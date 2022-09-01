@@ -10,6 +10,7 @@ import type {
 import { databaseTimestampToDate } from "~/utils/dates";
 import { gearImageUrl, modeImageUrl, weaponImageUrl } from "~/utils/urls";
 import { Ability } from "./Ability";
+import { LinkButton } from "./Button";
 import { Image } from "./Image";
 import { Popover } from "./Popover";
 
@@ -26,6 +27,7 @@ type BuildProps = Pick<
   abilities: AllAbilitiesTuple;
   modes: ModeShort[] | null;
   weapons: Array<BuildWeapon["weaponSplId"]>;
+  canEdit?: boolean;
 };
 
 export function BuildCard({
@@ -38,10 +40,34 @@ export function BuildCard({
   shoesGearSplId,
   abilities,
   modes,
+  canEdit = false,
 }: BuildProps) {
-  const { t } = useTranslation("weapons");
+  const { t } = useTranslation(["weapons", "builds"]);
   const { i18n } = useTranslation();
   const isMounted = useIsMounted();
+
+  const bottomRowItems = [
+    description && (
+      <Popover
+        key="info"
+        trigger={<>{t("builds:buildCard.info")}</>}
+        triggerClassName="build__small-text"
+      >
+        {description}
+      </Popover>
+    ),
+    canEdit && (
+      <LinkButton
+        key="edit"
+        className="build__small-text"
+        variant="minimal"
+        tiny
+        to="/"
+      >
+        {t("builds:buildCard.edit")}
+      </LinkButton>
+    ),
+  ].filter(Boolean);
 
   return (
     <div className="build">
@@ -81,15 +107,17 @@ export function BuildCard({
           <div key={weaponSplId} className="build__weapon">
             <Image
               path={weaponImageUrl(weaponSplId)}
-              alt={t(`${weaponSplId}` as any)}
-              title={t(`${weaponSplId}` as any)}
+              alt={t(`weapons:${weaponSplId}` as any)}
+              title={t(`weapons:${weaponSplId}` as any)}
               height={36}
               width={36}
             />
           </div>
         ))}
         {weapons.length === 1 && (
-          <div className="build__weapon-text">{t(`${weapons[0]!}` as any)}</div>
+          <div className="build__weapon-text">
+            {t(`weapons:${weapons[0]!}` as any)}
+          </div>
         )}
       </div>
       <div className="build__gear-abilities">
@@ -109,14 +137,8 @@ export function BuildCard({
           gearId={shoesGearSplId}
         />
       </div>
-      {description && (
-        <div className="build__bottom-row">
-          <Popover
-            trigger={<button className="build__bottom-row-button">Info</button>}
-          >
-            {description}
-          </Popover>
-        </div>
+      {bottomRowItems.length > 0 && (
+        <div className="build__bottom-row">{bottomRowItems}</div>
       )}
     </div>
   );

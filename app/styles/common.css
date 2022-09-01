@@ -737,13 +737,9 @@ dialog::backdrop {
   height: 100%;
   align-items: flex-end;
   justify-content: center;
+  gap: var(--s-2);
 }
 
-.build__bottom-row-button {
-  height: 1.25rem;
-  background-color: transparent;
-  color: var(--theme);
-  font-size: var(--fonts-xxs);
-  padding-block: var(--s-1);
-  padding-inline: var(--s-1-5);
+.build__small-text {
+  font-size: var(--fonts-xxs) !important;
 }
