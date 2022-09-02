@@ -246,6 +246,7 @@ export default function PlusSuggestionsPage() {
                   to={`new${tierVisible ? `?tier=${tierVisible}` : ""}`}
                   data-cy="new-suggest-button"
                   prefetch="render"
+                  tiny
                 >
                   Suggest
                 </LinkButton>
