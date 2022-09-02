@@ -27,6 +27,12 @@ export const CALENDAR_EVENT_RESULT = {
   MAX_PLAYER_NAME_LENGTH: 100,
 } as const;
 
+export const BUILD = {
+  TITLE_MIN_LENGTH: 1,
+  TITLE_MAX_LENGTH: 100,
+  DESCRIPTION_MAX_LENGTH: TWEET_LENGTH_MAX_LENGTH,
+} as const;
+
 export const PLUS_TIERS = [1, 2, 3];
 
 export const PLUS_UPVOTE = 1;

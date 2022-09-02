@@ -8,7 +8,7 @@ import { db } from "~/db";
 import { getUser, useUser } from "~/modules/auth";
 import { atOrError } from "~/utils/arrays";
 import { notFoundIfFalsy } from "~/utils/remix";
-import { type UserPageLoaderData, userParamsSchema } from "../u.$identifier";
+import { type UserPageLoaderData, userParamsSchema } from "../../u.$identifier";
 
 export const handle = {
   i18n: ["weapons", "builds"],
