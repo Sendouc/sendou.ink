@@ -10,12 +10,14 @@ import type { BuildAbilitiesTuple } from "~/modules/in-game-lists/types";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { gearImageUrl, modeImageUrl, weaponImageUrl } from "~/utils/urls";
 import { Ability } from "./Ability";
-import { LinkButton } from "./Button";
+import { Button, LinkButton } from "./Button";
+import { FormWithConfirm } from "./FormWithConfirm";
 import { Image } from "./Image";
 import { Popover } from "./Popover";
 
 type BuildProps = Pick<
   Build,
+  | "id"
   | "title"
   | "description"
   | "clothesGearSplId"
@@ -31,6 +33,7 @@ type BuildProps = Pick<
 };
 
 export function BuildCard({
+  id,
   title,
   description,
   weapons,
@@ -42,7 +45,7 @@ export function BuildCard({
   modes,
   canEdit = false,
 }: BuildProps) {
-  const { t } = useTranslation(["weapons", "builds"]);
+  const { t } = useTranslation(["weapons", "builds", "common"]);
   const { i18n } = useTranslation();
   const isMounted = useIsMounted();
 
@@ -66,6 +69,22 @@ export function BuildCard({
       >
         {t("builds:buildCard.edit")}
       </LinkButton>
+    ),
+    canEdit && (
+      <FormWithConfirm
+        key="delete"
+        dialogHeading={t("builds:deleteConfirm", { title })}
+        fields={[["buildToDeleteId", id]]}
+      >
+        <Button
+          className="build__small-text"
+          variant="minimal-destructive"
+          tiny
+          type="submit"
+        >
+          {t("common:actions.delete")}
+        </Button>
+      </FormWithConfirm>
     ),
   ].filter(Boolean);
 

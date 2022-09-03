@@ -9,5 +9,7 @@
   "forms.weapons": "Weapons",
   "forms.gear.HEAD": "Gear (head)",
   "forms.gear.CLOTHES": "Gear (clothes)",
-  "forms.gear.SHOES": "Gear (shoes)"
+  "forms.gear.SHOES": "Gear (shoes)",
+
+  "deleteConfirm": "Delete build '{{title}}'?"
 }

@@ -32,6 +32,7 @@ export const BUILD = {
   TITLE_MAX_LENGTH: 100,
   DESCRIPTION_MAX_LENGTH: TWEET_LENGTH_MAX_LENGTH,
   MAX_WEAPONS_COUNT: 5,
+  MAX_COUNT: 250,
 } as const;
 
 export const PLUS_TIERS = [1, 2, 3];
