@@ -7,6 +7,7 @@ import { db } from "~/db";
 import { sql } from "~/db/sql";
 import {
   abilities,
+  type AbilityType,
   clothesGearIds,
   headGearIds,
   modesShort,
@@ -504,6 +505,13 @@ function adminBuilds() {
     const randomOrderShoesGear = shuffle(shoesGearIds.slice());
     const randomOrderWeaponIds = shuffle(weaponIds.slice());
 
+    const randomAbility = (legalTypes: AbilityType[]) => {
+      const randomOrderAbilities = shuffle([...abilities]);
+
+      return randomOrderAbilities.find((a) => legalTypes.includes(a.type))!
+        .name;
+    };
+
     db.builds.create({
       title: `${capitalize(faker.word.adjective())} ${capitalize(
         faker.word.noun()
@@ -522,47 +530,26 @@ function adminBuilds() {
         Math.random() < 0.75
           ? modesShort.filter(() => Math.random() < 0.5)
           : null,
-      abilities: new Array(12).fill(null).map((_, i) => {
-        const gearType = i < 4 ? "HEAD" : i < 8 ? "CLOTHES" : "SHOES";
-        const isMain = i === 0 || i === 4 || i === 8;
-
-        const randomOrderAbilities = shuffle([...abilities]);
-
-        const getAbility = () => {
-          const legalAbilityForSlot = randomOrderAbilities.find((ability) => {
-            if (
-              ability.type === "HEAD_MAIN_ONLY" &&
-              (gearType !== "HEAD" || !isMain)
-            ) {
-              return false;
-            }
-            if (
-              ability.type === "CLOTHES_MAIN_ONLY" &&
-              (gearType !== "CLOTHES" || !isMain)
-            ) {
-              return false;
-            }
-            if (
-              ability.type === "SHOES_MAIN_ONLY" &&
-              (gearType !== "SHOES" || !isMain)
-            ) {
-              return false;
-            }
-
-            return true;
-          });
-
-          invariant(legalAbilityForSlot);
-
-          return legalAbilityForSlot.name;
-        };
-
-        return {
-          ability: getAbility(),
-          gearType,
-          slotIndex: (i % 4) as any,
-        };
-      }),
+      abilities: [
+        [
+          randomAbility(["HEAD_MAIN_ONLY", "STACKABLE"]),
+          randomAbility(["STACKABLE"]),
+          randomAbility(["STACKABLE"]),
+          randomAbility(["STACKABLE"]),
+        ],
+        [
+          randomAbility(["CLOTHES_MAIN_ONLY", "STACKABLE"]),
+          randomAbility(["STACKABLE"]),
+          randomAbility(["STACKABLE"]),
+          randomAbility(["STACKABLE"]),
+        ],
+        [
+          randomAbility(["SHOES_MAIN_ONLY", "STACKABLE"]),
+          randomAbility(["STACKABLE"]),
+          randomAbility(["STACKABLE"]),
+          randomAbility(["STACKABLE"]),
+        ],
+      ],
     });
   }
 }
