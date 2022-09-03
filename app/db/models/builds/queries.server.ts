@@ -70,6 +70,13 @@ export const create = sql.transaction((build: CreateArgs) => {
   }
 });
 
+export const updateByReplacing = sql.transaction(
+  (build: CreateArgs & { id: Build["id"] }) => {
+    deleteByIdStm.run({ id: build.id });
+    create(build);
+  }
+);
+
 export function countByUserId(userId: Build["ownerId"]) {
   return (countByUserIdStm.get({ userId })?.count ?? 0) as number;
 }

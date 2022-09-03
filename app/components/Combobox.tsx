@@ -192,10 +192,11 @@ export function WeaponCombobox({
   className,
   inputName,
   onChange,
+  initialWeaponId,
 }: Pick<
   ComboboxProps<ComboboxBaseOption>,
   "inputName" | "onChange" | "className" | "id" | "required"
->) {
+> & { initialWeaponId?: typeof weaponIds[number] }) {
   const { t } = useTranslation("weapons");
 
   const idToWeapon = (id: typeof weaponIds[number]) => ({
@@ -208,6 +209,7 @@ export function WeaponCombobox({
     <Combobox
       inputName={inputName}
       options={weaponIds.map(idToWeapon)}
+      initialValue={initialWeaponId ? idToWeapon(initialWeaponId) : undefined}
       placeholder={t(`${weaponIds[0]}`)}
       onChange={onChange}
       className={className}
@@ -224,10 +226,11 @@ export function GearCombobox({
   inputName,
   onChange,
   gearType,
+  initialGearId,
 }: Pick<
   ComboboxProps<ComboboxBaseOption>,
   "inputName" | "onChange" | "className" | "id" | "required"
-> & { gearType: GearType }) {
+> & { gearType: GearType; initialGearId?: number }) {
   const { t } = useTranslation("gear");
 
   const translationPrefix =
@@ -250,6 +253,7 @@ export function GearCombobox({
       inputName={inputName}
       options={ids.map(idToGear)}
       placeholder={idToGear(ids[0]).label}
+      initialValue={initialGearId ? idToGear(initialGearId as any) : undefined}
       onChange={onChange}
       className={className}
       id={id}
