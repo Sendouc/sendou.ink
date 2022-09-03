@@ -750,13 +750,29 @@ dialog::backdrop {
 .ability-selector__container {
   display: flex;
   width: 100%;
+  flex-direction: column;
   justify-content: center;
+  gap: var(--s-3);
 }
 
-.ability-selector__ability-row {
+.ability-selector__slots {
   display: grid;
   margin: 0 auto;
   gap: var(--s-2);
   grid-template-columns: repeat(4, max-content);
   place-items: center;
+}
+
+.ability-selector__ability-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--s-1);
+}
+
+.ability-selector__ability-button {
+  padding: var(--s-0-5);
+  border-color: var(--bg-darker);
+  background-color: var(--bg-darker);
+  border-radius: 50%;
 }

@@ -37,13 +37,14 @@ export const create = sql.transaction((build: CreateArgs) => {
     ownerId: build.ownerId,
     title: build.title,
     description: build.description,
-    modes: build.modes
-      ? JSON.stringify(
-          build.modes
-            .slice()
-            .sort((a, b) => modesShort.indexOf(a) - modesShort.indexOf(b))
-        )
-      : null,
+    modes:
+      build.modes && build.modes.length > 0
+        ? JSON.stringify(
+            build.modes
+              .slice()
+              .sort((a, b) => modesShort.indexOf(a) - modesShort.indexOf(b))
+          )
+        : null,
     headGearSplId: build.headGearSplId,
     clothesGearSplId: build.clothesGearSplId,
     shoesGearSplId: build.shoesGearSplId,

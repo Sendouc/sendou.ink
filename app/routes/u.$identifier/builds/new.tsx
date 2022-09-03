@@ -4,8 +4,7 @@ import { Main } from "~/components/Main";
 import { BUILD } from "~/constants";
 import * as React from "react";
 import { Form } from "@remix-run/react";
-import type {
-  GearType} from "~/modules/in-game-lists";
+import type { GearType } from "~/modules/in-game-lists";
 import {
   clothesGearIds,
   headGearIds,
@@ -22,10 +21,15 @@ import { z } from "zod";
 import {
   actualNumber,
   checkboxValueToBoolean,
+  clothesMainSlotAbility,
   falsyToNull,
+  headMainSlotAbility,
   id,
   processMany,
   removeDuplicates,
+  safeJSONParse,
+  shoesMainSlotAbility,
+  stackableAbility,
   toArray,
 } from "~/utils/zod";
 import type { ActionFunction } from "@remix-run/node";
@@ -84,31 +88,49 @@ const newBuildActionSchema = z.object({
         shoesGearIds.includes(val as typeof shoesGearIds[number])
       )
   ),
-  // TODO: abilities
+  abilities: z.preprocess(
+    safeJSONParse,
+    z.tuple([
+      z.tuple([
+        headMainSlotAbility,
+        stackableAbility,
+        stackableAbility,
+        stackableAbility,
+      ]),
+      z.tuple([
+        clothesMainSlotAbility,
+        stackableAbility,
+        stackableAbility,
+        stackableAbility,
+      ]),
+      z.tuple([
+        shoesMainSlotAbility,
+        stackableAbility,
+        stackableAbility,
+        stackableAbility,
+      ]),
+    ])
+  ),
 });
 
 export const action: ActionFunction = async ({ request }) => {
-  // const user = await requireUser(request);
+  const user = await requireUser(request);
   const data = await parseRequestFormData({
     request,
     schema: newBuildActionSchema,
   });
 
-  // const modes = modesShort.filter((mode) => data[mode]);
-
-  // db.builds.create({
-  //   title: data.title,
-  //   description: data.description,
-  //   abilities: [],
-  //   headGearSplId: data["head[value]"],
-  //   clothesGearSplId: data["clothes[value]"],
-  //   shoesGearSplId: data["shoes[value]"],
-  //   modes: modes.length > 0 ? modes : null,
-  //   weaponSplIds: data["weapon[value]"],
-  //   ownerId: user.id,
-  // });
-
-  console.log({ data });
+  db.builds.create({
+    title: data.title,
+    description: data.description,
+    abilities: [],
+    headGearSplId: data["head[value]"],
+    clothesGearSplId: data["clothes[value]"],
+    shoesGearSplId: data["shoes[value]"],
+    modes: modesShort.filter((mode) => data[mode]),
+    weaponSplIds: data["weapon[value]"],
+    ownerId: user.id,
+  });
 
   return null;
 };
@@ -280,5 +302,13 @@ function Abilities() {
       ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
     ]);
 
-  return <AbilitiesSelector abilities={abilities} onChange={setAbilities} />;
+  return (
+    <div>
+      <input type="hidden" name="abilities" value={JSON.stringify(abilities)} />
+      <AbilitiesSelector
+        selectedAbilities={abilities}
+        onChange={setAbilities}
+      />
+    </div>
+  );
 }

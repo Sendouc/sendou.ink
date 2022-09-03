@@ -1,4 +1,4 @@
-import type { abilityCodes } from "./abilities";
+import type { abilities } from "./abilities";
 import type { modes } from "./modes";
 import type { stages } from "./stages";
 
@@ -6,11 +6,9 @@ export type ModeShort = typeof modes[number]["short"];
 
 export type Stage = typeof stages[number];
 
-export type Ability = typeof abilityCodes[number]["name"];
-export type AbilityWithUnknown =
-  | typeof abilityCodes[number]["name"]
-  | "UNKNOWN";
-export type AbilityType = typeof abilityCodes[number]["type"];
+export type Ability = typeof abilities[number]["name"];
+export type AbilityWithUnknown = typeof abilities[number]["name"] | "UNKNOWN";
+export type AbilityType = typeof abilities[number]["type"];
 
 export type BuildAbilitiesTuple = [
   head: [main: Ability, s1: Ability, s2: Ability, s3: Ability],

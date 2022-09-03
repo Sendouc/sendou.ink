@@ -1,6 +1,5 @@
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
-import type { AllAbilitiesTuple } from "~/db/models/builds/queries.server";
 import type { Build, BuildWeapon } from "~/db/types";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import type {
@@ -8,6 +7,7 @@ import type {
   GearType,
   ModeShort,
 } from "~/modules/in-game-lists";
+import type { BuildAbilitiesTuple } from "~/modules/in-game-lists/types";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { gearImageUrl, modeImageUrl, weaponImageUrl } from "~/utils/urls";
 import { Ability } from "./Ability";
@@ -25,7 +25,7 @@ type BuildProps = Pick<
   | "updatedAt"
   | "modes"
 > & {
-  abilities: AllAbilitiesTuple;
+  abilities: BuildAbilitiesTuple;
   modes: ModeShort[] | null;
   weapons: Array<BuildWeapon["weaponSplId"]>;
   canEdit?: boolean;

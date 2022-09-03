@@ -8,12 +8,15 @@ const sizeMap = {
   TINY: 22,
 } as const;
 
+// xxx: onClick not keyboard friendly
 export function Ability({
   ability,
   size,
+  onClick,
 }: {
   ability: AbilityWithUnknown;
   size: keyof typeof sizeMap;
+  onClick?: () => void;
 }) {
   const sizeNumber = sizeMap[size];
 
@@ -25,6 +28,7 @@ export function Ability({
           "--ability-size": `${sizeNumber}px`,
         } as any
       }
+      onClick={onClick}
     >
       {/* xxx: make ticket for this or fix */}
       <Image alt="" path={abilityImageUrl(ability)} />

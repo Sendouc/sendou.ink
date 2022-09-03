@@ -7,5 +7,5 @@ export {
   shoesGearIds,
   type GearType,
 } from "./gear-ids";
-export { abilitiesShort, abilityCodes } from "./abilities";
+export { abilitiesShort, abilities } from "./abilities";
 export type { Ability, AbilityType, ModeShort, Stage } from "./types";
