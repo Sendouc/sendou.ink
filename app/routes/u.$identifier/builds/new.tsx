@@ -1,22 +1,36 @@
+import {
+  json,
+  redirect,
+  type LoaderArgs,
+  type ActionFunction,
+} from "@remix-run/node";
+import { Form, useLoaderData } from "@remix-run/react";
+import * as React from "react";
 import { useTranslation } from "react-i18next";
+import { z } from "zod";
+import { AbilitiesSelector } from "~/components/AbilitiesSelector";
+import { Button } from "~/components/Button";
+import { GearCombobox, WeaponCombobox } from "~/components/Combobox";
+import { Image } from "~/components/Image";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import { BUILD } from "~/constants";
-import * as React from "react";
-import { Form } from "@remix-run/react";
+import { db } from "~/db";
+import type { GearType } from "~/db/types";
+import { requireUser } from "~/modules/auth";
 import {
   clothesGearIds,
   headGearIds,
+  modesShort,
   shoesGearIds,
   weaponIds,
 } from "~/modules/in-game-lists";
-import { modesShort } from "~/modules/in-game-lists";
-import { Image } from "~/components/Image";
+import type {
+  BuildAbilitiesTuple,
+  BuildAbilitiesTupleWithUnknown,
+} from "~/modules/in-game-lists/types";
+import { parseRequestFormData } from "~/utils/remix";
 import { modeImageUrl, userBuildsPage } from "~/utils/urls";
-import { GearCombobox, WeaponCombobox } from "~/components/Combobox";
-import { Button } from "~/components/Button";
-import { AbilitiesSelector } from "~/components/AbilitiesSelector";
-import { z } from "zod";
 import {
   actualNumber,
   checkboxValueToBoolean,
@@ -31,15 +45,6 @@ import {
   stackableAbility,
   toArray,
 } from "~/utils/zod";
-import { type ActionFunction, redirect } from "@remix-run/node";
-import { requireUser } from "~/modules/auth";
-import { parseRequestFormData } from "~/utils/remix";
-import { db } from "~/db";
-import type {
-  BuildAbilitiesTuple,
-  BuildAbilitiesTupleWithUnknown,
-} from "~/modules/in-game-lists/types";
-import type { GearType } from "~/db/types";
 
 const newBuildActionSchema = z.object({
   buildToEditId: z.preprocess(actualNumber, id.nullish()),
@@ -128,7 +133,7 @@ export const action: ActionFunction = async ({ request }) => {
     throw new Response(null, { status: 400 });
   }
 
-  db.builds.create({
+  const commonArgs = {
     title: data.title,
     description: data.description,
     abilities: data.abilities as BuildAbilitiesTuple,
@@ -138,7 +143,12 @@ export const action: ActionFunction = async ({ request }) => {
     modes: modesShort.filter((mode) => data[mode]),
     weaponSplIds: data["weapon[value]"],
     ownerId: user.id,
-  });
+  };
+  if (data.buildToEditId) {
+    db.builds.updateByReplacing({ id: data.buildToEditId, ...commonArgs });
+  } else {
+    db.builds.create(commonArgs);
+  }
 
   return redirect(userBuildsPage(user.discordId));
 };
@@ -147,12 +157,38 @@ export const handle = {
   i18n: ["weapons", "builds", "gear"],
 };
 
+const newBuildLoaderParamsSchema = z.object({
+  buildId: z.preprocess(actualNumber, id),
+  userId: z.preprocess(actualNumber, id),
+});
+
+export const loader = async ({ request }: LoaderArgs) => {
+  const user = await requireUser(request);
+  const url = new URL(request.url);
+
+  const params = newBuildLoaderParamsSchema.safeParse(
+    Object.fromEntries(url.searchParams)
+  );
+
+  if (!params.success || params.data.userId !== user.id)
+    return json({ buildToEdit: null });
+
+  const usersBuilds = db.builds.buildsByUserId(params.data.userId);
+  const buildToEdit = usersBuilds.find((b) => b.id === params.data.buildId);
+
+  return json({ buildToEdit });
+};
+
 export default function NewBuildPage() {
+  const { buildToEdit } = useLoaderData<typeof loader>();
   const { t } = useTranslation();
 
   return (
     <Main halfWidth>
       <Form className="stack md items-start" method="post">
+        {buildToEdit && (
+          <input type="hidden" name="buildToEditId" value={buildToEdit.id} />
+        )}
         <WeaponsSelector />
         <GearSelector type="HEAD" />
         <GearSelector type="CLOTHES" />
@@ -171,7 +207,7 @@ export default function NewBuildPage() {
 
 function TitleInput() {
   const { t } = useTranslation("builds");
-  // const { eventToEdit } = useLoaderData<typeof loader>();
+  const { buildToEdit } = useLoaderData<typeof loader>();
 
   return (
     <div>
@@ -183,7 +219,7 @@ function TitleInput() {
         required
         minLength={BUILD.TITLE_MIN_LENGTH}
         maxLength={BUILD.TITLE_MAX_LENGTH}
-        // defaultValue={eventToEdit?.name}
+        defaultValue={buildToEdit?.title}
         data-cy="title-input"
       />
     </div>
@@ -192,9 +228,8 @@ function TitleInput() {
 
 function DescriptionTextarea() {
   const { t } = useTranslation();
-  // const { eventToEdit } = useLoaderData<typeof loader>();
-  // const [value, setValue] = React.useState(eventToEdit?.description ?? "");
-  const [value, setValue] = React.useState("");
+  const { buildToEdit } = useLoaderData<typeof loader>();
+  const [value, setValue] = React.useState(buildToEdit?.description ?? "");
 
   return (
     <div>
@@ -220,6 +255,7 @@ function DescriptionTextarea() {
 }
 
 function ModeCheckboxes() {
+  const { buildToEdit } = useLoaderData<typeof loader>();
   const { t } = useTranslation("builds");
 
   return (
@@ -232,7 +268,12 @@ function ModeCheckboxes() {
               {/* xxx: fix alt */}
               <Image alt="" path={modeImageUrl(mode)} width={24} height={24} />
             </label>
-            <input id={mode} name={mode} type="checkbox" />
+            <input
+              id={mode}
+              name={mode}
+              type="checkbox"
+              defaultChecked={buildToEdit?.modes?.includes(mode)}
+            />
           </div>
         ))}
       </div>
@@ -241,8 +282,9 @@ function ModeCheckboxes() {
 }
 
 function WeaponsSelector() {
+  const { buildToEdit } = useLoaderData<typeof loader>();
   const { t } = useTranslation(["common", "weapons", "builds"]);
-  const [count, setCount] = React.useState(1);
+  const [count, setCount] = React.useState(buildToEdit?.weapons.length ?? 1);
 
   return (
     <div>
@@ -254,7 +296,12 @@ function WeaponsSelector() {
           return (
             <div key={i} className="stack horizontal sm items-center">
               <div>
-                <WeaponCombobox inputName="weapon" id="weapon" required />
+                <WeaponCombobox
+                  inputName="weapon"
+                  id="weapon"
+                  required
+                  initialWeaponId={buildToEdit?.weapons[i]}
+                />
               </div>
               {i === count - 1 && (
                 <>
@@ -288,7 +335,16 @@ function WeaponsSelector() {
 
 // xxx: could be wider not to have line breaks in long gear names
 function GearSelector({ type }: { type: GearType }) {
+  const { buildToEdit } = useLoaderData<typeof loader>();
   const { t } = useTranslation("builds");
+
+  const initialGearId = !buildToEdit
+    ? undefined
+    : type === "HEAD"
+    ? buildToEdit.headGearSplId
+    : type === "CLOTHES"
+    ? buildToEdit.clothesGearSplId
+    : buildToEdit.shoesGearSplId;
 
   return (
     <div>
@@ -296,19 +352,28 @@ function GearSelector({ type }: { type: GearType }) {
         {t(`forms.gear.${type}`)}
       </Label>
       <div>
-        <GearCombobox gearType={type} inputName={type} id={type} required />
+        <GearCombobox
+          gearType={type}
+          inputName={type}
+          id={type}
+          required
+          initialGearId={initialGearId}
+        />
       </div>
     </div>
   );
 }
 
 function Abilities() {
+  const { buildToEdit } = useLoaderData<typeof loader>();
   const [abilities, setAbilities] =
-    React.useState<BuildAbilitiesTupleWithUnknown>([
-      ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
-      ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
-      ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
-    ]);
+    React.useState<BuildAbilitiesTupleWithUnknown>(
+      buildToEdit?.abilities ?? [
+        ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+        ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+        ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+      ]
+    );
 
   return (
     <div>

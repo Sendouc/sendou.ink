@@ -2,6 +2,7 @@ import clsx from "clsx";
 import { useTranslation } from "react-i18next";
 import type { Build, BuildWeapon, GearType } from "~/db/types";
 import { useIsMounted } from "~/hooks/useIsMounted";
+import { useUser } from "~/modules/auth";
 import type {
   Ability as AbilityType,
   ModeShort,
@@ -45,6 +46,7 @@ export function BuildCard({
   modes,
   canEdit = false,
 }: BuildProps) {
+  const user = useUser();
   const { t } = useTranslation(["weapons", "builds", "common"]);
   const { i18n } = useTranslation();
   const isMounted = useIsMounted();
@@ -65,7 +67,7 @@ export function BuildCard({
         className="build__small-text"
         variant="minimal"
         tiny
-        to="/"
+        to={`new?buildId=${id}&userId=${user!.id}`}
       >
         {t("builds:buildCard.edit")}
       </LinkButton>
