@@ -1,5 +1,6 @@
 import type { Badge } from "~/db/types";
-import type { Ability, ModeShort } from "~/modules/in-game-lists";
+import type { ModeShort } from "~/modules/in-game-lists";
+import type { AbilityWithUnknown } from "~/modules/in-game-lists/types";
 
 export const SENDOU_INK_DISCORD_URL = "https://discord.gg/sendou";
 export const SENDOU_TWITTER_URL = "https://twitter.com/sendouc";
@@ -51,7 +52,7 @@ export const gearImageUrl = (
 ) => `/img/gear/${gearType}/${gearSplId}`;
 export const weaponImageUrl = (weaponSplId: number) =>
   `/img/weapons/${weaponSplId}`;
-export const abilityImageUrl = (ability: Ability) =>
+export const abilityImageUrl = (ability: AbilityWithUnknown) =>
   `/img/abilities/${ability}`;
 export const modeImageUrl = (mode: ModeShort) => `/img/modes/${mode}`;
 
