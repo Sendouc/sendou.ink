@@ -100,7 +100,6 @@ export function BuildCard({
               {modes.map((mode) => (
                 <Image
                   key={mode}
-                  // xxx: alt to translated name + title
                   alt=""
                   path={modeImageUrl(mode)}
                   width={18}
