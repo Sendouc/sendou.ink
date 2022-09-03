@@ -33,4 +33,6 @@ from
   "BuildWithWeapon"
   left join "BuildAbility" on "BuildAbility"."buildId" = "BuildWithWeapon"."id"
 group by
-  "BuildWithWeapon"."id";
+  "BuildWithWeapon"."id"
+order by
+  "BuildWithWeapon"."updatedAt" desc

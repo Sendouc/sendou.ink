@@ -4,7 +4,6 @@ import { Main } from "~/components/Main";
 import { BUILD } from "~/constants";
 import * as React from "react";
 import { Form } from "@remix-run/react";
-import type { GearType } from "~/modules/in-game-lists";
 import {
   clothesGearIds,
   headGearIds,
@@ -13,7 +12,7 @@ import {
 } from "~/modules/in-game-lists";
 import { modesShort } from "~/modules/in-game-lists";
 import { Image } from "~/components/Image";
-import { modeImageUrl } from "~/utils/urls";
+import { modeImageUrl, userBuildsPage } from "~/utils/urls";
 import { GearCombobox, WeaponCombobox } from "~/components/Combobox";
 import { Button } from "~/components/Button";
 import { AbilitiesSelector } from "~/components/AbilitiesSelector";
@@ -32,11 +31,15 @@ import {
   stackableAbility,
   toArray,
 } from "~/utils/zod";
-import type { ActionFunction } from "@remix-run/node";
+import { type ActionFunction, redirect } from "@remix-run/node";
 import { requireUser } from "~/modules/auth";
 import { parseRequestFormData } from "~/utils/remix";
 import { db } from "~/db";
-import type { BuildAbilitiesTupleWithUnknown } from "~/modules/in-game-lists/types";
+import type {
+  BuildAbilitiesTuple,
+  BuildAbilitiesTupleWithUnknown,
+} from "~/modules/in-game-lists/types";
+import type { GearType } from "~/db/types";
 
 const newBuildActionSchema = z.object({
   buildToEditId: z.preprocess(actualNumber, id.nullish()),
@@ -66,13 +69,13 @@ const newBuildActionSchema = z.object({
       .min(1)
       .max(BUILD.MAX_WEAPONS_COUNT)
   ),
-  "head[value]": z.preprocess(
+  "HEAD[value]": z.preprocess(
     actualNumber,
     z
       .number()
       .refine((val) => headGearIds.includes(val as typeof headGearIds[number]))
   ),
-  "clothes[value]": z.preprocess(
+  "CLOTHES[value]": z.preprocess(
     actualNumber,
     z
       .number()
@@ -80,7 +83,7 @@ const newBuildActionSchema = z.object({
         clothesGearIds.includes(val as typeof clothesGearIds[number])
       )
   ),
-  "shoes[value]": z.preprocess(
+  "SHOES[value]": z.preprocess(
     actualNumber,
     z
       .number()
@@ -123,16 +126,16 @@ export const action: ActionFunction = async ({ request }) => {
   db.builds.create({
     title: data.title,
     description: data.description,
-    abilities: [],
-    headGearSplId: data["head[value]"],
-    clothesGearSplId: data["clothes[value]"],
-    shoesGearSplId: data["shoes[value]"],
+    abilities: data.abilities as BuildAbilitiesTuple,
+    headGearSplId: data["HEAD[value]"],
+    clothesGearSplId: data["CLOTHES[value]"],
+    shoesGearSplId: data["SHOES[value]"],
     modes: modesShort.filter((mode) => data[mode]),
     weaponSplIds: data["weapon[value]"],
     ownerId: user.id,
   });
 
-  return null;
+  return redirect(userBuildsPage(user.discordId));
 };
 
 export const handle = {
@@ -146,9 +149,9 @@ export default function NewBuildPage() {
     <Main halfWidth>
       <Form className="stack md items-start" method="post">
         <WeaponsSelector />
-        <GearSelector type="head" />
-        <GearSelector type="clothes" />
-        <GearSelector type="shoes" />
+        <GearSelector type="HEAD" />
+        <GearSelector type="CLOTHES" />
+        <GearSelector type="SHOES" />
         <Abilities />
         <TitleInput />
         <DescriptionTextarea />

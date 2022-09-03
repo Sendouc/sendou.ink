@@ -1,10 +1,9 @@
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
-import type { Build, BuildWeapon } from "~/db/types";
+import type { Build, BuildWeapon, GearType } from "~/db/types";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import type {
   Ability as AbilityType,
-  GearType,
   ModeShort,
 } from "~/modules/in-game-lists";
 import type { BuildAbilitiesTuple } from "~/modules/in-game-lists/types";
@@ -123,17 +122,17 @@ export function BuildCard({
       </div>
       <div className="build__gear-abilities">
         <AbilitiesRowWithGear
-          gearType="head"
+          gearType="HEAD"
           abilities={abilities[0]}
           gearId={headGearSplId}
         />
         <AbilitiesRowWithGear
-          gearType="clothes"
+          gearType="CLOTHES"
           abilities={abilities[1]}
           gearId={clothesGearSplId}
         />
         <AbilitiesRowWithGear
-          gearType="shoes"
+          gearType="SHOES"
           abilities={abilities[2]}
           gearId={shoesGearSplId}
         />
