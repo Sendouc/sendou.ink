@@ -78,6 +78,10 @@
   visibility: hidden;
 }
 
+.whitespace-pre-wrap {
+  white-space: pre-wrap;
+}
+
 .flex {
   display: flex;
 }

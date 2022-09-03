@@ -233,7 +233,9 @@ function Description() {
           <Avatar user={data.event} size="xs" />
           {discordFullName(data.event)}
         </div>
-        <div data-cy="event-description">{data.event.description}</div>
+        <div data-cy="event-description" className="whitespace-pre-wrap">
+          {data.event.description}
+        </div>
       </div>
     </Section>
   );
