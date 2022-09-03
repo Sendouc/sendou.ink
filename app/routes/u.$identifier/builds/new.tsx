@@ -123,6 +123,11 @@ export const action: ActionFunction = async ({ request }) => {
     schema: newBuildActionSchema,
   });
 
+  const usersBuilds = db.builds.buildsByUserId(user.id);
+  if (usersBuilds.length >= BUILD.MAX_COUNT) {
+    throw new Response(null, { status: 400 });
+  }
+
   db.builds.create({
     title: data.title,
     description: data.description,

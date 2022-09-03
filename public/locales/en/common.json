@@ -23,6 +23,7 @@
   "actions.edit": "Edit",
   "actions.add": "Add",
   "actions.remove": "Remove",
+  "actions.delete": "Delete",
 
   "results": "Results",
 

@@ -2,20 +2,22 @@ import { sql } from "~/db/sql";
 import type { Build, BuildAbility, BuildWeapon, GearType } from "~/db/types";
 import type { ModeShort } from "~/modules/in-game-lists";
 import { modesShort } from "~/modules/in-game-lists";
+import invariant from "tiny-invariant";
+import type { BuildAbilitiesTuple } from "~/modules/in-game-lists/types";
 
 import createBuildSql from "./createBuild.sql";
 import createBuildWeaponSql from "./createBuildWeapon.sql";
 import createBuildAbilitySql from "./createBuildAbility.sql";
 import countByUserIdSql from "./countByUserId.sql";
 import buildsByUserIdSql from "./buildsByUserId.sql";
-import invariant from "tiny-invariant";
-import type { BuildAbilitiesTuple } from "~/modules/in-game-lists/types";
+import deleteByIdSql from "./deleteById.sql";
 
 const createBuildStm = sql.prepare(createBuildSql);
 const createBuildWeaponStm = sql.prepare(createBuildWeaponSql);
 const createBuildAbilityStm = sql.prepare(createBuildAbilitySql);
 const countByUserIdStm = sql.prepare(countByUserIdSql);
 const buildsByUserIdStm = sql.prepare(buildsByUserIdSql);
+const deleteByIdStm = sql.prepare(deleteByIdSql);
 
 interface CreateArgs {
   ownerId: Build["ownerId"];
@@ -128,4 +130,8 @@ function dbAbilitiesToArrayOfArrays(
     [sorted[4]!, sorted[5]!, sorted[6]!, sorted[7]!],
     [sorted[8]!, sorted[9]!, sorted[10]!, sorted[11]!],
   ];
+}
+
+export function deleteById(id: Build["id"]) {
+  deleteByIdStm.run({ id });
 }

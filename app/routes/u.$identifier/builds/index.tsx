@@ -1,14 +1,41 @@
+import type { ActionFunction } from "@remix-run/node";
 import { json, type LoaderArgs } from "@remix-run/node";
 import { useLoaderData, useMatches } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
+import { z } from "zod";
 import { BuildCard } from "~/components/BuildCard";
 import { LinkButton } from "~/components/Button";
 import { Main } from "~/components/Main";
 import { db } from "~/db";
-import { getUser, useUser } from "~/modules/auth";
+import { getUser, requireUser, useUser } from "~/modules/auth";
 import { atOrError } from "~/utils/arrays";
-import { notFoundIfFalsy } from "~/utils/remix";
+import { notFoundIfFalsy, parseRequestFormData } from "~/utils/remix";
+import { actualNumber, id } from "~/utils/zod";
 import { type UserPageLoaderData, userParamsSchema } from "../../u.$identifier";
+
+const buildsActionSchema = z.object({
+  buildToDeleteId: z.preprocess(actualNumber, id),
+});
+
+export const action: ActionFunction = async ({ request }) => {
+  const user = await requireUser(request);
+  const data = await parseRequestFormData({
+    request,
+    schema: buildsActionSchema,
+  });
+
+  if (
+    !db.builds
+      .buildsByUserId(user.id)
+      .some((build) => build.id === data.buildToDeleteId)
+  ) {
+    throw new Response(null, { status: 400 });
+  }
+
+  db.builds.deleteById(data.buildToDeleteId);
+
+  return null;
+};
 
 export const handle = {
   i18n: ["weapons", "builds"],
@@ -34,6 +61,7 @@ export default function UserBuildsPage() {
   const parentPageData = atOrError(useMatches(), -2).data as UserPageLoaderData;
   const data = useLoaderData<typeof loader>();
 
+  // xxx: disable button if too many builds or something
   return (
     <Main className="stack lg">
       <div className="stack items-end">
@@ -46,6 +74,7 @@ export default function UserBuildsPage() {
           {data.builds.map((build) => (
             <BuildCard
               key={build.id}
+              id={build.id}
               title={build.title}
               description={build.description}
               headGearSplId={build.headGearSplId}
