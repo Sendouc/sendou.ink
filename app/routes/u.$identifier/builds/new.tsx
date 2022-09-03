@@ -7,6 +7,8 @@ import { Form } from "@remix-run/react";
 import { modesShort } from "~/modules/in-game-lists";
 import { Image } from "~/components/Image";
 import { modeImageUrl } from "~/utils/urls";
+import { WeaponCombobox } from "~/components/Combobox";
+import { Button } from "~/components/Button";
 
 export const handle = {
   i18n: ["weapons", "builds", "gear"],
@@ -97,9 +99,47 @@ function ModeCheckboxes() {
 }
 
 function WeaponsSelector() {
+  const { t } = useTranslation(["common", "weapons", "builds"]);
+  const [count, setCount] = React.useState(1);
+
   return (
     <div>
-      <Label>Weapons</Label>
+      <Label required htmlFor="weapon">
+        {t("builds:forms.weapons")}
+      </Label>
+      <div className="stack sm">
+        {new Array(count).fill(null).map((_, i) => {
+          return (
+            <div key={i} className="stack horizontal sm items-center">
+              <div>
+                <WeaponCombobox inputName="weapon" id="weapon" />
+              </div>
+              {i === count - 1 && (
+                <>
+                  <Button
+                    tiny
+                    disabled={count === BUILD.MAX_WEAPONS_COUNT}
+                    onClick={() => setCount((count) => count + 1)}
+                    data-cy="add-date-button"
+                  >
+                    {t("common:actions.add")}
+                  </Button>
+                  {count > 1 && (
+                    <Button
+                      tiny
+                      onClick={() => setCount((count) => count - 1)}
+                      data-cy="remove-date-button"
+                      variant="destructive"
+                    >
+                      {t("common:actions.remove")}
+                    </Button>
+                  )}
+                </>
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
