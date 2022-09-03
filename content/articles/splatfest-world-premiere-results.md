@@ -3,7 +3,8 @@ title: Splatfest World Premiere Results
 date: 2022-08-28
 author: Riczi
 ---
-The Splatfest World Premiere has sadly come to a close. At least we get to know the results! Each region was able to enjoy up to 12 hours of intense turf war battles, repping their chosen teams. 
+
+The Splatfest World Premiere has sadly come to a close. At least we get to know the results! Each region was able to enjoy up to 12 hours of intense turf war battles, repping their chosen teams.
 
 The Splatfest results varied slightly be region, but with many similarities. Team Rock was the most popular team, sporting the most members worldwide. Team Paper had the smallest membership, but won more Pro matches than the other teams.
 
