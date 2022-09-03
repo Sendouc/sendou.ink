@@ -1,4 +1,5 @@
 module.exports.up = function (db) {
+  // xxx: modes different table..?
   db.prepare(
     `
     create table "Build" (

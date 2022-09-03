@@ -7,12 +7,15 @@ import type { UserWithPlusTier } from "~/db/types";
 import { useUsers } from "~/hooks/swr";
 import { useTranslation } from "react-i18next";
 import { weaponIds } from "~/modules/in-game-lists";
+import { weaponImageUrl } from "~/utils/urls";
+import { Image } from "./Image";
 
 const MAX_RESULTS_SHOWN = 6;
 
 interface ComboboxBaseOption {
   label: string;
   value: string;
+  imgPath?: string;
 }
 
 type ComboboxOption<T> = ComboboxBaseOption & T;
@@ -101,6 +104,14 @@ export function Combobox<T extends Record<string, string | null | number>>({
             >
               {({ active }) => (
                 <li className={clsx("combobox-item", { active })}>
+                  {option.imgPath && (
+                    <Image
+                      alt=""
+                      path={option.imgPath}
+                      width={24}
+                      height={24}
+                    />
+                  )}
                   {option.label}
                 </li>
               )}
@@ -185,6 +196,7 @@ export function WeaponCombobox({
   const idToWeapon = (id: typeof weaponIds[number]) => ({
     value: String(id),
     label: t(`${id}`),
+    imgPath: weaponImageUrl(id),
   });
 
   // xxx: weapon images
