@@ -6,6 +6,7 @@ import { z } from "zod";
 import { BuildCard } from "~/components/BuildCard";
 import { LinkButton } from "~/components/Button";
 import { Main } from "~/components/Main";
+import { BUILD } from "~/constants";
 import { db } from "~/db";
 import { getUser, requireUser, useUser } from "~/modules/auth";
 import { atOrError } from "~/utils/arrays";
@@ -61,14 +62,17 @@ export default function UserBuildsPage() {
   const parentPageData = atOrError(useMatches(), -2).data as UserPageLoaderData;
   const data = useLoaderData<typeof loader>();
 
-  // xxx: disable button if too many builds or something
+  const isOwnPage = user?.id === parentPageData.id;
+
   return (
     <Main className="stack lg">
-      <div className="stack items-end">
-        <LinkButton to="new" tiny>
-          {t("addBuild")}
-        </LinkButton>
-      </div>
+      {data.builds.length < BUILD.MAX_COUNT && isOwnPage && (
+        <div className="stack items-end">
+          <LinkButton to="new" tiny>
+            {t("addBuild")}
+          </LinkButton>
+        </div>
+      )}
       {data.builds.length > 0 ? (
         <div className="builds-container">
           {data.builds.map((build) => (
@@ -84,7 +88,7 @@ export default function UserBuildsPage() {
               updatedAt={build.updatedAt}
               abilities={build.abilities}
               weapons={build.weapons}
-              canEdit={user?.id === parentPageData.id}
+              canEdit={isOwnPage}
             />
           ))}
         </div>

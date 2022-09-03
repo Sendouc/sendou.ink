@@ -265,7 +265,6 @@ function ModeCheckboxes() {
         {modesShort.map((mode) => (
           <div key={mode} className="stack items-center">
             <label htmlFor={mode}>
-              {/* xxx: fix alt */}
               <Image alt="" path={modeImageUrl(mode)} width={24} height={24} />
             </label>
             <input
@@ -333,7 +332,6 @@ function WeaponsSelector() {
   );
 }
 
-// xxx: could be wider not to have line breaks in long gear names
 function GearSelector({ type }: { type: GearType }) {
   const { buildToEdit } = useLoaderData<typeof loader>();
   const { t } = useTranslation("builds");
