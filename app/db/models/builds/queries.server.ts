@@ -1,6 +1,6 @@
 import { sql } from "~/db/sql";
-import type { Build, BuildAbility, BuildWeapon } from "~/db/types";
-import type { Ability, ModeShort } from "~/modules/in-game-lists";
+import type { Build, BuildAbility, BuildWeapon, GearType } from "~/db/types";
+import type { ModeShort } from "~/modules/in-game-lists";
 import { modesShort } from "~/modules/in-game-lists";
 
 import createBuildSql from "./createBuild.sql";
@@ -26,11 +26,7 @@ interface CreateArgs {
   clothesGearSplId: Build["clothesGearSplId"];
   shoesGearSplId: Build["shoesGearSplId"];
   weaponSplIds: Array<BuildWeapon["weaponSplId"]>;
-  abilities: Array<{
-    gearType: BuildAbility["gearType"];
-    ability: Ability;
-    slotIndex: BuildAbility["slotIndex"];
-  }>;
+  abilities: BuildAbilitiesTuple;
 }
 export const create = sql.transaction((build: CreateArgs) => {
   const createdBuild = createBuildStm.get({
@@ -57,13 +53,18 @@ export const create = sql.transaction((build: CreateArgs) => {
     });
   }
 
-  for (const { gearType, ability, slotIndex } of build.abilities) {
-    createBuildAbilityStm.run({
-      buildId: createdBuild.id,
-      gearType,
-      ability,
-      slotIndex,
-    });
+  for (const [rowI, row] of build.abilities.entries()) {
+    const gearType: GearType =
+      rowI === 0 ? "HEAD" : rowI === 1 ? "CLOTHES" : "SHOES";
+
+    for (const [abilityI, ability] of row.entries()) {
+      createBuildAbilityStm.run({
+        buildId: createdBuild.id,
+        gearType,
+        ability,
+        slotIndex: abilityI,
+      });
+    }
   }
 });
 

@@ -21,5 +21,3 @@ export const shoesGearIds = [
   4007, 4008, 4009, 4011, 4012, 4015, 4016, 4017, 4021, 4022, 5000, 5001, 6000,
   6001, 6006, 6007, 6012, 6021, 7002, 8010, 8013, 8014,
 ] as const;
-
-export type GearType = "head" | "clothes" | "shoes";

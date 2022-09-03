@@ -7,7 +7,7 @@
   "forms.title": "Title",
   "forms.modes": "Modes",
   "forms.weapons": "Weapons",
-  "forms.gear.head": "Gear (head)",
-  "forms.gear.clothes": "Gear (clothes)",
-  "forms.gear.shoes": "Gear (shoes)"
+  "forms.gear.HEAD": "Gear (head)",
+  "forms.gear.CLOTHES": "Gear (clothes)",
+  "forms.gear.SHOES": "Gear (shoes)"
 }

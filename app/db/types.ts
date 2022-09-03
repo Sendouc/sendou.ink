@@ -136,6 +136,8 @@ export interface BuildWeapon {
   weaponSplId: number;
 }
 
+export type GearType = "HEAD" | "CLOTHES" | "SHOES";
+
 export interface BuildAbility {
   buildId: number;
   gearType: "HEAD" | "CLOTHES" | "SHOES";

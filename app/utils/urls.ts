@@ -1,4 +1,4 @@
-import type { Badge } from "~/db/types";
+import type { Badge, GearType } from "~/db/types";
 import type { ModeShort } from "~/modules/in-game-lists";
 import type { AbilityWithUnknown } from "~/modules/in-game-lists/types";
 
@@ -23,6 +23,8 @@ export const STOP_IMPERSONATING_URL = "/auth/impersonate/stop";
 export const SEED_URL = "/seed";
 
 export const userPage = (discordId: string) => `/u/${discordId}`;
+export const userBuildsPage = (discordId: string) =>
+  `${userPage(discordId)}/builds`;
 export const impersonateUrl = (idToLogInAs: number) =>
   `/auth/impersonate?id=${idToLogInAs}`;
 export const badgePage = (badgeId: number) => `${BADGES_PAGE}/${badgeId}`;
@@ -46,10 +48,8 @@ export const articlePreviewUrl = (slug: string) =>
   `/img/article-previews/${slug}.png`;
 
 export const navIconUrl = (navItem: string) => `/img/layout/${navItem}`;
-export const gearImageUrl = (
-  gearType: "head" | "clothes" | "shoes",
-  gearSplId: number
-) => `/img/gear/${gearType}/${gearSplId}`;
+export const gearImageUrl = (gearType: GearType, gearSplId: number) =>
+  `/img/gear/${gearType.toLowerCase()}/${gearSplId}`;
 export const weaponImageUrl = (weaponSplId: number) =>
   `/img/weapons/${weaponSplId}`;
 export const abilityImageUrl = (ability: AbilityWithUnknown) =>

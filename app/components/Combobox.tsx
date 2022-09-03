@@ -3,10 +3,9 @@ import * as React from "react";
 import Fuse from "fuse.js";
 import clsx from "clsx";
 import type { Unpacked } from "~/utils/types";
-import type { UserWithPlusTier } from "~/db/types";
+import type { GearType, UserWithPlusTier } from "~/db/types";
 import { useUsers } from "~/hooks/swr";
 import { useTranslation } from "react-i18next";
-import type { GearType } from "~/modules/in-game-lists";
 import {
   clothesGearIds,
   headGearIds,
@@ -232,11 +231,11 @@ export function GearCombobox({
   const { t } = useTranslation("gear");
 
   const translationPrefix =
-    gearType === "head" ? "H" : gearType === "clothes" ? "C" : "S";
+    gearType === "HEAD" ? "H" : gearType === "CLOTHES" ? "C" : "S";
   const ids =
-    gearType === "head"
+    gearType === "HEAD"
       ? headGearIds
-      : gearType === "clothes"
+      : gearType === "CLOTHES"
       ? clothesGearIds
       : shoesGearIds;
 
