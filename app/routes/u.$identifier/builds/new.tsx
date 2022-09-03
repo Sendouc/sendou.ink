@@ -4,28 +4,136 @@ import { Main } from "~/components/Main";
 import { BUILD } from "~/constants";
 import * as React from "react";
 import { Form } from "@remix-run/react";
-import type { GearType } from "~/modules/in-game-lists";
+import type {
+  GearType} from "~/modules/in-game-lists";
+import {
+  clothesGearIds,
+  headGearIds,
+  shoesGearIds,
+  weaponIds,
+} from "~/modules/in-game-lists";
 import { modesShort } from "~/modules/in-game-lists";
 import { Image } from "~/components/Image";
 import { modeImageUrl } from "~/utils/urls";
 import { GearCombobox, WeaponCombobox } from "~/components/Combobox";
 import { Button } from "~/components/Button";
+import { AbilitiesSelector } from "~/components/AbilitiesSelector";
+import { z } from "zod";
+import {
+  actualNumber,
+  checkboxValueToBoolean,
+  falsyToNull,
+  id,
+  processMany,
+  removeDuplicates,
+  toArray,
+} from "~/utils/zod";
+import type { ActionFunction } from "@remix-run/node";
+import { requireUser } from "~/modules/auth";
+import { parseRequestFormData } from "~/utils/remix";
+import { db } from "~/db";
+import type { BuildAbilitiesTupleWithUnknown } from "~/modules/in-game-lists/types";
+
+const newBuildActionSchema = z.object({
+  buildToEditId: z.preprocess(actualNumber, id.nullish()),
+  title: z.string().min(BUILD.TITLE_MIN_LENGTH).max(BUILD.TITLE_MAX_LENGTH),
+  description: z.preprocess(
+    falsyToNull,
+    z.string().max(BUILD.DESCRIPTION_MAX_LENGTH).nullable()
+  ),
+  TW: z.preprocess(checkboxValueToBoolean, z.boolean()),
+  SZ: z.preprocess(checkboxValueToBoolean, z.boolean()),
+  TC: z.preprocess(checkboxValueToBoolean, z.boolean()),
+  RM: z.preprocess(checkboxValueToBoolean, z.boolean()),
+  CB: z.preprocess(checkboxValueToBoolean, z.boolean()),
+  "weapon[value]": z.preprocess(
+    processMany(toArray, removeDuplicates),
+    z
+      .array(
+        z.preprocess(
+          actualNumber,
+          z
+            .number()
+            .refine((val) =>
+              weaponIds.includes(val as typeof weaponIds[number])
+            )
+        )
+      )
+      .min(1)
+      .max(BUILD.MAX_WEAPONS_COUNT)
+  ),
+  "head[value]": z.preprocess(
+    actualNumber,
+    z
+      .number()
+      .refine((val) => headGearIds.includes(val as typeof headGearIds[number]))
+  ),
+  "clothes[value]": z.preprocess(
+    actualNumber,
+    z
+      .number()
+      .refine((val) =>
+        clothesGearIds.includes(val as typeof clothesGearIds[number])
+      )
+  ),
+  "shoes[value]": z.preprocess(
+    actualNumber,
+    z
+      .number()
+      .refine((val) =>
+        shoesGearIds.includes(val as typeof shoesGearIds[number])
+      )
+  ),
+  // TODO: abilities
+});
+
+export const action: ActionFunction = async ({ request }) => {
+  // const user = await requireUser(request);
+  const data = await parseRequestFormData({
+    request,
+    schema: newBuildActionSchema,
+  });
+
+  // const modes = modesShort.filter((mode) => data[mode]);
+
+  // db.builds.create({
+  //   title: data.title,
+  //   description: data.description,
+  //   abilities: [],
+  //   headGearSplId: data["head[value]"],
+  //   clothesGearSplId: data["clothes[value]"],
+  //   shoesGearSplId: data["shoes[value]"],
+  //   modes: modes.length > 0 ? modes : null,
+  //   weaponSplIds: data["weapon[value]"],
+  //   ownerId: user.id,
+  // });
+
+  console.log({ data });
+
+  return null;
+};
 
 export const handle = {
   i18n: ["weapons", "builds", "gear"],
 };
 
 export default function NewBuildPage() {
+  const { t } = useTranslation();
+
   return (
     <Main halfWidth>
       <Form className="stack md items-start" method="post">
-        <TitleInput />
-        <DescriptionTextarea />
-        <ModeCheckboxes />
         <WeaponsSelector />
         <GearSelector type="head" />
         <GearSelector type="clothes" />
         <GearSelector type="shoes" />
+        <Abilities />
+        <TitleInput />
+        <DescriptionTextarea />
+        <ModeCheckboxes />
+        <Button type="submit" className="mt-4" data-cy="submit-button">
+          {t("actions.submit")}
+        </Button>
       </Form>
     </Main>
   );
@@ -86,7 +194,7 @@ function ModeCheckboxes() {
 
   return (
     <div>
-      <Label htmlFor="mode">{t("forms.modes")}</Label>
+      <Label>{t("forms.modes")}</Label>
       <div className="stack horizontal md">
         {modesShort.map((mode) => (
           <div key={mode} className="stack items-center">
@@ -94,7 +202,7 @@ function ModeCheckboxes() {
               {/* xxx: fix alt */}
               <Image alt="" path={modeImageUrl(mode)} width={24} height={24} />
             </label>
-            <input id={mode} type="checkbox" />
+            <input id={mode} name={mode} type="checkbox" />
           </div>
         ))}
       </div>
@@ -116,7 +224,7 @@ function WeaponsSelector() {
           return (
             <div key={i} className="stack horizontal sm items-center">
               <div>
-                <WeaponCombobox inputName="weapon" id="weapon" />
+                <WeaponCombobox inputName="weapon" id="weapon" required />
               </div>
               {i === count - 1 && (
                 <>
@@ -162,4 +270,15 @@ function GearSelector({ type }: { type: GearType }) {
       </div>
     </div>
   );
+}
+
+function Abilities() {
+  const [abilities, setAbilities] =
+    React.useState<BuildAbilitiesTupleWithUnknown>([
+      ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+      ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+      ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+    ]);
+
+  return <AbilitiesSelector abilities={abilities} onChange={setAbilities} />;
 }

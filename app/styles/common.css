@@ -746,3 +746,17 @@ dialog::backdrop {
 .build__small-text {
   font-size: var(--fonts-xxs) !important;
 }
+
+.ability-selector__container {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.ability-selector__ability-row {
+  display: grid;
+  margin: 0 auto;
+  gap: var(--s-2);
+  grid-template-columns: repeat(4, max-content);
+  place-items: center;
+}
