@@ -6,7 +6,7 @@ import { ADMIN_DISCORD_ID } from "~/constants";
 import { db } from "~/db";
 import { sql } from "~/db/sql";
 import {
-  abilityCodes,
+  abilities,
   clothesGearIds,
   headGearIds,
   modesShort,
@@ -526,7 +526,7 @@ function adminBuilds() {
         const gearType = i < 4 ? "HEAD" : i < 8 ? "CLOTHES" : "SHOES";
         const isMain = i === 0 || i === 4 || i === 8;
 
-        const randomOrderAbilities = shuffle([...abilityCodes]);
+        const randomOrderAbilities = shuffle([...abilities]);
 
         const getAbility = () => {
           const legalAbilityForSlot = randomOrderAbilities.find((ability) => {
