@@ -459,7 +459,10 @@ dialog::backdrop {
 }
 
 .combobox-item {
+  display: flex;
+  align-items: center;
   padding: var(--s-1) var(--s-3);
+  gap: var(--s-2);
   list-style: none;
 }
 
