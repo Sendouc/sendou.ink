@@ -188,6 +188,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 export default function CalendarNewEventPage() {
+  const { t } = useTranslation();
   const { eventToEdit } = useLoaderData<typeof loader>();
 
   return (
@@ -208,7 +209,7 @@ export default function CalendarNewEventPage() {
         <TagsAdder />
         <BadgesAdder />
         <Button type="submit" className="mt-4" data-cy="submit-button">
-          Submit
+          {t("actions.submit")}
         </Button>
       </Form>
     </Main>

@@ -9,6 +9,7 @@ import createBuildAbilitySql from "./createBuildAbility.sql";
 import countByUserIdSql from "./countByUserId.sql";
 import buildsByUserIdSql from "./buildsByUserId.sql";
 import invariant from "tiny-invariant";
+import type { BuildAbilitiesTuple } from "~/modules/in-game-lists/types";
 
 const createBuildStm = sql.prepare(createBuildSql);
 const createBuildWeaponStm = sql.prepare(createBuildWeaponSql);
@@ -105,16 +106,10 @@ function augmentBuild<T>(
   };
 }
 
-export type AllAbilitiesTuple = [
-  head: [main: Ability, s1: Ability, s2: Ability, s3: Ability],
-  clothes: [main: Ability, s1: Ability, s2: Ability, s3: Ability],
-  shoes: [main: Ability, s1: Ability, s2: Ability, s3: Ability]
-];
-
 const gearOrder: Array<BuildAbility["gearType"]> = ["HEAD", "CLOTHES", "SHOES"];
 function dbAbilitiesToArrayOfArrays(
   abilities: Array<Pick<BuildAbility, "ability" | "gearType" | "slotIndex">>
-): AllAbilitiesTuple {
+): BuildAbilitiesTuple {
   const sorted = abilities
     .slice()
     .sort((a, b) => {

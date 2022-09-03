@@ -63,3 +63,13 @@ export function toArray<T>(value: T | Array<T>) {
 
   return [value];
 }
+
+export function checkboxValueToBoolean(value: unknown) {
+  if (!value) return false;
+
+  if (typeof value !== "string") {
+    throw new Error("Expected string checkbox value");
+  }
+
+  return value === "on";
+}
