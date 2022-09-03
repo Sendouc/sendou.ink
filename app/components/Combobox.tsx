@@ -6,8 +6,14 @@ import type { Unpacked } from "~/utils/types";
 import type { UserWithPlusTier } from "~/db/types";
 import { useUsers } from "~/hooks/swr";
 import { useTranslation } from "react-i18next";
-import { weaponIds } from "~/modules/in-game-lists";
-import { weaponImageUrl } from "~/utils/urls";
+import type { GearType } from "~/modules/in-game-lists";
+import {
+  clothesGearIds,
+  headGearIds,
+  shoesGearIds,
+  weaponIds,
+} from "~/modules/in-game-lists";
+import { gearImageUrl, weaponImageUrl } from "~/utils/urls";
 import { Image } from "./Image";
 
 const MAX_RESULTS_SHOWN = 6;
@@ -199,12 +205,52 @@ export function WeaponCombobox({
     imgPath: weaponImageUrl(id),
   });
 
-  // xxx: weapon images
   return (
     <Combobox
       inputName={inputName}
       options={weaponIds.map(idToWeapon)}
       placeholder={t(`${weaponIds[0]}`)}
+      onChange={onChange}
+      className={className}
+      id={id}
+      required={required}
+    />
+  );
+}
+
+export function GearCombobox({
+  id,
+  required,
+  className,
+  inputName,
+  onChange,
+  gearType,
+}: Pick<
+  ComboboxProps<ComboboxBaseOption>,
+  "inputName" | "onChange" | "className" | "id" | "required"
+> & { gearType: GearType }) {
+  const { t } = useTranslation("gear");
+
+  const translationPrefix =
+    gearType === "head" ? "H" : gearType === "clothes" ? "C" : "S";
+  const ids =
+    gearType === "head"
+      ? headGearIds
+      : gearType === "clothes"
+      ? clothesGearIds
+      : shoesGearIds;
+
+  const idToGear = (id: typeof ids[number]) => ({
+    value: String(id),
+    label: t(`${translationPrefix}_${id}` as any),
+    imgPath: gearImageUrl(gearType, id),
+  });
+
+  return (
+    <Combobox
+      inputName={inputName}
+      options={ids.map(idToGear)}
+      placeholder={idToGear(ids[0]).label}
       onChange={onChange}
       className={className}
       id={id}

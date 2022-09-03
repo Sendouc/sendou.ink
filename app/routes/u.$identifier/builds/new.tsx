@@ -4,10 +4,11 @@ import { Main } from "~/components/Main";
 import { BUILD } from "~/constants";
 import * as React from "react";
 import { Form } from "@remix-run/react";
+import type { GearType } from "~/modules/in-game-lists";
 import { modesShort } from "~/modules/in-game-lists";
 import { Image } from "~/components/Image";
 import { modeImageUrl } from "~/utils/urls";
-import { WeaponCombobox } from "~/components/Combobox";
+import { GearCombobox, WeaponCombobox } from "~/components/Combobox";
 import { Button } from "~/components/Button";
 
 export const handle = {
@@ -22,6 +23,9 @@ export default function NewBuildPage() {
         <DescriptionTextarea />
         <ModeCheckboxes />
         <WeaponsSelector />
+        <GearSelector type="head" />
+        <GearSelector type="clothes" />
+        <GearSelector type="shoes" />
       </Form>
     </Main>
   );
@@ -139,6 +143,22 @@ function WeaponsSelector() {
             </div>
           );
         })}
+      </div>
+    </div>
+  );
+}
+
+// xxx: could be wider not to have line breaks in long gear names
+function GearSelector({ type }: { type: GearType }) {
+  const { t } = useTranslation("builds");
+
+  return (
+    <div>
+      <Label htmlFor={type} required>
+        {t(`forms.gear.${type}`)}
+      </Label>
+      <div>
+        <GearCombobox gearType={type} inputName={type} id={type} required />
       </div>
     </div>
   );

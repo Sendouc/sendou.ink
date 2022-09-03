@@ -5,6 +5,7 @@ import type { Build, BuildWeapon } from "~/db/types";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import type {
   Ability as AbilityType,
+  GearType,
   ModeShort,
 } from "~/modules/in-game-lists";
 import { databaseTimestampToDate } from "~/utils/dates";
@@ -149,7 +150,7 @@ function AbilitiesRowWithGear({
   abilities,
   gearId,
 }: {
-  gearType: "head" | "clothes" | "shoes";
+  gearType: GearType;
   abilities: AbilityType[];
   gearId: number;
 }) {
