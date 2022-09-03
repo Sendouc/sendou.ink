@@ -1,4 +1,4 @@
-import type { Ability as AbilityType } from "~/modules/in-game-lists";
+import type { AbilityWithUnknown } from "~/modules/in-game-lists/types";
 import { abilityImageUrl } from "~/utils/urls";
 import { Image } from "./Image";
 
@@ -12,7 +12,7 @@ export function Ability({
   ability,
   size,
 }: {
-  ability: AbilityType;
+  ability: AbilityWithUnknown;
   size: keyof typeof sizeMap;
 }) {
   const sizeNumber = sizeMap[size];
