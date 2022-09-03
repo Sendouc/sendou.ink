@@ -5,10 +5,17 @@ import clsx from "clsx";
 import type { Unpacked } from "~/utils/types";
 import type { UserWithPlusTier } from "~/db/types";
 import { useUsers } from "~/hooks/swr";
+import { useTranslation } from "react-i18next";
+import { weaponIds } from "~/modules/in-game-lists";
 
 const MAX_RESULTS_SHOWN = 6;
 
-type ComboboxOption<T> = { label: string; value: string } & T;
+interface ComboboxBaseOption {
+  label: string;
+  value: string;
+}
+
+type ComboboxOption<T> = ComboboxBaseOption & T;
 interface ComboboxProps<T> {
   options: ComboboxOption<T>[];
   inputName: string;
@@ -155,6 +162,37 @@ export function UserCombobox({
       placeholder="Sendou#0043"
       isLoading={isLoading}
       initialValue={initialValue}
+      onChange={onChange}
+      className={className}
+      id={id}
+      required={required}
+    />
+  );
+}
+
+export function WeaponCombobox({
+  id,
+  required,
+  className,
+  inputName,
+  onChange,
+}: Pick<
+  ComboboxProps<ComboboxBaseOption>,
+  "inputName" | "onChange" | "className" | "id" | "required"
+>) {
+  const { t } = useTranslation("weapons");
+
+  const idToWeapon = (id: typeof weaponIds[number]) => ({
+    value: String(id),
+    label: t(`${id}`),
+  });
+
+  // xxx: weapon images
+  return (
+    <Combobox
+      inputName={inputName}
+      options={weaponIds.map(idToWeapon)}
+      placeholder={t(`${weaponIds[0]}`)}
       onChange={onChange}
       className={className}
       id={id}
