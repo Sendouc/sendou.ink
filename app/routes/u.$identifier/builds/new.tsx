@@ -376,7 +376,16 @@ function Abilities() {
 
   return (
     <div>
-      <input type="hidden" name="abilities" value={JSON.stringify(abilities)} />
+      <input
+        className="hidden-input-with-validation"
+        name="abilities"
+        value={
+          abilities.flat().every((a) => a !== "UNKNOWN")
+            ? JSON.stringify(abilities)
+            : undefined
+        }
+        required
+      />
       <AbilitiesSelector
         selectedAbilities={abilities}
         onChange={setAbilities}

@@ -574,6 +574,16 @@ dialog::backdrop {
   overflow: hidden;
 }
 
+/* https://stackoverflow.com/questions/50917016/make-a-hidden-field-required/50917245#comment117565184_50917245 */
+.hidden-input-with-validation {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border: none;
+  opacity: 0;
+  pointer-events: none;
+}
+
 .label__container {
   display: flex;
   align-items: flex-end;
