@@ -41,6 +41,8 @@ export function Avatar({
       alt=""
       width={dimensions[size]}
       height={dimensions[size]}
+      // https://github.com/jsx-eslint/eslint-plugin-react/issues/3388
+      // eslint-disable-next-line react/no-unknown-property
       onError={() => setIsErrored(true)}
       {...rest}
     />

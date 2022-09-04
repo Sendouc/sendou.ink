@@ -1,18 +1,22 @@
 import Markdown from "markdown-to-jsx";
 import { Main } from "~/components/Main";
-import { json, type LoaderArgs, type MetaFunction } from "@remix-run/node";
+import {
+  json,
+  type SerializeFrom,
+  type LoaderArgs,
+  type MetaFunction,
+} from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import * as React from "react";
 import { articleBySlug } from "~/modules/articles";
 import invariant from "tiny-invariant";
-import type { UseDataFunctionReturn } from "@remix-run/react/dist/components";
 import { makeTitle } from "~/utils/strings";
 import { articlePreviewUrl } from "~/utils/urls";
 import { notFoundIfFalsy } from "~/utils/remix";
 
 export const meta: MetaFunction = (args) => {
   invariant(args.params["slug"]);
-  const data = args.data as Nullable<UseDataFunctionReturn<typeof loader>>;
+  const data = args.data as SerializeFrom<typeof loader> | null;
 
   if (!data) return {};
 

@@ -1,7 +1,6 @@
-import type { LoaderArgs, MetaFunction } from "@remix-run/node";
+import type { LoaderArgs, MetaFunction, SerializeFrom } from "@remix-run/node";
 import { json, type LinksFunction } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
-import type { UseDataFunctionReturn } from "@remix-run/react/dist/components";
 import clsx from "clsx";
 import { addDays, addMonths, subDays, subMonths } from "date-fns";
 import React from "react";
@@ -32,7 +31,7 @@ export const links: LinksFunction = () => {
 };
 
 export const meta: MetaFunction = (args) => {
-  const data = args.data as Nullable<UseDataFunctionReturn<typeof loader>>;
+  const data = args.data as SerializeFrom<typeof loader> | null;
 
   if (!data) return {};
 
@@ -227,7 +226,7 @@ function WeekLinks() {
 function WeekLinkTitle({
   week,
 }: {
-  week: Unpacked<UseDataFunctionReturn<typeof loader>["weeks"]>;
+  week: Unpacked<SerializeFrom<typeof loader>["weeks"]>;
 }) {
   const { t } = useTranslation("calendar");
   const data = useLoaderData<typeof loader>();
@@ -278,7 +277,7 @@ function WeekLinkTitle({
 }
 
 function getEventsCountPerWeek(
-  startTimes: UseDataFunctionReturn<typeof loader>["nearbyStartTimes"]
+  startTimes: SerializeFrom<typeof loader>["nearbyStartTimes"]
 ) {
   const result = new Map<number, number>();
 
@@ -313,7 +312,7 @@ function EventsToReport() {
 function EventsList({
   events,
 }: {
-  events: UseDataFunctionReturn<typeof loader>["events"];
+  events: SerializeFrom<typeof loader>["events"];
 }) {
   const { t, i18n } = useTranslation("calendar");
 
@@ -419,11 +418,8 @@ function EventsList({
   );
 }
 
-function eventsGroupedByDay(
-  events: UseDataFunctionReturn<typeof loader>["events"]
-) {
-  const result: Array<[Date, UseDataFunctionReturn<typeof loader>["events"]]> =
-    [];
+function eventsGroupedByDay(events: SerializeFrom<typeof loader>["events"]) {
+  const result: Array<[Date, SerializeFrom<typeof loader>["events"]]> = [];
 
   for (const calendarEvent of events) {
     const previousIterationEvents = result[result.length - 1] ?? null;

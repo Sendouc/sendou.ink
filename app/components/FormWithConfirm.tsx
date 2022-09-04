@@ -48,6 +48,7 @@ export function FormWithConfirm({
         </div>
       </Dialog>
       {React.cloneElement(children, {
+        // @ts-expect-error broke with @types/react upgrade. TODO: figure out narrower type than React.ReactNode
         onClick: openDialog,
       })}
     </>

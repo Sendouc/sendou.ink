@@ -52,7 +52,10 @@ export class DiscordStrategy extends OAuth2Strategy<
         callbackURL: new URL("/auth/callback", envVars.BASE_URL).toString(),
       },
       async ({ accessToken }) => {
-        const authHeader = ["Authorization", `Bearer ${accessToken}`];
+        const authHeader: [string, string] = [
+          "Authorization",
+          `Bearer ${accessToken}`,
+        ];
         const discordResponses = await Promise.all([
           fetch("https://discord.com/api/users/@me", {
             headers: [authHeader],

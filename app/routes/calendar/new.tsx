@@ -5,6 +5,7 @@ import * as React from "react";
 import type { Badge as BadgeType, CalendarEventTag } from "~/db/types";
 import { CALENDAR_EVENT } from "~/constants";
 import { Button } from "~/components/Button";
+import type { SerializeFrom } from "@remix-run/node";
 import {
   json,
   redirect,
@@ -47,7 +48,6 @@ import {
 import { calendarEventPage } from "~/utils/urls";
 import { makeTitle } from "~/utils/strings";
 import { i18next } from "~/modules/i18n";
-import type { UseDataFunctionReturn } from "@remix-run/react/dist/components";
 import { canEditCalendarEvent } from "~/permissions";
 import { DateInput } from "~/components/DateInput";
 
@@ -61,7 +61,7 @@ export const links: LinksFunction = () => {
 };
 
 export const meta: MetaFunction = (args) => {
-  const data = args.data as Nullable<UseDataFunctionReturn<typeof loader>>;
+  const data = args.data as SerializeFrom<typeof loader> | null;
 
   if (!data) return {};
 

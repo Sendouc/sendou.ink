@@ -1,7 +1,11 @@
-import type { LinksFunction, LoaderArgs, MetaFunction } from "@remix-run/node";
+import type {
+  LinksFunction,
+  LoaderArgs,
+  MetaFunction,
+  SerializeFrom,
+} from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Outlet, useLoaderData } from "@remix-run/react";
-import type { UseDataFunctionReturn } from "@remix-run/react/dist/components";
 import { countries } from "countries-list";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
@@ -30,7 +34,7 @@ export const handle = {
 
 export const userParamsSchema = z.object({ identifier: z.string() });
 
-export type UserPageLoaderData = UseDataFunctionReturn<typeof loader>;
+export type UserPageLoaderData = SerializeFrom<typeof loader>;
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const locale = await i18next.getLocale(request);

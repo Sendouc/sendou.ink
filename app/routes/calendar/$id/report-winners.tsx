@@ -1,3 +1,4 @@
+import type { SerializeFrom } from "@remix-run/node";
 import {
   type ActionFunction,
   type LoaderArgs,
@@ -25,7 +26,6 @@ import clsx from "clsx";
 import { UserCombobox } from "~/components/Combobox";
 import { FormMessage } from "~/components/FormMessage";
 import { FormErrors } from "~/components/FormErrors";
-import type { UseDataFunctionReturn } from "@remix-run/react/dist/components";
 import type { Unpacked } from "~/utils/types";
 import { calendarEventPage } from "~/utils/urls";
 import { useTranslation } from "react-i18next";
@@ -274,7 +274,7 @@ function Team({
   onRemoveTeam?: () => void;
   hidden: boolean;
   initialPlacement: string;
-  initialValues?: Unpacked<UseDataFunctionReturn<typeof loader>["winners"]>;
+  initialValues?: Unpacked<SerializeFrom<typeof loader>["winners"]>;
 }) {
   const { t } = useTranslation("calendar");
   const teamNameId = React.useId();

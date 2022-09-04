@@ -1,3 +1,4 @@
+import type { SerializeFrom } from "@remix-run/node";
 import {
   json,
   type MetaFunction,
@@ -5,7 +6,6 @@ import {
   type LoaderArgs,
 } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import type { UseDataFunctionReturn } from "@remix-run/react/dist/components";
 import { Link } from "@remix-run/react/dist/components";
 import clsx from "clsx";
 import * as React from "react";
@@ -41,7 +41,7 @@ export const links: LinksFunction = () => {
 };
 
 export const meta: MetaFunction = (args) => {
-  const data = args.data as Nullable<UseDataFunctionReturn<typeof loader>>;
+  const data = args.data as SerializeFrom<typeof loader>;
 
   if (!data) return {};
 
