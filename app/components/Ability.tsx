@@ -28,6 +28,7 @@ export function Ability({
         } as any
       }
       onClick={onClick}
+      data-cy={`${ability}-ability`}
     >
       <Image alt="" path={abilityImageUrl(ability)} />
     </div>

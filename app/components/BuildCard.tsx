@@ -68,6 +68,7 @@ export function BuildCard({
         variant="minimal"
         tiny
         to={`new?buildId=${id}&userId=${user!.id}`}
+        data-cy="edit-build-button"
       >
         {t("builds:buildCard.edit")}
       </LinkButton>
@@ -83,6 +84,7 @@ export function BuildCard({
           variant="minimal-destructive"
           tiny
           type="submit"
+          data-cy="delete-build-button"
         >
           {t("common:actions.delete")}
         </Button>
@@ -91,7 +93,7 @@ export function BuildCard({
   ].filter(Boolean);
 
   return (
-    <div className="build">
+    <div className="build" data-cy="build-card">
       <div>
         <div className="build__top-row">
           <h2 className="build__title">{title}</h2>

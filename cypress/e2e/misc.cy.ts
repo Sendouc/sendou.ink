@@ -6,3 +6,14 @@ describe("404 page", () => {
     cy.contains("404");
   });
 });
+
+describe("theme switcher", () => {
+  it("should switch to light mode and remember it", () => {
+    cy.visit("/");
+    cy.get(".dark-mode-only").should("be.visible"); // moon svg icon
+    cy.getCy("theme-switch-button").click();
+    cy.get(".light-mode-only").should("be.visible"); // sun svg icon
+    cy.reload();
+    cy.get(".light-mode-only").should("be.visible"); // sun svg icon again
+  });
+});

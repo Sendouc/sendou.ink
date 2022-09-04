@@ -57,6 +57,7 @@ export const Layout = React.memo(function Layout({
           <button
             className="layout__header__color-mode-button"
             onClick={toggleTheme}
+            data-cy="theme-switch-button"
           >
             <SunIcon className="light-mode-only layout__header__color-mode-button__icon" />
             <MoonIcon className="dark-mode-only layout__header__color-mode-button__icon" />

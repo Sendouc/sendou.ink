@@ -61,6 +61,7 @@ export function AbilitiesSelector({
             className="ability-selector__ability-button"
             type="button"
             onClick={() => onButtonClick(ability)}
+            data-cy={`${ability.name}-ability-button`}
           >
             <Image
               alt=""

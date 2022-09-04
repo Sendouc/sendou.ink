@@ -272,6 +272,7 @@ function ModeCheckboxes() {
               name={mode}
               type="checkbox"
               defaultChecked={buildToEdit?.modes?.includes(mode)}
+              data-cy={`${mode}-checkbox`}
             />
           </div>
         ))}
