@@ -29,6 +29,8 @@ import { getUser } from "./modules/auth";
 import { DEFAULT_LANGUAGE, i18next } from "./modules/i18n";
 import { useChangeLanguage } from "remix-i18next";
 import { useTranslation } from "react-i18next";
+import { Theme, ThemeHead, useTheme, ThemeProvider } from "./modules/theme";
+import { getThemeSession } from "./modules/theme/session.server";
 
 export const unstable_shouldReload: ShouldReloadFunction = () => false;
 
@@ -51,6 +53,7 @@ export const meta: MetaFunction = () => ({
 
 export interface RootLoaderData {
   locale: string;
+  theme: Theme | null;
   patrons: FindAllPatrons;
   user?: Pick<
     UserWithPlusTier,
@@ -61,9 +64,11 @@ export interface RootLoaderData {
 export const loader: LoaderFunction = async ({ request }) => {
   const user = await getUser(request);
   const locale = await i18next.getLocale(request);
+  const themeSession = await getThemeSession(request);
 
   return json<RootLoaderData>({
     locale,
+    theme: themeSession.getTheme(),
     patrons: db.users.findAllPatrons(),
     user: user
       ? {
@@ -87,16 +92,17 @@ function Document({
   children: React.ReactNode;
   data?: RootLoaderData;
 }) {
+  const [theme] = useTheme();
   const { i18n } = useTranslation();
   const locale = data?.locale ?? DEFAULT_LANGUAGE;
   useChangeLanguage(locale);
 
   return (
-    <html lang={locale} dir={i18n.dir()}>
+    <html lang={locale} dir={i18n.dir()} className={theme ?? ""}>
       <head>
         <Meta />
-        <meta name="color-scheme" content="dark light" />
         <Links />
+        <ThemeHead ssrTheme={Boolean(data?.theme)} />
       </head>
       <body>
         <React.StrictMode>
@@ -118,16 +124,20 @@ export default function App() {
   const data = useLoaderData<RootLoaderData>();
 
   return (
-    <Document data={data}>
-      <Outlet />
-    </Document>
+    <ThemeProvider specifiedTheme={data?.theme ?? null}>
+      <Document data={data}>
+        <Outlet />
+      </Document>
+    </ThemeProvider>
   );
 }
 
 export function CatchBoundary() {
   return (
-    <Document>
-      <Catcher />
-    </Document>
+    <ThemeProvider specifiedTheme={Theme.DARK}>
+      <Document>
+        <Catcher />
+      </Document>
+    </ThemeProvider>
   );
 }

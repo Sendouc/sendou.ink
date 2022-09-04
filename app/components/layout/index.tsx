@@ -8,6 +8,9 @@ import { Image } from "../Image";
 import { Footer } from "./Footer";
 import type { RootLoaderData } from "~/root";
 import { useTranslation } from "react-i18next";
+import { Theme, useTheme } from "~/modules/theme";
+import { MoonIcon } from "../icons/Moon";
+import { SunIcon } from "../icons/Sun";
 
 export const Layout = React.memo(function Layout({
   children,
@@ -18,6 +21,7 @@ export const Layout = React.memo(function Layout({
   patrons?: RootLoaderData["patrons"];
   isCatchBoundary?: boolean;
 }) {
+  const [, setTheme] = useTheme();
   const { t } = useTranslation();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = React.useState(false);
@@ -25,6 +29,12 @@ export const Layout = React.memo(function Layout({
   const currentPagesNavItem = navItems.find((navItem) =>
     location.pathname.includes(navItem.name)
   );
+
+  const toggleTheme = () => {
+    setTheme((prevTheme) =>
+      prevTheme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT
+    );
+  };
 
   return (
     <div className="layout__container">
@@ -44,6 +54,13 @@ export const Layout = React.memo(function Layout({
           <div />
         )}
         <div className="layout__header__right-container">
+          <button
+            className="layout__header__color-mode-button"
+            onClick={toggleTheme}
+          >
+            <SunIcon className="light-mode-only layout__header__color-mode-button__icon" />
+            <MoonIcon className="dark-mode-only layout__header__color-mode-button__icon" />
+          </button>
           {!isCatchBoundary ? <UserItem /> : null}
           <HamburgerButton
             expanded={menuOpen}

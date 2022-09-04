@@ -36,6 +36,22 @@
   justify-self: flex-end;
 }
 
+.layout__header__color-mode-button {
+  width: var(--item-size);
+  height: var(--item-size);
+  padding: 0.25rem;
+  border: 2px solid;
+  border-color: var(--theme-transparent-vibrant);
+  background-color: transparent;
+  border-radius: 50%;
+  color: inherit;
+  cursor: pointer;
+}
+
+.layout__header__color-mode-button__icon {
+  width: 1.5rem;
+}
+
 .main {
   width: 100%;
   max-width: 48rem;
