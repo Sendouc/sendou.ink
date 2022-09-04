@@ -7,6 +7,7 @@ html {
   --bg-darker-transparent: hsla(202deg 90% 90% / 65%);
   --bg-ability: rgb(3 6 7);
   --bg-badge: #000;
+  --abilities-button-bg: hsl(237deg 32% 30%);
   --badge-text: rgb(255 255 255 / 95%);
   --border: hsl(237deg 100% 86%);
   --button-text: rgb(255 255 255 / 85%);
@@ -82,6 +83,7 @@ html.dark {
   --bg-darker-transparent: hsla(237.3deg 42.3% 26.6% / 90%);
   --bg-ability: rgb(17 19 43);
   --bg-badge: #000;
+  --abilities-button-bg: hsl(237.3deg 42.3% 26.6%);
   --border: hsl(237.3deg 42.3% 45.6%);
   --button-text: rgb(0 0 0 / 85%);
   --button-text-transparent: rgb(0 0 0 / 65%);
