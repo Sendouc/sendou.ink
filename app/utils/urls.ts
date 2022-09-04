@@ -2,6 +2,7 @@ import type { Badge, GearType } from "~/db/types";
 import type { ModeShort } from "~/modules/in-game-lists";
 import type { AbilityWithUnknown } from "~/modules/in-game-lists/types";
 
+export const PLUS_SERVER_DISCORD_URL = "https://discord.gg/FW4dKrY";
 export const SENDOU_INK_DISCORD_URL = "https://discord.gg/sendou";
 export const SENDOU_TWITTER_URL = "https://twitter.com/sendouc";
 export const SENDOU_INK_TWITTER_URL = "https://twitter.com/sendouink";

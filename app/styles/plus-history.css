@@ -1,8 +1,13 @@
 .plus-history__own-scores {
-  padding: 0;
+  width: max-content;
+  padding: var(--s-2);
+  margin: 0 auto;
+  background-color: var(--bg-lighter);
+  border-radius: var(--rounded);
   font-size: var(--fonts-sm);
   font-weight: var(--semi-bold);
   list-style-type: none;
+  padding-inline: var(--s-4);
   text-align: center;
 }
 

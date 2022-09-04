@@ -14,7 +14,7 @@ import { makeTitle } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
 import styles from "~/styles/plus-history.css";
 import { discordFullName } from "~/utils/strings";
-import { userPage } from "~/utils/urls";
+import { PLUS_SERVER_DISCORD_URL, userPage } from "~/utils/urls";
 import clsx from "clsx";
 import { getUser } from "~/modules/auth";
 
@@ -64,22 +64,32 @@ export default function PlusVotingResultsPage() {
         Voting results for {month + 1}/{year}
       </h2>
       {data.ownScores && data.ownScores.length > 0 ? (
-        <ul className="plus-history__own-scores stack sm">
-          {data.ownScores.map((result) => (
-            <li key={result.tier}>
-              You{" "}
-              {result.passedVoting ? (
-                <span className="plus-history__success">passed</span>
-              ) : (
-                <span className="plus-history__fail">didn&apos;t pass</span>
-              )}{" "}
-              the +{result.tier} voting
-              {typeof result.score === "number"
-                ? `, your score was ${result.score}% (at least 50% required to pass)`
-                : ""}
-            </li>
-          ))}
-        </ul>
+        <>
+          <ul className="plus-history__own-scores stack sm">
+            {data.ownScores.map((result) => (
+              <li key={result.tier}>
+                You{" "}
+                {result.passedVoting ? (
+                  <span className="plus-history__success">passed</span>
+                ) : (
+                  <span className="plus-history__fail">didn&apos;t pass</span>
+                )}{" "}
+                the +{result.tier} voting
+                {typeof result.score === "number"
+                  ? `, your score was ${result.score}% (at least 50% required to pass)`
+                  : ""}
+              </li>
+            ))}
+          </ul>
+          <div className="text-sm text-center text-lighter">
+            Click{" "}
+            <a href={PLUS_SERVER_DISCORD_URL} target="_blank" rel="noreferrer">
+              here
+            </a>{" "}
+            to join the Discord server. In some cases you might need to rejoin
+            the server to get the correct role.
+          </div>
+        </>
       ) : null}
       {!data.ownScores ? (
         <div className="text-center text-sm">
