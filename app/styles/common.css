@@ -302,6 +302,7 @@ abbr[title] {
 }
 
 dialog {
+  overflow: visible;
   width: min(90%, 24rem);
   border: 0;
   margin: auto;

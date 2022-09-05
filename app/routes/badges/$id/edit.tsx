@@ -137,19 +137,21 @@ function Managers({ data }: { data: BadgeDetailsLoaderData }) {
             </li>
           ))}
         </ul>
-        <UserCombobox
-          className="mx-auto"
-          inputName="new-manager"
-          onChange={(user) => {
-            if (!user) return;
+        <div className="text-center">
+          <UserCombobox
+            className="mx-auto"
+            inputName="new-manager"
+            onChange={(user) => {
+              if (!user) return;
 
-            setManagers([
-              ...managers,
-              { discordFullName: user.label, id: Number(user.value) },
-            ]);
-          }}
-          userIdsToOmit={userIdsToOmitFromCombobox}
-        />
+              setManagers([
+                ...managers,
+                { discordFullName: user.label, id: Number(user.value) },
+              ]);
+            }}
+            userIdsToOmit={userIdsToOmitFromCombobox}
+          />
+        </div>
       </div>
       <input
         type="hidden"
@@ -221,19 +223,25 @@ function Owners({ data }: { data: BadgeDetailsLoaderData }) {
             </li>
           ))}
         </ul>
-        <UserCombobox
-          className="mx-auto"
-          inputName="new-owner"
-          onChange={(user) => {
-            if (!user) return;
+        <div className="text-center">
+          <UserCombobox
+            className="mx-auto"
+            inputName="new-owner"
+            onChange={(user) => {
+              if (!user) return;
 
-            setOwners([
-              ...owners,
-              { discordFullName: user.label, id: Number(user.value), count: 1 },
-            ]);
-          }}
-          userIdsToOmit={userIdsToOmitFromCombobox}
-        />
+              setOwners([
+                ...owners,
+                {
+                  discordFullName: user.label,
+                  id: Number(user.value),
+                  count: 1,
+                },
+              ]);
+            }}
+            userIdsToOmit={userIdsToOmitFromCombobox}
+          />
+        </div>
       </div>
       {ownerDifferences.length > 0 ? (
         <ul className="badges-edit__differences">
