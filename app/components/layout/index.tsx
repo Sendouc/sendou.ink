@@ -39,20 +39,6 @@ export const Layout = React.memo(function Layout({
   return (
     <div className="layout__container">
       <header className="layout__header">
-        {currentPagesNavItem ? (
-          <h1 className="layout__page-heading">
-            <Image
-              className="layout__icon"
-              path={`/img/layout/${currentPagesNavItem.name}`}
-              width={40}
-              height={40}
-              alt=""
-            />
-            {t(`pages.${currentPagesNavItem.name}` as any)}
-          </h1>
-        ) : (
-          <div />
-        )}
         <div className="layout__header__right-container">
           <button
             className="layout__header__color-mode-button"
@@ -70,6 +56,17 @@ export const Layout = React.memo(function Layout({
         </div>
       </header>
       <Menu expanded={menuOpen} closeMenu={() => setMenuOpen(false)} />
+      {currentPagesNavItem && (
+        <div className="layout__page-title-header">
+          <Image
+            path={`/img/layout/${currentPagesNavItem.name}`}
+            width={28}
+            height={28}
+            alt=""
+          />
+          {t(`pages.${currentPagesNavItem.name}` as any)}
+        </div>
+      )}
       {children}
       <Footer patrons={patrons} />
     </div>

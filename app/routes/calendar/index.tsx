@@ -139,7 +139,7 @@ export default function CalendarPage() {
     : data.events;
 
   return (
-    <main className="stack lg">
+    <main className="stack lg layout__main">
       <WeekLinks />
       <EventsToReport />
       <div className="stack md">
