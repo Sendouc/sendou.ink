@@ -5,11 +5,10 @@ import shoes from "./dicts/GearInfoShoes.json";
 import fs from "node:fs";
 import path from "node:path";
 import invariant from "tiny-invariant";
-import { loadLangDicts } from "./utils";
+import { LANG_JSONS_TO_CREATE, loadLangDicts } from "./utils";
 
 const CURRENT_SEASON = 0;
 const OUTPUT_DIR_PATH = path.join(__dirname, "output");
-const LANG_JSONS_TO_CREATE = ["EUen"];
 
 async function main() {
   const allGear: Array<{

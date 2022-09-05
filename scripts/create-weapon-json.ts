@@ -2,11 +2,10 @@ import weapons from "./dicts/WeaponInfoMain.json";
 import fs from "node:fs";
 import path from "node:path";
 import invariant from "tiny-invariant";
-import { loadLangDicts } from "./utils";
+import { LANG_JSONS_TO_CREATE, loadLangDicts } from "./utils";
 
 const INTERNAL_NAMES_TO_IGNORE: readonly string[] = ["Free"] as const;
 const OUTPUT_DIR_PATH = path.join(__dirname, "output");
-const LANG_JSONS_TO_CREATE = ["EUen"];
 
 async function main() {
   const result: Array<{
