@@ -128,7 +128,6 @@ export function Combobox<T extends Record<string, string | null | number>>({
   );
 }
 
-// TODO: if we search with only discord id "79237403620945920" then doesn't really make sense to do fuzzy search
 export function UserCombobox({
   inputName,
   initialUserId,
