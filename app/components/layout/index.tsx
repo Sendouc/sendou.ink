@@ -1,16 +1,14 @@
+import { useLocation } from "@remix-run/react";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
+import type { RootLoaderData } from "~/root";
+import { Image } from "../Image";
+import { ColorModeToggle } from "./ColorModeToggle";
+import { Footer } from "./Footer";
 import { HamburgerButton } from "./HamburgerButton";
 import { Menu } from "./Menu";
-import { UserItem } from "./UserItem";
 import navItems from "./nav-items.json";
-import { useLocation } from "@remix-run/react";
-import { Image } from "../Image";
-import { Footer } from "./Footer";
-import type { RootLoaderData } from "~/root";
-import { useTranslation } from "react-i18next";
-import { Theme, useTheme } from "~/modules/theme";
-import { MoonIcon } from "../icons/Moon";
-import { SunIcon } from "../icons/Sun";
+import { UserItem } from "./UserItem";
 
 export const Layout = React.memo(function Layout({
   children,
@@ -21,7 +19,6 @@ export const Layout = React.memo(function Layout({
   patrons?: RootLoaderData["patrons"];
   isCatchBoundary?: boolean;
 }) {
-  const [, setTheme] = useTheme();
   const { t } = useTranslation();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = React.useState(false);
@@ -30,24 +27,11 @@ export const Layout = React.memo(function Layout({
     location.pathname.includes(navItem.name)
   );
 
-  const toggleTheme = () => {
-    setTheme((prevTheme) =>
-      prevTheme === Theme.LIGHT ? Theme.DARK : Theme.LIGHT
-    );
-  };
-
   return (
     <div className="layout__container">
       <header className="layout__header">
         <div className="layout__header__right-container">
-          <button
-            className="layout__header__color-mode-button"
-            onClick={toggleTheme}
-            data-cy="theme-switch-button"
-          >
-            <SunIcon className="light-mode-only layout__header__color-mode-button__icon" />
-            <MoonIcon className="dark-mode-only layout__header__color-mode-button__icon" />
-          </button>
+          <ColorModeToggle />
           {!isCatchBoundary ? <UserItem /> : null}
           <HamburgerButton
             expanded={menuOpen}
