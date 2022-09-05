@@ -56,7 +56,7 @@ export function BuildCard({
       <Popover
         key="info"
         trigger={<>{t("builds:buildCard.info")}</>}
-        triggerClassName="build__small-text"
+        triggerClassName="minimal tiny build__small-text"
       >
         {description}
       </Popover>

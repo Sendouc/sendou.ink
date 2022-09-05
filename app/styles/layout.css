@@ -5,7 +5,7 @@
 }
 
 .layout__header {
-  --item-size: 2.75rem;
+  --item-size: 2.25rem;
 
   position: relative;
   z-index: 501;
@@ -13,6 +13,11 @@
   justify-content: flex-end;
   padding: var(--s-4);
   background-color: var(--bg);
+}
+
+.layout__avatar {
+  width: var(--item-size);
+  height: var(--item-size);
 }
 
 .layout__page-heading {
@@ -40,11 +45,11 @@
 
 .layout__header__right-container {
   display: flex;
-  gap: var(--s-4);
+  gap: var(--s-3);
   justify-self: flex-end;
 }
 
-.layout__header__color-mode-button {
+.layout__header__button {
   width: var(--item-size);
   height: var(--item-size);
   padding: 0.25rem;
@@ -56,8 +61,8 @@
   cursor: pointer;
 }
 
-.layout__header__color-mode-button__icon {
-  width: 1.5rem;
+.layout__header__button__icon {
+  width: 1.15rem;
 }
 
 .main {
@@ -304,6 +309,14 @@
 }
 
 @media screen and (max-width: 640px) {
+  .layout__header {
+    --item-size: 2.5rem;
+  }
+
+  .layout__header__button__icon {
+    width: 1.3rem;
+  }
+
   .layout__footer__socials {
     flex-direction: column;
   }

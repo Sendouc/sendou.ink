@@ -1,5 +1,4 @@
 import { Popover as HeadlessPopover } from "@headlessui/react";
-import clsx from "clsx";
 import * as React from "react";
 import { usePopper } from "react-popper";
 
@@ -22,7 +21,7 @@ export function Popover({
       <HeadlessPopover.Button
         // @ts-expect-error Popper docs: https://popper.js.org/react-popper/v2/
         ref={setReferenceElement}
-        className={clsx("minimal tiny", triggerClassName)}
+        className={triggerClassName ?? "minimal tiny"}
       >
         {trigger}
       </HeadlessPopover.Button>

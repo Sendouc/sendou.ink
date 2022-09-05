@@ -6,6 +6,7 @@ import { Image } from "../Image";
 import { ColorModeToggle } from "./ColorModeToggle";
 import { Footer } from "./Footer";
 import { HamburgerButton } from "./HamburgerButton";
+import { LanguageChanger } from "./LanguageChanger";
 import { Menu } from "./Menu";
 import navItems from "./nav-items.json";
 import { UserItem } from "./UserItem";
@@ -31,8 +32,9 @@ export const Layout = React.memo(function Layout({
     <div className="layout__container">
       <header className="layout__header">
         <div className="layout__header__right-container">
-          <ColorModeToggle />
           {!isCatchBoundary ? <UserItem /> : null}
+          <LanguageChanger />
+          <ColorModeToggle />
           <HamburgerButton
             expanded={menuOpen}
             onClick={() => setMenuOpen(!menuOpen)}

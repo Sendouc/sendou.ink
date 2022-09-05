@@ -13,12 +13,12 @@ export function ColorModeToggle() {
 
   return (
     <button
-      className="layout__header__color-mode-button"
+      className="layout__header__button"
       onClick={toggleTheme}
       data-cy="theme-switch-button"
     >
-      <SunIcon className="light-mode-only layout__header__color-mode-button__icon" />
-      <MoonIcon className="dark-mode-only layout__header__color-mode-button__icon" />
+      <SunIcon className="light-mode-only layout__header__button__icon" />
+      <MoonIcon className="dark-mode-only layout__header__button__icon" />
     </button>
   );
 }
