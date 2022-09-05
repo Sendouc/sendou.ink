@@ -32,6 +32,24 @@ TODO: instructions on how to develop Lohi locally
 
 Contributions very welcome! See [CONTRIBUTING.md](./CONTRIBUTING.md) for more information.
 
+### Translations
+
+sendou.ink can be translated to any language. All the translations can be found in the [locales folder](./public/locales). Here is how you can contribute:
+
+1. Copy a `.json` file from `/en` folder.
+2. Translate lines one by one. For example `"country": "Country",` could become `"country": "Maa",`. Keep the "key" on the left side of : unchanged.
+3. Finally send the translated .json to Sendou or make a pull request if you know how.
+
+Things to note:
+
+- `weapons.json` and `gear.json` are auto-generated. Don't touch these.
+- If some language doesn't have a folder it can be added.
+- Some translated `.json` files can also have some lines in English as new lines get added to the site. Those can then be translated.
+- Some lines have a dynamic part like this one: `"articleBy": "by {{author}}"` in this case `{{author}}` should appear in the translated version unchanged. So in other words don't translate the part inside `{{}}`.
+- There is one more special syntax to keep in mind. When you translate this line `"project": "Sendou.ink is a project by <2>Sendou</2> with help from contributors:",` the `<2></2>` should appear in the translated version. The text inside these tags can change.
+
+Any questions please ask Sendou!
+
 ## API
 
 If you want to use the API then please leave an issue explaing your use case. By default I want to allow open use of the data on the site. It's just not recommended to use the same API's the web pages use as they are not stable at all and can change at any time without warning.
