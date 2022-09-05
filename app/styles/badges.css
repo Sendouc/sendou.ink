@@ -90,7 +90,7 @@
 }
 
 .badges-edit__number-input {
-  width: 5rem;
+  max-width: 5rem;
 }
 
 .badges-edit__cancel-button {
