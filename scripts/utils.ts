@@ -18,7 +18,7 @@ export const LANG_JSONS_TO_CREATE = [
 
 export async function loadLangDicts() {
   const result: Array<
-    [langCode: string, translations: Record<string, string>]
+    [langCode: string, translations: Record<string, Record<string, string>>]
   > = [];
 
   const files = await fs.promises.readdir(LANG_DICTS_PATH);

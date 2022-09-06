@@ -10,6 +10,10 @@ import { LANG_JSONS_TO_CREATE, loadLangDicts } from "./utils";
 const CURRENT_SEASON = 0;
 const OUTPUT_DIR_PATH = path.join(__dirname, "output");
 
+const LEAN_HEAD_CODE = "Hed";
+const LEAN_CLOTHES_CODE = "Clt";
+const LEAN_SHOES_CODE = "Shs";
+
 async function main() {
   const allGear: Array<{
     id: number;
@@ -28,12 +32,20 @@ async function main() {
     invariant(type);
     invariant(internalName);
 
+    const categoryKey = `CommonMsg/Gear/GearName_${
+      type === LEAN_CLOTHES_CODE
+        ? "Clothes"
+        : type === LEAN_SHOES_CODE
+        ? "Shoes"
+        : "Head"
+    }`;
+
     allGear.push({
       id: gear.Id,
       type,
       internalName,
       translations: langDicts.map(([langCode, translations]) => {
-        const name = translations[internalName];
+        const name = translations[categoryKey]?.[internalName];
         invariant(name, `Missing translation for ${internalName}`);
 
         return {
@@ -51,9 +63,9 @@ async function main() {
     JSON.stringify(allGear, null, 2)
   );
 
-  const headGear = allGear.filter((g) => g.type === "Hed");
-  const clothesGear = allGear.filter((g) => g.type === "Clt");
-  const shoesGear = allGear.filter((g) => g.type === "Shs");
+  const headGear = allGear.filter((g) => g.type === LEAN_HEAD_CODE);
+  const clothesGear = allGear.filter((g) => g.type === LEAN_CLOTHES_CODE);
+  const shoesGear = allGear.filter((g) => g.type === LEAN_SHOES_CODE);
   invariant(headGear.length);
   invariant(clothesGear.length);
   invariant(shoesGear.length);

@@ -6,6 +6,7 @@ import { LANG_JSONS_TO_CREATE, loadLangDicts } from "./utils";
 
 const INTERNAL_NAMES_TO_IGNORE: readonly string[] = ["Free"] as const;
 const OUTPUT_DIR_PATH = path.join(__dirname, "output");
+const LEAN_WEAPON_CATEGORY_KEY = "CommonMsg/Weapon/WeaponName_Main";
 
 async function main() {
   const result: Array<{
@@ -27,7 +28,7 @@ async function main() {
       id: weapon.Id,
       internalName: weapon.__RowId,
       translations: langDicts.map(([langCode, translations]) => {
-        const name = translations[weapon.__RowId];
+        const name = translations[LEAN_WEAPON_CATEGORY_KEY]?.[weapon.__RowId];
         invariant(name);
 
         return {
