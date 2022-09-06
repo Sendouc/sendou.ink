@@ -1,0 +1,53 @@
+{
+  "inYourTimeZone": "あなたのタイムゾーンでの時間:",
+  "addNew": "新規追加",
+  "noEvents": "選択された週にイベントはありません",
+  "reportResults": "結果を報告することができます:",
+  "day": "Day {{number}}",
+  "actions.reportWinners": "勝者を報告する",
+  "participatedCount": "{{count}} チームが参加しました",
+  "members": "メンバー",
+  "results": "結果",
+
+  "forms.dates": "日",
+  "forms.bracketUrl": "対戦表 URL URL",
+  "forms.discordInvite": "Discord サーバー招待 URL",
+  "forms.tags": "タグ",
+  "forms.tags.placeholder": "タグを選択",
+  "forms.tags.info": "\"バッジプライズ\" タグは可能な場合に自動的に適用されます",
+  "forms.badges": "バッジプライズ",
+  "forms.badges.placeholder": "バッジプライズを選択する",
+
+  "forms.participantCount": "参加者数",
+  "forms.reportResultsHeader": "{{eventName}} の報告結果",
+  "forms.reportResultsInfo": "レポートする結果の数を選択します。勝者のみ、トップ3など自由に決定できます。",
+  "forms.team.add": "チームを追加",
+  "forms.team.remove": "チームを削除",
+  "forms.team.name": "チーム名",
+  "forms.team.placing": "順位",
+
+  "forms.team.player.header": "プレイヤー {{number}}",
+  "forms.team.player.add": "プレイヤーを追加",
+  "forms.team.player.remove": "プレイヤーを削除",
+  "forms.team.player.addAsUser": "ユーザーで追加 (推奨)",
+  "forms.team.player.addAsText": "テキストで追加",
+
+  "forms.errors.uniqueTeamName": "それぞれのチームは固有の名前が必要です。",
+  "forms.errors.duplicatePlayer": "ひとつのチームに同一の名前のプレイヤーは設定できません。",
+  "forms.errors.emptyTeam": "それぞれのチームには最低1プレイヤーが必要です。",
+
+  "week.this": "今週",
+  "week.next": "次週",
+  "week.last": "先週",
+  "week.week": "週",
+
+  "tag.desc.BADGE": "このイベントの勝者は sendou.ink のバッジがもらえます。",
+  "tag.desc.SPECIAL": "通常とは異なるルール(ブキ縛り)が適用される場合があります。",
+  "tag.desc.ART": "このトーナメントに参加することでイラストをもらうことができます。",
+  "tag.desc.MONEY": "このトーナメントに参加することで賞金をもらうことができます。",
+  "tag.desc.REGION": "このイベントは参加者の地域が制限されています。",
+  "tag.desc.LOW": "このイベントはプレイヤースキルが制限されています。",
+  "tag.desc.COUNT": "参加チーム数が限定されています。",
+  "tag.desc.LAN": "このイベントは地域限定です。",
+  "tag.desc.QUALIFIER": "このトーナメントは他のイベントへの出場資格です。"
+}

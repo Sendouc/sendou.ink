@@ -1,0 +1,43 @@
+{
+  "pages.admin": "管理",
+  "pages.badges": "バッジ",
+  "pages.plus": "Plus Server",
+  "pages.contributors": "コントリビューター",
+  "pages.calendar": "カレンダー",
+  "pages.faq": "FAQ",
+  "pages.builds": "カード",
+
+  "header.profile": "プロファイル",
+  "header.logout": "ログアウト",
+  "header.login": "ログイン",
+
+  "footer.github.subtitle": "ソースコード",
+  "footer.twitter.subtitle": "最新情報",
+  "footer.discord.subtitle": "ヘルプ & フィードバック",
+  "footer.patreon.subtitle": "寄付",
+  "footer.thanks": "寄付のご協力ありがとうございます",
+
+  "actions.save": "保存",
+  "actions.saving": "保存中...",
+  "actions.submit": "送信",
+  "actions.edit": "編集",
+  "actions.add": "追加",
+  "actions.remove": "除外",
+  "actions.delete": "削除",
+
+  "results": "結果",
+
+  "forms.name": "名前",
+  "forms.description": "説明",
+  "forms.errors.title": "以下のエラーの修正が必要です",
+
+  "tag.name.BADGE": "バッジプライズ",
+  "tag.name.SPECIAL": "特別ルール",
+  "tag.name.ART": "イラスト賞品",
+  "tag.name.MONEY": "賞金",
+  "tag.name.REGION": "地域限定",
+  "tag.name.LOW": "上限レベル",
+  "tag.name.COUNT": "参加数限定",
+  "tag.name.LAN": "オフライン",
+  "tag.name.QUALIFIER": "参加資格"
+}

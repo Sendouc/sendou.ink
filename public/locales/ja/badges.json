@@ -1,0 +1,9 @@
+{
+  "patreon": "Patreon での sendou.ink Supporter",
+  "patreon+": "Patoreon での sendou.ink Supporter+",
+  "tournament_one": "{{tournament}} の勝者",
+  "tournament_other": "{{tournament}} の勝者 (×{{count}})",
+  "forYourEvent": "イベント専用のバッジ?",
+  "madeBy": "<2>borzoic</2> によって作成されたバッジ",
+  "managedBy": "{{users}} によって管理されています"
+}
