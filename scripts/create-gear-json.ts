@@ -103,8 +103,15 @@ async function main() {
     );
 
     fs.writeFileSync(
-      path.join(OUTPUT_DIR_PATH, `gear-${langCode}.json`),
-      JSON.stringify(translationsMap, null, 2)
+      path.join(
+        __dirname,
+        "..",
+        "public",
+        "locales",
+        langCode.slice(2),
+        `gear.json`
+      ),
+      JSON.stringify(translationsMap, null, 2) + "\n"
     );
   }
 }
