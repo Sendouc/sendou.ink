@@ -1,0 +1,43 @@
+{
+  "pages.admin": "Admin",
+  "pages.badges": "Abzeichen",
+  "pages.plus": "Plus Server",
+  "pages.contributors": "Mitwirkende",
+  "pages.calendar": "Kalender",
+  "pages.faq": "FAQ",
+  "pages.builds": "Ausrüstungen",
+
+  "header.profile": "Profil",
+  "header.logout": "Ausloggen",
+  "header.login": "Einloggen",
+
+  "footer.github.subtitle": "Sourcecode",
+  "footer.twitter.subtitle": "Updates",
+  "footer.discord.subtitle": "Hilfe & Feedback",
+  "footer.patreon.subtitle": "Support",
+  "footer.thanks": "Danke an die Patrons für den Support",
+
+  "actions.save": "Speichern",
+  "actions.saving": "Speichert...",
+  "actions.submit": "Senden",
+  "actions.edit": "Bearbeiten",
+  "actions.add": "Hinzufügen",
+  "actions.remove": "Entfernen",
+  "actions.delete": "Löschen",
+
+  "results": "Ergebnisse",
+
+  "forms.name": "Name",
+  "forms.description": "Beschreibung",
+  "forms.errors.title": "Diese Fehler müssen behoben werden",
+
+  "tag.name.BADGE": "Abzeichen-Preise",
+  "tag.name.SPECIAL": "Spezielle Regeln",
+  "tag.name.ART": "Kunst-Preise",
+  "tag.name.MONEY": "Geld-Preise",
+  "tag.name.REGION": "Regionsgebunden",
+  "tag.name.LOW": "Skill-Grenze",
+  "tag.name.COUNT": "Zulassungsgrenze",
+  "tag.name.LAN": "LAN",
+  "tag.name.QUALIFIER": "Qualifikation"
+}
