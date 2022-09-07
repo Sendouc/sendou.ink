@@ -1,0 +1,15 @@
+{
+  "addBuild": "カードを追加",
+  "noBuilds": "カードは作成されていません。最初のカードを作成しましょう!",
+  "buildCard.info": "詳細",
+  "buildCard.edit": "編集",
+
+  "forms.title": "タイトル",
+  "forms.modes": "モード",
+  "forms.weapons": "ブキ",
+  "forms.gear.HEAD": "ギア (アタマ)",
+  "forms.gear.CLOTHES": "ギア (フク)",
+  "forms.gear.SHOES": "ギア (クツ)",
+
+  "deleteConfirm": "'{{title}}'を削除しますか?"
+}
