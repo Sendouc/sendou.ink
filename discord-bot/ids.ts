@@ -10,6 +10,8 @@ const ids = {
     plusTwo: "678169134416265260",
     plusThree: "815267885601521696",
     // TESTING VALUES
+    // plusTwoPings: "1017077667276783657",
+    // plusThreePings: "1017077722813575290",
     // plusOne: "992852036334911638",
     // plusTwo: "992852055251234936",
     // plusThree: "992852066403893258",
