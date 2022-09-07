@@ -1,0 +1,13 @@
+{
+  "addBuild": "빌드 추가",
+  "noBuilds": "빌드가 아직 없습니다. 첫 빌드를 추가하세요!",
+  "buildCard.info": "정보",
+  "buildCard.edit": "편집",
+  "forms.title": "제목",
+  "forms.modes": "모드",
+  "forms.weapons": "무기",
+  "forms.gear.HEAD": "머리 기어",
+  "forms.gear.CLOTHES": "상의 기어",
+  "forms.gear.SHOES": "신발 기어",
+  "deleteConfirm": "'{{title}}' 빌드를 삭제하시겠습니까?"
+}
