@@ -1,8 +1,12 @@
 // To run this script you need from https://github.com/Leanny/leanny.github.io
 // 1) WeaponInfoMain.json inside dicts
+// 2) WeaponInfoSub.json inside dicts
+// 3) WeaponInfoMSpecial.json inside dicts
 
 import { weaponIds } from "~/modules/in-game-lists";
 import weapons from "./dicts/WeaponInfoMain.json";
+import subWeapons from "./dicts/WeaponInfoSub.json";
+import specialWeapons from "./dicts/WeaponInfoSpecial.json";
 import fs from "node:fs";
 import path from "node:path";
 import invariant from "tiny-invariant";
@@ -13,7 +17,10 @@ type Weapon = typeof weapons[number];
 
 interface Params {
   id: number;
+  subWeaponId: number;
+  specialWeaponId: number;
   internalName: string;
+  SpecialPoint: number;
   /** How much ink one shot consumes? InkConsume = 0.5 means 2 shots per full tank */
   InkConsume?: number;
   /** How much ink one fully charged shot consumes? */
@@ -69,6 +76,9 @@ function main() {
 function parametersToResult(weapon: Weapon, params: any): Params {
   return {
     id: weapon.Id,
+    SpecialPoint: weapon.SpecialPoint,
+    subWeaponId: resolveSubWeaponId(weapon),
+    specialWeaponId: resolveSpecialWeaponId(weapon),
     internalName: weapon.__RowId.replace("_00", ""),
     InkConsume: params["WeaponParam"]?.["InkConsume"],
     InkConsumeFullCharge: params["WeaponParam"]?.["InkConsumeFullCharge"],
@@ -104,6 +114,36 @@ function parametersToResult(weapon: Weapon, params: any): Params {
         "InkConsumeMinCharge"
       ],
   };
+}
+
+function resolveSubWeaponId(weapon: Weapon) {
+  // Work/Gyml/PoisonMist.spl__WeaponInfoSub.gyml
+  const codeName = weapon.SubWeapon.replace("Work/Gyml/", "").replace(
+    ".spl__WeaponInfoSub.gyml",
+    ""
+  );
+
+  const subWeaponObj = subWeapons.find((wpn) => codeName === wpn.__RowId);
+  invariant(subWeaponObj, `Could not find sub weapon for '${weapon.__RowId}'`);
+
+  return subWeaponObj.Id;
+}
+
+function resolveSpecialWeaponId(weapon: Weapon) {
+  const codeName = weapon.SpecialWeapon.replace("Work/Gyml/", "").replace(
+    ".spl__WeaponInfoSpecial.gyml",
+    ""
+  );
+
+  const specialWeaponObj = specialWeapons.find(
+    (wpn) => codeName === wpn.__RowId
+  );
+  invariant(
+    specialWeaponObj,
+    `Could not find special weapon for '${codeName}'`
+  );
+
+  return specialWeaponObj.Id;
 }
 
 function weaponShouldBeSkipped(weapon: Weapon) {
