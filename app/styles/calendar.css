@@ -81,6 +81,13 @@
   font-size: var(--fonts-xxs);
 }
 
+.calendar__week__relative {
+  max-width: 3rem;
+  margin: 0 auto;
+  text-align: center;
+  white-space: pre-line;
+}
+
 .calendar__week__dash {
   line-height: 0.8;
 }

@@ -243,9 +243,8 @@ function WeekLinkTitle({
 
   if (relativeWeekIdentifier) {
     return (
-      <div className="stack xxs">
+      <div className="calendar__week__relative">
         <div>{relativeWeekIdentifier}</div>
-        <div>{t("week.week")}</div>
       </div>
     );
   }

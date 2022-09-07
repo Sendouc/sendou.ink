@@ -36,10 +36,9 @@
   "forms.errors.duplicatePlayer": "Can't have the same player twice in the same team.",
   "forms.errors.emptyTeam": "Each team must have at least one player.",
 
-  "week.this": "This",
-  "week.next": "Next",
-  "week.last": "Last",
-  "week.week": "Week",
+  "week.this": "This Week",
+  "week.next": "Next Week",
+  "week.last": "Last Week",
 
   "tag.desc.BADGE": "Winner of this event gets a sendou.ink badge.",
   "tag.desc.SPECIAL": "Ruleset that differ from the standard e.g. limited what weapons can be used.",
