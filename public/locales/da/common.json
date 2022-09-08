@@ -1,0 +1,43 @@
+{
+  "pages.admin": "Administratorer",
+  "pages.badges": "Mærker",
+  "pages.plus": "Plus Server",
+  "pages.contributors": "Bidragydere",
+  "pages.calendar": "Kalender",
+  "pages.faq": "FAQ",
+  "pages.builds": "Udrustningssæt",
+
+  "header.profile": "Profil",
+  "header.logout": "Log ud",
+  "header.login": "Log ind",
+
+  "footer.github.subtitle": "Kildekode",
+  "footer.twitter.subtitle": "Opdateringer",
+  "footer.discord.subtitle": "Hjælp og feedback",
+  "footer.patreon.subtitle": "Støt hjemmesiden",
+  "footer.thanks": "Tak til vores patrons for støtten",
+
+  "actions.save": "Gem",
+  "actions.saving": "Gemmer...",
+  "actions.submit": "Fremlæg",
+  "actions.edit": "Rediger",
+  "actions.add": "Tilføj",
+  "actions.remove": "Fjern",
+  "actions.delete": "Slet",
+
+  "results": "Resultater",
+
+  "forms.name": "Navn",
+  "forms.description": "Beskrivelse",
+  "forms.errors.title": "Følgende fejl skal rettes",
+
+  "tag.name.BADGE": "Premiemærker",
+  "tag.name.SPECIAL": "Særregler",
+  "tag.name.ART": "Kunstpræmier",
+  "tag.name.MONEY": "Pengepræmier",
+  "tag.name.REGION": "Regional turnering",
+  "tag.name.LOW": "Kvalifikationsloft",
+  "tag.name.COUNT": "Tilmeldingsloft",
+  "tag.name.LAN": "LAN",
+  "tag.name.QUALIFIER": "Kvalifikationsturnering"
+}
