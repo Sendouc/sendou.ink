@@ -5,8 +5,14 @@
 
 // xxx: internal name can be deleted when to prod
 
-import { weaponIds } from "~/modules/in-game-lists";
+import {
+  type SubWeaponId,
+  subWeaponIds,
+  weaponIds,
+} from "~/modules/in-game-lists";
+// xxx: missing id 8010
 import weapons from "./dicts/WeaponInfoMain.json";
+// xxx: for example suction missing ink consume level, ink saver lvl... we are not considering default?
 import subWeapons from "./dicts/WeaponInfoSub.json";
 import specialWeapons from "./dicts/WeaponInfoSpecial.json";
 import fs from "node:fs";
@@ -136,8 +142,12 @@ function resolveSubWeaponId(weapon: MainWeapon) {
 
   const subWeaponObj = subWeapons.find((wpn) => codeName === wpn.__RowId);
   invariant(subWeaponObj, `Could not find sub weapon for '${weapon.__RowId}'`);
+  invariant(
+    subWeaponIds.includes(subWeaponObj.Id as any),
+    `Invalid sub weapon id`
+  );
 
-  return subWeaponObj.Id;
+  return subWeaponObj.Id as SubWeaponId;
 }
 
 function resolveSpecialWeaponId(weapon: MainWeapon) {
@@ -177,6 +187,10 @@ function resolveOverwrites(params: any) {
     ) {
       const abilityKey = key.split("_").at(-1);
       invariant(abilityKey, `Could not find ability key for '${key}'`);
+
+      if (!parsed.data.High && !parsed.data.Mid && !parsed.data.Low) {
+        continue;
+      }
 
       result[abilityKey] = {
         High: parsed.data.High,

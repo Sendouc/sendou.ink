@@ -74,6 +74,11 @@
       "SpecialPoint": 180,
       "subWeaponId": 0,
       "specialWeaponId": 3,
+      "overwrites": {
+        "ReduceJumpSwerveRate": {
+          "Mid": 0.5
+        }
+      },
       "internalName": "Blaster_Short",
       "InkConsume": 0.075
     },
@@ -81,6 +86,11 @@
       "SpecialPoint": 180,
       "subWeaponId": 7,
       "specialWeaponId": 2,
+      "overwrites": {
+        "ReduceJumpSwerveRate": {
+          "Mid": 0.5
+        }
+      },
       "internalName": "Blaster_Middle",
       "InkConsume": 0.1
     },
@@ -88,6 +98,11 @@
       "SpecialPoint": 200,
       "subWeaponId": 1,
       "specialWeaponId": 7,
+      "overwrites": {
+        "ReduceJumpSwerveRate": {
+          "Mid": 0.5
+        }
+      },
       "internalName": "Blaster_Long",
       "InkConsume": 0.11
     },
@@ -95,6 +110,11 @@
       "SpecialPoint": 180,
       "subWeaponId": 0,
       "specialWeaponId": 1,
+      "overwrites": {
+        "ReduceJumpSwerveRate": {
+          "Mid": 0.5
+        }
+      },
       "internalName": "Blaster_LightShort",
       "InkConsume": 0.04
     },
@@ -102,6 +122,11 @@
       "SpecialPoint": 200,
       "subWeaponId": 10,
       "specialWeaponId": 14,
+      "overwrites": {
+        "ReduceJumpSwerveRate": {
+          "Mid": 0.5
+        }
+      },
       "internalName": "Blaster_Light",
       "InkConsume": 0.07
     },
@@ -109,6 +134,11 @@
       "SpecialPoint": 180,
       "subWeaponId": 11,
       "specialWeaponId": 8,
+      "overwrites": {
+        "ReduceJumpSwerveRate": {
+          "Mid": 0.5
+        }
+      },
       "internalName": "Blaster_LightLong",
       "InkConsume": 0.08
     },
@@ -389,6 +419,15 @@
       "InkConsumeMinCharge_ChargeParam": 0.05
     },
     "8000": {
+      "SpecialPoint": 200,
+      "subWeaponId": 2,
+      "specialWeaponId": 3,
+      "internalName": "Saber_Normal",
+      "InkConsume_SwingParam": 0.04,
+      "InkConsumeFullCharge_ChargeParam": 0.09,
+      "InkConsumeMinCharge_ChargeParam": 0.035
+    },
+    "8010": {
       "SpecialPoint": 200,
       "subWeaponId": 2,
       "specialWeaponId": 3,

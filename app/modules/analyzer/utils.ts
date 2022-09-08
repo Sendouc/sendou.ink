@@ -1,9 +1,11 @@
 import type { BuildAbilitiesTupleWithUnknown } from "../in-game-lists";
-import paramsJson from "./params.json";
-import type { AbilityPoints, ParamsJson } from "./types";
+import weaponParamsJson from "./weapon-params.json";
+import abilityValuesJson from "./ability-values.json";
+import type { AbilityPoints, MainWeaponParams, ParamsJson } from "./types";
+import invariant from "tiny-invariant";
 
-export function params(): ParamsJson {
-  return paramsJson as ParamsJson;
+export function weaponParams(): ParamsJson {
+  return weaponParamsJson as ParamsJson;
 }
 
 export function buildToAbilityPoints(build: BuildAbilitiesTupleWithUnknown) {
@@ -20,4 +22,25 @@ export function buildToAbilityPoints(build: BuildAbilitiesTupleWithUnknown) {
   }
 
   return result;
+}
+
+export function abilityValues({
+  key,
+  weapon,
+}: {
+  key: keyof typeof abilityValuesJson;
+  weapon: MainWeaponParams;
+}): [number, number, number] {
+  const overwrites = weapon.overwrites?.[key];
+
+  const [High, Mid, Low] = abilityValuesJson[key];
+  invariant(typeof High === "number");
+  invariant(typeof Mid === "number");
+  invariant(typeof Low === "number");
+
+  return [
+    overwrites?.High ?? High,
+    overwrites?.Mid ?? Mid,
+    overwrites?.Low ?? Low,
+  ];
 }

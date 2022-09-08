@@ -1,7 +1,11 @@
-import type { Ability } from "~/modules/in-game-lists";
+import type {
+  Ability,
+  MainWeaponId,
+  SubWeaponId,
+} from "~/modules/in-game-lists";
 
 export interface MainWeaponParams {
-  subWeaponId: number;
+  subWeaponId: SubWeaponId;
   specialWeaponId: number;
   internalName: string;
   /** Replacing default values of the ability json for this specific weapon */
@@ -72,8 +76,8 @@ export interface SubWeaponParams {
 }
 
 export type ParamsJson = {
-  mainWeapons: Record<number, MainWeaponParams>;
-  subWeapons: Record<number, SubWeaponParams>;
+  mainWeapons: Record<MainWeaponId, MainWeaponParams>;
+  subWeapons: Record<SubWeaponId, SubWeaponParams>;
 };
 
 interface Stat {

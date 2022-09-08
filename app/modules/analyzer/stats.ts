@@ -1,20 +1,23 @@
-import type { BuildAbilitiesTupleWithUnknown } from "~/modules/in-game-lists";
-import type { BuildWeapon } from "~/db/types";
+import type {
+  BuildAbilitiesTupleWithUnknown,
+  MainWeaponId,
+} from "~/modules/in-game-lists";
 import type { AnalyzedBuild, StatFunctionInput } from "./types";
 import invariant from "tiny-invariant";
-import { buildToAbilityPoints, params } from "./utils";
+import { buildToAbilityPoints, weaponParams } from "./utils";
 
 export function buildStats({
   build,
   weaponSplId,
 }: {
   build: BuildAbilitiesTupleWithUnknown;
-  weaponSplId: BuildWeapon["weaponSplId"];
+  weaponSplId: MainWeaponId;
 }): AnalyzedBuild {
-  const mainWeaponParams = params().mainWeapons[weaponSplId];
+  const mainWeaponParams = weaponParams().mainWeapons[weaponSplId];
   invariant(mainWeaponParams, `Weapon with splId ${weaponSplId} not found`);
 
-  const subWeaponParams = params().subWeapons[mainWeaponParams.subWeaponId];
+  const subWeaponParams =
+    weaponParams().subWeapons[mainWeaponParams.subWeaponId];
   invariant(
     subWeaponParams,
     `Sub weapon with splId ${mainWeaponParams.subWeaponId} not found`
