@@ -4,6 +4,8 @@ export interface MainWeaponParams {
   subWeaponId: number;
   specialWeaponId: number;
   internalName: string;
+  /** Replacing default values of the ability json for this specific weapon */
+  overwrites?: Record<string, Partial<Record<"High" | "Mid" | "Low", number>>>;
   SpecialPoint: number;
   /** How much ink one shot consumes? InkConsume = 0.5 means 2 shots per full tank */
   InkConsume?: number;

@@ -14,6 +14,7 @@ import path from "node:path";
 import invariant from "tiny-invariant";
 import type { MainWeaponParams, SubWeaponParams } from "~/modules/analyzer";
 import type { ParamsJson } from "~/modules/analyzer/types";
+import { z } from "zod";
 
 const CURRENT_SEASON = 0;
 
@@ -61,6 +62,7 @@ function parametersToMainWeaponResult(
     SpecialPoint: weapon.SpecialPoint,
     subWeaponId: resolveSubWeaponId(weapon),
     specialWeaponId: resolveSpecialWeaponId(weapon),
+    overwrites: resolveOverwrites(params),
     internalName: weapon.__RowId.replace("_00", ""),
     InkConsume: params["WeaponParam"]?.["InkConsume"],
     InkConsumeFullCharge: params["WeaponParam"]?.["InkConsumeFullCharge"],
@@ -153,6 +155,40 @@ function resolveSpecialWeaponId(weapon: MainWeapon) {
   );
 
   return specialWeaponObj.Id;
+}
+
+const overwriteSchema = z.object({
+  High: z.number().optional(),
+  Mid: z.number().optional(),
+  Low: z.number().optional(),
+});
+
+function resolveOverwrites(params: any) {
+  const result: MainWeaponParams["overwrites"] = {};
+
+  for (const [key, value] of Object.entries(params)) {
+    const parsed = overwriteSchema.safeParse(value);
+
+    // each object has a $type property which we ignore
+    if (
+      key.includes("PlayerGearSkillParam") &&
+      parsed.success &&
+      Object.keys(parsed).length > 1
+    ) {
+      const abilityKey = key.split("_").at(-1);
+      invariant(abilityKey, `Could not find ability key for '${key}'`);
+
+      result[abilityKey] = {
+        High: parsed.data.High,
+        Mid: parsed.data.Mid,
+        Low: parsed.data.Low,
+      };
+    }
+  }
+
+  if (Object.keys(result).length === 0) return;
+
+  return result;
 }
 
 function mainWeaponShouldBeSkipped(weapon: MainWeapon) {
