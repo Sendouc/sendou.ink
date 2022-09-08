@@ -12,85 +12,17 @@ import specialWeapons from "./dicts/WeaponInfoSpecial.json";
 import fs from "node:fs";
 import path from "node:path";
 import invariant from "tiny-invariant";
+import type { MainWeaponParams, SubWeaponParams } from "~/modules/analyzer";
+import type { ParamsJson } from "~/modules/analyzer/types";
 
 const CURRENT_SEASON = 0;
 
 type MainWeapon = typeof weapons[number];
 type SubWeapon = typeof subWeapons[number];
 
-interface MainWeaponParams {
-  id: number;
-  subWeaponId: number;
-  specialWeaponId: number;
-  internalName: string;
-  SpecialPoint: number;
-  /** How much ink one shot consumes? InkConsume = 0.5 means 2 shots per full tank */
-  InkConsume?: number;
-  /** How much ink one fully charged shot consumes? */
-  InkConsumeFullCharge?: number;
-  /** How much ink one tap shot consumes? */
-  InkConsumeMinCharge?: number;
-  /** How much ink one swing of brush consumes? */
-  InkConsume_WeaponSwingParam?: number;
-  /** Lower bound of ink consumed per frame when rolling with roller/brush */
-  InkConsumeMaxPerFrame_WeaponRollParam?: number;
-  /** Upper bound of ink consumed per frame when rolling with roller/brush */
-  InkConsumeMinPerFrame_WeaponRollParam?: number;
-  /** How much ink one vertical swing of roller consumes? */
-  InkConsume_WeaponVerticalSwingParam?: number;
-  /** How much ink one horizontal swing of roller consumes? */
-  InkConsume_WeaponWideSwingParam?: number;
-  /** How much ink one swing of splatana consumes? */
-  InkConsume_SwingParam?: number;
-  /** How much ink brella shield launch consumes? */
-  InkConsumeUmbrella_WeaponShelterCanopyParam?: number;
-  // xxx: splat brella missing this - are we missing extend?
-  /** How much ink one brella shot consumes? */
-  InkConsume_WeaponShelterShotgunParam?: number;
-  /** How much ink a dualie dodge roll consumes? */
-  InkConsume_SideStepParam?: number;
-  // xxx: some explanations... the below two are for splatana/bow
-  InkConsumeFullCharge_ChargeParam?: number;
-  InkConsumeMinCharge_ChargeParam?: number;
-  //InkConsumeMidCharge_ChargeParam?: number;
-  // xxx: what are these?
-  // SpeedInkConsumeMax_WeaponRollParam?: number;
-  // SpeedInkConsumeMin_WeaponRollParam?: number;
-}
-
-interface DistanceDamage {
-  damage: number;
-  distance: number;
-}
-
-interface SubWeaponParams {
-  id: number;
-  internalName: string;
-  SubInkSaveLv: number;
-  /** How much ink one usage of the sub consumes */
-  InkConsume: number;
-  /** Amount of frames white ink (=no ink recovery during this time) takes */
-  InkRecoverStop: number;
-  /** Damage dealt at different radiuses */
-  DistanceDamage?: Array<DistanceDamage>;
-  /** Damage dealt by explosion at different radiuses (curling bomb charged all the way) */
-  DistanceDamage_BlastParamMaxCharge?: Array<DistanceDamage>;
-  /** Damage dealt by explosion at different radiuses (curling bomb not charged) */
-  DistanceDamage_BlastParamMinCharge?: Array<DistanceDamage>;
-  /** Damage dealt by explosion at different radiuses (fizzy bomb bounces) */
-  DistanceDamage_BlastParamArray?: Array<DistanceDamage>;
-  // xxx: verify torpedo
-  /** Damage dealt by explosion at different radiuses (torpedo explosion air to ground) */
-  DistanceDamage_BlastParamChase?: Array<DistanceDamage>;
-  /** Damage dealt by explosion at different radiuses (rolling torpedo) */
-  DistanceDamage_SplashBlastParam?: Array<DistanceDamage>;
-  /** Damage dealt by direct hit */
-  DirectDamage?: number;
-}
-
 function main() {
-  const mainWeaponsResult: Array<MainWeaponParams> = [];
-  const subWeaponsResult: Array<SubWeaponParams> = [];
+  const mainWeaponsResult: Record<number, MainWeaponParams> = {};
+  const subWeaponsResult: Record<number, SubWeaponParams> = {};
 
   for (const weapon of weapons) {
     if (mainWeaponShouldBeSkipped(weapon)) continue;
@@ -98,7 +30,7 @@ function main() {
     const rawParams = loadWeaponParamsObject(weapon);
     const params = parametersToMainWeaponResult(weapon, rawParams);
 
-    mainWeaponsResult.push(params);
+    mainWeaponsResult[weapon.Id] = params;
   }
 
   for (const subWeapon of subWeapons) {
@@ -107,10 +39,10 @@ function main() {
     const rawParams = loadWeaponParamsObject(subWeapon);
     const params = parametersToSubWeaponResult(subWeapon, rawParams);
 
-    subWeaponsResult.push(params);
+    subWeaponsResult[subWeapon.Id] = params;
   }
 
-  const toFile = {
+  const toFile: ParamsJson = {
     mainWeapons: mainWeaponsResult,
     subWeapons: subWeaponsResult,
   };
@@ -126,7 +58,6 @@ function parametersToMainWeaponResult(
   params: any
 ): MainWeaponParams {
   return {
-    id: weapon.Id,
     SpecialPoint: weapon.SpecialPoint,
     subWeaponId: resolveSubWeaponId(weapon),
     specialWeaponId: resolveSpecialWeaponId(weapon),
@@ -172,7 +103,6 @@ function parametersToSubWeaponResult(
   params: any
 ): SubWeaponParams {
   return {
-    id: subWeapon.Id,
     internalName: subWeapon.__RowId,
     // xxx: not every sub has this, why? e.g. Splash Wall
     SubInkSaveLv: params["SubWeaponSetting"]?.["SubInkSaveLv"],
