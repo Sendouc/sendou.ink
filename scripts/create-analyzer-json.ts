@@ -3,6 +3,8 @@
 // 2) WeaponInfoSub.json inside dicts
 // 3) WeaponInfoMSpecial.json inside dicts
 
+// xxx: internal name can be deleted when to prod
+
 import { weaponIds } from "~/modules/in-game-lists";
 import weapons from "./dicts/WeaponInfoMain.json";
 import subWeapons from "./dicts/WeaponInfoSub.json";
@@ -13,9 +15,10 @@ import invariant from "tiny-invariant";
 
 const CURRENT_SEASON = 0;
 
-type Weapon = typeof weapons[number];
+type MainWeapon = typeof weapons[number];
+type SubWeapon = typeof subWeapons[number];
 
-interface Params {
+interface MainWeaponParams {
   id: number;
   subWeaponId: number;
   specialWeaponId: number;
@@ -55,25 +58,73 @@ interface Params {
   // SpeedInkConsumeMin_WeaponRollParam?: number;
 }
 
+interface DistanceDamage {
+  damage: number;
+  distance: number;
+}
+
+interface SubWeaponParams {
+  id: number;
+  internalName: string;
+  SubInkSaveLv: number;
+  /** How much ink one usage of the sub consumes */
+  InkConsume: number;
+  /** Amount of frames white ink (=no ink recovery during this time) takes */
+  InkRecoverStop: number;
+  /** Damage dealt at different radiuses */
+  DistanceDamage?: Array<DistanceDamage>;
+  /** Damage dealt by explosion at different radiuses (curling bomb charged all the way) */
+  DistanceDamage_BlastParamMaxCharge?: Array<DistanceDamage>;
+  /** Damage dealt by explosion at different radiuses (curling bomb not charged) */
+  DistanceDamage_BlastParamMinCharge?: Array<DistanceDamage>;
+  /** Damage dealt by explosion at different radiuses (fizzy bomb bounces) */
+  DistanceDamage_BlastParamArray?: Array<DistanceDamage>;
+  // xxx: verify torpedo
+  /** Damage dealt by explosion at different radiuses (torpedo explosion air to ground) */
+  DistanceDamage_BlastParamChase?: Array<DistanceDamage>;
+  /** Damage dealt by explosion at different radiuses (rolling torpedo) */
+  DistanceDamage_SplashBlastParam?: Array<DistanceDamage>;
+  /** Damage dealt by direct hit */
+  DirectDamage?: number;
+}
+
 function main() {
-  const result: Array<Params> = [];
+  const mainWeaponsResult: Array<MainWeaponParams> = [];
+  const subWeaponsResult: Array<SubWeaponParams> = [];
 
   for (const weapon of weapons) {
-    if (weaponShouldBeSkipped(weapon)) continue;
+    if (mainWeaponShouldBeSkipped(weapon)) continue;
 
     const rawParams = loadWeaponParamsObject(weapon);
-    const params = parametersToResult(weapon, rawParams);
+    const params = parametersToMainWeaponResult(weapon, rawParams);
 
-    result.push(params);
+    mainWeaponsResult.push(params);
   }
+
+  for (const subWeapon of subWeapons) {
+    if (subWeaponShouldBeSkipped(subWeapon)) continue;
+
+    const rawParams = loadWeaponParamsObject(subWeapon);
+    const params = parametersToSubWeaponResult(subWeapon, rawParams);
+
+    subWeaponsResult.push(params);
+  }
+
+  const toFile = {
+    mainWeapons: mainWeaponsResult,
+    subWeapons: subWeaponsResult,
+  };
 
   fs.writeFileSync(
     path.join(__dirname, "output", `params.json`),
-    JSON.stringify(result, null, 2) + "\n"
+    JSON.stringify(toFile, null, 2) + "\n"
   );
 }
 
-function parametersToResult(weapon: Weapon, params: any): Params {
+function parametersToMainWeaponResult(
+  weapon: MainWeapon,
+  params: any
+): MainWeaponParams {
   return {
     id: weapon.Id,
     SpecialPoint: weapon.SpecialPoint,
@@ -116,8 +167,36 @@ function parametersToResult(weapon: Weapon, params: any): Params {
   };
 }
 
-function resolveSubWeaponId(weapon: Weapon) {
-  // Work/Gyml/PoisonMist.spl__WeaponInfoSub.gyml
+function parametersToSubWeaponResult(
+  subWeapon: SubWeapon,
+  params: any
+): SubWeaponParams {
+  return {
+    id: subWeapon.Id,
+    internalName: subWeapon.__RowId,
+    // xxx: not every sub has this, why? e.g. Splash Wall
+    SubInkSaveLv: params["SubWeaponSetting"]?.["SubInkSaveLv"],
+    InkConsume: params["WeaponParam"]["InkConsume"],
+    InkRecoverStop: params["WeaponParam"]["InkRecoverStop"],
+    DistanceDamage: params["BlastParam"]?.["DistanceDamage"],
+    DistanceDamage_BlastParamMaxCharge:
+      params["BlastParamMaxCharge"]?.["DistanceDamage"],
+    DistanceDamage_BlastParamMinCharge:
+      params["BlastParamMinCharge"]?.["DistanceDamage"],
+    DirectDamage:
+      params["MoveParam"]?.["DirectDamage"] ??
+      params["MoveParam"]?.["DamageDirectHit"],
+    DistanceDamage_BlastParamArray: params["MoveParam"]?.[
+      "BlastParamArray"
+    ]?.map((b: any) => b.DistanceDamage),
+    DistanceDamage_BlastParamChase:
+      params["BlastParamChase"]?.["DistanceDamage"],
+    DistanceDamage_SplashBlastParam:
+      params["BlastParamChase"]?.["SplashBlastParam"]?.["DistanceDamage"],
+  };
+}
+
+function resolveSubWeaponId(weapon: MainWeapon) {
   const codeName = weapon.SubWeapon.replace("Work/Gyml/", "").replace(
     ".spl__WeaponInfoSub.gyml",
     ""
@@ -129,7 +208,7 @@ function resolveSubWeaponId(weapon: Weapon) {
   return subWeaponObj.Id;
 }
 
-function resolveSpecialWeaponId(weapon: Weapon) {
+function resolveSpecialWeaponId(weapon: MainWeapon) {
   const codeName = weapon.SpecialWeapon.replace("Work/Gyml/", "").replace(
     ".spl__WeaponInfoSpecial.gyml",
     ""
@@ -146,14 +225,20 @@ function resolveSpecialWeaponId(weapon: Weapon) {
   return specialWeaponObj.Id;
 }
 
-function weaponShouldBeSkipped(weapon: Weapon) {
+function mainWeaponShouldBeSkipped(weapon: MainWeapon) {
   if (!weaponIds.includes(weapon.Id as any)) return true;
   if (weapon.Season > CURRENT_SEASON) return true;
 
   return false;
 }
 
-function loadWeaponParamsObject(weapon: Weapon) {
+function subWeaponShouldBeSkipped(subWeapon: SubWeapon) {
+  if (subWeapon.Id === 10000) return true;
+
+  return false;
+}
+
+function loadWeaponParamsObject(weapon: MainWeapon | SubWeapon) {
   return JSON.parse(
     fs.readFileSync(
       path.join(__dirname, "dicts", "weapon", weaponRowIdToFileName(weapon)),
@@ -162,12 +247,11 @@ function loadWeaponParamsObject(weapon: Weapon) {
   )["GameParameters"];
 }
 
-function weaponRowIdToFileName(weapon: Weapon) {
+function weaponRowIdToFileName(weapon: MainWeapon | SubWeapon) {
   const [category, codeName] = weapon.__RowId.split("_");
   invariant(category);
-  invariant(codeName);
 
-  return `Weapon${category}${codeName}.game__GameParameterTable.json`;
+  return `Weapon${category}${codeName ?? ""}.game__GameParameterTable.json`;
 }
 
 main();
