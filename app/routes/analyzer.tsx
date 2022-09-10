@@ -6,6 +6,7 @@ import { WeaponCombobox } from "~/components/Combobox";
 import { Main } from "~/components/Main";
 import type { Stat } from "~/modules/analyzer";
 import { useAnalyzeBuild } from "~/modules/analyzer";
+import type { MainWeaponId } from "~/modules/in-game-lists";
 import styles from "~/styles/analyzer.css";
 
 export const links: LinksFunction = () => {
@@ -18,7 +19,8 @@ export const handle = {
 
 export default function BuildAnalyzerPage() {
   const { t } = useTranslation("analyzer");
-  const { build, setBuild, weaponId, analyzed } = useAnalyzeBuild();
+  const { build, setBuild, weaponId, setWeaponId, analyzed } =
+    useAnalyzeBuild();
 
   if (process.env.NODE_ENV === "production") return <Main>Coming soon :)</Main>;
 
@@ -26,7 +28,15 @@ export default function BuildAnalyzerPage() {
     <Main>
       <div className="analyzer__container">
         <div className="stack lg items-center">
-          <WeaponCombobox inputName="weapon-1" initialWeaponId={weaponId} />
+          <div>
+            <WeaponCombobox
+              inputName="weapon-1"
+              initialWeaponId={weaponId}
+              onChange={(opt) =>
+                opt && setWeaponId(Number(opt.value) as MainWeaponId)
+              }
+            />
+          </div>
           <AbilitiesSelector selectedAbilities={build} onChange={setBuild} />
         </div>
         <div>

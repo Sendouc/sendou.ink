@@ -14,8 +14,8 @@ export function useAnalyzeBuild() {
   const [weaponId, setWeaponId] = React.useState<MainWeaponId>(0);
 
   const analyzed = React.useMemo(
-    () => buildStats({ build, weaponSplId: 0 }),
-    [build]
+    () => buildStats({ build, weaponSplId: weaponId }),
+    [build, weaponId]
   );
 
   return {
