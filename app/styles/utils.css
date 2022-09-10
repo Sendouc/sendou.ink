@@ -74,6 +74,10 @@
   margin: 0 auto;
 }
 
+.my-4 {
+  margin-block: var(--s-4);
+}
+
 .hidden {
   display: none;
 }
