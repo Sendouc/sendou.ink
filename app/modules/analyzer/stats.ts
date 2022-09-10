@@ -4,7 +4,12 @@ import type {
 } from "~/modules/in-game-lists";
 import type { AnalyzedBuild, StatFunctionInput } from "./types";
 import invariant from "tiny-invariant";
-import { buildToAbilityPoints, weaponParams } from "./utils";
+import {
+  abilityPointsToEffect,
+  apFromMap,
+  buildToAbilityPoints,
+  weaponParams,
+} from "./utils";
 
 export function buildStats({
   build,
@@ -49,13 +54,25 @@ function shotsPerInkTank(
   return {};
 }
 
-function specialPoint(
-  args: StatFunctionInput
-): AnalyzedBuild["stats"]["specialPoint"] {
+function specialPoint({
+  abilityPoints,
+  mainWeaponParams,
+}: StatFunctionInput): AnalyzedBuild["stats"]["specialPoint"] {
+  const SPECIAL_POINT_ABILITY = "SCU";
+
+  const effect = abilityPointsToEffect({
+    abilityPoints: apFromMap({
+      abilityPoints: abilityPoints,
+      ability: SPECIAL_POINT_ABILITY,
+    }),
+    key: "IncreaseRt_Special",
+    weapon: mainWeaponParams,
+  });
+
   return {
-    baseValue: args.mainWeaponParams.SpecialPoint,
-    modifiedBy: "SCU",
-    value: args.mainWeaponParams.SpecialPoint, // xxx:
+    baseValue: mainWeaponParams.SpecialPoint,
+    modifiedBy: SPECIAL_POINT_ABILITY,
+    value: Math.ceil(mainWeaponParams.SpecialPoint / effect),
   };
 }
 

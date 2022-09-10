@@ -80,7 +80,7 @@ export type ParamsJson = {
   subWeapons: Record<SubWeaponId, SubWeaponParams>;
 };
 
-interface Stat {
+export interface Stat {
   value: number;
   baseValue: number;
   modifiedBy: Ability;

@@ -1,6 +1,6 @@
 // xxx: rename file to something more accurate
 
-import type { BuildAbilitiesTupleWithUnknown } from "../in-game-lists";
+import type { Ability, BuildAbilitiesTupleWithUnknown } from "../in-game-lists";
 import weaponParamsJson from "./weapon-params.json";
 import abilityValuesJson from "./ability-values.json";
 import type { AbilityPoints, MainWeaponParams, ParamsJson } from "./types";
@@ -24,6 +24,16 @@ export function buildToAbilityPoints(build: BuildAbilitiesTupleWithUnknown) {
   }
 
   return result;
+}
+
+export function apFromMap({
+  abilityPoints,
+  ability,
+}: {
+  abilityPoints: AbilityPoints;
+  ability: Ability;
+}) {
+  return abilityPoints.get(ability) ?? 0;
 }
 
 function abilityValues({
@@ -87,5 +97,7 @@ export function abilityPointsToEffect({
   const percentage = calculateAbilityPointToPercent(abilityPoints) / 100.0;
   const result = low + (high - low) * lerpN(slope, percentage);
 
-  return [result, lerpN(slope, percentage) * 100];
+  // xxx: is this needed?
+  //return [result, lerpN(slope, percentage) * 100];
+  return result;
 }
