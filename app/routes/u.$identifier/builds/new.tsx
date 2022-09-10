@@ -23,7 +23,7 @@ import {
   headGearIds,
   modesShort,
   shoesGearIds,
-  weaponIds,
+  mainWeaponIds,
 } from "~/modules/in-game-lists";
 import type {
   BuildAbilitiesTuple,
@@ -67,7 +67,7 @@ const newBuildActionSchema = z.object({
           z
             .number()
             .refine((val) =>
-              weaponIds.includes(val as typeof weaponIds[number])
+              mainWeaponIds.includes(val as typeof mainWeaponIds[number])
             )
         )
       )

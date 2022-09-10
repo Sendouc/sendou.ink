@@ -8,7 +8,7 @@
 import {
   type SubWeaponId,
   subWeaponIds,
-  weaponIds,
+  mainWeaponIds,
 } from "~/modules/in-game-lists";
 // xxx: missing id 8010
 import weapons from "./dicts/WeaponInfoMain.json";
@@ -206,7 +206,7 @@ function resolveOverwrites(params: any) {
 }
 
 function mainWeaponShouldBeSkipped(weapon: MainWeapon) {
-  if (!weaponIds.includes(weapon.Id as any)) return true;
+  if (!mainWeaponIds.includes(weapon.Id as any)) return true;
   if (weapon.Season > CURRENT_SEASON) return true;
 
   return false;

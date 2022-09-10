@@ -10,7 +10,7 @@ import {
   clothesGearIds,
   headGearIds,
   shoesGearIds,
-  weaponIds,
+  mainWeaponIds,
 } from "~/modules/in-game-lists";
 import { gearImageUrl, weaponImageUrl } from "~/utils/urls";
 import { Image } from "./Image";
@@ -195,10 +195,10 @@ export function WeaponCombobox({
 }: Pick<
   ComboboxProps<ComboboxBaseOption>,
   "inputName" | "onChange" | "className" | "id" | "required"
-> & { initialWeaponId?: typeof weaponIds[number] }) {
+> & { initialWeaponId?: typeof mainWeaponIds[number] }) {
   const { t } = useTranslation("weapons");
 
-  const idToWeapon = (id: typeof weaponIds[number]) => ({
+  const idToWeapon = (id: typeof mainWeaponIds[number]) => ({
     value: String(id),
     label: t(`${id}`),
     imgPath: weaponImageUrl(id),
@@ -207,9 +207,9 @@ export function WeaponCombobox({
   return (
     <Combobox
       inputName={inputName}
-      options={weaponIds.map(idToWeapon)}
+      options={mainWeaponIds.map(idToWeapon)}
       initialValue={initialWeaponId ? idToWeapon(initialWeaponId) : undefined}
-      placeholder={t(`${weaponIds[0]}`)}
+      placeholder={t(`${mainWeaponIds[0]}`)}
       onChange={onChange}
       className={className}
       id={id}

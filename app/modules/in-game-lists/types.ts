@@ -1,7 +1,7 @@
 import type { abilities } from "./abilities";
 import type { modes } from "./modes";
 import type { stages } from "./stages";
-import type { subWeaponIds, weaponIds } from "./weapon-ids";
+import type { subWeaponIds, mainWeaponIds } from "./weapon-ids";
 
 export type ModeShort = typeof modes[number]["short"];
 
@@ -11,7 +11,7 @@ export type Ability = typeof abilities[number]["name"];
 export type AbilityWithUnknown = typeof abilities[number]["name"] | "UNKNOWN";
 export type AbilityType = typeof abilities[number]["type"];
 
-export type MainWeaponId = typeof weaponIds[number];
+export type MainWeaponId = typeof mainWeaponIds[number];
 export type SubWeaponId = typeof subWeaponIds[number];
 
 export type BuildAbilitiesTuple = [
