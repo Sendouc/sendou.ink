@@ -1,7 +1,7 @@
 // To run this script you need from https://github.com/Leanny/leanny.github.io
 // 1) WeaponInfoMain.json inside dicts
 // 2) WeaponInfoSub.json inside dicts
-// 3) WeaponInfoMSpecial.json inside dicts
+// 3) WeaponInfoSpecial.json inside dicts
 
 // xxx: internal name can be deleted when to prod
 
@@ -10,7 +10,6 @@ import {
   subWeaponIds,
   mainWeaponIds,
 } from "~/modules/in-game-lists";
-// xxx: missing id 8010
 import weapons from "./dicts/WeaponInfoMain.json";
 // xxx: for example suction missing ink consume level, ink saver lvl... we are not considering default?
 import subWeapons from "./dicts/WeaponInfoSub.json";
@@ -22,7 +21,7 @@ import type { MainWeaponParams, SubWeaponParams } from "~/modules/analyzer";
 import type { ParamsJson } from "~/modules/analyzer/types";
 import { z } from "zod";
 
-const CURRENT_SEASON = 0;
+const CURRENT_SEASON = 1;
 
 type MainWeapon = typeof weapons[number];
 type SubWeapon = typeof subWeapons[number];
@@ -214,6 +213,13 @@ function mainWeaponShouldBeSkipped(weapon: MainWeapon) {
 
 function subWeaponShouldBeSkipped(subWeapon: SubWeapon) {
   if (subWeapon.Id === 10000) return true;
+  if (
+    ["Mission", "Coop", "Hero", "Rival", "SalmonBuddy"].some((val) =>
+      subWeapon.__RowId.includes(val)
+    )
+  ) {
+    return true;
+  }
 
   return false;
 }

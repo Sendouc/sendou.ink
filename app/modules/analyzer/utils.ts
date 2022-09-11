@@ -1,5 +1,3 @@
-// xxx: rename file to something more accurate
-
 import type { Ability, BuildAbilitiesTupleWithUnknown } from "../in-game-lists";
 import weaponParamsJson from "./weapon-params.json";
 import abilityValuesJson from "./ability-values.json";

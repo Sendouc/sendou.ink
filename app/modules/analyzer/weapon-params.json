@@ -428,12 +428,12 @@
       "InkConsumeMinCharge_ChargeParam": 0.035
     },
     "8010": {
-      "SpecialPoint": 200,
-      "subWeaponId": 2,
-      "specialWeaponId": 3,
-      "internalName": "Saber_Normal",
-      "InkConsume_SwingParam": 0.04,
-      "InkConsumeFullCharge_ChargeParam": 0.09,
+      "SpecialPoint": 180,
+      "subWeaponId": 13,
+      "specialWeaponId": 11,
+      "internalName": "Saber_Lite",
+      "InkConsume_SwingParam": 0.03,
+      "InkConsumeFullCharge_ChargeParam": 0.06,
       "InkConsumeMinCharge_ChargeParam": 0.035
     }
   },

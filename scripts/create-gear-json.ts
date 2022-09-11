@@ -7,7 +7,7 @@ import path from "node:path";
 import invariant from "tiny-invariant";
 import { LANG_JSONS_TO_CREATE, loadLangDicts } from "./utils";
 
-const CURRENT_SEASON = 0;
+const CURRENT_SEASON = 1;
 const OUTPUT_DIR_PATH = path.join(__dirname, "output");
 
 const LEAN_HEAD_CODE = "Hed";
