@@ -18,6 +18,7 @@ import { assertUnreachable } from "~/utils/types";
 import { db } from "~/db";
 import type { User } from "~/db/types";
 import { badgePage } from "~/utils/urls";
+import { Label } from "~/components/Label";
 
 const editBadgeActionSchema = z.union([
   z.object({
@@ -121,6 +122,22 @@ function Managers({ data }: { data: BadgeDetailsLoaderData }) {
     <div className="stack md">
       <div className="stack sm">
         <h3 className="badges-edit__small-header">Managers</h3>
+        <div className="text-center my-4">
+          <Label className="stack vertical items-center">Add new manager</Label>
+          <UserCombobox
+            className="mx-auto"
+            inputName="new-manager"
+            onChange={(user) => {
+              if (!user) return;
+
+              setManagers([
+                ...managers,
+                { discordFullName: user.label, id: Number(user.value) },
+              ]);
+            }}
+            userIdsToOmit={userIdsToOmitFromCombobox}
+          />
+        </div>
         <ul className="badges-edit__users-list">
           {managers.map((manager) => (
             <li key={manager.id} data-cy="manager">
@@ -137,21 +154,6 @@ function Managers({ data }: { data: BadgeDetailsLoaderData }) {
             </li>
           ))}
         </ul>
-        <div className="text-center">
-          <UserCombobox
-            className="mx-auto"
-            inputName="new-manager"
-            onChange={(user) => {
-              if (!user) return;
-
-              setManagers([
-                ...managers,
-                { discordFullName: user.label, id: Number(user.value) },
-              ]);
-            }}
-            userIdsToOmit={userIdsToOmitFromCombobox}
-          />
-        </div>
       </div>
       <input
         type="hidden"
@@ -198,32 +200,8 @@ function Owners({ data }: { data: BadgeDetailsLoaderData }) {
     <div className="stack md">
       <div className="stack sm">
         <h3 className="badges-edit__small-header">Owners</h3>
-        <ul className="badges-edit__users-list">
-          {owners.map((owner) => (
-            <li key={owner.id}>
-              {owner.discordFullName}
-              <input
-                className="badges-edit__number-input"
-                data-cy="owner-count-input"
-                id="number"
-                type="number"
-                value={owner.count}
-                min={0}
-                max={100}
-                onChange={(e) =>
-                  setOwners(
-                    owners.map((o) =>
-                      o.id === owner.id
-                        ? { ...o, count: Number(e.target.value) }
-                        : o
-                    )
-                  )
-                }
-              />
-            </li>
-          ))}
-        </ul>
-        <div className="text-center">
+        <div className="text-center my-4">
+          <Label className="stack items-center">Add new owner</Label>
           <UserCombobox
             className="mx-auto"
             inputName="new-owner"
@@ -243,6 +221,31 @@ function Owners({ data }: { data: BadgeDetailsLoaderData }) {
           />
         </div>
       </div>
+      <ul className="badges-edit__users-list">
+        {owners.map((owner) => (
+          <li key={owner.id}>
+            {owner.discordFullName}
+            <input
+              className="badges-edit__number-input"
+              data-cy="owner-count-input"
+              id="number"
+              type="number"
+              value={owner.count}
+              min={0}
+              max={100}
+              onChange={(e) =>
+                setOwners(
+                  owners.map((o) =>
+                    o.id === owner.id
+                      ? { ...o, count: Number(e.target.value) }
+                      : o
+                  )
+                )
+              }
+            />
+          </li>
+        ))}
+      </ul>
       {ownerDifferences.length > 0 ? (
         <ul className="badges-edit__differences">
           {ownerDifferences.map((o) => (

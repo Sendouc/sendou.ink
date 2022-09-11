@@ -1,3 +1,7 @@
+// To run this script you need from https://github.com/Leanny/leanny.github.io
+// 1) WeaponInfoMain.json inside dicts
+// 2) EUde.json, EUen.json... inside dicts/langs
+
 import weapons from "./dicts/WeaponInfoMain.json";
 import fs from "node:fs";
 import path from "node:path";

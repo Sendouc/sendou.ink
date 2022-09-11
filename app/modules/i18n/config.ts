@@ -2,6 +2,10 @@ export const DEFAULT_LANGUAGE = "en";
 
 export const languages = [
   {
+    code: "da",
+    name: "Dansk",
+  },
+  {
     code: "de",
     name: "Deutsch",
   },

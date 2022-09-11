@@ -19,5 +19,4 @@ dump
 /scripts/output/*
 !/scripts/output/.gitkeep
 
-/scripts/dicts/*.json
-/scripts/dicts/langs/*.json
+/scripts/dicts/**/*.json
