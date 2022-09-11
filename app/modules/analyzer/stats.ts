@@ -5,7 +5,7 @@ import type {
 import type { AnalyzedBuild, StatFunctionInput } from "./types";
 import invariant from "tiny-invariant";
 import {
-  abilityPointsToEffect,
+  abilityPointsToEffects,
   apFromMap,
   buildToAbilityPoints,
   weaponParams,
@@ -43,6 +43,7 @@ export function buildStats({
       shotsPerInkTank: shotsPerInkTank(input),
       inkCost: inkCost(input),
       specialPoint: specialPoint(input),
+      specialSavedAfterDeath: specialSavedAfterDeath(input),
       subWeaponWhiteInkFrames: subWeaponParams.InkRecoverStop,
     },
   };
@@ -60,7 +61,7 @@ function specialPoint({
 }: StatFunctionInput): AnalyzedBuild["stats"]["specialPoint"] {
   const SPECIAL_POINT_ABILITY = "SCU";
 
-  const effect = abilityPointsToEffect({
+  const { effect } = abilityPointsToEffects({
     abilityPoints: apFromMap({
       abilityPoints: abilityPoints,
       ability: SPECIAL_POINT_ABILITY,
@@ -73,6 +74,30 @@ function specialPoint({
     baseValue: mainWeaponParams.SpecialPoint,
     modifiedBy: SPECIAL_POINT_ABILITY,
     value: Math.ceil(mainWeaponParams.SpecialPoint / effect),
+  };
+}
+
+function specialSavedAfterDeath({
+  abilityPoints,
+  mainWeaponParams,
+}: StatFunctionInput): AnalyzedBuild["stats"]["specialPoint"] {
+  const SPECIAL_SAVED_AFTER_DEATH_ABILITY = "SS";
+  const specialSavedAfterDeathForDisplay = (effect: number) =>
+    Number(((1.0 - effect) * 100).toFixed(2));
+
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: abilityPoints,
+      ability: SPECIAL_SAVED_AFTER_DEATH_ABILITY,
+    }),
+    key: "SpecialGaugeRt_Restart",
+    weapon: mainWeaponParams,
+  });
+
+  return {
+    baseValue: specialSavedAfterDeathForDisplay(baseEffect),
+    value: specialSavedAfterDeathForDisplay(effect),
+    modifiedBy: SPECIAL_SAVED_AFTER_DEATH_ABILITY,
   };
 }
 

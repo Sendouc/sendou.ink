@@ -80,7 +80,7 @@ function lerpN(p: number, s: number) {
   return Math.pow(Math.E, -1 * ((Math.log(p) * Math.log(s)) / Math.log(2)));
 }
 
-export function abilityPointsToEffect({
+function abilityPointsToEffect({
   key,
   abilityPoints,
   weapon,
@@ -98,4 +98,19 @@ export function abilityPointsToEffect({
   // xxx: is this needed?
   //return [result, lerpN(slope, percentage) * 100];
   return result;
+}
+
+export function abilityPointsToEffects({
+  key,
+  abilityPoints,
+  weapon,
+}: {
+  key: keyof typeof abilityValuesJson;
+  abilityPoints: number;
+  weapon: MainWeaponParams;
+}) {
+  return {
+    baseEffect: abilityPointsToEffect({ key, abilityPoints: 0, weapon }),
+    effect: abilityPointsToEffect({ key, abilityPoints, weapon }),
+  };
 }

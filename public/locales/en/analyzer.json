@@ -1,3 +1,4 @@
 {
-  "stat.specialPoints": "Points to special"
+  "stat.specialPoints": "Points to special",
+  "stat.specialLost": "Special lost when splatted"
 }

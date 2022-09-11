@@ -115,6 +115,8 @@ export interface AnalyzedBuild {
   };
   stats: {
     specialPoint: Stat;
+    /** % of special charge saved when dying */
+    specialSavedAfterDeath: Stat;
     shotsPerInkTank: Partial<Record<InkConsumeShotType, Stat>>;
     /** How much action costs (% of ink tank) */
     inkCost?: Partial<Record<InkConsumePercentageType, Stat>>;

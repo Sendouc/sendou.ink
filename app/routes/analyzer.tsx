@@ -41,13 +41,15 @@ export default function BuildAnalyzerPage() {
         </div>
         <div>
           <StatCategory title="Special">
-            <StatCollection
-              stats={[
-                {
-                  title: t("stat.specialPoints"),
-                  stat: analyzed.stats.specialPoint,
-                },
-              ]}
+            <StatCard
+              stat={analyzed.stats.specialPoint}
+              title={t("stat.specialPoints")}
+              suffix="p"
+            />
+            <StatCard
+              stat={analyzed.stats.specialSavedAfterDeath}
+              title={t("stat.specialLost")}
+              suffix="%"
             />
           </StatCategory>
         </div>
@@ -66,34 +68,38 @@ function StatCategory({
   return (
     <details>
       <summary className="analyzer__summary">{title}</summary>
-      {children}
+      <div className="analyzer__stat-collection">{children}</div>
     </details>
   );
 }
 
-function StatCollection({
-  stats,
+function StatCard({
+  title,
+  stat,
+  suffix,
 }: {
-  stats: Array<{ title: string; stat: Stat }>;
+  title: string;
+  stat: Stat;
+  suffix?: string;
 }) {
   return (
-    <div className="analyzer__stat-collection">
-      {stats.map(({ title, stat }) => (
-        <div key={title} className="analyzer__stat-card">
-          <h4 className="analyzer__stat-card__title">{title}</h4>
-          {stat.value !== stat.baseValue && (
-            <div className="analyzer__stat-card__value">
-              Current: {stat.value}
-            </div>
-          )}
-          <div className="analyzer__stat-card__value text-lighter">
-            Base: {stat.baseValue}
+    <div key={title} className="analyzer__stat-card">
+      <div>
+        <h4 className="analyzer__stat-card__title">{title}</h4>
+        {stat.value !== stat.baseValue && (
+          <div className="analyzer__stat-card__value">
+            Current: {stat.value}
+            {suffix}
           </div>
-          <div className="stack items-center mt-4">
-            <Ability ability={stat.modifiedBy} size="TINY" />
-          </div>
+        )}
+        <div className="analyzer__stat-card__value text-lighter">
+          Base: {stat.baseValue}
+          {suffix}
         </div>
-      ))}
+      </div>
+      <div className="stack items-center">
+        <Ability ability={stat.modifiedBy} size="TINY" />
+      </div>
     </div>
   );
 }

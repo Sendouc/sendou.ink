@@ -14,22 +14,24 @@
 }
 
 .analyzer__stat-collection {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
   gap: var(--s-2);
+  grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
   margin-block-start: var(--s-4);
 }
 
 .analyzer__stat-card {
-  width: max-content;
-  height: max-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   padding: var(--s-2);
   background-color: var(--bg-darker);
   border-radius: var(--rounded);
+  gap: var(--s-4);
 }
 
 .analyzer__stat-card__title {
-  font-size: var(--fonts-sm);
+  font-size: var(--fonts-xs);
 }
 
 .analyzer__stat-card__value {
