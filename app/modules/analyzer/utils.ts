@@ -1,8 +1,10 @@
 import type { Ability, BuildAbilitiesTupleWithUnknown } from "../in-game-lists";
+import { abilities } from "../in-game-lists";
 import weaponParamsJson from "./weapon-params.json";
 import abilityValuesJson from "./ability-values.json";
 import type { AbilityPoints, MainWeaponParams, ParamsJson } from "./types";
 import invariant from "tiny-invariant";
+import type { AbilityWithUnknown } from "../in-game-lists/types";
 
 export function weaponParams(): ParamsJson {
   return weaponParamsJson as ParamsJson;
@@ -12,16 +14,31 @@ export function buildToAbilityPoints(build: BuildAbilitiesTupleWithUnknown) {
   const result: AbilityPoints = new Map();
 
   for (const abilityRow of build) {
+    let abilityDoublerActive = false;
     for (const [i, ability] of abilityRow.entries()) {
-      if (ability === "UNKNOWN") continue;
+      if (ability === "AD") {
+        abilityDoublerActive = true;
+      }
+      if (!isStackableAbility(ability)) {
+        continue;
+      }
 
       const aps = i === 0 ? 10 : 3;
+      const apsDoubled = aps * (abilityDoublerActive ? 2 : 1);
 
-      result.set(ability, (result.get(ability) ?? 0) + aps);
+      result.set(ability, (result.get(ability) ?? 0) + apsDoubled);
     }
   }
 
   return result;
+}
+
+function isStackableAbility(ability: AbilityWithUnknown): ability is Ability {
+  if (ability === "UNKNOWN") return false;
+  const abilityObj = abilities.find((a) => a.name === ability);
+  invariant(abilityObj);
+
+  return abilityObj.type === "STACKABLE";
 }
 
 export function apFromMap({
