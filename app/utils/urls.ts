@@ -52,7 +52,7 @@ export const navIconUrl = (navItem: string) => `/img/layout/${navItem}`;
 export const gearImageUrl = (gearType: GearType, gearSplId: number) =>
   `/img/gear/${gearType.toLowerCase()}/${gearSplId}`;
 export const weaponImageUrl = (weaponSplId: number) =>
-  `/img/weapons/${weaponSplId}`;
+  `/img/main-weapons/${weaponSplId}`;
 export const abilityImageUrl = (ability: AbilityWithUnknown) =>
   `/img/abilities/${ability}`;
 export const modeImageUrl = (mode: ModeShort) => `/img/modes/${mode}`;
