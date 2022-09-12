@@ -4,6 +4,7 @@
 // 3) WeaponInfoSpecial.json inside dicts
 
 // xxx: internal name can be deleted when to prod
+// xxx: finish merging with create-weapon-json
 
 import {
   type SubWeaponId,
@@ -20,21 +21,35 @@ import invariant from "tiny-invariant";
 import type { MainWeaponParams, SubWeaponParams } from "~/modules/analyzer";
 import type { ParamsJson } from "~/modules/analyzer/types";
 import { z } from "zod";
+import { LANG_JSONS_TO_CREATE, loadLangDicts } from "./utils";
 
 const CURRENT_SEASON = 1;
 
 type MainWeapon = typeof weapons[number];
 type SubWeapon = typeof subWeapons[number];
+type SpecialWeapon = typeof specialWeapons[number];
+type TranslationArray = Array<{ language: string; key: string; value: string }>;
 
-function main() {
+async function main() {
   const mainWeaponsResult: Record<number, MainWeaponParams> = {};
   const subWeaponsResult: Record<number, SubWeaponParams> = {};
+  const translations: TranslationArray = [];
+
+  const langDicts = await loadLangDicts();
 
   for (const weapon of weapons) {
     if (mainWeaponShouldBeSkipped(weapon)) continue;
 
     const rawParams = loadWeaponParamsObject(weapon);
     const params = parametersToMainWeaponResult(weapon, rawParams);
+
+    translationsToArray({
+      arr: translations,
+      internalName: params.internalName,
+      weaponId: weapon.Id,
+      type: "Main",
+      translations: langDicts,
+    });
 
     mainWeaponsResult[weapon.Id] = params;
   }
@@ -45,7 +60,27 @@ function main() {
     const rawParams = loadWeaponParamsObject(subWeapon);
     const params = parametersToSubWeaponResult(subWeapon, rawParams);
 
+    translationsToArray({
+      arr: translations,
+      internalName: params.internalName,
+      weaponId: subWeapon.Id,
+      type: "Sub",
+      translations: langDicts,
+    });
+
     subWeaponsResult[subWeapon.Id] = params;
+  }
+
+  for (const specialWeapon of specialWeapons) {
+    if (specialWeaponShouldBeSkipped(specialWeapon)) continue;
+
+    translationsToArray({
+      arr: translations,
+      internalName: specialWeapon.__RowId,
+      weaponId: specialWeapon.Id,
+      type: "Special",
+      translations: langDicts,
+    });
   }
 
   const toFile: ParamsJson = {
@@ -57,6 +92,8 @@ function main() {
     path.join(__dirname, "output", `params.json`),
     JSON.stringify(toFile, null, 2) + "\n"
   );
+
+  writeTranslationsJsons(translations);
 }
 
 function parametersToMainWeaponResult(
@@ -68,7 +105,7 @@ function parametersToMainWeaponResult(
     subWeaponId: resolveSubWeaponId(weapon),
     specialWeaponId: resolveSpecialWeaponId(weapon),
     overwrites: resolveOverwrites(params),
-    internalName: weapon.__RowId.replace("_00", ""),
+    internalName: weapon.__RowId,
     InkConsume: params["WeaponParam"]?.["InkConsume"],
     InkConsumeFullCharge: params["WeaponParam"]?.["InkConsumeFullCharge"],
     InkConsumeMinCharge: params["WeaponParam"]?.["InkConsumeMinCharge"],
@@ -204,22 +241,35 @@ function resolveOverwrites(params: any) {
   return result;
 }
 
-function mainWeaponShouldBeSkipped(weapon: MainWeapon) {
-  if (!mainWeaponIds.includes(weapon.Id as any)) return true;
-  if (weapon.Season > CURRENT_SEASON) return true;
+const WEAPON_TYPES_TO_IGNORE = [
+  "Mission",
+  "Coop",
+  "Hero",
+  "Rival",
+  "SalmonBuddy",
+];
+
+function mainWeaponShouldBeSkipped(mainWeapon: MainWeapon) {
+  if (!mainWeaponIds.includes(mainWeapon.Id as any)) return true;
+  if (mainWeapon.Season > CURRENT_SEASON) return true;
 
   return false;
 }
 
 function subWeaponShouldBeSkipped(subWeapon: SubWeapon) {
   if (subWeapon.Id === 10000) return true;
-  if (
-    ["Mission", "Coop", "Hero", "Rival", "SalmonBuddy"].some((val) =>
-      subWeapon.__RowId.includes(val)
-    )
-  ) {
+  if (WEAPON_TYPES_TO_IGNORE.some((val) => subWeapon.__RowId.includes(val))) {
     return true;
   }
+
+  return false;
+}
+
+function specialWeaponShouldBeSkipped(specialWeapon: SpecialWeapon) {
+  if (WEAPON_TYPES_TO_IGNORE.some((val) => specialWeapon.Type.includes(val))) {
+    return true;
+  }
+  if (specialWeapon.__RowId === "SpGachihoko") return true;
 
   return false;
 }
@@ -240,4 +290,65 @@ function weaponRowIdToFileName(weapon: MainWeapon | SubWeapon) {
   return `Weapon${category}${codeName ?? ""}.game__GameParameterTable.json`;
 }
 
-main();
+function translationsToArray({
+  arr,
+  internalName,
+  weaponId,
+  type,
+  translations,
+}: {
+  arr: TranslationArray;
+  internalName: string;
+  weaponId: number;
+  type: "Main" | "Sub" | "Special";
+  translations: [
+    langCode: string,
+    translations: Record<string, Record<string, string>>
+  ][];
+}) {
+  for (const langCode of LANG_JSONS_TO_CREATE) {
+    const translationOfLanguage = translations.find((t) => t[0] === langCode);
+    invariant(
+      translationOfLanguage,
+      `Could not find translation for '${langCode}'`
+    );
+
+    const value =
+      translationOfLanguage[1][`CommonMsg/Weapon/WeaponName_${type}`]?.[
+        internalName
+      ];
+    invariant(value, `Could not find translation for '${internalName}'`);
+
+    arr.push({
+      key: `${type.toUpperCase()}_${weaponId}`,
+      language: langCode,
+      value,
+    });
+  }
+}
+
+function writeTranslationsJsons(arr: TranslationArray) {
+  for (const langCode of LANG_JSONS_TO_CREATE) {
+    fs.writeFileSync(
+      path.join(
+        __dirname,
+        "..",
+        "public",
+        "locales",
+        langCode.slice(2),
+        `weapons.json`
+      ),
+      JSON.stringify(
+        Object.fromEntries(
+          arr
+            .filter((val) => val.language === langCode)
+            .map(({ key, value }) => [key, value])
+        ),
+        null,
+        2
+      ) + "\n"
+    );
+  }
+}
+
+void main();
