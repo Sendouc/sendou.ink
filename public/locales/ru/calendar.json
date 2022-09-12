@@ -11,7 +11,7 @@
 
   "forms.dates": "Даты",
   "forms.bracketUrl": "URL сетки",
-  "forms.discordInvite": "URL приглашения на Discord сервер",
+  "forms.discordInvite": "URL приглашения на Discord-сервер",
   "forms.tags": "Теги",
   "forms.tags.placeholder": "Выберите тег",
   "forms.tags.info": "Тег \"Призовые значки\" добавляется автоматически, если это возможно",
