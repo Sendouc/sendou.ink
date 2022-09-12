@@ -1,4 +1,4 @@
-import type { Ability } from "~/modules/in-game-lists";
+import type { Ability, MainWeaponId } from "~/modules/in-game-lists";
 import type allTags from "../routes/calendar/tags.json";
 
 export interface User {
@@ -133,7 +133,7 @@ export interface Build {
 
 export interface BuildWeapon {
   buildId: number;
-  weaponSplId: number;
+  weaponSplId: MainWeaponId;
 }
 
 export type GearType = "HEAD" | "CLOTHES" | "SHOES";

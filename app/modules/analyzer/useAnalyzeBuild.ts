@@ -12,20 +12,20 @@ export function useAnalyzeBuild() {
     ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
     ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
   ]);
-  const [weaponId, setWeaponId] = React.useState<MainWeaponId>(
+  const [mainWeaponId, setMainWeaponId] = React.useState<MainWeaponId>(
     mainWeaponIds[0]
   );
 
   const analyzed = React.useMemo(
-    () => buildStats({ build, weaponSplId: weaponId }),
-    [build, weaponId]
+    () => buildStats({ build, weaponSplId: mainWeaponId }),
+    [build, mainWeaponId]
   );
 
   return {
     build,
     setBuild,
-    weaponId,
-    setWeaponId,
+    mainWeaponId,
+    setMainWeaponId,
     analyzed,
   };
 }

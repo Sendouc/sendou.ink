@@ -6,8 +6,11 @@ import { WeaponCombobox } from "~/components/Combobox";
 import { Main } from "~/components/Main";
 import type { Stat } from "~/modules/analyzer";
 import { useAnalyzeBuild } from "~/modules/analyzer";
+import type { AnalyzedBuild } from "~/modules/analyzer";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import styles from "~/styles/analyzer.css";
+import { Image } from "~/components/Image";
+import { specialWeaponImageUrl, subWeaponImageUrl } from "~/utils/urls";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -19,7 +22,7 @@ export const handle = {
 
 export default function BuildAnalyzerPage() {
   const { t } = useTranslation("analyzer");
-  const { build, setBuild, weaponId, setWeaponId, analyzed } =
+  const { build, setBuild, mainWeaponId, setMainWeaponId, analyzed } =
     useAnalyzeBuild();
 
   if (process.env.NODE_ENV === "production") return <Main>Coming soon :)</Main>;
@@ -28,14 +31,16 @@ export default function BuildAnalyzerPage() {
     <Main>
       <div className="analyzer__container">
         <div className="stack lg items-center">
-          <div>
+          <div className="stack sm items-center w-full">
             <WeaponCombobox
               inputName="weapon"
-              initialWeaponId={weaponId}
+              initialWeaponId={mainWeaponId}
               onChange={(opt) =>
-                opt && setWeaponId(Number(opt.value) as MainWeaponId)
+                opt && setMainWeaponId(Number(opt.value) as MainWeaponId)
               }
+              className="w-full-important"
             />
+            <KitCards analyzed={analyzed} />
           </div>
           <AbilitiesSelector selectedAbilities={build} onChange={setBuild} />
         </div>
@@ -55,6 +60,33 @@ export default function BuildAnalyzerPage() {
         </div>
       </div>
     </Main>
+  );
+}
+
+function KitCards({ analyzed }: { analyzed: AnalyzedBuild }) {
+  const { t } = useTranslation("weapons");
+
+  return (
+    <div className="analyzer__kit-cards">
+      <div className="analyzer__kit-card">
+        <Image
+          path={subWeaponImageUrl(analyzed.weapon.subWeaponSplId)}
+          width={20}
+          height={20}
+          alt={t(`SUB_${analyzed.weapon.subWeaponSplId}`)}
+        />
+        {t(`SUB_${analyzed.weapon.subWeaponSplId}`)}
+      </div>
+      <div className="analyzer__kit-card">
+        <Image
+          path={specialWeaponImageUrl(analyzed.weapon.specialWeaponSplId)}
+          width={20}
+          height={20}
+          alt={t(`SPECIAL_${analyzed.weapon.specialWeaponSplId}`)}
+        />
+        {t(`SPECIAL_${analyzed.weapon.specialWeaponSplId}`)}
+      </div>
+    </div>
   );
 }
 

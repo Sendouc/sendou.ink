@@ -38,6 +38,10 @@
   width: 100%;
 }
 
+.w-full-important {
+  width: 100% !important;
+}
+
 .w-24 {
   width: var(--s-24);
 }

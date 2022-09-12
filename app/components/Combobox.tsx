@@ -12,7 +12,7 @@ import {
   shoesGearIds,
   mainWeaponIds,
 } from "~/modules/in-game-lists";
-import { gearImageUrl, weaponImageUrl } from "~/utils/urls";
+import { gearImageUrl, mainWeaponImageUrl } from "~/utils/urls";
 import { Image } from "./Image";
 
 const MAX_RESULTS_SHOWN = 6;
@@ -36,6 +36,7 @@ interface ComboboxProps<T> {
   onChange?: (selectedOption?: ComboboxOption<T>) => void;
 }
 
+// xxx: should clear on click
 export function Combobox<T extends Record<string, string | null | number>>({
   options,
   inputName,
@@ -201,7 +202,7 @@ export function WeaponCombobox({
   const idToWeapon = (id: typeof mainWeaponIds[number]) => ({
     value: String(id),
     label: t(`MAIN_${id}`),
-    imgPath: weaponImageUrl(id),
+    imgPath: mainWeaponImageUrl(id),
   });
 
   return (

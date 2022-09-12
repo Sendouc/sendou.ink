@@ -1,6 +1,6 @@
 export { stages } from "./stages";
 export { modes, modesShort } from "./modes";
-export { mainWeaponIds, subWeaponIds } from "./weapon-ids";
+export { mainWeaponIds, subWeaponIds, specialWeaponIds } from "./weapon-ids";
 export { headGearIds, clothesGearIds, shoesGearIds } from "./gear-ids";
 export { abilitiesShort, abilities } from "./abilities";
 export type {
@@ -12,4 +12,5 @@ export type {
   BuildAbilitiesTupleWithUnknown,
   MainWeaponId,
   SubWeaponId,
+  SpecialWeaponId,
 } from "./types";

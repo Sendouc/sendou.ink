@@ -6,6 +6,7 @@
 // xxx: internal name can be deleted when to prod
 // xxx: finish merging with create-weapon-json
 
+import type { SpecialWeaponId } from "~/modules/in-game-lists";
 import {
   type SubWeaponId,
   subWeaponIds,
@@ -200,7 +201,7 @@ function resolveSpecialWeaponId(weapon: MainWeapon) {
     `Could not find special weapon for '${codeName}'`
   );
 
-  return specialWeaponObj.Id;
+  return specialWeaponObj.Id as SpecialWeaponId;
 }
 
 const overwriteSchema = z.object({

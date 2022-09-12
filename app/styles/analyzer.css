@@ -4,6 +4,26 @@
   grid-template-columns: 1fr 2fr;
 }
 
+.analyzer__kit-cards {
+  display: grid;
+  color: var(--text-lighter);
+  font-size: var(--fonts-xxs);
+  font-weight: var(--semi-bold);
+  gap: var(--s-2);
+  grid-template-columns: 1fr 1fr;
+}
+
+.analyzer__kit-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--theme-transparent);
+  border-radius: var(--rounded);
+  gap: var(--s-1-5);
+  padding-block: var(--s-1);
+  padding-inline: var(--s-1-5);
+}
+
 .analyzer__summary {
   background-color: var(--bg-lighter);
   border-radius: var(--rounded);

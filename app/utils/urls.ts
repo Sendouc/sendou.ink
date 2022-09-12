@@ -1,6 +1,11 @@
 import type { Badge, GearType } from "~/db/types";
 import type { ModeShort } from "~/modules/in-game-lists";
-import type { AbilityWithUnknown } from "~/modules/in-game-lists/types";
+import type {
+  AbilityWithUnknown,
+  MainWeaponId,
+  SpecialWeaponId,
+  SubWeaponId,
+} from "~/modules/in-game-lists/types";
 
 export const PLUS_SERVER_DISCORD_URL = "https://discord.gg/FW4dKrY";
 export const SENDOU_INK_DISCORD_URL = "https://discord.gg/sendou";
@@ -51,8 +56,12 @@ export const articlePreviewUrl = (slug: string) =>
 export const navIconUrl = (navItem: string) => `/img/layout/${navItem}`;
 export const gearImageUrl = (gearType: GearType, gearSplId: number) =>
   `/img/gear/${gearType.toLowerCase()}/${gearSplId}`;
-export const weaponImageUrl = (weaponSplId: number) =>
-  `/img/main-weapons/${weaponSplId}`;
+export const mainWeaponImageUrl = (mainWeaponSplId: MainWeaponId) =>
+  `/img/main-weapons/${mainWeaponSplId}`;
+export const subWeaponImageUrl = (subWeaponSplId: SubWeaponId) =>
+  `/img/sub-weapons/${subWeaponSplId}`;
+export const specialWeaponImageUrl = (specialWeaponSplId: SpecialWeaponId) =>
+  `/img/special-weapons/${specialWeaponSplId}`;
 export const abilityImageUrl = (ability: AbilityWithUnknown) =>
   `/img/abilities/${ability}`;
 export const modeImageUrl = (mode: ModeShort) => `/img/modes/${mode}`;

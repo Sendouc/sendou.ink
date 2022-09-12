@@ -1,12 +1,13 @@
 import type {
   Ability,
   MainWeaponId,
+  SpecialWeaponId,
   SubWeaponId,
 } from "~/modules/in-game-lists";
 
 export interface MainWeaponParams {
   subWeaponId: SubWeaponId;
-  specialWeaponId: number;
+  specialWeaponId: SpecialWeaponId;
   internalName: string;
   /** Replacing default values of the ability json for this specific weapon */
   overwrites?: Record<string, Partial<Record<"High" | "Mid" | "Low", number>>>;
@@ -110,8 +111,8 @@ type InkConsumePercentageType =
 
 export interface AnalyzedBuild {
   weapon: {
-    subWeaponSplId: number;
-    specialWeaponSplId: number;
+    subWeaponSplId: SubWeaponId;
+    specialWeaponSplId: SpecialWeaponId;
   };
   stats: {
     specialPoint: Stat;

@@ -28,6 +28,7 @@ import {
 import type {
   BuildAbilitiesTuple,
   BuildAbilitiesTupleWithUnknown,
+  MainWeaponId,
 } from "~/modules/in-game-lists/types";
 import { parseRequestFormData } from "~/utils/remix";
 import { modeImageUrl, userBuildsPage } from "~/utils/urls";
@@ -141,7 +142,7 @@ export const action: ActionFunction = async ({ request }) => {
     clothesGearSplId: data["CLOTHES[value]"],
     shoesGearSplId: data["SHOES[value]"],
     modes: modesShort.filter((mode) => data[mode]),
-    weaponSplIds: data["weapon[value]"],
+    weaponSplIds: data["weapon[value]"] as Array<MainWeaponId>,
     ownerId: user.id,
   };
   if (data.buildToEditId) {
