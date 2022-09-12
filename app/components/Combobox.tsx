@@ -200,7 +200,7 @@ export function WeaponCombobox({
 
   const idToWeapon = (id: typeof mainWeaponIds[number]) => ({
     value: String(id),
-    label: t(`${id}`),
+    label: t(`MAIN_${id}`),
     imgPath: weaponImageUrl(id),
   });
 
@@ -213,7 +213,7 @@ export function WeaponCombobox({
           ? idToWeapon(initialWeaponId)
           : undefined
       }
-      placeholder={t(`${mainWeaponIds[0]}`)}
+      placeholder={t(`MAIN_${mainWeaponIds[0]}`)}
       onChange={onChange}
       className={className}
       id={id}

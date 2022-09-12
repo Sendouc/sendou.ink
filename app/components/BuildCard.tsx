@@ -138,7 +138,7 @@ export function BuildCard({
         ))}
         {weapons.length === 1 && (
           <div className="build__weapon-text">
-            {t(`weapons:${weapons[0]!}` as any)}
+            {t(`weapons:MAIN_${weapons[0]!}` as any)}
           </div>
         )}
       </div>
