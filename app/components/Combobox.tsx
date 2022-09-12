@@ -208,7 +208,11 @@ export function WeaponCombobox({
     <Combobox
       inputName={inputName}
       options={mainWeaponIds.map(idToWeapon)}
-      initialValue={initialWeaponId ? idToWeapon(initialWeaponId) : undefined}
+      initialValue={
+        typeof initialWeaponId === "number"
+          ? idToWeapon(initialWeaponId)
+          : undefined
+      }
       placeholder={t(`${mainWeaponIds[0]}`)}
       onChange={onChange}
       className={className}

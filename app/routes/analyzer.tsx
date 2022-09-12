@@ -30,7 +30,7 @@ export default function BuildAnalyzerPage() {
         <div className="stack lg items-center">
           <div>
             <WeaponCombobox
-              inputName="weapon-1"
+              inputName="weapon"
               initialWeaponId={weaponId}
               onChange={(opt) =>
                 opt && setWeaponId(Number(opt.value) as MainWeaponId)
