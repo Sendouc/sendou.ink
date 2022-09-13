@@ -226,6 +226,10 @@
   gap: var(--s-2);
 }
 
+.layout__user-popover > button:focus {
+  outline: 2px solid var(--theme);
+}
+
 .layout__footer {
   display: flex;
   flex-direction: column;
