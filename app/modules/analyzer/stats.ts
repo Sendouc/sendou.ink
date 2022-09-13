@@ -2,7 +2,13 @@ import type {
   BuildAbilitiesTupleWithUnknown,
   MainWeaponId,
 } from "~/modules/in-game-lists";
-import type { AnalyzedBuild, StatFunctionInput } from "./types";
+import {
+  AnalyzedBuild,
+  InkConsumeType,
+  INK_CONSUME_TYPES,
+  MainWeaponParams,
+  StatFunctionInput,
+} from "./types";
 import invariant from "tiny-invariant";
 import {
   abilityPointsToEffects,
@@ -10,6 +16,7 @@ import {
   buildToAbilityPoints,
   weaponParams,
 } from "./utils";
+import { assertUnreachable } from "~/utils/types";
 
 export function buildStats({
   build,
@@ -36,23 +43,16 @@ export function buildStats({
 
   return {
     weapon: {
-      specialWeaponSplId: mainWeaponParams.specialWeaponId,
       subWeaponSplId: mainWeaponParams.subWeaponId,
+      specialWeaponSplId: mainWeaponParams.specialWeaponId,
     },
     stats: {
-      shotsPerInkTank: shotsPerInkTank(input),
-      inkCost: inkCost(input),
       specialPoint: specialPoint(input),
       specialSavedAfterDeath: specialSavedAfterDeath(input),
+      fullInkTankOptions: fullInkTankOptions(input),
       subWeaponWhiteInkFrames: subWeaponParams.InkRecoverStop,
     },
   };
-}
-
-function shotsPerInkTank(
-  args: StatFunctionInput
-): AnalyzedBuild["stats"]["shotsPerInkTank"] {
-  return {};
 }
 
 function specialPoint({
@@ -101,6 +101,127 @@ function specialSavedAfterDeath({
   };
 }
 
-function inkCost(args: StatFunctionInput): AnalyzedBuild["stats"]["inkCost"] {
-  return {};
+function fullInkTankOptions(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["fullInkTankOptions"] {
+  const result: AnalyzedBuild["stats"]["fullInkTankOptions"] = [];
+
+  const { inkConsume: subWeaponInkConsume, maxSubsFromFullInkTank } =
+    subWeaponConsume(args);
+
+  for (
+    let subsFromFullInkTank = 0;
+    subsFromFullInkTank <= maxSubsFromFullInkTank;
+    subsFromFullInkTank++
+  ) {
+    for (const type of INK_CONSUME_TYPES) {
+      const mainWeaponInkConsume = mainWeaponInkConsumeByType({
+        type,
+        ...args,
+      });
+
+      if (typeof mainWeaponInkConsume !== "number") continue;
+
+      result.push({
+        subsUsed: subsFromFullInkTank,
+        type,
+        value: effectToRounded(
+          (1 - subWeaponInkConsume * subsFromFullInkTank) / mainWeaponInkConsume
+        ),
+      });
+    }
+  }
+
+  return result;
+}
+
+function effectToRounded(effect: number) {
+  return Number(effect.toFixed(2));
+}
+
+function subWeaponConsume({
+  mainWeaponParams,
+  subWeaponParams,
+  abilityPoints,
+}: StatFunctionInput) {
+  const { effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints,
+      ability: "ISS",
+    }),
+    // xxx: placeholder fallback before prod
+    key: `ConsumeRt_Sub_Lv${subWeaponParams.SubInkSaveLv ?? 0}`,
+    weapon: mainWeaponParams,
+  });
+
+  // xxx: placeholder fallback before prod
+  const inkConsume = subWeaponParams.InkConsume ?? 0.6;
+
+  const inkConsumeAfterISS = inkConsume * effect;
+
+  return {
+    inkConsume: inkConsumeAfterISS,
+    maxSubsFromFullInkTank: Math.floor(1 / inkConsumeAfterISS),
+  };
+}
+
+function mainWeaponInkConsumeByType({
+  mainWeaponParams,
+  abilityPoints,
+  type,
+}: {
+  type: InkConsumeType;
+} & StatFunctionInput) {
+  const { effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints,
+      ability: "ISM",
+    }),
+    key: "ConsumeRt_Main",
+    weapon: mainWeaponParams,
+  });
+
+  // these keys are always mutually exclusive i.e. even if inkConsumeTypeToParamsKeys() returns many keys
+  // then weapon params of this weapon should only have one defined
+  for (const key of inkConsumeTypeToParamsKeys(type)) {
+    const value = mainWeaponParams[key];
+
+    if (typeof value === "number") {
+      return value * effect;
+    }
+  }
+
+  // not all weapons have all ink consume types
+  // i.e. blaster does not (hopefully) perform dualie dodge rolls
+  return;
+}
+
+function inkConsumeTypeToParamsKeys(
+  type: InkConsumeType
+): Array<keyof MainWeaponParams> {
+  switch (type) {
+    case "NORMAL":
+      return ["InkConsume"];
+    case "SWING":
+      return ["InkConsume_SwingParam", "InkConsume_WeaponSwingParam"];
+    case "TAP_SHOT":
+      return ["InkConsumeMinCharge", "InkConsumeMinCharge_ChargeParam"];
+    case "FULL_CHARGE":
+      return ["InkConsumeFullCharge", "InkConsumeFullCharge_ChargeParam"];
+    case "HORIZONTAL_SWING":
+      return ["InkConsume_WeaponWideSwingParam"];
+    case "VERTICAL_SWING":
+      return ["InkConsume_WeaponVerticalSwingParam"];
+    case "DUALIE_ROLL":
+      return ["InkConsume_SideStepParam"];
+    case "SHIELD_LAUNCH":
+      return ["InkConsumeUmbrella_WeaponShelterCanopyParam"];
+    case "ROLL_MAX":
+      return ["InkConsumeMaxPerFrame_WeaponRollParam"];
+    case "ROLL_MIN":
+      return ["InkConsumeMinPerFrame_WeaponRollParam"];
+    default: {
+      assertUnreachable(type);
+    }
+  }
 }

@@ -25,6 +25,7 @@ export default function BuildAnalyzerPage() {
   const { build, setBuild, mainWeaponId, setMainWeaponId, analyzed } =
     useAnalyzeBuild();
 
+  // xxx: remove before prod
   if (process.env.NODE_ENV === "production") return <Main>Coming soon :)</Main>;
 
   return (

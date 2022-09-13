@@ -143,14 +143,22 @@ function parametersToMainWeaponResult(
   };
 }
 
+// const LEGAL_SUB_INK_SAVE_LV = [0, 1, 2, 3];
 function parametersToSubWeaponResult(
   subWeapon: SubWeapon,
   params: any
 ): SubWeaponParams {
+  const SubInkSaveLv = params["SubWeaponSetting"]?.["SubInkSaveLv"];
+  // xxx: enable when all sub weapons have SubInkSaveLv's
+  // invariant(
+  //   LEGAL_SUB_INK_SAVE_LV.includes(SubInkSaveLv),
+  //   `Unknown SubInkSaveLv ${SubInkSaveLv} for ${subWeapon.__RowId}`
+  // );
+
   return {
     internalName: subWeapon.__RowId,
     // xxx: not every sub has this, why? e.g. Splash Wall
-    SubInkSaveLv: params["SubWeaponSetting"]?.["SubInkSaveLv"],
+    SubInkSaveLv,
     InkConsume: params["WeaponParam"]["InkConsume"],
     InkRecoverStop: params["WeaponParam"]["InkRecoverStop"],
     DistanceDamage: params["BlastParam"]?.["DistanceDamage"],

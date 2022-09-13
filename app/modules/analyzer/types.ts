@@ -54,7 +54,7 @@ export interface DistanceDamage {
 
 export interface SubWeaponParams {
   internalName: string;
-  SubInkSaveLv: number;
+  SubInkSaveLv: 0 | 1 | 2 | 3;
   /** How much ink one usage of the sub consumes */
   InkConsume: number;
   /** Amount of frames white ink (=no ink recovery during this time) takes */
@@ -95,19 +95,20 @@ export interface StatFunctionInput {
   abilityPoints: AbilityPoints;
 }
 
-type InkConsumeShotType =
-  | "NORMAL"
-  | "SWING"
-  | "VERTICAL_SWING"
-  | "HORIZONTAL_SWING"
-  | "TAP_SHOT"
-  | "FULL_CHARGE";
+export type InkConsumeType = typeof INK_CONSUME_TYPES[number];
 
-type InkConsumePercentageType =
-  | "SHIELD_LAUNCH"
-  | "DUALIE_ROLL"
-  | "ROLL_MIN"
-  | "ROLL_MAX";
+export const INK_CONSUME_TYPES = [
+  "NORMAL",
+  "SWING",
+  "VERTICAL_SWING",
+  "HORIZONTAL_SWING",
+  "TAP_SHOT",
+  "FULL_CHARGE",
+  "SHIELD_LAUNCH",
+  "DUALIE_ROLL",
+  "ROLL_MIN",
+  "ROLL_MAX",
+] as const;
 
 export interface AnalyzedBuild {
   weapon: {
@@ -118,9 +119,11 @@ export interface AnalyzedBuild {
     specialPoint: Stat;
     /** % of special charge saved when dying */
     specialSavedAfterDeath: Stat;
-    shotsPerInkTank: Partial<Record<InkConsumeShotType, Stat>>;
-    /** How much action costs (% of ink tank) */
-    inkCost?: Partial<Record<InkConsumePercentageType, Stat>>;
     subWeaponWhiteInkFrames?: number;
+    fullInkTankOptions: Array<{
+      subsUsed: number;
+      value: number;
+      type: InkConsumeType;
+    }>;
   };
 }
