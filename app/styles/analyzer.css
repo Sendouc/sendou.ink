@@ -99,6 +99,7 @@
 .analyzer__patch {
   background-color: var(--theme-transparent);
   border-radius: var(--rounded);
+  color: var(--text-lighter);
   font-size: var(--fonts-xxxs);
   font-weight: var(--bold);
   padding-block: var(--s-0-5);
