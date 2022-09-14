@@ -14,7 +14,7 @@ import { GearCombobox, WeaponCombobox } from "~/components/Combobox";
 import { Image } from "~/components/Image";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
-import { BUILD } from "~/constants";
+import { BUILD, EMPTY_BUILD } from "~/constants";
 import { db } from "~/db";
 import type { GearType } from "~/db/types";
 import { requireUser } from "~/modules/auth";
@@ -368,11 +368,7 @@ function Abilities() {
   const { buildToEdit } = useLoaderData<typeof loader>();
   const [abilities, setAbilities] =
     React.useState<BuildAbilitiesTupleWithUnknown>(
-      buildToEdit?.abilities ?? [
-        ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
-        ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
-        ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
-      ]
+      buildToEdit?.abilities ?? EMPTY_BUILD
     );
 
   return (
