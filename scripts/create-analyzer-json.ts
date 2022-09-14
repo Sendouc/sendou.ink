@@ -365,6 +365,7 @@ function writeTranslationsJsons(arr: TranslationArray) {
 }
 
 function logWeaponIds(weapons: Record<number, MainWeaponParams>) {
+  // eslint-disable-next-line no-console
   console.log(JSON.stringify(Object.keys(weapons).map(Number)));
 }
 

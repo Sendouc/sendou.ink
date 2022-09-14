@@ -2,13 +2,13 @@ import type {
   BuildAbilitiesTupleWithUnknown,
   MainWeaponId,
 } from "~/modules/in-game-lists";
-import {
+import type {
   AnalyzedBuild,
   InkConsumeType,
-  INK_CONSUME_TYPES,
   MainWeaponParams,
   StatFunctionInput,
 } from "./types";
+import { INK_CONSUME_TYPES } from "./types";
 import invariant from "tiny-invariant";
 import {
   abilityPointsToEffects,

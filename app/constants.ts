@@ -1,6 +1,6 @@
 import allTags from "~/routes/calendar/tags.json";
 import type { CalendarEventTag } from "./db/types";
-import { BuildAbilitiesTupleWithUnknown } from "./modules/in-game-lists";
+import type { BuildAbilitiesTupleWithUnknown } from "./modules/in-game-lists";
 
 export const TWEET_LENGTH_MAX_LENGTH = 280;
 export const DISCORD_MESSAGE_MAX_LENGTH = 2000;

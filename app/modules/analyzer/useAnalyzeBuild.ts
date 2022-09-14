@@ -7,7 +7,7 @@ import {
   mainWeaponIds,
   abilities,
 } from "../in-game-lists";
-import { AbilityType, AbilityWithUnknown } from "../in-game-lists/types";
+import type { AbilityType, AbilityWithUnknown } from "../in-game-lists/types";
 import { buildStats } from "./stats";
 
 const UNKNOWN_SHORT = "U";
