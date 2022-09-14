@@ -3,13 +3,6 @@ import fs from "node:fs";
 import path from "node:path";
 import invariant from "tiny-invariant";
 
-const WEAPON_IMAGES_PATH = path.join(
-  __dirname,
-  "..",
-  "public",
-  "img",
-  "weapons"
-);
 const GEAR_IMAGES_DIR_PATH = path.join(
   __dirname,
   "..",
@@ -17,33 +10,9 @@ const GEAR_IMAGES_DIR_PATH = path.join(
   "img",
   "gear"
 );
-const WEAPONS_JSON_PATH = path.join(__dirname, "output", "weapons.json");
 const GEAR_JSON_PATH = path.join(__dirname, "output", "gear.json");
 
 async function main() {
-  const weapons = JSON.parse(fs.readFileSync(WEAPONS_JSON_PATH, "utf8"));
-  const files = await fs.promises.readdir(WEAPON_IMAGES_PATH);
-
-  // weapons
-  for (const file of files) {
-    if (!file.startsWith("Path_Wst")) continue;
-
-    const weaponInternalName = file
-      .replace(".png", "")
-      .replace("Path_Wst_", "");
-
-    const weaponId = weapons.find(
-      (w: any) => w.internalName === weaponInternalName
-    ).id;
-    invariant(typeof weaponId === "number", weaponInternalName + " has no id");
-
-    fs.renameSync(
-      path.join(WEAPON_IMAGES_PATH, file),
-      path.join(WEAPON_IMAGES_PATH, `${weaponId}.png`)
-    );
-  }
-
-  // gear
   const gear = JSON.parse(fs.readFileSync(GEAR_JSON_PATH, "utf8"));
   for (const gearSlot of ["head", "clothes", "shoes"] as const) {
     const gearSlotDirPath = path.join(GEAR_IMAGES_DIR_PATH, gearSlot);
@@ -53,11 +22,17 @@ async function main() {
       gearSlot === "head" ? "Hed" : gearSlot === "shoes" ? "Shs" : "Clt";
 
     for (const file of files) {
+      // did we already replace the name
       if (
         !file.startsWith("Shs") &&
         !file.startsWith("Clt") &&
         !file.startsWith("Hed")
       ) {
+        continue;
+      }
+
+      if (file.endsWith(".webp")) {
+        fs.unlinkSync(path.join(gearSlotDirPath, file));
         continue;
       }
 
@@ -67,7 +42,11 @@ async function main() {
       const gearId = gear.find(
         (g: any) => g.internalName === internalName && g.type === type
       )?.id;
-      invariant(typeof gearId === "number", internalName + " has no id");
+
+      if (typeof gearId !== "number") {
+        fs.unlinkSync(path.join(gearSlotDirPath, file));
+        continue;
+      }
 
       fs.renameSync(
         path.join(gearSlotDirPath, file),

@@ -8,11 +8,7 @@
 // xxx: finish merging with create-weapon-json
 
 import type { SpecialWeaponId } from "~/modules/in-game-lists";
-import {
-  type SubWeaponId,
-  subWeaponIds,
-  mainWeaponIds,
-} from "~/modules/in-game-lists";
+import { type SubWeaponId, subWeaponIds } from "~/modules/in-game-lists";
 import weapons from "./dicts/WeaponInfoMain.json";
 // xxx: for example suction missing ink consume level, ink saver lvl... we are not considering default?
 import subWeapons from "./dicts/WeaponInfoSub.json";
