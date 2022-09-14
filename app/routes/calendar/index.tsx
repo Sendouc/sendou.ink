@@ -330,83 +330,74 @@ function EventsList({
               </div>
             </div>
             <div className="stack md">
-              {events.map((calendarEvent, i) => {
+              {events.map((calendarEvent) => {
                 return (
-                  <React.Fragment key={calendarEvent.eventDateId}>
-                    <section className="calendar__event main stack md">
-                      <div className="stack sm">
-                        <div
-                          className={clsx(
-                            "calendar__event__top-info-container",
-                            {
-                              "mt-4": i === 0,
-                            }
-                          )}
+                  <section
+                    key={calendarEvent.eventDateId}
+                    className="calendar__event main stack md"
+                  >
+                    <div className="stack sm">
+                      <div className="calendar__event__top-info-container">
+                        <time
+                          dateTime={databaseTimestampToDate(
+                            calendarEvent.startTime
+                          ).toISOString()}
+                          className="calendar__event__time"
                         >
-                          <time
-                            dateTime={databaseTimestampToDate(
-                              calendarEvent.startTime
-                            ).toISOString()}
-                            className="calendar__event__time"
-                          >
-                            {databaseTimestampToDate(
-                              calendarEvent.startTime
-                            ).toLocaleTimeString(i18n.language, {
-                              hour: "numeric",
-                              minute: "numeric",
-                            })}
-                          </time>
-                          <div className="calendar__event__author">
-                            From {discordFullName(calendarEvent)}
-                          </div>
-                        </div>
-                        <div className="stack xs">
-                          <Link
-                            to={String(calendarEvent.eventId)}
-                            data-cy="event-page-link"
-                          >
-                            <h2 className="calendar__event__title">
-                              {calendarEvent.name}{" "}
-                              {calendarEvent.nthAppearance > 1 ? (
-                                <span className="calendar__event__day">
-                                  {t("day", {
-                                    number: calendarEvent.nthAppearance,
-                                  })}
-                                </span>
-                              ) : null}
-                            </h2>
-                          </Link>
-                          <Tags
-                            tags={calendarEvent.tags}
-                            badges={calendarEvent.badgePrizes}
-                          />
+                          {databaseTimestampToDate(
+                            calendarEvent.startTime
+                          ).toLocaleTimeString(i18n.language, {
+                            hour: "numeric",
+                            minute: "numeric",
+                          })}
+                        </time>
+                        <div className="calendar__event__author">
+                          From {discordFullName(calendarEvent)}
                         </div>
                       </div>
-                      <div className="calendar__event__bottom-info-container">
-                        {calendarEvent.discordUrl ? (
-                          <LinkButton
-                            to={calendarEvent.discordUrl}
-                            variant="outlined"
-                            tiny
-                            isExternal
-                          >
-                            Discord
-                          </LinkButton>
-                        ) : null}
+                      <div className="stack xs">
+                        <Link
+                          to={String(calendarEvent.eventId)}
+                          data-cy="event-page-link"
+                        >
+                          <h2 className="calendar__event__title">
+                            {calendarEvent.name}{" "}
+                            {calendarEvent.nthAppearance > 1 ? (
+                              <span className="calendar__event__day">
+                                {t("day", {
+                                  number: calendarEvent.nthAppearance,
+                                })}
+                              </span>
+                            ) : null}
+                          </h2>
+                        </Link>
+                        <Tags
+                          tags={calendarEvent.tags}
+                          badges={calendarEvent.badgePrizes}
+                        />
+                      </div>
+                    </div>
+                    <div className="calendar__event__bottom-info-container">
+                      {calendarEvent.discordUrl ? (
                         <LinkButton
-                          to={calendarEvent.bracketUrl}
+                          to={calendarEvent.discordUrl}
                           variant="outlined"
                           tiny
                           isExternal
                         >
-                          {resolveBaseUrl(calendarEvent.bracketUrl)}
+                          Discord
                         </LinkButton>
-                      </div>
-                    </section>
-                    {i < events.length - 1 ? (
-                      <hr className="calendar__event__divider" />
-                    ) : null}
-                  </React.Fragment>
+                      ) : null}
+                      <LinkButton
+                        to={calendarEvent.bracketUrl}
+                        variant="outlined"
+                        tiny
+                        isExternal
+                      >
+                        {resolveBaseUrl(calendarEvent.bracketUrl)}
+                      </LinkButton>
+                    </div>
+                  </section>
                 );
               })}
             </div>

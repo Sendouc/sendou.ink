@@ -103,7 +103,12 @@
 .calendar__event {
   display: flex;
   flex-direction: column;
+  padding-top: var(--s-4);
   font-size: var(--fonts-lg);
+}
+
+.calendar__event + .calendar__event {
+  border-top: 2px solid var(--divider);
 }
 
 .calendar__event:last-child {
@@ -150,11 +155,6 @@
   align-items: center;
   font-size: var(--fonts-sm);
   gap: var(--s-2);
-}
-
-.calendar__event__divider {
-  width: 50rem;
-  margin: 0 auto;
 }
 
 .calendar__no-events {
