@@ -17,6 +17,8 @@ export interface MainWeaponParams {
   InkConsumeFullCharge?: number;
   /** How much ink one tap shot consumes? */
   InkConsumeMinCharge?: number;
+  /** How much ink one full charge of splatling consumes? */
+  InkConsumeFullChargeSplatling?: number;
   // xxx: morph with another swing one below
   /** How much ink one swing of brush consumes? */
   InkConsume_WeaponSwingParam?: number;
@@ -97,6 +99,7 @@ export const INK_CONSUME_TYPES = [
   "HORIZONTAL_SWING",
   "TAP_SHOT",
   "FULL_CHARGE",
+  "SPLATLING_CHARGE",
   "SHIELD_LAUNCH",
   "DUALIE_ROLL",
 ] as const;

@@ -208,6 +208,8 @@ function inkConsumeTypeToParamsKeys(
       return ["InkConsumeMinCharge"];
     case "FULL_CHARGE":
       return ["InkConsumeFullCharge", "InkConsumeFullCharge_ChargeParam"];
+    case "SPLATLING_CHARGE":
+      return ["InkConsumeFullChargeSplatling"];
     case "HORIZONTAL_SWING":
       return ["InkConsume_WeaponWideSwingParam"];
     case "VERTICAL_SWING":

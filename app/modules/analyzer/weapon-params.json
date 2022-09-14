@@ -270,31 +270,31 @@
       "SpecialPoint": 180,
       "subWeaponId": 2,
       "specialWeaponId": 11,
-      "InkConsume": 0.1725
+      "InkConsumeFullChargeSplatling": 0.1725
     },
     "4010": {
       "SpecialPoint": 200,
       "subWeaponId": 3,
       "specialWeaponId": 7,
-      "InkConsume": 0.225
+      "InkConsumeFullChargeSplatling": 0.225
     },
     "4020": {
       "SpecialPoint": 190,
       "subWeaponId": 7,
       "specialWeaponId": 6,
-      "InkConsume": 0.35
+      "InkConsumeFullChargeSplatling": 0.35
     },
     "4030": {
       "SpecialPoint": 200,
       "subWeaponId": 5,
       "specialWeaponId": 10,
-      "InkConsume": 0.25
+      "InkConsumeFullChargeSplatling": 0.25
     },
     "4040": {
       "SpecialPoint": 190,
       "subWeaponId": 9,
       "specialWeaponId": 5,
-      "InkConsume": 0.15
+      "InkConsumeFullChargeSplatling": 0.15
     },
     "5000": {
       "SpecialPoint": 180,

@@ -98,14 +98,25 @@ function parametersToMainWeaponResult(
   weapon: MainWeapon,
   params: any
 ): MainWeaponParams {
+  const isSplatling =
+    params["WeaponParam"]?.["$type"] === "spl__WeaponSpinnerParam";
+
+  const InkConsume = !isSplatling
+    ? params["WeaponParam"]?.["InkConsume"]
+    : undefined;
+  const InkConsumeFullChargeSplatling = isSplatling
+    ? params["WeaponParam"]?.["InkConsume"]
+    : undefined;
+
   return {
     SpecialPoint: weapon.SpecialPoint,
     subWeaponId: resolveSubWeaponId(weapon),
     specialWeaponId: resolveSpecialWeaponId(weapon),
     overwrites: resolveOverwrites(params),
-    InkConsume: params["WeaponParam"]?.["InkConsume"],
+    InkConsume,
     InkConsumeFullCharge: params["WeaponParam"]?.["InkConsumeFullCharge"],
     InkConsumeMinCharge: params["WeaponParam"]?.["InkConsumeMinCharge"],
+    InkConsumeFullChargeSplatling,
     InkConsume_WeaponSwingParam: params["WeaponSwingParam"]?.["InkConsume"],
     InkConsume_WeaponVerticalSwingParam:
       params["WeaponVerticalSwingParam"]?.["InkConsume"],
