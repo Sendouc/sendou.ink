@@ -4,6 +4,7 @@ export type {
   SubWeaponParams,
   Stat,
   AnalyzedBuild,
+  FullInkTankOption,
 } from "./types";
 
 export { useAnalyzeBuild } from "./useAnalyzeBuild";

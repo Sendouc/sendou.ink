@@ -21,10 +21,6 @@ export interface MainWeaponParams {
   // xxx: morph with another swing one below
   /** How much ink one swing of brush consumes? */
   InkConsume_WeaponSwingParam?: number;
-  /** Lower bound of ink consumed per frame when rolling with roller/brush */
-  InkConsumeMaxPerFrame_WeaponRollParam?: number;
-  /** Upper bound of ink consumed per frame when rolling with roller/brush */
-  InkConsumeMinPerFrame_WeaponRollParam?: number;
   /** How much ink one vertical swing of roller consumes? */
   InkConsume_WeaponVerticalSwingParam?: number;
   /** How much ink one horizontal swing of roller consumes? */
@@ -38,9 +34,8 @@ export interface MainWeaponParams {
   InkConsume_WeaponShelterShotgunParam?: number;
   /** How much ink a dualie dodge roll consumes? */
   InkConsume_SideStepParam?: number;
-  // xxx: some explanations... the below two are for splatana/bow
+  /** How much ink a fully charger Splatana shot consumes? */
   InkConsumeFullCharge_ChargeParam?: number;
-  InkConsumeMinCharge_ChargeParam?: number;
   //InkConsumeMidCharge_ChargeParam?: number;
   // xxx: what are these?
   // SpeedInkConsumeMax_WeaponRollParam?: number;
@@ -106,9 +101,13 @@ export const INK_CONSUME_TYPES = [
   "FULL_CHARGE",
   "SHIELD_LAUNCH",
   "DUALIE_ROLL",
-  "ROLL_MIN",
-  "ROLL_MAX",
 ] as const;
+
+export interface FullInkTankOption {
+  subsUsed: number;
+  value: number;
+  type: InkConsumeType;
+}
 
 export interface AnalyzedBuild {
   weapon: {
@@ -120,10 +119,6 @@ export interface AnalyzedBuild {
     /** % of special charge saved when dying */
     specialSavedAfterDeath: Stat;
     subWeaponWhiteInkFrames?: number;
-    fullInkTankOptions: Array<{
-      subsUsed: number;
-      value: number;
-      type: InkConsumeType;
-    }>;
+    fullInkTankOptions: Array<FullInkTankOption>;
   };
 }

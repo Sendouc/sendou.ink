@@ -109,10 +109,6 @@ function parametersToMainWeaponResult(
     InkConsumeFullCharge: params["WeaponParam"]?.["InkConsumeFullCharge"],
     InkConsumeMinCharge: params["WeaponParam"]?.["InkConsumeMinCharge"],
     InkConsume_WeaponSwingParam: params["WeaponSwingParam"]?.["InkConsume"],
-    InkConsumeMaxPerFrame_WeaponRollParam:
-      params["WeaponRollParam"]?.["InkConsumeMaxPerFrame"],
-    InkConsumeMinPerFrame_WeaponRollParam:
-      params["WeaponRollParam"]?.["InkConsumeMinPerFrame"],
     InkConsume_WeaponVerticalSwingParam:
       params["WeaponVerticalSwingParam"]?.["InkConsume"],
     InkConsume_WeaponWideSwingParam:
@@ -130,13 +126,6 @@ function parametersToMainWeaponResult(
       ] ??
       params["spl__WeaponStringerParam"]?.["ChargeParam"]?.[
         "InkConsumeFullCharge"
-      ],
-    InkConsumeMinCharge_ChargeParam:
-      params["spl__WeaponSaberParam"]?.["ChargeParam"]?.[
-        "InkConsumeMinCharge"
-      ] ??
-      params["spl__WeaponStringerParam"]?.["ChargeParam"]?.[
-        "InkConsumeMinCharge"
       ],
   };
 }

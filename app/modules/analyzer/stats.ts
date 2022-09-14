@@ -205,7 +205,7 @@ function inkConsumeTypeToParamsKeys(
     case "SWING":
       return ["InkConsume_SwingParam", "InkConsume_WeaponSwingParam"];
     case "TAP_SHOT":
-      return ["InkConsumeMinCharge", "InkConsumeMinCharge_ChargeParam"];
+      return ["InkConsumeMinCharge"];
     case "FULL_CHARGE":
       return ["InkConsumeFullCharge", "InkConsumeFullCharge_ChargeParam"];
     case "HORIZONTAL_SWING":
@@ -216,10 +216,6 @@ function inkConsumeTypeToParamsKeys(
       return ["InkConsume_SideStepParam"];
     case "SHIELD_LAUNCH":
       return ["InkConsumeUmbrella_WeaponShelterCanopyParam"];
-    case "ROLL_MAX":
-      return ["InkConsumeMaxPerFrame_WeaponRollParam"];
-    case "ROLL_MIN":
-      return ["InkConsumeMinPerFrame_WeaponRollParam"];
     default: {
       assertUnreachable(type);
     }

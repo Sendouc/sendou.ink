@@ -57,3 +57,18 @@
 .analyzer__stat-card__value {
   font-size: var(--fonts-xs);
 }
+
+.analyzer__consumption-table-container {
+  width: 100%;
+  padding: var(--s-3);
+  background-color: var(--bg-darker);
+  border-radius: var(--rounded);
+  margin-block-start: var(--s-4);
+  padding-block: var(--s-2);
+}
+
+.analyzer__consumption-table-explanation {
+  margin-top: var(--s-2);
+  color: var(--text-lighter);
+  font-size: var(--fonts-xxs);
+}

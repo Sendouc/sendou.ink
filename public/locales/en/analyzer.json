@@ -1,4 +1,14 @@
 {
   "stat.specialPoints": "Points to special",
-  "stat.specialLost": "Special lost when splatted"
+  "stat.specialLost": "Special lost when splatted",
+  "stat.consumption.bomb": "Bombs",
+  "stat.consumption.NORMAL": "Shots",
+  "stat.consumption.SWING": "Swings",
+  "stat.consumption.VERTICAL_SWING": "Vertical swings",
+  "stat.consumption.HORIZONTAL_SWING": "Horizontal swings",
+  "stat.consumption.TAP_SHOT": "Tap shots",
+  "stat.consumption.FULL_CHARGE": "Fully charged shots",
+  "stat.consumption.SHIELD_LAUNCH": "Shield launches",
+  "stat.consumption.DUALIE_ROLL": "Dodge Rolls",
+  "consumptionExplanation": "This chart shows the amount of actions left to perform with main weapon after using sub 0-{{maxSubsToUse}} times. Max amount of consecutive subs to use with full ink tank is {{maxSubsToUse}}."
 }

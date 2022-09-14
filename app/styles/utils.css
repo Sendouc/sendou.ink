@@ -30,6 +30,10 @@
   color: var(--theme-success);
 }
 
+.bg-darker-important {
+  background-color: var(--bg-darker) !important;
+}
+
 .font-semi-bold {
   font-weight: var(--semi-bold);
 }

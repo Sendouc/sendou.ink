@@ -6,7 +6,7 @@ import { WeaponCombobox } from "~/components/Combobox";
 import { Main } from "~/components/Main";
 import type { Stat } from "~/modules/analyzer";
 import { useAnalyzeBuild } from "~/modules/analyzer";
-import type { AnalyzedBuild } from "~/modules/analyzer";
+import type { AnalyzedBuild, FullInkTankOption } from "~/modules/analyzer";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import styles from "~/styles/analyzer.css";
 import { Image } from "~/components/Image";
@@ -33,19 +33,21 @@ export default function BuildAnalyzerPage() {
       <div className="analyzer__container">
         <div className="stack lg items-center">
           <div className="stack sm items-center w-full">
-            <WeaponCombobox
-              inputName="weapon"
-              initialWeaponId={mainWeaponId}
-              onChange={(opt) =>
-                opt && setMainWeaponId(Number(opt.value) as MainWeaponId)
-              }
-              className="w-full-important"
-            />
+            <div className="w-full">
+              <WeaponCombobox
+                inputName="weapon"
+                initialWeaponId={mainWeaponId}
+                onChange={(opt) =>
+                  opt && setMainWeaponId(Number(opt.value) as MainWeaponId)
+                }
+                className="w-full-important"
+              />
+            </div>
             <KitCards analyzed={analyzed} />
           </div>
           <AbilitiesSelector selectedAbilities={build} onChange={setBuild} />
         </div>
-        <div>
+        <div className="stack md">
           <StatCategory title="Special">
             <StatCard
               stat={analyzed.stats.specialPoint}
@@ -57,6 +59,12 @@ export default function BuildAnalyzerPage() {
               title={t("stat.specialLost")}
               suffix="%"
             />
+          </StatCategory>
+          <StatCategory
+            title="Actions per ink tank"
+            containerClassName="analyzer__consumption-table-container"
+          >
+            <ConsumptionTable options={analyzed.stats.fullInkTankOptions} />
           </StatCategory>
         </div>
       </div>
@@ -94,18 +102,21 @@ function KitCards({ analyzed }: { analyzed: AnalyzedBuild }) {
 function StatCategory({
   title,
   children,
+  containerClassName = "analyzer__stat-collection",
 }: {
   title: string;
   children: React.ReactNode;
+  containerClassName?: string;
 }) {
   return (
     <details>
       <summary className="analyzer__summary">{title}</summary>
-      <div className="analyzer__stat-collection">{children}</div>
+      <div className={containerClassName}>{children}</div>
     </details>
   );
 }
 
+// xxx: cobra kai style
 function StatCard({
   title,
   stat,
@@ -134,5 +145,43 @@ function StatCard({
         <Ability ability={stat.modifiedBy} size="TINY" />
       </div>
     </div>
+  );
+}
+
+function ConsumptionTable({ options }: { options: Array<FullInkTankOption> }) {
+  const { t } = useTranslation("analyzer");
+  const maxSubsToUse = Math.max(...options.map((opt) => opt.subsUsed));
+  const types = Array.from(new Set(options.map((opt) => opt.type)));
+
+  return (
+    <>
+      <table>
+        <thead>
+          <tr>
+            <th>{t("stat.consumption.bomb")}</th>
+            {types.map((type) => (
+              <th key={type}>{t(`stat.consumption.${type}`)}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {new Array(maxSubsToUse + 1).fill(null).map((_, subsUsed) => {
+            return (
+              <tr key={subsUsed} className="bg-darker-important">
+                <td>×{subsUsed}</td>
+                {options
+                  .filter((opt) => opt.subsUsed === subsUsed)
+                  .map((opt) => {
+                    return <td key={opt.type}>{opt.value}</td>;
+                  })}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+      <div className="analyzer__consumption-table-explanation">
+        {t("consumptionExplanation", { maxSubsToUse })}
+      </div>
+    </>
   );
 }
