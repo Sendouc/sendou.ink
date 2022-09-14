@@ -4,70 +4,77 @@
       "SpecialPoint": 180,
       "subWeaponId": 6,
       "specialWeaponId": 11,
-      "internalName": "Shooter_Short",
+      "internalName": "Shooter_Short_00",
       "InkConsume": 0.008
     },
     "10": {
       "SpecialPoint": 180,
       "subWeaponId": 0,
       "specialWeaponId": 2,
-      "internalName": "Shooter_First",
+      "internalName": "Shooter_First_00",
       "InkConsume": 0.0043
     },
     "20": {
       "SpecialPoint": 200,
       "subWeaponId": 2,
       "specialWeaponId": 12,
-      "internalName": "Shooter_Precision",
+      "internalName": "Shooter_Precision_00",
       "InkConsume": 0.008
     },
     "30": {
       "SpecialPoint": 200,
       "subWeaponId": 5,
       "specialWeaponId": 13,
-      "internalName": "Shooter_Blaze",
+      "internalName": "Shooter_Blaze_00",
       "InkConsume": 0.0055
     },
     "40": {
       "SpecialPoint": 200,
       "subWeaponId": 1,
       "specialWeaponId": 1,
-      "internalName": "Shooter_Normal",
+      "internalName": "Shooter_Normal_00",
+      "InkConsume": 0.0092
+    },
+    "45": {
+      "SpecialPoint": 200,
+      "subWeaponId": 1,
+      "specialWeaponId": 1,
+      "internalName": "Shooter_Normal_H",
       "InkConsume": 0.0092
     },
     "50": {
       "SpecialPoint": 200,
       "subWeaponId": 4,
       "specialWeaponId": 9,
-      "internalName": "Shooter_Gravity",
+      "internalName": "Shooter_Gravity_00",
       "InkConsume": 0.013
     },
     "60": {
       "SpecialPoint": 200,
       "subWeaponId": 1,
       "specialWeaponId": 15,
-      "internalName": "Shooter_QuickMiddle",
+      "internalName": "Shooter_QuickMiddle_00",
       "InkConsume": 0.008
     },
     "70": {
       "SpecialPoint": 200,
       "subWeaponId": 12,
       "specialWeaponId": 12,
-      "internalName": "Shooter_Expert",
+      "internalName": "Shooter_Expert_00",
       "InkConsume": 0.02
     },
     "80": {
       "SpecialPoint": 200,
       "subWeaponId": 3,
       "specialWeaponId": 8,
-      "internalName": "Shooter_Heavy",
+      "internalName": "Shooter_Heavy_00",
       "InkConsume": 0.025
     },
     "90": {
       "SpecialPoint": 200,
       "subWeaponId": 12,
       "specialWeaponId": 8,
-      "internalName": "Shooter_Long",
+      "internalName": "Shooter_Long_00",
       "InkConsume": 0.016
     },
     "200": {
@@ -79,7 +86,7 @@
           "Mid": 0.5
         }
       },
-      "internalName": "Blaster_Short",
+      "internalName": "Blaster_Short_00",
       "InkConsume": 0.075
     },
     "210": {
@@ -91,7 +98,7 @@
           "Mid": 0.5
         }
       },
-      "internalName": "Blaster_Middle",
+      "internalName": "Blaster_Middle_00",
       "InkConsume": 0.1
     },
     "220": {
@@ -103,7 +110,7 @@
           "Mid": 0.5
         }
       },
-      "internalName": "Blaster_Long",
+      "internalName": "Blaster_Long_00",
       "InkConsume": 0.11
     },
     "230": {
@@ -115,7 +122,7 @@
           "Mid": 0.5
         }
       },
-      "internalName": "Blaster_LightShort",
+      "internalName": "Blaster_LightShort_00",
       "InkConsume": 0.04
     },
     "240": {
@@ -127,7 +134,7 @@
           "Mid": 0.5
         }
       },
-      "internalName": "Blaster_Light",
+      "internalName": "Blaster_Light_00",
       "InkConsume": 0.07
     },
     "250": {
@@ -139,67 +146,56 @@
           "Mid": 0.5
         }
       },
-      "internalName": "Blaster_LightLong",
+      "internalName": "Blaster_LightLong_00",
       "InkConsume": 0.08
     },
     "300": {
       "SpecialPoint": 200,
       "subWeaponId": 6,
       "specialWeaponId": 12,
-      "internalName": "Shooter_TripleQuick",
+      "internalName": "Shooter_TripleQuick_00",
       "InkConsume": 0.0115
     },
     "310": {
       "SpecialPoint": 200,
       "subWeaponId": 9,
       "specialWeaponId": 15,
-      "internalName": "Shooter_TripleMiddle",
+      "internalName": "Shooter_TripleMiddle_00",
       "InkConsume": 0.0225
     },
     "400": {
       "SpecialPoint": 200,
       "subWeaponId": 4,
       "specialWeaponId": 1,
-      "internalName": "Shooter_Flash",
+      "internalName": "Shooter_Flash_00",
       "InkConsume": 0.022
     },
     "1000": {
       "SpecialPoint": 180,
       "subWeaponId": 7,
       "specialWeaponId": 3,
-      "internalName": "Roller_Compact",
-      "InkConsumeMaxPerFrame_WeaponRollParam": 0.001,
-      "InkConsumeMinPerFrame_WeaponRollParam": 0.0002,
-      "InkConsume_WeaponVerticalSwingParam": 0.0396,
-      "InkConsume_WeaponWideSwingParam": 0.0396
+      "internalName": "Roller_Compact_00",
+      "InkConsume_WeaponSwingParam": 0.0396
     },
     "1010": {
       "SpecialPoint": 180,
       "subWeaponId": 6,
       "specialWeaponId": 2,
-      "internalName": "Roller_Normal",
-      "InkConsumeMaxPerFrame_WeaponRollParam": 0.001,
-      "InkConsumeMinPerFrame_WeaponRollParam": 0.0002,
-      "InkConsume_WeaponVerticalSwingParam": 0.085,
-      "InkConsume_WeaponWideSwingParam": 0.085
+      "internalName": "Roller_Normal_00",
+      "InkConsume_WeaponSwingParam": 0.085
     },
     "1020": {
       "SpecialPoint": 190,
       "subWeaponId": 3,
       "specialWeaponId": 15,
-      "internalName": "Roller_Heavy",
-      "InkConsumeMaxPerFrame_WeaponRollParam": 0.001,
-      "InkConsumeMinPerFrame_WeaponRollParam": 0.0002,
-      "InkConsume_WeaponVerticalSwingParam": 0.18,
-      "InkConsume_WeaponWideSwingParam": 0.18
+      "internalName": "Roller_Heavy_00",
+      "InkConsume_WeaponSwingParam": 0.18
     },
     "1030": {
       "SpecialPoint": 200,
       "subWeaponId": 10,
       "specialWeaponId": 4,
-      "internalName": "Roller_Hunter",
-      "InkConsumeMaxPerFrame_WeaponRollParam": 0.001,
-      "InkConsumeMinPerFrame_WeaponRollParam": 0.0002,
+      "internalName": "Roller_Hunter_00",
       "InkConsume_WeaponVerticalSwingParam": 0.12,
       "InkConsume_WeaponWideSwingParam": 0.08
     },
@@ -207,25 +203,21 @@
       "SpecialPoint": 180,
       "subWeaponId": 0,
       "specialWeaponId": 9,
-      "internalName": "Brush_Mini",
-      "InkConsume_WeaponSwingParam": 0.02,
-      "InkConsumeMaxPerFrame_WeaponRollParam": 0.00135,
-      "InkConsumeMinPerFrame_WeaponRollParam": 0.00135
+      "internalName": "Brush_Mini_00",
+      "InkConsume_WeaponSwingParam": 0.02
     },
     "1110": {
       "SpecialPoint": 200,
       "subWeaponId": 1,
       "specialWeaponId": 3,
-      "internalName": "Brush_Normal",
-      "InkConsume_WeaponSwingParam": 0.032,
-      "InkConsumeMaxPerFrame_WeaponRollParam": 0.00162,
-      "InkConsumeMinPerFrame_WeaponRollParam": 0.00162
+      "internalName": "Brush_Normal_00",
+      "InkConsume_WeaponSwingParam": 0.032
     },
     "2000": {
       "SpecialPoint": 190,
       "subWeaponId": 9,
       "specialWeaponId": 2,
-      "internalName": "Charger_Quick",
+      "internalName": "Charger_Quick_00",
       "InkConsumeFullCharge": 0.105,
       "InkConsumeMinCharge": 0.018667
     },
@@ -233,7 +225,7 @@
       "SpecialPoint": 200,
       "subWeaponId": 0,
       "specialWeaponId": 8,
-      "internalName": "Charger_Normal",
+      "internalName": "Charger_Normal_00",
       "InkConsumeFullCharge": 0.18,
       "InkConsumeMinCharge": 0.0225
     },
@@ -241,7 +233,7 @@
       "SpecialPoint": 200,
       "subWeaponId": 0,
       "specialWeaponId": 8,
-      "internalName": "Charger_NormalScope",
+      "internalName": "Charger_NormalScope_00",
       "InkConsumeFullCharge": 0.18,
       "InkConsumeMinCharge": 0.0225
     },
@@ -249,7 +241,7 @@
       "SpecialPoint": 200,
       "subWeaponId": 10,
       "specialWeaponId": 7,
-      "internalName": "Charger_Long",
+      "internalName": "Charger_Long_00",
       "InkConsumeFullCharge": 0.25,
       "InkConsumeMinCharge": 0.0225
     },
@@ -257,7 +249,7 @@
       "SpecialPoint": 200,
       "subWeaponId": 10,
       "specialWeaponId": 7,
-      "internalName": "Charger_LongScope",
+      "internalName": "Charger_LongScope_00",
       "InkConsumeFullCharge": 0.25,
       "InkConsumeMinCharge": 0.0225
     },
@@ -265,7 +257,7 @@
       "SpecialPoint": 200,
       "subWeaponId": 7,
       "specialWeaponId": 9,
-      "internalName": "Charger_Light",
+      "internalName": "Charger_Light_00",
       "InkConsumeFullCharge": 0.084,
       "InkConsumeMinCharge": 0.0336
     },
@@ -273,7 +265,7 @@
       "SpecialPoint": 200,
       "subWeaponId": 13,
       "specialWeaponId": 4,
-      "internalName": "Charger_Keeper",
+      "internalName": "Charger_Keeper_00",
       "InkConsumeFullCharge": 0.15,
       "InkConsumeMinCharge": 0.02
     },
@@ -281,77 +273,77 @@
       "SpecialPoint": 200,
       "subWeaponId": 0,
       "specialWeaponId": 14,
-      "internalName": "Slosher_Strong",
+      "internalName": "Slosher_Strong_00",
       "InkConsume": 0.07
     },
     "3010": {
       "SpecialPoint": 190,
       "subWeaponId": 11,
       "specialWeaponId": 10,
-      "internalName": "Slosher_Diffusion",
+      "internalName": "Slosher_Diffusion_00",
       "InkConsume": 0.06
     },
     "3020": {
       "SpecialPoint": 200,
       "subWeaponId": 5,
       "specialWeaponId": 6,
-      "internalName": "Slosher_Launcher",
+      "internalName": "Slosher_Launcher_00",
       "InkConsume": 0.084
     },
     "3030": {
       "SpecialPoint": 190,
       "subWeaponId": 3,
       "specialWeaponId": 5,
-      "internalName": "Slosher_Bathtub",
+      "internalName": "Slosher_Bathtub_00",
       "InkConsume": 0.08
     },
     "3040": {
       "SpecialPoint": 200,
       "subWeaponId": 9,
       "specialWeaponId": 5,
-      "internalName": "Slosher_Washtub",
+      "internalName": "Slosher_Washtub_00",
       "InkConsume": 0.117
     },
     "4000": {
       "SpecialPoint": 180,
       "subWeaponId": 2,
       "specialWeaponId": 11,
-      "internalName": "Spinner_Quick",
+      "internalName": "Spinner_Quick_00",
       "InkConsume": 0.1725
     },
     "4010": {
       "SpecialPoint": 200,
       "subWeaponId": 3,
       "specialWeaponId": 7,
-      "internalName": "Spinner_Standard",
+      "internalName": "Spinner_Standard_00",
       "InkConsume": 0.225
     },
     "4020": {
       "SpecialPoint": 190,
       "subWeaponId": 7,
       "specialWeaponId": 6,
-      "internalName": "Spinner_Hyper",
+      "internalName": "Spinner_Hyper_00",
       "InkConsume": 0.35
     },
     "4030": {
       "SpecialPoint": 200,
       "subWeaponId": 5,
       "specialWeaponId": 10,
-      "internalName": "Spinner_Downpour",
+      "internalName": "Spinner_Downpour_00",
       "InkConsume": 0.25
     },
     "4040": {
       "SpecialPoint": 190,
       "subWeaponId": 9,
       "specialWeaponId": 5,
-      "internalName": "Spinner_Serein",
+      "internalName": "Spinner_Serein_00",
       "InkConsume": 0.15
     },
     "5000": {
       "SpecialPoint": 180,
       "subWeaponId": 8,
       "specialWeaponId": 15,
-      "internalName": "Maneuver_Short",
+      "internalName": "Maneuver_Short_00",
       "InkConsume": 0.00663,
       "InkConsume_SideStepParam": 0.05
     },
@@ -359,7 +351,7 @@
       "SpecialPoint": 200,
       "subWeaponId": 1,
       "specialWeaponId": 12,
-      "internalName": "Maneuver_Normal",
+      "internalName": "Maneuver_Normal_00",
       "InkConsume": 0.0072,
       "InkConsume_SideStepParam": 0.07
     },
@@ -367,7 +359,7 @@
       "SpecialPoint": 180,
       "subWeaponId": 4,
       "specialWeaponId": 6,
-      "internalName": "Maneuver_Gallon",
+      "internalName": "Maneuver_Gallon_00",
       "InkConsume": 0.014,
       "InkConsume_SideStepParam": 0.08
     },
@@ -375,7 +367,7 @@
       "SpecialPoint": 200,
       "subWeaponId": 0,
       "specialWeaponId": 7,
-      "internalName": "Maneuver_Dual",
+      "internalName": "Maneuver_Dual_00",
       "InkConsume": 0.012,
       "InkConsume_SideStepParam": 0.08
     },
@@ -383,7 +375,7 @@
       "SpecialPoint": 200,
       "subWeaponId": 7,
       "specialWeaponId": 13,
-      "internalName": "Maneuver_Stepper",
+      "internalName": "Maneuver_Stepper_00",
       "InkConsume": 0.008,
       "InkConsume_SideStepParam": 0.03
     },
@@ -391,14 +383,14 @@
       "SpecialPoint": 200,
       "subWeaponId": 3,
       "specialWeaponId": 14,
-      "internalName": "Shelter_Normal",
+      "internalName": "Shelter_Normal_00",
       "InkConsumeUmbrella_WeaponShelterCanopyParam": 0.3
     },
     "6010": {
       "SpecialPoint": 190,
       "subWeaponId": 8,
       "specialWeaponId": 8,
-      "internalName": "Shelter_Wide",
+      "internalName": "Shelter_Wide_00",
       "InkConsumeUmbrella_WeaponShelterCanopyParam": 0.3,
       "InkConsume_WeaponShelterShotgunParam": 0.11
     },
@@ -406,7 +398,7 @@
       "SpecialPoint": 180,
       "subWeaponId": 10,
       "specialWeaponId": 13,
-      "internalName": "Shelter_Compact",
+      "internalName": "Shelter_Compact_00",
       "InkConsumeUmbrella_WeaponShelterCanopyParam": 0,
       "InkConsume_WeaponShelterShotgunParam": 0.04
     },
@@ -414,27 +406,31 @@
       "SpecialPoint": 200,
       "subWeaponId": 11,
       "specialWeaponId": 9,
-      "internalName": "Stringer_Normal",
-      "InkConsumeFullCharge_ChargeParam": 0.085,
-      "InkConsumeMinCharge_ChargeParam": 0.05
+      "internalName": "Stringer_Normal_00",
+      "InkConsumeFullCharge_ChargeParam": 0.085
+    },
+    "7020": {
+      "SpecialPoint": 200,
+      "subWeaponId": 6,
+      "specialWeaponId": 4,
+      "internalName": "Stringer_Short_00",
+      "InkConsumeFullCharge_ChargeParam": 0.065
     },
     "8000": {
       "SpecialPoint": 200,
       "subWeaponId": 2,
       "specialWeaponId": 3,
-      "internalName": "Saber_Normal",
+      "internalName": "Saber_Normal_00",
       "InkConsume_SwingParam": 0.04,
-      "InkConsumeFullCharge_ChargeParam": 0.09,
-      "InkConsumeMinCharge_ChargeParam": 0.035
+      "InkConsumeFullCharge_ChargeParam": 0.09
     },
     "8010": {
       "SpecialPoint": 180,
       "subWeaponId": 13,
       "specialWeaponId": 11,
-      "internalName": "Saber_Lite",
+      "internalName": "Saber_Lite_00",
       "InkConsume_SwingParam": 0.03,
-      "InkConsumeFullCharge_ChargeParam": 0.06,
-      "InkConsumeMinCharge_ChargeParam": 0.035
+      "InkConsumeFullCharge_ChargeParam": 0.06
     }
   },
   "subWeapons": {

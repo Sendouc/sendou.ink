@@ -39,7 +39,9 @@ async function main() {
     if (mainWeaponShouldBeSkipped(weapon)) continue;
 
     const rawParams = loadWeaponParamsObject(weapon);
-    const params = parametersToMainWeaponResult(weapon, rawParams);
+    const params = combineSwingsIfSame(
+      parametersToMainWeaponResult(weapon, rawParams)
+    );
 
     translationsToArray({
       arr: translations,
@@ -127,6 +129,23 @@ function parametersToMainWeaponResult(
       params["spl__WeaponStringerParam"]?.["ChargeParam"]?.[
         "InkConsumeFullCharge"
       ],
+  };
+}
+
+function combineSwingsIfSame(params: MainWeaponParams): MainWeaponParams {
+  if (
+    !params.InkConsume_WeaponVerticalSwingParam ||
+    params.InkConsume_WeaponVerticalSwingParam !==
+      params.InkConsume_WeaponWideSwingParam
+  ) {
+    return params;
+  }
+
+  return {
+    ...params,
+    InkConsume_WeaponSwingParam: params.InkConsume_WeaponVerticalSwingParam,
+    InkConsume_WeaponVerticalSwingParam: undefined,
+    InkConsume_WeaponWideSwingParam: undefined,
   };
 }
 
