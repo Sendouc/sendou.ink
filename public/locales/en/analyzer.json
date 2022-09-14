@@ -1,7 +1,6 @@
 {
   "stat.specialPoints": "Points to special",
   "stat.specialLost": "Special lost when splatted",
-  "stat.consumption.bomb": "Bombs",
   "stat.consumption.NORMAL": "Shots",
   "stat.consumption.SWING": "Swings",
   "stat.consumption.VERTICAL_SWING": "Vertical swings",

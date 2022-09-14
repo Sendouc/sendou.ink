@@ -7,7 +7,7 @@ import { Main } from "~/components/Main";
 import type { Stat } from "~/modules/analyzer";
 import { useAnalyzeBuild } from "~/modules/analyzer";
 import type { AnalyzedBuild, FullInkTankOption } from "~/modules/analyzer";
-import type { MainWeaponId } from "~/modules/in-game-lists";
+import type { MainWeaponId, SubWeaponId } from "~/modules/in-game-lists";
 import styles from "~/styles/analyzer.css";
 import { Image } from "~/components/Image";
 import { specialWeaponImageUrl, subWeaponImageUrl } from "~/utils/urls";
@@ -64,7 +64,10 @@ export default function BuildAnalyzerPage() {
             title="Actions per ink tank"
             containerClassName="analyzer__consumption-table-container"
           >
-            <ConsumptionTable options={analyzed.stats.fullInkTankOptions} />
+            <ConsumptionTable
+              options={analyzed.stats.fullInkTankOptions}
+              subWeaponId={analyzed.weapon.subWeaponSplId}
+            />
           </StatCategory>
         </div>
       </div>
@@ -148,8 +151,14 @@ function StatCard({
   );
 }
 
-function ConsumptionTable({ options }: { options: Array<FullInkTankOption> }) {
-  const { t } = useTranslation("analyzer");
+function ConsumptionTable({
+  options,
+  subWeaponId,
+}: {
+  options: Array<FullInkTankOption>;
+  subWeaponId: SubWeaponId;
+}) {
+  const { t } = useTranslation(["analyzer", "weapons"]);
   const maxSubsToUse = Math.max(...options.map((opt) => opt.subsUsed));
   const types = Array.from(new Set(options.map((opt) => opt.type)));
 
@@ -158,9 +167,9 @@ function ConsumptionTable({ options }: { options: Array<FullInkTankOption> }) {
       <table>
         <thead>
           <tr>
-            <th>{t("stat.consumption.bomb")}</th>
+            <th>{t(`weapons:SUB_${subWeaponId}`)}</th>
             {types.map((type) => (
-              <th key={type}>{t(`stat.consumption.${type}`)}</th>
+              <th key={type}>{t(`analyzer:stat.consumption.${type}`)}</th>
             ))}
           </tr>
         </thead>
@@ -180,7 +189,7 @@ function ConsumptionTable({ options }: { options: Array<FullInkTankOption> }) {
         </tbody>
       </table>
       <div className="analyzer__consumption-table-explanation">
-        {t("consumptionExplanation", { maxSubsToUse })}
+        {t("analyzer:consumptionExplanation", { maxSubsToUse })}
       </div>
     </>
   );
