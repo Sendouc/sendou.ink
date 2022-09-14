@@ -8,7 +8,6 @@ import type {
 export interface MainWeaponParams {
   subWeaponId: SubWeaponId;
   specialWeaponId: SpecialWeaponId;
-  internalName: string;
   /** Replacing default values of the ability json for this specific weapon */
   overwrites?: Record<string, Partial<Record<"High" | "Mid" | "Low", number>>>;
   SpecialPoint: number;
@@ -48,7 +47,6 @@ export interface DistanceDamage {
 }
 
 export interface SubWeaponParams {
-  internalName: string;
   SubInkSaveLv: 0 | 1 | 2 | 3;
   /** How much ink one usage of the sub consumes */
   InkConsume: number;

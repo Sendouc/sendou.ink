@@ -4,9 +4,6 @@
 // 3) WeaponInfoSpecial.json inside dicts
 // 4) params (weapon folder) inside dicts
 
-// xxx: internal name can be deleted when to prod
-// xxx: finish merging with create-weapon-json
-
 import type { SpecialWeaponId } from "~/modules/in-game-lists";
 import { type SubWeaponId, subWeaponIds } from "~/modules/in-game-lists";
 import weapons from "./dicts/WeaponInfoMain.json";
@@ -45,7 +42,7 @@ async function main() {
 
     translationsToArray({
       arr: translations,
-      internalName: params.internalName,
+      internalName: weapon.__RowId,
       weaponId: weapon.Id,
       type: "Main",
       translations: langDicts,
@@ -58,11 +55,11 @@ async function main() {
     if (subWeaponShouldBeSkipped(subWeapon)) continue;
 
     const rawParams = loadWeaponParamsObject(subWeapon);
-    const params = parametersToSubWeaponResult(subWeapon, rawParams);
+    const params = parametersToSubWeaponResult(rawParams);
 
     translationsToArray({
       arr: translations,
-      internalName: params.internalName,
+      internalName: subWeapon.__RowId,
       weaponId: subWeapon.Id,
       type: "Sub",
       translations: langDicts,
@@ -106,7 +103,6 @@ function parametersToMainWeaponResult(
     subWeaponId: resolveSubWeaponId(weapon),
     specialWeaponId: resolveSpecialWeaponId(weapon),
     overwrites: resolveOverwrites(params),
-    internalName: weapon.__RowId,
     InkConsume: params["WeaponParam"]?.["InkConsume"],
     InkConsumeFullCharge: params["WeaponParam"]?.["InkConsumeFullCharge"],
     InkConsumeMinCharge: params["WeaponParam"]?.["InkConsumeMinCharge"],
@@ -150,10 +146,7 @@ function combineSwingsIfSame(params: MainWeaponParams): MainWeaponParams {
 }
 
 // const LEGAL_SUB_INK_SAVE_LV = [0, 1, 2, 3];
-function parametersToSubWeaponResult(
-  subWeapon: SubWeapon,
-  params: any
-): SubWeaponParams {
+function parametersToSubWeaponResult(params: any): SubWeaponParams {
   const SubInkSaveLv = params["SubWeaponSetting"]?.["SubInkSaveLv"];
   // xxx: enable when all sub weapons have SubInkSaveLv's
   // invariant(
@@ -162,7 +155,6 @@ function parametersToSubWeaponResult(
   // );
 
   return {
-    internalName: subWeapon.__RowId,
     // xxx: not every sub has this, why? e.g. Splash Wall
     SubInkSaveLv,
     InkConsume: params["WeaponParam"]["InkConsume"],
