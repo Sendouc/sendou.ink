@@ -45,6 +45,7 @@ export function buildStats({
     weapon: {
       subWeaponSplId: mainWeaponParams.subWeaponId,
       specialWeaponSplId: mainWeaponParams.specialWeaponId,
+      speedType: mainWeaponParams.WeaponSpeedType ?? "Normal",
     },
     stats: {
       specialPoint: specialPoint(input),

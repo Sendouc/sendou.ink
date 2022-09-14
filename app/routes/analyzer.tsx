@@ -46,7 +46,7 @@ export default function BuildAnalyzerPage() {
                 clearsInputOnFocus
               />
             </div>
-            <KitCards analyzed={analyzed} />
+            <WeaponInfoBadges analyzed={analyzed} />
           </div>
           <AbilitiesSelector selectedAbilities={build} onChange={setBuild} />
           <div className="analyzer__patch">
@@ -104,28 +104,32 @@ export default function BuildAnalyzerPage() {
   );
 }
 
-function KitCards({ analyzed }: { analyzed: AnalyzedBuild }) {
-  const { t } = useTranslation("weapons");
+function WeaponInfoBadges({ analyzed }: { analyzed: AnalyzedBuild }) {
+  const { t } = useTranslation(["weapons", "analyzer"]);
 
   return (
-    <div className="analyzer__kit-cards">
-      <div className="analyzer__kit-card">
+    <div className="analyzer__weapon-info-badges">
+      <div className="analyzer__weapon-info-badge">
         <Image
           path={subWeaponImageUrl(analyzed.weapon.subWeaponSplId)}
           width={20}
           height={20}
-          alt={t(`SUB_${analyzed.weapon.subWeaponSplId}`)}
+          alt={t(`weapons:SUB_${analyzed.weapon.subWeaponSplId}`)}
         />
-        {t(`SUB_${analyzed.weapon.subWeaponSplId}`)}
+        {t(`weapons:SUB_${analyzed.weapon.subWeaponSplId}`)}
       </div>
-      <div className="analyzer__kit-card">
+      <div className="analyzer__weapon-info-badge">
         <Image
           path={specialWeaponImageUrl(analyzed.weapon.specialWeaponSplId)}
           width={20}
           height={20}
-          alt={t(`SPECIAL_${analyzed.weapon.specialWeaponSplId}`)}
+          alt={t(`weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`)}
         />
-        {t(`SPECIAL_${analyzed.weapon.specialWeaponSplId}`)}
+        {t(`weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`)}
+      </div>
+      <div className="analyzer__weapon-info-badge">
+        {t("analyzer:attribute.weight")}{" "}
+        {t(`analyzer:attribute.weight.${analyzed.weapon.speedType}`)}
       </div>
     </div>
   );

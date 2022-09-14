@@ -118,6 +118,7 @@ export interface AnalyzedBuild {
   weapon: {
     subWeaponSplId: SubWeaponId;
     specialWeaponSplId: SpecialWeaponId;
+    speedType: NonNullable<MainWeaponParams["WeaponSpeedType"]> | "Normal";
   };
   stats: {
     specialPoint: Stat;
