@@ -2,6 +2,7 @@
 // 1) WeaponInfoMain.json inside dicts
 // 2) WeaponInfoSub.json inside dicts
 // 3) WeaponInfoSpecial.json inside dicts
+// 4) params (weapon folder) inside dicts
 
 // xxx: internal name can be deleted when to prod
 // xxx: finish merging with create-weapon-json
@@ -95,6 +96,7 @@ async function main() {
   );
 
   writeTranslationsJsons(translations);
+  logWeaponIds(mainWeaponsResult);
 }
 
 function parametersToMainWeaponResult(
@@ -258,9 +260,15 @@ const WEAPON_TYPES_TO_IGNORE = [
   "SalmonBuddy",
 ];
 
+const INTERNAL_WEAPON_NAMES_TO_IGNORE: readonly string[] = ["Free"] as const;
 function mainWeaponShouldBeSkipped(mainWeapon: MainWeapon) {
-  if (!mainWeaponIds.includes(mainWeapon.Id as any)) return true;
-  if (mainWeapon.Season > CURRENT_SEASON) return true;
+  if (
+    WEAPON_TYPES_TO_IGNORE.includes(mainWeapon.Type) ||
+    INTERNAL_WEAPON_NAMES_TO_IGNORE.includes(mainWeapon.__RowId) ||
+    mainWeapon.Season > CURRENT_SEASON
+  ) {
+    return true;
+  }
 
   return false;
 }
@@ -358,6 +366,10 @@ function writeTranslationsJsons(arr: TranslationArray) {
       ) + "\n"
     );
   }
+}
+
+function logWeaponIds(weapons: Record<number, MainWeaponParams>) {
+  console.log(JSON.stringify(Object.keys(weapons).map(Number)));
 }
 
 void main();
