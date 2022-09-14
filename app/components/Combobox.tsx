@@ -33,15 +33,16 @@ interface ComboboxProps<T> {
   isLoading?: boolean;
   required?: boolean;
   initialValue?: ComboboxOption<T>;
+  clearsInputOnFocus?: boolean;
   onChange?: (selectedOption?: ComboboxOption<T>) => void;
 }
 
-// xxx: should clear on click
 export function Combobox<T extends Record<string, string | null | number>>({
   options,
   inputName,
   placeholder,
   initialValue,
+  clearsInputOnFocus = false,
   onChange,
   required,
   className,
@@ -50,10 +51,13 @@ export function Combobox<T extends Record<string, string | null | number>>({
 }: ComboboxProps<T>) {
   const [selectedOption, setSelectedOption] =
     React.useState<Unpacked<typeof options>>();
+  const [lastSelectedOption, setLastSelectedOption] =
+    React.useState<Unpacked<typeof options>>();
   const [query, setQuery] = React.useState("");
 
   React.useEffect(() => {
     setSelectedOption(initialValue);
+    setLastSelectedOption(initialValue);
   }, [initialValue]);
 
   const filteredOptions = (() => {
@@ -76,11 +80,22 @@ export function Combobox<T extends Record<string, string | null | number>>({
       onChange={(selected) => {
         onChange?.(selected);
         setSelectedOption(selected);
+        setLastSelectedOption(selected);
       }}
       name={inputName}
       disabled={isLoading}
     >
       <HeadlessCombobox.Input
+        onFocus={() => {
+          if (clearsInputOnFocus) {
+            setSelectedOption(undefined);
+          }
+        }}
+        onBlur={() => {
+          if (!selectedOption && clearsInputOnFocus) {
+            setSelectedOption(lastSelectedOption);
+          }
+        }}
         onChange={(event) => setQuery(event.target.value)}
         placeholder={isLoading ? "Loading..." : placeholder}
         className={clsx("combobox-input", className)}
@@ -193,9 +208,15 @@ export function WeaponCombobox({
   inputName,
   onChange,
   initialWeaponId,
+  clearsInputOnFocus,
 }: Pick<
   ComboboxProps<ComboboxBaseOption>,
-  "inputName" | "onChange" | "className" | "id" | "required"
+  | "inputName"
+  | "onChange"
+  | "className"
+  | "id"
+  | "required"
+  | "clearsInputOnFocus"
 > & { initialWeaponId?: typeof mainWeaponIds[number] }) {
   const { t } = useTranslation("weapons");
 
@@ -219,6 +240,7 @@ export function WeaponCombobox({
       className={className}
       id={id}
       required={required}
+      clearsInputOnFocus={clearsInputOnFocus}
     />
   );
 }

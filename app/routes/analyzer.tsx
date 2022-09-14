@@ -43,6 +43,7 @@ export default function BuildAnalyzerPage() {
                   opt && setMainWeaponId(Number(opt.value) as MainWeaponId)
                 }
                 className="w-full-important"
+                clearsInputOnFocus
               />
             </div>
             <KitCards analyzed={analyzed} />
