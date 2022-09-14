@@ -25,5 +25,6 @@
   "base": "Base",
   "value": "Value",
   "build": "Build",
+  "patch": "Patch:",
   "consumptionExplanation": "This chart shows the amount of actions left to perform with main weapon after using sub 0-{{maxSubsToUse}} times. Max amount of consecutive subs to use with full ink tank is {{maxSubsToUse}}."
 }

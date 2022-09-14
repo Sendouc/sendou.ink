@@ -23,7 +23,6 @@ export interface MainWeaponParams {
   InkConsumeMinCharge?: number;
   /** How much ink one full charge of splatling consumes? */
   InkConsumeFullChargeSplatling?: number;
-  // xxx: morph with another swing one below
   /** How much ink one swing of brush consumes? */
   InkConsume_WeaponSwingParam?: number;
   /** How much ink one vertical swing of roller consumes? */

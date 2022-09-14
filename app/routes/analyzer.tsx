@@ -12,6 +12,8 @@ import styles from "~/styles/analyzer.css";
 import { Image } from "~/components/Image";
 import { specialWeaponImageUrl, subWeaponImageUrl } from "~/utils/urls";
 
+export const CURRENT_PATCH = "1.1";
+
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
@@ -46,6 +48,9 @@ export default function BuildAnalyzerPage() {
             <KitCards analyzed={analyzed} />
           </div>
           <AbilitiesSelector selectedAbilities={build} onChange={setBuild} />
+          <div className="analyzer__patch">
+            {t("patch")} {CURRENT_PATCH}
+          </div>
         </div>
         <div className="stack md">
           <StatCategory title={t("stat.category.sub")}>
