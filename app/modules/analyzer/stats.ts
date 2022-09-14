@@ -52,6 +52,9 @@ export function buildStats({
       fullInkTankOptions: fullInkTankOptions(input),
       subWeaponWhiteInkFrames: subWeaponParams.InkRecoverStop,
       squidFormInkRecoverySeconds: squidFormInkRecoverySeconds(input),
+      runSpeed: runSpeed(input),
+      // shootingRunSpeed: shootingRunSpeed(input),
+      swimSpeed: swimSpeed(input),
     },
   };
 }
@@ -246,5 +249,55 @@ function squidFormInkRecoverySeconds(
     baseValue: framesToSeconds(baseEffect),
     value: framesToSeconds(effect),
     modifiedBy: SQUID_FORM_INK_RECOVERY_SECONDS_ABILITY,
+  };
+}
+
+function runSpeed(args: StatFunctionInput): AnalyzedBuild["stats"]["runSpeed"] {
+  const key =
+    args.mainWeaponParams.WeaponSpeedType === "Fast"
+      ? "_Fast"
+      : args.mainWeaponParams.WeaponSpeedType === "Slow"
+      ? "_Slow"
+      : "";
+  const RUN_SPEED_ABILITY = "RSU";
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: RUN_SPEED_ABILITY,
+    }),
+    key: `MoveVel_Human${key}`,
+    weapon: args.mainWeaponParams,
+  });
+
+  return {
+    baseValue: effectToRounded(baseEffect * 10),
+    value: effectToRounded(effect * 10),
+    modifiedBy: RUN_SPEED_ABILITY,
+  };
+}
+
+function swimSpeed(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["swimSpeed"] {
+  const key =
+    args.mainWeaponParams.WeaponSpeedType === "Fast"
+      ? "_Fast"
+      : args.mainWeaponParams.WeaponSpeedType === "Slow"
+      ? "_Slow"
+      : "";
+  const SWIM_SPEED_ABILITY = "SSU";
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: SWIM_SPEED_ABILITY,
+    }),
+    key: `MoveVel_Stealth${key}`,
+    weapon: args.mainWeaponParams,
+  });
+
+  return {
+    baseValue: effectToRounded(baseEffect * 10),
+    value: effectToRounded(effect * 10),
+    modifiedBy: SWIM_SPEED_ABILITY,
   };
 }

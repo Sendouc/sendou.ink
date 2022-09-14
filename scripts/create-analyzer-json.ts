@@ -120,6 +120,7 @@ function parametersToMainWeaponResult(
     subWeaponId: resolveSubWeaponId(weapon),
     specialWeaponId: resolveSpecialWeaponId(weapon),
     overwrites: resolveOverwrites(params),
+    WeaponSpeedType: params["MainWeaponSetting"]?.["WeaponSpeedType"],
     InkConsume,
     InkConsumeSlosher,
     InkConsumeFullCharge: params["WeaponParam"]?.["InkConsumeFullCharge"],

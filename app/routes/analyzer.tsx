@@ -75,6 +75,16 @@ export default function BuildAnalyzerPage() {
               subWeaponId={analyzed.weapon.subWeaponSplId}
             />
           </StatCategory>
+          <StatCategory title={t("stat.category.movement")}>
+            <StatCard
+              stat={analyzed.stats.swimSpeed}
+              title={t("stat.swimSpeed")}
+            />
+            <StatCard
+              stat={analyzed.stats.runSpeed}
+              title={t("stat.runSpeed")}
+            />
+          </StatCategory>
           <StatCategory title={t("stat.category.misc")}>
             <StatCard
               stat={analyzed.stats.squidFormInkRecoverySeconds}

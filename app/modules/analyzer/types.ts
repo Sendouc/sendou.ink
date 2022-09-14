@@ -11,6 +11,8 @@ export interface MainWeaponParams {
   /** Replacing default values of the ability json for this specific weapon */
   overwrites?: Record<string, Partial<Record<"High" | "Mid" | "Low", number>>>;
   SpecialPoint: number;
+  /** Weapon's weight class. "Light/Heavy weapon" */
+  WeaponSpeedType?: "Slow" | "Fast";
   /** How much ink one shot consumes? InkConsume = 0.5 means 2 shots per full tank */
   InkConsume?: number;
   /** How much ink one slosh of slosher consumes? */
@@ -125,5 +127,9 @@ export interface AnalyzedBuild {
     subWeaponWhiteInkFrames: number;
     fullInkTankOptions: Array<FullInkTankOption>;
     squidFormInkRecoverySeconds: Stat;
+    runSpeed: Stat;
+    // xxx: missing from json
+    // shootingRunSpeed: Stat;
+    swimSpeed: Stat;
   };
 }

@@ -4,24 +4,28 @@
       "SpecialPoint": 180,
       "subWeaponId": 6,
       "specialWeaponId": 11,
+      "WeaponSpeedType": "Fast",
       "InkConsume": 0.008
     },
     "10": {
       "SpecialPoint": 180,
       "subWeaponId": 0,
       "specialWeaponId": 2,
+      "WeaponSpeedType": "Fast",
       "InkConsume": 0.0043
     },
     "20": {
       "SpecialPoint": 200,
       "subWeaponId": 2,
       "specialWeaponId": 12,
+      "WeaponSpeedType": "Fast",
       "InkConsume": 0.008
     },
     "30": {
       "SpecialPoint": 200,
       "subWeaponId": 5,
       "specialWeaponId": 13,
+      "WeaponSpeedType": "Fast",
       "InkConsume": 0.0055
     },
     "40": {
@@ -46,6 +50,7 @@
       "SpecialPoint": 200,
       "subWeaponId": 1,
       "specialWeaponId": 15,
+      "WeaponSpeedType": "Fast",
       "InkConsume": 0.008
     },
     "70": {
@@ -75,6 +80,7 @@
           "Mid": 0.5
         }
       },
+      "WeaponSpeedType": "Fast",
       "InkConsume": 0.075
     },
     "210": {
@@ -108,6 +114,7 @@
           "Mid": 0.5
         }
       },
+      "WeaponSpeedType": "Fast",
       "InkConsume": 0.04
     },
     "240": {
@@ -154,6 +161,7 @@
       "SpecialPoint": 180,
       "subWeaponId": 7,
       "specialWeaponId": 3,
+      "WeaponSpeedType": "Fast",
       "InkConsume_WeaponSwingParam": 0.0396
     },
     "1010": {
@@ -166,6 +174,7 @@
       "SpecialPoint": 190,
       "subWeaponId": 3,
       "specialWeaponId": 15,
+      "WeaponSpeedType": "Slow",
       "InkConsume_WeaponSwingParam": 0.18
     },
     "1030": {
@@ -179,6 +188,7 @@
       "SpecialPoint": 180,
       "subWeaponId": 0,
       "specialWeaponId": 9,
+      "WeaponSpeedType": "Fast",
       "InkConsume_WeaponSwingParam": 0.02
     },
     "1110": {
@@ -212,6 +222,7 @@
       "SpecialPoint": 200,
       "subWeaponId": 10,
       "specialWeaponId": 7,
+      "WeaponSpeedType": "Slow",
       "InkConsumeFullCharge": 0.25,
       "InkConsumeMinCharge": 0.0225
     },
@@ -219,6 +230,7 @@
       "SpecialPoint": 200,
       "subWeaponId": 10,
       "specialWeaponId": 7,
+      "WeaponSpeedType": "Slow",
       "InkConsumeFullCharge": 0.25,
       "InkConsumeMinCharge": 0.0225
     },
@@ -226,6 +238,7 @@
       "SpecialPoint": 200,
       "subWeaponId": 7,
       "specialWeaponId": 9,
+      "WeaponSpeedType": "Fast",
       "InkConsumeFullCharge": 0.084,
       "InkConsumeMinCharge": 0.0336
     },
@@ -246,6 +259,7 @@
       "SpecialPoint": 190,
       "subWeaponId": 11,
       "specialWeaponId": 10,
+      "WeaponSpeedType": "Fast",
       "InkConsumeSlosher": 0.06
     },
     "3020": {
@@ -264,6 +278,7 @@
       "SpecialPoint": 200,
       "subWeaponId": 9,
       "specialWeaponId": 5,
+      "WeaponSpeedType": "Slow",
       "InkConsumeSlosher": 0.117
     },
     "4000": {
@@ -282,6 +297,7 @@
       "SpecialPoint": 190,
       "subWeaponId": 7,
       "specialWeaponId": 6,
+      "WeaponSpeedType": "Slow",
       "InkConsumeFullChargeSplatling": 0.35
     },
     "4030": {
@@ -300,6 +316,7 @@
       "SpecialPoint": 180,
       "subWeaponId": 8,
       "specialWeaponId": 15,
+      "WeaponSpeedType": "Fast",
       "InkConsume": 0.00663,
       "InkConsume_SideStepParam": 0.05
     },
@@ -341,6 +358,7 @@
       "SpecialPoint": 190,
       "subWeaponId": 8,
       "specialWeaponId": 8,
+      "WeaponSpeedType": "Slow",
       "InkConsumeUmbrella_WeaponShelterCanopyParam": 0.3,
       "InkConsume_WeaponShelterShotgunParam": 0.11
     },
@@ -348,6 +366,7 @@
       "SpecialPoint": 180,
       "subWeaponId": 10,
       "specialWeaponId": 13,
+      "WeaponSpeedType": "Fast",
       "InkConsumeUmbrella_WeaponShelterCanopyParam": 0,
       "InkConsume_WeaponShelterShotgunParam": 0.04
     },
@@ -361,6 +380,7 @@
       "SpecialPoint": 200,
       "subWeaponId": 6,
       "specialWeaponId": 4,
+      "WeaponSpeedType": "Fast",
       "InkConsumeFullCharge_ChargeParam": 0.065
     },
     "8000": {
@@ -374,6 +394,7 @@
       "SpecialPoint": 180,
       "subWeaponId": 13,
       "specialWeaponId": 11,
+      "WeaponSpeedType": "Fast",
       "InkConsume_SwingParam": 0.03,
       "InkConsumeFullCharge_ChargeParam": 0.06
     }
