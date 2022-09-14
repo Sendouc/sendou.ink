@@ -51,6 +51,7 @@ export function buildStats({
       specialSavedAfterDeath: specialSavedAfterDeath(input),
       fullInkTankOptions: fullInkTankOptions(input),
       subWeaponWhiteInkFrames: subWeaponParams.InkRecoverStop,
+      squidFormInkRecoverySeconds: squidFormInkRecoverySeconds(input),
     },
   };
 }
@@ -224,4 +225,26 @@ function inkConsumeTypeToParamsKeys(
       assertUnreachable(type);
     }
   }
+}
+
+const framesToSeconds = (frames: number) =>
+  effectToRounded(Math.ceil(frames) / 60);
+function squidFormInkRecoverySeconds(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["squidFormInkRecoverySeconds"] {
+  const SQUID_FORM_INK_RECOVERY_SECONDS_ABILITY = "IRU";
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: SQUID_FORM_INK_RECOVERY_SECONDS_ABILITY,
+    }),
+    key: "InkRecoverFrm_Stealth",
+    weapon: args.mainWeaponParams,
+  });
+
+  return {
+    baseValue: framesToSeconds(baseEffect),
+    value: framesToSeconds(effect),
+    modifiedBy: SQUID_FORM_INK_RECOVERY_SECONDS_ABILITY,
+  };
 }

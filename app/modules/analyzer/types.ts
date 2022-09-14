@@ -124,5 +124,6 @@ export interface AnalyzedBuild {
     specialSavedAfterDeath: Stat;
     subWeaponWhiteInkFrames: number;
     fullInkTankOptions: Array<FullInkTankOption>;
+    squidFormInkRecoverySeconds: Stat;
   };
 }
