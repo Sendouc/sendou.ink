@@ -119,7 +119,6 @@ function StatCategory({
   );
 }
 
-// xxx: cobra kai style
 function StatCard({
   title,
   stat,
@@ -132,16 +131,24 @@ function StatCard({
   return (
     <div key={title} className="analyzer__stat-card">
       <div>
-        <h4 className="analyzer__stat-card__title">{title}</h4>
-        {stat.value !== stat.baseValue && (
+        <h3 className="analyzer__stat-card__title">{title}</h3>
+        <div className="analyzer__stat-card-values">
           <div className="analyzer__stat-card__value">
-            Current: {stat.value}
-            {suffix}
+            <h4 className="analyzer__stat-card__value__title">Base</h4>{" "}
+            <div className="analyzer__stat-card__value__number">
+              {stat.baseValue}
+              {suffix}
+            </div>
           </div>
-        )}
-        <div className="analyzer__stat-card__value text-lighter">
-          Base: {stat.baseValue}
-          {suffix}
+          {stat.value !== stat.baseValue && (
+            <div className="analyzer__stat-card__value">
+              <h4 className="analyzer__stat-card__value__title">Build</h4>{" "}
+              <div className="analyzer__stat-card__value__number">
+                {stat.value}
+                {suffix}
+              </div>
+            </div>
+          )}
         </div>
       </div>
       <div className="stack items-center">

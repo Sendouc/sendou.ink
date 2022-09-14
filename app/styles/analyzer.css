@@ -51,11 +51,34 @@
 }
 
 .analyzer__stat-card__title {
+  height: 2.75rem;
   font-size: var(--fonts-xs);
+  text-align: center;
+}
+
+.analyzer__stat-card-values {
+  display: flex;
+  justify-content: space-evenly;
+  gap: var(--s-1);
 }
 
 .analyzer__stat-card__value {
-  font-size: var(--fonts-xs);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.analyzer__stat-card__value__title {
+  color: var(--text-lighter);
+  font-size: var(--fonts-xxs);
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.analyzer__stat-card__value__number {
+  font-size: var(--fonts-md);
+  font-weight: var(--bold);
 }
 
 .analyzer__consumption-table-container {
