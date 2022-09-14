@@ -100,11 +100,18 @@ function parametersToMainWeaponResult(
 ): MainWeaponParams {
   const isSplatling =
     params["WeaponParam"]?.["$type"] === "spl__WeaponSpinnerParam";
+  const isSlosher =
+    params["WeaponParam"]?.["$type"] === "spl__WeaponSlosherParam";
 
-  const InkConsume = !isSplatling
+  const InkConsume =
+    !isSplatling && !isSlosher
+      ? params["WeaponParam"]?.["InkConsume"]
+      : undefined;
+  const InkConsumeFullChargeSplatling = isSplatling
     ? params["WeaponParam"]?.["InkConsume"]
     : undefined;
-  const InkConsumeFullChargeSplatling = isSplatling
+
+  const InkConsumeSlosher = isSlosher
     ? params["WeaponParam"]?.["InkConsume"]
     : undefined;
 
@@ -114,6 +121,7 @@ function parametersToMainWeaponResult(
     specialWeaponId: resolveSpecialWeaponId(weapon),
     overwrites: resolveOverwrites(params),
     InkConsume,
+    InkConsumeSlosher,
     InkConsumeFullCharge: params["WeaponParam"]?.["InkConsumeFullCharge"],
     InkConsumeMinCharge: params["WeaponParam"]?.["InkConsumeMinCharge"],
     InkConsumeFullChargeSplatling,

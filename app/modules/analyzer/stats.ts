@@ -204,6 +204,8 @@ function inkConsumeTypeToParamsKeys(
       return ["InkConsume"];
     case "SWING":
       return ["InkConsume_SwingParam", "InkConsume_WeaponSwingParam"];
+    case "SLOSH":
+      return ["InkConsumeSlosher"];
     case "TAP_SHOT":
       return ["InkConsumeMinCharge"];
     case "FULL_CHARGE":

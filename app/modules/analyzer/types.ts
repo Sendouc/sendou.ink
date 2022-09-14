@@ -13,6 +13,8 @@ export interface MainWeaponParams {
   SpecialPoint: number;
   /** How much ink one shot consumes? InkConsume = 0.5 means 2 shots per full tank */
   InkConsume?: number;
+  /** How much ink one slosh of slosher consumes? */
+  InkConsumeSlosher?: number;
   /** How much ink one fully charged shot consumes? */
   InkConsumeFullCharge?: number;
   /** How much ink one tap shot consumes? */
@@ -95,6 +97,7 @@ export type InkConsumeType = typeof INK_CONSUME_TYPES[number];
 export const INK_CONSUME_TYPES = [
   "NORMAL",
   "SWING",
+  "SLOSH",
   "VERTICAL_SWING",
   "HORIZONTAL_SWING",
   "TAP_SHOT",

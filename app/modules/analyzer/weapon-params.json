@@ -240,31 +240,31 @@
       "SpecialPoint": 200,
       "subWeaponId": 0,
       "specialWeaponId": 14,
-      "InkConsume": 0.07
+      "InkConsumeSlosher": 0.07
     },
     "3010": {
       "SpecialPoint": 190,
       "subWeaponId": 11,
       "specialWeaponId": 10,
-      "InkConsume": 0.06
+      "InkConsumeSlosher": 0.06
     },
     "3020": {
       "SpecialPoint": 200,
       "subWeaponId": 5,
       "specialWeaponId": 6,
-      "InkConsume": 0.084
+      "InkConsumeSlosher": 0.084
     },
     "3030": {
       "SpecialPoint": 190,
       "subWeaponId": 3,
       "specialWeaponId": 5,
-      "InkConsume": 0.08
+      "InkConsumeSlosher": 0.08
     },
     "3040": {
       "SpecialPoint": 200,
       "subWeaponId": 9,
       "specialWeaponId": 5,
-      "InkConsume": 0.117
+      "InkConsumeSlosher": 0.117
     },
     "4000": {
       "SpecialPoint": 180,

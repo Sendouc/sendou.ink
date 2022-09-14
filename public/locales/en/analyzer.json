@@ -3,6 +3,7 @@
   "stat.specialLost": "Special lost when splatted",
   "stat.consumption.NORMAL": "Shots",
   "stat.consumption.SWING": "Swings",
+  "stat.consumption.SLOSH": "Sloshes",
   "stat.consumption.VERTICAL_SWING": "Vertical swings",
   "stat.consumption.HORIZONTAL_SWING": "Horizontal swings",
   "stat.consumption.TAP_SHOT": "Tap shots",
