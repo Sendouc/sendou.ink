@@ -85,7 +85,7 @@ export function Combobox<T extends Record<string, string | null | number>>({
         placeholder={isLoading ? "Loading..." : placeholder}
         className={clsx("combobox-input", className)}
         displayValue={(option) =>
-          (option as Unpacked<typeof options>)?.label ?? ""
+          (option as unknown as Unpacked<typeof options>)?.label ?? ""
         }
         data-cy={`${inputName}-combobox-input`}
         id={id}
