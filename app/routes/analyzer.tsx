@@ -48,7 +48,13 @@ export default function BuildAnalyzerPage() {
           <AbilitiesSelector selectedAbilities={build} onChange={setBuild} />
         </div>
         <div className="stack md">
-          <StatCategory title="Special">
+          <StatCategory title={t("stat.category.sub")}>
+            <StatCard
+              stat={analyzed.stats.subWeaponWhiteInkFrames}
+              title={t("stat.whiteInkFrames")}
+            />
+          </StatCategory>
+          <StatCategory title={t("stat.category.special")}>
             <StatCard
               stat={analyzed.stats.specialPoint}
               title={t("stat.specialPoints")}
@@ -61,7 +67,7 @@ export default function BuildAnalyzerPage() {
             />
           </StatCategory>
           <StatCategory
-            title="Actions per ink tank"
+            title={t("stat.category.actionsPerInkTank")}
             containerClassName="analyzer__consumption-table-container"
           >
             <ConsumptionTable
@@ -125,24 +131,31 @@ function StatCard({
   suffix,
 }: {
   title: string;
-  stat: Stat;
+  stat: Stat | number;
   suffix?: string;
 }) {
+  const { t } = useTranslation("analyzer");
+  const baseValue = typeof stat === "number" ? stat : stat.baseValue;
+
   return (
     <div key={title} className="analyzer__stat-card">
       <div>
         <h3 className="analyzer__stat-card__title">{title}</h3>
         <div className="analyzer__stat-card-values">
           <div className="analyzer__stat-card__value">
-            <h4 className="analyzer__stat-card__value__title">Base</h4>{" "}
+            <h4 className="analyzer__stat-card__value__title">
+              {typeof stat === "number" ? t("value") : t("base")}
+            </h4>{" "}
             <div className="analyzer__stat-card__value__number">
-              {stat.baseValue}
+              {baseValue}
               {suffix}
             </div>
           </div>
-          {stat.value !== stat.baseValue && (
+          {typeof stat !== "number" && stat.value !== stat.baseValue && (
             <div className="analyzer__stat-card__value">
-              <h4 className="analyzer__stat-card__value__title">Build</h4>{" "}
+              <h4 className="analyzer__stat-card__value__title">
+                {t("build")}
+              </h4>{" "}
               <div className="analyzer__stat-card__value__number">
                 {stat.value}
                 {suffix}
@@ -151,9 +164,11 @@ function StatCard({
           )}
         </div>
       </div>
-      <div className="stack items-center">
-        <Ability ability={stat.modifiedBy} size="TINY" />
-      </div>
+      {typeof stat !== "number" && (
+        <div className="stack items-center">
+          <Ability ability={stat.modifiedBy} size="TINY" />
+        </div>
+      )}
     </div>
   );
 }

@@ -122,7 +122,7 @@ export interface AnalyzedBuild {
     specialPoint: Stat;
     /** % of special charge saved when dying */
     specialSavedAfterDeath: Stat;
-    subWeaponWhiteInkFrames?: number;
+    subWeaponWhiteInkFrames: number;
     fullInkTankOptions: Array<FullInkTankOption>;
   };
 }

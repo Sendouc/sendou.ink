@@ -1,6 +1,11 @@
 {
+  "stat.category.main": "Main weapon",
+  "stat.category.sub": "Sub weapon",
+  "stat.category.special": "Special weapon",
+  "stat.category.actionsPerInkTank": "Actions per ink tank",
   "stat.specialPoints": "Points to special",
   "stat.specialLost": "Special lost when splatted",
+  "stat.whiteInkFrames": "Frames of no ink recovery after usage",
   "stat.consumption.NORMAL": "Shots",
   "stat.consumption.SWING": "Swings",
   "stat.consumption.SLOSH": "Sloshes",
@@ -11,5 +16,8 @@
   "stat.consumption.SPLATLING_CHARGE": "Full charges",
   "stat.consumption.SHIELD_LAUNCH": "Shield launches",
   "stat.consumption.DUALIE_ROLL": "Dodge Rolls",
+  "base": "Base",
+  "value": "Value",
+  "build": "Build",
   "consumptionExplanation": "This chart shows the amount of actions left to perform with main weapon after using sub 0-{{maxSubsToUse}} times. Max amount of consecutive subs to use with full ink tank is {{maxSubsToUse}}."
 }
