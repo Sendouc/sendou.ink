@@ -4,6 +4,7 @@ import {
   type LoaderArgs,
   json,
   redirect,
+  LinksFunction
 } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 import { z } from "zod";
@@ -29,6 +30,11 @@ import { FormErrors } from "~/components/FormErrors";
 import type { Unpacked } from "~/utils/types";
 import { calendarEventPage } from "~/utils/urls";
 import { useTranslation } from "react-i18next";
+import styles from "~/styles/calendar-event.css";
+
+export const links: LinksFunction = () => {
+  return [{ rel: "stylesheet", href: styles }];
+};
 
 const playersSchema = z
   .array(
@@ -402,6 +408,7 @@ function Players({
                 variant="minimal"
                 onClick={() => handlePlayerInputTypeChange(i)}
                 data-cy="change-input-type-button"
+                className={"user-type-button"}
               >
                 {asPlainInput
                   ? t("forms.team.player.addAsUser")
