@@ -308,10 +308,10 @@ function EventsToReport() {
   );
 }
 
-function EventsList({ 
-  events, 
-}: { 
-  events: SerializeFrom<typeof loader>["events"]; 
+function EventsList({
+  events,
+}: {
+  events: SerializeFrom<typeof loader>["events"];
 }) {
   const { t, i18n } = useTranslation("calendar");
 
@@ -330,9 +330,9 @@ function EventsList({
               </div>
             </div>
             <div className="stack md">
-              {events.map(calendarEvent => {
+              {events.map((calendarEvent) => {
                 return (
-                  <section 
+                  <section
                     key={calendarEvent.eventDateId}
                     className="calendar__event main stack md"
                   >
@@ -404,7 +404,7 @@ function EventsList({
           </React.Fragment>
         );
       })}
-    </div> 
+    </div>
   );
 }
 
