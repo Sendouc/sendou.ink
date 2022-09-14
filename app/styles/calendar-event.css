@@ -44,7 +44,3 @@
   color: var(--text-lighter);
   font-size: var(--fonts-xs);
 }
-
-.user-type-button:focus {
-  outline: 2px solid var(--theme);
-}

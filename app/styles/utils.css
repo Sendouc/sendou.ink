@@ -121,3 +121,7 @@
 .all-unset {
   all: unset;
 }
+
+.outline-theme:focus {
+  outline: 2px solid var(--theme);
+}

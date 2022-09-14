@@ -408,7 +408,7 @@ function Players({
                 variant="minimal"
                 onClick={() => handlePlayerInputTypeChange(i)}
                 data-cy="change-input-type-button"
-                className={"user-type-button"}
+                className={"outline-theme"}
               >
                 {asPlainInput
                   ? t("forms.team.player.addAsUser")
