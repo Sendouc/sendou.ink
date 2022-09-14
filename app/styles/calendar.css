@@ -103,7 +103,7 @@
 .calendar__event {
   display: flex;
   flex-direction: column;
-  padding-top: 1rem;
+  padding-top: var(--s-4);
   font-size: var(--fonts-lg);
 }
 
