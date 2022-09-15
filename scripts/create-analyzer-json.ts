@@ -131,6 +131,12 @@ function parametersToMainWeaponResult(
     );
   };
 
+  const KeepChargeFullFrame =
+    params["WeaponKeepChargeParam"]?.["KeepChargeFullFrame"] ??
+    params["spl__WeaponStringerParam"]?.["ChargeKeepParam"]?.[
+      "KeepChargeFullFrame"
+    ];
+
   return {
     SpecialPoint: weapon.SpecialPoint,
     subWeaponId: resolveSubWeaponId(weapon),
@@ -148,6 +154,13 @@ function parametersToMainWeaponResult(
     DamageParam_ValueMaxCharge: params["DamageParam"]?.["ValueMaxCharge"],
     DamageParam_ValueMinCharge: params["DamageParam"]?.["ValueMinCharge"],
     CanopyHP: params["spl__BulletShelterCanopyParam"]?.["CanopyHP"],
+    ChargeFrameFullCharge:
+      params["WeaponParam"]?.["ChargeFrameFullCharge"] ??
+      params["spl__WeaponStringerParam"]?.["ChargeParam"]?.[
+        "ChargeFrameFullCharge"
+      ],
+    KeepChargeFullFrame:
+      KeepChargeFullFrame !== 1 ? KeepChargeFullFrame : undefined,
     InkConsume,
     InkConsumeSlosher,
     InkConsumeFullCharge: params["WeaponParam"]?.["InkConsumeFullCharge"],

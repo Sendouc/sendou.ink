@@ -16,6 +16,10 @@ export interface MainWeaponParams {
   // xxx: verify
   /** Total frames it takes the weapon to shoot out three times */
   TripleShotSpanFrame?: number;
+  /** Amount of frames charge can be held */
+  KeepChargeFullFrame?: number;
+  /** Amount of frames full charge takes */
+  ChargeFrameFullCharge?: number;
   DamageParam_ValueMax?: number;
   DamageParam_ValueMin?: number;
   DamageParam_ValueDirect?: number;
@@ -158,6 +162,8 @@ export interface AnalyzedBuild {
     subWeaponSplId: SubWeaponId;
     specialWeaponSplId: SpecialWeaponId;
     brellaCanopyHp?: number;
+    maxChargeHoldSeconds?: number;
+    fullChargeSeconds?: number;
     speedType: NonNullable<MainWeaponParams["WeaponSpeedType"]> | "Normal";
     isTripleShooter: boolean;
   };

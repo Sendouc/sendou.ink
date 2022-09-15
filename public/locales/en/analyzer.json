@@ -11,6 +11,8 @@
   "stat.category.movement": "Movement",
   "stat.category.misc": "Miscellaneous",
   "stat.canopyHp": "Canopy durability",
+  "stat.fullChargeSeconds": "Charge time to full",
+  "stat.maxChargeHoldSeconds": "Max charge hold time",
   "stat.specialPoints": "Points to special",
   "stat.specialLost": "Special lost when splatted",
   "stat.whiteInkFrames": "Frames of no ink recovery after usage",

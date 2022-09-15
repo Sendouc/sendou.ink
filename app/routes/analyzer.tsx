@@ -13,8 +13,6 @@ import styles from "~/styles/analyzer.css";
 import { makeTitle } from "~/utils/strings";
 import { specialWeaponImageUrl, subWeaponImageUrl } from "~/utils/urls";
 
-// xxx: charge hold frames
-
 export const CURRENT_PATCH = "1.1";
 
 export const meta: MetaFunction = () => {
@@ -70,6 +68,20 @@ export default function BuildAnalyzerPage() {
                 stat={analyzed.weapon.brellaCanopyHp}
                 title={t("analyzer:stat.canopyHp")}
                 suffix={t("analyzer:suffix.hp")}
+              />
+            )}
+            {typeof analyzed.weapon.fullChargeSeconds === "number" && (
+              <StatCard
+                stat={analyzed.weapon.fullChargeSeconds}
+                title={t("analyzer:stat.fullChargeSeconds")}
+                suffix={t("analyzer:suffix.seconds")}
+              />
+            )}
+            {typeof analyzed.weapon.maxChargeHoldSeconds === "number" && (
+              <StatCard
+                stat={analyzed.weapon.maxChargeHoldSeconds}
+                title={t("analyzer:stat.maxChargeHoldSeconds")}
+                suffix={t("analyzer:suffix.seconds")}
               />
             )}
           </StatCategory>

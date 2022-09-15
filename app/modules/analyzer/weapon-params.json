@@ -330,6 +330,8 @@
       "DamageParam_ValueFullCharge": 1400,
       "DamageParam_ValueMaxCharge": 800,
       "DamageParam_ValueMinCharge": 400,
+      "ChargeFrameFullCharge": 45,
+      "KeepChargeFullFrame": 75,
       "InkConsumeFullCharge": 0.105,
       "InkConsumeMinCharge": 0.018667
     },
@@ -340,6 +342,7 @@
       "DamageParam_ValueFullCharge": 1600,
       "DamageParam_ValueMaxCharge": 800,
       "DamageParam_ValueMinCharge": 400,
+      "KeepChargeFullFrame": 75,
       "InkConsumeFullCharge": 0.18,
       "InkConsumeMinCharge": 0.0225
     },
@@ -367,6 +370,8 @@
       "DamageParam_ValueFullCharge": 1800,
       "DamageParam_ValueMaxCharge": 800,
       "DamageParam_ValueMinCharge": 400,
+      "ChargeFrameFullCharge": 92,
+      "KeepChargeFullFrame": 75,
       "InkConsumeFullCharge": 0.25,
       "InkConsumeMinCharge": 0.0225
     },
@@ -384,6 +389,7 @@
       "DamageParam_ValueFullCharge": 1800,
       "DamageParam_ValueMaxCharge": 800,
       "DamageParam_ValueMinCharge": 400,
+      "ChargeFrameFullCharge": 92,
       "InkConsumeFullCharge": 0.25,
       "InkConsumeMinCharge": 0.0225
     },
@@ -395,6 +401,7 @@
       "DamageParam_ValueFullCharge": 850,
       "DamageParam_ValueMaxCharge": 850,
       "DamageParam_ValueMinCharge": 300,
+      "ChargeFrameFullCharge": 20,
       "InkConsumeFullCharge": 0.084,
       "InkConsumeMinCharge": 0.0336
     },
@@ -405,6 +412,8 @@
       "DamageParam_ValueFullCharge": 1800,
       "DamageParam_ValueMaxCharge": 1300,
       "DamageParam_ValueMinCharge": 400,
+      "ChargeFrameFullCharge": 75,
+      "KeepChargeFullFrame": 300,
       "InkConsumeFullCharge": 0.15,
       "InkConsumeMinCharge": 0.02
     },
@@ -519,6 +528,7 @@
       },
       "DamageParam_ValueMax": 320,
       "DamageParam_ValueMin": 160,
+      "KeepChargeFullFrame": 200,
       "InkConsumeFullChargeSplatling": 0.15
     },
     "5000": {
@@ -603,6 +613,7 @@
       "SpecialPoint": 200,
       "subWeaponId": 11,
       "specialWeaponId": 9,
+      "ChargeFrameFullCharge": 72,
       "InkConsumeFullCharge_ChargeParam": 0.085
     },
     "7020": {
@@ -610,6 +621,8 @@
       "subWeaponId": 6,
       "specialWeaponId": 4,
       "WeaponSpeedType": "Fast",
+      "ChargeFrameFullCharge": 34,
+      "KeepChargeFullFrame": 75,
       "InkConsumeFullCharge_ChargeParam": 0.065
     },
     "8000": {

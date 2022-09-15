@@ -50,6 +50,12 @@ export function buildStats({
       subWeaponSplId: mainWeaponParams.subWeaponId,
       specialWeaponSplId: mainWeaponParams.specialWeaponId,
       brellaCanopyHp: mainWeaponParams.CanopyHP,
+      fullChargeSeconds: mainWeaponParams.ChargeFrameFullCharge
+        ? framesToSeconds(mainWeaponParams.ChargeFrameFullCharge)
+        : undefined,
+      maxChargeHoldSeconds: mainWeaponParams.KeepChargeFullFrame
+        ? framesToSeconds(mainWeaponParams.KeepChargeFullFrame)
+        : undefined,
       speedType: mainWeaponParams.WeaponSpeedType ?? "Normal",
       isTripleShooter: Boolean(mainWeaponParams.TripleShotSpanFrame),
     },
