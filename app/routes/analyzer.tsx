@@ -62,6 +62,7 @@ export default function BuildAnalyzerPage() {
           </div>
         </div>
         <div className="stack md">
+          {/* xxx: make sure can't be empty */}
           <StatCategory title={t("analyzer:stat.category.main")}>
             {typeof analyzed.weapon.brellaCanopyHp === "number" && (
               <StatCard
@@ -139,6 +140,20 @@ export default function BuildAnalyzerPage() {
               stat={analyzed.stats.runSpeedInEnemyInk}
               title={t("analyzer:stat.runSpeedInEnemyInk")}
             />
+            <StatCard
+              stat={analyzed.stats.framesBeforeTakingDamageInEnemyInk}
+              title={t("analyzer:stat.framesBeforeTakingDamageInEnemyInk")}
+            />
+            <StatCard
+              stat={analyzed.stats.damageTakenInEnemyInkPerSecond}
+              title={t("analyzer:stat.damageTakenInEnemyInkPerSecond")}
+              suffix={t("analyzer:suffix.hp")}
+            />
+            <StatCard
+              stat={analyzed.stats.enemyInkDamageLimit}
+              title={t("analyzer:stat.enemyInkDamageLimit")}
+              suffix={t("analyzer:suffix.hp")}
+            />
           </StatCategory>
           <StatCategory title={t("analyzer:stat.category.misc")}>
             <StatCard
@@ -159,20 +174,6 @@ export default function BuildAnalyzerPage() {
               stat={analyzed.stats.superJumpTimeTotal}
               title={t("analyzer:stat.superJumpTimeTotal")}
               suffix={t("analyzer:suffix.seconds")}
-            />
-            <StatCard
-              stat={analyzed.stats.framesBeforeTakingDamageInEnemyInk}
-              title={t("analyzer:stat.framesBeforeTakingDamageInEnemyInk")}
-            />
-            <StatCard
-              stat={analyzed.stats.damageTakenInEnemyInkPerSecond}
-              title={t("analyzer:stat.damageTakenInEnemyInkPerSecond")}
-              suffix={t("analyzer:suffix.hp")}
-            />
-            <StatCard
-              stat={analyzed.stats.enemyInkDamageLimit}
-              title={t("analyzer:stat.enemyInkDamageLimit")}
-              suffix={t("analyzer:suffix.hp")}
             />
           </StatCategory>
         </div>
