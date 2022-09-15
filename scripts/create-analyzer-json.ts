@@ -122,6 +122,15 @@ function parametersToMainWeaponResult(
       ? params["DamageParam"]?.["ValueMax"]
       : undefined;
 
+  const DamageParam_ValueMax = () => {
+    if (DamageParam_ValueDirect) return undefined;
+
+    return (
+      params["DamageParam"]?.["ValueMax"] ??
+      params["spl__BulletShelterShotgunParam"]?.["DamageEffectiveTotalMax"]
+    );
+  };
+
   return {
     SpecialPoint: weapon.SpecialPoint,
     subWeaponId: resolveSubWeaponId(weapon),
@@ -129,9 +138,7 @@ function parametersToMainWeaponResult(
     overwrites: resolveOverwrites(params),
     TripleShotSpanFrame: params["WeaponParam"]?.["TripleShotSpanFrame"],
     WeaponSpeedType: params["MainWeaponSetting"]?.["WeaponSpeedType"],
-    DamageParam_ValueMax: !DamageParam_ValueDirect
-      ? params["DamageParam"]?.["ValueMax"]
-      : undefined,
+    DamageParam_ValueMax: DamageParam_ValueMax(),
     DamageParam_ValueMin: !DamageParam_ValueDirect
       ? params["DamageParam"]?.["ValueMin"]
       : undefined,
@@ -140,6 +147,7 @@ function parametersToMainWeaponResult(
     DamageParam_ValueFullCharge: params["DamageParam"]?.["ValueFullCharge"],
     DamageParam_ValueMaxCharge: params["DamageParam"]?.["ValueMaxCharge"],
     DamageParam_ValueMinCharge: params["DamageParam"]?.["ValueMinCharge"],
+    CanopyHP: params["spl__BulletShelterCanopyParam"]?.["CanopyHP"],
     InkConsume,
     InkConsumeSlosher,
     InkConsumeFullCharge: params["WeaponParam"]?.["InkConsumeFullCharge"],

@@ -571,6 +571,7 @@
       "SpecialPoint": 200,
       "subWeaponId": 3,
       "specialWeaponId": 14,
+      "DamageParam_ValueMax": 810,
       "InkConsumeUmbrella_WeaponShelterCanopyParam": 0.3
     },
     "6010": {
@@ -584,6 +585,8 @@
         }
       },
       "WeaponSpeedType": "Slow",
+      "DamageParam_ValueMax": 1190,
+      "CanopyHP": 7000,
       "InkConsumeUmbrella_WeaponShelterCanopyParam": 0.3,
       "InkConsume_WeaponShelterShotgunParam": 0.11
     },
@@ -592,6 +595,8 @@
       "subWeaponId": 10,
       "specialWeaponId": 13,
       "WeaponSpeedType": "Fast",
+      "DamageParam_ValueMax": 400,
+      "CanopyHP": 2000,
       "InkConsumeUmbrella_WeaponShelterCanopyParam": 0,
       "InkConsume_WeaponShelterShotgunParam": 0.04
     },

@@ -55,6 +55,15 @@ export default function BuildAnalyzerPage() {
           </div>
         </div>
         <div className="stack md">
+          <StatCategory title={t("stat.category.main")}>
+            {typeof analyzed.weapon.brellaCanopyHp === "number" && (
+              <StatCard
+                stat={analyzed.weapon.brellaCanopyHp}
+                title={t("stat.canopyHp")}
+                suffix={t("suffix.hp")}
+              />
+            )}
+          </StatCategory>
           <StatCategory title={t("stat.category.sub")}>
             <StatCard
               stat={analyzed.stats.subWeaponWhiteInkFrames}

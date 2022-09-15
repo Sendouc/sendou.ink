@@ -48,6 +48,7 @@ export function buildStats({
     weapon: {
       subWeaponSplId: mainWeaponParams.subWeaponId,
       specialWeaponSplId: mainWeaponParams.specialWeaponId,
+      brellaCanopyHp: mainWeaponParams.CanopyHP,
       speedType: mainWeaponParams.WeaponSpeedType ?? "Normal",
       isTripleShooter: Boolean(mainWeaponParams.TripleShotSpanFrame),
     },

@@ -29,6 +29,9 @@ export interface MainWeaponParams {
   // xxx: what are these? would probably be nice to show
   // DamageParam_ReduceStartFrame?: number;
   // DamageParam_ReduceEndFrame?: number;
+  // xxx: CanopyHP missing from Splat Brella
+  /** Brella shield HP */
+  CanopyHP?: number;
   /** How much ink one shot consumes? InkConsume = 0.5 means 2 shots per full tank */
   InkConsume?: number;
   /** How much ink one slosh of slosher consumes? */
@@ -153,6 +156,7 @@ export interface AnalyzedBuild {
   weapon: {
     subWeaponSplId: SubWeaponId;
     specialWeaponSplId: SpecialWeaponId;
+    brellaCanopyHp?: number;
     speedType: NonNullable<MainWeaponParams["WeaponSpeedType"]> | "Normal";
     isTripleShooter: boolean;
   };
