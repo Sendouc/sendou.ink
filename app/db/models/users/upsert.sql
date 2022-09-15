@@ -24,5 +24,5 @@ set
   "discordDiscriminator" = excluded."discordDiscriminator",
   "discordAvatar" = excluded."discordAvatar",
   "twitch" = excluded."twitch",
-  "twitch" = excluded."twitch",
+  "twitter" = excluded."twitter",
   "youtubeId" = excluded."youtubeId" returning *
