@@ -124,6 +124,15 @@ export default function BuildAnalyzerPage() {
               title={t("stat.quickRespawnTime")}
               suffix={t("suffix.seconds")}
             />
+            <StatCard
+              stat={analyzed.stats.superJumpTimeGroundFrames}
+              title={t("stat.superJumpTimeGround")}
+            />
+            <StatCard
+              stat={analyzed.stats.superJumpTimeTotal}
+              title={t("stat.superJumpTimeTotal")}
+              suffix={t("suffix.seconds")}
+            />
           </StatCategory>
         </div>
       </div>

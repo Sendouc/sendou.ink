@@ -174,5 +174,7 @@ export interface AnalyzedBuild {
     // shootingRunSpeed: Stat;
     swimSpeed: Stat;
     quickRespawnTime: Stat;
+    superJumpTimeGroundFrames: Stat;
+    superJumpTimeTotal: Stat;
   };
 }

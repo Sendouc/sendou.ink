@@ -64,6 +64,8 @@ export function buildStats({
       // shootingRunSpeed: shootingRunSpeed(input),
       swimSpeed: swimSpeed(input),
       quickRespawnTime: quickRespawnTime(input),
+      superJumpTimeGroundFrames: superJumpTimeGroundFrames(input),
+      superJumpTimeTotal: superJumpTimeTotal(input),
     },
   };
 }
@@ -382,7 +384,7 @@ function swimSpeed(
 }
 
 // xxx: take in account own use of RP and other use of RP
-const RESPAWN_ANIMATION_TIME = 150;
+const RESPAWN_CHASE_FRAME = 150;
 function quickRespawnTime(
   args: StatFunctionInput
 ): AnalyzedBuild["stats"]["quickRespawnTime"] {
@@ -407,11 +409,60 @@ function quickRespawnTime(
 
   return {
     baseValue: framesToSeconds(
-      RESPAWN_ANIMATION_TIME + chase.baseEffect + around.baseEffect
+      RESPAWN_CHASE_FRAME + chase.baseEffect + around.baseEffect
     ),
-    value: framesToSeconds(
-      RESPAWN_ANIMATION_TIME + chase.effect + around.effect
-    ),
+    value: framesToSeconds(RESPAWN_CHASE_FRAME + chase.effect + around.effect),
     modifiedBy: QUICK_RESPAWN_TIME_ABILITY,
+  };
+}
+
+function superJumpTimeGroundFrames(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["superJumpTimeGroundFrames"] {
+  const SUPER_JUMP_TIME_GROUND_ABILITY = "QSJ";
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: SUPER_JUMP_TIME_GROUND_ABILITY,
+    }),
+    key: "SuperJump_ChargeFrm",
+    weapon: args.mainWeaponParams,
+  });
+
+  return {
+    baseValue: Math.ceil(baseEffect),
+    value: Math.ceil(effect),
+    modifiedBy: SUPER_JUMP_TIME_GROUND_ABILITY,
+  };
+}
+
+function superJumpTimeTotal(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["superJumpTimeTotal"] {
+  const SUPER_JUMP_TIME_TOTAL_ABILITY = "QSJ";
+
+  const charge = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: SUPER_JUMP_TIME_TOTAL_ABILITY,
+    }),
+    key: "SuperJump_ChargeFrm",
+    weapon: args.mainWeaponParams,
+  });
+  const move = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: SUPER_JUMP_TIME_TOTAL_ABILITY,
+    }),
+    key: "SuperJump_MoveFrm",
+    weapon: args.mainWeaponParams,
+  });
+
+  return {
+    baseValue: framesToSeconds(
+      Math.ceil(charge.baseEffect) + Math.ceil(move.baseEffect)
+    ),
+    value: framesToSeconds(Math.ceil(charge.effect) + Math.ceil(move.effect)),
+    modifiedBy: SUPER_JUMP_TIME_TOTAL_ABILITY,
   };
 }
