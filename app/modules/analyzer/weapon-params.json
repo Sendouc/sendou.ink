@@ -245,6 +245,7 @@
       "SpecialPoint": 200,
       "subWeaponId": 6,
       "specialWeaponId": 12,
+      "TripleShotSpanFrame": 8,
       "DamageParam_ValueMax": 290,
       "DamageParam_ValueMin": 145,
       "InkConsume": 0.0115
@@ -263,6 +264,7 @@
           "Mid": -1
         }
       },
+      "TripleShotSpanFrame": 20,
       "DamageParam_ValueMax": 410,
       "DamageParam_ValueMin": 205,
       "InkConsume": 0.0225

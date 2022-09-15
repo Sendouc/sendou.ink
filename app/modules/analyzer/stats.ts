@@ -49,6 +49,7 @@ export function buildStats({
       subWeaponSplId: mainWeaponParams.subWeaponId,
       specialWeaponSplId: mainWeaponParams.specialWeaponId,
       speedType: mainWeaponParams.WeaponSpeedType ?? "Normal",
+      isTripleShooter: Boolean(mainWeaponParams.TripleShotSpanFrame),
     },
     stats: {
       specialPoint: specialPoint(input),
@@ -272,17 +273,31 @@ function damages(args: StatFunctionInput): AnalyzedBuild["stats"]["damages"] {
       id: semiRandomId(),
       type,
       value: value / 10,
-      shotsToSplat: shotsToSplat({ value, type }),
+      shotsToSplat: shotsToSplat({
+        value,
+        type,
+        isTripleShooter: Boolean(args.mainWeaponParams.TripleShotSpanFrame),
+      }),
     });
   }
 
   return result;
 }
 
-function shotsToSplat({ value, type }: { value: number; type: DamageType }) {
+function shotsToSplat({
+  value,
+  type,
+  isTripleShooter,
+}: {
+  value: number;
+  type: DamageType;
+  isTripleShooter: boolean;
+}) {
   if (type !== "NORMAL_MAX") return;
 
-  return Math.ceil(1000 / value);
+  const multiplier = isTripleShooter ? 3 : 1;
+
+  return Math.ceil(1000 / (value * multiplier));
 }
 
 const framesToSeconds = (frames: number) =>

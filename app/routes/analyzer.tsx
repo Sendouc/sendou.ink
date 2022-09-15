@@ -78,7 +78,10 @@ export default function BuildAnalyzerPage() {
               title={t("stat.category.damage")}
               containerClassName="analyzer__table-container"
             >
-              <DamageTable values={analyzed.stats.damages} />
+              <DamageTable
+                values={analyzed.stats.damages}
+                isTripleShooter={analyzed.weapon.isTripleShooter}
+              />
             </StatCategory>
           )}
           <StatCategory
@@ -209,11 +212,12 @@ function StatCard({
   );
 }
 
-// xxx: L-3
 function DamageTable({
   values,
+  isTripleShooter,
 }: {
   values: AnalyzedBuild["stats"]["damages"];
+  isTripleShooter: AnalyzedBuild["weapon"]["isTripleShooter"];
 }) {
   const { t } = useTranslation("analyzer");
 
@@ -230,20 +234,26 @@ function DamageTable({
           </tr>
         </thead>
         <tbody>
-          {values.map((val) => (
-            <tr key={val.id}>
-              <td>{t(`damage.${val.type}`)}</td>
-              <td>
-                {val.value}{" "}
-                {val.shotsToSplat && (
-                  <span className="analyzer__shots-to-splat">
-                    {t("damage.toSplat", { count: val.shotsToSplat })}
-                  </span>
-                )}
-              </td>
-              {val.distance && <td>{val.distance}</td>}
-            </tr>
-          ))}
+          {values.map((val) => {
+            const damage = isTripleShooter
+              ? `${val.value}+${val.value}+${val.value}`
+              : val.value;
+
+            return (
+              <tr key={val.id}>
+                <td>{t(`damage.${val.type}`)}</td>
+                <td>
+                  {damage}{" "}
+                  {val.shotsToSplat && (
+                    <span className="analyzer__shots-to-splat">
+                      {t("damage.toSplat", { count: val.shotsToSplat })}
+                    </span>
+                  )}
+                </td>
+                {val.distance && <td>{val.distance}</td>}
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </>

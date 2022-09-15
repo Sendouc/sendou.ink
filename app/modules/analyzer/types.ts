@@ -13,6 +13,9 @@ export interface MainWeaponParams {
   SpecialPoint: number;
   /** Weapon's weight class. "Light/Heavy weapon" */
   WeaponSpeedType?: "Slow" | "Fast";
+  // xxx: verify
+  /** Total frames it takes the weapon to shoot out three times */
+  TripleShotSpanFrame?: number;
   DamageParam_ValueMax?: number;
   DamageParam_ValueMin?: number;
   DamageParam_ValueDirect?: number;
@@ -151,6 +154,7 @@ export interface AnalyzedBuild {
     subWeaponSplId: SubWeaponId;
     specialWeaponSplId: SpecialWeaponId;
     speedType: NonNullable<MainWeaponParams["WeaponSpeedType"]> | "Normal";
+    isTripleShooter: boolean;
   };
   stats: {
     specialPoint: Stat;

@@ -127,6 +127,7 @@ function parametersToMainWeaponResult(
     subWeaponId: resolveSubWeaponId(weapon),
     specialWeaponId: resolveSpecialWeaponId(weapon),
     overwrites: resolveOverwrites(params),
+    TripleShotSpanFrame: params["WeaponParam"]?.["TripleShotSpanFrame"],
     WeaponSpeedType: params["MainWeaponSetting"]?.["WeaponSpeedType"],
     DamageParam_ValueMax: !DamageParam_ValueDirect
       ? params["DamageParam"]?.["ValueMax"]
