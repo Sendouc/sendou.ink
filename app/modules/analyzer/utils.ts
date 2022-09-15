@@ -7,6 +7,8 @@ import invariant from "tiny-invariant";
 import type { AbilityWithUnknown } from "../in-game-lists/types";
 
 export function weaponParams(): ParamsJson {
+  // xxx: after json update:
+  // @ts-expect-error can be removed when Lean updates the json
   return weaponParamsJson as ParamsJson;
 }
 

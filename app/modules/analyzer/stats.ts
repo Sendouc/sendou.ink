@@ -4,10 +4,12 @@ import type {
 } from "~/modules/in-game-lists";
 import type {
   AnalyzedBuild,
+  DamageType,
   InkConsumeType,
   MainWeaponParams,
   StatFunctionInput,
 } from "./types";
+import { DAMAGE_TYPE } from "./types";
 import { INK_CONSUME_TYPES } from "./types";
 import invariant from "tiny-invariant";
 import {
@@ -17,6 +19,7 @@ import {
   weaponParams,
 } from "./utils";
 import { assertUnreachable } from "~/utils/types";
+import { semiRandomId } from "~/utils/strings";
 
 export function buildStats({
   build,
@@ -51,6 +54,7 @@ export function buildStats({
       specialPoint: specialPoint(input),
       specialSavedAfterDeath: specialSavedAfterDeath(input),
       fullInkTankOptions: fullInkTankOptions(input),
+      damages: damages(input),
       subWeaponWhiteInkFrames: subWeaponParams.InkRecoverStop,
       squidFormInkRecoverySeconds: squidFormInkRecoverySeconds(input),
       runSpeed: runSpeed(input),
@@ -128,6 +132,7 @@ function fullInkTankOptions(
       if (typeof mainWeaponInkConsume !== "number") continue;
 
       result.push({
+        id: semiRandomId(),
         subsUsed: subsFromFullInkTank,
         type,
         value: effectToRounded(
@@ -229,6 +234,55 @@ function inkConsumeTypeToParamsKeys(
       assertUnreachable(type);
     }
   }
+}
+
+const damageTypeToParamsKey: Record<DamageType, keyof MainWeaponParams> = {
+  NORMAL_MIN: "DamageParam_ValueMin",
+  NORMAL_MAX: "DamageParam_ValueMax",
+  DIRECT: "DamageParam_ValueDirect",
+  DISTANCE: "BlastParam_DistanceDamage",
+  FULL_CHARGE: "DamageParam_ValueFullCharge",
+  MAX_CHARGE: "DamageParam_ValueMaxCharge",
+  TAP_SHOT: "DamageParam_ValueMinCharge",
+};
+
+function damages(args: StatFunctionInput): AnalyzedBuild["stats"]["damages"] {
+  const result: AnalyzedBuild["stats"]["damages"] = [];
+
+  for (const type of DAMAGE_TYPE) {
+    const key = damageTypeToParamsKey[type];
+    const value = args.mainWeaponParams[key];
+
+    if (Array.isArray(value)) {
+      for (const subValue of value) {
+        result.push({
+          type,
+          value: subValue.Damage / 10,
+          distance: subValue.Distance,
+          id: semiRandomId(),
+        });
+      }
+
+      continue;
+    }
+
+    if (typeof value !== "number") continue;
+
+    result.push({
+      id: semiRandomId(),
+      type,
+      value: value / 10,
+      shotsToSplat: shotsToSplat({ value, type }),
+    });
+  }
+
+  return result;
+}
+
+function shotsToSplat({ value, type }: { value: number; type: DamageType }) {
+  if (type !== "NORMAL_MAX") return;
+
+  return Math.ceil(1000 / value);
 }
 
 const framesToSeconds = (frames: number) =>

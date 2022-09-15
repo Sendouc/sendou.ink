@@ -115,12 +115,30 @@ function parametersToMainWeaponResult(
     ? params["WeaponParam"]?.["InkConsume"]
     : undefined;
 
+  // for blasters these values are the same and represent damage caused by direct
+  const DamageParam_ValueDirect =
+    params["DamageParam"]?.["ValueMax"] &&
+    params["DamageParam"]?.["ValueMax"] === params["DamageParam"]?.["ValueMin"]
+      ? params["DamageParam"]?.["ValueMax"]
+      : undefined;
+
   return {
     SpecialPoint: weapon.SpecialPoint,
     subWeaponId: resolveSubWeaponId(weapon),
     specialWeaponId: resolveSpecialWeaponId(weapon),
     overwrites: resolveOverwrites(params),
     WeaponSpeedType: params["MainWeaponSetting"]?.["WeaponSpeedType"],
+    DamageParam_ValueMax: !DamageParam_ValueDirect
+      ? params["DamageParam"]?.["ValueMax"]
+      : undefined,
+    DamageParam_ValueMin: !DamageParam_ValueDirect
+      ? params["DamageParam"]?.["ValueMin"]
+      : undefined,
+    DamageParam_ValueDirect,
+    BlastParam_DistanceDamage: params["BlastParam"]?.["DistanceDamage"],
+    DamageParam_ValueFullCharge: params["DamageParam"]?.["ValueFullCharge"],
+    DamageParam_ValueMaxCharge: params["DamageParam"]?.["ValueMaxCharge"],
+    DamageParam_ValueMinCharge: params["DamageParam"]?.["ValueMinCharge"],
     InkConsume,
     InkConsumeSlosher,
     InkConsumeFullCharge: params["WeaponParam"]?.["InkConsumeFullCharge"],

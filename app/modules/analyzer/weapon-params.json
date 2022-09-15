@@ -5,6 +5,8 @@
       "subWeaponId": 6,
       "specialWeaponId": 11,
       "WeaponSpeedType": "Fast",
+      "DamageParam_ValueMax": 380,
+      "DamageParam_ValueMin": 190,
       "InkConsume": 0.008
     },
     "10": {
@@ -12,6 +14,8 @@
       "subWeaponId": 0,
       "specialWeaponId": 2,
       "WeaponSpeedType": "Fast",
+      "DamageParam_ValueMax": 280,
+      "DamageParam_ValueMin": 140,
       "InkConsume": 0.0043
     },
     "20": {
@@ -19,6 +23,8 @@
       "subWeaponId": 2,
       "specialWeaponId": 12,
       "WeaponSpeedType": "Fast",
+      "DamageParam_ValueMax": 280,
+      "DamageParam_ValueMin": 140,
       "InkConsume": 0.008
     },
     "30": {
@@ -26,24 +32,32 @@
       "subWeaponId": 5,
       "specialWeaponId": 13,
       "WeaponSpeedType": "Fast",
+      "DamageParam_ValueMax": 240,
+      "DamageParam_ValueMin": 120,
       "InkConsume": 0.0055
     },
     "40": {
       "SpecialPoint": 200,
       "subWeaponId": 1,
       "specialWeaponId": 1,
+      "DamageParam_ValueMax": 360,
+      "DamageParam_ValueMin": 180,
       "InkConsume": 0.0092
     },
     "45": {
       "SpecialPoint": 200,
       "subWeaponId": 1,
       "specialWeaponId": 1,
+      "DamageParam_ValueMax": 360,
+      "DamageParam_ValueMin": 180,
       "InkConsume": 0.0092
     },
     "50": {
       "SpecialPoint": 200,
       "subWeaponId": 4,
       "specialWeaponId": 9,
+      "DamageParam_ValueMax": 520,
+      "DamageParam_ValueMin": 300,
       "InkConsume": 0.013
     },
     "60": {
@@ -51,6 +65,8 @@
       "subWeaponId": 1,
       "specialWeaponId": 15,
       "WeaponSpeedType": "Fast",
+      "DamageParam_ValueMax": 280,
+      "DamageParam_ValueMin": 140,
       "InkConsume": 0.008
     },
     "70": {
@@ -67,18 +83,24 @@
           "Mid": -1
         }
       },
+      "DamageParam_ValueMax": 420,
+      "DamageParam_ValueMin": 210,
       "InkConsume": 0.02
     },
     "80": {
       "SpecialPoint": 200,
       "subWeaponId": 3,
       "specialWeaponId": 8,
+      "DamageParam_ValueMax": 620,
+      "DamageParam_ValueMin": 350,
       "InkConsume": 0.025
     },
     "90": {
       "SpecialPoint": 200,
       "subWeaponId": 12,
       "specialWeaponId": 8,
+      "DamageParam_ValueMax": 320,
+      "DamageParam_ValueMin": 160,
       "InkConsume": 0.016
     },
     "200": {
@@ -95,6 +117,17 @@
         }
       },
       "WeaponSpeedType": "Fast",
+      "DamageParam_ValueDirect": 1250,
+      "BlastParam_DistanceDamage": [
+        {
+          "Damage": 700,
+          "Distance": 1
+        },
+        {
+          "Damage": 500,
+          "Distance": 3.57
+        }
+      ],
       "InkConsume": 0.075
     },
     "210": {
@@ -106,6 +139,17 @@
           "Mid": 0.5
         }
       },
+      "DamageParam_ValueDirect": 1250,
+      "BlastParam_DistanceDamage": [
+        {
+          "Damage": 700,
+          "Distance": 0.94
+        },
+        {
+          "Damage": 500,
+          "Distance": 3.3
+        }
+      ],
       "InkConsume": 0.1
     },
     "220": {
@@ -117,6 +161,17 @@
           "Mid": 0.5
         }
       },
+      "DamageParam_ValueDirect": 1250,
+      "BlastParam_DistanceDamage": [
+        {
+          "Damage": 700,
+          "Distance": 1
+        },
+        {
+          "Damage": 500,
+          "Distance": 3.5
+        }
+      ],
       "InkConsume": 0.11
     },
     "230": {
@@ -129,6 +184,17 @@
         }
       },
       "WeaponSpeedType": "Fast",
+      "DamageParam_ValueDirect": 600,
+      "BlastParam_DistanceDamage": [
+        {
+          "Damage": 300,
+          "Distance": 1
+        },
+        {
+          "Damage": 300,
+          "Distance": 4
+        }
+      ],
       "InkConsume": 0.04
     },
     "240": {
@@ -140,6 +206,17 @@
           "Mid": 0.5
         }
       },
+      "DamageParam_ValueDirect": 850,
+      "BlastParam_DistanceDamage": [
+        {
+          "Damage": 350,
+          "Distance": 0.94
+        },
+        {
+          "Damage": 350,
+          "Distance": 3.3
+        }
+      ],
       "InkConsume": 0.07
     },
     "250": {
@@ -151,12 +228,25 @@
           "Mid": 0.5
         }
       },
+      "DamageParam_ValueDirect": 850,
+      "BlastParam_DistanceDamage": [
+        {
+          "Damage": 350,
+          "Distance": 0.94
+        },
+        {
+          "Damage": 350,
+          "Distance": 3.3
+        }
+      ],
       "InkConsume": 0.08
     },
     "300": {
       "SpecialPoint": 200,
       "subWeaponId": 6,
       "specialWeaponId": 12,
+      "DamageParam_ValueMax": 290,
+      "DamageParam_ValueMin": 145,
       "InkConsume": 0.0115
     },
     "310": {
@@ -173,12 +263,16 @@
           "Mid": -1
         }
       },
+      "DamageParam_ValueMax": 410,
+      "DamageParam_ValueMin": 205,
       "InkConsume": 0.0225
     },
     "400": {
       "SpecialPoint": 200,
       "subWeaponId": 4,
       "specialWeaponId": 1,
+      "DamageParam_ValueMax": 380,
+      "DamageParam_ValueMin": 190,
       "InkConsume": 0.022
     },
     "1000": {
@@ -231,6 +325,9 @@
       "SpecialPoint": 190,
       "subWeaponId": 9,
       "specialWeaponId": 2,
+      "DamageParam_ValueFullCharge": 1400,
+      "DamageParam_ValueMaxCharge": 800,
+      "DamageParam_ValueMinCharge": 400,
       "InkConsumeFullCharge": 0.105,
       "InkConsumeMinCharge": 0.018667
     },
@@ -238,6 +335,9 @@
       "SpecialPoint": 200,
       "subWeaponId": 0,
       "specialWeaponId": 8,
+      "DamageParam_ValueFullCharge": 1600,
+      "DamageParam_ValueMaxCharge": 800,
+      "DamageParam_ValueMinCharge": 400,
       "InkConsumeFullCharge": 0.18,
       "InkConsumeMinCharge": 0.0225
     },
@@ -245,6 +345,9 @@
       "SpecialPoint": 200,
       "subWeaponId": 0,
       "specialWeaponId": 8,
+      "DamageParam_ValueFullCharge": 1600,
+      "DamageParam_ValueMaxCharge": 800,
+      "DamageParam_ValueMinCharge": 400,
       "InkConsumeFullCharge": 0.18,
       "InkConsumeMinCharge": 0.0225
     },
@@ -259,6 +362,9 @@
         }
       },
       "WeaponSpeedType": "Slow",
+      "DamageParam_ValueFullCharge": 1800,
+      "DamageParam_ValueMaxCharge": 800,
+      "DamageParam_ValueMinCharge": 400,
       "InkConsumeFullCharge": 0.25,
       "InkConsumeMinCharge": 0.0225
     },
@@ -273,6 +379,9 @@
         }
       },
       "WeaponSpeedType": "Slow",
+      "DamageParam_ValueFullCharge": 1800,
+      "DamageParam_ValueMaxCharge": 800,
+      "DamageParam_ValueMinCharge": 400,
       "InkConsumeFullCharge": 0.25,
       "InkConsumeMinCharge": 0.0225
     },
@@ -281,6 +390,9 @@
       "subWeaponId": 7,
       "specialWeaponId": 9,
       "WeaponSpeedType": "Fast",
+      "DamageParam_ValueFullCharge": 850,
+      "DamageParam_ValueMaxCharge": 850,
+      "DamageParam_ValueMinCharge": 300,
       "InkConsumeFullCharge": 0.084,
       "InkConsumeMinCharge": 0.0336
     },
@@ -288,6 +400,9 @@
       "SpecialPoint": 200,
       "subWeaponId": 13,
       "specialWeaponId": 4,
+      "DamageParam_ValueFullCharge": 1800,
+      "DamageParam_ValueMaxCharge": 1300,
+      "DamageParam_ValueMinCharge": 400,
       "InkConsumeFullCharge": 0.15,
       "InkConsumeMinCharge": 0.02
     },
@@ -334,6 +449,8 @@
           "Mid": 1.2
         }
       },
+      "DamageParam_ValueMax": 320,
+      "DamageParam_ValueMin": 160,
       "InkConsumeFullChargeSplatling": 0.1725
     },
     "4010": {
@@ -347,6 +464,8 @@
           "Mid": 1.175
         }
       },
+      "DamageParam_ValueMax": 300,
+      "DamageParam_ValueMin": 150,
       "InkConsumeFullChargeSplatling": 0.225
     },
     "4020": {
@@ -366,6 +485,8 @@
         }
       },
       "WeaponSpeedType": "Slow",
+      "DamageParam_ValueMax": 320,
+      "DamageParam_ValueMin": 160,
       "InkConsumeFullChargeSplatling": 0.35
     },
     "4030": {
@@ -379,6 +500,8 @@
           "Mid": 1.125
         }
       },
+      "DamageParam_ValueMax": 280,
+      "DamageParam_ValueMin": 140,
       "InkConsumeFullChargeSplatling": 0.25
     },
     "4040": {
@@ -392,6 +515,8 @@
           "Mid": 1.15
         }
       },
+      "DamageParam_ValueMax": 320,
+      "DamageParam_ValueMin": 160,
       "InkConsumeFullChargeSplatling": 0.15
     },
     "5000": {
@@ -399,6 +524,8 @@
       "subWeaponId": 8,
       "specialWeaponId": 15,
       "WeaponSpeedType": "Fast",
+      "DamageParam_ValueMax": 360,
+      "DamageParam_ValueMin": 180,
       "InkConsume": 0.00663,
       "InkConsume_SideStepParam": 0.05
     },
@@ -406,6 +533,8 @@
       "SpecialPoint": 200,
       "subWeaponId": 1,
       "specialWeaponId": 12,
+      "DamageParam_ValueMax": 300,
+      "DamageParam_ValueMin": 150,
       "InkConsume": 0.0072,
       "InkConsume_SideStepParam": 0.07
     },
@@ -413,6 +542,8 @@
       "SpecialPoint": 180,
       "subWeaponId": 4,
       "specialWeaponId": 6,
+      "DamageParam_ValueMax": 360,
+      "DamageParam_ValueMin": 180,
       "InkConsume": 0.014,
       "InkConsume_SideStepParam": 0.08
     },
@@ -420,6 +551,8 @@
       "SpecialPoint": 200,
       "subWeaponId": 0,
       "specialWeaponId": 7,
+      "DamageParam_ValueMax": 280,
+      "DamageParam_ValueMin": 140,
       "InkConsume": 0.012,
       "InkConsume_SideStepParam": 0.08
     },
@@ -427,6 +560,8 @@
       "SpecialPoint": 200,
       "subWeaponId": 7,
       "specialWeaponId": 13,
+      "DamageParam_ValueMax": 280,
+      "DamageParam_ValueMin": 140,
       "InkConsume": 0.008,
       "InkConsume_SideStepParam": 0.03
     },

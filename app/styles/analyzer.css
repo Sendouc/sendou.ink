@@ -81,13 +81,19 @@
   font-weight: var(--bold);
 }
 
-.analyzer__consumption-table-container {
+.analyzer__table-container {
   width: 100%;
   padding: var(--s-3);
   background-color: var(--bg-darker);
   border-radius: var(--rounded);
   margin-block-start: var(--s-4);
   padding-block: var(--s-2);
+}
+
+.analyzer__shots-to-splat {
+  color: var(--text-lighter);
+  font-size: var(--fonts-xxxs);
+  margin-inline-start: var(--s-4);
 }
 
 .analyzer__consumption-table-explanation {

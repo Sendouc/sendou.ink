@@ -3,14 +3,15 @@ import { useTranslation } from "react-i18next";
 import { AbilitiesSelector } from "~/components/AbilitiesSelector";
 import { Ability } from "~/components/Ability";
 import { WeaponCombobox } from "~/components/Combobox";
+import { Image } from "~/components/Image";
 import { Main } from "~/components/Main";
-import type { Stat } from "~/modules/analyzer";
+import type { AnalyzedBuild, Stat } from "~/modules/analyzer";
 import { useAnalyzeBuild } from "~/modules/analyzer";
-import type { AnalyzedBuild, FullInkTankOption } from "~/modules/analyzer";
 import type { MainWeaponId, SubWeaponId } from "~/modules/in-game-lists";
 import styles from "~/styles/analyzer.css";
-import { Image } from "~/components/Image";
 import { specialWeaponImageUrl, subWeaponImageUrl } from "~/utils/urls";
+
+// xxx: charge hold frames
 
 export const CURRENT_PATCH = "1.1";
 
@@ -72,9 +73,17 @@ export default function BuildAnalyzerPage() {
               suffix="%"
             />
           </StatCategory>
+          {analyzed.stats.damages.length > 0 && (
+            <StatCategory
+              title={t("stat.category.damage")}
+              containerClassName="analyzer__table-container"
+            >
+              <DamageTable values={analyzed.stats.damages} />
+            </StatCategory>
+          )}
           <StatCategory
             title={t("stat.category.actionsPerInkTank")}
-            containerClassName="analyzer__consumption-table-container"
+            containerClassName="analyzer__table-container"
           >
             <ConsumptionTable
               options={analyzed.stats.fullInkTankOptions}
@@ -200,11 +209,52 @@ function StatCard({
   );
 }
 
+// xxx: L-3
+function DamageTable({
+  values,
+}: {
+  values: AnalyzedBuild["stats"]["damages"];
+}) {
+  const { t } = useTranslation("analyzer");
+
+  return (
+    <>
+      <table>
+        <thead>
+          <tr>
+            <th>{t("damage.header.type")}</th>
+            <th>{t("damage.header.damage")}</th>
+            {values.some((val) => val.distance) && (
+              <th>{t("damage.header.distance")}</th>
+            )}
+          </tr>
+        </thead>
+        <tbody>
+          {values.map((val) => (
+            <tr key={val.id}>
+              <td>{t(`damage.${val.type}`)}</td>
+              <td>
+                {val.value}{" "}
+                {val.shotsToSplat && (
+                  <span className="analyzer__shots-to-splat">
+                    {t("damage.toSplat", { count: val.shotsToSplat })}
+                  </span>
+                )}
+              </td>
+              {val.distance && <td>{val.distance}</td>}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
+  );
+}
+
 function ConsumptionTable({
   options,
   subWeaponId,
 }: {
-  options: Array<FullInkTankOption>;
+  options: AnalyzedBuild["stats"]["fullInkTankOptions"];
   subWeaponId: SubWeaponId;
 }) {
   const { t } = useTranslation(["analyzer", "weapons"]);
@@ -230,7 +280,7 @@ function ConsumptionTable({
                 {options
                   .filter((opt) => opt.subsUsed === subsUsed)
                   .map((opt) => {
-                    return <td key={opt.type}>{opt.value}</td>;
+                    return <td key={opt.id}>{opt.value}</td>;
                   })}
               </tr>
             );

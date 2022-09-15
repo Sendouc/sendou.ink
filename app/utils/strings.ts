@@ -17,3 +17,7 @@ export function placementString(placement: number) {
 
   return `${placement}th`;
 }
+
+export function semiRandomId() {
+  return String(Math.random());
+}

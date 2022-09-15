@@ -13,6 +13,19 @@ export interface MainWeaponParams {
   SpecialPoint: number;
   /** Weapon's weight class. "Light/Heavy weapon" */
   WeaponSpeedType?: "Slow" | "Fast";
+  DamageParam_ValueMax?: number;
+  DamageParam_ValueMin?: number;
+  DamageParam_ValueDirect?: number;
+  /** Damage caused by charger's full charged shot */
+  DamageParam_ValueFullCharge?: number;
+  /** Max damage caused by charger's charged shot before fully charged */
+  DamageParam_ValueMaxCharge?: number;
+  /** Charger tap shot damage */
+  DamageParam_ValueMinCharge?: number;
+  BlastParam_DistanceDamage?: Array<DistanceDamage>;
+  // xxx: what are these? would probably be nice to show
+  // DamageParam_ReduceStartFrame?: number;
+  // DamageParam_ReduceEndFrame?: number;
   /** How much ink one shot consumes? InkConsume = 0.5 means 2 shots per full tank */
   InkConsume?: number;
   /** How much ink one slosh of slosher consumes? */
@@ -47,8 +60,8 @@ export interface MainWeaponParams {
 }
 
 export interface DistanceDamage {
-  damage: number;
-  distance: number;
+  Damage: number;
+  Distance: number;
 }
 
 export interface SubWeaponParams {
@@ -114,6 +127,25 @@ export interface FullInkTankOption {
   type: InkConsumeType;
 }
 
+export const DAMAGE_TYPE = [
+  "NORMAL_MIN",
+  "NORMAL_MAX",
+  "DIRECT",
+  "FULL_CHARGE",
+  "MAX_CHARGE",
+  "TAP_SHOT",
+  "DISTANCE",
+] as const;
+
+export type DamageType = typeof DAMAGE_TYPE[number];
+
+export interface Damage {
+  value: number;
+  type: DamageType;
+  distance?: number;
+  shotsToSplat?: number;
+}
+
 export interface AnalyzedBuild {
   weapon: {
     subWeaponSplId: SubWeaponId;
@@ -125,7 +157,8 @@ export interface AnalyzedBuild {
     /** % of special charge saved when dying */
     specialSavedAfterDeath: Stat;
     subWeaponWhiteInkFrames: number;
-    fullInkTankOptions: Array<FullInkTankOption>;
+    fullInkTankOptions: Array<FullInkTankOption & { id: string }>;
+    damages: Array<Damage & { id: string }>;
     squidFormInkRecoverySeconds: Stat;
     runSpeed: Stat;
     // xxx: missing from json
