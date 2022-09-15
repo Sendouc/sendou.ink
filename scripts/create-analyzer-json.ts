@@ -242,6 +242,8 @@ function resolveOverwrites(params: any) {
   for (const [key, value] of Object.entries(params)) {
     const parsed = overwriteSchema.safeParse(value);
 
+    resolveOverwritesWithArbitraryKeys(result, value);
+
     // each object has a $type property which we ignore
     if (
       key.includes("PlayerGearSkillParam") &&
@@ -266,6 +268,30 @@ function resolveOverwrites(params: any) {
   if (Object.keys(result).length === 0) return;
 
   return result;
+}
+
+function resolveOverwritesWithArbitraryKeys(
+  result: NonNullable<MainWeaponParams["overwrites"]>,
+  paramsObj: unknown
+) {
+  for (const [key, value] of Object.entries(
+    paramsObj as Record<string, number>
+  )) {
+    if (!key.startsWith("Overwrite_")) continue;
+
+    let abilityKey = key.replace("Overwrite_", "");
+
+    for (const type of ["High", "Mid", "Low"] as const) {
+      const suffix = `_${type}`;
+      if (!abilityKey.endsWith(suffix)) continue;
+
+      abilityKey = abilityKey.replace(suffix, "");
+
+      if (!result[abilityKey]) result[abilityKey] = {};
+
+      result[abilityKey]![type] = value;
+    }
+  }
 }
 
 const WEAPON_TYPES_TO_IGNORE = [

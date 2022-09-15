@@ -57,6 +57,16 @@
       "SpecialPoint": 200,
       "subWeaponId": 12,
       "specialWeaponId": 12,
+      "overwrites": {
+        "ConsumeRt_Main": {
+          "High": 0.5,
+          "Mid": 0.7
+        },
+        "MoveVelRt_Shot": {
+          "High": -1,
+          "Mid": -1
+        }
+      },
       "InkConsume": 0.02
     },
     "80": {
@@ -76,6 +86,10 @@
       "subWeaponId": 0,
       "specialWeaponId": 3,
       "overwrites": {
+        "ConsumeRt_Main": {
+          "High": 0.5,
+          "Mid": 0.7
+        },
         "ReduceJumpSwerveRate": {
           "Mid": 0.5
         }
@@ -149,6 +163,16 @@
       "SpecialPoint": 200,
       "subWeaponId": 9,
       "specialWeaponId": 15,
+      "overwrites": {
+        "ConsumeRt_Main": {
+          "High": 0.5,
+          "Mid": 0.7
+        },
+        "MoveVelRt_Shot": {
+          "High": -1,
+          "Mid": -1
+        }
+      },
       "InkConsume": 0.0225
     },
     "400": {
@@ -174,6 +198,12 @@
       "SpecialPoint": 190,
       "subWeaponId": 3,
       "specialWeaponId": 15,
+      "overwrites": {
+        "ConsumeRt_Main": {
+          "High": 0.5,
+          "Mid": 0.7
+        }
+      },
       "WeaponSpeedType": "Slow",
       "InkConsume_WeaponSwingParam": 0.18
     },
@@ -222,6 +252,12 @@
       "SpecialPoint": 200,
       "subWeaponId": 10,
       "specialWeaponId": 7,
+      "overwrites": {
+        "ConsumeRt_Main": {
+          "High": 0.5,
+          "Mid": 0.7
+        }
+      },
       "WeaponSpeedType": "Slow",
       "InkConsumeFullCharge": 0.25,
       "InkConsumeMinCharge": 0.0225
@@ -230,6 +266,12 @@
       "SpecialPoint": 200,
       "subWeaponId": 10,
       "specialWeaponId": 7,
+      "overwrites": {
+        "ConsumeRt_Main": {
+          "High": 0.5,
+          "Mid": 0.7
+        }
+      },
       "WeaponSpeedType": "Slow",
       "InkConsumeFullCharge": 0.25,
       "InkConsumeMinCharge": 0.0225
@@ -285,18 +327,44 @@
       "SpecialPoint": 180,
       "subWeaponId": 2,
       "specialWeaponId": 11,
+      "overwrites": {
+        "MoveVelRt_Shot": {
+          "High": 1.4,
+          "Low": 1,
+          "Mid": 1.2
+        }
+      },
       "InkConsumeFullChargeSplatling": 0.1725
     },
     "4010": {
       "SpecialPoint": 200,
       "subWeaponId": 3,
       "specialWeaponId": 7,
+      "overwrites": {
+        "MoveVelRt_Shot": {
+          "High": 1.35,
+          "Low": 1,
+          "Mid": 1.175
+        }
+      },
       "InkConsumeFullChargeSplatling": 0.225
     },
     "4020": {
       "SpecialPoint": 190,
       "subWeaponId": 7,
       "specialWeaponId": 6,
+      "overwrites": {
+        "ConsumeRt_Main": {
+          "High": 0.5,
+          "Low": 1,
+          "Mid": 0.7
+        },
+        "MoveVelRt_Shot": {
+          "High": 1.35,
+          "Low": 1,
+          "Mid": 1.175
+        }
+      },
       "WeaponSpeedType": "Slow",
       "InkConsumeFullChargeSplatling": 0.35
     },
@@ -304,12 +372,26 @@
       "SpecialPoint": 200,
       "subWeaponId": 5,
       "specialWeaponId": 10,
+      "overwrites": {
+        "MoveVelRt_Shot": {
+          "High": 1.25,
+          "Low": 1,
+          "Mid": 1.125
+        }
+      },
       "InkConsumeFullChargeSplatling": 0.25
     },
     "4040": {
       "SpecialPoint": 190,
       "subWeaponId": 9,
       "specialWeaponId": 5,
+      "overwrites": {
+        "MoveVelRt_Shot": {
+          "High": 1.3,
+          "Low": 1,
+          "Mid": 1.15
+        }
+      },
       "InkConsumeFullChargeSplatling": 0.15
     },
     "5000": {
@@ -358,6 +440,12 @@
       "SpecialPoint": 190,
       "subWeaponId": 8,
       "specialWeaponId": 8,
+      "overwrites": {
+        "ConsumeRt_Main": {
+          "High": 0.5,
+          "Mid": 0.7
+        }
+      },
       "WeaponSpeedType": "Slow",
       "InkConsumeUmbrella_WeaponShelterCanopyParam": 0.3,
       "InkConsume_WeaponShelterShotgunParam": 0.11
