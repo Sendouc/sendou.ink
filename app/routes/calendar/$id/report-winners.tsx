@@ -3,7 +3,7 @@ import {
   type ActionFunction,
   type LoaderArgs,
   json,
-  redirect
+  redirect,
 } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 import { z } from "zod";
