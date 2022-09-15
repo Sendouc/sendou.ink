@@ -597,7 +597,6 @@
       "WeaponSpeedType": "Fast",
       "DamageParam_ValueMax": 400,
       "CanopyHP": 2000,
-      "InkConsumeUmbrella_WeaponShelterCanopyParam": 0,
       "InkConsume_WeaponShelterShotgunParam": 0.04
     },
     "7010": {

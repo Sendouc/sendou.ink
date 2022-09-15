@@ -159,7 +159,9 @@ function parametersToMainWeaponResult(
     InkConsume_WeaponWideSwingParam:
       params["WeaponWideSwingParam"]?.["InkConsume"],
     InkConsumeUmbrella_WeaponShelterCanopyParam:
-      params["spl__WeaponShelterCanopyParam"]?.["InkConsumeUmbrella"],
+      params["spl__WeaponShelterCanopyParam"]?.["InkConsumeUmbrella"] !== 0
+        ? params["spl__WeaponShelterCanopyParam"]?.["InkConsumeUmbrella"]
+        : undefined,
     InkConsume_WeaponShelterShotgunParam:
       params["spl__WeaponShelterShotgunParam"]?.["InkConsume"],
     InkConsume_SideStepParam: params["SideStepParam"]?.["InkConsume"],

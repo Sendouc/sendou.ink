@@ -217,7 +217,7 @@ function inkConsumeTypeToParamsKeys(
 ): Array<keyof MainWeaponParams> {
   switch (type) {
     case "NORMAL":
-      return ["InkConsume"];
+      return ["InkConsume", "InkConsume_WeaponShelterShotgunParam"];
     case "SWING":
       return ["InkConsume_SwingParam", "InkConsume_WeaponSwingParam"];
     case "SLOSH":

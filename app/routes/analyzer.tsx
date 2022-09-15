@@ -94,15 +94,17 @@ export default function BuildAnalyzerPage() {
               />
             </StatCategory>
           )}
-          <StatCategory
-            title={t("stat.category.actionsPerInkTank")}
-            containerClassName="analyzer__table-container"
-          >
-            <ConsumptionTable
-              options={analyzed.stats.fullInkTankOptions}
-              subWeaponId={analyzed.weapon.subWeaponSplId}
-            />
-          </StatCategory>
+          {analyzed.stats.fullInkTankOptions.length > 0 && (
+            <StatCategory
+              title={t("stat.category.actionsPerInkTank")}
+              containerClassName="analyzer__table-container"
+            >
+              <ConsumptionTable
+                options={analyzed.stats.fullInkTankOptions}
+                subWeaponId={analyzed.weapon.subWeaponSplId}
+              />
+            </StatCategory>
+          )}
           <StatCategory title={t("stat.category.movement")}>
             <StatCard
               stat={analyzed.stats.swimSpeed}
