@@ -161,6 +161,7 @@ function parametersToMainWeaponResult(
       ],
     KeepChargeFullFrame:
       KeepChargeFullFrame !== 1 ? KeepChargeFullFrame : undefined,
+    InkRecoverStop: params["WeaponParam"]?.["InkRecoverStop"],
     InkConsume,
     InkConsumeSlosher,
     InkConsumeFullCharge: params["WeaponParam"]?.["InkConsumeFullCharge"],

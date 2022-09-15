@@ -36,6 +36,8 @@ export interface MainWeaponParams {
   // xxx: CanopyHP missing from Splat Brella
   /** Brella shield HP */
   CanopyHP?: number;
+  /** Amount of frames white ink (=no ink recovery during this time) takes */
+  InkRecoverStop?: number;
   /** How much ink one shot consumes? InkConsume = 0.5 means 2 shots per full tank */
   InkConsume?: number;
   /** How much ink one slosh of slosher consumes? */
@@ -171,7 +173,9 @@ export interface AnalyzedBuild {
     specialPoint: Stat;
     /** % of special charge saved when dying */
     specialSavedAfterDeath: Stat;
-    subWeaponWhiteInkFrames: number;
+    // xxx: not all weapons have this e.g. rollers have different values for rolling and horizontal/vertical swings
+    mainWeaponWhiteInkSeconds?: number;
+    subWeaponWhiteInkSeconds: number;
     fullInkTankOptions: Array<FullInkTankOption & { id: string }>;
     damages: Array<Damage & { id: string }>;
     squidFormInkRecoverySeconds: Stat;

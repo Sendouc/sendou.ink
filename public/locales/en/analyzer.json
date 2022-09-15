@@ -15,7 +15,7 @@
   "stat.maxChargeHoldSeconds": "Max charge hold time",
   "stat.specialPoints": "Points to special",
   "stat.specialLost": "Special lost when splatted",
-  "stat.whiteInkFrames": "Frames of no ink recovery after usage",
+  "stat.whiteInk": "No ink recovery time after usage",
   "stat.squidFormInkRecoverySeconds": "Ink tank full recovery time (squid form)",
   "stat.quickRespawnTime": "Quick respawn time",
   "stat.superJumpTimeGround": "Super jump vulnerable frames",

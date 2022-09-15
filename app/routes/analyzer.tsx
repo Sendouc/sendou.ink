@@ -64,6 +64,13 @@ export default function BuildAnalyzerPage() {
         <div className="stack md">
           {/* xxx: make sure can't be empty */}
           <StatCategory title={t("analyzer:stat.category.main")}>
+            {typeof analyzed.stats.mainWeaponWhiteInkSeconds === "number" && (
+              <StatCard
+                stat={analyzed.stats.mainWeaponWhiteInkSeconds}
+                title={t("analyzer:stat.whiteInk")}
+                suffix={t("analyzer:suffix.seconds")}
+              />
+            )}
             {typeof analyzed.weapon.brellaCanopyHp === "number" && (
               <StatCard
                 stat={analyzed.weapon.brellaCanopyHp}
@@ -88,8 +95,9 @@ export default function BuildAnalyzerPage() {
           </StatCategory>
           <StatCategory title={t("analyzer:stat.category.sub")}>
             <StatCard
-              stat={analyzed.stats.subWeaponWhiteInkFrames}
-              title={t("analyzer:stat.whiteInkFrames")}
+              stat={analyzed.stats.subWeaponWhiteInkSeconds}
+              title={t("analyzer:stat.whiteInk")}
+              suffix={t("analyzer:suffix.seconds")}
             />
           </StatCategory>
           <StatCategory title={t("analyzer:stat.category.special")}>

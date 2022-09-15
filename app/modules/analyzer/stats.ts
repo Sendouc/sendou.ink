@@ -64,7 +64,11 @@ export function buildStats({
       specialSavedAfterDeath: specialSavedAfterDeath(input),
       fullInkTankOptions: fullInkTankOptions(input),
       damages: damages(input),
-      subWeaponWhiteInkFrames: subWeaponParams.InkRecoverStop,
+      mainWeaponWhiteInkSeconds:
+        typeof mainWeaponParams.InkRecoverStop === "number"
+          ? framesToSeconds(mainWeaponParams.InkRecoverStop)
+          : undefined,
+      subWeaponWhiteInkSeconds: framesToSeconds(subWeaponParams.InkRecoverStop),
       squidFormInkRecoverySeconds: squidFormInkRecoverySeconds(input),
       runSpeed: runSpeed(input),
       // shootingRunSpeed: shootingRunSpeed(input),
