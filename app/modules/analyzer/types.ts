@@ -141,6 +141,7 @@ export const DAMAGE_TYPE = [
   "MAX_CHARGE",
   "TAP_SHOT",
   "DISTANCE",
+  "BOMB_NORMAL",
 ] as const;
 
 export type DamageType = typeof DAMAGE_TYPE[number];

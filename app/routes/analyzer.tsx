@@ -90,6 +90,7 @@ export default function BuildAnalyzerPage() {
               <DamageTable
                 values={analyzed.stats.damages}
                 isTripleShooter={analyzed.weapon.isTripleShooter}
+                subWeaponId={analyzed.weapon.subWeaponSplId}
               />
             </StatCategory>
           )}
@@ -224,21 +225,25 @@ function StatCard({
 function DamageTable({
   values,
   isTripleShooter,
+  subWeaponId,
 }: {
   values: AnalyzedBuild["stats"]["damages"];
   isTripleShooter: AnalyzedBuild["weapon"]["isTripleShooter"];
+  subWeaponId: SubWeaponId;
 }) {
-  const { t } = useTranslation("analyzer");
+  const { t } = useTranslation(["weapons", "analyzer"]);
+
+  const showDistanceColumn = values.some((val) => val.distance);
 
   return (
     <>
       <table>
         <thead>
           <tr>
-            <th>{t("damage.header.type")}</th>
-            <th>{t("damage.header.damage")}</th>
-            {values.some((val) => val.distance) && (
-              <th>{t("damage.header.distance")}</th>
+            <th>{t("analyzer:damage.header.type")}</th>
+            <th>{t("analyzer:damage.header.damage")}</th>
+            {showDistanceColumn && (
+              <th>{t("analyzer:damage.header.distance")}</th>
             )}
           </tr>
         </thead>
@@ -248,18 +253,25 @@ function DamageTable({
               ? `${val.value}+${val.value}+${val.value}`
               : val.value;
 
+            const typeRowName = val.type.startsWith("BOMB_")
+              ? t(`weapons:SUB_${subWeaponId}`)
+              : // xxx: maybe this could use a sub type where "BOMB_" starting are filtered out
+                t(`analyzer:damage.${val.type as "NORMAL_MIN"}`);
+
             return (
               <tr key={val.id}>
-                <td>{t(`damage.${val.type}`)}</td>
+                <td>{typeRowName}</td>
                 <td>
                   {damage}{" "}
                   {val.shotsToSplat && (
                     <span className="analyzer__shots-to-splat">
-                      {t("damage.toSplat", { count: val.shotsToSplat })}
+                      {t("analyzer:damage.toSplat", {
+                        count: val.shotsToSplat,
+                      })}
                     </span>
                   )}
                 </td>
-                {val.distance && <td>{val.distance}</td>}
+                {showDistanceColumn && <td>{val.distance}</td>}
               </tr>
             );
           })}

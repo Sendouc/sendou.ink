@@ -8,6 +8,7 @@ import type {
   InkConsumeType,
   MainWeaponParams,
   StatFunctionInput,
+  SubWeaponParams,
 } from "./types";
 import { DAMAGE_TYPE } from "./types";
 import { INK_CONSUME_TYPES } from "./types";
@@ -238,7 +239,10 @@ function inkConsumeTypeToParamsKeys(
   }
 }
 
-const damageTypeToParamsKey: Record<DamageType, keyof MainWeaponParams> = {
+const damageTypeToParamsKey: Record<
+  DamageType,
+  keyof MainWeaponParams | keyof SubWeaponParams
+> = {
   NORMAL_MIN: "DamageParam_ValueMin",
   NORMAL_MAX: "DamageParam_ValueMax",
   DIRECT: "DamageParam_ValueDirect",
@@ -246,6 +250,7 @@ const damageTypeToParamsKey: Record<DamageType, keyof MainWeaponParams> = {
   FULL_CHARGE: "DamageParam_ValueFullCharge",
   MAX_CHARGE: "DamageParam_ValueMaxCharge",
   TAP_SHOT: "DamageParam_ValueMinCharge",
+  BOMB_NORMAL: "DistanceDamage",
 };
 
 function damages(args: StatFunctionInput): AnalyzedBuild["stats"]["damages"] {
@@ -253,7 +258,9 @@ function damages(args: StatFunctionInput): AnalyzedBuild["stats"]["damages"] {
 
   for (const type of DAMAGE_TYPE) {
     const key = damageTypeToParamsKey[type];
-    const value = args.mainWeaponParams[key];
+    const value =
+      args.mainWeaponParams[key as keyof MainWeaponParams] ??
+      args.subWeaponParams[key as keyof SubWeaponParams];
 
     if (Array.isArray(value)) {
       for (const subValue of value) {
