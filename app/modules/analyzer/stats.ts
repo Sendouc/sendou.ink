@@ -63,6 +63,7 @@ export function buildStats({
       runSpeed: runSpeed(input),
       // shootingRunSpeed: shootingRunSpeed(input),
       swimSpeed: swimSpeed(input),
+      quickRespawnTime: quickRespawnTime(input),
     },
   };
 }
@@ -377,5 +378,40 @@ function swimSpeed(
     baseValue: effectToRounded(baseEffect * 10),
     value: effectToRounded(effect * 10),
     modifiedBy: SWIM_SPEED_ABILITY,
+  };
+}
+
+// xxx: take in account own use of RP and other use of RP
+const RESPAWN_ANIMATION_TIME = 150;
+function quickRespawnTime(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["quickRespawnTime"] {
+  const QUICK_RESPAWN_TIME_ABILITY = "QR";
+
+  const chase = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: QUICK_RESPAWN_TIME_ABILITY,
+    }),
+    key: "Dying_ChaseFrm",
+    weapon: args.mainWeaponParams,
+  });
+  const around = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: QUICK_RESPAWN_TIME_ABILITY,
+    }),
+    key: "Dying_AroundFrm",
+    weapon: args.mainWeaponParams,
+  });
+
+  return {
+    baseValue: framesToSeconds(
+      RESPAWN_ANIMATION_TIME + chase.baseEffect + around.baseEffect
+    ),
+    value: framesToSeconds(
+      RESPAWN_ANIMATION_TIME + chase.effect + around.effect
+    ),
+    modifiedBy: QUICK_RESPAWN_TIME_ABILITY,
   };
 }

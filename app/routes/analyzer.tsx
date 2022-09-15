@@ -119,6 +119,11 @@ export default function BuildAnalyzerPage() {
               title={t("stat.squidFormInkRecoverySeconds")}
               suffix={t("suffix.seconds")}
             />
+            <StatCard
+              stat={analyzed.stats.quickRespawnTime}
+              title={t("stat.quickRespawnTime")}
+              suffix={t("suffix.seconds")}
+            />
           </StatCategory>
         </div>
       </div>
@@ -222,6 +227,10 @@ function StatCard({
   );
 }
 
+// xxx: fizzy sloshing machine
+// xxx: curling roller
+// xxx: splatana torpedo
+// xxx: angle shooter
 function DamageTable({
   values,
   isTripleShooter,

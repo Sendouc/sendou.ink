@@ -15,6 +15,7 @@
   "stat.specialLost": "Special lost when splatted",
   "stat.whiteInkFrames": "Frames of no ink recovery after usage",
   "stat.squidFormInkRecoverySeconds": "Ink tank full recovery time (squid form)",
+  "stat.quickRespawnTime": "Quick respawn time",
   "stat.swimSpeed": "Swim speed (units per frame)",
   "stat.runSpeed": "Run speed (units per frame)",
   "stat.consumption.NORMAL": "Shots",

@@ -173,5 +173,6 @@ export interface AnalyzedBuild {
     // xxx: missing from json
     // shootingRunSpeed: Stat;
     swimSpeed: Stat;
+    quickRespawnTime: Stat;
   };
 }
