@@ -1,19 +1,27 @@
-import { type LinksFunction } from "@remix-run/node";
+import { type MetaFunction, type LinksFunction } from "@remix-run/node";
 import { useTranslation } from "react-i18next";
 import { AbilitiesSelector } from "~/components/AbilitiesSelector";
 import { Ability } from "~/components/Ability";
 import { WeaponCombobox } from "~/components/Combobox";
 import { Image } from "~/components/Image";
 import { Main } from "~/components/Main";
+import { useSetTitle } from "~/hooks/useSetTitle";
 import type { AnalyzedBuild, Stat } from "~/modules/analyzer";
 import { useAnalyzeBuild } from "~/modules/analyzer";
 import type { MainWeaponId, SubWeaponId } from "~/modules/in-game-lists";
 import styles from "~/styles/analyzer.css";
+import { makeTitle } from "~/utils/strings";
 import { specialWeaponImageUrl, subWeaponImageUrl } from "~/utils/urls";
 
 // xxx: charge hold frames
 
 export const CURRENT_PATCH = "1.1";
+
+export const meta: MetaFunction = () => {
+  return {
+    title: makeTitle("Build Analyzer"),
+  };
+};
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -24,7 +32,8 @@ export const handle = {
 };
 
 export default function BuildAnalyzerPage() {
-  const { t } = useTranslation("analyzer");
+  const { t } = useTranslation(["analyzer", "common"]);
+  useSetTitle(t("common:pages.buildAnalyzer"));
   const { build, setBuild, mainWeaponId, setMainWeaponId, analyzed } =
     useAnalyzeBuild();
 
@@ -51,40 +60,40 @@ export default function BuildAnalyzerPage() {
           </div>
           <AbilitiesSelector selectedAbilities={build} onChange={setBuild} />
           <div className="analyzer__patch">
-            {t("patch")} {CURRENT_PATCH}
+            {t("analyzer:patch")} {CURRENT_PATCH}
           </div>
         </div>
         <div className="stack md">
-          <StatCategory title={t("stat.category.main")}>
+          <StatCategory title={t("analyzer:stat.category.main")}>
             {typeof analyzed.weapon.brellaCanopyHp === "number" && (
               <StatCard
                 stat={analyzed.weapon.brellaCanopyHp}
-                title={t("stat.canopyHp")}
-                suffix={t("suffix.hp")}
+                title={t("analyzer:stat.canopyHp")}
+                suffix={t("analyzer:suffix.hp")}
               />
             )}
           </StatCategory>
-          <StatCategory title={t("stat.category.sub")}>
+          <StatCategory title={t("analyzer:stat.category.sub")}>
             <StatCard
               stat={analyzed.stats.subWeaponWhiteInkFrames}
-              title={t("stat.whiteInkFrames")}
+              title={t("analyzer:stat.whiteInkFrames")}
             />
           </StatCategory>
-          <StatCategory title={t("stat.category.special")}>
+          <StatCategory title={t("analyzer:stat.category.special")}>
             <StatCard
               stat={analyzed.stats.specialPoint}
-              title={t("stat.specialPoints")}
+              title={t("analyzer:stat.specialPoints")}
               suffix="p"
             />
             <StatCard
               stat={analyzed.stats.specialSavedAfterDeath}
-              title={t("stat.specialLost")}
+              title={t("analyzer:stat.specialLost")}
               suffix="%"
             />
           </StatCategory>
           {analyzed.stats.damages.length > 0 && (
             <StatCategory
-              title={t("stat.category.damage")}
+              title={t("analyzer:stat.category.damage")}
               containerClassName="analyzer__table-container"
             >
               <DamageTable
@@ -96,7 +105,7 @@ export default function BuildAnalyzerPage() {
           )}
           {analyzed.stats.fullInkTankOptions.length > 0 && (
             <StatCategory
-              title={t("stat.category.actionsPerInkTank")}
+              title={t("analyzer:stat.category.actionsPerInkTank")}
               containerClassName="analyzer__table-container"
             >
               <ConsumptionTable
@@ -105,53 +114,53 @@ export default function BuildAnalyzerPage() {
               />
             </StatCategory>
           )}
-          <StatCategory title={t("stat.category.movement")}>
+          <StatCategory title={t("analyzer:stat.category.movement")}>
             <StatCard
               stat={analyzed.stats.swimSpeed}
-              title={t("stat.swimSpeed")}
+              title={t("analyzer:stat.swimSpeed")}
             />
             <StatCard
               stat={analyzed.stats.runSpeed}
-              title={t("stat.runSpeed")}
+              title={t("analyzer:stat.runSpeed")}
             />
             <StatCard
               stat={analyzed.stats.runSpeedInEnemyInk}
-              title={t("stat.runSpeedInEnemyInk")}
+              title={t("analyzer:stat.runSpeedInEnemyInk")}
             />
           </StatCategory>
-          <StatCategory title={t("stat.category.misc")}>
+          <StatCategory title={t("analyzer:stat.category.misc")}>
             <StatCard
               stat={analyzed.stats.squidFormInkRecoverySeconds}
-              title={t("stat.squidFormInkRecoverySeconds")}
-              suffix={t("suffix.seconds")}
+              title={t("analyzer:stat.squidFormInkRecoverySeconds")}
+              suffix={t("analyzer:suffix.seconds")}
             />
             <StatCard
               stat={analyzed.stats.quickRespawnTime}
-              title={t("stat.quickRespawnTime")}
-              suffix={t("suffix.seconds")}
+              title={t("analyzer:stat.quickRespawnTime")}
+              suffix={t("analyzer:suffix.seconds")}
             />
             <StatCard
               stat={analyzed.stats.superJumpTimeGroundFrames}
-              title={t("stat.superJumpTimeGround")}
+              title={t("analyzer:stat.superJumpTimeGround")}
             />
             <StatCard
               stat={analyzed.stats.superJumpTimeTotal}
-              title={t("stat.superJumpTimeTotal")}
-              suffix={t("suffix.seconds")}
+              title={t("analyzer:stat.superJumpTimeTotal")}
+              suffix={t("analyzer:suffix.seconds")}
             />
             <StatCard
               stat={analyzed.stats.framesBeforeTakingDamageInEnemyInk}
-              title={t("stat.framesBeforeTakingDamageInEnemyInk")}
+              title={t("analyzer:stat.framesBeforeTakingDamageInEnemyInk")}
             />
             <StatCard
               stat={analyzed.stats.damageTakenInEnemyInkPerSecond}
-              title={t("stat.damageTakenInEnemyInkPerSecond")}
-              suffix={t("suffix.hp")}
+              title={t("analyzer:stat.damageTakenInEnemyInkPerSecond")}
+              suffix={t("analyzer:suffix.hp")}
             />
             <StatCard
               stat={analyzed.stats.enemyInkDamageLimit}
-              title={t("stat.enemyInkDamageLimit")}
-              suffix={t("suffix.hp")}
+              title={t("analyzer:stat.enemyInkDamageLimit")}
+              suffix={t("analyzer:suffix.hp")}
             />
           </StatCategory>
         </div>
