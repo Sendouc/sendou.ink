@@ -63,6 +63,11 @@ export function buildStats({
       runSpeed: runSpeed(input),
       // shootingRunSpeed: shootingRunSpeed(input),
       swimSpeed: swimSpeed(input),
+      runSpeedInEnemyInk: runSpeedInEnemyInk(input),
+      damageTakenInEnemyInkPerSecond: damageTakenInEnemyInkPerSecond(input),
+      enemyInkDamageLimit: enemyInkDamageLimit(input),
+      framesBeforeTakingDamageInEnemyInk:
+        framesBeforeTakingDamageInEnemyInk(input),
       quickRespawnTime: quickRespawnTime(input),
       superJumpTimeGroundFrames: superJumpTimeGroundFrames(input),
       superJumpTimeTotal: superJumpTimeTotal(input),
@@ -357,6 +362,26 @@ function runSpeed(args: StatFunctionInput): AnalyzedBuild["stats"]["runSpeed"] {
   };
 }
 
+function runSpeedInEnemyInk(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["runSpeedInEnemyInk"] {
+  const RUN_SPEED_IN_ENEMY_INK_ABILITY = "RES";
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: RUN_SPEED_IN_ENEMY_INK_ABILITY,
+    }),
+    key: "OpInk_MoveVel",
+    weapon: args.mainWeaponParams,
+  });
+
+  return {
+    baseValue: effectToRounded(baseEffect * 10),
+    value: effectToRounded(effect * 10),
+    modifiedBy: RUN_SPEED_IN_ENEMY_INK_ABILITY,
+  };
+}
+
 function swimSpeed(
   args: StatFunctionInput
 ): AnalyzedBuild["stats"]["swimSpeed"] {
@@ -464,5 +489,70 @@ function superJumpTimeTotal(
     ),
     value: framesToSeconds(Math.ceil(charge.effect) + Math.ceil(move.effect)),
     modifiedBy: SUPER_JUMP_TIME_TOTAL_ABILITY,
+  };
+}
+
+function damageTakenInEnemyInkPerSecond(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["damageTakenInEnemyInkPerSecond"] {
+  const DAMAGE_TAKEN_IN_ENEMY_INK_ABILITY = "RES";
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: DAMAGE_TAKEN_IN_ENEMY_INK_ABILITY,
+    }),
+    key: "OpInk_DamagePerFrame",
+    weapon: args.mainWeaponParams,
+  });
+
+  return {
+    baseValue: effectToDamage(baseEffect) * 60,
+    value: effectToDamage(effect) * 60,
+    modifiedBy: DAMAGE_TAKEN_IN_ENEMY_INK_ABILITY,
+  };
+}
+
+function enemyInkDamageLimit(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["enemyInkDamageLimit"] {
+  const ENEMY_INK_DAMAGE_LIMIT_ABILITY = "RES";
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: ENEMY_INK_DAMAGE_LIMIT_ABILITY,
+    }),
+    key: "OpInk_DamageLmt",
+    weapon: args.mainWeaponParams,
+  });
+
+  return {
+    baseValue: effectToDamage(baseEffect),
+    value: effectToDamage(effect),
+    modifiedBy: ENEMY_INK_DAMAGE_LIMIT_ABILITY,
+  };
+}
+
+function effectToDamage(effect: number) {
+  // not sure where the 0.05 is coming from. Old analyzer had it as well so assuming it's correct.
+  return Number((effect * 100 - 0.05).toFixed(1));
+}
+
+function framesBeforeTakingDamageInEnemyInk(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["framesBeforeTakingDamageInEnemyInk"] {
+  const FRAMES_BEFORE_TAKING_DAMAGE_IN_ENEMY_INK_ABILITY = "RES";
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: FRAMES_BEFORE_TAKING_DAMAGE_IN_ENEMY_INK_ABILITY,
+    }),
+    key: "OpInk_ArmorHP",
+    weapon: args.mainWeaponParams,
+  });
+
+  return {
+    baseValue: Math.ceil(baseEffect),
+    value: Math.ceil(effect),
+    modifiedBy: FRAMES_BEFORE_TAKING_DAMAGE_IN_ENEMY_INK_ABILITY,
   };
 }

@@ -173,6 +173,10 @@ export interface AnalyzedBuild {
     // xxx: missing from json
     // shootingRunSpeed: Stat;
     swimSpeed: Stat;
+    runSpeedInEnemyInk: Stat;
+    framesBeforeTakingDamageInEnemyInk: Stat;
+    damageTakenInEnemyInkPerSecond: Stat;
+    enemyInkDamageLimit: Stat;
     quickRespawnTime: Stat;
     superJumpTimeGroundFrames: Stat;
     superJumpTimeTotal: Stat;

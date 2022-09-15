@@ -114,6 +114,10 @@ export default function BuildAnalyzerPage() {
               stat={analyzed.stats.runSpeed}
               title={t("stat.runSpeed")}
             />
+            <StatCard
+              stat={analyzed.stats.runSpeedInEnemyInk}
+              title={t("stat.runSpeedInEnemyInk")}
+            />
           </StatCategory>
           <StatCategory title={t("stat.category.misc")}>
             <StatCard
@@ -134,6 +138,20 @@ export default function BuildAnalyzerPage() {
               stat={analyzed.stats.superJumpTimeTotal}
               title={t("stat.superJumpTimeTotal")}
               suffix={t("suffix.seconds")}
+            />
+            <StatCard
+              stat={analyzed.stats.framesBeforeTakingDamageInEnemyInk}
+              title={t("stat.framesBeforeTakingDamageInEnemyInk")}
+            />
+            <StatCard
+              stat={analyzed.stats.damageTakenInEnemyInkPerSecond}
+              title={t("stat.damageTakenInEnemyInkPerSecond")}
+              suffix={t("suffix.hp")}
+            />
+            <StatCard
+              stat={analyzed.stats.enemyInkDamageLimit}
+              title={t("stat.enemyInkDamageLimit")}
+              suffix={t("suffix.hp")}
             />
           </StatCategory>
         </div>
