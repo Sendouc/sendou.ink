@@ -381,7 +381,9 @@ function Abilities() {
             ? JSON.stringify(abilities)
             : []
         }
-        onChange={() => {}}
+        // empty onChange is because otherwise it will give a React error in console
+        // readOnly can't be set as then validation is not active
+        onChange={() => null}
         required
       />
       <AbilitiesSelector
