@@ -9,6 +9,7 @@ import {
   isAbility,
 } from "../in-game-lists";
 import type { AbilityType, AbilityWithUnknown } from "../in-game-lists/types";
+import { MAX_LDE_INTENSITY } from "./constants";
 import { applySpecialEffects, SPECIAL_EFFECTS } from "./specialEffects";
 import { buildStats } from "./stats";
 import type { SpecialEffectType } from "./types";
@@ -68,6 +69,7 @@ export function useAnalyzeBuild() {
     handleChange,
     analyzed,
     abilityPoints,
+    ldeIntensity,
   };
 }
 
@@ -142,7 +144,6 @@ function validateAbility(
   throw new Error("Invalid ability");
 }
 
-const MAX_LDE_INTENSITY = 21;
 function validatedLdeIntensityFromSearchParams(searchParams: URLSearchParams) {
   const ldeIntensity = searchParams.get("lde")
     ? Number(searchParams.get("lde"))
@@ -171,6 +172,7 @@ function validatedEffectsFromSearchParams({
 
   const effects = searchParams.getAll("effect");
   const effectsNoDuplicates = [...new Set(effects)];
+  const abilities = build.flat();
 
   for (const effect of effectsNoDuplicates) {
     const effectObj = SPECIAL_EFFECTS.find((e) => e.type === effect);
@@ -178,11 +180,17 @@ function validatedEffectsFromSearchParams({
 
     // e.g. even if OG effect is active in state
     // it can't be on unless build has OG
-    if (isAbility(effect) && !build.flat().includes(effect)) {
+    if (isAbility(effect) && !abilities.includes(effect)) {
       continue;
     }
 
     result.push(effect as SpecialEffectType);
+  }
+
+  // lde is a special case in that it's always
+  // considered active when in the build
+  if (abilities.includes("LDE") && !result.includes("LDE")) {
+    result.push("LDE");
   }
 
   return result;

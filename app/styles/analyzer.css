@@ -34,19 +34,30 @@
   padding-inline: var(--s-1-5);
 }
 
+.analyzer__effects-selector {
+  display: grid;
+  gap: var(--s-2);
+  grid-template-columns: 1fr 2.5fr;
+  place-items: center;
+}
+
+.analyzer__lde-intensity-select {
+  font-size: var(--fonts-xxs);
+}
+
 .analyzer__ap-summary {
+  width: 100%;
   background-color: var(--bg-lighter);
   border-radius: var(--rounded);
   font-size: var(--fonts-xxs);
   font-weight: var(--semi-bold);
-  width: 100%;
   padding-block: var(--s-1);
   padding-inline: var(--s-2);
 }
 
 .analyzer__ap-text {
-  font-size: var(--fonts-xxs);
   color: var(--text-lighter);
+  font-size: var(--fonts-xxs);
   font-weight: var(--semi-bold);
 }
 

@@ -1,4 +1,5 @@
 import { type MetaFunction, type LinksFunction } from "@remix-run/node";
+import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { AbilitiesSelector } from "~/components/AbilitiesSelector";
 import { Ability } from "~/components/Ability";
@@ -7,10 +8,17 @@ import { Image } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { useSetTitle } from "~/hooks/useSetTitle";
 import type { AnalyzedBuild, Stat } from "~/modules/analyzer";
+import { MAX_LDE_INTENSITY } from "~/modules/analyzer";
 import { useAnalyzeBuild } from "~/modules/analyzer";
+import {
+  lastDitchEffortIntensityToAp,
+  SPECIAL_EFFECTS,
+} from "~/modules/analyzer/specialEffects";
 import type { AbilityPoints } from "~/modules/analyzer/types";
+import type { BuildAbilitiesTupleWithUnknown } from "~/modules/in-game-lists";
 import {
   abilities,
+  isAbility,
   type MainWeaponId,
   type SubWeaponId,
 } from "~/modules/in-game-lists";
@@ -37,8 +45,14 @@ export const handle = {
 export default function BuildAnalyzerPage() {
   const { t } = useTranslation(["analyzer", "common"]);
   useSetTitle(t("common:pages.buildAnalyzer"));
-  const { build, mainWeaponId, handleChange, analyzed, abilityPoints } =
-    useAnalyzeBuild();
+  const {
+    build,
+    mainWeaponId,
+    handleChange,
+    analyzed,
+    abilityPoints,
+    ldeIntensity,
+  } = useAnalyzeBuild();
 
   // xxx: remove before prod
   if (process.env.NODE_ENV === "production") return <Main>Coming soon :)</Main>;
@@ -64,11 +78,20 @@ export default function BuildAnalyzerPage() {
             </div>
             <WeaponInfoBadges analyzed={analyzed} />
           </div>
-          <AbilitiesSelector
-            selectedAbilities={build}
-            onChange={(newBuild) => handleChange({ newBuild })}
-          />
-          <AbilityPointsDetails abilityPoints={abilityPoints} />
+          <div className="stack md items-center">
+            <AbilitiesSelector
+              selectedAbilities={build}
+              onChange={(newBuild) => handleChange({ newBuild })}
+            />
+            <EffectsSelector
+              build={build}
+              ldeIntensity={ldeIntensity}
+              handleLdeIntensityChange={(newLdeIntensity) =>
+                handleChange({ newLdeIntensity })
+              }
+            />
+            <AbilityPointsDetails abilityPoints={abilityPoints} />
+          </div>
           <div className="analyzer__patch">
             {t("analyzer:patch")} {CURRENT_PATCH}
           </div>
@@ -229,6 +252,71 @@ function WeaponInfoBadges({ analyzed }: { analyzed: AnalyzedBuild }) {
         {t("analyzer:attribute.weight")}{" "}
         {t(`analyzer:attribute.weight.${analyzed.weapon.speedType}`)}
       </div>
+    </div>
+  );
+}
+
+function EffectsSelector({
+  build,
+  ldeIntensity,
+  handleLdeIntensityChange,
+}: {
+  build: BuildAbilitiesTupleWithUnknown;
+  ldeIntensity: number;
+  handleLdeIntensityChange: (newLdeIntensity: number) => void;
+}) {
+  const { t } = useTranslation(["weapons", "analyzer"]);
+
+  const effectsToShow = SPECIAL_EFFECTS.filter(
+    (effect) => !isAbility(effect.type) || build.flat().includes(effect.type)
+  ).reverse(); // reverse to show Tacticooler first as it always shows
+
+  return (
+    <div className="analyzer__effects-selector">
+      {effectsToShow.map((effect) => {
+        return (
+          <React.Fragment key={effect.type}>
+            <div>
+              {isAbility(effect.type) ? (
+                <Ability ability={effect.type} size="SUB" />
+              ) : (
+                <Image
+                  path={specialWeaponImageUrl(15)}
+                  alt={t("weapons:SPECIAL_15")}
+                  height={32}
+                  width={32}
+                />
+              )}
+            </div>
+            <div>
+              {effect.type === "LDE" ? (
+                <select
+                  value={ldeIntensity}
+                  onChange={(e) =>
+                    handleLdeIntensityChange(Number(e.target.value))
+                  }
+                  className="analyzer__lde-intensity-select"
+                >
+                  {new Array(MAX_LDE_INTENSITY + 1).fill(null).map((_, i) => {
+                    const percentage = ((i / MAX_LDE_INTENSITY) * 100)
+                      .toFixed(2)
+                      .replace(".00", "");
+
+                    return (
+                      <option key={i} value={i}>
+                        {percentage}% (+{lastDitchEffortIntensityToAp(i)}{" "}
+                        {t("analyzer:abilityPoints.short")})
+                      </option>
+                    );
+                  })}
+                </select>
+              ) : (
+                <div />
+              )}
+            </div>
+          </React.Fragment>
+        );
+      })}
     </div>
   );
 }

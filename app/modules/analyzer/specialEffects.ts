@@ -1,8 +1,24 @@
+import { MAX_AP } from "./constants";
 import type { AbilityPoints } from "./types";
 
-const MAX_AP = 57;
-
 export const SPECIAL_EFFECTS = [
+  {
+    type: "DR",
+    values: [
+      {
+        type: "SSU",
+        ap: 10,
+      },
+      {
+        type: "RSU",
+        ap: 10,
+      },
+      {
+        type: "RES",
+        ap: 10,
+      },
+    ],
+  },
   {
     type: "OG",
     values: [
@@ -54,23 +70,6 @@ export const SPECIAL_EFFECTS = [
     ],
   },
   {
-    type: "DR",
-    values: [
-      {
-        type: "SSU",
-        ap: 10,
-      },
-      {
-        type: "RSU",
-        ap: 10,
-      },
-      {
-        type: "RES",
-        ap: 10,
-      },
-    ],
-  },
-  {
     type: "TACTICOOLER",
     values: [
       {
@@ -107,8 +106,12 @@ export const SPECIAL_EFFECTS = [
   },
 ] as const;
 
+export function lastDitchEffortIntensityToAp(intensity: number) {
+  return Math.floor((24 / 21) * intensity);
+}
+
 function lastDitchEffortValues(intensity: number) {
-  const ap = Math.floor((24 / 21) * intensity);
+  const ap = lastDitchEffortIntensityToAp(intensity);
 
   return [
     {
