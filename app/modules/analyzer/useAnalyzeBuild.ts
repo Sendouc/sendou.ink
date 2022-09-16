@@ -69,6 +69,7 @@ export function useAnalyzeBuild() {
     handleChange,
     analyzed,
     abilityPoints,
+    effects,
     ldeIntensity,
   };
 }

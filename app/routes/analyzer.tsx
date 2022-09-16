@@ -6,6 +6,7 @@ import { Ability } from "~/components/Ability";
 import { WeaponCombobox } from "~/components/Combobox";
 import { Image } from "~/components/Image";
 import { Main } from "~/components/Main";
+import { Toggle } from "~/components/Toggle";
 import { useSetTitle } from "~/hooks/useSetTitle";
 import type { AnalyzedBuild, Stat } from "~/modules/analyzer";
 import { MAX_LDE_INTENSITY } from "~/modules/analyzer";
@@ -14,7 +15,10 @@ import {
   lastDitchEffortIntensityToAp,
   SPECIAL_EFFECTS,
 } from "~/modules/analyzer/specialEffects";
-import type { AbilityPoints } from "~/modules/analyzer/types";
+import type {
+  AbilityPoints,
+  SpecialEffectType,
+} from "~/modules/analyzer/types";
 import type { BuildAbilitiesTupleWithUnknown } from "~/modules/in-game-lists";
 import {
   abilities,
@@ -52,6 +56,7 @@ export default function BuildAnalyzerPage() {
     analyzed,
     abilityPoints,
     ldeIntensity,
+    effects,
   } = useAnalyzeBuild();
 
   // xxx: remove before prod
@@ -89,6 +94,15 @@ export default function BuildAnalyzerPage() {
               handleLdeIntensityChange={(newLdeIntensity) =>
                 handleChange({ newLdeIntensity })
               }
+              handleAddEffect={(newEffect) =>
+                handleChange({ newEffects: [...effects, newEffect] })
+              }
+              handleRemoveEffect={(effectToRemove) =>
+                handleChange({
+                  newEffects: effects.filter((e) => e !== effectToRemove),
+                })
+              }
+              effects={effects}
             />
             <AbilityPointsDetails abilityPoints={abilityPoints} />
           </div>
@@ -258,12 +272,18 @@ function WeaponInfoBadges({ analyzed }: { analyzed: AnalyzedBuild }) {
 
 function EffectsSelector({
   build,
+  effects,
   ldeIntensity,
   handleLdeIntensityChange,
+  handleAddEffect,
+  handleRemoveEffect,
 }: {
   build: BuildAbilitiesTupleWithUnknown;
+  effects: Array<SpecialEffectType>;
   ldeIntensity: number;
   handleLdeIntensityChange: (newLdeIntensity: number) => void;
+  handleAddEffect: (effect: SpecialEffectType) => void;
+  handleRemoveEffect: (effect: SpecialEffectType) => void;
 }) {
   const { t } = useTranslation(["weapons", "analyzer"]);
 
@@ -311,7 +331,15 @@ function EffectsSelector({
                   })}
                 </select>
               ) : (
-                <div />
+                <Toggle
+                  checked={effects.includes(effect.type)}
+                  setChecked={(checked) =>
+                    checked
+                      ? handleAddEffect(effect.type)
+                      : handleRemoveEffect(effect.type)
+                  }
+                  tiny
+                />
               )}
             </div>
           </React.Fragment>

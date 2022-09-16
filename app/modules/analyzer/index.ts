@@ -4,6 +4,7 @@ export type {
   SubWeaponParams,
   Stat,
   AnalyzedBuild,
+  SpecialEffectType,
 } from "./types";
 
 export { useAnalyzeBuild } from "./useAnalyzeBuild";
