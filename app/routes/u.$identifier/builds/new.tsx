@@ -379,8 +379,9 @@ function Abilities() {
         value={
           abilities.flat().every((a) => a !== "UNKNOWN")
             ? JSON.stringify(abilities)
-            : undefined
+            : []
         }
+        onChange={() => {}}
         required
       />
       <AbilitiesSelector
