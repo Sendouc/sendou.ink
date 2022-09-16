@@ -2,7 +2,7 @@ import type { AbilityPoints } from "./types";
 
 const MAX_AP = 57;
 
-const SPECIAL_EFFECTS = [
+export const SPECIAL_EFFECTS = [
   {
     type: "OG",
     values: [

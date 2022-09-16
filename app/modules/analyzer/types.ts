@@ -4,6 +4,7 @@ import type {
   SpecialWeaponId,
   SubWeaponId,
 } from "~/modules/in-game-lists";
+import type { SPECIAL_EFFECTS } from "./specialEffects";
 
 export interface MainWeaponParams {
   subWeaponId: SubWeaponId;
@@ -192,3 +193,5 @@ export interface AnalyzedBuild {
     superJumpTimeTotal: Stat;
   };
 }
+
+export type SpecialEffectType = typeof SPECIAL_EFFECTS[number]["type"];

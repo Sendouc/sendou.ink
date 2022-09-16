@@ -14,3 +14,4 @@ export type {
   SubWeaponId,
   SpecialWeaponId,
 } from "./types";
+export { isAbility } from "./utils";

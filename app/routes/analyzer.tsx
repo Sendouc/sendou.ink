@@ -32,8 +32,7 @@ export const handle = {
 export default function BuildAnalyzerPage() {
   const { t } = useTranslation(["analyzer", "common"]);
   useSetTitle(t("common:pages.buildAnalyzer"));
-  const { build, setBuild, mainWeaponId, setMainWeaponId, analyzed } =
-    useAnalyzeBuild();
+  const { build, mainWeaponId, handleChange, analyzed } = useAnalyzeBuild();
 
   // xxx: remove before prod
   if (process.env.NODE_ENV === "production") return <Main>Coming soon :)</Main>;
@@ -48,7 +47,10 @@ export default function BuildAnalyzerPage() {
                 inputName="weapon"
                 initialWeaponId={mainWeaponId}
                 onChange={(opt) =>
-                  opt && setMainWeaponId(Number(opt.value) as MainWeaponId)
+                  opt &&
+                  handleChange({
+                    newMainWeaponId: Number(opt.value) as MainWeaponId,
+                  })
                 }
                 className="w-full-important"
                 clearsInputOnFocus
@@ -56,7 +58,10 @@ export default function BuildAnalyzerPage() {
             </div>
             <WeaponInfoBadges analyzed={analyzed} />
           </div>
-          <AbilitiesSelector selectedAbilities={build} onChange={setBuild} />
+          <AbilitiesSelector
+            selectedAbilities={build}
+            onChange={(newBuild) => handleChange({ newBuild })}
+          />
           <div className="analyzer__patch">
             {t("analyzer:patch")} {CURRENT_PATCH}
           </div>

@@ -6,9 +6,12 @@ import {
   type MainWeaponId,
   mainWeaponIds,
   abilities,
+  isAbility,
 } from "../in-game-lists";
 import type { AbilityType, AbilityWithUnknown } from "../in-game-lists/types";
+import { applySpecialEffects, SPECIAL_EFFECTS } from "./specialEffects";
 import { buildStats } from "./stats";
+import type { SpecialEffectType } from "./types";
 import { buildToAbilityPoints } from "./utils";
 
 const UNKNOWN_SHORT = "U";
@@ -18,19 +21,37 @@ export function useAnalyzeBuild() {
 
   const mainWeaponId = validatedWeaponIdFromSearchParams(searchParams);
   const build = validatedBuildFromSearchParams(searchParams);
+  const ldeIntensity = validatedLdeIntensityFromSearchParams(searchParams);
+  const effects = validatedEffectsFromSearchParams({ searchParams, build });
 
-  const setMainWeaponId = (weaponId: MainWeaponId) =>
-    setSearchParams({ weapon: String(weaponId), build: serializeBuild(build) });
-  const setBuild = (newBuild: BuildAbilitiesTupleWithUnknown) =>
+  const handleChange = ({
+    newMainWeaponId = mainWeaponId,
+    newBuild = build,
+    newLdeIntensity = ldeIntensity,
+    newEffects = effects,
+  }: {
+    newMainWeaponId?: MainWeaponId;
+    newBuild?: BuildAbilitiesTupleWithUnknown;
+    newLdeIntensity?: number;
+    newEffects?: Array<SpecialEffectType>;
+  }) => {
     setSearchParams({
+      weapon: String(newMainWeaponId),
       build: serializeBuild(newBuild),
-      weapon: String(mainWeaponId),
+      lde: String(newLdeIntensity),
+      effect: newEffects,
     });
+  };
 
-  const abilityPoints = React.useMemo(
-    () => buildToAbilityPoints(build),
-    [build]
-  );
+  const abilityPoints = React.useMemo(() => {
+    const buildsAbilityPoints = buildToAbilityPoints(build);
+
+    return applySpecialEffects({
+      abilityPoints: buildsAbilityPoints,
+      effects,
+      ldeIntensity,
+    });
+  }, [build, ldeIntensity, effects]);
 
   const analyzed = React.useMemo(
     () =>
@@ -43,9 +64,8 @@ export function useAnalyzeBuild() {
 
   return {
     build,
-    setBuild,
     mainWeaponId,
-    setMainWeaponId,
+    handleChange,
     analyzed,
     abilityPoints,
   };
@@ -120,4 +140,50 @@ function validateAbility(
   if (abilityObj) return abilityObj.name;
 
   throw new Error("Invalid ability");
+}
+
+const MAX_LDE_INTENSITY = 21;
+function validatedLdeIntensityFromSearchParams(searchParams: URLSearchParams) {
+  const ldeIntensity = searchParams.get("lde")
+    ? Number(searchParams.get("lde"))
+    : null;
+
+  if (
+    !ldeIntensity ||
+    !Number.isInteger(ldeIntensity) ||
+    ldeIntensity < 0 ||
+    ldeIntensity > MAX_LDE_INTENSITY
+  ) {
+    return 0;
+  }
+
+  return ldeIntensity;
+}
+
+function validatedEffectsFromSearchParams({
+  searchParams,
+  build,
+}: {
+  searchParams: URLSearchParams;
+  build: BuildAbilitiesTupleWithUnknown;
+}) {
+  const result: Array<SpecialEffectType> = [];
+
+  const effects = searchParams.getAll("effect");
+  const effectsNoDuplicates = [...new Set(effects)];
+
+  for (const effect of effectsNoDuplicates) {
+    const effectObj = SPECIAL_EFFECTS.find((e) => e.type === effect);
+    if (!effectObj) continue;
+
+    // e.g. even if OG effect is active in state
+    // it can't be on unless build has OG
+    if (isAbility(effect) && !build.flat().includes(effect)) {
+      continue;
+    }
+
+    result.push(effect as SpecialEffectType);
+  }
+
+  return result;
 }
