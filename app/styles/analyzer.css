@@ -4,6 +4,16 @@
   grid-template-columns: 1fr 2fr;
 }
 
+.analyzer__left-column {
+  position: sticky;
+  top: 2rem;
+  display: flex;
+  height: max-content;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-8);
+}
+
 .analyzer__weapon-info-badges {
   display: grid;
   color: var(--text-lighter);

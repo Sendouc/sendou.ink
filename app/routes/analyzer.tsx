@@ -41,7 +41,7 @@ export default function BuildAnalyzerPage() {
   return (
     <Main>
       <div className="analyzer__container">
-        <div className="stack lg items-center">
+        <div className="analyzer__left-column">
           <div className="stack sm items-center w-full">
             <div className="w-full">
               <WeaponCombobox
