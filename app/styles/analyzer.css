@@ -34,6 +34,22 @@
   padding-inline: var(--s-1-5);
 }
 
+.analyzer__ap-summary {
+  background-color: var(--bg-lighter);
+  border-radius: var(--rounded);
+  font-size: var(--fonts-xxs);
+  font-weight: var(--semi-bold);
+  width: 100%;
+  padding-block: var(--s-1);
+  padding-inline: var(--s-2);
+}
+
+.analyzer__ap-text {
+  font-size: var(--fonts-xxs);
+  color: var(--text-lighter);
+  font-weight: var(--semi-bold);
+}
+
 .analyzer__summary {
   background-color: var(--bg-lighter);
   border-radius: var(--rounded);

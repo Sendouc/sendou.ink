@@ -8,7 +8,12 @@ import { Main } from "~/components/Main";
 import { useSetTitle } from "~/hooks/useSetTitle";
 import type { AnalyzedBuild, Stat } from "~/modules/analyzer";
 import { useAnalyzeBuild } from "~/modules/analyzer";
-import type { MainWeaponId, SubWeaponId } from "~/modules/in-game-lists";
+import type { AbilityPoints } from "~/modules/analyzer/types";
+import {
+  abilities,
+  type MainWeaponId,
+  type SubWeaponId,
+} from "~/modules/in-game-lists";
 import styles from "~/styles/analyzer.css";
 import { makeTitle } from "~/utils/strings";
 import { specialWeaponImageUrl, subWeaponImageUrl } from "~/utils/urls";
@@ -32,7 +37,8 @@ export const handle = {
 export default function BuildAnalyzerPage() {
   const { t } = useTranslation(["analyzer", "common"]);
   useSetTitle(t("common:pages.buildAnalyzer"));
-  const { build, mainWeaponId, handleChange, analyzed } = useAnalyzeBuild();
+  const { build, mainWeaponId, handleChange, analyzed, abilityPoints } =
+    useAnalyzeBuild();
 
   // xxx: remove before prod
   if (process.env.NODE_ENV === "production") return <Main>Coming soon :)</Main>;
@@ -62,6 +68,7 @@ export default function BuildAnalyzerPage() {
             selectedAbilities={build}
             onChange={(newBuild) => handleChange({ newBuild })}
           />
+          <AbilityPointsDetails abilityPoints={abilityPoints} />
           <div className="analyzer__patch">
             {t("analyzer:patch")} {CURRENT_PATCH}
           </div>
@@ -223,6 +230,35 @@ function WeaponInfoBadges({ analyzed }: { analyzed: AnalyzedBuild }) {
         {t(`analyzer:attribute.weight.${analyzed.weapon.speedType}`)}
       </div>
     </div>
+  );
+}
+
+function AbilityPointsDetails({
+  abilityPoints,
+}: {
+  abilityPoints: AbilityPoints;
+}) {
+  const { t } = useTranslation("analyzer");
+
+  return (
+    <details className="w-full">
+      <summary className="analyzer__ap-summary">{t("abilityPoints")}</summary>
+      <div className="stack sm horizontal flex-wrap mt-4">
+        {abilities
+          .filter((a) => (abilityPoints.get(a.name) ?? 0) > 0)
+          .sort((a, b) => {
+            return abilityPoints.get(b.name)! - abilityPoints.get(a.name)!;
+          })
+          .map((a) => (
+            <div key={a.name} className="stack items-center">
+              <Ability ability={a.name} size="TINY" />
+              <div className="analyzer__ap-text">
+                {abilityPoints.get(a.name)}
+              </div>
+            </div>
+          ))}
+      </div>
+    </details>
   );
 }
 
