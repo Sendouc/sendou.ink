@@ -147,11 +147,12 @@ export function applySpecialEffects({
 
     for (const value of valuesArr) {
       const boostsBeyond = "boostsBeyond" in value ? value.boostsBeyond : true;
-      const maxAP = boostsBeyond ? MAX_AP : value.ap;
       const currentAP = result.get(value.type) ?? 0;
+      const newAP = boostsBeyond
+        ? currentAP + value.ap
+        : Math.max(currentAP, value.ap);
 
-      const newAP = Math.min(currentAP + value.ap, maxAP);
-      result.set(value.type, newAP);
+      result.set(value.type, Math.min(newAP, MAX_AP));
     }
   }
 

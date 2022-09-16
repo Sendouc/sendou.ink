@@ -49,6 +49,19 @@ ApplySpecialEffects("Tacticooler doesn't boost swim speed beyond 29", () => {
   assert.equal(aps.get("SSU"), 29);
 });
 
+ApplySpecialEffects(
+  "Tacticooler limit swim speed at 29 if more in build",
+  () => {
+    const aps = applySpecialEffects({
+      effects: ["TACTICOOLER"],
+      abilityPoints: new Map([["SSU", 30]]),
+      ldeIntensity: 0,
+    });
+
+    assert.equal(aps.get("SSU"), 30);
+  }
+);
+
 ApplySpecialEffects("Applies many effects", () => {
   const aps = applySpecialEffects({
     effects: ["DR", "CB"],
