@@ -1,8 +1,6 @@
+import type { MainWeaponId } from "~/modules/in-game-lists";
 import type {
-  BuildAbilitiesTupleWithUnknown,
-  MainWeaponId,
-} from "~/modules/in-game-lists";
-import type {
+  AbilityPoints,
   AnalyzedBuild,
   DamageType,
   InkConsumeType,
@@ -13,20 +11,15 @@ import type {
 import { DAMAGE_TYPE } from "./types";
 import { INK_CONSUME_TYPES } from "./types";
 import invariant from "tiny-invariant";
-import {
-  abilityPointsToEffects,
-  apFromMap,
-  buildToAbilityPoints,
-  weaponParams,
-} from "./utils";
+import { abilityPointsToEffects, apFromMap, weaponParams } from "./utils";
 import { assertUnreachable } from "~/utils/types";
 import { semiRandomId } from "~/utils/strings";
 
 export function buildStats({
-  build,
+  abilityPoints,
   weaponSplId,
 }: {
-  build: BuildAbilitiesTupleWithUnknown;
+  abilityPoints: AbilityPoints;
   weaponSplId: MainWeaponId;
 }): AnalyzedBuild {
   const mainWeaponParams = weaponParams().mainWeapons[weaponSplId];
@@ -42,7 +35,7 @@ export function buildStats({
   const input: StatFunctionInput = {
     mainWeaponParams,
     subWeaponParams,
-    abilityPoints: buildToAbilityPoints(build),
+    abilityPoints,
   };
 
   return {

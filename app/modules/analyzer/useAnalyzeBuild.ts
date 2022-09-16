@@ -9,6 +9,7 @@ import {
 } from "../in-game-lists";
 import type { AbilityType, AbilityWithUnknown } from "../in-game-lists/types";
 import { buildStats } from "./stats";
+import { buildToAbilityPoints } from "./utils";
 
 const UNKNOWN_SHORT = "U";
 
@@ -26,9 +27,18 @@ export function useAnalyzeBuild() {
       weapon: String(mainWeaponId),
     });
 
+  const abilityPoints = React.useMemo(
+    () => buildToAbilityPoints(build),
+    [build]
+  );
+
   const analyzed = React.useMemo(
-    () => buildStats({ build, weaponSplId: mainWeaponId }),
-    [build, mainWeaponId]
+    () =>
+      buildStats({
+        abilityPoints,
+        weaponSplId: mainWeaponId,
+      }),
+    [abilityPoints, mainWeaponId]
   );
 
   return {
@@ -37,6 +47,7 @@ export function useAnalyzeBuild() {
     mainWeaponId,
     setMainWeaponId,
     analyzed,
+    abilityPoints,
   };
 }
 
