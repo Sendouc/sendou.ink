@@ -1,4 +1,5 @@
 import type { MainWeaponId } from "~/modules/in-game-lists";
+import { ANGLE_SHOOTER_ID } from "~/modules/in-game-lists";
 import { INK_MINE_ID, POINT_SENSOR_ID } from "~/modules/in-game-lists";
 import type {
   AbilityPoints,
@@ -84,6 +85,8 @@ export function buildStats({
       subDefPointSensorMarkedTimeInSeconds:
         subDefPointSensorMarkedTimeInSeconds(input),
       subDefInkMineMarkedTimeInSeconds: subDefInkMineMarkedTimeInSeconds(input),
+      subDefAngleShooterMarkedTimeInSeconds:
+        subDefAngleShooterMarkedTimeInSeconds(input),
       ...subStats(input),
     },
   };
@@ -695,6 +698,34 @@ function subDefInkMineMarkedTimeInSeconds(
   return {
     baseValue: framesToSeconds(markingTimeEffect * baseEffect),
     modifiedBy: SUB_DEF_INK_MINE_MARKED_TIME_IN_SECONDS_KEY,
+    value: framesToSeconds(markingTimeEffect * effect),
+  };
+}
+
+function subDefAngleShooterMarkedTimeInSeconds(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["subDefAngleShooterMarkedTimeInSeconds"] {
+  const SUB_DEF_ANGLE_SHOOTER_MARKED_TIME_IN_SECONDS_KEY = "SRU";
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: SUB_DEF_ANGLE_SHOOTER_MARKED_TIME_IN_SECONDS_KEY,
+    }),
+    key: "MarkingTimeRt",
+    weapon: args.mainWeaponParams,
+  });
+
+  const angleShooterParams = weaponParams().subWeapons[ANGLE_SHOOTER_ID];
+
+  const { baseEffect: markingTimeEffect } = abilityPointsToEffects({
+    abilityPoints: 0,
+    key: "MarkingFrameSubSpec",
+    weapon: angleShooterParams,
+  });
+
+  return {
+    baseValue: framesToSeconds(markingTimeEffect * baseEffect),
+    modifiedBy: SUB_DEF_ANGLE_SHOOTER_MARKED_TIME_IN_SECONDS_KEY,
     value: framesToSeconds(markingTimeEffect * effect),
   };
 }

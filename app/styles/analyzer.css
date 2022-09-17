@@ -139,6 +139,12 @@
   font-size: var(--fonts-xxs);
 }
 
+.analyzer__stat-category-explanation {
+  color: var(--text-lighter);
+  font-size: var(--fonts-xxs);
+  grid-column: 1 / 4;
+}
+
 .analyzer__patch {
   background-color: var(--theme-transparent);
   border-radius: var(--rounded);

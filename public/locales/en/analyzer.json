@@ -65,5 +65,6 @@
   "patch": "Patch:",
   "abilityPoints": "Ability points",
   "abilityPoints.short": "AP",
-  "consumptionExplanation": "This chart shows the amount of actions left to perform with main weapon after using sub 0-{{maxSubsToUse}} times. Max amount of consecutive subs to use with full ink tank is {{maxSubsToUse}}."
+  "consumptionExplanation": "This chart shows the amount of actions left to perform with main weapon after using sub 0-{{maxSubsToUse}} times. Max amount of consecutive subs to use with full ink tank is {{maxSubsToUse}}.",
+  "trackingSubDefExplanation": "Point Sensor, Ink Mine and Angle Shooter tracking times are calculated against an opponent with 0AP of Sub Power Up."
 }

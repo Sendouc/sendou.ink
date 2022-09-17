@@ -20,6 +20,7 @@ import type {
   SpecialEffectType,
 } from "~/modules/analyzer/types";
 import type { BuildAbilitiesTupleWithUnknown } from "~/modules/in-game-lists";
+import { ANGLE_SHOOTER_ID } from "~/modules/in-game-lists";
 import { INK_MINE_ID, POINT_SENSOR_ID } from "~/modules/in-game-lists";
 import {
   abilities,
@@ -223,6 +224,16 @@ export default function BuildAnalyzerPage() {
               })}
               suffix={t("analyzer:suffix.seconds")}
             />
+            <StatCard
+              stat={analyzed.stats.subDefAngleShooterMarkedTimeInSeconds}
+              title={t("analyzer:stat.markedTime", {
+                weapon: t(`weapons:SUB_${ANGLE_SHOOTER_ID}`),
+              })}
+              suffix={t("analyzer:suffix.seconds")}
+            />
+            <div className="analyzer__stat-category-explanation">
+              {t("analyzer:trackingSubDefExplanation")}
+            </div>
           </StatCategory>
 
           {analyzed.stats.damages.length > 0 && (
