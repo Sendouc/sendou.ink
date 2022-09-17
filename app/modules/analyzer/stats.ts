@@ -11,9 +11,15 @@ import type {
 import { DAMAGE_TYPE } from "./types";
 import { INK_CONSUME_TYPES } from "./types";
 import invariant from "tiny-invariant";
-import { abilityPointsToEffects, apFromMap, weaponParams } from "./utils";
+import {
+  abilityPointsToEffects,
+  apFromMap,
+  hasEffect,
+  weaponParams,
+} from "./utils";
 import { assertUnreachable } from "~/utils/types";
 import { semiRandomId } from "~/utils/strings";
+import { roundToTwoDecimalPlaces } from "~/utils/number";
 
 export function buildStats({
   abilityPoints,
@@ -74,6 +80,7 @@ export function buildStats({
       quickRespawnTime: quickRespawnTime(input),
       superJumpTimeGroundFrames: superJumpTimeGroundFrames(input),
       superJumpTimeTotal: superJumpTimeTotal(input),
+      ...subStats(input),
     },
   };
 }
@@ -558,4 +565,72 @@ function framesBeforeTakingDamageInEnemyInk(
     value: Math.ceil(effect),
     modifiedBy: FRAMES_BEFORE_TAKING_DAMAGE_IN_ENEMY_INK_ABILITY,
   };
+}
+
+const SUB_WEAPON_STATS = [
+  {
+    analyzedBuildKey: "subVelocity",
+    abilityValuesKey: "SpawnSpeedZSpecUp",
+    type: "NO_CHANGE",
+  },
+  {
+    analyzedBuildKey: "subFirstPhaseDuration",
+    abilityValuesKey: "PeriodFirst",
+    type: "TIME",
+  },
+  {
+    analyzedBuildKey: "subSecondPhaseDuration",
+    abilityValuesKey: "PeriodSecond",
+    type: "TIME",
+  },
+  {
+    analyzedBuildKey: "subMarkingTimeInSeconds",
+    abilityValuesKey: "MarkingFrameSubSpec",
+    type: "TIME",
+  },
+  {
+    analyzedBuildKey: "subMarkingRadius",
+    abilityValuesKey: "SensorRadius",
+    type: "NO_CHANGE",
+  },
+  { analyzedBuildKey: "subHp", abilityValuesKey: "MaxHP", type: "HP" },
+] as const;
+function subStats(args: StatFunctionInput) {
+  const result: Partial<AnalyzedBuild["stats"]> = {};
+  const SUB_STATS_KEY = "BRU";
+
+  for (const { analyzedBuildKey, abilityValuesKey, type } of SUB_WEAPON_STATS) {
+    if (!hasEffect({ key: abilityValuesKey, weapon: args.subWeaponParams })) {
+      continue;
+    }
+    const { baseEffect, effect } = abilityPointsToEffects({
+      abilityPoints: apFromMap({
+        abilityPoints: args.abilityPoints,
+        ability: SUB_STATS_KEY,
+      }),
+      key: abilityValuesKey,
+      weapon: args.subWeaponParams,
+    });
+
+    const toValue = (effect: number) => {
+      switch (type) {
+        case "NO_CHANGE":
+          return roundToTwoDecimalPlaces(effect);
+        case "HP":
+          return roundToTwoDecimalPlaces(effect / 10);
+        case "TIME":
+          return framesToSeconds(effect);
+        default:
+          assertUnreachable(type);
+      }
+    };
+
+    result[analyzedBuildKey] = {
+      baseValue: toValue(baseEffect),
+      modifiedBy: SUB_STATS_KEY,
+      value: toValue(effect),
+    };
+  }
+
+  return result;
 }

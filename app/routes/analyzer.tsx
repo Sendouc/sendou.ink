@@ -148,6 +148,46 @@ export default function BuildAnalyzerPage() {
               title={t("analyzer:stat.whiteInk")}
               suffix={t("analyzer:suffix.seconds")}
             />
+            {analyzed.stats.subVelocity && (
+              <StatCard
+                stat={analyzed.stats.subVelocity}
+                title={t("analyzer:stat.sub.velocity")}
+              />
+            )}
+            {analyzed.stats.subFirstPhaseDuration && (
+              <StatCard
+                stat={analyzed.stats.subFirstPhaseDuration}
+                title={t("analyzer:stat.sub.firstPhaseDuration")}
+                suffix={t("analyzer:suffix.seconds")}
+              />
+            )}
+            {analyzed.stats.subSecondPhaseDuration && (
+              <StatCard
+                stat={analyzed.stats.subSecondPhaseDuration}
+                title={t("analyzer:stat.sub.secondPhaseDuration")}
+                suffix={t("analyzer:suffix.seconds")}
+              />
+            )}
+            {analyzed.stats.subMarkingTimeInSeconds && (
+              <StatCard
+                stat={analyzed.stats.subMarkingTimeInSeconds}
+                title={t("analyzer:stat.sub.markingTimeInSeconds")}
+                suffix={t("analyzer:suffix.seconds")}
+              />
+            )}
+            {analyzed.stats.subMarkingRadius && (
+              <StatCard
+                stat={analyzed.stats.subMarkingRadius}
+                title={t("analyzer:stat.sub.markingRadius")}
+              />
+            )}
+            {analyzed.stats.subHp && (
+              <StatCard
+                stat={analyzed.stats.subHp}
+                title={t("analyzer:stat.sub.hp")}
+                suffix={t("analyzer:suffix.hp")}
+              />
+            )}
           </StatCategory>
           <StatCategory title={t("analyzer:stat.category.special")}>
             <StatCard

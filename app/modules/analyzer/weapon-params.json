@@ -664,6 +664,13 @@
   },
   "subWeapons": {
     "0": {
+      "overwrites": {
+        "SpawnSpeedZSpecUp": {
+          "High": 1.68,
+          "Low": 1.12,
+          "Mid": 1.4
+        }
+      },
       "InkRecoverStop": 60,
       "DistanceDamage": [
         {
@@ -677,6 +684,13 @@
       ]
     },
     "1": {
+      "overwrites": {
+        "SpawnSpeedZSpecUp": {
+          "High": 1.68,
+          "Low": 1.12,
+          "Mid": 1.4
+        }
+      },
       "InkRecoverStop": 60,
       "DistanceDamage": [
         {
@@ -690,6 +704,13 @@
       ]
     },
     "2": {
+      "overwrites": {
+        "SpawnSpeedZSpecUp": {
+          "High": 1.68,
+          "Low": 1.12,
+          "Mid": 1.4
+        }
+      },
       "SubInkSaveLv": 0,
       "InkConsume": 0.4,
       "InkRecoverStop": 50,
@@ -705,15 +726,41 @@
       ]
     },
     "3": {
+      "overwrites": {
+        "PeriodFirst": {
+          "High": 600,
+          "Low": 300,
+          "Mid": 450
+        },
+        "PeriodSecond": {
+          "High": 1020,
+          "Low": 900,
+          "Mid": 960
+        }
+      },
       "SubInkSaveLv": 3,
       "InkConsume": 0.6,
       "InkRecoverStop": 60
     },
     "4": {
+      "overwrites": {
+        "MaxHP": {
+          "High": 15000,
+          "Low": 8000,
+          "Mid": 11500
+        }
+      },
       "InkConsume": 0.6,
       "InkRecoverStop": 85
     },
     "5": {
+      "overwrites": {
+        "SpawnSpeedZSpecUp": {
+          "High": 1.84,
+          "Low": 1.36,
+          "Mid": 1.6
+        }
+      },
       "SubInkSaveLv": 1,
       "InkConsume": 0.6,
       "InkRecoverStop": 70,
@@ -751,6 +798,13 @@
       ]
     },
     "6": {
+      "overwrites": {
+        "SpawnSpeedZSpecUp": {
+          "High": 0.52,
+          "Low": 0.4,
+          "Mid": 0.46
+        }
+      },
       "InkRecoverStop": 70,
       "DistanceDamage_BlastParamMaxCharge": [
         {
@@ -775,6 +829,13 @@
       "DirectDamage": 200
     },
     "7": {
+      "overwrites": {
+        "SpawnSpeedZSpecUp": {
+          "High": 1.68,
+          "Low": 1.12,
+          "Mid": 1.4
+        }
+      },
       "SubInkSaveLv": 1,
       "InkConsume": 0.55,
       "InkRecoverStop": 85,
@@ -790,16 +851,36 @@
       ]
     },
     "8": {
+      "overwrites": {},
       "SubInkSaveLv": 3,
       "InkConsume": 0.75,
       "InkRecoverStop": 0
     },
     "9": {
+      "overwrites": {
+        "SpawnSpeedZSpecUp": {
+          "High": 1.87,
+          "Low": 1.38,
+          "Mid": 1.64
+        },
+        "MarkingFrameSubSpec": {
+          "High": 960,
+          "Low": 480,
+          "Mid": 720
+        }
+      },
       "SubInkSaveLv": 1,
       "InkConsume": 0.45,
       "InkRecoverStop": 75
     },
     "10": {
+      "overwrites": {
+        "SensorRadius": {
+          "High": 4,
+          "Low": 3,
+          "Mid": 3.5
+        }
+      },
       "SubInkSaveLv": 3,
       "InkConsume": 0.6,
       "InkRecoverStop": 0,
@@ -815,17 +896,43 @@
       ]
     },
     "11": {
+      "overwrites": {
+        "SpawnSpeedZSpecUp": {
+          "High": 1.68,
+          "Low": 1.12,
+          "Mid": 1.4
+        }
+      },
       "SubInkSaveLv": 1,
       "InkConsume": 0.6,
       "InkRecoverStop": 75
     },
     "12": {
+      "overwrites": {
+        "SpawnSpeedZSpecUp": {
+          "High": 5.4,
+          "Low": 5,
+          "Mid": 5.2
+        },
+        "MarkingFrameSubSpec": {
+          "High": 600,
+          "Low": 300,
+          "Mid": 450
+        }
+      },
       "SubInkSaveLv": 0,
       "InkConsume": 0.4,
       "InkRecoverStop": 50,
       "DirectDamage": 300
     },
     "13": {
+      "overwrites": {
+        "SpawnSpeedZSpecUp": {
+          "High": 1.84,
+          "Low": 1.36,
+          "Mid": 1.6
+        }
+      },
       "InkConsume": 0.65,
       "InkRecoverStop": 88,
       "DistanceDamage_BlastParamChase": [

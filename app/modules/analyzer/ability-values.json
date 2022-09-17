@@ -38,5 +38,11 @@
   "SuperJump_ChargeFrm": [20.0, 35.0, 80.0],
   "SuperJump_MoveFrm": [96.6, 132.3, 138.0],
   "WallJumpChargeFrm": [0.0, 0.0, 0.0],
-  "ReduceJumpSwerveRate": [1.0, 0.75, 0.0]
+  "ReduceJumpSwerveRate": [1.0, 0.75, 0.0],
+  "SpawnSpeedZSpecUp": [0.0, 0.0, 0.0],
+  "PeriodFirst": [0.0, 0.0, 0.0],
+  "PeriodSecond": [0.0, 0.0, 0.0],
+  "MarkingFrameSubSpec": [0.0, 0.0, 0.0],
+  "SensorRadius": [0.0, 0.0, 0.0],
+  "MaxHP": [0.0, 0.0, 0.0]
 }

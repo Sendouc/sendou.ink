@@ -2,7 +2,12 @@ import type { Ability, BuildAbilitiesTupleWithUnknown } from "../in-game-lists";
 import { abilities } from "../in-game-lists";
 import weaponParamsJson from "./weapon-params.json";
 import abilityValuesJson from "./ability-values.json";
-import type { AbilityPoints, MainWeaponParams, ParamsJson } from "./types";
+import type {
+  AbilityPoints,
+  MainWeaponParams,
+  ParamsJson,
+  SubWeaponParams,
+} from "./types";
 import invariant from "tiny-invariant";
 import type { AbilityWithUnknown } from "../in-game-lists/types";
 
@@ -58,7 +63,7 @@ function abilityValues({
   weapon,
 }: {
   key: keyof typeof abilityValuesJson;
-  weapon: MainWeaponParams;
+  weapon: MainWeaponParams | SubWeaponParams;
 }): [number, number, number] {
   const overwrites = weapon.overwrites?.[key];
 
@@ -106,7 +111,7 @@ function abilityPointsToEffect({
 }: {
   key: keyof typeof abilityValuesJson;
   abilityPoints: number;
-  weapon: MainWeaponParams;
+  weapon: MainWeaponParams | SubWeaponParams;
 }) {
   const [high, mid, low] = abilityValues({ key, weapon });
 
@@ -126,10 +131,22 @@ export function abilityPointsToEffects({
 }: {
   key: keyof typeof abilityValuesJson;
   abilityPoints: number;
-  weapon: MainWeaponParams;
+  weapon: MainWeaponParams | SubWeaponParams;
 }) {
   return {
     baseEffect: abilityPointsToEffect({ key, abilityPoints: 0, weapon }),
     effect: abilityPointsToEffect({ key, abilityPoints, weapon }),
   };
+}
+
+export function hasEffect({
+  key,
+  weapon,
+}: {
+  key: keyof typeof abilityValuesJson;
+  weapon: MainWeaponParams | SubWeaponParams;
+}) {
+  const [high, mid, low] = abilityValues({ key, weapon });
+
+  return high !== mid || mid !== low;
 }

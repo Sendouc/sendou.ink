@@ -218,6 +218,7 @@ function parametersToSubWeaponResult(params: any): SubWeaponParams {
   // );
 
   return {
+    overwrites: resolveSubWeaponOverwrites(params),
     // xxx: not every sub has this, why? e.g. Splash Wall
     SubInkSaveLv,
     InkConsume: params["WeaponParam"]["InkConsume"],
@@ -335,6 +336,27 @@ function resolveOverwritesWithArbitraryKeys(
       result[abilityKey]![type] = value;
     }
   }
+}
+
+function resolveSubWeaponOverwrites(params: any) {
+  const result: SubWeaponParams["overwrites"] = {
+    SpawnSpeedZSpecUp: params["MoveParam"]?.["SpawnSpeedZSpecUp"],
+    PeriodFirst: params["MoveParam"]?.["PeriodFirst"],
+    PeriodSecond: params["MoveParam"]?.["PeriodSecond"],
+    MarkingFrameSubSpec:
+      params["MoveParam"]?.["MarkingFrameSubSpec"] ??
+      params["MoveParam"]?.["MarkingFrame"],
+    SensorRadius: params["MoveParam"]?.["SensorRadius"],
+    MaxHP: params["MoveParam"]?.["MaxHP"],
+    // xxx: missing Squid Beakon AP up
+  };
+
+  return Object.fromEntries(
+    Object.entries(result).filter(
+      ([_key, value]) =>
+        value && (value.High !== value.Mid || value.Low !== value.High)
+    )
+  );
 }
 
 const WEAPON_TYPES_TO_IGNORE = [

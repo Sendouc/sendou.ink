@@ -5,6 +5,7 @@ import type {
   SubWeaponId,
 } from "~/modules/in-game-lists";
 import type { SPECIAL_EFFECTS } from "./specialEffects";
+import type abilityValues from "./ability-values.json";
 
 export interface MainWeaponParams {
   subWeaponId: SubWeaponId;
@@ -78,6 +79,7 @@ export interface DistanceDamage {
 }
 
 export interface SubWeaponParams {
+  overwrites?: Record<string, Partial<Record<"High" | "Mid" | "Low", number>>>;
   SubInkSaveLv: 0 | 1 | 2 | 3;
   /** How much ink one usage of the sub consumes */
   InkConsume: number;
@@ -191,7 +193,15 @@ export interface AnalyzedBuild {
     quickRespawnTime: Stat;
     superJumpTimeGroundFrames: Stat;
     superJumpTimeTotal: Stat;
+    subVelocity?: Stat;
+    subFirstPhaseDuration?: Stat;
+    subSecondPhaseDuration?: Stat;
+    subMarkingTimeInSeconds?: Stat;
+    subMarkingRadius?: Stat;
+    subHp?: Stat;
   };
 }
 
 export type SpecialEffectType = typeof SPECIAL_EFFECTS[number]["type"];
+
+export type AbilityValuesKeys = keyof typeof abilityValues;
