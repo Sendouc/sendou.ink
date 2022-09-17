@@ -145,6 +145,7 @@ export const DAMAGE_TYPE = [
   "TAP_SHOT",
   "DISTANCE",
   "BOMB_NORMAL",
+  "BOMB_DIRECT",
 ] as const;
 
 export type DamageType = typeof DAMAGE_TYPE[number];
@@ -189,6 +190,10 @@ export interface AnalyzedBuild {
     subDefPointSensorMarkedTimeInSeconds: Stat;
     subDefInkMineMarkedTimeInSeconds: Stat;
     subDefAngleShooterMarkedTimeInSeconds: Stat;
+    subDefToxicMistMovementReduction: Stat;
+    subDefAngleShooterDamage: Stat;
+    subDefSplashWallDamagePercentage: Stat;
+    subDefSprinklerDamagePercentage: Stat;
     // subDefBombDamageLight: Stat;
     // subDefBombDamageHeavy: Stat;
     // subDefAngleShooterDamage: Stat;

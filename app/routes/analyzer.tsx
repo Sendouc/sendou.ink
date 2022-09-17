@@ -20,6 +20,11 @@ import type {
   SpecialEffectType,
 } from "~/modules/analyzer/types";
 import type { BuildAbilitiesTupleWithUnknown } from "~/modules/in-game-lists";
+import {
+  SPLASH_WALL_ID,
+  SPRINKLER_ID,
+  TOXIC_MIST_ID,
+} from "~/modules/in-game-lists";
 import { ANGLE_SHOOTER_ID } from "~/modules/in-game-lists";
 import { INK_MINE_ID, POINT_SENSOR_ID } from "~/modules/in-game-lists";
 import {
@@ -210,6 +215,34 @@ export default function BuildAnalyzerPage() {
             />
           </StatCategory>
           <StatCategory title={t("analyzer:stat.category.subDef")}>
+            <StatCard
+              stat={analyzed.stats.subDefAngleShooterDamage}
+              title={t("analyzer:stat.damage", {
+                weapon: t(`weapons:SUB_${ANGLE_SHOOTER_ID}`),
+              })}
+              suffix={t("analyzer:suffix.hp")}
+            />
+            <StatCard
+              stat={analyzed.stats.subDefSplashWallDamagePercentage}
+              title={t("analyzer:stat.damage", {
+                weapon: t(`weapons:SUB_${SPLASH_WALL_ID}`),
+              })}
+              suffix="%"
+            />
+            <StatCard
+              stat={analyzed.stats.subDefSprinklerDamagePercentage}
+              title={t("analyzer:stat.damage", {
+                weapon: t(`weapons:SUB_${SPRINKLER_ID}`),
+              })}
+              suffix="%"
+            />
+            <StatCard
+              stat={analyzed.stats.subDefToxicMistMovementReduction}
+              title={t("analyzer:stat.movementReduction", {
+                weapon: t(`weapons:SUB_${TOXIC_MIST_ID}`),
+              })}
+              suffix="%"
+            />
             <StatCard
               stat={analyzed.stats.subDefPointSensorMarkedTimeInSeconds}
               title={t("analyzer:stat.markedTime", {

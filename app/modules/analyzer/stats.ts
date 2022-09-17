@@ -87,6 +87,10 @@ export function buildStats({
       subDefInkMineMarkedTimeInSeconds: subDefInkMineMarkedTimeInSeconds(input),
       subDefAngleShooterMarkedTimeInSeconds:
         subDefAngleShooterMarkedTimeInSeconds(input),
+      subDefToxicMistMovementReduction: subDefToxicMistMovementReduction(input),
+      subDefAngleShooterDamage: subDefAngleShooterDamage(input),
+      subDefSplashWallDamagePercentage: subDefSplashWallDamagePercentage(input),
+      subDefSprinklerDamagePercentage: subDefSprinklerDamagePercentage(input),
       ...subStats(input),
     },
   };
@@ -276,6 +280,7 @@ const damageTypeToParamsKey: Record<
   MAX_CHARGE: "DamageParam_ValueMaxCharge",
   TAP_SHOT: "DamageParam_ValueMinCharge",
   BOMB_NORMAL: "DistanceDamage",
+  BOMB_DIRECT: "DirectDamage",
 };
 
 function damages(args: StatFunctionInput): AnalyzedBuild["stats"]["damages"] {
@@ -727,5 +732,91 @@ function subDefAngleShooterMarkedTimeInSeconds(
     baseValue: framesToSeconds(markingTimeEffect * baseEffect),
     modifiedBy: SUB_DEF_ANGLE_SHOOTER_MARKED_TIME_IN_SECONDS_KEY,
     value: framesToSeconds(markingTimeEffect * effect),
+  };
+}
+
+function subDefToxicMistMovementReduction(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["subDefToxicMistMovementReduction"] {
+  const SUB_DEF_TOXIC_MIST_MOVEMENT_REDUCTION_KEY = "SRU";
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: SUB_DEF_TOXIC_MIST_MOVEMENT_REDUCTION_KEY,
+    }),
+    key: "MoveDownRt_PoisonMist",
+    weapon: args.mainWeaponParams,
+  });
+
+  return {
+    baseValue: roundToTwoDecimalPlaces(baseEffect * 100),
+    value: roundToTwoDecimalPlaces(effect * 100),
+    modifiedBy: SUB_DEF_TOXIC_MIST_MOVEMENT_REDUCTION_KEY,
+  };
+}
+
+function subDefAngleShooterDamage(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["subDefAngleShooterDamage"] {
+  const SUB_DEF_ANGLE_SHOOTER_DAMAGE_KEY = "SRU";
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: SUB_DEF_ANGLE_SHOOTER_DAMAGE_KEY,
+    }),
+    key: "DamageRt_LineMarker",
+    weapon: args.mainWeaponParams,
+  });
+
+  const angleShooterDirectDamage =
+    weaponParams().subWeapons[ANGLE_SHOOTER_ID].DirectDamage;
+  invariant(angleShooterDirectDamage);
+
+  return {
+    baseValue: roundToTwoDecimalPlaces(
+      (angleShooterDirectDamage * baseEffect) / 10
+    ),
+    value: roundToTwoDecimalPlaces((angleShooterDirectDamage * effect) / 10),
+    modifiedBy: SUB_DEF_ANGLE_SHOOTER_DAMAGE_KEY,
+  };
+}
+
+function subDefSplashWallDamagePercentage(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["subDefSplashWallDamagePercentage"] {
+  const SUB_DEF_SPLASH_WALL_DAMAGE_PERCENTAGE_KEY = "SRU";
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: SUB_DEF_SPLASH_WALL_DAMAGE_PERCENTAGE_KEY,
+    }),
+    key: "DamageRt_Shield",
+    weapon: args.mainWeaponParams,
+  });
+
+  return {
+    baseValue: roundToTwoDecimalPlaces(baseEffect * 100),
+    value: roundToTwoDecimalPlaces(effect * 100),
+    modifiedBy: SUB_DEF_SPLASH_WALL_DAMAGE_PERCENTAGE_KEY,
+  };
+}
+
+function subDefSprinklerDamagePercentage(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["subDefSprinklerDamagePercentage"] {
+  const SUB_DEF_SPRINKLER_DAMAGE_PERCENTAGE_KEY = "SRU";
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: SUB_DEF_SPRINKLER_DAMAGE_PERCENTAGE_KEY,
+    }),
+    key: "DamageRt_Sprinkler",
+    weapon: args.mainWeaponParams,
+  });
+
+  return {
+    baseValue: roundToTwoDecimalPlaces(baseEffect * 100),
+    value: roundToTwoDecimalPlaces(effect * 100),
+    modifiedBy: SUB_DEF_SPRINKLER_DAMAGE_PERCENTAGE_KEY,
   };
 }
