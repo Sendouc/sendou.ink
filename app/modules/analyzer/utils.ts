@@ -12,7 +12,6 @@ import invariant from "tiny-invariant";
 import type { AbilityWithUnknown } from "../in-game-lists/types";
 
 export function weaponParams(): ParamsJson {
-  // xxx: after json update:
   // @ts-expect-error can be removed when Lean updates the json
   return weaponParamsJson as ParamsJson;
 }
@@ -119,8 +118,6 @@ function abilityPointsToEffect({
   const percentage = calculateAbilityPointToPercent(abilityPoints) / 100.0;
   const result = low + (high - low) * lerpN(slope, percentage);
 
-  // xxx: is this needed?
-  //return [result, lerpN(slope, percentage) * 100];
   return result;
 }
 

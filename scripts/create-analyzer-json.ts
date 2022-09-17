@@ -7,7 +7,6 @@
 import type { SpecialWeaponId } from "~/modules/in-game-lists";
 import { type SubWeaponId, subWeaponIds } from "~/modules/in-game-lists";
 import weapons from "./dicts/WeaponInfoMain.json";
-// xxx: for example suction missing ink consume level, ink saver lvl... we are not considering default?
 import subWeapons from "./dicts/WeaponInfoSub.json";
 import specialWeapons from "./dicts/WeaponInfoSpecial.json";
 import fs from "node:fs";
@@ -219,7 +218,6 @@ function parametersToSubWeaponResult(params: any): SubWeaponParams {
 
   return {
     overwrites: resolveSubWeaponOverwrites(params),
-    // xxx: not every sub has this, why? e.g. Splash Wall
     SubInkSaveLv,
     InkConsume: params["WeaponParam"]["InkConsume"],
     InkRecoverStop: params["WeaponParam"]["InkRecoverStop"],
@@ -348,7 +346,6 @@ function resolveSubWeaponOverwrites(params: any) {
       params["MoveParam"]?.["MarkingFrame"],
     SensorRadius: params["MoveParam"]?.["SensorRadius"],
     MaxHP: params["MoveParam"]?.["MaxHP"],
-    // xxx: missing Squid Beakon AP up
   };
 
   return Object.fromEntries(

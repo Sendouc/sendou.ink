@@ -418,7 +418,6 @@ function swimSpeed(
   };
 }
 
-// xxx: take in account own use of RP and other use of RP
 const RESPAWN_CHASE_FRAME = 150;
 function quickRespawnTime(
   args: StatFunctionInput

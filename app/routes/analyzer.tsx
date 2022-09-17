@@ -59,7 +59,6 @@ export default function BuildAnalyzerPage() {
     effects,
   } = useAnalyzeBuild();
 
-  // xxx: remove before prod
   if (process.env.NODE_ENV === "production") return <Main>Coming soon :)</Main>;
 
   return (
@@ -111,7 +110,6 @@ export default function BuildAnalyzerPage() {
           </div>
         </div>
         <div className="stack md">
-          {/* xxx: make sure can't be empty */}
           <StatCategory title={t("analyzer:stat.category.main")}>
             {typeof analyzed.stats.mainWeaponWhiteInkSeconds === "number" && (
               <StatCard
@@ -483,10 +481,6 @@ function StatCard({
   );
 }
 
-// xxx: fizzy sloshing machine
-// xxx: curling roller
-// xxx: splatana torpedo
-// xxx: angle shooter
 function DamageTable({
   values,
   isTripleShooter,
@@ -520,8 +514,7 @@ function DamageTable({
 
             const typeRowName = val.type.startsWith("BOMB_")
               ? t(`weapons:SUB_${subWeaponId}`)
-              : // xxx: maybe this could use a sub type where "BOMB_" starting are filtered out
-                t(`analyzer:damage.${val.type as "NORMAL_MIN"}`);
+              : t(`analyzer:damage.${val.type as "NORMAL_MIN"}`);
 
             return (
               <tr key={val.id}>

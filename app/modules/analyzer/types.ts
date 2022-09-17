@@ -15,7 +15,6 @@ export interface MainWeaponParams {
   SpecialPoint: number;
   /** Weapon's weight class. "Light/Heavy weapon" */
   WeaponSpeedType?: "Slow" | "Fast";
-  // xxx: verify
   /** Total frames it takes the weapon to shoot out three times */
   TripleShotSpanFrame?: number;
   /** Amount of frames charge can be held */
@@ -32,10 +31,8 @@ export interface MainWeaponParams {
   /** Charger tap shot damage */
   DamageParam_ValueMinCharge?: number;
   BlastParam_DistanceDamage?: Array<DistanceDamage>;
-  // xxx: what are these? would probably be nice to show
   // DamageParam_ReduceStartFrame?: number;
   // DamageParam_ReduceEndFrame?: number;
-  // xxx: CanopyHP missing from Splat Brella
   /** Brella shield HP */
   CanopyHP?: number;
   /** Amount of frames white ink (=no ink recovery during this time) takes */
@@ -60,7 +57,6 @@ export interface MainWeaponParams {
   InkConsume_SwingParam?: number;
   /** How much ink brella shield launch consumes? */
   InkConsumeUmbrella_WeaponShelterCanopyParam?: number;
-  // xxx: splat brella missing this - are we missing extend?
   /** How much ink one brella shot consumes? */
   InkConsume_WeaponShelterShotgunParam?: number;
   /** How much ink a dualie dodge roll consumes? */
@@ -68,7 +64,6 @@ export interface MainWeaponParams {
   /** How much ink a fully charger Splatana shot consumes? */
   InkConsumeFullCharge_ChargeParam?: number;
   //InkConsumeMidCharge_ChargeParam?: number;
-  // xxx: what are these?
   // SpeedInkConsumeMax_WeaponRollParam?: number;
   // SpeedInkConsumeMin_WeaponRollParam?: number;
 }
@@ -93,7 +88,6 @@ export interface SubWeaponParams {
   DistanceDamage_BlastParamMinCharge?: Array<DistanceDamage>;
   /** Damage dealt by explosion at different radiuses (fizzy bomb bounces) */
   DistanceDamage_BlastParamArray?: Array<DistanceDamage>;
-  // xxx: verify torpedo
   /** Damage dealt by explosion at different radiuses (torpedo explosion air to ground) */
   DistanceDamage_BlastParamChase?: Array<DistanceDamage>;
   /** Damage dealt by explosion at different radiuses (rolling torpedo) */
@@ -176,14 +170,12 @@ export interface AnalyzedBuild {
     specialPoint: Stat;
     /** % of special charge saved when dying */
     specialSavedAfterDeath: Stat;
-    // xxx: not all weapons have this e.g. rollers have different values for rolling and horizontal/vertical swings
     mainWeaponWhiteInkSeconds?: number;
     subWeaponWhiteInkSeconds: number;
     fullInkTankOptions: Array<FullInkTankOption & { id: string }>;
     damages: Array<Damage & { id: string }>;
     squidFormInkRecoverySeconds: Stat;
     runSpeed: Stat;
-    // xxx: missing from json
     // shootingRunSpeed: Stat;
     swimSpeed: Stat;
     runSpeedInEnemyInk: Stat;
