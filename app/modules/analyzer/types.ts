@@ -185,11 +185,24 @@ export interface AnalyzedBuild {
     quickRespawnTime: Stat;
     superJumpTimeGroundFrames: Stat;
     superJumpTimeTotal: Stat;
+
+    subDefPointSensorMarkedTimeInSeconds: Stat;
+    subDefInkMineMarkedTimeInSeconds: Stat;
+    // subDefBombDamageLight: Stat;
+    // subDefBombDamageHeavy: Stat;
+    // subDefAngleShooterDamage: Stat;
+    // subDefSplashWallDamage: Stat;
+    // subDefSprinklerDamage: Stat;
+    // subDefToxicMistMoveReduction: Stat;
+    // subDefInkMineMarkingTime: Stat;
+    // subDefPointSensorMarkingTime: Stat;
+
     subVelocity?: Stat;
     subFirstPhaseDuration?: Stat;
     subSecondPhaseDuration?: Stat;
     subMarkingTimeInSeconds?: Stat;
     subMarkingRadius?: Stat;
+    subExplosionRadius?: Stat;
     subHp?: Stat;
   };
 }

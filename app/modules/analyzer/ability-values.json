@@ -44,5 +44,6 @@
   "PeriodSecond": [0.0, 0.0, 0.0],
   "MarkingFrameSubSpec": [0.0, 0.0, 0.0],
   "SensorRadius": [0.0, 0.0, 0.0],
+  "ExplosionRadius": [0.0, 0.0, 0.0],
   "MaxHP": [0.0, 0.0, 0.0]
 }

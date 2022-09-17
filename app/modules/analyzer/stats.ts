@@ -1,4 +1,5 @@
 import type { MainWeaponId } from "~/modules/in-game-lists";
+import { INK_MINE_ID, POINT_SENSOR_ID } from "~/modules/in-game-lists";
 import type {
   AbilityPoints,
   AnalyzedBuild,
@@ -80,6 +81,9 @@ export function buildStats({
       quickRespawnTime: quickRespawnTime(input),
       superJumpTimeGroundFrames: superJumpTimeGroundFrames(input),
       superJumpTimeTotal: superJumpTimeTotal(input),
+      subDefPointSensorMarkedTimeInSeconds:
+        subDefPointSensorMarkedTimeInSeconds(input),
+      subDefInkMineMarkedTimeInSeconds: subDefInkMineMarkedTimeInSeconds(input),
       ...subStats(input),
     },
   };
@@ -592,6 +596,11 @@ const SUB_WEAPON_STATS = [
     abilityValuesKey: "SensorRadius",
     type: "NO_CHANGE",
   },
+  {
+    analyzedBuildKey: "subExplosionRadius",
+    abilityValuesKey: "ExplosionRadius",
+    type: "NO_CHANGE",
+  },
   { analyzedBuildKey: "subHp", abilityValuesKey: "MaxHP", type: "HP" },
 ] as const;
 function subStats(args: StatFunctionInput) {
@@ -632,4 +641,60 @@ function subStats(args: StatFunctionInput) {
   }
 
   return result;
+}
+
+function subDefPointSensorMarkedTimeInSeconds(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["subDefPointSensorMarkedTimeInSeconds"] {
+  const SUB_DEF_POINT_SENSOR_MARKED_TIME_IN_SECONDS_KEY = "SRU";
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: SUB_DEF_POINT_SENSOR_MARKED_TIME_IN_SECONDS_KEY,
+    }),
+    key: "MarkingTimeRt",
+    weapon: args.mainWeaponParams,
+  });
+
+  const pointSensorParams = weaponParams().subWeapons[POINT_SENSOR_ID];
+
+  const { baseEffect: markingTimeEffect } = abilityPointsToEffects({
+    abilityPoints: 0,
+    key: "MarkingFrameSubSpec",
+    weapon: pointSensorParams,
+  });
+
+  return {
+    baseValue: framesToSeconds(markingTimeEffect * baseEffect),
+    modifiedBy: SUB_DEF_POINT_SENSOR_MARKED_TIME_IN_SECONDS_KEY,
+    value: framesToSeconds(markingTimeEffect * effect),
+  };
+}
+
+function subDefInkMineMarkedTimeInSeconds(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["subDefInkMineMarkedTimeInSeconds"] {
+  const SUB_DEF_INK_MINE_MARKED_TIME_IN_SECONDS_KEY = "SRU";
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: SUB_DEF_INK_MINE_MARKED_TIME_IN_SECONDS_KEY,
+    }),
+    key: "MarkingTimeRt_Trap",
+    weapon: args.mainWeaponParams,
+  });
+
+  const inkMineParams = weaponParams().subWeapons[INK_MINE_ID];
+
+  const { baseEffect: markingTimeEffect } = abilityPointsToEffects({
+    abilityPoints: 0,
+    key: "MarkingFrameSubSpec",
+    weapon: inkMineParams,
+  });
+
+  return {
+    baseValue: framesToSeconds(markingTimeEffect * baseEffect),
+    modifiedBy: SUB_DEF_INK_MINE_MARKED_TIME_IN_SECONDS_KEY,
+    value: framesToSeconds(markingTimeEffect * effect),
+  };
 }

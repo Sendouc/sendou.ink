@@ -875,10 +875,20 @@
     },
     "10": {
       "overwrites": {
+        "MarkingFrameSubSpec": {
+          "High": 600,
+          "Low": 300,
+          "Mid": 450
+        },
         "SensorRadius": {
           "High": 4,
           "Low": 3,
           "Mid": 3.5
+        },
+        "ExplosionRadius": {
+          "High": 11,
+          "Low": 8,
+          "Mid": 9.5
         }
       },
       "SubInkSaveLv": 3,

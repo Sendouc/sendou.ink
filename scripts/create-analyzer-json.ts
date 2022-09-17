@@ -343,8 +343,10 @@ function resolveSubWeaponOverwrites(params: any) {
     PeriodSecond: params["MoveParam"]?.["PeriodSecond"],
     MarkingFrameSubSpec:
       params["MoveParam"]?.["MarkingFrameSubSpec"] ??
-      params["MoveParam"]?.["MarkingFrame"],
+      params["MoveParam"]?.["MarkingFrame"] ??
+      params["AreaParam"]?.["MarkingFrameSubSpec"],
     SensorRadius: params["MoveParam"]?.["SensorRadius"],
+    ExplosionRadius: params["AreaParam"]?.["Distance"],
     MaxHP: params["MoveParam"]?.["MaxHP"],
   };
 

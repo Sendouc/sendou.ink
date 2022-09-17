@@ -20,6 +20,7 @@ import type {
   SpecialEffectType,
 } from "~/modules/analyzer/types";
 import type { BuildAbilitiesTupleWithUnknown } from "~/modules/in-game-lists";
+import { INK_MINE_ID, POINT_SENSOR_ID } from "~/modules/in-game-lists";
 import {
   abilities,
   isAbility,
@@ -47,7 +48,7 @@ export const handle = {
 };
 
 export default function BuildAnalyzerPage() {
-  const { t } = useTranslation(["analyzer", "common"]);
+  const { t } = useTranslation(["analyzer", "common", "weapons"]);
   useSetTitle(t("common:pages.buildAnalyzer"));
   const {
     build,
@@ -140,6 +141,7 @@ export default function BuildAnalyzerPage() {
               />
             )}
           </StatCategory>
+
           <StatCategory title={t("analyzer:stat.category.sub")}>
             <StatCard
               stat={analyzed.stats.subWeaponWhiteInkSeconds}
@@ -179,6 +181,12 @@ export default function BuildAnalyzerPage() {
                 title={t("analyzer:stat.sub.markingRadius")}
               />
             )}
+            {analyzed.stats.subExplosionRadius && (
+              <StatCard
+                stat={analyzed.stats.subExplosionRadius}
+                title={t("analyzer:stat.sub.explosionRadius")}
+              />
+            )}
             {analyzed.stats.subHp && (
               <StatCard
                 stat={analyzed.stats.subHp}
@@ -187,11 +195,12 @@ export default function BuildAnalyzerPage() {
               />
             )}
           </StatCategory>
+
           <StatCategory title={t("analyzer:stat.category.special")}>
             <StatCard
               stat={analyzed.stats.specialPoint}
               title={t("analyzer:stat.specialPoints")}
-              suffix="p"
+              suffix={t("analyzer:suffix.specialPointsShort")}
             />
             <StatCard
               stat={analyzed.stats.specialSavedAfterDeath}
@@ -199,6 +208,23 @@ export default function BuildAnalyzerPage() {
               suffix="%"
             />
           </StatCategory>
+          <StatCategory title={t("analyzer:stat.category.subDef")}>
+            <StatCard
+              stat={analyzed.stats.subDefPointSensorMarkedTimeInSeconds}
+              title={t("analyzer:stat.markedTime", {
+                weapon: t(`weapons:SUB_${POINT_SENSOR_ID}`),
+              })}
+              suffix={t("analyzer:suffix.seconds")}
+            />
+            <StatCard
+              stat={analyzed.stats.subDefInkMineMarkedTimeInSeconds}
+              title={t("analyzer:stat.markedTime", {
+                weapon: t(`weapons:SUB_${INK_MINE_ID}`),
+              })}
+              suffix={t("analyzer:suffix.seconds")}
+            />
+          </StatCategory>
+
           {analyzed.stats.damages.length > 0 && (
             <StatCategory
               title={t("analyzer:stat.category.damage")}
@@ -211,6 +237,7 @@ export default function BuildAnalyzerPage() {
               />
             </StatCategory>
           )}
+
           {analyzed.stats.fullInkTankOptions.length > 0 && (
             <StatCategory
               title={t("analyzer:stat.category.actionsPerInkTank")}
@@ -222,6 +249,7 @@ export default function BuildAnalyzerPage() {
               />
             </StatCategory>
           )}
+
           <StatCategory title={t("analyzer:stat.category.movement")}>
             <StatCard
               stat={analyzed.stats.swimSpeed}
@@ -250,6 +278,7 @@ export default function BuildAnalyzerPage() {
               suffix={t("analyzer:suffix.hp")}
             />
           </StatCategory>
+
           <StatCategory title={t("analyzer:stat.category.misc")}>
             <StatCard
               stat={analyzed.stats.squidFormInkRecoverySeconds}
