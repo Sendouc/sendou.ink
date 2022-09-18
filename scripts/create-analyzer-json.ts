@@ -276,7 +276,29 @@ function parametersToSpecialWeaponResult(params: any) {
     }
   }
 
-  return result;
+  return { overwrites: unwrapSubSpecialSpecUpList(result) };
+}
+
+function unwrapSubSpecialSpecUpList(result: any) {
+  return Object.fromEntries(
+    Object.entries(result).flatMap((entries) => {
+      const [key, value]: any = entries;
+      if (Array.isArray(value)) {
+        return value.map((v: any) => {
+          if (
+            !v.SpecUpType ||
+            (v.Value.Low === v.Value.Mid && v.Value.Mid === v.Value.High)
+          ) {
+            return [];
+          }
+
+          return [v.SpecUpType, v.Value];
+        });
+      }
+
+      return [[key, value]];
+    })
+  );
 }
 
 function resolveSubWeaponId(weapon: MainWeapon) {

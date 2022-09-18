@@ -1025,254 +1025,213 @@
   },
   "specialWeapons": {
     "1": {
-      "SubSpecialSpecUpList": [
-        {
-          "SpecUpType": "PaintRadius",
-          "Value": {
-            "High": 4,
-            "Low": 3.2,
-            "Mid": 3.6
-          }
+      "overwrites": {
+        "PaintRadius": {
+          "High": 4,
+          "Low": 3.2,
+          "Mid": 3.6
         },
-        {
-          "SpecUpType": "DistanceDamageDistanceRate",
-          "Value": {
-            "High": 1.3,
-            "Low": 1,
-            "Mid": 1.15
-          }
+        "DistanceDamageDistanceRate": {
+          "High": 1.3,
+          "Low": 1,
+          "Mid": 1.15
+        },
+        "SpecialDurationFrame": {
+          "High": 480,
+          "Low": 360,
+          "Mid": 420
         }
-      ],
-      "SpecialDurationFrame": {
-        "High": 480,
-        "Low": 360,
-        "Mid": 420
       }
     },
     "2": {
-      "MaxFieldHP": {
-        "High": 28800,
-        "Low": 24000,
-        "Mid": 26400
-      },
-      "MaxHP": {
-        "High": 14400,
-        "Low": 12000,
-        "Mid": 13200
+      "overwrites": {
+        "MaxFieldHP": {
+          "High": 28800,
+          "Low": 24000,
+          "Mid": 26400
+        },
+        "MaxHP": {
+          "High": 14400,
+          "Low": 12000,
+          "Mid": 13200
+        }
       }
     },
     "3": {
-      "InkConsume_Hook": {
-        "High": 0.015,
-        "Low": 0.04,
-        "Mid": 0.025
-      },
-      "InkConsume_PerSec": {
-        "High": 0.08,
-        "Low": 0.1,
-        "Mid": 0.087
+      "overwrites": {
+        "InkConsume_Hook": {
+          "High": 0.015,
+          "Low": 0.04,
+          "Mid": 0.025
+        },
+        "InkConsume_PerSec": {
+          "High": 0.08,
+          "Low": 0.1,
+          "Mid": 0.087
+        }
       }
     },
     "4": {
-      "SubSpecialSpecUpList": [
-        {
-          "Value": {
-            "High": 3.78,
-            "Low": 3.15,
-            "Mid": 3.465
-          }
-        },
-        {
-          "SpecUpType": "CrossPaintRadius",
-          "Value": {
-            "High": 2,
-            "Low": 2,
-            "Mid": 2
-          }
-        },
-        {
-          "SpecUpType": "CrossPaintCheckLength",
-          "Value": {
-            "High": 3,
-            "Low": 3,
-            "Mid": 3
-          }
+      "overwrites": {
+        "TargetInCircleRadius": {
+          "High": 240,
+          "Low": 140,
+          "Mid": 190
         }
-      ],
-      "TargetInCircleRadius": {
-        "High": 240,
-        "Low": 140,
-        "Mid": 190
       }
     },
     "5": {
-      "RainyFrame": {
-        "High": 600,
-        "Low": 480,
-        "Mid": 540
-      },
-      "SpawnSpeedZSpecUp": {
-        "High": 1.68,
-        "Low": 1.12,
-        "Mid": 1.4
+      "overwrites": {
+        "RainyFrame": {
+          "High": 600,
+          "Low": 480,
+          "Mid": 540
+        },
+        "SpawnSpeedZSpecUp": {
+          "High": 1.68,
+          "Low": 1.12,
+          "Mid": 1.4
+        }
       }
     },
     "6": {
-      "ChargeRateAutoPerFrame": {
-        "High": 0.01,
-        "Low": 0.002,
-        "Mid": 0.006
+      "overwrites": {
+        "ChargeRateAutoPerFrame": {
+          "High": 0.01,
+          "Low": 0.002,
+          "Mid": 0.006
+        }
       }
     },
     "7": {
-      "MaxFrame": {
-        "High": 216,
-        "Low": 160,
-        "Mid": 192
-      },
-      "MaxRadius": {
-        "High": 27,
-        "Low": 20,
-        "Mid": 24
+      "overwrites": {
+        "MaxFrame": {
+          "High": 216,
+          "Low": 160,
+          "Mid": 192
+        },
+        "MaxRadius": {
+          "High": 27,
+          "Low": 20,
+          "Mid": 24
+        }
       }
     },
     "8": {
-      "RadiusMax": {
-        "High": 4,
-        "Low": 3,
-        "Mid": 3.5
-      },
-      "RadiusMin": {
-        "High": 1.4,
-        "Low": 0.8,
-        "Mid": 1.1
+      "overwrites": {
+        "RadiusMax": {
+          "High": 4,
+          "Low": 3,
+          "Mid": 3.5
+        },
+        "RadiusMin": {
+          "High": 1.4,
+          "Low": 0.8,
+          "Mid": 1.1
+        }
       }
     },
     "9": {
-      "LaserFrame": {
-        "High": 240,
-        "Low": 180,
-        "Mid": 210
+      "overwrites": {
+        "LaserFrame": {
+          "High": 240,
+          "Low": 180,
+          "Mid": 210
+        }
       }
     },
     "10": {
-      "SubSpecialSpecUpList": [
-        {
-          "Value": {
-            "High": 4,
-            "Low": 3.2,
-            "Mid": 3.6
-          }
+      "overwrites": {
+        "DistanceDamageDistanceRate": {
+          "High": 1.3,
+          "Low": 1,
+          "Mid": 1.15
         },
-        {
-          "SpecUpType": "DistanceDamageDistanceRate",
-          "Value": {
-            "High": 1.3,
-            "Low": 1,
-            "Mid": 1.15
-          }
+        "SplashAroundVelocityMin": {
+          "High": 0.52,
+          "Low": 0.49,
+          "Mid": 0.505
         },
-        {
-          "SpecUpType": "SplashAroundVelocityMin",
-          "Value": {
-            "High": 0.52,
-            "Low": 0.49,
-            "Mid": 0.505
-          }
+        "SplashAroundVelocityMax": {
+          "High": 0.35,
+          "Low": 0.33,
+          "Mid": 0.34
         },
-        {
-          "SpecUpType": "SplashAroundVelocityMax",
-          "Value": {
-            "High": 0.35,
-            "Low": 0.33,
-            "Mid": 0.34
-          }
+        "SplashAroundPaintRadius": {
+          "High": 0.7,
+          "Low": 0.63,
+          "Mid": 0.665
         },
-        {
-          "SpecUpType": "SplashAroundPaintRadius",
-          "Value": {
-            "High": 0.7,
-            "Low": 0.63,
-            "Mid": 0.665
-          }
+        "SpecialTotalFrame": {
+          "High": 510,
+          "Low": 450,
+          "Mid": 480
         }
-      ],
-      "SpecialTotalFrame": {
-        "High": 510,
-        "Low": 450,
-        "Mid": 480
       }
     },
     "11": {
-      "SpecialTotalFrame": {
-        "High": 660,
-        "Low": 540,
-        "Mid": 600
+      "overwrites": {
+        "SpecialTotalFrame": {
+          "High": 660,
+          "Low": 540,
+          "Mid": 600
+        }
       }
     },
     "12": {
-      "SpecialTotalFrame": {
-        "High": 660,
-        "Low": 540,
-        "Mid": 600
+      "overwrites": {
+        "SpecialTotalFrame": {
+          "High": 660,
+          "Low": 540,
+          "Mid": 600
+        }
       }
     },
     "13": {
-      "SubSpecialSpecUpList": [
-        {
-          "SpecUpType": "DistanceDamageDistanceRate",
-          "Value": {
-            "High": 1.2,
-            "Low": 1,
-            "Mid": 1.1
-          }
+      "overwrites": {
+        "DistanceDamageDistanceRate": {
+          "High": 1.2,
+          "Low": 1,
+          "Mid": 1.1
         },
-        {
-          "SpecUpType": "PaintRadius",
-          "Value": {
-            "High": 8.4,
-            "Low": 7,
-            "Mid": 7.7
-          }
+        "PaintRadius": {
+          "High": 8.4,
+          "Low": 7,
+          "Mid": 7.7
         },
-        {
-          "SpecUpType": "SplashAroundVelocityMin",
-          "Value": {
-            "High": 0.6,
-            "Low": 0.5,
-            "Mid": 0.55
-          }
+        "SplashAroundVelocityMin": {
+          "High": 0.6,
+          "Low": 0.5,
+          "Mid": 0.55
         },
-        {
-          "SpecUpType": "SplashAroundVelocityMax",
-          "Value": {
-            "High": 0.7,
-            "Low": 0.6,
-            "Mid": 0.65
-          }
+        "SplashAroundVelocityMax": {
+          "High": 0.7,
+          "Low": 0.6,
+          "Mid": 0.65
         },
-        {
-          "SpecUpType": "SplashAroundPaintRadius",
-          "Value": {
-            "High": 1.2,
-            "Low": 1,
-            "Mid": 1.1
-          }
+        "SplashAroundPaintRadius": {
+          "High": 1.2,
+          "Low": 1,
+          "Mid": 1.1
         }
-      ]
+      }
     },
     "14": {
-      "SpawnSpeedZSpecUp": {
-        "High": 2.6,
-        "Low": 2,
-        "Mid": 2.3
+      "overwrites": {
+        "SpawnSpeedZSpecUp": {
+          "High": 2.6,
+          "Low": 2,
+          "Mid": 2.3
+        }
       }
     },
     "15": {
-      "PowerUpFrame": {
-        "High": 1500,
-        "Low": 900,
-        "Mid": 1200
+      "overwrites": {
+        "PowerUpFrame": {
+          "High": 1500,
+          "Low": 900,
+          "Mid": 1200
+        }
       }
     }
   }

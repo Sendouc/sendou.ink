@@ -99,10 +99,13 @@ export interface SubWeaponParams {
   DirectDamage?: number;
 }
 
+type SpecialWeaponParamsObject = typeof weaponParams["specialWeapons"];
+export type SpecialWeaponParams = SpecialWeaponParamsObject[SpecialWeaponId];
+
 export type ParamsJson = {
   mainWeapons: Record<MainWeaponId, MainWeaponParams>;
   subWeapons: Record<SubWeaponId, SubWeaponParams>;
-  specialWeapons: typeof weaponParams["specialWeapons"];
+  specialWeapons: SpecialWeaponParamsObject;
 };
 
 export interface Stat {
@@ -119,6 +122,7 @@ export type AbilityPoints = Map<
 export interface StatFunctionInput {
   mainWeaponParams: MainWeaponParams;
   subWeaponParams: SubWeaponParams;
+  specialWeaponParams: SpecialWeaponParams;
   abilityPoints: AbilityPoints;
   mainOnlyAbilities: Array<Ability>;
 }
@@ -214,6 +218,8 @@ export interface AnalyzedBuild {
     subMarkingRadius?: Stat;
     subExplosionRadius?: Stat;
     subHp?: Stat;
+
+    specialDurationInSeconds?: Stat;
   };
 }
 

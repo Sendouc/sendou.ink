@@ -87,6 +87,7 @@ export default function BuildAnalyzerPage() {
   const mainWeaponCategoryItems = [
     analyzed.stats.shotSpreadAir && (
       <StatCard
+        key="jumpShotSpread"
         stat={analyzed.stats.shotSpreadAir}
         title={t("analyzer:stat.jumpShotSpread")}
         suffix="°"
@@ -94,6 +95,7 @@ export default function BuildAnalyzerPage() {
     ),
     typeof analyzed.stats.shotSpreadGround === "number" && (
       <StatCard
+        key="groundShotSpread"
         stat={analyzed.stats.shotSpreadGround}
         title={t("analyzer:stat.groundShotSpread")}
         suffix="°"
@@ -101,6 +103,7 @@ export default function BuildAnalyzerPage() {
     ),
     typeof analyzed.stats.mainWeaponWhiteInkSeconds === "number" && (
       <StatCard
+        key="whiteInkSeconds"
         stat={analyzed.stats.mainWeaponWhiteInkSeconds}
         title={t("analyzer:stat.whiteInk")}
         suffix={t("analyzer:suffix.seconds")}
@@ -108,6 +111,7 @@ export default function BuildAnalyzerPage() {
     ),
     typeof analyzed.weapon.brellaCanopyHp === "number" && (
       <StatCard
+        key="brellaCanopyHp"
         stat={analyzed.weapon.brellaCanopyHp}
         title={t("analyzer:stat.canopyHp")}
         suffix={t("analyzer:suffix.hp")}
@@ -115,6 +119,7 @@ export default function BuildAnalyzerPage() {
     ),
     typeof analyzed.weapon.fullChargeSeconds === "number" && (
       <StatCard
+        key="fullChargeSeconds"
         stat={analyzed.weapon.fullChargeSeconds}
         title={t("analyzer:stat.fullChargeSeconds")}
         suffix={t("analyzer:suffix.seconds")}
@@ -122,6 +127,7 @@ export default function BuildAnalyzerPage() {
     ),
     typeof analyzed.weapon.maxChargeHoldSeconds === "number" && (
       <StatCard
+        key="maxChargeHoldSeconds"
         stat={analyzed.weapon.maxChargeHoldSeconds}
         title={t("analyzer:stat.maxChargeHoldSeconds")}
         suffix={t("analyzer:suffix.seconds")}
@@ -249,6 +255,17 @@ export default function BuildAnalyzerPage() {
               title={t("analyzer:stat.specialLost")}
               suffix="%"
             />
+            {analyzed.stats.specialDurationInSeconds && (
+              <StatCard
+                stat={analyzed.stats.specialDurationInSeconds}
+                title={t("analyzer:stat.special.duration", {
+                  weapon: t(
+                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
+                  ),
+                })}
+                suffix={t("analyzer:suffix.seconds")}
+              />
+            )}
           </StatCategory>
           <StatCategory title={t("analyzer:stat.category.subDef")}>
             <StatCard

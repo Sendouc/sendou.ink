@@ -18,6 +18,21 @@ export {
   TOXIC_MIST_ID,
   ANGLE_SHOOTER_ID,
   TORPEDO_ID,
+  TRIZOOKA_ID,
+  BIG_BUBBLER_ID,
+  ZIPCASTER_ID,
+  TENTA_MISSILES_ID,
+  INK_STORM_ID,
+  BOOYAH_BOMB_ID,
+  WAVE_BREAKER_ID,
+  INK_VAC_ID,
+  KILLER_WAIL_ID,
+  INKJET_ID,
+  ULTRA_STAMP_ID,
+  CRAB_TANK_ID,
+  REEF_SLIDER_ID,
+  TRIPLE_INKSTRIKE_ID,
+  TACTICOOLER_ID,
 } from "./weapon-ids";
 export { headGearIds, clothesGearIds, shoesGearIds } from "./gear-ids";
 export { abilitiesShort, abilities } from "./abilities";

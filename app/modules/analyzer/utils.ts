@@ -6,6 +6,7 @@ import type {
   AbilityPoints,
   MainWeaponParams,
   ParamsJson,
+  SpecialWeaponParams,
   SubWeaponParams,
 } from "./types";
 import invariant from "tiny-invariant";
@@ -65,8 +66,10 @@ function abilityValues({
   weapon,
 }: {
   key: keyof typeof abilityValuesJson;
-  weapon: MainWeaponParams | SubWeaponParams;
+  weapon: MainWeaponParams | SubWeaponParams | SpecialWeaponParams;
 }): [number, number, number] {
+  // xxx: before prod
+  // @ts-expect-error should be gone soon
   const overwrites = weapon.overwrites?.[key];
 
   const [High, Mid, Low] = abilityValuesJson[key];
@@ -113,7 +116,7 @@ function abilityPointsToEffect({
 }: {
   key: keyof typeof abilityValuesJson;
   abilityPoints: number;
-  weapon: MainWeaponParams | SubWeaponParams;
+  weapon: MainWeaponParams | SubWeaponParams | SpecialWeaponParams;
 }) {
   const [high, mid, low] = abilityValues({ key, weapon });
 
@@ -131,7 +134,7 @@ export function abilityPointsToEffects({
 }: {
   key: keyof typeof abilityValuesJson;
   abilityPoints: number;
-  weapon: MainWeaponParams | SubWeaponParams;
+  weapon: MainWeaponParams | SubWeaponParams | SpecialWeaponParams;
 }) {
   return {
     baseEffect: abilityPointsToEffect({ key, abilityPoints: 0, weapon }),

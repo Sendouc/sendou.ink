@@ -42,9 +42,17 @@ export function buildStats({
     `Sub weapon with splId ${mainWeaponParams.subWeaponId} not found`
   );
 
+  const specialWeaponParams =
+    weaponParams().specialWeapons[mainWeaponParams.specialWeaponId];
+  invariant(
+    specialWeaponParams,
+    `Special weapon with splId ${mainWeaponParams.specialWeaponId} not found`
+  );
+
   const input: StatFunctionInput = {
     mainWeaponParams,
     subWeaponParams,
+    specialWeaponParams,
     abilityPoints,
     mainOnlyAbilities,
   };
@@ -99,6 +107,7 @@ export function buildStats({
       subDefBombDamageLightPercentage: subDefBombDamageLightPercentage(input),
       subDefBombDamageHeavyPercentage: subDefBombDamageHeavyPercentage(input),
       ...subStats(input),
+      specialDurationInSeconds: specialDurationInSeconds(input),
     },
   };
 }
@@ -918,5 +927,25 @@ function subDefBombDamageHeavyPercentage(
     baseValue: roundToTwoDecimalPlaces(baseEffect * 100),
     value: roundToTwoDecimalPlaces(effect * 100),
     modifiedBy: SUB_DEF_BOMB_DAMAGE_HEAVY_PERCENTAGE_KEY,
+  };
+}
+
+function specialDurationInSeconds(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["specialDurationInSeconds"] {
+  const SPECIAL_DURATION_IN_SECONDS_KEY = "SPU";
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: SPECIAL_DURATION_IN_SECONDS_KEY,
+    }),
+    key: "SpecialDurationFrame",
+    weapon: args.specialWeaponParams,
+  });
+
+  return {
+    baseValue: framesToSeconds(baseEffect),
+    value: framesToSeconds(effect),
+    modifiedBy: SPECIAL_DURATION_IN_SECONDS_KEY,
   };
 }

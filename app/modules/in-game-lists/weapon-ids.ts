@@ -37,6 +37,36 @@ export const subWeaponIds = [
   TORPEDO_ID,
 ] as const;
 
+export const TRIZOOKA_ID = 1;
+export const BIG_BUBBLER_ID = 2;
+export const ZIPCASTER_ID = 3;
+export const TENTA_MISSILES_ID = 4;
+export const INK_STORM_ID = 5;
+export const BOOYAH_BOMB_ID = 6;
+export const WAVE_BREAKER_ID = 7;
+export const INK_VAC_ID = 8;
+export const KILLER_WAIL_ID = 9;
+export const INKJET_ID = 10;
+export const ULTRA_STAMP_ID = 11;
+export const CRAB_TANK_ID = 12;
+export const REEF_SLIDER_ID = 13;
+export const TRIPLE_INKSTRIKE_ID = 14;
+export const TACTICOOLER_ID = 15;
+
 export const specialWeaponIds = [
-  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+  TRIZOOKA_ID,
+  BIG_BUBBLER_ID,
+  ZIPCASTER_ID,
+  TENTA_MISSILES_ID,
+  INK_STORM_ID,
+  BOOYAH_BOMB_ID,
+  WAVE_BREAKER_ID,
+  INK_VAC_ID,
+  KILLER_WAIL_ID,
+  INKJET_ID,
+  ULTRA_STAMP_ID,
+  CRAB_TANK_ID,
+  REEF_SLIDER_ID,
+  TRIPLE_INKSTRIKE_ID,
+  TACTICOOLER_ID,
 ] as const;
