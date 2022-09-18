@@ -112,6 +112,10 @@ export function buildStats({
       specialPaintRadius: specialPaintRadius(input),
       specialFieldHp: specialFieldHp(input),
       specialDeviceHp: specialDeviceHp(input),
+      specialHookInkConsumptionPercentage:
+        specialHookInkConsumptionPercentage(input),
+      specialInkConsumptionPerSecondPercentage:
+        specialInkConsumptionPerSecondPercentage(input),
     },
   };
 }
@@ -1061,5 +1065,63 @@ function specialDeviceHp(
     baseValue: roundToTwoDecimalPlaces(baseEffect / 100),
     value: roundToTwoDecimalPlaces(effect / 100),
     modifiedBy: SPECIAL_DEVICE_HP_KEY,
+  };
+}
+
+function specialHookInkConsumptionPercentage(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["specialHookInkConsumptionPercentage"] {
+  if (
+    !hasEffect({
+      key: "InkConsume_Hook",
+      weapon: args.specialWeaponParams,
+    })
+  ) {
+    return;
+  }
+
+  const SPECIAL_HOOK_INK_CONSUMPTION_PERCENTAGE_KEY = "SPU";
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: SPECIAL_HOOK_INK_CONSUMPTION_PERCENTAGE_KEY,
+    }),
+    key: "InkConsume_Hook",
+    weapon: args.specialWeaponParams,
+  });
+
+  return {
+    baseValue: roundToTwoDecimalPlaces(baseEffect * 100),
+    value: roundToTwoDecimalPlaces(effect * 100),
+    modifiedBy: SPECIAL_HOOK_INK_CONSUMPTION_PERCENTAGE_KEY,
+  };
+}
+
+function specialInkConsumptionPerSecondPercentage(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["specialInkConsumptionPerSecondPercentage"] {
+  if (
+    !hasEffect({
+      key: "InkConsume_PerSec",
+      weapon: args.specialWeaponParams,
+    })
+  ) {
+    return;
+  }
+
+  const SPECIAL_INK_CONSUMPTION_PER_SECOND_PERCENTAGE_KEY = "SPU";
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: SPECIAL_INK_CONSUMPTION_PER_SECOND_PERCENTAGE_KEY,
+    }),
+    key: "InkConsume_PerSec",
+    weapon: args.specialWeaponParams,
+  });
+
+  return {
+    baseValue: roundToTwoDecimalPlaces(baseEffect * 100),
+    value: roundToTwoDecimalPlaces(effect * 100),
+    modifiedBy: SPECIAL_INK_CONSUMPTION_PER_SECOND_PERCENTAGE_KEY,
   };
 }

@@ -308,6 +308,28 @@ export default function BuildAnalyzerPage() {
                 suffix={t("analyzer:suffix.hp")}
               />
             )}
+            {analyzed.stats.specialHookInkConsumptionPercentage && (
+              <StatCard
+                stat={analyzed.stats.specialHookInkConsumptionPercentage}
+                title={t("analyzer:stat.special.inkConsumptionHook", {
+                  weapon: t(
+                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
+                  ),
+                })}
+                suffix="%"
+              />
+            )}
+            {analyzed.stats.specialInkConsumptionPerSecondPercentage && (
+              <StatCard
+                stat={analyzed.stats.specialInkConsumptionPerSecondPercentage}
+                title={t("analyzer:stat.special.inkConsumptionPerSecond", {
+                  weapon: t(
+                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
+                  ),
+                })}
+                suffix="%"
+              />
+            )}
           </StatCategory>
           <StatCategory title={t("analyzer:stat.category.subDef")}>
             <StatCard

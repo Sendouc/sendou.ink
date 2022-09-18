@@ -231,6 +231,8 @@ export interface AnalyzedBuild {
     specialPaintRadius?: Stat;
     specialFieldHp?: Stat;
     specialDeviceHp?: Stat;
+    specialHookInkConsumptionPercentage?: Stat;
+    specialInkConsumptionPerSecondPercentage?: Stat;
   };
 }
 

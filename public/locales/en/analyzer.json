@@ -56,6 +56,8 @@
   "stat.special.paintRadius": "{{weapon}} paint radius",
   "stat.special.shieldHp": "{{weapon}} shield durability",
   "stat.special.deviceHp": "{{weapon}} device durability",
+  "stat.special.inkConsumptionHook": "{{weapon}} hook ink consumption",
+  "stat.special.inkConsumptionPerSecond": "{{weapon}} ink consumption per sec",
   "damage.header.type": "Type",
   "damage.header.damage": "Damage",
   "damage.header.distance": "Distance",
