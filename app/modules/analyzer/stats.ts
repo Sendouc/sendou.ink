@@ -1,4 +1,4 @@
-import type { MainWeaponId } from "~/modules/in-game-lists";
+import type { Ability, MainWeaponId } from "~/modules/in-game-lists";
 import { ANGLE_SHOOTER_ID } from "~/modules/in-game-lists";
 import { INK_MINE_ID, POINT_SENSOR_ID } from "~/modules/in-game-lists";
 import type {
@@ -26,9 +26,11 @@ import { roundToTwoDecimalPlaces } from "~/utils/number";
 export function buildStats({
   abilityPoints,
   weaponSplId,
+  mainOnlyAbilities,
 }: {
   abilityPoints: AbilityPoints;
   weaponSplId: MainWeaponId;
+  mainOnlyAbilities: Array<Ability>;
 }): AnalyzedBuild {
   const mainWeaponParams = weaponParams().mainWeapons[weaponSplId];
   invariant(mainWeaponParams, `Weapon with splId ${weaponSplId} not found`);
@@ -44,6 +46,7 @@ export function buildStats({
     mainWeaponParams,
     subWeaponParams,
     abilityPoints,
+    mainOnlyAbilities,
   };
 
   return {
@@ -423,9 +426,11 @@ function swimSpeed(
     weapon: args.mainWeaponParams,
   });
 
+  const ninjaSquidMultiplier = args.mainOnlyAbilities.includes("NS") ? 0.9 : 1;
+
   return {
     baseValue: effectToRounded(baseEffect * 10),
-    value: effectToRounded(effect * 10),
+    value: effectToRounded(effect * 10 * ninjaSquidMultiplier),
     modifiedBy: SWIM_SPEED_ABILITY,
   };
 }

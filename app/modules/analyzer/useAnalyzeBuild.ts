@@ -1,5 +1,4 @@
 import { useSearchParams } from "@remix-run/react";
-import * as React from "react";
 import { EMPTY_BUILD } from "~/constants";
 import {
   type BuildAbilitiesTupleWithUnknown,
@@ -8,7 +7,11 @@ import {
   abilities,
   isAbility,
 } from "../in-game-lists";
-import type { AbilityType, AbilityWithUnknown } from "../in-game-lists/types";
+import type {
+  Ability,
+  AbilityType,
+  AbilityWithUnknown,
+} from "../in-game-lists/types";
 import { MAX_LDE_INTENSITY } from "./constants";
 import { applySpecialEffects, SPECIAL_EFFECTS } from "./specialEffects";
 import { buildStats } from "./stats";
@@ -44,24 +47,24 @@ export function useAnalyzeBuild() {
     });
   };
 
-  const abilityPoints = React.useMemo(() => {
-    const buildsAbilityPoints = buildToAbilityPoints(build);
+  const buildsAbilityPoints = buildToAbilityPoints(build);
 
-    return applySpecialEffects({
-      abilityPoints: buildsAbilityPoints,
-      effects,
-      ldeIntensity,
-    });
-  }, [build, ldeIntensity, effects]);
+  const abilityPoints = applySpecialEffects({
+    abilityPoints: buildsAbilityPoints,
+    effects,
+    ldeIntensity,
+  });
 
-  const analyzed = React.useMemo(
-    () =>
-      buildStats({
-        abilityPoints,
-        weaponSplId: mainWeaponId,
+  const analyzed = buildStats({
+    abilityPoints,
+    weaponSplId: mainWeaponId,
+    mainOnlyAbilities: build
+      .map((row) => row[0])
+      .filter((ability): ability is Ability => {
+        const abilityObj = abilities.find((a) => a.name === ability);
+        return Boolean(abilityObj && abilityObj.type !== "STACKABLE");
       }),
-    [abilityPoints, mainWeaponId]
-  );
+  });
 
   return {
     build,

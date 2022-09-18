@@ -113,6 +113,7 @@ export interface StatFunctionInput {
   mainWeaponParams: MainWeaponParams;
   subWeaponParams: SubWeaponParams;
   abilityPoints: AbilityPoints;
+  mainOnlyAbilities: Array<Ability>;
 }
 
 export type InkConsumeType = typeof INK_CONSUME_TYPES[number];
