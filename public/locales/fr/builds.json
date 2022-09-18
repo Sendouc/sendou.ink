@@ -1,0 +1,15 @@
+{
+  "addBuild": "Ajouter un set",
+  "noBuilds": "Pas de sets disponibles. N'hésitez pas à en créer un !",
+  "buildCard.info": "Informations",
+  "buildCard.edit": "Éditer",
+
+  "forms.title": "Titre",
+  "forms.modes": "Modes",
+  "forms.weapons": "Armes",
+  "forms.gear.HEAD": "Équipement (tête)",
+  "forms.gear.CLOTHES": "Équipement (haut)",
+  "forms.gear.SHOES": "Équipement (chaussures)",
+
+  "deleteConfirm": "Effacer le build '{{title}}' ?"
+}

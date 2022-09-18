@@ -14,7 +14,7 @@ import { GearCombobox, WeaponCombobox } from "~/components/Combobox";
 import { Image } from "~/components/Image";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
-import { BUILD } from "~/constants";
+import { BUILD, EMPTY_BUILD } from "~/constants";
 import { db } from "~/db";
 import type { GearType } from "~/db/types";
 import { requireUser } from "~/modules/auth";
@@ -23,11 +23,12 @@ import {
   headGearIds,
   modesShort,
   shoesGearIds,
-  weaponIds,
+  mainWeaponIds,
 } from "~/modules/in-game-lists";
 import type {
   BuildAbilitiesTuple,
   BuildAbilitiesTupleWithUnknown,
+  MainWeaponId,
 } from "~/modules/in-game-lists/types";
 import { parseRequestFormData } from "~/utils/remix";
 import { modeImageUrl, userBuildsPage } from "~/utils/urls";
@@ -67,7 +68,7 @@ const newBuildActionSchema = z.object({
           z
             .number()
             .refine((val) =>
-              weaponIds.includes(val as typeof weaponIds[number])
+              mainWeaponIds.includes(val as typeof mainWeaponIds[number])
             )
         )
       )
@@ -141,7 +142,7 @@ export const action: ActionFunction = async ({ request }) => {
     clothesGearSplId: data["CLOTHES[value]"],
     shoesGearSplId: data["SHOES[value]"],
     modes: modesShort.filter((mode) => data[mode]),
-    weaponSplIds: data["weapon[value]"],
+    weaponSplIds: data["weapon[value]"] as Array<MainWeaponId>,
     ownerId: user.id,
   };
   if (data.buildToEditId) {
@@ -367,11 +368,7 @@ function Abilities() {
   const { buildToEdit } = useLoaderData<typeof loader>();
   const [abilities, setAbilities] =
     React.useState<BuildAbilitiesTupleWithUnknown>(
-      buildToEdit?.abilities ?? [
-        ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
-        ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
-        ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
-      ]
+      buildToEdit?.abilities ?? EMPTY_BUILD
     );
 
   return (

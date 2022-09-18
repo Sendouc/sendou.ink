@@ -1,5 +1,6 @@
 import allTags from "~/routes/calendar/tags.json";
 import type { CalendarEventTag } from "./db/types";
+import type { BuildAbilitiesTupleWithUnknown } from "./modules/in-game-lists";
 
 export const TWEET_LENGTH_MAX_LENGTH = 280;
 export const DISCORD_MESSAGE_MAX_LENGTH = 2000;
@@ -14,7 +15,7 @@ export const CALENDAR_EVENT = {
   NAME_MAX_LENGTH: 100,
   DESCRIPTION_MAX_LENGTH: DISCORD_MESSAGE_MAX_LENGTH,
   DISCORD_INVITE_CODE_MAX_LENGTH: 50,
-  BRACKET_URL_MAX_LENGTH: 100,
+  BRACKET_URL_MAX_LENGTH: 200,
   MAX_AMOUNT_OF_DATES: 5,
   TAGS: Object.keys(allTags) as Array<CalendarEventTag>,
 };
@@ -34,6 +35,12 @@ export const BUILD = {
   MAX_WEAPONS_COUNT: 5,
   MAX_COUNT: 250,
 } as const;
+
+export const EMPTY_BUILD: BuildAbilitiesTupleWithUnknown = [
+  ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+  ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+  ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+];
 
 export const PLUS_TIERS = [1, 2, 3];
 

@@ -30,12 +30,20 @@
   color: var(--theme-success);
 }
 
+.bg-darker-important {
+  background-color: var(--bg-darker) !important;
+}
+
 .font-semi-bold {
   font-weight: var(--semi-bold);
 }
 
 .w-full {
   width: 100%;
+}
+
+.w-full-important {
+  width: 100% !important;
 }
 
 .w-24 {
@@ -72,6 +80,10 @@
 
 .mx-auto {
   margin: 0 auto;
+}
+
+.my-4 {
+  margin-block: var(--s-4);
 }
 
 .hidden {
@@ -112,4 +124,8 @@
 
 .all-unset {
   all: unset;
+}
+
+.outline-theme:focus {
+  outline: 2px solid var(--theme);
 }

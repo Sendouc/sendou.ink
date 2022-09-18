@@ -7,12 +7,14 @@ import path from "node:path";
 import invariant from "tiny-invariant";
 import { LANG_JSONS_TO_CREATE, loadLangDicts } from "./utils";
 
-const CURRENT_SEASON = 0;
+const CURRENT_SEASON = 1;
 const OUTPUT_DIR_PATH = path.join(__dirname, "output");
 
 const LEAN_HEAD_CODE = "Hed";
 const LEAN_CLOTHES_CODE = "Clt";
 const LEAN_SHOES_CODE = "Shs";
+
+const AVAILABLE_SR_GEAR = [21010];
 
 async function main() {
   const allGear: Array<{
@@ -24,7 +26,11 @@ async function main() {
   const langDicts = await loadLangDicts();
 
   for (const gear of [...head, ...clothes, ...shoes]) {
-    if (gear.Season > CURRENT_SEASON || gear.HowToGet !== "Shop") {
+    if (gear.Season > CURRENT_SEASON || gear.HowToGet === "Impossible") {
+      continue;
+    }
+
+    if (gear.__RowId.includes("COP") && !AVAILABLE_SR_GEAR.includes(gear.Id)) {
       continue;
     }
 

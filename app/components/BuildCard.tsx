@@ -9,7 +9,7 @@ import type {
 } from "~/modules/in-game-lists";
 import type { BuildAbilitiesTuple } from "~/modules/in-game-lists/types";
 import { databaseTimestampToDate } from "~/utils/dates";
-import { gearImageUrl, modeImageUrl, weaponImageUrl } from "~/utils/urls";
+import { gearImageUrl, modeImageUrl, mainWeaponImageUrl } from "~/utils/urls";
 import { Ability } from "./Ability";
 import { Button, LinkButton } from "./Button";
 import { FormWithConfirm } from "./FormWithConfirm";
@@ -128,7 +128,7 @@ export function BuildCard({
         {weapons.map((weaponSplId) => (
           <div key={weaponSplId} className="build__weapon">
             <Image
-              path={weaponImageUrl(weaponSplId)}
+              path={mainWeaponImageUrl(weaponSplId)}
               alt={t(`weapons:${weaponSplId}` as any)}
               title={t(`weapons:${weaponSplId}` as any)}
               height={36}
@@ -138,7 +138,7 @@ export function BuildCard({
         ))}
         {weapons.length === 1 && (
           <div className="build__weapon-text">
-            {t(`weapons:${weapons[0]!}` as any)}
+            {t(`weapons:MAIN_${weapons[0]!}` as any)}
           </div>
         )}
       </div>

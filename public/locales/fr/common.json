@@ -1,0 +1,43 @@
+{
+  "pages.admin": "Admin",
+  "pages.badges": "Badges",
+  "pages.plus": "Plus Server",
+  "pages.contributors": "Contributeurs",
+  "pages.calendar": "Calendrier",
+  "pages.faq": "FAQ",
+  "pages.builds": "Builds",
+
+  "header.profile": "Profil",
+  "header.logout": "Déconnexion",
+  "header.login": "Connexion",
+
+  "footer.github.subtitle": "Code source",
+  "footer.twitter.subtitle": "Mises à jour",
+  "footer.discord.subtitle": "Aide & retours",
+  "footer.patreon.subtitle": "Soutenir le projet",
+  "footer.thanks": "Merci aux patrons pour le soutien",
+
+  "actions.save": "Sauvegarder",
+  "actions.saving": "Sauvegarde...",
+  "actions.submit": "Envoyer",
+  "actions.edit": "Éditer",
+  "actions.add": "Ajouter",
+  "actions.remove": "Retirer",
+  "actions.delete": "Effacer",
+
+  "results": "Résultats",
+
+  "forms.name": "Nom",
+  "forms.description": "Description",
+  "forms.errors.title": "Les erreurs ci-dessous doivent être réglés",
+
+  "tag.name.BADGE": "Badge à gagner",
+  "tag.name.SPECIAL": "Règles spéciales",
+  "tag.name.ART": "Illustration à gagner",
+  "tag.name.MONEY": "Argent à gagner",
+  "tag.name.REGION": "Region locked",
+  "tag.name.LOW": "Skill cap",
+  "tag.name.COUNT": "Entry limit",
+  "tag.name.LAN": "LAN",
+  "tag.name.QUALIFIER": "Qualifications"
+}

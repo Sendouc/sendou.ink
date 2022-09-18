@@ -1,0 +1,9 @@
+{
+  "patreon": "Supporteur sur le patreon de sendou.ink",
+  "patreon+": "Supporteur+ sur le patreon de sendou.ink",
+  "tournament_one": "Récompense pour avoir gagné le {{tournament}}",
+  "tournament_other": "Récompense pour avoir gagné le {{tournament}} (×{{count}})",
+  "forYourEvent": "Un badge pour votre événement ?",
+  "madeBy": "Badges créés par <2>borzoic</2>",
+  "managedBy": "Géré par {{users}}"
+}

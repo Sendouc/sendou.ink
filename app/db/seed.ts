@@ -12,7 +12,7 @@ import {
   headGearIds,
   modesShort,
   shoesGearIds,
-  weaponIds,
+  mainWeaponIds,
 } from "~/modules/in-game-lists";
 import {
   lastCompletedVoting,
@@ -503,7 +503,7 @@ function adminBuilds() {
     const randomOrderHeadGear = shuffle(headGearIds.slice());
     const randomOrderClothesGear = shuffle(clothesGearIds.slice());
     const randomOrderShoesGear = shuffle(shoesGearIds.slice());
-    const randomOrderWeaponIds = shuffle(weaponIds.slice());
+    const randomOrderWeaponIds = shuffle(mainWeaponIds.slice());
 
     const randomAbility = (legalTypes: AbilityType[]) => {
       const randomOrderAbilities = shuffle([...abilities]);

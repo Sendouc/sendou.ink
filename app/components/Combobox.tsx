@@ -10,9 +10,9 @@ import {
   clothesGearIds,
   headGearIds,
   shoesGearIds,
-  weaponIds,
+  mainWeaponIds,
 } from "~/modules/in-game-lists";
-import { gearImageUrl, weaponImageUrl } from "~/utils/urls";
+import { gearImageUrl, mainWeaponImageUrl } from "~/utils/urls";
 import { Image } from "./Image";
 
 const MAX_RESULTS_SHOWN = 6;
@@ -33,6 +33,7 @@ interface ComboboxProps<T> {
   isLoading?: boolean;
   required?: boolean;
   initialValue?: ComboboxOption<T>;
+  clearsInputOnFocus?: boolean;
   onChange?: (selectedOption?: ComboboxOption<T>) => void;
 }
 
@@ -41,6 +42,7 @@ export function Combobox<T extends Record<string, string | null | number>>({
   inputName,
   placeholder,
   initialValue,
+  clearsInputOnFocus = false,
   onChange,
   required,
   className,
@@ -49,10 +51,13 @@ export function Combobox<T extends Record<string, string | null | number>>({
 }: ComboboxProps<T>) {
   const [selectedOption, setSelectedOption] =
     React.useState<Unpacked<typeof options>>();
+  const [lastSelectedOption, setLastSelectedOption] =
+    React.useState<Unpacked<typeof options>>();
   const [query, setQuery] = React.useState("");
 
   React.useEffect(() => {
     setSelectedOption(initialValue);
+    setLastSelectedOption(initialValue);
   }, [initialValue]);
 
   const filteredOptions = (() => {
@@ -75,16 +80,27 @@ export function Combobox<T extends Record<string, string | null | number>>({
       onChange={(selected) => {
         onChange?.(selected);
         setSelectedOption(selected);
+        setLastSelectedOption(selected);
       }}
       name={inputName}
       disabled={isLoading}
     >
       <HeadlessCombobox.Input
+        onFocus={() => {
+          if (clearsInputOnFocus) {
+            setSelectedOption(undefined);
+          }
+        }}
+        onBlur={() => {
+          if (!selectedOption && clearsInputOnFocus) {
+            setSelectedOption(lastSelectedOption);
+          }
+        }}
         onChange={(event) => setQuery(event.target.value)}
         placeholder={isLoading ? "Loading..." : placeholder}
         className={clsx("combobox-input", className)}
         displayValue={(option) =>
-          (option as Unpacked<typeof options>)?.label ?? ""
+          (option as unknown as Unpacked<typeof options>)?.label ?? ""
         }
         data-cy={`${inputName}-combobox-input`}
         id={id}
@@ -192,28 +208,39 @@ export function WeaponCombobox({
   inputName,
   onChange,
   initialWeaponId,
+  clearsInputOnFocus,
 }: Pick<
   ComboboxProps<ComboboxBaseOption>,
-  "inputName" | "onChange" | "className" | "id" | "required"
-> & { initialWeaponId?: typeof weaponIds[number] }) {
+  | "inputName"
+  | "onChange"
+  | "className"
+  | "id"
+  | "required"
+  | "clearsInputOnFocus"
+> & { initialWeaponId?: typeof mainWeaponIds[number] }) {
   const { t } = useTranslation("weapons");
 
-  const idToWeapon = (id: typeof weaponIds[number]) => ({
+  const idToWeapon = (id: typeof mainWeaponIds[number]) => ({
     value: String(id),
-    label: t(`${id}`),
-    imgPath: weaponImageUrl(id),
+    label: t(`MAIN_${id}`),
+    imgPath: mainWeaponImageUrl(id),
   });
 
   return (
     <Combobox
       inputName={inputName}
-      options={weaponIds.map(idToWeapon)}
-      initialValue={initialWeaponId ? idToWeapon(initialWeaponId) : undefined}
-      placeholder={t(`${weaponIds[0]}`)}
+      options={mainWeaponIds.map(idToWeapon)}
+      initialValue={
+        typeof initialWeaponId === "number"
+          ? idToWeapon(initialWeaponId)
+          : undefined
+      }
+      placeholder={t(`MAIN_${mainWeaponIds[0]}`)}
       onChange={onChange}
       className={className}
       id={id}
       required={required}
+      clearsInputOnFocus={clearsInputOnFocus}
     />
   );
 }

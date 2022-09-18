@@ -1,0 +1,15 @@
+{
+  "addBuild": "Lav et udrustningssæt",
+  "noBuilds": "Her er ingen sæt. Lav dit første sæt!",
+  "buildCard.info": "Info",
+  "buildCard.edit": "Rediger",
+
+  "forms.title": "Titel",
+  "forms.modes": "spiltilstand",
+  "forms.weapons": "Våben",
+  "forms.gear.HEAD": "Udstyr (hovedbeklædning)",
+  "forms.gear.CLOTHES": "Udstyr (tøj)",
+  "forms.gear.SHOES": "Udstyr (sko)",
+
+  "deleteConfirm": "Vil du slette sættet '{{title}}'?"
+}

@@ -31,6 +31,7 @@ import { useChangeLanguage } from "remix-i18next";
 import { useTranslation } from "react-i18next";
 import { Theme, ThemeHead, useTheme, ThemeProvider } from "./modules/theme";
 import { getThemeSession } from "./modules/theme/session.server";
+import { COMMON_PREVIEW_IMAGE } from "./utils/urls";
 
 export const unstable_shouldReload: ShouldReloadFunction = () => false;
 
@@ -49,6 +50,7 @@ export const meta: MetaFunction = () => ({
   title: "sendou.ink",
   viewport: "width=device-width,initial-scale=1",
   "theme-color": "#8263de",
+  "og:image": COMMON_PREVIEW_IMAGE,
 });
 
 export interface RootLoaderData {

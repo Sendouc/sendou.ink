@@ -8,21 +8,17 @@ Prerequisites: [nvm](https://github.com/nvm-sh/nvm)
 
 There is a sequence of commands you need to run:
 
-1. `nvm use` to switch to the correct Node version. If you have problems with nvm you can also install the latest LTS version of Node.js from [their website](https://nodejs.org/en/).
+1. `nvm use` to switch to the correct Node version. If you don't have the correct Node.js version yet it will prompt you to install it via the `nvm install` command. If you have problems with nvm you can also install the latest LTS version of Node.js from [their website](https://nodejs.org/en/).
 2. `npm i` to install the dependencies.
-3. Make a copy of `.env.example` that's called `.env`. See below for note about environment variables.
+3. Make a copy of `.env.example` that's called `.env`. Filling additional values is not necessary unless you want to use real Discord auth or develop Lohi bot.
 4. `npm run migrate up` to set up the database tables.
-5. `npm run seed` to fill database with test data.
-6. `npm run dev` to run the project in development mode.
+5. `npm run dev` to run the project in development mode.
+6. Navigate to `http://localhost:5800/admin`. There press the seed button to fill the DB with test data. You can also impersonate any user (Sendou#0043 = admin).
 
 And if you want to run the E2E tests:
 
 6. Make a copy of the `db.sqlite3` file created by migration and name it `db-cypress.sqlite3`.
 7. `npm run dev:cypress` and `npm run cy:open` can be used to run the E2E tests.
-
-#### Environment variables
-
-You don't need to fill the missing values from `.env.example` to get started. Instead of using real auth via Discord you can "impersonate" the admin (=Sendou#0043) or any other use in the /admin page once the project has started up. `LOHI_TOKEN` is only needed for bot + sendou.ink interoperability.
 
 ## Lohi
 

@@ -302,7 +302,6 @@ abbr[title] {
 }
 
 dialog {
-  overflow: visible;
   width: min(90%, 24rem);
   border: 0;
   margin: auto;
@@ -331,6 +330,54 @@ dialog::backdrop {
   0% {
     opacity: 0;
   }
+}
+
+.toggle {
+  all: unset;
+  position: relative;
+  display: inline-flex;
+  width: var(--s-11);
+  height: var(--s-6);
+  align-items: center;
+  background-color: var(--theme-transparent);
+  border-radius: var(--rounded);
+}
+
+.toggle.tiny {
+  width: var(--s-6);
+  height: var(--s-3);
+}
+
+.toggle.checked {
+  background-color: var(--theme);
+}
+
+.toggle:active {
+  transform: initial;
+}
+
+.toggle-dot {
+  display: inline-block;
+  width: var(--s-4);
+  height: var(--s-4);
+  background-color: white;
+  border-radius: 50%;
+  transform: translateX(var(--s-1));
+  transition: transform 0.2s ease;
+}
+
+.toggle-dot.tiny {
+  width: var(--s-3);
+  height: var(--s-3);
+  transform: translateX(-0.2rem);
+}
+
+.toggle-dot.checked {
+  transform: translateX(var(--s-6));
+}
+
+.toggle-dot.checked.tiny {
+  transform: translateX(var(--s-4));
 }
 
 .button-text-paragraph {

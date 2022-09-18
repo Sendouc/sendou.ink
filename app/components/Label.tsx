@@ -12,6 +12,7 @@ type LabelProps = Pick<
     max: number;
   };
   required?: boolean;
+  className?: string;
 };
 
 export function Label({
@@ -19,9 +20,10 @@ export function Label({
   required,
   children,
   htmlFor,
+  className,
 }: LabelProps) {
   return (
-    <div className="label__container">
+    <div className={clsx("label__container", className)}>
       <label htmlFor={htmlFor}>
         {children} {required && <span className="text-error">*</span>}
       </label>

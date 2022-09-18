@@ -37,7 +37,7 @@ export function AbilitiesSelector({
     onChange(abilitiesClone);
   };
   const onButtonClick = (ability: typeof abilities[number]) => {
-    onChange(addAbility({ oldAbilites: selectedAbilities, ability }));
+    onChange(addAbility({ oldAbilities: selectedAbilities, ability }));
   };
 
   return (
@@ -77,14 +77,14 @@ export function AbilitiesSelector({
 }
 
 function addAbility({
-  oldAbilites,
+  oldAbilities,
   ability,
 }: {
-  oldAbilites: BuildAbilitiesTupleWithUnknown;
+  oldAbilities: BuildAbilitiesTupleWithUnknown;
   ability: typeof abilities[number];
 }): BuildAbilitiesTupleWithUnknown {
   const abilitiesClone = JSON.parse(
-    JSON.stringify(oldAbilites)
+    JSON.stringify(oldAbilities)
   ) as BuildAbilitiesTupleWithUnknown;
 
   for (const [i, row] of abilitiesClone.entries()) {
