@@ -24,6 +24,8 @@ export interface MainWeaponParams {
   DamageParam_ValueMax?: number;
   DamageParam_ValueMin?: number;
   DamageParam_ValueDirect?: number;
+  Jump_DegSwerve?: number;
+  Stand_DegSwerve?: number;
   /** Damage caused by charger's full charged shot */
   DamageParam_ValueFullCharge?: number;
   /** Max damage caused by charger's charged shot before fully charged */
@@ -190,7 +192,8 @@ export interface AnalyzedBuild {
     quickRespawnTime: Stat;
     superJumpTimeGroundFrames: Stat;
     superJumpTimeTotal: Stat;
-    jumpRngReductionEffectPercentage: Stat;
+    shotSpreadAir?: Stat;
+    shotSpreadGround?: number;
 
     subDefPointSensorMarkedTimeInSeconds: Stat;
     subDefInkMineMarkedTimeInSeconds: Stat;

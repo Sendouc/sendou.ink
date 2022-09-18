@@ -134,12 +134,20 @@ export default function BuildAnalyzerPage() {
         </div>
         <div className="stack md">
           <StatCategory title={t("analyzer:stat.category.main")}>
-            <StatCard
-              stat={analyzed.stats.jumpRngReductionEffectPercentage}
-              title={t("analyzer:stat.jumpRngReduction")}
-              popoverInfo={t("analyzer:stat.jumpRngReduction.explanation")}
-              suffix="%"
-            />
+            {analyzed.stats.shotSpreadAir && (
+              <StatCard
+                stat={analyzed.stats.shotSpreadAir}
+                title={t("analyzer:stat.jumpShotSpread")}
+                suffix="°"
+              />
+            )}
+            {typeof analyzed.stats.shotSpreadGround === "number" && (
+              <StatCard
+                stat={analyzed.stats.shotSpreadGround}
+                title={t("analyzer:stat.groundShotSpread")}
+                suffix="°"
+              />
+            )}
             {typeof analyzed.stats.mainWeaponWhiteInkSeconds === "number" && (
               <StatCard
                 stat={analyzed.stats.mainWeaponWhiteInkSeconds}

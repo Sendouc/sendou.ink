@@ -85,7 +85,8 @@ export function buildStats({
       quickRespawnTime: quickRespawnTime(input),
       superJumpTimeGroundFrames: superJumpTimeGroundFrames(input),
       superJumpTimeTotal: superJumpTimeTotal(input),
-      jumpRngReductionEffectPercentage: jumpRngReductionEffectPercentage(input),
+      shotSpreadAir: shotSpreadAir(input),
+      shotSpreadGround: mainWeaponParams.Stand_DegSwerve,
       subDefPointSensorMarkedTimeInSeconds:
         subDefPointSensorMarkedTimeInSeconds(input),
       subDefInkMineMarkedTimeInSeconds: subDefInkMineMarkedTimeInSeconds(input),
@@ -539,23 +540,36 @@ function superJumpTimeTotal(
   };
 }
 
-function jumpRngReductionEffectPercentage(
+function shotSpreadAir(
   args: StatFunctionInput
-): AnalyzedBuild["stats"]["jumpRngReductionEffectPercentage"] {
-  const JUMP_RNG_REDUCTION_ABILITY = "IA";
-  const { baseEffect, effect } = abilityPointsToEffects({
+): AnalyzedBuild["stats"]["shotSpreadAir"] {
+  const SHOT_SPREAD_AIR_ABILITY = "IA";
+  const groundSpread = args.mainWeaponParams.Stand_DegSwerve;
+  const jumpSpread = args.mainWeaponParams.Jump_DegSwerve;
+
+  if (
+    typeof jumpSpread !== "number" ||
+    typeof groundSpread !== "number" ||
+    jumpSpread === groundSpread
+  )
+    return;
+
+  const { effect } = abilityPointsToEffects({
     abilityPoints: apFromMap({
       abilityPoints: args.abilityPoints,
-      ability: JUMP_RNG_REDUCTION_ABILITY,
+      ability: SHOT_SPREAD_AIR_ABILITY,
     }),
     key: "ReduceJumpSwerveRate",
     weapon: args.mainWeaponParams,
   });
 
+  const extraSpread = jumpSpread - groundSpread;
+  const reducedExtraSpread = extraSpread * (1 - effect);
+
   return {
-    baseValue: roundToTwoDecimalPlaces(baseEffect * 100),
-    value: roundToTwoDecimalPlaces(effect * 100),
-    modifiedBy: JUMP_RNG_REDUCTION_ABILITY,
+    baseValue: roundToTwoDecimalPlaces(jumpSpread),
+    value: roundToTwoDecimalPlaces(reducedExtraSpread + groundSpread),
+    modifiedBy: SHOT_SPREAD_AIR_ABILITY,
   };
 }
 

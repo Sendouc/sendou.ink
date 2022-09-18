@@ -160,6 +160,8 @@ function parametersToMainWeaponResult(
       ],
     KeepChargeFullFrame:
       KeepChargeFullFrame !== 1 ? KeepChargeFullFrame : undefined,
+    Jump_DegSwerve: params["WeaponParam"]?.["Jump_DegSwerve"],
+    Stand_DegSwerve: params["WeaponParam"]?.["Stand_DegSwerve"],
     InkRecoverStop: params["WeaponParam"]?.["InkRecoverStop"],
     InkConsume,
     InkConsumeSlosher,
