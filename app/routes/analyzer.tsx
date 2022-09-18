@@ -358,6 +358,16 @@ export default function BuildAnalyzerPage() {
                 })}
               />
             )}
+            {analyzed.stats.specialAutoChargeRate && (
+              <StatCard
+                stat={analyzed.stats.specialAutoChargeRate}
+                title={t("analyzer:stat.special.autoChargeRate", {
+                  weapon: t(
+                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
+                  ),
+                })}
+              />
+            )}
           </StatCategory>
           <StatCategory title={t("analyzer:stat.category.subDef")}>
             <StatCard

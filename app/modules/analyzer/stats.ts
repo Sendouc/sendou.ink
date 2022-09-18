@@ -118,6 +118,7 @@ export function buildStats({
         specialInkConsumptionPerSecondPercentage(input),
       specialReticleRadius: specialReticleRadius(input),
       specialThrowDistance: specialThrowDistance(input),
+      specialAutoChargeRate: specialAutoChargeRate(input),
     },
   };
 }
@@ -1183,5 +1184,34 @@ function specialThrowDistance(
     baseValue: roundToTwoDecimalPlaces(baseEffect),
     value: roundToTwoDecimalPlaces(effect),
     modifiedBy: SPECIAL_THROW_DISTANCE_KEY,
+  };
+}
+
+function specialAutoChargeRate(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["specialAutoChargeRate"] {
+  if (
+    !hasEffect({
+      key: "ChargeRateAutoPerFrame",
+      weapon: args.specialWeaponParams,
+    })
+  ) {
+    return;
+  }
+
+  const SPECIAL_AUTO_CHARGE_RATE_KEY = "SPU";
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: SPECIAL_AUTO_CHARGE_RATE_KEY,
+    }),
+    key: "ChargeRateAutoPerFrame",
+    weapon: args.specialWeaponParams,
+  });
+
+  return {
+    baseValue: roundToTwoDecimalPlaces(baseEffect * 100),
+    value: roundToTwoDecimalPlaces(effect * 100),
+    modifiedBy: SPECIAL_AUTO_CHARGE_RATE_KEY,
   };
 }

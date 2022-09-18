@@ -61,6 +61,7 @@
   "stat.special.inkConsumptionPerSecond": "{{weapon}} ink consumption per sec",
   "stat.special.reticleRadius": "{{weapon}} reticle radius",
   "stat.special.throwDistance": "{{weapon}} throw distance",
+  "stat.special.autoChargeRate": "{{weapon}} auto charge rate",
   "damage.header.type": "Type",
   "damage.header.damage": "Damage",
   "damage.header.distance": "Distance",
