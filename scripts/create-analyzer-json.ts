@@ -27,6 +27,7 @@ type TranslationArray = Array<{ language: string; key: string; value: string }>;
 async function main() {
   const mainWeaponsResult: Record<number, MainWeaponParams> = {};
   const subWeaponsResult: Record<number, SubWeaponParams> = {};
+  const specialWeaponsResult: any = {};
   const translations: TranslationArray = [];
 
   const langDicts = await loadLangDicts();
@@ -70,6 +71,9 @@ async function main() {
   for (const specialWeapon of specialWeapons) {
     if (specialWeaponShouldBeSkipped(specialWeapon)) continue;
 
+    const rawParams = loadWeaponParamsObject(specialWeapon);
+    const params = parametersToSpecialWeaponResult(rawParams);
+
     translationsToArray({
       arr: translations,
       internalName: specialWeapon.__RowId,
@@ -77,11 +81,14 @@ async function main() {
       type: "Special",
       translations: langDicts,
     });
+
+    specialWeaponsResult[specialWeapon.Id] = params;
   }
 
   const toFile: ParamsJson = {
     mainWeapons: mainWeaponsResult,
     subWeapons: subWeaponsResult,
+    specialWeapons: specialWeaponsResult,
   };
 
   fs.writeFileSync(
@@ -239,6 +246,37 @@ function parametersToSubWeaponResult(params: any): SubWeaponParams {
     DistanceDamage_SplashBlastParam:
       params["BlastParamChase"]?.["SplashBlastParam"]?.["DistanceDamage"],
   };
+}
+
+function parametersToSpecialWeaponResult(params: any) {
+  const result: any = {};
+
+  for (const parentValue of Object.values(params)) {
+    for (const entries of Object.entries(parentValue as any)) {
+      const [key, value]: any = entries;
+      if (
+        key === "SubSpecialSpecUpList" ||
+        value.High !== value.Mid ||
+        value.Mid !== value.Low
+      ) {
+        result[key] = value;
+      }
+
+      for (const innerEntries of Object.entries(value)) {
+        const [innerMostKey, innerMostValue]: any = innerEntries;
+        if (typeof innerMostValue !== "object") continue;
+        if (
+          innerMostKey === "SubSpecialSpecUpList" ||
+          innerMostValue.High !== innerMostValue.Mid ||
+          innerMostValue.Mid !== innerMostValue.Low
+        ) {
+          result[innerMostKey] = innerMostValue;
+        }
+      }
+    }
+  }
+
+  return result;
 }
 
 function resolveSubWeaponId(weapon: MainWeapon) {
@@ -399,7 +437,9 @@ function specialWeaponShouldBeSkipped(specialWeapon: SpecialWeapon) {
   return false;
 }
 
-function loadWeaponParamsObject(weapon: MainWeapon | SubWeapon) {
+function loadWeaponParamsObject(
+  weapon: MainWeapon | SubWeapon | SpecialWeapon
+) {
   return JSON.parse(
     fs.readFileSync(
       path.join(__dirname, "dicts", "weapon", weaponRowIdToFileName(weapon)),
@@ -408,7 +448,7 @@ function loadWeaponParamsObject(weapon: MainWeapon | SubWeapon) {
   )["GameParameters"];
 }
 
-function weaponRowIdToFileName(weapon: MainWeapon | SubWeapon) {
+function weaponRowIdToFileName(weapon: MainWeapon | SubWeapon | SpecialWeapon) {
   const [category, codeName] = weapon.__RowId.split("_");
   invariant(category);
 

@@ -5,6 +5,7 @@ import type {
   SubWeaponId,
 } from "~/modules/in-game-lists";
 import type { SPECIAL_EFFECTS } from "./specialEffects";
+import type weaponParams from "./weapon-params.json";
 import type abilityValues from "./ability-values.json";
 
 export interface MainWeaponParams {
@@ -101,6 +102,7 @@ export interface SubWeaponParams {
 export type ParamsJson = {
   mainWeapons: Record<MainWeaponId, MainWeaponParams>;
   subWeapons: Record<SubWeaponId, SubWeaponParams>;
+  specialWeapons: typeof weaponParams["specialWeapons"];
 };
 
 export interface Stat {
