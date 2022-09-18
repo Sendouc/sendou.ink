@@ -93,6 +93,22 @@
   text-align: center;
 }
 
+.analyzer__stat-card__popover {
+  display: inline;
+}
+
+.analyzer__stat-card__popover-trigger {
+  display: inline;
+  height: 1rem;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  color: var(--theme);
+  font-size: var(--fonts-md);
+  font-weight: var(--bold);
+  outline: initial;
+}
+
 .analyzer__stat-card-values {
   display: flex;
   justify-content: space-evenly;

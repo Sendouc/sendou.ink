@@ -6,6 +6,7 @@ import { Ability } from "~/components/Ability";
 import { WeaponCombobox } from "~/components/Combobox";
 import { Image } from "~/components/Image";
 import { Main } from "~/components/Main";
+import { Popover } from "~/components/Popover";
 import { Toggle } from "~/components/Toggle";
 import { ADMIN_DISCORD_ID } from "~/constants";
 import { useSetTitle } from "~/hooks/useSetTitle";
@@ -136,6 +137,7 @@ export default function BuildAnalyzerPage() {
             <StatCard
               stat={analyzed.stats.jumpRngReductionEffectPercentage}
               title={t("analyzer:stat.jumpRngReduction")}
+              popoverInfo={t("analyzer:stat.jumpRngReduction.explanation")}
               suffix="%"
             />
             {typeof analyzed.stats.mainWeaponWhiteInkSeconds === "number" && (
@@ -542,18 +544,31 @@ function StatCard({
   title,
   stat,
   suffix,
+  popoverInfo,
 }: {
   title: string;
   stat: Stat | number;
   suffix?: string;
+  popoverInfo?: string;
 }) {
   const { t } = useTranslation("analyzer");
   const baseValue = typeof stat === "number" ? stat : stat.baseValue;
 
   return (
-    <div key={title} className="analyzer__stat-card">
+    <div className="analyzer__stat-card">
       <div>
-        <h3 className="analyzer__stat-card__title">{title}</h3>
+        <h3 className="analyzer__stat-card__title">
+          {title}{" "}
+          {popoverInfo && (
+            <Popover
+              containerClassName="analyzer__stat-card__popover"
+              triggerClassName="analyzer__stat-card__popover-trigger"
+              trigger={<>?</>}
+            >
+              {popoverInfo}
+            </Popover>
+          )}
+        </h3>
         <div className="analyzer__stat-card-values">
           <div className="analyzer__stat-card__value">
             <h4 className="analyzer__stat-card__value__title">

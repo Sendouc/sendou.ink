@@ -7,17 +7,19 @@ export function Popover({
   children,
   trigger,
   triggerClassName,
+  containerClassName,
 }: {
   children: React.ReactNode;
   trigger: React.ReactNode;
   triggerClassName?: string;
+  containerClassName?: string;
 }) {
   const [referenceElement, setReferenceElement] = React.useState();
   const [popperElement, setPopperElement] = React.useState();
   const { styles, attributes } = usePopper(referenceElement, popperElement);
 
   return (
-    <HeadlessPopover>
+    <HeadlessPopover className={containerClassName}>
       <HeadlessPopover.Button
         // @ts-expect-error Popper docs: https://popper.js.org/react-popper/v2/
         ref={setReferenceElement}
