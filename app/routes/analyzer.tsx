@@ -84,6 +84,51 @@ export default function BuildAnalyzerPage() {
     return <Main>Coming soon :)</Main>;
   }
 
+  const mainWeaponCategoryItems = [
+    analyzed.stats.shotSpreadAir && (
+      <StatCard
+        stat={analyzed.stats.shotSpreadAir}
+        title={t("analyzer:stat.jumpShotSpread")}
+        suffix="°"
+      />
+    ),
+    typeof analyzed.stats.shotSpreadGround === "number" && (
+      <StatCard
+        stat={analyzed.stats.shotSpreadGround}
+        title={t("analyzer:stat.groundShotSpread")}
+        suffix="°"
+      />
+    ),
+    typeof analyzed.stats.mainWeaponWhiteInkSeconds === "number" && (
+      <StatCard
+        stat={analyzed.stats.mainWeaponWhiteInkSeconds}
+        title={t("analyzer:stat.whiteInk")}
+        suffix={t("analyzer:suffix.seconds")}
+      />
+    ),
+    typeof analyzed.weapon.brellaCanopyHp === "number" && (
+      <StatCard
+        stat={analyzed.weapon.brellaCanopyHp}
+        title={t("analyzer:stat.canopyHp")}
+        suffix={t("analyzer:suffix.hp")}
+      />
+    ),
+    typeof analyzed.weapon.fullChargeSeconds === "number" && (
+      <StatCard
+        stat={analyzed.weapon.fullChargeSeconds}
+        title={t("analyzer:stat.fullChargeSeconds")}
+        suffix={t("analyzer:suffix.seconds")}
+      />
+    ),
+    typeof analyzed.weapon.maxChargeHoldSeconds === "number" && (
+      <StatCard
+        stat={analyzed.weapon.maxChargeHoldSeconds}
+        title={t("analyzer:stat.maxChargeHoldSeconds")}
+        suffix={t("analyzer:suffix.seconds")}
+      />
+    ),
+  ].filter(Boolean);
+
   return (
     <Main>
       <div className="analyzer__container">
@@ -133,50 +178,11 @@ export default function BuildAnalyzerPage() {
           </div>
         </div>
         <div className="stack md">
-          <StatCategory title={t("analyzer:stat.category.main")}>
-            {analyzed.stats.shotSpreadAir && (
-              <StatCard
-                stat={analyzed.stats.shotSpreadAir}
-                title={t("analyzer:stat.jumpShotSpread")}
-                suffix="°"
-              />
-            )}
-            {typeof analyzed.stats.shotSpreadGround === "number" && (
-              <StatCard
-                stat={analyzed.stats.shotSpreadGround}
-                title={t("analyzer:stat.groundShotSpread")}
-                suffix="°"
-              />
-            )}
-            {typeof analyzed.stats.mainWeaponWhiteInkSeconds === "number" && (
-              <StatCard
-                stat={analyzed.stats.mainWeaponWhiteInkSeconds}
-                title={t("analyzer:stat.whiteInk")}
-                suffix={t("analyzer:suffix.seconds")}
-              />
-            )}
-            {typeof analyzed.weapon.brellaCanopyHp === "number" && (
-              <StatCard
-                stat={analyzed.weapon.brellaCanopyHp}
-                title={t("analyzer:stat.canopyHp")}
-                suffix={t("analyzer:suffix.hp")}
-              />
-            )}
-            {typeof analyzed.weapon.fullChargeSeconds === "number" && (
-              <StatCard
-                stat={analyzed.weapon.fullChargeSeconds}
-                title={t("analyzer:stat.fullChargeSeconds")}
-                suffix={t("analyzer:suffix.seconds")}
-              />
-            )}
-            {typeof analyzed.weapon.maxChargeHoldSeconds === "number" && (
-              <StatCard
-                stat={analyzed.weapon.maxChargeHoldSeconds}
-                title={t("analyzer:stat.maxChargeHoldSeconds")}
-                suffix={t("analyzer:suffix.seconds")}
-              />
-            )}
-          </StatCategory>
+          {mainWeaponCategoryItems.length > 0 && (
+            <StatCategory title={t("analyzer:stat.category.main")}>
+              {mainWeaponCategoryItems}
+            </StatCategory>
+          )}
 
           <StatCategory title={t("analyzer:stat.category.sub")}>
             <StatCard
