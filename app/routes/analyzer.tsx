@@ -286,6 +286,28 @@ export default function BuildAnalyzerPage() {
                 })}
               />
             )}
+            {analyzed.stats.specialFieldHp && (
+              <StatCard
+                stat={analyzed.stats.specialFieldHp}
+                title={t("analyzer:stat.special.shieldHp", {
+                  weapon: t(
+                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
+                  ),
+                })}
+                suffix={t("analyzer:suffix.hp")}
+              />
+            )}
+            {analyzed.stats.specialDeviceHp && (
+              <StatCard
+                stat={analyzed.stats.specialDeviceHp}
+                title={t("analyzer:stat.special.deviceHp", {
+                  weapon: t(
+                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
+                  ),
+                })}
+                suffix={t("analyzer:suffix.hp")}
+              />
+            )}
           </StatCategory>
           <StatCategory title={t("analyzer:stat.category.subDef")}>
             <StatCard

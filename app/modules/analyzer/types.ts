@@ -229,6 +229,8 @@ export interface AnalyzedBuild {
     specialDurationInSeconds?: Stat;
     specialDamageDistance?: Stat;
     specialPaintRadius?: Stat;
+    specialFieldHp?: Stat;
+    specialDeviceHp?: Stat;
   };
 }
 

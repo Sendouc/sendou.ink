@@ -54,6 +54,8 @@
   "stat.special.duration": "{{weapon}} duration",
   "stat.special.damageDistance": "{{weapon}} damage distance",
   "stat.special.paintRadius": "{{weapon}} paint radius",
+  "stat.special.shieldHp": "{{weapon}} shield durability",
+  "stat.special.deviceHp": "{{weapon}} device durability",
   "damage.header.type": "Type",
   "damage.header.damage": "Damage",
   "damage.header.distance": "Distance",

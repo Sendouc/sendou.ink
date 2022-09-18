@@ -110,6 +110,8 @@ export function buildStats({
       specialDurationInSeconds: specialDurationInSeconds(input),
       specialDamageDistance: specialDamageDistance(input),
       specialPaintRadius: specialPaintRadius(input),
+      specialFieldHp: specialFieldHp(input),
+      specialDeviceHp: specialDeviceHp(input),
     },
   };
 }
@@ -935,6 +937,15 @@ function subDefBombDamageHeavyPercentage(
 function specialDurationInSeconds(
   args: StatFunctionInput
 ): AnalyzedBuild["stats"]["specialDurationInSeconds"] {
+  if (
+    !hasEffect({
+      key: "SpecialDurationFrame",
+      weapon: args.specialWeaponParams,
+    })
+  ) {
+    return;
+  }
+
   const SPECIAL_DURATION_IN_SECONDS_KEY = "SPU";
   const { baseEffect, effect } = abilityPointsToEffects({
     abilityPoints: apFromMap({
@@ -955,6 +966,15 @@ function specialDurationInSeconds(
 function specialDamageDistance(
   args: StatFunctionInput
 ): AnalyzedBuild["stats"]["specialDamageDistance"] {
+  if (
+    !hasEffect({
+      key: "DistanceDamageDistanceRate",
+      weapon: args.specialWeaponParams,
+    })
+  ) {
+    return;
+  }
+
   const SPECIAL_DAMAGE_DISTANCE_KEY = "SPU";
   const { baseEffect, effect } = abilityPointsToEffects({
     abilityPoints: apFromMap({
@@ -975,6 +995,10 @@ function specialDamageDistance(
 function specialPaintRadius(
   args: StatFunctionInput
 ): AnalyzedBuild["stats"]["specialPaintRadius"] {
+  if (!hasEffect({ key: "PaintRadius", weapon: args.specialWeaponParams })) {
+    return;
+  }
+
   const SPECIAL_PAINT_RADIUS_KEY = "SPU";
   const { baseEffect, effect } = abilityPointsToEffects({
     abilityPoints: apFromMap({
@@ -989,5 +1013,53 @@ function specialPaintRadius(
     baseValue: roundToTwoDecimalPlaces(baseEffect),
     value: roundToTwoDecimalPlaces(effect),
     modifiedBy: SPECIAL_PAINT_RADIUS_KEY,
+  };
+}
+
+function specialFieldHp(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["specialFieldHp"] {
+  if (!hasEffect({ key: "MaxFieldHP", weapon: args.specialWeaponParams })) {
+    return;
+  }
+
+  const SPECIAL_FIELD_HP_KEY = "SPU";
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: SPECIAL_FIELD_HP_KEY,
+    }),
+    key: "MaxFieldHP",
+    weapon: args.specialWeaponParams,
+  });
+
+  return {
+    baseValue: roundToTwoDecimalPlaces(baseEffect / 100),
+    value: roundToTwoDecimalPlaces(effect / 100),
+    modifiedBy: SPECIAL_FIELD_HP_KEY,
+  };
+}
+
+function specialDeviceHp(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["specialDeviceHp"] {
+  if (!hasEffect({ key: "MaxHP", weapon: args.specialWeaponParams })) {
+    return;
+  }
+
+  const SPECIAL_DEVICE_HP_KEY = "SPU";
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: SPECIAL_DEVICE_HP_KEY,
+    }),
+    key: "MaxHP",
+    weapon: args.specialWeaponParams,
+  });
+
+  return {
+    baseValue: roundToTwoDecimalPlaces(baseEffect / 100),
+    value: roundToTwoDecimalPlaces(effect / 100),
+    modifiedBy: SPECIAL_DEVICE_HP_KEY,
   };
 }

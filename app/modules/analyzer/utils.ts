@@ -145,7 +145,7 @@ export function hasEffect({
   weapon,
 }: {
   key: keyof typeof abilityValuesJson;
-  weapon: MainWeaponParams | SubWeaponParams;
+  weapon: MainWeaponParams | SubWeaponParams | SpecialWeaponParams;
 }) {
   const [high, mid, low] = abilityValues({ key, weapon });
 
