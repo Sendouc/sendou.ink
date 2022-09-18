@@ -21,6 +21,7 @@
   "stat.quickRespawnTime": "Quick respawn time",
   "stat.superJumpTimeGround": "Super jump vulnerable frames",
   "stat.superJumpTimeTotal": "Super jump time (total)",
+  "stat.jumpRngReduction": "Midjump shooting RNG reduction",
   "stat.swimSpeed": "Swim speed (units per frame)",
   "stat.runSpeed": "Run speed (units per frame)",
   "stat.runSpeedInEnemyInk": "Run speed in enemy ink",

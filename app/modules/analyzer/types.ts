@@ -190,6 +190,7 @@ export interface AnalyzedBuild {
     quickRespawnTime: Stat;
     superJumpTimeGroundFrames: Stat;
     superJumpTimeTotal: Stat;
+    jumpRngReductionEffectPercentage: Stat;
 
     subDefPointSensorMarkedTimeInSeconds: Stat;
     subDefInkMineMarkedTimeInSeconds: Stat;

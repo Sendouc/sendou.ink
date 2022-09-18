@@ -85,6 +85,7 @@ export function buildStats({
       quickRespawnTime: quickRespawnTime(input),
       superJumpTimeGroundFrames: superJumpTimeGroundFrames(input),
       superJumpTimeTotal: superJumpTimeTotal(input),
+      jumpRngReductionEffectPercentage: jumpRngReductionEffectPercentage(input),
       subDefPointSensorMarkedTimeInSeconds:
         subDefPointSensorMarkedTimeInSeconds(input),
       subDefInkMineMarkedTimeInSeconds: subDefInkMineMarkedTimeInSeconds(input),
@@ -535,6 +536,26 @@ function superJumpTimeTotal(
     ),
     value: framesToSeconds(Math.ceil(charge.effect) + Math.ceil(move.effect)),
     modifiedBy: SUPER_JUMP_TIME_TOTAL_ABILITY,
+  };
+}
+
+function jumpRngReductionEffectPercentage(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["jumpRngReductionEffectPercentage"] {
+  const JUMP_RNG_REDUCTION_ABILITY = "IA";
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: JUMP_RNG_REDUCTION_ABILITY,
+    }),
+    key: "ReduceJumpSwerveRate",
+    weapon: args.mainWeaponParams,
+  });
+
+  return {
+    baseValue: roundToTwoDecimalPlaces(baseEffect * 100),
+    value: roundToTwoDecimalPlaces(effect * 100),
+    modifiedBy: JUMP_RNG_REDUCTION_ABILITY,
   };
 }
 

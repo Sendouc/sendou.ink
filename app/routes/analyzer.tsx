@@ -133,6 +133,11 @@ export default function BuildAnalyzerPage() {
         </div>
         <div className="stack md">
           <StatCategory title={t("analyzer:stat.category.main")}>
+            <StatCard
+              stat={analyzed.stats.jumpRngReductionEffectPercentage}
+              title={t("analyzer:stat.jumpRngReduction")}
+              suffix="%"
+            />
             {typeof analyzed.stats.mainWeaponWhiteInkSeconds === "number" && (
               <StatCard
                 stat={analyzed.stats.mainWeaponWhiteInkSeconds}
