@@ -487,15 +487,17 @@ function AbilityPointsDetails({
       <summary className="analyzer__ap-summary">{t("abilityPoints")}</summary>
       <div className="stack sm horizontal flex-wrap mt-4">
         {abilities
-          .filter((a) => (abilityPoints.get(a.name) ?? 0) > 0)
+          .filter((a) => (abilityPoints.get(a.name)?.ap ?? 0) > 0)
           .sort((a, b) => {
-            return abilityPoints.get(b.name)! - abilityPoints.get(a.name)!;
+            return (
+              abilityPoints.get(b.name)!.ap - abilityPoints.get(a.name)!.ap
+            );
           })
           .map((a) => (
             <div key={a.name} className="stack items-center">
               <Ability ability={a.name} size="TINY" />
               <div className="analyzer__ap-text">
-                {abilityPoints.get(a.name)}
+                {abilityPoints.get(a.name)?.ap}
               </div>
             </div>
           ))}

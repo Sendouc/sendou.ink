@@ -121,11 +121,18 @@ function specialPoint({
   };
 }
 
+const OWN_RESPAWN_PUNISHER_EXTRA_SPECIAL_LOST = 0.225;
 function specialSavedAfterDeath({
   abilityPoints,
   mainWeaponParams,
+  mainOnlyAbilities,
 }: StatFunctionInput): AnalyzedBuild["stats"]["specialPoint"] {
   const SPECIAL_SAVED_AFTER_DEATH_ABILITY = "SS";
+  const hasRespawnPunisher = mainOnlyAbilities.includes("RP");
+  const extraSpecialLost = hasRespawnPunisher
+    ? OWN_RESPAWN_PUNISHER_EXTRA_SPECIAL_LOST
+    : 0;
+
   const specialSavedAfterDeathForDisplay = (effect: number) =>
     Number(((1.0 - effect) * 100).toFixed(2));
 
@@ -133,6 +140,7 @@ function specialSavedAfterDeath({
     abilityPoints: apFromMap({
       abilityPoints: abilityPoints,
       ability: SPECIAL_SAVED_AFTER_DEATH_ABILITY,
+      key: hasRespawnPunisher ? "apBeforeTacticooler" : "ap",
     }),
     key: "SpecialGaugeRt_Restart",
     weapon: mainWeaponParams,
@@ -140,7 +148,7 @@ function specialSavedAfterDeath({
 
   return {
     baseValue: specialSavedAfterDeathForDisplay(baseEffect),
-    value: specialSavedAfterDeathForDisplay(effect),
+    value: specialSavedAfterDeathForDisplay(effect - extraSpecialLost),
     modifiedBy: SPECIAL_SAVED_AFTER_DEATH_ABILITY,
   };
 }
@@ -436,15 +444,18 @@ function swimSpeed(
 }
 
 const RESPAWN_CHASE_FRAME = 150;
+const OWN_RESPAWN_PUNISHER_EXTRA_RESPAWN_FRAMES = 68;
 function quickRespawnTime(
   args: StatFunctionInput
 ): AnalyzedBuild["stats"]["quickRespawnTime"] {
   const QUICK_RESPAWN_TIME_ABILITY = "QR";
+  const hasRespawnPunisher = args.mainOnlyAbilities.includes("RP");
 
   const chase = abilityPointsToEffects({
     abilityPoints: apFromMap({
       abilityPoints: args.abilityPoints,
       ability: QUICK_RESPAWN_TIME_ABILITY,
+      key: hasRespawnPunisher ? "apBeforeTacticooler" : "ap",
     }),
     key: "Dying_ChaseFrm",
     weapon: args.mainWeaponParams,
@@ -453,16 +464,23 @@ function quickRespawnTime(
     abilityPoints: apFromMap({
       abilityPoints: args.abilityPoints,
       ability: QUICK_RESPAWN_TIME_ABILITY,
+      key: hasRespawnPunisher ? "apBeforeTacticooler" : "ap",
     }),
     key: "Dying_AroundFrm",
     weapon: args.mainWeaponParams,
   });
 
+  const extraFrames = hasRespawnPunisher
+    ? OWN_RESPAWN_PUNISHER_EXTRA_RESPAWN_FRAMES
+    : 0;
+
   return {
     baseValue: framesToSeconds(
       RESPAWN_CHASE_FRAME + chase.baseEffect + around.baseEffect
     ),
-    value: framesToSeconds(RESPAWN_CHASE_FRAME + chase.effect + around.effect),
+    value: framesToSeconds(
+      RESPAWN_CHASE_FRAME + chase.effect + around.effect + extraFrames
+    ),
     modifiedBy: QUICK_RESPAWN_TIME_ABILITY,
   };
 }

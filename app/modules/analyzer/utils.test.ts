@@ -25,8 +25,8 @@ BuildToAbilityPoints("Calculates ability points", () => {
     EMPTY_ROW,
   ]);
 
-  assert.equal(aps.get("SS"), 13);
-  assert.equal(aps.get("RSU"), 6);
+  assert.equal(aps.get("SS")?.ap, 13);
+  assert.equal(aps.get("RSU")?.ap, 6);
 });
 
 BuildToAbilityPoints("Handles ability doubler", () => {
@@ -36,7 +36,7 @@ BuildToAbilityPoints("Handles ability doubler", () => {
     EMPTY_ROW,
   ]);
 
-  assert.equal(aps.get("SS"), 6);
+  assert.equal(aps.get("SS")?.ap, 6);
 });
 
 BuildToAbilityPoints("Does not calculate AP for main only abilities", () => {

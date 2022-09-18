@@ -107,7 +107,10 @@ export interface Stat {
   modifiedBy: Ability;
 }
 
-export type AbilityPoints = Map<Ability, number>;
+export type AbilityPoints = Map<
+  Ability,
+  { ap: number; apBeforeTacticooler: number }
+>;
 
 export interface StatFunctionInput {
   mainWeaponParams: MainWeaponParams;
