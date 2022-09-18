@@ -116,6 +116,7 @@ export function buildStats({
         specialHookInkConsumptionPercentage(input),
       specialInkConsumptionPerSecondPercentage:
         specialInkConsumptionPerSecondPercentage(input),
+      specialReticleRadius: specialReticleRadius(input),
     },
   };
 }
@@ -1123,5 +1124,34 @@ function specialInkConsumptionPerSecondPercentage(
     baseValue: roundToTwoDecimalPlaces(baseEffect * 100),
     value: roundToTwoDecimalPlaces(effect * 100),
     modifiedBy: SPECIAL_INK_CONSUMPTION_PER_SECOND_PERCENTAGE_KEY,
+  };
+}
+
+function specialReticleRadius(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["specialReticleRadius"] {
+  if (
+    !hasEffect({
+      key: "TargetInCircleRadius",
+      weapon: args.specialWeaponParams,
+    })
+  ) {
+    return;
+  }
+
+  const SPECIAL_RETICLE_RADIUS_KEY = "SPU";
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: SPECIAL_RETICLE_RADIUS_KEY,
+    }),
+    key: "TargetInCircleRadius",
+    weapon: args.specialWeaponParams,
+  });
+
+  return {
+    baseValue: roundToTwoDecimalPlaces(baseEffect),
+    value: roundToTwoDecimalPlaces(effect),
+    modifiedBy: SPECIAL_RETICLE_RADIUS_KEY,
   };
 }

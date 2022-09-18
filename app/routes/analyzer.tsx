@@ -330,6 +330,16 @@ export default function BuildAnalyzerPage() {
                 suffix="%"
               />
             )}
+            {analyzed.stats.specialReticleRadius && (
+              <StatCard
+                stat={analyzed.stats.specialReticleRadius}
+                title={t("analyzer:stat.special.reticleRadius", {
+                  weapon: t(
+                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
+                  ),
+                })}
+              />
+            )}
           </StatCategory>
           <StatCategory title={t("analyzer:stat.category.subDef")}>
             <StatCard

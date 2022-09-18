@@ -58,6 +58,7 @@
   "stat.special.deviceHp": "{{weapon}} device durability",
   "stat.special.inkConsumptionHook": "{{weapon}} hook ink consumption",
   "stat.special.inkConsumptionPerSecond": "{{weapon}} ink consumption per sec",
+  "stat.special.reticleRadius": "{{weapon}} reticle radius",
   "damage.header.type": "Type",
   "damage.header.damage": "Damage",
   "damage.header.distance": "Distance",
