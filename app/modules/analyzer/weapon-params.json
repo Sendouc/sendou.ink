@@ -1082,15 +1082,15 @@
     },
     "5": {
       "overwrites": {
-        "RainyFrame": {
-          "High": 600,
-          "Low": 480,
-          "Mid": 540
-        },
         "SpawnSpeedZSpecUp": {
           "High": 1.68,
           "Low": 1.12,
           "Mid": 1.4
+        },
+        "SpecialDurationFrame": {
+          "High": 600,
+          "Low": 480,
+          "Mid": 540
         }
       }
     },

@@ -22,7 +22,10 @@ import type {
   SpecialEffectType,
 } from "~/modules/analyzer/types";
 import { useUser } from "~/modules/auth";
-import type { BuildAbilitiesTupleWithUnknown } from "~/modules/in-game-lists";
+import {
+  type BuildAbilitiesTupleWithUnknown,
+  INK_STORM_ID,
+} from "~/modules/in-game-lists";
 import {
   SPLASH_WALL_ID,
   SPRINKLER_ID,
@@ -264,6 +267,11 @@ export default function BuildAnalyzerPage() {
                   ),
                 })}
                 suffix={t("analyzer:suffix.seconds")}
+                popoverInfo={
+                  analyzed.weapon.specialWeaponSplId === INK_STORM_ID
+                    ? t("analyzer:stat.special.duration.inkStormExplanation")
+                    : undefined
+                }
               />
             )}
             {analyzed.stats.specialDamageDistance && (
@@ -334,6 +342,16 @@ export default function BuildAnalyzerPage() {
               <StatCard
                 stat={analyzed.stats.specialReticleRadius}
                 title={t("analyzer:stat.special.reticleRadius", {
+                  weapon: t(
+                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
+                  ),
+                })}
+              />
+            )}
+            {analyzed.stats.specialThrowDistance && (
+              <StatCard
+                stat={analyzed.stats.specialThrowDistance}
+                title={t("analyzer:stat.special.throwDistance", {
                   weapon: t(
                     `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
                   ),

@@ -276,6 +276,11 @@ function parametersToSpecialWeaponResult(params: any) {
     }
   }
 
+  if (result["RainyFrame"]) {
+    result["SpecialDurationFrame"] = result["RainyFrame"];
+    result["RainyFrame"] = undefined;
+  }
+
   return { overwrites: unwrapSubSpecialSpecUpList(result) };
 }
 

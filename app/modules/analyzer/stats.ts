@@ -117,6 +117,7 @@ export function buildStats({
       specialInkConsumptionPerSecondPercentage:
         specialInkConsumptionPerSecondPercentage(input),
       specialReticleRadius: specialReticleRadius(input),
+      specialThrowDistance: specialThrowDistance(input),
     },
   };
 }
@@ -1153,5 +1154,34 @@ function specialReticleRadius(
     baseValue: roundToTwoDecimalPlaces(baseEffect),
     value: roundToTwoDecimalPlaces(effect),
     modifiedBy: SPECIAL_RETICLE_RADIUS_KEY,
+  };
+}
+
+function specialThrowDistance(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["specialThrowDistance"] {
+  if (
+    !hasEffect({
+      key: "SpawnSpeedZSpecUp",
+      weapon: args.specialWeaponParams,
+    })
+  ) {
+    return;
+  }
+
+  const SPECIAL_THROW_DISTANCE_KEY = "SPU";
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: SPECIAL_THROW_DISTANCE_KEY,
+    }),
+    key: "SpawnSpeedZSpecUp",
+    weapon: args.specialWeaponParams,
+  });
+
+  return {
+    baseValue: roundToTwoDecimalPlaces(baseEffect),
+    value: roundToTwoDecimalPlaces(effect),
+    modifiedBy: SPECIAL_THROW_DISTANCE_KEY,
   };
 }
