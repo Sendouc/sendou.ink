@@ -104,7 +104,7 @@ export type ParamsJson = {
 export interface Stat {
   value: number;
   baseValue: number;
-  modifiedBy: Ability;
+  modifiedBy: Ability | Array<Ability>;
 }
 
 export type AbilityPoints = Map<

@@ -149,7 +149,7 @@ function specialSavedAfterDeath({
   return {
     baseValue: specialSavedAfterDeathForDisplay(baseEffect),
     value: specialSavedAfterDeathForDisplay(effect - extraSpecialLost),
-    modifiedBy: SPECIAL_SAVED_AFTER_DEATH_ABILITY,
+    modifiedBy: [SPECIAL_SAVED_AFTER_DEATH_ABILITY, "RP"],
   };
 }
 
@@ -439,7 +439,7 @@ function swimSpeed(
   return {
     baseValue: effectToRounded(baseEffect * 10),
     value: effectToRounded(effect * 10 * ninjaSquidMultiplier),
-    modifiedBy: SWIM_SPEED_ABILITY,
+    modifiedBy: [SWIM_SPEED_ABILITY, "NS"],
   };
 }
 
@@ -481,7 +481,7 @@ function quickRespawnTime(
     value: framesToSeconds(
       RESPAWN_CHASE_FRAME + chase.effect + around.effect + extraFrames
     ),
-    modifiedBy: QUICK_RESPAWN_TIME_ABILITY,
+    modifiedBy: [QUICK_RESPAWN_TIME_ABILITY, "RP"],
   };
 }
 

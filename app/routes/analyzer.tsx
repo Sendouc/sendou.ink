@@ -563,10 +563,20 @@ function StatCard({
         </div>
       </div>
       {typeof stat !== "number" && (
-        <div className="stack items-center">
-          <Ability ability={stat.modifiedBy} size="TINY" />
-        </div>
+        <ModifiedByAbilities abilities={stat.modifiedBy} />
       )}
+    </div>
+  );
+}
+
+function ModifiedByAbilities({ abilities }: { abilities: Stat["modifiedBy"] }) {
+  const abilitiesArray = Array.isArray(abilities) ? abilities : [abilities];
+
+  return (
+    <div className="stack horizontal sm items-center justify-center">
+      {abilitiesArray.map((ability) => (
+        <Ability key={ability} ability={ability} size="TINY" />
+      ))}
     </div>
   );
 }
