@@ -52,6 +52,8 @@
   "stat.sub.explosionRadius": "Explosion radius",
   "stat.sub.hp": "Durability",
   "stat.special.duration": "{{weapon}} duration",
+  "stat.special.damageDistance": "{{weapon}} damage distance",
+  "stat.special.paintRadius": "{{weapon}} paint radius",
   "damage.header.type": "Type",
   "damage.header.damage": "Damage",
   "damage.header.distance": "Distance",

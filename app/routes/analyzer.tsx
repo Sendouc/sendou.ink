@@ -266,6 +266,26 @@ export default function BuildAnalyzerPage() {
                 suffix={t("analyzer:suffix.seconds")}
               />
             )}
+            {analyzed.stats.specialDamageDistance && (
+              <StatCard
+                stat={analyzed.stats.specialDamageDistance}
+                title={t("analyzer:stat.special.damageDistance", {
+                  weapon: t(
+                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
+                  ),
+                })}
+              />
+            )}
+            {analyzed.stats.specialPaintRadius && (
+              <StatCard
+                stat={analyzed.stats.specialPaintRadius}
+                title={t("analyzer:stat.special.paintRadius", {
+                  weapon: t(
+                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
+                  ),
+                })}
+              />
+            )}
           </StatCategory>
           <StatCategory title={t("analyzer:stat.category.subDef")}>
             <StatCard

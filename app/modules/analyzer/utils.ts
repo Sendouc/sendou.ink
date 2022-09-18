@@ -68,8 +68,6 @@ function abilityValues({
   key: keyof typeof abilityValuesJson;
   weapon: MainWeaponParams | SubWeaponParams | SpecialWeaponParams;
 }): [number, number, number] {
-  // xxx: before prod
-  // @ts-expect-error should be gone soon
   const overwrites = weapon.overwrites?.[key];
 
   const [High, Mid, Low] = abilityValuesJson[key];

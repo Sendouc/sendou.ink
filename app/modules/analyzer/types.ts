@@ -8,11 +8,16 @@ import type { SPECIAL_EFFECTS } from "./specialEffects";
 import type weaponParams from "./weapon-params.json";
 import type abilityValues from "./ability-values.json";
 
+type Overwrites = Record<
+  string,
+  Partial<Record<"High" | "Mid" | "Low", number>>
+>;
+
 export interface MainWeaponParams {
   subWeaponId: SubWeaponId;
   specialWeaponId: SpecialWeaponId;
   /** Replacing default values of the ability json for this specific weapon */
-  overwrites?: Record<string, Partial<Record<"High" | "Mid" | "Low", number>>>;
+  overwrites?: Overwrites;
   SpecialPoint: number;
   /** Weapon's weight class. "Light/Heavy weapon" */
   WeaponSpeedType?: "Slow" | "Fast";
@@ -77,7 +82,7 @@ export interface DistanceDamage {
 }
 
 export interface SubWeaponParams {
-  overwrites?: Record<string, Partial<Record<"High" | "Mid" | "Low", number>>>;
+  overwrites?: Overwrites;
   SubInkSaveLv: 0 | 1 | 2 | 3;
   /** How much ink one usage of the sub consumes */
   InkConsume: number;
@@ -100,7 +105,9 @@ export interface SubWeaponParams {
 }
 
 type SpecialWeaponParamsObject = typeof weaponParams["specialWeapons"];
-export type SpecialWeaponParams = SpecialWeaponParamsObject[SpecialWeaponId];
+export type SpecialWeaponParams = SpecialWeaponParamsObject[SpecialWeaponId] & {
+  overwrites?: Overwrites;
+};
 
 export type ParamsJson = {
   mainWeapons: Record<MainWeaponId, MainWeaponParams>;
@@ -220,6 +227,8 @@ export interface AnalyzedBuild {
     subHp?: Stat;
 
     specialDurationInSeconds?: Stat;
+    specialDamageDistance?: Stat;
+    specialPaintRadius?: Stat;
   };
 }
 

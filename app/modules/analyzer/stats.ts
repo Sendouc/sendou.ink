@@ -108,6 +108,8 @@ export function buildStats({
       subDefBombDamageHeavyPercentage: subDefBombDamageHeavyPercentage(input),
       ...subStats(input),
       specialDurationInSeconds: specialDurationInSeconds(input),
+      specialDamageDistance: specialDamageDistance(input),
+      specialPaintRadius: specialPaintRadius(input),
     },
   };
 }
@@ -947,5 +949,45 @@ function specialDurationInSeconds(
     baseValue: framesToSeconds(baseEffect),
     value: framesToSeconds(effect),
     modifiedBy: SPECIAL_DURATION_IN_SECONDS_KEY,
+  };
+}
+
+function specialDamageDistance(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["specialDamageDistance"] {
+  const SPECIAL_DAMAGE_DISTANCE_KEY = "SPU";
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: SPECIAL_DAMAGE_DISTANCE_KEY,
+    }),
+    key: "DistanceDamageDistanceRate",
+    weapon: args.specialWeaponParams,
+  });
+
+  return {
+    baseValue: roundToTwoDecimalPlaces(baseEffect),
+    value: roundToTwoDecimalPlaces(effect),
+    modifiedBy: SPECIAL_DAMAGE_DISTANCE_KEY,
+  };
+}
+
+function specialPaintRadius(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["specialPaintRadius"] {
+  const SPECIAL_PAINT_RADIUS_KEY = "SPU";
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: SPECIAL_PAINT_RADIUS_KEY,
+    }),
+    key: "PaintRadius",
+    weapon: args.specialWeaponParams,
+  });
+
+  return {
+    baseValue: roundToTwoDecimalPlaces(baseEffect),
+    value: roundToTwoDecimalPlaces(effect),
+    modifiedBy: SPECIAL_PAINT_RADIUS_KEY,
   };
 }
