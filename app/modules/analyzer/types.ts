@@ -198,12 +198,8 @@ export interface AnalyzedBuild {
     subDefAngleShooterDamage: Stat;
     subDefSplashWallDamagePercentage: Stat;
     subDefSprinklerDamagePercentage: Stat;
-    // subDefBombDamageLight: Stat;
-    // subDefBombDamageHeavy: Stat;
-    // subDefAngleShooterDamage: Stat;
-    // subDefSplashWallDamage: Stat;
-    // subDefSprinklerDamage: Stat;
-    // subDefToxicMistMoveReduction: Stat;
+    subDefBombDamageLightPercentage: Stat;
+    subDefBombDamageHeavyPercentage: Stat;
 
     subVelocity?: Stat;
     subFirstPhaseDuration?: Stat;

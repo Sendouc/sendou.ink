@@ -231,6 +231,16 @@ export default function BuildAnalyzerPage() {
           </StatCategory>
           <StatCategory title={t("analyzer:stat.category.subDef")}>
             <StatCard
+              stat={analyzed.stats.subDefBombDamageLightPercentage}
+              title={t("analyzer:stat.bombLdamage")}
+              suffix="%"
+            />
+            <StatCard
+              stat={analyzed.stats.subDefBombDamageHeavyPercentage}
+              title={t("analyzer:stat.bombHdamage")}
+              suffix="%"
+            />
+            <StatCard
               stat={analyzed.stats.subDefAngleShooterDamage}
               title={t("analyzer:stat.damage", {
                 weapon: t(`weapons:SUB_${ANGLE_SHOOTER_ID}`),

@@ -30,6 +30,8 @@
   "stat.markedTime": "{{weapon}} tracking time",
   "stat.movementReduction": "{{weapon}} movement reduction",
   "stat.damage": "{{weapon}} damage",
+  "stat.bombHdamage": "Heavy bomb damage",
+  "stat.bombLdamage": "Light bomb damage",
   "stat.consumption.NORMAL": "Shots",
   "stat.consumption.SWING": "Swings",
   "stat.consumption.SLOSH": "Sloshes",

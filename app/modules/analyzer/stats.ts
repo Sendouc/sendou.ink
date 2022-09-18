@@ -94,6 +94,8 @@ export function buildStats({
       subDefAngleShooterDamage: subDefAngleShooterDamage(input),
       subDefSplashWallDamagePercentage: subDefSplashWallDamagePercentage(input),
       subDefSprinklerDamagePercentage: subDefSprinklerDamagePercentage(input),
+      subDefBombDamageLightPercentage: subDefBombDamageLightPercentage(input),
+      subDefBombDamageHeavyPercentage: subDefBombDamageHeavyPercentage(input),
       ...subStats(input),
     },
   };
@@ -841,5 +843,45 @@ function subDefSprinklerDamagePercentage(
     baseValue: roundToTwoDecimalPlaces(baseEffect * 100),
     value: roundToTwoDecimalPlaces(effect * 100),
     modifiedBy: SUB_DEF_SPRINKLER_DAMAGE_PERCENTAGE_KEY,
+  };
+}
+
+function subDefBombDamageLightPercentage(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["subDefBombDamageLightPercentage"] {
+  const SUB_DEF_BOMB_DAMAGE_LIGHT_PERCENTAGE_KEY = "SRU";
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: SUB_DEF_BOMB_DAMAGE_LIGHT_PERCENTAGE_KEY,
+    }),
+    key: "DamageRt_BombL",
+    weapon: args.mainWeaponParams,
+  });
+
+  return {
+    baseValue: roundToTwoDecimalPlaces(baseEffect * 100),
+    value: roundToTwoDecimalPlaces(effect * 100),
+    modifiedBy: SUB_DEF_BOMB_DAMAGE_LIGHT_PERCENTAGE_KEY,
+  };
+}
+
+function subDefBombDamageHeavyPercentage(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["subDefBombDamageHeavyPercentage"] {
+  const SUB_DEF_BOMB_DAMAGE_HEAVY_PERCENTAGE_KEY = "SRU";
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: SUB_DEF_BOMB_DAMAGE_HEAVY_PERCENTAGE_KEY,
+    }),
+    key: "DamageRt_BombH",
+    weapon: args.mainWeaponParams,
+  });
+
+  return {
+    baseValue: roundToTwoDecimalPlaces(baseEffect * 100),
+    value: roundToTwoDecimalPlaces(effect * 100),
+    modifiedBy: SUB_DEF_BOMB_DAMAGE_HEAVY_PERCENTAGE_KEY,
   };
 }
