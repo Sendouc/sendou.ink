@@ -7,6 +7,7 @@ import { WeaponCombobox } from "~/components/Combobox";
 import { Image } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { Toggle } from "~/components/Toggle";
+import { ADMIN_DISCORD_ID } from "~/constants";
 import { useSetTitle } from "~/hooks/useSetTitle";
 import type { AnalyzedBuild, Stat } from "~/modules/analyzer";
 import { MAX_LDE_INTENSITY } from "~/modules/analyzer";
@@ -19,6 +20,7 @@ import type {
   AbilityPoints,
   SpecialEffectType,
 } from "~/modules/analyzer/types";
+import { useUser } from "~/modules/auth";
 import type { BuildAbilitiesTupleWithUnknown } from "~/modules/in-game-lists";
 import {
   SPLASH_WALL_ID,
@@ -53,7 +55,15 @@ export const handle = {
   i18n: ["weapons", "analyzer"],
 };
 
+const canViewInProduction = (discordId?: string) => {
+  const LEAN_ID = "86905636402495488";
+  const SENDOU_ID = ADMIN_DISCORD_ID;
+
+  return discordId === LEAN_ID || discordId === SENDOU_ID;
+};
+
 export default function BuildAnalyzerPage() {
+  const user = useUser();
   const { t } = useTranslation(["analyzer", "common", "weapons"]);
   useSetTitle(t("common:pages.buildAnalyzer"));
   const {
@@ -66,7 +76,12 @@ export default function BuildAnalyzerPage() {
     effects,
   } = useAnalyzeBuild();
 
-  if (process.env.NODE_ENV === "production") return <Main>Coming soon :)</Main>;
+  if (
+    process.env.NODE_ENV === "production" &&
+    !canViewInProduction(user?.discordId)
+  ) {
+    return <Main>Coming soon :)</Main>;
+  }
 
   return (
     <Main>
