@@ -1133,7 +1133,7 @@
     },
     "9": {
       "overwrites": {
-        "LaserFrame": {
+        "SpecialDurationFrame": {
           "High": 240,
           "Low": 180,
           "Mid": 210
