@@ -276,16 +276,27 @@ function parametersToSpecialWeaponResult(params: any) {
     }
   }
 
-  const specialDurationFrameKeyAlises = ["LaserFrame", "RainyFrame"];
+  const resultUnwrapped = unwrapSubSpecialSpecUpList(result);
+
+  const specialDurationFrameKeyAlises = [
+    "LaserFrame",
+    "RainyFrame",
+    "SpecialTotalFrame",
+  ];
 
   for (const key of specialDurationFrameKeyAlises) {
-    if (!result[key]) continue;
+    if (!resultUnwrapped[key]) continue;
 
-    result["SpecialDurationFrame"] = result[key];
-    result[key] = undefined;
+    resultUnwrapped["SpecialDurationFrame"] = resultUnwrapped[key];
+    resultUnwrapped[key] = undefined;
   }
 
-  return { overwrites: unwrapSubSpecialSpecUpList(result) };
+  if (resultUnwrapped["SplashAroundPaintRadius"]) {
+    resultUnwrapped["PaintRadius"] = resultUnwrapped["SplashAroundPaintRadius"];
+    resultUnwrapped["SplashAroundPaintRadius"] = undefined;
+  }
+
+  return { overwrites: resultUnwrapped };
 }
 
 function unwrapSubSpecialSpecUpList(result: any) {

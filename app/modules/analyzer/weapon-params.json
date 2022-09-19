@@ -1157,21 +1157,21 @@
           "Low": 0.33,
           "Mid": 0.34
         },
-        "SplashAroundPaintRadius": {
-          "High": 0.7,
-          "Low": 0.63,
-          "Mid": 0.665
-        },
-        "SpecialTotalFrame": {
+        "SpecialDurationFrame": {
           "High": 510,
           "Low": 450,
           "Mid": 480
+        },
+        "PaintRadius": {
+          "High": 0.7,
+          "Low": 0.63,
+          "Mid": 0.665
         }
       }
     },
     "11": {
       "overwrites": {
-        "SpecialTotalFrame": {
+        "SpecialDurationFrame": {
           "High": 660,
           "Low": 540,
           "Mid": 600
@@ -1180,7 +1180,7 @@
     },
     "12": {
       "overwrites": {
-        "SpecialTotalFrame": {
+        "SpecialDurationFrame": {
           "High": 660,
           "Low": 540,
           "Mid": 600
@@ -1195,9 +1195,9 @@
           "Mid": 1.1
         },
         "PaintRadius": {
-          "High": 8.4,
-          "Low": 7,
-          "Mid": 7.7
+          "High": 1.2,
+          "Low": 1,
+          "Mid": 1.1
         },
         "SplashAroundVelocityMin": {
           "High": 0.6,
@@ -1208,11 +1208,6 @@
           "High": 0.7,
           "Low": 0.6,
           "Mid": 0.65
-        },
-        "SplashAroundPaintRadius": {
-          "High": 1.2,
-          "Low": 1,
-          "Mid": 1.1
         }
       }
     },
