@@ -238,6 +238,7 @@ export interface AnalyzedBuild {
     specialAutoChargeRate?: Stat;
     specialMaxRadius?: Stat;
     specialRadiusRange?: Stat<string>;
+    specialPowerUpDuration?: Stat;
   };
 }
 

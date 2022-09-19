@@ -389,6 +389,17 @@ export default function BuildAnalyzerPage() {
                 })}
               />
             )}
+            {analyzed.stats.specialPowerUpDuration && (
+              <StatCard
+                stat={analyzed.stats.specialPowerUpDuration}
+                title={t("analyzer:stat.special.powerUpDuration", {
+                  weapon: t(
+                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
+                  ),
+                })}
+                suffix={t("analyzer:suffix.seconds")}
+              />
+            )}
           </StatCategory>
           <StatCategory title={t("analyzer:stat.category.subDef")}>
             <StatCard

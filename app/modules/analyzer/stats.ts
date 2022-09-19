@@ -121,6 +121,7 @@ export function buildStats({
       specialAutoChargeRate: specialAutoChargeRate(input),
       specialMaxRadius: specialMaxRadius(input),
       specialRadiusRange: specialRadiusRange(input),
+      specialPowerUpDuration: specialPowerUpDuration(input),
     },
   };
 }
@@ -1290,5 +1291,34 @@ function specialRadiusRange(
       radiusMin.effect
     )}-${roundToTwoDecimalPlaces(radiusMax.effect)}`,
     modifiedBy: SPECIAL_RADIUS_RANGE_KEY,
+  };
+}
+
+function specialPowerUpDuration(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["specialPowerUpDuration"] {
+  if (
+    !hasEffect({
+      key: "PowerUpFrame",
+      weapon: args.specialWeaponParams,
+    })
+  ) {
+    return;
+  }
+
+  const SPECIAL_POWER_UP_DURATION_KEY = "SPU";
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: SPECIAL_POWER_UP_DURATION_KEY,
+    }),
+    key: "PowerUpFrame",
+    weapon: args.specialWeaponParams,
+  });
+
+  return {
+    baseValue: framesToSeconds(baseEffect),
+    value: framesToSeconds(effect),
+    modifiedBy: SPECIAL_POWER_UP_DURATION_KEY,
   };
 }

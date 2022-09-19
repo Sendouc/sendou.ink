@@ -65,6 +65,7 @@
   "stat.special.maxRadius": "{{weapon}} wave max radius",
   "stat.special.maxRadius.explanation": "Travel speed of the wave is always the same despite the increased radius.",
   "stat.special.radiusRange": "{{weapon}} sucking radius",
+  "stat.special.powerUpDuration": "{{weapon}} drink effect duration",
   "damage.header.type": "Type",
   "damage.header.damage": "Damage",
   "damage.header.distance": "Distance",
