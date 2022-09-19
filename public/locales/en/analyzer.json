@@ -64,6 +64,7 @@
   "stat.special.autoChargeRate": "{{weapon}} auto charge rate",
   "stat.special.maxRadius": "{{weapon}} wave max radius",
   "stat.special.maxRadius.explanation": "Travel speed of the wave is always the same despite the increased radius.",
+  "stat.special.radiusRange": "{{weapon}} sucking radius",
   "damage.header.type": "Type",
   "damage.header.damage": "Damage",
   "damage.header.distance": "Distance",

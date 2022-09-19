@@ -120,6 +120,7 @@ export function buildStats({
       specialThrowDistance: specialThrowDistance(input),
       specialAutoChargeRate: specialAutoChargeRate(input),
       specialMaxRadius: specialMaxRadius(input),
+      specialRadiusRange: specialRadiusRange(input),
     },
   };
 }
@@ -1243,5 +1244,51 @@ function specialMaxRadius(
     baseValue: roundToTwoDecimalPlaces(baseEffect),
     value: roundToTwoDecimalPlaces(effect),
     modifiedBy: SPECIAL_MAX_RADIUS_KEY,
+  };
+}
+
+function specialRadiusRange(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["specialRadiusRange"] {
+  if (
+    !hasEffect({
+      key: "RadiusMax",
+      weapon: args.specialWeaponParams,
+    }) ||
+    !hasEffect({
+      key: "RadiusMin",
+      weapon: args.specialWeaponParams,
+    })
+  ) {
+    return;
+  }
+
+  const SPECIAL_RADIUS_RANGE_KEY = "SPU";
+
+  const radiusMin = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: SPECIAL_RADIUS_RANGE_KEY,
+    }),
+    key: "RadiusMin",
+    weapon: args.specialWeaponParams,
+  });
+  const radiusMax = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: SPECIAL_RADIUS_RANGE_KEY,
+    }),
+    key: "RadiusMax",
+    weapon: args.specialWeaponParams,
+  });
+
+  return {
+    baseValue: `${roundToTwoDecimalPlaces(
+      radiusMin.baseEffect
+    )}-${roundToTwoDecimalPlaces(radiusMax.baseEffect)}`,
+    value: `${roundToTwoDecimalPlaces(
+      radiusMin.effect
+    )}-${roundToTwoDecimalPlaces(radiusMax.effect)}`,
+    modifiedBy: SPECIAL_RADIUS_RANGE_KEY,
   };
 }

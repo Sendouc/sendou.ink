@@ -115,9 +115,9 @@ export type ParamsJson = {
   specialWeapons: SpecialWeaponParamsObject;
 };
 
-export interface Stat {
-  value: number;
-  baseValue: number;
+export interface Stat<T = number> {
+  value: T;
+  baseValue: T;
   modifiedBy: Ability | Array<Ability>;
 }
 
@@ -237,6 +237,7 @@ export interface AnalyzedBuild {
     specialThrowDistance?: Stat;
     specialAutoChargeRate?: Stat;
     specialMaxRadius?: Stat;
+    specialRadiusRange?: Stat<string>;
   };
 }
 
