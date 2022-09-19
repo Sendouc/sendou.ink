@@ -236,6 +236,7 @@ export interface AnalyzedBuild {
     specialReticleRadius?: Stat;
     specialThrowDistance?: Stat;
     specialAutoChargeRate?: Stat;
+    specialMaxRadius?: Stat;
   };
 }
 

@@ -119,6 +119,7 @@ export function buildStats({
       specialReticleRadius: specialReticleRadius(input),
       specialThrowDistance: specialThrowDistance(input),
       specialAutoChargeRate: specialAutoChargeRate(input),
+      specialMaxRadius: specialMaxRadius(input),
     },
   };
 }
@@ -1213,5 +1214,34 @@ function specialAutoChargeRate(
     baseValue: roundToTwoDecimalPlaces(baseEffect * 100),
     value: roundToTwoDecimalPlaces(effect * 100),
     modifiedBy: SPECIAL_AUTO_CHARGE_RATE_KEY,
+  };
+}
+
+function specialMaxRadius(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["specialMaxRadius"] {
+  if (
+    !hasEffect({
+      key: "MaxRadius",
+      weapon: args.specialWeaponParams,
+    })
+  ) {
+    return;
+  }
+
+  const SPECIAL_MAX_RADIUS_KEY = "SPU";
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: SPECIAL_MAX_RADIUS_KEY,
+    }),
+    key: "MaxRadius",
+    weapon: args.specialWeaponParams,
+  });
+
+  return {
+    baseValue: roundToTwoDecimalPlaces(baseEffect),
+    value: roundToTwoDecimalPlaces(effect),
+    modifiedBy: SPECIAL_MAX_RADIUS_KEY,
   };
 }

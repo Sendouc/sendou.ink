@@ -368,6 +368,17 @@ export default function BuildAnalyzerPage() {
                 })}
               />
             )}
+            {analyzed.stats.specialMaxRadius && (
+              <StatCard
+                stat={analyzed.stats.specialMaxRadius}
+                title={t("analyzer:stat.special.maxRadius", {
+                  weapon: t(
+                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
+                  ),
+                })}
+                popoverInfo={t("analyzer:stat.special.maxRadius.explanation")}
+              />
+            )}
           </StatCategory>
           <StatCategory title={t("analyzer:stat.category.subDef")}>
             <StatCard
