@@ -180,7 +180,9 @@ export default function BuildAnalyzerPage() {
               }
               effects={effects}
             />
-            <AbilityPointsDetails abilityPoints={abilityPoints} />
+            {abilityPoints.size > 0 && (
+              <AbilityPointsDetails abilityPoints={abilityPoints} />
+            )}
           </div>
           <div className="analyzer__patch">
             {t("analyzer:patch")} {CURRENT_PATCH}

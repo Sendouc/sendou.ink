@@ -88,9 +88,9 @@
 }
 
 .analyzer__stat-card__title {
-  height: 2.75rem;
   font-size: var(--fonts-xs);
   text-align: center;
+  word-break: break-word;
 }
 
 .analyzer__stat-card__popover {
@@ -169,4 +169,14 @@
   font-weight: var(--bold);
   padding-block: var(--s-0-5);
   padding-inline: var(--s-1);
+}
+
+@media screen and (max-width: 640px) {
+  .analyzer__container {
+    grid-template-columns: 1fr;
+  }
+
+  .analyzer__left-column {
+    position: initial;
+  }
 }
