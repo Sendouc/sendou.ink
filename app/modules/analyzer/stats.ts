@@ -95,6 +95,7 @@ export function buildStats({
       superJumpTimeTotal: superJumpTimeTotal(input),
       shotSpreadAir: shotSpreadAir(input),
       shotSpreadGround: mainWeaponParams.Stand_DegSwerve,
+      squidSurgeChargeFrames: squidSurgeChargeFrames(input),
       subDefPointSensorMarkedTimeInSeconds:
         subDefPointSensorMarkedTimeInSeconds(input),
       subDefInkMineMarkedTimeInSeconds: subDefInkMineMarkedTimeInSeconds(input),
@@ -593,6 +594,26 @@ function shotSpreadAir(
     baseValue: roundToTwoDecimalPlaces(jumpSpread),
     value: roundToTwoDecimalPlaces(reducedExtraSpread + groundSpread),
     modifiedBy: SHOT_SPREAD_AIR_ABILITY,
+  };
+}
+
+function squidSurgeChargeFrames(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["squidSurgeChargeFrames"] {
+  const SQUID_SURGE_CHARGE_FRAMES_ABILITY = "IA";
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: SQUID_SURGE_CHARGE_FRAMES_ABILITY,
+    }),
+    key: "WallJumpChargeFrm",
+    weapon: args.mainWeaponParams,
+  });
+
+  return {
+    baseValue: Math.ceil(baseEffect),
+    value: Math.ceil(effect),
+    modifiedBy: SQUID_SURGE_CHARGE_FRAMES_ABILITY,
   };
 }
 

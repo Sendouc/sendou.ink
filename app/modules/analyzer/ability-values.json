@@ -37,7 +37,7 @@
   "SpecialGaugeRt_Restart": [1.0, 0.8, 0.5],
   "SuperJump_ChargeFrm": [20.0, 35.0, 80.0],
   "SuperJump_MoveFrm": [96.6, 132.3, 138.0],
-  "WallJumpChargeFrm": [0.0, 0.0, 0.0],
+  "WallJumpChargeFrm": [5.0, 18.0, 45.0],
   "ReduceJumpSwerveRate": [1.0, 0.75, 0.0],
   "SpawnSpeedZSpecUp": [0.0, 0.0, 0.0],
   "PeriodFirst": [0.0, 0.0, 0.0],

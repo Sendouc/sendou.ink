@@ -207,6 +207,7 @@ export interface AnalyzedBuild {
     superJumpTimeTotal: Stat;
     shotSpreadAir?: Stat;
     shotSpreadGround?: number;
+    squidSurgeChargeFrames: Stat;
 
     subDefPointSensorMarkedTimeInSeconds: Stat;
     subDefInkMineMarkedTimeInSeconds: Stat;

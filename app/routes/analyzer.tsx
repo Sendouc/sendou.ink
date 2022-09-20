@@ -482,6 +482,10 @@ export default function BuildAnalyzerPage() {
               title={t("analyzer:stat.runSpeed")}
             />
             <StatCard
+              stat={analyzed.stats.squidSurgeChargeFrames}
+              title={t("analyzer:stat.squidSurgeChargeFrames")}
+            />
+            <StatCard
               stat={analyzed.stats.runSpeedInEnemyInk}
               title={t("analyzer:stat.runSpeedInEnemyInk")}
             />
