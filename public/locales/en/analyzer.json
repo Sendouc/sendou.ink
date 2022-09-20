@@ -52,6 +52,7 @@
   "stat.sub.markingRadius": "Marking radius",
   "stat.sub.explosionRadius": "Explosion radius",
   "stat.sub.hp": "Durability",
+  "stat.sub.qsjBoost": "Quick Super Jump boost",
   "stat.special.duration": "{{weapon}} duration",
   "stat.special.duration.inkStormExplanation": "Increases distance painted but not the amount of ink.",
   "stat.special.damageDistance": "{{weapon}} damage distance",

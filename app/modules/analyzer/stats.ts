@@ -107,6 +107,7 @@ export function buildStats({
       subDefSprinklerDamagePercentage: subDefSprinklerDamagePercentage(input),
       subDefBombDamageLightPercentage: subDefBombDamageLightPercentage(input),
       subDefBombDamageHeavyPercentage: subDefBombDamageHeavyPercentage(input),
+      subQsjBoost: subQsjBoost(input),
       ...subStats(input),
       specialDurationInSeconds: specialDurationInSeconds(input),
       specialDamageDistance: specialDamageDistance(input),
@@ -960,6 +961,35 @@ function subDefBombDamageHeavyPercentage(
     baseValue: roundToTwoDecimalPlaces(baseEffect * 100),
     value: roundToTwoDecimalPlaces(effect * 100),
     modifiedBy: SUB_DEF_BOMB_DAMAGE_HEAVY_PERCENTAGE_KEY,
+  };
+}
+
+function subQsjBoost(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["subQsjBoost"] {
+  if (
+    !hasEffect({
+      key: "SubSpecUpParam",
+      weapon: args.subWeaponParams,
+    })
+  ) {
+    return;
+  }
+
+  const SUB_QSJ_BOOST_KEY = "BRU";
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: SUB_QSJ_BOOST_KEY,
+    }),
+    key: "SubSpecUpParam",
+    weapon: args.subWeaponParams,
+  });
+
+  return {
+    baseValue: Math.floor(baseEffect),
+    value: Math.floor(effect),
+    modifiedBy: SUB_QSJ_BOOST_KEY,
   };
 }
 

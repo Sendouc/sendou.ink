@@ -226,6 +226,7 @@ export interface AnalyzedBuild {
     subMarkingRadius?: Stat;
     subExplosionRadius?: Stat;
     subHp?: Stat;
+    subQsjBoost?: Stat;
 
     specialDurationInSeconds?: Stat;
     specialDamageDistance?: Stat;

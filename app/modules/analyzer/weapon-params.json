@@ -918,7 +918,13 @@
       ]
     },
     "8": {
-      "overwrites": {},
+      "overwrites": {
+        "SubSpecUpParam": {
+          "Low": 0,
+          "High": 57,
+          "Mid": 25
+        }
+      },
       "SubInkSaveLv": 3,
       "InkConsume": 0.75,
       "InkRecoverStop": 0

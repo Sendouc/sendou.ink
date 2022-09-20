@@ -40,6 +40,7 @@
   "WallJumpChargeFrm": [5.0, 18.0, 45.0],
   "ReduceJumpSwerveRate": [1.0, 0.75, 0.0],
   "SpawnSpeedZSpecUp": [0.0, 0.0, 0.0],
+  "SubSpecUpParam": [0.0, 0.0, 0.0],
   "PeriodFirst": [0.0, 0.0, 0.0],
   "PeriodSecond": [0.0, 0.0, 0.0],
   "MarkingFrameSubSpec": [0.0, 0.0, 0.0],

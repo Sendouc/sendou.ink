@@ -226,6 +226,13 @@ export default function BuildAnalyzerPage() {
                 suffix={t("analyzer:suffix.hp")}
               />
             )}
+            {analyzed.stats.subQsjBoost && (
+              <StatCard
+                stat={analyzed.stats.subQsjBoost}
+                title={t("analyzer:stat.sub.qsjBoost")}
+                suffix={t("analyzer:abilityPoints.short")}
+              />
+            )}
           </StatCategory>
 
           <StatCategory title={t("analyzer:stat.category.special")}>

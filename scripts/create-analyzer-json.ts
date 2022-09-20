@@ -2,13 +2,15 @@
 // 1) WeaponInfoMain.json inside dicts
 // 2) WeaponInfoSub.json inside dicts
 // 3) WeaponInfoSpecial.json inside dicts
-// 4) params (weapon folder) inside dicts
+// 4) SplPlayer.game__GameParameterTable.json inside dicts
+// 5) params (weapon folder) inside dicts
 
-import type { SpecialWeaponId } from "~/modules/in-game-lists";
+import { type SpecialWeaponId, SQUID_BEAKON_ID } from "~/modules/in-game-lists";
 import { type SubWeaponId, subWeaponIds } from "~/modules/in-game-lists";
 import weapons from "./dicts/WeaponInfoMain.json";
 import subWeapons from "./dicts/WeaponInfoSub.json";
 import specialWeapons from "./dicts/WeaponInfoSpecial.json";
+import playersParams from "./dicts/SplPlayer.game__GameParameterTable.json";
 import fs from "node:fs";
 import path from "node:path";
 import invariant from "tiny-invariant";
@@ -55,7 +57,7 @@ async function main() {
     if (subWeaponShouldBeSkipped(subWeapon)) continue;
 
     const rawParams = loadWeaponParamsObject(subWeapon);
-    const params = parametersToSubWeaponResult(rawParams);
+    const params = parametersToSubWeaponResult(subWeapon, rawParams);
 
     translationsToArray({
       arr: translations,
@@ -217,7 +219,10 @@ function combineSwingsIfSame(params: MainWeaponParams): MainWeaponParams {
 }
 
 // const LEGAL_SUB_INK_SAVE_LV = [0, 1, 2, 3];
-function parametersToSubWeaponResult(params: any): SubWeaponParams {
+function parametersToSubWeaponResult(
+  subWeapon: SubWeapon,
+  params: any
+): SubWeaponParams {
   const SubInkSaveLv = params["SubWeaponSetting"]?.["SubInkSaveLv"];
   // xxx: enable when all sub weapons have SubInkSaveLv's
   // invariant(
@@ -226,7 +231,7 @@ function parametersToSubWeaponResult(params: any): SubWeaponParams {
   // );
 
   return {
-    overwrites: resolveSubWeaponOverwrites(params),
+    overwrites: resolveSubWeaponOverwrites(subWeapon, params),
     SubInkSaveLv,
     InkConsume: params["WeaponParam"]["InkConsume"],
     InkRecoverStop: params["WeaponParam"]["InkRecoverStop"],
@@ -418,7 +423,7 @@ function resolveOverwritesWithArbitraryKeys(
   }
 }
 
-function resolveSubWeaponOverwrites(params: any) {
+function resolveSubWeaponOverwrites(subWeapon: SubWeapon, params: any) {
   const result: SubWeaponParams["overwrites"] = {
     SpawnSpeedZSpecUp: params["MoveParam"]?.["SpawnSpeedZSpecUp"],
     PeriodFirst: params["MoveParam"]?.["PeriodFirst"],
@@ -430,6 +435,13 @@ function resolveSubWeaponOverwrites(params: any) {
     SensorRadius: params["MoveParam"]?.["SensorRadius"],
     ExplosionRadius: params["AreaParam"]?.["Distance"],
     MaxHP: params["MoveParam"]?.["MaxHP"],
+    SubSpecUpParam: (subWeapon.Id === SQUID_BEAKON_ID
+      ? {
+          Low: 0.0,
+          ...playersParams.GameParameters.spl__PlayerBeaconSubSpecUpParam
+            .SubSpecUpParam,
+        }
+      : undefined) as any,
   };
 
   return Object.fromEntries(
