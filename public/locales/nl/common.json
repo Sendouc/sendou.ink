@@ -1,0 +1,44 @@
+﻿{
+  "pages.admin": "Admin",
+  "pages.badges": "Badges",
+  "pages.plus": "Plus Server",
+  "pages.contributors": "Bijdragers",
+  "pages.calendar": "Kalender",
+  "pages.faq": "FAQ",
+  "pages.builds": "Uitrusting",
+  "pages.buildAnalyzer": "Uitrusting Analyseren",
+
+  "header.profile": "Profiel",
+  "header.logout": "Log uit",
+  "header.login": "Log in",
+
+  "footer.github.subtitle": "Broncode",
+  "footer.twitter.subtitle": "Updates",
+  "footer.discord.subtitle": "Help & Feedback",
+  "footer.patreon.subtitle": "Ondersteuning",
+  "footer.thanks": "Met dank aan alle patrons voor de steun",
+
+  "actions.save": "Opslaan",
+  "actions.saving": "Opslaan...",
+  "actions.submit": "Verzenden",
+  "actions.edit": "Bewerken",
+  "actions.add": "Toevoegen",
+  "actions.remove": "Verwijderen",
+  "actions.delete": "Verwijderen",
+
+  "results": "Uitslagen",
+
+  "forms.name": "Naam",
+  "forms.description": "Beschrijving",
+  "forms.errors.title": "De volgende errors moeten nog worden gefixt",
+
+  "tag.name.BADGE": "Badge prijzen",
+  "tag.name.SPECIAL": "Speciale spelregels",
+  "tag.name.ART": "Kunst prijzen",
+  "tag.name.MONEY": "Geld prijzen",
+  "tag.name.REGION": "Beperkte regio",
+  "tag.name.LOW": "Begrensde vaardigheid",
+  "tag.name.COUNT": "Beperkte deelname",
+  "tag.name.LAN": "LAN",
+  "tag.name.QUALIFIER": "Qualificatie"
+}
