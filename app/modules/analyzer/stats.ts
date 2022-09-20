@@ -230,13 +230,11 @@ function subWeaponConsume({
       abilityPoints,
       ability: "ISS",
     }),
-    // xxx: placeholder fallback before prod
-    key: `ConsumeRt_Sub_Lv${subWeaponParams.SubInkSaveLv ?? 0}`,
+    key: `ConsumeRt_Sub_Lv${subWeaponParams.SubInkSaveLv}`,
     weapon: mainWeaponParams,
   });
 
-  // xxx: placeholder fallback before prod
-  const inkConsume = subWeaponParams.InkConsume ?? 0.6;
+  const inkConsume = subWeaponParams.InkConsume;
 
   const inkConsumeAfterISS = inkConsume * effect;
 

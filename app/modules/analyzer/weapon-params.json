@@ -732,6 +732,8 @@
         }
       },
       "InkRecoverStop": 60,
+      "InkConsume": 0.7,
+      "SubInkSaveLv": 3,
       "DistanceDamage": [
         {
           "Damage": 1800,
@@ -752,6 +754,8 @@
         }
       },
       "InkRecoverStop": 60,
+      "InkConsume": 0.7,
+      "SubInkSaveLv": 3,
       "DistanceDamage": [
         {
           "Damage": 1800,
@@ -811,6 +815,7 @@
         }
       },
       "InkConsume": 0.6,
+      "SubInkSaveLv": 3,
       "InkRecoverStop": 85
     },
     "5": {
@@ -866,6 +871,8 @@
         }
       },
       "InkRecoverStop": 70,
+      "SubInkSaveLv": 3,
+      "InkConsume": 0.7,
       "DistanceDamage_BlastParamMaxCharge": [
         {
           "Damage": 1800,
@@ -1004,6 +1011,7 @@
         }
       },
       "InkConsume": 0.65,
+      "SubInkSaveLv": 3,
       "InkRecoverStop": 88,
       "DistanceDamage_BlastParamChase": [
         {
