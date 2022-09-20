@@ -1,4 +1,4 @@
-import { type MetaFunction, type LinksFunction } from "@remix-run/node";
+import { type LinksFunction, type MetaFunction } from "@remix-run/node";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { AbilitiesSelector } from "~/components/AbilitiesSelector";
@@ -8,11 +8,9 @@ import { Image } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { Popover } from "~/components/Popover";
 import { Toggle } from "~/components/Toggle";
-import { ADMIN_DISCORD_ID } from "~/constants";
 import { useSetTitle } from "~/hooks/useSetTitle";
 import type { AnalyzedBuild, Stat } from "~/modules/analyzer";
-import { MAX_LDE_INTENSITY } from "~/modules/analyzer";
-import { useAnalyzeBuild } from "~/modules/analyzer";
+import { MAX_LDE_INTENSITY, useAnalyzeBuild } from "~/modules/analyzer";
 import {
   lastDitchEffortIntensityToAp,
   SPECIAL_EFFECTS,
@@ -21,21 +19,17 @@ import type {
   AbilityPoints,
   SpecialEffectType,
 } from "~/modules/analyzer/types";
-import { useUser } from "~/modules/auth";
 import {
-  type BuildAbilitiesTupleWithUnknown,
+  abilities,
+  ANGLE_SHOOTER_ID,
+  INK_MINE_ID,
   INK_STORM_ID,
-} from "~/modules/in-game-lists";
-import {
+  isAbility,
+  POINT_SENSOR_ID,
   SPLASH_WALL_ID,
   SPRINKLER_ID,
   TOXIC_MIST_ID,
-} from "~/modules/in-game-lists";
-import { ANGLE_SHOOTER_ID } from "~/modules/in-game-lists";
-import { INK_MINE_ID, POINT_SENSOR_ID } from "~/modules/in-game-lists";
-import {
-  abilities,
-  isAbility,
+  type BuildAbilitiesTupleWithUnknown,
   type MainWeaponId,
   type SubWeaponId,
 } from "~/modules/in-game-lists";
@@ -59,17 +53,9 @@ export const handle = {
   i18n: ["weapons", "analyzer"],
 };
 
-const canViewInProduction = (discordId?: string) => {
-  const LEAN_ID = "86905636402495488";
-  const SENDOU_ID = ADMIN_DISCORD_ID;
-
-  return discordId === LEAN_ID || discordId === SENDOU_ID;
-};
-
 export default function BuildAnalyzerPage() {
-  const user = useUser();
   const { t } = useTranslation(["analyzer", "common", "weapons"]);
-  useSetTitle(t("common:pages.buildAnalyzer"));
+  useSetTitle(t("common:pages.analyzer"));
   const {
     build,
     mainWeaponId,
@@ -79,13 +65,6 @@ export default function BuildAnalyzerPage() {
     ldeIntensity,
     effects,
   } = useAnalyzeBuild();
-
-  if (
-    process.env.NODE_ENV === "production" &&
-    !canViewInProduction(user?.discordId)
-  ) {
-    return <Main>Coming soon :)</Main>;
-  }
 
   const mainWeaponCategoryItems = [
     analyzed.stats.shotSpreadAir && (

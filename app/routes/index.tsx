@@ -13,6 +13,7 @@ import styles from "~/styles/front.css";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { discordFullName } from "~/utils/strings";
 import {
+  ANALYZER_PAGE,
   articlePage,
   BADGES_PAGE,
   calendarEventPage,
@@ -53,6 +54,12 @@ export default function Index() {
       <div className="stack md">
         <h2 className="front__more-features">{t("front:moreFeatures")}</h2>
         <div className="front__feature-cards">
+          <FeatureCard
+            navItem="analyzer"
+            title={t("common:pages.analyzer")}
+            description={t("front:badges.analyzer")}
+            to={ANALYZER_PAGE}
+          />
           <FeatureCard
             navItem="plus"
             title={t("common:pages.plus")}
