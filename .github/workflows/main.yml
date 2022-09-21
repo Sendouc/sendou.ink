@@ -16,6 +16,7 @@ jobs:
         with:
           build: npm run build
           start: npm start
+          browser: chrome
         env:
           BASE_URL: http://localhost:4455
           PORT: 4455
