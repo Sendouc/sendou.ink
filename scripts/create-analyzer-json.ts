@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 // To run this script you need from https://github.com/Leanny/leanny.github.io
 // 1) WeaponInfoMain.json inside dicts
 // 2) WeaponInfoSub.json inside dicts

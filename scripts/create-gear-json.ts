@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import head from "./dicts/GearInfoHead.json";
 import clothes from "./dicts/GearInfoClothes.json";
 import shoes from "./dicts/GearInfoShoes.json";
