@@ -87,8 +87,16 @@
   gap: var(--s-4);
 }
 
+.analyzer__stat-card__title-and-value-container {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
 .analyzer__stat-card__title {
   font-size: var(--fonts-xs);
+  line-height: 1.35;
   text-align: center;
   word-break: break-word;
 }
@@ -112,6 +120,7 @@
 .analyzer__stat-card-values {
   display: flex;
   justify-content: space-evenly;
+  margin-top: var(--s-2);
   gap: var(--s-1);
 }
 

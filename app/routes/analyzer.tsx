@@ -713,7 +713,7 @@ function StatCard({
 
   return (
     <div className="analyzer__stat-card">
-      <div>
+      <div className="analyzer__stat-card__title-and-value-container">
         <h3 className="analyzer__stat-card__title">
           {title}{" "}
           {popoverInfo && (
