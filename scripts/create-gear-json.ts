@@ -1,4 +1,5 @@
 /* eslint-disable */
+// @ts-nocheck
 
 import head from "./dicts/GearInfoHead.json";
 import clothes from "./dicts/GearInfoClothes.json";

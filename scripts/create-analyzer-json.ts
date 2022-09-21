@@ -1,4 +1,5 @@
 /* eslint-disable */
+// @ts-nocheck
 
 // To run this script you need from https://github.com/Leanny/leanny.github.io
 // 1) WeaponInfoMain.json inside dicts
