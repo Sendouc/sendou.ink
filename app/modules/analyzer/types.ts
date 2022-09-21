@@ -95,7 +95,7 @@ export interface SubWeaponParams {
   /** Damage dealt by explosion at different radiuses (curling bomb not charged) */
   DistanceDamage_BlastParamMinCharge?: Array<DistanceDamage>;
   /** Damage dealt by explosion at different radiuses (fizzy bomb bounces) */
-  DistanceDamage_BlastParamArray?: Array<DistanceDamage>;
+  DistanceDamage_BlastParamArray?: Array<DistanceDamage | DistanceDamage[]>;
   /** Damage dealt by explosion at different radiuses (torpedo explosion air to ground) */
   DistanceDamage_BlastParamChase?: Array<DistanceDamage>;
   /** Damage dealt by explosion at different radiuses (rolling torpedo) */

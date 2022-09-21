@@ -331,7 +331,7 @@ function damages(args: StatFunctionInput): AnalyzedBuild["stats"]["damages"] {
       args.subWeaponParams[key as keyof SubWeaponParams];
 
     if (Array.isArray(value)) {
-      for (const subValue of value) {
+      for (const subValue of value.flat()) {
         result.push({
           type,
           value: subValue.Damage / 10,
