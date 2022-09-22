@@ -389,7 +389,10 @@ export default function BuildAnalyzerPage() {
               />
             )}
           </StatCategory>
-          <StatCategory title={t("analyzer:stat.category.subDef")}>
+          <StatCategory
+            title={t("analyzer:stat.category.subDef")}
+            textBelow={t("analyzer:trackingSubDefExplanation")}
+          >
             <StatCard
               stat={analyzed.stats.subDefBombDamageLightPercentage}
               title={t("analyzer:stat.bombLdamage")}
@@ -449,9 +452,6 @@ export default function BuildAnalyzerPage() {
               })}
               suffix={t("analyzer:suffix.seconds")}
             />
-            <div className="analyzer__stat-category-explanation">
-              {t("analyzer:trackingSubDefExplanation")}
-            </div>
           </StatCategory>
 
           {analyzed.stats.damages.length > 0 && (
@@ -684,15 +684,20 @@ function StatCategory({
   title,
   children,
   containerClassName = "analyzer__stat-collection",
+  textBelow,
 }: {
   title: string;
   children: React.ReactNode;
   containerClassName?: string;
+  textBelow?: string;
 }) {
   return (
     <details>
       <summary className="analyzer__summary">{title}</summary>
       <div className={containerClassName}>{children}</div>
+      {textBelow && (
+        <div className="analyzer__stat-category-explanation">{textBelow}</div>
+      )}
     </details>
   );
 }
