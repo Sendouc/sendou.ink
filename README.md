@@ -44,6 +44,7 @@ Things to note:
 - Some lines have a dynamic part like this one: `"articleBy": "by {{author}}"` in this case `{{author}}` should appear in the translated version unchanged. So in other words don't translate the part inside `{{}}`.
 - There is one more special syntax to keep in mind. When you translate this line `"project": "Sendou.ink is a project by <2>Sendou</2> with help from contributors:",` the `<2></2>` should appear in the translated version. The text inside these tags can change.
 - To update a translation file copy the existing file, do any modifications needed and send the updated one.
+- Don't update translation-progress.md file directly. There is a script for this `npm run check-translation-jsons`. If you don't know how to run it then Sendou will run it for you.
 
 Any questions please ask Sendou!
 
