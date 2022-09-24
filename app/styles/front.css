@@ -96,8 +96,8 @@
   display: flex;
   flex-wrap: wrap;
   padding: 0;
+  column-gap: var(--s-3);
   font-size: var(--fonts-xxs);
-  gap: var(--s-3);
   list-style: none;
 }
 
