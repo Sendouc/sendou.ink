@@ -1,7 +1,10 @@
 export { stages } from "./stages";
 export { modes, modesShort } from "./modes";
 export {
+  weaponCategories,
   mainWeaponIds,
+  weaponIdToAltId,
+  weaponIdIsNotAlt,
   subWeaponIds,
   specialWeaponIds,
   SPLAT_BOMB_ID,

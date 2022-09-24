@@ -1,5 +1,5 @@
 import type { Badge, GearType } from "~/db/types";
-import type { ModeShort } from "~/modules/in-game-lists";
+import type { ModeShort, weaponCategories } from "~/modules/in-game-lists";
 import type {
   AbilityWithUnknown,
   MainWeaponId,
@@ -59,6 +59,9 @@ export const articlePreviewUrl = (slug: string) =>
 export const navIconUrl = (navItem: string) => `/img/layout/${navItem}`;
 export const gearImageUrl = (gearType: GearType, gearSplId: number) =>
   `/img/gear/${gearType.toLowerCase()}/${gearSplId}`;
+export const weaponCategoryUrl = (
+  category: typeof weaponCategories[number]["name"]
+) => `/img/weapon-categories/${category}`;
 export const mainWeaponImageUrl = (mainWeaponSplId: MainWeaponId) =>
   `/img/main-weapons/${mainWeaponSplId}`;
 export const subWeaponImageUrl = (subWeaponSplId: SubWeaponId) =>

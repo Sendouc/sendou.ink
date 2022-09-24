@@ -6,6 +6,7 @@ import {
   mainWeaponIds,
   abilities,
   isAbility,
+  weaponCategories,
 } from "../in-game-lists";
 import type {
   Ability,
@@ -95,7 +96,7 @@ function validatedWeaponIdFromSearchParams(
     return weaponId as MainWeaponId;
   }
 
-  return mainWeaponIds[0];
+  return weaponCategories[0].weaponIds[0];
 }
 
 function validatedBuildFromSearchParams(

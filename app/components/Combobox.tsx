@@ -11,6 +11,7 @@ import {
   headGearIds,
   shoesGearIds,
   mainWeaponIds,
+  weaponCategories,
 } from "~/modules/in-game-lists";
 import { gearImageUrl, mainWeaponImageUrl } from "~/utils/urls";
 import { Image } from "./Image";
@@ -235,7 +236,7 @@ export function WeaponCombobox({
           ? idToWeapon(initialWeaponId)
           : undefined
       }
-      placeholder={t(`MAIN_${mainWeaponIds[0]}`)}
+      placeholder={t(`MAIN_${weaponCategories[0].weaponIds[0]}`)}
       onChange={onChange}
       className={className}
       id={id}

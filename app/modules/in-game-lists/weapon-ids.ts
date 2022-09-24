@@ -1,9 +1,61 @@
-export const mainWeaponIds = [
-  0, 10, 20, 30, 40, 45, 50, 60, 70, 80, 90, 200, 210, 220, 230, 240, 250, 300,
-  310, 400, 1000, 1010, 1020, 1030, 1100, 1110, 2000, 2010, 2020, 2030, 2040,
-  2050, 2060, 3000, 3010, 3020, 3030, 3040, 4000, 4010, 4020, 4030, 4040, 5000,
-  5010, 5020, 5030, 5040, 6000, 6010, 6020, 7010, 7020, 8000, 8010,
+import type { MainWeaponId } from "./types";
+
+export const weaponCategories = [
+  {
+    name: "SHOOTERS",
+    weaponIds: [0, 10, 20, 30, 40, 45, 50, 60, 70, 80, 90, 300, 310, 400],
+  },
+  {
+    name: "BLASTERS",
+    weaponIds: [200, 210, 220, 230, 240, 250],
+  },
+  {
+    name: "ROLLERS",
+    weaponIds: [1000, 1010, 1020, 1030],
+  },
+  {
+    name: "BRUSHES",
+    weaponIds: [1100, 1110],
+  },
+  {
+    name: "CHARGERS",
+    weaponIds: [2000, 2010, 2020, 2030, 2040, 2050, 2060],
+  },
+  {
+    name: "SLOSHERS",
+    weaponIds: [3000, 3010, 3020, 3030, 3040],
+  },
+  {
+    name: "SPLATLINGS",
+    weaponIds: [4000, 4010, 4020, 4030, 4040],
+  },
+  {
+    name: "DUALIES",
+    weaponIds: [5000, 5010, 5020, 5030, 5040],
+  },
+  {
+    name: "BRELLAS",
+    weaponIds: [6000, 6010, 6020],
+  },
+  {
+    name: "STRINGERS",
+    weaponIds: [7010, 7020],
+  },
+  {
+    name: "SPLATANAS",
+    weaponIds: [8000, 8010],
+  },
 ] as const;
+
+export const mainWeaponIds = weaponCategories
+  .flatMap((category) => category.weaponIds)
+  .sort((a, b) => a - b);
+
+export const weaponIdToAltId = new Map<MainWeaponId, MainWeaponId>([[40, 45]]);
+
+const altWeaponIds = new Set(weaponIdToAltId.values());
+export const weaponIdIsNotAlt = (weaponId: MainWeaponId) =>
+  !altWeaponIds.has(weaponId);
 
 export const SPLAT_BOMB_ID = 0;
 export const SUCTION_BOMB_ID = 1;

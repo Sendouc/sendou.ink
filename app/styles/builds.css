@@ -1,0 +1,36 @@
+.builds__category {
+  display: flex;
+  flex-direction: column;
+  padding: var(--s-3);
+  background-color: var(--bg-darker);
+  border-radius: var(--rounded);
+  font-size: var(--fonts-sm);
+  font-weight: var(--semi-bold);
+  gap: var(--s-4);
+}
+
+.builds__category__header {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2-5);
+}
+
+.builds__category__weapons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+}
+
+.builds__category__weapon {
+  display: flex;
+  align-items: center;
+  color: var(--text);
+  font-size: var(--fonts-xs);
+  font-weight: var(--body);
+  gap: var(--s-1);
+}
+
+.builds__category__weapon__img {
+  background-color: var(--bg-lighter);
+  border-radius: var(--rounded);
+}
