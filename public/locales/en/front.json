@@ -4,7 +4,7 @@
   "moreFeatures": "More features",
   "plus.description": "View Plus Server voting history and more",
   "badges.description": "List of all the badges you can earn for your profile",
-  "badges.analyzer": "Find out what your builds actually do",
+  "analyzer.description": "Find out what your builds actually do",
   "recentWinners": "Recent winners",
   "upcomingEvents": "Upcoming events",
   "articleBy": "by {{author}}"

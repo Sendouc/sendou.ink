@@ -57,7 +57,7 @@ export default function Index() {
           <FeatureCard
             navItem="analyzer"
             title={t("common:pages.analyzer")}
-            description={t("front:badges.analyzer")}
+            description={t("front:analyzer.description")}
             to={ANALYZER_PAGE}
           />
           <FeatureCard
