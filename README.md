@@ -43,6 +43,7 @@ Things to note:
 - Some translated `.json` files can also have some lines in English as new lines get added to the site. Those can then be translated.
 - Some lines have a dynamic part like this one: `"articleBy": "by {{author}}"` in this case `{{author}}` should appear in the translated version unchanged. So in other words don't translate the part inside `{{}}`.
 - There is one more special syntax to keep in mind. When you translate this line `"project": "Sendou.ink is a project by <2>Sendou</2> with help from contributors:",` the `<2></2>` should appear in the translated version. The text inside these tags can change.
+- To update a translation file copy the existing file, do any modifications needed and send the updated one.
 
 Any questions please ask Sendou!
 
