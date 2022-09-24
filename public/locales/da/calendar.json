@@ -36,10 +36,9 @@
   "forms.errors.duplicatePlayer": "Man kan ikke have den samme spiller på samme hold 2 gange.",
   "forms.errors.emptyTeam": "Alle hold skal have mindst en spiller.",
 
-  "week.this": "Denne",
-  "week.next": "Næste",
-  "week.last": "Sidste",
-  "week.week": "Uge",
+  "week.this": "Denne Uge",
+  "week.next": "Næste Uge",
+  "week.last": "Sidste Uge",
 
   "tag.desc.BADGE": "Vinderne af denne begivenhed får et sendou.ink-mærke.",
   "tag.desc.SPECIAL": "Regelsættet afviger fra standardreglerne.",

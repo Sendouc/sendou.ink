@@ -6,7 +6,7 @@
   "pages.calendar": "Calendario",
   "pages.faq": "FAQ",
   "pages.builds": "Builds",
-  "pages.buildAnalyzer": "Analizador the builds",
+  "pages.analyzer": "Analizador the builds",
 
   "header.profile": "Perfil",
   "header.logout": "Cerrar sesión",
