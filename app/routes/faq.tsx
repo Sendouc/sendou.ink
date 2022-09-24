@@ -35,7 +35,11 @@ export default function FAQPage() {
             <summary className="faq__summary">
               {t(`faq:q${questionNumber}` as any)}
             </summary>
-            <p>{t(`faq:a${questionNumber}` as any)}</p>
+            <p
+              dangerouslySetInnerHTML={{
+                __html: t(`faq:a${questionNumber}` as any),
+              }}
+            />
           </details>
         );
       })}
