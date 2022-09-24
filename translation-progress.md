@@ -1,24 +1,27 @@
 # Translation Progress
+
 ## /da (🟡 In progress)
 
 ### 🔴 analyzer.json
+
 **0/91**
 
-
 ### 🟢 badges.json
+
 **7/7**
 
-
 ### 🟢 builds.json
+
 **11/11**
 
-
 ### 🟢 calendar.json
+
 **44/44**
 
-
 ### 🟡 common.json
+
 **35/36**
+
 <details>
 <summary>Missing</summary>
 
@@ -27,15 +30,17 @@
 </details>
 
 ### 🟢 contributions.json
+
 **5/5**
 
-
 ### 🟢 faq.json
+
 **6/6**
 
-
 ### 🟡 front.json
+
 **8/9**
+
 <details>
 <summary>Missing</summary>
 
@@ -44,15 +49,17 @@
 </details>
 
 ### 🟢 user.json
-**7/7**
 
+**7/7**
 
 ---
 
 ## /de (🟡 In progress)
 
 ### 🟡 analyzer.json
+
 **70/91**
+
 <details>
 <summary>Missing</summary>
 
@@ -81,19 +88,21 @@
 </details>
 
 ### 🟢 badges.json
+
 **7/7**
 
-
 ### 🟢 builds.json
+
 **11/11**
 
-
 ### 🟢 calendar.json
+
 **44/44**
 
-
 ### 🟡 common.json
+
 **35/36**
+
 <details>
 <summary>Missing</summary>
 
@@ -102,15 +111,17 @@
 </details>
 
 ### 🟢 contributions.json
+
 **5/5**
 
-
 ### 🟢 faq.json
+
 **6/6**
 
-
 ### 🟡 front.json
+
 **8/9**
+
 <details>
 <summary>Missing</summary>
 
@@ -119,15 +130,17 @@
 </details>
 
 ### 🟢 user.json
-**7/7**
 
+**7/7**
 
 ---
 
 ## /es (🟡 In progress)
 
 ### 🟡 analyzer.json
+
 **63/91**
+
 <details>
 <summary>Missing</summary>
 
@@ -163,31 +176,33 @@
 </details>
 
 ### 🟢 badges.json
+
 **7/7**
 
-
 ### 🟢 builds.json
+
 **11/11**
 
-
 ### 🟢 calendar.json
+
 **44/44**
 
-
 ### 🟢 common.json
+
 **36/36**
 
-
 ### 🟢 contributions.json
+
 **5/5**
 
-
 ### 🟢 faq.json
+
 **6/6**
 
-
 ### 🟡 front.json
+
 **8/9**
+
 <details>
 <summary>Missing</summary>
 
@@ -196,31 +211,33 @@
 </details>
 
 ### 🟢 user.json
-**7/7**
 
+**7/7**
 
 ---
 
 ## /fr (🟡 In progress)
 
 ### 🔴 analyzer.json
+
 **0/91**
 
-
 ### 🟢 badges.json
+
 **7/7**
 
-
 ### 🟢 builds.json
+
 **11/11**
 
-
 ### 🟢 calendar.json
+
 **44/44**
 
-
 ### 🟡 common.json
+
 **35/36**
+
 <details>
 <summary>Missing</summary>
 
@@ -229,7 +246,9 @@
 </details>
 
 ### 🟡 contributions.json
+
 **4/5**
+
 <details>
 <summary>Missing</summary>
 
@@ -238,11 +257,13 @@
 </details>
 
 ### 🟢 faq.json
+
 **6/6**
 
-
 ### 🟡 front.json
+
 **8/9**
+
 <details>
 <summary>Missing</summary>
 
@@ -251,37 +272,37 @@
 </details>
 
 ### 🟢 user.json
-**7/7**
 
+**7/7**
 
 ---
 
 ## /it (🔴 Not started)
-
-
 
 ---
 
 ## /ja (🟡 In progress)
 
 ### 🔴 analyzer.json
+
 **0/91**
 
-
 ### 🟢 badges.json
+
 **7/7**
 
-
 ### 🟢 builds.json
+
 **11/11**
 
-
 ### 🟢 calendar.json
+
 **44/44**
 
-
 ### 🟡 common.json
+
 **35/36**
+
 <details>
 <summary>Missing</summary>
 
@@ -290,15 +311,17 @@
 </details>
 
 ### 🟢 contributions.json
+
 **5/5**
 
-
 ### 🟢 faq.json
+
 **6/6**
 
-
 ### 🟡 front.json
+
 **8/9**
+
 <details>
 <summary>Missing</summary>
 
@@ -307,31 +330,33 @@
 </details>
 
 ### 🟢 user.json
-**7/7**
 
+**7/7**
 
 ---
 
 ## /ko (🟡 In progress)
 
 ### 🔴 analyzer.json
+
 **0/91**
 
-
 ### 🟢 badges.json
+
 **7/7**
 
-
 ### 🟢 builds.json
+
 **11/11**
 
-
 ### 🟢 calendar.json
+
 **44/44**
 
-
 ### 🟡 common.json
+
 **35/36**
+
 <details>
 <summary>Missing</summary>
 
@@ -340,15 +365,17 @@
 </details>
 
 ### 🟢 contributions.json
+
 **5/5**
 
-
 ### 🟢 faq.json
+
 **6/6**
 
-
 ### 🟡 front.json
+
 **8/9**
+
 <details>
 <summary>Missing</summary>
 
@@ -357,15 +384,17 @@
 </details>
 
 ### 🟢 user.json
-**7/7**
 
+**7/7**
 
 ---
 
 ## /nl (🟡 In progress)
 
 ### 🟡 analyzer.json
+
 **70/91**
+
 <details>
 <summary>Missing</summary>
 
@@ -394,31 +423,33 @@
 </details>
 
 ### 🟢 badges.json
+
 **7/7**
 
-
 ### 🟢 builds.json
+
 **11/11**
 
-
 ### 🟢 calendar.json
+
 **44/44**
 
-
 ### 🟢 common.json
+
 **36/36**
 
-
 ### 🟢 contributions.json
+
 **5/5**
 
-
 ### 🟢 faq.json
+
 **6/6**
 
-
 ### 🟡 front.json
+
 **8/9**
+
 <details>
 <summary>Missing</summary>
 
@@ -427,31 +458,33 @@
 </details>
 
 ### 🟢 user.json
-**7/7**
 
+**7/7**
 
 ---
 
 ## /ru (🟡 In progress)
 
 ### 🔴 analyzer.json
+
 **0/91**
 
-
 ### 🟢 badges.json
+
 **7/7**
 
-
 ### 🟢 builds.json
+
 **11/11**
 
-
 ### 🟢 calendar.json
+
 **44/44**
 
-
 ### 🟡 common.json
+
 **35/36**
+
 <details>
 <summary>Missing</summary>
 
@@ -460,15 +493,17 @@
 </details>
 
 ### 🟢 contributions.json
+
 **5/5**
 
-
 ### 🟢 faq.json
+
 **6/6**
 
-
 ### 🟡 front.json
+
 **8/9**
+
 <details>
 <summary>Missing</summary>
 
@@ -477,10 +512,9 @@
 </details>
 
 ### 🟢 user.json
-**7/7**
 
+**7/7**
 
 ---
 
 ## /zh (🔴 Not started)
-
