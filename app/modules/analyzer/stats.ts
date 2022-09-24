@@ -1093,8 +1093,8 @@ function specialFieldHp(
   });
 
   return {
-    baseValue: roundToTwoDecimalPlaces(baseEffect / 100),
-    value: roundToTwoDecimalPlaces(effect / 100),
+    baseValue: Math.round(baseEffect / 10),
+    value: Math.round(effect / 10),
     modifiedBy: SPECIAL_FIELD_HP_KEY,
   };
 }
@@ -1117,8 +1117,8 @@ function specialDeviceHp(
   });
 
   return {
-    baseValue: roundToTwoDecimalPlaces(baseEffect / 100),
-    value: roundToTwoDecimalPlaces(effect / 100),
+    baseValue: Math.round(baseEffect / 10),
+    value: Math.round(effect / 10),
     modifiedBy: SPECIAL_DEVICE_HP_KEY,
   };
 }
