@@ -45,7 +45,7 @@ export const languages = [
     code: "zh",
     name: "中文",
   },
-];
+] as const;
 
 export const config = {
   supportedLngs: languages.map((lang) => lang.code),

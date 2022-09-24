@@ -29,9 +29,16 @@
 
 </details>
 
-### 🟢 contributions.json
+### 🟡 contributions.json
 
-**5/5**
+**5/6**
+
+<details>
+<summary>Missing</summary>
+
+- translation
+
+</details>
 
 ### 🟢 faq.json
 
@@ -110,9 +117,16 @@
 
 </details>
 
-### 🟢 contributions.json
+### 🟡 contributions.json
 
-**5/5**
+**5/6**
+
+<details>
+<summary>Missing</summary>
+
+- translation
+
+</details>
 
 ### 🟢 faq.json
 
@@ -191,9 +205,16 @@
 
 **36/36**
 
-### 🟢 contributions.json
+### 🟡 contributions.json
 
-**5/5**
+**5/6**
+
+<details>
+<summary>Missing</summary>
+
+- translation
+
+</details>
 
 ### 🟢 faq.json
 
@@ -247,12 +268,13 @@
 
 ### 🟡 contributions.json
 
-**4/5**
+**4/6**
 
 <details>
 <summary>Missing</summary>
 
 - code
+- translation
 
 </details>
 
@@ -310,9 +332,16 @@
 
 </details>
 
-### 🟢 contributions.json
+### 🟡 contributions.json
 
-**5/5**
+**5/6**
+
+<details>
+<summary>Missing</summary>
+
+- translation
+
+</details>
 
 ### 🟢 faq.json
 
@@ -364,9 +393,16 @@
 
 </details>
 
-### 🟢 contributions.json
+### 🟡 contributions.json
 
-**5/5**
+**5/6**
+
+<details>
+<summary>Missing</summary>
+
+- translation
+
+</details>
 
 ### 🟢 faq.json
 
@@ -438,9 +474,16 @@
 
 **36/36**
 
-### 🟢 contributions.json
+### 🟡 contributions.json
 
-**5/5**
+**5/6**
+
+<details>
+<summary>Missing</summary>
+
+- translation
+
+</details>
 
 ### 🟢 faq.json
 
@@ -492,9 +535,16 @@
 
 </details>
 
-### 🟢 contributions.json
+### 🟡 contributions.json
 
-**5/5**
+**5/6**
+
+<details>
+<summary>Missing</summary>
+
+- translation
+
+</details>
 
 ### 🟢 faq.json
 
