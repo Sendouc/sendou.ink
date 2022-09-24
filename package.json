@@ -15,7 +15,7 @@
     "create-weapon-json": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/create-weapon-json.ts",
     "create-gear-json": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/create-gear-json.ts",
     "create-analyzer-json": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/create-analyzer-json.ts",
-    "check-translation-jsons": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/check-translation-jsons.ts",
+    "check-translation-jsons": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/check-translation-jsons.ts && npm run prettier:write",
     "replace-img-names": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/replace-img-names.ts",
     "lint:ts": "eslint . --ext .ts,.tsx",
     "lint:styles": "stylelint \"app/styles/**/*.css\"",
