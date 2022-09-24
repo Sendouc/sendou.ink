@@ -50,6 +50,7 @@ export function buildStats({
   );
 
   const input: StatFunctionInput = {
+    weaponSplId,
     mainWeaponParams,
     subWeaponParams,
     specialWeaponParams,
@@ -126,6 +127,13 @@ export function buildStats({
       specialPowerUpDuration: specialPowerUpDuration(input),
     },
   };
+}
+
+const SPLATTERSHOT_JR_ID = 10;
+function inkTankSize(weaponSplId: StatFunctionInput["weaponSplId"]) {
+  if (weaponSplId === SPLATTERSHOT_JR_ID) return 1.1;
+
+  return 1;
 }
 
 function specialPoint({
@@ -208,7 +216,9 @@ function fullInkTankOptions(
         subsUsed: subsFromFullInkTank,
         type,
         value: effectToRounded(
-          (1 - subWeaponInkConsume * subsFromFullInkTank) / mainWeaponInkConsume
+          (inkTankSize(args.weaponSplId) -
+            subWeaponInkConsume * subsFromFullInkTank) /
+            mainWeaponInkConsume
         ),
       });
     }
@@ -225,6 +235,7 @@ function subWeaponConsume({
   mainWeaponParams,
   subWeaponParams,
   abilityPoints,
+  weaponSplId,
 }: StatFunctionInput) {
   const { effect } = abilityPointsToEffects({
     abilityPoints: apFromMap({
@@ -241,7 +252,9 @@ function subWeaponConsume({
 
   return {
     inkConsume: inkConsumeAfterISS,
-    maxSubsFromFullInkTank: Math.floor(1 / inkConsumeAfterISS),
+    maxSubsFromFullInkTank: Math.floor(
+      inkTankSize(weaponSplId) / inkConsumeAfterISS
+    ),
   };
 }
 
@@ -392,8 +405,8 @@ function squidFormInkRecoverySeconds(
   });
 
   return {
-    baseValue: framesToSeconds(baseEffect),
-    value: framesToSeconds(effect),
+    baseValue: framesToSeconds(baseEffect * inkTankSize(args.weaponSplId)),
+    value: framesToSeconds(effect * inkTankSize(args.weaponSplId)),
     modifiedBy: SQUID_FORM_INK_RECOVERY_SECONDS_ABILITY,
   };
 }

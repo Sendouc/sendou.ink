@@ -127,6 +127,7 @@ export type AbilityPoints = Map<
 >;
 
 export interface StatFunctionInput {
+  weaponSplId: MainWeaponId;
   mainWeaponParams: MainWeaponParams;
   subWeaponParams: SubWeaponParams;
   specialWeaponParams: SpecialWeaponParams;
