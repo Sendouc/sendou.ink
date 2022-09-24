@@ -30,6 +30,8 @@ Contributions very welcome! See [CONTRIBUTING.md](./CONTRIBUTING.md) for more in
 
 ### Translations
 
+[View progress](/translation-progress.md)
+
 sendou.ink can be translated to any language. All the translations can be found in the [locales folder](./public/locales). Here is how you can contribute:
 
 1. Copy a `.json` file from `/en` folder.
