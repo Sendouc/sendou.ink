@@ -18,42 +18,21 @@
 
 **44/44**
 
-### 🟡 common.json
+### 🟢 common.json
 
-**35/36**
+**36/36**
 
-<details>
-<summary>Missing</summary>
+### 🟢 contributions.json
 
-- pages.analyzer
-
-</details>
-
-### 🟡 contributions.json
-
-**5/6**
-
-<details>
-<summary>Missing</summary>
-
-- translation
-
-</details>
+**6/6**
 
 ### 🟢 faq.json
 
 **6/6**
 
-### 🟡 front.json
+### 🟢 front.json
 
-**8/9**
-
-<details>
-<summary>Missing</summary>
-
-- analyzer.description
-
-</details>
+**9/9**
 
 ### 🟢 user.json
 
