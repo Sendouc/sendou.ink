@@ -36,6 +36,8 @@ export const COMMON_PREVIEW_IMAGE = "/img/layout/common-preview.png";
 export const userPage = (discordId: string) => `/u/${discordId}`;
 export const userBuildsPage = (discordId: string) =>
   `${userPage(discordId)}/builds`;
+export const userNewBuildPage = (discordId: string) =>
+  `/u/${discordId}/builds/new`;
 export const impersonateUrl = (idToLogInAs: number) =>
   `/auth/impersonate?id=${idToLogInAs}`;
 export const badgePage = (badgeId: number) => `${BADGES_PAGE}/${badgeId}`;

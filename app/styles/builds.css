@@ -1,3 +1,9 @@
+.builds__top-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .builds__breadcrumbs {
   display: flex;
   font-size: var(--fonts-xs);
