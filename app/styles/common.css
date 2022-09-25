@@ -726,6 +726,7 @@ dialog::backdrop {
 
 .build__title {
   font-size: var(--fonts-sm);
+  line-height: 1.25;
   word-wrap: break-word;
 }
 
@@ -734,9 +735,10 @@ dialog::backdrop {
   justify-content: space-between;
 }
 
-.build__date {
-  display: block;
+.build__date-author-row {
+  display: flex;
   font-size: var(--fonts-xxxs);
+  gap: var(--s-1);
 }
 
 .build__modes {

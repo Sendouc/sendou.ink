@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
-import type { Build, BuildWeapon, GearType } from "~/db/types";
+import { Link } from "react-router-dom";
+import type { Build, BuildWeapon, GearType, User } from "~/db/types";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useUser } from "~/modules/auth";
 import type {
@@ -9,7 +10,13 @@ import type {
 } from "~/modules/in-game-lists";
 import type { BuildAbilitiesTuple } from "~/modules/in-game-lists/types";
 import { databaseTimestampToDate } from "~/utils/dates";
-import { gearImageUrl, modeImageUrl, mainWeaponImageUrl } from "~/utils/urls";
+import { discordFullName } from "~/utils/strings";
+import {
+  gearImageUrl,
+  mainWeaponImageUrl,
+  modeImageUrl,
+  userBuildsPage,
+} from "~/utils/urls";
 import { Ability } from "./Ability";
 import { Button, LinkButton } from "./Button";
 import { FormWithConfirm } from "./FormWithConfirm";
@@ -31,10 +38,11 @@ interface BuildProps {
     modes: ModeShort[] | null;
     weapons: Array<BuildWeapon["weaponSplId"]>;
   };
+  owner?: Pick<User, "discordId" | "discordDiscriminator" | "discordName">;
   canEdit?: boolean;
 }
 
-export function BuildCard({ build, canEdit = false }: BuildProps) {
+export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
   const user = useUser();
   const { t } = useTranslation(["weapons", "builds", "common"]);
   const { i18n } = useTranslation();
@@ -96,7 +104,7 @@ export function BuildCard({ build, canEdit = false }: BuildProps) {
 
   return (
     <div className="build" data-cy="build-card">
-      <div>
+      <div className="stack xxs">
         <div className="build__top-row">
           <h2 className="build__title">{title}</h2>
           {modes && modes.length > 0 && (
@@ -113,18 +121,28 @@ export function BuildCard({ build, canEdit = false }: BuildProps) {
             </div>
           )}
         </div>
-        <time className={clsx("build__date", { invisible: !isMounted })}>
-          {isMounted
-            ? databaseTimestampToDate(updatedAt).toLocaleDateString(
-                i18n.language,
-                {
-                  day: "numeric",
-                  month: "numeric",
-                  year: "numeric",
-                }
-              )
-            : "t"}
-        </time>
+        <div className="build__date-author-row">
+          {owner && (
+            <>
+              <Link to={userBuildsPage(owner.discordId)}>
+                {discordFullName(owner)}
+              </Link>
+              <div>•</div>
+            </>
+          )}
+          <time className={clsx({ invisible: !isMounted })}>
+            {isMounted
+              ? databaseTimestampToDate(updatedAt).toLocaleDateString(
+                  i18n.language,
+                  {
+                    day: "numeric",
+                    month: "numeric",
+                    year: "numeric",
+                  }
+                )
+              : "t"}
+          </time>
+        </div>
       </div>
       <div className="build__weapons">
         {weapons.map((weaponSplId) => (

@@ -30,6 +30,9 @@ with "BuildFiltered" as (
 )
 select
   "BuildWithWeapon".*,
+  "User"."discordId",
+  "User"."discordName",
+  "User"."discordDiscriminator",
   json_group_array(
     json_object(
       'ability',
@@ -44,6 +47,7 @@ from
   "BuildWithWeapon"
   left join "BuildAbility" on "BuildAbility"."buildId" = "BuildWithWeapon"."id"
   left join "PlusTier" on "PlusTier"."userId" = "BuildWithWeapon"."ownerId"
+  left join "User" on "User"."id" = "BuildWithWeapon"."ownerId"
 group by
   "BuildWithWeapon"."id"
 order by

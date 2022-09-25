@@ -45,9 +45,16 @@ export default function WeaponsBuildsPage() {
 
   return (
     <div className="builds-container">
-      {data.builds.map((build) => (
-        <BuildCard key={build.id} build={build} canEdit={false} />
-      ))}
+      {data.builds.map((build) => {
+        return (
+          <BuildCard
+            key={build.id}
+            build={build}
+            owner={build}
+            canEdit={false}
+          />
+        );
+      })}
     </div>
   );
 }

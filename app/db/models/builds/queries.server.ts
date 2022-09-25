@@ -1,5 +1,11 @@
 import { sql } from "~/db/sql";
-import type { Build, BuildAbility, BuildWeapon, GearType } from "~/db/types";
+import type {
+  Build,
+  BuildAbility,
+  BuildWeapon,
+  GearType,
+  User,
+} from "~/db/types";
 import { type ModeShort, weaponIdToAltId } from "~/modules/in-game-lists";
 import { modesShort } from "~/modules/in-game-lists";
 import invariant from "tiny-invariant";
@@ -100,12 +106,15 @@ export function buildsByUserId(userId: Build["ownerId"]) {
   return rows.map(augmentBuild);
 }
 
+type BuildsByWeaponIdRow = BuildsByUserRow &
+  Pick<User, "discordId" | "discordName" | "discordDiscriminator">;
+
 export function buildsByWeaponId(weaponId: BuildWeapon["weaponSplId"]) {
   const rows = buildsByWeaponIdStm.all({
     weaponId,
     // default to impossible weapon id so we can always have same amount of placeholder values
     altWeaponId: weaponIdToAltId.get(weaponId) ?? -1,
-  }) as Array<BuildsByUserRow>;
+  }) as Array<BuildsByWeaponIdRow>;
 
   return rows.map(augmentBuild);
 }
