@@ -11,6 +11,15 @@
   font-size: var(--fonts-sm);
 }
 
+.front__builds-wrapper {
+  overflow-x: scroll;
+}
+
+.front__builds-container {
+  width: 46.5rem;
+  grid-template-columns: 15rem 15rem 15rem;
+}
+
 .front__go-to-page-banner {
   display: flex;
   align-items: center;
@@ -34,7 +43,8 @@
 }
 
 .front__go-to-page-banner__nav-img-container {
-  width: 3rem;
+  min-width: max-content;
+  padding-inline-end: var(--s-2);
 }
 
 .front__calendar-header {

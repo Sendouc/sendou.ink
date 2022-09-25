@@ -3,6 +3,7 @@ import { useLoaderData } from "@remix-run/react";
 import type React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { BuildCard } from "~/components/BuildCard";
 import { ArrowRightIcon } from "~/components/icons/ArrowRight";
 import { Image } from "~/components/Image";
 import { Main } from "~/components/Main";
@@ -16,6 +17,7 @@ import {
   ANALYZER_PAGE,
   articlePage,
   BADGES_PAGE,
+  BUILDS_PAGE,
   calendarEventPage,
   CALENDAR_PAGE,
   navIconUrl,
@@ -30,9 +32,14 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
+export const handle = {
+  i18n: ["weapons", "builds"],
+};
+
 export const loader = async () => {
   return json({
     upcomingEvents: db.calendarEvents.upcomingEvents(),
+    recentBuilds: db.builds.recentBuilds(),
     recentWinners: db.calendarEvents.recentWinners(),
     recentArticles: await mostRecentArticles(RECENT_ARTICLES_TO_SHOW),
   });
@@ -44,6 +51,12 @@ export default function Index() {
   return (
     <Main className="stack lg">
       <Header />
+      <div className="stack md">
+        <BuildsPeek />
+        <GoToPageBanner to={BUILDS_PAGE} navItem="builds">
+          {t("front:buildsGoTo")}
+        </GoToPageBanner>
+      </div>
       <div className="stack md">
         <CalendarPeek />
         <GoToPageBanner to={CALENDAR_PAGE} navItem="calendar">
@@ -111,6 +124,25 @@ function GoToPageBanner({
       {children}
       <ArrowRightIcon className="front__go-to-page-banner__arrow-right" />
     </Link>
+  );
+}
+
+function BuildsPeek() {
+  const data = useLoaderData<typeof loader>();
+
+  return (
+    <div className="front__builds-wrapper">
+      <div className="builds-container front__builds-container">
+        {data.recentBuilds.map((build) => (
+          <BuildCard
+            key={build.id}
+            build={build}
+            owner={build}
+            canEdit={false}
+          />
+        ))}
+      </div>
+    </div>
   );
 }
 
