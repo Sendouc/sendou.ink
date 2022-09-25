@@ -10,7 +10,6 @@ import {
   Meta,
   Outlet,
   Scripts,
-  ScrollRestoration,
   useLoaderData,
   type ShouldReloadFunction,
 } from "@remix-run/react";
@@ -32,6 +31,7 @@ import { useTranslation } from "react-i18next";
 import { Theme, ThemeHead, useTheme, ThemeProvider } from "./modules/theme";
 import { getThemeSession } from "./modules/theme/session.server";
 import { COMMON_PREVIEW_IMAGE } from "./utils/urls";
+import { ConditionalScrollRestoration } from "./components/ConditionalScrollRestoration";
 
 export const unstable_shouldReload: ShouldReloadFunction = () => false;
 
@@ -112,7 +112,7 @@ function Document({
             {children}
           </Layout>
         </React.StrictMode>
-        <ScrollRestoration />
+        <ConditionalScrollRestoration />
         <Scripts />
         <LiveReload />
       </body>

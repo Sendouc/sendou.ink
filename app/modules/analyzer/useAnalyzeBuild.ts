@@ -40,12 +40,15 @@ export function useAnalyzeBuild() {
     newLdeIntensity?: number;
     newEffects?: Array<SpecialEffectType>;
   }) => {
-    setSearchParams({
-      weapon: String(newMainWeaponId),
-      build: serializeBuild(newBuild),
-      lde: String(newLdeIntensity),
-      effect: newEffects,
-    });
+    setSearchParams(
+      {
+        weapon: String(newMainWeaponId),
+        build: serializeBuild(newBuild),
+        lde: String(newLdeIntensity),
+        effect: newEffects,
+      },
+      { replace: true, state: { scroll: false } }
+    );
   };
 
   const buildsAbilityPoints = buildToAbilityPoints(build);
