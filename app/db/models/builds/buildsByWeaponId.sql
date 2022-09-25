@@ -51,5 +51,8 @@ from
 group by
   "BuildWithWeapon"."id"
 order by
-  "PlusTier"."tier" asc,
+  case
+    when "PlusTier"."tier" is null then 4
+    else "PlusTier"."tier"
+  end asc,
   "BuildWithWeapon"."updatedAt" desc
