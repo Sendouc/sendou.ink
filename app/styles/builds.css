@@ -1,3 +1,10 @@
+.builds__breadcrumbs {
+  display: flex;
+  font-size: var(--fonts-xs);
+  font-weight: var(--bold);
+  gap: var(--s-1);
+}
+
 .builds__category {
   display: flex;
   flex-direction: column;

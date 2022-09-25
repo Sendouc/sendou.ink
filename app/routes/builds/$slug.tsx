@@ -1,5 +1,4 @@
 import { type LoaderArgs } from "@remix-run/node";
-import { Main } from "~/components/Main";
 import { i18next } from "~/modules/i18n";
 import { mainWeaponIds, weaponIdIsNotAlt } from "~/modules/in-game-lists";
 import { mySlugify } from "~/utils/urls";
@@ -14,9 +13,9 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     throw new Response(null, { status: 404 });
   }
 
-  return null;
+  return { weaponId };
 };
 
 export default function WeaponsBuildsPage() {
-  return <Main>Hellou</Main>;
+  return <div>Hellou</div>;
 }

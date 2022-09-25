@@ -25,6 +25,7 @@ export const ADMIN_PAGE = "/admin";
 export const FAQ_PAGE = "/faq";
 export const CONTRIBUTIONS_PAGE = "/contributions";
 export const BADGES_PAGE = "/badges";
+export const BUILDS_PAGE = "/builds";
 export const ANALYZER_PAGE = "/analyzer";
 export const CALENDAR_PAGE = "/calendar";
 export const STOP_IMPERSONATING_URL = "/auth/impersonate/stop";

@@ -1,22 +1,16 @@
-import { type LinksFunction } from "@remix-run/node";
 import { Link } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { Image } from "~/components/Image";
-import { Main } from "~/components/Main";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { weaponCategories, weaponIdIsNotAlt } from "~/modules/in-game-lists";
-import styles from "~/styles/builds.css";
 import { mainWeaponImageUrl, mySlugify, weaponCategoryUrl } from "~/utils/urls";
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
-};
 
 export const handle = {
   i18n: "weapons",
 };
 
 // xxx: 2) breadcrumbs + link to new build
+// xxx: 3) titles
 
 export default function BuildsPage() {
   const { t } = useTranslation(["common", "weapons"]);
@@ -26,7 +20,7 @@ export default function BuildsPage() {
   };
 
   return (
-    <Main className="stack md">
+    <div className="stack md">
       {weaponCategories.map((category) => (
         <div key={category.name} className="builds__category">
           <div className="builds__category__header">
@@ -63,6 +57,6 @@ export default function BuildsPage() {
           </div>
         </div>
       ))}
-    </Main>
+    </div>
   );
 }
