@@ -1,6 +1,6 @@
 import { sql } from "~/db/sql";
 import type { Build, BuildAbility, BuildWeapon, GearType } from "~/db/types";
-import type { ModeShort } from "~/modules/in-game-lists";
+import { type ModeShort, weaponIdToAltId } from "~/modules/in-game-lists";
 import { modesShort } from "~/modules/in-game-lists";
 import invariant from "tiny-invariant";
 import type { BuildAbilitiesTuple } from "~/modules/in-game-lists/types";
@@ -10,6 +10,7 @@ import createBuildWeaponSql from "./createBuildWeapon.sql";
 import createBuildAbilitySql from "./createBuildAbility.sql";
 import countByUserIdSql from "./countByUserId.sql";
 import buildsByUserIdSql from "./buildsByUserId.sql";
+import buildsByWeaponIdSql from "./buildsByWeaponId.sql";
 import deleteByIdSql from "./deleteById.sql";
 
 const createBuildStm = sql.prepare(createBuildSql);
@@ -17,6 +18,7 @@ const createBuildWeaponStm = sql.prepare(createBuildWeaponSql);
 const createBuildAbilityStm = sql.prepare(createBuildAbilitySql);
 const countByUserIdStm = sql.prepare(countByUserIdSql);
 const buildsByUserIdStm = sql.prepare(buildsByUserIdSql);
+const buildsByWeaponIdStm = sql.prepare(buildsByWeaponIdSql);
 const deleteByIdStm = sql.prepare(deleteByIdSql);
 
 interface CreateArgs {
@@ -94,6 +96,16 @@ type BuildsByUserRow = Pick<
 > & { weapons: string; abilities: string };
 export function buildsByUserId(userId: Build["ownerId"]) {
   const rows = buildsByUserIdStm.all({ userId }) as Array<BuildsByUserRow>;
+
+  return rows.map(augmentBuild);
+}
+
+export function buildsByWeaponId(weaponId: BuildWeapon["weaponSplId"]) {
+  const rows = buildsByWeaponIdStm.all({
+    weaponId,
+    // default to impossible weapon id so we can always have same amount of placeholder values
+    altWeaponId: weaponIdToAltId.get(weaponId) ?? -1,
+  }) as Array<BuildsByUserRow>;
 
   return rows.map(augmentBuild);
 }
