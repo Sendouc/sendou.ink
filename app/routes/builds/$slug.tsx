@@ -1,6 +1,6 @@
 import {
-  type MetaFunction,
   type LoaderArgs,
+  type MetaFunction,
   type SerializeFrom,
 } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
@@ -10,9 +10,9 @@ import { LinkButton } from "~/components/Button";
 import { BUILDS_PAGE_BATCH_SIZE, BUILDS_PAGE_MAX_BUILDS } from "~/constants";
 import { db } from "~/db";
 import { i18next } from "~/modules/i18n";
-import { mainWeaponIds, weaponIdIsNotAlt } from "~/modules/in-game-lists";
+import { weaponIdIsNotAlt } from "~/modules/in-game-lists";
 import { makeTitle } from "~/utils/strings";
-import { mySlugify } from "~/utils/urls";
+import { weaponNameSlugToId } from "~/utils/unslugify.server";
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
@@ -28,9 +28,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const t = await i18next.getFixedT(request, ["weapons", "common"], {
     lng: "en",
   });
-  const weaponId = mainWeaponIds.find(
-    (id) => mySlugify(t(`weapons:MAIN_${id}`)) === params["slug"]
-  );
+  const weaponId = weaponNameSlugToId(params["slug"]);
 
   if (typeof weaponId !== "number" || !weaponIdIsNotAlt(weaponId)) {
     throw new Response(null, { status: 404 });
