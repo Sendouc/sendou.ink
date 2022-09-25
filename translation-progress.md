@@ -48,9 +48,16 @@
 
 **6/6**
 
-### 🟢 front.json
+### 🟡 front.json
 
-**9/9**
+**9/10**
+
+<details>
+<summary>Missing</summary>
+
+- buildsGoTo
+
+</details>
 
 ### 🟢 user.json
 
@@ -106,9 +113,16 @@
 
 **6/6**
 
-### 🟢 front.json
+### 🟡 front.json
 
-**9/9**
+**9/10**
+
+<details>
+<summary>Missing</summary>
+
+- buildsGoTo
+
+</details>
 
 ### 🟢 user.json
 
@@ -207,11 +221,12 @@
 
 ### 🟡 front.json
 
-**8/9**
+**8/10**
 
 <details>
 <summary>Missing</summary>
 
+- buildsGoTo
 - analyzer.description
 
 </details>
@@ -281,11 +296,12 @@
 
 ### 🟡 front.json
 
-**8/9**
+**8/10**
 
 <details>
 <summary>Missing</summary>
 
+- buildsGoTo
 - analyzer.description
 
 </details>
@@ -358,11 +374,12 @@
 
 ### 🟡 front.json
 
-**8/9**
+**8/10**
 
 <details>
 <summary>Missing</summary>
 
+- buildsGoTo
 - analyzer.description
 
 </details>
@@ -431,11 +448,12 @@
 
 ### 🟡 front.json
 
-**8/9**
+**8/10**
 
 <details>
 <summary>Missing</summary>
 
+- buildsGoTo
 - analyzer.description
 
 </details>
@@ -530,11 +548,12 @@
 
 ### 🟡 front.json
 
-**8/9**
+**8/10**
 
 <details>
 <summary>Missing</summary>
 
+- buildsGoTo
 - analyzer.description
 
 </details>
@@ -603,11 +622,12 @@
 
 ### 🟡 front.json
 
-**8/9**
+**8/10**
 
 <details>
 <summary>Missing</summary>
 
+- buildsGoTo
 - analyzer.description
 
 </details>
