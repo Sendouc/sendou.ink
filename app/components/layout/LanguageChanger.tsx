@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { languages } from "~/modules/i18n";
-import { Button } from "../Button";
+import { LinkButton } from "../Button";
 import { GlobeIcon } from "../icons/Globe";
 import { Popover } from "../Popover";
 
@@ -14,17 +14,17 @@ export function LanguageChanger() {
     >
       <div className="layout__user-popover">
         {languages.map((lang) => (
-          <Button
+          <LinkButton
             key={lang.code}
             tiny
-            onClick={() => void i18n.changeLanguage(lang.code)}
             variant="minimal"
             className={
               i18n.language !== lang.code ? "text-main-forced" : undefined
             }
+            to={`?lng=${lang.code}`}
           >
             {lang.name}
-          </Button>
+          </LinkButton>
         ))}
       </div>
     </Popover>

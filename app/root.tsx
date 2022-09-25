@@ -25,7 +25,7 @@ import { db } from "./db";
 import type { FindAllPatrons } from "./db/models/users/queries.server";
 import type { UserWithPlusTier } from "./db/types";
 import { getUser } from "./modules/auth";
-import { DEFAULT_LANGUAGE, i18next } from "./modules/i18n";
+import { DEFAULT_LANGUAGE, i18nCookie, i18next } from "./modules/i18n";
 import { useChangeLanguage } from "remix-i18next";
 import { useTranslation } from "react-i18next";
 import { Theme, ThemeHead, useTheme, ThemeProvider } from "./modules/theme";
@@ -33,7 +33,12 @@ import { getThemeSession } from "./modules/theme/session.server";
 import { COMMON_PREVIEW_IMAGE } from "./utils/urls";
 import { ConditionalScrollRestoration } from "./components/ConditionalScrollRestoration";
 
-export const unstable_shouldReload: ShouldReloadFunction = () => false;
+export const unstable_shouldReload: ShouldReloadFunction = ({ url }) => {
+  // reload on language change so the selected language gets set into the cookie
+  const lang = url.searchParams.get("lng");
+
+  return Boolean(lang);
+};
 
 export const links: LinksFunction = () => {
   return [
@@ -68,19 +73,24 @@ export const loader: LoaderFunction = async ({ request }) => {
   const locale = await i18next.getLocale(request);
   const themeSession = await getThemeSession(request);
 
-  return json<RootLoaderData>({
-    locale,
-    theme: themeSession.getTheme(),
-    patrons: db.users.findAllPatrons(),
-    user: user
-      ? {
-          discordAvatar: user.discordAvatar,
-          discordId: user.discordId,
-          id: user.id,
-          plusTier: user.plusTier,
-        }
-      : undefined,
-  });
+  return json<RootLoaderData>(
+    {
+      locale,
+      theme: themeSession.getTheme(),
+      patrons: db.users.findAllPatrons(),
+      user: user
+        ? {
+            discordAvatar: user.discordAvatar,
+            discordId: user.discordId,
+            id: user.id,
+            plusTier: user.plusTier,
+          }
+        : undefined,
+    },
+    {
+      headers: { "Set-Cookie": await i18nCookie.serialize(locale) },
+    }
+  );
 };
 
 export const handle = {
