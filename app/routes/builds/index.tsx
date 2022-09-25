@@ -6,7 +6,7 @@ import { Main } from "~/components/Main";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { weaponCategories, weaponIdIsNotAlt } from "~/modules/in-game-lists";
 import styles from "~/styles/builds.css";
-import { mainWeaponImageUrl, weaponCategoryUrl } from "~/utils/urls";
+import { mainWeaponImageUrl, mySlugify, weaponCategoryUrl } from "~/utils/urls";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -16,8 +16,14 @@ export const handle = {
   i18n: "weapons",
 };
 
+// xxx: 2) breadcrumbs + link to new build
+
 export default function BuildsPage() {
   const { t } = useTranslation(["common", "weapons"]);
+
+  const weaponIdToSlug = (weaponId: MainWeaponId) => {
+    return mySlugify(t(`weapons:MAIN_${weaponId}`, { lng: "en" }));
+  };
 
   return (
     <Main className="stack md">
@@ -41,7 +47,7 @@ export default function BuildsPage() {
               .map((weaponId) => (
                 <Link
                   key={weaponId}
-                  to="/"
+                  to={weaponIdToSlug(weaponId)}
                   className="builds__category__weapon"
                 >
                   <Image

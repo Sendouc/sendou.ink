@@ -1,3 +1,4 @@
+import slugify from "slugify";
 import type { Badge, GearType } from "~/db/types";
 import type { ModeShort, weaponCategories } from "~/modules/in-game-lists";
 import type {
@@ -75,3 +76,10 @@ export const modeImageUrl = (mode: ModeShort) => `/img/modes/${mode}`;
 export function resolveBaseUrl(url: string) {
   return new URL(url).host;
 }
+
+export const mySlugify = (name: string) => {
+  return slugify(name, {
+    lower: true,
+    strict: true,
+  });
+};
