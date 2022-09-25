@@ -46,6 +46,7 @@ const basicSeeds = [
   calendarEventBadges,
   calendarEventResults,
   adminBuilds,
+  manySplattershotBuilds,
 ];
 
 export function seed() {
@@ -498,19 +499,18 @@ function calendarEventResults() {
   }
 }
 
+const randomAbility = (legalTypes: AbilityType[]) => {
+  const randomOrderAbilities = shuffle([...abilities]);
+
+  return randomOrderAbilities.find((a) => legalTypes.includes(a.type))!.name;
+};
+
 function adminBuilds() {
   for (let i = 0; i < 50; i++) {
     const randomOrderHeadGear = shuffle(headGearIds.slice());
     const randomOrderClothesGear = shuffle(clothesGearIds.slice());
     const randomOrderShoesGear = shuffle(shoesGearIds.slice());
     const randomOrderWeaponIds = shuffle(mainWeaponIds.slice());
-
-    const randomAbility = (legalTypes: AbilityType[]) => {
-      const randomOrderAbilities = shuffle([...abilities]);
-
-      return randomOrderAbilities.find((a) => legalTypes.includes(a.type))!
-        .name;
-    };
 
     db.builds.create({
       title: `${capitalize(faker.word.adjective())} ${capitalize(
@@ -526,6 +526,62 @@ function adminBuilds() {
       )
         .fill(null)
         .map(() => randomOrderWeaponIds.pop()!),
+      modes:
+        Math.random() < 0.75
+          ? modesShort.filter(() => Math.random() < 0.5)
+          : null,
+      abilities: [
+        [
+          randomAbility(["HEAD_MAIN_ONLY", "STACKABLE"]),
+          randomAbility(["STACKABLE"]),
+          randomAbility(["STACKABLE"]),
+          randomAbility(["STACKABLE"]),
+        ],
+        [
+          randomAbility(["CLOTHES_MAIN_ONLY", "STACKABLE"]),
+          randomAbility(["STACKABLE"]),
+          randomAbility(["STACKABLE"]),
+          randomAbility(["STACKABLE"]),
+        ],
+        [
+          randomAbility(["SHOES_MAIN_ONLY", "STACKABLE"]),
+          randomAbility(["STACKABLE"]),
+          randomAbility(["STACKABLE"]),
+          randomAbility(["STACKABLE"]),
+        ],
+      ],
+    });
+  }
+}
+
+function manySplattershotBuilds() {
+  for (let i = 0; i < 500; i++) {
+    const SPLATTERSHOT_ID = 40;
+
+    const randomOrderHeadGear = shuffle(headGearIds.slice());
+    const randomOrderClothesGear = shuffle(clothesGearIds.slice());
+    const randomOrderShoesGear = shuffle(shoesGearIds.slice());
+    const randomOrderWeaponIds = shuffle(mainWeaponIds.slice()).filter(
+      (id) => id !== SPLATTERSHOT_ID
+    );
+    const users = userIdsInRandomOrder();
+
+    db.builds.create({
+      title: `${capitalize(faker.word.adjective())} ${capitalize(
+        faker.word.noun()
+      )}`,
+      ownerId: users.pop()!,
+      description: Math.random() < 0.75 ? faker.lorem.paragraph() : null,
+      headGearSplId: randomOrderHeadGear[0]!,
+      clothesGearSplId: randomOrderClothesGear[0]!,
+      shoesGearSplId: randomOrderShoesGear[0]!,
+      weaponSplIds: new Array(
+        faker.helpers.arrayElement([1, 1, 1, 2, 2, 3, 4, 5])
+      )
+        .fill(null)
+        .map((_, i) =>
+          i === 0 ? SPLATTERSHOT_ID : randomOrderWeaponIds.pop()!
+        ),
       modes:
         Math.random() < 0.75
           ? modesShort.filter(() => Math.random() < 0.5)

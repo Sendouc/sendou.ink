@@ -25,6 +25,7 @@
   "actions.add": "Add",
   "actions.remove": "Remove",
   "actions.delete": "Delete",
+  "actions.loadMore": "Load more",
 
   "results": "Results",
 

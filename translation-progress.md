@@ -18,9 +18,27 @@
 
 **44/44**
 
-### 🟢 common.json
+### 🟡 common.json
 
-**36/36**
+**36/48**
+
+<details>
+<summary>Missing</summary>
+
+- actions.loadMore
+- weapon.category.SHOOTERS
+- weapon.category.BLASTERS
+- weapon.category.ROLLERS
+- weapon.category.BRUSHES
+- weapon.category.CHARGERS
+- weapon.category.SLOSHERS
+- weapon.category.SPLATLINGS
+- weapon.category.DUALIES
+- weapon.category.BRELLAS
+- weapon.category.STRINGERS
+- weapon.category.SPLATANAS
+
+</details>
 
 ### 🟢 contributions.json
 
@@ -40,7 +58,61 @@
 
 ---
 
-## /de (🟢 Done)
+## /de (🟡 In progress)
+
+### 🟢 analyzer.json
+
+**91/91**
+
+### 🟢 badges.json
+
+**7/7**
+
+### 🟢 builds.json
+
+**11/11**
+
+### 🟢 calendar.json
+
+**44/44**
+
+### 🟡 common.json
+
+**36/48**
+
+<details>
+<summary>Missing</summary>
+
+- actions.loadMore
+- weapon.category.SHOOTERS
+- weapon.category.BLASTERS
+- weapon.category.ROLLERS
+- weapon.category.BRUSHES
+- weapon.category.CHARGERS
+- weapon.category.SLOSHERS
+- weapon.category.SPLATLINGS
+- weapon.category.DUALIES
+- weapon.category.BRELLAS
+- weapon.category.STRINGERS
+- weapon.category.SPLATANAS
+
+</details>
+
+### 🟢 contributions.json
+
+**6/6**
+
+### 🟢 faq.json
+
+**6/6**
+
+### 🟢 front.json
+
+**9/9**
+
+### 🟢 user.json
+
+**7/7**
 
 ---
 
@@ -96,9 +168,27 @@
 
 **44/44**
 
-### 🟢 common.json
+### 🟡 common.json
 
-**36/36**
+**36/48**
+
+<details>
+<summary>Missing</summary>
+
+- actions.loadMore
+- weapon.category.SHOOTERS
+- weapon.category.BLASTERS
+- weapon.category.ROLLERS
+- weapon.category.BRUSHES
+- weapon.category.CHARGERS
+- weapon.category.SLOSHERS
+- weapon.category.SPLATLINGS
+- weapon.category.DUALIES
+- weapon.category.BRELLAS
+- weapon.category.STRINGERS
+- weapon.category.SPLATANAS
+
+</details>
 
 ### 🟡 contributions.json
 
@@ -152,12 +242,24 @@
 
 ### 🟡 common.json
 
-**35/36**
+**35/48**
 
 <details>
 <summary>Missing</summary>
 
 - pages.analyzer
+- actions.loadMore
+- weapon.category.SHOOTERS
+- weapon.category.BLASTERS
+- weapon.category.ROLLERS
+- weapon.category.BRUSHES
+- weapon.category.CHARGERS
+- weapon.category.SLOSHERS
+- weapon.category.SPLATLINGS
+- weapon.category.DUALIES
+- weapon.category.BRELLAS
+- weapon.category.STRINGERS
+- weapon.category.SPLATANAS
 
 </details>
 
@@ -218,12 +320,24 @@
 
 ### 🟡 common.json
 
-**35/36**
+**35/48**
 
 <details>
 <summary>Missing</summary>
 
 - pages.analyzer
+- actions.loadMore
+- weapon.category.SHOOTERS
+- weapon.category.BLASTERS
+- weapon.category.ROLLERS
+- weapon.category.BRUSHES
+- weapon.category.CHARGERS
+- weapon.category.SLOSHERS
+- weapon.category.SPLATLINGS
+- weapon.category.DUALIES
+- weapon.category.BRELLAS
+- weapon.category.STRINGERS
+- weapon.category.SPLATANAS
 
 </details>
 
@@ -279,12 +393,24 @@
 
 ### 🟡 common.json
 
-**35/36**
+**35/48**
 
 <details>
 <summary>Missing</summary>
 
 - pages.analyzer
+- actions.loadMore
+- weapon.category.SHOOTERS
+- weapon.category.BLASTERS
+- weapon.category.ROLLERS
+- weapon.category.BRUSHES
+- weapon.category.CHARGERS
+- weapon.category.SLOSHERS
+- weapon.category.SPLATLINGS
+- weapon.category.DUALIES
+- weapon.category.BRELLAS
+- weapon.category.STRINGERS
+- weapon.category.SPLATANAS
 
 </details>
 
@@ -365,9 +491,27 @@
 
 **44/44**
 
-### 🟢 common.json
+### 🟡 common.json
 
-**36/36**
+**36/48**
+
+<details>
+<summary>Missing</summary>
+
+- actions.loadMore
+- weapon.category.SHOOTERS
+- weapon.category.BLASTERS
+- weapon.category.ROLLERS
+- weapon.category.BRUSHES
+- weapon.category.CHARGERS
+- weapon.category.SLOSHERS
+- weapon.category.SPLATLINGS
+- weapon.category.DUALIES
+- weapon.category.BRELLAS
+- weapon.category.STRINGERS
+- weapon.category.SPLATANAS
+
+</details>
 
 ### 🟡 contributions.json
 
@@ -421,12 +565,24 @@
 
 ### 🟡 common.json
 
-**35/36**
+**35/48**
 
 <details>
 <summary>Missing</summary>
 
 - pages.analyzer
+- actions.loadMore
+- weapon.category.SHOOTERS
+- weapon.category.BLASTERS
+- weapon.category.ROLLERS
+- weapon.category.BRUSHES
+- weapon.category.CHARGERS
+- weapon.category.SLOSHERS
+- weapon.category.SPLATLINGS
+- weapon.category.DUALIES
+- weapon.category.BRELLAS
+- weapon.category.STRINGERS
+- weapon.category.SPLATANAS
 
 </details>
 

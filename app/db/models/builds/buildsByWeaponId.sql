@@ -56,3 +56,5 @@ order by
     else "PlusTier"."tier"
   end asc,
   "BuildWithWeapon"."updatedAt" desc
+limit
+  @limit

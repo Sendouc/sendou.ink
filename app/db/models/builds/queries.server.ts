@@ -109,11 +109,18 @@ export function buildsByUserId(userId: Build["ownerId"]) {
 type BuildsByWeaponIdRow = BuildsByUserRow &
   Pick<User, "discordId" | "discordName" | "discordDiscriminator">;
 
-export function buildsByWeaponId(weaponId: BuildWeapon["weaponSplId"]) {
+export function buildsByWeaponId({
+  weaponId,
+  limit,
+}: {
+  weaponId: BuildWeapon["weaponSplId"];
+  limit: number;
+}) {
   const rows = buildsByWeaponIdStm.all({
     weaponId,
     // default to impossible weapon id so we can always have same amount of placeholder values
     altWeaponId: weaponIdToAltId.get(weaponId) ?? -1,
+    limit,
   }) as Array<BuildsByWeaponIdRow>;
 
   return rows.map(augmentBuild);
