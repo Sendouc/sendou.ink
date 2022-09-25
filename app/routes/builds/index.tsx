@@ -9,9 +9,6 @@ export const handle = {
   i18n: "weapons",
 };
 
-// xxx: 2) breadcrumbs + link to new build
-// xxx: 3) titles
-
 export default function BuildsPage() {
   const { t } = useTranslation(["common", "weapons"]);
 
