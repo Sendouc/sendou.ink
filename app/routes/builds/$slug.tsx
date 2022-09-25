@@ -46,20 +46,7 @@ export default function WeaponsBuildsPage() {
   return (
     <div className="builds-container">
       {data.builds.map((build) => (
-        <BuildCard
-          key={build.id}
-          id={build.id}
-          title={build.title}
-          description={build.description}
-          headGearSplId={build.headGearSplId}
-          clothesGearSplId={build.clothesGearSplId}
-          shoesGearSplId={build.shoesGearSplId}
-          modes={build.modes}
-          updatedAt={build.updatedAt}
-          abilities={build.abilities}
-          weapons={build.weapons}
-          canEdit={false}
-        />
+        <BuildCard key={build.id} build={build} canEdit={false} />
       ))}
     </div>
   );

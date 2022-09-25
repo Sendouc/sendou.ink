@@ -16,40 +16,42 @@ import { FormWithConfirm } from "./FormWithConfirm";
 import { Image } from "./Image";
 import { Popover } from "./Popover";
 
-type BuildProps = Pick<
-  Build,
-  | "id"
-  | "title"
-  | "description"
-  | "clothesGearSplId"
-  | "headGearSplId"
-  | "shoesGearSplId"
-  | "updatedAt"
-  | "modes"
-> & {
-  abilities: BuildAbilitiesTuple;
-  modes: ModeShort[] | null;
-  weapons: Array<BuildWeapon["weaponSplId"]>;
+interface BuildProps {
+  build: Pick<
+    Build,
+    | "id"
+    | "title"
+    | "description"
+    | "clothesGearSplId"
+    | "headGearSplId"
+    | "shoesGearSplId"
+    | "updatedAt"
+  > & {
+    abilities: BuildAbilitiesTuple;
+    modes: ModeShort[] | null;
+    weapons: Array<BuildWeapon["weaponSplId"]>;
+  };
   canEdit?: boolean;
-};
+}
 
-export function BuildCard({
-  id,
-  title,
-  description,
-  weapons,
-  updatedAt,
-  headGearSplId,
-  clothesGearSplId,
-  shoesGearSplId,
-  abilities,
-  modes,
-  canEdit = false,
-}: BuildProps) {
+export function BuildCard({ build, canEdit = false }: BuildProps) {
   const user = useUser();
   const { t } = useTranslation(["weapons", "builds", "common"]);
   const { i18n } = useTranslation();
   const isMounted = useIsMounted();
+
+  const {
+    id,
+    title,
+    description,
+    clothesGearSplId,
+    headGearSplId,
+    shoesGearSplId,
+    updatedAt,
+    abilities,
+    modes,
+    weapons,
+  } = build;
 
   const bottomRowItems = [
     description && (
