@@ -32,6 +32,7 @@ export const STOP_IMPERSONATING_URL = "/auth/impersonate/stop";
 export const SEED_URL = "/seed";
 
 export const COMMON_PREVIEW_IMAGE = "/img/layout/common-preview.png";
+export const ERROR_GIRL_IMAGE_PATH = `/img/layout/error-girl`;
 
 export const userPage = (discordId: string) => `/u/${discordId}`;
 export const userBuildsPage = (discordId: string) =>

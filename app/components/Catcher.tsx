@@ -1,12 +1,36 @@
 import { useCatch } from "@remix-run/react";
 import { Button } from "~/components/Button";
 import { useUser } from "~/modules/auth";
-import { LOG_IN_URL, SENDOU_INK_DISCORD_URL } from "~/utils/urls";
+import {
+  ERROR_GIRL_IMAGE_PATH,
+  LOG_IN_URL,
+  SENDOU_INK_DISCORD_URL,
+} from "~/utils/urls";
+import { Image } from "./Image";
 import { Main } from "./Main";
 
 export function Catcher() {
   const caught = useCatch();
   const user = useUser();
+
+  if (!caught)
+    return (
+      <Main>
+        <Image
+          className="m-0-auto"
+          path={ERROR_GIRL_IMAGE_PATH}
+          width={292}
+          height={243.5}
+          alt=""
+        />
+        <h2 className="text-center">Error happened</h2>
+        <p className="text-center">
+          It seems like you encountered a bug. Sorry about that! Please report
+          details (your browser? what were you doing?) on{" "}
+          <a href={SENDOU_INK_DISCORD_URL}>our Discord</a> so it can be fixed.
+        </p>
+      </Main>
+    );
 
   switch (caught.status) {
     case 401:

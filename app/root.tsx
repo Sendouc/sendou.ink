@@ -153,3 +153,13 @@ export function CatchBoundary() {
     </ThemeProvider>
   );
 }
+
+export function ErrorBoundary() {
+  return (
+    <ThemeProvider specifiedTheme={Theme.DARK}>
+      <Document>
+        <Catcher />
+      </Document>
+    </ThemeProvider>
+  );
+}
