@@ -10,9 +10,20 @@
   position: relative;
   z-index: 501;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   padding: var(--s-4);
   background-color: var(--bg);
+}
+
+.layout__logo {
+  display: flex;
+  width: var(--item-size);
+  height: var(--item-size);
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-lighter);
+  background-image: url("/svg/background-pattern.svg");
+  border-radius: var(--rounded);
 }
 
 .layout__avatar {

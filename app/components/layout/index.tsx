@@ -1,7 +1,8 @@
-import { useLocation } from "@remix-run/react";
+import { Link, useLocation } from "@remix-run/react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import type { RootLoaderData } from "~/root";
+import { LOGO_PATH } from "~/utils/urls";
 import { Image } from "../Image";
 import { ColorModeToggle } from "./ColorModeToggle";
 import { Footer } from "./Footer";
@@ -31,6 +32,14 @@ export const Layout = React.memo(function Layout({
   return (
     <div className="layout__container">
       <header className="layout__header">
+        <Link to="/" className="layout__logo">
+          <Image
+            path={LOGO_PATH}
+            width={28}
+            height={28}
+            alt="sendou.ink logo"
+          />
+        </Link>
         <div className="layout__header__right-container">
           {!isCatchBoundary ? <UserItem /> : null}
           <LanguageChanger />
