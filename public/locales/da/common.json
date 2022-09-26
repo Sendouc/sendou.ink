@@ -25,6 +25,7 @@
   "actions.add": "Tilføj",
   "actions.remove": "Fjern",
   "actions.delete": "Slet",
+  "actions.loadMore": "Indlæs mere",
 
   "results": "Resultater",
 
@@ -41,4 +42,16 @@
   "tag.name.COUNT": "Tilmeldingsloft",
   "tag.name.LAN": "LAN",
   "tag.name.QUALIFIER": "Kvalifikationsturnering"
+  
+  "weapon.category.SHOOTERS": "Shooters",
+  "weapon.category.BLASTERS": "Blasters",
+  "weapon.category.ROLLERS": "Rollers",
+  "weapon.category.BRUSHES": "Brushes",
+  "weapon.category.CHARGERS": "Chargers",
+  "weapon.category.SLOSHERS": "Sloshers",
+  "weapon.category.SPLATLINGS": "Splatlings",
+  "weapon.category.DUALIES": "Dualies",
+  "weapon.category.BRELLAS": "Brellas",
+  "weapon.category.STRINGERS": "Stringers",
+  "weapon.category.SPLATANAS": "Splatanas"
 }
