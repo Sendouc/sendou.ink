@@ -1,8 +1,9 @@
 {
   "websiteSubtitle": "Konkurrencepræget Splatoon-hub",
+  "buildsGoTo": "Kig på våbenspecifikke udrustningssæt, der er lavet af andre spillere.",
   "calendarGoTo": "Se alle tidligere og kommende begivenheder på kalender-siden",
   "moreFeatures": "Flere funktioner",
-  "plus.description": "Se plus-serverens valghistorik med mere",
+  "plus.description": "Se plus-serverens valghistorik og mere til",
   "badges.description": "Liste af alle de premiemærker til din profil, som du kan gøre dig fortjent til",
   "analyzer.description": "Undersøg hvordan dine udrustinger giver dig af fordele i kamp",
   "recentWinners": "Se de seneste vindere",
