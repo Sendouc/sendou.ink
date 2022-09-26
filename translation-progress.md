@@ -2,9 +2,9 @@
 
 ## /da (🟡 In progress)
 
-### 🔴 analyzer.json
+### 🟢 analyzer.json
 
-**0/91**
+**91/91**
 
 ### 🟢 badges.json
 
@@ -18,27 +18,9 @@
 
 **44/44**
 
-### 🟡 common.json
+### 🟢 common.json
 
-**36/48**
-
-<details>
-<summary>Missing</summary>
-
-- actions.loadMore
-- weapon.category.SHOOTERS
-- weapon.category.BLASTERS
-- weapon.category.ROLLERS
-- weapon.category.BRUSHES
-- weapon.category.CHARGERS
-- weapon.category.SLOSHERS
-- weapon.category.SPLATLINGS
-- weapon.category.DUALIES
-- weapon.category.BRELLAS
-- weapon.category.STRINGERS
-- weapon.category.SPLATANAS
-
-</details>
+**48/48**
 
 ### 🟢 contributions.json
 
