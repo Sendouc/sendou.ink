@@ -20,7 +20,7 @@ export function Ability({
   const sizeNumber = sizeMap[size];
 
   return (
-    <div
+    <button
       className="build__ability"
       style={
         {
@@ -31,6 +31,6 @@ export function Ability({
       data-cy={`${ability}-ability`}
     >
       <Image alt="" path={abilityImageUrl(ability)} />
-    </div>
+    </button>
   );
 }

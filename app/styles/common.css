@@ -792,6 +792,7 @@ dialog::backdrop {
   border-radius: 50%;
   box-shadow: 0 0 0 1px var(--bg-ability);
   user-select: none;
+  padding: 0;
 }
 
 .build__bottom-row {
