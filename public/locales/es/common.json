@@ -25,6 +25,7 @@
   "actions.add": "Añadir",
   "actions.remove": "Remover",
   "actions.delete": "Borrar",
+  "actions.loadMore": "Cargar más",
 
   "results": "Resultados",
 
@@ -40,5 +41,17 @@
   "tag.name.LOW": "Limite de habilidad",
   "tag.name.COUNT": "Limite de entrada",
   "tag.name.LAN": "LAN",
-  "tag.name.QUALIFIER": "Clasificatorio"
+  "tag.name.QUALIFIER": "Clasificatorio",
+
+  "weapon.category.SHOOTERS": "Lanzatintas",
+  "weapon.category.BLASTERS": "Lanzamotas/Devastador",
+  "weapon.category.ROLLERS": "Rodillos",
+  "weapon.category.BRUSHES": "Brochas",
+  "weapon.category.CHARGERS": "Cargatintas",
+  "weapon.category.SLOSHERS": "Derramatic",
+  "weapon.category.SPLATLINGS": "Garabateadores",
+  "weapon.category.DUALIES": "Armas duales",
+  "weapon.category.BRELLAS": "Paratintas",
+  "weapon.category.STRINGERS": "Arcromatizador",
+  "weapon.category.SPLATANAS": "Azotintadores"
 }
