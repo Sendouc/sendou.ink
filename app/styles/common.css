@@ -784,6 +784,7 @@ dialog::backdrop {
 .build__ability {
   width: var(--ability-size);
   height: var(--ability-size);
+  padding: 0;
   border: 2px solid var(--theme-transparent);
   border-right: 0;
   border-bottom: 0;
