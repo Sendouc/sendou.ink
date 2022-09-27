@@ -725,7 +725,7 @@ function StatCard({
             <Popover
               containerClassName="analyzer__stat-card__popover"
               triggerClassName="analyzer__stat-card__popover-trigger"
-              trigger={<>?</>}
+              buttonChildren={<>?</>}
             >
               {popoverInfo}
             </Popover>

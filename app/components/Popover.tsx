@@ -5,12 +5,12 @@ import { usePopper } from "react-popper";
 // TODO: after clicking item in the pop over panel should close it
 export function Popover({
   children,
-  trigger,
+  buttonChildren,
   triggerClassName,
   containerClassName,
 }: {
   children: React.ReactNode;
-  trigger: React.ReactNode;
+  buttonChildren: React.ReactNode;
   triggerClassName?: string;
   containerClassName?: string;
 }) {
@@ -25,7 +25,7 @@ export function Popover({
         ref={setReferenceElement}
         className={triggerClassName ?? "minimal tiny"}
       >
-        {trigger}
+        {buttonChildren}
       </HeadlessPopover.Button>
 
       <HeadlessPopover.Panel

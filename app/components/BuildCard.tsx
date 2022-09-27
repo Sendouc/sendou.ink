@@ -65,7 +65,7 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
     description && (
       <Popover
         key="info"
-        trigger={<>{t("builds:buildCard.info")}</>}
+        buttonChildren={<>{t("builds:buildCard.info")}</>}
         triggerClassName="minimal tiny build__small-text"
       >
         {description}
