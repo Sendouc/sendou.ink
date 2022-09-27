@@ -39,7 +39,7 @@ const TRANSLATORS: Array<{
     language: "es",
   },
   {
-    translators: ["funyaaa"],
+    translators: ["funyaaa", "taqm"],
     language: "ja",
   },
   {
