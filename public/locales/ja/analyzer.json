@@ -1,0 +1,14 @@
+{
+  "attribute.weight": "重さ:",
+  "attribute.weight.Fast": "軽量級",
+  "attribute.weight.Slow": "重量級",
+  "attribute.weight.Normal": "中量級",
+  "stat.category.main": "メインウェポン",
+  "stat.category.sub": "サブウェポン",
+  "stat.category.special": "スペシャルウェポン",
+  "stat.category.subDef": "サブウェポン防御",
+  "stat.category.actionsPerInkTank": "インク効率",
+  "stat.category.damage": "ダメージ",
+  "stat.category.movement": "移動関連",
+  "stat.category.misc": "その他"
+}
