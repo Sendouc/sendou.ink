@@ -2,11 +2,13 @@ import slugify from "slugify";
 import type { Badge, GearType } from "~/db/types";
 import type { ModeShort, weaponCategories } from "~/modules/in-game-lists";
 import type {
+  Ability,
   AbilityWithUnknown,
   MainWeaponId,
   SpecialWeaponId,
   SubWeaponId,
 } from "~/modules/in-game-lists/types";
+import type navItems from "~/components/layout/nav-items.json";
 
 export const PLUS_SERVER_DISCORD_URL = "https://discord.gg/FW4dKrY";
 export const SENDOU_INK_DISCORD_URL = "https://discord.gg/sendou";
@@ -26,7 +28,6 @@ export const FAQ_PAGE = "/faq";
 export const CONTRIBUTIONS_PAGE = "/contributions";
 export const BADGES_PAGE = "/badges";
 export const BUILDS_PAGE = "/builds";
-export const ANALYZER_PAGE = "/analyzer";
 export const CALENDAR_PAGE = "/calendar";
 export const STOP_IMPERSONATING_URL = "/auth/impersonate/stop";
 export const SEED_URL = "/seed";
@@ -51,6 +52,17 @@ export const calendarEditPage = (eventId?: number) =>
 export const calendarReportWinnersPage = (eventId: number) =>
   `/calendar/${eventId}/report-winners`;
 export const articlePage = (slug: string) => `/a/${slug}`;
+export const analyzerPage = (args?: {
+  weaponId: MainWeaponId;
+  abilities: Ability[];
+}) =>
+  `/analyzer${
+    args
+      ? `?weapon=${args.weaponId}&build=${encodeURIComponent(
+          args.abilities.join(",")
+        )}`
+      : ""
+  }`;
 
 export const badgeUrl = ({
   code,
@@ -62,7 +74,8 @@ export const badgeUrl = ({
 export const articlePreviewUrl = (slug: string) =>
   `/img/article-previews/${slug}.png`;
 
-export const navIconUrl = (navItem: string) => `/img/layout/${navItem}`;
+export const navIconUrl = (navItem: typeof navItems[number]["name"]) =>
+  `/img/layout/${navItem}`;
 export const gearImageUrl = (gearType: GearType, gearSplId: number) =>
   `/img/gear/${gearType.toLowerCase()}/${gearSplId}`;
 export const weaponCategoryUrl = (

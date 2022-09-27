@@ -12,16 +12,21 @@ import type { BuildAbilitiesTuple } from "~/modules/in-game-lists/types";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { discordFullName } from "~/utils/strings";
 import {
+  analyzerPage,
   gearImageUrl,
   mainWeaponImageUrl,
   modeImageUrl,
+  navIconUrl,
   userBuildsPage,
 } from "~/utils/urls";
 import { Ability } from "./Ability";
 import { Button, LinkButton } from "./Button";
 import { FormWithConfirm } from "./FormWithConfirm";
+import { TrashIcon } from "./icons/Trash";
+import { EditIcon } from "./icons/Edit";
 import { Image } from "./Image";
 import { Popover } from "./Popover";
+import { InfoIcon } from "./icons/Info";
 
 interface BuildProps {
   build: Pick<
@@ -62,10 +67,20 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
   } = build;
 
   const bottomRowItems = [
+    <Link
+      key="analyzer"
+      to={analyzerPage({ weaponId: weapons[0]!, abilities: abilities.flat() })}
+    >
+      <Image
+        alt={t("common:pages.analyzer")}
+        className="build__icon"
+        path={navIconUrl("analyzer")}
+      />
+    </Link>,
     description && (
       <Popover
         key="info"
-        buttonChildren={<>{t("builds:buildCard.info")}</>}
+        buttonChildren={<InfoIcon className="build__icon" />}
         triggerClassName="minimal tiny build__small-text"
       >
         {description}
@@ -80,7 +95,7 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
         to={`new?buildId=${id}&userId=${user!.id}`}
         data-cy="edit-build-button"
       >
-        {t("builds:buildCard.edit")}
+        <EditIcon className="build__icon" />
       </LinkButton>
     ),
     canEdit && (
@@ -96,7 +111,7 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
           type="submit"
           data-cy="delete-build-button"
         >
-          {t("common:actions.delete")}
+          <TrashIcon className="build__icon" />
         </Button>
       </FormWithConfirm>
     ),
