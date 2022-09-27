@@ -66,57 +66,6 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
     weapons,
   } = build;
 
-  const bottomRowItems = [
-    <Link
-      key="analyzer"
-      to={analyzerPage({ weaponId: weapons[0]!, abilities: abilities.flat() })}
-    >
-      <Image
-        alt={t("common:pages.analyzer")}
-        className="build__icon"
-        path={navIconUrl("analyzer")}
-      />
-    </Link>,
-    description && (
-      <Popover
-        key="info"
-        buttonChildren={<InfoIcon className="build__icon" />}
-        triggerClassName="minimal tiny build__small-text"
-      >
-        {description}
-      </Popover>
-    ),
-    canEdit && (
-      <LinkButton
-        key="edit"
-        className="build__small-text"
-        variant="minimal"
-        tiny
-        to={`new?buildId=${id}&userId=${user!.id}`}
-        data-cy="edit-build-button"
-      >
-        <EditIcon className="build__icon" />
-      </LinkButton>
-    ),
-    canEdit && (
-      <FormWithConfirm
-        key="delete"
-        dialogHeading={t("builds:deleteConfirm", { title })}
-        fields={[["buildToDeleteId", id]]}
-      >
-        <Button
-          className="build__small-text"
-          variant="minimal-destructive"
-          tiny
-          type="submit"
-          data-cy="delete-build-button"
-        >
-          <TrashIcon className="build__icon" />
-        </Button>
-      </FormWithConfirm>
-    ),
-  ].filter(Boolean);
-
   return (
     <div className="build" data-cy="build-card">
       <div className="stack xxs">
@@ -194,9 +143,55 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
           gearId={shoesGearSplId}
         />
       </div>
-      {bottomRowItems.length > 0 && (
-        <div className="build__bottom-row">{bottomRowItems}</div>
-      )}
+      <div className="build__bottom-row">
+        <Link
+          to={analyzerPage({
+            weaponId: weapons[0]!,
+            abilities: abilities.flat(),
+          })}
+        >
+          <Image
+            alt={t("common:pages.analyzer")}
+            className="build__icon"
+            path={navIconUrl("analyzer")}
+          />
+        </Link>
+        {description && (
+          <Popover
+            buttonChildren={<InfoIcon className="build__icon" />}
+            triggerClassName="minimal tiny build__small-text"
+          >
+            {description}
+          </Popover>
+        )}
+        {canEdit && (
+          <>
+            <LinkButton
+              className="build__small-text"
+              variant="minimal"
+              tiny
+              to={`new?buildId=${id}&userId=${user!.id}`}
+              data-cy="edit-build-button"
+            >
+              <EditIcon className="build__icon" />
+            </LinkButton>
+            <FormWithConfirm
+              dialogHeading={t("builds:deleteConfirm", { title })}
+              fields={[["buildToDeleteId", id]]}
+            >
+              <Button
+                className="build__small-text"
+                variant="minimal-destructive"
+                tiny
+                type="submit"
+                data-cy="delete-build-button"
+              >
+                <TrashIcon className="build__icon" />
+              </Button>
+            </FormWithConfirm>
+          </>
+        )}
+      </div>
     </div>
   );
 }
