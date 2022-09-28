@@ -2,7 +2,7 @@ import { Link, useLocation } from "@remix-run/react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import type { RootLoaderData } from "~/root";
-import { LOGO_PATH } from "~/utils/urls";
+import { LOGO_PATH, navIconUrl } from "~/utils/urls";
 import { Image } from "../Image";
 import { ColorModeToggle } from "./ColorModeToggle";
 import { Footer } from "./Footer";
@@ -54,7 +54,7 @@ export const Layout = React.memo(function Layout({
       {currentPagesNavItem && (
         <div className="layout__page-title-header">
           <Image
-            path={`/img/layout/${currentPagesNavItem.name}`}
+            path={navIconUrl(currentPagesNavItem.name)}
             width={28}
             height={28}
             alt=""

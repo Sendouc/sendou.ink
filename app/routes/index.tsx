@@ -14,7 +14,7 @@ import styles from "~/styles/front.css";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { discordFullName } from "~/utils/strings";
 import {
-  ANALYZER_PAGE,
+  analyzerPage,
   articlePage,
   BADGES_PAGE,
   BUILDS_PAGE,
@@ -71,7 +71,7 @@ export default function Index() {
             navItem="analyzer"
             title={t("common:pages.analyzer")}
             description={t("front:analyzer.description")}
-            to={ANALYZER_PAGE}
+            to={analyzerPage()}
           />
           <FeatureCard
             navItem="plus"

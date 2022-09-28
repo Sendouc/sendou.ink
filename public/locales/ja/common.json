@@ -39,5 +39,17 @@
   "tag.name.LOW": "上限レベル",
   "tag.name.COUNT": "参加数限定",
   "tag.name.LAN": "オフライン",
-  "tag.name.QUALIFIER": "参加資格"
+  "tag.name.QUALIFIER": "参加資格",
+
+  "weapon.category.SHOOTERS": "シューター",
+  "weapon.category.BLASTERS": "ブラスター",
+  "weapon.category.ROLLERS": "ローラー",
+  "weapon.category.BRUSHES": "フデ",
+  "weapon.category.CHARGERS": "チャージャー",
+  "weapon.category.SLOSHERS": "スロッシャー",
+  "weapon.category.SPLATLINGS": "スピナー",
+  "weapon.category.DUALIES": "マニューバー",
+  "weapon.category.BRELLAS": "シェルター",
+  "weapon.category.STRINGERS": "ストリンガー",
+  "weapon.category.SPLATANAS": "ワイパー"
 }

@@ -16,7 +16,7 @@ export function UserItem() {
   if (user)
     return (
       <Popover
-        trigger={
+        buttonChildren={
           <Avatar
             data-cy="user-avatar"
             user={user}

@@ -9,7 +9,7 @@ export function LanguageChanger() {
 
   return (
     <Popover
-      trigger={<GlobeIcon className="layout__header__button__icon" />}
+      buttonChildren={<GlobeIcon className="layout__header__button__icon" />}
       triggerClassName="layout__header__button"
     >
       <div className="layout__user-popover">

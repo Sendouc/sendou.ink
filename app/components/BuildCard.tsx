@@ -12,16 +12,21 @@ import type { BuildAbilitiesTuple } from "~/modules/in-game-lists/types";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { discordFullName } from "~/utils/strings";
 import {
+  analyzerPage,
   gearImageUrl,
   mainWeaponImageUrl,
   modeImageUrl,
+  navIconUrl,
   userBuildsPage,
 } from "~/utils/urls";
 import { Ability } from "./Ability";
 import { Button, LinkButton } from "./Button";
 import { FormWithConfirm } from "./FormWithConfirm";
+import { TrashIcon } from "./icons/Trash";
+import { EditIcon } from "./icons/Edit";
 import { Image } from "./Image";
 import { Popover } from "./Popover";
+import { InfoIcon } from "./icons/Info";
 
 interface BuildProps {
   build: Pick<
@@ -60,47 +65,6 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
     modes,
     weapons,
   } = build;
-
-  const bottomRowItems = [
-    description && (
-      <Popover
-        key="info"
-        trigger={<>{t("builds:buildCard.info")}</>}
-        triggerClassName="minimal tiny build__small-text"
-      >
-        {description}
-      </Popover>
-    ),
-    canEdit && (
-      <LinkButton
-        key="edit"
-        className="build__small-text"
-        variant="minimal"
-        tiny
-        to={`new?buildId=${id}&userId=${user!.id}`}
-        data-cy="edit-build-button"
-      >
-        {t("builds:buildCard.edit")}
-      </LinkButton>
-    ),
-    canEdit && (
-      <FormWithConfirm
-        key="delete"
-        dialogHeading={t("builds:deleteConfirm", { title })}
-        fields={[["buildToDeleteId", id]]}
-      >
-        <Button
-          className="build__small-text"
-          variant="minimal-destructive"
-          tiny
-          type="submit"
-          data-cy="delete-build-button"
-        >
-          {t("common:actions.delete")}
-        </Button>
-      </FormWithConfirm>
-    ),
-  ].filter(Boolean);
 
   return (
     <div className="build" data-cy="build-card">
@@ -179,9 +143,55 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
           gearId={shoesGearSplId}
         />
       </div>
-      {bottomRowItems.length > 0 && (
-        <div className="build__bottom-row">{bottomRowItems}</div>
-      )}
+      <div className="build__bottom-row">
+        <Link
+          to={analyzerPage({
+            weaponId: weapons[0]!,
+            abilities: abilities.flat(),
+          })}
+        >
+          <Image
+            alt={t("common:pages.analyzer")}
+            className="build__icon"
+            path={navIconUrl("analyzer")}
+          />
+        </Link>
+        {description && (
+          <Popover
+            buttonChildren={<InfoIcon className="build__icon" />}
+            triggerClassName="minimal tiny build__small-text"
+          >
+            {description}
+          </Popover>
+        )}
+        {canEdit && (
+          <>
+            <LinkButton
+              className="build__small-text"
+              variant="minimal"
+              tiny
+              to={`new?buildId=${id}&userId=${user!.id}`}
+              data-cy="edit-build-button"
+            >
+              <EditIcon className="build__icon" />
+            </LinkButton>
+            <FormWithConfirm
+              dialogHeading={t("builds:deleteConfirm", { title })}
+              fields={[["buildToDeleteId", id]]}
+            >
+              <Button
+                className="build__small-text"
+                variant="minimal-destructive"
+                tiny
+                type="submit"
+                data-cy="delete-build-button"
+              >
+                <TrashIcon className="build__icon" />
+              </Button>
+            </FormWithConfirm>
+          </>
+        )}
+      </div>
     </div>
   );
 }
