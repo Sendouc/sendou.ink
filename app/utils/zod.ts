@@ -54,6 +54,12 @@ export function falsyToNull(value: unknown): unknown {
   return null;
 }
 
+export function undefinedToNull(value: unknown): unknown {
+  if (value === undefined) return null;
+
+  return value;
+}
+
 export function actualNumber(value: unknown) {
   const parsed = Number(value);
 

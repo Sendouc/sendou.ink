@@ -30,7 +30,18 @@ export function upsert(
 }
 
 const updateProfileStm = sql.prepare(updateProfileSql);
-export function updateProfile(args: Pick<User, "country" | "id" | "bio">) {
+export function updateProfile(
+  args: Pick<
+    User,
+    | "country"
+    | "id"
+    | "bio"
+    | "customUrl"
+    | "motionSens"
+    | "stickSens"
+    | "inGameName"
+  >
+) {
   updateProfileStm.run(args);
 }
 

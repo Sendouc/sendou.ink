@@ -12,6 +12,10 @@ export interface User {
   youtubeId: string | null;
   bio: string | null;
   country: string | null;
+  customUrl: string | null;
+  stickSens: number | null;
+  motionSens: number | null;
+  inGameName: string | null;
   patronTier: number | null;
   patronSince: number | null;
 }
