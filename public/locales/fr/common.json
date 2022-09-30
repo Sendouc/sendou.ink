@@ -40,4 +40,16 @@
   "tag.name.COUNT": "Entry limit",
   "tag.name.LAN": "LAN",
   "tag.name.QUALIFIER": "Qualifications"
+  
+  "weapon.category.SHOOTERS": "Liquidateurs",
+  "weapon.category.BLASTERS": "Blasters",
+  "weapon.category.ROLLERS": "Rouleaux",
+  "weapon.category.BRUSHES": "Epinceaux",
+  "weapon.category.CHARGERS": "Concentrateurs",
+  "weapon.category.SLOSHERS": "Seauceurs",
+  "weapon.category.SPLATLINGS": "Badigeonneurs",
+  "weapon.category.DUALIES": "Double encreurs",
+  "weapon.category.BRELLAS": "Para-encres",
+  "weapon.category.STRINGERS": "Trisperceurs",
+  "weapon.category.SPLATANAS": "Eclatanas"
 }
