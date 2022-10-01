@@ -792,7 +792,20 @@ dialog::backdrop {
   background-size: 100%;
   border-radius: 50%;
   box-shadow: 0 0 0 1px var(--bg-ability);
+  transform: scale(1);
+  transition: all 0.1s ease;
   user-select: none;
+}
+
+.build__ability.is-drag-target {
+  background: var(--abilities-button-bg);
+  transform: scale(1.15);
+}
+
+.build__ability.drag-started:not(.drop-allowed) {
+  filter: grayscale(1);
+  opacity: 0.3;
+  pointer-events: none;
 }
 
 .build__bottom-row {
@@ -840,4 +853,8 @@ dialog::backdrop {
   border-color: var(--abilities-button-bg);
   background-color: var(--abilities-button-bg);
   border-radius: 50%;
+}
+
+.ability-selector__ability-button.is-dragging {
+  box-shadow: 0 0 100px inset rgb(255 255 255 / 25%);
 }
