@@ -13,15 +13,15 @@ const sizeMap = {
 export function Ability({
   ability,
   size,
-  dragStarted,
-  dropAllowed,
+  dragStarted = false,
+  dropAllowed = false,
   onClick,
   onDrop,
 }: {
   ability: AbilityWithUnknown;
   size: keyof typeof sizeMap;
-  dragStarted: boolean;
-  dropAllowed: boolean;
+  dragStarted?: boolean;
+  dropAllowed?: boolean;
   onClick?: () => void;
   onDrop?: (event: React.DragEvent) => void;
 }) {
