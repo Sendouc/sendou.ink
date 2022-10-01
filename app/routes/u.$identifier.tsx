@@ -23,6 +23,8 @@ export const links: LinksFunction = () => {
 };
 
 export const meta: MetaFunction = ({ data }: { data: UserPageLoaderData }) => {
+  if (!data) return {};
+
   return {
     title: makeTitle(discordFullName(data)),
   };
