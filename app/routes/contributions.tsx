@@ -39,6 +39,10 @@ const TRANSLATORS: Array<{
     language: "es",
   },
   {
+    translators: ["Charakiga"],
+    language: "fr",
+  },
+  {
     translators: ["funyaaa", "taqm"],
     language: "ja",
   },
