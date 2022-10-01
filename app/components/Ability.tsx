@@ -58,6 +58,7 @@ export function Ability({
         setIsDragTarget(false);
         onDrop?.(event);
       }}
+      type="button"
     >
       <Image alt="" path={abilityImageUrl(ability)} />
     </button>
