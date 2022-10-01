@@ -75,9 +75,9 @@
 
 ## /fr (🟡 In progress)
 
-### 🔴 analyzer.json
+### 🟢 analyzer.json
 
-**0/91**
+**91/91**
 
 ### 🟢 badges.json
 
