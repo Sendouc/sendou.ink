@@ -1,4 +1,5 @@
 {
+  "customUrl": "Custom URL",
   "country": "Country",
   "bio": "Bio",
 
@@ -6,5 +7,9 @@
   "results.team": "Team",
   "results.tournament": "Tournament",
   "results.date": "Date",
-  "results.mates": "Mates"
+  "results.mates": "Mates",
+
+  "forms.errors.invalidCustomUrl.numbers": "Custom URL can't only contain numbers",
+  "forms.errors.invalidCustomUrl.strangeCharacter": "Custom URL can't contain special characters",
+  "forms.errors.invalidCustomUrl.duplicate": "Someone is already using this custom URL"
 }

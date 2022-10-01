@@ -16,6 +16,7 @@ import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
 import { z } from "zod";
 import { Button } from "~/components/Button";
+import { FormErrors } from "~/components/FormErrors";
 import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
@@ -26,7 +27,8 @@ import { requireUser } from "~/modules/auth";
 import { i18next } from "~/modules/i18n";
 import styles from "~/styles/u-edit.css";
 import { translatedCountry } from "~/utils/i18n.server";
-import { parseRequestFormData } from "~/utils/remix";
+import { safeParseRequestFormData } from "~/utils/remix";
+import { errorIsSqliteUniqueConstraintFailure } from "~/utils/sql";
 import { isCustomUrl, userPage } from "~/utils/urls";
 import { falsyToNull, undefinedToNull } from "~/utils/zod";
 import { type UserPageLoaderData } from "../u.$identifier";
@@ -49,22 +51,18 @@ const userEditActionSchema = z.object({
     falsyToNull,
     z.string().max(USER.BIO_MAX_LENGTH).nullable()
   ),
-  // xxx: return error if using duplicate custom url
   customUrl: z.preprocess(
     falsyToNull,
     z
       .string()
       .max(USER.CUSTOM_URL_MAX_LENGTH)
-      .refine(
-        (val) => val === null || isCustomUrl(val),
-        // xxx: translate
-        "Name in the custom URL can't only contain numbers"
-      )
+      .refine((val) => val === null || isCustomUrl(val), {
+        message: "forms.errors.invalidCustomUrl.numbers",
+      })
       .refine(
         // validate val only contains numbers and letters
         (val) => val === null || /^[a-zA-Z0-9-_]+$/.test(val),
-        // xxx: translate
-        "Custom URL can't contain special characters"
+        { message: "forms.errors.invalidCustomUrl.strangeCharacter" }
       )
       .transform((val) => val?.toLowerCase())
       .nullable()
@@ -98,23 +96,41 @@ const userEditActionSchema = z.object({
 });
 
 export const action: ActionFunction = async ({ request }) => {
-  const { inGameNameText, inGameNameDiscriminator, ...data } =
-    await parseRequestFormData({
-      request,
-      schema: userEditActionSchema,
-    });
-  const user = await requireUser(request);
-
-  const editedUser = db.users.updateProfile({
-    ...data,
-    inGameName:
-      inGameNameText && inGameNameDiscriminator
-        ? `${inGameNameText}#${inGameNameDiscriminator}`
-        : null,
-    id: user.id,
+  const parsedInput = await safeParseRequestFormData({
+    request,
+    schema: userEditActionSchema,
   });
 
-  return redirect(userPage(editedUser));
+  if (!parsedInput.success) {
+    return {
+      errors: parsedInput.errors,
+    };
+  }
+
+  const { inGameNameText, inGameNameDiscriminator, ...data } = parsedInput.data;
+
+  const user = await requireUser(request);
+
+  try {
+    const editedUser = db.users.updateProfile({
+      ...data,
+      inGameName:
+        inGameNameText && inGameNameDiscriminator
+          ? `${inGameNameText}#${inGameNameDiscriminator}`
+          : null,
+      id: user.id,
+    });
+
+    return redirect(userPage(editedUser));
+  } catch (e) {
+    if (!errorIsSqliteUniqueConstraintFailure(e)) {
+      throw e;
+    }
+
+    return {
+      errors: ["forms.errors.invalidCustomUrl.duplicate"],
+    };
+  }
 };
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -156,6 +172,7 @@ export default function UserEditPage() {
         >
           {t("common:actions.save")}
         </Button>
+        <FormErrors namespace="user" />
       </Form>
     </Main>
   );
@@ -166,11 +183,12 @@ function CustomUrlInput({
 }: {
   parentRouteData: UserPageLoaderData;
 }) {
+  const { t } = useTranslation(["user"]);
+
   // xxx: same width as textarea?
-  // xxx: translate
   return (
     <div className="stack items-start">
-      <Label htmlFor="customUrl">Custom URL</Label>
+      <Label htmlFor="customUrl">{t("user:customUrl")}</Label>
       <Input
         name="customUrl"
         leftAddon="https://sendou.ink/u/"

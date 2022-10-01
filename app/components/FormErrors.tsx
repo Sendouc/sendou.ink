@@ -1,7 +1,7 @@
 import { useActionData } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 
-export function FormErrors({ namespace }: { namespace: "calendar" }) {
+export function FormErrors({ namespace }: { namespace: "user" | "calendar" }) {
   const { t } = useTranslation(["common", namespace]);
   const actionData = useActionData<{ errors?: string[] }>();
 
