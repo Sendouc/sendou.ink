@@ -46,7 +46,7 @@ export default function BuildsLayoutPage() {
           )}
         </nav>
         {user && (
-          <LinkButton to={userNewBuildPage(user.discordId)} tiny>
+          <LinkButton to={userNewBuildPage(user)} tiny>
             {t("builds:addBuild")}
           </LinkButton>
         )}

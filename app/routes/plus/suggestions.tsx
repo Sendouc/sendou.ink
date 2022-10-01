@@ -368,7 +368,7 @@ function SuggestedUser({
         <h2>
           <Link
             className="all-unset"
-            to={userPage(suggested.suggestedUser.discordId)}
+            to={userPage(suggested.suggestedUser)}
             data-cy="suggested-user-name"
           >
             {suggested.suggestedUser.discordName}

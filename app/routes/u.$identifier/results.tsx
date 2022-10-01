@@ -58,7 +58,7 @@ export default function UserResultsPage() {
                           player
                         ) : (
                           <Link
-                            to={userPage(player.discordId)}
+                            to={userPage(player)}
                             className="stack horizontal xs items-center"
                           >
                             <Avatar user={player} size="xxs" />{" "}

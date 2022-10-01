@@ -123,7 +123,7 @@ function Results({
                 </h4>
                 {tiersResults[status].map((user) => (
                   <Link
-                    to={userPage(user.discordId)}
+                    to={userPage(user)}
                     className={clsx("plus-history__user-status", {
                       failed: status === "failed",
                     })}

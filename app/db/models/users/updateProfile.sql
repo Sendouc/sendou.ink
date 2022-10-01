@@ -8,4 +8,4 @@ set
   "motionSens" = @motionSens,
   "inGameName" = @inGameName
 where
-  "id" = @id
+  "id" = @id returning *

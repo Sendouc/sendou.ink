@@ -9,7 +9,7 @@ describe("user builds tab", () => {
   });
 
   it("views builds of other user", () => {
-    cy.visit(userBuildsPage(ADMIN_DISCORD_ID));
+    cy.visit(userBuildsPage({ discordId: ADMIN_DISCORD_ID }));
 
     cy.getCy("build-card").its("length").should("eq", 50);
 
@@ -18,7 +18,7 @@ describe("user builds tab", () => {
 
   it("operates ability selector", () => {
     cy.auth(1);
-    cy.visit(userBuildsPage(ADMIN_DISCORD_ID));
+    cy.visit(userBuildsPage({ discordId: ADMIN_DISCORD_ID }));
     cy.getCy("new-build-button").click();
 
     cy.getCy("UNKNOWN-ability").its("length").should("eq", 12);
@@ -39,7 +39,7 @@ describe("user builds tab", () => {
 
   it("adds a new build", () => {
     cy.auth(1);
-    cy.visit(userBuildsPage(ADMIN_DISCORD_ID));
+    cy.visit(userBuildsPage({ discordId: ADMIN_DISCORD_ID }));
     cy.getCy("new-build-button").click();
 
     cy.getCy("weapon-combobox-input").type("Luna Blaster{enter}");
@@ -62,7 +62,7 @@ describe("user builds tab", () => {
 
   it("edits build", () => {
     cy.auth(1);
-    cy.visit(userBuildsPage(ADMIN_DISCORD_ID));
+    cy.visit(userBuildsPage({ discordId: ADMIN_DISCORD_ID }));
 
     cy.getCy("edit-build-button").first().click();
 
@@ -77,7 +77,7 @@ describe("user builds tab", () => {
 
   it("deletes build", () => {
     cy.auth(1);
-    cy.visit(userBuildsPage(ADMIN_DISCORD_ID));
+    cy.visit(userBuildsPage({ discordId: ADMIN_DISCORD_ID }));
 
     cy.contains("Builds (50)");
     cy.getCy("delete-build-button").first().click();

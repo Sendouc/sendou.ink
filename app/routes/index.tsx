@@ -176,7 +176,7 @@ function CalendarPeek() {
                     player
                   ) : (
                     <Link
-                      to={userPage(player.discordId)}
+                      to={userPage(player)}
                       className="stack horizontal xs items-center"
                     >
                       {discordFullName(player)}

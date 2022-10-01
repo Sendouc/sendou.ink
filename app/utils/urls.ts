@@ -1,5 +1,5 @@
 import slugify from "slugify";
-import type { Badge, GearType } from "~/db/types";
+import type { Badge, GearType, User } from "~/db/types";
 import type { ModeShort, weaponCategories } from "~/modules/in-game-lists";
 import type {
   Ability,
@@ -36,11 +36,22 @@ export const COMMON_PREVIEW_IMAGE = "/img/layout/common-preview.png";
 export const ERROR_GIRL_IMAGE_PATH = `/img/layout/error-girl`;
 export const LOGO_PATH = `/img/layout/logo`;
 
-export const userPage = (discordId: string) => `/u/${discordId}`;
-export const userBuildsPage = (discordId: string) =>
-  `${userPage(discordId)}/builds`;
-export const userNewBuildPage = (discordId: string) =>
-  `/u/${discordId}/builds/new`;
+interface UserLinkArgs {
+  discordId: User["discordId"];
+  customUrl?: User["customUrl"];
+}
+
+export const userPage = (user: UserLinkArgs) =>
+  `/u/${user.customUrl ?? user.discordId}`;
+export const userEditProfilePage = (user: UserLinkArgs) =>
+  `${userPage(user)}/edit`;
+export const userBuildsPage = (user: UserLinkArgs) =>
+  `${userPage(user)}/builds`;
+export const userResultsPage = (user: UserLinkArgs) =>
+  `${userPage(user)}/results`;
+export const userNewBuildPage = (user: UserLinkArgs) =>
+  `${userBuildsPage(user)}/new`;
+
 export const impersonateUrl = (idToLogInAs: number) =>
   `/auth/impersonate?id=${idToLogInAs}`;
 export const badgePage = (badgeId: number) => `${BADGES_PAGE}/${badgeId}`;
@@ -100,4 +111,8 @@ export const mySlugify = (name: string) => {
     lower: true,
     strict: true,
   });
+};
+
+export const isCustomUrl = (value: string) => {
+  return Number.isNaN(Number(value));
 };

@@ -11,6 +11,7 @@ import { db } from "~/db";
 import { getUser, requireUser, useUser } from "~/modules/auth";
 import { atOrError } from "~/utils/arrays";
 import { notFoundIfFalsy, parseRequestFormData } from "~/utils/remix";
+import { userNewBuildPage } from "~/utils/urls";
 import { actualNumber, id } from "~/utils/zod";
 import { type UserPageLoaderData, userParamsSchema } from "../../u.$identifier";
 
@@ -68,7 +69,11 @@ export default function UserBuildsPage() {
     <Main className="stack lg">
       {data.builds.length < BUILD.MAX_COUNT && isOwnPage && (
         <div className="stack items-end">
-          <LinkButton to="new" tiny data-cy="new-build-button">
+          <LinkButton
+            to={userNewBuildPage(parentPageData)}
+            tiny
+            data-cy="new-build-button"
+          >
             {t("addBuild")}
           </LinkButton>
         </div>

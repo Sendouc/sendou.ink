@@ -90,9 +90,7 @@ export function Footer({
           <ul className="layout__footer__patron-list">
             {patrons.map((patron) => (
               <li key={patron.id}>
-                <Link to={userPage(patron.discordId)}>
-                  {discordFullName(patron)}
-                </Link>
+                <Link to={userPage(patron)}>{discordFullName(patron)}</Link>
               </li>
             ))}
           </ul>

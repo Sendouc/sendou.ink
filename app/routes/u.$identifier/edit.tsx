@@ -1,4 +1,5 @@
 import {
+  redirect,
   type ActionFunction,
   type LinksFunction,
   type LoaderArgs,
@@ -26,6 +27,7 @@ import { i18next } from "~/modules/i18n";
 import styles from "~/styles/u-edit.css";
 import { translatedCountry } from "~/utils/i18n.server";
 import { parseRequestFormData } from "~/utils/remix";
+import { isCustomUrl, userPage } from "~/utils/urls";
 import { falsyToNull, undefinedToNull } from "~/utils/zod";
 import { type UserPageLoaderData } from "../u.$identifier";
 
@@ -53,9 +55,8 @@ const userEditActionSchema = z.object({
     z
       .string()
       .max(USER.CUSTOM_URL_MAX_LENGTH)
-      .nullable()
       .refine(
-        (val) => val === null || Number.isNaN(Number(val)),
+        (val) => val === null || isCustomUrl(val),
         // xxx: translate
         "Name in the custom URL can't only contain numbers"
       )
@@ -66,6 +67,7 @@ const userEditActionSchema = z.object({
         "Custom URL can't contain special characters"
       )
       .transform((val) => val?.toLowerCase())
+      .nullable()
   ),
   stickSens: z.preprocess(
     undefinedToNull,
@@ -103,7 +105,7 @@ export const action: ActionFunction = async ({ request }) => {
     });
   const user = await requireUser(request);
 
-  db.users.updateProfile({
+  const editedUser = db.users.updateProfile({
     ...data,
     inGameName:
       inGameNameText && inGameNameDiscriminator
@@ -112,7 +114,7 @@ export const action: ActionFunction = async ({ request }) => {
     id: user.id,
   });
 
-  return null;
+  return redirect(userPage(editedUser));
 };
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -166,7 +168,6 @@ function CustomUrlInput({
 }) {
   // xxx: same width as textarea?
   // xxx: translate
-  // xxx: url from constant?
   return (
     <div className="stack items-start">
       <Label htmlFor="customUrl">Custom URL</Label>

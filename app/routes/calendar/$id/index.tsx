@@ -203,7 +203,7 @@ function Results() {
                         player
                       ) : (
                         <Link
-                          to={userPage(player.discordId)}
+                          to={userPage(player)}
                           className="stack horizontal xs items-center"
                         >
                           <Avatar user={player} size="xxs" />{" "}

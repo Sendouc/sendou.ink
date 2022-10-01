@@ -1,3 +1,4 @@
+import * as React from "react";
 import type {
   LinksFunction,
   LoaderArgs,
@@ -5,7 +6,7 @@ import type {
   SerializeFrom,
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Outlet, useLoaderData } from "@remix-run/react";
+import { Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import { countries } from "countries-list";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
@@ -17,6 +18,14 @@ import { translatedCountry } from "~/utils/i18n.server";
 import { notFoundIfFalsy } from "~/utils/remix";
 import { discordFullName, makeTitle } from "~/utils/strings";
 import styles from "~/styles/u.css";
+import invariant from "tiny-invariant";
+import {
+  isCustomUrl,
+  userBuildsPage,
+  userEditProfilePage,
+  userPage,
+  userResultsPage,
+} from "~/utils/urls";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -57,6 +66,10 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     twitter: user.twitter,
     youtubeId: user.youtubeId,
     bio: user.bio,
+    customUrl: user.customUrl,
+    motionSens: user.motionSens,
+    stickSens: user.stickSens,
+    inGameName: user.inGameName,
     country:
       countryObj && user.country
         ? {
@@ -82,24 +95,26 @@ export default function UserPageLayout() {
 
   const isOwnPage = data.id === user?.id;
 
+  useReplaceWithCustomUrl();
+
   return (
     <>
       <SubNav>
-        <SubNavLink to="" data-cy="profile-page-link">
+        <SubNavLink to={userPage(data)} data-cy="profile-page-link">
           {t("header.profile")}
         </SubNavLink>
         {isOwnPage && (
-          <SubNavLink to="edit" data-cy="edit-page-link">
+          <SubNavLink to={userEditProfilePage(data)} data-cy="edit-page-link">
             {t("actions.edit")}
           </SubNavLink>
         )}
         {data.results.length > 0 && (
-          <SubNavLink to="results" data-cy="results-page-link">
+          <SubNavLink to={userResultsPage(data)} data-cy="results-page-link">
             {t("results")}
           </SubNavLink>
         )}
         {(isOwnPage || data.buildsCount > 0) && (
-          <SubNavLink to="builds" data-cy="builds-page-link">
+          <SubNavLink to={userBuildsPage(data)} data-cy="builds-page-link">
             {t("pages.builds")} ({data.buildsCount})
           </SubNavLink>
         )}
@@ -107,4 +122,31 @@ export default function UserPageLayout() {
       <Outlet />
     </>
   );
+}
+
+function useReplaceWithCustomUrl() {
+  const data = useLoaderData<typeof loader>();
+  const location = useLocation();
+
+  React.useEffect(() => {
+    if (!data.customUrl) {
+      return;
+    }
+
+    const identifier = location.pathname.replace("/u/", "").split("/")[0];
+    invariant(identifier);
+
+    if (isCustomUrl(identifier)) {
+      return;
+    }
+
+    window.history.replaceState(
+      null,
+      "",
+      location.pathname
+        .split("/")
+        .map((part) => (part === identifier ? data.customUrl : part))
+        .join("/")
+    );
+  }, [location, data.customUrl]);
 }

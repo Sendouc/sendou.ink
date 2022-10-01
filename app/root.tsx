@@ -64,7 +64,7 @@ export interface RootLoaderData {
   patrons: FindAllPatrons;
   user?: Pick<
     UserWithPlusTier,
-    "id" | "discordId" | "discordAvatar" | "plusTier"
+    "id" | "discordId" | "discordAvatar" | "plusTier" | "customUrl"
   >;
 }
 
@@ -84,6 +84,7 @@ export const loader: LoaderFunction = async ({ request }) => {
             discordId: user.discordId,
             id: user.id,
             plusTier: user.plusTier,
+            customUrl: user.customUrl,
           }
         : undefined,
     },

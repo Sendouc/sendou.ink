@@ -151,7 +151,7 @@ export const action: ActionFunction = async ({ request }) => {
     db.builds.create(commonArgs);
   }
 
-  return redirect(userBuildsPage(user.discordId));
+  return redirect(userBuildsPage(user));
 };
 
 export const handle = {

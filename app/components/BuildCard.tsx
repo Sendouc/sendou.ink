@@ -88,9 +88,7 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
         <div className="build__date-author-row">
           {owner && (
             <>
-              <Link to={userBuildsPage(owner.discordId)}>
-                {discordFullName(owner)}
-              </Link>
+              <Link to={userBuildsPage(owner)}>{discordFullName(owner)}</Link>
               <div>•</div>
             </>
           )}

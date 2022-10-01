@@ -42,7 +42,7 @@ export function updateProfile(
     | "inGameName"
   >
 ) {
-  updateProfileStm.run(args);
+  return updateProfileStm.get(args) as User;
 }
 
 const updateByDiscordIdStm = sql.prepare(updateByDiscordIdSql);

@@ -26,7 +26,7 @@ export function UserItem() {
         }
       >
         <div className="layout__user-popover">
-          <Link to={userPage(user.discordId)}>
+          <Link to={userPage(user)}>
             <Button
               className="w-full"
               tiny
