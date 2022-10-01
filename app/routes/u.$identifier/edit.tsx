@@ -15,6 +15,7 @@ import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
 import { z } from "zod";
 import { Button } from "~/components/Button";
+import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import { USER } from "~/constants";
@@ -46,17 +47,25 @@ const userEditActionSchema = z.object({
     falsyToNull,
     z.string().max(USER.BIO_MAX_LENGTH).nullable()
   ),
+  // xxx: return error if using duplicate custom url
   customUrl: z.preprocess(
     falsyToNull,
     z
       .string()
       .max(USER.CUSTOM_URL_MAX_LENGTH)
+      .nullable()
       .refine(
         (val) => val === null || Number.isNaN(Number(val)),
         // xxx: translate
         "Name in the custom URL can't only contain numbers"
       )
-      .nullable()
+      .refine(
+        // validate val only contains numbers and letters
+        (val) => val === null || /^[a-zA-Z0-9-_]+$/.test(val),
+        // xxx: translate
+        "Custom URL can't contain special characters"
+      )
+      .transform((val) => val?.toLowerCase())
   ),
   stickSens: z.preprocess(
     undefinedToNull,
@@ -134,6 +143,7 @@ export default function UserEditPage() {
   return (
     <Main>
       <Form className="u-edit__container" method="post">
+        <CustomUrlInput parentRouteData={parentRouteData} />
         <CountrySelect parentRouteData={parentRouteData} />
         <BioTextarea initialValue={parentRouteData.bio} />
         <Button
@@ -146,6 +156,27 @@ export default function UserEditPage() {
         </Button>
       </Form>
     </Main>
+  );
+}
+
+function CustomUrlInput({
+  parentRouteData,
+}: {
+  parentRouteData: UserPageLoaderData;
+}) {
+  // xxx: same width as textarea?
+  // xxx: translate
+  // xxx: url from constant?
+  return (
+    <div className="stack items-start">
+      <Label htmlFor="customUrl">Custom URL</Label>
+      <Input
+        name="customUrl"
+        leftAddon="https://sendou.ink/u/"
+        maxLength={USER.CUSTOM_URL_MAX_LENGTH}
+        defaultValue={parentRouteData.customUrl ?? undefined}
+      />
+    </div>
   );
 }
 

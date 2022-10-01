@@ -34,7 +34,7 @@ const basicSeeds = [
   adminUser,
   nzapUser,
   users,
-  userBios,
+  userProfiles,
   lastMonthsVoting,
   lastMonthSuggestions,
   thisMonthsSuggestions,
@@ -107,7 +107,39 @@ function users() {
   new Array(500).fill(null).map(fakeUser(usedNames)).forEach(db.users.upsert);
 }
 
-function userBios() {
+function userProfiles() {
+  for (const args of [
+    {
+      userId: 1,
+      country: "FI",
+      customUrl: "sendou",
+      motionSens: 50,
+      stickSens: 5,
+      inGameName: "Sendou#1234",
+    },
+    {
+      userId: 2,
+      country: "SE",
+      customUrl: "nzap",
+      motionSens: -40,
+      stickSens: 0,
+      inGameName: "N-ZAP#5678",
+    },
+  ]) {
+    sql
+      .prepare(
+        `
+        UPDATE "User" SET 
+          country = $country,
+          customUrl = $customUrl,
+          motionSens = $motionSens,
+          stickSens = $stickSens,
+          inGameName = $inGameName
+        WHERE id = $userId`
+      )
+      .run(args);
+  }
+
   for (let id = 3; id < 500; id++) {
     if (Math.random() < 0.25) continue; // 75% have bio
 

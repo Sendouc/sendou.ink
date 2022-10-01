@@ -7,3 +7,4 @@ from
 where
   "discordId" = @identifier
   or "id" = @identifier
+  or "customUrl" = @identifier
