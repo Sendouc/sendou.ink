@@ -29,6 +29,7 @@ export function Ability({
       }
       onClick={onClick}
       data-cy={`${ability}-ability`}
+      type="button"
     >
       <Image alt="" path={abilityImageUrl(ability)} />
     </button>
