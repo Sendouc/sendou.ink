@@ -85,9 +85,9 @@
   "base": "Base",
   "value": "Valeur",
   "build": "Equipement",
-  "patch": "Correctif:",
+  "patch": "Version:",
   "abilityPoints": "Points de compétence",
   "abilityPoints.short": "PC",
-  "consumptionExplanation": "Ce tableau montre le nombre d'actions restant à effecteur avec l'arme principale après avoir utilisé l'arme secondaire 0-{{maxSubsToUse}} fois. Le nombre max d'armes secondaires consécutives à utiliser avec un réservoir d'encre plein est de {{maxSubsToUse}}.",
+  "consumptionExplanation": "Ce tableau montre le nombre d'actions restant à effectuer avec l'arme principale après avoir utilisé l'arme secondaire 0-{{maxSubsToUse}} fois. Le nombre max d'armes secondaires consécutives à utiliser avec un réservoir d'encre plein est de {{maxSubsToUse}}.",
   "trackingSubDefExplanation": "Les temps de traçage de détecteur, de mine et de ricocheur sont calculés contre un adversaire avec 0PC d'arme secondaire +."
 }
