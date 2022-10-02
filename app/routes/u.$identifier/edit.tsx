@@ -162,6 +162,7 @@ export default function UserEditPage() {
     <Main>
       <Form className="u-edit__container" method="post">
         <CustomUrlInput parentRouteData={parentRouteData} />
+        <InGameNameInputs parentRouteData={parentRouteData} />
         <CountrySelect parentRouteData={parentRouteData} />
         <BioTextarea initialValue={parentRouteData.bio} />
         <Button
@@ -185,7 +186,7 @@ function CustomUrlInput({
 }) {
   const { t } = useTranslation(["user"]);
 
-  // xxx: same width as textarea?
+  // xxx: fix all input widthes
   return (
     <div className="stack items-start">
       <Label htmlFor="customUrl">{t("user:customUrl")}</Label>
@@ -195,6 +196,38 @@ function CustomUrlInput({
         maxLength={USER.CUSTOM_URL_MAX_LENGTH}
         defaultValue={parentRouteData.customUrl ?? undefined}
       />
+    </div>
+  );
+}
+
+function InGameNameInputs({
+  parentRouteData,
+}: {
+  parentRouteData: UserPageLoaderData;
+}) {
+  const { t } = useTranslation(["user"]);
+
+  const inGameNameParts = parentRouteData.inGameName?.split("#");
+
+  return (
+    <div className="stack items-start">
+      <Label>{t("user:ign")}</Label>
+      <div className="stack horizontal sm">
+        <Input
+          className="u-edit__in-game-name-text"
+          name="inGameNameText"
+          maxLength={USER.IN_GAME_NAME_TEXT_MAX_LENGTH}
+          defaultValue={inGameNameParts?.[0]}
+        />
+        <div className="u-edit__in-game-name-hashtag">#</div>
+        <Input
+          className="u-edit__in-game-name-discriminator"
+          name="inGameNameDiscriminator"
+          maxLength={USER.IN_GAME_NAME_DISCRIMINATOR_LENGTH}
+          pattern="[0-9]{4}"
+          defaultValue={inGameNameParts?.[1]}
+        />
+      </div>
     </div>
   );
 }

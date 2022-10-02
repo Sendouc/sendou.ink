@@ -8,3 +8,11 @@
 .u-edit__country-select {
   max-width: 10rem;
 }
+
+.u-edit__in-game-name-hashtag {
+  font-size: var(--fonts-lg);
+}
+
+.u-edit__in-game-name-discriminator {
+  width: 4rem;
+}

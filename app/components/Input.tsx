@@ -7,6 +7,7 @@ export function Input({
   maxLength,
   defaultValue,
   leftAddon,
+  pattern,
   "data-cy": dataCy,
 }: {
   name: string;
@@ -15,6 +16,7 @@ export function Input({
   maxLength?: number;
   defaultValue?: string;
   leftAddon?: string;
+  pattern?: string;
   "data-cy"?: string;
 }) {
   return (
@@ -26,6 +28,7 @@ export function Input({
         maxLength={maxLength}
         defaultValue={defaultValue}
         data-cy={dataCy}
+        pattern={pattern}
       />
     </div>
   );
