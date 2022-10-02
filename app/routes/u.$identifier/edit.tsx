@@ -30,7 +30,12 @@ import { translatedCountry } from "~/utils/i18n.server";
 import { safeParseRequestFormData } from "~/utils/remix";
 import { errorIsSqliteUniqueConstraintFailure } from "~/utils/sql";
 import { isCustomUrl, userPage } from "~/utils/urls";
-import { falsyToNull, undefinedToNull } from "~/utils/zod";
+import {
+  actualNumber,
+  falsyToNull,
+  processMany,
+  undefinedToNull,
+} from "~/utils/zod";
 import { type UserPageLoaderData } from "../u.$identifier";
 
 export const links: LinksFunction = () => {
@@ -68,7 +73,7 @@ const userEditActionSchema = z.object({
       .nullable()
   ),
   stickSens: z.preprocess(
-    undefinedToNull,
+    processMany(actualNumber, undefinedToNull),
     z
       .number()
       .min(-50)
@@ -77,7 +82,7 @@ const userEditActionSchema = z.object({
       .nullable()
   ),
   motionSens: z.preprocess(
-    undefinedToNull,
+    processMany(actualNumber, undefinedToNull),
     z
       .number()
       .min(-50)
@@ -159,10 +164,11 @@ export default function UserEditPage() {
   const transition = useTransition();
 
   return (
-    <Main>
+    <Main halfWidth>
       <Form className="u-edit__container" method="post">
         <CustomUrlInput parentRouteData={parentRouteData} />
         <InGameNameInputs parentRouteData={parentRouteData} />
+        <SensSelects parentRouteData={parentRouteData} />
         <CountrySelect parentRouteData={parentRouteData} />
         <BioTextarea initialValue={parentRouteData.bio} />
         <Button
@@ -186,9 +192,8 @@ function CustomUrlInput({
 }) {
   const { t } = useTranslation(["user"]);
 
-  // xxx: fix all input widthes
   return (
-    <div className="stack items-start">
+    <div className="w-full">
       <Label htmlFor="customUrl">{t("user:customUrl")}</Label>
       <Input
         name="customUrl"
@@ -232,6 +237,56 @@ function InGameNameInputs({
   );
 }
 
+const SENS_OPTIONS = [
+  -50, -45, -40, -35, -30, -25, -20, -15, -10, -5, 0, 5, 10, 15, 20, 25, 30, 35,
+  40, 45, 50,
+];
+function SensSelects({
+  parentRouteData,
+}: {
+  parentRouteData: UserPageLoaderData;
+}) {
+  const { t } = useTranslation(["user"]);
+
+  return (
+    <div className="stack horizontal md">
+      <div>
+        <Label>{t("user:stickSens")}</Label>
+        <select
+          name="stickSens"
+          defaultValue={parentRouteData.stickSens ?? undefined}
+          className="u-edit__sens-select"
+        >
+          <option value="">{"-"}</option>
+          {SENS_OPTIONS.map((sens) => (
+            <option key={sens} value={sens}>
+              {sens > 0 ? "+" : ""}
+              {Number(sens) / 10}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <Label>{t("user:motionSens")}</Label>
+        <select
+          name="motionSens"
+          defaultValue={parentRouteData.motionSens ?? undefined}
+          className="u-edit__sens-select"
+        >
+          <option value="">{"-"}</option>
+          {SENS_OPTIONS.map((sens) => (
+            <option key={sens} value={sens}>
+              {sens > 0 ? "+" : ""}
+              {Number(sens) / 10}
+            </option>
+          ))}
+        </select>
+      </div>
+    </div>
+  );
+}
+
 function CountrySelect({
   parentRouteData,
 }: {
@@ -266,7 +321,7 @@ function BioTextarea({ initialValue }: { initialValue: User["bio"] }) {
   const [value, setValue] = React.useState(initialValue ?? "");
 
   return (
-    <div className="w-full">
+    <div className="u-edit__bio-container">
       <Label
         htmlFor="bio"
         valueLimits={{ current: value.length, max: USER.BIO_MAX_LENGTH }}
