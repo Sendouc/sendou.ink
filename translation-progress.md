@@ -2,9 +2,18 @@
 
 ## /da (🟡 In progress)
 
-### 🟢 analyzer.json
+### 🟡 analyzer.json
 
-**91/91**
+**91/94**
+
+<details>
+<summary>Missing</summary>
+
+- stat.shootingRunSpeed
+- stat.shootingRunSpeedCharging
+- stat.shootingRunSpeedFullCharge
+
+</details>
 
 ### 🟢 badges.json
 
@@ -60,9 +69,18 @@
 
 ## /de (🟡 In progress)
 
-### 🟢 analyzer.json
+### 🟡 analyzer.json
 
-**91/91**
+**91/94**
+
+<details>
+<summary>Missing</summary>
+
+- stat.shootingRunSpeed
+- stat.shootingRunSpeedCharging
+- stat.shootingRunSpeedFullCharge
+
+</details>
 
 ### 🟢 badges.json
 
@@ -143,9 +161,18 @@
 
 ## /es (🟡 In progress)
 
-### 🟢 analyzer.json
+### 🟡 analyzer.json
 
-**91/91**
+**91/94**
+
+<details>
+<summary>Missing</summary>
+
+- stat.shootingRunSpeed
+- stat.shootingRunSpeedCharging
+- stat.shootingRunSpeedFullCharge
+
+</details>
 
 ### 🟢 badges.json
 
@@ -201,9 +228,18 @@
 
 ## /fr (🟡 In progress)
 
-### 🟢 analyzer.json
+### 🟡 analyzer.json
 
-**91/91**
+**91/94**
+
+<details>
+<summary>Missing</summary>
+
+- stat.shootingRunSpeed
+- stat.shootingRunSpeedCharging
+- stat.shootingRunSpeedFullCharge
+
+</details>
 
 ### 🟢 badges.json
 
@@ -289,7 +325,7 @@
 
 ### 🟡 analyzer.json
 
-**12/91**
+**12/94**
 
 <details>
 <summary>Missing</summary>
@@ -310,6 +346,9 @@
 - stat.swimSpeed
 - stat.runSpeed
 - stat.runSpeedInEnemyInk
+- stat.shootingRunSpeed
+- stat.shootingRunSpeedCharging
+- stat.shootingRunSpeedFullCharge
 - stat.framesBeforeTakingDamageInEnemyInk
 - stat.damageTakenInEnemyInkPerSecond
 - stat.enemyInkDamageLimit
@@ -455,7 +494,7 @@
 
 ### 🔴 analyzer.json
 
-**0/91**
+**0/94**
 
 ### 🟢 badges.json
 
@@ -547,7 +586,7 @@
 
 ### 🟡 analyzer.json
 
-**70/91**
+**70/94**
 
 <details>
 <summary>Missing</summary>
@@ -555,6 +594,9 @@
 - stat.jumpShotSpread
 - stat.groundShotSpread
 - stat.squidSurgeChargeFrames
+- stat.shootingRunSpeed
+- stat.shootingRunSpeedCharging
+- stat.shootingRunSpeedFullCharge
 - stat.bombHdamage
 - stat.bombLdamage
 - stat.sub.qsjBoost
@@ -665,7 +707,7 @@
 
 ### 🔴 analyzer.json
 
-**0/91**
+**0/94**
 
 ### 🟢 badges.json
 

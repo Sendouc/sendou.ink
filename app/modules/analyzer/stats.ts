@@ -84,7 +84,12 @@ export function buildStats({
       subWeaponWhiteInkSeconds: framesToSeconds(subWeaponParams.InkRecoverStop),
       squidFormInkRecoverySeconds: squidFormInkRecoverySeconds(input),
       runSpeed: runSpeed(input),
-      // shootingRunSpeed: shootingRunSpeed(input),
+      shootingRunSpeed: shootingRunSpeed(input, "MoveSpeed"),
+      shootingRunSpeedCharging: shootingRunSpeed(input, "MoveSpeed_Charge"),
+      shootingRunSpeedFullCharge: shootingRunSpeed(
+        input,
+        "MoveSpeedFullCharge"
+      ),
       swimSpeed: swimSpeed(input),
       runSpeedInEnemyInk: runSpeedInEnemyInk(input),
       damageTakenInEnemyInkPerSecond: damageTakenInEnemyInkPerSecond(input),
@@ -452,6 +457,31 @@ function runSpeedInEnemyInk(
     baseValue: effectToRounded(baseEffect * 10),
     value: effectToRounded(effect * 10),
     modifiedBy: RUN_SPEED_IN_ENEMY_INK_ABILITY,
+  };
+}
+
+function shootingRunSpeed(
+  args: StatFunctionInput,
+  keyName: "MoveSpeed" | "MoveSpeed_Charge" | "MoveSpeedFullCharge"
+): AnalyzedBuild["stats"]["shootingRunSpeed"] {
+  const SHOOTING_RUN_SPEED_ABILITY = "RSU";
+  const moveSpeed = args.mainWeaponParams[keyName];
+
+  if (!moveSpeed) return;
+
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: SHOOTING_RUN_SPEED_ABILITY,
+    }),
+    key: "MoveVelRt_Shot",
+    weapon: args.mainWeaponParams,
+  });
+
+  return {
+    baseValue: effectToRounded(moveSpeed * baseEffect * 10),
+    value: effectToRounded(moveSpeed * effect * 10),
+    modifiedBy: SHOOTING_RUN_SPEED_ABILITY,
   };
 }
 

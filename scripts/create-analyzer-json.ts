@@ -155,6 +155,16 @@ function parametersToMainWeaponResult(
     overwrites: resolveOverwrites(params),
     TripleShotSpanFrame: params["WeaponParam"]?.["TripleShotSpanFrame"],
     WeaponSpeedType: params["MainWeaponSetting"]?.["WeaponSpeedType"],
+    MoveSpeed:
+      params["WeaponParam"]?.["MoveSpeed"] ??
+      params["spl__WeaponShelterShotgunParam"]?.["MoveSpeed"],
+    MoveSpeed_Charge: params["WeaponParam"]?.["MoveSpeed_Charge"],
+    MoveSpeedFullCharge:
+      params["WeaponParam"]?.["MoveSpeedFullCharge"] ??
+      params["spl__WeaponStringerParam"]?.["ChargeParam"]?.[
+        "MoveSpeedFullCharge"
+      ] ??
+      params["spl__WeaponSaberParam"]?.["ChargeParam"]?.["MoveSpeedFullCharge"],
     DamageParam_ValueMax: DamageParam_ValueMax(),
     DamageParam_ValueMin: !DamageParam_ValueDirect
       ? params["DamageParam"]?.["ValueMin"]
@@ -226,7 +236,7 @@ function parametersToSubWeaponResult(
   subWeapon: SubWeapon,
   params: any
 ): SubWeaponParams {
-  const SubInkSaveLv = params["SubWeaponSetting"]?.["SubInkSaveLv"];
+  const SubInkSaveLv = params["SubWeaponSetting"]?.["SubInkSaveLv"] ?? 2;
   // xxx: enable when all sub weapons have SubInkSaveLv's
   // invariant(
   //   LEGAL_SUB_INK_SAVE_LV.includes(SubInkSaveLv),
@@ -236,7 +246,7 @@ function parametersToSubWeaponResult(
   return {
     overwrites: resolveSubWeaponOverwrites(subWeapon, params),
     SubInkSaveLv,
-    InkConsume: params["WeaponParam"]["InkConsume"],
+    InkConsume: params["WeaponParam"]["InkConsume"] ?? 0.7,
     InkRecoverStop: params["WeaponParam"]["InkRecoverStop"],
     DistanceDamage: params["BlastParam"]?.["DistanceDamage"],
     DistanceDamage_BlastParamMaxCharge:

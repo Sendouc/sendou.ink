@@ -488,6 +488,24 @@ export default function BuildAnalyzerPage() {
               stat={analyzed.stats.runSpeed}
               title={t("analyzer:stat.runSpeed")}
             />
+            {analyzed.stats.shootingRunSpeed && (
+              <StatCard
+                stat={analyzed.stats.shootingRunSpeed}
+                title={t("analyzer:stat.shootingRunSpeed")}
+              />
+            )}
+            {analyzed.stats.shootingRunSpeedCharging && (
+              <StatCard
+                stat={analyzed.stats.shootingRunSpeedCharging}
+                title={t("analyzer:stat.shootingRunSpeedCharging")}
+              />
+            )}
+            {analyzed.stats.shootingRunSpeedFullCharge && (
+              <StatCard
+                stat={analyzed.stats.shootingRunSpeedFullCharge}
+                title={t("analyzer:stat.shootingRunSpeedFullCharge")}
+              />
+            )}
             <StatCard
               stat={analyzed.stats.squidSurgeChargeFrames}
               title={t("analyzer:stat.squidSurgeChargeFrames")}

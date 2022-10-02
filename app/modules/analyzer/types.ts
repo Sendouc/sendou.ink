@@ -27,6 +27,9 @@ export interface MainWeaponParams {
   KeepChargeFullFrame?: number;
   /** Amount of frames full charge takes */
   ChargeFrameFullCharge?: number;
+  MoveSpeed?: number;
+  MoveSpeed_Charge?: number;
+  MoveSpeedFullCharge?: number;
   DamageParam_ValueMax?: number;
   DamageParam_ValueMin?: number;
   DamageParam_ValueDirect?: number;
@@ -197,7 +200,9 @@ export interface AnalyzedBuild {
     damages: Array<Damage & { id: string }>;
     squidFormInkRecoverySeconds: Stat;
     runSpeed: Stat;
-    // shootingRunSpeed: Stat;
+    shootingRunSpeed?: Stat;
+    shootingRunSpeedCharging?: Stat;
+    shootingRunSpeedFullCharge?: Stat;
     swimSpeed: Stat;
     runSpeedInEnemyInk: Stat;
     framesBeforeTakingDamageInEnemyInk: Stat;
