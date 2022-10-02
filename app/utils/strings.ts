@@ -21,3 +21,6 @@ export function placementString(placement: number) {
 export function semiRandomId() {
   return String(Math.random());
 }
+
+export const rawSensToString = (sens: number) =>
+  `${sens > 0 ? "+" : ""}${sens / 10}`;

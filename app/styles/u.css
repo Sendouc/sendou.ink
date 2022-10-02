@@ -86,6 +86,26 @@
   fill: #9146ff;
 }
 
+.u__extra-infos {
+  display: flex;
+  max-width: 24rem;
+  flex-wrap: wrap;
+  gap: var(--s-2-5);
+  margin-inline: auto;
+}
+
+.u__extra-info {
+  padding: var(--s-1) var(--s-1-5);
+  background-color: var(--bg-darker);
+  border-radius: var(--rounded);
+  font-size: var(--fonts-xxs);
+}
+
+.u__extra-info__heading {
+  color: var(--theme);
+  font-weight: var(--bold);
+}
+
 .u__badges {
   display: flex;
   max-width: 24rem;

@@ -9,6 +9,7 @@ import { TwitchIcon } from "~/components/icons/Twitch";
 import { TwitterIcon } from "~/components/icons/Twitter";
 import { YouTubeIcon } from "~/components/icons/YouTube";
 import { Main } from "~/components/Main";
+import { rawSensToString } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
 import { assertUnreachable } from "~/utils/types";
 import { badgeExplanationText } from "../badges/$id";
@@ -52,6 +53,7 @@ export default function UserInfoPage() {
             ) : null}
           </div>
         </div>
+        <ExtraInfos />
         <BadgeContainer badges={data.badges} />
         {data.bio && <article>{data.bio}</article>}
       </div>
@@ -109,6 +111,40 @@ function SocialLinkIcon({ type }: Pick<SocialLinkProps, "type">) {
     default:
       assertUnreachable(type);
   }
+}
+
+function ExtraInfos() {
+  const { t } = useTranslation(["user"]);
+  const [, parentRoute] = useMatches();
+  invariant(parentRoute);
+  const data = parentRoute.data as UserPageLoaderData;
+
+  const motionSensText =
+    typeof data.motionSens === "number"
+      ? ` / ${t("user:motion")} ${rawSensToString(data.motionSens)}`
+      : "";
+
+  if (!data.inGameName && typeof data.stickSens !== "number") {
+    return null;
+  }
+
+  return (
+    <div className="u__extra-infos">
+      {data.inGameName && (
+        <div className="u__extra-info">
+          <span className="u__extra-info__heading">{t("user:ign.short")}</span>{" "}
+          {data.inGameName}
+        </div>
+      )}
+      {typeof data.stickSens === "number" && (
+        <div className="u__extra-info">
+          <span className="u__extra-info__heading">{t("user:sens")}</span>{" "}
+          {t("user:stick")} {rawSensToString(data.stickSens)}
+          {motionSensText}
+        </div>
+      )}
+    </div>
+  );
 }
 
 function BadgeContainer(props: { badges: UserPageLoaderData["badges"] }) {

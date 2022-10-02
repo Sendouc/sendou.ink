@@ -61,6 +61,8 @@ export function undefinedToNull(value: unknown): unknown {
 }
 
 export function actualNumber(value: unknown) {
+  if (value === "") return undefined;
+
   const parsed = Number(value);
 
   return Number.isNaN(parsed) ? undefined : parsed;
