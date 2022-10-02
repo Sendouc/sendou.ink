@@ -29,6 +29,7 @@ import styles from "~/styles/u-edit.css";
 import { translatedCountry } from "~/utils/i18n.server";
 import { safeParseRequestFormData } from "~/utils/remix";
 import { errorIsSqliteUniqueConstraintFailure } from "~/utils/sql";
+import { rawSensToString } from "~/utils/strings";
 import { isCustomUrl, userPage } from "~/utils/urls";
 import {
   actualNumber,
@@ -42,63 +43,76 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-const userEditActionSchema = z.object({
-  country: z.preprocess(
-    falsyToNull,
-    z
-      .string()
-      .refine(
-        (val) => !val || Object.keys(countries).some((code) => val === code)
-      )
-      .nullable()
-  ),
-  bio: z.preprocess(
-    falsyToNull,
-    z.string().max(USER.BIO_MAX_LENGTH).nullable()
-  ),
-  customUrl: z.preprocess(
-    falsyToNull,
-    z
-      .string()
-      .max(USER.CUSTOM_URL_MAX_LENGTH)
-      .refine((val) => val === null || isCustomUrl(val), {
-        message: "forms.errors.invalidCustomUrl.numbers",
-      })
-      .refine(
-        // validate val only contains numbers and letters
-        (val) => val === null || /^[a-zA-Z0-9-_]+$/.test(val),
-        { message: "forms.errors.invalidCustomUrl.strangeCharacter" }
-      )
-      .transform((val) => val?.toLowerCase())
-      .nullable()
-  ),
-  stickSens: z.preprocess(
-    processMany(actualNumber, undefinedToNull),
-    z
-      .number()
-      .min(-50)
-      .max(50)
-      .refine((val) => val % 5 === 0)
-      .nullable()
-  ),
-  motionSens: z.preprocess(
-    processMany(actualNumber, undefinedToNull),
-    z
-      .number()
-      .min(-50)
-      .max(50)
-      .refine((val) => val % 5 === 0)
-      .nullable()
-  ),
-  inGameNameText: z.preprocess(
-    falsyToNull,
-    z.string().max(USER.IN_GAME_NAME_TEXT_MAX_LENGTH).nullable()
-  ),
-  inGameNameDiscriminator: z.preprocess(
-    falsyToNull,
-    z.string().length(USER.IN_GAME_NAME_DISCRIMINATOR_LENGTH).nullable()
-  ),
-});
+const userEditActionSchema = z
+  .object({
+    country: z.preprocess(
+      falsyToNull,
+      z
+        .string()
+        .refine(
+          (val) => !val || Object.keys(countries).some((code) => val === code)
+        )
+        .nullable()
+    ),
+    bio: z.preprocess(
+      falsyToNull,
+      z.string().max(USER.BIO_MAX_LENGTH).nullable()
+    ),
+    customUrl: z.preprocess(
+      falsyToNull,
+      z
+        .string()
+        .max(USER.CUSTOM_URL_MAX_LENGTH)
+        .refine((val) => val === null || isCustomUrl(val), {
+          message: "forms.errors.invalidCustomUrl.numbers",
+        })
+        .refine(
+          // validate val only contains numbers and letters
+          (val) => val === null || /^[a-zA-Z0-9-_]+$/.test(val),
+          { message: "forms.errors.invalidCustomUrl.strangeCharacter" }
+        )
+        .transform((val) => val?.toLowerCase())
+        .nullable()
+    ),
+    stickSens: z.preprocess(
+      processMany(actualNumber, undefinedToNull),
+      z
+        .number()
+        .min(-50)
+        .max(50)
+        .refine((val) => val % 5 === 0)
+        .nullable()
+    ),
+    motionSens: z.preprocess(
+      processMany(actualNumber, undefinedToNull),
+      z
+        .number()
+        .min(-50)
+        .max(50)
+        .refine((val) => val % 5 === 0)
+        .nullable()
+    ),
+    inGameNameText: z.preprocess(
+      falsyToNull,
+      z.string().max(USER.IN_GAME_NAME_TEXT_MAX_LENGTH).nullable()
+    ),
+    inGameNameDiscriminator: z.preprocess(
+      falsyToNull,
+      z.string().length(USER.IN_GAME_NAME_DISCRIMINATOR_LENGTH).nullable()
+    ),
+  })
+  .refine(
+    (val) => {
+      if (val.motionSens !== null && val.stickSens === null) {
+        return false;
+      }
+
+      return true;
+    },
+    {
+      message: "forms.errors.invalidSens",
+    }
+  );
 
 export const action: ActionFunction = async ({ request }) => {
   const parsedInput = await safeParseRequestFormData({
@@ -260,8 +274,7 @@ function SensSelects({
           <option value="">{"-"}</option>
           {SENS_OPTIONS.map((sens) => (
             <option key={sens} value={sens}>
-              {sens > 0 ? "+" : ""}
-              {Number(sens) / 10}
+              {rawSensToString(Number(sens))}
             </option>
           ))}
         </select>
@@ -277,8 +290,7 @@ function SensSelects({
           <option value="">{"-"}</option>
           {SENS_OPTIONS.map((sens) => (
             <option key={sens} value={sens}>
-              {sens > 0 ? "+" : ""}
-              {Number(sens) / 10}
+              {rawSensToString(Number(sens))}
             </option>
           ))}
         </select>
