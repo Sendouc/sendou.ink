@@ -1,6 +1,60 @@
 # Translation Progress
 
-## /da (🟢 Done)
+## /da (🟡 In progress)
+
+### 🟢 analyzer.json
+
+**91/91**
+
+### 🟢 badges.json
+
+**7/7**
+
+### 🟢 builds.json
+
+**11/11**
+
+### 🟢 calendar.json
+
+**44/44**
+
+### 🟢 common.json
+
+**48/48**
+
+### 🟢 contributions.json
+
+**6/6**
+
+### 🟢 faq.json
+
+**6/6**
+
+### 🟢 front.json
+
+**10/10**
+
+### 🟡 user.json
+
+**7/19**
+
+<details>
+<summary>Missing</summary>
+
+- customUrl
+- ign
+- ign.short
+- stickSens
+- motionSens
+- motion
+- stick
+- sens
+- forms.errors.invalidCustomUrl.numbers
+- forms.errors.invalidCustomUrl.strangeCharacter
+- forms.errors.invalidCustomUrl.duplicate
+- forms.errors.invalidSens
+
+</details>
 
 ---
 
@@ -63,13 +117,85 @@
 
 </details>
 
-### 🟢 user.json
+### 🟡 user.json
 
-**7/7**
+**7/19**
+
+<details>
+<summary>Missing</summary>
+
+- customUrl
+- ign
+- ign.short
+- stickSens
+- motionSens
+- motion
+- stick
+- sens
+- forms.errors.invalidCustomUrl.numbers
+- forms.errors.invalidCustomUrl.strangeCharacter
+- forms.errors.invalidCustomUrl.duplicate
+- forms.errors.invalidSens
+
+</details>
 
 ---
 
-## /es (🟢 Done)
+## /es (🟡 In progress)
+
+### 🟢 analyzer.json
+
+**91/91**
+
+### 🟢 badges.json
+
+**7/7**
+
+### 🟢 builds.json
+
+**11/11**
+
+### 🟢 calendar.json
+
+**44/44**
+
+### 🟢 common.json
+
+**48/48**
+
+### 🟢 contributions.json
+
+**6/6**
+
+### 🟢 faq.json
+
+**6/6**
+
+### 🟢 front.json
+
+**10/10**
+
+### 🟡 user.json
+
+**7/19**
+
+<details>
+<summary>Missing</summary>
+
+- customUrl
+- ign
+- ign.short
+- stickSens
+- motionSens
+- motion
+- stick
+- sens
+- forms.errors.invalidCustomUrl.numbers
+- forms.errors.invalidCustomUrl.strangeCharacter
+- forms.errors.invalidCustomUrl.duplicate
+- forms.errors.invalidSens
+
+</details>
 
 ---
 
@@ -131,9 +257,27 @@
 
 </details>
 
-### 🟢 user.json
+### 🟡 user.json
 
-**7/7**
+**7/19**
+
+<details>
+<summary>Missing</summary>
+
+- customUrl
+- ign
+- ign.short
+- stickSens
+- motionSens
+- motion
+- stick
+- sens
+- forms.errors.invalidCustomUrl.numbers
+- forms.errors.invalidCustomUrl.strangeCharacter
+- forms.errors.invalidCustomUrl.duplicate
+- forms.errors.invalidSens
+
+</details>
 
 ---
 
@@ -283,9 +427,27 @@
 
 </details>
 
-### 🟢 user.json
+### 🟡 user.json
 
-**7/7**
+**7/19**
+
+<details>
+<summary>Missing</summary>
+
+- customUrl
+- ign
+- ign.short
+- stickSens
+- motionSens
+- motion
+- stick
+- sens
+- forms.errors.invalidCustomUrl.numbers
+- forms.errors.invalidCustomUrl.strangeCharacter
+- forms.errors.invalidCustomUrl.duplicate
+- forms.errors.invalidSens
+
+</details>
 
 ---
 
@@ -357,9 +519,27 @@
 
 </details>
 
-### 🟢 user.json
+### 🟡 user.json
 
-**7/7**
+**7/19**
+
+<details>
+<summary>Missing</summary>
+
+- customUrl
+- ign
+- ign.short
+- stickSens
+- motionSens
+- motion
+- stick
+- sens
+- forms.errors.invalidCustomUrl.numbers
+- forms.errors.invalidCustomUrl.strangeCharacter
+- forms.errors.invalidCustomUrl.duplicate
+- forms.errors.invalidSens
+
+</details>
 
 ---
 
@@ -457,9 +637,27 @@
 
 </details>
 
-### 🟢 user.json
+### 🟡 user.json
 
-**7/7**
+**7/19**
+
+<details>
+<summary>Missing</summary>
+
+- customUrl
+- ign
+- ign.short
+- stickSens
+- motionSens
+- motion
+- stick
+- sens
+- forms.errors.invalidCustomUrl.numbers
+- forms.errors.invalidCustomUrl.strangeCharacter
+- forms.errors.invalidCustomUrl.duplicate
+- forms.errors.invalidSens
+
+</details>
 
 ---
 
@@ -531,9 +729,27 @@
 
 </details>
 
-### 🟢 user.json
+### 🟡 user.json
 
-**7/7**
+**7/19**
+
+<details>
+<summary>Missing</summary>
+
+- customUrl
+- ign
+- ign.short
+- stickSens
+- motionSens
+- motion
+- stick
+- sens
+- forms.errors.invalidCustomUrl.numbers
+- forms.errors.invalidCustomUrl.strangeCharacter
+- forms.errors.invalidCustomUrl.duplicate
+- forms.errors.invalidSens
+
+</details>
 
 ---
 
