@@ -32,6 +32,7 @@ export function Image({
         width={width}
         height={height}
         style={style}
+        draggable="false"
       />
     </picture>
   );
