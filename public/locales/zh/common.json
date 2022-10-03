@@ -1,0 +1,43 @@
+{
+  "pages.admin": "管理",
+  "pages.badges": "徽章",
+  "pages.plus": "Plus Server",
+  "pages.contributors": "贡献者",
+  "pages.calendar": "日程",
+  "pages.faq": "常见问题与解答",
+  "pages.builds": "套装",
+
+  "header.profile": "档案",
+  "header.logout": "登出",
+  "header.login": "登录",
+
+  "footer.github.subtitle": "源代码",
+  "footer.twitter.subtitle": "更新",
+  "footer.discord.subtitle": "帮助及反馈",
+  "footer.patreon.subtitle": "支持",
+  "footer.thanks": "感谢Patreon上的支持者",
+
+  "actions.save": "保存",
+  "actions.saving": "保存中...",
+  "actions.submit": "确认",
+  "actions.edit": "编辑",
+  "actions.add": "添加",
+  "actions.remove": "移除",
+  "actions.delete": "删除",
+
+  "results": "结果",
+
+  "forms.name": "名称",
+  "forms.description": "描述",
+  "forms.errors.title": "以下错误将被修正",
+
+  "tag.name.BADGE": "徽章奖",
+  "tag.name.SPECIAL": "特殊规则",
+  "tag.name.ART": "插画奖",
+  "tag.name.MONEY": "奖金",
+  "tag.name.REGION": "地区限制",
+  "tag.name.LOW": "技能限制",
+  "tag.name.COUNT": "参赛限制",
+  "tag.name.LAN": "线下",
+  "tag.name.QUALIFIER": "参赛资格"
+}

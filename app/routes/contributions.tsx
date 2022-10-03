@@ -58,6 +58,10 @@ const TRANSLATORS: Array<{
     translators: ["DoubleCookies", "Yaga"],
     language: "ru",
   },
+  {
+    translators: ["たここ"],
+    language: "zh",
+  },
 ];
 
 export default function ContributionsPage() {

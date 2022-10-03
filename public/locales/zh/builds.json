@@ -1,0 +1,15 @@
+{
+  "addBuild": "添加套装",
+  "noBuilds": "您还没有添加套装，现在开始吧!",
+  "buildCard.info": "详情",
+  "buildCard.edit": "编辑",
+
+  "forms.title": "标题",
+  "forms.modes": "模式",
+  "forms.weapons": "武器",
+  "forms.gear.HEAD": "头部装备",
+  "forms.gear.CLOTHES": "上身装备",
+  "forms.gear.SHOES": "脚部装备",
+
+  "deleteConfirm": "删除套装'{{title}}'?"
+}

@@ -795,4 +795,92 @@
 
 ---
 
-## /zh (🔴 Not started)
+## /zh (🟡 In progress)
+
+### 🔴 analyzer.json
+
+**0/94**
+
+### 🟢 badges.json
+
+**7/7**
+
+### 🟢 builds.json
+
+**11/11**
+
+### 🟢 calendar.json
+
+**44/44**
+
+### 🟡 common.json
+
+**35/48**
+
+<details>
+<summary>Missing</summary>
+
+- pages.analyzer
+- actions.loadMore
+- weapon.category.SHOOTERS
+- weapon.category.BLASTERS
+- weapon.category.ROLLERS
+- weapon.category.BRUSHES
+- weapon.category.CHARGERS
+- weapon.category.SLOSHERS
+- weapon.category.SPLATLINGS
+- weapon.category.DUALIES
+- weapon.category.BRELLAS
+- weapon.category.STRINGERS
+- weapon.category.SPLATANAS
+
+</details>
+
+### 🟡 contributions.json
+
+**5/6**
+
+<details>
+<summary>Missing</summary>
+
+- translation
+
+</details>
+
+### 🟢 faq.json
+
+**6/6**
+
+### 🟡 front.json
+
+**8/10**
+
+<details>
+<summary>Missing</summary>
+
+- buildsGoTo
+- analyzer.description
+
+</details>
+
+### 🟡 user.json
+
+**7/19**
+
+<details>
+<summary>Missing</summary>
+
+- customUrl
+- ign
+- ign.short
+- stickSens
+- motionSens
+- motion
+- stick
+- sens
+- forms.errors.invalidCustomUrl.numbers
+- forms.errors.invalidCustomUrl.strangeCharacter
+- forms.errors.invalidCustomUrl.duplicate
+- forms.errors.invalidSens
+
+</details>
