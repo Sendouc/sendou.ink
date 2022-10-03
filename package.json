@@ -18,7 +18,6 @@
     "create-analyzer-json": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/create-analyzer-json.ts",
     "check-translation-jsons": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/check-translation-jsons.ts && npm run prettier:write",
     "replace-img-names": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/replace-img-names.ts",
-    "add-custom-urls": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/add-custom-urls.ts",
     "lint:ts": "eslint . --ext .ts,.tsx",
     "lint:styles": "stylelint \"app/styles/**/*.css\"",
     "prettier:check": "prettier --check . --loglevel warn",
