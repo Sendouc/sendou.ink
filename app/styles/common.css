@@ -245,15 +245,14 @@ select {
 
   /* TODO: Get color from CSS var */
   background-image: url('data:image/svg+xml;utf8,<svg width="1rem" color="rgb(255 255 255 / 55%)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>');
-  background-position-x: 92%;
-  background-position-y: 50%;
+  background-position: center right var(--s-3);
   background-repeat: no-repeat;
   border-radius: var(--rounded);
   cursor: pointer;
   font-size: var(--fonts-sm);
   font-weight: 500;
   padding-block: 3.5px;
-  padding-inline: var(--s-3);
+  padding-inline: var(--s-3) var(--s-7);
 }
 
 select::selection {
