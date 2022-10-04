@@ -22,7 +22,7 @@ import allTags from "~/routes/calendar/tags.json";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import type { UpsertManyPlusVotesArgs } from "./models/plusVotes/queries.server";
 
-const ADMIN_TEST_AVATAR = "e424e1ba50d2019fdc4730d261e56c55";
+const ADMIN_TEST_AVATAR = "1d1d8488ced4cdf478648592fa871101";
 
 const NZAP_TEST_DISCORD_ID = "455039198672453645";
 const NZAP_TEST_AVATAR = "f809176af93132c3db5f0a5019e96339"; // https://cdn.discordapp.com/avatars/455039198672453645/f809176af93132c3db5f0a5019e96339.webp?size=160
