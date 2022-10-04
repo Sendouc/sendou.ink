@@ -213,7 +213,12 @@ function AbilitiesRowWithGear({
         className="build__gear"
       />
       {abilities.map((ability, i) => (
-        <Ability key={i} ability={ability} size={i === 0 ? "MAIN" : "SUB"} />
+        <Ability
+          key={i}
+          ability={ability}
+          size={i === 0 ? "MAIN" : "SUB"}
+          readonly
+        />
       ))}
     </>
   );

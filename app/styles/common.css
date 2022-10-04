@@ -808,6 +808,12 @@ dialog::backdrop {
   pointer-events: none;
 }
 
+.build__ability.readonly,
+.build__ability.readonly:active {
+  cursor: default;
+  transform: none;
+}
+
 .build__bottom-row {
   display: flex;
   height: 100%;

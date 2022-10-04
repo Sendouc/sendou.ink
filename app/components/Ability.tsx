@@ -13,6 +13,7 @@ const sizeMap = {
 export function Ability({
   ability,
   size,
+  readonly = false,
   dragStarted = false,
   dropAllowed = false,
   onClick,
@@ -20,6 +21,7 @@ export function Ability({
 }: {
   ability: AbilityWithUnknown;
   size: keyof typeof sizeMap;
+  readonly?: boolean;
   dragStarted?: boolean;
   dropAllowed?: boolean;
   onClick?: () => void;
@@ -44,6 +46,7 @@ export function Ability({
         "is-drag-target": isDragTarget,
         "drag-started": dragStarted,
         "drop-allowed": dropAllowed,
+        readonly,
       })}
       style={
         {
@@ -58,7 +61,7 @@ export function Ability({
         setIsDragTarget(false);
         onDrop?.(event);
       }}
-      type="button"
+      tabIndex={readonly ? -1 : undefined}
     >
       <Image alt="" path={abilityImageUrl(ability)} />
     </button>
