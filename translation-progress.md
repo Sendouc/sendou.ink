@@ -27,9 +27,16 @@
 
 **44/44**
 
-### 🟢 common.json
+### 🟡 common.json
 
-**48/48**
+**48/49**
+
+<details>
+<summary>Missing</summary>
+
+- pages.s2
+
+</details>
 
 ### 🟢 contributions.json
 
@@ -96,11 +103,12 @@
 
 ### 🟡 common.json
 
-**36/48**
+**36/49**
 
 <details>
 <summary>Missing</summary>
 
+- pages.s2
 - actions.loadMore
 - weapon.category.SHOOTERS
 - weapon.category.BLASTERS
@@ -186,9 +194,16 @@
 
 **44/44**
 
-### 🟢 common.json
+### 🟡 common.json
 
-**48/48**
+**48/49**
+
+<details>
+<summary>Missing</summary>
+
+- pages.s2
+
+</details>
 
 ### 🟢 contributions.json
 
@@ -255,11 +270,12 @@
 
 ### 🟡 common.json
 
-**46/48**
+**46/49**
 
 <details>
 <summary>Missing</summary>
 
+- pages.s2
 - pages.analyzer
 - actions.loadMore
 
@@ -429,11 +445,12 @@
 
 ### 🟡 common.json
 
-**46/48**
+**46/49**
 
 <details>
 <summary>Missing</summary>
 
+- pages.s2
 - pages.analyzer
 - actions.loadMore
 
@@ -510,11 +527,12 @@
 
 ### 🟡 common.json
 
-**35/48**
+**35/49**
 
 <details>
 <summary>Missing</summary>
 
+- pages.s2
 - pages.analyzer
 - actions.loadMore
 - weapon.category.SHOOTERS
@@ -632,11 +650,12 @@
 
 ### 🟡 common.json
 
-**36/48**
+**36/49**
 
 <details>
 <summary>Missing</summary>
 
+- pages.s2
 - actions.loadMore
 - weapon.category.SHOOTERS
 - weapon.category.BLASTERS
@@ -723,11 +742,12 @@
 
 ### 🟡 common.json
 
-**35/48**
+**35/49**
 
 <details>
 <summary>Missing</summary>
 
+- pages.s2
 - pages.analyzer
 - actions.loadMore
 - weapon.category.SHOOTERS
@@ -815,11 +835,12 @@
 
 ### 🟡 common.json
 
-**35/48**
+**35/49**
 
 <details>
 <summary>Missing</summary>
 
+- pages.s2
 - pages.analyzer
 - actions.loadMore
 - weapon.category.SHOOTERS

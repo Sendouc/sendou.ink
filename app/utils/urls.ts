@@ -10,6 +10,7 @@ import type {
 } from "~/modules/in-game-lists/types";
 import type navItems from "~/components/layout/nav-items.json";
 
+export const SPLATOON_2_SENDOU_IN_URL = "https://spl2.sendou.ink";
 export const PLUS_SERVER_DISCORD_URL = "https://discord.gg/FW4dKrY";
 export const SENDOU_INK_DISCORD_URL = "https://discord.gg/sendou";
 export const SENDOU_TWITTER_URL = "https://twitter.com/sendouc";

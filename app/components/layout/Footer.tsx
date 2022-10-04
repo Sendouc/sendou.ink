@@ -9,6 +9,7 @@ import {
   SENDOU_INK_GITHUB_URL,
   SENDOU_INK_PATREON_URL,
   SENDOU_INK_TWITTER_URL,
+  SPLATOON_2_SENDOU_IN_URL,
   userPage,
 } from "~/utils/urls";
 import { DiscordIcon } from "../icons/Discord";
@@ -29,6 +30,7 @@ export function Footer({
       <div className="layout__footer__link-list">
         <Link to={CONTRIBUTIONS_PAGE}>{t("pages.contributors")}</Link>
         <Link to={FAQ_PAGE}>{t("pages.faq")}</Link>
+        <a href={SPLATOON_2_SENDOU_IN_URL}>{t("pages.s2")}</a>
       </div>
       <div className="layout__footer__socials">
         <a
