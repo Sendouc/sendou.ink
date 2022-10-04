@@ -62,6 +62,7 @@ export function Ability({
         onDrop?.(event);
       }}
       tabIndex={readonly ? -1 : undefined}
+      type="button"
     >
       <Image alt="" path={abilityImageUrl(ability)} />
     </button>
