@@ -1,4 +1,3 @@
-export { stages } from "./stages";
 export { modes, modesShort } from "./modes";
 export {
   weaponCategories,
@@ -43,7 +42,7 @@ export type {
   Ability,
   AbilityType,
   ModeShort,
-  Stage,
+  StageId,
   BuildAbilitiesTuple,
   BuildAbilitiesTupleWithUnknown,
   MainWeaponId,

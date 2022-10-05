@@ -1,10 +1,5 @@
 import invariant from "tiny-invariant";
-import {
-  modesShort,
-  type Stage,
-  stages as allStages,
-  stages,
-} from "../in-game-lists";
+import { modesShort, type StageId, stageIds } from "../in-game-lists";
 import type { MapPool } from "./types";
 
 export function mapPoolToSerializedString(mapPool: MapPool): string {
@@ -14,17 +9,17 @@ export function mapPoolToSerializedString(mapPool: MapPool): string {
     const stages = mapPool[mode];
     if (stages.length === 0) continue;
 
-    serializedModes.push(`${mode}:${binaryToHex(stagesToBinary(stages))}`);
+    serializedModes.push(`${mode}:${binaryToHex(stageIdsToBinary(stages))}`);
   }
 
   return serializedModes.join(";").toLowerCase();
 }
 
-function stagesToBinary(input: Stage[]) {
+function stageIdsToBinary(input: StageId[]) {
   let result = "1";
 
-  for (const stage of allStages) {
-    if (input.includes(stage)) {
+  for (const stageId of stageIds) {
+    if (input.includes(stageId)) {
       result += "1";
     } else {
       result += "0";
@@ -57,22 +52,22 @@ export function serializedStringToMapPool(serialized: string) {
     if (!validatedMode) continue;
 
     const stagesBinary = hexToBinary(mapsInHex);
-    result[validatedMode].push(...binaryToStages(stagesBinary));
+    result[validatedMode].push(...binaryToStageIds(stagesBinary));
   }
 
   return result;
 }
 
-function binaryToStages(binary: string): Stage[] {
-  const result: Stage[] = [];
+function binaryToStageIds(binary: string): StageId[] {
+  const result: StageId[] = [];
 
   // first 1 is padding
-  for (let i = 1; i <= stages.length; i++) {
+  for (let i = 1; i <= stageIds.length; i++) {
     const letter = binary[i];
     if (letter === "0" || !letter) continue;
 
-    const stage = stages[i - 1];
-    invariant(stage);
+    const stage = stageIds[i - 1];
+    invariant(typeof stage === "number");
 
     result.push(stage);
   }

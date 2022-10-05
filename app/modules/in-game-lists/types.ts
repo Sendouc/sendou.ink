@@ -1,6 +1,6 @@
 import type { abilities } from "./abilities";
 import type { modes } from "./modes";
-import type { stages } from "./stages";
+import type { stageIds } from "./stage-ids";
 import type {
   subWeaponIds,
   mainWeaponIds,
@@ -9,7 +9,7 @@ import type {
 
 export type ModeShort = typeof modes[number]["short"];
 
-export type Stage = typeof stages[number];
+export type StageId = typeof stageIds[number];
 
 export type Ability = typeof abilities[number]["name"];
 export type AbilityWithUnknown = typeof abilities[number]["name"] | "UNKNOWN";

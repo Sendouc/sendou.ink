@@ -23,49 +23,13 @@ Serializer("Ignores invalid mode key", () => {
   assert.equal(mapPoolToSerializedString(mapPool), testSerializedPool);
 });
 
-Serializer("Ignores invalid mode key", () => {
-  const mapPool = serializedStringToMapPool(testSerializedPool);
-
-  assert.equal(mapPoolToSerializedString(mapPool), testSerializedPool);
-});
-
 Serializer("Matching serialization with IPLMapGen2", () => {
   const testMapPool: MapPool = {
-    TW: [
-      "Scorch Gorge",
-      "Undertow Spillway",
-      "Mincemeat Metalworks",
-      "Mahi-Mahi Resort",
-      "Inkblot Art Academy",
-    ],
-    SZ: [
-      "Scorch Gorge",
-      "Eeltail Alley",
-      "Undertow Spillway",
-      "Inkblot Art Academy",
-      "MakoMart",
-    ],
-    TC: [
-      "Eeltail Alley",
-      "Hagglefish Market",
-      "Hammerhead Bridge",
-      "Inkblot Art Academy",
-      "Sturgeon Shipyard",
-    ],
-    RM: [
-      "Eeltail Alley",
-      "Undertow Spillway",
-      "Mincemeat Metalworks",
-      "Hammerhead Bridge",
-      "Museum d'Alfonsino",
-    ],
-    CB: [
-      "Scorch Gorge",
-      "Eeltail Alley",
-      "Mincemeat Metalworks",
-      "Hammerhead Bridge",
-      "Museum d'Alfonsino",
-    ],
+    TW: [0, 3, 4, 7, 8],
+    SZ: [0, 1, 3, 8, 10],
+    TC: [1, 2, 5, 8, 9],
+    RM: [1, 3, 4, 5, 6],
+    CB: [0, 1, 4, 5, 6],
   };
 
   assert.equal(mapPoolToSerializedString(testMapPool), testSerializedPool);
@@ -73,10 +37,10 @@ Serializer("Matching serialization with IPLMapGen2", () => {
 
 Serializer("Omits key if mode has no maps", () => {
   const testPoolWithoutTw: MapPool = {
-    CB: ["Eeltail Alley", "Hagglefish Market"],
-    RM: ["Eeltail Alley", "Inkblot Art Academy"],
-    TC: ["Inkblot Art Academy", "Mincemeat Metalworks"],
-    SZ: ["MakoMart"],
+    CB: [1, 2],
+    RM: [1, 8],
+    TC: [8, 4],
+    SZ: [10],
     TW: [],
   };
 
@@ -101,8 +65,8 @@ Serializer("Returns empty string if no maps", () => {
 
 Serializer("Value of two modes is the same with same maps", () => {
   const testPoolWithDuplicateMaps: MapPool = {
-    CB: ["Eeltail Alley", "Hagglefish Market"],
-    RM: ["Eeltail Alley", "Hagglefish Market"],
+    CB: [1, 2],
+    RM: [1, 2],
     TC: [],
     SZ: [],
     TW: [],
