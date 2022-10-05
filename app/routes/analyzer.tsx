@@ -772,9 +772,11 @@ function StatCard({
           )}
         </div>
       </div>
-      {typeof stat !== "number" && (
-        <ModifiedByAbilities abilities={stat.modifiedBy} />
-      )}
+      <div className="analyzer__stat-card__ability-container">
+        {typeof stat !== "number" && (
+          <ModifiedByAbilities abilities={stat.modifiedBy} />
+        )}
+      </div>
     </div>
   );
 }

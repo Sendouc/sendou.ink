@@ -91,6 +91,7 @@
   display: flex;
   height: 100%;
   flex-direction: column;
+  flex-grow: 1;
   justify-content: space-between;
 }
 
@@ -99,6 +100,10 @@
   line-height: 1.35;
   text-align: center;
   word-break: break-word;
+}
+
+.analyzer__stat-card__ability-container {
+  min-height: 22px;
 }
 
 .analyzer__stat-card__popover {
