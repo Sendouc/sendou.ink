@@ -6,6 +6,7 @@ import type {
   AbilityWithUnknown,
   MainWeaponId,
   SpecialWeaponId,
+  StageId,
   SubWeaponId,
 } from "~/modules/in-game-lists/types";
 import type navItems from "~/components/layout/nav-items.json";
@@ -102,6 +103,7 @@ export const specialWeaponImageUrl = (specialWeaponSplId: SpecialWeaponId) =>
 export const abilityImageUrl = (ability: AbilityWithUnknown) =>
   `/img/abilities/${ability}`;
 export const modeImageUrl = (mode: ModeShort) => `/img/modes/${mode}`;
+export const stageImageUrl = (stageId: StageId) => `/img/stages/${stageId}`;
 
 export function resolveBaseUrl(url: string) {
   return new URL(url).host;

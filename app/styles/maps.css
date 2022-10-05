@@ -1,5 +1,17 @@
+.maps__container {
+  max-width: 32rem;
+}
+
 .maps__stage-row {
   display: flex;
+  width: 100%;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.maps__stage-name-row {
+  display: flex;
+  flex-grow: 1;
   align-items: center;
   justify-content: space-between;
   background-color: var(--bg-lighter);
@@ -11,6 +23,13 @@
   padding-inline: var(--s-3);
 }
 
+.maps__mode-buttons-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--s-1-5);
+}
+
 .maps__mode-button {
   padding: 0;
   padding: var(--s-1-5);
@@ -19,4 +38,20 @@
   border-radius: var(--rounded);
   color: var(--theme);
   outline: initial;
+}
+
+.maps__mode-button.selected {
+  background-color: var(--theme-very-transparent);
+}
+
+.maps__stage-image {
+  border-radius: var(--rounded);
+}
+
+.maps__mode {
+  filter: grayscale(100%);
+}
+
+.maps__mode.selected {
+  filter: grayscale(0%);
 }
