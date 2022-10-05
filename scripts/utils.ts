@@ -1,5 +1,6 @@
 import path from "node:path";
 import fs from "node:fs";
+import type euEn from "./dicts/langs/EUen.json";
 
 const LANG_DICTS_PATH = path.join(__dirname, "dicts", "langs");
 
@@ -17,9 +18,7 @@ export const LANG_JSONS_TO_CREATE = [
 ];
 
 export async function loadLangDicts() {
-  const result: Array<
-    [langCode: string, translations: Record<string, Record<string, string>>]
-  > = [];
+  const result: Array<[langCode: string, translations: typeof euEn]> = [];
 
   const files = await fs.promises.readdir(LANG_DICTS_PATH);
   for (const file of files) {

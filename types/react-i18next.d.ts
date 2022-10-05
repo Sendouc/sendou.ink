@@ -11,6 +11,7 @@ import type weapons from "../public/locales/en/weapons.json";
 import type gear from "../public/locales/en/gear.json";
 import type builds from "../public/locales/en/builds.json";
 import type analyzer from "../public/locales/en/analyzer.json";
+import type gameMisc from "../public/locales/en/game-misc.json";
 
 declare module "react-i18next" {
   interface CustomTypeOptions {
@@ -27,6 +28,7 @@ declare module "react-i18next" {
       gear: typeof gear;
       builds: typeof builds;
       analyzer: typeof analyzer;
+      "game-misc": typeof gameMisc;
     };
   }
 }

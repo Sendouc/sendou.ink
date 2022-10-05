@@ -1,0 +1,22 @@
+.maps__stage-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--bg-lighter);
+  border-radius: var(--rounded);
+  font-size: var(--fonts-xs);
+  font-weight: var(--semi-bold);
+  gap: var(--s-0-5);
+  padding-block: var(--s-1-5);
+  padding-inline: var(--s-3);
+}
+
+.maps__mode-button {
+  padding: 0;
+  padding: var(--s-1-5);
+  border: none;
+  background-color: var(--bg-darker);
+  border-radius: var(--rounded);
+  color: var(--theme);
+  outline: initial;
+}
