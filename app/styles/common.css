@@ -711,7 +711,7 @@ dialog::backdrop {
   display: grid;
   justify-content: center;
   gap: var(--s-3);
-  grid-template-columns: repeat(auto-fit, 15rem);
+  grid-template-columns: repeat(auto-fit, 240px);
 }
 
 .build {
