@@ -1,3 +1,6 @@
+/* eslint-disable */
+// @ts-nocheck
+
 import path from "node:path";
 import fs from "node:fs";
 import type euEn from "./dicts/langs/EUen.json";
