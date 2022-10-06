@@ -267,7 +267,6 @@ export function recentWinners() {
   }> = [];
 
   for (const row of rows) {
-    const team = result.find((team) => team.teamName === row.teamName);
     const player = row.playerName ?? {
       // player name and user id are mutually exclusive
       // also if user id exists we know a joined user also has to exist
@@ -278,6 +277,7 @@ export function recentWinners() {
       discordAvatar: row.playerDiscordAvatar,
     };
 
+    const team = result.find((team) => team.eventId === row.eventId);
     if (team) {
       team.players.push(player);
     } else {
