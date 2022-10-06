@@ -75,20 +75,22 @@
   --tags-max-width: 999rem;
 
   display: grid;
+  flex: 1 1 0px;
   background-color: var(--bg-darker);
   border-radius: var(--rounded);
   font-size: var(--fonts-sm);
   grid-template-areas: "name secondary" "content content";
   grid-template-columns: 1fr 1fr;
-  padding-block: var(--s-1);
-  padding-inline: var(--s-2);
-  row-gap: var(--s-1);
+  padding-block: var(--s-1-5);
+  padding-inline: var(--s-2-5);
+  row-gap: var(--s-2);
 }
 
 .front__event-name {
   color: var(--text);
   font-weight: var(--semi-bold);
   grid-area: name;
+  line-height: 1.35;
 }
 
 .front__event-time {
@@ -112,6 +114,8 @@
 }
 
 .front__event-content-below {
+  display: flex;
+  align-items: flex-end;
   grid-area: content;
 }
 
