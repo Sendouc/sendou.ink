@@ -1,3 +1,6 @@
+/* eslint-disable */
+// @ts-nocheck
+
 import { LANG_JSONS_TO_CREATE, loadLangDicts } from "./utils";
 import fs from "fs";
 import path from "path";
