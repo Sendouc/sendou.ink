@@ -12,7 +12,7 @@
 }
 
 .front__builds-wrapper {
-  overflow-x: scroll;
+  overflow-x: auto;
 }
 
 .front__builds-container {
