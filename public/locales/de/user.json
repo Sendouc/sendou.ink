@@ -1,10 +1,23 @@
 {
+  "customUrl": "Benutzerdefinierte URL",
+  "ign": "Name im Spiel",
+  "ign.short": "IGN",
   "country": "Land",
   "bio": "Über mich",
+  "stickSens": "Empfindlichkeit R-Stick",
+  "motionSens": "Empfindlichkeit Bewegungssteuerung",
+  "motion": "Bewegungssteuerung",
+  "stick": "Stick",
+  "sens": "Empfindlichkeit",
 
   "results.placing": "Platzierung",
   "results.team": "Team",
   "results.tournament": "Turnier",
   "results.date": "Datum",
-  "results.mates": "Mitspieler"
+  "results.mates": "Mitspieler",
+  
+  "forms.errors.invalidCustomUrl.numbers": "Benutzerdefinierte URL kann nicht nur aus Zahlen bestehen",
+  "forms.errors.invalidCustomUrl.strangeCharacter": "Benutzerdefinierte URL kann nicht aus speziellen Zeichen bestehen",
+  "forms.errors.invalidCustomUrl.duplicate": "Diese Benutzerdefinierte URL wird bereits verwendet",
+  "forms.errors.invalidSens": "Empfindlichkeit der Bewegungssteuerung kann nur festgelegt werden, wenn Empfindlichkeit R-Stick festgelegt ist"
 }
