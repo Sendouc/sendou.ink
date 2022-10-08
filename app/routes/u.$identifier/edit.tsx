@@ -66,11 +66,9 @@ const userEditActionSchema = z
         .refine((val) => val === null || isCustomUrl(val), {
           message: "forms.errors.invalidCustomUrl.numbers",
         })
-        .refine(
-          // validate val only contains numbers and letters
-          (val) => val === null || /^[a-zA-Z0-9-_]+$/.test(val),
-          { message: "forms.errors.invalidCustomUrl.strangeCharacter" }
-        )
+        .refine((val) => val === null || /^[a-zA-Z0-9-_]+$/.test(val), {
+          message: "forms.errors.invalidCustomUrl.strangeCharacter",
+        })
         .transform((val) => val?.toLowerCase())
         .nullable()
     ),
