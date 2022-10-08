@@ -13,6 +13,8 @@ import {
   mapPoolToSerializedString,
   serializedStringToMapPool,
 } from "~/modules/map-pool-serializer";
+import { useUser } from "~/modules/auth";
+import { ADMIN_DISCORD_ID } from "~/constants";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -87,7 +89,15 @@ function MapPoolSelector({
   mapPool: MapPool;
   handleMapPoolChange: (args: { mode: ModeShort; stageId: StageId }) => void;
 }) {
+  const user = useUser();
   const { t } = useTranslation(["game-misc"]);
+
+  if (
+    process.env.NODE_ENV !== "development" &&
+    user?.discordId !== ADMIN_DISCORD_ID
+  ) {
+    return <Main>Coming soon :)</Main>;
+  }
 
   return (
     <div className="stack md">
