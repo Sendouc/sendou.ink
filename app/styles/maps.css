@@ -2,6 +2,13 @@
   max-width: 32rem;
 }
 
+.maps__pool-loader-saver {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: var(--s-4);
+}
+
 .maps__stage-row {
   display: flex;
   width: 100%;
@@ -54,4 +61,26 @@
 
 .maps__mode.selected {
   filter: grayscale(0%);
+}
+
+.maps__map-list-creator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-4);
+}
+
+.maps__toggle-container {
+  --label-margin: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+}
+
+.maps__map-list {
+  font-size: var(--fonts-xs);
+  font-weight: var(--semi-bold);
 }

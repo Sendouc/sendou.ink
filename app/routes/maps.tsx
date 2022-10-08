@@ -2,19 +2,37 @@ import type { LinksFunction } from "@remix-run/node";
 import { useTranslation } from "react-i18next";
 import { Image } from "~/components/Image";
 import { Main } from "~/components/Main";
-import type { ModeShort, StageId } from "~/modules/in-game-lists";
+import type {
+  ModeShort,
+  ModeWithStage,
+  StageId,
+} from "~/modules/in-game-lists";
 import { modes, stageIds } from "~/modules/in-game-lists";
 import type { MapPool } from "~/modules/map-pool-serializer/types";
 import styles from "~/styles/maps.css";
 import { modeImageUrl, stageImageUrl } from "~/utils/urls";
 import clsx from "clsx";
-import { useSearchParams } from "@remix-run/react";
+import { Form, useSearchParams } from "@remix-run/react";
 import {
   mapPoolToSerializedString,
   serializedStringToMapPool,
 } from "~/modules/map-pool-serializer";
 import { useUser } from "~/modules/auth";
 import { ADMIN_DISCORD_ID } from "~/constants";
+import { Button } from "~/components/Button";
+import { Input } from "~/components/Input";
+import { Label } from "~/components/Label";
+import { DownloadIcon } from "~/components/icons/Download";
+import { Toggle } from "~/components/Toggle";
+import {
+  generateMapList,
+  mapPoolToNonEmptyModes,
+  modesOrder,
+} from "~/modules/map-list-generator";
+import * as React from "react";
+import invariant from "tiny-invariant";
+
+const AMOUNT_OF_MAPS_IN_MAP_LIST = stageIds.length * 2;
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -36,11 +54,13 @@ export default function MapListPage() {
   const { mapPool, handleMapPoolChange } = useSearchParamMapPool();
 
   return (
-    <Main className="maps__container">
+    <Main className="maps__container stack lg">
+      <MapPoolLoaderSaver />
       <MapPoolSelector
         mapPool={mapPool}
         handleMapPoolChange={handleMapPoolChange}
       />
+      <MapListCreator mapPool={mapPool} />
     </Main>
   );
 }
@@ -143,6 +163,59 @@ function MapPoolSelector({
           </div>
         </div>
       ))}
+    </div>
+  );
+}
+
+function MapPoolLoaderSaver() {
+  return (
+    <Form className="maps__pool-loader-saver">
+      <div>
+        <Label>Code</Label>
+        <Input name="code" />
+      </div>
+      <Button icon={<DownloadIcon />} variant="outlined" type="submit">
+        Load map pool
+      </Button>
+    </Form>
+  );
+}
+
+// xxx: crashes if only one map in mode
+// xxx: presentational mode
+function MapListCreator({ mapPool }: { mapPool: MapPool }) {
+  const { t } = useTranslation(["game-misc"]);
+  const [mapList, setMapList] = React.useState<ModeWithStage[]>();
+
+  const handleCreateMaplist = () => {
+    const [list] = generateMapList(
+      mapPool,
+      modesOrder("EQUAL", mapPoolToNonEmptyModes(mapPool)),
+      [AMOUNT_OF_MAPS_IN_MAP_LIST]
+    );
+
+    invariant(list);
+
+    setMapList(list);
+  };
+
+  return (
+    <div className="maps__map-list-creator">
+      <div className="maps__toggle-container">
+        <Label>50% SZ</Label>
+        <Toggle checked={false} setChecked={() => true} />
+      </div>
+      <Button onClick={handleCreateMaplist}>Create map list</Button>
+      {mapList && (
+        <ol className="maps__map-list">
+          {mapList.map(({ mode, stageId }, i) => (
+            <li key={i}>
+              {t(`game-misc:MODE_SHORT_${mode}`)}{" "}
+              {t(`game-misc:STAGE_${stageId}`)}
+            </li>
+          ))}
+        </ol>
+      )}
     </div>
   );
 }

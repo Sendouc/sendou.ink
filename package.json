@@ -48,6 +48,7 @@
     "i18next-fs-backend": "^1.1.5",
     "i18next-http-backend": "^1.4.4",
     "just-capitalize": "^3.1.1",
+    "just-clone": "^6.1.1",
     "just-shuffle": "^4.1.1",
     "markdown-to-jsx": "^7.1.7",
     "node-cron": "3.0.2",

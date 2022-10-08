@@ -11,6 +11,8 @@ export type ModeShort = typeof modes[number]["short"];
 
 export type StageId = typeof stageIds[number];
 
+export type ModeWithStage = { mode: ModeShort; stageId: StageId };
+
 export type Ability = typeof abilities[number]["name"];
 export type AbilityWithUnknown = typeof abilities[number]["name"] | "UNKNOWN";
 export type AbilityType = typeof abilities[number]["type"];

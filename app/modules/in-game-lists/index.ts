@@ -42,6 +42,7 @@ export type {
   Ability,
   AbilityType,
   ModeShort,
+  ModeWithStage,
   StageId,
   BuildAbilitiesTuple,
   BuildAbilitiesTupleWithUnknown,
