@@ -15,7 +15,7 @@
   "results.tournament": "Turnier",
   "results.date": "Datum",
   "results.mates": "Mitspieler",
-  
+
   "forms.errors.invalidCustomUrl.numbers": "Benutzerdefinierte URL kann nicht nur aus Zahlen bestehen",
   "forms.errors.invalidCustomUrl.strangeCharacter": "Benutzerdefinierte URL kann nicht aus speziellen Zeichen bestehen",
   "forms.errors.invalidCustomUrl.duplicate": "Diese Benutzerdefinierte URL wird bereits verwendet",
