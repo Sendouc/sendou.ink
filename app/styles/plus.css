@@ -46,7 +46,6 @@
   display: flex;
   align-items: center;
   gap: var(--s-2);
-  overflow-x: auto;
 }
 
 .plus__comment-button {

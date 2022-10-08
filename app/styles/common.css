@@ -145,7 +145,7 @@ textarea:not(.plain) {
   font-size: var(--fonts-sm);
   outline: none;
   overflow-wrap: normal;
-  overflow-x: scroll;
+  overflow-x: auto;
   white-space: pre;
 }
 
