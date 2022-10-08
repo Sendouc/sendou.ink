@@ -3,6 +3,7 @@
   "pages.badges": "Abzeichen",
   "pages.plus": "Plus Server",
   "pages.contributors": "Mitwirkende",
+  "pages.s2": "Splatoon 2",
   "pages.calendar": "Kalender",
   "pages.faq": "FAQ",
   "pages.builds": "Ausrüstungen",
@@ -25,6 +26,7 @@
   "actions.add": "Hinzufügen",
   "actions.remove": "Entfernen",
   "actions.delete": "Löschen",
+  "actions.loadMore": "Mehr laden",
 
   "results": "Ergebnisse",
 
@@ -40,5 +42,17 @@
   "tag.name.LOW": "Skill-Grenze",
   "tag.name.COUNT": "Zulassungsgrenze",
   "tag.name.LAN": "LAN",
-  "tag.name.QUALIFIER": "Qualifikation"
+  "tag.name.QUALIFIER": "Qualifikation",
+  
+  "weapon.category.SHOOTERS": "Kleckser",
+  "weapon.category.BLASTERS": "Blaster",
+  "weapon.category.ROLLERS": "Roller",
+  "weapon.category.BRUSHES": "Quastos",
+  "weapon.category.CHARGERS": "Konzentratoren",
+  "weapon.category.SLOSHERS": "Schwapper",
+  "weapon.category.SPLATLINGS": "Splatlings",
+  "weapon.category.DUALIES": "Doppler",
+  "weapon.category.BRELLAS": "Pluviatoren",
+  "weapon.category.STRINGERS": "Stringer",
+  "weapon.category.SPLATANAS": "Splatanas"
 }
