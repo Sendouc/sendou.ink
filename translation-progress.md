@@ -50,6 +50,10 @@
 
 **10/10**
 
+### 🟢 game-misc.json
+
+**12/12**
+
 ### 🟡 user.json
 
 **7/19**
@@ -74,96 +78,7 @@
 
 ---
 
-## /de (🟡 In progress)
-
-### 🟡 analyzer.json
-
-**91/94**
-
-<details>
-<summary>Missing</summary>
-
-- stat.shootingRunSpeed
-- stat.shootingRunSpeedCharging
-- stat.shootingRunSpeedFullCharge
-
-</details>
-
-### 🟢 badges.json
-
-**7/7**
-
-### 🟢 builds.json
-
-**11/11**
-
-### 🟢 calendar.json
-
-**44/44**
-
-### 🟡 common.json
-
-**36/49**
-
-<details>
-<summary>Missing</summary>
-
-- pages.s2
-- actions.loadMore
-- weapon.category.SHOOTERS
-- weapon.category.BLASTERS
-- weapon.category.ROLLERS
-- weapon.category.BRUSHES
-- weapon.category.CHARGERS
-- weapon.category.SLOSHERS
-- weapon.category.SPLATLINGS
-- weapon.category.DUALIES
-- weapon.category.BRELLAS
-- weapon.category.STRINGERS
-- weapon.category.SPLATANAS
-
-</details>
-
-### 🟢 contributions.json
-
-**6/6**
-
-### 🟢 faq.json
-
-**6/6**
-
-### 🟡 front.json
-
-**9/10**
-
-<details>
-<summary>Missing</summary>
-
-- buildsGoTo
-
-</details>
-
-### 🟡 user.json
-
-**7/19**
-
-<details>
-<summary>Missing</summary>
-
-- customUrl
-- ign
-- ign.short
-- stickSens
-- motionSens
-- motion
-- stick
-- sens
-- forms.errors.invalidCustomUrl.numbers
-- forms.errors.invalidCustomUrl.strangeCharacter
-- forms.errors.invalidCustomUrl.duplicate
-- forms.errors.invalidSens
-
-</details>
+## /de (🟢 Done)
 
 ---
 
@@ -216,6 +131,10 @@
 ### 🟢 front.json
 
 **10/10**
+
+### 🟢 game-misc.json
+
+**12/12**
 
 ### 🟡 user.json
 
@@ -309,6 +228,10 @@
 
 </details>
 
+### 🟢 game-misc.json
+
+**12/12**
+
 ### 🟡 user.json
 
 **7/19**
@@ -333,7 +256,47 @@
 
 ---
 
-## /it (🔴 Not started)
+## /it (🟡 In progress)
+
+### 🔴 analyzer.json
+
+**0/94**
+
+### 🔴 badges.json
+
+**0/7**
+
+### 🔴 builds.json
+
+**0/11**
+
+### 🔴 calendar.json
+
+**0/44**
+
+### 🔴 common.json
+
+**0/49**
+
+### 🔴 contributions.json
+
+**0/6**
+
+### 🔴 faq.json
+
+**0/6**
+
+### 🔴 front.json
+
+**0/10**
+
+### 🟢 game-misc.json
+
+**12/12**
+
+### 🔴 user.json
+
+**0/19**
 
 ---
 
@@ -483,6 +446,10 @@
 
 </details>
 
+### 🟢 game-misc.json
+
+**12/12**
+
 ### 🟡 user.json
 
 **7/19**
@@ -575,6 +542,10 @@
 - analyzer.description
 
 </details>
+
+### 🟢 game-misc.json
+
+**12/12**
 
 ### 🟡 user.json
 
@@ -698,6 +669,10 @@
 
 </details>
 
+### 🟢 game-misc.json
+
+**12/12**
+
 ### 🟡 user.json
 
 **7/19**
@@ -791,6 +766,10 @@
 
 </details>
 
+### 🟢 game-misc.json
+
+**12/12**
+
 ### 🟡 user.json
 
 **7/19**
@@ -883,6 +862,10 @@
 - analyzer.description
 
 </details>
+
+### 🟢 game-misc.json
+
+**12/12**
 
 ### 🟡 user.json
 
