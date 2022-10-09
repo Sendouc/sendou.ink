@@ -44,6 +44,7 @@
   background-color: var(--bg-darker);
   border-radius: var(--rounded);
   color: var(--theme);
+  opacity: 1 !important;
   outline: initial;
 }
 
@@ -69,6 +70,11 @@
   align-items: center;
   justify-content: center;
   gap: var(--s-4);
+}
+
+.maps__pool_info {
+  font-size: var(--fonts-xs);
+  font-weight: var(--semi-bold);
 }
 
 .maps__toggle-container {

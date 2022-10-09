@@ -1,4 +1,9 @@
-import type { ActionFunction, LinksFunction } from "@remix-run/node";
+import type {
+  ActionFunction,
+  LinksFunction,
+  LoaderArgs,
+} from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import { useTranslation } from "react-i18next";
 import { Image } from "~/components/Image";
 import { Main } from "~/components/Main";
@@ -11,9 +16,9 @@ import {
 import { modes, stageIds } from "~/modules/in-game-lists";
 import type { MapPool } from "~/modules/map-pool-serializer/types";
 import styles from "~/styles/maps.css";
-import { modeImageUrl, stageImageUrl } from "~/utils/urls";
+import { mapsPage, modeImageUrl, stageImageUrl } from "~/utils/urls";
 import clsx from "clsx";
-import { Form, useSearchParams } from "@remix-run/react";
+import { Form, useLoaderData, useSearchParams } from "@remix-run/react";
 import {
   mapPoolToSerializedString,
   serializedStringToMapPool,
@@ -35,6 +40,8 @@ import invariant from "tiny-invariant";
 import { z } from "zod";
 import { parseRequestFormData } from "~/utils/remix";
 import { db } from "~/db";
+import { discordFullName } from "~/utils/strings";
+import { UploadIcon } from "~/components/icons/Upload";
 
 const AMOUNT_OF_MAPS_IN_MAP_LIST = stageIds.length * 2;
 
@@ -47,6 +54,7 @@ export const handle = {
 };
 
 // xxx: next -> define user flow after submitting a map pool
+// xxx: code can't have spaces or special characters also convert upper case to lower case
 const mapsActionSchema = z.object({
   code: z.string().min(MAPS.CODE_MIN_LENGTH).max(MAPS.CODE_MAX_LENGTH),
   pool: z.string(),
@@ -70,7 +78,16 @@ export const action: ActionFunction = async ({ request }) => {
     maps,
   });
 
-  return null;
+  return redirect(mapsPage(data.code));
+};
+
+export const loader = ({ request }: LoaderArgs) => {
+  const url = new URL(request.url);
+  const code = url.searchParams.get("code");
+
+  if (!code) return null;
+
+  return db.maps.findMapPoolByCode(code) ?? null;
 };
 
 const DEFAULT_MAP_POOL = {
@@ -82,7 +99,15 @@ const DEFAULT_MAP_POOL = {
 };
 
 export default function MapListPage() {
+  const user = useUser();
   const { mapPool, handleMapPoolChange } = useSearchParamMapPool();
+
+  if (
+    process.env.NODE_ENV !== "development" &&
+    user?.discordId !== ADMIN_DISCORD_ID
+  ) {
+    return <Main>Coming soon :)</Main>;
+  }
 
   return (
     <Main className="maps__container stack lg">
@@ -97,10 +122,26 @@ export default function MapListPage() {
 }
 
 function useSearchParamMapPool() {
+  const data = useLoaderData<typeof loader>();
   const [searchParams, setSearchParams] = useSearchParams();
-  const mapPool = searchParams.has("pool")
-    ? serializedStringToMapPool(searchParams.get("pool")!)
-    : DEFAULT_MAP_POOL;
+
+  const mapPool = (() => {
+    if (data?.maps) {
+      return {
+        TW: data.maps.filter((m) => m.mode === "TW").map((m) => m.stageId),
+        SZ: data.maps.filter((m) => m.mode === "SZ").map((m) => m.stageId),
+        TC: data.maps.filter((m) => m.mode === "TC").map((m) => m.stageId),
+        CB: data.maps.filter((m) => m.mode === "CB").map((m) => m.stageId),
+        RM: data.maps.filter((m) => m.mode === "RM").map((m) => m.stageId),
+      };
+    }
+
+    if (searchParams.has("pool")) {
+      return serializedStringToMapPool(searchParams.get("pool")!);
+    }
+
+    return DEFAULT_MAP_POOL;
+  })();
 
   const handleMapPoolChange = ({
     mode,
@@ -140,15 +181,10 @@ function MapPoolSelector({
   mapPool: MapPool;
   handleMapPoolChange: (args: { mode: ModeShort; stageId: StageId }) => void;
 }) {
-  const user = useUser();
+  const data = useLoaderData<typeof loader>();
   const { t } = useTranslation(["game-misc"]);
 
-  if (
-    process.env.NODE_ENV !== "development" &&
-    user?.discordId !== ADMIN_DISCORD_ID
-  ) {
-    return <Main>Coming soon :)</Main>;
-  }
+  const editMode = !data;
 
   return (
     <div className="stack md">
@@ -172,10 +208,12 @@ function MapPoolSelector({
                     key={mode.short}
                     className={clsx("maps__mode-button", "outline-theme", {
                       selected,
+                      hidden: !editMode && !selected,
                     })}
                     onClick={() =>
                       handleMapPoolChange({ mode: mode.short, stageId })
                     }
+                    disabled={!editMode}
                     type="button"
                   >
                     <Image
@@ -200,6 +238,16 @@ function MapPoolSelector({
 
 // xxx: show "log in to save map pools" if not logged in
 function MapPoolLoaderSaver({ mapPool }: { mapPool: MapPool }) {
+  const data = useLoaderData<typeof loader>();
+
+  if (data) {
+    return (
+      <div className="maps__pool_info">
+        Code: <code>{data.code}</code> - Made by: {discordFullName(data.owner)}
+      </div>
+    );
+  }
+
   const hasChanges = (() => {
     for (const mode of modesShort) {
       if (mapPool[mode].length !== DEFAULT_MAP_POOL[mode].length) {
@@ -234,7 +282,11 @@ function MapPoolLoaderSaver({ mapPool }: { mapPool: MapPool }) {
           maxLength={MAPS.CODE_MAX_LENGTH}
         />
       </div>
-      <Button icon={<DownloadIcon />} variant="outlined" type="submit">
+      <Button
+        icon={hasChanges ? <UploadIcon /> : <DownloadIcon />}
+        variant="outlined"
+        type="submit"
+      >
         {hasChanges ? "Save map pool" : "Load map pool"}
       </Button>
     </Form>
