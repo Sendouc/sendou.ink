@@ -1,4 +1,9 @@
-import type { Ability, MainWeaponId } from "~/modules/in-game-lists";
+import type {
+  Ability,
+  MainWeaponId,
+  ModeShort,
+  StageId,
+} from "~/modules/in-game-lists";
 import type allTags from "../routes/calendar/tags.json";
 
 export interface User {
@@ -95,6 +100,7 @@ export interface CalendarEvent {
   discordUrl: string | null;
   bracketUrl: string;
   participantCount: number | null;
+  mapPoolId?: number;
 }
 
 export type CalendarEventTag = keyof typeof allTags;
@@ -147,4 +153,16 @@ export interface BuildAbility {
   gearType: "HEAD" | "CLOTHES" | "SHOES";
   ability: Ability;
   slotIndex: 0 | 1 | 2 | 3;
+}
+
+export interface MapPool {
+  id: number;
+  code: string;
+  ownerId: number;
+}
+
+export interface MapPoolMap {
+  mapPoolId: number;
+  stageId: StageId;
+  mode: ModeShort;
 }

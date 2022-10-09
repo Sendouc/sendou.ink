@@ -1,11 +1,12 @@
-import type { LinksFunction } from "@remix-run/node";
+import type { ActionFunction, LinksFunction } from "@remix-run/node";
 import { useTranslation } from "react-i18next";
 import { Image } from "~/components/Image";
 import { Main } from "~/components/Main";
-import type {
-  ModeShort,
-  ModeWithStage,
-  StageId,
+import {
+  modesShort,
+  type ModeShort,
+  type ModeWithStage,
+  type StageId,
 } from "~/modules/in-game-lists";
 import { modes, stageIds } from "~/modules/in-game-lists";
 import type { MapPool } from "~/modules/map-pool-serializer/types";
@@ -17,8 +18,8 @@ import {
   mapPoolToSerializedString,
   serializedStringToMapPool,
 } from "~/modules/map-pool-serializer";
-import { useUser } from "~/modules/auth";
-import { ADMIN_DISCORD_ID } from "~/constants";
+import { requireUser, useUser } from "~/modules/auth";
+import { ADMIN_DISCORD_ID, MAPS } from "~/constants";
 import { Button } from "~/components/Button";
 import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
@@ -31,6 +32,9 @@ import {
 } from "~/modules/map-list-generator";
 import * as React from "react";
 import invariant from "tiny-invariant";
+import { z } from "zod";
+import { parseRequestFormData } from "~/utils/remix";
+import { db } from "~/db";
 
 const AMOUNT_OF_MAPS_IN_MAP_LIST = stageIds.length * 2;
 
@@ -40,6 +44,33 @@ export const links: LinksFunction = () => {
 
 export const handle = {
   i18n: "game-misc",
+};
+
+// xxx: next -> define user flow after submitting a map pool
+const mapsActionSchema = z.object({
+  code: z.string().min(MAPS.CODE_MIN_LENGTH).max(MAPS.CODE_MAX_LENGTH),
+  pool: z.string(),
+});
+
+export const action: ActionFunction = async ({ request }) => {
+  const user = await requireUser(request);
+  const data = await parseRequestFormData({
+    request,
+    schema: mapsActionSchema,
+  });
+
+  const mapPool = serializedStringToMapPool(data.pool);
+  const maps = Object.entries(mapPool).flatMap(([mode, stages]) =>
+    stages.flatMap((stageId) => ({ mode: mode as ModeShort, stageId }))
+  );
+
+  db.maps.addMapPool({
+    ownerId: user.id,
+    code: data.code,
+    maps,
+  });
+
+  return null;
 };
 
 const DEFAULT_MAP_POOL = {
@@ -55,7 +86,7 @@ export default function MapListPage() {
 
   return (
     <Main className="maps__container stack lg">
-      <MapPoolLoaderSaver />
+      <MapPoolLoaderSaver mapPool={mapPool} />
       <MapPoolSelector
         mapPool={mapPool}
         handleMapPoolChange={handleMapPoolChange}
@@ -167,15 +198,44 @@ function MapPoolSelector({
   );
 }
 
-function MapPoolLoaderSaver() {
+// xxx: show "log in to save map pools" if not logged in
+function MapPoolLoaderSaver({ mapPool }: { mapPool: MapPool }) {
+  const hasChanges = (() => {
+    for (const mode of modesShort) {
+      if (mapPool[mode].length !== DEFAULT_MAP_POOL[mode].length) {
+        return true;
+      }
+
+      for (const stageId of mapPool[mode]) {
+        if (!(DEFAULT_MAP_POOL[mode] as StageId[]).includes(stageId)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  })();
+
   return (
-    <Form className="maps__pool-loader-saver">
+    <Form
+      className="maps__pool-loader-saver"
+      method={hasChanges ? "post" : "get"}
+    >
+      <input
+        type="hidden"
+        name="pool"
+        value={mapPoolToSerializedString(mapPool)}
+      />
       <div>
         <Label>Code</Label>
-        <Input name="code" />
+        <Input
+          name="code"
+          minLength={MAPS.CODE_MIN_LENGTH}
+          maxLength={MAPS.CODE_MAX_LENGTH}
+        />
       </div>
       <Button icon={<DownloadIcon />} variant="outlined" type="submit">
-        Load map pool
+        {hasChanges ? "Save map pool" : "Load map pool"}
       </Button>
     </Form>
   );

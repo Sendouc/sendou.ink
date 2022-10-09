@@ -41,6 +41,11 @@ export const BUILD = {
   MAX_COUNT: 250,
 } as const;
 
+export const MAPS = {
+  CODE_MIN_LENGTH: 2,
+  CODE_MAX_LENGTH: 32,
+};
+
 export const BUILDS_PAGE_BATCH_SIZE = 24;
 export const BUILDS_PAGE_MAX_BUILDS = 240;
 
