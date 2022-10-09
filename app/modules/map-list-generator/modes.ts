@@ -11,5 +11,5 @@ export function modesOrder(
 
   const withoutSZ = shuffle(modes.filter((mode) => mode !== "SZ"));
 
-  return withoutSZ.flatMap((mode, i) => (i % 2 === 0 ? ["SZ", mode] : [mode]));
+  return withoutSZ.flatMap((mode) => [mode, "SZ"]);
 }

@@ -186,11 +186,15 @@ function MapPoolLoaderSaver() {
 function MapListCreator({ mapPool }: { mapPool: MapPool }) {
   const { t } = useTranslation(["game-misc"]);
   const [mapList, setMapList] = React.useState<ModeWithStage[]>();
+  const [szEveryOther, setSzEveryOther] = React.useState(false);
 
   const handleCreateMaplist = () => {
     const [list] = generateMapList(
       mapPool,
-      modesOrder("EQUAL", mapPoolToNonEmptyModes(mapPool)),
+      modesOrder(
+        szEveryOther ? "SZ_EVERY_OTHER" : "EQUAL",
+        mapPoolToNonEmptyModes(mapPool)
+      ),
       [AMOUNT_OF_MAPS_IN_MAP_LIST]
     );
 
@@ -203,7 +207,7 @@ function MapListCreator({ mapPool }: { mapPool: MapPool }) {
     <div className="maps__map-list-creator">
       <div className="maps__toggle-container">
         <Label>50% SZ</Label>
-        <Toggle checked={false} setChecked={() => true} />
+        <Toggle checked={szEveryOther} setChecked={setSzEveryOther} tiny />
       </div>
       <Button onClick={handleCreateMaplist}>Create map list</Button>
       {mapList && (
