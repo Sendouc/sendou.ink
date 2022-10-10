@@ -2,8 +2,9 @@
   "pages.admin": "Administratorer",
   "pages.badges": "Mærker",
   "pages.plus": "Plus Server",
-  "pages.contributors": "Bidragydere",
+  "pages.contributors": "Bidragsydere",
   "pages.calendar": "Kalender",
+  "pages.s2": "Splatoon 2",
   "pages.faq": "FAQ",
   "pages.builds": "Udrustningssæt",
   "pages.analyzer": "Udrustningsanalysator",
@@ -25,7 +26,7 @@
   "actions.add": "Tilføj",
   "actions.remove": "Fjern",
   "actions.delete": "Slet",
-  "actions.loadMore": "Indlæs mere",
+  "actions.loadMore": "Indlæs flere",
 
   "results": "Resultater",
 
@@ -43,15 +44,15 @@
   "tag.name.LAN": "LAN",
   "tag.name.QUALIFIER": "Kvalifikationsturnering",
 
-  "weapon.category.SHOOTERS": "Shooters",
-  "weapon.category.BLASTERS": "Blasters",
-  "weapon.category.ROLLERS": "Rollers",
-  "weapon.category.BRUSHES": "Brushes",
-  "weapon.category.CHARGERS": "Chargers",
-  "weapon.category.SLOSHERS": "Sloshers",
-  "weapon.category.SPLATLINGS": "Splatlings",
-  "weapon.category.DUALIES": "Dualies",
-  "weapon.category.BRELLAS": "Brellas",
-  "weapon.category.STRINGERS": "Stringers",
-  "weapon.category.SPLATANAS": "Splatanas"
+  "weapon.category.SHOOTERS": "Shooters/Skydere",
+  "weapon.category.BLASTERS": "Blasters/Blastere",
+  "weapon.category.ROLLERS": "Rollers/Malerruller",
+  "weapon.category.BRUSHES": "Brushes/Pensler",
+  "weapon.category.CHARGERS": "Chargers/Opladere",
+  "weapon.category.SLOSHERS": "Sloshers/Plaskere",
+  "weapon.category.SPLATLINGS": "Splatlings/Splatninger",
+  "weapon.category.DUALIES": "Dualies/Dualier",
+  "weapon.category.BRELLAS": "Brellas/Paraplyer",
+  "weapon.category.STRINGERS": "Stringers/Buer",
+  "weapon.category.SPLATANAS": "Splatanas/Splatanaer"
 }
