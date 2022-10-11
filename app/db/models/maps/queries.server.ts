@@ -3,10 +3,12 @@ import type { MapPool, MapPoolMap, User } from "~/db/types";
 import createMapPoolSql from "./createMapPool.sql";
 import createMapPoolMapSql from "./createMapPoolMap.sql";
 import findMapPoolByCodeSql from "./findMapPoolByCode.sql";
+import codesByUserIdSql from "./codesByUserId.sql";
 
 const createMapPoolStm = sql.prepare(createMapPoolSql);
 const createMapPoolMapStm = sql.prepare(createMapPoolMapSql);
 const findMapPoolByCodeStm = sql.prepare(findMapPoolByCodeSql);
+const codesByUserIdStm = sql.prepare(codesByUserIdSql);
 
 export const addMapPool = sql.transaction(
   ({
@@ -52,4 +54,10 @@ export function findMapPoolByCode(code: MapPool["code"]) {
     };
     maps: Array<Pick<MapPoolMap, "mode" | "stageId">>;
   };
+}
+
+export function codesByUserId(userId: User["id"]) {
+  return (codesByUserIdStm.all({ userId }) as Array<Pick<MapPool, "code">>).map(
+    ({ code }) => code
+  );
 }

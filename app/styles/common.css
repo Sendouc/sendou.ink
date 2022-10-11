@@ -205,6 +205,10 @@ input[type="checkbox"] {
   height: 16px;
 }
 
+[list]::-webkit-calendar-picker-indicator {
+  display: none !important;
+}
+
 label {
   display: block;
   font-size: var(--fonts-xs);

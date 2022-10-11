@@ -18,12 +18,13 @@ import type { MapPool } from "~/modules/map-pool-serializer/types";
 import styles from "~/styles/maps.css";
 import { mapsPage, modeImageUrl, stageImageUrl } from "~/utils/urls";
 import clsx from "clsx";
+import type { ShouldReloadFunction } from "@remix-run/react";
 import { Form, useLoaderData, useSearchParams } from "@remix-run/react";
 import {
   mapPoolToSerializedString,
   serializedStringToMapPool,
 } from "~/modules/map-pool-serializer";
-import { requireUser, useUser } from "~/modules/auth";
+import { getUser, requireUser, useUser } from "~/modules/auth";
 import { ADMIN_DISCORD_ID, MAPS } from "~/constants";
 import { Button } from "~/components/Button";
 import { Input } from "~/components/Input";
@@ -45,6 +46,10 @@ import { UploadIcon } from "~/components/icons/Upload";
 
 const AMOUNT_OF_MAPS_IN_MAP_LIST = stageIds.length * 2;
 
+export const unstable_shouldReload: ShouldReloadFunction = ({ url }) => {
+  return Boolean(url.searchParams.get("code"));
+};
+
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
@@ -53,6 +58,7 @@ export const handle = {
   i18n: "game-misc",
 };
 
+// xxx: check: limit how many map pools can be submitted maybe
 // xxx: next -> define user flow after submitting a map pool
 // xxx: code can't have spaces or special characters also convert upper case to lower case
 const mapsActionSchema = z.object({
@@ -81,13 +87,15 @@ export const action: ActionFunction = async ({ request }) => {
   return redirect(mapsPage(data.code));
 };
 
-export const loader = ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderArgs) => {
+  const user = await getUser(request);
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
 
-  if (!code) return null;
-
-  return db.maps.findMapPoolByCode(code) ?? null;
+  return {
+    mapPool: code ? db.maps.findMapPoolByCode(code) : null,
+    ownCodes: user ? db.maps.codesByUserId(user.id) : null,
+  };
 };
 
 const DEFAULT_MAP_POOL = {
@@ -126,13 +134,23 @@ function useSearchParamMapPool() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const mapPool = (() => {
-    if (data?.maps) {
+    if (data?.mapPool) {
       return {
-        TW: data.maps.filter((m) => m.mode === "TW").map((m) => m.stageId),
-        SZ: data.maps.filter((m) => m.mode === "SZ").map((m) => m.stageId),
-        TC: data.maps.filter((m) => m.mode === "TC").map((m) => m.stageId),
-        CB: data.maps.filter((m) => m.mode === "CB").map((m) => m.stageId),
-        RM: data.maps.filter((m) => m.mode === "RM").map((m) => m.stageId),
+        TW: data.mapPool.maps
+          .filter((m) => m.mode === "TW")
+          .map((m) => m.stageId),
+        SZ: data.mapPool.maps
+          .filter((m) => m.mode === "SZ")
+          .map((m) => m.stageId),
+        TC: data.mapPool.maps
+          .filter((m) => m.mode === "TC")
+          .map((m) => m.stageId),
+        CB: data.mapPool.maps
+          .filter((m) => m.mode === "CB")
+          .map((m) => m.stageId),
+        RM: data.mapPool.maps
+          .filter((m) => m.mode === "RM")
+          .map((m) => m.stageId),
       };
     }
 
@@ -181,10 +199,11 @@ function MapPoolSelector({
   mapPool: MapPool;
   handleMapPoolChange: (args: { mode: ModeShort; stageId: StageId }) => void;
 }) {
+  const user = useUser();
   const data = useLoaderData<typeof loader>();
   const { t } = useTranslation(["game-misc"]);
 
-  const editMode = !data;
+  const editMode = !data.mapPool || data.mapPool?.owner.id === user?.id;
 
   return (
     <div className="stack md">
@@ -240,10 +259,17 @@ function MapPoolSelector({
 function MapPoolLoaderSaver({ mapPool }: { mapPool: MapPool }) {
   const data = useLoaderData<typeof loader>();
 
-  if (data) {
+  if (data.mapPool) {
     return (
       <div className="maps__pool_info">
-        Code: <code>{data.code}</code> - Made by: {discordFullName(data.owner)}
+        <div>
+          Code: <code>{data.mapPool.code}</code> - Made by:{" "}
+          {discordFullName(data.mapPool.owner)}
+        </div>
+        <div className="stack horizontal sm">
+          <Button tiny>Change pool</Button>
+          <Button tiny>Save 3 changes</Button>
+        </div>
       </div>
     );
   }
@@ -276,11 +302,19 @@ function MapPoolLoaderSaver({ mapPool }: { mapPool: MapPool }) {
       />
       <div>
         <Label>Code</Label>
-        <Input
+        {/* <Input
           name="code"
           minLength={MAPS.CODE_MIN_LENGTH}
           maxLength={MAPS.CODE_MAX_LENGTH}
-        />
+        /> */}
+        <Input name="code" list="ownCodes" />
+        {data.ownCodes && (
+          <datalist id="ownCodes">
+            {data.ownCodes.map((code) => (
+              <option key={code} value={code} />
+            ))}
+          </datalist>
+        )}
       </div>
       <Button
         icon={hasChanges ? <UploadIcon /> : <DownloadIcon />}
@@ -293,8 +327,9 @@ function MapPoolLoaderSaver({ mapPool }: { mapPool: MapPool }) {
   );
 }
 
+// xxx: next maybe own map pool being viewed is always editable but other is view only?
+
 // xxx: crashes if only one map in mode
-// xxx: presentational mode
 function MapListCreator({ mapPool }: { mapPool: MapPool }) {
   const { t } = useTranslation(["game-misc"]);
   const [mapList, setMapList] = React.useState<ModeWithStage[]>();
