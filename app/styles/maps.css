@@ -89,4 +89,5 @@
 .maps__map-list {
   font-size: var(--fonts-xs);
   font-weight: var(--semi-bold);
+  margin-block-start: var(--s-4);
 }

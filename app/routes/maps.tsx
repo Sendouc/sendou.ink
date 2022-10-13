@@ -5,6 +5,7 @@ import { useLoaderData, useSearchParams } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
+import { useCopyToClipboard } from "react-use";
 import invariant from "tiny-invariant";
 import { Button } from "~/components/Button";
 import { Image } from "~/components/Image";
@@ -206,6 +207,7 @@ function MapListCreator({ mapPool }: { mapPool: MapPool }) {
   const { t } = useTranslation(["game-misc"]);
   const [mapList, setMapList] = React.useState<ModeWithStage[]>();
   const [szEveryOther, setSzEveryOther] = React.useState(false);
+  const [, copyToClipboard] = useCopyToClipboard();
 
   const handleCreateMaplist = () => {
     const [list] = generateMapList(
@@ -230,14 +232,34 @@ function MapListCreator({ mapPool }: { mapPool: MapPool }) {
       </div>
       <Button onClick={handleCreateMaplist}>Create map list</Button>
       {mapList && (
-        <ol className="maps__map-list">
-          {mapList.map(({ mode, stageId }, i) => (
-            <li key={i}>
-              {t(`game-misc:MODE_SHORT_${mode}`)}{" "}
-              {t(`game-misc:STAGE_${stageId}`)}
-            </li>
-          ))}
-        </ol>
+        <>
+          <ol className="maps__map-list">
+            {mapList.map(({ mode, stageId }, i) => (
+              <li key={i}>
+                {t(`game-misc:MODE_SHORT_${mode}`)}{" "}
+                {t(`game-misc:STAGE_${stageId}`)}
+              </li>
+            ))}
+          </ol>
+          <Button
+            tiny
+            variant="outlined"
+            onClick={() =>
+              copyToClipboard(
+                mapList
+                  .map(
+                    ({ mode, stageId }, i) =>
+                      `${i + 1}) ${t(`game-misc:MODE_SHORT_${mode}`)} ${t(
+                        `game-misc:STAGE_${stageId}`
+                      )}`
+                  )
+                  .join("\n")
+              )
+            }
+          >
+            Copy to clipboard
+          </Button>
+        </>
       )}
     </div>
   );
