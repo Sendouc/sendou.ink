@@ -15,7 +15,7 @@ export default function UserResultsPage() {
   const data = parentRoute.data as UserPageLoaderData;
 
   return (
-    <main className="u__results-main layout__main">
+    <main className="main layout__main">
       <Section className="u__results-section">
         <table>
           <thead>
