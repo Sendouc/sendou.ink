@@ -28,6 +28,12 @@
   "actions.remove": "Remove",
   "actions.delete": "Delete",
   "actions.loadMore": "Load more",
+  "actions.copyToClipboard": "Copy to clipboard",
+
+  "maps.createMapList": "Create map list",
+  "maps.halfSz": "50% SZ",
+  "maps.mapPool": "Map pool",
+  "maps.tournamentMaplist": "Create tournament map list (maps.iplabs.ink)",
 
   "results": "Results",
 

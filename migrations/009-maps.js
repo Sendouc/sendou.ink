@@ -1,4 +1,3 @@
-// xxx: add unique constraint to code
 module.exports.up = function (db) {
   db.prepare(
     `

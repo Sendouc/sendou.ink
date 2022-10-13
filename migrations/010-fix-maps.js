@@ -1,4 +1,3 @@
-// xxx: add unique constraint to code
 module.exports.up = function (db) {
   for (const table of ["MapPool", "MapPoolMap"]) {
     db.prepare(`drop table "${table}"`).run();

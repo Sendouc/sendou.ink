@@ -80,6 +80,7 @@ const DEFAULT_MAP_POOL = {
 };
 
 export default function MapListPage() {
+  const { t } = useTranslation(["common"]);
   const data = useLoaderData<typeof loader>();
   const [searchParams] = useSearchParams();
   const { mapPool, handleMapPoolChange } = useSearchParamMapPool();
@@ -88,7 +89,7 @@ export default function MapListPage() {
     <Main className="maps__container stack lg">
       {data.calendarEvent && !searchParams.has("pool") && (
         <div className="maps__pool-info">
-          Map pool:{" "}
+          {t("common:maps.mapPool")}:{" "}
           <Link to={calendarEventPage(data.calendarEvent.id)}>
             {data.calendarEvent.name}
           </Link>
@@ -104,7 +105,7 @@ export default function MapListPage() {
         rel="noreferrer"
         className="maps__tournament-map-list-link"
       >
-        Create tournament map list (maps.iplabs.ink)
+        {t("common:maps.tournamentMaplist")}
       </a>
       <MapListCreator mapPool={mapPool} />
     </Main>
@@ -217,7 +218,7 @@ function MapPoolSelector({
 
 // xxx: crashes if only one map in mode
 function MapListCreator({ mapPool }: { mapPool: MapPool }) {
-  const { t } = useTranslation(["game-misc"]);
+  const { t } = useTranslation(["game-misc", "common"]);
   const [mapList, setMapList] = React.useState<ModeWithStage[]>();
   const [szEveryOther, setSzEveryOther] = React.useState(false);
   const [, copyToClipboard] = useCopyToClipboard();
@@ -240,10 +241,12 @@ function MapListCreator({ mapPool }: { mapPool: MapPool }) {
   return (
     <div className="maps__map-list-creator">
       <div className="maps__toggle-container">
-        <Label>50% SZ</Label>
+        <Label>{t("common:maps.halfSz")}</Label>
         <Toggle checked={szEveryOther} setChecked={setSzEveryOther} tiny />
       </div>
-      <Button onClick={handleCreateMaplist}>Create map list</Button>
+      <Button onClick={handleCreateMaplist}>
+        {t("common:maps.createMapList")}
+      </Button>
       {mapList && (
         <>
           <ol className="maps__map-list">
@@ -270,7 +273,7 @@ function MapListCreator({ mapPool }: { mapPool: MapPool }) {
               )
             }
           >
-            Copy to clipboard
+            {t("common:actions.copyToClipboard")}
           </Button>
         </>
       )}

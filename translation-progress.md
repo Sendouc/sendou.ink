@@ -23,18 +23,32 @@
 
 **11/11**
 
-### 🟢 calendar.json
+### 🟡 calendar.json
 
-**44/44**
+**44/46**
+
+<details>
+<summary>Missing</summary>
+
+- createMapList
+- forms.mapPool
+
+</details>
 
 ### 🟡 common.json
 
-**48/49**
+**48/55**
 
 <details>
 <summary>Missing</summary>
 
 - pages.s2
+- pages.maps
+- actions.copyToClipboard
+- maps.createMapList
+- maps.halfSz
+- maps.mapPool
+- maps.tournamentMaplist
 
 </details>
 
@@ -46,13 +60,31 @@
 
 **6/6**
 
-### 🟢 front.json
+### 🟡 front.json
 
-**10/10**
+**10/11**
 
-### 🟢 game-misc.json
+<details>
+<summary>Missing</summary>
 
-**12/12**
+- maps.description
+
+</details>
+
+### 🟡 game-misc.json
+
+**12/17**
+
+<details>
+<summary>Missing</summary>
+
+- MODE_SHORT_TW
+- MODE_SHORT_SZ
+- MODE_SHORT_TC
+- MODE_SHORT_RM
+- MODE_SHORT_CB
+
+</details>
 
 ### 🟡 user.json
 
@@ -78,7 +110,85 @@
 
 ---
 
-## /de (🟢 Done)
+## /de (🟡 In progress)
+
+### 🟢 analyzer.json
+
+**94/94**
+
+### 🟢 badges.json
+
+**7/7**
+
+### 🟢 builds.json
+
+**11/11**
+
+### 🟡 calendar.json
+
+**44/46**
+
+<details>
+<summary>Missing</summary>
+
+- createMapList
+- forms.mapPool
+
+</details>
+
+### 🟡 common.json
+
+**49/55**
+
+<details>
+<summary>Missing</summary>
+
+- pages.maps
+- actions.copyToClipboard
+- maps.createMapList
+- maps.halfSz
+- maps.mapPool
+- maps.tournamentMaplist
+
+</details>
+
+### 🟢 contributions.json
+
+**6/6**
+
+### 🟢 faq.json
+
+**6/6**
+
+### 🟡 front.json
+
+**10/11**
+
+<details>
+<summary>Missing</summary>
+
+- maps.description
+
+</details>
+
+### 🟡 game-misc.json
+
+**12/17**
+
+<details>
+<summary>Missing</summary>
+
+- MODE_SHORT_TW
+- MODE_SHORT_SZ
+- MODE_SHORT_TC
+- MODE_SHORT_RM
+- MODE_SHORT_CB
+
+</details>
+
+### 🟢 user.json
+
+**19/19**
 
 ---
 
@@ -105,18 +215,32 @@
 
 **11/11**
 
-### 🟢 calendar.json
+### 🟡 calendar.json
 
-**44/44**
+**44/46**
+
+<details>
+<summary>Missing</summary>
+
+- createMapList
+- forms.mapPool
+
+</details>
 
 ### 🟡 common.json
 
-**48/49**
+**48/55**
 
 <details>
 <summary>Missing</summary>
 
 - pages.s2
+- pages.maps
+- actions.copyToClipboard
+- maps.createMapList
+- maps.halfSz
+- maps.mapPool
+- maps.tournamentMaplist
 
 </details>
 
@@ -128,13 +252,31 @@
 
 **6/6**
 
-### 🟢 front.json
+### 🟡 front.json
 
-**10/10**
+**10/11**
 
-### 🟢 game-misc.json
+<details>
+<summary>Missing</summary>
 
-**12/12**
+- maps.description
+
+</details>
+
+### 🟡 game-misc.json
+
+**12/17**
+
+<details>
+<summary>Missing</summary>
+
+- MODE_SHORT_TW
+- MODE_SHORT_SZ
+- MODE_SHORT_TC
+- MODE_SHORT_RM
+- MODE_SHORT_CB
+
+</details>
 
 ### 🟡 user.json
 
@@ -183,20 +325,34 @@
 
 **11/11**
 
-### 🟢 calendar.json
+### 🟡 calendar.json
 
-**44/44**
+**44/46**
+
+<details>
+<summary>Missing</summary>
+
+- createMapList
+- forms.mapPool
+
+</details>
 
 ### 🟡 common.json
 
-**46/49**
+**46/55**
 
 <details>
 <summary>Missing</summary>
 
 - pages.s2
 - pages.analyzer
+- pages.maps
 - actions.loadMore
+- actions.copyToClipboard
+- maps.createMapList
+- maps.halfSz
+- maps.mapPool
+- maps.tournamentMaplist
 
 </details>
 
@@ -218,19 +374,31 @@
 
 ### 🟡 front.json
 
-**8/10**
+**8/11**
 
 <details>
 <summary>Missing</summary>
 
 - buildsGoTo
 - analyzer.description
+- maps.description
 
 </details>
 
-### 🟢 game-misc.json
+### 🟡 game-misc.json
 
-**12/12**
+**12/17**
+
+<details>
+<summary>Missing</summary>
+
+- MODE_SHORT_TW
+- MODE_SHORT_SZ
+- MODE_SHORT_TC
+- MODE_SHORT_RM
+- MODE_SHORT_CB
+
+</details>
 
 ### 🟡 user.json
 
@@ -272,11 +440,11 @@
 
 ### 🔴 calendar.json
 
-**0/44**
+**0/46**
 
 ### 🔴 common.json
 
-**0/49**
+**0/55**
 
 ### 🔴 contributions.json
 
@@ -288,11 +456,22 @@
 
 ### 🔴 front.json
 
-**0/10**
+**0/11**
 
-### 🟢 game-misc.json
+### 🟡 game-misc.json
 
-**12/12**
+**12/17**
+
+<details>
+<summary>Missing</summary>
+
+- MODE_SHORT_TW
+- MODE_SHORT_SZ
+- MODE_SHORT_TC
+- MODE_SHORT_RM
+- MODE_SHORT_CB
+
+</details>
 
 ### 🔴 user.json
 
@@ -402,20 +581,34 @@
 
 **11/11**
 
-### 🟢 calendar.json
+### 🟡 calendar.json
 
-**44/44**
+**44/46**
+
+<details>
+<summary>Missing</summary>
+
+- createMapList
+- forms.mapPool
+
+</details>
 
 ### 🟡 common.json
 
-**46/49**
+**46/55**
 
 <details>
 <summary>Missing</summary>
 
 - pages.s2
 - pages.analyzer
+- pages.maps
 - actions.loadMore
+- actions.copyToClipboard
+- maps.createMapList
+- maps.halfSz
+- maps.mapPool
+- maps.tournamentMaplist
 
 </details>
 
@@ -436,19 +629,31 @@
 
 ### 🟡 front.json
 
-**8/10**
+**8/11**
 
 <details>
 <summary>Missing</summary>
 
 - buildsGoTo
 - analyzer.description
+- maps.description
 
 </details>
 
-### 🟢 game-misc.json
+### 🟡 game-misc.json
 
-**12/12**
+**12/17**
+
+<details>
+<summary>Missing</summary>
+
+- MODE_SHORT_TW
+- MODE_SHORT_SZ
+- MODE_SHORT_TC
+- MODE_SHORT_RM
+- MODE_SHORT_CB
+
+</details>
 
 ### 🟡 user.json
 
@@ -488,20 +693,34 @@
 
 **11/11**
 
-### 🟢 calendar.json
+### 🟡 calendar.json
 
-**44/44**
+**44/46**
+
+<details>
+<summary>Missing</summary>
+
+- createMapList
+- forms.mapPool
+
+</details>
 
 ### 🟡 common.json
 
-**35/49**
+**35/55**
 
 <details>
 <summary>Missing</summary>
 
 - pages.s2
 - pages.analyzer
+- pages.maps
 - actions.loadMore
+- actions.copyToClipboard
+- maps.createMapList
+- maps.halfSz
+- maps.mapPool
+- maps.tournamentMaplist
 - weapon.category.SHOOTERS
 - weapon.category.BLASTERS
 - weapon.category.ROLLERS
@@ -533,19 +752,31 @@
 
 ### 🟡 front.json
 
-**8/10**
+**8/11**
 
 <details>
 <summary>Missing</summary>
 
 - buildsGoTo
 - analyzer.description
+- maps.description
 
 </details>
 
-### 🟢 game-misc.json
+### 🟡 game-misc.json
 
-**12/12**
+**12/17**
+
+<details>
+<summary>Missing</summary>
+
+- MODE_SHORT_TW
+- MODE_SHORT_SZ
+- MODE_SHORT_TC
+- MODE_SHORT_RM
+- MODE_SHORT_CB
+
+</details>
 
 ### 🟡 user.json
 
@@ -615,19 +846,33 @@
 
 **11/11**
 
-### 🟢 calendar.json
+### 🟡 calendar.json
 
-**44/44**
+**44/46**
+
+<details>
+<summary>Missing</summary>
+
+- createMapList
+- forms.mapPool
+
+</details>
 
 ### 🟡 common.json
 
-**36/49**
+**36/55**
 
 <details>
 <summary>Missing</summary>
 
 - pages.s2
+- pages.maps
 - actions.loadMore
+- actions.copyToClipboard
+- maps.createMapList
+- maps.halfSz
+- maps.mapPool
+- maps.tournamentMaplist
 - weapon.category.SHOOTERS
 - weapon.category.BLASTERS
 - weapon.category.ROLLERS
@@ -659,19 +904,31 @@
 
 ### 🟡 front.json
 
-**8/10**
+**8/11**
 
 <details>
 <summary>Missing</summary>
 
 - buildsGoTo
 - analyzer.description
+- maps.description
 
 </details>
 
-### 🟢 game-misc.json
+### 🟡 game-misc.json
 
-**12/12**
+**12/17**
+
+<details>
+<summary>Missing</summary>
+
+- MODE_SHORT_TW
+- MODE_SHORT_SZ
+- MODE_SHORT_TC
+- MODE_SHORT_RM
+- MODE_SHORT_CB
+
+</details>
 
 ### 🟡 user.json
 
@@ -711,20 +968,34 @@
 
 **11/11**
 
-### 🟢 calendar.json
+### 🟡 calendar.json
 
-**44/44**
+**44/46**
+
+<details>
+<summary>Missing</summary>
+
+- createMapList
+- forms.mapPool
+
+</details>
 
 ### 🟡 common.json
 
-**35/49**
+**35/55**
 
 <details>
 <summary>Missing</summary>
 
 - pages.s2
 - pages.analyzer
+- pages.maps
 - actions.loadMore
+- actions.copyToClipboard
+- maps.createMapList
+- maps.halfSz
+- maps.mapPool
+- maps.tournamentMaplist
 - weapon.category.SHOOTERS
 - weapon.category.BLASTERS
 - weapon.category.ROLLERS
@@ -756,19 +1027,31 @@
 
 ### 🟡 front.json
 
-**8/10**
+**8/11**
 
 <details>
 <summary>Missing</summary>
 
 - buildsGoTo
 - analyzer.description
+- maps.description
 
 </details>
 
-### 🟢 game-misc.json
+### 🟡 game-misc.json
 
-**12/12**
+**12/17**
+
+<details>
+<summary>Missing</summary>
+
+- MODE_SHORT_TW
+- MODE_SHORT_SZ
+- MODE_SHORT_TC
+- MODE_SHORT_RM
+- MODE_SHORT_CB
+
+</details>
 
 ### 🟡 user.json
 
@@ -808,20 +1091,34 @@
 
 **11/11**
 
-### 🟢 calendar.json
+### 🟡 calendar.json
 
-**44/44**
+**44/46**
+
+<details>
+<summary>Missing</summary>
+
+- createMapList
+- forms.mapPool
+
+</details>
 
 ### 🟡 common.json
 
-**35/49**
+**35/55**
 
 <details>
 <summary>Missing</summary>
 
 - pages.s2
 - pages.analyzer
+- pages.maps
 - actions.loadMore
+- actions.copyToClipboard
+- maps.createMapList
+- maps.halfSz
+- maps.mapPool
+- maps.tournamentMaplist
 - weapon.category.SHOOTERS
 - weapon.category.BLASTERS
 - weapon.category.ROLLERS
@@ -853,19 +1150,31 @@
 
 ### 🟡 front.json
 
-**8/10**
+**8/11**
 
 <details>
 <summary>Missing</summary>
 
 - buildsGoTo
 - analyzer.description
+- maps.description
 
 </details>
 
-### 🟢 game-misc.json
+### 🟡 game-misc.json
 
-**12/12**
+**12/17**
+
+<details>
+<summary>Missing</summary>
+
+- MODE_SHORT_TW
+- MODE_SHORT_SZ
+- MODE_SHORT_TC
+- MODE_SHORT_RM
+- MODE_SHORT_CB
+
+</details>
 
 ### 🟡 user.json
 
