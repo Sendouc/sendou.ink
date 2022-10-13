@@ -9,7 +9,9 @@ import type {
   CalendarEventBadge,
   CalendarEventResultTeam,
   CalendarEventResultPlayer,
+  MapPoolMap,
 } from "../../types";
+import { mapPoolListToMapPoolObject } from "~/modules/map-list-generator";
 
 import createSql from "./create.sql";
 import updateSql from "./update.sql";
@@ -31,6 +33,9 @@ import findBadgesByEventIdSql from "./findBadgesByEventId.sql";
 import eventsToReportSql from "./eventsToReport.sql";
 import recentWinnersSql from "./recentWinners.sql";
 import upcomingEventsSql from "./upcomingEvents.sql";
+import createMapPoolMapSql from "./createMapPoolMap.sql";
+import deleteMapPoolMapsSql from "./deleteMapPoolMaps.sql";
+import findMapPoolByEventIdSql from "./findMapPoolByEventId.sql";
 
 const createStm = sql.prepare(createSql);
 const updateStm = sql.prepare(updateSql);
@@ -38,6 +43,9 @@ const createDateStm = sql.prepare(createDateSql);
 const deleteDatesByEventIdStm = sql.prepare(deleteDatesByEventIdSql);
 const createBadgeStm = sql.prepare(createBadgeSql);
 const deleteBadgesByEventIdStm = sql.prepare(deleteBadgesByEventIdSql);
+const createMapPoolMapStm = sql.prepare(createMapPoolMapSql);
+const deleteMapPoolMapsStm = sql.prepare(deleteMapPoolMapsSql);
+const findMapPoolByEventIdStm = sql.prepare(findMapPoolByEventIdSql);
 
 export type CreateArgs = Pick<
   CalendarEvent,
@@ -50,9 +58,15 @@ export type CreateArgs = Pick<
 > & {
   startTimes: Array<CalendarEventDate["startTime"]>;
   badges: Array<CalendarEventBadge["badgeId"]>;
+  mapPoolMaps?: Array<Pick<MapPoolMap, "mode" | "stageId">>;
 };
 export const create = sql.transaction(
-  ({ startTimes, badges, ...calendarEventArgs }: CreateArgs) => {
+  ({
+    startTimes,
+    badges,
+    mapPoolMaps = [],
+    ...calendarEventArgs
+  }: CreateArgs) => {
     const createdEvent = createStm.get(calendarEventArgs) as CalendarEvent;
 
     for (const startTime of startTimes) {
@@ -69,6 +83,13 @@ export const create = sql.transaction(
       });
     }
 
+    for (const mapPoolArgs of mapPoolMaps) {
+      createMapPoolMapStm.run({
+        calendarEventId: createdEvent.id,
+        ...mapPoolArgs,
+      });
+    }
+
     return createdEvent.id;
   }
 );
@@ -78,6 +99,7 @@ export const update = sql.transaction(
     startTimes,
     badges,
     eventId,
+    mapPoolMaps = [],
     ...calendarEventArgs
   }: Omit<CreateArgs, "authorId"> & { eventId: CalendarEvent["id"] }) => {
     updateStm.run({ ...calendarEventArgs, eventId });
@@ -95,6 +117,14 @@ export const update = sql.transaction(
       createBadgeStm.run({
         eventId,
         badgeId,
+      });
+    }
+
+    deleteMapPoolMapsStm.run({ calendarEventId: eventId });
+    for (const mapPoolArgs of mapPoolMaps) {
+      createMapPoolMapStm.run({
+        calendarEventId: eventId,
+        ...mapPoolArgs,
       });
     }
   }
@@ -408,6 +438,16 @@ export function findBadgesByEventId(eventId: CalendarEvent["id"]) {
   return findBadgesByEventIdStm.all({ eventId }) as Array<
     Pick<Badge, "id" | "code" | "hue" | "displayName">
   >;
+}
+
+export function findMapPoolByEventId(calendarEventId: CalendarEvent["id"]) {
+  const rows = findMapPoolByEventIdStm.all({ calendarEventId }) as Array<
+    Pick<MapPoolMap, "stageId" | "mode">
+  >;
+
+  if (rows.length === 0) return;
+
+  return mapPoolListToMapPoolObject(rows);
 }
 
 const eventsToReportStm = sql.prepare(eventsToReportSql);

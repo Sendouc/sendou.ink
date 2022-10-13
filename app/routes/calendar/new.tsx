@@ -14,7 +14,8 @@ import {
   type LinksFunction,
   type LoaderArgs,
 } from "@remix-run/node";
-import styles from "~/styles/calendar-new.css";
+import calendarNewStyles from "~/styles/calendar-new.css";
+import mapsStyles from "~/styles/maps.css";
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
 import { TrashIcon } from "~/components/icons/Trash";
@@ -45,11 +46,20 @@ import {
   databaseTimestampToDate,
   dateToDatabaseTimestamp,
 } from "~/utils/dates";
-import { calendarEventPage } from "~/utils/urls";
+import { calendarEventPage, modeImageUrl, stageImageUrl } from "~/utils/urls";
 import { makeTitle } from "~/utils/strings";
 import { i18next } from "~/modules/i18n";
 import { canEditCalendarEvent } from "~/permissions";
 import { DateInput } from "~/components/DateInput";
+import type { ModeShort, StageId } from "~/modules/in-game-lists";
+import { modes, stageIds } from "~/modules/in-game-lists";
+import { Image } from "~/components/Image";
+import {
+  type MapPool,
+  serializedStringToMapPool,
+} from "~/modules/map-pool-serializer";
+import { mapPoolToSerializedString } from "~/modules/map-pool-serializer";
+import { Toggle } from "~/components/Toggle";
 
 const MIN_DATE = new Date(Date.UTC(2015, 4, 28));
 
@@ -57,7 +67,10 @@ const MAX_DATE = new Date();
 MAX_DATE.setFullYear(MAX_DATE.getFullYear() + 1);
 
 export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
+  return [
+    { rel: "stylesheet", href: calendarNewStyles },
+    { rel: "stylesheet", href: mapsStyles },
+  ];
 };
 
 export const meta: MetaFunction = (args) => {
@@ -108,6 +121,7 @@ const newCalendarEventActionSchema = z.object({
     processMany(safeJSONParse, removeDuplicates),
     z.array(id).nullable()
   ),
+  pool: z.string().optional(),
 });
 
 export const action: ActionFunction = async ({ request }) => {
@@ -134,6 +148,16 @@ export const action: ActionFunction = async ({ request }) => {
       : data.tags,
     badges: data.badges ?? [],
   };
+
+  const deserializedMaps = (() => {
+    if (!data.pool) return;
+
+    const mapPool = serializedStringToMapPool(data.pool);
+    return Object.entries(mapPool).flatMap(([mode, stages]) =>
+      stages.flatMap((stageId) => ({ mode: mode as ModeShort, stageId }))
+    );
+  })();
+
   if (data.eventToEditId) {
     const eventToEdit = badRequestIfFalsy(
       db.calendarEvents.findById(data.eventToEditId)
@@ -142,6 +166,7 @@ export const action: ActionFunction = async ({ request }) => {
 
     db.calendarEvents.update({
       eventId: data.eventToEditId,
+      mapPoolMaps: deserializedMaps,
       ...commonArgs,
     });
 
@@ -149,6 +174,7 @@ export const action: ActionFunction = async ({ request }) => {
   } else {
     const createdEventId = db.calendarEvents.create({
       authorId: user.id,
+      mapPoolMaps: deserializedMaps,
       ...commonArgs,
     });
 
@@ -181,6 +207,7 @@ export const loader = async ({ request }: LoaderArgs) => {
           // "BADGE" tag is special and can't be edited like other tags
           tags: eventToEdit.tags.filter((tag) => tag !== "BADGE"),
           badges: db.calendarEvents.findBadgesByEventId(eventId),
+          mapPool: db.calendarEvents.findMapPoolByEventId(eventId),
         }
       : undefined,
     title: makeTitle([canEditEvent ? "Edit" : "New", t("pages.calendar")]),
@@ -192,7 +219,7 @@ export default function CalendarNewEventPage() {
   const { eventToEdit } = useLoaderData<typeof loader>();
 
   return (
-    <Main halfWidth>
+    <Main className="calendar-new__container">
       <Form className="stack md items-start" method="post">
         {eventToEdit && (
           <input
@@ -208,6 +235,7 @@ export default function CalendarNewEventPage() {
         <DiscordLinkInput />
         <TagsAdder />
         <BadgesAdder />
+        <MapPoolSelector />
         <Button type="submit" className="mt-4" data-cy="submit-button">
           {t("actions.submit")}
         </Button>
@@ -494,6 +522,114 @@ function BadgesAdder() {
           ))}
         </div>
       )}
+    </div>
+  );
+}
+
+// xxx: maybe better mobile layout?
+const DEFAULT_MAP_POOL = {
+  SZ: [],
+  TC: [],
+  CB: [],
+  RM: [],
+  TW: [],
+};
+function MapPoolSelector() {
+  const { t } = useTranslation(["game-misc", "calendar"]);
+
+  const data = useLoaderData<typeof loader>();
+  const [mapPool, setMapPool] = React.useState<MapPool>(
+    data.eventToEdit?.mapPool ?? DEFAULT_MAP_POOL
+  );
+  const [includeMapPool, setIncludeMapPool] = React.useState(
+    Boolean(data.eventToEdit?.mapPool)
+  );
+
+  const handleMapPoolChange = ({
+    mode,
+    stageId,
+  }: {
+    mode: ModeShort;
+    stageId: StageId;
+  }) => {
+    const newMapPool = mapPool[mode].includes(stageId)
+      ? {
+          ...mapPool,
+          [mode]: mapPool[mode].filter((id) => id !== stageId),
+        }
+      : {
+          ...mapPool,
+          [mode]: [...mapPool[mode], stageId],
+        };
+
+    setMapPool(newMapPool);
+  };
+
+  return (
+    <div className="w-full">
+      {includeMapPool && (
+        <input
+          type="hidden"
+          name="pool"
+          value={mapPoolToSerializedString(mapPool)}
+        />
+      )}
+      <Label>{t("calendar:forms.mapPool")}</Label>
+      <div className="stack md">
+        <Toggle checked={includeMapPool} setChecked={setIncludeMapPool} tiny />
+        {includeMapPool && (
+          <div className="stack md">
+            {stageIds.map((stageId) => (
+              <div key={stageId} className="maps__stage-row">
+                <Image
+                  className="maps__stage-image"
+                  alt=""
+                  path={stageImageUrl(stageId)}
+                  width={80}
+                  height={45}
+                />
+                <div className="maps__stage-name-row">
+                  <div>{t(`game-misc:STAGE_${stageId}`)}</div>
+                  <div className="maps__mode-buttons-container">
+                    {modes.map((mode) => {
+                      const selected = (
+                        mapPool[mode.short] as StageId[]
+                      ).includes(stageId);
+
+                      return (
+                        <button
+                          key={mode.short}
+                          className={clsx(
+                            "maps__mode-button",
+                            "outline-theme",
+                            {
+                              selected,
+                            }
+                          )}
+                          onClick={() =>
+                            handleMapPoolChange({ mode: mode.short, stageId })
+                          }
+                          type="button"
+                        >
+                          <Image
+                            className={clsx("maps__mode", {
+                              selected,
+                            })}
+                            alt={mode.long}
+                            path={modeImageUrl(mode.short)}
+                            width={20}
+                            height={20}
+                          />
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

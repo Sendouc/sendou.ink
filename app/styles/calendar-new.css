@@ -1,3 +1,7 @@
+.calendar-new__container {
+  max-width: 32rem;
+}
+
 .calendar-new__select {
   max-width: 16rem;
 }

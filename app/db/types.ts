@@ -155,14 +155,8 @@ export interface BuildAbility {
   slotIndex: 0 | 1 | 2 | 3;
 }
 
-export interface MapPool {
-  id: number;
-  code: string;
-  ownerId: number;
-}
-
 export interface MapPoolMap {
-  mapPoolId: number;
+  calendarEventId?: number;
   stageId: StageId;
   mode: ModeShort;
 }
