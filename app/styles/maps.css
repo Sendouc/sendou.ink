@@ -16,6 +16,7 @@
 
 .maps__stage-name-row {
   display: flex;
+  flex-direction: column;
   flex-grow: 1;
   align-items: center;
   justify-content: space-between;
@@ -23,9 +24,15 @@
   border-radius: var(--rounded);
   font-size: var(--fonts-xs);
   font-weight: var(--semi-bold);
-  gap: var(--s-0-5);
+  gap: var(--s-2);
   padding-block: var(--s-1-5);
   padding-inline: var(--s-3);
+}
+
+@media screen and (min-width: 640px) {
+  .maps__stage-name-row {
+    flex-direction: row;
+  }
 }
 
 .maps__mode-buttons-container {

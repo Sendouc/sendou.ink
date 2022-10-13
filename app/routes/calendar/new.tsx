@@ -525,7 +525,6 @@ function BadgesAdder() {
   );
 }
 
-// xxx: maybe better mobile layout?
 const DEFAULT_MAP_POOL = {
   SZ: [],
   TC: [],

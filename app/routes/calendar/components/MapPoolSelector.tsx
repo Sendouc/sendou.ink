@@ -6,7 +6,6 @@ import { modes, stageIds } from "~/modules/in-game-lists";
 import { type MapPool } from "~/modules/map-pool-serializer";
 import { modeImageUrl, stageImageUrl } from "~/utils/urls";
 
-// xxx: maybe better mobile layout?
 export function MapPoolSelector({
   mapPool,
   handleMapPoolChange,

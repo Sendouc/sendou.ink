@@ -11,9 +11,7 @@ import { Image } from "~/components/Image";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import { Toggle } from "~/components/Toggle";
-import { ADMIN_DISCORD_ID } from "~/constants";
 import { db } from "~/db";
-import { useUser } from "~/modules/auth";
 import {
   modes,
   stageIds,
