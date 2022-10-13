@@ -20,6 +20,7 @@ import {
   BUILDS_PAGE,
   calendarEventPage,
   CALENDAR_PAGE,
+  mapsPage,
   navIconUrl,
   plusSuggestionPage,
   userPage,
@@ -84,6 +85,12 @@ export default function Index() {
             title={t("common:pages.badges")}
             description={t("front:badges.description")}
             to={BADGES_PAGE}
+          />
+          <FeatureCard
+            navItem="maps"
+            title={t("common:pages.maps")}
+            description={t("front:maps.description")}
+            to={mapsPage()}
           />
         </div>
       </div>

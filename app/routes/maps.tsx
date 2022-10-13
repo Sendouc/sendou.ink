@@ -77,16 +77,8 @@ const DEFAULT_MAP_POOL = {
 
 export default function MapListPage() {
   const data = useLoaderData<typeof loader>();
-  const user = useUser();
   const [searchParams] = useSearchParams();
   const { mapPool, handleMapPoolChange } = useSearchParamMapPool();
-
-  if (
-    process.env.NODE_ENV !== "development" &&
-    user?.discordId !== ADMIN_DISCORD_ID
-  ) {
-    return <Main>Coming soon :)</Main>;
-  }
 
   return (
     <Main className="maps__container stack lg">
