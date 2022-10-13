@@ -110,7 +110,7 @@ export default function UserPageLayout() {
         )}
         {data.results.length > 0 && (
           <SubNavLink to={userResultsPage(data)} data-cy="results-page-link">
-            {t("results")}
+            {t("results")} ({data.results.length})
           </SubNavLink>
         )}
         {(isOwnPage || data.buildsCount > 0) && (
