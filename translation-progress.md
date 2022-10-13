@@ -794,39 +794,9 @@
 
 ## /nl (🟡 In progress)
 
-### 🟡 analyzer.json
+### 🟢 analyzer.json
 
-**70/94**
-
-<details>
-<summary>Missing</summary>
-
-- stat.jumpShotSpread
-- stat.groundShotSpread
-- stat.squidSurgeChargeFrames
-- stat.shootingRunSpeed
-- stat.shootingRunSpeedCharging
-- stat.shootingRunSpeedFullCharge
-- stat.bombHdamage
-- stat.bombLdamage
-- stat.sub.qsjBoost
-- stat.special.duration
-- stat.special.duration.inkStormExplanation
-- stat.special.damageDistance
-- stat.special.paintRadius
-- stat.special.shieldHp
-- stat.special.deviceHp
-- stat.special.inkConsumptionHook
-- stat.special.inkConsumptionPerSecond
-- stat.special.reticleRadius
-- stat.special.throwDistance
-- stat.special.autoChargeRate
-- stat.special.maxRadius
-- stat.special.maxRadius.explanation
-- stat.special.radiusRange
-- stat.special.powerUpDuration
-
-</details>
+**94/94**
 
 ### 🟢 badges.json
 
@@ -850,43 +820,24 @@
 
 ### 🟡 common.json
 
-**36/55**
+**48/55**
 
 <details>
 <summary>Missing</summary>
 
-- pages.s2
+- pages.analyzer
 - pages.maps
-- actions.loadMore
 - actions.copyToClipboard
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool
 - maps.tournamentMaplist
-- weapon.category.SHOOTERS
-- weapon.category.BLASTERS
-- weapon.category.ROLLERS
-- weapon.category.BRUSHES
-- weapon.category.CHARGERS
-- weapon.category.SLOSHERS
-- weapon.category.SPLATLINGS
-- weapon.category.DUALIES
-- weapon.category.BRELLAS
-- weapon.category.STRINGERS
-- weapon.category.SPLATANAS
 
 </details>
 
-### 🟡 contributions.json
+### 🟢 contributions.json
 
-**5/6**
-
-<details>
-<summary>Missing</summary>
-
-- translation
-
-</details>
+**6/6**
 
 ### 🟢 faq.json
 
@@ -894,13 +845,11 @@
 
 ### 🟡 front.json
 
-**8/11**
+**10/11**
 
 <details>
 <summary>Missing</summary>
 
-- buildsGoTo
-- analyzer.description
 - maps.description
 
 </details>
@@ -920,27 +869,9 @@
 
 </details>
 
-### 🟡 user.json
+### 🟢 user.json
 
-**7/19**
-
-<details>
-<summary>Missing</summary>
-
-- customUrl
-- ign
-- ign.short
-- stickSens
-- motionSens
-- motion
-- stick
-- sens
-- forms.errors.invalidCustomUrl.numbers
-- forms.errors.invalidCustomUrl.strangeCharacter
-- forms.errors.invalidCustomUrl.duplicate
-- forms.errors.invalidSens
-
-</details>
+**19/19**
 
 ---
 

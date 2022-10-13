@@ -3,10 +3,10 @@
   "pages.badges": "Badges",
   "pages.plus": "Plus Server",
   "pages.contributors": "Bijdragers",
+  "pages.s2": "Splatoon 2",
   "pages.calendar": "Kalender",
   "pages.faq": "FAQ",
   "pages.builds": "Uitrusting",
-  "pages.analyzer": "Uitrusting Analyseren",
 
   "header.profile": "Profiel",
   "header.logout": "Log uit",
@@ -15,7 +15,7 @@
   "footer.github.subtitle": "Broncode",
   "footer.twitter.subtitle": "Updates",
   "footer.discord.subtitle": "Help & Feedback",
-  "footer.patreon.subtitle": "Ondersteuning",
+  "footer.patreon.subtitle": "Steun Sendou.ink",
   "footer.thanks": "Met dank aan alle patrons voor de steun",
 
   "actions.save": "Opslaan",
@@ -25,6 +25,7 @@
   "actions.add": "Toevoegen",
   "actions.remove": "Verwijderen",
   "actions.delete": "Verwijderen",
+  "actions.loadMore": "Laad meer",
 
   "results": "Uitslagen",
 
@@ -40,5 +41,17 @@
   "tag.name.LOW": "Begrensde vaardigheid",
   "tag.name.COUNT": "Beperkte deelname",
   "tag.name.LAN": "LAN",
-  "tag.name.QUALIFIER": "Qualificatie"
+  "tag.name.QUALIFIER": "Qualificatie",
+
+  "weapon.category.SHOOTERS": "Spetters",
+  "weapon.category.BLASTERS": "Blasters",
+  "weapon.category.ROLLERS": "Rollers",
+  "weapon.category.BRUSHES": "Kwasten",
+  "weapon.category.CHARGERS": "Laders",
+  "weapon.category.SLOSHERS": "Morsers",
+  "weapon.category.SPLATLINGS": "Spetlings",
+  "weapon.category.DUALIES": "Dubbelknallers",
+  "weapon.category.BRELLAS": "Plenzers",
+  "weapon.category.STRINGERS": "Spanners",
+  "weapon.category.SPLATANAS": "Zwiepers"
 }
