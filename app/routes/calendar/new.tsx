@@ -1,31 +1,52 @@
-import { Form, useLoaderData } from "@remix-run/react";
-import { Label } from "~/components/Label";
-import { Main } from "~/components/Main";
-import * as React from "react";
-import type { Badge as BadgeType, CalendarEventTag } from "~/db/types";
-import { CALENDAR_EVENT } from "~/constants";
-import { Button } from "~/components/Button";
 import type { SerializeFrom } from "@remix-run/node";
 import {
   json,
   redirect,
-  type MetaFunction,
   type ActionFunction,
   type LinksFunction,
   type LoaderArgs,
+  type MetaFunction,
 } from "@remix-run/node";
-import styles from "~/styles/calendar-new.css";
+import { Form, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
+import * as React from "react";
 import { useTranslation } from "react-i18next";
+import { z } from "zod";
+import { Badge } from "~/components/Badge";
+import { Button } from "~/components/Button";
+import { DateInput } from "~/components/DateInput";
+import { FormMessage } from "~/components/FormMessage";
 import { TrashIcon } from "~/components/icons/Trash";
 import { Input } from "~/components/Input";
-import { FormMessage } from "~/components/FormMessage";
-import { useIsMounted } from "~/hooks/useIsMounted";
-import { Tags } from "./components/Tags";
+import { Label } from "~/components/Label";
+import { Main } from "~/components/Main";
+import { Toggle } from "~/components/Toggle";
+import { CALENDAR_EVENT } from "~/constants";
 import { db } from "~/db";
+import type { Badge as BadgeType, CalendarEventTag } from "~/db/types";
+import { useIsMounted } from "~/hooks/useIsMounted";
 import { requireUser } from "~/modules/auth";
-import { Badge } from "~/components/Badge";
-import { z } from "zod";
+import { i18next } from "~/modules/i18n";
+import type { ModeShort, StageId } from "~/modules/in-game-lists";
+import {
+  mapPoolToSerializedString,
+  serializedStringToMapPool,
+  type MapPool,
+} from "~/modules/map-pool-serializer";
+import { canEditCalendarEvent } from "~/permissions";
+import calendarNewStyles from "~/styles/calendar-new.css";
+import mapsStyles from "~/styles/maps.css";
+import {
+  databaseTimestampToDate,
+  dateToDatabaseTimestamp,
+} from "~/utils/dates";
+import {
+  badRequestIfFalsy,
+  parseRequestFormData,
+  validate,
+} from "~/utils/remix";
+import { makeTitle } from "~/utils/strings";
+import { calendarEventPage } from "~/utils/urls";
 import {
   actualNumber,
   date,
@@ -36,20 +57,8 @@ import {
   safeJSONParse,
   toArray,
 } from "~/utils/zod";
-import {
-  badRequestIfFalsy,
-  parseRequestFormData,
-  validate,
-} from "~/utils/remix";
-import {
-  databaseTimestampToDate,
-  dateToDatabaseTimestamp,
-} from "~/utils/dates";
-import { calendarEventPage } from "~/utils/urls";
-import { makeTitle } from "~/utils/strings";
-import { i18next } from "~/modules/i18n";
-import { canEditCalendarEvent } from "~/permissions";
-import { DateInput } from "~/components/DateInput";
+import { MapPoolSelector } from "./components/MapPoolSelector";
+import { Tags } from "./components/Tags";
 
 const MIN_DATE = new Date(Date.UTC(2015, 4, 28));
 
@@ -57,7 +66,10 @@ const MAX_DATE = new Date();
 MAX_DATE.setFullYear(MAX_DATE.getFullYear() + 1);
 
 export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
+  return [
+    { rel: "stylesheet", href: calendarNewStyles },
+    { rel: "stylesheet", href: mapsStyles },
+  ];
 };
 
 export const meta: MetaFunction = (args) => {
@@ -108,6 +120,7 @@ const newCalendarEventActionSchema = z.object({
     processMany(safeJSONParse, removeDuplicates),
     z.array(id).nullable()
   ),
+  pool: z.string().optional(),
 });
 
 export const action: ActionFunction = async ({ request }) => {
@@ -134,6 +147,16 @@ export const action: ActionFunction = async ({ request }) => {
       : data.tags,
     badges: data.badges ?? [],
   };
+
+  const deserializedMaps = (() => {
+    if (!data.pool) return;
+
+    const mapPool = serializedStringToMapPool(data.pool);
+    return Object.entries(mapPool).flatMap(([mode, stages]) =>
+      stages.flatMap((stageId) => ({ mode: mode as ModeShort, stageId }))
+    );
+  })();
+
   if (data.eventToEditId) {
     const eventToEdit = badRequestIfFalsy(
       db.calendarEvents.findById(data.eventToEditId)
@@ -142,6 +165,7 @@ export const action: ActionFunction = async ({ request }) => {
 
     db.calendarEvents.update({
       eventId: data.eventToEditId,
+      mapPoolMaps: deserializedMaps,
       ...commonArgs,
     });
 
@@ -149,6 +173,7 @@ export const action: ActionFunction = async ({ request }) => {
   } else {
     const createdEventId = db.calendarEvents.create({
       authorId: user.id,
+      mapPoolMaps: deserializedMaps,
       ...commonArgs,
     });
 
@@ -181,6 +206,7 @@ export const loader = async ({ request }: LoaderArgs) => {
           // "BADGE" tag is special and can't be edited like other tags
           tags: eventToEdit.tags.filter((tag) => tag !== "BADGE"),
           badges: db.calendarEvents.findBadgesByEventId(eventId),
+          mapPool: db.calendarEvents.findMapPoolByEventId(eventId),
         }
       : undefined,
     title: makeTitle([canEditEvent ? "Edit" : "New", t("pages.calendar")]),
@@ -192,7 +218,7 @@ export default function CalendarNewEventPage() {
   const { eventToEdit } = useLoaderData<typeof loader>();
 
   return (
-    <Main halfWidth>
+    <Main className="calendar-new__container">
       <Form className="stack md items-start" method="post">
         {eventToEdit && (
           <input
@@ -208,6 +234,7 @@ export default function CalendarNewEventPage() {
         <DiscordLinkInput />
         <TagsAdder />
         <BadgesAdder />
+        <MapPoolSection />
         <Button type="submit" className="mt-4" data-cy="submit-button">
           {t("actions.submit")}
         </Button>
@@ -494,6 +521,67 @@ function BadgesAdder() {
           ))}
         </div>
       )}
+    </div>
+  );
+}
+
+const DEFAULT_MAP_POOL = {
+  SZ: [],
+  TC: [],
+  CB: [],
+  RM: [],
+  TW: [],
+};
+function MapPoolSection() {
+  const { t } = useTranslation(["game-misc", "calendar"]);
+
+  const data = useLoaderData<typeof loader>();
+  const [mapPool, setMapPool] = React.useState<MapPool>(
+    data.eventToEdit?.mapPool ?? DEFAULT_MAP_POOL
+  );
+  const [includeMapPool, setIncludeMapPool] = React.useState(
+    Boolean(data.eventToEdit?.mapPool)
+  );
+
+  const handleMapPoolChange = ({
+    mode,
+    stageId,
+  }: {
+    mode: ModeShort;
+    stageId: StageId;
+  }) => {
+    const newMapPool = mapPool[mode].includes(stageId)
+      ? {
+          ...mapPool,
+          [mode]: mapPool[mode].filter((id) => id !== stageId),
+        }
+      : {
+          ...mapPool,
+          [mode]: [...mapPool[mode], stageId],
+        };
+
+    setMapPool(newMapPool);
+  };
+
+  return (
+    <div className="w-full">
+      {includeMapPool && (
+        <input
+          type="hidden"
+          name="pool"
+          value={mapPoolToSerializedString(mapPool)}
+        />
+      )}
+      <Label>{t("calendar:forms.mapPool")}</Label>
+      <div className="stack md">
+        <Toggle checked={includeMapPool} setChecked={setIncludeMapPool} tiny />
+        {includeMapPool && (
+          <MapPoolSelector
+            mapPool={mapPool}
+            handleMapPoolChange={handleMapPoolChange}
+          />
+        )}
+      </div>
     </div>
   );
 }

@@ -6,6 +6,7 @@
   "plus.description": "View Plus Server voting history and more",
   "badges.description": "List of all the badges you can earn for your profile",
   "analyzer.description": "Find out what your builds actually do",
+  "maps.description": "Turn pool of maps into a list to play on",
   "recentWinners": "Recent winners",
   "upcomingEvents": "Upcoming events",
   "articleBy": "by {{author}}"

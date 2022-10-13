@@ -8,6 +8,7 @@
   "participatedCount": "{{count}} teams participated",
   "members": "Members",
   "results": "Results",
+  "createMapList": "Create map list",
 
   "forms.dates": "Dates",
   "forms.bracketUrl": "Bracket URL",
@@ -17,6 +18,7 @@
   "forms.tags.info": "\"Badge prizes\" tag is added automatically if applicable",
   "forms.badges": "Badge prizes",
   "forms.badges.placeholder": "Choose a badge prize",
+  "forms.mapPool": "Map pool",
 
   "forms.participantCount": "Participant count",
   "forms.reportResultsHeader": "Reporting results for {{eventName}}",

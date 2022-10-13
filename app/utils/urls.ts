@@ -1,5 +1,5 @@
 import slugify from "slugify";
-import type { Badge, GearType, MapPool, User } from "~/db/types";
+import type { Badge, GearType, MapPoolMap, User } from "~/db/types";
 import type { ModeShort, weaponCategories } from "~/modules/in-game-lists";
 import type {
   Ability,
@@ -23,6 +23,9 @@ export const GITHUB_CONTRIBUTORS_URL =
 export const BORZOIC_TWITTER = "https://twitter.com/borzoic_";
 export const LEAN_TWITTER = "https://twitter.com/LeanYoshi";
 export const UBERU_TWITTER = "https://twitter.com/uberu5";
+export const ipLabsMaps = (pool: string) =>
+  `https://maps.iplabs.ink/?3&pool=${pool}`;
+
 export const LOG_IN_URL = "/auth";
 export const LOG_OUT_URL = "/auth/logout";
 export const ADMIN_PAGE = "/admin";
@@ -64,8 +67,8 @@ export const calendarEditPage = (eventId?: number) =>
   `/calendar/new${eventId ? `?eventId=${eventId}` : ""}`;
 export const calendarReportWinnersPage = (eventId: number) =>
   `/calendar/${eventId}/report-winners`;
-export const mapsPage = (code?: MapPool["code"]) =>
-  `/maps${code ? `?code=${code}` : ""}`;
+export const mapsPage = (eventId?: MapPoolMap["calendarEventId"]) =>
+  `/maps${eventId ? `?eventId=${eventId}` : ""}`;
 export const articlePage = (slug: string) => `/a/${slug}`;
 export const analyzerPage = (args?: {
   weaponId: MainWeaponId;

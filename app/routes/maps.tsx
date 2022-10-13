@@ -1,49 +1,46 @@
-import type {
-  ActionFunction,
-  LinksFunction,
-  LoaderArgs,
-} from "@remix-run/node";
-import { redirect } from "@remix-run/node";
+import type { LinksFunction, LoaderArgs } from "@remix-run/node";
+import type { ShouldReloadFunction } from "@remix-run/react";
+import { Link } from "@remix-run/react";
+import { useLoaderData, useSearchParams } from "@remix-run/react";
+import clsx from "clsx";
+import * as React from "react";
 import { useTranslation } from "react-i18next";
+import { useCopyToClipboard } from "react-use";
+import invariant from "tiny-invariant";
+import { Button } from "~/components/Button";
 import { Image } from "~/components/Image";
+import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
+import { Toggle } from "~/components/Toggle";
+import { db } from "~/db";
 import {
-  modesShort,
+  modes,
+  stageIds,
   type ModeShort,
   type ModeWithStage,
   type StageId,
 } from "~/modules/in-game-lists";
-import { modes, stageIds } from "~/modules/in-game-lists";
-import type { MapPool } from "~/modules/map-pool-serializer/types";
-import styles from "~/styles/maps.css";
-import { mapsPage, modeImageUrl, stageImageUrl } from "~/utils/urls";
-import clsx from "clsx";
-import { Form, useLoaderData, useSearchParams } from "@remix-run/react";
-import {
-  mapPoolToSerializedString,
-  serializedStringToMapPool,
-} from "~/modules/map-pool-serializer";
-import { requireUser, useUser } from "~/modules/auth";
-import { ADMIN_DISCORD_ID, MAPS } from "~/constants";
-import { Button } from "~/components/Button";
-import { Input } from "~/components/Input";
-import { Label } from "~/components/Label";
-import { DownloadIcon } from "~/components/icons/Download";
-import { Toggle } from "~/components/Toggle";
 import {
   generateMapList,
   mapPoolToNonEmptyModes,
   modesOrder,
 } from "~/modules/map-list-generator";
-import * as React from "react";
-import invariant from "tiny-invariant";
-import { z } from "zod";
-import { parseRequestFormData } from "~/utils/remix";
-import { db } from "~/db";
-import { discordFullName } from "~/utils/strings";
-import { UploadIcon } from "~/components/icons/Upload";
+import {
+  mapPoolToSerializedString,
+  serializedStringToMapPool,
+} from "~/modules/map-pool-serializer";
+import type { MapPool } from "~/modules/map-pool-serializer/types";
+import styles from "~/styles/maps.css";
+import {
+  calendarEventPage,
+  ipLabsMaps,
+  modeImageUrl,
+  stageImageUrl,
+} from "~/utils/urls";
 
 const AMOUNT_OF_MAPS_IN_MAP_LIST = stageIds.length * 2;
+
+export const unstable_shouldReload: ShouldReloadFunction = () => false;
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -53,41 +50,25 @@ export const handle = {
   i18n: "game-misc",
 };
 
-// xxx: next -> define user flow after submitting a map pool
-// xxx: code can't have spaces or special characters also convert upper case to lower case
-const mapsActionSchema = z.object({
-  code: z.string().min(MAPS.CODE_MIN_LENGTH).max(MAPS.CODE_MAX_LENGTH),
-  pool: z.string(),
-});
-
-export const action: ActionFunction = async ({ request }) => {
-  const user = await requireUser(request);
-  const data = await parseRequestFormData({
-    request,
-    schema: mapsActionSchema,
-  });
-
-  const mapPool = serializedStringToMapPool(data.pool);
-  const maps = Object.entries(mapPool).flatMap(([mode, stages]) =>
-    stages.flatMap((stageId) => ({ mode: mode as ModeShort, stageId }))
-  );
-
-  db.maps.addMapPool({
-    ownerId: user.id,
-    code: data.code,
-    maps,
-  });
-
-  return redirect(mapsPage(data.code));
-};
-
 export const loader = ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
-  const code = url.searchParams.get("code");
+  const calendarEventId = url.searchParams.get("eventId");
 
-  if (!code) return null;
+  const event = calendarEventId
+    ? db.calendarEvents.findById(Number(calendarEventId))
+    : undefined;
 
-  return db.maps.findMapPoolByCode(code) ?? null;
+  return {
+    calendarEvent: event
+      ? {
+          id: event.eventId,
+          name: event.name,
+        }
+      : undefined,
+    mapPool: event
+      ? db.calendarEvents.findMapPoolByEventId(event.eventId)
+      : null,
+  };
 };
 
 const DEFAULT_MAP_POOL = {
@@ -99,23 +80,33 @@ const DEFAULT_MAP_POOL = {
 };
 
 export default function MapListPage() {
-  const user = useUser();
+  const { t } = useTranslation(["common"]);
+  const data = useLoaderData<typeof loader>();
+  const [searchParams] = useSearchParams();
   const { mapPool, handleMapPoolChange } = useSearchParamMapPool();
-
-  if (
-    process.env.NODE_ENV !== "development" &&
-    user?.discordId !== ADMIN_DISCORD_ID
-  ) {
-    return <Main>Coming soon :)</Main>;
-  }
 
   return (
     <Main className="maps__container stack lg">
-      <MapPoolLoaderSaver mapPool={mapPool} />
+      {data.calendarEvent && !searchParams.has("pool") && (
+        <div className="maps__pool-info">
+          {t("common:maps.mapPool")}:{" "}
+          <Link to={calendarEventPage(data.calendarEvent.id)}>
+            {data.calendarEvent.name}
+          </Link>
+        </div>
+      )}
       <MapPoolSelector
         mapPool={mapPool}
         handleMapPoolChange={handleMapPoolChange}
       />
+      <a
+        href={ipLabsMaps(mapPoolToSerializedString(mapPool))}
+        target="_blank"
+        rel="noreferrer"
+        className="maps__tournament-map-list-link"
+      >
+        {t("common:maps.tournamentMaplist")}
+      </a>
       <MapListCreator mapPool={mapPool} />
     </Main>
   );
@@ -126,18 +117,12 @@ function useSearchParamMapPool() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const mapPool = (() => {
-    if (data?.maps) {
-      return {
-        TW: data.maps.filter((m) => m.mode === "TW").map((m) => m.stageId),
-        SZ: data.maps.filter((m) => m.mode === "SZ").map((m) => m.stageId),
-        TC: data.maps.filter((m) => m.mode === "TC").map((m) => m.stageId),
-        CB: data.maps.filter((m) => m.mode === "CB").map((m) => m.stageId),
-        RM: data.maps.filter((m) => m.mode === "RM").map((m) => m.stageId),
-      };
-    }
-
     if (searchParams.has("pool")) {
       return serializedStringToMapPool(searchParams.get("pool")!);
+    }
+
+    if (data?.mapPool) {
+      return data.mapPool;
     }
 
     return DEFAULT_MAP_POOL;
@@ -181,10 +166,7 @@ function MapPoolSelector({
   mapPool: MapPool;
   handleMapPoolChange: (args: { mode: ModeShort; stageId: StageId }) => void;
 }) {
-  const data = useLoaderData<typeof loader>();
   const { t } = useTranslation(["game-misc"]);
-
-  const editMode = !data;
 
   return (
     <div className="stack md">
@@ -208,12 +190,10 @@ function MapPoolSelector({
                     key={mode.short}
                     className={clsx("maps__mode-button", "outline-theme", {
                       selected,
-                      hidden: !editMode && !selected,
                     })}
                     onClick={() =>
                       handleMapPoolChange({ mode: mode.short, stageId })
                     }
-                    disabled={!editMode}
                     type="button"
                   >
                     <Image
@@ -236,69 +216,12 @@ function MapPoolSelector({
   );
 }
 
-// xxx: show "log in to save map pools" if not logged in
-function MapPoolLoaderSaver({ mapPool }: { mapPool: MapPool }) {
-  const data = useLoaderData<typeof loader>();
-
-  if (data) {
-    return (
-      <div className="maps__pool_info">
-        Code: <code>{data.code}</code> - Made by: {discordFullName(data.owner)}
-      </div>
-    );
-  }
-
-  const hasChanges = (() => {
-    for (const mode of modesShort) {
-      if (mapPool[mode].length !== DEFAULT_MAP_POOL[mode].length) {
-        return true;
-      }
-
-      for (const stageId of mapPool[mode]) {
-        if (!(DEFAULT_MAP_POOL[mode] as StageId[]).includes(stageId)) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  })();
-
-  return (
-    <Form
-      className="maps__pool-loader-saver"
-      method={hasChanges ? "post" : "get"}
-    >
-      <input
-        type="hidden"
-        name="pool"
-        value={mapPoolToSerializedString(mapPool)}
-      />
-      <div>
-        <Label>Code</Label>
-        <Input
-          name="code"
-          minLength={MAPS.CODE_MIN_LENGTH}
-          maxLength={MAPS.CODE_MAX_LENGTH}
-        />
-      </div>
-      <Button
-        icon={hasChanges ? <UploadIcon /> : <DownloadIcon />}
-        variant="outlined"
-        type="submit"
-      >
-        {hasChanges ? "Save map pool" : "Load map pool"}
-      </Button>
-    </Form>
-  );
-}
-
 // xxx: crashes if only one map in mode
-// xxx: presentational mode
 function MapListCreator({ mapPool }: { mapPool: MapPool }) {
-  const { t } = useTranslation(["game-misc"]);
+  const { t } = useTranslation(["game-misc", "common"]);
   const [mapList, setMapList] = React.useState<ModeWithStage[]>();
   const [szEveryOther, setSzEveryOther] = React.useState(false);
+  const [, copyToClipboard] = useCopyToClipboard();
 
   const handleCreateMaplist = () => {
     const [list] = generateMapList(
@@ -318,19 +241,41 @@ function MapListCreator({ mapPool }: { mapPool: MapPool }) {
   return (
     <div className="maps__map-list-creator">
       <div className="maps__toggle-container">
-        <Label>50% SZ</Label>
+        <Label>{t("common:maps.halfSz")}</Label>
         <Toggle checked={szEveryOther} setChecked={setSzEveryOther} tiny />
       </div>
-      <Button onClick={handleCreateMaplist}>Create map list</Button>
+      <Button onClick={handleCreateMaplist}>
+        {t("common:maps.createMapList")}
+      </Button>
       {mapList && (
-        <ol className="maps__map-list">
-          {mapList.map(({ mode, stageId }, i) => (
-            <li key={i}>
-              {t(`game-misc:MODE_SHORT_${mode}`)}{" "}
-              {t(`game-misc:STAGE_${stageId}`)}
-            </li>
-          ))}
-        </ol>
+        <>
+          <ol className="maps__map-list">
+            {mapList.map(({ mode, stageId }, i) => (
+              <li key={i}>
+                {t(`game-misc:MODE_SHORT_${mode}`)}{" "}
+                {t(`game-misc:STAGE_${stageId}`)}
+              </li>
+            ))}
+          </ol>
+          <Button
+            tiny
+            variant="outlined"
+            onClick={() =>
+              copyToClipboard(
+                mapList
+                  .map(
+                    ({ mode, stageId }, i) =>
+                      `${i + 1}) ${t(`game-misc:MODE_SHORT_${mode}`)} ${t(
+                        `game-misc:STAGE_${stageId}`
+                      )}`
+                  )
+                  .join("\n")
+              )
+            }
+          >
+            {t("common:actions.copyToClipboard")}
+          </Button>
+        </>
       )}
     </div>
   );

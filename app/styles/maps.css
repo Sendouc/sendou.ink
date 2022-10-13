@@ -2,11 +2,14 @@
   max-width: 32rem;
 }
 
-.maps__pool-loader-saver {
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  gap: var(--s-4);
+.maps__pool-info {
+  font-size: var(--fonts-xxs);
+  font-weight: var(--semi-bold);
+}
+
+.maps__tournament-map-list-link {
+  font-size: var(--fonts-xxs);
+  text-align: center;
 }
 
 .maps__stage-row {
@@ -18,6 +21,7 @@
 
 .maps__stage-name-row {
   display: flex;
+  flex-direction: column;
   flex-grow: 1;
   align-items: center;
   justify-content: space-between;
@@ -25,9 +29,15 @@
   border-radius: var(--rounded);
   font-size: var(--fonts-xs);
   font-weight: var(--semi-bold);
-  gap: var(--s-0-5);
+  gap: var(--s-2);
   padding-block: var(--s-1-5);
   padding-inline: var(--s-3);
+}
+
+@media screen and (min-width: 640px) {
+  .maps__stage-name-row {
+    flex-direction: row;
+  }
 }
 
 .maps__mode-buttons-container {
@@ -72,11 +82,6 @@
   gap: var(--s-4);
 }
 
-.maps__pool_info {
-  font-size: var(--fonts-xs);
-  font-weight: var(--semi-bold);
-}
-
 .maps__toggle-container {
   --label-margin: 0;
 
@@ -89,4 +94,5 @@
 .maps__map-list {
   font-size: var(--fonts-xs);
   font-weight: var(--semi-bold);
+  margin-block-start: var(--s-4);
 }

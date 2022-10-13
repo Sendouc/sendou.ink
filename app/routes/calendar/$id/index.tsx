@@ -13,6 +13,7 @@ import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { Avatar } from "~/components/Avatar";
 import { LinkButton } from "~/components/Button";
+import { Image } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { Section } from "~/components/Section";
 import { db } from "~/db";
@@ -23,21 +24,28 @@ import {
   canEditCalendarEvent,
   canReportCalendarEventWinners,
 } from "~/permissions";
-import styles from "~/styles/calendar-event.css";
+import calendarStyles from "~/styles/calendar-event.css";
+import mapsStyles from "~/styles/maps.css";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { notFoundIfFalsy } from "~/utils/remix";
 import { discordFullName, makeTitle, placementString } from "~/utils/strings";
 import {
   calendarEditPage,
   calendarReportWinnersPage,
+  mapsPage,
+  navIconUrl,
   resolveBaseUrl,
   userPage,
 } from "~/utils/urls";
 import { actualNumber, id } from "~/utils/zod";
+import { MapPoolSelector } from "../components/MapPoolSelector";
 import { Tags } from "../components/Tags";
 
 export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
+  return [
+    { rel: "stylesheet", href: calendarStyles },
+    { rel: "stylesheet", href: mapsStyles },
+  ];
 };
 
 export const meta: MetaFunction = (args) => {
@@ -52,7 +60,7 @@ export const meta: MetaFunction = (args) => {
 };
 
 export const handle = {
-  i18n: "calendar",
+  i18n: ["calendar", "game-misc"],
 };
 
 export const loader = async ({ params, request }: LoaderArgs) => {
@@ -67,6 +75,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     badgePrizes: db.calendarEvents.findBadgesByEventId(parsedParams.id),
     title: makeTitle([event.name, t("pages.calendar")]),
     results: db.calendarEvents.findResultsByEventId(parsedParams.id),
+    mapPool: db.calendarEvents.findMapPoolByEventId(parsedParams.id),
   });
 };
 
@@ -159,6 +168,7 @@ export default function CalendarEventPage() {
         </div>
       </section>
       <Results />
+      <MapPoolInfo />
       <Description />
     </Main>
   );
@@ -222,6 +232,30 @@ function Results() {
   );
 }
 
+function MapPoolInfo() {
+  const { t } = useTranslation(["calendar"]);
+  const data = useLoaderData<typeof loader>();
+
+  if (!data.mapPool) return null;
+
+  return (
+    <Section title="Map pool">
+      <div className="event__map-pool-section">
+        <MapPoolSelector mapPool={data.mapPool} />
+        <LinkButton
+          className="event__create-map-list-link"
+          to={mapsPage(data.event.eventId)}
+          variant="outlined"
+          tiny
+        >
+          <Image alt="" path={navIconUrl("maps")} width={22} height={22} />
+          {t("calendar:createMapList")}
+        </LinkButton>
+      </div>
+    </Section>
+  );
+}
+
 function Description() {
   const { t } = useTranslation();
   const data = useLoaderData<typeof loader>();
@@ -233,9 +267,11 @@ function Description() {
           <Avatar user={data.event} size="xs" />
           {discordFullName(data.event)}
         </div>
-        <div data-cy="event-description" className="whitespace-pre-wrap">
-          {data.event.description}
-        </div>
+        {data.event.description && (
+          <div data-cy="event-description" className="whitespace-pre-wrap">
+            {data.event.description}
+          </div>
+        )}
       </div>
     </Section>
   );
