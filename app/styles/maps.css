@@ -2,11 +2,9 @@
   max-width: 32rem;
 }
 
-.maps__pool-loader-saver {
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  gap: var(--s-4);
+.maps__pool-info {
+  font-size: var(--fonts-xxs);
+  font-weight: var(--semi-bold);
 }
 
 .maps__stage-row {
@@ -70,14 +68,6 @@
   align-items: center;
   justify-content: center;
   gap: var(--s-4);
-}
-
-.maps__pool_info {
-  display: flex;
-  flex-direction: column;
-  font-size: var(--fonts-xs);
-  font-weight: var(--semi-bold);
-  gap: var(--s-2);
 }
 
 .maps__toggle-container {
