@@ -31,7 +31,12 @@ import {
 } from "~/modules/map-pool-serializer";
 import type { MapPool } from "~/modules/map-pool-serializer/types";
 import styles from "~/styles/maps.css";
-import { calendarEventPage, modeImageUrl, stageImageUrl } from "~/utils/urls";
+import {
+  calendarEventPage,
+  ipLabsMaps,
+  modeImageUrl,
+  stageImageUrl,
+} from "~/utils/urls";
 
 const AMOUNT_OF_MAPS_IN_MAP_LIST = stageIds.length * 2;
 
@@ -93,6 +98,14 @@ export default function MapListPage() {
         mapPool={mapPool}
         handleMapPoolChange={handleMapPoolChange}
       />
+      <a
+        href={ipLabsMaps(mapPoolToSerializedString(mapPool))}
+        target="_blank"
+        rel="noreferrer"
+        className="maps__tournament-map-list-link"
+      >
+        Create tournament map list (maps.iplabs.ink)
+      </a>
       <MapListCreator mapPool={mapPool} />
     </Main>
   );

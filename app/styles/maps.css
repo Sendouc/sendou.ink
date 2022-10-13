@@ -7,6 +7,11 @@
   font-weight: var(--semi-bold);
 }
 
+.maps__tournament-map-list-link {
+  font-size: var(--fonts-xxs);
+  text-align: center;
+}
+
 .maps__stage-row {
   display: flex;
   width: 100%;
