@@ -1,32 +1,52 @@
-import { Form, useLoaderData } from "@remix-run/react";
-import { Label } from "~/components/Label";
-import { Main } from "~/components/Main";
-import * as React from "react";
-import type { Badge as BadgeType, CalendarEventTag } from "~/db/types";
-import { CALENDAR_EVENT } from "~/constants";
-import { Button } from "~/components/Button";
 import type { SerializeFrom } from "@remix-run/node";
 import {
   json,
   redirect,
-  type MetaFunction,
   type ActionFunction,
   type LinksFunction,
   type LoaderArgs,
+  type MetaFunction,
 } from "@remix-run/node";
-import calendarNewStyles from "~/styles/calendar-new.css";
-import mapsStyles from "~/styles/maps.css";
+import { Form, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
+import * as React from "react";
 import { useTranslation } from "react-i18next";
+import { z } from "zod";
+import { Badge } from "~/components/Badge";
+import { Button } from "~/components/Button";
+import { DateInput } from "~/components/DateInput";
+import { FormMessage } from "~/components/FormMessage";
 import { TrashIcon } from "~/components/icons/Trash";
 import { Input } from "~/components/Input";
-import { FormMessage } from "~/components/FormMessage";
-import { useIsMounted } from "~/hooks/useIsMounted";
-import { Tags } from "./components/Tags";
+import { Label } from "~/components/Label";
+import { Main } from "~/components/Main";
+import { Toggle } from "~/components/Toggle";
+import { CALENDAR_EVENT } from "~/constants";
 import { db } from "~/db";
+import type { Badge as BadgeType, CalendarEventTag } from "~/db/types";
+import { useIsMounted } from "~/hooks/useIsMounted";
 import { requireUser } from "~/modules/auth";
-import { Badge } from "~/components/Badge";
-import { z } from "zod";
+import { i18next } from "~/modules/i18n";
+import type { ModeShort, StageId } from "~/modules/in-game-lists";
+import {
+  mapPoolToSerializedString,
+  serializedStringToMapPool,
+  type MapPool,
+} from "~/modules/map-pool-serializer";
+import { canEditCalendarEvent } from "~/permissions";
+import calendarNewStyles from "~/styles/calendar-new.css";
+import mapsStyles from "~/styles/maps.css";
+import {
+  databaseTimestampToDate,
+  dateToDatabaseTimestamp,
+} from "~/utils/dates";
+import {
+  badRequestIfFalsy,
+  parseRequestFormData,
+  validate,
+} from "~/utils/remix";
+import { makeTitle } from "~/utils/strings";
+import { calendarEventPage } from "~/utils/urls";
 import {
   actualNumber,
   date,
@@ -37,29 +57,8 @@ import {
   safeJSONParse,
   toArray,
 } from "~/utils/zod";
-import {
-  badRequestIfFalsy,
-  parseRequestFormData,
-  validate,
-} from "~/utils/remix";
-import {
-  databaseTimestampToDate,
-  dateToDatabaseTimestamp,
-} from "~/utils/dates";
-import { calendarEventPage, modeImageUrl, stageImageUrl } from "~/utils/urls";
-import { makeTitle } from "~/utils/strings";
-import { i18next } from "~/modules/i18n";
-import { canEditCalendarEvent } from "~/permissions";
-import { DateInput } from "~/components/DateInput";
-import type { ModeShort, StageId } from "~/modules/in-game-lists";
-import { modes, stageIds } from "~/modules/in-game-lists";
-import { Image } from "~/components/Image";
-import {
-  type MapPool,
-  serializedStringToMapPool,
-} from "~/modules/map-pool-serializer";
-import { mapPoolToSerializedString } from "~/modules/map-pool-serializer";
-import { Toggle } from "~/components/Toggle";
+import { MapPoolSelector } from "./components/MapPoolSelector";
+import { Tags } from "./components/Tags";
 
 const MIN_DATE = new Date(Date.UTC(2015, 4, 28));
 
@@ -235,7 +234,7 @@ export default function CalendarNewEventPage() {
         <DiscordLinkInput />
         <TagsAdder />
         <BadgesAdder />
-        <MapPoolSelector />
+        <MapPoolSection />
         <Button type="submit" className="mt-4" data-cy="submit-button">
           {t("actions.submit")}
         </Button>
@@ -534,7 +533,7 @@ const DEFAULT_MAP_POOL = {
   RM: [],
   TW: [],
 };
-function MapPoolSelector() {
+function MapPoolSection() {
   const { t } = useTranslation(["game-misc", "calendar"]);
 
   const data = useLoaderData<typeof loader>();
@@ -578,56 +577,10 @@ function MapPoolSelector() {
       <div className="stack md">
         <Toggle checked={includeMapPool} setChecked={setIncludeMapPool} tiny />
         {includeMapPool && (
-          <div className="stack md">
-            {stageIds.map((stageId) => (
-              <div key={stageId} className="maps__stage-row">
-                <Image
-                  className="maps__stage-image"
-                  alt=""
-                  path={stageImageUrl(stageId)}
-                  width={80}
-                  height={45}
-                />
-                <div className="maps__stage-name-row">
-                  <div>{t(`game-misc:STAGE_${stageId}`)}</div>
-                  <div className="maps__mode-buttons-container">
-                    {modes.map((mode) => {
-                      const selected = (
-                        mapPool[mode.short] as StageId[]
-                      ).includes(stageId);
-
-                      return (
-                        <button
-                          key={mode.short}
-                          className={clsx(
-                            "maps__mode-button",
-                            "outline-theme",
-                            {
-                              selected,
-                            }
-                          )}
-                          onClick={() =>
-                            handleMapPoolChange({ mode: mode.short, stageId })
-                          }
-                          type="button"
-                        >
-                          <Image
-                            className={clsx("maps__mode", {
-                              selected,
-                            })}
-                            alt={mode.long}
-                            path={modeImageUrl(mode.short)}
-                            width={20}
-                            height={20}
-                          />
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <MapPoolSelector
+            mapPool={mapPool}
+            handleMapPoolChange={handleMapPoolChange}
+          />
         )}
       </div>
     </div>

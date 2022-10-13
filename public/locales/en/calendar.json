@@ -8,6 +8,7 @@
   "participatedCount": "{{count}} teams participated",
   "members": "Members",
   "results": "Results",
+  "createMapList": "Create map list",
 
   "forms.dates": "Dates",
   "forms.bracketUrl": "Bracket URL",
