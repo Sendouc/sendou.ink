@@ -2,18 +2,9 @@
 
 ## /da (🟡 In progress)
 
-### 🟡 analyzer.json
+### 🟢 analyzer.json
 
-**91/94**
-
-<details>
-<summary>Missing</summary>
-
-- stat.shootingRunSpeed
-- stat.shootingRunSpeedCharging
-- stat.shootingRunSpeedFullCharge
-
-</details>
+**94/94**
 
 ### 🟢 badges.json
 
