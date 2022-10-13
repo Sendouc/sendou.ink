@@ -23,6 +23,7 @@ export default function UserResultsPage() {
               <th>{t("results.placing")}</th>
               <th>{t("results.team")}</th>
               <th>{t("results.tournament")}</th>
+              <th>{t("results.participants")}</th>
               <th>{t("results.date")}</th>
               <th>{t("results.mates")}</th>
             </tr>
@@ -37,6 +38,7 @@ export default function UserResultsPage() {
                     {result.eventName}
                   </Link>
                 </td>
+                <td>{result.participantCount}</td>
                 <td>
                   {databaseTimestampToDate(result.startTime).toLocaleDateString(
                     i18n.language,
