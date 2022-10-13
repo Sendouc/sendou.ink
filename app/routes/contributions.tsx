@@ -59,7 +59,7 @@ const TRANSLATORS: Array<{
     language: "ru",
   },
   {
-    translators: ["たここ"],
+    translators: ["たここ", "ShanglinMo"],
     language: "zh",
   },
 ];

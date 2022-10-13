@@ -28,12 +28,11 @@
 
 ### 🟡 common.json
 
-**48/55**
+**49/55**
 
 <details>
 <summary>Missing</summary>
 
-- pages.s2
 - pages.maps
 - actions.copyToClipboard
 - maps.createMapList
@@ -1070,9 +1069,9 @@
 
 ## /zh (🟡 In progress)
 
-### 🔴 analyzer.json
+### 🟢 analyzer.json
 
-**0/94**
+**94/94**
 
 ### 🟢 badges.json
 
