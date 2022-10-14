@@ -29,7 +29,7 @@
   "stat.runSpeedInEnemyInk": "Løbehastighed i fjendtligt blæk",
   "stat.shootingRunSpeed": "Løbehastighed under skydning",
   "stat.shootingRunSpeedCharging": "Løbehastighed under opladning (af skud)",
-  "stat.shootingRunSpeedFullCharge": "Løbehastig (ved fuld ladning af våben)",
+  "stat.shootingRunSpeedFullCharge": "Løbehastighed (ved fuld ladning af våben)",
   "stat.framesBeforeTakingDamageInEnemyInk": "Mængde af tid i billeder/frames, før at du begynder at tage skade af at stå i fjendens blæk",
   "stat.damageTakenInEnemyInkPerSecond": "Skaden fra fjendtligt blæk per sekund",
   "stat.enemyInkDamageLimit": "Maksimal mængde skade man kan tage af fjendtligt blæk",
