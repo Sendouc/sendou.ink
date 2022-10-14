@@ -54,5 +54,5 @@ export const config = {
   react: { useSuspense: false },
   interpolation: {
     escapeValue: false,
-  }
+  },
 };
