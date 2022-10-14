@@ -515,6 +515,7 @@ function swimSpeed(
 
 const RESPAWN_CHASE_FRAME = 150;
 const OWN_RESPAWN_PUNISHER_EXTRA_RESPAWN_FRAMES = 68;
+const SPLATOON_3_FASTER_RESPAWN = 60;
 function quickRespawnTime(
   args: StatFunctionInput
 ): AnalyzedBuild["stats"]["quickRespawnTime"] {
@@ -546,10 +547,17 @@ function quickRespawnTime(
 
   return {
     baseValue: framesToSeconds(
-      RESPAWN_CHASE_FRAME + chase.baseEffect + around.baseEffect
+      RESPAWN_CHASE_FRAME +
+        chase.baseEffect +
+        around.baseEffect -
+        SPLATOON_3_FASTER_RESPAWN
     ),
     value: framesToSeconds(
-      RESPAWN_CHASE_FRAME + chase.effect + around.effect + extraFrames
+      RESPAWN_CHASE_FRAME +
+        chase.effect +
+        around.effect +
+        extraFrames -
+        SPLATOON_3_FASTER_RESPAWN
     ),
     modifiedBy: [QUICK_RESPAWN_TIME_ABILITY, "RP"],
   };
