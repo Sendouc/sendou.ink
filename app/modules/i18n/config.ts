@@ -52,4 +52,7 @@ export const config = {
   fallbackLng: DEFAULT_LANGUAGE,
   defaultNS: "common",
   react: { useSuspense: false },
+  interpolation: {
+    escapeValue: false,
+  }
 };
