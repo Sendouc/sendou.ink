@@ -2,9 +2,10 @@ import { Link, useMatches } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
 import { Avatar } from "~/components/Avatar";
+import { Placement } from "~/components/Placement";
 import { Section } from "~/components/Section";
 import { databaseTimestampToDate } from "~/utils/dates";
-import { discordFullName, placementString } from "~/utils/strings";
+import { discordFullName } from "~/utils/strings";
 import { calendarEventPage, userPage } from "~/utils/urls";
 import type { UserPageLoaderData } from "../u.$identifier";
 
@@ -31,7 +32,9 @@ export default function UserResultsPage() {
           <tbody>
             {data.results.map((result) => (
               <tr key={result.eventId}>
-                <td className="pl-4">{placementString(result.placement)}</td>
+                <td className="pl-4">
+                  <Placement placement={result.placement} />
+                </td>
                 <td>{result.teamName}</td>
                 <td>
                   <Link to={calendarEventPage(result.eventId)}>
