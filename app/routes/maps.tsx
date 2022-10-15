@@ -235,7 +235,6 @@ function MapPoolSelector({
   );
 }
 
-// xxx: crashes if only one map in mode
 function MapListCreator({ mapPool }: { mapPool: MapPool }) {
   const { t } = useTranslation(["game-misc", "common"]);
   const [mapList, setMapList] = React.useState<ModeWithStage[]>();
