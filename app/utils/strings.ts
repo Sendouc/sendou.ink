@@ -15,13 +15,13 @@ export function getEnglishOrdinalSuffix(num: number) {
   const last2Digits = num % 100;
 
   if (lastDigit === 1 && last2Digits !== 11) {
-    return 'st';
+    return "st";
   } else if (lastDigit === 2 && last2Digits !== 12) {
-    return 'nd';
+    return "nd";
   } else if (lastDigit === 3 && last2Digits !== 13) {
-    return 'rd';
+    return "rd";
   }
-  return 'th';
+  return "th";
 }
 
 export function semiRandomId() {
