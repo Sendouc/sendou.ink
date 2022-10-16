@@ -15,6 +15,7 @@ import { Avatar } from "~/components/Avatar";
 import { LinkButton } from "~/components/Button";
 import { Image } from "~/components/Image";
 import { Main } from "~/components/Main";
+import { Placement } from "~/components/Placement";
 import { Section } from "~/components/Section";
 import { db } from "~/db";
 import { useIsMounted } from "~/hooks/useIsMounted";
@@ -28,7 +29,7 @@ import calendarStyles from "~/styles/calendar-event.css";
 import mapsStyles from "~/styles/maps.css";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { notFoundIfFalsy } from "~/utils/remix";
-import { discordFullName, makeTitle, placementString } from "~/utils/strings";
+import { discordFullName, makeTitle } from "~/utils/strings";
 import {
   calendarEditPage,
   calendarReportWinnersPage,
@@ -200,7 +201,9 @@ function Results() {
         <tbody>
           {data.results.map((result, i) => (
             <tr key={i}>
-              <td className="pl-4">{placementString(result.placement)}</td>
+              <td className="pl-4">
+                <Placement placement={result.placement} />
+              </td>
               <td>{result.teamName}</td>
               <td>
                 <ul className="event__results-players">
