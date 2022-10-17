@@ -10,7 +10,7 @@ import type {
   StatFunctionInput,
   SubWeaponParams,
 } from "./types";
-import { DAMAGE_TYPE } from "./types";
+import { DAMAGE_TYPE } from "./constants";
 import { INK_CONSUME_TYPES } from "./types";
 import invariant from "tiny-invariant";
 import {
@@ -24,13 +24,13 @@ import { semiRandomId } from "~/utils/strings";
 import { roundToTwoDecimalPlaces } from "~/utils/number";
 
 export function buildStats({
-  abilityPoints,
   weaponSplId,
-  mainOnlyAbilities,
+  abilityPoints = new Map(),
+  mainOnlyAbilities = [],
 }: {
-  abilityPoints: AbilityPoints;
   weaponSplId: MainWeaponId;
-  mainOnlyAbilities: Array<Ability>;
+  abilityPoints?: AbilityPoints;
+  mainOnlyAbilities?: Array<Ability>;
 }): AnalyzedBuild {
   const mainWeaponParams = weaponParams().mainWeapons[weaponSplId];
   invariant(mainWeaponParams, `Weapon with splId ${weaponSplId} not found`);

@@ -1,0 +1,5579 @@
+{
+  "Blaster_BlasterMiddle": {
+    "mainWeaponIds": [20900, 210, 20210, 10210, 30200, 30210],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 1.6
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2.2
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 1.6
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 1.9
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1.9
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1.9
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 1.5
+      },
+      {
+        "target": "MsnBoxL",
+        "rate": 10
+      },
+      {
+        "target": "MsnBoxS",
+        "rate": 10
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 3
+      },
+      {
+        "target": "Propeller",
+        "rate": 2
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 2
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 1.5
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2.4
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2.4
+      }
+    ]
+  },
+  "Blaster_BlasterShort": {
+    "mainWeaponIds": [200, 20200, 10200],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 1.6
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 3.6
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 2
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 2.1
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 2.1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 2.1
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 1.5
+      },
+      {
+        "target": "MsnBoxL",
+        "rate": 10
+      },
+      {
+        "target": "MsnBoxS",
+        "rate": 10
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 3
+      },
+      {
+        "target": "Propeller",
+        "rate": 2
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 2
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 1.5
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2.4
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2.4
+      }
+    ]
+  },
+  "Blaster_KillOneShot": {
+    "mainWeaponIds": [
+      20900, 220, 20220, 10220, 210, 20210, 10210, 30200, 30210, 20200, 10200
+    ],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 1.6
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2.2
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 1.6
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 1.9
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1.9
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1.9
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 1.5
+      },
+      {
+        "target": "MsnBoxL",
+        "rate": 10
+      },
+      {
+        "target": "MsnBoxS",
+        "rate": 10
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 3
+      },
+      {
+        "target": "Propeller",
+        "rate": 2
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 2
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 1.5
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2.4
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2.4
+      }
+    ]
+  },
+  "Blaster": {
+    "mainWeaponIds": [
+      250, 20250, 10250, 230, 20230, 10230, 240, 20240, 10240, 220, 20220, 10220
+    ],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 1.6
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2.2
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 1.6
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 2.1
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 2.1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 2.1
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 1.5
+      },
+      {
+        "target": "MsnBoxL",
+        "rate": 10
+      },
+      {
+        "target": "MsnBoxS",
+        "rate": 10
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 3
+      },
+      {
+        "target": "Propeller",
+        "rate": 2
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 2
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 1.5
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2.4
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2.4
+      }
+    ]
+  },
+  "BlowerExhale_BombCore": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [8, 10008],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 5
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 5
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 7
+      },
+      {
+        "target": "Chariot",
+        "rate": 2.8
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 5.6
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 5.6
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 2.8
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 10
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 4
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 5.6
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 5.6
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 5.6
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 5.6
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 5.6
+      }
+    ]
+  },
+  "BlowerInhale": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [8, 10008],
+    "rates": [
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1
+      }
+    ]
+  },
+  "BombFlower": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1
+      }
+    ]
+  },
+  "Bomb_CurlingBullet": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [6, 11006, 10006, 30006],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "AttractTarget",
+        "rate": 1
+      },
+      {
+        "target": "Bomb_TorpedoBullet",
+        "rate": 0.5
+      },
+      {
+        "target": "CoopEnemySakelienCupTwins",
+        "rate": 10
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 5
+      },
+      {
+        "target": "Propeller",
+        "rate": 3
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 100
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 100
+      }
+    ]
+  },
+  "Bomb_DirectHit": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [
+      2, 11002, 10002, 30002, 7, 10007, 30007, 0, 21000, 20000, 11000, 10000,
+      30000
+    ],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "AttractTarget",
+        "rate": 1
+      },
+      {
+        "target": "Bomb_TorpedoBullet",
+        "rate": 0.6
+      },
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 2
+      },
+      {
+        "target": "CoopEnemySakeTamaire",
+        "rate": 1
+      },
+      {
+        "target": "CoopEnemySakelienCupTwins",
+        "rate": 10
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 2
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 2
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1.5
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 2
+      },
+      {
+        "target": "MsnBoxL",
+        "rate": 2.5
+      },
+      {
+        "target": "MsnBoxS",
+        "rate": 2
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 10
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 1.5
+      },
+      {
+        "target": "Propeller",
+        "rate": 5
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2
+      }
+    ]
+  },
+  "Bomb_Fizzy": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [5],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "Bomb_TorpedoBullet",
+        "rate": 0.6
+      },
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 3.6
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 3.6
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 3.6
+      },
+      {
+        "target": "Chariot",
+        "rate": 1.6
+      },
+      {
+        "target": "CoopEnemySakelienCupTwins",
+        "rate": 10
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 3.6
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 3.6
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 0.9
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 2
+      },
+      {
+        "target": "MsnBoxL",
+        "rate": 5
+      },
+      {
+        "target": "MsnBoxS",
+        "rate": 4
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 5
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 2.4
+      },
+      {
+        "target": "Propeller",
+        "rate": 5
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 1.8
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2.4
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 3.2
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 3.6
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 3.2
+      }
+    ]
+  },
+  "Bomb_Suction": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [1, 10001],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "Bomb_TorpedoBullet",
+        "rate": 0.6
+      },
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 2
+      },
+      {
+        "target": "CoopEnemySakelienCupTwins",
+        "rate": 10
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 2
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 2
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 0.5
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 2
+      },
+      {
+        "target": "MsnBoxL",
+        "rate": 2.5
+      },
+      {
+        "target": "MsnBoxS",
+        "rate": 2
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 5
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 1.5
+      },
+      {
+        "target": "Propeller",
+        "rate": 5
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2
+      }
+    ]
+  },
+  "Bomb_TorpedoBullet": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [13],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 4
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 4
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 4
+      },
+      {
+        "target": "Chariot",
+        "rate": 2
+      },
+      {
+        "target": "CoopEnemySakelienCupTwins",
+        "rate": 10
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 4
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 4
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1
+      },
+      {
+        "target": "MsnBoxL",
+        "rate": 2.5
+      },
+      {
+        "target": "MsnBoxS",
+        "rate": 2
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 5
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 2.5
+      },
+      {
+        "target": "Propeller",
+        "rate": 5
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 2
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 3
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 3
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 4
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 3
+      }
+    ]
+  },
+  "Bomb_TorpedoSplashBurst": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [13],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "CoopEnemySakelienCupTwins",
+        "rate": 10
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1
+      },
+      {
+        "target": "Propeller",
+        "rate": 5
+      }
+    ]
+  },
+  "Bomb_Trap": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [10, 10010],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "Bomb_TorpedoBullet",
+        "rate": 0.6
+      },
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 2
+      },
+      {
+        "target": "CoopEnemySakelienCupTwins",
+        "rate": 10
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 2
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 2
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 2
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 2
+      },
+      {
+        "target": "MsnBoxL",
+        "rate": 2.5
+      },
+      {
+        "target": "MsnBoxS",
+        "rate": 2
+      },
+      {
+        "target": "MsnEnemyEscape",
+        "rate": 2.5
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 10
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 1.5
+      },
+      {
+        "target": "Propeller",
+        "rate": 5
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2
+      }
+    ]
+  },
+  "Bomb": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [
+      6, 11006, 10006, 30006, 2, 11002, 10002, 30002, 7, 10007, 30007, 0, 21000,
+      20000, 11000, 10000, 30000
+    ],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "Bomb_TorpedoBullet",
+        "rate": 0.6
+      },
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 2
+      },
+      {
+        "target": "CoopEnemySakeTamaire",
+        "rate": 1
+      },
+      {
+        "target": "CoopEnemySakelienCupTwins",
+        "rate": 10
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 2
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 2
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 0.5
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 2
+      },
+      {
+        "target": "MsnBoxL",
+        "rate": 2.5
+      },
+      {
+        "target": "MsnBoxS",
+        "rate": 2
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 10
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 1.5
+      },
+      {
+        "target": "Propeller",
+        "rate": 5
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2
+      }
+    ]
+  },
+  "BrushCore": {
+    "mainWeaponIds": [1100, 21100, 11100, 1110, 21110, 11110, 31100, 31110],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "CoopGoldenIkuraBox",
+        "rate": 1
+      },
+      {
+        "target": "CoopSpawnBox",
+        "rate": 2
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1
+      },
+      {
+        "target": "InkRail",
+        "rate": 12
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 0.6
+      },
+      {
+        "target": "MsnBoxL",
+        "rate": 100
+      },
+      {
+        "target": "MsnBoxS",
+        "rate": 100
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 6
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2.189
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 100
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 100
+      }
+    ]
+  },
+  "BrushSplash": {
+    "mainWeaponIds": [1100, 21100, 11100, 1110, 21110, 11110, 31100, 31110],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 1.5
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 1.5
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 1.5
+      },
+      {
+        "target": "Chariot",
+        "rate": 1.4
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 1.8
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1.8
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1.8
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 0.8
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 4
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 1.4
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 1.8
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 1.8
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 1.8
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 1.8
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 1.8
+      }
+    ]
+  },
+  "CannonMissile": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1
+      }
+    ]
+  },
+  "ChargerFull_Light": {
+    "mainWeaponIds": [22900, 2050, 22050, 12050],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2.4
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 2
+      },
+      {
+        "target": "Chariot",
+        "rate": 0.8
+      },
+      {
+        "target": "CoopEnemySakelienTowerUnite",
+        "rate": 1
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 2
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 2
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 2
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 3
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 3
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 0.9
+      },
+      {
+        "target": "Propeller",
+        "rate": 2
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 1.6
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 1.6
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2
+      }
+    ]
+  },
+  "ChargerFull_Long": {
+    "mainWeaponIds": [2040, 12040, 2030, 22030, 12030],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 2.4
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 3.5
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 2.4
+      },
+      {
+        "target": "Chariot",
+        "rate": 1.3
+      },
+      {
+        "target": "CoopEnemySakelienTowerUnite",
+        "rate": 1
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 2.3
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 2.3
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1.725
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 3
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 3
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 1.35
+      },
+      {
+        "target": "Propeller",
+        "rate": 2
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 2.2
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2.2
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2
+      }
+    ]
+  },
+  "ChargerFull": {
+    "mainWeaponIds": [
+      2060, 22060, 12060, 2020, 12020, 2010, 22010, 12010, 2000, 22000, 12000
+    ],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 3
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 2
+      },
+      {
+        "target": "Chariot",
+        "rate": 1.3
+      },
+      {
+        "target": "CoopEnemySakelienTowerUnite",
+        "rate": 1
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 2
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 2
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1.5
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 3
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 3
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 1.3
+      },
+      {
+        "target": "Propeller",
+        "rate": 2
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 2
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2
+      }
+    ]
+  },
+  "Charger_Light": {
+    "mainWeaponIds": [22900, 2050, 22050, 12050],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2.4
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 2
+      },
+      {
+        "target": "Chariot",
+        "rate": 0.8
+      },
+      {
+        "target": "CoopEnemySakelienTowerUnite",
+        "rate": 1
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 2
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 2
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 2
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 3
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 3
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 0.9
+      },
+      {
+        "target": "Propeller",
+        "rate": 2
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 1.6
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 1.6
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2
+      }
+    ]
+  },
+  "Charger_Long": {
+    "mainWeaponIds": [2040, 12040, 2030, 22030, 12030],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 2.4
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 3.5
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 2.4
+      },
+      {
+        "target": "Chariot",
+        "rate": 1.3
+      },
+      {
+        "target": "CoopEnemySakelienTowerUnite",
+        "rate": 1
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 2
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 2
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 2
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 3
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 1.35
+      },
+      {
+        "target": "Propeller",
+        "rate": 2
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 2.2
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2.2
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2
+      }
+    ]
+  },
+  "Charger": {
+    "mainWeaponIds": [
+      2060, 22060, 12060, 2020, 12020, 2010, 22010, 12010, 2000, 22000, 12000
+    ],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 3
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 2
+      },
+      {
+        "target": "Chariot",
+        "rate": 1.3
+      },
+      {
+        "target": "CoopEnemySakelienTowerUnite",
+        "rate": 1
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 2
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 2
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 2
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 3
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 1.3
+      },
+      {
+        "target": "Propeller",
+        "rate": 2
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 2
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2
+      }
+    ]
+  },
+  "Chariot_Body": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [12, 20012, 10012],
+    "rates": [
+      {
+        "target": "EnemyRockBall",
+        "rate": 10
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 1
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 100
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 100
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 100
+      }
+    ]
+  },
+  "Chariot_Cannon": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [12, 20012, 10012],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 3
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 3
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 3
+      },
+      {
+        "target": "Chariot",
+        "rate": 1.5
+      },
+      {
+        "target": "CoopEnemySakelienCupTwins",
+        "rate": 10
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 3
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 3
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1.5
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 3
+      },
+      {
+        "target": "MsnEnemyShield",
+        "rate": 20
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 10
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 2
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 3
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 3
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 3
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 3
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 3
+      }
+    ]
+  },
+  "Default": {
+    "mainWeaponIds": [
+      20900, 220, 20220, 10220, 210, 20210, 10210, 30200, 30210, 20200, 10200,
+      1100, 21100, 11100, 1110, 21110, 11110, 31100, 31110, 22900, 2060, 22060,
+      12060, 2050, 22050, 12050, 2040, 12040, 2030, 42030, 22030, 12030, 2020,
+      12020, 2010, 22010, 12010, 2000, 22000, 12000, 40000, 1000, 21000, 11000,
+      1020, 21020, 11020, 1030, 21030, 11030, 1010, 21010, 11010, 31000, 31010,
+      26900, 6020, 26020, 16020, 6000, 26000, 16000, 36000, 36010, 6010, 26010,
+      16010, 40040, 40042, 40041
+    ],
+    "subWeaponIds": [8, 6, 11006, 10006, 30006, 12, 10012, 9, 11, 10100],
+    "specialWeaponIds": [
+      12, 20012, 10012, 15, 20, 2, 30002, 10100, 7, 20007, 10007, 30007
+    ],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 1
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 1
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 1
+      }
+    ]
+  },
+  "EnemyFlyingHohei_BombCore": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1
+      },
+      {
+        "target": "Propeller",
+        "rate": 5
+      }
+    ]
+  },
+  "GachihokoTimeUpBurst": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 1
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 1
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 1
+      }
+    ]
+  },
+  "Gachihoko_BombCore": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [20],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 2
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 2
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 2
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1.5
+      },
+      {
+        "target": "MsnBoxL",
+        "rate": 2.5
+      },
+      {
+        "target": "MsnBoxS",
+        "rate": 2
+      },
+      {
+        "target": "Propeller",
+        "rate": 5
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 2
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2
+      }
+    ]
+  },
+  "Gachihoko_Bullet": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [20],
+    "rates": [
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 0.75
+      },
+      {
+        "target": "Propeller",
+        "rate": 1
+      }
+    ]
+  },
+  "Geyser": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1
+      }
+    ]
+  },
+  "GoldenIkuraAttack": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "CoopEnemySakelienCupTwins",
+        "rate": 10
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1
+      }
+    ]
+  },
+  "InkStormRain": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [5, 30005],
+    "rates": [
+      {
+        "target": "BlowerInhale",
+        "rate": 1
+      }
+    ]
+  },
+  "InkStorm": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [5, 10005, 30005],
+    "rates": [
+      {
+        "target": "Bomb_TorpedoBullet",
+        "rate": 0.25
+      },
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 3
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 3
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 3
+      },
+      {
+        "target": "Chariot",
+        "rate": 2.5
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 5
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 5
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 5
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 2
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 3
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 5
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 3
+      }
+    ]
+  },
+  "Jetpack_BombCore": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [10],
+    "rates": [
+      {
+        "target": "Bomb_TorpedoBullet",
+        "rate": 0.5
+      },
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 2.5
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2.5
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 3.5
+      },
+      {
+        "target": "Chariot",
+        "rate": 1.4
+      },
+      {
+        "target": "CoopEnemySakelienCupTwins",
+        "rate": 10
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 2.8
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 2.8
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 2.1
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 3
+      },
+      {
+        "target": "MsnBoxL",
+        "rate": 2
+      },
+      {
+        "target": "MsnEnemyShield",
+        "rate": 20
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 10
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 2
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 2.8
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2.8
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2.8
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2.8
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2.8
+      }
+    ]
+  },
+  "Jetpack_Bullet": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [10, 10010, 30010],
+    "rates": [
+      {
+        "target": "Bomb_TorpedoBullet",
+        "rate": 1
+      },
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 2.5
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2.5
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 3.5
+      },
+      {
+        "target": "Chariot",
+        "rate": 0.8334
+      },
+      {
+        "target": "CoopEnemySakeTamaireOneBomb",
+        "rate": 1
+      },
+      {
+        "target": "CoopEnemySakelienCupTwins",
+        "rate": 10
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 2.8
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 2.8
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 2.1
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 3
+      },
+      {
+        "target": "MsnBoxL",
+        "rate": 2
+      },
+      {
+        "target": "MsnEnemyShield",
+        "rate": 20
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 10
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 1.3334
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 2.8
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2.8
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2.8
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2.8
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2.8
+      }
+    ]
+  },
+  "Jetpack_Coop": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [20010],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 1
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 1
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 1
+      },
+      {
+        "target": "CoopEnemySakelienCupTwins",
+        "rate": 10
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 1
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 1
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 1
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 1
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 1
+      }
+    ]
+  },
+  "Jetpack_Jet": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [10, 20010, 30010],
+    "rates": [
+      {
+        "target": "Bomb_TorpedoBullet",
+        "rate": 0.5
+      },
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 2
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 2.8
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 2.8
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 2.8
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 3
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 2.8
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2.8
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2.8
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2.8
+      }
+    ]
+  },
+  "Maneuver_Short": {
+    "mainWeaponIds": [5000, 25000, 15000],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 0.7
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 0.7
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 1.1
+      },
+      {
+        "target": "Chariot",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 0.6
+      }
+    ]
+  },
+  "Maneuver": {
+    "mainWeaponIds": [
+      5030, 25030, 15030, 5020, 25020, 15020, 5010, 25010, 15010, 35000, 35010,
+      5040, 25040, 15040
+    ],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 0.7
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 0.7
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 0.7
+      },
+      {
+        "target": "Chariot",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 0.6
+      }
+    ]
+  },
+  "MicroLaser": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [9, 20009, 10009],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 2
+      },
+      {
+        "target": "Chariot",
+        "rate": 1.5
+      },
+      {
+        "target": "CoopEnemySakeTamaire",
+        "rate": 0.5
+      },
+      {
+        "target": "CoopEnemySakelienTowerPart",
+        "rate": 1
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 2.4
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 2.4
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 2.4
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 2.4
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2.4
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2.4
+      }
+    ]
+  },
+  "MissionSalmonBuddy": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 1
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 1
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 2
+      },
+      {
+        "target": "MsnBoxL",
+        "rate": 1.6
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 45
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 1
+      },
+      {
+        "target": "Propeller",
+        "rate": 5
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 5
+      }
+    ]
+  },
+  "MovePainter_Burst": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1
+      },
+      {
+        "target": "MsnEnemy",
+        "rate": 10
+      },
+      {
+        "target": "MsnEnemyShield",
+        "rate": 40
+      },
+      {
+        "target": "MsnEnemyTakopodDEV",
+        "rate": 10
+      },
+      {
+        "target": "SnakeBlock",
+        "rate": 8
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 10
+      }
+    ]
+  },
+  "MovePainter_Direct": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1
+      },
+      {
+        "target": "MsnEnemyShield",
+        "rate": 20
+      }
+    ]
+  },
+  "MultiMissile_BombCore": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [4, 10004, 30004],
+    "rates": [
+      {
+        "target": "Bomb_TorpedoBullet",
+        "rate": 0.5
+      },
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 2
+      },
+      {
+        "target": "Chariot",
+        "rate": 1.5
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 0.75
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 2.5
+      },
+      {
+        "target": "MsnBoxL",
+        "rate": 2.5
+      },
+      {
+        "target": "MsnBoxS",
+        "rate": 2
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 5
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 1.5
+      },
+      {
+        "target": "Propeller",
+        "rate": 5
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 2
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2
+      }
+    ]
+  },
+  "MultiMissile_Bullet": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [4, 10004, 30004],
+    "rates": [
+      {
+        "target": "Bomb_TorpedoBullet",
+        "rate": 0.5
+      },
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 1.5
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 1.5
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 1.5
+      },
+      {
+        "target": "Chariot",
+        "rate": 1.5
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 0.75
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 8
+      },
+      {
+        "target": "MsnBoxS",
+        "rate": 1
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 1.5
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 2
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2
+      }
+    ]
+  },
+  "NiceBall": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [6, 20006],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 2.5
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2.5
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 2.5
+      },
+      {
+        "target": "Chariot",
+        "rate": 2
+      },
+      {
+        "target": "CoopEnemyHardBody",
+        "rate": 1
+      },
+      {
+        "target": "CoopEnemySakeTamaire",
+        "rate": 1
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 3
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 3
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 3
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 1.5
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 3
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 3
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 3
+      }
+    ]
+  },
+  "ObjectEffect_Up": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "Bomb_TorpedoBullet",
+        "rate": 1.3
+      },
+      {
+        "target": "Chariot",
+        "rate": 1.3
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 1.1
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1.1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1.1
+      },
+      {
+        "target": "InkRail",
+        "rate": 1.3
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 1.1
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 1.25
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 1.3
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 10
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 1.5
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 10
+      }
+    ]
+  },
+  "RollerCore": {
+    "mainWeaponIds": [
+      1000, 21000, 11000, 1020, 21020, 11020, 1030, 21030, 11030, 1010, 21010,
+      11010, 31000, 31010
+    ],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "CoopEnemySakelienTowerUnite",
+        "rate": 1
+      },
+      {
+        "target": "CoopGoldenIkuraBox",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1
+      },
+      {
+        "target": "InkRail",
+        "rate": 12
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 1
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 3
+      },
+      {
+        "target": "Propeller",
+        "rate": 0.5
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 0.344
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 100
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 100
+      }
+    ]
+  },
+  "RollerSplash_Compact": {
+    "mainWeaponIds": [1000, 21000, 11000],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 1.5
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 1.7
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 1.8
+      },
+      {
+        "target": "Chariot",
+        "rate": 1.4
+      },
+      {
+        "target": "CoopEnemySakelienTowerUnite",
+        "rate": 1
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 1.8
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1.8
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1.8
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 1
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 3
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 1.43
+      },
+      {
+        "target": "Propeller",
+        "rate": 3
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 1.2
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2.88
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2.4
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2.88
+      }
+    ]
+  },
+  "RollerSplash_Heavy": {
+    "mainWeaponIds": [1020, 21020, 11020],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 1.5
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 1.5
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 1.5
+      },
+      {
+        "target": "Chariot",
+        "rate": 1.6
+      },
+      {
+        "target": "CoopEnemySakelienTowerUnite",
+        "rate": 1
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 1.8
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1.8
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1.35
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 1
+      },
+      {
+        "target": "MsnEnemyTakopodDEV",
+        "rate": 1.8
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 3
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 1.6
+      },
+      {
+        "target": "Propeller",
+        "rate": 3
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 1.2
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2.88
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2.4
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2.88
+      }
+    ]
+  },
+  "RollerSplash_Hunter": {
+    "mainWeaponIds": [1030, 21030, 11030],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 1.5
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 1.7
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 1.5
+      },
+      {
+        "target": "Chariot",
+        "rate": 1.4
+      },
+      {
+        "target": "CoopEnemySakelienTowerUnite",
+        "rate": 1
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 1.8
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1.8
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1.35
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 1
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 3
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 1.4
+      },
+      {
+        "target": "Propeller",
+        "rate": 3
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 1.2
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2.88
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2.4
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2.88
+      }
+    ]
+  },
+  "RollerSplash": {
+    "mainWeaponIds": [1010, 21010, 11010, 31000, 31010],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 1.5
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 1.7
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 1.78
+      },
+      {
+        "target": "Chariot",
+        "rate": 1.4
+      },
+      {
+        "target": "CoopEnemySakelienTowerUnite",
+        "rate": 1
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 1.8
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1.8
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1.8
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 1
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 3
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 1.43
+      },
+      {
+        "target": "Propeller",
+        "rate": 3
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 1.2
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2.88
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2.4
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2.88
+      }
+    ]
+  },
+  "Saber_ChargeShot": {
+    "mainWeaponIds": [8010, 28010, 8000, 28000, 18000],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "Bomb_TorpedoBullet",
+        "rate": 4.8
+      },
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 4.8
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 4.8
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 4.8
+      },
+      {
+        "target": "Chariot",
+        "rate": 2.6
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 3.2
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 4.8
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 2.4
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 2
+      },
+      {
+        "target": "MsnEnemyShield",
+        "rate": 3
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 10
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 2.6
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 4.8
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 4.8
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 4.8
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 4.8
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 4.8
+      }
+    ]
+  },
+  "Saber_ChargeSlash": {
+    "mainWeaponIds": [8010, 28010, 8000, 28000, 18000],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "Bomb_TorpedoBullet",
+        "rate": 1.2
+      },
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 1.2
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 1.2
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 1.2
+      },
+      {
+        "target": "Chariot",
+        "rate": 0.65
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 0.8
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1.2
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 0.9
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 10
+      },
+      {
+        "target": "MsnEnemyShield",
+        "rate": 10
+      },
+      {
+        "target": "MsnEnemyTakopodDEV",
+        "rate": 4
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 10
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 0.65
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 1.2
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 1.2
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 1.2
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 1.2
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 1.2
+      }
+    ]
+  },
+  "Saber_Shot": {
+    "mainWeaponIds": [8010, 28010, 8000, 28000, 18000],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "Bomb_TorpedoBullet",
+        "rate": 4.8
+      },
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 4.8
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 4.8
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 4.8
+      },
+      {
+        "target": "Chariot",
+        "rate": 2.6
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 3.2
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 4.8
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 3.6
+      },
+      {
+        "target": "MsnEnemyShield",
+        "rate": 3
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 3
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 2.6
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 4.8
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 4.8
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 4.8
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 4.8
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 4.8
+      }
+    ]
+  },
+  "Saber_Slash": {
+    "mainWeaponIds": [8010, 28010, 8000, 28000, 18000],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "Bomb_TorpedoBullet",
+        "rate": 2.4
+      },
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 2.4
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2.4
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 2.4
+      },
+      {
+        "target": "Chariot",
+        "rate": 1.3
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 1.6
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 2.4
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1.8
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 3
+      },
+      {
+        "target": "MsnEnemyShield",
+        "rate": 10
+      },
+      {
+        "target": "MsnEnemyTakopodDEV",
+        "rate": 3
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 3
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 1.3
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 2.4
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2.4
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2.4
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2.4
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2.4
+      }
+    ]
+  },
+  "SakerocketBullet": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "Chariot",
+        "rate": 2.5
+      },
+      {
+        "target": "CoopEnemySakelienCupTwins",
+        "rate": 10
+      },
+      {
+        "target": "Default",
+        "rate": 1
+      },
+      {
+        "target": "MsnSharkKing",
+        "rate": 1
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 1
+      }
+    ]
+  },
+  "ShelterCanopy_Compact": {
+    "mainWeaponIds": [6020, 26020, 16020],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "Bomb_TorpedoBullet",
+        "rate": 5
+      },
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 5
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 5
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 5
+      },
+      {
+        "target": "CoopEnemySakelienTowerUnite",
+        "rate": 1
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 2.4
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 2.4
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 2.4
+      },
+      {
+        "target": "Propeller",
+        "rate": 3
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 5
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2.4
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 100
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 1
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 100
+      }
+    ]
+  },
+  "ShelterCanopy_Wide": {
+    "mainWeaponIds": [6010, 26010, 16010],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "Bomb_TorpedoBullet",
+        "rate": 5
+      },
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 5
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 5
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 5
+      },
+      {
+        "target": "CoopEnemySakelienTowerUnite",
+        "rate": 1
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 2.4
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 2.4
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 2.4
+      },
+      {
+        "target": "Propeller",
+        "rate": 3
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 5
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2.4
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 100
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 1
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 100
+      }
+    ]
+  },
+  "ShelterCanopy": {
+    "mainWeaponIds": [26900, 6000, 26000, 16000, 36000, 36010],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "Bomb_TorpedoBullet",
+        "rate": 5
+      },
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 5
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 5
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 5
+      },
+      {
+        "target": "CoopEnemySakelienTowerUnite",
+        "rate": 1
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 2.4
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 2.4
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 2.4
+      },
+      {
+        "target": "Propeller",
+        "rate": 3
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 5
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2.4
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 100
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 1
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 100
+      }
+    ]
+  },
+  "ShelterShot_Compact": {
+    "mainWeaponIds": [6020, 26020, 16020],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "Bomb_TorpedoBullet",
+        "rate": 2.4
+      },
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 2
+      },
+      {
+        "target": "Chariot",
+        "rate": 1.3
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 2.4
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 2.4
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 2.4
+      },
+      {
+        "target": "InkRail",
+        "rate": 1.175
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 1.56
+      },
+      {
+        "target": "Propeller",
+        "rate": 2
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 2.4
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2.88
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2.4
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2.4
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2.4
+      }
+    ]
+  },
+  "ShelterShot_Wide": {
+    "mainWeaponIds": [6010, 26010, 16010],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "Bomb_TorpedoBullet",
+        "rate": 2.4
+      },
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 2
+      },
+      {
+        "target": "Chariot",
+        "rate": 1.3
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 2.4
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 2.4
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 2.4
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 1.3
+      },
+      {
+        "target": "Propeller",
+        "rate": 2
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 2.4
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2.4
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2.4
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2.4
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2.4
+      }
+    ]
+  },
+  "ShelterShot": {
+    "mainWeaponIds": [26900, 6000, 26000, 16000, 36000, 36010],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "Bomb_TorpedoBullet",
+        "rate": 2.4
+      },
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 2
+      },
+      {
+        "target": "Chariot",
+        "rate": 1.3
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 2.4
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 2.4
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 2.4
+      },
+      {
+        "target": "MsnEnemyTakopodDEV",
+        "rate": 1.3
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 3
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 1.3
+      },
+      {
+        "target": "Propeller",
+        "rate": 2
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 2.4
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2.4
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2.4
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2.4
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2.4
+      }
+    ]
+  },
+  "Shield": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [4],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 0.2
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 0.2
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 0.2
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 3.75
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 0.2
+      }
+    ]
+  },
+  "ShockSonar_Wave": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [7, 20007, 10007, 30007],
+    "rates": [
+      {
+        "target": "Chariot",
+        "rate": 2
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 8
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 8
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 8
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 100
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 100
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 100
+      }
+    ]
+  },
+  "Shooter_Blaze": {
+    "mainWeaponIds": [30, 20030, 10030],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 0.7
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 0.7
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 1.1
+      },
+      {
+        "target": "Chariot",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 0.7
+      }
+    ]
+  },
+  "Shooter_Expert": {
+    "mainWeaponIds": [70, 20070, 10070],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 0.7
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 0.7
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 0.7
+      },
+      {
+        "target": "Chariot",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 0.6
+      }
+    ]
+  },
+  "Shooter_First": {
+    "mainWeaponIds": [10, 20010, 10010],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 0.7
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 0.7
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 1.1
+      },
+      {
+        "target": "Chariot",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 0.7
+      }
+    ]
+  },
+  "Shooter_FlashRepeat": {
+    "mainWeaponIds": [400, 20400, 10400],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 0.7
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 1.1
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 0.7
+      },
+      {
+        "target": "Chariot",
+        "rate": 1
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 1.1
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1.1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1.1
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 0.7
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 1.1
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 1.1
+      }
+    ]
+  },
+  "Shooter_Flash": {
+    "mainWeaponIds": [400, 20400, 10400],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 0.7
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 1.1
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 0.7
+      },
+      {
+        "target": "Chariot",
+        "rate": 1
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 1.1
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1.1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1.1
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 0.7
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 1.1
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 1.1
+      }
+    ]
+  },
+  "Shooter_Gravity": {
+    "mainWeaponIds": [50],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 0.7
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 0.85
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 0.7
+      },
+      {
+        "target": "Chariot",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 0.7
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 1.1
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 1.1
+      }
+    ]
+  },
+  "Shooter_Heavy": {
+    "mainWeaponIds": [80],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 0.7
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 1.1
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 0.7
+      },
+      {
+        "target": "Chariot",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 0.6
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 1.1
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 1.1
+      }
+    ]
+  },
+  "Shooter_Long": {
+    "mainWeaponIds": [90, 20090, 10090],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 0.7
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 0.7
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 0.7
+      },
+      {
+        "target": "Chariot",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 0.6
+      }
+    ]
+  },
+  "Shooter_Precision": {
+    "mainWeaponIds": [20, 20020, 10020],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 0.7
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 0.7
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 1.1
+      },
+      {
+        "target": "Chariot",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 0.7
+      }
+    ]
+  },
+  "Shooter_Short": {
+    "mainWeaponIds": [0, 20000, 10000],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 0.7
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 0.7
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 1.1
+      },
+      {
+        "target": "Chariot",
+        "rate": 1
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 1.1
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1.1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1.1
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 0.7
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 1
+      }
+    ]
+  },
+  "Shooter_TripleMiddle": {
+    "mainWeaponIds": [310],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 0.8
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 0.8
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 0.8
+      },
+      {
+        "target": "Chariot",
+        "rate": 1
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 1.2
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1.2
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1.2
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 0.7
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 1.2
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 1.2
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 1.2
+      }
+    ]
+  },
+  "Shooter_TripleQuick": {
+    "mainWeaponIds": [300],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 0.85
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 0.85
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 0.85
+      },
+      {
+        "target": "Chariot",
+        "rate": 1
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 1.15
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1.15
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1.15
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 0.65
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 1.1
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 1.2
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 1.2
+      }
+    ]
+  },
+  "Shooter": {
+    "mainWeaponIds": [
+      400, 20400, 10400, 20050, 10050, 20080, 10080, 10900, 10910, 10920, 40,
+      20040, 45, 10040, 60, 20060, 10060, 30000, 30010, 20310, 10310, 20300,
+      10300
+    ],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 0.7
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 0.7
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 0.7
+      },
+      {
+        "target": "Chariot",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 0.7
+      }
+    ]
+  },
+  "Skewer_Body": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [13, 20013, 10013],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 100
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 100
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 100
+      },
+      {
+        "target": "Chariot",
+        "rate": 7.28
+      },
+      {
+        "target": "CoopEnemyHardBody",
+        "rate": 1
+      },
+      {
+        "target": "CoopEnemySakeTamaire",
+        "rate": 0.45
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 5
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 5
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 10
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 7.5
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 5
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 5
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 5
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 5
+      }
+    ]
+  },
+  "Skewer": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [13, 20013, 10013],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 6
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 9.5
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 6
+      },
+      {
+        "target": "Chariot",
+        "rate": 7.28
+      },
+      {
+        "target": "CoopEnemySakeTamaire",
+        "rate": 0.3
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 5
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 5
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 5
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 10
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 7.5
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 5
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 5
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 5
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 5
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 5
+      }
+    ]
+  },
+  "Slosher_Bathtub": {
+    "mainWeaponIds": [3030, 23030, 13030],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 1.6
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 1.6
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 1.6
+      },
+      {
+        "target": "Default",
+        "rate": 1
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 2
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 2
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 2
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 3
+      },
+      {
+        "target": "Propeller",
+        "rate": 2
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2.4
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2.5
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2.5
+      }
+    ]
+  },
+  "Slosher_Bear": {
+    "mainWeaponIds": [23900],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 2
+      },
+      {
+        "target": "CoopEnemyHardBody",
+        "rate": 1
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 2.4
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 2.4
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 2.4
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 1.5
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 3
+      },
+      {
+        "target": "Propeller",
+        "rate": 2
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 1.25
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2.4
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2.5
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2.5
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2.5
+      }
+    ]
+  },
+  "Slosher_WashtubBombCore": {
+    "mainWeaponIds": [3040, 23040, 13040],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 2
+      },
+      {
+        "target": "CoopEnemySakeTamaireOneBomb",
+        "rate": 1
+      },
+      {
+        "target": "CoopEnemySakelienCupTwins",
+        "rate": 10
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 3.2
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 3.2
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 0.8
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 1.5
+      },
+      {
+        "target": "MsnBoxL",
+        "rate": 2.5
+      },
+      {
+        "target": "MsnBoxS",
+        "rate": 2
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 5
+      },
+      {
+        "target": "Propeller",
+        "rate": 5
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 4
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 4
+      }
+    ]
+  },
+  "Slosher_Washtub": {
+    "mainWeaponIds": [3040, 23040, 13040],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 2
+      },
+      {
+        "target": "CoopEnemySakelienCupTwins",
+        "rate": 10
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 3.6
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 3.6
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 0.9
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 2
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 10
+      },
+      {
+        "target": "Propeller",
+        "rate": 2
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 1.25
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2.4
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 5
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2.5
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 5
+      }
+    ]
+  },
+  "Slosher": {
+    "mainWeaponIds": [
+      3010, 23010, 13010, 3020, 23020, 13020, 33000, 33010, 3000, 23000, 13000
+    ],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 2
+      },
+      {
+        "target": "CoopEnemySakelienTowerUnite",
+        "rate": 1
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 2.4
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 2.4
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 2.4
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 1.5
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 3
+      },
+      {
+        "target": "Propeller",
+        "rate": 2
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 1.25
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2.4
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2.5
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2.5
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2.5
+      }
+    ]
+  },
+  "Spinner": {
+    "mainWeaponIds": [
+      4030, 24030, 14030, 4020, 24020, 14020, 4000, 24000, 14000, 4040, 24040,
+      14040, 4010, 24010, 14010
+    ],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 0.7
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 0.7
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 0.7
+      },
+      {
+        "target": "Chariot",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 0.6
+      }
+    ]
+  },
+  "Sprinkler": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [3],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "Bomb_TorpedoBullet",
+        "rate": 0.5
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 0.6
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 0.6
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 0.6
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 0.6
+      }
+    ]
+  },
+  "Stringer_Short": {
+    "mainWeaponIds": [7020, 27020],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 1.5556
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2.3333
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 1.5556
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 1.5556
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1.5556
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1.5556
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 1.5556
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 1.5556
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 1.5556
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 1.5556
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 1.5556
+      }
+    ]
+  },
+  "Stringer": {
+    "mainWeaponIds": [27900, 7010, 27010, 17010],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 3
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 2
+      },
+      {
+        "target": "Chariot",
+        "rate": 1.3
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 2
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 2
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 2
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 2.5
+      },
+      {
+        "target": "MsnBoxS",
+        "rate": 2
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 3
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 1.3
+      },
+      {
+        "target": "Propeller",
+        "rate": 2
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 2
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2
+      }
+    ]
+  },
+  "SuperHook": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [3, 10003],
+    "rates": [
+      {
+        "target": "Bomb_TorpedoBullet",
+        "rate": 0.6
+      },
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 2
+      },
+      {
+        "target": "CoopEnemySakelienCupTwins",
+        "rate": 10
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 2
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 2
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 2
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 2
+      },
+      {
+        "target": "MsnEnemy",
+        "rate": 2
+      },
+      {
+        "target": "MsnEnemyTakopodDEV",
+        "rate": 2
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 10
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 1.5
+      },
+      {
+        "target": "Propeller",
+        "rate": 5
+      },
+      {
+        "target": "SnakeBlock",
+        "rate": 12
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2
+      }
+    ]
+  },
+  "SuperLanding": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [101, 20101, 30101],
+    "rates": [
+      {
+        "target": "Bomb_TorpedoBullet",
+        "rate": 0.6
+      },
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 2
+      },
+      {
+        "target": "CoopEnemySakelienCupTwins",
+        "rate": 10
+      },
+      {
+        "target": "EnemyRockBall",
+        "rate": 2
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 2
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 2
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 2
+      },
+      {
+        "target": "MsnBossWeak",
+        "rate": 5
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 5
+      },
+      {
+        "target": "MsnBoxL",
+        "rate": 2.5
+      },
+      {
+        "target": "MsnBoxS",
+        "rate": 2
+      },
+      {
+        "target": "MsnEnemyShield",
+        "rate": 20
+      },
+      {
+        "target": "MsnEnemyTakopodDEV",
+        "rate": 4
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 10
+      },
+      {
+        "target": "MsnLeaderMoray",
+        "rate": 2
+      },
+      {
+        "target": "MsnMantaShadow",
+        "rate": 2
+      },
+      {
+        "target": "MsnRailKingHand",
+        "rate": 5
+      },
+      {
+        "target": "MsnSharkKing",
+        "rate": 2.5
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 1.5
+      },
+      {
+        "target": "Propeller",
+        "rate": 5
+      },
+      {
+        "target": "SnakeBlock",
+        "rate": 3
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2
+      }
+    ]
+  },
+  "TripleTornado": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [14, 20014, 10014],
+    "rates": [
+      {
+        "target": "Bomb_TorpedoBullet",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 2
+      },
+      {
+        "target": "Chariot",
+        "rate": 2
+      },
+      {
+        "target": "CoopEnemyHardBody",
+        "rate": 1
+      },
+      {
+        "target": "CoopEnemySakeTamaire",
+        "rate": 0.8
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 2
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 2
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 2
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 2
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 2
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2
+      }
+    ]
+  },
+  "UltraShot": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [1, 20001, 10001],
+    "rates": [
+      {
+        "target": "BlowoutsRoll",
+        "rate": 3
+      },
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 6
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 6
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 6
+      },
+      {
+        "target": "Chariot",
+        "rate": 1.5
+      },
+      {
+        "target": "CoopEnemySakelienCupTwins",
+        "rate": 1
+      },
+      {
+        "target": "EnemyRockBall",
+        "rate": 3
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 2
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 2
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1.5
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 10
+      },
+      {
+        "target": "MsnEnemyShield",
+        "rate": 20
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 10
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 2
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 1
+      },
+      {
+        "target": "SnakeBlock",
+        "rate": 5
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 6
+      }
+    ]
+  },
+  "UltraStamp_Swing": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [11, 10011],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 20
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 20
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 20
+      },
+      {
+        "target": "Chariot",
+        "rate": 1.5
+      },
+      {
+        "target": "EnemyRockBall",
+        "rate": 10
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 3
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 3
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 3
+      },
+      {
+        "target": "MsnEnemyShield",
+        "rate": 10
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 10
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 1.8
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 20
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 3
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 20
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 3
+      }
+    ]
+  },
+  "UltraStamp_Throw_BombCore": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [11, 10011],
+    "rates": [
+      {
+        "target": "Bomb_TorpedoBullet",
+        "rate": 1
+      },
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 5
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 5
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 5
+      },
+      {
+        "target": "Chariot",
+        "rate": 2
+      },
+      {
+        "target": "EnemyRockBall",
+        "rate": 10
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 3.5
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 3.5
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 2.625
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 2.5
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 4
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 3
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 3
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 4
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 3
+      }
+    ]
+  },
+  "UltraStamp_Throw": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [11, 10011],
+    "rates": [
+      {
+        "target": "Bomb_TorpedoBullet",
+        "rate": 0.545
+      },
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 4.091
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 4.091
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 4.091
+      },
+      {
+        "target": "Chariot",
+        "rate": 1.091
+      },
+      {
+        "target": "EnemyRockBall",
+        "rate": 10
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 1.909
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 1.909
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 1.4318
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 10
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 1.364
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 2.182
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 1.636
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 1.636
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2.182
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 1.636
+      }
+    ]
+  }
+}

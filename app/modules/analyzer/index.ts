@@ -9,6 +9,8 @@ export type {
 
 export { useAnalyzeBuild } from "./useAnalyzeBuild";
 
-export { MAX_LDE_INTENSITY } from "./constants";
+export { useObjectDamage } from "./useObjectDamage";
+
+export { MAX_LDE_INTENSITY, DAMAGE_RECEIVERS, DAMAGE_TYPE } from "./constants";
 
 export { lastDitchEffortIntensityToAp } from "./specialEffects";
