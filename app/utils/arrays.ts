@@ -34,3 +34,9 @@ export function joinListToNaturalString(arg: string[]) {
 
   return last ? `${commaJoined} and ${last}` : commaJoined;
 }
+
+export function normalizeFormFieldArray(
+  value: undefined | null | string | string[]
+): string[] {
+  return value == null ? [] : typeof value === "string" ? [value] : value;
+}

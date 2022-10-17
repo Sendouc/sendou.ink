@@ -292,6 +292,10 @@ table > tbody > tr > td {
   padding-inline: var(--s-1);
 }
 
+td > input[type="checkbox"] {
+  vertical-align: middle;
+}
+
 hr {
   border-color: var(--theme-transparent);
 }
