@@ -12,7 +12,16 @@ select
       "CalendarEventDate"
     where
       "eventId" = "CalendarEvent"."id"
-  ) as "startTime"
+  ) as "startTime",
+  exists (
+    select
+      1
+    from
+      "UserResultHighlight"
+    where
+      "userId" = @userId and
+      "teamId" = "CalendarEventResultTeam"."id"
+  ) as "isHighlight"
 from
   "CalendarEventResultPlayer"
   join "CalendarEventResultTeam" on "CalendarEventResultTeam"."id" = "CalendarEventResultPlayer"."teamId"
