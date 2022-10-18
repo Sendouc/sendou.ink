@@ -10,5 +10,10 @@
   "STAGE_8": "Академия «Лепота»",
   "STAGE_9": "Осетровые верфи",
   "STAGE_10": "«Горбуша-Маркет»",
-  "STAGE_11": "Луна-парк «Язь»"
+  "STAGE_11": "Луна-парк «Язь»",
+  "MODE_SHORT_TW": "TW",
+  "MODE_SHORT_SZ": "SZ",
+  "MODE_SHORT_TC": "TC",
+  "MODE_SHORT_RM": "RM",
+  "MODE_SHORT_CB": "CB"
 }
