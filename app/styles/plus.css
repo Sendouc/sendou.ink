@@ -61,6 +61,8 @@
 
 .plus__comment {
   white-space: pre-wrap;
+  min-width: auto;
+  overflow-wrap: break-word;
 }
 
 .plus__comment-time {
