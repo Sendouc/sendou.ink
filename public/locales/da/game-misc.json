@@ -11,4 +11,9 @@
   "STAGE_9": "Sturgeon Shipyard",
   "STAGE_10": "MakoMart",
   "STAGE_11": "Wahoo World"
+  "MODE_SHORT_TW": "TW",
+  "MODE_SHORT_SZ": "SZ",
+  "MODE_SHORT_TC": "TC",
+  "MODE_SHORT_RM": "RM",
+  "MODE_SHORT_CB": "CB"
 }
