@@ -15,8 +15,8 @@
   "results.tournament": "Turnering",
   "results.participants": "Deltagere",
   "results.date": "Dato",
-  "results.mates": "Holdkammerater"
-  
+  "results.mates": "Holdkammerater",
+
   "forms.errors.invalidCustomUrl.numbers": "Brugerdefineret URL må ikke kun indeholde numre",
   "forms.errors.invalidCustomUrl.strangeCharacter": "Brugerdefineret URL må ikke indeholde specialtegn (Gælder også æ, ø og å)",
   "forms.errors.invalidCustomUrl.duplicate": "Brugerdefineret URL er allerede i brug",
