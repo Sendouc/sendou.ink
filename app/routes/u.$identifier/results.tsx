@@ -2,9 +2,10 @@ import { Link, useMatches } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
 import { Avatar } from "~/components/Avatar";
+import { Placement } from "~/components/Placement";
 import { Section } from "~/components/Section";
 import { databaseTimestampToDate } from "~/utils/dates";
-import { discordFullName, placementString } from "~/utils/strings";
+import { discordFullName } from "~/utils/strings";
 import { calendarEventPage, userPage } from "~/utils/urls";
 import type { UserPageLoaderData } from "../u.$identifier";
 
@@ -15,7 +16,7 @@ export default function UserResultsPage() {
   const data = parentRoute.data as UserPageLoaderData;
 
   return (
-    <main className="u__results-main layout__main">
+    <main className="main layout__main">
       <Section className="u__results-section">
         <table>
           <thead>
@@ -23,6 +24,7 @@ export default function UserResultsPage() {
               <th>{t("results.placing")}</th>
               <th>{t("results.team")}</th>
               <th>{t("results.tournament")}</th>
+              <th>{t("results.participants")}</th>
               <th>{t("results.date")}</th>
               <th>{t("results.mates")}</th>
             </tr>
@@ -30,13 +32,16 @@ export default function UserResultsPage() {
           <tbody>
             {data.results.map((result) => (
               <tr key={result.eventId}>
-                <td className="pl-4">{placementString(result.placement)}</td>
+                <td className="pl-4">
+                  <Placement placement={result.placement} />
+                </td>
                 <td>{result.teamName}</td>
                 <td>
                   <Link to={calendarEventPage(result.eventId)}>
                     {result.eventName}
                   </Link>
                 </td>
+                <td>{result.participantCount}</td>
                 <td>
                   {databaseTimestampToDate(result.startTime).toLocaleDateString(
                     i18n.language,

@@ -78,7 +78,7 @@
 
 ### 🟡 user.json
 
-**7/19**
+**7/20**
 
 <details>
 <summary>Missing</summary>
@@ -91,6 +91,7 @@
 - motion
 - stick
 - sens
+- results.participants
 - forms.errors.invalidCustomUrl.numbers
 - forms.errors.invalidCustomUrl.strangeCharacter
 - forms.errors.invalidCustomUrl.duplicate
@@ -178,7 +179,7 @@
 
 ### 🟢 user.json
 
-**19/19**
+**20/20**
 
 ---
 
@@ -270,7 +271,7 @@
 
 ### 🟡 user.json
 
-**7/19**
+**7/20**
 
 <details>
 <summary>Missing</summary>
@@ -283,6 +284,7 @@
 - motion
 - stick
 - sens
+- results.participants
 - forms.errors.invalidCustomUrl.numbers
 - forms.errors.invalidCustomUrl.strangeCharacter
 - forms.errors.invalidCustomUrl.duplicate
@@ -392,7 +394,7 @@
 
 ### 🟡 user.json
 
-**7/19**
+**7/20**
 
 <details>
 <summary>Missing</summary>
@@ -405,6 +407,7 @@
 - motion
 - stick
 - sens
+- results.participants
 - forms.errors.invalidCustomUrl.numbers
 - forms.errors.invalidCustomUrl.strangeCharacter
 - forms.errors.invalidCustomUrl.duplicate
@@ -465,7 +468,7 @@
 
 ### 🔴 user.json
 
-**0/19**
+**0/20**
 
 ---
 
@@ -647,7 +650,7 @@
 
 ### 🟡 user.json
 
-**7/19**
+**7/20**
 
 <details>
 <summary>Missing</summary>
@@ -660,6 +663,7 @@
 - motion
 - stick
 - sens
+- results.participants
 - forms.errors.invalidCustomUrl.numbers
 - forms.errors.invalidCustomUrl.strangeCharacter
 - forms.errors.invalidCustomUrl.duplicate
@@ -770,7 +774,7 @@
 
 ### 🟡 user.json
 
-**7/19**
+**7/20**
 
 <details>
 <summary>Missing</summary>
@@ -783,6 +787,7 @@
 - motion
 - stick
 - sens
+- results.participants
 - forms.errors.invalidCustomUrl.numbers
 - forms.errors.invalidCustomUrl.strangeCharacter
 - forms.errors.invalidCustomUrl.duplicate
@@ -869,9 +874,16 @@
 
 </details>
 
-### 🟢 user.json
+### 🟡 user.json
 
-**19/19**
+**19/20**
+
+<details>
+<summary>Missing</summary>
+
+- results.participants
+
+</details>
 
 ---
 
@@ -976,7 +988,7 @@
 
 ### 🟡 user.json
 
-**7/19**
+**7/20**
 
 <details>
 <summary>Missing</summary>
@@ -989,6 +1001,7 @@
 - motion
 - stick
 - sens
+- results.participants
 - forms.errors.invalidCustomUrl.numbers
 - forms.errors.invalidCustomUrl.strangeCharacter
 - forms.errors.invalidCustomUrl.duplicate
@@ -1099,7 +1112,7 @@
 
 ### 🟡 user.json
 
-**7/19**
+**7/20**
 
 <details>
 <summary>Missing</summary>
@@ -1112,6 +1125,7 @@
 - motion
 - stick
 - sens
+- results.participants
 - forms.errors.invalidCustomUrl.numbers
 - forms.errors.invalidCustomUrl.strangeCharacter
 - forms.errors.invalidCustomUrl.duplicate

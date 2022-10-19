@@ -10,12 +10,18 @@ export function makeTitle(title: string | string[]) {
   return `${Array.isArray(title) ? title.join(" | ") : title} | sendou.ink`;
 }
 
-export function placementString(placement: number) {
-  if (placement === 1) return "🥇";
-  if (placement === 2) return "🥈";
-  if (placement === 3) return "🥉";
+export function getEnglishOrdinalSuffix(num: number) {
+  const lastDigit = num % 10;
+  const last2Digits = num % 100;
 
-  return `${placement}th`;
+  if (lastDigit === 1 && last2Digits !== 11) {
+    return "st";
+  } else if (lastDigit === 2 && last2Digits !== 12) {
+    return "nd";
+  } else if (lastDigit === 3 && last2Digits !== 13) {
+    return "rd";
+  }
+  return "th";
 }
 
 export function semiRandomId() {

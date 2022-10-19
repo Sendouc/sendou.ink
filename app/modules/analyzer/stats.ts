@@ -10,7 +10,7 @@ import type {
   StatFunctionInput,
   SubWeaponParams,
 } from "./types";
-import { DAMAGE_TYPE } from "./types";
+import { DAMAGE_TYPE } from "./constants";
 import { INK_CONSUME_TYPES } from "./types";
 import invariant from "tiny-invariant";
 import {
@@ -24,13 +24,13 @@ import { semiRandomId } from "~/utils/strings";
 import { roundToTwoDecimalPlaces } from "~/utils/number";
 
 export function buildStats({
-  abilityPoints,
   weaponSplId,
-  mainOnlyAbilities,
+  abilityPoints = new Map(),
+  mainOnlyAbilities = [],
 }: {
-  abilityPoints: AbilityPoints;
   weaponSplId: MainWeaponId;
-  mainOnlyAbilities: Array<Ability>;
+  abilityPoints?: AbilityPoints;
+  mainOnlyAbilities?: Array<Ability>;
 }): AnalyzedBuild {
   const mainWeaponParams = weaponParams().mainWeapons[weaponSplId];
   invariant(mainWeaponParams, `Weapon with splId ${weaponSplId} not found`);
@@ -515,6 +515,7 @@ function swimSpeed(
 
 const RESPAWN_CHASE_FRAME = 150;
 const OWN_RESPAWN_PUNISHER_EXTRA_RESPAWN_FRAMES = 68;
+const SPLATOON_3_FASTER_RESPAWN = 60;
 function quickRespawnTime(
   args: StatFunctionInput
 ): AnalyzedBuild["stats"]["quickRespawnTime"] {
@@ -546,10 +547,17 @@ function quickRespawnTime(
 
   return {
     baseValue: framesToSeconds(
-      RESPAWN_CHASE_FRAME + chase.baseEffect + around.baseEffect
+      RESPAWN_CHASE_FRAME +
+        chase.baseEffect +
+        around.baseEffect -
+        SPLATOON_3_FASTER_RESPAWN
     ),
     value: framesToSeconds(
-      RESPAWN_CHASE_FRAME + chase.effect + around.effect + extraFrames
+      RESPAWN_CHASE_FRAME +
+        chase.effect +
+        around.effect +
+        extraFrames -
+        SPLATOON_3_FASTER_RESPAWN
     ),
     modifiedBy: [QUICK_RESPAWN_TIME_ABILITY, "RP"],
   };

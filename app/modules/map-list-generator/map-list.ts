@@ -59,7 +59,9 @@ export function generateMapList(
 }
 
 function isValid(stageId: StageId, mapHistory: StageId[]) {
-  return !mapHistory.slice(-BACKLOG, mapHistory.length).includes(stageId);
+  // [1,2,3,4,5,6,7,8,9,10].slice(-2)
+  // > (2) [9, 10]
+  return !mapHistory.slice(-BACKLOG).includes(stageId);
 }
 
 function addAndReturnMap(
@@ -154,8 +156,28 @@ function getMap(
   for (let bucketNum = 0; bucketNum < buckets.size; bucketNum++) {
     const item = buckets.get(bucketNum);
     shuffle(item![mode]);
-    for (const stageId of item![mode]) {
-      if (isValid(stageId, mapHistory)) {
+
+    for (const [i, stageId] of item![mode].entries()) {
+      // fallback solution, might happen if map pool is small
+      const isLast = () => {
+        // is actually last
+        if (bucketNum === buckets.size - 1 && i === item![mode].length - 1) {
+          return true;
+        }
+
+        // is last in bucket and next is empty
+        const nextBucket = buckets.get(bucketNum + 1);
+        if (
+          i === item![mode].length - 1 &&
+          nextBucket &&
+          nextBucket[mode].length === 0
+        ) {
+          return true;
+        }
+
+        return false;
+      };
+      if (isLast() || isValid(stageId, mapHistory)) {
         return addAndReturnMap(stageId, mode, buckets, bucketNum);
       }
     }

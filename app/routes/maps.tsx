@@ -1,4 +1,9 @@
-import type { LinksFunction, LoaderArgs } from "@remix-run/node";
+import type {
+  LinksFunction,
+  LoaderArgs,
+  MetaFunction,
+  SerializeFrom,
+} from "@remix-run/node";
 import type { ShouldReloadFunction } from "@remix-run/react";
 import { Link } from "@remix-run/react";
 import { useLoaderData, useSearchParams } from "@remix-run/react";
@@ -13,6 +18,7 @@ import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import { Toggle } from "~/components/Toggle";
 import { db } from "~/db";
+import { i18next } from "~/modules/i18n";
 import {
   modes,
   stageIds,
@@ -31,6 +37,7 @@ import {
 } from "~/modules/map-pool-serializer";
 import type { MapPool } from "~/modules/map-pool-serializer/types";
 import styles from "~/styles/maps.css";
+import { makeTitle } from "~/utils/strings";
 import {
   calendarEventPage,
   ipLabsMaps,
@@ -46,13 +53,24 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
+export const meta: MetaFunction = (args) => {
+  const data = args.data as SerializeFrom<typeof loader> | null;
+
+  if (!data) return {};
+
+  return {
+    title: data.title,
+  };
+};
+
 export const handle = {
   i18n: "game-misc",
 };
 
-export const loader = ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
   const calendarEventId = url.searchParams.get("eventId");
+  const t = await i18next.getFixedT(request);
 
   const event = calendarEventId
     ? db.calendarEvents.findById(Number(calendarEventId))
@@ -68,6 +86,7 @@ export const loader = ({ request }: LoaderArgs) => {
     mapPool: event
       ? db.calendarEvents.findMapPoolByEventId(event.eventId)
       : null,
+    title: makeTitle([t("pages.maps")]),
   };
 };
 
@@ -216,7 +235,6 @@ function MapPoolSelector({
   );
 }
 
-// xxx: crashes if only one map in mode
 function MapListCreator({ mapPool }: { mapPool: MapPool }) {
   const { t } = useTranslation(["game-misc", "common"]);
   const [mapList, setMapList] = React.useState<ModeWithStage[]>();
