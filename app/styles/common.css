@@ -348,6 +348,7 @@ dialog::backdrop {
   align-items: center;
   border-radius: var(--rounded);
   background-color: var(--theme-transparent);
+  cursor: pointer;
 }
 
 .toggle.tiny {
