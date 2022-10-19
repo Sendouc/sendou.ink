@@ -6,6 +6,7 @@
   "plus.description": "Se plus-serverens valghistorik og mere til",
   "badges.description": "Liste af alle de premiemærker til din profil, som du kan gøre dig fortjent til",
   "analyzer.description": "Undersøg hvordan dine udrustinger giver dig af fordele i kamp",
+  "maps.description": "Lav en liste af baner ud fra en pulje af baner",
   "recentWinners": "Se de seneste vindere",
   "upcomingEvents": "Kommende begivenheder",
   "articleBy": "Af {{author}}"
