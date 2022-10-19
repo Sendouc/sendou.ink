@@ -147,8 +147,19 @@
   font-weight: var(--bold);
 }
 
-.u__results-section {
+.u__results-table-wrapper {
+  width: 100%;
   overflow-x: auto;
+}
+
+.u__results-table-highlights {
+  border: var(--s-2) solid var(--bg-lighter);
+  padding-inline: 0 !important;
+}
+
+.u__results-table-highlights > legend {
+  margin-inline-start: var(--s-2);
+  padding-inline: var(--s-1);
 }
 
 .u__results-players {

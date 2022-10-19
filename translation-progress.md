@@ -82,7 +82,7 @@
 
 ### 🟢 user.json
 
-**20/20**
+**25/25**
 
 ---
 
@@ -174,7 +174,7 @@
 
 ### 🟡 user.json
 
-**7/20**
+**7/25**
 
 <details>
 <summary>Missing</summary>
@@ -187,7 +187,12 @@
 - motion
 - stick
 - sens
+- results.title
 - results.participants
+- results.highlights
+- results.nonHighlights
+- results.highlights.choose
+- results.highlights.explanation
 - forms.errors.invalidCustomUrl.numbers
 - forms.errors.invalidCustomUrl.strangeCharacter
 - forms.errors.invalidCustomUrl.duplicate
@@ -297,7 +302,7 @@
 
 ### 🟡 user.json
 
-**7/20**
+**7/25**
 
 <details>
 <summary>Missing</summary>
@@ -310,7 +315,12 @@
 - motion
 - stick
 - sens
+- results.title
 - results.participants
+- results.highlights
+- results.nonHighlights
+- results.highlights.choose
+- results.highlights.explanation
 - forms.errors.invalidCustomUrl.numbers
 - forms.errors.invalidCustomUrl.strangeCharacter
 - forms.errors.invalidCustomUrl.duplicate
@@ -371,7 +381,7 @@
 
 ### 🔴 user.json
 
-**0/20**
+**0/25**
 
 ---
 
@@ -553,7 +563,7 @@
 
 ### 🟡 user.json
 
-**7/20**
+**7/25**
 
 <details>
 <summary>Missing</summary>
@@ -566,7 +576,12 @@
 - motion
 - stick
 - sens
+- results.title
 - results.participants
+- results.highlights
+- results.nonHighlights
+- results.highlights.choose
+- results.highlights.explanation
 - forms.errors.invalidCustomUrl.numbers
 - forms.errors.invalidCustomUrl.strangeCharacter
 - forms.errors.invalidCustomUrl.duplicate
@@ -677,7 +692,7 @@
 
 ### 🟡 user.json
 
-**7/20**
+**7/25**
 
 <details>
 <summary>Missing</summary>
@@ -690,7 +705,12 @@
 - motion
 - stick
 - sens
+- results.title
 - results.participants
+- results.highlights
+- results.nonHighlights
+- results.highlights.choose
+- results.highlights.explanation
 - forms.errors.invalidCustomUrl.numbers
 - forms.errors.invalidCustomUrl.strangeCharacter
 - forms.errors.invalidCustomUrl.duplicate
@@ -779,12 +799,17 @@
 
 ### 🟡 user.json
 
-**19/20**
+**19/25**
 
 <details>
 <summary>Missing</summary>
 
+- results.title
 - results.participants
+- results.highlights
+- results.nonHighlights
+- results.highlights.choose
+- results.highlights.explanation
 
 </details>
 
@@ -891,7 +916,7 @@
 
 ### 🟡 user.json
 
-**7/20**
+**7/25**
 
 <details>
 <summary>Missing</summary>
@@ -904,7 +929,12 @@
 - motion
 - stick
 - sens
+- results.title
 - results.participants
+- results.highlights
+- results.nonHighlights
+- results.highlights.choose
+- results.highlights.explanation
 - forms.errors.invalidCustomUrl.numbers
 - forms.errors.invalidCustomUrl.strangeCharacter
 - forms.errors.invalidCustomUrl.duplicate
@@ -1015,7 +1045,7 @@
 
 ### 🟡 user.json
 
-**7/20**
+**7/25**
 
 <details>
 <summary>Missing</summary>
@@ -1028,7 +1058,12 @@
 - motion
 - stick
 - sens
+- results.title
 - results.participants
+- results.highlights
+- results.nonHighlights
+- results.highlights.choose
+- results.highlights.explanation
 - forms.errors.invalidCustomUrl.numbers
 - forms.errors.invalidCustomUrl.strangeCharacter
 - forms.errors.invalidCustomUrl.duplicate
