@@ -126,8 +126,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--theme-success-transparent);
   border-radius: var(--rounded);
+  background-color: var(--theme-success-transparent);
   color: var(--text);
   font-size: var(--fonts-sm);
   font-weight: var(--semi-bold);

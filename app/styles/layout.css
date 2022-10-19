@@ -21,9 +21,9 @@
   height: var(--item-size);
   align-items: center;
   justify-content: center;
+  border-radius: var(--rounded);
   background-color: var(--bg-lighter);
   background-image: url("/svg/background-pattern.svg");
-  border-radius: var(--rounded);
 }
 
 .layout__avatar {
@@ -44,8 +44,8 @@
   display: flex;
   width: max-content;
   align-items: center;
-  background-color: var(--bg-darker);
   border-radius: 0 var(--rounded) var(--rounded) 0;
+  background-color: var(--bg-darker);
   font-size: var(--fonts-xs);
   font-weight: var(--semi-bold);
   gap: var(--s-1);
@@ -66,8 +66,8 @@
   padding: 0.25rem;
   border: 2px solid;
   border-color: var(--theme-transparent-vibrant);
-  background-color: transparent;
   border-radius: 50%;
+  background-color: transparent;
   color: inherit;
   cursor: pointer;
 }
@@ -102,8 +102,8 @@
   padding: 0.25rem;
   border: 2px solid;
   border-color: var(--theme-transparent-vibrant);
-  background-color: transparent;
   border-radius: 50%;
+  background-color: transparent;
   color: inherit;
   cursor: pointer;
   gap: 2px;
@@ -169,9 +169,9 @@
 .layout__menu__link__icon {
   width: 2rem;
   height: 2rem;
+  border-radius: var(--rounded);
   background-color: var(--bg-lighter);
   background-image: url("/svg/background-pattern.svg");
-  border-radius: var(--rounded);
 }
 
 .layout__menu__links {
@@ -213,8 +213,8 @@
   padding: 0.5rem;
   border: 2px solid;
   border-color: var(--bg-lighter);
-  background-color: transparent;
   border-radius: var(--rounded);
+  background-color: transparent;
   color: inherit;
   cursor: pointer;
   font-size: var(--fonts-xs);
@@ -276,8 +276,8 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--s-4);
-  background-color: var(--theme-transparent-vibrant);
   border-radius: var(--rounded);
+  background-color: var(--theme-transparent-vibrant);
   cursor: pointer;
   font-size: var(--fonts-lg);
 }

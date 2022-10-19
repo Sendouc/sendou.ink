@@ -32,9 +32,9 @@ a {
   align-items: center;
   justify-content: center;
   border: 2px solid var(--theme);
+  border-radius: var(--rounded-sm);
   appearance: none;
   background: var(--theme);
-  border-radius: var(--rounded-sm);
   color: var(--button-text);
   cursor: pointer;
   font-size: var(--fonts-sm);
@@ -138,9 +138,9 @@ textarea:not(.plain) {
   height: 8rem;
   padding: var(--s-2-5) var(--s-3);
   border: 1px solid var(--border);
+  border-radius: var(--rounded);
   accent-color: var(--theme-secondary);
   background-color: transparent;
-  border-radius: var(--rounded);
   color: var(--text);
   font-size: var(--fonts-sm);
   outline: none;
@@ -168,9 +168,9 @@ input:not(.plain) {
   height: 1rem;
   padding: var(--s-4) var(--s-3);
   border: 1px solid var(--border);
+  border-radius: var(--rounded);
   accent-color: var(--theme-secondary);
   background-color: transparent;
-  border-radius: var(--rounded);
   color: var(--text);
   font-size: var(--fonts-sm);
   outline: none;
@@ -222,17 +222,17 @@ details summary {
 
 fieldset {
   border: none;
-  background-color: var(--bg-darker-transparent);
   border-radius: var(--rounded);
+  background-color: var(--bg-darker-transparent);
   font-size: var(--fonts-sm);
   padding-block-end: var(--s-3);
   padding-inline: var(--s-3);
 }
 
 legend {
-  background-color: transparent;
   border-radius: 2px;
   border-radius: var(--rounded-sm);
+  background-color: transparent;
   font-size: var(--fonts-xs);
   font-weight: var(--bold);
 }
@@ -245,13 +245,13 @@ select {
   all: unset;
   width: 90%;
   border: 1px solid var(--border);
+  border-radius: var(--rounded);
   background: var(--select-background, var(--bg-lighter));
 
   /* TODO: Get color from CSS var */
   background-image: url('data:image/svg+xml;utf8,<svg width="1rem" color="rgb(255 255 255 / 55%)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>');
   background-position: center right var(--s-3);
   background-repeat: no-repeat;
-  border-radius: var(--rounded);
   cursor: pointer;
   font-size: var(--fonts-sm);
   font-weight: 500;
@@ -311,9 +311,9 @@ abbr[title] {
 dialog {
   width: min(90%, 24rem);
   border: 0;
+  border-radius: var(--rounded);
   margin: auto;
   background-color: var(--bg);
-  border-radius: var(--rounded);
 }
 
 dialog::backdrop {
@@ -346,8 +346,8 @@ dialog::backdrop {
   width: var(--s-11);
   height: var(--s-6);
   align-items: center;
-  background-color: var(--theme-transparent);
   border-radius: var(--rounded);
+  background-color: var(--theme-transparent);
 }
 
 .toggle.tiny {
@@ -367,8 +367,8 @@ dialog::backdrop {
   display: inline-block;
   width: var(--s-4);
   height: var(--s-4);
-  background-color: white;
   border-radius: 50%;
+  background-color: white;
   transform: translateX(var(--s-1));
   transition: transform 0.2s ease;
 }
@@ -402,9 +402,9 @@ dialog::backdrop {
 .input-container {
   display: flex;
   border: 1px solid var(--border);
+  border-radius: var(--rounded);
   accent-color: var(--theme-secondary);
   background-color: transparent;
-  border-radius: var(--rounded);
   color: var(--text);
   font-size: var(--fonts-sm);
   outline: none;
@@ -430,8 +430,8 @@ dialog::backdrop {
 
 .input-addon {
   display: grid;
-  background-color: var(--bg-lighter);
   border-radius: var(--rounded) 0 0 var(--rounded);
+  background-color: var(--bg-lighter);
   color: var(--text-lighter);
   font-size: var(--fonts-xs);
   font-weight: var(--semi-bold);
@@ -476,8 +476,8 @@ dialog::backdrop {
   z-index: 1;
   max-width: 20rem;
   padding: var(--s-2);
-  background-color: var(--bg-darker-transparent);
   border-radius: var(--rounded);
+  background-color: var(--bg-darker-transparent);
   font-size: var(--fonts-sm);
   font-weight: var(--semi-bold);
   white-space: pre-wrap;
@@ -499,9 +499,9 @@ dialog::backdrop {
   position: absolute;
   z-index: 2;
   width: 12rem;
+  border-radius: var(--rounded);
   margin-top: var(--s-2);
   background-color: var(--bg-darker);
-  border-radius: var(--rounded);
   color: var(--text);
   font-size: var(--fonts-sm);
   padding-block: var(--s-3);
@@ -548,8 +548,8 @@ dialog::backdrop {
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  background-color: var(--theme-info-transparent);
   border-radius: var(--rounded);
+  background-color: var(--theme-info-transparent);
   color: var(--text);
   font-size: var(--fonts-sm);
   font-weight: var(--semi-bold);
@@ -562,9 +562,9 @@ dialog::backdrop {
 }
 
 .avatar {
+  border-radius: 50%;
   background-color: var(--bg-lighter);
   background-image: url("/svg/background-pattern.svg");
-  border-radius: 50%;
 }
 
 .alert > svg {
@@ -582,8 +582,8 @@ dialog::backdrop {
 
 .section > div {
   padding: var(--s-2);
-  background-color: var(--bg-darker);
   border-radius: var(--rounded);
+  background-color: var(--bg-darker);
 }
 
 .section > h2 {
@@ -726,8 +726,8 @@ dialog::backdrop {
   display: flex;
   flex-direction: column;
   padding: var(--s-2-5);
-  background-color: var(--bg-lighter);
   border-radius: var(--rounded);
+  background-color: var(--bg-lighter);
   gap: var(--s-3);
 }
 
@@ -756,8 +756,8 @@ dialog::backdrop {
 
 .build__weapon {
   padding: var(--s-0-5);
-  background-color: var(--bg-darker-very-transparent);
   border-radius: 50%;
+  background-color: var(--bg-darker-very-transparent);
 }
 
 .build__weapon-text {
@@ -784,8 +784,8 @@ dialog::backdrop {
 }
 
 .build__gear {
-  background-color: var(--bg-darker-very-transparent);
   border-radius: 50%;
+  background-color: var(--bg-darker-very-transparent);
 }
 
 .build__ability {
@@ -793,11 +793,11 @@ dialog::backdrop {
   height: var(--ability-size);
   padding: 0;
   border: 2px solid var(--theme-transparent);
+  border-radius: 50%;
   border-right: 0;
   border-bottom: 0;
   background: var(--bg-ability);
   background-size: 100%;
-  border-radius: 50%;
   box-shadow: 0 0 0 1px var(--bg-ability);
   transform: scale(1);
   transition: all 0.1s ease;
@@ -864,8 +864,8 @@ dialog::backdrop {
 .ability-selector__ability-button {
   padding: var(--s-0-5);
   border-color: var(--abilities-button-bg);
-  background-color: var(--abilities-button-bg);
   border-radius: 50%;
+  background-color: var(--abilities-button-bg);
 }
 
 .ability-selector__ability-button.is-dragging {

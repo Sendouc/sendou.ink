@@ -96,8 +96,8 @@
 
 .u__extra-info {
   padding: var(--s-1) var(--s-1-5);
-  background-color: var(--bg-darker);
   border-radius: var(--rounded);
+  background-color: var(--bg-darker);
   font-size: var(--fonts-xxs);
 }
 
@@ -111,8 +111,8 @@
   max-width: 24rem;
   align-items: center;
   padding: var(--s-2);
-  background-color: var(--bg-badge);
   border-radius: var(--rounded);
+  background-color: var(--bg-badge);
   margin-inline: auto;
 }
 
