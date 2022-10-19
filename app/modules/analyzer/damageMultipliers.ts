@@ -7,20 +7,28 @@ import type {
 } from "../in-game-lists";
 import { DAMAGE_RECEIVERS } from "./constants";
 
-const objectDamageJsonKeyPriority: Record<
-  DamageType,
-  Array<keyof typeof objectDamages>
+/** Keys to check in the json. Lower index takes priority over higher. If key is omitted means any key with valid weapon id is okay. One json key can only map to one DamageType. */
+const objectDamageJsonKeyPriority: Partial<
+  Record<DamageType, Array<keyof typeof objectDamages>>
 > = {
-  NORMAL_MIN: ["Shooter"],
-  NORMAL_MAX: ["Shooter"],
-  DIRECT: [],
+  // NORMAL_MIN: [],
+  // NORMAL_MAX: [],
+  DIRECT: ["Blaster_KillOneShot"],
   FULL_CHARGE: [],
   MAX_CHARGE: [],
   TAP_SHOT: [],
-  DISTANCE: [],
-  BOMB_NORMAL: [],
-  BOMB_DIRECT: [],
+  // DISTANCE: [],
+  // BOMB_NORMAL: [],
+  BOMB_DIRECT: ["Bomb_DirectHit"],
 };
+
+const commonObjectDamageJsonKeys = () =>
+  Object.keys(objectDamages).filter(
+    (key) =>
+      !Object.values(objectDamageJsonKeyPriority)
+        .flat()
+        .includes(key as any)
+  ) as Array<keyof typeof objectDamages>;
 
 export function damageTypeToMultipliers({
   type,
@@ -41,7 +49,10 @@ export function damageTypeToMultipliers({
         id: SpecialWeaponId;
       };
 }) {
-  for (const key of objectDamageJsonKeyPriority[type]) {
+  const keysToCheck =
+    objectDamageJsonKeyPriority[type] ?? commonObjectDamageJsonKeys();
+
+  for (const key of keysToCheck) {
     const objectDamagesObj = objectDamages[key];
 
     let ok = false;
@@ -58,7 +69,10 @@ export function damageTypeToMultipliers({
       );
     }
 
-    if (ok) return objectDamagesObj.rates;
+    if (ok) {
+      console.log(`for ${type} used ${key ?? "FALLBACK"}`);
+      return objectDamagesObj.rates;
+    }
   }
 
   return null;

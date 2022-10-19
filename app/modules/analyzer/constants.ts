@@ -1,3 +1,5 @@
+import type { DamageType } from "./types";
+
 export const MAX_LDE_INTENSITY = 21;
 export const MAX_AP = 57;
 
@@ -30,3 +32,18 @@ export const DAMAGE_TYPE = [
   "BOMB_NORMAL",
   "BOMB_DIRECT",
 ] as const;
+
+export const damageTypeToWeaponType: Record<
+  DamageType,
+  "MAIN" | "SUB" | "SPECIAL"
+> = {
+  NORMAL_MIN: "MAIN",
+  NORMAL_MAX: "MAIN",
+  DIRECT: "MAIN",
+  FULL_CHARGE: "MAIN",
+  MAX_CHARGE: "MAIN",
+  TAP_SHOT: "MAIN",
+  DISTANCE: "MAIN",
+  BOMB_NORMAL: "SUB",
+  BOMB_DIRECT: "SUB",
+};
