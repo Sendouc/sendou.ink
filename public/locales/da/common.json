@@ -8,6 +8,7 @@
   "pages.faq": "FAQ",
   "pages.builds": "Udrustningssæt",
   "pages.analyzer": "Udrustningsanalysator",
+  "pages.maps": "Banelister",
 
   "header.profile": "Profil",
   "header.logout": "Log ud",
@@ -27,6 +28,12 @@
   "actions.remove": "Fjern",
   "actions.delete": "Slet",
   "actions.loadMore": "Indlæs flere",
+  "actions.copyToClipboard": "Kopiér til udklipsholderen",
+
+  "maps.createMapList": "Lav bane-liste",
+  "maps.halfSz": "50% SZ",
+  "maps.mapPool": "Banepulje",
+  "maps.tournamentMaplist": "Lav turneringsbanepuljer på (maps.iplabs.ink)",
 
   "results": "Resultater",
 
