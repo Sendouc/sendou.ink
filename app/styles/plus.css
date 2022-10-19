@@ -60,9 +60,9 @@
 }
 
 .plus__comment {
-  white-space: pre-wrap;
   min-width: auto;
   overflow-wrap: break-word;
+  white-space: pre-wrap;
 }
 
 .plus__comment-time {
