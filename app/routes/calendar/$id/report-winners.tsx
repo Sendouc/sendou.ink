@@ -17,6 +17,7 @@ import {
   notFoundIfFalsy,
   safeParseRequestFormData,
   validate,
+  type SendouRouteHandle,
 } from "~/utils/remix";
 import { actualNumber, id, safeJSONParse, toArray } from "~/utils/zod";
 import * as React from "react";
@@ -135,7 +136,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   return redirect(calendarEventPage(parsedParams.id));
 };
 
-export const handle = {
+export const handle: SendouRouteHandle = {
   i18n: "calendar",
 };
 

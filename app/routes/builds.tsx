@@ -6,6 +6,7 @@ import { LinkButton } from "~/components/Button";
 import { Main } from "~/components/Main";
 import { useUser } from "~/modules/auth";
 import type { MainWeaponId } from "~/modules/in-game-lists";
+import { type SendouRouteHandle } from "~/utils/remix";
 
 import styles from "~/styles/builds.css";
 import { atOrError } from "~/utils/arrays";
@@ -15,7 +16,7 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const handle = {
+export const handle: SendouRouteHandle = {
   i18n: ["weapons", "builds"],
 };
 

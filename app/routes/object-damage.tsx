@@ -2,8 +2,9 @@ import { WeaponCombobox } from "~/components/Combobox";
 import { Main } from "~/components/Main";
 import { useObjectDamage } from "~/modules/analyzer";
 import type { MainWeaponId } from "~/modules/in-game-lists";
+import { type SendouRouteHandle } from "~/utils/remix";
 
-export const handle = {
+export const handle: SendouRouteHandle = {
   i18n: ["weapons"],
 };
 

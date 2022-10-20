@@ -30,7 +30,7 @@ import type {
   BuildAbilitiesTupleWithUnknown,
   MainWeaponId,
 } from "~/modules/in-game-lists/types";
-import { parseRequestFormData } from "~/utils/remix";
+import { parseRequestFormData, type SendouRouteHandle } from "~/utils/remix";
 import { modeImageUrl, userBuildsPage } from "~/utils/urls";
 import {
   actualNumber,
@@ -154,7 +154,7 @@ export const action: ActionFunction = async ({ request }) => {
   return redirect(userBuildsPage(user));
 };
 
-export const handle = {
+export const handle: SendouRouteHandle = {
   i18n: ["weapons", "builds", "gear"],
 };
 

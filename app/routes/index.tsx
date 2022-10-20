@@ -26,6 +26,7 @@ import {
   userPage,
 } from "~/utils/urls";
 import { Tags } from "./calendar/components/Tags";
+import { type SendouRouteHandle } from "~/utils/remix";
 
 const RECENT_ARTICLES_TO_SHOW = 3;
 
@@ -33,7 +34,7 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const handle = {
+export const handle: SendouRouteHandle = {
   i18n: ["weapons", "builds"],
 };
 

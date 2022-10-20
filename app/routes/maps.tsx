@@ -44,6 +44,7 @@ import {
   modeImageUrl,
   stageImageUrl,
 } from "~/utils/urls";
+import { type SendouRouteHandle } from "~/utils/remix";
 
 const AMOUNT_OF_MAPS_IN_MAP_LIST = stageIds.length * 2;
 
@@ -63,7 +64,7 @@ export const meta: MetaFunction = (args) => {
   };
 };
 
-export const handle = {
+export const handle: SendouRouteHandle = {
   i18n: "game-misc",
 };
 
