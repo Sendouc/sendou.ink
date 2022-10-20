@@ -71,7 +71,7 @@
 }
 
 .maps__mode.selected {
-  filter: grayscale(0%);
+  filter: unset;
 }
 
 .maps__map-list-creator {
