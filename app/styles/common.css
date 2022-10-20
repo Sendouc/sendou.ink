@@ -872,3 +872,10 @@ dialog::backdrop {
 .ability-selector__ability-button.is-dragging {
   box-shadow: 0 0 100px inset rgb(255 255 255 / 25%);
 }
+
+.breadcrumbs {
+  display: flex;
+  font-size: var(--fonts-xs);
+  font-weight: var(--bold);
+  gap: var(--s-1);
+}

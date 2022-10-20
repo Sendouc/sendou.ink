@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { type ReactNode } from "react";
-import { type Namespace } from "react-i18next";
+import { type TFunction, type Namespace } from "react-i18next";
+import { type RouteMatch } from "@remix-run/react";
 
 export function notFoundIfFalsy<T>(value: T | null | undefined): T {
   if (!value) throw new Response(null, { status: 404 });
@@ -102,4 +102,12 @@ export function validate(condition: any, status = 400): asserts condition {
 export type SendouRouteHandle = {
   /** The i18n translation files used for this route, via remix-i18next */
   i18n?: Namespace;
+  /**
+   * A function that returns the breadcrumb text that should be displayed in
+   * the <Breadcrumb> component
+   */
+  breadcrumb?: (args: {
+    match: RouteMatch;
+    t: TFunction<"common", undefined>;
+  }) => string | undefined;
 };

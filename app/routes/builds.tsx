@@ -1,16 +1,13 @@
 import { type LinksFunction } from "@remix-run/node";
-import { Link, Outlet, useMatches, useParams } from "@remix-run/react";
-import type * as React from "react";
+import { Outlet } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { LinkButton } from "~/components/Button";
 import { Main } from "~/components/Main";
 import { useUser } from "~/modules/auth";
-import type { MainWeaponId } from "~/modules/in-game-lists";
 import { type SendouRouteHandle } from "~/utils/remix";
-
 import styles from "~/styles/builds.css";
-import { atOrError } from "~/utils/arrays";
-import { BUILDS_PAGE, userNewBuildPage } from "~/utils/urls";
+import { userNewBuildPage } from "~/utils/urls";
+import { Breadcrumbs } from "~/components/Breadcrumbs";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -18,34 +15,17 @@ export const links: LinksFunction = () => {
 
 export const handle: SendouRouteHandle = {
   i18n: ["weapons", "builds"],
+  breadcrumb: ({ t }) => t("pages.builds"),
 };
 
 export default function BuildsLayoutPage() {
   const user = useUser();
-  const matches = useMatches();
   const { t } = useTranslation(["weapons", "common", "builds"]);
-  const params = useParams();
-
-  const weaponId: MainWeaponId | undefined = atOrError(matches, -1).data?.[
-    "weaponId"
-  ];
 
   return (
     <Main className="stack lg">
       <div className="builds__top-container">
-        <nav className="builds__breadcrumbs">
-          <SometimesLink isLink={Boolean(params["slug"])}>
-            {t("common:pages.builds")}
-          </SometimesLink>
-          {typeof weaponId === "number" && (
-            <>
-              <div>/</div>
-              <SometimesLink isLink={false}>
-                {t(`weapons:MAIN_${weaponId}`)}
-              </SometimesLink>
-            </>
-          )}
-        </nav>
+        <Breadcrumbs />
         {user && (
           <LinkButton to={userNewBuildPage(user)} tiny>
             {t("builds:addBuild")}
@@ -55,18 +35,4 @@ export default function BuildsLayoutPage() {
       <Outlet />
     </Main>
   );
-}
-
-function SometimesLink({
-  children,
-  isLink,
-}: {
-  children: React.ReactNode;
-  isLink: boolean;
-}) {
-  if (isLink) {
-    return <Link to={BUILDS_PAGE}>{children}</Link>;
-  }
-
-  return <div>{children}</div>;
 }
