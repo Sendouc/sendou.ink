@@ -1,6 +1,68 @@
 # Translation Progress
 
-## /da (🟢 Done)
+## /da (🟡 In progress)
+
+### 🟢 analyzer.json
+
+**94/94**
+
+### 🟢 badges.json
+
+**7/7**
+
+### 🟢 builds.json
+
+**11/11**
+
+### 🟢 calendar.json
+
+**46/46**
+
+### 🟡 common.json
+
+**55/60**
+
+<details>
+<summary>Missing</summary>
+
+- auth.errors.aborted
+- auth.errors.failed
+- auth.errors.discordPermissions
+- auth.errors.unknown
+- actions.close
+
+</details>
+
+### 🟢 contributions.json
+
+**6/6**
+
+### 🟢 faq.json
+
+**6/6**
+
+### 🟢 front.json
+
+**11/11**
+
+### 🟢 game-misc.json
+
+**17/17**
+
+### 🟡 user.json
+
+**20/25**
+
+<details>
+<summary>Missing</summary>
+
+- results.title
+- results.highlights
+- results.nonHighlights
+- results.highlights.choose
+- results.highlights.explanation
+
+</details>
 
 ---
 
@@ -32,7 +94,7 @@
 
 ### 🟡 common.json
 
-**49/55**
+**54/60**
 
 <details>
 <summary>Missing</summary>
@@ -123,14 +185,19 @@
 
 ### 🟡 common.json
 
-**48/55**
+**48/60**
 
 <details>
 <summary>Missing</summary>
 
 - pages.s2
 - pages.maps
+- auth.errors.aborted
+- auth.errors.failed
+- auth.errors.discordPermissions
+- auth.errors.unknown
 - actions.copyToClipboard
+- actions.close
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool
@@ -239,7 +306,7 @@
 
 ### 🟡 common.json
 
-**46/55**
+**46/60**
 
 <details>
 <summary>Missing</summary>
@@ -247,8 +314,13 @@
 - pages.s2
 - pages.analyzer
 - pages.maps
+- auth.errors.aborted
+- auth.errors.failed
+- auth.errors.discordPermissions
+- auth.errors.unknown
 - actions.loadMore
 - actions.copyToClipboard
+- actions.close
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool
@@ -350,7 +422,7 @@
 
 ### 🔴 common.json
 
-**0/55**
+**0/60**
 
 ### 🔴 contributions.json
 
@@ -501,7 +573,7 @@
 
 ### 🟡 common.json
 
-**46/55**
+**46/60**
 
 <details>
 <summary>Missing</summary>
@@ -509,8 +581,13 @@
 - pages.s2
 - pages.analyzer
 - pages.maps
+- auth.errors.aborted
+- auth.errors.failed
+- auth.errors.discordPermissions
+- auth.errors.unknown
 - actions.loadMore
 - actions.copyToClipboard
+- actions.close
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool
@@ -619,7 +696,7 @@
 
 ### 🟡 common.json
 
-**35/55**
+**35/60**
 
 <details>
 <summary>Missing</summary>
@@ -627,8 +704,13 @@
 - pages.s2
 - pages.analyzer
 - pages.maps
+- auth.errors.aborted
+- auth.errors.failed
+- auth.errors.discordPermissions
+- auth.errors.unknown
 - actions.loadMore
 - actions.copyToClipboard
+- actions.close
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool
@@ -748,14 +830,19 @@
 
 ### 🟡 common.json
 
-**48/55**
+**48/60**
 
 <details>
 <summary>Missing</summary>
 
 - pages.analyzer
 - pages.maps
+- auth.errors.aborted
+- auth.errors.failed
+- auth.errors.discordPermissions
+- auth.errors.unknown
 - actions.copyToClipboard
+- actions.close
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool
@@ -843,7 +930,7 @@
 
 ### 🟡 common.json
 
-**35/55**
+**35/60**
 
 <details>
 <summary>Missing</summary>
@@ -851,8 +938,13 @@
 - pages.s2
 - pages.analyzer
 - pages.maps
+- auth.errors.aborted
+- auth.errors.failed
+- auth.errors.discordPermissions
+- auth.errors.unknown
 - actions.loadMore
 - actions.copyToClipboard
+- actions.close
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool
@@ -972,7 +1064,7 @@
 
 ### 🟡 common.json
 
-**35/55**
+**35/60**
 
 <details>
 <summary>Missing</summary>
@@ -980,8 +1072,13 @@
 - pages.s2
 - pages.analyzer
 - pages.maps
+- auth.errors.aborted
+- auth.errors.failed
+- auth.errors.discordPermissions
+- auth.errors.unknown
 - actions.loadMore
 - actions.copyToClipboard
+- actions.close
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool

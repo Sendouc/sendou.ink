@@ -27,6 +27,7 @@
   "actions.remove": "Entfernen",
   "actions.delete": "Löschen",
   "actions.loadMore": "Mehr laden",
+  "actions.close": "Schließen",
 
   "results": "Ergebnisse",
 
@@ -54,5 +55,10 @@
   "weapon.category.DUALIES": "Doppler",
   "weapon.category.BRELLAS": "Pluviatoren",
   "weapon.category.STRINGERS": "Stringer",
-  "weapon.category.SPLATANAS": "Splatanas"
+  "weapon.category.SPLATANAS": "Splatanas",
+
+  "auth.errors.aborted": "Login Abgebrochen",
+  "auth.errors.failed": "Login Fehlgeschlagen",
+  "auth.errors.discordPermissions": "Für dein sendou.ink Profil braucht die Seite die Erlaubnis deinen Discord-Namen, Avatar, und verbundene Social Accounts auszulesen.",
+  "auth.errors.unknown": "Der Login via Discord ist aus unbekannten Gründen fehlgeschlagen. Falls dies wiederholt auftritt, kontaktiere uns bitte."
 }

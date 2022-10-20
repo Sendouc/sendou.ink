@@ -9,3 +9,5 @@ export {
 export { getUser, requireUser } from "./user.server";
 
 export { useUser } from "./user";
+
+export { AuthErrorCode } from "./errors";
