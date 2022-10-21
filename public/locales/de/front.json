@@ -6,6 +6,7 @@
   "plus.description": "Sieh vergangene Plus Server Abstimmungen und mehr",
   "badges.description": "Liste aller Abzeichen, die du für dein Profil verdienen kannst",
   "analyzer.description": "Analysiere, was deine Ausrüstungen wirklich bewirken",
+  "maps.description": "Erstelle aus einem Arenen-Pool die Liste für dein Spiel",
   "recentWinners": "Aktuelle Gewinner",
   "upcomingEvents": "Bevorstehende Events",
   "articleBy": "von {{author}}"
