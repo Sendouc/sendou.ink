@@ -40,3 +40,8 @@ export function normalizeFormFieldArray(
 ): string[] {
   return value == null ? [] : typeof value === "string" ? [value] : value;
 }
+
+/** Can be used as a strongly typed array filter */
+export function isDefined<T>(value: T | undefined | null): value is T {
+  return value !== null && value !== undefined;
+}

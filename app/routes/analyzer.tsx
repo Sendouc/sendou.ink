@@ -34,6 +34,7 @@ import {
   type SubWeaponId,
 } from "~/modules/in-game-lists";
 import styles from "~/styles/analyzer.css";
+import { type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { specialWeaponImageUrl, subWeaponImageUrl } from "~/utils/urls";
 
@@ -49,7 +50,7 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const handle = {
+export const handle: SendouRouteHandle = {
   i18n: ["weapons", "analyzer"],
 };
 

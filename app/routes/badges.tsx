@@ -9,6 +9,7 @@ import styles from "~/styles/badges.css";
 import { BORZOIC_TWITTER, FAQ_PAGE } from "~/utils/urls";
 import { Trans, useTranslation } from "react-i18next";
 import { useAnimateListEntry } from "~/hooks/useAnimateListEntry";
+import { type SendouRouteHandle } from "~/utils/remix";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -18,7 +19,7 @@ export interface BadgesLoaderData {
   badges: FindAll;
 }
 
-export const handle = {
+export const handle: SendouRouteHandle = {
   i18n: "badges",
 };
 

@@ -15,7 +15,7 @@ import { db } from "~/db";
 import { useUser } from "~/modules/auth";
 import { i18next } from "~/modules/i18n";
 import { translatedCountry } from "~/utils/i18n.server";
-import { notFoundIfFalsy } from "~/utils/remix";
+import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
 import { discordFullName, makeTitle } from "~/utils/strings";
 import styles from "~/styles/u.css";
 import invariant from "tiny-invariant";
@@ -39,7 +39,7 @@ export const meta: MetaFunction = ({ data }: { data: UserPageLoaderData }) => {
   };
 };
 
-export const handle = {
+export const handle: SendouRouteHandle = {
   i18n: "user",
 };
 

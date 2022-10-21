@@ -14,8 +14,9 @@ import type { Unpacked } from "~/utils/types";
 import { assertUnreachable } from "~/utils/types";
 import { badgeExplanationText } from "../badges/$id";
 import type { UserPageLoaderData } from "../u.$identifier";
+import { type SendouRouteHandle } from "~/utils/remix";
 
-export const handle = {
+export const handle: SendouRouteHandle = {
   i18n: "badges",
 };
 

@@ -4,6 +4,7 @@ import { Main } from "~/components/Main";
 import { useSetTitle } from "~/hooks/useSetTitle";
 import styles from "~/styles/faq.css";
 import { makeTitle } from "~/utils/strings";
+import { type SendouRouteHandle } from "~/utils/remix";
 
 const AMOUNT_OF_QUESTIONS = 3;
 
@@ -18,7 +19,7 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const handle = {
+export const handle: SendouRouteHandle = {
   i18n: "faq",
 };
 

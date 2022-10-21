@@ -32,6 +32,7 @@ import { Theme, ThemeHead, useTheme, ThemeProvider } from "./modules/theme";
 import { getThemeSession } from "./modules/theme/session.server";
 import { COMMON_PREVIEW_IMAGE } from "./utils/urls";
 import { ConditionalScrollRestoration } from "./components/ConditionalScrollRestoration";
+import { type SendouRouteHandle } from "~/utils/remix";
 
 export const unstable_shouldReload: ShouldReloadFunction = ({ url }) => {
   // reload on language change so the selected language gets set into the cookie
@@ -94,7 +95,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   );
 };
 
-export const handle = {
+export const handle: SendouRouteHandle = {
   i18n: "common",
 };
 

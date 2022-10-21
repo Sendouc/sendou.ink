@@ -4,8 +4,9 @@ import { Image } from "~/components/Image";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { weaponCategories, weaponIdIsNotAlt } from "~/modules/in-game-lists";
 import { mainWeaponImageUrl, mySlugify, weaponCategoryUrl } from "~/utils/urls";
+import { type SendouRouteHandle } from "~/utils/remix";
 
-export const handle = {
+export const handle: SendouRouteHandle = {
   i18n: "weapons",
 };
 

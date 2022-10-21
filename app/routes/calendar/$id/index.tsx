@@ -28,7 +28,7 @@ import {
 import calendarStyles from "~/styles/calendar-event.css";
 import mapsStyles from "~/styles/maps.css";
 import { databaseTimestampToDate } from "~/utils/dates";
-import { notFoundIfFalsy } from "~/utils/remix";
+import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
 import { discordFullName, makeTitle } from "~/utils/strings";
 import {
   calendarEditPage,
@@ -60,7 +60,7 @@ export const meta: MetaFunction = (args) => {
   };
 };
 
-export const handle = {
+export const handle: SendouRouteHandle = {
   i18n: ["calendar", "game-misc"],
 };
 
