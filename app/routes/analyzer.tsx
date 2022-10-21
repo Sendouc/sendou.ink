@@ -52,6 +52,7 @@ export const links: LinksFunction = () => {
 
 export const handle: SendouRouteHandle = {
   i18n: ["weapons", "analyzer"],
+  navItemName: "analyzer",
 };
 
 export default function BuildAnalyzerPage() {

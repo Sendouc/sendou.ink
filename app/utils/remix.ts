@@ -102,6 +102,7 @@ export function validate(condition: any, status = 400): asserts condition {
 export type SendouRouteHandle = {
   /** The i18n translation files used for this route, via remix-i18next */
   i18n?: Namespace;
+
   /**
    * A function that returns the breadcrumb text that should be displayed in
    * the <Breadcrumb> component
@@ -110,4 +111,7 @@ export type SendouRouteHandle = {
     match: RouteMatch;
     t: TFunction<"common", undefined>;
   }) => string | undefined;
+
+  /** The name of a navItem that is active on this route. See nav-items.json */
+  navItemName?: string;
 };

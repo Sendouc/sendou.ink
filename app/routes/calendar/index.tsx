@@ -48,6 +48,7 @@ export const meta: MetaFunction = (args) => {
 
 export const handle: SendouRouteHandle = {
   i18n: "calendar",
+  navItemName: "calendar",
 };
 
 const loaderSearchParamsSchema = z.object({
