@@ -80,31 +80,18 @@
 
 **11/11**
 
-### 🟡 calendar.json
+### 🟢 calendar.json
 
-**44/46**
-
-<details>
-<summary>Missing</summary>
-
-- createMapList
-- forms.mapPool
-
-</details>
+**46/46**
 
 ### 🟡 common.json
 
-**54/60**
+**59/60**
 
 <details>
 <summary>Missing</summary>
 
-- pages.maps
 - actions.copyToClipboard
-- maps.createMapList
-- maps.halfSz
-- maps.mapPool
-- maps.tournamentMaplist
 
 </details>
 
@@ -116,31 +103,13 @@
 
 **6/6**
 
-### 🟡 front.json
+### 🟢 front.json
 
-**10/11**
+**11/11**
 
-<details>
-<summary>Missing</summary>
+### 🟢 game-misc.json
 
-- maps.description
-
-</details>
-
-### 🟡 game-misc.json
-
-**12/17**
-
-<details>
-<summary>Missing</summary>
-
-- MODE_SHORT_TW
-- MODE_SHORT_SZ
-- MODE_SHORT_TC
-- MODE_SHORT_RM
-- MODE_SHORT_CB
-
-</details>
+**17/17**
 
 ### 🟢 user.json
 
