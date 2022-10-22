@@ -1,11 +1,7 @@
 import { WeaponCombobox } from "~/components/Combobox";
 import { Image } from "~/components/Image";
 import { Main } from "~/components/Main";
-import {
-  DAMAGE_RECEIVERS,
-  useObjectDamage,
-  type HitPoints,
-} from "~/modules/analyzer";
+import { DAMAGE_RECEIVERS, useObjectDamage } from "~/modules/analyzer";
 import {
   type MainWeaponId,
   BIG_BUBBLER_ID,
@@ -27,25 +23,31 @@ import styles from "~/styles/object-damage.css";
 import type { LinksFunction } from "@remix-run/node";
 import type { SendouRouteHandle } from "~/utils/remix";
 import type { DamageReceiver } from "~/modules/analyzer/types";
+import React from "react";
+import { roundToTwoDecimalPlaces } from "~/utils/number";
+import { useTranslation } from "react-i18next";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
 export const handle: SendouRouteHandle = {
-  i18n: ["weapons"],
+  i18n: ["weapons", "analyzer"],
 };
 
 export default function ObjectDamagePage() {
-  const { mainWeaponId, handleChange, multipliers, damages, hitPoints } =
-    useObjectDamage();
+  const {
+    mainWeaponId,
+    subWeaponId,
+    handleChange,
+    multipliers,
+    damages,
+    hitPoints,
+  } = useObjectDamage();
 
   if (process.env.NODE_ENV !== "development") {
     return <Main>WIP :)</Main>;
   }
-
-  console.log(JSON.stringify(multipliers, null, 2));
-  console.log(JSON.stringify(damages, null, 2));
 
   return (
     <Main className="stack lg">
@@ -61,12 +63,12 @@ export default function ObjectDamagePage() {
         className="w-full-important"
         clearsInputOnFocus
       />
-      <div
-        className="object-damage__grid"
-        style={{ "--columns-count": "2" } as any}
-      >
-        <DamageReceiversHeader hitPoints={hitPoints} />
-      </div>
+      <DamageReceiversGrid
+        subWeaponId={subWeaponId}
+        hitPoints={hitPoints}
+        damages={damages}
+        multipliers={multipliers}
+      />
     </Main>
   );
 }
@@ -88,21 +90,75 @@ const damageReceiverImages: Record<DamageReceiver, string> = {
   BulletUmbrellaCanopyWide: mainWeaponImageUrl(6010),
   BulletUmbrellaCanopyCompact: mainWeaponImageUrl(6020),
 };
-function DamageReceiversHeader({ hitPoints }: { hitPoints: HitPoints }) {
+
+function DamageReceiversGrid({
+  subWeaponId,
+  hitPoints,
+  damages,
+  multipliers,
+}: Pick<
+  ReturnType<typeof useObjectDamage>,
+  "hitPoints" | "damages" | "multipliers" | "subWeaponId"
+>) {
+  const { t } = useTranslation(["weapons", "analyzer"]);
+
   return (
-    <>
-      {DAMAGE_RECEIVERS.map((receiver, i) => (
-        <>
-          <Image
-            key={i}
-            alt=""
-            path={damageReceiverImages[receiver]}
-            width={40}
-            height={40}
-          />
-          <div>{hitPoints[receiver]}</div>
-        </>
+    <div
+      className="object-damage__grid"
+      style={{ "--columns-count": String(2 + damages.length) } as any}
+    >
+      <div />
+      <div />
+      {damages.map((damage) => (
+        <div key={damage.id} className="object-damage__table-header">
+          {damage.type.startsWith("BOMB_")
+            ? t(`weapons:SUB_${subWeaponId}`)
+            : t(`analyzer:damage.${damage.type as "NORMAL_MIN"}`)}
+        </div>
       ))}
-    </>
+      {DAMAGE_RECEIVERS.map((receiver, i) => {
+        const damageReceiverHp = hitPoints[receiver];
+
+        return (
+          <React.Fragment key={receiver}>
+            <Image
+              key={i}
+              alt=""
+              path={damageReceiverImages[receiver]}
+              width={40}
+              height={40}
+            />
+            <div className="object-damage__hp">{damageReceiverHp}hp</div>
+            {damages.map((damage) => {
+              const multiplier = multipliers[damage.type]![receiver];
+              const damagePerHit = roundToTwoDecimalPlaces(
+                damage.value * multiplier
+              );
+
+              const hitsToDestroy = Math.ceil(damageReceiverHp / damagePerHit);
+
+              return (
+                <div key={damage.id} className="object-damage__table-card">
+                  <div className="object-damage__table-card__results">
+                    <abbr className="object-damage__abbr" title="Damage">
+                      DMG
+                    </abbr>
+                    <div>{damagePerHit}</div>
+                    <abbr
+                      className="object-damage__abbr"
+                      title="Hits to destroy"
+                    >
+                      HTD
+                    </abbr>
+                    <div>{hitsToDestroy}</div>
+                  </div>
+                  <div className="object-damage__multiplier">×{multiplier}</div>
+                </div>
+              );
+            })}
+          </React.Fragment>
+        );
+      })}
+    </div>
   );
 }

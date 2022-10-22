@@ -1,7 +1,10 @@
 import { useSearchParams } from "@remix-run/react";
 import { type MainWeaponId } from "../in-game-lists";
 import { damageTypeToWeaponType } from "./constants";
-import { damageTypeToMultipliers, fallbackRates } from "./damageMultipliers";
+import {
+  damageTypeToMultipliers,
+  multipliersToRecordWithFallbacks,
+} from "./damageMultipliers";
 import { objectHitPoints } from "./objectHitPoints";
 import { buildStats } from "./stats";
 import { validatedWeaponIdFromSearchParams } from "./utils";
@@ -40,7 +43,7 @@ export function useObjectDamage() {
 
       return [
         damage.type,
-        fallbackRates(
+        multipliersToRecordWithFallbacks(
           damageTypeToMultipliers({
             type: damage.type,
             weapon: { type: weaponType, id: weaponId },
@@ -52,6 +55,7 @@ export function useObjectDamage() {
 
   return {
     mainWeaponId,
+    subWeaponId: analyzed.weapon.subWeaponSplId,
     handleChange,
     multipliers,
     damages: analyzed.stats.damages,

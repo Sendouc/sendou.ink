@@ -1,4 +1,4 @@
-import type { DamageType } from "./types";
+import type { DamageReceiver, DamageType } from "./types";
 import objectDamages from "./object-dmg.json";
 import type {
   MainWeaponId,
@@ -78,11 +78,13 @@ export function damageTypeToMultipliers({
   return null;
 }
 
-export function fallbackRates(
+export function multipliersToRecordWithFallbacks(
   multipliers: ReturnType<typeof damageTypeToMultipliers>
 ) {
-  return DAMAGE_RECEIVERS.map((receiver) => ({
-    target: receiver,
-    rate: multipliers?.find((m) => m.target === receiver)?.rate ?? 1,
-  }));
+  return Object.fromEntries(
+    DAMAGE_RECEIVERS.map((receiver) => [
+      receiver,
+      multipliers?.find((m) => m.target === receiver)?.rate ?? 1,
+    ])
+  ) as Record<DamageReceiver, number>;
 }
