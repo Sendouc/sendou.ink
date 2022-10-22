@@ -765,7 +765,9 @@ const SUB_WEAPON_STATS = [
   },
   { analyzedBuildKey: "subHp", abilityValuesKey: "MaxHP", type: "HP" },
 ] as const;
-function subStats(args: StatFunctionInput) {
+export function subStats(
+  args: Pick<StatFunctionInput, "subWeaponParams" | "abilityPoints">
+) {
   const result: Partial<AnalyzedBuild["stats"]> = {};
   const SUB_STATS_KEY = "BRU";
 
@@ -1126,8 +1128,8 @@ function specialPaintRadius(
   };
 }
 
-function specialFieldHp(
-  args: StatFunctionInput
+export function specialFieldHp(
+  args: Pick<StatFunctionInput, "specialWeaponParams" | "abilityPoints">
 ): AnalyzedBuild["stats"]["specialFieldHp"] {
   if (!hasEffect({ key: "MaxFieldHP", weapon: args.specialWeaponParams })) {
     return;
@@ -1150,8 +1152,8 @@ function specialFieldHp(
   };
 }
 
-function specialDeviceHp(
-  args: StatFunctionInput
+export function specialDeviceHp(
+  args: Pick<StatFunctionInput, "specialWeaponParams" | "abilityPoints">
 ): AnalyzedBuild["stats"]["specialDeviceHp"] {
   if (!hasEffect({ key: "MaxHP", weapon: args.specialWeaponParams })) {
     return;

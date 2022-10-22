@@ -1,0 +1,6 @@
+.object-damage__grid {
+  display: grid;
+  width: 100%;
+  gap: var(--s-3);
+  grid-template-columns: repeat(var(--columns-count), 1fr);
+}

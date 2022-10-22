@@ -2,6 +2,7 @@ import { useSearchParams } from "@remix-run/react";
 import { type MainWeaponId } from "../in-game-lists";
 import { damageTypeToWeaponType } from "./constants";
 import { damageTypeToMultipliers, fallbackRates } from "./damageMultipliers";
+import { objectHitPoints } from "./objectHitPoints";
 import { buildStats } from "./stats";
 import { validatedWeaponIdFromSearchParams } from "./utils";
 
@@ -53,5 +54,7 @@ export function useObjectDamage() {
     mainWeaponId,
     handleChange,
     multipliers,
+    damages: analyzed.stats.damages,
+    hitPoints: objectHitPoints(new Map()),
   };
 }

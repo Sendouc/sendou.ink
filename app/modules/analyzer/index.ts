@@ -5,6 +5,7 @@ export type {
   Stat,
   AnalyzedBuild,
   SpecialEffectType,
+  HitPoints,
 } from "./types";
 
 export { useAnalyzeBuild } from "./useAnalyzeBuild";

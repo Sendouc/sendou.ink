@@ -164,6 +164,8 @@ export type DamageType = typeof DAMAGE_TYPE[number];
 
 export type DamageReceiver = typeof DAMAGE_RECEIVERS[number];
 
+export type HitPoints = Record<DamageReceiver, number>;
+
 export interface Damage {
   value: number;
   type: DamageType;
