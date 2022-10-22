@@ -1,7 +1,8 @@
-import { Link, useLocation } from "@remix-run/react";
+import { Link, useMatches } from "@remix-run/react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import type { RootLoaderData } from "~/root";
+import { type SendouRouteHandle } from "~/utils/remix";
 import { LOGO_PATH, navIconUrl } from "~/utils/urls";
 import { Image } from "../Image";
 import { ColorModeToggle } from "./ColorModeToggle";
@@ -11,6 +12,25 @@ import { LanguageChanger } from "./LanguageChanger";
 import { Menu } from "./Menu";
 import navItems from "./nav-items.json";
 import { UserItem } from "./UserItem";
+
+function useActiveNavItem() {
+  const matches = useMatches();
+
+  return React.useMemo(() => {
+    let activeItem: { name: string; url: string } | undefined = undefined;
+
+    for (const match of matches.reverse()) {
+      const handle = match.handle as SendouRouteHandle | undefined;
+
+      if (handle?.navItemName) {
+        activeItem = navItems.find(({ name }) => name === handle.navItemName);
+        break;
+      }
+    }
+
+    return activeItem;
+  }, [matches]);
+}
 
 export const Layout = React.memo(function Layout({
   children,
@@ -22,12 +42,8 @@ export const Layout = React.memo(function Layout({
   isCatchBoundary?: boolean;
 }) {
   const { t } = useTranslation();
-  const location = useLocation();
   const [menuOpen, setMenuOpen] = React.useState(false);
-
-  const currentPagesNavItem = navItems.find((navItem) =>
-    location.pathname.includes(navItem.name)
-  );
+  const activeNavItem = useActiveNavItem();
 
   return (
     <div className="layout__container">
@@ -51,15 +67,15 @@ export const Layout = React.memo(function Layout({
         </div>
       </header>
       <Menu expanded={menuOpen} closeMenu={() => setMenuOpen(false)} />
-      {currentPagesNavItem && (
+      {activeNavItem && (
         <div className="layout__page-title-header">
           <Image
-            path={navIconUrl(currentPagesNavItem.name)}
+            path={navIconUrl(activeNavItem.name)}
             width={28}
             height={28}
             alt=""
           />
-          {t(`pages.${currentPagesNavItem.name}` as any)}
+          {t(`pages.${activeNavItem.name}` as any)}
         </div>
       )}
       {children}

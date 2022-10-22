@@ -21,6 +21,7 @@ export interface BadgesLoaderData {
 
 export const handle: SendouRouteHandle = {
   i18n: "badges",
+  navItemName: "badges",
 };
 
 export const loader: LoaderFunction = () => {

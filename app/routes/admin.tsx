@@ -18,7 +18,11 @@ import { Main } from "~/components/Main";
 import { requireUser } from "~/modules/auth";
 import { getUser, isImpersonating } from "~/modules/auth/user.server";
 import { canPerformAdminActions } from "~/permissions";
-import { parseRequestFormData, validate } from "~/utils/remix";
+import {
+  parseRequestFormData,
+  type SendouRouteHandle,
+  validate,
+} from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { impersonateUrl, SEED_URL, STOP_IMPERSONATING_URL } from "~/utils/urls";
 import { db } from "~/db";
@@ -67,6 +71,10 @@ export const loader: LoaderFunction = async ({ request }) => {
   return json<AdminPageLoaderData>({
     isImpersonating: await isImpersonating(request),
   });
+};
+
+export const handle: SendouRouteHandle = {
+  navItemName: "admin",
 };
 
 export default function AdminPage() {

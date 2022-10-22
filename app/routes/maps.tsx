@@ -66,6 +66,7 @@ export const meta: MetaFunction = (args) => {
 
 export const handle: SendouRouteHandle = {
   i18n: "game-misc",
+  navItemName: "maps",
 };
 
 export const loader = async ({ request }: LoaderArgs) => {

@@ -16,6 +16,7 @@ export const links: LinksFunction = () => {
 export const handle: SendouRouteHandle = {
   i18n: ["weapons", "builds"],
   breadcrumb: ({ t }) => t("pages.builds"),
+  navItemName: "builds",
 };
 
 export default function BuildsLayoutPage() {
