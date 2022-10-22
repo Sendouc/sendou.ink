@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { type TFunction, type Namespace } from "react-i18next";
 import { type RouteMatch } from "@remix-run/react";
+import type navItems from "~/components/layout/nav-items.json";
 
 export function notFoundIfFalsy<T>(value: T | null | undefined): T {
   if (!value) throw new Response(null, { status: 404 });
@@ -113,5 +114,5 @@ export type SendouRouteHandle = {
   }) => string | undefined;
 
   /** The name of a navItem that is active on this route. See nav-items.json */
-  navItemName?: string;
+  navItemName?: typeof navItems[number]["name"];
 };
