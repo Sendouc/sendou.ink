@@ -27,7 +27,7 @@ import type { Badge as BadgeType, CalendarEventTag } from "~/db/types";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { requireUser } from "~/modules/auth";
 import { i18next } from "~/modules/i18n";
-import type { ModeShort, StageId } from "~/modules/in-game-lists";
+import type { ModeShort } from "~/modules/in-game-lists";
 import {
   mapPoolToSerializedString,
   serializedStringToMapPool,
@@ -201,6 +201,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   return json({
     managedBadges: db.badges.managedByUserId(user.id),
+    mapPoolTemplateEvents: db.calendarEvents.findAllEventsWithMapPools(user.id),
     eventToEdit: canEditEvent
       ? {
           ...eventToEdit,
@@ -544,26 +545,6 @@ function MapPoolSection() {
     Boolean(data.eventToEdit?.mapPool)
   );
 
-  const handleMapPoolChange = ({
-    mode,
-    stageId,
-  }: {
-    mode: ModeShort;
-    stageId: StageId;
-  }) => {
-    const newMapPool = mapPool[mode].includes(stageId)
-      ? {
-          ...mapPool,
-          [mode]: mapPool[mode].filter((id) => id !== stageId),
-        }
-      : {
-          ...mapPool,
-          [mode]: [...mapPool[mode], stageId],
-        };
-
-    setMapPool(newMapPool);
-  };
-
   return (
     <div className="w-full">
       {includeMapPool && (
@@ -579,7 +560,8 @@ function MapPoolSection() {
         {includeMapPool && (
           <MapPoolSelector
             mapPool={mapPool}
-            handleMapPoolChange={handleMapPoolChange}
+            handleMapPoolChange={setMapPool}
+            templateEvents={data.mapPoolTemplateEvents}
           />
         )}
       </div>

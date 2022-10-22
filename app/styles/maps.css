@@ -19,6 +19,28 @@
   gap: var(--s-3);
 }
 
+.maps__template-row {
+  display: flex;
+  /* image width + gap */
+  margin-inline-start: calc(80px + var(--s-3));
+  justify-content: center;
+  align-items: flex-end;
+  gap: var(--s-2)
+}
+
+input.maps__template-event-input {
+  border: 2px solid var(--theme-info-transparent);
+  border-radius: var(--rounded);
+}
+
+input.maps__template-event-input.hasValue {
+  border: 2px solid var(--theme-info);
+}
+
+.maps__template-apply-button {
+  margin-bottom: 0.25rem;
+}
+
 .maps__stage-name-row {
   display: flex;
   flex-direction: column;
@@ -50,8 +72,8 @@
 .maps__mode-button {
   padding: 0;
   padding: var(--s-1-5);
-  border: none;
-  border-radius: var(--rounded);
+  border: 2px solid transparent;
+  border-radius: var(--rounded-full);
   background-color: var(--bg-darker);
   color: var(--theme);
   opacity: 1 !important;
@@ -60,6 +82,10 @@
 
 .maps__mode-button.selected {
   background-color: var(--theme-very-transparent);
+}
+
+.maps__mode-button.inTemplate {
+  border-color: var(--theme-info);
 }
 
 .maps__stage-image {

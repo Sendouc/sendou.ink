@@ -3,7 +3,7 @@ import * as React from "react";
 import Fuse from "fuse.js";
 import clsx from "clsx";
 import type { Unpacked } from "~/utils/types";
-import type { GearType, UserWithPlusTier } from "~/db/types";
+import type { CalendarEvent, GearType, UserWithPlusTier } from "~/db/types";
 import { useUsers } from "~/hooks/swr";
 import { useTranslation } from "react-i18next";
 import {
@@ -36,6 +36,7 @@ interface ComboboxProps<T> {
   initialValue?: ComboboxOption<T>;
   clearsInputOnFocus?: boolean;
   onChange?: (selectedOption?: ComboboxOption<T>) => void;
+  showEmptyQueryResults?: boolean;
 }
 
 export function Combobox<T extends Record<string, string | null | number>>({
@@ -49,6 +50,7 @@ export function Combobox<T extends Record<string, string | null | number>>({
   className,
   id,
   isLoading = false,
+  showEmptyQueryResults = false,
 }: ComboboxProps<T>) {
   const [selectedOption, setSelectedOption] =
     React.useState<Unpacked<typeof options>>();
@@ -62,7 +64,12 @@ export function Combobox<T extends Record<string, string | null | number>>({
   }, [initialValue]);
 
   const filteredOptions = (() => {
-    if (!query) return [];
+    if (!query) {
+      if (showEmptyQueryResults) {
+        return options.slice(0, MAX_RESULTS_SHOWN);
+      }
+      return [];
+    }
 
     const fuse = new Fuse(options, {
       keys: [...Object.keys(options[0] ?? {})],
@@ -79,12 +86,13 @@ export function Combobox<T extends Record<string, string | null | number>>({
     <HeadlessCombobox
       value={selectedOption}
       onChange={(selected) => {
-        onChange?.(selected);
-        setSelectedOption(selected);
-        setLastSelectedOption(selected);
+        onChange?.(selected ?? undefined);
+        setSelectedOption(selected ?? undefined);
+        setLastSelectedOption(selected ?? undefined);
       }}
       name={inputName}
       disabled={isLoading}
+      nullable
     >
       <HeadlessCombobox.Input
         onFocus={() => {
@@ -110,7 +118,7 @@ export function Combobox<T extends Record<string, string | null | number>>({
       <HeadlessCombobox.Options
         className={clsx("combobox-options", {
           empty: noMatches,
-          hidden: !query,
+          hidden: !query && !showEmptyQueryResults,
         })}
       >
         {noMatches ? (
@@ -285,6 +293,45 @@ export function GearCombobox({
       className={className}
       id={id}
       required={required}
+    />
+  );
+}
+
+export function EventCombobox({
+  id,
+  required,
+  className,
+  inputName,
+  events,
+  onChange,
+}: Pick<
+  ComboboxProps<ComboboxBaseOption>,
+  "inputName" | "className" | "id" | "required" | "onChange"
+> & {
+  events: Pick<CalendarEvent, "id" | "name">[];
+}) {
+  const { t } = useTranslation();
+
+  const options = React.useMemo(
+    () =>
+      events.map((event) => ({
+        label: event.name,
+        value: event.id.toString(),
+      })),
+    [events]
+  );
+
+  return (
+    <Combobox
+      inputName={inputName}
+      options={options}
+      placeholder={t("forms.name")}
+      onChange={onChange}
+      className={className}
+      id={id}
+      required={required}
+      showEmptyQueryResults
+      clearsInputOnFocus
     />
   );
 }

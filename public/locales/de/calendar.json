@@ -19,6 +19,7 @@
   "forms.badges": "Abzeichen-Preis",
   "forms.badges.placeholder": "Wähle ein Abzeichen für das Event",
   "forms.mapPool": "Arenen-Pool",
+  "forms.mapPool.copyEventPool": "Event-Arenen-Pool kopieren",
 
   "forms.participantCount": "Anzahl Teilnehmer",
   "forms.reportResultsHeader": "Berichten der Ergebnisse von {{eventName}}",

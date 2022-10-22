@@ -34,6 +34,7 @@
   "actions.delete": "Löschen",
   "actions.loadMore": "Mehr laden",
   "actions.close": "Schließen",
+  "actions.apply": "Anwenden",
 
   "maps.createMapList": "Arenen-Liste erstellen",
   "maps.halfSz": "50% Herrschaft",

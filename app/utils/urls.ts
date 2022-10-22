@@ -72,6 +72,8 @@ export const calendarEditPage = (eventId?: number) =>
   `/calendar/new${eventId ? `?eventId=${eventId}` : ""}`;
 export const calendarReportWinnersPage = (eventId: number) =>
   `/calendar/${eventId}/report-winners`;
+export const calendarEventMapPool = (eventId: number) =>
+  `/calendar/${eventId}/map-pool`;
 export const mapsPage = (eventId?: MapPoolMap["calendarEventId"]) =>
   `/maps${eventId ? `?eventId=${eventId}` : ""}`;
 export const articlePage = (slug: string) => `/a/${slug}`;

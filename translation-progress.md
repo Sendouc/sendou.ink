@@ -14,13 +14,20 @@
 
 **11/11**
 
-### 🟢 calendar.json
+### 🟡 calendar.json
 
-**46/46**
+**46/47**
+
+<details>
+<summary>Missing</summary>
+
+- forms.mapPool.copyEventPool
+
+</details>
 
 ### 🟡 common.json
 
-**55/60**
+**55/61**
 
 <details>
 <summary>Missing</summary>
@@ -30,6 +37,7 @@
 - auth.errors.discordPermissions
 - auth.errors.unknown
 - actions.close
+- actions.apply
 
 </details>
 
@@ -82,11 +90,11 @@
 
 ### 🟢 calendar.json
 
-**46/46**
+**47/47**
 
 ### 🟡 common.json
 
-**59/60**
+**60/61**
 
 <details>
 <summary>Missing</summary>
@@ -142,19 +150,20 @@
 
 ### 🟡 calendar.json
 
-**44/46**
+**44/47**
 
 <details>
 <summary>Missing</summary>
 
 - createMapList
 - forms.mapPool
+- forms.mapPool.copyEventPool
 
 </details>
 
 ### 🟡 common.json
 
-**48/60**
+**48/61**
 
 <details>
 <summary>Missing</summary>
@@ -167,6 +176,7 @@
 - auth.errors.unknown
 - actions.copyToClipboard
 - actions.close
+- actions.apply
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool
@@ -263,19 +273,20 @@
 
 ### 🟡 calendar.json
 
-**44/46**
+**44/47**
 
 <details>
 <summary>Missing</summary>
 
 - createMapList
 - forms.mapPool
+- forms.mapPool.copyEventPool
 
 </details>
 
 ### 🟡 common.json
 
-**46/60**
+**46/61**
 
 <details>
 <summary>Missing</summary>
@@ -290,6 +301,7 @@
 - actions.loadMore
 - actions.copyToClipboard
 - actions.close
+- actions.apply
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool
@@ -387,11 +399,11 @@
 
 ### 🔴 calendar.json
 
-**0/46**
+**0/47**
 
 ### 🔴 common.json
 
-**0/60**
+**0/61**
 
 ### 🔴 contributions.json
 
@@ -530,19 +542,20 @@
 
 ### 🟡 calendar.json
 
-**44/46**
+**44/47**
 
 <details>
 <summary>Missing</summary>
 
 - createMapList
 - forms.mapPool
+- forms.mapPool.copyEventPool
 
 </details>
 
 ### 🟡 common.json
 
-**46/60**
+**46/61**
 
 <details>
 <summary>Missing</summary>
@@ -557,6 +570,7 @@
 - actions.loadMore
 - actions.copyToClipboard
 - actions.close
+- actions.apply
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool
@@ -653,19 +667,20 @@
 
 ### 🟡 calendar.json
 
-**44/46**
+**44/47**
 
 <details>
 <summary>Missing</summary>
 
 - createMapList
 - forms.mapPool
+- forms.mapPool.copyEventPool
 
 </details>
 
 ### 🟡 common.json
 
-**35/60**
+**35/61**
 
 <details>
 <summary>Missing</summary>
@@ -680,6 +695,7 @@
 - actions.loadMore
 - actions.copyToClipboard
 - actions.close
+- actions.apply
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool
@@ -787,19 +803,20 @@
 
 ### 🟡 calendar.json
 
-**44/46**
+**44/47**
 
 <details>
 <summary>Missing</summary>
 
 - createMapList
 - forms.mapPool
+- forms.mapPool.copyEventPool
 
 </details>
 
 ### 🟡 common.json
 
-**48/60**
+**48/61**
 
 <details>
 <summary>Missing</summary>
@@ -812,6 +829,7 @@
 - auth.errors.unknown
 - actions.copyToClipboard
 - actions.close
+- actions.apply
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool
@@ -887,19 +905,20 @@
 
 ### 🟡 calendar.json
 
-**44/46**
+**44/47**
 
 <details>
 <summary>Missing</summary>
 
 - createMapList
 - forms.mapPool
+- forms.mapPool.copyEventPool
 
 </details>
 
 ### 🟡 common.json
 
-**35/60**
+**35/61**
 
 <details>
 <summary>Missing</summary>
@@ -914,6 +933,7 @@
 - actions.loadMore
 - actions.copyToClipboard
 - actions.close
+- actions.apply
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool
@@ -1021,19 +1041,20 @@
 
 ### 🟡 calendar.json
 
-**44/46**
+**44/47**
 
 <details>
 <summary>Missing</summary>
 
 - createMapList
 - forms.mapPool
+- forms.mapPool.copyEventPool
 
 </details>
 
 ### 🟡 common.json
 
-**35/60**
+**35/61**
 
 <details>
 <summary>Missing</summary>
@@ -1048,6 +1069,7 @@
 - actions.loadMore
 - actions.copyToClipboard
 - actions.close
+- actions.apply
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool

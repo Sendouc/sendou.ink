@@ -32,6 +32,7 @@ html {
   --theme-secondary: hsl(85deg 66.7% 55.3%);
   --rounded: 16px;
   --rounded-sm: 10px;
+  --rounded-full: 200px;
   --fonts-xl: 1.5rem;
   --fonts-lg: 1.2rem;
   --fonts-md: 1rem;

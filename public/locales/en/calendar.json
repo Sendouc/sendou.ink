@@ -19,6 +19,7 @@
   "forms.badges": "Badge prizes",
   "forms.badges.placeholder": "Choose a badge prize",
   "forms.mapPool": "Map pool",
+  "forms.mapPool.copyEventPool": "Copy an event's pool",
 
   "forms.participantCount": "Participant count",
   "forms.reportResultsHeader": "Reporting results for {{eventName}}",
