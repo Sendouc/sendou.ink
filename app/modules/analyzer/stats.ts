@@ -17,6 +17,7 @@ import {
   abilityPointsToEffects,
   apFromMap,
   hasEffect,
+  hpDivided,
   weaponParams,
 } from "./utils";
 import { assertUnreachable } from "~/utils/types";
@@ -789,7 +790,7 @@ export function subStats(
         case "NO_CHANGE":
           return roundToTwoDecimalPlaces(effect);
         case "HP":
-          return roundToTwoDecimalPlaces(effect / 10);
+          return roundToTwoDecimalPlaces(hpDivided(effect));
         case "TIME":
           return framesToSeconds(effect);
         default:
@@ -1170,8 +1171,8 @@ export function specialDeviceHp(
   });
 
   return {
-    baseValue: Math.round(baseEffect / 10),
-    value: Math.round(effect / 10),
+    baseValue: Math.round(hpDivided(baseEffect)),
+    value: Math.round(hpDivided(effect)),
     modifiedBy: SPECIAL_DEVICE_HP_KEY,
   };
 }

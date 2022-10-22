@@ -7,6 +7,7 @@ import type {
   SpecialWeaponParams,
   SubWeaponParams,
 } from "./types";
+import { hpDivided } from "./utils";
 import weaponParams from "./weapon-params.json";
 
 const PLACEHOLDER_HP = 1000;
@@ -35,11 +36,15 @@ export const objectHitPoints = (abilityPoints: AbilityPoints): HitPoints => {
 
   return {
     BulletUmbrellaCanopyNormal: PLACEHOLDER_HP, // ?? needs defaults
-    BulletUmbrellaCanopyWide: weaponParams.mainWeapons[6010].CanopyHP,
-    BulletUmbrellaCanopyCompact: weaponParams.mainWeapons[6020].CanopyHP,
+    BulletUmbrellaCanopyWide: hpDivided(
+      weaponParams.mainWeapons[6010].CanopyHP
+    ),
+    BulletUmbrellaCanopyCompact: hpDivided(
+      weaponParams.mainWeapons[6020].CanopyHP
+    ),
     Wsb_Shield,
     Bomb_TorpedoBullet: PLACEHOLDER_HP, // ??
-    Chariot: weaponParams.specialWeapons[CRAB_TANK_ID].ArmorHP,
+    Chariot: hpDivided(weaponParams.specialWeapons[CRAB_TANK_ID].ArmorHP),
     Gachihoko_Barrier: PLACEHOLDER_HP, // ??
     GreatBarrier_Barrier,
     GreatBarrier_WeakPoint,

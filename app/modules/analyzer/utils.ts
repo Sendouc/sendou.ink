@@ -165,3 +165,5 @@ export function validatedWeaponIdFromSearchParams(
 
   return weaponCategories[0].weaponIds[0];
 }
+
+export const hpDivided = (hp: number) => hp / 10;
