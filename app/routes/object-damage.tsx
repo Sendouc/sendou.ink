@@ -24,7 +24,6 @@ import type { LinksFunction } from "@remix-run/node";
 import type { SendouRouteHandle } from "~/utils/remix";
 import type { DamageReceiver } from "~/modules/analyzer/types";
 import React from "react";
-import { roundToTwoDecimalPlaces } from "~/utils/number";
 import { useTranslation } from "react-i18next";
 import clsx from "clsx";
 
@@ -37,14 +36,8 @@ export const handle: SendouRouteHandle = {
 };
 
 export default function ObjectDamagePage() {
-  const {
-    mainWeaponId,
-    subWeaponId,
-    handleChange,
-    multipliers,
-    damages,
-    hitPoints,
-  } = useObjectDamage();
+  const { mainWeaponId, subWeaponId, handleChange, damagesToReceivers } =
+    useObjectDamage();
 
   if (process.env.NODE_ENV !== "development") {
     return <Main>WIP :)</Main>;
@@ -66,9 +59,7 @@ export default function ObjectDamagePage() {
       />
       <DamageReceiversGrid
         subWeaponId={subWeaponId}
-        hitPoints={hitPoints}
-        damages={damages}
-        multipliers={multipliers}
+        damagesToReceivers={damagesToReceivers}
       />
     </Main>
   );
@@ -92,23 +83,23 @@ const damageReceiverImages: Record<DamageReceiver, string> = {
 
 function DamageReceiversGrid({
   subWeaponId,
-  hitPoints,
-  damages,
-  multipliers,
+  damagesToReceivers,
 }: Pick<
   ReturnType<typeof useObjectDamage>,
-  "hitPoints" | "damages" | "multipliers" | "subWeaponId"
+  "damagesToReceivers" | "subWeaponId"
 >) {
   const { t } = useTranslation(["weapons", "analyzer"]);
 
   return (
     <div
       className="object-damage__grid"
-      style={{ "--columns-count": String(2 + damages.length) } as any}
+      style={
+        { "--columns-count": String(2 + damagesToReceivers.length) } as any
+      }
     >
       <div />
       <div />
-      {damages.map((damage) => (
+      {damagesToReceivers[0]?.damages.map((damage) => (
         <div key={damage.id} className="object-damage__table-header">
           {damage.type.startsWith("BOMB_")
             ? t(`weapons:SUB_${subWeaponId}`)
@@ -122,43 +113,38 @@ function DamageReceiversGrid({
           </div>
         </div>
       ))}
-      {DAMAGE_RECEIVERS.map((receiver, i) => {
-        const damageReceiverHp = hitPoints[receiver];
-
+      {damagesToReceivers.map((damageToReceiver, i) => {
         return (
-          <React.Fragment key={receiver}>
+          <React.Fragment key={damageToReceiver.receiver}>
             <Image
               key={i}
               alt=""
-              path={damageReceiverImages[receiver]}
+              path={damageReceiverImages[damageToReceiver.receiver]}
               width={40}
               height={40}
             />
-            <div className="object-damage__hp">{damageReceiverHp}hp</div>
-            {damages.map((damage) => {
-              const multiplier = multipliers[damage.type]![receiver];
-              const damagePerHit = roundToTwoDecimalPlaces(
-                damage.value * multiplier
-              );
-
-              const hitsToDestroy = Math.ceil(damageReceiverHp / damagePerHit);
-
+            <div className="object-damage__hp">
+              {damageToReceiver.hitPoints}hp
+            </div>
+            {damageToReceiver.damages.map((damage) => {
               return (
                 <div key={damage.id} className="object-damage__table-card">
                   <div className="object-damage__table-card__results">
                     <abbr className="object-damage__abbr" title="Damage">
                       DMG
                     </abbr>
-                    <div>{damagePerHit}</div>
+                    <div>{damage.value}</div>
                     <abbr
                       className="object-damage__abbr"
                       title="Hits to destroy"
                     >
                       HTD
                     </abbr>
-                    <div>{hitsToDestroy}</div>
+                    <div>{damage.hitsToDestroy}</div>
                   </div>
-                  <div className="object-damage__multiplier">×{multiplier}</div>
+                  <div className="object-damage__multiplier">
+                    ×{damage.multiplier}
+                  </div>
                 </div>
               );
             })}
