@@ -58,7 +58,7 @@ import {
   safeJSONParse,
   toArray,
 } from "~/utils/zod";
-import { MapPoolSelector } from "./components/MapPoolSelector";
+import { MapPoolSelector } from "~/components/MapPoolSelector";
 import { Tags } from "./components/Tags";
 
 const MIN_DATE = new Date(Date.UTC(2015, 4, 28));

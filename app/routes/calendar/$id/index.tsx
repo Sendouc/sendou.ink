@@ -39,7 +39,7 @@ import {
   userPage,
 } from "~/utils/urls";
 import { actualNumber, id } from "~/utils/zod";
-import { MapPoolSelector } from "../components/MapPoolSelector";
+import { MapPoolSelector } from "~/components/MapPoolSelector";
 import { Tags } from "../components/Tags";
 
 export const links: LinksFunction = () => {

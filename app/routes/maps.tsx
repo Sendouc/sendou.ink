@@ -7,20 +7,17 @@ import type {
 import type { ShouldReloadFunction } from "@remix-run/react";
 import { Link } from "@remix-run/react";
 import { useLoaderData, useSearchParams } from "@remix-run/react";
-import clsx from "clsx";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { useCopyToClipboard } from "react-use";
 import invariant from "tiny-invariant";
 import { Button } from "~/components/Button";
-import { Image } from "~/components/Image";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import { Toggle } from "~/components/Toggle";
 import { db } from "~/db";
 import { i18next } from "~/modules/i18n";
 import {
-  modes,
   stageIds,
   type ModeShort,
   type ModeWithStage,
@@ -38,13 +35,9 @@ import {
 import type { MapPool } from "~/modules/map-pool-serializer/types";
 import styles from "~/styles/maps.css";
 import { makeTitle } from "~/utils/strings";
-import {
-  calendarEventPage,
-  ipLabsMaps,
-  modeImageUrl,
-  stageImageUrl,
-} from "~/utils/urls";
+import { calendarEventPage, ipLabsMaps } from "~/utils/urls";
 import { type SendouRouteHandle } from "~/utils/remix";
+import { MapPoolSelector } from "~/components/MapPoolSelector";
 
 const AMOUNT_OF_MAPS_IN_MAP_LIST = stageIds.length * 2;
 
@@ -178,63 +171,6 @@ function useSearchParamMapPool() {
     mapPool,
     handleMapPoolChange,
   };
-}
-
-function MapPoolSelector({
-  mapPool,
-  handleMapPoolChange,
-}: {
-  mapPool: MapPool;
-  handleMapPoolChange: (args: { mode: ModeShort; stageId: StageId }) => void;
-}) {
-  const { t } = useTranslation(["game-misc"]);
-
-  return (
-    <div className="stack md">
-      {stageIds.map((stageId) => (
-        <div key={stageId} className="maps__stage-row">
-          <Image
-            className="maps__stage-image"
-            alt=""
-            path={stageImageUrl(stageId)}
-            width={80}
-            height={45}
-          />
-          <div className="maps__stage-name-row">
-            <div>{t(`game-misc:STAGE_${stageId}`)}</div>
-            <div className="maps__mode-buttons-container">
-              {modes.map((mode) => {
-                const selected = mapPool[mode.short].includes(stageId);
-
-                return (
-                  <button
-                    key={mode.short}
-                    className={clsx("maps__mode-button", "outline-theme", {
-                      selected,
-                    })}
-                    onClick={() =>
-                      handleMapPoolChange({ mode: mode.short, stageId })
-                    }
-                    type="button"
-                  >
-                    <Image
-                      className={clsx("maps__mode", {
-                        selected,
-                      })}
-                      alt={mode.long}
-                      path={modeImageUrl(mode.short)}
-                      width={20}
-                      height={20}
-                    />
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
 }
 
 function MapListCreator({ mapPool }: { mapPool: MapPool }) {

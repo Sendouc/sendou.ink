@@ -19,7 +19,7 @@ export function MapPoolSelector({
     stageId: StageId;
   }) => void;
 }) {
-  const { t } = useTranslation(["game-misc", "calendar"]);
+  const { t } = useTranslation(["game-misc"]);
 
   const isPresentational = !handleMapPoolChange;
 
