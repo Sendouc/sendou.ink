@@ -11,6 +11,9 @@ import { hpDivided } from "./utils";
 import weaponParams from "./weapon-params.json";
 
 const PLACEHOLDER_HP = 1000;
+const WAVE_BREAKER_HP = 400;
+const SPRINKER_HP = 100;
+const RAINMAKER_HP = 1000;
 
 export const objectHitPoints = (abilityPoints: AbilityPoints): HitPoints => {
   const Wsb_Shield = subStats({
@@ -45,14 +48,12 @@ export const objectHitPoints = (abilityPoints: AbilityPoints): HitPoints => {
     Wsb_Shield,
     Bomb_TorpedoBullet: PLACEHOLDER_HP, // ??
     Chariot: hpDivided(weaponParams.specialWeapons[CRAB_TANK_ID].ArmorHP),
-    Gachihoko_Barrier: PLACEHOLDER_HP, // ??
+    Gachihoko_Barrier: RAINMAKER_HP,
     GreatBarrier_Barrier,
     GreatBarrier_WeakPoint,
-    InkRail: PLACEHOLDER_HP, // ??
     NiceBall_Armor: PLACEHOLDER_HP, // ??
-    ShockSonar: PLACEHOLDER_HP, // ??
-    Sponge_Versus: PLACEHOLDER_HP, // ??
+    ShockSonar: WAVE_BREAKER_HP,
     Wsb_Flag: PLACEHOLDER_HP, // ??
-    Wsb_Sprinkler: PLACEHOLDER_HP, // ??
+    Wsb_Sprinkler: SPRINKER_HP,
   };
 };

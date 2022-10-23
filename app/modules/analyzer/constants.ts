@@ -9,10 +9,10 @@ export const DAMAGE_RECEIVERS = [
   "Gachihoko_Barrier", // Rainmaker Shield
   "GreatBarrier_Barrier", // Big Bubbler Shield
   "GreatBarrier_WeakPoint", // Big Bubbler Weak Point
-  "InkRail", // InkRail
+  // "InkRail", // InkRail
   "NiceBall_Armor", // Booyah Bomb Armor
   "ShockSonar", // Wave Breaker
-  "Sponge_Versus", // Sponge
+  // "Sponge_Versus", // Sponge
   "Wsb_Flag", // Squid Beakon
   "Wsb_Shield", // Splash Wall
   "Wsb_Sprinkler", // Sprinkler
