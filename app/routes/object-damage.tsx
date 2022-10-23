@@ -26,6 +26,7 @@ import type { DamageReceiver } from "~/modules/analyzer/types";
 import React from "react";
 import { roundToTwoDecimalPlaces } from "~/utils/number";
 import { useTranslation } from "react-i18next";
+import clsx from "clsx";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -79,10 +80,8 @@ const damageReceiverImages: Record<DamageReceiver, string> = {
   Gachihoko_Barrier: modeImageUrl("RM"),
   GreatBarrier_Barrier: specialWeaponImageUrl(BIG_BUBBLER_ID),
   GreatBarrier_WeakPoint: specialWeaponImageUrl(BIG_BUBBLER_ID),
-  InkRail: modeImageUrl("CB"),
   NiceBall_Armor: specialWeaponImageUrl(BOOYAH_BOMB_ID),
   ShockSonar: specialWeaponImageUrl(WAVE_BREAKER_ID),
-  Sponge_Versus: modeImageUrl("CB"),
   Wsb_Flag: subWeaponImageUrl(SQUID_BEAKON_ID),
   Wsb_Shield: subWeaponImageUrl(SPLASH_WALL_ID),
   Wsb_Sprinkler: subWeaponImageUrl(SPRINKLER_ID),
@@ -114,6 +113,13 @@ function DamageReceiversGrid({
           {damage.type.startsWith("BOMB_")
             ? t(`weapons:SUB_${subWeaponId}`)
             : t(`analyzer:damage.${damage.type as "NORMAL_MIN"}`)}
+          <div
+            className={clsx("object-damage__distance", {
+              invisible: !damage.distance,
+            })}
+          >
+            Distance: {damage.distance}
+          </div>
         </div>
       ))}
       {DAMAGE_RECEIVERS.map((receiver, i) => {

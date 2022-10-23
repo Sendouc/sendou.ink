@@ -26,6 +26,12 @@
   text-align: center;
 }
 
+.object-damage__distance {
+  color: var(--text-lighter);
+  font-size: var(--fonts-xxs);
+  margin-block-start: var(--s-1);
+}
+
 .object-damage__table-card {
   display: grid;
   width: 100%;
