@@ -96,6 +96,7 @@ export function multipliersToRecordWithFallbacks(
   ) as Record<DamageReceiver, number>;
 }
 
+const objectShredderMultipliers = objectDamages.ObjectEffect_Up.rates;
 export function calculateDamage({
   analyzed,
   mainWeaponId,
@@ -140,21 +141,34 @@ export function calculateDamage({
     return {
       receiver,
       hitPoints: damageReceiverHp,
-      damages: filteredDamages.map((damage) => {
-        const multiplier = multipliers[damage.type]![receiver];
-        const damagePerHit = roundToNDecimalPlaces(damage.value * multiplier);
+      damages: filteredDamages
+        .flatMap((damage) => [
+          { ...damage, objectShredder: false },
+          { ...damage, objectShredder: true },
+        ])
+        .map((damage) => {
+          const baseMultiplier = multipliers[damage.type]![receiver];
+          const objectShredderMultiplier =
+            objectShredderMultipliers.find((m) => m.target === receiver)
+              ?.rate ?? 1;
+          const multiplier =
+            baseMultiplier *
+            (damage.objectShredder ? objectShredderMultiplier : 1);
 
-        const hitsToDestroy = Math.ceil(damageReceiverHp / damagePerHit);
+          const damagePerHit = roundToNDecimalPlaces(damage.value * multiplier);
 
-        return {
-          value: damagePerHit,
-          hitsToDestroy,
-          multiplier,
-          type: damage.type,
-          id: damage.id,
-          distance: damage.distance,
-        };
-      }),
+          const hitsToDestroy = Math.ceil(damageReceiverHp / damagePerHit);
+
+          return {
+            value: damagePerHit,
+            hitsToDestroy,
+            multiplier: roundToNDecimalPlaces(multiplier, 2),
+            type: damage.type,
+            id: `${damage.id}-${String(damage.objectShredder)}`,
+            distance: damage.distance,
+            objectShredder: damage.objectShredder,
+          };
+        }),
     };
   });
 }

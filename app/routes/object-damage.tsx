@@ -184,12 +184,15 @@ function DamageReceiversGrid({
       <div />
       {damagesToReceivers[0]?.damages.map((damage) => (
         <div key={damage.id} className="object-damage__table-header">
-          {t(
-            damageTypeTranslationString({
-              damageType: damage.type,
-              subWeaponId: subWeaponId,
-            })
-          )}
+          <div className="stack horizontal sm justify-center items-center">
+            {t(
+              damageTypeTranslationString({
+                damageType: damage.type,
+                subWeaponId: subWeaponId,
+              })
+            )}
+            {damage.objectShredder && <Ability ability="OS" size="TINY" />}
+          </div>
           <div
             className={clsx("object-damage__distance", {
               invisible: !damage.distance,
