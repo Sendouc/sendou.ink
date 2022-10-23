@@ -9,6 +9,7 @@
   "pages.builds": "Builds",
   "pages.analyzer": "Build Analyzer",
   "pages.maps": "Map Lists",
+  "pages.object-damage": "Object Damage Calculator",
 
   "header.profile": "Profile",
   "header.logout": "Log out",

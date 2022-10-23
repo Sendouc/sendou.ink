@@ -29,6 +29,7 @@ import clsx from "clsx";
 import { Label } from "~/components/Label";
 import { Ability } from "~/components/Ability";
 import { damageTypeTranslationString } from "~/utils/i18next";
+import { useSetTitle } from "~/hooks/useSetTitle";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -170,7 +171,8 @@ function DamageReceiversGrid({
   ReturnType<typeof useObjectDamage>,
   "damagesToReceivers" | "subWeaponId"
 >) {
-  const { t } = useTranslation(["weapons", "analyzer"]);
+  const { t } = useTranslation(["weapons", "analyzer", "common"]);
+  useSetTitle(t("common:pages.object-damage"));
 
   return (
     <div
