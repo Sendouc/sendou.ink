@@ -11,7 +11,7 @@ import type {
   SubWeaponId,
 } from "../in-game-lists";
 import { damageTypeToWeaponType, DAMAGE_RECEIVERS } from "./constants";
-import { roundToTwoDecimalPlaces } from "~/utils/number";
+import { roundToNDecimalPlaces } from "~/utils/number";
 import { objectHitPoints } from "./objectHitPoints";
 
 /** Keys to check in the json. Lower index takes priority over higher. If key is omitted means any key with valid weapon id is okay. One json key can only map to one DamageType. */
@@ -136,7 +136,7 @@ export function calculateDamage({
       hitPoints: damageReceiverHp,
       damages: analyzed.stats.damages.map((damage) => {
         const multiplier = multipliers[damage.type]![receiver];
-        const damagePerHit = roundToTwoDecimalPlaces(damage.value * multiplier);
+        const damagePerHit = roundToNDecimalPlaces(damage.value * multiplier);
 
         const hitsToDestroy = Math.ceil(damageReceiverHp / damagePerHit);
 

@@ -22,7 +22,7 @@ import {
 } from "./utils";
 import { assertUnreachable } from "~/utils/types";
 import { semiRandomId } from "~/utils/strings";
-import { roundToTwoDecimalPlaces } from "~/utils/number";
+import { roundToNDecimalPlaces } from "~/utils/number";
 
 export function buildStats({
   weaponSplId,
@@ -642,8 +642,8 @@ function shotSpreadAir(
   const reducedExtraSpread = extraSpread * (1 - effect);
 
   return {
-    baseValue: roundToTwoDecimalPlaces(jumpSpread),
-    value: roundToTwoDecimalPlaces(reducedExtraSpread + groundSpread),
+    baseValue: roundToNDecimalPlaces(jumpSpread),
+    value: roundToNDecimalPlaces(reducedExtraSpread + groundSpread),
     modifiedBy: SHOT_SPREAD_AIR_ABILITY,
   };
 }
@@ -788,9 +788,9 @@ export function subStats(
     const toValue = (effect: number) => {
       switch (type) {
         case "NO_CHANGE":
-          return roundToTwoDecimalPlaces(effect);
+          return roundToNDecimalPlaces(effect);
         case "HP":
-          return roundToTwoDecimalPlaces(hpDivided(effect));
+          return roundToNDecimalPlaces(hpDivided(effect), 1);
         case "TIME":
           return framesToSeconds(effect);
         default:
@@ -906,8 +906,8 @@ function subDefToxicMistMovementReduction(
   });
 
   return {
-    baseValue: roundToTwoDecimalPlaces(baseEffect * 100),
-    value: roundToTwoDecimalPlaces(effect * 100),
+    baseValue: roundToNDecimalPlaces(baseEffect * 100),
+    value: roundToNDecimalPlaces(effect * 100),
     modifiedBy: SUB_DEF_TOXIC_MIST_MOVEMENT_REDUCTION_KEY,
   };
 }
@@ -930,10 +930,11 @@ function subDefAngleShooterDamage(
   invariant(angleShooterDirectDamage);
 
   return {
-    baseValue: roundToTwoDecimalPlaces(
-      (angleShooterDirectDamage * baseEffect) / 10
+    baseValue: roundToNDecimalPlaces(
+      (angleShooterDirectDamage * baseEffect) / 10,
+      1
     ),
-    value: roundToTwoDecimalPlaces((angleShooterDirectDamage * effect) / 10),
+    value: roundToNDecimalPlaces((angleShooterDirectDamage * effect) / 10, 1),
     modifiedBy: SUB_DEF_ANGLE_SHOOTER_DAMAGE_KEY,
   };
 }
@@ -952,8 +953,8 @@ function subDefSplashWallDamagePercentage(
   });
 
   return {
-    baseValue: roundToTwoDecimalPlaces(baseEffect * 100),
-    value: roundToTwoDecimalPlaces(effect * 100),
+    baseValue: roundToNDecimalPlaces(baseEffect * 100),
+    value: roundToNDecimalPlaces(effect * 100),
     modifiedBy: SUB_DEF_SPLASH_WALL_DAMAGE_PERCENTAGE_KEY,
   };
 }
@@ -972,8 +973,8 @@ function subDefSprinklerDamagePercentage(
   });
 
   return {
-    baseValue: roundToTwoDecimalPlaces(baseEffect * 100),
-    value: roundToTwoDecimalPlaces(effect * 100),
+    baseValue: roundToNDecimalPlaces(baseEffect * 100),
+    value: roundToNDecimalPlaces(effect * 100),
     modifiedBy: SUB_DEF_SPRINKLER_DAMAGE_PERCENTAGE_KEY,
   };
 }
@@ -992,8 +993,8 @@ function subDefBombDamageLightPercentage(
   });
 
   return {
-    baseValue: roundToTwoDecimalPlaces(baseEffect * 100),
-    value: roundToTwoDecimalPlaces(effect * 100),
+    baseValue: roundToNDecimalPlaces(baseEffect * 100),
+    value: roundToNDecimalPlaces(effect * 100),
     modifiedBy: SUB_DEF_BOMB_DAMAGE_LIGHT_PERCENTAGE_KEY,
   };
 }
@@ -1012,8 +1013,8 @@ function subDefBombDamageHeavyPercentage(
   });
 
   return {
-    baseValue: roundToTwoDecimalPlaces(baseEffect * 100),
-    value: roundToTwoDecimalPlaces(effect * 100),
+    baseValue: roundToNDecimalPlaces(baseEffect * 100),
+    value: roundToNDecimalPlaces(effect * 100),
     modifiedBy: SUB_DEF_BOMB_DAMAGE_HEAVY_PERCENTAGE_KEY,
   };
 }
@@ -1099,8 +1100,8 @@ function specialDamageDistance(
   });
 
   return {
-    baseValue: roundToTwoDecimalPlaces(baseEffect),
-    value: roundToTwoDecimalPlaces(effect),
+    baseValue: roundToNDecimalPlaces(baseEffect),
+    value: roundToNDecimalPlaces(effect),
     modifiedBy: SPECIAL_DAMAGE_DISTANCE_KEY,
   };
 }
@@ -1123,8 +1124,8 @@ function specialPaintRadius(
   });
 
   return {
-    baseValue: roundToTwoDecimalPlaces(baseEffect),
-    value: roundToTwoDecimalPlaces(effect),
+    baseValue: roundToNDecimalPlaces(baseEffect),
+    value: roundToNDecimalPlaces(effect),
     modifiedBy: SPECIAL_PAINT_RADIUS_KEY,
   };
 }
@@ -1200,8 +1201,8 @@ function specialHookInkConsumptionPercentage(
   });
 
   return {
-    baseValue: roundToTwoDecimalPlaces(baseEffect * 100),
-    value: roundToTwoDecimalPlaces(effect * 100),
+    baseValue: roundToNDecimalPlaces(baseEffect * 100),
+    value: roundToNDecimalPlaces(effect * 100),
     modifiedBy: SPECIAL_HOOK_INK_CONSUMPTION_PERCENTAGE_KEY,
   };
 }
@@ -1229,8 +1230,8 @@ function specialInkConsumptionPerSecondPercentage(
   });
 
   return {
-    baseValue: roundToTwoDecimalPlaces(baseEffect * 100),
-    value: roundToTwoDecimalPlaces(effect * 100),
+    baseValue: roundToNDecimalPlaces(baseEffect * 100),
+    value: roundToNDecimalPlaces(effect * 100),
     modifiedBy: SPECIAL_INK_CONSUMPTION_PER_SECOND_PERCENTAGE_KEY,
   };
 }
@@ -1258,8 +1259,8 @@ function specialReticleRadius(
   });
 
   return {
-    baseValue: roundToTwoDecimalPlaces(baseEffect),
-    value: roundToTwoDecimalPlaces(effect),
+    baseValue: roundToNDecimalPlaces(baseEffect),
+    value: roundToNDecimalPlaces(effect),
     modifiedBy: SPECIAL_RETICLE_RADIUS_KEY,
   };
 }
@@ -1287,8 +1288,8 @@ function specialThrowDistance(
   });
 
   return {
-    baseValue: roundToTwoDecimalPlaces(baseEffect),
-    value: roundToTwoDecimalPlaces(effect),
+    baseValue: roundToNDecimalPlaces(baseEffect),
+    value: roundToNDecimalPlaces(effect),
     modifiedBy: SPECIAL_THROW_DISTANCE_KEY,
   };
 }
@@ -1316,8 +1317,8 @@ function specialAutoChargeRate(
   });
 
   return {
-    baseValue: roundToTwoDecimalPlaces(baseEffect * 100),
-    value: roundToTwoDecimalPlaces(effect * 100),
+    baseValue: roundToNDecimalPlaces(baseEffect * 100),
+    value: roundToNDecimalPlaces(effect * 100),
     modifiedBy: SPECIAL_AUTO_CHARGE_RATE_KEY,
   };
 }
@@ -1345,8 +1346,8 @@ function specialMaxRadius(
   });
 
   return {
-    baseValue: roundToTwoDecimalPlaces(baseEffect),
-    value: roundToTwoDecimalPlaces(effect),
+    baseValue: roundToNDecimalPlaces(baseEffect),
+    value: roundToNDecimalPlaces(effect),
     modifiedBy: SPECIAL_MAX_RADIUS_KEY,
   };
 }
@@ -1387,12 +1388,12 @@ function specialRadiusRange(
   });
 
   return {
-    baseValue: `${roundToTwoDecimalPlaces(
+    baseValue: `${roundToNDecimalPlaces(
       radiusMin.baseEffect
-    )}-${roundToTwoDecimalPlaces(radiusMax.baseEffect)}`,
-    value: `${roundToTwoDecimalPlaces(
-      radiusMin.effect
-    )}-${roundToTwoDecimalPlaces(radiusMax.effect)}`,
+    )}-${roundToNDecimalPlaces(radiusMax.baseEffect)}`,
+    value: `${roundToNDecimalPlaces(radiusMin.effect)}-${roundToNDecimalPlaces(
+      radiusMax.effect
+    )}`,
     modifiedBy: SPECIAL_RADIUS_RANGE_KEY,
   };
 }
