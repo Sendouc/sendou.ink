@@ -2,9 +2,6 @@
   display: grid;
   width: 100%;
   column-gap: var(--s-6);
-
-  /* xxx: make dynamic */
-  grid-template-columns: max-content max-content 1fr 1fr 1fr 1fr 1fr;
   place-items: center;
   row-gap: var(--s-3);
 }

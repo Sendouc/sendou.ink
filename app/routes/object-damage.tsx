@@ -1,7 +1,7 @@
 import { WeaponCombobox } from "~/components/Combobox";
 import { Image } from "~/components/Image";
 import { Main } from "~/components/Main";
-import { DAMAGE_RECEIVERS, useObjectDamage } from "~/modules/analyzer";
+import { useObjectDamage } from "~/modules/analyzer";
 import {
   type MainWeaponId,
   BIG_BUBBLER_ID,
@@ -93,9 +93,11 @@ function DamageReceiversGrid({
   return (
     <div
       className="object-damage__grid"
-      style={
-        { "--columns-count": String(2 + damagesToReceivers.length) } as any
-      }
+      style={{
+        gridTemplateColumns: gridTemplateColumnsValue(
+          damagesToReceivers[0]?.damages.length ?? 0
+        ),
+      }}
     >
       <div />
       <div />
@@ -153,4 +155,11 @@ function DamageReceiversGrid({
       })}
     </div>
   );
+}
+
+function gridTemplateColumnsValue(dataColumnsCount: number) {
+  return `max-content max-content ${new Array(dataColumnsCount)
+    .fill(null)
+    .map(() => `1fr`)
+    .join(" ")}`;
 }
