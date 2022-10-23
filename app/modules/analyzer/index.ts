@@ -6,6 +6,8 @@ export type {
   AnalyzedBuild,
   SpecialEffectType,
   HitPoints,
+  DamageReceiver,
+  DamageType,
 } from "./types";
 
 export { useAnalyzeBuild } from "./useAnalyzeBuild";

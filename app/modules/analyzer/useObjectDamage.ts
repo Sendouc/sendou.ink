@@ -1,10 +1,13 @@
 import { useSearchParams } from "@remix-run/react";
+import invariant from "tiny-invariant";
 import { type MainWeaponId } from "../in-game-lists";
 import { calculateDamage } from "./objectDamage";
 import { buildStats } from "./stats";
+import type { AnalyzedBuild, DamageType } from "./types";
 import { possibleApValues, validatedWeaponIdFromSearchParams } from "./utils";
 
 const ABILITY_POINTS_SP_KEY = "ap";
+const DAMAGE_TYPE_SP_KEY = "dmg";
 
 export function useObjectDamage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -12,25 +15,33 @@ export function useObjectDamage() {
   const mainWeaponId = validatedWeaponIdFromSearchParams(searchParams);
   const abilityPoints = validatedAbilityPointsFromSearchParams(searchParams);
 
+  const analyzed = buildStats({
+    weaponSplId: mainWeaponId,
+  });
+
+  const damageType = validatedDamageTypeFromSearchParams({
+    searchParams,
+    analyzed,
+  });
+
   const handleChange = ({
     newMainWeaponId = mainWeaponId,
-    abilityPoints = 0,
+    newAbilityPoints = abilityPoints,
+    newDamageType = damageType,
   }: {
     newMainWeaponId?: MainWeaponId;
-    abilityPoints?: number;
+    newAbilityPoints?: number;
+    newDamageType?: DamageType;
   }) => {
     setSearchParams(
       {
         weapon: String(newMainWeaponId),
-        [ABILITY_POINTS_SP_KEY]: String(abilityPoints),
+        [ABILITY_POINTS_SP_KEY]: String(newAbilityPoints),
+        [DAMAGE_TYPE_SP_KEY]: newDamageType,
       },
       { replace: true, state: { scroll: false } }
     );
   };
-
-  const analyzed = buildStats({
-    weaponSplId: mainWeaponId,
-  });
 
   return {
     mainWeaponId,
@@ -43,17 +54,52 @@ export function useObjectDamage() {
       ]),
       analyzed,
       mainWeaponId,
+      damageType,
     }),
     abilityPoints: String(abilityPoints),
+    damageType,
+    allDamageTypes: Array.from(
+      new Set(analyzed.stats.damages.map((d) => d.type))
+    ),
   };
 }
 
-export function validatedAbilityPointsFromSearchParams(
-  searchParams: URLSearchParams
-) {
+function validatedAbilityPointsFromSearchParams(searchParams: URLSearchParams) {
   const abilityPoints = Number(searchParams.get(ABILITY_POINTS_SP_KEY));
 
   return (
     possibleApValues().find((possibleAp) => possibleAp === abilityPoints) ?? 0
   );
+}
+
+export const damageTypePriorityList = [
+  "DIRECT",
+  "FULL_CHARGE",
+  "MAX_CHARGE",
+  "NORMAL_MAX",
+  "NORMAL_MIN",
+  "TAP_SHOT",
+  "DISTANCE",
+  "BOMB_DIRECT",
+  "BOMB_NORMAL",
+] as const;
+function validatedDamageTypeFromSearchParams({
+  searchParams,
+  analyzed,
+}: {
+  searchParams: URLSearchParams;
+  analyzed: AnalyzedBuild;
+}) {
+  const damageType = searchParams.get(DAMAGE_TYPE_SP_KEY);
+
+  const found = analyzed.stats.damages.find((d) => d.type === damageType);
+
+  if (found) return found.type;
+
+  const fallbackFound = damageTypePriorityList.find((type) =>
+    analyzed.stats.damages.some((d) => d.type === type)
+  );
+  invariant(fallbackFound);
+
+  return fallbackFound;
 }

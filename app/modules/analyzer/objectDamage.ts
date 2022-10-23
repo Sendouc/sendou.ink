@@ -100,14 +100,20 @@ export function calculateDamage({
   analyzed,
   mainWeaponId,
   abilityPoints,
+  damageType,
 }: {
   analyzed: AnalyzedBuild;
   mainWeaponId: MainWeaponId;
   abilityPoints: AbilityPoints;
+  damageType: DamageType;
 }) {
+  const filteredDamages = analyzed.stats.damages.filter(
+    (d) => d.type === damageType
+  );
+
   const hitPoints = objectHitPoints(abilityPoints);
   const multipliers = Object.fromEntries(
-    analyzed.stats.damages.map((damage) => {
+    filteredDamages.map((damage) => {
       const weaponType = damageTypeToWeaponType[damage.type];
       const weaponId: any =
         weaponType === "MAIN"
@@ -134,7 +140,7 @@ export function calculateDamage({
     return {
       receiver,
       hitPoints: damageReceiverHp,
-      damages: analyzed.stats.damages.map((damage) => {
+      damages: filteredDamages.map((damage) => {
         const multiplier = multipliers[damage.type]![receiver];
         const damagePerHit = roundToNDecimalPlaces(damage.value * multiplier);
 

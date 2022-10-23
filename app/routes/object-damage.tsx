@@ -22,12 +22,13 @@ import {
 import styles from "~/styles/object-damage.css";
 import type { LinksFunction } from "@remix-run/node";
 import type { SendouRouteHandle } from "~/utils/remix";
-import type { DamageReceiver } from "~/modules/analyzer/types";
+import type { DamageReceiver, DamageType } from "~/modules/analyzer";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import clsx from "clsx";
 import { Label } from "~/components/Label";
 import { Ability } from "~/components/Ability";
+import { damageTypeTranslationString } from "~/utils/i18next";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -45,6 +46,8 @@ export default function ObjectDamagePage() {
     handleChange,
     damagesToReceivers,
     abilityPoints,
+    damageType,
+    allDamageTypes,
   } = useObjectDamage();
 
   if (process.env.NODE_ENV !== "development") {
@@ -72,9 +75,12 @@ export default function ObjectDamagePage() {
         </div>
         <div>
           <Label htmlFor="damage">Damage type</Label>
-          <select id="damage">
-            <option value="0">0</option>
-          </select>
+          <DamageTypesSelect
+            handleChange={handleChange}
+            subWeaponId={subWeaponId}
+            damageType={damageType}
+            allDamageTypes={allDamageTypes}
+          />
         </div>
         <div>
           <Label htmlFor="ap" labelClassName="object-damage__ap-label">
@@ -85,7 +91,7 @@ export default function ObjectDamagePage() {
             id="ap"
             value={abilityPoints}
             onChange={(e) =>
-              handleChange({ abilityPoints: Number(e.target.value) })
+              handleChange({ newAbilityPoints: Number(e.target.value) })
             }
           >
             {possibleApValues().map((ap) => (
@@ -102,6 +108,41 @@ export default function ObjectDamagePage() {
         damagesToReceivers={damagesToReceivers}
       />
     </Main>
+  );
+}
+
+function DamageTypesSelect({
+  allDamageTypes,
+  handleChange,
+  subWeaponId,
+  damageType,
+}: Pick<
+  ReturnType<typeof useObjectDamage>,
+  "handleChange" | "subWeaponId" | "damageType" | "allDamageTypes"
+>) {
+  const { t } = useTranslation(["analyzer"]);
+
+  return (
+    <select
+      id="damage"
+      value={damageType}
+      onChange={(e) =>
+        handleChange({ newDamageType: e.target.value as DamageType })
+      }
+    >
+      {allDamageTypes.map((damageType) => {
+        return (
+          <option key={damageType} value={damageType}>
+            {t(
+              damageTypeTranslationString({
+                damageType,
+                subWeaponId,
+              })
+            )}
+          </option>
+        );
+      })}
+    </select>
   );
 }
 
@@ -143,9 +184,12 @@ function DamageReceiversGrid({
       <div />
       {damagesToReceivers[0]?.damages.map((damage) => (
         <div key={damage.id} className="object-damage__table-header">
-          {damage.type.startsWith("BOMB_")
-            ? t(`weapons:SUB_${subWeaponId}`)
-            : t(`analyzer:damage.${damage.type as "NORMAL_MIN"}`)}
+          {t(
+            damageTypeTranslationString({
+              damageType: damage.type,
+              subWeaponId: subWeaponId,
+            })
+          )}
           <div
             className={clsx("object-damage__distance", {
               invisible: !damage.distance,
