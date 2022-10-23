@@ -58,7 +58,7 @@ export default function ObjectDamagePage() {
     <Main className="stack lg">
       <div className="object-damage__controls">
         <div>
-          <Label htmlFor="weapon">Weapon</Label>
+          <Label htmlFor="weapon">{t("analyzer:labels.weapon")}</Label>
           <WeaponCombobox
             id="weapon"
             inputName="weapon"
@@ -74,7 +74,7 @@ export default function ObjectDamagePage() {
           />
         </div>
         <div>
-          <Label htmlFor="damage">Damage type</Label>
+          <Label htmlFor="damage">{t("analyzer:labels.damageType")}</Label>
           <DamageTypesSelect
             handleChange={handleChange}
             subWeaponId={subWeaponId}
@@ -84,7 +84,8 @@ export default function ObjectDamagePage() {
         </div>
         <div>
           <Label htmlFor="ap" labelClassName="object-damage__ap-label">
-            Amount of <Ability ability="BRU" size="TINY" />{" "}
+            {t("analyzer:labels.amountOf")}
+            <Ability ability="BRU" size="TINY" />
             <Ability ability="SPU" size="TINY" />
           </Label>
           <select
@@ -198,7 +199,7 @@ function DamageReceiversGrid({
               invisible: !damage.distance,
             })}
           >
-            Distance: {damage.distance}
+            {t("analyzer:distanceInline", { value: damage.distance })}
           </div>
         </div>
       ))}
@@ -213,21 +214,25 @@ function DamageReceiversGrid({
               height={40}
             />
             <div className="object-damage__hp">
-              {damageToReceiver.hitPoints}hp
+              {damageToReceiver.hitPoints}
+              {t("analyzer:suffix.hp")}
             </div>
             {damageToReceiver.damages.map((damage) => {
               return (
                 <div key={damage.id} className="object-damage__table-card">
                   <div className="object-damage__table-card__results">
-                    <abbr className="object-damage__abbr" title="Damage">
-                      DMG
+                    <abbr
+                      className="object-damage__abbr"
+                      title={t("analyzer:stat.category.damage")}
+                    >
+                      {t("analyzer:damageShort")}
                     </abbr>
                     <div>{damage.value}</div>
                     <abbr
                       className="object-damage__abbr"
-                      title="Hits to destroy"
+                      title={t("analyzer:hitsToDestroyLong")}
                     >
-                      HTD
+                      {t("analyzer:hitsToDestroyShort")}
                     </abbr>
                     <div>{damage.hitsToDestroy}</div>
                   </div>
