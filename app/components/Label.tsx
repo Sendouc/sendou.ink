@@ -13,6 +13,7 @@ type LabelProps = Pick<
   };
   required?: boolean;
   className?: string;
+  labelClassName?: string;
 };
 
 export function Label({
@@ -21,10 +22,11 @@ export function Label({
   children,
   htmlFor,
   className,
+  labelClassName,
 }: LabelProps) {
   return (
     <div className={clsx("label__container", className)}>
-      <label htmlFor={htmlFor}>
+      <label htmlFor={htmlFor} className={labelClassName}>
         {children} {required && <span className="text-error">*</span>}
       </label>
       {valueLimits ? (

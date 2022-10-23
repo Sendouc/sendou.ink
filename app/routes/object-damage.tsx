@@ -1,7 +1,7 @@
 import { WeaponCombobox } from "~/components/Combobox";
 import { Image } from "~/components/Image";
 import { Main } from "~/components/Main";
-import { useObjectDamage } from "~/modules/analyzer";
+import { possibleApValues, useObjectDamage } from "~/modules/analyzer";
 import {
   type MainWeaponId,
   BIG_BUBBLER_ID,
@@ -26,6 +26,8 @@ import type { DamageReceiver } from "~/modules/analyzer/types";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import clsx from "clsx";
+import { Label } from "~/components/Label";
+import { Ability } from "~/components/Ability";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -36,8 +38,14 @@ export const handle: SendouRouteHandle = {
 };
 
 export default function ObjectDamagePage() {
-  const { mainWeaponId, subWeaponId, handleChange, damagesToReceivers } =
-    useObjectDamage();
+  const { t } = useTranslation(["analyzer"]);
+  const {
+    mainWeaponId,
+    subWeaponId,
+    handleChange,
+    damagesToReceivers,
+    abilityPoints,
+  } = useObjectDamage();
 
   if (process.env.NODE_ENV !== "development") {
     return <Main>WIP :)</Main>;
@@ -45,18 +53,50 @@ export default function ObjectDamagePage() {
 
   return (
     <Main className="stack lg">
-      <WeaponCombobox
-        inputName="weapon"
-        initialWeaponId={mainWeaponId}
-        onChange={(opt) =>
-          opt &&
-          handleChange({
-            newMainWeaponId: Number(opt.value) as MainWeaponId,
-          })
-        }
-        className="w-full-important"
-        clearsInputOnFocus
-      />
+      <div className="object-damage__controls">
+        <div>
+          <Label htmlFor="weapon">Weapon</Label>
+          <WeaponCombobox
+            id="weapon"
+            inputName="weapon"
+            initialWeaponId={mainWeaponId}
+            onChange={(opt) =>
+              opt &&
+              handleChange({
+                newMainWeaponId: Number(opt.value) as MainWeaponId,
+              })
+            }
+            className="w-full-important"
+            clearsInputOnFocus
+          />
+        </div>
+        <div>
+          <Label htmlFor="damage">Damage type</Label>
+          <select id="damage">
+            <option value="0">0</option>
+          </select>
+        </div>
+        <div>
+          <Label htmlFor="ap" labelClassName="object-damage__ap-label">
+            Amount of <Ability ability="BRU" size="TINY" />{" "}
+            <Ability ability="SPU" size="TINY" />
+          </Label>
+          <select
+            id="ap"
+            value={abilityPoints}
+            onChange={(e) =>
+              handleChange({ abilityPoints: Number(e.target.value) })
+            }
+          >
+            {possibleApValues().map((ap) => (
+              <option key={ap} value={ap}>
+                {ap}
+                {t("analyzer:abilityPoints.short")}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
       <DamageReceiversGrid
         subWeaponId={subWeaponId}
         damagesToReceivers={damagesToReceivers}

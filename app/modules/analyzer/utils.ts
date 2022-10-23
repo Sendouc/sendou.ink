@@ -167,3 +167,15 @@ export function validatedWeaponIdFromSearchParams(
 }
 
 export const hpDivided = (hp: number) => hp / 10;
+
+export function possibleApValues() {
+  const uniqueValues = new Set<number>();
+
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 10; j++) {
+      uniqueValues.add(i * 10 + j * 3);
+    }
+  }
+
+  return Array.from(uniqueValues).sort((a, b) => a - b);
+}

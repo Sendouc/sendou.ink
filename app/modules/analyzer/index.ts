@@ -15,3 +15,5 @@ export { useObjectDamage } from "./useObjectDamage";
 export { MAX_LDE_INTENSITY, DAMAGE_RECEIVERS, DAMAGE_TYPE } from "./constants";
 
 export { lastDitchEffortIntensityToAp } from "./specialEffects";
+
+export { possibleApValues } from "./utils";

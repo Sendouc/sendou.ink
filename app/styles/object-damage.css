@@ -1,3 +1,14 @@
+.object-damage__controls {
+  display: flex;
+  justify-content: space-between;
+}
+
+.object-damage__ap-label {
+  display: flex;
+  align-items: center;
+  gap: var(--s-1-5);
+}
+
 .object-damage__grid {
   display: grid;
   width: 100%;
