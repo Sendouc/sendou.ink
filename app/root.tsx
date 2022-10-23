@@ -1,3 +1,4 @@
+import type { ErrorBoundaryComponent } from "@remix-run/node";
 import {
   json,
   type LinksFunction,
@@ -156,7 +157,9 @@ export function CatchBoundary() {
   );
 }
 
-export function ErrorBoundary() {
+export const ErrorBoundary: ErrorBoundaryComponent = ({ error }) => {
+  console.error(error);
+
   return (
     <ThemeProvider specifiedTheme={Theme.DARK}>
       <Document>
@@ -164,4 +167,4 @@ export function ErrorBoundary() {
       </Document>
     </ThemeProvider>
   );
-}
+};
