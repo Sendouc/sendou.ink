@@ -244,9 +244,11 @@ export function findResultsByUserId(userId: User["id"]) {
       placement: CalendarEventResultTeam["placement"];
       participantCount: CalendarEvent["participantCount"];
       startTime: CalendarEventDate["startTime"];
+      isHighlight: number;
     }>
   ).map((row) => ({
     ...row,
+    isHighlight: Boolean(row.isHighlight),
     mates: (
       findMatesByResultTeamIdStm.all({
         teamId: row.teamId,

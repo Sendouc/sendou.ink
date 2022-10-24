@@ -34,6 +34,8 @@ import {
   type SubWeaponId,
 } from "~/modules/in-game-lists";
 import styles from "~/styles/analyzer.css";
+import { damageTypeTranslationString } from "~/utils/i18next";
+import { type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { specialWeaponImageUrl, subWeaponImageUrl } from "~/utils/urls";
 
@@ -49,8 +51,9 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const handle = {
+export const handle: SendouRouteHandle = {
   i18n: ["weapons", "analyzer"],
+  navItemName: "analyzer",
 };
 
 export default function BuildAnalyzerPage() {
@@ -824,9 +827,10 @@ function DamageTable({
               ? `${val.value}+${val.value}+${val.value}`
               : val.value;
 
-            const typeRowName = val.type.startsWith("BOMB_")
-              ? t(`weapons:SUB_${subWeaponId}`)
-              : t(`analyzer:damage.${val.type as "NORMAL_MIN"}`);
+            const typeRowName = damageTypeTranslationString({
+              damageType: val.type,
+              subWeaponId,
+            });
 
             return (
               <tr key={val.id}>

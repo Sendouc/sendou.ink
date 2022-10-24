@@ -1,10 +1,24 @@
 {
+  "customUrl": "Brugerdefineret URL",
+  "ign": "Splatoon 3 Brugernavn",
+  "ign.short": "Splatnavn",
   "country": "Land",
   "bio": "Biografi",
+  "stickSens": "Styrepindsfølsomhed",
+  "motionSens": "Bevægelsesfølsomhed",
+  "motion": "Bevægelse",
+  "stick": "Styrepind",
+  "sens": "Følsomhed",
 
   "results.placing": "Rang",
   "results.team": "Hold",
   "results.tournament": "Turnering",
+  "results.participants": "Deltagere",
   "results.date": "Dato",
-  "results.mates": "Holdkammerater"
+  "results.mates": "Holdkammerater",
+
+  "forms.errors.invalidCustomUrl.numbers": "Brugerdefineret URL må ikke kun indeholde numre",
+  "forms.errors.invalidCustomUrl.strangeCharacter": "Brugerdefineret URL må ikke indeholde specialtegn (Gælder også æ, ø og å)",
+  "forms.errors.invalidCustomUrl.duplicate": "Brugerdefineret URL er allerede i brug",
+  "forms.errors.invalidSens": "Bevægelsesfølsomhed kan ikke indstilles før at Styrepindsfølsomheden er indstillet"
 }

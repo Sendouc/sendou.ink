@@ -4,19 +4,12 @@
   justify-content: space-between;
 }
 
-.builds__breadcrumbs {
-  display: flex;
-  font-size: var(--fonts-xs);
-  font-weight: var(--bold);
-  gap: var(--s-1);
-}
-
 .builds__category {
   display: flex;
   flex-direction: column;
   padding: var(--s-3);
-  background-color: var(--bg-darker);
   border-radius: var(--rounded);
+  background-color: var(--bg-darker);
   font-size: var(--fonts-sm);
   font-weight: var(--semi-bold);
   gap: var(--s-4);
@@ -44,6 +37,6 @@
 }
 
 .builds__category__weapon__img {
-  background-color: var(--bg-lighter);
   border-radius: var(--rounded);
+  background-color: var(--bg-lighter);
 }

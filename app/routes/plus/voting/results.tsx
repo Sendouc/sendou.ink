@@ -9,7 +9,7 @@ import { lastCompletedVoting } from "~/modules/plus-server";
 import { db } from "~/db";
 import type { PlusVotingResultByMonthYear } from "~/db/models/plusVotes/queries.server";
 import type { PlusVotingResult } from "~/db/types";
-import { roundToTwoDecimalPlaces } from "~/utils/number";
+import { roundToNDecimalPlaces } from "~/utils/number";
 import { makeTitle } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
 import styles from "~/styles/plus-history.css";
@@ -147,7 +147,7 @@ function Results({
 function databaseAvgToPercentage(score: number) {
   const scoreNormalized = score + 1;
 
-  return roundToTwoDecimalPlaces((scoreNormalized / 2) * 100);
+  return roundToNDecimalPlaces((scoreNormalized / 2) * 100);
 }
 
 function scoreForDisplaying(

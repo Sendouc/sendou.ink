@@ -1,9 +1,9 @@
 .plus-history__own-scores {
   width: max-content;
   padding: var(--s-2);
+  border-radius: var(--rounded);
   margin: 0 auto;
   background-color: var(--bg-lighter);
-  border-radius: var(--rounded);
   font-size: var(--fonts-sm);
   font-weight: var(--semi-bold);
   list-style-type: none;
@@ -53,8 +53,8 @@
 }
 
 .plus-history__user-status {
-  background-color: var(--theme);
   border-radius: var(--rounded);
+  background-color: var(--theme);
   color: var(--button-text);
   font-size: var(--fonts-xs);
   font-weight: var(--semi-bold);
@@ -67,8 +67,8 @@
 }
 
 .plus-history__suggestion-s {
-  background-color: var(--bg-lighter);
   border-radius: 50%;
+  background-color: var(--bg-lighter);
   color: var(--text);
   font-weight: var(--bold);
   margin-inline-end: var(--s-1);

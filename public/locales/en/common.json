@@ -9,10 +9,16 @@
   "pages.builds": "Builds",
   "pages.analyzer": "Build Analyzer",
   "pages.maps": "Map Lists",
+  "pages.object-damage": "Object Damage Calculator",
 
   "header.profile": "Profile",
   "header.logout": "Log out",
   "header.login": "Log in",
+
+  "auth.errors.aborted": "Login Aborted",
+  "auth.errors.failed": "Login Failed",
+  "auth.errors.discordPermissions": "For your sendou.ink profile, the site needs access to your Discord profile's name, avatar and social connections.",
+  "auth.errors.unknown": "The login via Discord failed for an unknown reason. If this keeps happening, please reach out for help.",
 
   "footer.github.subtitle": "Source code",
   "footer.twitter.subtitle": "Updates",
@@ -29,6 +35,7 @@
   "actions.delete": "Delete",
   "actions.loadMore": "Load more",
   "actions.copyToClipboard": "Copy to clipboard",
+  "actions.close": "Close",
 
   "maps.createMapList": "Create map list",
   "maps.halfSz": "50% SZ",

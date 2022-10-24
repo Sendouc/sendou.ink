@@ -10,6 +10,7 @@ import type {
   SubWeaponId,
 } from "~/modules/in-game-lists/types";
 import type navItems from "~/components/layout/nav-items.json";
+import { type AuthErrorCode } from "~/modules/auth";
 
 export const SPLATOON_2_SENDOU_IN_URL = "https://spl2.sendou.ink";
 export const PLUS_SERVER_DISCORD_URL = "https://discord.gg/FW4dKrY";
@@ -54,9 +55,13 @@ export const userBuildsPage = (user: UserLinkArgs) =>
   `${userPage(user)}/builds`;
 export const userResultsPage = (user: UserLinkArgs) =>
   `${userPage(user)}/results`;
+export const userResultsEditHighlightsPage = (user: UserLinkArgs) =>
+  `${userResultsPage(user)}/highlights`;
 export const userNewBuildPage = (user: UserLinkArgs) =>
   `${userBuildsPage(user)}/new`;
 
+export const authErrorUrl = (errorCode: AuthErrorCode) =>
+  `/?authError=${errorCode}`;
 export const impersonateUrl = (idToLogInAs: number) =>
   `/auth/impersonate?id=${idToLogInAs}`;
 export const badgePage = (badgeId: number) => `${BADGES_PAGE}/${badgeId}`;

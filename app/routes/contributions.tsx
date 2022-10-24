@@ -11,6 +11,7 @@ import {
   SENDOU_TWITTER_URL,
   UBERU_TWITTER,
 } from "~/utils/urls";
+import { type SendouRouteHandle } from "~/utils/remix";
 
 export const meta: MetaFunction = () => {
   return {
@@ -18,7 +19,7 @@ export const meta: MetaFunction = () => {
   };
 };
 
-export const handle = {
+export const handle: SendouRouteHandle = {
   i18n: "contributions",
 };
 

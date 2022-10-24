@@ -96,8 +96,8 @@
 
 .u__extra-info {
   padding: var(--s-1) var(--s-1-5);
-  background-color: var(--bg-darker);
   border-radius: var(--rounded);
+  background-color: var(--bg-darker);
   font-size: var(--fonts-xxs);
 }
 
@@ -111,8 +111,8 @@
   max-width: 24rem;
   align-items: center;
   padding: var(--s-2);
-  background-color: var(--bg-badge);
   border-radius: var(--rounded);
+  background-color: var(--bg-badge);
   margin-inline: auto;
 }
 
@@ -147,8 +147,19 @@
   font-weight: var(--bold);
 }
 
-.u__results-section {
+.u__results-table-wrapper {
+  width: 100%;
   overflow-x: auto;
+}
+
+.u__results-table-highlights {
+  border: var(--s-2) solid var(--bg-lighter);
+  padding-inline: 0 !important;
+}
+
+.u__results-table-highlights > legend {
+  margin-inline-start: var(--s-2);
+  padding-inline: var(--s-1);
 }
 
 .u__results-players {

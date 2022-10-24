@@ -11,6 +11,7 @@ import { BUILDS_PAGE_BATCH_SIZE, BUILDS_PAGE_MAX_BUILDS } from "~/constants";
 import { db } from "~/db";
 import { i18next } from "~/modules/i18n";
 import { weaponIdIsNotAlt } from "~/modules/in-game-lists";
+import { type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { weaponNameSlugToId } from "~/utils/unslugify.server";
 
@@ -40,15 +41,26 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     BUILDS_PAGE_MAX_BUILDS
   );
 
+  const weaponName = t(`weapons:MAIN_${weaponId}`);
+
   return {
     weaponId,
-    title: makeTitle([t(`weapons:MAIN_${weaponId}`), t("common:pages.builds")]),
+    weaponName,
+    title: makeTitle([weaponName, t("common:pages.builds")]),
     builds: db.builds.buildsByWeaponId({
       weaponId,
       limit,
     }),
     limit,
   };
+};
+
+export const handle: SendouRouteHandle = {
+  breadcrumb: ({ match }) => {
+    const data = match.data as SerializeFrom<typeof loader> | null;
+
+    return data ? data.weaponName : "Unknown";
+  },
 };
 
 export default function WeaponsBuildsPage() {

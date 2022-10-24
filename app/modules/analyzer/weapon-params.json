@@ -1246,6 +1246,7 @@
       }
     },
     "12": {
+      "ArmorHP": 5000,
       "overwrites": {
         "SpecialDurationFrame": {
           "High": 660,

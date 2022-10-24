@@ -44,6 +44,7 @@ import {
   badRequestIfFalsy,
   parseRequestFormData,
   validate,
+  type SendouRouteHandle,
 } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { calendarEventPage } from "~/utils/urls";
@@ -181,7 +182,7 @@ export const action: ActionFunction = async ({ request }) => {
   }
 };
 
-export const handle = {
+export const handle: SendouRouteHandle = {
   i18n: "calendar",
 };
 

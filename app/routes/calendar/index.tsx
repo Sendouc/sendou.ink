@@ -25,6 +25,7 @@ import type { Unpacked } from "~/utils/types";
 import { calendarReportWinnersPage, resolveBaseUrl } from "~/utils/urls";
 import { actualNumber } from "~/utils/zod";
 import { Tags } from "./components/Tags";
+import { type SendouRouteHandle } from "~/utils/remix";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -45,8 +46,9 @@ export const meta: MetaFunction = (args) => {
   };
 };
 
-export const handle = {
+export const handle: SendouRouteHandle = {
   i18n: "calendar",
+  navItemName: "calendar",
 };
 
 const loaderSearchParamsSchema = z.object({
