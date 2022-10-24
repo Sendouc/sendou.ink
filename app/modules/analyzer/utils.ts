@@ -1,4 +1,5 @@
 import type { Ability, BuildAbilitiesTupleWithUnknown } from "../in-game-lists";
+import { mainWeaponIds, weaponCategories } from "../in-game-lists";
 import { abilities } from "../in-game-lists";
 import weaponParamsJson from "./weapon-params.json";
 import abilityValuesJson from "./ability-values.json";
@@ -10,7 +11,7 @@ import type {
   SubWeaponParams,
 } from "./types";
 import invariant from "tiny-invariant";
-import type { AbilityWithUnknown } from "../in-game-lists/types";
+import type { AbilityWithUnknown, MainWeaponId } from "../in-game-lists/types";
 
 export function weaponParams(): ParamsJson {
   return weaponParamsJson as ParamsJson;
@@ -149,4 +150,32 @@ export function hasEffect({
   const [high, mid, low] = abilityValues({ key, weapon });
 
   return high !== mid || mid !== low;
+}
+
+export function validatedWeaponIdFromSearchParams(
+  searchParams: URLSearchParams
+): MainWeaponId {
+  const weaponId = searchParams.get("weapon")
+    ? Number(searchParams.get("weapon"))
+    : null;
+
+  if (mainWeaponIds.includes(weaponId as any)) {
+    return weaponId as MainWeaponId;
+  }
+
+  return weaponCategories[0].weaponIds[0];
+}
+
+export const hpDivided = (hp: number) => hp / 10;
+
+export function possibleApValues() {
+  const uniqueValues = new Set<number>();
+
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 10; j++) {
+      uniqueValues.add(i * 10 + j * 3);
+    }
+  }
+
+  return Array.from(uniqueValues).sort((a, b) => a - b);
 }

@@ -1,5 +1,9 @@
 import { sql } from "../../sql";
-import type { User, UserWithPlusTier } from "../../types";
+import type {
+  CalendarEventResultTeam,
+  User,
+  UserWithPlusTier,
+} from "../../types";
 
 import upsertSql from "./upsert.sql";
 import updateProfileSql from "./updateProfile.sql";
@@ -12,6 +16,8 @@ import updateDiscordIdSql from "./updateDiscordId.sql";
 import findByIdentifierSql from "./findByIdentifier.sql";
 import findAllPlusMembersSql from "./findAllPlusMembers.sql";
 import findAllPatronsSql from "./findAllPatrons.sql";
+import addResultHighlightSql from "./addResultHighlight.sql";
+import deleteAllResultHighlightsSql from "./deleteAllResultHighlights.sql";
 
 const upsertStm = sql.prepare(upsertSql);
 export function upsert(
@@ -123,3 +129,18 @@ export type FindAllPatrons = Array<
 export function findAllPatrons() {
   return findAllPatronsStm.all() as FindAllPatrons;
 }
+
+const deleteAllResultHighlightsStm = sql.prepare(deleteAllResultHighlightsSql);
+const addResultHighlightStm = sql.prepare(addResultHighlightSql);
+export type UpdateResultHighlightsArgs = {
+  userId: User["id"];
+  resultTeamIds: Array<CalendarEventResultTeam["id"]>;
+};
+export const updateResultHighlights = sql.transaction(
+  ({ userId, resultTeamIds }: UpdateResultHighlightsArgs) => {
+    deleteAllResultHighlightsStm.run({ userId });
+    for (const teamId of resultTeamIds) {
+      addResultHighlightStm.run({ userId, teamId });
+    }
+  }
+);

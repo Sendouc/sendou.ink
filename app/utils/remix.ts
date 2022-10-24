@@ -1,4 +1,7 @@
 import { z } from "zod";
+import { type TFunction, type Namespace } from "react-i18next";
+import { type RouteMatch } from "@remix-run/react";
+import type navItems from "~/components/layout/nav-items.json";
 
 export function notFoundIfFalsy<T>(value: T | null | undefined): T {
   if (!value) throw new Response(null, { status: 404 });
@@ -89,3 +92,27 @@ export function validate(condition: any, status = 400): asserts condition {
 
   throw new Response(null, { status });
 }
+
+/**
+ * Our custom type for route handles - the keys are defined by us or
+ * libraries that parse them.
+ *
+ * Can be set per route using `export const handle: SendouRouteHandle = { };`
+ * Can be accessed for all currently active routes via the `useMatches()` hook.
+ */
+export type SendouRouteHandle = {
+  /** The i18n translation files used for this route, via remix-i18next */
+  i18n?: Namespace;
+
+  /**
+   * A function that returns the breadcrumb text that should be displayed in
+   * the <Breadcrumb> component
+   */
+  breadcrumb?: (args: {
+    match: RouteMatch;
+    t: TFunction<"common", undefined>;
+  }) => string | undefined;
+
+  /** The name of a navItem that is active on this route. See nav-items.json */
+  navItemName?: typeof navItems[number]["name"];
+};

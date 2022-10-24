@@ -8,10 +8,16 @@
   "pages.faq": "FAQ",
   "pages.builds": "Ausrüstungen",
   "pages.analyzer": "Ausrüstungs-Analyse",
+  "pages.maps": "Arenen-Listen",
 
   "header.profile": "Profil",
   "header.logout": "Ausloggen",
   "header.login": "Einloggen",
+
+  "auth.errors.aborted": "Einloggen abgebrochen",
+  "auth.errors.failed": "Einloggen fehlgeschlagen",
+  "auth.errors.discordPermissions": "Für dein sendou.ink-Profil benötigt die Seite Zugriff auf den Namen, Avatar und verbundene Social-Media-Accounts in deinem Discord-Profil.",
+  "auth.errors.unknown": "Das Einloggen via Discord ist aus unbekannten Gründen fehlgeschlagen. Falls dies wiederholt auftritt, kontaktiere uns bitte.",
 
   "footer.github.subtitle": "Sourcecode",
   "footer.twitter.subtitle": "Updates",
@@ -27,6 +33,12 @@
   "actions.remove": "Entfernen",
   "actions.delete": "Löschen",
   "actions.loadMore": "Mehr laden",
+  "actions.close": "Schließen",
+
+  "maps.createMapList": "Arenen-Liste erstellen",
+  "maps.halfSz": "50% Herrschaft",
+  "maps.mapPool": "Arenen-Pool",
+  "maps.tournamentMaplist": "Arenen-Liste für Turnier erstellen (maps.iplabs.ink)",
 
   "results": "Ergebnisse",
 

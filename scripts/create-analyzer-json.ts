@@ -314,7 +314,10 @@ function parametersToSpecialWeaponResult(params: any) {
     resultUnwrapped["SplashAroundPaintRadius"] = undefined;
   }
 
-  return { overwrites: resultUnwrapped };
+  return {
+    ArmorHP: params["WeaponSpChariotParam"]?.["ArmorHP"],
+    overwrites: resultUnwrapped,
+  };
 }
 
 function unwrapSubSpecialSpecUpList(result: any) {

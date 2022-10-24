@@ -10,7 +10,11 @@ import { BUILD } from "~/constants";
 import { db } from "~/db";
 import { getUser, requireUser, useUser } from "~/modules/auth";
 import { atOrError } from "~/utils/arrays";
-import { notFoundIfFalsy, parseRequestFormData } from "~/utils/remix";
+import {
+  notFoundIfFalsy,
+  parseRequestFormData,
+  type SendouRouteHandle,
+} from "~/utils/remix";
 import { userNewBuildPage } from "~/utils/urls";
 import { actualNumber, id } from "~/utils/zod";
 import { type UserPageLoaderData, userParamsSchema } from "../../u.$identifier";
@@ -39,7 +43,7 @@ export const action: ActionFunction = async ({ request }) => {
   return null;
 };
 
-export const handle = {
+export const handle: SendouRouteHandle = {
   i18n: ["weapons", "builds"],
 };
 

@@ -25,8 +25,8 @@
   flex-grow: 1;
   align-items: center;
   justify-content: space-between;
-  background-color: var(--bg-lighter);
   border-radius: var(--rounded);
+  background-color: var(--bg-lighter);
   font-size: var(--fonts-xs);
   font-weight: var(--semi-bold);
   gap: var(--s-2);
@@ -51,8 +51,8 @@
   padding: 0;
   padding: var(--s-1-5);
   border: none;
-  background-color: var(--bg-darker);
   border-radius: var(--rounded);
+  background-color: var(--bg-darker);
   color: var(--theme);
   opacity: 1 !important;
   outline: initial;
@@ -71,7 +71,7 @@
 }
 
 .maps__mode.selected {
-  filter: grayscale(0%);
+  filter: unset;
 }
 
 .maps__map-list-creator {

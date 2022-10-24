@@ -1,3 +1,4 @@
+import type { ErrorBoundaryComponent } from "@remix-run/node";
 import {
   json,
   type LinksFunction,
@@ -32,6 +33,7 @@ import { Theme, ThemeHead, useTheme, ThemeProvider } from "./modules/theme";
 import { getThemeSession } from "./modules/theme/session.server";
 import { COMMON_PREVIEW_IMAGE } from "./utils/urls";
 import { ConditionalScrollRestoration } from "./components/ConditionalScrollRestoration";
+import { type SendouRouteHandle } from "~/utils/remix";
 
 export const unstable_shouldReload: ShouldReloadFunction = ({ url }) => {
   // reload on language change so the selected language gets set into the cookie
@@ -94,7 +96,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   );
 };
 
-export const handle = {
+export const handle: SendouRouteHandle = {
   i18n: "common",
 };
 
@@ -155,7 +157,9 @@ export function CatchBoundary() {
   );
 }
 
-export function ErrorBoundary() {
+export const ErrorBoundary: ErrorBoundaryComponent = ({ error }) => {
+  console.error(error);
+
   return (
     <ThemeProvider specifiedTheme={Theme.DARK}>
       <Document>
@@ -163,4 +167,4 @@ export function ErrorBoundary() {
       </Document>
     </ThemeProvider>
   );
-}
+};

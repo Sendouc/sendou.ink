@@ -10,5 +10,10 @@
   "STAGE_8": "Perlmutt-Akademie",
   "STAGE_9": "Störwerft",
   "STAGE_10": "Cetacea-Markt",
-  "STAGE_11": "Flunder-Funpark"
+  "STAGE_11": "Flunder-Funpark",
+  "MODE_SHORT_TW": "RK",
+  "MODE_SHORT_SZ": "HS",
+  "MODE_SHORT_TC": "TK",
+  "MODE_SHORT_RM": "OG",
+  "MODE_SHORT_CB": "MC"
 }

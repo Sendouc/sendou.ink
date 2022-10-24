@@ -14,31 +14,22 @@
 
 **11/11**
 
-### 🟡 calendar.json
+### 🟢 calendar.json
 
-**44/46**
-
-<details>
-<summary>Missing</summary>
-
-- createMapList
-- forms.mapPool
-
-</details>
+**46/46**
 
 ### 🟡 common.json
 
-**49/55**
+**55/60**
 
 <details>
 <summary>Missing</summary>
 
-- pages.maps
-- actions.copyToClipboard
-- maps.createMapList
-- maps.halfSz
-- maps.mapPool
-- maps.tournamentMaplist
+- auth.errors.aborted
+- auth.errors.failed
+- auth.errors.discordPermissions
+- auth.errors.unknown
+- actions.close
 
 </details>
 
@@ -50,52 +41,26 @@
 
 **6/6**
 
-### 🟡 front.json
+### 🟢 front.json
 
-**10/11**
+**11/11**
 
-<details>
-<summary>Missing</summary>
+### 🟢 game-misc.json
 
-- maps.description
-
-</details>
-
-### 🟡 game-misc.json
-
-**12/17**
-
-<details>
-<summary>Missing</summary>
-
-- MODE_SHORT_TW
-- MODE_SHORT_SZ
-- MODE_SHORT_TC
-- MODE_SHORT_RM
-- MODE_SHORT_CB
-
-</details>
+**17/17**
 
 ### 🟡 user.json
 
-**7/20**
+**20/25**
 
 <details>
 <summary>Missing</summary>
 
-- customUrl
-- ign
-- ign.short
-- stickSens
-- motionSens
-- motion
-- stick
-- sens
-- results.participants
-- forms.errors.invalidCustomUrl.numbers
-- forms.errors.invalidCustomUrl.strangeCharacter
-- forms.errors.invalidCustomUrl.duplicate
-- forms.errors.invalidSens
+- results.title
+- results.highlights
+- results.nonHighlights
+- results.highlights.choose
+- results.highlights.explanation
 
 </details>
 
@@ -115,31 +80,18 @@
 
 **11/11**
 
-### 🟡 calendar.json
+### 🟢 calendar.json
 
-**44/46**
-
-<details>
-<summary>Missing</summary>
-
-- createMapList
-- forms.mapPool
-
-</details>
+**46/46**
 
 ### 🟡 common.json
 
-**49/55**
+**59/60**
 
 <details>
 <summary>Missing</summary>
 
-- pages.maps
 - actions.copyToClipboard
-- maps.createMapList
-- maps.halfSz
-- maps.mapPool
-- maps.tournamentMaplist
 
 </details>
 
@@ -151,35 +103,17 @@
 
 **6/6**
 
-### 🟡 front.json
+### 🟢 front.json
 
-**10/11**
+**11/11**
 
-<details>
-<summary>Missing</summary>
+### 🟢 game-misc.json
 
-- maps.description
-
-</details>
-
-### 🟡 game-misc.json
-
-**12/17**
-
-<details>
-<summary>Missing</summary>
-
-- MODE_SHORT_TW
-- MODE_SHORT_SZ
-- MODE_SHORT_TC
-- MODE_SHORT_RM
-- MODE_SHORT_CB
-
-</details>
+**17/17**
 
 ### 🟢 user.json
 
-**20/20**
+**25/25**
 
 ---
 
@@ -220,14 +154,19 @@
 
 ### 🟡 common.json
 
-**48/55**
+**48/60**
 
 <details>
 <summary>Missing</summary>
 
 - pages.s2
 - pages.maps
+- auth.errors.aborted
+- auth.errors.failed
+- auth.errors.discordPermissions
+- auth.errors.unknown
 - actions.copyToClipboard
+- actions.close
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool
@@ -271,7 +210,7 @@
 
 ### 🟡 user.json
 
-**7/20**
+**7/25**
 
 <details>
 <summary>Missing</summary>
@@ -284,7 +223,12 @@
 - motion
 - stick
 - sens
+- results.title
 - results.participants
+- results.highlights
+- results.nonHighlights
+- results.highlights.choose
+- results.highlights.explanation
 - forms.errors.invalidCustomUrl.numbers
 - forms.errors.invalidCustomUrl.strangeCharacter
 - forms.errors.invalidCustomUrl.duplicate
@@ -331,7 +275,7 @@
 
 ### 🟡 common.json
 
-**46/55**
+**46/60**
 
 <details>
 <summary>Missing</summary>
@@ -339,8 +283,13 @@
 - pages.s2
 - pages.analyzer
 - pages.maps
+- auth.errors.aborted
+- auth.errors.failed
+- auth.errors.discordPermissions
+- auth.errors.unknown
 - actions.loadMore
 - actions.copyToClipboard
+- actions.close
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool
@@ -394,7 +343,7 @@
 
 ### 🟡 user.json
 
-**7/20**
+**7/25**
 
 <details>
 <summary>Missing</summary>
@@ -407,7 +356,12 @@
 - motion
 - stick
 - sens
+- results.title
 - results.participants
+- results.highlights
+- results.nonHighlights
+- results.highlights.choose
+- results.highlights.explanation
 - forms.errors.invalidCustomUrl.numbers
 - forms.errors.invalidCustomUrl.strangeCharacter
 - forms.errors.invalidCustomUrl.duplicate
@@ -437,7 +391,7 @@
 
 ### 🔴 common.json
 
-**0/55**
+**0/60**
 
 ### 🔴 contributions.json
 
@@ -468,7 +422,7 @@
 
 ### 🔴 user.json
 
-**0/20**
+**0/25**
 
 ---
 
@@ -588,7 +542,7 @@
 
 ### 🟡 common.json
 
-**46/55**
+**46/60**
 
 <details>
 <summary>Missing</summary>
@@ -596,8 +550,13 @@
 - pages.s2
 - pages.analyzer
 - pages.maps
+- auth.errors.aborted
+- auth.errors.failed
+- auth.errors.discordPermissions
+- auth.errors.unknown
 - actions.loadMore
 - actions.copyToClipboard
+- actions.close
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool
@@ -650,7 +609,7 @@
 
 ### 🟡 user.json
 
-**7/20**
+**7/25**
 
 <details>
 <summary>Missing</summary>
@@ -663,7 +622,12 @@
 - motion
 - stick
 - sens
+- results.title
 - results.participants
+- results.highlights
+- results.nonHighlights
+- results.highlights.choose
+- results.highlights.explanation
 - forms.errors.invalidCustomUrl.numbers
 - forms.errors.invalidCustomUrl.strangeCharacter
 - forms.errors.invalidCustomUrl.duplicate
@@ -701,7 +665,7 @@
 
 ### 🟡 common.json
 
-**35/55**
+**35/60**
 
 <details>
 <summary>Missing</summary>
@@ -709,8 +673,13 @@
 - pages.s2
 - pages.analyzer
 - pages.maps
+- auth.errors.aborted
+- auth.errors.failed
+- auth.errors.discordPermissions
+- auth.errors.unknown
 - actions.loadMore
 - actions.copyToClipboard
+- actions.close
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool
@@ -774,7 +743,7 @@
 
 ### 🟡 user.json
 
-**7/20**
+**7/25**
 
 <details>
 <summary>Missing</summary>
@@ -787,7 +756,12 @@
 - motion
 - stick
 - sens
+- results.title
 - results.participants
+- results.highlights
+- results.nonHighlights
+- results.highlights.choose
+- results.highlights.explanation
 - forms.errors.invalidCustomUrl.numbers
 - forms.errors.invalidCustomUrl.strangeCharacter
 - forms.errors.invalidCustomUrl.duplicate
@@ -825,14 +799,19 @@
 
 ### 🟡 common.json
 
-**48/55**
+**48/60**
 
 <details>
 <summary>Missing</summary>
 
 - pages.analyzer
 - pages.maps
+- auth.errors.aborted
+- auth.errors.failed
+- auth.errors.discordPermissions
+- auth.errors.unknown
 - actions.copyToClipboard
+- actions.close
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool
@@ -876,12 +855,17 @@
 
 ### 🟡 user.json
 
-**19/20**
+**19/25**
 
 <details>
 <summary>Missing</summary>
 
+- results.title
 - results.participants
+- results.highlights
+- results.nonHighlights
+- results.highlights.choose
+- results.highlights.explanation
 
 </details>
 
@@ -915,7 +899,7 @@
 
 ### 🟡 common.json
 
-**35/55**
+**35/60**
 
 <details>
 <summary>Missing</summary>
@@ -923,8 +907,13 @@
 - pages.s2
 - pages.analyzer
 - pages.maps
+- auth.errors.aborted
+- auth.errors.failed
+- auth.errors.discordPermissions
+- auth.errors.unknown
 - actions.loadMore
 - actions.copyToClipboard
+- actions.close
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool
@@ -988,7 +977,7 @@
 
 ### 🟡 user.json
 
-**7/20**
+**7/25**
 
 <details>
 <summary>Missing</summary>
@@ -1001,7 +990,12 @@
 - motion
 - stick
 - sens
+- results.title
 - results.participants
+- results.highlights
+- results.nonHighlights
+- results.highlights.choose
+- results.highlights.explanation
 - forms.errors.invalidCustomUrl.numbers
 - forms.errors.invalidCustomUrl.strangeCharacter
 - forms.errors.invalidCustomUrl.duplicate
@@ -1039,7 +1033,7 @@
 
 ### 🟡 common.json
 
-**35/55**
+**35/60**
 
 <details>
 <summary>Missing</summary>
@@ -1047,8 +1041,13 @@
 - pages.s2
 - pages.analyzer
 - pages.maps
+- auth.errors.aborted
+- auth.errors.failed
+- auth.errors.discordPermissions
+- auth.errors.unknown
 - actions.loadMore
 - actions.copyToClipboard
+- actions.close
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool
@@ -1112,7 +1111,7 @@
 
 ### 🟡 user.json
 
-**7/20**
+**7/25**
 
 <details>
 <summary>Missing</summary>
@@ -1125,7 +1124,12 @@
 - motion
 - stick
 - sens
+- results.title
 - results.participants
+- results.highlights
+- results.nonHighlights
+- results.highlights.choose
+- results.highlights.explanation
 - forms.errors.invalidCustomUrl.numbers
 - forms.errors.invalidCustomUrl.strangeCharacter
 - forms.errors.invalidCustomUrl.duplicate

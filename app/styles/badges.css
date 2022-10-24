@@ -2,8 +2,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: var(--bg-badge);
   border-radius: var(--rounded);
+  background-color: var(--bg-badge);
   color: var(--badge-text);
   gap: var(--s-6);
   padding-block: var(--s-2);

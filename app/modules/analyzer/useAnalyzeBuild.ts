@@ -3,10 +3,8 @@ import { EMPTY_BUILD } from "~/constants";
 import {
   type BuildAbilitiesTupleWithUnknown,
   type MainWeaponId,
-  mainWeaponIds,
   abilities,
   isAbility,
-  weaponCategories,
 } from "../in-game-lists";
 import type {
   Ability,
@@ -17,7 +15,10 @@ import { MAX_LDE_INTENSITY } from "./constants";
 import { applySpecialEffects, SPECIAL_EFFECTS } from "./specialEffects";
 import { buildStats } from "./stats";
 import type { SpecialEffectType } from "./types";
-import { buildToAbilityPoints } from "./utils";
+import {
+  buildToAbilityPoints,
+  validatedWeaponIdFromSearchParams,
+} from "./utils";
 
 const UNKNOWN_SHORT = "U";
 
@@ -86,20 +87,6 @@ function serializeBuild(build: BuildAbilitiesTupleWithUnknown) {
     .flat()
     .map((ability) => (ability === "UNKNOWN" ? UNKNOWN_SHORT : ability))
     .join(",");
-}
-
-function validatedWeaponIdFromSearchParams(
-  searchParams: URLSearchParams
-): MainWeaponId {
-  const weaponId = searchParams.get("weapon")
-    ? Number(searchParams.get("weapon"))
-    : null;
-
-  if (mainWeaponIds.includes(weaponId as any)) {
-    return weaponId as MainWeaponId;
-  }
-
-  return weaponCategories[0].weaponIds[0];
 }
 
 function validatedBuildFromSearchParams(

@@ -8,6 +8,7 @@
   "participatedCount": "{{count}} hold deltog",
   "members": "Medlemmer",
   "results": "Resultater",
+  "createMapList": "Lav bane-liste",
 
   "forms.dates": "Datoer",
   "forms.bracketUrl": "Turneringsplans-URL",
@@ -17,6 +18,7 @@
   "forms.tags.info": "\"Præmiemærker\" tag tilføjes automatisk, hvis den er anvendelig",
   "forms.badges": "Præmiemærker",
   "forms.badges.placeholder": "Vælg et premiemærke",
+  "forms.mapPool": "Banepulje",
 
   "forms.participantCount": "Antal deltagere",
   "forms.reportResultsHeader": "Viser resultater for {{eventName}}",

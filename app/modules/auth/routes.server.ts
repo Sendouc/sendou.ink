@@ -1,7 +1,7 @@
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { canPerformAdminActions } from "~/permissions";
-import { ADMIN_PAGE } from "~/utils/urls";
+import { ADMIN_PAGE, authErrorUrl } from "~/utils/urls";
 import {
   authenticator,
   DISCORD_AUTH_KEY,
@@ -11,11 +11,19 @@ import { authSessionStorage } from "./session.server";
 import { getUser } from "./user.server";
 
 export const callbackLoader: LoaderFunction = async ({ request }) => {
+  const url = new URL(request.url);
+  if (url.searchParams.get("error") === "access_denied") {
+    // The user denied the authentication request
+    // This is part of the oauth2 protocol, but remix-auth-oauth2 doesn't do
+    // nice error handling for this case.
+    // https://www.oauth.com/oauth2-servers/server-side-apps/possible-errors/
+
+    return redirect(authErrorUrl("aborted"));
+  }
+
   await authenticator.authenticate(DISCORD_AUTH_KEY, request, {
     successRedirect: "/",
-    // TODO: should include query param that displays an error banner explaining that log in went wrong
-    // and where to get help for that
-    failureRedirect: "/",
+    failureRedirect: authErrorUrl("unknown"),
   });
 
   throw new Response("Unknown authentication state", { status: 500 });

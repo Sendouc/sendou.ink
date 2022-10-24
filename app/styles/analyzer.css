@@ -27,8 +27,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--theme-transparent);
   border-radius: var(--rounded);
+  background-color: var(--theme-transparent);
   gap: var(--s-1);
   padding-block: var(--s-1);
   padding-inline: var(--s-1-5);
@@ -47,8 +47,8 @@
 
 .analyzer__ap-summary {
   width: 100%;
-  background-color: var(--bg-lighter);
   border-radius: var(--rounded);
+  background-color: var(--bg-lighter);
   font-size: var(--fonts-xxs);
   font-weight: var(--semi-bold);
   padding-block: var(--s-1);
@@ -62,8 +62,8 @@
 }
 
 .analyzer__summary {
-  background-color: var(--bg-lighter);
   border-radius: var(--rounded);
+  background-color: var(--bg-lighter);
   font-size: var(--fonts-md);
   font-weight: var(--bold);
   padding-block: var(--s-2);
@@ -82,8 +82,8 @@
   flex-direction: column;
   justify-content: space-between;
   padding: var(--s-2);
-  background-color: var(--bg-darker);
   border-radius: var(--rounded);
+  background-color: var(--bg-darker);
   gap: var(--s-4);
 }
 
@@ -151,8 +151,8 @@
 .analyzer__table-container {
   width: 100%;
   padding: var(--s-3);
-  background-color: var(--bg-darker);
   border-radius: var(--rounded);
+  background-color: var(--bg-darker);
   margin-block-start: var(--s-4);
   padding-block: var(--s-2);
 }
@@ -176,8 +176,8 @@
 }
 
 .analyzer__patch {
-  background-color: var(--theme-transparent);
   border-radius: var(--rounded);
+  background-color: var(--theme-transparent);
   color: var(--text-lighter);
   font-size: var(--fonts-xxxs);
   font-weight: var(--bold);
