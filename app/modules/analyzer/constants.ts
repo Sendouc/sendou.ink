@@ -4,21 +4,19 @@ export const MAX_LDE_INTENSITY = 21;
 export const MAX_AP = 57;
 
 export const DAMAGE_RECEIVERS = [
-  "Bomb_TorpedoBullet", // Torpedo
   "Chariot", // Crab Tank
-  "Gachihoko_Barrier", // Rainmaker Shield
-  "GreatBarrier_Barrier", // Big Bubbler Shield
-  "GreatBarrier_WeakPoint", // Big Bubbler Weak Point
-  // "InkRail", // InkRail
   "NiceBall_Armor", // Booyah Bomb Armor
   "ShockSonar", // Wave Breaker
-  // "Sponge_Versus", // Sponge
-  "Wsb_Flag", // Squid Beakon
-  "Wsb_Shield", // Splash Wall
-  "Wsb_Sprinkler", // Sprinkler
+  "GreatBarrier_Barrier", // Big Bubbler Shield
+  "GreatBarrier_WeakPoint", // Big Bubbler Weak Point
+  "Gachihoko_Barrier", // Rainmaker Shield
   "BulletUmbrellaCanopyCompact", // Undercover Brella Canopy
   "BulletUmbrellaCanopyNormal", // Splat Brella Canopy
   "BulletUmbrellaCanopyWide", // Tenta Brella Canopy
+  "Wsb_Flag", // Squid Beakon
+  "Wsb_Shield", // Splash Wall
+  "Wsb_Sprinkler", // Sprinkler
+  "Bomb_TorpedoBullet", // Torpedo
 ] as const;
 
 export const DAMAGE_TYPE = [
