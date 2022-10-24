@@ -1,10 +1,24 @@
 {
+  "customUrl": "Пользовательский URL",
+  "ign": "Внутриигровое имя",
+  "ign.short": "Ник",
   "country": "Страна",
   "bio": "О себе",
+  "stickSens": "Чувствительность стика",
+  "motionSens": "Чувствительность наклона",
+  "motion": "Наклон",
+  "stick": "Стик",
+  "sens": "Чувствительность",
 
   "results.placing": "Место",
   "results.team": "Команда",
   "results.tournament": "Турнир",
+  "results.participants": "Участники",
   "results.date": "Дата",
-  "results.mates": "Напарники"
+  "results.mates": "Напарники",
+
+  "forms.errors.invalidCustomUrl.numbers": "Пользовательский URL не может содержать только цифры",
+  "forms.errors.invalidCustomUrl.strangeCharacter": "Пользовательский URL не может содержать особые символы",
+  "forms.errors.invalidCustomUrl.duplicate": "Кто-то уже использует этот пользовательский URL",
+  "forms.errors.invalidSens": "Чувствительность наклона не может быть указана, если не указана чувствительность стика"
 }
