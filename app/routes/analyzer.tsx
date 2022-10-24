@@ -545,6 +545,11 @@ export default function BuildAnalyzerPage() {
               suffix={t("analyzer:suffix.seconds")}
             />
             <StatCard
+              stat={analyzed.stats.quickRespawnTimeSplattedByRP}
+              title={t("analyzer:stat.quickRespawnTimeSplattedByRP")}
+              suffix={t("analyzer:suffix.seconds")}
+            />
+            <StatCard
               stat={analyzed.stats.superJumpTimeGroundFrames}
               title={t("analyzer:stat.superJumpTimeGround")}
             />

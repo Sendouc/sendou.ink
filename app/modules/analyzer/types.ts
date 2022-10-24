@@ -202,6 +202,7 @@ export interface AnalyzedBuild {
     damageTakenInEnemyInkPerSecond: Stat;
     enemyInkDamageLimit: Stat;
     quickRespawnTime: Stat;
+    quickRespawnTimeSplattedByRP: Stat;
     superJumpTimeGroundFrames: Stat;
     superJumpTimeTotal: Stat;
     shotSpreadAir?: Stat;

@@ -97,7 +97,8 @@ export function buildStats({
       enemyInkDamageLimit: enemyInkDamageLimit(input),
       framesBeforeTakingDamageInEnemyInk:
         framesBeforeTakingDamageInEnemyInk(input),
-      quickRespawnTime: quickRespawnTime(input),
+      quickRespawnTime: respawnTime(input),
+      quickRespawnTimeSplattedByRP: respawnTime(input, true),
       superJumpTimeGroundFrames: superJumpTimeGroundFrames(input),
       superJumpTimeTotal: superJumpTimeTotal(input),
       shotSpreadAir: shotSpreadAir(input),
@@ -516,9 +517,11 @@ function swimSpeed(
 
 const RESPAWN_CHASE_FRAME = 150;
 const OWN_RESPAWN_PUNISHER_EXTRA_RESPAWN_FRAMES = 68;
+const ENEMY_RESPAWN_PUNISHER_EXTRA_RESPAWN_FRAMES = 45;
 const SPLATOON_3_FASTER_RESPAWN = 60;
-function quickRespawnTime(
-  args: StatFunctionInput
+function respawnTime(
+  args: StatFunctionInput,
+  splattedByRP = false
 ): AnalyzedBuild["stats"]["quickRespawnTime"] {
   const QUICK_RESPAWN_TIME_ABILITY = "QR";
   const hasRespawnPunisher = args.mainOnlyAbilities.includes("RP");
@@ -542,14 +545,19 @@ function quickRespawnTime(
     weapon: args.mainWeaponParams,
   });
 
-  const extraFrames = hasRespawnPunisher
+  const ownRPExtraFrames = hasRespawnPunisher
     ? OWN_RESPAWN_PUNISHER_EXTRA_RESPAWN_FRAMES
+    : 0;
+
+  const splattedByExtraFrames = splattedByRP
+    ? ENEMY_RESPAWN_PUNISHER_EXTRA_RESPAWN_FRAMES
     : 0;
 
   return {
     baseValue: framesToSeconds(
       RESPAWN_CHASE_FRAME +
         chase.baseEffect +
+        splattedByExtraFrames +
         around.baseEffect -
         SPLATOON_3_FASTER_RESPAWN
     ),
@@ -557,7 +565,8 @@ function quickRespawnTime(
       RESPAWN_CHASE_FRAME +
         chase.effect +
         around.effect +
-        extraFrames -
+        splattedByExtraFrames +
+        ownRPExtraFrames -
         SPLATOON_3_FASTER_RESPAWN
     ),
     modifiedBy: [QUICK_RESPAWN_TIME_ABILITY, "RP"],

@@ -19,6 +19,7 @@
   "stat.whiteInk": "No ink recovery time after usage",
   "stat.squidFormInkRecoverySeconds": "Ink tank full recovery time (squid form)",
   "stat.quickRespawnTime": "Quick respawn time",
+  "stat.quickRespawnTimeSplattedByRP": "Quick Respawn time (splatted by RP user)",
   "stat.superJumpTimeGround": "Super jump vulnerable frames",
   "stat.superJumpTimeTotal": "Super jump time (total)",
   "stat.jumpShotSpread": "Shot spread in degrees (jumping)",
