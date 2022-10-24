@@ -75,7 +75,8 @@ export function buildStats({
     },
     stats: {
       specialPoint: specialPoint(input),
-      specialSavedAfterDeath: specialSavedAfterDeath(input),
+      specialLost: specialLost(input),
+      specialLostSplattedByRP: specialLost(input, true),
       fullInkTankOptions: fullInkTankOptions(input),
       damages: damages(input),
       mainWeaponWhiteInkSeconds:
@@ -166,11 +167,11 @@ function specialPoint({
 }
 
 const OWN_RESPAWN_PUNISHER_EXTRA_SPECIAL_LOST = 0.225;
-function specialSavedAfterDeath({
-  abilityPoints,
-  mainWeaponParams,
-  mainOnlyAbilities,
-}: StatFunctionInput): AnalyzedBuild["stats"]["specialPoint"] {
+const ENEMY_RESPAWN_PUNISHER_EXTRA_SPECIAL_LOST = 0.15;
+function specialLost(
+  { abilityPoints, mainWeaponParams, mainOnlyAbilities }: StatFunctionInput,
+  splattedByRP = false
+): AnalyzedBuild["stats"]["specialPoint"] {
   const SPECIAL_SAVED_AFTER_DEATH_ABILITY = "SS";
   const hasRespawnPunisher = mainOnlyAbilities.includes("RP");
   const extraSpecialLost = hasRespawnPunisher
@@ -190,9 +191,17 @@ function specialSavedAfterDeath({
     weapon: mainWeaponParams,
   });
 
+  const splattedByExtraPenalty = splattedByRP
+    ? ENEMY_RESPAWN_PUNISHER_EXTRA_SPECIAL_LOST
+    : 0;
+
   return {
-    baseValue: specialSavedAfterDeathForDisplay(baseEffect),
-    value: specialSavedAfterDeathForDisplay(effect - extraSpecialLost),
+    baseValue: specialSavedAfterDeathForDisplay(
+      baseEffect - splattedByExtraPenalty
+    ),
+    value: specialSavedAfterDeathForDisplay(
+      effect - splattedByExtraPenalty - extraSpecialLost
+    ),
     modifiedBy: [SPECIAL_SAVED_AFTER_DEATH_ABILITY, "RP"],
   };
 }

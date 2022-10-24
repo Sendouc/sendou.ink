@@ -245,8 +245,13 @@ export default function BuildAnalyzerPage() {
               suffix={t("analyzer:suffix.specialPointsShort")}
             />
             <StatCard
-              stat={analyzed.stats.specialSavedAfterDeath}
+              stat={analyzed.stats.specialLost}
               title={t("analyzer:stat.specialLost")}
+              suffix="%"
+            />
+            <StatCard
+              stat={analyzed.stats.specialLostSplattedByRP}
+              title={t("analyzer:stat.specialLostSplattedByRP")}
               suffix="%"
             />
             {analyzed.stats.specialDurationInSeconds && (
