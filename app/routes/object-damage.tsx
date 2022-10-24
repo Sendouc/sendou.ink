@@ -90,6 +90,7 @@ export default function ObjectDamagePage() {
             <Ability ability="SPU" size="TINY" />
           </Label>
           <select
+            className="object-damage__select"
             id="ap"
             value={abilityPoints}
             onChange={(e) =>
@@ -126,6 +127,7 @@ function DamageTypesSelect({
 
   return (
     <select
+      className="object-damage__select"
       id="damage"
       value={damageType}
       onChange={(e) =>
