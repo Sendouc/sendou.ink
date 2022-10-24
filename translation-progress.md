@@ -2,9 +2,24 @@
 
 ## /da (🟡 In progress)
 
-### 🟢 analyzer.json
+### 🟡 analyzer.json
 
-**94/94**
+**94/103**
+
+<details>
+<summary>Missing</summary>
+
+- stat.specialLostSplattedByRP
+- stat.quickRespawnTimeSplattedByRP
+- distanceInline
+- damageShort
+- hitsToDestroyLong
+- hitsToDestroyShort
+- labels.amountOf
+- labels.damageType
+- labels.weapon
+
+</details>
 
 ### 🟢 badges.json
 
@@ -20,11 +35,12 @@
 
 ### 🟡 common.json
 
-**55/60**
+**55/61**
 
 <details>
 <summary>Missing</summary>
 
+- pages.object-damage
 - auth.errors.aborted
 - auth.errors.failed
 - auth.errors.discordPermissions
@@ -68,9 +84,24 @@
 
 ## /de (🟡 In progress)
 
-### 🟢 analyzer.json
+### 🟡 analyzer.json
 
-**94/94**
+**94/103**
+
+<details>
+<summary>Missing</summary>
+
+- stat.specialLostSplattedByRP
+- stat.quickRespawnTimeSplattedByRP
+- distanceInline
+- damageShort
+- hitsToDestroyLong
+- hitsToDestroyShort
+- labels.amountOf
+- labels.damageType
+- labels.weapon
+
+</details>
 
 ### 🟢 badges.json
 
@@ -86,11 +117,12 @@
 
 ### 🟡 common.json
 
-**59/60**
+**59/61**
 
 <details>
 <summary>Missing</summary>
 
+- pages.object-damage
 - actions.copyToClipboard
 
 </details>
@@ -121,14 +153,23 @@
 
 ### 🟡 analyzer.json
 
-**91/94**
+**91/103**
 
 <details>
 <summary>Missing</summary>
 
+- stat.specialLostSplattedByRP
+- stat.quickRespawnTimeSplattedByRP
 - stat.shootingRunSpeed
 - stat.shootingRunSpeedCharging
 - stat.shootingRunSpeedFullCharge
+- distanceInline
+- damageShort
+- hitsToDestroyLong
+- hitsToDestroyShort
+- labels.amountOf
+- labels.damageType
+- labels.weapon
 
 </details>
 
@@ -154,13 +195,14 @@
 
 ### 🟡 common.json
 
-**48/60**
+**48/61**
 
 <details>
 <summary>Missing</summary>
 
 - pages.s2
 - pages.maps
+- pages.object-damage
 - auth.errors.aborted
 - auth.errors.failed
 - auth.errors.discordPermissions
@@ -242,14 +284,23 @@
 
 ### 🟡 analyzer.json
 
-**91/94**
+**91/103**
 
 <details>
 <summary>Missing</summary>
 
+- stat.specialLostSplattedByRP
+- stat.quickRespawnTimeSplattedByRP
 - stat.shootingRunSpeed
 - stat.shootingRunSpeedCharging
 - stat.shootingRunSpeedFullCharge
+- distanceInline
+- damageShort
+- hitsToDestroyLong
+- hitsToDestroyShort
+- labels.amountOf
+- labels.damageType
+- labels.weapon
 
 </details>
 
@@ -275,7 +326,7 @@
 
 ### 🟡 common.json
 
-**46/60**
+**46/61**
 
 <details>
 <summary>Missing</summary>
@@ -283,6 +334,7 @@
 - pages.s2
 - pages.analyzer
 - pages.maps
+- pages.object-damage
 - auth.errors.aborted
 - auth.errors.failed
 - auth.errors.discordPermissions
@@ -375,7 +427,7 @@
 
 ### 🔴 analyzer.json
 
-**0/94**
+**0/103**
 
 ### 🔴 badges.json
 
@@ -391,7 +443,7 @@
 
 ### 🔴 common.json
 
-**0/60**
+**0/61**
 
 ### 🔴 contributions.json
 
@@ -430,7 +482,7 @@
 
 ### 🟡 analyzer.json
 
-**12/94**
+**12/103**
 
 <details>
 <summary>Missing</summary>
@@ -440,9 +492,11 @@
 - stat.maxChargeHoldSeconds
 - stat.specialPoints
 - stat.specialLost
+- stat.specialLostSplattedByRP
 - stat.whiteInk
 - stat.squidFormInkRecoverySeconds
 - stat.quickRespawnTime
+- stat.quickRespawnTimeSplattedByRP
 - stat.superJumpTimeGround
 - stat.superJumpTimeTotal
 - stat.jumpShotSpread
@@ -517,6 +571,13 @@
 - abilityPoints.short
 - consumptionExplanation
 - trackingSubDefExplanation
+- distanceInline
+- damageShort
+- hitsToDestroyLong
+- hitsToDestroyShort
+- labels.amountOf
+- labels.damageType
+- labels.weapon
 
 </details>
 
@@ -542,7 +603,7 @@
 
 ### 🟡 common.json
 
-**46/60**
+**46/61**
 
 <details>
 <summary>Missing</summary>
@@ -550,6 +611,7 @@
 - pages.s2
 - pages.analyzer
 - pages.maps
+- pages.object-damage
 - auth.errors.aborted
 - auth.errors.failed
 - auth.errors.discordPermissions
@@ -641,7 +703,7 @@
 
 ### 🔴 analyzer.json
 
-**0/94**
+**0/103**
 
 ### 🟢 badges.json
 
@@ -665,7 +727,7 @@
 
 ### 🟡 common.json
 
-**35/60**
+**35/61**
 
 <details>
 <summary>Missing</summary>
@@ -673,6 +735,7 @@
 - pages.s2
 - pages.analyzer
 - pages.maps
+- pages.object-damage
 - auth.errors.aborted
 - auth.errors.failed
 - auth.errors.discordPermissions
@@ -773,9 +836,24 @@
 
 ## /nl (🟡 In progress)
 
-### 🟢 analyzer.json
+### 🟡 analyzer.json
 
-**94/94**
+**94/103**
+
+<details>
+<summary>Missing</summary>
+
+- stat.specialLostSplattedByRP
+- stat.quickRespawnTimeSplattedByRP
+- distanceInline
+- damageShort
+- hitsToDestroyLong
+- hitsToDestroyShort
+- labels.amountOf
+- labels.damageType
+- labels.weapon
+
+</details>
 
 ### 🟢 badges.json
 
@@ -799,13 +877,14 @@
 
 ### 🟡 common.json
 
-**48/60**
+**48/61**
 
 <details>
 <summary>Missing</summary>
 
 - pages.analyzer
 - pages.maps
+- pages.object-damage
 - auth.errors.aborted
 - auth.errors.failed
 - auth.errors.discordPermissions
@@ -875,7 +954,7 @@
 
 ### 🔴 analyzer.json
 
-**0/94**
+**0/103**
 
 ### 🟢 badges.json
 
@@ -899,7 +978,7 @@
 
 ### 🟡 common.json
 
-**35/60**
+**35/61**
 
 <details>
 <summary>Missing</summary>
@@ -907,6 +986,7 @@
 - pages.s2
 - pages.analyzer
 - pages.maps
+- pages.object-damage
 - auth.errors.aborted
 - auth.errors.failed
 - auth.errors.discordPermissions
@@ -1007,9 +1087,24 @@
 
 ## /zh (🟡 In progress)
 
-### 🟢 analyzer.json
+### 🟡 analyzer.json
 
-**94/94**
+**94/103**
+
+<details>
+<summary>Missing</summary>
+
+- stat.specialLostSplattedByRP
+- stat.quickRespawnTimeSplattedByRP
+- distanceInline
+- damageShort
+- hitsToDestroyLong
+- hitsToDestroyShort
+- labels.amountOf
+- labels.damageType
+- labels.weapon
+
+</details>
 
 ### 🟢 badges.json
 
@@ -1033,7 +1128,7 @@
 
 ### 🟡 common.json
 
-**35/60**
+**35/61**
 
 <details>
 <summary>Missing</summary>
@@ -1041,6 +1136,7 @@
 - pages.s2
 - pages.analyzer
 - pages.maps
+- pages.object-damage
 - auth.errors.aborted
 - auth.errors.failed
 - auth.errors.discordPermissions
