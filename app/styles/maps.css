@@ -1,9 +1,19 @@
 .maps__container {
-  max-width: 32rem;
+  max-width: 38rem;
+}
+
+.maps__pool-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .maps__pool-info {
-  font-size: var(--fonts-xxs);
+  font-size: var(--fonts-xs);
+  font-weight: var(--bold);
+}
+
+.maps__pool-info a {
   font-weight: var(--semi-bold);
 }
 
@@ -49,29 +59,27 @@
 
 .maps__mode-button {
   padding: 0;
-  padding: var(--s-1-5);
-  border: none;
-  border-radius: var(--rounded);
-  background-color: var(--bg-darker);
+  padding: var(--s-1);
+  border: 2px solid var(--bg-darker);
+  border-radius: var(--rounded-full);
+  background-color: transparent;
   color: var(--theme);
   opacity: 1 !important;
   outline: initial;
 }
 
 .maps__mode-button.selected {
-  background-color: var(--theme-very-transparent);
+  border: 2px solid transparent;
+  background-color: var(--bg-mode-active);
 }
 
 .maps__stage-image {
   border-radius: var(--rounded);
 }
 
-.maps__mode {
-  filter: grayscale(100%);
-}
-
-.maps__mode.selected {
-  filter: unset;
+.maps__mode:not(.selected) {
+  filter: var(--inactive-image-filter);
+  opacity: 0.6;
 }
 
 .maps__map-list-creator {
@@ -95,4 +103,10 @@
   font-size: var(--fonts-xs);
   font-weight: var(--semi-bold);
   margin-block-start: var(--s-4);
+}
+
+.maps__mode-abbr {
+  color: var(--text-lighter);
+  font-weight: var(--bold);
+  text-decoration: none;
 }

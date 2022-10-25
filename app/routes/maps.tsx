@@ -17,12 +17,7 @@ import { Main } from "~/components/Main";
 import { Toggle } from "~/components/Toggle";
 import { db } from "~/db";
 import { i18next } from "~/modules/i18n";
-import {
-  stageIds,
-  type ModeShort,
-  type ModeWithStage,
-  type StageId,
-} from "~/modules/in-game-lists";
+import { stageIds, type ModeWithStage } from "~/modules/in-game-lists";
 import {
   generateMapList,
   mapPoolToNonEmptyModes,
@@ -33,11 +28,18 @@ import styles from "~/styles/maps.css";
 import { makeTitle } from "~/utils/strings";
 import { calendarEventPage, ipLabsMaps } from "~/utils/urls";
 import { type SendouRouteHandle } from "~/utils/remix";
-import { MapPoolSelector } from "~/components/MapPoolSelector";
+import { MapPoolSelector, MapPoolStages } from "~/components/MapPoolSelector";
+import { EditIcon } from "~/components/icons/Edit";
+import { useOnce } from "~/hooks/useOnce";
 
 const AMOUNT_OF_MAPS_IN_MAP_LIST = stageIds.length * 2;
 
-export const unstable_shouldReload: ShouldReloadFunction = () => false;
+export const unstable_shouldReload: ShouldReloadFunction = ({ url }) => {
+  const searchParams = new URL(url).searchParams;
+  // Only let loader reload data if we're not currently editing the map pool
+  // and persisting it in the search params.
+  return searchParams.has("readonly");
+};
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -81,34 +83,43 @@ export const loader = async ({ request }: LoaderArgs) => {
   };
 };
 
-const DEFAULT_MAP_POOL = new MapPool({
-  SZ: [...stageIds],
-  TC: [...stageIds],
-  CB: [...stageIds],
-  RM: [...stageIds],
-  TW: [],
-});
-
 export default function MapListPage() {
   const { t } = useTranslation(["common"]);
   const data = useLoaderData<typeof loader>();
   const [searchParams] = useSearchParams();
-  const { mapPool, handleMapPoolChange } = useSearchParamMapPool();
+  const { mapPool, handleMapPoolChange, readonly, switchToEditMode } =
+    useSearchParamPersistedMapPool();
 
   return (
     <Main className="maps__container stack lg">
-      {data.calendarEvent && !searchParams.has("pool") && (
-        <div className="maps__pool-info">
-          {t("common:maps.mapPool")}:{" "}
-          <Link to={calendarEventPage(data.calendarEvent.id)}>
-            {data.calendarEvent.name}
-          </Link>
+      {searchParams.has("readonly") && data.calendarEvent && (
+        <div className="maps__pool-meta">
+          <div className="maps__pool-info">
+            {t("common:maps.mapPool")}:{" "}
+            {
+              <Link to={calendarEventPage(data.calendarEvent.id)}>
+                {data.calendarEvent.name}
+              </Link>
+            }
+          </div>
+          <Button
+            variant="outlined"
+            onClick={switchToEditMode}
+            tiny
+            icon={<EditIcon />}
+          >
+            {t("common:actions.edit")}
+          </Button>
         </div>
       )}
-      <MapPoolSelector
-        mapPool={mapPool}
-        handleMapPoolChange={handleMapPoolChange}
-      />
+      {readonly ? (
+        <MapPoolStages mapPool={mapPool} />
+      ) : (
+        <MapPoolSelector
+          mapPool={mapPool}
+          handleMapPoolChange={handleMapPoolChange}
+        />
+      )}
       <a
         href={ipLabsMaps(mapPool.serialized)}
         target="_blank"
@@ -122,41 +133,26 @@ export default function MapListPage() {
   );
 }
 
-function useSearchParamMapPool() {
+function useSearchParamPersistedMapPool() {
   const data = useLoaderData<typeof loader>();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const mapPool = (() => {
+  const initialMapPool = useOnce(() => {
     if (searchParams.has("pool")) {
       return new MapPool(searchParams.get("pool")!);
     }
 
-    if (data?.mapPool) {
+    if (data.mapPool) {
       return new MapPool(data.mapPool);
     }
 
-    return DEFAULT_MAP_POOL;
-  })();
+    return MapPool.ANARCHY;
+  });
 
-  const handleMapPoolChange = ({
-    mode,
-    stageId,
-  }: {
-    mode: ModeShort;
-    stageId: StageId;
-  }) => {
-    const newMapPool = new MapPool(
-      mapPool.parsed[mode].includes(stageId)
-        ? {
-            ...mapPool.parsed,
-            [mode]: mapPool.parsed[mode].filter((id) => id !== stageId),
-          }
-        : {
-            ...mapPool.parsed,
-            [mode]: [...mapPool.parsed[mode], stageId],
-          }
-    );
+  const [mapPool, setMapPool] = React.useState(initialMapPool);
 
+  const handleMapPoolChange = (newMapPool: MapPool) => {
+    setMapPool(newMapPool);
     setSearchParams(
       {
         pool: newMapPool.serialized,
@@ -165,9 +161,20 @@ function useSearchParamMapPool() {
     );
   };
 
+  const switchToEditMode = () => {
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.delete("readonly");
+    setSearchParams(newSearchParams, {
+      replace: false,
+      state: { scroll: false },
+    });
+  };
+
   return {
     mapPool,
+    readonly: searchParams.has("readonly"),
     handleMapPoolChange,
+    switchToEditMode,
   };
 }
 
@@ -192,13 +199,16 @@ function MapListCreator({ mapPool }: { mapPool: MapPool }) {
     setMapList(list);
   };
 
+  const disabled =
+    mapPool.isEmpty() || (szEveryOther && !mapPool.hasMode("SZ"));
+
   return (
     <div className="maps__map-list-creator">
       <div className="maps__toggle-container">
         <Label>{t("common:maps.halfSz")}</Label>
         <Toggle checked={szEveryOther} setChecked={setSzEveryOther} tiny />
       </div>
-      <Button onClick={handleCreateMaplist}>
+      <Button onClick={handleCreateMaplist} disabled={disabled}>
         {t("common:maps.createMapList")}
       </Button>
       {mapList && (
@@ -206,7 +216,12 @@ function MapListCreator({ mapPool }: { mapPool: MapPool }) {
           <ol className="maps__map-list">
             {mapList.map(({ mode, stageId }, i) => (
               <li key={i}>
-                {t(`game-misc:MODE_SHORT_${mode}`)}{" "}
+                <abbr
+                  className="maps__mode-abbr"
+                  title={t(`game-misc:MODE_LONG_${mode}`)}
+                >
+                  {t(`game-misc:MODE_SHORT_${mode}`)}
+                </abbr>{" "}
                 {t(`game-misc:STAGE_${stageId}`)}
               </li>
             ))}

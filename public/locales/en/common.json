@@ -36,6 +36,8 @@
   "actions.loadMore": "Load more",
   "actions.copyToClipboard": "Copy to clipboard",
   "actions.close": "Close",
+  "actions.clear": "Clear",
+  "actions.selectAll": "Select All",
 
   "maps.createMapList": "Create map list",
   "maps.halfSz": "50% SZ",

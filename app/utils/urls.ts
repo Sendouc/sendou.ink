@@ -1,5 +1,11 @@
 import slugify from "slugify";
-import type { Badge, GearType, MapPoolMap, User } from "~/db/types";
+import type {
+  Badge,
+  CalendarEvent,
+  GearType,
+  MapPoolMap,
+  User,
+} from "~/db/types";
 import type { ModeShort, weaponCategories } from "~/modules/in-game-lists";
 import type {
   Ability,
@@ -74,6 +80,8 @@ export const calendarReportWinnersPage = (eventId: number) =>
   `/calendar/${eventId}/report-winners`;
 export const mapsPage = (eventId?: MapPoolMap["calendarEventId"]) =>
   `/maps${eventId ? `?eventId=${eventId}` : ""}`;
+export const readonlyMapsPage = (eventId: CalendarEvent["id"]) =>
+  `/maps?readonly&eventId=${eventId}`;
 export const articlePage = (slug: string) => `/a/${slug}`;
 export const analyzerPage = (args?: {
   weaponId: MainWeaponId;

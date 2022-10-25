@@ -6,7 +6,11 @@ import type { ReadonlyMapPoolObject, MapPoolObject } from "./types";
 import clone from "just-clone";
 import type { MapPoolMap } from "~/db/types";
 import { mapPoolListToMapPoolObject } from "~/modules/map-list-generator";
-import type { ModeShort, StageId } from "~/modules/in-game-lists";
+import {
+  type ModeShort,
+  type StageId,
+  stageIds,
+} from "~/modules/in-game-lists";
 
 type DbMapPoolList = Array<Pick<MapPoolMap, "stageId" | "mode">>;
 
@@ -84,4 +88,20 @@ export class MapPool {
   toJSON() {
     return this.parsed;
   }
+
+  static EMPTY = new MapPool({
+    SZ: [],
+    TC: [],
+    CB: [],
+    RM: [],
+    TW: [],
+  });
+
+  static ANARCHY = new MapPool({
+    SZ: [...stageIds],
+    TC: [...stageIds],
+    CB: [...stageIds],
+    RM: [...stageIds],
+    TW: [],
+  });
 }

@@ -20,14 +20,12 @@ import { TrashIcon } from "~/components/icons/Trash";
 import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
-import { Toggle } from "~/components/Toggle";
 import { CALENDAR_EVENT } from "~/constants";
 import { db } from "~/db";
 import type { Badge as BadgeType, CalendarEventTag } from "~/db/types";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { requireUser } from "~/modules/auth";
 import { i18next } from "~/modules/i18n";
-import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import { MapPool } from "~/modules/map-pool-serializer";
 import { canEditCalendarEvent } from "~/permissions";
 import calendarNewStyles from "~/styles/calendar-new.css";
@@ -519,61 +517,41 @@ function BadgesAdder() {
   );
 }
 
-const DEFAULT_MAP_POOL = new MapPool({
-  SZ: [],
-  TC: [],
-  CB: [],
-  RM: [],
-  TW: [],
-});
 function MapPoolSection() {
-  const { t } = useTranslation(["game-misc", "calendar"]);
+  const { t } = useTranslation(["game-misc", "common"]);
 
   const { eventToEdit } = useLoaderData<typeof loader>();
   const [mapPool, setMapPool] = React.useState<MapPool>(
-    eventToEdit?.mapPool ? new MapPool(eventToEdit.mapPool) : DEFAULT_MAP_POOL
+    eventToEdit?.mapPool ? new MapPool(eventToEdit.mapPool) : MapPool.EMPTY
   );
   const [includeMapPool, setIncludeMapPool] = React.useState(
     Boolean(eventToEdit?.mapPool)
   );
 
-  const handleMapPoolChange = ({
-    mode,
-    stageId,
-  }: {
-    mode: ModeShort;
-    stageId: StageId;
-  }) => {
-    const newMapPool = new MapPool(
-      mapPool.parsed[mode].includes(stageId)
-        ? {
-            ...mapPool.parsed,
-            [mode]: mapPool.parsed[mode].filter((id) => id !== stageId),
-          }
-        : {
-            ...mapPool.parsed,
-            [mode]: [...mapPool.parsed[mode], stageId],
-          }
-    );
+  const id = React.useId();
 
-    setMapPool(newMapPool);
-  };
+  return includeMapPool ? (
+    <>
+      <input type="hidden" name="pool" value={mapPool.serialized} />
 
-  return (
-    <div className="w-full">
-      {includeMapPool && (
-        <input type="hidden" name="pool" value={mapPool.serialized} />
-      )}
-      <Label>{t("calendar:forms.mapPool")}</Label>
-      <div className="stack md">
-        <Toggle checked={includeMapPool} setChecked={setIncludeMapPool} tiny />
-        {includeMapPool && (
-          <MapPoolSelector
-            mapPool={mapPool}
-            handleMapPoolChange={handleMapPoolChange}
-          />
-        )}
-      </div>
+      <MapPoolSelector
+        className="w-full"
+        mapPool={mapPool}
+        handleRemoval={() => setIncludeMapPool(false)}
+        handleMapPoolChange={setMapPool}
+      />
+    </>
+  ) : (
+    <div>
+      <label htmlFor={id}>{t("common:maps.mapPool")}</label>
+      <Button
+        id={id}
+        variant="outlined"
+        tiny
+        onClick={() => setIncludeMapPool(true)}
+      >
+        {t("common:actions.add")}
+      </Button>
     </div>
   );
 }

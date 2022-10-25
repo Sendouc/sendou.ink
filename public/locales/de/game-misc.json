@@ -15,5 +15,10 @@
   "MODE_SHORT_SZ": "HS",
   "MODE_SHORT_TC": "TK",
   "MODE_SHORT_RM": "OG",
-  "MODE_SHORT_CB": "MC"
+  "MODE_SHORT_CB": "MC",
+  "MODE_LONG_TW": "Revierkampf",
+  "MODE_LONG_SZ": "Herrschaft",
+  "MODE_LONG_TC": "Turmkommando",
+  "MODE_LONG_RM": "Operation Goldfisch",
+  "MODE_LONG_CB": "Muschelchaos"
 }
