@@ -1,6 +1,2 @@
-export {
-  mapPoolToSerializedString,
-  serializedStringToMapPool,
-} from "./serializer";
-
-export type { MapPool } from "./types";
+export { MapPool } from "./map-pool";
+export type { MapPoolObject } from "./types";

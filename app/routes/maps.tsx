@@ -28,11 +28,7 @@ import {
   mapPoolToNonEmptyModes,
   modesOrder,
 } from "~/modules/map-list-generator";
-import {
-  mapPoolToSerializedString,
-  serializedStringToMapPool,
-} from "~/modules/map-pool-serializer";
-import type { MapPool } from "~/modules/map-pool-serializer/types";
+import { MapPool } from "~/modules/map-pool-serializer";
 import styles from "~/styles/maps.css";
 import { makeTitle } from "~/utils/strings";
 import { calendarEventPage, ipLabsMaps } from "~/utils/urls";
@@ -85,13 +81,13 @@ export const loader = async ({ request }: LoaderArgs) => {
   };
 };
 
-const DEFAULT_MAP_POOL = {
+const DEFAULT_MAP_POOL = new MapPool({
   SZ: [...stageIds],
   TC: [...stageIds],
   CB: [...stageIds],
   RM: [...stageIds],
   TW: [],
-};
+});
 
 export default function MapListPage() {
   const { t } = useTranslation(["common"]);
@@ -114,7 +110,7 @@ export default function MapListPage() {
         handleMapPoolChange={handleMapPoolChange}
       />
       <a
-        href={ipLabsMaps(mapPoolToSerializedString(mapPool))}
+        href={ipLabsMaps(mapPool.serialized)}
         target="_blank"
         rel="noreferrer"
         className="maps__tournament-map-list-link"
@@ -132,11 +128,11 @@ function useSearchParamMapPool() {
 
   const mapPool = (() => {
     if (searchParams.has("pool")) {
-      return serializedStringToMapPool(searchParams.get("pool")!);
+      return new MapPool(searchParams.get("pool")!);
     }
 
     if (data?.mapPool) {
-      return data.mapPool;
+      return new MapPool(data.mapPool);
     }
 
     return DEFAULT_MAP_POOL;
@@ -149,19 +145,21 @@ function useSearchParamMapPool() {
     mode: ModeShort;
     stageId: StageId;
   }) => {
-    const newMapPool = mapPool[mode].includes(stageId)
-      ? {
-          ...mapPool,
-          [mode]: mapPool[mode].filter((id) => id !== stageId),
-        }
-      : {
-          ...mapPool,
-          [mode]: [...mapPool[mode], stageId],
-        };
+    const newMapPool = new MapPool(
+      mapPool.parsed[mode].includes(stageId)
+        ? {
+            ...mapPool.parsed,
+            [mode]: mapPool.parsed[mode].filter((id) => id !== stageId),
+          }
+        : {
+            ...mapPool.parsed,
+            [mode]: [...mapPool.parsed[mode], stageId],
+          }
+    );
 
     setSearchParams(
       {
-        pool: mapPoolToSerializedString(newMapPool),
+        pool: newMapPool.serialized,
       },
       { replace: true, state: { scroll: false } }
     );

@@ -41,6 +41,7 @@ import {
 import { actualNumber, id } from "~/utils/zod";
 import { MapPoolSelector } from "~/components/MapPoolSelector";
 import { Tags } from "../components/Tags";
+import { MapPool } from "~/modules/map-pool-serializer";
 
 export const links: LinksFunction = () => {
   return [
@@ -244,7 +245,7 @@ function MapPoolInfo() {
   return (
     <Section title="Map pool">
       <div className="event__map-pool-section">
-        <MapPoolSelector mapPool={data.mapPool} />
+        <MapPoolSelector mapPool={new MapPool(data.mapPool)} />
         <LinkButton
           className="event__create-map-list-link"
           to={mapsPage(data.event.eventId)}

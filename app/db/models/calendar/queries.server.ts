@@ -11,7 +11,7 @@ import type {
   CalendarEventResultPlayer,
   MapPoolMap,
 } from "../../types";
-import { mapPoolListToMapPoolObject } from "~/modules/map-list-generator";
+import { MapPool } from "~/modules/map-pool-serializer";
 
 import createSql from "./create.sql";
 import updateSql from "./update.sql";
@@ -449,7 +449,7 @@ export function findMapPoolByEventId(calendarEventId: CalendarEvent["id"]) {
 
   if (rows.length === 0) return;
 
-  return mapPoolListToMapPoolObject(rows);
+  return MapPool.parse(rows);
 }
 
 const eventsToReportStm = sql.prepare(eventsToReportSql);

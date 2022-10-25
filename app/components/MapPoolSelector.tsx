@@ -26,7 +26,7 @@ export function MapPoolSelector({
   const stageRowIsVisible = (stageId: StageId) => {
     if (!isPresentational) return true;
 
-    return modes.some((mode) => mapPool[mode.short].includes(stageId));
+    return mapPool.hasStage(stageId);
   };
 
   return (
@@ -44,9 +44,7 @@ export function MapPoolSelector({
             <div>{t(`game-misc:STAGE_${stageId}`)}</div>
             <div className="maps__mode-buttons-container">
               {modes.map((mode) => {
-                const selected = (mapPool[mode.short] as StageId[]).includes(
-                  stageId
-                );
+                const selected = mapPool.parsed[mode.short].includes(stageId);
 
                 if (isPresentational && !selected) return null;
                 if (isPresentational && selected) {

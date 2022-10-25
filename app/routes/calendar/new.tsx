@@ -28,11 +28,7 @@ import { useIsMounted } from "~/hooks/useIsMounted";
 import { requireUser } from "~/modules/auth";
 import { i18next } from "~/modules/i18n";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
-import {
-  mapPoolToSerializedString,
-  serializedStringToMapPool,
-  type MapPool,
-} from "~/modules/map-pool-serializer";
+import { MapPool } from "~/modules/map-pool-serializer";
 import { canEditCalendarEvent } from "~/permissions";
 import calendarNewStyles from "~/styles/calendar-new.css";
 import mapsStyles from "~/styles/maps.css";
@@ -152,10 +148,7 @@ export const action: ActionFunction = async ({ request }) => {
   const deserializedMaps = (() => {
     if (!data.pool) return;
 
-    const mapPool = serializedStringToMapPool(data.pool);
-    return Object.entries(mapPool).flatMap(([mode, stages]) =>
-      stages.flatMap((stageId) => ({ mode: mode as ModeShort, stageId }))
-    );
+    return MapPool.toDbList(data.pool);
   })();
 
   if (data.eventToEditId) {
@@ -526,22 +519,22 @@ function BadgesAdder() {
   );
 }
 
-const DEFAULT_MAP_POOL = {
+const DEFAULT_MAP_POOL = new MapPool({
   SZ: [],
   TC: [],
   CB: [],
   RM: [],
   TW: [],
-};
+});
 function MapPoolSection() {
   const { t } = useTranslation(["game-misc", "calendar"]);
 
-  const data = useLoaderData<typeof loader>();
+  const { eventToEdit } = useLoaderData<typeof loader>();
   const [mapPool, setMapPool] = React.useState<MapPool>(
-    data.eventToEdit?.mapPool ?? DEFAULT_MAP_POOL
+    eventToEdit?.mapPool ? new MapPool(eventToEdit.mapPool) : DEFAULT_MAP_POOL
   );
   const [includeMapPool, setIncludeMapPool] = React.useState(
-    Boolean(data.eventToEdit?.mapPool)
+    Boolean(eventToEdit?.mapPool)
   );
 
   const handleMapPoolChange = ({
@@ -551,15 +544,17 @@ function MapPoolSection() {
     mode: ModeShort;
     stageId: StageId;
   }) => {
-    const newMapPool = mapPool[mode].includes(stageId)
-      ? {
-          ...mapPool,
-          [mode]: mapPool[mode].filter((id) => id !== stageId),
-        }
-      : {
-          ...mapPool,
-          [mode]: [...mapPool[mode], stageId],
-        };
+    const newMapPool = new MapPool(
+      mapPool.parsed[mode].includes(stageId)
+        ? {
+            ...mapPool.parsed,
+            [mode]: mapPool.parsed[mode].filter((id) => id !== stageId),
+          }
+        : {
+            ...mapPool.parsed,
+            [mode]: [...mapPool.parsed[mode], stageId],
+          }
+    );
 
     setMapPool(newMapPool);
   };
@@ -567,11 +562,7 @@ function MapPoolSection() {
   return (
     <div className="w-full">
       {includeMapPool && (
-        <input
-          type="hidden"
-          name="pool"
-          value={mapPoolToSerializedString(mapPool)}
-        />
+        <input type="hidden" name="pool" value={mapPool.serialized} />
       )}
       <Label>{t("calendar:forms.mapPool")}</Label>
       <div className="stack md">
