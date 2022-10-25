@@ -844,7 +844,7 @@ function DamageTable({
 
             return (
               <tr key={val.id}>
-                <td>{typeRowName}</td>
+                <td>{t(typeRowName)}</td>
                 <td>
                   {damage}{" "}
                   {val.shotsToSplat && (
