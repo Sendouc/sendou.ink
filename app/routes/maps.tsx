@@ -31,6 +31,8 @@ import { type SendouRouteHandle } from "~/utils/remix";
 import { MapPoolSelector, MapPoolStages } from "~/components/MapPoolSelector";
 import { EditIcon } from "~/components/icons/Edit";
 import { useOnce } from "~/hooks/useOnce";
+import { getUser } from "~/modules/auth";
+import type { CalendarEvent } from "~/db/types";
 
 const AMOUNT_OF_MAPS_IN_MAP_LIST = stageIds.length * 2;
 
@@ -61,6 +63,7 @@ export const handle: SendouRouteHandle = {
 };
 
 export const loader = async ({ request }: LoaderArgs) => {
+  const user = await getUser(request);
   const url = new URL(request.url);
   const calendarEventId = url.searchParams.get("eventId");
   const t = await i18next.getFixedT(request);
@@ -79,6 +82,9 @@ export const loader = async ({ request }: LoaderArgs) => {
     mapPool: event
       ? db.calendarEvents.findMapPoolByEventId(event.eventId)
       : null,
+    recentEventsWithMapPools: user
+      ? db.calendarEvents.findRecentMapPoolsByAuthorId(user.id)
+      : undefined,
     title: makeTitle([t("pages.maps")]),
   };
 };
@@ -118,6 +124,7 @@ export default function MapListPage() {
         <MapPoolSelector
           mapPool={mapPool}
           handleMapPoolChange={handleMapPoolChange}
+          recentEvents={data.recentEventsWithMapPools}
         />
       )}
       <a
@@ -151,12 +158,17 @@ function useSearchParamPersistedMapPool() {
 
   const [mapPool, setMapPool] = React.useState(initialMapPool);
 
-  const handleMapPoolChange = (newMapPool: MapPool) => {
+  const handleMapPoolChange = (
+    newMapPool: MapPool,
+    event?: Pick<CalendarEvent, "id" | "name">
+  ) => {
     setMapPool(newMapPool);
     setSearchParams(
-      {
-        pool: newMapPool.serialized,
-      },
+      event
+        ? { eventId: event.id.toString() }
+        : {
+            pool: newMapPool.serialized,
+          },
       { replace: true, state: { scroll: false } }
     );
   };

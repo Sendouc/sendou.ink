@@ -44,6 +44,7 @@
   "maps.template": "Vorlage",
   "maps.template.none": "Keine",
   "maps.template.presets": "Voreinstellungen",
+  "maps.template.yourRecentEvents": "Deine Events",
   "maps.template.preset.ANARCHY": "Anarchie-Modi",
   "maps.template.preset.ALL": "Alle Modi",
   "maps.template.preset.onlyMode": "Nur {{modeName}}",

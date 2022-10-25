@@ -14,12 +14,19 @@ import { split, startsWith } from "~/utils/strings";
 import { CrossIcon } from "./icons/Cross";
 import { ArrowLongLeftIcon } from "./icons/ArrowLongLeft";
 import * as React from "react";
+import type { CalendarEvent } from "~/db/types";
 
 export type MapPoolSelectorProps = {
   mapPool: MapPool;
   handleRemoval?: () => void;
-  handleMapPoolChange: (mapPool: MapPool) => void;
+  handleMapPoolChange: (
+    mapPool: MapPool,
+    event?: Pick<CalendarEvent, "id" | "name">
+  ) => void;
   className?: string;
+  recentEvents?: Array<
+    Pick<CalendarEvent, "id" | "name"> & { serializedMapPool: string }
+  >;
 };
 
 export function MapPoolSelector({
@@ -27,6 +34,7 @@ export function MapPoolSelector({
   handleMapPoolChange,
   handleRemoval,
   className,
+  recentEvents,
 }: MapPoolSelectorProps) {
   const { t } = useTranslation();
 
@@ -56,6 +64,17 @@ export function MapPoolSelector({
       handleMapPoolChange(MapPool[presetId]);
       return;
     }
+
+    if (startsWith(template, "recent-event:")) {
+      const [, eventId] = split(template, ":");
+
+      const event = recentEvents?.find((e) => e.id.toString() === eventId);
+
+      if (event) {
+        handleMapPoolChange(new MapPool(event.serializedMapPool), event);
+      }
+      return;
+    }
   };
 
   return (
@@ -80,6 +99,7 @@ export function MapPoolSelector({
           <MapPoolTemplateSelect
             value={template}
             handleChange={handleTemplateChange}
+            recentEvents={recentEvents}
           />
         </div>
         <MapPoolStages
@@ -256,7 +276,10 @@ type MapModePresetId = "ANARCHY" | "ALL" | ModeShort;
 
 const presetIds: MapModePresetId[] = ["ANARCHY", "ALL", ...modesShort];
 
-type MapPoolTemplateValue = "none" | `preset:${MapModePresetId}`;
+type MapPoolTemplateValue =
+  | "none"
+  | `preset:${MapModePresetId}`
+  | `recent-event:${string}`;
 
 function detectTemplate(mapPool: MapPool): MapPoolTemplateValue {
   for (const presetId of presetIds) {
@@ -270,11 +293,13 @@ function detectTemplate(mapPool: MapPool): MapPoolTemplateValue {
 type MapPoolTemplateSelectProps = {
   value: MapPoolTemplateValue;
   handleChange: (newValue: MapPoolTemplateValue) => void;
+  recentEvents?: Pick<CalendarEvent, "id" | "name">[];
 };
 
 function MapPoolTemplateSelect({
   handleChange,
   value,
+  recentEvents,
 }: MapPoolTemplateSelectProps) {
   const { t } = useTranslation(["game-misc", "common"]);
 
@@ -302,6 +327,15 @@ function MapPoolTemplateSelect({
             </option>
           ))}
         </optgroup>
+        {recentEvents && recentEvents.length > 0 && (
+          <optgroup label={t("common:maps.template.yourRecentEvents")}>
+            {recentEvents.map((event) => (
+              <option key={event.id} value={`recent-event:${event.id}`}>
+                {event.name}
+              </option>
+            ))}
+          </optgroup>
+        )}
       </select>
     </label>
   );

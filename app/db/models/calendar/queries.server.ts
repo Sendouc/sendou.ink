@@ -36,6 +36,7 @@ import upcomingEventsSql from "./upcomingEvents.sql";
 import createMapPoolMapSql from "./createMapPoolMap.sql";
 import deleteMapPoolMapsSql from "./deleteMapPoolMaps.sql";
 import findMapPoolByEventIdSql from "./findMapPoolByEventId.sql";
+import findRecentMapPoolsByAuthorIdSql from "./findRecentMapPoolsByAuthorId.sql";
 
 const createStm = sql.prepare(createSql);
 const updateStm = sql.prepare(updateSql);
@@ -466,4 +467,23 @@ export function eventsToReport(authorId?: CalendarEvent["authorId"]) {
       lowerLimitTime: dateToDatabaseTimestamp(oneMonthAgo),
     }) as Array<Pick<CalendarEvent, "id" | "name">>
   ).map((row) => ({ id: row.id, name: row.name }));
+}
+
+const findRecentMapPoolsByAuthorIdStm = sql.prepare(
+  findRecentMapPoolsByAuthorIdSql
+);
+export function findRecentMapPoolsByAuthorId(
+  authorId: CalendarEvent["authorId"]
+) {
+  return (
+    findRecentMapPoolsByAuthorIdStm.all({ authorId }) as Array<
+      Pick<CalendarEvent, "id" | "name"> & {
+        mapPool: string;
+      }
+    >
+  ).map((row) => ({
+    id: row.id,
+    name: row.name,
+    serializedMapPool: MapPool.serialize(JSON.parse(row.mapPool)),
+  }));
 }

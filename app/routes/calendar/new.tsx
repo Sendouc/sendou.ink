@@ -192,6 +192,9 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   return json({
     managedBadges: db.badges.managedByUserId(user.id),
+    recentEventsWithMapPools: db.calendarEvents.findRecentMapPoolsByAuthorId(
+      user.id
+    ),
     eventToEdit: canEditEvent
       ? {
           ...eventToEdit,
@@ -520,7 +523,8 @@ function BadgesAdder() {
 function MapPoolSection() {
   const { t } = useTranslation(["game-misc", "common"]);
 
-  const { eventToEdit } = useLoaderData<typeof loader>();
+  const { eventToEdit, recentEventsWithMapPools } =
+    useLoaderData<typeof loader>();
   const [mapPool, setMapPool] = React.useState<MapPool>(
     eventToEdit?.mapPool ? new MapPool(eventToEdit.mapPool) : MapPool.EMPTY
   );
@@ -539,6 +543,7 @@ function MapPoolSection() {
         mapPool={mapPool}
         handleRemoval={() => setIncludeMapPool(false)}
         handleMapPoolChange={setMapPool}
+        recentEvents={recentEventsWithMapPools}
       />
     </>
   ) : (

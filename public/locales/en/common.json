@@ -46,6 +46,7 @@
   "maps.template": "Template",
   "maps.template.none": "None",
   "maps.template.presets": "Presets",
+  "maps.template.yourRecentEvents": "Recent Events",
   "maps.template.preset.ANARCHY": "Anarchy Modes",
   "maps.template.preset.ALL": "All Modes",
   "maps.template.preset.onlyMode": "Only {{modeName}}",
