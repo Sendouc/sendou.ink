@@ -43,6 +43,12 @@
   "maps.halfSz": "50% SZ",
   "maps.mapPool": "Map pool",
   "maps.tournamentMaplist": "Create tournament map list (maps.iplabs.ink)",
+  "maps.template": "Template",
+  "maps.template.none": "None",
+  "maps.template.presets": "Presets",
+  "maps.template.preset.ANARCHY": "Anarchy Modes",
+  "maps.template.preset.ALL": "All Modes",
+  "maps.template.preset.onlyMode": "Only {{modeName}}",
 
   "results": "Results",
 

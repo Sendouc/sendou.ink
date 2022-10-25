@@ -110,3 +110,15 @@
   font-weight: var(--bold);
   text-decoration: none;
 }
+
+.maps__template-selection {
+  display: grid;
+  gap: var(--s-2);
+  grid-template-columns: 1fr;
+}
+
+@media screen and (min-width: 640px) {
+  .maps__template-selection {
+    grid-template-columns: 1fr 1fr;
+  }
+}

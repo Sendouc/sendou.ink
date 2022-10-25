@@ -1,11 +1,16 @@
 import clsx from "clsx";
 import { useTranslation } from "react-i18next";
 import { Image } from "~/components/Image";
-import type { ModeShort, StageId } from "~/modules/in-game-lists";
+import {
+  type ModeShort,
+  modesShort,
+  type StageId,
+} from "~/modules/in-game-lists";
 import { modes, stageIds } from "~/modules/in-game-lists";
 import { MapPool } from "~/modules/map-pool-serializer";
 import { modeImageUrl, stageImageUrl } from "~/utils/urls";
 import { Button } from "~/components/Button";
+import { split, startsWith } from "~/utils/strings";
 import { CrossIcon } from "./icons/Cross";
 import { ArrowLongLeftIcon } from "./icons/ArrowLongLeft";
 import * as React from "react";
@@ -25,31 +30,57 @@ export function MapPoolSelector({
 }: MapPoolSelectorProps) {
   const { t } = useTranslation();
 
+  const [template, setTemplate] = React.useState<MapPoolTemplateValue>(
+    detectTemplate(mapPool)
+  );
+
   const handleStageModesChange = (newMapPool: MapPool) => {
+    setTemplate(detectTemplate(newMapPool));
     handleMapPoolChange(newMapPool);
   };
 
   const handleClear = () => {
+    setTemplate("none");
     handleMapPoolChange(MapPool.EMPTY);
+  };
+
+  const handleTemplateChange = (template: MapPoolTemplateValue) => {
+    setTemplate(template);
+    if (template === "none") {
+      return;
+    }
+
+    if (startsWith(template, "preset:")) {
+      const [, presetId] = split(template, ":");
+
+      handleMapPoolChange(MapPool[presetId]);
+      return;
+    }
   };
 
   return (
     <fieldset className={className}>
       <legend>{t("maps.mapPool")}</legend>
-      <div className="stack md">
-        <div className="stack horizontal sm justify-end">
-          {handleRemoval && (
-            <Button variant="minimal" onClick={handleRemoval}>
-              {t("actions.remove")}
-            </Button>
-          )}
-          <Button
-            variant="minimal-destructive"
-            disabled={mapPool.isEmpty()}
-            onClick={handleClear}
-          >
-            {t("actions.clear")}
+      <div className="stack horizontal sm justify-end">
+        {handleRemoval && (
+          <Button variant="minimal" onClick={handleRemoval}>
+            {t("actions.remove")}
           </Button>
+        )}
+        <Button
+          variant="minimal-destructive"
+          disabled={mapPool.isEmpty()}
+          onClick={handleClear}
+        >
+          {t("actions.clear")}
+        </Button>
+      </div>
+      <div className="stack md">
+        <div className="maps__template-selection">
+          <MapPoolTemplateSelect
+            value={template}
+            handleChange={handleTemplateChange}
+          />
         </div>
         <MapPoolStages
           mapPool={mapPool}
@@ -218,5 +249,60 @@ export function MapPoolStages({
         </div>
       ))}
     </div>
+  );
+}
+
+type MapModePresetId = "ANARCHY" | "ALL" | ModeShort;
+
+const presetIds: MapModePresetId[] = ["ANARCHY", "ALL", ...modesShort];
+
+type MapPoolTemplateValue = "none" | `preset:${MapModePresetId}`;
+
+function detectTemplate(mapPool: MapPool): MapPoolTemplateValue {
+  for (const presetId of presetIds) {
+    if (MapPool[presetId].serialized === mapPool.serialized) {
+      return `preset:${presetId}`;
+    }
+  }
+  return "none";
+}
+
+type MapPoolTemplateSelectProps = {
+  value: MapPoolTemplateValue;
+  handleChange: (newValue: MapPoolTemplateValue) => void;
+};
+
+function MapPoolTemplateSelect({
+  handleChange,
+  value,
+}: MapPoolTemplateSelectProps) {
+  const { t } = useTranslation(["game-misc", "common"]);
+
+  return (
+    <label className="stack sm">
+      {t("common:maps.template")}
+      <select
+        value={value}
+        onChange={(e) => {
+          handleChange(e.currentTarget.value as MapPoolTemplateValue);
+        }}
+      >
+        <option value="none">{t("common:maps.template.none")}</option>
+        <optgroup label={t("common:maps.template.presets")}>
+          {(["ANARCHY", "ALL"] as const).map((presetId) => (
+            <option key={presetId} value={`preset:${presetId}`}>
+              {t(`common:maps.template.preset.${presetId}`)}
+            </option>
+          ))}
+          {modes.map((mode) => (
+            <option key={mode.short} value={`preset:${mode.short}`}>
+              {t(`common:maps.template.preset.onlyMode`, {
+                modeName: t(`game-misc:MODE_LONG_${mode.short}`),
+              })}
+            </option>
+          ))}
+        </optgroup>
+      </select>
+    </label>
   );
 }

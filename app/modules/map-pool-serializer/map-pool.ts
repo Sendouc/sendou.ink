@@ -97,11 +97,40 @@ export class MapPool {
     TW: [],
   });
 
+  static ALL = new MapPool({
+    SZ: [...stageIds],
+    TC: [...stageIds],
+    CB: [...stageIds],
+    RM: [...stageIds],
+    TW: [...stageIds],
+  });
+
   static ANARCHY = new MapPool({
     SZ: [...stageIds],
     TC: [...stageIds],
     CB: [...stageIds],
     RM: [...stageIds],
     TW: [],
+  });
+
+  static SZ = new MapPool({
+    ...MapPool.EMPTY.parsed,
+    SZ: [...stageIds],
+  });
+  static TC = new MapPool({
+    ...MapPool.EMPTY.parsed,
+    TC: [...stageIds],
+  });
+  static CB = new MapPool({
+    ...MapPool.EMPTY.parsed,
+    CB: [...stageIds],
+  });
+  static RM = new MapPool({
+    ...MapPool.EMPTY.parsed,
+    RM: [...stageIds],
+  });
+  static TW = new MapPool({
+    ...MapPool.EMPTY.parsed,
+    TW: [...stageIds],
   });
 }
