@@ -101,5 +101,6 @@
   "hitsToDestroyShort": "HTD",
   "labels.amountOf": "Amount of",
   "labels.damageType": "Damage type",
-  "labels.weapon": "Weapon"
+  "labels.weapon": "Weapon",
+  "dmgHtdExplanation": "DMG = Damage • HTD = Hits to destroy"
 }

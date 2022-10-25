@@ -1,3 +1,7 @@
+.text-lg {
+  font-size: var(--fonts-lg);
+}
+
 .text-sm {
   font-size: var(--fonts-sm);
 }
@@ -6,8 +10,8 @@
   font-size: var(--fonts-xs);
 }
 
-.text-lg {
-  font-size: var(--fonts-lg);
+.text-xxs {
+  font-size: var(--fonts-xxs);
 }
 
 .text-center {

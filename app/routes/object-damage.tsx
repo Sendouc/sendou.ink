@@ -110,6 +110,9 @@ export default function ObjectDamagePage() {
         subWeaponId={subWeaponId}
         damagesToReceivers={damagesToReceivers}
       />
+      <div className="text-lighter text-xs">
+        {t("analyzer:dmgHtdExplanation")}
+      </div>
     </Main>
   );
 }
