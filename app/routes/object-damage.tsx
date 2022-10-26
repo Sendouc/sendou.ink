@@ -177,7 +177,7 @@ function DamageReceiversGrid({
   "damagesToReceivers" | "subWeaponId"
 >) {
   const { t } = useTranslation(["weapons", "analyzer", "common"]);
-  useSetTitle(t("common:pages.object-damage"));
+  useSetTitle(t("common:pages.object-damage-calculator"));
 
   return (
     <div

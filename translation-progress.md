@@ -4,7 +4,7 @@
 
 ### 🟡 analyzer.json
 
-**94/103**
+**94/104**
 
 <details>
 <summary>Missing</summary>
@@ -18,6 +18,7 @@
 - labels.amountOf
 - labels.damageType
 - labels.weapon
+- dmgHtdExplanation
 
 </details>
 
@@ -40,7 +41,7 @@
 <details>
 <summary>Missing</summary>
 
-- pages.object-damage
+- pages.object-damage-calculator
 - auth.errors.aborted
 - auth.errors.failed
 - auth.errors.discordPermissions
@@ -57,9 +58,16 @@
 
 **6/6**
 
-### 🟢 front.json
+### 🟡 front.json
 
-**11/11**
+**11/12**
+
+<details>
+<summary>Missing</summary>
+
+- object-damage-calculator.description
+
+</details>
 
 ### 🟢 game-misc.json
 
@@ -86,7 +94,7 @@
 
 ### 🟡 analyzer.json
 
-**94/103**
+**94/104**
 
 <details>
 <summary>Missing</summary>
@@ -100,6 +108,7 @@
 - labels.amountOf
 - labels.damageType
 - labels.weapon
+- dmgHtdExplanation
 
 </details>
 
@@ -122,7 +131,7 @@
 <details>
 <summary>Missing</summary>
 
-- pages.object-damage
+- pages.object-damage-calculator
 - actions.copyToClipboard
 
 </details>
@@ -135,9 +144,16 @@
 
 **6/6**
 
-### 🟢 front.json
+### 🟡 front.json
 
-**11/11**
+**11/12**
+
+<details>
+<summary>Missing</summary>
+
+- object-damage-calculator.description
+
+</details>
 
 ### 🟢 game-misc.json
 
@@ -153,7 +169,7 @@
 
 ### 🟡 analyzer.json
 
-**91/103**
+**91/104**
 
 <details>
 <summary>Missing</summary>
@@ -170,6 +186,7 @@
 - labels.amountOf
 - labels.damageType
 - labels.weapon
+- dmgHtdExplanation
 
 </details>
 
@@ -202,7 +219,7 @@
 
 - pages.s2
 - pages.maps
-- pages.object-damage
+- pages.object-damage-calculator
 - auth.errors.aborted
 - auth.errors.failed
 - auth.errors.discordPermissions
@@ -226,12 +243,13 @@
 
 ### 🟡 front.json
 
-**10/11**
+**10/12**
 
 <details>
 <summary>Missing</summary>
 
 - maps.description
+- object-damage-calculator.description
 
 </details>
 
@@ -284,7 +302,7 @@
 
 ### 🟡 analyzer.json
 
-**91/103**
+**91/104**
 
 <details>
 <summary>Missing</summary>
@@ -301,6 +319,7 @@
 - labels.amountOf
 - labels.damageType
 - labels.weapon
+- dmgHtdExplanation
 
 </details>
 
@@ -334,7 +353,7 @@
 - pages.s2
 - pages.analyzer
 - pages.maps
-- pages.object-damage
+- pages.object-damage-calculator
 - auth.errors.aborted
 - auth.errors.failed
 - auth.errors.discordPermissions
@@ -367,7 +386,7 @@
 
 ### 🟡 front.json
 
-**8/11**
+**8/12**
 
 <details>
 <summary>Missing</summary>
@@ -375,6 +394,7 @@
 - buildsGoTo
 - analyzer.description
 - maps.description
+- object-damage-calculator.description
 
 </details>
 
@@ -427,7 +447,7 @@
 
 ### 🔴 analyzer.json
 
-**0/103**
+**0/104**
 
 ### 🔴 badges.json
 
@@ -455,7 +475,7 @@
 
 ### 🔴 front.json
 
-**0/11**
+**0/12**
 
 ### 🟡 game-misc.json
 
@@ -482,7 +502,7 @@
 
 ### 🟡 analyzer.json
 
-**12/103**
+**12/104**
 
 <details>
 <summary>Missing</summary>
@@ -578,6 +598,7 @@
 - labels.amountOf
 - labels.damageType
 - labels.weapon
+- dmgHtdExplanation
 
 </details>
 
@@ -611,7 +632,7 @@
 - pages.s2
 - pages.analyzer
 - pages.maps
-- pages.object-damage
+- pages.object-damage-calculator
 - auth.errors.aborted
 - auth.errors.failed
 - auth.errors.discordPermissions
@@ -643,7 +664,7 @@
 
 ### 🟡 front.json
 
-**8/11**
+**8/12**
 
 <details>
 <summary>Missing</summary>
@@ -651,6 +672,7 @@
 - buildsGoTo
 - analyzer.description
 - maps.description
+- object-damage-calculator.description
 
 </details>
 
@@ -703,7 +725,7 @@
 
 ### 🔴 analyzer.json
 
-**0/103**
+**0/104**
 
 ### 🟢 badges.json
 
@@ -735,7 +757,7 @@
 - pages.s2
 - pages.analyzer
 - pages.maps
-- pages.object-damage
+- pages.object-damage-calculator
 - auth.errors.aborted
 - auth.errors.failed
 - auth.errors.discordPermissions
@@ -778,7 +800,7 @@
 
 ### 🟡 front.json
 
-**8/11**
+**8/12**
 
 <details>
 <summary>Missing</summary>
@@ -786,6 +808,7 @@
 - buildsGoTo
 - analyzer.description
 - maps.description
+- object-damage-calculator.description
 
 </details>
 
@@ -838,7 +861,7 @@
 
 ### 🟡 analyzer.json
 
-**94/103**
+**94/104**
 
 <details>
 <summary>Missing</summary>
@@ -852,6 +875,7 @@
 - labels.amountOf
 - labels.damageType
 - labels.weapon
+- dmgHtdExplanation
 
 </details>
 
@@ -884,7 +908,7 @@
 
 - pages.analyzer
 - pages.maps
-- pages.object-damage
+- pages.object-damage-calculator
 - auth.errors.aborted
 - auth.errors.failed
 - auth.errors.discordPermissions
@@ -908,12 +932,13 @@
 
 ### 🟡 front.json
 
-**10/11**
+**10/12**
 
 <details>
 <summary>Missing</summary>
 
 - maps.description
+- object-damage-calculator.description
 
 </details>
 
@@ -954,7 +979,7 @@
 
 ### 🔴 analyzer.json
 
-**0/103**
+**0/104**
 
 ### 🟢 badges.json
 
@@ -986,7 +1011,7 @@
 - pages.s2
 - pages.analyzer
 - pages.maps
-- pages.object-damage
+- pages.object-damage-calculator
 - auth.errors.aborted
 - auth.errors.failed
 - auth.errors.discordPermissions
@@ -1029,7 +1054,7 @@
 
 ### 🟡 front.json
 
-**8/11**
+**8/12**
 
 <details>
 <summary>Missing</summary>
@@ -1037,6 +1062,7 @@
 - buildsGoTo
 - analyzer.description
 - maps.description
+- object-damage-calculator.description
 
 </details>
 
@@ -1089,7 +1115,7 @@
 
 ### 🟡 analyzer.json
 
-**94/103**
+**94/104**
 
 <details>
 <summary>Missing</summary>
@@ -1103,6 +1129,7 @@
 - labels.amountOf
 - labels.damageType
 - labels.weapon
+- dmgHtdExplanation
 
 </details>
 
@@ -1136,7 +1163,7 @@
 - pages.s2
 - pages.analyzer
 - pages.maps
-- pages.object-damage
+- pages.object-damage-calculator
 - auth.errors.aborted
 - auth.errors.failed
 - auth.errors.discordPermissions
@@ -1179,7 +1206,7 @@
 
 ### 🟡 front.json
 
-**8/11**
+**8/12**
 
 <details>
 <summary>Missing</summary>
@@ -1187,6 +1214,7 @@
 - buildsGoTo
 - analyzer.description
 - maps.description
+- object-damage-calculator.description
 
 </details>
 
