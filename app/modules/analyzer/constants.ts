@@ -1,21 +1,20 @@
 import type { DamageType } from "./types";
+import type objectDamages from "./object-dmg.json";
 
 export const MAX_LDE_INTENSITY = 21;
 export const MAX_AP = 57;
 
 export const DAMAGE_RECEIVERS = [
-  "Bomb_TorpedoBullet", // Torpedo
   "Chariot", // Crab Tank
-  "Gachihoko_Barrier", // Rainmaker Shield
-  "GreatBarrier_Barrier", // Big Bubbler Shield
-  "GreatBarrier_WeakPoint", // Big Bubbler Weak Point
-  // "InkRail", // InkRail
   "NiceBall_Armor", // Booyah Bomb Armor
   "ShockSonar", // Wave Breaker
-  // "Sponge_Versus", // Sponge
+  "GreatBarrier_Barrier", // Big Bubbler Shield
+  "GreatBarrier_WeakPoint", // Big Bubbler Weak Point
+  "Gachihoko_Barrier", // Rainmaker Shield
   "Wsb_Flag", // Squid Beakon
   "Wsb_Shield", // Splash Wall
   "Wsb_Sprinkler", // Sprinkler
+  "Bomb_TorpedoBullet", // Torpedo
   "BulletUmbrellaCanopyCompact", // Undercover Brella Canopy
   "BulletUmbrellaCanopyNormal", // Splat Brella Canopy
   "BulletUmbrellaCanopyWide", // Tenta Brella Canopy
@@ -46,4 +45,108 @@ export const damageTypeToWeaponType: Record<
   DISTANCE: "MAIN",
   BOMB_NORMAL: "SUB",
   BOMB_DIRECT: "SUB",
+};
+
+export const objectDamageJsonKeyPriority: Record<
+  keyof typeof objectDamages,
+  Array<DamageType> | null
+> = {
+  Blaster_BlasterMiddle: null,
+  Blaster_BlasterShort: null,
+  Blaster_KillOneShot: ["DIRECT"],
+  Blaster: null,
+  BlowerExhale_BombCore: null,
+  BlowerInhale: null,
+  BombFlower: null,
+  Bomb_CurlingBullet: null,
+  Bomb_DirectHit: ["BOMB_DIRECT"],
+  Bomb_Fizzy: null,
+  Bomb_Suction: null,
+  Bomb_TorpedoBullet: null,
+  Bomb_TorpedoSplashBurst: null,
+  Bomb_Trap: null,
+  Bomb: null,
+  BrushCore: null,
+  BrushSplash: null,
+  CannonMissile: null,
+  ChargerFull_Light: ["FULL_CHARGE"],
+  ChargerFull_Long: ["FULL_CHARGE"],
+  ChargerFull: ["FULL_CHARGE"],
+  Charger_Light: ["MAX_CHARGE", "TAP_SHOT"],
+  Charger_Long: ["MAX_CHARGE", "TAP_SHOT"],
+  Charger: ["MAX_CHARGE", "TAP_SHOT"],
+  Chariot_Body: null,
+  Chariot_Cannon: null,
+  Default: null,
+  EnemyFlyingHohei_BombCore: null,
+  GachihokoTimeUpBurst: null,
+  Gachihoko_BombCore: null,
+  Gachihoko_Bullet: null,
+  Geyser: null,
+  GoldenIkuraAttack: null,
+  InkStormRain: null,
+  InkStorm: null,
+  Jetpack_BombCore: null,
+  Jetpack_Bullet: null,
+  Jetpack_Coop: null,
+  Jetpack_Jet: null,
+  Maneuver_Short: null,
+  Maneuver: null,
+  MicroLaser: null,
+  MissionSalmonBuddy: null,
+  MovePainter_Burst: null,
+  MovePainter_Direct: null,
+  MultiMissile_BombCore: null,
+  MultiMissile_Bullet: null,
+  NiceBall: null,
+  ObjectEffect_Up: null,
+  RollerCore: null,
+  RollerSplash_Compact: null,
+  RollerSplash_Heavy: null,
+  RollerSplash_Hunter: null,
+  RollerSplash: null,
+  Saber_ChargeShot: null,
+  Saber_ChargeSlash: null,
+  Saber_Shot: null,
+  Saber_Slash: null,
+  SakerocketBullet: null,
+  ShelterCanopy_Compact: null,
+  ShelterCanopy_Wide: null,
+  ShelterCanopy: null,
+  ShelterShot_Compact: null,
+  ShelterShot_Wide: null,
+  ShelterShot: null,
+  Shield: null,
+  ShockSonar_Wave: null,
+  Shooter_Blaze: ["NORMAL_MAX", "NORMAL_MIN"],
+  Shooter_Expert: ["NORMAL_MAX", "NORMAL_MIN"],
+  Shooter_First: ["NORMAL_MAX", "NORMAL_MIN"],
+  Shooter_FlashRepeat: ["NORMAL_MAX", "NORMAL_MIN"],
+  Shooter_Flash: ["NORMAL_MAX", "NORMAL_MIN"],
+  Shooter_Gravity: ["NORMAL_MAX", "NORMAL_MIN"],
+  Shooter_Heavy: ["NORMAL_MAX", "NORMAL_MIN"],
+  Shooter_Long: ["NORMAL_MAX", "NORMAL_MIN"],
+  Shooter_Precision: ["NORMAL_MAX", "NORMAL_MIN"],
+  Shooter_Short: ["NORMAL_MAX", "NORMAL_MIN"],
+  Shooter_TripleMiddle: ["NORMAL_MAX", "NORMAL_MIN"],
+  Shooter_TripleQuick: ["NORMAL_MAX", "NORMAL_MIN"],
+  Shooter: null,
+  Skewer_Body: null,
+  Skewer: null,
+  Slosher_Bathtub: null,
+  Slosher_Bear: null,
+  Slosher_WashtubBombCore: null,
+  Slosher_Washtub: null,
+  Slosher: null,
+  Spinner: null,
+  Sprinkler: null,
+  Stringer_Short: null,
+  Stringer: null,
+  SuperHook: null,
+  SuperLanding: null,
+  TripleTornado: null,
+  UltraShot: null,
+  UltraStamp_Swing: null,
+  UltraStamp_Throw_BombCore: null,
+  UltraStamp_Throw: null,
 };

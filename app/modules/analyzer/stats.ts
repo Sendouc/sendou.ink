@@ -75,7 +75,8 @@ export function buildStats({
     },
     stats: {
       specialPoint: specialPoint(input),
-      specialSavedAfterDeath: specialSavedAfterDeath(input),
+      specialLost: specialLost(input),
+      specialLostSplattedByRP: specialLost(input, true),
       fullInkTankOptions: fullInkTankOptions(input),
       damages: damages(input),
       mainWeaponWhiteInkSeconds:
@@ -97,7 +98,8 @@ export function buildStats({
       enemyInkDamageLimit: enemyInkDamageLimit(input),
       framesBeforeTakingDamageInEnemyInk:
         framesBeforeTakingDamageInEnemyInk(input),
-      quickRespawnTime: quickRespawnTime(input),
+      quickRespawnTime: respawnTime(input),
+      quickRespawnTimeSplattedByRP: respawnTime(input, true),
       superJumpTimeGroundFrames: superJumpTimeGroundFrames(input),
       superJumpTimeTotal: superJumpTimeTotal(input),
       shotSpreadAir: shotSpreadAir(input),
@@ -165,11 +167,11 @@ function specialPoint({
 }
 
 const OWN_RESPAWN_PUNISHER_EXTRA_SPECIAL_LOST = 0.225;
-function specialSavedAfterDeath({
-  abilityPoints,
-  mainWeaponParams,
-  mainOnlyAbilities,
-}: StatFunctionInput): AnalyzedBuild["stats"]["specialPoint"] {
+const ENEMY_RESPAWN_PUNISHER_EXTRA_SPECIAL_LOST = 0.15;
+function specialLost(
+  { abilityPoints, mainWeaponParams, mainOnlyAbilities }: StatFunctionInput,
+  splattedByRP = false
+): AnalyzedBuild["stats"]["specialPoint"] {
   const SPECIAL_SAVED_AFTER_DEATH_ABILITY = "SS";
   const hasRespawnPunisher = mainOnlyAbilities.includes("RP");
   const extraSpecialLost = hasRespawnPunisher
@@ -189,9 +191,17 @@ function specialSavedAfterDeath({
     weapon: mainWeaponParams,
   });
 
+  const splattedByExtraPenalty = splattedByRP
+    ? ENEMY_RESPAWN_PUNISHER_EXTRA_SPECIAL_LOST
+    : 0;
+
   return {
-    baseValue: specialSavedAfterDeathForDisplay(baseEffect),
-    value: specialSavedAfterDeathForDisplay(effect - extraSpecialLost),
+    baseValue: specialSavedAfterDeathForDisplay(
+      baseEffect - splattedByExtraPenalty
+    ),
+    value: specialSavedAfterDeathForDisplay(
+      effect - splattedByExtraPenalty - extraSpecialLost
+    ),
     modifiedBy: [SPECIAL_SAVED_AFTER_DEATH_ABILITY, "RP"],
   };
 }
@@ -516,9 +526,11 @@ function swimSpeed(
 
 const RESPAWN_CHASE_FRAME = 150;
 const OWN_RESPAWN_PUNISHER_EXTRA_RESPAWN_FRAMES = 68;
+const ENEMY_RESPAWN_PUNISHER_EXTRA_RESPAWN_FRAMES = 45;
 const SPLATOON_3_FASTER_RESPAWN = 60;
-function quickRespawnTime(
-  args: StatFunctionInput
+function respawnTime(
+  args: StatFunctionInput,
+  splattedByRP = false
 ): AnalyzedBuild["stats"]["quickRespawnTime"] {
   const QUICK_RESPAWN_TIME_ABILITY = "QR";
   const hasRespawnPunisher = args.mainOnlyAbilities.includes("RP");
@@ -542,14 +554,19 @@ function quickRespawnTime(
     weapon: args.mainWeaponParams,
   });
 
-  const extraFrames = hasRespawnPunisher
+  const ownRPExtraFrames = hasRespawnPunisher
     ? OWN_RESPAWN_PUNISHER_EXTRA_RESPAWN_FRAMES
+    : 0;
+
+  const splattedByExtraFrames = splattedByRP
+    ? ENEMY_RESPAWN_PUNISHER_EXTRA_RESPAWN_FRAMES
     : 0;
 
   return {
     baseValue: framesToSeconds(
       RESPAWN_CHASE_FRAME +
         chase.baseEffect +
+        splattedByExtraFrames +
         around.baseEffect -
         SPLATOON_3_FASTER_RESPAWN
     ),
@@ -557,7 +574,8 @@ function quickRespawnTime(
       RESPAWN_CHASE_FRAME +
         chase.effect +
         around.effect +
-        extraFrames -
+        splattedByExtraFrames +
+        ownRPExtraFrames -
         SPLATOON_3_FASTER_RESPAWN
     ),
     modifiedBy: [QUICK_RESPAWN_TIME_ABILITY, "RP"],

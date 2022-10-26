@@ -10,32 +10,13 @@ import type {
   SpecialWeaponId,
   SubWeaponId,
 } from "../in-game-lists";
-import { damageTypeToWeaponType, DAMAGE_RECEIVERS } from "./constants";
+import {
+  damageTypeToWeaponType,
+  DAMAGE_RECEIVERS,
+  objectDamageJsonKeyPriority,
+} from "./constants";
 import { roundToNDecimalPlaces } from "~/utils/number";
 import { objectHitPoints } from "./objectHitPoints";
-
-/** Keys to check in the json. Lower index takes priority over higher. If key is omitted means any key with valid weapon id is okay. One json key can only map to one DamageType. */
-const objectDamageJsonKeyPriority: Partial<
-  Record<DamageType, Array<keyof typeof objectDamages>>
-> = {
-  // NORMAL_MIN: [],
-  // NORMAL_MAX: [],
-  DIRECT: ["Blaster_KillOneShot"],
-  FULL_CHARGE: [],
-  MAX_CHARGE: [],
-  TAP_SHOT: [],
-  // DISTANCE: [],
-  // BOMB_NORMAL: [],
-  BOMB_DIRECT: ["Bomb_DirectHit"],
-};
-
-const commonObjectDamageJsonKeys = () =>
-  Object.keys(objectDamages).filter(
-    (key) =>
-      !Object.values(objectDamageJsonKeyPriority)
-        .flat()
-        .includes(key as any)
-  ) as Array<keyof typeof objectDamages>;
 
 export function damageTypeToMultipliers({
   type,
@@ -56,10 +37,7 @@ export function damageTypeToMultipliers({
         id: SpecialWeaponId;
       };
 }) {
-  const keysToCheck =
-    objectDamageJsonKeyPriority[type] ?? commonObjectDamageJsonKeys();
-
-  for (const key of keysToCheck) {
+  for (const key of jsonKeysToCeck(type)) {
     const objectDamagesObj = objectDamages[key];
 
     let ok = false;
@@ -77,12 +55,37 @@ export function damageTypeToMultipliers({
     }
 
     if (ok) {
-      console.log(`for ${type} used ${key ?? "FALLBACK"}`);
       return objectDamagesObj.rates;
     }
   }
 
   return null;
+}
+const objectDamageJsonKeyPriorityEntries = Object.entries(
+  objectDamageJsonKeyPriority
+);
+
+// for example blaster belongs to both Blaster_KillOneShot
+// and Blaster categories so it needs to be specified
+// which damage type uses which
+function jsonKeysToCeck(type: DamageType) {
+  const result: Array<keyof typeof objectDamages> = [];
+
+  for (const [key, value] of objectDamageJsonKeyPriorityEntries) {
+    if (value?.includes(type)) {
+      result.push(key as keyof typeof objectDamages);
+    }
+  }
+
+  if (result.length) return result;
+
+  for (const [key, value] of objectDamageJsonKeyPriorityEntries) {
+    if (!value) {
+      result.push(key as keyof typeof objectDamages);
+    }
+  }
+
+  return result;
 }
 
 export function multipliersToRecordWithFallbacks(
@@ -96,6 +99,7 @@ export function multipliersToRecordWithFallbacks(
   ) as Record<DamageReceiver, number>;
 }
 
+const objectShredderMultipliers = objectDamages.ObjectEffect_Up.rates;
 export function calculateDamage({
   analyzed,
   mainWeaponId,
@@ -140,21 +144,34 @@ export function calculateDamage({
     return {
       receiver,
       hitPoints: damageReceiverHp,
-      damages: filteredDamages.map((damage) => {
-        const multiplier = multipliers[damage.type]![receiver];
-        const damagePerHit = roundToNDecimalPlaces(damage.value * multiplier);
+      damages: filteredDamages
+        .flatMap((damage) => [
+          { ...damage, objectShredder: false },
+          { ...damage, objectShredder: true },
+        ])
+        .map((damage) => {
+          const baseMultiplier = multipliers[damage.type]![receiver];
+          const objectShredderMultiplier =
+            objectShredderMultipliers.find((m) => m.target === receiver)
+              ?.rate ?? 1;
+          const multiplier =
+            baseMultiplier *
+            (damage.objectShredder ? objectShredderMultiplier : 1);
 
-        const hitsToDestroy = Math.ceil(damageReceiverHp / damagePerHit);
+          const damagePerHit = roundToNDecimalPlaces(damage.value * multiplier);
 
-        return {
-          value: damagePerHit,
-          hitsToDestroy,
-          multiplier,
-          type: damage.type,
-          id: damage.id,
-          distance: damage.distance,
-        };
-      }),
+          const hitsToDestroy = Math.ceil(damageReceiverHp / damagePerHit);
+
+          return {
+            value: damagePerHit,
+            hitsToDestroy,
+            multiplier: roundToNDecimalPlaces(multiplier, 2),
+            type: damage.type,
+            id: `${damage.id}-${String(damage.objectShredder)}`,
+            distance: damage.distance,
+            objectShredder: damage.objectShredder,
+          };
+        }),
     };
   });
 }

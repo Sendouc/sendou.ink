@@ -185,8 +185,8 @@ export interface AnalyzedBuild {
   };
   stats: {
     specialPoint: Stat;
-    /** % of special charge saved when dying */
-    specialSavedAfterDeath: Stat;
+    specialLost: Stat;
+    specialLostSplattedByRP: Stat;
     mainWeaponWhiteInkSeconds?: number;
     subWeaponWhiteInkSeconds: number;
     fullInkTankOptions: Array<FullInkTankOption & { id: string }>;
@@ -202,6 +202,7 @@ export interface AnalyzedBuild {
     damageTakenInEnemyInkPerSecond: Stat;
     enemyInkDamageLimit: Stat;
     quickRespawnTime: Stat;
+    quickRespawnTimeSplattedByRP: Stat;
     superJumpTimeGroundFrames: Stat;
     superJumpTimeTotal: Stat;
     shotSpreadAir?: Stat;

@@ -29,6 +29,9 @@ import clsx from "clsx";
 import { Label } from "~/components/Label";
 import { Ability } from "~/components/Ability";
 import { damageTypeTranslationString } from "~/utils/i18next";
+import { useSetTitle } from "~/hooks/useSetTitle";
+
+export const CURRENT_PATCH = "1.2";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -50,15 +53,11 @@ export default function ObjectDamagePage() {
     allDamageTypes,
   } = useObjectDamage();
 
-  if (process.env.NODE_ENV !== "development") {
-    return <Main>WIP :)</Main>;
-  }
-
   return (
     <Main className="stack lg">
       <div className="object-damage__controls">
         <div>
-          <Label htmlFor="weapon">Weapon</Label>
+          <Label htmlFor="weapon">{t("analyzer:labels.weapon")}</Label>
           <WeaponCombobox
             id="weapon"
             inputName="weapon"
@@ -74,7 +73,7 @@ export default function ObjectDamagePage() {
           />
         </div>
         <div>
-          <Label htmlFor="damage">Damage type</Label>
+          <Label htmlFor="damage">{t("analyzer:labels.damageType")}</Label>
           <DamageTypesSelect
             handleChange={handleChange}
             subWeaponId={subWeaponId}
@@ -84,10 +83,12 @@ export default function ObjectDamagePage() {
         </div>
         <div>
           <Label htmlFor="ap" labelClassName="object-damage__ap-label">
-            Amount of <Ability ability="BRU" size="TINY" />{" "}
+            {t("analyzer:labels.amountOf")}
+            <Ability ability="BRU" size="TINY" />
             <Ability ability="SPU" size="TINY" />
           </Label>
           <select
+            className="object-damage__select"
             id="ap"
             value={abilityPoints}
             onChange={(e) =>
@@ -107,6 +108,14 @@ export default function ObjectDamagePage() {
         subWeaponId={subWeaponId}
         damagesToReceivers={damagesToReceivers}
       />
+      <div className="object-damage__bottom-container">
+        <div className="text-lighter text-xs">
+          {t("analyzer:dmgHtdExplanation")}
+        </div>
+        <div className="object-damage__patch">
+          {t("analyzer:patch")} {CURRENT_PATCH}
+        </div>
+      </div>
     </Main>
   );
 }
@@ -124,6 +133,7 @@ function DamageTypesSelect({
 
   return (
     <select
+      className="object-damage__select"
       id="damage"
       value={damageType}
       onChange={(e) =>
@@ -169,7 +179,8 @@ function DamageReceiversGrid({
   ReturnType<typeof useObjectDamage>,
   "damagesToReceivers" | "subWeaponId"
 >) {
-  const { t } = useTranslation(["weapons", "analyzer"]);
+  const { t } = useTranslation(["weapons", "analyzer", "common"]);
+  useSetTitle(t("common:pages.object-damage-calculator"));
 
   return (
     <div
@@ -184,18 +195,21 @@ function DamageReceiversGrid({
       <div />
       {damagesToReceivers[0]?.damages.map((damage) => (
         <div key={damage.id} className="object-damage__table-header">
-          {t(
-            damageTypeTranslationString({
-              damageType: damage.type,
-              subWeaponId: subWeaponId,
-            })
-          )}
+          <div className="stack horizontal sm justify-center items-center">
+            {t(
+              damageTypeTranslationString({
+                damageType: damage.type,
+                subWeaponId: subWeaponId,
+              })
+            )}
+            {damage.objectShredder && <Ability ability="OS" size="TINY" />}
+          </div>
           <div
             className={clsx("object-damage__distance", {
               invisible: !damage.distance,
             })}
           >
-            Distance: {damage.distance}
+            {t("analyzer:distanceInline", { value: damage.distance })}
           </div>
         </div>
       ))}
@@ -210,21 +224,25 @@ function DamageReceiversGrid({
               height={40}
             />
             <div className="object-damage__hp">
-              {damageToReceiver.hitPoints}hp
+              {damageToReceiver.hitPoints}
+              {t("analyzer:suffix.hp")}
             </div>
             {damageToReceiver.damages.map((damage) => {
               return (
                 <div key={damage.id} className="object-damage__table-card">
                   <div className="object-damage__table-card__results">
-                    <abbr className="object-damage__abbr" title="Damage">
-                      DMG
+                    <abbr
+                      className="object-damage__abbr"
+                      title={t("analyzer:stat.category.damage")}
+                    >
+                      {t("analyzer:damageShort")}
                     </abbr>
                     <div>{damage.value}</div>
                     <abbr
                       className="object-damage__abbr"
-                      title="Hits to destroy"
+                      title={t("analyzer:hitsToDestroyLong")}
                     >
-                      HTD
+                      {t("analyzer:hitsToDestroyShort")}
                     </abbr>
                     <div>{damage.hitsToDestroy}</div>
                   </div>

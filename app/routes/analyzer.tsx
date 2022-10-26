@@ -245,8 +245,13 @@ export default function BuildAnalyzerPage() {
               suffix={t("analyzer:suffix.specialPointsShort")}
             />
             <StatCard
-              stat={analyzed.stats.specialSavedAfterDeath}
+              stat={analyzed.stats.specialLost}
               title={t("analyzer:stat.specialLost")}
+              suffix="%"
+            />
+            <StatCard
+              stat={analyzed.stats.specialLostSplattedByRP}
+              title={t("analyzer:stat.specialLostSplattedByRP")}
               suffix="%"
             />
             {analyzed.stats.specialDurationInSeconds && (
@@ -545,6 +550,11 @@ export default function BuildAnalyzerPage() {
               suffix={t("analyzer:suffix.seconds")}
             />
             <StatCard
+              stat={analyzed.stats.quickRespawnTimeSplattedByRP}
+              title={t("analyzer:stat.quickRespawnTimeSplattedByRP")}
+              suffix={t("analyzer:suffix.seconds")}
+            />
+            <StatCard
               stat={analyzed.stats.superJumpTimeGroundFrames}
               title={t("analyzer:stat.superJumpTimeGround")}
             />
@@ -834,7 +844,7 @@ function DamageTable({
 
             return (
               <tr key={val.id}>
-                <td>{typeRowName}</td>
+                <td>{t(typeRowName)}</td>
                 <td>
                   {damage}{" "}
                   {val.shotsToSplat && (

@@ -16,9 +16,11 @@
   "stat.maxChargeHoldSeconds": "Max charge hold time",
   "stat.specialPoints": "Points to special",
   "stat.specialLost": "Special lost when splatted",
+  "stat.specialLostSplattedByRP": "Special lost when splatted by RP user",
   "stat.whiteInk": "No ink recovery time after usage",
   "stat.squidFormInkRecoverySeconds": "Ink tank full recovery time (squid form)",
   "stat.quickRespawnTime": "Quick respawn time",
+  "stat.quickRespawnTimeSplattedByRP": "Quick Respawn time (splatted by RP user)",
   "stat.superJumpTimeGround": "Super jump vulnerable frames",
   "stat.superJumpTimeTotal": "Super jump time (total)",
   "stat.jumpShotSpread": "Shot spread in degrees (jumping)",
@@ -92,5 +94,13 @@
   "abilityPoints": "Ability points",
   "abilityPoints.short": "AP",
   "consumptionExplanation": "This chart shows the amount of actions left to perform with main weapon after using sub 0-{{maxSubsToUse}} times. Max amount of consecutive subs to use with full ink tank is {{maxSubsToUse}}.",
-  "trackingSubDefExplanation": "Point Sensor, Ink Mine and Angle Shooter tracking times are calculated against an opponent with 0AP of Sub Power Up."
+  "trackingSubDefExplanation": "Point Sensor, Ink Mine and Angle Shooter tracking times are calculated against an opponent with 0AP of Sub Power Up.",
+  "distanceInline": "Distance: {{value}}",
+  "damageShort": "DMG",
+  "hitsToDestroyLong": "Hits to destroy",
+  "hitsToDestroyShort": "HTD",
+  "labels.amountOf": "Amount of",
+  "labels.damageType": "Damage type",
+  "labels.weapon": "Weapon",
+  "dmgHtdExplanation": "DMG = Damage • HTD = Hits to destroy"
 }
