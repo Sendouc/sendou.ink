@@ -125,6 +125,7 @@ export default function MapListPage() {
           mapPool={mapPool}
           handleMapPoolChange={handleMapPoolChange}
           recentEvents={data.recentEventsWithMapPools}
+          initialEvent={data.calendarEvent}
         />
       )}
       <a

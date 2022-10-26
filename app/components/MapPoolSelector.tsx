@@ -15,6 +15,10 @@ import { CrossIcon } from "./icons/Cross";
 import { ArrowLongLeftIcon } from "./icons/ArrowLongLeft";
 import * as React from "react";
 import type { CalendarEvent } from "~/db/types";
+import type { SerializedMapPoolEvent } from "~/routes/calendar/map-pool-events";
+import { assertType } from "~/utils/types";
+import { MapPoolEventsCombobox } from "./Combobox";
+import { useOnce } from "~/hooks/useOnce";
 
 export type MapPoolSelectorProps = {
   mapPool: MapPool;
@@ -24,9 +28,8 @@ export type MapPoolSelectorProps = {
     event?: Pick<CalendarEvent, "id" | "name">
   ) => void;
   className?: string;
-  recentEvents?: Array<
-    Pick<CalendarEvent, "id" | "name"> & { serializedMapPool: string }
-  >;
+  recentEvents?: SerializedMapPoolEvent[];
+  initialEvent?: Pick<CalendarEvent, "id" | "name">;
 };
 
 export function MapPoolSelector({
@@ -35,11 +38,20 @@ export function MapPoolSelector({
   handleRemoval,
   className,
   recentEvents,
+  initialEvent,
 }: MapPoolSelectorProps) {
   const { t } = useTranslation();
 
   const [template, setTemplate] = React.useState<MapPoolTemplateValue>(
-    detectTemplate(mapPool)
+    initialEvent ? "event" : detectTemplate(mapPool)
+  );
+
+  const initialSerializedEvent: SerializedMapPoolEvent | undefined = useOnce(
+    () =>
+      initialEvent && {
+        ...initialEvent,
+        serializedMapPool: mapPool.serialized,
+      }
   );
 
   const handleStageModesChange = (newMapPool: MapPool) => {
@@ -54,7 +66,8 @@ export function MapPoolSelector({
 
   const handleTemplateChange = (template: MapPoolTemplateValue) => {
     setTemplate(template);
-    if (template === "none") {
+
+    if (template === "none" || template === "event") {
       return;
     }
 
@@ -75,6 +88,8 @@ export function MapPoolSelector({
       }
       return;
     }
+
+    assertType<never, typeof template>();
   };
 
   return (
@@ -101,6 +116,12 @@ export function MapPoolSelector({
             handleChange={handleTemplateChange}
             recentEvents={recentEvents}
           />
+          {template === "event" && (
+            <TemplateEventSelection
+              initialEvent={initialSerializedEvent}
+              handleEventChange={handleMapPoolChange}
+            />
+          )}
         </div>
         <MapPoolStages
           mapPool={mapPool}
@@ -279,7 +300,8 @@ const presetIds: MapModePresetId[] = ["ANARCHY", "ALL", ...modesShort];
 type MapPoolTemplateValue =
   | "none"
   | `preset:${MapModePresetId}`
-  | `recent-event:${string}`;
+  | `recent-event:${string}`
+  | "event";
 
 function detectTemplate(mapPool: MapPool): MapPoolTemplateValue {
   for (const presetId of presetIds) {
@@ -313,6 +335,7 @@ function MapPoolTemplateSelect({
         }}
       >
         <option value="none">{t("common:maps.template.none")}</option>
+        <option value="event">{t("common:maps.template.event")}</option>
         <optgroup label={t("common:maps.template.presets")}>
           {(["ANARCHY", "ALL"] as const).map((presetId) => (
             <option key={presetId} value={`preset:${presetId}`}>
@@ -337,6 +360,40 @@ function MapPoolTemplateSelect({
           </optgroup>
         )}
       </select>
+    </label>
+  );
+}
+
+type TemplateEventSelectionProps = {
+  handleEventChange: (
+    mapPool: MapPool,
+    event?: Pick<CalendarEvent, "id" | "name">
+  ) => void;
+  initialEvent?: SerializedMapPoolEvent;
+};
+function TemplateEventSelection({
+  handleEventChange,
+  initialEvent,
+}: TemplateEventSelectionProps) {
+  const { t } = useTranslation();
+  const id = React.useId();
+
+  return (
+    <label className="stack sm">
+      {t("maps.template.event")}
+      <MapPoolEventsCombobox
+        id={id}
+        inputName={id}
+        onChange={(e) => {
+          if (e) {
+            handleEventChange(new MapPool(e.serializedMapPool), {
+              id: e.id,
+              name: e.name,
+            });
+          }
+        }}
+        initialEvent={initialEvent}
+      />
     </label>
   );
 }

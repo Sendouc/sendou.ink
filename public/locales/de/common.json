@@ -34,8 +34,10 @@
   "actions.delete": "Löschen",
   "actions.loadMore": "Mehr laden",
   "actions.close": "Schließen",
+  "actions.loading": "Lädt...",
   "actions.clear": "Leeren",
   "actions.selectAll": "Alle auswählen",
+  "actions.search": "Suchen",
 
   "maps.createMapList": "Arenen-Liste erstellen",
   "maps.halfSz": "50% Herrschaft",
@@ -43,6 +45,7 @@
   "maps.tournamentMaplist": "Arenen-Liste für Turnier erstellen (maps.iplabs.ink)",
   "maps.template": "Vorlage",
   "maps.template.none": "Keine",
+  "maps.template.event": "Event",
   "maps.template.presets": "Voreinstellungen",
   "maps.template.yourRecentEvents": "Deine Events",
   "maps.template.preset.ANARCHY": "Anarchie-Modi",
@@ -54,6 +57,9 @@
   "forms.name": "Name",
   "forms.description": "Beschreibung",
   "forms.errors.title": "Diese Fehler müssen behoben werden",
+  "forms.errors.noSearchMatches": "Keine Suchergebnisse",
+
+  "errors.genericReload": "Etwas ist schiefgegangen. Versuche die Seite neu zu laden.",
 
   "tag.name.BADGE": "Abzeichen-Preise",
   "tag.name.SPECIAL": "Spezielle Regeln",

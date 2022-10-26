@@ -493,8 +493,16 @@ dialog::backdrop {
   }
 }
 
+.combobox-wrapper {
+  position: relative;
+}
+
 .combobox-input {
   width: 12rem;
+}
+
+.combobox-input.fullWidth {
+  width: 100%;
 }
 
 .combobox-options {
@@ -508,6 +516,10 @@ dialog::backdrop {
   font-size: var(--fonts-sm);
   padding-block: var(--s-3);
   padding-inline: 0;
+}
+
+.combobox-options.fullWidth {
+  width: 100%;
 }
 
 .combobox-options.empty {

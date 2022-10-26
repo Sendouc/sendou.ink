@@ -48,6 +48,9 @@ export const COMMON_PREVIEW_IMAGE = "/img/layout/common-preview.png";
 export const ERROR_GIRL_IMAGE_PATH = `/img/layout/error-girl`;
 export const LOGO_PATH = `/img/layout/logo`;
 
+export const GET_ALL_USERS_ROUTE = "/users";
+export const GET_ALL_EVENTS_WITH_MAP_POOLS_ROUTE = "/calendar/map-pool-events";
+
 interface UserLinkArgs {
   discordId: User["discordId"];
   customUrl?: User["customUrl"];
