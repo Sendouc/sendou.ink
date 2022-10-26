@@ -2,6 +2,8 @@ import { useFetcher } from "@remix-run/react";
 import type { Dispatch, ReactNode, SetStateAction } from "react";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 
+const THEME_LOCAL_STORAGE_KEY = "theme-preference";
+
 enum Theme {
   DARK = "dark",
   LIGHT = "light",
@@ -13,8 +15,22 @@ type ThemeContextType = [Theme | null, Dispatch<SetStateAction<Theme | null>>];
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 const prefersLightMQ = "(prefers-color-scheme: light)";
-const getPreferredTheme = () =>
-  window.matchMedia(prefersLightMQ).matches ? Theme.LIGHT : Theme.DARK;
+
+/**
+ * Retrieves the preferred Theme by the user based on what is stored in the web browser's LocalStorage.
+ *  - If none is found, then we use the theme based on the predefined preferred color scheme instead.
+ * 
+ * @returns the preferred Theme of the user
+ */
+const getPreferredTheme = () => {
+  let preferredTheme = window.matchMedia(prefersLightMQ).matches ? Theme.LIGHT : Theme.DARK;
+  const localStorageTheme = localStorage.getItem(THEME_LOCAL_STORAGE_KEY) as Theme;
+  if (typeof localStorageTheme !== "undefined" && localStorageTheme !== null) {
+    preferredTheme = localStorageTheme;
+  }
+
+  return preferredTheme;
+}
 
 function ThemeProvider({
   children,
@@ -85,14 +101,20 @@ function ThemeProvider({
   );
 }
 
-// this is how I make certain we avoid a flash of the wrong theme. If you select
-// a theme, then I'll know what you want in the future and you'll not see this
-// script anymore.
+/** 
+ * This is how I make certain we avoid a flash of the wrong theme. 
+ * If you select a theme, then I'll know what you want in the future and you'll not see this script anymore.
+ * 
+ * TODO: if additional themes are planned to be supported in the future, the number of theme combination strings must be updated/refactored!
+ */
 const clientThemeCode = `
 ;(() => {
-  const theme = window.matchMedia(${JSON.stringify(prefersLightMQ)}).matches
-    ? 'light'
-    : 'dark';
+  let theme = 'light';
+  const localStorageTheme = localStorage.getItem('theme-preference');
+  if (typeof localStorageTheme !== "undefined" && localStorageTheme !== null) {
+    theme = localStorageTheme;
+  }
+  
   const cl = document.documentElement.classList;
   const themeAlreadyApplied = cl.contains('light') || cl.contains('dark');
   if (themeAlreadyApplied) {
@@ -161,4 +183,4 @@ function isTheme(value: unknown): value is Theme {
   return typeof value === "string" && themes.includes(value as Theme);
 }
 
-export { isTheme, Theme, ThemeHead, ThemeProvider, useTheme };
+export { isTheme, Theme, ThemeHead, ThemeProvider, useTheme, THEME_LOCAL_STORAGE_KEY };
