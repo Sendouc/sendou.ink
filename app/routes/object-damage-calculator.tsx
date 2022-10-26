@@ -51,10 +51,6 @@ export default function ObjectDamagePage() {
     allDamageTypes,
   } = useObjectDamage();
 
-  if (process.env.NODE_ENV !== "development") {
-    return <Main>WIP :)</Main>;
-  }
-
   return (
     <Main className="stack lg">
       <div className="object-damage__controls">
