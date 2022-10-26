@@ -39,6 +39,7 @@ export const links: LinksFunction = () => {
 
 export const handle: SendouRouteHandle = {
   i18n: ["weapons", "analyzer"],
+  navItemName: "object-damage-calculator",
 };
 
 export default function ObjectDamagePage() {
