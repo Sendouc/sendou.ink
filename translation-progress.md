@@ -4,7 +4,7 @@
 
 ### 🟡 analyzer.json
 
-**94/104**
+**94/105**
 
 <details>
 <summary>Missing</summary>
@@ -19,6 +19,7 @@
 - labels.damageType
 - labels.weapon
 - dmgHtdExplanation
+- noDmgData
 
 </details>
 
@@ -78,7 +79,7 @@
 
 ### 🟡 analyzer.json
 
-**94/104**
+**94/105**
 
 <details>
 <summary>Missing</summary>
@@ -93,6 +94,7 @@
 - labels.damageType
 - labels.weapon
 - dmgHtdExplanation
+- noDmgData
 
 </details>
 
@@ -153,7 +155,7 @@
 
 ### 🟡 analyzer.json
 
-**91/104**
+**91/105**
 
 <details>
 <summary>Missing</summary>
@@ -171,6 +173,7 @@
 - labels.damageType
 - labels.weapon
 - dmgHtdExplanation
+- noDmgData
 
 </details>
 
@@ -286,7 +289,7 @@
 
 ### 🟡 analyzer.json
 
-**91/104**
+**91/105**
 
 <details>
 <summary>Missing</summary>
@@ -304,6 +307,7 @@
 - labels.damageType
 - labels.weapon
 - dmgHtdExplanation
+- noDmgData
 
 </details>
 
@@ -431,7 +435,7 @@
 
 ### 🔴 analyzer.json
 
-**0/104**
+**0/105**
 
 ### 🔴 badges.json
 
@@ -486,7 +490,7 @@
 
 ### 🟡 analyzer.json
 
-**12/104**
+**12/105**
 
 <details>
 <summary>Missing</summary>
@@ -583,6 +587,7 @@
 - labels.damageType
 - labels.weapon
 - dmgHtdExplanation
+- noDmgData
 
 </details>
 
@@ -709,7 +714,7 @@
 
 ### 🔴 analyzer.json
 
-**0/104**
+**0/105**
 
 ### 🟢 badges.json
 
@@ -845,7 +850,7 @@
 
 ### 🟡 analyzer.json
 
-**94/104**
+**94/105**
 
 <details>
 <summary>Missing</summary>
@@ -860,6 +865,7 @@
 - labels.damageType
 - labels.weapon
 - dmgHtdExplanation
+- noDmgData
 
 </details>
 
@@ -963,7 +969,7 @@
 
 ### 🔴 analyzer.json
 
-**0/104**
+**0/105**
 
 ### 🟢 badges.json
 
@@ -1099,7 +1105,7 @@
 
 ### 🟡 analyzer.json
 
-**94/104**
+**94/105**
 
 <details>
 <summary>Missing</summary>
@@ -1114,6 +1120,7 @@
 - labels.damageType
 - labels.weapon
 - dmgHtdExplanation
+- noDmgData
 
 </details>
 

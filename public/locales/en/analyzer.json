@@ -102,5 +102,6 @@
   "labels.amountOf": "Amount of",
   "labels.damageType": "Damage type",
   "labels.weapon": "Weapon",
-  "dmgHtdExplanation": "DMG = Damage • HTD = Hits to destroy"
+  "dmgHtdExplanation": "DMG = Damage • HTD = Hits to destroy",
+  "noDmgData": "No damage data yet for this weapon. Check back later!"
 }
