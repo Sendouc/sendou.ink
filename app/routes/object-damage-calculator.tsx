@@ -31,6 +31,8 @@ import { Ability } from "~/components/Ability";
 import { damageTypeTranslationString } from "~/utils/i18next";
 import { useSetTitle } from "~/hooks/useSetTitle";
 
+export const CURRENT_PATCH = "1.2";
+
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
@@ -106,8 +108,13 @@ export default function ObjectDamagePage() {
         subWeaponId={subWeaponId}
         damagesToReceivers={damagesToReceivers}
       />
-      <div className="text-lighter text-xs">
-        {t("analyzer:dmgHtdExplanation")}
+      <div className="object-damage__bottom-container">
+        <div className="text-lighter text-xs">
+          {t("analyzer:dmgHtdExplanation")}
+        </div>
+        <div className="object-damage__patch">
+          {t("analyzer:patch")} {CURRENT_PATCH}
+        </div>
       </div>
     </Main>
   );

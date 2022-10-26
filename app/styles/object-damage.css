@@ -81,3 +81,20 @@
   letter-spacing: 0.5px;
   margin-block-start: var(--s-2);
 }
+
+.object-damage__bottom-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.object-damage__patch {
+  border-radius: var(--rounded);
+  background-color: var(--theme-transparent);
+  color: var(--text-lighter);
+  font-size: var(--fonts-xxxs);
+  font-weight: var(--bold);
+  padding-block: var(--s-0-5);
+  padding-inline: var(--s-1);
+}
