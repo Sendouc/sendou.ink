@@ -26,7 +26,7 @@
   "forms.team.add": "Tilføj hold",
   "forms.team.remove": "Fjern hold",
   "forms.team.name": "Holdnavn",
-  "forms.team.placing": "Placerer",
+  "forms.team.placing": "Placering",
 
   "forms.team.player.header": "Spiller {{number}}",
   "forms.team.player.add": "Tilføj spiller",

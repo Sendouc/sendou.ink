@@ -14,6 +14,11 @@
   "header.logout": "Log ud",
   "header.login": "Log ind",
 
+  "auth.errors.aborted": "logindforsøg afbrudt",
+  "auth.errors.failed": "Loginforsøg fejlet",
+  "auth.errors.discordPermissions": "Før at du kan oprette en profil på Sendou.ink, skal Sendou.ink have adgang til din Discordprofils navn, brugerbillede og sociale forbindelser (de sociale medier, som du har tilknyttet din discordprofil).",
+  "auth.errors.unknown": "Loginforsøget via discord fejlede grundet en ukendt årsag. Hvis dette bliver ved med at ske, så spørg om hjælp (på engelsk) på discord-serveren https://discord.gg/sendou via #helpdesk-chatten.",
+
   "footer.github.subtitle": "Kildekode",
   "footer.twitter.subtitle": "Opdateringer",
   "footer.discord.subtitle": "Hjælp og feedback",
@@ -29,6 +34,7 @@
   "actions.delete": "Slet",
   "actions.loadMore": "Indlæs flere",
   "actions.copyToClipboard": "Kopiér til udklipsholderen",
+  "actions.close": "Luk",
 
   "maps.createMapList": "Lav bane-liste",
   "maps.halfSz": "50% SZ",

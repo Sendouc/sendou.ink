@@ -36,17 +36,12 @@
 
 ### 🟡 common.json
 
-**55/61**
+**60/61**
 
 <details>
 <summary>Missing</summary>
 
 - pages.object-damage-calculator
-- auth.errors.aborted
-- auth.errors.failed
-- auth.errors.discordPermissions
-- auth.errors.unknown
-- actions.close
 
 </details>
 
@@ -73,20 +68,9 @@
 
 **17/17**
 
-### 🟡 user.json
+### 🟢 user.json
 
-**20/25**
-
-<details>
-<summary>Missing</summary>
-
-- results.title
-- results.highlights
-- results.nonHighlights
-- results.highlights.choose
-- results.highlights.explanation
-
-</details>
+**25/25**
 
 ---
 
