@@ -4,7 +4,7 @@ import {
   mapPoolToSerializedString,
   serializedStringToMapPool,
 } from "./serializer";
-import type { MapPool } from "./types";
+import type { MapPoolObject } from "./types";
 
 const Serializer = suite("Map pool serializer");
 
@@ -24,7 +24,7 @@ Serializer("Ignores invalid mode key", () => {
 });
 
 Serializer("Matching serialization with IPLMapGen2", () => {
-  const testMapPool: MapPool = {
+  const testMapPool: MapPoolObject = {
     TW: [0, 3, 4, 7, 8],
     SZ: [0, 1, 3, 8, 10],
     TC: [1, 2, 5, 8, 9],
@@ -36,7 +36,7 @@ Serializer("Matching serialization with IPLMapGen2", () => {
 });
 
 Serializer("Omits key if mode has no maps", () => {
-  const testPoolWithoutTw: MapPool = {
+  const testPoolWithoutTw: MapPoolObject = {
     CB: [1, 2],
     RM: [1, 8],
     TC: [8, 4],
@@ -50,7 +50,7 @@ Serializer("Omits key if mode has no maps", () => {
 });
 
 Serializer("Returns empty string if no maps", () => {
-  const testPoolWithoutTw: MapPool = {
+  const testPoolWithoutTw: MapPoolObject = {
     CB: [],
     RM: [],
     TC: [],
@@ -64,7 +64,7 @@ Serializer("Returns empty string if no maps", () => {
 });
 
 Serializer("Value of two modes is the same with same maps", () => {
-  const testPoolWithDuplicateMaps: MapPool = {
+  const testPoolWithDuplicateMaps: MapPoolObject = {
     CB: [1, 2],
     RM: [1, 2],
     TC: [],

@@ -20,19 +20,13 @@ import { TrashIcon } from "~/components/icons/Trash";
 import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
-import { Toggle } from "~/components/Toggle";
 import { CALENDAR_EVENT } from "~/constants";
 import { db } from "~/db";
 import type { Badge as BadgeType, CalendarEventTag } from "~/db/types";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { requireUser } from "~/modules/auth";
 import { i18next } from "~/modules/i18n";
-import type { ModeShort, StageId } from "~/modules/in-game-lists";
-import {
-  mapPoolToSerializedString,
-  serializedStringToMapPool,
-  type MapPool,
-} from "~/modules/map-pool-serializer";
+import { MapPool } from "~/modules/map-pool-serializer";
 import { canEditCalendarEvent } from "~/permissions";
 import calendarNewStyles from "~/styles/calendar-new.css";
 import mapsStyles from "~/styles/maps.css";
@@ -58,7 +52,7 @@ import {
   safeJSONParse,
   toArray,
 } from "~/utils/zod";
-import { MapPoolSelector } from "./components/MapPoolSelector";
+import { MapPoolSelector } from "~/components/MapPoolSelector";
 import { Tags } from "./components/Tags";
 
 const MIN_DATE = new Date(Date.UTC(2015, 4, 28));
@@ -152,10 +146,7 @@ export const action: ActionFunction = async ({ request }) => {
   const deserializedMaps = (() => {
     if (!data.pool) return;
 
-    const mapPool = serializedStringToMapPool(data.pool);
-    return Object.entries(mapPool).flatMap(([mode, stages]) =>
-      stages.flatMap((stageId) => ({ mode: mode as ModeShort, stageId }))
-    );
+    return MapPool.toDbList(data.pool);
   })();
 
   if (data.eventToEditId) {
@@ -201,6 +192,9 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   return json({
     managedBadges: db.badges.managedByUserId(user.id),
+    recentEventsWithMapPools: db.calendarEvents.findRecentMapPoolsByAuthorId(
+      user.id
+    ),
     eventToEdit: canEditEvent
       ? {
           ...eventToEdit,
@@ -526,63 +520,43 @@ function BadgesAdder() {
   );
 }
 
-const DEFAULT_MAP_POOL = {
-  SZ: [],
-  TC: [],
-  CB: [],
-  RM: [],
-  TW: [],
-};
 function MapPoolSection() {
-  const { t } = useTranslation(["game-misc", "calendar"]);
+  const { t } = useTranslation(["game-misc", "common"]);
 
-  const data = useLoaderData<typeof loader>();
+  const { eventToEdit, recentEventsWithMapPools } =
+    useLoaderData<typeof loader>();
   const [mapPool, setMapPool] = React.useState<MapPool>(
-    data.eventToEdit?.mapPool ?? DEFAULT_MAP_POOL
+    eventToEdit?.mapPool ? new MapPool(eventToEdit.mapPool) : MapPool.EMPTY
   );
   const [includeMapPool, setIncludeMapPool] = React.useState(
-    Boolean(data.eventToEdit?.mapPool)
+    Boolean(eventToEdit?.mapPool)
   );
 
-  const handleMapPoolChange = ({
-    mode,
-    stageId,
-  }: {
-    mode: ModeShort;
-    stageId: StageId;
-  }) => {
-    const newMapPool = mapPool[mode].includes(stageId)
-      ? {
-          ...mapPool,
-          [mode]: mapPool[mode].filter((id) => id !== stageId),
-        }
-      : {
-          ...mapPool,
-          [mode]: [...mapPool[mode], stageId],
-        };
+  const id = React.useId();
 
-    setMapPool(newMapPool);
-  };
+  return includeMapPool ? (
+    <>
+      <input type="hidden" name="pool" value={mapPool.serialized} />
 
-  return (
-    <div className="w-full">
-      {includeMapPool && (
-        <input
-          type="hidden"
-          name="pool"
-          value={mapPoolToSerializedString(mapPool)}
-        />
-      )}
-      <Label>{t("calendar:forms.mapPool")}</Label>
-      <div className="stack md">
-        <Toggle checked={includeMapPool} setChecked={setIncludeMapPool} tiny />
-        {includeMapPool && (
-          <MapPoolSelector
-            mapPool={mapPool}
-            handleMapPoolChange={handleMapPoolChange}
-          />
-        )}
-      </div>
+      <MapPoolSelector
+        className="w-full"
+        mapPool={mapPool}
+        handleRemoval={() => setIncludeMapPool(false)}
+        handleMapPoolChange={setMapPool}
+        recentEvents={recentEventsWithMapPools}
+      />
+    </>
+  ) : (
+    <div>
+      <label htmlFor={id}>{t("common:maps.mapPool")}</label>
+      <Button
+        id={id}
+        variant="outlined"
+        tiny
+        onClick={() => setIncludeMapPool(true)}
+      >
+        {t("common:actions.add")}
+      </Button>
     </div>
   );
 }
