@@ -23,6 +23,7 @@ export const DAMAGE_RECEIVERS = [
 export const DAMAGE_TYPE = [
   "NORMAL_MIN",
   "NORMAL_MAX",
+  "NORMAL_MAX_FULL_CHARGE", // Hydra Splatling goes from 32 to 40 dmg when fully charged
   "DIRECT",
   "FULL_CHARGE",
   "MAX_CHARGE",
@@ -38,6 +39,7 @@ export const damageTypeToWeaponType: Record<
 > = {
   NORMAL_MIN: "MAIN",
   NORMAL_MAX: "MAIN",
+  NORMAL_MAX_FULL_CHARGE: "MAIN",
   DIRECT: "MAIN",
   FULL_CHARGE: "MAIN",
   MAX_CHARGE: "MAIN",

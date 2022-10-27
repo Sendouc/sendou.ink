@@ -79,6 +79,7 @@
   "damage.toSplat": "{{count}} hits to splat",
   "damage.NORMAL_MIN": "Minimum",
   "damage.NORMAL_MAX": "Maximum",
+  "damage.NORMAL_MAX_FULL_CHARGE": "Maximum (Fully charged)",
   "damage.DIRECT": "Direct",
   "damage.FULL_CHARGE": "Fully charged shot",
   "damage.MAX_CHARGE": "Maximum partial charge",

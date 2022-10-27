@@ -597,6 +597,7 @@
       "MoveSpeed_Charge": 0.04,
       "DamageParam_ValueMax": 320,
       "DamageParam_ValueMin": 160,
+      "DamageParam_ValueFullChargeMax": 400,
       "Jump_DegSwerve": 6,
       "Stand_DegSwerve": 3,
       "InkRecoverStop": 40,

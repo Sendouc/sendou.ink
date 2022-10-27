@@ -172,6 +172,10 @@ function parametersToMainWeaponResult(
     DamageParam_ValueDirect,
     BlastParam_DistanceDamage: params["BlastParam"]?.["DistanceDamage"],
     DamageParam_ValueFullCharge: params["DamageParam"]?.["ValueFullCharge"],
+    DamageParam_ValueFullChargeMax:
+      params["DamageParam"]?.["ValueFullChargeMax"] !== DamageParam_ValueMax()
+        ? params["DamageParam"]?.["ValueFullChargeMax"]
+        : undefined,
     DamageParam_ValueMaxCharge: params["DamageParam"]?.["ValueMaxCharge"],
     DamageParam_ValueMinCharge: params["DamageParam"]?.["ValueMinCharge"],
     CanopyHP: params["spl__BulletShelterCanopyParam"]?.["CanopyHP"],

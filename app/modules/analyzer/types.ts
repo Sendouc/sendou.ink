@@ -33,6 +33,7 @@ export interface MainWeaponParams {
   MoveSpeedFullCharge?: number;
   DamageParam_ValueMax?: number;
   DamageParam_ValueMin?: number;
+  DamageParam_ValueFullChargeMax?: number;
   DamageParam_ValueDirect?: number;
   Jump_DegSwerve?: number;
   Stand_DegSwerve?: number;
