@@ -8,7 +8,7 @@
   "analyzer.description": "アナライザーでギアとブキの効果を見る",
   "maps.description": "Turn pool of maps into a list to play on",
   "object-damage-calculator.description": "オブジェクトに対するダメージを計算する",
-  "recentWinners": "最近の勝者",
+  "recentWinners": "直近の優勝者",
   "upcomingEvents": "開催予定のイベント",
   "articleBy": "by {{author}}"
 }
