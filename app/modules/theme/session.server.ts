@@ -14,7 +14,7 @@ const sessionSecret = process.env["SESSION_SECRET"] ?? "secret";
 const themeStorage = createCookieSessionStorage({
   cookie: {
     name: "theme",
-    secure: true,
+    secure: process.env.NODE_ENV === "production",
     secrets: [sessionSecret],
     sameSite: "lax",
     path: "/",
