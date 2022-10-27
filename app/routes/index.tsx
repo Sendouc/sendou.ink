@@ -22,6 +22,7 @@ import {
   CALENDAR_PAGE,
   mapsPage,
   navIconUrl,
+  objectDamageCalculatorPage,
   plusSuggestionPage,
   userPage,
 } from "~/utils/urls";
@@ -74,6 +75,12 @@ export default function Index() {
             title={t("common:pages.analyzer")}
             description={t("front:analyzer.description")}
             to={analyzerPage()}
+          />
+          <FeatureCard
+            navItem="object-damage-calculator"
+            title={t("common:pages.object-damage-calculator")}
+            description={t("front:object-damage-calculator.description")}
+            to={objectDamageCalculatorPage()}
           />
           <FeatureCard
             navItem="plus"

@@ -10,12 +10,17 @@
   "stick": "Styrepind",
   "sens": "Følsomhed",
 
-  "results.placing": "Rang",
+  "results.title": "Resultater",
+  "results.placing": "Placering",
   "results.team": "Hold",
   "results.tournament": "Turnering",
   "results.participants": "Deltagere",
   "results.date": "Dato",
   "results.mates": "Holdkammerater",
+  "results.highlights": "Højdepunkter",
+  "results.nonHighlights": "Andre resultater",
+  "results.highlights.choose": "Vælg højdepunkter",
+  "results.highlights.explanation": "Vælg de resultater, som du vil fremhæve",
 
   "forms.errors.invalidCustomUrl.numbers": "Brugerdefineret URL må ikke kun indeholde numre",
   "forms.errors.invalidCustomUrl.strangeCharacter": "Brugerdefineret URL må ikke indeholde specialtegn (Gælder også æ, ø og å)",

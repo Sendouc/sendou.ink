@@ -86,6 +86,10 @@ export const analyzerPage = (args?: {
         )}`
       : ""
   }`;
+export const objectDamageCalculatorPage = (weaponId?: MainWeaponId) =>
+  `/object-damage-calculator${
+    typeof weaponId === "number" ? `?weapon=${weaponId}` : ""
+  }`;
 
 export const badgeUrl = ({
   code,

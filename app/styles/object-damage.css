@@ -1,6 +1,8 @@
 .object-damage__controls {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
+  gap: var(--s-4);
 }
 
 .object-damage__ap-label {
@@ -13,6 +15,7 @@
   display: grid;
   width: 100%;
   column-gap: var(--s-6);
+  overflow-x: auto;
   place-items: center;
   row-gap: var(--s-3);
 }
@@ -31,7 +34,9 @@
   font-size: var(--fonts-xs);
   font-weight: var(--semi-bold);
   padding-block: var(--s-2);
+  padding-inline: var(--s-2);
   text-align: center;
+  white-space: nowrap;
 }
 
 .object-damage__distance {
@@ -56,6 +61,11 @@
   display: grid;
   column-gap: var(--s-2);
   grid-template-columns: 1fr 1fr;
+  padding-inline: var(--s-2);
+}
+
+.object-damage__select {
+  width: initial;
 }
 
 .object-damage__abbr {
@@ -70,4 +80,21 @@
   font-weight: var(--bold);
   letter-spacing: 0.5px;
   margin-block-start: var(--s-2);
+}
+
+.object-damage__bottom-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.object-damage__patch {
+  border-radius: var(--rounded);
+  background-color: var(--theme-transparent);
+  color: var(--text-lighter);
+  font-size: var(--fonts-xxxs);
+  font-weight: var(--bold);
+  padding-block: var(--s-0-5);
+  padding-inline: var(--s-1);
 }
