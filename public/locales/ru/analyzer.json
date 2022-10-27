@@ -92,5 +92,12 @@
   "abilityPoints": "Свойства (AP)",
   "abilityPoints.short": "AP",
   "consumptionExplanation": "Данная таблица показывает, сколько действий можно совершить после 0-{{maxSubsToUse}}кратного использования запасного оружия. С полным баллоном запасное оружие можно использовать {{maxSubsToUse}} раз(а) подряд.",
-  "trackingSubDefExplanation": "В расчётах продолжительности маркировки Маркера Движения, Мины и Углострела используется противник с 0AP Стойкости Запаса."
+  "trackingSubDefExplanation": "В расчётах продолжительности маркировки Маркера Движения, Мины и Углострела используется противник с 0AP Стойкости Запаса.",
+  "distanceInline": "Расстояние: {{value}}",
+  "damageShort": "Урон",
+  "hitsToDestroyLong": "Атак для уничтожения",
+  "hitsToDestroyShort": "Атак",
+  "labels.amountOf": "Количество: ",
+  "labels.damageType": "Тип урона",
+  "labels.weapon": "Оружие"
 }
