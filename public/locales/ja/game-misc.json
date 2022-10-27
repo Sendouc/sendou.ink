@@ -10,5 +10,10 @@
   "STAGE_8": "海女美術大学",
   "STAGE_9": "チョウザメ造船",
   "STAGE_10": "ザトウマーケット",
-  "STAGE_11": "スメーシーワールド"
+  "STAGE_11": "スメーシーワールド",
+  "MODE_SHORT_TW": "ナワバリ",
+  "MODE_SHORT_SZ": "エリア",
+  "MODE_SHORT_TC": "ヤグラ",
+  "MODE_SHORT_RM": "ホコ",
+  "MODE_SHORT_CB": "アサリ"
 }

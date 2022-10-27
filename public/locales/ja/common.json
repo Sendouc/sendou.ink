@@ -3,13 +3,22 @@
   "pages.badges": "バッジ",
   "pages.plus": "Plus Server",
   "pages.contributors": "コントリビューター",
+  "pages.s2": "Splatoon 2",
   "pages.calendar": "カレンダー",
   "pages.faq": "FAQ",
   "pages.builds": "カード",
+  "pages.analyzer": "セットアップ・アナライザー",
+  "pages.maps": "ステージ一覧",
+  "pages.object-damage-calculator": "オブジェクトダメージ計算",
 
   "header.profile": "プロファイル",
   "header.logout": "ログアウト",
   "header.login": "ログイン",
+
+  "auth.errors.aborted": "ログインを中断しました",
+  "auth.errors.failed": "ログインに失敗しました",
+  "auth.errors.discordPermissions": "sendou.ink は、Discord のプロファイル名、アバターとフレンドリストをサイトのプロファイルに使用します。",
+  "auth.errors.unknown": "Discord 経由でのログインに失敗しました。この減少が続くようであれば、サポートに連絡してください。",
 
   "footer.github.subtitle": "ソースコード",
   "footer.twitter.subtitle": "最新情報",
@@ -24,6 +33,14 @@
   "actions.add": "追加",
   "actions.remove": "除外",
   "actions.delete": "削除",
+  "actions.loadMore": "さらに見る",
+  "actions.copyToClipboard": "クリップボードにコピーする",
+  "actions.close": "閉じる",
+
+  "maps.createMapList": "ステージ一覧を作る",
+  "maps.halfSz": "50% ガチエリア",
+  "maps.mapPool": "ステージプール",
+  "maps.tournamentMaplist": "トーナメントステージのリストを作る (maps.iplabs.ink)",
 
   "results": "結果",
 

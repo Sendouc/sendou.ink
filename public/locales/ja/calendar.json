@@ -8,6 +8,7 @@
   "participatedCount": "{{count}} チームが参加しました",
   "members": "メンバー",
   "results": "結果",
+  "createMapList": "マップリストを作成する",
 
   "forms.dates": "日",
   "forms.bracketUrl": "対戦表 URL",
@@ -17,6 +18,7 @@
   "forms.tags.info": "\"バッジプライズ\" タグは可能な場合に自動的に適用されます",
   "forms.badges": "バッジプライズ",
   "forms.badges.placeholder": "バッジプライズを選択する",
+  "forms.mapPool": "マッププール",
 
   "forms.participantCount": "参加者数",
   "forms.reportResultsHeader": "{{eventName}} の報告結果",
