@@ -375,7 +375,7 @@
       "InkConsume_WeaponSwingParam": 0.18
     },
     "1030": {
-      "SpecialPoint": 200,
+      "SpecialPoint": 210,
       "subWeaponId": 10,
       "specialWeaponId": 4,
       "InkConsume_WeaponVerticalSwingParam": 0.12,
@@ -513,7 +513,7 @@
       "InkConsumeSlosher": 0.06
     },
     "3020": {
-      "SpecialPoint": 200,
+      "SpecialPoint": 210,
       "subWeaponId": 5,
       "specialWeaponId": 6,
       "MoveSpeed": 0.07,
@@ -748,7 +748,7 @@
       "InkConsumeFullCharge_ChargeParam": 0.085
     },
     "7020": {
-      "SpecialPoint": 200,
+      "SpecialPoint": 210,
       "subWeaponId": 6,
       "specialWeaponId": 4,
       "WeaponSpeedType": "Fast",
@@ -881,7 +881,7 @@
       },
       "SubInkSaveLv": 1,
       "InkConsume": 0.6,
-      "InkRecoverStop": 70,
+      "InkRecoverStop": 85,
       "DistanceDamage_BlastParamArray": [
         [
           {

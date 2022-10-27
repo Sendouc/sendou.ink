@@ -39,7 +39,7 @@ import { type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { specialWeaponImageUrl, subWeaponImageUrl } from "~/utils/urls";
 
-export const CURRENT_PATCH = "1.1";
+export const CURRENT_PATCH = "1.2";
 
 export const meta: MetaFunction = () => {
   return {
