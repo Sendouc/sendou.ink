@@ -4,13 +4,15 @@
 
 ### 🟡 analyzer.json
 
-**94/105**
+**94/107**
 
 <details>
 <summary>Missing</summary>
 
+- objCalcAd
 - stat.specialLostSplattedByRP
 - stat.quickRespawnTimeSplattedByRP
+- damage.NORMAL_MAX_FULL_CHARGE
 - distanceInline
 - damageShort
 - hitsToDestroyLong
@@ -79,13 +81,15 @@
 
 ### 🟡 analyzer.json
 
-**94/105**
+**94/107**
 
 <details>
 <summary>Missing</summary>
 
+- objCalcAd
 - stat.specialLostSplattedByRP
 - stat.quickRespawnTimeSplattedByRP
+- damage.NORMAL_MAX_FULL_CHARGE
 - distanceInline
 - damageShort
 - hitsToDestroyLong
@@ -155,16 +159,18 @@
 
 ### 🟡 analyzer.json
 
-**91/105**
+**91/107**
 
 <details>
 <summary>Missing</summary>
 
+- objCalcAd
 - stat.specialLostSplattedByRP
 - stat.quickRespawnTimeSplattedByRP
 - stat.shootingRunSpeed
 - stat.shootingRunSpeedCharging
 - stat.shootingRunSpeedFullCharge
+- damage.NORMAL_MAX_FULL_CHARGE
 - distanceInline
 - damageShort
 - hitsToDestroyLong
@@ -289,16 +295,18 @@
 
 ### 🟡 analyzer.json
 
-**91/105**
+**91/107**
 
 <details>
 <summary>Missing</summary>
 
+- objCalcAd
 - stat.specialLostSplattedByRP
 - stat.quickRespawnTimeSplattedByRP
 - stat.shootingRunSpeed
 - stat.shootingRunSpeedCharging
 - stat.shootingRunSpeedFullCharge
+- damage.NORMAL_MAX_FULL_CHARGE
 - distanceInline
 - damageShort
 - hitsToDestroyLong
@@ -435,7 +443,7 @@
 
 ### 🔴 analyzer.json
 
-**0/105**
+**0/107**
 
 ### 🔴 badges.json
 
@@ -490,11 +498,12 @@
 
 ### 🟡 analyzer.json
 
-**12/105**
+**12/107**
 
 <details>
 <summary>Missing</summary>
 
+- objCalcAd
 - stat.canopyHp
 - stat.fullChargeSeconds
 - stat.maxChargeHoldSeconds
@@ -563,6 +572,7 @@
 - damage.toSplat
 - damage.NORMAL_MIN
 - damage.NORMAL_MAX
+- damage.NORMAL_MAX_FULL_CHARGE
 - damage.DIRECT
 - damage.FULL_CHARGE
 - damage.MAX_CHARGE
@@ -714,7 +724,7 @@
 
 ### 🔴 analyzer.json
 
-**0/105**
+**0/107**
 
 ### 🟢 badges.json
 
@@ -850,13 +860,15 @@
 
 ### 🟡 analyzer.json
 
-**94/105**
+**94/107**
 
 <details>
 <summary>Missing</summary>
 
+- objCalcAd
 - stat.specialLostSplattedByRP
 - stat.quickRespawnTimeSplattedByRP
+- damage.NORMAL_MAX_FULL_CHARGE
 - distanceInline
 - damageShort
 - hitsToDestroyLong
@@ -969,7 +981,7 @@
 
 ### 🔴 analyzer.json
 
-**0/105**
+**0/107**
 
 ### 🟢 badges.json
 
@@ -1105,13 +1117,15 @@
 
 ### 🟡 analyzer.json
 
-**94/105**
+**94/107**
 
 <details>
 <summary>Missing</summary>
 
+- objCalcAd
 - stat.specialLostSplattedByRP
 - stat.quickRespawnTimeSplattedByRP
+- damage.NORMAL_MAX_FULL_CHARGE
 - distanceInline
 - damageShort
 - hitsToDestroyLong

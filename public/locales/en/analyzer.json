@@ -3,6 +3,7 @@
   "attribute.weight.Fast": "Light",
   "attribute.weight.Slow": "Heavy",
   "attribute.weight.Normal": "Normal",
+  "objCalcAd": "For info on Object Shredder check out Object DMG Calc",
   "stat.category.main": "Main weapon",
   "stat.category.sub": "Sub weapon",
   "stat.category.special": "Special weapon",
