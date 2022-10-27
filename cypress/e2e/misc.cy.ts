@@ -5,12 +5,8 @@ beforeEach(() => {
   cy.visit("/");
 });
 
-/**
- * Note: function() is preferred over arrow functions for access to this.*
- * Reference: https://docs.cypress.io/guides/core-concepts/variables-and-aliases#Avoiding-the-use-of-this
- */
 describe("404 page", () => {
-  it("should say 404 if accessing URL that doesn't exist", function() {
+  it("should say 404 if accessing URL that doesn't exist", () => {
     cy.visit("/plus/idonotexist", { failOnStatusCode: false });
     cy.contains("404");
   });
@@ -26,14 +22,14 @@ describe("theme switcher", () => {
    */
   const THEME_LOCAL_STORAGE_KEY = "theme-preference";
 
-  it("should start on Light Mode and remember it", function() {
+  it("should start on Light Mode and remember it", () => {
     cy.get(".light-mode-only").should("be.visible"); // sun svg icon
     cy.reload().then(() => {
       cy.get(".light-mode-only").should("be.visible"); // sun svg icon again
     });
   });
 
-  it("should switch to Dark Mode and remember it", function() {
+  it("should switch to Dark Mode and remember it", () => {
     cy.get(".light-mode-only").should("be.visible"); // sun svg icon
 
     cy.getCy("theme-switch-button").click().then(() => {
@@ -44,7 +40,7 @@ describe("theme switcher", () => {
     });
   });
 
-  it("should start on Light Mode, switch to Dark Mode and remember it, then switch back to Light Mode properly", function() {
+  it("should start on Light Mode, switch to Dark Mode and remember it, then switch back to Light Mode properly", () => {
     cy.get(".light-mode-only").should("be.visible"); // sun svg icon
 
     cy.getCy("theme-switch-button").click().then(() => {
@@ -59,13 +55,13 @@ describe("theme switcher", () => {
     });
   });
 
-  it("should start on Light Mode if the localStorage key is set to be light", function() {
+  it("should start on Light Mode if the localStorage key is set to be light", () => {
     localStorage.setItem(THEME_LOCAL_STORAGE_KEY, 'light');
     cy.visit("/"); // Re-visit the page after localStorage key-value pair is set
     cy.get(".light-mode-only").should("be.visible"); // moon svg icon
   });
 
-  it("should start on Dark Mode if the localStorage key is set to be dark", function() {
+  it("should start on Dark Mode if the localStorage key is set to be dark", () => {
     localStorage.setItem(THEME_LOCAL_STORAGE_KEY, 'dark');
     cy.visit("/"); // Re-visit the page after localStorage key-value pair is set
     cy.get(".dark-mode-only").should("be.visible"); // moon svg icon
