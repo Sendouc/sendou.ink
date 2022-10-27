@@ -1,5 +1,4 @@
 import { useSearchParams } from "@remix-run/react";
-import invariant from "tiny-invariant";
 import { type MainWeaponId } from "../in-game-lists";
 import { calculateDamage } from "./objectDamage";
 import { buildStats } from "./stats";
@@ -37,7 +36,7 @@ export function useObjectDamage() {
       {
         weapon: String(newMainWeaponId),
         [ABILITY_POINTS_SP_KEY]: String(newAbilityPoints),
-        [DAMAGE_TYPE_SP_KEY]: newDamageType,
+        [DAMAGE_TYPE_SP_KEY]: newDamageType ?? "",
       },
       { replace: true, state: { scroll: false } }
     );
@@ -47,15 +46,17 @@ export function useObjectDamage() {
     mainWeaponId,
     subWeaponId: analyzed.weapon.subWeaponSplId,
     handleChange,
-    damagesToReceivers: calculateDamage({
-      abilityPoints: new Map([
-        ["BRU", { ap: abilityPoints, apBeforeTacticooler: abilityPoints }],
-        ["SPU", { ap: abilityPoints, apBeforeTacticooler: abilityPoints }],
-      ]),
-      analyzed,
-      mainWeaponId,
-      damageType,
-    }),
+    damagesToReceivers: damageType
+      ? calculateDamage({
+          abilityPoints: new Map([
+            ["BRU", { ap: abilityPoints, apBeforeTacticooler: abilityPoints }],
+            ["SPU", { ap: abilityPoints, apBeforeTacticooler: abilityPoints }],
+          ]),
+          analyzed,
+          mainWeaponId,
+          damageType,
+        })
+      : null,
     abilityPoints: String(abilityPoints),
     damageType,
     allDamageTypes: Array.from(
@@ -99,7 +100,6 @@ function validatedDamageTypeFromSearchParams({
   const fallbackFound = damageTypePriorityList.find((type) =>
     analyzed.stats.damages.some((d) => d.type === type)
   );
-  invariant(fallbackFound);
 
   return fallbackFound;
 }

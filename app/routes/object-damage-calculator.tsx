@@ -31,12 +31,15 @@ import { Ability } from "~/components/Ability";
 import { damageTypeTranslationString } from "~/utils/i18next";
 import { useSetTitle } from "~/hooks/useSetTitle";
 
+export const CURRENT_PATCH = "1.2";
+
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
 export const handle: SendouRouteHandle = {
   i18n: ["weapons", "analyzer"],
+  navItemName: "object-damage-calculator",
 };
 
 export default function ObjectDamagePage() {
@@ -50,10 +53,6 @@ export default function ObjectDamagePage() {
     damageType,
     allDamageTypes,
   } = useObjectDamage();
-
-  if (process.env.NODE_ENV !== "development") {
-    return <Main>WIP :)</Main>;
-  }
 
   return (
     <Main className="stack lg">
@@ -74,7 +73,7 @@ export default function ObjectDamagePage() {
             clearsInputOnFocus
           />
         </div>
-        <div>
+        <div className={clsx({ invisible: !damagesToReceivers })}>
           <Label htmlFor="damage">{t("analyzer:labels.damageType")}</Label>
           <DamageTypesSelect
             handleChange={handleChange}
@@ -90,6 +89,7 @@ export default function ObjectDamagePage() {
             <Ability ability="SPU" size="TINY" />
           </Label>
           <select
+            className="object-damage__select"
             id="ap"
             value={abilityPoints}
             onChange={(e) =>
@@ -105,10 +105,22 @@ export default function ObjectDamagePage() {
           </select>
         </div>
       </div>
-      <DamageReceiversGrid
-        subWeaponId={subWeaponId}
-        damagesToReceivers={damagesToReceivers}
-      />
+      {damagesToReceivers ? (
+        <DamageReceiversGrid
+          subWeaponId={subWeaponId}
+          damagesToReceivers={damagesToReceivers}
+        />
+      ) : (
+        <div>{t("analyzer:noDmgData")}</div>
+      )}
+      <div className="object-damage__bottom-container">
+        <div className="text-lighter text-xs">
+          {t("analyzer:dmgHtdExplanation")}
+        </div>
+        <div className="object-damage__patch">
+          {t("analyzer:patch")} {CURRENT_PATCH}
+        </div>
+      </div>
     </Main>
   );
 }
@@ -126,6 +138,7 @@ function DamageTypesSelect({
 
   return (
     <select
+      className="object-damage__select"
       id="damage"
       value={damageType}
       onChange={(e) =>
@@ -167,12 +180,14 @@ const damageReceiverImages: Record<DamageReceiver, string> = {
 function DamageReceiversGrid({
   subWeaponId,
   damagesToReceivers,
-}: Pick<
-  ReturnType<typeof useObjectDamage>,
-  "damagesToReceivers" | "subWeaponId"
->) {
+}: {
+  subWeaponId: ReturnType<typeof useObjectDamage>["subWeaponId"];
+  damagesToReceivers: NonNullable<
+    ReturnType<typeof useObjectDamage>["damagesToReceivers"]
+  >;
+}) {
   const { t } = useTranslation(["weapons", "analyzer", "common"]);
-  useSetTitle(t("common:pages.object-damage"));
+  useSetTitle(t("common:pages.object-damage-calculator"));
 
   return (
     <div

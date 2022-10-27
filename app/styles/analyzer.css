@@ -55,6 +55,19 @@
   padding-inline: var(--s-2);
 }
 
+.analyzer__noticeable-link {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  border-radius: var(--rounded);
+  background-color: var(--theme-transparent);
+  font-size: var(--fonts-xxs);
+  font-weight: var(--semi-bold);
+  gap: var(--s-2);
+  padding-block: var(--s-1);
+  padding-inline: var(--s-2);
+}
+
 .analyzer__ap-text {
   color: var(--text-lighter);
   font-size: var(--fonts-xxs);

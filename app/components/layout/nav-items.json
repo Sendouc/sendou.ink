@@ -5,6 +5,7 @@
   },
   { "name": "builds", "url": "builds" },
   { "name": "analyzer", "url": "analyzer" },
+  { "name": "object-damage-calculator", "url": "object-damage-calculator" },
   { "name": "calendar", "url": "calendar" },
   { "name": "maps", "url": "maps" },
   { "name": "badges", "url": "badges" },

@@ -3,6 +3,7 @@
   "attribute.weight.Fast": "Light",
   "attribute.weight.Slow": "Heavy",
   "attribute.weight.Normal": "Normal",
+  "objCalcAd": "For info on Object Shredder check out Object DMG Calc",
   "stat.category.main": "Main weapon",
   "stat.category.sub": "Sub weapon",
   "stat.category.special": "Special weapon",
@@ -16,9 +17,11 @@
   "stat.maxChargeHoldSeconds": "Max charge hold time",
   "stat.specialPoints": "Points to special",
   "stat.specialLost": "Special lost when splatted",
+  "stat.specialLostSplattedByRP": "Special lost when splatted by RP user",
   "stat.whiteInk": "No ink recovery time after usage",
   "stat.squidFormInkRecoverySeconds": "Ink tank full recovery time (squid form)",
   "stat.quickRespawnTime": "Quick respawn time",
+  "stat.quickRespawnTimeSplattedByRP": "Quick Respawn time (splatted by RP user)",
   "stat.superJumpTimeGround": "Super jump vulnerable frames",
   "stat.superJumpTimeTotal": "Super jump time (total)",
   "stat.jumpShotSpread": "Shot spread in degrees (jumping)",
@@ -77,6 +80,7 @@
   "damage.toSplat": "{{count}} hits to splat",
   "damage.NORMAL_MIN": "Minimum",
   "damage.NORMAL_MAX": "Maximum",
+  "damage.NORMAL_MAX_FULL_CHARGE": "Maximum (Fully charged)",
   "damage.DIRECT": "Direct",
   "damage.FULL_CHARGE": "Fully charged shot",
   "damage.MAX_CHARGE": "Maximum partial charge",
@@ -99,5 +103,7 @@
   "hitsToDestroyShort": "HTD",
   "labels.amountOf": "Amount of",
   "labels.damageType": "Damage type",
-  "labels.weapon": "Weapon"
+  "labels.weapon": "Weapon",
+  "dmgHtdExplanation": "DMG = Damage • HTD = Hits to destroy",
+  "noDmgData": "No damage data yet for this weapon. Check back later!"
 }
