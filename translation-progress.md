@@ -893,12 +893,11 @@
 
 ### 🟡 common.json
 
-**60/75**
+**61/75**
 
 <details>
 <summary>Missing</summary>
 
-- pages.object-damage-calculator
 - actions.loading
 - actions.clear
 - actions.selectAll
