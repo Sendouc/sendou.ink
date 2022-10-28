@@ -34,3 +34,5 @@ jobs:
         run: npm run lint:styles
       - name: Typecheck
         run: npm run typecheck
+      - name: Check translations jsons
+        run: npm run check-translation-jsons:no-write

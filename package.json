@@ -19,6 +19,7 @@
     "create-misc-json": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/create-misc-json.ts",
     "create-analyzer-json": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/create-analyzer-json.ts",
     "check-translation-jsons": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/check-translation-jsons.ts && npm run prettier:write-translation-progress",
+    "check-translation-jsons:no-write": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/check-translation-jsons.ts --no-write",
     "replace-img-names": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/replace-img-names.ts",
     "remove-bad-custom-urls": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/remove-bad-custom-urls.ts",
     "lint:ts": "eslint . --ext .ts,.tsx",

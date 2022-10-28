@@ -1,7 +1,9 @@
-// 1) create status.json
-
 import fs from "fs";
 import path from "path";
+
+const NO_WRITE_KEY = "--no-write";
+
+const dontWrite = process.argv.includes(NO_WRITE_KEY);
 
 const otherLanguageTranslationPath = (code?: string, fileName?: string) =>
   path.join(
@@ -83,13 +85,17 @@ const markdown = createTranslationProgessMarkdown({
   totalTranslationCounts,
 });
 
-fs.writeFileSync(
-  path.join(__dirname, "..", "translation-progress.md"),
-  markdown
-);
+if (!dontWrite) {
+  fs.writeFileSync(
+    path.join(__dirname, "..", "translation-progress.md"),
+    markdown
+  );
+}
 
 // eslint-disable-next-line no-console
-console.log("translation-progress.md written");
+console.log(
+  dontWrite ? "translation-progress.md ok" : "translation-progress.md written"
+);
 
 function validateNoExtraKeysInOther({
   english,
