@@ -895,7 +895,7 @@ function ConsumptionTable({
   subWeaponId: SubWeaponId;
 }) {
   const { t } = useTranslation(["analyzer", "weapons"]);
-  const maxSubsToUse = Math.max(...options.map((opt) => opt.subsUsed));
+  const maxSubsToUse = subWeaponId === 13 ? 1 : Math.max(...options.map((opt) => opt.subsUsed));
   const types = Array.from(new Set(options.map((opt) => opt.type)));
 
   return (
@@ -926,6 +926,7 @@ function ConsumptionTable({
       </table>
       <div className="analyzer__consumption-table-explanation">
         {t("analyzer:consumptionExplanation", { maxSubsToUse })}
+        {subWeaponId === 13 && <>{" "}{t("analyzer:torpedoExplanation")}</>}
       </div>
     </>
   );
