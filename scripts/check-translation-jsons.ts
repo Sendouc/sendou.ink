@@ -33,9 +33,13 @@ for (const file of fs.readdirSync(otherLanguageTranslationPath("en"))) {
 
   for (const lang of allOtherLanguages) {
     try {
-      const otherLanguageContent = JSON.parse(
-        fs.readFileSync(otherLanguageTranslationPath(lang, file), "utf8").trim()
-      ) as Record<string, string>;
+      const otherRawContent = fs
+        .readFileSync(otherLanguageTranslationPath(lang, file), "utf8")
+        .trim();
+      const otherLanguageContent = JSON.parse(otherRawContent) as Record<
+        string,
+        string
+      >;
 
       validateNoExtraKeysInOther({
         english: englishContent,
@@ -49,6 +53,11 @@ for (const file of fs.readdirSync(otherLanguageTranslationPath("en"))) {
         lang,
         file,
       });
+      validateNoDuplicateKeys({
+        otherRawContent,
+        file,
+        lang,
+      });
 
       const missingKeys = Object.keys(englishContent).filter(
         (key) => !Object.keys(otherLanguageContent).includes(key)
@@ -56,7 +65,7 @@ for (const file of fs.readdirSync(otherLanguageTranslationPath("en"))) {
 
       if (key === "weapons" || key === "gear") {
         if (missingKeys.length > 0) {
-          console.error(`missing keys in ${lang}/${file}`);
+          throw new Error(`missing keys in ${lang}/${file}`);
         }
       } else {
         missingTranslations[lang]![key] = missingKeys;
@@ -79,6 +88,9 @@ fs.writeFileSync(
   markdown
 );
 
+// eslint-disable-next-line no-console
+console.log("translation-progress.md written");
+
 function validateNoExtraKeysInOther({
   english,
   other,
@@ -95,7 +107,7 @@ function validateNoExtraKeysInOther({
   for (const key of Object.keys(other)) {
     if (validKeys.includes(key)) continue;
 
-    console.error(`unknown key in ${lang}/${file}: ${key}`);
+    throw new Error(`unknown key in ${lang}/${file}: ${key}`);
   }
 }
 
@@ -114,7 +126,6 @@ function validateVariables({
     const otherValue = other[key];
     if (!otherValue) continue;
 
-    // find all matches inside {{}}
     const englishMatches = value.match(/{{(.*?)}}/g);
     const otherMatches = otherValue.match(/{{(.*?)}}/g);
 
@@ -122,11 +133,41 @@ function validateVariables({
 
     for (const englishVar of englishMatches ?? []) {
       if (!otherMatches?.includes(englishVar)) {
-        console.error(
+        throw new Error(
           `variable mismatch in ${lang}/${file}: ${englishVar} is missing in ${otherValue}`
         );
       }
     }
+  }
+}
+
+function validateNoDuplicateKeys({
+  otherRawContent,
+  lang,
+  file,
+}: {
+  otherRawContent: string;
+  lang: string;
+  file: string;
+}) {
+  const keys = new Set<string>();
+  const duplicateKeys = new Set<string>();
+  for (const line of otherRawContent.split("\n")) {
+    const key = line.trim().split(":")[0];
+    if (!key) continue;
+
+    if (keys.has(key)) {
+      duplicateKeys.add(key);
+    }
+    keys.add(key);
+  }
+
+  if (duplicateKeys.size > 0) {
+    throw new Error(
+      `duplicate key(s) in ${lang}/${file}: ${Array.from(duplicateKeys).join(
+        ", "
+      )}`
+    );
   }
 }
 
