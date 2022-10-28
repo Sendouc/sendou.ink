@@ -40,8 +40,8 @@ export function Ability({
     setIsDragTarget(false);
   };
 
+  // Render an ability as a button only if it is meant to be draggable (i.e., not readonly)
   const AbilityTag = readonly ? "div" : "button";
-  console.warn(AbilityTag);
 
   return (
     <AbilityTag
