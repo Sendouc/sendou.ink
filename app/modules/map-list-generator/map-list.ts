@@ -6,14 +6,13 @@ import type {
   ModeWithStage,
   StageId,
 } from "~/modules/in-game-lists";
-import type { MapPool } from "~/modules/map-pool-serializer";
-import clone from "just-clone";
+import type { MapPool, MapPoolObject } from "~/modules/map-pool-serializer";
 
 const BACKLOG = 2;
 
 export type Popularity = Map<ModeShort, Map<StageId, number>>;
 
-type MapBucket = Map<number, MapPool>;
+type MapBucket = Map<number, MapPoolObject>;
 
 /**
  * @param mapPool Map pool to work with as dictionary
@@ -79,7 +78,7 @@ function addAndReturnMap(
       TC: [],
       RM: [],
       CB: [],
-    } as MapPool);
+    } as MapPoolObject);
   }
 
   /* prettier-ignore */
@@ -97,7 +96,7 @@ function getMapPopular(
 ): StageId {
   const popularity_map_pool = new Map();
   for (const [stageId, votes] of popularity.get(mode)!.entries()) {
-    if (mapPool[mode].includes(stageId)) {
+    if (mapPool.parsed[mode].includes(stageId)) {
       popularity_map_pool.set(stageId, votes);
     }
   }
@@ -150,7 +149,7 @@ function getMap(
   mapHistory: StageId[]
 ) {
   if (!buckets.size) {
-    buckets.set(0, clone(mapPool));
+    buckets.set(0, mapPool.getClonedObject());
   }
 
   for (let bucketNum = 0; bucketNum < buckets.size; bucketNum++) {

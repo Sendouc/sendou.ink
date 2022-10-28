@@ -15,5 +15,10 @@
   "MODE_SHORT_SZ": "SZ",
   "MODE_SHORT_TC": "TC",
   "MODE_SHORT_RM": "RM",
-  "MODE_SHORT_CB": "CB"
+  "MODE_SHORT_CB": "CB",
+  "MODE_LONG_TW": "Turf War",
+  "MODE_LONG_SZ": "Splat Zones",
+  "MODE_LONG_TC": "Tower Control",
+  "MODE_LONG_RM": "Rainmaker",
+  "MODE_LONG_CB": "Clam Blitz"
 }

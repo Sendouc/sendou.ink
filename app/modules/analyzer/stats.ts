@@ -341,6 +341,7 @@ const damageTypeToParamsKey: Record<
 > = {
   NORMAL_MIN: "DamageParam_ValueMin",
   NORMAL_MAX: "DamageParam_ValueMax",
+  NORMAL_MAX_FULL_CHARGE: "DamageParam_ValueFullChargeMax",
   DIRECT: "DamageParam_ValueDirect",
   DISTANCE: "BlastParam_DistanceDamage",
   FULL_CHARGE: "DamageParam_ValueFullCharge",
@@ -398,7 +399,7 @@ function shotsToSplat({
   type: DamageType;
   isTripleShooter: boolean;
 }) {
-  if (type !== "NORMAL_MAX") return;
+  if (type !== "NORMAL_MAX" && type !== "NORMAL_MAX_FULL_CHARGE") return;
 
   const multiplier = isTripleShooter ? 3 : 1;
 

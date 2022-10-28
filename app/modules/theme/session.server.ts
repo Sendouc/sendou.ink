@@ -4,6 +4,8 @@ import { isTheme } from "./provider";
 import type { Theme } from "./provider";
 import invariant from "tiny-invariant";
 
+const TEN_YEARS_IN_SECONDS = 315_360_000;
+
 if (process.env.NODE_ENV === "production") {
   invariant(process.env["SESSION_SECRET"], "SESSION_SECRET is required");
 }
@@ -12,11 +14,12 @@ const sessionSecret = process.env["SESSION_SECRET"] ?? "secret";
 const themeStorage = createCookieSessionStorage({
   cookie: {
     name: "theme",
-    secure: true,
+    secure: process.env.NODE_ENV === "production",
     secrets: [sessionSecret],
     sameSite: "lax",
     path: "/",
     httpOnly: true,
+    maxAge: TEN_YEARS_IN_SECONDS,
   },
 });
 

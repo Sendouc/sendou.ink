@@ -4,13 +4,15 @@
 
 ### 🟡 analyzer.json
 
-**94/104**
+**94/107**
 
 <details>
 <summary>Missing</summary>
 
+- objCalcAd
 - stat.specialLostSplattedByRP
 - stat.quickRespawnTimeSplattedByRP
+- damage.NORMAL_MAX_FULL_CHARGE
 - distanceInline
 - damageShort
 - hitsToDestroyLong
@@ -19,6 +21,7 @@
 - labels.damageType
 - labels.weapon
 - dmgHtdExplanation
+- noDmgData
 
 </details>
 
@@ -36,12 +39,26 @@
 
 ### 🟡 common.json
 
-**60/61**
+**60/75**
 
 <details>
 <summary>Missing</summary>
 
 - pages.object-damage-calculator
+- actions.loading
+- actions.clear
+- actions.selectAll
+- actions.search
+- maps.template
+- maps.template.none
+- maps.template.event
+- maps.template.presets
+- maps.template.yourRecentEvents
+- maps.template.preset.ANARCHY
+- maps.template.preset.ALL
+- maps.template.preset.onlyMode
+- forms.errors.noSearchMatches
+- errors.genericReload
 
 </details>
 
@@ -64,9 +81,20 @@
 
 </details>
 
-### 🟢 game-misc.json
+### 🟡 game-misc.json
 
-**17/17**
+**17/22**
+
+<details>
+<summary>Missing</summary>
+
+- MODE_LONG_TW
+- MODE_LONG_SZ
+- MODE_LONG_TC
+- MODE_LONG_RM
+- MODE_LONG_CB
+
+</details>
 
 ### 🟢 user.json
 
@@ -78,13 +106,15 @@
 
 ### 🟡 analyzer.json
 
-**94/104**
+**94/107**
 
 <details>
 <summary>Missing</summary>
 
+- objCalcAd
 - stat.specialLostSplattedByRP
 - stat.quickRespawnTimeSplattedByRP
+- damage.NORMAL_MAX_FULL_CHARGE
 - distanceInline
 - damageShort
 - hitsToDestroyLong
@@ -93,6 +123,7 @@
 - labels.damageType
 - labels.weapon
 - dmgHtdExplanation
+- noDmgData
 
 </details>
 
@@ -110,7 +141,7 @@
 
 ### 🟡 common.json
 
-**59/61**
+**73/75**
 
 <details>
 <summary>Missing</summary>
@@ -141,7 +172,7 @@
 
 ### 🟢 game-misc.json
 
-**17/17**
+**22/22**
 
 ### 🟢 user.json
 
@@ -153,16 +184,18 @@
 
 ### 🟡 analyzer.json
 
-**91/104**
+**91/107**
 
 <details>
 <summary>Missing</summary>
 
+- objCalcAd
 - stat.specialLostSplattedByRP
 - stat.quickRespawnTimeSplattedByRP
 - stat.shootingRunSpeed
 - stat.shootingRunSpeedCharging
 - stat.shootingRunSpeedFullCharge
+- damage.NORMAL_MAX_FULL_CHARGE
 - distanceInline
 - damageShort
 - hitsToDestroyLong
@@ -171,6 +204,7 @@
 - labels.damageType
 - labels.weapon
 - dmgHtdExplanation
+- noDmgData
 
 </details>
 
@@ -196,7 +230,7 @@
 
 ### 🟡 common.json
 
-**48/61**
+**48/75**
 
 <details>
 <summary>Missing</summary>
@@ -210,10 +244,24 @@
 - auth.errors.unknown
 - actions.copyToClipboard
 - actions.close
+- actions.loading
+- actions.clear
+- actions.selectAll
+- actions.search
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool
 - maps.tournamentMaplist
+- maps.template
+- maps.template.none
+- maps.template.event
+- maps.template.presets
+- maps.template.yourRecentEvents
+- maps.template.preset.ANARCHY
+- maps.template.preset.ALL
+- maps.template.preset.onlyMode
+- forms.errors.noSearchMatches
+- errors.genericReload
 
 </details>
 
@@ -239,7 +287,7 @@
 
 ### 🟡 game-misc.json
 
-**12/17**
+**12/22**
 
 <details>
 <summary>Missing</summary>
@@ -249,6 +297,11 @@
 - MODE_SHORT_TC
 - MODE_SHORT_RM
 - MODE_SHORT_CB
+- MODE_LONG_TW
+- MODE_LONG_SZ
+- MODE_LONG_TC
+- MODE_LONG_RM
+- MODE_LONG_CB
 
 </details>
 
@@ -286,16 +339,18 @@
 
 ### 🟡 analyzer.json
 
-**91/104**
+**91/107**
 
 <details>
 <summary>Missing</summary>
 
+- objCalcAd
 - stat.specialLostSplattedByRP
 - stat.quickRespawnTimeSplattedByRP
 - stat.shootingRunSpeed
 - stat.shootingRunSpeedCharging
 - stat.shootingRunSpeedFullCharge
+- damage.NORMAL_MAX_FULL_CHARGE
 - distanceInline
 - damageShort
 - hitsToDestroyLong
@@ -304,6 +359,7 @@
 - labels.damageType
 - labels.weapon
 - dmgHtdExplanation
+- noDmgData
 
 </details>
 
@@ -329,7 +385,7 @@
 
 ### 🟡 common.json
 
-**46/61**
+**46/75**
 
 <details>
 <summary>Missing</summary>
@@ -345,10 +401,24 @@
 - actions.loadMore
 - actions.copyToClipboard
 - actions.close
+- actions.loading
+- actions.clear
+- actions.selectAll
+- actions.search
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool
 - maps.tournamentMaplist
+- maps.template
+- maps.template.none
+- maps.template.event
+- maps.template.presets
+- maps.template.yourRecentEvents
+- maps.template.preset.ANARCHY
+- maps.template.preset.ALL
+- maps.template.preset.onlyMode
+- forms.errors.noSearchMatches
+- errors.genericReload
 
 </details>
 
@@ -384,7 +454,7 @@
 
 ### 🟡 game-misc.json
 
-**12/17**
+**12/22**
 
 <details>
 <summary>Missing</summary>
@@ -394,6 +464,11 @@
 - MODE_SHORT_TC
 - MODE_SHORT_RM
 - MODE_SHORT_CB
+- MODE_LONG_TW
+- MODE_LONG_SZ
+- MODE_LONG_TC
+- MODE_LONG_RM
+- MODE_LONG_CB
 
 </details>
 
@@ -431,7 +506,7 @@
 
 ### 🔴 analyzer.json
 
-**0/104**
+**0/107**
 
 ### 🔴 badges.json
 
@@ -447,7 +522,7 @@
 
 ### 🔴 common.json
 
-**0/61**
+**0/75**
 
 ### 🔴 contributions.json
 
@@ -463,7 +538,7 @@
 
 ### 🟡 game-misc.json
 
-**12/17**
+**12/22**
 
 <details>
 <summary>Missing</summary>
@@ -473,6 +548,11 @@
 - MODE_SHORT_TC
 - MODE_SHORT_RM
 - MODE_SHORT_CB
+- MODE_LONG_TW
+- MODE_LONG_SZ
+- MODE_LONG_TC
+- MODE_LONG_RM
+- MODE_LONG_CB
 
 </details>
 
@@ -486,11 +566,12 @@
 
 ### 🟡 analyzer.json
 
-**12/104**
+**12/107**
 
 <details>
 <summary>Missing</summary>
 
+- objCalcAd
 - stat.canopyHp
 - stat.fullChargeSeconds
 - stat.maxChargeHoldSeconds
@@ -559,6 +640,7 @@
 - damage.toSplat
 - damage.NORMAL_MIN
 - damage.NORMAL_MAX
+- damage.NORMAL_MAX_FULL_CHARGE
 - damage.DIRECT
 - damage.FULL_CHARGE
 - damage.MAX_CHARGE
@@ -583,6 +665,7 @@
 - labels.damageType
 - labels.weapon
 - dmgHtdExplanation
+- noDmgData
 
 </details>
 
@@ -608,7 +691,7 @@
 
 ### 🟡 common.json
 
-**46/61**
+**46/75**
 
 <details>
 <summary>Missing</summary>
@@ -624,10 +707,24 @@
 - actions.loadMore
 - actions.copyToClipboard
 - actions.close
+- actions.loading
+- actions.clear
+- actions.selectAll
+- actions.search
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool
 - maps.tournamentMaplist
+- maps.template
+- maps.template.none
+- maps.template.event
+- maps.template.presets
+- maps.template.yourRecentEvents
+- maps.template.preset.ANARCHY
+- maps.template.preset.ALL
+- maps.template.preset.onlyMode
+- forms.errors.noSearchMatches
+- errors.genericReload
 
 </details>
 
@@ -662,7 +759,7 @@
 
 ### 🟡 game-misc.json
 
-**12/17**
+**12/22**
 
 <details>
 <summary>Missing</summary>
@@ -672,6 +769,11 @@
 - MODE_SHORT_TC
 - MODE_SHORT_RM
 - MODE_SHORT_CB
+- MODE_LONG_TW
+- MODE_LONG_SZ
+- MODE_LONG_TC
+- MODE_LONG_RM
+- MODE_LONG_CB
 
 </details>
 
@@ -709,7 +811,7 @@
 
 ### 🔴 analyzer.json
 
-**0/104**
+**0/107**
 
 ### 🟢 badges.json
 
@@ -733,7 +835,7 @@
 
 ### 🟡 common.json
 
-**35/61**
+**35/75**
 
 <details>
 <summary>Missing</summary>
@@ -749,10 +851,24 @@
 - actions.loadMore
 - actions.copyToClipboard
 - actions.close
+- actions.loading
+- actions.clear
+- actions.selectAll
+- actions.search
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool
 - maps.tournamentMaplist
+- maps.template
+- maps.template.none
+- maps.template.event
+- maps.template.presets
+- maps.template.yourRecentEvents
+- maps.template.preset.ANARCHY
+- maps.template.preset.ALL
+- maps.template.preset.onlyMode
+- forms.errors.noSearchMatches
+- errors.genericReload
 - weapon.category.SHOOTERS
 - weapon.category.BLASTERS
 - weapon.category.ROLLERS
@@ -798,7 +914,7 @@
 
 ### 🟡 game-misc.json
 
-**12/17**
+**12/22**
 
 <details>
 <summary>Missing</summary>
@@ -808,6 +924,11 @@
 - MODE_SHORT_TC
 - MODE_SHORT_RM
 - MODE_SHORT_CB
+- MODE_LONG_TW
+- MODE_LONG_SZ
+- MODE_LONG_TC
+- MODE_LONG_RM
+- MODE_LONG_CB
 
 </details>
 
@@ -845,13 +966,15 @@
 
 ### 🟡 analyzer.json
 
-**94/104**
+**94/107**
 
 <details>
 <summary>Missing</summary>
 
+- objCalcAd
 - stat.specialLostSplattedByRP
 - stat.quickRespawnTimeSplattedByRP
+- damage.NORMAL_MAX_FULL_CHARGE
 - distanceInline
 - damageShort
 - hitsToDestroyLong
@@ -860,6 +983,7 @@
 - labels.damageType
 - labels.weapon
 - dmgHtdExplanation
+- noDmgData
 
 </details>
 
@@ -885,7 +1009,7 @@
 
 ### 🟡 common.json
 
-**48/61**
+**48/75**
 
 <details>
 <summary>Missing</summary>
@@ -899,10 +1023,24 @@
 - auth.errors.unknown
 - actions.copyToClipboard
 - actions.close
+- actions.loading
+- actions.clear
+- actions.selectAll
+- actions.search
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool
 - maps.tournamentMaplist
+- maps.template
+- maps.template.none
+- maps.template.event
+- maps.template.presets
+- maps.template.yourRecentEvents
+- maps.template.preset.ANARCHY
+- maps.template.preset.ALL
+- maps.template.preset.onlyMode
+- forms.errors.noSearchMatches
+- errors.genericReload
 
 </details>
 
@@ -928,7 +1066,7 @@
 
 ### 🟡 game-misc.json
 
-**12/17**
+**12/22**
 
 <details>
 <summary>Missing</summary>
@@ -938,6 +1076,11 @@
 - MODE_SHORT_TC
 - MODE_SHORT_RM
 - MODE_SHORT_CB
+- MODE_LONG_TW
+- MODE_LONG_SZ
+- MODE_LONG_TC
+- MODE_LONG_RM
+- MODE_LONG_CB
 
 </details>
 
@@ -961,9 +1104,21 @@
 
 ## /ru (🟡 In progress)
 
-### 🔴 analyzer.json
+### 🟡 analyzer.json
 
-**0/104**
+**101/107**
+
+<details>
+<summary>Missing</summary>
+
+- objCalcAd
+- stat.specialLostSplattedByRP
+- stat.quickRespawnTimeSplattedByRP
+- damage.NORMAL_MAX_FULL_CHARGE
+- dmgHtdExplanation
+- noDmgData
+
+</details>
 
 ### 🟢 badges.json
 
@@ -973,64 +1128,38 @@
 
 **11/11**
 
-### 🟡 calendar.json
+### 🟢 calendar.json
 
-**44/46**
-
-<details>
-<summary>Missing</summary>
-
-- createMapList
-- forms.mapPool
-
-</details>
+**46/46**
 
 ### 🟡 common.json
 
-**35/61**
+**60/75**
 
 <details>
 <summary>Missing</summary>
 
-- pages.s2
-- pages.analyzer
-- pages.maps
 - pages.object-damage-calculator
-- auth.errors.aborted
-- auth.errors.failed
-- auth.errors.discordPermissions
-- auth.errors.unknown
-- actions.loadMore
-- actions.copyToClipboard
-- actions.close
-- maps.createMapList
-- maps.halfSz
-- maps.mapPool
-- maps.tournamentMaplist
-- weapon.category.SHOOTERS
-- weapon.category.BLASTERS
-- weapon.category.ROLLERS
-- weapon.category.BRUSHES
-- weapon.category.CHARGERS
-- weapon.category.SLOSHERS
-- weapon.category.SPLATLINGS
-- weapon.category.DUALIES
-- weapon.category.BRELLAS
-- weapon.category.STRINGERS
-- weapon.category.SPLATANAS
+- actions.loading
+- actions.clear
+- actions.selectAll
+- actions.search
+- maps.template
+- maps.template.none
+- maps.template.event
+- maps.template.presets
+- maps.template.yourRecentEvents
+- maps.template.preset.ANARCHY
+- maps.template.preset.ALL
+- maps.template.preset.onlyMode
+- forms.errors.noSearchMatches
+- errors.genericReload
 
 </details>
 
-### 🟡 contributions.json
+### 🟢 contributions.json
 
-**5/6**
-
-<details>
-<summary>Missing</summary>
-
-- translation
-
-</details>
+**6/6**
 
 ### 🟢 faq.json
 
@@ -1038,60 +1167,33 @@
 
 ### 🟡 front.json
 
-**8/12**
+**11/12**
 
 <details>
 <summary>Missing</summary>
 
-- buildsGoTo
-- analyzer.description
-- maps.description
 - object-damage-calculator.description
 
 </details>
 
 ### 🟡 game-misc.json
 
-**12/17**
+**17/22**
 
 <details>
 <summary>Missing</summary>
 
-- MODE_SHORT_TW
-- MODE_SHORT_SZ
-- MODE_SHORT_TC
-- MODE_SHORT_RM
-- MODE_SHORT_CB
+- MODE_LONG_TW
+- MODE_LONG_SZ
+- MODE_LONG_TC
+- MODE_LONG_RM
+- MODE_LONG_CB
 
 </details>
 
-### 🟡 user.json
+### 🟢 user.json
 
-**7/25**
-
-<details>
-<summary>Missing</summary>
-
-- customUrl
-- ign
-- ign.short
-- stickSens
-- motionSens
-- motion
-- stick
-- sens
-- results.title
-- results.participants
-- results.highlights
-- results.nonHighlights
-- results.highlights.choose
-- results.highlights.explanation
-- forms.errors.invalidCustomUrl.numbers
-- forms.errors.invalidCustomUrl.strangeCharacter
-- forms.errors.invalidCustomUrl.duplicate
-- forms.errors.invalidSens
-
-</details>
+**25/25**
 
 ---
 
@@ -1099,13 +1201,15 @@
 
 ### 🟡 analyzer.json
 
-**94/104**
+**94/107**
 
 <details>
 <summary>Missing</summary>
 
+- objCalcAd
 - stat.specialLostSplattedByRP
 - stat.quickRespawnTimeSplattedByRP
+- damage.NORMAL_MAX_FULL_CHARGE
 - distanceInline
 - damageShort
 - hitsToDestroyLong
@@ -1114,6 +1218,7 @@
 - labels.damageType
 - labels.weapon
 - dmgHtdExplanation
+- noDmgData
 
 </details>
 
@@ -1139,7 +1244,7 @@
 
 ### 🟡 common.json
 
-**35/61**
+**35/75**
 
 <details>
 <summary>Missing</summary>
@@ -1155,10 +1260,24 @@
 - actions.loadMore
 - actions.copyToClipboard
 - actions.close
+- actions.loading
+- actions.clear
+- actions.selectAll
+- actions.search
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool
 - maps.tournamentMaplist
+- maps.template
+- maps.template.none
+- maps.template.event
+- maps.template.presets
+- maps.template.yourRecentEvents
+- maps.template.preset.ANARCHY
+- maps.template.preset.ALL
+- maps.template.preset.onlyMode
+- forms.errors.noSearchMatches
+- errors.genericReload
 - weapon.category.SHOOTERS
 - weapon.category.BLASTERS
 - weapon.category.ROLLERS
@@ -1204,7 +1323,7 @@
 
 ### 🟡 game-misc.json
 
-**12/17**
+**12/22**
 
 <details>
 <summary>Missing</summary>
@@ -1214,6 +1333,11 @@
 - MODE_SHORT_TC
 - MODE_SHORT_RM
 - MODE_SHORT_CB
+- MODE_LONG_TW
+- MODE_LONG_SZ
+- MODE_LONG_TC
+- MODE_LONG_RM
+- MODE_LONG_CB
 
 </details>
 

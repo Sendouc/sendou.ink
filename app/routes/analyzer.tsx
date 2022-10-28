@@ -1,4 +1,5 @@
 import { type LinksFunction, type MetaFunction } from "@remix-run/node";
+import { Link } from "@remix-run/react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { AbilitiesSelector } from "~/components/AbilitiesSelector";
@@ -37,9 +38,14 @@ import styles from "~/styles/analyzer.css";
 import { damageTypeTranslationString } from "~/utils/i18next";
 import { type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
-import { specialWeaponImageUrl, subWeaponImageUrl } from "~/utils/urls";
+import {
+  navIconUrl,
+  objectDamageCalculatorPage,
+  specialWeaponImageUrl,
+  subWeaponImageUrl,
+} from "~/utils/urls";
 
-export const CURRENT_PATCH = "1.1";
+export const CURRENT_PATCH = "1.2";
 
 export const meta: MetaFunction = () => {
   return {
@@ -68,6 +74,8 @@ export default function BuildAnalyzerPage() {
     ldeIntensity,
     effects,
   } = useAnalyzeBuild();
+
+  const objectShredderSelected = build[2][0] === "OS";
 
   const mainWeaponCategoryItems = [
     analyzed.stats.shotSpreadAir && (
@@ -564,6 +572,20 @@ export default function BuildAnalyzerPage() {
               suffix={t("analyzer:suffix.seconds")}
             />
           </StatCategory>
+          {objectShredderSelected && (
+            <Link
+              className="analyzer__noticeable-link"
+              to={objectDamageCalculatorPage(mainWeaponId)}
+            >
+              <Image
+                path={navIconUrl("object-damage-calculator")}
+                width={24}
+                height={24}
+                alt=""
+              />
+              {t("analyzer:objCalcAd")}
+            </Link>
+          )}
         </div>
       </div>
     </Main>

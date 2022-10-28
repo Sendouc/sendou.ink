@@ -1,8 +1,10 @@
 import invariant from "tiny-invariant";
 import { modesShort, type StageId, stageIds } from "../in-game-lists";
-import type { MapPool } from "./types";
+import type { MapPoolObject, ReadonlyMapPoolObject } from "./types";
 
-export function mapPoolToSerializedString(mapPool: MapPool): string {
+export function mapPoolToSerializedString(
+  mapPool: ReadonlyMapPoolObject
+): string {
   const serializedModes = [];
 
   for (const mode of modesShort) {
@@ -15,7 +17,7 @@ export function mapPoolToSerializedString(mapPool: MapPool): string {
   return serializedModes.join(";").toLowerCase();
 }
 
-function stageIdsToBinary(input: StageId[]) {
+function stageIdsToBinary(input: readonly StageId[]) {
   let result = "1";
 
   for (const stageId of stageIds) {
@@ -33,8 +35,10 @@ function binaryToHex(binary: string) {
   return parseInt(binary, 2).toString(16);
 }
 
-export function serializedStringToMapPool(serialized: string) {
-  const result: MapPool = {
+export function serializedStringToMapPool(
+  serialized: string
+): ReadonlyMapPoolObject {
+  const result: MapPoolObject = {
     SZ: [],
     CB: [],
     RM: [],
@@ -58,7 +62,7 @@ export function serializedStringToMapPool(serialized: string) {
   return result;
 }
 
-function binaryToStageIds(binary: string): StageId[] {
+function binaryToStageIds(binary: string): readonly StageId[] {
   const result: StageId[] = [];
 
   // first 1 is padding

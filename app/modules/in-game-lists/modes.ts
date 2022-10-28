@@ -1,24 +1,9 @@
 export const modes = [
-  {
-    short: "TW",
-    long: "Turf War",
-  },
-  {
-    short: "SZ",
-    long: "Splat Zones",
-  },
-  {
-    short: "TC",
-    long: "Tower Control",
-  },
-  {
-    short: "RM",
-    long: "Rainmaker",
-  },
-  {
-    short: "CB",
-    long: "Clam Blitz",
-  },
+  { short: "TW" },
+  { short: "SZ" },
+  { short: "TC" },
+  { short: "RM" },
+  { short: "CB" },
 ] as const;
 
 export const modesShort = modes.map((mode) => mode.short);

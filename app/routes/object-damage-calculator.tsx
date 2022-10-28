@@ -39,6 +39,7 @@ export const links: LinksFunction = () => {
 
 export const handle: SendouRouteHandle = {
   i18n: ["weapons", "analyzer"],
+  navItemName: "object-damage-calculator",
 };
 
 export default function ObjectDamagePage() {
@@ -72,7 +73,7 @@ export default function ObjectDamagePage() {
             clearsInputOnFocus
           />
         </div>
-        <div>
+        <div className={clsx({ invisible: !damagesToReceivers })}>
           <Label htmlFor="damage">{t("analyzer:labels.damageType")}</Label>
           <DamageTypesSelect
             handleChange={handleChange}
@@ -104,10 +105,14 @@ export default function ObjectDamagePage() {
           </select>
         </div>
       </div>
-      <DamageReceiversGrid
-        subWeaponId={subWeaponId}
-        damagesToReceivers={damagesToReceivers}
-      />
+      {damagesToReceivers ? (
+        <DamageReceiversGrid
+          subWeaponId={subWeaponId}
+          damagesToReceivers={damagesToReceivers}
+        />
+      ) : (
+        <div>{t("analyzer:noDmgData")}</div>
+      )}
       <div className="object-damage__bottom-container">
         <div className="text-lighter text-xs">
           {t("analyzer:dmgHtdExplanation")}
@@ -175,10 +180,12 @@ const damageReceiverImages: Record<DamageReceiver, string> = {
 function DamageReceiversGrid({
   subWeaponId,
   damagesToReceivers,
-}: Pick<
-  ReturnType<typeof useObjectDamage>,
-  "damagesToReceivers" | "subWeaponId"
->) {
+}: {
+  subWeaponId: ReturnType<typeof useObjectDamage>["subWeaponId"];
+  damagesToReceivers: NonNullable<
+    ReturnType<typeof useObjectDamage>["damagesToReceivers"]
+  >;
+}) {
   const { t } = useTranslation(["weapons", "analyzer", "common"]);
   useSetTitle(t("common:pages.object-damage-calculator"));
 

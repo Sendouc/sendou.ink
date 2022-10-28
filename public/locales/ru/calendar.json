@@ -8,6 +8,7 @@
   "participatedCount": "{{count}} команд приняло участие",
   "members": "Участники",
   "results": "Результаты",
+  "createMapList": "Создать список карт",
 
   "forms.dates": "Даты",
   "forms.bracketUrl": "URL сетки",
@@ -17,6 +18,7 @@
   "forms.tags.info": "Тег \"Призовые значки\" добавляется автоматически, если это возможно",
   "forms.badges": "Призовые значки",
   "forms.badges.placeholder": "Выберите призовой значок",
+  "forms.mapPool": "Список карт",
 
   "forms.participantCount": "Количество участников",
   "forms.reportResultsHeader": "Указать результаты для {{eventName}}",

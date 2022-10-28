@@ -3,13 +3,22 @@
   "pages.badges": "Значки",
   "pages.plus": "Plus Server",
   "pages.contributors": "Помощники",
+  "pages.s2": "Splatoon 2",
   "pages.calendar": "Календарь",
   "pages.faq": "FAQ",
   "pages.builds": "Сборки",
+  "pages.analyzer": "Анализатор сборок",
+  "pages.maps": "Списки карт",
+  "pages.object-damage": "Калькулятор урона",
 
   "header.profile": "Профиль",
   "header.logout": "Выйти",
   "header.login": "Войти",
+
+  "auth.errors.aborted": "Вход отменён",
+  "auth.errors.failed": "Ошибка входа",
+  "auth.errors.discordPermissions": "Для вашего профиля на sendou.ink странице нужет доступ к вашему имени, аватару и привязанным аккаунтам соц. сетей в Discord.",
+  "auth.errors.unknown": "Вход через Discord не удался по неизвестной причине. Если это продолжается — обратитесь за помощью.",
 
   "footer.github.subtitle": "Исходный код",
   "footer.twitter.subtitle": "Обновления",
@@ -24,6 +33,14 @@
   "actions.add": "Добавить",
   "actions.remove": "Убрать",
   "actions.delete": "Удалить",
+  "actions.loadMore": "Загрузить ещё",
+  "actions.copyToClipboard": "Скопировать в буфер обмена",
+  "actions.close": "Закрыть",
+
+  "maps.createMapList": "Создать список карт",
+  "maps.halfSz": "50% Зон",
+  "maps.mapPool": "Пул карт",
+  "maps.tournamentMaplist": "Создать список карт для турнира (maps.iplabs.ink)",
 
   "results": "Результаты",
 
@@ -39,5 +56,17 @@
   "tag.name.LOW": "Ограничение по скиллу",
   "tag.name.COUNT": "Лимит участников",
   "tag.name.LAN": "LAN",
-  "tag.name.QUALIFIER": "Квалификационный"
+  "tag.name.QUALIFIER": "Квалификационный",
+
+  "weapon.category.SHOOTERS": "Каплестрелы",
+  "weapon.category.BLASTERS": "Бластеры",
+  "weapon.category.ROLLERS": "Валики",
+  "weapon.category.BRUSHES": "Кисти",
+  "weapon.category.CHARGERS": "Нагнетатели",
+  "weapon.category.SLOSHERS": "Ведроганы",
+  "weapon.category.SPLATLINGS": "Брызгометы",
+  "weapon.category.DUALIES": "Спуртометы",
+  "weapon.category.BRELLAS": "Зонтганы",
+  "weapon.category.STRINGERS": "Тетиваторы",
+  "weapon.category.SPLATANAS": "Сплат-катаны"
 }
