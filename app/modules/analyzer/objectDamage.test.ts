@@ -80,6 +80,8 @@ const shotsToPopRM: Array<
   [2010, "FULL_CHARGE", 4, 3],
   // E-liter 4K
   [2030, "TAP_SHOT", 13, 12],
+  // Hydra Splatling
+  [4020, "NORMAL_MAX", 32, 29],
 ];
 
 CalculateDamage(

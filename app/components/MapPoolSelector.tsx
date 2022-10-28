@@ -18,7 +18,6 @@ import type { CalendarEvent } from "~/db/types";
 import type { SerializedMapPoolEvent } from "~/routes/calendar/map-pool-events";
 import { assertType } from "~/utils/types";
 import { MapPoolEventsCombobox } from "./Combobox";
-import { useOnce } from "~/hooks/useOnce";
 
 export type MapPoolSelectorProps = {
   mapPool: MapPool;
@@ -46,8 +45,8 @@ export function MapPoolSelector({
     initialEvent ? "event" : detectTemplate(mapPool)
   );
 
-  const initialSerializedEvent: SerializedMapPoolEvent | undefined = useOnce(
-    () =>
+  const [initialSerializedEvent, setInitialSerializedEvent] = React.useState(
+    (): SerializedMapPoolEvent | undefined =>
       initialEvent && {
         ...initialEvent,
         serializedMapPool: mapPool.serialized,
@@ -67,7 +66,15 @@ export function MapPoolSelector({
   const handleTemplateChange = (template: MapPoolTemplateValue) => {
     setTemplate(template);
 
-    if (template === "none" || template === "event") {
+    if (template === "none") {
+      return;
+    }
+
+    if (template === "event") {
+      // If the user selected the "event" option, the _initial_ event passed via
+      // props is likely not the current state and should not be prefilled
+      // anymore.
+      setInitialSerializedEvent(undefined);
       return;
     }
 

@@ -30,7 +30,6 @@ import { calendarEventPage, ipLabsMaps } from "~/utils/urls";
 import { type SendouRouteHandle } from "~/utils/remix";
 import { MapPoolSelector, MapPoolStages } from "~/components/MapPoolSelector";
 import { EditIcon } from "~/components/icons/Edit";
-import { useOnce } from "~/hooks/useOnce";
 import { getUser } from "~/modules/auth";
 import type { CalendarEvent } from "~/db/types";
 
@@ -145,7 +144,7 @@ function useSearchParamPersistedMapPool() {
   const data = useLoaderData<typeof loader>();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const initialMapPool = useOnce(() => {
+  const [mapPool, setMapPool] = React.useState(() => {
     if (searchParams.has("pool")) {
       return new MapPool(searchParams.get("pool")!);
     }
@@ -156,8 +155,6 @@ function useSearchParamPersistedMapPool() {
 
     return MapPool.ANARCHY;
   });
-
-  const [mapPool, setMapPool] = React.useState(initialMapPool);
 
   const handleMapPoolChange = (
     newMapPool: MapPool,
