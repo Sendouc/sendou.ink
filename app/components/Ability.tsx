@@ -40,8 +40,11 @@ export function Ability({
     setIsDragTarget(false);
   };
 
+  // Render an ability as a button only if it is meant to be draggable (i.e., not readonly)
+  const AbilityTag = readonly ? "div" : "button";
+
   return (
-    <button
+    <AbilityTag
       className={clsx("build__ability", {
         "is-drag-target": isDragTarget,
         "drag-started": dragStarted,
@@ -61,10 +64,9 @@ export function Ability({
         setIsDragTarget(false);
         onDrop?.(event);
       }}
-      tabIndex={readonly ? -1 : undefined}
-      type="button"
+      type={readonly ? undefined : "button"}
     >
       <Image alt="" path={abilityImageUrl(ability)} />
-    </button>
+    </AbilityTag>
   );
 }
