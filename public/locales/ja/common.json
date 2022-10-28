@@ -36,17 +36,32 @@
   "actions.loadMore": "さらに見る",
   "actions.copyToClipboard": "クリップボードにコピーする",
   "actions.close": "閉じる",
+  "actions.loading": "Loading...",
+  "actions.clear": "クリア",
+  "actions.selectAll": "すべてを選択",
+  "actions.search": "検索",
 
   "maps.createMapList": "ステージ一覧を作る",
   "maps.halfSz": "ガチエリア (2ヶ所)",
   "maps.mapPool": "ステージプール",
   "maps.tournamentMaplist": "トーナメントステージのリストを作る (maps.iplabs.ink)",
+  "maps.template": "テンプレート",
+  "maps.template.none": "なし",
+  "maps.template.event": "イベント",
+  "maps.template.presets": "プリセット",
+  "maps.template.yourRecentEvents": "最近のイベント",
+  "maps.template.preset.ANARCHY": "バンカラマッチルール",
+  "maps.template.preset.ALL": "すべてのルール",
+  "maps.template.preset.onlyMode": "{{modeName}} のみ",
 
   "results": "結果",
 
   "forms.name": "名前",
   "forms.description": "説明",
   "forms.errors.title": "以下のエラーの修正が必要です",
+  "forms.errors.noSearchMatches": "検索結果がみつかりませんでした",
+
+  "errors.genericReload": "エラーが発生しました。ページを再読込してください。",
 
   "tag.name.BADGE": "バッジプライズ",
   "tag.name.SPECIAL": "特別ルール",
