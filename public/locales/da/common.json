@@ -9,6 +9,7 @@
   "pages.builds": "Udrustningssæt",
   "pages.analyzer": "Udrustningsanalysator",
   "pages.maps": "Banelister",
+    "pages.object-damage-calculator": "Objektskadeberegneren",
 
   "header.profile": "Profil",
   "header.logout": "Log ud",
@@ -35,17 +36,32 @@
   "actions.loadMore": "Indlæs flere",
   "actions.copyToClipboard": "Kopiér til udklipsholderen",
   "actions.close": "Luk",
+  "actions.loading": "Indlæser...",
+  "actions.clear": "Ryd",
+  "actions.selectAll": "Vælg alle",
+  "actions.search": "Søg",
 
   "maps.createMapList": "Lav bane-liste",
   "maps.halfSz": "50% SZ",
   "maps.mapPool": "Banepulje",
   "maps.tournamentMaplist": "Lav turneringsbanepuljer på (maps.iplabs.ink)",
+  "maps.template": "Skabelon",
+  "maps.template.none": "Ingen",
+  "maps.template.event": "Begivenhed",
+  "maps.template.presets": "Forudindstillet",
+  "maps.template.yourRecentEvents": "Nylige begivenheder",
+  "maps.template.preset.ANARCHY": "Anarchy-spiltilstande",
+  "maps.template.preset.ALL": "Alle spiltilstande",
+  "maps.template.preset.onlyMode": "Kun {{modeName}}",
 
   "results": "Resultater",
 
   "forms.name": "Navn",
   "forms.description": "Beskrivelse",
   "forms.errors.title": "Følgende fejl skal rettes",
+  "forms.errors.noSearchMatches": "Ingen kampe fundet",
+  
+  "errors.genericReload": "Noget gik galt. Prøv at genindlæse siden.",
 
   "tag.name.BADGE": "Premiemærker",
   "tag.name.SPECIAL": "Særregler",
