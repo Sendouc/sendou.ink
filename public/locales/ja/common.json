@@ -17,7 +17,7 @@
 
   "auth.errors.aborted": "ログインを中断しました",
   "auth.errors.failed": "ログインに失敗しました",
-  "auth.errors.discordPermissions": "sendou.ink は、Discord のプロファイル名、アバターとフレンドリストをサイトのプロファイルに使用します。",
+  "auth.errors.discordPermissions": "sendou.ink は、Discord のプロファイル名、アバター、フレンドリストをサイトのプロファイルに使用します。",
   "auth.errors.unknown": "Discord 経由でのログインに失敗しました。この減少が続くようであれば、サポートに連絡してください。",
 
   "footer.github.subtitle": "ソースコード",
@@ -38,7 +38,7 @@
   "actions.close": "閉じる",
 
   "maps.createMapList": "ステージ一覧を作る",
-  "maps.halfSz": "50% ガチエリア",
+  "maps.halfSz": "ガチエリア (2ヶ所)",
   "maps.mapPool": "ステージプール",
   "maps.tournamentMaplist": "トーナメントステージのリストを作る (maps.iplabs.ink)",
 
