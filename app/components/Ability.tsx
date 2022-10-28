@@ -64,8 +64,7 @@ export function Ability({
         setIsDragTarget(false);
         onDrop?.(event);
       }}
-      tabIndex={readonly ? -1 : undefined}
-      type="button"
+      type={readonly ? undefined : "button"}
     >
       <Image alt="" path={abilityImageUrl(ability)} />
     </AbilityTag>
