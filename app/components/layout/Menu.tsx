@@ -43,6 +43,7 @@ export function Menu({
             onClick={closeMenu}
             data-cy={`menu-link-${navItem.name}`}
             tabIndex={!expanded ? -1 : undefined}
+            prefetch={navItem.prefetch ? "render" : undefined}
           >
             <Image
               className="layout__menu__link__icon"
