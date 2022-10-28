@@ -816,7 +816,6 @@ dialog::backdrop {
   transform: scale(1);
   transition: all 0.1s ease;
   user-select: none;
-  cursor: default; /* Non-draggable ability icons will not change the cursor */
 }
 
 .build__ability.is-drag-target {
