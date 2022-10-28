@@ -243,7 +243,8 @@ article {
 
 select {
   all: unset;
-  width: 90%;
+  width: 100%;
+  box-sizing: border-box;
   border: 1px solid var(--border);
   border-radius: var(--rounded);
   background: var(--select-background, var(--bg-lighter));
@@ -492,8 +493,16 @@ dialog::backdrop {
   }
 }
 
+.combobox-wrapper {
+  position: relative;
+}
+
 .combobox-input {
   width: 12rem;
+}
+
+.combobox-input.fullWidth {
+  width: 100%;
 }
 
 .combobox-options {
@@ -507,6 +516,10 @@ dialog::backdrop {
   font-size: var(--fonts-sm);
   padding-block: var(--s-3);
   padding-inline: 0;
+}
+
+.combobox-options.fullWidth {
+  width: 100%;
 }
 
 .combobox-options.empty {

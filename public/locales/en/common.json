@@ -36,17 +36,32 @@
   "actions.loadMore": "Load more",
   "actions.copyToClipboard": "Copy to clipboard",
   "actions.close": "Close",
+  "actions.loading": "Loading...",
+  "actions.clear": "Clear",
+  "actions.selectAll": "Select All",
+  "actions.search": "Search",
 
   "maps.createMapList": "Create map list",
   "maps.halfSz": "50% SZ",
   "maps.mapPool": "Map pool",
   "maps.tournamentMaplist": "Create tournament map list (maps.iplabs.ink)",
+  "maps.template": "Template",
+  "maps.template.none": "None",
+  "maps.template.event": "Event",
+  "maps.template.presets": "Presets",
+  "maps.template.yourRecentEvents": "Recent Events",
+  "maps.template.preset.ANARCHY": "Anarchy Modes",
+  "maps.template.preset.ALL": "All Modes",
+  "maps.template.preset.onlyMode": "Only {{modeName}}",
 
   "results": "Results",
 
   "forms.name": "Name",
   "forms.description": "Description",
   "forms.errors.title": "Following errors need to be fixed",
+  "forms.errors.noSearchMatches": "No matches found",
+
+  "errors.genericReload": "Something went wrong. Try reloading the page.",
 
   "tag.name.BADGE": "Badge prizes",
   "tag.name.SPECIAL": "Special rules",

@@ -22,7 +22,7 @@ import {
   CALENDAR_PAGE,
   mapsPage,
   navIconUrl,
-  OBJECT_DAMAGE_CALCULATOR,
+  objectDamageCalculatorPage,
   plusSuggestionPage,
   userPage,
 } from "~/utils/urls";
@@ -36,7 +36,7 @@ export const links: LinksFunction = () => {
 };
 
 export const handle: SendouRouteHandle = {
-  i18n: ["weapons", "builds"],
+  i18n: ["weapons", "builds", "front"],
 };
 
 export const loader = async () => {
@@ -80,7 +80,7 @@ export default function Index() {
             navItem="object-damage-calculator"
             title={t("common:pages.object-damage-calculator")}
             description={t("front:object-damage-calculator.description")}
-            to={OBJECT_DAMAGE_CALCULATOR}
+            to={objectDamageCalculatorPage()}
           />
           <FeatureCard
             navItem="plus"

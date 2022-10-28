@@ -1,5 +1,11 @@
 import slugify from "slugify";
-import type { Badge, GearType, MapPoolMap, User } from "~/db/types";
+import type {
+  Badge,
+  CalendarEvent,
+  GearType,
+  MapPoolMap,
+  User,
+} from "~/db/types";
 import type { ModeShort, weaponCategories } from "~/modules/in-game-lists";
 import type {
   Ability,
@@ -35,13 +41,15 @@ export const CONTRIBUTIONS_PAGE = "/contributions";
 export const BADGES_PAGE = "/badges";
 export const BUILDS_PAGE = "/builds";
 export const CALENDAR_PAGE = "/calendar";
-export const OBJECT_DAMAGE_CALCULATOR = "/object-damage-calculator";
 export const STOP_IMPERSONATING_URL = "/auth/impersonate/stop";
 export const SEED_URL = "/seed";
 
 export const COMMON_PREVIEW_IMAGE = "/img/layout/common-preview.png";
 export const ERROR_GIRL_IMAGE_PATH = `/img/layout/error-girl`;
 export const LOGO_PATH = `/img/layout/logo`;
+
+export const GET_ALL_USERS_ROUTE = "/users";
+export const GET_ALL_EVENTS_WITH_MAP_POOLS_ROUTE = "/calendar/map-pool-events";
 
 interface UserLinkArgs {
   discordId: User["discordId"];
@@ -75,6 +83,8 @@ export const calendarReportWinnersPage = (eventId: number) =>
   `/calendar/${eventId}/report-winners`;
 export const mapsPage = (eventId?: MapPoolMap["calendarEventId"]) =>
   `/maps${eventId ? `?eventId=${eventId}` : ""}`;
+export const readonlyMapsPage = (eventId: CalendarEvent["id"]) =>
+  `/maps?readonly&eventId=${eventId}`;
 export const articlePage = (slug: string) => `/a/${slug}`;
 export const analyzerPage = (args?: {
   weaponId: MainWeaponId;
@@ -86,6 +96,10 @@ export const analyzerPage = (args?: {
           args.abilities.join(",")
         )}`
       : ""
+  }`;
+export const objectDamageCalculatorPage = (weaponId?: MainWeaponId) =>
+  `/object-damage-calculator${
+    typeof weaponId === "number" ? `?weapon=${weaponId}` : ""
   }`;
 
 export const badgeUrl = ({

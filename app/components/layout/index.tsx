@@ -68,7 +68,7 @@ export const Layout = React.memo(function Layout({
       </header>
       <Menu expanded={menuOpen} closeMenu={() => setMenuOpen(false)} />
       {activeNavItem && (
-        <div className="layout__page-title-header">
+        <h1 className="layout__page-title-header">
           <Image
             path={navIconUrl(activeNavItem.name)}
             width={28}
@@ -76,7 +76,7 @@ export const Layout = React.memo(function Layout({
             alt=""
           />
           {t(`pages.${activeNavItem.name}` as any)}
-        </div>
+        </h1>
       )}
       {children}
       <Footer patrons={patrons} />
