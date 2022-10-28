@@ -40,8 +40,11 @@ export function Ability({
     setIsDragTarget(false);
   };
 
+  const AbilityTag = readonly ? "div" : "button";
+  console.warn(AbilityTag);
+
   return (
-    <button
+    <AbilityTag
       className={clsx("build__ability", {
         "is-drag-target": isDragTarget,
         "drag-started": dragStarted,
@@ -65,6 +68,6 @@ export function Ability({
       type="button"
     >
       <Image alt="" path={abilityImageUrl(ability)} />
-    </button>
+    </AbilityTag>
   );
 }

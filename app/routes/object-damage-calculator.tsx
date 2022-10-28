@@ -85,8 +85,8 @@ export default function ObjectDamagePage() {
         <div>
           <Label htmlFor="ap" labelClassName="object-damage__ap-label">
             {t("analyzer:labels.amountOf")}
-            <Ability ability="BRU" size="TINY" />
-            <Ability ability="SPU" size="TINY" />
+            <Ability ability="BRU" size="TINY" readonly />
+            <Ability ability="SPU" size="TINY" readonly />
           </Label>
           <select
             className="object-damage__select"
@@ -209,7 +209,7 @@ function DamageReceiversGrid({
                 subWeaponId: subWeaponId,
               })
             )}
-            {damage.objectShredder && <Ability ability="OS" size="TINY" />}
+            {damage.objectShredder && <Ability ability="OS" size="TINY" readonly />}
           </div>
           <div
             className={clsx("object-damage__distance", {
