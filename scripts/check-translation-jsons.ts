@@ -38,10 +38,12 @@ for (const file of fs.readdirSync(otherLanguageTranslationPath("en"))) {
       const otherRawContent = fs
         .readFileSync(otherLanguageTranslationPath(lang, file), "utf8")
         .trim();
-      const otherLanguageContent = JSON.parse(otherRawContent) as Record<
-        string,
-        string
-      >;
+      let otherLanguageContent: Record<string, string>;
+      try {
+        otherLanguageContent = JSON.parse(otherRawContent);
+      } catch (e) {
+        throw new Error(`failed to parse ${lang}/${file}`);
+      }
 
       validateNoExtraKeysInOther({
         english: englishContent,
