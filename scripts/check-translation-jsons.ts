@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import prettier from "prettier";
 
 const NO_WRITE_KEY = "--no-write";
 
@@ -87,11 +88,19 @@ const markdown = createTranslationProgessMarkdown({
   totalTranslationCounts,
 });
 
-if (!dontWrite) {
-  fs.writeFileSync(
-    path.join(__dirname, "..", "translation-progress.md"),
-    markdown
-  );
+const formattedMarkdown = prettier.format(markdown, { parser: "markdown" });
+
+const translationProgressPath = path.join(
+  __dirname,
+  "..",
+  "translation-progress.md"
+);
+if (dontWrite) {
+  if (formattedMarkdown !== fs.readFileSync(translationProgressPath, "utf8")) {
+    throw new Error("translation-progress.md is out of date");
+  }
+} else {
+  fs.writeFileSync(translationProgressPath, formattedMarkdown);
 }
 
 // eslint-disable-next-line no-console
