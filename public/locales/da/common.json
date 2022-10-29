@@ -9,7 +9,7 @@
   "pages.builds": "Udrustningssæt",
   "pages.analyzer": "Udrustningsanalysator",
   "pages.maps": "Banelister",
-    "pages.object-damage-calculator": "Objektskadeberegneren",
+  "pages.object-damage-calculator": "Objektskadeberegneren",
 
   "header.profile": "Profil",
   "header.logout": "Log ud",
@@ -60,7 +60,7 @@
   "forms.description": "Beskrivelse",
   "forms.errors.title": "Følgende fejl skal rettes",
   "forms.errors.noSearchMatches": "Ingen kampe fundet",
-  
+
   "errors.genericReload": "Noget gik galt. Prøv at genindlæse siden.",
 
   "tag.name.BADGE": "Premiemærker",
