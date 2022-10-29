@@ -217,7 +217,6 @@ function AbilitiesRowWithGear({
           key={i}
           ability={ability}
           size={i === 0 ? "MAIN" : "SUB"}
-          readonly
         />
       ))}
     </>
