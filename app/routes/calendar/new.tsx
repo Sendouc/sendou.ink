@@ -293,7 +293,7 @@ function DescriptionTextarea() {
 function getDateWithHoursOffset(date: Date) {
     const DATE_INPUT_HOURS_OFFSET = 24;
 
-    var copiedDate = new Date(date.getTime());
+    const copiedDate = new Date(date.getTime());
     copiedDate.setHours(date.getHours() + DATE_INPUT_HOURS_OFFSET);
     return copiedDate;
 }
