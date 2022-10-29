@@ -37,9 +37,16 @@
 
 **6/6**
 
-### 🟢 front.json
+### 🟡 front.json
 
-**12/12**
+**12/13**
+
+<details>
+<summary>Missing</summary>
+
+- articlesGoTo
+
+</details>
 
 ### 🟢 game-misc.json
 
@@ -111,12 +118,13 @@
 
 ### 🟡 front.json
 
-**11/12**
+**11/13**
 
 <details>
 <summary>Missing</summary>
 
 - object-damage-calculator.description
+- articlesGoTo
 
 </details>
 
@@ -226,13 +234,14 @@
 
 ### 🟡 front.json
 
-**10/12**
+**10/13**
 
 <details>
 <summary>Missing</summary>
 
 - maps.description
 - object-damage-calculator.description
+- articlesGoTo
 
 </details>
 
@@ -392,7 +401,7 @@
 
 ### 🟡 front.json
 
-**8/12**
+**9/13**
 
 <details>
 <summary>Missing</summary>
@@ -486,7 +495,7 @@
 
 ### 🔴 front.json
 
-**0/12**
+**0/13**
 
 ### 🟡 game-misc.json
 
@@ -551,9 +560,16 @@
 
 **6/6**
 
-### 🟢 front.json
+### 🟡 front.json
 
-**12/12**
+**12/13**
+
+<details>
+<summary>Missing</summary>
+
+- articlesGoTo
+
+</details>
 
 ### 🟢 game-misc.json
 
@@ -658,7 +674,7 @@
 
 ### 🟡 front.json
 
-**8/12**
+**8/13**
 
 <details>
 <summary>Missing</summary>
@@ -667,6 +683,7 @@
 - analyzer.description
 - maps.description
 - object-damage-calculator.description
+- articlesGoTo
 
 </details>
 
@@ -798,12 +815,13 @@
 
 ### 🟡 front.json
 
-**11/12**
+**11/13**
 
 <details>
 <summary>Missing</summary>
 
 - object-damage-calculator.description
+- articlesGoTo
 
 </details>
 
@@ -904,12 +922,13 @@
 
 ### 🟡 front.json
 
-**11/12**
+**11/13**
 
 <details>
 <summary>Missing</summary>
 
 - object-damage-calculator.description
+- articlesGoTo
 
 </details>
 
@@ -1047,7 +1066,7 @@
 
 ### 🟡 front.json
 
-**8/12**
+**8/13**
 
 <details>
 <summary>Missing</summary>
@@ -1056,6 +1075,7 @@
 - analyzer.description
 - maps.description
 - object-damage-calculator.description
+- articlesGoTo
 
 </details>
 
