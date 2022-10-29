@@ -38,19 +38,18 @@ export function Ability({
     setIsDragTarget(false);
   };
 
-  const hasOnClickFunc = onClick !== undefined;
+  const readonly = typeof (onClick) === "undefined" || ability === "UNKNOWN"; // Force "UNKNOWN" ability icons to be readonly
 
   // Render an ability as a button only if it is meant to be draggable (i.e., not readonly)
-  const AbilityTag = hasOnClickFunc ? "button" : "div";
-  const readonly = !hasOnClickFunc || ability === "UNKNOWN"; // Force "UNKNOWN" ability icons to be readonly
-
+  const AbilityTag = readonly ? "div" : "button";
+  
   return (
     <AbilityTag
       className={clsx("build__ability", {
         "is-drag-target": isDragTarget,
         "drag-started": dragStarted,
         "drop-allowed": dropAllowed,
-        readonly,
+        readonly: readonly,
       })}
       style={
         {
@@ -65,7 +64,7 @@ export function Ability({
         setIsDragTarget(false);
         onDrop?.(event);
       }}
-      type={hasOnClickFunc ? "button" : undefined}
+      type={readonly ? undefined : "button"}
     >
       <Image alt="" path={abilityImageUrl(ability)} />
     </AbilityTag>
