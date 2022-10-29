@@ -19,12 +19,7 @@ export function UserItem() {
     return (
       <Popover
         buttonChildren={
-          <Avatar
-            data-cy="user-avatar"
-            user={user}
-            className="layout__avatar"
-            size="sm"
-          />
+          <Avatar user={user} className="layout__avatar" size="sm" />
         }
       >
         <div className="layout__user-popover">
@@ -33,7 +28,6 @@ export function UserItem() {
               className="w-full"
               tiny
               variant="outlined"
-              data-cy="profile-button"
               icon={<UserIcon />}
             >
               {t("header.profile")}
@@ -58,12 +52,8 @@ export function UserItem() {
 
   return (
     <>
-      <form action={LOG_IN_URL} method="post" data-cy="log-in-form">
-        <button
-          type="submit"
-          className="layout__log-in-button"
-          data-cy="log-in-button"
-        >
+      <form action={LOG_IN_URL} method="post">
+        <button type="submit" className="layout__log-in-button">
           <DiscordIcon /> {t("header.login")}
         </button>
       </form>

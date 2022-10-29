@@ -67,7 +67,7 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
   } = build;
 
   return (
-    <div className="build" data-cy="build-card">
+    <div className="build">
       <div className="stack xxs">
         <div className="build__top-row">
           <h2 className="build__title">{title}</h2>
@@ -169,7 +169,6 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
               variant="minimal"
               tiny
               to={`new?buildId=${id}&userId=${user!.id}`}
-              data-cy="edit-build-button"
             >
               <EditIcon className="build__icon" />
             </LinkButton>
@@ -182,7 +181,6 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
                 variant="minimal-destructive"
                 tiny
                 type="submit"
-                data-cy="delete-build-button"
               >
                 <TrashIcon className="build__icon" />
               </Button>

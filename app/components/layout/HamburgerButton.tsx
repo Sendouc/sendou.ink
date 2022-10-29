@@ -11,7 +11,6 @@ export function HamburgerButton({
     <button
       className="layout__burger"
       onClick={onClick}
-      data-cy="hamburger-button"
       type="button"
       aria-label={!expanded ? "Open menu" : "Close menu"}
     >

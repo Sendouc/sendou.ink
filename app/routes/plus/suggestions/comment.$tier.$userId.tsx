@@ -100,9 +100,7 @@ export default function PlusCommentModalPage() {
         </h2>
         <CommentTextarea maxLength={PlUS_SUGGESTION_COMMENT_MAX_LENGTH} />
         <div className="plus__modal-buttons">
-          <Button type="submit" data-cy="submit-button">
-            Submit
-          </Button>
+          <Button type="submit">Submit</Button>
           <LinkButton
             to={plusSuggestionPage()}
             variant="minimal-destructive"

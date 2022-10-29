@@ -10,9 +10,6 @@ notes.md
 db*.sqlite3*
 dump
 
-/cypress/videos
-/cypress/screenshots
-
 .DS_Store
 .excalidraw
 

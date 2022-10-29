@@ -9,14 +9,12 @@ export function DateInput({
   min,
   max,
   required,
-  "data-cy": dataCy,
 }: {
   id?: string;
   name?: string;
   defaultValue?: Date;
   min?: Date;
   max?: Date;
-  "data-cy": string;
   required?: boolean;
 }) {
   const [date, setDate] = React.useState(defaultValue ?? new Date());
@@ -44,7 +42,6 @@ export function DateInput({
         min={min ? dateToYearMonthDayHourMinuteString(min) : undefined}
         max={max ? dateToYearMonthDayHourMinuteString(max) : undefined}
         onChange={(e) => setDate(new Date(e.target.value))}
-        data-cy={dataCy}
         required={required}
       />
     </>

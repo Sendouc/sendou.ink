@@ -33,12 +33,7 @@ export function FormWithConfirm({
         <div className="stack md">
           <h2 className="text-sm">{dialogHeading}</h2>
           <div className="stack horizontal md justify-center">
-            <Button
-              form={id}
-              variant="destructive"
-              type="submit"
-              data-cy="confirm-button"
-            >
+            <Button form={id} variant="destructive" type="submit">
               Delete
             </Button>
             <Button variant="outlined" onClick={closeDialog}>
