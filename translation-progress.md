@@ -4,7 +4,7 @@
 
 ### 🟡 analyzer.json
 
-**94/107**
+**94/108**
 
 <details>
 <summary>Missing</summary>
@@ -13,6 +13,7 @@
 - stat.specialLostSplattedByRP
 - stat.quickRespawnTimeSplattedByRP
 - damage.NORMAL_MAX_FULL_CHARGE
+- torpedoExplanation
 - distanceInline
 - damageShort
 - hitsToDestroyLong
@@ -106,7 +107,7 @@
 
 ### 🟡 analyzer.json
 
-**94/107**
+**94/108**
 
 <details>
 <summary>Missing</summary>
@@ -115,6 +116,7 @@
 - stat.specialLostSplattedByRP
 - stat.quickRespawnTimeSplattedByRP
 - damage.NORMAL_MAX_FULL_CHARGE
+- torpedoExplanation
 - distanceInline
 - damageShort
 - hitsToDestroyLong
@@ -184,7 +186,7 @@
 
 ### 🟡 analyzer.json
 
-**91/107**
+**91/108**
 
 <details>
 <summary>Missing</summary>
@@ -196,6 +198,7 @@
 - stat.shootingRunSpeedCharging
 - stat.shootingRunSpeedFullCharge
 - damage.NORMAL_MAX_FULL_CHARGE
+- torpedoExplanation
 - distanceInline
 - damageShort
 - hitsToDestroyLong
@@ -339,7 +342,7 @@
 
 ### 🟡 analyzer.json
 
-**91/107**
+**91/108**
 
 <details>
 <summary>Missing</summary>
@@ -351,6 +354,7 @@
 - stat.shootingRunSpeedCharging
 - stat.shootingRunSpeedFullCharge
 - damage.NORMAL_MAX_FULL_CHARGE
+- torpedoExplanation
 - distanceInline
 - damageShort
 - hitsToDestroyLong
@@ -506,7 +510,7 @@
 
 ### 🔴 analyzer.json
 
-**0/107**
+**0/108**
 
 ### 🔴 badges.json
 
@@ -566,106 +570,12 @@
 
 ### 🟡 analyzer.json
 
-**12/107**
+**107/108**
 
 <details>
 <summary>Missing</summary>
 
-- objCalcAd
-- stat.canopyHp
-- stat.fullChargeSeconds
-- stat.maxChargeHoldSeconds
-- stat.specialPoints
-- stat.specialLost
-- stat.specialLostSplattedByRP
-- stat.whiteInk
-- stat.squidFormInkRecoverySeconds
-- stat.quickRespawnTime
-- stat.quickRespawnTimeSplattedByRP
-- stat.superJumpTimeGround
-- stat.superJumpTimeTotal
-- stat.jumpShotSpread
-- stat.groundShotSpread
-- stat.squidSurgeChargeFrames
-- stat.swimSpeed
-- stat.runSpeed
-- stat.runSpeedInEnemyInk
-- stat.shootingRunSpeed
-- stat.shootingRunSpeedCharging
-- stat.shootingRunSpeedFullCharge
-- stat.framesBeforeTakingDamageInEnemyInk
-- stat.damageTakenInEnemyInkPerSecond
-- stat.enemyInkDamageLimit
-- stat.markedTime
-- stat.movementReduction
-- stat.damage
-- stat.bombHdamage
-- stat.bombLdamage
-- stat.consumption.NORMAL
-- stat.consumption.SWING
-- stat.consumption.SLOSH
-- stat.consumption.VERTICAL_SWING
-- stat.consumption.HORIZONTAL_SWING
-- stat.consumption.TAP_SHOT
-- stat.consumption.FULL_CHARGE
-- stat.consumption.SPLATLING_CHARGE
-- stat.consumption.SHIELD_LAUNCH
-- stat.consumption.DUALIE_ROLL
-- stat.sub.velocity
-- stat.sub.firstPhaseDuration
-- stat.sub.secondPhaseDuration
-- stat.sub.markingTimeInSeconds
-- stat.sub.markingRadius
-- stat.sub.explosionRadius
-- stat.sub.hp
-- stat.sub.qsjBoost
-- stat.special.duration
-- stat.special.duration.inkStormExplanation
-- stat.special.damageDistance
-- stat.special.paintRadius
-- stat.special.shieldHp
-- stat.special.deviceHp
-- stat.special.inkConsumptionHook
-- stat.special.inkConsumptionPerSecond
-- stat.special.reticleRadius
-- stat.special.throwDistance
-- stat.special.autoChargeRate
-- stat.special.maxRadius
-- stat.special.maxRadius.explanation
-- stat.special.radiusRange
-- stat.special.powerUpDuration
-- damage.header.type
-- damage.header.damage
-- damage.header.distance
-- damage.toSplat
-- damage.NORMAL_MIN
-- damage.NORMAL_MAX
-- damage.NORMAL_MAX_FULL_CHARGE
-- damage.DIRECT
-- damage.FULL_CHARGE
-- damage.MAX_CHARGE
-- damage.TAP_SHOT
-- damage.DISTANCE
-- suffix.seconds
-- suffix.hp
-- suffix.specialPointsShort
-- base
-- value
-- build
-- patch
-- abilityPoints
-- abilityPoints.short
-- consumptionExplanation
-- trackingSubDefExplanation
-- distanceInline
-- damageShort
-- hitsToDestroyLong
-- hitsToDestroyShort
-- labels.amountOf
-- labels.damageType
-- labels.weapon
-- dmgHtdExplanation
-- noDmgData
+- torpedoExplanation
 
 </details>
 
@@ -677,133 +587,33 @@
 
 **11/11**
 
-### 🟡 calendar.json
+### 🟢 calendar.json
 
-**44/46**
+**46/46**
 
-<details>
-<summary>Missing</summary>
+### 🟢 common.json
 
-- createMapList
-- forms.mapPool
+**75/75**
 
-</details>
+### 🟢 contributions.json
 
-### 🟡 common.json
-
-**46/75**
-
-<details>
-<summary>Missing</summary>
-
-- pages.s2
-- pages.analyzer
-- pages.maps
-- pages.object-damage-calculator
-- auth.errors.aborted
-- auth.errors.failed
-- auth.errors.discordPermissions
-- auth.errors.unknown
-- actions.loadMore
-- actions.copyToClipboard
-- actions.close
-- actions.loading
-- actions.clear
-- actions.selectAll
-- actions.search
-- maps.createMapList
-- maps.halfSz
-- maps.mapPool
-- maps.tournamentMaplist
-- maps.template
-- maps.template.none
-- maps.template.event
-- maps.template.presets
-- maps.template.yourRecentEvents
-- maps.template.preset.ANARCHY
-- maps.template.preset.ALL
-- maps.template.preset.onlyMode
-- forms.errors.noSearchMatches
-- errors.genericReload
-
-</details>
-
-### 🟡 contributions.json
-
-**5/6**
-
-<details>
-<summary>Missing</summary>
-
-- translation
-
-</details>
+**6/6**
 
 ### 🟢 faq.json
 
 **6/6**
 
-### 🟡 front.json
+### 🟢 front.json
 
-**8/12**
+**12/12**
 
-<details>
-<summary>Missing</summary>
+### 🟢 game-misc.json
 
-- buildsGoTo
-- analyzer.description
-- maps.description
-- object-damage-calculator.description
+**22/22**
 
-</details>
+### 🟢 user.json
 
-### 🟡 game-misc.json
-
-**12/22**
-
-<details>
-<summary>Missing</summary>
-
-- MODE_SHORT_TW
-- MODE_SHORT_SZ
-- MODE_SHORT_TC
-- MODE_SHORT_RM
-- MODE_SHORT_CB
-- MODE_LONG_TW
-- MODE_LONG_SZ
-- MODE_LONG_TC
-- MODE_LONG_RM
-- MODE_LONG_CB
-
-</details>
-
-### 🟡 user.json
-
-**7/25**
-
-<details>
-<summary>Missing</summary>
-
-- customUrl
-- ign
-- ign.short
-- stickSens
-- motionSens
-- motion
-- stick
-- sens
-- results.title
-- results.participants
-- results.highlights
-- results.nonHighlights
-- results.highlights.choose
-- results.highlights.explanation
-- forms.errors.invalidCustomUrl.numbers
-- forms.errors.invalidCustomUrl.strangeCharacter
-- forms.errors.invalidCustomUrl.duplicate
-- forms.errors.invalidSens
-
-</details>
+**25/25**
 
 ---
 
@@ -811,7 +621,7 @@
 
 ### 🔴 analyzer.json
 
-**0/107**
+**0/108**
 
 ### 🟢 badges.json
 
@@ -966,7 +776,7 @@
 
 ### 🟡 analyzer.json
 
-**94/107**
+**94/108**
 
 <details>
 <summary>Missing</summary>
@@ -975,6 +785,7 @@
 - stat.specialLostSplattedByRP
 - stat.quickRespawnTimeSplattedByRP
 - damage.NORMAL_MAX_FULL_CHARGE
+- torpedoExplanation
 - distanceInline
 - damageShort
 - hitsToDestroyLong
@@ -995,42 +806,27 @@
 
 **11/11**
 
-### 🟡 calendar.json
+### 🟢 calendar.json
 
-**44/46**
-
-<details>
-<summary>Missing</summary>
-
-- createMapList
-- forms.mapPool
-
-</details>
+**46/46**
 
 ### 🟡 common.json
 
-**48/75**
+**55/75**
 
 <details>
 <summary>Missing</summary>
 
-- pages.analyzer
-- pages.maps
 - pages.object-damage-calculator
 - auth.errors.aborted
 - auth.errors.failed
 - auth.errors.discordPermissions
 - auth.errors.unknown
-- actions.copyToClipboard
 - actions.close
 - actions.loading
 - actions.clear
 - actions.selectAll
 - actions.search
-- maps.createMapList
-- maps.halfSz
-- maps.mapPool
-- maps.tournamentMaplist
 - maps.template
 - maps.template.none
 - maps.template.event
@@ -1054,28 +850,22 @@
 
 ### 🟡 front.json
 
-**10/12**
+**11/12**
 
 <details>
 <summary>Missing</summary>
 
-- maps.description
 - object-damage-calculator.description
 
 </details>
 
 ### 🟡 game-misc.json
 
-**12/22**
+**17/22**
 
 <details>
 <summary>Missing</summary>
 
-- MODE_SHORT_TW
-- MODE_SHORT_SZ
-- MODE_SHORT_TC
-- MODE_SHORT_RM
-- MODE_SHORT_CB
 - MODE_LONG_TW
 - MODE_LONG_SZ
 - MODE_LONG_TC
@@ -1086,13 +876,12 @@
 
 ### 🟡 user.json
 
-**19/25**
+**20/25**
 
 <details>
 <summary>Missing</summary>
 
 - results.title
-- results.participants
 - results.highlights
 - results.nonHighlights
 - results.highlights.choose
@@ -1106,7 +895,7 @@
 
 ### 🟡 analyzer.json
 
-**101/107**
+**101/108**
 
 <details>
 <summary>Missing</summary>
@@ -1115,6 +904,7 @@
 - stat.specialLostSplattedByRP
 - stat.quickRespawnTimeSplattedByRP
 - damage.NORMAL_MAX_FULL_CHARGE
+- torpedoExplanation
 - dmgHtdExplanation
 - noDmgData
 
@@ -1134,12 +924,11 @@
 
 ### 🟡 common.json
 
-**60/75**
+**61/75**
 
 <details>
 <summary>Missing</summary>
 
-- pages.object-damage-calculator
 - actions.loading
 - actions.clear
 - actions.selectAll
@@ -1201,7 +990,7 @@
 
 ### 🟡 analyzer.json
 
-**94/107**
+**94/108**
 
 <details>
 <summary>Missing</summary>
@@ -1210,6 +999,7 @@
 - stat.specialLostSplattedByRP
 - stat.quickRespawnTimeSplattedByRP
 - damage.NORMAL_MAX_FULL_CHARGE
+- torpedoExplanation
 - distanceInline
 - damageShort
 - hitsToDestroyLong

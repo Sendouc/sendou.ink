@@ -10,5 +10,10 @@
   "STAGE_8": "Koraalcampus",
   "STAGE_9": "Walruswerf",
   "STAGE_10": "Bultrugbazaar",
-  "STAGE_11": "Waterwonderland"
+  "STAGE_11": "Waterwonderland",
+  "MODE_SHORT_TW": "GO",
+  "MODE_SHORT_SZ": "SZ",
+  "MODE_SHORT_TC": "TT",
+  "MODE_SHORT_RM": "BK",
+  "MODE_SHORT_CB": "SS"
 }

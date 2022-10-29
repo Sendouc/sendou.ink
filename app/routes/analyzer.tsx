@@ -30,6 +30,7 @@ import {
   SPLASH_WALL_ID,
   SPRINKLER_ID,
   TOXIC_MIST_ID,
+  TORPEDO_ID,
   type BuildAbilitiesTupleWithUnknown,
   type MainWeaponId,
   type SubWeaponId,
@@ -895,7 +896,10 @@ function ConsumptionTable({
   subWeaponId: SubWeaponId;
 }) {
   const { t } = useTranslation(["analyzer", "weapons"]);
-  const maxSubsToUse = Math.max(...options.map((opt) => opt.subsUsed));
+  const maxSubsToUse =
+    subWeaponId === TORPEDO_ID
+      ? 1
+      : Math.max(...options.map((opt) => opt.subsUsed));
   const types = Array.from(new Set(options.map((opt) => opt.type)));
 
   return (
@@ -926,6 +930,7 @@ function ConsumptionTable({
       </table>
       <div className="analyzer__consumption-table-explanation">
         {t("analyzer:consumptionExplanation", { maxSubsToUse })}
+        {subWeaponId === TORPEDO_ID && <> {t("analyzer:torpedoExplanation")}</>}
       </div>
     </>
   );
