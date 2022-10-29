@@ -105,5 +105,5 @@
   "labels.damageType": "Skadetype",
   "labels.weapon": "Våben",
   "dmgHtdExplanation": "Skade = Skade • Tfø = Træffere for at ødelægge (objekt)",
-  "noDmgData": "Der er endnu ikke nogen data for dette våpens skade.",
+  "noDmgData": "Der er endnu ikke nogen data for dette våpens skade."
 }

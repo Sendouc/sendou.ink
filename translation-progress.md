@@ -4,25 +4,12 @@
 
 ### 🟡 analyzer.json
 
-**94/108**
+**107/108**
 
 <details>
 <summary>Missing</summary>
 
-- objCalcAd
-- stat.specialLostSplattedByRP
-- stat.quickRespawnTimeSplattedByRP
-- damage.NORMAL_MAX_FULL_CHARGE
 - torpedoExplanation
-- distanceInline
-- damageShort
-- hitsToDestroyLong
-- hitsToDestroyShort
-- labels.amountOf
-- labels.damageType
-- labels.weapon
-- dmgHtdExplanation
-- noDmgData
 
 </details>
 
@@ -38,30 +25,9 @@
 
 **46/46**
 
-### 🟡 common.json
+### 🟢 common.json
 
-**60/75**
-
-<details>
-<summary>Missing</summary>
-
-- pages.object-damage-calculator
-- actions.loading
-- actions.clear
-- actions.selectAll
-- actions.search
-- maps.template
-- maps.template.none
-- maps.template.event
-- maps.template.presets
-- maps.template.yourRecentEvents
-- maps.template.preset.ANARCHY
-- maps.template.preset.ALL
-- maps.template.preset.onlyMode
-- forms.errors.noSearchMatches
-- errors.genericReload
-
-</details>
+**75/75**
 
 ### 🟢 contributions.json
 
@@ -71,31 +37,13 @@
 
 **6/6**
 
-### 🟡 front.json
+### 🟢 front.json
 
-**11/12**
+**12/12**
 
-<details>
-<summary>Missing</summary>
+### 🟢 game-misc.json
 
-- object-damage-calculator.description
-
-</details>
-
-### 🟡 game-misc.json
-
-**17/22**
-
-<details>
-<summary>Missing</summary>
-
-- MODE_LONG_TW
-- MODE_LONG_SZ
-- MODE_LONG_TC
-- MODE_LONG_RM
-- MODE_LONG_CB
-
-</details>
+**22/22**
 
 ### 🟢 user.json
 
