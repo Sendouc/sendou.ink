@@ -10,7 +10,7 @@ import type {
 } from "~/modules/in-game-lists";
 import type { BuildAbilitiesTuple } from "~/modules/in-game-lists/types";
 import { databaseTimestampToDate } from "~/utils/dates";
-import { discordFullName } from "~/utils/strings";
+import { discordFullName, gearTypeToInitial } from "~/utils/strings";
 import {
   analyzerPage,
   gearImageUrl,
@@ -203,12 +203,18 @@ function AbilitiesRowWithGear({
   abilities: AbilityType[];
   gearId: number;
 }) {
+  const { t } = useTranslation(["gear"]);
+  const translatedGearName = t(
+    `gear:${gearTypeToInitial(gearType)}_${gearId}` as any
+  );
+
   return (
     <>
       <Image
         height={64}
         width={64}
-        alt=""
+        alt={translatedGearName}
+        title={translatedGearName}
         path={gearImageUrl(gearType, gearId)}
         className="build__gear"
       />
