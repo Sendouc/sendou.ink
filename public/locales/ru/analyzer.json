@@ -82,6 +82,7 @@
   "damage.MAX_CHARGE": "Максимальный частичный заряд",
   "damage.TAP_SHOT": "Тап шот",
   "damage.DISTANCE": "Разрыв",
+  "damage.SPLASH": "Разрыв",
   "suffix.seconds": "сек",
   "suffix.hp": "hp",
   "suffix.specialPointsShort": "очк.",

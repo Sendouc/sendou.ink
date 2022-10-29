@@ -82,6 +82,7 @@
   "damage.MAX_CHARGE": "最大不完全蓄力伤害",
   "damage.TAP_SHOT": "普通攻击",
   "damage.DISTANCE": "溅射",
+  "damage.SPLASH": "溅射",
   "suffix.seconds": "s",
   "suffix.hp": "hp",
   "suffix.specialPointsShort": "p",

@@ -86,6 +86,7 @@
   "damage.MAX_CHARGE": "最大半チャージ",
   "damage.TAP_SHOT": "チャージ無し射撃",
   "damage.DISTANCE": "飛沫",
+  "damage.SPLASH": "飛沫",
   "suffix.seconds": "秒",
   "suffix.hp": "耐久値",
   "suffix.specialPointsShort": "ポイント",

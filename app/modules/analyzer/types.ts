@@ -35,6 +35,8 @@ export interface MainWeaponParams {
   DamageParam_ValueMin?: number;
   DamageParam_ValueFullChargeMax?: number;
   DamageParam_ValueDirect?: number;
+  DamageParam_ValueDirectMax?: number;
+  DamageParam_ValueDirectMin?: number;
   Jump_DegSwerve?: number;
   Stand_DegSwerve?: number;
   /** Damage caused by charger's full charged shot */
@@ -43,6 +45,7 @@ export interface MainWeaponParams {
   DamageParam_ValueMaxCharge?: number;
   /** Charger tap shot damage */
   DamageParam_ValueMinCharge?: number;
+  BlastParam_SplashDamage?: number;
   BlastParam_DistanceDamage?: Array<DistanceDamage>;
   // DamageParam_ReduceStartFrame?: number;
   // DamageParam_ReduceEndFrame?: number;

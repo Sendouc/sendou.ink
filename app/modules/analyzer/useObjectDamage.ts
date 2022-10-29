@@ -74,11 +74,14 @@ function validatedAbilityPointsFromSearchParams(searchParams: URLSearchParams) {
 }
 
 export const damageTypePriorityList: Array<DamageType> = [
+  "DIRECT_MAX",
   "DIRECT",
+  "DIRECT_MIN",
   "FULL_CHARGE",
   "MAX_CHARGE",
   "NORMAL_MAX_FULL_CHARGE",
   "NORMAL_MIN",
+  "SPLASH",
   "TAP_SHOT",
   "DISTANCE",
   "BOMB_DIRECT",

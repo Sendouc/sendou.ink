@@ -79,6 +79,7 @@
   "damage.MAX_CHARGE": "Carga parcial máxima",
   "damage.TAP_SHOT": "Disparo rapido",
   "damage.DISTANCE": "Daño de salpicadura",
+  "damage.SPLASH": "Daño de salpicadura",
   "suffix.seconds": "s",
   "suffix.hp": "hp",
   "suffix.specialPointsShort": "p",

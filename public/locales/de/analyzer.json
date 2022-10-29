@@ -82,6 +82,7 @@
   "damage.MAX_CHARGE": "Maximum teilweiser Aufladung",
   "damage.TAP_SHOT": "Tap-Schuss",
   "damage.DISTANCE": "Schuss",
+  "damage.SPLASH": "Schuss",
   "suffix.seconds": "s",
   "suffix.hp": "hp",
   "suffix.specialPointsShort": "p",

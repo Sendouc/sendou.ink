@@ -86,6 +86,7 @@
   "damage.MAX_CHARGE": "Maksimal skade fra en delvis opladning",
   "damage.TAP_SHOT": "Uopladt skud",
   "damage.DISTANCE": "eksplosionsradius",
+  "damage.SPLASH": "eksplosionsradius",
   "suffix.seconds": "s",
   "suffix.hp": "HP",
   "suffix.specialPointsShort": "p",

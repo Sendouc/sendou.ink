@@ -4,11 +4,13 @@
 
 ### 🟡 analyzer.json
 
-**107/108**
+**108/111**
 
 <details>
 <summary>Missing</summary>
 
+- damage.DIRECT_MIN
+- damage.DIRECT_MAX
 - torpedoExplanation
 
 </details>
@@ -55,7 +57,7 @@
 
 ### 🟡 analyzer.json
 
-**94/108**
+**95/111**
 
 <details>
 <summary>Missing</summary>
@@ -64,6 +66,8 @@
 - stat.specialLostSplattedByRP
 - stat.quickRespawnTimeSplattedByRP
 - damage.NORMAL_MAX_FULL_CHARGE
+- damage.DIRECT_MIN
+- damage.DIRECT_MAX
 - torpedoExplanation
 - distanceInline
 - damageShort
@@ -134,7 +138,7 @@
 
 ### 🟡 analyzer.json
 
-**91/108**
+**92/111**
 
 <details>
 <summary>Missing</summary>
@@ -146,6 +150,8 @@
 - stat.shootingRunSpeedCharging
 - stat.shootingRunSpeedFullCharge
 - damage.NORMAL_MAX_FULL_CHARGE
+- damage.DIRECT_MIN
+- damage.DIRECT_MAX
 - torpedoExplanation
 - distanceInline
 - damageShort
@@ -290,7 +296,7 @@
 
 ### 🟡 analyzer.json
 
-**91/108**
+**92/111**
 
 <details>
 <summary>Missing</summary>
@@ -302,6 +308,8 @@
 - stat.shootingRunSpeedCharging
 - stat.shootingRunSpeedFullCharge
 - damage.NORMAL_MAX_FULL_CHARGE
+- damage.DIRECT_MIN
+- damage.DIRECT_MAX
 - torpedoExplanation
 - distanceInline
 - damageShort
@@ -458,7 +466,7 @@
 
 ### 🔴 analyzer.json
 
-**0/108**
+**0/111**
 
 ### 🔴 badges.json
 
@@ -518,11 +526,13 @@
 
 ### 🟡 analyzer.json
 
-**107/108**
+**108/111**
 
 <details>
 <summary>Missing</summary>
 
+- damage.DIRECT_MIN
+- damage.DIRECT_MAX
 - torpedoExplanation
 
 </details>
@@ -569,7 +579,7 @@
 
 ### 🔴 analyzer.json
 
-**0/108**
+**0/111**
 
 ### 🟢 badges.json
 
@@ -724,7 +734,7 @@
 
 ### 🟡 analyzer.json
 
-**94/108**
+**95/111**
 
 <details>
 <summary>Missing</summary>
@@ -733,6 +743,8 @@
 - stat.specialLostSplattedByRP
 - stat.quickRespawnTimeSplattedByRP
 - damage.NORMAL_MAX_FULL_CHARGE
+- damage.DIRECT_MIN
+- damage.DIRECT_MAX
 - torpedoExplanation
 - distanceInline
 - damageShort
@@ -843,7 +855,7 @@
 
 ### 🟡 analyzer.json
 
-**101/108**
+**102/111**
 
 <details>
 <summary>Missing</summary>
@@ -852,6 +864,8 @@
 - stat.specialLostSplattedByRP
 - stat.quickRespawnTimeSplattedByRP
 - damage.NORMAL_MAX_FULL_CHARGE
+- damage.DIRECT_MIN
+- damage.DIRECT_MAX
 - torpedoExplanation
 - dmgHtdExplanation
 - noDmgData
@@ -938,7 +952,7 @@
 
 ### 🟡 analyzer.json
 
-**94/108**
+**95/111**
 
 <details>
 <summary>Missing</summary>
@@ -947,6 +961,8 @@
 - stat.specialLostSplattedByRP
 - stat.quickRespawnTimeSplattedByRP
 - damage.NORMAL_MAX_FULL_CHARGE
+- damage.DIRECT_MIN
+- damage.DIRECT_MAX
 - torpedoExplanation
 - distanceInline
 - damageShort
