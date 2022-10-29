@@ -353,8 +353,8 @@ function DatesInput() {
                         setDatesInputState((current) => [
                           ...current,
                           {
-                            // @ts-expect-error: this will never be null, so ignore this TSLint error
                             finalDateInputDate: getDateWithHoursOffset(
+                              // @ts-expect-error: this will never be null, so ignore this TSLint error
                               datesInputState.at(i)?.finalDateInputDate
                             ),
                             index: i + 1,
