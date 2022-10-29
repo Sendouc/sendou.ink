@@ -50,7 +50,7 @@ export function Ability({
         "is-drag-target": isDragTarget,
         "drag-started": dragStarted,
         "drop-allowed": dropAllowed,
-        readonly
+        readonly,
       })}
       style={
         {

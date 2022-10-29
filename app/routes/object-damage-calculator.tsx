@@ -209,9 +209,7 @@ function DamageReceiversGrid({
                 subWeaponId: subWeaponId,
               })
             )}
-            {damage.objectShredder && (
-              <Ability ability="OS" size="TINY" />
-            )}
+            {damage.objectShredder && <Ability ability="OS" size="TINY" />}
           </div>
           <div
             className={clsx("object-damage__distance", {
