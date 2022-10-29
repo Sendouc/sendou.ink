@@ -30,10 +30,7 @@ import { MapPool } from "~/modules/map-pool-serializer";
 import { canEditCalendarEvent } from "~/permissions";
 import calendarNewStyles from "~/styles/calendar-new.css";
 import mapsStyles from "~/styles/maps.css";
-import {
-  databaseTimestampToDate,
-  dateToDatabaseTimestamp,
-} from "~/utils/dates";
+import { dateToDatabaseTimestamp } from "~/utils/dates";
 import {
   badRequestIfFalsy,
   parseRequestFormData,
@@ -309,7 +306,6 @@ function DatesInput() {
   );
 
   // React hook that keeps contains an array of parameters that corresponds to each DateInput child object generated
-  //TODO: define a PropType for the object type used in this hook
   const [datesInputState, setDatesInputState] = React.useState(
     [
       {
@@ -355,7 +351,7 @@ function DatesInput() {
                       onClick={() => {
                         setDatesCount((count) => count + 1);
                         setDatesInputState(current => [...current, {
-                          //TODO: fix ESLint Date | undefined type error here
+                          // @ts-expect-error: this will never be null, so ignore this TSLint error
                           finalDateInputDate: getDateWithHoursOffset(datesInputState.at(i)?.finalDateInputDate),
                           index: i + 1
                         }])
