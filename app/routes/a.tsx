@@ -29,11 +29,11 @@ export const loader = async () => {
 
 export default function ArticlesMainPage() {
   const { t } = useTranslation("front");
-  
+
   return (
     <Main className="stack lg">
       <Outlet />
-      
+
       <h2>{t("articlesGoTo")}</h2>
       <ArticlesPeek />
     </Main>
