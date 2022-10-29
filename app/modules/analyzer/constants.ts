@@ -140,7 +140,7 @@ export const objectDamageJsonKeyPriority: Record<
   Slosher_WashtubBombCore: null,
   Slosher_Washtub: null,
   Slosher: null,
-  Spinner: null,
+  Spinner: ["NORMAL_MAX", "NORMAL_MIN", "NORMAL_MAX_FULL_CHARGE"],
   Sprinkler: null,
   Stringer_Short: null,
   Stringer: null,
