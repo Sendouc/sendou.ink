@@ -38,11 +38,11 @@ export function Ability({
     setIsDragTarget(false);
   };
 
-  const readonly = typeof (onClick) === "undefined" || ability === "UNKNOWN"; // Force "UNKNOWN" ability icons to be readonly
+  const readonly = typeof onClick === "undefined" || ability === "UNKNOWN"; // Force "UNKNOWN" ability icons to be readonly
 
   // Render an ability as a button only if it is meant to be draggable (i.e., not readonly)
   const AbilityTag = readonly ? "div" : "button";
-  
+
   return (
     <AbilityTag
       className={clsx("build__ability", {
