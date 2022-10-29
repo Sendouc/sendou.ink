@@ -6,5 +6,6 @@
   "badges.description": "La liste de tous les badges que vous pouvez recevoir sur votre profil",
   "recentWinners": "Gagnants récents",
   "upcomingEvents": "Événements à venir",
-  "articleBy": "par {{author}}"
+  "articleBy": "par {{author}}",
+  "articlesGoTo": "Articles"
 }

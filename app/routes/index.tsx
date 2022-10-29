@@ -16,6 +16,7 @@ import { discordFullName } from "~/utils/strings";
 import {
   analyzerPage,
   articlePage,
+  ARTICLES_MAIN_PAGE,
   BADGES_PAGE,
   BUILDS_PAGE,
   calendarEventPage,
@@ -66,6 +67,9 @@ export default function Index() {
           {t("front:calendarGoTo")}
         </GoToPageBanner>
       </div>
+      <GoToPageBanner to={ARTICLES_MAIN_PAGE} navItem="sendou_love">
+        {t("front:articlesGoTo")}
+      </GoToPageBanner>
       <ArticlesPeek />
       <div className="stack md">
         <h2 className="front__more-features">{t("front:moreFeatures")}</h2>
@@ -251,7 +255,7 @@ function Event({
   );
 }
 
-function ArticlesPeek() {
+export function ArticlesPeek() {
   const { t } = useTranslation("front");
   const data = useLoaderData<typeof loader>();
 
