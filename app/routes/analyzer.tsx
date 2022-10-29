@@ -651,7 +651,7 @@ function EffectsSelector({
           <React.Fragment key={effect.type}>
             <div>
               {isAbility(effect.type) ? (
-                <Ability ability={effect.type} size="SUB" readonly />
+                <Ability ability={effect.type} size="SUB" />
               ) : (
                 <Image
                   path={specialWeaponImageUrl(15)}
@@ -722,7 +722,7 @@ function AbilityPointsDetails({
           })
           .map((a) => (
             <div key={a.name} className="stack items-center">
-              <Ability ability={a.name} size="TINY" readonly />
+              <Ability ability={a.name} size="TINY" />
               <div className="analyzer__ap-text">
                 {abilityPoints.get(a.name)?.ap}
               </div>
@@ -822,7 +822,7 @@ function ModifiedByAbilities({ abilities }: { abilities: Stat["modifiedBy"] }) {
   return (
     <div className="stack horizontal sm items-center justify-center">
       {abilitiesArray.map((ability) => (
-        <Ability key={ability} ability={ability} size="TINY" readonly />
+        <Ability key={ability} ability={ability} size="TINY" />
       ))}
     </div>
   );
