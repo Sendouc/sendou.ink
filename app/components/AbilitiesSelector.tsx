@@ -91,7 +91,7 @@ export function AbilitiesSelector({
                 draggingAbility
               )}
               onDrop={onDrop(rowI, abilityI)}
-              readonly
+              readonly={ability == "UNKNOWN" ? true : undefined}
             />
           ))
         )}
