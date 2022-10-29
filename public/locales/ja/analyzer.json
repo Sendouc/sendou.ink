@@ -59,7 +59,7 @@
   "stat.sub.explosionRadius": "爆発範囲",
   "stat.sub.hp": "耐久値",
   "stat.sub.qsjBoost": "スーパージャンプ時間短縮効果",
-  "stat.special.duration": "{{weapon}} 感覚",
+  "stat.special.duration": "{{weapon}} 効果時間",
   "stat.special.duration.inkStormExplanation": "塗り範囲の強化 (インク量の変化なし)",
   "stat.special.damageDistance": "{{weapon}} ダメージ距離",
   "stat.special.paintRadius": "{{weapon}} 塗り範囲",
