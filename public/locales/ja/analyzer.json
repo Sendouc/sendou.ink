@@ -77,7 +77,7 @@
   "damage.header.type": "タイプ",
   "damage.header.damage": "ダメージ",
   "damage.header.distance": "距離",
-  "damage.toSplat": "{{count}} 確定数",
+  "damage.toSplat_other": "{{count}} 確定数",
   "damage.NORMAL_MIN": "最小",
   "damage.NORMAL_MAX": "最大",
   "damage.NORMAL_MAX_FULL_CHARGE": "最大 (フルチャージ)",

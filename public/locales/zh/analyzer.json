@@ -74,7 +74,7 @@
   "damage.header.type": "类型",
   "damage.header.damage": "伤害",
   "damage.header.distance": "距离",
-  "damage.toSplat": "{{count}} 确",
+  "damage.toSplat_other": "{{count}} 确",
   "damage.NORMAL_MIN": "最小值",
   "damage.NORMAL_MAX": "最大值",
   "damage.DIRECT": "直击",

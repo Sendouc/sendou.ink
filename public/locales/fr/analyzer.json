@@ -71,7 +71,7 @@
   "damage.header.type": "Type",
   "damage.header.damage": "Dégâts",
   "damage.header.distance": "Distance",
-  "damage.toSplat": "{{count}} coups pour liquider",
+  "damage.toSplat_other": "{{count}} coups pour liquider",
   "damage.NORMAL_MIN": "Minimum",
   "damage.NORMAL_MAX": "Maximum",
   "damage.DIRECT": "Direct",

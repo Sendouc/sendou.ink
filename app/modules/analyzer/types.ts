@@ -185,7 +185,7 @@ export interface AnalyzedBuild {
     maxChargeHoldSeconds?: number;
     fullChargeSeconds?: number;
     speedType: NonNullable<MainWeaponParams["WeaponSpeedType"]> | "Normal";
-    isTripleShooter: boolean;
+    multiShots?: number;
   };
   stats: {
     specialPoint: Stat;

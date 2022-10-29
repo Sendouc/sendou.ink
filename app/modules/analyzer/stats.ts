@@ -10,7 +10,7 @@ import type {
   StatFunctionInput,
   SubWeaponParams,
 } from "./types";
-import { DAMAGE_TYPE } from "./constants";
+import { DAMAGE_TYPE, multiShot } from "./constants";
 import { INK_CONSUME_TYPES } from "./types";
 import invariant from "tiny-invariant";
 import {
@@ -71,7 +71,7 @@ export function buildStats({
         ? framesToSeconds(mainWeaponParams.KeepChargeFullFrame)
         : undefined,
       speedType: mainWeaponParams.WeaponSpeedType ?? "Normal",
-      isTripleShooter: Boolean(mainWeaponParams.TripleShotSpanFrame),
+      multiShots: multiShot[weaponSplId],
     },
     stats: {
       specialPoint: specialPoint(input),
@@ -385,7 +385,7 @@ function damages(args: StatFunctionInput): AnalyzedBuild["stats"]["damages"] {
       shotsToSplat: shotsToSplat({
         value,
         type,
-        isTripleShooter: Boolean(args.mainWeaponParams.TripleShotSpanFrame),
+        multiShots: multiShot[args.weaponSplId],
       }),
     });
   }
@@ -396,15 +396,17 @@ function damages(args: StatFunctionInput): AnalyzedBuild["stats"]["damages"] {
 function shotsToSplat({
   value,
   type,
-  isTripleShooter,
+  multiShots,
 }: {
   value: number;
   type: DamageType;
-  isTripleShooter: boolean;
+  multiShots?: number;
 }) {
-  if (type !== "NORMAL_MAX" && type !== "NORMAL_MAX_FULL_CHARGE") return;
+  if (!["NORMAL_MAX", "NORMAL_MAX_FULL_CHARGE", "DIRECT"].includes(type)) {
+    return;
+  }
 
-  const multiplier = isTripleShooter ? 3 : 1;
+  const multiplier = multiShots ? multiShots : 1;
 
   return Math.ceil(1000 / (value * multiplier));
 }

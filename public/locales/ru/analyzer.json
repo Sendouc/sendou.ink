@@ -74,7 +74,7 @@
   "damage.header.type": "Тип",
   "damage.header.damage": "Урон",
   "damage.header.distance": "Дальнобойность",
-  "damage.toSplat": "{{count}} выстрел(ов) для плюха",
+  "damage.toSplat_other": "{{count}} выстрел(ов) для плюха",
   "damage.NORMAL_MIN": "Минимум",
   "damage.NORMAL_MAX": "Максимум",
   "damage.DIRECT": "Прямое попадание",

@@ -4,11 +4,12 @@
 
 ### 🟡 analyzer.json
 
-**108/111**
+**108/112**
 
 <details>
 <summary>Missing</summary>
 
+- damage.toSplat_one
 - damage.DIRECT_MIN
 - damage.DIRECT_MAX
 - torpedoExplanation
@@ -57,7 +58,7 @@
 
 ### 🟡 analyzer.json
 
-**95/111**
+**95/112**
 
 <details>
 <summary>Missing</summary>
@@ -65,6 +66,7 @@
 - objCalcAd
 - stat.specialLostSplattedByRP
 - stat.quickRespawnTimeSplattedByRP
+- damage.toSplat_one
 - damage.NORMAL_MAX_FULL_CHARGE
 - damage.DIRECT_MIN
 - damage.DIRECT_MAX
@@ -138,7 +140,7 @@
 
 ### 🟡 analyzer.json
 
-**92/111**
+**92/112**
 
 <details>
 <summary>Missing</summary>
@@ -149,6 +151,7 @@
 - stat.shootingRunSpeed
 - stat.shootingRunSpeedCharging
 - stat.shootingRunSpeedFullCharge
+- damage.toSplat_one
 - damage.NORMAL_MAX_FULL_CHARGE
 - damage.DIRECT_MIN
 - damage.DIRECT_MAX
@@ -296,7 +299,7 @@
 
 ### 🟡 analyzer.json
 
-**92/111**
+**92/112**
 
 <details>
 <summary>Missing</summary>
@@ -307,6 +310,7 @@
 - stat.shootingRunSpeed
 - stat.shootingRunSpeedCharging
 - stat.shootingRunSpeedFullCharge
+- damage.toSplat_one
 - damage.NORMAL_MAX_FULL_CHARGE
 - damage.DIRECT_MIN
 - damage.DIRECT_MAX
@@ -466,7 +470,7 @@
 
 ### 🔴 analyzer.json
 
-**0/111**
+**0/112**
 
 ### 🔴 badges.json
 
@@ -526,11 +530,12 @@
 
 ### 🟡 analyzer.json
 
-**108/111**
+**108/112**
 
 <details>
 <summary>Missing</summary>
 
+- damage.toSplat_one
 - damage.DIRECT_MIN
 - damage.DIRECT_MAX
 - torpedoExplanation
@@ -579,7 +584,7 @@
 
 ### 🔴 analyzer.json
 
-**0/111**
+**0/112**
 
 ### 🟢 badges.json
 
@@ -734,7 +739,7 @@
 
 ### 🟡 analyzer.json
 
-**95/111**
+**95/112**
 
 <details>
 <summary>Missing</summary>
@@ -742,6 +747,7 @@
 - objCalcAd
 - stat.specialLostSplattedByRP
 - stat.quickRespawnTimeSplattedByRP
+- damage.toSplat_one
 - damage.NORMAL_MAX_FULL_CHARGE
 - damage.DIRECT_MIN
 - damage.DIRECT_MAX
@@ -855,7 +861,7 @@
 
 ### 🟡 analyzer.json
 
-**102/111**
+**102/112**
 
 <details>
 <summary>Missing</summary>
@@ -863,6 +869,7 @@
 - objCalcAd
 - stat.specialLostSplattedByRP
 - stat.quickRespawnTimeSplattedByRP
+- damage.toSplat_one
 - damage.NORMAL_MAX_FULL_CHARGE
 - damage.DIRECT_MIN
 - damage.DIRECT_MAX
@@ -952,7 +959,7 @@
 
 ### 🟡 analyzer.json
 
-**95/111**
+**95/112**
 
 <details>
 <summary>Missing</summary>
@@ -960,6 +967,7 @@
 - objCalcAd
 - stat.specialLostSplattedByRP
 - stat.quickRespawnTimeSplattedByRP
+- damage.toSplat_one
 - damage.NORMAL_MAX_FULL_CHARGE
 - damage.DIRECT_MIN
 - damage.DIRECT_MAX

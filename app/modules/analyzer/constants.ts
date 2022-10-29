@@ -1,5 +1,6 @@
 import type { DamageType } from "./types";
 import type objectDamages from "./object-dmg.json";
+import type { MainWeaponId } from "../in-game-lists";
 
 export const MAX_LDE_INTENSITY = 21;
 export const MAX_AP = 57;
@@ -157,4 +158,13 @@ export const objectDamageJsonKeyPriority: Record<
   UltraStamp_Swing: null,
   UltraStamp_Throw_BombCore: null,
   UltraStamp_Throw: null,
+};
+
+export const multiShot: Partial<Record<MainWeaponId, number>> = {
+  // L-3
+  300: 3,
+  // H-3
+  310: 3,
+  // Bloblobber
+  3030: 4,
 };

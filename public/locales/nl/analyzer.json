@@ -50,7 +50,7 @@
   "damage.header.type": "Type",
   "damage.header.damage": "Schade",
   "damage.header.distance": "Afstand",
-  "damage.toSplat": "{{count}} treffers nodig om vijand uit te schakelen",
+  "damage.toSplat_other": "{{count}} treffers nodig om vijand uit te schakelen",
   "damage.NORMAL_MIN": "Minimum",
   "damage.NORMAL_MAX": "Maximum",
   "damage.DIRECT": "Direct",
