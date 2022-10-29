@@ -1,6 +1,7 @@
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { dateToYearMonthDayHourMinuteString } from "~/utils/dates";
 import * as React from "react";
+import type { Dispatch, SetStateAction } from "react";
 
 export function DateInput({
   id,
@@ -10,6 +11,8 @@ export function DateInput({
   max,
   required,
   "data-cy": dataCy,
+  setDatesInputParentState,
+  keyIndex
 }: {
   id?: string;
   name?: string;
@@ -18,6 +21,8 @@ export function DateInput({
   max?: Date;
   "data-cy": string;
   required?: boolean;
+  setDatesInputParentState: Dispatch<SetStateAction<{ finalDateInputDate: Date; index: number; }[]>>;
+  keyIndex: number;
 }) {
   const [date, setDate] = React.useState(defaultValue ?? new Date());
   const isMounted = useIsMounted();
@@ -43,7 +48,19 @@ export function DateInput({
         value={dateToYearMonthDayHourMinuteString(date)}
         min={min ? dateToYearMonthDayHourMinuteString(min) : undefined}
         max={max ? dateToYearMonthDayHourMinuteString(max) : undefined}
-        onChange={(e) => setDate(new Date(e.target.value))}
+        onChange={(e) => {
+          const updatedDate = new Date(e.target.value);
+          setDate(updatedDate);
+
+          // Update the correct entry in the React hook from the parent
+          setDatesInputParentState(current => current.map(obj => {
+            if (obj.index == keyIndex) {
+              return {...obj, finalDateInputDate: updatedDate }
+            }
+
+            return obj;
+          }));
+        }}
         data-cy={dataCy}
         required={required}
       />

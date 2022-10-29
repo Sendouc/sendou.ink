@@ -287,14 +287,39 @@ function DescriptionTextarea() {
   );
 }
 
+/**
+ * Retrieves a new Date object that is offset by several hours.
+ * 
+ * NOTE: it is important that we work with & return a copy of the date here, 
+ *  otherwise we will just be mutating the original date passed into this function.
+ */
+function getDateWithHoursOffset(date: Date) {
+    const DATE_INPUT_HOURS_OFFSET = 24;
+
+    var copiedDate = new Date(date.getTime());
+    copiedDate.setHours(date.getHours() + DATE_INPUT_HOURS_OFFSET);
+    return copiedDate;
+}
+
 function DatesInput() {
   const { t } = useTranslation(["common", "calendar"]);
   const { eventToEdit } = useLoaderData<typeof loader>();
   const [datesCount, setDatesCount] = React.useState(
     eventToEdit?.startTimes.length ?? 1
   );
-  const isMounted = useIsMounted();
 
+  // React hook that keeps contains an array of parameters that corresponds to each DateInput child object generated
+  //TODO: define a PropType for the object type used in this hook
+  const [datesInputState, setDatesInputState] = React.useState(
+    [
+      {
+        finalDateInputDate: new Date(),
+        index: 0
+      }
+    ]
+  );
+
+  const isMounted = useIsMounted();
   const usersTimeZone = isMounted
     ? Intl.DateTimeFormat().resolvedOptions().timeZone
     : "";
@@ -306,23 +331,19 @@ function DatesInput() {
           {t("calendar:forms.dates")}
         </Label>
         <div className="stack sm">
-          {new Array(datesCount).fill(null).map((_, i) => {
-            const defaultStartTime = eventToEdit?.startTimes[i];
-
+          {new Array(datesCount).fill(null).map((_, i) => {              
             return (
               <div key={i} className="stack horizontal sm items-center">
                 <DateInput
                   id="date"
                   name="date"
-                  defaultValue={
-                    defaultStartTime
-                      ? databaseTimestampToDate(defaultStartTime)
-                      : undefined
-                  }
+                  defaultValue={datesInputState.at(i)?.finalDateInputDate ?? undefined}
                   min={MIN_DATE}
                   max={MAX_DATE}
                   data-cy="date-input"
                   required
+                  setDatesInputParentState={setDatesInputState}
+                  keyIndex={i}
                 />
                 {i === datesCount - 1 && (
                   <>
@@ -331,7 +352,14 @@ function DatesInput() {
                       disabled={
                         datesCount === CALENDAR_EVENT.MAX_AMOUNT_OF_DATES
                       }
-                      onClick={() => setDatesCount((count) => count + 1)}
+                      onClick={() => {
+                        setDatesCount((count) => count + 1);
+                        setDatesInputState(current => [...current, {
+                          //TODO: fix ESLint Date | undefined type error here
+                          finalDateInputDate: getDateWithHoursOffset(datesInputState.at(i)?.finalDateInputDate),
+                          index: i + 1
+                        }])
+                      }}
                       data-cy="add-date-button"
                     >
                       {t("common:actions.add")}
@@ -339,7 +367,10 @@ function DatesInput() {
                     {datesCount > 1 && (
                       <Button
                         tiny
-                        onClick={() => setDatesCount((count) => count - 1)}
+                        onClick={() => {
+                          setDatesCount((count) => count - 1);
+                          setDatesInputState(current => current.slice(0, -1))
+                        }}
                         data-cy="remove-date-button"
                         variant="destructive"
                       >
