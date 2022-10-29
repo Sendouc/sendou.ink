@@ -1,10 +1,6 @@
 name: Tests and checks on push
 
-on:
-  push:
-  pull_request:
-    branches:
-      - rewrite
+on: [push, pull_request]
 
 jobs:
   run-checks-and-tests:
