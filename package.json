@@ -31,7 +31,7 @@
     "cy:open": "cypress open",
     "cy:run": "cypress run",
     "checks": "npm run test:unit && npm run lint:styles && npm run lint:ts && npm run prettier:check && npm run typecheck",
-    "cf": "npm run test:unit && npm run lint:styles -- --fix && npm run lint:ts -- --fix && npm run prettier:write && npm run typecheck"
+    "cf": "npm run test:unit && npm run check-translation-jsons && npm run lint:styles -- --fix && npm run lint:ts -- --fix && npm run prettier:write && npm run typecheck"
   },
   "dependencies": {
     "@faker-js/faker": "^7.6.0",
