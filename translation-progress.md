@@ -4,7 +4,7 @@
 
 ### 🟡 analyzer.json
 
-**94/107**
+**94/108**
 
 <details>
 <summary>Missing</summary>
@@ -13,6 +13,7 @@
 - stat.specialLostSplattedByRP
 - stat.quickRespawnTimeSplattedByRP
 - damage.NORMAL_MAX_FULL_CHARGE
+- torpedoExplanation
 - distanceInline
 - damageShort
 - hitsToDestroyLong
@@ -106,7 +107,7 @@
 
 ### 🟡 analyzer.json
 
-**94/107**
+**94/108**
 
 <details>
 <summary>Missing</summary>
@@ -115,6 +116,7 @@
 - stat.specialLostSplattedByRP
 - stat.quickRespawnTimeSplattedByRP
 - damage.NORMAL_MAX_FULL_CHARGE
+- torpedoExplanation
 - distanceInline
 - damageShort
 - hitsToDestroyLong
@@ -184,7 +186,7 @@
 
 ### 🟡 analyzer.json
 
-**91/107**
+**91/108**
 
 <details>
 <summary>Missing</summary>
@@ -196,6 +198,7 @@
 - stat.shootingRunSpeedCharging
 - stat.shootingRunSpeedFullCharge
 - damage.NORMAL_MAX_FULL_CHARGE
+- torpedoExplanation
 - distanceInline
 - damageShort
 - hitsToDestroyLong
@@ -339,7 +342,7 @@
 
 ### 🟡 analyzer.json
 
-**91/107**
+**91/108**
 
 <details>
 <summary>Missing</summary>
@@ -351,6 +354,7 @@
 - stat.shootingRunSpeedCharging
 - stat.shootingRunSpeedFullCharge
 - damage.NORMAL_MAX_FULL_CHARGE
+- torpedoExplanation
 - distanceInline
 - damageShort
 - hitsToDestroyLong
@@ -506,7 +510,7 @@
 
 ### 🔴 analyzer.json
 
-**0/107**
+**0/108**
 
 ### 🔴 badges.json
 
@@ -562,7 +566,54 @@
 
 ---
 
-## /ja (🟢 Done)
+## /ja (🟡 In progress)
+
+### 🟡 analyzer.json
+
+**107/108**
+
+<details>
+<summary>Missing</summary>
+
+- torpedoExplanation
+
+</details>
+
+### 🟢 badges.json
+
+**7/7**
+
+### 🟢 builds.json
+
+**11/11**
+
+### 🟢 calendar.json
+
+**46/46**
+
+### 🟢 common.json
+
+**75/75**
+
+### 🟢 contributions.json
+
+**6/6**
+
+### 🟢 faq.json
+
+**6/6**
+
+### 🟢 front.json
+
+**12/12**
+
+### 🟢 game-misc.json
+
+**22/22**
+
+### 🟢 user.json
+
+**25/25**
 
 ---
 
@@ -570,7 +621,7 @@
 
 ### 🔴 analyzer.json
 
-**0/107**
+**0/108**
 
 ### 🟢 badges.json
 
@@ -725,7 +776,7 @@
 
 ### 🟡 analyzer.json
 
-**94/107**
+**94/108**
 
 <details>
 <summary>Missing</summary>
@@ -734,6 +785,7 @@
 - stat.specialLostSplattedByRP
 - stat.quickRespawnTimeSplattedByRP
 - damage.NORMAL_MAX_FULL_CHARGE
+- torpedoExplanation
 - distanceInline
 - damageShort
 - hitsToDestroyLong
@@ -754,42 +806,27 @@
 
 **11/11**
 
-### 🟡 calendar.json
+### 🟢 calendar.json
 
-**44/46**
-
-<details>
-<summary>Missing</summary>
-
-- createMapList
-- forms.mapPool
-
-</details>
+**46/46**
 
 ### 🟡 common.json
 
-**48/75**
+**55/75**
 
 <details>
 <summary>Missing</summary>
 
-- pages.analyzer
-- pages.maps
 - pages.object-damage-calculator
 - auth.errors.aborted
 - auth.errors.failed
 - auth.errors.discordPermissions
 - auth.errors.unknown
-- actions.copyToClipboard
 - actions.close
 - actions.loading
 - actions.clear
 - actions.selectAll
 - actions.search
-- maps.createMapList
-- maps.halfSz
-- maps.mapPool
-- maps.tournamentMaplist
 - maps.template
 - maps.template.none
 - maps.template.event
@@ -813,28 +850,22 @@
 
 ### 🟡 front.json
 
-**10/12**
+**11/12**
 
 <details>
 <summary>Missing</summary>
 
-- maps.description
 - object-damage-calculator.description
 
 </details>
 
 ### 🟡 game-misc.json
 
-**12/22**
+**17/22**
 
 <details>
 <summary>Missing</summary>
 
-- MODE_SHORT_TW
-- MODE_SHORT_SZ
-- MODE_SHORT_TC
-- MODE_SHORT_RM
-- MODE_SHORT_CB
 - MODE_LONG_TW
 - MODE_LONG_SZ
 - MODE_LONG_TC
@@ -845,13 +876,12 @@
 
 ### 🟡 user.json
 
-**19/25**
+**20/25**
 
 <details>
 <summary>Missing</summary>
 
 - results.title
-- results.participants
 - results.highlights
 - results.nonHighlights
 - results.highlights.choose
@@ -865,7 +895,7 @@
 
 ### 🟡 analyzer.json
 
-**101/107**
+**101/108**
 
 <details>
 <summary>Missing</summary>
@@ -874,6 +904,7 @@
 - stat.specialLostSplattedByRP
 - stat.quickRespawnTimeSplattedByRP
 - damage.NORMAL_MAX_FULL_CHARGE
+- torpedoExplanation
 - dmgHtdExplanation
 - noDmgData
 
@@ -959,7 +990,7 @@
 
 ### 🟡 analyzer.json
 
-**94/107**
+**94/108**
 
 <details>
 <summary>Missing</summary>
@@ -968,6 +999,7 @@
 - stat.specialLostSplattedByRP
 - stat.quickRespawnTimeSplattedByRP
 - damage.NORMAL_MAX_FULL_CHARGE
+- torpedoExplanation
 - distanceInline
 - damageShort
 - hitsToDestroyLong

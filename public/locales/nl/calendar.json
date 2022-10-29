@@ -8,6 +8,7 @@
   "participatedCount": "{{count}} teams hebben meegedaan",
   "members": "Leden",
   "results": "Uitslagen",
+  "createMapList": "Maak levellijst",
 
   "forms.dates": "Data",
   "forms.bracketUrl": "Bracket URL",
@@ -17,10 +18,11 @@
   "forms.tags.info": "De \"Badge prizes\" tag wordt indien mogelijk automatisch toegevoegd",
   "forms.badges": "Badge prijzen",
   "forms.badges.placeholder": "Kies een badge prijs",
+  "forms.mapPool": "Beschikbare levels",
 
   "forms.participantCount": "Aantal deelnemers",
   "forms.reportResultsHeader": "Uitslagen doorgeven voor {{eventName}}",
-  "forms.reportResultsInfo": "Je mag zelf kiezen hoeveel uitslagen je wilt doorgeven. Het kan bijvoorbeeld alleen het winnende team zijn, maar ook de top 3, etc.",
+  "forms.reportResultsInfo": "Je kunt zelf kiezen hoeveel uitslagen je wilt doorgeven. Het kan bijvoorbeeld alleen het winnende team zijn, maar ook de top 3, etc.",
   "forms.team.add": "Voeg team toe",
   "forms.team.remove": "Verwijder team",
   "forms.team.name": "Team naam",
@@ -32,7 +34,7 @@
   "forms.team.player.addAsUser": "Voeg toe als gebruiker (aanbevolen)",
   "forms.team.player.addAsText": "Voeg toe als tekst",
 
-  "forms.errors.uniqueTeamName": "Elk team heeft een eigen, unieke naam nodig.",
+  "forms.errors.uniqueTeamName": "Elk team heeft een eigen unieke naam nodig.",
   "forms.errors.duplicatePlayer": "Je kunt niet een speler twee keer in hetzelfde team neerzetten.",
   "forms.errors.emptyTeam": "Elk team moet tenminste één speler hebben",
 
