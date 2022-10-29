@@ -111,8 +111,8 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
           <div key={weaponSplId} className="build__weapon">
             <Image
               path={mainWeaponImageUrl(weaponSplId)}
-              alt={t(`weapons:${weaponSplId}` as any)}
-              title={t(`weapons:${weaponSplId}` as any)}
+              alt={t(`weapons:MAIN_${weaponSplId}` as any)}
+              title={t(`weapons:MAIN_${weaponSplId}` as any)}
               height={36}
               width={36}
             />
