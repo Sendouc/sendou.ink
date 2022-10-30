@@ -57,6 +57,7 @@ export type CreateArgs = Pick<
   | "description"
   | "discordInviteCode"
   | "bracketUrl"
+  | "toToolsEnabled"
 > & {
   startTimes: Array<CalendarEventDate["startTime"]>;
   badges: Array<CalendarEventBadge["badgeId"]>;
@@ -378,6 +379,7 @@ export function findById(id: CalendarEvent["id"]) {
       | "tags"
       | "authorId"
       | "participantCount"
+      | "toToolsEnabled"
     > &
       Pick<CalendarEventDate, "startTime" | "eventId"> &
       Pick<

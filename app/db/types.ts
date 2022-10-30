@@ -101,6 +101,7 @@ export interface CalendarEvent {
   bracketUrl: string;
   participantCount: number | null;
   customUrl: string | null;
+  toToolsEnabled: number;
 }
 
 export type CalendarEventTag = keyof typeof allTags;
@@ -156,17 +157,11 @@ export interface BuildAbility {
 }
 
 export interface MapPoolMap {
-  calendarEventId: number | null;
+  calendarEventId: number | null; // Part of tournament's map pool
   tournamentTeamId: number | null; // Part of team's map pool
-  tournamentId: number | null; // Part of the tournament's tiebreaker list
+  tieBreakerCalendarEventId: number | null; // Part of the tournament's tiebreaker pool
   stageId: StageId;
   mode: ModeShort;
-}
-
-export interface Tournament {
-  id: number;
-  calendarEventId: number;
-  ownerId: number;
 }
 
 export interface TournamentTeam {
@@ -174,6 +169,7 @@ export interface TournamentTeam {
   name: string;
   createdAt: number;
   seed: number | null;
+  calendarEventId: number;
 }
 
 export interface TournamentTeamMember {

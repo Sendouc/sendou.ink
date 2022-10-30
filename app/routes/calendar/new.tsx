@@ -44,6 +44,7 @@ import { makeTitle } from "~/utils/strings";
 import { calendarEventPage } from "~/utils/urls";
 import {
   actualNumber,
+  checkboxValueToBoolean,
   date,
   falsyToNull,
   id,
@@ -54,6 +55,7 @@ import {
 } from "~/utils/zod";
 import { MapPoolSelector } from "~/components/MapPoolSelector";
 import { Tags } from "./components/Tags";
+import { Toggle } from "~/components/Toggle";
 
 const MIN_DATE = new Date(Date.UTC(2015, 4, 28));
 
@@ -116,6 +118,7 @@ const newCalendarEventActionSchema = z.object({
     z.array(id).nullable()
   ),
   pool: z.string().optional(),
+  toToolsEnabled: z.preprocess(checkboxValueToBoolean, z.boolean()),
 });
 
 export const action: ActionFunction = async ({ request }) => {
@@ -141,6 +144,7 @@ export const action: ActionFunction = async ({ request }) => {
           .join(",")
       : data.tags,
     badges: data.badges ?? [],
+    toToolsEnabled: Number(data.toToolsEnabled),
   };
 
   const deserializedMaps = (() => {
@@ -230,6 +234,7 @@ export default function CalendarNewEventPage() {
         <TagsAdder />
         <BadgesAdder />
         <MapPoolSection />
+        <TOToolsEnabler />
         <Button type="submit" className="mt-4">
           {t("actions.submit")}
         </Button>
@@ -547,6 +552,31 @@ function MapPoolSection() {
       >
         {t("common:actions.add")}
       </Button>
+    </div>
+  );
+}
+
+function TOToolsEnabler() {
+  const { eventToEdit } = useLoaderData<typeof loader>();
+  const [checked, setChecked] = React.useState(
+    Boolean(eventToEdit?.toToolsEnabled)
+  );
+  const id = React.useId();
+
+  return (
+    <div>
+      <label htmlFor={id}>Enable TO Tools</label>
+      <Toggle
+        name="toToolsEnabled"
+        id={id}
+        tiny
+        checked={checked}
+        setChecked={setChecked}
+      />
+      <FormMessage type="info">
+        With TO Tools your tournament will use the Some Fancy Name Map Pools and
+        seed creator tool.
+      </FormMessage>
     </div>
   );
 }

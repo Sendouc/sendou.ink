@@ -5,7 +5,8 @@ insert into
     "tags",
     "description",
     "discordInviteCode",
-    "bracketUrl"
+    "bracketUrl",
+    "toToolsEnabled"
   )
 values
   (
@@ -14,5 +15,6 @@ values
     @tags,
     @description,
     @discordInviteCode,
-    @bracketUrl
+    @bracketUrl,
+    @toToolsEnabled
   ) returning *
