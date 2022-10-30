@@ -8,7 +8,6 @@ import styles from "~/styles/front.css";
 import { ArticlesPeek } from ".";
 import { useTranslation } from "react-i18next";
 
-// Set the max number of articles to render
 const MAX_ARTICLES_COUNT = 100;
 
 export const links: LinksFunction = () => {
