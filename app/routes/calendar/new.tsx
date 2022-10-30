@@ -284,7 +284,6 @@ function DescriptionTextarea() {
 
 function DatesInput() {
   const { t } = useTranslation(["common", "calendar"]);
-  const { eventToEdit } = useLoaderData<typeof loader>();
 
   // React hook that keeps contains an array of parameters that corresponds to each DateInput child object generated
   const [datesInputState, setDatesInputState] = React.useState([
