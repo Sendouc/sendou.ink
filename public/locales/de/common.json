@@ -14,6 +14,7 @@
   "header.profile": "Profil",
   "header.logout": "Ausloggen",
   "header.login": "Einloggen",
+  "header.theme": "Theme",
 
   "auth.errors.aborted": "Einloggen abgebrochen",
   "auth.errors.failed": "Einloggen fehlgeschlagen",
@@ -83,5 +84,9 @@
   "weapon.category.DUALIES": "Doppler",
   "weapon.category.BRELLAS": "Pluviatoren",
   "weapon.category.STRINGERS": "Stringer",
-  "weapon.category.SPLATANAS": "Splatanas"
+  "weapon.category.SPLATANAS": "Splatanas",
+
+  "theme.light": "Hell",
+  "theme.dark": "Dunkel",
+  "theme.auto": "Auto"
 }
