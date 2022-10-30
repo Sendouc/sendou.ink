@@ -51,6 +51,8 @@ export const loader = async () => {
 
 export default function Index() {
   const { t } = useTranslation(["common", "front"]);
+  const data = useLoaderData<typeof loader>();
+  const articles = data.recentArticles;
 
   return (
     <Main className="stack lg">
@@ -66,8 +68,8 @@ export default function Index() {
         <GoToPageBanner to={CALENDAR_PAGE} navItem="calendar">
           {t("front:calendarGoTo")}
         </GoToPageBanner>
-      </div>      
-      <ArticlesPeek />
+      </div>
+      <ArticlesPeek articles={articles} />
       <GoToPageBanner to={ARTICLES_MAIN_PAGE} navItem="sendou_love">
         {t("front:articlesGoTo")}
       </GoToPageBanner>
@@ -255,13 +257,25 @@ function Event({
   );
 }
 
-export function ArticlesPeek() {
+export function ArticlesPeek({
+  articles,
+}: {
+  articles: SerializeObject<
+    Simplify<
+      {
+        title: string;
+        author: string;
+        slug: string;
+        dateString: string;
+      } & {}
+    >
+  >[];
+}) {
   const { t } = useTranslation("front");
-  const data = useLoaderData<typeof loader>();
 
   return (
     <ul className="front__articles">
-      {data.recentArticles.map((article) => (
+      {articles.map((article) => (
         <li key={article.title}>
           <Link to={articlePage(article.slug)}>{article.title}</Link>
           <div className="text-xs text-lighter">
