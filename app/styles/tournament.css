@@ -1,0 +1,13 @@
+.tournament__action-section {
+  padding: var(--s-6);
+  border-radius: var(--rounded);
+  background-color: var(--bg-lighter);
+  font-size: var(--fonts-lg);
+  font-weight: var(--bold);
+}
+
+.tournament__action-side-note {
+  color: var(--text-lighter);
+  font-size: var(--fonts-xs);
+  font-weight: var(--semi-bold);
+}
