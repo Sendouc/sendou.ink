@@ -161,9 +161,7 @@ export default function CalendarPage() {
                 </div>
               </>
             ) : (
-              <h2 className="calendar__no-events" data-cy="no-events">
-                {t("noEvents")}
-              </h2>
+              <h2 className="calendar__no-events">{t("noEvents")}</h2>
             )}
           </>
         ) : (
@@ -358,10 +356,7 @@ function EventsList({
                         </div>
                       </div>
                       <div className="stack xs">
-                        <Link
-                          to={String(calendarEvent.eventId)}
-                          data-cy="event-page-link"
-                        >
+                        <Link to={String(calendarEvent.eventId)}>
                           <h2 className="calendar__event__title">
                             {calendarEvent.name}{" "}
                             {calendarEvent.nthAppearance > 1 ? (

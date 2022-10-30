@@ -82,6 +82,10 @@ const shotsToPopRM: Array<
   [2030, "TAP_SHOT", 13, 12],
   // Hydra Splatling
   [4020, "NORMAL_MAX", 32, 29],
+  // Sloshing Machine
+  [3020, "DIRECT_MAX", 6, 5],
+  // Splat Dualies
+  [5010, "NORMAL_MAX", 34, 31],
 ];
 
 CalculateDamage(

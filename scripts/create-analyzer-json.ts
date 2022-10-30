@@ -142,11 +142,34 @@ function parametersToMainWeaponResult(
     );
   };
 
+  const slosherDirectDamage = () => {
+    const DamageParam_ValueDirectMax =
+      params["UnitGroupParam"]?.["Unit"]?.[0]?.["DamageParam"]?.["ValueMax"];
+    const DamageParam_ValueDirectMin =
+      params["UnitGroupParam"]?.["Unit"]?.[0]?.["DamageParam"]?.["ValueMin"];
+
+    if (
+      DamageParam_ValueDirectMax &&
+      DamageParam_ValueDirectMax === DamageParam_ValueDirectMin
+    ) {
+      return {
+        DamageParam_ValueDirect: DamageParam_ValueDirectMax,
+      };
+    }
+
+    return {
+      DamageParam_ValueDirectMax,
+      DamageParam_ValueDirectMin,
+    };
+  };
+
   const KeepChargeFullFrame =
     params["WeaponKeepChargeParam"]?.["KeepChargeFullFrame"] ??
     params["spl__WeaponStringerParam"]?.["ChargeKeepParam"]?.[
       "KeepChargeFullFrame"
     ];
+
+  const isSloshingMachine = weapon.Id === 3020;
 
   return {
     SpecialPoint: weapon.SpecialPoint,
@@ -170,7 +193,13 @@ function parametersToMainWeaponResult(
       ? params["DamageParam"]?.["ValueMin"]
       : undefined,
     DamageParam_ValueDirect,
-    BlastParam_DistanceDamage: params["BlastParam"]?.["DistanceDamage"],
+    ...slosherDirectDamage(),
+    BlastParam_SplashDamage: isSloshingMachine
+      ? params["UnitGroupParam"]?.["Unit"]?.[1]?.["DamageParam"]?.["ValueMax"]
+      : undefined,
+    BlastParam_DistanceDamage:
+      params["BlastParam"]?.["DistanceDamage"] ??
+      params["BlastParam"]?.["BlastParam"]?.["DistanceDamage"],
     DamageParam_ValueFullCharge: params["DamageParam"]?.["ValueFullCharge"],
     DamageParam_ValueFullChargeMax:
       params["DamageParam"]?.["ValueFullChargeMax"] !== DamageParam_ValueMax()

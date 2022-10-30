@@ -3,7 +3,6 @@
   "exclude": ["discord-bot/*"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2019"],
-    "types": ["cypress"],
     "isolatedModules": true,
     "esModuleInterop": true,
     "jsx": "react-jsx",

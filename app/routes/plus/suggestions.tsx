@@ -244,7 +244,6 @@ export default function PlusSuggestionsPage() {
                 // TODO: resetScroll={false} https://twitter.com/ryanflorence/status/1527775882797907969
                 <LinkButton
                   to={`new${tierVisible ? `?tier=${tierVisible}` : ""}`}
-                  data-cy="new-suggest-button"
                   prefetch="render"
                   tiny
                 >
@@ -366,11 +365,7 @@ function SuggestedUser({
       <div className="plus__suggested-user-info">
         <Avatar user={suggested.suggestedUser} size="md" />
         <h2>
-          <Link
-            className="all-unset"
-            to={userPage(suggested.suggestedUser)}
-            data-cy="suggested-user-name"
-          >
+          <Link className="all-unset" to={userPage(suggested.suggestedUser)}>
             {suggested.suggestedUser.discordName}
           </Link>
         </h2>
@@ -386,7 +381,6 @@ function SuggestedUser({
             tiny
             variant="outlined"
             to={`comment/${tier}/${suggested.suggestedUser.id}?tier=${tier}`}
-            data-cy="comment-button"
             prefetch="render"
           >
             Comment
@@ -422,10 +416,7 @@ export function PlusSuggestionComments({
 }) {
   return (
     <details open={defaultOpen} className="w-full">
-      <summary
-        className="plus__view-comments-action"
-        data-cy="comments-summary"
-      >
+      <summary className="plus__view-comments-action">
         Comments ({suggestions.length})
       </summary>
       <div className="stack sm mt-2">
@@ -499,7 +490,6 @@ function CommentDeleteButton({
         icon={<TrashIcon />}
         variant="minimal-destructive"
         aria-label="Delete comment"
-        data-cy="delete-comment-button"
       />
     </FormWithConfirm>
   );

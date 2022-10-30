@@ -198,7 +198,7 @@ export default function NewBuildPage() {
         <TitleInput />
         <DescriptionTextarea />
         <ModeCheckboxes />
-        <Button type="submit" className="mt-4" data-cy="submit-button">
+        <Button type="submit" className="mt-4">
           {t("actions.submit")}
         </Button>
       </Form>
@@ -221,7 +221,6 @@ function TitleInput() {
         minLength={BUILD.TITLE_MIN_LENGTH}
         maxLength={BUILD.TITLE_MAX_LENGTH}
         defaultValue={buildToEdit?.title}
-        data-cy="title-input"
       />
     </div>
   );
@@ -249,7 +248,6 @@ function DescriptionTextarea() {
         value={value}
         onChange={(e) => setValue(e.target.value)}
         maxLength={BUILD.DESCRIPTION_MAX_LENGTH}
-        data-cy="description-textarea"
       />
     </div>
   );
@@ -310,7 +308,6 @@ function WeaponsSelector() {
                     tiny
                     disabled={count === BUILD.MAX_WEAPONS_COUNT}
                     onClick={() => setCount((count) => count + 1)}
-                    data-cy="add-date-button"
                   >
                     {t("common:actions.add")}
                   </Button>
@@ -318,7 +315,6 @@ function WeaponsSelector() {
                     <Button
                       tiny
                       onClick={() => setCount((count) => count - 1)}
-                      data-cy="remove-date-button"
                       variant="destructive"
                     >
                       {t("common:actions.remove")}

@@ -44,7 +44,6 @@ export default function BadgesPageLayout() {
               className="badges__nav-link"
               key={badge.id}
               to={String(badge.id)}
-              data-cy="badge-nav-link"
             >
               <Badge badge={badge} size={64} isAnimated={false} />
             </NavLink>

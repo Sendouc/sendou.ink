@@ -1,5 +1,6 @@
 import type { DamageType } from "./types";
 import type objectDamages from "./object-dmg.json";
+import type { MainWeaponId } from "../in-game-lists";
 
 export const MAX_LDE_INTENSITY = 21;
 export const MAX_AP = 57;
@@ -25,10 +26,13 @@ export const DAMAGE_TYPE = [
   "NORMAL_MAX",
   "NORMAL_MAX_FULL_CHARGE", // Hydra Splatling goes from 32 to 40 dmg when fully charged
   "DIRECT",
+  "DIRECT_MIN",
+  "DIRECT_MAX",
   "FULL_CHARGE",
   "MAX_CHARGE",
   "TAP_SHOT",
   "DISTANCE",
+  "SPLASH",
   "BOMB_NORMAL",
   "BOMB_DIRECT",
 ] as const;
@@ -41,10 +45,13 @@ export const damageTypeToWeaponType: Record<
   NORMAL_MAX: "MAIN",
   NORMAL_MAX_FULL_CHARGE: "MAIN",
   DIRECT: "MAIN",
+  DIRECT_MIN: "MAIN",
+  DIRECT_MAX: "MAIN",
   FULL_CHARGE: "MAIN",
   MAX_CHARGE: "MAIN",
   TAP_SHOT: "MAIN",
   DISTANCE: "MAIN",
+  SPLASH: "MAIN",
   BOMB_NORMAL: "SUB",
   BOMB_DIRECT: "SUB",
 };
@@ -135,12 +142,12 @@ export const objectDamageJsonKeyPriority: Record<
   Shooter: null,
   Skewer_Body: null,
   Skewer: null,
-  Slosher_Bathtub: null,
-  Slosher_Bear: null,
-  Slosher_WashtubBombCore: null,
-  Slosher_Washtub: null,
-  Slosher: null,
-  Spinner: ["NORMAL_MAX", "NORMAL_MIN", "NORMAL_MAX_FULL_CHARGE"],
+  Slosher_Bathtub: ["DIRECT", "DIRECT_MAX", "DIRECT_MIN", "DISTANCE", "SPLASH"],
+  Slosher_Bear: ["DIRECT", "DIRECT_MAX", "DIRECT_MIN", "DISTANCE", "SPLASH"],
+  Slosher_WashtubBombCore: ["DIRECT", "DIRECT_MAX", "DIRECT_MIN"],
+  Slosher_Washtub: ["DISTANCE", "SPLASH"],
+  Slosher: ["DIRECT", "DIRECT_MAX", "DIRECT_MIN", "DISTANCE", "SPLASH"],
+  Spinner: ["NORMAL_MAX", "NORMAL_MIN", "NORMAL_MAX_FULL_CHARGE", "SPLASH"],
   Sprinkler: null,
   Stringer_Short: null,
   Stringer: null,
@@ -151,4 +158,13 @@ export const objectDamageJsonKeyPriority: Record<
   UltraStamp_Swing: null,
   UltraStamp_Throw_BombCore: null,
   UltraStamp_Throw: null,
+};
+
+export const multiShot: Partial<Record<MainWeaponId, number>> = {
+  // L-3
+  300: 3,
+  // H-3
+  310: 3,
+  // Bloblobber
+  3030: 4,
 };
