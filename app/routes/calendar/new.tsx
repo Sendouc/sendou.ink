@@ -285,9 +285,6 @@ function DescriptionTextarea() {
 function DatesInput() {
   const { t } = useTranslation(["common", "calendar"]);
   const { eventToEdit } = useLoaderData<typeof loader>();
-  const [datesCount, setDatesCount] = React.useState(
-    eventToEdit?.startTimes.length ?? 1
-  );
 
   // React hook that keeps contains an array of parameters that corresponds to each DateInput child object generated
   const [datesInputState, setDatesInputState] = React.useState([
@@ -296,6 +293,8 @@ function DatesInput() {
       index: 0,
     },
   ]);
+
+  const datesCount = datesInputState.length;
 
   const isMounted = useIsMounted();
   const usersTimeZone = isMounted
@@ -342,7 +341,6 @@ function DatesInput() {
                         datesCount === CALENDAR_EVENT.MAX_AMOUNT_OF_DATES
                       }
                       onClick={() => {
-                        setDatesCount((count) => count + 1);
                         setDatesInputState((current) => [
                           ...current,
                           {
@@ -362,7 +360,6 @@ function DatesInput() {
                       <Button
                         tiny
                         onClick={() => {
-                          setDatesCount((count) => count - 1);
                           setDatesInputState((current) => current.slice(0, -1));
                         }}
                         variant="destructive"
