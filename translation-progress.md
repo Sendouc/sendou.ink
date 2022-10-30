@@ -25,9 +25,16 @@
 
 **46/46**
 
-### 🟢 common.json
+### 🟡 common.json
 
-**75/75**
+**75/76**
+
+<details>
+<summary>Missing</summary>
+
+- pages.articles
+
+</details>
 
 ### 🟢 contributions.json
 
@@ -98,11 +105,12 @@
 
 ### 🟡 common.json
 
-**73/75**
+**73/76**
 
 <details>
 <summary>Missing</summary>
 
+- pages.articles
 - pages.object-damage-calculator
 - actions.copyToClipboard
 
@@ -189,11 +197,12 @@
 
 ### 🟡 common.json
 
-**48/75**
+**48/76**
 
 <details>
 <summary>Missing</summary>
 
+- pages.articles
 - pages.s2
 - pages.maps
 - pages.object-damage-calculator
@@ -346,7 +355,7 @@
 
 ### 🟡 common.json
 
-**46/75**
+**47/76**
 
 <details>
 <summary>Missing</summary>
@@ -483,7 +492,7 @@
 
 ### 🔴 common.json
 
-**0/75**
+**0/76**
 
 ### 🔴 contributions.json
 
@@ -548,9 +557,16 @@
 
 **46/46**
 
-### 🟢 common.json
+### 🟡 common.json
 
-**75/75**
+**75/76**
+
+<details>
+<summary>Missing</summary>
+
+- pages.articles
+
+</details>
 
 ### 🟢 contributions.json
 
@@ -609,11 +625,12 @@
 
 ### 🟡 common.json
 
-**35/75**
+**35/76**
 
 <details>
 <summary>Missing</summary>
 
+- pages.articles
 - pages.s2
 - pages.analyzer
 - pages.maps
@@ -777,11 +794,12 @@
 
 ### 🟡 common.json
 
-**55/75**
+**55/76**
 
 <details>
 <summary>Missing</summary>
 
+- pages.articles
 - pages.object-damage-calculator
 - auth.errors.aborted
 - auth.errors.failed
@@ -890,11 +908,12 @@
 
 ### 🟡 common.json
 
-**61/75**
+**61/76**
 
 <details>
 <summary>Missing</summary>
 
+- pages.articles
 - actions.loading
 - actions.clear
 - actions.selectAll
@@ -1001,11 +1020,12 @@
 
 ### 🟡 common.json
 
-**35/75**
+**35/76**
 
 <details>
 <summary>Missing</summary>
 
+- pages.articles
 - pages.s2
 - pages.analyzer
 - pages.maps
