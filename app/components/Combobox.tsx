@@ -68,12 +68,19 @@ export function Combobox<T extends Record<string, string | null | number>>({
     setLastSelectedOption(initialValue);
   }, [initialValue]);
 
+  // Reference for Fuse options: https://fusejs.io/api/options.html
+  const FUSE_OPTIONS = {
+    threshold: 0.42, // Empirically determined value to get an exact match for a Discord ID
+  };
+
   const filteredOptions = (() => {
     if (!query) return [];
 
     const fuse = new Fuse(options, {
+      ...FUSE_OPTIONS,
       keys: [...Object.keys(options[0] ?? {})],
     });
+
     return fuse
       .search(query)
       .slice(0, MAX_RESULTS_SHOWN)
