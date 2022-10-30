@@ -20,7 +20,7 @@ export function DateInput({
   min?: Date;
   max?: Date;
   required?: boolean;
-  onChange: (newDate: Date) => void;
+  onChange?: (newDate: Date) => void;
 }) {
   const [date, setDate] = React.useState(defaultValue ?? new Date());
   const isMounted = useIsMounted();
