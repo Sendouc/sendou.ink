@@ -6,11 +6,16 @@ import { mostRecentArticles } from "~/modules/articles";
 import styles from "~/styles/front.css";
 import { ArticlesPeek } from ".";
 import { useTranslation } from "react-i18next";
+import type { SendouRouteHandle } from "~/utils/remix";
 
 const MAX_ARTICLES_COUNT = 100;
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
+};
+
+export const handle: SendouRouteHandle = {
+  i18n: ["front"],
 };
 
 export const loader = async () => {
