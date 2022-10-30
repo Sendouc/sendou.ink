@@ -4,7 +4,7 @@
 
 ### 🟡 analyzer.json
 
-**108/112**
+**109/112**
 
 <details>
 <summary>Missing</summary>
@@ -12,7 +12,6 @@
 - damage.toSplat_one
 - damage.DIRECT_MIN
 - damage.DIRECT_MAX
-- torpedoExplanation
 
 </details>
 
