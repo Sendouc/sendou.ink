@@ -1,5 +1,5 @@
 import { useIsMounted } from "~/hooks/useIsMounted";
-import { dateToYearMonthDayHourMinuteString } from "~/utils/dates";
+import { dateToYearMonthDayHourMinuteString, getValidNewDateIfInvalid } from "~/utils/dates";
 import * as React from "react";
 import type { Dispatch, SetStateAction } from "react";
 
@@ -51,7 +51,8 @@ export function DateInput({
         min={min ? dateToYearMonthDayHourMinuteString(min) : undefined}
         max={max ? dateToYearMonthDayHourMinuteString(max) : undefined}
         onChange={(e) => {
-          const updatedDate = new Date(e.target.value);
+          let updatedDate = new Date(e.target.value);
+          updatedDate = getValidNewDateIfInvalid(updatedDate); // Validate date
           setDate(updatedDate);
 
           // Update the correct entry in the React hook from the parent

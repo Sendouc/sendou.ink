@@ -34,13 +34,32 @@ export function weekNumberToDate({
   return result;
 }
 
+/**
+ * Retrieve a valid date. If invalid, get a new Date object.
+ * 
+ * Returns:
+ * - The date object if valid
+ * - Otherwise, returns `new Date()`
+ */
+export function getValidNewDateIfInvalid(date: Date) {
+  if (isNaN(date.getTime())) {
+    console.error("Invalid date, returning a new Date object");
+    return new Date();
+  }
+
+  return date;
+}
+
 /** Returns date as a string with the format YYYY-MM-DDThh:mm in user's time zone */
 export function dateToYearMonthDayHourMinuteString(date: Date) {
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-  const hour = date.getHours();
-  const minute = date.getMinutes();
+  let copiedDate = new Date(date.getTime());
+  copiedDate = getValidNewDateIfInvalid(copiedDate); // Validate date
+
+  const year = copiedDate.getFullYear();
+  const month = copiedDate.getMonth() + 1;
+  const day = copiedDate.getDate();
+  const hour = copiedDate.getHours();
+  const minute = copiedDate.getMinutes();
 
   return `${year}-${prefixZero(month)}-${prefixZero(day)}T${prefixZero(
     hour
