@@ -325,8 +325,17 @@ function DatesInput() {
                   max={MAX_DATE}
                   data-cy="date-input"
                   required
-                  setDatesInputParentState={setDatesInputState}
-                  keyIndex={i}
+                  onChange={(newDate: Date) => {
+                    setDatesInputState((current) =>
+                        current.map((obj) => {
+                          if (obj.index === i) {
+                            return { ...obj, finalDateInputDate: newDate };
+                          }
+                
+                          return obj;
+                        })
+                      );
+                  }}
                 />
                 {i === datesCount - 1 && (
                   <>

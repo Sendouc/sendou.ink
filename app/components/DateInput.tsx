@@ -11,8 +11,7 @@ export function DateInput({
   max,
   required,
   "data-cy": dataCy,
-  setDatesInputParentState,
-  keyIndex,
+  onChange
 }: {
   id?: string;
   name?: string;
@@ -21,10 +20,7 @@ export function DateInput({
   max?: Date;
   "data-cy": string;
   required?: boolean;
-  setDatesInputParentState: Dispatch<
-    SetStateAction<{ finalDateInputDate: Date; index: number }[]>
-  >;
-  keyIndex: number;
+  onChange: (newDate: Date) => void
 }) {
   const [date, setDate] = React.useState(defaultValue ?? new Date());
   const isMounted = useIsMounted();
@@ -55,16 +51,8 @@ export function DateInput({
           updatedDate = getValidNewDateIfInvalid(updatedDate); // Validate date
           setDate(updatedDate);
 
-          // Update the correct entry in the React hook from the parent
-          setDatesInputParentState((current) =>
-            current.map((obj) => {
-              if (obj.index == keyIndex) {
-                return { ...obj, finalDateInputDate: updatedDate };
-              }
-
-              return obj;
-            })
-          );
+          // Update the correct entry in the React hook from the parent via the passed on callback function
+          onChange(updatedDate);
         }}
         data-cy={dataCy}
         required={required}
