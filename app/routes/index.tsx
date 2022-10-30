@@ -66,11 +66,11 @@ export default function Index() {
         <GoToPageBanner to={CALENDAR_PAGE} navItem="calendar">
           {t("front:calendarGoTo")}
         </GoToPageBanner>
-      </div>
+      </div>      
+      <ArticlesPeek />
       <GoToPageBanner to={ARTICLES_MAIN_PAGE} navItem="sendou_love">
         {t("front:articlesGoTo")}
       </GoToPageBanner>
-      <ArticlesPeek />
       <div className="stack md">
         <h2 className="front__more-features">{t("front:moreFeatures")}</h2>
         <div className="front__feature-cards">
