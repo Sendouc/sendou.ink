@@ -100,7 +100,7 @@ export interface CalendarEvent {
   discordUrl: string | null;
   bracketUrl: string;
   participantCount: number | null;
-  mapPoolId?: number;
+  customUrl: string | null;
 }
 
 export type CalendarEventTag = keyof typeof allTags;
@@ -156,7 +156,29 @@ export interface BuildAbility {
 }
 
 export interface MapPoolMap {
-  calendarEventId?: number;
+  calendarEventId: number | null;
+  tournamentTeamId: number | null; // Part of team's map pool
+  tournamentId: number | null; // Part of the tournament's tiebreaker list
   stageId: StageId;
   mode: ModeShort;
+}
+
+export interface Tournament {
+  id: number;
+  calendarEventId: number;
+  ownerId: number;
+}
+
+export interface TournamentTeam {
+  id: number;
+  name: string;
+  createdAt: number;
+  seed: number | null;
+}
+
+export interface TournamentTeamMember {
+  tournamentTeamId: number;
+  userId: number;
+  isOwner: number;
+  createdAt: number;
 }
