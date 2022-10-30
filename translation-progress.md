@@ -1,53 +1,6 @@
 # Translation Progress
 
-## /da (🟡 In progress)
-
-### 🟡 analyzer.json
-
-**107/108**
-
-<details>
-<summary>Missing</summary>
-
-- torpedoExplanation
-
-</details>
-
-### 🟢 badges.json
-
-**7/7**
-
-### 🟢 builds.json
-
-**11/11**
-
-### 🟢 calendar.json
-
-**46/46**
-
-### 🟢 common.json
-
-**75/75**
-
-### 🟢 contributions.json
-
-**6/6**
-
-### 🟢 faq.json
-
-**6/6**
-
-### 🟢 front.json
-
-**12/12**
-
-### 🟢 game-misc.json
-
-**22/22**
-
-### 🟢 user.json
-
-**25/25**
+## /da (🟢 Done)
 
 ---
 
