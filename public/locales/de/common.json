@@ -9,6 +9,7 @@
   "pages.builds": "Ausrüstungen",
   "pages.analyzer": "Ausrüstungs-Analyse",
   "pages.maps": "Arenen-Listen",
+  "pages.object-damage-calculator": "Objekt-Schaden-Rechner",
 
   "header.profile": "Profil",
   "header.logout": "Ausloggen",
@@ -33,6 +34,7 @@
   "actions.remove": "Entfernen",
   "actions.delete": "Löschen",
   "actions.loadMore": "Mehr laden",
+  "actions.copyToClipboard": "In die Zwischenablage kopieren",
   "actions.close": "Schließen",
   "actions.loading": "Lädt...",
   "actions.clear": "Leeren",
