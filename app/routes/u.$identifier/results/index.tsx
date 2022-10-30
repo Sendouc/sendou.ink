@@ -27,11 +27,7 @@ export default function UserResultsPage() {
   const isOwnResultsPage = user?.id === userPageData.id;
 
   const showHighlightsSection =
-    hasHighlights || (isOwnResultsPage && hasResults);
-
-  const showChooseHighlightsButton =
-    isOwnResultsPage &&
-    !(highlights.length === 1 && userPageData.results.length === 1);
+    hasHighlights || (isOwnResultsPage && hasResults && userPageData.results.length !== 1);
 
   return (
     <Main className="stack lg">
@@ -46,7 +42,7 @@ export default function UserResultsPage() {
               results={highlights}
             />
           )}
-          {showChooseHighlightsButton && (
+          {isOwnResultsPage && (
             <LinkButton
               variant="outlined"
               tiny
