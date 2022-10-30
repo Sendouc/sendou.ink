@@ -33,7 +33,7 @@ export default function ArticlesMainPage() {
     <Main className="stack lg">
       <Outlet />
 
-      <h2>{t("articlesGoTo")}</h2>
+      <h1>{t("articlesGoTo")}</h1>
       <ArticlesPeek />
     </Main>
   );
