@@ -1,5 +1,3 @@
-Note: This is the WIP Splatoon 3 version of the site. To see the current live version checkout the [main branch](https://github.com/Sendouc/sendou.ink/tree/main)
-
 ## Running locally
 
 ### sendou.ink
@@ -14,11 +12,6 @@ There is a sequence of commands you need to run:
 4. `npm run migrate up` to set up the database tables.
 5. `npm run dev` to run the project in development mode.
 6. Navigate to `http://localhost:5800/admin`. There press the seed button to fill the DB with test data. You can also impersonate any user (Sendou#0043 = admin).
-
-And if you want to run the E2E tests:
-
-6. Make a copy of the `db.sqlite3` file created by migration and name it `db-cypress.sqlite3`.
-7. `npm run dev:cypress` and `npm run cy:open` can be used to run the E2E tests.
 
 ## Lohi
 
@@ -66,8 +59,7 @@ sendou.ink/
 │   ├── routes/ -- Routes see: https://remix.run/docs/en/v1/guides/routing
 │   ├── styles/ -- All .css files of the project for styling
 │   ├── utils/ -- Random helper functions used in many places
-│   └── permissions.ts / -- What actions are allowed. Separated by frontend and backend as frontend has constraints based on what user sees.
-├── cypress/ -- see: https://docs.cypress.io/guides/core-concepts/writing-and-organizing-tests#Folder-structure
+│   └── permissions.ts / -- What actions are allowed. Separated by frontend and backend as frontend has constraints based on what user sees.writing-and-organizing-tests#Folder-structure
 ├── discord-bot/ -- Lohi Discord bot that works together with sendou.ink
 ├── migrations/ -- Database migrations
 ├── public/ -- Images, built assets etc. static files to be served as is

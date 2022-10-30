@@ -227,7 +227,7 @@ export default function CalendarNewEventPage() {
         <TagsAdder />
         <BadgesAdder />
         <MapPoolSection />
-        <Button type="submit" className="mt-4" data-cy="submit-button">
+        <Button type="submit" className="mt-4">
           {t("actions.submit")}
         </Button>
       </Form>
@@ -250,7 +250,6 @@ function NameInput() {
         minLength={CALENDAR_EVENT.NAME_MIN_LENGTH}
         maxLength={CALENDAR_EVENT.NAME_MAX_LENGTH}
         defaultValue={eventToEdit?.name}
-        data-cy="name-input"
       />
     </div>
   );
@@ -278,7 +277,6 @@ function DescriptionTextarea() {
         value={value}
         onChange={(e) => setValue(e.target.value)}
         maxLength={CALENDAR_EVENT.DESCRIPTION_MAX_LENGTH}
-        data-cy="description-textarea"
       />
     </div>
   );
@@ -323,7 +321,6 @@ function DatesInput() {
                   }
                   min={MIN_DATE}
                   max={MAX_DATE}
-                  data-cy="date-input"
                   required
                   onChange={(newDate: Date) => {
                     setDatesInputState((current) =>
@@ -358,7 +355,6 @@ function DatesInput() {
                           },
                         ]);
                       }}
-                      data-cy="add-date-button"
                     >
                       {t("common:actions.add")}
                     </Button>
@@ -369,7 +365,6 @@ function DatesInput() {
                           setDatesCount((count) => count - 1);
                           setDatesInputState((current) => current.slice(0, -1));
                         }}
-                        data-cy="remove-date-button"
                         variant="destructive"
                       >
                         {t("common:actions.remove")}
@@ -404,7 +399,6 @@ function BracketUrlInput() {
         required
         maxLength={CALENDAR_EVENT.BRACKET_URL_MAX_LENGTH}
         defaultValue={eventToEdit?.bracketUrl}
-        data-cy="bracket-url-input"
       />
     </div>
   );
@@ -422,7 +416,6 @@ function DiscordLinkInput() {
         leftAddon="https://discord.gg/"
         maxLength={CALENDAR_EVENT.DISCORD_INVITE_CODE_MAX_LENGTH}
         defaultValue={eventToEdit?.discordInviteCode ?? undefined}
-        data-cy="discord-invite-code-input"
       />
     </div>
   );
@@ -455,7 +448,6 @@ function TagsAdder() {
           onChange={(e) =>
             setTags([...tags, e.target.value as CalendarEventTag])
           }
-          data-cy="tags-select"
         >
           <option value="">{t("calendar:forms.tags.placeholder")}</option>
           {tagsForSelect.map((tag) => (
@@ -517,7 +509,6 @@ function BadgesAdder() {
               )!,
             ]);
           }}
-          data-cy="badges-select"
         >
           <option value="">{t("forms.badges.placeholder")}</option>
           {badgesForSelect.map((badge) => (
@@ -539,7 +530,6 @@ function BadgesAdder() {
                 icon={<TrashIcon />}
                 variant="minimal-destructive"
                 aria-label="Remove badge"
-                data-cy="badge-delete-button"
               />
             </div>
           ))}

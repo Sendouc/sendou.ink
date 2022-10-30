@@ -100,21 +100,19 @@ export default function UserPageLayout() {
   return (
     <>
       <SubNav>
-        <SubNavLink to={userPage(data)} data-cy="profile-page-link">
-          {t("header.profile")}
-        </SubNavLink>
+        <SubNavLink to={userPage(data)}>{t("header.profile")}</SubNavLink>
         {isOwnPage && (
-          <SubNavLink to={userEditProfilePage(data)} data-cy="edit-page-link">
+          <SubNavLink to={userEditProfilePage(data)}>
             {t("actions.edit")}
           </SubNavLink>
         )}
         {data.results.length > 0 && (
-          <SubNavLink to={userResultsPage(data)} data-cy="results-page-link">
+          <SubNavLink to={userResultsPage(data)}>
             {t("results")} ({data.results.length})
           </SubNavLink>
         )}
         {(isOwnPage || data.buildsCount > 0) && (
-          <SubNavLink to={userBuildsPage(data)} data-cy="builds-page-link">
+          <SubNavLink to={userBuildsPage(data)}>
             {t("pages.builds")} ({data.buildsCount})
           </SubNavLink>
         )}

@@ -82,6 +82,10 @@ const shotsToPopRM: Array<
   [2030, "TAP_SHOT", 13, 12],
   // Hydra Splatling
   [4020, "NORMAL_MAX", 32, 29],
+  // Sloshing Machine
+  [3020, "DIRECT_MAX", 6, 5],
+  // Splat Dualies
+  [5010, "NORMAL_MAX", 34, 31],
 ];
 
 CalculateDamage(
@@ -110,6 +114,32 @@ CalculateDamage(
         `Shots to pop wrong with OS for weapon id: ${mainWeaponId}`
       );
     }
+  }
+);
+
+const HYDRA_SPLATLING_ID = 4020;
+CalculateDamage(
+  "Hits to destroy Minimum < Maximum < Maximum (Fully charged)",
+  () => {
+    const min = calculate({
+      mainWeaponId: HYDRA_SPLATLING_ID,
+      damageType: "NORMAL_MIN",
+    })[0]?.damages[0]?.hitsToDestroy;
+    const max = calculate({
+      mainWeaponId: HYDRA_SPLATLING_ID,
+      damageType: "NORMAL_MAX",
+    })[0]?.damages[0]?.hitsToDestroy;
+    const maxFullyCharged = calculate({
+      mainWeaponId: HYDRA_SPLATLING_ID,
+      damageType: "NORMAL_MAX_FULL_CHARGE",
+    })[0]?.damages[0]?.hitsToDestroy;
+
+    assert.ok(typeof min === "number");
+    assert.ok(typeof max === "number");
+    assert.ok(typeof maxFullyCharged === "number");
+
+    assert.ok(min > max);
+    assert.ok(max > maxFullyCharged);
   }
 );
 

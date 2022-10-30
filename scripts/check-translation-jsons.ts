@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import prettier from "prettier";
 
 const NO_WRITE_KEY = "--no-write";
 
@@ -38,10 +39,12 @@ for (const file of fs.readdirSync(otherLanguageTranslationPath("en"))) {
       const otherRawContent = fs
         .readFileSync(otherLanguageTranslationPath(lang, file), "utf8")
         .trim();
-      const otherLanguageContent = JSON.parse(otherRawContent) as Record<
-        string,
-        string
-      >;
+      let otherLanguageContent: Record<string, string>;
+      try {
+        otherLanguageContent = JSON.parse(otherRawContent);
+      } catch (e) {
+        throw new Error(`failed to parse ${lang}/${file}`);
+      }
 
       validateNoExtraKeysInOther({
         english: englishContent,
@@ -85,11 +88,19 @@ const markdown = createTranslationProgessMarkdown({
   totalTranslationCounts,
 });
 
-if (!dontWrite) {
-  fs.writeFileSync(
-    path.join(__dirname, "..", "translation-progress.md"),
-    markdown
-  );
+const formattedMarkdown = prettier.format(markdown, { parser: "markdown" });
+
+const translationProgressPath = path.join(
+  __dirname,
+  "..",
+  "translation-progress.md"
+);
+if (dontWrite) {
+  if (formattedMarkdown !== fs.readFileSync(translationProgressPath, "utf8")) {
+    throw new Error("translation-progress.md is out of date");
+  }
+} else {
+  fs.writeFileSync(translationProgressPath, formattedMarkdown);
 }
 
 // eslint-disable-next-line no-console

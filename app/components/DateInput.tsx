@@ -13,7 +13,6 @@ export function DateInput({
   min,
   max,
   required,
-  "data-cy": dataCy,
   onChange,
 }: {
   id?: string;
@@ -21,7 +20,6 @@ export function DateInput({
   defaultValue?: Date;
   min?: Date;
   max?: Date;
-  "data-cy": string;
   required?: boolean;
   onChange: (newDate: Date) => void;
 }) {
@@ -57,7 +55,6 @@ export function DateInput({
           // Update the correct entry in the React hook from the parent via the passed on callback function
           onChange(updatedDate);
         }}
-        data-cy={dataCy}
         required={required}
       />
     </>
