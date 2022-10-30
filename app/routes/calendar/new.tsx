@@ -308,14 +308,14 @@ function DatesInput() {
           {t("calendar:forms.dates")}
         </Label>
         <div className="stack sm">
-          {new Array(datesCount).fill(null).map((_, i) => {
+          {datesInputState.map((inputState, i) => {
             return (
               <div key={i} className="stack horizontal sm items-center">
                 <DateInput
                   id="date"
                   name="date"
                   defaultValue={
-                    datesInputState.at(i)?.finalDateInputDate ?? undefined
+                    inputState.finalDateInputDate ?? undefined
                   }
                   min={MIN_DATE}
                   max={MAX_DATE}
@@ -344,8 +344,7 @@ function DatesInput() {
                           ...current,
                           {
                             finalDateInputDate: getDateWithHoursOffset(
-                              // @ts-expect-error: this will never be null, so ignore this TSLint error
-                              datesInputState.at(i)?.finalDateInputDate,
+                              inputState.finalDateInputDate,
                               NEW_CALENDAR_EVENT_HOURS_OFFSET
                             ),
                             index: i + 1,
