@@ -38,6 +38,7 @@ interface ComboboxProps<T> {
   clearsInputOnFocus?: boolean;
   onChange?: (selectedOption?: ComboboxOption<T>) => void;
   fullWidth?: boolean;
+  fuseOptions?: Fuse.IFuseOptions<ComboboxOption<T>>;
 }
 
 export function Combobox<T extends Record<string, string | null | number>>({
@@ -52,6 +53,7 @@ export function Combobox<T extends Record<string, string | null | number>>({
   id,
   isLoading = false,
   fullWidth = false,
+  fuseOptions = {},
 }: ComboboxProps<T>) {
   const { t } = useTranslation();
 
@@ -72,8 +74,10 @@ export function Combobox<T extends Record<string, string | null | number>>({
     if (!query) return [];
 
     const fuse = new Fuse(options, {
+      ...fuseOptions,
       keys: [...Object.keys(options[0] ?? {})],
     });
+
     return fuse
       .search(query)
       .slice(0, MAX_RESULTS_SHOWN)
@@ -164,6 +168,11 @@ export function Combobox<T extends Record<string, string | null | number>>({
   );
 }
 
+// Reference for Fuse options: https://fusejs.io/api/options.html
+const USER_COMBOBOX_FUSE_OPTIONS = {
+  threshold: 0.42, // Empirically determined value to get an exact match for a Discord ID
+};
+
 export function UserCombobox({
   inputName,
   initialUserId,
@@ -216,6 +225,7 @@ export function UserCombobox({
       className={className}
       id={id}
       required={required}
+      fuseOptions={USER_COMBOBOX_FUSE_OPTIONS}
     />
   );
 }
