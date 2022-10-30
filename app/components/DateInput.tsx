@@ -52,7 +52,9 @@ export function DateInput({
           setDate(updatedDate);
 
           // Update the correct entry in the React hook from the parent via the passed on callback function
-          onChange(updatedDate);
+          if (typeof onChange !== "undefined") {
+            onChange(updatedDate);
+          }
         }}
         required={required}
       />
