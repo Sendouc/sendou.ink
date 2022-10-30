@@ -260,16 +260,12 @@ function Event({
 export function ArticlesPeek({
   articles,
 }: {
-  articles: SerializeObject<
-    Simplify<
-      {
-        title: string;
-        author: string;
-        slug: string;
-        dateString: string;
-      } & {}
-    >
-  >[];
+  articles: {
+    title: string;
+    author: string;
+    slug: string;
+    dateString: string;
+  }[];
 }) {
   const { t } = useTranslation("front");
 
