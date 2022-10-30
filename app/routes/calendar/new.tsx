@@ -327,14 +327,14 @@ function DatesInput() {
                   required
                   onChange={(newDate: Date) => {
                     setDatesInputState((current) =>
-                        current.map((obj) => {
-                          if (obj.index === i) {
-                            return { ...obj, finalDateInputDate: newDate };
-                          }
-                
-                          return obj;
-                        })
-                      );
+                      current.map((obj) => {
+                        if (obj.index === i) {
+                          return { ...obj, finalDateInputDate: newDate };
+                        }
+
+                        return obj;
+                      })
+                    );
                   }}
                 />
                 {i === datesCount - 1 && (

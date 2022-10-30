@@ -1,5 +1,8 @@
 import { useIsMounted } from "~/hooks/useIsMounted";
-import { dateToYearMonthDayHourMinuteString, getValidNewDateIfInvalid } from "~/utils/dates";
+import {
+  dateToYearMonthDayHourMinuteString,
+  getValidNewDateIfInvalid,
+} from "~/utils/dates";
 import * as React from "react";
 import type { Dispatch, SetStateAction } from "react";
 
@@ -11,7 +14,7 @@ export function DateInput({
   max,
   required,
   "data-cy": dataCy,
-  onChange
+  onChange,
 }: {
   id?: string;
   name?: string;
@@ -20,7 +23,7 @@ export function DateInput({
   max?: Date;
   "data-cy": string;
   required?: boolean;
-  onChange: (newDate: Date) => void
+  onChange: (newDate: Date) => void;
 }) {
   const [date, setDate] = React.useState(defaultValue ?? new Date());
   const isMounted = useIsMounted();

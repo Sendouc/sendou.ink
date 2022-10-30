@@ -36,7 +36,7 @@ export function weekNumberToDate({
 
 /**
  * Retrieve a valid date. If invalid, get a new Date object.
- * 
+ *
  * Returns:
  * - The date object if valid
  * - Otherwise, returns `new Date()`
