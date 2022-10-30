@@ -4,7 +4,6 @@ import {
   getValidNewDateIfInvalid,
 } from "~/utils/dates";
 import * as React from "react";
-import type { Dispatch, SetStateAction } from "react";
 
 export function DateInput({
   id,
