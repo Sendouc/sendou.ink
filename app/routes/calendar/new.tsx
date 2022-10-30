@@ -289,7 +289,6 @@ function DatesInput() {
   const [datesInputState, setDatesInputState] = React.useState([
     {
       finalDateInputDate: new Date(),
-      index: 0,
     },
   ]);
 
@@ -314,16 +313,14 @@ function DatesInput() {
                 <DateInput
                   id="date"
                   name="date"
-                  defaultValue={
-                    inputState.finalDateInputDate ?? undefined
-                  }
+                  defaultValue={inputState.finalDateInputDate ?? undefined}
                   min={MIN_DATE}
                   max={MAX_DATE}
                   required
                   onChange={(newDate: Date) => {
                     setDatesInputState((current) =>
-                      current.map((obj) => {
-                        if (obj.index === i) {
+                      current.map((obj, objIndex) => {
+                        if (objIndex === i) {
                           return { ...obj, finalDateInputDate: newDate };
                         }
 
@@ -334,6 +331,7 @@ function DatesInput() {
                 />
                 {i === datesCount - 1 && (
                   <>
+                    {/* "Add" button */}
                     <Button
                       tiny
                       disabled={
@@ -347,13 +345,14 @@ function DatesInput() {
                               inputState.finalDateInputDate,
                               NEW_CALENDAR_EVENT_HOURS_OFFSET
                             ),
-                            index: i + 1,
                           },
                         ]);
                       }}
                     >
                       {t("common:actions.add")}
                     </Button>
+
+                    {/* "Remove" button */}
                     {datesCount > 1 && (
                       <Button
                         tiny
