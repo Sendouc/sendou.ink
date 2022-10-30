@@ -30,7 +30,7 @@ import { MapPool } from "~/modules/map-pool-serializer";
 import { canEditCalendarEvent } from "~/permissions";
 import calendarNewStyles from "~/styles/calendar-new.css";
 import mapsStyles from "~/styles/maps.css";
-import { dateToDatabaseTimestamp } from "~/utils/dates";
+import { dateToDatabaseTimestamp, getDateWithHoursOffset } from "~/utils/dates";
 import {
   badRequestIfFalsy,
   parseRequestFormData,
@@ -284,20 +284,6 @@ function DescriptionTextarea() {
   );
 }
 
-/**
- * Retrieves a new Date object that is offset by several hours.
- *
- * NOTE: it is important that we work with & return a copy of the date here,
- *  otherwise we will just be mutating the original date passed into this function.
- */
-function getDateWithHoursOffset(date: Date) {
-  const DATE_INPUT_HOURS_OFFSET = 24;
-
-  const copiedDate = new Date(date.getTime());
-  copiedDate.setHours(date.getHours() + DATE_INPUT_HOURS_OFFSET);
-  return copiedDate;
-}
-
 function DatesInput() {
   const { t } = useTranslation(["common", "calendar"]);
   const { eventToEdit } = useLoaderData<typeof loader>();
@@ -317,6 +303,7 @@ function DatesInput() {
   const usersTimeZone = isMounted
     ? Intl.DateTimeFormat().resolvedOptions().timeZone
     : "";
+  const NEW_CALENDAR_EVENT_HOURS_OFFSET = 24;
 
   return (
     <div className="stack md items-start">
@@ -355,7 +342,8 @@ function DatesInput() {
                           {
                             finalDateInputDate: getDateWithHoursOffset(
                               // @ts-expect-error: this will never be null, so ignore this TSLint error
-                              datesInputState.at(i)?.finalDateInputDate
+                              datesInputState.at(i)?.finalDateInputDate,
+                              NEW_CALENDAR_EVENT_HOURS_OFFSET
                             ),
                             index: i + 1,
                           },
