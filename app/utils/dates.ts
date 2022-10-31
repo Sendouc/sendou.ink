@@ -38,7 +38,7 @@ export function weekNumberToDate({
  * Checks if a date is valid or not.
  *
  * Returns:
- * - True if valid
+ * - True if date is valid
  * - False otherwise
  */
 export function isValidDate(date: Date) {
