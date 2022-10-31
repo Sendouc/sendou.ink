@@ -55,6 +55,7 @@ import {
 } from "~/utils/zod";
 import { MapPoolSelector } from "~/components/MapPoolSelector";
 import { Tags } from "./components/Tags";
+import { isDefined } from "~/utils/arrays";
 
 const MIN_DATE = new Date(Date.UTC(2015, 4, 28));
 
@@ -290,22 +291,29 @@ function DatesInput() {
   const { t } = useTranslation(["common", "calendar"]);
   const { eventToEdit } = useLoaderData<typeof loader>();
 
-  // Initialize datesInputState by retrieving pre-existing events if they exist
-  let eventDatesInputState = null;
-  if (typeof eventToEdit?.startTimes !== "undefined") {
-    eventDatesInputState = eventToEdit.startTimes.map((t) => {
-      return { finalDateInputDate: databaseTimestampToDate(t) };
-    });
-  }
+  // Using array index as a key can mess up internal state, especially when
+  // removing elements from the middle. So we just count up for every date we
+  // create.
+  const keyCounter = React.useRef(0);
+  const getKey = () => ++keyCounter.current;
 
-  // React hook that keeps contains an array of parameters that corresponds to each DateInput child object generated
-  const [datesInputState, setDatesInputState] = React.useState(
-    eventDatesInputState ?? [
-      {
-        finalDateInputDate: new Date(),
-      },
-    ]
-  );
+  // React hook that keeps track of child DateInput's dates
+  // (necessary for determining additional Date's defaultValues)
+  const [datesInputState, setDatesInputState] = React.useState<
+    Array<{
+      key: number;
+      date: Date | null;
+    }>
+  >(() => {
+    // Initialize datesInputState by retrieving pre-existing events if they exist
+    if (eventToEdit?.startTimes) {
+      return eventToEdit.startTimes.map((t) => ({
+        key: getKey(),
+        date: databaseTimestampToDate(t),
+      }));
+    }
+    return [{ key: getKey(), date: new Date() }];
+  });
 
   const datesCount = datesInputState.length;
 
@@ -315,6 +323,22 @@ function DatesInput() {
     : "";
   const NEW_CALENDAR_EVENT_HOURS_OFFSET = 24;
 
+  const addDate = () =>
+    setDatesInputState((current) => {
+      // .reverse() is mutating, but map/filter returns a new array anyway.
+      const lastValidDate = current
+        .map((e) => e.date)
+        .filter(isDefined)
+        .reverse()
+        .at(0);
+
+      const addedDate = lastValidDate
+        ? getDateWithHoursOffset(lastValidDate, NEW_CALENDAR_EVENT_HOURS_OFFSET)
+        : new Date();
+
+      return [...current, { key: getKey(), date: addedDate }];
+    });
+
   return (
     <div className="stack md items-start">
       <div>
@@ -322,25 +346,21 @@ function DatesInput() {
           {t("calendar:forms.dates")}
         </Label>
         <div className="stack sm">
-          {datesInputState.map((inputState, i) => {
+          {datesInputState.map(({ date, key }, i) => {
             return (
-              <div key={i} className="stack horizontal sm items-center">
+              <div key={key} className="stack horizontal sm items-center">
                 <DateInput
-                  id="date"
+                  id={`date-input-${key}`}
                   name="date"
-                  defaultValue={inputState.finalDateInputDate ?? new Date()}
+                  defaultValue={date ?? undefined}
                   min={MIN_DATE}
                   max={MAX_DATE}
                   required
-                  onChange={(newDate: Date) => {
+                  onChange={(newDate: Date | null) => {
                     setDatesInputState((current) =>
-                      current.map((obj, objIndex) => {
-                        if (objIndex === i) {
-                          return { ...obj, finalDateInputDate: newDate };
-                        }
-
-                        return obj;
-                      })
+                      current.map((entry) =>
+                        entry.key === key ? { ...entry, date: newDate } : entry
+                      )
                     );
                   }}
                 />
@@ -352,17 +372,7 @@ function DatesInput() {
                       disabled={
                         datesCount === CALENDAR_EVENT.MAX_AMOUNT_OF_DATES
                       }
-                      onClick={() => {
-                        setDatesInputState((current) => [
-                          ...current,
-                          {
-                            finalDateInputDate: getDateWithHoursOffset(
-                              inputState.finalDateInputDate,
-                              NEW_CALENDAR_EVENT_HOURS_OFFSET
-                            ),
-                          },
-                        ]);
-                      }}
+                      onClick={addDate}
                     >
                       {t("common:actions.add")}
                     </Button>

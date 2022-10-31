@@ -2,62 +2,68 @@ import { useIsMounted } from "~/hooks/useIsMounted";
 import { dateToYearMonthDayHourMinuteString, isValidDate } from "~/utils/dates";
 import * as React from "react";
 
+export interface DateInputProps
+  extends Omit<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    "defaultValue" | "min" | "max" | "onChange" | "value"
+  > {
+  defaultValue?: Date;
+  min?: Date;
+  max?: Date;
+  onChange?: (newDate: Date | null) => void;
+}
+
 export function DateInput({
-  id,
   name,
   defaultValue,
   min,
   max,
-  required,
   onChange,
-}: {
-  id?: string;
-  name?: string;
-  defaultValue?: Date;
-  min?: Date;
-  max?: Date;
-  required?: boolean;
-  onChange?: (newDate: Date) => void;
-}) {
-  const [date, setDate] = React.useState(defaultValue ?? new Date());
+  ...inputProps
+}: DateInputProps) {
+  // Keeping track of the value as a string is a nice fallback for browsers that
+  // don't show a date picker but actually expect the user to type in the date
+  // as a text. This was Safari Desktop until recently, but nowadays all current
+  // versions of the main browsers set the input to either a valid date string
+  // or "". (The browser will handle transitional invalid states internally).
+  const [[parsedDate, valueString], setDate] = React.useState<
+    [Date | null, string]
+  >(() => {
+    if (defaultValue) {
+      if (isValidDate(defaultValue)) {
+        return [defaultValue, dateToYearMonthDayHourMinuteString(defaultValue)];
+      }
+      console.warn("DateInput got invalid date as defaultValue");
+    }
+    return [null, ""];
+  });
   const isMounted = useIsMounted();
-
-  if (!isMounted) {
-    return (
-      <input
-        id={id}
-        type="datetime-local"
-        name={name}
-        required={required}
-        disabled
-      />
-    );
-  }
 
   return (
     <>
-      {date && <input name={name} type="hidden" value={date.getTime()} />}
+      {parsedDate && isMounted && (
+        <input name={name} type="hidden" value={parsedDate.getTime() ?? ""} />
+      )}
       <input
-        id={id}
+        {...inputProps}
         type="datetime-local"
-        value={dateToYearMonthDayHourMinuteString(date)}
+        disabled={!isMounted || inputProps.disabled}
+        // This is important, because SSR will likely have a date in the wrong
+        // timezone. We can only fill in a value once hydration is over.
+        value={isMounted ? valueString : ""}
         min={min ? dateToYearMonthDayHourMinuteString(min) : undefined}
         max={max ? dateToYearMonthDayHourMinuteString(max) : undefined}
         onChange={(e) => {
-          //TODO: fix invalid Date Input handling: https://github.com/Sendouc/sendou.ink/issues/1082
-          const updatedDate = new Date(e.target.value);
-          if (!isValidDate(updatedDate)) {
-            console.warn("Invalid date");
-            // throw new RangeError("Invalid Date");
-          }
-          setDate(updatedDate);
+          const newValueString = e.target.value;
+          const parsedValue = new Date(newValueString);
+          const newDate = isValidDate(parsedValue) ? parsedValue : null;
 
-          // Update the correct entry in the React hook from the parent via the passed on callback function
-          if (typeof onChange !== "undefined") {
-            onChange(updatedDate);
-          }
+          setDate([newDate, newValueString]);
+          onChange?.(newDate);
         }}
-        required={required}
+        // Firefox fix for hydration error "prop `disabled` did not match" */
+        // https://github.com/facebook/react/issues/21459
+        autoComplete="off"
       />
     </>
   );
