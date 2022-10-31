@@ -2,16 +2,9 @@
 
 ## /da (🟡 In progress)
 
-### 🟡 analyzer.json
+### 🟢 analyzer.json
 
-**107/108**
-
-<details>
-<summary>Missing</summary>
-
-- torpedoExplanation
-
-</details>
+**112/112**
 
 ### 🟢 badges.json
 
@@ -67,29 +60,9 @@
 
 ## /de (🟡 In progress)
 
-### 🟡 analyzer.json
+### 🟢 analyzer.json
 
-**94/108**
-
-<details>
-<summary>Missing</summary>
-
-- objCalcAd
-- stat.specialLostSplattedByRP
-- stat.quickRespawnTimeSplattedByRP
-- damage.NORMAL_MAX_FULL_CHARGE
-- torpedoExplanation
-- distanceInline
-- damageShort
-- hitsToDestroyLong
-- hitsToDestroyShort
-- labels.amountOf
-- labels.damageType
-- labels.weapon
-- dmgHtdExplanation
-- noDmgData
-
-</details>
+**112/112**
 
 ### 🟢 badges.json
 
@@ -105,14 +78,12 @@
 
 ### 🟡 common.json
 
-**73/76**
+**75/76**
 
 <details>
 <summary>Missing</summary>
 
 - pages.articles
-- pages.object-damage-calculator
-- actions.copyToClipboard
 
 </details>
 
@@ -126,12 +97,11 @@
 
 ### 🟡 front.json
 
-**11/13**
+**12/13**
 
 <details>
 <summary>Missing</summary>
 
-- object-damage-calculator.description
 - articlesGoTo
 
 </details>
@@ -150,7 +120,7 @@
 
 ### 🟡 analyzer.json
 
-**91/108**
+**92/112**
 
 <details>
 <summary>Missing</summary>
@@ -161,7 +131,10 @@
 - stat.shootingRunSpeed
 - stat.shootingRunSpeedCharging
 - stat.shootingRunSpeedFullCharge
+- damage.toSplat_one
 - damage.NORMAL_MAX_FULL_CHARGE
+- damage.DIRECT_MIN
+- damage.DIRECT_MAX
 - torpedoExplanation
 - distanceInline
 - damageShort
@@ -308,7 +281,7 @@
 
 ### 🟡 analyzer.json
 
-**91/108**
+**92/112**
 
 <details>
 <summary>Missing</summary>
@@ -319,7 +292,10 @@
 - stat.shootingRunSpeed
 - stat.shootingRunSpeedCharging
 - stat.shootingRunSpeedFullCharge
+- damage.toSplat_one
 - damage.NORMAL_MAX_FULL_CHARGE
+- damage.DIRECT_MIN
+- damage.DIRECT_MAX
 - torpedoExplanation
 - distanceInline
 - damageShort
@@ -476,7 +452,7 @@
 
 ### 🔴 analyzer.json
 
-**0/108**
+**0/112**
 
 ### 🔴 badges.json
 
@@ -536,11 +512,14 @@
 
 ### 🟡 analyzer.json
 
-**107/108**
+**108/112**
 
 <details>
 <summary>Missing</summary>
 
+- damage.toSplat_one
+- damage.DIRECT_MIN
+- damage.DIRECT_MAX
 - torpedoExplanation
 
 </details>
@@ -601,7 +580,7 @@
 
 ### 🔴 analyzer.json
 
-**0/108**
+**0/112**
 
 ### 🟢 badges.json
 
@@ -758,7 +737,7 @@
 
 ### 🟡 analyzer.json
 
-**94/108**
+**95/112**
 
 <details>
 <summary>Missing</summary>
@@ -766,7 +745,10 @@
 - objCalcAd
 - stat.specialLostSplattedByRP
 - stat.quickRespawnTimeSplattedByRP
+- damage.toSplat_one
 - damage.NORMAL_MAX_FULL_CHARGE
+- damage.DIRECT_MIN
+- damage.DIRECT_MAX
 - torpedoExplanation
 - distanceInline
 - damageShort
@@ -879,7 +861,7 @@
 
 ### 🟡 analyzer.json
 
-**101/108**
+**102/112**
 
 <details>
 <summary>Missing</summary>
@@ -887,7 +869,10 @@
 - objCalcAd
 - stat.specialLostSplattedByRP
 - stat.quickRespawnTimeSplattedByRP
+- damage.toSplat_one
 - damage.NORMAL_MAX_FULL_CHARGE
+- damage.DIRECT_MIN
+- damage.DIRECT_MAX
 - torpedoExplanation
 - dmgHtdExplanation
 - noDmgData
@@ -976,7 +961,7 @@
 
 ### 🟡 analyzer.json
 
-**94/108**
+**95/112**
 
 <details>
 <summary>Missing</summary>
@@ -984,7 +969,10 @@
 - objCalcAd
 - stat.specialLostSplattedByRP
 - stat.quickRespawnTimeSplattedByRP
+- damage.toSplat_one
 - damage.NORMAL_MAX_FULL_CHARGE
+- damage.DIRECT_MIN
+- damage.DIRECT_MAX
 - torpedoExplanation
 - distanceInline
 - damageShort

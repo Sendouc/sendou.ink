@@ -37,7 +37,7 @@ export const links: LinksFunction = () => {
 };
 
 export const handle: SendouRouteHandle = {
-  i18n: ["weapons", "builds", "front"],
+  i18n: ["weapons", "builds", "front", "gear"],
 };
 
 export const loader = async () => {

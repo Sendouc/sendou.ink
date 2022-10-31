@@ -96,7 +96,11 @@ const userEditActionSchema = z
     ),
     inGameNameDiscriminator: z.preprocess(
       falsyToNull,
-      z.string().length(USER.IN_GAME_NAME_DISCRIMINATOR_LENGTH).nullable()
+      z
+        .string()
+        .length(USER.IN_GAME_NAME_DISCRIMINATOR_LENGTH)
+        .refine((val) => /^[0-9]{4}$/.test(val))
+        .nullable()
     ),
   })
   .refine(
@@ -187,7 +191,6 @@ export default function UserEditPage() {
           loadingText={t("common:actions.saving")}
           type="submit"
           loading={transition.state === "submitting"}
-          data-cy="submit-button"
         >
           {t("common:actions.save")}
         </Button>
@@ -313,7 +316,6 @@ function CountrySelect({
         name="country"
         id="country"
         defaultValue={parentRouteData.country?.code ?? ""}
-        data-cy="country-select"
       >
         <option value="" />
         {data.countries.map((country) => (
@@ -341,7 +343,6 @@ function BioTextarea({ initialValue }: { initialValue: User["bio"] }) {
       <textarea
         id="bio"
         name="bio"
-        data-cy="bio-textarea"
         value={value}
         onChange={(e) => setValue(e.target.value)}
         maxLength={USER.BIO_MAX_LENGTH}

@@ -17,15 +17,9 @@ export default function PlusPageLayout() {
   return (
     <>
       <SubNav>
-        <SubNavLink to="suggestions" data-cy="profile-page-link">
-          Suggestions
-        </SubNavLink>
-        <SubNavLink to="voting/results" data-cy="edit-page-link">
-          Results
-        </SubNavLink>
-        <SubNavLink to="voting" data-cy="edit-page-link">
-          Voting
-        </SubNavLink>
+        <SubNavLink to="suggestions">Suggestions</SubNavLink>
+        <SubNavLink to="voting/results">Results</SubNavLink>
+        <SubNavLink to="voting">Voting</SubNavLink>
       </SubNav>
       <Main>
         <Outlet />

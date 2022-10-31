@@ -140,7 +140,7 @@ function Managers({ data }: { data: BadgeDetailsLoaderData }) {
         </div>
         <ul className="badges-edit__users-list">
           {managers.map((manager) => (
-            <li key={manager.id} data-cy="manager">
+            <li key={manager.id}>
               {manager.discordFullName}
               <Button
                 icon={<TrashIcon />}
@@ -149,7 +149,6 @@ function Managers({ data }: { data: BadgeDetailsLoaderData }) {
                 onClick={() =>
                   setManagers(managers.filter((m) => m.id !== manager.id))
                 }
-                data-cy="delete-manager-button"
               />
             </li>
           ))}
@@ -227,7 +226,6 @@ function Owners({ data }: { data: BadgeDetailsLoaderData }) {
             {owner.discordFullName}
             <input
               className="badges-edit__number-input"
-              data-cy="owner-count-input"
               id="number"
               type="number"
               value={owner.count}
@@ -253,23 +251,13 @@ function Owners({ data }: { data: BadgeDetailsLoaderData }) {
               {o.type === "added" ? (
                 <>
                   {o.difference}{" "}
-                  <span
-                    className="text-success font-semi-bold"
-                    data-cy="difference-added"
-                  >
-                    added
-                  </span>{" "}
-                  to {o.discordFullName}
+                  <span className="text-success font-semi-bold">added</span> to{" "}
+                  {o.discordFullName}
                 </>
               ) : (
                 <>
                   {o.difference}{" "}
-                  <span
-                    className="text-error font-semi-bold"
-                    data-cy="difference-removed"
-                  >
-                    removed
-                  </span>{" "}
+                  <span className="text-error font-semi-bold">removed</span>{" "}
                   from {o.discordFullName}
                 </>
               )}
@@ -289,7 +277,6 @@ function Owners({ data }: { data: BadgeDetailsLoaderData }) {
         disabled={ownerDifferences.length === 0}
         name="_action"
         value="OWNERS"
-        data-cy="save-owners-button"
       >
         Save
       </Button>

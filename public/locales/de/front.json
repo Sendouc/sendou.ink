@@ -7,6 +7,7 @@
   "badges.description": "Liste aller Abzeichen, die du für dein Profil verdienen kannst",
   "analyzer.description": "Analysiere, was deine Ausrüstungen wirklich bewirken",
   "maps.description": "Erstelle aus einem Arenen-Pool die Liste für dein Spiel",
+  "object-damage-calculator.description": "Berechne unterschiedlichen Objekten zugefügten Schaden",
   "recentWinners": "Aktuelle Gewinner",
   "upcomingEvents": "Bevorstehende Events",
   "articleBy": "von {{author}}"

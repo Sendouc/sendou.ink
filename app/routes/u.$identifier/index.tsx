@@ -172,7 +172,7 @@ function BadgeContainer(props: { badges: UserPageLoaderData["badges"] }) {
   };
 
   return (
-    <div data-cy="badge-container">
+    <div>
       <div
         className={clsx("u__badges", {
           "justify-center": smallBadges.length === 0,
@@ -182,11 +182,7 @@ function BadgeContainer(props: { badges: UserPageLoaderData["badges"] }) {
         {smallBadges.length > 0 ? (
           <div className="u__small-badges">
             {smallBadges.map((badge) => (
-              <div
-                key={badge.id}
-                className="u__small-badge-container"
-                data-cy="small-badge"
-              >
+              <div key={badge.id} className="u__small-badge-container">
                 <Badge
                   badge={badge}
                   onClick={() => setBadgeFirst(badge)}
@@ -201,7 +197,7 @@ function BadgeContainer(props: { badges: UserPageLoaderData["badges"] }) {
           </div>
         ) : null}
       </div>
-      <div className="u__badge-explanation" data-cy="badge-explanation">
+      <div className="u__badge-explanation">
         {badgeExplanationText(t, bigBadge)}
       </div>
     </div>
