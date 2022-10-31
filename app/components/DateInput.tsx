@@ -1,8 +1,5 @@
 import { useIsMounted } from "~/hooks/useIsMounted";
-import {
-  dateToYearMonthDayHourMinuteString,
-  isValidDate,
-} from "~/utils/dates";
+import { dateToYearMonthDayHourMinuteString, isValidDate } from "~/utils/dates";
 import * as React from "react";
 
 export function DateInput({
@@ -49,8 +46,7 @@ export function DateInput({
         onChange={(e) => {
           //TODO: fix invalid Date Input handling: https://github.com/Sendouc/sendou.ink/issues/1082
           const updatedDate = new Date(e.target.value);
-          if (!isValidDate(updatedDate))
-          {
+          if (!isValidDate(updatedDate)) {
             console.warn("Invalid date");
             // throw new RangeError("Invalid Date");
           }
