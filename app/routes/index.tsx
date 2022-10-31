@@ -69,10 +69,12 @@ export default function Index() {
           {t("front:calendarGoTo")}
         </GoToPageBanner>
       </div>
-      <ArticlesPeek articles={articles} />
-      <GoToPageBanner to={ARTICLES_MAIN_PAGE}>
-        {t("front:articlesGoTo")}
-      </GoToPageBanner>
+      <div className="stack md">
+        <ArticlesPeek articles={articles} />
+        <GoToPageBanner to={ARTICLES_MAIN_PAGE}>
+          {t("front:articlesGoTo")}
+        </GoToPageBanner>
+      </div>
       <div className="stack md">
         <h2 className="front__more-features">{t("front:moreFeatures")}</h2>
         <div className="front__feature-cards">
