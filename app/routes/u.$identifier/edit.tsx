@@ -96,7 +96,11 @@ const userEditActionSchema = z
     ),
     inGameNameDiscriminator: z.preprocess(
       falsyToNull,
-      z.string().length(USER.IN_GAME_NAME_DISCRIMINATOR_LENGTH).nullable()
+      z
+        .string()
+        .length(USER.IN_GAME_NAME_DISCRIMINATOR_LENGTH)
+        .refine((val) => /^[0-9]{4}$/.test(val))
+        .nullable()
     ),
   })
   .refine(
