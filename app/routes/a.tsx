@@ -31,8 +31,6 @@ export default function ArticlesMainPage() {
 
   return (
     <Main className="stack lg">
-      <Outlet />
-
       <h1>{t("pages.articles")}</h1>
       <ArticlesPeek articles={articles} />
     </Main>
