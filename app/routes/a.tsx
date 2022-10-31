@@ -1,4 +1,4 @@
-import { Outlet, useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 import { Main } from "~/components/Main";
 import type { LinksFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
