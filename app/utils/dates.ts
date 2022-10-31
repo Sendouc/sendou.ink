@@ -35,25 +35,25 @@ export function weekNumberToDate({
 }
 
 /**
- * Retrieve a valid date. If invalid, get a new Date object.
+ * Checks if a date is valid or not.
  *
  * Returns:
- * - The date object if valid
- * - Otherwise, returns `new Date()`
+ * - True if valid
+ * - False otherwise
  */
-export function getValidNewDateIfInvalid(date: Date) {
-  if (isNaN(date.getTime())) {
-    console.error("Invalid date, returning a new Date object");
-    return new Date();
-  }
-
-  return date;
+export function isValidDate(date: Date) {
+  return !isNaN(date.getTime());
 }
 
 /** Returns date as a string with the format YYYY-MM-DDThh:mm in user's time zone */
 export function dateToYearMonthDayHourMinuteString(date: Date) {
-  let copiedDate = new Date(date.getTime());
-  copiedDate = getValidNewDateIfInvalid(copiedDate); // Validate date
+  const copiedDate = new Date(date.getTime());
+
+  //TODO: fix invalid Date Input handling: https://github.com/Sendouc/sendou.ink/issues/1082
+  // if (!isValidDate(copiedDate)) {
+  //   // console.error("Invalid date");
+  //   // throw new RangeError("Invalid Date");
+  // }
 
   const year = copiedDate.getFullYear();
   const month = copiedDate.getMonth() + 1;

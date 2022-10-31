@@ -30,7 +30,11 @@ import { MapPool } from "~/modules/map-pool-serializer";
 import { canEditCalendarEvent } from "~/permissions";
 import calendarNewStyles from "~/styles/calendar-new.css";
 import mapsStyles from "~/styles/maps.css";
-import { dateToDatabaseTimestamp, getDateWithHoursOffset } from "~/utils/dates";
+import {
+  dateToDatabaseTimestamp,
+  databaseTimestampToDate,
+  getDateWithHoursOffset,
+} from "~/utils/dates";
 import {
   badRequestIfFalsy,
   parseRequestFormData,
@@ -284,13 +288,24 @@ function DescriptionTextarea() {
 
 function DatesInput() {
   const { t } = useTranslation(["common", "calendar"]);
+  const { eventToEdit } = useLoaderData<typeof loader>();
+
+  // Initialize datesInputState by retrieving pre-existing events if they exist
+  let eventDatesInputState = null;
+  if (typeof eventToEdit?.startTimes !== "undefined") {
+    eventDatesInputState = eventToEdit.startTimes.map((t) => {
+      return { finalDateInputDate: databaseTimestampToDate(t) };
+    });
+  }
 
   // React hook that keeps contains an array of parameters that corresponds to each DateInput child object generated
-  const [datesInputState, setDatesInputState] = React.useState([
-    {
-      finalDateInputDate: new Date(),
-    },
-  ]);
+  const [datesInputState, setDatesInputState] = React.useState(
+    eventDatesInputState ?? [
+      {
+        finalDateInputDate: new Date(),
+      },
+    ]
+  );
 
   const datesCount = datesInputState.length;
 
@@ -313,7 +328,7 @@ function DatesInput() {
                 <DateInput
                   id="date"
                   name="date"
-                  defaultValue={inputState.finalDateInputDate ?? undefined}
+                  defaultValue={inputState.finalDateInputDate ?? new Date()}
                   min={MIN_DATE}
                   max={MAX_DATE}
                   required
