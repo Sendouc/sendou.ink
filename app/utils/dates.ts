@@ -50,10 +50,10 @@ export function dateToYearMonthDayHourMinuteString(date: Date) {
   const copiedDate = new Date(date.getTime());
 
   //TODO: fix invalid Date Input handling: https://github.com/Sendouc/sendou.ink/issues/1082
-  // if (!isValidDate(copiedDate)) {
-  //   // console.error("Invalid date");
-  //   // throw new RangeError("Invalid Date");
-  // }
+  if (!isValidDate(copiedDate)) {
+    console.warn("Invalid date");
+    // throw new RangeError("Invalid Date");
+  }
 
   const year = copiedDate.getFullYear();
   const month = copiedDate.getMonth() + 1;
