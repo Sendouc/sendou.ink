@@ -19,7 +19,14 @@ export function UserItem() {
     return (
       <Popover
         buttonChildren={
-          <Avatar user={user} className="layout__avatar" size="sm" />
+          <Avatar
+            user={user}
+            alt={t("header.loggedInAs", {
+              userName: `${user.discordName}`,
+            })}
+            className="layout__avatar"
+            size="sm"
+          />
         }
       >
         <div className="layout__user-popover">

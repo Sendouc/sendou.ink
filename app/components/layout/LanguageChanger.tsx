@@ -5,11 +5,16 @@ import { GlobeIcon } from "../icons/Globe";
 import { Popover } from "../Popover";
 
 export function LanguageChanger() {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   return (
     <Popover
-      buttonChildren={<GlobeIcon className="layout__header__button__icon" />}
+      buttonChildren={
+        <GlobeIcon
+          alt={t("header.language")}
+          className="layout__header__button__icon"
+        />
+      }
       triggerClassName="layout__header__button"
     >
       <div className="layout__user-popover">

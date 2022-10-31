@@ -14,6 +14,8 @@
   "header.profile": "Profil",
   "header.logout": "Ausloggen",
   "header.login": "Einloggen",
+  "header.language": "Sprache",
+  "header.loggedInAs": "Eingeloggt als {{userName}}",
   "header.theme": "Theme",
 
   "auth.errors.aborted": "Einloggen abgebrochen",
