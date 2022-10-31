@@ -70,7 +70,7 @@ export default function Index() {
         </GoToPageBanner>
       </div>
       <ArticlesPeek articles={articles} />
-      <GoToPageBanner to={ARTICLES_MAIN_PAGE} navItem="sendou_love">
+      <GoToPageBanner to={ARTICLES_MAIN_PAGE}>
         {t("front:articlesGoTo")}
       </GoToPageBanner>
       <div className="stack md">
