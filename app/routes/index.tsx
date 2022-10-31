@@ -130,17 +130,19 @@ function GoToPageBanner({
 }: {
   children: React.ReactNode;
   to: string;
-  navItem: string;
+  navItem?: string;
 }) {
   return (
     <Link to={to} className="front__go-to-page-banner">
       <div className="front__go-to-page-banner__nav-img-container">
-        <Image
-          path={navIconUrl(navItem)}
-          alt={navItem}
-          width={32}
-          height={32}
-        />
+        {navItem && (
+          <Image
+            path={navIconUrl(navItem)}
+            alt={navItem}
+            width={32}
+            height={32}
+          />
+        )}
       </div>
       {children}
       <ArrowRightIcon className="front__go-to-page-banner__arrow-right" />
