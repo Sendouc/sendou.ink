@@ -19,7 +19,8 @@ function useActiveNavItem() {
   return React.useMemo(() => {
     let activeItem: { name: string; url: string } | undefined = undefined;
 
-    for (const match of matches.reverse()) {
+    // `.reverse()` is mutating!
+    for (const match of [...matches].reverse()) {
       const handle = match.handle as SendouRouteHandle | undefined;
 
       if (handle?.navItemName) {
