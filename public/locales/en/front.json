@@ -10,5 +10,6 @@
   "object-damage-calculator.description": "Calculate damage dealt to different objects",
   "recentWinners": "Recent winners",
   "upcomingEvents": "Upcoming events",
-  "articleBy": "by {{author}}"
+  "articleBy": "by {{author}}",
+  "articlesGoTo": "View all articles from before"
 }
