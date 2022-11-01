@@ -1,6 +1,6 @@
 import { Main } from "~/components/Main";
 import type { LinksFunction } from "@remix-run/node";
-import styles from "~/styles/front.css";
+import styles from "~/styles/u.css";
 import { useTranslation } from "react-i18next";
 import { UserSearchResult } from "~/components/UserSearchResult";
 
