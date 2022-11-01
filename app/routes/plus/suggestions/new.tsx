@@ -131,7 +131,6 @@ export default function PlusNewSuggestionModalPage() {
           <select
             id="tier"
             name="tier"
-            data-cy="tier-select"
             className="plus__modal-select"
             value={targetPlusTier}
             onChange={(e) => setTargetPlusTier(Number(e.target.value))}
@@ -152,11 +151,7 @@ export default function PlusNewSuggestionModalPage() {
         </div>
         <CommentTextarea maxLength={PlUS_SUGGESTION_FIRST_COMMENT_MAX_LENGTH} />
         <div className="plus__modal-buttons">
-          <Button
-            type="submit"
-            data-cy="submit-button"
-            disabled={Boolean(selectedUserErrorMessage)}
-          >
+          <Button type="submit" disabled={Boolean(selectedUserErrorMessage)}>
             Submit
           </Button>
           <LinkButton
@@ -220,7 +215,6 @@ export function CommentTextarea({ maxLength }: { maxLength: number }) {
         value={value}
         onChange={(e) => setValue(e.target.value)}
         maxLength={maxLength}
-        data-cy="comment-textarea"
         required
       />
     </div>

@@ -12,6 +12,7 @@ import { Toggle } from "~/components/Toggle";
 import { useSetTitle } from "~/hooks/useSetTitle";
 import type { AnalyzedBuild, Stat } from "~/modules/analyzer";
 import { MAX_LDE_INTENSITY, useAnalyzeBuild } from "~/modules/analyzer";
+import { damageTypeToWeaponType } from "~/modules/analyzer/constants";
 import {
   lastDitchEffortIntensityToAp,
   SPECIAL_EFFECTS,
@@ -478,7 +479,7 @@ export default function BuildAnalyzerPage() {
             >
               <DamageTable
                 values={analyzed.stats.damages}
-                isTripleShooter={analyzed.weapon.isTripleShooter}
+                multiShots={analyzed.weapon.multiShots}
                 subWeaponId={analyzed.weapon.subWeaponSplId}
               />
             </StatCategory>
@@ -831,11 +832,11 @@ function ModifiedByAbilities({ abilities }: { abilities: Stat["modifiedBy"] }) {
 
 function DamageTable({
   values,
-  isTripleShooter,
+  multiShots,
   subWeaponId,
 }: {
   values: AnalyzedBuild["stats"]["damages"];
-  isTripleShooter: AnalyzedBuild["weapon"]["isTripleShooter"];
+  multiShots: AnalyzedBuild["weapon"]["multiShots"];
   subWeaponId: SubWeaponId;
 }) {
   const { t } = useTranslation(["weapons", "analyzer"]);
@@ -856,9 +857,10 @@ function DamageTable({
         </thead>
         <tbody>
           {values.map((val) => {
-            const damage = isTripleShooter
-              ? `${val.value}+${val.value}+${val.value}`
-              : val.value;
+            const damage =
+              multiShots && damageTypeToWeaponType[val.type] === "MAIN"
+                ? new Array(multiShots).fill(val.value).join(" + ")
+                : val.value;
 
             const typeRowName = damageTypeTranslationString({
               damageType: val.type,
@@ -896,7 +898,10 @@ function ConsumptionTable({
   subWeaponId: SubWeaponId;
 }) {
   const { t } = useTranslation(["analyzer", "weapons"]);
-  const maxSubsToUse = subWeaponId === TORPEDO_ID ? 1 : Math.max(...options.map((opt) => opt.subsUsed));
+  const maxSubsToUse =
+    subWeaponId === TORPEDO_ID
+      ? 1
+      : Math.max(...options.map((opt) => opt.subsUsed));
   const types = Array.from(new Set(options.map((opt) => opt.type)));
 
   return (
@@ -927,7 +932,7 @@ function ConsumptionTable({
       </table>
       <div className="analyzer__consumption-table-explanation">
         {t("analyzer:consumptionExplanation", { maxSubsToUse })}
-        {subWeaponId === TORPEDO_ID && <>{" "}{t("analyzer:torpedoExplanation")}</>}
+        {subWeaponId === TORPEDO_ID && <> {t("analyzer:torpedoExplanation")}</>}
       </div>
     </>
   );

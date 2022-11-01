@@ -7,6 +7,8 @@
   "pages.calendar": "Kalender",
   "pages.faq": "FAQ",
   "pages.builds": "Uitrusting",
+  "pages.analyzer": "Uitrusting Bestuderen",
+  "pages.maps": "Levellijsten",
 
   "header.profile": "Profiel",
   "header.logout": "Log uit",
@@ -26,12 +28,18 @@
   "actions.remove": "Verwijderen",
   "actions.delete": "Verwijderen",
   "actions.loadMore": "Laad meer",
+  "actions.copyToClipboard": "Kopiëren naar klembord",
+
+  "maps.createMapList": "Maak levellijst",
+  "maps.halfSz": "50% SZ",
+  "maps.mapPool": "Beschikbare levels",
+  "maps.tournamentMaplist": "Maak een toernooi levellijst (maps.iplabs.ink)",
 
   "results": "Uitslagen",
 
   "forms.name": "Naam",
   "forms.description": "Beschrijving",
-  "forms.errors.title": "De volgende errors moeten nog worden gefixt",
+  "forms.errors.title": "De volgende errors moeten nog worden opgelost",
 
   "tag.name.BADGE": "Badge prijzen",
   "tag.name.SPECIAL": "Speciale spelregels",

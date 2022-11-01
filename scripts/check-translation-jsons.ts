@@ -1,7 +1,10 @@
-// 1) create status.json
-
 import fs from "fs";
 import path from "path";
+import prettier from "prettier";
+
+const NO_WRITE_KEY = "--no-write";
+
+const dontWrite = process.argv.includes(NO_WRITE_KEY);
 
 const otherLanguageTranslationPath = (code?: string, fileName?: string) =>
   path.join(
@@ -33,9 +36,15 @@ for (const file of fs.readdirSync(otherLanguageTranslationPath("en"))) {
 
   for (const lang of allOtherLanguages) {
     try {
-      const otherLanguageContent = JSON.parse(
-        fs.readFileSync(otherLanguageTranslationPath(lang, file), "utf8").trim()
-      ) as Record<string, string>;
+      const otherRawContent = fs
+        .readFileSync(otherLanguageTranslationPath(lang, file), "utf8")
+        .trim();
+      let otherLanguageContent: Record<string, string>;
+      try {
+        otherLanguageContent = JSON.parse(otherRawContent);
+      } catch (e) {
+        throw new Error(`failed to parse ${lang}/${file}`);
+      }
 
       validateNoExtraKeysInOther({
         english: englishContent,
@@ -49,6 +58,11 @@ for (const file of fs.readdirSync(otherLanguageTranslationPath("en"))) {
         lang,
         file,
       });
+      validateNoDuplicateKeys({
+        otherRawContent,
+        file,
+        lang,
+      });
 
       const missingKeys = Object.keys(englishContent).filter(
         (key) => !Object.keys(otherLanguageContent).includes(key)
@@ -56,7 +70,7 @@ for (const file of fs.readdirSync(otherLanguageTranslationPath("en"))) {
 
       if (key === "weapons" || key === "gear") {
         if (missingKeys.length > 0) {
-          console.error(`missing keys in ${lang}/${file}`);
+          throw new Error(`missing keys in ${lang}/${file}`);
         }
       } else {
         missingTranslations[lang]![key] = missingKeys;
@@ -74,9 +88,24 @@ const markdown = createTranslationProgessMarkdown({
   totalTranslationCounts,
 });
 
-fs.writeFileSync(
-  path.join(__dirname, "..", "translation-progress.md"),
-  markdown
+const formattedMarkdown = prettier.format(markdown, { parser: "markdown" });
+
+const translationProgressPath = path.join(
+  __dirname,
+  "..",
+  "translation-progress.md"
+);
+if (dontWrite) {
+  if (formattedMarkdown !== fs.readFileSync(translationProgressPath, "utf8")) {
+    throw new Error("translation-progress.md is out of date");
+  }
+} else {
+  fs.writeFileSync(translationProgressPath, formattedMarkdown);
+}
+
+// eslint-disable-next-line no-console
+console.log(
+  dontWrite ? "translation-progress.md ok" : "translation-progress.md written"
 );
 
 function validateNoExtraKeysInOther({
@@ -95,7 +124,7 @@ function validateNoExtraKeysInOther({
   for (const key of Object.keys(other)) {
     if (validKeys.includes(key)) continue;
 
-    console.error(`unknown key in ${lang}/${file}: ${key}`);
+    throw new Error(`unknown key in ${lang}/${file}: ${key}`);
   }
 }
 
@@ -114,7 +143,6 @@ function validateVariables({
     const otherValue = other[key];
     if (!otherValue) continue;
 
-    // find all matches inside {{}}
     const englishMatches = value.match(/{{(.*?)}}/g);
     const otherMatches = otherValue.match(/{{(.*?)}}/g);
 
@@ -122,11 +150,41 @@ function validateVariables({
 
     for (const englishVar of englishMatches ?? []) {
       if (!otherMatches?.includes(englishVar)) {
-        console.error(
+        throw new Error(
           `variable mismatch in ${lang}/${file}: ${englishVar} is missing in ${otherValue}`
         );
       }
     }
+  }
+}
+
+function validateNoDuplicateKeys({
+  otherRawContent,
+  lang,
+  file,
+}: {
+  otherRawContent: string;
+  lang: string;
+  file: string;
+}) {
+  const keys = new Set<string>();
+  const duplicateKeys = new Set<string>();
+  for (const line of otherRawContent.split("\n")) {
+    const key = line.trim().split(":")[0];
+    if (!key) continue;
+
+    if (keys.has(key)) {
+      duplicateKeys.add(key);
+    }
+    keys.add(key);
+  }
+
+  if (duplicateKeys.size > 0) {
+    throw new Error(
+      `duplicate key(s) in ${lang}/${file}: ${Array.from(duplicateKeys).join(
+        ", "
+      )}`
+    );
   }
 }
 

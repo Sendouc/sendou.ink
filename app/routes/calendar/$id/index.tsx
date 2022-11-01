@@ -145,11 +145,7 @@ export default function CalendarEventPage() {
               {resolveBaseUrl(data.event.bracketUrl)}
             </LinkButton>
             {canEditCalendarEvent({ user, event: data.event }) && (
-              <LinkButton
-                tiny
-                to={calendarEditPage(data.event.eventId)}
-                data-cy="edit-button"
-              >
+              <LinkButton tiny to={calendarEditPage(data.event.eventId)}>
                 {t("common:actions.edit")}
               </LinkButton>
             )}
@@ -161,7 +157,6 @@ export default function CalendarEventPage() {
               <LinkButton
                 tiny
                 to={calendarReportWinnersPage(data.event.eventId)}
-                data-cy="report-winners-button"
               >
                 {t("calendar:actions.reportWinners")}
               </LinkButton>
@@ -271,11 +266,7 @@ function Description() {
           <Avatar user={data.event} size="xs" />
           {discordFullName(data.event)}
         </div>
-        {data.event.description && (
-          <div data-cy="event-description" className="whitespace-pre-wrap">
-            {data.event.description}
-          </div>
-        )}
+        {data.event.description && <div>{data.event.description}</div>}
       </div>
     </Section>
   );

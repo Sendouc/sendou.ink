@@ -7,6 +7,7 @@
   "badges.description": "Liste af alle de premiemærker til din profil, som du kan gøre dig fortjent til",
   "analyzer.description": "Undersøg hvordan dine udrustinger giver dig af fordele i kamp",
   "maps.description": "Lav en liste af baner ud fra en pulje af baner",
+  "object-damage-calculator.description": "Her kan du udregne den påførte skade for forskellige objekter.",
   "recentWinners": "Se de seneste vindere",
   "upcomingEvents": "Kommende begivenheder",
   "articleBy": "Af {{author}}"

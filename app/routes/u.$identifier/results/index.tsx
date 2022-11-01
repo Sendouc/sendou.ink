@@ -27,7 +27,8 @@ export default function UserResultsPage() {
   const isOwnResultsPage = user?.id === userPageData.id;
 
   const showHighlightsSection =
-    hasHighlights || (isOwnResultsPage && hasResults);
+    hasHighlights ||
+    (isOwnResultsPage && hasResults && userPageData.results.length !== 1);
 
   return (
     <Main className="stack lg">

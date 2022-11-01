@@ -36,6 +36,7 @@ export const ipLabsMaps = (pool: string) =>
 export const LOG_IN_URL = "/auth";
 export const LOG_OUT_URL = "/auth/logout";
 export const ADMIN_PAGE = "/admin";
+export const ARTICLES_MAIN_PAGE = "/a";
 export const FAQ_PAGE = "/faq";
 export const CONTRIBUTIONS_PAGE = "/contributions";
 export const BADGES_PAGE = "/badges";
@@ -85,7 +86,7 @@ export const mapsPage = (eventId?: MapPoolMap["calendarEventId"]) =>
   `/maps${eventId ? `?eventId=${eventId}` : ""}`;
 export const readonlyMapsPage = (eventId: CalendarEvent["id"]) =>
   `/maps?readonly&eventId=${eventId}`;
-export const articlePage = (slug: string) => `/a/${slug}`;
+export const articlePage = (slug: string) => `${ARTICLES_MAIN_PAGE}/${slug}`;
 export const analyzerPage = (args?: {
   weaponId: MainWeaponId;
   abilities: Ability[];

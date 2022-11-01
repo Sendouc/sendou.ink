@@ -31,8 +31,9 @@ import { canEditCalendarEvent } from "~/permissions";
 import calendarNewStyles from "~/styles/calendar-new.css";
 import mapsStyles from "~/styles/maps.css";
 import {
-  databaseTimestampToDate,
   dateToDatabaseTimestamp,
+  databaseTimestampToDate,
+  getDateWithHoursOffset,
 } from "~/utils/dates";
 import {
   badRequestIfFalsy,
@@ -230,7 +231,7 @@ export default function CalendarNewEventPage() {
         <TagsAdder />
         <BadgesAdder />
         <MapPoolSection />
-        <Button type="submit" className="mt-4" data-cy="submit-button">
+        <Button type="submit" className="mt-4">
           {t("actions.submit")}
         </Button>
       </Form>
@@ -253,7 +254,6 @@ function NameInput() {
         minLength={CALENDAR_EVENT.NAME_MIN_LENGTH}
         maxLength={CALENDAR_EVENT.NAME_MAX_LENGTH}
         defaultValue={eventToEdit?.name}
-        data-cy="name-input"
       />
     </div>
   );
@@ -281,7 +281,6 @@ function DescriptionTextarea() {
         value={value}
         onChange={(e) => setValue(e.target.value)}
         maxLength={CALENDAR_EVENT.DESCRIPTION_MAX_LENGTH}
-        data-cy="description-textarea"
       />
     </div>
   );
@@ -290,14 +289,31 @@ function DescriptionTextarea() {
 function DatesInput() {
   const { t } = useTranslation(["common", "calendar"]);
   const { eventToEdit } = useLoaderData<typeof loader>();
-  const [datesCount, setDatesCount] = React.useState(
-    eventToEdit?.startTimes.length ?? 1
-  );
-  const isMounted = useIsMounted();
 
+  // Initialize datesInputState by retrieving pre-existing events if they exist
+  let eventDatesInputState = null;
+  if (typeof eventToEdit?.startTimes !== "undefined") {
+    eventDatesInputState = eventToEdit.startTimes.map((t) => {
+      return { finalDateInputDate: databaseTimestampToDate(t) };
+    });
+  }
+
+  // React hook that keeps contains an array of parameters that corresponds to each DateInput child object generated
+  const [datesInputState, setDatesInputState] = React.useState(
+    eventDatesInputState ?? [
+      {
+        finalDateInputDate: new Date(),
+      },
+    ]
+  );
+
+  const datesCount = datesInputState.length;
+
+  const isMounted = useIsMounted();
   const usersTimeZone = isMounted
     ? Intl.DateTimeFormat().resolvedOptions().timeZone
     : "";
+  const NEW_CALENDAR_EVENT_HOURS_OFFSET = 24;
 
   return (
     <div className="stack md items-start">
@@ -306,41 +322,58 @@ function DatesInput() {
           {t("calendar:forms.dates")}
         </Label>
         <div className="stack sm">
-          {new Array(datesCount).fill(null).map((_, i) => {
-            const defaultStartTime = eventToEdit?.startTimes[i];
-
+          {datesInputState.map((inputState, i) => {
             return (
               <div key={i} className="stack horizontal sm items-center">
                 <DateInput
                   id="date"
                   name="date"
-                  defaultValue={
-                    defaultStartTime
-                      ? databaseTimestampToDate(defaultStartTime)
-                      : undefined
-                  }
+                  defaultValue={inputState.finalDateInputDate ?? new Date()}
                   min={MIN_DATE}
                   max={MAX_DATE}
-                  data-cy="date-input"
                   required
+                  onChange={(newDate: Date) => {
+                    setDatesInputState((current) =>
+                      current.map((obj, objIndex) => {
+                        if (objIndex === i) {
+                          return { ...obj, finalDateInputDate: newDate };
+                        }
+
+                        return obj;
+                      })
+                    );
+                  }}
                 />
                 {i === datesCount - 1 && (
                   <>
+                    {/* "Add" button */}
                     <Button
                       tiny
                       disabled={
                         datesCount === CALENDAR_EVENT.MAX_AMOUNT_OF_DATES
                       }
-                      onClick={() => setDatesCount((count) => count + 1)}
-                      data-cy="add-date-button"
+                      onClick={() => {
+                        setDatesInputState((current) => [
+                          ...current,
+                          {
+                            finalDateInputDate: getDateWithHoursOffset(
+                              inputState.finalDateInputDate,
+                              NEW_CALENDAR_EVENT_HOURS_OFFSET
+                            ),
+                          },
+                        ]);
+                      }}
                     >
                       {t("common:actions.add")}
                     </Button>
+
+                    {/* "Remove" button */}
                     {datesCount > 1 && (
                       <Button
                         tiny
-                        onClick={() => setDatesCount((count) => count - 1)}
-                        data-cy="remove-date-button"
+                        onClick={() => {
+                          setDatesInputState((current) => current.slice(0, -1));
+                        }}
                         variant="destructive"
                       >
                         {t("common:actions.remove")}
@@ -375,7 +408,6 @@ function BracketUrlInput() {
         required
         maxLength={CALENDAR_EVENT.BRACKET_URL_MAX_LENGTH}
         defaultValue={eventToEdit?.bracketUrl}
-        data-cy="bracket-url-input"
       />
     </div>
   );
@@ -393,7 +425,6 @@ function DiscordLinkInput() {
         leftAddon="https://discord.gg/"
         maxLength={CALENDAR_EVENT.DISCORD_INVITE_CODE_MAX_LENGTH}
         defaultValue={eventToEdit?.discordInviteCode ?? undefined}
-        data-cy="discord-invite-code-input"
       />
     </div>
   );
@@ -426,7 +457,6 @@ function TagsAdder() {
           onChange={(e) =>
             setTags([...tags, e.target.value as CalendarEventTag])
           }
-          data-cy="tags-select"
         >
           <option value="">{t("calendar:forms.tags.placeholder")}</option>
           {tagsForSelect.map((tag) => (
@@ -488,7 +518,6 @@ function BadgesAdder() {
               )!,
             ]);
           }}
-          data-cy="badges-select"
         >
           <option value="">{t("forms.badges.placeholder")}</option>
           {badgesForSelect.map((badge) => (
@@ -510,7 +539,6 @@ function BadgesAdder() {
                 icon={<TrashIcon />}
                 variant="minimal-destructive"
                 aria-label="Remove badge"
-                data-cy="badge-delete-button"
               />
             </div>
           ))}

@@ -28,12 +28,13 @@ import type { UserWithPlusTier } from "./db/types";
 import { getUser } from "./modules/auth";
 import { DEFAULT_LANGUAGE, i18nCookie, i18next } from "./modules/i18n";
 import { useChangeLanguage } from "remix-i18next";
-import { useTranslation } from "react-i18next";
+import { type CustomTypeOptions, useTranslation } from "react-i18next";
 import { Theme, ThemeHead, useTheme, ThemeProvider } from "./modules/theme";
 import { getThemeSession } from "./modules/theme/session.server";
 import { COMMON_PREVIEW_IMAGE } from "./utils/urls";
 import { ConditionalScrollRestoration } from "./components/ConditionalScrollRestoration";
 import { type SendouRouteHandle } from "~/utils/remix";
+import generalI18next from "i18next";
 
 export const unstable_shouldReload: ShouldReloadFunction = ({ url }) => {
   // reload on language change so the selected language gets set into the cookie
@@ -110,7 +111,9 @@ function Document({
   const [theme] = useTheme();
   const { i18n } = useTranslation();
   const locale = data?.locale ?? DEFAULT_LANGUAGE;
+
   useChangeLanguage(locale);
+  usePreloadTranslation();
 
   return (
     <html lang={locale} dir={i18n.dir()} className={theme ?? ""}>
@@ -131,6 +134,33 @@ function Document({
       </body>
     </html>
   );
+}
+
+// TODO: this should be an array if we can figure out how to make Typescript
+// enforce that it has every member of keyof CustomTypeOptions["resources"] without duplicating the type manually
+export const namespaceJsonsToPreloadObj: Record<
+  keyof CustomTypeOptions["resources"],
+  boolean
+> = {
+  common: true,
+  analyzer: true,
+  badges: true,
+  builds: true,
+  calendar: true,
+  contributions: true,
+  faq: true,
+  front: true,
+  "game-misc": true,
+  gear: true,
+  user: true,
+  weapons: true,
+};
+const namespaceJsonsToPreload = Object.keys(namespaceJsonsToPreloadObj);
+
+function usePreloadTranslation() {
+  React.useEffect(() => {
+    void generalI18next.loadNamespaces(namespaceJsonsToPreload);
+  }, []);
 }
 
 export default function App() {

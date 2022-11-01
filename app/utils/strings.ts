@@ -1,4 +1,5 @@
-import type { User } from "~/db/types";
+import type { GearType, User } from "~/db/types";
+import { assertUnreachable } from "./types";
 
 export function discordFullName(
   user: Pick<User, "discordName" | "discordDiscriminator">
@@ -56,4 +57,17 @@ export function split<S extends string, Sep extends string>(
   seperator: Sep
 ) {
   return str.split(seperator) as Split<S, Sep>;
+}
+
+export function gearTypeToInitial(gearType: GearType) {
+  switch (gearType) {
+    case "HEAD":
+      return "H";
+    case "CLOTHES":
+      return "C";
+    case "SHOES":
+      return "S";
+    default:
+      assertUnreachable(gearType);
+  }
 }

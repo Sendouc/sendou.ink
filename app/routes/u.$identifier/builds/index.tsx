@@ -73,11 +73,7 @@ export default function UserBuildsPage() {
     <Main className="stack lg">
       {data.builds.length < BUILD.MAX_COUNT && isOwnPage && (
         <div className="stack items-end">
-          <LinkButton
-            to={userNewBuildPage(parentPageData)}
-            tiny
-            data-cy="new-build-button"
-          >
+          <LinkButton to={userNewBuildPage(parentPageData)} tiny>
             {t("addBuild")}
           </LinkButton>
         </div>

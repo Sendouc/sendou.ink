@@ -10,7 +10,7 @@ import type {
 } from "~/modules/in-game-lists";
 import type { BuildAbilitiesTuple } from "~/modules/in-game-lists/types";
 import { databaseTimestampToDate } from "~/utils/dates";
-import { discordFullName } from "~/utils/strings";
+import { discordFullName, gearTypeToInitial } from "~/utils/strings";
 import {
   analyzerPage,
   gearImageUrl,
@@ -67,7 +67,7 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
   } = build;
 
   return (
-    <div className="build" data-cy="build-card">
+    <div className="build">
       <div className="stack xxs">
         <div className="build__top-row">
           <h2 className="build__title">{title}</h2>
@@ -111,8 +111,8 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
           <div key={weaponSplId} className="build__weapon">
             <Image
               path={mainWeaponImageUrl(weaponSplId)}
-              alt={t(`weapons:${weaponSplId}` as any)}
-              title={t(`weapons:${weaponSplId}` as any)}
+              alt={t(`weapons:MAIN_${weaponSplId}` as any)}
+              title={t(`weapons:MAIN_${weaponSplId}` as any)}
               height={36}
               width={36}
             />
@@ -169,7 +169,6 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
               variant="minimal"
               tiny
               to={`new?buildId=${id}&userId=${user!.id}`}
-              data-cy="edit-build-button"
             >
               <EditIcon className="build__icon" />
             </LinkButton>
@@ -182,7 +181,6 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
                 variant="minimal-destructive"
                 tiny
                 type="submit"
-                data-cy="delete-build-button"
               >
                 <TrashIcon className="build__icon" />
               </Button>
@@ -203,22 +201,23 @@ function AbilitiesRowWithGear({
   abilities: AbilityType[];
   gearId: number;
 }) {
+  const { t } = useTranslation(["gear"]);
+  const translatedGearName = t(
+    `gear:${gearTypeToInitial(gearType)}_${gearId}` as any
+  );
+
   return (
     <>
       <Image
         height={64}
         width={64}
-        alt=""
+        alt={translatedGearName}
+        title={translatedGearName}
         path={gearImageUrl(gearType, gearId)}
         className="build__gear"
       />
       {abilities.map((ability, i) => (
-        <Ability
-          key={i}
-          ability={ability}
-          size={i === 0 ? "MAIN" : "SUB"}
-          readonly
-        />
+        <Ability key={i} ability={ability} size={i === 0 ? "MAIN" : "SUB"} />
       ))}
     </>
   );

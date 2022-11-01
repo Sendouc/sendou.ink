@@ -11,9 +11,14 @@
   "STAGE_9": "Sturgeon Shipyard",
   "STAGE_10": "MakoMart",
   "STAGE_11": "Wahoo World",
-  "MODE_SHORT_TW": "TW",
-  "MODE_SHORT_SZ": "SZ",
-  "MODE_SHORT_TC": "TC",
-  "MODE_SHORT_RM": "RM",
-  "MODE_SHORT_CB": "CB"
+  "MODE_SHORT_TW": "RK",
+  "MODE_SHORT_SZ": "DD",
+  "MODE_SHORT_TC": "TR",
+  "MODE_SHORT_RM": "BK",
+  "MODE_SHORT_CB": "MB",
+  "MODE_LONG_TW": "Revirkamp",
+  "MODE_LONG_SZ": "Distriktsdyst",
+  "MODE_LONG_TC": "Tagrytter",
+  "MODE_LONG_RM": "Bazookarpe",
+  "MODE_LONG_CB": "Muslingebold"
 }

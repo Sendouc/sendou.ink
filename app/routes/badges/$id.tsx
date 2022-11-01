@@ -71,7 +71,7 @@ export default function BadgeDetailsPage() {
         </div>
       </div>
       {canEditBadgeOwners({ user, managers: data.managers }) ? (
-        <LinkButton to="edit" variant="outlined" tiny data-cy="edit-button">
+        <LinkButton to="edit" variant="outlined" tiny>
           Edit
         </LinkButton>
       ) : null}
@@ -86,7 +86,7 @@ export default function BadgeDetailsPage() {
               >
                 ×{owner.count}
               </span>
-              <span data-cy="badge-owner">{discordFullName(owner)}</span>
+              <span>{discordFullName(owner)}</span>
             </li>
           ))}
         </ul>

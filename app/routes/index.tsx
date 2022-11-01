@@ -16,6 +16,7 @@ import { discordFullName } from "~/utils/strings";
 import {
   analyzerPage,
   articlePage,
+  ARTICLES_MAIN_PAGE,
   BADGES_PAGE,
   BUILDS_PAGE,
   calendarEventPage,
@@ -36,7 +37,7 @@ export const links: LinksFunction = () => {
 };
 
 export const handle: SendouRouteHandle = {
-  i18n: ["weapons", "builds", "front"],
+  i18n: ["weapons", "builds", "front", "gear"],
 };
 
 export const loader = async () => {
@@ -50,6 +51,8 @@ export const loader = async () => {
 
 export default function Index() {
   const { t } = useTranslation(["common", "front"]);
+  const data = useLoaderData<typeof loader>();
+  const articles = data.recentArticles;
 
   return (
     <Main className="stack lg">
@@ -66,7 +69,12 @@ export default function Index() {
           {t("front:calendarGoTo")}
         </GoToPageBanner>
       </div>
-      <ArticlesPeek />
+      <div className="stack md">
+        <ArticlesPeek articles={articles} />
+        <GoToPageBanner to={ARTICLES_MAIN_PAGE}>
+          {t("front:articlesGoTo")}
+        </GoToPageBanner>
+      </div>
       <div className="stack md">
         <h2 className="front__more-features">{t("front:moreFeatures")}</h2>
         <div className="front__feature-cards">
@@ -124,17 +132,19 @@ function GoToPageBanner({
 }: {
   children: React.ReactNode;
   to: string;
-  navItem: string;
+  navItem?: string;
 }) {
   return (
     <Link to={to} className="front__go-to-page-banner">
       <div className="front__go-to-page-banner__nav-img-container">
-        <Image
-          path={navIconUrl(navItem)}
-          alt={navItem}
-          width={32}
-          height={32}
-        />
+        {navItem && (
+          <Image
+            path={navIconUrl(navItem)}
+            alt={navItem}
+            width={32}
+            height={32}
+          />
+        )}
       </div>
       {children}
       <ArrowRightIcon className="front__go-to-page-banner__arrow-right" />
@@ -251,13 +261,21 @@ function Event({
   );
 }
 
-function ArticlesPeek() {
+export function ArticlesPeek({
+  articles,
+}: {
+  articles: {
+    title: string;
+    author: string;
+    slug: string;
+    dateString: string;
+  }[];
+}) {
   const { t } = useTranslation("front");
-  const data = useLoaderData<typeof loader>();
 
   return (
     <ul className="front__articles">
-      {data.recentArticles.map((article) => (
+      {articles.map((article) => (
         <li key={article.title}>
           <Link to={articlePage(article.slug)}>{article.title}</Link>
           <div className="text-xs text-lighter">

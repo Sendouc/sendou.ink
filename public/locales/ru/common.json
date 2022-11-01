@@ -9,7 +9,7 @@
   "pages.builds": "Сборки",
   "pages.analyzer": "Анализатор сборок",
   "pages.maps": "Списки карт",
-  "pages.object-damage": "Калькулятор урона",
+  "pages.object-damage-calculator": "Калькулятор урона",
 
   "header.profile": "Профиль",
   "header.logout": "Выйти",

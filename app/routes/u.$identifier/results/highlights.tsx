@@ -68,7 +68,6 @@ export default function ResultHighlightsEditPage() {
           loadingText={t("common:actions.saving")}
           type="submit"
           loading={transition.state === "submitting"}
-          data-cy="submit-button"
         >
           {t("common:actions.save")}
         </Button>

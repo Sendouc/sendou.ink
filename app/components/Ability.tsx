@@ -13,7 +13,6 @@ const sizeMap = {
 export function Ability({
   ability,
   size,
-  readonly = false,
   dragStarted = false,
   dropAllowed = false,
   onClick,
@@ -21,7 +20,6 @@ export function Ability({
 }: {
   ability: AbilityWithUnknown;
   size: keyof typeof sizeMap;
-  readonly?: boolean;
   dragStarted?: boolean;
   dropAllowed?: boolean;
   onClick?: () => void;
@@ -40,8 +38,13 @@ export function Ability({
     setIsDragTarget(false);
   };
 
+  const readonly = typeof onClick === "undefined" || ability === "UNKNOWN"; // Force "UNKNOWN" ability icons to be readonly
+
+  // Render an ability as a button only if it is meant to be draggable (i.e., not readonly)
+  const AbilityTag = readonly ? "div" : "button";
+
   return (
-    <button
+    <AbilityTag
       className={clsx("build__ability", {
         "is-drag-target": isDragTarget,
         "drag-started": dragStarted,
@@ -61,10 +64,9 @@ export function Ability({
         setIsDragTarget(false);
         onDrop?.(event);
       }}
-      tabIndex={readonly ? -1 : undefined}
-      type="button"
+      type={readonly ? undefined : "button"}
     >
       <Image alt="" path={abilityImageUrl(ability)} />
-    </button>
+    </AbilityTag>
   );
 }
