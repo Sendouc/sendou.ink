@@ -12,6 +12,8 @@ import clsx from "clsx";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
+import type { AlertVariation } from "~/components/Alert";
+import { Alert } from "~/components/Alert";
 import { Badge } from "~/components/Badge";
 import { Button } from "~/components/Button";
 import { DateInput } from "~/components/DateInput";
@@ -20,6 +22,8 @@ import { TrashIcon } from "~/components/icons/Trash";
 import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
+import { MapPoolSelector } from "~/components/MapPoolSelector";
+import { Toggle } from "~/components/Toggle";
 import { CALENDAR_EVENT } from "~/constants";
 import { db } from "~/db";
 import type { Badge as BadgeType, CalendarEventTag } from "~/db/types";
@@ -53,9 +57,7 @@ import {
   safeJSONParse,
   toArray,
 } from "~/utils/zod";
-import { MapPoolSelector } from "~/components/MapPoolSelector";
 import { Tags } from "./components/Tags";
-import { Toggle } from "~/components/Toggle";
 
 const MIN_DATE = new Date(Date.UTC(2015, 4, 28));
 
@@ -233,8 +235,7 @@ export default function CalendarNewEventPage() {
         <DiscordLinkInput />
         <TagsAdder />
         <BadgesAdder />
-        <MapPoolSection />
-        <TOToolsEnabler />
+        <TOToolsAndMapPool />
         <Button type="submit" className="mt-4">
           {t("actions.submit")}
         </Button>
@@ -515,6 +516,47 @@ function BadgesAdder() {
   );
 }
 
+function TOToolsAndMapPool() {
+  const { eventToEdit } = useLoaderData<typeof loader>();
+  const [checked, setChecked] = React.useState(
+    Boolean(eventToEdit?.toToolsEnabled)
+  );
+
+  return (
+    <>
+      <TOToolsEnabler checked={checked} setChecked={setChecked} />
+      {checked ? <CounterPickMapPoolSection /> : <MapPoolSection />}
+    </>
+  );
+}
+
+function TOToolsEnabler({
+  checked,
+  setChecked,
+}: {
+  checked: boolean;
+  setChecked: (checked: boolean) => void;
+}) {
+  const id = React.useId();
+
+  return (
+    <div>
+      <label htmlFor={id}>Enable TO Tools</label>
+      <Toggle
+        name="toToolsEnabled"
+        id={id}
+        tiny
+        checked={checked}
+        setChecked={setChecked}
+      />
+      <FormMessage type="info">
+        With TO Tools your tournament will use the Some Fancy Name Map Pools and
+        seed creator tool.
+      </FormMessage>
+    </div>
+  );
+}
+
 function MapPoolSection() {
   const { t } = useTranslation(["game-misc", "common"]);
 
@@ -556,27 +598,86 @@ function MapPoolSection() {
   );
 }
 
-function TOToolsEnabler() {
-  const { eventToEdit } = useLoaderData<typeof loader>();
-  const [checked, setChecked] = React.useState(
-    Boolean(eventToEdit?.toToolsEnabled)
+function CounterPickMapPoolSection() {
+  const { t } = useTranslation(["common"]);
+  const { eventToEdit, recentEventsWithMapPools } =
+    useLoaderData<typeof loader>();
+  const [mapPool, setMapPool] = React.useState<MapPool>(
+    eventToEdit?.mapPool ? new MapPool(eventToEdit.mapPool) : MapPool.EMPTY
   );
-  const id = React.useId();
+
+  return (
+    <>
+      <input type="hidden" name="pool" value={mapPool.serialized} />
+
+      <MapPoolSelector
+        className="w-full"
+        mapPool={mapPool}
+        handleMapPoolChange={setMapPool}
+        recentEvents={recentEventsWithMapPools}
+        title={t("common:maps.counterPickMapPool")}
+        includeFancyControls={false}
+        modesToInclude={["SZ", "TC", "RM", "CB"]}
+        info={
+          <div>
+            <MapPoolValidationStatusMessage
+              status={validateCounterPickMapPool(mapPool)}
+            />
+          </div>
+        }
+      />
+    </>
+  );
+}
+
+type CounterPickValidationStatus =
+  | "PICKING"
+  | "VALID"
+  | "NOT_ONE_MAP_PER_MODE"
+  | "MAP_REPEATED"
+  | "MODE_REPEATED";
+
+function validateCounterPickMapPool(
+  mapPool: MapPool
+): CounterPickValidationStatus {
+  if (mapPool.stages.length !== new Set(mapPool.stages).size) {
+    return "MAP_REPEATED";
+  }
+  if (
+    mapPool.parsed.SZ.length > 1 ||
+    mapPool.parsed.TC.length > 1 ||
+    mapPool.parsed.RM.length > 1 ||
+    mapPool.parsed.CB.length > 1
+  ) {
+    return "MODE_REPEATED";
+  }
+  if (
+    mapPool.parsed.SZ.length < 1 ||
+    mapPool.parsed.TC.length < 1 ||
+    mapPool.parsed.RM.length < 1 ||
+    mapPool.parsed.CB.length < 1
+  ) {
+    return "PICKING";
+  }
+
+  return "VALID";
+}
+
+function MapPoolValidationStatusMessage({
+  status,
+}: {
+  status: CounterPickValidationStatus;
+}) {
+  const { t } = useTranslation(["common"]);
+
+  const alertVariation: AlertVariation =
+    status === "VALID" ? "SUCCESS" : status === "PICKING" ? "INFO" : "WARNING";
 
   return (
     <div>
-      <label htmlFor={id}>Enable TO Tools</label>
-      <Toggle
-        name="toToolsEnabled"
-        id={id}
-        tiny
-        checked={checked}
-        setChecked={setChecked}
-      />
-      <FormMessage type="info">
-        With TO Tools your tournament will use the Some Fancy Name Map Pools and
-        seed creator tool.
-      </FormMessage>
+      <Alert alertClassName="w-max" variation={alertVariation} tiny>
+        {t(`common:maps.validation.${status}`)}
+      </Alert>
     </div>
   );
 }

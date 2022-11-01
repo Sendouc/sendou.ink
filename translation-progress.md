@@ -27,9 +27,21 @@
 
 **46/46**
 
-### 🟢 common.json
+### 🟡 common.json
 
-**75/75**
+**75/81**
+
+<details>
+<summary>Missing</summary>
+
+- maps.counterPickMapPool
+- maps.validation.PICKING
+- maps.validation.NOT_ONE_MAP_PER_MODE
+- maps.validation.MAP_REPEATED
+- maps.validation.MODE_REPEATED
+- maps.validation.VALID
+
+</details>
 
 ### 🟢 contributions.json
 
@@ -96,13 +108,19 @@
 
 ### 🟡 common.json
 
-**73/75**
+**73/81**
 
 <details>
 <summary>Missing</summary>
 
 - pages.object-damage-calculator
 - actions.copyToClipboard
+- maps.counterPickMapPool
+- maps.validation.PICKING
+- maps.validation.NOT_ONE_MAP_PER_MODE
+- maps.validation.MAP_REPEATED
+- maps.validation.MODE_REPEATED
+- maps.validation.VALID
 
 </details>
 
@@ -189,7 +207,7 @@
 
 ### 🟡 common.json
 
-**48/75**
+**48/81**
 
 <details>
 <summary>Missing</summary>
@@ -210,6 +228,7 @@
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool
+- maps.counterPickMapPool
 - maps.tournamentMaplist
 - maps.template
 - maps.template.none
@@ -219,6 +238,11 @@
 - maps.template.preset.ANARCHY
 - maps.template.preset.ALL
 - maps.template.preset.onlyMode
+- maps.validation.PICKING
+- maps.validation.NOT_ONE_MAP_PER_MODE
+- maps.validation.MAP_REPEATED
+- maps.validation.MODE_REPEATED
+- maps.validation.VALID
 - forms.errors.noSearchMatches
 - errors.genericReload
 
@@ -348,7 +372,7 @@
 
 ### 🟡 common.json
 
-**46/75**
+**46/81**
 
 <details>
 <summary>Missing</summary>
@@ -371,6 +395,7 @@
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool
+- maps.counterPickMapPool
 - maps.tournamentMaplist
 - maps.template
 - maps.template.none
@@ -380,6 +405,11 @@
 - maps.template.preset.ANARCHY
 - maps.template.preset.ALL
 - maps.template.preset.onlyMode
+- maps.validation.PICKING
+- maps.validation.NOT_ONE_MAP_PER_MODE
+- maps.validation.MAP_REPEATED
+- maps.validation.MODE_REPEATED
+- maps.validation.VALID
 - forms.errors.noSearchMatches
 - errors.genericReload
 
@@ -485,7 +515,7 @@
 
 ### 🔴 common.json
 
-**0/75**
+**0/81**
 
 ### 🔴 contributions.json
 
@@ -553,9 +583,21 @@
 
 **46/46**
 
-### 🟢 common.json
+### 🟡 common.json
 
-**75/75**
+**75/81**
+
+<details>
+<summary>Missing</summary>
+
+- maps.counterPickMapPool
+- maps.validation.PICKING
+- maps.validation.NOT_ONE_MAP_PER_MODE
+- maps.validation.MAP_REPEATED
+- maps.validation.MODE_REPEATED
+- maps.validation.VALID
+
+</details>
 
 ### 🟢 contributions.json
 
@@ -607,7 +649,7 @@
 
 ### 🟡 common.json
 
-**35/75**
+**35/81**
 
 <details>
 <summary>Missing</summary>
@@ -630,6 +672,7 @@
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool
+- maps.counterPickMapPool
 - maps.tournamentMaplist
 - maps.template
 - maps.template.none
@@ -639,6 +682,11 @@
 - maps.template.preset.ANARCHY
 - maps.template.preset.ALL
 - maps.template.preset.onlyMode
+- maps.validation.PICKING
+- maps.validation.NOT_ONE_MAP_PER_MODE
+- maps.validation.MAP_REPEATED
+- maps.validation.MODE_REPEATED
+- maps.validation.VALID
 - forms.errors.noSearchMatches
 - errors.genericReload
 - weapon.category.SHOOTERS
@@ -777,7 +825,7 @@
 
 ### 🟡 common.json
 
-**55/75**
+**55/81**
 
 <details>
 <summary>Missing</summary>
@@ -792,6 +840,7 @@
 - actions.clear
 - actions.selectAll
 - actions.search
+- maps.counterPickMapPool
 - maps.template
 - maps.template.none
 - maps.template.event
@@ -800,6 +849,11 @@
 - maps.template.preset.ANARCHY
 - maps.template.preset.ALL
 - maps.template.preset.onlyMode
+- maps.validation.PICKING
+- maps.validation.NOT_ONE_MAP_PER_MODE
+- maps.validation.MAP_REPEATED
+- maps.validation.MODE_REPEATED
+- maps.validation.VALID
 - forms.errors.noSearchMatches
 - errors.genericReload
 
@@ -892,7 +946,7 @@
 
 ### 🟡 common.json
 
-**61/75**
+**61/81**
 
 <details>
 <summary>Missing</summary>
@@ -901,6 +955,7 @@
 - actions.clear
 - actions.selectAll
 - actions.search
+- maps.counterPickMapPool
 - maps.template
 - maps.template.none
 - maps.template.event
@@ -909,6 +964,11 @@
 - maps.template.preset.ANARCHY
 - maps.template.preset.ALL
 - maps.template.preset.onlyMode
+- maps.validation.PICKING
+- maps.validation.NOT_ONE_MAP_PER_MODE
+- maps.validation.MAP_REPEATED
+- maps.validation.MODE_REPEATED
+- maps.validation.VALID
 - forms.errors.noSearchMatches
 - errors.genericReload
 
@@ -1005,7 +1065,7 @@
 
 ### 🟡 common.json
 
-**35/75**
+**35/81**
 
 <details>
 <summary>Missing</summary>
@@ -1028,6 +1088,7 @@
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool
+- maps.counterPickMapPool
 - maps.tournamentMaplist
 - maps.template
 - maps.template.none
@@ -1037,6 +1098,11 @@
 - maps.template.preset.ANARCHY
 - maps.template.preset.ALL
 - maps.template.preset.onlyMode
+- maps.validation.PICKING
+- maps.validation.NOT_ONE_MAP_PER_MODE
+- maps.validation.MAP_REPEATED
+- maps.validation.MODE_REPEATED
+- maps.validation.VALID
 - forms.errors.noSearchMatches
 - errors.genericReload
 - weapon.category.SHOOTERS

@@ -54,6 +54,10 @@
   width: var(--s-24);
 }
 
+.w-max {
+  width: max-content;
+}
+
 .pl-4 {
   padding-inline-start: var(--s-4);
 }

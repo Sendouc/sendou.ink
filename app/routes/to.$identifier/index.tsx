@@ -1,5 +1,6 @@
 import type { LinksFunction, LoaderArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
+import { Button } from "~/components/Button";
 import { Main } from "~/components/Main";
 import { db } from "~/db";
 import styles from "~/styles/tournament.css";
@@ -37,6 +38,7 @@ export default function TournamentToolsPage() {
         <div className="tournament__action-side-note">
           You can play without selecting a map pool but then your opponent get
           to decide what maps get played.
+          <Button className="mt-4">Pick</Button>
         </div>
       </section>
       <section className="tournament__action-section">
@@ -44,6 +46,7 @@ export default function TournamentToolsPage() {
         <div className="tournament__action-side-note">
           Submitting roster is optional but you might be seeded lower if you
           don&apos;t.
+          <Button className="mt-4">Enter roster</Button>
         </div>
       </section>
       <div className="tournament__action-side-note">

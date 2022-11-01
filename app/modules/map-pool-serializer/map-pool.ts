@@ -63,6 +63,10 @@ export class MapPool {
     );
   }
 
+  get stages() {
+    return Object.values(this.parsed).flat();
+  }
+
   hasMode(mode: ModeShort): boolean {
     return this.parsed[mode].length > 0;
   }

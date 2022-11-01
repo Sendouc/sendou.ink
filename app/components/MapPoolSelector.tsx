@@ -29,6 +29,10 @@ export type MapPoolSelectorProps = {
   className?: string;
   recentEvents?: SerializedMapPoolEvent[];
   initialEvent?: Pick<CalendarEvent, "id" | "name">;
+  title?: string;
+  includeFancyControls?: boolean;
+  modesToInclude?: ModeShort[];
+  info?: React.ReactNode;
 };
 
 export function MapPoolSelector({
@@ -38,6 +42,10 @@ export function MapPoolSelector({
   className,
   recentEvents,
   initialEvent,
+  title,
+  includeFancyControls = true,
+  modesToInclude,
+  info,
 }: MapPoolSelectorProps) {
   const { t } = useTranslation();
 
@@ -101,38 +109,45 @@ export function MapPoolSelector({
 
   return (
     <fieldset className={className}>
-      <legend>{t("maps.mapPool")}</legend>
-      <div className="stack horizontal sm justify-end">
-        {handleRemoval && (
-          <Button variant="minimal" onClick={handleRemoval}>
-            {t("actions.remove")}
-          </Button>
-        )}
-        <Button
-          variant="minimal-destructive"
-          disabled={mapPool.isEmpty()}
-          onClick={handleClear}
-        >
-          {t("actions.clear")}
-        </Button>
-      </div>
-      <div className="stack md">
-        <div className="maps__template-selection">
-          <MapPoolTemplateSelect
-            value={template}
-            handleChange={handleTemplateChange}
-            recentEvents={recentEvents}
-          />
-          {template === "event" && (
-            <TemplateEventSelection
-              initialEvent={initialSerializedEvent}
-              handleEventChange={handleMapPoolChange}
-            />
+      <legend>{title ?? t("maps.mapPool")}</legend>
+      {includeFancyControls && (
+        <div className="stack horizontal sm justify-end">
+          {handleRemoval && (
+            <Button variant="minimal" onClick={handleRemoval}>
+              {t("actions.remove")}
+            </Button>
           )}
+          <Button
+            variant="minimal-destructive"
+            disabled={mapPool.isEmpty()}
+            onClick={handleClear}
+          >
+            {t("actions.clear")}
+          </Button>
         </div>
+      )}
+      <div className="stack md">
+        {includeFancyControls && (
+          <div className="maps__template-selection">
+            <MapPoolTemplateSelect
+              value={template}
+              handleChange={handleTemplateChange}
+              recentEvents={recentEvents}
+            />
+            {template === "event" && (
+              <TemplateEventSelection
+                initialEvent={initialSerializedEvent}
+                handleEventChange={handleMapPoolChange}
+              />
+            )}
+          </div>
+        )}
+        {info}
         <MapPoolStages
           mapPool={mapPool}
           handleMapPoolChange={handleStageModesChange}
+          includeFancyControls={includeFancyControls}
+          modesToInclude={modesToInclude}
         />
       </div>
     </fieldset>
@@ -142,11 +157,15 @@ export function MapPoolSelector({
 export type MapPoolStagesProps = {
   mapPool: MapPool;
   handleMapPoolChange?: (newMapPool: MapPool) => void;
+  includeFancyControls?: boolean;
+  modesToInclude?: ModeShort[];
 };
 
 export function MapPoolStages({
   mapPool,
   handleMapPoolChange,
+  includeFancyControls = true,
+  modesToInclude,
 }: MapPoolStagesProps) {
   const { t } = useTranslation(["game-misc", "common"]);
 
@@ -224,53 +243,59 @@ export function MapPoolStages({
               {t(`game-misc:STAGE_${stageId}`)}
             </div>
             <div className="maps__mode-buttons-container">
-              {modes.map((mode) => {
-                const selected = mapPool.parsed[mode.short].includes(stageId);
+              {modes
+                .filter(
+                  (mode) =>
+                    !modesToInclude || modesToInclude.includes(mode.short)
+                )
+                .map((mode) => {
+                  const selected = mapPool.parsed[mode.short].includes(stageId);
 
-                if (isPresentational && !selected) return null;
-                if (isPresentational && selected) {
+                  if (isPresentational && !selected) return null;
+                  if (isPresentational && selected) {
+                    return (
+                      <Image
+                        key={mode.short}
+                        className={clsx("maps__mode", {
+                          selected,
+                        })}
+                        title={t(`game-misc:MODE_LONG_${mode.short}`)}
+                        alt={t(`game-misc:MODE_LONG_${mode.short}`)}
+                        path={modeImageUrl(mode.short)}
+                        width={33}
+                        height={33}
+                      />
+                    );
+                  }
+
                   return (
-                    <Image
+                    <button
                       key={mode.short}
-                      className={clsx("maps__mode", {
+                      className={clsx("maps__mode-button", "outline-theme", {
                         selected,
                       })}
+                      onClick={() =>
+                        handleModeChange?.({ mode: mode.short, stageId })
+                      }
+                      type="button"
                       title={t(`game-misc:MODE_LONG_${mode.short}`)}
-                      alt={t(`game-misc:MODE_LONG_${mode.short}`)}
-                      path={modeImageUrl(mode.short)}
-                      width={33}
-                      height={33}
-                    />
+                      aria-describedby={`${id}-stage-name-${stageId}`}
+                      aria-pressed={selected}
+                    >
+                      <Image
+                        className={clsx("maps__mode", {
+                          selected,
+                        })}
+                        alt={t(`game-misc:MODE_LONG_${mode.short}`)}
+                        path={modeImageUrl(mode.short)}
+                        width={20}
+                        height={20}
+                      />
+                    </button>
                   );
-                }
-
-                return (
-                  <button
-                    key={mode.short}
-                    className={clsx("maps__mode-button", "outline-theme", {
-                      selected,
-                    })}
-                    onClick={() =>
-                      handleModeChange?.({ mode: mode.short, stageId })
-                    }
-                    type="button"
-                    title={t(`game-misc:MODE_LONG_${mode.short}`)}
-                    aria-describedby={`${id}-stage-name-${stageId}`}
-                    aria-pressed={selected}
-                  >
-                    <Image
-                      className={clsx("maps__mode", {
-                        selected,
-                      })}
-                      alt={t(`game-misc:MODE_LONG_${mode.short}`)}
-                      path={modeImageUrl(mode.short)}
-                      width={20}
-                      height={20}
-                    />
-                  </button>
-                );
-              })}
+                })}
               {!isPresentational &&
+                includeFancyControls &&
                 (mapPool.hasStage(stageId) ? (
                   <Button
                     key="clear"

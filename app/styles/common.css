@@ -557,6 +557,44 @@ dialog::backdrop {
   padding-block: var(--s-2-5);
 }
 
+.calendar__event__tags {
+  display: flex;
+  max-width: var(--tags-max-width, 18rem);
+  flex-wrap: wrap;
+  padding: 0;
+  color: var(--black-text);
+  font-size: var(--fonts-xxs);
+  font-weight: var(--semi-bold);
+  gap: var(--s-1);
+  list-style: none;
+}
+
+.calendar__event__tags > li {
+  display: flex;
+  border-radius: var(--rounded);
+  padding-inline: var(--s-1-5);
+}
+
+.calendar__event__badge-tag {
+  color: var(--badge-text);
+}
+
+.calendar__event__tag-delete-button {
+  margin-left: auto;
+}
+
+.calendar__event__tag-badges {
+  display: flex;
+  margin-inline-start: var(--s-1);
+}
+
+.calendar__event__tag-delete-button > svg {
+  width: 0.85rem !important;
+  color: var(--black-text);
+  margin-inline-end: 0 !important;
+  margin-inline-start: var(--s-1);
+}
+
 .alert {
   display: flex;
   flex-wrap: wrap;
@@ -575,6 +613,22 @@ dialog::backdrop {
   padding-inline-start: var(--s-3);
 }
 
+.alert.tiny {
+  font-size: var(--fonts-xs);
+}
+
+.alert.warning {
+  background-color: var(--theme-warning-transparent);
+}
+
+.alert.error {
+  background-color: var(--theme-error-transparent);
+}
+
+.alert.success {
+  background-color: var(--theme-success-transparent);
+}
+
 .avatar {
   border-radius: 50%;
   background-color: var(--bg-lighter);
@@ -584,6 +638,22 @@ dialog::backdrop {
 .alert > svg {
   height: 1.75rem;
   fill: var(--theme-info);
+}
+
+.alert.tiny > svg {
+  height: 1.25rem;
+}
+
+.alert.warning > svg {
+  fill: var(--theme-warning);
+}
+
+.alert.error > svg {
+  fill: var(--theme-error);
+}
+
+.alert.success > svg {
+  fill: var(--theme-success);
 }
 
 .form-errors {
@@ -689,44 +759,6 @@ dialog::backdrop {
   color: var(--text-lighter);
   font-size: var(--fonts-xs);
   margin-block-start: var(--label-margin);
-}
-
-.calendar__event__tags {
-  display: flex;
-  max-width: var(--tags-max-width, 18rem);
-  flex-wrap: wrap;
-  padding: 0;
-  color: var(--black-text);
-  font-size: var(--fonts-xxs);
-  font-weight: var(--semi-bold);
-  gap: var(--s-1);
-  list-style: none;
-}
-
-.calendar__event__tags > li {
-  display: flex;
-  border-radius: var(--rounded);
-  padding-inline: var(--s-1-5);
-}
-
-.calendar__event__badge-tag {
-  color: var(--badge-text);
-}
-
-.calendar__event__tag-delete-button {
-  margin-left: auto;
-}
-
-.calendar__event__tag-badges {
-  display: flex;
-  margin-inline-start: var(--s-1);
-}
-
-.calendar__event__tag-delete-button > svg {
-  width: 0.85rem !important;
-  color: var(--black-text);
-  margin-inline-end: 0 !important;
-  margin-inline-start: var(--s-1);
 }
 
 .builds-container {

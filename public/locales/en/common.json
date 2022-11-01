@@ -44,6 +44,7 @@
   "maps.createMapList": "Create map list",
   "maps.halfSz": "50% SZ",
   "maps.mapPool": "Map pool",
+  "maps.counterPickMapPool": "Counter pick map pool",
   "maps.tournamentMaplist": "Create tournament map list (maps.iplabs.ink)",
   "maps.template": "Template",
   "maps.template.none": "None",
@@ -53,6 +54,11 @@
   "maps.template.preset.ANARCHY": "Anarchy Modes",
   "maps.template.preset.ALL": "All Modes",
   "maps.template.preset.onlyMode": "Only {{modeName}}",
+  "maps.validation.PICKING": "Pick one stage per mode",
+  "maps.validation.NOT_ONE_MAP_PER_MODE": "Pick only one stage per mode",
+  "maps.validation.MAP_REPEATED": "Can't pick same stage more than once",
+  "maps.validation.MODE_REPEATED": "Can't pick same mode more than once",
+  "maps.validation.VALID": "Map pool ok!",
 
   "results": "Results",
 

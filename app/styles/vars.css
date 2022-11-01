@@ -20,6 +20,7 @@ html {
   --theme-error: rgb(199 13 6);
   --theme-error-transparent: rgba(199 13 6 / 75%);
   --theme-warning: #c9c900;
+  --theme-warning-transparent: #c9c90052;
   --theme-success: #00a514;
   --theme-success-transparent: #00a51452;
   --theme-info: #1fb0d0;

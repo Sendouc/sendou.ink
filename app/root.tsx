@@ -98,7 +98,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export const handle: SendouRouteHandle = {
-  i18n: "common",
+  i18n: ["common", "game-misc"],
 };
 
 function Document({
