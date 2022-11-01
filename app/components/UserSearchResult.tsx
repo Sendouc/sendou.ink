@@ -1,4 +1,5 @@
 import { type LinksFunction } from "@remix-run/node";
+import { USER_SEARCH_PAGE } from "~/utils/urls";
 import clsx from "clsx";
 import styles from "~/styles/u.css";
 
@@ -7,6 +8,11 @@ export const links: LinksFunction = () => {
 };
 
 export function UserSearchResult() {
+  //TODO: make this dynamic, this is just a placeholder
+  const discordUsername = "Sendou#4059";
+  const discordId = String(79237403620945920);
+  const twitterHandle = "Sendouc";
+
   return (
     <div className={clsx("")}>
       {/* Left side, profile picture */}
@@ -24,8 +30,11 @@ export function UserSearchResult() {
       <div className="css-1q8b5yy">
         {/* Discord Username */}
         <div className="css-lrfoj5o">
-          <a className="chakra-link css-f4h6uy" href="/u/127265908056915968">
-            David#5859
+          <a
+            className="chakra-link css-f4h6uy"
+            href={`${USER_SEARCH_PAGE}/${discordId}`}
+          >
+            {discordUsername}
           </a>
         </div>
 
@@ -45,9 +54,9 @@ export function UserSearchResult() {
           </svg>
           <a
             className="chakra-link css-f4h6uy"
-            href="https://twitter.com/davandrus"
+            href={`https://twitter.com/${twitterHandle}`}
           >
-            davandrus
+            {twitterHandle}
           </a>
         </div>
       </div>
