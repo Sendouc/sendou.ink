@@ -508,7 +508,61 @@
 
 ---
 
-## /ja (🟢 Done)
+## /ja (🟡 In progress)
+
+### 🟢 analyzer.json
+
+**112/112**
+
+### 🟢 badges.json
+
+**7/7**
+
+### 🟢 builds.json
+
+**11/11**
+
+### 🟢 calendar.json
+
+**46/46**
+
+### 🟡 common.json
+
+**75/76**
+
+<details>
+<summary>Missing</summary>
+
+- pages.articles
+
+</details>
+
+### 🟢 contributions.json
+
+**6/6**
+
+### 🟢 faq.json
+
+**6/6**
+
+### 🟡 front.json
+
+**12/13**
+
+<details>
+<summary>Missing</summary>
+
+- articlesGoTo
+
+</details>
+
+### 🟢 game-misc.json
+
+**22/22**
+
+### 🟢 user.json
+
+**25/25**
 
 ---
 
