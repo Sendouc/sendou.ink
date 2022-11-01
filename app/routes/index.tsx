@@ -26,6 +26,7 @@ import {
   objectDamageCalculatorPage,
   plusSuggestionPage,
   userPage,
+  USER_SEARCH_PAGE,
 } from "~/utils/urls";
 import { Tags } from "./calendar/components/Tags";
 import { type SendouRouteHandle } from "~/utils/remix";
@@ -57,6 +58,11 @@ export default function Index() {
   return (
     <Main className="stack lg">
       <Header />
+      <div className="stack md">
+        <GoToPageBanner to={USER_SEARCH_PAGE}>
+          {"User Search (TODO: remove this later, this is just for convenience)"}
+        </GoToPageBanner>
+      </div>
       <div className="stack md">
         <BuildsPeek />
         <GoToPageBanner to={BUILDS_PAGE} navItem="builds">
