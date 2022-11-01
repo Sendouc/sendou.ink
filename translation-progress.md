@@ -1,10 +1,118 @@
 # Translation Progress
 
-## /da (🟢 Done)
+## /da (🟡 In progress)
+
+### 🟢 analyzer.json
+
+**112/112**
+
+### 🟢 badges.json
+
+**7/7**
+
+### 🟢 builds.json
+
+**11/11**
+
+### 🟢 calendar.json
+
+**46/46**
+
+### 🟡 common.json
+
+**75/76**
+
+<details>
+<summary>Missing</summary>
+
+- pages.articles
+
+</details>
+
+### 🟢 contributions.json
+
+**6/6**
+
+### 🟢 faq.json
+
+**6/6**
+
+### 🟡 front.json
+
+**12/13**
+
+<details>
+<summary>Missing</summary>
+
+- articlesGoTo
+
+</details>
+
+### 🟢 game-misc.json
+
+**22/22**
+
+### 🟢 user.json
+
+**25/25**
 
 ---
 
-## /de (🟢 Done)
+## /de (🟡 In progress)
+
+### 🟢 analyzer.json
+
+**112/112**
+
+### 🟢 badges.json
+
+**7/7**
+
+### 🟢 builds.json
+
+**11/11**
+
+### 🟢 calendar.json
+
+**46/46**
+
+### 🟡 common.json
+
+**75/76**
+
+<details>
+<summary>Missing</summary>
+
+- pages.articles
+
+</details>
+
+### 🟢 contributions.json
+
+**6/6**
+
+### 🟢 faq.json
+
+**6/6**
+
+### 🟡 front.json
+
+**12/13**
+
+<details>
+<summary>Missing</summary>
+
+- articlesGoTo
+
+</details>
+
+### 🟢 game-misc.json
+
+**22/22**
+
+### 🟢 user.json
+
+**25/25**
 
 ---
 
@@ -62,11 +170,12 @@
 
 ### 🟡 common.json
 
-**48/75**
+**48/76**
 
 <details>
 <summary>Missing</summary>
 
+- pages.articles
 - pages.s2
 - pages.maps
 - pages.object-damage-calculator
@@ -107,13 +216,14 @@
 
 ### 🟡 front.json
 
-**10/12**
+**10/13**
 
 <details>
 <summary>Missing</summary>
 
 - maps.description
 - object-damage-calculator.description
+- articlesGoTo
 
 </details>
 
@@ -221,7 +331,7 @@
 
 ### 🟡 common.json
 
-**46/75**
+**47/76**
 
 <details>
 <summary>Missing</summary>
@@ -276,7 +386,7 @@
 
 ### 🟡 front.json
 
-**8/12**
+**9/13**
 
 <details>
 <summary>Missing</summary>
@@ -358,7 +468,7 @@
 
 ### 🔴 common.json
 
-**0/75**
+**0/76**
 
 ### 🔴 contributions.json
 
@@ -370,7 +480,7 @@
 
 ### 🔴 front.json
 
-**0/12**
+**0/13**
 
 ### 🟡 game-misc.json
 
@@ -398,7 +508,61 @@
 
 ---
 
-## /ja (🟢 Done)
+## /ja (🟡 In progress)
+
+### 🟢 analyzer.json
+
+**112/112**
+
+### 🟢 badges.json
+
+**7/7**
+
+### 🟢 builds.json
+
+**11/11**
+
+### 🟢 calendar.json
+
+**46/46**
+
+### 🟡 common.json
+
+**75/76**
+
+<details>
+<summary>Missing</summary>
+
+- pages.articles
+
+</details>
+
+### 🟢 contributions.json
+
+**6/6**
+
+### 🟢 faq.json
+
+**6/6**
+
+### 🟡 front.json
+
+**12/13**
+
+<details>
+<summary>Missing</summary>
+
+- articlesGoTo
+
+</details>
+
+### 🟢 game-misc.json
+
+**22/22**
+
+### 🟢 user.json
+
+**25/25**
 
 ---
 
@@ -430,11 +594,12 @@
 
 ### 🟡 common.json
 
-**35/75**
+**35/76**
 
 <details>
 <summary>Missing</summary>
 
+- pages.articles
 - pages.s2
 - pages.analyzer
 - pages.maps
@@ -495,7 +660,7 @@
 
 ### 🟡 front.json
 
-**8/12**
+**8/13**
 
 <details>
 <summary>Missing</summary>
@@ -504,6 +669,7 @@
 - analyzer.description
 - maps.description
 - object-damage-calculator.description
+- articlesGoTo
 
 </details>
 
@@ -600,11 +766,12 @@
 
 ### 🟡 common.json
 
-**55/75**
+**55/76**
 
 <details>
 <summary>Missing</summary>
 
+- pages.articles
 - pages.object-damage-calculator
 - auth.errors.aborted
 - auth.errors.failed
@@ -638,12 +805,13 @@
 
 ### 🟡 front.json
 
-**11/12**
+**11/13**
 
 <details>
 <summary>Missing</summary>
 
 - object-damage-calculator.description
+- articlesGoTo
 
 </details>
 
@@ -715,11 +883,12 @@
 
 ### 🟡 common.json
 
-**61/75**
+**61/76**
 
 <details>
 <summary>Missing</summary>
 
+- pages.articles
 - actions.loading
 - actions.clear
 - actions.selectAll
@@ -747,12 +916,13 @@
 
 ### 🟡 front.json
 
-**11/12**
+**11/13**
 
 <details>
 <summary>Missing</summary>
 
 - object-damage-calculator.description
+- articlesGoTo
 
 </details>
 
@@ -828,11 +998,12 @@
 
 ### 🟡 common.json
 
-**35/75**
+**35/76**
 
 <details>
 <summary>Missing</summary>
 
+- pages.articles
 - pages.s2
 - pages.analyzer
 - pages.maps
@@ -893,7 +1064,7 @@
 
 ### 🟡 front.json
 
-**8/12**
+**8/13**
 
 <details>
 <summary>Missing</summary>
@@ -902,6 +1073,7 @@
 - analyzer.description
 - maps.description
 - object-damage-calculator.description
+- articlesGoTo
 
 </details>
 
