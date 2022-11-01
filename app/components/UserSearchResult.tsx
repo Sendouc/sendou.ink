@@ -10,7 +10,7 @@ export const links: LinksFunction = () => {
 export function UserSearchResult() {
   //TODO: make this dynamic, this is just a placeholder
   const discordUsername = "Sendou#4059";
-  const discordId = String(79237403620945920);
+  const discordId = 79237403620945920;
   const twitterHandle = "Sendouc";
 
   return (
