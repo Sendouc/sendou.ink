@@ -169,3 +169,17 @@
   gap: var(--s-3);
   list-style: none;
 }
+
+/* Users Search page */
+
+.u_search__container {
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  margin-top: var(--chakra-space-3);
+  margin-bottom: var(--chakra-space-3);
+}
+
+.css-1q8b5yy {
+  margin-left: var(--chakra-space-4);
+}
