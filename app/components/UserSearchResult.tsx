@@ -9,9 +9,10 @@ export function UserSearchResult({
   discordId: number;
   twitterHandle?: string;
 }) {
-  let discordAvatarAltText: string | undefined;
+  const userPageHyperlink = `${USER_SEARCH_PAGE}/${discordId}`;
 
   // Retrieves the string content before the '#' character in the full Discord username
+  let discordAvatarAltText: string | undefined;
   const regexExtractDiscordNameWithoutIdentifier = new RegExp("^(.+?)#");
   const regexArray =
     regexExtractDiscordNameWithoutIdentifier.exec(discordUsername);
@@ -19,13 +20,17 @@ export function UserSearchResult({
     discordAvatarAltText = regexArray[0];
   }
 
+  //TODO: for Discord Avatar image, use a real image later
+  const discordAvatarUrl =
+    "https://cdn.discordapp.com/avatars/79237403620945920/1d1d8488ced4cdf478648592fa871101.webp?size=80";
+
   return (
     <div className="u__search__container">
       {/* Left side, Discord avatar */}
-      <a href="http://www.google.ca">
+      <a href={userPageHyperlink}>
         <span className="u__search_discord_avatar_wrapper">
           <img
-            src="https://cdn.discordapp.com/avatars/79237403620945920/1d1d8488ced4cdf478648592fa871101.webp?size=80"
+            src={discordAvatarUrl}
             alt={discordAvatarAltText}
             className="u__search_discord_avatar"
           />
@@ -36,10 +41,7 @@ export function UserSearchResult({
       <div className="u__search_container_right">
         {/* Discord Username */}
         <div className="u__search_discord_container">
-          <a
-            className="u__search_hyperlink"
-            href={`${USER_SEARCH_PAGE}/${discordId}`}
-          >
+          <a className="u__search_hyperlink" href={userPageHyperlink}>
             {discordUsername}
           </a>
         </div>
@@ -57,7 +59,8 @@ export function UserSearchResult({
               width="1em"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"></path>
+              {/* Minified Twitter SVG - courtesy of: https://codepen.io/elliz/pen/BpqVzG */}
+              <path d="m492 110c-13 18-29 35-49 50c0 0 0 12 0 12c0 44-10 87-30 128c-21 41-53 76-96 104c-43 28-92 42-148 42c-55 0-104-14-149-43c5 1 13 1 24 1c45 0 85-13 120-40c-21-1-40-8-56-20c-17-12-28-28-34-48c3 1 9 2 17 2c9 0 18-1 26-3c-23-5-41-16-56-34c-14-18-21-38-21-61c0 0 0-1 0-1c12 6 27 11 43 12c-29-20-43-47-43-81c0-16 4-32 13-48c53 64 119 98 200 100c-2-6-3-13-3-21c0-27 9-50 28-68c19-19 42-28 69-28c28 0 51 9 70 29c20-4 41-11 61-22c-7 22-21 40-42 53c19-3 38-8 56-15" />
             </svg>
             <a
               className="u__search_hyperlink"
