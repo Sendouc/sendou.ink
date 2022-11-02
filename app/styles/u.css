@@ -176,12 +176,12 @@
   display: flex;
   -webkit-box-align: center;
   align-items: center;
-  margin-top: var(--chakra-space-3);
-  margin-bottom: var(--chakra-space-3);
+  margin-top: var(--fonts-xxs);
+  margin-bottom: var(--fonts-xxs);
 }
 
 .css-1q8b5yy {
-  margin-left: var(--chakra-space-4);
+  margin-left: var(--fonts-md);
 }
 
 .css-1y6t5e9 {
@@ -210,4 +210,25 @@
     height: 100%;
     object-fit: cover;
     border-radius: 9999px;
+}
+
+.css-f4h6uy {
+  cursor: pointer;
+  text-decoration: none;
+  outline: transparent solid 2px;
+  outline-offset: 2px;
+  color: inherit;
+}
+
+.css-kte2mz {
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  font-size: var(--fonts-xs);
+  margin-top: var(--s-1);
+}
+
+.css-11bknqq {
+  color: rgb(0, 172, 238);
+  margin-right: var(--s-1);
 }
