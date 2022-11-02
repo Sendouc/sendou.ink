@@ -28,12 +28,12 @@ export default function UsersSearchPage() {
         discordUsername={userData.discordUsername}
         discordId={userData.discordId}
         twitterHandle={userData.twitterHandle}
-      ></UserSearchResult>
+      />
 
       <UserSearchResult
         discordUsername={userData.discordUsername}
         discordId={userData.discordId}
-      ></UserSearchResult>
+      />
     </Main>
   );
 }
