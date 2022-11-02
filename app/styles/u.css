@@ -208,7 +208,7 @@
   align-items: center;
   justify-content: center;
   border-color: white;
-  border-radius: var(--border-radius-max);
+  border-radius: 2rem;
   background: rgb(84 30 236);
   -webkit-box-align: center;
   -webkit-box-pack: center;
@@ -223,7 +223,7 @@
 .u__search_discord_avatar {
   width: 100%;
   height: 100%;
-  border-radius: var(--border-radius-max);
+  border-radius: 2rem;
   object-fit: cover;
 }
 
