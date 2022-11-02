@@ -180,12 +180,27 @@
   margin-bottom: var(--fonts-xxs);
 }
 
-.css-1q8b5yy {
+.u__search_container_right {
   margin-left: var(--fonts-md);
 }
 
-.css-1y6t5e9 {
-  border-radius: 9999px;
+.u__search_discord_container {
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  font-weight: var(--extra-bold);
+}
+
+.u__search_hyperlink {
+  cursor: pointer;
+  text-decoration: none;
+  outline: transparent solid 2px;
+  outline-offset: 2px;
+  color: inherit;
+}
+
+.u__search_discord_avatar_wrapper {
+  border-radius: var(--border-radius-max);
   display: inline-flex;
   -webkit-box-align: center;
   align-items: center;
@@ -205,22 +220,14 @@
   font-size: calc(0.8rem);
 }
 
-.css-3a5bz2 {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 9999px;
+.u__search_discord_avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--border-radius-max);
 }
 
-.css-f4h6uy {
-  cursor: pointer;
-  text-decoration: none;
-  outline: transparent solid 2px;
-  outline-offset: 2px;
-  color: inherit;
-}
-
-.css-kte2mz {
+.u__search_twitter_container {
   display: flex;
   -webkit-box-align: center;
   align-items: center;
@@ -228,7 +235,7 @@
   margin-top: var(--s-1);
 }
 
-.css-11bknqq {
+.u__search_twitter-blue-icon {
   color: rgb(0, 172, 238);
   margin-right: var(--s-1);
 }

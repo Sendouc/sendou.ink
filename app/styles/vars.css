@@ -90,6 +90,7 @@ html.dark {
   --bg-mode-active: var(--theme-transparent);
   --abilities-button-bg: hsl(237.3deg 42.3% 26.6%);
   --border: hsl(237.3deg 42.3% 45.6%);
+  --border-radius-max: 9999px;
   --button-text: rgb(0 0 0 / 85%);
   --button-text-transparent: rgb(0 0 0 / 65%);
   --text: rgb(255 255 255 / 95%);
