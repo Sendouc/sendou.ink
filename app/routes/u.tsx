@@ -58,7 +58,11 @@ export function UserSearchResult({
       {/* Left side, Discord avatar */}
       <a href={userPageHyperlink}>
         <span className="u-search_discord_avatar_wrapper">
-          <img src={discordAvatarUrl} className="u-search_discord_avatar" />
+          <img
+            src={discordAvatarUrl}
+            alt={discordUsername}
+            className="u-search_discord_avatar"
+          />
         </span>
       </a>
 
