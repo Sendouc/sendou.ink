@@ -128,4 +128,3 @@ If you modified any `.css` or `.scss` files and the CI pipeline errors out on th
 ```sh
 npm run lint:styles-fix
 ```
-
