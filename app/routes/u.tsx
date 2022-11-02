@@ -2,8 +2,9 @@ import { Main } from "~/components/Main";
 import type { LinksFunction } from "@remix-run/node";
 import styles from "~/styles/u.css";
 import { useTranslation } from "react-i18next";
-import { USER_SEARCH_PAGE } from "~/utils/urls";
+import { userPage, USER_SEARCH_PAGE } from "~/utils/urls";
 import { TwitterIcon } from "~/components/icons/Twitter";
+import { Link } from "@remix-run/react";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -17,7 +18,7 @@ export default function UsersSearchPage() {
   //TODO: get appropriate data from API
   const userData = {
     discordUsername: "Sendou#4059",
-    discordId: 79237403620945920,
+    discordId: "79237403620945920",
     twitterHandle: "Sendouc",
   };
 
@@ -44,7 +45,7 @@ export function UserSearchResult({
   twitterHandle,
 }: {
   discordUsername: string;
-  discordId: number;
+  discordId: string;
   twitterHandle?: string;
 }) {
   const userPageHyperlink = `${USER_SEARCH_PAGE}/${discordId}`;
@@ -65,9 +66,9 @@ export function UserSearchResult({
       <div className="u-search_container_right">
         {/* Discord Username */}
         <div className="u-search_discord_container">
-          <a className="u-search_hyperlink" href={userPageHyperlink}>
+          <Link to={userPage({ discordId })} className="u-search_hyperlink">
             {discordUsername}
-          </a>
+          </Link>
         </div>
 
         {/* Twitter */}
