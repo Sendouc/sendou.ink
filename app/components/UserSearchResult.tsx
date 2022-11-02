@@ -9,6 +9,15 @@ export function UserSearchResult({
   discordId: number;
   twitterHandle?: string;
 }) {
+  let discordAvatarAltText: string | undefined;
+
+  const regexExtractDiscordNameWithoutIdentifier = new RegExp("^(.+?)#");
+  const regexArray =
+    regexExtractDiscordNameWithoutIdentifier.exec(discordUsername);
+  if (regexArray !== null) {
+    discordAvatarAltText = regexArray[0];
+  }
+
   return (
     <div className="u__search__container">
       {/* Left side, Discord avatar */}
@@ -16,7 +25,7 @@ export function UserSearchResult({
         <span className="u__search_discord_avatar_wrapper">
           <img
             src="https://cdn.discordapp.com/avatars/79237403620945920/1d1d8488ced4cdf478648592fa871101.webp?size=80"
-            alt="Sendou"
+            alt={discordAvatarAltText}
             className="u__search_discord_avatar"
           />
         </span>
