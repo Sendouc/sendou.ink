@@ -53,29 +53,29 @@ export function UserSearchResult({
   const discordAvatarUrl = `https://cdn.discordapp.com/avatars/${discordId}/1d1d8488ced4cdf478648592fa871101.webp?size=80`;
 
   return (
-    <div className="u__search__container">
+    <div className="u-search__container">
       {/* Left side, Discord avatar */}
       <a href={userPageHyperlink}>
-        <span className="u__search_discord_avatar_wrapper">
-          <img src={discordAvatarUrl} className="u__search_discord_avatar" />
+        <span className="u-search_discord_avatar_wrapper">
+          <img src={discordAvatarUrl} className="u-search_discord_avatar" />
         </span>
       </a>
 
       {/* Right side */}
-      <div className="u__search_container_right">
+      <div className="u-search_container_right">
         {/* Discord Username */}
-        <div className="u__search_discord_container">
-          <a className="u__search_hyperlink" href={userPageHyperlink}>
+        <div className="u-search_discord_container">
+          <a className="u-search_hyperlink" href={userPageHyperlink}>
             {discordUsername}
           </a>
         </div>
 
         {/* Twitter */}
         {twitterHandle && (
-          <div className="u__search_twitter_container">
-            <TwitterIcon className="u__search_twitter-blue-icon" />
+          <div className="u-search_twitter_container">
+            <TwitterIcon className="u-search_twitter-blue-icon" />
             <a
-              className="u__search_hyperlink"
+              className="u-search_hyperlink"
               href={`https://twitter.com/${twitterHandle}`}
             >
               {twitterHandle}

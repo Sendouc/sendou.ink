@@ -172,7 +172,7 @@
 
 /* Users Search page */
 
-.u__search__container {
+.u-search__container {
   display: flex;
   align-items: center;
   margin-top: var(--fonts-xxs);
@@ -180,18 +180,18 @@
   -webkit-box-align: center;
 }
 
-.u__search_container_right {
+.u-search_container_right {
   margin-left: var(--fonts-md);
 }
 
-.u__search_discord_container {
+.u-search_discord_container {
   display: flex;
   align-items: center;
   -webkit-box-align: center;
   font-weight: var(--extra-bold);
 }
 
-.u__search_hyperlink {
+.u-search_hyperlink {
   color: inherit;
   cursor: pointer;
   outline: transparent solid 2px;
@@ -199,7 +199,7 @@
   text-decoration: none;
 }
 
-.u__search_discord_avatar_wrapper {
+.u-search_discord_avatar_wrapper {
   position: relative;
   display: inline-flex;
   width: var(--fonts-xl);
@@ -220,14 +220,14 @@
   vertical-align: top;
 }
 
-.u__search_discord_avatar {
+.u-search_discord_avatar {
   width: 100%;
   height: 100%;
   border-radius: 2rem;
   object-fit: cover;
 }
 
-.u__search_twitter_container {
+.u-search_twitter_container {
   display: flex;
   align-items: center;
   margin-top: var(--s-1);
@@ -235,7 +235,7 @@
   font-size: var(--fonts-xs);
 }
 
-.u__search_twitter-blue-icon {
+.u-search_twitter-blue-icon {
   width: var(--fonts-sm);
   height: var(--fonts-sm);
   margin-right: var(--s-1);
