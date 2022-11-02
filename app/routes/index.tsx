@@ -60,7 +60,9 @@ export default function Index() {
       <Header />
       <div className="stack md">
         <GoToPageBanner to={USER_SEARCH_PAGE}>
-          {"User Search (TODO: remove this later, this is just for convenience)"}
+          {
+            "User Search (TODO: remove this later, this is just for convenience)"
+          }
         </GoToPageBanner>
       </div>
       <div className="stack md">
