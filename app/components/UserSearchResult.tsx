@@ -11,6 +11,7 @@ export function UserSearchResult({
 }) {
   let discordAvatarAltText: string | undefined;
 
+  // Retrieves the string content before the '#' character in the full Discord username
   const regexExtractDiscordNameWithoutIdentifier = new RegExp("^(.+?)#");
   const regexArray =
     regexExtractDiscordNameWithoutIdentifier.exec(discordUsername);
