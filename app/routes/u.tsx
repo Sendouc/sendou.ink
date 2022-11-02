@@ -11,7 +11,9 @@ export const links: LinksFunction = () => {
 export default function UsersSearchPage() {
   const { t } = useTranslation("common");
 
-  //TODO: get data from API
+  //TODO: add User Search ComboBox, specifically tailored for this page
+
+  //TODO: get appropriate data from API
   const userData = {
     discordUsername: "Sendou#4059",
     discordId: 79237403620945920,
@@ -25,6 +27,11 @@ export default function UsersSearchPage() {
         discordUsername={userData.discordUsername}
         discordId={userData.discordId}
         twitterHandle={userData.twitterHandle}
+      ></UserSearchResult>
+
+      <UserSearchResult
+        discordUsername={userData.discordUsername}
+        discordId={userData.discordId}
       ></UserSearchResult>
     </Main>
   );
