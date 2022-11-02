@@ -110,3 +110,22 @@ Note: This is only useful if you have access to a production running on Render.c
 
 1. Add image in both .png and .avif with the correct weapon ID (`replace-img-names.ts` can help)
 2. Create new weapon ids json and weapon translation jsons using `create-weapon-json.ts` script
+
+### Fix errors from the CI Pipeline
+
+#### Prettier step
+
+If you change any files and the CI pipeline errors out on the `Prettier` step, run this command in the repo's root directory:
+
+```sh
+npm run prettier:write
+```
+
+#### Stylelint step
+
+If you modified any `.css` or `.scss` files and the CI pipeline errors out on the `Stylelint` step, run this command in the repo's root directory:
+
+```sh
+npm run lint:styles-fix
+```
+

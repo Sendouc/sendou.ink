@@ -174,10 +174,10 @@
 
 .u__search__container {
   display: flex;
-  -webkit-box-align: center;
   align-items: center;
   margin-top: var(--fonts-xxs);
   margin-bottom: var(--fonts-xxs);
+  -webkit-box-align: center;
 }
 
 .u__search_container_right {
@@ -186,56 +186,56 @@
 
 .u__search_discord_container {
   display: flex;
-  -webkit-box-align: center;
   align-items: center;
+  -webkit-box-align: center;
   font-weight: var(--extra-bold);
 }
 
 .u__search_hyperlink {
+  color: inherit;
   cursor: pointer;
-  text-decoration: none;
   outline: transparent solid 2px;
   outline-offset: 2px;
-  color: inherit;
+  text-decoration: none;
 }
 
 .u__search_discord_avatar_wrapper {
-  border-radius: var(--border-radius-max);
-  display: inline-flex;
-  -webkit-box-align: center;
-  align-items: center;
-  -webkit-box-pack: center;
-  justify-content: center;
-  text-align: center;
-  text-transform: uppercase;
-  font-weight: var(--semi-bold);
   position: relative;
-  flex-shrink: 0;
-  background: rgb(84, 30, 236);
-  color: white;
-  border-color: white;
-  vertical-align: top;
+  display: inline-flex;
   width: var(--fonts-xl);
   height: var(--fonts-xl);
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-color: white;
+  border-radius: var(--border-radius-max);
+  background: rgb(84 30 236);
+  -webkit-box-align: center;
+  -webkit-box-pack: center;
+  color: white;
   font-size: calc(0.8rem);
+  font-weight: var(--semi-bold);
+  text-align: center;
+  text-transform: uppercase;
+  vertical-align: top;
 }
 
 .u__search_discord_avatar {
   width: 100%;
   height: 100%;
-  object-fit: cover;
   border-radius: var(--border-radius-max);
+  object-fit: cover;
 }
 
 .u__search_twitter_container {
   display: flex;
-  -webkit-box-align: center;
   align-items: center;
-  font-size: var(--fonts-xs);
   margin-top: var(--s-1);
+  -webkit-box-align: center;
+  font-size: var(--fonts-xs);
 }
 
 .u__search_twitter-blue-icon {
-  color: rgb(0, 172, 238);
   margin-right: var(--s-1);
+  color: rgb(0 172 238);
 }
