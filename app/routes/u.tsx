@@ -11,10 +11,21 @@ export const links: LinksFunction = () => {
 export default function UsersSearchPage() {
   const { t } = useTranslation("common");
 
+  //TODO: get data from API
+  const userData = {
+    discordUsername: "Sendou#4059",
+    discordId: 79237403620945920,
+    twitterHandle: "Sendouc",
+  };
+
   return (
     <Main className="stack lg">
       <h1>{t("actions.search")}</h1>
-      <UserSearchResult></UserSearchResult>
+      <UserSearchResult
+        discordUsername={userData.discordUsername}
+        discordId={userData.discordId}
+        twitterHandle={userData.twitterHandle}
+      ></UserSearchResult>
     </Main>
   );
 }

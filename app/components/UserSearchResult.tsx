@@ -1,11 +1,14 @@
 import { USER_SEARCH_PAGE } from "~/utils/urls";
 
-export function UserSearchResult() {
-  //TODO: make this dynamic, this is just a placeholder
-  const discordUsername = "Sendou#4059";
-  const discordId = 79237403620945920;
-  const twitterHandle = "Sendouc";
-
+export function UserSearchResult({
+  discordUsername,
+  discordId,
+  twitterHandle,
+}: {
+  discordUsername: string;
+  discordId: number;
+  twitterHandle: string;
+}) {
   return (
     <div className="u__search__container">
       {/* Left side, Discord avatar */}
