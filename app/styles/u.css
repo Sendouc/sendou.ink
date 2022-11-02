@@ -236,6 +236,8 @@
 }
 
 .u__search_twitter-blue-icon {
+  width: var(--fonts-sm);
+  height: var(--fonts-sm);
   margin-right: var(--s-1);
   color: rgb(0 172 238);
 }
