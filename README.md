@@ -115,16 +115,8 @@ Note: This is only useful if you have access to a production running on Render.c
 
 #### Prettier step
 
-If you change any files and the CI pipeline errors out on the `Prettier` step, run this command in the repo's root directory:
+If you change any files and the CI pipeline errors out on certain formatting/linting steps (e.g. the `Prettier` or `Stylelint` step), run this command in the repo's root directory:
 
 ```sh
-npm run prettier:write
-```
-
-#### Stylelint step
-
-If you modified any `.css` or `.scss` files and the CI pipeline errors out on the `Stylelint` step, run this command in the repo's root directory:
-
-```sh
-npm run lint:styles-fix
+npm run cf
 ```
