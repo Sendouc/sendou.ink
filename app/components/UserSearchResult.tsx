@@ -12,8 +12,8 @@ export function UserSearchResult() {
       <a href="http://www.google.ca">
         <span className="css-1y6t5e9">
           <img
-            src="https://cdn.discordapp.com/avatars/127265908056915968/a3b2fbe2749796df6176dcaaa1349f59.jpg?size=40"
-            alt="David"
+            src="https://cdn.discordapp.com/avatars/79237403620945920/1d1d8488ced4cdf478648592fa871101.webp?size=80"
+            alt="Sendou"
             className="css-3a5bz2"
           />
         </span>
