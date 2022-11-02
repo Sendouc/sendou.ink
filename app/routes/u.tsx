@@ -8,7 +8,7 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export default function ArticlesMainPage() {
+export default function UsersSearchPage() {
   const { t } = useTranslation("common");
 
   return (
