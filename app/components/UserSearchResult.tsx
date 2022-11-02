@@ -21,8 +21,7 @@ export function UserSearchResult({
   }
 
   //TODO: for Discord Avatar image, use a real image later
-  const discordAvatarUrl =
-    "https://cdn.discordapp.com/avatars/79237403620945920/1d1d8488ced4cdf478648592fa871101.webp?size=80";
+  const discordAvatarUrl = `https://cdn.discordapp.com/avatars/${discordId}/1d1d8488ced4cdf478648592fa871101.webp?size=80`;
 
   return (
     <div className="u__search__container">
