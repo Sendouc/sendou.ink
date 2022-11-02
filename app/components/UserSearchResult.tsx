@@ -12,15 +12,6 @@ export function UserSearchResult({
 }) {
   const userPageHyperlink = `${USER_SEARCH_PAGE}/${discordId}`;
 
-  // Retrieves the string content before the '#' character in the full Discord username
-  let discordAvatarAltText: string | undefined;
-  const regexExtractDiscordNameWithoutIdentifier = new RegExp("^(.+?)#");
-  const regexArray =
-    regexExtractDiscordNameWithoutIdentifier.exec(discordUsername);
-  if (regexArray !== null) {
-    discordAvatarAltText = regexArray[0];
-  }
-
   //TODO: for Discord Avatar image, use a real image later
   const discordAvatarUrl = `https://cdn.discordapp.com/avatars/${discordId}/1d1d8488ced4cdf478648592fa871101.webp?size=80`;
 
@@ -29,11 +20,7 @@ export function UserSearchResult({
       {/* Left side, Discord avatar */}
       <a href={userPageHyperlink}>
         <span className="u__search_discord_avatar_wrapper">
-          <img
-            src={discordAvatarUrl}
-            alt={discordAvatarAltText}
-            className="u__search_discord_avatar"
-          />
+          <img src={discordAvatarUrl} className="u__search_discord_avatar" />
         </span>
       </a>
 
