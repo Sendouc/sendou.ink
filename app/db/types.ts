@@ -101,7 +101,10 @@ export interface CalendarEvent {
   bracketUrl: string;
   participantCount: number | null;
   customUrl: string | null;
+  /** Is tournament tools page visible */
   toToolsEnabled: number;
+  /** In tournament tools, can teams change their maps and rosters? */
+  isBeforeStart: number;
 }
 
 export type CalendarEventTag = keyof typeof allTags;

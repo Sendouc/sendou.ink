@@ -8,6 +8,10 @@ export function dateToDatabaseTimestamp(date: Date) {
   return Math.floor(date.getTime() / 1000);
 }
 
+export function databaseCreatedAt() {
+  return dateToDatabaseTimestamp(new Date());
+}
+
 export function dateToWeekNumber(date: Date) {
   return getWeek(date, { weekStartsOn: 1, firstWeekContainsDate: 4 });
 }

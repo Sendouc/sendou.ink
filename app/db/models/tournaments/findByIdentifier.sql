@@ -1,5 +1,7 @@
 select
-  "CalendarEvent"."bracketUrl"
+  "CalendarEvent"."id",
+  "CalendarEvent"."bracketUrl",
+  "CalendarEvent"."isBeforeStart"
 from
   "CalendarEvent"
 where

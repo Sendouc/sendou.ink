@@ -4,6 +4,9 @@ module.exports.up = function (db) {
     `alter table "CalendarEvent" add "toToolsEnabled" integer default 0`
   ).run();
   db.prepare(
+    `alter table "CalendarEvent" add "isBeforeStart" integer default 1`
+  ).run();
+  db.prepare(
     `create unique index calendar_event_custom_url_unique on "CalendarEvent"("customUrl")`
   ).run();
 
@@ -43,7 +46,8 @@ module.exports.up = function (db) {
       "userId" integer not null,
       "isOwner" integer not null,
       "createdAt" integer not null,
-      foreign key ("tournamentTeamId") references "TournamentTeam"("id") on delete cascade
+      foreign key ("tournamentTeamId") references "TournamentTeam"("id") on delete cascade,
+      unique("tournamentTeamId", "userId") on conflict rollback
     ) strict
     `
   ).run();
@@ -59,6 +63,7 @@ module.exports.down = function (db) {
 
   db.prepare(`alter table "CalendarEvent" drop column "customUrl"`).run();
   db.prepare(`alter table "CalendarEvent" drop column "toToolsEnabled"`).run();
+  db.prepare(`alter table "CalendarEvent" drop column "isBeforeStart"`).run();
   db.prepare(`alter table "MapPoolMap" drop column "tournamentTeamId"`).run();
   db.prepare(
     `alter table "MapPoolMap" drop column "tieBreakerCalendarEventId"`

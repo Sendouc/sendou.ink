@@ -543,7 +543,7 @@ export function findAllEventsWithMapPools() {
 }
 
 export function findTieBreakerMapPoolByEventId(
-  calendarEventId: CalendarEvent["id"]
+  calendarEventId: string | number
 ) {
   return findTieBreakerMapPoolByEventIdtm.all({ calendarEventId }) as Array<
     Pick<MapPoolMap, "mode" | "stageId">
