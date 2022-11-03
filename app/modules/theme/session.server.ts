@@ -32,6 +32,7 @@ async function getThemeSession(request: Request) {
     },
     setTheme: (theme: Theme) => session.set("theme", theme),
     commit: () => themeStorage.commitSession(session),
+    destroy: () => themeStorage.destroySession(session, { maxAge: 0 }),
   };
 }
 

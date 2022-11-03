@@ -20,12 +20,18 @@
 
 ### 🟡 common.json
 
-**75/76**
+**75/82**
 
 <details>
 <summary>Missing</summary>
 
 - pages.articles
+- header.language
+- header.loggedInAs
+- header.theme
+- theme.light
+- theme.dark
+- theme.auto
 
 </details>
 
@@ -78,7 +84,7 @@
 
 ### 🟡 common.json
 
-**75/76**
+**81/82**
 
 <details>
 <summary>Missing</summary>
@@ -170,7 +176,7 @@
 
 ### 🟡 common.json
 
-**48/76**
+**48/82**
 
 <details>
 <summary>Missing</summary>
@@ -179,6 +185,9 @@
 - pages.s2
 - pages.maps
 - pages.object-damage-calculator
+- header.language
+- header.loggedInAs
+- header.theme
 - auth.errors.aborted
 - auth.errors.failed
 - auth.errors.discordPermissions
@@ -203,6 +212,9 @@
 - maps.template.preset.onlyMode
 - forms.errors.noSearchMatches
 - errors.genericReload
+- theme.light
+- theme.dark
+- theme.auto
 
 </details>
 
@@ -331,7 +343,7 @@
 
 ### 🟡 common.json
 
-**47/76**
+**47/82**
 
 <details>
 <summary>Missing</summary>
@@ -340,6 +352,9 @@
 - pages.analyzer
 - pages.maps
 - pages.object-damage-calculator
+- header.language
+- header.loggedInAs
+- header.theme
 - auth.errors.aborted
 - auth.errors.failed
 - auth.errors.discordPermissions
@@ -365,6 +380,9 @@
 - maps.template.preset.onlyMode
 - forms.errors.noSearchMatches
 - errors.genericReload
+- theme.light
+- theme.dark
+- theme.auto
 
 </details>
 
@@ -468,7 +486,7 @@
 
 ### 🔴 common.json
 
-**0/76**
+**0/82**
 
 ### 🔴 contributions.json
 
@@ -528,12 +546,18 @@
 
 ### 🟡 common.json
 
-**75/76**
+**75/82**
 
 <details>
 <summary>Missing</summary>
 
 - pages.articles
+- header.language
+- header.loggedInAs
+- header.theme
+- theme.light
+- theme.dark
+- theme.auto
 
 </details>
 
@@ -594,7 +618,7 @@
 
 ### 🟡 common.json
 
-**35/76**
+**35/82**
 
 <details>
 <summary>Missing</summary>
@@ -604,6 +628,9 @@
 - pages.analyzer
 - pages.maps
 - pages.object-damage-calculator
+- header.language
+- header.loggedInAs
+- header.theme
 - auth.errors.aborted
 - auth.errors.failed
 - auth.errors.discordPermissions
@@ -640,6 +667,9 @@
 - weapon.category.BRELLAS
 - weapon.category.STRINGERS
 - weapon.category.SPLATANAS
+- theme.light
+- theme.dark
+- theme.auto
 
 </details>
 
@@ -766,13 +796,16 @@
 
 ### 🟡 common.json
 
-**55/76**
+**55/82**
 
 <details>
 <summary>Missing</summary>
 
 - pages.articles
 - pages.object-damage-calculator
+- header.language
+- header.loggedInAs
+- header.theme
 - auth.errors.aborted
 - auth.errors.failed
 - auth.errors.discordPermissions
@@ -792,6 +825,9 @@
 - maps.template.preset.onlyMode
 - forms.errors.noSearchMatches
 - errors.genericReload
+- theme.light
+- theme.dark
+- theme.auto
 
 </details>
 
@@ -883,12 +919,15 @@
 
 ### 🟡 common.json
 
-**61/76**
+**61/82**
 
 <details>
 <summary>Missing</summary>
 
 - pages.articles
+- header.language
+- header.loggedInAs
+- header.theme
 - actions.loading
 - actions.clear
 - actions.selectAll
@@ -903,6 +942,9 @@
 - maps.template.preset.onlyMode
 - forms.errors.noSearchMatches
 - errors.genericReload
+- theme.light
+- theme.dark
+- theme.auto
 
 </details>
 
@@ -998,7 +1040,7 @@
 
 ### 🟡 common.json
 
-**35/76**
+**35/82**
 
 <details>
 <summary>Missing</summary>
@@ -1008,6 +1050,9 @@
 - pages.analyzer
 - pages.maps
 - pages.object-damage-calculator
+- header.language
+- header.loggedInAs
+- header.theme
 - auth.errors.aborted
 - auth.errors.failed
 - auth.errors.discordPermissions
@@ -1044,6 +1089,9 @@
 - weapon.category.BRELLAS
 - weapon.category.STRINGERS
 - weapon.category.SPLATANAS
+- theme.light
+- theme.dark
+- theme.auto
 
 </details>
 
