@@ -8,7 +8,11 @@ import shoes from "./dicts/GearInfoShoes.json";
 import fs from "node:fs";
 import path from "node:path";
 import invariant from "tiny-invariant";
-import { LANG_JSONS_TO_CREATE, loadLangDicts } from "./utils";
+import {
+  LANG_JSONS_TO_CREATE,
+  loadLangDicts,
+  translationJsonFolderName,
+} from "./utils";
 
 const CURRENT_SEASON = 1;
 const OUTPUT_DIR_PATH = path.join(__dirname, "output");
@@ -117,7 +121,7 @@ async function main() {
         "..",
         "public",
         "locales",
-        langCode.slice(2),
+        translationJsonFolderName(langCode),
         `gear.json`
       ),
       JSON.stringify(translationsMap, null, 2) + "\n"

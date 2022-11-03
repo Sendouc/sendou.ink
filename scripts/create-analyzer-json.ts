@@ -20,7 +20,11 @@ import invariant from "tiny-invariant";
 import type { MainWeaponParams, SubWeaponParams } from "~/modules/analyzer";
 import type { ParamsJson } from "~/modules/analyzer/types";
 import { z } from "zod";
-import { LANG_JSONS_TO_CREATE, loadLangDicts } from "./utils";
+import {
+  LANG_JSONS_TO_CREATE,
+  loadLangDicts,
+  translationJsonFolderName,
+} from "./utils";
 
 const CURRENT_SEASON = 1;
 
@@ -603,7 +607,7 @@ function writeTranslationsJsons(arr: TranslationArray) {
         "..",
         "public",
         "locales",
-        langCode.slice(2),
+        translationJsonFolderName(langCode),
         `weapons.json`
       ),
       JSON.stringify(

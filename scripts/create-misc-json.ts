@@ -1,7 +1,11 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { LANG_JSONS_TO_CREATE, loadLangDicts } from "./utils";
+import {
+  LANG_JSONS_TO_CREATE,
+  loadLangDicts,
+  translationJsonFolderName,
+} from "./utils";
 import fs from "fs";
 import path from "path";
 import invariant from "tiny-invariant";
@@ -61,7 +65,7 @@ async function main() {
         "..",
         "public",
         "locales",
-        langCode.slice(2),
+        translationJsonFolderName(langCode),
         `game-misc.json`
       ),
       JSON.stringify(translationsMap, null, 2) + "\n"

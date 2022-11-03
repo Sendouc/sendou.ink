@@ -122,7 +122,174 @@
 
 ---
 
-## /es (🟡 In progress)
+## /es-ES (🟡 In progress)
+
+### 🟡 analyzer.json
+
+**92/112**
+
+<details>
+<summary>Missing</summary>
+
+- objCalcAd
+- stat.specialLostSplattedByRP
+- stat.quickRespawnTimeSplattedByRP
+- stat.shootingRunSpeed
+- stat.shootingRunSpeedCharging
+- stat.shootingRunSpeedFullCharge
+- damage.toSplat_one
+- damage.NORMAL_MAX_FULL_CHARGE
+- damage.DIRECT_MIN
+- damage.DIRECT_MAX
+- torpedoExplanation
+- distanceInline
+- damageShort
+- hitsToDestroyLong
+- hitsToDestroyShort
+- labels.amountOf
+- labels.damageType
+- labels.weapon
+- dmgHtdExplanation
+- noDmgData
+
+</details>
+
+### 🟢 badges.json
+
+**7/7**
+
+### 🟢 builds.json
+
+**11/11**
+
+### 🟡 calendar.json
+
+**44/46**
+
+<details>
+<summary>Missing</summary>
+
+- createMapList
+- forms.mapPool
+
+</details>
+
+### 🟡 common.json
+
+**48/82**
+
+<details>
+<summary>Missing</summary>
+
+- pages.articles
+- pages.s2
+- pages.maps
+- pages.object-damage-calculator
+- header.language
+- header.loggedInAs
+- header.theme
+- auth.errors.aborted
+- auth.errors.failed
+- auth.errors.discordPermissions
+- auth.errors.unknown
+- actions.copyToClipboard
+- actions.close
+- actions.loading
+- actions.clear
+- actions.selectAll
+- actions.search
+- maps.createMapList
+- maps.halfSz
+- maps.mapPool
+- maps.tournamentMaplist
+- maps.template
+- maps.template.none
+- maps.template.event
+- maps.template.presets
+- maps.template.yourRecentEvents
+- maps.template.preset.ANARCHY
+- maps.template.preset.ALL
+- maps.template.preset.onlyMode
+- forms.errors.noSearchMatches
+- errors.genericReload
+- theme.light
+- theme.dark
+- theme.auto
+
+</details>
+
+### 🟢 contributions.json
+
+**6/6**
+
+### 🟢 faq.json
+
+**6/6**
+
+### 🟡 front.json
+
+**10/13**
+
+<details>
+<summary>Missing</summary>
+
+- maps.description
+- object-damage-calculator.description
+- articlesGoTo
+
+</details>
+
+### 🟡 game-misc.json
+
+**12/22**
+
+<details>
+<summary>Missing</summary>
+
+- MODE_SHORT_TW
+- MODE_SHORT_SZ
+- MODE_SHORT_TC
+- MODE_SHORT_RM
+- MODE_SHORT_CB
+- MODE_LONG_TW
+- MODE_LONG_SZ
+- MODE_LONG_TC
+- MODE_LONG_RM
+- MODE_LONG_CB
+
+</details>
+
+### 🟡 user.json
+
+**7/25**
+
+<details>
+<summary>Missing</summary>
+
+- customUrl
+- ign
+- ign.short
+- stickSens
+- motionSens
+- motion
+- stick
+- sens
+- results.title
+- results.participants
+- results.highlights
+- results.nonHighlights
+- results.highlights.choose
+- results.highlights.explanation
+- forms.errors.invalidCustomUrl.numbers
+- forms.errors.invalidCustomUrl.strangeCharacter
+- forms.errors.invalidCustomUrl.duplicate
+- forms.errors.invalidSens
+
+</details>
+
+---
+
+## /es-US (🟡 In progress)
 
 ### 🟡 analyzer.json
 
