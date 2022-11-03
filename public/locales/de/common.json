@@ -9,10 +9,14 @@
   "pages.builds": "Ausrüstungen",
   "pages.analyzer": "Ausrüstungs-Analyse",
   "pages.maps": "Arenen-Listen",
+  "pages.object-damage-calculator": "Objekt-Schaden-Rechner",
 
   "header.profile": "Profil",
   "header.logout": "Ausloggen",
   "header.login": "Einloggen",
+  "header.language": "Sprache",
+  "header.loggedInAs": "Eingeloggt als {{userName}}",
+  "header.theme": "Theme",
 
   "auth.errors.aborted": "Einloggen abgebrochen",
   "auth.errors.failed": "Einloggen fehlgeschlagen",
@@ -33,6 +37,7 @@
   "actions.remove": "Entfernen",
   "actions.delete": "Löschen",
   "actions.loadMore": "Mehr laden",
+  "actions.copyToClipboard": "In die Zwischenablage kopieren",
   "actions.close": "Schließen",
   "actions.loading": "Lädt...",
   "actions.clear": "Leeren",
@@ -81,5 +86,9 @@
   "weapon.category.DUALIES": "Doppler",
   "weapon.category.BRELLAS": "Pluviatoren",
   "weapon.category.STRINGERS": "Stringer",
-  "weapon.category.SPLATANAS": "Splatanas"
+  "weapon.category.SPLATANAS": "Splatanas",
+
+  "theme.light": "Hell",
+  "theme.dark": "Dunkel",
+  "theme.auto": "Auto"
 }

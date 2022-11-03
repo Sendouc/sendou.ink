@@ -110,3 +110,11 @@ Note: This is only useful if you have access to a production running on Render.c
 
 1. Add image in both .png and .avif with the correct weapon ID (`replace-img-names.ts` can help)
 2. Create new weapon ids json and weapon translation jsons using `create-weapon-json.ts` script
+
+### Add new gear gear
+
+0. If Salmon Run gear, update constant in create-gear-json.ts
+1. `npm run create-gear-json`
+2. Copy generated files from output folder to gear-ids.ts file
+3. Get .png from Lean's repository
+4. Generate .avif image

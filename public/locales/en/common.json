@@ -1,5 +1,6 @@
 {
   "pages.admin": "Admin",
+  "pages.articles": "Articles",
   "pages.badges": "Badges",
   "pages.plus": "Plus Server",
   "pages.contributors": "Contributors",
@@ -14,6 +15,9 @@
   "header.profile": "Profile",
   "header.logout": "Log out",
   "header.login": "Log in",
+  "header.language": "Language",
+  "header.loggedInAs": "Logged in as {{userName}}",
+  "header.theme": "Theme",
 
   "auth.errors.aborted": "Login Aborted",
   "auth.errors.failed": "Login Failed",
@@ -89,5 +93,9 @@
   "weapon.category.DUALIES": "Dualies",
   "weapon.category.BRELLAS": "Brellas",
   "weapon.category.STRINGERS": "Stringers",
-  "weapon.category.SPLATANAS": "Splatanas"
+  "weapon.category.SPLATANAS": "Splatanas",
+
+  "theme.light": "Light",
+  "theme.dark": "Dark",
+  "theme.auto": "Auto"
 }

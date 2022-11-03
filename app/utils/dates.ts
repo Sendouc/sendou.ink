@@ -38,13 +38,32 @@ export function weekNumberToDate({
   return result;
 }
 
+/**
+ * Checks if a date is valid or not.
+ *
+ * Returns:
+ * - True if date is valid
+ * - False otherwise
+ */
+export function isValidDate(date: Date) {
+  return !isNaN(date.getTime());
+}
+
 /** Returns date as a string with the format YYYY-MM-DDThh:mm in user's time zone */
 export function dateToYearMonthDayHourMinuteString(date: Date) {
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-  const hour = date.getHours();
-  const minute = date.getMinutes();
+  const copiedDate = new Date(date.getTime());
+
+  //TODO: fix invalid Date Input handling: https://github.com/Sendouc/sendou.ink/issues/1082
+  if (!isValidDate(copiedDate)) {
+    console.warn("Invalid date");
+    // throw new RangeError("Invalid Date");
+  }
+
+  const year = copiedDate.getFullYear();
+  const month = copiedDate.getMonth() + 1;
+  const day = copiedDate.getDate();
+  const hour = copiedDate.getHours();
+  const minute = copiedDate.getMinutes();
 
   return `${year}-${prefixZero(month)}-${prefixZero(day)}T${prefixZero(
     hour
@@ -53,4 +72,16 @@ export function dateToYearMonthDayHourMinuteString(date: Date) {
 
 function prefixZero(number: number) {
   return number < 10 ? `0${number}` : number;
+}
+
+/**
+ * Retrieves a new Date object that is offset by several hours.
+ *
+ * NOTE: it is important that we work with & return a copy of the date here,
+ *  otherwise we will just be mutating the original date passed into this function.
+ */
+export function getDateWithHoursOffset(date: Date, hoursOffset: number) {
+  const copiedDate = new Date(date.getTime());
+  copiedDate.setHours(date.getHours() + hoursOffset);
+  return copiedDate;
 }

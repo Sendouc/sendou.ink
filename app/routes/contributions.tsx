@@ -37,7 +37,7 @@ const TRANSLATORS: Array<{
   },
   {
     translators: ["Hachi"],
-    language: "es",
+    language: "es-ES",
   },
   {
     translators: ["Charakiga"],
