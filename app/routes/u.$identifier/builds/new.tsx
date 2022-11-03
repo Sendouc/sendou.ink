@@ -367,6 +367,7 @@ function Abilities() {
       buildToEdit?.abilities ?? EMPTY_BUILD
     );
 
+  // xxx: todo replace with RequiredHiddenInput
   return (
     <div>
       <input

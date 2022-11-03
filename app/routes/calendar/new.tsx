@@ -23,6 +23,7 @@ import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import { MapPoolSelector } from "~/components/MapPoolSelector";
+import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
 import { Toggle } from "~/components/Toggle";
 import { CALENDAR_EVENT } from "~/constants";
 import { db } from "~/db";
@@ -208,6 +209,8 @@ export const loader = async ({ request }: LoaderArgs) => {
           tags: eventToEdit.tags.filter((tag) => tag !== "BADGE"),
           badges: db.calendarEvents.findBadgesByEventId(eventId),
           mapPool: db.calendarEvents.findMapPoolByEventId(eventId),
+          tieBreakerMapPool:
+            db.calendarEvents.findTieBreakerMapPoolByEventId(eventId),
         }
       : undefined,
     title: makeTitle([canEditEvent ? "Edit" : "New", t("pages.calendar")]),
@@ -603,12 +606,18 @@ function CounterPickMapPoolSection() {
   const { eventToEdit, recentEventsWithMapPools } =
     useLoaderData<typeof loader>();
   const [mapPool, setMapPool] = React.useState<MapPool>(
-    eventToEdit?.mapPool ? new MapPool(eventToEdit.mapPool) : MapPool.EMPTY
+    eventToEdit?.tieBreakerMapPool
+      ? new MapPool(eventToEdit.tieBreakerMapPool)
+      : MapPool.EMPTY
   );
 
   return (
     <>
-      <input type="hidden" name="pool" value={mapPool.serialized} />
+      <RequiredHiddenInput
+        value={mapPool.serialized}
+        name="pool"
+        isValid={validateCounterPickMapPool(mapPool) === "VALID"}
+      />
 
       <MapPoolSelector
         className="w-full"
