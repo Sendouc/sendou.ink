@@ -60,7 +60,7 @@ export function UserSearchResult({
         <span className="u-search_discord_avatar_wrapper">
           <img
             src={discordAvatarUrl}
-            alt={discordUsername}
+            alt=""
             className="u-search_discord_avatar"
           />
         </span>
