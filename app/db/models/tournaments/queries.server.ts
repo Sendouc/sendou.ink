@@ -10,11 +10,13 @@ import findByIdentifierSql from "./findByIdentifier.sql";
 import addTeamSql from "./addTeam.sql";
 import addTeamMemberSql from "./addTeamMember.sql";
 import findTeamsByEventIdSql from "./findTeamsByEventId.sql";
+import renameTeamSql from "./renameTeam.sql";
 
 const findByIdentifierStm = sql.prepare(findByIdentifierSql);
 const addTeamStm = sql.prepare(addTeamSql);
 const addTeamMemberStm = sql.prepare(addTeamMemberSql);
 const findTeamsByEventIdStm = sql.prepare(findTeamsByEventIdSql);
+const renameTeamStm = sql.prepare(renameTeamSql);
 
 type FindByIdentifier = Pick<
   CalendarEvent,
@@ -52,7 +54,7 @@ interface FindTeamsByEventIdRow {
   name: TournamentTeam["name"];
   members: Array<Pick<TournamentTeamMember, "userId" | "isOwner">>;
 }
-type FindTeamsByEventId = Array<FindTeamsByEventIdRow>;
+export type FindTeamsByEventId = Array<FindTeamsByEventIdRow>;
 export function findTeamsByEventId(calendarEventId: CalendarEvent["id"]) {
   const rows = findTeamsByEventIdStm.all({ calendarEventId });
 
@@ -62,4 +64,8 @@ export function findTeamsByEventId(calendarEventId: CalendarEvent["id"]) {
       members: JSON.parse(row.members),
     };
   }) as FindTeamsByEventId;
+}
+
+export function renameTeam({ id, name }: Pick<TournamentTeam, "id" | "name">) {
+  renameTeamStm.run({ id, name });
 }

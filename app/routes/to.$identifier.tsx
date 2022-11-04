@@ -3,6 +3,7 @@ import { Outlet, useLoaderData } from "@remix-run/react";
 import { db } from "~/db";
 import { getUser } from "~/modules/auth";
 import { notFoundIfFalsy } from "~/utils/remix";
+import { findOwnedTeam } from "~/utils/tournaments";
 
 export type TournamentToolsLoaderData = SerializeFrom<typeof loader>;
 
@@ -12,16 +13,13 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 
   const event = notFoundIfFalsy(db.tournaments.findByIdentifier(eventId));
   const teams = db.tournaments.findTeamsByEventId(event.id);
-  const ownTeam = teams.find((team) =>
-    team.members.some((m) => m.userId === user?.id)
-  );
 
   return {
     event,
     tieBreakerMapPool:
       db.calendarEvents.findTieBreakerMapPoolByEventId(eventId),
     teams,
-    ownTeam,
+    ownTeam: findOwnedTeam({ userId: user?.id, teams }),
   };
 };
 

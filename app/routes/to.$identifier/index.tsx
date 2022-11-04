@@ -7,7 +7,12 @@ import { TOURNAMENT } from "~/constants";
 import { db } from "~/db";
 import { requireUser } from "~/modules/auth";
 import styles from "~/styles/tournament.css";
-import { badRequestIfFalsy, parseRequestFormData } from "~/utils/remix";
+import {
+  badRequestIfFalsy,
+  parseRequestFormData,
+  validate,
+} from "~/utils/remix";
+import { findOwnedTeam } from "~/utils/tournaments";
 import { assertUnreachable } from "~/utils/types";
 import type { TournamentToolsLoaderData } from "../to.$identifier";
 
@@ -18,6 +23,7 @@ export const links: LinksFunction = () => {
 const tournamentToolsActionSchema = z.union([
   z.object({
     _action: z.literal("TEAM_NAME"),
+    // xxx: not trimming if for example "Team Olive "
     name: z.string().min(1).max(TOURNAMENT.TEAM_NAME_MAX_LENGTH),
   }),
   z.object({
@@ -35,16 +41,25 @@ export const action: ActionFunction = async ({ request, params }) => {
   const event = badRequestIfFalsy(
     db.tournaments.findByIdentifier(params["identifier"]!)
   );
+  const teams = db.tournaments.findTeamsByEventId(event.id);
+  const ownTeam = findOwnedTeam({ userId: user.id, teams });
 
-  // xxx: validate tournament not started
+  validate(event.isBeforeStart);
 
   switch (data._action) {
     case "TEAM_NAME": {
-      db.tournaments.addTeam({
-        ownerId: user.id,
-        name: data.name,
-        calendarEventId: event.id,
-      });
+      if (ownTeam) {
+        db.tournaments.renameTeam({
+          id: ownTeam.id,
+          name: data.name,
+        });
+      } else {
+        db.tournaments.addTeam({
+          ownerId: user.id,
+          name: data.name,
+          calendarEventId: event.id,
+        });
+      }
       break;
     }
     case "POOL": {
@@ -72,7 +87,6 @@ function PrestartControls() {
   const data = useOutletContext<TournamentToolsLoaderData>();
 
   // xxx: delete team
-  // xxx: rename team or this not different action but backend knows what to do?
   return (
     <Form method="post" className="stack md">
       <section className="tournament__action-section">
@@ -104,26 +118,30 @@ function PrestartControls() {
           </Button>
         </div>
       </section>
-      <section className="tournament__action-section">
-        2. Pick map pool
-        <div className="tournament__action-side-note">
-          You can play without selecting a map pool but then your opponent gets
-          to decide what maps get played.
-          <Button className="mt-4">Pick</Button>
-        </div>
-      </section>
-      <section className="tournament__action-section">
-        3. Submit roster
-        <div className="tournament__action-side-note">
-          Submitting roster is optional but you might be seeded lower if you
-          don&apos;t.
-          <Button className="mt-4">Enter roster</Button>
-        </div>
-      </section>
-      <div className="tournament__action-side-note">
-        Note: you can change your map pool and roster as many times as you want
-        before the tournament starts.
-      </div>
+      {data.ownTeam && (
+        <>
+          <section className="tournament__action-section">
+            2. Pick map pool
+            <div className="tournament__action-side-note">
+              You can play without selecting a map pool but then your opponent
+              gets to decide what maps get played.
+              <Button className="mt-4">Pick</Button>
+            </div>
+          </section>
+          <section className="tournament__action-section">
+            3. Submit roster
+            <div className="tournament__action-side-note">
+              Submitting roster is optional but you might be seeded lower if you
+              don&apos;t.
+              <Button className="mt-4">Enter roster</Button>
+            </div>
+          </section>
+          <div className="tournament__action-side-note">
+            Note: you can change your map pool and roster as many times as you
+            want before the tournament starts.
+          </div>
+        </>
+      )}
     </Form>
   );
 }
