@@ -89,53 +89,11 @@ function PrestartControls() {
   // xxx: delete team
   return (
     <Form method="post" className="stack md">
-      <section className="tournament__action-section">
-        1. Register on{" "}
-        <a
-          href={data.event.bracketUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {data.event.bracketUrl}
-        </a>
-        <div className="mt-4">
-          <label htmlFor="name">Team name you register with</label>
-          <input
-            id="name"
-            name="name"
-            maxLength={TOURNAMENT.TEAM_NAME_MAX_LENGTH}
-            defaultValue={data.ownTeam?.name}
-            required
-          />
-          <Button
-            tiny
-            className="mt-4"
-            name="_action"
-            value="TEAM_NAME"
-            type="submit"
-          >
-            Submit
-          </Button>
-        </div>
-      </section>
+      <TeamNameSection />
       {data.ownTeam && (
         <>
-          <section className="tournament__action-section">
-            2. Pick map pool
-            <div className="tournament__action-side-note">
-              You can play without selecting a map pool but then your opponent
-              gets to decide what maps get played.
-              <Button className="mt-4">Pick</Button>
-            </div>
-          </section>
-          <section className="tournament__action-section">
-            3. Submit roster
-            <div className="tournament__action-side-note">
-              Submitting roster is optional but you might be seeded lower if you
-              don&apos;t.
-              <Button className="mt-4">Enter roster</Button>
-            </div>
-          </section>
+          <MapPoolSection />
+          <RosterSection />
           <div className="tournament__action-side-note">
             Note: you can change your map pool and roster as many times as you
             want before the tournament starts.
@@ -143,5 +101,65 @@ function PrestartControls() {
         </>
       )}
     </Form>
+  );
+}
+
+function TeamNameSection() {
+  const data = useOutletContext<TournamentToolsLoaderData>();
+
+  return (
+    <section className="tournament__action-section">
+      1. Register on{" "}
+      <a href={data.event.bracketUrl} target="_blank" rel="noopener noreferrer">
+        {data.event.bracketUrl}
+      </a>
+      <div className="mt-4">
+        <label htmlFor="name">Team name you register with</label>
+        <input
+          id="name"
+          name="name"
+          maxLength={TOURNAMENT.TEAM_NAME_MAX_LENGTH}
+          defaultValue={data.ownTeam?.name}
+          required
+        />
+        <Button
+          tiny
+          className="mt-4"
+          name="_action"
+          value="TEAM_NAME"
+          type="submit"
+        >
+          Submit
+        </Button>
+      </div>
+    </section>
+  );
+}
+
+function MapPoolSection() {
+  const data = useOutletContext<TournamentToolsLoaderData>();
+
+  return (
+    <section className="tournament__action-section">
+      2. Pick map pool
+      <div className="tournament__action-side-note">
+        You can play without selecting a map pool but then your opponent gets to
+        decide what maps get played.
+        <Button className="mt-4">Pick</Button>
+      </div>
+    </section>
+  );
+}
+
+function RosterSection() {
+  return (
+    <section className="tournament__action-section">
+      3. Submit roster
+      <div className="tournament__action-side-note">
+        Submitting roster is optional but you might be seeded lower if you
+        don&apos;t.
+        <Button className="mt-4">Enter roster</Button>
+      </div>
+    </section>
   );
 }
