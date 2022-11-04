@@ -91,6 +91,7 @@ function PrestartControls() {
             name="name"
             maxLength={TOURNAMENT.TEAM_NAME_MAX_LENGTH}
             defaultValue={data.ownTeam?.name}
+            required
           />
           <Button
             tiny
