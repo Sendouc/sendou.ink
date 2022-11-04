@@ -79,3 +79,13 @@ export function getDateWithHoursOffset(date: Date, hoursOffset: number) {
   copiedDate.setHours(date.getHours() + hoursOffset);
   return copiedDate;
 }
+
+export function getDateAtNextFullHour(date: Date) {
+  const copiedDate = new Date(date.getTime());
+  if (date.getMinutes() > 0) {
+    copiedDate.setHours(date.getHours() + 1);
+    copiedDate.setMinutes(0);
+  }
+  copiedDate.setSeconds(0);
+  return copiedDate;
+}
