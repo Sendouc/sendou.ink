@@ -34,6 +34,7 @@ import {
   dateToDatabaseTimestamp,
   databaseTimestampToDate,
   getDateWithHoursOffset,
+  getDateAtNextFullHour,
 } from "~/utils/dates";
 import {
   badRequestIfFalsy,
@@ -312,7 +313,9 @@ function DatesInput() {
         date: databaseTimestampToDate(t),
       }));
     }
-    return [{ key: getKey(), date: new Date() }];
+
+    // Initial date rounded to next full hour from now
+    return [{ key: getKey(), date: getDateAtNextFullHour(new Date()) }];
   });
 
   const datesCount = datesInputState.length;
@@ -334,7 +337,7 @@ function DatesInput() {
 
       const addedDate = lastValidDate
         ? getDateWithHoursOffset(lastValidDate, NEW_CALENDAR_EVENT_HOURS_OFFSET)
-        : new Date();
+        : getDateAtNextFullHour(new Date());
 
       return [...current, { key: getKey(), date: addedDate }];
     });
