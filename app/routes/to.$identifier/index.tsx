@@ -1,9 +1,5 @@
-import type {
-  ActionFunction,
-  LinksFunction,
-  LoaderArgs,
-} from "@remix-run/node";
-import { Form, useLoaderData } from "@remix-run/react";
+import type { ActionFunction, LinksFunction } from "@remix-run/node";
+import { Form, useOutletContext } from "@remix-run/react";
 import { z } from "zod";
 import { Button } from "~/components/Button";
 import { Main } from "~/components/Main";
@@ -11,12 +7,9 @@ import { TOURNAMENT } from "~/constants";
 import { db } from "~/db";
 import { requireUser } from "~/modules/auth";
 import styles from "~/styles/tournament.css";
-import {
-  badRequestIfFalsy,
-  notFoundIfFalsy,
-  parseRequestFormData,
-} from "~/utils/remix";
+import { badRequestIfFalsy, parseRequestFormData } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
+import type { TournamentToolsLoaderData } from "../to.$identifier";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -65,18 +58,8 @@ export const action: ActionFunction = async ({ request, params }) => {
   return null;
 };
 
-export const loader = ({ params }: LoaderArgs) => {
-  const eventId = params["identifier"]!;
-
-  return {
-    event: notFoundIfFalsy(db.tournaments.findByIdentifier(eventId)),
-    tieBreakerMapPool:
-      db.calendarEvents.findTieBreakerMapPoolByEventId(eventId),
-  };
-};
-
 export default function TournamentToolsPage() {
-  const data = useLoaderData<typeof loader>();
+  const data = useOutletContext<TournamentToolsLoaderData>();
 
   return (
     <Main>
@@ -86,9 +69,8 @@ export default function TournamentToolsPage() {
 }
 
 function PrestartControls() {
-  const data = useLoaderData<typeof loader>();
+  const data = useOutletContext<TournamentToolsLoaderData>();
 
-  // xxx: NEXT -> create layout route and load teams there
   // xxx: delete team
   // xxx: rename team or this not different action but backend knows what to do?
   return (
@@ -108,6 +90,7 @@ function PrestartControls() {
             id="name"
             name="name"
             maxLength={TOURNAMENT.TEAM_NAME_MAX_LENGTH}
+            defaultValue={data.ownTeam?.name}
           />
           <Button
             tiny

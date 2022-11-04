@@ -1,13 +1,20 @@
 import { sql } from "~/db/sql";
-import type { CalendarEvent, TournamentTeam, User } from "~/db/types";
+import type {
+  CalendarEvent,
+  TournamentTeam,
+  TournamentTeamMember,
+  User,
+} from "~/db/types";
 import { databaseCreatedAt } from "~/utils/dates";
 import findByIdentifierSql from "./findByIdentifier.sql";
 import addTeamSql from "./addTeam.sql";
 import addTeamMemberSql from "./addTeamMember.sql";
+import findTeamsByEventIdSql from "./findTeamsByEventId.sql";
 
 const findByIdentifierStm = sql.prepare(findByIdentifierSql);
 const addTeamStm = sql.prepare(addTeamSql);
 const addTeamMemberStm = sql.prepare(addTeamMemberSql);
+const findTeamsByEventIdStm = sql.prepare(findTeamsByEventIdSql);
 
 type FindByIdentifier = Pick<
   CalendarEvent,
@@ -39,3 +46,20 @@ export const addTeam = sql.transaction(
     });
   }
 );
+
+interface FindTeamsByEventIdRow {
+  id: TournamentTeam["id"];
+  name: TournamentTeam["name"];
+  members: Array<Pick<TournamentTeamMember, "userId" | "isOwner">>;
+}
+type FindTeamsByEventId = Array<FindTeamsByEventIdRow>;
+export function findTeamsByEventId(calendarEventId: CalendarEvent["id"]) {
+  const rows = findTeamsByEventIdStm.all({ calendarEventId });
+
+  return rows.map((row) => {
+    return {
+      ...row,
+      members: JSON.parse(row.members),
+    };
+  }) as FindTeamsByEventId;
+}
