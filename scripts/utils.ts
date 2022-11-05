@@ -12,6 +12,7 @@ export const LANG_JSONS_TO_CREATE = [
   "CNzh",
   "EUde",
   "EUes",
+  "USes",
   "EUfr",
   "EUit",
   "EUnl",
@@ -35,4 +36,10 @@ export async function loadLangDicts() {
   }
 
   return result;
+}
+
+export function translationJsonFolderName(langCode: string) {
+  if (langCode === "EUes") return "es-ES";
+  if (langCode === "USes") return "es-US";
+  return langCode.slice(2);
 }

@@ -1,11 +1,24 @@
-import { useTranslation } from "react-i18next";
+import { useSearchParams } from "@remix-run/react";
+import { useTranslation } from "~/hooks/useTranslation";
 import { languages } from "~/modules/i18n";
 import { LinkButton } from "../Button";
 import { GlobeIcon } from "../icons/Globe";
 import { Popover } from "../Popover";
 
+const addUniqueParam = (
+  oldParams: URLSearchParams,
+  name: string,
+  value: string
+): URLSearchParams => {
+  const paramsCopy = new URLSearchParams(oldParams);
+  paramsCopy.delete(name);
+  paramsCopy.append(name, value);
+  return paramsCopy;
+};
+
 export function LanguageChanger() {
   const { t, i18n } = useTranslation();
+  const [searchParams] = useSearchParams();
 
   return (
     <Popover
@@ -26,7 +39,7 @@ export function LanguageChanger() {
             className={
               i18n.language !== lang.code ? "text-main-forced" : undefined
             }
-            to={`?lng=${lang.code}`}
+            to={`?${addUniqueParam(searchParams, "lng", lang.code).toString()}`}
           >
             {lang.name}
           </LinkButton>

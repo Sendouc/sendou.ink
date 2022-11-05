@@ -5,7 +5,7 @@ import { json } from "@remix-run/node";
 import { mostRecentArticles } from "~/modules/articles";
 import styles from "~/styles/front.css";
 import { ArticlesPeek } from ".";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "~/hooks/useTranslation";
 import type { SendouRouteHandle } from "~/utils/remix";
 
 const MAX_ARTICLES_COUNT = 100;

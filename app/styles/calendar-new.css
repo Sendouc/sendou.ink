@@ -14,3 +14,7 @@
   font-size: var(--fonts-sm);
   font-weight: var(--semi-bold);
 }
+
+.calendar-new__day-label {
+  margin: 0;
+}

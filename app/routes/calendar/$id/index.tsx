@@ -9,7 +9,7 @@ import { useLoaderData } from "@remix-run/react";
 import { Link } from "@remix-run/react/dist/components";
 import clsx from "clsx";
 import * as React from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "~/hooks/useTranslation";
 import { z } from "zod";
 import { Avatar } from "~/components/Avatar";
 import { LinkButton } from "~/components/Button";

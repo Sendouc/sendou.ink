@@ -1,6 +1,6 @@
 import { Link, useMatches } from "@remix-run/react";
 import { useMemo, Fragment } from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "~/hooks/useTranslation";
 import { isDefined } from "~/utils/arrays";
 import { type SendouRouteHandle } from "~/utils/remix";
 
