@@ -128,5 +128,6 @@ npm run cf
 ```
 
 Before committing, if for some reason you see an abnormally high amount of files changed, simply run `git add --renormalize .` and it will fix the error.
+
 - Background info: this is caused by the line endings on your local repo not matching those with the remote repo's, which should remove the vast majority of unstaged files that appears to have no changes at all.
 - Reference: https://docs.github.com/en/get-started/getting-started-with-git/configuring-git-to-handle-line-endings
