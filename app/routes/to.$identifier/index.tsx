@@ -6,6 +6,9 @@ import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { Alert } from "~/components/Alert";
 import { Button } from "~/components/Button";
+import { Details, Summary } from "~/components/DetailsSummary";
+import { AlertIcon } from "~/components/icons/Alert";
+import { CheckmarkIcon } from "~/components/icons/Checkmark";
 import { Image } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { MapPoolSelector } from "~/components/MapPoolSelector";
@@ -160,63 +163,69 @@ function TeamNameSection() {
   );
 }
 
+// xxx: what if no map pool but submitting team name
 // xxx: some explanation for tiebreaker maps
 function MapPoolSection() {
   const data = useOutletContext<TournamentToolsLoaderData>();
-  const [expanded, setExpanded] = React.useState(false);
   const [counterpickMapPool, setCounterpickMapPool] = React.useState(
     data.ownTeam?.mapPool ? new MapPool(data.ownTeam.mapPool) : MapPool.EMPTY
   );
-  const { t } = useTranslation(["common"]);
+
+  const hasPickedMapPool = (data.ownTeam?.mapPool.length ?? 0) > 0;
 
   return (
     <section className="tournament__action-section stack md">
       <div>
-        2. Pick map pool
+        2. Map pool
         <div className="tournament__action-side-note">
           You can play without selecting a map pool but then your opponent gets
           to decide what maps get played.
-          {!expanded && (
-            <Button className="mt-4" onClick={() => setExpanded(true)}>
-              Pick
-            </Button>
-          )}
         </div>
       </div>
-      {expanded && (
-        <div>
-          <RequiredHiddenInput
-            value={counterpickMapPool.serialized}
-            name="pool"
-            isValid={validateCounterPickMapPool(counterpickMapPool) === "VALID"}
-          />
-          <MapPoolSelector
-            mapPool={counterpickMapPool}
-            handleMapPoolChange={setCounterpickMapPool}
-            title={t("common:maps.counterPickMapPool")}
-            includeFancyControls={false}
-            modesToInclude={["SZ", "TC", "RM", "CB"]}
-            preselectedMapPool={new MapPool(data.tieBreakerMapPool)}
-            info={
-              <div className="stack md mt-2">
-                <MapPoolCounts mapPool={counterpickMapPool} />
-                <MapPoolValidationStatusMessage
-                  status={validateCounterPickMapPool(counterpickMapPool)}
-                />
-              </div>
-            }
-          />
-          <Button
-            type="submit"
-            className="mt-4"
-            name="_action"
-            value="POOL"
-            tiny
-          >
-            Save changes
-          </Button>
-        </div>
-      )}
+      <Details className="bg-darker-transparent rounded">
+        <Summary>
+          <div className="tournament__summary-content">
+            Pick your team&apos;s maps{" "}
+            {hasPickedMapPool ? (
+              <CheckmarkIcon className="fill-success" />
+            ) : (
+              <AlertIcon className="fill-warning" />
+            )}
+          </div>
+        </Summary>
+        <RequiredHiddenInput
+          value={counterpickMapPool.serialized}
+          name="pool"
+          isValid={validateCounterPickMapPool(counterpickMapPool) === "VALID"}
+        />
+        <MapPoolSelector
+          mapPool={counterpickMapPool}
+          handleMapPoolChange={setCounterpickMapPool}
+          noTitle
+          includeFancyControls={false}
+          modesToInclude={["SZ", "TC", "RM", "CB"]}
+          preselectedMapPool={new MapPool(data.tieBreakerMapPool)}
+          info={
+            <div className="stack md mt-2">
+              <MapPoolCounts mapPool={counterpickMapPool} />
+              <MapPoolValidationStatusMessage
+                status={validateCounterPickMapPool(counterpickMapPool)}
+              />
+            </div>
+          }
+          footer={
+            <Button
+              type="submit"
+              className="mt-4 w-max mx-auto"
+              name="_action"
+              value="POOL"
+              tiny
+            >
+              Save changes
+            </Button>
+          }
+        />
+      </Details>
     </section>
   );
 }

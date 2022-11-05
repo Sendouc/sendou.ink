@@ -32,9 +32,11 @@ export type MapPoolSelectorProps = {
   recentEvents?: SerializedMapPoolEvent[];
   initialEvent?: Pick<CalendarEvent, "id" | "name">;
   title?: string;
+  noTitle?: boolean;
   includeFancyControls?: boolean;
   modesToInclude?: ModeShort[];
   info?: React.ReactNode;
+  footer?: React.ReactNode;
 };
 
 export function MapPoolSelector({
@@ -46,9 +48,11 @@ export function MapPoolSelector({
   recentEvents,
   initialEvent,
   title,
+  noTitle = false,
   includeFancyControls = true,
   modesToInclude,
   info,
+  footer,
 }: MapPoolSelectorProps) {
   const { t } = useTranslation();
 
@@ -112,7 +116,7 @@ export function MapPoolSelector({
 
   return (
     <fieldset className={className}>
-      <legend>{title ?? t("maps.mapPool")}</legend>
+      {!noTitle && <legend>{title ?? t("maps.mapPool")}</legend>}
       {includeFancyControls && (
         <div className="stack horizontal sm justify-end">
           {handleRemoval && (
@@ -153,6 +157,7 @@ export function MapPoolSelector({
           modesToInclude={modesToInclude}
           preselectedMapPool={preselectedMapPool}
         />
+        {footer}
       </div>
     </fieldset>
   );

@@ -34,8 +34,24 @@
   color: var(--theme-success);
 }
 
+.fill-success {
+  fill: var(--theme-success);
+}
+
+.fill-warning {
+  fill: var(--theme-warning);
+}
+
 .bg-darker-important {
   background-color: var(--bg-darker) !important;
+}
+
+.bg-darker-transparent {
+  background-color: var(--bg-darker-transparent);
+}
+
+.rounded {
+  border-radius: var(--rounded);
 }
 
 .font-semi-bold {

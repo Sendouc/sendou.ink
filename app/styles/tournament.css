@@ -22,3 +22,12 @@
   place-items: center;
   row-gap: var(--s-2);
 }
+
+.tournament__summary-content {
+  display: inline-flex;
+  gap: var(--s-3);
+}
+
+.tournament__summary-content > svg {
+  width: 1rem;
+}

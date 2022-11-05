@@ -28,7 +28,7 @@
 - header.language
 - header.loggedInAs
 - header.theme
-- maps.counterPickMapPool
+- maps.tieBreakerMapPool
 - maps.validation.PICKING
 - maps.validation.NOT_ONE_MAP_PER_MODE
 - maps.validation.MAP_REPEATED
@@ -89,7 +89,7 @@
 <summary>Missing</summary>
 
 - pages.articles
-- maps.counterPickMapPool
+- maps.tieBreakerMapPool
 - maps.validation.PICKING
 - maps.validation.NOT_ONE_MAP_PER_MODE
 - maps.validation.MAP_REPEATED
@@ -207,8 +207,8 @@
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool
-- maps.counterPickMapPool
 - maps.tournamentMaplist
+- maps.tieBreakerMapPool
 - maps.template
 - maps.template.none
 - maps.template.event
@@ -381,8 +381,8 @@
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool
-- maps.counterPickMapPool
 - maps.tournamentMaplist
+- maps.tieBreakerMapPool
 - maps.template
 - maps.template.none
 - maps.template.event
@@ -556,8 +556,8 @@
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool
-- maps.counterPickMapPool
 - maps.tournamentMaplist
+- maps.tieBreakerMapPool
 - maps.template
 - maps.template.none
 - maps.template.event
@@ -749,7 +749,7 @@
 - header.language
 - header.loggedInAs
 - header.theme
-- maps.counterPickMapPool
+- maps.tieBreakerMapPool
 - maps.validation.PICKING
 - maps.validation.NOT_ONE_MAP_PER_MODE
 - maps.validation.MAP_REPEATED
@@ -846,8 +846,8 @@
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool
-- maps.counterPickMapPool
 - maps.tournamentMaplist
+- maps.tieBreakerMapPool
 - maps.template
 - maps.template.none
 - maps.template.event
@@ -1023,7 +1023,7 @@
 - actions.clear
 - actions.selectAll
 - actions.search
-- maps.counterPickMapPool
+- maps.tieBreakerMapPool
 - maps.template
 - maps.template.none
 - maps.template.event
@@ -1147,7 +1147,7 @@
 - actions.clear
 - actions.selectAll
 - actions.search
-- maps.counterPickMapPool
+- maps.tieBreakerMapPool
 - maps.template
 - maps.template.none
 - maps.template.event
@@ -1289,8 +1289,8 @@
 - maps.createMapList
 - maps.halfSz
 - maps.mapPool
-- maps.counterPickMapPool
 - maps.tournamentMaplist
+- maps.tieBreakerMapPool
 - maps.template
 - maps.template.none
 - maps.template.event

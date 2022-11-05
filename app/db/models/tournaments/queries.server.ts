@@ -15,6 +15,7 @@ import renameTeamSql from "./renameTeam.sql";
 import addCounterpickMapSql from "./addCounterpickMap.sql";
 import deleteCounterpickMapsByTeamIdSql from "./deleteCounterpickMapsByTeamId.sql";
 import type { MapPool } from "~/modules/map-pool-serializer";
+import { parseDBJsonArray } from "~/utils/sql";
 
 const findByIdentifierStm = sql.prepare(findByIdentifierSql);
 const addTeamStm = sql.prepare(addTeamSql);
@@ -73,8 +74,8 @@ export function findTeamsByEventId(calendarEventId: CalendarEvent["id"]) {
   return rows.map((row) => {
     return {
       ...row,
-      members: JSON.parse(row.members),
-      mapPool: JSON.parse(row.mapPool),
+      members: parseDBJsonArray(row.members),
+      mapPool: parseDBJsonArray(row.mapPool),
     };
   }) as FindTeamsByEventId;
 }

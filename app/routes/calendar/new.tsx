@@ -662,8 +662,7 @@ function CounterPickMapPoolSection() {
         mapPool={mapPool}
         handleMapPoolChange={setMapPool}
         recentEvents={recentEventsWithMapPools}
-        // xxx: rename
-        title={t("common:maps.counterPickMapPool")}
+        title={t("common:maps.tieBreakerMapPool")}
         includeFancyControls={false}
         modesToInclude={["SZ", "TC", "RM", "CB"]}
         info={

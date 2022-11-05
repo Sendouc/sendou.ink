@@ -218,6 +218,16 @@ label {
 
 details summary {
   cursor: pointer;
+  user-select: none;
+}
+
+.summary {
+  border-radius: var(--rounded);
+  background-color: var(--bg-darker-transparent);
+  font-size: var(--fonts-xs);
+  font-weight: var(--semi-bold);
+  padding-block: var(--s-1);
+  padding-inline: var(--s-2);
 }
 
 fieldset {
@@ -230,7 +240,6 @@ fieldset {
 }
 
 legend {
-  border-radius: 2px;
   border-radius: var(--rounded-sm);
   background-color: transparent;
   font-size: var(--fonts-xs);
