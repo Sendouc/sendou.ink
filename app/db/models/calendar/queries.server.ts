@@ -94,12 +94,11 @@ export const create = sql.transaction(
       });
     }
 
-    for (const mapPoolArgs of mapPoolMaps) {
-      createMapPoolMapStm.run({
-        calendarEventId: createdEvent.id,
-        ...mapPoolArgs,
-      });
-    }
+    upsertMapPool({
+      eventId: createdEvent.id,
+      mapPoolMaps,
+      toToolsEnabled: calendarEventArgs.toToolsEnabled,
+    });
 
     return createdEvent.id;
   }
