@@ -118,3 +118,14 @@ Note: This is only useful if you have access to a production running on Render.c
 2. Copy generated files from output folder to gear-ids.ts file
 3. Get .png from Lean's repository
 4. Generate .avif image
+
+### Fix errors from the CI Pipeline
+
+If you change any files and the CI pipeline errors out on certain formatting/linting steps (e.g. the `Prettier` or `Stylelint` step), run this command in the repo's root directory:
+
+```sh
+npm run cf
+```
+
+Before committing, if for some reason you see an abnormally high amount of files changed, simply run `git add --renormalize .` and it will fix the error.
+- Background info: this is caused by the line endings on your local repo not matching those with the remote repo's, which should remove the vast majority of unstaged files that appears to have no changes at all.
