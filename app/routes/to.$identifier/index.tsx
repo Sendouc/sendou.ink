@@ -41,7 +41,6 @@ export const links: LinksFunction = () => {
 const tournamentToolsActionSchema = z.union([
   z.object({
     _action: z.literal("TEAM_NAME"),
-    // xxx: not trimming if for example "Team Olive "
     name: z.string().min(1).max(TOURNAMENT.TEAM_NAME_MAX_LENGTH),
   }),
   z.object({

@@ -5,5 +5,8 @@ select
 from
   "CalendarEvent"
 where
-  "id" = @identifier
-  or "customUrl" = @identifier
+  (
+    "id" = @identifier
+    or "customUrl" = @identifier
+  )
+  and "CalendarEvent"."toToolsEnabled" = 1
