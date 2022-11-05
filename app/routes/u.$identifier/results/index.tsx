@@ -1,5 +1,5 @@
 import { useMatches } from "@remix-run/react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "~/hooks/useTranslation";
 import invariant from "tiny-invariant";
 import { LinkButton } from "~/components/Button";
 import { Main } from "~/components/Main";

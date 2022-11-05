@@ -6,7 +6,7 @@ import {
 } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 import * as React from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "~/hooks/useTranslation";
 import { z } from "zod";
 import { AbilitiesSelector } from "~/components/AbilitiesSelector";
 import { Button } from "~/components/Button";

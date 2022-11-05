@@ -10,7 +10,7 @@ import {
 import { Form, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "~/hooks/useTranslation";
 import { z } from "zod";
 import { Badge } from "~/components/Badge";
 import { Button } from "~/components/Button";

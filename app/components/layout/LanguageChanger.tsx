@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "~/hooks/useTranslation";
 import { languages } from "~/modules/i18n";
 import { LinkButton } from "../Button";
 import { GlobeIcon } from "../icons/Globe";

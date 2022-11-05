@@ -12,7 +12,7 @@ import {
 } from "@remix-run/react";
 import { countries } from "countries-list";
 import * as React from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "~/hooks/useTranslation";
 import invariant from "tiny-invariant";
 import { z } from "zod";
 import { Button } from "~/components/Button";

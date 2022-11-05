@@ -4,7 +4,7 @@ import {
   type SerializeFrom,
 } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "~/hooks/useTranslation";
 import { BuildCard } from "~/components/BuildCard";
 import { LinkButton } from "~/components/Button";
 import { BUILDS_PAGE_BATCH_SIZE, BUILDS_PAGE_MAX_BUILDS } from "~/constants";

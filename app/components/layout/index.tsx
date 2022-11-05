@@ -1,6 +1,6 @@
 import { Link, useMatches } from "@remix-run/react";
 import * as React from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "~/hooks/useTranslation";
 import type { RootLoaderData } from "~/root";
 import { type SendouRouteHandle } from "~/utils/remix";
 import { LOGO_PATH, navIconUrl } from "~/utils/urls";

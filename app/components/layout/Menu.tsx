@@ -5,7 +5,7 @@ import { Image } from "../Image";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { canPerformAdminActions } from "~/permissions";
 import { useUser } from "~/modules/auth";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "~/hooks/useTranslation";
 
 export function Menu({
   expanded,

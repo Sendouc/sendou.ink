@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "~/hooks/useTranslation";
 import { Link } from "react-router-dom";
 import type { Build, BuildWeapon, GearType, User } from "~/db/types";
 import { useIsMounted } from "~/hooks/useIsMounted";

@@ -8,7 +8,7 @@ import type { ShouldReloadFunction } from "@remix-run/react";
 import { Link } from "@remix-run/react";
 import { useLoaderData, useSearchParams } from "@remix-run/react";
 import * as React from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "~/hooks/useTranslation";
 import { useCopyToClipboard } from "react-use";
 import invariant from "tiny-invariant";
 import { Button } from "~/components/Button";

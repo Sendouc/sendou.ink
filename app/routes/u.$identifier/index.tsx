@@ -1,7 +1,7 @@
 import { useMatches } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "~/hooks/useTranslation";
 import invariant from "tiny-invariant";
 import { Avatar } from "~/components/Avatar";
 import { Badge } from "~/components/Badge";

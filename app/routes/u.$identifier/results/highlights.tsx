@@ -1,6 +1,6 @@
 import { type ActionFunction, redirect } from "@remix-run/node";
 import { Form, useMatches, useTransition } from "@remix-run/react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "~/hooks/useTranslation";
 import invariant from "tiny-invariant";
 import { z } from "zod";
 import { Button } from "~/components/Button";
