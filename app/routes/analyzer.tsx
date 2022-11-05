@@ -1,7 +1,7 @@
 import { type LinksFunction, type MetaFunction } from "@remix-run/node";
 import { Link } from "@remix-run/react";
 import * as React from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "~/hooks/useTranslation";
 import { AbilitiesSelector } from "~/components/AbilitiesSelector";
 import { Ability } from "~/components/Ability";
 import { WeaponCombobox } from "~/components/Combobox";

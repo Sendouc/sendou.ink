@@ -5,7 +5,7 @@ import clsx from "clsx";
 import type { Unpacked } from "~/utils/types";
 import type { GearType, UserWithPlusTier } from "~/db/types";
 import { useAllEventsWithMapPools, useUsers } from "~/hooks/swr";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "~/hooks/useTranslation";
 import {
   clothesGearIds,
   headGearIds,

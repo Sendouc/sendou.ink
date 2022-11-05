@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "~/hooks/useTranslation";
 import { Image } from "~/components/Image";
 import {
   type ModeShort,

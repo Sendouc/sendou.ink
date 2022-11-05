@@ -29,7 +29,7 @@ import { FormMessage } from "~/components/FormMessage";
 import { FormErrors } from "~/components/FormErrors";
 import type { Unpacked } from "~/utils/types";
 import { calendarEventPage } from "~/utils/urls";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "~/hooks/useTranslation";
 
 const playersSchema = z
   .array(

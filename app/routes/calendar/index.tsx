@@ -5,7 +5,7 @@ import clsx from "clsx";
 import { addDays, addMonths, subDays, subMonths } from "date-fns";
 import React from "react";
 import { Flipped, Flipper } from "react-flip-toolkit";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "~/hooks/useTranslation";
 import { z } from "zod";
 import { Alert } from "~/components/Alert";
 import { LinkButton } from "~/components/Button";

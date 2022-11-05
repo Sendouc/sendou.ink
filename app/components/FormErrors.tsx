@@ -1,5 +1,5 @@
 import { useActionData } from "@remix-run/react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "~/hooks/useTranslation";
 
 export function FormErrors({ namespace }: { namespace: "user" | "calendar" }) {
   const { t } = useTranslation(["common", namespace]);

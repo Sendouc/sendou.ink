@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "~/hooks/useTranslation";
 import { Theme, useTheme } from "~/modules/theme";
 import { Button } from "../Button";
 import { MoonIcon } from "../icons/Moon";

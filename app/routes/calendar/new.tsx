@@ -10,7 +10,7 @@ import {
 import { Form, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "~/hooks/useTranslation";
 import { z } from "zod";
 import type { AlertVariation } from "~/components/Alert";
 import { Alert } from "~/components/Alert";
@@ -39,6 +39,7 @@ import {
   dateToDatabaseTimestamp,
   databaseTimestampToDate,
   getDateWithHoursOffset,
+  getDateAtNextFullHour,
 } from "~/utils/dates";
 import {
   badRequestIfFalsy,
@@ -60,6 +61,8 @@ import {
   toArray,
 } from "~/utils/zod";
 import { Tags } from "./components/Tags";
+import { isDefined } from "~/utils/arrays";
+import { CrossIcon } from "~/components/icons/Cross";
 
 const MIN_DATE = new Date(Date.UTC(2015, 4, 28));
 
@@ -182,7 +185,7 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 export const handle: SendouRouteHandle = {
-  i18n: "calendar",
+  i18n: ["calendar", "game-misc"],
 };
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -295,26 +298,45 @@ function DescriptionTextarea() {
   );
 }
 
+function AddButton({ onAdd, id }: { onAdd: () => void; id?: string }) {
+  const { t } = useTranslation();
+
+  return (
+    <Button tiny variant="outlined" onClick={onAdd} id={id}>
+      {t("actions.add")}
+    </Button>
+  );
+}
+
 function DatesInput() {
   const { t } = useTranslation(["common", "calendar"]);
   const { eventToEdit } = useLoaderData<typeof loader>();
 
-  // Initialize datesInputState by retrieving pre-existing events if they exist
-  let eventDatesInputState = null;
-  if (typeof eventToEdit?.startTimes !== "undefined") {
-    eventDatesInputState = eventToEdit.startTimes.map((t) => {
-      return { finalDateInputDate: databaseTimestampToDate(t) };
-    });
-  }
+  // Using array index as a key can mess up internal state, especially when
+  // removing elements from the middle. So we just count up for every date we
+  // create.
+  const keyCounter = React.useRef(0);
+  const getKey = () => ++keyCounter.current;
 
-  // React hook that keeps contains an array of parameters that corresponds to each DateInput child object generated
-  const [datesInputState, setDatesInputState] = React.useState(
-    eventDatesInputState ?? [
-      {
-        finalDateInputDate: new Date(),
-      },
-    ]
-  );
+  // React hook that keeps track of child DateInput's dates
+  // (necessary for determining additional Date's defaultValues)
+  const [datesInputState, setDatesInputState] = React.useState<
+    Array<{
+      key: number;
+      date: Date | null;
+    }>
+  >(() => {
+    // Initialize datesInputState by retrieving pre-existing events if they exist
+    if (eventToEdit?.startTimes) {
+      return eventToEdit.startTimes.map((t) => ({
+        key: getKey(),
+        date: databaseTimestampToDate(t),
+      }));
+    }
+
+    // Initial date rounded to next full hour from now
+    return [{ key: getKey(), date: getDateAtNextFullHour(new Date()) }];
+  });
 
   const datesCount = datesInputState.length;
 
@@ -324,80 +346,87 @@ function DatesInput() {
     : "";
   const NEW_CALENDAR_EVENT_HOURS_OFFSET = 24;
 
+  const addDate = () =>
+    setDatesInputState((current) => {
+      // .reverse() is mutating, but map/filter returns a new array anyway.
+      const lastValidDate = current
+        .map((e) => e.date)
+        .filter(isDefined)
+        .reverse()[0];
+
+      const addedDate = lastValidDate
+        ? getDateWithHoursOffset(lastValidDate, NEW_CALENDAR_EVENT_HOURS_OFFSET)
+        : getDateAtNextFullHour(new Date());
+
+      return [...current, { key: getKey(), date: addedDate }];
+    });
+
   return (
     <div className="stack md items-start">
-      <div>
-        <Label htmlFor="date" required>
-          {t("calendar:forms.dates")}
-        </Label>
-        <div className="stack sm">
-          {datesInputState.map((inputState, i) => {
-            return (
-              <div key={i} className="stack horizontal sm items-center">
-                <DateInput
-                  id="date"
-                  name="date"
-                  defaultValue={inputState.finalDateInputDate ?? new Date()}
-                  min={MIN_DATE}
-                  max={MAX_DATE}
-                  required
-                  onChange={(newDate: Date) => {
-                    setDatesInputState((current) =>
-                      current.map((obj, objIndex) => {
-                        if (objIndex === i) {
-                          return { ...obj, finalDateInputDate: newDate };
-                        }
-
-                        return obj;
-                      })
-                    );
-                  }}
-                />
-                {i === datesCount - 1 && (
-                  <>
-                    {/* "Add" button */}
+      <fieldset>
+        <legend>
+          {t("calendar:forms.dates")} <span className="text-error">*</span>
+        </legend>
+        <div className="stack sm items-start">
+          <div className="stack sm">
+            {datesInputState.map(({ date, key }, i) => {
+              return (
+                <div key={key} className="stack horizontal sm items-center">
+                  <label
+                    id={`date-input-${key}-label`}
+                    className="calendar-new__day-label"
+                    htmlFor={`date-input-${key}`}
+                  >
+                    {t("calendar:day", {
+                      number: i + 1,
+                    })}
+                  </label>
+                  <DateInput
+                    id={`date-input-${key}`}
+                    name="date"
+                    defaultValue={date ?? undefined}
+                    min={MIN_DATE}
+                    max={MAX_DATE}
+                    required
+                    onChange={(newDate: Date | null) => {
+                      setDatesInputState((current) =>
+                        current.map((entry) =>
+                          entry.key === key
+                            ? { ...entry, date: newDate }
+                            : entry
+                        )
+                      );
+                    }}
+                  />
+                  {/* "Remove" button */}
+                  {datesCount > 1 && (
                     <Button
                       tiny
-                      disabled={
-                        datesCount === CALENDAR_EVENT.MAX_AMOUNT_OF_DATES
-                      }
                       onClick={() => {
-                        setDatesInputState((current) => [
-                          ...current,
-                          {
-                            finalDateInputDate: getDateWithHoursOffset(
-                              inputState.finalDateInputDate,
-                              NEW_CALENDAR_EVENT_HOURS_OFFSET
-                            ),
-                          },
-                        ]);
+                        setDatesInputState((current) =>
+                          current.filter((e) => e.key !== key)
+                        );
                       }}
-                    >
-                      {t("common:actions.add")}
-                    </Button>
-
-                    {/* "Remove" button */}
-                    {datesCount > 1 && (
-                      <Button
-                        tiny
-                        onClick={() => {
-                          setDatesInputState((current) => current.slice(0, -1));
-                        }}
-                        variant="destructive"
-                      >
-                        {t("common:actions.remove")}
-                      </Button>
-                    )}
-                  </>
-                )}
-              </div>
-            );
-          })}
+                      aria-controls={`date-input-${key}`}
+                      aria-label={t("common:actions.remove")}
+                      aria-describedby={`date-input-${key}-label`}
+                      title={t("common:actions.remove")}
+                      icon={<CrossIcon />}
+                      variant="minimal-destructive"
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+          {datesCount < CALENDAR_EVENT.MAX_AMOUNT_OF_DATES && (
+            <AddButton onAdd={addDate} />
+          )}
+          <FormMessage type="info" className={clsx({ invisible: !isMounted })}>
+            {t("calendar:inYourTimeZone")} {usersTimeZone}
+          </FormMessage>
         </div>
-        <FormMessage type="info" className={clsx({ invisible: !isMounted })}>
-          {t("calendar:inYourTimeZone")} {usersTimeZone}
-        </FormMessage>
-      </div>
+      </fieldset>
     </div>
   );
 }
@@ -627,14 +656,7 @@ function MapPoolSection() {
   ) : (
     <div>
       <label htmlFor={id}>{t("common:maps.mapPool")}</label>
-      <Button
-        id={id}
-        variant="outlined"
-        tiny
-        onClick={() => setIncludeMapPool(true)}
-      >
-        {t("common:actions.add")}
-      </Button>
+      <AddButton onAdd={() => setIncludeMapPool(true)} id={id} />
     </div>
   );
 }

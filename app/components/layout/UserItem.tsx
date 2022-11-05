@@ -1,5 +1,5 @@
 import { Link, useSearchParams } from "@remix-run/react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
 import { LOG_IN_URL, LOG_OUT_URL, userPage } from "~/utils/urls";
 import { Avatar } from "../Avatar";

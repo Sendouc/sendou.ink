@@ -53,10 +53,8 @@ export function isValidDate(date: Date) {
 export function dateToYearMonthDayHourMinuteString(date: Date) {
   const copiedDate = new Date(date.getTime());
 
-  //TODO: fix invalid Date Input handling: https://github.com/Sendouc/sendou.ink/issues/1082
   if (!isValidDate(copiedDate)) {
-    console.warn("Invalid date");
-    // throw new RangeError("Invalid Date");
+    throw new Error("tried to format string from invalid date");
   }
 
   const year = copiedDate.getFullYear();
@@ -83,5 +81,15 @@ function prefixZero(number: number) {
 export function getDateWithHoursOffset(date: Date, hoursOffset: number) {
   const copiedDate = new Date(date.getTime());
   copiedDate.setHours(date.getHours() + hoursOffset);
+  return copiedDate;
+}
+
+export function getDateAtNextFullHour(date: Date) {
+  const copiedDate = new Date(date.getTime());
+  if (date.getMinutes() > 0) {
+    copiedDate.setHours(date.getHours() + 1);
+    copiedDate.setMinutes(0);
+  }
+  copiedDate.setSeconds(0);
   return copiedDate;
 }

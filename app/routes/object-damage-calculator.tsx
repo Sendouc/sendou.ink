@@ -24,7 +24,7 @@ import type { LinksFunction } from "@remix-run/node";
 import type { SendouRouteHandle } from "~/utils/remix";
 import type { DamageReceiver, DamageType } from "~/modules/analyzer";
 import React from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "~/hooks/useTranslation";
 import clsx from "clsx";
 import { Label } from "~/components/Label";
 import { Ability } from "~/components/Ability";

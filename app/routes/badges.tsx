@@ -7,7 +7,8 @@ import { db } from "~/db";
 import type { FindAll } from "~/db/models/badges/queries.server";
 import styles from "~/styles/badges.css";
 import { BORZOIC_TWITTER, FAQ_PAGE } from "~/utils/urls";
-import { Trans, useTranslation } from "react-i18next";
+import { Trans } from "react-i18next";
+import { useTranslation } from "~/hooks/useTranslation";
 import { useAnimateListEntry } from "~/hooks/useAnimateListEntry";
 import { type SendouRouteHandle } from "~/utils/remix";
 
