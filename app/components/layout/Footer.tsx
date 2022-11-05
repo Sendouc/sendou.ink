@@ -1,5 +1,5 @@
 import { Link } from "@remix-run/react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "~/hooks/useTranslation";
 import type { RootLoaderData } from "~/root";
 import { discordFullName } from "~/utils/strings";
 import {

@@ -1,7 +1,7 @@
 import type { ActionFunction } from "@remix-run/node";
 import { json, type LoaderArgs } from "@remix-run/node";
 import { useLoaderData, useMatches } from "@remix-run/react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "~/hooks/useTranslation";
 import { z } from "zod";
 import { BuildCard } from "~/components/BuildCard";
 import { LinkButton } from "~/components/Button";

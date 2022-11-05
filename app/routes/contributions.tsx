@@ -1,5 +1,5 @@
 import type { MetaFunction } from "@remix-run/node";
-import { Trans, useTranslation } from "react-i18next";
+import { Trans } from "react-i18next";
 import { Main } from "~/components/Main";
 import { useSetTitle } from "~/hooks/useSetTitle";
 import { languages } from "~/modules/i18n";
@@ -12,6 +12,7 @@ import {
   UBERU_TWITTER,
 } from "~/utils/urls";
 import { type SendouRouteHandle } from "~/utils/remix";
+import { useTranslation } from "~/hooks/useTranslation";
 
 export const meta: MetaFunction = () => {
   return {
