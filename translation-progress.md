@@ -20,12 +20,11 @@
 
 ### 🟡 common.json
 
-**75/82**
+**76/82**
 
 <details>
 <summary>Missing</summary>
 
-- pages.articles
 - header.language
 - header.loggedInAs
 - header.theme
@@ -43,16 +42,9 @@
 
 **6/6**
 
-### 🟡 front.json
+### 🟢 front.json
 
-**12/13**
-
-<details>
-<summary>Missing</summary>
-
-- articlesGoTo
-
-</details>
+**13/13**
 
 ### 🟢 game-misc.json
 
