@@ -14,6 +14,7 @@ import findTeamsByEventIdSql from "./findTeamsByEventId.sql";
 import renameTeamSql from "./renameTeam.sql";
 import addCounterpickMapSql from "./addCounterpickMap.sql";
 import deleteCounterpickMapsByTeamIdSql from "./deleteCounterpickMapsByTeamId.sql";
+import deleteTournamentTeamSql from "./deleteTournamentTeam.sql";
 import type { MapPool } from "~/modules/map-pool-serializer";
 import { parseDBJsonArray } from "~/utils/sql";
 
@@ -26,6 +27,7 @@ const addCounterpickMapStm = sql.prepare(addCounterpickMapSql);
 const deleteCounterpickMapsByTeamIdStm = sql.prepare(
   deleteCounterpickMapsByTeamIdSql
 );
+const deleteTournamentTeamStm = sql.prepare(deleteTournamentTeamSql);
 
 type FindByIdentifier = Pick<
   CalendarEvent,
@@ -103,3 +105,7 @@ export const upsertCounterpickMaps = sql.transaction(
     }
   }
 );
+
+export function deleteTournamentTeam(id: TournamentTeam["id"]) {
+  deleteTournamentTeamStm.run({ id });
+}

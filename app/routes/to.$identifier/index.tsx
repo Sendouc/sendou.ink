@@ -30,6 +30,7 @@ import { findOwnedTeam } from "~/utils/tournaments";
 import { assertUnreachable } from "~/utils/types";
 import { modeImageUrl } from "~/utils/urls";
 import type { TournamentToolsLoaderData } from "../to.$identifier";
+import { FormWithConfirm } from "~/components/FormWithConfirm";
 
 export const links: LinksFunction = () => {
   return [
@@ -46,6 +47,9 @@ const tournamentToolsActionSchema = z.union([
   z.object({
     _action: z.literal("POOL"),
     pool: z.string(),
+  }),
+  z.object({
+    _action: z.literal("DELETE_REGISTRATION"),
   }),
 ]);
 
@@ -91,6 +95,11 @@ export const action: ActionFunction = async ({ request, params }) => {
       });
       break;
     }
+    case "DELETE_REGISTRATION": {
+      validate(ownTeam);
+      db.tournaments.deleteTournamentTeam(ownTeam.id);
+      break;
+    }
     default: {
       assertUnreachable(data);
     }
@@ -112,7 +121,6 @@ export default function TournamentToolsPage() {
 function PrestartControls() {
   const data = useOutletContext<TournamentToolsLoaderData>();
 
-  // xxx: delete team
   return (
     <div className="stack md">
       <TeamNameSection />
@@ -124,6 +132,19 @@ function PrestartControls() {
             Note: you can change your map pool and roster as many times as you
             want before the tournament starts.
           </div>
+          <FormWithConfirm
+            fields={[["_action", "DELETE_REGISTRATION"]]}
+            dialogHeading={`Delete data related to ${data.ownTeam.name}?`}
+          >
+            <Button
+              tiny
+              variant="minimal-destructive"
+              type="submit"
+              className="mt-4"
+            >
+              Delete team
+            </Button>
+          </FormWithConfirm>
         </>
       )}
     </div>
