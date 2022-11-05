@@ -178,7 +178,7 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 export const handle: SendouRouteHandle = {
-  i18n: "calendar",
+  i18n: ["calendar", "game-misc"],
 };
 
 export const loader = async ({ request }: LoaderArgs) => {
