@@ -28,12 +28,10 @@ export type MapPoolSelectorProps = {
     event?: Pick<CalendarEvent, "id" | "name">
   ) => void;
   className?: string;
-  // xxx: do we need includeFancyControls or could this missing do the same thing?
   recentEvents?: SerializedMapPoolEvent[];
   initialEvent?: Pick<CalendarEvent, "id" | "name">;
   title?: string;
   noTitle?: boolean;
-  includeFancyControls?: boolean;
   modesToInclude?: ModeShort[];
   info?: React.ReactNode;
   footer?: React.ReactNode;
@@ -49,7 +47,6 @@ export function MapPoolSelector({
   initialEvent,
   title,
   noTitle = false,
-  includeFancyControls = true,
   modesToInclude,
   info,
   footer,
@@ -113,6 +110,8 @@ export function MapPoolSelector({
 
     assertType<never, typeof template>();
   };
+
+  const includeFancyControls = Boolean(recentEvents);
 
   return (
     <fieldset className={className}>

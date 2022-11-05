@@ -663,8 +663,7 @@ function MapPoolSection() {
 
 function CounterPickMapPoolSection() {
   const { t } = useTranslation(["common"]);
-  const { eventToEdit, recentEventsWithMapPools } =
-    useLoaderData<typeof loader>();
+  const { eventToEdit } = useLoaderData<typeof loader>();
   const [mapPool, setMapPool] = React.useState<MapPool>(
     eventToEdit?.tieBreakerMapPool
       ? new MapPool(eventToEdit.tieBreakerMapPool)
@@ -683,9 +682,7 @@ function CounterPickMapPoolSection() {
         className="w-full"
         mapPool={mapPool}
         handleMapPoolChange={setMapPool}
-        recentEvents={recentEventsWithMapPools}
         title={t("common:maps.tieBreakerMapPool")}
-        includeFancyControls={false}
         modesToInclude={["SZ", "TC", "RM", "CB"]}
         info={
           <div>

@@ -220,7 +220,6 @@ function MapPoolSection() {
             handleMapPoolChange={setCounterpickMapPool}
             className="bg-transparent-important"
             noTitle
-            includeFancyControls={false}
             modesToInclude={["SZ", "TC", "RM", "CB"]}
             preselectedMapPool={new MapPool(data.tieBreakerMapPool)}
             info={
