@@ -2,7 +2,7 @@ import type { ActionFunction, LinksFunction } from "@remix-run/node";
 import { Form, useOutletContext } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "~/hooks/useTranslation";
 import { z } from "zod";
 import { Alert } from "~/components/Alert";
 import { Button } from "~/components/Button";
@@ -135,34 +135,52 @@ function TeamNameSection() {
   const data = useOutletContext<TournamentToolsLoaderData>();
 
   return (
-    <section className="tournament__action-section">
-      1. Register on{" "}
-      <a href={data.event.bracketUrl} target="_blank" rel="noopener noreferrer">
-        {data.event.bracketUrl}
-      </a>
-      <Form method="post" className="mt-4">
-        <label htmlFor="name">Team name you register with</label>
-        <input
-          id="name"
-          name="name"
-          maxLength={TOURNAMENT.TEAM_NAME_MAX_LENGTH}
-          defaultValue={data.ownTeam?.name}
-          required
-        />
-        <Button
-          tiny
-          className="mt-4"
-          name="_action"
-          value="TEAM_NAME"
-          type="submit"
+    <section className="tournament__action-section stack md">
+      <div>
+        1. Register on{" "}
+        <a
+          href={data.event.bracketUrl}
+          target="_blank"
+          rel="noopener noreferrer"
         >
-          Submit
-        </Button>
-      </Form>
+          {data.event.bracketUrl}
+        </a>
+      </div>
+      <Details>
+        <Summary>
+          <div className="tournament__summary-content">
+            Enter team name you register with{" "}
+            {data.ownTeam ? (
+              <CheckmarkIcon className="fill-success" />
+            ) : (
+              <AlertIcon className="fill-warning" />
+            )}
+          </div>
+        </Summary>
+        <Form method="post" className="mt-4">
+          <input
+            id="name"
+            name="name"
+            maxLength={TOURNAMENT.TEAM_NAME_MAX_LENGTH}
+            defaultValue={data.ownTeam?.name}
+            required
+          />
+          <Button
+            tiny
+            className="mt-4"
+            name="_action"
+            value="TEAM_NAME"
+            type="submit"
+          >
+            Submit
+          </Button>
+        </Form>
+      </Details>
     </section>
   );
 }
 
+// xxx: small bits of no background color
 // xxx: some explanation for tiebreaker maps
 function MapPoolSection() {
   const data = useOutletContext<TournamentToolsLoaderData>();
