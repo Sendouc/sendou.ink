@@ -10,5 +10,6 @@
   "object-damage-calculator.description": "Her kan du udregne den påførte skade for forskellige objekter.",
   "recentWinners": "Se de seneste vindere",
   "upcomingEvents": "Kommende begivenheder",
-  "articleBy": "Af {{author}}"
+  "articleBy": "Af {{author}}",
+  "articlesGoTo": "Se alle udgivne artikler"
 }
