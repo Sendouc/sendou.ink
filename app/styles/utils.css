@@ -46,6 +46,10 @@
   background-color: var(--bg-darker) !important;
 }
 
+.bg-transparent-important {
+  background-color: transparent !important;
+}
+
 .bg-darker-transparent {
   background-color: var(--bg-darker-transparent);
 }
@@ -78,8 +82,20 @@
   padding-inline-start: var(--s-4);
 }
 
+.px-2 {
+  padding-inline: var(--s-2);
+}
+
+.pb-4 {
+  padding-block-end: var(--s-4);
+}
+
 .mt-2 {
   margin-block-start: var(--s-2);
+}
+
+.mt-3 {
+  margin-block-start: var(--s-3);
 }
 
 .mt-4 {

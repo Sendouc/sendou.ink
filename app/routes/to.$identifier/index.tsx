@@ -146,8 +146,8 @@ function TeamNameSection() {
           {data.event.bracketUrl}
         </a>
       </div>
-      <Details>
-        <Summary>
+      <Details className="bg-darker-transparent rounded">
+        <Summary className="bg-transparent-important">
           <div className="tournament__summary-content">
             Enter team name you register with{" "}
             {data.ownTeam ? (
@@ -157,7 +157,7 @@ function TeamNameSection() {
             )}
           </div>
         </Summary>
-        <Form method="post" className="mt-4">
+        <Form method="post" className="mt-3 px-2 pb-4">
           <input
             id="name"
             name="name"
@@ -180,7 +180,6 @@ function TeamNameSection() {
   );
 }
 
-// xxx: small bits of no background color
 // xxx: some explanation for tiebreaker maps
 function MapPoolSection() {
   const data = useOutletContext<TournamentToolsLoaderData>();
@@ -201,7 +200,7 @@ function MapPoolSection() {
           </div>
         </div>
         <Details className="bg-darker-transparent rounded">
-          <Summary>
+          <Summary className="bg-transparent-important">
             <div className="tournament__summary-content">
               Pick your team&apos;s maps{" "}
               {hasPickedMapPool ? (
@@ -219,6 +218,7 @@ function MapPoolSection() {
           <MapPoolSelector
             mapPool={counterpickMapPool}
             handleMapPoolChange={setCounterpickMapPool}
+            className="bg-transparent-important"
             noTitle
             includeFancyControls={false}
             modesToInclude={["SZ", "TC", "RM", "CB"]}
