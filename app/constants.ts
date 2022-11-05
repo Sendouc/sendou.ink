@@ -35,7 +35,9 @@ export const CALENDAR_EVENT_RESULT = {
 
 export const TOURNAMENT = {
   TEAM_NAME_MAX_LENGTH: 64,
-};
+  COUNTERPICK_MAPS_PER_MODE: 2,
+  COUNTERPICK_MAX_STAGE_REPEAT: 2,
+} as const;
 
 export const BUILD = {
   TITLE_MIN_LENGTH: 1,

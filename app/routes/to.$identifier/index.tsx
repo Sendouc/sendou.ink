@@ -1,11 +1,22 @@
 import type { ActionFunction, LinksFunction } from "@remix-run/node";
 import { Form, useOutletContext } from "@remix-run/react";
+import clsx from "clsx";
+import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { z } from "zod";
+import { Alert } from "~/components/Alert";
 import { Button } from "~/components/Button";
+import { Image } from "~/components/Image";
 import { Main } from "~/components/Main";
+import { MapPoolSelector } from "~/components/MapPoolSelector";
+import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
 import { TOURNAMENT } from "~/constants";
 import { db } from "~/db";
 import { requireUser } from "~/modules/auth";
+import type { StageId } from "~/modules/in-game-lists";
+import { rankedModesShort } from "~/modules/in-game-lists/modes";
+import { MapPool } from "~/modules/map-pool-serializer";
+import mapsStyles from "~/styles/maps.css";
 import styles from "~/styles/tournament.css";
 import {
   badRequestIfFalsy,
@@ -14,10 +25,14 @@ import {
 } from "~/utils/remix";
 import { findOwnedTeam } from "~/utils/tournaments";
 import { assertUnreachable } from "~/utils/types";
+import { modeImageUrl } from "~/utils/urls";
 import type { TournamentToolsLoaderData } from "../to.$identifier";
 
 export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
+  return [
+    { rel: "stylesheet", href: styles },
+    { rel: "stylesheet", href: mapsStyles },
+  ];
 };
 
 const tournamentToolsActionSchema = z.union([
@@ -28,6 +43,7 @@ const tournamentToolsActionSchema = z.union([
   }),
   z.object({
     _action: z.literal("POOL"),
+    pool: z.string(),
   }),
 ]);
 
@@ -63,6 +79,14 @@ export const action: ActionFunction = async ({ request, params }) => {
       break;
     }
     case "POOL": {
+      validate(ownTeam);
+      const mapPool = new MapPool(data.pool);
+      validate(validateCounterPickMapPool(mapPool) === "VALID");
+
+      db.tournaments.upsertCounterpickMaps({
+        mapPool,
+        tournamentTeamId: ownTeam.id,
+      });
       break;
     }
     default: {
@@ -136,18 +160,151 @@ function TeamNameSection() {
   );
 }
 
+// xxx: some explanation for tiebreaker maps
 function MapPoolSection() {
   const data = useOutletContext<TournamentToolsLoaderData>();
+  const [expanded, setExpanded] = React.useState(false);
+  const [counterpickMapPool, setCounterpickMapPool] = React.useState(
+    data.ownTeam?.mapPool ? new MapPool(data.ownTeam.mapPool) : MapPool.EMPTY
+  );
+  const { t } = useTranslation(["common"]);
 
   return (
-    <section className="tournament__action-section">
-      2. Pick map pool
-      <div className="tournament__action-side-note">
-        You can play without selecting a map pool but then your opponent gets to
-        decide what maps get played.
-        <Button className="mt-4">Pick</Button>
+    <section className="tournament__action-section stack md">
+      <div>
+        2. Pick map pool
+        <div className="tournament__action-side-note">
+          You can play without selecting a map pool but then your opponent gets
+          to decide what maps get played.
+          {!expanded && (
+            <Button className="mt-4" onClick={() => setExpanded(true)}>
+              Pick
+            </Button>
+          )}
+        </div>
       </div>
+      {expanded && (
+        <div>
+          <RequiredHiddenInput
+            value={counterpickMapPool.serialized}
+            name="pool"
+            isValid={validateCounterPickMapPool(counterpickMapPool) === "VALID"}
+          />
+          <MapPoolSelector
+            mapPool={counterpickMapPool}
+            handleMapPoolChange={setCounterpickMapPool}
+            title={t("common:maps.counterPickMapPool")}
+            includeFancyControls={false}
+            modesToInclude={["SZ", "TC", "RM", "CB"]}
+            preselectedMapPool={new MapPool(data.tieBreakerMapPool)}
+            info={
+              <div className="stack md mt-2">
+                <MapPoolCounts mapPool={counterpickMapPool} />
+                <MapPoolValidationStatusMessage
+                  status={validateCounterPickMapPool(counterpickMapPool)}
+                />
+              </div>
+            }
+          />
+          <Button
+            type="submit"
+            className="mt-4"
+            name="_action"
+            value="POOL"
+            tiny
+          >
+            Save changes
+          </Button>
+        </div>
+      )}
     </section>
+  );
+}
+
+type CounterPickValidationStatus =
+  | "PICKING"
+  | "VALID"
+  | "TOO_MUCH_STAGE_REPEAT";
+
+function validateCounterPickMapPool(
+  mapPool: MapPool
+): CounterPickValidationStatus {
+  const stageCounts = new Map<StageId, number>();
+  for (const stageId of mapPool.stages) {
+    if (!stageCounts.has(stageId)) {
+      stageCounts.set(stageId, 0);
+    }
+    if (stageCounts.get(stageId)! === TOURNAMENT.COUNTERPICK_MAX_STAGE_REPEAT) {
+      return "TOO_MUCH_STAGE_REPEAT";
+    }
+
+    stageCounts.set(stageId, stageCounts.get(stageId)! + 1);
+  }
+
+  if (
+    mapPool.parsed.SZ.length !== TOURNAMENT.COUNTERPICK_MAPS_PER_MODE ||
+    mapPool.parsed.TC.length !== TOURNAMENT.COUNTERPICK_MAPS_PER_MODE ||
+    mapPool.parsed.RM.length !== TOURNAMENT.COUNTERPICK_MAPS_PER_MODE ||
+    mapPool.parsed.CB.length !== TOURNAMENT.COUNTERPICK_MAPS_PER_MODE
+  ) {
+    return "PICKING";
+  }
+
+  return "VALID";
+}
+
+function MapPoolValidationStatusMessage({
+  status,
+}: {
+  status: CounterPickValidationStatus;
+}) {
+  const { t } = useTranslation(["common"]);
+
+  if (status !== "TOO_MUCH_STAGE_REPEAT") return null;
+
+  return (
+    <div>
+      <Alert alertClassName="w-max" variation="WARNING" tiny>
+        {t(`common:maps.validation.${status}`, {
+          maxStageRepeat: TOURNAMENT.COUNTERPICK_MAX_STAGE_REPEAT,
+        })}
+      </Alert>
+    </div>
+  );
+}
+
+function MapPoolCounts({ mapPool }: { mapPool: MapPool }) {
+  const { t } = useTranslation(["game-misc"]);
+
+  return (
+    <div className="tournament__map-pool-counts">
+      {rankedModesShort.map((mode) => (
+        <Image
+          key={mode}
+          title={t(`game-misc:MODE_LONG_${mode}`)}
+          alt={t(`game-misc:MODE_LONG_${mode}`)}
+          path={modeImageUrl(mode)}
+          width={24}
+          height={24}
+        />
+      ))}
+      {rankedModesShort.map((mode) => {
+        const currentLen = mapPool.parsed[mode].length;
+        const targetLen = TOURNAMENT.COUNTERPICK_MAPS_PER_MODE;
+
+        return (
+          <div
+            key={mode}
+            className={clsx("tournament__map-pool-count", {
+              "text-success": currentLen === targetLen,
+              "text-error": currentLen > targetLen,
+            })}
+          >
+            {currentLen}/{targetLen}
+          </div>
+        );
+      })}
+    </div>
   );
 }
 

@@ -20,7 +20,7 @@
 
 ### 🟡 common.json
 
-**75/88**
+**75/89**
 
 <details>
 <summary>Missing</summary>
@@ -34,6 +34,7 @@
 - maps.validation.NOT_ONE_MAP_PER_MODE
 - maps.validation.MAP_REPEATED
 - maps.validation.MODE_REPEATED
+- maps.validation.TOO_MUCH_STAGE_REPEAT
 - maps.validation.VALID
 - theme.light
 - theme.dark
@@ -90,7 +91,7 @@
 
 ### 🟡 common.json
 
-**81/88**
+**81/89**
 
 <details>
 <summary>Missing</summary>
@@ -101,6 +102,7 @@
 - maps.validation.NOT_ONE_MAP_PER_MODE
 - maps.validation.MAP_REPEATED
 - maps.validation.MODE_REPEATED
+- maps.validation.TOO_MUCH_STAGE_REPEAT
 - maps.validation.VALID
 
 </details>
@@ -188,7 +190,7 @@
 
 ### 🟡 common.json
 
-**48/88**
+**48/89**
 
 <details>
 <summary>Missing</summary>
@@ -227,6 +229,7 @@
 - maps.validation.NOT_ONE_MAP_PER_MODE
 - maps.validation.MAP_REPEATED
 - maps.validation.MODE_REPEATED
+- maps.validation.TOO_MUCH_STAGE_REPEAT
 - maps.validation.VALID
 - forms.errors.noSearchMatches
 - errors.genericReload
@@ -361,7 +364,7 @@
 
 ### 🟡 common.json
 
-**48/88**
+**48/89**
 
 <details>
 <summary>Missing</summary>
@@ -400,6 +403,7 @@
 - maps.validation.NOT_ONE_MAP_PER_MODE
 - maps.validation.MAP_REPEATED
 - maps.validation.MODE_REPEATED
+- maps.validation.TOO_MUCH_STAGE_REPEAT
 - maps.validation.VALID
 - forms.errors.noSearchMatches
 - errors.genericReload
@@ -534,7 +538,7 @@
 
 ### 🟡 common.json
 
-**47/88**
+**47/89**
 
 <details>
 <summary>Missing</summary>
@@ -574,6 +578,7 @@
 - maps.validation.NOT_ONE_MAP_PER_MODE
 - maps.validation.MAP_REPEATED
 - maps.validation.MODE_REPEATED
+- maps.validation.TOO_MUCH_STAGE_REPEAT
 - maps.validation.VALID
 - forms.errors.noSearchMatches
 - errors.genericReload
@@ -683,7 +688,7 @@
 
 ### 🔴 common.json
 
-**0/88**
+**0/89**
 
 ### 🔴 contributions.json
 
@@ -743,7 +748,7 @@
 
 ### 🟡 common.json
 
-**75/88**
+**75/89**
 
 <details>
 <summary>Missing</summary>
@@ -757,6 +762,7 @@
 - maps.validation.NOT_ONE_MAP_PER_MODE
 - maps.validation.MAP_REPEATED
 - maps.validation.MODE_REPEATED
+- maps.validation.TOO_MUCH_STAGE_REPEAT
 - maps.validation.VALID
 - theme.light
 - theme.dark
@@ -821,7 +827,7 @@
 
 ### 🟡 common.json
 
-**35/88**
+**35/89**
 
 <details>
 <summary>Missing</summary>
@@ -862,6 +868,7 @@
 - maps.validation.NOT_ONE_MAP_PER_MODE
 - maps.validation.MAP_REPEATED
 - maps.validation.MODE_REPEATED
+- maps.validation.TOO_MUCH_STAGE_REPEAT
 - maps.validation.VALID
 - forms.errors.noSearchMatches
 - errors.genericReload
@@ -1005,7 +1012,7 @@
 
 ### 🟡 common.json
 
-**55/88**
+**55/89**
 
 <details>
 <summary>Missing</summary>
@@ -1037,6 +1044,7 @@
 - maps.validation.NOT_ONE_MAP_PER_MODE
 - maps.validation.MAP_REPEATED
 - maps.validation.MODE_REPEATED
+- maps.validation.TOO_MUCH_STAGE_REPEAT
 - maps.validation.VALID
 - forms.errors.noSearchMatches
 - errors.genericReload
@@ -1134,7 +1142,7 @@
 
 ### 🟡 common.json
 
-**61/88**
+**61/89**
 
 <details>
 <summary>Missing</summary>
@@ -1160,6 +1168,7 @@
 - maps.validation.NOT_ONE_MAP_PER_MODE
 - maps.validation.MAP_REPEATED
 - maps.validation.MODE_REPEATED
+- maps.validation.TOO_MUCH_STAGE_REPEAT
 - maps.validation.VALID
 - forms.errors.noSearchMatches
 - errors.genericReload
@@ -1261,7 +1270,7 @@
 
 ### 🟡 common.json
 
-**35/88**
+**35/89**
 
 <details>
 <summary>Missing</summary>
@@ -1302,6 +1311,7 @@
 - maps.validation.NOT_ONE_MAP_PER_MODE
 - maps.validation.MAP_REPEATED
 - maps.validation.MODE_REPEATED
+- maps.validation.TOO_MUCH_STAGE_REPEAT
 - maps.validation.VALID
 - forms.errors.noSearchMatches
 - errors.genericReload

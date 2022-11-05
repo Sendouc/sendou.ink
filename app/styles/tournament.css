@@ -11,3 +11,14 @@
   font-size: var(--fonts-xs);
   font-weight: var(--semi-bold);
 }
+
+.tournament__map-pool-counts {
+  display: grid;
+  width: 250px;
+  margin: 0 auto;
+  color: var(--text-lighter);
+  font-size: var(--fonts-xs);
+  grid-template-columns: repeat(4, 1fr);
+  place-items: center;
+  row-gap: var(--s-2);
+}

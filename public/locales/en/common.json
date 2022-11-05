@@ -62,6 +62,7 @@
   "maps.validation.NOT_ONE_MAP_PER_MODE": "Pick only one stage per mode",
   "maps.validation.MAP_REPEATED": "Can't pick same stage more than once",
   "maps.validation.MODE_REPEATED": "Can't pick same mode more than once",
+  "maps.validation.TOO_MUCH_STAGE_REPEAT": "Can't pick stage more than {{maxStageRepeat}} times",
   "maps.validation.VALID": "Map pool ok!",
 
   "results": "Results",

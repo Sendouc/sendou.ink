@@ -662,6 +662,7 @@ function CounterPickMapPoolSection() {
         mapPool={mapPool}
         handleMapPoolChange={setMapPool}
         recentEvents={recentEventsWithMapPools}
+        // xxx: rename
         title={t("common:maps.counterPickMapPool")}
         includeFancyControls={false}
         modesToInclude={["SZ", "TC", "RM", "CB"]}
@@ -684,6 +685,8 @@ type CounterPickValidationStatus =
   | "MAP_REPEATED"
   | "MODE_REPEATED";
 
+// xxx: use in action
+// xxx: rename to validateTiebreaker
 function validateCounterPickMapPool(
   mapPool: MapPool
 ): CounterPickValidationStatus {

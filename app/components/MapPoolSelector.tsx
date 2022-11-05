@@ -21,12 +21,14 @@ import { MapPoolEventsCombobox } from "./Combobox";
 
 export type MapPoolSelectorProps = {
   mapPool: MapPool;
+  preselectedMapPool?: MapPool;
   handleRemoval?: () => void;
   handleMapPoolChange: (
     mapPool: MapPool,
     event?: Pick<CalendarEvent, "id" | "name">
   ) => void;
   className?: string;
+  // xxx: do we need includeFancyControls or could this missing do the same thing?
   recentEvents?: SerializedMapPoolEvent[];
   initialEvent?: Pick<CalendarEvent, "id" | "name">;
   title?: string;
@@ -37,6 +39,7 @@ export type MapPoolSelectorProps = {
 
 export function MapPoolSelector({
   mapPool,
+  preselectedMapPool,
   handleMapPoolChange,
   handleRemoval,
   className,
@@ -148,6 +151,7 @@ export function MapPoolSelector({
           handleMapPoolChange={handleStageModesChange}
           includeFancyControls={includeFancyControls}
           modesToInclude={modesToInclude}
+          preselectedMapPool={preselectedMapPool}
         />
       </div>
     </fieldset>
@@ -159,6 +163,7 @@ export type MapPoolStagesProps = {
   handleMapPoolChange?: (newMapPool: MapPool) => void;
   includeFancyControls?: boolean;
   modesToInclude?: ModeShort[];
+  preselectedMapPool?: MapPool;
 };
 
 export function MapPoolStages({
@@ -166,6 +171,7 @@ export function MapPoolStages({
   handleMapPoolChange,
   includeFancyControls = true,
   modesToInclude,
+  preselectedMapPool,
 }: MapPoolStagesProps) {
   const { t } = useTranslation(["game-misc", "common"]);
 
@@ -249,7 +255,7 @@ export function MapPoolStages({
                     !modesToInclude || modesToInclude.includes(mode.short)
                 )
                 .map((mode) => {
-                  const selected = mapPool.parsed[mode.short].includes(stageId);
+                  const selected = mapPool.has({ stageId, mode: mode.short });
 
                   if (isPresentational && !selected) return null;
                   if (isPresentational && selected) {
@@ -268,11 +274,17 @@ export function MapPoolStages({
                     );
                   }
 
+                  const preselected = preselectedMapPool?.has({
+                    stageId,
+                    mode: mode.short,
+                  });
+
                   return (
                     <button
                       key={mode.short}
                       className={clsx("maps__mode-button", "outline-theme", {
                         selected,
+                        preselected,
                       })}
                       onClick={() =>
                         handleModeChange?.({ mode: mode.short, stageId })
@@ -281,10 +293,12 @@ export function MapPoolStages({
                       title={t(`game-misc:MODE_LONG_${mode.short}`)}
                       aria-describedby={`${id}-stage-name-${stageId}`}
                       aria-pressed={selected}
+                      disabled={preselected}
                     >
                       <Image
                         className={clsx("maps__mode", {
                           selected,
+                          preselected,
                         })}
                         alt={t(`game-misc:MODE_LONG_${mode.short}`)}
                         path={modeImageUrl(mode.short)}
