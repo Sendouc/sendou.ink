@@ -675,7 +675,7 @@ function CounterPickMapPoolSection() {
       <RequiredHiddenInput
         value={mapPool.serialized}
         name="pool"
-        isValid={validateCounterPickMapPool(mapPool) === "VALID"}
+        isValid={validateTiebreakerMapPool(mapPool) === "VALID"}
       />
 
       <MapPoolSelector
@@ -687,7 +687,7 @@ function CounterPickMapPoolSection() {
         info={
           <div>
             <MapPoolValidationStatusMessage
-              status={validateCounterPickMapPool(mapPool)}
+              status={validateTiebreakerMapPool(mapPool)}
             />
           </div>
         }
@@ -703,9 +703,7 @@ type CounterPickValidationStatus =
   | "MAP_REPEATED"
   | "MODE_REPEATED";
 
-// xxx: use in action
-// xxx: rename to validateTiebreaker
-function validateCounterPickMapPool(
+function validateTiebreakerMapPool(
   mapPool: MapPool
 ): CounterPickValidationStatus {
   if (mapPool.stages.length !== new Set(mapPool.stages).size) {
