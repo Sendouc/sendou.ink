@@ -180,7 +180,6 @@ function TeamNameSection() {
   );
 }
 
-// xxx: some explanation for tiebreaker maps
 function MapPoolSection() {
   const data = useOutletContext<TournamentToolsLoaderData>();
   const [counterpickMapPool, setCounterpickMapPool] = React.useState(
@@ -196,7 +195,8 @@ function MapPoolSection() {
           2. Map pool
           <div className="tournament__action-side-note">
             You can play without selecting a map pool but then your opponent
-            gets to decide what maps get played.
+            gets to decide what maps get played. Tie breaker maps marked in{" "}
+            <span className="text-info">blue</span>.
           </div>
         </div>
         <Details className="bg-darker-transparent rounded">
