@@ -28,6 +28,7 @@
   "actions.loadMore": "Cargar más",
 
   "results": "Resultados",
+  "results.placeSuffix": "^o",
 
   "forms.name": "Nombre",
   "forms.description": "Descripción",

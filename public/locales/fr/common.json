@@ -27,6 +27,8 @@
   "actions.delete": "Effacer",
 
   "results": "Résultats",
+  "results.placeSuffix_one": "^re",
+  "results.placeSuffix_other": "^e",
 
   "forms.name": "Nom",
   "forms.description": "Description",
