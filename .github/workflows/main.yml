@@ -35,8 +35,5 @@ jobs:
         run: npm run lint:styles
       - name: Typecheck
         run: npm run typecheck
-      - name: Update translation progress issue
-        if: ${{ github.repository == 'remmycat/sendou.ink-contrib' && github.ref_name == 'rewrite' }}
-        run: |
-          npm run check-translation-jsons
-          gh issue edit 1 --body-file ./translation-progress.md
+      - name: Check translations jsons
+        run: npm run check-translation-jsons:no-write
