@@ -1,6 +1,7 @@
 import invariant from "tiny-invariant";
 import type { ModeShort, ModeWithStage, StageId } from "../in-game-lists";
 import { rankedModesShort } from "../in-game-lists/modes";
+import { DEFAULT_MAP_POOL } from "./constants";
 import type { TournamentMaplistInput } from "./types";
 import { seededRandom } from "./utils";
 
@@ -35,8 +36,9 @@ export function createTournamentMapList({
   }
 
   // strat that allows duplicate maps (map on both teams list)
+  // redo equalNoStageRepeatStrategy with default map list
 
-  throw new Error("not implemented");
+  throw new Error("should not get here");
 }
 
 function seededShuffle({
@@ -158,6 +160,9 @@ function resolveTeamMapPoolToUse({
   teamOneMaps: { mode: ModeShort; stageId: StageId }[];
   teamTwoMaps: { mode: ModeShort; stageId: StageId }[];
 }) {
+  if (teamOneMaps.length === 0 && teamTwoMaps.length === 0) {
+    return DEFAULT_MAP_POOL.stageModePairs;
+  }
   if (teamOneMaps.length === 0) return teamTwoMaps;
   if (teamTwoMaps.length === 0) return teamOneMaps;
 
@@ -173,6 +178,10 @@ function isUnfair({
 }) {
   let teamOneCount = 0;
   let teamTwoCount = 0;
+
+  if (teams[0].maps.stages.length === 0 || teams[1].maps.stages.length === 0) {
+    return false;
+  }
 
   for (const { mode, stageId } of maybeResult) {
     if (teams[0].maps.has({ mode, stageId })) teamOneCount++;
