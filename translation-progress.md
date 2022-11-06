@@ -4,11 +4,11 @@
 
 ### 🟢 analyzer.json
 
-**112/112**
+**111/111**
 
 ### 🟢 badges.json
 
-**7/7**
+**6/6**
 
 ### 🟢 builds.json
 
@@ -20,7 +20,7 @@
 
 ### 🟡 common.json
 
-**76/82**
+**77/83**
 
 <details>
 <summary>Missing</summary>
@@ -60,11 +60,11 @@
 
 ### 🟢 analyzer.json
 
-**112/112**
+**111/111**
 
 ### 🟢 badges.json
 
-**7/7**
+**6/6**
 
 ### 🟢 builds.json
 
@@ -76,7 +76,7 @@
 
 ### 🟡 common.json
 
-**81/82**
+**82/83**
 
 <details>
 <summary>Missing</summary>
@@ -118,7 +118,7 @@
 
 ### 🟡 analyzer.json
 
-**92/112**
+**92/111**
 
 <details>
 <summary>Missing</summary>
@@ -129,7 +129,6 @@
 - stat.shootingRunSpeed
 - stat.shootingRunSpeedCharging
 - stat.shootingRunSpeedFullCharge
-- damage.toSplat_one
 - damage.NORMAL_MAX_FULL_CHARGE
 - damage.DIRECT_MIN
 - damage.DIRECT_MAX
@@ -148,7 +147,7 @@
 
 ### 🟢 badges.json
 
-**7/7**
+**6/6**
 
 ### 🟢 builds.json
 
@@ -168,7 +167,7 @@
 
 ### 🟡 common.json
 
-**48/82**
+**49/83**
 
 <details>
 <summary>Missing</summary>
@@ -285,7 +284,7 @@
 
 ### 🟡 analyzer.json
 
-**92/112**
+**92/111**
 
 <details>
 <summary>Missing</summary>
@@ -296,7 +295,6 @@
 - stat.shootingRunSpeed
 - stat.shootingRunSpeedCharging
 - stat.shootingRunSpeedFullCharge
-- damage.toSplat_one
 - damage.NORMAL_MAX_FULL_CHARGE
 - damage.DIRECT_MIN
 - damage.DIRECT_MAX
@@ -315,7 +313,7 @@
 
 ### 🟢 badges.json
 
-**7/7**
+**6/6**
 
 ### 🟢 builds.json
 
@@ -335,7 +333,7 @@
 
 ### 🟡 common.json
 
-**48/82**
+**49/83**
 
 <details>
 <summary>Missing</summary>
@@ -452,7 +450,7 @@
 
 ### 🟡 analyzer.json
 
-**92/112**
+**92/111**
 
 <details>
 <summary>Missing</summary>
@@ -463,7 +461,6 @@
 - stat.shootingRunSpeed
 - stat.shootingRunSpeedCharging
 - stat.shootingRunSpeedFullCharge
-- damage.toSplat_one
 - damage.NORMAL_MAX_FULL_CHARGE
 - damage.DIRECT_MIN
 - damage.DIRECT_MAX
@@ -482,7 +479,7 @@
 
 ### 🟢 badges.json
 
-**7/7**
+**6/6**
 
 ### 🟢 builds.json
 
@@ -502,7 +499,7 @@
 
 ### 🟡 common.json
 
-**47/82**
+**48/83**
 
 <details>
 <summary>Missing</summary>
@@ -629,11 +626,11 @@
 
 ### 🔴 analyzer.json
 
-**0/112**
+**0/111**
 
 ### 🔴 badges.json
 
-**0/7**
+**0/6**
 
 ### 🔴 builds.json
 
@@ -645,7 +642,7 @@
 
 ### 🔴 common.json
 
-**0/82**
+**0/83**
 
 ### 🔴 contributions.json
 
@@ -689,11 +686,11 @@
 
 ### 🟢 analyzer.json
 
-**112/112**
+**111/111**
 
 ### 🟢 badges.json
 
-**7/7**
+**6/6**
 
 ### 🟢 builds.json
 
@@ -705,7 +702,7 @@
 
 ### 🟡 common.json
 
-**75/82**
+**75/83**
 
 <details>
 <summary>Missing</summary>
@@ -714,6 +711,7 @@
 - header.language
 - header.loggedInAs
 - header.theme
+- results.placeSuffix
 - theme.light
 - theme.dark
 - theme.auto
@@ -753,11 +751,11 @@
 
 ### 🔴 analyzer.json
 
-**0/112**
+**0/111**
 
 ### 🟢 badges.json
 
-**7/7**
+**6/6**
 
 ### 🟢 builds.json
 
@@ -777,7 +775,7 @@
 
 ### 🟡 common.json
 
-**35/82**
+**35/83**
 
 <details>
 <summary>Missing</summary>
@@ -813,6 +811,7 @@
 - maps.template.preset.ANARCHY
 - maps.template.preset.ALL
 - maps.template.preset.onlyMode
+- results.placeSuffix
 - forms.errors.noSearchMatches
 - errors.genericReload
 - weapon.category.SHOOTERS
@@ -916,7 +915,7 @@
 
 ### 🟡 analyzer.json
 
-**95/112**
+**95/111**
 
 <details>
 <summary>Missing</summary>
@@ -924,7 +923,6 @@
 - objCalcAd
 - stat.specialLostSplattedByRP
 - stat.quickRespawnTimeSplattedByRP
-- damage.toSplat_one
 - damage.NORMAL_MAX_FULL_CHARGE
 - damage.DIRECT_MIN
 - damage.DIRECT_MAX
@@ -943,7 +941,7 @@
 
 ### 🟢 badges.json
 
-**7/7**
+**6/6**
 
 ### 🟢 builds.json
 
@@ -955,7 +953,7 @@
 
 ### 🟡 common.json
 
-**55/82**
+**56/83**
 
 <details>
 <summary>Missing</summary>
@@ -1046,7 +1044,7 @@
 
 ### 🟡 analyzer.json
 
-**102/112**
+**102/111**
 
 <details>
 <summary>Missing</summary>
@@ -1054,7 +1052,6 @@
 - objCalcAd
 - stat.specialLostSplattedByRP
 - stat.quickRespawnTimeSplattedByRP
-- damage.toSplat_one
 - damage.NORMAL_MAX_FULL_CHARGE
 - damage.DIRECT_MIN
 - damage.DIRECT_MAX
@@ -1066,7 +1063,7 @@
 
 ### 🟢 badges.json
 
-**7/7**
+**6/6**
 
 ### 🟢 builds.json
 
@@ -1078,7 +1075,7 @@
 
 ### 🟡 common.json
 
-**61/82**
+**61/83**
 
 <details>
 <summary>Missing</summary>
@@ -1099,6 +1096,7 @@
 - maps.template.preset.ANARCHY
 - maps.template.preset.ALL
 - maps.template.preset.onlyMode
+- results.placeSuffix
 - forms.errors.noSearchMatches
 - errors.genericReload
 - theme.light
@@ -1152,7 +1150,7 @@
 
 ### 🟡 analyzer.json
 
-**95/112**
+**95/111**
 
 <details>
 <summary>Missing</summary>
@@ -1160,7 +1158,6 @@
 - objCalcAd
 - stat.specialLostSplattedByRP
 - stat.quickRespawnTimeSplattedByRP
-- damage.toSplat_one
 - damage.NORMAL_MAX_FULL_CHARGE
 - damage.DIRECT_MIN
 - damage.DIRECT_MAX
@@ -1179,7 +1176,7 @@
 
 ### 🟢 badges.json
 
-**7/7**
+**6/6**
 
 ### 🟢 builds.json
 
@@ -1199,7 +1196,7 @@
 
 ### 🟡 common.json
 
-**35/82**
+**35/83**
 
 <details>
 <summary>Missing</summary>
@@ -1235,6 +1232,7 @@
 - maps.template.preset.ANARCHY
 - maps.template.preset.ALL
 - maps.template.preset.onlyMode
+- results.placeSuffix
 - forms.errors.noSearchMatches
 - errors.genericReload
 - weapon.category.SHOOTERS

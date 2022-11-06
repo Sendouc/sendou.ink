@@ -58,6 +58,7 @@
   "maps.template.preset.onlyMode": "Nur {{modeName}}",
 
   "results": "Ergebnisse",
+  "results.placeSuffix": ".",
 
   "forms.name": "Name",
   "forms.description": "Beschreibung",

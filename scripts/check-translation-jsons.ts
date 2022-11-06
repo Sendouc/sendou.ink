@@ -4,6 +4,8 @@ import prettier from "prettier";
 
 const NO_WRITE_KEY = "--no-write";
 
+const KNOWN_SUFFIXES = ["_zero", "_one", "_two", "_few", "_many", "_other"];
+
 const dontWrite = process.argv.includes(NO_WRITE_KEY);
 
 const otherLanguageTranslationPath = (code?: string, fileName?: string) =>
@@ -29,9 +31,10 @@ for (const file of fs.readdirSync(otherLanguageTranslationPath("en"))) {
     fs.readFileSync(otherLanguageTranslationPath("en", file), "utf8").trim()
   ) as Record<string, string>;
   const key = file.replace(".json", "");
+  const englishContentKeys = getKeysWithoutSuffix(englishContent, "en", file);
 
   if (file !== "gear.json" && file !== "weapons.json") {
-    totalTranslationCounts[key] = Object.keys(englishContent).length;
+    totalTranslationCounts[key] = englishContentKeys.length;
   }
 
   for (const lang of allOtherLanguages) {
@@ -46,9 +49,15 @@ for (const file of fs.readdirSync(otherLanguageTranslationPath("en"))) {
         throw new Error(`failed to parse ${lang}/${file}`);
       }
 
+      const otherLanguageContentKeys = getKeysWithoutSuffix(
+        otherLanguageContent,
+        lang,
+        file
+      );
+
       validateNoExtraKeysInOther({
-        english: englishContent,
-        other: otherLanguageContent,
+        english: otherLanguageContentKeys,
+        other: otherLanguageContentKeys,
         lang,
         file,
       });
@@ -64,8 +73,8 @@ for (const file of fs.readdirSync(otherLanguageTranslationPath("en"))) {
         lang,
       });
 
-      const missingKeys = Object.keys(englishContent).filter(
-        (key) => !Object.keys(otherLanguageContent).includes(key)
+      const missingKeys = englishContentKeys.filter(
+        (key) => !otherLanguageContentKeys.includes(key)
       );
 
       if (key === "weapons" || key === "gear") {
@@ -78,7 +87,7 @@ for (const file of fs.readdirSync(otherLanguageTranslationPath("en"))) {
     } catch (e) {
       if ((e as { code: string }).code !== "ENOENT") throw e;
 
-      missingTranslations[lang]![key] = Object.keys(englishContent);
+      missingTranslations[lang]![key] = englishContentKeys;
     }
   }
 }
@@ -114,14 +123,14 @@ function validateNoExtraKeysInOther({
   lang,
   file,
 }: {
-  english: Record<string, string>;
-  other: Record<string, string>;
+  english: string[];
+  other: string[];
   lang: string;
   file: string;
 }) {
-  const validKeys = Object.keys(english);
+  const validKeys = english;
 
-  for (const key of Object.keys(other)) {
+  for (const key of other) {
     if (validKeys.includes(key)) continue;
 
     throw new Error(`unknown key in ${lang}/${file}: ${key}`);
@@ -186,6 +195,47 @@ function validateNoDuplicateKeys({
       )}`
     );
   }
+}
+
+// get keys while respecting different plural/context key suffixes in different languages.
+function getKeysWithoutSuffix(
+  translations: Record<string, string>,
+  lang: string,
+  file: string
+): string[] {
+  const foundSuffixKeys = new Set<string>();
+  const keys = [];
+
+  for (const key of Object.keys(translations)) {
+    const suffix = KNOWN_SUFFIXES.find((sfx) => key.endsWith(sfx));
+    if (!suffix) {
+      if (foundSuffixKeys.has(key)) {
+        throw new Error(
+          `Found same key with and without suffixes in ${lang}/${file}: ${key}`
+        );
+      }
+      keys.push(key);
+      continue;
+    }
+
+    const baseKey = key.replace(suffix, "");
+
+    if (foundSuffixKeys.has(baseKey)) {
+      // Already found this key with a suffix. Duplicates are handled elsewhere.
+      continue;
+    }
+
+    if (keys.includes(baseKey)) {
+      throw new Error(
+        `Found same key with and without suffixes in ${lang}/${file}: ${baseKey}`
+      );
+    }
+
+    keys.push(baseKey);
+    foundSuffixKeys.add(baseKey);
+  }
+
+  return keys;
 }
 
 function createTranslationProgessMarkdown({
