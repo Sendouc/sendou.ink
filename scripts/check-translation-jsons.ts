@@ -92,6 +92,13 @@ for (const file of fs.readdirSync(otherLanguageTranslationPath("en"))) {
   }
 }
 
+// eslint-disable-next-line no-console
+console.log("no issues found inside translation files");
+
+if (dontWrite) {
+  process.exit(0);
+}
+
 const markdown = createTranslationProgessMarkdown({
   missingTranslations,
   totalTranslationCounts,
@@ -104,18 +111,11 @@ const translationProgressPath = path.join(
   "..",
   "translation-progress.md"
 );
-if (dontWrite) {
-  if (formattedMarkdown !== fs.readFileSync(translationProgressPath, "utf8")) {
-    throw new Error("translation-progress.md is out of date");
-  }
-} else {
-  fs.writeFileSync(translationProgressPath, formattedMarkdown);
-}
+
+fs.writeFileSync(translationProgressPath, formattedMarkdown);
 
 // eslint-disable-next-line no-console
-console.log(
-  dontWrite ? "translation-progress.md ok" : "translation-progress.md written"
-);
+console.log("translation-progress.md written");
 
 function validateNoExtraKeysInOther({
   english,
