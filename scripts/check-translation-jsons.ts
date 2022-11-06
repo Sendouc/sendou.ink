@@ -3,10 +3,19 @@ import path from "path";
 import prettier from "prettier";
 
 const NO_WRITE_KEY = "--no-write";
+const dontWrite = process.argv.includes(NO_WRITE_KEY);
 
 const KNOWN_SUFFIXES = ["_zero", "_one", "_two", "_few", "_many", "_other"];
 
-const dontWrite = process.argv.includes(NO_WRITE_KEY);
+const REPO_TRANSLATIONS_INFO_URL =
+  "https://github.com/Sendouc/sendou.ink#translations";
+
+const MD = {
+  inlineCode: (s: string) => `\`${s}\``,
+  strong: (s: string) => `**${s}**`,
+  h2: (s: string) => `## ${s}`,
+  li: (s: string) => `- ${s}`,
+};
 
 const otherLanguageTranslationPath = (code?: string, fileName?: string) =>
   path.join(
@@ -26,7 +35,9 @@ const missingTranslations: Record<
 
 const totalTranslationCounts: Record<string, number> = {};
 
-for (const file of fs.readdirSync(otherLanguageTranslationPath("en"))) {
+const fileNames: string[] = fs.readdirSync(otherLanguageTranslationPath("en"));
+
+for (const file of fileNames) {
   const englishContent = JSON.parse(
     fs.readFileSync(otherLanguageTranslationPath("en", file), "utf8").trim()
   ) as Record<string, string>;
@@ -238,6 +249,142 @@ function getKeysWithoutSuffix(
   return keys;
 }
 
+type StatusProps = {
+  totalCount: number;
+  missingCount: number;
+  percentage?: boolean;
+};
+function MDCompletionStatus({
+  totalCount,
+  missingCount,
+  percentage,
+}: StatusProps) {
+  const circle =
+    missingCount === 0 ? "🟢" : missingCount === totalCount ? "🔴" : "🟡";
+
+  const nonMissingCount = totalCount - missingCount;
+
+  if (!percentage) {
+    return `${circle} ${nonMissingCount}/${totalCount}`;
+  }
+
+  const percent =
+    totalCount === 0 ? 100 : Math.floor((nonMissingCount / totalCount) * 100);
+
+  return `${circle} ${percent}%`;
+}
+
+function MDOverviewTable({
+  totalTranslationCounts,
+}: {
+  totalTranslationCounts: Record<string, number>;
+}) {
+  const totalKeysCount = Object.values(totalTranslationCounts).reduce(
+    (a, b) => a + b,
+    0
+  );
+  const relevantFiles = fileNames.filter(
+    (name) => name !== "weapons.json" && name !== "gear.json"
+  );
+
+  const rows = [];
+
+  rows.push(
+    `| Language | Total | ${relevantFiles.map(MD.inlineCode).join(" | ")} |`
+  );
+
+  rows.push(`| :-- | :-: | ${relevantFiles.map(() => ":-:").join(" | ")} |`);
+
+  for (const [lang, missingKeysObj] of Object.entries(missingTranslations)) {
+    const cells = [];
+
+    cells.push(MD.strong(lang));
+
+    const totalAmountOfMissingKeys = Object.values(missingKeysObj).reduce(
+      (a, b) => a + b.length,
+      0
+    );
+
+    cells.push(
+      MD.strong(
+        MDCompletionStatus({
+          totalCount: totalKeysCount,
+          missingCount: totalAmountOfMissingKeys,
+          percentage: true,
+        })
+      )
+    );
+
+    for (const file of relevantFiles) {
+      const fileKey = file.replace(".json", "");
+      const missingKeysInFile = missingKeysObj[fileKey];
+      if (!missingKeysInFile) {
+        return "";
+      }
+
+      cells.push(
+        MDCompletionStatus({
+          totalCount: totalTranslationCounts[fileKey]!,
+          missingCount: missingKeysInFile.length,
+        })
+      );
+    }
+
+    rows.push(`| ${cells.join(" | ")} |`);
+  }
+
+  return rows.join("\n");
+}
+
+function MDDetails({ summary, content }: { summary: string; content: string }) {
+  return `<details><summary>${summary}</summary>\n\n${content}\n\n</details>`;
+}
+
+function MDMissingKeysList({
+  missingTranslations,
+}: {
+  missingTranslations: Record<string, Record<string, Array<string>>>;
+}) {
+  const blocks = [];
+
+  for (const [lang, missingKeysObj] of Object.entries(missingTranslations)) {
+    const totalAmountOfMissingKeys = Object.values(missingKeysObj).reduce(
+      (a, b) => a + b.length,
+      0
+    );
+
+    if (totalAmountOfMissingKeys === 0) {
+      continue;
+    }
+
+    const parts = [];
+
+    parts.push(MD.h2(lang));
+
+    const filteredEntries = Object.entries(missingKeysObj).filter(
+      ([_, missingKeys]) => missingKeys.length > 0
+    );
+
+    for (const [fileKey, missingKeys] of filteredEntries) {
+      parts.push(
+        MDDetails({
+          summary: `<code>${fileKey}.json</code>`,
+          content:
+            missingKeys.length === totalTranslationCounts[fileKey]!
+              ? `All keys missing - Create a fresh copy of ${MD.inlineCode(
+                  `en/${fileKey}.json`
+                )} to get started.`
+              : missingKeys.map(MD.li).join("\n"),
+        })
+      );
+    }
+
+    blocks.push(parts.join("\n\n"));
+  }
+
+  return blocks.join("\n\n");
+}
+
 function createTranslationProgessMarkdown({
   missingTranslations,
   totalTranslationCounts,
@@ -245,59 +392,20 @@ function createTranslationProgessMarkdown({
   missingTranslations: Record<string, Record<string, Array<string>>>;
   totalTranslationCounts: Record<string, number>;
 }) {
-  const totalKeysCount = Object.values(totalTranslationCounts).reduce(
-    (a, b) => a + b,
-    0
-  );
+  return `
+> 🤖 This issue is fully automated, it should always be up-to-date.
 
-  return `# Translation Progress
-${Object.entries(missingTranslations)
-  .map(([lang, missingKeysObj]) => {
-    const totalAmountOfMissingKeys = Object.values(missingKeysObj).reduce(
-      (a, b) => a + b.length,
-      0
-    );
-    const status =
-      totalAmountOfMissingKeys === 0
-        ? "🟢 Done"
-        : totalAmountOfMissingKeys === totalKeysCount
-        ? "🔴 Not started"
-        : "🟡 In progress";
+# Translation Progress
 
-    const headers = () => {
-      if (status !== "🟡 In progress") return "";
+If you want to contribute by adding missing translations, make sure to read the [project description](${REPO_TRANSLATIONS_INFO_URL}) on how to do this 💚
 
-      return Object.entries(missingKeysObj)
-        .map(([file, missingKeys]) => {
-          const statusDot =
-            missingKeys.length === 0
-              ? "🟢"
-              : missingKeys.length === totalTranslationCounts[file]!
-              ? "🔴"
-              : "🟡";
+## Overview
 
-          return `### ${statusDot} ${file}.json
-**${
-            totalTranslationCounts[file]! - missingKeys.length
-          }/${totalTranslationCounts[file]!}**
-${
-  missingKeys.length === 0 ||
-  missingKeys.length === totalTranslationCounts[file]!
-    ? ""
-    : `<details>
-<summary>Missing</summary>
+Key: 🟢 = Done, 🟡 = In progress, 🔴 = Not started
 
-${missingKeys.map((key) => `- ${key}`).join("\n")}
+${MDOverviewTable({ totalTranslationCounts })}
 
-</details>`
-}`;
-        })
-        .join("\n\n");
-    };
-
-    return `## /${lang} (${status})
-
-${headers()}`;
-  })
-  .join("\n\n---\n\n")}`;
+## Missing Keys
+  
+${MDMissingKeysList({ missingTranslations })}`;
 }
