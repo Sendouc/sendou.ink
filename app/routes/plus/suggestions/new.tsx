@@ -20,7 +20,7 @@ import { UserCombobox } from "~/components/Combobox";
 import type { ActionFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { z } from "zod";
-import { actualNumber } from "~/utils/zod";
+import { actualNumber, trimmedString } from "~/utils/zod";
 import {
   badRequestIfFalsy,
   parseRequestFormData,
@@ -41,7 +41,10 @@ const commentActionSchema = z.object({
       .min(Math.min(...PLUS_TIERS))
       .max(Math.max(...PLUS_TIERS))
   ),
-  text: z.string().min(1).max(PlUS_SUGGESTION_FIRST_COMMENT_MAX_LENGTH),
+  text: z.preprocess(
+    trimmedString,
+    z.string().min(1).max(PlUS_SUGGESTION_FIRST_COMMENT_MAX_LENGTH)
+  ),
   "user[value]": z.preprocess(actualNumber, z.number().positive()),
 });
 
@@ -193,15 +196,34 @@ function getSelectedUserErrorMessage({
   return;
 }
 
-// TODO: better UX - allow going over but prevent submit like Twitter
 export function CommentTextarea({ maxLength }: { maxLength: number }) {
   const [value, setValue] = React.useState("");
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const value = e.target.value;
+    setValue(value);
+
+    // Custom validity errors
+
+    const trimmedLength = value.trim().length;
+
+    if (trimmedLength === 0 && value.length !== 0) {
+      // value.length === 0 is already validated by the browser due to "required"
+      e.target.setCustomValidity("Comment must contain more than whitespace");
+    } else if (trimmedLength > maxLength) {
+      e.target.setCustomValidity("Comment is too long");
+    } else {
+      // Important: Reset custom errors if value is valid
+      e.target.setCustomValidity("");
+    }
+  };
+
   return (
     <div>
       <Label
         htmlFor="text"
         valueLimits={{
-          current: value.length,
+          current: value.trim().length,
           max: maxLength,
         }}
       >
@@ -213,8 +235,7 @@ export function CommentTextarea({ maxLength }: { maxLength: number }) {
         className="plus__modal-textarea"
         rows={4}
         value={value}
-        onChange={(e) => setValue(e.target.value)}
-        maxLength={maxLength}
+        onChange={handleChange}
         required
       />
     </div>
