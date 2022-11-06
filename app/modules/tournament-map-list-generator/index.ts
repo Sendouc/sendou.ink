@@ -1,22 +1,36 @@
-import shuffle from "just-shuffle";
 import invariant from "tiny-invariant";
-import type { ModeWithStage, StageId } from "../in-game-lists";
+import type { ModeShort, ModeWithStage, StageId } from "../in-game-lists";
 import { rankedModesShort } from "../in-game-lists/modes";
 import type { TournamentMaplistInput } from "./types";
+import { seededRandom } from "./utils";
 
 export function createTournamentMapList({
   teams,
   bestOf,
   tiebreakerMaps,
+  bracketType,
+  roundNumber,
 }: TournamentMaplistInput) {
   const result: ModeWithStage[] = [];
 
-  const stagesUsed = new Set<StageId>();
-  const modesOrder = shuffle(rankedModesShort);
+  const seededShuffle = (seedPart: string) => {
+    const { shuffle } = seededRandom(
+      `${bracketType}-${roundNumber}-${seedPart}`
+    );
 
-  // xxx: order by name
-  const teamOneMaps = shuffle(teams[0].maps.stageModePairs);
-  const teamTwoMaps = shuffle(teams[1].maps.stageModePairs);
+    return shuffle;
+  };
+
+  const stagesUsed = new Set<StageId>();
+  const modesOrder = seededShuffle("modes")(rankedModesShort);
+
+  const teamsSortedByName = teams.sort((a, b) => a.name.localeCompare(b.name));
+  const teamOneMaps = seededShuffle("teamOne")(
+    teamsSortedByName[0].maps.stageModePairs
+  );
+  const teamTwoMaps = seededShuffle("teamTwo")(
+    teamsSortedByName[1].maps.stageModePairs
+  );
 
   for (let i = 0; i < bestOf; i++) {
     const modeOfThisRound = modesOrder.shift()!;
@@ -33,11 +47,13 @@ export function createTournamentMapList({
     }
 
     let found = false;
-    const maps = i % 2 === 0 ? teamOneMaps : teamTwoMaps;
 
-    console.log({ maps, modeOfThisRound });
-    for (const { mode, stageId } of maps) {
-      if (mode === modeOfThisRound /*&& !stagesUsed.has(stageId)*/) {
+    for (const { mode, stageId } of resolveMapList({
+      index: i,
+      teamOneMaps,
+      teamTwoMaps,
+    })) {
+      if (mode === modeOfThisRound && !stagesUsed.has(stageId)) {
         stagesUsed.add(stageId);
         result.push({ mode, stageId });
         found = true;
@@ -51,4 +67,19 @@ export function createTournamentMapList({
   }
 
   return result;
+}
+
+function resolveMapList({
+  teamOneMaps,
+  teamTwoMaps,
+  index,
+}: {
+  index: number;
+  teamOneMaps: { mode: ModeShort; stageId: StageId }[];
+  teamTwoMaps: { mode: ModeShort; stageId: StageId }[];
+}) {
+  if (teamOneMaps.length === 0) return teamTwoMaps;
+  if (teamTwoMaps.length === 0) return teamOneMaps;
+
+  return index % 2 === 0 ? teamOneMaps : teamTwoMaps;
 }

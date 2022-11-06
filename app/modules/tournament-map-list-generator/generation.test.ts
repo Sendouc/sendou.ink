@@ -27,7 +27,7 @@ const team2Picks = new MapPool([
   { mode: "CB", stageId: 2 },
   { mode: "CB", stageId: 3 },
 ]);
-const tiebreaker = new MapPool([
+const tiebreakerPicks = new MapPool([
   { mode: "SZ", stageId: 1 },
   { mode: "TC", stageId: 2 },
   { mode: "RM", stageId: 3 },
@@ -48,8 +48,8 @@ const generateMaps = ({
       maps: team2Picks,
     },
   ],
-  tiebreakerMaps = tiebreaker,
-}: Partial<TournamentMaplistInput>) => {
+  tiebreakerMaps = tiebreakerPicks,
+}: Partial<TournamentMaplistInput> = {}) => {
   return createTournamentMapList({
     bestOf,
     bracketType,
@@ -60,7 +60,7 @@ const generateMaps = ({
 };
 
 TournamentMapListGenerator("Modes are spread evenly", () => {
-  const mapList = generateMaps({});
+  const mapList = generateMaps();
   const modes = new Set(rankedModesShort);
 
   assert.equal(mapList.length, 5);
@@ -80,25 +80,28 @@ TournamentMapListGenerator("Equal picks", () => {
   let their = 0;
   let tiebreaker = 0;
 
-  const mapList = generateMaps({});
+  const mapList = generateMaps();
 
   for (const { stageId, mode } of mapList) {
     if (team1Picks.has({ stageId, mode })) {
       our++;
-    } else if (team2Picks.has({ stageId, mode })) {
+    }
+
+    if (team2Picks.has({ stageId, mode })) {
       their++;
-    } else {
+    }
+
+    if (tiebreakerPicks.has({ stageId, mode })) {
       tiebreaker++;
     }
   }
 
-  assert.equal(our, 2);
-  assert.equal(their, 2);
+  assert.equal(our, their);
   assert.equal(tiebreaker, 1);
 });
 
 TournamentMapListGenerator("No stage repeats in optimal case", () => {
-  const mapList = generateMaps({});
+  const mapList = generateMaps();
 
   const stages = new Set(mapList.map(({ stageId }) => stageId));
 
@@ -108,8 +111,8 @@ TournamentMapListGenerator("No stage repeats in optimal case", () => {
 TournamentMapListGenerator(
   "Always generates same maplist given same input",
   () => {
-    const mapList1 = generateMaps({});
-    const mapList2 = generateMaps({});
+    const mapList1 = generateMaps();
+    const mapList2 = generateMaps();
 
     assert.equal(mapList1.length, 5);
 
@@ -123,7 +126,7 @@ TournamentMapListGenerator(
 TournamentMapListGenerator(
   "Order of team doesn't matter regarding what maplist gets created",
   () => {
-    const mapList1 = generateMaps({});
+    const mapList1 = generateMaps();
     const mapList2 = generateMaps({
       teams: [
         {
