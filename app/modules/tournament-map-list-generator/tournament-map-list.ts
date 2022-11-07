@@ -8,6 +8,8 @@ import { seededRandom } from "./utils";
 type ModeWithStageAndScore = ModeWithStage & { score: number };
 
 // xxx: don't allow going like our pick, their, their, our
+// xxx: instead of perfect and suboptimal maybe instead assign preference score. if preference score = 0 then break.
+// each map repeat is +1 preference score. triple map is +2. store always best completed map
 
 export function createTournamentMapList(input: TournamentMaplistInput) {
   const { shuffle } = seededRandom(`${input.bracketType}-${input.roundNumber}`);
