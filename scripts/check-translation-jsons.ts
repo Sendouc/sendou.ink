@@ -15,6 +15,8 @@ const MD = {
   strong: (s: string) => `**${s}**`,
   h2: (s: string) => `## ${s}`,
   li: (s: string) => `- ${s}`,
+  ticked: (s: string) => `- [x] ${s}`,
+  unticked: (s: string) => `- [ ] ${s}`,
 };
 
 const otherLanguageTranslationPath = (code?: string, fileName?: string) =>
@@ -336,8 +338,16 @@ function MDOverviewTable({
   return rows.join("\n");
 }
 
-function MDDetails({ summary, content }: { summary: string; content: string }) {
-  return `<details><summary>${summary}</summary>\n\n${content}\n\n</details>`;
+function MDDetailsList({
+  summary,
+  content,
+}: {
+  summary: string;
+  content: string[];
+}) {
+  return `<details><summary>${summary}</summary><ul>${content
+    .map((c) => `<li>${c}</li>`)
+    .join("")}</ul></details>`;
 }
 
 function MDMissingKeysList({
@@ -348,38 +358,41 @@ function MDMissingKeysList({
   const blocks = [];
 
   for (const [lang, missingKeysObj] of Object.entries(missingTranslations)) {
-    const totalAmountOfMissingKeys = Object.values(missingKeysObj).reduce(
-      (a, b) => a + b.length,
-      0
-    );
-
-    if (totalAmountOfMissingKeys === 0) {
-      continue;
-    }
-
     const parts = [];
 
     parts.push(MD.h2(lang));
 
-    const filteredEntries = Object.entries(missingKeysObj).filter(
-      ([_, missingKeys]) => missingKeys.length > 0
-    );
+    for (const [fileKey, missingKeys] of Object.entries(missingKeysObj)) {
+      const noneMissing = missingKeys.length === 0;
+      const checkbox = noneMissing ? MD.ticked : MD.unticked;
+      const fileEntry = checkbox(MD.inlineCode(`${fileKey}.json`));
 
-    for (const [fileKey, missingKeys] of filteredEntries) {
-      parts.push(
-        MDDetails({
-          summary: `<code>${fileKey}.json</code>`,
-          content:
-            missingKeys.length === totalTranslationCounts[fileKey]!
-              ? `All keys missing - Create a fresh copy of ${MD.inlineCode(
-                  `en/${fileKey}.json`
-                )} to get started.`
-              : missingKeys.map(MD.li).join("\n"),
-        })
-      );
+      const allMissing =
+        missingKeys.length === totalTranslationCounts[fileKey]!;
+
+      const keysLabel = allMissing
+        ? "All keys"
+        : missingKeys.length === 1
+        ? "1 key"
+        : `${missingKeys.length} keys`;
+
+      const details = noneMissing
+        ? ""
+        : MDDetailsList({
+            summary: `${keysLabel} missing`,
+            content: allMissing
+              ? [
+                  `Create a fresh copy of ${MD.inlineCode(
+                    `en/${fileKey}.json`
+                  )} to get started.`,
+                ]
+              : missingKeys,
+          });
+
+      parts.push(`${fileEntry} ${details}`);
     }
 
-    blocks.push(parts.join("\n\n"));
+    blocks.push(parts.join("\n"));
   }
 
   return blocks.join("\n\n");
