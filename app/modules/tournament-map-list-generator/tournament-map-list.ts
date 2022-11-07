@@ -1,11 +1,13 @@
 import invariant from "tiny-invariant";
-import { modes, ModeShort, ModeWithStage } from "../in-game-lists";
-import { MapPool } from "../map-pool-serializer";
+import type { ModeShort, ModeWithStage } from "../in-game-lists";
+import type { MapPool } from "../map-pool-serializer";
 import { DEFAULT_MAP_POOL } from "./constants";
-import { TournamentMaplistInput } from "./types";
+import type { TournamentMaplistInput } from "./types";
 import { seededRandom } from "./utils";
 
 type ModeWithStageAndScore = ModeWithStage & { score: number };
+
+// xxx: don't allow going like our pick, their, their, our
 
 export function createTournamentMapList(input: TournamentMaplistInput) {
   const { shuffle } = seededRandom(`${input.bracketType}-${input.roundNumber}`);
@@ -92,7 +94,9 @@ export function createTournamentMapList(input: TournamentMaplistInput) {
       }
     }
 
-    return result;
+    return result.sort((a, b) =>
+      `${a.stageId}-${a.mode}`.localeCompare(`${b.stageId}-${b.mode}`)
+    );
   }
 
   function stageIsOk(stage: ModeWithStageAndScore, index: number) {
@@ -101,7 +105,6 @@ export function createTournamentMapList(input: TournamentMaplistInput) {
     if (isNotFollowingModePattern(stage)) return false;
     if (isMakingThingsUnfair(stage)) return false;
     if (isStageRepeatWithoutBreak(stage)) return false;
-    if (isThirdStageRepeat(stage)) return false;
 
     return true;
   }
@@ -143,13 +146,12 @@ export function createTournamentMapList(input: TournamentMaplistInput) {
   // don't allow making two picks from one team in row
   function isMakingThingsUnfair(stage: ModeWithStageAndScore) {
     const score = mapList.reduce((acc, cur) => acc + cur.score, 0);
+    const newScore = score + stage.score;
 
-    if (score === 0) return false;
+    if (score !== 0 && newScore !== 0) return true;
+    if (newScore !== 0 && mapList.length + 1 === input.bestOf) return true;
 
-    const newSum = score + stage.score;
-    // last map before tiebreaker would make things unfair
-    if (newSum !== 0 && mapList.length === input.bestOf - 2) return true;
-    return newSum !== 0;
+    return false;
   }
 
   function isStageRepeatWithoutBreak(stage: ModeWithStageAndScore) {
@@ -157,15 +159,6 @@ export function createTournamentMapList(input: TournamentMaplistInput) {
     if (!lastStage) return false;
 
     return lastStage.stageId === stage.stageId;
-  }
-
-  function isThirdStageRepeat(stage: ModeWithStageAndScore) {
-    const stageAppearanceCount = mapList.reduce(
-      (acc, cur) => (cur.stageId === stage.stageId ? 1 : 0) + acc,
-      0
-    );
-
-    return stageAppearanceCount === 2;
   }
 
   function isPerfection() {

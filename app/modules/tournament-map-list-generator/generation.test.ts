@@ -29,7 +29,7 @@ const team2Picks = new MapPool([
 ]);
 const tiebreakerPicks = new MapPool([
   { mode: "SZ", stageId: 1 },
-  { mode: "TC", stageId: 2 },
+  { mode: "TC", stageId: 11 },
   { mode: "RM", stageId: 3 },
   { mode: "CB", stageId: 4 },
 ]);
@@ -136,6 +136,43 @@ TournamentMapListGenerator(
         {
           name: "Team 1",
           maps: team1Picks,
+        },
+      ],
+    });
+
+    assert.equal(mapList1.length, 5);
+
+    for (let i = 0; i < mapList1.length; i++) {
+      assert.equal(mapList1[i]!.stageId, mapList2[i]!.stageId);
+      assert.equal(mapList1[i]!.mode, mapList2[i]!.mode);
+    }
+  }
+);
+
+TournamentMapListGenerator(
+  "Order of maps in the list doesn't matter regarding what maplist gets created",
+  () => {
+    const mapList1 = generateMaps({
+      teams: [
+        {
+          name: "Team 1",
+          maps: team1Picks,
+        },
+        {
+          name: "Team 2",
+          maps: team2Picks,
+        },
+      ],
+    });
+    const mapList2 = generateMaps({
+      teams: [
+        {
+          name: "Team 1",
+          maps: team1Picks,
+        },
+        {
+          name: "Team 2",
+          maps: new MapPool(team2Picks.stageModePairs.slice().reverse()),
         },
       ],
     });
