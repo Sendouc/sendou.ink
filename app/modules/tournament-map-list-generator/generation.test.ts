@@ -278,7 +278,7 @@ TournamentMapListGenerator("Keeps things fair when overlap", () => {
       team1PicksAppeared++;
     }
 
-    if (team2Picks.has({ stageId, mode })) {
+    if (team2PicksWithSomeDuplication.has({ stageId, mode })) {
       team2PicksAppeared++;
     }
   }

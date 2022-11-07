@@ -1,192 +1,185 @@
 import invariant from "tiny-invariant";
-import type { ModeShort, ModeWithStage, StageId } from "../in-game-lists";
-import { rankedModesShort } from "../in-game-lists/modes";
+import { modes, ModeShort, ModeWithStage } from "../in-game-lists";
+import { MapPool } from "../map-pool-serializer";
 import { DEFAULT_MAP_POOL } from "./constants";
-import type { TournamentMaplistInput } from "./types";
+import { TournamentMaplistInput } from "./types";
 import { seededRandom } from "./utils";
 
-export function createTournamentMapList({
-  bracketType,
-  roundNumber,
-  bestOf,
-  ...rest
-}: TournamentMaplistInput) {
-  const modesOrder = seededShuffle({
-    bracketType,
-    roundNumber,
-    seedId: "mode",
-  })(rankedModesShort);
+type ModeWithStageAndScore = ModeWithStage & { score: number };
 
-  // startingMode will be the mode used in tiebreaker
-  for (const startingMode of modesOrder) {
-    const list = equalNoStageRepeatStrategy({
-      ...rest,
-      bestOf,
-      bracketType,
-      roundNumber,
-      modesOrder: resolveModesOrder({
-        bracketType,
-        roundNumber,
-        startingMode,
-        bestOf,
-      }),
-    });
+export function createTournamentMapList(input: TournamentMaplistInput) {
+  const { shuffle } = seededRandom(`${input.bracketType}-${input.roundNumber}`);
+  const stages = shuffle(resolveStages());
+  const mapList: Array<ModeWithStageAndScore & { score: number }> = [];
+  let subOptimalMapList: Array<ModeWithStageAndScore> | undefined;
+  let perfectMapList: Array<ModeWithStageAndScore> | undefined;
+  const usedStages = new Set<number>();
 
-    if (list) return list;
-  }
+  const backtrack = () => {
+    if (isPerfection()) perfectMapList = [...mapList];
+    if (perfectMapList) return;
 
-  // strat that allows duplicate maps (map on both teams list)
-  // redo equalNoStageRepeatStrategy with default map list
+    if (isSuboptimal()) subOptimalMapList = [...mapList];
 
-  throw new Error("should not get here");
-}
+    const stageList =
+      mapList.length < input.bestOf - 1
+        ? stages
+        : input.tiebreakerMaps.stageModePairs.map((p) => ({ ...p, score: 0 }));
 
-function seededShuffle({
-  bracketType,
-  roundNumber,
-  seedId,
-}: Pick<TournamentMaplistInput, "bracketType" | "roundNumber"> & {
-  seedId: string;
-}) {
-  const { shuffle } = seededRandom(`${bracketType}-${roundNumber}-${seedId}`);
+    for (const [i, stage] of stageList.entries()) {
+      if (!stageIsOk(stage, i)) continue;
+      mapList.push(stage);
+      usedStages.add(i);
 
-  return shuffle;
-}
+      backtrack();
 
-function resolveModesOrder({
-  startingMode,
-  bracketType,
-  roundNumber,
-  bestOf,
-}: {
-  startingMode: ModeShort;
-  bracketType: TournamentMaplistInput["bracketType"];
-  roundNumber: TournamentMaplistInput["roundNumber"];
-  bestOf: TournamentMaplistInput["bestOf"];
-}) {
-  const result = [startingMode];
-
-  const modes = seededShuffle({
-    bracketType,
-    roundNumber,
-    seedId: startingMode,
-  })(rankedModesShort.filter((mode) => mode !== startingMode));
-  modes.push(startingMode);
-
-  while (result.length < bestOf) {
-    const nextMode = modes.shift()!;
-    result.push(nextMode);
-    modes.push(nextMode);
-  }
-
-  return result.reverse();
-}
-
-function equalNoStageRepeatStrategy({
-  teams,
-  bestOf,
-  tiebreakerMaps,
-  bracketType,
-  roundNumber,
-  modesOrder,
-}: TournamentMaplistInput & { modesOrder: ModeShort[] }) {
-  const result: ModeWithStage[] = [];
-
-  // let's already mark tiebreaker stage as used so we don't use it in regular maps and "fail the run"
-  const tiebreakerStageId = tiebreakerMaps.stageModePairs.find(
-    (pair) => pair.mode === modesOrder[modesOrder.length - 1]
-  )!.stageId;
-  const stagesUsed = new Set<StageId>([tiebreakerStageId]);
-
-  const teamsSortedByName = teams.sort((a, b) => a.name.localeCompare(b.name));
-  const teamOneMaps = seededShuffle({
-    bracketType,
-    roundNumber,
-    seedId: "teamOne",
-  })(teamsSortedByName[0].maps.stageModePairs);
-  const teamTwoMaps = seededShuffle({
-    bracketType,
-    roundNumber,
-    seedId: "teamTwo",
-  })(teamsSortedByName[1].maps.stageModePairs);
-
-  for (let i = 0; i < bestOf; i++) {
-    const modeOfThisRound = modesOrder.shift()!;
-    modesOrder.push(modeOfThisRound);
-
-    if (i === bestOf - 1) {
-      const lastMap = tiebreakerMaps.stageModePairs.find(
-        ({ mode }) => mode === modeOfThisRound
-      );
-      invariant(lastMap, "Tiebreaker map not found");
-
-      result.push(lastMap);
-      break;
+      usedStages.delete(i);
+      mapList.pop();
     }
+  };
 
-    let found = false;
+  backtrack();
 
-    for (const { mode, stageId } of resolveTeamMapPoolToUse({
-      index: i,
-      teamOneMaps,
-      teamTwoMaps,
-    })) {
-      if (mode === modeOfThisRound && !stagesUsed.has(stageId)) {
-        stagesUsed.add(stageId);
-        result.push({ mode, stageId });
-        found = true;
-        break;
+  if (perfectMapList) return perfectMapList;
+  if (subOptimalMapList) return subOptimalMapList;
+
+  throw new Error("couldn't generate maplist");
+
+  function resolveStages() {
+    const sorted = input.teams
+      .slice()
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .map((t) => t.maps) as [MapPool, MapPool];
+
+    const result = sorted[0].stageModePairs.map((pair) => ({
+      ...pair,
+      score: 1,
+    }));
+
+    for (const stage of sorted[1].stageModePairs) {
+      const alreadyIncludedStage = result.find(
+        (alreadyIncludedStage) =>
+          alreadyIncludedStage.stageId === stage.stageId &&
+          alreadyIncludedStage.mode === stage.mode
+      );
+
+      if (alreadyIncludedStage) {
+        alreadyIncludedStage.score = 0;
+      } else {
+        result.push({ ...stage, score: -1 });
       }
     }
 
-    if (!found) {
-      return null;
+    if (
+      input.teams[0].maps.stages.length === 0 &&
+      input.teams[1].maps.stages.length === 0
+    ) {
+      // neither team submitted map, we go default
+      result.push(
+        ...DEFAULT_MAP_POOL.stageModePairs.map((pair) => ({
+          ...pair,
+          score: 0,
+        }))
+      );
+    } else if (
+      input.teams[0].maps.stages.length === 0 ||
+      input.teams[1].maps.stages.length === 0
+    ) {
+      // let's set it up for later that if one team doesn't have stages set
+      // we can make a maplist consisting of only stages from the team that did submit
+      for (const stageObj of result) {
+        stageObj.score = 0;
+      }
     }
+
+    return result;
   }
 
-  if (isUnfair({ maybeResult: result, teams })) {
-    return null;
+  function stageIsOk(stage: ModeWithStageAndScore, index: number) {
+    if (usedStages.has(index)) return false;
+    if (isEarlyModeRepeat(stage)) return false;
+    if (isNotFollowingModePattern(stage)) return false;
+    if (isMakingThingsUnfair(stage)) return false;
+    if (isStageRepeatWithoutBreak(stage)) return false;
+    if (isThirdStageRepeat(stage)) return false;
+
+    return true;
   }
 
-  return result;
-}
+  function isEarlyModeRepeat(stage: ModeWithStageAndScore) {
+    // all modes already appeared
+    if (mapList.length >= 4) return false;
 
-function resolveTeamMapPoolToUse({
-  teamOneMaps,
-  teamTwoMaps,
-  index,
-}: {
-  index: number;
-  teamOneMaps: { mode: ModeShort; stageId: StageId }[];
-  teamTwoMaps: { mode: ModeShort; stageId: StageId }[];
-}) {
-  if (teamOneMaps.length === 0 && teamTwoMaps.length === 0) {
-    return DEFAULT_MAP_POOL.stageModePairs;
-  }
-  if (teamOneMaps.length === 0) return teamTwoMaps;
-  if (teamTwoMaps.length === 0) return teamOneMaps;
+    if (
+      mapList.some(
+        (alreadyIncludedStage) => alreadyIncludedStage.mode === stage.mode
+      )
+    ) {
+      return true;
+    }
 
-  return index % 2 === 0 ? teamOneMaps : teamTwoMaps;
-}
-
-function isUnfair({
-  maybeResult,
-  teams,
-}: {
-  maybeResult: ModeWithStage[];
-  teams: TournamentMaplistInput["teams"];
-}) {
-  let teamOneCount = 0;
-  let teamTwoCount = 0;
-
-  if (teams[0].maps.stages.length === 0 || teams[1].maps.stages.length === 0) {
     return false;
   }
 
-  for (const { mode, stageId } of maybeResult) {
-    if (teams[0].maps.has({ mode, stageId })) teamOneCount++;
-    if (teams[1].maps.has({ mode, stageId })) teamTwoCount++;
+  function isNotFollowingModePattern(stage: ModeWithStageAndScore) {
+    // not all modes appeared yet
+    if (mapList.length < 4) return false;
+
+    let previousModeShouldBe: ModeShort | undefined;
+    for (let i = 0; i < mapList.length; i++) {
+      if (mapList[i]!.mode === stage.mode) {
+        if (i === 0) {
+          previousModeShouldBe = mapList[mapList.length - 1]!.mode;
+        } else {
+          previousModeShouldBe = mapList[i - 1]!.mode;
+        }
+      }
+    }
+    invariant(previousModeShouldBe, "Couldn't resolve maplist pattern");
+
+    return mapList[mapList.length - 1]!.mode !== previousModeShouldBe;
   }
 
-  return teamOneCount !== teamTwoCount;
+  // don't allow making two picks from one team in row
+  function isMakingThingsUnfair(stage: ModeWithStageAndScore) {
+    const score = mapList.reduce((acc, cur) => acc + cur.score, 0);
+
+    if (score === 0) return false;
+
+    const newSum = score + stage.score;
+    // last map before tiebreaker would make things unfair
+    if (newSum !== 0 && mapList.length === input.bestOf - 2) return true;
+    return newSum !== 0;
+  }
+
+  function isStageRepeatWithoutBreak(stage: ModeWithStageAndScore) {
+    const lastStage = mapList[mapList.length - 1];
+    if (!lastStage) return false;
+
+    return lastStage.stageId === stage.stageId;
+  }
+
+  function isThirdStageRepeat(stage: ModeWithStageAndScore) {
+    const stageAppearanceCount = mapList.reduce(
+      (acc, cur) => (cur.stageId === stage.stageId ? 1 : 0) + acc,
+      0
+    );
+
+    return stageAppearanceCount === 2;
+  }
+
+  function isPerfection() {
+    if (!isSuboptimal()) return false;
+    if (new Set(mapList.map((s) => s.stageId)).size !== mapList.length) {
+      return false;
+    }
+
+    return true;
+  }
+
+  function isSuboptimal() {
+    if (mapList.length !== input.bestOf) return false;
+
+    return true;
+  }
 }
