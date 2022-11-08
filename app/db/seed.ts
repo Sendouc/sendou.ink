@@ -7,13 +7,16 @@ import { db } from "~/db";
 import { sql } from "~/db/sql";
 import {
   abilities,
-  type AbilityType,
   clothesGearIds,
   headGearIds,
+  mainWeaponIds,
   modesShort,
   shoesGearIds,
-  mainWeaponIds,
+  type StageId,
+  type AbilityType,
 } from "~/modules/in-game-lists";
+import { rankedModesShort } from "~/modules/in-game-lists/modes";
+import { MapPool } from "~/modules/map-pool-serializer";
 import {
   lastCompletedVoting,
   nextNonCompletedVoting,
@@ -45,6 +48,9 @@ const basicSeeds = [
   calendarEvents,
   calendarEventBadges,
   calendarEventResults,
+  calendarEventWithToTools,
+  calendarEventWithToToolsTieBreakerMapPool,
+  calendarEventWithToToolsTeams,
   adminBuilds,
   manySplattershotBuilds,
 ];
@@ -60,6 +66,9 @@ export function seed() {
 function wipeDB() {
   const tablesToDelete = [
     "Build",
+    "TournamentTeamMember",
+    "MapPoolMap",
+    "TournamentTeam",
     "CalendarEventDate",
     "CalendarEventResultPlayer",
     "CalendarEventResultTeam",
@@ -361,11 +370,15 @@ function patrons() {
   }
 }
 
-function userIdsInRandomOrder() {
-  return sql
+function userIdsInRandomOrder(adminLast = false) {
+  const rows = sql
     .prepare(`select "id" from "User" order by random()`)
     .all()
     .map((u) => u.id) as number[];
+
+  if (!adminLast) return rows;
+
+  return [...rows.filter((id) => id !== 1), 1];
 }
 
 function calendarEvents() {
@@ -528,6 +541,180 @@ function calendarEventResults() {
     });
 
     userIds = userIdsInRandomOrder();
+  }
+}
+
+const TO_TOOLS_CALENDAR_EVENT_ID = 201;
+function calendarEventWithToTools() {
+  sql
+    .prepare(
+      `
+      insert into "CalendarEvent" (
+        "id",
+        "name",
+        "description",
+        "discordInviteCode",
+        "bracketUrl",
+        "authorId",
+        "toToolsEnabled"
+      ) values (
+        $id,
+        $name,
+        $description,
+        $discordInviteCode,
+        $bracketUrl,
+        $authorId,
+        $toToolsEnabled
+      )
+      `
+    )
+    .run({
+      id: TO_TOOLS_CALENDAR_EVENT_ID,
+      name: `${capitalize(faker.word.adjective())} ${capitalize(
+        faker.word.noun()
+      )}`,
+      description: faker.lorem.paragraph(),
+      discordInviteCode: faker.lorem.word(),
+      bracketUrl: faker.internet.url(),
+      authorId: 1,
+      toToolsEnabled: 1,
+    });
+}
+
+const tiebreakerPicks = new MapPool([
+  { mode: "SZ", stageId: 1 },
+  { mode: "TC", stageId: 2 },
+  { mode: "RM", stageId: 3 },
+  { mode: "CB", stageId: 4 },
+]);
+function calendarEventWithToToolsTieBreakerMapPool() {
+  for (const { mode, stageId } of tiebreakerPicks.stageModePairs) {
+    sql
+      .prepare(
+        `
+        insert into "MapPoolMap" (
+          "calendarEventId",
+          "stageId",
+          "mode"
+        ) values (
+          $calendarEventId,
+          $stageId,
+          $mode
+        )
+      `
+      )
+      .run({
+        calendarEventId: TO_TOOLS_CALENDAR_EVENT_ID,
+        stageId,
+        mode,
+      });
+  }
+}
+
+const names = Array.from(
+  new Set(new Array(100).fill(null).map(() => faker.music.songName()))
+);
+const availableStages: StageId[] = [1, 2, 3, 4, 6, 7, 8, 10, 11];
+const availablePairs = rankedModesShort
+  .flatMap((mode) =>
+    availableStages.map((stageId) => ({ mode, stageId: stageId }))
+  )
+  .filter((pair) => !tiebreakerPicks.has(pair));
+function calendarEventWithToToolsTeams() {
+  const userIds = userIdsInRandomOrder(true);
+  for (let id = 1; id <= 40; id++) {
+    sql
+      .prepare(
+        `
+      insert into "TournamentTeam" (
+        "id",
+        "name",
+        "createdAt",
+        "calendarEventId"
+      ) values (
+        $id,
+        $name,
+        $createdAt,
+        $calendarEventId
+      )
+      `
+      )
+      .run({
+        id,
+        name: names.pop(),
+        createdAt: dateToDatabaseTimestamp(new Date()),
+        calendarEventId: TO_TOOLS_CALENDAR_EVENT_ID,
+      });
+
+    for (
+      let i = 0;
+      i < faker.helpers.arrayElement([1, 2, 3, 4, 4, 4, 4, 4, 4, 5, 6, 7, 8]);
+      i++
+    ) {
+      sql
+        .prepare(
+          `
+      insert into "TournamentTeamMember" (
+        "tournamentTeamId",
+        "userId",
+        "isOwner",
+        "createdAt"
+      ) values (
+        $tournamentTeamId,
+        $userId,
+        $isOwner,
+        $createdAt
+      )
+      `
+        )
+        .run({
+          tournamentTeamId: id,
+          userId: userIds.pop()!,
+          isOwner: i === 0 ? 1 : 0,
+          createdAt: dateToDatabaseTimestamp(new Date()),
+        });
+
+      if (Math.random() < 0.8) {
+        const shuffledPairs = shuffle(availablePairs.slice());
+
+        let SZ = 0;
+        let TC = 0;
+        let RM = 0;
+        let CB = 0;
+
+        for (const pair of shuffledPairs) {
+          if (pair.mode === "SZ" && SZ >= 2) continue;
+          if (pair.mode === "TC" && TC >= 2) continue;
+          if (pair.mode === "RM" && RM >= 2) continue;
+          if (pair.mode === "CB" && CB >= 2) continue;
+
+          sql
+            .prepare(
+              `
+          insert into "MapPoolMap" (
+            "tournamentTeamId",
+            "stageId",
+            "mode"
+          ) values (
+            $tournamentTeamId,
+            $stageId,
+            $mode
+          )
+          `
+            )
+            .run({
+              tournamentTeamId: id,
+              stageId: pair.stageId,
+              mode: pair.mode,
+            });
+
+          if (pair.mode === "SZ") SZ++;
+          if (pair.mode === "TC") TC++;
+          if (pair.mode === "RM") RM++;
+          if (pair.mode === "CB") CB++;
+        }
+      }
+    }
   }
 }
 
