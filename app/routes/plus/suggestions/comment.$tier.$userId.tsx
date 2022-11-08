@@ -16,12 +16,15 @@ import {
 import { atOrError } from "~/utils/arrays";
 import { parseRequestFormData, validate } from "~/utils/remix";
 import { plusSuggestionPage } from "~/utils/urls";
-import { actualNumber } from "~/utils/zod";
+import { actualNumber, trimmedString } from "~/utils/zod";
 import type { PlusSuggestionsLoaderData } from "../suggestions";
 import { CommentTextarea } from "./new";
 
 const commentActionSchema = z.object({
-  text: z.string().min(1).max(PlUS_SUGGESTION_COMMENT_MAX_LENGTH),
+  text: z.preprocess(
+    trimmedString,
+    z.string().min(1).max(PlUS_SUGGESTION_COMMENT_MAX_LENGTH)
+  ),
   tier: z.preprocess(
     actualNumber,
     z

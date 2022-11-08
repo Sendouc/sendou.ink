@@ -4,6 +4,7 @@ node_modules
 /build
 /public/build
 .env
+translation-progress.md
 
 notes.md
 

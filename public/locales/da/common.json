@@ -59,6 +59,7 @@
   "maps.template.preset.onlyMode": "Kun {{modeName}}",
 
   "results": "Resultater",
+  "results.placeSuffix": ".",
 
   "forms.name": "Navn",
   "forms.description": "Beskrivelse",

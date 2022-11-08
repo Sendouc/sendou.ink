@@ -1,7 +1,7 @@
 {
   "websiteSubtitle": "Competitive Splatoon Hub",
   "buildsGoTo": "トッププレイヤーや他のプレイヤーが使っている Splatoon 3 のブキのセットアップを見る",
-  "calendarGoTo": "過去・開催予定イベントをカレンダーで見る",
+  "calendarGoTo": "過去・開催予定イベントを見る",
   "moreFeatures": "その他の機能",
   "plus.description": "Plus Server 投票の履歴を見る、その他",
   "badges.description": "プロファイルに表示できるバッジのリスト",
@@ -10,5 +10,6 @@
   "object-damage-calculator.description": "オブジェクトに対するダメージを計算する",
   "recentWinners": "直近の優勝者",
   "upcomingEvents": "開催予定のイベント",
-  "articleBy": "by {{author}}"
+  "articleBy": "by {{author}}",
+  "articlesGoTo": "過去の記事を見る"
 }

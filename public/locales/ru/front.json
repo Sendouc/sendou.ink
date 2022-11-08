@@ -7,7 +7,9 @@
   "badges.description": "Список всех значков, которые можно заработать для своего профиля",
   "analyzer.description": "Узнайте, что на самом деле делают ваши сборки",
   "maps.description": "Сделайте свой список на основе выбранного пула карт",
+  "object-damage-calculator.description": "Расчитайте урон, наносимый различным объектам",
   "recentWinners": "Недавние победители",
   "upcomingEvents": "Предстоящие события",
-  "articleBy": "от {{author}}"
+  "articleBy": "от {{author}}",
+  "articlesGoTo": "Посмотреть все прошлые статьи"
 }
