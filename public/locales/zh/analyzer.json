@@ -100,7 +100,7 @@
   "abilityPoints.short": "AP",
   "consumptionExplanation": "表中的数据表示在使用了副武器 0-{{maxSubsToUse}} 次后主武器的可攻击次数. 在满墨下的最大副武器连续使用次数为 {{maxSubsToUse}}。",
   "torpedoExplanation": "根据游戏机制，你无法同时使用多个鱼雷。",
-  "trackingSubDefExplanation": "定点侦测器, 墨汁陷阱和标线器的索敌标记时间是根据没有携带副武器强化的敌人计算得出。"
+  "trackingSubDefExplanation": "定点侦测器, 墨汁陷阱和标线器的索敌标记时间是根据没有携带副武器强化的敌人计算得出。",
   "distanceInline": "距离: {{value}}",
   "damageShort": "DMG",
   "hitsToDestroyLong": "破坏所需伤害",
