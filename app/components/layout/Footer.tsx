@@ -18,6 +18,8 @@ import { PatreonIcon } from "../icons/Patreon";
 import { TwitterIcon } from "../icons/Twitter";
 import { Image } from "../Image";
 
+const currentYear = new Date().getFullYear();
+
 export function Footer({
   patrons = [],
 }: {
@@ -98,6 +100,12 @@ export function Footer({
           </ul>
         </div>
       ) : null}
+      <div className="layout__copyright-note">
+        sendou.ink © Copyright of Sendou and contributors 2019-{currentYear}.
+        Original content & source code is licensed under the GPL-3.0 license.
+        Splatoon is trademark & © of Nintendo 2014-{currentYear}. Sendou.ink is
+        not affiliated with Nintendo.
+      </div>
     </footer>
   );
 }
