@@ -23,7 +23,7 @@ Contributions very welcome! See [CONTRIBUTING.md](./CONTRIBUTING.md) for more in
 
 ### Translations
 
-[View progress](/translation-progress.md)
+[Translation Progress](https://github.com/Sendouc/sendou.ink/issues/1104)
 
 sendou.ink can be translated to any language. All the translations can be found in the [locales folder](./public/locales). Here is how you can contribute:
 
@@ -39,7 +39,6 @@ Things to note:
 - Some lines have a dynamic part like this one: `"articleBy": "by {{author}}"` in this case `{{author}}` should appear in the translated version unchanged. So in other words don't translate the part inside `{{}}`.
 - There is one more special syntax to keep in mind. When you translate this line `"project": "Sendou.ink is a project by <2>Sendou</2> with help from contributors:",` the `<2></2>` should appear in the translated version. The text inside these tags can change.
 - To update a translation file copy the existing file, do any modifications needed and send the updated one.
-- Don't update translation-progress.md file directly. There is a script for this `npm run check-translation-jsons`. If you don't know how to run it then Sendou will run it for you.
 
 Any questions please ask Sendou!
 
@@ -110,3 +109,24 @@ Note: This is only useful if you have access to a production running on Render.c
 
 1. Add image in both .png and .avif with the correct weapon ID (`replace-img-names.ts` can help)
 2. Create new weapon ids json and weapon translation jsons using `create-weapon-json.ts` script
+
+### Add new gear gear
+
+0. If Salmon Run gear, update constant in create-gear-json.ts
+1. `npm run create-gear-json`
+2. Copy generated files from output folder to gear-ids.ts file
+3. Get .png from Lean's repository
+4. Generate .avif image
+
+### Fix errors from the CI Pipeline
+
+If you change any files and the CI pipeline errors out on certain formatting/linting steps (e.g. the `Prettier` or `Stylelint` step), run this command in the repo's root directory:
+
+```sh
+npm run cf
+```
+
+Before committing, if for some reason you see an abnormally high amount of files changed, simply run `git add --renormalize .` and it will fix the error.
+
+- Background info: this is caused by the line endings on your local repo not matching those with the remote repo's, which should remove the vast majority of unstaged files that appears to have no changes at all.
+- Reference: https://docs.github.com/en/get-started/getting-started-with-git/configuring-git-to-handle-line-endings

@@ -8,7 +8,7 @@ import type {
 import { json } from "@remix-run/node";
 import { Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import { countries } from "countries-list";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "~/hooks/useTranslation";
 import { z } from "zod";
 import { SubNav, SubNavLink } from "~/components/SubNav";
 import { db } from "~/db";

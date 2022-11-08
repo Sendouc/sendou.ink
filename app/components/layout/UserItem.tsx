@@ -1,5 +1,5 @@
 import { Link, useSearchParams } from "@remix-run/react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
 import { LOG_IN_URL, LOG_OUT_URL, userPage } from "~/utils/urls";
 import { Avatar } from "../Avatar";
@@ -19,7 +19,14 @@ export function UserItem() {
     return (
       <Popover
         buttonChildren={
-          <Avatar user={user} className="layout__avatar" size="sm" />
+          <Avatar
+            user={user}
+            alt={t("header.loggedInAs", {
+              userName: `${user.discordName}`,
+            })}
+            className="layout__avatar"
+            size="sm"
+          />
         }
       >
         <div className="layout__user-popover">

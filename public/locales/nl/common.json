@@ -36,6 +36,7 @@
   "maps.tournamentMaplist": "Maak een toernooi levellijst (maps.iplabs.ink)",
 
   "results": "Uitslagen",
+  "results.placeSuffix": "e",
 
   "forms.name": "Naam",
   "forms.description": "Beschrijving",

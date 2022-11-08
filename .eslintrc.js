@@ -31,6 +31,19 @@ module.exports = {
     "@typescript-eslint/no-non-null-assertion": 0,
     "@typescript-eslint/no-explicit-any": 0,
     "react/prop-types": 0,
+    "@typescript-eslint/no-restricted-imports": [
+      "error",
+      {
+        paths: [
+          {
+            name: "react-i18next",
+            importNames: ["useTranslation"],
+            message:
+              "Please import useTranslation from '~/hooks/useTranslation' instead.",
+          },
+        ],
+      },
+    ],
   },
   settings: {
     react: {

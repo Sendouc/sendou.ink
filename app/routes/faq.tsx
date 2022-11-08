@@ -1,5 +1,5 @@
 import type { LinksFunction, MetaFunction } from "@remix-run/node";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "~/hooks/useTranslation";
 import { Main } from "~/components/Main";
 import { useSetTitle } from "~/hooks/useSetTitle";
 import styles from "~/styles/faq.css";

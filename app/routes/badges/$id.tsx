@@ -16,7 +16,8 @@ import { canEditBadgeOwners } from "~/permissions";
 import { discordFullName } from "~/utils/strings";
 import { BADGES_PAGE } from "~/utils/urls";
 import { type BadgesLoaderData } from "../badges";
-import { useTranslation, type TFunction } from "react-i18next";
+import { type TFunction } from "react-i18next";
+import { useTranslation } from "~/hooks/useTranslation";
 
 export interface BadgeDetailsContext {
   badgeName: string;
