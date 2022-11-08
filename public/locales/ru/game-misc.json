@@ -15,5 +15,10 @@
   "MODE_SHORT_SZ": "Зоны:",
   "MODE_SHORT_TC": "Башни:",
   "MODE_SHORT_RM": "Карп:",
-  "MODE_SHORT_CB": "Клэмы:"
+  "MODE_SHORT_CB": "Клэмы:",
+  "MODE_LONG_TW": "Бой за район",
+  "MODE_LONG_SZ": "Бой за зоны",
+  "MODE_LONG_TC": "Бой за башню",
+  "MODE_LONG_RM": "Мегкарп",
+  "MODE_LONG_CB": "Устробол"
 }
