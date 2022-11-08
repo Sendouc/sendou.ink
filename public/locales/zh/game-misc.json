@@ -10,5 +10,15 @@
   "STAGE_8": "海女美术大学",
   "STAGE_9": "鲟鱼造船厂",
   "STAGE_10": "座头购物中心",
-  "STAGE_11": "醋饭海洋世界"
+  "STAGE_11": "醋饭海洋世界",
+  "MODE_SHORT_TW": "涂地",
+  "MODE_SHORT_SZ": "区域",
+  "MODE_SHORT_TC": "塔楼",
+  "MODE_SHORT_RM": "鱼虎",
+  "MODE_SHORT_CB": "蛤蜊",
+  "MODE_LONG_TW": "占地对战",
+  "MODE_LONG_SZ": "真格区域",
+  "MODE_LONG_TC": "真格塔楼",
+  "MODE_LONG_RM": "真格鱼虎对战",
+  "MODE_LONG_CB": "真格蛤蜊"
 }
