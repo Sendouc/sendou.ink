@@ -18,7 +18,6 @@
   "header.language": "语言",
   "header.loggedInAs": "以 {{userName}} 登录",
   "header.theme": "主题",
-  "header.login": "登录",
 
   "auth.errors.aborted": "登录中止",
   "auth.errors.failed": "登录失败",
