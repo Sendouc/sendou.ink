@@ -22,7 +22,7 @@
 
   "auth.errors.aborted": "登录中止",
   "auth.errors.failed": "登录失败",
-  "auth.errors.discordPermissions": "为了完善你的sendou.ink个人资料，网站需要获取你的Discord名字、头像和社交。",
+  "auth.errors.discordPermissions": "为了完善你的sendou.ink个人资料，网站需要获取你的Discord名字、头像和社交链接。",
   "auth.errors.unknown": "通过Discord登录因未知原因失败。如果该错误持续发生，请寻求帮助。",
 
   "footer.github.subtitle": "源代码",
