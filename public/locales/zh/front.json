@@ -10,6 +10,6 @@
   "object-damage-calculator.description": "计算对不同物体的伤害",
   "recentWinners": "往期冠军",
   "upcomingEvents": "近期活动",
-  "articleBy": "由{{author}}发表"
+  "articleBy": "由{{author}}发表",
   "articlesGoTo": "查看全部文章"
 }
