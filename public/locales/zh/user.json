@@ -1,10 +1,29 @@
 {
+  "customUrl": "自定义URL",
+  "ign": "游戏ID",
+  "ign.short": "游戏ID",
   "country": "国家",
-  "bio": "个人资料",
-
+  "bio": "个人简介",
+  "stickSens": "摇杆感度",
+  "motionSens": "体感感度",
+  "motion": "体感",
+  "stick": "摇杆",
+  "sens": "感度",
+  
+  "results.title": "成绩",
   "results.placing": "排名",
   "results.team": "队伍",
   "results.tournament": "比赛",
   "results.date": "日期",
-  "results.mates": "队友"
+  "results.mates": "队友",
+  "results.highlights": "高光成绩",
+  "results.nonHighlights": "其他成绩",
+  "results.highlights.choose": "选择高光成绩",
+  "results.highlights.explanation": "选择你想强调的高光成绩",
+
+  "forms.errors.invalidCustomUrl.numbers": "自定义URL不能只包含数字",
+  "forms.errors.invalidCustomUrl.strangeCharacter": "自定义URL不能包含特殊符号",
+  "forms.errors.invalidCustomUrl.duplicate": "这个自定义URL已被使用",
+  "forms.errors.invalidSens": "设置体感感度前请先设置摇杆感度"
+  
 }
