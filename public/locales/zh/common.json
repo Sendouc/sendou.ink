@@ -11,7 +11,7 @@
   "pages.analyzer": "配装分析器",
   "pages.maps": "地图列表",
   "pages.object-damage-calculator": "对物攻击力计算器",
-  
+
   "header.profile": "个人资料",
   "header.logout": "登出",
   "header.login": "登录",
@@ -58,9 +58,9 @@
   "maps.template.preset.ANARCHY": "真格模式",
   "maps.template.preset.ALL": "全部模式",
   "maps.template.preset.onlyMode": "仅限 {{modeName}}",
-  
+
   "results": "结果",
-  
+
   "results.placeSuffix_one": "^st",
   "results.placeSuffix_two": "^nd",
   "results.placeSuffix_few": "^rd",
@@ -70,7 +70,7 @@
   "forms.description": "描述",
   "forms.errors.title": "以下错误需要修正",
   "forms.errors.noSearchMatches": "没有找到对战",
-  
+
   "errors.genericReload": "发生错误，请重新加载本页面。",
 
   "tag.name.BADGE": "徽章奖励",
@@ -82,7 +82,7 @@
   "tag.name.COUNT": "队伍数量限制",
   "tag.name.LAN": "线下",
   "tag.name.QUALIFIER": "参赛资格",
-  
+
   "weapon.category.SHOOTERS": "射击枪",
   "weapon.category.BLASTERS": "爆破枪",
   "weapon.category.ROLLERS": "滚筒",
