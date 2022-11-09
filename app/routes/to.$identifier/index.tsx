@@ -113,7 +113,7 @@ export default function TournamentToolsPage() {
 
   return (
     <Main>
-      {data.event.isBeforeStart ? <PrestartControls /> : <>generate map list</>}
+      {data.event.isBeforeStart ? <PrestartControls /> : <MaplistGenerator />}
     </Main>
   );
 }
@@ -366,4 +366,8 @@ function RosterSection() {
       </div>
     </section>
   );
+}
+
+function MaplistGenerator() {
+  return <>hellou</>;
 }

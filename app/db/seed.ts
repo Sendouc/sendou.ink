@@ -556,7 +556,8 @@ function calendarEventWithToTools() {
         "discordInviteCode",
         "bracketUrl",
         "authorId",
-        "toToolsEnabled"
+        "toToolsEnabled",
+        "isBeforeStart"
       ) values (
         $id,
         $name,
@@ -564,7 +565,8 @@ function calendarEventWithToTools() {
         $discordInviteCode,
         $bracketUrl,
         $authorId,
-        $toToolsEnabled
+        $toToolsEnabled,
+        $isBeforeStart
       )
       `
     )
@@ -578,6 +580,7 @@ function calendarEventWithToTools() {
       bracketUrl: faker.internet.url(),
       authorId: 1,
       toToolsEnabled: 1,
+      isBeforeStart: 0,
     });
 }
 
@@ -593,18 +596,18 @@ function calendarEventWithToToolsTieBreakerMapPool() {
       .prepare(
         `
         insert into "MapPoolMap" (
-          "calendarEventId",
+          "tieBreakerCalendarEventId",
           "stageId",
           "mode"
         ) values (
-          $calendarEventId,
+          $tieBreakerCalendarEventId,
           $stageId,
           $mode
         )
       `
       )
       .run({
-        calendarEventId: TO_TOOLS_CALENDAR_EVENT_ID,
+        tieBreakerCalendarEventId: TO_TOOLS_CALENDAR_EVENT_ID,
         stageId,
         mode,
       });
@@ -673,46 +676,52 @@ function calendarEventWithToToolsTeams() {
           isOwner: i === 0 ? 1 : 0,
           createdAt: dateToDatabaseTimestamp(new Date()),
         });
+    }
 
-      if (Math.random() < 0.8) {
-        const shuffledPairs = shuffle(availablePairs.slice());
+    if (Math.random() < 0.8 || id === 1) {
+      const shuffledPairs = shuffle(availablePairs.slice());
 
-        let SZ = 0;
-        let TC = 0;
-        let RM = 0;
-        let CB = 0;
+      let SZ = 0;
+      let TC = 0;
+      let RM = 0;
+      let CB = 0;
+      const stageUsedCounts: Partial<Record<StageId, number>> = {};
 
-        for (const pair of shuffledPairs) {
-          if (pair.mode === "SZ" && SZ >= 2) continue;
-          if (pair.mode === "TC" && TC >= 2) continue;
-          if (pair.mode === "RM" && RM >= 2) continue;
-          if (pair.mode === "CB" && CB >= 2) continue;
+      for (const pair of shuffledPairs) {
+        if (pair.mode === "SZ" && SZ >= 2) continue;
+        if (pair.mode === "TC" && TC >= 2) continue;
+        if (pair.mode === "RM" && RM >= 2) continue;
+        if (pair.mode === "CB" && CB >= 2) continue;
 
-          sql
-            .prepare(
-              `
-          insert into "MapPoolMap" (
-            "tournamentTeamId",
-            "stageId",
-            "mode"
-          ) values (
-            $tournamentTeamId,
-            $stageId,
-            $mode
+        if (stageUsedCounts[pair.stageId] === 2) continue;
+
+        stageUsedCounts[pair.stageId] =
+          (stageUsedCounts[pair.stageId] ?? 0) + 1;
+
+        sql
+          .prepare(
+            `
+        insert into "MapPoolMap" (
+          "tournamentTeamId",
+          "stageId",
+          "mode"
+        ) values (
+          $tournamentTeamId,
+          $stageId,
+          $mode
+        )
+        `
           )
-          `
-            )
-            .run({
-              tournamentTeamId: id,
-              stageId: pair.stageId,
-              mode: pair.mode,
-            });
+          .run({
+            tournamentTeamId: id,
+            stageId: pair.stageId,
+            mode: pair.mode,
+          });
 
-          if (pair.mode === "SZ") SZ++;
-          if (pair.mode === "TC") TC++;
-          if (pair.mode === "RM") RM++;
-          if (pair.mode === "CB") CB++;
-        }
+        if (pair.mode === "SZ") SZ++;
+        if (pair.mode === "TC") TC++;
+        if (pair.mode === "RM") RM++;
+        if (pair.mode === "CB") CB++;
       }
     }
   }

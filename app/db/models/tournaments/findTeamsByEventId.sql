@@ -1,14 +1,25 @@
+with "TeamWithMembers" as (
+  select
+    "id",
+    "name",
+    json_group_array(
+      json_object(
+        'userId',
+        "TournamentTeamMember"."userId",
+        'isOwner',
+        "TournamentTeamMember"."isOwner"
+      )
+    ) as "members"
+  from
+    "TournamentTeam"
+    left join "TournamentTeamMember" on "TournamentTeamMember"."tournamentTeamId" = "TournamentTeam"."id"
+  where
+    "TournamentTeam"."calendarEventId" = @calendarEventId
+  group by
+    "TournamentTeam"."id"
+)
 select
-  "id",
-  "name",
-  json_group_array(
-    json_object(
-      'userId',
-      "TournamentTeamMember"."userId",
-      'isOwner',
-      "TournamentTeamMember"."isOwner"
-    )
-  ) as "members",
+  "TeamWithMembers".*,
   json_group_array(
     json_object(
       'stageId',
@@ -18,10 +29,7 @@ select
     )
   ) as "mapPool"
 from
-  "TournamentTeam"
-  left join "TournamentTeamMember" on "TournamentTeamMember"."tournamentTeamId" = "TournamentTeam"."id"
-  left join "MapPoolMap" on "MapPoolMap"."tournamentTeamId" = "TournamentTeam"."id"
-where
-  "TournamentTeam"."calendarEventId" = @calendarEventId
+  "TeamWithMembers"
+  left join "MapPoolMap" on "MapPoolMap"."tournamentTeamId" = "TeamWithMembers"."id"
 group by
-  "TournamentTeam"."id"
+  "TeamWithMembers"."id"
