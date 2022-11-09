@@ -33,3 +33,5 @@ from
   left join "MapPoolMap" on "MapPoolMap"."tournamentTeamId" = "TeamWithMembers"."id"
 group by
   "TeamWithMembers"."id"
+order by
+  "TeamWithMembers"."name" asc

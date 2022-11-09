@@ -6,11 +6,11 @@ export interface TournamentMaplistInput {
   bracketType: "GROUPS" | "SE" | "DE_WINNERS" | "DE_LOSERS" | "SWISS";
   teams: [
     {
-      name: string;
+      id: number;
       maps: MapPool;
     },
     {
-      name: string;
+      id: number;
       maps: MapPool;
     }
   ];

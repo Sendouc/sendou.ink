@@ -40,11 +40,11 @@ const generateMaps = ({
   roundNumber = 3,
   teams = [
     {
-      name: "Team 1",
+      id: 1,
       maps: team1Picks,
     },
     {
-      name: "Team 2",
+      id: 2,
       maps: team2Picks,
     },
   ],
@@ -130,11 +130,11 @@ TournamentMapListGenerator(
     const mapList2 = generateMaps({
       teams: [
         {
-          name: "Team 2",
+          id: 2,
           maps: team2Picks,
         },
         {
-          name: "Team 1",
+          id: 1,
           maps: team1Picks,
         },
       ],
@@ -155,11 +155,11 @@ TournamentMapListGenerator(
     const mapList1 = generateMaps({
       teams: [
         {
-          name: "Team 1",
+          id: 1,
           maps: team1Picks,
         },
         {
-          name: "Team 2",
+          id: 2,
           maps: team2Picks,
         },
       ],
@@ -167,11 +167,11 @@ TournamentMapListGenerator(
     const mapList2 = generateMaps({
       teams: [
         {
-          name: "Team 1",
+          id: 1,
           maps: team1Picks,
         },
         {
-          name: "Team 2",
+          id: 2,
           maps: new MapPool(team2Picks.stageModePairs.slice().reverse()),
         },
       ],
@@ -209,11 +209,11 @@ TournamentMapListGenerator(
     const mapList = generateMaps({
       teams: [
         {
-          name: "Team 1",
+          id: 1,
           maps: new MapPool([]),
         },
         {
-          name: "Team 2",
+          id: 2,
           maps: team2Picks,
         },
       ],
@@ -237,11 +237,11 @@ TournamentMapListGenerator(
     const mapList = generateMaps({
       teams: [
         {
-          name: "Team 1",
+          id: 1,
           maps: new MapPool([]),
         },
         {
-          name: "Team 2",
+          id: 2,
           maps: new MapPool([]),
         },
       ],
@@ -255,11 +255,11 @@ TournamentMapListGenerator("Handles worst case with duplication", () => {
   const maplist = generateMaps({
     teams: [
       {
-        name: "Team 1",
+        id: 1,
         maps: duplicationPicks,
       },
       {
-        name: "Team 2",
+        id: 2,
         maps: duplicationPicks,
       },
     ],
@@ -294,11 +294,11 @@ TournamentMapListGenerator("Keeps things fair when overlap", () => {
   const mapList = generateMaps({
     teams: [
       {
-        name: "Team 1",
+        id: 1,
         maps: team1Picks,
       },
       {
-        name: "Team 2",
+        id: 2,
         maps: team2PicksWithSomeDuplication,
       },
     ],

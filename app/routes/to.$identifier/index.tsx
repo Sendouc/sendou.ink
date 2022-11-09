@@ -27,10 +27,15 @@ import {
   validate,
 } from "~/utils/remix";
 import { findOwnedTeam } from "~/utils/tournaments";
+import type { Unpacked } from "~/utils/types";
 import { assertUnreachable } from "~/utils/types";
 import { modeImageUrl } from "~/utils/urls";
 import type { TournamentToolsLoaderData } from "../to.$identifier";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
+import { createTournamentMapList } from "~/modules/tournament-map-list-generator";
+// xxx: fix
+import type { TournamentMaplistInput } from "~/modules/tournament-map-list-generator/types";
+import type { TournamentMaplistSource } from "~/modules/tournament-map-list-generator/tournament-map-list";
 
 export const links: LinksFunction = () => {
   return [
@@ -369,5 +374,147 @@ function RosterSection() {
 }
 
 function MaplistGenerator() {
-  return <>hellou</>;
+  const data = useOutletContext<TournamentToolsLoaderData>();
+
+  // xxx: but inside custom hook using search params
+  const [bestOf, setBestOf] = React.useState<3 | 5 | 7>(3);
+  const [teamOne, setTeamOne] = React.useState(data.teams[0]!);
+  const [teamTwo, setTeamTwo] = React.useState(data.teams[1]!);
+
+  return (
+    <div className="stack md">
+      <RoundSelect />
+      <div className="tournament__teams-container">
+        <TeamsSelect
+          number={1}
+          team={teamOne}
+          setTeam={setTeamOne}
+          includeOwn
+        />
+        <TeamsSelect number={2} team={teamTwo} setTeam={setTeamTwo} />
+      </div>
+      <BestOfRadios bestOf={bestOf} setBestOf={setBestOf} />
+      <MapList
+        teams={[
+          { ...teamOne, maps: new MapPool(teamOne.mapPool ?? []) },
+          { ...teamTwo, maps: new MapPool(teamTwo.mapPool ?? []) },
+        ]}
+        bestOf={bestOf}
+      />
+    </div>
+  );
+}
+
+// xxx: implement
+function RoundSelect() {
+  return (
+    <div className="tournament__round-container tournament__select-container">
+      <label htmlFor="round">Round</label>
+      <select id="round">
+        <option>Winners Round 1</option>
+      </select>
+    </div>
+  );
+}
+
+function TeamsSelect({
+  number,
+  team,
+  setTeam,
+  includeOwn = false,
+}: {
+  number: number;
+  team: Unpacked<TournamentToolsLoaderData["teams"]>;
+  setTeam: (team: Unpacked<TournamentToolsLoaderData["teams"]>) => void;
+  includeOwn?: boolean;
+}) {
+  const data = useOutletContext<TournamentToolsLoaderData>();
+
+  return (
+    <div className="tournament__select-container">
+      <label htmlFor="round">Team {number}</label>
+      <select
+        id="round"
+        className="tournament__team-select"
+        value={team.id}
+        onChange={(e) => {
+          const team = data.teams.find((t) => t.id === Number(e.target.value))!;
+
+          setTeam(team);
+        }}
+      >
+        {includeOwn && <option>Our team</option>}
+        {data.teams.map((team) => (
+          <option key={team.id} value={team.id}>
+            {team.name}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
+const BEST_OF_OPTIONS = [3, 5, 7] as const;
+function BestOfRadios({
+  bestOf,
+  setBestOf,
+}: {
+  bestOf: 3 | 5 | 7;
+  setBestOf: (bestOf: 3 | 5 | 7) => void;
+}) {
+  return (
+    <div className="tournament__bo-radios-container">
+      {BEST_OF_OPTIONS.map((bestOfOption) => (
+        <div key={bestOfOption}>
+          <label htmlFor={String(bestOfOption)}>Bo{bestOfOption}</label>
+          <input
+            id={String(bestOfOption)}
+            name="bestOf"
+            type="radio"
+            checked={bestOfOption === bestOf}
+            onChange={() => setBestOf(bestOfOption)}
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function MapList({
+  teams,
+  bestOf,
+}: {
+  teams: TournamentMaplistInput["teams"];
+  bestOf: TournamentMaplistInput["bestOf"];
+}) {
+  const { t } = useTranslation(["game-misc"]);
+  const data = useOutletContext<TournamentToolsLoaderData>();
+
+  const mapList = createTournamentMapList({
+    bestOf,
+    bracketType: "DE_WINNERS",
+    roundNumber: 1,
+    teams,
+    tiebreakerMaps: new MapPool(data.tieBreakerMapPool),
+  });
+
+  return (
+    <div className="tournament__map-list">
+      {mapList.map(({ stageId, mode, source }, i) => {
+        return (
+          <React.Fragment key={`${stageId}-${mode}`}>
+            <PickInfoText source={source} />
+            <div key={stageId} className="tournament__stage-listed">
+              {i + 1}) {mode} {t(`game-misc:STAGE_${stageId}`)}
+            </div>
+          </React.Fragment>
+        );
+      })}
+    </div>
+  );
+}
+
+// xxx: implement
+function PickInfoText({ source }: { source: TournamentMaplistSource }) {
+  return <div>{source}</div>;
 }

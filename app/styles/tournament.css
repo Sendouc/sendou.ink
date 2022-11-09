@@ -31,3 +31,61 @@
 .tournament__summary-content > svg {
   width: 1rem;
 }
+
+.tournament__round-container {
+  width: 250px;
+  margin: 0 auto;
+}
+
+.tournament__select-container > label {
+  margin-left: var(--s-2-5);
+}
+
+.tournament__teams-container {
+  display: flex;
+  justify-content: center;
+  gap: var(--s-4);
+}
+
+.tournament__team-select {
+  width: 150px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tournament__bo-radios-container {
+  display: flex;
+  justify-content: center;
+  gap: var(--s-4);
+}
+
+.tournament__map-list {
+  display: grid;
+  justify-content: center;
+  column-gap: var(--s-4);
+  font-size: var(--fonts-sm);
+  font-weight: var(--semi-bold);
+  grid-template-columns: max-content max-content;
+}
+
+.tournament__left-x {
+  align-self: center;
+  color: lightgreen;
+  font-size: var(--fonts-xxxs);
+}
+
+.tournament__right-x {
+  align-self: center;
+  color: lightpink;
+  font-size: var(--fonts-xxxs);
+}
+
+.tournament__tiebreaker {
+  align-self: center;
+  color: lightcyan;
+  font-size: var(--fonts-xxxs);
+}
+
+.tournament__stage-listed {
+  justify-self: flex-start;
+}
