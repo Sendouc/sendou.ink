@@ -95,7 +95,7 @@
   "base": "基础",
   "value": "值",
   "build": "配装",
-  "patch": "补丁:",
+  "patch": "版本:",
   "abilityPoints": "能力点数",
   "abilityPoints.short": "AP",
   "consumptionExplanation": "表中的数据表示在使用了副武器 0-{{maxSubsToUse}} 次后主武器的可攻击次数。在满墨下的最大副武器连续使用次数为 {{maxSubsToUse}}。",
