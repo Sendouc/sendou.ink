@@ -58,7 +58,7 @@
   "maps.template.preset.ALL": "全部模式",
   "maps.template.preset.onlyMode": "仅限 {{modeName}}",
 
-  "results": "结果",
+  "results": "成绩",
 
   "results.placeSuffix_one": "^st",
   "results.placeSuffix_two": "^nd",
@@ -66,9 +66,9 @@
   "results.placeSuffix_other": "^th",
 
   "forms.name": "名称",
-  "forms.description": "描述",
+  "forms.description": "简介",
   "forms.errors.title": "以下错误需要修正",
-  "forms.errors.noSearchMatches": "没有找到对战",
+  "forms.errors.noSearchMatches": "没有找到相关结果",
 
   "errors.genericReload": "发生错误，请重新加载本页面。",
 
@@ -80,7 +80,7 @@
   "tag.name.LOW": "水平限制",
   "tag.name.COUNT": "队伍数量限制",
   "tag.name.LAN": "线下",
-  "tag.name.QUALIFIER": "参赛资格",
+  "tag.name.QUALIFIER": "资格赛",
 
   "weapon.category.SHOOTERS": "射击枪",
   "weapon.category.BLASTERS": "爆破枪",
