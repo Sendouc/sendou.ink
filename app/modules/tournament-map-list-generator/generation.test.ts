@@ -323,4 +323,27 @@ TournamentMapListGenerator("Keeps things fair when overlap", () => {
   assert.equal(team1PicksAppeared, team2PicksAppeared);
 });
 
+TournamentMapListGenerator("No map picked by same team twice in row", () => {
+  for (let i = 1; i <= 10; i++) {
+    const mapList = generateMaps({
+      teams: [
+        {
+          id: 1,
+          maps: team1Picks,
+        },
+        {
+          id: 2,
+          maps: team2Picks,
+        },
+      ],
+      roundNumber: i,
+    });
+
+    for (let j = 0; j < mapList.length - 1; j++) {
+      if (typeof mapList[j]!.source !== "number") continue;
+      assert.not.equal(mapList[j]!.source, mapList[j + 1]!.source);
+    }
+  }
+});
+
 TournamentMapListGenerator.run();

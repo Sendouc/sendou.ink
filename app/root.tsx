@@ -162,6 +162,7 @@ export const namespaceJsonsToPreloadObj: Record<
   gear: true,
   user: true,
   weapons: true,
+  tournament: true,
 };
 const namespaceJsonsToPreload = Object.keys(namespaceJsonsToPreloadObj);
 

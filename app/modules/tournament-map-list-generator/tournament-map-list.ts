@@ -1,20 +1,14 @@
 import invariant from "tiny-invariant";
 import type { ModeShort, ModeWithStage } from "../in-game-lists";
 import { DEFAULT_MAP_POOL } from "./constants";
-import type { TournamentMaplistInput } from "./types";
+import type { TournamentMaplistInput, TournamentMaplistSource } from "./types";
 import { seededRandom } from "./utils";
 
-export type TournamentMaplistSource =
-  | number
-  | "DEFAULT"
-  | "TIEBREAKER"
-  | "BOTH";
 type TournamentMapListMap = ModeWithStage & {
   source: TournamentMaplistSource;
 };
 type ModeWithStageAndScore = TournamentMapListMap & { score: number };
 
-// xxx: don't allow going like our pick, their, their, our
 // xxx: instead of perfect and suboptimal maybe instead assign preference score. if preference score = 0 then break.
 // each map repeat is +1 preference score. triple map is +2. store always best completed map
 
@@ -126,6 +120,7 @@ export function createTournamentMapList(
     if (isNotFollowingModePattern(stage)) return false;
     if (isMakingThingsUnfair(stage)) return false;
     if (isStageRepeatWithoutBreak(stage)) return false;
+    if (isSecondPickBySameTeamInRow(stage)) return false;
 
     return true;
   }
@@ -180,6 +175,14 @@ export function createTournamentMapList(
     if (!lastStage) return false;
 
     return lastStage.stageId === stage.stageId;
+  }
+
+  function isSecondPickBySameTeamInRow(stage: StageValidatorInput) {
+    const lastStage = mapList[mapList.length - 1];
+    if (!lastStage) return false;
+    if (stage.score === 0) return false;
+
+    return lastStage.score === stage.score;
   }
 
   function isPerfection() {

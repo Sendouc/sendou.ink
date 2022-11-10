@@ -68,22 +68,25 @@
   grid-template-columns: max-content max-content;
 }
 
-.tournament__left-x {
+.tournament__pick-info {
   align-self: center;
-  color: lightgreen;
   font-size: var(--fonts-xxxs);
 }
 
-.tournament__right-x {
-  align-self: center;
-  color: lightpink;
-  font-size: var(--fonts-xxxs);
+.tournament__pick-info.team-1 {
+  color: var(--theme-informative-blue);
 }
 
-.tournament__tiebreaker {
-  align-self: center;
-  color: lightcyan;
-  font-size: var(--fonts-xxxs);
+.tournament__pick-info.team-2 {
+  color: var(--theme-informative-red);
+}
+
+.tournament__pick-info.tiebreaker {
+  color: var(--theme-informative-yellow);
+}
+
+.tournament__pick-info.both {
+  color: var(--theme-informative-green);
 }
 
 .tournament__stage-listed {

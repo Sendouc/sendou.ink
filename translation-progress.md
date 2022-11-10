@@ -57,6 +57,10 @@
 
 **22/22**
 
+### 🔴 tournament.json
+
+**0/2**
+
 ### 🟢 user.json
 
 **25/25**
@@ -121,6 +125,10 @@
 ### 🟢 game-misc.json
 
 **22/22**
+
+### 🔴 tournament.json
+
+**0/2**
 
 ### 🟢 user.json
 
@@ -271,6 +279,10 @@
 - MODE_LONG_CB
 
 </details>
+
+### 🔴 tournament.json
+
+**0/2**
 
 ### 🟡 user.json
 
@@ -445,6 +457,10 @@
 - MODE_LONG_CB
 
 </details>
+
+### 🔴 tournament.json
+
+**0/2**
 
 ### 🟡 user.json
 
@@ -630,6 +646,10 @@
 
 </details>
 
+### 🔴 tournament.json
+
+**0/2**
+
 ### 🟡 user.json
 
 **7/25**
@@ -714,6 +734,10 @@
 
 </details>
 
+### 🔴 tournament.json
+
+**0/2**
+
 ### 🔴 user.json
 
 **0/25**
@@ -784,6 +808,10 @@
 ### 🟢 game-misc.json
 
 **22/22**
+
+### 🔴 tournament.json
+
+**0/2**
 
 ### 🟢 user.json
 
@@ -930,6 +958,10 @@
 - MODE_LONG_CB
 
 </details>
+
+### 🔴 tournament.json
+
+**0/2**
 
 ### 🟡 user.json
 
@@ -1081,6 +1113,10 @@
 
 </details>
 
+### 🔴 tournament.json
+
+**0/2**
+
 ### 🟡 user.json
 
 **20/25**
@@ -1204,6 +1240,10 @@
 - MODE_LONG_CB
 
 </details>
+
+### 🔴 tournament.json
+
+**0/2**
 
 ### 🟢 user.json
 
@@ -1373,6 +1413,10 @@
 - MODE_LONG_CB
 
 </details>
+
+### 🔴 tournament.json
+
+**0/2**
 
 ### 🟡 user.json
 

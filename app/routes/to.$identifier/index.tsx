@@ -24,24 +24,31 @@ import styles from "~/styles/tournament.css";
 import {
   badRequestIfFalsy,
   parseRequestFormData,
+  type SendouRouteHandle,
   validate,
 } from "~/utils/remix";
 import { findOwnedTeam } from "~/utils/tournaments";
-import type { Unpacked } from "~/utils/types";
 import { assertUnreachable } from "~/utils/types";
 import { modeImageUrl } from "~/utils/urls";
 import type { TournamentToolsLoaderData } from "../to.$identifier";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
-import { createTournamentMapList } from "~/modules/tournament-map-list-generator";
-// xxx: fix
-import type { TournamentMaplistInput } from "~/modules/tournament-map-list-generator/types";
-import type { TournamentMaplistSource } from "~/modules/tournament-map-list-generator/tournament-map-list";
+import {
+  createTournamentMapList,
+  type BracketType,
+  type TournamentMaplistInput,
+  type TournamentMaplistSource,
+} from "~/modules/tournament-map-list-generator";
+import type { MapPoolMap } from "~/db/types";
 
 export const links: LinksFunction = () => {
   return [
     { rel: "stylesheet", href: styles },
     { rel: "stylesheet", href: mapsStyles },
   ];
+};
+
+export const handle: SendouRouteHandle = {
+  i18n: ["tournament"],
 };
 
 const tournamentToolsActionSchema = z.union([
@@ -373,25 +380,51 @@ function RosterSection() {
   );
 }
 
+type TeamInState = {
+  id: number;
+  mapPool?: Pick<MapPoolMap, "mode" | "stageId">[];
+};
 function MaplistGenerator() {
   const data = useOutletContext<TournamentToolsLoaderData>();
 
   // xxx: but inside custom hook using search params
   const [bestOf, setBestOf] = React.useState<3 | 5 | 7>(3);
-  const [teamOne, setTeamOne] = React.useState(data.teams[0]!);
-  const [teamTwo, setTeamTwo] = React.useState(data.teams[1]!);
+  const [teamOne, setTeamOne] = React.useState<TeamInState>(
+    data.ownTeam ?? data.teams[0]!
+  );
+  const [teamTwo, setTeamTwo] = React.useState<TeamInState>(data.teams[1]!);
+  const [roundNumber, setRoundNumber] = React.useState(1);
+  const [bracketType, setBracketType] =
+    React.useState<BracketType>("DE_WINNERS");
+
+  const handleSetTeam =
+    (setTeam: (newTeam: TeamInState) => void) => (id: number) => {
+      setTeam(id === -1 ? { id } : data.teams.find((team) => team.id === id)!);
+    };
 
   return (
     <div className="stack md">
-      <RoundSelect />
+      <RoundSelect
+        roundNumber={roundNumber}
+        bracketType={bracketType}
+        handleChange={(roundNumber, bracketType) => {
+          setRoundNumber(roundNumber);
+          setBracketType(bracketType);
+        }}
+      />
       <div className="tournament__teams-container">
         <TeamsSelect
           number={1}
           team={teamOne}
-          setTeam={setTeamOne}
-          includeOwn
+          otherTeam={teamTwo}
+          setTeam={handleSetTeam(setTeamOne)}
         />
-        <TeamsSelect number={2} team={teamTwo} setTeam={setTeamTwo} />
+        <TeamsSelect
+          number={2}
+          team={teamTwo}
+          otherTeam={teamOne}
+          setTeam={handleSetTeam(setTeamTwo)}
+        />
       </div>
       <BestOfRadios bestOf={bestOf} setBestOf={setBestOf} />
       <MapList
@@ -400,18 +433,48 @@ function MaplistGenerator() {
           { ...teamTwo, maps: new MapPool(teamTwo.mapPool ?? []) },
         ]}
         bestOf={bestOf}
+        bracketType={bracketType}
+        roundNumber={roundNumber}
       />
     </div>
   );
 }
 
-// xxx: implement
-function RoundSelect() {
+const BRACKET_TYPES: Array<BracketType> = ["DE_WINNERS", "DE_LOSERS"];
+const AMOUNT_OF_ROUNDS = 12;
+function RoundSelect({
+  roundNumber,
+  bracketType,
+  handleChange,
+}: {
+  roundNumber: TournamentMaplistInput["roundNumber"];
+  bracketType: TournamentMaplistInput["bracketType"];
+  handleChange: (roundNumber: number, bracketType: BracketType) => void;
+}) {
+  const { t } = useTranslation(["tournament"]);
+
   return (
     <div className="tournament__round-container tournament__select-container">
       <label htmlFor="round">Round</label>
-      <select id="round">
-        <option>Winners Round 1</option>
+      <select
+        id="round"
+        value={`${bracketType}-${roundNumber}`}
+        onChange={(e) => {
+          const [bracketType, roundNumber] = e.target.value.split("-") as [
+            BracketType,
+            string
+          ];
+          handleChange(Number(roundNumber), bracketType);
+        }}
+      >
+        {BRACKET_TYPES.flatMap((type) =>
+          new Array(AMOUNT_OF_ROUNDS).fill(null).map((_, i) => (
+            <option key={`${type}-${i}`} value={`${type}-${i}`}>
+              {/* xxx: fix */}
+              {t(`tournament:bracket.type.${type}` as any)} {i + 1}
+            </option>
+          ))
+        )}
       </select>
     </div>
   );
@@ -420,13 +483,13 @@ function RoundSelect() {
 function TeamsSelect({
   number,
   team,
+  otherTeam,
   setTeam,
-  includeOwn = false,
 }: {
   number: number;
-  team: Unpacked<TournamentToolsLoaderData["teams"]>;
-  setTeam: (team: Unpacked<TournamentToolsLoaderData["teams"]>) => void;
-  includeOwn?: boolean;
+  team: TeamInState;
+  otherTeam: TeamInState;
+  setTeam: (newTeamId: number) => void;
 }) {
   const data = useOutletContext<TournamentToolsLoaderData>();
 
@@ -438,17 +501,17 @@ function TeamsSelect({
         className="tournament__team-select"
         value={team.id}
         onChange={(e) => {
-          const team = data.teams.find((t) => t.id === Number(e.target.value))!;
-
-          setTeam(team);
+          setTeam(Number(e.target.value));
         }}
       >
-        {includeOwn && <option>Our team</option>}
-        {data.teams.map((team) => (
-          <option key={team.id} value={team.id}>
-            {team.name}
-          </option>
-        ))}
+        {otherTeam.id !== -1 && <option value={-1}>(Unlisted team)</option>}
+        {data.teams
+          .filter((t) => t.id !== otherTeam.id)
+          .map((team) => (
+            <option key={team.id} value={team.id}>
+              {team.name}
+            </option>
+          ))}
       </select>
     </div>
   );
@@ -480,21 +543,12 @@ function BestOfRadios({
   );
 }
 
-function MapList({
-  teams,
-  bestOf,
-}: {
-  teams: TournamentMaplistInput["teams"];
-  bestOf: TournamentMaplistInput["bestOf"];
-}) {
+function MapList(props: Omit<TournamentMaplistInput, "tiebreakerMaps">) {
   const { t } = useTranslation(["game-misc"]);
   const data = useOutletContext<TournamentToolsLoaderData>();
 
   const mapList = createTournamentMapList({
-    bestOf,
-    bracketType: "DE_WINNERS",
-    roundNumber: 1,
-    teams,
+    ...props,
     tiebreakerMaps: new MapPool(data.tieBreakerMapPool),
   });
 
@@ -503,7 +557,11 @@ function MapList({
       {mapList.map(({ stageId, mode, source }, i) => {
         return (
           <React.Fragment key={`${stageId}-${mode}`}>
-            <PickInfoText source={source} />
+            <PickInfoText
+              source={source}
+              teamOneId={props.teams[0].id}
+              teamTwoId={props.teams[1].id}
+            />
             <div key={stageId} className="tournament__stage-listed">
               {i + 1}) {mode} {t(`game-misc:STAGE_${stageId}`)}
             </div>
@@ -514,7 +572,35 @@ function MapList({
   );
 }
 
-// xxx: implement
-function PickInfoText({ source }: { source: TournamentMaplistSource }) {
-  return <div>{source}</div>;
+function PickInfoText({
+  source,
+  teamOneId,
+  teamTwoId,
+}: {
+  source: TournamentMaplistSource;
+  teamOneId: number;
+  teamTwoId: number;
+}) {
+  const text = () => {
+    if (source === teamOneId) return `Team 1 pick`;
+    if (source === teamTwoId) return `Team 2 pick`;
+    if (source === "TIEBREAKER") return `Tiebreaker`;
+    if (source === "BOTH") return `Both picked`;
+    if (source === "DEFAULT") return `Default map`;
+
+    console.error(`Unknown source: ${String(source)}`);
+    return "";
+  };
+
+  const otherClassName = () => {
+    if (source === teamOneId) return "team-1";
+    if (source === teamTwoId) return "team-2";
+    return typeof source === "string" ? source.toLocaleLowerCase() : source;
+  };
+
+  return (
+    <div className={clsx("tournament__pick-info", otherClassName())}>
+      {text()}
+    </div>
+  );
 }
