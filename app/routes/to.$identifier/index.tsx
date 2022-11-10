@@ -470,8 +470,7 @@ function RoundSelect({
         {BRACKET_TYPES.flatMap((type) =>
           new Array(AMOUNT_OF_ROUNDS).fill(null).map((_, i) => (
             <option key={`${type}-${i}`} value={`${type}-${i}`}>
-              {/* xxx: fix */}
-              {t(`tournament:bracket.type.${type}` as any)} {i + 1}
+              {t(`tournament:bracket.type.${type}`)} {i + 1}
             </option>
           ))
         )}

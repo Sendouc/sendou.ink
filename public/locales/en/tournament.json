@@ -1,4 +1,7 @@
 {
   "bracket.type.DE_WINNERS": "Winners Round",
-  "bracket.type.DE_LOSERS": "Losers Round"
+  "bracket.type.DE_LOSERS": "Losers Round",
+  "bracket.type.SE": "Round",
+  "bracket.type.SWISS": "Swiss Round",
+  "bracket.type.GROUPS": "Groups Round"
 }
