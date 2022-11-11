@@ -19,6 +19,7 @@ import {
 } from "~/modules/analyzer/specialEffects";
 import type {
   AbilityPoints,
+  MainAbilityChunks,
   SpecialEffectType,
 } from "~/modules/analyzer/types";
 import {
@@ -46,6 +47,11 @@ import {
   specialWeaponImageUrl,
   subWeaponImageUrl,
 } from "~/utils/urls";
+import type { AbilityWithUnknown } from "~/modules/in-game-lists/types";
+import {
+  PRIMARY_SLOT_REQUIRED_ABILITY_CHUNKS_COUNT,
+  REQUIRED_ABILITY_CHUNKS_COUNT,
+} from "~/modules/in-game-lists/abilities";
 
 export const CURRENT_PATCH = "1.2";
 
@@ -130,6 +136,8 @@ export default function BuildAnalyzerPage() {
     ),
   ].filter(Boolean);
 
+  const mainAbilities = build.map((a) => a[0]);
+
   return (
     <Main>
       <div className="analyzer__container">
@@ -173,7 +181,10 @@ export default function BuildAnalyzerPage() {
               effects={effects}
             />
             {abilityPoints.size > 0 && (
-              <AbilityPointsDetails abilityPoints={abilityPoints} />
+              <>
+                <AbilityPointsDetails abilityPoints={abilityPoints} />
+                <AbilityChunksRequired mainAbilities={mainAbilities} />
+              </>
             )}
           </div>
           <div className="analyzer__patch">
@@ -730,6 +741,86 @@ function AbilityPointsDetails({
               </div>
             </div>
           ))}
+      </div>
+    </details>
+  );
+}
+
+/**
+ * From an array of Main abilities, create a map of <Ability, number>
+ *  that describes the number of Ability chunks required to replace the main ability on a piece of gear.
+ *
+ * Extra processing is required for Main abilities that are primary slot-only abilities,
+ *  as they are comprised of 3 stackable ability chunks at a lower ability chunk count than usual.
+ *
+ * @param mainAbilities
+ * @returns
+ */
+function getAbilityChunksMap(mainAbilities: AbilityWithUnknown[]) {
+  const abilityChunksMap: MainAbilityChunks = new Map();
+  for (let i = 0; i < mainAbilities.length; i++) {
+    const mainAbility = mainAbilities[i];
+    if (typeof mainAbility !== "undefined" && mainAbility !== "UNKNOWN") {
+      const primarySlotOnlyAbilityRef = abilities.filter(
+        (a) => a.name === mainAbility && a.abilityChunkTypesRequired.length > 0
+      );
+
+      // Primary-slot-only item that can have ability chunks put on it
+      if (primarySlotOnlyAbilityRef.length === 1) {
+        const primaryAbility = primarySlotOnlyAbilityRef[0];
+        if (typeof primaryAbility !== "undefined") {
+          for (
+            let j = 0;
+            j < primaryAbility?.abilityChunkTypesRequired.length;
+            j++
+          ) {
+            const mainAbilityName = primaryAbility.abilityChunkTypesRequired[j];
+
+            if (typeof mainAbilityName !== "undefined") {
+              abilityChunksMap.set(
+                mainAbilityName,
+                (abilityChunksMap.get(mainAbility) ?? 0) +
+                  PRIMARY_SLOT_REQUIRED_ABILITY_CHUNKS_COUNT
+              );
+            }
+          }
+        }
+      } else {
+        abilityChunksMap.set(
+          mainAbility,
+          (abilityChunksMap.get(mainAbility) ?? 0) +
+            REQUIRED_ABILITY_CHUNKS_COUNT
+        );
+      }
+    }
+  }
+
+  return abilityChunksMap;
+}
+
+function AbilityChunksRequired({
+  mainAbilities,
+}: {
+  mainAbilities: AbilityWithUnknown[];
+}) {
+  const { t } = useTranslation("analyzer");
+  const abilityChunksMap = getAbilityChunksMap(mainAbilities);
+
+  return (
+    <details className="w-full">
+      <summary className="analyzer__ap-summary">{t("abilityChunks")}</summary>
+      <div className="stack sm horizontal flex-wrap mt-4">
+        {Array.from(abilityChunksMap).map((a) => {
+          const mainAbilityName = a[0];
+          const numChunksRequired = a[1];
+
+          return (
+            <div key={mainAbilityName} className="stack items-center">
+              <Ability ability={mainAbilityName} size="TINY" />
+              <div className="analyzer__ap-text">{numChunksRequired}</div>
+            </div>
+          );
+        })}
       </div>
     </details>
   );

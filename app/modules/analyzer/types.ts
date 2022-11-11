@@ -8,6 +8,7 @@ import type { SPECIAL_EFFECTS } from "./specialEffects";
 import type weaponParams from "./weapon-params.json";
 import type abilityValues from "./ability-values.json";
 import type { DAMAGE_RECEIVERS, DAMAGE_TYPE } from "./constants";
+import { AbilityWithUnknown } from "../in-game-lists/types";
 
 type Overwrites = Record<
   string,
@@ -132,6 +133,11 @@ export interface Stat<T = number> {
 export type AbilityPoints = Map<
   Ability,
   { ap: number; apBeforeTacticooler: number }
+>;
+
+export type MainAbilityChunks = Map<
+  AbilityWithUnknown,
+  number
 >;
 
 export interface StatFunctionInput {
