@@ -86,7 +86,8 @@
  */
 .calendar__week:nth-child(3),
 .calendar__week:nth-child(7) {
-  width: calc(var(--full-size-week-width) - 1.5rem);
+  min-width: calc(var(--full-size-week-width) - 1.5rem);
+  max-width: calc(var(--full-size-week-width) - 1.5rem);
 }
 
 .calendar__week__relative {
