@@ -69,6 +69,13 @@
   font-size: var(--fonts-sm);
 }
 
+/* Addresses spacing issues for translations with slightly longer strings
+ * Issue: https://github.com/Sendouc/sendou.ink/issues/935
+ */
+.calendar__week:nth-child(5) > .calendar__week__relative {
+  max-width: 3.6rem;
+}
+
 .calendar__week:nth-child(4),
 .calendar__week:nth-child(6) {
   min-width: calc(var(--full-size-week-width) - 1rem);
@@ -81,8 +88,16 @@
   font-size: var(--fonts-xxs);
 }
 
-/* Addresses asymmetric elements mentioned in this issue:
- * https://github.com/Sendouc/sendou.ink/issues/1117
+/* Addresses spacing issues for translations with slightly longer strings
+ * Issue: https://github.com/Sendouc/sendou.ink/issues/935
+ */
+.calendar__week:nth-child(4) > .calendar__week__relative,
+.calendar__week:nth-child(6) > .calendar__week__relative {
+  max-width: 3.2rem;
+}
+
+/* Addresses asymmetric elements.
+ * Issue: https://github.com/Sendouc/sendou.ink/issues/1117
  */
 .calendar__week:nth-child(3),
 .calendar__week:nth-child(7) {
