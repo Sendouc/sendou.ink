@@ -736,7 +736,7 @@ function AbilityPointsDetails({
             );
           })
           .map((a) => (
-            <div key={a.name} className="stack items-center">
+            <div key={`abilityPointsDetails_${a.name}`} className="stack items-center">
               <Ability ability={a.name} size="TINY" />
               <div className="analyzer__ap-text">
                 {abilityPoints.get(a.name)?.ap}
@@ -814,7 +814,7 @@ function AbilityChunksRequired({
           const numChunksRequired = a[1];
 
           return (
-            <div key={mainAbilityName} className="stack items-center">
+            <div key={`abilityChunksRequired_${mainAbilityName}`} className="stack items-center">
               <Ability ability={mainAbilityName} size="TINY" />
               <div className="analyzer__ap-text">{numChunksRequired}</div>
             </div>
