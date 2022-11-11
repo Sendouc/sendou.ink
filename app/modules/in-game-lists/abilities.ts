@@ -1,6 +1,6 @@
 export const REQUIRED_ABILITY_CHUNKS_COUNT = 45;
 
-export const PRIMARY_SLOT_REQUIRED_ABILITY_CHUNKS_COUNT = 15;
+export const PRIMARY_SLOT_ONLY_REQUIRED_ABILITY_CHUNKS_COUNT = 15;
 
 export const abilities = [
   { name: "ISM", type: "STACKABLE", abilityChunkTypesRequired: [] },

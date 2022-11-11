@@ -49,7 +49,7 @@ import {
 } from "~/utils/urls";
 import type { AbilityWithUnknown } from "~/modules/in-game-lists/types";
 import {
-  PRIMARY_SLOT_REQUIRED_ABILITY_CHUNKS_COUNT,
+  PRIMARY_SLOT_ONLY_REQUIRED_ABILITY_CHUNKS_COUNT,
   REQUIRED_ABILITY_CHUNKS_COUNT,
 } from "~/modules/in-game-lists/abilities";
 
@@ -780,7 +780,7 @@ function getAbilityChunksMap(mainAbilities: AbilityWithUnknown[]) {
               abilityChunksMap.set(
                 mainAbilityName,
                 (abilityChunksMap.get(mainAbility) ?? 0) +
-                  PRIMARY_SLOT_REQUIRED_ABILITY_CHUNKS_COUNT
+                  PRIMARY_SLOT_ONLY_REQUIRED_ABILITY_CHUNKS_COUNT
               );
             }
           }
