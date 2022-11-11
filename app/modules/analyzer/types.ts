@@ -135,10 +135,7 @@ export type AbilityPoints = Map<
   { ap: number; apBeforeTacticooler: number }
 >;
 
-export type MainAbilityChunks = Map<
-  AbilityWithUnknown,
-  number
->;
+export type MainAbilityChunks = Map<AbilityWithUnknown, number>;
 
 export interface StatFunctionInput {
   weaponSplId: MainWeaponId;
