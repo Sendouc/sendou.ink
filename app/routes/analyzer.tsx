@@ -752,9 +752,6 @@ function AbilityPointsDetails({
  *
  * Extra processing is required for Main abilities that are primary slot-only abilities,
  *  as they are comprised of 3 stackable ability chunks at a lower ability chunk count than usual.
- *
- * @param mainAbilities
- * @returns
  */
 function getAbilityChunksMap(mainAbilities: AbilityWithUnknown[]) {
   const abilityChunksMap: MainAbilityChunks = new Map();
