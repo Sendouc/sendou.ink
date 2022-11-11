@@ -183,7 +183,9 @@ export default function BuildAnalyzerPage() {
             {abilityPoints.size > 0 && (
               <>
                 <AbilityPointsDetails abilityPoints={abilityPoints} />
-                <AbilityChunksRequired mainAbilities={mainAbilities} />
+                {mainAbilities.some((a) => a !== "UNKNOWN") && (
+                  <AbilityChunksRequired mainAbilities={mainAbilities} />
+                )}
               </>
             )}
           </div>
