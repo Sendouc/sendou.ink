@@ -736,7 +736,10 @@ function AbilityPointsDetails({
             );
           })
           .map((a) => (
-            <div key={`abilityPointsDetails_${a.name}`} className="stack items-center">
+            <div
+              key={`abilityPointsDetails_${a.name}`}
+              className="stack items-center"
+            >
               <Ability ability={a.name} size="TINY" />
               <div className="analyzer__ap-text">
                 {abilityPoints.get(a.name)?.ap}
@@ -749,13 +752,14 @@ function AbilityPointsDetails({
 }
 
 /**
- * From an array of Main abilities, create a map of <Ability, number>
- *  that describes the number of Ability chunks required to replace the main ability on a piece of gear.
+ * From an array of Main abilities, create a map of <Ability, number>, then return it as an Array after sorting by value, descending.
+ *
+ * The map describes the number of Ability chunks required to replace the main ability on a piece of gear.
  *
  * Extra processing is required for Main abilities that are primary slot-only abilities,
  *  as they are comprised of 3 stackable ability chunks at a lower ability chunk count than usual.
  */
-function getAbilityChunksMap(mainAbilities: AbilityWithUnknown[]) {
+function getAbilityChunksMapAsArray(mainAbilities: AbilityWithUnknown[]) {
   const abilityChunksMap: MainAbilityChunks = new Map();
   for (let i = 0; i < mainAbilities.length; i++) {
     const mainAbility = mainAbilities[i];
@@ -794,7 +798,8 @@ function getAbilityChunksMap(mainAbilities: AbilityWithUnknown[]) {
     }
   }
 
-  return abilityChunksMap;
+  // After building the map, convert it to an array & sort the map by value, descending
+  return Array.from(abilityChunksMap).sort((a, b) => b[1] - a[1]);
 }
 
 function AbilityChunksRequired({
@@ -803,18 +808,21 @@ function AbilityChunksRequired({
   mainAbilities: AbilityWithUnknown[];
 }) {
   const { t } = useTranslation("analyzer");
-  const abilityChunksMap = getAbilityChunksMap(mainAbilities);
+  const abilityChunksMapAsArray = getAbilityChunksMapAsArray(mainAbilities);
 
   return (
     <details className="w-full">
       <summary className="analyzer__ap-summary">{t("abilityChunks")}</summary>
       <div className="stack sm horizontal flex-wrap mt-4">
-        {Array.from(abilityChunksMap).map((a) => {
+        {abilityChunksMapAsArray.map((a) => {
           const mainAbilityName = a[0];
           const numChunksRequired = a[1];
 
           return (
-            <div key={`abilityChunksRequired_${mainAbilityName}`} className="stack items-center">
+            <div
+              key={`abilityChunksRequired_${mainAbilityName}`}
+              className="stack items-center"
+            >
               <Ability ability={mainAbilityName} size="TINY" />
               <div className="analyzer__ap-text">{numChunksRequired}</div>
             </div>
