@@ -81,6 +81,15 @@
   font-size: var(--fonts-xxs);
 }
 
+/* Addresses asymmetric elements mentioned in this issue:
+ * https://github.com/Sendouc/sendou.ink/issues/1117
+ */
+.calendar__week:nth-child(3),
+.calendar__week:nth-child(7) {
+  min-width: calc(var(--full-size-week-width) - 1.5rem);
+  max-width: calc(var(--full-size-week-width) - 1.5rem);
+}
+
 .calendar__week__relative {
   max-width: 3rem;
   margin: 0 auto;
