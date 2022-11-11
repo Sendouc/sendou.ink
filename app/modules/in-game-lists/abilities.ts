@@ -2,6 +2,9 @@ export const REQUIRED_ABILITY_CHUNKS_COUNT = 45;
 
 export const PRIMARY_SLOT_ONLY_REQUIRED_ABILITY_CHUNKS_COUNT = 15;
 
+/**
+ * Reference for Ability Chunks of Primary Slot-Only abilities: https://splatoonwiki.org/wiki/Ability_chunk#Splatoon_3
+ */
 export const abilities = [
   { name: "ISM", type: "STACKABLE", abilityChunkTypesRequired: [] },
   { name: "ISS", type: "STACKABLE", abilityChunkTypesRequired: [] },
