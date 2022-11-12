@@ -582,6 +582,23 @@ function calendarEventWithToTools() {
       toToolsEnabled: 1,
       isBeforeStart: 0,
     });
+
+  sql
+    .prepare(
+      `
+        insert into "CalendarEventDate" (
+          "eventId",
+          "startTime"
+        ) values (
+          $eventId,
+          $startTime
+        )
+      `
+    )
+    .run({
+      eventId: TO_TOOLS_CALENDAR_EVENT_ID,
+      startTime: dateToDatabaseTimestamp(new Date()),
+    });
 }
 
 const tiebreakerPicks = new MapPool([
