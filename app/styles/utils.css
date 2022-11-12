@@ -74,12 +74,20 @@
   width: 100% !important;
 }
 
+.w-4 {
+  width: var(--s-4);
+}
+
 .w-24 {
   width: var(--s-24);
 }
 
 .w-max {
   width: max-content;
+}
+
+.p-2 {
+  padding: var(--s-2);
 }
 
 .pl-4 {

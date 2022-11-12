@@ -1,18 +1,25 @@
 with "TeamWithMembers" as (
   select
-    "id",
-    "name",
+    "TournamentTeam"."id",
+    "TournamentTeam"."name",
     json_group_array(
       json_object(
         'userId',
         "TournamentTeamMember"."userId",
         'isOwner',
-        "TournamentTeamMember"."isOwner"
+        "TournamentTeamMember"."isOwner",
+        'discordName',
+        "User"."discordName",
+        'discordId',
+        "User"."discordId",
+        'discordAvatar',
+        "User"."discordAvatar"
       )
     ) as "members"
   from
     "TournamentTeam"
     left join "TournamentTeamMember" on "TournamentTeamMember"."tournamentTeamId" = "TournamentTeam"."id"
+    left join "User" on "User"."id" = "TournamentTeamMember"."userId"
   where
     "TournamentTeam"."calendarEventId" = @calendarEventId
   group by

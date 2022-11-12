@@ -19,6 +19,7 @@ import addCounterpickMapSql from "./addCounterpickMap.sql";
 import deleteCounterpickMapsByTeamIdSql from "./deleteCounterpickMapsByTeamId.sql";
 import deleteTournamentTeamSql from "./deleteTournamentTeam.sql";
 import updateIsBeforeStartSql from "./updateIsBeforeStart.sql";
+import deleteTeamMemberSql from "./deleteTeamMember.sql";
 
 const findByIdentifierStm = sql.prepare(findByIdentifierSql);
 const addTeamStm = sql.prepare(addTeamSql);
@@ -31,6 +32,7 @@ const deleteCounterpickMapsByTeamIdStm = sql.prepare(
 );
 const deleteTournamentTeamStm = sql.prepare(deleteTournamentTeamSql);
 const updateIsBeforeStartStm = sql.prepare(updateIsBeforeStartSql);
+const deleteTeamMemberStm = sql.prepare(deleteTeamMemberSql);
 
 type FindByIdentifier = Pick<
   CalendarEvent,
@@ -66,10 +68,41 @@ export const addTeam = sql.transaction(
   }
 );
 
+export function addTeamMember({
+  tournamentTeamId,
+  userId,
+}: {
+  tournamentTeamId: TournamentTeam["id"];
+  userId: User["id"];
+}) {
+  addTeamMemberStm.run({
+    tournamentTeamId,
+    userId,
+    isOwner: 0,
+    createdAt: databaseCreatedAt(),
+  });
+}
+
+export function deleteTeamMember({
+  tournamentTeamId,
+  userId,
+}: {
+  tournamentTeamId: TournamentTeam["id"];
+  userId: User["id"];
+}) {
+  deleteTeamMemberStm.run({
+    tournamentTeamId,
+    userId,
+  });
+}
+
 export interface FindTeamsByEventIdItem {
   id: TournamentTeam["id"];
   name: TournamentTeam["name"];
-  members: Array<Pick<TournamentTeamMember, "userId" | "isOwner">>;
+  members: Array<
+    Pick<TournamentTeamMember, "userId" | "isOwner"> &
+      Pick<User, "discordAvatar" | "discordId" | "discordName">
+  >;
   mapPool: Array<Pick<MapPoolMap, "mode" | "stageId">>;
 }
 export type FindTeamsByEventId = Array<FindTeamsByEventIdItem>;

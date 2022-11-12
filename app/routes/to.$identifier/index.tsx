@@ -40,6 +40,10 @@ import {
   type TournamentMaplistSource,
 } from "~/modules/tournament-map-list-generator";
 import type { MapPoolMap } from "~/db/types";
+import invariant from "tiny-invariant";
+import { UserCombobox } from "~/components/Combobox";
+import { TeamWithRoster } from "./components/TeamWithRoster";
+import { actualNumber } from "~/utils/zod";
 
 export const links: LinksFunction = () => {
   return [
@@ -63,6 +67,14 @@ const tournamentToolsActionSchema = z.union([
   }),
   z.object({
     _action: z.literal("DELETE_REGISTRATION"),
+  }),
+  z.object({
+    _action: z.literal("ADD_MEMBER"),
+    "user[value]": z.preprocess(actualNumber, z.number().positive()),
+  }),
+  z.object({
+    _action: z.literal("DELETE_MEMBER"),
+    id: z.preprocess(actualNumber, z.number().positive()),
   }),
 ]);
 
@@ -111,6 +123,24 @@ export const action: ActionFunction = async ({ request, params }) => {
     case "DELETE_REGISTRATION": {
       validate(ownTeam);
       db.tournaments.deleteTournamentTeam(ownTeam.id);
+      break;
+    }
+    case "ADD_MEMBER": {
+      validate(ownTeam);
+      validate(ownTeam.members.length < TOURNAMENT.TEAM_MAX_MEMBERS);
+      db.tournaments.addTeamMember({
+        userId: data["user[value]"],
+        tournamentTeamId: ownTeam.id,
+      });
+      break;
+    }
+    case "DELETE_MEMBER": {
+      validate(ownTeam);
+      validate(data.id !== user.id);
+      db.tournaments.deleteTeamMember({
+        userId: data.id,
+        tournamentTeamId: ownTeam.id,
+      });
       break;
     }
     default: {
@@ -170,14 +200,16 @@ function TeamNameSection() {
   return (
     <section className="tournament__action-section stack md">
       <div>
-        1. Register on{" "}
-        <a
-          href={data.event.bracketUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {data.event.bracketUrl}
-        </a>
+        <span className="tournament__action-section-title">
+          1. Register on{" "}
+          <a
+            href={data.event.bracketUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {data.event.bracketUrl}
+          </a>
+        </span>
       </div>
       <Details className="bg-darker-transparent rounded">
         <Summary className="bg-transparent-important">
@@ -225,7 +257,7 @@ function MapPoolSection() {
     <section>
       <Form method="post" className="tournament__action-section stack md">
         <div>
-          2. Map pool
+          <span className="tournament__action-section-title">2. Map pool</span>
           <div className="tournament__action-side-note">
             You can play without selecting a map pool but then your opponent
             gets to decide what maps get played. Tie breaker maps marked in{" "}
@@ -369,14 +401,60 @@ function MapPoolCounts({ mapPool }: { mapPool: MapPool }) {
 }
 
 function RosterSection() {
+  const data = useOutletContext<TournamentToolsLoaderData>();
+  invariant(data.ownTeam);
+
+  const hasCompleteTeam =
+    data.ownTeam.members.length >= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL;
+  const hasSpaceInTeam =
+    data.ownTeam.members.length < TOURNAMENT.TEAM_MAX_MEMBERS;
+
   return (
-    <section className="tournament__action-section">
-      3. Submit roster
-      <div className="tournament__action-side-note">
-        Submitting roster is optional but you might be seeded lower if you
-        don&apos;t.
-        <Button className="mt-4">Enter roster</Button>
+    <section className="tournament__action-section stack md">
+      <div>
+        <span className="tournament__action-section-title">
+          3. Submit roster
+        </span>
+        <div className="tournament__action-side-note">
+          Submitting roster is optional but you might be seeded lower if you
+          don&apos;t.
+        </div>
       </div>
+      <Details className="bg-darker-transparent rounded">
+        <Summary className="bg-transparent-important">
+          <div className="tournament__summary-content">
+            Enter roster{" "}
+            {hasCompleteTeam ? (
+              <CheckmarkIcon className="fill-success" />
+            ) : (
+              <AlertIcon className="fill-warning" />
+            )}
+          </div>
+        </Summary>
+        <div className="stack md items-center p-2">
+          {hasSpaceInTeam ? (
+            <Form method="post" className="stack horizontal sm items-center">
+              <UserCombobox
+                inputName="user"
+                required
+                userIdsToOmit={
+                  new Set(data.ownTeam.members.map((m) => m.userId))
+                }
+              />
+              <Button tiny type="submit" name="_action" value="ADD_MEMBER">
+                Add
+              </Button>
+            </Form>
+          ) : (
+            <div className="text-xs text-lighter">Team is full.</div>
+          )}
+
+          <Form method="post">
+            <input type="hidden" name="_action" value="DELETE_MEMBER" />
+            <TeamWithRoster team={data.ownTeam} showDeleteButtons />
+          </Form>
+        </div>
+      </Details>
     </section>
   );
 }
