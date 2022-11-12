@@ -15,6 +15,9 @@
   "header.profile": "Profil",
   "header.logout": "Log ud",
   "header.login": "Log ind",
+  "header.language": "Sprog",
+  "header.loggedInAs": "Du er logget ind som {{userName}}",
+  "header.theme": "Tema",
 
   "auth.errors.aborted": "logindforsøg afbrudt",
   "auth.errors.failed": "Loginforsøg fejlet",
@@ -43,7 +46,7 @@
   "actions.search": "Søg",
 
   "maps.createMapList": "Lav bane-liste",
-  "maps.halfSz": "50% SZ",
+  "maps.halfSz": "50% DD",
   "maps.mapPool": "Banepulje",
   "maps.tournamentMaplist": "Lav turneringsbanepuljer på (maps.iplabs.ink)",
   "maps.template": "Skabelon",
@@ -56,6 +59,7 @@
   "maps.template.preset.onlyMode": "Kun {{modeName}}",
 
   "results": "Resultater",
+  "results.placeSuffix": ".",
 
   "forms.name": "Navn",
   "forms.description": "Beskrivelse",
@@ -84,5 +88,9 @@
   "weapon.category.DUALIES": "Dualies/Dualier",
   "weapon.category.BRELLAS": "Brellas/Paraplyer",
   "weapon.category.STRINGERS": "Stringers/Buer",
-  "weapon.category.SPLATANAS": "Splatanas/Splatanaer"
+  "weapon.category.SPLATANAS": "Splatanas/Splatanaer",
+
+  "theme.light": "Lyst",
+  "theme.dark": "Mørkt",
+  "theme.auto": "Automatisk"
 }

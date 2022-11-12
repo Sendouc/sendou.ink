@@ -67,6 +67,11 @@
 
   "results": "Results",
 
+  "results.placeSuffix_one": "^st",
+  "results.placeSuffix_two": "^nd",
+  "results.placeSuffix_few": "^rd",
+  "results.placeSuffix_other": "^th",
+
   "forms.name": "Name",
   "forms.description": "Description",
   "forms.errors.title": "Following errors need to be fixed",

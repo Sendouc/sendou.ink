@@ -238,7 +238,7 @@ function MapPoolInfo() {
   if (!data.mapPool) return null;
 
   return (
-    <Section title="Map pool">
+    <Section title={t("calendar:forms.mapPool")}>
       <div className="event__map-pool-section">
         <MapPoolStages mapPool={new MapPool(data.mapPool)} />
         <LinkButton

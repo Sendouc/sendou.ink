@@ -1,10 +1,11 @@
 {
   "pages.admin": "管理",
+  "pages.articles": "記事一覧",
   "pages.badges": "バッジ",
   "pages.plus": "Plus Server",
   "pages.contributors": "コントリビューター",
   "pages.s2": "Splatoon 2",
-  "pages.calendar": "カレンダー",
+  "pages.calendar": "イベント予定表",
   "pages.faq": "FAQ",
   "pages.builds": "セットアップ",
   "pages.analyzer": "セットアップ・アナライザー",
@@ -14,10 +15,13 @@
   "header.profile": "プロファイル",
   "header.logout": "ログアウト",
   "header.login": "ログイン",
+  "header.language": "言語",
+  "header.loggedInAs": "{{userName}} でログインしています",
+  "header.theme": "テーマ",
 
   "auth.errors.aborted": "ログインを中断しました",
   "auth.errors.failed": "ログインに失敗しました",
-  "auth.errors.discordPermissions": "sendou.ink は、Discord のプロファイル名、アバター、フレンドリストをサイトのプロファイルに使用します。",
+  "auth.errors.discordPermissions": "sendou.ink は、Discord のプロファイル名、アバター、SNS連携をサイトのプロファイルに使用します。",
   "auth.errors.unknown": "Discord 経由でのログインに失敗しました。この減少が続くようであれば、サポートに連絡してください。",
 
   "footer.github.subtitle": "ソースコード",
@@ -56,6 +60,11 @@
 
   "results": "結果",
 
+  "results.placeSuffix_one": "位",
+  "results.placeSuffix_two": "位",
+  "results.placeSuffix_few": "位",
+  "results.placeSuffix_other": "位",
+
   "forms.name": "名前",
   "forms.description": "説明",
   "forms.errors.title": "以下のエラーの修正が必要です",
@@ -83,5 +92,9 @@
   "weapon.category.DUALIES": "マニューバー",
   "weapon.category.BRELLAS": "シェルター",
   "weapon.category.STRINGERS": "ストリンガー",
-  "weapon.category.SPLATANAS": "ワイパー"
+  "weapon.category.SPLATANAS": "ワイパー",
+
+  "theme.light": "Light",
+  "theme.dark": "Dark",
+  "theme.auto": "自動"
 }
