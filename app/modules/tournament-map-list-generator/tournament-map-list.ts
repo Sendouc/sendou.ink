@@ -1,12 +1,13 @@
 import invariant from "tiny-invariant";
-import type { ModeShort, ModeWithStage, StageId } from "../in-game-lists";
+import type { ModeShort, StageId } from "../in-game-lists";
 import { DEFAULT_MAP_POOL } from "./constants";
-import type { TournamentMaplistInput, TournamentMaplistSource } from "./types";
+import type {
+  TournamentMaplistInput,
+  TournamentMapListMap,
+  TournamentMaplistSource,
+} from "./types";
 import { seededRandom } from "./utils";
 
-type TournamentMapListMap = ModeWithStage & {
-  source: TournamentMaplistSource;
-};
 type ModeWithStageAndScore = TournamentMapListMap & { score: number };
 
 const OPTIMAL_MAPLIST_SCORE = 0;

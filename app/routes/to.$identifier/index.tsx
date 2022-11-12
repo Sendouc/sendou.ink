@@ -32,6 +32,7 @@ import { assertUnreachable } from "~/utils/types";
 import { modeImageUrl } from "~/utils/urls";
 import type { TournamentToolsLoaderData } from "../to.$identifier";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
+import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator";
 import {
   createTournamentMapList,
   type BracketType,
@@ -548,10 +549,34 @@ function MapList(props: Omit<TournamentMaplistInput, "tiebreakerMaps">) {
   const { t } = useTranslation(["game-misc"]);
   const data = useOutletContext<TournamentToolsLoaderData>();
 
-  const mapList = createTournamentMapList({
-    ...props,
-    tiebreakerMaps: new MapPool(data.tieBreakerMapPool),
-  });
+  let mapList: Array<TournamentMapListMap>;
+
+  try {
+    mapList = createTournamentMapList({
+      ...props,
+      tiebreakerMaps: new MapPool(data.tieBreakerMapPool),
+    });
+  } catch (e) {
+    console.error(
+      "Failed to create map list. Falling back to default maps.",
+      e
+    );
+
+    mapList = createTournamentMapList({
+      ...props,
+      teams: [
+        {
+          id: -1,
+          maps: new MapPool([]),
+        },
+        {
+          id: -2,
+          maps: new MapPool([]),
+        },
+      ],
+      tiebreakerMaps: new MapPool(data.tieBreakerMapPool),
+    });
+  }
 
   return (
     <div className="tournament__map-list">

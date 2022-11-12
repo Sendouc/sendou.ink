@@ -1,3 +1,4 @@
+import type { ModeWithStage } from "../in-game-lists";
 import type { MapPool } from "../map-pool-serializer";
 
 export type BracketType =
@@ -29,3 +30,7 @@ export type TournamentMaplistSource =
   | "DEFAULT"
   | "TIEBREAKER"
   | "BOTH";
+
+export type TournamentMapListMap = ModeWithStage & {
+  source: TournamentMaplistSource;
+};
