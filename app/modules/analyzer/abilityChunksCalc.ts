@@ -3,6 +3,7 @@
 // Extra processing is required for Main abilities that are primary slot-only abilities,
 //    as they are comprised of 3 stackable ability chunks at a lower ability chunk count than usual.
 
+import type { abilitiesShort } from "../in-game-lists";
 import { abilities } from "../in-game-lists";
 import {
   PRIMARY_SLOT_ONLY_REQUIRED_ABILITY_CHUNKS_COUNT,
@@ -26,7 +27,8 @@ export function getAbilityChunksMapAsArray(
   });
 
   const subAbilities = build.flatMap((a) =>
-    a.flatMap((b) => {
+    a.flatMap((b, i) => {
+      if (i === 0) return []; // Exclude first slot as this is a Main Ability
       if (b === "UNKNOWN") return [];
       return b;
     })
@@ -40,34 +42,7 @@ export function getAbilityChunksMapAsArray(
 
 function updateAbilityChunksMap(
   abilityChunksMap: AbilityChunks,
-  abilityList: (
-    | "ISM"
-    | "ISS"
-    | "IRU"
-    | "RSU"
-    | "SSU"
-    | "SCU"
-    | "SS"
-    | "SPU"
-    | "QR"
-    | "QSJ"
-    | "BRU"
-    | "RES"
-    | "SRU"
-    | "IA"
-    | "OG"
-    | "LDE"
-    | "T"
-    | "CB"
-    | "NS"
-    | "H"
-    | "TI"
-    | "RP"
-    | "AD"
-    | "SJ"
-    | "OS"
-    | "DR"
-  )[],
+  abilityList: typeof abilitiesShort,
   isInMainAbilitySlot: boolean
 ) {
   for (const selectedAbility of abilityList) {
