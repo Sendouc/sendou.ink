@@ -8,18 +8,23 @@ import {
   PRIMARY_SLOT_ONLY_REQUIRED_ABILITY_CHUNKS_COUNT,
   REQUIRED_ABILITY_CHUNKS_COUNT,
 } from "../in-game-lists/abilities";
-import type { AbilityWithUnknown } from "../in-game-lists/types";
-import type { MainAbilityChunks } from "./types";
+import type {
+  AbilityWithUnknown,
+  BuildAbilitiesTupleWithUnknown,
+} from "../in-game-lists/types";
+import type { AbilityChunks } from "./types";
 
 export function getAbilityChunksMapAsArray(
-  mainAbilities: AbilityWithUnknown[]
+  build: BuildAbilitiesTupleWithUnknown
 ) {
-  const abilityChunksMap: MainAbilityChunks = new Map<
-    AbilityWithUnknown,
-    number
-  >();
+  const abilityChunksMap: AbilityChunks = new Map<AbilityWithUnknown, number>();
+
+  const mainAbilities = build.map((a) => a[0]);
+
   for (let i = 0; i < mainAbilities.length; i++) {
     const mainAbility = mainAbilities[i];
+    console.warn(mainAbility);
+
     if (typeof mainAbility !== "undefined" && mainAbility !== "UNKNOWN") {
       const primarySlotOnlyAbilityRef = abilities.filter(
         (a) => a.name === mainAbility && a.abilityChunkTypesRequired.length > 0
@@ -37,7 +42,7 @@ export function getAbilityChunksMapAsArray(
             ability,
             (abilityChunksMap.get(ability) ?? 0) +
               PRIMARY_SLOT_ONLY_REQUIRED_ABILITY_CHUNKS_COUNT
-          );          
+          );
         }
       } else {
         abilityChunksMap.set(

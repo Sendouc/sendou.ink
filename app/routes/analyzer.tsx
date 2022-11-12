@@ -46,7 +46,6 @@ import {
   specialWeaponImageUrl,
   subWeaponImageUrl,
 } from "~/utils/urls";
-import type { AbilityWithUnknown } from "~/modules/in-game-lists/types";
 import { getAbilityChunksMapAsArray } from "~/modules/analyzer/abilityChunksCalc";
 
 export const CURRENT_PATCH = "1.2";
@@ -132,8 +131,6 @@ export default function BuildAnalyzerPage() {
     ),
   ].filter(Boolean);
 
-  const mainAbilities = build.map((a) => a[0]);
-
   return (
     <Main>
       <div className="analyzer__container">
@@ -179,9 +176,7 @@ export default function BuildAnalyzerPage() {
             {abilityPoints.size > 0 && (
               <>
                 <AbilityPointsDetails abilityPoints={abilityPoints} />
-                {mainAbilities.some((a) => a !== "UNKNOWN") && (
-                  <AbilityChunksRequired mainAbilities={mainAbilities} />
-                )}
+                <AbilityChunksRequired build={build} />
               </>
             )}
           </div>
@@ -748,12 +743,12 @@ function AbilityPointsDetails({
 }
 
 function AbilityChunksRequired({
-  mainAbilities,
+  build,
 }: {
-  mainAbilities: AbilityWithUnknown[];
+  build: BuildAbilitiesTupleWithUnknown;
 }) {
   const { t } = useTranslation("analyzer");
-  const abilityChunksMapAsArray = getAbilityChunksMapAsArray(mainAbilities);
+  const abilityChunksMapAsArray = getAbilityChunksMapAsArray(build);
 
   return (
     <details className="w-full">
