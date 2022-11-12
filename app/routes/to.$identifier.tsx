@@ -1,12 +1,14 @@
 import type { LoaderArgs, SerializeFrom } from "@remix-run/node";
 import { Outlet, useLoaderData } from "@remix-run/react";
+import { SubNav, SubNavLink } from "~/components/SubNav";
 import { db } from "~/db";
 import type {
   FindTeamsByEventId,
   FindTeamsByEventIdItem,
 } from "~/db/models/tournaments/queries.server";
 import type { TournamentTeam } from "~/db/types";
-import { getUser } from "~/modules/auth";
+import { getUser, useUser } from "~/modules/auth";
+import { canAdminCalendarTOTools } from "~/permissions";
 import { notFoundIfFalsy } from "~/utils/remix";
 import { findOwnedTeam } from "~/utils/tournaments";
 
@@ -51,10 +53,17 @@ function censorMapPools({
 }
 
 export default function TournamentToolsLayout() {
+  const user = useUser();
   const data = useLoaderData<typeof loader>();
 
   return (
     <>
+      <SubNav>
+        <SubNavLink to="">Info</SubNavLink>
+        {canAdminCalendarTOTools({ user, event: data.event }) && (
+          <SubNavLink to="admin">Admin</SubNavLink>
+        )}
+      </SubNav>
       <Outlet context={data} />
     </>
   );

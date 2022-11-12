@@ -59,7 +59,7 @@
 
 ### 🔴 tournament.json
 
-**0/2**
+**0/5**
 
 ### 🟢 user.json
 
@@ -128,7 +128,7 @@
 
 ### 🔴 tournament.json
 
-**0/2**
+**0/5**
 
 ### 🟢 user.json
 
@@ -282,7 +282,7 @@
 
 ### 🔴 tournament.json
 
-**0/2**
+**0/5**
 
 ### 🟡 user.json
 
@@ -460,7 +460,7 @@
 
 ### 🔴 tournament.json
 
-**0/2**
+**0/5**
 
 ### 🟡 user.json
 
@@ -648,7 +648,7 @@
 
 ### 🔴 tournament.json
 
-**0/2**
+**0/5**
 
 ### 🟡 user.json
 
@@ -736,7 +736,7 @@
 
 ### 🔴 tournament.json
 
-**0/2**
+**0/5**
 
 ### 🔴 user.json
 
@@ -811,7 +811,7 @@
 
 ### 🔴 tournament.json
 
-**0/2**
+**0/5**
 
 ### 🟢 user.json
 
@@ -961,7 +961,7 @@
 
 ### 🔴 tournament.json
 
-**0/2**
+**0/5**
 
 ### 🟡 user.json
 
@@ -1115,7 +1115,7 @@
 
 ### 🔴 tournament.json
 
-**0/2**
+**0/5**
 
 ### 🟡 user.json
 
@@ -1243,7 +1243,7 @@
 
 ### 🔴 tournament.json
 
-**0/2**
+**0/5**
 
 ### 🟢 user.json
 
@@ -1416,7 +1416,7 @@
 
 ### 🔴 tournament.json
 
-**0/2**
+**0/5**
 
 ### 🟡 user.json
 

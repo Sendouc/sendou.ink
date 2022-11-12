@@ -1,7 +1,8 @@
 select
   "CalendarEvent"."id",
   "CalendarEvent"."bracketUrl",
-  "CalendarEvent"."isBeforeStart"
+  "CalendarEvent"."isBeforeStart",
+  "CalendarEvent"."authorId"
 from
   "CalendarEvent"
 where

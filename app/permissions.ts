@@ -296,3 +296,14 @@ function eventStartedInThePast(
       databaseTimestampToDate(startTime).getTime() < new Date().getTime()
   );
 }
+
+interface CanAdminCalendarTOTools {
+  user?: Pick<User, "id" | "discordId">;
+  event: Pick<CalendarEvent, "authorId">;
+}
+export function canAdminCalendarTOTools({
+  user,
+  event,
+}: CanAdminCalendarTOTools) {
+  return adminOverride(user)(user?.id === event.authorId);
+}

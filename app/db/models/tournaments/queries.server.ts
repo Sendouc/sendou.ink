@@ -7,6 +7,9 @@ import type {
   User,
 } from "~/db/types";
 import { databaseCreatedAt } from "~/utils/dates";
+import type { MapPool } from "~/modules/map-pool-serializer";
+import { parseDBJsonArray } from "~/utils/sql";
+
 import findByIdentifierSql from "./findByIdentifier.sql";
 import addTeamSql from "./addTeam.sql";
 import addTeamMemberSql from "./addTeamMember.sql";
@@ -15,8 +18,7 @@ import renameTeamSql from "./renameTeam.sql";
 import addCounterpickMapSql from "./addCounterpickMap.sql";
 import deleteCounterpickMapsByTeamIdSql from "./deleteCounterpickMapsByTeamId.sql";
 import deleteTournamentTeamSql from "./deleteTournamentTeam.sql";
-import type { MapPool } from "~/modules/map-pool-serializer";
-import { parseDBJsonArray } from "~/utils/sql";
+import updateIsBeforeStartSql from "./updateIsBeforeStart.sql";
 
 const findByIdentifierStm = sql.prepare(findByIdentifierSql);
 const addTeamStm = sql.prepare(addTeamSql);
@@ -28,10 +30,11 @@ const deleteCounterpickMapsByTeamIdStm = sql.prepare(
   deleteCounterpickMapsByTeamIdSql
 );
 const deleteTournamentTeamStm = sql.prepare(deleteTournamentTeamSql);
+const updateIsBeforeStartStm = sql.prepare(updateIsBeforeStartSql);
 
 type FindByIdentifier = Pick<
   CalendarEvent,
-  "bracketUrl" | "isBeforeStart" | "id"
+  "bracketUrl" | "isBeforeStart" | "id" | "authorId"
 > | null;
 export function findByIdentifier(identifier: string | number) {
   return findByIdentifierStm.get({ identifier }) as FindByIdentifier;
@@ -108,4 +111,11 @@ export const upsertCounterpickMaps = sql.transaction(
 
 export function deleteTournamentTeam(id: TournamentTeam["id"]) {
   deleteTournamentTeamStm.run({ id });
+}
+
+export function updateIsBeforeStart({
+  id,
+  isBeforeStart,
+}: Pick<CalendarEvent, "id" | "isBeforeStart">) {
+  updateIsBeforeStartStm.run({ id, isBeforeStart });
 }
