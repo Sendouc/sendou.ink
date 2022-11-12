@@ -1,7 +1,7 @@
 import { Main } from "~/components/Main";
 import type { LinksFunction } from "@remix-run/node";
 import styles from "~/styles/u.css";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "~/hooks/useTranslation";
 import { userPage, USER_SEARCH_PAGE } from "~/utils/urls";
 import { TwitterIcon } from "~/components/icons/Twitter";
 import { Link } from "@remix-run/react";
