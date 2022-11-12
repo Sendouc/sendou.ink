@@ -1,5 +1,5 @@
 import invariant from "tiny-invariant";
-import type { ModeShort, ModeWithStage } from "../in-game-lists";
+import type { ModeShort, ModeWithStage, StageId } from "../in-game-lists";
 import { DEFAULT_MAP_POOL } from "./constants";
 import type { TournamentMaplistInput, TournamentMaplistSource } from "./types";
 import { seededRandom } from "./utils";
@@ -9,8 +9,7 @@ type TournamentMapListMap = ModeWithStage & {
 };
 type ModeWithStageAndScore = TournamentMapListMap & { score: number };
 
-// xxx: instead of perfect and suboptimal maybe instead assign preference score. if preference score = 0 then break.
-// each map repeat is +1 preference score. triple map is +2. store always best completed map
+const OPTIMAL_MAPLIST_SCORE = 0;
 
 export function createTournamentMapList(
   input: TournamentMaplistInput
@@ -18,15 +17,22 @@ export function createTournamentMapList(
   const { shuffle } = seededRandom(`${input.bracketType}-${input.roundNumber}`);
   const stages = shuffle(resolveStages());
   const mapList: Array<ModeWithStageAndScore & { score: number }> = [];
-  let subOptimalMapList: Array<ModeWithStageAndScore> | undefined;
-  let perfectMapList: Array<ModeWithStageAndScore> | undefined;
+  const bestMapList: { maps?: Array<ModeWithStageAndScore>; score: number } = {
+    score: Infinity,
+  };
   const usedStages = new Set<number>();
 
   const backtrack = () => {
-    if (isPerfection()) perfectMapList = [...mapList];
-    if (perfectMapList) return;
+    const mapListScore = rateMapList();
+    if (typeof mapListScore === "number" && mapListScore < bestMapList.score) {
+      bestMapList.maps = [...mapList];
+      bestMapList.score = mapListScore;
+    }
 
-    if (isSuboptimal()) subOptimalMapList = [...mapList];
+    // There can't be better map list than this
+    if (bestMapList.score === OPTIMAL_MAPLIST_SCORE) {
+      return;
+    }
 
     const stageList =
       mapList.length < input.bestOf - 1
@@ -51,8 +57,7 @@ export function createTournamentMapList(
 
   backtrack();
 
-  if (perfectMapList) return perfectMapList;
-  if (subOptimalMapList) return subOptimalMapList;
+  if (bestMapList.maps) return bestMapList.maps;
 
   throw new Error("couldn't generate maplist");
 
@@ -185,18 +190,23 @@ export function createTournamentMapList(
     return lastStage.score === stage.score;
   }
 
-  function isPerfection() {
-    if (!isSuboptimal()) return false;
-    if (new Set(mapList.map((s) => s.stageId)).size !== mapList.length) {
-      return false;
+  function rateMapList() {
+    // not a full map list
+    if (mapList.length !== input.bestOf) return;
+
+    let score = OPTIMAL_MAPLIST_SCORE;
+
+    const appearedMaps = new Map<StageId, number>();
+    for (const stage of mapList) {
+      const timesAppeared = appearedMaps.get(stage.stageId) ?? 0;
+
+      if (timesAppeared > 0) {
+        score += timesAppeared;
+      }
+
+      appearedMaps.set(stage.stageId, timesAppeared + 1);
     }
 
-    return true;
-  }
-
-  function isSuboptimal() {
-    if (mapList.length !== input.bestOf) return false;
-
-    return true;
+    return score;
   }
 }
