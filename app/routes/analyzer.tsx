@@ -747,7 +747,6 @@ function AbilityChunksRequired({
 }) {
   const { t } = useTranslation("analyzer");
   const abilityChunksMapAsArray = getAbilityChunksMapAsArray(build);
-  console.warn(abilityChunksMapAsArray);
 
   return (
     <details className="w-full">
