@@ -297,6 +297,10 @@ function eventStartedInThePast(
   );
 }
 
+export function canEnableTOTools(user?: IsAdminUser) {
+  return isAdmin(user);
+}
+
 interface CanAdminCalendarTOTools {
   user?: Pick<User, "id" | "discordId">;
   event: Pick<CalendarEvent, "authorId">;

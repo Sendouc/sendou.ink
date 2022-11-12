@@ -29,10 +29,10 @@ import { CALENDAR_EVENT } from "~/constants";
 import { db } from "~/db";
 import type { Badge as BadgeType, CalendarEventTag } from "~/db/types";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import { requireUser } from "~/modules/auth";
+import { requireUser, useUser } from "~/modules/auth";
 import { i18next } from "~/modules/i18n";
 import { MapPool } from "~/modules/map-pool-serializer";
-import { canEditCalendarEvent } from "~/permissions";
+import { canEditCalendarEvent, canEnableTOTools } from "~/permissions";
 import calendarNewStyles from "~/styles/calendar-new.css";
 import mapsStyles from "~/styles/maps.css";
 import {
@@ -151,7 +151,7 @@ export const action: ActionFunction = async ({ request }) => {
           .join(",")
       : data.tags,
     badges: data.badges ?? [],
-    toToolsEnabled: Number(data.toToolsEnabled),
+    toToolsEnabled: canEnableTOTools(user) ? Number(data.toToolsEnabled) : 0,
   };
 
   const deserializedMaps = (() => {
@@ -587,6 +587,7 @@ function BadgesAdder() {
 }
 
 function TOToolsAndMapPool() {
+  const user = useUser();
   const { eventToEdit } = useLoaderData<typeof loader>();
   const [checked, setChecked] = React.useState(
     Boolean(eventToEdit?.toToolsEnabled)
@@ -594,7 +595,9 @@ function TOToolsAndMapPool() {
 
   return (
     <>
-      <TOToolsEnabler checked={checked} setChecked={setChecked} />
+      {canEnableTOTools(user) && (
+        <TOToolsEnabler checked={checked} setChecked={setChecked} />
+      )}
       {checked ? <CounterPickMapPoolSection /> : <MapPoolSection />}
     </>
   );
