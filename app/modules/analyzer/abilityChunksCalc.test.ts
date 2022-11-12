@@ -77,10 +77,28 @@ GetAbilityChunksMapAsArray("Ninja Squid calculation is correct", () => {
   validateAbilityChunksArray(abilityChunksArray, expectedOutput);
 });
 
-// const slayerBuild = [
-//   ["LDE", "SSU", "ISS", "RES"],
-//   ["NS", "QR", "QR", "ISM"],
-//   ["SJ", "SSU", "SSU", "QSU"],
-// ] as unknown as BuildAbilitiesTupleWithUnknown;
+GetAbilityChunksMapAsArray("Slayer build calculation is correct", () => {
+  const slayerBuild = [
+    ["LDE", "SSU", "SSU", "RES"],
+    ["NS", "QR", "QR", "ISM"],
+    ["SJ", "SSU", "SSU", "QSJ"],
+  ] as unknown as BuildAbilitiesTupleWithUnknown;
+
+  const expectedOutput = [
+    ["SSU", 55],
+    ["IRU", 30],
+    ["ISM", 25],
+    ["QSJ", 25],
+    ["QR", 20],
+    ["IA", 15],
+    ["ISS", 15],
+    ["RSU", 15],
+    ["SRU", 15],
+    ["RES", 10],
+  ];
+
+  const abilityChunksArray = getAbilityChunksMapAsArray(slayerBuild);
+  validateAbilityChunksArray(abilityChunksArray, expectedOutput);
+});
 
 GetAbilityChunksMapAsArray.run();
