@@ -39,7 +39,6 @@ import {
   type TournamentMaplistSource,
 } from "~/modules/tournament-map-list-generator";
 import type { MapPoolMap } from "~/db/types";
-import { useSearchParamState } from "~/hooks/useSearchParamState";
 
 export const links: LinksFunction = () => {
   return [
@@ -389,27 +388,14 @@ function MaplistGenerator() {
   const data = useOutletContext<TournamentToolsLoaderData>();
 
   // xxx: but inside custom hook using search params
-  const [bestOf, setBestOf] = useSearchParamState<3 | 5 | 7>({
-    name: "bo",
-    defaultValue: 3,
-    revive: reviveBestOf,
-  });
+  const [bestOf, setBestOf] = React.useState<3 | 5 | 7>(3);
   const [teamOne, setTeamOne] = React.useState<TeamInState>(
     data.ownTeam ?? data.teams[0]!
   );
   const [teamTwo, setTeamTwo] = React.useState<TeamInState>(data.teams[1]!);
-
-  // xxx: resolve race condition
-  const [roundNumber, setRoundNumber] = useSearchParamState({
-    name: "round",
-    defaultValue: 1,
-    revive: reviveRound,
-  });
-  const [bracketType, setBracketType] = useSearchParamState<BracketType>({
-    name: "bracket",
-    defaultValue: "DE_WINNERS",
-    revive: reviveBracketType,
-  });
+  const [roundNumber, setRoundNumber] = React.useState(1);
+  const [bracketType, setBracketType] =
+    React.useState<BracketType>("DE_WINNERS");
 
   const handleSetTeam =
     (setTeam: (newTeam: TeamInState) => void) => (id: number) => {
@@ -456,26 +442,6 @@ function MaplistGenerator() {
 
 const BRACKET_TYPES: Array<BracketType> = ["DE_WINNERS", "DE_LOSERS"];
 const AMOUNT_OF_ROUNDS = 12;
-
-function reviveBestOf(value: string) {
-  const parsed = Number(value);
-
-  return TOURNAMENT.AVAILABLE_BEST_OF.find((bo) => bo === parsed);
-}
-
-function reviveBracketType(value: string) {
-  return BRACKET_TYPES.find((bracketType) => bracketType === value);
-}
-
-function reviveRound(value: string) {
-  const parsed = Number(value);
-
-  return new Array(12)
-    .fill(null)
-    .map((_, i) => i + 1)
-    .find((val) => val === parsed);
-}
-
 function RoundSelect({
   roundNumber,
   bracketType,
@@ -502,15 +468,11 @@ function RoundSelect({
         }}
       >
         {BRACKET_TYPES.flatMap((type) =>
-          new Array(AMOUNT_OF_ROUNDS).fill(null).map((_, i) => {
-            const value = `${type}-${i + 1}`;
-
-            return (
-              <option key={value} value={value}>
-                {t(`tournament:bracket.type.${type}`)} {i + 1}
-              </option>
-            );
-          })
+          new Array(AMOUNT_OF_ROUNDS).fill(null).map((_, i) => (
+            <option key={`${type}-${i}`} value={`${type}-${i}`}>
+              {t(`tournament:bracket.type.${type}`)} {i + 1}
+            </option>
+          ))
         )}
       </select>
     </div>

@@ -37,7 +37,6 @@ export const TOURNAMENT = {
   TEAM_NAME_MAX_LENGTH: 64,
   COUNTERPICK_MAPS_PER_MODE: 2,
   COUNTERPICK_MAX_STAGE_REPEAT: 2,
-  AVAILABLE_BEST_OF: [3, 5, 7] as const,
 } as const;
 
 export const BUILD = {
