@@ -19,38 +19,44 @@ export function getAbilityChunksMapAsArray(
 ) {
   const abilityChunksMap: AbilityChunks = new Map<AbilityWithUnknown, number>();
 
-  const mainAbilities = build.map((a) => a[0]);
+  const mainAbilities = build.flatMap((a) => {
+    if (a[0] === "UNKNOWN") return [];
+    return a[0];
+  });
+
+  const subAbilities = build.flatMap((a) =>
+    a.flatMap((b) => {
+      if (b === "UNKNOWN") return [];
+      return b;
+    })
+  );
 
   for (let i = 0; i < mainAbilities.length; i++) {
     const mainAbility = mainAbilities[i];
-    console.warn(mainAbility);
 
-    if (typeof mainAbility !== "undefined" && mainAbility !== "UNKNOWN") {
-      const primarySlotOnlyAbilityRef = abilities.filter(
-        (a) => a.name === mainAbility && a.abilityChunkTypesRequired.length > 0
-      );
+    if (!mainAbility) continue;
 
-      // Primary-slot-only item that can have ability chunks put on it
-      if (primarySlotOnlyAbilityRef.length === 1) {
-        const primaryAbility = primarySlotOnlyAbilityRef[0];
-        if (!primaryAbility) continue;
+    const primarySlotOnlyAbilityRef = abilities.filter(
+      (a) => a.name === mainAbility && a.abilityChunkTypesRequired.length > 0
+    );
 
-        for (const ability of primaryAbility.abilityChunkTypesRequired) {
-          if (!ability) continue;
+    // Primary-slot-only item that can have ability chunks put on it
+    if (primarySlotOnlyAbilityRef.length === 1) {
+      const primaryAbility = primarySlotOnlyAbilityRef[0];
+      if (!primaryAbility) continue;
 
-          abilityChunksMap.set(
-            ability,
-            (abilityChunksMap.get(ability) ?? 0) +
-              PRIMARY_SLOT_ONLY_REQUIRED_ABILITY_CHUNKS_COUNT
-          );
-        }
-      } else {
+      for (const ability of primaryAbility.abilityChunkTypesRequired) {
         abilityChunksMap.set(
-          mainAbility,
-          (abilityChunksMap.get(mainAbility) ?? 0) +
-            REQUIRED_ABILITY_CHUNKS_COUNT
+          ability,
+          (abilityChunksMap.get(ability) ?? 0) +
+            PRIMARY_SLOT_ONLY_REQUIRED_ABILITY_CHUNKS_COUNT
         );
       }
+    } else {
+      abilityChunksMap.set(
+        mainAbility,
+        (abilityChunksMap.get(mainAbility) ?? 0) + REQUIRED_ABILITY_CHUNKS_COUNT
+      );
     }
   }
 
