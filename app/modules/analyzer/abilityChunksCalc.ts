@@ -31,13 +31,13 @@ export function getAbilityChunksMapAsArray(
         if (!primaryAbility) continue;
 
         for (const ability of primaryAbility.abilityChunkTypesRequired) {
-          if (typeof ability !== "undefined") {
-            abilityChunksMap.set(
-              ability,
-              (abilityChunksMap.get(ability) ?? 0) +
-                PRIMARY_SLOT_ONLY_REQUIRED_ABILITY_CHUNKS_COUNT
-            );
-          }
+          if (!ability) continue;
+
+          abilityChunksMap.set(
+            ability,
+            (abilityChunksMap.get(ability) ?? 0) +
+              PRIMARY_SLOT_ONLY_REQUIRED_ABILITY_CHUNKS_COUNT
+          );          
         }
       } else {
         abilityChunksMap.set(
