@@ -1,3 +1,4 @@
+/* stylelint-disable no-descending-specificity */
 .calendar__placeholder {
   height: 48rem;
 }
@@ -105,6 +106,13 @@
   max-width: calc(var(--full-size-week-width) - 1.5rem);
 }
 
+.calendar__week__relative {
+  max-width: 3rem;
+  margin: 0 auto;
+  text-align: center;
+  white-space: pre-line;
+}
+
 .calendar__week__dash {
   line-height: 0.8;
 }
@@ -185,11 +193,4 @@
   font-size: var(--fonts-xs);
   padding-block-end: var(--s-2);
   text-align: center;
-}
-
-.calendar__week__relative {
-  max-width: 3rem;
-  margin: 0 auto;
-  text-align: center;
-  white-space: pre-line;
 }
