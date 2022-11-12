@@ -174,11 +174,9 @@ export default function BuildAnalyzerPage() {
               effects={effects}
             />
             {abilityPoints.size > 0 && (
-              <>
-                <AbilityPointsDetails abilityPoints={abilityPoints} />
-                <AbilityChunksRequired build={build} />
-              </>
+              <AbilityPointsDetails abilityPoints={abilityPoints} />
             )}
+            <AbilityChunksRequired build={build} />
           </div>
           <div className="analyzer__patch">
             {t("analyzer:patch")} {CURRENT_PATCH}
@@ -749,6 +747,7 @@ function AbilityChunksRequired({
 }) {
   const { t } = useTranslation("analyzer");
   const abilityChunksMapAsArray = getAbilityChunksMapAsArray(build);
+  console.warn(abilityChunksMapAsArray);
 
   return (
     <details className="w-full">

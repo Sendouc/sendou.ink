@@ -37,7 +37,10 @@ export function getAbilityChunksMapAsArray(
   updateAbilityChunksMap(abilityChunksMap, mainAbilities, true);
   updateAbilityChunksMap(abilityChunksMap, subAbilities, false);
 
-  return Array.from(abilityChunksMap).sort((a, b) => b[1] - a[1]);
+  // Sort by value (number, descending) first, then sort by name (string, ascending)
+  return Array.from(abilityChunksMap).sort(
+    (a, b) => b[1] - a[1] || a[0].localeCompare(b[0])
+  );
 }
 
 function updateAbilityChunksMap(
