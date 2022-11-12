@@ -323,6 +323,12 @@
   margin-block-start: var(--s-2);
 }
 
+.layout__copyright-note {
+  color: var(--text-lighter);
+  font-size: var(--fonts-xxs);
+  text-align: center;
+}
+
 @media screen and (max-width: 640px) {
   .layout__header {
     --item-size: 2.5rem;

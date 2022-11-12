@@ -1,4 +1,11 @@
-export function SunIcon({ className }: { className?: string }) {
+export function SunIcon({
+  className,
+  alt,
+}: {
+  className?: string;
+  alt: string;
+  title?: string;
+}) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -7,7 +14,11 @@ export function SunIcon({ className }: { className?: string }) {
       strokeWidth={1.5}
       stroke="currentColor"
       className={className}
+      role="img"
+      aria-hidden={alt === ""}
+      aria-label={alt !== "" ? alt : undefined}
     >
+      {alt !== "" && <title>{alt}</title>}
       <path
         strokeLinecap="round"
         strokeLinejoin="round"

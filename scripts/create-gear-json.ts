@@ -8,7 +8,11 @@ import shoes from "./dicts/GearInfoShoes.json";
 import fs from "node:fs";
 import path from "node:path";
 import invariant from "tiny-invariant";
-import { LANG_JSONS_TO_CREATE, loadLangDicts } from "./utils";
+import {
+  LANG_JSONS_TO_CREATE,
+  loadLangDicts,
+  translationJsonFolderName,
+} from "./utils";
 
 const CURRENT_SEASON = 1;
 const OUTPUT_DIR_PATH = path.join(__dirname, "output");
@@ -17,7 +21,7 @@ const LEAN_HEAD_CODE = "Hed";
 const LEAN_CLOTHES_CODE = "Clt";
 const LEAN_SHOES_CODE = "Shs";
 
-const AVAILABLE_SR_GEAR = [21010, 21011];
+const AVAILABLE_SR_GEAR = [21010, 21011, 21015];
 
 async function main() {
   const allGear: Array<{
@@ -117,7 +121,7 @@ async function main() {
         "..",
         "public",
         "locales",
-        langCode.slice(2),
+        translationJsonFolderName(langCode),
         `gear.json`
       ),
       JSON.stringify(translationsMap, null, 2) + "\n"

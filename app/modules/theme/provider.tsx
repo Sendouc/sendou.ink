@@ -1,6 +1,6 @@
 import { useFetcher } from "@remix-run/react";
-import type { Dispatch, ReactNode, SetStateAction } from "react";
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { type ReactNode, useCallback } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 enum Theme {
   DARK = "dark",
@@ -8,7 +8,19 @@ enum Theme {
 }
 const themes: Array<Theme> = Object.values(Theme);
 
-type ThemeContextType = [Theme | null, Dispatch<SetStateAction<Theme | null>>];
+type ThemeContextType = {
+  /** The CSS class to attach to the `html` tag */
+  htmlThemeClass: Theme | "";
+  /** The color scheme to be defined in the meta tag */
+  metaColorScheme: "light dark" | "dark light";
+  /**
+   * The Theme setting of the user, as displayed in the theme switcher.
+   * `null` means there is no theme switcher (static theme on error pages).
+   */
+  userTheme: Theme | "auto" | null;
+  /** Persists a new `userTheme` setting */
+  setUserTheme: (newTheme: Theme | "auto") => void;
+};
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
@@ -16,70 +28,91 @@ const prefersLightMQ = "(prefers-color-scheme: light)";
 const getPreferredTheme = () =>
   window.matchMedia(prefersLightMQ).matches ? Theme.LIGHT : Theme.DARK;
 
+type ThemeProviderProps = {
+  children: ReactNode;
+  specifiedTheme: Theme | null;
+  themeSource: "user-preference" | "static";
+};
+
 function ThemeProvider({
   children,
   specifiedTheme,
-}: {
-  children: ReactNode;
-  specifiedTheme: Theme | null;
-}) {
-  const [theme, setTheme] = useState<Theme | null>(() => {
-    // On the server, if we don't have a specified theme then we should
-    // return null and the clientThemeCode will set the theme for us
-    // before hydration. Then (during hydration), this code will get the same
-    // value that clientThemeCode got so hydration is happy.
+  themeSource,
+}: ThemeProviderProps) {
+  const [[theme, isAutoDetected], setThemeState] = useState<
+    [Theme, false] | [Theme | null, true]
+  >(() => {
+    if (themeSource === "static") {
+      return [specifiedTheme ?? Theme.DARK, false];
+    }
+
     if (specifiedTheme) {
-      if (themes.includes(specifiedTheme)) {
-        return specifiedTheme;
-      } else {
-        return null;
-      }
+      return [specifiedTheme, false];
     }
 
-    // there's no way for us to know what the theme should be in this context
-    // the client will have to figure it out before hydration.
-    if (typeof document === "undefined") {
-      return null;
-    }
+    /* 
+      If we don't know a preferred user theme, we have to auto-detect it.
 
-    return getPreferredTheme();
+      Since the server has no way of doing auto-detection, it returns null,
+      leading to the `html` class and `color-scheme` values being set to a
+      default.
+      
+      Then, on the client, the `clientThemeCode` will run, correcting those 
+      defaults with the determined correct value.
+
+      Which means, when we later render this component again, hydration will
+      succeed. Because the output of `getPreferredTheme()` is (very likely) the
+      same that the `clientThemeCode` determined and added to the html element
+      shortly before.
+    */
+
+    return [typeof document === "undefined" ? null : getPreferredTheme(), true];
   });
 
-  const persistTheme = useFetcher();
-  // TODO: remove this when persistTheme is memoized properly
-  const persistThemeRef = useRef(persistTheme);
-  useEffect(() => {
-    persistThemeRef.current = persistTheme;
-  }, [persistTheme]);
+  const persistThemeFetcher = useFetcher();
+  const persistTheme = persistThemeFetcher.submit;
 
-  const mountRun = useRef(false);
+  const setUserTheme = useCallback(
+    (newTheme: Theme | "auto") => {
+      setThemeState(
+        newTheme === "auto" ? [getPreferredTheme(), true] : [newTheme, false]
+      );
+      persistTheme(
+        { theme: newTheme },
+        {
+          action: "theme",
+          method: "post",
+        }
+      );
+    },
+    [setThemeState, persistTheme]
+  );
 
   useEffect(() => {
-    if (!mountRun.current) {
-      mountRun.current = true;
+    if (!isAutoDetected) {
       return;
     }
-    if (!theme) {
-      return;
-    }
 
-    persistThemeRef.current.submit(
-      { theme },
-      { action: "theme", method: "post" }
-    );
-  }, [theme]);
-
-  useEffect(() => {
     const mediaQuery = window.matchMedia(prefersLightMQ);
     const handleChange = () => {
-      setTheme(mediaQuery.matches ? Theme.DARK : Theme.LIGHT);
+      setThemeState([mediaQuery.matches ? Theme.LIGHT : Theme.DARK, true]);
     };
     mediaQuery.addEventListener("change", handleChange);
     return () => mediaQuery.removeEventListener("change", handleChange);
-  }, []);
+  }, [isAutoDetected]);
 
   return (
-    <ThemeContext.Provider value={[theme, setTheme]}>
+    <ThemeContext.Provider
+      value={{
+        // Gets corrected by clientThemeCode if set to "" during SSR
+        htmlThemeClass: theme ?? "",
+        // Gets corrected by clientThemeCode if set to wrong value during SSR
+        metaColorScheme: theme === "light" ? "light dark" : "dark light",
+        userTheme:
+          themeSource === "static" ? null : isAutoDetected ? "auto" : theme!,
+        setUserTheme,
+      }}
+    >
       {children}
     </ThemeContext.Provider>
   );
@@ -117,8 +150,9 @@ const clientThemeCode = `
 })();
 `;
 
-function ThemeHead({ ssrTheme }: { ssrTheme: boolean }) {
-  const [theme] = useTheme();
+function ThemeHead() {
+  const { userTheme, metaColorScheme } = useTheme();
+  const [initialUserTheme] = useState(userTheme);
 
   return (
     <>
@@ -126,24 +160,19 @@ function ThemeHead({ ssrTheme }: { ssrTheme: boolean }) {
         On the server, "theme" might be `null`, so clientThemeCode ensures that
         this is correct before hydration.
       */}
-      <meta
-        name="color-scheme"
-        content={theme === "light" ? "light dark" : "dark light"}
-      />
+      <meta name="color-scheme" content={metaColorScheme} />
       {/*
-        If we know what the theme is from the server then we don't need
+        If we know what the theme is from user preference, then we don't need 
         to do fancy tricks prior to hydration to make things match.
       */}
-      {ssrTheme ? null : (
-        <>
-          <script
-            // NOTE: we cannot use type="module" because that automatically makes
-            // the script "defer". That doesn't work for us because we need
-            // this script to run synchronously before the rest of the document
-            // is finished loading.
-            dangerouslySetInnerHTML={{ __html: clientThemeCode }}
-          />
-        </>
+      {initialUserTheme === "auto" && (
+        <script
+          // NOTE: we cannot use type="module" because that automatically makes
+          // the script "defer". That doesn't work for us because we need
+          // this script to run synchronously before the rest of the document
+          // is finished loading.
+          dangerouslySetInnerHTML={{ __html: clientThemeCode }}
+        />
       )}
     </>
   );

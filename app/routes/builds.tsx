@@ -1,6 +1,6 @@
 import { type LinksFunction } from "@remix-run/node";
 import { Outlet } from "@remix-run/react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "~/hooks/useTranslation";
 import { LinkButton } from "~/components/Button";
 import { Main } from "~/components/Main";
 import { useUser } from "~/modules/auth";

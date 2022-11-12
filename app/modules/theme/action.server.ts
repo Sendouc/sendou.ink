@@ -10,6 +10,13 @@ export const action: ActionFunction = async ({ request }) => {
   const form = new URLSearchParams(requestText);
   const theme = form.get("theme");
 
+  if (theme === "auto") {
+    return json(
+      { success: true },
+      { headers: { "Set-Cookie": await themeSession.destroy() } }
+    );
+  }
+
   if (!isTheme(theme)) {
     return json({
       success: false,

@@ -1,10 +1,15 @@
 {
   "websiteSubtitle": "斯普拉遁竞技中心",
+  "buildsGoTo": "查看来自顶尖玩家及其他玩家的斯普拉遁3全武器配装",
   "calendarGoTo": "在日程页查看所有活动",
   "moreFeatures": "更多功能",
   "plus.description": "查看Plus Server的投票记录及其他",
   "badges.description": "个人档案中可添加的所有徽章",
+  "analyzer.description": "查看你的配装的实际效果",
+  "maps.description": "制作可供游玩的地图列表",
+  "object-damage-calculator.description": "计算对不同物体的伤害",
   "recentWinners": "往期冠军",
   "upcomingEvents": "近期活动",
-  "articleBy": "由{{author}}发表"
+  "articleBy": "由{{author}}发表",
+  "articlesGoTo": "查看全部文章"
 }

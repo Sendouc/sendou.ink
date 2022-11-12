@@ -28,13 +28,15 @@ import type { UserWithPlusTier } from "./db/types";
 import { getUser } from "./modules/auth";
 import { DEFAULT_LANGUAGE, i18nCookie, i18next } from "./modules/i18n";
 import { useChangeLanguage } from "remix-i18next";
-import { type CustomTypeOptions, useTranslation } from "react-i18next";
+import { type CustomTypeOptions } from "react-i18next";
+import { useTranslation } from "~/hooks/useTranslation";
 import { Theme, ThemeHead, useTheme, ThemeProvider } from "./modules/theme";
 import { getThemeSession } from "./modules/theme/session.server";
 import { COMMON_PREVIEW_IMAGE } from "./utils/urls";
 import { ConditionalScrollRestoration } from "./components/ConditionalScrollRestoration";
 import { type SendouRouteHandle } from "~/utils/remix";
 import generalI18next from "i18next";
+import { isTheme } from "./modules/theme/provider";
 
 export const unstable_shouldReload: ShouldReloadFunction = ({ url }) => {
   // reload on language change so the selected language gets set into the cookie
@@ -63,11 +65,16 @@ export const meta: MetaFunction = () => ({
 
 export interface RootLoaderData {
   locale: string;
-  theme: Theme | null;
+  theme: string | null;
   patrons: FindAllPatrons;
   user?: Pick<
     UserWithPlusTier,
-    "id" | "discordId" | "discordAvatar" | "plusTier" | "customUrl"
+    | "id"
+    | "discordId"
+    | "discordAvatar"
+    | "plusTier"
+    | "customUrl"
+    | "discordName"
   >;
 }
 
@@ -83,6 +90,7 @@ export const loader: LoaderFunction = async ({ request }) => {
       patrons: db.users.findAllPatrons(),
       user: user
         ? {
+            discordName: user.discordName,
             discordAvatar: user.discordAvatar,
             discordId: user.discordId,
             id: user.id,
@@ -108,7 +116,7 @@ function Document({
   children: React.ReactNode;
   data?: RootLoaderData;
 }) {
-  const [theme] = useTheme();
+  const { htmlThemeClass } = useTheme();
   const { i18n } = useTranslation();
   const locale = data?.locale ?? DEFAULT_LANGUAGE;
 
@@ -116,11 +124,11 @@ function Document({
   usePreloadTranslation();
 
   return (
-    <html lang={locale} dir={i18n.dir()} className={theme ?? ""}>
+    <html lang={locale} dir={i18n.dir()} className={htmlThemeClass}>
       <head>
         <Meta />
         <Links />
-        <ThemeHead ssrTheme={Boolean(data?.theme)} />
+        <ThemeHead />
       </head>
       <body>
         <React.StrictMode>
@@ -169,7 +177,10 @@ export default function App() {
   const data = useLoaderData<RootLoaderData>();
 
   return (
-    <ThemeProvider specifiedTheme={data?.theme ?? null}>
+    <ThemeProvider
+      specifiedTheme={isTheme(data.theme) ? data.theme : null}
+      themeSource="user-preference"
+    >
       <Document data={data}>
         <Outlet />
       </Document>
@@ -179,7 +190,7 @@ export default function App() {
 
 export function CatchBoundary() {
   return (
-    <ThemeProvider specifiedTheme={Theme.DARK}>
+    <ThemeProvider themeSource="static" specifiedTheme={Theme.DARK}>
       <Document>
         <Catcher />
       </Document>
@@ -191,7 +202,7 @@ export const ErrorBoundary: ErrorBoundaryComponent = ({ error }) => {
   console.error(error);
 
   return (
-    <ThemeProvider specifiedTheme={Theme.DARK}>
+    <ThemeProvider themeSource="static" specifiedTheme={Theme.DARK}>
       <Document>
         <Catcher />
       </Document>

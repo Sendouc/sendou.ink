@@ -1,4 +1,4 @@
-import { getEnglishOrdinalSuffix } from "~/utils/strings";
+import { useTranslation } from "~/hooks/useTranslation";
 
 export type PlacementProps = {
   placement: number;
@@ -24,28 +24,35 @@ export function Placement({
   iconClassName,
   textClassName,
 }: PlacementProps) {
-  /* 
-        Placements are using english ordinal syntax only.
-        If wished for, we could look into properly adding translations here, but
-        english-style ordinals are commonly used internationally as well.
-    */
-  const ordinalSuffix = getEnglishOrdinalSuffix(placement);
+  const { t } = useTranslation(undefined, {});
+
+  // Remove assertion if types stop claiming result is "never".
+  const ordinalSuffix: string = t("results.placeSuffix", {
+    count: placement,
+    ordinal: true,
+    // no suffix is a better default than english
+    defaultValue: "",
+    fallbackLng: [],
+  });
+
+  const isSuperscript = ordinalSuffix.startsWith("^");
+  const ordinalSuffixText = ordinalSuffix.replace(/^\^/, "");
+
   const iconPath = getSpecialPlacementIconPath(placement);
 
   if (!iconPath) {
     return (
-      <span className={textClassName} lang="en-us">
+      <span className={textClassName}>
         {placement}
-        <sup>{ordinalSuffix}</sup>
+        {isSuperscript ? <sup>{ordinalSuffixText}</sup> : ordinalSuffixText}
       </span>
     );
   }
 
-  const placementString = `${placement}${ordinalSuffix}`;
+  const placementString = `${placement}${ordinalSuffixText}`;
 
   return (
     <img
-      lang="en-us"
       alt={placementString}
       title={placementString}
       src={iconPath}

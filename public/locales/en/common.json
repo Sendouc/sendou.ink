@@ -15,6 +15,9 @@
   "header.profile": "Profile",
   "header.logout": "Log out",
   "header.login": "Log in",
+  "header.language": "Language",
+  "header.loggedInAs": "Logged in as {{userName}}",
+  "header.theme": "Theme",
 
   "auth.errors.aborted": "Login Aborted",
   "auth.errors.failed": "Login Failed",
@@ -57,6 +60,11 @@
 
   "results": "Results",
 
+  "results.placeSuffix_one": "^st",
+  "results.placeSuffix_two": "^nd",
+  "results.placeSuffix_few": "^rd",
+  "results.placeSuffix_other": "^th",
+
   "forms.name": "Name",
   "forms.description": "Description",
   "forms.errors.title": "Following errors need to be fixed",
@@ -84,5 +92,9 @@
   "weapon.category.DUALIES": "Dualies",
   "weapon.category.BRELLAS": "Brellas",
   "weapon.category.STRINGERS": "Stringers",
-  "weapon.category.SPLATANAS": "Splatanas"
+  "weapon.category.SPLATANAS": "Splatanas",
+
+  "theme.light": "Light",
+  "theme.dark": "Dark",
+  "theme.auto": "Auto"
 }

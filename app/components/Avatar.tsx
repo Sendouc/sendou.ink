@@ -14,10 +14,12 @@ export function Avatar({
   user,
   size = "sm",
   className,
+  alt = "",
   ...rest
 }: {
   user: Pick<User, "discordId" | "discordAvatar">;
   className?: string;
+  alt?: string;
   size: keyof typeof dimensions;
 } & React.ButtonHTMLAttributes<HTMLImageElement>) {
   const [isErrored, setIsErrored] = React.useState(false);
@@ -38,7 +40,8 @@ export function Avatar({
             }.webp${size === "lg" ? "?size=240" : "?size=80"}`
           : "/img/blank.gif" // avoid broken image placeholder
       }
-      alt=""
+      alt={alt}
+      title={alt ? alt : undefined}
       width={dimensions[size]}
       height={dimensions[size]}
       // https://github.com/jsx-eslint/eslint-plugin-react/issues/3388
