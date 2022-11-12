@@ -5,16 +5,16 @@
 
 import type { abilitiesShort } from "../in-game-lists";
 import { abilities } from "../in-game-lists";
-import {
-  PRIMARY_SLOT_ONLY_REQUIRED_ABILITY_CHUNKS_COUNT,
-  REQUIRED_ABILITY_CHUNKS_COUNT,
-  SUB_REQUIRED_ABILITY_CHUNKS_COUNT,
-} from "../in-game-lists/abilities";
 import type {
   AbilityWithUnknown,
   BuildAbilitiesTupleWithUnknown,
 } from "../in-game-lists/types";
 import type { AbilityChunks } from "./types";
+
+// Reference for Ability Chunks numbers: https://splatoonwiki.org/wiki/Ability_chunk#Splatoon_3
+const REQUIRED_ABILITY_CHUNKS_COUNT = 45;
+const PRIMARY_SLOT_ONLY_REQUIRED_ABILITY_CHUNKS_COUNT = 15;
+const SUB_REQUIRED_ABILITY_CHUNKS_COUNT = 10;
 
 export function getAbilityChunksMapAsArray(
   build: BuildAbilitiesTupleWithUnknown
