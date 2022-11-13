@@ -1,5 +1,5 @@
 import type { ActionFunction, LinksFunction } from "@remix-run/node";
-import { Form, useOutletContext } from "@remix-run/react";
+import { Form, useActionData, useOutletContext } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
 import { useTranslation } from "~/hooks/useTranslation";
@@ -87,7 +87,9 @@ export const action: ActionFunction = async ({ request, params }) => {
   const teams = db.tournaments.findTeamsByEventId(event.id);
   const ownTeam = findOwnedTeam({ userId: user.id, teams });
 
-  validate(event.isBeforeStart);
+  if (!event.isBeforeStart) {
+    return { failed: true };
+  }
 
   switch (data._action) {
     case "TEAM_NAME": {
@@ -461,6 +463,7 @@ type TeamInState = {
   mapPool?: Pick<MapPoolMap, "mode" | "stageId">[];
 };
 function MaplistGenerator() {
+  const actionData = useActionData<{ failed?: boolean }>();
   const data = useOutletContext<TournamentToolsLoaderData>();
 
   // xxx: but inside custom hook using search params
@@ -480,6 +483,11 @@ function MaplistGenerator() {
 
   return (
     <div className="stack md">
+      {actionData?.failed && (
+        <Alert variation="ERROR" tiny>
+          Changes you made weren&apos;t saved since tournament has started
+        </Alert>
+      )}
       <RoundSelect
         roundNumber={roundNumber}
         bracketType={bracketType}
