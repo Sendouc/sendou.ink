@@ -1,4 +1,9 @@
-import type { LinksFunction, LoaderArgs, SerializeFrom } from "@remix-run/node";
+import type {
+  LinksFunction,
+  LoaderArgs,
+  MetaFunction,
+  SerializeFrom,
+} from "@remix-run/node";
 import { Outlet, useLoaderData } from "@remix-run/react";
 import { SubNav, SubNavLink } from "~/components/SubNav";
 import { db } from "~/db";
@@ -12,6 +17,17 @@ import { canAdminCalendarTOTools } from "~/permissions";
 import { notFoundIfFalsy } from "~/utils/remix";
 import { findOwnedTeam } from "~/utils/tournaments";
 import styles from "~/styles/tournament.css";
+import { makeTitle } from "~/utils/strings";
+
+export const meta: MetaFunction = (args) => {
+  const data = args.data as SerializeFrom<typeof loader>;
+
+  if (!data) return {};
+
+  return {
+    title: makeTitle(data.event.name),
+  };
+};
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];

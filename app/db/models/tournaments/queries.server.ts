@@ -36,7 +36,7 @@ const deleteTeamMemberStm = sql.prepare(deleteTeamMemberSql);
 
 type FindByIdentifier = Pick<
   CalendarEvent,
-  "bracketUrl" | "isBeforeStart" | "id" | "authorId"
+  "bracketUrl" | "isBeforeStart" | "id" | "authorId" | "name"
 > | null;
 export function findByIdentifier(identifier: string | number) {
   return findByIdentifierStm.get({ identifier }) as FindByIdentifier;
