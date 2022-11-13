@@ -43,6 +43,7 @@ import invariant from "tiny-invariant";
 import { UserCombobox } from "~/components/Combobox";
 import { TeamWithRoster } from "./components/TeamWithRoster";
 import { actualNumber } from "~/utils/zod";
+import { useSearchParamState } from "~/hooks/useSearchParamState";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: mapsStyles }];
@@ -466,20 +467,41 @@ function MaplistGenerator() {
   const actionData = useActionData<{ failed?: boolean }>();
   const data = useOutletContext<TournamentToolsLoaderData>();
 
-  // xxx: but inside custom hook using search params
-  const [bestOf, setBestOf] = React.useState<3 | 5 | 7>(3);
-  const [teamOne, setTeamOne] = React.useState<TeamInState>(
-    data.ownTeam ?? data.teams[0]!
-  );
-  const [teamTwo, setTeamTwo] = React.useState<TeamInState>(data.teams[1]!);
-  const [roundNumber, setRoundNumber] = React.useState(1);
-  const [bracketType, setBracketType] =
-    React.useState<BracketType>("DE_WINNERS");
+  const [bestOf, setBestOf] = useSearchParamState<
+    typeof TOURNAMENT["AVAILABLE_BEST_OF"][number]
+  >({
+    name: "bo",
+    defaultValue: 3,
+    revive: reviveBestOf,
+  });
+  const [teamOneId, setTeamOneId] = useSearchParamState({
+    name: "team-one",
+    defaultValue: data.ownTeam?.id ?? data.teams[0]!.id,
+    revive: reviveTeam(data.teams.map((t) => t.id)),
+  });
+  const [teamTwoId, setTeamTwoId] = useSearchParamState({
+    name: "team-two",
+    defaultValue: data.teams[1]!.id,
+    revive: reviveTeam(
+      data.teams.map((t) => t.id),
+      teamOneId
+    ),
+  });
+  const [roundNumber, setRoundNumber] = useSearchParamState({
+    name: "round",
+    defaultValue: 1,
+    revive: reviveRound,
+  });
+  const [bracketType, setBracketType] = useSearchParamState<BracketType>({
+    name: "bracket",
+    defaultValue: "DE_WINNERS",
+    revive: reviveBracketType,
+  });
 
-  const handleSetTeam =
-    (setTeam: (newTeam: TeamInState) => void) => (id: number) => {
-      setTeam(id === -1 ? { id } : data.teams.find((team) => team.id === id)!);
-    };
+  const teamOne = data.teams.find((t) => t.id === teamOneId);
+  const teamTwo = data.teams.find((t) => t.id === teamTwoId);
+  invariant(teamOne);
+  invariant(teamTwo);
 
   return (
     <div className="stack md">
@@ -501,13 +523,13 @@ function MaplistGenerator() {
           number={1}
           team={teamOne}
           otherTeam={teamTwo}
-          setTeam={handleSetTeam(setTeamOne)}
+          setTeam={setTeamOneId}
         />
         <TeamsSelect
           number={2}
           team={teamTwo}
           otherTeam={teamOne}
-          setTeam={handleSetTeam(setTeamTwo)}
+          setTeam={setTeamTwoId}
         />
       </div>
       <BestOfRadios bestOf={bestOf} setBestOf={setBestOf} />
@@ -526,6 +548,36 @@ function MaplistGenerator() {
 
 const BRACKET_TYPES: Array<BracketType> = ["DE_WINNERS", "DE_LOSERS"];
 const AMOUNT_OF_ROUNDS = 12;
+
+function reviveBestOf(value: string) {
+  const parsed = Number(value);
+
+  return TOURNAMENT.AVAILABLE_BEST_OF.find((bo) => bo === parsed);
+}
+
+function reviveBracketType(value: string) {
+  return BRACKET_TYPES.find((bracketType) => bracketType === value);
+}
+
+function reviveRound(value: string) {
+  const parsed = Number(value);
+
+  return new Array(AMOUNT_OF_ROUNDS)
+    .fill(null)
+    .map((_, i) => i + 1)
+    .find((val) => val === parsed);
+}
+
+function reviveTeam(teamIds: number[], excludedTeamId?: number) {
+  return function (value: string) {
+    const parsed = Number(value);
+
+    return teamIds
+      .filter((id) => id !== excludedTeamId)
+      .find((id) => id === parsed);
+  };
+}
+
 function RoundSelect({
   roundNumber,
   bracketType,
@@ -602,17 +654,16 @@ function TeamsSelect({
   );
 }
 
-const BEST_OF_OPTIONS = [3, 5, 7] as const;
 function BestOfRadios({
   bestOf,
   setBestOf,
 }: {
-  bestOf: 3 | 5 | 7;
-  setBestOf: (bestOf: 3 | 5 | 7) => void;
+  bestOf: typeof TOURNAMENT["AVAILABLE_BEST_OF"][number];
+  setBestOf: (bestOf: typeof TOURNAMENT["AVAILABLE_BEST_OF"][number]) => void;
 }) {
   return (
     <div className="tournament__bo-radios-container">
-      {BEST_OF_OPTIONS.map((bestOfOption) => (
+      {TOURNAMENT.AVAILABLE_BEST_OF.map((bestOfOption) => (
         <div key={bestOfOption}>
           <label htmlFor={String(bestOfOption)}>Bo{bestOfOption}</label>
           <input

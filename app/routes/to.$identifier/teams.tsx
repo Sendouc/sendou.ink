@@ -23,7 +23,7 @@ export default function TournamentToolsTeamsPage() {
                 height={16}
                 width={16}
               />
-              {team.mapPool ? (
+              {team.mapPool && team.mapPool.length > 0 ? (
                 <CheckmarkIcon className="fill-success" />
               ) : (
                 <AlertIcon className="fill-warning" />

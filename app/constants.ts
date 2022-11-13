@@ -39,6 +39,7 @@ export const TOURNAMENT = {
   COUNTERPICK_MAX_STAGE_REPEAT: 2,
   TEAM_MIN_MEMBERS_FOR_FULL: 4,
   TEAM_MAX_MEMBERS: 6,
+  AVAILABLE_BEST_OF: [3, 5, 7] as const,
 } as const;
 
 export const BUILD = {
