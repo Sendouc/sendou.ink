@@ -9,7 +9,7 @@ export function TeamWithRoster({
   team,
   showDeleteButtons = false,
 }: {
-  team: FindTeamsByEventIdItem;
+  team: Pick<FindTeamsByEventIdItem, "members" | "name">;
   showDeleteButtons?: boolean;
 }) {
   const user = useUser();

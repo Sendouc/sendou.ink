@@ -86,8 +86,12 @@
   width: max-content;
 }
 
-.p-2 {
-  padding: var(--s-2);
+.px-4 {
+  padding-inline: var(--s-4);
+}
+
+.py-4 {
+  padding-block: var(--s-4);
 }
 
 .pl-4 {

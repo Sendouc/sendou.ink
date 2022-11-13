@@ -1,4 +1,4 @@
-import type { LoaderArgs, SerializeFrom } from "@remix-run/node";
+import type { LinksFunction, LoaderArgs, SerializeFrom } from "@remix-run/node";
 import { Outlet, useLoaderData } from "@remix-run/react";
 import { SubNav, SubNavLink } from "~/components/SubNav";
 import { db } from "~/db";
@@ -11,6 +11,11 @@ import { getUser, useUser } from "~/modules/auth";
 import { canAdminCalendarTOTools } from "~/permissions";
 import { notFoundIfFalsy } from "~/utils/remix";
 import { findOwnedTeam } from "~/utils/tournaments";
+import styles from "~/styles/tournament.css";
+
+export const links: LinksFunction = () => {
+  return [{ rel: "stylesheet", href: styles }];
+};
 
 export type TournamentToolsLoaderData = SerializeFrom<typeof loader>;
 
@@ -60,6 +65,7 @@ export default function TournamentToolsLayout() {
     <>
       <SubNav>
         <SubNavLink to="">Info</SubNavLink>
+        <SubNavLink to="teams">Teams ({data.teams.length})</SubNavLink>
         {canAdminCalendarTOTools({ user, event: data.event }) && (
           <SubNavLink to="admin">Admin</SubNavLink>
         )}

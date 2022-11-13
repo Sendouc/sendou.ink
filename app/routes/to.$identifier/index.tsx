@@ -20,7 +20,6 @@ import type { StageId } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { MapPool } from "~/modules/map-pool-serializer";
 import mapsStyles from "~/styles/maps.css";
-import styles from "~/styles/tournament.css";
 import {
   badRequestIfFalsy,
   parseRequestFormData,
@@ -46,10 +45,7 @@ import { TeamWithRoster } from "./components/TeamWithRoster";
 import { actualNumber } from "~/utils/zod";
 
 export const links: LinksFunction = () => {
-  return [
-    { rel: "stylesheet", href: styles },
-    { rel: "stylesheet", href: mapsStyles },
-  ];
+  return [{ rel: "stylesheet", href: mapsStyles }];
 };
 
 export const handle: SendouRouteHandle = {
@@ -222,7 +218,7 @@ function TeamNameSection() {
             )}
           </div>
         </Summary>
-        <Form method="post" className="mt-3 px-2 pb-4">
+        <Form method="post" className="mt-3 px-4 pb-4">
           <input
             id="name"
             name="name"
@@ -431,7 +427,7 @@ function RosterSection() {
             )}
           </div>
         </Summary>
-        <div className="stack md items-center p-2">
+        <div className="stack lg items-center px-2 py-4">
           {hasSpaceInTeam ? (
             <Form method="post" className="stack horizontal sm items-center">
               <UserCombobox
