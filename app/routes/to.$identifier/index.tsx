@@ -436,6 +436,7 @@ function RosterSection() {
                 userIdsToOmit={
                   new Set(data.ownTeam.members.map((m) => m.userId))
                 }
+                key={data.ownTeam.members.length}
               />
               <Button tiny type="submit" name="_action" value="ADD_MEMBER">
                 Add
@@ -445,7 +446,7 @@ function RosterSection() {
             <div className="text-xs text-lighter">Team is full.</div>
           )}
 
-          <Form method="post">
+          <Form method="post" className="w-full">
             <input type="hidden" name="_action" value="DELETE_MEMBER" />
             <TeamWithRoster team={data.ownTeam} showDeleteButtons />
           </Form>

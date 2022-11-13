@@ -98,7 +98,7 @@
 
 .tournament__team-with-roster {
   display: flex;
-  width: 320px;
+  width: 100%;
   align-items: center;
 }
 
@@ -122,9 +122,15 @@
 }
 
 .tournament__team-with-roster__member {
-  display: flex;
-  align-items: center;
+  display: grid;
   gap: var(--s-1-5);
+  grid-template-columns: max-content max-content 1fr;
+}
+
+.tournament__team-member-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .tournament__pick-status-container {

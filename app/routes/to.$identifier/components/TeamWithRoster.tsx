@@ -36,7 +36,9 @@ export function TeamWithRoster({
               </Button>
             )}
             <Avatar user={member} size="xxs" />
-            {member.discordName}
+            <span className="tournament__team-member-name">
+              {member.discordName}
+            </span>
           </li>
         ))}
       </ul>
