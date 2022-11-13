@@ -26,6 +26,7 @@ function validateAbilityChunksArray(
     )} was not found in the actual output.\nExpected output: ${JSON.stringify(
       expectedOutput
     )}\nActual Output: ${JSON.stringify(abilityChunksArray)}`;
+    
     assert.ok(isFound, errorString);
   }
 }
