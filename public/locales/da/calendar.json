@@ -38,6 +38,9 @@
   "forms.errors.duplicatePlayer": "Man kan ikke have den samme spiller på samme hold 2 gange.",
   "forms.errors.emptyTeam": "Alle hold skal have mindst en spiller.",
 
+  "forms.toTools.header": "Aktiver TO-redskaber",
+  "forms.toTools.explanation": "Ved brug af TO-redskaberne vil din turnering bruge en forudbestemt baneliste og seedningsværktøjet vil være til rådighed.",
+
   "week.this": "Denne Uge",
   "week.next": "Næste Uge",
   "week.last": "Sidste Uge",
