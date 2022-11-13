@@ -31,6 +31,7 @@
   "footer.thanks": "Thanks to the patrons for the support",
 
   "actions.save": "Save",
+  "actions.saveChanges": "Save changes",
   "actions.saving": "Saving...",
   "actions.submit": "Submit",
   "actions.edit": "Edit",

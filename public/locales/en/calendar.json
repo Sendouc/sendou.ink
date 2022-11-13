@@ -38,6 +38,9 @@
   "forms.errors.duplicatePlayer": "Can't have the same player twice in the same team.",
   "forms.errors.emptyTeam": "Each team must have at least one player.",
 
+  "forms.toTools.header": "Enable TO Tools",
+  "forms.toTools.explanation": "With TO Tools your tournament will use prepicked maps and seed creator tool is available.",
+
   "week.this": "This Week",
   "week.next": "Next Week",
   "week.last": "Last Week",

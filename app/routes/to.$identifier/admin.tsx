@@ -6,6 +6,7 @@ import { FormMessage } from "~/components/FormMessage";
 import { Main } from "~/components/Main";
 import { Toggle } from "~/components/Toggle";
 import { db } from "~/db";
+import { useTranslation } from "~/hooks/useTranslation";
 import { requireUser } from "~/modules/auth";
 import { canAdminCalendarTOTools } from "~/permissions";
 import {
@@ -41,6 +42,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 };
 
 export default function TournamentToolsAdminPage() {
+  const { t } = useTranslation(["tournament"]);
   const submit = useSubmit();
   const data = useOutletContext<TournamentToolsLoaderData>();
   const [eventStarted, setEventStarted] = React.useState(
@@ -59,15 +61,14 @@ export default function TournamentToolsAdminPage() {
   return (
     <Main halfWidth>
       <div>
-        <label>Event started</label>
+        <label>{t("tournament:admin.eventStarted")}</label>
         <Toggle
           checked={eventStarted}
           setChecked={handleToggle}
           name="started"
         />
         <FormMessage type="info">
-          After start teams can generate map lists but won&apos;t be able to
-          edit their map pools or rosters.
+          {t("tournament:admin.eventStarted.explanation")}
         </FormMessage>
       </div>
     </Main>

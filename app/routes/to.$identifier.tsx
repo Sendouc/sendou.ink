@@ -14,10 +14,11 @@ import type {
 import type { TournamentTeam } from "~/db/types";
 import { getUser, useUser } from "~/modules/auth";
 import { canAdminCalendarTOTools } from "~/permissions";
-import { notFoundIfFalsy } from "~/utils/remix";
+import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
 import { findOwnedTeam } from "~/utils/tournaments";
 import styles from "~/styles/tournament.css";
 import { makeTitle } from "~/utils/strings";
+import { useTranslation } from "~/hooks/useTranslation";
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader>;
@@ -31,6 +32,10 @@ export const meta: MetaFunction = (args) => {
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
+};
+
+export const handle: SendouRouteHandle = {
+  i18n: ["tournament"],
 };
 
 export type TournamentToolsLoaderData = SerializeFrom<typeof loader>;
@@ -74,16 +79,19 @@ function censorMapPools({
 }
 
 export default function TournamentToolsLayout() {
+  const { t } = useTranslation(["tournament"]);
   const user = useUser();
   const data = useLoaderData<typeof loader>();
 
   return (
     <>
       <SubNav>
-        <SubNavLink to="">Info</SubNavLink>
-        <SubNavLink to="teams">Teams ({data.teams.length})</SubNavLink>
+        <SubNavLink to="">{t("tournament:tabs.info")}</SubNavLink>
+        <SubNavLink to="teams">
+          {t("tournament:tabs.teams", { count: data.teams.length })}
+        </SubNavLink>
         {canAdminCalendarTOTools({ user, event: data.event }) && (
-          <SubNavLink to="admin">Admin</SubNavLink>
+          <SubNavLink to="admin">{t("tournament:tabs.admin")}</SubNavLink>
         )}
       </SubNav>
       <Outlet context={data} />

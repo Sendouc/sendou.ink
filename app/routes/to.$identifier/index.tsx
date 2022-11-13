@@ -161,6 +161,7 @@ export default function TournamentToolsPage() {
 }
 
 function PrestartControls() {
+  const { t } = useTranslation(["tournament"]);
   const data = useOutletContext<TournamentToolsLoaderData>();
 
   return (
@@ -171,8 +172,7 @@ function PrestartControls() {
           <MapPoolSection />
           <RosterSection />
           <div className="tournament__action-side-note">
-            Note: you can change your map pool and roster as many times as you
-            want before the tournament starts.
+            {t("tournament:pre.footerNote")}
           </div>
           <FormWithConfirm
             fields={[["_action", "DELETE_REGISTRATION"]]}
@@ -184,7 +184,7 @@ function PrestartControls() {
               type="submit"
               className="mt-4"
             >
-              Delete team
+              {t("tournament:pre.deleteTeam")}
             </Button>
           </FormWithConfirm>
         </>
@@ -194,13 +194,14 @@ function PrestartControls() {
 }
 
 function TeamNameSection() {
+  const { t } = useTranslation(["tournament", "common"]);
   const data = useOutletContext<TournamentToolsLoaderData>();
 
   return (
     <section className="tournament__action-section stack md">
       <div>
         <span className="tournament__action-section-title">
-          1. Register on{" "}
+          {t("tournament:pre.steps.register")}{" "}
           <a
             href={data.event.bracketUrl}
             target="_blank"
@@ -213,7 +214,7 @@ function TeamNameSection() {
       <Details className="bg-darker-transparent rounded">
         <Summary className="bg-transparent-important">
           <div className="tournament__summary-content">
-            Enter team name you register with{" "}
+            {t("tournament:pre.steps.register.summary")}{" "}
             {data.ownTeam ? (
               <CheckmarkIcon className="fill-success" />
             ) : (
@@ -236,7 +237,7 @@ function TeamNameSection() {
             value="TEAM_NAME"
             type="submit"
           >
-            Submit
+            {t("common:actions.submit")}
           </Button>
         </Form>
       </Details>
@@ -245,6 +246,7 @@ function TeamNameSection() {
 }
 
 function MapPoolSection() {
+  const { t } = useTranslation(["tournament", "common"]);
   const data = useOutletContext<TournamentToolsLoaderData>();
   const [counterpickMapPool, setCounterpickMapPool] = React.useState(
     data.ownTeam?.mapPool ? new MapPool(data.ownTeam.mapPool) : MapPool.EMPTY
@@ -256,17 +258,17 @@ function MapPoolSection() {
     <section>
       <Form method="post" className="tournament__action-section stack md">
         <div>
-          <span className="tournament__action-section-title">2. Map pool</span>
+          <span className="tournament__action-section-title">
+            {t("tournament:pre.steps.mapPool")}
+          </span>
           <div className="tournament__action-side-note">
-            You can play without selecting a map pool but then your opponent
-            gets to decide what maps get played. Tie breaker maps marked in{" "}
-            <span className="text-info">blue</span>.
+            {t("tournament:pre.steps.mapPool.explanation")}
           </div>
         </div>
         <Details className="bg-darker-transparent rounded">
           <Summary className="bg-transparent-important">
             <div className="tournament__summary-content">
-              Pick your team&apos;s maps{" "}
+              {t("tournament:pre.steps.mapPool.summary")}{" "}
               {hasPickedMapPool ? (
                 <CheckmarkIcon className="fill-success" />
               ) : (
@@ -302,7 +304,7 @@ function MapPoolSection() {
                 value="POOL"
                 tiny
               >
-                Save changes
+                {t("common:actions.saveChanges")}
               </Button>
             }
           />
@@ -400,6 +402,7 @@ function MapPoolCounts({ mapPool }: { mapPool: MapPool }) {
 }
 
 function RosterSection() {
+  const { t } = useTranslation(["tournament", "common"]);
   const data = useOutletContext<TournamentToolsLoaderData>();
   invariant(data.ownTeam);
 
@@ -412,17 +415,16 @@ function RosterSection() {
     <section className="tournament__action-section stack md">
       <div>
         <span className="tournament__action-section-title">
-          3. Submit roster
+          {t("tournament:pre.steps.roster")}
         </span>
         <div className="tournament__action-side-note">
-          Submitting roster is optional but you might be seeded lower if you
-          don&apos;t.
+          {t("tournament:pre.steps.roster.explanation")}
         </div>
       </div>
       <Details className="bg-darker-transparent rounded">
         <Summary className="bg-transparent-important">
           <div className="tournament__summary-content">
-            Enter roster{" "}
+            {t("tournament:pre.steps.roster.summary")}{" "}
             {hasCompleteTeam ? (
               <CheckmarkIcon className="fill-success" />
             ) : (
@@ -442,11 +444,13 @@ function RosterSection() {
                 key={data.ownTeam.members.length}
               />
               <Button tiny type="submit" name="_action" value="ADD_MEMBER">
-                Add
+                {t("common:actions.add")}
               </Button>
             </Form>
           ) : (
-            <div className="text-xs text-lighter">Team is full.</div>
+            <div className="text-xs text-lighter">
+              {t("tournament:pre.steps.roster.fullTeamError")}
+            </div>
           )}
 
           <Form method="post" className="w-full">
@@ -464,6 +468,7 @@ type TeamInState = {
   mapPool?: Pick<MapPoolMap, "mode" | "stageId">[];
 };
 function MaplistGenerator() {
+  const { t } = useTranslation(["tournament"]);
   const actionData = useActionData<{ failed?: boolean }>();
   const data = useOutletContext<TournamentToolsLoaderData>();
 
@@ -507,7 +512,7 @@ function MaplistGenerator() {
     <div className="stack md">
       {actionData?.failed && (
         <Alert variation="ERROR" tiny>
-          Changes you made weren&apos;t saved since tournament has started
+          {t("tournament:generator.error")}
         </Alert>
       )}
       <RoundSelect
@@ -591,7 +596,7 @@ function RoundSelect({
 
   return (
     <div className="tournament__round-container tournament__select-container">
-      <label htmlFor="round">Round</label>
+      <label htmlFor="round">{t("tournament:round.label")}</label>
       <select
         id="round"
         value={`${bracketType}-${roundNumber}`}
@@ -628,11 +633,14 @@ function TeamsSelect({
   otherTeam: TeamInState;
   setTeam: (newTeamId: number) => void;
 }) {
+  const { t } = useTranslation(["tournament"]);
   const data = useOutletContext<TournamentToolsLoaderData>();
 
   return (
     <div className="tournament__select-container">
-      <label htmlFor="round">Team {number}</label>
+      <label htmlFor="round">
+        {t("tournament:team.label")} {number}
+      </label>
       <select
         id="round"
         className="tournament__team-select"
@@ -641,7 +649,9 @@ function TeamsSelect({
           setTeam(Number(e.target.value));
         }}
       >
-        {otherTeam.id !== -1 && <option value={-1}>(Unlisted team)</option>}
+        {otherTeam.id !== -1 && (
+          <option value={-1}>({t("tournament:team.unlisted")})</option>
+        )}
         {data.teams
           .filter((t) => t.id !== otherTeam.id)
           .map((team) => (
@@ -661,11 +671,16 @@ function BestOfRadios({
   bestOf: typeof TOURNAMENT["AVAILABLE_BEST_OF"][number];
   setBestOf: (bestOf: typeof TOURNAMENT["AVAILABLE_BEST_OF"][number]) => void;
 }) {
+  const { t } = useTranslation(["tournament"]);
+
   return (
     <div className="tournament__bo-radios-container">
       {TOURNAMENT.AVAILABLE_BEST_OF.map((bestOfOption) => (
         <div key={bestOfOption}>
-          <label htmlFor={String(bestOfOption)}>Bo{bestOfOption}</label>
+          <label htmlFor={String(bestOfOption)}>
+            {t("tournament:bestOf.label.short")}
+            {bestOfOption}
+          </label>
           <input
             id={String(bestOfOption)}
             name="bestOf"
@@ -741,12 +756,16 @@ function PickInfoText({
   teamOneId: number;
   teamTwoId: number;
 }) {
+  const { t } = useTranslation(["tournament"]);
+
   const text = () => {
-    if (source === teamOneId) return `Team 1 pick`;
-    if (source === teamTwoId) return `Team 2 pick`;
-    if (source === "TIEBREAKER") return `Tiebreaker`;
-    if (source === "BOTH") return `Both picked`;
-    if (source === "DEFAULT") return `Default map`;
+    if (source === teamOneId)
+      return t("tournament:pickInfo.team", { number: 1 });
+    if (source === teamTwoId)
+      return t("tournament:pickInfo.team", { number: 2 });
+    if (source === "TIEBREAKER") return t("tournament:pickInfo.tiebreaker");
+    if (source === "BOTH") return t("tournament:pickInfo.both");
+    if (source === "DEFAULT") return t("tournament:pickInfo.default");
 
     console.error(`Unknown source: ${String(source)}`);
     return "";

@@ -3,11 +3,13 @@ import { AlertIcon } from "~/components/icons/Alert";
 import { CheckmarkIcon } from "~/components/icons/Checkmark";
 import { Image } from "~/components/Image";
 import { Main } from "~/components/Main";
+import { useTranslation } from "~/hooks/useTranslation";
 import { navIconUrl } from "~/utils/urls";
 import type { TournamentToolsLoaderData } from "../to.$identifier";
 import { TeamWithRoster } from "./components/TeamWithRoster";
 
 export default function TournamentToolsTeamsPage() {
+  const { t } = useTranslation(["tournament"]);
   const data = useOutletContext<TournamentToolsLoaderData>();
 
   return (
@@ -18,8 +20,8 @@ export default function TournamentToolsTeamsPage() {
             <div className="tournament__pick-status-container">
               <Image
                 path={navIconUrl("maps")}
-                alt="Maps picked status"
-                title="Maps picked status"
+                alt={t("tournament:teams.mapsPickedStatus")}
+                title={t("tournament:teams.mapsPickedStatus")}
                 height={16}
                 width={16}
               />

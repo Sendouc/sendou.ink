@@ -610,11 +610,12 @@ function TOToolsEnabler({
   checked: boolean;
   setChecked: (checked: boolean) => void;
 }) {
+  const { t } = useTranslation(["calendar"]);
   const id = React.useId();
 
   return (
     <div>
-      <label htmlFor={id}>Enable TO Tools</label>
+      <label htmlFor={id}>{t("calendar:forms.toTools.header")}</label>
       <Toggle
         name="toToolsEnabled"
         id={id}
@@ -623,8 +624,7 @@ function TOToolsEnabler({
         setChecked={setChecked}
       />
       <FormMessage type="info">
-        With TO Tools your tournament will use the Some Fancy Name Map Pools and
-        seed creator tool.
+        {t("calendar:forms.toTools.explanation")}
       </FormMessage>
     </div>
   );
