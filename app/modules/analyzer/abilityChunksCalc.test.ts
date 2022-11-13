@@ -36,7 +36,7 @@ GetAbilityChunksMapAsArray("Empty build results in an empty array", () => {
   ] as unknown as BuildAbilitiesTupleWithUnknown;
 
   const abilityChunksArray = getAbilityChunksMapAsArray(emptyBuild);
-  assert.equal(abilityChunksArray, []);
+  assert.equal(abilityChunksArray, [], "Ability chunks array is not empty.");
 });
 
 GetAbilityChunksMapAsArray(
