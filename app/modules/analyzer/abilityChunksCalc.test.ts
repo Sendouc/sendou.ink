@@ -11,15 +11,10 @@ function validateAbilityChunksArray(
   expectedOutput: (string | number)[][]
 ) {
   for (const output of expectedOutput) {
-    let isFound = false;
     const typedOutput = output as [AbilityWithUnknown, number];
-
-    for (const result of abilityChunksArray) {
-      if (JSON.stringify(result) == JSON.stringify(typedOutput)) {
-        isFound = true;
-        break;
-      }
-    }
+    const isFoundInAbilityChunksArray = abilityChunksArray.filter(
+      (result) => JSON.stringify(result) === JSON.stringify(typedOutput)
+    ).length;
 
     const errorString = `${JSON.stringify(
       typedOutput
@@ -27,7 +22,7 @@ function validateAbilityChunksArray(
       expectedOutput
     )}\nActual Output: ${JSON.stringify(abilityChunksArray)}`;
 
-    assert.ok(isFound, errorString);
+    assert.ok(isFoundInAbilityChunksArray, errorString);
   }
 }
 
