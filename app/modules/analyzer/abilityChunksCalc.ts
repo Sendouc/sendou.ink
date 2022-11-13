@@ -24,8 +24,6 @@ export function getAbilityChunksMapAsArray(
   );
 }
 
-// Extra processing is required for Main abilities that are primary slot-only abilities,
-//    as they are comprised of 3 stackable ability chunks at a lower ability chunk count than usual.
 function updateAbilityChunksMap(
   abilityChunksMap: AbilityChunks,
   build: BuildAbilitiesTupleWithUnknown
@@ -45,7 +43,8 @@ function updateAbilityChunksMap(
             a.name === selectedAbility && a.abilityChunkTypesRequired.length > 0
         );
 
-        // Primary-slot-only item that can have ability chunks put on it
+        // Extra processing is required for Main abilities that are primary slot-only abilities,
+        //    as they are comprised of 3 stackable ability chunks at a lower ability chunk count than usual.
         if (primarySlotOnlyAbilityRef.length === 1) {
           const primaryAbility = primarySlotOnlyAbilityRef[0];
           if (!primaryAbility) continue;
