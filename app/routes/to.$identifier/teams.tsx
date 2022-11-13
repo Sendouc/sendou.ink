@@ -15,6 +15,16 @@ export default function TournamentToolsTeamsPage() {
   return (
     <Main className="stack lg">
       {data.teams.map((team) => {
+        const hasMapPool = () => {
+          // before start empty array is returned if team has map list
+          // after start empty array means team has no map list
+          if (data.event.isBeforeStart) {
+            return Boolean(team.mapPool);
+          }
+
+          return team.mapPool && team.mapPool.length > 0;
+        };
+
         return (
           <div key={team.id} className="stack sm items-center">
             <div className="tournament__pick-status-container">
@@ -25,7 +35,7 @@ export default function TournamentToolsTeamsPage() {
                 height={16}
                 width={16}
               />
-              {team.mapPool && team.mapPool.length > 0 ? (
+              {hasMapPool() ? (
                 <CheckmarkIcon className="fill-success" />
               ) : (
                 <AlertIcon className="fill-warning" />
