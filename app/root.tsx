@@ -106,7 +106,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export const handle: SendouRouteHandle = {
-  i18n: "common",
+  i18n: ["common", "game-misc"],
 };
 
 function Document({
@@ -162,6 +162,7 @@ export const namespaceJsonsToPreloadObj: Record<
   gear: true,
   user: true,
   weapons: true,
+  tournament: true,
 };
 const namespaceJsonsToPreload = Object.keys(namespaceJsonsToPreloadObj);
 

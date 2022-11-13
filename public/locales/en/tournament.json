@@ -1,0 +1,43 @@
+{
+  "tabs.info": "Info",
+  "tabs.teams": "Teams ({{count}})",
+  "tabs.admin": "Admin",
+
+  "pre.footerNote": "Note: you can change your map pool and roster as many times as you want before the tournament starts.",
+  "pre.deleteTeam": "Delete team",
+
+  "pre.steps.register": "1. Register on",
+  "pre.steps.register.summary": "Enter team name you register with",
+  "pre.steps.mapPool": "2. Map pool",
+  "pre.steps.mapPool.explanation": "You can play without selecting a map pool but then your opponent gets to decide what maps get played. Tie breaker maps marked in blue.",
+  "pre.steps.mapPool.summary": "Pick your team's maps",
+  "pre.steps.roster": "3. Submit roster",
+  "pre.steps.roster.explanation": "Submitting roster is optional but you might be seeded lower if you don't.",
+  "pre.steps.roster.summary": "Enter roster",
+  "pre.steps.roster.fullTeamError": "Team is full.",
+
+  "bracket.type.DE_WINNERS": "Winners Round",
+  "bracket.type.DE_LOSERS": "Losers Round",
+  "bracket.type.SE": "Round",
+  "bracket.type.SWISS": "Swiss Round",
+  "bracket.type.GROUPS": "Groups Round",
+
+  "round.label": "Round",
+
+  "team.label": "Team",
+  "team.unlisted": "Unlisted team",
+
+  "bestOf.label.short": "Bo",
+
+  "pickInfo.team": "Team {{number}} pick",
+  "pickInfo.tiebreaker": "Tiebreaker",
+  "pickInfo.both": "Both picked",
+  "pickInfo.default": "Default map",
+
+  "generator.error": "Changes you made weren't saved since tournament has started",
+
+  "teams.mapsPickedStatus": "Maps picked status",
+
+  "admin.eventStarted": "Event started",
+  "admin.eventStarted.explanation": "After start teams can generate map lists but won't be able to edit their map pools or rosters."
+}

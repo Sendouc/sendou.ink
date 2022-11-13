@@ -46,6 +46,7 @@ import {
   stackableAbility,
   toArray,
 } from "~/utils/zod";
+import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
 
 const newBuildActionSchema = z.object({
   buildToEditId: z.preprocess(actualNumber, id.nullish()),
@@ -369,18 +370,10 @@ function Abilities() {
 
   return (
     <div>
-      <input
-        className="hidden-input-with-validation"
+      <RequiredHiddenInput
+        value={JSON.stringify(abilities)}
+        isValid={abilities.flat().every((a) => a !== "UNKNOWN")}
         name="abilities"
-        value={
-          abilities.flat().every((a) => a !== "UNKNOWN")
-            ? JSON.stringify(abilities)
-            : []
-        }
-        // empty onChange is because otherwise it will give a React error in console
-        // readOnly can't be set as then validation is not active
-        onChange={() => null}
-        required
       />
       <AbilitiesSelector
         selectedAbilities={abilities}

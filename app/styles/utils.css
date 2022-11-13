@@ -34,8 +34,32 @@
   color: var(--theme-success);
 }
 
+.text-info {
+  color: var(--theme-info);
+}
+
+.fill-success {
+  fill: var(--theme-success);
+}
+
+.fill-warning {
+  fill: var(--theme-warning);
+}
+
 .bg-darker-important {
   background-color: var(--bg-darker) !important;
+}
+
+.bg-transparent-important {
+  background-color: transparent !important;
+}
+
+.bg-darker-transparent {
+  background-color: var(--bg-darker-transparent);
+}
+
+.rounded {
+  border-radius: var(--rounded);
 }
 
 .font-semi-bold {
@@ -50,16 +74,44 @@
   width: 100% !important;
 }
 
+.w-4 {
+  width: var(--s-4);
+}
+
 .w-24 {
   width: var(--s-24);
+}
+
+.w-max {
+  width: max-content;
+}
+
+.px-4 {
+  padding-inline: var(--s-4);
+}
+
+.py-4 {
+  padding-block: var(--s-4);
 }
 
 .pl-4 {
   padding-inline-start: var(--s-4);
 }
 
+.px-2 {
+  padding-inline: var(--s-2);
+}
+
+.pb-4 {
+  padding-block-end: var(--s-4);
+}
+
 .mt-2 {
   margin-block-start: var(--s-2);
+}
+
+.mt-3 {
+  margin-block-start: var(--s-3);
 }
 
 .mt-4 {

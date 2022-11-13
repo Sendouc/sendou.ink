@@ -35,9 +35,11 @@ import recentWinnersSql from "./recentWinners.sql";
 import upcomingEventsSql from "./upcomingEvents.sql";
 import createMapPoolMapSql from "./createMapPoolMap.sql";
 import deleteMapPoolMapsSql from "./deleteMapPoolMaps.sql";
+import createTieBreakerMapPoolMapSql from "./createTieBreakerMapPoolMap.sql";
 import findMapPoolByEventIdSql from "./findMapPoolByEventId.sql";
 import findRecentMapPoolsByAuthorIdSql from "./findRecentMapPoolsByAuthorId.sql";
 import findAllEventsWithMapPoolsSql from "./findAllEventsWithMapPools.sql";
+import findTieBreakerMapPoolByEventIdSql from "./findTieBreakerMapPoolByEventId.sql";
 
 const createStm = sql.prepare(createSql);
 const updateStm = sql.prepare(updateSql);
@@ -47,7 +49,13 @@ const createBadgeStm = sql.prepare(createBadgeSql);
 const deleteBadgesByEventIdStm = sql.prepare(deleteBadgesByEventIdSql);
 const createMapPoolMapStm = sql.prepare(createMapPoolMapSql);
 const deleteMapPoolMapsStm = sql.prepare(deleteMapPoolMapsSql);
+const createTieBreakerMapPoolMapStm = sql.prepare(
+  createTieBreakerMapPoolMapSql
+);
 const findMapPoolByEventIdStm = sql.prepare(findMapPoolByEventIdSql);
+const findTieBreakerMapPoolByEventIdtm = sql.prepare(
+  findTieBreakerMapPoolByEventIdSql
+);
 
 export type CreateArgs = Pick<
   CalendarEvent,
@@ -57,6 +65,7 @@ export type CreateArgs = Pick<
   | "description"
   | "discordInviteCode"
   | "bracketUrl"
+  | "toToolsEnabled"
 > & {
   startTimes: Array<CalendarEventDate["startTime"]>;
   badges: Array<CalendarEventBadge["badgeId"]>;
@@ -85,17 +94,19 @@ export const create = sql.transaction(
       });
     }
 
-    for (const mapPoolArgs of mapPoolMaps) {
-      createMapPoolMapStm.run({
-        calendarEventId: createdEvent.id,
-        ...mapPoolArgs,
-      });
-    }
+    upsertMapPool({
+      eventId: createdEvent.id,
+      mapPoolMaps,
+      toToolsEnabled: calendarEventArgs.toToolsEnabled,
+    });
 
     return createdEvent.id;
   }
 );
 
+export type Update = Omit<CreateArgs, "authorId"> & {
+  eventId: CalendarEvent["id"];
+};
 export const update = sql.transaction(
   ({
     startTimes,
@@ -103,7 +114,7 @@ export const update = sql.transaction(
     eventId,
     mapPoolMaps = [],
     ...calendarEventArgs
-  }: Omit<CreateArgs, "authorId"> & { eventId: CalendarEvent["id"] }) => {
+  }: Update) => {
     updateStm.run({ ...calendarEventArgs, eventId });
 
     deleteDatesByEventIdStm.run({ eventId });
@@ -122,7 +133,32 @@ export const update = sql.transaction(
       });
     }
 
-    deleteMapPoolMapsStm.run({ calendarEventId: eventId });
+    upsertMapPool({
+      eventId,
+      mapPoolMaps,
+      toToolsEnabled: calendarEventArgs.toToolsEnabled,
+    });
+  }
+);
+
+function upsertMapPool({
+  eventId,
+  mapPoolMaps,
+  toToolsEnabled,
+}: {
+  eventId: Update["eventId"];
+  mapPoolMaps: NonNullable<Update["mapPoolMaps"]>;
+  toToolsEnabled: Update["toToolsEnabled"];
+}) {
+  deleteMapPoolMapsStm.run({ calendarEventId: eventId });
+  if (toToolsEnabled) {
+    for (const mapPoolArgs of mapPoolMaps) {
+      createTieBreakerMapPoolMapStm.run({
+        calendarEventId: eventId,
+        ...mapPoolArgs,
+      });
+    }
+  } else {
     for (const mapPoolArgs of mapPoolMaps) {
       createMapPoolMapStm.run({
         calendarEventId: eventId,
@@ -130,7 +166,7 @@ export const update = sql.transaction(
       });
     }
   }
-);
+}
 
 const updateParticipantsCountStm = sql.prepare(updateParticipantsCountSql);
 const deleteResultTeamsByEventIdStm = sql.prepare(
@@ -378,6 +414,7 @@ export function findById(id: CalendarEvent["id"]) {
       | "tags"
       | "authorId"
       | "participantCount"
+      | "toToolsEnabled"
     > &
       Pick<CalendarEventDate, "startTime" | "eventId"> &
       Pick<
@@ -502,4 +539,12 @@ export function findAllEventsWithMapPools() {
     name: row.name,
     serializedMapPool: MapPool.serialize(JSON.parse(row.mapPool)),
   }));
+}
+
+export function findTieBreakerMapPoolByEventId(
+  calendarEventId: string | number
+) {
+  return findTieBreakerMapPoolByEventIdtm.all({ calendarEventId }) as Array<
+    Pick<MapPoolMap, "mode" | "stageId">
+  >;
 }

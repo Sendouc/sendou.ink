@@ -6,6 +6,7 @@ select
   "CalendarEvent"."bracketUrl",
   "CalendarEvent"."tags",
   "CalendarEvent"."participantCount",
+  "CalendarEvent"."toToolsEnabled",
   "User"."id" as "authorId",
   exists (
     select
