@@ -10,7 +10,6 @@ const MAIN_REQUIRED_ABILITY_CHUNKS_COUNT = 45;
 const PRIMARY_SLOT_ONLY_REQUIRED_ABILITY_CHUNKS_COUNT = 15;
 const SUB_REQUIRED_ABILITY_CHUNKS_COUNT = 10;
 
-
 // From an array of Main abilities, create a map of <Ability, number>, then return it as an Array after sorting by value, descending.
 //    The data structure describes the number of Ability chunks required for any given build.
 export function getAbilityChunksMapAsArray(
