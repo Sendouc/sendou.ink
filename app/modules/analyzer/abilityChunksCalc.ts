@@ -1,8 +1,3 @@
-// From an array of Main abilities, create a map of <Ability, number>, then return it as an Array after sorting by value, descending.
-//    The map describes the number of Ability chunks required to replace the main ability on a piece of gear.
-// Extra processing is required for Main abilities that are primary slot-only abilities,
-//    as they are comprised of 3 stackable ability chunks at a lower ability chunk count than usual.
-
 import { abilities } from "../in-game-lists";
 import type {
   AbilityWithUnknown,
@@ -15,6 +10,9 @@ const MAIN_REQUIRED_ABILITY_CHUNKS_COUNT = 45;
 const PRIMARY_SLOT_ONLY_REQUIRED_ABILITY_CHUNKS_COUNT = 15;
 const SUB_REQUIRED_ABILITY_CHUNKS_COUNT = 10;
 
+
+// From an array of Main abilities, create a map of <Ability, number>, then return it as an Array after sorting by value, descending.
+//    The data structure describes the number of Ability chunks required for any given build.
 export function getAbilityChunksMapAsArray(
   build: BuildAbilitiesTupleWithUnknown
 ) {
@@ -27,6 +25,8 @@ export function getAbilityChunksMapAsArray(
   );
 }
 
+// Extra processing is required for Main abilities that are primary slot-only abilities,
+//    as they are comprised of 3 stackable ability chunks at a lower ability chunk count than usual.
 function updateAbilityChunksMap(
   abilityChunksMap: AbilityChunks,
   build: BuildAbilitiesTupleWithUnknown
