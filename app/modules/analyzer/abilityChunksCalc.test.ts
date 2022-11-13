@@ -59,7 +59,7 @@ GetAbilityChunksMapAsArray(
 );
 
 GetAbilityChunksMapAsArray(
-  "Ninja Squid ability chunk calculation is correct",
+  "Ninja Squid ability chunk calculation is correct (for a primary slot-only ability)",
   () => {
     const build = [
       ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
