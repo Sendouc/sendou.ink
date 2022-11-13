@@ -38,6 +38,9 @@
   "forms.errors.duplicatePlayer": "ひとつのチームに同一の名前のプレイヤーは設定できません。",
   "forms.errors.emptyTeam": "それぞれのチームには最低1プレイヤーが必要です。",
 
+  "forms.toTools.header": "トーナメントツールを有効にする",
+  "forms.toTools.explanation": "トーナメントツールを使うことで、作成したトーナメントは事前に選択されたマップが使用されます。また、シードクリエイターも使用できます。",
+
   "week.this": "今週",
   "week.next": "次週",
   "week.last": "先週",
