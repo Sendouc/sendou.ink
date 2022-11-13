@@ -77,11 +77,14 @@ export const impersonateUrl = (idToLogInAs: number) =>
 export const badgePage = (badgeId: number) => `${BADGES_PAGE}/${badgeId}`;
 export const plusSuggestionPage = (tier?: string | number) =>
   `/plus/suggestions${tier ? `?tier=${tier}` : ""}`;
+
 export const calendarEventPage = (eventId: number) => `/calendar/${eventId}`;
 export const calendarEditPage = (eventId?: number) =>
   `/calendar/new${eventId ? `?eventId=${eventId}` : ""}`;
 export const calendarReportWinnersPage = (eventId: number) =>
   `/calendar/${eventId}/report-winners`;
+export const toToolsPage = (eventId: number) => `/to/${eventId}`;
+
 export const mapsPage = (eventId?: MapPoolMap["calendarEventId"]) =>
   `/maps${eventId ? `?eventId=${eventId}` : ""}`;
 export const readonlyMapsPage = (eventId: CalendarEvent["id"]) =>

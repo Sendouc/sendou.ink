@@ -127,9 +127,6 @@ const translationProgressPath = path.join(
 
 fs.writeFileSync(translationProgressPath, formattedMarkdown);
 
-// eslint-disable-next-line no-console
-console.log("translation-progress.md written");
-
 function validateNoExtraKeysInOther({
   english,
   other,

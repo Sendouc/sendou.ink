@@ -63,6 +63,20 @@ export class MapPool {
     );
   }
 
+  get stages() {
+    return Object.values(this.parsed).flat();
+  }
+
+  get stageModePairs() {
+    return Object.entries(this.parsed).flatMap(([mode, stages]) =>
+      stages.map((stageId) => ({ mode: mode as ModeShort, stageId }))
+    );
+  }
+
+  has({ stageId, mode }: { stageId: StageId; mode: ModeShort }) {
+    return this.parsed[mode].includes(stageId);
+  }
+
   hasMode(mode: ModeShort): boolean {
     return this.parsed[mode].length > 0;
   }

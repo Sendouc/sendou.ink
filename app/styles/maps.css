@@ -73,11 +73,16 @@
   background-color: var(--bg-mode-active);
 }
 
+.maps__mode-button.preselected {
+  border: 2px solid var(--theme-info);
+  background-color: var(--bg-mode-active);
+}
+
 .maps__stage-image {
   border-radius: var(--rounded);
 }
 
-.maps__mode:not(.selected) {
+.maps__mode:not(.selected, .preselected) {
   filter: var(--inactive-image-filter);
   opacity: 0.6;
 }

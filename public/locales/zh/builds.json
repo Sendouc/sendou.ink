@@ -8,8 +8,8 @@
   "forms.modes": "模式",
   "forms.weapons": "武器",
   "forms.gear.HEAD": "头部装备",
-  "forms.gear.CLOTHES": "上身装备",
-  "forms.gear.SHOES": "脚部装备",
+  "forms.gear.CLOTHES": "服装",
+  "forms.gear.SHOES": "鞋子",
 
   "deleteConfirm": "删除配装'{{title}}'？"
 }
