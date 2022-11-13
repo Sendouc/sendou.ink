@@ -105,4 +105,29 @@ GetAbilityChunksMapAsArray(
   }
 );
 
+GetAbilityChunksMapAsArray(
+  "Ability chunk calculation is correct for a real build (Splatling)",
+  () => {
+    const splatlingBuild = [
+      ["RSU", "QSJ", "SSU", "RSU"],
+      ["RSU", "ISM", "ISM", "RSU"],
+      ["OS", "SSU", "SSU", "RES"],
+    ] as unknown as BuildAbilitiesTupleWithUnknown;
+
+    const expectedOutput = [
+      ["RSU", 110],
+      ["SSU", 40],
+      ["ISM", 30],
+      ["BRU", 15],
+      ["IRU", 15],
+      ["SPU", 15],
+      ["QSJ", 10],
+      ["RES", 10],
+    ];
+
+    const abilityChunksArray = getAbilityChunksMapAsArray(splatlingBuild);
+    validateAbilityChunksArray(abilityChunksArray, expectedOutput);
+  }
+);
+
 GetAbilityChunksMapAsArray.run();
