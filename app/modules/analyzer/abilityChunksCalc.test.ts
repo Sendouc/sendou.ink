@@ -86,9 +86,9 @@ GetAbilityChunksMapAsArray("Ability chunk calculation is correct for a real buil
   const expectedOutput = [
     ["SSU", 85],
     ["IRU", 30],
-    ["ISM", 25],
-    ["QSJ", 25],
     ["QR", 30],
+    ["ISM", 25],
+    ["QSJ", 25],    
     ["IA", 15],
     ["ISS", 15],
     ["RSU", 15],
