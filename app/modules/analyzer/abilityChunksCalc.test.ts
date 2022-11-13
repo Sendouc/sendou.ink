@@ -32,51 +32,51 @@ function validateAbilityChunksArray(
 
 const GetAbilityChunksMapAsArray = suite("getAbilityChunksMapAsArray()");
 
-// GetAbilityChunksMapAsArray("Empty build results in an empty array", () => {
-//   const emptyBuild = [
-//     ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
-//     ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
-//     ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
-//   ] as unknown as BuildAbilitiesTupleWithUnknown;
+GetAbilityChunksMapAsArray("Empty build results in an empty array", () => {
+  const emptyBuild = [
+    ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+    ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+    ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+  ] as unknown as BuildAbilitiesTupleWithUnknown;
 
-//   const abilityChunksArray = getAbilityChunksMapAsArray(emptyBuild);
-//   assert.equal(abilityChunksArray, []);
-// });
+  const abilityChunksArray = getAbilityChunksMapAsArray(emptyBuild);
+  assert.equal(abilityChunksArray, []);
+});
 
-// GetAbilityChunksMapAsArray("Main Ability stackable ability is correct", () => {
-//   const build = [
-//     ["ISS", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
-//     ["ISM", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
-//     ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
-//   ] as unknown as BuildAbilitiesTupleWithUnknown;
+GetAbilityChunksMapAsArray("Main Ability stackable ability chunk calculation is correct", () => {
+  const build = [
+    ["ISS", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+    ["ISM", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+    ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+  ] as unknown as BuildAbilitiesTupleWithUnknown;
 
-//   const expectedOutput = [
-//     ["ISM", 45],
-//     ["ISS", 45],
-//   ];
+  const expectedOutput = [
+    ["ISM", 45],
+    ["ISS", 45],
+  ];
 
-//   const abilityChunksArray = getAbilityChunksMapAsArray(build);
-//   validateAbilityChunksArray(abilityChunksArray, expectedOutput);
-// });
+  const abilityChunksArray = getAbilityChunksMapAsArray(build);
+  validateAbilityChunksArray(abilityChunksArray, expectedOutput);
+});
 
-// GetAbilityChunksMapAsArray("Ninja Squid calculation is correct", () => {
-//   const build = [
-//     ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
-//     ["NS", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
-//     ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
-//   ] as unknown as BuildAbilitiesTupleWithUnknown;
+GetAbilityChunksMapAsArray("Ninja Squid ability chunk calculation is correct", () => {
+  const build = [
+    ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+    ["NS", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+    ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+  ] as unknown as BuildAbilitiesTupleWithUnknown;
 
-//   const expectedOutput = [
-//     ["RSU", 15],
-//     ["IRU", 15],
-//     ["SSU", 15],
-//   ];
+  const expectedOutput = [
+    ["RSU", 15],
+    ["IRU", 15],
+    ["SSU", 15],
+  ];
 
-//   const abilityChunksArray = getAbilityChunksMapAsArray(build);
-//   validateAbilityChunksArray(abilityChunksArray, expectedOutput);
-// });
+  const abilityChunksArray = getAbilityChunksMapAsArray(build);
+  validateAbilityChunksArray(abilityChunksArray, expectedOutput);
+});
 
-GetAbilityChunksMapAsArray("Slayer build calculation is correct", () => {
+GetAbilityChunksMapAsArray("Ability chunk calculation is correct for a real build. Each gear has 1, 2 or 3 ability chunks of same type", () => {
   const slayerBuild = [
     ["LDE", "SSU", "SSU", "SSU"],
     ["NS", "QR", "QR", "ISM"],
