@@ -129,6 +129,7 @@
 
 .tournament__team-member-name {
   overflow: hidden;
+  color: var(--text);
   text-overflow: ellipsis;
   white-space: nowrap;
 }

@@ -1,9 +1,11 @@
+import { Link } from "@remix-run/react";
 import clsx from "clsx";
 import { Avatar } from "~/components/Avatar";
 import { Button } from "~/components/Button";
 import { TrashIcon } from "~/components/icons/Trash";
 import type { FindTeamsByEventIdItem } from "~/db/models/tournaments/queries.server";
 import { useUser } from "~/modules/auth";
+import { userPage } from "~/utils/urls";
 
 export function TeamWithRoster({
   team,
@@ -36,9 +38,12 @@ export function TeamWithRoster({
               </Button>
             )}
             <Avatar user={member} size="xxs" />
-            <span className="tournament__team-member-name">
+            <Link
+              to={userPage(member)}
+              className="tournament__team-member-name"
+            >
               {member.discordName}
-            </span>
+            </Link>
           </li>
         ))}
       </ul>
