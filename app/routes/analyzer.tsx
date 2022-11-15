@@ -46,6 +46,7 @@ import {
   specialWeaponImageUrl,
   subWeaponImageUrl,
 } from "~/utils/urls";
+import { getAbilityChunksMapAsArray } from "~/modules/analyzer/abilityChunksCalc";
 
 export const CURRENT_PATCH = "1.2";
 
@@ -130,6 +131,11 @@ export default function BuildAnalyzerPage() {
     ),
   ].filter(Boolean);
 
+  // Handles edge case where a primary slot-only ability (e.g. Ninja Squid) is selected & the 'abilityPoints' count is still 0
+  const showAbilityChunksRequired: boolean = build.some(
+    (gear) => gear.filter((ability) => ability !== "UNKNOWN").length
+  );
+
   return (
     <Main>
       <div className="analyzer__container">
@@ -174,6 +180,9 @@ export default function BuildAnalyzerPage() {
             />
             {abilityPoints.size > 0 && (
               <AbilityPointsDetails abilityPoints={abilityPoints} />
+            )}
+            {showAbilityChunksRequired && (
+              <AbilityChunksRequired build={build} />
             )}
           </div>
           <div className="analyzer__patch">
@@ -723,13 +732,47 @@ function AbilityPointsDetails({
             );
           })
           .map((a) => (
-            <div key={a.name} className="stack items-center">
+            <div
+              key={`abilityPointsDetails_${a.name}`}
+              className="stack items-center"
+            >
               <Ability ability={a.name} size="TINY" />
               <div className="analyzer__ap-text">
                 {abilityPoints.get(a.name)?.ap}
               </div>
             </div>
           ))}
+      </div>
+    </details>
+  );
+}
+
+function AbilityChunksRequired({
+  build,
+}: {
+  build: BuildAbilitiesTupleWithUnknown;
+}) {
+  const { t } = useTranslation("analyzer");
+  const abilityChunksMapAsArray = getAbilityChunksMapAsArray(build);
+
+  return (
+    <details className="w-full">
+      <summary className="analyzer__ap-summary">{t("abilityChunks")}</summary>
+      <div className="stack sm horizontal flex-wrap mt-4">
+        {abilityChunksMapAsArray.map((a) => {
+          const mainAbilityName = a[0];
+          const numChunksRequired = a[1];
+
+          return (
+            <div
+              key={`abilityChunksRequired_${mainAbilityName}`}
+              className="stack items-center"
+            >
+              <Ability ability={mainAbilityName} size="TINY" />
+              <div className="analyzer__ap-text">{numChunksRequired}</div>
+            </div>
+          );
+        })}
       </div>
     </details>
   );
