@@ -31,6 +31,7 @@
   "footer.thanks": "Tak til vores patrons for støtten",
 
   "actions.save": "Gem",
+  "actions.saveChanges": "Gem ændringer",
   "actions.saving": "Gemmer...",
   "actions.submit": "Fremlæg",
   "actions.edit": "Rediger",
@@ -49,6 +50,7 @@
   "maps.halfSz": "50% DD",
   "maps.mapPool": "Banepulje",
   "maps.tournamentMaplist": "Lav turneringsbanepuljer på (maps.iplabs.ink)",
+  "maps.tieBreakerMapPool": "Tiebreak-banepulje",
   "maps.template": "Skabelon",
   "maps.template.none": "Ingen",
   "maps.template.event": "Begivenhed",
@@ -57,6 +59,12 @@
   "maps.template.preset.ANARCHY": "Anarchy-spiltilstande",
   "maps.template.preset.ALL": "Alle spiltilstande",
   "maps.template.preset.onlyMode": "Kun {{modeName}}",
+  "maps.validation.PICKING": "Vælg en bane per spiltilstand",
+  "maps.validation.NOT_ONE_MAP_PER_MODE": "Vælg kun en bane per spiltilstand",
+  "maps.validation.MAP_REPEATED": "Man kan ikke vælge den samme bane 2 gange",
+  "maps.validation.MODE_REPEATED": "Man kan ikke vælge den samme spiltilstand 2 gange",
+  "maps.validation.TOO_MUCH_STAGE_REPEAT": "Man kan ikke vælge den samme bane mere end {{maxStageRepeat}} gang(e)",
+  "maps.validation.VALID": "Banepuljen er gyldig",
 
   "results": "Resultater",
   "results.placeSuffix": ".",
