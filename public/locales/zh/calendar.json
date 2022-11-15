@@ -38,6 +38,9 @@
   "forms.errors.duplicatePlayer": "同一队伍内选手不得重复。",
   "forms.errors.emptyTeam": "每队至少要有一名选手。",
 
+  "forms.toTools.header": "启用比赛主办工具",
+  "forms.toTools.explanation": "启用比赛主办工具后，您的比赛便可以使用参加者赛前选择的地图并设定种子了。",
+
   "week.this": "本周",
   "week.next": "下周",
   "week.last": "上周",
