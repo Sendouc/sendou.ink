@@ -131,6 +131,11 @@ export default function BuildAnalyzerPage() {
     ),
   ].filter(Boolean);
 
+  // Handles edge case where a primary slot-only ability (e.g. Ninja Squid) is selected & the 'abilityPoints' count is still 0
+  const showAbilityChunksRequired: boolean = build.some(
+    (gear) => gear.filter((ability) => ability !== "UNKNOWN").length
+  );
+
   return (
     <Main>
       <div className="analyzer__container">
@@ -176,7 +181,9 @@ export default function BuildAnalyzerPage() {
             {abilityPoints.size > 0 && (
               <AbilityPointsDetails abilityPoints={abilityPoints} />
             )}
-            <AbilityChunksRequired build={build} />
+            {showAbilityChunksRequired && (
+              <AbilityChunksRequired build={build} />
+            )}
           </div>
           <div className="analyzer__patch">
             {t("analyzer:patch")} {CURRENT_PATCH}
