@@ -31,6 +31,7 @@
   "footer.thanks": "感谢Patreon上的支持者",
 
   "actions.save": "保存",
+  "actions.saveChanges": "保存更改内容",
   "actions.saving": "保存中...",
   "actions.submit": "确认",
   "actions.edit": "编辑",
@@ -49,6 +50,7 @@
   "maps.halfSz": "50%为真格区域",
   "maps.mapPool": "地图池",
   "maps.tournamentMaplist": "制作比赛地图列表（maps.iplabs.ink）",
+  "maps.tieBreakerMapPool": "决胜局地图池",
   "maps.template": "模版",
   "maps.template.none": "无",
   "maps.template.event": "活动",
@@ -57,6 +59,12 @@
   "maps.template.preset.ANARCHY": "真格模式",
   "maps.template.preset.ALL": "全部模式",
   "maps.template.preset.onlyMode": "仅限 {{modeName}}",
+  "maps.validation.PICKING": "给每个模式选择一张地图",
+  "maps.validation.NOT_ONE_MAP_PER_MODE": "每个模式只能选择一张地图",
+  "maps.validation.MAP_REPEATED": "每张地图只能选择一次",
+  "maps.validation.MODE_REPEATED": "每个模式只能选择一次",
+  "maps.validation.TOO_MUCH_STAGE_REPEAT": "每张地图只能选择 {{maxStageRepeat}} 次",
+  "maps.validation.VALID": "地图池已完成！",
 
   "results": "成绩",
 
