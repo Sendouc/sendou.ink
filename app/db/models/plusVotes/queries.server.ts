@@ -61,14 +61,14 @@ export interface PlusVotingResultByMonthYear {
     passed: PlusVotingResultUser[];
     failed: PlusVotingResultUser[];
   }[];
-  ownScores?: Pick<
+  scores: (Pick<
     PlusVotingResult,
     "score" | "tier" | "wasSuggested" | "passedVoting"
-  >[];
+  > & { userId: User["id"] })[];
 }
 
 export function resultsByMontYear(
-  args: MonthYear & { userId?: User["id"] }
+  args: MonthYear
 ): PlusVotingResultByMonthYear {
   const results = resultsByMonthYearStm.all(
     args
@@ -76,7 +76,7 @@ export function resultsByMontYear(
 
   return {
     results: groupPlusVotingResults(results),
-    ownScores: ownScoresFromPlusVotingResults(results, args.userId),
+    scores: scoresFromPlusVotingResults(results),
   };
 }
 
@@ -114,26 +114,18 @@ function groupPlusVotingResults(
     .sort((a, b) => a.tier - b.tier);
 }
 
-function ownScoresFromPlusVotingResults(
-  rows: PlusVotingResultsByMonthYearDatabaseResult,
-  userId?: User["id"]
+function scoresFromPlusVotingResults(
+  rows: PlusVotingResultsByMonthYearDatabaseResult
 ) {
-  if (!userId) return;
-
-  const result: PlusVotingResultByMonthYear["ownScores"] = [];
-
-  for (const row of rows) {
-    if (row.id === userId) {
-      result.push({
-        tier: row.tier,
-        score: row.score,
-        wasSuggested: row.wasSuggested,
-        passedVoting: row.passedVoting,
-      });
-    }
-  }
-
-  return result.sort((a, b) => a.tier - b.tier);
+  return rows
+    .map((row) => ({
+      userId: row.id,
+      tier: row.tier,
+      score: row.score,
+      wasSuggested: row.wasSuggested,
+      passedVoting: row.passedVoting,
+    }))
+    .sort((a, b) => a.tier - b.tier);
 }
 
 const plusServerMembersStm = sql.prepare(plusServerMembersSql);

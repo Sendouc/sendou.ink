@@ -8,15 +8,15 @@ import { Link, useLoaderData } from "@remix-run/react";
 import { lastCompletedVoting } from "~/modules/plus-server";
 import { db } from "~/db";
 import type { PlusVotingResultByMonthYear } from "~/db/models/plusVotes/queries.server";
-import type { PlusVotingResult } from "~/db/types";
+import type { PlusVotingResult, UserWithPlusTier } from "~/db/types";
 import { roundToNDecimalPlaces } from "~/utils/number";
 import { makeTitle } from "~/utils/strings";
-import type { Unpacked } from "~/utils/types";
 import styles from "~/styles/plus-history.css";
 import { discordFullName } from "~/utils/strings";
 import { PLUS_SERVER_DISCORD_URL, userPage } from "~/utils/urls";
 import clsx from "clsx";
 import { getUser } from "~/modules/auth";
+import { isAtLeastFiveDollarTierPatreon } from "~/utils/users";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -37,21 +37,75 @@ interface PlusVotingResultsLoaderData {
     score?: PlusVotingResult["score"];
     tier: PlusVotingResult["tier"];
     passedVoting: PlusVotingResult["passedVoting"];
+    betterThan?: number;
   }[];
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
   const user = await getUser(request);
-  const { results, ownScores } = db.plusVotes.resultsByMontYear({
-    ...lastCompletedVoting(new Date()),
-    userId: user?.id,
-  });
+  const { results, scores } = db.plusVotes.resultsByMontYear(
+    lastCompletedVoting(new Date())
+  );
 
   return json<PlusVotingResultsLoaderData>({
     results,
-    ownScores: ownScores?.map(scoreForDisplaying),
+    ownScores: ownScores({ scores, user }),
   });
 };
+
+function databaseAvgToPercentage(score: number) {
+  const scoreNormalized = score + 1;
+
+  return roundToNDecimalPlaces((scoreNormalized / 2) * 100);
+}
+
+function ownScores({
+  scores,
+  user,
+}: {
+  scores: PlusVotingResultByMonthYear["scores"];
+  user?: UserWithPlusTier;
+}) {
+  return scores
+    .filter((score) => {
+      return score.userId === user?.id;
+    })
+    .map((score) => {
+      const showScore =
+        (score.wasSuggested && !score.passedVoting) ||
+        isAtLeastFiveDollarTierPatreon(user);
+
+      const sameTierButNotOwn = (
+        filteredScore: Pick<PlusVotingResult, "tier"> & { userId: number }
+      ) =>
+        filteredScore.tier === score.tier && filteredScore.userId !== user?.id;
+
+      const result: {
+        tier: number;
+        score?: number;
+        passedVoting: number;
+        betterThan?: number;
+      } = {
+        tier: score.tier,
+        score: databaseAvgToPercentage(score.score),
+        passedVoting: score.passedVoting,
+        betterThan: roundToNDecimalPlaces(
+          (scores
+            .filter(sameTierButNotOwn)
+            .filter((otherScore) => otherScore.score <= score.score).length /
+            scores.filter(sameTierButNotOwn).length) *
+            100
+        ),
+      };
+
+      if (!showScore) result.score = undefined;
+      if (!isAtLeastFiveDollarTierPatreon(user) || !result.passedVoting) {
+        result.betterThan = undefined;
+      }
+
+      return result;
+    });
+}
 
 export default function PlusVotingResultsPage() {
   const data = useLoaderData<PlusVotingResultsLoaderData>();
@@ -76,7 +130,11 @@ export default function PlusVotingResultsPage() {
                 )}{" "}
                 the +{result.tier} voting
                 {typeof result.score === "number"
-                  ? `, your score was ${result.score}% (at least 50% required to pass)`
+                  ? `, your score was ${result.score}% ${
+                      result.betterThan
+                        ? `(better than ${result.betterThan}% others)`
+                        : "(at least 50% required to pass)"
+                    }`
                   : ""}
               </li>
             ))}
@@ -142,22 +200,4 @@ function Results({
       </div>
     </div>
   );
-}
-
-function databaseAvgToPercentage(score: number) {
-  const scoreNormalized = score + 1;
-
-  return roundToNDecimalPlaces((scoreNormalized / 2) * 100);
-}
-
-function scoreForDisplaying(
-  score: Unpacked<NonNullable<PlusVotingResultByMonthYear["ownScores"]>>
-) {
-  const showScore = score.wasSuggested && !score.passedVoting;
-
-  return {
-    tier: score.tier,
-    score: showScore ? databaseAvgToPercentage(score.score) : undefined,
-    passedVoting: score.passedVoting,
-  };
 }

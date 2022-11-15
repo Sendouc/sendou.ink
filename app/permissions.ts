@@ -15,7 +15,7 @@ import { databaseTimestampToDate } from "./utils/dates";
 // TODO: 1) move "root checkers" to one file and utils to one file 2) make utils const for more terseness
 
 type IsAdminUser = Pick<User, "discordId">;
-function isAdmin(user?: IsAdminUser) {
+export function isAdmin(user?: IsAdminUser) {
   return user?.discordId === ADMIN_DISCORD_ID;
 }
 
