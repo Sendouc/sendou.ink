@@ -31,6 +31,7 @@
   "footer.thanks": "寄付のご協力ありがとうございます",
 
   "actions.save": "保存",
+  "actions.saveChanges": "変更を保存",
   "actions.saving": "保存中...",
   "actions.submit": "送信",
   "actions.edit": "編集",
@@ -49,6 +50,7 @@
   "maps.halfSz": "ガチエリア (2ヶ所)",
   "maps.mapPool": "ステージプール",
   "maps.tournamentMaplist": "トーナメントステージのリストを作る (maps.iplabs.ink)",
+  "maps.tieBreakerMapPool": "タイブレークマップリスト",
   "maps.template": "テンプレート",
   "maps.template.none": "なし",
   "maps.template.event": "イベント",
@@ -57,6 +59,12 @@
   "maps.template.preset.ANARCHY": "バンカラマッチルール",
   "maps.template.preset.ALL": "すべてのルール",
   "maps.template.preset.onlyMode": "{{modeName}} のみ",
+  "maps.validation.PICKING": "ルールごとにステージを選択する",
+  "maps.validation.NOT_ONE_MAP_PER_MODE": "1ルール1ステージで選択する",
+  "maps.validation.MAP_REPEATED": "同じステージを1回以上選択できません",
+  "maps.validation.MODE_REPEATED": "同じルールを1回以上選択できません",
+  "maps.validation.TOO_MUCH_STAGE_REPEAT": "同じステージを {{maxStageRepeat}} 回以上選択できません",
+  "maps.validation.VALID": "登録できるマップリストです!",
 
   "results": "結果",
 
