@@ -5,6 +5,7 @@ import type {
   TournamentTeam,
   TournamentTeamMember,
   User,
+  UserWithPlusTier,
 } from "~/db/types";
 import { databaseCreatedAt } from "~/utils/dates";
 import type { MapPool } from "~/modules/map-pool-serializer";
@@ -101,7 +102,10 @@ export interface FindTeamsByEventIdItem {
   name: TournamentTeam["name"];
   members: Array<
     Pick<TournamentTeamMember, "userId" | "isOwner"> &
-      Pick<User, "discordAvatar" | "discordId" | "discordName">
+      Pick<
+        UserWithPlusTier,
+        "discordAvatar" | "discordId" | "discordName" | "plusTier"
+      >
   >;
   mapPool: Array<Pick<MapPoolMap, "mode" | "stageId">>;
 }

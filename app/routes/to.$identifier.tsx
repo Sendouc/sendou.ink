@@ -19,6 +19,7 @@ import { findOwnedTeam } from "~/utils/tournaments";
 import styles from "~/styles/tournament.css";
 import { makeTitle } from "~/utils/strings";
 import { useTranslation } from "~/hooks/useTranslation";
+import type { Unpacked } from "~/utils/types";
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader>;
@@ -38,6 +39,7 @@ export const handle: SendouRouteHandle = {
   i18n: ["tournament"],
 };
 
+export type TournamentToolsTeam = Unpacked<TournamentToolsLoaderData["teams"]>;
 export type TournamentToolsLoaderData = SerializeFrom<typeof loader>;
 
 export const loader = async ({ params, request }: LoaderArgs) => {

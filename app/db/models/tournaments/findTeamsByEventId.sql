@@ -13,13 +13,16 @@ with "TeamWithMembers" as (
         'discordId',
         "User"."discordId",
         'discordAvatar',
-        "User"."discordAvatar"
+        "User"."discordAvatar",
+        'plusTier',
+        "PlusTier"."tier"
       )
     ) as "members"
   from
     "TournamentTeam"
     left join "TournamentTeamMember" on "TournamentTeamMember"."tournamentTeamId" = "TournamentTeam"."id"
     left join "User" on "User"."id" = "TournamentTeamMember"."userId"
+    left join "PlusTier" on "User"."id" = "PlusTier"."userId"
   where
     "TournamentTeam"."calendarEventId" = @calendarEventId
   group by
