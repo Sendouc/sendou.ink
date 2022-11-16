@@ -58,6 +58,8 @@ export const links: LinksFunction = () => {
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
   title: "sendou.ink",
+  description:
+    "Competitive Splatoon Hub featuring gear planner, event calendar, builds by top players, and more!",
   viewport: "width=device-width,initial-scale=1",
   "theme-color": "#8263de",
   "og:image": COMMON_PREVIEW_IMAGE,
