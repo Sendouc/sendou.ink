@@ -151,7 +151,7 @@
   right: 0;
   width: max-content;
   height: max-content;
-  margin-top: 10rem;
+  margin-top: 5rem;
   background-color: var(--bg-lighter);
   background-image: url("/svg/background-pattern.svg");
   border-end-start-radius: var(--rounded);
