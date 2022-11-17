@@ -7,6 +7,13 @@
   margin-inline-start: auto;
 }
 
+.calendar__week__relative {
+  max-width: 3rem;
+  margin: 0 auto;
+  text-align: center;
+  white-space: pre-line;
+}
+
 .calendar__weeks {
   display: flex;
   align-items: center;
@@ -103,13 +110,6 @@
 .calendar__week:nth-child(7) {
   min-width: calc(var(--full-size-week-width) - 1.5rem);
   max-width: calc(var(--full-size-week-width) - 1.5rem);
-}
-
-.calendar__week__relative {
-  max-width: 3rem;
-  margin: 0 auto;
-  text-align: center;
-  white-space: pre-line;
 }
 
 .calendar__week__dash {
