@@ -61,6 +61,7 @@ export const colorCommand: BotCommand = {
       const role = await interaction.guild!.roles.create({
         color: hexCode,
         name: `${interaction.user.username}!`,
+        position: 10,
       });
 
       await memberRoles.add(role);
