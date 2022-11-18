@@ -122,9 +122,11 @@ export default function MapListPage() {
       ) : (
         <MapPoolSelector
           mapPool={mapPool}
+          title={t("common:maps.mapPool")}
           handleMapPoolChange={handleMapPoolChange}
           recentEvents={data.recentEventsWithMapPools}
           initialEvent={data.calendarEvent}
+          allowBulkEdit
         />
       )}
       <a

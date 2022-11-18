@@ -300,7 +300,6 @@ function MapPoolSection() {
             mapPool={counterpickMapPool}
             handleMapPoolChange={setCounterpickMapPool}
             className="bg-transparent-important"
-            noTitle
             modesToInclude={["SZ", "TC", "RM", "CB"]}
             preselectedMapPool={new MapPool(data.tieBreakerMapPool)}
             info={

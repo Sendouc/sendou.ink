@@ -651,9 +651,11 @@ function MapPoolSection() {
       <MapPoolSelector
         className="w-full"
         mapPool={mapPool}
+        title={t("common:maps.mapPool")}
         handleRemoval={() => setIncludeMapPool(false)}
         handleMapPoolChange={setMapPool}
         recentEvents={recentEventsWithMapPools}
+        allowBulkEdit
       />
     </>
   ) : (
