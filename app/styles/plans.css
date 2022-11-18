@@ -1,0 +1,7 @@
+.layout__header {
+  display: none;
+}
+
+.tl-canvas {
+  background-color: var(--bg);
+}
