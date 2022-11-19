@@ -81,6 +81,8 @@ export function LinkButton({
         className={clsx("button", variant, { tiny }, className)}
         href={to as string}
         data-cy={testId}
+        target="_blank"
+        rel="noreferrer"
       >
         {children}
       </a>
