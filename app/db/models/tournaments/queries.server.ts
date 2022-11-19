@@ -104,7 +104,11 @@ export interface FindTeamsByEventIdItem {
     Pick<TournamentTeamMember, "userId" | "isOwner"> &
       Pick<
         UserWithPlusTier,
-        "discordAvatar" | "discordId" | "discordName" | "plusTier"
+        | "discordAvatar"
+        | "discordId"
+        | "discordName"
+        | "plusTier"
+        | "discordDiscriminator"
       >
   >;
   mapPool: Array<Pick<MapPoolMap, "mode" | "stageId">>;

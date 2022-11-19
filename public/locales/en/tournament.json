@@ -39,5 +39,7 @@
   "teams.mapsPickedStatus": "Maps picked status",
 
   "admin.eventStarted": "Event started",
-  "admin.eventStarted.explanation": "After start teams can generate map lists but won't be able to edit their map pools or rosters."
+  "admin.eventStarted.explanation": "After start teams can generate map lists but won't be able to edit their map pools or rosters.",
+  "admin.download": "Download participants",
+  "admin.download.discord": "Discord list"
 }

@@ -1,7 +1,9 @@
 import { type ActionFunction } from "@remix-run/node";
 import { useOutletContext, useSubmit } from "@remix-run/react";
 import * as React from "react";
+import invariant from "tiny-invariant";
 import { z } from "zod";
+import { Button } from "~/components/Button";
 import { FormMessage } from "~/components/FormMessage";
 import { Main } from "~/components/Main";
 import { Toggle } from "~/components/Toggle";
@@ -14,6 +16,7 @@ import {
   parseRequestFormData,
   validate,
 } from "~/utils/remix";
+import { discordFullName } from "~/utils/strings";
 import { checkboxValueToBoolean } from "~/utils/zod";
 import type { TournamentToolsLoaderData } from "../to.$identifier";
 
@@ -59,7 +62,7 @@ export default function TournamentToolsAdminPage() {
   }
 
   return (
-    <Main halfWidth>
+    <Main halfWidth className="stack md">
       <div>
         <label>{t("tournament:admin.eventStarted")}</label>
         <Toggle
@@ -71,6 +74,52 @@ export default function TournamentToolsAdminPage() {
           {t("tournament:admin.eventStarted.explanation")}
         </FormMessage>
       </div>
+      <div>
+        <label>{t("tournament:admin.download")}</label>
+        <div className="stack horizontal sm">
+          <Button
+            tiny
+            onClick={() =>
+              handleDownload({
+                filename: "discord.txt",
+                content: discordListContent(data),
+              })
+            }
+          >
+            {t("tournament:admin.download.discord")}
+          </Button>
+        </div>
+      </div>
     </Main>
   );
+}
+
+function handleDownload({
+  content,
+  filename,
+}: {
+  content: string;
+  filename: string;
+}) {
+  const element = document.createElement("a");
+  const file = new Blob([content], {
+    type: "text/plain",
+  });
+  element.href = URL.createObjectURL(file);
+  element.download = filename;
+  document.body.appendChild(element);
+  element.click();
+}
+
+function discordListContent(data: TournamentToolsLoaderData) {
+  return data.teams
+    .slice()
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map((team) => {
+      const owner = team.members.find((user) => user.isOwner);
+      invariant(owner);
+
+      return `${team.name} - ${discordFullName(owner)} - <@${owner.discordId}>`;
+    })
+    .join("\n");
 }
