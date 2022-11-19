@@ -238,6 +238,7 @@ function TeamNameSection() {
           </div>
         </Summary>
         <Form method="post" className="mt-3 px-4 pb-4">
+          <input type="hidden" name="_action" value="TEAM_NAME" />
           <input
             id="name"
             name="name"
@@ -245,13 +246,7 @@ function TeamNameSection() {
             defaultValue={data.ownTeam?.name}
             required
           />
-          <Button
-            tiny
-            className="mt-4"
-            name="_action"
-            value="TEAM_NAME"
-            type="submit"
-          >
+          <Button tiny className="mt-4" type="submit">
             {t("common:actions.submit")}
           </Button>
         </Form>
@@ -272,6 +267,7 @@ function MapPoolSection() {
   return (
     <section>
       <Form method="post" className="tournament__action-section stack md">
+        <input type="hidden" name="_action" value="POOL" />
         <div>
           <span className="tournament__action-section-title">
             {t("tournament:pre.steps.mapPool")}
@@ -311,13 +307,7 @@ function MapPoolSection() {
               </div>
             }
             footer={
-              <Button
-                type="submit"
-                className="mt-4 w-max mx-auto"
-                name="_action"
-                value="POOL"
-                tiny
-              >
+              <Button type="submit" className="mt-4 w-max mx-auto" tiny>
                 {t("common:actions.saveChanges")}
               </Button>
             }
@@ -449,6 +439,7 @@ function RosterSection() {
         <div className="stack lg items-center px-2 py-4">
           {hasSpaceInTeam ? (
             <Form method="post" className="stack horizontal sm items-center">
+              <input type="hidden" name="_action" value="ADD_MEMBER" />
               <UserCombobox
                 inputName="user"
                 required
@@ -457,7 +448,7 @@ function RosterSection() {
                 }
                 key={data.ownTeam.members.length}
               />
-              <Button tiny type="submit" name="_action" value="ADD_MEMBER">
+              <Button tiny type="submit">
                 {t("common:actions.add")}
               </Button>
             </Form>
