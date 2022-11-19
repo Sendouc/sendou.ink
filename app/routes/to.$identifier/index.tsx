@@ -517,10 +517,14 @@ function MaplistGenerator() {
     revive: reviveBracketType,
   });
 
-  const teamOne = data.teams.find((t) => t.id === teamOneId);
-  const teamTwo = data.teams.find((t) => t.id === teamTwoId);
-  invariant(teamOne);
-  invariant(teamTwo);
+  const teamOne = data.teams.find((t) => t.id === teamOneId) ?? {
+    id: -1,
+    mapPool: [],
+  };
+  const teamTwo = data.teams.find((t) => t.id === teamTwoId) ?? {
+    id: -1,
+    mapPool: [],
+  };
 
   return (
     <div className="stack md">
@@ -643,7 +647,7 @@ function TeamsSelect({
   setTeam,
 }: {
   number: number;
-  team: TeamInState;
+  team: { id: number };
   otherTeam: TeamInState;
   setTeam: (newTeamId: number) => void;
 }) {
