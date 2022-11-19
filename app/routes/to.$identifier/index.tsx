@@ -15,7 +15,7 @@ import { MapPoolSelector } from "~/components/MapPoolSelector";
 import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
 import { TOURNAMENT } from "~/constants";
 import { db } from "~/db";
-import { requireUser } from "~/modules/auth";
+import { requireUser, useUser } from "~/modules/auth";
 import type { StageId } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { MapPool } from "~/modules/map-pool-serializer";
@@ -44,6 +44,9 @@ import { UserCombobox } from "~/components/Combobox";
 import { TeamWithRoster } from "./components/TeamWithRoster";
 import { actualNumber } from "~/utils/zod";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
+import { canAdminCalendarTOTools } from "~/permissions";
+import { Toggle } from "~/components/Toggle";
+import { Label } from "~/components/Label";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: mapsStyles }];
@@ -151,11 +154,23 @@ export const action: ActionFunction = async ({ request, params }) => {
 };
 
 export default function TournamentToolsPage() {
+  const { t } = useTranslation(["tournament"]);
+  const user = useUser();
   const data = useOutletContext<TournamentToolsLoaderData>();
+  const [showGenerator, setShowGenerator] = React.useState(
+    !data.event.isBeforeStart
+  );
 
   return (
-    <Main>
-      {data.event.isBeforeStart ? <PrestartControls /> : <MaplistGenerator />}
+    <Main className="stack lg">
+      {canAdminCalendarTOTools({ user, event: data.event }) &&
+      data.event.isBeforeStart ? (
+        <div className="stack horizontal md items-center">
+          <Toggle checked={showGenerator} setChecked={setShowGenerator} />
+          <Label>{t("tournament:preview")}</Label>
+        </div>
+      ) : null}
+      <div>{showGenerator ? <MaplistGenerator /> : <PrestartControls />}</div>
     </Main>
   );
 }
