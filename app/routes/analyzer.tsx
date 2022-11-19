@@ -67,9 +67,7 @@ export const handle: SendouRouteHandle = {
 };
 
 // Resolves this Github issue: https://github.com/Sendouc/sendou.ink/issues/1053
-export const unstable_shouldReload: ShouldReloadFunction = ({ url }) => {
-  return Boolean(url) && !url.searchParams.get("weapon");
-};
+export const unstable_shouldReload: ShouldReloadFunction = () => false;
 
 export default function BuildAnalyzerPage() {
   const { t } = useTranslation(["analyzer", "common", "weapons"]);
