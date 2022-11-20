@@ -5,3 +5,20 @@
 .tl-canvas {
   background-color: var(--bg);
 }
+
+.plans__top-section {
+  position: fixed;
+  z-index: 10;
+  top: 5%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.plans__weapons-section {
+  position: fixed;
+  z-index: 10;
+  top: 15%;
+  display: flex;
+  width: 125px;
+  flex-wrap: wrap;
+}
