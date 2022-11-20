@@ -31,10 +31,11 @@ export type MapPoolSelectorProps = {
   recentEvents?: SerializedMapPoolEvent[];
   initialEvent?: Pick<CalendarEvent, "id" | "name">;
   title?: string;
-  noTitle?: boolean;
   modesToInclude?: ModeShort[];
   info?: React.ReactNode;
   footer?: React.ReactNode;
+  /** Enables clear button, template selection, and toggling a whole stage */
+  allowBulkEdit?: boolean;
 };
 
 export function MapPoolSelector({
@@ -46,10 +47,10 @@ export function MapPoolSelector({
   recentEvents,
   initialEvent,
   title,
-  noTitle = false,
   modesToInclude,
   info,
   footer,
+  allowBulkEdit = false,
 }: MapPoolSelectorProps) {
   const { t } = useTranslation();
 
@@ -111,29 +112,29 @@ export function MapPoolSelector({
     assertType<never, typeof template>();
   };
 
-  const includeFancyControls = Boolean(recentEvents);
-
   return (
     <fieldset className={className}>
-      {!noTitle && <legend>{title ?? t("maps.mapPool")}</legend>}
-      {includeFancyControls && (
+      {Boolean(title) && <legend>{title}</legend>}
+      {Boolean(handleRemoval || allowBulkEdit) && (
         <div className="stack horizontal sm justify-end">
           {handleRemoval && (
             <Button variant="minimal" onClick={handleRemoval}>
               {t("actions.remove")}
             </Button>
           )}
-          <Button
-            variant="minimal-destructive"
-            disabled={mapPool.isEmpty()}
-            onClick={handleClear}
-          >
-            {t("actions.clear")}
-          </Button>
+          {allowBulkEdit && (
+            <Button
+              variant="minimal-destructive"
+              disabled={mapPool.isEmpty()}
+              onClick={handleClear}
+            >
+              {t("actions.clear")}
+            </Button>
+          )}
         </div>
       )}
       <div className="stack md">
-        {includeFancyControls && (
+        {allowBulkEdit && (
           <div className="maps__template-selection">
             <MapPoolTemplateSelect
               value={template}
@@ -152,7 +153,7 @@ export function MapPoolSelector({
         <MapPoolStages
           mapPool={mapPool}
           handleMapPoolChange={handleStageModesChange}
-          includeFancyControls={includeFancyControls}
+          allowBulkEdit={allowBulkEdit}
           modesToInclude={modesToInclude}
           preselectedMapPool={preselectedMapPool}
         />
@@ -165,7 +166,7 @@ export function MapPoolSelector({
 export type MapPoolStagesProps = {
   mapPool: MapPool;
   handleMapPoolChange?: (newMapPool: MapPool) => void;
-  includeFancyControls?: boolean;
+  allowBulkEdit?: boolean;
   modesToInclude?: ModeShort[];
   preselectedMapPool?: MapPool;
 };
@@ -173,7 +174,7 @@ export type MapPoolStagesProps = {
 export function MapPoolStages({
   mapPool,
   handleMapPoolChange,
-  includeFancyControls = true,
+  allowBulkEdit = false,
   modesToInclude,
   preselectedMapPool,
 }: MapPoolStagesProps) {
@@ -313,7 +314,7 @@ export function MapPoolStages({
                   );
                 })}
               {!isPresentational &&
-                includeFancyControls &&
+                allowBulkEdit &&
                 (mapPool.hasStage(stageId) ? (
                   <Button
                     key="clear"

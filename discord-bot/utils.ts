@@ -25,6 +25,18 @@ export async function usersWithAccess(): Promise<PlusListLoaderData> {
   return response.json();
 }
 
+export async function patronsFiveDollarsAndOver(): Promise<PlusListLoaderData> {
+  const response = await sendouInkFetch("/patrons");
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed to fetch users. Response status was ${response.status}`
+    );
+  }
+
+  return (await response.json()).filter((user) => user.patronTier >= 2);
+}
+
 const memberRoles = [
   "",
   ids.roles.plusOne,

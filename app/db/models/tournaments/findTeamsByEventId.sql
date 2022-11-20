@@ -10,6 +10,8 @@ with "TeamWithMembers" as (
         "TournamentTeamMember"."isOwner",
         'discordName',
         "User"."discordName",
+        'discordDiscriminator',
+        "User"."discordDiscriminator",
         'discordId',
         "User"."discordId",
         'discordAvatar',

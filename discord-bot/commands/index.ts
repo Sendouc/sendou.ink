@@ -4,7 +4,8 @@ import { accessCommand } from "./access";
 import { plusCommand } from "./plus";
 import { updateAllCommand } from "./updateall";
 import { pingRolesCommand } from "./pings";
-import type { BotCommand } from "discord-bot/types";
+import { colorCommand } from "./color";
+import type { BotCommand } from "../types";
 
 export const commands = [
   questionCommand,
@@ -13,6 +14,7 @@ export const commands = [
   plusCommand,
   updateAllCommand,
   pingRolesCommand,
+  colorCommand,
 ];
 
 export const commandsMap = Object.fromEntries(commands.map((c) => [c.name, c]));

@@ -6,6 +6,7 @@
   "pre.footerNote": "Note: you can change your map pool and roster as many times as you want before the tournament starts.",
   "pre.deleteTeam": "Delete team",
 
+  "preview": "Preview maplist generator (admin only)",
   "pre.steps.register": "1. Register on",
   "pre.steps.register.summary": "Enter team name you register with",
   "pre.steps.mapPool": "2. Map pool",
@@ -39,5 +40,7 @@
   "teams.mapsPickedStatus": "Maps picked status",
 
   "admin.eventStarted": "Event started",
-  "admin.eventStarted.explanation": "After start teams can generate map lists but won't be able to edit their map pools or rosters."
+  "admin.eventStarted.explanation": "After start teams can generate map lists but won't be able to edit their map pools or rosters.",
+  "admin.download": "Download participants",
+  "admin.download.discord": "Discord list"
 }

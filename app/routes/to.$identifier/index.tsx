@@ -15,7 +15,7 @@ import { MapPoolSelector } from "~/components/MapPoolSelector";
 import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
 import { TOURNAMENT } from "~/constants";
 import { db } from "~/db";
-import { requireUser } from "~/modules/auth";
+import { requireUser, useUser } from "~/modules/auth";
 import type { StageId } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { MapPool } from "~/modules/map-pool-serializer";
@@ -44,6 +44,9 @@ import { UserCombobox } from "~/components/Combobox";
 import { TeamWithRoster } from "./components/TeamWithRoster";
 import { actualNumber } from "~/utils/zod";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
+import { canAdminCalendarTOTools } from "~/permissions";
+import { Toggle } from "~/components/Toggle";
+import { Label } from "~/components/Label";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: mapsStyles }];
@@ -151,11 +154,23 @@ export const action: ActionFunction = async ({ request, params }) => {
 };
 
 export default function TournamentToolsPage() {
+  const { t } = useTranslation(["tournament"]);
+  const user = useUser();
   const data = useOutletContext<TournamentToolsLoaderData>();
+  const [showGenerator, setShowGenerator] = React.useState(
+    !data.event.isBeforeStart
+  );
 
   return (
-    <Main>
-      {data.event.isBeforeStart ? <PrestartControls /> : <MaplistGenerator />}
+    <Main className="stack lg">
+      {canAdminCalendarTOTools({ user, event: data.event }) &&
+      data.event.isBeforeStart ? (
+        <div className="stack horizontal md items-center">
+          <Toggle checked={showGenerator} setChecked={setShowGenerator} />
+          <Label>{t("tournament:preview")}</Label>
+        </div>
+      ) : null}
+      <div>{showGenerator ? <MaplistGenerator /> : <PrestartControls />}</div>
     </Main>
   );
 }
@@ -223,6 +238,7 @@ function TeamNameSection() {
           </div>
         </Summary>
         <Form method="post" className="mt-3 px-4 pb-4">
+          <input type="hidden" name="_action" value="TEAM_NAME" />
           <input
             id="name"
             name="name"
@@ -230,13 +246,7 @@ function TeamNameSection() {
             defaultValue={data.ownTeam?.name}
             required
           />
-          <Button
-            tiny
-            className="mt-4"
-            name="_action"
-            value="TEAM_NAME"
-            type="submit"
-          >
+          <Button tiny className="mt-4" type="submit">
             {t("common:actions.submit")}
           </Button>
         </Form>
@@ -257,6 +267,7 @@ function MapPoolSection() {
   return (
     <section>
       <Form method="post" className="tournament__action-section stack md">
+        <input type="hidden" name="_action" value="POOL" />
         <div>
           <span className="tournament__action-section-title">
             {t("tournament:pre.steps.mapPool")}
@@ -285,7 +296,6 @@ function MapPoolSection() {
             mapPool={counterpickMapPool}
             handleMapPoolChange={setCounterpickMapPool}
             className="bg-transparent-important"
-            noTitle
             modesToInclude={["SZ", "TC", "RM", "CB"]}
             preselectedMapPool={new MapPool(data.tieBreakerMapPool)}
             info={
@@ -297,13 +307,7 @@ function MapPoolSection() {
               </div>
             }
             footer={
-              <Button
-                type="submit"
-                className="mt-4 w-max mx-auto"
-                name="_action"
-                value="POOL"
-                tiny
-              >
+              <Button type="submit" className="mt-4 w-max mx-auto" tiny>
                 {t("common:actions.saveChanges")}
               </Button>
             }
@@ -435,6 +439,7 @@ function RosterSection() {
         <div className="stack lg items-center px-2 py-4">
           {hasSpaceInTeam ? (
             <Form method="post" className="stack horizontal sm items-center">
+              <input type="hidden" name="_action" value="ADD_MEMBER" />
               <UserCombobox
                 inputName="user"
                 required
@@ -443,7 +448,7 @@ function RosterSection() {
                 }
                 key={data.ownTeam.members.length}
               />
-              <Button tiny type="submit" name="_action" value="ADD_MEMBER">
+              <Button tiny type="submit">
                 {t("common:actions.add")}
               </Button>
             </Form>
@@ -503,10 +508,14 @@ function MaplistGenerator() {
     revive: reviveBracketType,
   });
 
-  const teamOne = data.teams.find((t) => t.id === teamOneId);
-  const teamTwo = data.teams.find((t) => t.id === teamTwoId);
-  invariant(teamOne);
-  invariant(teamTwo);
+  const teamOne = data.teams.find((t) => t.id === teamOneId) ?? {
+    id: -1,
+    mapPool: [],
+  };
+  const teamTwo = data.teams.find((t) => t.id === teamTwoId) ?? {
+    id: -1,
+    mapPool: [],
+  };
 
   return (
     <div className="stack md">
@@ -629,7 +638,7 @@ function TeamsSelect({
   setTeam,
 }: {
   number: number;
-  team: TeamInState;
+  team: { id: number };
   otherTeam: TeamInState;
   setTeam: (newTeamId: number) => void;
 }) {

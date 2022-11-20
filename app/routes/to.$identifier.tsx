@@ -53,7 +53,10 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     event,
     tieBreakerMapPool:
       db.calendarEvents.findTieBreakerMapPoolByEventId(eventId),
-    teams: event.isBeforeStart ? censorMapPools({ teams }) : teams,
+    teams:
+      event.isBeforeStart && !canAdminCalendarTOTools({ user, event })
+        ? censorMapPools({ teams })
+        : teams,
     ownTeam: findOwnedTeam({ userId: user?.id, teams }),
   };
 };
