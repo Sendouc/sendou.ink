@@ -1,4 +1,5 @@
 import { type LinksFunction, type MetaFunction } from "@remix-run/node";
+import type { ShouldReloadFunction } from "@remix-run/react";
 import { Link } from "@remix-run/react";
 import * as React from "react";
 import { useTranslation } from "~/hooks/useTranslation";
@@ -64,6 +65,9 @@ export const handle: SendouRouteHandle = {
   i18n: ["weapons", "analyzer"],
   navItemName: "analyzer",
 };
+
+// Resolves this Github issue: https://github.com/Sendouc/sendou.ink/issues/1053
+export const unstable_shouldReload: ShouldReloadFunction = () => false;
 
 export default function BuildAnalyzerPage() {
   const { t } = useTranslation(["analyzer", "common", "weapons"]);
