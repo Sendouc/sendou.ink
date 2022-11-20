@@ -19,6 +19,11 @@
   z-index: 10;
   top: 15%;
   display: flex;
-  width: 125px;
+  width: 130px;
   flex-wrap: wrap;
+  justify-content: center;
+  padding: var(--s-2);
+  border-radius: 0 var(--rounded) var(--rounded) 0;
+  background: var(--bg-darker);
+  gap: 2px;
 }

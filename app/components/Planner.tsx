@@ -1,4 +1,4 @@
-import { Tldraw, type TldrawApp } from "@tldraw/tldraw";
+import { Tldraw, ColorStyle, type TldrawApp } from "@tldraw/tldraw";
 import * as React from "react";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { mainWeaponIds } from "~/modules/in-game-lists";
@@ -9,10 +9,12 @@ import { Image } from "./Image";
 const mapUrl = "http://localhost:5800/img/planner-maps/test.png";
 
 export default function Planner() {
-  const [app, setApp] = React.useState<TldrawApp | null>(null);
+  const [_app, setApp] = React.useState<TldrawApp>();
+  const app = _app!;
 
   const handleMount = React.useCallback((app: TldrawApp) => {
     setApp(app);
+    app.style({ color: ColorStyle.Red });
   }, []);
 
   const handleAddImage = React.useCallback(
@@ -25,8 +27,12 @@ export default function Planner() {
         // @ts-expect-error todo: fix this
         const file = new File([blob], "weapon.png", { contentType });
 
-        void app.addMediaFromFiles([file]);
-        cb?.();
+        app
+          .addMediaFromFiles([file])
+          .then(() => {
+            cb?.();
+          })
+          .catch(console.error);
       });
     },
     [app]
@@ -35,15 +41,19 @@ export default function Planner() {
   const handleAddWeapon = React.useCallback(
     (weaponId: MainWeaponId) => {
       handleAddImage(`${mainWeaponImageUrl(weaponId)}.png`, () =>
-        app!.selectTool("select")
+        app.selectTool("select")
       );
     },
     [app, handleAddImage]
   );
 
   const handleAddBackgroundImage = React.useCallback(() => {
-    handleAddImage(mapUrl);
-  }, [handleAddImage]);
+    app.resetDocument();
+    handleAddImage(mapUrl, () => {
+      app.selectAll();
+      app.toggleLocked();
+    });
+  }, [app, handleAddImage]);
 
   return (
     <>
