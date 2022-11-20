@@ -6,6 +6,7 @@
   "pre.footerNote": "メモ: トーナメント開始前であれば、マップリストと参加者を何回でも変更できます。",
   "pre.deleteTeam": "チームを削除",
 
+  "preview": "マップリストジェネレーターのプレビュー (管理者のみ)",
   "pre.steps.register": "1. 登録",
   "pre.steps.register.summary": "登録するチーム名を入力してください",
   "pre.steps.mapPool": "2. マップリスト",
@@ -39,5 +40,7 @@
   "teams.mapsPickedStatus": "マップの選択状況",
 
   "admin.eventStarted": "イベント開始しました",
-  "admin.eventStarted.explanation": "イベント開始後、チームはマップリストを生成できますがマップリストや参加メンバーを編集することはできません。"
+  "admin.eventStarted.explanation": "イベント開始後、チームはマップリストを生成できますがマップリストや参加メンバーを編集することはできません。",
+  "admin.download": "参加者リストをダウンロード",
+  "admin.download.discord": "Discord 一覧をダウンロード"
 }
