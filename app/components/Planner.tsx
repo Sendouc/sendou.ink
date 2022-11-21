@@ -1,4 +1,11 @@
-import { Tldraw, ColorStyle, type TldrawApp } from "@tldraw/tldraw";
+import type { TDImageAsset } from "@tldraw/tldraw";
+import {
+  Tldraw,
+  ColorStyle,
+  type TldrawApp,
+  TDShapeType,
+  TDAssetType,
+} from "@tldraw/tldraw";
 import * as React from "react";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { mainWeaponIds } from "~/modules/in-game-lists";
@@ -18,40 +25,73 @@ export default function Planner() {
   }, []);
 
   const handleAddImage = React.useCallback(
-    (imgUrl: string, cb?: () => void) => {
+    ({
+      src,
+      size,
+      isLocked,
+      point,
+      cb,
+    }: {
+      src: string;
+      size: number[];
+      isLocked: boolean;
+      point: number[];
+      cb?: () => void;
+    }) => {
       if (!app) return;
-      void fetch(imgUrl).then(async (response) => {
-        const contentType = response.headers.get("content-type");
-        const blob = await response.blob();
-        // xxx:
-        // @ts-expect-error todo: fix this
-        const file = new File([blob], "weapon.png", { contentType });
 
-        app
-          .addMediaFromFiles([file])
-          .then(() => {
-            cb?.();
-          })
-          .catch(console.error);
+      const asset: TDImageAsset = {
+        id: src,
+        type: TDAssetType.Image,
+        fileName: "img",
+        src,
+        size,
+      };
+
+      // tldraw creator:
+      // "So image shapes in tldraw work like this: we add an asset to the app.assets table, then we reference that asset in the shape object itself.
+      // This lets us have multiple copies of an image on the canvas without having all of those take up memory individually"
+
+      app.insertContent({
+        assets: [asset],
+        shapes: [],
       });
+
+      app.createShapes({
+        id: src,
+        type: TDShapeType.Image,
+        assetId: src,
+        size,
+        isAspectRatioLocked: true,
+        isLocked,
+        point,
+      });
+      cb?.();
     },
     [app]
   );
 
   const handleAddWeapon = React.useCallback(
     (weaponId: MainWeaponId) => {
-      handleAddImage(`${mainWeaponImageUrl(weaponId)}.png`, () =>
-        app.selectTool("select")
-      );
+      handleAddImage({
+        src: `${mainWeaponImageUrl(weaponId)}.png`,
+        size: [50, 50],
+        isLocked: false,
+        // xxx: slightly randomize this?
+        point: [500, 500],
+        cb: () => app.selectTool("select"),
+      });
     },
     [app, handleAddImage]
   );
 
   const handleAddBackgroundImage = React.useCallback(() => {
     app.resetDocument();
-    handleAddImage(mapUrl, () => {
-      app.selectAll();
-      app.toggleLocked();
+    handleAddImage({
+      src: mapUrl,
+      size: [1600, 900],
+      isLocked: true,
+      point: [0, 50],
     });
   }, [app, handleAddImage]);
 

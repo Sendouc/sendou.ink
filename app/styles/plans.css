@@ -1,3 +1,7 @@
+div {
+  box-shadow: none !important;
+}
+
 .layout__header {
   display: none;
 }
