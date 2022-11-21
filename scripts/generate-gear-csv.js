@@ -19,7 +19,6 @@ function main() {
       obj[weaponId] = weaponsJsonEn[key];
       return obj;
     }, {});
-
   const mainWeaponsParams = weaponParams.mainWeapons;
 
   const columnNames = [
@@ -33,6 +32,7 @@ function main() {
 
   const columnAttributes = ["SpecialPoint", "WeaponSpeedType", "MoveSpeed"];
 
+  // Construct each row data string for each main weapon, then append them to the CSV file
   Object.entries(mainWeaponsParams).forEach((mainWeapon) => {
     const [weaponId, weaponAttributes] = mainWeapon;
     const weaponName = mainWeaponsJson[weaponId];
