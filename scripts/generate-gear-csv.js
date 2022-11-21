@@ -8,7 +8,7 @@ const weaponParams = require("../app/modules/analyzer/weapon-params.json");
 const weaponsJsonEn = require("../public/locales/en/weapons.json");
 const fs = require("fs");
 
-const outFilePath = "output/gear-table.csv";
+const outFilePath = "output/main-weapon-table.csv";
 
 function main() {
   // Create data structure where we can search by weaponId as the key
@@ -52,7 +52,7 @@ function main() {
     });
   });
 
-  console.log("gear-table.csv has been generated in the output/ folder")
+  console.log(`Table was generated in file '${outFilePath}'`)
 }
 
 void main();
