@@ -2,7 +2,7 @@
 // @ts-nocheck
 
 // This script generates a CSV file for main weapons and some of their attributes.
-// To run the script, run "node scripts/generate-gear-csv.js" from the root of the repository folder
+// To run the script, run "node scripts/generate-weapon-csv.js" from the root of the repository folder
 
 const weaponParams = require("../app/modules/analyzer/weapon-params.json");
 const weaponsJsonEn = require("../public/locales/en/weapons.json");
@@ -52,7 +52,7 @@ function main() {
     });
   });
 
-  console.log(`Table was generated in file '${outFilePath}'`)
+  console.log(`Table was generated in file '${outFilePath}'`);
 }
 
 void main();
