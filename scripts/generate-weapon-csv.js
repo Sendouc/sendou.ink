@@ -39,10 +39,7 @@ function main() {
 
     let rowData = weaponName + ",";
     for (const attrKey of columnAttributes) {
-      let attribute = weaponAttributes[attrKey];
-      if (!attribute) {
-        attribute = "";
-      }
+      const attribute = weaponAttributes[attrKey] ?? "";
       rowData += attribute + ",";
     }
 
