@@ -266,7 +266,7 @@ select {
   font-size: var(--fonts-sm);
   font-weight: 500;
   padding-block: 3.5px;
-  padding-inline: var(--s-3) var(--s-7);
+  padding-inline: var(--s-3) var(--s-8);
 }
 
 select::selection {
