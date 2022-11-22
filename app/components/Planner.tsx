@@ -13,12 +13,17 @@ import type { MainWeaponId, ModeShort, StageId } from "~/modules/in-game-lists";
 import { stageIds } from "~/modules/in-game-lists";
 import { mainWeaponIds } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
-import { mainWeaponImageUrl, modeImageUrl } from "~/utils/urls";
+import {
+  mainWeaponImageUrl,
+  modeImageUrl,
+  outlinedMainWeaponImageUrl,
+} from "~/utils/urls";
 import { Button } from "./Button";
 import { Image } from "./Image";
 
 const mapUrl = "http://localhost:5800/img/planner-maps/test.png";
 
+// xxx: https://twigtm.itch.io/splatoon-3-minimap-views
 export default function Planner() {
   const [_app, setApp] = React.useState<TldrawApp>();
   const app = _app!;
@@ -78,7 +83,7 @@ export default function Planner() {
   const handleAddWeapon = React.useCallback(
     (weaponId: MainWeaponId) => {
       handleAddImage({
-        src: `${mainWeaponImageUrl(weaponId)}.png`,
+        src: `${outlinedMainWeaponImageUrl(weaponId)}.png`,
         size: [50, 50],
         isLocked: false,
         // xxx: slightly randomize this?

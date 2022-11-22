@@ -125,6 +125,8 @@ export const weaponCategoryUrl = (
 ) => `/img/weapon-categories/${category}`;
 export const mainWeaponImageUrl = (mainWeaponSplId: MainWeaponId) =>
   `/img/main-weapons/${mainWeaponSplId}`;
+export const outlinedMainWeaponImageUrl = (mainWeaponSplId: MainWeaponId) =>
+  `/img/main-weapons-outlined/${mainWeaponSplId}`;
 export const subWeaponImageUrl = (subWeaponSplId: SubWeaponId) =>
   `/img/sub-weapons/${subWeaponSplId}`;
 export const specialWeaponImageUrl = (specialWeaponSplId: SpecialWeaponId) =>
