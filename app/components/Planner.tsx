@@ -134,7 +134,7 @@ export default function Planner() {
       });
 
       // Clam Blitz: add clams. Proof-of-concept for Scorched Gorge
-      if (modeShort === "CB") {
+      if (modeShort === "CB" && stageId === 0) {
         for (const clamPoint of scorchedGorgeClams.clam_points) {
           if (!clamPoint) continue;
 
