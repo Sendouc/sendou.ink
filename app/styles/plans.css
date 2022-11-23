@@ -1,0 +1,92 @@
+div {
+  box-shadow: none !important;
+}
+
+/** Hacky selector to remove the question mark popup on bottom left */
+button[data-state="closed"][aria-haspopup="dialog"] {
+  display: none;
+}
+
+/* stylelint-disable selector-id-pattern */
+#TD-MenuPanel {
+  display: none;
+}
+/* stylelint-enable selector-id-pattern */
+
+.layout__header {
+  display: none;
+}
+
+.tl-canvas {
+  background-color: var(--bg);
+}
+
+.plans__placeholder {
+  min-height: 100%;
+}
+
+.plans__top-section {
+  position: fixed;
+  z-index: 10;
+  top: 3%;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  padding: var(--s-3);
+  border: 1px solid var(--theme-very-transparent);
+  border-radius: 0 0 var(--rounded) var(--rounded);
+  background-color: var(--bg-darker);
+  gap: var(--s-4);
+  transform: translate(-50%, -42%);
+}
+
+.plans__mode-buttons {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.plans__mode-button {
+  padding: 0;
+  padding: var(--s-1-5);
+  border: none;
+  border-radius: var(--rounded-full);
+  background-color: transparent;
+  color: var(--theme);
+  opacity: 1 !important;
+  outline: initial;
+}
+
+.plans__mode-button.selected {
+  background-color: var(--bg-mode-active);
+}
+
+.plans__mode-img:not(.selected) {
+  filter: var(--inactive-image-filter);
+  opacity: 0.6;
+}
+
+.plans__weapons-section {
+  position: fixed;
+  z-index: 10;
+  top: 15%;
+  display: flex;
+  width: 130px;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: var(--s-2);
+  border: 1px solid var(--theme-very-transparent);
+  border-radius: 0 var(--rounded) var(--rounded) 0;
+  background: var(--bg-darker);
+  gap: 2px;
+}
+
+.plans__powered-by {
+  position: fixed;
+  z-index: 10;
+  right: 0.5%;
+  bottom: 0.5%;
+  color: var(--text-lighter);
+  font-size: var(--fonts-xxxs);
+}

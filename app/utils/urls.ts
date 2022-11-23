@@ -12,8 +12,8 @@ import type {
   AbilityWithUnknown,
   MainWeaponId,
   SpecialWeaponId,
-  StageId,
   SubWeaponId,
+  StageId,
 } from "~/modules/in-game-lists/types";
 import type navItems from "~/components/layout/nav-items.json";
 import { type AuthErrorCode } from "~/modules/auth";
@@ -27,9 +27,11 @@ export const SENDOU_INK_PATREON_URL = "https://patreon.com/sendou";
 export const SENDOU_INK_GITHUB_URL = "https://github.com/Sendouc/sendou.ink";
 export const GITHUB_CONTRIBUTORS_URL =
   "https://github.com/Sendouc/sendou.ink/graphs/contributors";
+export const TLDRAW_URL = "https://www.tldraw.com/";
 export const BORZOIC_TWITTER = "https://twitter.com/borzoic_";
 export const LEAN_TWITTER = "https://twitter.com/LeanYoshi";
 export const UBERU_TWITTER = "https://twitter.com/uberu5";
+export const TWIG_TWITTER = "https://twitter.com/TwigTheBluePik";
 export const ipLabsMaps = (pool: string) =>
   `https://maps.iplabs.ink/?3&pool=${pool}`;
 
@@ -44,6 +46,7 @@ export const BUILDS_PAGE = "/builds";
 export const CALENDAR_PAGE = "/calendar";
 export const STOP_IMPERSONATING_URL = "/auth/impersonate/stop";
 export const SEED_URL = "/seed";
+export const PLANNER_URL = "/plans";
 
 export const COMMON_PREVIEW_IMAGE = "/img/layout/common-preview.png";
 export const ERROR_GIRL_IMAGE_PATH = `/img/layout/error-girl`;
@@ -125,6 +128,8 @@ export const weaponCategoryUrl = (
 ) => `/img/weapon-categories/${category}`;
 export const mainWeaponImageUrl = (mainWeaponSplId: MainWeaponId) =>
   `/img/main-weapons/${mainWeaponSplId}`;
+export const outlinedMainWeaponImageUrl = (mainWeaponSplId: MainWeaponId) =>
+  `/img/main-weapons-outlined/${mainWeaponSplId}`;
 export const subWeaponImageUrl = (subWeaponSplId: SubWeaponId) =>
   `/img/sub-weapons/${subWeaponSplId}`;
 export const specialWeaponImageUrl = (specialWeaponSplId: SpecialWeaponId) =>
@@ -133,6 +138,13 @@ export const abilityImageUrl = (ability: AbilityWithUnknown) =>
   `/img/abilities/${ability}`;
 export const modeImageUrl = (mode: ModeShort) => `/img/modes/${mode}`;
 export const stageImageUrl = (stageId: StageId) => `/img/stages/${stageId}`;
+export const stageMinimapImageUrlWithEnding = ({
+  stageId,
+  modeShort,
+}: {
+  stageId: StageId;
+  modeShort: ModeShort;
+}) => `/img/stage-minimaps/${stageId}-${modeShort}.jpeg`;
 
 export function resolveBaseUrl(url: string) {
   return new URL(url).host;
