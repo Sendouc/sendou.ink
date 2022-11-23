@@ -26,6 +26,23 @@ import {
 import { Button } from "./Button";
 import { Image } from "./Image";
 
+const scorchedGorgeClams = {
+  "icon_path": "img/modes/CB.png",
+  "icon_size": [24, 24],
+  "center_pos_symmetry": [850, 430],
+  "clam_points": [
+    [630, 690],
+    [646, 610],
+    [680, 570],
+    [725, 580],
+    [775, 560],
+    [770, 435],
+    [721, 490],
+    [671, 375],
+    [815, 470],
+  ]
+}
+
 export default function Planner() {
   const { t } = useTranslation(["common", "weapons"]);
   const { i18n } = useTranslation();
@@ -115,6 +132,34 @@ export default function Planner() {
         isLocked: true,
         point: [65, 20],
       });
+
+      // Clam Blitz: add clams. Proof-of-concept for Scorched Gorge
+      if (modeShort === "CB") {
+        for (const clamPoint of scorchedGorgeClams.clam_points) {
+          if (!clamPoint) continue;
+
+          // Clams on top-right half
+          handleAddImage({
+            src: scorchedGorgeClams.icon_path,
+            size: scorchedGorgeClams.icon_size,
+            isLocked: true,
+            point: clamPoint
+          });
+
+          const mirroredPoint = [0, 0];
+          mirroredPoint[0] = clamPoint[0] - 2*(clamPoint[0] - scorchedGorgeClams.center_pos_symmetry[0]);
+          mirroredPoint[1] = clamPoint[1] - 2*(clamPoint[1] - scorchedGorgeClams.center_pos_symmetry[1]);
+          console.warn(mirroredPoint);
+
+          // Mirrored clams through center point of symmetry
+          handleAddImage({
+            src: scorchedGorgeClams.icon_path,
+            size: scorchedGorgeClams.icon_size,
+            isLocked: true,
+            point: mirroredPoint
+          });
+        }        
+      }
     },
     [app, handleAddImage]
   );
@@ -164,7 +209,7 @@ function StageBackgroundSelector({
 }) {
   const { t } = useTranslation(["game-misc", "common"]);
   const [stageId, setStageId] = React.useState<StageId>(stageIds[0]);
-  const [selectedMode, setSelectedMode] = React.useState<ModeShort>("SZ");
+  const [selectedMode, setSelectedMode] = React.useState<ModeShort>("CB");
 
   return (
     <div className="plans__top-section">
