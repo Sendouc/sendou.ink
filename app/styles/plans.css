@@ -14,6 +14,11 @@ button[data-state="closed"][aria-haspopup="dialog"] {
 /* stylelint-enable selector-id-pattern */
 
 .layout__header {
+  z-index: 2;
+  background-color: transparent;
+}
+
+.layout__header__right-container {
   display: none;
 }
 

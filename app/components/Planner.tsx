@@ -1,19 +1,21 @@
 import type { TDImageAsset } from "@tldraw/tldraw";
 import {
-  Tldraw,
   ColorStyle,
-  type TldrawApp,
-  TDShapeType,
   TDAssetType,
+  TDShapeType,
+  Tldraw,
+  type TldrawApp,
 } from "@tldraw/tldraw";
 import clsx from "clsx";
+import randomInt from "just-random-integer";
 import * as React from "react";
 import { useForceRefreshOnMount } from "~/hooks/useForceRefresh";
 import { useTranslation } from "~/hooks/useTranslation";
+import type { LanguageCode } from "~/modules/i18n";
 import type { MainWeaponId, ModeShort, StageId } from "~/modules/in-game-lists";
-import { stageIds } from "~/modules/in-game-lists";
-import { mainWeaponIds } from "~/modules/in-game-lists";
+import { mainWeaponIds, stageIds } from "~/modules/in-game-lists";
 import { modesShort } from "~/modules/in-game-lists/modes";
+import { semiRandomId } from "~/utils/strings";
 import {
   mainWeaponImageUrl,
   modeImageUrl,
@@ -23,9 +25,6 @@ import {
 } from "~/utils/urls";
 import { Button } from "./Button";
 import { Image } from "./Image";
-import randomInt from "just-random-integer";
-import type { LanguageCode } from "~/modules/i18n";
-import { semiRandomId } from "~/utils/strings";
 
 export default function Planner() {
   const { t } = useTranslation(["common", "weapons"]);
