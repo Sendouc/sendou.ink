@@ -48,6 +48,7 @@
     "i18next-browser-languagedetector": "^6.1.5",
     "i18next-fs-backend": "^1.1.5",
     "i18next-http-backend": "^1.4.4",
+    "isbot": "^3.6.5",
     "just-capitalize": "^3.1.1",
     "just-clone": "^6.1.1",
     "just-random-integer": "^4.1.1",
