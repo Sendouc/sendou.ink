@@ -28,7 +28,7 @@ import randomInt from "just-random-integer";
 import type { LanguageCode } from "~/modules/i18n";
 
 export default function Planner() {
-  const { t } = useTranslation(["common"]);
+  const { t } = useTranslation(["common", "weapons"]);
   const { i18n } = useTranslation();
   const appRef = React.useRef<TldrawApp>();
   const app = appRef.current!;
@@ -132,7 +132,8 @@ export default function Planner() {
               onClick={() => handleAddWeapon(weaponId)}
             >
               <Image
-                alt=""
+                alt={t(`weapons:MAIN_${weaponId}`)}
+                title={t(`weapons:MAIN_${weaponId}`)}
                 path={mainWeaponImageUrl(weaponId)}
                 width={36}
                 height={36}
