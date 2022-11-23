@@ -10,6 +10,7 @@
   "pages.builds": "Builds",
   "pages.analyzer": "Build Analyzer",
   "pages.maps": "Map Lists",
+  "pages.plans": "Planner",
   "pages.object-damage-calculator": "Object DMG Calc",
 
   "header.profile": "Profile",
@@ -45,6 +46,7 @@
   "actions.clear": "Clear",
   "actions.selectAll": "Select All",
   "actions.search": "Search",
+  "actions.setBg": "Set background",
 
   "maps.createMapList": "Create map list",
   "maps.halfSz": "50% SZ",
@@ -104,5 +106,7 @@
 
   "theme.light": "Light",
   "theme.dark": "Dark",
-  "theme.auto": "Auto"
+  "theme.auto": "Auto",
+
+  "plans.poweredBy": "Powered by {{name}}"
 }

@@ -51,6 +51,8 @@ export const languages = [
   },
 ] as const;
 
+export type LanguageCode = typeof languages[number]["code"];
+
 export const config = {
   supportedLngs: languages.map((lang) => lang.code),
   fallbackLng: DEFAULT_LANGUAGE,

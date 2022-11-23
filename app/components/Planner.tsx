@@ -8,30 +8,45 @@ import {
 } from "@tldraw/tldraw";
 import clsx from "clsx";
 import * as React from "react";
+import { useForceRefreshOnMount } from "~/hooks/useForceRefresh";
 import { useTranslation } from "~/hooks/useTranslation";
 import type { MainWeaponId, ModeShort, StageId } from "~/modules/in-game-lists";
 import { stageIds } from "~/modules/in-game-lists";
 import { mainWeaponIds } from "~/modules/in-game-lists";
-import { rankedModesShort } from "~/modules/in-game-lists/modes";
+import { modesShort } from "~/modules/in-game-lists/modes";
 import {
   mainWeaponImageUrl,
   modeImageUrl,
   outlinedMainWeaponImageUrl,
+  stageMinimapImageUrlWithEnding,
+  TLDRAW_URL,
 } from "~/utils/urls";
 import { Button } from "./Button";
 import { Image } from "./Image";
+import { nanoid } from "nanoid";
+import randomInt from "just-random-integer";
+import type { LanguageCode } from "~/modules/i18n";
 
-const mapUrl = "http://localhost:5800/img/planner-maps/test.png";
-
-// xxx: https://twigtm.itch.io/splatoon-3-minimap-views
+// xxx: can't undo to get back last state after setting background
 export default function Planner() {
-  const [_app, setApp] = React.useState<TldrawApp>();
-  const app = _app!;
+  const { t } = useTranslation(["common"]);
+  const { i18n } = useTranslation();
+  const appRef = React.useRef<TldrawApp>();
+  const app = appRef.current!;
 
-  const handleMount = React.useCallback((app: TldrawApp) => {
-    setApp(app);
-    app.style({ color: ColorStyle.Red });
-  }, []);
+  useForceRefreshOnMount();
+
+  const handleMount = React.useCallback(
+    (mountedApp: TldrawApp) => {
+      appRef.current = mountedApp;
+      mountedApp.setSetting(
+        "language",
+        ourLanguageToTldrawLanguage(i18n.language)
+      );
+      mountedApp.style({ color: ColorStyle.Red });
+    },
+    [i18n]
+  );
 
   const handleAddImage = React.useCallback(
     ({
@@ -67,7 +82,7 @@ export default function Planner() {
       });
 
       app.createShapes({
-        id: src,
+        id: nanoid(),
         type: TDShapeType.Image,
         assetId: src,
         size,
@@ -84,25 +99,27 @@ export default function Planner() {
     (weaponId: MainWeaponId) => {
       handleAddImage({
         src: `${outlinedMainWeaponImageUrl(weaponId)}.png`,
-        size: [50, 50],
+        size: [45, 45],
         isLocked: false,
-        // xxx: slightly randomize this?
-        point: [500, 500],
+        point: [randomInt(250, 1000), randomInt(250, 750)],
         cb: () => app.selectTool("select"),
       });
     },
     [app, handleAddImage]
   );
 
-  const handleAddBackgroundImage = React.useCallback(() => {
-    app.resetDocument();
-    handleAddImage({
-      src: mapUrl,
-      size: [1600, 900],
-      isLocked: true,
-      point: [65, 20],
-    });
-  }, [app, handleAddImage]);
+  const handleAddBackgroundImage = React.useCallback(
+    ({ stageId, modeShort }: { stageId: StageId; modeShort: ModeShort }) => {
+      app.resetDocument();
+      handleAddImage({
+        src: stageMinimapImageUrlWithEnding({ stageId, modeShort }),
+        size: [1600, 900],
+        isLocked: true,
+        point: [65, 20],
+      });
+    },
+    [app, handleAddImage]
+  );
 
   return (
     <>
@@ -125,6 +142,11 @@ export default function Planner() {
           );
         })}
       </div>
+      <div className="plans__powered-by">
+        <a href={TLDRAW_URL} target="_blank" rel="noreferrer">
+          {t("common:plans.poweredBy", { name: "tldraw" })}
+        </a>
+      </div>
       <Tldraw showMultiplayerMenu={false} onMount={handleMount} />
     </>
   );
@@ -135,25 +157,23 @@ function StageBackgroundSelector({
 }: {
   onAddBackground: ({
     stageId,
-    mode,
+    modeShort,
   }: {
     stageId: StageId;
-    mode: ModeShort;
+    modeShort: ModeShort;
   }) => void;
 }) {
-  const { t } = useTranslation(["game-misc"]);
+  const { t } = useTranslation(["game-misc", "common"]);
   const [stageId, setStageId] = React.useState<StageId>(stageIds[0]);
-  const [selectedMode, setSelectedMode] = React.useState<ModeShort>(
-    rankedModesShort[0]!
-  );
+  const [selectedMode, setSelectedMode] = React.useState<ModeShort>("SZ");
 
-  // xxx: title to select
   return (
     <div className="plans__top-section">
       <select
         className="w-max"
         value={stageId}
         onChange={(e) => setStageId(Number(e.target.value) as StageId)}
+        aria-label="Select stage"
       >
         {stageIds.map((stageId) => {
           return (
@@ -164,7 +184,7 @@ function StageBackgroundSelector({
         })}
       </select>
       <div className="plans__mode-buttons">
-        {rankedModesShort.map((mode) => {
+        {modesShort.map((mode) => {
           const selected = mode === selectedMode;
           return (
             <button
@@ -190,9 +210,43 @@ function StageBackgroundSelector({
           );
         })}
       </div>
-      <Button tiny onClick={() => onAddBackground({ mode: "SZ", stageId: 1 })}>
-        Go
+      <Button
+        tiny
+        onClick={() => onAddBackground({ modeShort: selectedMode, stageId })}
+        className="w-max"
+      >
+        {t("common:actions.setBg")}
       </Button>
     </div>
   );
+}
+
+// when adding new language check from Tldraw codebase what is the matching
+// language in TRANSLATIONS constant, or default to english if none found
+const ourLanguageToTldrawLanguageMap: Record<LanguageCode, string> = {
+  "es-US": "es",
+  "es-ES": "es",
+  ko: "ko-kr",
+  nl: "en",
+  zh: "zh-ch",
+  // map to itself
+  da: "da",
+  de: "de",
+  en: "en",
+  fr: "fr",
+  it: "it",
+  ja: "ja",
+  ru: "ru",
+};
+function ourLanguageToTldrawLanguage(ourLanguageUserSelected: string) {
+  for (const [ourLanguage, tldrawLanguage] of Object.entries(
+    ourLanguageToTldrawLanguageMap
+  )) {
+    if (ourLanguage === ourLanguageUserSelected) {
+      return tldrawLanguage;
+    }
+  }
+
+  console.error(`No tldraw language found for: ${ourLanguageUserSelected}`);
+  return "en";
 }

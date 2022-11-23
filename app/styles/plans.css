@@ -2,12 +2,27 @@ div {
   box-shadow: none !important;
 }
 
+/** Hacky selector to remove the question mark popup on bottom left */
+button[data-state="closed"][aria-haspopup="dialog"] {
+  display: none;
+}
+
+/* stylelint-disable selector-id-pattern */
+#TD-MenuPanel {
+  display: none;
+}
+/* stylelint-enable selector-id-pattern */
+
 .layout__header {
   display: none;
 }
 
 .tl-canvas {
   background-color: var(--bg);
+}
+
+.plans__placeholder {
+  min-height: 100%;
 }
 
 .plans__top-section {
@@ -22,7 +37,7 @@ div {
   border-radius: 0 0 var(--rounded) var(--rounded);
   background-color: var(--bg-darker);
   gap: var(--s-4);
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -42%);
 }
 
 .plans__mode-buttons {
@@ -65,4 +80,13 @@ div {
   border-radius: 0 var(--rounded) var(--rounded) 0;
   background: var(--bg-darker);
   gap: 2px;
+}
+
+.plans__powered-by {
+  position: fixed;
+  z-index: 10;
+  bottom: 0.5%;
+  right: 0.5%;
+  font-size: var(--fonts-xxxs);
+  color: var(--text-lighter);
 }

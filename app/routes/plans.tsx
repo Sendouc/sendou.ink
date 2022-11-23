@@ -10,7 +10,7 @@ const Planner = lazy(() => import("~/components/Planner"));
 
 export default function MapPlannerPage() {
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<div className="plans__placeholder" />}>
       <Planner />
     </Suspense>
   );
