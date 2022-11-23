@@ -23,7 +23,7 @@
   display: flex;
   min-width: calc(var(--full-size-week-width) - 2rem);
   height: auto;
-  min-height: calc(var(--full-size-week-height) - 3rem);
+  min-height: calc(var(--full-size-week-height) - 2rem);
   flex-direction: column;
   justify-content: space-between;
   padding: var(--s-1-5);
