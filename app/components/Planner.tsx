@@ -23,9 +23,9 @@ import {
 } from "~/utils/urls";
 import { Button } from "./Button";
 import { Image } from "./Image";
-import { nanoid } from "nanoid";
 import randomInt from "just-random-integer";
 import type { LanguageCode } from "~/modules/i18n";
+import { semiRandomId } from "~/utils/strings";
 
 export default function Planner() {
   const { t } = useTranslation(["common", "weapons"]);
@@ -81,7 +81,7 @@ export default function Planner() {
       });
 
       app.createShapes({
-        id: nanoid(),
+        id: semiRandomId(),
         type: TDShapeType.Image,
         assetId: src,
         size,
