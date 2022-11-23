@@ -38,7 +38,7 @@
     "@remix-run/react": "^1.7.4",
     "@remix-run/serve": "^1.7.4",
     "@tldraw/tldraw": "^1.26.2",
-    "better-sqlite3": "^7.6.2",
+    "better-sqlite3": "^8.0.0",
     "clsx": "^1.2.1",
     "countries-list": "^2.6.1",
     "date-fns": "^2.29.3",
@@ -97,8 +97,5 @@
     "tsm": "^2.2.2",
     "typescript": "^4.8.4",
     "uvu": "^0.5.6"
-  },
-  "engines": {
-    "node": ">=14"
   }
 }
