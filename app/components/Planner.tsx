@@ -138,7 +138,7 @@ export default function Planner() {
         for (const clamPoint of scorchedGorgeClams.clam_points) {
           if (!clamPoint) continue;
 
-          // Clams on top-right half
+          // Clams on bottom-left half
           handleAddImage({
             src: scorchedGorgeClams.icon_path,
             size: scorchedGorgeClams.icon_size,
@@ -146,12 +146,13 @@ export default function Planner() {
             point: clamPoint
           });
 
+          // I know these aren't type-safe yet, this is just a proof-of-concept
           const mirroredPoint = [0, 0];
           mirroredPoint[0] = clamPoint[0] - 2*(clamPoint[0] - scorchedGorgeClams.center_pos_symmetry[0]);
           mirroredPoint[1] = clamPoint[1] - 2*(clamPoint[1] - scorchedGorgeClams.center_pos_symmetry[1]);
           console.warn(mirroredPoint);
 
-          // Mirrored clams through center point of symmetry
+          // Mirror clams through center point of symmetry
           handleAddImage({
             src: scorchedGorgeClams.icon_path,
             size: scorchedGorgeClams.icon_size,
