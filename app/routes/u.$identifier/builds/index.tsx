@@ -44,7 +44,7 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 export const handle: SendouRouteHandle = {
-  i18n: ["weapons", "builds"],
+  i18n: ["weapons", "builds", "gear"],
 };
 
 export const loader = async ({ params, request }: LoaderArgs) => {
