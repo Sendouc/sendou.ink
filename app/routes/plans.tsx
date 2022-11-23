@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy } from "react";
 import type { LinksFunction } from "@remix-run/node";
 import styles from "~/styles/plans.css";
 import type { SendouRouteHandle } from "~/utils/remix";

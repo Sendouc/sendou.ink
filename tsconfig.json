@@ -3,7 +3,7 @@
   "exclude": ["discord-bot/*"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2019"],
-    "module": "ES2020",
+    "module": "commonjs",
     "isolatedModules": true,
     "esModuleInterop": true,
     "jsx": "react-jsx",
