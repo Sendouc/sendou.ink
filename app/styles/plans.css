@@ -85,8 +85,8 @@ button[data-state="closed"][aria-haspopup="dialog"] {
 .plans__powered-by {
   position: fixed;
   z-index: 10;
-  bottom: 0.5%;
   right: 0.5%;
-  font-size: var(--fonts-xxxs);
+  bottom: 0.5%;
   color: var(--text-lighter);
+  font-size: var(--fonts-xxxs);
 }

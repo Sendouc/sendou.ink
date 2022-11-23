@@ -27,7 +27,6 @@ import { nanoid } from "nanoid";
 import randomInt from "just-random-integer";
 import type { LanguageCode } from "~/modules/i18n";
 
-// xxx: can't undo to get back last state after setting background
 export default function Planner() {
   const { t } = useTranslation(["common"]);
   const { i18n } = useTranslation();
