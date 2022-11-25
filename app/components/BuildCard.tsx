@@ -28,7 +28,7 @@ import { EditIcon } from "./icons/Edit";
 import { Image } from "./Image";
 import { Popover } from "./Popover";
 import { InfoIcon } from "./icons/Info";
-import { WeaponIdToSlug } from "~/utils/i18next";
+import { useWeaponIdToSlug } from "~/hooks/useWeaponIdToSlug";
 
 interface BuildProps {
   build: Pick<
@@ -54,6 +54,7 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
   const { t } = useTranslation(["weapons", "builds", "common"]);
   const { i18n } = useTranslation();
   const isMounted = useIsMounted();
+  const weaponIdSlug = useWeaponIdToSlug;
 
   const {
     id,
@@ -111,7 +112,7 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
       <div className="build__weapons">
         {weapons.map((weaponSplId) => (
           <div key={weaponSplId} className="build__weapon">
-            <Link to={`${BUILDS_PAGE}/${WeaponIdToSlug(weaponSplId)}`}>
+            <Link to={`${BUILDS_PAGE}/${weaponIdSlug(weaponSplId)}`}>
               <Image
                 path={mainWeaponImageUrl(weaponSplId)}
                 alt={t(`weapons:MAIN_${weaponSplId}` as any)}

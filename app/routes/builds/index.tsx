@@ -5,7 +5,7 @@ import type { MainWeaponId } from "~/modules/in-game-lists";
 import { weaponCategories, weaponIdIsNotAlt } from "~/modules/in-game-lists";
 import { mainWeaponImageUrl, weaponCategoryUrl } from "~/utils/urls";
 import { type SendouRouteHandle } from "~/utils/remix";
-import { WeaponIdToSlug } from "~/utils/i18next";
+import { useWeaponIdToSlug } from "~/hooks/useWeaponIdToSlug";
 
 export const handle: SendouRouteHandle = {
   i18n: "weapons",
@@ -13,6 +13,7 @@ export const handle: SendouRouteHandle = {
 
 export default function BuildsPage() {
   const { t } = useTranslation(["common", "weapons"]);
+  const weaponIdSlug = useWeaponIdToSlug;
 
   return (
     <div className="stack md">
@@ -36,7 +37,7 @@ export default function BuildsPage() {
               .map((weaponId) => (
                 <Link
                   key={weaponId}
-                  to={WeaponIdToSlug(weaponId)}
+                  to={weaponIdSlug(weaponId)}
                   className="builds__category__weapon"
                 >
                   <Image
