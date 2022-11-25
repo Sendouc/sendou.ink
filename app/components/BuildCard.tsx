@@ -13,6 +13,7 @@ import { databaseTimestampToDate } from "~/utils/dates";
 import { discordFullName, gearTypeToInitial } from "~/utils/strings";
 import {
   analyzerPage,
+  BUILDS_PAGE,
   gearImageUrl,
   mainWeaponImageUrl,
   modeImageUrl,
@@ -27,6 +28,7 @@ import { EditIcon } from "./icons/Edit";
 import { Image } from "./Image";
 import { Popover } from "./Popover";
 import { InfoIcon } from "./icons/Info";
+import { WeaponIdToSlug } from "~/utils/i18next";
 
 interface BuildProps {
   build: Pick<
@@ -109,13 +111,15 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
       <div className="build__weapons">
         {weapons.map((weaponSplId) => (
           <div key={weaponSplId} className="build__weapon">
-            <Image
-              path={mainWeaponImageUrl(weaponSplId)}
-              alt={t(`weapons:MAIN_${weaponSplId}` as any)}
-              title={t(`weapons:MAIN_${weaponSplId}` as any)}
-              height={36}
-              width={36}
-            />
+            <Link to={`${BUILDS_PAGE}/${WeaponIdToSlug(weaponSplId)}`}>
+              <Image
+                path={mainWeaponImageUrl(weaponSplId)}
+                alt={t(`weapons:MAIN_${weaponSplId}` as any)}
+                title={t(`weapons:MAIN_${weaponSplId}` as any)}
+                height={36}
+                width={36}
+              />
+            </Link>
           </div>
         ))}
         {weapons.length === 1 && (
