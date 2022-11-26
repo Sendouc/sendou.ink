@@ -5,10 +5,12 @@ export const Main = ({
   children,
   className,
   halfWidth,
+  style,
 }: {
   children: React.ReactNode;
   className?: string;
   halfWidth?: boolean;
+  style?: React.CSSProperties;
 }) => (
   <main
     className={clsx(
@@ -17,6 +19,7 @@ export const Main = ({
       { "half-width": halfWidth },
       className
     )}
+    style={style}
   >
     {children}
   </main>

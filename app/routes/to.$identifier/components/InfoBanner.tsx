@@ -1,32 +1,37 @@
-import { Link, useLocation, useMatches } from "@remix-run/react";
+import { Link, useLocation } from "@remix-run/react";
 import { DiscordIcon } from "~/components/icons/Discord";
-import { TwitterIcon } from "~/components/icons/Twitter";
-import { resolveTournamentFormatString } from "~/core/tournament/bracket";
-import { TournamentLoaderData } from "~/routes/to.$identifier";
-import { FindTournamentByNameForUrlI } from "~/services/tournament";
+import { resolveTournamentFormatString } from "~/modules/tournament/bracket";
+import type { TournamentLoaderData } from "~/routes/to.$identifier";
+import { databaseTimestampToDate } from "~/utils/dates";
+import { discordFullName } from "~/utils/strings";
 
 export function InfoBanner({ data }: { data: TournamentLoaderData }) {
   const location = useLocation();
 
+  // xxx: fix
   const urlToTournamentFrontPage = location.pathname
     .split("/")
     .slice(0, 4)
     .join("/");
 
+  const startTimeDate = databaseTimestampToDate(data.startTime);
+
+  // xxx: expand discord link
+  // xxx: fix dates before mount
   return (
     <>
       <div className="info-banner">
         <div className="info-banner__top-row">
           <div className="info-banner__top-row__date-name">
             <time
-              dateTime={dateYYYYMMDD(data.startTime)}
+              dateTime={startTimeDate.toISOString().split("T")[0]}
               className="info-banner__top-row__month-date"
             >
               <div className="info-banner__top-row__month-date__month">
-                {shortMonthName(data.startTime)}
+                {startTimeDate.toLocaleString("en-US", { month: "short" })}
               </div>
               <div className="info-banner__top-row__month-date__date">
-                {dayNumber(data.startTime)}
+                {startTimeDate.toLocaleString("en-US", { day: "numeric" })}
               </div>
             </time>
             <Link
@@ -37,19 +42,7 @@ export function InfoBanner({ data }: { data: TournamentLoaderData }) {
             </Link>
           </div>
           <div className="info-banner__icon-buttons-container">
-            {data.organizer.twitter && (
-              // TODO: broken on Safari
-              <a
-                className="info-banner__icon-button"
-                href={data.organizer.twitter}
-              >
-                <TwitterIcon />
-              </a>
-            )}
-            <a
-              className="info-banner__icon-button"
-              href={data.organizer.discordInvite}
-            >
+            <a className="info-banner__icon-button" href={data.discordUrl}>
               <DiscordIcon />
             </a>
           </div>
@@ -60,8 +53,11 @@ export function InfoBanner({ data }: { data: TournamentLoaderData }) {
               <div className="info-banner__bottom-row__info-label">
                 Starting time
               </div>
-              <time dateTime={data.startTime}>
-                {weekdayAndStartTime(data.startTime)}
+              <time dateTime={startTimeDate.toISOString()}>
+                {startTimeDate.toLocaleString("en-US", {
+                  weekday: "long",
+                  hour: "numeric",
+                })}
               </time>
             </div>
             <div className="info-banner__bottom-row__info-container">
@@ -72,31 +68,11 @@ export function InfoBanner({ data }: { data: TournamentLoaderData }) {
               <div className="info-banner__bottom-row__info-label">
                 Organizer
               </div>
-              <div>{data.organizer.name}</div>
+              <div>{discordFullName(data.organizer)}</div>
             </div>
           </div>
         </div>
       </div>
     </>
   );
-}
-
-// TODO: https://github.com/remix-run/remix/issues/656
-function weekdayAndStartTime(date: string) {
-  return new Date(date).toLocaleString("en-US", {
-    weekday: "long",
-    hour: "numeric",
-  });
-}
-
-function shortMonthName(date: string) {
-  return new Date(date).toLocaleString("en-US", { month: "short" });
-}
-
-function dayNumber(date: string) {
-  return new Date(date).toLocaleString("en-US", { day: "numeric" });
-}
-
-function dateYYYYMMDD(date: string) {
-  return new Date(date).toISOString().split("T")[0];
 }

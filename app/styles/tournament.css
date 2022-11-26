@@ -360,36 +360,65 @@
   margin-block-start: var(--s-6);
 }
 
-.tournament-nav__container {
-  display: flex;
-  width: 100vw;
-  flex-wrap: wrap;
-  justify-content: center;
-  background-color: var(--bg-lighter);
-  background-image: url("/svg/background-pattern.svg");
+/** === TournamentNav === **/
+
+.tournament__links-overflower {
+  width: 100%;
   overflow-x: auto;
 }
 
-.tournament-nav__link {
+.tournament__links-border {
+  display: inline-block;
+  min-width: 100%;
+  padding: var(--s-1-5);
+  background: var(--tournaments-bg);
+  border-radius: var(--rounded);
+}
+
+.tournament__links-container {
+  display: grid;
+  border-radius: var(--rounded);
+  grid-template-columns: repeat(var(--tabs-count), minmax(100px, 1fr));
+  place-items: center;
+}
+
+.tournament__nav-link {
+  all: unset;
   display: flex;
-  height: 100%;
-  flex-direction: column;
-  align-items: center;
-  padding: var(--s-4);
+  width: 100%;
+  justify-content: center;
   background-color: var(--bg-lighter);
   color: var(--text);
-  font-size: var(--fonts-xs);
-  font-weight: var(--semi-bold);
-  white-space: nowrap;
+  cursor: pointer;
+  font-size: var(--fonts-sm);
+  gap: var(--s-1);
+  padding-block: var(--s-1-5);
 }
 
-.tournament-nav__active-icon {
-  height: 1.2rem;
-  margin-block-end: -1rem;
-  margin-block-start: -3px;
-  visibility: hidden;
+.tournament__nav-link > svg {
+  width: 1rem;
 }
 
-.tournament-nav__link.active > .tournament-nav__active-icon {
-  visibility: visible;
+.tournament__nav-link:first-of-type {
+  border-bottom-left-radius: var(--rounded);
+  border-top-left-radius: var(--rounded);
+}
+
+.tournament__nav-link:last-of-type {
+  border-bottom-right-radius: var(--rounded);
+  border-top-right-radius: var(--rounded);
+}
+
+.tournament__nav-link:hover {
+  font-weight: var(--bold);
+}
+
+.tournament__nav-link:focus-visible {
+  background-color: var(--bg-lighter-transparent);
+}
+
+.tournament__nav-link.active {
+  background-color: transparent;
+  color: var(--tournaments-text);
+  font-weight: var(--bold);
 }

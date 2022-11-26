@@ -33,6 +33,7 @@ import {
 } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { z } from "zod";
+import { Main } from "~/components/Main";
 import { db } from "~/db";
 import { useUser } from "~/modules/auth";
 import { tournamentHasStarted } from "~/modules/tournament/utils";
@@ -146,7 +147,7 @@ export default function TournamentPage() {
   })();
 
   return (
-    <div
+    <Main
       className="tournament__container"
       style={
         {
@@ -156,20 +157,20 @@ export default function TournamentPage() {
         } as any
       }
     >
-      <TournamentNav>
+      <TournamentNav tabsCount={navLinks.length}>
         {navLinks.map((link) => (
-          <TournamentNavLink key={link.code} to={link.code}>
-            {link.text}
-          </TournamentNavLink>
+          <TournamentNavLink
+            key={link.code}
+            code={link.code}
+            text={link.text}
+          />
         ))}
-        <MyTeamLink />
       </TournamentNav>
       <div className="tournament__container__spacer" />
       <CheckinActions />
       <div className="tournament__outlet-spacer" />
-      {/* TODO: pass context instead of useMatches */}
       <Outlet context={data} />
-    </div>
+    </Main>
   );
 }
 
@@ -189,12 +190,11 @@ function MyTeamLink() {
   if (alreadyRegistered) {
     return (
       <TournamentNavLink
-        to="manage-team"
-        className="info-banner__action-button"
-        prefetch="intent"
-      >
-        Add players
-      </TournamentNavLink>
+        code="manage-team"
+        text="Add players"
+        // className="info-banner__action-button"
+        // prefetch="intent"
+      />
     );
   }
 
@@ -217,13 +217,5 @@ function MyTeamLink() {
   // }
   if (!user) return null;
 
-  return (
-    <TournamentNavLink
-      to="register"
-      className="info-banner__action-button"
-      data-cy="register-button"
-    >
-      Register
-    </TournamentNavLink>
-  );
+  return <TournamentNavLink code="register" text="Register" />;
 }

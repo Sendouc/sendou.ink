@@ -1,3 +1,5 @@
+import type { BracketType } from "~/db/types";
+
 export function findByIdentifier(identifier: string) {
   return {
     name: "In The Zone X",
@@ -7,6 +9,11 @@ export function findByIdentifier(identifier: string) {
     startTime: 1669409425,
     // one hour less than startTime
     checkInStartTime: 1669405825,
+    discordUrl: "https://discord.gg/sendou",
+    organizer: {
+      discordName: "Sendou",
+      discordDiscriminator: "0001",
+    },
     styles: {
       bannerBackground:
         "radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%)",
@@ -17,6 +24,7 @@ export function findByIdentifier(identifier: string) {
       {
         id: 1,
         rounds: [],
+        type: "DE" as BracketType,
       },
     ],
     teams: [
