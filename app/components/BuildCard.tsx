@@ -68,7 +68,7 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
 
   return (
     <div className="build">
-      <div className="stack xxs">
+      <div>
         <div className="build__top-row">
           <h2 className="build__title">{title}</h2>
         </div>

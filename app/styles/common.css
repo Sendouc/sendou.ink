@@ -794,9 +794,11 @@ dialog::backdrop {
 }
 
 .build__title {
+  overflow: hidden;
+  height: 2.5rem;
   font-size: var(--fonts-sm);
   line-height: 1.25;
-  word-wrap: break-word;
+  word-wrap: break-all;
 }
 
 .build__top-row {
