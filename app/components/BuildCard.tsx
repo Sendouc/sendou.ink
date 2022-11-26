@@ -71,19 +71,6 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
       <div className="stack xxs">
         <div className="build__top-row">
           <h2 className="build__title">{title}</h2>
-          {modes && modes.length > 0 && (
-            <div className="build__modes">
-              {modes.map((mode) => (
-                <Image
-                  key={mode}
-                  alt=""
-                  path={modeImageUrl(mode)}
-                  width={18}
-                  height={18}
-                />
-              ))}
-            </div>
-          )}
         </div>
         <div className="build__date-author-row">
           {owner && (
@@ -154,14 +141,27 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
             path={navIconUrl("analyzer")}
           />
         </Link>
-        {description && (
+        {description || (modes && modes.length > 0) ? (
           <Popover
             buttonChildren={<InfoIcon className="build__icon" />}
             triggerClassName="minimal tiny build__small-text"
           >
+            {modes && modes.length > 0 && (
+              <div className="build__modes">
+                {modes.map((mode) => (
+                  <Image
+                    key={mode}
+                    alt=""
+                    path={modeImageUrl(mode)}
+                    width={18}
+                    height={18}
+                  />
+                ))}
+              </div>
+            )}
             {description}
           </Popover>
-        )}
+        ) : null}
         {canEdit && (
           <>
             <LinkButton
