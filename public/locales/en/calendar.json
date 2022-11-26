@@ -5,6 +5,8 @@
   "reportResults": "You can report results:",
   "day": "Day {{number}}",
   "actions.reportWinners": "Report winners",
+  "actions.delete": "Delete event",
+  "actions.delete.confirm": "Delete all data related to {{name}}?",
   "participatedCount": "{{count}} teams participated",
   "members": "Members",
   "results": "Results",

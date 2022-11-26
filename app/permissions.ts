@@ -272,6 +272,16 @@ export function canEditCalendarEvent({
   return adminOverride(user)(user?.id === event.authorId);
 }
 
+export function canDeleteCalendarEvent({
+  user,
+  event,
+  startTime,
+}: CanEditCalendarEventArgs & { startTime: Date }) {
+  return adminOverride(user)(
+    user?.id === event.authorId && startTime.getTime() > new Date().getTime()
+  );
+}
+
 interface CanReportCalendarEventWinnersArgs {
   user?: Pick<User, "id" | "discordId">;
   event: Pick<CalendarEvent, "authorId">;

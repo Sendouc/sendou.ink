@@ -1,4 +1,5 @@
-import type { SerializeFrom } from "@remix-run/node";
+import type { ActionFunction, SerializeFrom } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import {
   json,
   type MetaFunction,
@@ -12,27 +13,33 @@ import * as React from "react";
 import { useTranslation } from "~/hooks/useTranslation";
 import { z } from "zod";
 import { Avatar } from "~/components/Avatar";
-import { LinkButton } from "~/components/Button";
+import { Button, LinkButton } from "~/components/Button";
 import { Image } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { Placement } from "~/components/Placement";
 import { Section } from "~/components/Section";
 import { db } from "~/db";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import { useUser } from "~/modules/auth";
+import { requireUser, useUser } from "~/modules/auth";
 import { i18next } from "~/modules/i18n";
 import {
+  canDeleteCalendarEvent,
   canEditCalendarEvent,
   canReportCalendarEventWinners,
 } from "~/permissions";
 import calendarStyles from "~/styles/calendar-event.css";
 import mapsStyles from "~/styles/maps.css";
 import { databaseTimestampToDate } from "~/utils/dates";
-import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
+import {
+  notFoundIfFalsy,
+  validate,
+  type SendouRouteHandle,
+} from "~/utils/remix";
 import { discordFullName, makeTitle } from "~/utils/strings";
 import {
   calendarEditPage,
   calendarReportWinnersPage,
+  CALENDAR_PAGE,
   navIconUrl,
   readonlyMapsPage,
   resolveBaseUrl,
@@ -42,6 +49,28 @@ import { actualNumber, id } from "~/utils/zod";
 import { MapPoolStages } from "~/components/MapPoolSelector";
 import { Tags } from "../components/Tags";
 import { MapPool } from "~/modules/map-pool-serializer";
+import { FormWithConfirm } from "~/components/FormWithConfirm";
+
+export const action: ActionFunction = async ({ params, request }) => {
+  const user = await requireUser(request);
+  const parsedParams = z
+    .object({ id: z.preprocess(actualNumber, id) })
+    .parse(params);
+  const event = notFoundIfFalsy(db.calendarEvents.findById(parsedParams.id));
+
+  validate(
+    canDeleteCalendarEvent({
+      user,
+      event,
+      startTime: databaseTimestampToDate(event.startTimes[0]!),
+    }),
+    403
+  );
+
+  db.calendarEvents.deleteById(event.eventId);
+
+  return redirect(CALENDAR_PAGE);
+};
 
 export const links: LinksFunction = () => {
   return [
@@ -166,7 +195,29 @@ export default function CalendarEventPage() {
       </section>
       <Results />
       <MapPoolInfo />
-      <Description />
+      <div className="stack md">
+        <Description />
+        {canDeleteCalendarEvent({
+          user,
+          startTime: databaseTimestampToDate(data.event.startTimes[0]!),
+          event: data.event,
+        }) ? (
+          <FormWithConfirm
+            dialogHeading={t("calendar:actions.delete.confirm", {
+              name: data.event.name,
+            })}
+          >
+            <Button
+              className="ml-auto"
+              tiny
+              variant="minimal-destructive"
+              type="submit"
+            >
+              {t("calendar:actions.delete")}
+            </Button>
+          </FormWithConfirm>
+        ) : null}
+      </div>
     </Main>
   );
 }

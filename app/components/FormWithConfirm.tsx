@@ -9,7 +9,7 @@ export function FormWithConfirm({
   children,
   dialogHeading,
 }: {
-  fields: [name: string, value: string | number][];
+  fields?: [name: string, value: string | number][];
   children: React.ReactNode;
   dialogHeading: string;
 }) {
@@ -25,7 +25,7 @@ export function FormWithConfirm({
   return (
     <>
       <Form id={id} className="hidden" ref={formRef} method="post">
-        {fields.map(([name, value]) => (
+        {fields?.map(([name, value]) => (
           <input type="hidden" key={name} name={name} value={value} />
         ))}
       </Form>

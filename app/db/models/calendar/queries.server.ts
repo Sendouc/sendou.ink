@@ -40,6 +40,7 @@ import findMapPoolByEventIdSql from "./findMapPoolByEventId.sql";
 import findRecentMapPoolsByAuthorIdSql from "./findRecentMapPoolsByAuthorId.sql";
 import findAllEventsWithMapPoolsSql from "./findAllEventsWithMapPools.sql";
 import findTieBreakerMapPoolByEventIdSql from "./findTieBreakerMapPoolByEventId.sql";
+import deleteByIdSql from "./deleteById.sql";
 
 const createStm = sql.prepare(createSql);
 const updateStm = sql.prepare(updateSql);
@@ -56,6 +57,7 @@ const findMapPoolByEventIdStm = sql.prepare(findMapPoolByEventIdSql);
 const findTieBreakerMapPoolByEventIdtm = sql.prepare(
   findTieBreakerMapPoolByEventIdSql
 );
+const deleteByIdStm = sql.prepare(deleteByIdSql);
 
 export type CreateArgs = Pick<
   CalendarEvent,
@@ -547,4 +549,8 @@ export function findTieBreakerMapPoolByEventId(
   return findTieBreakerMapPoolByEventIdtm.all({ calendarEventId }) as Array<
     Pick<MapPoolMap, "mode" | "stageId">
   >;
+}
+
+export function deleteById(id: CalendarEvent["id"]) {
+  return deleteByIdStm.run({ id });
 }
