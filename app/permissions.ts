@@ -305,9 +305,6 @@ interface CanAdminCalendarTOTools {
   user?: Pick<User, "id" | "discordId">;
   event: Pick<CalendarEvent, "authorId">;
 }
-export function canAdminCalendarTOTools({
-  user,
-  event,
-}: CanAdminCalendarTOTools) {
+export function canAdminTournament({ user, event }: CanAdminCalendarTOTools) {
   return adminOverride(user)(user?.id === event.authorId);
 }

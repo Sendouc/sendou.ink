@@ -24,24 +24,28 @@ import type {
   ActionFunction,
   LinksFunction,
   LoaderArgs,
-  MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
 import {
-  type ShouldReloadFunction,
-  useLoaderData,
   Outlet,
+  useLoaderData,
+  type ShouldReloadFunction,
 } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { z } from "zod";
-import { requireUser, useUser } from "~/modules/auth";
+import { db } from "~/db";
+import { useUser } from "~/modules/auth";
 import { tournamentHasStarted } from "~/modules/tournament/utils";
+import { canAdminTournament } from "~/permissions";
 import tournamentStylesUrl from "~/styles/tournament.css";
 import { parseRequestFormData } from "~/utils/remix";
-import { makeTitle } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
 import { id } from "~/utils/zod";
-import { CheckinActions } from "./components/CheckinActions";
+import { CheckinActions } from "./to.$identifier/components/CheckinActions";
+import {
+  TournamentNav,
+  TournamentNavLink,
+} from "./to.$identifier/components/TournamentNav";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: tournamentStylesUrl }];
@@ -57,7 +61,6 @@ export const action: ActionFunction = async ({ request }) => {
     request,
     schema: tournamentActionSchema,
   });
-  const user = await requireUser(request);
 
   switch (data._action) {
     case "CHECK_IN": {
@@ -74,22 +77,16 @@ export const action: ActionFunction = async ({ request }) => {
   return new Response(undefined, { status: 200 });
 };
 
-export const loader = async ({ params }: LoaderArgs) => {
+export type TournamentLoader = typeof loader;
+export type TournamentLoaderData = SerializeFrom<typeof loader>;
+
+export const loader = ({ params }: LoaderArgs) => {
   invariant(
     typeof params["identifier"] === "string",
     "Expected params.identifier to be string"
   );
 
-  // xxx: findTournamentByNameForUrl
-  // const tournament = await findTournamentByNameForUrl({
-  //   organizationNameForUrl: params.organization,
-  //   tournamentNameForUrl: params.tournament,
-  // });
-
-  return {
-    rounds: [],
-    // [PAGE_TITLE_KEY]: tournament.name,
-  };
+  return db.tournaments.findByIdentifier(params["identifier"]);
 };
 
 // xxx:
@@ -120,7 +117,8 @@ export default function TournamentPage() {
     const tournamentIsOver = false;
 
     if (tournamentHasStarted(data.brackets)) {
-      result.push({ code: `bracket/${data.brackets[0].id}`, text: "Bracket" });
+      // TODO: support many tournaments
+      result.push({ code: `bracket/${data.brackets[0]!.id}`, text: "Bracket" });
 
       // TODO: add streams page
       // eslint-disable-next-line no-constant-condition
@@ -133,7 +131,7 @@ export default function TournamentPage() {
       (bracket) => bracket.rounds.length === 0
     );
 
-    if (isTournamentAdmin({ userId: user?.id, organization: data.organizer })) {
+    if (canAdminTournament({ user, event: data })) {
       result.push({
         code: "manage",
         text: "Controls",
@@ -147,27 +145,30 @@ export default function TournamentPage() {
     return result;
   })();
 
-  const tournamentContainerStyle: MyCSSProperties = {
-    "--tournaments-bg": data.bannerBackground,
-    "--tournaments-text": data.CSSProperties.text,
-    "--tournaments-text-transparent": data.CSSProperties.textTransparent,
-  };
-
   return (
-    <div className="tournament__container" style={tournamentContainerStyle}>
-      <SubNav>
+    <div
+      className="tournament__container"
+      style={
+        {
+          "--tournaments-bg": data.styles.bannerBackground,
+          "--tournaments-text": data.styles.text,
+          "--tournaments-text-transparent": data.styles.textTransparent,
+        } as any
+      }
+    >
+      <TournamentNav>
         {navLinks.map((link) => (
-          <SubNavLink key={link.code} to={link.code}>
+          <TournamentNavLink key={link.code} to={link.code}>
             {link.text}
-          </SubNavLink>
+          </TournamentNavLink>
         ))}
         <MyTeamLink />
-      </SubNav>
+      </TournamentNav>
       <div className="tournament__container__spacer" />
       <CheckinActions />
       <div className="tournament__outlet-spacer" />
       {/* TODO: pass context instead of useMatches */}
-      <Outlet />
+      <Outlet context={data} />
     </div>
   );
 }
@@ -178,22 +179,22 @@ function MyTeamLink() {
 
   const isAlreadyInATeamButNotCaptain = data.teams
     .flatMap((team) => team.members)
-    .filter(({ captain }) => !captain)
-    .some(({ member }) => member.id === user?.id);
+    .filter(({ isOwner }) => !isOwner)
+    .some((member) => member.id === user?.id);
   if (isAlreadyInATeamButNotCaptain) return null;
 
   const alreadyRegistered = data.teams
     .flatMap((team) => team.members)
-    .some(({ member }) => member.id === user?.id);
+    .some((member) => member.id === user?.id);
   if (alreadyRegistered) {
     return (
-      <SubNavLink
+      <TournamentNavLink
         to="manage-team"
         className="info-banner__action-button"
         prefetch="intent"
       >
         Add players
-      </SubNavLink>
+      </TournamentNavLink>
     );
   }
 
@@ -217,12 +218,12 @@ function MyTeamLink() {
   if (!user) return null;
 
   return (
-    <SubNavLink
+    <TournamentNavLink
       to="register"
       className="info-banner__action-button"
       data-cy="register-button"
     >
       Register
-    </SubNavLink>
+    </TournamentNavLink>
   );
 }

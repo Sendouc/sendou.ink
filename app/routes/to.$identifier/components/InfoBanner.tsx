@@ -2,11 +2,10 @@ import { Link, useLocation, useMatches } from "@remix-run/react";
 import { DiscordIcon } from "~/components/icons/Discord";
 import { TwitterIcon } from "~/components/icons/Twitter";
 import { resolveTournamentFormatString } from "~/core/tournament/bracket";
+import { TournamentLoaderData } from "~/routes/to.$identifier";
 import { FindTournamentByNameForUrlI } from "~/services/tournament";
 
-export function InfoBanner() {
-  const [, parentRoute] = useMatches();
-  const data = parentRoute.data as FindTournamentByNameForUrlI;
+export function InfoBanner({ data }: { data: TournamentLoaderData }) {
   const location = useLocation();
 
   const urlToTournamentFrontPage = location.pathname

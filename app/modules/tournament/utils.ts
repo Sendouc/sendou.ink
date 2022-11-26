@@ -73,3 +73,7 @@ export function matchIsOver({ bestOf, score }: MatchIsOverArgs) {
 
 export const friendCodeRegExpString = "^(SW-)?[0-9]{4}-?[0-9]{4}-?[0-9]{4}$";
 export const friendCodeRegExp = new RegExp(friendCodeRegExpString, "i");
+
+export const checkInClosesDate = (startTime: Date): Date => {
+  return new Date(new Date(startTime).getTime() - 1000 * 10);
+};

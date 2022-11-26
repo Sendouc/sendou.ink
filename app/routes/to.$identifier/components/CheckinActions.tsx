@@ -1,29 +1,29 @@
 // TODO: Warning: Text content did not match. Server: "57" Client: "56"
 import * as React from "react";
 import { Form, useLoaderData, useTransition } from "@remix-run/react";
-import {
-  checkInClosesDate,
-  TOURNAMENT_TEAM_ROSTER_MIN_SIZE,
-} from "~/constants";
-import { TournamentAction } from "~/routes/to/$organization.$tournament";
-import type { FindTournamentByNameForUrlI } from "~/services/tournament";
-import { useUser } from "~/hooks/common";
-import { Button } from "../Button";
-import { AlertIcon } from "../icons/Alert";
-import { CheckInIcon } from "../icons/CheckIn";
-import { ErrorIcon } from "../icons/Error";
-import { SuccessIcon } from "../icons/Success";
 import { ActionSectionWrapper } from "./ActionSectionWrapper";
+import { Button } from "~/components/Button";
+import { useUser } from "~/modules/auth";
+import { CheckInIcon } from "~/components/icons/CheckIn";
+import { SuccessIcon } from "~/components/icons/Success";
+import { AlertIcon } from "~/components/icons/Alert";
+import { ErrorIcon } from "~/components/icons/Error";
+import { checkInClosesDate } from "~/modules/tournament/utils";
+import { TOURNAMENT } from "~/constants";
+import type { TournamentLoader } from "../../to.$identifier";
+import { databaseTimestampToDate } from "~/utils/dates";
 
 // TODO: warning when not registered but check in is open
 export function CheckinActions() {
-  const tournament = useLoaderData<FindTournamentByNameForUrlI>();
+  const tournament = useLoaderData<TournamentLoader>();
   const user = useUser();
   const transition = useTransition();
 
   const timeInMinutesBeforeCheckInCloses = React.useCallback(() => {
     return Math.floor(
-      (checkInClosesDate(tournament.startTime).getTime() -
+      (checkInClosesDate(
+        databaseTimestampToDate(tournament.startTime)
+      ).getTime() -
         new Date().getTime()) /
         (1000 * 60)
     );
@@ -40,9 +40,7 @@ export function CheckinActions() {
   }, []);
 
   const ownTeam = tournament.teams.find((team) =>
-    team.members.some(
-      ({ member, captain }) => captain && member.id === user?.id
-    )
+    team.members.some((member) => member.isOwner && member.id === user?.id)
   );
 
   const tournamentHasStarted = tournament.brackets.some((b) => b.rounds.length);
@@ -60,7 +58,7 @@ export function CheckinActions() {
 
   const checkInHasStarted = new Date(tournament.checkInStartTime) < new Date();
   const teamHasEnoughMembers =
-    ownTeam.members.length >= TOURNAMENT_TEAM_ROSTER_MIN_SIZE;
+    ownTeam.members.length >= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL;
 
   if (!checkInHasStarted && !teamHasEnoughMembers) {
     return (
@@ -124,11 +122,7 @@ export function CheckinActions() {
           method="post"
           className="tournament__action-section__button-container"
         >
-          <input
-            type="hidden"
-            name="_action"
-            value={TournamentAction.CHECK_IN}
-          />
+          <input type="hidden" name="_action" value="CHECK_IN" />
           <input type="hidden" name="teamId" value={ownTeam.id} />
           <Button
             variant="outlined"
