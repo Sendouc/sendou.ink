@@ -43,6 +43,7 @@ import { parseRequestFormData } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
 import { id } from "~/utils/zod";
 import { CheckinActions } from "./to.$identifier/components/CheckinActions";
+import { InfoBanner } from "./to.$identifier/components/InfoBanner";
 import {
   TournamentNav,
   TournamentNavLink,
@@ -111,8 +112,7 @@ export default function TournamentPage() {
 
   const navLinks = (() => {
     const result: { code: string; text: string }[] = [
-      { code: "", text: "Overview" },
-      { code: "map-pool", text: "Map Pool" },
+      { code: "", text: "Register" },
       { code: "teams", text: `Teams (${data.teams.length})` },
     ];
     const tournamentIsOver = false;
@@ -157,6 +157,8 @@ export default function TournamentPage() {
         } as any
       }
     >
+      <InfoBanner data={data} />
+      <div className="tournament__container__spacer" />
       <TournamentNav tabsCount={navLinks.length}>
         {navLinks.map((link) => (
           <TournamentNavLink
@@ -172,50 +174,4 @@ export default function TournamentPage() {
       <Outlet context={data} />
     </Main>
   );
-}
-
-function MyTeamLink() {
-  const data = useLoaderData<typeof loader>();
-  const user = useUser();
-
-  const isAlreadyInATeamButNotCaptain = data.teams
-    .flatMap((team) => team.members)
-    .filter(({ isOwner }) => !isOwner)
-    .some((member) => member.id === user?.id);
-  if (isAlreadyInATeamButNotCaptain) return null;
-
-  const alreadyRegistered = data.teams
-    .flatMap((team) => team.members)
-    .some((member) => member.id === user?.id);
-  if (alreadyRegistered) {
-    return (
-      <TournamentNavLink
-        code="manage-team"
-        text="Add players"
-        // className="info-banner__action-button"
-        // prefetch="intent"
-      />
-    );
-  }
-
-  if (tournamentHasStarted(data.brackets)) {
-    return null;
-  }
-
-  // TODO: prompt user to log in if not logged in
-  // if (!user) {
-  //   return (
-  //     <form action={getLogInUrl(location)} method="post">
-  //       <button
-  //         className="info-banner__action-button"
-  //         data-cy="log-in-to-join-button"
-  //       >
-  //         Log in to join
-  //       </button>
-  //     </form>
-  //   );
-  // }
-  if (!user) return null;
-
-  return <TournamentNavLink code="register" text="Register" />;
 }

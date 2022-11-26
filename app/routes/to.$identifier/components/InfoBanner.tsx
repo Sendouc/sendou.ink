@@ -1,5 +1,6 @@
 import { Link, useLocation } from "@remix-run/react";
 import { DiscordIcon } from "~/components/icons/Discord";
+import { TwitterIcon } from "~/components/icons/Twitter";
 import { resolveTournamentFormatString } from "~/modules/tournament/bracket";
 import type { TournamentLoaderData } from "~/routes/to.$identifier";
 import { databaseTimestampToDate } from "~/utils/dates";
@@ -16,7 +17,6 @@ export function InfoBanner({ data }: { data: TournamentLoaderData }) {
 
   const startTimeDate = databaseTimestampToDate(data.startTime);
 
-  // xxx: expand discord link
   // xxx: fix dates before mount
   return (
     <>
@@ -42,6 +42,13 @@ export function InfoBanner({ data }: { data: TournamentLoaderData }) {
             </Link>
           </div>
           <div className="info-banner__icon-buttons-container">
+            <a
+              className="info-banner__icon-button"
+              // xxx:
+              href={"https://google.com/sendou"}
+            >
+              <TwitterIcon />
+            </a>
             <a className="info-banner__icon-button" href={data.discordUrl}>
               <DiscordIcon />
             </a>

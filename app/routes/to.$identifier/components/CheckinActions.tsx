@@ -37,7 +37,7 @@ export function CheckinActions() {
     }, 1000 * 15);
 
     return () => clearTimeout(timeout);
-  }, []);
+  }, [timeInMinutesBeforeCheckInCloses]);
 
   const ownTeam = tournament.teams.find((team) =>
     team.members.some((member) => member.isOwner && member.id === user?.id)
