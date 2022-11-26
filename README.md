@@ -81,6 +81,8 @@ sendou.ink/
 └── scripts/ -- Stand-alone scripts to be run outside of the app
 ```
 
+NOTE: `public/static-assets` should only have files that don't change as it is cached for 1 month.
+
 ## Commands
 
 ### Converting gifs (badges) to thumbnail (.png)

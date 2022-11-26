@@ -9,6 +9,7 @@ import {
   SENDOU_INK_GITHUB_URL,
   SENDOU_INK_PATREON_URL,
   SENDOU_INK_TWITTER_URL,
+  SENDOU_LOVE_EMOJI_PATH,
   SPLATOON_2_SENDOU_IN_URL,
   userPage,
 } from "~/utils/urls";
@@ -86,7 +87,7 @@ export function Footer({
             {t("footer.thanks")}
             <Image
               alt=""
-              path="/img/layout/sendou_love"
+              path={SENDOU_LOVE_EMOJI_PATH}
               width={24}
               height={24}
             />

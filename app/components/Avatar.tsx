@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import type { User } from "~/db/types";
 import * as React from "react";
+import { BLANK_IMAGE_URL } from "~/utils/urls";
 
 const dimensions = {
   xxs: 24,
@@ -38,7 +39,7 @@ export function Avatar({
           ? `https://cdn.discordapp.com/avatars/${user.discordId}/${
               user.discordAvatar
             }.webp${size === "lg" ? "?size=240" : "?size=80"}`
-          : "/img/blank.gif" // avoid broken image placeholder
+          : BLANK_IMAGE_URL // avoid broken image placeholder
       }
       alt={alt}
       title={alt ? alt : undefined}

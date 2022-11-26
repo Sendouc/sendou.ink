@@ -461,7 +461,7 @@ dialog::backdrop {
   flex-wrap: wrap;
   justify-content: center;
   background-color: var(--bg-lighter);
-  background-image: url("/svg/background-pattern.svg");
+  background-image: url("/static-assets/svg/background-pattern.svg");
   margin-block-end: var(--s-4);
   overflow-x: auto;
 }
@@ -648,7 +648,7 @@ dialog::backdrop {
 .avatar {
   border-radius: 50%;
   background-color: var(--bg-lighter);
-  background-image: url("/svg/background-pattern.svg");
+  background-image: url("/static-assets/svg/background-pattern.svg");
 }
 
 .alert > svg {

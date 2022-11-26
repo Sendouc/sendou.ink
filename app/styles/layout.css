@@ -23,7 +23,7 @@
   justify-content: center;
   border-radius: var(--rounded);
   background-color: var(--bg-lighter);
-  background-image: url("/svg/background-pattern.svg");
+  background-image: url("/static-assets/svg/background-pattern.svg");
 }
 
 .layout__avatar {
@@ -153,7 +153,7 @@
   height: max-content;
   margin-top: 5rem;
   background-color: var(--bg-lighter);
-  background-image: url("/svg/background-pattern.svg");
+  background-image: url("/static-assets/svg/background-pattern.svg");
   border-end-start-radius: var(--rounded);
   border-start-start-radius: var(--rounded);
   overflow-y: auto;
@@ -171,7 +171,7 @@
   height: 2rem;
   border-radius: var(--rounded);
   background-color: var(--bg-lighter);
-  background-image: url("/svg/background-pattern.svg");
+  background-image: url("/static-assets/svg/background-pattern.svg");
 }
 
 .layout__menu__links {
