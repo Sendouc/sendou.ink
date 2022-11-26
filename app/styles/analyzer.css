@@ -83,6 +83,10 @@
   padding-inline: var(--s-3);
 }
 
+.analyzer__details:has(.analyzer__stat-card-highlighted) .analyzer__summary {
+  background-color: var(--theme-transparent);
+}
+
 .analyzer__stat-collection {
   display: grid;
   gap: var(--s-2);
@@ -98,6 +102,10 @@
   border-radius: var(--rounded);
   background-color: var(--bg-darker);
   gap: var(--s-4);
+}
+
+.analyzer__stat-card-highlighted {
+  background-color: var(--theme-transparent);
 }
 
 .analyzer__stat-card__title-and-value-container {

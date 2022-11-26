@@ -48,6 +48,7 @@ import {
   subWeaponImageUrl,
 } from "~/utils/urls";
 import { getAbilityChunksMapAsArray } from "~/modules/analyzer/abilityChunksCalc";
+import clsx from "clsx";
 
 export const CURRENT_PATCH = "1.2";
 
@@ -503,6 +504,12 @@ export default function BuildAnalyzerPage() {
               title={t("analyzer:stat.category.actionsPerInkTank")}
               containerClassName="analyzer__table-container"
             >
+              {/** Hack the :has ;) */}
+              {build
+                .flat()
+                .some((ability) => ability === "ISM" || ability === "ISS") ? (
+                <div className="analyzer__stat-card-highlighted" />
+              ) : null}
               <ConsumptionTable
                 options={analyzed.stats.fullInkTankOptions}
                 subWeaponId={analyzed.weapon.subWeaponSplId}
@@ -794,7 +801,7 @@ function StatCategory({
   textBelow?: string;
 }) {
   return (
-    <details>
+    <details className="analyzer__details">
       <summary className="analyzer__summary">{title}</summary>
       <div className={containerClassName}>{children}</div>
       {textBelow && (
@@ -816,10 +823,17 @@ function StatCard({
   popoverInfo?: string;
 }) {
   const { t } = useTranslation("analyzer");
+
   const baseValue = typeof stat === "number" ? stat : stat.baseValue;
+  const showBuildValue =
+    typeof stat !== "number" && stat.value !== stat.baseValue;
 
   return (
-    <div className="analyzer__stat-card">
+    <div
+      className={clsx("analyzer__stat-card", {
+        "analyzer__stat-card-highlighted": showBuildValue,
+      })}
+    >
       <div className="analyzer__stat-card__title-and-value-container">
         <h3 className="analyzer__stat-card__title">
           {title}{" "}
@@ -843,7 +857,7 @@ function StatCard({
               {suffix}
             </div>
           </div>
-          {typeof stat !== "number" && stat.value !== stat.baseValue && (
+          {showBuildValue ? (
             <div className="analyzer__stat-card__value">
               <h4 className="analyzer__stat-card__value__title">
                 {t("build")}
@@ -853,7 +867,7 @@ function StatCard({
                 {suffix}
               </div>
             </div>
-          )}
+          ) : null}
         </div>
       </div>
       <div className="analyzer__stat-card__ability-container">
