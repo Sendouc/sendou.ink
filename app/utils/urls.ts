@@ -17,7 +17,6 @@ import type {
 } from "~/modules/in-game-lists/types";
 import type navItems from "~/components/layout/nav-items.json";
 import { type AuthErrorCode } from "~/modules/auth";
-import { useWeaponIdToSlug } from "~/hooks/useWeaponIdToSlug";
 
 export const SPLATOON_2_SENDOU_IN_URL = "https://spl2.sendou.ink";
 export const PLUS_SERVER_DISCORD_URL = "https://discord.gg/FW4dKrY";
@@ -82,10 +81,8 @@ export const badgePage = (badgeId: number) => `${BADGES_PAGE}/${badgeId}`;
 export const plusSuggestionPage = (tier?: string | number) =>
   `/plus/suggestions${tier ? `?tier=${tier}` : ""}`;
 
-export const WeaponsBuildsPage = (weaponId: MainWeaponId) => {
-  const weaponIdSlug = useWeaponIdToSlug(weaponId);
-  return weaponIdSlug;
-};
+export const weaponBuildPage = (weaponSlug: string) =>
+  `${BUILDS_PAGE}/${weaponSlug}`;
 
 export const calendarEventPage = (eventId: number) => `/calendar/${eventId}`;
 export const calendarEditPage = (eventId?: number) =>

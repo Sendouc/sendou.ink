@@ -8,18 +8,21 @@ import type {
   Ability as AbilityType,
   ModeShort,
 } from "~/modules/in-game-lists";
-import type { BuildAbilitiesTuple } from "~/modules/in-game-lists/types";
+import type {
+  BuildAbilitiesTuple,
+  MainWeaponId,
+} from "~/modules/in-game-lists/types";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { discordFullName, gearTypeToInitial } from "~/utils/strings";
 import {
   analyzerPage,
-  BUILDS_PAGE,
   gearImageUrl,
   mainWeaponImageUrl,
   modeImageUrl,
+  mySlugify,
   navIconUrl,
   userBuildsPage,
-  WeaponsBuildsPage,
+  weaponBuildPage,
 } from "~/utils/urls";
 import { Ability } from "./Ability";
 import { Button, LinkButton } from "./Button";
@@ -110,17 +113,7 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
       </div>
       <div className="build__weapons">
         {weapons.map((weaponSplId) => (
-          <div key={weaponSplId} className="build__weapon">
-            <Link to={`${BUILDS_PAGE}/${WeaponsBuildsPage(weaponSplId)}`}>
-              <Image
-                path={mainWeaponImageUrl(weaponSplId)}
-                alt={t(`weapons:MAIN_${weaponSplId}` as any)}
-                title={t(`weapons:MAIN_${weaponSplId}` as any)}
-                height={36}
-                width={36}
-              />
-            </Link>
-          </div>
+          <RoundWeaponImage key={weaponSplId} weaponSplId={weaponSplId} />
         ))}
         {weapons.length === 1 && (
           <div className="build__weapon-text">
@@ -192,6 +185,25 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
           </>
         )}
       </div>
+    </div>
+  );
+}
+
+function RoundWeaponImage({ weaponSplId }: { weaponSplId: MainWeaponId }) {
+  const { t } = useTranslation(["weapons"]);
+  const slug = mySlugify(t(`weapons:MAIN_${weaponSplId}`, { lng: "en" }));
+
+  return (
+    <div key={weaponSplId} className="build__weapon">
+      <Link to={weaponBuildPage(slug)}>
+        <Image
+          path={mainWeaponImageUrl(weaponSplId)}
+          alt={t(`weapons:MAIN_${weaponSplId}` as any)}
+          title={t(`weapons:MAIN_${weaponSplId}` as any)}
+          height={36}
+          width={36}
+        />
+      </Link>
     </div>
   );
 }
