@@ -10,6 +10,7 @@
   "pages.builds": "Udrustningssæt",
   "pages.analyzer": "Udrustningsanalysator",
   "pages.maps": "Banelister",
+  "pages.plans": "Planlægningsværktøj",
   "pages.object-damage-calculator": "Objektskadeberegneren",
 
   "header.profile": "Profil",
@@ -45,6 +46,7 @@
   "actions.clear": "Ryd",
   "actions.selectAll": "Vælg alle",
   "actions.search": "Søg",
+  "actions.setBg": "Indstil som baggrund",
 
   "maps.createMapList": "Lav bane-liste",
   "maps.halfSz": "50% DD",
@@ -100,5 +102,7 @@
 
   "theme.light": "Lyst",
   "theme.dark": "Mørkt",
-  "theme.auto": "Automatisk"
+  "theme.auto": "Automatisk",
+
+  "plans.poweredBy": "Tegneprogrammet er leveret af {{name}}"
 }

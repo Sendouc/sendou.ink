@@ -6,6 +6,7 @@
   "pre.footerNote": "Bemærk: Du kan altid ændre din banepulje og holdliste, så længe at turneringen ikke erstartet.",
   "pre.deleteTeam": "Fjern hold",
 
+  "preview": "Se forhåndsvisning af banelistegeneratoren (kun for admins)",
   "pre.steps.register": "1. Registrer jer på",
   "pre.steps.register.summary": "Indtast det holdnavn, som I vil registrere jer med",
   "pre.steps.mapPool": "2. Banepulje",
@@ -39,5 +40,7 @@
   "teams.mapsPickedStatus": "Status for banevalg",
 
   "admin.eventStarted": "Begivenheden er startet",
-  "admin.eventStarted.explanation": "Efter begivenheden er startet, kan hold stadigvæk lave nye banepuljer. De kan dog ikke ændre deres banepulje eller holdlister."
+  "admin.eventStarted.explanation": "Efter begivenheden er startet, kan hold stadigvæk lave nye banepuljer. De kan dog ikke ændre deres banepulje eller holdlister.",
+  "admin.download": "Hent liste over deltagere",
+  "admin.download.discord": "Hent Discord-liste"
 }
