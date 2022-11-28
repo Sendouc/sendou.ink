@@ -16,6 +16,7 @@ const addUniqueParam = (
   return paramsCopy;
 };
 
+// xxx: reimplement or delete
 export function LanguageChanger() {
   const { t, i18n } = useTranslation();
   const [searchParams] = useSearchParams();

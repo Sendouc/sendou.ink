@@ -5,11 +5,21 @@ import type { MainWeaponId } from "~/modules/in-game-lists";
 import { weaponCategories, weaponIdIsNotAlt } from "~/modules/in-game-lists";
 import { mainWeaponImageUrl, mySlugify, weaponCategoryUrl } from "~/utils/urls";
 import { type SendouRouteHandle } from "~/utils/remix";
+import styles from "~/styles/builds.css";
+import type { LinksFunction } from "@remix-run/node";
+import { Main } from "~/components/Main";
 
+// xxx: implement
 export const handle: SendouRouteHandle = {
   i18n: "weapons",
+  breadcrumb: ({ match, t }) => "TODO",
 };
 
+export const links: LinksFunction = () => {
+  return [{ rel: "stylesheet", href: styles }];
+};
+
+// xxx: readd new build button somewhere
 export default function BuildsPage() {
   const { t } = useTranslation(["common", "weapons"]);
 
@@ -18,7 +28,7 @@ export default function BuildsPage() {
   };
 
   return (
-    <div className="stack md">
+    <Main className="stack md">
       {weaponCategories.map((category) => (
         <div key={category.name} className="builds__category">
           <div className="builds__category__header">
@@ -55,6 +65,6 @@ export default function BuildsPage() {
           </div>
         </div>
       ))}
-    </div>
+    </Main>
   );
 }

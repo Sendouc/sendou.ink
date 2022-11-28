@@ -33,8 +33,10 @@
   --theme-semi-transparent-vibrant: hsl(255deg 78% 65% / 75%);
   --theme-secondary: hsl(85deg 66.7% 55.3%);
   --inactive-image-filter: grayscale(100%) brightness(130%);
+  /** font-weight vars */
   --new-bg: #02011e;
   --new-bg-lighter: rgb(169 138 255 / 10%);
+  --new-bg-darker: #02011e62;
   --new-text: rgb(255 255 255 / 90%);
   --new-theme: #ffc6de;
   --new-theme-transparent: #ffc6de52;

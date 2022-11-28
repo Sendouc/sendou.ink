@@ -1,7 +1,7 @@
 .builds__top-container {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
 }
 
 .builds__category {
@@ -9,9 +9,9 @@
   flex-direction: column;
   padding: var(--s-3);
   border-radius: var(--rounded);
-  background-color: var(--bg-darker);
+  background-color: var(--new-bg-lighter);
   font-size: var(--fonts-sm);
-  font-weight: var(--semi-bold);
+  font-weight: 600;
   gap: var(--s-4);
 }
 
@@ -38,5 +38,5 @@
 
 .builds__category__weapon__img {
   border-radius: var(--rounded);
-  background-color: var(--bg-lighter);
+  background-color: var(--new-bg-darker);
 }

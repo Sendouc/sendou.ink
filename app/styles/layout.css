@@ -20,6 +20,12 @@
   font-weight: bold;
 }
 
+.layout__breadcrumb {
+  color: var(--new-text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
 .layout__avatar {
   width: var(--item-size);
   height: var(--item-size);
@@ -32,12 +38,6 @@
   font-weight: var(--bold);
   gap: var(--s-2-5);
   letter-spacing: 0.02rem;
-}
-
-.layout__header__right-container {
-  display: flex;
-  gap: var(--s-3);
-  justify-self: flex-end;
 }
 
 .layout__header__button {

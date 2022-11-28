@@ -30,10 +30,10 @@ a {
   width: auto;
   align-items: center;
   justify-content: center;
-  border: 2px solid var(--theme);
+  border: 2px solid var(--new-theme);
   border-radius: var(--rounded-sm);
   appearance: none;
-  background: var(--theme);
+  background: var(--new-theme);
   color: var(--button-text);
   cursor: pointer;
   font-size: var(--fonts-sm);
@@ -933,11 +933,4 @@ dialog::backdrop {
 
 .ability-selector__ability-button.is-dragging {
   box-shadow: 0 0 100px inset rgb(255 255 255 / 25%);
-}
-
-.breadcrumbs {
-  display: flex;
-  font-size: var(--fonts-xs);
-  font-weight: var(--bold);
-  gap: var(--s-1);
 }
