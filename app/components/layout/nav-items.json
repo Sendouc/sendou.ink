@@ -1,24 +1,19 @@
 [
   {
-    "name": "admin",
-    "url": "admin",
+    "name": "plans",
+    "url": "plans",
     "prefetch": false
   },
-  { "name": "builds", "url": "builds", "prefetch": true },
-  { "name": "analyzer", "url": "analyzer", "prefetch": true },
+  { "name": "maps", "url": "maps", "prefetch": false },
+  { "name": "badges", "url": "badges", "prefetch": false },
+  { "name": "calendar", "url": "calendar", "prefetch": false },
   {
     "name": "object-damage-calculator",
     "url": "object-damage-calculator",
     "prefetch": true
   },
-  {
-    "name": "plans",
-    "url": "plans",
-    "prefetch": false
-  },
-  { "name": "calendar", "url": "calendar", "prefetch": false },
-  { "name": "maps", "url": "maps", "prefetch": false },
-  { "name": "badges", "url": "badges", "prefetch": false },
+  { "name": "analyzer", "url": "analyzer", "prefetch": true },
+  { "name": "builds", "url": "builds", "prefetch": true },
   {
     "name": "plus",
     "url": "plus/suggestions",

@@ -21,6 +21,7 @@ import { Image } from "../Image";
 
 const currentYear = new Date().getFullYear();
 
+// xxx: new footer style
 export function Footer({
   patrons = [],
 }: {

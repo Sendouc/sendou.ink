@@ -1,10 +1,8 @@
-import { useLoaderData } from "@remix-run/react";
 import { Main } from "~/components/Main";
 import type { LinksFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { mostRecentArticles } from "~/modules/articles";
 import styles from "~/styles/front.css";
-import { ArticlesPeek } from ".";
 import { useTranslation } from "~/hooks/useTranslation";
 import type { SendouRouteHandle } from "~/utils/remix";
 
@@ -26,13 +24,13 @@ export const loader = async () => {
 
 export default function ArticlesMainPage() {
   const { t } = useTranslation("common");
-  const data = useLoaderData<typeof loader>();
-  const articles = data.recentArticles;
+  // xxx: Add articles back
+  // const data = useLoaderData<typeof loader>();
+  // const articles = data.recentArticles;
 
   return (
     <Main className="stack lg">
       <h1>{t("pages.articles")}</h1>
-      <ArticlesPeek articles={articles} />
     </Main>
   );
 }

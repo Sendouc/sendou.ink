@@ -9,15 +9,15 @@
   --item-size: 2.25rem;
 
   position: fixed;
-  top: 0;
   z-index: 501;
-  width: 100%;
+  top: 0;
   display: flex;
+  width: 100%;
+  align-items: center;
   justify-content: space-between;
   padding: var(--s-4);
   background-color: var(--new-bg);
   font-weight: bold;
-  align-items: center;
 }
 
 .layout__avatar {
@@ -69,7 +69,7 @@
 
 .layout__main {
   padding-block-end: var(--s-32);
-  padding-block-start: var(--s-16);
+  padding-block-start: var(--s-20);
 }
 
 .layout__log-in-button {
