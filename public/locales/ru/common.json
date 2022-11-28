@@ -10,6 +10,7 @@
   "pages.builds": "Сборки",
   "pages.analyzer": "Анализатор сборок",
   "pages.maps": "Списки карт",
+  "pages.plans": "Планировщик",
   "pages.object-damage-calculator": "Калькулятор урона",
 
   "header.profile": "Профиль",
@@ -31,6 +32,7 @@
   "footer.thanks": "Спасибо меценатам за поддержку",
 
   "actions.save": "Сохранить",
+  "actions.saveChanges": "Сохранить изменения",
   "actions.saving": "Сохранение...",
   "actions.submit": "Опубликовать",
   "actions.edit": "Изменить",
@@ -44,11 +46,13 @@
   "actions.clear": "Очистить",
   "actions.selectAll": "Выбрать всё",
   "actions.search": "Поиск",
+  "actions.setBg": "Задать фон",
 
   "maps.createMapList": "Создать список карт",
   "maps.halfSz": "50% Зон",
   "maps.mapPool": "Пул карт",
   "maps.tournamentMaplist": "Создать список карт для турнира (maps.iplabs.ink)",
+  "maps.tieBreakerMapPool": "Список карт для тай-брейка",
   "maps.template": "Шаблон",
   "maps.template.none": "Отсутствует",
   "maps.template.event": "Событие",
@@ -57,6 +61,12 @@
   "maps.template.preset.ANARCHY": "Режимы стихийных боёв",
   "maps.template.preset.ALL": "Все режимы",
   "maps.template.preset.onlyMode": "Только {{modeName}}",
+  "maps.validation.PICKING": "Выберите одну карту для режима",
+  "maps.validation.NOT_ONE_MAP_PER_MODE": "Выберите только одну карту для режима",
+  "maps.validation.MAP_REPEATED": "Нельзя выбрать ту же самую карту дважды",
+  "maps.validation.MODE_REPEATED": "Нельзя выбрать тот же самый режим дважды",
+  "maps.validation.TOO_MUCH_STAGE_REPEAT": "Можно выбрать карту не больше чем {{maxStageRepeat}} раз(а)",
+  "maps.validation.VALID": "Список карт в порядке!",
 
   "results": "Результаты",
 
@@ -96,5 +106,7 @@
 
   "theme.light": "Светлая",
   "theme.dark": "Тёмная",
-  "theme.auto": "Системная"
+  "theme.auto": "Системная",
+
+  "plans.poweredBy": "При поддержке {{name}}"
 }
