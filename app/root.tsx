@@ -123,6 +123,7 @@ function Document({
       <head>
         <Meta />
         <Links />
+        <Fonts />
       </head>
       <body>
         <React.StrictMode>
@@ -135,6 +136,23 @@ function Document({
         <LiveReload />
       </body>
     </html>
+  );
+}
+
+function Fonts() {
+  return (
+    <>
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossOrigin="true"
+      />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&display=swap"
+        rel="stylesheet"
+      />
+    </>
   );
 }
 
