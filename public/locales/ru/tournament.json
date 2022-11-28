@@ -1,0 +1,46 @@
+{
+  "tabs.info": "Информация",
+  "tabs.teams": "Команды: ({{count}})",
+  "tabs.admin": "Администратор",
+
+  "pre.footerNote": "Вы можете изменить ваш пул карт и ростер сколько угодно раз до начала турнира.",
+  "pre.deleteTeam": "Удалить команду",
+
+  "preview": "Предпросмотр генератора пулов карт (только для администраторов)",
+  "pre.steps.register": "1. Регистрация",
+  "pre.steps.register.summary": "Введите название команды, которую вы регистрируете",
+  "pre.steps.mapPool": "2. Пул карт",
+  "pre.steps.mapPool.explanation": "Вы можете играть без пула карт, но тогда ваши противники выбирют, на каких картах вы будете играть. Карты для тай-брейков выделены синим.",
+  "pre.steps.mapPool.summary": "Выберите карты вашей команды",
+  "pre.steps.roster": "3. Утверждение ростера",
+  "pre.steps.roster.explanation": "Утверждение ростера не является обязательным, но результат сидинга может быть ниже.",
+  "pre.steps.roster.summary": "Введите ростер",
+  "pre.steps.roster.fullTeamError": "Команда заполнена.",
+
+  "bracket.type.DE_WINNERS": "Раунд победителей",
+  "bracket.type.DE_LOSERS": "Раунд проигравших",
+  "bracket.type.SE": "Раунд",
+  "bracket.type.SWISS": "Швейцарский раунд",
+  "bracket.type.GROUPS": "Групповой раунд",
+
+  "round.label": "Раунд",
+
+  "team.label": "Команда",
+  "team.unlisted": "Скрытая команда",
+
+  "bestOf.label.short": "Лучшее из ",
+
+  "pickInfo.team": "Выбор команды {{number}}",
+  "pickInfo.tiebreaker": "Тай-брейк",
+  "pickInfo.both": "Выбрано обеими",
+  "pickInfo.default": "Карта по умолчанию",
+
+  "generator.error": "Ваши изменения не были сохранены так как турнир начался",
+
+  "teams.mapsPickedStatus": "Статус выбранных карт",
+
+  "admin.eventStarted": "Мероприятие началось",
+  "admin.eventStarted.explanation": "После начала турнира команды могут создавать новые списки карт, но не редактирование пулов карт или ростеров будет недоступно.",
+  "admin.download": "Скачать участников",
+  "admin.download.discord": "Discord список"
+}
