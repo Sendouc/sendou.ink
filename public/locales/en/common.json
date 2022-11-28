@@ -104,9 +104,5 @@
   "weapon.category.STRINGERS": "Stringers",
   "weapon.category.SPLATANAS": "Splatanas",
 
-  "theme.light": "Light",
-  "theme.dark": "Dark",
-  "theme.auto": "Auto",
-
   "plans.poweredBy": "Powered by {{name}}"
 }

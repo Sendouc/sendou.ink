@@ -100,9 +100,5 @@
   "weapon.category.DUALIES": "机动枪",
   "weapon.category.BRELLAS": "防空伞",
   "weapon.category.STRINGERS": "猎鱼弓",
-  "weapon.category.SPLATANAS": "刮水刀",
-
-  "theme.light": "浅色模式",
-  "theme.dark": "深色模式",
-  "theme.auto": "自动"
+  "weapon.category.SPLATANAS": "刮水刀"
 }

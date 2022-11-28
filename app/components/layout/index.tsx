@@ -5,7 +5,6 @@ import type { RootLoaderData } from "~/root";
 import { type SendouRouteHandle } from "~/utils/remix";
 import { LOGO_PATH, navIconUrl } from "~/utils/urls";
 import { Image } from "../Image";
-import { ThemeChanger } from "./ThemeChanger";
 import { Footer } from "./Footer";
 import { HamburgerButton } from "./HamburgerButton";
 import { LanguageChanger } from "./LanguageChanger";
@@ -60,7 +59,6 @@ export const Layout = React.memo(function Layout({
         <div className="layout__header__right-container">
           {!isCatchBoundary ? <UserItem /> : null}
           <LanguageChanger />
-          <ThemeChanger />
           <HamburgerButton
             expanded={menuOpen}
             onClick={() => setMenuOpen(!menuOpen)}

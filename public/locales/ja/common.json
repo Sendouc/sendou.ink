@@ -100,9 +100,5 @@
   "weapon.category.DUALIES": "マニューバー",
   "weapon.category.BRELLAS": "シェルター",
   "weapon.category.STRINGERS": "ストリンガー",
-  "weapon.category.SPLATANAS": "ワイパー",
-
-  "theme.light": "Light",
-  "theme.dark": "Dark",
-  "theme.auto": "自動"
+  "weapon.category.SPLATANAS": "ワイパー"
 }

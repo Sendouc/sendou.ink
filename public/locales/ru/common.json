@@ -92,9 +92,5 @@
   "weapon.category.DUALIES": "Спуртометы",
   "weapon.category.BRELLAS": "Зонтганы",
   "weapon.category.STRINGERS": "Тетиваторы",
-  "weapon.category.SPLATANAS": "Сплат-катаны",
-
-  "theme.light": "Светлая",
-  "theme.dark": "Тёмная",
-  "theme.auto": "Системная"
+  "weapon.category.SPLATANAS": "Сплат-катаны"
 }
