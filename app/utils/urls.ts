@@ -12,8 +12,8 @@ import type {
   AbilityWithUnknown,
   MainWeaponId,
   SpecialWeaponId,
-  StageId,
   SubWeaponId,
+  StageId,
 } from "~/modules/in-game-lists/types";
 import type navItems from "~/components/layout/nav-items.json";
 import { type AuthErrorCode } from "~/modules/auth";
@@ -27,9 +27,11 @@ export const SENDOU_INK_PATREON_URL = "https://patreon.com/sendou";
 export const SENDOU_INK_GITHUB_URL = "https://github.com/Sendouc/sendou.ink";
 export const GITHUB_CONTRIBUTORS_URL =
   "https://github.com/Sendouc/sendou.ink/graphs/contributors";
+export const TLDRAW_URL = "https://www.tldraw.com/";
 export const BORZOIC_TWITTER = "https://twitter.com/borzoic_";
 export const LEAN_TWITTER = "https://twitter.com/LeanYoshi";
 export const UBERU_TWITTER = "https://twitter.com/uberu5";
+export const TWIG_TWITTER = "https://twitter.com/TwigTheBluePik";
 export const ipLabsMaps = (pool: string) =>
   `https://maps.iplabs.ink/?3&pool=${pool}`;
 
@@ -44,10 +46,20 @@ export const BUILDS_PAGE = "/builds";
 export const CALENDAR_PAGE = "/calendar";
 export const STOP_IMPERSONATING_URL = "/auth/impersonate/stop";
 export const SEED_URL = "/seed";
+export const PLANNER_URL = "/plans";
 
-export const COMMON_PREVIEW_IMAGE = "/img/layout/common-preview.png";
-export const ERROR_GIRL_IMAGE_PATH = `/img/layout/error-girl`;
-export const LOGO_PATH = `/img/layout/logo`;
+export const BLANK_IMAGE_URL = "/static-assets/img/blank.gif";
+export const COMMON_PREVIEW_IMAGE =
+  "/static-assets/img/layout/common-preview.png";
+export const ERROR_GIRL_IMAGE_PATH = "/static-assets/img/layout/error-girl";
+export const LOGO_PATH = "/static-assets/img/layout/logo";
+export const SENDOU_LOVE_EMOJI_PATH = "/static-assets/img/layout/sendou_love";
+export const FIRST_PLACEMENT_ICON_PATH =
+  "/static-assets/svg/placements/first.svg";
+export const SECOND_PLACEMENT_ICON_PATH =
+  "/static-assets/svg/placements/second.svg";
+export const THIRD_PLACEMENT_ICON_PATH =
+  "/static-assets/svg/placements/third.svg";
 
 export const GET_ALL_USERS_ROUTE = "/users";
 export const GET_ALL_EVENTS_WITH_MAP_POOLS_ROUTE = "/calendar/map-pool-events";
@@ -77,11 +89,17 @@ export const impersonateUrl = (idToLogInAs: number) =>
 export const badgePage = (badgeId: number) => `${BADGES_PAGE}/${badgeId}`;
 export const plusSuggestionPage = (tier?: string | number) =>
   `/plus/suggestions${tier ? `?tier=${tier}` : ""}`;
+
+export const weaponBuildPage = (weaponSlug: string) =>
+  `${BUILDS_PAGE}/${weaponSlug}`;
+
 export const calendarEventPage = (eventId: number) => `/calendar/${eventId}`;
 export const calendarEditPage = (eventId?: number) =>
   `/calendar/new${eventId ? `?eventId=${eventId}` : ""}`;
 export const calendarReportWinnersPage = (eventId: number) =>
   `/calendar/${eventId}/report-winners`;
+export const toToolsPage = (eventId: number) => `/to/${eventId}`;
+
 export const mapsPage = (eventId?: MapPoolMap["calendarEventId"]) =>
   `/maps${eventId ? `?eventId=${eventId}` : ""}`;
 export const readonlyMapsPage = (eventId: CalendarEvent["id"]) =>
@@ -109,27 +127,38 @@ export const badgeUrl = ({
 }: {
   code: Badge["code"];
   extension?: "gif";
-}) => `/badges/${code}${extension ? `.${extension}` : ""}`;
+}) => `/static-assets/badges/${code}${extension ? `.${extension}` : ""}`;
 export const articlePreviewUrl = (slug: string) =>
-  `/img/article-previews/${slug}.png`;
+  `/static-assets/img/article-previews/${slug}.png`;
 
 export const navIconUrl = (navItem: typeof navItems[number]["name"]) =>
-  `/img/layout/${navItem}`;
+  `/static-assets/img/layout/${navItem}`;
 export const gearImageUrl = (gearType: GearType, gearSplId: number) =>
-  `/img/gear/${gearType.toLowerCase()}/${gearSplId}`;
+  `/static-assets/img/gear/${gearType.toLowerCase()}/${gearSplId}`;
 export const weaponCategoryUrl = (
   category: typeof weaponCategories[number]["name"]
-) => `/img/weapon-categories/${category}`;
+) => `/static-assets/img/weapon-categories/${category}`;
 export const mainWeaponImageUrl = (mainWeaponSplId: MainWeaponId) =>
-  `/img/main-weapons/${mainWeaponSplId}`;
+  `/static-assets/img/main-weapons/${mainWeaponSplId}`;
+export const outlinedMainWeaponImageUrl = (mainWeaponSplId: MainWeaponId) =>
+  `/static-assets/img/main-weapons-outlined/${mainWeaponSplId}`;
 export const subWeaponImageUrl = (subWeaponSplId: SubWeaponId) =>
-  `/img/sub-weapons/${subWeaponSplId}`;
+  `/static-assets/img/sub-weapons/${subWeaponSplId}`;
 export const specialWeaponImageUrl = (specialWeaponSplId: SpecialWeaponId) =>
-  `/img/special-weapons/${specialWeaponSplId}`;
+  `/static-assets/img/special-weapons/${specialWeaponSplId}`;
 export const abilityImageUrl = (ability: AbilityWithUnknown) =>
-  `/img/abilities/${ability}`;
-export const modeImageUrl = (mode: ModeShort) => `/img/modes/${mode}`;
-export const stageImageUrl = (stageId: StageId) => `/img/stages/${stageId}`;
+  `/static-assets/img/abilities/${ability}`;
+export const modeImageUrl = (mode: ModeShort) =>
+  `/static-assets/img/modes/${mode}`;
+export const stageImageUrl = (stageId: StageId) =>
+  `/static-assets/img/stages/${stageId}`;
+export const stageMinimapImageUrlWithEnding = ({
+  stageId,
+  modeShort,
+}: {
+  stageId: StageId;
+  modeShort: ModeShort;
+}) => `/static-assets/img/stage-minimaps/${stageId}-${modeShort}.jpeg`;
 
 export function resolveBaseUrl(url: string) {
   return new URL(url).host;

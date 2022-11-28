@@ -15,7 +15,7 @@ import { databaseTimestampToDate } from "./utils/dates";
 // TODO: 1) move "root checkers" to one file and utils to one file 2) make utils const for more terseness
 
 type IsAdminUser = Pick<User, "discordId">;
-function isAdmin(user?: IsAdminUser) {
+export function isAdmin(user?: IsAdminUser) {
   return user?.discordId === ADMIN_DISCORD_ID;
 }
 
@@ -272,6 +272,16 @@ export function canEditCalendarEvent({
   return adminOverride(user)(user?.id === event.authorId);
 }
 
+export function canDeleteCalendarEvent({
+  user,
+  event,
+  startTime,
+}: CanEditCalendarEventArgs & { startTime: Date }) {
+  return adminOverride(user)(
+    user?.id === event.authorId && startTime.getTime() > new Date().getTime()
+  );
+}
+
 interface CanReportCalendarEventWinnersArgs {
   user?: Pick<User, "id" | "discordId">;
   event: Pick<CalendarEvent, "authorId">;
@@ -295,4 +305,19 @@ function eventStartedInThePast(
     (startTime) =>
       databaseTimestampToDate(startTime).getTime() < new Date().getTime()
   );
+}
+
+export function canEnableTOTools(user?: IsAdminUser) {
+  return isAdmin(user);
+}
+
+interface CanAdminCalendarTOTools {
+  user?: Pick<User, "id" | "discordId">;
+  event: Pick<CalendarEvent, "authorId">;
+}
+export function canAdminCalendarTOTools({
+  user,
+  event,
+}: CanAdminCalendarTOTools) {
+  return adminOverride(user)(user?.id === event.authorId);
 }

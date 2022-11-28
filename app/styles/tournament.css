@@ -1,0 +1,146 @@
+.tournament__action-section {
+  padding: var(--s-6);
+  border-radius: var(--rounded);
+  background-color: var(--bg-lighter);
+}
+
+.tournament__action-section-title {
+  font-size: var(--fonts-lg);
+  font-weight: var(--bold);
+}
+
+.tournament__action-side-note {
+  color: var(--text-lighter);
+  font-size: var(--fonts-xs);
+  font-weight: var(--semi-bold);
+}
+
+.tournament__map-pool-counts {
+  display: grid;
+  width: 250px;
+  margin: 0 auto;
+  color: var(--text-lighter);
+  font-size: var(--fonts-xs);
+  grid-template-columns: repeat(4, 1fr);
+  place-items: center;
+  row-gap: var(--s-2);
+}
+
+.tournament__summary-content {
+  display: inline-flex;
+  gap: var(--s-3);
+}
+
+.tournament__summary-content > svg {
+  width: 1rem;
+}
+
+.tournament__round-container {
+  width: 250px;
+  margin: 0 auto;
+}
+
+.tournament__select-container > label {
+  margin-left: var(--s-2-5);
+}
+
+.tournament__teams-container {
+  display: flex;
+  justify-content: center;
+  gap: var(--s-4);
+}
+
+.tournament__team-select {
+  width: 150px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tournament__bo-radios-container {
+  display: flex;
+  justify-content: center;
+  gap: var(--s-4);
+}
+
+.tournament__map-list {
+  display: grid;
+  justify-content: center;
+  column-gap: var(--s-4);
+  font-size: var(--fonts-sm);
+  font-weight: var(--semi-bold);
+  grid-template-columns: max-content max-content;
+}
+
+.tournament__pick-info {
+  align-self: center;
+  font-size: var(--fonts-xxxs);
+}
+
+.tournament__pick-info.team-1 {
+  color: var(--theme-informative-blue);
+}
+
+.tournament__pick-info.team-2 {
+  color: var(--theme-informative-red);
+}
+
+.tournament__pick-info.tiebreaker {
+  color: var(--theme-informative-yellow);
+}
+
+.tournament__pick-info.both {
+  color: var(--theme-informative-green);
+}
+
+.tournament__stage-listed {
+  justify-self: flex-start;
+}
+
+.tournament__team-with-roster {
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+
+.tournament__team-with-roster__name {
+  flex: 1;
+  font-weight: var(--bold);
+  padding-inline-end: var(--s-4);
+  text-align: right;
+}
+
+.tournament__team-with-roster__members {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  border-inline-start: 2px solid var(--theme);
+  font-size: var(--fonts-xs);
+  font-weight: var(--semi-bold);
+  gap: var(--s-2);
+  list-style: none;
+  padding-inline-start: var(--s-4);
+}
+
+.tournament__team-with-roster__member {
+  display: grid;
+  gap: var(--s-1-5);
+  grid-template-columns: max-content max-content 1fr;
+}
+
+.tournament__team-member-name {
+  overflow: hidden;
+  color: var(--text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tournament__pick-status-container {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  gap: var(--s-1);
+}
+
+.tournament__pick-status-container > svg {
+  width: 1rem;
+}

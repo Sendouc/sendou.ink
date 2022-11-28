@@ -7,3 +7,4 @@ export const modes = [
 ] as const;
 
 export const modesShort = modes.map((mode) => mode.short);
+export const rankedModesShort = modesShort.slice(1);

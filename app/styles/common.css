@@ -218,6 +218,16 @@ label {
 
 details summary {
   cursor: pointer;
+  user-select: none;
+}
+
+.summary {
+  border-radius: var(--rounded);
+  background-color: var(--bg-darker-transparent);
+  font-size: var(--fonts-xs);
+  font-weight: var(--semi-bold);
+  padding-block: var(--s-1);
+  padding-inline: var(--s-2);
 }
 
 fieldset {
@@ -230,7 +240,6 @@ fieldset {
 }
 
 legend {
-  border-radius: 2px;
   border-radius: var(--rounded-sm);
   background-color: transparent;
   font-size: var(--fonts-xs);
@@ -257,7 +266,13 @@ select {
   font-size: var(--fonts-sm);
   font-weight: 500;
   padding-block: 3.5px;
-  padding-inline: var(--s-3) var(--s-7);
+  padding-inline: var(--s-3) var(--s-8);
+}
+
+/* Temporary solution for issue: https://github.com/Sendouc/sendou.ink/issues/1141 */
+.light select {
+  /* TODO: Get color from CSS var */
+  background-image: url('data:image/svg+xml;utf8,<svg width="1rem" color="rgb(0 0 0 / 55%)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>');
 }
 
 select::selection {
@@ -446,7 +461,8 @@ dialog::backdrop {
   flex-wrap: wrap;
   justify-content: center;
   background-color: var(--bg-lighter);
-  background-image: url("/svg/background-pattern.svg");
+  background-image: url("/static-assets/svg/background-pattern.svg");
+  margin-block-end: var(--s-4);
   overflow-x: auto;
 }
 
@@ -557,6 +573,44 @@ dialog::backdrop {
   padding-block: var(--s-2-5);
 }
 
+.calendar__event__tags {
+  display: flex;
+  max-width: var(--tags-max-width, 18rem);
+  flex-wrap: wrap;
+  padding: 0;
+  color: var(--black-text);
+  font-size: var(--fonts-xxs);
+  font-weight: var(--semi-bold);
+  gap: var(--s-1);
+  list-style: none;
+}
+
+.calendar__event__tags > li {
+  display: flex;
+  border-radius: var(--rounded);
+  padding-inline: var(--s-1-5);
+}
+
+.calendar__event__badge-tag {
+  color: var(--badge-text);
+}
+
+.calendar__event__tag-delete-button {
+  margin-left: auto;
+}
+
+.calendar__event__tag-badges {
+  display: flex;
+  margin-inline-start: var(--s-1);
+}
+
+.calendar__event__tag-delete-button > svg {
+  width: 0.85rem !important;
+  color: var(--black-text);
+  margin-inline-end: 0 !important;
+  margin-inline-start: var(--s-1);
+}
+
 .alert {
   display: flex;
   flex-wrap: wrap;
@@ -575,15 +629,47 @@ dialog::backdrop {
   padding-inline-start: var(--s-3);
 }
 
+.alert.tiny {
+  font-size: var(--fonts-xs);
+}
+
+.alert.warning {
+  background-color: var(--theme-warning-transparent);
+}
+
+.alert.error {
+  background-color: var(--theme-error-transparent);
+}
+
+.alert.success {
+  background-color: var(--theme-success-transparent);
+}
+
 .avatar {
   border-radius: 50%;
   background-color: var(--bg-lighter);
-  background-image: url("/svg/background-pattern.svg");
+  background-image: url("/static-assets/svg/background-pattern.svg");
 }
 
 .alert > svg {
   height: 1.75rem;
   fill: var(--theme-info);
+}
+
+.alert.tiny > svg {
+  height: 1.25rem;
+}
+
+.alert.warning > svg {
+  fill: var(--theme-warning);
+}
+
+.alert.error > svg {
+  fill: var(--theme-error);
+}
+
+.alert.success > svg {
+  fill: var(--theme-success);
 }
 
 .form-errors {
@@ -691,44 +777,6 @@ dialog::backdrop {
   margin-block-start: var(--label-margin);
 }
 
-.calendar__event__tags {
-  display: flex;
-  max-width: var(--tags-max-width, 18rem);
-  flex-wrap: wrap;
-  padding: 0;
-  color: var(--black-text);
-  font-size: var(--fonts-xxs);
-  font-weight: var(--semi-bold);
-  gap: var(--s-1);
-  list-style: none;
-}
-
-.calendar__event__tags > li {
-  display: flex;
-  border-radius: var(--rounded);
-  padding-inline: var(--s-1-5);
-}
-
-.calendar__event__badge-tag {
-  color: var(--badge-text);
-}
-
-.calendar__event__tag-delete-button {
-  margin-left: auto;
-}
-
-.calendar__event__tag-badges {
-  display: flex;
-  margin-inline-start: var(--s-1);
-}
-
-.calendar__event__tag-delete-button > svg {
-  width: 0.85rem !important;
-  color: var(--black-text);
-  margin-inline-end: 0 !important;
-  margin-inline-start: var(--s-1);
-}
-
 .builds-container {
   display: grid;
   justify-content: center;
@@ -739,16 +787,18 @@ dialog::backdrop {
 .build {
   display: flex;
   flex-direction: column;
-  padding: var(--s-2-5);
+  padding: var(--s-3);
   border-radius: var(--rounded);
   background-color: var(--bg-lighter);
   gap: var(--s-3);
 }
 
 .build__title {
+  overflow: hidden;
+  height: 2.5rem;
   font-size: var(--fonts-sm);
   line-height: 1.25;
-  word-wrap: break-word;
+  word-wrap: break-all;
 }
 
 .build__top-row {

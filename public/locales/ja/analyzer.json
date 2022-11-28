@@ -99,6 +99,7 @@
   "patch": "Patch:",
   "abilityPoints": "ギアパワー",
   "abilityPoints.short": "GP",
+  "abilityChunks": "ギアパワーのかけらが必要です",
   "consumptionExplanation": "このチャートはサブを 0-{{maxSubsToUse}} 回使用したあとに何回メインを使用できるかを表しています。インクタンクが満タンの状態でサブが連続使用できる回数は {{maxSubsToUse}} です。",
   "torpedoExplanation": "ゲームの仕様上、1度に1つ以上のトーピードを使用することはできません。",
   "trackingSubDefExplanation": "ポイントセンサー、トラップ、ラインマーカーのマーキング時間は、サブ性能アップのギアなしで計算しています。",

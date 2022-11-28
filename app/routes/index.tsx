@@ -24,6 +24,7 @@ import {
   mapsPage,
   navIconUrl,
   objectDamageCalculatorPage,
+  PLANNER_URL,
   plusSuggestionPage,
   userPage,
 } from "~/utils/urls";
@@ -107,6 +108,12 @@ export default function Index() {
             title={t("common:pages.maps")}
             description={t("front:maps.description")}
             to={mapsPage()}
+          />
+          <FeatureCard
+            navItem="plans"
+            title={t("common:pages.plans")}
+            description={t("front:plans.description")}
+            to={PLANNER_URL}
           />
         </div>
       </div>

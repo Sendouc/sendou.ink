@@ -11,6 +11,11 @@
     "url": "object-damage-calculator",
     "prefetch": true
   },
+  {
+    "name": "plans",
+    "url": "plans",
+    "prefetch": false
+  },
   { "name": "calendar", "url": "calendar", "prefetch": false },
   { "name": "maps", "url": "maps", "prefetch": false },
   { "name": "badges", "url": "badges", "prefetch": false },

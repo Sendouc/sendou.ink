@@ -1,4 +1,9 @@
 import { useTranslation } from "~/hooks/useTranslation";
+import {
+  FIRST_PLACEMENT_ICON_PATH,
+  SECOND_PLACEMENT_ICON_PATH,
+  THIRD_PLACEMENT_ICON_PATH,
+} from "~/utils/urls";
 
 export type PlacementProps = {
   placement: number;
@@ -9,11 +14,11 @@ export type PlacementProps = {
 const getSpecialPlacementIconPath = (placement: number): string | null => {
   switch (placement) {
     case 3:
-      return "/svg/placements/third.svg";
+      return THIRD_PLACEMENT_ICON_PATH;
     case 2:
-      return "/svg/placements/second.svg";
+      return SECOND_PLACEMENT_ICON_PATH;
     case 1:
-      return "/svg/placements/first.svg";
+      return FIRST_PLACEMENT_ICON_PATH;
     default:
       return null;
   }

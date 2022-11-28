@@ -1,9 +1,13 @@
 {
   "q1": "Hvad er Plus Serveren?",
   "a1": "Plus-serveren er en Discord-server for vestlige spillere, der spiller på højt niveau, så de kan lede efter folk at spille med og imod. Den blev grundlagt i september 2017. Den er opdelt ind i 3 niveauer, hvor +1 er det højeste. Du får adgang til serveren, når du er blevet indstillet af et servermedlem og godkendt af det månedlige valg. \n\nGennem valget for du en procentscore baseret på dit valgresultat. Hvis du får en score på 0% har alle vælgere nedstemt dig og det omvendte gælder ved en score på 100%. Du skal have en score på 50% eller højere for at bestå valget. Hvis et medlem får score på mindre end 50%, vil de blive nedgraderet til et lavere niveau. Hvis medlemmet er på niveau 3+, når dette sker, vil medlemmet blive smidt ud af serveren.",
+
   "q2": "Hvordan får jeg et præmiemærke til min begivenhed?",
-  "a2": "Du afgiver bestillingen af mærket til borzoic#1991. Prisen er 10-30€ afhængig af detaljegraden af mærket. Derefter skal du kontakte Sendou for at få den tilføjet til hjemmesiden.\n\nEnhver turnering kan have et mærke som en præmie.  Hvis du ønsker at tildele mærker for andre præstationer, så anbefales det, at du først kontakter Sendou og fortæller om din ide.",
+  "a2": "Du afgiver bestillingen af mærket til borzoic#1991. Prisen er mellem 10 til 30€ afhængig af detaljegraden af mærket. Derefter skal du kontakte Sendou for at få den tilføjet til hjemmesiden.\n\nEnhver turnering kan have et mærke som en præmie.  Hvis du ønsker at tildele mærker for andre præstationer, så anbefales det, at du først kontakter Sendou og fortæller om din ide.",
 
   "q3": "Hvordan opdaterer jeg min avatar eller brugernavn?",
-  "a3": "Ændringer af brugernavn eller avatar på Discord bliver ikke synkroniseret til Sendou.ink med det samme. For at synkroniserer ændringerne med det samme har du 2 muligheder:\n\n1) Hvis du er medlem af hjemmesidens Discord-server eller Plus-serveren, så kan du blot vente, da der kører en synkronisering 1 gang om dagen, der håndterer ændringer af din Discord-profil.\n\n2) Du kan også logge af og på hjemmesiden, så sker synkroniseringen med det samme."
+  "a3": "Ændringer af brugernavn eller avatar på Discord bliver ikke synkroniseret til Sendou.ink med det samme. For at synkroniserer ændringerne med det samme har du 2 muligheder:\n\n1) Hvis du er medlem af hjemmesidens Discord-server eller Plus-serveren, så kan du blot vente, da der kører en synkronisering 1 gang om dagen, der håndterer ændringer af din Discord-profil.\n\n2) Du kan også logge af og på hjemmesiden, så sker synkroniseringen med det samme.",
+
+  "q4": "Jeg tegnede et abonnement til sendou.ink via Patreon, men jeg kan ikke se nogle forandringer på hjemmesiden. ",
+  "a4": "Sørg for at forbinde din Discord-bruger til Patreaon.com. Derefter vil der gå op til 2 timer, før Sendou.ink registrerer det og opdaterer hjemmesiden. Hvis du oplever nogle problemer. Send en direkte besked til Sendou for at få hjælp. (Korrespondancen skal foregå på engelsk) "
 }

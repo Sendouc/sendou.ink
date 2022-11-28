@@ -21,6 +21,7 @@ import { MapPoolEventsCombobox } from "./Combobox";
 
 export type MapPoolSelectorProps = {
   mapPool: MapPool;
+  preselectedMapPool?: MapPool;
   handleRemoval?: () => void;
   handleMapPoolChange: (
     mapPool: MapPool,
@@ -29,15 +30,27 @@ export type MapPoolSelectorProps = {
   className?: string;
   recentEvents?: SerializedMapPoolEvent[];
   initialEvent?: Pick<CalendarEvent, "id" | "name">;
+  title?: string;
+  modesToInclude?: ModeShort[];
+  info?: React.ReactNode;
+  footer?: React.ReactNode;
+  /** Enables clear button, template selection, and toggling a whole stage */
+  allowBulkEdit?: boolean;
 };
 
 export function MapPoolSelector({
   mapPool,
+  preselectedMapPool,
   handleMapPoolChange,
   handleRemoval,
   className,
   recentEvents,
   initialEvent,
+  title,
+  modesToInclude,
+  info,
+  footer,
+  allowBulkEdit = false,
 }: MapPoolSelectorProps) {
   const { t } = useTranslation();
 
@@ -101,39 +114,50 @@ export function MapPoolSelector({
 
   return (
     <fieldset className={className}>
-      <legend>{t("maps.mapPool")}</legend>
-      <div className="stack horizontal sm justify-end">
-        {handleRemoval && (
-          <Button variant="minimal" onClick={handleRemoval}>
-            {t("actions.remove")}
-          </Button>
-        )}
-        <Button
-          variant="minimal-destructive"
-          disabled={mapPool.isEmpty()}
-          onClick={handleClear}
-        >
-          {t("actions.clear")}
-        </Button>
-      </div>
-      <div className="stack md">
-        <div className="maps__template-selection">
-          <MapPoolTemplateSelect
-            value={template}
-            handleChange={handleTemplateChange}
-            recentEvents={recentEvents}
-          />
-          {template === "event" && (
-            <TemplateEventSelection
-              initialEvent={initialSerializedEvent}
-              handleEventChange={handleMapPoolChange}
-            />
+      {Boolean(title) && <legend>{title}</legend>}
+      {Boolean(handleRemoval || allowBulkEdit) && (
+        <div className="stack horizontal sm justify-end">
+          {handleRemoval && (
+            <Button variant="minimal" onClick={handleRemoval}>
+              {t("actions.remove")}
+            </Button>
+          )}
+          {allowBulkEdit && (
+            <Button
+              variant="minimal-destructive"
+              disabled={mapPool.isEmpty()}
+              onClick={handleClear}
+            >
+              {t("actions.clear")}
+            </Button>
           )}
         </div>
+      )}
+      <div className="stack md">
+        {allowBulkEdit && (
+          <div className="maps__template-selection">
+            <MapPoolTemplateSelect
+              value={template}
+              handleChange={handleTemplateChange}
+              recentEvents={recentEvents}
+            />
+            {template === "event" && (
+              <TemplateEventSelection
+                initialEvent={initialSerializedEvent}
+                handleEventChange={handleMapPoolChange}
+              />
+            )}
+          </div>
+        )}
+        {info}
         <MapPoolStages
           mapPool={mapPool}
           handleMapPoolChange={handleStageModesChange}
+          allowBulkEdit={allowBulkEdit}
+          modesToInclude={modesToInclude}
+          preselectedMapPool={preselectedMapPool}
         />
+        {footer}
       </div>
     </fieldset>
   );
@@ -142,11 +166,17 @@ export function MapPoolSelector({
 export type MapPoolStagesProps = {
   mapPool: MapPool;
   handleMapPoolChange?: (newMapPool: MapPool) => void;
+  allowBulkEdit?: boolean;
+  modesToInclude?: ModeShort[];
+  preselectedMapPool?: MapPool;
 };
 
 export function MapPoolStages({
   mapPool,
   handleMapPoolChange,
+  allowBulkEdit = false,
+  modesToInclude,
+  preselectedMapPool,
 }: MapPoolStagesProps) {
   const { t } = useTranslation(["game-misc", "common"]);
 
@@ -224,53 +254,67 @@ export function MapPoolStages({
               {t(`game-misc:STAGE_${stageId}`)}
             </div>
             <div className="maps__mode-buttons-container">
-              {modes.map((mode) => {
-                const selected = mapPool.parsed[mode.short].includes(stageId);
+              {modes
+                .filter(
+                  (mode) =>
+                    !modesToInclude || modesToInclude.includes(mode.short)
+                )
+                .map((mode) => {
+                  const selected = mapPool.has({ stageId, mode: mode.short });
 
-                if (isPresentational && !selected) return null;
-                if (isPresentational && selected) {
+                  if (isPresentational && !selected) return null;
+                  if (isPresentational && selected) {
+                    return (
+                      <Image
+                        key={mode.short}
+                        className={clsx("maps__mode", {
+                          selected,
+                        })}
+                        title={t(`game-misc:MODE_LONG_${mode.short}`)}
+                        alt={t(`game-misc:MODE_LONG_${mode.short}`)}
+                        path={modeImageUrl(mode.short)}
+                        width={33}
+                        height={33}
+                      />
+                    );
+                  }
+
+                  const preselected = preselectedMapPool?.has({
+                    stageId,
+                    mode: mode.short,
+                  });
+
                   return (
-                    <Image
+                    <button
                       key={mode.short}
-                      className={clsx("maps__mode", {
+                      className={clsx("maps__mode-button", "outline-theme", {
                         selected,
+                        preselected,
                       })}
+                      onClick={() =>
+                        handleModeChange?.({ mode: mode.short, stageId })
+                      }
+                      type="button"
                       title={t(`game-misc:MODE_LONG_${mode.short}`)}
-                      alt={t(`game-misc:MODE_LONG_${mode.short}`)}
-                      path={modeImageUrl(mode.short)}
-                      width={33}
-                      height={33}
-                    />
+                      aria-describedby={`${id}-stage-name-${stageId}`}
+                      aria-pressed={selected}
+                      disabled={preselected}
+                    >
+                      <Image
+                        className={clsx("maps__mode", {
+                          selected,
+                          preselected,
+                        })}
+                        alt={t(`game-misc:MODE_LONG_${mode.short}`)}
+                        path={modeImageUrl(mode.short)}
+                        width={20}
+                        height={20}
+                      />
+                    </button>
                   );
-                }
-
-                return (
-                  <button
-                    key={mode.short}
-                    className={clsx("maps__mode-button", "outline-theme", {
-                      selected,
-                    })}
-                    onClick={() =>
-                      handleModeChange?.({ mode: mode.short, stageId })
-                    }
-                    type="button"
-                    title={t(`game-misc:MODE_LONG_${mode.short}`)}
-                    aria-describedby={`${id}-stage-name-${stageId}`}
-                    aria-pressed={selected}
-                  >
-                    <Image
-                      className={clsx("maps__mode", {
-                        selected,
-                      })}
-                      alt={t(`game-misc:MODE_LONG_${mode.short}`)}
-                      path={modeImageUrl(mode.short)}
-                      width={20}
-                      height={20}
-                    />
-                  </button>
-                );
-              })}
+                })}
               {!isPresentational &&
+                allowBulkEdit &&
                 (mapPool.hasStage(stageId) ? (
                   <Button
                     key="clear"

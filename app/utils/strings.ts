@@ -26,6 +26,7 @@ type WithStart<
 export function startsWith<S extends string, Start extends string>(
   str: S,
   start: Start
+  // @ts-expect-error TS 4.9 upgrade
 ): str is WithStart<S, Start> {
   return str.startsWith(start);
 }

@@ -5,6 +5,7 @@ set
   "tags" = @tags,
   "description" = @description,
   "discordInviteCode" = @discordInviteCode,
-  "bracketUrl" = @bracketUrl
+  "bracketUrl" = @bracketUrl,
+  "toToolsEnabled" = @toToolsEnabled
 where
   "id" = @eventId

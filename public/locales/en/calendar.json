@@ -5,6 +5,8 @@
   "reportResults": "You can report results:",
   "day": "Day {{number}}",
   "actions.reportWinners": "Report winners",
+  "actions.delete": "Delete event",
+  "actions.delete.confirm": "Delete all data related to {{name}}?",
   "participatedCount": "{{count}} teams participated",
   "members": "Members",
   "results": "Results",
@@ -37,6 +39,9 @@
   "forms.errors.uniqueTeamName": "Each team needs a unique name.",
   "forms.errors.duplicatePlayer": "Can't have the same player twice in the same team.",
   "forms.errors.emptyTeam": "Each team must have at least one player.",
+
+  "forms.toTools.header": "Enable TO Tools",
+  "forms.toTools.explanation": "With TO Tools your tournament will use prepicked maps and seed creator tool is available.",
 
   "week.this": "This Week",
   "week.next": "Next Week",

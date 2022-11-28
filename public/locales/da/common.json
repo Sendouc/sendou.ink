@@ -10,11 +10,15 @@
   "pages.builds": "Udrustningssæt",
   "pages.analyzer": "Udrustningsanalysator",
   "pages.maps": "Banelister",
+  "pages.plans": "Planlægningsværktøj",
   "pages.object-damage-calculator": "Objektskadeberegneren",
 
   "header.profile": "Profil",
   "header.logout": "Log ud",
   "header.login": "Log ind",
+  "header.language": "Sprog",
+  "header.loggedInAs": "Du er logget ind som {{userName}}",
+  "header.theme": "Tema",
 
   "auth.errors.aborted": "logindforsøg afbrudt",
   "auth.errors.failed": "Loginforsøg fejlet",
@@ -28,6 +32,7 @@
   "footer.thanks": "Tak til vores patrons for støtten",
 
   "actions.save": "Gem",
+  "actions.saveChanges": "Gem ændringer",
   "actions.saving": "Gemmer...",
   "actions.submit": "Fremlæg",
   "actions.edit": "Rediger",
@@ -41,11 +46,13 @@
   "actions.clear": "Ryd",
   "actions.selectAll": "Vælg alle",
   "actions.search": "Søg",
+  "actions.setBg": "Indstil som baggrund",
 
   "maps.createMapList": "Lav bane-liste",
-  "maps.halfSz": "50% SZ",
+  "maps.halfSz": "50% DD",
   "maps.mapPool": "Banepulje",
   "maps.tournamentMaplist": "Lav turneringsbanepuljer på (maps.iplabs.ink)",
+  "maps.tieBreakerMapPool": "Tiebreak-banepulje",
   "maps.template": "Skabelon",
   "maps.template.none": "Ingen",
   "maps.template.event": "Begivenhed",
@@ -54,6 +61,12 @@
   "maps.template.preset.ANARCHY": "Anarchy-spiltilstande",
   "maps.template.preset.ALL": "Alle spiltilstande",
   "maps.template.preset.onlyMode": "Kun {{modeName}}",
+  "maps.validation.PICKING": "Vælg en bane per spiltilstand",
+  "maps.validation.NOT_ONE_MAP_PER_MODE": "Vælg kun en bane per spiltilstand",
+  "maps.validation.MAP_REPEATED": "Man kan ikke vælge den samme bane 2 gange",
+  "maps.validation.MODE_REPEATED": "Man kan ikke vælge den samme spiltilstand 2 gange",
+  "maps.validation.TOO_MUCH_STAGE_REPEAT": "Man kan ikke vælge den samme bane mere end {{maxStageRepeat}} gang(e)",
+  "maps.validation.VALID": "Banepuljen er gyldig",
 
   "results": "Resultater",
   "results.placeSuffix": ".",
@@ -85,5 +98,11 @@
   "weapon.category.DUALIES": "Dualies/Dualier",
   "weapon.category.BRELLAS": "Brellas/Paraplyer",
   "weapon.category.STRINGERS": "Stringers/Buer",
-  "weapon.category.SPLATANAS": "Splatanas/Splatanaer"
+  "weapon.category.SPLATANAS": "Splatanas/Splatanaer",
+
+  "theme.light": "Lyst",
+  "theme.dark": "Mørkt",
+  "theme.auto": "Automatisk",
+
+  "plans.poweredBy": "Tegneprogrammet er leveret af {{name}}"
 }

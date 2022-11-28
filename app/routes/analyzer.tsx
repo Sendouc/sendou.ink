@@ -1,4 +1,5 @@
 import { type LinksFunction, type MetaFunction } from "@remix-run/node";
+import type { ShouldReloadFunction } from "@remix-run/react";
 import { Link } from "@remix-run/react";
 import * as React from "react";
 import { useTranslation } from "~/hooks/useTranslation";
@@ -46,6 +47,8 @@ import {
   specialWeaponImageUrl,
   subWeaponImageUrl,
 } from "~/utils/urls";
+import { getAbilityChunksMapAsArray } from "~/modules/analyzer/abilityChunksCalc";
+import clsx from "clsx";
 
 export const CURRENT_PATCH = "1.2";
 
@@ -63,6 +66,9 @@ export const handle: SendouRouteHandle = {
   i18n: ["weapons", "analyzer"],
   navItemName: "analyzer",
 };
+
+// Resolves this Github issue: https://github.com/Sendouc/sendou.ink/issues/1053
+export const unstable_shouldReload: ShouldReloadFunction = () => false;
 
 export default function BuildAnalyzerPage() {
   const { t } = useTranslation(["analyzer", "common", "weapons"]);
@@ -130,6 +136,11 @@ export default function BuildAnalyzerPage() {
     ),
   ].filter(Boolean);
 
+  // Handles edge case where a primary slot-only ability (e.g. Ninja Squid) is selected & the 'abilityPoints' count is still 0
+  const showAbilityChunksRequired: boolean = build.some(
+    (gear) => gear.filter((ability) => ability !== "UNKNOWN").length
+  );
+
   return (
     <Main>
       <div className="analyzer__container">
@@ -174,6 +185,9 @@ export default function BuildAnalyzerPage() {
             />
             {abilityPoints.size > 0 && (
               <AbilityPointsDetails abilityPoints={abilityPoints} />
+            )}
+            {showAbilityChunksRequired && (
+              <AbilityChunksRequired build={build} />
             )}
           </div>
           <div className="analyzer__patch">
@@ -490,6 +504,12 @@ export default function BuildAnalyzerPage() {
               title={t("analyzer:stat.category.actionsPerInkTank")}
               containerClassName="analyzer__table-container"
             >
+              {/** Hack the :has ;) */}
+              {build
+                .flat()
+                .some((ability) => ability === "ISM" || ability === "ISS") ? (
+                <div className="analyzer__stat-card-highlighted" />
+              ) : null}
               <ConsumptionTable
                 options={analyzed.stats.fullInkTankOptions}
                 subWeaponId={analyzed.weapon.subWeaponSplId}
@@ -723,13 +743,47 @@ function AbilityPointsDetails({
             );
           })
           .map((a) => (
-            <div key={a.name} className="stack items-center">
+            <div
+              key={`abilityPointsDetails_${a.name}`}
+              className="stack items-center"
+            >
               <Ability ability={a.name} size="TINY" />
               <div className="analyzer__ap-text">
                 {abilityPoints.get(a.name)?.ap}
               </div>
             </div>
           ))}
+      </div>
+    </details>
+  );
+}
+
+function AbilityChunksRequired({
+  build,
+}: {
+  build: BuildAbilitiesTupleWithUnknown;
+}) {
+  const { t } = useTranslation("analyzer");
+  const abilityChunksMapAsArray = getAbilityChunksMapAsArray(build);
+
+  return (
+    <details className="w-full">
+      <summary className="analyzer__ap-summary">{t("abilityChunks")}</summary>
+      <div className="stack sm horizontal flex-wrap mt-4">
+        {abilityChunksMapAsArray.map((a) => {
+          const mainAbilityName = a[0];
+          const numChunksRequired = a[1];
+
+          return (
+            <div
+              key={`abilityChunksRequired_${mainAbilityName}`}
+              className="stack items-center"
+            >
+              <Ability ability={mainAbilityName} size="TINY" />
+              <div className="analyzer__ap-text">{numChunksRequired}</div>
+            </div>
+          );
+        })}
       </div>
     </details>
   );
@@ -747,7 +801,7 @@ function StatCategory({
   textBelow?: string;
 }) {
   return (
-    <details>
+    <details className="analyzer__details">
       <summary className="analyzer__summary">{title}</summary>
       <div className={containerClassName}>{children}</div>
       {textBelow && (
@@ -769,10 +823,17 @@ function StatCard({
   popoverInfo?: string;
 }) {
   const { t } = useTranslation("analyzer");
+
   const baseValue = typeof stat === "number" ? stat : stat.baseValue;
+  const showBuildValue =
+    typeof stat !== "number" && stat.value !== stat.baseValue;
 
   return (
-    <div className="analyzer__stat-card">
+    <div
+      className={clsx("analyzer__stat-card", {
+        "analyzer__stat-card-highlighted": showBuildValue,
+      })}
+    >
       <div className="analyzer__stat-card__title-and-value-container">
         <h3 className="analyzer__stat-card__title">
           {title}{" "}
@@ -796,7 +857,7 @@ function StatCard({
               {suffix}
             </div>
           </div>
-          {typeof stat !== "number" && stat.value !== stat.baseValue && (
+          {showBuildValue ? (
             <div className="analyzer__stat-card__value">
               <h4 className="analyzer__stat-card__value__title">
                 {t("build")}
@@ -806,7 +867,7 @@ function StatCard({
                 {suffix}
               </div>
             </div>
-          )}
+          ) : null}
         </div>
       </div>
       <div className="analyzer__stat-card__ability-container">

@@ -9,6 +9,7 @@ import {
   GITHUB_CONTRIBUTORS_URL,
   LEAN_TWITTER,
   SENDOU_TWITTER_URL,
+  TWIG_TWITTER,
   UBERU_TWITTER,
 } from "~/utils/urls";
 import { type SendouRouteHandle } from "~/utils/remix";
@@ -23,6 +24,8 @@ export const meta: MetaFunction = () => {
 export const handle: SendouRouteHandle = {
   i18n: "contributions",
 };
+
+const PROGRAMMERS = ["DoubleCookies", "ElementUser", "remmycat"] as const;
 
 const TRANSLATORS: Array<{
   translators: Array<string>;
@@ -61,7 +64,7 @@ const TRANSLATORS: Array<{
     language: "ru",
   },
   {
-    translators: ["たここ", "ShanglinMo"],
+    translators: ["たここ", "ShanglinMo", "gellneko"],
     language: "zh",
   },
 ];
@@ -83,6 +86,7 @@ export default function ContributionsPage() {
       </p>
       <ul className="mt-2">
         <li>
+          {PROGRAMMERS.join(", ")} -{" "}
           <a href={GITHUB_CONTRIBUTORS_URL} target="_blank" rel="noreferrer">
             {t("contributions:code")}
           </a>
@@ -104,6 +108,12 @@ export default function ContributionsPage() {
             uberu
           </a>{" "}
           - {t("contributions:uberu")}
+        </li>
+        <li>
+          <a href={TWIG_TWITTER} target="_blank" rel="noreferrer">
+            Twig
+          </a>{" "}
+          - {t("contributions:twig")}
         </li>
         {TRANSLATORS.map(({ translators, language }) => (
           <li key={language}>

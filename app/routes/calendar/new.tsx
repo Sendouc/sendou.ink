@@ -12,6 +12,8 @@ import clsx from "clsx";
 import * as React from "react";
 import { useTranslation } from "~/hooks/useTranslation";
 import { z } from "zod";
+import type { AlertVariation } from "~/components/Alert";
+import { Alert } from "~/components/Alert";
 import { Badge } from "~/components/Badge";
 import { Button } from "~/components/Button";
 import { DateInput } from "~/components/DateInput";
@@ -20,14 +22,17 @@ import { TrashIcon } from "~/components/icons/Trash";
 import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
+import { MapPoolSelector } from "~/components/MapPoolSelector";
+import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
+import { Toggle } from "~/components/Toggle";
 import { CALENDAR_EVENT } from "~/constants";
 import { db } from "~/db";
 import type { Badge as BadgeType, CalendarEventTag } from "~/db/types";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import { requireUser } from "~/modules/auth";
+import { requireUser, useUser } from "~/modules/auth";
 import { i18next } from "~/modules/i18n";
 import { MapPool } from "~/modules/map-pool-serializer";
-import { canEditCalendarEvent } from "~/permissions";
+import { canEditCalendarEvent, canEnableTOTools } from "~/permissions";
 import calendarNewStyles from "~/styles/calendar-new.css";
 import mapsStyles from "~/styles/maps.css";
 import {
@@ -46,6 +51,7 @@ import { makeTitle } from "~/utils/strings";
 import { calendarEventPage } from "~/utils/urls";
 import {
   actualNumber,
+  checkboxValueToBoolean,
   date,
   falsyToNull,
   id,
@@ -54,7 +60,6 @@ import {
   safeJSONParse,
   toArray,
 } from "~/utils/zod";
-import { MapPoolSelector } from "~/components/MapPoolSelector";
 import { Tags } from "./components/Tags";
 import { isDefined } from "~/utils/arrays";
 import { CrossIcon } from "~/components/icons/Cross";
@@ -120,6 +125,7 @@ const newCalendarEventActionSchema = z.object({
     z.array(id).nullable()
   ),
   pool: z.string().optional(),
+  toToolsEnabled: z.preprocess(checkboxValueToBoolean, z.boolean()),
 });
 
 export const action: ActionFunction = async ({ request }) => {
@@ -145,6 +151,7 @@ export const action: ActionFunction = async ({ request }) => {
           .join(",")
       : data.tags,
     badges: data.badges ?? [],
+    toToolsEnabled: canEnableTOTools(user) ? Number(data.toToolsEnabled) : 0,
   };
 
   const deserializedMaps = (() => {
@@ -206,6 +213,8 @@ export const loader = async ({ request }: LoaderArgs) => {
           tags: eventToEdit.tags.filter((tag) => tag !== "BADGE"),
           badges: db.calendarEvents.findBadgesByEventId(eventId),
           mapPool: db.calendarEvents.findMapPoolByEventId(eventId),
+          tieBreakerMapPool:
+            db.calendarEvents.findTieBreakerMapPoolByEventId(eventId),
         }
       : undefined,
     title: makeTitle([canEditEvent ? "Edit" : "New", t("pages.calendar")]),
@@ -233,7 +242,7 @@ export default function CalendarNewEventPage() {
         <DiscordLinkInput />
         <TagsAdder />
         <BadgesAdder />
-        <MapPoolSection />
+        <TOToolsAndMapPool />
         <Button type="submit" className="mt-4">
           {t("actions.submit")}
         </Button>
@@ -577,6 +586,50 @@ function BadgesAdder() {
   );
 }
 
+function TOToolsAndMapPool() {
+  const user = useUser();
+  const { eventToEdit } = useLoaderData<typeof loader>();
+  const [checked, setChecked] = React.useState(
+    Boolean(eventToEdit?.toToolsEnabled)
+  );
+
+  return (
+    <>
+      {canEnableTOTools(user) && (
+        <TOToolsEnabler checked={checked} setChecked={setChecked} />
+      )}
+      {checked ? <CounterPickMapPoolSection /> : <MapPoolSection />}
+    </>
+  );
+}
+
+function TOToolsEnabler({
+  checked,
+  setChecked,
+}: {
+  checked: boolean;
+  setChecked: (checked: boolean) => void;
+}) {
+  const { t } = useTranslation(["calendar"]);
+  const id = React.useId();
+
+  return (
+    <div>
+      <label htmlFor={id}>{t("calendar:forms.toTools.header")}</label>
+      <Toggle
+        name="toToolsEnabled"
+        id={id}
+        tiny
+        checked={checked}
+        setChecked={setChecked}
+      />
+      <FormMessage type="info">
+        {t("calendar:forms.toTools.explanation")}
+      </FormMessage>
+    </div>
+  );
+}
+
 function MapPoolSection() {
   const { t } = useTranslation(["game-misc", "common"]);
 
@@ -598,15 +651,104 @@ function MapPoolSection() {
       <MapPoolSelector
         className="w-full"
         mapPool={mapPool}
+        title={t("common:maps.mapPool")}
         handleRemoval={() => setIncludeMapPool(false)}
         handleMapPoolChange={setMapPool}
         recentEvents={recentEventsWithMapPools}
+        allowBulkEdit
       />
     </>
   ) : (
     <div>
       <label htmlFor={id}>{t("common:maps.mapPool")}</label>
       <AddButton onAdd={() => setIncludeMapPool(true)} id={id} />
+    </div>
+  );
+}
+
+function CounterPickMapPoolSection() {
+  const { t } = useTranslation(["common"]);
+  const { eventToEdit } = useLoaderData<typeof loader>();
+  const [mapPool, setMapPool] = React.useState<MapPool>(
+    eventToEdit?.tieBreakerMapPool
+      ? new MapPool(eventToEdit.tieBreakerMapPool)
+      : MapPool.EMPTY
+  );
+
+  return (
+    <>
+      <RequiredHiddenInput
+        value={mapPool.serialized}
+        name="pool"
+        isValid={validateTiebreakerMapPool(mapPool) === "VALID"}
+      />
+
+      <MapPoolSelector
+        className="w-full"
+        mapPool={mapPool}
+        handleMapPoolChange={setMapPool}
+        title={t("common:maps.tieBreakerMapPool")}
+        modesToInclude={["SZ", "TC", "RM", "CB"]}
+        info={
+          <div>
+            <MapPoolValidationStatusMessage
+              status={validateTiebreakerMapPool(mapPool)}
+            />
+          </div>
+        }
+      />
+    </>
+  );
+}
+
+type CounterPickValidationStatus =
+  | "PICKING"
+  | "VALID"
+  | "NOT_ONE_MAP_PER_MODE"
+  | "MAP_REPEATED"
+  | "MODE_REPEATED";
+
+function validateTiebreakerMapPool(
+  mapPool: MapPool
+): CounterPickValidationStatus {
+  if (mapPool.stages.length !== new Set(mapPool.stages).size) {
+    return "MAP_REPEATED";
+  }
+  if (
+    mapPool.parsed.SZ.length > 1 ||
+    mapPool.parsed.TC.length > 1 ||
+    mapPool.parsed.RM.length > 1 ||
+    mapPool.parsed.CB.length > 1
+  ) {
+    return "MODE_REPEATED";
+  }
+  if (
+    mapPool.parsed.SZ.length < 1 ||
+    mapPool.parsed.TC.length < 1 ||
+    mapPool.parsed.RM.length < 1 ||
+    mapPool.parsed.CB.length < 1
+  ) {
+    return "PICKING";
+  }
+
+  return "VALID";
+}
+
+function MapPoolValidationStatusMessage({
+  status,
+}: {
+  status: CounterPickValidationStatus;
+}) {
+  const { t } = useTranslation(["common"]);
+
+  const alertVariation: AlertVariation =
+    status === "VALID" ? "SUCCESS" : status === "PICKING" ? "INFO" : "WARNING";
+
+  return (
+    <div>
+      <Alert alertClassName="w-max" variation={alertVariation} tiny>
+        {t(`common:maps.validation.${status}`)}
+      </Alert>
     </div>
   );
 }

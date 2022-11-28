@@ -100,7 +100,11 @@ export interface CalendarEvent {
   discordUrl: string | null;
   bracketUrl: string;
   participantCount: number | null;
-  mapPoolId?: number;
+  customUrl: string | null;
+  /** Is tournament tools page visible */
+  toToolsEnabled: number;
+  /** In tournament tools, can teams change their maps and rosters? */
+  isBeforeStart: number;
 }
 
 export type CalendarEventTag = keyof typeof allTags;
@@ -156,7 +160,24 @@ export interface BuildAbility {
 }
 
 export interface MapPoolMap {
-  calendarEventId?: number;
+  calendarEventId: number | null; // Part of tournament's map pool
+  tournamentTeamId: number | null; // Part of team's map pool
+  tieBreakerCalendarEventId: number | null; // Part of the tournament's tiebreaker pool
   stageId: StageId;
   mode: ModeShort;
+}
+
+export interface TournamentTeam {
+  id: number;
+  name: string;
+  createdAt: number;
+  seed: number | null;
+  calendarEventId: number;
+}
+
+export interface TournamentTeamMember {
+  tournamentTeamId: number;
+  userId: number;
+  isOwner: number;
+  createdAt: number;
 }

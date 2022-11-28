@@ -6,6 +6,7 @@ import { useIsMounted } from "~/hooks/useIsMounted";
 import { canPerformAdminActions } from "~/permissions";
 import { useUser } from "~/modules/auth";
 import { useTranslation } from "~/hooks/useTranslation";
+import { navIconUrl } from "~/utils/urls";
 
 export function Menu({
   expanded,
@@ -47,7 +48,7 @@ export function Menu({
           >
             <Image
               className="layout__menu__link__icon"
-              path={`/img/layout/${navItem.name.replace(" ", "")}`}
+              path={navIconUrl(navItem.name)}
               alt={navItem.name}
             />
             <div>{t(`pages.${navItem.name}` as any)}</div>
