@@ -1,10 +1,11 @@
-import { Link, useMatches } from "@remix-run/react";
+import { Link, useLocation, useMatches } from "@remix-run/react";
 import * as React from "react";
 import type { RootLoaderData } from "~/root";
 import type { Breadcrumb, SendouRouteHandle } from "~/utils/remix";
 import { Footer } from "./Footer";
 import { useTranslation } from "~/hooks/useTranslation";
 import { Image } from "../Image";
+import { SideNav } from "./SideNav";
 
 function useBreadcrumbs() {
   const { t } = useTranslation();
@@ -33,9 +34,11 @@ export const Layout = React.memo(function Layout({
   children: React.ReactNode;
   patrons?: RootLoaderData["patrons"];
 }) {
+  const location = useLocation();
   const breadcrumbs = useBreadcrumbs();
 
-  // xxx: how to do h1?
+  const isFrontPage = location.pathname === "/";
+
   // xxx: bread crumbs safe padding on top on mobile
   // xxx: maybe a bit lighter header e.g. #090828
   // xxx: readd useritem and languagechanger
@@ -59,6 +62,7 @@ export const Layout = React.memo(function Layout({
           })}
         </div>
       </header>
+      {!isFrontPage ? <SideNav /> : null}
       {children}
       <Footer patrons={patrons} />
     </div>

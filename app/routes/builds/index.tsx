@@ -15,7 +15,6 @@ import styles from "~/styles/builds.css";
 import type { LinksFunction } from "@remix-run/node";
 import { Main } from "~/components/Main";
 
-// xxx: implement
 export const handle: SendouRouteHandle = {
   i18n: "weapons",
   breadcrumb: () => ({

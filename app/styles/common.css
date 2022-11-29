@@ -20,7 +20,7 @@ body {
 }
 
 a {
-  color: var(--theme);
+  color: var(--new-theme);
   font-weight: var(--semi-bold);
   text-decoration: none;
 }
