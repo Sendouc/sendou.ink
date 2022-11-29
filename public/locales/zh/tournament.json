@@ -6,13 +6,14 @@
   "pre.footerNote": "请注意: 在比赛开始前，您可以随意更改您的地图池和队伍阵容。",
   "pre.deleteTeam": "删除队伍",
 
+  "preview": "预览地图列表生成器（仅限管理者）",
   "pre.steps.register": "1. 点击报名链接:",
   "pre.steps.register.summary": "输入您报名所用的队伍名",
   "pre.steps.mapPool": "2. 地图池",
   "pre.steps.mapPool.explanation": "您也可以在不选择地图池的情况下参赛，但是这代表您的对手可以决定比赛地图。决胜局所用地图被蓝色标记。",
   "pre.steps.mapPool.summary": "选择您的队伍的地图",
   "pre.steps.roster": "3. 提交阵容",
-  "pre.steps.roster.explanation": "提交阵容不是必要的。但是不提交阵容可能会导致您的种子排名变低。",
+  "pre.steps.roster.explanation": "提交阵容不是必须的。但是不提交阵容可能会导致您的种子排名变低。",
   "pre.steps.roster.summary": "输入阵容",
   "pre.steps.roster.fullTeamError": "队伍已满。",
 
@@ -39,5 +40,7 @@
   "teams.mapsPickedStatus": "地图的选择情况",
 
   "admin.eventStarted": "比赛开始",
-  "admin.eventStarted.explanation": "比赛开始后，参赛队伍可以制作地图列表，但是不能更改他们的地图池或者队伍阵容。"
+  "admin.eventStarted.explanation": "比赛开始后，参赛队伍可以制作地图列表，但是不能更改他们的地图池或者队伍阵容。",
+  "admin.download": "下载参赛者",
+  "admin.download.discord": "Discord列表"
 }
