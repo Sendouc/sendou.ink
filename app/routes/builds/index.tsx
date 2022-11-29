@@ -3,7 +3,13 @@ import { useTranslation } from "~/hooks/useTranslation";
 import { Image } from "~/components/Image";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { weaponCategories, weaponIdIsNotAlt } from "~/modules/in-game-lists";
-import { mainWeaponImageUrl, mySlugify, weaponCategoryUrl } from "~/utils/urls";
+import {
+  BUILDS_PAGE,
+  mainWeaponImageUrl,
+  mySlugify,
+  navIconUrl,
+  weaponCategoryUrl,
+} from "~/utils/urls";
 import { type SendouRouteHandle } from "~/utils/remix";
 import styles from "~/styles/builds.css";
 import type { LinksFunction } from "@remix-run/node";
@@ -12,7 +18,11 @@ import { Main } from "~/components/Main";
 // xxx: implement
 export const handle: SendouRouteHandle = {
   i18n: "weapons",
-  breadcrumb: ({ match, t }) => "TODO",
+  breadcrumb: () => ({
+    imgPath: navIconUrl("builds"),
+    href: BUILDS_PAGE,
+    type: "IMAGE",
+  }),
 };
 
 export const links: LinksFunction = () => {

@@ -14,6 +14,14 @@ import { weaponIdIsNotAlt } from "~/modules/in-game-lists";
 import { type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { weaponNameSlugToId } from "~/utils/unslugify.server";
+import {
+  BUILDS_PAGE,
+  mySlugify,
+  navIconUrl,
+  outlinedMainWeaponImageUrl,
+  weaponBuildPage,
+} from "~/utils/urls";
+import { Main } from "~/components/Main";
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
@@ -23,6 +31,26 @@ export const meta: MetaFunction = (args) => {
   return {
     title: data.title,
   };
+};
+
+export const handle: SendouRouteHandle = {
+  i18n: ["weapons", "builds", "gear"],
+  breadcrumb: ({ match }) => {
+    const data = match.data as SerializeFrom<typeof loader>;
+
+    return [
+      {
+        imgPath: navIconUrl("builds"),
+        href: BUILDS_PAGE,
+        type: "IMAGE",
+      },
+      {
+        imgPath: outlinedMainWeaponImageUrl(data.weaponId),
+        href: weaponBuildPage(data.slug),
+        type: "IMAGE",
+      },
+    ];
+  },
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
@@ -43,6 +71,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const weaponName = t(`weapons:MAIN_${weaponId}`);
 
+  const slug = mySlugify(t(`weapons:MAIN_${weaponId}`, { lng: "en" }));
+
   return {
     weaponId,
     weaponName,
@@ -52,15 +82,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
       limit,
     }),
     limit,
+    slug,
   };
-};
-
-export const handle: SendouRouteHandle = {
-  breadcrumb: ({ match }) => {
-    const data = match.data as SerializeFrom<typeof loader> | null;
-
-    return data ? data.weaponName : "Unknown";
-  },
 };
 
 export default function WeaponsBuildsPage() {
@@ -68,7 +91,7 @@ export default function WeaponsBuildsPage() {
   const { t } = useTranslation(["common"]);
 
   return (
-    <div className="stack lg">
+    <Main className="stack lg">
       <div className="builds-container">
         {data.builds.map((build) => {
           return (
@@ -93,6 +116,6 @@ export default function WeaponsBuildsPage() {
             {t("common:actions.loadMore")}
           </LinkButton>
         )}
-    </div>
+    </Main>
   );
 }

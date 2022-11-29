@@ -4,6 +4,19 @@
   flex-direction: column;
 }
 
+.layout__breadcrumb-container {
+  display: flex;
+  /** check if should use px or not */
+  height: 30px;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+/** use css var */
+.layout__breadcrumb-separator {
+  font-size: 20px;
+}
+
 .layout__header {
   /** xxx: remove */
   --item-size: 2.25rem;
@@ -15,9 +28,10 @@
   width: 100%;
   align-items: center;
   justify-content: space-between;
-  padding: var(--s-4);
   background-color: var(--new-bg);
   font-weight: bold;
+  padding-block: var(--s-2);
+  padding-inline: var(--s-4);
 }
 
 .layout__breadcrumb {
@@ -69,7 +83,7 @@
 
 .layout__main {
   padding-block-end: var(--s-32);
-  padding-block-start: var(--s-20);
+  padding-block-start: var(--s-16);
 }
 
 .layout__log-in-button {

@@ -127,9 +127,7 @@ function Document({
       </head>
       <body>
         <React.StrictMode>
-          <Layout patrons={data?.patrons} isCatchBoundary={!data}>
-            {children}
-          </Layout>
+          <Layout patrons={data?.patrons}>{children}</Layout>
         </React.StrictMode>
         <ConditionalScrollRestoration />
         <Scripts />
