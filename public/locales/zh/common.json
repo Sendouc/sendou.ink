@@ -106,7 +106,7 @@
 
   "theme.light": "浅色模式",
   "theme.dark": "深色模式",
-  "theme.auto": "自动"
+  "theme.auto": "自动",
 
   "plans.poweredBy": "Powered by {{name}}"
 }
