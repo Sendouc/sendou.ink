@@ -118,6 +118,7 @@ export const objectDamageJsonKeyPriority: Record<
   Saber_ChargeSlash: null,
   Saber_Shot: null,
   Saber_Slash: null,
+  Saber_ChargeSlash_Penetrate: null,
   SakerocketBullet: null,
   ShelterCanopy_Compact: null,
   ShelterCanopy_Wide: null,
