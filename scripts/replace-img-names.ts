@@ -7,6 +7,7 @@ const GEAR_IMAGES_DIR_PATH = path.join(
   __dirname,
   "..",
   "public",
+  "static-assets",
   "img",
   "gear"
 );

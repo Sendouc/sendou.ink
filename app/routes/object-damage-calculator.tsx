@@ -31,7 +31,7 @@ import { Ability } from "~/components/Ability";
 import { damageTypeTranslationString } from "~/utils/i18next";
 import { useSetTitle } from "~/hooks/useSetTitle";
 
-export const CURRENT_PATCH = "1.2";
+export const CURRENT_PATCH = "2.0";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];

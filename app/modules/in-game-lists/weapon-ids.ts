@@ -3,35 +3,38 @@ import type { MainWeaponId } from "./types";
 export const weaponCategories = [
   {
     name: "SHOOTERS",
-    weaponIds: [0, 10, 20, 30, 40, 45, 50, 60, 70, 80, 90, 300, 310, 400],
+    weaponIds: [
+      0, 10, 11, 20, 30, 31, 40, 41, 45, 50, 60, 70, 71, 80, 90, 100, 300, 310,
+      400,
+    ],
   },
   {
     name: "BLASTERS",
-    weaponIds: [200, 210, 220, 230, 240, 250],
+    weaponIds: [200, 201, 210, 220, 230, 240, 250],
   },
   {
     name: "ROLLERS",
-    weaponIds: [1000, 1010, 1020, 1030],
+    weaponIds: [1000, 1001, 1010, 1020, 1030, 1040],
   },
   {
     name: "BRUSHES",
-    weaponIds: [1100, 1110],
+    weaponIds: [1100, 1101, 1110],
   },
   {
     name: "CHARGERS",
-    weaponIds: [2000, 2010, 2020, 2030, 2040, 2050, 2060],
+    weaponIds: [2000, 2010, 2020, 2030, 2040, 2050, 2060, 2070],
   },
   {
     name: "SLOSHERS",
-    weaponIds: [3000, 3010, 3020, 3030, 3040],
+    weaponIds: [3000, 3001, 3010, 3020, 3030, 3040],
   },
   {
     name: "SPLATLINGS",
-    weaponIds: [4000, 4010, 4020, 4030, 4040],
+    weaponIds: [4000, 4001, 4010, 4020, 4030, 4040],
   },
   {
     name: "DUALIES",
-    weaponIds: [5000, 5010, 5020, 5030, 5040],
+    weaponIds: [5000, 5001, 5010, 5020, 5030, 5040],
   },
   {
     name: "BRELLAS",

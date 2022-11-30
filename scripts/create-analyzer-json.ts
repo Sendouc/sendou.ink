@@ -26,7 +26,7 @@ import {
   translationJsonFolderName,
 } from "./utils";
 
-const CURRENT_SEASON = 1;
+const CURRENT_SEASON = 2;
 
 type MainWeapon = typeof weapons[number];
 type SubWeapon = typeof subWeapons[number];

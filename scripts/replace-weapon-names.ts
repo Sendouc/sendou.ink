@@ -4,36 +4,50 @@
 import fs from "node:fs";
 import path from "node:path";
 import invariant from "tiny-invariant";
+import weapons from "./dicts/WeaponInfoMain.json";
 
-const DIR_PATH = path.join(
+const DIR_PATH_1 = path.join(
   __dirname,
   "..",
   "public",
+  "static-assets",
+  "img",
+  "main-weapons"
+);
+
+const DIR_PATH_2 = path.join(
+  __dirname,
+  "..",
+  "public",
+  "static-assets",
   "img",
   "main-weapons-outlined"
 );
-const WEAPON_JSON_PATH = path.join(__dirname, "output", "weapons.json");
 
 async function main() {
-  const weapons = JSON.parse(fs.readFileSync(WEAPON_JSON_PATH, "utf8"));
-  const files = await fs.promises.readdir(DIR_PATH);
+  for (const dir of [DIR_PATH_1, DIR_PATH_2]) {
+    const files = await fs.promises.readdir(dir);
 
-  for (const file of files) {
-    // did we already replace the name
-    if (file.includes(".webp") || file.includes("Lv01")) {
-      // delete file
-      await fs.promises.unlink(path.join(DIR_PATH, file));
+    for (const file of files) {
+      // skip if already replaced
+      if (file.length <= 8) continue;
+
+      if (file.includes(".webp") || file.includes("Lv01")) {
+        await fs.promises.unlink(path.join(dir, file));
+        continue;
+      }
+
+      const weapon: any = weapons.find((weapon: any) =>
+        file.includes(weapon.__RowId)
+      );
+
+      if (!weapon) {
+        await fs.promises.unlink(path.join(dir, file));
+        continue;
+      }
+
+      fs.renameSync(path.join(dir, file), path.join(dir, `${weapon.Id}.png`));
     }
-
-    const weapon: any = weapons.find((weapon: any) =>
-      file.includes(weapon.internalName)
-    );
-    invariant(weapon, `Could not find weapon for ${file}`);
-
-    fs.renameSync(
-      path.join(DIR_PATH, file),
-      path.join(DIR_PATH, `${weapon.id}.png`)
-    );
   }
 
   console.log("done with all");

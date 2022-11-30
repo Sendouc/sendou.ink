@@ -50,7 +50,7 @@ import {
 import { getAbilityChunksMapAsArray } from "~/modules/analyzer/abilityChunksCalc";
 import clsx from "clsx";
 
-export const CURRENT_PATCH = "1.2";
+export const CURRENT_PATCH = "2.0";
 
 export const meta: MetaFunction = () => {
   return {
