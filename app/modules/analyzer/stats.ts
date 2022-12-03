@@ -138,8 +138,11 @@ export function buildStats({
 }
 
 const SPLATTERSHOT_JR_ID = 10;
+const CUSTOM_SPLATTERSHOT_JR_ID = 11;
 function inkTankSize(weaponSplId: StatFunctionInput["weaponSplId"]) {
-  if (weaponSplId === SPLATTERSHOT_JR_ID) return 1.1;
+  if ([SPLATTERSHOT_JR_ID, CUSTOM_SPLATTERSHOT_JR_ID].includes(weaponSplId)) {
+    return 1.1;
+  }
 
   return 1;
 }
