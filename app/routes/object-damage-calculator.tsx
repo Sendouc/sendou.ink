@@ -174,11 +174,20 @@ const damageReceiverImages: Record<DamageReceiver, string> = {
   BulletUmbrellaCanopyCompact: mainWeaponImageUrl(6020),
 };
 
-const damageReceiverAp: Record<DamageReceiver, string> = {
-  GreatBarrier_WeakPoint: <Ability ability="SPU" size="TINY" />,
+const damageReceiverAp: Record<DamageReceiver, JSX.Element> = {
+  Bomb_TorpedoBullet: <div />,
+  Chariot: <div />,
+  Gachihoko_Barrier: <div />,
   GreatBarrier_Barrier: <Ability ability="SPU" size="TINY" />,
   GreatBarrier_WeakPoint: <Ability ability="SPU" size="TINY" />,
+  NiceBall_Armor: <div />,
+  ShockSonar: <div />,
+  Wsb_Flag: <div />,
   Wsb_Shield: <Ability ability="BRU" size="TINY" />,
+  Wsb_Sprinkler: <div />,
+  BulletUmbrellaCanopyNormal: <div />,
+  BulletUmbrellaCanopyWide: <div />,
+  BulletUmbrellaCanopyCompact: <div />,
 };
 
 function DamageReceiversGrid({
@@ -191,7 +200,9 @@ function DamageReceiversGrid({
   damagesToReceivers: NonNullable<
     ReturnType<typeof useObjectDamage>["damagesToReceivers"]
   >;
-}) {
+  children: React.ReactNode;
+  abilityPoints: string;
+}): JSX.Element {
   const { t } = useTranslation(["weapons", "analyzer", "common"]);
   useSetTitle(t("common:pages.object-damage-calculator"));
   return (
