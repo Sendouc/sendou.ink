@@ -181,7 +181,10 @@ function parametersToMainWeaponResult(
     specialWeaponId: resolveSpecialWeaponId(weapon),
     overwrites: resolveOverwrites(params),
     TripleShotSpanFrame: params["WeaponParam"]?.["TripleShotSpanFrame"],
-    WeaponSpeedType: params["MainWeaponSetting"]?.["WeaponSpeedType"],
+    WeaponSpeedType:
+      params["MainWeaponSetting"]?.["WeaponSpeedType"] === "Mid"
+        ? undefined
+        : params["MainWeaponSetting"]?.["WeaponSpeedType"],
     MoveSpeed:
       params["WeaponParam"]?.["MoveSpeed"] ??
       params["spl__WeaponShelterShotgunParam"]?.["MoveSpeed"],

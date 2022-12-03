@@ -201,7 +201,6 @@
       "SpecialPoint": 200,
       "subWeaponId": 9,
       "specialWeaponId": 9,
-      "WeaponSpeedType": "Mid",
       "MoveSpeed": 0.072,
       "DamageParam_ValueMax": 240,
       "DamageParam_ValueMin": 120,
@@ -493,7 +492,6 @@
       "SpecialPoint": 200,
       "subWeaponId": 4,
       "specialWeaponId": 8,
-      "WeaponSpeedType": "Mid",
       "InkConsume_WeaponSwingParam": 0.1
     },
     "1100": {
