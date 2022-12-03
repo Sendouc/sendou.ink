@@ -179,7 +179,7 @@ const damageReceiverAp: Record<DamageReceiver, string> = {
   GreatBarrier_Barrier: <Ability ability="SPU" size="TINY" />,
   GreatBarrier_WeakPoint: <Ability ability="SPU" size="TINY" />,
   Wsb_Shield: <Ability ability="BRU" size="TINY" />,
-}
+};
 
 function DamageReceiversGrid({
   subWeaponId,
@@ -212,9 +212,7 @@ function DamageReceiversGrid({
           </div>
         </Label>
       </div>
-      <div>
-        {children}
-      </div>
+      <div>{children}</div>
       {damagesToReceivers[0]?.damages.map((damage) => (
         <div key={damage.id} className="object-damage__table-header">
           <div className="stack horizontal sm justify-center items-center">
@@ -238,20 +236,21 @@ function DamageReceiversGrid({
       {damagesToReceivers.map((damageToReceiver, i) => {
         return (
           <React.Fragment key={damageToReceiver.receiver}>
-          <div>
-            <Label htmlFor="ap">
-              <div className="object-damage__ap-label">
-                {abilityPoints !== "0" && (damageReceiverAp[damageToReceiver.receiver])}
-              </div>
-            </Label>
-            <Image
-              key={i}
-              alt=""
-              path={damageReceiverImages[damageToReceiver.receiver]}
-              width={40}
-              height={40}
-            />
-          </div>
+            <div>
+              <Label htmlFor="ap">
+                <div className="object-damage__ap-label">
+                  {abilityPoints !== "0" &&
+                    damageReceiverAp[damageToReceiver.receiver]}
+                </div>
+              </Label>
+              <Image
+                key={i}
+                alt=""
+                path={damageReceiverImages[damageToReceiver.receiver]}
+                width={40}
+                height={40}
+              />
+            </div>
             <div className="object-damage__hp">
               {damageToReceiver.hitPoints}
               {t("analyzer:suffix.hp")}
