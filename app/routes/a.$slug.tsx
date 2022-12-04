@@ -11,8 +11,32 @@ import * as React from "react";
 import { articleBySlug } from "~/modules/articles";
 import invariant from "tiny-invariant";
 import { makeTitle } from "~/utils/strings";
-import { articlePreviewUrl } from "~/utils/urls";
+import {
+  articlePreviewUrl,
+  ARTICLES_MAIN_PAGE,
+  navIconUrl,
+} from "~/utils/urls";
+import type { SendouRouteHandle } from "~/utils/remix";
 import { notFoundIfFalsy } from "~/utils/remix";
+
+export const handle: SendouRouteHandle = {
+  breadcrumb: ({ match }) => {
+    const data = match.data as SerializeFrom<typeof loader>;
+    return [
+      {
+        imgPath: navIconUrl("articles"),
+        href: ARTICLES_MAIN_PAGE,
+        type: "IMAGE",
+      },
+      {
+        text: data.title,
+        // xxx: fix ARTICLES_MAIN_PAGE
+        href: ARTICLES_MAIN_PAGE,
+        type: "TEXT",
+      },
+    ];
+  },
+};
 
 export const meta: MetaFunction = (args) => {
   invariant(args.params["slug"]);

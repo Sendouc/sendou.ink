@@ -28,7 +28,6 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-// xxx: readd new build button somewhere
 export default function BuildsPage() {
   const { t } = useTranslation(["common", "weapons"]);
 

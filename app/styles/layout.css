@@ -15,7 +15,7 @@
 
 .layout__breadcrumb-container > a {
   overflow: hidden;
-  max-width: 175px;
+  max-width: 350px;
   color: var(--text);
   font-size: var(--fonts-sm);
   font-weight: 600;
@@ -256,6 +256,10 @@
 @media screen and (max-width: 640px) {
   .layout__header__right-container {
     display: none;
+  }
+
+  .layout__breadcrumb-container > a {
+    max-width: 175px;
   }
 
   .layout__footer__socials {

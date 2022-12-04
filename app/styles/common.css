@@ -489,6 +489,19 @@ dialog::backdrop {
   white-space: pre-wrap;
 }
 
+.articles-list {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  gap: var(--s-6);
+  list-style: none;
+}
+
+.articles-list__title {
+  color: var(--theme);
+  font-size: var(--fonts-md);
+}
+
 @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
   .popover-content {
     -webkit-backdrop-filter: blur(10px) brightness(75%);

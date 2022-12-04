@@ -105,5 +105,7 @@
   "weapon.category.STRINGERS": "Stringers",
   "weapon.category.SPLATANAS": "Splatanas",
 
-  "plans.poweredBy": "Powered by {{name}}"
+  "plans.poweredBy": "Powered by {{name}}",
+
+  "articles.by": "by {{author}}"
 }

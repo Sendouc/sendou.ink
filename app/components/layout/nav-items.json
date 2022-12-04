@@ -8,15 +8,20 @@
   { "name": "badges", "url": "badges", "prefetch": false },
   { "name": "calendar", "url": "calendar", "prefetch": false },
   {
+    "name": "plus",
+    "url": "plus/suggestions",
+    "prefetch": false
+  },
+  {
+    "name": "articles",
+    "url": "a",
+    "prefetch": true
+  },
+  {
     "name": "object-damage-calculator",
     "url": "object-damage-calculator",
     "prefetch": true
   },
   { "name": "analyzer", "url": "analyzer", "prefetch": true },
-  { "name": "builds", "url": "builds", "prefetch": true },
-  {
-    "name": "plus",
-    "url": "plus/suggestions",
-    "prefetch": false
-  }
+  { "name": "builds", "url": "builds", "prefetch": true }
 ]

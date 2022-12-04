@@ -10,7 +10,6 @@ import { LogOutIcon } from "../icons/LogOut";
 import { UserIcon } from "../icons/User";
 import { Popover } from "../Popover";
 
-// xxx: reimplement or delete
 export function UserItem() {
   const { t } = useTranslation();
   const user = useUser();
