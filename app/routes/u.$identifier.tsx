@@ -26,6 +26,7 @@ import {
   userPage,
   userResultsPage,
 } from "~/utils/urls";
+import { Main } from "~/components/Main";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -98,7 +99,7 @@ export default function UserPageLayout() {
   useReplaceWithCustomUrl();
 
   return (
-    <>
+    <Main>
       <SubNav>
         <SubNavLink to={userPage(data)}>{t("header.profile")}</SubNavLink>
         {isOwnPage && (
@@ -118,7 +119,7 @@ export default function UserPageLayout() {
         )}
       </SubNav>
       <Outlet />
-    </>
+    </Main>
   );
 }
 

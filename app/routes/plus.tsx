@@ -21,15 +21,13 @@ export const handle: SendouRouteHandle = {
 
 export default function PlusPageLayout() {
   return (
-    <>
+    <Main>
       <SubNav>
         <SubNavLink to="suggestions">Suggestions</SubNavLink>
         <SubNavLink to="voting/results">Results</SubNavLink>
         <SubNavLink to="voting">Voting</SubNavLink>
       </SubNav>
-      <Main>
-        <Outlet />
-      </Main>
-    </>
+      <Outlet />
+    </Main>
   );
 }

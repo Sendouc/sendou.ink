@@ -1,9 +1,8 @@
 import { useMatches } from "@remix-run/react";
-import { useTranslation } from "~/hooks/useTranslation";
 import invariant from "tiny-invariant";
 import { LinkButton } from "~/components/Button";
-import { Main } from "~/components/Main";
 import { Section } from "~/components/Section";
+import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
 import { userResultsEditHighlightsPage } from "~/utils/urls";
 import type { UserPageLoaderData } from "../../u.$identifier";
@@ -31,7 +30,7 @@ export default function UserResultsPage() {
     (isOwnResultsPage && hasResults && userPageData.results.length !== 1);
 
   return (
-    <Main className="stack lg">
+    <div className="stack lg">
       {showHighlightsSection && (
         <Section
           title={t("results.highlights")}
@@ -64,6 +63,6 @@ export default function UserResultsPage() {
           <UserResultsTable id="user-results-table" results={nonHighlights} />
         </Section>
       )}
-    </Main>
+    </div>
   );
 }

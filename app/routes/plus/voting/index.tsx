@@ -258,7 +258,7 @@ function Voting(data: Extract<PlusVotingLoaderData, { type: "voting" }>) {
         <div className="stack md items-center">
           <Avatar user={currentUser.user} size="lg" />
           <h2>{discordFullName(currentUser.user)}</h2>
-          <div className="stack horizontal md">
+          <div className="stack horizontal lg">
             <Button
               className="plus-voting__vote-button downvote"
               variant="outlined"

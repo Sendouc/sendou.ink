@@ -99,14 +99,12 @@
 }
 
 .plus-voting__vote-button {
-  width: 6rem;
-  height: 2.5rem;
-  color: var(--text) !important;
-  font-size: var(--fonts-md);
+  width: 4rem;
 }
 
 .plus-voting__vote-button.downvote {
   border-color: var(--theme-error-transparent);
+  color: var(--theme-error);
   outline-color: var(--theme-error);
 }
 

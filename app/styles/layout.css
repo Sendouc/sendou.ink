@@ -85,8 +85,10 @@
   padding-inline: var(--s-3);
 }
 
-.main.half-width {
+.half-width {
+  width: 100%;
   max-width: 24rem;
+  margin: 0 auto;
 }
 
 .layout__main {

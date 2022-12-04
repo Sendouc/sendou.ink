@@ -2,12 +2,12 @@
 *::before,
 *::after {
   box-sizing: border-box;
+  color: var(--text);
 }
 
 body {
   width: 100%;
   background-color: var(--bg);
-  color: var(--text);
   font-family: Lexend, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: antialiased;
@@ -414,7 +414,7 @@ dialog::backdrop {
 
 .input-container {
   display: flex;
-  border: 1px solid var(--border);
+  border: 2px solid var(--border);
   border-radius: var(--rounded);
   accent-color: var(--theme-secondary);
   background-color: var(--bg-input);
@@ -456,34 +456,26 @@ dialog::backdrop {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  background-color: var(--bg-lighter);
-  background-image: url("/static-assets/svg/background-pattern.svg");
-  margin-block-end: var(--s-4);
-  overflow-x: auto;
+  gap: var(--s-4);
+  margin-block-end: var(--s-8);
+  margin-block-start: -12px;
 }
 
 .sub-nav__link {
-  display: flex;
-  height: 100%;
-  flex-direction: column;
-  align-items: center;
-  padding: var(--s-4);
-  background-color: var(--bg-lighter);
+  max-width: 100px;
+  flex: 1;
+  padding: var(--s-1) var(--s-2);
+  border-radius: var(--rounded);
+  background-color: var(--bg-lightest);
   color: var(--text);
   font-size: var(--fonts-xs);
   font-weight: var(--semi-bold);
+  text-align: center;
   white-space: nowrap;
 }
 
-.sub-nav__active-icon {
-  height: 1.2rem;
-  margin-block-end: -1rem;
-  margin-block-start: -3px;
-  visibility: hidden;
-}
-
-.sub-nav__link.active > .sub-nav__active-icon {
-  visibility: visible;
+.sub-nav__link.active {
+  color: var(--theme);
 }
 
 .popover-content {
@@ -643,8 +635,8 @@ dialog::backdrop {
 
 .avatar {
   border-radius: 50%;
-  background-color: var(--bg-lighter);
-  background-image: url("/static-assets/svg/background-pattern.svg");
+  background-color: var(--bg-lightest);
+  background-image: url("/static-assets/svg/new-background-pattern.svg");
 }
 
 .alert > svg {
