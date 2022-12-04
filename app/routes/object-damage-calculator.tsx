@@ -82,34 +82,31 @@ export default function ObjectDamagePage() {
             allDamageTypes={allDamageTypes}
           />
         </div>
-        <div>
-          <Label htmlFor="ap" labelClassName="object-damage__ap-label">
-            {t("analyzer:labels.amountOf")}
-            <Ability ability="BRU" size="TINY" />
-            <Ability ability="SPU" size="TINY" />
-          </Label>
-          <select
-            className="object-damage__select"
-            id="ap"
-            value={abilityPoints}
-            onChange={(e) =>
-              handleChange({ newAbilityPoints: Number(e.target.value) })
-            }
-          >
-            {possibleApValues().map((ap) => (
-              <option key={ap} value={ap}>
-                {ap}
-                {t("analyzer:abilityPoints.short")}
-              </option>
-            ))}
-          </select>
-        </div>
       </div>
       {damagesToReceivers ? (
         <DamageReceiversGrid
           subWeaponId={subWeaponId}
           damagesToReceivers={damagesToReceivers}
-        />
+          abilityPoints={abilityPoints}
+        >
+          <div>
+            <select
+              className="object-damage__select"
+              id="ap"
+              value={abilityPoints}
+              onChange={(e) =>
+                handleChange({ newAbilityPoints: Number(e.target.value) })
+              }
+            >
+              {possibleApValues().map((ap) => (
+                <option key={ap} value={ap}>
+                  {ap}
+                  {t("analyzer:abilityPoints.short")}
+                </option>
+              ))}
+            </select>
+          </div>
+        </DamageReceiversGrid>
       ) : (
         <div>{t("analyzer:noDmgData")}</div>
       )}
@@ -177,18 +174,37 @@ const damageReceiverImages: Record<DamageReceiver, string> = {
   BulletUmbrellaCanopyCompact: mainWeaponImageUrl(6020),
 };
 
+const damageReceiverAp: Record<DamageReceiver, JSX.Element> = {
+  Bomb_TorpedoBullet: <div />,
+  Chariot: <div />,
+  Gachihoko_Barrier: <div />,
+  GreatBarrier_Barrier: <Ability ability="SPU" size="TINY" />,
+  GreatBarrier_WeakPoint: <Ability ability="SPU" size="TINY" />,
+  NiceBall_Armor: <div />,
+  ShockSonar: <div />,
+  Wsb_Flag: <div />,
+  Wsb_Shield: <Ability ability="BRU" size="TINY" />,
+  Wsb_Sprinkler: <div />,
+  BulletUmbrellaCanopyNormal: <div />,
+  BulletUmbrellaCanopyWide: <div />,
+  BulletUmbrellaCanopyCompact: <div />,
+};
+
 function DamageReceiversGrid({
   subWeaponId,
   damagesToReceivers,
+  children,
+  abilityPoints,
 }: {
   subWeaponId: ReturnType<typeof useObjectDamage>["subWeaponId"];
   damagesToReceivers: NonNullable<
     ReturnType<typeof useObjectDamage>["damagesToReceivers"]
   >;
-}) {
+  children: React.ReactNode;
+  abilityPoints: string;
+}): JSX.Element {
   const { t } = useTranslation(["weapons", "analyzer", "common"]);
   useSetTitle(t("common:pages.object-damage-calculator"));
-
   return (
     <div
       className="object-damage__grid"
@@ -198,8 +214,16 @@ function DamageReceiversGrid({
         ),
       }}
     >
-      <div />
-      <div />
+      <div>
+        <Label htmlFor="ap">
+          {t("analyzer:labels.amountOf")}
+          <div className="object-damage__ap-label">
+            <Ability ability="BRU" size="TINY" />
+            <Ability ability="SPU" size="TINY" />
+          </div>
+        </Label>
+      </div>
+      <div>{children}</div>
       {damagesToReceivers[0]?.damages.map((damage) => (
         <div key={damage.id} className="object-damage__table-header">
           <div className="stack horizontal sm justify-center items-center">
@@ -223,13 +247,21 @@ function DamageReceiversGrid({
       {damagesToReceivers.map((damageToReceiver, i) => {
         return (
           <React.Fragment key={damageToReceiver.receiver}>
-            <Image
-              key={i}
-              alt=""
-              path={damageReceiverImages[damageToReceiver.receiver]}
-              width={40}
-              height={40}
-            />
+            <div>
+              <Label htmlFor="ap">
+                <div className="object-damage__ap-label">
+                  {abilityPoints !== "0" &&
+                    damageReceiverAp[damageToReceiver.receiver]}
+                </div>
+              </Label>
+              <Image
+                key={i}
+                alt=""
+                path={damageReceiverImages[damageToReceiver.receiver]}
+                width={40}
+                height={40}
+              />
+            </div>
             <div className="object-damage__hp">
               {damageToReceiver.hitPoints}
               {t("analyzer:suffix.hp")}
