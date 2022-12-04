@@ -22,7 +22,8 @@
 .calendar__week {
   display: flex;
   min-width: calc(var(--full-size-week-width) - 2rem);
-  height: calc(var(--full-size-week-height) - 2rem);
+  height: auto;
+  min-height: calc(var(--full-size-week-height) - 2rem);
   flex-direction: column;
   justify-content: space-between;
   padding: var(--s-1-5);
@@ -60,7 +61,7 @@
 
 .calendar__week:nth-child(5) {
   min-width: var(--full-size-week-width);
-  height: var(--full-size-week-height);
+  min-height: var(--full-size-week-height);
   color: var(--text);
   font-size: var(--fonts-sm);
 }
@@ -72,7 +73,7 @@
 .calendar__week:nth-child(4),
 .calendar__week:nth-child(6) {
   min-width: calc(var(--full-size-week-width) - 1rem);
-  height: calc(var(--full-size-week-height) - 1rem);
+  min-height: calc(var(--full-size-week-height) - 1rem);
   font-size: var(--fonts-xs);
 }
 
