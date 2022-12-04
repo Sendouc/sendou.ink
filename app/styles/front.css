@@ -2,6 +2,7 @@
   display: grid;
   max-width: 340px;
   margin: 0 auto;
+  column-gap: var(--s-4);
   font-size: 13px;
   grid-template-columns: 1fr 1fr 1fr;
   row-gap: var(--s-4);
@@ -17,6 +18,10 @@
   text-align: center;
 }
 
+.front__nav-item.round {
+  display: none;
+}
+
 .front__nav-image-container {
   display: grid;
   width: 75px;
@@ -27,6 +32,23 @@
   transition: all 0.2s ease-out;
 }
 
+.front__nav-image-container.round {
+  width: 50px;
+  height: 50px;
+  border-radius: 100%;
+}
+
+.front__avatar {
+  width: 50px;
+  height: 50px;
+}
+
 .front__nav-image-container:hover {
   background-color: var(--theme-transparent);
+}
+
+@media screen and (max-width: 640px) {
+  .front__nav-item.round.round {
+    display: flex;
+  }
 }

@@ -108,9 +108,11 @@ export const handle: SendouRouteHandle = {
 function Document({
   children,
   data,
+  isCatchBoundary = false,
 }: {
   children: React.ReactNode;
   data?: RootLoaderData;
+  isCatchBoundary?: boolean;
 }) {
   const { i18n } = useTranslation();
   const locale = data?.locale ?? DEFAULT_LANGUAGE;
@@ -127,7 +129,9 @@ function Document({
       </head>
       <body>
         <React.StrictMode>
-          <Layout patrons={data?.patrons}>{children}</Layout>
+          <Layout patrons={data?.patrons} isCatchBoundary={isCatchBoundary}>
+            {children}
+          </Layout>
         </React.StrictMode>
         <ConditionalScrollRestoration />
         <Scripts />
@@ -196,7 +200,7 @@ export default function App() {
 
 export function CatchBoundary() {
   return (
-    <Document>
+    <Document isCatchBoundary>
       <Catcher />
     </Document>
   );

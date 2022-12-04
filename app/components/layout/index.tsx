@@ -6,6 +6,8 @@ import { Footer } from "./Footer";
 import { useTranslation } from "~/hooks/useTranslation";
 import { Image } from "../Image";
 import { SideNav } from "./SideNav";
+import { UserItem } from "./UserItem";
+import { LanguageChanger } from "./LanguageChanger";
 
 function useBreadcrumbs() {
   const { t } = useTranslation();
@@ -30,18 +32,17 @@ function useBreadcrumbs() {
 export const Layout = React.memo(function Layout({
   children,
   patrons,
+  isCatchBoundary = false,
 }: {
   children: React.ReactNode;
   patrons?: RootLoaderData["patrons"];
+  isCatchBoundary?: boolean;
 }) {
   const location = useLocation();
   const breadcrumbs = useBreadcrumbs();
 
   const isFrontPage = location.pathname === "/";
 
-  // xxx: bread crumbs safe padding on top on mobile
-  // xxx: maybe a bit lighter header e.g. #090828
-  // xxx: readd useritem and languagechanger
   return (
     <div className="layout__container">
       <header className="layout__header">
@@ -60,6 +61,10 @@ export const Layout = React.memo(function Layout({
               <BreadcrumbLink key={breadcrumb.href} data={breadcrumb} />,
             ];
           })}
+        </div>
+        <div className="layout__header__right-container">
+          <LanguageChanger />
+          {!isCatchBoundary ? <UserItem /> : null}
         </div>
       </header>
       {!isFrontPage ? <SideNav /> : null}

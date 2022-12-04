@@ -5,7 +5,7 @@ import { LOG_IN_URL, LOG_OUT_URL, userPage } from "~/utils/urls";
 import { Avatar } from "../Avatar";
 import { Button } from "../Button";
 import { Dialog } from "../Dialog";
-import { DiscordIcon } from "../icons/Discord";
+import { LogInIcon } from "../icons/LogIn";
 import { LogOutIcon } from "../icons/LogOut";
 import { UserIcon } from "../icons/User";
 import { Popover } from "../Popover";
@@ -62,7 +62,7 @@ export function UserItem() {
     <>
       <form action={LOG_IN_URL} method="post">
         <button type="submit" className="layout__log-in-button">
-          <DiscordIcon /> {t("header.login")}
+          <LogInIcon /> {t("header.login")}
         </button>
       </form>
       {authError != null && (

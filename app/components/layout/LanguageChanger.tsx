@@ -1,4 +1,5 @@
 import { useSearchParams } from "@remix-run/react";
+import type * as React from "react";
 import { useTranslation } from "~/hooks/useTranslation";
 import { languages } from "~/modules/i18n";
 import { LinkButton } from "../Button";
@@ -16,20 +17,27 @@ const addUniqueParam = (
   return paramsCopy;
 };
 
-// xxx: reimplement or delete
-export function LanguageChanger() {
+export function LanguageChanger({
+  children,
+  plain = false,
+}: {
+  children?: React.ReactNode;
+  plain?: boolean;
+}) {
   const { t, i18n } = useTranslation();
   const [searchParams] = useSearchParams();
 
   return (
     <Popover
       buttonChildren={
-        <GlobeIcon
-          alt={t("header.language")}
-          className="layout__header__button__icon"
-        />
+        children ?? (
+          <GlobeIcon
+            alt={t("header.language")}
+            className="layout__header__button__icon"
+          />
+        )
       }
-      triggerClassName="layout__header__button"
+      triggerClassName={plain ? undefined : "layout__header__button"}
     >
       <div className="layout__user-popover">
         {languages.map((lang) => (
