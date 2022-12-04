@@ -11,7 +11,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: var(--new-text);
+  color: var(--text);
   font-weight: bold;
   gap: var(--s-1);
   text-align: center;
@@ -22,11 +22,11 @@
   width: 75px;
   height: 75px;
   border-radius: var(--rounded);
-  background-color: var(--new-bg-lighter);
+  background-color: var(--bg-lighter);
   place-items: center;
   transition: all 0.2s ease-out;
 }
 
 .front__nav-image-container:hover {
-  background-color: var(--new-theme-transparent);
+  background-color: var(--theme-transparent);
 }

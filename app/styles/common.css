@@ -6,8 +6,8 @@
 
 body {
   width: 100%;
-  background-color: var(--new-bg);
-  color: var(--new-text);
+  background-color: var(--bg);
+  color: var(--text);
   font-family: Lexend, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: antialiased;
@@ -20,7 +20,7 @@ body {
 }
 
 a {
-  color: var(--new-theme);
+  color: var(--theme);
   font-weight: var(--semi-bold);
   text-decoration: none;
 }
@@ -30,10 +30,10 @@ a {
   width: auto;
   align-items: center;
   justify-content: center;
-  border: 2px solid var(--new-theme);
+  border: 2px solid var(--theme);
   border-radius: var(--rounded-sm);
   appearance: none;
-  background: var(--new-theme);
+  background: var(--theme);
   color: var(--button-text);
   cursor: pointer;
   font-size: var(--fonts-sm);
@@ -60,7 +60,7 @@ a {
 }
 
 :is(button, .button).outlined {
-  background-color: transparent;
+  background-color: var(--theme-very-transparent);
   color: var(--theme);
 }
 
@@ -136,12 +136,11 @@ textarea:not(.plain) {
   max-width: 100%;
   height: 8rem;
   padding: var(--s-2-5) var(--s-3);
-  border: 1px solid var(--border);
+  border: 2px solid var(--border);
   border-radius: var(--rounded);
   accent-color: var(--theme-secondary);
-  background-color: transparent;
+  background-color: var(--bg-input);
   color: var(--text);
-  font-size: var(--fonts-sm);
   outline: none;
   overflow-wrap: normal;
   overflow-x: auto;
@@ -166,12 +165,11 @@ input:not(.plain, [type="radio"]) {
 input:not(.plain) {
   height: 1rem;
   padding: var(--s-4) var(--s-3);
-  border: 1px solid var(--border);
+  border: 2px solid var(--border);
   border-radius: var(--rounded);
   accent-color: var(--theme-secondary);
-  background-color: transparent;
+  background-color: var(--bg-input);
   color: var(--text);
-  font-size: var(--fonts-sm);
   outline: none;
 }
 
@@ -232,7 +230,7 @@ details summary {
 fieldset {
   border: none;
   border-radius: var(--rounded);
-  background-color: var(--bg-darker-transparent);
+  background-color: var(--bg-lighter);
   font-size: var(--fonts-sm);
   padding-block-end: var(--s-3);
   padding-inline: var(--s-3);
@@ -253,16 +251,15 @@ select {
   all: unset;
   width: 100%;
   box-sizing: border-box;
-  border: 1px solid var(--border);
+  border: 2px solid var(--border);
   border-radius: var(--rounded);
-  background: var(--select-background, var(--bg-lighter));
+  background: var(--select-background, var(--bg-input));
 
   /* TODO: Get color from CSS var */
   background-image: url('data:image/svg+xml;utf8,<svg width="1rem" color="rgb(255 255 255 / 55%)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>');
   background-position: center right var(--s-3);
   background-repeat: no-repeat;
   cursor: pointer;
-  font-size: var(--fonts-sm);
   font-weight: 500;
   padding-block: 3.5px;
   padding-inline: var(--s-3) var(--s-8);
