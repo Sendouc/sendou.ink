@@ -16,6 +16,8 @@ import {
 import {
   mainWeaponImageUrl,
   modeImageUrl,
+  navIconUrl,
+  OBJECT_DAMAGE_CALCULATOR_URL,
   specialWeaponImageUrl,
   subWeaponImageUrl,
 } from "~/utils/urls";
@@ -39,7 +41,11 @@ export const links: LinksFunction = () => {
 
 export const handle: SendouRouteHandle = {
   i18n: ["weapons", "analyzer"],
-  navItemName: "object-damage-calculator",
+  breadcrumb: () => ({
+    imgPath: navIconUrl("object-damage-calculator"),
+    href: OBJECT_DAMAGE_CALCULATOR_URL,
+    type: "IMAGE",
+  }),
 };
 
 export default function ObjectDamagePage() {
@@ -229,6 +235,7 @@ function DamageReceiversGrid({
               path={damageReceiverImages[damageToReceiver.receiver]}
               width={40}
               height={40}
+              className="object-damage__receiver-image"
             />
             <div className="object-damage__hp">
               {damageToReceiver.hitPoints}

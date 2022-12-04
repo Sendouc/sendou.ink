@@ -20,7 +20,6 @@ export function Image({
       <source
         type="image/avif"
         srcSet={`${path}.avif`}
-        className={className}
         width={width}
         height={height}
         style={style}

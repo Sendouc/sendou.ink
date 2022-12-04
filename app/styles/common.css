@@ -417,7 +417,7 @@ dialog::backdrop {
   border: 1px solid var(--border);
   border-radius: var(--rounded);
   accent-color: var(--theme-secondary);
-  background-color: transparent;
+  background-color: var(--bg-input);
   color: var(--text);
   font-size: var(--fonts-sm);
   outline: none;

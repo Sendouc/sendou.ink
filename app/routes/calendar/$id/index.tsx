@@ -38,6 +38,7 @@ import {
 import { discordFullName, makeTitle } from "~/utils/strings";
 import {
   calendarEditPage,
+  calendarEventPage,
   calendarReportWinnersPage,
   CALENDAR_PAGE,
   navIconUrl,
@@ -92,6 +93,21 @@ export const meta: MetaFunction = (args) => {
 
 export const handle: SendouRouteHandle = {
   i18n: ["calendar", "game-misc"],
+  breadcrumb: ({ match }) => {
+    const data = match.data as SerializeFrom<typeof loader>;
+    return [
+      {
+        imgPath: navIconUrl("calendar"),
+        href: CALENDAR_PAGE,
+        type: "IMAGE",
+      },
+      {
+        text: data.event.name,
+        href: calendarEventPage(data.event.eventId),
+        type: "TEXT",
+      },
+    ];
+  },
 };
 
 export const loader = async ({ params, request }: LoaderArgs) => {

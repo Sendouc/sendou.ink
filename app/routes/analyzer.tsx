@@ -42,6 +42,7 @@ import { damageTypeTranslationString } from "~/utils/i18next";
 import { type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import {
+  ANALYZER_URL,
   navIconUrl,
   objectDamageCalculatorPage,
   specialWeaponImageUrl,
@@ -64,7 +65,11 @@ export const links: LinksFunction = () => {
 
 export const handle: SendouRouteHandle = {
   i18n: ["weapons", "analyzer"],
-  navItemName: "analyzer",
+  breadcrumb: () => ({
+    imgPath: navIconUrl("analyzer"),
+    href: ANALYZER_URL,
+    type: "IMAGE",
+  }),
 };
 
 // Resolves this Github issue: https://github.com/Sendouc/sendou.ink/issues/1053

@@ -22,7 +22,12 @@ import {
 } from "~/utils/dates";
 import { discordFullName, makeTitle } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
-import { calendarReportWinnersPage, resolveBaseUrl } from "~/utils/urls";
+import {
+  calendarReportWinnersPage,
+  CALENDAR_PAGE,
+  navIconUrl,
+  resolveBaseUrl,
+} from "~/utils/urls";
 import { actualNumber } from "~/utils/zod";
 import { Tags } from "./components/Tags";
 import { type SendouRouteHandle } from "~/utils/remix";
@@ -48,7 +53,11 @@ export const meta: MetaFunction = (args) => {
 
 export const handle: SendouRouteHandle = {
   i18n: "calendar",
-  navItemName: "calendar",
+  breadcrumb: () => ({
+    imgPath: navIconUrl("calendar"),
+    href: CALENDAR_PAGE,
+    type: "IMAGE",
+  }),
 };
 
 const loaderSearchParamsSchema = z.object({

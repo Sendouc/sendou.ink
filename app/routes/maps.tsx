@@ -26,7 +26,12 @@ import {
 import { MapPool } from "~/modules/map-pool-serializer";
 import styles from "~/styles/maps.css";
 import { makeTitle } from "~/utils/strings";
-import { calendarEventPage, ipLabsMaps } from "~/utils/urls";
+import {
+  calendarEventPage,
+  ipLabsMaps,
+  MAPS_URL,
+  navIconUrl,
+} from "~/utils/urls";
 import { type SendouRouteHandle } from "~/utils/remix";
 import { MapPoolSelector, MapPoolStages } from "~/components/MapPoolSelector";
 import { EditIcon } from "~/components/icons/Edit";
@@ -58,7 +63,11 @@ export const meta: MetaFunction = (args) => {
 
 export const handle: SendouRouteHandle = {
   i18n: "game-misc",
-  navItemName: "maps",
+  breadcrumb: () => ({
+    imgPath: navIconUrl("maps"),
+    href: MAPS_URL,
+    type: "IMAGE",
+  }),
 };
 
 export const loader = async ({ request }: LoaderArgs) => {
