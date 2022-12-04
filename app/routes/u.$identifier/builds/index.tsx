@@ -3,6 +3,8 @@ import { json, type LoaderArgs } from "@remix-run/node";
 import { useLoaderData, useMatches } from "@remix-run/react";
 import { z } from "zod";
 import { BuildCard } from "~/components/BuildCard";
+import { LinkButton } from "~/components/Button";
+import { BUILD } from "~/constants";
 import { db } from "~/db";
 import { useTranslation } from "~/hooks/useTranslation";
 import { getUser, requireUser, useUser } from "~/modules/auth";
@@ -12,6 +14,7 @@ import {
   parseRequestFormData,
   type SendouRouteHandle,
 } from "~/utils/remix";
+import { userNewBuildPage } from "~/utils/urls";
 import { actualNumber, id } from "~/utils/zod";
 import { userParamsSchema, type UserPageLoaderData } from "../../u.$identifier";
 
@@ -67,6 +70,13 @@ export default function UserBuildsPage() {
 
   return (
     <div className="stack lg">
+      {data.builds.length < BUILD.MAX_COUNT && isOwnPage && (
+        <div className="stack items-end">
+          <LinkButton to={userNewBuildPage(parentPageData)} tiny>
+            {t("addBuild")}
+          </LinkButton>
+        </div>
+      )}
       {data.builds.length > 0 ? (
         <div className="builds-container">
           {data.builds.map((build) => (
