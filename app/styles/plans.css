@@ -77,9 +77,10 @@ button[data-state="closed"][aria-haspopup="dialog"] {
 .plans__weapons-section {
   position: fixed;
   z-index: 10;
-  top: 15%;
+  top: 10%;
   display: flex;
-  width: 130px;
+  width: 150px;
+  max-height: 85vh;
   flex-wrap: wrap;
   justify-content: center;
   padding: var(--s-2);
@@ -87,6 +88,7 @@ button[data-state="closed"][aria-haspopup="dialog"] {
   border-radius: 0 var(--rounded) var(--rounded) 0;
   background: var(--bg-darker);
   gap: 2px;
+  overflow-y: auto;
 }
 
 .plans__powered-by {
