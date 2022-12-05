@@ -84,6 +84,8 @@ export function buildStats({
           ? framesToSeconds(mainWeaponParams.InkRecoverStop)
           : undefined,
       subWeaponWhiteInkSeconds: framesToSeconds(subWeaponParams.InkRecoverStop),
+      subWeaponInkConsumptionPercentage:
+        subWeaponInkConsumptionPercentage(input),
       squidFormInkRecoverySeconds: squidFormInkRecoverySeconds(input),
       runSpeed: runSpeed(input),
       shootingRunSpeed: shootingRunSpeed(input, "MoveSpeed"),
@@ -206,6 +208,14 @@ function specialLost(
       effect - splattedByExtraPenalty - extraSpecialLost
     ),
     modifiedBy: [SPECIAL_SAVED_AFTER_DEATH_ABILITY, "RP"],
+  };
+}
+
+function subWeaponInkConsumptionPercentage(args: StatFunctionInput) {
+  return {
+    modifiedBy: "ISS" as const,
+    baseValue: roundToNDecimalPlaces(args.subWeaponParams.InkConsume * 100),
+    value: roundToNDecimalPlaces(subWeaponConsume(args).inkConsume * 100),
   };
 }
 

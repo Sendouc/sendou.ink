@@ -208,6 +208,11 @@ export default function BuildAnalyzerPage() {
 
           <StatCategory title={t("analyzer:stat.category.sub")}>
             <StatCard
+              stat={analyzed.stats.subWeaponInkConsumptionPercentage}
+              title={t("analyzer:stat.subWeaponInkConsumptionPercentage")}
+              suffix="%"
+            />
+            <StatCard
               stat={analyzed.stats.subWeaponWhiteInkSeconds}
               title={t("analyzer:stat.whiteInk")}
               suffix={t("analyzer:suffix.seconds")}

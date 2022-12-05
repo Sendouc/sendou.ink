@@ -196,6 +196,7 @@ export interface AnalyzedBuild {
     specialLostSplattedByRP: Stat;
     mainWeaponWhiteInkSeconds?: number;
     subWeaponWhiteInkSeconds: number;
+    subWeaponInkConsumptionPercentage: Stat;
     fullInkTankOptions: Array<FullInkTankOption & { id: string }>;
     damages: Array<Damage & { id: string }>;
     squidFormInkRecoverySeconds: Stat;
