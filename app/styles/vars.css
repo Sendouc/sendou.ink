@@ -33,7 +33,7 @@
   --theme-very-transparent: #ffc6de36;
   --theme-vibrant: hsl(255deg 78% 65%);
   --theme-transparent: #ffc6de52;
-  --theme-secondary: hsl(85deg 66.7% 55.3%);
+  --theme-secondary: rgb(239, 229, 83);
   --inactive-image-filter: grayscale(100%) brightness(130%);
   --rounded: 16px;
   --rounded-full: 200px;

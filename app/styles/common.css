@@ -475,7 +475,7 @@ dialog::backdrop {
 }
 
 .sub-nav__link.active {
-  color: var(--theme);
+  color: var(--theme-secondary);
 }
 
 .popover-content {
