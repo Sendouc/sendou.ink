@@ -32,8 +32,11 @@ import { Label } from "~/components/Label";
 import { Ability } from "~/components/Ability";
 import { damageTypeTranslationString } from "~/utils/i18next";
 import { useSetTitle } from "~/hooks/useSetTitle";
+import type { ShouldReloadFunction } from "@remix-run/react";
 
 export const CURRENT_PATCH = "2.0";
+
+export const unstable_shouldReload: ShouldReloadFunction = () => false;
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
