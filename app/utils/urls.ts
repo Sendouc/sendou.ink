@@ -64,6 +64,10 @@ export const SECOND_PLACEMENT_ICON_PATH =
   "/static-assets/svg/placements/second.svg";
 export const THIRD_PLACEMENT_ICON_PATH =
   "/static-assets/svg/placements/third.svg";
+export const FRONT_BOY_PATH = "/static-assets/img/layout/front-boy";
+export const FRONT_GIRL_PATH = "/static-assets/img/layout/front-girl";
+export const FRONT_BOY_BG_PATH = "/static-assets/img/layout/front-boy-bg";
+export const FRONT_GIRL_BG_PATH = "/static-assets/img/layout/front-girl-bg";
 
 export const GET_ALL_USERS_ROUTE = "/users";
 export const GET_ALL_EVENTS_WITH_MAP_POOLS_ROUTE = "/calendar/map-pool-events";

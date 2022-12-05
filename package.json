@@ -19,6 +19,7 @@
     "check-translation-jsons:no-write": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/check-translation-jsons.ts --no-write",
     "replace-img-names": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/replace-img-names.ts",
     "replace-weapon-names": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/replace-weapon-names.ts",
+    "hex-to-filter": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/hex-to-filter.ts",
     "lint:ts": "eslint . --ext .ts,.tsx",
     "lint:styles": "stylelint \"app/styles/**/*.css\"",
     "prettier:check": "prettier --check . --loglevel warn",

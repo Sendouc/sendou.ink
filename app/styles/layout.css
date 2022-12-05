@@ -13,7 +13,7 @@
   gap: var(--s-2);
 }
 
-.layout__breadcrumb-container > a {
+.layout__breadcrumb {
   overflow: hidden;
   max-width: 350px;
   color: var(--text);

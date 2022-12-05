@@ -1,7 +1,15 @@
 import { Main } from "~/components/Main";
 import navItems from "~/components/layout/nav-items.json";
 import { Image } from "~/components/Image";
-import { LOG_OUT_URL, navIconUrl, userPage } from "~/utils/urls";
+import {
+  FRONT_BOY_BG_PATH,
+  FRONT_BOY_PATH,
+  FRONT_GIRL_BG_PATH,
+  FRONT_GIRL_PATH,
+  LOG_OUT_URL,
+  navIconUrl,
+  userPage,
+} from "~/utils/urls";
 import { useTranslation } from "~/hooks/useTranslation";
 import type { LinksFunction } from "@remix-run/node";
 import styles from "~/styles/front.css";
@@ -15,12 +23,16 @@ import { Button } from "~/components/Button";
 import { LogOutIcon } from "~/components/icons/LogOut";
 import { LogInButtonContainer } from "~/components/layout/LogInButtonContainer";
 import { LogInIcon } from "~/components/icons/LogIn";
+import * as React from "react";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
 export default function FrontPage() {
+  const [filters, setFilters] = React.useState<[string, string]>(
+    navItems[0]?.filters as [string, string]
+  );
   const { t, i18n } = useTranslation(["common"]);
   const user = useUser();
 
@@ -28,7 +40,6 @@ export default function FrontPage() {
     (lang) => i18n.language === lang.code
   );
 
-  // xxx: add borzoic drawing
   // xxx: test in other languages (ellipsis)
   return (
     <Main className="stack lg">
@@ -73,6 +84,7 @@ export default function FrontPage() {
             className="front__nav-item"
             key={item.name}
             prefetch={item.prefetch ? "render" : undefined}
+            onMouseEnter={() => setFilters(item.filters as [string, string])}
           >
             <div className="front__nav-image-container">
               <Image
@@ -101,6 +113,44 @@ export default function FrontPage() {
           </form>
         </div>
       ) : null}
+      <Drawings filters={filters} />
     </Main>
+  );
+}
+
+function Drawings({
+  filters,
+}: {
+  filters: [boyFilter: string, girlFilter: string];
+}) {
+  return (
+    <div className="front__drawings">
+      <Image
+        path={FRONT_BOY_PATH}
+        className="front__drawing-img"
+        containerClassName="front__drawings__boy"
+        alt=""
+      />
+      <Image
+        path={FRONT_BOY_BG_PATH}
+        className="front__drawing-img"
+        containerClassName="front__drawings__boy bg"
+        style={{ filter: filters[0] }}
+        alt=""
+      />
+      <Image
+        path={FRONT_GIRL_PATH}
+        className="front__drawing-img"
+        containerClassName="front__drawings__girl"
+        alt=""
+      />
+      <Image
+        path={FRONT_GIRL_BG_PATH}
+        className="front__drawing-img"
+        containerClassName="front__drawings__girl bg"
+        style={{ filter: filters[1] }}
+        alt=""
+      />
+    </div>
   );
 }

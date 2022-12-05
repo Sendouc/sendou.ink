@@ -59,6 +59,56 @@
   justify-content: center;
 }
 
+.front__drawings {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-block-start: var(--s-8);
+  margin-inline-end: -30px;
+}
+
+.front__drawing-img {
+  max-height: 175px;
+}
+
+@media screen and (min-width: 400px) {
+  .front__drawing-img {
+    max-height: 200px;
+  }
+}
+
+@media screen and (min-width: 600px) {
+  .front__drawing-img {
+    max-height: 300px;
+  }
+}
+
+@media screen and (min-width: 800px) {
+  .front__drawing-img {
+    max-height: 400px;
+  }
+}
+
+.front__drawings__boy {
+  z-index: 10;
+  grid-column: 1 / 2;
+  grid-row: 1;
+  justify-self: flex-end;
+}
+
+.front__drawings__girl {
+  z-index: 10;
+  grid-column: 2 / 3;
+  grid-row: 1;
+}
+
+.front__drawings__girl.bg {
+  z-index: 1;
+}
+
+.front__drawings__boy.bg {
+  z-index: 1;
+}
+
 @media screen and (min-width: 640px) {
   .front__nav-item.round {
     display: none;

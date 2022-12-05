@@ -100,5 +100,7 @@
   "weapon.category.STRINGERS": "Stringers/Buer",
   "weapon.category.SPLATANAS": "Splatanas/Splatanaer",
 
-  "plans.poweredBy": "Tegneprogrammet er leveret af {{name}}"
+  "plans.poweredBy": "Tegneprogrammet er leveret af {{name}}",
+
+  "websiteSubtitle": "Konkurrencepræget Splatoon-hub"
 }

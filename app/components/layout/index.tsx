@@ -38,6 +38,7 @@ export const Layout = React.memo(function Layout({
   patrons?: RootLoaderData["patrons"];
   isCatchBoundary?: boolean;
 }) {
+  const { t } = useTranslation(["common"]);
   const location = useLocation();
   const breadcrumbs = useBreadcrumbs();
 
@@ -61,6 +62,14 @@ export const Layout = React.memo(function Layout({
               <BreadcrumbLink key={breadcrumb.href} data={breadcrumb} />,
             ];
           })}
+          {isFrontPage ? (
+            <>
+              <div className="layout__breadcrumb-separator">-</div>
+              <div className="layout__breadcrumb">
+                {t("common:websiteSubtitle")}
+              </div>
+            </>
+          ) : null}
         </div>
         <div className="layout__header__right-container">
           <LanguageChanger />
@@ -77,11 +86,15 @@ export const Layout = React.memo(function Layout({
 function BreadcrumbLink({ data }: { data: Breadcrumb }) {
   if (data.type === "IMAGE") {
     return (
-      <Link to={data.href}>
+      <Link to={data.href} className="layout__breadcrumb">
         <Image alt="" path={data.imgPath} width={30} height={30} />
       </Link>
     );
   }
 
-  return <Link to={data.href}>{data.text}</Link>;
+  return (
+    <Link to={data.href} className="layout__breadcrumb">
+      {data.text}
+    </Link>
+  );
 }

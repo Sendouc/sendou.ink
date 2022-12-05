@@ -107,5 +107,7 @@
 
   "plans.poweredBy": "Powered by {{name}}",
 
-  "articles.by": "by {{author}}"
+  "articles.by": "by {{author}}",
+
+  "websiteSubtitle": "Competitive Splatoon Hub"
 }

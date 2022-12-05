@@ -104,5 +104,7 @@
   "weapon.category.STRINGERS": "Тетиваторы",
   "weapon.category.SPLATANAS": "Сплат-катаны",
 
-  "plans.poweredBy": "При поддержке {{name}}"
+  "plans.poweredBy": "При поддержке {{name}}",
+
+  "websiteSubtitle": "Соревновательный Splatoon-хаб"
 }

@@ -15,7 +15,6 @@ export const links: LinksFunction = () => {
 };
 
 export const handle: SendouRouteHandle = {
-  i18n: ["front"],
   breadcrumb: () => ({
     imgPath: navIconUrl("articles"),
     href: ARTICLES_MAIN_PAGE,

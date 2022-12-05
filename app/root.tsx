@@ -171,7 +171,6 @@ export const namespaceJsonsToPreloadObj: Record<
   calendar: true,
   contributions: true,
   faq: true,
-  front: true,
   "game-misc": true,
   gear: true,
   user: true,
