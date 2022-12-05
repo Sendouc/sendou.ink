@@ -137,7 +137,7 @@ textarea:not(.plain) {
   height: 8rem;
   padding: var(--s-2-5) var(--s-3);
   border: 2px solid var(--border);
-  border-radius: var(--rounded);
+  border-radius: var(--rounded-sm);
   accent-color: var(--theme-secondary);
   background-color: var(--bg-input);
   color: var(--text);
@@ -166,7 +166,7 @@ input:not(.plain) {
   height: 1rem;
   padding: var(--s-4) var(--s-3);
   border: 2px solid var(--border);
-  border-radius: var(--rounded);
+  border-radius: var(--rounded-sm);
   accent-color: var(--theme-secondary);
   background-color: var(--bg-input);
   color: var(--text);
@@ -252,7 +252,7 @@ select {
   width: 100%;
   box-sizing: border-box;
   border: 2px solid var(--border);
-  border-radius: var(--rounded);
+  border-radius: var(--rounded-sm);
   background: var(--select-background, var(--bg-input));
 
   /* TODO: Get color from CSS var */
@@ -415,7 +415,7 @@ dialog::backdrop {
 .input-container {
   display: flex;
   border: 2px solid var(--border);
-  border-radius: var(--rounded);
+  border-radius: var(--rounded-sm);
   accent-color: var(--theme-secondary);
   background-color: var(--bg-input);
   color: var(--text);
@@ -434,6 +434,7 @@ dialog::backdrop {
 .input-container > input {
   width: 100%;
   border: none;
+  margin: auto 0;
 }
 /* stylelint-enable no-descending-specificity */
 
@@ -443,7 +444,7 @@ dialog::backdrop {
 
 .input-addon {
   display: grid;
-  border-radius: var(--rounded) 0 0 var(--rounded);
+  border-radius: var(--rounded-sm) 0 0 var(--rounded-sm);
   background-color: var(--bg-lighter);
   color: var(--text-lighter);
   font-size: var(--fonts-xs);

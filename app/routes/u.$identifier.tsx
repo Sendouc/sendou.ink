@@ -21,10 +21,12 @@ import styles from "~/styles/u.css";
 import invariant from "tiny-invariant";
 import {
   isCustomUrl,
+  navIconUrl,
   userBuildsPage,
   userEditProfilePage,
   userPage,
   userResultsPage,
+  USER_SEARCH_PAGE,
 } from "~/utils/urls";
 import { Main } from "~/components/Main";
 
@@ -42,6 +44,22 @@ export const meta: MetaFunction = ({ data }: { data: UserPageLoaderData }) => {
 
 export const handle: SendouRouteHandle = {
   i18n: "user",
+  breadcrumb: ({ match }) => {
+    const data = match.data as UserPageLoaderData;
+
+    return [
+      {
+        imgPath: navIconUrl("u"),
+        href: USER_SEARCH_PAGE,
+        type: "IMAGE",
+      },
+      {
+        text: data.discordName,
+        href: userPage(data),
+        type: "TEXT",
+      },
+    ];
+  },
 };
 
 export const userParamsSchema = z.object({ identifier: z.string() });

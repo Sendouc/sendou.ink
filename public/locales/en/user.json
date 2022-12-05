@@ -25,5 +25,8 @@
   "forms.errors.invalidCustomUrl.numbers": "Custom URL can't only contain numbers",
   "forms.errors.invalidCustomUrl.strangeCharacter": "Custom URL can't contain special characters",
   "forms.errors.invalidCustomUrl.duplicate": "Someone is already using this custom URL",
-  "forms.errors.invalidSens": "Motion sens can't be set if R-stick sens isn't"
+  "forms.errors.invalidSens": "Motion sens can't be set if R-stick sens isn't",
+
+  "search.info": "Search for users by Discord, Splatoon 3 or Twitter name",
+  "search.noResults": "No users found matching '{{query}}'"
 }

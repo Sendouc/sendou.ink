@@ -45,12 +45,12 @@
     ]
   },
   {
-    "name": "articles",
-    "url": "a",
+    "name": "u",
+    "url": "u",
     "prefetch": true,
     "filters": [
-      "invert(30%) sepia(73%) saturate(4089%) hue-rotate(326deg) brightness(96%) contrast(104%)",
-      "invert(55%) sepia(20%) saturate(738%) hue-rotate(224deg) brightness(86%) contrast(88%)"
+      "invert(20%) sepia(99%) saturate(5628%) hue-rotate(0deg) brightness(95%) contrast(118%)",
+      "invert(53%) sepia(0%) saturate(1071%) hue-rotate(253deg) brightness(95%) contrast(84%)"
     ]
   },
   {
@@ -78,6 +78,15 @@
     "filters": [
       "invert(16%) sepia(80%) saturate(5634%) hue-rotate(272deg) brightness(91%) contrast(105%)",
       "invert(71%) sepia(42%) saturate(4219%) hue-rotate(150deg) brightness(99%) contrast(86%)"
+    ]
+  },
+  {
+    "name": "articles",
+    "url": "a",
+    "prefetch": true,
+    "filters": [
+      "invert(30%) sepia(73%) saturate(4089%) hue-rotate(326deg) brightness(96%) contrast(104%)",
+      "invert(55%) sepia(20%) saturate(738%) hue-rotate(224deg) brightness(86%) contrast(88%)"
     ]
   }
 ]

@@ -18,6 +18,7 @@ import findAllPlusMembersSql from "./findAllPlusMembers.sql";
 import findAllPatronsSql from "./findAllPatrons.sql";
 import addResultHighlightSql from "./addResultHighlight.sql";
 import deleteAllResultHighlightsSql from "./deleteAllResultHighlights.sql";
+import searchSql from "./search.sql";
 
 const upsertStm = sql.prepare(upsertSql);
 export function upsert(
@@ -144,3 +145,24 @@ export const updateResultHighlights = sql.transaction(
     }
   }
 );
+
+const searchStm = sql.prepare(searchSql);
+export function search(input: string) {
+  const searchString = `%${input}%`;
+
+  return searchStm.all({
+    discordName: searchString,
+    inGameName: searchString,
+    twitter: searchString,
+  }) as Array<
+    Pick<
+      User,
+      | "discordId"
+      | "discordAvatar"
+      | "discordName"
+      | "discordDiscriminator"
+      | "customUrl"
+      | "inGameName"
+    >
+  >;
+}
