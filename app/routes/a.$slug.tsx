@@ -12,6 +12,7 @@ import { articleBySlug } from "~/modules/articles";
 import invariant from "tiny-invariant";
 import { makeTitle } from "~/utils/strings";
 import {
+  articlePage,
   articlePreviewUrl,
   ARTICLES_MAIN_PAGE,
   navIconUrl,
@@ -30,8 +31,7 @@ export const handle: SendouRouteHandle = {
       },
       {
         text: data.title,
-        // xxx: fix ARTICLES_MAIN_PAGE
-        href: ARTICLES_MAIN_PAGE,
+        href: articlePage(data.slug),
         type: "TEXT",
       },
     ];
@@ -61,7 +61,9 @@ export const meta: MetaFunction = (args) => {
 export const loader = ({ params }: LoaderArgs) => {
   invariant(params["slug"]);
 
-  return json(notFoundIfFalsy(articleBySlug(params["slug"])));
+  const article = notFoundIfFalsy(articleBySlug(params["slug"]));
+
+  return json({ ...article, slug: params["slug"] });
 };
 
 export default function ArticlePage() {
