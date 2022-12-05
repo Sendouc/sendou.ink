@@ -48,7 +48,7 @@ export const Layout = React.memo(function Layout({
     <div className="layout__container">
       <header className="layout__header">
         <div className="layout__breadcrumb-container">
-          <Link to="/" className="layout__breadcrumb">
+          <Link to="/" className="layout__breadcrumb logo">
             sendou.ink
           </Link>
           {breadcrumbs.flatMap((breadcrumb) => {

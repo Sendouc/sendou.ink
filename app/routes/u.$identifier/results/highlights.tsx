@@ -5,7 +5,6 @@ import invariant from "tiny-invariant";
 import { z } from "zod";
 import { Button } from "~/components/Button";
 import { FormErrors } from "~/components/FormErrors";
-import { Main } from "~/components/Main";
 import { db } from "~/db";
 import { requireUser } from "~/modules/auth";
 import { type UserPageLoaderData } from "~/routes/u.$identifier";
