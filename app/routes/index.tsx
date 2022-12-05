@@ -40,7 +40,6 @@ export default function FrontPage() {
     (lang) => i18n.language === lang.code
   );
 
-  // xxx: test in other languages (ellipsis)
   return (
     <Main className="stack lg">
       <div className="front__nav-items-container">
