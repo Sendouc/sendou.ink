@@ -18,8 +18,15 @@
   text-align: center;
 }
 
-.front__nav-item.round {
-  display: none;
+.front__log-in-button {
+  display: grid;
+  width: 50px;
+  height: 50px;
+  border: none;
+  border-radius: 100%;
+  background-color: var(--bg-lighter);
+  place-items: center;
+  transition: all 0.2s ease-out;
 }
 
 .front__nav-image-container {
@@ -47,8 +54,17 @@
   background-color: var(--theme-transparent);
 }
 
-@media screen and (max-width: 640px) {
-  .front__nav-item.round.round {
-    display: flex;
+.front__log-out-container {
+  display: flex;
+  justify-content: center;
+}
+
+@media screen and (min-width: 640px) {
+  .front__nav-item.round {
+    display: none;
+  }
+
+  .front__log-out-container {
+    display: none;
   }
 }

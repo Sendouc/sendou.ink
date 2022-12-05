@@ -1,7 +1,7 @@
 import { Main } from "~/components/Main";
 import navItems from "~/components/layout/nav-items.json";
 import { Image } from "~/components/Image";
-import { navIconUrl, userPage } from "~/utils/urls";
+import { LOG_OUT_URL, navIconUrl, userPage } from "~/utils/urls";
 import { useTranslation } from "~/hooks/useTranslation";
 import type { LinksFunction } from "@remix-run/node";
 import styles from "~/styles/front.css";
@@ -11,6 +11,10 @@ import { LanguageChanger } from "~/components/layout/LanguageChanger";
 import { Avatar } from "~/components/Avatar";
 import { useUser } from "~/modules/auth";
 import { languages } from "~/modules/i18n";
+import { Button } from "~/components/Button";
+import { LogOutIcon } from "~/components/icons/LogOut";
+import { LogInButtonContainer } from "~/components/layout/LogInButtonContainer";
+import { LogInIcon } from "~/components/icons/LogIn";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -26,9 +30,8 @@ export default function FrontPage() {
 
   // xxx: add borzoic drawing
   // xxx: test in other languages (ellipsis)
-  // xxx: add logout
   return (
-    <Main className="stack md">
+    <Main className="stack lg">
       <div className="front__nav-items-container">
         <div className="front__nav-item round">
           <LanguageChanger plain>
@@ -53,7 +56,16 @@ export default function FrontPage() {
             />
             {t("common:pages.myPage")}
           </Link>
-        ) : null}
+        ) : (
+          <div className="front__nav-item round">
+            <LogInButtonContainer>
+              <button className="front__log-in-button">
+                <LogInIcon size={28} />
+              </button>
+            </LogInButtonContainer>
+            {t("common:header.login")}
+          </div>
+        )}
 
         {navItems.map((item) => (
           <Link
@@ -74,6 +86,21 @@ export default function FrontPage() {
           </Link>
         ))}
       </div>
+      {user ? (
+        <div className="front__log-out-container">
+          <form method="post" action={LOG_OUT_URL}>
+            <Button
+              tiny
+              variant="outlined"
+              icon={<LogOutIcon />}
+              type="submit"
+              className="w-full"
+            >
+              {t("common:header.logout")}
+            </Button>
+          </form>
+        </div>
+      ) : null}
     </Main>
   );
 }

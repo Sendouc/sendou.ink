@@ -1,4 +1,10 @@
-export function LogInIcon({ className }: { className?: string }) {
+export function LogInIcon({
+  className,
+  size,
+}: {
+  className?: string;
+  size?: number;
+}) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -7,6 +13,8 @@ export function LogInIcon({ className }: { className?: string }) {
       strokeWidth={1.5}
       stroke="currentColor"
       className={className}
+      width={size}
+      height={size}
     >
       <path
         strokeLinecap="round"
