@@ -37,11 +37,17 @@ export function UserItem() {
               variant="outlined"
               icon={<UserIcon />}
             >
-              {t("header.profile")}
+              {t("pages.myPage")}
             </Button>
           </Link>
           <form method="post" action={LOG_OUT_URL}>
-            <Button tiny variant="outlined" icon={<LogOutIcon />} type="submit">
+            <Button
+              tiny
+              variant="outlined"
+              icon={<LogOutIcon />}
+              type="submit"
+              className="w-full"
+            >
               {t("header.logout")}
             </Button>
           </form>
