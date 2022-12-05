@@ -180,20 +180,16 @@ const damageReceiverImages: Record<DamageReceiver, string> = {
   BulletUmbrellaCanopyCompact: mainWeaponImageUrl(6020),
 };
 
-const damageReceiverAp: Record<DamageReceiver, JSX.Element> = {
-  Bomb_TorpedoBullet: <div />,
-  Chariot: <div />,
-  Gachihoko_Barrier: <div />,
-  GreatBarrier_Barrier: <Ability ability="SPU" size="TINY" />,
-  GreatBarrier_WeakPoint: <Ability ability="SPU" size="TINY" />,
-  NiceBall_Armor: <div />,
-  ShockSonar: <div />,
-  Wsb_Flag: <div />,
-  Wsb_Shield: <Ability ability="BRU" size="TINY" />,
-  Wsb_Sprinkler: <div />,
-  BulletUmbrellaCanopyNormal: <div />,
-  BulletUmbrellaCanopyWide: <div />,
-  BulletUmbrellaCanopyCompact: <div />,
+const damageReceiverAp: Partial<Record<DamageReceiver, JSX.Element>> = {
+  GreatBarrier_Barrier: (
+    <Ability ability="SPU" size="TINY" className="object-damage__ability" />
+  ),
+  GreatBarrier_WeakPoint: (
+    <Ability ability="SPU" size="TINY" className="object-damage__ability" />
+  ),
+  Wsb_Shield: (
+    <Ability ability="BRU" size="TINY" className="object-damage__ability" />
+  ),
 };
 
 function DamageReceiversGrid({
@@ -261,6 +257,7 @@ function DamageReceiversGrid({
                 </div>
               </Label>
               <Image
+                className="object-damage__receiver-image"
                 key={i}
                 alt=""
                 path={damageReceiverImages[damageToReceiver.receiver]}
