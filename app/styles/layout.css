@@ -135,6 +135,9 @@
 .layout__user-popover {
   display: flex;
   flex-direction: column;
+  padding: var(--s-2);
+  border-radius: var(--rounded);
+  background-color: var(--bg-darker);
   gap: var(--s-2);
 }
 
