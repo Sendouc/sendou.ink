@@ -70,7 +70,7 @@
   "maps.validation.VALID": "Banepuljen er gyldig",
 
   "results": "Resultater",
-  
+
   "results.placeSuffix": ".",
 
   "forms.name": "Navn",
@@ -103,7 +103,7 @@
   "weapon.category.SPLATANAS": "Splatanas/Splatanaer",
 
   "plans.poweredBy": "Tegneprogrammet er leveret af {{name}}",
-  
+
   "articles.by": "af {{author}}",
 
   "websiteSubtitle": "Konkurrencepræget Splatoon-hub"
