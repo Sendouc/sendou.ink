@@ -27,7 +27,9 @@ export function Tags({
         <React.Fragment key={tag}>
           <li
             style={{ backgroundColor: allTags[tag].color }}
-            className={clsx({ "calendar__event__badge-tag": tag === "BADGE" })}
+            className={clsx("calendar__event__tag", {
+              "calendar__event__badge-tag": tag === "BADGE",
+            })}
           >
             {t(`tag.name.${tag}`)}
             {onDelete && (
