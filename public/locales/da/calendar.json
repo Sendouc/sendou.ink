@@ -5,6 +5,8 @@
   "reportResults": "Du kan rapportere resultaterne:",
   "day": "Dag {{number}}",
   "actions.reportWinners": "Vis vinderne",
+  "actions.delete": "Slet begivenhed",
+  "actions.delete.confirm": "Slet alt data vedrørende {{name}}?",
   "participatedCount": "{{count}} hold deltog",
   "members": "Medlemmer",
   "results": "Resultater",
