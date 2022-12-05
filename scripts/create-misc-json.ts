@@ -24,6 +24,8 @@ const stages = [
   "Sturgeon Shipyard",
   "MakoMart",
   "Wahoo World",
+  "Flounder Heights",
+  "Brinewater Springs",
 ] as const;
 
 async function main() {
