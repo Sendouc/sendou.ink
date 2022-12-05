@@ -123,18 +123,29 @@ Note: This is only useful if you have access to a production running on Render.c
 4. `wormhole send db-copy.sqlite3`
 5. On the receiver computer use the command shown.
 
-### Add a new weapon
+### Doing monthly update
 
-1. Add image in both .png and .avif with the correct weapon ID (`replace-img-names.ts` can help)
-2. Create new weapon ids json and weapon translation jsons using `create-weapon-json.ts` script
-
-### Add new gear gear
-
-0. If Salmon Run gear, update constant in create-gear-json.ts
-1. `npm run create-gear-json`
-2. Copy generated files from output folder to gear-ids.ts file
-3. Get .png from Lean's repository
-4. Generate .avif image
+1. Fill /scripts/dicts with new data from leanny repository:
+   - weapon = contents of `weapon` folder
+   - langs = contents of `language` folder
+   - Couple other at the root: `GearInfoClothes.json`, `GearInfoHead.json`, `GearInfoShoes.json`, `spl__DamageRateInfoConfig.pp__CombinationDataTableData.json`, `SplPlayer.game__GameParameterTable.json`, `WeaponInfoMain.json`, `WeaponInfoSpecial.json` and `WeaponInfoSub.json`
+2. Update `AVAILABLE_SR_GEAR` with new SR gear
+3. Update all `CURRENT_SEASON` constants
+4. Update `CURRENT_PATH` constants
+5. `npm run create-misc-json`
+6. `npm run create-gear-json`
+7. `npm run create-analyzer-json`
+8. `npm run create-object-dmg-json`
+9. Fill new weapon ID's by category to `weapon-ids.ts` (easy to take from the diff of english weapons.json)
+10. Get gear id's for each slot from /output folder and also update gear id files.
+11. Replace `object-dmg.json` with the `object-dmg.json` in /output folder
+12. Replace `weapon-params.json` with the `params.json` in /output folder
+13. Delete all images inside `main-weapons`, `main-weapons-outlined` and `gear` folders.
+14. Replace with images from Lean's repository.
+15. Run the `npm run replace-img-names` command
+16. Run the `npm run replace-weapon-names` command
+17. Run the avif generating command in each image folder.
+18. Update manually any languages that use English `gear.json` and `weapons.json` files
 
 ### Fix errors from the CI Pipeline
 

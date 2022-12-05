@@ -8,7 +8,7 @@ import type { MapPoolObject } from "./types";
 
 const Serializer = suite("Map pool serializer");
 
-const testSerializedPool = "tw:1998;sz:1d0a;tc:164c;rm:15e0;cb:1ce0";
+const testSerializedPool = "tw:6660;sz:7428;tc:5930;rm:5780;cb:7380";
 
 Serializer("Unserializes and then serializes to same result", () => {
   const mapPool = serializedStringToMapPool(testSerializedPool);
@@ -25,10 +25,15 @@ Serializer("Ignores invalid mode key", () => {
 
 Serializer("Matching serialization with IPLMapGen2", () => {
   const testMapPool: MapPoolObject = {
+    // Gorge, Spillway, Mincemeat, Mahi-Mahi, Inkblot
     TW: [0, 3, 4, 7, 8],
+    // Gorge, Eeltail, Spillway, Inkblot, MakoMart
     SZ: [0, 1, 3, 8, 10],
+    // Eeltail, Hagglefish, Bridge, Inbklot, Sturgeon
     TC: [1, 2, 5, 8, 9],
+    // Eeltail, Spillway, Mincemeat, Bridge, Museum
     RM: [1, 3, 4, 5, 6],
+    // Gorge, Eeltail, Mincemeat, Bridge, Museum
     CB: [0, 1, 4, 5, 6],
   };
 

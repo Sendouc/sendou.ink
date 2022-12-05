@@ -7,6 +7,7 @@
   "badges.description": "个人档案中可添加的所有徽章",
   "analyzer.description": "查看你的配装的实际效果",
   "maps.description": "制作可供游玩的地图列表",
+  "plans.description": "使用地图和武器图像来做规划的画图工具",
   "object-damage-calculator.description": "计算对不同物体的伤害",
   "recentWinners": "往期冠军",
   "upcomingEvents": "近期活动",

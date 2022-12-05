@@ -10,6 +10,7 @@
   "pages.builds": "配装",
   "pages.analyzer": "配装分析器",
   "pages.maps": "地图列表",
+  "pages.plans": "地图规划",
   "pages.object-damage-calculator": "对物攻击力计算器",
 
   "header.profile": "个人资料",
@@ -45,6 +46,7 @@
   "actions.clear": "清除",
   "actions.selectAll": "全选",
   "actions.search": "搜索",
+  "actions.setBg": "设置为背景",
 
   "maps.createMapList": "创建地图列表",
   "maps.halfSz": "50%为真格区域",
@@ -100,5 +102,7 @@
   "weapon.category.DUALIES": "机动枪",
   "weapon.category.BRELLAS": "防空伞",
   "weapon.category.STRINGERS": "猎鱼弓",
-  "weapon.category.SPLATANAS": "刮水刀"
+  "weapon.category.SPLATANAS": "刮水刀",
+
+  "plans.poweredBy": "Powered by {{name}}"
 }

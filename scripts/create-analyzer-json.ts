@@ -26,7 +26,7 @@ import {
   translationJsonFolderName,
 } from "./utils";
 
-const CURRENT_SEASON = 1;
+const CURRENT_SEASON = 2;
 
 type MainWeapon = typeof weapons[number];
 type SubWeapon = typeof subWeapons[number];
@@ -181,7 +181,10 @@ function parametersToMainWeaponResult(
     specialWeaponId: resolveSpecialWeaponId(weapon),
     overwrites: resolveOverwrites(params),
     TripleShotSpanFrame: params["WeaponParam"]?.["TripleShotSpanFrame"],
-    WeaponSpeedType: params["MainWeaponSetting"]?.["WeaponSpeedType"],
+    WeaponSpeedType:
+      params["MainWeaponSetting"]?.["WeaponSpeedType"] === "Mid"
+        ? undefined
+        : params["MainWeaponSetting"]?.["WeaponSpeedType"],
     MoveSpeed:
       params["WeaponParam"]?.["MoveSpeed"] ??
       params["spl__WeaponShelterShotgunParam"]?.["MoveSpeed"],
