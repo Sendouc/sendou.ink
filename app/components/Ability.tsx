@@ -17,6 +17,7 @@ export function Ability({
   dropAllowed = false,
   onClick,
   onDrop,
+  className,
 }: {
   ability: AbilityWithUnknown;
   size: keyof typeof sizeMap;
@@ -24,6 +25,7 @@ export function Ability({
   dropAllowed?: boolean;
   onClick?: () => void;
   onDrop?: (event: React.DragEvent) => void;
+  className?: string;
 }) {
   const sizeNumber = sizeMap[size];
 
@@ -45,12 +47,16 @@ export function Ability({
 
   return (
     <AbilityTag
-      className={clsx("build__ability", {
-        "is-drag-target": isDragTarget,
-        "drag-started": dragStarted,
-        "drop-allowed": dropAllowed,
-        readonly,
-      })}
+      className={clsx(
+        "build__ability",
+        {
+          "is-drag-target": isDragTarget,
+          "drag-started": dragStarted,
+          "drop-allowed": dropAllowed,
+          readonly,
+        },
+        className
+      )}
       style={
         {
           "--ability-size": `${sizeNumber}px`,

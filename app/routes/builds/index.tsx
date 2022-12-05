@@ -3,11 +3,29 @@ import { useTranslation } from "~/hooks/useTranslation";
 import { Image } from "~/components/Image";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { weaponCategories, weaponIdIsNotAlt } from "~/modules/in-game-lists";
-import { mainWeaponImageUrl, mySlugify, weaponCategoryUrl } from "~/utils/urls";
+import {
+  BUILDS_PAGE,
+  mainWeaponImageUrl,
+  mySlugify,
+  navIconUrl,
+  weaponCategoryUrl,
+} from "~/utils/urls";
 import { type SendouRouteHandle } from "~/utils/remix";
+import styles from "~/styles/builds.css";
+import type { LinksFunction } from "@remix-run/node";
+import { Main } from "~/components/Main";
 
 export const handle: SendouRouteHandle = {
   i18n: "weapons",
+  breadcrumb: () => ({
+    imgPath: navIconUrl("builds"),
+    href: BUILDS_PAGE,
+    type: "IMAGE",
+  }),
+};
+
+export const links: LinksFunction = () => {
+  return [{ rel: "stylesheet", href: styles }];
 };
 
 export default function BuildsPage() {
@@ -18,7 +36,7 @@ export default function BuildsPage() {
   };
 
   return (
-    <div className="stack md">
+    <Main className="stack md">
       {weaponCategories.map((category) => (
         <div key={category.name} className="builds__category">
           <div className="builds__category__header">
@@ -55,6 +73,6 @@ export default function BuildsPage() {
           </div>
         </div>
       ))}
-    </div>
+    </Main>
   );
 }

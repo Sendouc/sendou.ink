@@ -48,6 +48,9 @@ export const CALENDAR_PAGE = "/calendar";
 export const STOP_IMPERSONATING_URL = "/auth/impersonate/stop";
 export const SEED_URL = "/seed";
 export const PLANNER_URL = "/plans";
+export const MAPS_URL = "/maps";
+export const ANALYZER_URL = "/analyzer";
+export const OBJECT_DAMAGE_CALCULATOR_URL = "/object-damage-calculator";
 
 export const BLANK_IMAGE_URL = "/static-assets/img/blank.gif";
 export const COMMON_PREVIEW_IMAGE =
@@ -61,6 +64,10 @@ export const SECOND_PLACEMENT_ICON_PATH =
   "/static-assets/svg/placements/second.svg";
 export const THIRD_PLACEMENT_ICON_PATH =
   "/static-assets/svg/placements/third.svg";
+export const FRONT_BOY_PATH = "/static-assets/img/layout/front-boy";
+export const FRONT_GIRL_PATH = "/static-assets/img/layout/front-girl";
+export const FRONT_BOY_BG_PATH = "/static-assets/img/layout/front-boy-bg";
+export const FRONT_GIRL_BG_PATH = "/static-assets/img/layout/front-girl-bg";
 
 export const GET_ALL_USERS_ROUTE = "/users";
 export const GET_ALL_EVENTS_WITH_MAP_POOLS_ROUTE = "/calendar/map-pool-events";

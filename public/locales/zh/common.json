@@ -104,9 +104,7 @@
   "weapon.category.STRINGERS": "猎鱼弓",
   "weapon.category.SPLATANAS": "刮水刀",
 
-  "theme.light": "浅色模式",
-  "theme.dark": "深色模式",
-  "theme.auto": "自动",
+  "plans.poweredBy": "Powered by {{name}}",
 
-  "plans.poweredBy": "Powered by {{name}}"
+  "websiteSubtitle": "斯普拉遁竞技中心"
 }

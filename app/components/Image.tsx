@@ -6,21 +6,22 @@ export function Image({
   width,
   height,
   style,
+  containerClassName,
 }: {
   path: string;
   alt: string;
   title?: string;
   className?: string;
+  containerClassName?: string;
   width?: number;
   height?: number;
   style?: React.CSSProperties;
 }) {
   return (
-    <picture title={title}>
+    <picture title={title} className={containerClassName}>
       <source
         type="image/avif"
         srcSet={`${path}.avif`}
-        className={className}
         width={width}
         height={height}
         style={style}

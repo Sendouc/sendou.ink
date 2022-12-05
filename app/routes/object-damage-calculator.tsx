@@ -16,6 +16,8 @@ import {
 import {
   mainWeaponImageUrl,
   modeImageUrl,
+  navIconUrl,
+  OBJECT_DAMAGE_CALCULATOR_URL,
   specialWeaponImageUrl,
   subWeaponImageUrl,
 } from "~/utils/urls";
@@ -30,8 +32,11 @@ import { Label } from "~/components/Label";
 import { Ability } from "~/components/Ability";
 import { damageTypeTranslationString } from "~/utils/i18next";
 import { useSetTitle } from "~/hooks/useSetTitle";
+import type { ShouldReloadFunction } from "@remix-run/react";
 
 export const CURRENT_PATCH = "2.0";
+
+export const unstable_shouldReload: ShouldReloadFunction = () => false;
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -39,7 +44,11 @@ export const links: LinksFunction = () => {
 
 export const handle: SendouRouteHandle = {
   i18n: ["weapons", "analyzer"],
-  navItemName: "object-damage-calculator",
+  breadcrumb: () => ({
+    imgPath: navIconUrl("object-damage-calculator"),
+    href: OBJECT_DAMAGE_CALCULATOR_URL,
+    type: "IMAGE",
+  }),
 };
 
 export default function ObjectDamagePage() {
@@ -174,20 +183,16 @@ const damageReceiverImages: Record<DamageReceiver, string> = {
   BulletUmbrellaCanopyCompact: mainWeaponImageUrl(6020),
 };
 
-const damageReceiverAp: Record<DamageReceiver, JSX.Element> = {
-  Bomb_TorpedoBullet: <div />,
-  Chariot: <div />,
-  Gachihoko_Barrier: <div />,
-  GreatBarrier_Barrier: <Ability ability="SPU" size="TINY" />,
-  GreatBarrier_WeakPoint: <Ability ability="SPU" size="TINY" />,
-  NiceBall_Armor: <div />,
-  ShockSonar: <div />,
-  Wsb_Flag: <div />,
-  Wsb_Shield: <Ability ability="BRU" size="TINY" />,
-  Wsb_Sprinkler: <div />,
-  BulletUmbrellaCanopyNormal: <div />,
-  BulletUmbrellaCanopyWide: <div />,
-  BulletUmbrellaCanopyCompact: <div />,
+const damageReceiverAp: Partial<Record<DamageReceiver, JSX.Element>> = {
+  GreatBarrier_Barrier: (
+    <Ability ability="SPU" size="TINY" className="object-damage__ability" />
+  ),
+  GreatBarrier_WeakPoint: (
+    <Ability ability="SPU" size="TINY" className="object-damage__ability" />
+  ),
+  Wsb_Shield: (
+    <Ability ability="BRU" size="TINY" className="object-damage__ability" />
+  ),
 };
 
 function DamageReceiversGrid({
@@ -255,6 +260,7 @@ function DamageReceiversGrid({
                 </div>
               </Label>
               <Image
+                className="object-damage__receiver-image"
                 key={i}
                 alt=""
                 path={damageReceiverImages[damageToReceiver.receiver]}

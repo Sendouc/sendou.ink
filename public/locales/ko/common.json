@@ -33,5 +33,7 @@
   "tag.name.LOW": "실력 제한",
   "tag.name.COUNT": "참가 제한",
   "tag.name.LAN": "현장 이벤트",
-  "tag.name.QUALIFIER": "예선전"
+  "tag.name.QUALIFIER": "예선전",
+
+  "websiteSubtitle": "Competitive Splatoon Hub"
 }

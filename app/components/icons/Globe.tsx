@@ -1,9 +1,11 @@
 export function GlobeIcon({
   className,
   alt,
+  size,
 }: {
   className?: string;
   alt: string;
+  size?: number;
 }) {
   return (
     <svg
@@ -16,6 +18,8 @@ export function GlobeIcon({
       role="img"
       aria-hidden={alt === ""}
       aria-label={alt !== "" ? alt : undefined}
+      width={size}
+      height={size}
     >
       {alt !== "" && <title>{alt}</title>}
       <path

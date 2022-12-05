@@ -30,13 +30,10 @@ import { DEFAULT_LANGUAGE, i18nCookie, i18next } from "./modules/i18n";
 import { useChangeLanguage } from "remix-i18next";
 import { type CustomTypeOptions } from "react-i18next";
 import { useTranslation } from "~/hooks/useTranslation";
-import { Theme, ThemeHead, useTheme, ThemeProvider } from "./modules/theme";
-import { getThemeSession } from "./modules/theme/session.server";
 import { COMMON_PREVIEW_IMAGE } from "./utils/urls";
 import { ConditionalScrollRestoration } from "./components/ConditionalScrollRestoration";
 import { type SendouRouteHandle } from "~/utils/remix";
 import generalI18next from "i18next";
-import { isTheme } from "./modules/theme/provider";
 
 export const unstable_shouldReload: ShouldReloadFunction = ({ url }) => {
   // reload on language change so the selected language gets set into the cookie
@@ -67,7 +64,6 @@ export const meta: MetaFunction = () => ({
 
 export interface RootLoaderData {
   locale: string;
-  theme: string | null;
   patrons: FindAllPatrons;
   user?: Pick<
     UserWithPlusTier,
@@ -83,12 +79,10 @@ export interface RootLoaderData {
 export const loader: LoaderFunction = async ({ request }) => {
   const user = await getUser(request);
   const locale = await i18next.getLocale(request);
-  const themeSession = await getThemeSession(request);
 
   return json<RootLoaderData>(
     {
       locale,
-      theme: themeSession.getTheme(),
       patrons: db.users.findAllPatrons(),
       user: user
         ? {
@@ -114,11 +108,12 @@ export const handle: SendouRouteHandle = {
 function Document({
   children,
   data,
+  isCatchBoundary = false,
 }: {
   children: React.ReactNode;
   data?: RootLoaderData;
+  isCatchBoundary?: boolean;
 }) {
-  const { htmlThemeClass } = useTheme();
   const { i18n } = useTranslation();
   const locale = data?.locale ?? DEFAULT_LANGUAGE;
 
@@ -126,15 +121,15 @@ function Document({
   usePreloadTranslation();
 
   return (
-    <html lang={locale} dir={i18n.dir()} className={htmlThemeClass}>
+    <html lang={locale} dir={i18n.dir()}>
       <head>
         <Meta />
         <Links />
-        <ThemeHead />
+        <Fonts />
       </head>
       <body>
         <React.StrictMode>
-          <Layout patrons={data?.patrons} isCatchBoundary={!data}>
+          <Layout patrons={data?.patrons} isCatchBoundary={isCatchBoundary}>
             {children}
           </Layout>
         </React.StrictMode>
@@ -143,6 +138,23 @@ function Document({
         <LiveReload />
       </body>
     </html>
+  );
+}
+
+function Fonts() {
+  return (
+    <>
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossOrigin="true"
+      />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&display=swap"
+        rel="stylesheet"
+      />
+    </>
   );
 }
 
@@ -159,7 +171,6 @@ export const namespaceJsonsToPreloadObj: Record<
   calendar: true,
   contributions: true,
   faq: true,
-  front: true,
   "game-misc": true,
   gear: true,
   user: true,
@@ -180,24 +191,17 @@ export default function App() {
   const data = useLoaderData<RootLoaderData>();
 
   return (
-    <ThemeProvider
-      specifiedTheme={isTheme(data.theme) ? data.theme : null}
-      themeSource="user-preference"
-    >
-      <Document data={data}>
-        <Outlet />
-      </Document>
-    </ThemeProvider>
+    <Document data={data}>
+      <Outlet />
+    </Document>
   );
 }
 
 export function CatchBoundary() {
   return (
-    <ThemeProvider themeSource="static" specifiedTheme={Theme.DARK}>
-      <Document>
-        <Catcher />
-      </Document>
-    </ThemeProvider>
+    <Document isCatchBoundary>
+      <Catcher />
+    </Document>
   );
 }
 
@@ -205,10 +209,8 @@ export const ErrorBoundary: ErrorBoundaryComponent = ({ error }) => {
   console.error(error);
 
   return (
-    <ThemeProvider themeSource="static" specifiedTheme={Theme.DARK}>
-      <Document>
-        <Catcher />
-      </Document>
-    </ThemeProvider>
+    <Document>
+      <Catcher />
+    </Document>
   );
 };

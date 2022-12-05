@@ -67,7 +67,7 @@
 
 .plus-history__suggestion-s {
   border-radius: 50%;
-  background-color: var(--bg-lighter);
+  background-color: var(--bg);
   color: var(--text);
   font-weight: var(--bold);
   margin-inline-end: var(--s-1);

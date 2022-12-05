@@ -3,9 +3,15 @@ import type { LinksFunction } from "@remix-run/node";
 import styles from "~/styles/plans.css";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { useIsMounted } from "~/hooks/useIsMounted";
+import { navIconUrl, PLANNER_URL } from "~/utils/urls";
 
 export const handle: SendouRouteHandle = {
   i18n: ["weapons"],
+  breadcrumb: () => ({
+    imgPath: navIconUrl("plans"),
+    href: PLANNER_URL,
+    type: "IMAGE",
+  }),
 };
 
 export const links: LinksFunction = () => {

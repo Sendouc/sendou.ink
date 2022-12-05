@@ -1,12 +1,12 @@
-import { useLoaderData } from "@remix-run/react";
 import { Main } from "~/components/Main";
 import type { LinksFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { mostRecentArticles } from "~/modules/articles";
 import styles from "~/styles/front.css";
-import { ArticlesPeek } from ".";
 import { useTranslation } from "~/hooks/useTranslation";
 import type { SendouRouteHandle } from "~/utils/remix";
+import { articlePage, ARTICLES_MAIN_PAGE, navIconUrl } from "~/utils/urls";
+import { Link, useLoaderData } from "@remix-run/react";
 
 const MAX_ARTICLES_COUNT = 100;
 
@@ -15,24 +15,41 @@ export const links: LinksFunction = () => {
 };
 
 export const handle: SendouRouteHandle = {
-  i18n: ["front"],
+  breadcrumb: () => ({
+    imgPath: navIconUrl("articles"),
+    href: ARTICLES_MAIN_PAGE,
+    type: "IMAGE",
+  }),
 };
 
 export const loader = async () => {
   return json({
-    recentArticles: await mostRecentArticles(MAX_ARTICLES_COUNT),
+    articles: await mostRecentArticles(MAX_ARTICLES_COUNT),
   });
 };
 
 export default function ArticlesMainPage() {
-  const { t } = useTranslation("common");
+  const { t } = useTranslation(["common"]);
   const data = useLoaderData<typeof loader>();
-  const articles = data.recentArticles;
 
   return (
     <Main className="stack lg">
-      <h1>{t("pages.articles")}</h1>
-      <ArticlesPeek articles={articles} />
+      <ul className="articles-list">
+        {data.articles.map((article) => (
+          <li key={article.title}>
+            <Link
+              to={articlePage(article.slug)}
+              className="articles-list__title"
+            >
+              {article.title}
+            </Link>
+            <div className="text-xs text-lighter">
+              {t("common:articles.by", { author: article.author })} •{" "}
+              <time>{article.dateString}</time>
+            </div>
+          </li>
+        ))}
+      </ul>
     </Main>
   );
 }

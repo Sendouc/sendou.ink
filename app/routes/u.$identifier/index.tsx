@@ -8,7 +8,6 @@ import { Badge } from "~/components/Badge";
 import { TwitchIcon } from "~/components/icons/Twitch";
 import { TwitterIcon } from "~/components/icons/Twitter";
 import { YouTubeIcon } from "~/components/icons/YouTube";
-import { Main } from "~/components/Main";
 import { rawSensToString } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
 import { assertUnreachable } from "~/utils/types";
@@ -26,39 +25,37 @@ export default function UserInfoPage() {
   const data = parentRoute.data as UserPageLoaderData;
 
   return (
-    <Main>
-      <div className="u__container">
-        <div className="u__avatar-container">
-          <Avatar user={data} size="lg" className="u__avatar" />
-          <h2 className="u__name">
-            {data.discordName}
-            <span className="u__discriminator">
-              <wbr />#{data.discordDiscriminator}
-            </span>
-          </h2>
-          {data.country ? (
-            <div className="u__country">
-              <span className="u__country-emoji">{data.country.emoji}</span>{" "}
-              <span className="u__country-name">{data.country.name}</span>
-            </div>
-          ) : null}
-          <div className="u__socials">
-            {data.twitch ? (
-              <SocialLink type="twitch" identifier={data.twitch} />
-            ) : null}
-            {data.twitter ? (
-              <SocialLink type="twitter" identifier={data.twitter} />
-            ) : null}
-            {data.youtubeId ? (
-              <SocialLink type="youtube" identifier={data.youtubeId} />
-            ) : null}
+    <div className="u__container">
+      <div className="u__avatar-container">
+        <Avatar user={data} size="lg" className="u__avatar" />
+        <h2 className="u__name">
+          {data.discordName}
+          <span className="u__discriminator">
+            <wbr />#{data.discordDiscriminator}
+          </span>
+        </h2>
+        {data.country ? (
+          <div className="u__country">
+            <span className="u__country-emoji">{data.country.emoji}</span>{" "}
+            <span className="u__country-name">{data.country.name}</span>
           </div>
+        ) : null}
+        <div className="u__socials">
+          {data.twitch ? (
+            <SocialLink type="twitch" identifier={data.twitch} />
+          ) : null}
+          {data.twitter ? (
+            <SocialLink type="twitter" identifier={data.twitter} />
+          ) : null}
+          {data.youtubeId ? (
+            <SocialLink type="youtube" identifier={data.youtubeId} />
+          ) : null}
         </div>
-        <ExtraInfos />
-        <BadgeContainer badges={data.badges} />
-        {data.bio && <article>{data.bio}</article>}
       </div>
-    </Main>
+      <ExtraInfos />
+      <BadgeContainer badges={data.badges} />
+      {data.bio && <article>{data.bio}</article>}
+    </div>
   );
 }
 

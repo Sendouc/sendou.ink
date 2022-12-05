@@ -4,6 +4,16 @@
   gap: var(--s-5);
 }
 
+@media screen and (min-width: 640px) {
+  .object-damage__controls {
+    justify-content: center;
+  }
+}
+
+.object-damage__ability {
+  position: absolute;
+}
+
 .object-damage__ap-label {
   display: flex;
   justify-content: center;
@@ -29,7 +39,7 @@
   top: 0;
   width: 100%;
   border-radius: var(--rounded);
-  background-color: var(--bg-darker);
+  background-color: var(--bg-lightest);
   font-size: var(--fonts-xs);
   font-weight: var(--semi-bold);
   padding-block: var(--s-2);
@@ -42,6 +52,12 @@
   color: var(--text-lighter);
   font-size: var(--fonts-xxs);
   margin-block-start: var(--s-1);
+}
+
+.object-damage__receiver-image {
+  padding: var(--s-2);
+  border-radius: var(--rounded);
+  background-color: var(--bg-lightest);
 }
 
 .object-damage__table-card {

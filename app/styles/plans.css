@@ -15,6 +15,8 @@ button[data-state="closed"][aria-haspopup="dialog"] {
 
 .layout__header {
   z-index: 2;
+  border: none;
+  backdrop-filter: none;
   background-color: transparent;
 }
 

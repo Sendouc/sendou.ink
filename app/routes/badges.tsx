@@ -6,7 +6,12 @@ import { Main } from "~/components/Main";
 import { db } from "~/db";
 import type { FindAll } from "~/db/models/badges/queries.server";
 import styles from "~/styles/badges.css";
-import { BORZOIC_TWITTER, FAQ_PAGE } from "~/utils/urls";
+import {
+  BADGES_PAGE,
+  BORZOIC_TWITTER,
+  FAQ_PAGE,
+  navIconUrl,
+} from "~/utils/urls";
 import { Trans } from "react-i18next";
 import { useTranslation } from "~/hooks/useTranslation";
 import { useAnimateListEntry } from "~/hooks/useAnimateListEntry";
@@ -22,7 +27,11 @@ export interface BadgesLoaderData {
 
 export const handle: SendouRouteHandle = {
   i18n: "badges",
-  navItemName: "badges",
+  breadcrumb: () => ({
+    imgPath: navIconUrl("badges"),
+    href: BADGES_PAGE,
+    type: "IMAGE",
+  }),
 };
 
 export const loader: LoaderFunction = () => {

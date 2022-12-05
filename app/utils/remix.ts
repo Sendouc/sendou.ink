@@ -93,6 +93,10 @@ export function validate(condition: any, status = 400): asserts condition {
   throw new Response(null, { status });
 }
 
+export type Breadcrumb =
+  | { imgPath: string; type: "IMAGE"; href: string }
+  | { text: string; type: "TEXT"; href: string };
+
 /**
  * Our custom type for route handles - the keys are defined by us or
  * libraries that parse them.
@@ -111,7 +115,7 @@ export type SendouRouteHandle = {
   breadcrumb?: (args: {
     match: RouteMatch;
     t: TFunction<"common", undefined>;
-  }) => string | undefined;
+  }) => Breadcrumb | Array<Breadcrumb>;
 
   /** The name of a navItem that is active on this route. See nav-items.json */
   navItemName?: typeof navItems[number]["name"];

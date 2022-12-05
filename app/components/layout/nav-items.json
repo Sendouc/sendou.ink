@@ -1,27 +1,83 @@
 [
   {
-    "name": "admin",
-    "url": "admin",
-    "prefetch": false
-  },
-  { "name": "builds", "url": "builds", "prefetch": true },
-  { "name": "analyzer", "url": "analyzer", "prefetch": true },
-  {
-    "name": "object-damage-calculator",
-    "url": "object-damage-calculator",
-    "prefetch": true
-  },
-  {
     "name": "plans",
     "url": "plans",
-    "prefetch": false
+    "prefetch": false,
+    "filters": [
+      "invert(46%) sepia(98%) saturate(7459%) hue-rotate(327deg) brightness(102%) contrast(94%)",
+      "invert(68%) sepia(78%) saturate(364%) hue-rotate(74deg) brightness(100%) contrast(100%)"
+    ]
   },
-  { "name": "calendar", "url": "calendar", "prefetch": false },
-  { "name": "maps", "url": "maps", "prefetch": false },
-  { "name": "badges", "url": "badges", "prefetch": false },
+  {
+    "name": "maps",
+    "url": "maps",
+    "prefetch": false,
+    "filters": [
+      "invert(53%) sepia(87%) saturate(411%) hue-rotate(42deg) brightness(95%) contrast(90%)",
+      "invert(81%) sepia(25%) saturate(0%) hue-rotate(166deg) brightness(89%) contrast(82%)"
+    ]
+  },
+  {
+    "name": "badges",
+    "url": "badges",
+    "prefetch": false,
+    "filters": [
+      "invert(92%) sepia(88%) saturate(701%) hue-rotate(327deg) brightness(94%) contrast(93%)",
+      "invert(35%) sepia(84%) saturate(1474%) hue-rotate(329deg) brightness(105%) contrast(101%)"
+    ]
+  },
+  {
+    "name": "calendar",
+    "url": "calendar",
+    "prefetch": false,
+    "filters": [
+      "invert(71%) sepia(16%) saturate(7491%) hue-rotate(76deg) brightness(107%) contrast(100%)",
+      "invert(26%) sepia(59%) saturate(5210%) hue-rotate(323deg) brightness(98%) contrast(101%)"
+    ]
+  },
   {
     "name": "plus",
     "url": "plus/suggestions",
-    "prefetch": false
+    "prefetch": false,
+    "filters": [
+      "invert(68%) sepia(69%) saturate(1761%) hue-rotate(145deg) brightness(101%) contrast(108%)",
+      "invert(22%) sepia(100%) saturate(2645%) hue-rotate(279deg) brightness(98%) contrast(115%)"
+    ]
+  },
+  {
+    "name": "articles",
+    "url": "a",
+    "prefetch": true,
+    "filters": [
+      "invert(30%) sepia(73%) saturate(4089%) hue-rotate(326deg) brightness(96%) contrast(104%)",
+      "invert(55%) sepia(20%) saturate(738%) hue-rotate(224deg) brightness(86%) contrast(88%)"
+    ]
+  },
+  {
+    "name": "object-damage-calculator",
+    "url": "object-damage-calculator",
+    "prefetch": true,
+    "filters": [
+      "invert(19%) sepia(97%) saturate(6605%) hue-rotate(326deg) brightness(103%) contrast(105%)",
+      "invert(20%) sepia(99%) saturate(4341%) hue-rotate(220deg) brightness(102%) contrast(104%)"
+    ]
+  },
+  {
+    "name": "analyzer",
+    "url": "analyzer",
+    "prefetch": true,
+    "filters": [
+      "invert(27%) sepia(69%) saturate(5653%) hue-rotate(220deg) brightness(96%) contrast(85%)",
+      "invert(23%) sepia(83%) saturate(2378%) hue-rotate(334deg) brightness(87%) contrast(102%)"
+    ]
+  },
+  {
+    "name": "builds",
+    "url": "builds",
+    "prefetch": true,
+    "filters": [
+      "invert(16%) sepia(80%) saturate(5634%) hue-rotate(272deg) brightness(91%) contrast(105%)",
+      "invert(71%) sepia(42%) saturate(4219%) hue-rotate(150deg) brightness(99%) contrast(86%)"
+    ]
   }
 ]

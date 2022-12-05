@@ -11,7 +11,8 @@
   "pages.analyzer": "Build Analyzer",
   "pages.maps": "Map Lists",
   "pages.plans": "Planner",
-  "pages.object-damage-calculator": "Object DMG Calc",
+  "pages.object-damage-calculator": "DMG Calc",
+  "pages.myPage": "My Page",
 
   "header.profile": "Profile",
   "header.logout": "Log out",
@@ -104,9 +105,9 @@
   "weapon.category.STRINGERS": "Stringers",
   "weapon.category.SPLATANAS": "Splatanas",
 
-  "theme.light": "Light",
-  "theme.dark": "Dark",
-  "theme.auto": "Auto",
+  "plans.poweredBy": "Powered by {{name}}",
 
-  "plans.poweredBy": "Powered by {{name}}"
+  "articles.by": "by {{author}}",
+
+  "websiteSubtitle": "Competitive Splatoon Hub"
 }

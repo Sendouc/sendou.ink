@@ -2,14 +2,13 @@
 *::before,
 *::after {
   box-sizing: border-box;
+  color: var(--text);
 }
 
 body {
   width: 100%;
   background-color: var(--bg);
-  color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial,
-    sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  font-family: Lexend, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: antialiased;
   line-height: 1.55;
@@ -61,7 +60,7 @@ a {
 }
 
 :is(button, .button).outlined {
-  background-color: transparent;
+  background-color: var(--theme-very-transparent);
   color: var(--theme);
 }
 
@@ -137,12 +136,11 @@ textarea:not(.plain) {
   max-width: 100%;
   height: 8rem;
   padding: var(--s-2-5) var(--s-3);
-  border: 1px solid var(--border);
+  border: 2px solid var(--border);
   border-radius: var(--rounded);
   accent-color: var(--theme-secondary);
-  background-color: transparent;
+  background-color: var(--bg-input);
   color: var(--text);
-  font-size: var(--fonts-sm);
   outline: none;
   overflow-wrap: normal;
   overflow-x: auto;
@@ -167,12 +165,11 @@ input:not(.plain, [type="radio"]) {
 input:not(.plain) {
   height: 1rem;
   padding: var(--s-4) var(--s-3);
-  border: 1px solid var(--border);
+  border: 2px solid var(--border);
   border-radius: var(--rounded);
   accent-color: var(--theme-secondary);
-  background-color: transparent;
+  background-color: var(--bg-input);
   color: var(--text);
-  font-size: var(--fonts-sm);
   outline: none;
 }
 
@@ -233,7 +230,7 @@ details summary {
 fieldset {
   border: none;
   border-radius: var(--rounded);
-  background-color: var(--bg-darker-transparent);
+  background-color: var(--bg-lighter);
   font-size: var(--fonts-sm);
   padding-block-end: var(--s-3);
   padding-inline: var(--s-3);
@@ -254,16 +251,15 @@ select {
   all: unset;
   width: 100%;
   box-sizing: border-box;
-  border: 1px solid var(--border);
+  border: 2px solid var(--border);
   border-radius: var(--rounded);
-  background: var(--select-background, var(--bg-lighter));
+  background: var(--select-background, var(--bg-input));
 
   /* TODO: Get color from CSS var */
   background-image: url('data:image/svg+xml;utf8,<svg width="1rem" color="rgb(255 255 255 / 55%)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>');
   background-position: center right var(--s-3);
   background-repeat: no-repeat;
   cursor: pointer;
-  font-size: var(--fonts-sm);
   font-weight: 500;
   padding-block: 3.5px;
   padding-inline: var(--s-3) var(--s-8);
@@ -418,10 +414,10 @@ dialog::backdrop {
 
 .input-container {
   display: flex;
-  border: 1px solid var(--border);
+  border: 2px solid var(--border);
   border-radius: var(--rounded);
   accent-color: var(--theme-secondary);
-  background-color: transparent;
+  background-color: var(--bg-input);
   color: var(--text);
   font-size: var(--fonts-sm);
   outline: none;
@@ -460,45 +456,50 @@ dialog::backdrop {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  background-color: var(--bg-lighter);
-  background-image: url("/static-assets/svg/background-pattern.svg");
-  margin-block-end: var(--s-4);
-  overflow-x: auto;
+  gap: var(--s-4);
+  margin-block-end: var(--s-8);
+  margin-block-start: -12px;
 }
 
 .sub-nav__link {
-  display: flex;
-  height: 100%;
-  flex-direction: column;
-  align-items: center;
-  padding: var(--s-4);
-  background-color: var(--bg-lighter);
+  max-width: 100px;
+  flex: 1;
+  padding: var(--s-1) var(--s-2);
+  border-radius: var(--rounded);
+  background-color: var(--bg-lightest);
   color: var(--text);
   font-size: var(--fonts-xs);
   font-weight: var(--semi-bold);
+  text-align: center;
   white-space: nowrap;
 }
 
-.sub-nav__active-icon {
-  height: 1.2rem;
-  margin-block-end: -1rem;
-  margin-block-start: -3px;
-  visibility: hidden;
-}
-
-.sub-nav__link.active > .sub-nav__active-icon {
-  visibility: visible;
+.sub-nav__link.active {
+  color: var(--theme);
 }
 
 .popover-content {
   z-index: 1;
   max-width: 20rem;
-  padding: var(--s-2);
+  padding: var(--s-4);
   border-radius: var(--rounded);
   background-color: var(--bg-darker-transparent);
   font-size: var(--fonts-sm);
   font-weight: var(--semi-bold);
   white-space: pre-wrap;
+}
+
+.articles-list {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  gap: var(--s-6);
+  list-style: none;
+}
+
+.articles-list__title {
+  color: var(--theme);
+  font-size: var(--fonts-md);
 }
 
 @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
@@ -647,8 +648,8 @@ dialog::backdrop {
 
 .avatar {
   border-radius: 50%;
-  background-color: var(--bg-lighter);
-  background-image: url("/static-assets/svg/background-pattern.svg");
+  background-color: var(--bg-lightest);
+  background-image: url("/static-assets/svg/new-background-pattern.svg");
 }
 
 .alert > svg {
@@ -934,11 +935,4 @@ dialog::backdrop {
 
 .ability-selector__ability-button.is-dragging {
   box-shadow: 0 0 100px inset rgb(255 255 255 / 25%);
-}
-
-.breadcrumbs {
-  display: flex;
-  font-size: var(--fonts-xs);
-  font-weight: var(--bold);
-  gap: var(--s-1);
 }

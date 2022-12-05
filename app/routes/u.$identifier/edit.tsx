@@ -12,17 +12,16 @@ import {
 } from "@remix-run/react";
 import { countries } from "countries-list";
 import * as React from "react";
-import { useTranslation } from "~/hooks/useTranslation";
 import invariant from "tiny-invariant";
 import { z } from "zod";
 import { Button } from "~/components/Button";
 import { FormErrors } from "~/components/FormErrors";
 import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
-import { Main } from "~/components/Main";
 import { USER } from "~/constants";
 import { db } from "~/db";
 import { type User } from "~/db/types";
+import { useTranslation } from "~/hooks/useTranslation";
 import { requireUser } from "~/modules/auth";
 import { i18next } from "~/modules/i18n";
 import styles from "~/styles/u-edit.css";
@@ -180,7 +179,7 @@ export default function UserEditPage() {
   const transition = useTransition();
 
   return (
-    <Main halfWidth>
+    <div className="half-width">
       <Form className="u-edit__container" method="post">
         <CustomUrlInput parentRouteData={parentRouteData} />
         <InGameNameInputs parentRouteData={parentRouteData} />
@@ -196,7 +195,7 @@ export default function UserEditPage() {
         </Button>
         <FormErrors namespace="user" />
       </Form>
-    </Main>
+    </div>
   );
 }
 
