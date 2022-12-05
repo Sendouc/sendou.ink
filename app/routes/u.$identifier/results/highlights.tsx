@@ -51,28 +51,26 @@ export default function ResultHighlightsEditPage() {
   const userPageData = parentRoute.data as UserPageLoaderData;
 
   return (
-    <Main>
-      <Form method="post" className="stack md items-start">
-        <h2 className="text-start">{t("user:results.highlights.choose")}</h2>
-        <div className="u__results-table-wrapper">
-          <fieldset className="u__results-table-highlights">
-            <legend>{t("user:results.highlights.explanation")}</legend>
-            <UserResultsTable
-              id="user-results-highlight-selection"
-              results={userPageData.results}
-              hasHighlightCheckboxes
-            />
-          </fieldset>
-        </div>
-        <Button
-          loadingText={t("common:actions.saving")}
-          type="submit"
-          loading={transition.state === "submitting"}
-        >
-          {t("common:actions.save")}
-        </Button>
-        <FormErrors namespace="user" />
-      </Form>
-    </Main>
+    <Form method="post" className="stack md items-start">
+      <h2 className="text-start">{t("user:results.highlights.choose")}</h2>
+      <div className="u__results-table-wrapper">
+        <fieldset className="u__results-table-highlights">
+          <legend>{t("user:results.highlights.explanation")}</legend>
+          <UserResultsTable
+            id="user-results-highlight-selection"
+            results={userPageData.results}
+            hasHighlightCheckboxes
+          />
+        </fieldset>
+      </div>
+      <Button
+        loadingText={t("common:actions.saving")}
+        type="submit"
+        loading={transition.state === "submitting"}
+      >
+        {t("common:actions.save")}
+      </Button>
+      <FormErrors namespace="user" />
+    </Form>
   );
 }
