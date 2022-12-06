@@ -2,6 +2,10 @@
   max-width: 38rem;
 }
 
+.maps__pool-selector {
+  padding-block: var(--s-3);
+}
+
 .maps__pool-meta {
   display: flex;
   align-items: center;
