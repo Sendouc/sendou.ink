@@ -463,6 +463,7 @@ function resolveOverwritesWithArbitraryKeys(
     paramsObj as Record<string, number>
   )) {
     if (!key.startsWith("Overwrite_")) continue;
+    if (value === -1) continue;
 
     let abilityKey = key.replace("Overwrite_", "");
 

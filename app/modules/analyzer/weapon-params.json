@@ -141,10 +141,6 @@
         "ConsumeRt_Main": {
           "High": 0.5,
           "Mid": 0.7
-        },
-        "MoveVelRt_Shot": {
-          "High": -1,
-          "Mid": -1
         }
       },
       "MoveSpeed": 0.055,
@@ -162,10 +158,6 @@
         "ConsumeRt_Main": {
           "High": 0.5,
           "Mid": 0.7
-        },
-        "MoveVelRt_Shot": {
-          "High": -1,
-          "Mid": -1
         }
       },
       "MoveSpeed": 0.055,
@@ -422,10 +414,6 @@
         "ConsumeRt_Main": {
           "High": 0.5,
           "Mid": 0.7
-        },
-        "MoveVelRt_Shot": {
-          "High": -1,
-          "Mid": -1
         }
       },
       "TripleShotSpanFrame": 20,
