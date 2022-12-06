@@ -1,5 +1,6 @@
 {
   "pages.admin": "Admin",
+  "pages.articles": "Artikel",
   "pages.badges": "Abzeichen",
   "pages.plus": "Plus Server",
   "pages.contributors": "Mitwirkende",
@@ -9,7 +10,10 @@
   "pages.builds": "Ausrüstungen",
   "pages.analyzer": "Ausrüstungs-Analyse",
   "pages.maps": "Arenen-Listen",
+  "pages.plans": "Planer",
   "pages.object-damage-calculator": "Objekt-Schaden-Rechner",
+  "pages.myPage": "Mein Profil",
+  "pages.u": "Nutzer-Suche",
 
   "header.profile": "Profil",
   "header.logout": "Ausloggen",
@@ -30,6 +34,7 @@
   "footer.thanks": "Danke an die Patrons für den Support",
 
   "actions.save": "Speichern",
+  "actions.saveChanges": "Änderungen speichern",
   "actions.saving": "Speichert...",
   "actions.submit": "Senden",
   "actions.edit": "Bearbeiten",
@@ -43,11 +48,13 @@
   "actions.clear": "Leeren",
   "actions.selectAll": "Alle auswählen",
   "actions.search": "Suchen",
+  "actions.setBg": "Hintergrund festlegen",
 
   "maps.createMapList": "Arenen-Liste erstellen",
   "maps.halfSz": "50% Herrschaft",
   "maps.mapPool": "Arenen-Pool",
   "maps.tournamentMaplist": "Arenen-Liste für Turnier erstellen (maps.iplabs.ink)",
+  "maps.tieBreakerMapPool": "Arenen-Pool für Tie-Breaker",
   "maps.template": "Vorlage",
   "maps.template.none": "Keine",
   "maps.template.event": "Event",
@@ -56,9 +63,19 @@
   "maps.template.preset.ANARCHY": "Anarchie-Modi",
   "maps.template.preset.ALL": "Alle Modi",
   "maps.template.preset.onlyMode": "Nur {{modeName}}",
+  "maps.validation.PICKING": "Wähle eine Arena pro Modus",
+  "maps.validation.NOT_ONE_MAP_PER_MODE": "Wähle nur eine Arena pro Modus",
+  "maps.validation.MAP_REPEATED": "Dieselbe Arena kann nicht mehrmals ausgewählt werden",
+  "maps.validation.MODE_REPEATED": "Derselbe Modus kann nicht mehrmals ausgewählt werden",
+  "maps.validation.TOO_MUCH_STAGE_REPEAT": "Arena kann nicht mehr als {{maxStageRepeat}} Mal ausgewählt werden",
+  "maps.validation.VALID": "Arenen-Pool ok!",
 
   "results": "Ergebnisse",
-  "results.placeSuffix": ".",
+
+  "results.placeSuffix_one": "^.",
+  "results.placeSuffix_two": "^.",
+  "results.placeSuffix_few": "^.",
+  "results.placeSuffix_other": "^.",
 
   "forms.name": "Name",
   "forms.description": "Beschreibung",
@@ -88,6 +105,10 @@
   "weapon.category.BRELLAS": "Pluviatoren",
   "weapon.category.STRINGERS": "Stringer",
   "weapon.category.SPLATANAS": "Splatanas",
+
+  "plans.poweredBy": "Ermöglicht durch {{name}}",
+
+  "articles.by": "von {{author}}",
 
   "websiteSubtitle": "Hub für Competitive Splatoon"
 }

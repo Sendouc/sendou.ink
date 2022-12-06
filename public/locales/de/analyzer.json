@@ -19,6 +19,7 @@
   "stat.specialLost": "Verlonene Spezialpunkte wenn erledigt",
   "stat.specialLostSplattedByRP": "Verlonene Spezialpunkte wenn erledigt durch Spieler mit Heimsuchung-Effekt",
   "stat.whiteInk": "Dauer keiner Tintenregeneration nach Nutzung",
+  "stat.subWeaponInkConsumptionPercentage": "Tintentankverbrauch",
   "stat.squidFormInkRecoverySeconds": "Dauer vollst. Tintenregeneration (als Tintenfisch)",
   "stat.quickRespawnTime": "Dauer schneller Rückkehr",
   "stat.quickRespawnTimeSplattedByRP": "Dauer schneller Rückkehr wenn erledigt durch Spieler mit Heimsuchung-Effekt",
@@ -97,11 +98,12 @@
   "value": "Wert",
   "build": "Ausrüstung",
   "patch": "Patch:",
-  "abilityPoints": "Ausrüstungs-Punkte",
-  "abilityPoints.short": "AP",
+  "abilityPoints": "Effekt-Punkte",
+  "abilityPoints.short": "EP",
+  "abilityChunks": "Effekt-Fragmente erforderlich",
   "consumptionExplanation": "Dieses Diagramm zeigt die Anzahl der Aktionen, die mit der Hauptwaffe noch durchgeführt werden können, nachdem die Sekundärwaffe 0-{{maxSubsToUse}} mal benutzt wurde. Die maximale Anzahl an aufeinanderfolgenden Sekundärwaffen, die bei vollem Tintentank verwendet werden können, ist {{maxSubsToUse}}.",
   "torpedoExplanation": "Es ist unmöglich, mehr als einen Torpedo gleichzeitig abzufeuern (wegen der Spielmechanik).",
-  "trackingSubDefExplanation": "Die Markierungsdauern von Detektor, Tintenmine and Winkelmarker basieren auf einem Gegner mit 0 AP Sekundärstärke +.",
+  "trackingSubDefExplanation": "Die Markierungsdauern von Detektor, Tintenmine and Winkelmarker basieren auf einem Gegner mit 0 EP Sekundärstärke +.",
   "distanceInline": "Reichweite: {{value}}",
   "damageShort": "SCD",
   "hitsToDestroyLong": "Treffer bis zerstört",
@@ -110,5 +112,5 @@
   "labels.damageType": "Schadenstyp",
   "labels.weapon": "Waffe",
   "dmgHtdExplanation": "SCD = Schaden • TBZ = Treffer bis zerstört",
-  "noDmgData": "Noch keine Daten über Schaden dieser Waffe. No damage data yet for this weapon. Schau später nochmal vorbei!"
+  "noDmgData": "Noch keine Daten über den Schaden dieser Waffe. Schau später nochmal vorbei!"
 }
