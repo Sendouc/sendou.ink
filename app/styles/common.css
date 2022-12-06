@@ -483,8 +483,9 @@ dialog::backdrop {
   z-index: 1;
   max-width: 20rem;
   padding: var(--s-4);
+  border: 2px solid var(--border);
   border-radius: var(--rounded);
-  background-color: var(--bg-darker-transparent);
+  background-color: var(--bg-darker);
   font-size: var(--fonts-sm);
   font-weight: var(--semi-bold);
   white-space: pre-wrap;
@@ -501,14 +502,6 @@ dialog::backdrop {
 .articles-list__title {
   color: var(--theme);
   font-size: var(--fonts-md);
-}
-
-@supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
-  .popover-content {
-    -webkit-backdrop-filter: blur(10px) brightness(75%);
-    backdrop-filter: blur(10px) brightness(75%);
-    background-color: transparent;
-  }
 }
 
 .combobox-wrapper {
