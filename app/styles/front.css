@@ -63,7 +63,6 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   margin-block-start: var(--s-8);
-  margin-inline-end: -30px;
 }
 
 .front__drawing-img {
@@ -92,13 +91,13 @@
   z-index: 10;
   grid-column: 1 / 2;
   grid-row: 1;
-  justify-self: flex-end;
 }
 
 .front__drawings__girl {
   z-index: 10;
   grid-column: 2 / 3;
   grid-row: 1;
+  justify-self: flex-end;
 }
 
 .front__drawings__girl.bg {

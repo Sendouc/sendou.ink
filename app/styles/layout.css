@@ -258,8 +258,8 @@
 
 @media screen and (display-mode: standalone) {
   .layout__header {
-    padding-top: env(safe-area-inset-top);
     align-items: flex-end;
+    padding-top: env(safe-area-inset-top);
   }
 
   .layout__main {
