@@ -214,9 +214,11 @@
 
 .layout__footer__patron-list {
   display: flex;
+  max-width: 75vw;
   flex-wrap: wrap;
   justify-content: center;
   padding: 0;
+  margin: 0 auto;
   font-size: var(--fonts-xs);
   gap: var(--s-1);
   list-style: none;
