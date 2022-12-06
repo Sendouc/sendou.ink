@@ -26,7 +26,7 @@
   "forms.errors.invalidCustomUrl.strangeCharacter": "Benutzerdefinierte URL kann nicht aus speziellen Zeichen bestehen",
   "forms.errors.invalidCustomUrl.duplicate": "Diese Benutzerdefinierte URL wird bereits verwendet",
   "forms.errors.invalidSens": "Empfindlichkeit der Bewegungssteuerung kann nur festgelegt werden, wenn Empfindlichkeit R-Stick festgelegt ist",
-  
+
   "search.info": "Suche nach Nutzern anhand des Discord-, Splatoon-3- oder Twitter-Namens",
   "search.noResults": "Keine Nutzer gefunden, die '{{query}}' entsprechen"
 }
