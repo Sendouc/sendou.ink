@@ -71,7 +71,7 @@
   "maps.validation.VALID": "Arenen-Pool ok!",
 
   "results": "Ergebnisse",
-  
+
   "results.placeSuffix_one": "^.",
   "results.placeSuffix_two": "^.",
   "results.placeSuffix_few": "^.",
@@ -105,7 +105,7 @@
   "weapon.category.BRELLAS": "Pluviatoren",
   "weapon.category.STRINGERS": "Stringer",
   "weapon.category.SPLATANAS": "Splatanas",
-  
+
   "plans.poweredBy": "Ermöglicht durch {{name}}",
 
   "articles.by": "von {{author}}",
