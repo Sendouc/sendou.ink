@@ -39,7 +39,7 @@
   "forms.errors.uniqueTeamName": "Zwei Teams dürfen nicht den gleichen Namen haben.",
   "forms.errors.duplicatePlayer": "Ein Spieler kann nicht doppelt in einem Team sein.",
   "forms.errors.emptyTeam": "Jedes Team brauch mindestens einen gelisteten Spieler.",
-  
+
   "forms.toTools.header": "TO-Tools aktivieren",
   "forms.toTools.explanation": "Mit TO-Tools verwendet dein Turnier vorausgewählte Arenen und das Seed-Creator-Tool ist verfügbar.",
 
