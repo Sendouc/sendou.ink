@@ -5,6 +5,8 @@
   "reportResults": "Ergebnisse können eingetragen werden für:",
   "day": "Tag {{number}}",
   "actions.reportWinners": "Gewinner berichten",
+  "actions.delete": "Event löschen",
+  "actions.delete.confirm": "Alle Daten über {{name}} löschen?",
   "participatedCount": "{{count}} teilnehmende Teams",
   "members": "Mitglieder",
   "results": "Resultate",
@@ -37,6 +39,9 @@
   "forms.errors.uniqueTeamName": "Zwei Teams dürfen nicht den gleichen Namen haben.",
   "forms.errors.duplicatePlayer": "Ein Spieler kann nicht doppelt in einem Team sein.",
   "forms.errors.emptyTeam": "Jedes Team brauch mindestens einen gelisteten Spieler.",
+  
+  "forms.toTools.header": "TO-Tools aktivieren",
+  "forms.toTools.explanation": "Mit TO-Tools verwendet dein Turnier vorausgewählte Arenen und das Seed-Creator-Tool ist verfügbar.",
 
   "week.this": "Diese Woche",
   "week.next": "Nächste Woche",
