@@ -639,6 +639,10 @@ function WeaponInfoBadges({ analyzed }: { analyzed: AnalyzedBuild }) {
         {t(`weapons:SUB_${analyzed.weapon.subWeaponSplId}`)}
       </div>
       <div className="analyzer__weapon-info-badge">
+        {t("analyzer:attribute.weight")}{" "}
+        {t(`analyzer:attribute.weight.${analyzed.weapon.speedType}`)}
+      </div>
+      <div className="analyzer__weapon-info-badge">
         <Image
           path={specialWeaponImageUrl(analyzed.weapon.specialWeaponSplId)}
           width={20}
@@ -646,10 +650,6 @@ function WeaponInfoBadges({ analyzed }: { analyzed: AnalyzedBuild }) {
           alt={t(`weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`)}
         />
         {t(`weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`)}
-      </div>
-      <div className="analyzer__weapon-info-badge">
-        {t("analyzer:attribute.weight")}{" "}
-        {t(`analyzer:attribute.weight.${analyzed.weapon.speedType}`)}
       </div>
     </div>
   );

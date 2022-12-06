@@ -15,23 +15,25 @@
 }
 
 .analyzer__weapon-info-badges {
-  display: grid;
+  display: flex;
+  flex-wrap: wrap;
   color: var(--text-lighter);
   font-size: var(--fonts-xxs);
   font-weight: var(--semi-bold);
   gap: var(--s-2);
-  grid-template-columns: 1fr 1fr;
 }
 
 .analyzer__weapon-info-badge {
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 2px solid var(--border);
   border-radius: var(--rounded);
-  background-color: var(--theme-transparent);
-  gap: var(--s-1);
+  background-color: var(--bg-darker);
+  gap: var(--s-2);
   padding-block: var(--s-1);
-  padding-inline: var(--s-1-5);
+  padding-inline: var(--s-2);
+  white-space: nowrap;
 }
 
 .analyzer__effects-selector {
