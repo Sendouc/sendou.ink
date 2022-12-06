@@ -1,0 +1,46 @@
+{
+  "tabs.info": "Info",
+  "tabs.teams": "Teams ({{count}})",
+  "tabs.admin": "Admin",
+
+  "pre.footerNote": "Hinweis: der Arenenpool und die Aufstellung können vor Start des Turniers beliebig oft geändert werden.",
+  "pre.deleteTeam": "Team löschem",
+
+  "preview": "Vorschau des Arenenlisten-Generators ansehen (nur für Admins)",
+  "pre.steps.register": "1. Registrieren auf",
+  "pre.steps.register.summary": "Enter team name you register with",
+  "pre.steps.mapPool": "2. Arenenpool",
+  "pre.steps.mapPool.explanation": "Es kann auch ohne einen ausgewählten Arenenpool gespielt werden. Der Gegner kann dann jedoch entscheiden, welche Arenen gespielt werden. Tie-Braker-Arenen sind blau markiert.",
+  "pre.steps.mapPool.summary": "Wähle die Arenen deines Teams",
+  "pre.steps.roster": "3. Aufstellung einreichen",
+  "pre.steps.roster.explanation": "Das Einreichen der Team-Aufstellung ist zawr optional, aber ihr könntet deswegen niedriger platziert werden.",
+  "pre.steps.roster.summary": "Aufstellung eingeben",
+  "pre.steps.roster.fullTeamError": "Das Team ist voll.",
+
+  "bracket.type.DE_WINNERS": "Sieger-Runde",
+  "bracket.type.DE_LOSERS": "Verlierer-Runde",
+  "bracket.type.SE": "Runde",
+  "bracket.type.SWISS": "Schweizer-Runde",
+  "bracket.type.GROUPS": "Gruppen-Runde",
+
+  "round.label": "Runde",
+
+  "team.label": "Team",
+  "team.unlisted": "Nicht gelistetes Team",
+
+  "bestOf.label.short": "Bo",
+
+  "pickInfo.team": "Team {{number}} Auswahl",
+  "pickInfo.tiebreaker": "Tie-Breaker",
+  "pickInfo.both": "Von beiden ausgewählt",
+  "pickInfo.default": "Standardmäßige Arena",
+
+  "generator.error": "Die Änderungen wurden nicht gespeichert, weil das Turnier bereits begonnen hat",
+
+  "teams.mapsPickedStatus": "Status ausgewähler Arenen",
+
+  "admin.eventStarted": "Event gestartet",
+  "admin.eventStarted.explanation": "Nach dem Start können Teams Arenenlisten erstellen, aber ihre Arenenpools und Aufstellungen nicht mehr bearbeiten.",
+  "admin.download": "Teilnehmer herunterladen",
+  "admin.download.discord": "Discord-Liste"
+}
