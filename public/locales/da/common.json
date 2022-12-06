@@ -12,6 +12,7 @@
   "pages.maps": "Banelister",
   "pages.plans": "Planlægningsværktøj",
   "pages.object-damage-calculator": "Objektskadeberegneren",
+  "pages.myPage": "Min side",
 
   "header.profile": "Profil",
   "header.logout": "Log ud",
@@ -69,6 +70,7 @@
   "maps.validation.VALID": "Banepuljen er gyldig",
 
   "results": "Resultater",
+
   "results.placeSuffix": ".",
 
   "forms.name": "Navn",
@@ -101,6 +103,8 @@
   "weapon.category.SPLATANAS": "Splatanas/Splatanaer",
 
   "plans.poweredBy": "Tegneprogrammet er leveret af {{name}}",
+
+  "articles.by": "af {{author}}",
 
   "websiteSubtitle": "Konkurrencepræget Splatoon-hub"
 }
