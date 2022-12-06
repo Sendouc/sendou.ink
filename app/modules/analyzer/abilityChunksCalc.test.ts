@@ -39,6 +39,19 @@ GetAbilityChunksMapAsArray("Empty build results in an empty array", () => {
   assert.equal(abilityChunksArray, [], "Ability chunks array is not empty.");
 });
 
+GetAbilityChunksMapAsArray("Build ignores Ability Doubler", () => {
+  const buildWithOnlyAbilityDoubler = [
+    ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+    ["AD", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+    ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+  ] as unknown as BuildAbilitiesTupleWithUnknown;
+
+  const abilityChunksArray = getAbilityChunksMapAsArray(
+    buildWithOnlyAbilityDoubler
+  );
+  assert.equal(abilityChunksArray, [], "Ability chunks array is not empty.");
+});
+
 GetAbilityChunksMapAsArray(
   "Main Ability stackable ability chunk calculation is correct",
   () => {

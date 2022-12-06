@@ -10,6 +10,8 @@ const MAIN_REQUIRED_ABILITY_CHUNKS_COUNT = 45;
 const PRIMARY_SLOT_ONLY_REQUIRED_ABILITY_CHUNKS_COUNT = 15;
 const SUB_REQUIRED_ABILITY_CHUNKS_COUNT = 10;
 
+export const ABILITIES_WITHOUT_CHUNKS = new Set(["UNKNOWN", "AD"]);
+
 // From a given build, create a map of <Ability, number>, then return it as an Array after sorting by value, descending.
 //    The data structure describes the number of Ability chunks required for any given build.
 export function getAbilityChunksMapAsArray(
@@ -34,7 +36,7 @@ function updateAbilityChunksMap(
 
     for (const [index, selectedAbility] of gear.entries()) {
       if (!selectedAbility) continue;
-      if (selectedAbility === "UNKNOWN") continue;
+      if (ABILITIES_WITHOUT_CHUNKS.has(selectedAbility)) continue;
 
       // Ability is in main slot
       if (index === 0) {
