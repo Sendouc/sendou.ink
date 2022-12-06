@@ -256,6 +256,17 @@
   background-color: var(--theme-transparent);
 }
 
+@media screen and (display-mode: standalone) {
+  .layout__header {
+    height: 80px;
+    align-items: flex-end;
+  }
+
+  .layout__main {
+    padding-block-start: var(--s-26);
+  }
+}
+
 @media screen and (max-width: 900px) {
   .layout__side-nav {
     display: none;

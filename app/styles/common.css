@@ -13,6 +13,7 @@ body {
   -moz-osx-font-smoothing: antialiased;
   line-height: 1.55;
   overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
 }
 
 *:focus:not(:focus-visible) {
