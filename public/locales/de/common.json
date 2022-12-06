@@ -54,7 +54,7 @@
   "maps.halfSz": "50% Herrschaft",
   "maps.mapPool": "Arenen-Pool",
   "maps.tournamentMaplist": "Arenen-Liste für Turnier erstellen (maps.iplabs.ink)",
-  "maps.tieBreakerMapPool": "Arenenpool für Tie-Breaker",
+  "maps.tieBreakerMapPool": "Arenen-Pool für Tie-Breaker",
   "maps.template": "Vorlage",
   "maps.template.none": "Keine",
   "maps.template.event": "Event",
@@ -68,7 +68,7 @@
   "maps.validation.MAP_REPEATED": "Dieselbe Arena kann nicht mehrmals ausgewählt werden",
   "maps.validation.MODE_REPEATED": "Derselbe Modus kann nicht mehrmals ausgewählt werden",
   "maps.validation.TOO_MUCH_STAGE_REPEAT": "Arena kann nicht mehr als {{maxStageRepeat}} Mal ausgewählt werden",
-  "maps.validation.VALID": "Arenenpool ok!",
+  "maps.validation.VALID": "Arenen-Pool ok!",
 
   "results": "Ergebnisse",
   
