@@ -263,7 +263,7 @@
   }
 
   .layout__main {
-    padding-block-start: var(--s-26);
+    padding-block-start: calc(env(safe-area-inset-top) + var(--s-16));
   }
 }
 

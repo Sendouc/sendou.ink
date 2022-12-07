@@ -6,7 +6,7 @@ import styles from "~/styles/faq.css";
 import { makeTitle } from "~/utils/strings";
 import { type SendouRouteHandle } from "~/utils/remix";
 
-const AMOUNT_OF_QUESTIONS = 4;
+const AMOUNT_OF_QUESTIONS = 6;
 
 export const meta: MetaFunction = () => {
   return {
