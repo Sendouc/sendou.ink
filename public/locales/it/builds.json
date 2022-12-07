@@ -1,13 +1,13 @@
 {
-    "addBuild": "Aggiungi kit",
-    "noBuilds": "Non hai ancora kit. Aggiungine uno!",
-    "buildCard.info": "Info",
-    "buildCard.edit": "Modifica",
-    "forms.title": "Nome",
-    "forms.modes": "Modalità",
-    "forms.weapons": "Armi",
-    "forms.gear.HEAD": "Accessorio",
-    "forms.gear.CLOTHES": "Vestiti",
-    "forms.gear.SHOES": "Scarpe",
-    "deleteConfirm": "Vuoi cancellare il kit '{{title}}'?"
+  "addBuild": "Aggiungi kit",
+  "noBuilds": "Non hai ancora kit. Aggiungine uno!",
+  "buildCard.info": "Info",
+  "buildCard.edit": "Modifica",
+  "forms.title": "Nome",
+  "forms.modes": "Modalità",
+  "forms.weapons": "Armi",
+  "forms.gear.HEAD": "Accessorio",
+  "forms.gear.CLOTHES": "Vestiti",
+  "forms.gear.SHOES": "Scarpe",
+  "deleteConfirm": "Vuoi cancellare il kit '{{title}}'?"
 }
