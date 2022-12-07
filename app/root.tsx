@@ -12,6 +12,7 @@ import {
   Outlet,
   Scripts,
   useLoaderData,
+  useLocation,
   type ShouldReloadFunction,
 } from "@remix-run/react";
 import * as React from "react";
@@ -34,6 +35,7 @@ import { COMMON_PREVIEW_IMAGE } from "./utils/urls";
 import { ConditionalScrollRestoration } from "./components/ConditionalScrollRestoration";
 import { type SendouRouteHandle } from "~/utils/remix";
 import generalI18next from "i18next";
+import * as gtag from "~/utils/gtags.client";
 
 export const unstable_shouldReload: ShouldReloadFunction = ({ url }) => {
   // reload on language change so the selected language gets set into the cookie
@@ -123,6 +125,7 @@ function Document({
 
   useChangeLanguage(locale);
   usePreloadTranslation();
+  useTrackPageView();
 
   return (
     <html lang={locale} dir={i18n.dir()}>
@@ -133,8 +136,8 @@ function Document({
         <PWALinks />
         <Fonts />
       </head>
-      {data?.gtmId ? <GTM id={data.gtmId} /> : null}
       <body>
+        {data?.gtmId ? <GTM id={data.gtmId} /> : null}
         <React.StrictMode>
           <Layout patrons={data?.patrons} isCatchBoundary={isCatchBoundary}>
             {children}
@@ -175,6 +178,17 @@ function usePreloadTranslation() {
   }, []);
 }
 
+function useTrackPageView() {
+  const location = useLocation();
+  const data = useLoaderData<typeof loader>();
+
+  React.useEffect(() => {
+    if (data?.gtmId) {
+      gtag.pageview(location.pathname, data.gtmId);
+    }
+  }, [location, data]);
+}
+
 export default function App() {
   // prop drilling data instead of using useLoaderData in the child components directly because
   // useLoaderData can't be used in CatchBoundary and layout is rendered in it as well
@@ -209,8 +223,11 @@ function GTM({ id }: { id: string }) {
   return (
     <>
       <script async src={`https://www.googletagmanager.com/gtag/js?id=${id}`} />
-      <script>
-        {`window.dataLayer = window.dataLayer || [];
+      <script
+        async
+        id="gtag-init"
+        dangerouslySetInnerHTML={{
+          __html: `window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
 
@@ -222,8 +239,9 @@ function GTM({ id }: { id: string }) {
             security_storage: "denied"
           });
 
-          gtag('config', '${id}');`}
-      </script>
+          gtag('config', '${id}');`,
+        }}
+      />
     </>
   );
 }
