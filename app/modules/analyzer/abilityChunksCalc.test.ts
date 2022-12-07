@@ -39,18 +39,21 @@ GetAbilityChunksMapAsArray("Empty build results in an empty array", () => {
   assert.equal(abilityChunksArray, [], "Ability chunks array is not empty.");
 });
 
-GetAbilityChunksMapAsArray("Build ignores Ability Doubler", () => {
-  const buildWithOnlyAbilityDoubler = [
-    ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
-    ["AD", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
-    ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
-  ] as unknown as BuildAbilitiesTupleWithUnknown;
+GetAbilityChunksMapAsArray(
+  "Ability Doubler ability does not count towards Ability Chunks",
+  () => {
+    const buildWithOnlyAbilityDoubler = [
+      ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+      ["AD", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+      ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+    ] as unknown as BuildAbilitiesTupleWithUnknown;
 
-  const abilityChunksArray = getAbilityChunksMapAsArray(
-    buildWithOnlyAbilityDoubler
-  );
-  assert.equal(abilityChunksArray, [], "Ability chunks array is not empty.");
-});
+    const abilityChunksArray = getAbilityChunksMapAsArray(
+      buildWithOnlyAbilityDoubler
+    );
+    assert.equal(abilityChunksArray, [], "Ability chunks array is not empty.");
+  }
+);
 
 GetAbilityChunksMapAsArray(
   "Main Ability stackable ability chunk calculation is correct",
@@ -139,6 +142,25 @@ GetAbilityChunksMapAsArray(
     ];
 
     const abilityChunksArray = getAbilityChunksMapAsArray(splatlingBuild);
+    validateAbilityChunksArray(abilityChunksArray, expectedOutput);
+  }
+);
+
+GetAbilityChunksMapAsArray(
+  "Sub abilities chunk calculation with Ability Doubler in Clothing slot is correct",
+  () => {
+    const build = [
+      ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+      ["AD", "SSU", "SSU", "ISM"],
+      ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
+    ] as unknown as BuildAbilitiesTupleWithUnknown;
+
+    const expectedOutput = [
+      ["SSU", 9],
+      ["ISM", 3],
+    ];
+
+    const abilityChunksArray = getAbilityChunksMapAsArray(build);
     validateAbilityChunksArray(abilityChunksArray, expectedOutput);
   }
 );

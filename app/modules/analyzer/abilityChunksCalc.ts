@@ -10,6 +10,10 @@ const MAIN_REQUIRED_ABILITY_CHUNKS_COUNT = 45;
 const PRIMARY_SLOT_ONLY_REQUIRED_ABILITY_CHUNKS_COUNT = 15;
 const SUB_REQUIRED_ABILITY_CHUNKS_COUNT = 10;
 
+// Ability Doubler: cost of adding a non-duplicate secondary ability only costs 3 ability chunks
+// Reference: https://splatoonwiki.org/wiki/Splatfest_Tee#Splatoon_3_2
+const SUB_WITH_ABILITY_DOUBLER_REQUIRED_ABILITY_CHUNKS_COUNT = 3;
+
 export const ABILITIES_WITHOUT_CHUNKS = new Set(["UNKNOWN", "AD"]);
 
 // From a given build, create a map of <Ability, number>, then return it as an Array after sorting by value, descending.
@@ -30,13 +34,23 @@ function updateAbilityChunksMap(
   abilityChunksMap: AbilityChunks,
   build: BuildAbilitiesTupleWithUnknown
 ) {
+  let buildIndex = 0;
+
   for (const gear of build) {
+    let hasAbilityDoubler = false;
+
     // Handles the incremental amount of ability chunks required for the same ability for 1 piece of gear
     const abilityChunksMapForGear = new Map<AbilityWithUnknown, number>();
 
     for (const [index, selectedAbility] of gear.entries()) {
       if (!selectedAbility) continue;
-      if (ABILITIES_WITHOUT_CHUNKS.has(selectedAbility)) continue;
+      if (ABILITIES_WITHOUT_CHUNKS.has(selectedAbility)) {
+        // Detect the presence of Ability Doubler in the Clothing gear slot
+        if (selectedAbility === "AD" && buildIndex === 1) {
+          hasAbilityDoubler = true;
+        }
+        continue;
+      }
 
       // Ability is in main slot
       if (index === 0) {
@@ -70,10 +84,13 @@ function updateAbilityChunksMap(
       // Ability is in a sub slot
       else {
         // 1 Ability in sub slot = 10 chunks, 2 abilities = 20 chunks, 3 abilities = 30 chunks
+        // Also handle the edge case for when the piece of gear has Ability Doubler (3/6/9 chunks for 1/2/3 of the same ability)
         abilityChunksMapForGear.set(
           selectedAbility,
           (abilityChunksMapForGear.get(selectedAbility) ?? 0) +
-            SUB_REQUIRED_ABILITY_CHUNKS_COUNT
+            (hasAbilityDoubler
+              ? SUB_WITH_ABILITY_DOUBLER_REQUIRED_ABILITY_CHUNKS_COUNT
+              : SUB_REQUIRED_ABILITY_CHUNKS_COUNT)
         );
 
         abilityChunksMap.set(
@@ -83,5 +100,7 @@ function updateAbilityChunksMap(
         );
       }
     }
+
+    buildIndex += 1;
   }
 }
