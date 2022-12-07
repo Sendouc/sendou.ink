@@ -12,5 +12,15 @@
   "STAGE_10": "Mercatotano",
   "STAGE_11": "Soglioland",
   "STAGE_12": "Cime Sogliolose",
-  "STAGE_13": "Fermenterme"
+  "STAGE_13": "Fermenterme",
+  "MODE_SHORT_TW": "MM",
+  "MODE_SHORT_SZ": "ZS",
+  "MODE_SHORT_TC": "TM",
+  "MODE_SHORT_RM": "CP",
+  "MODE_SHORT_CB": "VG",
+  "MODE_LONG_TW": "Mischia Mollusca",
+  "MODE_LONG_SZ": "Zona Splat",
+  "MODE_LONG_TC": "Torre Mobile",
+  "MODE_LONG_RM": "Checkpoint",
+  "MODE_LONG_CB": "Vongol gol"
 }
