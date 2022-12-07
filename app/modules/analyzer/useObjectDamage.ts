@@ -1,5 +1,7 @@
 import { useSearchParams } from "@remix-run/react";
+import { assertType } from "~/utils/types";
 import { type MainWeaponId } from "../in-game-lists";
+import type { DAMAGE_TYPE } from "./constants";
 import { calculateDamage } from "./objectDamage";
 import { buildStats } from "./stats";
 import type { AnalyzedBuild, DamageType } from "./types";
@@ -73,20 +75,27 @@ function validatedAbilityPointsFromSearchParams(searchParams: URLSearchParams) {
   );
 }
 
-export const damageTypePriorityList: Array<DamageType> = [
+export const damageTypePriorityList = [
   "DIRECT_MAX",
   "DIRECT",
   "DIRECT_MIN",
   "FULL_CHARGE",
   "MAX_CHARGE",
   "NORMAL_MAX_FULL_CHARGE",
+  "NORMAL_MAX",
   "NORMAL_MIN",
   "SPLASH",
   "TAP_SHOT",
   "DISTANCE",
   "BOMB_DIRECT",
   "BOMB_NORMAL",
-];
+  "SPLATANA_VERTICAL_DIRECT",
+  "SPLATANA_VERTICAL",
+  "SPLATANA_HORIZONTAL_DIRECT",
+  "SPLATANA_HORIZONTAL",
+] as const;
+assertType<typeof damageTypePriorityList[number], typeof DAMAGE_TYPE[number]>();
+
 function validatedDamageTypeFromSearchParams({
   searchParams,
   analyzed,

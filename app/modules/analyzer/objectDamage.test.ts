@@ -86,6 +86,12 @@ const shotsToPopRM: Array<
   [3020, "DIRECT_MAX", 6, 5],
   // Splat Dualies
   [5010, "NORMAL_MAX", 34, 31],
+  // Splatana Wiper
+  [8010, "SPLATANA_HORIZONTAL", 11, 10],
+  // Splatana Wiper
+  [8010, "SPLATANA_HORIZONTAL_DIRECT", 9, 8],
+  // Splatana Stamper
+  [8000, "SPLATANA_VERTICAL_DIRECT", 3, 3],
 ];
 
 CalculateDamage(
