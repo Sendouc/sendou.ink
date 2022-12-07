@@ -582,6 +582,7 @@ dialog::backdrop {
 
 .calendar__event__tags > li {
   display: flex;
+  align-items: center;
   border-radius: var(--rounded);
   padding-inline: var(--s-1-5);
 }
