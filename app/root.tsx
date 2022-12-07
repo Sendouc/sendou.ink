@@ -67,6 +67,7 @@ export const meta: MetaFunction = () => ({
 export interface RootLoaderData {
   locale: string;
   patrons: FindAllPatrons;
+  gtmId?: string;
   user?: Pick<
     UserWithPlusTier,
     | "id"
@@ -86,6 +87,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     {
       locale,
       patrons: db.users.findAllPatrons(),
+      gtmId: process.env["GTM_ID"],
       user: user
         ? {
             discordName: user.discordName,
@@ -131,7 +133,7 @@ function Document({
         <PWALinks />
         <Fonts />
       </head>
-      <GTM />
+      {data?.gtmId ? <GTM id={data.gtmId} /> : null}
       <body>
         <React.StrictMode>
           <Layout patrons={data?.patrons} isCatchBoundary={isCatchBoundary}>
@@ -203,11 +205,7 @@ export const ErrorBoundary: ErrorBoundaryComponent = ({ error }) => {
   );
 };
 
-function GTM() {
-  const id = process.env["GTM_ID"];
-
-  if (!id) return null;
-
+function GTM({ id }: { id: string }) {
   return (
     <>
       <script async src={`https://www.googletagmanager.com/gtag/js?id=${id}`} />
