@@ -941,6 +941,10 @@
       "subWeaponId": 2,
       "specialWeaponId": 3,
       "MoveSpeedFullCharge": 0.4,
+      "DamageParam_SplatanaVerticalDirect": 1400,
+      "DamageParam_SplatanaVertical": 700,
+      "DamageParam_SplatanaHorizontalDirect": 550,
+      "DamageParam_SplatanaHorizontal": 350,
       "InkConsume_SwingParam": 0.04,
       "InkConsumeFullCharge_ChargeParam": 0.09
     },
@@ -950,6 +954,10 @@
       "specialWeaponId": 11,
       "WeaponSpeedType": "Fast",
       "MoveSpeedFullCharge": 0.4,
+      "DamageParam_SplatanaVerticalDirect": 1200,
+      "DamageParam_SplatanaVertical": 600,
+      "DamageParam_SplatanaHorizontalDirect": 450,
+      "DamageParam_SplatanaHorizontal": 300,
       "InkConsume_SwingParam": 0.03,
       "InkConsumeFullCharge_ChargeParam": 0.06
     }

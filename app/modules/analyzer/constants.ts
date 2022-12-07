@@ -35,6 +35,10 @@ export const DAMAGE_TYPE = [
   "SPLASH",
   "BOMB_NORMAL",
   "BOMB_DIRECT",
+  "SPLATANA_VERTICAL",
+  "SPLATANA_VERTICAL_DIRECT",
+  "SPLATANA_HORIZONTAL",
+  "SPLATANA_HORIZONTAL_DIRECT",
 ] as const;
 
 export const damageTypeToWeaponType: Record<
@@ -54,6 +58,10 @@ export const damageTypeToWeaponType: Record<
   SPLASH: "MAIN",
   BOMB_NORMAL: "SUB",
   BOMB_DIRECT: "SUB",
+  SPLATANA_VERTICAL: "MAIN",
+  SPLATANA_VERTICAL_DIRECT: "MAIN",
+  SPLATANA_HORIZONTAL: "MAIN",
+  SPLATANA_HORIZONTAL_DIRECT: "MAIN",
 };
 
 export const objectDamageJsonKeyPriority: Record<

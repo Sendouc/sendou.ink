@@ -363,6 +363,10 @@ const damageTypeToParamsKey: Record<
   FULL_CHARGE: "DamageParam_ValueFullCharge",
   MAX_CHARGE: "DamageParam_ValueMaxCharge",
   TAP_SHOT: "DamageParam_ValueMinCharge",
+  SPLATANA_VERTICAL: "DamageParam_SplatanaVertical",
+  SPLATANA_VERTICAL_DIRECT: "DamageParam_SplatanaVerticalDirect",
+  SPLATANA_HORIZONTAL: "DamageParam_SplatanaHorizontal",
+  SPLATANA_HORIZONTAL_DIRECT: "DamageParam_SplatanaHorizontalDirect",
   BOMB_NORMAL: "DistanceDamage",
   BOMB_DIRECT: "DirectDamage",
 };
