@@ -48,7 +48,10 @@ import {
   specialWeaponImageUrl,
   subWeaponImageUrl,
 } from "~/utils/urls";
-import { getAbilityChunksMapAsArray } from "~/modules/analyzer/abilityChunksCalc";
+import {
+  ABILITIES_WITHOUT_CHUNKS,
+  getAbilityChunksMapAsArray,
+} from "~/modules/analyzer/abilityChunksCalc";
 import clsx from "clsx";
 
 export const CURRENT_PATCH = "2.0";
@@ -141,9 +144,11 @@ export default function BuildAnalyzerPage() {
     ),
   ].filter(Boolean);
 
-  // Handles edge case where a primary slot-only ability (e.g. Ninja Squid) is selected & the 'abilityPoints' count is still 0
+  // Handles edge case where a primary slot-only ability (e.g. Ninja Squid) is selected & the 'abilityPoints' count is still 0,
+  //  and also fixes an edge case with Ability Doubler as the only ability in the build
   const showAbilityChunksRequired: boolean = build.some(
-    (gear) => gear.filter((ability) => ability !== "UNKNOWN").length
+    (gear) =>
+      gear.filter((ability) => !ABILITIES_WITHOUT_CHUNKS.has(ability)).length
   );
 
   return (
