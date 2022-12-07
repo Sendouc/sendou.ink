@@ -131,6 +131,7 @@ function Document({
         <PWALinks />
         <Fonts />
       </head>
+      <GTM />
       <body>
         <React.StrictMode>
           <Layout patrons={data?.patrons} isCatchBoundary={isCatchBoundary}>
@@ -201,6 +202,33 @@ export const ErrorBoundary: ErrorBoundaryComponent = ({ error }) => {
     </Document>
   );
 };
+
+function GTM() {
+  const id = process.env["GTM_ID"];
+
+  if (!id) return null;
+
+  return (
+    <>
+      <script async src={`https://www.googletagmanager.com/gtag/js?id=${id}`} />
+      <script>
+        {`window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag("consent", "default", {
+            ad_storage: "denied",
+            analytics_storage: "denied",
+            functionality_storage: "denied",
+            personalization_storage: "denied",
+            security_storage: "denied"
+          });
+
+          gtag('config', '${id}');`}
+      </script>
+    </>
+  );
+}
 
 function Fonts() {
   return (
