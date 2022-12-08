@@ -923,6 +923,14 @@
       "subWeaponId": 11,
       "specialWeaponId": 9,
       "MoveSpeedFullCharge": 0.06,
+      "DamageParam_ValueMax": 350,
+      "DamageParam_ValueMin": 300,
+      "BlastParam_DistanceDamage": [
+        {
+          "Damage": 280,
+          "Distance": 2
+        }
+      ],
       "ChargeFrameFullCharge": 72,
       "InkConsumeFullCharge_ChargeParam": 0.085
     },
@@ -932,6 +940,8 @@
       "specialWeaponId": 4,
       "WeaponSpeedType": "Fast",
       "MoveSpeedFullCharge": 0.07,
+      "DamageParam_ValueMax": 450,
+      "DamageParam_ValueMin": 300,
       "ChargeFrameFullCharge": 34,
       "KeepChargeFullFrame": 75,
       "InkConsumeFullCharge_ChargeParam": 0.065

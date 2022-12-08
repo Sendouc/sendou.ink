@@ -142,7 +142,24 @@ function parametersToMainWeaponResult(
 
     return (
       params["DamageParam"]?.["ValueMax"] ??
+      params["spl__BulletStringerParam"]?.["DamageParam"]?.[
+        "DirectHitDamageMax"
+      ] ??
       params["spl__BulletShelterShotgunParam"]?.["DamageEffectiveTotalMax"]
+    );
+  };
+
+  const BlastParam_DistanceDamage = () => {
+    // REEF-LUX has distance damage listed in params
+    // but actually doesn't deal it in game
+    if (weapon.Id === 7020) return undefined;
+
+    return (
+      params["BlastParam"]?.["DistanceDamage"] ??
+      params["BlastParam"]?.["BlastParam"]?.["DistanceDamage"] ??
+      params["spl__BulletStringerParam"]?.["DetonationParam"]?.["BlastParam"]?.[
+        "DistanceDamage"
+      ]
     );
   };
 
@@ -201,16 +218,17 @@ function parametersToMainWeaponResult(
       params["spl__WeaponSaberParam"]?.["ChargeParam"]?.["MoveSpeedFullCharge"],
     DamageParam_ValueMax: DamageParam_ValueMax(),
     DamageParam_ValueMin: !DamageParam_ValueDirect
-      ? params["DamageParam"]?.["ValueMin"]
+      ? params["DamageParam"]?.["ValueMin"] ??
+        params["spl__BulletStringerParam"]?.["DamageParam"]?.[
+          "DirectHitDamageMin"
+        ]
       : undefined,
     DamageParam_ValueDirect,
     ...slosherDirectDamage(),
     BlastParam_SplashDamage: isSloshingMachine
       ? params["UnitGroupParam"]?.["Unit"]?.[1]?.["DamageParam"]?.["ValueMax"]
       : undefined,
-    BlastParam_DistanceDamage:
-      params["BlastParam"]?.["DistanceDamage"] ??
-      params["BlastParam"]?.["BlastParam"]?.["DistanceDamage"],
+    BlastParam_DistanceDamage: BlastParam_DistanceDamage(),
     DamageParam_ValueFullCharge: params["DamageParam"]?.["ValueFullCharge"],
     DamageParam_ValueFullChargeMax:
       params["DamageParam"]?.["ValueFullChargeMax"] !== DamageParam_ValueMax()

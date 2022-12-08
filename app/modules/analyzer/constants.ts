@@ -158,8 +158,8 @@ export const objectDamageJsonKeyPriority: Record<
   Slosher: ["DIRECT", "DIRECT_MAX", "DIRECT_MIN", "DISTANCE", "SPLASH"],
   Spinner: ["NORMAL_MAX", "NORMAL_MIN", "NORMAL_MAX_FULL_CHARGE", "SPLASH"],
   Sprinkler: null,
-  Stringer_Short: null,
-  Stringer: null,
+  Stringer_Short: ["NORMAL_MAX", "NORMAL_MIN", "DISTANCE"],
+  Stringer: ["NORMAL_MAX", "NORMAL_MIN", "DISTANCE"],
   SuperHook: null,
   SuperLanding: null,
   TripleTornado: null,
@@ -174,6 +174,10 @@ export const multiShot: Partial<Record<MainWeaponId, number>> = {
   300: 3,
   // H-3
   310: 3,
+  // Tri-Stringer,
+  7010: 3,
+  // REEF-LUX,
+  7020: 3,
   // Bloblobber
   3030: 4,
 };
