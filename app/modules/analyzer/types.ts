@@ -38,6 +38,10 @@ export interface MainWeaponParams {
   DamageParam_ValueDirect?: number;
   DamageParam_ValueDirectMax?: number;
   DamageParam_ValueDirectMin?: number;
+  DamageParam_SplatanaVerticalDirect?: number;
+  DamageParam_SplatanaVertical?: number;
+  DamageParam_SplatanaHorizontalDirect?: number;
+  DamageParam_SplatanaHorizontal?: number;
   Jump_DegSwerve?: number;
   Stand_DegSwerve?: number;
   /** Damage caused by charger's full charged shot */

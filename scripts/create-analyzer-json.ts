@@ -175,6 +175,10 @@ function parametersToMainWeaponResult(
 
   const isSloshingMachine = weapon.Id === 3020;
 
+  const DamageParam_SplatanaHorizontalDirect =
+    params["BulletSaberHorizontalParam"]?.["DamageParam"]?.["HitDamage"] +
+    params["BulletSaberSlashHorizontalParam"]?.["DamageParam"]?.["DamageValue"];
+
   return {
     SpecialPoint: weapon.SpecialPoint,
     subWeaponId: resolveSubWeaponId(weapon),
@@ -214,6 +218,17 @@ function parametersToMainWeaponResult(
         : undefined,
     DamageParam_ValueMaxCharge: params["DamageParam"]?.["ValueMaxCharge"],
     DamageParam_ValueMinCharge: params["DamageParam"]?.["ValueMinCharge"],
+    DamageParam_SplatanaVerticalDirect:
+      params["BulletSaberSlashVerticalParam"]?.["DamageParam"]?.["DamageValue"],
+    DamageParam_SplatanaVertical:
+      params["BulletSaberVerticalParam"]?.["DamageParam"]?.["HitDamage"],
+    DamageParam_SplatanaHorizontalDirect: Number.isNaN(
+      DamageParam_SplatanaHorizontalDirect
+    )
+      ? undefined
+      : DamageParam_SplatanaHorizontalDirect,
+    DamageParam_SplatanaHorizontal:
+      params["BulletSaberHorizontalParam"]?.["DamageParam"]?.["HitDamage"],
     CanopyHP: params["spl__BulletShelterCanopyParam"]?.["CanopyHP"],
     ChargeFrameFullCharge:
       params["WeaponParam"]?.["ChargeFrameFullCharge"] ??
