@@ -132,7 +132,7 @@ function Document({
 
   useChangeLanguage(locale);
   usePreloadTranslation();
-  useTrackPageView();
+  useTrackPageView(data);
 
   return (
     <html lang={locale} dir={i18n.dir()} className={htmlThemeClass}>
@@ -186,9 +186,8 @@ function usePreloadTranslation() {
   }, []);
 }
 
-function useTrackPageView() {
+function useTrackPageView(data?: RootLoaderData) {
   const location = useLocation();
-  const data = useLoaderData<typeof loader>();
 
   React.useEffect(() => {
     if (data?.gtmId) {
