@@ -483,7 +483,7 @@ dialog::backdrop {
 .popover-content {
   z-index: 1;
   max-width: 20rem;
-  padding: var(--s-4);
+  padding: var(--s-2);
   border: 2px solid var(--border);
   border-radius: var(--rounded);
   background-color: var(--bg-darker);

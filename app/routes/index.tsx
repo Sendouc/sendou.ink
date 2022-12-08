@@ -24,12 +24,16 @@ import { LogOutIcon } from "~/components/icons/LogOut";
 import { LogInButtonContainer } from "~/components/layout/LogInButtonContainer";
 import { LogInIcon } from "~/components/icons/LogIn";
 import * as React from "react";
+import { ThemeChanger } from "~/components/layout/ThemeChanger";
+import { SelectedThemeIcon } from "~/components/layout/SelectedThemeIcon";
+import { useTheme } from "~/modules/theme";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
 export default function FrontPage() {
+  const { userTheme } = useTheme();
   const [filters, setFilters] = React.useState<[string, string]>(
     navItems[0]?.filters as [string, string]
   );
@@ -52,7 +56,14 @@ export default function FrontPage() {
           {selectedLanguage?.name ?? ""}
         </div>
 
-        <div className="front__nav-item round" />
+        <div className="front__nav-item round">
+          <ThemeChanger plain>
+            <div className="front__nav-image-container round">
+              <SelectedThemeIcon size={28} />
+            </div>
+          </ThemeChanger>
+          {t(`common:theme.${userTheme ?? "auto"}`)}
+        </div>
 
         {user ? (
           <Link to={userPage(user)} className="front__nav-item round">

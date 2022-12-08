@@ -36,6 +36,9 @@ import { ConditionalScrollRestoration } from "./components/ConditionalScrollRest
 import { type SendouRouteHandle } from "~/utils/remix";
 import generalI18next from "i18next";
 import * as gtag from "~/utils/gtags.client";
+import { Theme, ThemeHead, useTheme, ThemeProvider } from "./modules/theme";
+import { getThemeSession } from "./modules/theme/session.server";
+import { isTheme } from "./modules/theme/provider";
 
 export const unstable_shouldReload: ShouldReloadFunction = ({ url }) => {
   // reload on language change so the selected language gets set into the cookie
@@ -68,6 +71,7 @@ export const meta: MetaFunction = () => ({
 
 export interface RootLoaderData {
   locale: string;
+  theme: Theme | null;
   patrons: FindAllPatrons;
   gtmId?: string;
   user?: Pick<
@@ -84,10 +88,12 @@ export interface RootLoaderData {
 export const loader: LoaderFunction = async ({ request }) => {
   const user = await getUser(request);
   const locale = await i18next.getLocale(request);
+  const themeSession = await getThemeSession(request);
 
   return json<RootLoaderData>(
     {
       locale,
+      theme: themeSession.getTheme(),
       patrons: db.users.findAllPatrons(),
       gtmId: process.env["GTM_ID"],
       user: user
@@ -120,6 +126,7 @@ function Document({
   data?: RootLoaderData;
   isCatchBoundary?: boolean;
 }) {
+  const { htmlThemeClass } = useTheme();
   const { i18n } = useTranslation();
   const locale = data?.locale ?? DEFAULT_LANGUAGE;
 
@@ -128,10 +135,11 @@ function Document({
   useTrackPageView();
 
   return (
-    <html lang={locale} dir={i18n.dir()}>
+    <html lang={locale} dir={i18n.dir()} className={htmlThemeClass}>
       <head>
         <Meta />
         <Links />
+        <ThemeHead />
         <link rel="manifest" href="/app.webmanifest" />
         <PWALinks />
         <Fonts />
@@ -195,17 +203,24 @@ export default function App() {
   const data = useLoaderData<RootLoaderData>();
 
   return (
-    <Document data={data}>
-      <Outlet />
-    </Document>
+    <ThemeProvider
+      specifiedTheme={isTheme(data.theme) ? data.theme : null}
+      themeSource="user-preference"
+    >
+      <Document data={data}>
+        <Outlet />
+      </Document>
+    </ThemeProvider>
   );
 }
 
 export function CatchBoundary() {
   return (
-    <Document isCatchBoundary>
-      <Catcher />
-    </Document>
+    <ThemeProvider themeSource="static" specifiedTheme={Theme.DARK}>
+      <Document isCatchBoundary>
+        <Catcher />
+      </Document>
+    </ThemeProvider>
   );
 }
 
@@ -213,9 +228,11 @@ export const ErrorBoundary: ErrorBoundaryComponent = ({ error }) => {
   console.error(error);
 
   return (
-    <Document>
-      <Catcher />
-    </Document>
+    <ThemeProvider themeSource="static" specifiedTheme={Theme.DARK}>
+      <Document>
+        <Catcher />
+      </Document>
+    </ThemeProvider>
   );
 };
 

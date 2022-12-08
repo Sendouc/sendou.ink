@@ -36,9 +36,7 @@ export function FormWithConfirm({
             <Button form={id} variant="destructive" type="submit">
               Delete
             </Button>
-            <Button variant="outlined" onClick={closeDialog}>
-              Cancel
-            </Button>
+            <Button onClick={closeDialog}>Cancel</Button>
           </div>
         </div>
       </Dialog>
