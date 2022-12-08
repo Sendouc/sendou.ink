@@ -25,5 +25,8 @@
   "forms.errors.invalidCustomUrl.numbers": "Пользовательский URL не может содержать только цифры",
   "forms.errors.invalidCustomUrl.strangeCharacter": "Пользовательский URL не может содержать особые символы",
   "forms.errors.invalidCustomUrl.duplicate": "Кто-то уже использует этот пользовательский URL",
-  "forms.errors.invalidSens": "Чувствительность наклона не может быть указана, если не указана чувствительность стика"
+  "forms.errors.invalidSens": "Чувствительность наклона не может быть указана, если не указана чувствительность стика",
+
+  "search.info": "Поиск пользователей по имени в Discord, Splatoon 3 или Twitter",
+  "search.noResults": "Не найден пользователь по запросу '{{query}}'"
 }
