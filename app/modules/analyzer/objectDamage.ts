@@ -17,6 +17,7 @@ import {
 } from "./constants";
 import { roundToNDecimalPlaces } from "~/utils/number";
 import { objectHitPoints } from "./objectHitPoints";
+import invariant from "tiny-invariant";
 
 export function damageTypeToMultipliers({
   type,
@@ -112,7 +113,18 @@ export function calculateDamage({
   damageType: DamageType;
 }) {
   const filteredDamages = analyzed.stats.damages.filter(
-    (d) => d.type === damageType
+    (d) =>
+      d.type === damageType ||
+      // Splatana direct seems to use two damage sources
+      // The way Splatana damage works is a bit confusing:
+      // Vertical Direct = Vertical + Vertical Direct damage vs. Objects only
+      // Horizontal Direct = Horizontal + Horizontal Direct damage vs. both objects and players both
+      // so that's why Horizontal Direct damage has these baked in while
+      // with Vertical Direct we add them here in not so clean manner
+      (damageType === "SPLATANA_VERTICAL_DIRECT" &&
+        d.type === "SPLATANA_VERTICAL") ||
+      (damageType === "SPLATANA_HORIZONTAL_DIRECT" &&
+        d.type === "SPLATANA_HORIZONTAL")
   );
 
   const hitPoints = objectHitPoints(abilityPoints);
@@ -149,16 +161,80 @@ export function calculateDamage({
           { ...damage, objectShredder: false },
           { ...damage, objectShredder: true },
         ])
-        .map((damage) => {
-          const baseMultiplier = multipliers[damage.type]![receiver];
+        .flatMap((damage) => {
+          if (
+            (damageType === "SPLATANA_VERTICAL_DIRECT" &&
+              damage.type === "SPLATANA_VERTICAL") ||
+            (damageType === "SPLATANA_HORIZONTAL_DIRECT" &&
+              damage.type === "SPLATANA_HORIZONTAL")
+          ) {
+            return [];
+          }
+
+          const splatanaDmg = (type: "VERTICAL" | "HORIZONTAL") => {
+            const key =
+              type === "VERTICAL" ? "SPLATANA_VERTICAL" : "SPLATANA_HORIZONTAL";
+            const splatanaVerticalDamage = filteredDamages.find(
+              (damage) => damage.type === key
+            );
+            invariant(splatanaVerticalDamage);
+
+            return splatanaVerticalDamage.value;
+          };
+          const dmg = () => {
+            if (damageType === "SPLATANA_VERTICAL_DIRECT") {
+              return damage.value + splatanaDmg("VERTICAL");
+            }
+            return damage.value;
+          };
+          const baseMultiplier = () => {
+            const normalMultiplier = multipliers[damage.type]![receiver];
+            if (
+              [
+                "SPLATANA_VERTICAL_DIRECT",
+                "SPLATANA_HORIZONTAL_DIRECT",
+              ].includes(damageType)
+            ) {
+              const otherDamageKey =
+                damageType === "SPLATANA_VERTICAL_DIRECT"
+                  ? "SPLATANA_VERTICAL"
+                  : "SPLATANA_HORIZONTAL";
+              const otherDamage =
+                damageType === "SPLATANA_VERTICAL_DIRECT"
+                  ? splatanaDmg("VERTICAL")
+                  : splatanaDmg("HORIZONTAL");
+              const actualDamage = () => {
+                if (damageType === "SPLATANA_HORIZONTAL_DIRECT") {
+                  // undo "baked in" damage (see above)
+                  return damage.value - otherDamage;
+                }
+
+                return damage.value;
+              };
+
+              const splatanaVerticalMultiplier =
+                multipliers[otherDamageKey]![receiver];
+              invariant(splatanaVerticalMultiplier);
+
+              // calculate "made up" multiplier that is taking the
+              // weighted average of the two multipliers
+              return (
+                (normalMultiplier * actualDamage() +
+                  splatanaVerticalMultiplier * otherDamage) /
+                (actualDamage() + otherDamage)
+              );
+            }
+            return normalMultiplier;
+          };
+
           const objectShredderMultiplier =
             objectShredderMultipliers.find((m) => m.target === receiver)
               ?.rate ?? 1;
           const multiplier =
-            baseMultiplier *
+            baseMultiplier() *
             (damage.objectShredder ? objectShredderMultiplier : 1);
 
-          const damagePerHit = roundToNDecimalPlaces(damage.value * multiplier);
+          const damagePerHit = roundToNDecimalPlaces(dmg() * multiplier);
 
           const hitsToDestroy = Math.ceil(damageReceiverHp / damagePerHit);
 
