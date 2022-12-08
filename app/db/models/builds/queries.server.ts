@@ -4,7 +4,7 @@ import type {
   BuildAbility,
   BuildWeapon,
   GearType,
-  User,
+  UserWithPlusTier,
 } from "~/db/types";
 import { type ModeShort, weaponIdToAltId } from "~/modules/in-game-lists";
 import { modesShort } from "~/modules/in-game-lists";
@@ -109,7 +109,10 @@ export function buildsByUserId(userId: Build["ownerId"]) {
 }
 
 type BuildsByWeaponIdRow = BuildsByUserRow &
-  Pick<User, "discordId" | "discordName" | "discordDiscriminator">;
+  Pick<
+    UserWithPlusTier,
+    "discordId" | "discordName" | "discordDiscriminator" | "plusTier"
+  >;
 
 export function buildsByWeaponId({
   weaponId,

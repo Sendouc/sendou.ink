@@ -33,6 +33,7 @@ select
   "User"."discordId",
   "User"."discordName",
   "User"."discordDiscriminator",
+  "PlusTier"."tier" as "plusTier",
   json_group_array(
     json_object(
       'ability',
