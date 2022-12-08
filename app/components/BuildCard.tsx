@@ -54,7 +54,7 @@ interface BuildProps {
 
 export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
   const user = useUser();
-  const { t } = useTranslation(["weapons", "builds", "common"]);
+  const { t } = useTranslation(["weapons", "builds", "common", "game-misc"]);
   const { i18n } = useTranslation();
   const isMounted = useIsMounted();
 
@@ -75,6 +75,20 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
     <div className="build">
       <div>
         <div className="build__top-row">
+          {modes && modes.length > 0 && (
+            <div className="build__modes">
+              {modes.map((mode) => (
+                <Image
+                  key={mode}
+                  alt={t(`game-misc:MODE_LONG_${mode}` as any)}
+                  title={t(`game-misc:MODE_LONG_${mode}` as any)}
+                  path={modeImageUrl(mode)}
+                  width={18}
+                  height={18}
+                />
+              ))}
+            </div>
+          )}
           <h2 className="build__title">{title}</h2>
         </div>
         <div className="build__date-author-row">
@@ -138,24 +152,11 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
             path={navIconUrl("analyzer")}
           />
         </Link>
-        {description || (modes && modes.length > 0) ? (
+        {description ? (
           <Popover
             buttonChildren={<InfoIcon className="build__icon" />}
             triggerClassName="minimal tiny build__small-text"
           >
-            {modes && modes.length > 0 && (
-              <div className="build__modes">
-                {modes.map((mode) => (
-                  <Image
-                    key={mode}
-                    alt=""
-                    path={modeImageUrl(mode)}
-                    width={18}
-                    height={18}
-                  />
-                ))}
-              </div>
-            )}
             {description}
           </Popover>
         ) : null}

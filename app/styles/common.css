@@ -780,11 +780,13 @@ dialog::backdrop {
 .builds-container {
   display: grid;
   justify-content: center;
-  gap: var(--s-3);
+  column-gap: var(--s-3);
   grid-template-columns: repeat(auto-fit, 240px);
+  row-gap: var(--s-4);
 }
 
 .build {
+  position: relative;
   display: flex;
   flex-direction: column;
   padding: var(--s-3);
@@ -813,8 +815,11 @@ dialog::backdrop {
 }
 
 .build__modes {
+  position: absolute;
+  right: 0;
   display: flex;
   min-width: max-content;
+  margin-top: -21px;
   gap: var(--s-1);
 }
 
