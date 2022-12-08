@@ -51,7 +51,6 @@ export const handle: SendouRouteHandle = {
   }),
 };
 
-// xxx: separate horizontal + horizontal direct
 export default function ObjectDamagePage() {
   const { t } = useTranslation(["analyzer"]);
   const {
