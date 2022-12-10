@@ -111,6 +111,6 @@
   "labels.amountOf": "Menge an",
   "labels.damageType": "Schadenstyp",
   "labels.weapon": "Waffe",
-  "dmgHtdExplanation": "SCD = Schaden • TBZ = Treffer bis zerstört",
+  "dmgHtdExplanation": "SCD = Schaden | TBZ = Treffer bis zerstört",
   "noDmgData": "Noch keine Daten über den Schaden dieser Waffe. Schau später nochmal vorbei!"
 }

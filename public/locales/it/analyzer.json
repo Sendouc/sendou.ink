@@ -111,6 +111,6 @@
   "labels.amountOf": "Quantità di",
   "labels.damageType": "Tipo di danno",
   "labels.weapon": "Arma",
-  "dmgHtdExplanation": "DMG = Danno • HTD = Colpi per distruggere",
+  "dmgHtdExplanation": "DMG = Danno | HTD = Colpi per distruggere",
   "noDmgData": "Non ci sono ancora dati sui danni di quest'arma. Controlla tra un pò!"
 }
