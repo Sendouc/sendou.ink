@@ -34,9 +34,9 @@ interface ComboboxProps<T> {
   id?: string;
   isLoading?: boolean;
   required?: boolean;
-  initialValue?: ComboboxOption<T>;
+  initialValue: ComboboxOption<T> | null;
   clearsInputOnFocus?: boolean;
-  onChange?: (selectedOption?: ComboboxOption<T>) => void;
+  onChange?: (selectedOption: ComboboxOption<T> | null) => void;
   fullWidth?: boolean;
   fuseOptions?: Fuse.IFuseOptions<ComboboxOption<T>>;
 }
@@ -57,12 +57,12 @@ export function Combobox<T extends Record<string, string | null | number>>({
 }: ComboboxProps<T>) {
   const { t } = useTranslation();
 
-  const [selectedOption, setSelectedOption] = React.useState<
-    Unpacked<typeof options> | undefined
-  >(initialValue);
-  const [lastSelectedOption, setLastSelectedOption] = React.useState<
-    Unpacked<typeof options> | undefined
-  >(initialValue);
+  const [selectedOption, setSelectedOption] = React.useState<Unpacked<
+    typeof options
+  > | null>(initialValue);
+  const [lastSelectedOption, setLastSelectedOption] = React.useState<Unpacked<
+    typeof options
+  > | null>(initialValue);
   const [query, setQuery] = React.useState("");
 
   React.useEffect(() => {
@@ -105,7 +105,7 @@ export function Combobox<T extends Record<string, string | null | number>>({
         <HeadlessCombobox.Input
           onFocus={() => {
             if (clearsInputOnFocus) {
-              setSelectedOption(undefined);
+              setSelectedOption(null);
             }
           }}
           onBlur={() => {
@@ -220,7 +220,7 @@ export function UserCombobox({
       options={options}
       placeholder="Sendou#4059"
       isLoading={isLoading}
-      initialValue={initialValue}
+      initialValue={initialValue ?? null}
       onChange={onChange}
       className={className}
       id={id}
@@ -260,9 +260,7 @@ export function WeaponCombobox({
       inputName={inputName}
       options={mainWeaponIds.map(idToWeapon)}
       initialValue={
-        typeof initialWeaponId === "number"
-          ? idToWeapon(initialWeaponId)
-          : undefined
+        typeof initialWeaponId === "number" ? idToWeapon(initialWeaponId) : null
       }
       placeholder={t(`MAIN_${weaponCategories[0].weaponIds[0]}`)}
       onChange={onChange}
@@ -308,7 +306,7 @@ export function GearCombobox({
       inputName={inputName}
       options={ids.map(idToGear)}
       placeholder={idToGear(ids[0]).label}
-      initialValue={initialGearId ? idToGear(initialGearId as any) : undefined}
+      initialValue={initialGearId ? idToGear(initialGearId as any) : null}
       onChange={onChange}
       className={className}
       id={id}
@@ -330,7 +328,7 @@ type MapPoolEventsComboboxProps = Pick<
   "inputName" | "className" | "id" | "required"
 > & {
   initialEvent?: SerializedMapPoolEvent;
-  onChange: (event?: SerializedMapPoolEvent) => void;
+  onChange: (event: SerializedMapPoolEvent | null) => void;
 };
 
 export function MapPoolEventsCombobox({
@@ -366,7 +364,7 @@ export function MapPoolEventsCombobox({
       inputName={inputName}
       options={isLoading && initialOption ? [initialOption] : options}
       placeholder={t("actions.search")}
-      initialValue={initialOption}
+      initialValue={initialOption ?? null}
       onChange={(e) => {
         onChange(
           e && {
