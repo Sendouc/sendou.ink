@@ -93,6 +93,8 @@ const shotsToPopRM: Array<
   [8010, "SPLATANA_HORIZONTAL_DIRECT", 9, 8],
   // Splatana Stamper
   [8000, "SPLATANA_VERTICAL_DIRECT", 3, 3],
+  // // Tri-Stringer
+  [7010, "NORMAL_MAX", 3, 3],
   // REEF-LUX
   [7020, "NORMAL_MIN", 8, 7],
 ];
