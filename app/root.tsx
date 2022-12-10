@@ -240,8 +240,6 @@ function GTM({ id }: { id: string }) {
     <>
       <script async src={`https://www.googletagmanager.com/gtag/js?id=${id}`} />
       <script
-        async
-        id="gtag-init"
         dangerouslySetInnerHTML={{
           __html: `window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
@@ -255,7 +253,9 @@ function GTM({ id }: { id: string }) {
             security_storage: "denied"
           });
 
-          gtag('config', '${id}');`,
+          gtag('config', '${id}', {
+            page_path: window.location.pathname,
+          });`,
         }}
       />
     </>
