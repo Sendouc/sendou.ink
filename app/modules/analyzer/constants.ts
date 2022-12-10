@@ -1,6 +1,7 @@
 import type { DamageType } from "./types";
 import type objectDamages from "./object-dmg.json";
-import type { MainWeaponId } from "../in-game-lists";
+import { type MainWeaponId, mainWeaponIds } from "../in-game-lists";
+import invariant from "tiny-invariant";
 
 export const MAX_LDE_INTENSITY = 21;
 export const MAX_AP = 57;
@@ -168,6 +169,46 @@ export const objectDamageJsonKeyPriority: Record<
   UltraStamp_Throw_BombCore: null,
   UltraStamp_Throw: null,
 };
+
+export const damageTypesToCombine: Partial<
+  Record<
+    MainWeaponId,
+    Array<{
+      when: DamageType;
+      combineWith: DamageType;
+      /** for this weapon "when" damage already includes "combineWith" damage, so calculating multiplier only */
+      multiplierOnly?: boolean;
+    }>
+  >
+> = {
+  // Splatana Stamper
+  8000: [
+    { when: "SPLATANA_VERTICAL_DIRECT", combineWith: "SPLATANA_VERTICAL" },
+    {
+      when: "SPLATANA_HORIZONTAL_DIRECT",
+      combineWith: "SPLATANA_HORIZONTAL",
+      multiplierOnly: true,
+    },
+  ],
+  // Splatana Wiper
+  8010: [
+    { when: "SPLATANA_VERTICAL_DIRECT", combineWith: "SPLATANA_VERTICAL" },
+    {
+      when: "SPLATANA_HORIZONTAL_DIRECT",
+      combineWith: "SPLATANA_HORIZONTAL",
+      multiplierOnly: true,
+    },
+  ],
+};
+invariant(
+  mainWeaponIds.every((id) => {
+    // not Splatana
+    if (id < 8000 || id >= 9000) return true;
+
+    return Boolean(damageTypesToCombine[id]);
+  }),
+  "Splatana weapon missing from damageTypesToCombine"
+);
 
 export const multiShot: Partial<Record<MainWeaponId, number>> = {
   // L-3
