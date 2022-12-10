@@ -19,8 +19,6 @@ You are free to create issues about bugs, feature requests or just questions abo
 
 - Tell me how I can test it and include unit / E2E tests if possible.
 
-I try to review any pull requests without delay. Note that since this is my personal project I have some opinions on how the code should look. Due to this I might make some nitpicky adjustments directly to your contribution or point out even relatively minor issues in the code review.
-
 ## Help
 
 If you need help with anything related to contributing we have [a Discord server](https://discord.gg/sendou). Especially the "development" channel is meant for this.
