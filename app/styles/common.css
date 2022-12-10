@@ -2,12 +2,12 @@
 *::before,
 *::after {
   box-sizing: border-box;
-  color: var(--text);
 }
 
 body {
   width: 100%;
   background-color: var(--bg);
+  color: var(--text);
   font-family: Lexend, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: antialiased;
