@@ -12,6 +12,7 @@ import {
   SENDOU_TWITTER_URL,
   TWIG_TWITTER,
   UBERU_TWITTER,
+  YAGA_TWITTER,
 } from "~/utils/urls";
 import { type SendouRouteHandle } from "~/utils/remix";
 import { useTranslation } from "~/hooks/useTranslation";
@@ -119,6 +120,12 @@ export default function ContributionsPage() {
             Chara
           </a>
           - {t("contributions:twig")}
+        </li>
+        <li>
+          <a href={YAGA_TWITTER} target="_blank" rel="noreferrer">
+            yaga
+          </a>{" "}
+          - {t("contributions:yaga")}
         </li>
         {TRANSLATORS.map(({ translators, language }) => (
           <li key={language}>

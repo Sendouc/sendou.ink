@@ -33,6 +33,7 @@ export const LEAN_TWITTER = "https://twitter.com/LeanYoshi";
 export const UBERU_TWITTER = "https://twitter.com/uberu5";
 export const TWIG_TWITTER = "https://twitter.com/TwigTheBluePik";
 export const CHARA_TWITTER = "https://twitter.com/ProChara";
+export const YAGA_TWITTER = "https://twitter.com/a_bog_hag";
 export const ipLabsMaps = (pool: string) =>
   `https://maps.iplabs.ink/?3&pool=${pool}`;
 
