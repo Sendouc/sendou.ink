@@ -181,6 +181,8 @@ export const damageTypesToCombine: Partial<
     }>
   >
 > = {
+  // Explosher
+  3040: [{ when: "DIRECT", combineWith: "DISTANCE" }],
   // Tri-Stringer
   7010: [{ when: "NORMAL_MAX", combineWith: "DISTANCE" }],
   // Splatana Stamper
