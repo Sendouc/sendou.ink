@@ -193,3 +193,7 @@
 .outline-theme:focus {
   outline: 2px solid var(--theme);
 }
+
+.label-no-spacing {
+  --label-margin: 0;
+}

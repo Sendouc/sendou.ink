@@ -9,13 +9,14 @@ import { possibleApValues, validatedWeaponIdFromSearchParams } from "./utils";
 
 const ABILITY_POINTS_SP_KEY = "ap";
 const DAMAGE_TYPE_SP_KEY = "dmg";
+const MULTI_SHOT_SP_KEY = "multi";
 
 export function useObjectDamage() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const mainWeaponId = validatedWeaponIdFromSearchParams(searchParams);
   const abilityPoints = validatedAbilityPointsFromSearchParams(searchParams);
-
+  const isMultiShot = validatedMultiShotFromSearchParams(searchParams);
   const analyzed = buildStats({
     weaponSplId: mainWeaponId,
   });
@@ -29,16 +30,19 @@ export function useObjectDamage() {
     newMainWeaponId = mainWeaponId,
     newAbilityPoints = abilityPoints,
     newDamageType = damageType,
+    newIsMultiShot = isMultiShot,
   }: {
     newMainWeaponId?: MainWeaponId;
     newAbilityPoints?: number;
     newDamageType?: DamageType;
+    newIsMultiShot?: boolean;
   }) => {
     setSearchParams(
       {
         weapon: String(newMainWeaponId),
         [ABILITY_POINTS_SP_KEY]: String(newAbilityPoints),
         [DAMAGE_TYPE_SP_KEY]: newDamageType ?? "",
+        [MULTI_SHOT_SP_KEY]: String(newIsMultiShot),
       },
       { replace: true, state: { scroll: false } }
     );
@@ -47,6 +51,9 @@ export function useObjectDamage() {
   return {
     mainWeaponId,
     subWeaponId: analyzed.weapon.subWeaponSplId,
+    isMultiShot,
+    multiShotCount: analyzed.stats.damages.find((d) => d.type === damageType)
+      ?.multiShots,
     handleChange,
     damagesToReceivers: damageType
       ? calculateDamage({
@@ -57,6 +64,7 @@ export function useObjectDamage() {
           analyzed,
           mainWeaponId,
           damageType,
+          isMultiShot,
         })
       : null,
     abilityPoints: String(abilityPoints),
@@ -73,6 +81,10 @@ function validatedAbilityPointsFromSearchParams(searchParams: URLSearchParams) {
   return (
     possibleApValues().find((possibleAp) => possibleAp === abilityPoints) ?? 0
   );
+}
+
+function validatedMultiShotFromSearchParams(searchParams: URLSearchParams) {
+  return searchParams.get(MULTI_SHOT_SP_KEY) === "false" ? false : true;
 }
 
 export const damageTypePriorityList = [

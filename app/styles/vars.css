@@ -33,6 +33,7 @@ html {
   --theme: #f73e8b;
   --theme-transparent: #f3a0c386;
   --theme-very-transparent: #f3a0c341;
+  --theme-vibrant: #f73e8b;
   --theme-secondary: rgb(63 58 255);
   --backdrop-filter: blur(10px) brightness(95%);
   --rounded: 16px;
@@ -115,7 +116,7 @@ html.dark {
   --theme-informative-green: #a2ffad;
   --theme: #ffc6de;
   --theme-very-transparent: #ffc6de36;
-  --theme-vibrant: hsl(255deg 78% 65%);
+  --theme-vibrant: #f391ba;
   --theme-transparent: #ffc6de52;
   --theme-secondary: rgb(239 229 83);
   --backdrop-filter: blur(10px) brightness(75%);

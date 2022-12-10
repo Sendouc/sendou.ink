@@ -33,6 +33,7 @@ import { Ability } from "~/components/Ability";
 import { damageTypeTranslationString } from "~/utils/i18next";
 import { useSetTitle } from "~/hooks/useSetTitle";
 import type { ShouldReloadFunction } from "@remix-run/react";
+import { Toggle } from "~/components/Toggle";
 
 export const CURRENT_PATCH = "2.0";
 
@@ -61,36 +62,54 @@ export default function ObjectDamagePage() {
     abilityPoints,
     damageType,
     allDamageTypes,
+    multiShotCount,
+    isMultiShot,
   } = useObjectDamage();
 
   return (
     <Main className="stack lg">
       <div className="object-damage__controls">
-        <div>
-          <Label htmlFor="weapon">{t("analyzer:labels.weapon")}</Label>
-          <WeaponCombobox
-            id="weapon"
-            inputName="weapon"
-            initialWeaponId={mainWeaponId}
-            onChange={(opt) =>
-              opt &&
-              handleChange({
-                newMainWeaponId: Number(opt.value) as MainWeaponId,
-              })
-            }
-            className="w-full-important"
-            clearsInputOnFocus
-          />
+        <div className="object-damage__selects">
+          <div>
+            <Label htmlFor="weapon">{t("analyzer:labels.weapon")}</Label>
+            <WeaponCombobox
+              id="weapon"
+              inputName="weapon"
+              initialWeaponId={mainWeaponId}
+              onChange={(opt) =>
+                opt &&
+                handleChange({
+                  newMainWeaponId: Number(opt.value) as MainWeaponId,
+                })
+              }
+              className="w-full-important"
+              clearsInputOnFocus
+            />
+          </div>
+          <div className={clsx({ invisible: !damagesToReceivers })}>
+            <Label htmlFor="damage">{t("analyzer:labels.damageType")}</Label>
+            <DamageTypesSelect
+              handleChange={handleChange}
+              subWeaponId={subWeaponId}
+              damageType={damageType}
+              allDamageTypes={allDamageTypes}
+            />
+          </div>
         </div>
-        <div className={clsx({ invisible: !damagesToReceivers })}>
-          <Label htmlFor="damage">{t("analyzer:labels.damageType")}</Label>
-          <DamageTypesSelect
-            handleChange={handleChange}
-            subWeaponId={subWeaponId}
-            damageType={damageType}
-            allDamageTypes={allDamageTypes}
-          />
-        </div>
+        {multiShotCount ? (
+          <div className="stack sm horizontal items-center label-no-spacing">
+            <label className="plain" htmlFor="multi">
+              ×{multiShotCount}
+            </label>
+            <Toggle
+              name="multi"
+              checked={isMultiShot}
+              setChecked={(checked) =>
+                handleChange({ newIsMultiShot: checked })
+              }
+            />
+          </div>
+        ) : null}
       </div>
       {damagesToReceivers ? (
         <DamageReceiversGrid

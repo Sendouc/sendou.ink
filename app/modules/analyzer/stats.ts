@@ -404,6 +404,7 @@ function damages(args: StatFunctionInput): AnalyzedBuild["stats"]["damages"] {
         type,
         multiShots: multiShot[args.weaponSplId],
       }),
+      multiShots: multiShot[args.weaponSplId],
     });
   }
 

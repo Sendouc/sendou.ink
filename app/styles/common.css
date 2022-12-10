@@ -370,7 +370,7 @@ dialog::backdrop {
 }
 
 .toggle.checked {
-  background-color: var(--theme);
+  background-color: var(--theme-vibrant);
 }
 
 .toggle:active {

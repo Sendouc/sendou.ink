@@ -106,26 +106,37 @@ export function calculateDamage({
   mainWeaponId,
   abilityPoints,
   damageType,
+  isMultiShot,
 }: {
   analyzed: AnalyzedBuild;
   mainWeaponId: MainWeaponId;
   abilityPoints: AbilityPoints;
   damageType: DamageType;
+  isMultiShot: boolean;
 }) {
-  const filteredDamages = analyzed.stats.damages.filter(
-    (d) =>
-      d.type === damageType ||
-      // Splatana direct seems to use two damage sources
-      // The way Splatana damage works is a bit confusing:
-      // Vertical Direct = Vertical + Vertical Direct damage vs. Objects only
-      // Horizontal Direct = Horizontal + Horizontal Direct damage vs. both objects and players both
-      // so that's why Horizontal Direct damage has these baked in while
-      // with Vertical Direct we add them here in not so clean manner
-      (damageType === "SPLATANA_VERTICAL_DIRECT" &&
-        d.type === "SPLATANA_VERTICAL") ||
-      (damageType === "SPLATANA_HORIZONTAL_DIRECT" &&
-        d.type === "SPLATANA_HORIZONTAL")
-  );
+  const filteredDamages = analyzed.stats.damages
+    .filter(
+      (d) =>
+        d.type === damageType ||
+        // Splatana direct seems to use two damage sources
+        // The way Splatana damage works is a bit confusing:
+        // Vertical Direct = Vertical + Vertical Direct damage vs. Objects only
+        // Horizontal Direct = Horizontal + Horizontal Direct damage vs. both objects and players both
+        // so that's why Horizontal Direct damage has these baked in while
+        // with Vertical Direct we add them here in not so clean manner
+        (damageType === "SPLATANA_VERTICAL_DIRECT" &&
+          d.type === "SPLATANA_VERTICAL") ||
+        (damageType === "SPLATANA_HORIZONTAL_DIRECT" &&
+          d.type === "SPLATANA_HORIZONTAL")
+    )
+    .map((damage) => {
+      if (!isMultiShot || !damage.multiShots) return damage;
+
+      return {
+        ...damage,
+        value: damage.value * damage.multiShots,
+      };
+    });
 
   const hitPoints = objectHitPoints(abilityPoints);
   const multipliers = Object.fromEntries(
