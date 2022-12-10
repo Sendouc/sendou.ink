@@ -1,5 +1,5 @@
 <center><img src="public/static-assets/img/app-icon.png" style="border-radius:100%" width="200" height="200"></center>
-<center><a href="https://sendou.ink" target="_blank" rel="noreferrer"><h2>sendou.ink</h2></a></center>
+<center><a href="https://sendou.ink" target="_blank" rel="noreferrer">sendou.ink</a></center>
 <center><img src="https://dcbadge.vercel.app/api/server/sendou" style="margin:0 auto;display:block;"></center>
 
 Competitive Splatoon Hub with over 20k registered users.
