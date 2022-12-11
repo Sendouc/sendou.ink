@@ -26,6 +26,7 @@
     "prettier:write": "prettier --write . --loglevel warn",
     "typecheck": "tsc --noEmit",
     "test:unit": "uvu -r tsm -r tsconfig-paths/register",
+    "test:e2e": "npx playwright test",
     "checks": "npm run test:unit && npm run lint:styles && npm run lint:ts && npm run prettier:check && npm run typecheck",
     "cf": "npm run test:unit && npm run check-translation-jsons && npm run lint:styles -- --fix && npm run lint:ts -- --fix && npm run prettier:write && npm run typecheck"
   },
@@ -69,6 +70,7 @@
     "zod": "^3.19.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.28.1",
     "@remix-run/dev": "^1.8.1",
     "@remix-run/eslint-config": "^1.8.1",
     "@types/better-sqlite3": "^7.6.2",
