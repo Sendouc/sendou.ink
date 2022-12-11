@@ -25,5 +25,8 @@
   "forms.errors.invalidCustomUrl.numbers": "Brugerdefineret URL må ikke kun indeholde numre",
   "forms.errors.invalidCustomUrl.strangeCharacter": "Brugerdefineret URL må ikke indeholde specialtegn (Gælder også æ, ø og å)",
   "forms.errors.invalidCustomUrl.duplicate": "Brugerdefineret URL er allerede i brug",
-  "forms.errors.invalidSens": "Bevægelsesfølsomhed kan ikke indstilles før at Styrepindsfølsomheden er indstillet"
+  "forms.errors.invalidSens": "Bevægelsesfølsomhed kan ikke indstilles før at Styrepindsfølsomheden er indstillet",
+
+  "search.info": "Søg efter brugere ved hjælp af deres  Discord-, Splatoon 3- eller Twitter-navn",
+  "search.noResults": "Søgningen ’{{query}}’ fandt ingen brugere"
 }
