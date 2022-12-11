@@ -121,7 +121,7 @@ export function Combobox<T extends Record<string, string | null | number>>({
           // To make SSR prefill work in an uncontrolled component
           defaultValue={initialValue ? displayValue(initialValue) : undefined}
           displayValue={displayValue}
-          data-cy={`${inputName}-combobox-input`}
+          data-testid={`${inputName}-combobox-input`}
           id={id}
           required={required}
         />

@@ -39,6 +39,7 @@ import * as gtag from "~/utils/gtags.client";
 import { Theme, ThemeHead, useTheme, ThemeProvider } from "./modules/theme";
 import { getThemeSession } from "./modules/theme/session.server";
 import { isTheme } from "./modules/theme/provider";
+import { useIsMounted } from "./hooks/useIsMounted";
 
 export const unstable_shouldReload: ShouldReloadFunction = ({ url }) => {
   // reload on language change so the selected language gets set into the cookie
@@ -145,6 +146,7 @@ function Document({
         <Fonts />
       </head>
       <body>
+        {process.env.NODE_ENV === "development" && <HydrationTestIndicator />}
         {data?.gtmId ? <GTM id={data.gtmId} /> : null}
         <React.StrictMode>
           <Layout patrons={data?.patrons} isCatchBoundary={isCatchBoundary}>
@@ -234,6 +236,14 @@ export const ErrorBoundary: ErrorBoundaryComponent = ({ error }) => {
     </ThemeProvider>
   );
 };
+
+function HydrationTestIndicator() {
+  const isMounted = useIsMounted();
+
+  if (!isMounted) return null;
+
+  return <div style={{ display: "none" }} data-testid="hydrated" />;
+}
 
 function GTM({ id }: { id: string }) {
   return (

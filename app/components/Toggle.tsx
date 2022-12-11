@@ -21,6 +21,7 @@ export function Toggle({
       className={clsx("toggle", { checked, tiny })}
       id={id}
       name={name}
+      data-testid={id ? `toggle-${id}` : null}
     >
       <span className={clsx("toggle-dot", { checked, tiny })} />
     </Switch>

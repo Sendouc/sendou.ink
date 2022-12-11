@@ -102,6 +102,7 @@ export default function ObjectDamagePage() {
               ×{multiShotCount}
             </label>
             <Toggle
+              id="multi"
               name="multi"
               checked={isMultiShot}
               setChecked={(checked) =>
@@ -288,7 +289,9 @@ function DamageReceiversGrid({
               />
             </div>
             <div className="object-damage__hp">
-              {damageToReceiver.hitPoints}
+              <span data-testid={`hp-${damageToReceiver.receiver}`}>
+                {damageToReceiver.hitPoints}
+              </span>
               {t("analyzer:suffix.hp")}
             </div>
             {damageToReceiver.damages.map((damage) => {
@@ -301,14 +304,26 @@ function DamageReceiversGrid({
                     >
                       {t("analyzer:damageShort")}
                     </abbr>
-                    <div>{damage.value}</div>
+                    <div
+                      data-testid={`dmg${damage.objectShredder ? "-os" : ""}-${
+                        damageToReceiver.receiver
+                      }`}
+                    >
+                      {damage.value}
+                    </div>
                     <abbr
                       className="object-damage__abbr"
                       title={t("analyzer:hitsToDestroyLong")}
                     >
                       {t("analyzer:hitsToDestroyShort")}
                     </abbr>
-                    <div>{damage.hitsToDestroy}</div>
+                    <div
+                      data-testid={`htd${damage.objectShredder ? "-os" : ""}-${
+                        damageToReceiver.receiver
+                      }`}
+                    >
+                      {damage.hitsToDestroy}
+                    </div>
                   </div>
                   <div className="object-damage__multiplier">
                     ×{damage.multiplier}
