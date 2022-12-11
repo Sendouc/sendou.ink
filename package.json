@@ -6,7 +6,7 @@
     "deploy": "npm ci && npm run build",
     "build": "remix build",
     "dev": "cross-env NODE_ENV=development remix dev",
-    "dev:ci": "npm run migrate up && npm run dev",
+    "dev:ci": "cp .env.example .env && npm run migrate up && npm run dev",
     "start": "npm run migrate up && remix-serve build",
     "migrate": "ley",
     "migrate:reset": "node scripts/delete-db-files.mjs && npm run migrate && npm run seed",
