@@ -1,4 +1,4 @@
-import { test, expect, Page, Locator } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import { navigate, selectWeapon } from "~/utils/playwright";
 import { OBJECT_DAMAGE_CALCULATOR_URL } from "~/utils/urls";
 
