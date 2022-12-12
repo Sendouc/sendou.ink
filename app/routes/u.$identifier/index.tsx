@@ -37,7 +37,9 @@ export default function UserInfoPage() {
         {data.country ? (
           <div className="u__country">
             <span className="u__country-emoji">{data.country.emoji}</span>{" "}
-            <span className="u__country-name">{data.country.name}</span>
+            <span className="u__country-name" data-testid="country">
+              {data.country.name}
+            </span>
           </div>
         ) : null}
         <div className="u__socials">

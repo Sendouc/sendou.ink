@@ -211,6 +211,7 @@ function CustomUrlInput({
       <Label htmlFor="customUrl">{t("user:customUrl")}</Label>
       <Input
         name="customUrl"
+        id="customUrl"
         leftAddon="https://sendou.ink/u/"
         maxLength={USER.CUSTOM_URL_MAX_LENGTH}
         defaultValue={parentRouteData.customUrl ?? undefined}
@@ -235,6 +236,7 @@ function InGameNameInputs({
         <Input
           className="u-edit__in-game-name-text"
           name="inGameNameText"
+          aria-label="In game name"
           maxLength={USER.IN_GAME_NAME_TEXT_MAX_LENGTH}
           defaultValue={inGameNameParts?.[0]}
         />
@@ -242,6 +244,7 @@ function InGameNameInputs({
         <Input
           className="u-edit__in-game-name-discriminator"
           name="inGameNameDiscriminator"
+          aria-label="In game name discriminator"
           maxLength={USER.IN_GAME_NAME_DISCRIMINATOR_LENGTH}
           pattern="[0-9]{4}"
           defaultValue={inGameNameParts?.[1]}
@@ -265,8 +268,9 @@ function SensSelects({
   return (
     <div className="stack horizontal md">
       <div>
-        <Label>{t("user:stickSens")}</Label>
+        <Label htmlFor="stickSens">{t("user:stickSens")}</Label>
         <select
+          id="stickSens"
           name="stickSens"
           defaultValue={parentRouteData.stickSens ?? undefined}
           className="u-edit__sens-select"
@@ -281,8 +285,9 @@ function SensSelects({
       </div>
 
       <div>
-        <Label>{t("user:motionSens")}</Label>
+        <Label htmlFor="motionSens">{t("user:motionSens")}</Label>
         <select
+          id="motionSens"
           name="motionSens"
           defaultValue={parentRouteData.motionSens ?? undefined}
           className="u-edit__sens-select"

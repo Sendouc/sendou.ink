@@ -2,6 +2,7 @@ import clsx from "clsx";
 
 export function Input({
   name,
+  id,
   className,
   minLength,
   maxLength,
@@ -11,10 +12,12 @@ export function Input({
   pattern,
   list,
   "data-cy": dataCy,
+  "aria-label": ariaLabel,
   value,
   onChange,
 }: {
   name?: string;
+  id?: string;
   className?: string;
   minLength?: number;
   maxLength?: number;
@@ -24,6 +27,7 @@ export function Input({
   pattern?: string;
   list?: string;
   "data-cy"?: string;
+  "aria-label"?: string;
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
@@ -32,6 +36,7 @@ export function Input({
       {leftAddon ? <div className="input-addon">{leftAddon}</div> : null}
       <input
         name={name}
+        id={id}
         minLength={minLength}
         maxLength={maxLength}
         defaultValue={defaultValue}
@@ -40,6 +45,7 @@ export function Input({
         data-cy={dataCy}
         value={value}
         onChange={onChange}
+        aria-label={ariaLabel}
       />
       {icon}
     </div>
