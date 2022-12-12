@@ -43,7 +43,7 @@ import { load, trackPageview } from "fathom-client";
 import invariant from "tiny-invariant";
 
 const FATHOM_ID = "MMTSTBEP";
-const FATHOM_CUSTOM_URL = "https://cheeky-efficient.sendou.ink";
+const FATHOM_CUSTOM_URL = "https://cheeky-efficient.sendou.ink/script.js";
 
 export const unstable_shouldReload: ShouldReloadFunction = ({ url }) => {
   // reload on language change so the selected language gets set into the cookie
