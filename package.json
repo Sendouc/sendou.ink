@@ -43,6 +43,7 @@
     "clsx": "^1.2.1",
     "countries-list": "^2.6.1",
     "date-fns": "^2.29.3",
+    "fathom-client": "^3.5.0",
     "fuse.js": "^6.6.2",
     "gray-matter": "^4.0.3",
     "i18next": "^21.9.2",

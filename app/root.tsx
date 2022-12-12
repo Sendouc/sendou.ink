@@ -35,11 +35,15 @@ import { COMMON_PREVIEW_IMAGE } from "./utils/urls";
 import { ConditionalScrollRestoration } from "./components/ConditionalScrollRestoration";
 import { type SendouRouteHandle } from "~/utils/remix";
 import generalI18next from "i18next";
-import * as gtag from "~/utils/gtags.client";
 import { Theme, ThemeHead, useTheme, ThemeProvider } from "./modules/theme";
 import { getThemeSession } from "./modules/theme/session.server";
 import { isTheme } from "./modules/theme/provider";
 import { useIsMounted } from "./hooks/useIsMounted";
+import { load, trackPageview } from "fathom-client";
+import invariant from "tiny-invariant";
+
+const FATHOM_ID = "MMTSTBEP";
+const FATHOM_CUSTOM_URL = "https://cheeky-efficient.sendou.ink";
 
 export const unstable_shouldReload: ShouldReloadFunction = ({ url }) => {
   // reload on language change so the selected language gets set into the cookie
@@ -90,6 +94,8 @@ export const loader: LoaderFunction = async ({ request }) => {
   const locale = await i18next.getLocale(request);
   const themeSession = await getThemeSession(request);
 
+  invariant(process.env["BASE_URL"], "BASE_URL env var is not set");
+
   return json<RootLoaderData>(
     {
       locale,
@@ -131,6 +137,7 @@ function Document({
 
   useChangeLanguage(locale);
   usePreloadTranslation();
+  useFathom();
 
   return (
     <html lang={locale} dir={i18n.dir()} className={htmlThemeClass}>
@@ -222,6 +229,22 @@ export const ErrorBoundary: ErrorBoundaryComponent = ({ error }) => {
     </ThemeProvider>
   );
 };
+
+function useFathom() {
+  const location = useLocation();
+
+  React.useEffect(() => {
+    if (process.env.NODE_ENV !== "production") return;
+
+    load(FATHOM_ID, { url: FATHOM_CUSTOM_URL });
+  }, []);
+
+  React.useEffect(() => {
+    if (process.env.NODE_ENV !== "production") return;
+
+    trackPageview();
+  }, [location.pathname, location.search]);
+}
 
 function HydrationTestIndicator() {
   const isMounted = useIsMounted();
