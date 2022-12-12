@@ -25,6 +25,7 @@
   border: none;
   border-radius: 100%;
   background-color: var(--bg-lighter);
+  color: var(--text);
   place-items: center;
   transition: all 0.2s ease-out;
 }
