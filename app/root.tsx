@@ -74,7 +74,6 @@ export interface RootLoaderData {
   locale: string;
   theme: Theme | null;
   patrons: FindAllPatrons;
-  gtmId?: string;
   user?: Pick<
     UserWithPlusTier,
     | "id"
@@ -96,7 +95,6 @@ export const loader: LoaderFunction = async ({ request }) => {
       locale,
       theme: themeSession.getTheme(),
       patrons: db.users.findAllPatrons(),
-      gtmId: process.env["GTM_ID"],
       user: user
         ? {
             discordName: user.discordName,
@@ -133,7 +131,6 @@ function Document({
 
   useChangeLanguage(locale);
   usePreloadTranslation();
-  useTrackPageView(data);
 
   return (
     <html lang={locale} dir={i18n.dir()} className={htmlThemeClass}>
@@ -147,7 +144,6 @@ function Document({
       </head>
       <body>
         {process.env.NODE_ENV === "development" && <HydrationTestIndicator />}
-        {data?.gtmId ? <GTM id={data.gtmId} /> : null}
         <React.StrictMode>
           <Layout patrons={data?.patrons} isCatchBoundary={isCatchBoundary}>
             {children}
@@ -186,16 +182,6 @@ function usePreloadTranslation() {
   React.useEffect(() => {
     void generalI18next.loadNamespaces(namespaceJsonsToPreload);
   }, []);
-}
-
-function useTrackPageView(data?: RootLoaderData) {
-  const location = useLocation();
-
-  React.useEffect(() => {
-    if (data?.gtmId) {
-      gtag.pageview(location.pathname, data.gtmId);
-    }
-  }, [location, data]);
 }
 
 export default function App() {
@@ -243,33 +229,6 @@ function HydrationTestIndicator() {
   if (!isMounted) return null;
 
   return <div style={{ display: "none" }} data-testid="hydrated" />;
-}
-
-function GTM({ id }: { id: string }) {
-  return (
-    <>
-      <script async src={`https://www.googletagmanager.com/gtag/js?id=${id}`} />
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-
-          gtag("consent", "default", {
-            ad_storage: "denied",
-            analytics_storage: "denied",
-            functionality_storage: "denied",
-            personalization_storage: "denied",
-            security_storage: "denied"
-          });
-
-          gtag('config', '${id}', {
-            page_path: window.location.pathname,
-          });`,
-        }}
-      />
-    </>
-  );
 }
 
 function Fonts() {
