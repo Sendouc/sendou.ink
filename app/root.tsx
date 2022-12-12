@@ -243,7 +243,7 @@ function useFathom() {
     if (process.env.NODE_ENV !== "production") return;
 
     trackPageview();
-  }, [location.pathname, location.search]);
+  }, [location.pathname]);
 }
 
 function HydrationTestIndicator() {
