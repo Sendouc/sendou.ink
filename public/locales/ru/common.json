@@ -111,6 +111,8 @@
   "theme.auto": "Системная",
 
   "plans.poweredBy": "При поддержке {{name}}",
+  "plans.blueprint": "план",
+  "plans.noImg": "Нет изображения",
 
   "articles.by": "от {{author}}",
 
