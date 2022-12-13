@@ -17,7 +17,7 @@ export interface ButtonProps
   loading?: boolean;
   loadingText?: string;
   icon?: JSX.Element;
-  "data-cy"?: string;
+  testId?: string;
 }
 
 export function Button(props: ButtonProps) {
@@ -30,6 +30,7 @@ export function Button(props: ButtonProps) {
     className,
     icon,
     type = "button",
+    testId,
     ...rest
   } = props;
   return (
@@ -45,6 +46,7 @@ export function Button(props: ButtonProps) {
       )}
       disabled={props.disabled || loading}
       type={type}
+      data-testid={testId}
       {...rest}
     >
       {icon &&

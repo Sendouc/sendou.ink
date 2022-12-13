@@ -35,6 +35,7 @@ const AMOUNT_OF_CALENDAR_EVENTS = 200;
 
 const basicSeeds = [
   adminUser,
+  adminUserWeaponPool,
   nzapUser,
   users,
   userProfiles,
@@ -74,6 +75,7 @@ function wipeDB() {
     "CalendarEventResultTeam",
     "CalendarEventBadge",
     "CalendarEvent",
+    "UserWeapon",
     "User",
     "PlusVote",
     "PlusSuggestion",
@@ -97,6 +99,19 @@ function adminUser() {
     discordAvatar: ADMIN_TEST_AVATAR,
     twitter: "sendouc",
   });
+}
+
+function adminUserWeaponPool() {
+  for (const [i, weaponSplId] of [200, 1100, 2000, 4000].entries()) {
+    sql
+      .prepare(
+        `
+      insert into "UserWeapon" ("userId", "weaponSplId", "order")
+        values ($userId, $weaponSplId, $order)
+    `
+      )
+      .run({ userId: 1, weaponSplId, order: i + 1 });
+  }
 }
 
 function nzapUser() {

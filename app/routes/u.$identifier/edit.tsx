@@ -6,16 +6,22 @@ import {
 } from "@remix-run/node";
 import {
   Form,
+  Link,
   useLoaderData,
   useMatches,
   useTransition,
 } from "@remix-run/react";
 import { countries } from "countries-list";
 import * as React from "react";
+import { Trans } from "react-i18next";
 import invariant from "tiny-invariant";
 import { z } from "zod";
 import { Button } from "~/components/Button";
+import { WeaponCombobox } from "~/components/Combobox";
 import { FormErrors } from "~/components/FormErrors";
+import { FormMessage } from "~/components/FormMessage";
+import { TrashIcon } from "~/components/icons/Trash";
+import { WeaponImage } from "~/components/Image";
 import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
 import { USER } from "~/constants";
@@ -24,16 +30,19 @@ import { type User } from "~/db/types";
 import { useTranslation } from "~/hooks/useTranslation";
 import { requireUser } from "~/modules/auth";
 import { i18next } from "~/modules/i18n";
+import { mainWeaponIds, type MainWeaponId } from "~/modules/in-game-lists";
 import styles from "~/styles/u-edit.css";
 import { translatedCountry } from "~/utils/i18n.server";
 import { safeParseRequestFormData } from "~/utils/remix";
 import { errorIsSqliteUniqueConstraintFailure } from "~/utils/sql";
 import { rawSensToString } from "~/utils/strings";
-import { isCustomUrl, userPage } from "~/utils/urls";
+import { FAQ_PAGE, isCustomUrl, userPage } from "~/utils/urls";
 import {
   actualNumber,
   falsyToNull,
   processMany,
+  removeDuplicates,
+  safeJSONParse,
   undefinedToNull,
 } from "~/utils/zod";
 import { type UserPageLoaderData } from "../u.$identifier";
@@ -101,6 +110,18 @@ const userEditActionSchema = z
         .refine((val) => /^[0-9]{4}$/.test(val))
         .nullable()
     ),
+    weapons: z.preprocess(
+      processMany(safeJSONParse, removeDuplicates),
+      z
+        .array(
+          z
+            .number()
+            .refine((val) =>
+              mainWeaponIds.includes(val as typeof mainWeaponIds[number])
+            )
+        )
+        .max(USER.WEAPON_POOL_MAX_SIZE)
+    ),
   })
   .refine(
     (val) => {
@@ -134,6 +155,7 @@ export const action: ActionFunction = async ({ request }) => {
   try {
     const editedUser = db.users.updateProfile({
       ...data,
+      weapons: data.weapons as MainWeaponId[],
       inGameName:
         inGameNameText && inGameNameDiscriminator
           ? `${inGameNameText}#${inGameNameDiscriminator}`
@@ -172,7 +194,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 export default function UserEditPage() {
-  const { t } = useTranslation(["common"]);
+  const { t } = useTranslation(["common", "user"]);
   const [, parentRoute] = useMatches();
   invariant(parentRoute);
   const parentRouteData = parentRoute.data as UserPageLoaderData;
@@ -185,7 +207,15 @@ export default function UserEditPage() {
         <InGameNameInputs parentRouteData={parentRouteData} />
         <SensSelects parentRouteData={parentRouteData} />
         <CountrySelect parentRouteData={parentRouteData} />
+        <WeaponPoolSelect parentRouteData={parentRouteData} />
         <BioTextarea initialValue={parentRouteData.bio} />
+        <FormMessage type="info">
+          <Trans i18nKey={"user:discordExplanation"} t={t}>
+            Username, profile picture, YouTube, Twitter and Twitch accounts come
+            from your Discord account. See <Link to={FAQ_PAGE}>FAQ</Link> for
+            more information.
+          </Trans>
+        </FormMessage>
         <Button
           loadingText={t("common:actions.saving")}
           type="submit"
@@ -328,6 +358,66 @@ function CountrySelect({
           </option>
         ))}
       </select>
+    </div>
+  );
+}
+
+function WeaponPoolSelect({
+  parentRouteData,
+}: {
+  parentRouteData: UserPageLoaderData;
+}) {
+  const [weapons, setWeapons] = React.useState<Array<MainWeaponId>>(
+    parentRouteData.weapons
+  );
+  const { t } = useTranslation(["user"]);
+
+  return (
+    <div className="stack md u-edit__weapon-pool">
+      <input type="hidden" name="weapons" value={JSON.stringify(weapons)} />
+      <div>
+        <label htmlFor="weapon">{t("user:weaponPool")}</label>
+        {weapons.length < USER.WEAPON_POOL_MAX_SIZE ? (
+          <WeaponCombobox
+            inputName="weapon"
+            id="weapon"
+            onChange={(weapon) => {
+              if (!weapon) return;
+              setWeapons([...weapons, Number(weapon.value) as MainWeaponId]);
+            }}
+            weaponIdsToOmit={new Set(weapons)}
+            wrapperClassName="w-full-important"
+            className="w-full-important"
+          />
+        ) : (
+          <span className="text-xs text-warning">
+            {t("user:forms.errors.maxWeapons")}
+          </span>
+        )}
+      </div>
+      <div className="stack horizontal sm justify-center">
+        {weapons.map((weapon) => {
+          return (
+            <div key={weapon} className="stack xs">
+              <div className="u__weapon">
+                <WeaponImage
+                  weaponSplId={weapon}
+                  variant="badge"
+                  width={38}
+                  height={38}
+                />
+              </div>
+              <Button
+                icon={<TrashIcon />}
+                variant="minimal-destructive"
+                aria-label="Delete weapon"
+                onClick={() => setWeapons(weapons.filter((w) => w !== weapon))}
+                testId={`delete-weapon-${weapon}`}
+              />
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

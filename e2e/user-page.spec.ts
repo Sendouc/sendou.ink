@@ -1,6 +1,6 @@
 import { expect, type Page, test } from "@playwright/test";
 import { ADMIN_DISCORD_ID } from "~/constants";
-import { impersonate, navigate, seed } from "~/utils/playwright";
+import { impersonate, navigate, seed, selectWeapon } from "~/utils/playwright";
 import { userPage } from "~/utils/urls";
 
 const goToEditPage = (page: Page) =>
@@ -56,5 +56,29 @@ test.describe("User page", () => {
     await submitEditForm(page);
 
     await expect(page).toHaveURL(/lean/);
+  });
+
+  test("edits weapon pool", async ({ page }) => {
+    await seed(page);
+    await impersonate(page);
+    await navigate({
+      page,
+      url: userPage({ discordId: ADMIN_DISCORD_ID, customUrl: "sendou" }),
+    });
+
+    for (const [i, id] of [200, 1100, 2000, 4000].entries()) {
+      await expect(page.getByTestId(`${id}-${i + 1}`)).toBeVisible();
+    }
+
+    await goToEditPage(page);
+    await selectWeapon({ name: "Range Blaster", page });
+    await page.getByText("Max weapon count reached").isVisible();
+    await page.getByTestId("delete-weapon-1100").click();
+
+    await submitEditForm(page);
+
+    for (const [i, id] of [200, 2000, 4000, 220].entries()) {
+      await expect(page.getByTestId(`${id}-${i + 1}`)).toBeVisible();
+    }
   });
 });

@@ -30,6 +30,13 @@ export interface UserWithPlusTier extends User {
   plusTier: PlusTier["tier"] | null;
 }
 
+export interface UserWeapon {
+  userId: number;
+  weaponSplId: MainWeaponId;
+  createdAt: number;
+  order: number;
+}
+
 export interface PlusSuggestion {
   id: number;
   text: string;

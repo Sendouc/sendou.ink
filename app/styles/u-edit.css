@@ -26,6 +26,10 @@
   width: 6rem;
 }
 
+.u-edit__weapon-pool {
+  width: 20rem;
+}
+
 .u-edit__bio-container {
   width: 100%;
 }

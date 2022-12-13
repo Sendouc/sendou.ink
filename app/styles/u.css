@@ -221,3 +221,9 @@
   margin: 0 auto;
   font-size: var(--fonts-lg);
 }
+
+.u__weapon {
+  padding: var(--s-2);
+  border-radius: 100%;
+  background-color: var(--bg-lighter);
+}

@@ -1,19 +1,20 @@
 import { useMatches } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
-import { useTranslation } from "~/hooks/useTranslation";
 import invariant from "tiny-invariant";
 import { Avatar } from "~/components/Avatar";
 import { Badge } from "~/components/Badge";
 import { TwitchIcon } from "~/components/icons/Twitch";
 import { TwitterIcon } from "~/components/icons/Twitter";
 import { YouTubeIcon } from "~/components/icons/YouTube";
+import { WeaponImage } from "~/components/Image";
+import { useTranslation } from "~/hooks/useTranslation";
+import { type SendouRouteHandle } from "~/utils/remix";
 import { rawSensToString } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
 import { assertUnreachable } from "~/utils/types";
 import { badgeExplanationText } from "../badges/$id";
 import type { UserPageLoaderData } from "../u.$identifier";
-import { type SendouRouteHandle } from "~/utils/remix";
 
 export const handle: SendouRouteHandle = {
   i18n: "badges",
@@ -55,6 +56,7 @@ export default function UserInfoPage() {
         </div>
       </div>
       <ExtraInfos />
+      <WeaponPool />
       <BadgeContainer badges={data.badges} />
       {data.bio && <article>{data.bio}</article>}
     </div>
@@ -143,6 +145,30 @@ function ExtraInfos() {
           {motionSensText}
         </div>
       )}
+    </div>
+  );
+}
+
+function WeaponPool() {
+  const [, parentRoute] = useMatches();
+  invariant(parentRoute);
+  const data = parentRoute.data as UserPageLoaderData;
+
+  return (
+    <div className="stack horizontal sm justify-center">
+      {data.weapons.map((weapon, i) => {
+        return (
+          <div key={weapon} className="u__weapon">
+            <WeaponImage
+              testId={`${weapon}-${i + 1}`}
+              weaponSplId={weapon}
+              variant="badge"
+              width={38}
+              height={38}
+            />
+          </div>
+        );
+      })}
     </div>
   );
 }
