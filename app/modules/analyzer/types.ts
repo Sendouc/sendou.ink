@@ -182,6 +182,7 @@ export interface Damage {
   type: DamageType;
   distance?: number;
   shotsToSplat?: number;
+  multiShots?: number;
 }
 
 export interface AnalyzedBuild {

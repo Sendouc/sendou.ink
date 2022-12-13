@@ -11,12 +11,14 @@ import type {
   SubWeaponId,
 } from "../in-game-lists";
 import {
+  damageTypesToCombine,
   damageTypeToWeaponType,
   DAMAGE_RECEIVERS,
   objectDamageJsonKeyPriority,
 } from "./constants";
 import { roundToNDecimalPlaces } from "~/utils/number";
 import { objectHitPoints } from "./objectHitPoints";
+import invariant from "tiny-invariant";
 
 export function damageTypeToMultipliers({
   type,
@@ -105,15 +107,28 @@ export function calculateDamage({
   mainWeaponId,
   abilityPoints,
   damageType,
+  isMultiShot,
 }: {
   analyzed: AnalyzedBuild;
   mainWeaponId: MainWeaponId;
   abilityPoints: AbilityPoints;
   damageType: DamageType;
+  isMultiShot: boolean;
 }) {
-  const filteredDamages = analyzed.stats.damages.filter(
-    (d) => d.type === damageType
+  const toCombine = (damageTypesToCombine[mainWeaponId] ?? []).find(
+    (c) => c.when === damageType
   );
+
+  const filteredDamages = analyzed.stats.damages
+    .filter((d) => d.type === damageType || toCombine?.combineWith === d.type)
+    .map((damage) => {
+      if (!isMultiShot || !damage.multiShots) return damage;
+
+      return {
+        ...damage,
+        value: damage.value * damage.multiShots,
+      };
+    });
 
   const hitPoints = objectHitPoints(abilityPoints);
   const multipliers = Object.fromEntries(
@@ -149,16 +164,59 @@ export function calculateDamage({
           { ...damage, objectShredder: false },
           { ...damage, objectShredder: true },
         ])
-        .map((damage) => {
-          const baseMultiplier = multipliers[damage.type]![receiver];
+        .flatMap((damage) => {
+          if (toCombine?.combineWith === damage.type) {
+            return [];
+          }
+
+          const otherDamage = () => {
+            const result = filteredDamages.find(
+              (damage) => damage.type === toCombine?.combineWith
+            )?.value;
+            invariant(result);
+
+            return result;
+          };
+          const dmg = () => {
+            if (toCombine && !toCombine?.multiplierOnly) {
+              return damage.value + otherDamage();
+            }
+            return damage.value;
+          };
+          const baseMultiplier = () => {
+            const normalMultiplier = multipliers[damage.type]![receiver];
+            if (toCombine) {
+              const actualDamage = () => {
+                if (toCombine.multiplierOnly) {
+                  // undo "baked in" damage (see above)
+                  return damage.value - otherDamage();
+                }
+
+                return damage.value;
+              };
+
+              const otherMultiplier =
+                multipliers[toCombine.combineWith]![receiver];
+
+              // calculate "made up" multiplier that is taking the
+              // weighted average of the two multipliers
+              return (
+                (normalMultiplier * actualDamage() +
+                  otherMultiplier * otherDamage()) /
+                (actualDamage() + otherDamage())
+              );
+            }
+            return normalMultiplier;
+          };
+
           const objectShredderMultiplier =
             objectShredderMultipliers.find((m) => m.target === receiver)
               ?.rate ?? 1;
           const multiplier =
-            baseMultiplier *
+            baseMultiplier() *
             (damage.objectShredder ? objectShredderMultiplier : 1);
 
-          const damagePerHit = roundToNDecimalPlaces(damage.value * multiplier);
+          const damagePerHit = roundToNDecimalPlaces(dmg() * multiplier);
 
           const hitsToDestroy = Math.ceil(damageReceiverHp / damagePerHit);
 

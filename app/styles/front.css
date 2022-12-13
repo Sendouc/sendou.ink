@@ -35,6 +35,7 @@
   height: 75px;
   border-radius: var(--rounded);
   background-color: var(--bg-lighter);
+  color: var(--text);
   place-items: center;
   transition: all 0.2s ease-out;
 }

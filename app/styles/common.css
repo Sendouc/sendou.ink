@@ -2,12 +2,12 @@
 *::before,
 *::after {
   box-sizing: border-box;
-  color: var(--text);
 }
 
 body {
   width: 100%;
   background-color: var(--bg);
+  color: var(--text);
   font-family: Lexend, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: antialiased;
@@ -370,7 +370,7 @@ dialog::backdrop {
 }
 
 .toggle.checked {
-  background-color: var(--theme);
+  background-color: var(--theme-vibrant);
 }
 
 .toggle:active {
@@ -483,7 +483,7 @@ dialog::backdrop {
 .popover-content {
   z-index: 1;
   max-width: 20rem;
-  padding: var(--s-4);
+  padding: var(--s-2);
   border: 2px solid var(--border);
   border-radius: var(--rounded);
   background-color: var(--bg-darker);
@@ -780,11 +780,13 @@ dialog::backdrop {
 .builds-container {
   display: grid;
   justify-content: center;
-  gap: var(--s-3);
+  column-gap: var(--s-3);
   grid-template-columns: repeat(auto-fit, 240px);
+  row-gap: var(--s-4);
 }
 
 .build {
+  position: relative;
   display: flex;
   flex-direction: column;
   padding: var(--s-3);
@@ -813,8 +815,11 @@ dialog::backdrop {
 }
 
 .build__modes {
+  position: absolute;
+  right: 0;
   display: flex;
   min-width: max-content;
+  margin-top: -21px;
   gap: var(--s-1);
 }
 

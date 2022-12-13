@@ -33,6 +33,7 @@ import { Ability } from "~/components/Ability";
 import { damageTypeTranslationString } from "~/utils/i18next";
 import { useSetTitle } from "~/hooks/useSetTitle";
 import type { ShouldReloadFunction } from "@remix-run/react";
+import { Toggle } from "~/components/Toggle";
 
 export const CURRENT_PATCH = "2.0";
 
@@ -51,7 +52,6 @@ export const handle: SendouRouteHandle = {
   }),
 };
 
-// xxx: separate horizontal + horizontal direct
 export default function ObjectDamagePage() {
   const { t } = useTranslation(["analyzer"]);
   const {
@@ -62,36 +62,55 @@ export default function ObjectDamagePage() {
     abilityPoints,
     damageType,
     allDamageTypes,
+    multiShotCount,
+    isMultiShot,
   } = useObjectDamage();
 
   return (
     <Main className="stack lg">
       <div className="object-damage__controls">
-        <div>
-          <Label htmlFor="weapon">{t("analyzer:labels.weapon")}</Label>
-          <WeaponCombobox
-            id="weapon"
-            inputName="weapon"
-            initialWeaponId={mainWeaponId}
-            onChange={(opt) =>
-              opt &&
-              handleChange({
-                newMainWeaponId: Number(opt.value) as MainWeaponId,
-              })
-            }
-            className="w-full-important"
-            clearsInputOnFocus
-          />
+        <div className="object-damage__selects">
+          <div>
+            <Label htmlFor="weapon">{t("analyzer:labels.weapon")}</Label>
+            <WeaponCombobox
+              id="weapon"
+              inputName="weapon"
+              initialWeaponId={mainWeaponId}
+              onChange={(opt) =>
+                opt &&
+                handleChange({
+                  newMainWeaponId: Number(opt.value) as MainWeaponId,
+                })
+              }
+              className="w-full-important"
+              clearsInputOnFocus
+            />
+          </div>
+          <div className={clsx({ invisible: !damagesToReceivers })}>
+            <Label htmlFor="damage">{t("analyzer:labels.damageType")}</Label>
+            <DamageTypesSelect
+              handleChange={handleChange}
+              subWeaponId={subWeaponId}
+              damageType={damageType}
+              allDamageTypes={allDamageTypes}
+            />
+          </div>
         </div>
-        <div className={clsx({ invisible: !damagesToReceivers })}>
-          <Label htmlFor="damage">{t("analyzer:labels.damageType")}</Label>
-          <DamageTypesSelect
-            handleChange={handleChange}
-            subWeaponId={subWeaponId}
-            damageType={damageType}
-            allDamageTypes={allDamageTypes}
-          />
-        </div>
+        {multiShotCount ? (
+          <div className="stack sm horizontal items-center label-no-spacing">
+            <label className="plain" htmlFor="multi">
+              ×{multiShotCount}
+            </label>
+            <Toggle
+              id="multi"
+              name="multi"
+              checked={isMultiShot}
+              setChecked={(checked) =>
+                handleChange({ newIsMultiShot: checked })
+              }
+            />
+          </div>
+        ) : null}
       </div>
       {damagesToReceivers ? (
         <DamageReceiversGrid
@@ -270,7 +289,9 @@ function DamageReceiversGrid({
               />
             </div>
             <div className="object-damage__hp">
-              {damageToReceiver.hitPoints}
+              <span data-testid={`hp-${damageToReceiver.receiver}`}>
+                {damageToReceiver.hitPoints}
+              </span>
               {t("analyzer:suffix.hp")}
             </div>
             {damageToReceiver.damages.map((damage) => {
@@ -283,14 +304,26 @@ function DamageReceiversGrid({
                     >
                       {t("analyzer:damageShort")}
                     </abbr>
-                    <div>{damage.value}</div>
+                    <div
+                      data-testid={`dmg${damage.objectShredder ? "-os" : ""}-${
+                        damageToReceiver.receiver
+                      }`}
+                    >
+                      {damage.value}
+                    </div>
                     <abbr
                       className="object-damage__abbr"
                       title={t("analyzer:hitsToDestroyLong")}
                     >
                       {t("analyzer:hitsToDestroyShort")}
                     </abbr>
-                    <div>{damage.hitsToDestroy}</div>
+                    <div
+                      data-testid={`htd${damage.objectShredder ? "-os" : ""}-${
+                        damageToReceiver.receiver
+                      }`}
+                    >
+                      {damage.hitsToDestroy}
+                    </div>
                   </div>
                   <div className="object-damage__multiplier">
                     ×{damage.multiplier}

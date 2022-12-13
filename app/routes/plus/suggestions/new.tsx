@@ -94,7 +94,7 @@ export default function PlusNewSuggestionModalPage() {
     /** User id */
     value: string;
     plusTier: number | null;
-  }>();
+  } | null>(null);
 
   const tierOptions = PLUS_TIERS.filter((tier) => {
     // user will be redirected anyway

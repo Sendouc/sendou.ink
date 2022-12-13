@@ -17,6 +17,7 @@ import type {
 } from "~/modules/in-game-lists/types";
 import type navItems from "~/components/layout/nav-items.json";
 import { type AuthErrorCode } from "~/modules/auth";
+import type { StageBackgroundStyle } from "~/components/Planner";
 
 export const SPLATOON_2_SENDOU_IN_URL = "https://spl2.sendou.ink";
 export const PLUS_SERVER_DISCORD_URL = "https://discord.gg/FW4dKrY";
@@ -33,6 +34,7 @@ export const LEAN_TWITTER = "https://twitter.com/LeanYoshi";
 export const UBERU_TWITTER = "https://twitter.com/uberu5";
 export const TWIG_TWITTER = "https://twitter.com/TwigTheBluePik";
 export const CHARA_TWITTER = "https://twitter.com/ProChara";
+export const YAGA_TWITTER = "https://twitter.com/a_bog_hag";
 export const ipLabsMaps = (pool: string) =>
   `https://maps.iplabs.ink/?3&pool=${pool}`;
 
@@ -163,11 +165,11 @@ export const stageImageUrl = (stageId: StageId) =>
   `/static-assets/img/stages/${stageId}`;
 export const stageMinimapImageUrlWithEnding = ({
   stageId,
-  modeShort,
+  style,
 }: {
   stageId: StageId;
-  modeShort: ModeShort;
-}) => `/static-assets/img/stage-minimaps/${stageId}-${modeShort}.jpeg`;
+  style: StageBackgroundStyle;
+}) => `/static-assets/img/stage-minimaps/${stageId}-${style}.jpeg`;
 
 export function resolveBaseUrl(url: string) {
   return new URL(url).host;

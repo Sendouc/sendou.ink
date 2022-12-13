@@ -106,6 +106,10 @@
   "weapon.category.STRINGERS": "Тетиваторы",
   "weapon.category.SPLATANAS": "Сплат-катаны",
 
+  "theme.light": "Светлая",
+  "theme.dark": "Тёмная",
+  "theme.auto": "Системная",
+
   "plans.poweredBy": "При поддержке {{name}}",
 
   "articles.by": "от {{author}}",

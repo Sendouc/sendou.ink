@@ -380,6 +380,8 @@ function damages(args: StatFunctionInput): AnalyzedBuild["stats"]["damages"] {
       args.mainWeaponParams[key as keyof MainWeaponParams] ??
       args.subWeaponParams[key as keyof SubWeaponParams];
 
+    const isMainWeaponParam = key in args.mainWeaponParams;
+
     if (Array.isArray(value)) {
       for (const subValue of value.flat()) {
         result.push({
@@ -387,6 +389,9 @@ function damages(args: StatFunctionInput): AnalyzedBuild["stats"]["damages"] {
           value: subValue.Damage / 10,
           distance: subValue.Distance,
           id: semiRandomId(),
+          multiShots: isMainWeaponParam
+            ? multiShot[args.weaponSplId]
+            : undefined,
         });
       }
 
@@ -404,6 +409,7 @@ function damages(args: StatFunctionInput): AnalyzedBuild["stats"]["damages"] {
         type,
         multiShots: multiShot[args.weaponSplId],
       }),
+      multiShots: isMainWeaponParam ? multiShot[args.weaponSplId] : undefined,
     });
   }
 

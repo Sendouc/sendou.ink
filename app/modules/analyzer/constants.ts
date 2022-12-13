@@ -1,6 +1,7 @@
 import type { DamageType } from "./types";
 import type objectDamages from "./object-dmg.json";
-import type { MainWeaponId } from "../in-game-lists";
+import { type MainWeaponId, mainWeaponIds } from "../in-game-lists";
+import invariant from "tiny-invariant";
 
 export const MAX_LDE_INTENSITY = 21;
 export const MAX_AP = 57;
@@ -158,8 +159,8 @@ export const objectDamageJsonKeyPriority: Record<
   Slosher: ["DIRECT", "DIRECT_MAX", "DIRECT_MIN", "DISTANCE", "SPLASH"],
   Spinner: ["NORMAL_MAX", "NORMAL_MIN", "NORMAL_MAX_FULL_CHARGE", "SPLASH"],
   Sprinkler: null,
-  Stringer_Short: null,
-  Stringer: null,
+  Stringer_Short: ["NORMAL_MAX", "NORMAL_MIN", "DISTANCE"],
+  Stringer: ["NORMAL_MAX", "NORMAL_MIN", "DISTANCE"],
   SuperHook: null,
   SuperLanding: null,
   TripleTornado: null,
@@ -169,11 +170,59 @@ export const objectDamageJsonKeyPriority: Record<
   UltraStamp_Throw: null,
 };
 
+export const damageTypesToCombine: Partial<
+  Record<
+    MainWeaponId,
+    Array<{
+      when: DamageType;
+      combineWith: DamageType;
+      /** for this weapon "when" damage already includes "combineWith" damage, so calculating multiplier only */
+      multiplierOnly?: boolean;
+    }>
+  >
+> = {
+  // Explosher
+  3040: [{ when: "DIRECT", combineWith: "DISTANCE" }],
+  // Tri-Stringer
+  7010: [{ when: "NORMAL_MAX", combineWith: "DISTANCE" }],
+  // Splatana Stamper
+  8000: [
+    { when: "SPLATANA_VERTICAL_DIRECT", combineWith: "SPLATANA_VERTICAL" },
+    {
+      when: "SPLATANA_HORIZONTAL_DIRECT",
+      combineWith: "SPLATANA_HORIZONTAL",
+      multiplierOnly: true,
+    },
+  ],
+  // Splatana Wiper
+  8010: [
+    { when: "SPLATANA_VERTICAL_DIRECT", combineWith: "SPLATANA_VERTICAL" },
+    {
+      when: "SPLATANA_HORIZONTAL_DIRECT",
+      combineWith: "SPLATANA_HORIZONTAL",
+      multiplierOnly: true,
+    },
+  ],
+};
+invariant(
+  mainWeaponIds.every((id) => {
+    // not Splatana
+    if (id < 8000 || id >= 9000) return true;
+
+    return Boolean(damageTypesToCombine[id]);
+  }),
+  "Splatana weapon missing from damageTypesToCombine"
+);
+
 export const multiShot: Partial<Record<MainWeaponId, number>> = {
   // L-3
   300: 3,
   // H-3
   310: 3,
+  // Tri-Stringer,
+  7010: 3,
+  // REEF-LUX,
+  7020: 3,
   // Bloblobber
   3030: 4,
 };

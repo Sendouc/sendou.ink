@@ -1,13 +1,13 @@
 .object-damage__controls {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--s-5);
+  align-items: flex-start;
+  justify-content: space-between;
 }
 
-@media screen and (min-width: 640px) {
-  .object-damage__controls {
-    justify-content: center;
-  }
+.object-damage__selects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-5);
 }
 
 .object-damage__ability {

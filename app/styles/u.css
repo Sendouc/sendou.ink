@@ -188,6 +188,7 @@
 .u-search__user {
   display: flex;
   align-items: center;
+  color: var(--text);
   font-weight: var(--body);
   gap: var(--s-4);
   line-height: 1.2rem;

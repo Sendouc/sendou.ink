@@ -8,6 +8,7 @@ import { Image } from "../Image";
 import { SideNav } from "./SideNav";
 import { UserItem } from "./UserItem";
 import { LanguageChanger } from "./LanguageChanger";
+import { ThemeChanger } from "./ThemeChanger";
 
 function useBreadcrumbs() {
   const { t } = useTranslation();
@@ -73,6 +74,7 @@ export const Layout = React.memo(function Layout({
         </div>
         <div className="layout__header__right-container">
           <LanguageChanger />
+          <ThemeChanger />
           {!isCatchBoundary ? <UserItem /> : null}
         </div>
       </header>

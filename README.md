@@ -1,3 +1,40 @@
+<center><img src="public/static-assets/img/app-icon.png" style="border-radius:100%" width="200" height="200"></center>
+<center><a href="https://sendou.ink" target="_blank" rel="noreferrer">sendou.ink</a></center>
+<center><img src="https://dcbadge.vercel.app/api/server/sendou" style="margin:0 auto;display:block;"></center>
+
+Competitive Splatoon Hub with over 20k registered users.
+
+## Selected Features
+
+- Map planner that lets you draw on maps and insert weapons
+- Map list generation tool
+- Win badges from tournaments, management tools for TO's
+- Calendar to find out upcoming events to play in
+- Event result reporting
+- Plus Server for top player "looking for group purposes" voting and suggestion tools.
+- User pages
+- User search
+- Object Damage Calculator (how much does each weapon deal vs. different objects)
+- Build Analyzer (exact stats of your builds)
+- Auth via Discord
+- Light and dark mode
+- Localization
+
+## Tech stack
+
+- React
+- Remix
+- Sqlite3
+- CSS (plain)
+
+## Screenshots
+
+<img src="screenshot-1.png">
+<img src="screenshot-2.png">
+<img src="screenshot-3.png">
+
+---
+
 ## Running locally
 
 ### sendou.ink
@@ -13,13 +50,9 @@ There is a sequence of commands you need to run:
 5. `npm run dev` to run the project in development mode.
 6. Navigate to `http://localhost:5800/admin`. There press the seed button to fill the DB with test data. You can also impersonate any user (Sendou#0043 = admin).
 
-## Lohi
-
-TODO: instructions on how to develop Lohi locally
-
 ## Contributing
 
-Contributions very welcome! See [CONTRIBUTING.md](./CONTRIBUTING.md) for more information.
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for more information.
 
 ### Translations
 
@@ -74,7 +107,7 @@ sendou.ink/
 │   ├── routes/ -- Routes see: https://remix.run/docs/en/v1/guides/routing
 │   ├── styles/ -- All .css files of the project for styling
 │   ├── utils/ -- Random helper functions used in many places
-│   └── permissions.ts / -- What actions are allowed. Separated by frontend and backend as frontend has constraints based on what user sees.writing-and-organizing-tests#Folder-structure
+│   └── permissions.ts / -- What actions are allowed. Separated by frontend and backend as frontend has constraints based on what user sees.
 ├── discord-bot/ -- Lohi Discord bot that works together with sendou.ink
 ├── migrations/ -- Database migrations
 ├── public/ -- Images, built assets etc. static files to be served as is

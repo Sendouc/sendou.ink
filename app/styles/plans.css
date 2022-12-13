@@ -47,33 +47,6 @@ button[data-state="closed"][aria-haspopup="dialog"] {
   transform: translate(-50%, -42%);
 }
 
-.plans__mode-buttons {
-  display: flex;
-  width: 100%;
-  align-items: center;
-  justify-content: center;
-}
-
-.plans__mode-button {
-  padding: 0;
-  padding: var(--s-1-5);
-  border: none;
-  border-radius: var(--rounded-full);
-  background-color: transparent;
-  color: var(--theme);
-  opacity: 1 !important;
-  outline: initial;
-}
-
-.plans__mode-button.selected {
-  background-color: var(--bg-mode-active);
-}
-
-.plans__mode-img:not(.selected) {
-  filter: var(--inactive-image-filter);
-  opacity: 0.6;
-}
-
 .plans__weapons-section {
   position: fixed;
   z-index: 10;
@@ -98,4 +71,9 @@ button[data-state="closed"][aria-haspopup="dialog"] {
   bottom: 0.5%;
   color: var(--text-lighter);
   font-size: var(--fonts-xxxs);
+}
+
+.plans__no-img-text {
+  color: var(--theme-error);
+  font-size: var(--fonts-xs);
 }

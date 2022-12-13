@@ -6,6 +6,7 @@
     "deploy": "npm ci && npm run build",
     "build": "remix build",
     "dev": "cross-env NODE_ENV=development remix dev",
+    "dev:ci": "cp .env.example .env && npm run migrate up && npm run dev",
     "start": "npm run migrate up && remix-serve build",
     "migrate": "ley",
     "migrate:reset": "node scripts/delete-db-files.mjs && npm run migrate && npm run seed",
@@ -25,7 +26,8 @@
     "prettier:check": "prettier --check . --loglevel warn",
     "prettier:write": "prettier --write . --loglevel warn",
     "typecheck": "tsc --noEmit",
-    "test:unit": "uvu -r tsm -r tsconfig-paths/register",
+    "test:unit": "uvu -r tsm -r tsconfig-paths/register -i e2e",
+    "test:e2e": "npx playwright test",
     "checks": "npm run test:unit && npm run lint:styles && npm run lint:ts && npm run prettier:check && npm run typecheck",
     "cf": "npm run test:unit && npm run check-translation-jsons && npm run lint:styles -- --fix && npm run lint:ts -- --fix && npm run prettier:write && npm run typecheck"
   },
@@ -41,6 +43,7 @@
     "clsx": "^1.2.1",
     "countries-list": "^2.6.1",
     "date-fns": "^2.29.3",
+    "fathom-client": "^3.5.0",
     "fuse.js": "^6.6.2",
     "gray-matter": "^4.0.3",
     "i18next": "^21.9.2",
@@ -69,6 +72,7 @@
     "zod": "^3.19.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.28.1",
     "@remix-run/dev": "^1.8.1",
     "@remix-run/eslint-config": "^1.8.1",
     "@types/better-sqlite3": "^7.6.2",

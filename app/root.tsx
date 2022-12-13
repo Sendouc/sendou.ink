@@ -35,7 +35,15 @@ import { COMMON_PREVIEW_IMAGE } from "./utils/urls";
 import { ConditionalScrollRestoration } from "./components/ConditionalScrollRestoration";
 import { type SendouRouteHandle } from "~/utils/remix";
 import generalI18next from "i18next";
-import * as gtag from "~/utils/gtags.client";
+import { Theme, ThemeHead, useTheme, ThemeProvider } from "./modules/theme";
+import { getThemeSession } from "./modules/theme/session.server";
+import { isTheme } from "./modules/theme/provider";
+import { useIsMounted } from "./hooks/useIsMounted";
+import { load, trackPageview } from "fathom-client";
+import invariant from "tiny-invariant";
+
+const FATHOM_ID = "MMTSTBEP";
+const FATHOM_CUSTOM_URL = "https://cheeky-efficient.sendou.ink/script.js";
 
 export const unstable_shouldReload: ShouldReloadFunction = ({ url }) => {
   // reload on language change so the selected language gets set into the cookie
@@ -68,8 +76,8 @@ export const meta: MetaFunction = () => ({
 
 export interface RootLoaderData {
   locale: string;
+  theme: Theme | null;
   patrons: FindAllPatrons;
-  gtmId?: string;
   user?: Pick<
     UserWithPlusTier,
     | "id"
@@ -84,12 +92,15 @@ export interface RootLoaderData {
 export const loader: LoaderFunction = async ({ request }) => {
   const user = await getUser(request);
   const locale = await i18next.getLocale(request);
+  const themeSession = await getThemeSession(request);
+
+  invariant(process.env["BASE_URL"], "BASE_URL env var is not set");
 
   return json<RootLoaderData>(
     {
       locale,
+      theme: themeSession.getTheme(),
       patrons: db.users.findAllPatrons(),
-      gtmId: process.env["GTM_ID"],
       user: user
         ? {
             discordName: user.discordName,
@@ -120,24 +131,26 @@ function Document({
   data?: RootLoaderData;
   isCatchBoundary?: boolean;
 }) {
+  const { htmlThemeClass } = useTheme();
   const { i18n } = useTranslation();
   const locale = data?.locale ?? DEFAULT_LANGUAGE;
 
   useChangeLanguage(locale);
   usePreloadTranslation();
-  useTrackPageView();
+  useFathom();
 
   return (
-    <html lang={locale} dir={i18n.dir()}>
+    <html lang={locale} dir={i18n.dir()} className={htmlThemeClass}>
       <head>
         <Meta />
         <Links />
+        <ThemeHead />
         <link rel="manifest" href="/app.webmanifest" />
         <PWALinks />
         <Fonts />
       </head>
       <body>
-        {data?.gtmId ? <GTM id={data.gtmId} /> : null}
+        {process.env.NODE_ENV === "development" && <HydrationTestIndicator />}
         <React.StrictMode>
           <Layout patrons={data?.patrons} isCatchBoundary={isCatchBoundary}>
             {children}
@@ -178,34 +191,30 @@ function usePreloadTranslation() {
   }, []);
 }
 
-function useTrackPageView() {
-  const location = useLocation();
-  const data = useLoaderData<typeof loader>();
-
-  React.useEffect(() => {
-    if (data?.gtmId) {
-      gtag.pageview(location.pathname, data.gtmId);
-    }
-  }, [location, data]);
-}
-
 export default function App() {
   // prop drilling data instead of using useLoaderData in the child components directly because
   // useLoaderData can't be used in CatchBoundary and layout is rendered in it as well
   const data = useLoaderData<RootLoaderData>();
 
   return (
-    <Document data={data}>
-      <Outlet />
-    </Document>
+    <ThemeProvider
+      specifiedTheme={isTheme(data.theme) ? data.theme : null}
+      themeSource="user-preference"
+    >
+      <Document data={data}>
+        <Outlet />
+      </Document>
+    </ThemeProvider>
   );
 }
 
 export function CatchBoundary() {
   return (
-    <Document isCatchBoundary>
-      <Catcher />
-    </Document>
+    <ThemeProvider themeSource="static" specifiedTheme={Theme.DARK}>
+      <Document isCatchBoundary>
+        <Catcher />
+      </Document>
+    </ThemeProvider>
   );
 }
 
@@ -213,37 +222,36 @@ export const ErrorBoundary: ErrorBoundaryComponent = ({ error }) => {
   console.error(error);
 
   return (
-    <Document>
-      <Catcher />
-    </Document>
+    <ThemeProvider themeSource="static" specifiedTheme={Theme.DARK}>
+      <Document>
+        <Catcher />
+      </Document>
+    </ThemeProvider>
   );
 };
 
-function GTM({ id }: { id: string }) {
-  return (
-    <>
-      <script async src={`https://www.googletagmanager.com/gtag/js?id=${id}`} />
-      <script
-        async
-        id="gtag-init"
-        dangerouslySetInnerHTML={{
-          __html: `window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
+function useFathom() {
+  const location = useLocation();
 
-          gtag("consent", "default", {
-            ad_storage: "denied",
-            analytics_storage: "denied",
-            functionality_storage: "denied",
-            personalization_storage: "denied",
-            security_storage: "denied"
-          });
+  React.useEffect(() => {
+    if (process.env.NODE_ENV !== "production") return;
 
-          gtag('config', '${id}');`,
-        }}
-      />
-    </>
-  );
+    load(FATHOM_ID, { url: FATHOM_CUSTOM_URL });
+  }, []);
+
+  React.useEffect(() => {
+    if (process.env.NODE_ENV !== "production") return;
+
+    trackPageview();
+  }, [location.pathname]);
+}
+
+function HydrationTestIndicator() {
+  const isMounted = useIsMounted();
+
+  if (!isMounted) return null;
+
+  return <div style={{ display: "none" }} data-testid="hydrated" />;
 }
 
 function Fonts() {

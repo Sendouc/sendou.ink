@@ -107,8 +107,14 @@
   "weapon.category.SPLATANAS": "Splatanas",
 
   "plans.poweredBy": "Powered by {{name}}",
+  "plans.blueprint": "Blueprint",
+  "plans.noImg": "No image available",
 
   "articles.by": "by {{author}}",
+
+  "theme.light": "Light",
+  "theme.dark": "Dark",
+  "theme.auto": "Auto",
 
   "websiteSubtitle": "Competitive Splatoon Hub"
 }
