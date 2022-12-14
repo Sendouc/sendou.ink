@@ -1,29 +1,29 @@
 import {
   json,
   redirect,
-  type LoaderArgs,
   type ActionFunction,
+  type LoaderArgs,
 } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 import * as React from "react";
-import { useTranslation } from "~/hooks/useTranslation";
 import { z } from "zod";
 import { AbilitiesSelector } from "~/components/AbilitiesSelector";
 import { Button } from "~/components/Button";
 import { GearCombobox, WeaponCombobox } from "~/components/Combobox";
 import { Image } from "~/components/Image";
 import { Label } from "~/components/Label";
-import { Main } from "~/components/Main";
+import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
 import { BUILD, EMPTY_BUILD } from "~/constants";
 import { db } from "~/db";
 import type { GearType } from "~/db/types";
+import { useTranslation } from "~/hooks/useTranslation";
 import { requireUser } from "~/modules/auth";
 import {
   clothesGearIds,
   headGearIds,
+  mainWeaponIds,
   modesShort,
   shoesGearIds,
-  mainWeaponIds,
 } from "~/modules/in-game-lists";
 import type {
   BuildAbilitiesTuple,
@@ -46,7 +46,6 @@ import {
   stackableAbility,
   toArray,
 } from "~/utils/zod";
-import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
 
 const newBuildActionSchema = z.object({
   buildToEditId: z.preprocess(actualNumber, id.nullish()),
@@ -186,7 +185,7 @@ export default function NewBuildPage() {
   const { t } = useTranslation();
 
   return (
-    <Main halfWidth>
+    <div className="half-width">
       <Form className="stack md items-start" method="post">
         {buildToEdit && (
           <input type="hidden" name="buildToEditId" value={buildToEdit.id} />
@@ -203,7 +202,7 @@ export default function NewBuildPage() {
           {t("actions.submit")}
         </Button>
       </Form>
-    </Main>
+    </div>
   );
 }
 

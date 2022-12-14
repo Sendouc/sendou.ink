@@ -6,6 +6,7 @@ import type { Unpacked } from "~/utils/types";
 import type { GearType, UserWithPlusTier } from "~/db/types";
 import { useAllEventsWithMapPools, useUsers } from "~/hooks/swr";
 import { useTranslation } from "~/hooks/useTranslation";
+import type { MainWeaponId } from "~/modules/in-game-lists";
 import {
   clothesGearIds,
   headGearIds,
@@ -31,6 +32,7 @@ interface ComboboxProps<T> {
   inputName: string;
   placeholder: string;
   className?: string;
+  wrapperClassName?: string;
   id?: string;
   isLoading?: boolean;
   required?: boolean;
@@ -50,6 +52,7 @@ export function Combobox<T extends Record<string, string | null | number>>({
   onChange,
   required,
   className,
+  wrapperClassName,
   id,
   isLoading = false,
   fullWidth = false,
@@ -91,7 +94,7 @@ export function Combobox<T extends Record<string, string | null | number>>({
   };
 
   return (
-    <div className="combobox-wrapper">
+    <div className={clsx("combobox-wrapper", wrapperClassName)}>
       <HeadlessCombobox
         value={selectedOption}
         onChange={(selected) => {
@@ -234,10 +237,12 @@ export function WeaponCombobox({
   id,
   required,
   className,
+  wrapperClassName,
   inputName,
   onChange,
   initialWeaponId,
   clearsInputOnFocus,
+  weaponIdsToOmit,
 }: Pick<
   ComboboxProps<ComboboxBaseOption>,
   | "inputName"
@@ -246,7 +251,11 @@ export function WeaponCombobox({
   | "id"
   | "required"
   | "clearsInputOnFocus"
-> & { initialWeaponId?: typeof mainWeaponIds[number] }) {
+  | "wrapperClassName"
+> & {
+  initialWeaponId?: typeof mainWeaponIds[number];
+  weaponIdsToOmit?: Set<MainWeaponId>;
+}) {
   const { t } = useTranslation("weapons");
 
   const idToWeapon = (id: typeof mainWeaponIds[number]) => ({
@@ -258,13 +267,16 @@ export function WeaponCombobox({
   return (
     <Combobox
       inputName={inputName}
-      options={mainWeaponIds.map(idToWeapon)}
+      options={mainWeaponIds
+        .filter((id) => !weaponIdsToOmit?.has(id))
+        .map(idToWeapon)}
       initialValue={
         typeof initialWeaponId === "number" ? idToWeapon(initialWeaponId) : null
       }
       placeholder={t(`MAIN_${weaponCategories[0].weaponIds[0]}`)}
       onChange={onChange}
       className={className}
+      wrapperClassName={wrapperClassName}
       id={id}
       required={required}
       clearsInputOnFocus={clearsInputOnFocus}

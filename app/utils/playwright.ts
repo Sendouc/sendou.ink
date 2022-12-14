@@ -18,3 +18,11 @@ export async function navigate({ page, url }: { page: Page; url: string }) {
   await page.goto(url);
   page.getByTestId("hydrated");
 }
+
+export async function seed(page: Page) {
+  return page.request.post("/seed");
+}
+
+export async function impersonate(page: Page, userId = 1) {
+  return page.request.post(`/auth/impersonate?id=${userId}`);
+}

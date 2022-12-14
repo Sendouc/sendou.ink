@@ -38,6 +38,10 @@
   color: var(--theme-info);
 }
 
+.text-warning {
+  color: var(--theme-warning);
+}
+
 .fill-success {
   fill: var(--theme-success);
 }

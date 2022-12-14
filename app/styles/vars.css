@@ -103,6 +103,7 @@ html.dark {
   --badge-text: var(--text);
   --black-text: rgb(0 0 0 / 95%);
   --text-lighter: rgb(215 214 255 / 80%);
+  --divider: #ffbedb2f;
   --theme-error: rgb(219 70 65);
   --theme-error-transparent: rgba(219 70 65 / 55%);
   --theme-warning: #f5f587;

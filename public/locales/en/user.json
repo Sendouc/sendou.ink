@@ -9,6 +9,8 @@
   "motion": "Motion",
   "stick": "Stick",
   "sens": "Sens",
+  "weaponPool": "Weapon pool",
+  "discordExplanation": "Username, profile picture, YouTube, Twitter and Twitch accounts come from your Discord account. See <1>FAQ</1> for more information.",
 
   "results.title": "Results",
   "results.placing": "Placing",
@@ -22,6 +24,7 @@
   "results.highlights.choose": "Choose Highlights",
   "results.highlights.explanation": "Select the results you want to highlight",
 
+  "forms.errors.maxWeapons": "Max weapon count reached",
   "forms.errors.invalidCustomUrl.numbers": "Custom URL can't only contain numbers",
   "forms.errors.invalidCustomUrl.strangeCharacter": "Custom URL can't contain special characters",
   "forms.errors.invalidCustomUrl.duplicate": "Someone is already using this custom URL",

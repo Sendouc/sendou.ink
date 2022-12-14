@@ -10,3 +10,13 @@ export function parseDBJsonArray(value: any) {
   // this is a workaround for that
   return parsed.filter((item: any) => Object.values(item).some(Boolean));
 }
+
+export function parseDBArray(value: any) {
+  const parsed = JSON.parse(value);
+
+  if (parsed.length === 1 && parsed[0] === null) {
+    return [];
+  }
+
+  return parsed;
+}
