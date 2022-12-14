@@ -388,6 +388,7 @@ function WeaponPoolSelect({
             weaponIdsToOmit={new Set(weapons)}
             wrapperClassName="w-full-important"
             className="w-full-important"
+            clearsInputOnFocus
           />
         ) : (
           <span className="text-xs text-warning">
