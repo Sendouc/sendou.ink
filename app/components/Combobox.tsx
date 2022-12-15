@@ -32,7 +32,6 @@ interface ComboboxProps<T> {
   inputName: string;
   placeholder: string;
   className?: string;
-  wrapperClassName?: string;
   id?: string;
   isLoading?: boolean;
   required?: boolean;
@@ -52,7 +51,6 @@ export function Combobox<T extends Record<string, string | null | number>>({
   onChange,
   required,
   className,
-  wrapperClassName,
   id,
   isLoading = false,
   fullWidth = false,
@@ -94,7 +92,7 @@ export function Combobox<T extends Record<string, string | null | number>>({
   };
 
   return (
-    <div className={clsx("combobox-wrapper", wrapperClassName)}>
+    <div className="combobox-wrapper">
       <HeadlessCombobox
         value={selectedOption}
         onChange={(selected) => {
@@ -237,12 +235,12 @@ export function WeaponCombobox({
   id,
   required,
   className,
-  wrapperClassName,
   inputName,
   onChange,
   initialWeaponId,
   clearsInputOnFocus,
   weaponIdsToOmit,
+  fullWidth,
 }: Pick<
   ComboboxProps<ComboboxBaseOption>,
   | "inputName"
@@ -251,7 +249,7 @@ export function WeaponCombobox({
   | "id"
   | "required"
   | "clearsInputOnFocus"
-  | "wrapperClassName"
+  | "fullWidth"
 > & {
   initialWeaponId?: typeof mainWeaponIds[number];
   weaponIdsToOmit?: Set<MainWeaponId>;
@@ -276,10 +274,10 @@ export function WeaponCombobox({
       placeholder={t(`MAIN_${weaponCategories[0].weaponIds[0]}`)}
       onChange={onChange}
       className={className}
-      wrapperClassName={wrapperClassName}
       id={id}
       required={required}
       clearsInputOnFocus={clearsInputOnFocus}
+      fullWidth={fullWidth}
     />
   );
 }

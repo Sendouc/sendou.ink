@@ -386,8 +386,7 @@ function WeaponPoolSelect({
               setWeapons([...weapons, Number(weapon.value) as MainWeaponId]);
             }}
             weaponIdsToOmit={new Set(weapons)}
-            wrapperClassName="w-full-important"
-            className="w-full-important"
+            fullWidth
           />
         ) : (
           <span className="text-xs text-warning">

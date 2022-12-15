@@ -540,7 +540,7 @@ dialog::backdrop {
 .combobox-options {
   position: absolute;
   z-index: 2;
-  width: 100%;
+  width: 12rem;
   border-radius: var(--rounded);
   margin-top: var(--s-2);
   background-color: var(--bg-darker);
