@@ -9,5 +9,11 @@
   "a3": "Ændringer af brugernavn eller avatar på Discord bliver ikke synkroniseret til Sendou.ink med det samme. For at synkroniserer ændringerne med det samme har du 2 muligheder:\n\n1) Hvis du er medlem af hjemmesidens Discord-server eller Plus-serveren, så kan du blot vente, da der kører en synkronisering 1 gang om dagen, der håndterer ændringer af din Discord-profil.\n\n2) Du kan også logge af og på hjemmesiden, så sker synkroniseringen med det samme.",
 
   "q4": "Jeg tegnede et abonnement til sendou.ink via Patreon, men jeg kan ikke se nogle forandringer på hjemmesiden. ",
-  "a4": "Sørg for at forbinde din Discord-bruger til Patreaon.com. Derefter vil der gå op til 2 timer, før Sendou.ink registrerer det og opdaterer hjemmesiden. Hvis du oplever nogle problemer. Send en direkte besked til Sendou for at få hjælp. (Korrespondancen skal foregå på engelsk) "
+  "a4": "Sørg for at forbinde din Discord-bruger til Patreaon.com. Derefter vil der gå op til 2 timer, før Sendou.ink registrerer det og opdaterer hjemmesiden. Hvis du oplever nogle problemer. Send en direkte besked til Sendou for at få hjælp. (Korrespondancen skal foregå på engelsk) ",
+
+  "q5": "Findes der en Sendou.ink app?",
+  "a5": "Nej, men man kan installere Sendou ink som en ”Progressive Web App”, som fungerer som en traditionel app. Hvor man understøttelse af fuld skærm, skrivebordsikon og kører som en proces separat fra en webbrowser. Google ”How to install pwa on *din browser’ for at sfinde en vejledning til at gøre dette.",
+
+  "q6": "Hvordan tilføjer man en Twitch/Twitter/YouTube-profil til min Sendou.ink-profil?",
+  "a6": "Vi bruger Discord til dette formål. Tilknyt profilerne til Discord og verificér dem. Log derefter af og på Sendou.ink for at få tilknyttet dine profiler på Sendou.ink. "
 }
