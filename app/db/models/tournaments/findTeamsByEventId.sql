@@ -2,6 +2,7 @@ with "TeamWithMembers" as (
   select
     "TournamentTeam"."id",
     "TournamentTeam"."name",
+    "TournamentTeam"."inviteCode",
     json_group_array(
       json_object(
         'userId',
@@ -27,6 +28,7 @@ with "TeamWithMembers" as (
     left join "PlusTier" on "User"."id" = "PlusTier"."userId"
   where
     "TournamentTeam"."calendarEventId" = @calendarEventId
+    and "TournamentTeam"."name" is not null
   group by
     "TournamentTeam"."id"
 )

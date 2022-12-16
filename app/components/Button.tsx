@@ -14,6 +14,7 @@ export interface ButtonProps
     | "minimal-success"
     | "minimal-destructive";
   tiny?: boolean;
+  big?: boolean;
   loading?: boolean;
   loadingText?: string;
   icon?: JSX.Element;
@@ -27,6 +28,7 @@ export function Button(props: ButtonProps) {
     children,
     loadingText,
     tiny,
+    big,
     className,
     icon,
     type = "button",
@@ -41,6 +43,7 @@ export function Button(props: ButtonProps) {
           "disabled-opaque": props.disabled,
           loading,
           tiny,
+          big,
         },
         className
       )}
@@ -60,7 +63,7 @@ export function Button(props: ButtonProps) {
 
 type LinkButtonProps = Pick<
   ButtonProps,
-  "variant" | "children" | "className" | "tiny"
+  "variant" | "children" | "className" | "tiny" | "big"
 > &
   Pick<LinkProps, "to" | "prefetch" | "state"> & { "data-cy"?: string } & {
     isExternal?: boolean;
@@ -70,6 +73,7 @@ export function LinkButton({
   variant,
   children,
   tiny,
+  big,
   className,
   to,
   prefetch,
@@ -80,7 +84,7 @@ export function LinkButton({
   if (isExternal) {
     return (
       <a
-        className={clsx("button", variant, { tiny }, className)}
+        className={clsx("button", variant, { tiny, big }, className)}
         href={to as string}
         data-cy={testId}
         target="_blank"
@@ -93,7 +97,7 @@ export function LinkButton({
 
   return (
     <Link
-      className={clsx("button", variant, { tiny }, className)}
+      className={clsx("button", variant, { tiny, big }, className)}
       to={to}
       data-cy={testId}
       prefetch={prefetch}

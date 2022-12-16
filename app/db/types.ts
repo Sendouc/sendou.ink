@@ -110,8 +110,6 @@ export interface CalendarEvent {
   customUrl: string | null;
   /** Is tournament tools page visible */
   toToolsEnabled: number;
-  /** In tournament tools, can teams change their maps and rosters? */
-  isBeforeStart: number;
 }
 
 export type CalendarEventTag = keyof typeof allTags;
@@ -176,15 +174,61 @@ export interface MapPoolMap {
 
 export interface TournamentTeam {
   id: number;
-  name: string;
+  name: string | null;
   createdAt: number;
   seed: number | null;
   calendarEventId: number;
+  inviteCode: string;
+  checkedInAt?: number;
 }
 
 export interface TournamentTeamMember {
   tournamentTeamId: number;
   userId: number;
   isOwner: number;
+  createdAt: number;
+}
+
+export type BracketType = "SE" | "DE";
+
+export interface TournamentBracket {
+  id: number;
+  calendarEventId: number;
+  type: BracketType;
+}
+
+export interface TournamentRound {
+  id: number;
+  // position of the round 1 for Round 1, 2 for Round 2, -1 for Losers Round 1 etc.
+  position: number;
+  bracketId: number;
+  bestOf: number;
+}
+
+export interface TournamentMatch {
+  id: number;
+  roundId: number;
+  // xxx: why we need both?
+  number: number | null;
+  position: number;
+  winnerDestinationMatchId: number | null;
+  loserDestinationMatchId: number | null;
+}
+
+export type TeamOrder = "UPPER" | "LOWER";
+
+export interface TournamentMatchParticipant {
+  order: TeamOrder;
+  teamId: number;
+  matchId: number;
+}
+
+export interface TournamentMatchGameResult {
+  id: number;
+  matchId: number;
+  stageId: StageId;
+  mode: ModeShort;
+  winnerTeamId: number;
+  reporterId: number;
   createdAt: number;
 }

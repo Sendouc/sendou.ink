@@ -19,7 +19,6 @@ import renameTeamSql from "./renameTeam.sql";
 import addCounterpickMapSql from "./addCounterpickMap.sql";
 import deleteCounterpickMapsByTeamIdSql from "./deleteCounterpickMapsByTeamId.sql";
 import deleteTournamentTeamSql from "./deleteTournamentTeam.sql";
-import updateIsBeforeStartSql from "./updateIsBeforeStart.sql";
 import deleteTeamMemberSql from "./deleteTeamMember.sql";
 
 const findByIdentifierStm = sql.prepare(findByIdentifierSql);
@@ -32,15 +31,30 @@ const deleteCounterpickMapsByTeamIdStm = sql.prepare(
   deleteCounterpickMapsByTeamIdSql
 );
 const deleteTournamentTeamStm = sql.prepare(deleteTournamentTeamSql);
-const updateIsBeforeStartStm = sql.prepare(updateIsBeforeStartSql);
 const deleteTeamMemberStm = sql.prepare(deleteTeamMemberSql);
 
-type FindByIdentifier = Pick<
-  CalendarEvent,
-  "bracketUrl" | "isBeforeStart" | "id" | "authorId" | "name"
-> | null;
+type FindByIdentifier =
+  | (Pick<
+      CalendarEvent,
+      "bracketUrl" | "id" | "name" | "description" | "authorId"
+    > &
+      Pick<User, "discordId" | "discordName" | "discordDiscriminator">)
+  | null;
 export function findByIdentifier(identifier: string | number) {
-  return findByIdentifierStm.get({ identifier }) as FindByIdentifier;
+  const row = findByIdentifierStm.get({ identifier }) as FindByIdentifier;
+
+  if (!row) return null;
+
+  const { discordId, discordName, discordDiscriminator, ...rest } = row;
+
+  return {
+    ...rest,
+    author: {
+      discordId,
+      discordName,
+      discordDiscriminator,
+    },
+  };
 }
 
 export const addTeam = sql.transaction(
@@ -100,6 +114,7 @@ export function deleteTeamMember({
 export interface FindTeamsByEventIdItem {
   id: TournamentTeam["id"];
   name: TournamentTeam["name"];
+  inviteCode: TournamentTeam["inviteCode"];
   members: Array<
     Pick<TournamentTeamMember, "userId" | "isOwner"> &
       Pick<
@@ -152,11 +167,4 @@ export const upsertCounterpickMaps = sql.transaction(
 
 export function deleteTournamentTeam(id: TournamentTeam["id"]) {
   deleteTournamentTeamStm.run({ id });
-}
-
-export function updateIsBeforeStart({
-  id,
-  isBeforeStart,
-}: Pick<CalendarEvent, "id" | "isBeforeStart">) {
-  updateIsBeforeStartStm.run({ id, isBeforeStart });
 }

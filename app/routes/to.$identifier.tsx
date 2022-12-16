@@ -20,6 +20,7 @@ import styles from "~/styles/tournament.css";
 import { makeTitle } from "~/utils/strings";
 import { useTranslation } from "~/hooks/useTranslation";
 import type { Unpacked } from "~/utils/types";
+import { Main } from "~/components/Main";
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader>;
@@ -53,15 +54,14 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     event,
     tieBreakerMapPool:
       db.calendarEvents.findTieBreakerMapPoolByEventId(eventId),
-    teams:
-      event.isBeforeStart && !canAdminCalendarTOTools({ user, event })
-        ? censorMapPools({ teams })
-        : teams,
+    teams: !canAdminCalendarTOTools({ user, event })
+      ? censor({ teams })
+      : teams,
     ownTeam: findOwnedTeam({ userId: user?.id, teams }),
   };
 };
 
-function censorMapPools({
+function censor({
   teams,
   ownTeamId,
 }: {
@@ -73,6 +73,7 @@ function censorMapPools({
       ? team
       : {
           ...team,
+          inviteCode: undefined,
           mapPool:
             // can be used to show checkmark in UI if team has submitted
             // the map pool without revealing the contents
@@ -89,7 +90,7 @@ export default function TournamentToolsLayout() {
   const data = useLoaderData<typeof loader>();
 
   return (
-    <>
+    <Main>
       <SubNav>
         <SubNavLink to="">{t("tournament:tabs.info")}</SubNavLink>
         <SubNavLink to="teams">
@@ -100,6 +101,6 @@ export default function TournamentToolsLayout() {
         )}
       </SubNav>
       <Outlet context={data} />
-    </>
+    </Main>
   );
 }
