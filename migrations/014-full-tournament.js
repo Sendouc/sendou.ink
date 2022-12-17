@@ -7,7 +7,8 @@ module.exports.up = function (db) {
     create table "TournamentTeam" (
       "id" integer primary key,
       "name" text,
-      "createdAt" integer not null,
+      "friendCode" text,
+      "createdAt" integer default (strftime('%s', 'now')) not null,
       "seed" integer,
       "checkedInAt" integer,
       "inviteCode" text not null,
@@ -19,6 +20,23 @@ module.exports.up = function (db) {
   ).run();
   db.prepare(
     `create index tournament_team_calendar_event_id on "TournamentTeam"("calendarEventId")`
+  ).run();
+
+  db.prepare(`drop table "TournamentTeamMember"`).run();
+  db.prepare(
+    `
+    create table "TournamentTeamMember" (
+      "tournamentTeamId" integer not null,
+      "userId" integer not null,
+      "isOwner" integer not null,
+      "createdAt" integer default (strftime('%s', 'now')) not null,
+      foreign key ("tournamentTeamId") references "TournamentTeam"("id") on delete cascade,
+      unique("tournamentTeamId", "userId") on conflict rollback
+    ) strict
+    `
+  ).run();
+  db.prepare(
+    `create index tournament_team_member_tournament_team_id on "TournamentTeamMember"("tournamentTeamId")`
   ).run();
 
   db.prepare(
@@ -96,7 +114,7 @@ module.exports.up = function (db) {
       "mode" text not null,
       "winnerTeamId" integer not null,
       "reporterId" integer not null,
-      "createdAt" integer not null,
+      "createdAt" integer default (strftime('%s', 'now')) not null,
       foreign key ("matchId") references "TournamentMatch"("id") on delete cascade,
       foreign key ("winnerTeamId") references "TournamentTeam"("id") on delete restrict,
       foreign key ("reporterId") references "User"("id") on delete restrict
@@ -109,44 +127,4 @@ module.exports.up = function (db) {
   db.prepare(
     `create index tournament_match_game_result_winner_team_id on "TournamentMatchGameResult"("winnerTeamId")`
   ).run();
-};
-
-module.exports.down = function (db) {
-  db.prepare(`drop table "TournamentTeam"`).run();
-  db.prepare(
-    `
-    create table "TournamentTeam" (
-      "id" integer primary key,
-      "name" text not null,
-      "createdAt" integer not null,
-      "seed" integer,
-      "calendarEventId" integer not null,
-      foreign key ("calendarEventId") references "CalendarEvent"("id") on delete cascade,
-      unique("calendarEventId", "name") on conflict rollback
-    ) strict
-    `
-  ).run();
-  db.prepare(
-    `create index tournament_team_calendar_event_id on "TournamentTeam"("calendarEventId")`
-  ).run();
-
-  db.prepare(
-    `alter table "CalendarEvent" add "isBeforeStart" integer default 1`
-  ).run();
-
-  db.prepare(`drop index tournament_bracket_calendar_event_id`).run();
-  db.prepare(`drop table "TournamentBracket"`).run();
-
-  db.prepare(`drop table "TournamentRound"`).run();
-
-  db.prepare(`drop index tournament_match_round_id`).run();
-  db.prepare(`drop table "TournamentMatch"`).run();
-
-  db.prepare(`drop index tournament_match_participant_team_id`).run();
-  db.prepare(`drop index tournament_match_participant_match_id`).run();
-  db.prepare(`drop table "TournamentMatchParticipant"`).run();
-
-  db.prepare(`drop index tournament_match_game_result_match_id`).run();
-  db.prepare(`drop index tournament_match_game_result_winner_team_id`).run();
-  db.prepare(`drop table "TournamentMatchGameResult"`).run();
 };

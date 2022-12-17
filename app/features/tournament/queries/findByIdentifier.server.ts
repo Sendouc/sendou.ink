@@ -1,7 +1,7 @@
 import { sql } from "~/db/sql";
 import type { CalendarEvent, User } from "~/db/types";
 
-const findByIdentifierStm = sql.prepare(/*sql*/ `
+const stm = sql.prepare(/*sql*/ `
   select
   "CalendarEvent"."name",
   "CalendarEvent"."description",
@@ -30,7 +30,7 @@ type FindByIdentifierRow =
   | null;
 
 export function findByIdentifier(identifier: string | number) {
-  const row = findByIdentifierStm.get({ identifier }) as FindByIdentifierRow;
+  const row = stm.get({ identifier }) as FindByIdentifierRow;
 
   if (!row) return null;
 

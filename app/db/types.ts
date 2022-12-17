@@ -175,6 +175,7 @@ export interface MapPoolMap {
 export interface TournamentTeam {
   id: number;
   name: string | null;
+  friendCode: string | null;
   createdAt: number;
   seed: number | null;
   calendarEventId: number;

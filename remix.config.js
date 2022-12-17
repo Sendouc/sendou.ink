@@ -14,6 +14,10 @@ module.exports = {
             "/to/:identifier",
             "features/tournament/routes/to.$identifier.index.tsx"
           );
+          route(
+            "/to/:identifier/register",
+            "features/tournament/routes/to.$identifier.register.tsx"
+          );
         }
       );
     });

@@ -1,19 +1,16 @@
 import { sql } from "~/db/sql";
 import type {
   CalendarEvent,
-  MapPoolMap,
   TournamentTeam,
   TournamentTeamMember,
   UserWithPlusTier,
 } from "~/db/types";
 import { parseDBJsonArray } from "~/utils/sql";
 
-const findTeamsByEventIdStm = sql.prepare(/*sql*/ `
-with "TeamWithMembers" as (
+const stm = sql.prepare(/*sql*/ `
   select
     "TournamentTeam"."id",
     "TournamentTeam"."name",
-    "TournamentTeam"."inviteCode",
     json_group_array(
       json_object(
         'userId',
@@ -43,30 +40,11 @@ with "TeamWithMembers" as (
     and "TournamentTeam"."name" is not null
   group by
     "TournamentTeam"."id"
-)
-select
-  "TeamWithMembers".*,
-  json_group_array(
-    json_object(
-      'stageId',
-      "MapPoolMap"."stageId",
-      'mode',
-      "MapPoolMap"."mode"
-    )
-  ) as "mapPool"
-from
-  "TeamWithMembers"
-  left join "MapPoolMap" on "MapPoolMap"."tournamentTeamId" = "TeamWithMembers"."id"
-group by
-  "TeamWithMembers"."id"
-order by
-  "TeamWithMembers"."name" asc
 `);
 
 export interface FindTeamsByEventIdItem {
   id: TournamentTeam["id"];
   name: TournamentTeam["name"];
-  inviteCode: TournamentTeam["inviteCode"];
   members: Array<
     Pick<TournamentTeamMember, "userId" | "isOwner"> &
       Pick<
@@ -78,18 +56,16 @@ export interface FindTeamsByEventIdItem {
         | "discordDiscriminator"
       >
   >;
-  mapPool: Array<Pick<MapPoolMap, "mode" | "stageId">>;
 }
 export type FindTeamsByEventId = Array<FindTeamsByEventIdItem>;
 
 export function findTeamsByEventId(calendarEventId: CalendarEvent["id"]) {
-  const rows = findTeamsByEventIdStm.all({ calendarEventId });
+  const rows = stm.all({ calendarEventId });
 
   return rows.map((row) => {
     return {
       ...row,
       members: parseDBJsonArray(row.members),
-      mapPool: parseDBJsonArray(row.mapPool),
     };
   }) as FindTeamsByEventId;
 }

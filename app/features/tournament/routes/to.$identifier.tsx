@@ -5,24 +5,19 @@ import type {
   SerializeFrom,
 } from "@remix-run/node";
 import { Outlet, useLoaderData } from "@remix-run/react";
+import { Main } from "~/components/Main";
 import { SubNav, SubNavLink } from "~/components/SubNav";
 import { db } from "~/db";
-import type { TournamentTeam } from "~/db/types";
-import { getUser, useUser } from "~/modules/auth";
+import { useTranslation } from "~/hooks/useTranslation";
+import { useUser } from "~/modules/auth";
 import { canAdminCalendarTOTools } from "~/permissions";
 import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
-import styles from "../tournament.css";
 import { makeTitle } from "~/utils/strings";
-import { useTranslation } from "~/hooks/useTranslation";
 import type { Unpacked } from "~/utils/types";
-import { Main } from "~/components/Main";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
-import type {
-  FindTeamsByEventId,
-  FindTeamsByEventIdItem,
-} from "../queries/findTeamsByEventId.server";
 import { findTeamsByEventId } from "../queries/findTeamsByEventId.server";
-import { findOwnedTeam } from "../tournament-utils";
+import { identifierFromParams } from "../tournament-utils";
+import styles from "../tournament.css";
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader>;
@@ -45,46 +40,17 @@ export const handle: SendouRouteHandle = {
 export type TournamentToolsTeam = Unpacked<TournamentToolsLoaderData["teams"]>;
 export type TournamentToolsLoaderData = SerializeFrom<typeof loader>;
 
-export const loader = async ({ params, request }: LoaderArgs) => {
-  const user = await getUser(request);
-  const eventId = params["identifier"]!;
-
-  const event = notFoundIfFalsy(findByIdentifier(eventId));
-  const teams = findTeamsByEventId(event.id);
+export const loader = ({ params }: LoaderArgs) => {
+  const event = notFoundIfFalsy(findByIdentifier(identifierFromParams(params)));
 
   return {
     event,
-    tieBreakerMapPool:
-      db.calendarEvents.findTieBreakerMapPoolByEventId(eventId),
-    teams: !canAdminCalendarTOTools({ user, event })
-      ? censor({ teams })
-      : teams,
-    ownTeam: findOwnedTeam({ userId: user?.id, teams }),
+    tieBreakerMapPool: db.calendarEvents.findTieBreakerMapPoolByEventId(
+      event.id
+    ),
+    teams: findTeamsByEventId(event.id),
   };
 };
-
-function censor({
-  teams,
-  ownTeamId,
-}: {
-  teams: FindTeamsByEventId;
-  ownTeamId?: TournamentTeam["id"];
-}) {
-  return teams.map((team) =>
-    team.id === ownTeamId
-      ? team
-      : {
-          ...team,
-          inviteCode: undefined,
-          mapPool:
-            // can be used to show checkmark in UI if team has submitted
-            // the map pool without revealing the contents
-            team.mapPool.length > 0
-              ? ([] as FindTeamsByEventIdItem["mapPool"])
-              : undefined,
-        }
-  );
-}
 
 export default function TournamentToolsLayout() {
   const { t } = useTranslation(["tournament"]);
@@ -94,7 +60,7 @@ export default function TournamentToolsLayout() {
   return (
     <Main>
       <SubNav>
-        <SubNavLink to="">{t("tournament:tabs.info")}</SubNavLink>
+        <SubNavLink to="register">Register</SubNavLink>
         <SubNavLink to="teams">
           {t("tournament:tabs.teams", { count: data.teams.length })}
         </SubNavLink>
