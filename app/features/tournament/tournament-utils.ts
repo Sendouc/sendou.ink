@@ -17,9 +17,9 @@ export function findOwnedTeam({
   );
 }
 
-export function identifierFromParams(params: Params<string>) {
-  const result = params["identifier"];
-  invariant(typeof result === "string", "identifier is not a string");
+export function idFromParams(params: Params<string>) {
+  const result = Number(params["id"]);
+  invariant(!Number.isNaN(result), "id is not a number");
 
   return result;
 }

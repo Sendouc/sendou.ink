@@ -1,5 +1,5 @@
 import type { ActionFunction, LoaderArgs } from "@remix-run/node";
-import { useFetcher, useOutletContext } from "@remix-run/react";
+import { useFetcher, useLoaderData, useOutletContext } from "@remix-run/react";
 import { Button } from "~/components/Button";
 import { SubmitButton } from "~/components/SubmitButton";
 import { getUser, requireUser, useUser } from "~/modules/auth";
@@ -10,7 +10,8 @@ import { CALENDAR_PAGE, LOG_IN_URL, navIconUrl } from "~/utils/urls";
 import { createTeam } from "../queries/createTeam.server";
 import { findOwnTeam } from "../queries/findOwnTeam.server";
 import { registerSchema } from "../tournament-schemas.server";
-import type { TournamentToolsLoaderData } from "./to.$identifier";
+import { idFromParams } from "../tournament-utils";
+import type { TournamentToolsLoaderData } from "./to.$id";
 
 export const handle: SendouRouteHandle = {
   breadcrumb: () => ({
@@ -20,7 +21,7 @@ export const handle: SendouRouteHandle = {
   }),
 };
 
-export const action: ActionFunction = async ({ request }) => {
+export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUser(request);
   const data = await parseRequestFormData({ request, schema: registerSchema });
 
@@ -28,7 +29,7 @@ export const action: ActionFunction = async ({ request }) => {
     case "CREATE_TEAM": {
       // xxx: make sure user is not in another team
       // xxx: make sure tournament has not started
-      createTeam({ calendarEventId: 1, ownerId: user.id });
+      createTeam({ calendarEventId: idFromParams(params), ownerId: user.id });
       break;
     }
     case "placeholder": {
@@ -42,18 +43,24 @@ export const action: ActionFunction = async ({ request }) => {
   return null;
 };
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderArgs) => {
   const user = await getUser(request);
 
   if (!user) return null;
 
   return {
-    ownTeam: findOwnTeam({ calendarEventId: 1, userId: user.id }),
+    ownTeam: findOwnTeam({
+      calendarEventId: idFromParams(params),
+      userId: user.id,
+    }),
   };
 };
 
 export default function TournamentRegisterPage() {
-  const data = useOutletContext<TournamentToolsLoaderData>();
+  const data = useLoaderData<typeof loader>();
+  const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
+
+  console.log({ data });
 
   return (
     <div className="stack lg">
@@ -67,13 +74,13 @@ export default function TournamentRegisterPage() {
           height={124}
         />
         <div>
-          <div className="tournament__title">{data.event.name}</div>
+          <div className="tournament__title">{parentRouteData.event.name}</div>
           <div className="tournament__by">
-            by {discordFullName(data.event.author)}
+            by {discordFullName(parentRouteData.event.author)}
           </div>
         </div>
       </div>
-      <div>{data.event.description}</div>
+      <div>{parentRouteData.event.description}</div>
       {true ? (
         <Register />
       ) : (

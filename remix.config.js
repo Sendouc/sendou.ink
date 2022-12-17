@@ -6,20 +6,13 @@ module.exports = {
   cacheDirectory: process.env.NODE_ENV === "test" ? ".cache-test" : undefined,
   routes: async (defineRoutes) => {
     return defineRoutes((route) => {
-      route(
-        "/to/:identifier",
-        "features/tournament/routes/to.$identifier.tsx",
-        () => {
-          route(
-            "/to/:identifier",
-            "features/tournament/routes/to.$identifier.index.tsx"
-          );
-          route(
-            "/to/:identifier/register",
-            "features/tournament/routes/to.$identifier.register.tsx"
-          );
-        }
-      );
+      route("/to/:id", "features/tournament/routes/to.$id.tsx", () => {
+        route("/to/:id", "features/tournament/routes/to.$id.index.tsx");
+        route(
+          "/to/:id/register",
+          "features/tournament/routes/to.$id.register.tsx"
+        );
+      });
     });
   },
 };

@@ -16,7 +16,7 @@ import { makeTitle } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { findTeamsByEventId } from "../queries/findTeamsByEventId.server";
-import { identifierFromParams } from "../tournament-utils";
+import { idFromParams } from "../tournament-utils";
 import styles from "../tournament.css";
 
 export const meta: MetaFunction = (args) => {
@@ -41,14 +41,14 @@ export type TournamentToolsTeam = Unpacked<TournamentToolsLoaderData["teams"]>;
 export type TournamentToolsLoaderData = SerializeFrom<typeof loader>;
 
 export const loader = ({ params }: LoaderArgs) => {
-  const event = notFoundIfFalsy(findByIdentifier(identifierFromParams(params)));
+  const eventId = idFromParams(params);
+  const event = notFoundIfFalsy(findByIdentifier(eventId));
 
   return {
     event,
-    tieBreakerMapPool: db.calendarEvents.findTieBreakerMapPoolByEventId(
-      event.id
-    ),
-    teams: findTeamsByEventId(event.id),
+    tieBreakerMapPool:
+      db.calendarEvents.findTieBreakerMapPoolByEventId(eventId),
+    teams: findTeamsByEventId(eventId),
   };
 };
 
