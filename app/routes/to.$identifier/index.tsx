@@ -50,12 +50,20 @@ export function Prestart() {
         </div>
       ) : (
         <div>
-          <div>
-            <h3 className="tournament__section-header">1. Fill roster</h3>
-            <section className="tournament__section">asdasdasd</section>
-          </div>
+          <FillRosterSection />
         </div>
       )}
+    </div>
+  );
+}
+
+function FillRosterSection() {
+  return (
+    <div>
+      <h3 className="tournament__section-header">1. Fill roster</h3>
+      <section className="tournament__section">
+        Share your invite link to add members https://sendou.ink/inv/${}
+      </section>
     </div>
   );
 }
