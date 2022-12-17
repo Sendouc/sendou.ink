@@ -1,9 +1,12 @@
-import { useOutletContext } from "@remix-run/react";
+import type { ActionFunction } from "@remix-run/node";
+import { useFetcher, useOutletContext } from "@remix-run/react";
 import * as React from "react";
 import { Button } from "~/components/Button";
+import { SubmitButton } from "~/components/SubmitButton";
+import { useUser } from "~/modules/auth";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { discordFullName } from "~/utils/strings";
-import { CALENDAR_PAGE, navIconUrl } from "~/utils/urls";
+import { CALENDAR_PAGE, LOG_IN_URL, navIconUrl } from "~/utils/urls";
 import type { TournamentToolsLoaderData } from "./to.$identifier";
 
 export const handle: SendouRouteHandle = {
@@ -12,6 +15,10 @@ export const handle: SendouRouteHandle = {
     href: CALENDAR_PAGE,
     type: "IMAGE",
   }),
+};
+
+export const action: ActionFunction = () => {
+  return null;
 };
 
 export default function TournamentFrontPage() {
@@ -43,17 +50,36 @@ export function Prestart() {
       </div>
       <div>{data.event.description}</div>
       {!expanded ? (
-        <div className="stack items-center">
-          <Button size="big" onClick={() => setExpanded(true)}>
-            Register now
-          </Button>
-        </div>
+        <Register />
       ) : (
         <div>
           <FillRosterSection />
         </div>
       )}
     </div>
+  );
+}
+
+function Register() {
+  const user = useUser();
+  const fetcher = useFetcher();
+
+  if (!user) {
+    return (
+      <form className="stack items-center" action={LOG_IN_URL} method="post">
+        <Button size="big" type="submit">
+          Log in to register
+        </Button>
+      </form>
+    );
+  }
+
+  return (
+    <fetcher.Form className="stack items-center" method="post">
+      <SubmitButton size="big" state={fetcher.state} _action="REGISTER">
+        Register now
+      </SubmitButton>
+    </fetcher.Form>
   );
 }
 
