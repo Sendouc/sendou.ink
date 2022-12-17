@@ -119,7 +119,7 @@ export default function MapListPage() {
           <Button
             variant="outlined"
             onClick={switchToEditMode}
-            tiny
+            size="tiny"
             icon={<EditIcon />}
           >
             {t("common:actions.edit")}
@@ -248,7 +248,7 @@ function MapListCreator({ mapPool }: { mapPool: MapPool }) {
             ))}
           </ol>
           <Button
-            tiny
+            size="tiny"
             variant="outlined"
             onClick={() =>
               copyToClipboard(

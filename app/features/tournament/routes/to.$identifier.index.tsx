@@ -44,7 +44,7 @@ export function Prestart() {
       <div>{data.event.description}</div>
       {!expanded ? (
         <div className="stack items-center">
-          <Button big onClick={() => setExpanded(true)}>
+          <Button size="big" onClick={() => setExpanded(true)}>
             Register now
           </Button>
         </div>

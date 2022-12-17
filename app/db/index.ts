@@ -4,7 +4,6 @@ import * as plusVotes from "./models/plusVotes/queries.server";
 import * as badges from "./models/badges/queries.server";
 import * as calendarEvents from "./models/calendar/queries.server";
 import * as builds from "./models/builds/queries.server";
-import * as tournaments from "./models/tournaments/queries.server";
 
 export const db = {
   users,
@@ -13,5 +12,4 @@ export const db = {
   badges,
   calendarEvents,
   builds,
-  tournaments,
 };

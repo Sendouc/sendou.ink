@@ -81,7 +81,7 @@ export default function EditBadgePage() {
           <LinkButton
             to={atOrError(matches, -2).pathname}
             variant="minimal-destructive"
-            tiny
+            size="tiny"
             className="badges-edit__cancel-button"
           >
             Cancel
@@ -161,7 +161,7 @@ function Managers({ data }: { data: BadgeDetailsLoaderData }) {
       />
       <Button
         type="submit"
-        tiny
+        size="tiny"
         className="badges-edit__submit-button"
         disabled={amountOfChanges === 0}
         name="_action"
@@ -272,7 +272,7 @@ function Owners({ data }: { data: BadgeDetailsLoaderData }) {
       />
       <Button
         type="submit"
-        tiny
+        size="tiny"
         className="badges-edit__submit-button"
         disabled={ownerDifferences.length === 0}
         name="_action"

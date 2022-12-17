@@ -40,7 +40,7 @@ export function ThemeChanger({
             <Button
               variant="minimal"
               key={theme}
-              tiny
+              size="tiny"
               icon={<Icon alt="" />}
               // TODO: Remove this and find better semantic representation than
               // just multiple buttons. Maybe radio group?

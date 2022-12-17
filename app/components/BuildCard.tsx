@@ -179,7 +179,7 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
             <LinkButton
               className="build__small-text"
               variant="minimal"
-              tiny
+              size="tiny"
               to={`new?buildId=${id}&userId=${user!.id}`}
             >
               <EditIcon className="build__icon" />
@@ -191,7 +191,7 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
               <Button
                 className="build__small-text"
                 variant="minimal-destructive"
-                tiny
+                size="tiny"
                 type="submit"
               >
                 <TrashIcon className="build__icon" />
