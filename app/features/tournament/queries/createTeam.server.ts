@@ -1,6 +1,6 @@
 import { sql } from "~/db/sql";
 import type { TournamentTeam, User } from "~/db/types";
-import crypto from "node:crypto";
+import { nanoid } from "nanoid";
 
 const createTeamStm = sql.prepare(/*sql*/ `
   insert into "TournamentTeam" (
@@ -34,7 +34,7 @@ export const createTeam = sql.transaction(
   }) => {
     const team = createTeamStm.get({
       calendarEventId,
-      inviteCode: crypto.randomUUID(),
+      inviteCode: nanoid(10),
     }) as TournamentTeam;
 
     createMemberStm.run({ tournamentTeamId: team.id, userId: ownerId });

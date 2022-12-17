@@ -1,5 +1,11 @@
-import type { ActionFunction, LoaderArgs } from "@remix-run/node";
+import type {
+  ActionFunction,
+  LoaderArgs,
+  SerializeFrom,
+} from "@remix-run/node";
 import { useFetcher, useLoaderData, useOutletContext } from "@remix-run/react";
+import { useTranslation } from "~/hooks/useTranslation";
+import { useCopyToClipboard } from "react-use";
 import { Button } from "~/components/Button";
 import { SubmitButton } from "~/components/SubmitButton";
 import { getUser, requireUser, useUser } from "~/modules/auth";
@@ -48,11 +54,14 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   if (!user) return null;
 
+  const ownTeam = findOwnTeam({
+    calendarEventId: idFromParams(params),
+    userId: user.id,
+  });
+  if (!ownTeam) return null;
+
   return {
-    ownTeam: findOwnTeam({
-      calendarEventId: idFromParams(params),
-      userId: user.id,
-    }),
+    ownTeam,
   };
 };
 
@@ -81,11 +90,11 @@ export default function TournamentRegisterPage() {
         </div>
       </div>
       <div>{parentRouteData.event.description}</div>
-      {true ? (
+      {!data?.ownTeam ? (
         <Register />
       ) : (
         <div>
-          <FillRosterSection />
+          <EditTeam ownTeam={data.ownTeam} />
         </div>
       )}
     </div>
@@ -115,12 +124,28 @@ function Register() {
   );
 }
 
-function FillRosterSection() {
+function EditTeam({
+  ownTeam,
+}: {
+  ownTeam: NonNullable<SerializeFrom<typeof loader>>["ownTeam"];
+}) {
+  const [, copyToClipboard] = useCopyToClipboard();
+  const { t } = useTranslation(["common"]);
+
+  const inviteLink = `https://sendou.ink/inv/${ownTeam.inviteCode}`;
+
   return (
     <div>
       <h3 className="tournament__section-header">1. Fill roster</h3>
-      <section className="tournament__section">
-        Share your invite link to add members https://sendou.ink/inv/${}
+      <section className="tournament__section stack md items-center">
+        <div className="text-center text-sm">
+          Share your invite link to add members {inviteLink}
+        </div>
+        <div>
+          <Button size="tiny" onClick={() => copyToClipboard(inviteLink)}>
+            {t("common:actions.copyToClipboard")}
+          </Button>
+        </div>
       </section>
     </div>
   );
