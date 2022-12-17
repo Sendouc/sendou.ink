@@ -1,5 +1,5 @@
-import type { FindTeamsByEventId } from "~/db/models/tournaments/queries.server";
 import type { User } from "~/db/types";
+import type { FindTeamsByEventId } from "./queries/findTeamsByEventId.server";
 
 export function findOwnedTeam({
   teams,

@@ -4,7 +4,7 @@ import { Button } from "~/components/Button";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { discordFullName } from "~/utils/strings";
 import { CALENDAR_PAGE, navIconUrl } from "~/utils/urls";
-import type { TournamentToolsLoaderData } from "../to.$identifier";
+import type { TournamentToolsLoaderData } from "./to.$identifier";
 
 export const handle: SendouRouteHandle = {
   breadcrumb: () => ({
@@ -20,7 +20,7 @@ export default function TournamentFrontPage() {
 
 export function Prestart() {
   // xxx: fix condition
-  const [expanded, setExpanded] = React.useState(true);
+  const [expanded, setExpanded] = React.useState(false);
   const data = useOutletContext<TournamentToolsLoaderData>();
 
   return (

@@ -7,20 +7,22 @@ import type {
 import { Outlet, useLoaderData } from "@remix-run/react";
 import { SubNav, SubNavLink } from "~/components/SubNav";
 import { db } from "~/db";
-import type {
-  FindTeamsByEventId,
-  FindTeamsByEventIdItem,
-} from "~/db/models/tournaments/queries.server";
 import type { TournamentTeam } from "~/db/types";
 import { getUser, useUser } from "~/modules/auth";
 import { canAdminCalendarTOTools } from "~/permissions";
 import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
-import { findOwnedTeam } from "~/utils/tournaments";
-import styles from "~/styles/tournament.css";
+import styles from "../tournament.css";
 import { makeTitle } from "~/utils/strings";
 import { useTranslation } from "~/hooks/useTranslation";
 import type { Unpacked } from "~/utils/types";
 import { Main } from "~/components/Main";
+import { findByIdentifier } from "../queries/findByIdentifier.server";
+import type {
+  FindTeamsByEventId,
+  FindTeamsByEventIdItem,
+} from "../queries/findTeamsByEventId.server";
+import { findTeamsByEventId } from "../queries/findTeamsByEventId.server";
+import { findOwnedTeam } from "../tournament-utils";
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader>;
@@ -47,8 +49,8 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const user = await getUser(request);
   const eventId = params["identifier"]!;
 
-  const event = notFoundIfFalsy(db.tournaments.findByIdentifier(eventId));
-  const teams = db.tournaments.findTeamsByEventId(event.id);
+  const event = notFoundIfFalsy(findByIdentifier(eventId));
+  const teams = findTeamsByEventId(event.id);
 
   return {
     event,

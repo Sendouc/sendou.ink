@@ -1,3 +1,14 @@
+import { sql } from "~/db/sql";
+import type {
+  CalendarEvent,
+  MapPoolMap,
+  TournamentTeam,
+  TournamentTeamMember,
+  UserWithPlusTier,
+} from "~/db/types";
+import { parseDBJsonArray } from "~/utils/sql";
+
+const findTeamsByEventIdStm = sql.prepare(/*sql*/ `
 with "TeamWithMembers" as (
   select
     "TournamentTeam"."id",
@@ -28,6 +39,7 @@ with "TeamWithMembers" as (
     left join "PlusTier" on "User"."id" = "PlusTier"."userId"
   where
     "TournamentTeam"."calendarEventId" = @calendarEventId
+    -- xxx: but what about our team?
     and "TournamentTeam"."name" is not null
   group by
     "TournamentTeam"."id"
@@ -49,3 +61,35 @@ group by
   "TeamWithMembers"."id"
 order by
   "TeamWithMembers"."name" asc
+`);
+
+export interface FindTeamsByEventIdItem {
+  id: TournamentTeam["id"];
+  name: TournamentTeam["name"];
+  inviteCode: TournamentTeam["inviteCode"];
+  members: Array<
+    Pick<TournamentTeamMember, "userId" | "isOwner"> &
+      Pick<
+        UserWithPlusTier,
+        | "discordAvatar"
+        | "discordId"
+        | "discordName"
+        | "plusTier"
+        | "discordDiscriminator"
+      >
+  >;
+  mapPool: Array<Pick<MapPoolMap, "mode" | "stageId">>;
+}
+export type FindTeamsByEventId = Array<FindTeamsByEventIdItem>;
+
+export function findTeamsByEventId(calendarEventId: CalendarEvent["id"]) {
+  const rows = findTeamsByEventIdStm.all({ calendarEventId });
+
+  return rows.map((row) => {
+    return {
+      ...row,
+      members: parseDBJsonArray(row.members),
+      mapPool: parseDBJsonArray(row.mapPool),
+    };
+  }) as FindTeamsByEventId;
+}
