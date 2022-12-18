@@ -15,7 +15,10 @@ import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
-import type { FindTeamsByEventId } from "../queries/findTeamsByEventId.server";
+import type {
+  FindTeamsByEventId,
+  FindTeamsByEventIdItem,
+} from "../queries/findTeamsByEventId.server";
 import { findTeamsByEventId } from "../queries/findTeamsByEventId.server";
 import { idFromParams } from "../tournament-utils";
 import styles from "../tournament.css";
@@ -50,7 +53,9 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     event,
     tieBreakerMapPool:
       db.calendarEvents.findTieBreakerMapPoolByEventId(eventId),
-    teams: filterIncompleteTeamsExceptOwn(findTeamsByEventId(eventId)),
+    teams: censorMapPools(
+      filterIncompleteTeamsExceptOwn(findTeamsByEventId(eventId))
+    ),
   };
 
   function filterIncompleteTeamsExceptOwn(
@@ -66,6 +71,24 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 
       return Boolean(team.name);
     });
+  }
+
+  function censorMapPools(teams: FindTeamsByEventId): FindTeamsByEventId {
+    return teams.map((team) =>
+      team.members.some(
+        (member) => member.userId === user?.id && member.isOwner
+      )
+        ? team
+        : {
+            ...team,
+            mapPool:
+              // can be used to show checkmark in UI if team has submitted
+              // the map pool without revealing the contents
+              (team.mapPool?.length ?? 0) > 0
+                ? ([] as FindTeamsByEventIdItem["mapPool"])
+                : undefined,
+          }
+    );
   }
 };
 

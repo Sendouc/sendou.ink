@@ -70,6 +70,10 @@
   font-weight: var(--semi-bold);
 }
 
+.font-bold {
+  font-weight: var(--bold);
+}
+
 .w-full {
   width: 100%;
 }
@@ -184,6 +188,10 @@
 
 .justify-end {
   justify-content: flex-end;
+}
+
+.self-center {
+  align-self: center;
 }
 
 .flex-wrap {

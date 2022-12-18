@@ -49,6 +49,7 @@ export type {
   MainWeaponId,
   SubWeaponId,
   SpecialWeaponId,
+  RankedModeShort,
 } from "./types";
 export { isAbility } from "./utils";
 export { stageIds } from "./stage-ids";

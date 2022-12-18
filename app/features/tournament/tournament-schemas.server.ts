@@ -8,4 +8,8 @@ export const registerSchema = z.union([
     teamName: z.string().min(1).max(TOURNAMENT.TEAM_NAME_MAX_LENGTH),
     friendCode: z.string().regex(new RegExp(FRIEND_CODE_REGEX_PATTERN)),
   }),
+  z.object({
+    _action: z.literal("UPDATE_MAP_POOL"),
+    mapPool: z.string(),
+  }),
 ]);

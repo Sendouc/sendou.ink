@@ -1,6 +1,7 @@
 import { sql } from "~/db/sql";
 import type {
   CalendarEvent,
+  MapPoolMap,
   TournamentTeam,
   TournamentTeamMember,
   UserWithPlusTier,
@@ -8,36 +9,55 @@ import type {
 import { parseDBJsonArray } from "~/utils/sql";
 
 const stm = sql.prepare(/*sql*/ `
+  with "TeamWithMembers" as (
+    select
+      "TournamentTeam"."id",
+      "TournamentTeam"."name",
+      json_group_array(
+        json_object(
+          'userId',
+          "TournamentTeamMember"."userId",
+          'isOwner',
+          "TournamentTeamMember"."isOwner",
+          'discordName',
+          "User"."discordName",
+          'discordDiscriminator',
+          "User"."discordDiscriminator",
+          'discordId',
+          "User"."discordId",
+          'discordAvatar',
+          "User"."discordAvatar",
+          'plusTier',
+          "PlusTier"."tier"
+        )
+      ) as "members"
+    from
+      "TournamentTeam"
+      left join "TournamentTeamMember" on "TournamentTeamMember"."tournamentTeamId" = "TournamentTeam"."id"
+      left join "User" on "User"."id" = "TournamentTeamMember"."userId"
+      left join "PlusTier" on "User"."id" = "PlusTier"."userId"
+    where
+      "TournamentTeam"."calendarEventId" = @calendarEventId
+    group by
+      "TournamentTeam"."id"
+  )
   select
-    "TournamentTeam"."id",
-    "TournamentTeam"."name",
+    "TeamWithMembers".*,
     json_group_array(
       json_object(
-        'userId',
-        "TournamentTeamMember"."userId",
-        'isOwner',
-        "TournamentTeamMember"."isOwner",
-        'discordName',
-        "User"."discordName",
-        'discordDiscriminator',
-        "User"."discordDiscriminator",
-        'discordId',
-        "User"."discordId",
-        'discordAvatar',
-        "User"."discordAvatar",
-        'plusTier',
-        "PlusTier"."tier"
+        'stageId',
+        "MapPoolMap"."stageId",
+        'mode',
+        "MapPoolMap"."mode"
       )
-    ) as "members"
+    ) as "mapPool"
   from
-    "TournamentTeam"
-    left join "TournamentTeamMember" on "TournamentTeamMember"."tournamentTeamId" = "TournamentTeam"."id"
-    left join "User" on "User"."id" = "TournamentTeamMember"."userId"
-    left join "PlusTier" on "User"."id" = "PlusTier"."userId"
-  where
-    "TournamentTeam"."calendarEventId" = @calendarEventId
+    "TeamWithMembers"
+    left join "MapPoolMap" on "MapPoolMap"."tournamentTeamId" = "TeamWithMembers"."id"
   group by
-    "TournamentTeam"."id"
+    "TeamWithMembers"."id"
+  order by
+    "TeamWithMembers"."name" asc
 `);
 
 export interface FindTeamsByEventIdItem {
@@ -54,6 +74,7 @@ export interface FindTeamsByEventIdItem {
         | "discordDiscriminator"
       >
   >;
+  mapPool?: Array<Pick<MapPoolMap, "mode" | "stageId">>;
 }
 export type FindTeamsByEventId = Array<FindTeamsByEventIdItem>;
 
@@ -64,6 +85,7 @@ export function findTeamsByEventId(calendarEventId: CalendarEvent["id"]) {
     return {
       ...row,
       members: parseDBJsonArray(row.members),
+      mapPool: parseDBJsonArray(row.mapPool),
     };
   }) as FindTeamsByEventId;
 }

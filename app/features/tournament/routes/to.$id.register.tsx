@@ -6,14 +6,20 @@ import type {
 import { useFetcher, useLoaderData, useOutletContext } from "@remix-run/react";
 import { useCopyToClipboard } from "react-use";
 import invariant from "tiny-invariant";
+import { Alert } from "~/components/Alert";
 import { Avatar } from "~/components/Avatar";
 import { Button } from "~/components/Button";
 import { FormMessage } from "~/components/FormMessage";
+import { Image } from "~/components/Image";
 import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
 import { SubmitButton } from "~/components/SubmitButton";
 import { useTranslation } from "~/hooks/useTranslation";
 import { getUser, requireUser, useUser } from "~/modules/auth";
+import type { RankedModeShort, StageId } from "~/modules/in-game-lists";
+import { stageIds } from "~/modules/in-game-lists";
+import { rankedModesShort } from "~/modules/in-game-lists/modes";
+import { MapPool } from "~/modules/map-pool-serializer";
 import {
   parseRequestFormData,
   validate,
@@ -21,12 +27,19 @@ import {
 } from "~/utils/remix";
 import { discordFullName } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
-import { CALENDAR_PAGE, LOG_IN_URL, navIconUrl } from "~/utils/urls";
+import {
+  CALENDAR_PAGE,
+  LOG_IN_URL,
+  modeImageUrl,
+  navIconUrl,
+} from "~/utils/urls";
 import { createTeam } from "../queries/createTeam.server";
 import { findOwnTeam } from "../queries/findOwnTeam.server";
 import { findTeamsByEventId } from "../queries/findTeamsByEventId.server";
 import { updateTeamInfo } from "../queries/updateTeamInfo.server";
+import { upsertCounterpickMaps } from "../queries/upsertCounterpickMaps.server";
 import { FRIEND_CODE_REGEX_PATTERN, TOURNAMENT } from "../tournament-constants";
+import { useSelectCounterpickMapPoolState } from "../tournament-hooks";
 import { registerSchema } from "../tournament-schemas.server";
 import { idFromParams, resolveOwnedTeam } from "../tournament-utils";
 import type { TournamentToolsLoaderData } from "./to.$id";
@@ -44,7 +57,11 @@ export const action: ActionFunction = async ({ request, params }) => {
   const data = await parseRequestFormData({ request, schema: registerSchema });
 
   const eventId = idFromParams(params);
+
   const teams = findTeamsByEventId(eventId);
+  const ownTeam = teams.find((team) =>
+    team.members.some((member) => member.userId === user.id && member.isOwner)
+  );
 
   switch (data._action) {
     case "CREATE_TEAM": {
@@ -59,11 +76,6 @@ export const action: ActionFunction = async ({ request, params }) => {
       break;
     }
     case "UPDATE_TEAM_INFO": {
-      const ownTeam = teams.find((team) =>
-        team.members.some(
-          (member) => member.userId === user.id && member.isOwner
-        )
-      );
       validate(ownTeam);
 
       // xxx: make sure not changing name AND tournament is happening
@@ -72,6 +84,18 @@ export const action: ActionFunction = async ({ request, params }) => {
         friendCode: data.friendCode,
         name: data.teamName,
         id: ownTeam.id,
+      });
+      break;
+    }
+    case "UPDATE_MAP_POOL": {
+      const mapPool = new MapPool(data.mapPool);
+      validate(ownTeam);
+      validate(validateCounterPickMapPool(mapPool) === "VALID");
+
+      // xxx: make sure tournament not happening
+      upsertCounterpickMaps({
+        tournamentTeamId: ownTeam.id,
+        mapPool: new MapPool(data.mapPool),
       });
       break;
     }
@@ -165,6 +189,7 @@ function EditTeam({
     <div className="stack lg">
       <FillRoster ownTeam={ownTeam} />
       <TeamInfo ownTeam={ownTeam} />
+      <CounterPickMapPoolPicker />
     </div>
   );
 }
@@ -276,4 +301,160 @@ function TeamInfo({
       </section>
     </div>
   );
+}
+
+function CounterPickMapPoolPicker() {
+  const { t } = useTranslation(["common", "game-misc"]);
+  const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
+  const fetcher = useFetcher();
+
+  const { counterpickMaps, handleCounterpickMapPoolSelect } =
+    useSelectCounterpickMapPoolState();
+
+  const counterPickMapPool = new MapPool(
+    Object.entries(counterpickMaps).flatMap(([mode, stages]) => {
+      return stages
+        .filter((stageId) => stageId !== null)
+        .map((stageId) => {
+          return {
+            mode: mode as RankedModeShort,
+            stageId: stageId as StageId,
+          };
+        });
+    })
+  );
+
+  return (
+    <div>
+      <h3 className="tournament__section-header">3. Pick map pool</h3>
+      <section className="tournament__section">
+        <fetcher.Form
+          method="post"
+          className="stack md tournament__section-centered"
+        >
+          <input
+            type="hidden"
+            name="mapPool"
+            value={counterPickMapPool.serialized}
+          />
+          {rankedModesShort.map((mode) => {
+            const tiebreakerStageId = parentRouteData.tieBreakerMapPool.find(
+              (stage) => stage.mode === mode
+            )?.stageId;
+
+            return (
+              <div key={mode} className="stack md">
+                <div className="stack sm">
+                  <div className="stack horizontal sm items-center font-bold">
+                    <Image
+                      path={modeImageUrl(mode)}
+                      width={32}
+                      height={32}
+                      alt=""
+                    />
+                    {t(`game-misc:MODE_LONG_${mode}`)}
+                  </div>
+                  {typeof tiebreakerStageId === "number" ? (
+                    <div className="text-xs text-lighter">
+                      Tiebreaker: {t(`game-misc:STAGE_${tiebreakerStageId}`)}
+                    </div>
+                  ) : null}
+                </div>
+                {new Array(2).fill(null).map((_, i) => {
+                  return (
+                    <div
+                      key={i}
+                      className="tournament__section__map-select-row"
+                    >
+                      Pick {i + 1}{" "}
+                      <select
+                        value={counterpickMaps[mode][i] ?? undefined}
+                        onChange={handleCounterpickMapPoolSelect(mode, i)}
+                      >
+                        <option value=""></option>
+                        {stageIds
+                          .filter((id) => id !== tiebreakerStageId)
+                          .map((stageId) => {
+                            return (
+                              <option key={stageId} value={stageId}>
+                                {t(`game-misc:STAGE_${stageId}`)}
+                              </option>
+                            );
+                          })}
+                      </select>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })}
+          {validateCounterPickMapPool(counterPickMapPool) === "VALID" ? (
+            <SubmitButton
+              _action="UPDATE_MAP_POOL"
+              state={fetcher.state}
+              className="self-center mt-4"
+            >
+              {t("common:actions.save")}
+            </SubmitButton>
+          ) : (
+            <MapPoolValidationStatusMessage
+              status={validateCounterPickMapPool(counterPickMapPool)}
+            />
+          )}
+        </fetcher.Form>
+      </section>
+    </div>
+  );
+}
+
+function MapPoolValidationStatusMessage({
+  status,
+}: {
+  status: CounterPickValidationStatus;
+}) {
+  const { t } = useTranslation(["common"]);
+
+  if (status !== "TOO_MUCH_STAGE_REPEAT") return null;
+
+  return (
+    <div className="mt-4">
+      <Alert alertClassName="w-max" variation="WARNING" tiny>
+        {t(`common:maps.validation.${status}`, {
+          maxStageRepeat: TOURNAMENT.COUNTERPICK_MAX_STAGE_REPEAT,
+        })}
+      </Alert>
+    </div>
+  );
+}
+
+type CounterPickValidationStatus =
+  | "PICKING"
+  | "VALID"
+  | "TOO_MUCH_STAGE_REPEAT";
+
+function validateCounterPickMapPool(
+  mapPool: MapPool
+): CounterPickValidationStatus {
+  const stageCounts = new Map<StageId, number>();
+  for (const stageId of mapPool.stages) {
+    if (!stageCounts.has(stageId)) {
+      stageCounts.set(stageId, 0);
+    }
+    if (stageCounts.get(stageId)! === TOURNAMENT.COUNTERPICK_MAX_STAGE_REPEAT) {
+      return "TOO_MUCH_STAGE_REPEAT";
+    }
+
+    stageCounts.set(stageId, stageCounts.get(stageId)! + 1);
+  }
+
+  if (
+    mapPool.parsed.SZ.length !== TOURNAMENT.COUNTERPICK_MAPS_PER_MODE ||
+    mapPool.parsed.TC.length !== TOURNAMENT.COUNTERPICK_MAPS_PER_MODE ||
+    mapPool.parsed.RM.length !== TOURNAMENT.COUNTERPICK_MAPS_PER_MODE ||
+    mapPool.parsed.CB.length !== TOURNAMENT.COUNTERPICK_MAPS_PER_MODE
+  ) {
+    return "PICKING";
+  }
+
+  return "VALID";
 }

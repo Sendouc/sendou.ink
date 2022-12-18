@@ -179,7 +179,12 @@
 .tournament__section {
   background-color: var(--bg-lighter);
   margin-inline: -12px;
-  padding: var(--s-2-5);
+  padding: var(--s-4) var(--s-3);
+}
+
+.tournament__section-centered {
+  margin: 0 auto;
+  max-width: 20rem;
 }
 
 .tournament__section__input-container {
@@ -191,6 +196,13 @@
   font-size: var(--fonts-xs);
   font-weight: var(--semi-bold);
   text-align: center;
+}
+
+.tournament__section__map-select-row {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  white-space: nowrap;
 }
 
 .tournament__missing-player {
