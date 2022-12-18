@@ -36,8 +36,6 @@ const stm = sql.prepare(/*sql*/ `
     left join "PlusTier" on "User"."id" = "PlusTier"."userId"
   where
     "TournamentTeam"."calendarEventId" = @calendarEventId
-    -- xxx: but what about our team?
-    and "TournamentTeam"."name" is not null
   group by
     "TournamentTeam"."id"
 `);

@@ -1,0 +1,10 @@
+export const TOURNAMENT = {
+  TEAM_NAME_MAX_LENGTH: 64,
+  COUNTERPICK_MAPS_PER_MODE: 2,
+  COUNTERPICK_MAX_STAGE_REPEAT: 2,
+  TEAM_MIN_MEMBERS_FOR_FULL: 4,
+  TEAM_MAX_MEMBERS: 6,
+  AVAILABLE_BEST_OF: [3, 5, 7] as const,
+} as const;
+
+export const FRIEND_CODE_REGEX_PATTERN = "^\\d{4}-\\d{4}-\\d{4}$";

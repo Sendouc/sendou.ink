@@ -9,12 +9,13 @@ import { Main } from "~/components/Main";
 import { SubNav, SubNavLink } from "~/components/SubNav";
 import { db } from "~/db";
 import { useTranslation } from "~/hooks/useTranslation";
-import { useUser } from "~/modules/auth";
+import { getUser, useUser } from "~/modules/auth";
 import { canAdminCalendarTOTools } from "~/permissions";
 import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
+import type { FindTeamsByEventId } from "../queries/findTeamsByEventId.server";
 import { findTeamsByEventId } from "../queries/findTeamsByEventId.server";
 import { idFromParams } from "../tournament-utils";
 import styles from "../tournament.css";
@@ -40,7 +41,8 @@ export const handle: SendouRouteHandle = {
 export type TournamentToolsTeam = Unpacked<TournamentToolsLoaderData["teams"]>;
 export type TournamentToolsLoaderData = SerializeFrom<typeof loader>;
 
-export const loader = ({ params }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderArgs) => {
+  const user = await getUser(request);
   const eventId = idFromParams(params);
   const event = notFoundIfFalsy(findByIdentifier(eventId));
 
@@ -48,8 +50,23 @@ export const loader = ({ params }: LoaderArgs) => {
     event,
     tieBreakerMapPool:
       db.calendarEvents.findTieBreakerMapPoolByEventId(eventId),
-    teams: findTeamsByEventId(eventId),
+    teams: filterIncompleteTeamsExceptOwn(findTeamsByEventId(eventId)),
   };
+
+  function filterIncompleteTeamsExceptOwn(
+    teams: FindTeamsByEventId
+  ): FindTeamsByEventId {
+    return teams.filter((team) => {
+      const userOwnsTeam = team.members.some(
+        (member) => member.isOwner && member.userId === user?.id
+      );
+      if (userOwnsTeam) {
+        return team;
+      }
+
+      return Boolean(team.name);
+    });
+  }
 };
 
 export default function TournamentToolsLayout() {

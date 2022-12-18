@@ -23,6 +23,7 @@ module.exports = {
     "no-console": ["warn", { allow: ["warn", "error"] }],
     "no-warning-comments": ["warn", { terms: ["xxx"] }],
     "no-var": 0,
+    "no-useless-escape": 0,
     "@typescript-eslint/no-unsafe-return": 0,
     "@typescript-eslint/no-unsafe-member-access": 0,
     "@typescript-eslint/no-unsafe-assignment": 0,

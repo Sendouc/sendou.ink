@@ -3,6 +3,7 @@ import type { TournamentTeam } from "~/db/types";
 
 const stm = sql.prepare(/*sql*/ `
   select
+    "TournamentTeam"."id",
     "TournamentTeam"."name",
     "TournamentTeam"."friendCode",
     "TournamentTeam"."checkedInAt",
@@ -19,7 +20,7 @@ const stm = sql.prepare(/*sql*/ `
 
 type FindOwnTeam = Pick<
   TournamentTeam,
-  "name" | "friendCode" | "checkedInAt" | "inviteCode"
+  "id" | "name" | "friendCode" | "checkedInAt" | "inviteCode"
 > | null;
 
 export function findOwnTeam({

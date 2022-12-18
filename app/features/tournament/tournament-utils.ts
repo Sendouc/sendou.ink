@@ -3,7 +3,7 @@ import invariant from "tiny-invariant";
 import type { User } from "~/db/types";
 import type { FindTeamsByEventId } from "./queries/findTeamsByEventId.server";
 
-export function findOwnedTeam({
+export function resolveOwnedTeam({
   teams,
   userId,
 }: {
