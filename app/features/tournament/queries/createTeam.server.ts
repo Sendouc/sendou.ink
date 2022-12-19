@@ -1,6 +1,7 @@
 import { sql } from "~/db/sql";
 import type { TournamentTeam, User } from "~/db/types";
 import { nanoid } from "nanoid";
+import { INVITE_CODE_LENGTH } from "~/constants";
 
 const createTeamStm = sql.prepare(/*sql*/ `
   insert into "TournamentTeam" (
@@ -34,7 +35,7 @@ export const createTeam = sql.transaction(
   }) => {
     const team = createTeamStm.get({
       calendarEventId,
-      inviteCode: nanoid(10),
+      inviteCode: nanoid(INVITE_CODE_LENGTH),
     }) as TournamentTeam;
 
     createMemberStm.run({ tournamentTeamId: team.id, userId: ownerId });

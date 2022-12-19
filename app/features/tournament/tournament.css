@@ -215,6 +215,14 @@
   place-items: center;
 }
 
+.tournament__invite-container {
+  margin-block-start: var(--s-14);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-12);
+  align-items: center;
+}
+
 @media screen and (min-width: 640px) {
   .tournament__section {
     margin: 0;

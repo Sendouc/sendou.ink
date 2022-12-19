@@ -50,6 +50,8 @@ export const MAPS = {
 export const BUILDS_PAGE_BATCH_SIZE = 24;
 export const BUILDS_PAGE_MAX_BUILDS = 240;
 
+export const INVITE_CODE_LENGTH = 10;
+
 export const EMPTY_BUILD: BuildAbilitiesTupleWithUnknown = [
   ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],
   ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],

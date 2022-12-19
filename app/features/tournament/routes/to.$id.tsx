@@ -53,25 +53,8 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     event,
     tieBreakerMapPool:
       db.calendarEvents.findTieBreakerMapPoolByEventId(eventId),
-    teams: censorMapPools(
-      filterIncompleteTeamsExceptOwn(findTeamsByEventId(eventId))
-    ),
+    teams: censorMapPools(findTeamsByEventId(eventId)),
   };
-
-  function filterIncompleteTeamsExceptOwn(
-    teams: FindTeamsByEventId
-  ): FindTeamsByEventId {
-    return teams.filter((team) => {
-      const userOwnsTeam = team.members.some(
-        (member) => member.isOwner && member.userId === user?.id
-      );
-      if (userOwnsTeam) {
-        return team;
-      }
-
-      return Boolean(team.name);
-    });
-  }
 
   function censorMapPools(teams: FindTeamsByEventId): FindTeamsByEventId {
     return teams.map((team) =>

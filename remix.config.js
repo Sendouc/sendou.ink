@@ -12,6 +12,7 @@ module.exports = {
           "/to/:id/register",
           "features/tournament/routes/to.$id.register.tsx"
         );
+        route("/to/:id/join", "features/tournament/routes/to.$id.join.tsx");
       });
     });
   },

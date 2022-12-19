@@ -123,6 +123,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   };
 };
 
+// xxx: handle member of another team (currently just shows Register)
 export default function TournamentRegisterPage() {
   const data = useLoaderData<typeof loader>();
   const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
@@ -204,7 +205,7 @@ function FillRoster({
   const [, copyToClipboard] = useCopyToClipboard();
   const { t } = useTranslation(["common"]);
 
-  const inviteLink = `https://sendou.ink/inv/${ownTeam.inviteCode}`;
+  const inviteLink = `https://sendou.ink/to/201/join?code=${ownTeam.inviteCode}`;
 
   const { members: ownTeamMembers } =
     resolveOwnedTeam({
