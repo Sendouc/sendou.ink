@@ -927,7 +927,6 @@ dialog::backdrop {
 .build__icon {
   width: 1.2rem;
   height: 1.2rem;
-  fill: var(--theme);
 }
 
 .build__small-text {
