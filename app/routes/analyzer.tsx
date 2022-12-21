@@ -520,9 +520,9 @@ export default function BuildAnalyzerPage() {
               containerClassName="analyzer__table-container"
             >
               {/** Hack the :has ;) */}
-              {build
-                .flat()
-                .some((ability) => ability === "ISM" || ability === "ISS") ? (
+              {(["ISM", "ISS"] as const).some(
+                (ability) => (abilityPoints.get(ability)?.ap ?? 0) > 0
+              ) ? (
                 <div className="analyzer__stat-card-highlighted" />
               ) : null}
               <ConsumptionTable
