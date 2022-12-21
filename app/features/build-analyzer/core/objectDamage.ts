@@ -9,7 +9,7 @@ import type {
   MainWeaponId,
   SpecialWeaponId,
   SubWeaponId,
-} from "../in-game-lists";
+} from "~/modules/in-game-lists";
 import {
   damageTypesToCombine,
   damageTypeToWeaponType,

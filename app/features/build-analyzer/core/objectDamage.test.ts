@@ -1,6 +1,6 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
-import type { MainWeaponId } from "../in-game-lists";
+import type { MainWeaponId } from "~/modules/in-game-lists";
 import { calculateDamage } from "./objectDamage";
 import { buildStats } from "./stats";
 import type { AbilityPoints, DamageType } from "./types";

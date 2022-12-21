@@ -1,6 +1,6 @@
 import type { DamageType } from "./types";
 import type objectDamages from "./object-dmg.json";
-import { type MainWeaponId, mainWeaponIds } from "../in-game-lists";
+import { type MainWeaponId, mainWeaponIds } from "~/modules/in-game-lists";
 import invariant from "tiny-invariant";
 
 export const MAX_LDE_INTENSITY = 21;

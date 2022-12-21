@@ -1,6 +1,6 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
-import type { AbilityWithUnknown } from "../in-game-lists/types";
+import type { AbilityWithUnknown } from "~/modules/in-game-lists/types";
 import { buildToAbilityPoints } from "./utils";
 
 const BuildToAbilityPoints = suite("buildToAbilityPoints()");

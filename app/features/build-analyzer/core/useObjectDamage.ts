@@ -1,6 +1,6 @@
 import { useSearchParams } from "@remix-run/react";
 import { assertType } from "~/utils/types";
-import { type MainWeaponId } from "../in-game-lists";
+import { type MainWeaponId } from "~/modules/in-game-lists";
 import type { DAMAGE_TYPE } from "./constants";
 import { calculateDamage } from "./objectDamage";
 import { buildStats } from "./stats";

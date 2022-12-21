@@ -1,7 +1,9 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
-import type { BuildAbilitiesTupleWithUnknown } from "../in-game-lists";
-import type { AbilityWithUnknown } from "../in-game-lists/types";
+import type {
+  BuildAbilitiesTupleWithUnknown,
+  AbilityWithUnknown,
+} from "~/modules/in-game-lists";
 import { getAbilityChunksMapAsArray } from "./abilityChunksCalc";
 
 // Utility function that performs an order-agnostic check to see

@@ -1,5 +1,9 @@
 import invariant from "tiny-invariant";
-import { BIG_BUBBLER_ID, CRAB_TANK_ID, SPLASH_WALL_ID } from "../in-game-lists";
+import {
+  BIG_BUBBLER_ID,
+  CRAB_TANK_ID,
+  SPLASH_WALL_ID,
+} from "~/modules/in-game-lists";
 import { specialDeviceHp, specialFieldHp, subStats } from "./stats";
 import type {
   AbilityPoints,

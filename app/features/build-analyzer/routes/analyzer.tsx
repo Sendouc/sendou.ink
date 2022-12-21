@@ -11,17 +11,6 @@ import { Main } from "~/components/Main";
 import { Popover } from "~/components/Popover";
 import { Toggle } from "~/components/Toggle";
 import { useSetTitle } from "~/hooks/useSetTitle";
-import type { AnalyzedBuild, Stat } from "~/modules/analyzer";
-import { MAX_LDE_INTENSITY, useAnalyzeBuild } from "~/modules/analyzer";
-import { damageTypeToWeaponType } from "~/modules/analyzer/constants";
-import {
-  lastDitchEffortIntensityToAp,
-  SPECIAL_EFFECTS,
-} from "~/modules/analyzer/specialEffects";
-import type {
-  AbilityPoints,
-  SpecialEffectType,
-} from "~/modules/analyzer/types";
 import {
   abilities,
   ANGLE_SHOOTER_ID,
@@ -37,7 +26,7 @@ import {
   type MainWeaponId,
   type SubWeaponId,
 } from "~/modules/in-game-lists";
-import styles from "~/styles/analyzer.css";
+import styles from "../analyzer.css";
 import { damageTypeTranslationString } from "~/utils/i18next";
 import { type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
@@ -48,11 +37,23 @@ import {
   specialWeaponImageUrl,
   subWeaponImageUrl,
 } from "~/utils/urls";
+import clsx from "clsx";
 import {
   ABILITIES_WITHOUT_CHUNKS,
   getAbilityChunksMapAsArray,
-} from "~/modules/analyzer/abilityChunksCalc";
-import clsx from "clsx";
+} from "../core/abilityChunksCalc";
+import type {
+  AbilityPoints,
+  AnalyzedBuild,
+  SpecialEffectType,
+  Stat,
+} from "../core/types";
+import {
+  lastDitchEffortIntensityToAp,
+  SPECIAL_EFFECTS,
+} from "../core/specialEffects";
+import { damageTypeToWeaponType, MAX_LDE_INTENSITY } from "../core/constants";
+import { useAnalyzeBuild } from "../analyzer-hooks";
 
 export const CURRENT_PATCH = "2.0";
 

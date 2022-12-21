@@ -1,8 +1,8 @@
-import { abilities } from "../in-game-lists";
-import type {
-  AbilityWithUnknown,
-  BuildAbilitiesTupleWithUnknown,
-} from "../in-game-lists/types";
+import {
+  abilities,
+  type AbilityWithUnknown,
+  type BuildAbilitiesTupleWithUnknown,
+} from "~/modules/in-game-lists";
 import type { AbilityChunks } from "./types";
 
 // Reference for Ability Chunks numbers: https://splatoonwiki.org/wiki/Ability_chunk#Splatoon_3

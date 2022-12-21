@@ -1,6 +1,12 @@
-import type { Ability, BuildAbilitiesTupleWithUnknown } from "../in-game-lists";
-import { mainWeaponIds, weaponCategories } from "../in-game-lists";
-import { abilities } from "../in-game-lists";
+import {
+  abilities,
+  mainWeaponIds,
+  weaponCategories,
+  type Ability,
+  type BuildAbilitiesTupleWithUnknown,
+  type AbilityWithUnknown,
+  type MainWeaponId,
+} from "~/modules/in-game-lists";
 import weaponParamsJson from "./weapon-params.json";
 import abilityValuesJson from "./ability-values.json";
 import type {
@@ -11,7 +17,6 @@ import type {
   SubWeaponParams,
 } from "./types";
 import invariant from "tiny-invariant";
-import type { AbilityWithUnknown, MainWeaponId } from "../in-game-lists/types";
 
 export function weaponParams(): ParamsJson {
   return weaponParamsJson as ParamsJson;

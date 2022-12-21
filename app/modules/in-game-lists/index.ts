@@ -41,6 +41,7 @@ export { abilitiesShort, abilities } from "./abilities";
 export type {
   Ability,
   AbilityType,
+  AbilityWithUnknown,
   ModeShort,
   ModeWithStage,
   StageId,

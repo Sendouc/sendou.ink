@@ -1,7 +1,6 @@
 import { WeaponCombobox } from "~/components/Combobox";
 import { Image } from "~/components/Image";
 import { Main } from "~/components/Main";
-import { possibleApValues, useObjectDamage } from "~/modules/analyzer";
 import {
   type MainWeaponId,
   BIG_BUBBLER_ID,
@@ -24,7 +23,6 @@ import {
 import styles from "~/styles/object-damage.css";
 import type { LinksFunction } from "@remix-run/node";
 import type { SendouRouteHandle } from "~/utils/remix";
-import type { DamageReceiver, DamageType } from "~/modules/analyzer";
 import React from "react";
 import { useTranslation } from "~/hooks/useTranslation";
 import clsx from "clsx";
@@ -34,6 +32,9 @@ import { damageTypeTranslationString } from "~/utils/i18next";
 import { useSetTitle } from "~/hooks/useSetTitle";
 import type { ShouldReloadFunction } from "@remix-run/react";
 import { Toggle } from "~/components/Toggle";
+import { useObjectDamage } from "~/features/build-analyzer/core/useObjectDamage";
+import type { DamageReceiver } from "~/features/build-analyzer";
+import { type DamageType, possibleApValues } from "~/features/build-analyzer";
 
 export const CURRENT_PATCH = "2.0";
 

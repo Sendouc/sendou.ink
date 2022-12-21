@@ -3,22 +3,20 @@ import { EMPTY_BUILD } from "~/constants";
 import {
   type BuildAbilitiesTupleWithUnknown,
   type MainWeaponId,
+  type Ability,
+  type AbilityType,
+  type AbilityWithUnknown,
   abilities,
   isAbility,
-} from "../in-game-lists";
-import type {
-  Ability,
-  AbilityType,
-  AbilityWithUnknown,
-} from "../in-game-lists/types";
-import { MAX_LDE_INTENSITY } from "./constants";
-import { applySpecialEffects, SPECIAL_EFFECTS } from "./specialEffects";
-import { buildStats } from "./stats";
-import type { SpecialEffectType } from "./types";
+} from "~/modules/in-game-lists";
+import { MAX_LDE_INTENSITY } from "./core/constants";
+import { applySpecialEffects, SPECIAL_EFFECTS } from "./core/specialEffects";
+import { buildStats } from "./core/stats";
+import type { SpecialEffectType } from "./core/types";
 import {
   buildToAbilityPoints,
   validatedWeaponIdFromSearchParams,
-} from "./utils";
+} from "./core/utils";
 
 const UNKNOWN_SHORT = "U";
 
