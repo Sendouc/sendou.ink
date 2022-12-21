@@ -77,6 +77,12 @@ a {
   padding-inline: var(--s-2);
 }
 
+:is(button, .button).big {
+  font-size: var(--fonts-md);
+  padding-block: var(--s-2-5);
+  padding-inline: var(--s-6);
+}
+
 :is(button, .button).minimal {
   padding: 0;
   border: none;

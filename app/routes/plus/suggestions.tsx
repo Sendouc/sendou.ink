@@ -245,7 +245,7 @@ export default function PlusSuggestionsPage() {
                 <LinkButton
                   to={`new${tierVisible ? `?tier=${tierVisible}` : ""}`}
                   prefetch="render"
-                  tiny
+                  size="tiny"
                 >
                   Suggest
                 </LinkButton>
@@ -337,7 +337,12 @@ function SuggestedForInfo({ hideText = false }: { hideText?: boolean }) {
               ]}
               dialogHeading={`Delete your suggestion to +${tier}? You won't appear in next voting.`}
             >
-              <Button key={tier} tiny variant="destructive" type="submit">
+              <Button
+                key={tier}
+                size="tiny"
+                variant="destructive"
+                type="submit"
+              >
                 Delete your +{tier} suggestion
               </Button>
             </FormWithConfirm>
@@ -378,7 +383,7 @@ function SuggestedUser({
           // TODO: resetScroll={false} https://twitter.com/ryanflorence/status/1527775882797907969
           <LinkButton
             className="plus__comment-button"
-            tiny
+            size="tiny"
             variant="outlined"
             to={`comment/${tier}/${suggested.suggestedUser.id}?tier=${tier}`}
             prefetch="render"

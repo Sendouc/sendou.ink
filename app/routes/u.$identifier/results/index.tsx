@@ -45,7 +45,7 @@ export default function UserResultsPage() {
           {isOwnResultsPage && (
             <LinkButton
               variant="outlined"
-              tiny
+              size="tiny"
               to={userResultsEditHighlightsPage(userPageData)}
             >
               {t("results.highlights.choose")}

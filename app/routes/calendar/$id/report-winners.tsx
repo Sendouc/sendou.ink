@@ -243,7 +243,7 @@ function TeamInputs() {
       })}
       <Button
         onClick={() => setAmountOfTeams((amountOfTeams) => amountOfTeams + 1)}
-        tiny
+        size="tiny"
       >
         {t("forms.team.add")}
       </Button>
@@ -342,7 +342,7 @@ function Team({
       {onRemoveTeam && (
         <Button
           onClick={onRemoveTeam}
-          tiny
+          size="tiny"
           variant="minimal-destructive"
           className="mt-4"
         >
@@ -395,7 +395,7 @@ function Players({
                 {t("forms.team.player.header", { number: i + 1 })}
               </label>
               <Button
-                tiny
+                size="tiny"
                 variant="minimal"
                 onClick={() => handlePlayerInputTypeChange(i)}
                 className="outline-theme"
@@ -430,7 +430,7 @@ function Players({
       })}
       <div className="stack horizontal sm mt-2">
         <Button
-          tiny
+          size="tiny"
           onClick={handleAddPlayer}
           disabled={players.length === CALENDAR_EVENT_RESULT.MAX_PLAYERS_LENGTH}
           variant="outlined"
@@ -438,7 +438,7 @@ function Players({
           {t("forms.team.player.add")}
         </Button>{" "}
         <Button
-          tiny
+          size="tiny"
           variant="destructive"
           onClick={handleRemovePlayer}
           disabled={players.length === 1}

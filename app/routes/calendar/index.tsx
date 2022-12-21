@@ -155,7 +155,7 @@ export default function CalendarPage() {
       <EventsToReport />
       <div className="stack md">
         {user && (
-          <LinkButton to="new" className="calendar__add-new-button" tiny>
+          <LinkButton to="new" className="calendar__add-new-button" size="tiny">
             {t("addNew")}
           </LinkButton>
         )}
@@ -388,7 +388,7 @@ function EventsList({
                         <LinkButton
                           to={calendarEvent.discordUrl}
                           variant="outlined"
-                          tiny
+                          size="tiny"
                           isExternal
                         >
                           Discord
@@ -397,7 +397,7 @@ function EventsList({
                       <LinkButton
                         to={calendarEvent.bracketUrl}
                         variant="outlined"
-                        tiny
+                        size="tiny"
                         isExternal
                       >
                         {resolveBaseUrl(calendarEvent.bracketUrl)}

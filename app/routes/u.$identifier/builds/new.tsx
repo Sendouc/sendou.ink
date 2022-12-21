@@ -305,7 +305,7 @@ function WeaponsSelector() {
               {i === count - 1 && (
                 <>
                   <Button
-                    tiny
+                    size="tiny"
                     disabled={count === BUILD.MAX_WEAPONS_COUNT}
                     onClick={() => setCount((count) => count + 1)}
                   >
@@ -313,7 +313,7 @@ function WeaponsSelector() {
                   </Button>
                   {count > 1 && (
                     <Button
-                      tiny
+                      size="tiny"
                       onClick={() => setCount((count) => count - 1)}
                       variant="destructive"
                     >

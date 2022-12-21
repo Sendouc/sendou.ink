@@ -1,6 +1,7 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 import { createTournamentMapList } from ".";
+import type { RankedModeShort } from "../in-game-lists";
 import { rankedModesShort } from "../in-game-lists/modes";
 import { MapPool } from "../map-pool-serializer";
 import type { TournamentMaplistInput } from "./types";
@@ -66,12 +67,13 @@ TournamentMapListGenerator("Modes are spread evenly", () => {
   assert.equal(mapList.length, 5);
 
   for (const [i, { mode }] of mapList.entries()) {
-    if (!modes.has(mode)) {
+    const rankedMode = mode as RankedModeShort;
+    if (!modes.has(rankedMode)) {
       assert.equal(i, 4, "Repeated mode early");
       assert.equal(mode, mapList[0]!.mode, "1st and 5th mode are not the same");
     }
 
-    modes.delete(mode);
+    modes.delete(rankedMode);
   }
 });
 

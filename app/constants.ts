@@ -34,15 +34,6 @@ export const CALENDAR_EVENT_RESULT = {
   MAX_PLAYER_NAME_LENGTH: 100,
 } as const;
 
-export const TOURNAMENT = {
-  TEAM_NAME_MAX_LENGTH: 64,
-  COUNTERPICK_MAPS_PER_MODE: 2,
-  COUNTERPICK_MAX_STAGE_REPEAT: 2,
-  TEAM_MIN_MEMBERS_FOR_FULL: 4,
-  TEAM_MAX_MEMBERS: 6,
-  AVAILABLE_BEST_OF: [3, 5, 7] as const,
-} as const;
-
 export const BUILD = {
   TITLE_MIN_LENGTH: 1,
   TITLE_MAX_LENGTH: 50,
@@ -58,6 +49,8 @@ export const MAPS = {
 
 export const BUILDS_PAGE_BATCH_SIZE = 24;
 export const BUILDS_PAGE_MAX_BUILDS = 240;
+
+export const INVITE_CODE_LENGTH = 10;
 
 export const EMPTY_BUILD: BuildAbilitiesTupleWithUnknown = [
   ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"],

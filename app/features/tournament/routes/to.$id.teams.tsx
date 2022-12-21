@@ -1,23 +1,20 @@
-import { useOutletContext } from "@remix-run/react";
+import { Link, useOutletContext } from "@remix-run/react";
+import { Avatar } from "~/components/Avatar";
 import { AlertIcon } from "~/components/icons/Alert";
 import { CheckmarkIcon } from "~/components/icons/Checkmark";
 import { Image } from "~/components/Image";
-import { Main } from "~/components/Main";
-import { TOURNAMENT } from "~/constants";
 import { useTranslation } from "~/hooks/useTranslation";
-import { navIconUrl } from "~/utils/urls";
-import type {
-  TournamentToolsLoaderData,
-  TournamentToolsTeam,
-} from "../to.$identifier";
-import { TeamWithRoster } from "./components/TeamWithRoster";
+import { navIconUrl, userPage } from "~/utils/urls";
+import type { FindTeamsByEventIdItem } from "../queries/findTeamsByEventId.server";
+import { TOURNAMENT } from "../tournament-constants";
+import type { TournamentToolsLoaderData, TournamentToolsTeam } from "./to.$id";
 
 export default function TournamentToolsTeamsPage() {
   const { t } = useTranslation(["tournament"]);
   const data = useOutletContext<TournamentToolsLoaderData>();
 
   return (
-    <Main className="stack lg">
+    <div className="stack lg">
       {data.teams
         .slice()
         .sort(fullTeamAndHigherPlusStatusOnTop)
@@ -52,7 +49,35 @@ export default function TournamentToolsTeamsPage() {
             </div>
           );
         })}
-    </Main>
+    </div>
+  );
+}
+
+function TeamWithRoster({
+  team,
+}: {
+  team: Pick<FindTeamsByEventIdItem, "members" | "name">;
+}) {
+  return (
+    <div className="tournament__team-with-roster">
+      <div className="tournament__team-with-roster__name">{team.name}</div>
+      <ul className="tournament__team-with-roster__members">
+        {team.members.map((member) => (
+          <li
+            key={member.userId}
+            className="tournament__team-with-roster__member"
+          >
+            <Avatar user={member} size="xxs" />
+            <Link
+              to={userPage(member)}
+              className="tournament__team-member-name"
+            >
+              {member.discordName}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 

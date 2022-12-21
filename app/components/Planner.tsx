@@ -222,7 +222,7 @@ function StageBackgroundSelector({
       </select>
       {imgExists() ? (
         <Button
-          tiny
+          size="tiny"
           onClick={() => onAddBackground({ style: backgroundStyle, stageId })}
           className="w-max"
         >

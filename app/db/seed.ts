@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker";
 import capitalize from "just-capitalize";
 import shuffle from "just-shuffle";
 import invariant from "tiny-invariant";
-import { ADMIN_DISCORD_ID } from "~/constants";
+import { ADMIN_DISCORD_ID, INVITE_CODE_LENGTH } from "~/constants";
 import { db } from "~/db";
 import { sql } from "~/db/sql";
 import {
@@ -24,6 +24,7 @@ import {
 import allTags from "~/routes/calendar/tags.json";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import type { UpsertManyPlusVotesArgs } from "./models/plusVotes/queries.server";
+import { nanoid } from "nanoid";
 
 const ADMIN_TEST_AVATAR = "1d1d8488ced4cdf478648592fa871101";
 
@@ -571,8 +572,7 @@ function calendarEventWithToTools() {
         "discordInviteCode",
         "bracketUrl",
         "authorId",
-        "toToolsEnabled",
-        "isBeforeStart"
+        "toToolsEnabled"
       ) values (
         $id,
         $name,
@@ -580,22 +580,18 @@ function calendarEventWithToTools() {
         $discordInviteCode,
         $bracketUrl,
         $authorId,
-        $toToolsEnabled,
-        $isBeforeStart
+        $toToolsEnabled
       )
       `
     )
     .run({
       id: TO_TOOLS_CALENDAR_EVENT_ID,
-      name: `${capitalize(faker.word.adjective())} ${capitalize(
-        faker.word.noun()
-      )}`,
+      name: "PICNIC #2",
       description: faker.lorem.paragraph(),
       discordInviteCode: faker.lorem.word(),
       bracketUrl: faker.internet.url(),
       authorId: 1,
       toToolsEnabled: 1,
-      isBeforeStart: 0,
     });
 
   sql
@@ -665,12 +661,14 @@ function calendarEventWithToToolsTeams() {
         "id",
         "name",
         "createdAt",
-        "calendarEventId"
+        "calendarEventId",
+        "inviteCode"
       ) values (
         $id,
         $name,
         $createdAt,
-        $calendarEventId
+        $calendarEventId,
+        $inviteCode
       )
       `
       )
@@ -679,6 +677,7 @@ function calendarEventWithToToolsTeams() {
         name: names.pop(),
         createdAt: dateToDatabaseTimestamp(new Date()),
         calendarEventId: TO_TOOLS_CALENDAR_EVENT_ID,
+        inviteCode: nanoid(INVITE_CODE_LENGTH),
       });
 
     for (

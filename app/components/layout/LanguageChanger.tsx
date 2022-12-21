@@ -43,7 +43,7 @@ export function LanguageChanger({
         {languages.map((lang) => (
           <LinkButton
             key={lang.code}
-            tiny
+            size="tiny"
             variant="minimal"
             className={
               i18n.language !== lang.code ? "text-main-forced" : undefined

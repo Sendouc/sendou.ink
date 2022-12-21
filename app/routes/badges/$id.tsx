@@ -72,7 +72,7 @@ export default function BadgeDetailsPage() {
         </div>
       </div>
       {canEditBadgeOwners({ user, managers: data.managers }) ? (
-        <LinkButton to="edit" variant="outlined" tiny>
+        <LinkButton to="edit" variant="outlined" size="tiny">
           Edit
         </LinkButton>
       ) : null}

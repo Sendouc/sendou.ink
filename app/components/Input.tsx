@@ -6,6 +6,7 @@ export function Input({
   className,
   minLength,
   maxLength,
+  required,
   defaultValue,
   leftAddon,
   icon,
@@ -14,6 +15,7 @@ export function Input({
   "data-cy": dataCy,
   "aria-label": ariaLabel,
   value,
+  placeholder,
   onChange,
 }: {
   name?: string;
@@ -21,6 +23,7 @@ export function Input({
   className?: string;
   minLength?: number;
   maxLength?: number;
+  required?: boolean;
   defaultValue?: string;
   leftAddon?: string;
   icon?: React.ReactNode;
@@ -29,6 +32,7 @@ export function Input({
   "data-cy"?: string;
   "aria-label"?: string;
   value?: string;
+  placeholder?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
   return (
@@ -46,6 +50,8 @@ export function Input({
         value={value}
         onChange={onChange}
         aria-label={ariaLabel}
+        required={required}
+        placeholder={placeholder}
       />
       {icon}
     </div>

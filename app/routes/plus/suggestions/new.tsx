@@ -160,7 +160,7 @@ export default function PlusNewSuggestionModalPage() {
           <LinkButton
             to={plusSuggestionPage()}
             variant="minimal-destructive"
-            tiny
+            size="tiny"
           >
             Cancel
           </LinkButton>

@@ -302,7 +302,7 @@ function AddButton({ onAdd, id }: { onAdd: () => void; id?: string }) {
   const { t } = useTranslation();
 
   return (
-    <Button tiny variant="outlined" onClick={onAdd} id={id}>
+    <Button size="tiny" variant="outlined" onClick={onAdd} id={id}>
       {t("actions.add")}
     </Button>
   );
@@ -401,7 +401,7 @@ function DatesInput() {
                   {/* "Remove" button */}
                   {datesCount > 1 && (
                     <Button
-                      tiny
+                      size="tiny"
                       onClick={() => {
                         setDatesInputState((current) =>
                           current.filter((e) => e.key !== key)

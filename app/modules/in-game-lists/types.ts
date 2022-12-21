@@ -8,6 +8,7 @@ import type {
 } from "./weapon-ids";
 
 export type ModeShort = typeof modes[number]["short"];
+export type RankedModeShort = "SZ" | "TC" | "RM" | "CB";
 
 export type StageId = typeof stageIds[number];
 

@@ -39,7 +39,7 @@ export function Tags({
                 icon={<CrossIcon />}
                 variant="minimal"
                 aria-label="Remove date"
-                tiny
+                size="tiny"
               />
             )}
             {tag === "BADGE" && badges && (

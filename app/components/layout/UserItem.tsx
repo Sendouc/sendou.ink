@@ -32,7 +32,7 @@ export function UserItem() {
           <Link to={userPage(user)}>
             <Button
               className="w-full"
-              tiny
+              size="tiny"
               variant="outlined"
               icon={<UserIcon />}
             >
@@ -41,7 +41,7 @@ export function UserItem() {
           </Link>
           <form method="post" action={LOG_OUT_URL}>
             <Button
-              tiny
+              size="tiny"
               variant="outlined"
               icon={<LogOutIcon />}
               type="submit"

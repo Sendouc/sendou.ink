@@ -323,7 +323,7 @@ export function MapPoolStages({
                     variant="minimal"
                     aria-label={t("common:actions.remove")}
                     title={t("common:actions.remove")}
-                    tiny
+                    size="tiny"
                   />
                 ) : (
                   <Button
@@ -333,7 +333,7 @@ export function MapPoolStages({
                     variant="minimal"
                     aria-label={t("common:actions.selectAll")}
                     title={t("common:actions.selectAll")}
-                    tiny
+                    size="tiny"
                   />
                 ))}
             </div>
