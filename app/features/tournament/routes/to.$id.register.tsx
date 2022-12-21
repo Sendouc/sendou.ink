@@ -4,6 +4,7 @@ import type {
   SerializeFrom,
 } from "@remix-run/node";
 import { useFetcher, useLoaderData, useOutletContext } from "@remix-run/react";
+import clsx from "clsx";
 import { useCopyToClipboard } from "react-use";
 import invariant from "tiny-invariant";
 import { Alert } from "~/components/Alert";
@@ -258,7 +259,14 @@ function FillRoster({
           })}
         </div>
       </section>
-      <div className="tournament__section__warning">
+      <div
+        className={clsx("tournament__section__warning", {
+          "text-warning":
+            ownTeamMembers.length < TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
+          "text-success":
+            ownTeamMembers.length >= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
+        })}
+      >
         {TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL}-{TOURNAMENT.TEAM_MAX_MEMBERS}{" "}
         members needed to play
       </div>

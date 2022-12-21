@@ -192,7 +192,6 @@
 }
 
 .tournament__section__warning {
-  color: var(--theme-informative-yellow);
   font-size: var(--fonts-xs);
   font-weight: var(--semi-bold);
   text-align: center;
