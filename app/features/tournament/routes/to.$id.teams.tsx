@@ -1,19 +1,14 @@
 import { Link, useOutletContext } from "@remix-run/react";
-import clsx from "clsx";
 import { Avatar } from "~/components/Avatar";
-import { Button } from "~/components/Button";
 import { AlertIcon } from "~/components/icons/Alert";
 import { CheckmarkIcon } from "~/components/icons/Checkmark";
-import { TrashIcon } from "~/components/icons/Trash";
 import { Image } from "~/components/Image";
 import { useTranslation } from "~/hooks/useTranslation";
-import { useUser } from "~/modules/auth";
 import { navIconUrl, userPage } from "~/utils/urls";
 import type { FindTeamsByEventIdItem } from "../queries/findTeamsByEventId.server";
 import { TOURNAMENT } from "../tournament-constants";
 import type { TournamentToolsLoaderData, TournamentToolsTeam } from "./to.$id";
 
-// xxx: add controls for own team
 export default function TournamentToolsTeamsPage() {
   const { t } = useTranslation(["tournament"]);
   const data = useOutletContext<TournamentToolsLoaderData>();
@@ -60,13 +55,9 @@ export default function TournamentToolsTeamsPage() {
 
 function TeamWithRoster({
   team,
-  showDeleteButtons = false,
 }: {
   team: Pick<FindTeamsByEventIdItem, "members" | "name">;
-  showDeleteButtons?: boolean;
 }) {
-  const user = useUser();
-
   return (
     <div className="tournament__team-with-roster">
       <div className="tournament__team-with-roster__name">{team.name}</div>
@@ -76,18 +67,6 @@ function TeamWithRoster({
             key={member.userId}
             className="tournament__team-with-roster__member"
           >
-            {showDeleteButtons && (
-              <Button
-                className={clsx({ invisible: user?.id === member.userId })}
-                variant="minimal-destructive"
-                size="tiny"
-                type="submit"
-                name="id"
-                value={member.userId}
-              >
-                <TrashIcon className="w-4" />
-              </Button>
-            )}
             <Avatar user={member} size="xxs" />
             <Link
               to={userPage(member)}

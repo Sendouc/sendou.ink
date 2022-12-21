@@ -27,6 +27,7 @@ import {
   type SendouRouteHandle,
 } from "~/utils/remix";
 import { discordFullName } from "~/utils/strings";
+import type { Unpacked } from "~/utils/types";
 import { assertUnreachable } from "~/utils/types";
 import {
   CALENDAR_PAGE,
@@ -35,6 +36,7 @@ import {
   navIconUrl,
 } from "~/utils/urls";
 import { createTeam } from "../queries/createTeam.server";
+import deleteTeamMember from "../queries/deleteTeamMember.server";
 import { findOwnTeam } from "../queries/findOwnTeam.server";
 import { findTeamsByEventId } from "../queries/findTeamsByEventId.server";
 import { updateTeamInfo } from "../queries/updateTeamInfo.server";
@@ -44,6 +46,7 @@ import { useSelectCounterpickMapPoolState } from "../tournament-hooks";
 import { registerSchema } from "../tournament-schemas.server";
 import { idFromParams, resolveOwnedTeam } from "../tournament-utils";
 import type { TournamentToolsLoaderData } from "./to.$id";
+import * as React from "react";
 
 export const handle: SendouRouteHandle = {
   breadcrumb: () => ({
@@ -86,6 +89,16 @@ export const action: ActionFunction = async ({ request, params }) => {
         name: data.teamName,
         id: ownTeam.id,
       });
+      break;
+    }
+    case "DELETE_TEAM_MEMBER": {
+      validate(ownTeam);
+      validate(ownTeam.members.some((member) => member.userId === data.userId));
+      validate(data.userId !== user.id);
+
+      // xxx: make sure tournament not happening
+
+      deleteTeamMember({ tournamentTeamId: ownTeam.id, userId: data.userId });
       break;
     }
     case "UPDATE_MAP_POOL": {
@@ -226,17 +239,22 @@ function FillRoster({
     0
   );
 
+  // xxx: + tournament has not started
+  const showDeleteMemberSection = ownTeamMembers.length > 1;
+
   return (
     <div>
       <h3 className="tournament__section-header">1. Fill roster</h3>
-      <section className="tournament__section stack md items-center">
-        <div className="text-center text-sm">
-          Share your invite link to add members: {inviteLink}
-        </div>
-        <div>
-          <Button size="tiny" onClick={() => copyToClipboard(inviteLink)}>
-            {t("common:actions.copyToClipboard")}
-          </Button>
+      <section className="tournament__section stack lg items-center">
+        <div className="stack md items-center">
+          <div className="text-center text-sm">
+            Share your invite link to add members: {inviteLink}
+          </div>
+          <div>
+            <Button size="tiny" onClick={() => copyToClipboard(inviteLink)}>
+              {t("common:actions.copyToClipboard")}
+            </Button>
+          </div>
         </div>
         <div className="stack lg horizontal mt-2">
           {ownTeamMembers.map((member) => {
@@ -258,6 +276,9 @@ function FillRoster({
             );
           })}
         </div>
+        {showDeleteMemberSection ? (
+          <DeleteMember members={ownTeamMembers} />
+        ) : null}
       </section>
       <div
         className={clsx("tournament__section__warning", {
@@ -271,6 +292,52 @@ function FillRoster({
         members needed to play
       </div>
     </div>
+  );
+}
+
+function DeleteMember({
+  members,
+}: {
+  members: Unpacked<TournamentToolsLoaderData["teams"]>["members"];
+}) {
+  const id = React.useId();
+  const fetcher = useFetcher();
+  const [expanded, setExpanded] = React.useState(false);
+
+  if (!expanded) {
+    return (
+      <Button
+        size="tiny"
+        variant="minimal-destructive"
+        onClick={() => setExpanded(true)}
+      >
+        Delete member
+      </Button>
+    );
+  }
+
+  return (
+    <fetcher.Form method="post">
+      <Label htmlFor={id}>User to delete</Label>
+      <div className="stack md horizontal">
+        <select name="userId" id={id}>
+          {members
+            .filter((member) => !member.isOwner)
+            .map((member) => (
+              <option key={member.userId} value={member.userId}>
+                {discordFullName(member)}
+              </option>
+            ))}
+        </select>
+        <SubmitButton
+          state={fetcher.state}
+          _action="DELETE_TEAM_MEMBER"
+          variant="minimal-destructive"
+        >
+          Delete
+        </SubmitButton>
+      </div>
+    </fetcher.Form>
   );
 }
 

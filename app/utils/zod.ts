@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { abilities } from "~/modules/in-game-lists";
 
-export const id = z.number().int().positive();
+export const id = z.coerce.number().int().positive();
 
 const abilityNameToType = (val: string) =>
   abilities.find((ability) => ability.name === val)?.type;
