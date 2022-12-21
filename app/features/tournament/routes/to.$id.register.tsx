@@ -123,10 +123,14 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   };
 };
 
-// xxx: handle member of another team (currently just shows Register)
 export default function TournamentRegisterPage() {
+  const user = useUser();
   const data = useLoaderData<typeof loader>();
   const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
+
+  const teamRegularMemberOf = parentRouteData.teams.find((team) =>
+    team.members.some((member) => member.userId === user?.id && !member.isOwner)
+  );
 
   return (
     <div className="stack lg">
@@ -147,7 +151,9 @@ export default function TournamentRegisterPage() {
         </div>
       </div>
       <div>{parentRouteData.event.description}</div>
-      {!data?.ownTeam ? (
+      {teamRegularMemberOf ? (
+        <Alert>You are in a team for this event</Alert>
+      ) : !data?.ownTeam ? (
         <Register />
       ) : (
         <div>
