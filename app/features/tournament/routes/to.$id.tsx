@@ -50,7 +50,8 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const event = notFoundIfFalsy(findByIdentifier(eventId));
 
   return {
-    event,
+    // xxx: remove isBeforeStart
+    event: { ...event, isBeforeStart: true },
     tieBreakerMapPool:
       db.calendarEvents.findTieBreakerMapPoolByEventId(eventId),
     teams: censorMapPools(findTeamsByEventId(eventId)),
