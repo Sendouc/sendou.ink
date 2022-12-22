@@ -31,7 +31,7 @@ const BLUEPRINTS_AVAILABLE: Partial<Record<ModeShort, Array<StageId>>> = {
 };
 
 export default function Planner() {
-  const { t } = useTranslation(["common", "weapons"]);
+  const { t } = useTranslation(["common"]);
   const { i18n } = useTranslation();
   const appRef = React.useRef<TldrawApp>();
   const app = appRef.current!;
@@ -126,25 +126,7 @@ export default function Planner() {
   return (
     <>
       <StageBackgroundSelector onAddBackground={handleAddBackgroundImage} />
-      <div className="plans__weapons-section">
-        {mainWeaponIds.map((weaponId) => {
-          return (
-            <Button
-              key={weaponId}
-              variant="minimal"
-              onClick={() => handleAddWeapon(weaponId)}
-            >
-              <Image
-                alt={t(`weapons:MAIN_${weaponId}`)}
-                title={t(`weapons:MAIN_${weaponId}`)}
-                path={mainWeaponImageUrl(weaponId)}
-                width={36}
-                height={36}
-              />
-            </Button>
-          );
-        })}
-      </div>
+      <WeaponImageSelector handleAddWeapon={handleAddWeapon} />
       <div className="plans__powered-by">
         <a href={TLDRAW_URL} target="_blank" rel="noreferrer">
           {t("common:plans.poweredBy", { name: "tldraw" })}
@@ -152,6 +134,35 @@ export default function Planner() {
       </div>
       <Tldraw showMultiplayerMenu={false} onMount={handleMount} />
     </>
+  );
+}
+
+function WeaponImageSelector({
+  handleAddWeapon,
+}: {
+  handleAddWeapon: (weaponId: MainWeaponId) => void;
+}) {
+  const { t } = useTranslation(["weapons"]);
+  return (
+    <div className="plans__weapons-section">
+      {mainWeaponIds.map((weaponId) => {
+        return (
+          <Button
+            key={weaponId}
+            variant="minimal"
+            onClick={() => handleAddWeapon(weaponId)}
+          >
+            <Image
+              alt={t(`weapons:MAIN_${weaponId}`)}
+              title={t(`weapons:MAIN_${weaponId}`)}
+              path={mainWeaponImageUrl(weaponId)}
+              width={36}
+              height={36}
+            />
+          </Button>
+        );
+      })}
+    </div>
   );
 }
 
