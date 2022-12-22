@@ -74,7 +74,8 @@ button[data-state="closed"][aria-haspopup="dialog"] {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  padding: var(--s-2);
+  padding: var(--s-1-5);
+  gap: var(--s-1-5);
 }
 
 .plans__powered-by {

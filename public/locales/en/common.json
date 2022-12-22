@@ -105,6 +105,8 @@
   "weapon.category.BRELLAS": "Brellas",
   "weapon.category.STRINGERS": "Stringers",
   "weapon.category.SPLATANAS": "Splatanas",
+  "weapon.category.subs": "Subs",
+  "weapon.category.specials": "Specials",
 
   "plans.poweredBy": "Powered by {{name}}",
   "plans.blueprint": "Blueprint",

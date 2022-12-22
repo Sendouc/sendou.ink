@@ -12,14 +12,17 @@ import invariant from "tiny-invariant";
 import { useForceRefreshOnMount } from "~/hooks/useForceRefresh";
 import { useTranslation } from "~/hooks/useTranslation";
 import type { LanguageCode } from "~/modules/i18n";
-import type { MainWeaponId, ModeShort, StageId } from "~/modules/in-game-lists";
+import type { ModeShort, StageId } from "~/modules/in-game-lists";
+import { specialWeaponIds, subWeaponIds } from "~/modules/in-game-lists";
 import { stageIds, weaponCategories } from "~/modules/in-game-lists";
 import { modesShort } from "~/modules/in-game-lists/modes";
 import { semiRandomId } from "~/utils/strings";
 import {
   mainWeaponImageUrl,
   outlinedMainWeaponImageUrl,
+  specialWeaponImageUrl,
   stageMinimapImageUrlWithEnding,
+  subWeaponImageUrl,
   TLDRAW_URL,
   weaponCategoryUrl,
 } from "~/utils/urls";
@@ -99,9 +102,9 @@ export default function Planner() {
   );
 
   const handleAddWeapon = React.useCallback(
-    (weaponId: MainWeaponId) => {
+    (src: string) => {
       handleAddImage({
-        src: `${outlinedMainWeaponImageUrl(weaponId)}.png`,
+        src,
         size: [45, 45],
         isLocked: false,
         point: [randomInt(250, 1000), randomInt(250, 750)],
@@ -141,7 +144,7 @@ export default function Planner() {
 function WeaponImageSelector({
   handleAddWeapon,
 }: {
-  handleAddWeapon: (weaponId: MainWeaponId) => void;
+  handleAddWeapon: (src: string) => void;
 }) {
   const { t } = useTranslation(["weapons", "common"]);
   return (
@@ -164,7 +167,11 @@ function WeaponImageSelector({
                   <Button
                     key={weaponId}
                     variant="minimal"
-                    onClick={() => handleAddWeapon(weaponId)}
+                    onClick={() =>
+                      handleAddWeapon(
+                        `${outlinedMainWeaponImageUrl(weaponId)}.png`
+                      )
+                    }
                   >
                     <Image
                       alt={t(`weapons:MAIN_${weaponId}`)}
@@ -180,6 +187,67 @@ function WeaponImageSelector({
           </details>
         );
       })}
+      <details>
+        <summary className="plans__weapons-summary">
+          <Image path={subWeaponImageUrl(0)} width={24} height={24} alt="" />
+          {t("common:weapon.category.subs")}
+        </summary>
+        <div className="plans__weapons-container">
+          {subWeaponIds.map((subWeaponId) => {
+            return (
+              <Button
+                key={subWeaponId}
+                variant="minimal"
+                onClick={() =>
+                  handleAddWeapon(`${subWeaponImageUrl(subWeaponId)}.png`)
+                }
+              >
+                <Image
+                  alt={t(`weapons:SUB_${subWeaponId}`)}
+                  title={t(`weapons:SUB_${subWeaponId}`)}
+                  path={subWeaponImageUrl(subWeaponId)}
+                  width={28}
+                  height={28}
+                />
+              </Button>
+            );
+          })}
+        </div>
+      </details>
+      <details>
+        <summary className="plans__weapons-summary">
+          <Image
+            path={specialWeaponImageUrl(1)}
+            width={24}
+            height={24}
+            alt=""
+          />
+          {t("common:weapon.category.specials")}
+        </summary>
+        <div className="plans__weapons-container">
+          {specialWeaponIds.map((specialWeaponId) => {
+            return (
+              <Button
+                key={specialWeaponId}
+                variant="minimal"
+                onClick={() =>
+                  handleAddWeapon(
+                    `${specialWeaponImageUrl(specialWeaponId)}.png`
+                  )
+                }
+              >
+                <Image
+                  alt={t(`weapons:SPECIAL_${specialWeaponId}`)}
+                  title={t(`weapons:SPECIAL_${specialWeaponId}`)}
+                  path={specialWeaponImageUrl(specialWeaponId)}
+                  width={28}
+                  height={28}
+                />
+              </Button>
+            );
+          })}
+        </div>
+      </details>
     </div>
   );
 }
