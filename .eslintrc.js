@@ -44,6 +44,13 @@ module.exports = {
               "Please import useTranslation from '~/hooks/useTranslation' instead.",
           },
         ],
+        patterns: [
+          {
+            group: ["~/features/*/*"],
+            message:
+              "Please import from '~/features' instead. Export from index.ts what should be exposed. See README for more information.",
+          },
+        ],
       },
     ],
   },
