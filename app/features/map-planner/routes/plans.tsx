@@ -1,6 +1,6 @@
 import { lazy } from "react";
 import type { LinksFunction } from "@remix-run/node";
-import styles from "./plans.css";
+import styles from "../plans.css";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { navIconUrl, PLANNER_URL } from "~/utils/urls";

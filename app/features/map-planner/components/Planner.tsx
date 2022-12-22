@@ -13,7 +13,7 @@ import { useForceRefreshOnMount } from "~/hooks/useForceRefresh";
 import { useTranslation } from "~/hooks/useTranslation";
 import type { LanguageCode } from "~/modules/i18n";
 import type { MainWeaponId, ModeShort, StageId } from "~/modules/in-game-lists";
-import { mainWeaponIds, stageIds } from "~/modules/in-game-lists";
+import { stageIds, weaponCategories } from "~/modules/in-game-lists";
 import { modesShort } from "~/modules/in-game-lists/modes";
 import { semiRandomId } from "~/utils/strings";
 import {
@@ -21,6 +21,7 @@ import {
   outlinedMainWeaponImageUrl,
   stageMinimapImageUrlWithEnding,
   TLDRAW_URL,
+  weaponCategoryUrl,
 } from "~/utils/urls";
 import { Button } from "../../../components/Button";
 import { Image } from "../../../components/Image";
@@ -142,24 +143,41 @@ function WeaponImageSelector({
 }: {
   handleAddWeapon: (weaponId: MainWeaponId) => void;
 }) {
-  const { t } = useTranslation(["weapons"]);
+  const { t } = useTranslation(["weapons", "common"]);
   return (
     <div className="plans__weapons-section">
-      {mainWeaponIds.map((weaponId) => {
+      {weaponCategories.map((category) => {
         return (
-          <Button
-            key={weaponId}
-            variant="minimal"
-            onClick={() => handleAddWeapon(weaponId)}
-          >
-            <Image
-              alt={t(`weapons:MAIN_${weaponId}`)}
-              title={t(`weapons:MAIN_${weaponId}`)}
-              path={mainWeaponImageUrl(weaponId)}
-              width={36}
-              height={36}
-            />
-          </Button>
+          <details key={category.name}>
+            <summary className="plans__weapons-summary">
+              <Image
+                path={weaponCategoryUrl(category.name)}
+                width={24}
+                height={24}
+                alt={t(`common:weapon.category.${category.name}`)}
+              />
+              {t(`common:weapon.category.${category.name}`)}
+            </summary>
+            <div className="plans__weapons-container">
+              {category.weaponIds.map((weaponId) => {
+                return (
+                  <Button
+                    key={weaponId}
+                    variant="minimal"
+                    onClick={() => handleAddWeapon(weaponId)}
+                  >
+                    <Image
+                      alt={t(`weapons:MAIN_${weaponId}`)}
+                      title={t(`weapons:MAIN_${weaponId}`)}
+                      path={mainWeaponImageUrl(weaponId)}
+                      width={36}
+                      height={36}
+                    />
+                  </Button>
+                );
+              })}
+            </div>
+          </details>
         );
       })}
     </div>

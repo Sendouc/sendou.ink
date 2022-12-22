@@ -51,17 +51,30 @@ button[data-state="closed"][aria-haspopup="dialog"] {
   position: fixed;
   z-index: 10;
   top: 10%;
-  display: flex;
   width: 150px;
   max-height: 85vh;
-  flex-wrap: wrap;
-  justify-content: center;
-  padding: var(--s-2);
   border: 1px solid var(--theme-very-transparent);
   border-radius: 0 var(--rounded) var(--rounded) 0;
   background: var(--bg-darker);
   gap: 2px;
   overflow-y: auto;
+}
+
+.plans__weapons-summary {
+  background-color: var(--bg-lighter);
+  font-size: var(--fonts-sm);
+  font-weight: var(--bold);
+  padding: var(--s-2-5);
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.plans__weapons-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: var(--s-2);
 }
 
 .plans__powered-by {
