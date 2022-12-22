@@ -20,7 +20,7 @@ import {
   specialWeaponImageUrl,
   subWeaponImageUrl,
 } from "~/utils/urls";
-import styles from "~/styles/object-damage.css";
+import styles from "../calculator.css";
 import type { LinksFunction } from "@remix-run/node";
 import type { SendouRouteHandle } from "~/utils/remix";
 import React from "react";

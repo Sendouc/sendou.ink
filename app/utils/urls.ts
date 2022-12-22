@@ -17,7 +17,7 @@ import type {
 } from "~/modules/in-game-lists/types";
 import type navItems from "~/components/layout/nav-items.json";
 import { type AuthErrorCode } from "~/modules/auth";
-import type { StageBackgroundStyle } from "~/components/Planner";
+import type { StageBackgroundStyle } from "~/features/map-planner";
 
 export const SPLATOON_2_SENDOU_IN_URL = "https://spl2.sendou.ink";
 export const PLUS_SERVER_DISCORD_URL = "https://discord.gg/FW4dKrY";

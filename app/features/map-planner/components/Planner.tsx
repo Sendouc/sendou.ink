@@ -22,10 +22,9 @@ import {
   stageMinimapImageUrlWithEnding,
   TLDRAW_URL,
 } from "~/utils/urls";
-import { Button } from "./Button";
-import { Image } from "./Image";
-
-export type StageBackgroundStyle = ModeShort | "TCO";
+import { Button } from "../../../components/Button";
+import { Image } from "../../../components/Image";
+import type { StageBackgroundStyle } from "../plans-types";
 
 const BLUEPRINTS_AVAILABLE: Partial<Record<ModeShort, Array<StageId>>> = {
   TC: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
