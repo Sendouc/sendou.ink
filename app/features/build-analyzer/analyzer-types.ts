@@ -4,10 +4,10 @@ import type {
   SpecialWeaponId,
   SubWeaponId,
 } from "~/modules/in-game-lists";
-import type { SPECIAL_EFFECTS } from "./specialEffects";
-import type weaponParams from "./weapon-params.json";
-import type abilityValues from "./ability-values.json";
-import type { DAMAGE_TYPE } from "./constants";
+import type { SPECIAL_EFFECTS } from "./core/specialEffects";
+import type weaponParams from "./core/weapon-params.json";
+import type abilityValues from "./core/ability-values.json";
+import type { DAMAGE_TYPE } from "./analyzer-constants";
 import type { AbilityWithUnknown } from "~/modules/in-game-lists/types";
 
 type Overwrites = Record<

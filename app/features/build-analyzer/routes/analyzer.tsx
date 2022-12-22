@@ -47,12 +47,15 @@ import type {
   AnalyzedBuild,
   SpecialEffectType,
   Stat,
-} from "../core/types";
+} from "../analyzer-types";
 import {
   lastDitchEffortIntensityToAp,
   SPECIAL_EFFECTS,
 } from "../core/specialEffects";
-import { damageTypeToWeaponType, MAX_LDE_INTENSITY } from "../core/constants";
+import {
+  damageTypeToWeaponType,
+  MAX_LDE_INTENSITY,
+} from "../analyzer-constants";
 import { useAnalyzeBuild } from "../analyzer-hooks";
 
 export const CURRENT_PATCH = "2.0";

@@ -15,7 +15,7 @@ import type {
   ParamsJson,
   SpecialWeaponParams,
   SubWeaponParams,
-} from "./types";
+} from "../analyzer-types";
 import invariant from "tiny-invariant";
 
 export function weaponParams(): ParamsJson {

@@ -9,9 +9,9 @@ import type {
   MainWeaponParams,
   StatFunctionInput,
   SubWeaponParams,
-} from "./types";
-import { DAMAGE_TYPE, multiShot } from "./constants";
-import { INK_CONSUME_TYPES } from "./types";
+} from "../analyzer-types";
+import { DAMAGE_TYPE, multiShot } from "../analyzer-constants";
+import { INK_CONSUME_TYPES } from "../analyzer-types";
 import invariant from "tiny-invariant";
 import {
   abilityPointsToEffects,

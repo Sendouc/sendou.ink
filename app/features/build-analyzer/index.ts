@@ -9,12 +9,12 @@ export type {
   AnalyzedBuild,
   SpecialWeaponParams,
   SubWeaponParams,
-} from "./core/types";
+} from "./analyzer-types";
 export {
   buildStats,
   specialDeviceHp,
   specialFieldHp,
   subStats,
 } from "./core/stats";
-export { DAMAGE_TYPE, damageTypeToWeaponType } from "./core/constants";
+export { DAMAGE_TYPE, damageTypeToWeaponType } from "./analyzer-constants";
 export { default as weaponParams } from "./core/weapon-params.json";

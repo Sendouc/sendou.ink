@@ -1,7 +1,7 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 import { type MainWeaponId, mainWeaponIds } from "~/modules/in-game-lists";
-import { damageTypeToWeaponType } from "./constants";
+import { damageTypeToWeaponType } from "../analyzer-constants";
 import { buildStats } from "./stats";
 
 const AnalyzeBuild = suite("Analyze build");

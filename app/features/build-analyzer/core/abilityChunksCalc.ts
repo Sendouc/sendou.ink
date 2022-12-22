@@ -3,7 +3,7 @@ import {
   type AbilityWithUnknown,
   type BuildAbilitiesTupleWithUnknown,
 } from "~/modules/in-game-lists";
-import type { AbilityChunks } from "./types";
+import type { AbilityChunks } from "../analyzer-types";
 
 // Reference for Ability Chunks numbers: https://splatoonwiki.org/wiki/Ability_chunk#Splatoon_3
 const MAIN_REQUIRED_ABILITY_CHUNKS_COUNT = 45;

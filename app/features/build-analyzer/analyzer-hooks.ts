@@ -9,10 +9,10 @@ import {
   abilities,
   isAbility,
 } from "~/modules/in-game-lists";
-import { MAX_LDE_INTENSITY } from "./core/constants";
+import { MAX_LDE_INTENSITY } from "./analyzer-constants";
 import { applySpecialEffects, SPECIAL_EFFECTS } from "./core/specialEffects";
 import { buildStats } from "./core/stats";
-import type { SpecialEffectType } from "./core/types";
+import type { SpecialEffectType } from "./analyzer-types";
 import {
   buildToAbilityPoints,
   validatedWeaponIdFromSearchParams,
