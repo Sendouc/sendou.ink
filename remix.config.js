@@ -7,6 +7,10 @@ module.exports = {
   routes: async (defineRoutes) => {
     return defineRoutes((route) => {
       route("/analyzer", "features/build-analyzer/routes/analyzer.tsx");
+      route(
+        "/object-damage-calculator",
+        "features/object-damage-calculator/routes/object-damage-calculator.tsx"
+      );
       route("/to/:id", "features/tournament/routes/to.$id.tsx", () => {
         route("/to/:id", "features/tournament/routes/to.$id.index.tsx");
         route(

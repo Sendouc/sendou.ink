@@ -7,7 +7,7 @@ import type {
 import type { SPECIAL_EFFECTS } from "./specialEffects";
 import type weaponParams from "./weapon-params.json";
 import type abilityValues from "./ability-values.json";
-import type { DAMAGE_RECEIVERS, DAMAGE_TYPE } from "./constants";
+import type { DAMAGE_TYPE } from "./constants";
 import type { AbilityWithUnknown } from "~/modules/in-game-lists/types";
 
 type Overwrites = Record<
@@ -172,10 +172,6 @@ export interface FullInkTankOption {
 }
 
 export type DamageType = typeof DAMAGE_TYPE[number];
-
-export type DamageReceiver = typeof DAMAGE_RECEIVERS[number];
-
-export type HitPoints = Record<DamageReceiver, number>;
 
 export interface Damage {
   value: number;

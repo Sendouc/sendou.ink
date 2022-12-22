@@ -1,11 +1,15 @@
 import { useSearchParams } from "@remix-run/react";
 import { assertType } from "~/utils/types";
 import { type MainWeaponId } from "~/modules/in-game-lists";
-import type { DAMAGE_TYPE } from "./constants";
-import { calculateDamage } from "./objectDamage";
-import { buildStats } from "./stats";
-import type { AnalyzedBuild, DamageType } from "./types";
-import { possibleApValues, validatedWeaponIdFromSearchParams } from "./utils";
+import {
+  type DAMAGE_TYPE,
+  buildStats,
+  possibleApValues,
+  validatedWeaponIdFromSearchParams,
+  type AnalyzedBuild,
+  type DamageType,
+} from "~/features/build-analyzer";
+import { calculateDamage } from "./core/objectDamage";
 
 const ABILITY_POINTS_SP_KEY = "ap";
 const DAMAGE_TYPE_SP_KEY = "dmg";

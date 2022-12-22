@@ -4,15 +4,17 @@ import {
   CRAB_TANK_ID,
   SPLASH_WALL_ID,
 } from "~/modules/in-game-lists";
-import { specialDeviceHp, specialFieldHp, subStats } from "./stats";
-import type {
-  AbilityPoints,
-  HitPoints,
-  SpecialWeaponParams,
-  SubWeaponParams,
-} from "./types";
-import { hpDivided } from "./utils";
-import weaponParams from "./weapon-params.json";
+import {
+  specialDeviceHp,
+  specialFieldHp,
+  subStats,
+  hpDivided,
+  weaponParams,
+  type AbilityPoints,
+  type SpecialWeaponParams,
+  type SubWeaponParams,
+} from "~/features/build-analyzer";
+import type { HitPoints } from "../calculator-types";
 
 const WAVE_BREAKER_HP = 400;
 const SPRINKER_HP = 100;

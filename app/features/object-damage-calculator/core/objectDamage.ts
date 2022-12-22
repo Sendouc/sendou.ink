@@ -1,24 +1,24 @@
 import type {
   AbilityPoints,
   AnalyzedBuild,
-  DamageReceiver,
   DamageType,
-} from "./types";
+} from "~/features/build-analyzer";
+import { damageTypeToWeaponType } from "~/features/build-analyzer";
 import objectDamages from "./object-dmg.json";
 import type {
   MainWeaponId,
   SpecialWeaponId,
   SubWeaponId,
 } from "~/modules/in-game-lists";
+import { roundToNDecimalPlaces } from "~/utils/number";
+import invariant from "tiny-invariant";
+import { objectHitPoints } from "./objectHitPoints";
 import {
   damageTypesToCombine,
-  damageTypeToWeaponType,
   DAMAGE_RECEIVERS,
   objectDamageJsonKeyPriority,
-} from "./constants";
-import { roundToNDecimalPlaces } from "~/utils/number";
-import { objectHitPoints } from "./objectHitPoints";
-import invariant from "tiny-invariant";
+} from "../calculator-constants";
+import type { DamageReceiver } from "../calculator-types";
 
 export function damageTypeToMultipliers({
   type,

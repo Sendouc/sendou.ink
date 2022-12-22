@@ -32,9 +32,9 @@ import { damageTypeTranslationString } from "~/utils/i18next";
 import { useSetTitle } from "~/hooks/useSetTitle";
 import type { ShouldReloadFunction } from "@remix-run/react";
 import { Toggle } from "~/components/Toggle";
-import { useObjectDamage } from "~/features/build-analyzer/core/useObjectDamage";
-import type { DamageReceiver } from "~/features/build-analyzer";
+import { useObjectDamage } from "../calculator-hooks";
 import { type DamageType, possibleApValues } from "~/features/build-analyzer";
+import type { DamageReceiver } from "../calculator-types";
 
 export const CURRENT_PATCH = "2.0";
 
