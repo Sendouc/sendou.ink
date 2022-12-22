@@ -12,8 +12,17 @@ import {
 } from "~/utils/urls";
 import { type SendouRouteHandle } from "~/utils/remix";
 import styles from "~/styles/builds.css";
-import type { LinksFunction } from "@remix-run/node";
+import type { LinksFunction, MetaFunction } from "@remix-run/node";
 import { Main } from "~/components/Main";
+import { makeTitle } from "~/utils/strings";
+import { useSetTitle } from "~/hooks/useSetTitle";
+
+export const meta: MetaFunction = () => {
+  return {
+    title: makeTitle("Builds"),
+    description: "View Splatoon 3 builds for all weapons by the best players",
+  };
+};
 
 export const handle: SendouRouteHandle = {
   i18n: "weapons",
@@ -30,6 +39,7 @@ export const links: LinksFunction = () => {
 
 export default function BuildsPage() {
   const { t } = useTranslation(["common", "weapons"]);
+  useSetTitle(t("common:pages.builds"));
 
   const weaponIdToSlug = (weaponId: MainWeaponId) => {
     return mySlugify(t(`weapons:MAIN_${weaponId}`, { lng: "en" }));
