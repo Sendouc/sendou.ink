@@ -4,7 +4,7 @@ const ids = {
   },
   roles: {
     sroLfg: "749589703371653158",
-    sroCoach: "1053243405179826266",
+    sroCoach: "807258345223356486",
     plusTwoPings: "678602424314888224",
     plusThreePings: "818060819811663872",
     plusOne: "657613334249734165",
