@@ -87,6 +87,7 @@ export function buildStats({
       subWeaponInkConsumptionPercentage:
         subWeaponInkConsumptionPercentage(input),
       squidFormInkRecoverySeconds: squidFormInkRecoverySeconds(input),
+      humanoidFormInkRecoverySeconds: humanoidFormInkRecoverySeconds(input),
       runSpeed: runSpeed(input),
       shootingRunSpeed: shootingRunSpeed(input, "MoveSpeed"),
       shootingRunSpeedCharging: shootingRunSpeed(input, "MoveSpeed_Charge"),
@@ -453,6 +454,26 @@ function squidFormInkRecoverySeconds(
     baseValue: framesToSeconds(baseEffect * inkTankSize(args.weaponSplId)),
     value: framesToSeconds(effect * inkTankSize(args.weaponSplId)),
     modifiedBy: SQUID_FORM_INK_RECOVERY_SECONDS_ABILITY,
+  };
+}
+
+function humanoidFormInkRecoverySeconds(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["humanoidFormInkRecoverySeconds"] {
+  const HUMANOID_FORM_INK_RECOVERY_SECONDS_ABILITY = "IRU";
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: HUMANOID_FORM_INK_RECOVERY_SECONDS_ABILITY,
+    }),
+    key: "InkRecoverFrm_Std",
+    weapon: args.mainWeaponParams,
+  });
+
+  return {
+    baseValue: framesToSeconds(baseEffect * inkTankSize(args.weaponSplId)),
+    value: framesToSeconds(effect * inkTankSize(args.weaponSplId)),
+    modifiedBy: HUMANOID_FORM_INK_RECOVERY_SECONDS_ABILITY,
   };
 }
 

@@ -594,6 +594,11 @@ export default function BuildAnalyzerPage() {
               suffix={t("analyzer:suffix.seconds")}
             />
             <StatCard
+              stat={analyzed.stats.humanoidFormInkRecoverySeconds}
+              title={t("analyzer:stat.humanoidFormInkRecoverySeconds")}
+              suffix={t("analyzer:suffix.seconds")}
+            />
+            <StatCard
               stat={analyzed.stats.quickRespawnTime}
               title={t("analyzer:stat.quickRespawnTime")}
               suffix={t("analyzer:suffix.seconds")}

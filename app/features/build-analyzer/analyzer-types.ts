@@ -201,6 +201,7 @@ export interface AnalyzedBuild {
     fullInkTankOptions: Array<FullInkTankOption & { id: string }>;
     damages: Array<Damage & { id: string }>;
     squidFormInkRecoverySeconds: Stat;
+    humanoidFormInkRecoverySeconds: Stat;
     runSpeed: Stat;
     shootingRunSpeed?: Stat;
     shootingRunSpeedCharging?: Stat;

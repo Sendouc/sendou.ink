@@ -21,6 +21,7 @@
   "stat.whiteInk": "No ink recovery time after usage",
   "stat.subWeaponInkConsumptionPercentage": "Ink tank consumption",
   "stat.squidFormInkRecoverySeconds": "Ink tank full recovery time (squid form)",
+  "stat.humanoidFormInkRecoverySeconds": "Ink tank full recovery time (humanoid form)",
   "stat.quickRespawnTime": "Quick respawn time",
   "stat.quickRespawnTimeSplattedByRP": "Quick Respawn time (splatted by RP user)",
   "stat.superJumpTimeGround": "Super jump vulnerable frames",
