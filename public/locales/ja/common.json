@@ -32,7 +32,6 @@
 
   "actions.save": "保存",
   "actions.saveChanges": "変更を保存",
-  "actions.saving": "保存中...",
   "actions.submit": "送信",
   "actions.edit": "編集",
   "actions.add": "追加",

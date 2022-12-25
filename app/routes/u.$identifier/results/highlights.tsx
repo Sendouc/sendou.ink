@@ -1,9 +1,8 @@
 import { type ActionFunction, redirect } from "@remix-run/node";
-import { Form, useMatches, useTransition } from "@remix-run/react";
+import { Form, useMatches } from "@remix-run/react";
 import { useTranslation } from "~/hooks/useTranslation";
 import invariant from "tiny-invariant";
 import { z } from "zod";
-import { Button } from "~/components/Button";
 import { FormErrors } from "~/components/FormErrors";
 import { db } from "~/db";
 import { requireUser } from "~/modules/auth";
@@ -15,6 +14,7 @@ import {
   HIGHLIGHT_CHECKBOX_NAME,
   UserResultsTable,
 } from "./components/UserResultsTable";
+import { SubmitButton } from "~/components/SubmitButton";
 
 const editHighlightsActionSchema = z.object({
   [HIGHLIGHT_CHECKBOX_NAME]: z.optional(
@@ -44,7 +44,6 @@ export const action: ActionFunction = async ({ request }) => {
 export default function ResultHighlightsEditPage() {
   const { t } = useTranslation(["common", "user"]);
   const [, parentRoute] = useMatches();
-  const transition = useTransition();
 
   invariant(parentRoute);
   const userPageData = parentRoute.data as UserPageLoaderData;
@@ -62,13 +61,7 @@ export default function ResultHighlightsEditPage() {
           />
         </fieldset>
       </div>
-      <Button
-        loadingText={t("common:actions.saving")}
-        type="submit"
-        loading={transition.state === "submitting"}
-      >
-        {t("common:actions.save")}
-      </Button>
+      <SubmitButton>{t("common:actions.save")}</SubmitButton>
       <FormErrors namespace="user" />
     </Form>
   );

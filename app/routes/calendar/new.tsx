@@ -63,6 +63,7 @@ import {
 import { Tags } from "./components/Tags";
 import { isDefined } from "~/utils/arrays";
 import { CrossIcon } from "~/components/icons/Cross";
+import { SubmitButton } from "~/components/SubmitButton";
 
 const MIN_DATE = new Date(Date.UTC(2015, 4, 28));
 
@@ -243,9 +244,7 @@ export default function CalendarNewEventPage() {
         <TagsAdder />
         <BadgesAdder />
         <TOToolsAndMapPool />
-        <Button type="submit" className="mt-4">
-          {t("actions.submit")}
-        </Button>
+        <SubmitButton className="mt-4">{t("actions.submit")}</SubmitButton>
       </Form>
     </Main>
   );

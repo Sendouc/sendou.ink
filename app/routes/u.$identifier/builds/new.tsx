@@ -13,6 +13,7 @@ import { GearCombobox, WeaponCombobox } from "~/components/Combobox";
 import { Image } from "~/components/Image";
 import { Label } from "~/components/Label";
 import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
+import { SubmitButton } from "~/components/SubmitButton";
 import { BUILD, EMPTY_BUILD } from "~/constants";
 import { db } from "~/db";
 import type { GearType } from "~/db/types";
@@ -198,9 +199,7 @@ export default function NewBuildPage() {
         <TitleInput />
         <DescriptionTextarea />
         <ModeCheckboxes />
-        <Button type="submit" className="mt-4">
-          {t("actions.submit")}
-        </Button>
+        <SubmitButton className="mt-4">{t("actions.submit")}</SubmitButton>
       </Form>
     </div>
   );

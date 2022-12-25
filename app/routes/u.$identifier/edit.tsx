@@ -4,13 +4,7 @@ import {
   type LinksFunction,
   type LoaderArgs,
 } from "@remix-run/node";
-import {
-  Form,
-  Link,
-  useLoaderData,
-  useMatches,
-  useTransition,
-} from "@remix-run/react";
+import { Form, Link, useLoaderData, useMatches } from "@remix-run/react";
 import { countries } from "countries-list";
 import * as React from "react";
 import { Trans } from "react-i18next";
@@ -24,6 +18,7 @@ import { TrashIcon } from "~/components/icons/Trash";
 import { WeaponImage } from "~/components/Image";
 import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
+import { SubmitButton } from "~/components/SubmitButton";
 import { USER } from "~/constants";
 import { db } from "~/db";
 import { type User } from "~/db/types";
@@ -198,7 +193,6 @@ export default function UserEditPage() {
   const [, parentRoute] = useMatches();
   invariant(parentRoute);
   const parentRouteData = parentRoute.data as UserPageLoaderData;
-  const transition = useTransition();
 
   return (
     <div className="half-width">
@@ -216,13 +210,7 @@ export default function UserEditPage() {
             more information.
           </Trans>
         </FormMessage>
-        <Button
-          loadingText={t("common:actions.saving")}
-          type="submit"
-          loading={transition.state === "submitting"}
-        >
-          {t("common:actions.save")}
-        </Button>
+        <SubmitButton>{t("common:actions.save")}</SubmitButton>
         <FormErrors namespace="user" />
       </Form>
     </div>
