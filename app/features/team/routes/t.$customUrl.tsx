@@ -15,9 +15,10 @@ import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { teamParamsSchema } from "../team-schemas.server";
 import { Placement } from "~/components/Placement";
 import styles from "../team.css";
-import type { DetailedTeamMember } from "../team-types";
+import type { DetailedTeamMember, TeamResultPeek } from "../team-types";
 import { Avatar } from "~/components/Avatar";
 import { useTranslation } from "~/hooks/useTranslation";
+import { Flag } from "~/components/Flag";
 
 export const meta: MetaFunction = ({
   data,
@@ -62,7 +63,7 @@ export default function TeamPage() {
         <TeamBanner />
         <InfoBadges />
       </div>
-      <ResultsBanner />
+      {team.results ? <ResultsBanner results={team.results} /> : null}
       <div className="stack lg">
         {team.members.map((member) => (
           <MemberRow key={member.discordId} member={member} />
@@ -93,12 +94,9 @@ function TeamBanner() {
         </div>
       ) : null}
       <div className="team__banner__flags">
-        {/* xxx: map to real flags */}
-        <img
-          src="https://twemoji.maxcdn.com/v/latest/svg/1f1eb-1f1ee.svg"
-          alt="Flag of Finland"
-          width={48}
-        />
+        {team.countries.map((country) => {
+          return <Flag key={country} countryCode={country} />;
+        })}
       </div>
       <div className="team__banner__name">{team.name}</div>
     </div>
@@ -126,16 +124,12 @@ function InfoBadges() {
   );
 }
 
-function ResultsBanner() {
-  const { team } = useLoaderData<typeof loader>();
-
-  if (!team.results) return null;
-
+function ResultsBanner({ results }: { results: TeamResultPeek }) {
   return (
     <Link className="team__results" to="results">
-      <div>View {team.results.count} results</div>
+      <div>View {results.count} results</div>
       <ul className="team__results__placements">
-        {team.results.placements.map(({ placement, count }) => {
+        {results.placements.map(({ placement, count }) => {
           return (
             <li key={placement}>
               <Placement placement={placement} />×{count}

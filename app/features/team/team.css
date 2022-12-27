@@ -18,6 +18,8 @@
 .team__banner__flags {
   grid-area: flags;
   margin-top: -5px;
+  display: flex;
+  column-gap: var(--s-4);
 }
 
 .team__banner__name {

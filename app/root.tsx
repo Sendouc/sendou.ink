@@ -21,6 +21,7 @@ import variableStyles from "~/styles/vars.css";
 import utilStyles from "~/styles/utils.css";
 import layoutStyles from "~/styles/layout.css";
 import resetStyles from "~/styles/reset.css";
+import flagsStyles from "~/styles/flags.css";
 import { Catcher } from "./components/Catcher";
 import { Layout } from "./components/layout";
 import { db } from "./db";
@@ -59,6 +60,7 @@ export const links: LinksFunction = () => {
     { rel: "stylesheet", href: variableStyles },
     { rel: "stylesheet", href: utilStyles },
     { rel: "stylesheet", href: layoutStyles },
+    { rel: "stylesheet", href: flagsStyles },
   ];
 };
 
