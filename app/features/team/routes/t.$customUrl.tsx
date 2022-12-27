@@ -1,6 +1,6 @@
 import type {
   LinksFunction,
-  LoaderArgs,
+  // LoaderArgs,
   MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
@@ -12,7 +12,7 @@ import { notFoundIfFalsy } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { navIconUrl, userPage } from "~/utils/urls";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
-import { teamParamsSchema } from "../team-schemas.server";
+// import { teamParamsSchema } from "../team-schemas.server";
 import { Placement } from "~/components/Placement";
 import styles from "../team.css";
 import type { DetailedTeamMember, TeamResultPeek } from "../team-types";
@@ -46,10 +46,10 @@ export const handle: SendouRouteHandle = {
   // }),
 };
 
-export const loader = ({ params }: LoaderArgs) => {
-  const { customUrl } = teamParamsSchema.parse(params);
+export const loader = (/*{ params }: LoaderArgs*/) => {
+  // const { customUrl } = teamParamsSchema.parse(params);
 
-  const team = notFoundIfFalsy(findByIdentifier(customUrl));
+  const team = notFoundIfFalsy(findByIdentifier(/*customUrl*/));
 
   return { team };
 };

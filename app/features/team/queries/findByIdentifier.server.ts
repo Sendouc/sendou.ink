@@ -1,6 +1,6 @@
 import type { DetailedTeam } from "../team-types";
 
-export function findByIdentifier(customUrl: string): DetailedTeam | null {
+export function findByIdentifier(/*customUrl: string*/): DetailedTeam | null {
   return {
     countries: ["FR"],
     name: "Alliance Rogue",
