@@ -27,7 +27,7 @@
 .u__country {
   display: flex;
   align-items: center;
-  gap: var(--s-1);
+  gap: var(--s-1-5);
   grid-area: country;
   line-height: 0.75;
 }
@@ -35,10 +35,6 @@
 .u__country-name {
   color: var(--text-lighter);
   font-weight: var(--bold);
-}
-
-.u__country-emoji {
-  font-size: var(--fonts-lg);
 }
 
 .u__socials {
