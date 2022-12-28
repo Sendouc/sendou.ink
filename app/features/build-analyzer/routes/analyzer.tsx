@@ -100,6 +100,7 @@ export default function BuildAnalyzerPage() {
   const mainWeaponCategoryItems = [
     analyzed.stats.shotSpreadAir && (
       <StatCard
+        abilityPoints={abilityPoints}
         key="jumpShotSpread"
         stat={analyzed.stats.shotSpreadAir}
         title={t("analyzer:stat.jumpShotSpread")}
@@ -108,6 +109,7 @@ export default function BuildAnalyzerPage() {
     ),
     typeof analyzed.stats.shotSpreadGround === "number" && (
       <StatCard
+        abilityPoints={abilityPoints}
         key="groundShotSpread"
         stat={analyzed.stats.shotSpreadGround}
         title={t("analyzer:stat.groundShotSpread")}
@@ -116,6 +118,7 @@ export default function BuildAnalyzerPage() {
     ),
     typeof analyzed.stats.mainWeaponWhiteInkSeconds === "number" && (
       <StatCard
+        abilityPoints={abilityPoints}
         key="whiteInkSeconds"
         stat={analyzed.stats.mainWeaponWhiteInkSeconds}
         title={t("analyzer:stat.whiteInk")}
@@ -124,6 +127,7 @@ export default function BuildAnalyzerPage() {
     ),
     typeof analyzed.weapon.brellaCanopyHp === "number" && (
       <StatCard
+        abilityPoints={abilityPoints}
         key="brellaCanopyHp"
         stat={analyzed.weapon.brellaCanopyHp}
         title={t("analyzer:stat.canopyHp")}
@@ -132,6 +136,7 @@ export default function BuildAnalyzerPage() {
     ),
     typeof analyzed.weapon.fullChargeSeconds === "number" && (
       <StatCard
+        abilityPoints={abilityPoints}
         key="fullChargeSeconds"
         stat={analyzed.weapon.fullChargeSeconds}
         title={t("analyzer:stat.fullChargeSeconds")}
@@ -140,6 +145,7 @@ export default function BuildAnalyzerPage() {
     ),
     typeof analyzed.weapon.maxChargeHoldSeconds === "number" && (
       <StatCard
+        abilityPoints={abilityPoints}
         key="maxChargeHoldSeconds"
         stat={analyzed.weapon.maxChargeHoldSeconds}
         title={t("analyzer:stat.maxChargeHoldSeconds")}
@@ -217,23 +223,27 @@ export default function BuildAnalyzerPage() {
 
           <StatCategory title={t("analyzer:stat.category.sub")}>
             <StatCard
+              abilityPoints={abilityPoints}
               stat={analyzed.stats.subWeaponInkConsumptionPercentage}
               title={t("analyzer:stat.subWeaponInkConsumptionPercentage")}
               suffix="%"
             />
             <StatCard
+              abilityPoints={abilityPoints}
               stat={analyzed.stats.subWeaponWhiteInkSeconds}
               title={t("analyzer:stat.whiteInk")}
               suffix={t("analyzer:suffix.seconds")}
             />
             {analyzed.stats.subVelocity && (
               <StatCard
+                abilityPoints={abilityPoints}
                 stat={analyzed.stats.subVelocity}
                 title={t("analyzer:stat.sub.velocity")}
               />
             )}
             {analyzed.stats.subFirstPhaseDuration && (
               <StatCard
+                abilityPoints={abilityPoints}
                 stat={analyzed.stats.subFirstPhaseDuration}
                 title={t("analyzer:stat.sub.firstPhaseDuration")}
                 suffix={t("analyzer:suffix.seconds")}
@@ -241,6 +251,7 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.subSecondPhaseDuration && (
               <StatCard
+                abilityPoints={abilityPoints}
                 stat={analyzed.stats.subSecondPhaseDuration}
                 title={t("analyzer:stat.sub.secondPhaseDuration")}
                 suffix={t("analyzer:suffix.seconds")}
@@ -248,6 +259,7 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.subMarkingTimeInSeconds && (
               <StatCard
+                abilityPoints={abilityPoints}
                 stat={analyzed.stats.subMarkingTimeInSeconds}
                 title={t("analyzer:stat.sub.markingTimeInSeconds")}
                 suffix={t("analyzer:suffix.seconds")}
@@ -255,18 +267,21 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.subMarkingRadius && (
               <StatCard
+                abilityPoints={abilityPoints}
                 stat={analyzed.stats.subMarkingRadius}
                 title={t("analyzer:stat.sub.markingRadius")}
               />
             )}
             {analyzed.stats.subExplosionRadius && (
               <StatCard
+                abilityPoints={abilityPoints}
                 stat={analyzed.stats.subExplosionRadius}
                 title={t("analyzer:stat.sub.explosionRadius")}
               />
             )}
             {analyzed.stats.subHp && (
               <StatCard
+                abilityPoints={abilityPoints}
                 stat={analyzed.stats.subHp}
                 title={t("analyzer:stat.sub.hp")}
                 suffix={t("analyzer:suffix.hp")}
@@ -274,6 +289,7 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.subQsjBoost && (
               <StatCard
+                abilityPoints={abilityPoints}
                 stat={analyzed.stats.subQsjBoost}
                 title={t("analyzer:stat.sub.qsjBoost")}
                 suffix={t("analyzer:abilityPoints.short")}
@@ -283,22 +299,26 @@ export default function BuildAnalyzerPage() {
 
           <StatCategory title={t("analyzer:stat.category.special")}>
             <StatCard
+              abilityPoints={abilityPoints}
               stat={analyzed.stats.specialPoint}
               title={t("analyzer:stat.specialPoints")}
               suffix={t("analyzer:suffix.specialPointsShort")}
             />
             <StatCard
+              abilityPoints={abilityPoints}
               stat={analyzed.stats.specialLost}
               title={t("analyzer:stat.specialLost")}
               suffix="%"
             />
             <StatCard
+              abilityPoints={abilityPoints}
               stat={analyzed.stats.specialLostSplattedByRP}
               title={t("analyzer:stat.specialLostSplattedByRP")}
               suffix="%"
             />
             {analyzed.stats.specialDurationInSeconds && (
               <StatCard
+                abilityPoints={abilityPoints}
                 stat={analyzed.stats.specialDurationInSeconds}
                 title={t("analyzer:stat.special.duration", {
                   weapon: t(
@@ -315,6 +335,7 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.specialDamageDistance && (
               <StatCard
+                abilityPoints={abilityPoints}
                 stat={analyzed.stats.specialDamageDistance}
                 title={t("analyzer:stat.special.damageDistance", {
                   weapon: t(
@@ -325,6 +346,7 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.specialPaintRadius && (
               <StatCard
+                abilityPoints={abilityPoints}
                 stat={analyzed.stats.specialPaintRadius}
                 title={t("analyzer:stat.special.paintRadius", {
                   weapon: t(
@@ -335,6 +357,7 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.specialFieldHp && (
               <StatCard
+                abilityPoints={abilityPoints}
                 stat={analyzed.stats.specialFieldHp}
                 title={t("analyzer:stat.special.shieldHp", {
                   weapon: t(
@@ -346,6 +369,7 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.specialDeviceHp && (
               <StatCard
+                abilityPoints={abilityPoints}
                 stat={analyzed.stats.specialDeviceHp}
                 title={t("analyzer:stat.special.deviceHp", {
                   weapon: t(
@@ -357,6 +381,7 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.specialHookInkConsumptionPercentage && (
               <StatCard
+                abilityPoints={abilityPoints}
                 stat={analyzed.stats.specialHookInkConsumptionPercentage}
                 title={t("analyzer:stat.special.inkConsumptionHook", {
                   weapon: t(
@@ -368,6 +393,7 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.specialInkConsumptionPerSecondPercentage && (
               <StatCard
+                abilityPoints={abilityPoints}
                 stat={analyzed.stats.specialInkConsumptionPerSecondPercentage}
                 title={t("analyzer:stat.special.inkConsumptionPerSecond", {
                   weapon: t(
@@ -379,6 +405,7 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.specialReticleRadius && (
               <StatCard
+                abilityPoints={abilityPoints}
                 stat={analyzed.stats.specialReticleRadius}
                 title={t("analyzer:stat.special.reticleRadius", {
                   weapon: t(
@@ -389,6 +416,7 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.specialThrowDistance && (
               <StatCard
+                abilityPoints={abilityPoints}
                 stat={analyzed.stats.specialThrowDistance}
                 title={t("analyzer:stat.special.throwDistance", {
                   weapon: t(
@@ -399,6 +427,7 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.specialAutoChargeRate && (
               <StatCard
+                abilityPoints={abilityPoints}
                 stat={analyzed.stats.specialAutoChargeRate}
                 title={t("analyzer:stat.special.autoChargeRate", {
                   weapon: t(
@@ -409,6 +438,7 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.specialMaxRadius && (
               <StatCard
+                abilityPoints={abilityPoints}
                 stat={analyzed.stats.specialMaxRadius}
                 title={t("analyzer:stat.special.maxRadius", {
                   weapon: t(
@@ -420,6 +450,7 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.specialRadiusRange && (
               <StatCard
+                abilityPoints={abilityPoints}
                 stat={analyzed.stats.specialRadiusRange}
                 title={t("analyzer:stat.special.radiusRange", {
                   weapon: t(
@@ -430,6 +461,7 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.specialPowerUpDuration && (
               <StatCard
+                abilityPoints={abilityPoints}
                 stat={analyzed.stats.specialPowerUpDuration}
                 title={t("analyzer:stat.special.powerUpDuration", {
                   weapon: t(
@@ -445,16 +477,19 @@ export default function BuildAnalyzerPage() {
             textBelow={t("analyzer:trackingSubDefExplanation")}
           >
             <StatCard
+              abilityPoints={abilityPoints}
               stat={analyzed.stats.subDefBombDamageLightPercentage}
               title={t("analyzer:stat.bombLdamage")}
               suffix="%"
             />
             <StatCard
+              abilityPoints={abilityPoints}
               stat={analyzed.stats.subDefBombDamageHeavyPercentage}
               title={t("analyzer:stat.bombHdamage")}
               suffix="%"
             />
             <StatCard
+              abilityPoints={abilityPoints}
               stat={analyzed.stats.subDefAngleShooterDamage}
               title={t("analyzer:stat.damage", {
                 weapon: t(`weapons:SUB_${ANGLE_SHOOTER_ID}`),
@@ -462,6 +497,7 @@ export default function BuildAnalyzerPage() {
               suffix={t("analyzer:suffix.hp")}
             />
             <StatCard
+              abilityPoints={abilityPoints}
               stat={analyzed.stats.subDefSplashWallDamagePercentage}
               title={t("analyzer:stat.damage", {
                 weapon: t(`weapons:SUB_${SPLASH_WALL_ID}`),
@@ -469,6 +505,7 @@ export default function BuildAnalyzerPage() {
               suffix="%"
             />
             <StatCard
+              abilityPoints={abilityPoints}
               stat={analyzed.stats.subDefSprinklerDamagePercentage}
               title={t("analyzer:stat.damage", {
                 weapon: t(`weapons:SUB_${SPRINKLER_ID}`),
@@ -476,6 +513,7 @@ export default function BuildAnalyzerPage() {
               suffix="%"
             />
             <StatCard
+              abilityPoints={abilityPoints}
               stat={analyzed.stats.subDefToxicMistMovementReduction}
               title={t("analyzer:stat.movementReduction", {
                 weapon: t(`weapons:SUB_${TOXIC_MIST_ID}`),
@@ -483,6 +521,7 @@ export default function BuildAnalyzerPage() {
               suffix="%"
             />
             <StatCard
+              abilityPoints={abilityPoints}
               stat={analyzed.stats.subDefPointSensorMarkedTimeInSeconds}
               title={t("analyzer:stat.markedTime", {
                 weapon: t(`weapons:SUB_${POINT_SENSOR_ID}`),
@@ -490,6 +529,7 @@ export default function BuildAnalyzerPage() {
               suffix={t("analyzer:suffix.seconds")}
             />
             <StatCard
+              abilityPoints={abilityPoints}
               stat={analyzed.stats.subDefInkMineMarkedTimeInSeconds}
               title={t("analyzer:stat.markedTime", {
                 weapon: t(`weapons:SUB_${INK_MINE_ID}`),
@@ -497,6 +537,7 @@ export default function BuildAnalyzerPage() {
               suffix={t("analyzer:suffix.seconds")}
             />
             <StatCard
+              abilityPoints={abilityPoints}
               stat={analyzed.stats.subDefAngleShooterMarkedTimeInSeconds}
               title={t("analyzer:stat.markedTime", {
                 weapon: t(`weapons:SUB_${ANGLE_SHOOTER_ID}`),
@@ -538,53 +579,64 @@ export default function BuildAnalyzerPage() {
 
           <StatCategory title={t("analyzer:stat.category.movement")}>
             <StatCard
+              abilityPoints={abilityPoints}
               stat={analyzed.stats.swimSpeed}
               title={t("analyzer:stat.swimSpeed")}
             />
             <StatCard
+              abilityPoints={abilityPoints}
               stat={analyzed.stats.swimSpeedHoldingRainmaker}
               title={t("analyzer:stat.swimSpeedHoldingRainmaker")}
             />
             <StatCard
+              abilityPoints={abilityPoints}
               stat={analyzed.stats.runSpeed}
               title={t("analyzer:stat.runSpeed")}
             />
             {analyzed.stats.shootingRunSpeed && (
               <StatCard
+                abilityPoints={abilityPoints}
                 stat={analyzed.stats.shootingRunSpeed}
                 title={t("analyzer:stat.shootingRunSpeed")}
               />
             )}
             {analyzed.stats.shootingRunSpeedCharging && (
               <StatCard
+                abilityPoints={abilityPoints}
                 stat={analyzed.stats.shootingRunSpeedCharging}
                 title={t("analyzer:stat.shootingRunSpeedCharging")}
               />
             )}
             {analyzed.stats.shootingRunSpeedFullCharge && (
               <StatCard
+                abilityPoints={abilityPoints}
                 stat={analyzed.stats.shootingRunSpeedFullCharge}
                 title={t("analyzer:stat.shootingRunSpeedFullCharge")}
               />
             )}
             <StatCard
+              abilityPoints={abilityPoints}
               stat={analyzed.stats.squidSurgeChargeFrames}
               title={t("analyzer:stat.squidSurgeChargeFrames")}
             />
             <StatCard
+              abilityPoints={abilityPoints}
               stat={analyzed.stats.runSpeedInEnemyInk}
               title={t("analyzer:stat.runSpeedInEnemyInk")}
             />
             <StatCard
+              abilityPoints={abilityPoints}
               stat={analyzed.stats.framesBeforeTakingDamageInEnemyInk}
               title={t("analyzer:stat.framesBeforeTakingDamageInEnemyInk")}
             />
             <StatCard
+              abilityPoints={abilityPoints}
               stat={analyzed.stats.damageTakenInEnemyInkPerSecond}
               title={t("analyzer:stat.damageTakenInEnemyInkPerSecond")}
               suffix={t("analyzer:suffix.hp")}
             />
             <StatCard
+              abilityPoints={abilityPoints}
               stat={analyzed.stats.enemyInkDamageLimit}
               title={t("analyzer:stat.enemyInkDamageLimit")}
               suffix={t("analyzer:suffix.hp")}
@@ -593,30 +645,36 @@ export default function BuildAnalyzerPage() {
 
           <StatCategory title={t("analyzer:stat.category.misc")}>
             <StatCard
+              abilityPoints={abilityPoints}
               stat={analyzed.stats.squidFormInkRecoverySeconds}
               title={t("analyzer:stat.squidFormInkRecoverySeconds")}
               suffix={t("analyzer:suffix.seconds")}
             />
             <StatCard
+              abilityPoints={abilityPoints}
               stat={analyzed.stats.humanoidFormInkRecoverySeconds}
               title={t("analyzer:stat.humanoidFormInkRecoverySeconds")}
               suffix={t("analyzer:suffix.seconds")}
             />
             <StatCard
+              abilityPoints={abilityPoints}
               stat={analyzed.stats.quickRespawnTime}
               title={t("analyzer:stat.quickRespawnTime")}
               suffix={t("analyzer:suffix.seconds")}
             />
             <StatCard
+              abilityPoints={abilityPoints}
               stat={analyzed.stats.quickRespawnTimeSplattedByRP}
               title={t("analyzer:stat.quickRespawnTimeSplattedByRP")}
               suffix={t("analyzer:suffix.seconds")}
             />
             <StatCard
+              abilityPoints={abilityPoints}
               stat={analyzed.stats.superJumpTimeGroundFrames}
               title={t("analyzer:stat.superJumpTimeGround")}
             />
             <StatCard
+              abilityPoints={abilityPoints}
               stat={analyzed.stats.superJumpTimeTotal}
               title={t("analyzer:stat.superJumpTimeTotal")}
               suffix={t("analyzer:suffix.seconds")}
@@ -844,22 +902,29 @@ function StatCard({
   stat,
   suffix,
   popoverInfo,
+  abilityPoints,
 }: {
   title: string;
   stat: Stat | Stat<string> | number;
   suffix?: string;
   popoverInfo?: string;
+  abilityPoints: AbilityPoints;
 }) {
   const { t } = useTranslation("analyzer");
 
   const baseValue = typeof stat === "number" ? stat : stat.baseValue;
-  const showBuildValue =
-    typeof stat !== "number" && stat.value !== stat.baseValue;
+  const showBuildValue = () => {
+    if (typeof stat === "number") return false;
+
+    return [stat.modifiedBy]
+      .flat()
+      .some((ability) => (abilityPoints.get(ability)?.ap ?? 0) > 0);
+  };
 
   return (
     <div
       className={clsx("analyzer__stat-card", {
-        "analyzer__stat-card-highlighted": showBuildValue,
+        "analyzer__stat-card-highlighted": showBuildValue(),
       })}
     >
       <div className="analyzer__stat-card__title-and-value-container">
@@ -885,13 +950,13 @@ function StatCard({
               {suffix}
             </div>
           </div>
-          {showBuildValue ? (
+          {showBuildValue() ? (
             <div className="analyzer__stat-card__value">
               <h4 className="analyzer__stat-card__value__title">
                 {t("build")}
               </h4>{" "}
               <div className="analyzer__stat-card__value__number">
-                {stat.value}
+                {(stat as Stat).value}
                 {suffix}
               </div>
             </div>
