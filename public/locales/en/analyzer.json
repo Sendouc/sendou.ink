@@ -30,6 +30,7 @@
   "stat.groundShotSpread": "Shot spread in degrees (ground)",
   "stat.squidSurgeChargeFrames": "Squid Surge charge to full frames",
   "stat.swimSpeed": "Swim speed (units per frame)",
+  "stat.swimSpeedHoldingRainmaker": "Swim speed (holding Rainmaker)",
   "stat.runSpeed": "Run speed (units per frame)",
   "stat.runSpeedInEnemyInk": "Run speed in enemy ink",
   "stat.shootingRunSpeed": "Run speed while shooting",

@@ -10,7 +10,11 @@ import type {
   StatFunctionInput,
   SubWeaponParams,
 } from "../analyzer-types";
-import { DAMAGE_TYPE, multiShot } from "../analyzer-constants";
+import {
+  DAMAGE_TYPE,
+  multiShot,
+  RAINMAKER_SPEED_PENALTY_MODIFIER,
+} from "../analyzer-constants";
 import { INK_CONSUME_TYPES } from "../analyzer-types";
 import invariant from "tiny-invariant";
 import {
@@ -96,6 +100,7 @@ export function buildStats({
         "MoveSpeedFullCharge"
       ),
       swimSpeed: swimSpeed(input),
+      swimSpeedHoldingRainmaker: swimSpeedHoldingRainmaker(input),
       runSpeedInEnemyInk: runSpeedInEnemyInk(input),
       damageTakenInEnemyInkPerSecond: damageTakenInEnemyInkPerSecond(input),
       enemyInkDamageLimit: enemyInkDamageLimit(input),
@@ -571,6 +576,20 @@ function swimSpeed(
     baseValue: effectToRounded(baseEffect * 10),
     value: effectToRounded(effect * 10 * ninjaSquidMultiplier),
     modifiedBy: [SWIM_SPEED_ABILITY, "NS"],
+  };
+}
+
+function swimSpeedHoldingRainmaker(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["swimSpeedHoldingRainmaker"] {
+  const withoutRM = swimSpeed(args);
+
+  return {
+    ...withoutRM,
+    baseValue: effectToRounded(
+      withoutRM.baseValue * RAINMAKER_SPEED_PENALTY_MODIFIER
+    ),
+    value: effectToRounded(withoutRM.value * RAINMAKER_SPEED_PENALTY_MODIFIER),
   };
 }
 

@@ -542,6 +542,10 @@ export default function BuildAnalyzerPage() {
               title={t("analyzer:stat.swimSpeed")}
             />
             <StatCard
+              stat={analyzed.stats.swimSpeedHoldingRainmaker}
+              title={t("analyzer:stat.swimSpeedHoldingRainmaker")}
+            />
+            <StatCard
               stat={analyzed.stats.runSpeed}
               title={t("analyzer:stat.runSpeed")}
             />
