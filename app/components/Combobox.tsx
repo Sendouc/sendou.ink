@@ -6,6 +6,7 @@ import type { Unpacked } from "~/utils/types";
 import type { GearType, UserWithPlusTier } from "~/db/types";
 import { useAllEventsWithMapPools, useUsers } from "~/hooks/swr";
 import { useTranslation } from "~/hooks/useTranslation";
+import type { MainWeaponId } from "~/modules/in-game-lists";
 import {
   clothesGearIds,
   headGearIds,
@@ -121,7 +122,7 @@ export function Combobox<T extends Record<string, string | null | number>>({
           // To make SSR prefill work in an uncontrolled component
           defaultValue={initialValue ? displayValue(initialValue) : undefined}
           displayValue={displayValue}
-          data-cy={`${inputName}-combobox-input`}
+          data-testid={`${inputName}-combobox-input`}
           id={id}
           required={required}
         />
@@ -238,6 +239,8 @@ export function WeaponCombobox({
   onChange,
   initialWeaponId,
   clearsInputOnFocus,
+  weaponIdsToOmit,
+  fullWidth,
 }: Pick<
   ComboboxProps<ComboboxBaseOption>,
   | "inputName"
@@ -246,7 +249,11 @@ export function WeaponCombobox({
   | "id"
   | "required"
   | "clearsInputOnFocus"
-> & { initialWeaponId?: typeof mainWeaponIds[number] }) {
+  | "fullWidth"
+> & {
+  initialWeaponId?: typeof mainWeaponIds[number];
+  weaponIdsToOmit?: Set<MainWeaponId>;
+}) {
   const { t } = useTranslation("weapons");
 
   const idToWeapon = (id: typeof mainWeaponIds[number]) => ({
@@ -258,7 +265,9 @@ export function WeaponCombobox({
   return (
     <Combobox
       inputName={inputName}
-      options={mainWeaponIds.map(idToWeapon)}
+      options={mainWeaponIds
+        .filter((id) => !weaponIdsToOmit?.has(id))
+        .map(idToWeapon)}
       initialValue={
         typeof initialWeaponId === "number" ? idToWeapon(initialWeaponId) : null
       }
@@ -268,6 +277,7 @@ export function WeaponCombobox({
       id={id}
       required={required}
       clearsInputOnFocus={clearsInputOnFocus}
+      fullWidth={fullWidth}
     />
   );
 }

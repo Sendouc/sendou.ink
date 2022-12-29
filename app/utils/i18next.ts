@@ -1,4 +1,4 @@
-import type { DamageType } from "~/modules/analyzer";
+import type { DamageType } from "~/features/build-analyzer";
 import type { SubWeaponId } from "~/modules/in-game-lists";
 
 // TODO: type this correctly

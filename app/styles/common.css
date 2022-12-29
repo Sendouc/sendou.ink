@@ -77,6 +77,12 @@ a {
   padding-inline: var(--s-2);
 }
 
+:is(button, .button).big {
+  font-size: var(--fonts-md);
+  padding-block: var(--s-2-5);
+  padding-inline: var(--s-6);
+}
+
 :is(button, .button).minimal {
   padding: 0;
   border: none;
@@ -463,21 +469,41 @@ dialog::backdrop {
   margin-block-start: -12px;
 }
 
-.sub-nav__link {
+.sub-nav__link__container {
+  display: flex;
   max-width: 100px;
   flex: 1;
+  flex-direction: column;
+  align-items: center;
+  color: var(--text);
+  gap: var(--s-1-5);
+}
+
+.sub-nav__link__container.active {
+  color: var(--theme-secondary);
+}
+
+.sub-nav__link {
+  width: 100%;
   padding: var(--s-1) var(--s-2);
   border-radius: var(--rounded);
   background-color: var(--bg-lightest);
-  color: var(--text);
   font-size: var(--fonts-xs);
   font-weight: var(--semi-bold);
   text-align: center;
   white-space: nowrap;
 }
 
-.sub-nav__link.active {
-  color: var(--theme-secondary);
+.sub-nav__border-guy {
+  display: none;
+  width: 78%;
+  height: 3px;
+  border-radius: var(--rounded);
+  background-color: var(--bg-lightest);
+}
+
+.sub-nav__link__container.active > .sub-nav__border-guy {
+  display: block;
 }
 
 .popover-content {
@@ -901,7 +927,6 @@ dialog::backdrop {
 .build__icon {
   width: 1.2rem;
   height: 1.2rem;
-  fill: var(--theme);
 }
 
 .build__small-text {

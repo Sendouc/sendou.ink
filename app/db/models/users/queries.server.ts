@@ -4,21 +4,25 @@ import type {
   User,
   UserWithPlusTier,
 } from "../../types";
+import type { MainWeaponId } from "~/modules/in-game-lists";
 
-import upsertSql from "./upsert.sql";
-import updateProfileSql from "./updateProfile.sql";
-import updateByDiscordIdSql from "./updateByDiscordId.sql";
-import deleteAllPatronDataSql from "./deleteAllPatronData.sql";
 import addPatronDataSql from "./addPatronData.sql";
-import findAllSql from "./findAll.sql";
-import deleteByIdSql from "./deleteById.sql";
-import updateDiscordIdSql from "./updateDiscordId.sql";
-import findByIdentifierSql from "./findByIdentifier.sql";
-import findAllPlusMembersSql from "./findAllPlusMembers.sql";
-import findAllPatronsSql from "./findAllPatrons.sql";
 import addResultHighlightSql from "./addResultHighlight.sql";
+import deleteAllPatronDataSql from "./deleteAllPatronData.sql";
 import deleteAllResultHighlightsSql from "./deleteAllResultHighlights.sql";
+import deleteByIdSql from "./deleteById.sql";
+import findAllSql from "./findAll.sql";
+import findAllPatronsSql from "./findAllPatrons.sql";
+import findAllPlusMembersSql from "./findAllPlusMembers.sql";
+import findByIdentifierSql from "./findByIdentifier.sql";
 import searchSql from "./search.sql";
+import updateByDiscordIdSql from "./updateByDiscordId.sql";
+import updateDiscordIdSql from "./updateDiscordId.sql";
+import updateProfileSql from "./updateProfile.sql";
+import upsertSql from "./upsert.sql";
+import addUserWeaponSql from "./addUserWeapon.sql";
+import deleteUserWeaponsSql from "./deleteUserWeapons.sql";
+import { parseDBArray } from "~/utils/sql";
 
 const upsertStm = sql.prepare(upsertSql);
 export function upsert(
@@ -37,8 +41,13 @@ export function upsert(
 }
 
 const updateProfileStm = sql.prepare(updateProfileSql);
-export function updateProfile(
-  args: Pick<
+const addUserWeaponStm = sql.prepare(addUserWeaponSql);
+const deleteUserWeaponsStm = sql.prepare(deleteUserWeaponsSql);
+export const updateProfile = sql.transaction(
+  ({
+    weapons,
+    ...rest
+  }: Pick<
     User,
     | "country"
     | "id"
@@ -47,10 +56,15 @@ export function updateProfile(
     | "motionSens"
     | "stickSens"
     | "inGameName"
-  >
-) {
-  return updateProfileStm.get(args) as User;
-}
+  > & { weapons: MainWeaponId[] }) => {
+    deleteUserWeaponsStm.run({ userId: rest.id });
+    for (const [i, weaponSplId] of weapons.entries()) {
+      addUserWeaponStm.run({ userId: rest.id, weaponSplId, order: i + 1 });
+    }
+
+    return updateProfileStm.get(rest) as User;
+  }
+);
 
 const updateByDiscordIdStm = sql.prepare(updateByDiscordIdSql);
 export const updateMany = sql.transaction(
@@ -98,8 +112,10 @@ export const migrate = sql.transaction(
 
 const findByIdentifierStm = sql.prepare(findByIdentifierSql);
 export function findByIdentifier(identifier: string | number) {
-  return findByIdentifierStm.get({ identifier }) as
-    | UserWithPlusTier
+  const row = findByIdentifierStm.get({ identifier });
+
+  return { ...row, weapons: parseDBArray(row.weapons) } as
+    | (UserWithPlusTier & { weapons: MainWeaponId[] })
     | undefined;
 }
 

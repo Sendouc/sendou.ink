@@ -38,6 +38,10 @@
   color: var(--theme-info);
 }
 
+.text-warning {
+  color: var(--theme-warning);
+}
+
 .fill-success {
   fill: var(--theme-success);
 }
@@ -64,6 +68,10 @@
 
 .font-semi-bold {
   font-weight: var(--semi-bold);
+}
+
+.font-bold {
+  font-weight: var(--bold);
 }
 
 .w-full {
@@ -180,6 +188,10 @@
 
 .justify-end {
   justify-content: flex-end;
+}
+
+.self-center {
+  align-self: center;
 }
 
 .flex-wrap {

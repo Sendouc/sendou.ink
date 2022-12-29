@@ -9,6 +9,8 @@
   "motion": "Наклон",
   "stick": "Стик",
   "sens": "Чувствительность",
+  "weaponPool": "Пул оружий",
+  "discordExplanation": "Имя пользователя, аватар, ссылка на аккаунты YouTube, Twitter и Twitch берутся из вашего аккаунта в Discord. Посмотрите <1>FAQ</1> для дополнительной информации.",
 
   "results.title": "Результаты",
   "results.placing": "Место",
@@ -22,6 +24,7 @@
   "results.highlights.choose": "Выберите избранное",
   "results.highlights.explanation": "Выберите ваш избранный результат",
 
+  "forms.errors.maxWeapons": "Достигнуто максимальное количество оружия",
   "forms.errors.invalidCustomUrl.numbers": "Пользовательский URL не может содержать только цифры",
   "forms.errors.invalidCustomUrl.strangeCharacter": "Пользовательский URL не может содержать особые символы",
   "forms.errors.invalidCustomUrl.duplicate": "Кто-то уже использует этот пользовательский URL",

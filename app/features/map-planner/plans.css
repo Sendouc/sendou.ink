@@ -1,0 +1,93 @@
+div {
+  box-shadow: none !important;
+}
+
+/** Hacky selector to remove the question mark popup on bottom left */
+button[data-state="closed"][aria-haspopup="dialog"] {
+  display: none;
+}
+
+/* stylelint-disable selector-id-pattern */
+#TD-MenuPanel {
+  display: none;
+}
+/* stylelint-enable selector-id-pattern */
+
+.layout__header {
+  z-index: 2;
+  border: none;
+  backdrop-filter: none;
+  background-color: transparent;
+}
+
+.layout__header__right-container {
+  display: none;
+}
+
+.tl-canvas {
+  background-color: var(--bg);
+}
+
+.plans__placeholder {
+  min-height: 100%;
+}
+
+.plans__top-section {
+  position: fixed;
+  z-index: 10;
+  top: 3%;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  padding: var(--s-3);
+  border: 1px solid var(--theme-very-transparent);
+  border-radius: 0 0 var(--rounded) var(--rounded);
+  background-color: var(--bg-darker);
+  gap: var(--s-4);
+  transform: translate(-50%, -42%);
+}
+
+.plans__weapons-section {
+  position: fixed;
+  z-index: 10;
+  top: 10%;
+  width: 150px;
+  max-height: 85vh;
+  border: 1px solid var(--theme-very-transparent);
+  border-radius: 0 var(--rounded) var(--rounded) 0;
+  background: var(--bg-darker);
+  gap: 2px;
+  overflow-y: auto;
+}
+
+.plans__weapons-summary {
+  background-color: var(--bg-lighter);
+  font-size: var(--fonts-sm);
+  font-weight: var(--bold);
+  padding: var(--s-2-5);
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.plans__weapons-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: var(--s-1-5);
+  gap: var(--s-1-5);
+}
+
+.plans__powered-by {
+  position: fixed;
+  z-index: 10;
+  right: 0.5%;
+  bottom: 0.5%;
+  color: var(--text-lighter);
+  font-size: var(--fonts-xxxs);
+}
+
+.plans__no-img-text {
+  color: var(--theme-error);
+  font-size: var(--fonts-xs);
+}

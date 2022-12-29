@@ -109,7 +109,7 @@ export default function WeaponsBuildsPage() {
         data.builds.length === data.limit && (
           <LinkButton
             className="m-0-auto"
-            tiny
+            size="tiny"
             to={`?limit=${data.limit + BUILDS_PAGE_BATCH_SIZE}`}
             state={{ scroll: false }}
           >

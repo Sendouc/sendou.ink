@@ -7,6 +7,7 @@ const dimensions = {
   xxs: 24,
   xs: 36,
   sm: 44,
+  xsm: 62,
   md: 81,
   lg: 125,
 } as const;

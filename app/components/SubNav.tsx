@@ -19,8 +19,9 @@ export function SubNavLink({
   children: React.ReactNode;
 }) {
   return (
-    <NavLink className={clsx("sub-nav__link", className)} end {...props}>
-      {children}
+    <NavLink className={"sub-nav__link__container"} end {...props}>
+      <div className={clsx("sub-nav__link", className)}>{children}</div>
+      <div className="sub-nav__border-guy" />
     </NavLink>
   );
 }

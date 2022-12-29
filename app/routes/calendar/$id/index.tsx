@@ -175,7 +175,7 @@ export default function CalendarEventPage() {
               <LinkButton
                 to={data.event.discordUrl}
                 variant="outlined"
-                tiny
+                size="tiny"
                 isExternal
               >
                 Discord
@@ -184,13 +184,13 @@ export default function CalendarEventPage() {
             <LinkButton
               to={data.event.bracketUrl}
               variant="outlined"
-              tiny
+              size="tiny"
               isExternal
             >
               {resolveBaseUrl(data.event.bracketUrl)}
             </LinkButton>
             {canEditCalendarEvent({ user, event: data.event }) && (
-              <LinkButton tiny to={calendarEditPage(data.event.eventId)}>
+              <LinkButton size="tiny" to={calendarEditPage(data.event.eventId)}>
                 {t("common:actions.edit")}
               </LinkButton>
             )}
@@ -200,7 +200,7 @@ export default function CalendarEventPage() {
               startTimes: data.event.startTimes,
             }) && (
               <LinkButton
-                tiny
+                size="tiny"
                 to={calendarReportWinnersPage(data.event.eventId)}
               >
                 {t("calendar:actions.reportWinners")}
@@ -225,7 +225,7 @@ export default function CalendarEventPage() {
           >
             <Button
               className="ml-auto"
-              tiny
+              size="tiny"
               variant="minimal-destructive"
               type="submit"
             >
@@ -312,7 +312,7 @@ function MapPoolInfo() {
           className="event__create-map-list-link"
           to={readonlyMapsPage(data.event.eventId)}
           variant="outlined"
-          tiny
+          size="tiny"
         >
           <Image alt="" path={navIconUrl("maps")} width={22} height={22} />
           {t("calendar:createMapList")}

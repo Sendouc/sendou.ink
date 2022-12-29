@@ -107,7 +107,7 @@ export default function PlusCommentModalPage() {
           <LinkButton
             to={plusSuggestionPage()}
             variant="minimal-destructive"
-            tiny
+            size="tiny"
           >
             Cancel
           </LinkButton>

@@ -112,7 +112,7 @@ export default function FrontPage() {
         <div className="front__log-out-container">
           <form method="post" action={LOG_OUT_URL}>
             <Button
-              tiny
+              size="tiny"
               variant="outlined"
               icon={<LogOutIcon />}
               type="submit"

@@ -8,6 +8,12 @@
   "q3": "Come faccio ad aggiornare il mio nome utente o avatar?",
   "a3": "Aggiornare il nome utente o avatar su Discord non li aggiorna instantaneamente su sendou.ink. Per aggiornarli hai due opzioni: \n\n1) Se sei un membro del server Discord pubblico di questo sito o il Server Plus, puoi semplicemente aspettare. Una volta al giorno, tutti i profili dei membri connessi vengono aggiornati.\n\n2) Alternativamente, se vuoi aggiornarli subito, puoi semplicemente uscire e riaccedere su sendou.ink.",
 
-  "q4": "Sono diventato un sostenitore su Patreon ma non vedo nessun cambiamento sul sito?",
-  "a4": "Assicurati di aver connesso il tuo account Discord con quello Patreon. Dopo averli sincronizzati, l'aggiornamento dei dati sul sito potrebbe impiegare fino a 2 ore. Se stai avendo problemi, scrivi direttamente a Sendou."
+  "q4": "Sono diventato un sostenitore su Patreon, come mai non vedo nessun cambiamento sul sito?",
+  "a4": "Assicurati di aver connesso il tuo account Discord con quello Patreon. Dopo averli sincronizzati, l'aggiornamento dei dati sul sito potrebbe impiegare fino a 2 ore. Se stai avendo problemi, scrivi direttamente a Sendou.",
+
+  "q5": "Esiste un app per sendou.ink?",
+  "a5": "No, ma il sito può essere installato come una 'Progressive Web App', che porta un sacco degli stessi benefici come l'uso a schermo pieno, l'icona sulla schermata home e un processo separato dal browser. Cerca 'Come installare progressive web app su *il tuo browser*' per imparare come si fa.",
+
+  "q6": "Come faccio ad aggiungere un link per Twitch/Twitter/Youtube al mio profilo?",
+  "a6": "Il sito sincronizza i profili con le tue connessioni al profilo Discord. Per connettere un account a sendou.ink, connettilo e verificalo su Discord, quindi esci e riaccedi qui per aggiornare il profilo."
 }

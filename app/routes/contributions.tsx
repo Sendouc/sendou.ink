@@ -62,7 +62,7 @@ const TRANSLATORS: Array<{
     language: "nl",
   },
   {
-    translators: ["DoubleCookies", "Yaga"],
+    translators: ["DoubleCookies", "yaga"],
     language: "ru",
   },
   {

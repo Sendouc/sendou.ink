@@ -35,7 +35,6 @@
 
   "actions.save": "Save",
   "actions.saveChanges": "Save changes",
-  "actions.saving": "Saving...",
   "actions.submit": "Submit",
   "actions.edit": "Edit",
   "actions.add": "Add",
@@ -105,6 +104,8 @@
   "weapon.category.BRELLAS": "Brellas",
   "weapon.category.STRINGERS": "Stringers",
   "weapon.category.SPLATANAS": "Splatanas",
+  "weapon.category.subs": "Subs",
+  "weapon.category.specials": "Specials",
 
   "plans.poweredBy": "Powered by {{name}}",
   "plans.blueprint": "Blueprint",

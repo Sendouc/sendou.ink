@@ -116,6 +116,26 @@ sendou.ink/
 
 NOTE: `public/static-assets` should only have files that don't change as it is cached for 1 month.
 
+### Feature folders
+
+Feature folders contain all the code needed to make that feature happen. Some common folders include:
+
+- routes (same principle as Remix file system routing)
+- queries
+- components
+- core (all core logic, separated from any React details)
+
+Some common files:
+
+- styles.css
+- feature-hooks.ts
+- feature-utils.ts
+- feature-constants.ts
+- feature-schemas.server.ts
+
+Note: for anything that should be accessed outside of that feature should be re-exported in the index.ts file (information hiding).
+Note2: Currently the project is in progress to migrating this style so that's why not everything is using it yet.
+
 ## Commands
 
 ### Converting gifs (badges) to thumbnail (.png)

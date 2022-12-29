@@ -23,6 +23,7 @@ module.exports = {
     "no-console": ["warn", { allow: ["warn", "error"] }],
     "no-warning-comments": ["warn", { terms: ["xxx"] }],
     "no-var": 0,
+    "no-useless-escape": 0,
     "@typescript-eslint/no-unsafe-return": 0,
     "@typescript-eslint/no-unsafe-member-access": 0,
     "@typescript-eslint/no-unsafe-assignment": 0,
@@ -41,6 +42,13 @@ module.exports = {
             importNames: ["useTranslation"],
             message:
               "Please import useTranslation from '~/hooks/useTranslation' instead.",
+          },
+        ],
+        patterns: [
+          {
+            group: ["~/features/*/*"],
+            message:
+              "Please import from '~/features' instead. Export from index.ts what should be exposed. See README for more information.",
           },
         ],
       },

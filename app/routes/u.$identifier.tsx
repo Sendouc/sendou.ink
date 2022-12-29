@@ -89,10 +89,10 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     motionSens: user.motionSens,
     stickSens: user.stickSens,
     inGameName: user.inGameName,
+    weapons: user.weapons,
     country:
       countryObj && user.country
         ? {
-            emoji: countryObj.emoji,
             code: user.country,
             name:
               translatedCountry({

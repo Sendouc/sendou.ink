@@ -21,6 +21,7 @@ import variableStyles from "~/styles/vars.css";
 import utilStyles from "~/styles/utils.css";
 import layoutStyles from "~/styles/layout.css";
 import resetStyles from "~/styles/reset.css";
+import flagsStyles from "~/styles/flags.css";
 import { Catcher } from "./components/Catcher";
 import { Layout } from "./components/layout";
 import { db } from "./db";
@@ -35,10 +36,15 @@ import { COMMON_PREVIEW_IMAGE } from "./utils/urls";
 import { ConditionalScrollRestoration } from "./components/ConditionalScrollRestoration";
 import { type SendouRouteHandle } from "~/utils/remix";
 import generalI18next from "i18next";
-import * as gtag from "~/utils/gtags.client";
 import { Theme, ThemeHead, useTheme, ThemeProvider } from "./modules/theme";
 import { getThemeSession } from "./modules/theme/session.server";
 import { isTheme } from "./modules/theme/provider";
+import { useIsMounted } from "./hooks/useIsMounted";
+import { load, trackPageview } from "fathom-client";
+import invariant from "tiny-invariant";
+
+const FATHOM_ID = "MMTSTBEP";
+const FATHOM_CUSTOM_URL = "https://cheeky-efficient.sendou.ink/script.js";
 
 export const unstable_shouldReload: ShouldReloadFunction = ({ url }) => {
   // reload on language change so the selected language gets set into the cookie
@@ -54,6 +60,7 @@ export const links: LinksFunction = () => {
     { rel: "stylesheet", href: variableStyles },
     { rel: "stylesheet", href: utilStyles },
     { rel: "stylesheet", href: layoutStyles },
+    { rel: "stylesheet", href: flagsStyles },
   ];
 };
 
@@ -73,7 +80,6 @@ export interface RootLoaderData {
   locale: string;
   theme: Theme | null;
   patrons: FindAllPatrons;
-  gtmId?: string;
   user?: Pick<
     UserWithPlusTier,
     | "id"
@@ -90,12 +96,13 @@ export const loader: LoaderFunction = async ({ request }) => {
   const locale = await i18next.getLocale(request);
   const themeSession = await getThemeSession(request);
 
+  invariant(process.env["BASE_URL"], "BASE_URL env var is not set");
+
   return json<RootLoaderData>(
     {
       locale,
       theme: themeSession.getTheme(),
       patrons: db.users.findAllPatrons(),
-      gtmId: process.env["GTM_ID"],
       user: user
         ? {
             discordName: user.discordName,
@@ -114,7 +121,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export const handle: SendouRouteHandle = {
-  i18n: ["common", "game-misc"],
+  i18n: ["common", "game-misc", "weapons"],
 };
 
 function Document({
@@ -132,7 +139,7 @@ function Document({
 
   useChangeLanguage(locale);
   usePreloadTranslation();
-  useTrackPageView(data);
+  useFathom();
 
   return (
     <html lang={locale} dir={i18n.dir()} className={htmlThemeClass}>
@@ -145,7 +152,7 @@ function Document({
         <Fonts />
       </head>
       <body>
-        {data?.gtmId ? <GTM id={data.gtmId} /> : null}
+        {process.env.NODE_ENV === "development" && <HydrationTestIndicator />}
         <React.StrictMode>
           <Layout patrons={data?.patrons} isCatchBoundary={isCatchBoundary}>
             {children}
@@ -177,6 +184,7 @@ export const namespaceJsonsToPreloadObj: Record<
   user: true,
   weapons: true,
   tournament: true,
+  team: true,
 };
 const namespaceJsonsToPreload = Object.keys(namespaceJsonsToPreloadObj);
 
@@ -184,16 +192,6 @@ function usePreloadTranslation() {
   React.useEffect(() => {
     void generalI18next.loadNamespaces(namespaceJsonsToPreload);
   }, []);
-}
-
-function useTrackPageView(data?: RootLoaderData) {
-  const location = useLocation();
-
-  React.useEffect(() => {
-    if (data?.gtmId) {
-      gtag.pageview(location.pathname, data.gtmId);
-    }
-  }, [location, data]);
 }
 
 export default function App() {
@@ -235,31 +233,28 @@ export const ErrorBoundary: ErrorBoundaryComponent = ({ error }) => {
   );
 };
 
-function GTM({ id }: { id: string }) {
-  return (
-    <>
-      <script async src={`https://www.googletagmanager.com/gtag/js?id=${id}`} />
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
+function useFathom() {
+  const location = useLocation();
 
-          gtag("consent", "default", {
-            ad_storage: "denied",
-            analytics_storage: "denied",
-            functionality_storage: "denied",
-            personalization_storage: "denied",
-            security_storage: "denied"
-          });
+  React.useEffect(() => {
+    if (process.env.NODE_ENV !== "production") return;
 
-          gtag('config', '${id}', {
-            page_path: window.location.pathname,
-          });`,
-        }}
-      />
-    </>
-  );
+    load(FATHOM_ID, { url: FATHOM_CUSTOM_URL });
+  }, []);
+
+  React.useEffect(() => {
+    if (process.env.NODE_ENV !== "production") return;
+
+    trackPageview();
+  }, [location.pathname]);
+}
+
+function HydrationTestIndicator() {
+  const isMounted = useIsMounted();
+
+  if (!isMounted) return null;
+
+  return <div style={{ display: "none" }} data-testid="hydrated" />;
 }
 
 function Fonts() {
