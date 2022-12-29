@@ -109,7 +109,9 @@
 
   "plans.poweredBy": "Powered by {{name}}",
   "plans.blueprint": "Blueprint",
-  "plans.noImg": "No image available",
+  "plans.bgStyle.OVER": "Overhead",
+  "plans.bgStyle.MINI": "Minimap (blank)",
+  "plans.bgStyle.ITEMS": "Minimap",
 
   "articles.by": "by {{author}}",
 
