@@ -916,9 +916,16 @@ function StatCard({
   const showBuildValue = () => {
     if (typeof stat === "number") return false;
 
-    return [stat.modifiedBy]
-      .flat()
-      .some((ability) => (abilityPoints.get(ability)?.ap ?? 0) > 0);
+    // slightly hacky but handles the edge case
+    // where baseValue === value which can happen when
+    // you have Ninja Squid and stack swim speed
+    // -> we still want to show the build value
+    return [stat.modifiedBy].flat().some((ability) => {
+      const hasStackable = (abilityPoints.get(ability)?.ap ?? 0) > 0;
+      const hasEffect = stat.baseValue !== stat.value;
+
+      return hasEffect || hasStackable;
+    });
   };
 
   return (

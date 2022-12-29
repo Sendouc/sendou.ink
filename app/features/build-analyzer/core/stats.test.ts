@@ -35,4 +35,19 @@ AnalyzeBuild("Every main weapon has damage", () => {
   );
 });
 
+AnalyzeBuild("Ninja Squid decreases swim speed", () => {
+  const analyzed = buildStats({
+    weaponSplId: 0,
+  });
+
+  const analyzedWithNS = buildStats({
+    weaponSplId: 0,
+    mainOnlyAbilities: ["NS"],
+  });
+
+  assert.ok(
+    analyzed.stats.swimSpeed.value > analyzedWithNS.stats.swimSpeed.value
+  );
+});
+
 AnalyzeBuild.run();
