@@ -15,6 +15,11 @@
   padding: var(--s-5);
 }
 
+.team__banner__placeholder {
+  height: 12rem;
+  background-color: var(--theme-transparent);
+}
+
 .team__banner__flags {
   grid-area: flags;
   margin-top: -5px;

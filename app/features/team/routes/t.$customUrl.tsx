@@ -19,6 +19,7 @@ import type { DetailedTeamMember, TeamResultPeek } from "../team-types";
 import { Avatar } from "~/components/Avatar";
 import { useTranslation } from "~/hooks/useTranslation";
 import { Flag } from "~/components/Flag";
+import clsx from "clsx";
 
 export const meta: MetaFunction = ({
   data,
@@ -78,11 +79,14 @@ function TeamBanner() {
 
   return (
     <div
-      className="team__banner"
+      className={clsx("team__banner", {
+        team__banner__placeholder: !team.bannerSrc,
+      })}
       style={
         {
-          // xxx: some fallback banner image
-          "--team-banner-img": team.bannerSrc ? `url("${team.bannerSrc}")` : "",
+          "--team-banner-img": team.bannerSrc
+            ? `url("${team.bannerSrc}")`
+            : undefined,
         } as any
       }
     >
