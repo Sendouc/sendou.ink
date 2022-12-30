@@ -254,7 +254,19 @@ function DescriptionTextarea() {
 }
 
 function ModeCheckboxes() {
+  const { buildToEdit } = useLoaderData<typeof loader>();
   const { t } = useTranslation("builds");
+
+  let currentBuildModes:
+    | typeof modesShort
+    | null
+    | undefined
+    | typeof rankedModesShort = buildToEdit?.modes;
+
+  // Use the Ranked Modes by default for brand new builds (so that the checkboxes can be checked by default)
+  if (!currentBuildModes) {
+    currentBuildModes = rankedModesShort;
+  }
 
   return (
     <div>
@@ -269,8 +281,8 @@ function ModeCheckboxes() {
               id={mode}
               name={mode}
               type="checkbox"
-              defaultChecked={rankedModesShort.some(
-                (rankedMode) => rankedMode === mode
+              defaultChecked={currentBuildModes?.some(
+                (currentMode) => currentMode == mode
               )}
               data-cy={`${mode}-checkbox`}
             />
