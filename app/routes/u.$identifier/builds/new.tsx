@@ -26,6 +26,7 @@ import {
   modesShort,
   shoesGearIds,
 } from "~/modules/in-game-lists";
+import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import type {
   BuildAbilitiesTuple,
   BuildAbilitiesTupleWithUnknown,
@@ -253,7 +254,6 @@ function DescriptionTextarea() {
 }
 
 function ModeCheckboxes() {
-  const { buildToEdit } = useLoaderData<typeof loader>();
   const { t } = useTranslation("builds");
 
   return (
@@ -269,7 +269,9 @@ function ModeCheckboxes() {
               id={mode}
               name={mode}
               type="checkbox"
-              defaultChecked={buildToEdit?.modes?.includes(mode)}
+              defaultChecked={rankedModesShort.some(
+                (rankedMode) => rankedMode === mode
+              )}
               data-cy={`${mode}-checkbox`}
             />
           </div>
