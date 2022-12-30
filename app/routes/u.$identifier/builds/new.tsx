@@ -259,9 +259,9 @@ function ModeCheckboxes() {
 
   let currentBuildModes:
     | typeof modesShort
+    | typeof rankedModesShort
     | null
-    | undefined
-    | typeof rankedModesShort = buildToEdit?.modes;
+    | undefined = buildToEdit?.modes;
 
   // Use the Ranked Modes by default for brand new builds (so that the checkboxes can be checked by default)
   // See issue for more info: https://github.com/Sendouc/sendou.ink/issues/1150
