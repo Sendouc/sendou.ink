@@ -8,6 +8,7 @@ import {
 } from "@tldraw/tldraw";
 import randomInt from "just-random-integer";
 import * as React from "react";
+import useWindowSize from "react-use/lib/useWindowSize";
 import { useForceRefreshOnMount } from "~/hooks/useForceRefresh";
 import { useTranslation } from "~/hooks/useTranslation";
 import type { LanguageCode } from "~/modules/i18n";
@@ -109,21 +110,29 @@ export default function Planner() {
     [app, handleAddImage]
   );
 
+  // Natively available WindowSize hook: https://usehooks-ts.com/react-hook/use-window-size
+  const windowSize = useWindowSize();
+
   const handleAddBackgroundImage = React.useCallback(
     (urlArgs: {
       stageId: StageId;
       mode: ModeShort;
       style: StageBackgroundStyle;
     }) => {
+      // Dynamic background size. See this issue for more info: https://github.com/Sendouc/sendou.ink/issues/1161
+      const bgSizeFactor = 0.7;
+      const bgWidth = windowSize.width * bgSizeFactor;
+      const bgHeight = windowSize.height * bgSizeFactor;
+
       app.resetDocument();
       handleAddImage({
         src: stageMinimapImageUrlWithEnding(urlArgs),
-        size: [1600, 900],
+        size: [bgWidth, bgHeight],
         isLocked: true,
-        point: [65, 20],
+        point: [bgWidth * (1 - bgSizeFactor), bgHeight * (1 - bgSizeFactor)], // Re-centers the image onto the canvas
       });
     },
-    [app, handleAddImage]
+    [app, handleAddImage, windowSize.height, windowSize.width]
   );
 
   return (
