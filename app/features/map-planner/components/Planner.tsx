@@ -33,6 +33,10 @@ import type { StageBackgroundStyle } from "../plans-types";
 export default function Planner() {
   const { t } = useTranslation(["common"]);
   const { i18n } = useTranslation();
+
+  // Natively available WindowSize hook: https://usehooks-ts.com/react-hook/use-window-size
+  const windowSize = useWindowSize();
+
   const appRef = React.useRef<TldrawApp>();
   const app = appRef.current!;
 
@@ -109,9 +113,6 @@ export default function Planner() {
     },
     [app, handleAddImage]
   );
-
-  // Natively available WindowSize hook: https://usehooks-ts.com/react-hook/use-window-size
-  const windowSize = useWindowSize();
 
   const handleAddBackgroundImage = React.useCallback(
     (urlArgs: {
