@@ -20,6 +20,7 @@ import { Avatar } from "~/components/Avatar";
 import { useTranslation } from "~/hooks/useTranslation";
 import { Flag } from "~/components/Flag";
 import clsx from "clsx";
+import React from "react";
 
 export const meta: MetaFunction = ({
   data,
@@ -64,10 +65,14 @@ export default function TeamPage() {
         <TeamBanner />
         <InfoBadges />
       </div>
+      <MobileTeamNameCountry />
       {team.results ? <ResultsBanner results={team.results} /> : null}
       <div className="stack lg">
         {team.members.map((member) => (
-          <MemberRow key={member.discordId} member={member} />
+          <React.Fragment key={member.discordId}>
+            <MemberRow member={member} />
+            <MobileMemberCard member={member} />
+          </React.Fragment>
         ))}
       </div>
     </Main>
@@ -128,6 +133,21 @@ function InfoBadges() {
   );
 }
 
+function MobileTeamNameCountry() {
+  const { team } = useLoaderData<typeof loader>();
+
+  return (
+    <div className="team__mobile-name-country">
+      <div className="stack horizontal sm">
+        {team.countries.map((country) => {
+          return <Flag key={country} countryCode={country} tiny />;
+        })}
+      </div>
+      {team.name}
+    </div>
+  );
+}
+
 function ResultsBanner({ results }: { results: TeamResultPeek }) {
   return (
     <Link className="team__results" to="results">
@@ -177,6 +197,37 @@ function MemberRow({ member }: { member: DetailedTeamMember }) {
           ))}
         </div>
       </div>
+    </div>
+  );
+}
+
+function MobileMemberCard({ member }: { member: DetailedTeamMember }) {
+  const { t } = useTranslation(["team"]);
+
+  return (
+    <div className="team__member-card__container">
+      <div className="team__member-card">
+        <Link to={userPage(member)}>
+          <Avatar user={member} size="md" />
+          <div className="team__member-card__name">{member.discordName}</div>
+        </Link>
+        <div className="stack horizontal md">
+          {member.weapons.map((weapon) => (
+            <WeaponImage
+              key={weapon}
+              variant="badge"
+              weaponSplId={weapon}
+              width={32}
+              height={32}
+            />
+          ))}
+        </div>
+      </div>
+      {member.role ? (
+        <span className="team__member__role__mobile">
+          {t(`team:roles.${member.role}`)}
+        </span>
+      ) : null}
     </div>
   );
 }

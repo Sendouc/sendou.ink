@@ -2,7 +2,7 @@ import type { DetailedTeam } from "../team-types";
 
 export function findByIdentifier(/*customUrl: string*/): DetailedTeam | null {
   return {
-    countries: ["FR"],
+    countries: ["FR", "US"],
     name: "Alliance Rogue",
     lutiDiv: "X",
     teamXp: "2981.2",
@@ -16,7 +16,7 @@ export function findByIdentifier(/*customUrl: string*/): DetailedTeam | null {
         discordAvatar: "2ce2f7e4fe6cd2aeceec940ecebcb22c",
         discordId: "92909500100513792",
         role: "FRONTLINE",
-        weapons: [40, 20, 210, 1000],
+        weapons: [40, 20, 210, 1000, 1010],
       },
       {
         discordName: "Scar",

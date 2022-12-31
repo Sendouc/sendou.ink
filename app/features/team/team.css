@@ -9,10 +9,10 @@
   background-size: cover;
   width: 100%;
   aspect-ratio: 2 / 1;
-  border-radius: var(--rounded);
   display: grid;
   grid-template-areas: "flags ." "avatar name";
   padding: var(--s-5);
+  border-radius: var(--rounded);
 }
 
 .team__banner__placeholder {
@@ -23,7 +23,7 @@
 .team__banner__flags {
   grid-area: flags;
   margin-top: -5px;
-  display: flex;
+  display: none;
   column-gap: var(--s-4);
 }
 
@@ -35,13 +35,13 @@
   line-height: 1;
   font-weight: var(--bold);
   color: #fff;
+  display: none;
 }
 
 .team__banner__avatar {
   grid-area: avatar;
   align-self: flex-end;
-  margin-bottom: -90px;
-  margin-left: var(--s-2);
+  margin-bottom: -110px;
 }
 
 .team__banner__avatar > div {
@@ -51,7 +51,17 @@
   aspect-ratio: 1 / 1;
   display: grid;
   place-items: center;
-  width: 10rem;
+  width: 7rem;
+}
+
+.team__mobile-name-country {
+  display: flex;
+  margin-top: var(--s-12);
+  font-size: var(--fonts-xl);
+  align-items: center;
+  font-weight: var(--bold);
+  flex-direction: column;
+  line-height: 1.5;
 }
 
 .team__banner__avatar img {
@@ -74,6 +84,7 @@
   display: flex;
   align-items: center;
   gap: var(--s-1-5);
+  height: 1.5rem;
 }
 
 .team__results {
@@ -88,7 +99,6 @@
   justify-content: space-between;
   width: min(100%, 48rem);
   color: var(--text);
-  margin-block-start: var(--s-10);
 }
 
 .team__results__placements {
@@ -104,7 +114,7 @@
 }
 
 .team__member {
-  display: flex;
+  display: none;
   flex-direction: column;
 }
 
@@ -140,4 +150,69 @@
   color: var(--text-lighter);
   margin-inline-end: var(--s-2-5);
   font-weight: var(--bold);
+}
+
+.team__member__role__mobile {
+  color: var(--text-lighter);
+  font-weight: var(--bold);
+}
+
+.team__member-card__container {
+  width: 16rem;
+  margin: 0 auto;
+  display: flex;
+  text-align: center;
+  flex-direction: column;
+}
+
+.team__member-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-3);
+  background-color: var(--bg-lighter);
+  border-radius: var(--rounded);
+  font-size: var(--fonts-lg);
+  font-weight: var(--bold);
+}
+
+.team__member-card__name {
+  color: var(--text);
+  font-weight: var(--bold);
+  margin-block-start: var(--s-2);
+}
+
+@media screen and (min-width: 640px) {
+  .team__banner__flags {
+    display: flex;
+  }
+  .team__banner__name {
+    display: block;
+  }
+
+  .team__banner__avatar > div {
+    width: 10rem;
+  }
+
+  .team__banner__avatar {
+    margin-left: var(--s-2);
+    margin-bottom: -90px;
+  }
+
+  .team__mobile-name-country {
+    display: none;
+  }
+
+  .team__results {
+    margin-block-start: var(--s-10);
+  }
+
+  .team__member {
+    display: flex;
+  }
+
+  .team__member-card__container {
+    display: none;
+  }
 }
