@@ -125,12 +125,16 @@ export default function Planner() {
       const bgWidth = windowSize.width * bgSizeFactor;
       const bgHeight = windowSize.height * bgSizeFactor;
 
+      // Point offsets that move the image closer to the center of the window
+      const pointOffsetX = bgWidth * (1 - bgSizeFactor);
+      const pointOffsetY = 0.6 * (bgHeight * (1 - bgSizeFactor)); // Removes some dead space above the image
+
       app.resetDocument();
       handleAddImage({
         src: stageMinimapImageUrlWithEnding(urlArgs),
         size: [bgWidth, bgHeight],
         isLocked: true,
-        point: [bgWidth * (1 - bgSizeFactor), bgHeight * (1 - bgSizeFactor)], // Re-centers the image onto the canvas
+        point: [pointOffsetX, pointOffsetY],
       });
     },
     [app, handleAddImage, windowSize.height, windowSize.width]
