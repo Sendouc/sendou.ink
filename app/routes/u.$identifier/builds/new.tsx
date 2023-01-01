@@ -26,6 +26,7 @@ import {
   modesShort,
   shoesGearIds,
 } from "~/modules/in-game-lists";
+import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import type {
   BuildAbilitiesTuple,
   BuildAbilitiesTupleWithUnknown,
@@ -256,6 +257,18 @@ function ModeCheckboxes() {
   const { buildToEdit } = useLoaderData<typeof loader>();
   const { t } = useTranslation("builds");
 
+  let currentBuildModes:
+    | typeof modesShort
+    | typeof rankedModesShort
+    | null
+    | undefined = buildToEdit?.modes;
+
+  // Use the Ranked Modes by default for brand new builds (so that the checkboxes can be checked by default)
+  // See issue for more info: https://github.com/Sendouc/sendou.ink/issues/1150
+  if (!currentBuildModes) {
+    currentBuildModes = rankedModesShort;
+  }
+
   return (
     <div>
       <Label>{t("forms.modes")}</Label>
@@ -269,7 +282,9 @@ function ModeCheckboxes() {
               id={mode}
               name={mode}
               type="checkbox"
-              defaultChecked={buildToEdit?.modes?.includes(mode)}
+              defaultChecked={currentBuildModes?.some(
+                (currentMode) => currentMode == mode
+              )}
               data-cy={`${mode}-checkbox`}
             />
           </div>
