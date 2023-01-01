@@ -67,7 +67,6 @@
   "maps.validation.NOT_ONE_MAP_PER_MODE": "Ne choisissez qu'un stage par mode",
   "maps.validation.MAP_REPEATED": "Vous ne pouvez pas choisir deux fois le même stage",
   "maps.validation.MODE_REPEATED": "Vous ne pouvez pas choisir deux fois le même mode",
-  "maps",
   "maps.validation.TOO_MUCH_STAGE_REPEAT": "Vous ne pouvez pas choisir {{maxStageRepeat}} fois le même stage",
   "maps.validation.VALID": "Liste de stages valide !",
 
