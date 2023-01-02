@@ -247,6 +247,7 @@ export interface Team {
   name: string;
   customUrl: string;
   inviteCode: string;
+  twitter: string | null;
   bio: string | null;
   lutiDiv: string | null;
   avatarImgId: number | null;
@@ -266,7 +267,7 @@ export interface TeamMember {
   teamId: number;
   userId: number;
   role: MemberRole | null;
-  isCaptain: number;
+  isOwner: number;
   createdAt: number;
   leftAt: number | null;
 }

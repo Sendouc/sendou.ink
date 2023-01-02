@@ -45,3 +45,7 @@ export function normalizeFormFieldArray(
 export function isDefined<T>(value: T | undefined | null): value is T {
   return value !== null && value !== undefined;
 }
+
+export function removeDuplicates<T>(arr: T[]): T[] {
+  return [...new Set(arr)];
+}

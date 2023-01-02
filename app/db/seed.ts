@@ -55,6 +55,7 @@ const basicSeeds = [
   calendarEventWithToToolsTeams,
   adminBuilds,
   manySplattershotBuilds,
+  detailedTeam,
 ];
 
 export function seed() {
@@ -67,6 +68,9 @@ export function seed() {
 
 function wipeDB() {
   const tablesToDelete = [
+    "UserSubmittedImage",
+    "TeamMember",
+    "Team",
     "Build",
     "TournamentTeamMember",
     "MapPoolMap",
@@ -386,15 +390,15 @@ function patrons() {
   }
 }
 
-function userIdsInRandomOrder(adminLast = false) {
+function userIdsInRandomOrder(specialLast = false) {
   const rows = sql
     .prepare(`select "id" from "User" order by random()`)
     .all()
     .map((u) => u.id) as number[];
 
-  if (!adminLast) return rows;
+  if (!specialLast) return rows;
 
-  return [...rows.filter((id) => id !== 1), 1];
+  return [...rows.filter((id) => id !== 1 && id !== 2), 1, 2];
 }
 
 function calendarEvents() {
@@ -866,5 +870,56 @@ function manySplattershotBuilds() {
         ],
       ],
     });
+  }
+}
+
+function detailedTeam() {
+  sql
+    .prepare(
+      /* sql */ `
+    insert into "UserSubmittedImage" ("validatedAt", "url")
+      values 
+        (1672587342, 'https://abload.de/img/ryri0cnc_400x4005qcyx.jpeg'), 
+        (1672587342, 'https://abload.de/img/fjkfa-uxkamgdbxr3iqn.jpeg')
+  `
+    )
+    .run();
+
+  sql
+    .prepare(
+      /* sql */ `
+      insert into "Team" ("name", "customUrl", "inviteCode", "twitter", "bio", "lutiDiv", "avatarImgId", "bannerImgId")
+       values (
+          'Alliance Rogue',
+          'alliance-rogue',
+          '${nanoid(INVITE_CODE_LENGTH)}',
+          'AllianceRogueFR',
+          '${faker.lorem.paragraph()}',
+          'X',
+          1,
+          2
+       )
+  `
+    )
+    .run();
+
+  const userIds = userIdsInRandomOrder(true);
+  for (let i = 0; i < 5; i++) {
+    const userId = i <= 1 ? i + 1 : userIds.shift()!;
+
+    sql
+      .prepare(
+        /*sql*/ `
+      insert into "TeamMember" ("teamId", "userId", "role", "isOwner", "leftAt")
+        values (
+          1,
+          ${userId},
+          ${i === 0 ? "'CAPTAIN'" : "'FRONTLINE'"},
+          ${i === 0 ? 1 : 0},
+          ${i < 4 ? "null" : "1672587342"}
+        )
+    `
+      )
+      .run();
   }
 }
