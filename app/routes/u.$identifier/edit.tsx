@@ -28,7 +28,7 @@ import { i18next } from "~/modules/i18n";
 import { mainWeaponIds, type MainWeaponId } from "~/modules/in-game-lists";
 import styles from "~/styles/u-edit.css";
 import { translatedCountry } from "~/utils/i18n.server";
-import { safeParseRequestFormData } from "~/utils/remix";
+import { notFoundIfFalsy, safeParseRequestFormData } from "~/utils/remix";
 import { errorIsSqliteUniqueConstraintFailure } from "~/utils/sql";
 import { rawSensToString } from "~/utils/strings";
 import { FAQ_PAGE, isCustomUrl, userPage } from "~/utils/urls";
@@ -40,7 +40,7 @@ import {
   safeJSONParse,
   undefinedToNull,
 } from "~/utils/zod";
-import { type UserPageLoaderData } from "../u.$identifier";
+import { userParamsSchema, type UserPageLoaderData } from "../u.$identifier";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -170,8 +170,15 @@ export const action: ActionFunction = async ({ request }) => {
   }
 };
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderArgs) => {
   const locale = await i18next.getLocale(request);
+
+  const user = await requireUser(request);
+  const { identifier } = userParamsSchema.parse(params);
+  const userToBeEdited = notFoundIfFalsy(db.users.findByIdentifier(identifier));
+  if (user.id !== userToBeEdited.id) {
+    throw redirect(userPage(userToBeEdited));
+  }
 
   return {
     countries: Object.entries(countries)
