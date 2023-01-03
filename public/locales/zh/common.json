@@ -33,7 +33,6 @@
 
   "actions.save": "保存",
   "actions.saveChanges": "保存更改内容",
-  "actions.saving": "保存中...",
   "actions.submit": "确认",
   "actions.edit": "编辑",
   "actions.add": "添加",

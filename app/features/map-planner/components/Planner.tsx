@@ -8,7 +8,6 @@ import {
 } from "@tldraw/tldraw";
 import randomInt from "just-random-integer";
 import * as React from "react";
-import invariant from "tiny-invariant";
 import { useForceRefreshOnMount } from "~/hooks/useForceRefresh";
 import { useTranslation } from "~/hooks/useTranslation";
 import type { LanguageCode } from "~/modules/i18n";
@@ -29,10 +28,6 @@ import {
 import { Button } from "../../../components/Button";
 import { Image } from "../../../components/Image";
 import type { StageBackgroundStyle } from "../plans-types";
-
-const BLUEPRINTS_AVAILABLE: Partial<Record<ModeShort, Array<StageId>>> = {
-  TC: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-};
 
 export default function Planner() {
   const { t } = useTranslation(["common"]);
@@ -115,10 +110,14 @@ export default function Planner() {
   );
 
   const handleAddBackgroundImage = React.useCallback(
-    ({ stageId, style }: { stageId: StageId; style: StageBackgroundStyle }) => {
+    (urlArgs: {
+      stageId: StageId;
+      mode: ModeShort;
+      style: StageBackgroundStyle;
+    }) => {
       app.resetDocument();
       handleAddImage({
-        src: stageMinimapImageUrlWithEnding({ stageId, style }),
+        src: stageMinimapImageUrlWithEnding(urlArgs),
         size: [1600, 900],
         isLocked: true,
         point: [65, 20],
@@ -255,29 +254,17 @@ function WeaponImageSelector({
 function StageBackgroundSelector({
   onAddBackground,
 }: {
-  onAddBackground: ({
-    stageId,
-    style,
-  }: {
+  onAddBackground: (args: {
     stageId: StageId;
+    mode: ModeShort;
     style: StageBackgroundStyle;
   }) => void;
 }) {
   const { t } = useTranslation(["game-misc", "common"]);
   const [stageId, setStageId] = React.useState<StageId>(stageIds[0]);
+  const [mode, setMode] = React.useState<ModeShort>("SZ");
   const [backgroundStyle, setBackgroundStyle] =
-    React.useState<StageBackgroundStyle>("SZ");
-
-  const imgExists = () => {
-    // normal background image
-    if (backgroundStyle.length === 2) return true;
-
-    const stageIds =
-      BLUEPRINTS_AVAILABLE[backgroundStyle.replace("O", "") as ModeShort];
-    invariant(stageIds);
-
-    return stageIds.includes(stageId);
-  };
+    React.useState<StageBackgroundStyle>("ITEMS");
 
   return (
     <div className="plans__top-section">
@@ -297,36 +284,41 @@ function StageBackgroundSelector({
       </select>
       <select
         className="w-max"
+        value={mode}
+        onChange={(e) => setMode(e.target.value as ModeShort)}
+      >
+        {modesShort.map((mode) => {
+          return (
+            <option key={mode} value={mode}>
+              {t(`game-misc:MODE_LONG_${mode}`)}
+            </option>
+          );
+        })}
+      </select>
+      <select
+        className="w-max"
         value={backgroundStyle}
         onChange={(e) =>
           setBackgroundStyle(e.target.value as StageBackgroundStyle)
         }
       >
-        {modesShort.map((mode) => {
+        {["ITEMS", "MINI", "OVER"].map((style) => {
           return (
-            <React.Fragment key={mode}>
-              <option value={mode}>{t(`game-misc:MODE_SHORT_${mode}`)}</option>
-              {Object.keys(BLUEPRINTS_AVAILABLE).includes(mode as any) ? (
-                <option value={`${mode}O`}>
-                  {t(`game-misc:MODE_SHORT_${mode}`)} (
-                  {t("common:plans.blueprint")})
-                </option>
-              ) : null}
-            </React.Fragment>
+            <option key={style} value={style}>
+              {t(`common:plans.bgStyle.${style as StageBackgroundStyle}`)}
+            </option>
           );
         })}
       </select>
-      {imgExists() ? (
-        <Button
-          size="tiny"
-          onClick={() => onAddBackground({ style: backgroundStyle, stageId })}
-          className="w-max"
-        >
-          {t("common:actions.setBg")}
-        </Button>
-      ) : (
-        <span className="plans__no-img-text">{t("common:plans.noImg")}</span>
-      )}
+      <Button
+        size="tiny"
+        onClick={() =>
+          onAddBackground({ style: backgroundStyle, stageId, mode })
+        }
+        className="w-max"
+      >
+        {t("common:actions.setBg")}
+      </Button>
     </div>
   );
 }

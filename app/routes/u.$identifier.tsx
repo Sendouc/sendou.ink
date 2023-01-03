@@ -93,7 +93,6 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     country:
       countryObj && user.country
         ? {
-            emoji: countryObj.emoji,
             code: user.country,
             name:
               translatedCountry({

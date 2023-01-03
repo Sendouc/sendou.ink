@@ -16,6 +16,16 @@ export function dateToWeekNumber(date: Date) {
   return getWeek(date, { weekStartsOn: 1, firstWeekContainsDate: 4 });
 }
 
+export function dateToThisWeeksMonday(date: Date) {
+  const copiedDate = new Date(date.getTime());
+
+  while (copiedDate.getDay() !== 1) {
+    copiedDate.setDate(copiedDate.getDate() - 1);
+  }
+
+  return copiedDate;
+}
+
 // https://stackoverflow.com/a/71336659
 export function weekNumberToDate({
   week,

@@ -13,6 +13,7 @@ import { GearCombobox, WeaponCombobox } from "~/components/Combobox";
 import { Image } from "~/components/Image";
 import { Label } from "~/components/Label";
 import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
+import { SubmitButton } from "~/components/SubmitButton";
 import { BUILD, EMPTY_BUILD } from "~/constants";
 import { db } from "~/db";
 import type { GearType } from "~/db/types";
@@ -25,6 +26,7 @@ import {
   modesShort,
   shoesGearIds,
 } from "~/modules/in-game-lists";
+import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import type {
   BuildAbilitiesTuple,
   BuildAbilitiesTupleWithUnknown,
@@ -198,9 +200,7 @@ export default function NewBuildPage() {
         <TitleInput />
         <DescriptionTextarea />
         <ModeCheckboxes />
-        <Button type="submit" className="mt-4">
-          {t("actions.submit")}
-        </Button>
+        <SubmitButton className="mt-4">{t("actions.submit")}</SubmitButton>
       </Form>
     </div>
   );
@@ -257,6 +257,18 @@ function ModeCheckboxes() {
   const { buildToEdit } = useLoaderData<typeof loader>();
   const { t } = useTranslation("builds");
 
+  let currentBuildModes:
+    | typeof modesShort
+    | typeof rankedModesShort
+    | null
+    | undefined = buildToEdit?.modes;
+
+  // Use the Ranked Modes by default for brand new builds (so that the checkboxes can be checked by default)
+  // See issue for more info: https://github.com/Sendouc/sendou.ink/issues/1150
+  if (!currentBuildModes) {
+    currentBuildModes = rankedModesShort;
+  }
+
   return (
     <div>
       <Label>{t("forms.modes")}</Label>
@@ -270,7 +282,9 @@ function ModeCheckboxes() {
               id={mode}
               name={mode}
               type="checkbox"
-              defaultChecked={buildToEdit?.modes?.includes(mode)}
+              defaultChecked={currentBuildModes?.some(
+                (currentMode) => currentMode == mode
+              )}
               data-cy={`${mode}-checkbox`}
             />
           </div>

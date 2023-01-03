@@ -2,6 +2,7 @@ import { type FetcherWithComponents, useTransition } from "@remix-run/react";
 import { Button, type ButtonProps } from "./Button";
 
 interface SubmitButtonProps extends ButtonProps {
+  /** If the page has multiple forms you can pass in fetcher.state to differentiate when this SubmitButton should be in submitting state */
   state?: FetcherWithComponents<any>["state"];
   _action?: string;
 }

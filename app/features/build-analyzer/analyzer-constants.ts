@@ -59,3 +59,5 @@ export const multiShot: Partial<Record<MainWeaponId, number>> = {
   // Bloblobber
   3030: 4,
 };
+
+export const RAINMAKER_SPEED_PENALTY_MODIFIER = 0.8;

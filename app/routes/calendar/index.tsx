@@ -17,6 +17,7 @@ import styles from "~/styles/calendar.css";
 import { joinListToNaturalString } from "~/utils/arrays";
 import {
   databaseTimestampToDate,
+  dateToThisWeeksMonday,
   dateToWeekNumber,
   weekNumberToDate,
 } from "~/utils/dates";
@@ -74,15 +75,15 @@ export const loader = async ({ request }: LoaderArgs) => {
     week: url.searchParams.get("week"),
   });
 
-  const now = new Date();
-  const currentWeek = dateToWeekNumber(now);
+  const mondayDate = dateToThisWeeksMonday(new Date());
+  const currentWeek = dateToWeekNumber(mondayDate);
 
   const displayedWeek = parsedParams.success
     ? parsedParams.data.week
     : currentWeek;
   const displayedYear = parsedParams.success
     ? parsedParams.data.year
-    : now.getFullYear();
+    : mondayDate.getFullYear();
 
   return json({
     currentWeek,

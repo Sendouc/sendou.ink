@@ -10,7 +10,11 @@ import type {
   StatFunctionInput,
   SubWeaponParams,
 } from "../analyzer-types";
-import { DAMAGE_TYPE, multiShot } from "../analyzer-constants";
+import {
+  DAMAGE_TYPE,
+  multiShot,
+  RAINMAKER_SPEED_PENALTY_MODIFIER,
+} from "../analyzer-constants";
 import { INK_CONSUME_TYPES } from "../analyzer-types";
 import invariant from "tiny-invariant";
 import {
@@ -87,6 +91,7 @@ export function buildStats({
       subWeaponInkConsumptionPercentage:
         subWeaponInkConsumptionPercentage(input),
       squidFormInkRecoverySeconds: squidFormInkRecoverySeconds(input),
+      humanoidFormInkRecoverySeconds: humanoidFormInkRecoverySeconds(input),
       runSpeed: runSpeed(input),
       shootingRunSpeed: shootingRunSpeed(input, "MoveSpeed"),
       shootingRunSpeedCharging: shootingRunSpeed(input, "MoveSpeed_Charge"),
@@ -95,6 +100,7 @@ export function buildStats({
         "MoveSpeedFullCharge"
       ),
       swimSpeed: swimSpeed(input),
+      swimSpeedHoldingRainmaker: swimSpeedHoldingRainmaker(input),
       runSpeedInEnemyInk: runSpeedInEnemyInk(input),
       damageTakenInEnemyInkPerSecond: damageTakenInEnemyInkPerSecond(input),
       enemyInkDamageLimit: enemyInkDamageLimit(input),
@@ -456,6 +462,26 @@ function squidFormInkRecoverySeconds(
   };
 }
 
+function humanoidFormInkRecoverySeconds(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["humanoidFormInkRecoverySeconds"] {
+  const HUMANOID_FORM_INK_RECOVERY_SECONDS_ABILITY = "IRU";
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: HUMANOID_FORM_INK_RECOVERY_SECONDS_ABILITY,
+    }),
+    key: "InkRecoverFrm_Std",
+    weapon: args.mainWeaponParams,
+  });
+
+  return {
+    baseValue: framesToSeconds(baseEffect * inkTankSize(args.weaponSplId)),
+    value: framesToSeconds(effect * inkTankSize(args.weaponSplId)),
+    modifiedBy: HUMANOID_FORM_INK_RECOVERY_SECONDS_ABILITY,
+  };
+}
+
 function runSpeed(args: StatFunctionInput): AnalyzedBuild["stats"]["runSpeed"] {
   const key =
     args.mainWeaponParams.WeaponSpeedType === "Fast"
@@ -550,6 +576,20 @@ function swimSpeed(
     baseValue: effectToRounded(baseEffect * 10),
     value: effectToRounded(effect * 10 * ninjaSquidMultiplier),
     modifiedBy: [SWIM_SPEED_ABILITY, "NS"],
+  };
+}
+
+function swimSpeedHoldingRainmaker(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["swimSpeedHoldingRainmaker"] {
+  const withoutRM = swimSpeed(args);
+
+  return {
+    ...withoutRM,
+    baseValue: effectToRounded(
+      withoutRM.baseValue * RAINMAKER_SPEED_PENALTY_MODIFIER
+    ),
+    value: effectToRounded(withoutRM.value * RAINMAKER_SPEED_PENALTY_MODIFIER),
   };
 }
 

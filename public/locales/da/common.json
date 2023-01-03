@@ -35,7 +35,6 @@
 
   "actions.save": "Gem",
   "actions.saveChanges": "Gem ændringer",
-  "actions.saving": "Gemmer...",
   "actions.submit": "Fremlæg",
   "actions.edit": "Rediger",
   "actions.add": "Tilføj",
@@ -91,17 +90,19 @@
   "tag.name.LAN": "LAN",
   "tag.name.QUALIFIER": "Kvalifikationsturnering",
 
-  "weapon.category.SHOOTERS": "Shooters/Skydere",
-  "weapon.category.BLASTERS": "Blasters/Blastere",
-  "weapon.category.ROLLERS": "Rollers/Malerruller",
-  "weapon.category.BRUSHES": "Brushes/Pensler",
-  "weapon.category.CHARGERS": "Chargers/Opladere",
-  "weapon.category.SLOSHERS": "Sloshers/Plaskere",
-  "weapon.category.SPLATLINGS": "Splatlings/Splatninger",
-  "weapon.category.DUALIES": "Dualies/Dualier",
-  "weapon.category.BRELLAS": "Brellas/Paraplyer",
-  "weapon.category.STRINGERS": "Stringers/Buer",
-  "weapon.category.SPLATANAS": "Splatanas/Splatanaer",
+  "weapon.category.SHOOTERS": "Skydere",
+  "weapon.category.BLASTERS": "Blastere",
+  "weapon.category.ROLLERS": "Malerruller",
+  "weapon.category.BRUSHES": "Pensler",
+  "weapon.category.CHARGERS": "Opladere",
+  "weapon.category.SLOSHERS": "Plaskere",
+  "weapon.category.SPLATLINGS": "Splatninger",
+  "weapon.category.DUALIES": "Dualier",
+  "weapon.category.BRELLAS": "Paraplyer",
+  "weapon.category.STRINGERS": "Buer",
+  "weapon.category.SPLATANAS": "Splatanaer",
+  "weapon.category.subs": "Sekundære våben",
+  "weapon.category.specials": "Specialvåben",
 
   "theme.light": "Lyst",
   "theme.dark": "Mørkt",
@@ -109,7 +110,6 @@
 
   "plans.poweredBy": "Tegneprogrammet er leveret af {{name}}",
   "plans.blueprint": "Blåtryk",
-  "plans.noImg": "Intet billede er tilgængeligt",
 
   "articles.by": "af {{author}}",
 

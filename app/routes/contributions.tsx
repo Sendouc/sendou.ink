@@ -6,11 +6,9 @@ import { languages } from "~/modules/i18n";
 import { makeTitle } from "~/utils/strings";
 import {
   BORZOIC_TWITTER,
-  CHARA_TWITTER,
   GITHUB_CONTRIBUTORS_URL,
   LEAN_TWITTER,
   SENDOU_TWITTER_URL,
-  TWIG_TWITTER,
   UBERU_TWITTER,
   YAGA_TWITTER,
 } from "~/utils/urls";
@@ -110,16 +108,6 @@ export default function ContributionsPage() {
             uberu
           </a>{" "}
           - {t("contributions:uberu")}
-        </li>
-        <li>
-          <a href={TWIG_TWITTER} target="_blank" rel="noreferrer">
-            Twig
-          </a>{" "}
-          &{" "}
-          <a href={CHARA_TWITTER} target="_blank" rel="noreferrer">
-            Chara
-          </a>
-          - {t("contributions:twig")}
         </li>
         <li>
           <a href={YAGA_TWITTER} target="_blank" rel="noreferrer">

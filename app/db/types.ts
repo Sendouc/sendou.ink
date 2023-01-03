@@ -233,3 +233,41 @@ export interface TournamentMatchGameResult {
   reporterId: number;
   createdAt: number;
 }
+
+/** TODO: incomplete team tables */
+
+export interface UserSubmittedImage {
+  id: number;
+  validatedAt: number | null;
+  url: string;
+}
+
+export interface Team {
+  id: number;
+  name: string;
+  customUrl: string;
+  inviteCode: string;
+  twitter: string | null;
+  bio: string | null;
+  lutiDiv: string | null;
+  avatarImgId: number | null;
+  bannerImgId: number | null;
+  createdAt: number;
+  deletedAt: number | null;
+}
+
+export type MemberRole =
+  | "CAPTAIN"
+  | "FRONTLINE"
+  | "SUPPORT"
+  | "BACKLINE"
+  | "COACH";
+
+export interface TeamMember {
+  teamId: number;
+  userId: number;
+  role: MemberRole | null;
+  isOwner: number;
+  createdAt: number;
+  leftAt: number | null;
+}

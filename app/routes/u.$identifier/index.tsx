@@ -4,6 +4,7 @@ import * as React from "react";
 import invariant from "tiny-invariant";
 import { Avatar } from "~/components/Avatar";
 import { Badge } from "~/components/Badge";
+import { Flag } from "~/components/Flag";
 import { TwitchIcon } from "~/components/icons/Twitch";
 import { TwitterIcon } from "~/components/icons/Twitter";
 import { YouTubeIcon } from "~/components/icons/YouTube";
@@ -37,7 +38,7 @@ export default function UserInfoPage() {
         </h2>
         {data.country ? (
           <div className="u__country">
-            <span className="u__country-emoji">{data.country.emoji}</span>{" "}
+            <Flag countryCode={data.country.code} tiny />{" "}
             <span className="u__country-name" data-testid="country">
               {data.country.name}
             </span>

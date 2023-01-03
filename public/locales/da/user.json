@@ -9,6 +9,8 @@
   "motion": "Bevægelse",
   "stick": "Styrepind",
   "sens": "Følsomhed",
+  "weaponPool": "Våbensortiment",
+  "discordExplanation": "Brugernavn, Profilbillede, Youtube-, Twitter- og Twitch-konter er hentet via din Discord-konto. Se <1>FAQ</1> for yderligere information.",
 
   "results.title": "Resultater",
   "results.placing": "Placering",
@@ -22,6 +24,7 @@
   "results.highlights.choose": "Vælg højdepunkter",
   "results.highlights.explanation": "Vælg de resultater, som du vil fremhæve",
 
+  "forms.errors.maxWeapons": "Maks antal våben nået",
   "forms.errors.invalidCustomUrl.numbers": "Brugerdefineret URL må ikke kun indeholde numre",
   "forms.errors.invalidCustomUrl.strangeCharacter": "Brugerdefineret URL må ikke indeholde specialtegn (Gælder også æ, ø og å)",
   "forms.errors.invalidCustomUrl.duplicate": "Brugerdefineret URL er allerede i brug",

@@ -1,5 +1,5 @@
 import { Form, useMatches } from "@remix-run/react";
-import { Button, LinkButton } from "~/components/Button";
+import { LinkButton } from "~/components/Button";
 import { Dialog } from "~/components/Dialog";
 import { Redirect } from "~/components/Redirect";
 import {
@@ -32,6 +32,7 @@ import type { UserWithPlusTier } from "~/db/types";
 import { FormMessage } from "~/components/FormMessage";
 import { atOrError } from "~/utils/arrays";
 import { requireUser, useUser } from "~/modules/auth";
+import { SubmitButton } from "~/components/SubmitButton";
 
 const commentActionSchema = z.object({
   tier: z.preprocess(
@@ -154,9 +155,9 @@ export default function PlusNewSuggestionModalPage() {
         </div>
         <CommentTextarea maxLength={PlUS_SUGGESTION_FIRST_COMMENT_MAX_LENGTH} />
         <div className="plus__modal-buttons">
-          <Button type="submit" disabled={Boolean(selectedUserErrorMessage)}>
+          <SubmitButton disabled={Boolean(selectedUserErrorMessage)}>
             Submit
-          </Button>
+          </SubmitButton>
           <LinkButton
             to={plusSuggestionPage()}
             variant="minimal-destructive"

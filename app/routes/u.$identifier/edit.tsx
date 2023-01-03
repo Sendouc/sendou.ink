@@ -4,13 +4,7 @@ import {
   type LinksFunction,
   type LoaderArgs,
 } from "@remix-run/node";
-import {
-  Form,
-  Link,
-  useLoaderData,
-  useMatches,
-  useTransition,
-} from "@remix-run/react";
+import { Form, Link, useLoaderData, useMatches } from "@remix-run/react";
 import { countries } from "countries-list";
 import * as React from "react";
 import { Trans } from "react-i18next";
@@ -24,6 +18,7 @@ import { TrashIcon } from "~/components/icons/Trash";
 import { WeaponImage } from "~/components/Image";
 import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
+import { SubmitButton } from "~/components/SubmitButton";
 import { USER } from "~/constants";
 import { db } from "~/db";
 import { type User } from "~/db/types";
@@ -33,7 +28,7 @@ import { i18next } from "~/modules/i18n";
 import { mainWeaponIds, type MainWeaponId } from "~/modules/in-game-lists";
 import styles from "~/styles/u-edit.css";
 import { translatedCountry } from "~/utils/i18n.server";
-import { safeParseRequestFormData } from "~/utils/remix";
+import { notFoundIfFalsy, safeParseRequestFormData } from "~/utils/remix";
 import { errorIsSqliteUniqueConstraintFailure } from "~/utils/sql";
 import { rawSensToString } from "~/utils/strings";
 import { FAQ_PAGE, isCustomUrl, userPage } from "~/utils/urls";
@@ -45,7 +40,7 @@ import {
   safeJSONParse,
   undefinedToNull,
 } from "~/utils/zod";
-import { type UserPageLoaderData } from "../u.$identifier";
+import { userParamsSchema, type UserPageLoaderData } from "../u.$identifier";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -175,8 +170,15 @@ export const action: ActionFunction = async ({ request }) => {
   }
 };
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderArgs) => {
   const locale = await i18next.getLocale(request);
+
+  const user = await requireUser(request);
+  const { identifier } = userParamsSchema.parse(params);
+  const userToBeEdited = notFoundIfFalsy(db.users.findByIdentifier(identifier));
+  if (user.id !== userToBeEdited.id) {
+    throw redirect(userPage(userToBeEdited));
+  }
 
   return {
     countries: Object.entries(countries)
@@ -198,7 +200,6 @@ export default function UserEditPage() {
   const [, parentRoute] = useMatches();
   invariant(parentRoute);
   const parentRouteData = parentRoute.data as UserPageLoaderData;
-  const transition = useTransition();
 
   return (
     <div className="half-width">
@@ -216,13 +217,7 @@ export default function UserEditPage() {
             more information.
           </Trans>
         </FormMessage>
-        <Button
-          loadingText={t("common:actions.saving")}
-          type="submit"
-          loading={transition.state === "submitting"}
-        >
-          {t("common:actions.save")}
-        </Button>
+        <SubmitButton>{t("common:actions.save")}</SubmitButton>
         <FormErrors namespace="user" />
       </Form>
     </div>
