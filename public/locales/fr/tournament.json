@@ -1,0 +1,46 @@
+{
+  "tabs.info": "Informations",
+  "tabs.teams": "Équipes ({{count}})",
+  "tabs.admin": "Admin",
+
+  "pre.footerNote": "Note: vous pouvez changer votre liste de stages et votre roster autant que vous le souhaitez avant le début du tournoi",
+  "pre.deleteTeam": "Effacer l'équipe",
+
+  "preview": "Aperçu du générateurs de liste de stages (admin uniquement)",
+  "pre.steps.register": "1. S'inscrire avec",
+  "pre.steps.register.summary": "Entrez le nom de l'équipe avec laquelle vous vous inscrivez",
+  "pre.steps.mapPool": "2. Pool de stages",
+  "pre.steps.mapPool.explanation": "Vous pouvez jouer sans avoir sélectionné un stage, mais vos adversaires pourront choisir librement le stage sur lequel vous jouerez. Les cartes de Tie breaker sont marquées en bleu",
+  "pre.steps.mapPool.summary": "Choisissez le stage pour votre équipe",
+  "pre.steps.roster": "3. Envoyer votre roster",
+  "pre.steps.roster.explanation": "Envoyer votre roster est optionnel mais vous risquez de recevoir un seed plus bas que prévu.",
+  "pre.steps.roster.summary": "Entrer votre roster",
+  "pre.steps.roster.fullTeamError": "L'équipe est pleine",
+
+  "bracket.type.DE_WINNERS": "Winners Round",
+  "bracket.type.DE_LOSERS": "Losers Round",
+  "bracket.type.SE": "Round",
+  "bracket.type.SWISS": "Swiss Round",
+  "bracket.type.GROUPS": "Groups Round",
+
+  "round.label": "Round",
+
+  "team.label": "Équipe",
+  "team.unlisted": "Équipe non listée",
+
+  "bestOf.label.short": "Bo",
+
+  "pickInfo.team": "Choix de l'équipe {{number}}",
+  "pickInfo.tiebreaker": "Tiebreaker",
+  "pickInfo.both": "Les deux équipes ont choisi",
+  "pickInfo.default": "Stage par défaut",
+
+  "generator.error": "Vos choix n'ont pas été sauvegardés car le tournoi a commencé",
+
+  "teams.mapsPickedStatus": "Statut du choix de stages",
+
+  "admin.eventStarted": "L'événement a commencé",
+  "admin.eventStarted.explanation": "Après le lancement de l'événement, les équipes peuvent générer des listes de stages mais ne peuvent pas changer leur pool de cartes ou leur roster",
+  "admin.download": "Télécharger les participants",
+  "admin.download.discord": "Liste Discord"
+}
