@@ -51,7 +51,7 @@ export const handle: SendouRouteHandle = {
 export const loader = ({ params }: LoaderArgs) => {
   const { customUrl } = teamParamsSchema.parse(params);
 
-  const team = notFoundIfFalsy(findByIdentifier(customUrl.toLowerCase()));
+  const team = notFoundIfFalsy(findByIdentifier(customUrl));
 
   return { team };
 };

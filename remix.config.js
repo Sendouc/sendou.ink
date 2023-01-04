@@ -21,7 +21,9 @@ module.exports = {
         route("/to/:id/teams", "features/tournament/routes/to.$id.teams.tsx");
         route("/to/:id/join", "features/tournament/routes/to.$id.join.tsx");
       });
+
       route("/t/:customUrl", "features/team/routes/t.$customUrl.tsx");
+      route("/t/:customUrl/edit", "features/team/routes/t.$customUrl.edit.tsx");
     });
   },
 };

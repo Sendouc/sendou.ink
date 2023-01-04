@@ -19,15 +19,18 @@ const teamStm = sql.prepare(/*sql*/ `
     left join "TeamMember" on "TeamMember"."teamId" = "t"."id"
     left join "User" on "User"."id" = "TeamMember"."userId"
   where "t"."customUrl" = @customUrl
+    and "t"."deletedAt" is null
   group by "t"."id"
 `);
 
 const membersStm = sql.prepare(/*sql*/ `
   select
+    "User"."id",
     "User"."discordName",
     "User"."discordAvatar",
     "User"."discordId",
     "TeamMember"."role",
+    "TeamMember"."isOwner",
     json_group_array("UserWeapon"."weaponSplId") as "weapons"
   from "TeamMember"
     join "User" on "User"."id" = "TeamMember"."userId"
@@ -45,18 +48,19 @@ type TeamRow =
   | null;
 
 type MemberRows = Array<
-  Pick<User, "discordName" | "discordAvatar" | "discordId"> &
-    Pick<TeamMember, "role"> & { weapons: string }
+  Pick<User, "id" | "discordName" | "discordAvatar" | "discordId"> &
+    Pick<TeamMember, "role" | "isOwner"> & { weapons: string }
 >;
 
 export function findByIdentifier(customUrl: string): DetailedTeam | null {
-  const team = teamStm.get({ customUrl }) as TeamRow;
+  const team = teamStm.get({ customUrl: customUrl.toLowerCase() }) as TeamRow;
 
   if (!team) return null;
 
   const members = membersStm.all({ teamId: team.id }) as MemberRows;
 
   return {
+    id: team.id,
     name: team.name,
     twitter: team.twitter ?? undefined,
     bio: team.bio ?? undefined,
@@ -66,10 +70,12 @@ export function findByIdentifier(customUrl: string): DetailedTeam | null {
     bannerSrc: team.bannerSrc,
     countries: removeDuplicates(JSON.parse(team.countries).filter(Boolean)),
     members: members.map((member) => ({
+      id: member.id,
       discordAvatar: member.discordAvatar,
       discordId: member.discordId,
       discordName: member.discordName,
       role: member.role ?? undefined,
+      isOwner: Boolean(member.isOwner),
       weapons: JSON.parse(member.weapons).filter(Boolean),
     })),
     results: undefined,
