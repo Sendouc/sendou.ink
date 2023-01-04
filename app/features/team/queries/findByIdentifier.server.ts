@@ -9,7 +9,6 @@ const teamStm = sql.prepare(/*sql*/ `
     "t"."name",
     "t"."twitter",
     "t"."bio",
-    "t"."lutiDiv",
     "ia"."url" as "avatarSrc",
     "ib"."url" as "bannerSrc",
     json_group_array("User"."country") as "countries"
@@ -40,7 +39,7 @@ const membersStm = sql.prepare(/*sql*/ `
 `);
 
 type TeamRow =
-  | (Pick<Team, "id" | "name" | "twitter" | "bio" | "lutiDiv"> & {
+  | (Pick<Team, "id" | "name" | "twitter" | "bio"> & {
       avatarSrc: string;
       bannerSrc: string;
       countries: string;
@@ -64,8 +63,6 @@ export function findByIdentifier(customUrl: string): DetailedTeam | null {
     name: team.name,
     twitter: team.twitter ?? undefined,
     bio: team.bio ?? undefined,
-    lutiDiv: team.lutiDiv ?? undefined,
-    teamXp: undefined,
     avatarSrc: team.avatarSrc,
     bannerSrc: team.bannerSrc,
     countries: removeDuplicates(JSON.parse(team.countries).filter(Boolean)),

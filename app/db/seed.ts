@@ -888,14 +888,13 @@ function detailedTeam() {
   sql
     .prepare(
       /* sql */ `
-      insert into "Team" ("name", "customUrl", "inviteCode", "twitter", "bio", "lutiDiv", "avatarImgId", "bannerImgId")
+      insert into "Team" ("name", "customUrl", "inviteCode", "twitter", "bio", "avatarImgId", "bannerImgId")
        values (
           'Alliance Rogue',
           'alliance-rogue',
           '${nanoid(INVITE_CODE_LENGTH)}',
           'AllianceRogueFR',
           '${faker.lorem.paragraph()}',
-          'X',
           1,
           2
        )

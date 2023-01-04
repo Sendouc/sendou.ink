@@ -5,22 +5,22 @@ import type {
   SerializeFrom,
 } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
-import { Image, WeaponImage } from "~/components/Image";
+import clsx from "clsx";
+import React from "react";
+import { Avatar } from "~/components/Avatar";
+import { Flag } from "~/components/Flag";
+import { WeaponImage } from "~/components/Image";
 import { Main } from "~/components/Main";
+import { Placement } from "~/components/Placement";
+import { useTranslation } from "~/hooks/useTranslation";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { notFoundIfFalsy } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
-import { navIconUrl, userPage } from "~/utils/urls";
+import { userPage } from "~/utils/urls";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { teamParamsSchema } from "../team-schemas.server";
-import { Placement } from "~/components/Placement";
-import styles from "../team.css";
 import type { DetailedTeamMember, TeamResultPeek } from "../team-types";
-import { Avatar } from "~/components/Avatar";
-import { useTranslation } from "~/hooks/useTranslation";
-import { Flag } from "~/components/Flag";
-import clsx from "clsx";
-import React from "react";
+import styles from "../team.css";
 
 export const meta: MetaFunction = ({
   data,
@@ -63,7 +63,7 @@ export default function TeamPage() {
     <Main className="stack lg">
       <div className="stack sm">
         <TeamBanner />
-        <InfoBadges />
+        {/* <InfoBadges /> */}
       </div>
       <MobileTeamNameCountry />
       {team.results ? <ResultsBanner results={team.results} /> : <div />}
@@ -112,26 +112,26 @@ function TeamBanner() {
   );
 }
 
-function InfoBadges() {
-  const { team } = useLoaderData<typeof loader>();
+// function InfoBadges() {
+//   const { team } = useLoaderData<typeof loader>();
 
-  return (
-    <div className="team__badges">
-      {team.teamXp ? (
-        <div>
-          <Image
-            path={navIconUrl("xsearch")}
-            width={26}
-            alt="Team XP"
-            title="Team XP"
-          />
-          {team.teamXp}
-        </div>
-      ) : null}
-      {team.lutiDiv ? <div>LUTI Div {team.lutiDiv}</div> : null}
-    </div>
-  );
-}
+//   return (
+//     <div className="team__badges">
+//       {team.teamXp ? (
+//         <div>
+//           <Image
+//             path={navIconUrl("xsearch")}
+//             width={26}
+//             alt="Team XP"
+//             title="Team XP"
+//           />
+//           {team.teamXp}
+//         </div>
+//       ) : null}
+//       {team.lutiDiv ? <div>LUTI Div {team.lutiDiv}</div> : null}
+//     </div>
+//   );
+// }
 
 function MobileTeamNameCountry() {
   const { team } = useLoaderData<typeof loader>();

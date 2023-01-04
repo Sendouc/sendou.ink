@@ -6,10 +6,8 @@ export interface DetailedTeam {
   name: string;
   bio?: string;
   twitter?: string;
-  lutiDiv?: string;
   avatarSrc?: string;
   bannerSrc?: string;
-  teamXp?: string;
   countries: string[];
   members: DetailedTeamMember[];
   results?: TeamResultPeek;
