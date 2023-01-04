@@ -29,7 +29,7 @@
   "forms.errors.invalidCustomUrl.strangeCharacter": "Votre URL personnalisée ne peut pas contenir de caractères spéciaux",
   "forms.errors.invalidCustomUrl.duplicate": "Cette URL a déjà été choisie par quelqu'un",
   "forms.errors.invalidSens": "La sensibilité du gyroscope ne peut pas être choisie si la sensibilité du stick droit ne l'est pas",
- 
+
   "search.info": "Rechercher des utilisateurs par le pseudo Discord, Splatoon 3 ou Twitter",
   "search.noResults": "Aucun utilisateur correspondant à '{{query}}' n'a été trouvé"
 }

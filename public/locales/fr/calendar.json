@@ -39,7 +39,7 @@
   "forms.errors.uniqueTeamName": "Chaque équipe doit avoir un nom unique.",
   "forms.errors.duplicatePlayer": "Il est impossible d'avoir le même joueur plusieurs fois dans la même équipe.",
   "forms.errors.emptyTeam": "Chaque équipe doit au moins avoir un joueur.",
-    
+
   "forms.toTools.header": "Activer les outils de TO",
   "forms.toTools.explanation": "En activant les outils de TO, votre tournoi aura accès à des stages présélectionnés et l'outil de création de seed sera disponible",
 

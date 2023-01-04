@@ -21,7 +21,7 @@
   "header.language": "Langue",
   "header.loggedInAs": "Connecté en tant que {{userName}}",
   "header.theme": "Thème",
-    
+
   "auth.errors.aborted": "Connexion abandonnée",
   "auth.errors.failed": "Connexion échouée",
   "auth.errors.discordPermissions": "Pour mettre en place ton profil, sendou.ink a besoin de votre nom de profil Discord, de votre avatar et de tes réseaux connectés.",
@@ -71,7 +71,7 @@
   "maps.validation.VALID": "Liste de stages valide !",
 
   "results": "Résultats",
-    
+
   "results.placeSuffix_one": "^er",
   "results.placeSuffix_two": "^ème",
   "results.placeSuffix_few": "^ème",
