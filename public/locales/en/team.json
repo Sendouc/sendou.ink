@@ -3,5 +3,9 @@
   "roles.FRONTLINE": "Frontline",
   "roles.SUPPORT": "Support",
   "roles.BACKLINE": "Backline",
-  "roles.COACH": "Coach"
+  "roles.COACH": "Coach",
+  "forms.fields.teamTwitter": "Team Twitter",
+  "forms.fields.bio": "Bio",
+  "forms.info.name": "Note that if you change your team's name then someone else can claim the name and URL for their team",
+  "forms.errors.duplicateName": "There is already a team with this name"
 }

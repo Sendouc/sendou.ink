@@ -249,7 +249,6 @@ export interface Team {
   inviteCode: string;
   twitter: string | null;
   bio: string | null;
-  lutiDiv: string | null;
   avatarImgId: number | null;
   bannerImgId: number | null;
   createdAt: number;

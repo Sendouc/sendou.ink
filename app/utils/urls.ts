@@ -100,6 +100,8 @@ export const userResultsEditHighlightsPage = (user: UserLinkArgs) =>
 export const userNewBuildPage = (user: UserLinkArgs) =>
   `${userBuildsPage(user)}/new`;
 
+export const teamPage = (customUrl: string) => `/t/${customUrl}`;
+
 export const authErrorUrl = (errorCode: AuthErrorCode) =>
   `/?authError=${errorCode}`;
 export const impersonateUrl = (idToLogInAs: number) =>

@@ -2,22 +2,23 @@ import type { MemberRole } from "~/db/types";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 
 export interface DetailedTeam {
+  id: number;
   name: string;
   bio?: string;
   twitter?: string;
-  lutiDiv?: string;
   avatarSrc?: string;
   bannerSrc?: string;
-  teamXp?: string;
   countries: string[];
   members: DetailedTeamMember[];
   results?: TeamResultPeek;
 }
 
 export interface DetailedTeamMember {
+  id: number;
   discordName: string;
   discordId: string;
   discordAvatar: string | null;
+  isOwner: boolean;
   weapons: MainWeaponId[];
   role?: MemberRole;
 }
