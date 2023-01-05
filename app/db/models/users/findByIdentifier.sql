@@ -12,7 +12,6 @@ from
   left join "TeamMember" on "TeamMember"."userId" = "User"."id"
   left join "Team" on "Team"."id" = "TeamMember"."teamId"
   left join "UserSubmittedImage" on "Team"."avatarImgId" = "UserSubmittedImage"."id"
-  and "UserSubmittedImage"."validatedAt" is not null
 where
   "User"."discordId" = @identifier
   or "User"."id" = @identifier

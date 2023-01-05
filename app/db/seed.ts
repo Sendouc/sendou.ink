@@ -68,9 +68,9 @@ export function seed() {
 
 function wipeDB() {
   const tablesToDelete = [
-    "UserSubmittedImage",
+    "UnvalidatedUserSubmittedImage",
     "TeamMember",
-    "Team",
+    "AllTeam",
     "Build",
     "TournamentTeamMember",
     "MapPoolMap",
@@ -877,7 +877,7 @@ function detailedTeam() {
   sql
     .prepare(
       /* sql */ `
-    insert into "UserSubmittedImage" ("validatedAt", "url")
+    insert into "UnvalidatedUserSubmittedImage" ("validatedAt", "url")
       values 
         (1672587342, 'https://abload.de/img/ryri0cnc_400x4005qcyx.jpeg'), 
         (1672587342, 'https://abload.de/img/fjkfa-uxkamgdbxr3iqn.jpeg')
@@ -888,7 +888,7 @@ function detailedTeam() {
   sql
     .prepare(
       /* sql */ `
-      insert into "Team" ("name", "customUrl", "inviteCode", "twitter", "bio", "avatarImgId", "bannerImgId")
+      insert into "AllTeam" ("name", "customUrl", "inviteCode", "twitter", "bio", "avatarImgId", "bannerImgId")
        values (
           'Alliance Rogue',
           'alliance-rogue',

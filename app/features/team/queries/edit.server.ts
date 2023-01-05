@@ -2,7 +2,7 @@ import { sql } from "~/db/sql";
 import type { Team } from "~/db/types";
 
 const stm = sql.prepare(/*sql*/ `
-  update "Team" 
+  update "AllTeam" 
   set 
     "name" = @name,
     "customUrl" = @customUrl,

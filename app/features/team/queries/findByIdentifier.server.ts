@@ -13,12 +13,11 @@ const teamStm = sql.prepare(/*sql*/ `
     "ib"."url" as "bannerSrc",
     json_group_array("User"."country") as "countries"
   from "Team" as "t"
-    left join "UserSubmittedImage" as "ia" on "avatarImgId" = "ia"."id" and "ia"."validatedAt" is not null
-    left join "UserSubmittedImage" as "ib" on "bannerImgId" = "ib"."id" and "ib"."validatedAt" is not null
+    left join "UserSubmittedImage" as "ia" on "avatarImgId" = "ia"."id"
+    left join "UserSubmittedImage" as "ib" on "bannerImgId" = "ib"."id"
     left join "TeamMember" on "TeamMember"."teamId" = "t"."id"
     left join "User" on "User"."id" = "TeamMember"."userId"
   where "t"."customUrl" = @customUrl
-    and "t"."deletedAt" is null
   group by "t"."id"
 `);
 
