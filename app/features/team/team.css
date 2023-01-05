@@ -54,9 +54,12 @@
   width: 7rem;
 }
 
+.team__banner__avatar__spacer {
+  height: 4rem;
+}
+
 .team__mobile-name-country {
   display: flex;
-  margin-top: var(--s-12);
   font-size: var(--fonts-xl);
   align-items: center;
   font-weight: var(--bold);
@@ -202,10 +205,6 @@
 
   .team__mobile-name-country {
     display: none;
-  }
-
-  .team__results {
-    margin-block-start: var(--s-10);
   }
 
   .team__member {

@@ -66,7 +66,8 @@ export default function TeamPage() {
         {/* <InfoBadges /> */}
       </div>
       <MobileTeamNameCountry />
-      {team.results ? <ResultsBanner results={team.results} /> : <div />}
+      {team.results ? <ResultsBanner results={team.results} /> : null}
+      {team.bio ? <article>{team.bio}</article> : null}
       <div className="stack lg">
         {team.members.map((member) => (
           <React.Fragment key={member.discordId}>
@@ -83,32 +84,35 @@ function TeamBanner() {
   const { team } = useLoaderData<typeof loader>();
 
   return (
-    <div
-      className={clsx("team__banner", {
-        team__banner__placeholder: !team.bannerSrc,
-      })}
-      style={
-        {
-          "--team-banner-img": team.bannerSrc
-            ? `url("${team.bannerSrc}")`
-            : undefined,
-        } as any
-      }
-    >
-      {team.avatarSrc ? (
-        <div className="team__banner__avatar">
-          <div>
-            <img src={team.avatarSrc} alt="" />
-          </div>
-        </div>
-      ) : null}
-      <div className="team__banner__flags">
-        {team.countries.map((country) => {
-          return <Flag key={country} countryCode={country} />;
+    <>
+      <div
+        className={clsx("team__banner", {
+          team__banner__placeholder: !team.bannerSrc,
         })}
+        style={
+          {
+            "--team-banner-img": team.bannerSrc
+              ? `url("${team.bannerSrc}")`
+              : undefined,
+          } as any
+        }
+      >
+        {team.avatarSrc ? (
+          <div className="team__banner__avatar">
+            <div>
+              <img src={team.avatarSrc} alt="" />
+            </div>
+          </div>
+        ) : null}
+        <div className="team__banner__flags">
+          {team.countries.map((country) => {
+            return <Flag key={country} countryCode={country} />;
+          })}
+        </div>
+        <div className="team__banner__name">{team.name}</div>
       </div>
-      <div className="team__banner__name">{team.name}</div>
-    </div>
+      {team.avatarSrc ? <div className="team__banner__avatar__spacer" /> : null}
+    </>
   );
 }
 

@@ -74,7 +74,6 @@ export function findByIdentifier(customUrl: string): DetailedTeam | null {
       isOwner: Boolean(member.isOwner),
       weapons: JSON.parse(member.weapons).filter(Boolean),
     })),
-    results: undefined,
     // results: {
     //   count: 23,
     //   placements: [
