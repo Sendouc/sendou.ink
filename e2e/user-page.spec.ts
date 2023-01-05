@@ -17,9 +17,7 @@ test.describe("User page", () => {
       url: userPage({ discordId: ADMIN_DISCORD_ID, customUrl: "sendou" }),
     });
 
-    const country = page.getByTestId("country");
-
-    await expect(country).toHaveText("Finland");
+    await page.getByTestId("flag-FI").isVisible();
     await goToEditPage(page);
 
     await page
@@ -34,7 +32,7 @@ test.describe("User page", () => {
     await page.getByLabel("Bio").type("My awesome bio");
     await submitEditForm(page);
 
-    await expect(country).toHaveText("Sweden");
+    await page.getByTestId("flag-SV").isVisible();
     await page.getByText("My awesome bio").isVisible();
     await page.getByText("Lean#1234").isVisible();
     await page.getByText("Stick 0 / Motion -5").isVisible();

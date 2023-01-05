@@ -66,6 +66,10 @@
   border-radius: var(--rounded);
 }
 
+.rounded-full {
+  border-radius: 100%;
+}
+
 .font-semi-bold {
   font-weight: var(--semi-bold);
 }

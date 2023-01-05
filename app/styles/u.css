@@ -8,28 +8,31 @@
   display: grid;
   justify-content: center;
   column-gap: var(--s-2-5);
-  grid-template-areas: "avatar name" "avatar country" "avatar ." "avatar team" "socials .";
+  grid-template-areas: "avatar name" "avatar team" "avatar ." "avatar ." "socials .";
 }
 
 .u__avatar {
   grid-area: avatar;
 }
 
+.u__team {
+  display: flex;
+  color: var(--text-lighter);
+  font-weight: var(--bold);
+  gap: var(--s-1-5);
+  grid-area: team;
+}
+
 .u__name {
+  display: flex;
+  align-items: center;
   grid-area: name;
   overflow-wrap: anywhere;
 }
 
 .u__discriminator {
   color: var(--text-lighter);
-}
-
-.u__country {
-  display: flex;
-  align-items: center;
-  gap: var(--s-1-5);
-  grid-area: country;
-  line-height: 0.75;
+  margin-inline-end: var(--s-2);
 }
 
 .u__country-name {

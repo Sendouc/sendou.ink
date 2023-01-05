@@ -344,7 +344,7 @@ function CountrySelect({
         className="u-edit__country-select"
         name="country"
         id="country"
-        defaultValue={parentRouteData.country?.code ?? ""}
+        defaultValue={parentRouteData.country ?? ""}
       >
         <option value="" />
         {data.countries.map((country) => (

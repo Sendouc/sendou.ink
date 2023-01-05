@@ -1,4 +1,4 @@
-import { useMatches } from "@remix-run/react";
+import { Link, useMatches } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
 import invariant from "tiny-invariant";
@@ -14,6 +14,7 @@ import { type SendouRouteHandle } from "~/utils/remix";
 import { rawSensToString } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
 import { assertUnreachable } from "~/utils/types";
+import { teamPage } from "~/utils/urls";
 import { badgeExplanationText } from "../badges/$id";
 import type { UserPageLoaderData } from "../u.$identifier";
 
@@ -30,20 +31,16 @@ export default function UserInfoPage() {
     <div className="u__container">
       <div className="u__avatar-container">
         <Avatar user={data} size="lg" className="u__avatar" />
-        <h2 className="u__name">
-          {data.discordName}
-          <span className="u__discriminator">
-            <wbr />#{data.discordDiscriminator}
-          </span>
-        </h2>
-        {data.country ? (
-          <div className="u__country">
-            <Flag countryCode={data.country.code} tiny />{" "}
-            <span className="u__country-name" data-testid="country">
-              {data.country.name}
+        <div>
+          <h2 className="u__name">
+            {data.discordName}
+            <span className="u__discriminator">
+              <wbr />#{data.discordDiscriminator}
             </span>
-          </div>
-        ) : null}
+            {data.country ? <Flag countryCode={data.country} tiny /> : null}
+          </h2>
+          <TeamInfo />
+        </div>
         <div className="u__socials">
           {data.twitch ? (
             <SocialLink type="twitch" identifier={data.twitch} />
@@ -61,6 +58,29 @@ export default function UserInfoPage() {
       <BadgeContainer badges={data.badges} />
       {data.bio && <article>{data.bio}</article>}
     </div>
+  );
+}
+
+function TeamInfo() {
+  const [, parentRoute] = useMatches();
+  invariant(parentRoute);
+  const { team } = parentRoute.data as UserPageLoaderData;
+
+  if (!team) return null;
+
+  return (
+    <Link to={teamPage(team.customUrl)} className="u__team">
+      {team.avatarUrl ? (
+        <img
+          alt=""
+          src={team.avatarUrl}
+          width={24}
+          height={24}
+          className="rounded-full"
+        />
+      ) : null}
+      {team.name}
+    </Link>
   );
 }
 
