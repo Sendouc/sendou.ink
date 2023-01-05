@@ -115,6 +115,8 @@ export function findByIdentifier(identifier: string | number) {
   const { weapons, teamName, teamCustomUrl, teamAvatarUrl, ...row } =
     findByIdentifierStm.get({ identifier });
 
+  if (!row.id) return;
+
   return {
     ...row,
     weapons: parseDBArray(weapons),

@@ -44,6 +44,8 @@ export const handle: SendouRouteHandle = {
   breadcrumb: ({ match }) => {
     const data = match.data as UserPageLoaderData;
 
+    if (!data) return;
+
     return [
       {
         imgPath: navIconUrl("u"),
