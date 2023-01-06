@@ -4,6 +4,8 @@
   "actionButtons.leaveTeam.confirm": "Leave",
   "actionButtons.editTeam": "Edit Team",
   "actionButtons.manageRoster": "Manage Roster",
+  "actionButtons.deleteTeam": "Delete Team",
+  "deleteTeam.header": "Are you sure you want to delete {{teamName}}?",
   "roles.CAPTAIN": "Captain",
   "roles.FRONTLINE": "Frontline",
   "roles.SUPPORT": "Support",

@@ -17,13 +17,16 @@ import {
   type SendouRouteHandle,
   validate,
 } from "~/utils/remix";
-import { mySlugify, teamPage } from "~/utils/urls";
+import { mySlugify, teamPage, TEAM_SEARCH_PAGE } from "~/utils/urls";
 import { edit } from "../queries/edit.server";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { TEAM } from "../team-constants";
 import { editTeamSchema, teamParamsSchema } from "../team-schemas.server";
 import { isTeamOwner } from "../team-utils";
 import { FormErrors } from "~/components/FormErrors";
+import { FormWithConfirm } from "~/components/FormWithConfirm";
+import { deleteTeam } from "../queries/deleteTeam.server";
+import { Button } from "~/components/Button";
 
 export const handle: SendouRouteHandle = {
   i18n: ["team"],
@@ -47,23 +50,32 @@ export const action: ActionFunction = async ({ request, params }) => {
     schema: editTeamSchema,
   });
 
-  const newCustomUrl = mySlugify(data.name);
-  const existingTeam = findByIdentifier(newCustomUrl);
+  switch (data._action) {
+    case "DELETE": {
+      deleteTeam(team.id);
 
-  // can't take someone else's custom url
-  if (existingTeam && existingTeam.id !== team.id) {
-    return {
-      errors: ["forms.errors.duplicateName"],
-    };
+      return redirect(TEAM_SEARCH_PAGE);
+    }
+    case "EDIT": {
+      const newCustomUrl = mySlugify(data.name);
+      const existingTeam = findByIdentifier(newCustomUrl);
+
+      // can't take someone else's custom url
+      if (existingTeam && existingTeam.id !== team.id) {
+        return {
+          errors: ["forms.errors.duplicateName"],
+        };
+      }
+
+      const editedTeam = edit({
+        id: team.id,
+        customUrl: newCustomUrl,
+        ...data,
+      });
+
+      return redirect(teamPage(editedTeam.customUrl));
+    }
   }
-
-  const editedTeam = edit({
-    id: team.id,
-    customUrl: newCustomUrl,
-    ...data,
-  });
-
-  return redirect(teamPage(editedTeam.customUrl));
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
@@ -80,15 +92,24 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 };
 
 export default function EditTeamPage() {
-  const { t } = useTranslation(["common"]);
+  const { t } = useTranslation(["common", "team"]);
+  const { team } = useLoaderData<typeof loader>();
 
   return (
     <Main className="half-width">
+      <FormWithConfirm
+        dialogHeading={t("team:deleteTeam.header", { teamName: team.name })}
+        fields={[["_action", "DELETE"]]}
+      >
+        <Button className="ml-auto" variant="minimal-destructive">
+          {t("team:actionButtons.deleteTeam")}
+        </Button>
+      </FormWithConfirm>
       <Form method="post" className="stack md items-start">
         <NameInput />
         <TwitterInput />
         <BioTextarea />
-        <SubmitButton className="mt-4">
+        <SubmitButton className="mt-4" _action="EDIT">
           {t("common:actions.submit")}
         </SubmitButton>
         <FormErrors namespace="team" />
@@ -124,12 +145,9 @@ function TwitterInput() {
 
   return (
     <div>
-      <Label htmlFor="title" required>
-        {t("team:forms.fields.teamTwitter")}
-      </Label>
+      <Label htmlFor="title">{t("team:forms.fields.teamTwitter")}</Label>
       <input
         name="twitter"
-        required
         maxLength={TEAM.TWITTER_MAX_LENGTH}
         defaultValue={team.twitter}
       />

@@ -65,7 +65,13 @@ module.exports.up = function (db) {
     /*sql*/ `
       create view "TeamMember"
       as
-      select * from "AllTeamMember" where "leftAt" is null
+      select "AllTeamMember".* 
+      from "AllTeamMember"
+        left join "Team" on "Team"."id" = "AllTeamMember"."teamId"
+      where "AllTeamMember"."leftAt" is null 
+        and 
+      -- if team id is null the team is deleted
+      "Team"."id" is not null
   `
   ).run();
 };
