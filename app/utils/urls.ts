@@ -106,6 +106,13 @@ export const editTeamPage = (customUrl: string) =>
   `${teamPage(customUrl)}/edit`;
 export const manageTeamRosterPage = (customUrl: string) =>
   `${teamPage(customUrl)}/roster`;
+export const joinTeamPage = ({
+  customUrl,
+  inviteCode,
+}: {
+  customUrl: string;
+  inviteCode: string;
+}) => `${teamPage(customUrl)}/join?code=${inviteCode}`;
 
 export const authErrorUrl = (errorCode: AuthErrorCode) =>
   `/?authError=${errorCode}`;

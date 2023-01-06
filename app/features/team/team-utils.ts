@@ -1,3 +1,4 @@
+import { TEAM } from "./team-constants";
 import type { DetailedTeam } from "./team-types";
 
 export function isTeamOwner({
@@ -22,4 +23,8 @@ export function isTeamMember({
   if (!user) return false;
 
   return team.members.some((member) => member.id === user.id);
+}
+
+export function isTeamFull(team: DetailedTeam) {
+  return team.members.length >= TEAM.MAX_MEMBER_COUNT;
 }

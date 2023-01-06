@@ -19,6 +19,7 @@ export interface DetailedTeamMember {
   discordName: string;
   discordId: string;
   discordAvatar: string | null;
+  discordDiscriminator: string;
   isOwner: boolean;
   weapons: MainWeaponId[];
   role?: MemberRole;

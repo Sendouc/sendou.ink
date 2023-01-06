@@ -80,6 +80,7 @@ export interface RootLoaderData {
   locale: string;
   theme: Theme | null;
   patrons: FindAllPatrons;
+  baseUrl: string;
   user?: Pick<
     UserWithPlusTier,
     | "id"
@@ -103,6 +104,7 @@ export const loader: LoaderFunction = async ({ request }) => {
       locale,
       theme: themeSession.getTheme(),
       patrons: db.users.findAllPatrons(),
+      baseUrl: process.env["BASE_URL"],
       user: user
         ? {
             discordName: user.discordName,

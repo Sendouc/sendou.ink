@@ -40,6 +40,7 @@
   "actions.add": "Add",
   "actions.remove": "Remove",
   "actions.delete": "Delete",
+  "actions.reset": "Reset",
   "actions.loadMore": "Load more",
   "actions.copyToClipboard": "Copy to clipboard",
   "actions.close": "Close",

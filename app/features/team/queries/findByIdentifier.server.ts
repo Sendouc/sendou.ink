@@ -28,6 +28,7 @@ const membersStm = sql.prepare(/*sql*/ `
     "User"."discordName",
     "User"."discordAvatar",
     "User"."discordId",
+    "User"."discordDiscriminator",
     "TeamMember"."role",
     "TeamMember"."isOwner",
     json_group_array("UserWeapon"."weaponSplId") as "weapons"
@@ -47,7 +48,14 @@ type TeamRow =
   | null;
 
 type MemberRows = Array<
-  Pick<User, "id" | "discordName" | "discordAvatar" | "discordId"> &
+  Pick<
+    User,
+    | "id"
+    | "discordName"
+    | "discordAvatar"
+    | "discordId"
+    | "discordDiscriminator"
+  > &
     Pick<TeamMember, "role" | "isOwner"> & { weapons: string }
 >;
 
@@ -72,6 +80,7 @@ export function findByIdentifier(customUrl: string): DetailedTeam | null {
       discordAvatar: member.discordAvatar,
       discordId: member.discordId,
       discordName: member.discordName,
+      discordDiscriminator: member.discordDiscriminator,
       role: member.role ?? undefined,
       isOwner: Boolean(member.isOwner),
       weapons: JSON.parse(member.weapons).filter(Boolean),

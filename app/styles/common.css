@@ -272,6 +272,12 @@ select {
   padding-inline: var(--s-3) var(--s-8);
 }
 
+select:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  transform: initial;
+}
+
 /* Temporary solution for issue: https://github.com/Sendouc/sendou.ink/issues/1141 */
 .light select {
   /* TODO: Get color from CSS var */

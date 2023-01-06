@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { falsyToNull } from "~/utils/zod";
-import { TEAM } from "./team-constants";
+import { falsyToNull, id } from "~/utils/zod";
+import { TEAM, TEAM_MEMBER_ROLES } from "./team-constants";
 
 export const teamParamsSchema = z.object({ customUrl: z.string() });
 
@@ -19,5 +19,24 @@ export const editTeamSchema = z.union([
       falsyToNull,
       z.string().max(TEAM.TWITTER_MAX_LENGTH).nullable()
     ),
+  }),
+]);
+
+export const manageRosterSchema = z.union([
+  z.object({
+    _action: z.literal("RESET_INVITE_LINK"),
+  }),
+  z.object({
+    _action: z.literal("DELETE_MEMBER"),
+    userId: id,
+  }),
+  z.object({
+    _action: z.literal("TRANSFER_OWNERSHIP"),
+    newOwnerId: id,
+  }),
+  z.object({
+    _action: z.literal("UPDATE_MEMBER_ROLE"),
+    userId: id,
+    role: z.union([z.enum(TEAM_MEMBER_ROLES), z.literal("")]),
   }),
 ]);

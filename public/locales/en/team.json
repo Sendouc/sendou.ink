@@ -5,6 +5,11 @@
   "actionButtons.editTeam": "Edit Team",
   "actionButtons.manageRoster": "Manage Roster",
   "actionButtons.deleteTeam": "Delete Team",
+  "actionButtons.kick": "Kick",
+  "kick.header": "Kick {{user}} from {{teamName}}?",
+  "actionButtons.transferOwnership": "Transfer Ownership",
+  "transferOwnership.header": "Transfer ownership of {{teamName}} to {{user}}?",
+  "actionButtons.transferOwnership.confirm": "Transfer",
   "deleteTeam.header": "Are you sure you want to delete {{teamName}}?",
   "roles.CAPTAIN": "Captain",
   "roles.FRONTLINE": "Frontline",
@@ -14,5 +19,8 @@
   "forms.fields.teamTwitter": "Team Twitter",
   "forms.fields.bio": "Bio",
   "forms.info.name": "Note that if you change your team's name then someone else can claim the name and URL for their team",
-  "forms.errors.duplicateName": "There is already a team with this name"
+  "forms.errors.duplicateName": "There is already a team with this name",
+  "roster.teamFull": "Team is full",
+  "roster.inviteLink.header": "Share invite link to add members",
+  "roster.members.header": "Members"
 }

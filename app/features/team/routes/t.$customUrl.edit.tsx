@@ -27,6 +27,7 @@ import { FormErrors } from "~/components/FormErrors";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { deleteTeam } from "../queries/deleteTeam.server";
 import { Button } from "~/components/Button";
+import { assertUnreachable } from "~/utils/types";
 
 export const handle: SendouRouteHandle = {
   i18n: ["team"],
@@ -74,6 +75,9 @@ export const action: ActionFunction = async ({ request, params }) => {
       });
 
       return redirect(teamPage(editedTeam.customUrl));
+    }
+    default: {
+      assertUnreachable(data);
     }
   }
 };
