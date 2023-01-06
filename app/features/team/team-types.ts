@@ -3,6 +3,7 @@ import type { MainWeaponId } from "~/modules/in-game-lists";
 
 export interface DetailedTeam {
   id: number;
+  customUrl: string;
   name: string;
   bio?: string;
   twitter?: string;

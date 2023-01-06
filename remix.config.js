@@ -24,6 +24,10 @@ module.exports = {
 
       route("/t/:customUrl", "features/team/routes/t.$customUrl.tsx");
       route("/t/:customUrl/edit", "features/team/routes/t.$customUrl.edit.tsx");
+      route(
+        "/t/:customUrl/roster",
+        "features/team/routes/t.$customUrl.roster.tsx"
+      );
     });
   },
 };

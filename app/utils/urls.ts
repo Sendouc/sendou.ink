@@ -101,6 +101,10 @@ export const userNewBuildPage = (user: UserLinkArgs) =>
   `${userBuildsPage(user)}/new`;
 
 export const teamPage = (customUrl: string) => `/t/${customUrl}`;
+export const editTeamPage = (customUrl: string) =>
+  `${teamPage(customUrl)}/edit`;
+export const manageTeamRosterPage = (customUrl: string) =>
+  `${teamPage(customUrl)}/roster`;
 
 export const authErrorUrl = (errorCode: AuthErrorCode) =>
   `/?authError=${errorCode}`;

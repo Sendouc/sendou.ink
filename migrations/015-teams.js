@@ -47,7 +47,7 @@ module.exports.up = function (db) {
 
   db.prepare(
     /*sql*/ `
-    create table "TeamMember" (
+    create table "AllTeamMember" (
       "teamId" integer not null,
       "userId" integer not null,
       "role" text,
@@ -59,5 +59,13 @@ module.exports.up = function (db) {
       unique("teamId", "userId") on conflict rollback
     ) strict
     `
+  ).run();
+
+  db.prepare(
+    /*sql*/ `
+      create view "TeamMember"
+      as
+      select * from "AllTeamMember" where "leftAt" is null
+  `
   ).run();
 };

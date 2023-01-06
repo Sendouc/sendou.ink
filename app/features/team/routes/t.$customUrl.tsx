@@ -1,4 +1,5 @@
 import type {
+  ActionFunction,
   LinksFunction,
   LoaderArgs,
   MetaFunction,
@@ -8,18 +9,23 @@ import { Link, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import React from "react";
 import { Avatar } from "~/components/Avatar";
+import { Button, LinkButton } from "~/components/Button";
 import { Flag } from "~/components/Flag";
+import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { WeaponImage } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { Placement } from "~/components/Placement";
 import { useTranslation } from "~/hooks/useTranslation";
-import type { SendouRouteHandle } from "~/utils/remix";
+import { requireUser, useUser } from "~/modules/auth";
+import { type SendouRouteHandle, validate } from "~/utils/remix";
 import { notFoundIfFalsy } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
-import { userPage } from "~/utils/urls";
+import { editTeamPage, manageTeamRosterPage, userPage } from "~/utils/urls";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
+import { leaveTeam } from "../queries/leaveTeam.server";
 import { teamParamsSchema } from "../team-schemas.server";
 import type { DetailedTeamMember, TeamResultPeek } from "../team-types";
+import { isTeamMember, isTeamOwner } from "../team-utils";
 import styles from "../team.css";
 
 export const meta: MetaFunction = ({
@@ -37,6 +43,19 @@ export const meta: MetaFunction = ({
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
+};
+
+export const action: ActionFunction = async ({ request, params }) => {
+  const user = await requireUser(request);
+
+  const { customUrl } = teamParamsSchema.parse(params);
+  const team = notFoundIfFalsy(findByIdentifier(customUrl));
+
+  validate(isTeamMember({ user, team }) && !isTeamOwner({ user, team }));
+
+  leaveTeam({ userId: user.id, teamId: team.id });
+
+  return null;
 };
 
 export const handle: SendouRouteHandle = {
@@ -66,6 +85,7 @@ export default function TeamPage() {
         {/* <InfoBadges /> */}
       </div>
       <MobileTeamNameCountry />
+      <ActionButtons />
       {team.results ? <ResultsBanner results={team.results} /> : null}
       {team.bio ? <article>{team.bio}</article> : null}
       <div className="stack lg">
@@ -148,6 +168,51 @@ function MobileTeamNameCountry() {
         })}
       </div>
       {team.name}
+    </div>
+  );
+}
+
+function ActionButtons() {
+  const { t } = useTranslation(["team"]);
+  const user = useUser();
+  const { team } = useLoaderData<typeof loader>();
+
+  if (!isTeamMember({ user, team })) {
+    return null;
+  }
+
+  return (
+    <div className="team__action-buttons">
+      {!isTeamOwner({ user, team }) ? (
+        <FormWithConfirm
+          dialogHeading={t("team:leaveTeam.header", { teamName: team.name })}
+          deleteButtonText={t("team:actionButtons.leaveTeam.confirm")}
+        >
+          <Button size="tiny" variant="destructive">
+            {t("team:actionButtons.leaveTeam")}
+          </Button>
+        </FormWithConfirm>
+      ) : null}
+      {isTeamOwner({ user, team }) ? (
+        <LinkButton
+          size="tiny"
+          to={manageTeamRosterPage(team.customUrl)}
+          variant="outlined"
+          prefetch="intent"
+        >
+          {t("team:actionButtons.manageRoster")}
+        </LinkButton>
+      ) : null}
+      {isTeamOwner({ user, team }) ? (
+        <LinkButton
+          size="tiny"
+          to={editTeamPage(team.customUrl)}
+          variant="outlined"
+          prefetch="intent"
+        >
+          {t("team:actionButtons.editTeam")}
+        </LinkButton>
+      ) : null}
     </div>
   );
 }

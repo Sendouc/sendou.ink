@@ -90,6 +90,12 @@
   height: 1.5rem;
 }
 
+.team__action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--s-2);
+}
+
 .team__results {
   background-color: var(--bg-lightest);
   max-width: 32rem;

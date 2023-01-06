@@ -43,6 +43,7 @@
   "actions.loadMore": "Load more",
   "actions.copyToClipboard": "Copy to clipboard",
   "actions.close": "Close",
+  "actions.cancel": "Cancel",
   "actions.loading": "Loading...",
   "actions.clear": "Clear",
   "actions.selectAll": "Select All",

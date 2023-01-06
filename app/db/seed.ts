@@ -69,7 +69,7 @@ export function seed() {
 function wipeDB() {
   const tablesToDelete = [
     "UnvalidatedUserSubmittedImage",
-    "TeamMember",
+    "AllTeamMember",
     "AllTeam",
     "Build",
     "TournamentTeamMember",
@@ -909,7 +909,7 @@ function detailedTeam() {
     sql
       .prepare(
         /*sql*/ `
-      insert into "TeamMember" ("teamId", "userId", "role", "isOwner", "leftAt")
+      insert into "AllTeamMember" ("teamId", "userId", "role", "isOwner", "leftAt")
         values (
           1,
           ${userId},
