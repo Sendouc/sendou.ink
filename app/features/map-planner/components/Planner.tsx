@@ -8,7 +8,7 @@ import {
 } from "@tldraw/tldraw";
 import randomInt from "just-random-integer";
 import * as React from "react";
-import useWindowSize from "react-use/lib/useWindowSize";
+import { useWindowSize } from "react-use";
 import { useForceRefreshOnMount } from "~/hooks/useForceRefresh";
 import { useTranslation } from "~/hooks/useTranslation";
 import type { LanguageCode } from "~/modules/i18n";
@@ -121,7 +121,7 @@ export default function Planner() {
       style: StageBackgroundStyle;
     }) => {
       // Dynamic background size. See this issue for more info: https://github.com/Sendouc/sendou.ink/issues/1161
-      const bgSizeFactor = 0.7;
+      const bgSizeFactor = 0.85;
       const bgWidth = windowSize.width * bgSizeFactor;
       const bgHeight = windowSize.height * bgSizeFactor;
 

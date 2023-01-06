@@ -42,6 +42,7 @@ export const BORZOIC_TWITTER = "https://twitter.com/borzoic_";
 export const LEAN_TWITTER = "https://twitter.com/LeanYoshi";
 export const UBERU_TWITTER = "https://twitter.com/uberu5";
 export const YAGA_TWITTER = "https://twitter.com/a_bog_hag";
+export const ANTARISKA_TWITTER = "https://twitter.com/antariska_spl";
 export const ipLabsMaps = (pool: string) =>
   `https://maps.iplabs.ink/?3&pool=${pool}`;
 
