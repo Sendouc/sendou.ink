@@ -8,8 +8,8 @@ import {
 } from "@tldraw/tldraw";
 import randomInt from "just-random-integer";
 import * as React from "react";
-import { useWindowSize } from "react-use";
 import { useForceRefreshOnMount } from "~/hooks/useForceRefresh";
+import { usePlannerBg } from "~/hooks/usePlannerBg";
 import { useTranslation } from "~/hooks/useTranslation";
 import type { LanguageCode } from "~/modules/i18n";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
@@ -33,9 +33,7 @@ import type { StageBackgroundStyle } from "../plans-types";
 export default function Planner() {
   const { t } = useTranslation(["common"]);
   const { i18n } = useTranslation();
-
-  // Natively available WindowSize hook: https://usehooks-ts.com/react-hook/use-window-size
-  const windowSize = useWindowSize();
+  const plannerBgParams = usePlannerBg();
 
   const appRef = React.useRef<TldrawApp>();
   const app = appRef.current!;
@@ -103,15 +101,52 @@ export default function Planner() {
 
   const handleAddWeapon = React.useCallback(
     (src: string) => {
+      // Adjustable constants - we can move these later if needed
+      const imageSize = 45;
+      const imageSpawnBoxSizeFactorX = 0.15;
+      const imageSpawnBoxSizeFactorY = 0.3;
+      const imageSpawnBoxOffsetFactorX = 0;
+      const imageSpawnBoxOffsetFactorY = 0.2;
+
+      // Get 2 sets of [X, Y] point coordinates to bound the rectangle
+      const pointTopLeftOfBgRectangleX = plannerBgParams.pointOffsetX;
+      const pointTopLeftOfBgRectangleY = plannerBgParams.pointOffsetY;
+      const pointBottomRightOfBgRectangleX =
+        pointTopLeftOfBgRectangleX + plannerBgParams.bgWidth - imageSize;
+      const pointBottomRightOfBgRectangleY =
+        plannerBgParams.pointOffsetY + plannerBgParams.bgHeight - imageSize;
+
+      // Derived values for image spawn rectangle
+      const imageSpawnBoxLeft = pointTopLeftOfBgRectangleX + (plannerBgParams.bgWidth * imageSpawnBoxOffsetFactorX);
+      const imageSpawnBoxRight =
+      imageSpawnBoxSizeFactorX *
+          (pointBottomRightOfBgRectangleX - pointTopLeftOfBgRectangleX) +
+        imageSpawnBoxLeft;
+      const imageSpawnBoxTop = pointTopLeftOfBgRectangleY + (plannerBgParams.bgHeight * imageSpawnBoxOffsetFactorY);
+      const imageSpawnBoxBottom =
+      imageSpawnBoxSizeFactorY *
+          (pointBottomRightOfBgRectangleY - pointTopLeftOfBgRectangleY) +
+        imageSpawnBoxTop;
+
       handleAddImage({
         src,
         size: [45, 45],
         isLocked: false,
-        point: [randomInt(250, 1000), randomInt(250, 750)],
+        point: [
+          randomInt(imageSpawnBoxLeft, imageSpawnBoxRight),
+          randomInt(imageSpawnBoxTop, imageSpawnBoxBottom),
+        ],
         cb: () => app.selectTool("select"),
       });
     },
-    [app, handleAddImage]
+    [
+      app,
+      handleAddImage,
+      plannerBgParams.bgHeight,
+      plannerBgParams.bgWidth,
+      plannerBgParams.pointOffsetX,
+      plannerBgParams.pointOffsetY,
+    ]
   );
 
   const handleAddBackgroundImage = React.useCallback(
@@ -120,24 +155,22 @@ export default function Planner() {
       mode: ModeShort;
       style: StageBackgroundStyle;
     }) => {
-      // Dynamic background size. See this issue for more info: https://github.com/Sendouc/sendou.ink/issues/1161
-      const bgSizeFactor = 0.85;
-      const bgWidth = windowSize.width * bgSizeFactor;
-      const bgHeight = windowSize.height * bgSizeFactor;
-
-      // Point offsets that move the image closer to the center of the window
-      const pointOffsetX = bgWidth * (1 - bgSizeFactor);
-      const pointOffsetY = 0.6 * (bgHeight * (1 - bgSizeFactor)); // Removes some dead space above the image
-
       app.resetDocument();
       handleAddImage({
         src: stageMinimapImageUrlWithEnding(urlArgs),
-        size: [bgWidth, bgHeight],
+        size: [plannerBgParams.bgWidth, plannerBgParams.bgHeight],
         isLocked: true,
-        point: [pointOffsetX, pointOffsetY],
+        point: [plannerBgParams.pointOffsetX, plannerBgParams.pointOffsetY],
       });
     },
-    [app, handleAddImage, windowSize.height, windowSize.width]
+    [
+      app,
+      handleAddImage,
+      plannerBgParams.bgHeight,
+      plannerBgParams.bgWidth,
+      plannerBgParams.pointOffsetX,
+      plannerBgParams.pointOffsetY,
+    ]
   );
 
   return (
