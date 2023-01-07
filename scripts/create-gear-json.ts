@@ -21,7 +21,7 @@ const LEAN_HEAD_CODE = "Hed";
 const LEAN_CLOTHES_CODE = "Clt";
 const LEAN_SHOES_CODE = "Shs";
 
-const AVAILABLE_SR_GEAR = [21010, 21011, 21015, 21013];
+const AVAILABLE_SR_GEAR = [21010, 21011, 21015, 21013, 21012];
 
 async function main() {
   const allGear: Array<{
