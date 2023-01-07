@@ -4,6 +4,10 @@ import { TEAM, TEAM_MEMBER_ROLES } from "./team-constants";
 
 export const teamParamsSchema = z.object({ customUrl: z.string() });
 
+export const createTeamSchema = z.object({
+  name: z.string().min(TEAM.NAME_MIN_LENGTH).max(TEAM.NAME_MAX_LENGTH),
+});
+
 export const editTeamSchema = z.union([
   z.object({
     _action: z.literal("DELETE"),

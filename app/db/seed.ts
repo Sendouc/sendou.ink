@@ -25,6 +25,7 @@ import allTags from "~/routes/calendar/tags.json";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import type { UpsertManyPlusVotesArgs } from "./models/plusVotes/queries.server";
 import { nanoid } from "nanoid";
+import { mySlugify } from "~/utils/urls";
 
 const ADMIN_TEST_AVATAR = "1d1d8488ced4cdf478648592fa871101";
 
@@ -56,6 +57,7 @@ const basicSeeds = [
   adminBuilds,
   manySplattershotBuilds,
   detailedTeam,
+  otherTeams,
 ];
 
 export function seed() {
@@ -920,5 +922,65 @@ function detailedTeam() {
     `
       )
       .run();
+  }
+}
+
+function otherTeams() {
+  const usersInTeam = sql
+    .prepare(
+      /*sql */ `select
+    "userId"
+    from "AllTeamMember"
+    `
+    )
+    .all()
+    .map((row) => row.userId);
+
+  const userIds = userIdsInRandomOrder().filter(
+    (u) => !usersInTeam.includes(u)
+  );
+
+  for (let i = 3; i < 100; i++) {
+    const teamName = `${capitalize(faker.word.adjective())} ${capitalize(
+      faker.word.noun()
+    )}`;
+    const teamCustomUrl = mySlugify(teamName);
+
+    sql
+      .prepare(
+        /* sql */ `
+      insert into "AllTeam" ("id", "name", "customUrl", "inviteCode", "twitter", "bio")
+       values (
+          ${i},
+          '${teamName}',
+          '${teamCustomUrl}',
+          '${nanoid(INVITE_CODE_LENGTH)}',
+          '${faker.internet.userName()}',
+          '${faker.lorem.paragraph()}'
+       )
+    `
+      )
+      .run();
+
+    const numMembers = faker.helpers.arrayElement([
+      1, 2, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 7, 7, 8,
+    ]);
+    for (let j = 0; j < numMembers; j++) {
+      const userId = userIds.shift()!;
+
+      sql
+        .prepare(
+          /*sql*/ `
+        insert into "AllTeamMember" ("teamId", "userId", "role", "isOwner")
+          values (
+            ${i},
+            ${userId},
+            ${j === 0 ? "'CAPTAIN'" : "'FRONTLINE'"},
+            ${j === 0 ? 1 : 0}
+          )
+      `
+        )
+        .run();
+    }
   }
 }

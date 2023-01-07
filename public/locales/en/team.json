@@ -1,4 +1,7 @@
 {
+  "newTeam.button": "New team",
+  "newTeam.header": "Creating a new team",
+  "teamSearch.placeholder": "Search for a team or player...",
   "actionButtons.leaveTeam": "Leave Team",
   "leaveTeam.header": "Are you sure you want to leave {{teamName}}?",
   "actionButtons.leaveTeam.confirm": "Leave",

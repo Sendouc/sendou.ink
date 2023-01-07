@@ -203,6 +203,12 @@
   list-style: none;
 }
 
+.u-search__input {
+  height: 40px !important;
+  margin: 0 auto;
+  font-size: var(--fonts-lg);
+}
+
 .u-search__icon {
   height: 25px;
   margin: auto;
@@ -213,12 +219,6 @@
   color: var(--text-lighter);
   font-size: var(--fonts-sm);
   text-align: center;
-}
-
-.u-search__input {
-  height: 40px !important;
-  margin: 0 auto;
-  font-size: var(--fonts-lg);
 }
 
 .u__weapon {

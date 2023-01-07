@@ -130,6 +130,10 @@
   margin-block-start: var(--s-4);
 }
 
+.mt-6 {
+  margin-block-start: var(--s-6);
+}
+
 .mb-0 {
   margin-block-end: 0;
 }

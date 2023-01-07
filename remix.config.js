@@ -22,6 +22,7 @@ module.exports = {
         route("/to/:id/join", "features/tournament/routes/to.$id.join.tsx");
       });
 
+      route("/t", "features/team/routes/t.tsx");
       route("/t/:customUrl", "features/team/routes/t.$customUrl.tsx");
       route("/t/:customUrl/edit", "features/team/routes/t.$customUrl.edit.tsx");
       route(

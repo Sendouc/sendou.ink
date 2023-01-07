@@ -1,3 +1,47 @@
+.team-search__input {
+  height: 40px !important;
+  margin: 0 auto;
+  font-size: var(--fonts-lg);
+}
+
+.team-search__icon {
+  height: 25px;
+  margin: auto;
+  margin-right: 15px;
+}
+
+.team-search__team {
+  display: flex;
+  color: var(--text);
+  gap: var(--s-3);
+  align-items: center;
+}
+
+.team-search__team__name {
+  font-size: var(--fonts-xl);
+  font-weight: var(--bold);
+}
+
+.team-search__team__members {
+  font-size: var(--fonts-xs);
+  color: var(--text-lighter);
+}
+
+.team-search__team__avatar-placeholder {
+  height: 64px;
+  min-width: 64px;
+  display: grid;
+  place-items: center;
+  font-size: var(--fonts-xl);
+  border-radius: 100%;
+  background-color: var(--theme-transparent);
+}
+
+.team-search__form-input-container {
+  text-align: left;
+  margin: 0 auto;
+}
+
 .team__banner {
   background-image: linear-gradient(
       to bottom,

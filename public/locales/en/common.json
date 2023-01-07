@@ -43,6 +43,7 @@
   "actions.reset": "Reset",
   "actions.loadMore": "Load more",
   "actions.copyToClipboard": "Copy to clipboard",
+  "actions.create": "Create",
   "actions.close": "Close",
   "actions.cancel": "Cancel",
   "actions.loading": "Loading...",

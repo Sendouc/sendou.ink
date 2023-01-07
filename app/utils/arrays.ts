@@ -27,12 +27,12 @@ function at<T>(arr: T[], n: number) {
   return arr[n];
 }
 
-export function joinListToNaturalString(arg: string[]) {
+export function joinListToNaturalString(arg: string[], lastSeparator = "and") {
   const list = [...arg];
   const last = list.pop();
   const commaJoined = list.join(", ");
 
-  return last ? `${commaJoined} and ${last}` : commaJoined;
+  return last ? `${commaJoined} ${lastSeparator} ${last}` : commaJoined;
 }
 
 export function normalizeFormFieldArray(
