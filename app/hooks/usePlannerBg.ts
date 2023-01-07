@@ -12,7 +12,12 @@ type PlannerBgParams = {
 const bgSizeFactor = 0.8;
 
 export function usePlannerBg() {
-  const [plannerBgParams, setPlannerBgParams] = useState({});
+  const [plannerBgParams, setPlannerBgParams] = useState<PlannerBgParams>({
+    bgWidth: 1200,
+    bgHeight: 800,
+    pointOffsetX: 240,
+    pointOffsetY: 96,
+  });
 
   // Natively available WindowSize hook: https://usehooks-ts.com/react-hook/use-window-size
   const windowSize = useWindowSize();
@@ -33,5 +38,5 @@ export function usePlannerBg() {
     });
   }, [windowSize.width, windowSize.height]);
 
-  return plannerBgParams as PlannerBgParams;
+  return plannerBgParams;
 }

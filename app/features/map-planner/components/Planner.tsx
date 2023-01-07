@@ -101,42 +101,38 @@ export default function Planner() {
 
   const handleAddWeapon = React.useCallback(
     (src: string) => {
-      // Adjustable constants - we can move these later if needed
-      const imageSize = 45;
+      // Adjustable parameters for image spawning
+      const imageSizePx = 45;
       const imageSpawnBoxSizeFactorX = 0.15;
       const imageSpawnBoxSizeFactorY = 0.3;
       const imageSpawnBoxOffsetFactorX = 0;
       const imageSpawnBoxOffsetFactorY = 0.2;
 
-      // Get 2 sets of [X, Y] point coordinates to bound the rectangle
-      const pointTopLeftOfBgRectangleX = plannerBgParams.pointOffsetX;
-      const pointTopLeftOfBgRectangleY = plannerBgParams.pointOffsetY;
+      // Get positions of the background rectangle
+      const bgRectangleLeft = plannerBgParams.pointOffsetX;
+      const bgRectangleTop = plannerBgParams.pointOffsetY;
 
       // Subtract the size of the image here to correct the image spawn location at the right-most & bottom-most boundaries
-      const pointBottomRightOfBgRectangleX =
-        pointTopLeftOfBgRectangleX + plannerBgParams.bgWidth - imageSize;
-      const pointBottomRightOfBgRectangleY =
-        plannerBgParams.pointOffsetY + plannerBgParams.bgHeight - imageSize;
+      const bgRectangleRight =
+        bgRectangleLeft + plannerBgParams.bgWidth - imageSizePx;
+      const bgRectangleBottom =
+        plannerBgParams.pointOffsetY + plannerBgParams.bgHeight - imageSizePx;
 
-      // Derived values for image spawn rectangle
+      // Derived values for image spawn box
       const imageSpawnBoxLeft =
-        pointTopLeftOfBgRectangleX +
-        plannerBgParams.bgWidth * imageSpawnBoxOffsetFactorX;
+        bgRectangleLeft + plannerBgParams.bgWidth * imageSpawnBoxOffsetFactorX;
       const imageSpawnBoxRight =
-        imageSpawnBoxSizeFactorX *
-          (pointBottomRightOfBgRectangleX - pointTopLeftOfBgRectangleX) +
+        imageSpawnBoxSizeFactorX * (bgRectangleRight - bgRectangleLeft) +
         imageSpawnBoxLeft;
       const imageSpawnBoxTop =
-        pointTopLeftOfBgRectangleY +
-        plannerBgParams.bgHeight * imageSpawnBoxOffsetFactorY;
+        bgRectangleTop + plannerBgParams.bgHeight * imageSpawnBoxOffsetFactorY;
       const imageSpawnBoxBottom =
-        imageSpawnBoxSizeFactorY *
-          (pointBottomRightOfBgRectangleY - pointTopLeftOfBgRectangleY) +
+        imageSpawnBoxSizeFactorY * (bgRectangleBottom - bgRectangleTop) +
         imageSpawnBoxTop;
 
       handleAddImage({
         src,
-        size: [45, 45],
+        size: [imageSizePx, imageSizePx],
         isLocked: false,
         point: [
           randomInt(imageSpawnBoxLeft, imageSpawnBoxRight),
