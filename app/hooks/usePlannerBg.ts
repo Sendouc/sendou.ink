@@ -9,7 +9,7 @@ type PlannerBgParams = {
 };
 
 // Dynamic background size. See this issue for more info: https://github.com/Sendouc/sendou.ink/issues/1161
-const bgSizeFactor = 0.80;
+const bgSizeFactor = 0.8;
 
 export function usePlannerBg() {
   const [plannerBgParams, setPlannerBgParams] = useState({});
@@ -26,7 +26,10 @@ export function usePlannerBg() {
     const pointOffsetY = 0.6 * (bgHeight * (1 - bgSizeFactor)); // Removes some dead space above the image
 
     setPlannerBgParams({
-      bgWidth, bgHeight, pointOffsetX, pointOffsetY
+      bgWidth,
+      bgHeight,
+      pointOffsetX,
+      pointOffsetY,
     });
   }, [windowSize.width, windowSize.height]);
 
