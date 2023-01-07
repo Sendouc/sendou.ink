@@ -111,20 +111,26 @@ export default function Planner() {
       // Get 2 sets of [X, Y] point coordinates to bound the rectangle
       const pointTopLeftOfBgRectangleX = plannerBgParams.pointOffsetX;
       const pointTopLeftOfBgRectangleY = plannerBgParams.pointOffsetY;
+
+      // Subtract the size of the image here to correct the image spawn location at the right-most & bottom-most boundaries
       const pointBottomRightOfBgRectangleX =
         pointTopLeftOfBgRectangleX + plannerBgParams.bgWidth - imageSize;
       const pointBottomRightOfBgRectangleY =
         plannerBgParams.pointOffsetY + plannerBgParams.bgHeight - imageSize;
 
       // Derived values for image spawn rectangle
-      const imageSpawnBoxLeft = pointTopLeftOfBgRectangleX + (plannerBgParams.bgWidth * imageSpawnBoxOffsetFactorX);
+      const imageSpawnBoxLeft =
+        pointTopLeftOfBgRectangleX +
+        plannerBgParams.bgWidth * imageSpawnBoxOffsetFactorX;
       const imageSpawnBoxRight =
-      imageSpawnBoxSizeFactorX *
+        imageSpawnBoxSizeFactorX *
           (pointBottomRightOfBgRectangleX - pointTopLeftOfBgRectangleX) +
         imageSpawnBoxLeft;
-      const imageSpawnBoxTop = pointTopLeftOfBgRectangleY + (plannerBgParams.bgHeight * imageSpawnBoxOffsetFactorY);
+      const imageSpawnBoxTop =
+        pointTopLeftOfBgRectangleY +
+        plannerBgParams.bgHeight * imageSpawnBoxOffsetFactorY;
       const imageSpawnBoxBottom =
-      imageSpawnBoxSizeFactorY *
+        imageSpawnBoxSizeFactorY *
           (pointBottomRightOfBgRectangleY - pointTopLeftOfBgRectangleY) +
         imageSpawnBoxTop;
 
