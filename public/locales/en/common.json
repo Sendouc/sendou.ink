@@ -50,6 +50,7 @@
   "actions.selectAll": "Select All",
   "actions.search": "Search",
   "actions.setBg": "Set background",
+  "actions.join": "Join",
 
   "maps.createMapList": "Create map list",
   "maps.halfSz": "50% SZ",

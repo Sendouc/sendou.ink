@@ -28,6 +28,7 @@ module.exports = {
         "/t/:customUrl/roster",
         "features/team/routes/t.$customUrl.roster.tsx"
       );
+      route("/t/:customUrl/join", "features/team/routes/t.$customUrl.join.tsx");
     });
   },
 };

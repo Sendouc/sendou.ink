@@ -11,6 +11,12 @@ const stm = sql.prepare(/* sql */ `
     "leftAt" = null
 `);
 
-export function addNewTeamMember(teamId: number, userId: number) {
+export function addNewTeamMember({
+  teamId,
+  userId,
+}: {
+  teamId: number;
+  userId: number;
+}) {
   stm.run({ teamId, userId });
 }
