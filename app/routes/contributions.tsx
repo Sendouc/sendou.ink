@@ -5,6 +5,7 @@ import { useSetTitle } from "~/hooks/useSetTitle";
 import { languages } from "~/modules/i18n";
 import { makeTitle } from "~/utils/strings";
 import {
+  ANTARISKA_TWITTER,
   BORZOIC_TWITTER,
   GITHUB_CONTRIBUTORS_URL,
   LEAN_TWITTER,
@@ -114,6 +115,12 @@ export default function ContributionsPage() {
             yaga
           </a>{" "}
           - {t("contributions:yaga")}
+        </li>
+        <li>
+          <a href={ANTARISKA_TWITTER} target="_blank" rel="noreferrer">
+            Antariska
+          </a>{" "}
+          - {t("contributions:antariska")}
         </li>
         {TRANSLATORS.map(({ translators, language }) => (
           <li key={language}>

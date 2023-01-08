@@ -9,6 +9,7 @@ import {
 import randomInt from "just-random-integer";
 import * as React from "react";
 import { useForceRefreshOnMount } from "~/hooks/useForceRefresh";
+import { usePlannerBg } from "~/hooks/usePlannerBg";
 import { useTranslation } from "~/hooks/useTranslation";
 import type { LanguageCode } from "~/modules/i18n";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
@@ -32,6 +33,8 @@ import type { StageBackgroundStyle } from "../plans-types";
 export default function Planner() {
   const { t } = useTranslation(["common"]);
   const { i18n } = useTranslation();
+  const plannerBgParams = usePlannerBg();
+
   const appRef = React.useRef<TldrawApp>();
   const app = appRef.current!;
 
@@ -98,15 +101,54 @@ export default function Planner() {
 
   const handleAddWeapon = React.useCallback(
     (src: string) => {
+      // Adjustable parameters for image spawning
+      const imageSizePx = 45;
+      const imageSpawnBoxSizeFactorX = 0.15;
+      const imageSpawnBoxSizeFactorY = 0.3;
+      const imageSpawnBoxOffsetFactorX = 0;
+      const imageSpawnBoxOffsetFactorY = 0.2;
+
+      // Get positions of the background rectangle
+      const bgRectangleLeft = plannerBgParams.pointOffsetX;
+      const bgRectangleTop = plannerBgParams.pointOffsetY;
+
+      // Subtract the size of the image here to correct the image spawn location at the right-most & bottom-most boundaries
+      const bgRectangleRight =
+        bgRectangleLeft + plannerBgParams.bgWidth - imageSizePx;
+      const bgRectangleBottom =
+        plannerBgParams.pointOffsetY + plannerBgParams.bgHeight - imageSizePx;
+
+      // Derived values for image spawn box
+      const imageSpawnBoxLeft =
+        bgRectangleLeft + plannerBgParams.bgWidth * imageSpawnBoxOffsetFactorX;
+      const imageSpawnBoxRight =
+        imageSpawnBoxSizeFactorX * (bgRectangleRight - bgRectangleLeft) +
+        imageSpawnBoxLeft;
+      const imageSpawnBoxTop =
+        bgRectangleTop + plannerBgParams.bgHeight * imageSpawnBoxOffsetFactorY;
+      const imageSpawnBoxBottom =
+        imageSpawnBoxSizeFactorY * (bgRectangleBottom - bgRectangleTop) +
+        imageSpawnBoxTop;
+
       handleAddImage({
         src,
-        size: [45, 45],
+        size: [imageSizePx, imageSizePx],
         isLocked: false,
-        point: [randomInt(250, 1000), randomInt(250, 750)],
+        point: [
+          randomInt(imageSpawnBoxLeft, imageSpawnBoxRight),
+          randomInt(imageSpawnBoxTop, imageSpawnBoxBottom),
+        ],
         cb: () => app.selectTool("select"),
       });
     },
-    [app, handleAddImage]
+    [
+      app,
+      handleAddImage,
+      plannerBgParams.bgHeight,
+      plannerBgParams.bgWidth,
+      plannerBgParams.pointOffsetX,
+      plannerBgParams.pointOffsetY,
+    ]
   );
 
   const handleAddBackgroundImage = React.useCallback(
@@ -118,12 +160,19 @@ export default function Planner() {
       app.resetDocument();
       handleAddImage({
         src: stageMinimapImageUrlWithEnding(urlArgs),
-        size: [1600, 900],
+        size: [plannerBgParams.bgWidth, plannerBgParams.bgHeight],
         isLocked: true,
-        point: [65, 20],
+        point: [plannerBgParams.pointOffsetX, plannerBgParams.pointOffsetY],
       });
     },
-    [app, handleAddImage]
+    [
+      app,
+      handleAddImage,
+      plannerBgParams.bgHeight,
+      plannerBgParams.bgWidth,
+      plannerBgParams.pointOffsetX,
+      plannerBgParams.pointOffsetY,
+    ]
   );
 
   return (
