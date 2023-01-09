@@ -879,10 +879,10 @@ function detailedTeam() {
   sql
     .prepare(
       /* sql */ `
-    insert into "UnvalidatedUserSubmittedImage" ("validatedAt", "url")
+    insert into "UnvalidatedUserSubmittedImage" ("validatedAt", "url", "submitterUserId")
       values 
-        (1672587342, 'AiGSM5T-cxm6BFGT7N_lA-1673297699133.webp'), 
-        (1672587342, 'jTbWd95klxU2MzGFIdi1c-1673297932788.webp')
+        (1672587342, 'AiGSM5T-cxm6BFGT7N_lA-1673297699133.webp', 1), 
+        (1672587342, 'jTbWd95klxU2MzGFIdi1c-1673297932788.webp', 1)
   `
     )
     .run();

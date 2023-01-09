@@ -14,7 +14,7 @@ import { type SendouRouteHandle } from "~/utils/remix";
 import { rawSensToString } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
 import { assertUnreachable } from "~/utils/types";
-import { teamPage } from "~/utils/urls";
+import { teamPage, userSubmittedImage } from "~/utils/urls";
 import { badgeExplanationText } from "../badges/$id";
 import type { UserPageLoaderData } from "../u.$identifier";
 
@@ -73,7 +73,7 @@ function TeamInfo() {
       {team.avatarUrl ? (
         <img
           alt=""
-          src={team.avatarUrl}
+          src={userSubmittedImage(team.avatarUrl)}
           width={24}
           height={24}
           className="rounded-full"
