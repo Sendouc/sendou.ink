@@ -60,7 +60,7 @@
 }
 
 .team__banner__placeholder {
-  height: 12rem;
+  height: 6rem;
   background-color: var(--theme-transparent);
 }
 
@@ -263,6 +263,13 @@
   align-items: center;
 }
 
+.team__image-links-list {
+  display: flex;
+  gap: var(--s-8);
+  padding-left: var(--s-4);
+  font-size: var(--fonts-sm);
+}
+
 @media screen and (min-width: 640px) {
   .team__banner__flags {
     display: flex;
@@ -298,5 +305,9 @@
 
   .team__roster__separator {
     display: none;
+  }
+
+  .team__banner__placeholder {
+    height: 12rem;
   }
 }

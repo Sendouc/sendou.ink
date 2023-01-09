@@ -24,7 +24,12 @@ import { getUser, requireUser, useUser } from "~/modules/auth";
 import { joinListToNaturalString } from "~/utils/arrays";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { parseRequestFormData, validate } from "~/utils/remix";
-import { mySlugify, teamPage, TEAM_SEARCH_PAGE } from "~/utils/urls";
+import {
+  mySlugify,
+  teamPage,
+  TEAM_SEARCH_PAGE,
+  userSubmittedImage,
+} from "~/utils/urls";
 import { allTeams } from "../queries/allTeams.server";
 import { createNewTeam } from "../queries/createNewTeam.server";
 import { TEAM } from "../team-constants";
@@ -171,7 +176,7 @@ export default function TeamSearchPage() {
           >
             {team.avatarSrc ? (
               <img
-                src={team.avatarSrc}
+                src={userSubmittedImage(team.avatarSrc)}
                 alt=""
                 width={64}
                 height={64}

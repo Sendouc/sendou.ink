@@ -1,10 +1,11 @@
+import type { LinksFunction } from "@remix-run/node";
 import {
   type LoaderArgs,
   redirect,
   type ActionFunction,
 } from "@remix-run/node";
 import * as React from "react";
-import { Form, useLoaderData } from "@remix-run/react";
+import { Form, Link, useLoaderData } from "@remix-run/react";
 import { FormMessage } from "~/components/FormMessage";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
@@ -17,7 +18,12 @@ import {
   type SendouRouteHandle,
   validate,
 } from "~/utils/remix";
-import { mySlugify, teamPage, TEAM_SEARCH_PAGE } from "~/utils/urls";
+import {
+  mySlugify,
+  teamPage,
+  TEAM_SEARCH_PAGE,
+  uploadImagePage,
+} from "~/utils/urls";
 import { edit } from "../queries/edit.server";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { TEAM } from "../team-constants";
@@ -28,6 +34,11 @@ import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { deleteTeam } from "../queries/deleteTeam.server";
 import { Button } from "~/components/Button";
 import { assertUnreachable } from "~/utils/types";
+import styles from "../team.css";
+
+export const links: LinksFunction = () => {
+  return [{ rel: "stylesheet", href: styles }];
+};
 
 export const handle: SendouRouteHandle = {
   i18n: ["team"],
@@ -110,6 +121,7 @@ export default function EditTeamPage() {
         </Button>
       </FormWithConfirm>
       <Form method="post" className="stack md items-start">
+        <ImageUploadLinks />
         <NameInput />
         <TwitterInput />
         <BioTextarea />
@@ -119,6 +131,27 @@ export default function EditTeamPage() {
         <FormErrors namespace="team" />
       </Form>
     </Main>
+  );
+}
+
+function ImageUploadLinks() {
+  const { t } = useTranslation(["team"]);
+  return (
+    <div>
+      <Label>{t("team:forms.fields.uploadImages")}</Label>
+      <ol className="team__image-links-list">
+        <li>
+          <Link to={uploadImagePage("team-pfp")}>
+            {t("team:forms.fields.uploadImages.pfp")}
+          </Link>
+        </li>
+        <li>
+          <Link to={uploadImagePage("team-banner")}>
+            {t("team:forms.fields.uploadImages.banner")}
+          </Link>
+        </li>
+      </ol>
+    </div>
   );
 }
 

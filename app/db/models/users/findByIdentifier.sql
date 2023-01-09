@@ -2,6 +2,7 @@ select
   "User".*,
   "Team"."name" as "teamName",
   "Team"."customUrl" as "teamCustomUrl",
+  "Team"."id" as "teamId",
   "UserSubmittedImage"."url" as "teamAvatarUrl",
   "PlusTier"."tier" as "plusTier",
   json_group_array("UserWeapon"."weaponSplId") as "weapons"

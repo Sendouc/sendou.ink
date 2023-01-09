@@ -18,6 +18,7 @@ import type {
 import type navItems from "~/components/layout/nav-items.json";
 import { type AuthErrorCode } from "~/modules/auth";
 import type { StageBackgroundStyle } from "~/features/map-planner";
+import type { ImageUploadType } from "~/features/img-upload";
 
 const staticAssetsUrl = ({
   folder,
@@ -27,6 +28,13 @@ const staticAssetsUrl = ({
   fileName: string;
 }) =>
   `https://raw.githubusercontent.com/Sendouc/sendou-ink-assets/main/${folder}/${fileName}`;
+
+const USER_SUBMITTED_IMAGE_ROOT =
+  process.env.NODE_ENV === "development"
+    ? `https://sendou.nyc3.digitaloceanspaces.com`
+    : `https://assets.sendou.ink`;
+export const userSubmittedImage = (fileName: string) =>
+  `${USER_SUBMITTED_IMAGE_ROOT}/${fileName}`;
 
 export const SPLATOON_2_SENDOU_IN_URL = "https://spl2.sendou.ink";
 export const PLUS_SERVER_DISCORD_URL = "https://discord.gg/FW4dKrY";
@@ -153,6 +161,9 @@ export const objectDamageCalculatorPage = (weaponId?: MainWeaponId) =>
   `/object-damage-calculator${
     typeof weaponId === "number" ? `?weapon=${weaponId}` : ""
   }`;
+
+export const uploadImagePage = (type: ImageUploadType) =>
+  `/upload?type=${type}`;
 
 export const badgeUrl = ({
   code,

@@ -241,6 +241,7 @@ export interface UserSubmittedImage {
   id: number;
   validatedAt: number | null;
   url: string;
+  submitterUserId: number;
 }
 
 export interface Team {

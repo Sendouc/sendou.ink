@@ -112,7 +112,7 @@ export const migrate = sql.transaction(
 
 const findByIdentifierStm = sql.prepare(findByIdentifierSql);
 export function findByIdentifier(identifier: string | number) {
-  const { weapons, teamName, teamCustomUrl, teamAvatarUrl, ...row } =
+  const { weapons, teamName, teamCustomUrl, teamAvatarUrl, teamId, ...row } =
     findByIdentifierStm.get({ identifier });
 
   if (!row.id) return;
@@ -121,12 +121,22 @@ export function findByIdentifier(identifier: string | number) {
     ...row,
     weapons: parseDBArray(weapons),
     team: teamName
-      ? { name: teamName, customUrl: teamCustomUrl, avatarUrl: teamAvatarUrl }
+      ? {
+          name: teamName,
+          customUrl: teamCustomUrl,
+          avatarUrl: teamAvatarUrl,
+          id: teamId,
+        }
       : undefined,
   } as
     | (UserWithPlusTier & {
         weapons: MainWeaponId[];
-        team?: { name: string; customUrl: string; avatarUrl?: string };
+        team?: {
+          name: string;
+          customUrl: string;
+          avatarUrl?: string;
+          id: number;
+        };
       })
     | undefined;
 }

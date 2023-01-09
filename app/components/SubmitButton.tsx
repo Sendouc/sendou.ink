@@ -20,7 +20,7 @@ export function SubmitButton({
   return (
     <Button
       {...rest}
-      disabled={isSubmitting}
+      disabled={rest.disabled || isSubmitting}
       type="submit"
       name={_action ? "_action" : undefined}
       value={_action}

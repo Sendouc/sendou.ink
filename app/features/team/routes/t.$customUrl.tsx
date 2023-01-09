@@ -20,7 +20,12 @@ import { requireUser, useUser } from "~/modules/auth";
 import { type SendouRouteHandle, validate } from "~/utils/remix";
 import { notFoundIfFalsy } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
-import { editTeamPage, manageTeamRosterPage, userPage } from "~/utils/urls";
+import {
+  editTeamPage,
+  manageTeamRosterPage,
+  userPage,
+  userSubmittedImage,
+} from "~/utils/urls";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { leaveTeam } from "../queries/leaveTeam.server";
 import { teamParamsSchema } from "../team-schemas.server";
@@ -112,7 +117,7 @@ function TeamBanner() {
         style={
           {
             "--team-banner-img": team.bannerSrc
-              ? `url("${team.bannerSrc}")`
+              ? `url("${userSubmittedImage(team.bannerSrc)}")`
               : undefined,
           } as any
         }
@@ -120,7 +125,7 @@ function TeamBanner() {
         {team.avatarSrc ? (
           <div className="team__banner__avatar">
             <div>
-              <img src={team.avatarSrc} alt="" />
+              <img src={userSubmittedImage(team.avatarSrc)} alt="" />
             </div>
           </div>
         ) : null}

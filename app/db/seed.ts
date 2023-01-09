@@ -881,8 +881,8 @@ function detailedTeam() {
       /* sql */ `
     insert into "UnvalidatedUserSubmittedImage" ("validatedAt", "url")
       values 
-        (1672587342, 'https://abload.de/img/ryri0cnc_400x4005qcyx.jpeg'), 
-        (1672587342, 'https://abload.de/img/fjkfa-uxkamgdbxr3iqn.jpeg')
+        (1672587342, 'AiGSM5T-cxm6BFGT7N_lA-1673297699133.webp'), 
+        (1672587342, 'jTbWd95klxU2MzGFIdi1c-1673297932788.webp')
   `
     )
     .run();
