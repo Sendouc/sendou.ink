@@ -904,9 +904,9 @@ function detailedTeam() {
     )
     .run();
 
-  const userIds = userIdsInRandomOrder(true);
+  const userIds = userIdsInRandomOrder(true).filter((id) => id !== 2);
   for (let i = 0; i < 5; i++) {
-    const userId = i <= 1 ? i + 1 : userIds.shift()!;
+    const userId = i === 0 ? 1 : userIds.shift()!;
 
     sql
       .prepare(
@@ -937,7 +937,7 @@ function otherTeams() {
     .map((row) => row.userId);
 
   const userIds = userIdsInRandomOrder().filter(
-    (u) => !usersInTeam.includes(u)
+    (u) => !usersInTeam.includes(u) && u !== 2
   );
 
   for (let i = 3; i < 100; i++) {

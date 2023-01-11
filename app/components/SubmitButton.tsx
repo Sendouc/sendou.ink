@@ -24,6 +24,7 @@ export function SubmitButton({
       type="submit"
       name={_action ? "_action" : undefined}
       value={_action}
+      data-testid="submit-button"
     >
       {children}
     </Button>

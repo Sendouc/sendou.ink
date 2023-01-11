@@ -26,3 +26,7 @@ export async function seed(page: Page) {
 export async function impersonate(page: Page, userId = 1) {
   return page.request.post(`/auth/impersonate?id=${userId}`);
 }
+
+export async function submit(page: Page) {
+  return page.getByTestId("submit-button").click();
+}

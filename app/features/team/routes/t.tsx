@@ -175,7 +175,12 @@ export default function TeamSearchPage() {
     <Main className="stack lg">
       <NewTeamDialog />
       {user && !data.isMemberOfTeam ? (
-        <LinkButton size="tiny" to="?new=true" className="ml-auto">
+        <LinkButton
+          size="tiny"
+          to="?new=true"
+          className="ml-auto"
+          testId="new-team-button"
+        >
           {t("team:newTeam.button")}
         </LinkButton>
       ) : null}
@@ -185,9 +190,10 @@ export default function TeamSearchPage() {
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         placeholder={t("team:teamSearch.placeholder")}
+        testId="team-search-input"
       />
       <div className="mt-6 stack lg">
-        {filteredTeams.map((team) => (
+        {filteredTeams.map((team, i) => (
           <Link
             key={team.customUrl}
             to={teamPage(team.customUrl)}
@@ -208,7 +214,12 @@ export default function TeamSearchPage() {
               </div>
             )}
             <div>
-              <div className="team-search__team__name">{team.name}</div>
+              <div
+                className="team-search__team__name"
+                data-testid={`team-${i}`}
+              >
+                {team.name}
+              </div>
               <div className="team-search__team__members">
                 {team.members.length === 1
                   ? team.members[0]!.discordName
@@ -246,6 +257,7 @@ function NewTeamDialog() {
             minLength={TEAM.NAME_MIN_LENGTH}
             maxLength={TEAM.NAME_MAX_LENGTH}
             required
+            data-testid="new-team-name-input"
           />
         </div>
         <FormErrors namespace="team" />

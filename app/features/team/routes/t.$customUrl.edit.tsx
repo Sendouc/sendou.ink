@@ -193,11 +193,13 @@ function NameInput() {
         {t("common:forms.name")}
       </Label>
       <input
+        id="name"
         name="name"
         required
         minLength={TEAM.NAME_MIN_LENGTH}
         maxLength={TEAM.NAME_MAX_LENGTH}
         defaultValue={team.name}
+        data-testid="name-input"
       />
       <FormMessage type="info">{t("team:forms.info.name")}</FormMessage>
     </div>
@@ -210,11 +212,13 @@ function TwitterInput() {
 
   return (
     <div>
-      <Label htmlFor="title">{t("team:forms.fields.teamTwitter")}</Label>
+      <Label htmlFor="twitter">{t("team:forms.fields.teamTwitter")}</Label>
       <input
+        id="twitter"
         name="twitter"
         maxLength={TEAM.TWITTER_MAX_LENGTH}
         defaultValue={team.twitter}
+        data-testid="twitter-input"
       />
     </div>
   );
@@ -239,6 +243,7 @@ function BioTextarea() {
         value={value}
         onChange={(e) => setValue(e.target.value)}
         maxLength={TEAM.BIO_MAX_LENGTH}
+        data-testid="bio-textarea"
       />
     </div>
   );

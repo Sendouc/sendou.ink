@@ -105,7 +105,7 @@ export default function TeamPage() {
       <MobileTeamNameCountry />
       <ActionButtons />
       {team.results ? <ResultsBanner results={team.results} /> : null}
-      {team.bio ? <article>{team.bio}</article> : null}
+      {team.bio ? <article data-testid="team-bio">{team.bio}</article> : null}
       <div className="stack lg">
         {team.members.map((member) => (
           <React.Fragment key={member.discordId}>
@@ -227,6 +227,7 @@ function ActionButtons() {
           to={editTeamPage(team.customUrl)}
           variant="outlined"
           prefetch="intent"
+          testId="edit-team-button"
         >
           {t("team:actionButtons.editTeam")}
         </LinkButton>
