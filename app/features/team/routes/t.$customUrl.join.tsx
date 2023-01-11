@@ -12,8 +12,8 @@ import { useTranslation } from "~/hooks/useTranslation";
 import { requireUser } from "~/modules/auth";
 import {
   notFoundIfFalsy,
-  type SendouRouteHandle,
   validate,
+  type SendouRouteHandle,
 } from "~/utils/remix";
 import { teamPage } from "~/utils/urls";
 import { addNewTeamMember } from "../queries/addNewTeamMember.server";
@@ -53,11 +53,6 @@ export const action: ActionFunction = async ({ request, params }) => {
 
 export const handle: SendouRouteHandle = {
   i18n: ["team"],
-  // breadcrumb: () => ({
-  //   imgPath: navIconUrl("object-damage-calculator"),
-  //   href: OBJECT_DAMAGE_CALCULATOR_URL,
-  //   type: "IMAGE",
-  // }),
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

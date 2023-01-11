@@ -8,27 +8,45 @@ import { writeAsyncIterableToWritable } from "@remix-run/node";
 import { nanoid } from "nanoid";
 import invariant from "tiny-invariant";
 
-const {
-  STORAGE_END_POINT,
-  STORAGE_ACCESS_KEY,
-  STORAGE_SECRET,
-  STORAGE_REGION,
-  STORAGE_BUCKET,
-} = process.env;
+const envVars = () => {
+  const {
+    STORAGE_END_POINT,
+    STORAGE_ACCESS_KEY,
+    STORAGE_SECRET,
+    STORAGE_REGION,
+    STORAGE_BUCKET,
+  } = process.env;
 
-if (
-  !(
-    STORAGE_ACCESS_KEY &&
-    STORAGE_END_POINT &&
-    STORAGE_SECRET &&
-    STORAGE_REGION &&
-    STORAGE_BUCKET
-  )
-) {
-  throw new Error(`Storage is missing required configuration.`);
-}
+  if (
+    !(
+      STORAGE_ACCESS_KEY &&
+      STORAGE_END_POINT &&
+      STORAGE_SECRET &&
+      STORAGE_REGION &&
+      STORAGE_BUCKET
+    )
+  ) {
+    throw new Error(`Storage is missing required configuration.`);
+  }
+
+  return {
+    STORAGE_END_POINT,
+    STORAGE_ACCESS_KEY,
+    STORAGE_SECRET,
+    STORAGE_REGION,
+    STORAGE_BUCKET,
+  };
+};
 
 const uploadStream = ({ Key }: Pick<AWS.S3.Types.PutObjectRequest, "Key">) => {
+  const {
+    STORAGE_END_POINT,
+    STORAGE_ACCESS_KEY,
+    STORAGE_SECRET,
+    STORAGE_REGION,
+    STORAGE_BUCKET,
+  } = envVars();
+
   const s3 = new AWS.S3({
     endpoint: STORAGE_END_POINT,
     s3ForcePathStyle: false,

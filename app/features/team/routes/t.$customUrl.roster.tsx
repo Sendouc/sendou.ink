@@ -1,4 +1,8 @@
-import type { LinksFunction } from "@remix-run/node";
+import type {
+  LinksFunction,
+  MetaFunction,
+  SerializeFrom,
+} from "@remix-run/node";
 import {
   redirect,
   type ActionFunction,
@@ -18,9 +22,14 @@ import { useTranslation } from "~/hooks/useTranslation";
 import { requireUser, useUser } from "~/modules/auth";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
-import { discordFullName } from "~/utils/strings";
+import { discordFullName, makeTitle } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
-import { joinTeamPage, teamPage } from "~/utils/urls";
+import {
+  joinTeamPage,
+  navIconUrl,
+  teamPage,
+  TEAM_SEARCH_PAGE,
+} from "~/utils/urls";
 import { editRole } from "../queries/editRole.server";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { inviteCodeById } from "../queries/inviteCodeById.server";
@@ -35,6 +44,18 @@ import styles from "../team.css";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
+};
+
+export const meta: MetaFunction = ({
+  data,
+}: {
+  data: SerializeFrom<typeof loader>;
+}) => {
+  if (!data) return {};
+
+  return {
+    title: makeTitle(data.team.name),
+  };
 };
 
 export const action: ActionFunction = async ({ request, params }) => {
@@ -86,11 +107,21 @@ export const action: ActionFunction = async ({ request, params }) => {
 
 export const handle: SendouRouteHandle = {
   i18n: ["team"],
-  // breadcrumb: () => ({
-  //   imgPath: navIconUrl("object-damage-calculator"),
-  //   href: OBJECT_DAMAGE_CALCULATOR_URL,
-  //   type: "IMAGE",
-  // }),
+  breadcrumb: ({ match }) => {
+    const data = match.data as SerializeFrom<typeof loader>;
+    return [
+      {
+        imgPath: navIconUrl("t"),
+        href: TEAM_SEARCH_PAGE,
+        type: "IMAGE",
+      },
+      {
+        text: data.team.name,
+        href: teamPage(data.team.customUrl),
+        type: "TEXT",
+      },
+    ];
+  },
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

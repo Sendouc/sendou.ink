@@ -23,6 +23,9 @@ import { makeTitle } from "~/utils/strings";
 import {
   editTeamPage,
   manageTeamRosterPage,
+  navIconUrl,
+  teamPage,
+  TEAM_SEARCH_PAGE,
   userPage,
   userSubmittedImage,
 } from "~/utils/urls";
@@ -65,11 +68,21 @@ export const action: ActionFunction = async ({ request, params }) => {
 
 export const handle: SendouRouteHandle = {
   i18n: ["team"],
-  // breadcrumb: () => ({
-  //   imgPath: navIconUrl("object-damage-calculator"),
-  //   href: OBJECT_DAMAGE_CALCULATOR_URL,
-  //   type: "IMAGE",
-  // }),
+  breadcrumb: ({ match }) => {
+    const data = match.data as SerializeFrom<typeof loader>;
+    return [
+      {
+        imgPath: navIconUrl("t"),
+        href: TEAM_SEARCH_PAGE,
+        type: "IMAGE",
+      },
+      {
+        text: data.team.name,
+        href: teamPage(data.team.customUrl),
+        type: "TEXT",
+      },
+    ];
+  },
 };
 
 export const loader = ({ params }: LoaderArgs) => {

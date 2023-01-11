@@ -2,6 +2,8 @@ import type {
   ActionFunction,
   LinksFunction,
   LoaderArgs,
+  MetaFunction,
+  SerializeFrom,
 } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import {
@@ -21,11 +23,14 @@ import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { useTranslation } from "~/hooks/useTranslation";
 import { getUser, requireUser, useUser } from "~/modules/auth";
+import { i18next } from "~/modules/i18n";
 import { joinListToNaturalString } from "~/utils/arrays";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { parseRequestFormData, validate } from "~/utils/remix";
+import { makeTitle } from "~/utils/strings";
 import {
   mySlugify,
+  navIconUrl,
   teamPage,
   TEAM_SEARCH_PAGE,
   userSubmittedImage,
@@ -35,6 +40,18 @@ import { createNewTeam } from "../queries/createNewTeam.server";
 import { TEAM } from "../team-constants";
 import { createTeamSchema } from "../team-schemas.server";
 import styles from "../team.css";
+
+export const meta: MetaFunction = ({
+  data,
+}: {
+  data: SerializeFrom<typeof loader>;
+}) => {
+  if (!data) return {};
+
+  return {
+    title: data.title,
+  };
+};
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -73,15 +90,16 @@ export const action: ActionFunction = async ({ request }) => {
 
 export const handle: SendouRouteHandle = {
   i18n: ["team"],
-  // breadcrumb: () => ({
-  //   imgPath: navIconUrl("object-damage-calculator"),
-  //   href: OBJECT_DAMAGE_CALCULATOR_URL,
-  //   type: "IMAGE",
-  // }),
+  breadcrumb: () => ({
+    imgPath: navIconUrl("t"),
+    href: TEAM_SEARCH_PAGE,
+    type: "IMAGE",
+  }),
 };
 
 export const loader = async ({ request }: LoaderArgs) => {
   const user = await getUser(request);
+  const t = await i18next.getFixedT(request);
 
   const teams = allTeams().sort((teamA, teamB) => {
     // show own team first always
@@ -122,6 +140,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   });
 
   return {
+    title: makeTitle(t("pages.t")),
     teams,
     isMemberOfTeam: !user
       ? false

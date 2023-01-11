@@ -1,4 +1,8 @@
-import type { LinksFunction } from "@remix-run/node";
+import type {
+  LinksFunction,
+  MetaFunction,
+  SerializeFrom,
+} from "@remix-run/node";
 import {
   type LoaderArgs,
   redirect,
@@ -20,6 +24,7 @@ import {
 } from "~/utils/remix";
 import {
   mySlugify,
+  navIconUrl,
   teamPage,
   TEAM_SEARCH_PAGE,
   uploadImagePage,
@@ -35,18 +40,41 @@ import { deleteTeam } from "../queries/deleteTeam.server";
 import { Button } from "~/components/Button";
 import { assertUnreachable } from "~/utils/types";
 import styles from "../team.css";
+import { makeTitle } from "~/utils/strings";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
+export const meta: MetaFunction = ({
+  data,
+}: {
+  data: SerializeFrom<typeof loader>;
+}) => {
+  if (!data) return {};
+
+  return {
+    title: makeTitle(data.team.name),
+  };
+};
+
 export const handle: SendouRouteHandle = {
   i18n: ["team"],
-  // breadcrumb: () => ({
-  //   imgPath: navIconUrl("object-damage-calculator"),
-  //   href: OBJECT_DAMAGE_CALCULATOR_URL,
-  //   type: "IMAGE",
-  // }),
+  breadcrumb: ({ match }) => {
+    const data = match.data as SerializeFrom<typeof loader>;
+    return [
+      {
+        imgPath: navIconUrl("t"),
+        href: TEAM_SEARCH_PAGE,
+        type: "IMAGE",
+      },
+      {
+        text: data.team.name,
+        href: teamPage(data.team.customUrl),
+        type: "TEXT",
+      },
+    ];
+  },
 };
 
 export const action: ActionFunction = async ({ request, params }) => {
