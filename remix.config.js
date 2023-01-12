@@ -7,6 +7,7 @@ module.exports = {
   routes: async (defineRoutes) => {
     return defineRoutes((route) => {
       route("/upload", "features/img-upload/routes/upload.tsx");
+      route("/upload/admin", "features/img-upload/routes/upload.admin.tsx");
       route("/plans", "features/map-planner/routes/plans.tsx");
       route("/analyzer", "features/build-analyzer/routes/analyzer.tsx");
       route(
