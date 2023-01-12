@@ -339,6 +339,7 @@ dialog {
   border-radius: var(--rounded);
   margin: auto;
   background-color: var(--bg);
+  color: var(--text);
 }
 
 dialog::backdrop {
