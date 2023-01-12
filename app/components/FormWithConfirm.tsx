@@ -4,6 +4,7 @@ import invariant from "tiny-invariant";
 import { useTranslation } from "~/hooks/useTranslation";
 import { Button } from "./Button";
 import { Dialog } from "./Dialog";
+import { SubmitButton } from "./SubmitButton";
 
 export function FormWithConfirm({
   fields,
@@ -37,14 +38,13 @@ export function FormWithConfirm({
         <div className="stack md">
           <h2 className="text-sm">{dialogHeading}</h2>
           <div className="stack horizontal md justify-center">
-            <Button
+            <SubmitButton
               form={id}
               variant="destructive"
-              type="submit"
               testId={dialogOpen ? "confirm-button" : undefined}
             >
               {deleteButtonText ?? t("common:actions.delete")}
-            </Button>
+            </SubmitButton>
             <Button onClick={closeDialog}>{t("common:actions.cancel")}</Button>
           </div>
         </div>
