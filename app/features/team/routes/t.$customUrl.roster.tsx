@@ -174,7 +174,9 @@ function InviteCodeSection() {
     <div>
       <h2 className="text-lg">{t("team:roster.inviteLink.header")}</h2>
       <div className="stack md">
-        <div className="text-sm">{inviteLink}</div>
+        <div className="text-sm" data-testid="invite-link">
+          {inviteLink}
+        </div>
         <Form method="post" className="stack horizontal md">
           <Button size="tiny" onClick={() => copyToClipboard(inviteLink)}>
             {t("common:actions.copyToClipboard")}
@@ -183,6 +185,7 @@ function InviteCodeSection() {
             variant="minimal-destructive"
             _action="RESET_INVITE_LINK"
             size="tiny"
+            testId="reset-invite-link-button"
           >
             {t("common:actions.reset")}
           </SubmitButton>

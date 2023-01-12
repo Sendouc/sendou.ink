@@ -93,7 +93,47 @@ test.describe("Team page", () => {
     await isNotVisible(page.getByTestId("manage-roster-button"));
   });
 
-  // resets inviteCode, copies it to clipboard, joins team, leaves, joins again
+  test("deletes team", async ({ page }) => {
+    await seed(page);
+    await impersonate(page, 1);
 
-  // deletes team
+    await navigate({ page, url: TEAM_SEARCH_PAGE });
+    const firstTeamName = page.getByTestId("team-0");
+    await firstTeamName.click();
+
+    await page.getByTestId("edit-team-button").click();
+    await page.getByTestId("delete-team-button").click();
+    await modalClickConfirmButton(page);
+
+    await expect(page).toHaveURL(TEAM_SEARCH_PAGE);
+    await expect(page.getByTestId("team-0")).not.toHaveText("Alliance Rogue");
+  });
+
+  test("resets invite code, joins team, leaves, rejoins", async ({ page }) => {
+    await seed(page);
+    await impersonate(page, 1);
+    await navigate({ page, url: teamPage("alliance-rogue") });
+
+    await page.getByTestId("manage-roster-button").click();
+
+    const oldInviteLink = await page.getByTestId("invite-link").innerText();
+
+    await page.getByTestId("reset-invite-link-button").click();
+
+    await expect(page.getByTestId("invite-link")).not.toHaveText(oldInviteLink);
+    const newInviteLink = await page.getByTestId("invite-link").innerText();
+
+    await impersonate(page, 2);
+
+    await navigate({ page, url: newInviteLink });
+    await submit(page);
+
+    await page.getByTestId("leave-team-button").click();
+    await modalClickConfirmButton(page);
+
+    await navigate({ page, url: newInviteLink });
+    await submit(page);
+
+    await page.getByTestId("leave-team-button").isVisible();
+  });
 });

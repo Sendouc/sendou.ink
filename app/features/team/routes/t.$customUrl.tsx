@@ -213,7 +213,11 @@ function ActionButtons() {
           dialogHeading={t("team:leaveTeam.header", { teamName: team.name })}
           deleteButtonText={t("team:actionButtons.leaveTeam.confirm")}
         >
-          <Button size="tiny" variant="destructive">
+          <Button
+            size="tiny"
+            variant="destructive"
+            data-testid="leave-team-button"
+          >
             {t("team:actionButtons.leaveTeam")}
           </Button>
         </FormWithConfirm>

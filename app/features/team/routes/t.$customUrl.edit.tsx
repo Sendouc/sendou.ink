@@ -147,7 +147,11 @@ export default function EditTeamPage() {
         dialogHeading={t("team:deleteTeam.header", { teamName: team.name })}
         fields={[["_action", "DELETE"]]}
       >
-        <Button className="ml-auto" variant="minimal-destructive">
+        <Button
+          className="ml-auto"
+          variant="minimal-destructive"
+          data-testid="delete-team-button"
+        >
           {t("team:actionButtons.deleteTeam")}
         </Button>
       </FormWithConfirm>
