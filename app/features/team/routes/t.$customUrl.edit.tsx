@@ -61,7 +61,10 @@ export const meta: MetaFunction = ({
 export const handle: SendouRouteHandle = {
   i18n: ["team"],
   breadcrumb: ({ match }) => {
-    const data = match.data as SerializeFrom<typeof loader>;
+    const data = match.data as SerializeFrom<typeof loader> | undefined;
+
+    if (!data) return [];
+
     return [
       {
         imgPath: navIconUrl("t"),

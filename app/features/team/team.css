@@ -80,6 +80,21 @@
   font-weight: var(--bold);
   color: #fff;
   display: none;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.team__twitter-link {
+  padding: var(--s-1);
+  border: 1px solid;
+  border-radius: 50%;
+  border-color: #1da1f2;
+  background-color: #1da0f22f;
+}
+
+.team__twitter-link > svg {
+  width: 0.9rem;
+  fill: #1da1f2;
 }
 
 .team__banner__avatar {
@@ -109,6 +124,12 @@
   font-weight: var(--bold);
   flex-direction: column;
   line-height: 1.5;
+}
+
+.team__mobile-team-name {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
 }
 
 .team__banner__avatar img {
@@ -275,7 +296,7 @@
     display: flex;
   }
   .team__banner__name {
-    display: block;
+    display: flex;
   }
 
   .team__banner__avatar > div {

@@ -22,7 +22,10 @@ import { notFoundIfFalsy } from "~/utils/remix";
 
 export const handle: SendouRouteHandle = {
   breadcrumb: ({ match }) => {
-    const data = match.data as SerializeFrom<typeof loader>;
+    const data = match.data as SerializeFrom<typeof loader> | undefined;
+
+    if (!data) return [];
+
     return [
       {
         imgPath: navIconUrl("articles"),

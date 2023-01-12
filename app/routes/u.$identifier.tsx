@@ -42,9 +42,9 @@ export const meta: MetaFunction = ({ data }: { data: UserPageLoaderData }) => {
 export const handle: SendouRouteHandle = {
   i18n: "user",
   breadcrumb: ({ match }) => {
-    const data = match.data as UserPageLoaderData;
+    const data = match.data as UserPageLoaderData | undefined;
 
-    if (!data) return;
+    if (!data) return [];
 
     return [
       {

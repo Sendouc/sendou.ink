@@ -94,7 +94,10 @@ export const meta: MetaFunction = (args) => {
 export const handle: SendouRouteHandle = {
   i18n: ["calendar", "game-misc"],
   breadcrumb: ({ match }) => {
-    const data = match.data as SerializeFrom<typeof loader>;
+    const data = match.data as SerializeFrom<typeof loader> | undefined;
+
+    if (!data) return [];
+
     return [
       {
         imgPath: navIconUrl("calendar"),

@@ -108,7 +108,10 @@ export const action: ActionFunction = async ({ request, params }) => {
 export const handle: SendouRouteHandle = {
   i18n: ["team"],
   breadcrumb: ({ match }) => {
-    const data = match.data as SerializeFrom<typeof loader>;
+    const data = match.data as SerializeFrom<typeof loader> | undefined;
+
+    if (!data) return [];
+
     return [
       {
         imgPath: navIconUrl("t"),
@@ -198,8 +201,8 @@ function MemberActions() {
       <h2 className="text-lg">{t("team:roster.members.header")}</h2>
 
       <div className="team__roster__members">
-        {team.members.map((member) => (
-          <MemberRow key={member.id} member={member} />
+        {team.members.map((member, i) => (
+          <MemberRow key={member.id} member={member} number={i} />
         ))}
       </div>
     </div>
@@ -207,7 +210,13 @@ function MemberActions() {
 }
 
 const NO_ROLE = "NO_ROLE";
-function MemberRow({ member }: { member: DetailedTeamMember }) {
+function MemberRow({
+  member,
+  number,
+}: {
+  member: DetailedTeamMember;
+  number: number;
+}) {
   const { team } = useLoaderData<typeof loader>();
   const { t } = useTranslation(["team"]);
   const user = useUser();
@@ -218,7 +227,10 @@ function MemberRow({ member }: { member: DetailedTeamMember }) {
 
   return (
     <React.Fragment key={member.id}>
-      <div className="team__roster__members__member">
+      <div
+        className="team__roster__members__member"
+        data-testid={`member-row-${number}`}
+      >
         {discordFullName(member)}
       </div>
       <div>
@@ -235,6 +247,7 @@ function MemberRow({ member }: { member: DetailedTeamMember }) {
             )
           }
           disabled={roleFetcher.state !== "idle"}
+          data-testid={`role-select-${number}`}
         >
           <option value={NO_ROLE}>No role</option>
           {TEAM_MEMBER_ROLES.map((role) => {
@@ -258,7 +271,11 @@ function MemberRow({ member }: { member: DetailedTeamMember }) {
             ["userId", member.id],
           ]}
         >
-          <Button size="tiny" variant="minimal-destructive">
+          <Button
+            size="tiny"
+            variant="minimal-destructive"
+            testId={`kick-button-${number}`}
+          >
             {t("team:actionButtons.kick")}
           </Button>
         </FormWithConfirm>
@@ -275,7 +292,11 @@ function MemberRow({ member }: { member: DetailedTeamMember }) {
             ["newOwnerId", member.id],
           ]}
         >
-          <Button size="tiny" variant="minimal-destructive">
+          <Button
+            size="tiny"
+            variant="minimal-destructive"
+            testId={`transfer-ownership-button-${number}`}
+          >
             {t("team:actionButtons.transferOwnership")}
           </Button>
         </FormWithConfirm>

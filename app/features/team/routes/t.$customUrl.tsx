@@ -12,6 +12,7 @@ import { Avatar } from "~/components/Avatar";
 import { Button, LinkButton } from "~/components/Button";
 import { Flag } from "~/components/Flag";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
+import { TwitterIcon } from "~/components/icons/Twitter";
 import { WeaponImage } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { Placement } from "~/components/Placement";
@@ -26,6 +27,7 @@ import {
   navIconUrl,
   teamPage,
   TEAM_SEARCH_PAGE,
+  twitterUrl,
   userPage,
   userSubmittedImage,
 } from "~/utils/urls";
@@ -69,7 +71,10 @@ export const action: ActionFunction = async ({ request, params }) => {
 export const handle: SendouRouteHandle = {
   i18n: ["team"],
   breadcrumb: ({ match }) => {
-    const data = match.data as SerializeFrom<typeof loader>;
+    const data = match.data as SerializeFrom<typeof loader> | undefined;
+
+    if (!data) return [];
+
     return [
       {
         imgPath: navIconUrl("t"),
@@ -107,9 +112,9 @@ export default function TeamPage() {
       {team.results ? <ResultsBanner results={team.results} /> : null}
       {team.bio ? <article data-testid="team-bio">{team.bio}</article> : null}
       <div className="stack lg">
-        {team.members.map((member) => (
+        {team.members.map((member, i) => (
           <React.Fragment key={member.discordId}>
-            <MemberRow member={member} />
+            <MemberRow member={member} number={i} />
             <MobileMemberCard member={member} />
           </React.Fragment>
         ))}
@@ -147,33 +152,14 @@ function TeamBanner() {
             return <Flag key={country} countryCode={country} />;
           })}
         </div>
-        <div className="team__banner__name">{team.name}</div>
+        <div className="team__banner__name">
+          {team.name} <TwitterLink testId="twitter-link" />
+        </div>
       </div>
       {team.avatarSrc ? <div className="team__banner__avatar__spacer" /> : null}
     </>
   );
 }
-
-// function InfoBadges() {
-//   const { team } = useLoaderData<typeof loader>();
-
-//   return (
-//     <div className="team__badges">
-//       {team.teamXp ? (
-//         <div>
-//           <Image
-//             path={navIconUrl("xsearch")}
-//             width={26}
-//             alt="Team XP"
-//             title="Team XP"
-//           />
-//           {team.teamXp}
-//         </div>
-//       ) : null}
-//       {team.lutiDiv ? <div>LUTI Div {team.lutiDiv}</div> : null}
-//     </div>
-//   );
-// }
 
 function MobileTeamNameCountry() {
   const { team } = useLoaderData<typeof loader>();
@@ -185,8 +171,29 @@ function MobileTeamNameCountry() {
           return <Flag key={country} countryCode={country} tiny />;
         })}
       </div>
-      {team.name}
+      <div className="team__mobile-team-name">
+        {team.name}
+        <TwitterLink />
+      </div>
     </div>
+  );
+}
+
+function TwitterLink({ testId }: { testId?: string }) {
+  const { team } = useLoaderData<typeof loader>();
+
+  if (!team.twitter) return null;
+
+  return (
+    <a
+      className="team__twitter-link"
+      href={twitterUrl(team.twitter)}
+      target="_blank"
+      rel="noreferrer"
+      data-testid={testId}
+    >
+      <TwitterIcon />
+    </a>
   );
 }
 
@@ -217,6 +224,7 @@ function ActionButtons() {
           to={manageTeamRosterPage(team.customUrl)}
           variant="outlined"
           prefetch="intent"
+          testId="manage-roster-button"
         >
           {t("team:actionButtons.manageRoster")}
         </LinkButton>
@@ -253,13 +261,22 @@ function ResultsBanner({ results }: { results: TeamResultPeek }) {
   );
 }
 
-function MemberRow({ member }: { member: DetailedTeamMember }) {
+function MemberRow({
+  member,
+  number,
+}: {
+  member: DetailedTeamMember;
+  number: number;
+}) {
   const { t } = useTranslation(["team"]);
 
   return (
     <div className="team__member">
       {member.role ? (
-        <span className="team__member__role">
+        <span
+          className="team__member__role"
+          data-testid={`member-row-role-${number}`}
+        >
           {t(`team:roles.${member.role}`)}
         </span>
       ) : null}

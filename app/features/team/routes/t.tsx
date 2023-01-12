@@ -257,7 +257,7 @@ function NewTeamDialog() {
             minLength={TEAM.NAME_MIN_LENGTH}
             maxLength={TEAM.NAME_MAX_LENGTH}
             required
-            data-testid="new-team-name-input"
+            data-testid={isOpen ? "new-team-name-input" : undefined}
           />
         </div>
         <FormErrors namespace="team" />

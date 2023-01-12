@@ -37,7 +37,12 @@ export function FormWithConfirm({
         <div className="stack md">
           <h2 className="text-sm">{dialogHeading}</h2>
           <div className="stack horizontal md justify-center">
-            <Button form={id} variant="destructive" type="submit">
+            <Button
+              form={id}
+              variant="destructive"
+              type="submit"
+              testId={dialogOpen ? "confirm-button" : undefined}
+            >
               {deleteButtonText ?? t("common:actions.delete")}
             </Button>
             <Button onClick={closeDialog}>{t("common:actions.cancel")}</Button>
