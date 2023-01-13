@@ -29,10 +29,11 @@ const staticAssetsUrl = ({
 }) =>
   `https://raw.githubusercontent.com/Sendouc/sendou-ink-assets/main/${folder}/${fileName}`;
 
-const USER_SUBMITTED_IMAGE_ROOT =
-  process.env.NODE_ENV === "development"
-    ? `https://sendou.nyc3.digitaloceanspaces.com`
-    : `https://assets.sendou.ink`;
+// const USER_SUBMITTED_IMAGE_ROOT =
+//   process.env.NODE_ENV === "development"
+//     ? `https://sendou.nyc3.digitaloceanspaces.com`
+//     : `https://assets.sendou.ink`;
+const USER_SUBMITTED_IMAGE_ROOT = "https://sendou.nyc3.digitaloceanspaces.com";
 export const userSubmittedImage = (fileName: string) =>
   `${USER_SUBMITTED_IMAGE_ROOT}/${fileName}`;
 
