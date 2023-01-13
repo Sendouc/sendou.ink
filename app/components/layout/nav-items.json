@@ -47,7 +47,7 @@
   {
     "name": "u",
     "url": "u",
-    "prefetch": true,
+    "prefetch": false,
     "filters": [
       "invert(20%) sepia(99%) saturate(5628%) hue-rotate(0deg) brightness(95%) contrast(118%)",
       "invert(53%) sepia(0%) saturate(1071%) hue-rotate(253deg) brightness(95%) contrast(84%)"
@@ -83,7 +83,7 @@
   {
     "name": "articles",
     "url": "a",
-    "prefetch": true,
+    "prefetch": false,
     "filters": [
       "invert(30%) sepia(73%) saturate(4089%) hue-rotate(326deg) brightness(96%) contrast(104%)",
       "invert(55%) sepia(20%) saturate(738%) hue-rotate(224deg) brightness(86%) contrast(88%)"
@@ -92,6 +92,7 @@
   {
     "name": "t",
     "url": "t",
+    "prefetch": false,
     "filters": [
       "invert(99%) sepia(3%) saturate(615%) hue-rotate(199deg) brightness(115%) contrast(88%)",
       "invert(23%) sepia(90%) saturate(2049%) hue-rotate(329deg) brightness(95%) contrast(107%)"
