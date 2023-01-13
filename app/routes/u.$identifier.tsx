@@ -106,7 +106,7 @@ export default function UserPageLayout() {
       <SubNav>
         <SubNavLink to={userPage(data)}>{t("header.profile")}</SubNavLink>
         {isOwnPage && (
-          <SubNavLink to={userEditProfilePage(data)}>
+          <SubNavLink to={userEditProfilePage(data)} prefetch="intent">
             {t("actions.edit")}
           </SubNavLink>
         )}
@@ -116,7 +116,7 @@ export default function UserPageLayout() {
           </SubNavLink>
         )}
         {(isOwnPage || data.buildsCount > 0) && (
-          <SubNavLink to={userBuildsPage(data)}>
+          <SubNavLink to={userBuildsPage(data)} prefetch="intent">
             {t("pages.builds")} ({data.buildsCount})
           </SubNavLink>
         )}

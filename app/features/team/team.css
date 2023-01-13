@@ -157,7 +157,7 @@
 
 .team__action-buttons {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   gap: var(--s-2);
 }
 
@@ -330,5 +330,9 @@
 
   .team__banner__placeholder {
     height: 12rem;
+  }
+
+  .team__action-buttons {
+    justify-content: flex-end;
   }
 }

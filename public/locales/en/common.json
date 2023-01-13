@@ -130,7 +130,7 @@
   "upload.imageToUpload": "Image to upload",
   "upload.title": "Uploading {{type}}. Recommended size is {{width}}×{{height}}.",
   "upload.type.team-pfp": "team profile picture",
-  "upload.type.team-banner": "team banner",
+  "upload.type.team-banner": "team picture banner",
   "upload.commonExplanation": "Before the image is publicly displayed a moderator will validate it. Images uploaded by patrons are shown without validation.",
   "upload.afterExplanation_one": "You have {{count}} image pending. The image will show up automatically after validation.",
   "upload.afterExplanation_other": "You have {{count}} images pending. The images will show up automatically after validation."

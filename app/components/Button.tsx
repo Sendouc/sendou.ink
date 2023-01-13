@@ -61,7 +61,7 @@ export function Button(props: ButtonProps) {
 
 type LinkButtonProps = Pick<
   ButtonProps,
-  "variant" | "children" | "className" | "size" | "testId"
+  "variant" | "children" | "className" | "size" | "testId" | "icon"
 > &
   Pick<LinkProps, "to" | "prefetch" | "state"> & { "data-cy"?: string } & {
     isExternal?: boolean;
@@ -77,6 +77,7 @@ export function LinkButton({
   isExternal,
   state,
   testId,
+  icon,
 }: LinkButtonProps) {
   if (isExternal) {
     return (
@@ -92,6 +93,10 @@ export function LinkButton({
         target="_blank"
         rel="noreferrer"
       >
+        {icon &&
+          React.cloneElement(icon, {
+            className: clsx("button-icon", { lonely: !children }),
+          })}
         {children}
       </a>
     );
@@ -110,6 +115,10 @@ export function LinkButton({
       prefetch={prefetch}
       state={state}
     >
+      {icon &&
+        React.cloneElement(icon, {
+          className: clsx("button-icon", { lonely: !children }),
+        })}
       {children}
     </Link>
   );

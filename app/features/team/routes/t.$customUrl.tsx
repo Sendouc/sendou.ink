@@ -12,7 +12,9 @@ import { Avatar } from "~/components/Avatar";
 import { Button, LinkButton } from "~/components/Button";
 import { Flag } from "~/components/Flag";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
+import { EditIcon } from "~/components/icons/Edit";
 import { TwitterIcon } from "~/components/icons/Twitter";
+import { UsersIcon } from "~/components/icons/Users";
 import { WeaponImage } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { Placement } from "~/components/Placement";
@@ -228,6 +230,7 @@ function ActionButtons() {
           to={manageTeamRosterPage(team.customUrl)}
           variant="outlined"
           prefetch="intent"
+          icon={<UsersIcon />}
           testId="manage-roster-button"
         >
           {t("team:actionButtons.manageRoster")}
@@ -239,6 +242,7 @@ function ActionButtons() {
           to={editTeamPage(team.customUrl)}
           variant="outlined"
           prefetch="intent"
+          icon={<EditIcon />}
           testId="edit-team-button"
         >
           {t("team:actionButtons.editTeam")}

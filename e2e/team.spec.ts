@@ -59,7 +59,7 @@ test.describe("Team page", () => {
     await page.getByTestId("bio-textarea").clear();
     await page.getByTestId("bio-textarea").type("shorter bio");
 
-    await submit(page);
+    await page.getByTestId("edit-team-submit-button").click();
 
     await expect(page).toHaveURL(/better-alliance-rogue/);
     await page.getByText("shorter bio").isVisible();

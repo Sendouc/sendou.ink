@@ -160,7 +160,11 @@ export default function EditTeamPage() {
         <NameInput />
         <TwitterInput />
         <BioTextarea />
-        <SubmitButton className="mt-4" _action="EDIT">
+        <SubmitButton
+          className="mt-4"
+          _action="EDIT"
+          testId="edit-team-submit-button"
+        >
           {t("common:actions.submit")}
         </SubmitButton>
         <FormErrors namespace="team" />

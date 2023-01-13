@@ -139,7 +139,7 @@ a {
 }
 
 /* :not([name="text"]) workaround not to select textarea on map planner  */
-textarea:not(.plain):not([name="text"]) {
+textarea:not(.plain, [name="text"]) {
   width: 18rem;
   max-width: 100%;
   height: 8rem;
@@ -159,7 +159,7 @@ progress {
   accent-color: var(--theme);
 }
 
-textarea:not(.plain):not([name="text"]):focus-within {
+textarea:not(.plain, [name="text"]):focus-within {
   border-color: transparent;
 
   /* TODO: rectangle on Safari */
