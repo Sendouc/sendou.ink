@@ -844,7 +844,7 @@ dialog::backdrop {
 
 .build__date-author-row {
   display: flex;
-  font-size: var(--fonts-xxxs);
+  font-size: var(--fonts-xxs);
   gap: var(--s-1);
 }
 
