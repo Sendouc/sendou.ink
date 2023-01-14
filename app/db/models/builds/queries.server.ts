@@ -17,7 +17,6 @@ import createBuildAbilitySql from "./createBuildAbility.sql";
 import countByUserIdSql from "./countByUserId.sql";
 import buildsByUserIdSql from "./buildsByUserId.sql";
 import buildsByWeaponIdSql from "./buildsByWeaponId.sql";
-import recentBuildsSql from "./recentBuilds.sql";
 import deleteByIdSql from "./deleteById.sql";
 
 const createBuildStm = sql.prepare(createBuildSql);
@@ -26,7 +25,6 @@ const createBuildAbilityStm = sql.prepare(createBuildAbilitySql);
 const countByUserIdStm = sql.prepare(countByUserIdSql);
 const buildsByUserIdStm = sql.prepare(buildsByUserIdSql);
 const buildsByWeaponIdStm = sql.prepare(buildsByWeaponIdSql);
-const recentBuildsStm = sql.prepare(recentBuildsSql);
 const deleteByIdStm = sql.prepare(deleteByIdSql);
 
 interface CreateArgs {
@@ -127,12 +125,6 @@ export function buildsByWeaponId({
     altWeaponId: weaponIdToAltId.get(weaponId) ?? -1,
     limit,
   }) as Array<BuildsByWeaponIdRow>;
-
-  return rows.map(augmentBuild);
-}
-
-export function recentBuilds() {
-  const rows = recentBuildsStm.all() as Array<BuildsByWeaponIdRow>;
 
   return rows.map(augmentBuild);
 }

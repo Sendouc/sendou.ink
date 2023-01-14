@@ -31,8 +31,6 @@ import findByIdSql from "./findById.sql";
 import startTimesOfRangeSql from "./startTimesOfRange.sql";
 import findBadgesByEventIdSql from "./findBadgesByEventId.sql";
 import eventsToReportSql from "./eventsToReport.sql";
-import recentWinnersSql from "./recentWinners.sql";
-import upcomingEventsSql from "./upcomingEvents.sql";
 import createMapPoolMapSql from "./createMapPoolMap.sql";
 import deleteMapPoolMapsSql from "./deleteMapPoolMaps.sql";
 import createTieBreakerMapPoolMapSql from "./createTieBreakerMapPoolMap.sql";
@@ -305,67 +303,6 @@ export function findResultsByUserId(userId: User["id"]) {
   }));
 }
 
-const recentWinnersStm = sql.prepare(recentWinnersSql);
-export function recentWinners() {
-  const rows = recentWinnersStm.all() as Array<{
-    eventId: CalendarEventResultTeam["eventId"];
-    eventName: CalendarEvent["name"];
-    startTime: CalendarEventDate["startTime"];
-    teamName: CalendarEventResultTeam["name"];
-    playerId: CalendarEventResultPlayer["userId"];
-    playerName: CalendarEventResultPlayer["name"];
-    playerDiscordName: User["discordName"] | null;
-    playerDiscordDiscriminator: User["discordDiscriminator"] | null;
-    playerDiscordId: User["discordId"] | null;
-    playerDiscordAvatar: User["discordAvatar"];
-  }>;
-
-  const result: Array<{
-    eventId: CalendarEventResultTeam["eventId"];
-    eventName: CalendarEvent["name"];
-    teamName: CalendarEventResultTeam["name"];
-    startTime: CalendarEventDate["startTime"];
-    players: Array<
-      | string
-      | Pick<
-          User,
-          | "id"
-          | "discordId"
-          | "discordName"
-          | "discordDiscriminator"
-          | "discordAvatar"
-        >
-    >;
-  }> = [];
-
-  for (const row of rows) {
-    const player = row.playerName ?? {
-      // player name and user id are mutually exclusive
-      // also if user id exists we know a joined user also has to exist
-      id: row.playerId!,
-      discordId: row.playerDiscordId!,
-      discordName: row.playerDiscordName!,
-      discordDiscriminator: row.playerDiscordDiscriminator!,
-      discordAvatar: row.playerDiscordAvatar,
-    };
-
-    const team = result.find((team) => team.eventId === row.eventId);
-    if (team) {
-      team.players.push(player);
-    } else {
-      result.push({
-        eventId: row.eventId,
-        eventName: row.eventName,
-        teamName: row.teamName,
-        startTime: row.startTime,
-        players: [player],
-      });
-    }
-  }
-
-  return result;
-}
-
 const findAllBetweenTwoTimestampsStm = sql.prepare(
   findAllBetweenTwoTimestampsSql
 );
@@ -432,21 +369,6 @@ export function findById(id: CalendarEvent["id"]) {
     startTimes: [firstRow, ...rest].map((row) => row.startTime),
     startTime: undefined,
   });
-}
-
-const upcomingEventsStm = sql.prepare(upcomingEventsSql);
-export function upcomingEvents() {
-  const rows = upcomingEventsStm.all({
-    now: dateToDatabaseTimestamp(new Date()),
-  }) as Array<{
-    eventId: CalendarEvent["id"];
-    eventName: CalendarEvent["name"];
-    tags: CalendarEvent["tags"];
-    startTime: CalendarEventDate["startTime"];
-    hasBadge: number;
-  }>;
-
-  return rows.map(addTagArray).map(addBadges);
 }
 
 function addBadges<
