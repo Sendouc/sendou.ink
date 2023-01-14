@@ -42,6 +42,7 @@ const basicSeeds = [
   users,
   userProfiles,
   lastMonthsVoting,
+  syncPlusTiers,
   lastMonthSuggestions,
   thisMonthsSuggestions,
   badgesToAdmin,
@@ -83,8 +84,8 @@ function wipeDB() {
     "CalendarEventBadge",
     "CalendarEvent",
     "UserWeapon",
+    "PlusTier",
     "User",
-    "PlusVote",
     "PlusSuggestion",
     "PlusVote",
     "TournamentBadgeOwner",
@@ -297,6 +298,16 @@ function thisMonthsSuggestions() {
       });
     }
   }
+}
+
+function syncPlusTiers() {
+  sql
+    .prepare(
+      /* sql */ `
+    insert into "PlusTier" ("userId", "tier") select "userId", "tier" from "FreshPlusTier" where "tier" is not null;
+  `
+    )
+    .run();
 }
 
 function badgesToAdmin() {
