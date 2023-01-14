@@ -22,7 +22,8 @@ import { Input } from "~/components/Input";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { useTranslation } from "~/hooks/useTranslation";
-import { getUser, requireUser, useUser } from "~/modules/auth";
+import { useUser } from "~/modules/auth";
+import { getUserId, requireUserId } from "~/modules/auth/user.server";
 import { i18next } from "~/modules/i18n";
 import { joinListToNaturalString } from "~/utils/arrays";
 import type { SendouRouteHandle } from "~/utils/remix";
@@ -58,7 +59,7 @@ export const links: LinksFunction = () => {
 };
 
 export const action: ActionFunction = async ({ request }) => {
-  const user = await requireUser(request);
+  const user = await requireUserId(request);
   const data = await parseRequestFormData({
     request,
     schema: createTeamSchema,
@@ -98,7 +99,7 @@ export const handle: SendouRouteHandle = {
 };
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const user = await getUser(request);
+  const user = await getUserId(request);
   const t = await i18next.getFixedT(request);
 
   const teams = allTeams().sort((teamA, teamB) => {

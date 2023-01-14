@@ -9,7 +9,8 @@ import { Main } from "~/components/Main";
 import { SubNav, SubNavLink } from "~/components/SubNav";
 import { db } from "~/db";
 import { useTranslation } from "~/hooks/useTranslation";
-import { getUser, useUser } from "~/modules/auth";
+import { useUser } from "~/modules/auth";
+import { getUserId } from "~/modules/auth/user.server";
 import { canAdminCalendarTOTools } from "~/permissions";
 import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
@@ -45,7 +46,7 @@ export type TournamentToolsTeam = Unpacked<TournamentToolsLoaderData["teams"]>;
 export type TournamentToolsLoaderData = SerializeFrom<typeof loader>;
 
 export const loader = async ({ params, request }: LoaderArgs) => {
-  const user = await getUser(request);
+  const user = await getUserId(request);
   const eventId = idFromParams(params);
   const event = notFoundIfFalsy(findByIdentifier(eventId));
 

@@ -1,8 +1,11 @@
 import { db } from "~/db";
+import type { User } from "~/db/types";
 import { IMPERSONATED_SESSION_KEY, SESSION_KEY } from "./authenticator.server";
 import { authSessionStorage } from "./session.server";
 
-export async function getUser(request: Request) {
+export async function getUserId(
+  request: Request
+): Promise<Pick<User, "id"> | undefined> {
   const session = await authSessionStorage.getSession(
     request.headers.get("Cookie")
   );
@@ -12,7 +15,23 @@ export async function getUser(request: Request) {
 
   if (!userId) return;
 
+  return { id: userId };
+}
+
+export async function getUser(request: Request) {
+  const userId = (await getUserId(request))?.id;
+
+  if (!userId) return;
+
   return db.users.findByIdentifier(userId);
+}
+
+export async function requireUserId(request: Request) {
+  const user = await getUserId(request);
+
+  if (!user) throw new Response(null, { status: 401 });
+
+  return user;
 }
 
 export async function requireUser(request: Request) {

@@ -2,7 +2,7 @@ import type { ActionFunction, LoaderArgs } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
-import { requireUser } from "~/modules/auth";
+import { requireUserId } from "~/modules/auth/user.server";
 import { isAdmin } from "~/permissions";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { userSubmittedImage } from "~/utils/urls";
@@ -11,7 +11,7 @@ import { validateImage } from "../queries/validateImage";
 import { validateImageSchema } from "../upload-schemas.server";
 
 export const action: ActionFunction = async ({ request }) => {
-  const user = await requireUser(request);
+  const user = await requireUserId(request);
   const data = await parseRequestFormData({
     schema: validateImageSchema,
     request,
@@ -25,7 +25,7 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const user = await requireUser(request);
+  const user = await requireUserId(request);
 
   notFoundIfFalsy(isAdmin(user));
 

@@ -4,24 +4,29 @@ import type {
   SerializeFrom,
 } from "@remix-run/node";
 import {
-  type LoaderArgs,
   redirect,
   type ActionFunction,
+  type LoaderArgs,
 } from "@remix-run/node";
-import * as React from "react";
 import { Form, Link, useLoaderData } from "@remix-run/react";
+import * as React from "react";
+import { Button } from "~/components/Button";
+import { FormErrors } from "~/components/FormErrors";
 import { FormMessage } from "~/components/FormMessage";
+import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { useTranslation } from "~/hooks/useTranslation";
-import { requireUser } from "~/modules/auth";
+import { requireUserId } from "~/modules/auth/user.server";
 import {
   notFoundIfFalsy,
   parseRequestFormData,
-  type SendouRouteHandle,
   validate,
+  type SendouRouteHandle,
 } from "~/utils/remix";
+import { makeTitle } from "~/utils/strings";
+import { assertUnreachable } from "~/utils/types";
 import {
   mySlugify,
   navIconUrl,
@@ -29,18 +34,13 @@ import {
   TEAM_SEARCH_PAGE,
   uploadImagePage,
 } from "~/utils/urls";
+import { deleteTeam } from "../queries/deleteTeam.server";
 import { edit } from "../queries/edit.server";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { TEAM } from "../team-constants";
 import { editTeamSchema, teamParamsSchema } from "../team-schemas.server";
 import { isTeamOwner } from "../team-utils";
-import { FormErrors } from "~/components/FormErrors";
-import { FormWithConfirm } from "~/components/FormWithConfirm";
-import { deleteTeam } from "../queries/deleteTeam.server";
-import { Button } from "~/components/Button";
-import { assertUnreachable } from "~/utils/types";
 import styles from "../team.css";
-import { makeTitle } from "~/utils/strings";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -81,7 +81,7 @@ export const handle: SendouRouteHandle = {
 };
 
 export const action: ActionFunction = async ({ request, params }) => {
-  const user = await requireUser(request);
+  const user = await requireUserId(request);
   const { customUrl } = teamParamsSchema.parse(params);
 
   const team = notFoundIfFalsy(findByIdentifier(customUrl));
@@ -125,7 +125,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
-  const user = await requireUser(request);
+  const user = await requireUserId(request);
   const { customUrl } = teamParamsSchema.parse(params);
 
   const team = notFoundIfFalsy(findByIdentifier(customUrl));

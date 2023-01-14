@@ -19,7 +19,8 @@ import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { useBaseUrl } from "~/hooks/useBaseUrl";
 import { useTranslation } from "~/hooks/useTranslation";
-import { requireUser, useUser } from "~/modules/auth";
+import { useUser } from "~/modules/auth";
+import { requireUserId } from "~/modules/auth/user.server";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { discordFullName, makeTitle } from "~/utils/strings";
@@ -59,7 +60,7 @@ export const meta: MetaFunction = ({
 };
 
 export const action: ActionFunction = async ({ request, params }) => {
-  const user = await requireUser(request);
+  const user = await requireUserId(request);
 
   const { customUrl } = teamParamsSchema.parse(params);
   const team = notFoundIfFalsy(findByIdentifier(customUrl));
@@ -128,7 +129,7 @@ export const handle: SendouRouteHandle = {
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
-  const user = await requireUser(request);
+  const user = await requireUserId(request);
   const { customUrl } = teamParamsSchema.parse(params);
 
   const team = notFoundIfFalsy(findByIdentifier(customUrl));

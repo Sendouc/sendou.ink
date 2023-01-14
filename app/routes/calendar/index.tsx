@@ -5,13 +5,14 @@ import clsx from "clsx";
 import { addDays, addMonths, subDays, subMonths } from "date-fns";
 import React from "react";
 import { Flipped, Flipper } from "react-flip-toolkit";
-import { useTranslation } from "~/hooks/useTranslation";
 import { z } from "zod";
 import { Alert } from "~/components/Alert";
 import { LinkButton } from "~/components/Button";
 import { db } from "~/db";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import { getUser, useUser } from "~/modules/auth";
+import { useTranslation } from "~/hooks/useTranslation";
+import { useUser } from "~/modules/auth";
+import { getUserId } from "~/modules/auth/user.server";
 import { i18next } from "~/modules/i18n";
 import styles from "~/styles/calendar.css";
 import { joinListToNaturalString } from "~/utils/arrays";
@@ -21,6 +22,7 @@ import {
   dateToWeekNumber,
   weekNumberToDate,
 } from "~/utils/dates";
+import { type SendouRouteHandle } from "~/utils/remix";
 import { discordFullName, makeTitle } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
 import {
@@ -31,7 +33,6 @@ import {
 } from "~/utils/urls";
 import { actualNumber } from "~/utils/zod";
 import { Tags } from "./components/Tags";
-import { type SendouRouteHandle } from "~/utils/remix";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -67,7 +68,7 @@ const loaderSearchParamsSchema = z.object({
 });
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const user = await getUser(request);
+  const user = await getUserId(request);
   const t = await i18next.getFixedT(request);
   const url = new URL(request.url);
   const parsedParams = loaderSearchParamsSchema.safeParse({

@@ -1,9 +1,9 @@
-import { json, redirect } from "@remix-run/node";
 import type {
+  ActionFunction,
   LoaderFunction,
   MetaFunction,
-  ActionFunction,
 } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
 import {
   Form,
   useFetcher,
@@ -11,22 +11,25 @@ import {
   useTransition,
 } from "@remix-run/react";
 import * as React from "react";
+import { z } from "zod";
 import { Button } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
 import { UserCombobox } from "~/components/Combobox";
 import { Main } from "~/components/Main";
-import { requireUser } from "~/modules/auth";
-import { getUser, isImpersonating } from "~/modules/auth/user.server";
+import { db } from "~/db";
+import {
+  getUserId,
+  isImpersonating,
+  requireUserId,
+} from "~/modules/auth/user.server";
 import { canPerformAdminActions } from "~/permissions";
 import {
   parseRequestFormData,
-  type SendouRouteHandle,
   validate,
+  type SendouRouteHandle,
 } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { impersonateUrl, SEED_URL, STOP_IMPERSONATING_URL } from "~/utils/urls";
-import { db } from "~/db";
-import { z } from "zod";
 import { actualNumber } from "~/utils/zod";
 
 export const meta: MetaFunction = () => {
@@ -45,7 +48,7 @@ export const action: ActionFunction = async ({ request }) => {
     request,
     schema: adminActionSchema,
   });
-  const user = await requireUser(request);
+  const user = await requireUserId(request);
 
   validate(canPerformAdminActions(user));
 
@@ -62,7 +65,7 @@ interface AdminPageLoaderData {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const user = await getUser(request);
+  const user = await getUserId(request);
 
   if (!canPerformAdminActions(user)) {
     return redirect("/");

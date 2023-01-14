@@ -23,7 +23,7 @@ import { USER } from "~/constants";
 import { db } from "~/db";
 import { type User } from "~/db/types";
 import { useTranslation } from "~/hooks/useTranslation";
-import { requireUser } from "~/modules/auth";
+import { requireUserId } from "~/modules/auth/user.server";
 import { i18next } from "~/modules/i18n";
 import { mainWeaponIds, type MainWeaponId } from "~/modules/in-game-lists";
 import styles from "~/styles/u-edit.css";
@@ -145,7 +145,7 @@ export const action: ActionFunction = async ({ request }) => {
 
   const { inGameNameText, inGameNameDiscriminator, ...data } = parsedInput.data;
 
-  const user = await requireUser(request);
+  const user = await requireUserId(request);
 
   try {
     const editedUser = db.users.updateProfile({
@@ -173,7 +173,7 @@ export const action: ActionFunction = async ({ request }) => {
 export const loader = async ({ request, params }: LoaderArgs) => {
   const locale = await i18next.getLocale(request);
 
-  const user = await requireUser(request);
+  const user = await requireUserId(request);
   const { identifier } = userParamsSchema.parse(params);
   const userToBeEdited = notFoundIfFalsy(db.users.findByIdentifier(identifier));
   if (user.id !== userToBeEdited.id) {

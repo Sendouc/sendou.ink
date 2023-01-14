@@ -64,5 +64,6 @@ export const PLUS_UPVOTE = 1;
 export const PLUS_DOWNVOTE = -1;
 
 export const ADMIN_DISCORD_ID = "79237403620945920";
+export const ADMIN_ID = process.env.NODE_ENV === "production" ? 274 : 1;
 
 export const LOHI_TOKEN_HEADER_NAME = "Lohi-Token";

@@ -1,27 +1,31 @@
 import type { ActionFunction, SerializeFrom } from "@remix-run/node";
-import { redirect } from "@remix-run/node";
 import {
   json,
-  type MetaFunction,
+  redirect,
   type LinksFunction,
   type LoaderArgs,
+  type MetaFunction,
 } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { Link } from "@remix-run/react/dist/components";
 import clsx from "clsx";
 import * as React from "react";
-import { useTranslation } from "~/hooks/useTranslation";
 import { z } from "zod";
 import { Avatar } from "~/components/Avatar";
 import { Button, LinkButton } from "~/components/Button";
+import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { Image } from "~/components/Image";
 import { Main } from "~/components/Main";
+import { MapPoolStages } from "~/components/MapPoolSelector";
 import { Placement } from "~/components/Placement";
 import { Section } from "~/components/Section";
 import { db } from "~/db";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import { requireUser, useUser } from "~/modules/auth";
+import { useTranslation } from "~/hooks/useTranslation";
+import { useUser } from "~/modules/auth";
+import { requireUserId } from "~/modules/auth/user.server";
 import { i18next } from "~/modules/i18n";
+import { MapPool } from "~/modules/map-pool-serializer";
 import {
   canDeleteCalendarEvent,
   canEditCalendarEvent,
@@ -47,13 +51,10 @@ import {
   userPage,
 } from "~/utils/urls";
 import { actualNumber, id } from "~/utils/zod";
-import { MapPoolStages } from "~/components/MapPoolSelector";
 import { Tags } from "../components/Tags";
-import { MapPool } from "~/modules/map-pool-serializer";
-import { FormWithConfirm } from "~/components/FormWithConfirm";
 
 export const action: ActionFunction = async ({ params, request }) => {
-  const user = await requireUser(request);
+  const user = await requireUserId(request);
   const parsedParams = z
     .object({ id: z.preprocess(actualNumber, id) })
     .parse(params);

@@ -19,6 +19,7 @@ import { db } from "~/db";
 import type { GearType } from "~/db/types";
 import { useTranslation } from "~/hooks/useTranslation";
 import { requireUser } from "~/modules/auth";
+import { requireUserId } from "~/modules/auth/user.server";
 import {
   clothesGearIds,
   headGearIds,
@@ -166,7 +167,7 @@ const newBuildLoaderParamsSchema = z.object({
 });
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const user = await requireUser(request);
+  const user = await requireUserId(request);
   const url = new URL(request.url);
 
   const params = newBuildLoaderParamsSchema.safeParse(

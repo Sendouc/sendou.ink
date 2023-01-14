@@ -5,17 +5,20 @@ import type {
   SerializeFrom,
 } from "@remix-run/node";
 import type { ShouldReloadFunction } from "@remix-run/react";
-import { Link } from "@remix-run/react";
-import { useLoaderData, useSearchParams } from "@remix-run/react";
+import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
 import * as React from "react";
-import { useTranslation } from "~/hooks/useTranslation";
 import { useCopyToClipboard } from "react-use";
 import invariant from "tiny-invariant";
 import { Button } from "~/components/Button";
+import { EditIcon } from "~/components/icons/Edit";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
+import { MapPoolSelector, MapPoolStages } from "~/components/MapPoolSelector";
 import { Toggle } from "~/components/Toggle";
 import { db } from "~/db";
+import type { CalendarEvent } from "~/db/types";
+import { useTranslation } from "~/hooks/useTranslation";
+import { getUserId } from "~/modules/auth/user.server";
 import { i18next } from "~/modules/i18n";
 import { stageIds, type ModeWithStage } from "~/modules/in-game-lists";
 import {
@@ -25,6 +28,7 @@ import {
 } from "~/modules/map-list-generator";
 import { MapPool } from "~/modules/map-pool-serializer";
 import styles from "~/styles/maps.css";
+import { type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import {
   calendarEventPage,
@@ -32,11 +36,6 @@ import {
   MAPS_URL,
   navIconUrl,
 } from "~/utils/urls";
-import { type SendouRouteHandle } from "~/utils/remix";
-import { MapPoolSelector, MapPoolStages } from "~/components/MapPoolSelector";
-import { EditIcon } from "~/components/icons/Edit";
-import { getUser } from "~/modules/auth";
-import type { CalendarEvent } from "~/db/types";
 
 const AMOUNT_OF_MAPS_IN_MAP_LIST = stageIds.length * 2;
 
@@ -71,7 +70,7 @@ export const handle: SendouRouteHandle = {
 };
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const user = await getUser(request);
+  const user = await getUserId(request);
   const url = new URL(request.url);
   const calendarEventId = url.searchParams.get("eventId");
   const t = await i18next.getFixedT(request);

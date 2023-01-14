@@ -19,9 +19,13 @@ import { WeaponImage } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { Placement } from "~/components/Placement";
 import { useTranslation } from "~/hooks/useTranslation";
-import { requireUser, useUser } from "~/modules/auth";
-import { type SendouRouteHandle, validate } from "~/utils/remix";
-import { notFoundIfFalsy } from "~/utils/remix";
+import { useUser } from "~/modules/auth";
+import { requireUserId } from "~/modules/auth/user.server";
+import {
+  notFoundIfFalsy,
+  validate,
+  type SendouRouteHandle,
+} from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import {
   editTeamPage,
@@ -58,7 +62,7 @@ export const links: LinksFunction = () => {
 };
 
 export const action: ActionFunction = async ({ request, params }) => {
-  const user = await requireUser(request);
+  const user = await requireUserId(request);
 
   const { customUrl } = teamParamsSchema.parse(params);
   const team = notFoundIfFalsy(findByIdentifier(customUrl));

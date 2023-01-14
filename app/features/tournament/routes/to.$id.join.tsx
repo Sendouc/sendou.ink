@@ -4,7 +4,8 @@ import { Form, useLoaderData, useOutletContext } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { SubmitButton } from "~/components/SubmitButton";
 import { INVITE_CODE_LENGTH } from "~/constants";
-import { requireUser, useUser } from "~/modules/auth";
+import { useUser } from "~/modules/auth";
+import { requireUserId } from "~/modules/auth/user.server";
 import { notFoundIfFalsy, validate } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
 import { toToolsPage } from "~/utils/urls";
@@ -22,7 +23,7 @@ import type { TournamentToolsLoaderData } from "./to.$id";
 // 3) team and captain, can join, tournament disbands IF tournament not checked in
 
 export const action: ActionFunction = async ({ request }) => {
-  const user = await requireUser(request);
+  const user = await requireUserId(request);
   const url = new URL(request.url);
   const inviteCode = url.searchParams.get("code");
   // xxx: don't throw here
