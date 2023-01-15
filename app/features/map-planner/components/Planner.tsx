@@ -1,10 +1,11 @@
 import type { TDImageAsset } from "@tldraw/tldraw";
+import { TldrawApp } from "@tldraw/tldraw";
 import {
   ColorStyle,
   TDAssetType,
   TDShapeType,
   Tldraw,
-  type TldrawApp,
+  type TldrawApp as TldrawAppType,
 } from "@tldraw/tldraw";
 import randomInt from "just-random-integer";
 import * as React from "react";
@@ -35,14 +36,11 @@ export default function Planner() {
   const { i18n } = useTranslation();
   const plannerBgParams = usePlannerBg();
 
-  const appRef = React.useRef<TldrawApp>();
-  const app = appRef.current!;
-
-  useForceRefreshOnMount();
+  const [app, setApp] = React.useState<TldrawApp>(new TldrawApp());
 
   const handleMount = React.useCallback(
-    (mountedApp: TldrawApp) => {
-      appRef.current = mountedApp;
+    (mountedApp: TldrawAppType) => {
+      setApp(mountedApp);
       mountedApp.setSetting(
         "language",
         ourLanguageToTldrawLanguage(i18n.language)
@@ -51,6 +49,8 @@ export default function Planner() {
     },
     [i18n]
   );
+
+  useForceRefreshOnMount();
 
   const handleAddImage = React.useCallback(
     ({
@@ -157,7 +157,7 @@ export default function Planner() {
       mode: ModeShort;
       style: StageBackgroundStyle;
     }) => {
-      app.resetDocument();
+      if (app) app.resetDocument();
       handleAddImage({
         src: stageMinimapImageUrlWithEnding(urlArgs),
         size: [plannerBgParams.bgWidth, plannerBgParams.bgHeight],
@@ -184,7 +184,7 @@ export default function Planner() {
           {t("common:plans.poweredBy", { name: "tldraw" })}
         </a>
       </div>
-      <Tldraw showMultiplayerMenu={false} onMount={handleMount} />
+      <Tldraw id="tldraw-persist-id" showMultiplayerMenu={false} onMount={handleMount} />
     </>
   );
 }
