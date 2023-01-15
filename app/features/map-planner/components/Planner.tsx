@@ -181,7 +181,11 @@ export default function Planner() {
           {t("common:plans.poweredBy", { name: "tldraw" })}
         </a>
       </div>
-      <Tldraw id="tldraw-persist-sendou" showMultiplayerMenu={false} onMount={handleMount} />
+      <Tldraw
+        id="tldraw-persist-sendou"
+        showMultiplayerMenu={false}
+        onMount={handleMount}
+      />
     </>
   );
 }
