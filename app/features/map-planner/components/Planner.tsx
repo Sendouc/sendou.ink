@@ -1,12 +1,6 @@
 import type { TDImageAsset } from "@tldraw/tldraw";
 import { TldrawApp } from "@tldraw/tldraw";
-import {
-  ColorStyle,
-  TDAssetType,
-  TDShapeType,
-  Tldraw,
-  type TldrawApp as TldrawAppType,
-} from "@tldraw/tldraw";
+import { ColorStyle, TDAssetType, TDShapeType, Tldraw } from "@tldraw/tldraw";
 import randomInt from "just-random-integer";
 import * as React from "react";
 import { usePlannerBg } from "~/hooks/usePlannerBg";
@@ -38,7 +32,7 @@ export default function Planner() {
   const [app, setApp] = React.useState<TldrawApp>(new TldrawApp());
 
   const handleMount = React.useCallback(
-    (mountedApp: TldrawAppType) => {
+    (mountedApp: TldrawApp) => {
       setApp(mountedApp);
       mountedApp.setSetting(
         "language",
