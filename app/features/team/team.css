@@ -107,7 +107,6 @@
   padding: var(--s-2);
   background-color: var(--bg);
   border-radius: 100%;
-  aspect-ratio: 1 / 1;
   display: grid;
   place-items: center;
   width: 7rem;
