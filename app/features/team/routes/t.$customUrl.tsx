@@ -324,21 +324,23 @@ function MobileMemberCard({ member }: { member: DetailedTeamMember }) {
   return (
     <div className="team__member-card__container">
       <div className="team__member-card">
-        <Link to={userPage(member)}>
+        <Link to={userPage(member)} className="stack items-center">
           <Avatar user={member} size="md" />
           <div className="team__member-card__name">{member.discordName}</div>
         </Link>
-        <div className="stack horizontal md">
-          {member.weapons.map((weapon) => (
-            <WeaponImage
-              key={weapon}
-              variant="badge"
-              weaponSplId={weapon}
-              width={32}
-              height={32}
-            />
-          ))}
-        </div>
+        {member.weapons.length > 0 ? (
+          <div className="stack horizontal md">
+            {member.weapons.map((weapon) => (
+              <WeaponImage
+                key={weapon}
+                variant="badge"
+                weaponSplId={weapon}
+                width={32}
+                height={32}
+              />
+            ))}
+          </div>
+        ) : null}
       </div>
       {member.role ? (
         <span className="team__member__role__mobile">
