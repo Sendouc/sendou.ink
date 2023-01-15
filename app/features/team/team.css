@@ -20,6 +20,7 @@
 .team-search__team__name {
   font-size: var(--fonts-xl);
   font-weight: var(--bold);
+  word-break: break-word;
 }
 
 .team-search__team__members {
@@ -107,7 +108,6 @@
   padding: var(--s-2);
   background-color: var(--bg);
   border-radius: 100%;
-  aspect-ratio: 1 / 1;
   display: grid;
   place-items: center;
   width: 7rem;

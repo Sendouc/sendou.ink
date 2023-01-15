@@ -21,7 +21,7 @@ import type { PlusSuggestionsLoaderData } from "../suggestions";
 import { CommentTextarea } from "./new";
 
 const commentActionSchema = z.object({
-  text: z.preprocess(
+  comment: z.preprocess(
     trimmedString,
     z.string().min(1).max(PlUS_SUGGESTION_COMMENT_MAX_LENGTH)
   ),
@@ -60,6 +60,7 @@ export const action: ActionFunction = async ({ request }) => {
   db.plusSuggestions.create({
     authorId: user.id,
     ...data,
+    text: data.comment,
     ...nextNonCompletedVoting(new Date()),
   });
 

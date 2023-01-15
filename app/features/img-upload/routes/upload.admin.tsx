@@ -6,6 +6,7 @@ import { requireUserId } from "~/modules/auth/user.server";
 import { isAdmin } from "~/permissions";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { userSubmittedImage } from "~/utils/urls";
+import { countAllUnvalidatedImg } from "../queries/countAllUnvalidatedImg.server";
 import { oneUnvalidatedImage } from "../queries/oneUnvalidatedImage";
 import { validateImage } from "../queries/validateImage";
 import { validateImageSchema } from "../upload-schemas.server";
@@ -31,6 +32,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   return {
     image: oneUnvalidatedImage(),
+    unvalidatedImgCount: countAllUnvalidatedImg(),
   };
 };
 
@@ -51,6 +53,7 @@ function ImageValidator() {
 
   return (
     <>
+      <div>{data.unvalidatedImgCount} left</div>
       <img src={userSubmittedImage(data.image.url)} alt="" />
       <Form method="post">
         <input type="hidden" name="imageId" value={data.image.id} />

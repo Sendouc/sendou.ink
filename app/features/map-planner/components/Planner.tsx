@@ -9,7 +9,6 @@ import {
 } from "@tldraw/tldraw";
 import randomInt from "just-random-integer";
 import * as React from "react";
-import { useForceRefreshOnMount } from "~/hooks/useForceRefresh";
 import { usePlannerBg } from "~/hooks/usePlannerBg";
 import { useTranslation } from "~/hooks/useTranslation";
 import type { LanguageCode } from "~/modules/i18n";
@@ -49,8 +48,6 @@ export default function Planner() {
     },
     [i18n]
   );
-
-  useForceRefreshOnMount();
 
   const handleAddImage = React.useCallback(
     ({
@@ -138,7 +135,7 @@ export default function Planner() {
           randomInt(imageSpawnBoxLeft, imageSpawnBoxRight),
           randomInt(imageSpawnBoxTop, imageSpawnBoxBottom),
         ],
-        cb: () => app.selectTool("select"),
+        cb: () => app?.selectTool("select"),
       });
     },
     [
@@ -184,7 +181,7 @@ export default function Planner() {
           {t("common:plans.poweredBy", { name: "tldraw" })}
         </a>
       </div>
-      <Tldraw id="tldraw-persist-id" showMultiplayerMenu={false} onMount={handleMount} />
+      <Tldraw id="tldraw-persist-sendou" showMultiplayerMenu={false} onMount={handleMount} />
     </>
   );
 }
