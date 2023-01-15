@@ -46,6 +46,7 @@ export function canAddCommentToSuggestionFE(
   return allTruthy([
     !alreadyCommentedByUser(args),
     isPlusServerMember(args.user),
+    args.user?.plusTier && args.targetPlusTier >= args.user?.plusTier,
   ]);
 }
 
