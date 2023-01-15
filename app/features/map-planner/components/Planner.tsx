@@ -8,7 +8,6 @@ import {
 } from "@tldraw/tldraw";
 import randomInt from "just-random-integer";
 import * as React from "react";
-import { useForceRefreshOnMount } from "~/hooks/useForceRefresh";
 import { usePlannerBg } from "~/hooks/usePlannerBg";
 import { useTranslation } from "~/hooks/useTranslation";
 import type { LanguageCode } from "~/modules/i18n";
@@ -35,14 +34,11 @@ export default function Planner() {
   const { i18n } = useTranslation();
   const plannerBgParams = usePlannerBg();
 
-  const appRef = React.useRef<TldrawApp>();
-  const app = appRef.current!;
-
-  useForceRefreshOnMount();
+  const [app, setApp] = React.useState<TldrawApp | null>(null);
 
   const handleMount = React.useCallback(
     (mountedApp: TldrawApp) => {
-      appRef.current = mountedApp;
+      setApp(mountedApp);
       mountedApp.setSetting(
         "language",
         ourLanguageToTldrawLanguage(i18n.language)
@@ -138,7 +134,7 @@ export default function Planner() {
           randomInt(imageSpawnBoxLeft, imageSpawnBoxRight),
           randomInt(imageSpawnBoxTop, imageSpawnBoxBottom),
         ],
-        cb: () => app.selectTool("select"),
+        cb: () => app?.selectTool("select"),
       });
     },
     [
@@ -157,6 +153,7 @@ export default function Planner() {
       mode: ModeShort;
       style: StageBackgroundStyle;
     }) => {
+      if (!app) return;
       app.resetDocument();
       handleAddImage({
         src: stageMinimapImageUrlWithEnding(urlArgs),
@@ -184,7 +181,7 @@ export default function Planner() {
           {t("common:plans.poweredBy", { name: "tldraw" })}
         </a>
       </div>
-      <Tldraw showMultiplayerMenu={false} onMount={handleMount} />
+      <Tldraw id="sendou" showMultiplayerMenu={false} onMount={handleMount} />
     </>
   );
 }
