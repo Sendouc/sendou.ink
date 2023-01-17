@@ -684,6 +684,13 @@ dialog::backdrop {
   background-color: var(--bg-lightest);
 }
 
+/* Hack to deal with Safari bug when the image is loading. See: https://stackoverflow.com/a/73466877 */
+@media not all and (min-resolution: 0.001dpcm) {
+  img[loading="lazy"] {
+    clip-path: inset(0.5px);
+  }
+}
+
 .alert > svg {
   height: 1.75rem;
   fill: var(--theme-info);
