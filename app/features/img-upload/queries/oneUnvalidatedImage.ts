@@ -3,11 +3,14 @@ import type { UserSubmittedImage } from "~/db/types";
 
 const stm = sql.prepare(/* sql */ `
   select
-    "id",
-    "url",
-    "submitterUserId"
+    "UnvalidatedUserSubmittedImage"."id",
+    "UnvalidatedUserSubmittedImage"."url",
+    "UnvalidatedUserSubmittedImage"."submitterUserId"
   from "UnvalidatedUserSubmittedImage"
-  where "validatedAt" is null
+  inner join "Team" on 
+    "UnvalidatedUserSubmittedImage"."id" = "Team"."avatarImgId" or 
+    "UnvalidatedUserSubmittedImage"."id" = "Team"."bannerImgId"
+  where "UnvalidatedUserSubmittedImage"."validatedAt" is null
   limit 1
 `);
 
