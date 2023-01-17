@@ -152,7 +152,6 @@ textarea:not(.plain, [name="text"]) {
   outline: none;
   overflow-wrap: normal;
   overflow-x: auto;
-  white-space: pre;
 }
 
 progress {
