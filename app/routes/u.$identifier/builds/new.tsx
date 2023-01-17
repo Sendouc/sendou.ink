@@ -188,7 +188,7 @@ export default function NewBuildPage() {
   const { t } = useTranslation();
 
   return (
-    <div className="half-width">
+    <div className="half-width u__build-form">
       <Form className="stack md items-start" method="post">
         {buildToEdit && (
           <input type="hidden" name="buildToEditId" value={buildToEdit.id} />

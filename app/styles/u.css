@@ -226,3 +226,7 @@
   border-radius: 100%;
   background-color: var(--bg-lighter);
 }
+
+.u__build-form {
+  --input-width: min(18rem, 75vw);
+}

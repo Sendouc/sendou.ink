@@ -10,6 +10,10 @@
   gap: var(--s-5);
 }
 
+.object-damage__selects__weapon {
+  width: 16rem;
+}
+
 .object-damage__ability {
   position: absolute;
 }

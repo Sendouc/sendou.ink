@@ -83,7 +83,7 @@
 }
 
 .plus__modal-textarea {
-  width: 100%;
+  width: 100% !important;
   resize: none;
 }
 

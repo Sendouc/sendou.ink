@@ -71,7 +71,7 @@ export default function ObjectDamagePage() {
     <Main className="stack lg">
       <div className="object-damage__controls">
         <div className="object-damage__selects">
-          <div>
+          <div className="object-damage__selects__weapon">
             <Label htmlFor="weapon">{t("analyzer:labels.weapon")}</Label>
             <WeaponCombobox
               id="weapon"
@@ -83,7 +83,7 @@ export default function ObjectDamagePage() {
                   newMainWeaponId: Number(opt.value) as MainWeaponId,
                 })
               }
-              className="w-full-important"
+              fullWidth
               clearsInputOnFocus
             />
           </div>

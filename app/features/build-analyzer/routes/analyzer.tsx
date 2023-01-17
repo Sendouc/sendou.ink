@@ -176,7 +176,7 @@ export default function BuildAnalyzerPage() {
                     newMainWeaponId: Number(opt.value) as MainWeaponId,
                   })
                 }
-                className="w-full-important"
+                fullWidth
                 clearsInputOnFocus
               />
             </div>
