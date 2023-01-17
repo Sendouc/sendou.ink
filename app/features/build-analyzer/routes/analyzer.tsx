@@ -32,6 +32,7 @@ import { type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import {
   ANALYZER_URL,
+  mainWeaponImageUrl,
   navIconUrl,
   objectDamageCalculatorPage,
   specialWeaponImageUrl,
@@ -180,7 +181,6 @@ export default function BuildAnalyzerPage() {
                 clearsInputOnFocus
               />
             </div>
-            <WeaponInfoBadges analyzed={analyzed} />
           </div>
           <div className="stack md items-center">
             <AbilitiesSelector
@@ -216,12 +216,38 @@ export default function BuildAnalyzerPage() {
         </div>
         <div className="stack md">
           {mainWeaponCategoryItems.length > 0 && (
-            <StatCategory title={t("analyzer:stat.category.main")}>
+            <StatCategory
+              title={t("analyzer:stat.category.main")}
+              summaryRightContent={
+                <div className="analyzer__weapon-info-badge">
+                  <Image
+                    path={mainWeaponImageUrl(mainWeaponId)}
+                    width={24}
+                    height={24}
+                    alt={t(`weapons:MAIN_${mainWeaponId}`)}
+                  />
+                  {t(`weapons:MAIN_${mainWeaponId}`)}
+                </div>
+              }
+            >
               {mainWeaponCategoryItems}
             </StatCategory>
           )}
 
-          <StatCategory title={t("analyzer:stat.category.sub")}>
+          <StatCategory
+            title={t("analyzer:stat.category.sub")}
+            summaryRightContent={
+              <div className="analyzer__weapon-info-badge">
+                <Image
+                  path={subWeaponImageUrl(analyzed.weapon.subWeaponSplId)}
+                  width={24}
+                  height={24}
+                  alt={t(`weapons:SUB_${analyzed.weapon.subWeaponSplId}`)}
+                />
+                {t(`weapons:SUB_${analyzed.weapon.subWeaponSplId}`)}
+              </div>
+            }
+          >
             <StatCard
               abilityPoints={abilityPoints}
               stat={analyzed.stats.subWeaponInkConsumptionPercentage}
@@ -297,7 +323,24 @@ export default function BuildAnalyzerPage() {
             )}
           </StatCategory>
 
-          <StatCategory title={t("analyzer:stat.category.special")}>
+          <StatCategory
+            title={t("analyzer:stat.category.special")}
+            summaryRightContent={
+              <div className="analyzer__weapon-info-badge">
+                <Image
+                  path={specialWeaponImageUrl(
+                    analyzed.weapon.specialWeaponSplId
+                  )}
+                  width={24}
+                  height={24}
+                  alt={t(
+                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
+                  )}
+                />
+                {t(`weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`)}
+              </div>
+            }
+          >
             <StatCard
               abilityPoints={abilityPoints}
               stat={analyzed.stats.specialPoint}
@@ -579,6 +622,11 @@ export default function BuildAnalyzerPage() {
 
           <StatCategory title={t("analyzer:stat.category.movement")}>
             <StatCard
+              title={t("analyzer:attribute.weight")}
+              abilityPoints={abilityPoints}
+              stat={t(`analyzer:attribute.weight.${analyzed.weapon.speedType}`)}
+            />
+            <StatCard
               abilityPoints={abilityPoints}
               stat={analyzed.stats.swimSpeed}
               title={t("analyzer:stat.swimSpeed")}
@@ -697,37 +745,6 @@ export default function BuildAnalyzerPage() {
         </div>
       </div>
     </Main>
-  );
-}
-
-function WeaponInfoBadges({ analyzed }: { analyzed: AnalyzedBuild }) {
-  const { t } = useTranslation(["weapons", "analyzer"]);
-
-  return (
-    <div className="analyzer__weapon-info-badges">
-      <div className="analyzer__weapon-info-badge">
-        <Image
-          path={subWeaponImageUrl(analyzed.weapon.subWeaponSplId)}
-          width={20}
-          height={20}
-          alt={t(`weapons:SUB_${analyzed.weapon.subWeaponSplId}`)}
-        />
-        {t(`weapons:SUB_${analyzed.weapon.subWeaponSplId}`)}
-      </div>
-      <div className="analyzer__weapon-info-badge">
-        {t("analyzer:attribute.weight")}{" "}
-        {t(`analyzer:attribute.weight.${analyzed.weapon.speedType}`)}
-      </div>
-      <div className="analyzer__weapon-info-badge">
-        <Image
-          path={specialWeaponImageUrl(analyzed.weapon.specialWeaponSplId)}
-          width={20}
-          height={20}
-          alt={t(`weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`)}
-        />
-        {t(`weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`)}
-      </div>
-    </div>
   );
 }
 
@@ -880,15 +897,20 @@ function StatCategory({
   children,
   containerClassName = "analyzer__stat-collection",
   textBelow,
+  summaryRightContent,
 }: {
   title: string;
   children: React.ReactNode;
   containerClassName?: string;
   textBelow?: string;
+  summaryRightContent?: React.ReactNode;
 }) {
   return (
     <details className="analyzer__details">
-      <summary className="analyzer__summary">{title}</summary>
+      <summary className="analyzer__summary">
+        {title}
+        {summaryRightContent}
+      </summary>
       <div className={containerClassName}>{children}</div>
       {textBelow && (
         <div className="analyzer__stat-category-explanation">{textBelow}</div>
@@ -905,16 +927,17 @@ function StatCard({
   abilityPoints,
 }: {
   title: string;
-  stat: Stat | Stat<string> | number;
+  stat: Stat | Stat<string> | number | string;
   suffix?: string;
   popoverInfo?: string;
   abilityPoints: AbilityPoints;
 }) {
   const { t } = useTranslation("analyzer");
 
-  const baseValue = typeof stat === "number" ? stat : stat.baseValue;
+  const isStaticValue = typeof stat === "number" || typeof stat === "string";
+  const baseValue = isStaticValue ? stat : stat.baseValue;
   const showBuildValue = () => {
-    if (typeof stat === "number") return false;
+    if (isStaticValue) return false;
 
     // slightly hacky but handles the edge case
     // where baseValue === value which can happen when
@@ -971,9 +994,7 @@ function StatCard({
         </div>
       </div>
       <div className="analyzer__stat-card__ability-container">
-        {typeof stat !== "number" && (
-          <ModifiedByAbilities abilities={stat.modifiedBy} />
-        )}
+        {!isStaticValue && <ModifiedByAbilities abilities={stat.modifiedBy} />}
       </div>
     </div>
   );
@@ -1079,7 +1100,7 @@ function ConsumptionTable({
         <tbody>
           {new Array(maxSubsToUse + 1).fill(null).map((_, subsUsed) => {
             return (
-              <tr key={subsUsed} className="bg-darker-important">
+              <tr key={subsUsed}>
                 <td>×{subsUsed}</td>
                 {options
                   .filter((opt) => opt.subsUsed === subsUsed)

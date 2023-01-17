@@ -50,10 +50,6 @@
   fill: var(--theme-warning);
 }
 
-.bg-darker-important {
-  background-color: var(--bg-darker) !important;
-}
-
 .bg-transparent-important {
   background-color: transparent !important;
 }

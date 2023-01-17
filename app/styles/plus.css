@@ -59,12 +59,6 @@
   font-weight: var(--semi-bold);
 }
 
-.plus__comment {
-  min-width: auto;
-  overflow-wrap: break-word;
-  white-space: pre-wrap;
-}
-
 .plus__comment-time {
   color: var(--text-lighter);
   font-size: var(--fonts-xxs);

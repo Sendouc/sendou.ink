@@ -1,5 +1,5 @@
 {
-  "attribute.weight": "Weight:",
+  "attribute.weight": "Weight",
   "attribute.weight.Fast": "Light",
   "attribute.weight.Slow": "Heavy",
   "attribute.weight.Normal": "Normal",
