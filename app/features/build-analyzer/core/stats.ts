@@ -263,7 +263,7 @@ function fullInkTankOptions(
 }
 
 function effectToRounded(effect: number) {
-  return Number(effect.toFixed(2));
+  return Number(effect.toFixed(3));
 }
 
 function subWeaponConsume({
