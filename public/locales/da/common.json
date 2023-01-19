@@ -14,6 +14,7 @@
   "pages.object-damage-calculator": "Beregn Objektstade",
   "pages.myPage": "Min side",
   "pages.u": "Brugersøgning",
+  "pages.t": "Hold",
 
   "header.profile": "Profil",
   "header.logout": "Log ud",
@@ -40,14 +41,19 @@
   "actions.add": "Tilføj",
   "actions.remove": "Fjern",
   "actions.delete": "Slet",
+  "actions.reset": "Nulstil",
   "actions.loadMore": "Indlæs flere",
-  "actions.copyToClipboard": "Kopiér til udklipsholderen",
+  "actions.copyToClipboard": "Kopiér til udklipsholder",
+  "actions.create": "Skab",
   "actions.close": "Luk",
+  "actions.cancel": "Annuller",
   "actions.loading": "Indlæser...",
   "actions.clear": "Ryd",
   "actions.selectAll": "Vælg alle",
   "actions.search": "Søg",
   "actions.setBg": "Indstil som baggrund",
+  "actions.join": "Bliv medlem",
+  "actions.upload": "Upload",
 
   "maps.createMapList": "Lav bane-liste",
   "maps.halfSz": "50% DD",
@@ -116,5 +122,13 @@
   "theme.dark": "Mørkt",
   "theme.auto": "Automatisk",
 
-  "websiteSubtitle": "Konkurrencepræget Splatoon-hub"
+  "websiteSubtitle": "Konkurrencepræget Splatoon-hub",
+
+  "upload.imageToUpload": "Valgte billede",
+  "upload.title": "Uploader {{type}}. Den anbefalede opløsning er {{width}}×{{height}}.",
+  "upload.type.team-pfp": "Holdprofilbillede",
+  "upload.type.team-banner": "profilbillede til et hold ",
+  "upload.commonExplanation": "Billedet vil først blive offentligt tilgængeligt, når en moderator har godkendt billedet. Billeder, der er uploadet af Patreons bliver fremvist uden moderatorgodkendelse.",
+  "upload.afterExplanation_one": "Du har et billede, der afventer moderatorgodkendelse. Billedet vil blive vist automatisk efter det er blevet godkendt.",
+  "upload.afterExplanation_other": "Du har {{count}} billeder, der afventer moderatorgodkendelse. Billederne vil blive vist automatisk efter de er blevet godkendt."
 }
