@@ -40,11 +40,7 @@ import { Theme, ThemeHead, useTheme, ThemeProvider } from "./modules/theme";
 import { getThemeSession } from "./modules/theme/session.server";
 import { isTheme } from "./modules/theme/provider";
 import { useIsMounted } from "./hooks/useIsMounted";
-import { load, trackPageview } from "fathom-client";
 import invariant from "tiny-invariant";
-
-const FATHOM_ID = "MMTSTBEP";
-const FATHOM_CUSTOM_URL = "https://cheeky-efficient.sendou.ink/script.js";
 
 export const unstable_shouldReload: ShouldReloadFunction = ({ url }) => {
   // reload on language change so the selected language gets set into the cookie
@@ -141,7 +137,6 @@ function Document({
 
   useChangeLanguage(locale);
   usePreloadTranslation();
-  useFathom();
 
   return (
     <html lang={locale} dir={i18n.dir()} className={htmlThemeClass}>
@@ -234,22 +229,6 @@ export const ErrorBoundary: ErrorBoundaryComponent = ({ error }) => {
     </ThemeProvider>
   );
 };
-
-function useFathom() {
-  const location = useLocation();
-
-  React.useEffect(() => {
-    if (process.env.NODE_ENV !== "production") return;
-
-    load(FATHOM_ID, { url: FATHOM_CUSTOM_URL });
-  }, []);
-
-  React.useEffect(() => {
-    if (process.env.NODE_ENV !== "production") return;
-
-    trackPageview();
-  }, [location.pathname]);
-}
 
 function HydrationTestIndicator() {
   const isMounted = useIsMounted();
