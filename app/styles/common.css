@@ -495,8 +495,8 @@ dialog::backdrop {
   padding: var(--s-1) var(--s-2);
   border-radius: var(--rounded);
   background-color: var(--bg-lightest);
+  cursor: pointer;
   font-size: var(--fonts-xs);
-  font-weight: var(--semi-bold);
   text-align: center;
   white-space: nowrap;
 }

@@ -103,6 +103,8 @@
   "base": "Base",
   "value": "Value",
   "build": "Build",
+  "build1": "Build 1",
+  "build2": "Build 2",
   "patch": "Patch:",
   "abilityPoints": "Ability points",
   "abilityPoints.short": "AP",

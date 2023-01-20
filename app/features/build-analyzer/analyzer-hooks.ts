@@ -25,59 +25,90 @@ export function useAnalyzeBuild() {
 
   const mainWeaponId = validatedWeaponIdFromSearchParams(searchParams);
   const build = validatedBuildFromSearchParams(searchParams);
+  const build2 = validatedBuildFromSearchParams(searchParams, "build2");
   const ldeIntensity = validatedLdeIntensityFromSearchParams(searchParams);
   const effects = validatedEffectsFromSearchParams({ searchParams, build });
+  const effects2 = validatedEffectsFromSearchParams({
+    searchParams,
+    build: build2,
+  });
+  const focused = validatedFocusedFromSearchParams({ searchParams });
 
   const handleChange = ({
     newMainWeaponId = mainWeaponId,
     newBuild = build,
+    newBuild2 = build2,
     newLdeIntensity = ldeIntensity,
     newEffects = effects,
+    newFocused = focused,
   }: {
     newMainWeaponId?: MainWeaponId;
     newBuild?: BuildAbilitiesTupleWithUnknown;
+    newBuild2?: BuildAbilitiesTupleWithUnknown;
     newLdeIntensity?: number;
     newEffects?: Array<SpecialEffectType>;
+    newFocused?: 1 | 2;
   }) => {
     setSearchParams(
       {
         weapon: String(newMainWeaponId),
         build: serializeBuild(newBuild),
+        build2: serializeBuild(newBuild2),
         lde: String(newLdeIntensity),
         effect: newEffects,
+        focused: String(newFocused),
       },
       { replace: true, state: { scroll: false } }
     );
   };
 
-  const buildsAbilityPoints = buildToAbilityPoints(build);
-
+  const buildAbilityPoints = buildToAbilityPoints(build);
   const abilityPoints = applySpecialEffects({
-    abilityPoints: buildsAbilityPoints,
+    abilityPoints: buildAbilityPoints,
     effects,
     ldeIntensity,
   });
-
   const analyzed = buildStats({
     abilityPoints,
     weaponSplId: mainWeaponId,
     mainOnlyAbilities: build
       .map((row) => row[0])
-      .filter((ability): ability is Ability => {
-        const abilityObj = abilities.find((a) => a.name === ability);
-        return Boolean(abilityObj && abilityObj.type !== "STACKABLE");
-      }),
+      .filter(filterMainOnlyAbilities),
+  });
+
+  const buildAbilityPoints2 = buildToAbilityPoints(build2);
+  const abilityPoints2 = applySpecialEffects({
+    abilityPoints: buildAbilityPoints2,
+    effects: effects2,
+    ldeIntensity,
+  });
+  const analyzed2 = buildStats({
+    abilityPoints: abilityPoints2,
+    weaponSplId: mainWeaponId,
+    mainOnlyAbilities: build2
+      .map((row) => row[0])
+      .filter(filterMainOnlyAbilities),
   });
 
   return {
     build,
+    build2,
+    focused,
     mainWeaponId,
     handleChange,
     analyzed,
+    analyzed2,
     abilityPoints,
     effects,
     ldeIntensity,
   };
+}
+
+function filterMainOnlyAbilities(
+  ability: AbilityWithUnknown
+): ability is Ability {
+  const abilityObj = abilities.find((a) => a.name === ability);
+  return Boolean(abilityObj && abilityObj.type !== "STACKABLE");
 }
 
 function serializeBuild(build: BuildAbilitiesTupleWithUnknown) {
@@ -88,10 +119,11 @@ function serializeBuild(build: BuildAbilitiesTupleWithUnknown) {
 }
 
 function validatedBuildFromSearchParams(
-  searchParams: URLSearchParams
+  searchParams: URLSearchParams,
+  key = "build"
 ): BuildAbilitiesTupleWithUnknown {
-  const abilitiesArr = searchParams.get("build")
-    ? searchParams.get("build")?.split(",")
+  const abilitiesArr = searchParams.get(key)
+    ? searchParams.get(key)?.split(",")
     : null;
 
   if (!abilitiesArr) return EMPTY_BUILD;
@@ -187,4 +219,16 @@ function validatedEffectsFromSearchParams({
   }
 
   return result;
+}
+
+function validatedFocusedFromSearchParams({
+  searchParams,
+}: {
+  searchParams: URLSearchParams;
+}) {
+  const focused = searchParams.get("focused");
+
+  if (focused === "2") return 2;
+
+  return 1;
 }

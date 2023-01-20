@@ -152,6 +152,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
 
 .analyzer__stat-card__value__title {
@@ -192,6 +193,10 @@
   color: var(--text-lighter);
   font-size: var(--fonts-xxs);
   margin-block-start: var(--s-3);
+}
+
+.analyzer__sub-nav {
+  margin-block-end: var(--s-4);
 }
 
 .analyzer__patch {
