@@ -60,7 +60,7 @@ import {
 import { useAnalyzeBuild } from "../analyzer-hooks";
 import { Tabs, Tab } from "~/components/Tabs";
 
-export const CURRENT_PATCH = "2.0";
+export const CURRENT_PATCH = "2.1";
 
 export const meta: MetaFunction = () => {
   return {
