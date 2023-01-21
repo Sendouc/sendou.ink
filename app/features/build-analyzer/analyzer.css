@@ -27,6 +27,7 @@
   display: flex;
   justify-content: center;
   gap: var(--s-2);
+  margin-block-end: var(--s-2);
 }
 
 .analyzer__ap-compare__bar {
