@@ -229,8 +229,33 @@ export default function BuildAnalyzerPage() {
                 <AbilitiesSelector
                   selectedAbilities={focusedBuild}
                   onChange={(newBuild) => {
+                    const firstBuildIsEmpty = build
+                      .flat()
+                      .every((ability) => ability === "UNKNOWN");
+
+                    const buildWasEmptied =
+                      !firstBuildIsEmpty &&
+                      newBuild
+                        .flat()
+                        .every((ability) => ability === "UNKNOWN") &&
+                      focused === 1;
+
+                    // if we don't do this the
+                    // build2 would be duplicated
+                    if (buildWasEmptied) {
+                      handleChange({
+                        newBuild: build2,
+                        newBuild2: newBuild,
+                        newFocused: 1,
+                      });
+                      return;
+                    }
+
                     handleChange({
-                      [focused === 1 ? "newBuild" : "newBuild2"]: newBuild,
+                      [focused === 1 || firstBuildIsEmpty
+                        ? "newBuild"
+                        : "newBuild2"]: newBuild,
+                      newFocused: firstBuildIsEmpty ? 1 : undefined,
                     });
                   }}
                 />
@@ -704,7 +729,6 @@ export default function BuildAnalyzerPage() {
               ) ? (
                 <div className="analyzer__stat-card-highlighted" />
               ) : null}
-              {/* xxx: handle comparison */}
               <ConsumptionTable
                 options={analyzed.stats.fullInkTankOptions}
                 subWeaponId={analyzed.weapon.subWeaponSplId}
