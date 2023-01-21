@@ -129,6 +129,6 @@
   "upload.type.team-pfp": "Holdprofilbillede",
   "upload.type.team-banner": "profilbillede til et hold ",
   "upload.commonExplanation": "Billedet vil først blive offentligt tilgængeligt, når en moderator har godkendt billedet. Billeder, der er uploadet af Patreons bliver fremvist uden moderatorgodkendelse.",
-  "upload.afterExplanation_one": "Du har et billede, der afventer moderatorgodkendelse. Billedet vil blive vist automatisk efter det er blevet godkendt.",
+  "upload.afterExplanation_one": "Du har {{count}} billede, der afventer moderatorgodkendelse. Billedet vil blive vist automatisk efter det er blevet godkendt.",
   "upload.afterExplanation_other": "Du har {{count}} billeder, der afventer moderatorgodkendelse. Billederne vil blive vist automatisk efter de er blevet godkendt."
 }
