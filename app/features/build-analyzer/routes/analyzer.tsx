@@ -1133,8 +1133,7 @@ function StatCard({
     // -> we still want to show the build value
     return [stat[0].modifiedBy].flat().some((ability) => {
       const hasStackable = (abilityPoints.get(ability) ?? 0) > 0;
-      const hasEffect =
-        baseValue !== stat[0].value && baseValue !== stat[1].value;
+      const hasEffect = baseValue !== stat[0].value;
 
       return hasEffect || hasStackable;
     });
