@@ -59,6 +59,7 @@ import {
 } from "../analyzer-constants";
 import { useAnalyzeBuild } from "../analyzer-hooks";
 import { Tabs, Tab } from "~/components/Tabs";
+import { isStackableAbility } from "../core/utils";
 
 export const CURRENT_PATCH = "2.1";
 
@@ -237,6 +238,8 @@ export default function BuildAnalyzerPage() {
                 <APCompare
                   abilityPoints={abilityPoints}
                   abilityPoints2={abilityPoints2}
+                  build={build}
+                  build2={build2}
                 />
               )}
             </div>
@@ -855,18 +858,46 @@ export default function BuildAnalyzerPage() {
   );
 }
 
-// xxx: no main abilities?
 function APCompare({
   abilityPoints,
   abilityPoints2,
+  build,
+  build2,
 }: {
   abilityPoints: AbilityPoints;
   abilityPoints2: AbilityPoints;
+  build: BuildAbilitiesTupleWithUnknown;
+  build2: BuildAbilitiesTupleWithUnknown;
 }) {
   const { t } = useTranslation(["analyzer"]);
 
+  const buildMains = build
+    .flat()
+    .filter((ability) => !isStackableAbility(ability) && ability !== "UNKNOWN");
+  const build2Mains = build2
+    .flat()
+    .filter((ability) => !isStackableAbility(ability) && ability !== "UNKNOWN");
+
+  const hasAtLeastOneMainOnlyAbility =
+    buildMains.length > 0 || build2Mains.length > 0;
+
   return (
     <div className="analyzer__ap-compare">
+      {hasAtLeastOneMainOnlyAbility ? (
+        <>
+          <div className="analyzer__ap-compare__mains">
+            {buildMains.map((ability) => (
+              <Ability key={ability} ability={ability} size="TINY" />
+            ))}
+          </div>
+          <div />
+          <div className="analyzer__ap-compare__mains">
+            {build2Mains.map((ability) => (
+              <Ability key={ability} ability={ability} size="TINY" />
+            ))}
+          </div>
+        </>
+      ) : null}
       {([...abilitiesShort, "UNKNOWN"] as const).map((ability) => {
         const ap = abilityPoints.get(ability) ?? 0;
         const ap2 = abilityPoints2.get(ability) ?? 0;

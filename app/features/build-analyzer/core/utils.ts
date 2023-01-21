@@ -46,7 +46,9 @@ export function buildToAbilityPoints(build: BuildAbilitiesTupleWithUnknown) {
   return result;
 }
 
-function isStackableAbility(ability: AbilityWithUnknown): ability is Ability {
+export function isStackableAbility(
+  ability: AbilityWithUnknown
+): ability is Ability {
   if (ability === "UNKNOWN") return false;
   const abilityObj = abilities.find((a) => a.name === ability);
   invariant(abilityObj);
