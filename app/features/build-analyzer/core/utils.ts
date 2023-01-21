@@ -31,7 +31,7 @@ export function buildToAbilityPoints(build: BuildAbilitiesTupleWithUnknown) {
       if (ability === "AD") {
         abilityDoublerActive = true;
       }
-      if (!isStackableAbility(ability)) {
+      if (!isStackableAbility(ability) && ability !== "UNKNOWN") {
         continue;
       }
 

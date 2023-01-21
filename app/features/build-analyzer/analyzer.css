@@ -14,6 +14,23 @@
   gap: var(--s-8);
 }
 
+.analyzer__ap-compare {
+  display: grid;
+  grid-template-columns: 1fr max-content max-content max-content 1fr;
+  gap: var(--s-2);
+  font-size: var(--fonts-xs);
+  align-items: center;
+}
+
+.analyzer__ap-compare__bar {
+  height: 100%;
+  background-color: var(--theme);
+}
+
+.analyzer__ap-compare__bar.analyzer__better {
+  background-color: var(--theme-success);
+}
+
 .analyzer__effects-selector {
   display: grid;
   gap: var(--s-2);

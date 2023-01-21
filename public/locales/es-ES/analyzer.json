@@ -87,7 +87,6 @@
   "value": "Valor",
   "build": "Build",
   "patch": "Parche:",
-  "abilityPoints": "Puntos de habilidad (AP)",
   "abilityPoints.short": "AP",
   "consumptionExplanation": "Este gráfico muestra la cantidad de acciones restantes con el arma principal después de usar un arma secundaria 0-{{maxSubsToUse}} veces. La cantidad máxima de armas secundarias consecutivas que se pueden usar con el tanque lleno es {{maxSubsToUse}}.",
   "trackingSubDefExplanation": "Tiempos de rastreo de Rastreador, Mina de Tinta y Dardo Resaltador son calculados contra un oponente con 0AP de Resistencia Secundaria."

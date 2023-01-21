@@ -98,7 +98,6 @@
   "value": "Wert",
   "build": "Ausrüstung",
   "patch": "Patch:",
-  "abilityPoints": "Effekt-Punkte",
   "abilityPoints.short": "EP",
   "abilityChunks": "Effekt-Fragmente erforderlich",
   "consumptionExplanation": "Dieses Diagramm zeigt die Anzahl der Aktionen, die mit der Hauptwaffe noch durchgeführt werden können, nachdem die Sekundärwaffe 0-{{maxSubsToUse}} mal benutzt wurde. Die maximale Anzahl an aufeinanderfolgenden Sekundärwaffen, die bei vollem Tintentank verwendet werden können, ist {{maxSubsToUse}}.",

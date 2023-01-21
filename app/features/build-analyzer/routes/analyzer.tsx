@@ -12,7 +12,6 @@ import { Popover } from "~/components/Popover";
 import { Toggle } from "~/components/Toggle";
 import { useSetTitle } from "~/hooks/useSetTitle";
 import {
-  abilities,
   ANGLE_SHOOTER_ID,
   INK_MINE_ID,
   INK_STORM_ID,
@@ -25,6 +24,7 @@ import {
   type BuildAbilitiesTupleWithUnknown,
   type MainWeaponId,
   type SubWeaponId,
+  abilitiesShort,
 } from "~/modules/in-game-lists";
 import styles from "../analyzer.css";
 import { damageTypeTranslationString } from "~/utils/i18next";
@@ -84,21 +84,22 @@ export const handle: SendouRouteHandle = {
 // Resolves this Github issue: https://github.com/Sendouc/sendou.ink/issues/1053
 export const unstable_shouldReload: ShouldReloadFunction = () => false;
 
-// xxx: for comparison AP bar charts show green if the better value (except for unknown), green can be on both sides too
 export default function BuildAnalyzerPage() {
   const { t } = useTranslation(["analyzer", "common", "weapons"]);
   useSetTitle(t("common:pages.analyzer"));
   const {
     build,
     build2,
+    focusedBuild,
     mainWeaponId,
     handleChange,
     analyzed,
     analyzed2,
     focused,
     abilityPoints,
+    abilityPoints2,
     ldeIntensity,
-    effects,
+    allEffects,
   } = useAnalyzeBuild();
 
   const statKeyToTuple = (key: keyof AnalyzedBuild["stats"]) => {
@@ -201,8 +202,8 @@ export default function BuildAnalyzerPage() {
               />
             </div>
           </div>
-          <div className="stack md items-center">
-            <div>
+          <div className="stack md items-center w-full">
+            <div className="w-full">
               <Tabs className="analyzer__sub-nav">
                 <Tab
                   active={focused === 1}
@@ -216,15 +217,28 @@ export default function BuildAnalyzerPage() {
                 >
                   {t("analyzer:build2")}
                 </Tab>
+                <Tab
+                  active={focused === 3}
+                  onClick={() => handleChange({ newFocused: 3 })}
+                >
+                  {t("analyzer:compare")}
+                </Tab>
               </Tabs>
-              <AbilitiesSelector
-                selectedAbilities={focused === 1 ? build : build2}
-                onChange={(newBuild) => {
-                  handleChange({
-                    [focused === 1 ? "newBuild" : "newBuild2"]: newBuild,
-                  });
-                }}
-              />
+              {focusedBuild ? (
+                <AbilitiesSelector
+                  selectedAbilities={focusedBuild}
+                  onChange={(newBuild) => {
+                    handleChange({
+                      [focused === 1 ? "newBuild" : "newBuild2"]: newBuild,
+                    });
+                  }}
+                />
+              ) : (
+                <APCompare
+                  abilityPoints={abilityPoints}
+                  abilityPoints2={abilityPoints2}
+                />
+              )}
             </div>
             <EffectsSelector
               build={build}
@@ -234,19 +248,15 @@ export default function BuildAnalyzerPage() {
                 handleChange({ newLdeIntensity })
               }
               handleAddEffect={(newEffect) =>
-                handleChange({ newEffects: [...effects, newEffect] })
+                handleChange({ newEffects: [...allEffects, newEffect] })
               }
               handleRemoveEffect={(effectToRemove) =>
                 handleChange({
-                  newEffects: effects.filter((e) => e !== effectToRemove),
+                  newEffects: allEffects.filter((e) => e !== effectToRemove),
                 })
               }
-              effects={effects}
+              effects={allEffects}
             />
-            {/* xxx: rework these - maybe 3rd tab "Comparison" */}
-            {abilityPoints.size > 0 && (
-              <AbilityPointsDetails abilityPoints={abilityPoints} />
-            )}
             {showAbilityChunksRequired && (
               <AbilityChunksRequired build={build} />
             )}
@@ -845,6 +855,56 @@ export default function BuildAnalyzerPage() {
   );
 }
 
+function APCompare({
+  abilityPoints,
+  abilityPoints2,
+}: {
+  abilityPoints: AbilityPoints;
+  abilityPoints2: AbilityPoints;
+}) {
+  const { t } = useTranslation(["analyzer"]);
+
+  return (
+    <div className="analyzer__ap-compare">
+      {([...abilitiesShort, "UNKNOWN"] as const).map((ability) => {
+        const ap = abilityPoints.get(ability)?.ap ?? 0;
+        const ap2 = abilityPoints2.get(ability)?.ap ?? 0;
+
+        if (!ap && !ap2) return null;
+
+        return (
+          <>
+            <div
+              className={clsx("justify-self-end", {
+                invisible: !ap,
+              })}
+            >
+              {ap}AP
+            </div>
+            <div
+              className={clsx("analyzer__ap-compare__bar", "justify-self-end", {
+                analyzer__better: ap >= ap2,
+              })}
+              style={{ width: `${ap}px` }}
+            />
+            <Ability ability={ability} size="TINY" />
+            <div
+              className={clsx("analyzer__ap-compare__bar", {
+                analyzer__better: ap <= ap2,
+              })}
+              style={{ width: `${ap2}px` }}
+            />
+            <div className={clsx({ invisible: !ap2 })}>
+              {ap2}
+              {t("analyzer:abilityPoints.short")}
+            </div>
+          </>
+        );
+      })}
+    </div>
+  );
+}
+
 function EffectsSelector({
   build,
   build2,
@@ -926,40 +986,6 @@ function EffectsSelector({
         );
       })}
     </div>
-  );
-}
-
-function AbilityPointsDetails({
-  abilityPoints,
-}: {
-  abilityPoints: AbilityPoints;
-}) {
-  const { t } = useTranslation("analyzer");
-
-  return (
-    <details className="w-full">
-      <summary className="analyzer__ap-summary">{t("abilityPoints")}</summary>
-      <div className="stack sm horizontal flex-wrap mt-4">
-        {abilities
-          .filter((a) => (abilityPoints.get(a.name)?.ap ?? 0) > 0)
-          .sort((a, b) => {
-            return (
-              abilityPoints.get(b.name)!.ap - abilityPoints.get(a.name)!.ap
-            );
-          })
-          .map((a) => (
-            <div
-              key={`abilityPointsDetails_${a.name}`}
-              className="stack items-center"
-            >
-              <Ability ability={a.name} size="TINY" />
-              <div className="analyzer__ap-text">
-                {abilityPoints.get(a.name)?.ap}
-              </div>
-            </div>
-          ))}
-      </div>
-    </details>
   );
 }
 

@@ -135,7 +135,7 @@ export interface Stat<T = number> {
 }
 
 export type AbilityPoints = Map<
-  Ability,
+  AbilityWithUnknown,
   { ap: number; apBeforeTacticooler: number }
 >;
 

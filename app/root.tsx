@@ -12,7 +12,6 @@ import {
   Outlet,
   Scripts,
   useLoaderData,
-  useLocation,
   type ShouldReloadFunction,
 } from "@remix-run/react";
 import * as React from "react";

@@ -194,6 +194,10 @@
   justify-content: flex-end;
 }
 
+.justify-self-end {
+  justify-self: flex-end;
+}
+
 .self-center {
   align-self: center;
 }

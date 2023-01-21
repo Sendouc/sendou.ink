@@ -47,7 +47,7 @@ export function useAnalyzeBuild() {
     newBuild2?: BuildAbilitiesTupleWithUnknown;
     newLdeIntensity?: number;
     newEffects?: Array<SpecialEffectType>;
-    newFocused?: 1 | 2;
+    newFocused?: 1 | 2 | 3;
   }) => {
     setSearchParams(
       {
@@ -93,13 +93,15 @@ export function useAnalyzeBuild() {
   return {
     build,
     build2,
+    focusedBuild: focused === 1 ? build : focused === 2 ? build2 : null,
     focused,
     mainWeaponId,
     handleChange,
     analyzed,
     analyzed2,
     abilityPoints,
-    effects,
+    abilityPoints2,
+    allEffects: Array.from(new Set([...effects, ...effects2])),
     ldeIntensity,
   };
 }
@@ -229,6 +231,7 @@ function validatedFocusedFromSearchParams({
   const focused = searchParams.get("focused");
 
   if (focused === "2") return 2;
+  if (focused === "3") return 3;
 
   return 1;
 }
