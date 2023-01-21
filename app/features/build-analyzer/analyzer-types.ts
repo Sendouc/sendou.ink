@@ -134,10 +134,7 @@ export interface Stat<T = number> {
   modifiedBy: Ability | Array<Ability>;
 }
 
-export type AbilityPoints = Map<
-  AbilityWithUnknown,
-  { ap: number; apBeforeTacticooler: number }
->;
+export type AbilityPoints = Map<AbilityWithUnknown, number>;
 
 export type AbilityChunks = Map<AbilityWithUnknown, number>;
 
@@ -148,6 +145,7 @@ export interface StatFunctionInput {
   specialWeaponParams: SpecialWeaponParams;
   abilityPoints: AbilityPoints;
   mainOnlyAbilities: Array<Ability>;
+  hasTacticooler: boolean;
 }
 
 export type InkConsumeType = typeof INK_CONSUME_TYPES[number];

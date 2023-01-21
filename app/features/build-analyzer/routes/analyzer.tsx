@@ -697,7 +697,7 @@ export default function BuildAnalyzerPage() {
             >
               {/** Hack the :has ;) */}
               {(["ISM", "ISS"] as const).some(
-                (ability) => (abilityPoints.get(ability)?.ap ?? 0) > 0
+                (ability) => (abilityPoints.get(ability) ?? 0) > 0
               ) ? (
                 <div className="analyzer__stat-card-highlighted" />
               ) : null}
@@ -855,6 +855,7 @@ export default function BuildAnalyzerPage() {
   );
 }
 
+// xxx: no main abilities?
 function APCompare({
   abilityPoints,
   abilityPoints2,
@@ -867,13 +868,13 @@ function APCompare({
   return (
     <div className="analyzer__ap-compare">
       {([...abilitiesShort, "UNKNOWN"] as const).map((ability) => {
-        const ap = abilityPoints.get(ability)?.ap ?? 0;
-        const ap2 = abilityPoints2.get(ability)?.ap ?? 0;
+        const ap = abilityPoints.get(ability) ?? 0;
+        const ap2 = abilityPoints2.get(ability) ?? 0;
 
         if (!ap && !ap2) return null;
 
         return (
-          <>
+          <React.Fragment key={ability}>
             <div
               className={clsx("justify-self-end", {
                 invisible: !ap,
@@ -898,7 +899,7 @@ function APCompare({
               {ap2}
               {t("analyzer:abilityPoints.short")}
             </div>
-          </>
+          </React.Fragment>
         );
       })}
     </div>
@@ -1076,7 +1077,7 @@ function StatCard({
     // you have Ninja Squid and stack swim speed
     // -> we still want to show the build value
     return [stat[0].modifiedBy].flat().some((ability) => {
-      const hasStackable = (abilityPoints.get(ability)?.ap ?? 0) > 0;
+      const hasStackable = (abilityPoints.get(ability) ?? 0) > 0;
       const hasEffect =
         baseValue !== stat[0].value && baseValue !== stat[1].value;
 

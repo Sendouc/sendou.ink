@@ -37,9 +37,9 @@ export function buildToAbilityPoints(build: BuildAbilitiesTupleWithUnknown) {
 
       const aps = i === 0 ? 10 : 3;
       const apsDoubled = aps * (abilityDoublerActive ? 2 : 1);
-      const newAp = (result.get(ability)?.ap ?? 0) + apsDoubled;
+      const newAp = (result.get(ability) ?? 0) + apsDoubled;
 
-      result.set(ability, { ap: newAp, apBeforeTacticooler: newAp });
+      result.set(ability, newAp);
     }
   }
 
@@ -57,13 +57,11 @@ function isStackableAbility(ability: AbilityWithUnknown): ability is Ability {
 export function apFromMap({
   abilityPoints,
   ability,
-  key = "ap",
 }: {
   abilityPoints: AbilityPoints;
   ability: Ability;
-  key?: "ap" | "apBeforeTacticooler";
 }) {
-  return abilityPoints.get(ability)?.[key] ?? 0;
+  return abilityPoints.get(ability) ?? 0;
 }
 
 function abilityValues({

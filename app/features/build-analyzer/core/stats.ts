@@ -32,10 +32,12 @@ export function buildStats({
   weaponSplId,
   abilityPoints = new Map(),
   mainOnlyAbilities = [],
+  hasTacticooler,
 }: {
   weaponSplId: MainWeaponId;
   abilityPoints?: AbilityPoints;
   mainOnlyAbilities?: Array<Ability>;
+  hasTacticooler: boolean;
 }): AnalyzedBuild {
   const mainWeaponParams = weaponParams().mainWeapons[weaponSplId];
   invariant(mainWeaponParams, `Weapon with splId ${weaponSplId} not found`);
@@ -61,6 +63,7 @@ export function buildStats({
     specialWeaponParams,
     abilityPoints,
     mainOnlyAbilities,
+    hasTacticooler,
   };
 
   return {
@@ -196,7 +199,6 @@ function specialLost(
     abilityPoints: apFromMap({
       abilityPoints: abilityPoints,
       ability: SPECIAL_SAVED_AFTER_DEATH_ABILITY,
-      key: hasRespawnPunisher ? "apBeforeTacticooler" : "ap",
     }),
     key: "SpecialGaugeRt_Restart",
     weapon: mainWeaponParams,
@@ -593,6 +595,14 @@ function swimSpeedHoldingRainmaker(
   };
 }
 
+const qrApAfterRespawnPunish = ({
+  ap,
+  hasTacticooler,
+}: {
+  ap: number;
+  hasTacticooler: boolean;
+}) => (hasTacticooler ? ap : Math.ceil(ap * 0.15));
+
 const RESPAWN_CHASE_FRAME = 150;
 const OWN_RESPAWN_PUNISHER_EXTRA_RESPAWN_FRAMES = 68;
 const ENEMY_RESPAWN_PUNISHER_EXTRA_RESPAWN_FRAMES = 45;
@@ -604,21 +614,25 @@ function respawnTime(
   const QUICK_RESPAWN_TIME_ABILITY = "QR";
   const hasRespawnPunisher = args.mainOnlyAbilities.includes("RP");
 
+  const ap = apFromMap({
+    abilityPoints: args.abilityPoints,
+    ability: QUICK_RESPAWN_TIME_ABILITY,
+  });
+  const abilityPoints =
+    splattedByRP || hasRespawnPunisher
+      ? qrApAfterRespawnPunish({
+          ap,
+          hasTacticooler: args.hasTacticooler,
+        })
+      : ap;
+
   const chase = abilityPointsToEffects({
-    abilityPoints: apFromMap({
-      abilityPoints: args.abilityPoints,
-      ability: QUICK_RESPAWN_TIME_ABILITY,
-      key: hasRespawnPunisher ? "apBeforeTacticooler" : "ap",
-    }),
+    abilityPoints,
     key: "Dying_ChaseFrm",
     weapon: args.mainWeaponParams,
   });
   const around = abilityPointsToEffects({
-    abilityPoints: apFromMap({
-      abilityPoints: args.abilityPoints,
-      ability: QUICK_RESPAWN_TIME_ABILITY,
-      key: hasRespawnPunisher ? "apBeforeTacticooler" : "ap",
-    }),
+    abilityPoints,
     key: "Dying_AroundFrm",
     weapon: args.mainWeaponParams,
   });

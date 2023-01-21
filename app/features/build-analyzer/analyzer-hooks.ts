@@ -68,12 +68,14 @@ export function useAnalyzeBuild() {
     effects,
     ldeIntensity,
   });
+  const hasTacticooler = effects.includes("TACTICOOLER");
   const analyzed = buildStats({
     abilityPoints,
     weaponSplId: mainWeaponId,
     mainOnlyAbilities: build
       .map((row) => row[0])
       .filter(filterMainOnlyAbilities),
+    hasTacticooler,
   });
 
   const buildAbilityPoints2 = buildToAbilityPoints(build2);
@@ -88,6 +90,7 @@ export function useAnalyzeBuild() {
     mainOnlyAbilities: build2
       .map((row) => row[0])
       .filter(filterMainOnlyAbilities),
+    hasTacticooler,
   });
 
   return {
