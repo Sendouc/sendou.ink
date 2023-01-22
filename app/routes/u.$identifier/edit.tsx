@@ -112,7 +112,7 @@ const userEditActionSchema = z
           z
             .number()
             .refine((val) =>
-              mainWeaponIds.includes(val as typeof mainWeaponIds[number])
+              mainWeaponIds.includes(val as (typeof mainWeaponIds)[number])
             )
         )
         .max(USER.WEAPON_POOL_MAX_SIZE)

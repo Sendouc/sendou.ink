@@ -111,7 +111,10 @@ export const damageTypePriorityList = [
   "SPLATANA_HORIZONTAL_DIRECT",
   "SPLATANA_HORIZONTAL",
 ] as const;
-assertType<typeof damageTypePriorityList[number], typeof DAMAGE_TYPE[number]>();
+assertType<
+  (typeof damageTypePriorityList)[number],
+  (typeof DAMAGE_TYPE)[number]
+>();
 
 function validatedDamageTypeFromSearchParams({
   searchParams,

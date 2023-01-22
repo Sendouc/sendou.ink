@@ -1,4 +1,4 @@
-import type * as React from "react";
+import * as React from "react";
 import { useIsMounted } from "~/hooks/useIsMounted";
 
 export function RelativeTime({

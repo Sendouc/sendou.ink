@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import type * as React from "react";
+import * as React from "react";
 import { AlertIcon } from "./icons/Alert";
 import { ErrorIcon } from "./icons/Error";
 import { CheckmarkIcon } from "./icons/Checkmark";

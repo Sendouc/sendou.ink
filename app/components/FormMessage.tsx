@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import type * as React from "react";
+import * as React from "react";
 
 export function FormMessage({
   children,

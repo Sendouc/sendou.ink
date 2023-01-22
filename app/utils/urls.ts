@@ -179,12 +179,12 @@ export const badgeUrl = ({
 export const articlePreviewUrl = (slug: string) =>
   `/static-assets/img/article-previews/${slug}.png`;
 
-export const navIconUrl = (navItem: typeof navItems[number]["name"]) =>
+export const navIconUrl = (navItem: (typeof navItems)[number]["name"]) =>
   `/static-assets/img/layout/${navItem}`;
 export const gearImageUrl = (gearType: GearType, gearSplId: number) =>
   `/static-assets/img/gear/${gearType.toLowerCase()}/${gearSplId}`;
 export const weaponCategoryUrl = (
-  category: typeof weaponCategories[number]["name"]
+  category: (typeof weaponCategories)[number]["name"]
 ) => `/static-assets/img/weapon-categories/${category}`;
 export const mainWeaponImageUrl = (mainWeaponSplId: MainWeaponId) =>
   `/static-assets/img/main-weapons/${mainWeaponSplId}`;

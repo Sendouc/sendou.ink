@@ -71,7 +71,7 @@ const newBuildActionSchema = z.object({
           z
             .number()
             .refine((val) =>
-              mainWeaponIds.includes(val as typeof mainWeaponIds[number])
+              mainWeaponIds.includes(val as (typeof mainWeaponIds)[number])
             )
         )
       )
@@ -82,14 +82,16 @@ const newBuildActionSchema = z.object({
     actualNumber,
     z
       .number()
-      .refine((val) => headGearIds.includes(val as typeof headGearIds[number]))
+      .refine((val) =>
+        headGearIds.includes(val as (typeof headGearIds)[number])
+      )
   ),
   "CLOTHES[value]": z.preprocess(
     actualNumber,
     z
       .number()
       .refine((val) =>
-        clothesGearIds.includes(val as typeof clothesGearIds[number])
+        clothesGearIds.includes(val as (typeof clothesGearIds)[number])
       )
   ),
   "SHOES[value]": z.preprocess(
@@ -97,7 +99,7 @@ const newBuildActionSchema = z.object({
     z
       .number()
       .refine((val) =>
-        shoesGearIds.includes(val as typeof shoesGearIds[number])
+        shoesGearIds.includes(val as (typeof shoesGearIds)[number])
       )
   ),
   abilities: z.preprocess(

@@ -38,16 +38,16 @@ export function AbilitiesSelector({
 
     onChange(abilitiesClone);
   };
-  const onButtonClick = (ability: typeof abilities[number]) => {
+  const onButtonClick = (ability: (typeof abilities)[number]) => {
     onChange(addAbility({ oldAbilities: selectedAbilities, ability }));
   };
 
   const [draggingAbility, setDraggingAbility] = React.useState<
-    typeof abilities[number] | undefined
+    (typeof abilities)[number] | undefined
   >();
 
   const onDragStart =
-    (ability: typeof abilities[number]) => (event: React.DragEvent) => {
+    (ability: (typeof abilities)[number]) => (event: React.DragEvent) => {
       setDraggingAbility(ability);
       event.dataTransfer.setData("text/plain", JSON.stringify(ability));
     };
@@ -62,7 +62,7 @@ export function AbilitiesSelector({
       event.preventDefault();
       const ability = JSON.parse(
         event.dataTransfer.getData("text/plain")
-      ) as typeof abilities[number];
+      ) as (typeof abilities)[number];
 
       onChange(
         addAbility({
@@ -125,7 +125,7 @@ export function AbilitiesSelector({
 const canPlaceAbilityAtSlot = (
   rowIndex: number,
   abilityIndex: number,
-  ability?: typeof abilities[number]
+  ability?: (typeof abilities)[number]
 ) => {
   if (!ability) {
     return false;
@@ -162,7 +162,7 @@ function addAbility({
   atAbilityIndex,
 }: {
   oldAbilities: BuildAbilitiesTupleWithUnknown;
-  ability: typeof abilities[number];
+  ability: (typeof abilities)[number];
   atRowIndex?: number;
   atAbilityIndex?: number;
 }): BuildAbilitiesTupleWithUnknown {

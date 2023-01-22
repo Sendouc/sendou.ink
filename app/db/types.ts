@@ -257,7 +257,7 @@ export interface Team {
   deletedAt: number | null;
 }
 
-export type MemberRole = typeof TEAM_MEMBER_ROLES[number];
+export type MemberRole = (typeof TEAM_MEMBER_ROLES)[number];
 
 export interface TeamMember {
   teamId: number;
