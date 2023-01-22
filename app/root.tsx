@@ -11,8 +11,8 @@ import {
   Meta,
   Outlet,
   Scripts,
+  type ShouldRevalidateFunction,
   useLoaderData,
-  type ShouldReloadFunction,
 } from "@remix-run/react";
 import * as React from "react";
 import commonStyles from "~/styles/common.css";
@@ -41,9 +41,9 @@ import { isTheme } from "./modules/theme/provider";
 import { useIsMounted } from "./hooks/useIsMounted";
 import invariant from "tiny-invariant";
 
-export const unstable_shouldReload: ShouldReloadFunction = ({ url }) => {
-  // reload on language change so the selected language gets set into the cookie
-  const lang = url.searchParams.get("lng");
+export const shouldRevalidate: ShouldRevalidateFunction = ({ nextUrl }) => {
+  // // reload on language change so the selected language gets set into the cookie
+  const lang = nextUrl.searchParams.get("lng");
 
   return Boolean(lang);
 };

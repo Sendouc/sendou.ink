@@ -4,7 +4,7 @@ import type {
   MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
-import type { ShouldReloadFunction } from "@remix-run/react";
+import type { ShouldRevalidateFunction } from "@remix-run/react";
 import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
 import * as React from "react";
 import { useCopyToClipboard } from "react-use";
@@ -39,8 +39,8 @@ import {
 
 const AMOUNT_OF_MAPS_IN_MAP_LIST = stageIds.length * 2;
 
-export const unstable_shouldReload: ShouldReloadFunction = ({ url }) => {
-  const searchParams = new URL(url).searchParams;
+export const shouldRevalidate: ShouldRevalidateFunction = ({ nextUrl }) => {
+  const searchParams = new URL(nextUrl).searchParams;
   // Only let loader reload data if we're not currently editing the map pool
   // and persisting it in the search params.
   return searchParams.has("readonly");

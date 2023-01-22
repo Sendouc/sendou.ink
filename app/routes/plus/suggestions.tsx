@@ -4,7 +4,7 @@ import type {
   MetaFunction,
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import type { ShouldReloadFunction } from "@remix-run/react";
+import type { ShouldRevalidateFunction } from "@remix-run/react";
 import { Link, Outlet, useLoaderData, useSearchParams } from "@remix-run/react";
 import clsx from "clsx";
 import invariant from "tiny-invariant";
@@ -138,9 +138,9 @@ export interface PlusSuggestionsLoaderData {
   suggestedForTiers: number[];
 }
 
-export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
+export const shouldRevalidate: ShouldRevalidateFunction = ({ formMethod }) => {
   // only reload if form submission not when user changes tabs
-  return Boolean(submission);
+  return Boolean(formMethod && formMethod !== "get");
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
