@@ -7,10 +7,10 @@ import {
   FAQ_PAGE,
   SENDOU_INK_DISCORD_URL,
   SENDOU_INK_GITHUB_URL,
-  SENDOU_INK_PATREON_URL,
   SENDOU_INK_TWITTER_URL,
   SENDOU_LOVE_EMOJI_PATH,
   SPLATOON_2_SENDOU_IN_URL,
+  SUPPORT_PAGE,
   userPage,
 } from "~/utils/urls";
 import { DiscordIcon } from "../icons/Discord";
@@ -69,17 +69,12 @@ export function Footer({
           </div>{" "}
           <DiscordIcon className="layout__footer__social-icon discord" />
         </a>
-        <a
-          className="layout__footer__social-link"
-          href={SENDOU_INK_PATREON_URL}
-          target="_blank"
-          rel="noreferrer"
-        >
+        <Link className="layout__footer__social-link" to={SUPPORT_PAGE}>
           <div className="layout__footer__social-header">
             Patreon<p>{t("footer.patreon.subtitle")}</p>
           </div>{" "}
           <PatreonIcon className="layout__footer__social-icon patreon" />
-        </a>
+        </Link>
       </div>
       {patrons.length > 0 ? (
         <div>

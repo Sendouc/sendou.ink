@@ -9,6 +9,10 @@ import { SideNav } from "./SideNav";
 import { UserItem } from "./UserItem";
 import { LanguageChanger } from "./LanguageChanger";
 import { ThemeChanger } from "./ThemeChanger";
+import { LinkButton } from "../Button";
+import { SUPPORT_PAGE } from "~/utils/urls";
+import { HeartIcon } from "../icons/Heart";
+import { useUser } from "~/modules/auth";
 
 function useBreadcrumbs() {
   const { t } = useTranslation();
@@ -39,6 +43,7 @@ export const Layout = React.memo(function Layout({
   patrons?: RootLoaderData["patrons"];
   isCatchBoundary?: boolean;
 }) {
+  const user = useUser();
   const { t } = useTranslation(["common"]);
   const location = useLocation();
   const breadcrumbs = useBreadcrumbs();
@@ -65,14 +70,37 @@ export const Layout = React.memo(function Layout({
           })}
           {isFrontPage ? (
             <>
-              <div className="layout__breadcrumb-separator">-</div>
-              <div className="layout__breadcrumb">
+              <div className="layout__breadcrumb-separator mobile-hidden">
+                -
+              </div>
+              <div className="layout__breadcrumb mobile-hidden">
                 {t("common:websiteSubtitle")}
               </div>
+              {typeof user?.patronTier !== "number" ? (
+                <LinkButton
+                  to={SUPPORT_PAGE}
+                  size="tiny"
+                  icon={<HeartIcon />}
+                  variant="outlined"
+                  className="ml-auto desktop-hidden"
+                >
+                  {t("common:pages.support")}
+                </LinkButton>
+              ) : null}
             </>
           ) : null}
         </div>
         <div className="layout__header__right-container">
+          {typeof user?.patronTier !== "number" ? (
+            <LinkButton
+              to={SUPPORT_PAGE}
+              size="tiny"
+              icon={<HeartIcon />}
+              variant="outlined"
+            >
+              {t("common:pages.support")}
+            </LinkButton>
+          ) : null}
           <LanguageChanger />
           <ThemeChanger />
           {!isCatchBoundary ? <UserItem /> : null}

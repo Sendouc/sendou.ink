@@ -84,6 +84,7 @@ export interface RootLoaderData {
     | "plusTier"
     | "customUrl"
     | "discordName"
+    | "patronTier"
   >;
 }
 
@@ -108,6 +109,7 @@ export const loader: LoaderFunction = async ({ request }) => {
             id: user.id,
             plusTier: user.plusTier,
             customUrl: user.customUrl,
+            patronTier: user.patronTier,
           }
         : undefined,
     },

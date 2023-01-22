@@ -206,6 +206,10 @@
   align-self: flex-start;
 }
 
+.justify-self-start {
+  justify-self: flex-start;
+}
+
 .flex-wrap {
   flex-wrap: wrap;
 }
@@ -220,4 +224,22 @@
 
 .label-no-spacing {
   --label-margin: 0;
+}
+
+.mobile-hidden {
+  display: none;
+}
+
+.desktop-hidden {
+  display: inherit;
+}
+
+@media screen and (min-width: 480px) {
+  .mobile-hidden {
+    display: inherit;
+  }
+
+  .desktop-hidden {
+    display: none;
+  }
 }
