@@ -17,6 +17,7 @@ export interface User {
   twitter: string | null;
   youtubeId: string | null;
   bio: string | null;
+  css: string | null;
   country: string | null;
   customUrl: string | null;
   stickSens: number | null;
@@ -249,6 +250,7 @@ export interface Team {
   name: string;
   customUrl: string;
   inviteCode: string;
+  css: string | null;
   twitter: string | null;
   bio: string | null;
   avatarImgId: number | null;

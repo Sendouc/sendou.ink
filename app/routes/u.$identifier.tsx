@@ -14,6 +14,7 @@ import { SubNav, SubNavLink } from "~/components/SubNav";
 import { db } from "~/db";
 import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
+import { canAddCustomizedColorsToUserProfile } from "~/permissions";
 import styles from "~/styles/u.css";
 import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
 import { discordFullName, makeTitle } from "~/utils/strings";
@@ -86,6 +87,7 @@ export const loader = ({ params }: LoaderArgs) => {
     weapons: user.weapons,
     team: user.team,
     country: user.country,
+    css: canAddCustomizedColorsToUserProfile(user) ? user.css : undefined,
     badges: db.badges.countsByUserId(user.id),
     results: db.calendarEvents.findResultsByUserId(user.id),
     buildsCount: db.builds.countByUserId(user.id),

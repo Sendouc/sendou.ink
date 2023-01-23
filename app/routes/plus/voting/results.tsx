@@ -64,7 +64,7 @@ function ownScores({
   user,
 }: {
   scores: PlusVotingResultByMonthYear["scores"];
-  user?: UserWithPlusTier;
+  user?: Pick<UserWithPlusTier, "id" | "patronTier">;
 }) {
   return scores
     .filter((score) => {

@@ -979,3 +979,13 @@ dialog::backdrop {
 .ability-selector__ability-button.is-dragging {
   box-shadow: 0 0 100px inset rgb(255 255 255 / 25%);
 }
+
+.colors__grid {
+  display: grid;
+  width: 100%;
+  justify-content: center;
+  font-size: var(--fonts-sm);
+  font-weight: var(--bold);
+  grid-template-columns: 3fr 2fr 1fr;
+  row-gap: var(--s-3);
+}

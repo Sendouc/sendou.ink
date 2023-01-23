@@ -13,6 +13,7 @@ import {
   Scripts,
   type ShouldRevalidateFunction,
   useLoaderData,
+  useMatches,
 } from "@remix-run/react";
 import * as React from "react";
 import commonStyles from "~/styles/common.css";
@@ -40,6 +41,7 @@ import { getThemeSession } from "./modules/theme/session.server";
 import { isTheme } from "./modules/theme/provider";
 import { useIsMounted } from "./hooks/useIsMounted";
 import invariant from "tiny-invariant";
+import { CUSTOMIZED_CSS_VARS_NAME } from "./constants";
 
 export const shouldRevalidate: ShouldRevalidateFunction = ({ nextUrl }) => {
   // // reload on language change so the selected language gets set into the cookie
@@ -138,6 +140,7 @@ function Document({
 
   useChangeLanguage(locale);
   usePreloadTranslation();
+  const customizedCSSVars = useCustomizedCSSVars();
 
   return (
     <html lang={locale} dir={i18n.dir()} className={htmlThemeClass}>
@@ -149,7 +152,7 @@ function Document({
         <PWALinks />
         <Fonts />
       </head>
-      <body>
+      <body style={customizedCSSVars}>
         {process.env.NODE_ENV === "development" && <HydrationTestIndicator />}
         <React.StrictMode>
           <Layout patrons={data?.patrons} isCatchBoundary={isCatchBoundary}>
@@ -190,6 +193,24 @@ function usePreloadTranslation() {
   React.useEffect(() => {
     void generalI18next.loadNamespaces(namespaceJsonsToPreload);
   }, []);
+}
+
+function useCustomizedCSSVars() {
+  const matches = useMatches();
+
+  for (const match of matches) {
+    if (match.data?.[CUSTOMIZED_CSS_VARS_NAME]) {
+      // cheating TypeScript here but no real way to keep up
+      // even an illusion of type safety here
+      return Object.fromEntries(
+        Object.entries(
+          match.data[CUSTOMIZED_CSS_VARS_NAME] as Record<string, string>
+        ).map(([key, value]) => [`--${key}`, value])
+      ) as React.CSSProperties;
+    }
+  }
+
+  return;
 }
 
 export default function App() {
