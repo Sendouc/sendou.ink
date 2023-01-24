@@ -5,6 +5,8 @@
   "reportResults": "Geef uitslagen door:",
   "day": "Dag {{number}}",
   "actions.reportWinners": "Geef winnaars door",
+  "actions.delete": "Verwijder evenement",
+  "actions.delete.confirm": "Verwijder al de gegevens gerelateerd aan {{name}}?",
   "participatedCount": "{{count}} teams hebben meegedaan",
   "members": "Leden",
   "results": "Uitslagen",
@@ -37,6 +39,9 @@
   "forms.errors.uniqueTeamName": "Elk team heeft een eigen unieke naam nodig.",
   "forms.errors.duplicatePlayer": "Je kunt niet een speler twee keer in hetzelfde team neerzetten.",
   "forms.errors.emptyTeam": "Elk team moet tenminste één speler hebben",
+
+"forms.toTools.header": "Activeer TO gereedschappen",
+  "forms.toTools.explanation": "Met TO-gereedschappen zal je toernooi voorbestemde levels gebruiken en de plaatsen-gereedschap zal beschikbaar zijn.",
 
   "week.this": "Deze week",
   "week.next": "Volgende week",
