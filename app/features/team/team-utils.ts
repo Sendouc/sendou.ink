@@ -28,3 +28,9 @@ export function isTeamMember({
 export function isTeamFull(team: DetailedTeam) {
   return team.members.length >= TEAM.MAX_MEMBER_COUNT;
 }
+
+export function canAddCustomizedColors(team: DetailedTeam) {
+  return team.members.some(
+    (member) => member.patronTier && member.patronTier >= 2
+  );
+}

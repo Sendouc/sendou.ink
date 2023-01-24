@@ -7,7 +7,8 @@ const stm = sql.prepare(/*sql*/ `
     "name" = @name,
     "customUrl" = @customUrl,
     "bio" = @bio,
-    "twitter" = @twitter
+    "twitter" = @twitter,
+    "css" = @css
   where "id" = @id
   returning *
 `);
@@ -18,12 +19,14 @@ export function edit({
   customUrl,
   bio,
   twitter,
-}: Pick<Team, "id" | "name" | "customUrl" | "bio" | "twitter">) {
+  css,
+}: Pick<Team, "id" | "name" | "customUrl" | "bio" | "twitter" | "css">) {
   return stm.get({
     id,
     name,
     customUrl,
     bio,
     twitter,
+    css,
   }) as Team;
 }

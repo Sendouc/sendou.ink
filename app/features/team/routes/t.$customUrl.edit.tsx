@@ -11,6 +11,7 @@ import {
 import { Form, Link, useLoaderData } from "@remix-run/react";
 import * as React from "react";
 import { Button } from "~/components/Button";
+import { CustomizedColorsInput } from "~/components/CustomizedColorsInput";
 import { FormErrors } from "~/components/FormErrors";
 import { FormMessage } from "~/components/FormMessage";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
@@ -39,7 +40,7 @@ import { edit } from "../queries/edit.server";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { TEAM } from "../team-constants";
 import { editTeamSchema, teamParamsSchema } from "../team-schemas.server";
-import { isTeamOwner } from "../team-utils";
+import { canAddCustomizedColors, isTeamOwner } from "../team-utils";
 import styles from "../team.css";
 
 export const links: LinksFunction = () => {
@@ -84,7 +85,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUserId(request);
   const { customUrl } = teamParamsSchema.parse(params);
 
-  const team = notFoundIfFalsy(findByIdentifier(customUrl));
+  const { team } = notFoundIfFalsy(findByIdentifier(customUrl));
 
   validate(isTeamOwner({ team, user }));
 
@@ -101,10 +102,10 @@ export const action: ActionFunction = async ({ request, params }) => {
     }
     case "EDIT": {
       const newCustomUrl = mySlugify(data.name);
-      const existingTeam = findByIdentifier(newCustomUrl);
+      const existing = findByIdentifier(newCustomUrl);
 
       // can't take someone else's custom url
-      if (existingTeam && existingTeam.id !== team.id) {
+      if (existing && existing.team.id !== team.id) {
         return {
           errors: ["forms.errors.duplicateName"],
         };
@@ -128,18 +129,18 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const user = await requireUserId(request);
   const { customUrl } = teamParamsSchema.parse(params);
 
-  const team = notFoundIfFalsy(findByIdentifier(customUrl));
+  const { team, css } = notFoundIfFalsy(findByIdentifier(customUrl));
 
   if (!isTeamOwner({ team, user })) {
     throw redirect(teamPage(customUrl));
   }
 
-  return { team };
+  return { team, css };
 };
 
 export default function EditTeamPage() {
   const { t } = useTranslation(["common", "team"]);
-  const { team } = useLoaderData<typeof loader>();
+  const { team, css } = useLoaderData<typeof loader>();
 
   return (
     <Main className="half-width">
@@ -157,6 +158,9 @@ export default function EditTeamPage() {
       </FormWithConfirm>
       <Form method="post" className="stack md items-start">
         <ImageUploadLinks />
+        {canAddCustomizedColors(team) ? (
+          <CustomizedColorsInput initialColors={css} />
+        ) : null}
         <NameInput />
         <TwitterInput />
         <BioTextarea />

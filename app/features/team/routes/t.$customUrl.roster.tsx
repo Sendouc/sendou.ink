@@ -63,7 +63,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUserId(request);
 
   const { customUrl } = teamParamsSchema.parse(params);
-  const team = notFoundIfFalsy(findByIdentifier(customUrl));
+  const { team } = notFoundIfFalsy(findByIdentifier(customUrl));
   validate(isTeamOwner({ team, user }));
 
   const data = await parseRequestFormData({
@@ -132,7 +132,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const user = await requireUserId(request);
   const { customUrl } = teamParamsSchema.parse(params);
 
-  const team = notFoundIfFalsy(findByIdentifier(customUrl));
+  const { team } = notFoundIfFalsy(findByIdentifier(customUrl));
 
   if (!isTeamOwner({ team, user })) {
     throw redirect(teamPage(customUrl));

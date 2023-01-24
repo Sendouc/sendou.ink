@@ -37,8 +37,8 @@ export const action = async ({ request }: ActionArgs) => {
   validate(validatedType);
 
   validate(user.team);
-  const detailedTeam = findByIdentifier(user.team.customUrl);
-  validate(detailedTeam && isTeamOwner({ team: detailedTeam, user }));
+  const detailed = findByIdentifier(user.team.customUrl);
+  validate(detailed && isTeamOwner({ team: detailed.team, user }));
 
   // TODO: graceful error handling when uploading many images
   validate(countUnvalidatedImg(user.id) < MAX_UNVALIDATED_IMG_COUNT);
@@ -82,9 +82,9 @@ export const loader = async ({ request }: LoaderArgs) => {
     throw redirect("/");
   }
 
-  const detailedTeam = findByIdentifier(user.team.customUrl);
+  const detailed = findByIdentifier(user.team.customUrl);
 
-  if (!detailedTeam || !isTeamOwner({ team: detailedTeam, user })) {
+  if (!detailed || !isTeamOwner({ team: detailed.team, user })) {
     throw redirect("/");
   }
 

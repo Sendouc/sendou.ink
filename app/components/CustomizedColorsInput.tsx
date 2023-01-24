@@ -19,7 +19,7 @@ type CustomColorsRecord = Partial<
 export function CustomizedColorsInput({
   initialColors,
 }: {
-  initialColors?: Record<string, string>;
+  initialColors?: Record<string, string> | null;
 }) {
   const { t } = useTranslation();
   const [colors, setColors] = React.useState<CustomColorsRecord>(

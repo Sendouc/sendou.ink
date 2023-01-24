@@ -32,7 +32,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUser(request);
   const { customUrl } = teamParamsSchema.parse(params);
 
-  const team = notFoundIfFalsy(findByIdentifier(customUrl));
+  const { team } = notFoundIfFalsy(findByIdentifier(customUrl));
 
   const inviteCode = new URL(request.url).searchParams.get("code") ?? "";
   const realInviteCode = inviteCodeById(team.id)!;
@@ -59,7 +59,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const user = await requireUser(request);
   const { customUrl } = teamParamsSchema.parse(params);
 
-  const team = notFoundIfFalsy(findByIdentifier(customUrl));
+  const { team } = notFoundIfFalsy(findByIdentifier(customUrl));
 
   const inviteCode = new URL(request.url).searchParams.get("code") ?? "";
   const realInviteCode = inviteCodeById(team.id)!;

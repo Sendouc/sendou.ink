@@ -23,6 +23,7 @@ export interface DetailedTeamMember {
   isOwner: boolean;
   weapons: MainWeaponId[];
   role?: MemberRole;
+  patronTier: number | null;
 }
 
 export interface TeamResultPeek {
