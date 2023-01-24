@@ -98,7 +98,6 @@
   "value": "Valore",
   "build": "Kit",
   "patch": "Versione gioco:",
-  "abilityPoints": "Punti abilità",
   "abilityPoints.short": "AP",
   "abilityChunks": "Frammenti abilità necessari",
   "consumptionExplanation": "Questa tabella mostra la quantità di azioni rimaste da eseguire con l'arma principale dopo aver usato l'arma secondaria da 0 a {{maxSubsToUse}} volte. Il numero massimo di armi secondarie da utilizzare consecutivamente con un serbatoio pieno è {{maxSubsToUse}}.",

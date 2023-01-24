@@ -19,6 +19,7 @@ function calculate({
 }) {
   const analyzed = buildStats({
     weaponSplId: mainWeaponId,
+    hasTacticooler: false,
   });
 
   return calculateDamage({
@@ -35,7 +36,7 @@ const CalculateDamage = suite("calculateDamage()");
 CalculateDamage("BRU increases Splash Wall hitpoints", () => {
   const withoutBRU = calculate({});
   const withBRU = calculate({
-    abilityPoints: new Map([["BRU", { ap: 10, apBeforeTacticooler: 10 }]]),
+    abilityPoints: new Map([["BRU", 10]]),
   });
 
   const hpWithoutBRU = withoutBRU.find(
@@ -51,7 +52,7 @@ CalculateDamage("BRU increases Splash Wall hitpoints", () => {
 CalculateDamage("SPU increases Big Bubbler hitpoints", () => {
   const withoutSPU = calculate({});
   const withSPU = calculate({
-    abilityPoints: new Map([["SPU", { ap: 10, apBeforeTacticooler: 10 }]]),
+    abilityPoints: new Map([["SPU", 10]]),
   });
 
   const hpWithoutSPU = withoutSPU.find(

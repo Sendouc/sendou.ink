@@ -17,6 +17,7 @@ AnalyzeBuild("Every main weapon has damage", () => {
   for (const weaponSplId of mainWeaponIds) {
     const analyzed = buildStats({
       weaponSplId,
+      hasTacticooler: false,
     });
 
     const hasDamage =
@@ -38,15 +39,47 @@ AnalyzeBuild("Every main weapon has damage", () => {
 AnalyzeBuild("Ninja Squid decreases swim speed", () => {
   const analyzed = buildStats({
     weaponSplId: 0,
+    hasTacticooler: false,
   });
 
   const analyzedWithNS = buildStats({
     weaponSplId: 0,
     mainOnlyAbilities: ["NS"],
+    hasTacticooler: false,
   });
 
   assert.ok(
     analyzed.stats.swimSpeed.value > analyzedWithNS.stats.swimSpeed.value
+  );
+});
+
+AnalyzeBuild("Tacticooler / RP calculated correctly", () => {
+  const fullQR = buildStats({
+    weaponSplId: 0,
+    abilityPoints: new Map([["QR", 57]]),
+    hasTacticooler: false,
+  });
+
+  const tacticooler = buildStats({
+    weaponSplId: 0,
+    abilityPoints: new Map([["QR", 57]]),
+    hasTacticooler: true,
+  });
+
+  assert.ok(
+    fullQR.stats.quickRespawnTime.value ===
+      tacticooler.stats.quickRespawnTime.value,
+    "Base QR should be same whether 57AP of QR or Tacticooler"
+  );
+  assert.ok(
+    fullQR.stats.quickRespawnTimeSplattedByRP.value >
+      tacticooler.stats.quickRespawnTimeSplattedByRP.value,
+    "Tacticooler splatted by RP should respawn faster than 57AP of QR"
+  );
+  assert.ok(
+    tacticooler.stats.quickRespawnTime.value <
+      tacticooler.stats.quickRespawnTimeSplattedByRP.value,
+    "Tacticooler should respawn faster than Tacticooler splatted by RP"
   );
 });
 

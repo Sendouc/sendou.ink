@@ -495,8 +495,8 @@ dialog::backdrop {
   padding: var(--s-1) var(--s-2);
   border-radius: var(--rounded);
   background-color: var(--bg-lightest);
+  cursor: pointer;
   font-size: var(--fonts-xs);
-  font-weight: var(--semi-bold);
   text-align: center;
   white-space: nowrap;
 }
@@ -978,4 +978,14 @@ dialog::backdrop {
 
 .ability-selector__ability-button.is-dragging {
   box-shadow: 0 0 100px inset rgb(255 255 255 / 25%);
+}
+
+.colors__grid {
+  display: grid;
+  width: 100%;
+  justify-content: center;
+  font-size: var(--fonts-sm);
+  font-weight: var(--bold);
+  grid-template-columns: 3fr 2fr 1fr;
+  row-gap: var(--s-3);
 }

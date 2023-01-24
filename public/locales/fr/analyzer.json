@@ -102,7 +102,6 @@
   "value": "Valeur",
   "build": "Equipement",
   "patch": "Version:",
-  "abilityPoints": "Points de compétence",
   "abilityPoints.short": " PC",
   "abilityChunks": "Fragments de bonus requis",
   "consumptionExplanation": "Ce tableau montre le nombre d'actions restantes à effectuer avec l'arme principale après avoir utilisé l'arme secondaire 0-{{maxSubsToUse}} fois. Le nombre max d'utilisations d'armes secondaires consécutives à utiliser avec un réservoir d'encre plein est de {{maxSubsToUse}}.",

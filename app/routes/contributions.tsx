@@ -30,7 +30,7 @@ const PROGRAMMERS = ["DoubleCookies", "ElementUser", "remmycat"] as const;
 
 const TRANSLATORS: Array<{
   translators: Array<string>;
-  language: typeof languages[number]["code"];
+  language: (typeof languages)[number]["code"];
 }> = [
   {
     translators: ["Frederik"],

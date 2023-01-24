@@ -104,7 +104,6 @@
   "value": "Værdi",
   "build": "Udrustning",
   "patch": "Patch:",
-  "abilityPoints": "Egenskabspoint (AP)",
   "abilityPoints.short": "AP",
   "abilityChunks": "Pris i Egenskabs-fragmenter",
   "consumptionExplanation": "Dette diagram viser, hvor mange handlinger man kan udføre med det primære våben efter brug af det sekundære våben 0-{{maxSubsToUse}} gange. Du kan bruge {{maxSubsToUse}} sekundære våben per fuld blæktank.",

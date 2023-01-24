@@ -43,6 +43,8 @@ export const SENDOU_INK_DISCORD_URL = "https://discord.gg/sendou";
 export const SENDOU_TWITTER_URL = "https://twitter.com/sendouc";
 export const SENDOU_INK_TWITTER_URL = "https://twitter.com/sendouink";
 export const SENDOU_INK_PATREON_URL = "https://patreon.com/sendou";
+export const PATREON_HOW_TO_CONNECT_DISCORD_URL =
+  "https://support.patreon.com/hc/en-us/articles/212052266-How-do-I-connect-Discord-to-Patreon-Patron-";
 export const SENDOU_INK_GITHUB_URL = "https://github.com/Sendouc/sendou.ink";
 export const GITHUB_CONTRIBUTORS_URL =
   "https://github.com/Sendouc/sendou.ink/graphs/contributors";
@@ -63,6 +65,7 @@ export const LOG_OUT_URL = "/auth/logout";
 export const ADMIN_PAGE = "/admin";
 export const ARTICLES_MAIN_PAGE = "/a";
 export const FAQ_PAGE = "/faq";
+export const SUPPORT_PAGE = "/support";
 export const CONTRIBUTIONS_PAGE = "/contributions";
 export const BADGES_PAGE = "/badges";
 export const BUILDS_PAGE = "/builds";
@@ -179,12 +182,12 @@ export const badgeUrl = ({
 export const articlePreviewUrl = (slug: string) =>
   `/static-assets/img/article-previews/${slug}.png`;
 
-export const navIconUrl = (navItem: typeof navItems[number]["name"]) =>
+export const navIconUrl = (navItem: (typeof navItems)[number]["name"]) =>
   `/static-assets/img/layout/${navItem}`;
 export const gearImageUrl = (gearType: GearType, gearSplId: number) =>
   `/static-assets/img/gear/${gearType.toLowerCase()}/${gearSplId}`;
 export const weaponCategoryUrl = (
-  category: typeof weaponCategories[number]["name"]
+  category: (typeof weaponCategories)[number]["name"]
 ) => `/static-assets/img/weapon-categories/${category}`;
 export const mainWeaponImageUrl = (mainWeaponSplId: MainWeaponId) =>
   `/static-assets/img/main-weapons/${mainWeaponSplId}`;

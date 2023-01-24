@@ -56,6 +56,7 @@ export const updateProfile = sql.transaction(
     | "motionSens"
     | "stickSens"
     | "inGameName"
+    | "css"
   > & { weapons: MainWeaponId[] }) => {
     deleteUserWeaponsStm.run({ userId: rest.id });
     for (const [i, weaponSplId] of weapons.entries()) {
@@ -112,13 +113,21 @@ export const migrate = sql.transaction(
 
 const findByIdentifierStm = sql.prepare(findByIdentifierSql);
 export function findByIdentifier(identifier: string | number) {
-  const { weapons, teamName, teamCustomUrl, teamAvatarUrl, teamId, ...row } =
-    findByIdentifierStm.get({ identifier });
+  const {
+    weapons,
+    teamName,
+    teamCustomUrl,
+    teamAvatarUrl,
+    teamId,
+    css,
+    ...row
+  } = findByIdentifierStm.get({ identifier });
 
   if (!row.id) return;
 
   return {
     ...row,
+    css: css ? JSON.parse(css) : undefined,
     weapons: parseDBArray(weapons),
     team: teamName
       ? {
@@ -129,7 +138,8 @@ export function findByIdentifier(identifier: string | number) {
         }
       : undefined,
   } as
-    | (UserWithPlusTier & {
+    | (Omit<UserWithPlusTier, "css"> & {
+        css: Record<string, string>;
         weapons: MainWeaponId[];
         team?: {
           name: string;

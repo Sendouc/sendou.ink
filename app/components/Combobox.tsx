@@ -251,12 +251,12 @@ export function WeaponCombobox({
   | "clearsInputOnFocus"
   | "fullWidth"
 > & {
-  initialWeaponId?: typeof mainWeaponIds[number];
+  initialWeaponId?: (typeof mainWeaponIds)[number];
   weaponIdsToOmit?: Set<MainWeaponId>;
 }) {
   const { t } = useTranslation("weapons");
 
-  const idToWeapon = (id: typeof mainWeaponIds[number]) => ({
+  const idToWeapon = (id: (typeof mainWeaponIds)[number]) => ({
     value: String(id),
     label: t(`MAIN_${id}`),
     imgPath: mainWeaponImageUrl(id),
@@ -305,7 +305,7 @@ export function GearCombobox({
       ? clothesGearIds
       : shoesGearIds;
 
-  const idToGear = (id: typeof ids[number]) => ({
+  const idToGear = (id: (typeof ids)[number]) => ({
     value: String(id),
     label: t(`${translationPrefix}_${id}` as any),
     imgPath: gearImageUrl(gearType, id),

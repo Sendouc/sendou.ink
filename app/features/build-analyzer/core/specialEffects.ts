@@ -135,7 +135,7 @@ export function applySpecialEffects({
   ldeIntensity,
 }: {
   abilityPoints: AbilityPoints;
-  effects: Array<typeof SPECIAL_EFFECTS[number]["type"]>;
+  effects: Array<(typeof SPECIAL_EFFECTS)[number]["type"]>;
   ldeIntensity: number;
 }): AbilityPoints {
   const result: AbilityPoints = new Map(abilityPoints);
@@ -147,17 +147,13 @@ export function applySpecialEffects({
 
     for (const value of valuesArr) {
       const boostsBeyond = "boostsBeyond" in value ? value.boostsBeyond : true;
-      const currentAP = result.get(value.type)?.ap ?? 0;
+      const currentAP = result.get(value.type) ?? 0;
       const newAPUnlimited = boostsBeyond
         ? currentAP + value.ap
         : Math.max(currentAP, value.ap);
       const newAP = Math.min(newAPUnlimited, MAX_AP);
 
-      result.set(value.type, {
-        ap: newAP,
-        apBeforeTacticooler:
-          effectObj.type === "TACTICOOLER" ? currentAP : newAP,
-      });
+      result.set(value.type, newAP);
     }
   }
 
@@ -168,7 +164,7 @@ function effectObjToValuesArr({
   effectObj,
   ldeIntensity,
 }: {
-  effectObj: typeof SPECIAL_EFFECTS[number];
+  effectObj: (typeof SPECIAL_EFFECTS)[number];
   ldeIntensity: number;
 }) {
   if (typeof effectObj.values === "function") {

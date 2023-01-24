@@ -28,9 +28,9 @@ import {
 
 const CURRENT_SEASON = 2;
 
-type MainWeapon = typeof weapons[number];
-type SubWeapon = typeof subWeapons[number];
-type SpecialWeapon = typeof specialWeapons[number];
+type MainWeapon = (typeof weapons)[number];
+type SubWeapon = (typeof subWeapons)[number];
+type SpecialWeapon = (typeof specialWeapons)[number];
 type TranslationArray = Array<{ language: string; key: string; value: string }>;
 
 async function main() {

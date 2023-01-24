@@ -54,7 +54,7 @@ async function main() {
       stages.map((_, i) => {
         const codeName = codeNames[
           i
-        ] as keyof typeof langDict["CommonMsg/VS/VSStageName"];
+        ] as keyof (typeof langDict)["CommonMsg/VS/VSStageName"];
         invariant(codeName);
 
         return [`STAGE_${i}`, langDict["CommonMsg/VS/VSStageName"][codeName]];

@@ -1,5 +1,5 @@
 import { useSearchParams } from "@remix-run/react";
-import type * as React from "react";
+import * as React from "react";
 import { useTranslation } from "~/hooks/useTranslation";
 import { languages } from "~/modules/i18n";
 import { LinkButton } from "../Button";

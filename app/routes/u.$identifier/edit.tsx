@@ -12,6 +12,7 @@ import invariant from "tiny-invariant";
 import { z } from "zod";
 import { Button } from "~/components/Button";
 import { WeaponCombobox } from "~/components/Combobox";
+import { CustomizedColorsInput } from "~/components/CustomizedColorsInput";
 import { FormErrors } from "~/components/FormErrors";
 import { FormMessage } from "~/components/FormMessage";
 import { TrashIcon } from "~/components/icons/Trash";
@@ -23,9 +24,11 @@ import { USER } from "~/constants";
 import { db } from "~/db";
 import { type User } from "~/db/types";
 import { useTranslation } from "~/hooks/useTranslation";
+import { useUser } from "~/modules/auth";
 import { requireUserId } from "~/modules/auth/user.server";
 import { i18next } from "~/modules/i18n";
 import { mainWeaponIds, type MainWeaponId } from "~/modules/in-game-lists";
+import { canAddCustomizedColorsToUserProfile } from "~/permissions";
 import styles from "~/styles/u-edit.css";
 import { translatedCountry } from "~/utils/i18n.server";
 import { notFoundIfFalsy, safeParseRequestFormData } from "~/utils/remix";
@@ -35,6 +38,7 @@ import { FAQ_PAGE, isCustomUrl, userPage } from "~/utils/urls";
 import {
   actualNumber,
   falsyToNull,
+  jsonParseable,
   processMany,
   removeDuplicates,
   safeJSONParse,
@@ -105,6 +109,7 @@ const userEditActionSchema = z
         .refine((val) => /^[0-9]{4}$/.test(val))
         .nullable()
     ),
+    css: z.preprocess(falsyToNull, z.string().refine(jsonParseable).nullable()),
     weapons: z.preprocess(
       processMany(safeJSONParse, removeDuplicates),
       z
@@ -112,7 +117,7 @@ const userEditActionSchema = z
           z
             .number()
             .refine((val) =>
-              mainWeaponIds.includes(val as typeof mainWeaponIds[number])
+              mainWeaponIds.includes(val as (typeof mainWeaponIds)[number])
             )
         )
         .max(USER.WEAPON_POOL_MAX_SIZE)
@@ -196,6 +201,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 };
 
 export default function UserEditPage() {
+  const user = useUser();
   const { t } = useTranslation(["common", "user"]);
   const [, parentRoute] = useMatches();
   invariant(parentRoute);
@@ -204,6 +210,9 @@ export default function UserEditPage() {
   return (
     <div className="half-width">
       <Form className="u-edit__container" method="post">
+        {canAddCustomizedColorsToUserProfile(user) ? (
+          <CustomizedColorsInput initialColors={parentRouteData.css} />
+        ) : null}
         <CustomUrlInput parentRouteData={parentRouteData} />
         <InGameNameInputs parentRouteData={parentRouteData} />
         <SensSelects parentRouteData={parentRouteData} />

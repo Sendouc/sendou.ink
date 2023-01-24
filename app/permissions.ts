@@ -322,3 +322,13 @@ export function canAdminCalendarTOTools({
 }: CanAdminCalendarTOTools) {
   return adminOverride(user)(user?.id === event.authorId);
 }
+
+export function canAddCustomizedColorsToUserProfile(
+  user?: Pick<User, "id" | "patronTier">
+) {
+  if (!user) return false;
+
+  return adminOverride(user)(
+    Boolean(user?.patronTier) && user.patronTier! >= 2
+  );
+}
