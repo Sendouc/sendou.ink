@@ -3,7 +3,7 @@ import { Label } from "./Label";
 import * as React from "react";
 import { Button } from "./Button";
 
-const EDITABLE_COLORS = [
+const EDITABLE_CSS_VARS = [
   "bg",
   "bg-darker",
   "bg-lighter",
@@ -13,7 +13,7 @@ const EDITABLE_COLORS = [
 ] as const;
 
 type CustomColorsRecord = Partial<
-  Record<(typeof EDITABLE_COLORS)[number], string>
+  Record<(typeof EDITABLE_CSS_VARS)[number], string>
 >;
 
 export function CustomizedColorsInput({
@@ -31,31 +31,32 @@ export function CustomizedColorsInput({
       <Label>{t("custom.colors.title")}</Label>
       <input type="hidden" name="css" value={JSON.stringify(colors)} />
       <div className="colors__grid">
-        {EDITABLE_COLORS.map((color) => {
+        {EDITABLE_CSS_VARS.map((cssVar) => {
           return (
-            <React.Fragment key={color}>
-              <div>{t(`custom.colors.${color}`)}</div>
+            <React.Fragment key={cssVar}>
+              <div>{t(`custom.colors.${cssVar}`)}</div>
               <input
                 type="color"
                 className="plain"
-                value={colors[color]}
+                value={colors[cssVar]}
                 onChange={(e) => {
                   const extras: Record<string, string> = {};
-                  if (color === "bg-lighter") {
+                  if (cssVar === "bg-lighter") {
                     extras["bg-lightest"] = `${e.target.value}80`;
                   }
-                  setColors({ ...colors, ...extras, [color]: e.target.value });
+                  setColors({ ...colors, ...extras, [cssVar]: e.target.value });
                 }}
+                data-testid={`color-input-${cssVar}`}
               />
               <Button
                 size="tiny"
                 variant="minimal-destructive"
                 onClick={() => {
                   const newColors: Record<string, string> = { ...colors };
-                  if (color === "bg-lighter") {
+                  if (cssVar === "bg-lighter") {
                     delete newColors["bg-lightest"];
                   }
-                  setColors({ ...newColors, [color]: undefined });
+                  setColors({ ...newColors, [cssVar]: undefined });
                 }}
               >
                 {t("actions.reset")}

@@ -37,6 +37,7 @@ const AMOUNT_OF_CALENDAR_EVENTS = 200;
 
 const basicSeeds = [
   adminUser,
+  makeAdminPatron,
   adminUserWeaponPool,
   nzapUser,
   users,
@@ -107,6 +108,14 @@ function adminUser() {
     discordAvatar: ADMIN_TEST_AVATAR,
     twitter: "sendouc",
   });
+}
+
+function makeAdminPatron() {
+  sql
+    .prepare(
+      `update "User" set "patronTier" = 2, "patronSince" = 1674663454 where id = 1`
+    )
+    .run();
 }
 
 function adminUserWeaponPool() {
