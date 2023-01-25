@@ -41,6 +41,21 @@ const PERKS = [
   },
   {
     tier: 2,
+    name: "privateDiscord",
+    extraInfo: true,
+  },
+  {
+    tier: 2,
+    name: "customizedColorsUser",
+    extraInfo: false,
+  },
+  {
+    tier: 2,
+    name: "customizedColorsTeam",
+    extraInfo: true,
+  },
+  {
+    tier: 2,
     name: "badge",
     extraInfo: false,
   },
