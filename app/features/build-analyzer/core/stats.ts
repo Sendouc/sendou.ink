@@ -222,12 +222,15 @@ function specialLost(
 function subWeaponInkConsumptionPercentage(args: StatFunctionInput) {
   return {
     modifiedBy: "ISS" as const,
-    baseValue: roundToNDecimalPlaces(args.subWeaponParams.InkConsume * 100),
+    baseValue: roundToNDecimalPlaces(
+      (args.subWeaponParams.InkConsume * 100) / inkTankSize(args.weaponSplId)
+    ),
     value: roundToNDecimalPlaces(
       // + 0.004 is a hack to avoid situation where the value is e.g. 50.0005
       // -> rounds to 50% so it appears you can throw two subs
       // which is not correct so we force the round upwards
-      subWeaponConsume(args).inkConsume * 100 + 0.0045
+      (subWeaponConsume(args).inkConsume * 100 + 0.0045) /
+        inkTankSize(args.weaponSplId)
     ),
   };
 }
