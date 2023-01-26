@@ -626,13 +626,12 @@ function respawnTime(
     abilityPoints: args.abilityPoints,
     ability: QUICK_RESPAWN_TIME_ABILITY,
   });
-  const abilityPoints =
-    splattedByRP || hasRespawnPunisher
-      ? qrApAfterRespawnPunish({
-          ap,
-          hasTacticooler: args.hasTacticooler,
-        })
-      : ap;
+  const abilityPoints = hasRespawnPunisher
+    ? qrApAfterRespawnPunish({
+        ap,
+        hasTacticooler: args.hasTacticooler,
+      })
+    : ap;
 
   const chase = abilityPointsToEffects({
     abilityPoints,
