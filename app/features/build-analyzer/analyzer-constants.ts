@@ -61,3 +61,5 @@ export const multiShot: Partial<Record<MainWeaponId, number>> = {
 };
 
 export const RAINMAKER_SPEED_PENALTY_MODIFIER = 0.8;
+
+export const UNKNOWN_SHORT = "U";

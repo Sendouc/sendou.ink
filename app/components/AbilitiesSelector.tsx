@@ -104,7 +104,7 @@ export function AbilitiesSelector({
             })}
             type="button"
             onClick={() => onButtonClick(ability)}
-            data-cy={`${ability.name}-ability-button`}
+            data-testid={`${ability.name}-ability-button`}
             draggable="true"
             onDragStart={onDragStart(ability)}
             onDragEnd={onDragEnd}

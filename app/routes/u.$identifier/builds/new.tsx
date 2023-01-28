@@ -4,7 +4,7 @@ import {
   type ActionFunction,
   type LoaderArgs,
 } from "@remix-run/node";
-import { Form, useLoaderData } from "@remix-run/react";
+import { Form, useLoaderData, useSearchParams } from "@remix-run/react";
 import * as React from "react";
 import { z } from "zod";
 import { AbilitiesSelector } from "~/components/AbilitiesSelector";
@@ -14,9 +14,13 @@ import { Image } from "~/components/Image";
 import { Label } from "~/components/Label";
 import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
 import { SubmitButton } from "~/components/SubmitButton";
-import { BUILD, EMPTY_BUILD } from "~/constants";
+import { BUILD } from "~/constants";
 import { db } from "~/db";
 import type { GearType } from "~/db/types";
+import {
+  validatedBuildFromSearchParams,
+  validatedWeaponIdFromSearchParams,
+} from "~/features/build-analyzer";
 import { useTranslation } from "~/hooks/useTranslation";
 import { requireUser } from "~/modules/auth";
 import { requireUserId } from "~/modules/auth/user.server";
@@ -176,13 +180,16 @@ export const loader = async ({ request }: LoaderArgs) => {
     Object.fromEntries(url.searchParams)
   );
 
-  if (!params.success || params.data.userId !== user.id)
+  if (!params.success || params.data.userId !== user.id) {
     return json({ buildToEdit: null });
+  }
 
   const usersBuilds = db.builds.buildsByUserId(params.data.userId);
   const buildToEdit = usersBuilds.find((b) => b.id === params.data.buildId);
 
-  return json({ buildToEdit });
+  return json({
+    buildToEdit,
+  });
 };
 
 export default function NewBuildPage() {
@@ -298,6 +305,7 @@ function ModeCheckboxes() {
 }
 
 function WeaponsSelector() {
+  const [searchParams] = useSearchParams();
   const { buildToEdit } = useLoaderData<typeof loader>();
   const { t } = useTranslation(["common", "weapons", "builds"]);
   const [count, setCount] = React.useState(buildToEdit?.weapons.length ?? 1);
@@ -316,7 +324,10 @@ function WeaponsSelector() {
                   inputName="weapon"
                   id="weapon"
                   required
-                  initialWeaponId={buildToEdit?.weapons[i]}
+                  initialWeaponId={
+                    buildToEdit?.weapons[i] ??
+                    validatedWeaponIdFromSearchParams(searchParams)
+                  }
                 />
               </div>
               {i === count - 1 && (
@@ -378,10 +389,11 @@ function GearSelector({ type }: { type: GearType }) {
 }
 
 function Abilities() {
+  const [searchParams] = useSearchParams();
   const { buildToEdit } = useLoaderData<typeof loader>();
   const [abilities, setAbilities] =
     React.useState<BuildAbilitiesTupleWithUnknown>(
-      buildToEdit?.abilities ?? EMPTY_BUILD
+      buildToEdit?.abilities ?? validatedBuildFromSearchParams(searchParams)
     );
 
   return (

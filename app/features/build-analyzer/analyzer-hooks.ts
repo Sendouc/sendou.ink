@@ -1,10 +1,8 @@
 import { useSearchParams } from "@remix-run/react";
-import { EMPTY_BUILD } from "~/constants";
 import {
   type BuildAbilitiesTupleWithUnknown,
   type MainWeaponId,
   type Ability,
-  type AbilityType,
   type AbilityWithUnknown,
   abilities,
   isAbility,
@@ -15,10 +13,10 @@ import { buildStats } from "./core/stats";
 import type { SpecialEffectType } from "./analyzer-types";
 import {
   buildToAbilityPoints,
+  serializeBuild,
+  validatedBuildFromSearchParams,
   validatedWeaponIdFromSearchParams,
 } from "./core/utils";
-
-const UNKNOWN_SHORT = "U";
 
 export function useAnalyzeBuild() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -114,64 +112,6 @@ function filterMainOnlyAbilities(
 ): ability is Ability {
   const abilityObj = abilities.find((a) => a.name === ability);
   return Boolean(abilityObj && abilityObj.type !== "STACKABLE");
-}
-
-function serializeBuild(build: BuildAbilitiesTupleWithUnknown) {
-  return build
-    .flat()
-    .map((ability) => (ability === "UNKNOWN" ? UNKNOWN_SHORT : ability))
-    .join(",");
-}
-
-function validatedBuildFromSearchParams(
-  searchParams: URLSearchParams,
-  key = "build"
-): BuildAbilitiesTupleWithUnknown {
-  const abilitiesArr = searchParams.get(key)
-    ? searchParams.get(key)?.split(",")
-    : null;
-
-  if (!abilitiesArr) return EMPTY_BUILD;
-
-  try {
-    return [
-      [
-        validateAbility(["STACKABLE", "HEAD_MAIN_ONLY"], abilitiesArr[0]),
-        validateAbility(["STACKABLE"], abilitiesArr[1]),
-        validateAbility(["STACKABLE"], abilitiesArr[2]),
-        validateAbility(["STACKABLE"], abilitiesArr[3]),
-      ],
-      [
-        validateAbility(["STACKABLE", "CLOTHES_MAIN_ONLY"], abilitiesArr[4]),
-        validateAbility(["STACKABLE"], abilitiesArr[5]),
-        validateAbility(["STACKABLE"], abilitiesArr[6]),
-        validateAbility(["STACKABLE"], abilitiesArr[7]),
-      ],
-      [
-        validateAbility(["STACKABLE", "SHOES_MAIN_ONLY"], abilitiesArr[8]),
-        validateAbility(["STACKABLE"], abilitiesArr[9]),
-        validateAbility(["STACKABLE"], abilitiesArr[10]),
-        validateAbility(["STACKABLE"], abilitiesArr[11]),
-      ],
-    ];
-  } catch (err) {
-    return EMPTY_BUILD;
-  }
-}
-
-function validateAbility(
-  legalTypes: Array<AbilityType>,
-  ability?: string
-): AbilityWithUnknown {
-  if (!ability) throw new Error("Ability missing");
-  if (ability === UNKNOWN_SHORT) return "UNKNOWN";
-
-  const abilityObj = abilities.find(
-    (a) => a.name === ability && legalTypes.includes(a.type)
-  );
-  if (abilityObj) return abilityObj.name;
-
-  throw new Error("Invalid ability");
 }
 
 function validatedLdeIntensityFromSearchParams(searchParams: URLSearchParams) {

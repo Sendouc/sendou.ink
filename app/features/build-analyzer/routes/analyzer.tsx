@@ -1,5 +1,5 @@
 import { type LinksFunction, type MetaFunction } from "@remix-run/node";
-import type { ShouldReloadFunction } from "@remix-run/react";
+import type { ShouldRevalidateFunction } from "@remix-run/react";
 import { Link } from "@remix-run/react";
 import * as React from "react";
 import { useTranslation } from "~/hooks/useTranslation";
@@ -37,6 +37,7 @@ import {
   objectDamageCalculatorPage,
   specialWeaponImageUrl,
   subWeaponImageUrl,
+  userNewBuildPage,
 } from "~/utils/urls";
 import clsx from "clsx";
 import {
@@ -59,7 +60,8 @@ import {
 } from "../analyzer-constants";
 import { useAnalyzeBuild } from "../analyzer-hooks";
 import { Tabs, Tab } from "~/components/Tabs";
-import { isStackableAbility } from "../core/utils";
+import { buildIsEmpty, isStackableAbility } from "../core/utils";
+import { useUser } from "~/modules/auth";
 
 export const CURRENT_PATCH = "2.1";
 
@@ -83,9 +85,10 @@ export const handle: SendouRouteHandle = {
 };
 
 // Resolves this Github issue: https://github.com/Sendouc/sendou.ink/issues/1053
-export const unstable_shouldReload: ShouldReloadFunction = () => false;
+export const shouldRevalidate: ShouldRevalidateFunction = () => false;
 
 export default function BuildAnalyzerPage() {
+  const user = useUser();
   const { t } = useTranslation(["analyzer", "common", "weapons"]);
   useSetTitle(t("common:pages.analyzer"));
   const {
@@ -107,11 +110,9 @@ export default function BuildAnalyzerPage() {
     return [analyzed.stats[key], analyzed2.stats[key]] as [Stat, Stat];
   };
 
-  const objectShredderSelected = build[2][0] === "OS";
+  const objectShredderSelected = build[2][0] === "OS" || build2[2][0] === "OS";
 
-  const isComparing =
-    build.flat().some((ability) => ability !== "UNKNOWN") &&
-    build2.flat().some((ability) => ability !== "UNKNOWN");
+  const isComparing = !buildIsEmpty(build) && !buildIsEmpty(build2);
 
   const mainWeaponCategoryItems = [
     analyzed.stats.shotSpreadAir && (
@@ -736,7 +737,10 @@ export default function BuildAnalyzerPage() {
             </StatCategory>
           )}
 
-          <StatCategory title={t("analyzer:stat.category.movement")}>
+          <StatCategory
+            title={t("analyzer:stat.category.movement")}
+            testId="movement-category"
+          >
             <StatCard
               isComparing={isComparing}
               title={t("analyzer:attribute.weight")}
@@ -748,6 +752,7 @@ export default function BuildAnalyzerPage() {
               abilityPoints={abilityPoints}
               stat={statKeyToTuple("swimSpeed")}
               title={t("analyzer:stat.swimSpeed")}
+              testId="swim-speed"
             />
             <StatCard
               isComparing={isComparing}
@@ -876,6 +881,24 @@ export default function BuildAnalyzerPage() {
               {t("analyzer:objCalcAd")}
             </Link>
           )}
+          {user && focusedBuild && !buildIsEmpty(focusedBuild) ? (
+            <Link
+              className="analyzer__noticeable-link"
+              to={userNewBuildPage(user, {
+                weapon: mainWeaponId,
+                build: focusedBuild,
+              })}
+              data-testid="new-build-prompt"
+            >
+              <Image
+                path={navIconUrl("builds")}
+                width={24}
+                height={24}
+                alt=""
+              />
+              {t("analyzer:newBuildPrompt")}
+            </Link>
+          ) : null}
         </div>
       </div>
     </Main>
@@ -1082,16 +1105,18 @@ function StatCategory({
   containerClassName = "analyzer__stat-collection",
   textBelow,
   summaryRightContent,
+  testId,
 }: {
   title: string;
   children: React.ReactNode;
   containerClassName?: string;
   textBelow?: string;
   summaryRightContent?: React.ReactNode;
+  testId?: string;
 }) {
   return (
     <details className="analyzer__details">
-      <summary className="analyzer__summary">
+      <summary className="analyzer__summary" data-testid={testId}>
         {title}
         {summaryRightContent}
       </summary>
@@ -1110,6 +1135,7 @@ function StatCard({
   popoverInfo,
   abilityPoints,
   isComparing,
+  testId,
 }: {
   title: string;
   stat: [Stat, Stat] | [Stat<string>, Stat<string>] | number | string;
@@ -1117,6 +1143,7 @@ function StatCard({
   popoverInfo?: string;
   abilityPoints: AbilityPoints;
   isComparing: boolean;
+  testId?: string;
 }) {
   const { t } = useTranslation("analyzer");
 
@@ -1177,14 +1204,20 @@ function StatCard({
                 ? t("build1")
                 : t("base")}
             </h4>{" "}
-            <div className="analyzer__stat-card__value__number">
+            <div
+              className="analyzer__stat-card__value__number"
+              data-testid={testId ? `${testId}-base` : undefined}
+            >
               {showComparison ? (stat as [Stat, Stat])[0].value : baseValue}
               {suffix}
             </div>
           </div>
           {showBuildValue() ? (
             <div className="analyzer__stat-card__value">
-              <h4 className="analyzer__stat-card__value__title">
+              <h4
+                className="analyzer__stat-card__value__title"
+                data-testid={testId ? `${testId}-build-title` : undefined}
+              >
                 {showComparison ? t("build2") : t("build")}
               </h4>{" "}
               <div className="analyzer__stat-card__value__number">

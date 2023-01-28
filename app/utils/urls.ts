@@ -14,11 +14,13 @@ import type {
   SpecialWeaponId,
   SubWeaponId,
   StageId,
+  BuildAbilitiesTupleWithUnknown,
 } from "~/modules/in-game-lists/types";
 import type navItems from "~/components/layout/nav-items.json";
 import { type AuthErrorCode } from "~/modules/auth";
 import type { StageBackgroundStyle } from "~/features/map-planner";
 import type { ImageUploadType } from "~/features/img-upload";
+import { serializeBuild } from "~/features/build-analyzer";
 
 const staticAssetsUrl = ({
   folder,
@@ -114,8 +116,20 @@ export const userResultsPage = (user: UserLinkArgs) =>
   `${userPage(user)}/results`;
 export const userResultsEditHighlightsPage = (user: UserLinkArgs) =>
   `${userResultsPage(user)}/highlights`;
-export const userNewBuildPage = (user: UserLinkArgs) =>
-  `${userBuildsPage(user)}/new`;
+export const userNewBuildPage = (
+  user: UserLinkArgs,
+  params?: { weapon: MainWeaponId; build: BuildAbilitiesTupleWithUnknown }
+) =>
+  `${userBuildsPage(user)}/new${
+    params
+      ? `?${String(
+          new URLSearchParams({
+            weapon: String(params.weapon),
+            build: serializeBuild(params.build),
+          })
+        )}`
+      : ""
+  }`;
 
 export const teamPage = (customUrl: string) => `/t/${customUrl}`;
 export const editTeamPage = (customUrl: string) =>
