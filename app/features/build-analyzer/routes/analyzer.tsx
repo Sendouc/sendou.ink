@@ -731,7 +731,11 @@ export default function BuildAnalyzerPage() {
                 <div className="analyzer__stat-card-highlighted" />
               ) : null}
               <ConsumptionTable
-                options={analyzed.stats.fullInkTankOptions}
+                isComparing={isComparing}
+                options={[
+                  analyzed.stats.fullInkTankOptions,
+                  analyzed2.stats.fullInkTankOptions,
+                ]}
                 subWeaponId={analyzed.weapon.subWeaponSplId}
               />
             </StatCategory>
@@ -1310,18 +1314,25 @@ function DamageTable({
 }
 
 function ConsumptionTable({
+  isComparing,
   options,
   subWeaponId,
 }: {
-  options: AnalyzedBuild["stats"]["fullInkTankOptions"];
+  isComparing: boolean;
+  options: [
+    AnalyzedBuild["stats"]["fullInkTankOptions"],
+    AnalyzedBuild["stats"]["fullInkTankOptions"]
+  ];
   subWeaponId: SubWeaponId;
 }) {
+  const [options1, options2] = options;
+
   const { t } = useTranslation(["analyzer", "weapons"]);
   const maxSubsToUse =
     subWeaponId === TORPEDO_ID
       ? 1
-      : Math.max(...options.map((opt) => opt.subsUsed));
-  const types = Array.from(new Set(options.map((opt) => opt.type)));
+      : Math.max(...options.flat().map((opt) => opt.subsUsed));
+  const types = Array.from(new Set(options1.map((opt) => opt.type)));
 
   return (
     <>
@@ -1336,23 +1347,51 @@ function ConsumptionTable({
         </thead>
         <tbody>
           {new Array(maxSubsToUse + 1).fill(null).map((_, subsUsed) => {
+            const options1ForThisSubsUsed = options1.filter(
+              (opt) => opt.subsUsed === subsUsed
+            );
+            const options2ForThisSubsUsed = options2.filter(
+              (opt) => opt.subsUsed === subsUsed
+            );
+
+            const cells: React.ReactNode[] = [];
+
+            // weird using basic for loop in react code but here we are essentially
+            // zipping these two arrays into one cell and if one of the arrays
+            // doesn't have value then it shows as a dash instead
+            for (
+              let i = 0;
+              i <
+              Math.max(
+                options1ForThisSubsUsed.length,
+                options2ForThisSubsUsed.length
+              );
+              i++
+            ) {
+              const opt1 = options1ForThisSubsUsed[i];
+              const opt2 = options2ForThisSubsUsed[i];
+
+              const contents = !isComparing
+                ? opt1!.value
+                : `${opt1?.value ?? "-"}/${opt2?.value ?? "-"}`;
+
+              cells.push(<td key={opt1?.id ?? opt2!.id}>{contents}</td>);
+            }
+
             return (
               <tr key={subsUsed}>
                 <td>×{subsUsed}</td>
-                {options
-                  .filter((opt) => opt.subsUsed === subsUsed)
-                  .map((opt) => {
-                    return <td key={opt.id}>{opt.value}</td>;
-                  })}
+                {cells}
               </tr>
             );
           })}
         </tbody>
       </table>
-      <div className="analyzer__consumption-table-explanation">
-        {t("analyzer:consumptionExplanation", { maxSubsToUse })}
-        {subWeaponId === TORPEDO_ID && <> {t("analyzer:torpedoExplanation")}</>}
-      </div>
+      {subWeaponId === TORPEDO_ID && (
+        <div className="analyzer__consumption-table-explanation">
+          <> {t("analyzer:torpedoExplanation")}</>
+        </div>
+      )}
     </>
   );
 }

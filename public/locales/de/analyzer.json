@@ -100,7 +100,6 @@
   "patch": "Patch:",
   "abilityPoints.short": "EP",
   "abilityChunks": "Effekt-Fragmente erforderlich",
-  "consumptionExplanation": "Dieses Diagramm zeigt die Anzahl der Aktionen, die mit der Hauptwaffe noch durchgeführt werden können, nachdem die Sekundärwaffe 0-{{maxSubsToUse}} mal benutzt wurde. Die maximale Anzahl an aufeinanderfolgenden Sekundärwaffen, die bei vollem Tintentank verwendet werden können, ist {{maxSubsToUse}}.",
   "torpedoExplanation": "Es ist unmöglich, mehr als einen Torpedo gleichzeitig abzufeuern (wegen der Spielmechanik).",
   "trackingSubDefExplanation": "Die Markierungsdauern von Detektor, Tintenmine and Winkelmarker basieren auf einem Gegner mit 0 EP Sekundärstärke +.",
   "distanceInline": "Reichweite: {{value}}",

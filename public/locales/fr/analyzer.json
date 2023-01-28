@@ -104,7 +104,6 @@
   "patch": "Version:",
   "abilityPoints.short": " PC",
   "abilityChunks": "Fragments de bonus requis",
-  "consumptionExplanation": "Ce tableau montre le nombre d'actions restantes à effectuer avec l'arme principale après avoir utilisé l'arme secondaire 0-{{maxSubsToUse}} fois. Le nombre max d'utilisations d'armes secondaires consécutives à utiliser avec un réservoir d'encre plein est de {{maxSubsToUse}}.",
   "torpedoExplanation": "Vous ne pouvez pas lancer plus d'une torpille à la fois à cause d'une mécanique du jeu",
   "trackingSubDefExplanation": "Les temps de traçage de détecteur, de la mine et du ricocheur sont calculés contre un adversaire avec 0 PC d'arme secondaire +.",
   "distanceInline": "Distance : {{value}}",

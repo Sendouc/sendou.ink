@@ -263,7 +263,8 @@ function fullInkTankOptions(
         value: effectToRounded(
           (inkTankSize(args.weaponSplId) -
             subWeaponInkConsume * subsFromFullInkTank) /
-            mainWeaponInkConsume
+            mainWeaponInkConsume,
+          2
         ),
       });
     }
@@ -272,8 +273,8 @@ function fullInkTankOptions(
   return result;
 }
 
-function effectToRounded(effect: number) {
-  return Number(effect.toFixed(3));
+function effectToRounded(effect: number, decimals = 3) {
+  return Number(effect.toFixed(decimals));
 }
 
 function subWeaponConsume({
