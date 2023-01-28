@@ -1,4 +1,4 @@
-import { Link } from "@remix-run/react";
+import { Link, useLocation } from "@remix-run/react";
 import { useTranslation } from "~/hooks/useTranslation";
 import type { RootLoaderData } from "~/root";
 import { discordFullName } from "~/utils/strings";
@@ -96,6 +96,7 @@ export function Footer({
           </ul>
         </div>
       ) : null}
+      <PlaywireBadge />
       <div className="layout__copyright-note">
         sendou.ink © Copyright of Sendou and contributors 2019-{currentYear}.
         Original content & source code is licensed under the GPL-3.0 license.
@@ -103,5 +104,40 @@ export function Footer({
         not affiliated with Nintendo.
       </div>
     </footer>
+  );
+}
+
+function PlaywireBadge() {
+  const location = useLocation();
+
+  if (location.pathname !== "/test") return null;
+
+  return (
+    <div className="stack sm">
+      <p>
+        {/* eslint-disable-next-line react/jsx-no-target-blank */}
+        <a href="http://www.playwire.com" rel="noopener" target="_blank">
+          <img
+            className="playwire__img dark-mode-only"
+            src="https://www.playwire.com/hubfs/Powered-by-Playwire-Badges/Powered-by-playwire-2021-standalone-large-white-300px.png"
+            alt="Playwire"
+            width="200"
+            loading="lazy"
+          />
+          <img
+            className="playwire__img light-mode-only"
+            src="https://www.playwire.com/hubfs/Powered-by-Playwire-Badges/Powered-by-playwire-2021-standalone-large-1-1.png"
+            alt="Playwire"
+            width="200"
+            loading="lazy"
+          />
+        </a>
+      </p>
+      <p className="playwire__text">
+        <a href="/contact-direct-sales" rel="noopener" target="_blank">
+          Advertise on this site
+        </a>
+      </p>
+    </div>
   );
 }

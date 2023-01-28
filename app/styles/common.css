@@ -989,3 +989,15 @@ dialog::backdrop {
   grid-template-columns: 3fr 2fr 1fr;
   row-gap: var(--s-3);
 }
+
+.playwire__img {
+  width: 200px;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+.playwire__text {
+  text-align: center;
+  font-size: var(--fonts-sm);
+}
