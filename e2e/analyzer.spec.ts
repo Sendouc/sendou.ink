@@ -46,4 +46,33 @@ test.describe("Build Analyzer", () => {
     );
     await page.getByTestId("SSU-ability").isVisible();
   });
+
+  test("compares builds", async ({ page }) => {
+    await navigate({ page, url: ANALYZER_URL });
+
+    await page.getByTestId("build2-tab").click();
+
+    const swimSpeedAbilityButtonLocator =
+      page.getByTestId("SSU-ability-button");
+    const swimSpeedAbilityLocator = page.locator(
+      "data-testid=ability-selector > data-testid=SSU-ability"
+    );
+
+    await swimSpeedAbilityButtonLocator.click();
+    await swimSpeedAbilityLocator.isVisible();
+
+    // can't add abilities to build 2 if build 1 is empty
+    // -> they automatically go to build 1
+    await page.getByTestId("build2-tab").click();
+    await isNotVisible(swimSpeedAbilityLocator);
+
+    await swimSpeedAbilityButtonLocator.click();
+    await swimSpeedAbilityButtonLocator.click();
+
+    await page.getByTestId("ap-tab").click();
+    await page.getByText("10AP").isVisible();
+    await page.getByText("13AP").isVisible();
+
+    await page.getByTestId("swim-speed").getByText("BUILD 2").isVisible();
+  });
 });

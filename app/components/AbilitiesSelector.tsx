@@ -75,7 +75,7 @@ export function AbilitiesSelector({
     };
 
   return (
-    <div className="ability-selector__container">
+    <div className="ability-selector__container" data-testid="ability-selector">
       <div className="ability-selector__slots">
         {selectedAbilities.map((row, rowI) =>
           row.map((ability, abilityI) => (

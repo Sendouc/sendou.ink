@@ -210,18 +210,21 @@ export default function BuildAnalyzerPage() {
                 <Tab
                   active={focused === 1}
                   onClick={() => handleChange({ newFocused: 1 })}
+                  testId="build1-tab"
                 >
                   {t("analyzer:build1")}
                 </Tab>
                 <Tab
                   active={focused === 2}
                   onClick={() => handleChange({ newFocused: 2 })}
+                  testId="build2-tab"
                 >
                   {t("analyzer:build2")}
                 </Tab>
                 <Tab
                   active={focused === 3}
                   onClick={() => handleChange({ newFocused: 3 })}
+                  testId="ap-tab"
                 >
                   {t("analyzer:compare")}
                 </Tab>
@@ -1185,6 +1188,7 @@ function StatCard({
       className={clsx("analyzer__stat-card", {
         "analyzer__stat-card-highlighted": isHighlighted(),
       })}
+      data-testid={testId}
     >
       <div className="analyzer__stat-card__title-and-value-container">
         <h3 className="analyzer__stat-card__title">
