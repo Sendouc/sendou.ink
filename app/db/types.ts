@@ -236,8 +236,6 @@ export interface TournamentMatchGameResult {
   createdAt: number;
 }
 
-/** TODO: incomplete team tables */
-
 export interface UserSubmittedImage {
   id: number;
   validatedAt: number | null;
@@ -268,4 +266,30 @@ export interface TeamMember {
   isOwner: number;
   createdAt: number;
   leftAt: number | null;
+}
+
+export interface Video {
+  id: number;
+  youtubeId: string;
+  submitterUserId: number;
+  valitatedAt: number | null;
+}
+
+export interface VideoMatch {
+  videoId: number;
+  type: "SCRIM" | "TOURNAMENT" | "MATCHMAKING" | "CAST";
+  startsAt: number;
+  stageId: StageId;
+  mode: ModeShort;
+  eventId: number | null;
+  eventName: string | null;
+  hasVc: number;
+}
+
+export interface VideoMatchPlayer {
+  playerUserId: number | null;
+  playerName: string | null;
+  weaponSplId: MainWeaponId;
+  isPov: number;
+  team: 1 | 2;
 }
