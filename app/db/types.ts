@@ -270,6 +270,7 @@ export interface TeamMember {
 
 export interface Video {
   id: number;
+  title: string;
   youtubeId: string;
   submitterUserId: number;
   valitatedAt: number | null;
@@ -282,11 +283,11 @@ export interface VideoMatch {
   stageId: StageId;
   mode: ModeShort;
   eventId: number | null;
-  eventName: string | null;
   hasVc: number;
 }
 
 export interface VideoMatchPlayer {
+  videoMatchId: number;
   playerUserId: number | null;
   playerName: string | null;
   weaponSplId: MainWeaponId;

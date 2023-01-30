@@ -13,6 +13,7 @@ import type analyzer from "../public/locales/en/analyzer.json";
 import type gameMisc from "../public/locales/en/game-misc.json";
 import type tournament from "../public/locales/en/tournament.json";
 import type team from "../public/locales/en/team.json";
+import type vods from "../public/locales/en/vods.json";
 
 declare module "react-i18next" {
   interface CustomTypeOptions {
@@ -31,6 +32,7 @@ declare module "react-i18next" {
       "game-misc": typeof gameMisc;
       tournament: typeof tournament;
       team: typeof team;
+      vods: typeof vods;
     };
   }
 }
