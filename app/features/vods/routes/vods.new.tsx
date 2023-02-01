@@ -1,29 +1,34 @@
+import clone from "just-clone";
+import { nanoid } from "nanoid";
+import * as React from "react";
 import LiteYouTubeEmbed from "react-lite-youtube-embed";
 import { Button } from "~/components/Button";
+import { UserCombobox } from "~/components/Combobox";
 import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
+import type { Video, VideoMatch, VideoMatchPlayer } from "~/db/types";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
 import { useTranslation } from "~/hooks/useTranslation";
-import { type StageId, stageIds } from "~/modules/in-game-lists";
+import { stageIds, type StageId } from "~/modules/in-game-lists";
 import { modesShort } from "~/modules/in-game-lists/modes";
-import * as React from "react";
-import type { VideoMatch, VideoMatchPlayer } from "~/db/types";
-import { nanoid } from "nanoid";
 import type { SendouRouteHandle } from "~/utils/remix";
-import clone from "just-clone";
 import { videoMatchTypes } from "../vods-constants";
 
 export const handle: SendouRouteHandle = {
-  i18n: "vods",
+  i18n: ["vods", "calendar"],
 };
 
+type VideoMatchBeingAddedPlayer = Partial<
+  Omit<VideoMatchPlayer, "videoMatchId" | "isPov" | "team">
+>;
 type VideoMatchBeingAdded = Partial<Omit<VideoMatch, "videoId">> & {
   id: string;
-  players: Array<Omit<VideoMatchPlayer, "videoMatchId">>;
+  players: Array<VideoMatchBeingAddedPlayer>;
 };
 
 export default function NewVodPage() {
+  const { t } = useTranslation(["vods"]);
   // xxx: does this need to be search param?
   const [youtubeUrl, setYoutubeUrl] = useSearchParamState({
     defaultValue: "",
@@ -33,11 +38,14 @@ export default function NewVodPage() {
   const [matches, setMatches] = React.useState<Array<VideoMatchBeingAdded>>([
     newMatch(),
   ]);
+  const [eventType, setEventType] = React.useState<Video["type"]>("TOURNAMENT");
 
   const videoId = extractYoutubeIdFromVideoUrl(youtubeUrl);
 
+  // xxx: hide other inputs except youtube url if videoId is null
+
   return (
-    <Main halfWidth className="stack lg">
+    <Main halfWidth className="stack md">
       <div>
         <Label>YouTube URL</Label>
         <Input
@@ -45,6 +53,27 @@ export default function NewVodPage() {
           onChange={(e) => setYoutubeUrl(e.target.value)}
         />
       </div>
+      <div>
+        <Label>Type</Label>
+        <select
+          name="type"
+          value={eventType}
+          onChange={(e) => setEventType(e.target.value as Video["type"])}
+        >
+          {videoMatchTypes.map((type) => {
+            return (
+              <option key={type} value={type}>
+                {t(`vods:type.${type}`)}
+              </option>
+            );
+          })}
+        </select>
+      </div>
+      <div>
+        <Label>Calendar Event</Label>
+        <Input />
+      </div>
+
       {videoId ? (
         <>
           <LiteYouTubeEmbed id={videoId} title="" />
@@ -61,10 +90,20 @@ export default function NewVodPage() {
                 matches.map((match, j) => (i === j ? newMatch : match))
               );
             }}
+            type={eventType}
           />
         );
       })}
-      <Button className="self-start">Add match</Button>
+      {/* xxx: delete match */}
+      <Button
+        className="self-start mt-4"
+        variant="outlined"
+        onClick={() =>
+          setMatches([...matches, newMatch(matches[matches.length - 1])])
+        }
+      >
+        Add match
+      </Button>
     </Main>
   );
 }
@@ -74,10 +113,7 @@ function newMatch(previousMatch?: VideoMatchBeingAdded): VideoMatchBeingAdded {
     // this id is for frontend only
     id: nanoid(),
     mode: "SZ",
-    eventId: previousMatch?.eventId,
-    hasVc: previousMatch?.hasVc,
-    type: previousMatch?.type ?? "TOURNAMENT",
-    players: clone(previousMatch?.players ?? []),
+    players: clone(previousMatch?.players ?? [{ playerUserId: null }]),
   };
 }
 
@@ -99,10 +135,12 @@ function Match({
   match,
   onChange,
   number,
+  type,
 }: {
   match: VideoMatchBeingAdded;
   onChange: (match: VideoMatchBeingAdded) => void;
   number: number;
+  type: Video["type"];
 }) {
   const [minutes, setMinutes] = React.useState(0);
   const [seconds, setSeconds] = React.useState(0);
@@ -115,24 +153,7 @@ function Match({
 
   return (
     <div className="stack md">
-      <h2>{t("vods:matchCount", { count: number })}</h2>
-      <div>
-        <Label>Type</Label>
-        <select
-          value={match.type}
-          onChange={(e) =>
-            handleChange({ type: e.target.value as VideoMatch["type"] })
-          }
-        >
-          {videoMatchTypes.map((type) => {
-            return (
-              <option key={type} value={type}>
-                {t(`vods:type.${type}`)}
-              </option>
-            );
-          })}
-        </select>
-      </div>
+      <h2>{t("vods:gameCount", { count: number })}</h2>
 
       <div>
         <Label>Start timestamp</Label>
@@ -206,6 +227,81 @@ function Match({
           </select>
         </div>
       </div>
+
+      {/* 
+        xxx: cast inputs:
+
+        team 1 weapons
+        inputs
+        x y z
+
+        team 2 weapons
+        inputs
+        x y z
+      */}
+      <TransformingPlayerInput
+        type={type}
+        player={match.players[0]!}
+        onChange={(newPlayer) => console.log("TODO: handle newPlayer")}
+      />
+      {/* xxx: single player weapon input */}
+    </div>
+  );
+}
+
+function TransformingPlayerInput({
+  type,
+  player,
+  onChange,
+}: {
+  type: Video["type"];
+  player: VideoMatchBeingAddedPlayer;
+  onChange: (match: VideoMatchBeingAdded) => void;
+}) {
+  const { t } = useTranslation(["calendar"]);
+
+  if (type === "CAST") return null;
+
+  // if null or number we render combobox
+  const asPlainInput = player.playerUserId === undefined;
+
+  return (
+    <div>
+      <div className="stack horizontal md items-center mb-1">
+        <label htmlFor="pov" className="mb-0">
+          Player (PoV)
+        </label>
+        <Button
+          size="tiny"
+          variant="minimal"
+          // onClick={() => setAsPlainInput(!asPlainInput)}
+          className="outline-theme"
+        >
+          {asPlainInput
+            ? t("calendar:forms.team.player.addAsUser")
+            : t("calendar:forms.team.player.addAsText")}
+        </Button>
+      </div>
+      {asPlainInput ? (
+        <input
+          id="pov"
+          // value={player}
+          // onChange={(e) => handleInputChange(i, e.target.value)}
+          // max={CALENDAR_EVENT_RESULT.MAX_PLAYER_NAME_LENGTH}
+        />
+      ) : (
+        <UserCombobox
+          id="pov"
+          inputName="team-player"
+          // initialUserId={player.id}
+          // onChange={(selected) =>
+          //   handleInputChange(
+          //     i,
+          //     selected?.value ? Number(selected?.value) : NEW_PLAYER.id
+          //   )
+          // }
+        />
+      )}
     </div>
   );
 }

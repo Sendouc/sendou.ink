@@ -3,5 +3,5 @@
   "type.TOURNAMENT": "Tournament (PoV)",
   "type.MATCHMAKING": "Anarchy/X Battle/Turf War",
   "type.CAST": "Tournament (Cast)",
-  "matchCount": "Match {{count}}"
+  "gameCount": "Game {{count}}"
 }

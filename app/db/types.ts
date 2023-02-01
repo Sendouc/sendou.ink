@@ -271,6 +271,9 @@ export interface TeamMember {
 export interface Video {
   id: number;
   title: string;
+  type: "SCRIM" | "TOURNAMENT" | "MATCHMAKING" | "CAST";
+  youtubeDate: number;
+  eventId: number | null;
   youtubeId: string;
   submitterUserId: number;
   valitatedAt: number | null;
@@ -278,12 +281,9 @@ export interface Video {
 
 export interface VideoMatch {
   videoId: number;
-  type: "SCRIM" | "TOURNAMENT" | "MATCHMAKING" | "CAST";
   startsAt: number;
   stageId: StageId;
   mode: ModeShort;
-  eventId: number | null;
-  hasVc: number;
 }
 
 export interface VideoMatchPlayer {
@@ -291,6 +291,5 @@ export interface VideoMatchPlayer {
   playerUserId: number | null;
   playerName: string | null;
   weaponSplId: MainWeaponId;
-  isPov: number;
   team: 1 | 2;
 }
