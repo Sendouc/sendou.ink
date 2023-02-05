@@ -152,6 +152,7 @@
   background-color: var(--bg-lighter);
   gap: var(--s-6);
   margin-block-start: auto;
+  padding-block-end: var(--s-32);
 }
 
 .layout__footer__link-list {
