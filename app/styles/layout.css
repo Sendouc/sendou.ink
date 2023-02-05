@@ -156,13 +156,8 @@
 
 .layout__footer__link-list {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   font-size: var(--fonts-xxs);
-}
-
-.layout__footer__link-list > a {
-  flex: 1 1 0;
-  text-align: center;
 }
 
 .layout__footer__socials {
