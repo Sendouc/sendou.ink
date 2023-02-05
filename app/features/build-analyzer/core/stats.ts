@@ -1287,6 +1287,9 @@ export function specialDeviceHp(
   };
 }
 
+// GameParameters -> WeaponParam -> InkCapacityRt
+const ZIPCASTER_INKTANK_SIZE = 1.5;
+
 function specialHookInkConsumptionPercentage(
   args: StatFunctionInput
 ): AnalyzedBuild["stats"]["specialHookInkConsumptionPercentage"] {
@@ -1310,8 +1313,8 @@ function specialHookInkConsumptionPercentage(
   });
 
   return {
-    baseValue: roundToNDecimalPlaces(baseEffect * 100),
-    value: roundToNDecimalPlaces(effect * 100),
+    baseValue: roundToNDecimalPlaces(baseEffect * 100) / ZIPCASTER_INKTANK_SIZE,
+    value: roundToNDecimalPlaces(effect * 100) / ZIPCASTER_INKTANK_SIZE,
     modifiedBy: SPECIAL_HOOK_INK_CONSUMPTION_PERCENTAGE_KEY,
   };
 }
@@ -1339,8 +1342,8 @@ function specialInkConsumptionPerSecondPercentage(
   });
 
   return {
-    baseValue: roundToNDecimalPlaces(baseEffect * 100),
-    value: roundToNDecimalPlaces(effect * 100),
+    baseValue: roundToNDecimalPlaces(baseEffect * 100) / ZIPCASTER_INKTANK_SIZE,
+    value: roundToNDecimalPlaces(effect * 100) / ZIPCASTER_INKTANK_SIZE,
     modifiedBy: SPECIAL_INK_CONSUMPTION_PER_SECOND_PERCENTAGE_KEY,
   };
 }
