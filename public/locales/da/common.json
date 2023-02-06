@@ -15,6 +15,7 @@
   "pages.myPage": "Min side",
   "pages.u": "Brugersøgning",
   "pages.t": "Hold",
+  "pages.support": "Støt siden",
 
   "header.profile": "Profil",
   "header.logout": "Log ud",
@@ -130,5 +131,13 @@
   "upload.type.team-banner": "profilbillede til et hold ",
   "upload.commonExplanation": "Billedet vil først blive offentligt tilgængeligt, når en moderator har godkendt billedet. Billeder, der er uploadet af Patreons bliver fremvist uden moderatorgodkendelse.",
   "upload.afterExplanation_one": "Du har {{count}} billede, der afventer moderatorgodkendelse. Billedet vil blive vist automatisk efter det er blevet godkendt.",
-  "upload.afterExplanation_other": "Du har {{count}} billeder, der afventer moderatorgodkendelse. Billederne vil blive vist automatisk efter de er blevet godkendt."
+  "upload.afterExplanation_other": "Du har {{count}} billeder, der afventer moderatorgodkendelse. Billederne vil blive vist automatisk efter de er blevet godkendt.",
+
+  "custom.colors.title": "Tilpas farver",
+  "custom.colors.bg": "Baggrund",
+  "custom.colors.bg-darker": "Mørkere baggrund",
+  "custom.colors.bg-lighter": "Lysere baggrund",
+  "custom.colors.text": "Tekts",
+  "custom.colors.text-lighter": "Lysere tekst",
+  "custom.colors.theme": "Tema"
 }

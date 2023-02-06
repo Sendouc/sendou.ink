@@ -47,8 +47,8 @@ export default function BuildsPage() {
 
   return (
     <>
-      <div id="top-leaderboard" />
-      <Main className="stack md">
+      <div id="top-leaderboard" style={{ marginTop: "var(--s-20)" }} />
+      <Main className="stack md" style={{ paddingBlockStart: "var(--s-12)" }}>
         {weaponCategories.map((category) => (
           <div key={category.name} className="builds__category">
             <div className="builds__category__header">

@@ -68,6 +68,7 @@ export const CURRENT_PATCH = "2.1";
 export const meta: MetaFunction = () => {
   return {
     title: makeTitle("Build Analyzer"),
+    description: "Detailed stats for any weapon and build in Splatoon 3.",
   };
 };
 

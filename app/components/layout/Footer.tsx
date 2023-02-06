@@ -5,6 +5,7 @@ import { discordFullName } from "~/utils/strings";
 import {
   CONTRIBUTIONS_PAGE,
   FAQ_PAGE,
+  PRIVACY_POLICY_PAGE,
   SENDOU_INK_DISCORD_URL,
   SENDOU_INK_GITHUB_URL,
   SENDOU_INK_TWITTER_URL,
@@ -31,6 +32,7 @@ export function Footer({
   return (
     <footer className="layout__footer">
       <div className="layout__footer__link-list">
+        <Link to={PRIVACY_POLICY_PAGE}>{t("pages.privacy")}</Link>
         <Link to={CONTRIBUTIONS_PAGE}>{t("pages.contributors")}</Link>
         <Link to={FAQ_PAGE}>{t("pages.faq")}</Link>
         <a href={SPLATOON_2_SENDOU_IN_URL}>{t("pages.s2")}</a>
@@ -134,9 +136,7 @@ function PlaywireBadge() {
         </a>
       </p>
       <p className="playwire__text">
-        <a href="/contact-direct-sales" rel="noopener" target="_blank">
-          Advertise on this site
-        </a>
+        <a href="mailto:sales@playwire.com">Advertise on this site</a>
       </p>
     </div>
   );
