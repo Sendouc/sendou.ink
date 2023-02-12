@@ -153,12 +153,12 @@ function Document({
     <html lang={locale} dir={i18n.dir()} className={htmlThemeClass}>
       <head>
         <Meta />
+        <PlaywireScripts />
         <Links />
         <ThemeHead />
         <link rel="manifest" href="/app.webmanifest" />
         <PWALinks />
         <Fonts />
-        <PlaywireScripts />
       </head>
       <body style={customizedCSSVars}>
         {process.env.NODE_ENV === "development" && <HydrationTestIndicator />}
