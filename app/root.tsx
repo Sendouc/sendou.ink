@@ -349,15 +349,17 @@ function PlaywireScripts() {
           __html: `
         var pwUnits = ${JSON.stringify(units)}
     
-        var init = function () {  
-            ramp
-            .addUnits(pwUnits)
-            .then(() => {
-                ramp.displayUnits()
-            }).catch((e) =>{
-                ramp.displayUnits()
-                console.log(e)
-            })
+        var init = function () {
+            ramp.destroyUnits('all').then(() => {
+              ramp
+              .addUnits(pwUnits)
+              .then(() => {
+                  ramp.displayUnits()
+              }).catch((e) =>{
+                  ramp.displayUnits()
+                  console.log(e)
+              })
+            })  
         }
     
         ramp.onReady = function() {
