@@ -5,7 +5,7 @@ module.exports.up = function (db) {
     "id" integer primary key,
     "title" text not null,
     "type" text not null,
-    "youtubeId" text not null unique,
+    "youtubeId" text not null,
     "youtubeDate" integer not null,
     "submitterUserId" integer not null,
     "valitedAt" integer,

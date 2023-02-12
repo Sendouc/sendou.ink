@@ -1,64 +1,61 @@
-import clone from "just-clone";
-import { nanoid } from "nanoid";
 import * as React from "react";
 import LiteYouTubeEmbed from "react-lite-youtube-embed";
 import { Button } from "~/components/Button";
-import { UserCombobox } from "~/components/Combobox";
+import { UserCombobox, WeaponCombobox } from "~/components/Combobox";
 import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
-import type { Video, VideoMatch, VideoMatchPlayer } from "~/db/types";
-import { useSearchParamState } from "~/hooks/useSearchParamState";
+import type { Video, VideoMatch } from "~/db/types";
 import { useTranslation } from "~/hooks/useTranslation";
-import { stageIds, type StageId } from "~/modules/in-game-lists";
+import {
+  type MainWeaponId,
+  stageIds,
+  type StageId,
+} from "~/modules/in-game-lists";
 import { modesShort } from "~/modules/in-game-lists/modes";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { videoMatchTypes } from "../vods-constants";
+import type { VideoBeingAdded, VideoMatchBeingAdded } from "../vods-types";
 
 export const handle: SendouRouteHandle = {
   i18n: ["vods", "calendar"],
 };
 
-type VideoMatchBeingAddedPlayer = Partial<
-  Omit<VideoMatchPlayer, "videoMatchId" | "isPov" | "team">
->;
-type VideoMatchBeingAdded = Partial<Omit<VideoMatch, "videoId">> & {
-  id: string;
-  players: Array<VideoMatchBeingAddedPlayer>;
-};
-
 export default function NewVodPage() {
   const { t } = useTranslation(["vods"]);
-  // xxx: does this need to be search param?
-  const [youtubeUrl, setYoutubeUrl] = useSearchParamState({
-    defaultValue: "",
-    name: "youtubeUrl",
-    revive: (value) => value,
+  const [video, setVideo] = React.useState<VideoBeingAdded>({
+    type: "TOURNAMENT",
+    matches: [newMatch()],
   });
-  const [matches, setMatches] = React.useState<Array<VideoMatchBeingAdded>>([
-    newMatch(),
-  ]);
-  const [eventType, setEventType] = React.useState<Video["type"]>("TOURNAMENT");
-
-  const videoId = extractYoutubeIdFromVideoUrl(youtubeUrl);
-
-  // xxx: hide other inputs except youtube url if videoId is null
 
   return (
     <Main halfWidth className="stack md">
       <div>
-        <Label>YouTube URL</Label>
+        <Label required>YouTube URL</Label>
         <Input
-          value={youtubeUrl}
-          onChange={(e) => setYoutubeUrl(e.target.value)}
+          onChange={(e) =>
+            setVideo({
+              ...video,
+              youtubeId: extractYoutubeIdFromVideoUrl(e.target.value),
+            })
+          }
         />
       </div>
+
+      {video.youtubeId ? (
+        <>
+          <LiteYouTubeEmbed id={video.youtubeId} title="" />
+        </>
+      ) : null}
+
       <div>
-        <Label>Type</Label>
+        <Label required>Type</Label>
         <select
           name="type"
-          value={eventType}
-          onChange={(e) => setEventType(e.target.value as Video["type"])}
+          value={video.type}
+          onChange={(e) =>
+            setVideo({ ...video, type: e.target.value as Video["type"] })
+          }
         >
           {videoMatchTypes.map((type) => {
             return (
@@ -69,68 +66,164 @@ export default function NewVodPage() {
           })}
         </select>
       </div>
-      <div>
-        <Label>Calendar Event</Label>
-        <Input />
-      </div>
 
-      {videoId ? (
-        <>
-          <LiteYouTubeEmbed id={videoId} title="" />
-        </>
+      {video.type !== "CAST" ? (
+        <TransformingPlayerInput
+          match={video}
+          onChange={(newUser) => setVideo({ ...video, ...newUser })}
+          toggleInputType={() => {
+            const isPlainInput = typeof video.povUserName === "string";
+
+            if (isPlainInput) {
+              setVideo({
+                ...video,
+                povUserId: undefined,
+                povUserName: undefined,
+              });
+            } else {
+              setVideo({
+                ...video,
+                povUserId: undefined,
+                povUserName: "",
+              });
+            }
+          }}
+        />
       ) : null}
-      {matches.map((match, i) => {
+
+      {/* xxx: Enable calendar event */}
+      {/* {["TOURNAMENT", "CAST"].includes(video.type as string) ? (
+        <div>
+          <Label>Calendar Event</Label>
+          <Input />
+        </div>
+      ) : null} */}
+
+      {video.matches.map((match, i) => {
         return (
           <Match
-            key={match.id}
+            key={i}
             match={match}
             number={i + 1}
             onChange={(newMatch) => {
-              setMatches(
-                matches.map((match, j) => (i === j ? newMatch : match))
-              );
+              setVideo({
+                ...video,
+                matches: video.matches.map((match, j) =>
+                  i === j ? newMatch : match
+                ),
+              });
             }}
-            type={eventType}
+            type={video.type}
           />
         );
       })}
-      {/* xxx: delete match */}
-      <Button
-        className="self-start mt-4"
-        variant="outlined"
-        onClick={() =>
-          setMatches([...matches, newMatch(matches[matches.length - 1])])
-        }
-      >
-        Add match
-      </Button>
+      <div className="stack horizontal md">
+        <Button
+          className="self-start mt-4"
+          variant="outlined"
+          onClick={() =>
+            setVideo({
+              ...video,
+              matches: [...video.matches, newMatch()],
+            })
+          }
+        >
+          Add match
+        </Button>
+        {video.matches.length > 1 ? (
+          <Button
+            className="self-start mt-4"
+            variant="destructive"
+            onClick={() =>
+              setVideo({
+                ...video,
+                matches: video.matches.filter(
+                  (_, i) => i !== video.matches.length - 1
+                ),
+              })
+            }
+          >
+            Delete match
+          </Button>
+        ) : null}
+      </div>
     </Main>
   );
 }
 
-function newMatch(previousMatch?: VideoMatchBeingAdded): VideoMatchBeingAdded {
-  return {
-    // this id is for frontend only
-    id: nanoid(),
-    mode: "SZ",
-    players: clone(previousMatch?.players ?? [{ playerUserId: null }]),
-  };
+function newMatch() {
+  return { weapons: [] };
 }
 
-function extractYoutubeIdFromVideoUrl(url: string): string | null {
+function extractYoutubeIdFromVideoUrl(url: string): string | undefined {
   const match = url.match(
     /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?(.+)$/
   );
 
   const found = match?.[1];
-  if (!found) return null;
+  if (!found) return;
 
   const withoutSearchParams = found.split("&")[0]!;
 
   return withoutSearchParams;
 }
 
-// xxx: accordion design for matches?
+function TransformingPlayerInput({
+  match,
+  onChange,
+  toggleInputType,
+}: {
+  match: Pick<VideoBeingAdded, "povUserId" | "povUserName">;
+  onChange: (match: Pick<VideoBeingAdded, "povUserId" | "povUserName">) => void;
+  toggleInputType: () => void;
+}) {
+  const { t } = useTranslation(["calendar"]);
+
+  // if null or number we render combobox
+  const asPlainInput = typeof match.povUserName === "string";
+
+  return (
+    <div>
+      <div className="stack horizontal md items-center mb-1">
+        <Label required htmlFor="pov" className="mb-0">
+          Player (PoV)
+        </Label>
+        <Button
+          size="tiny"
+          variant="minimal"
+          onClick={toggleInputType}
+          className="outline-theme"
+        >
+          {asPlainInput
+            ? t("calendar:forms.team.player.addAsUser")
+            : t("calendar:forms.team.player.addAsText")}
+        </Button>
+      </div>
+      {asPlainInput ? (
+        <input
+          id="pov"
+          value={match.povUserName ?? ""}
+          onChange={(e) => onChange({ ...match, povUserName: e.target.value })}
+          // xxx: max length
+          // max={CALENDAR_EVENT_RESULT.MAX_PLAYER_NAME_LENGTH}
+        />
+      ) : (
+        <UserCombobox
+          id="pov"
+          inputName="team-player"
+          initialUserId={match.povUserId}
+          onChange={(selected) =>
+            onChange({
+              ...match,
+              povUserId: selected?.value ? Number(selected.value) : undefined,
+            })
+          }
+        />
+      )}
+    </div>
+  );
+}
+
 function Match({
   match,
   onChange,
@@ -142,6 +235,7 @@ function Match({
   number: number;
   type: Video["type"];
 }) {
+  const id = React.useId();
   const [minutes, setMinutes] = React.useState(0);
   const [seconds, setSeconds] = React.useState(0);
 
@@ -156,7 +250,7 @@ function Match({
       <h2>{t("vods:gameCount", { count: number })}</h2>
 
       <div>
-        <Label>Start timestamp</Label>
+        <Label required>Start timestamp</Label>
         <div className="stack horizontal sm">
           <div className="stack horizontal sm items-center text-sm">
             <Input
@@ -193,7 +287,7 @@ function Match({
 
       <div className="stack horizontal sm">
         <div>
-          <Label>Mode</Label>
+          <Label required>Mode</Label>
           <select
             value={match.mode}
             onChange={(e) =>
@@ -210,7 +304,7 @@ function Match({
           </select>
         </div>
         <div>
-          <Label>Stage</Label>
+          <Label required>Stage</Label>
           <select
             value={match.stageId}
             onChange={(e) =>
@@ -228,80 +322,30 @@ function Match({
         </div>
       </div>
 
-      {/* 
-        xxx: cast inputs:
-
-        team 1 weapons
-        inputs
-        x y z
-
-        team 2 weapons
-        inputs
-        x y z
-      */}
-      <TransformingPlayerInput
-        type={type}
-        player={match.players[0]!}
-        onChange={(newPlayer) => console.log("TODO: handle newPlayer")}
-      />
-      {/* xxx: single player weapon input */}
-    </div>
-  );
-}
-
-function TransformingPlayerInput({
-  type,
-  player,
-  onChange,
-}: {
-  type: Video["type"];
-  player: VideoMatchBeingAddedPlayer;
-  onChange: (match: VideoMatchBeingAdded) => void;
-}) {
-  const { t } = useTranslation(["calendar"]);
-
-  if (type === "CAST") return null;
-
-  // if null or number we render combobox
-  const asPlainInput = player.playerUserId === undefined;
-
-  return (
-    <div>
-      <div className="stack horizontal md items-center mb-1">
-        <label htmlFor="pov" className="mb-0">
-          Player (PoV)
-        </label>
-        <Button
-          size="tiny"
-          variant="minimal"
-          // onClick={() => setAsPlainInput(!asPlainInput)}
-          className="outline-theme"
-        >
-          {asPlainInput
-            ? t("calendar:forms.team.player.addAsUser")
-            : t("calendar:forms.team.player.addAsText")}
-        </Button>
+      {/* xxx: many weapons for cast */}
+      <div className="stack sm">
+        {type === "CAST" ? null : (
+          <>
+            <Label required htmlFor={id}>
+              Weapon
+            </Label>
+            <WeaponCombobox
+              fullWidth
+              id={id}
+              inputName="weapon"
+              initialWeaponId={match.weapons[0]}
+              onChange={(selected) =>
+                onChange({
+                  ...match,
+                  weapons: selected?.value
+                    ? [Number(selected.value) as MainWeaponId]
+                    : [],
+                })
+              }
+            />
+          </>
+        )}
       </div>
-      {asPlainInput ? (
-        <input
-          id="pov"
-          // value={player}
-          // onChange={(e) => handleInputChange(i, e.target.value)}
-          // max={CALENDAR_EVENT_RESULT.MAX_PLAYER_NAME_LENGTH}
-        />
-      ) : (
-        <UserCombobox
-          id="pov"
-          inputName="team-player"
-          // initialUserId={player.id}
-          // onChange={(selected) =>
-          //   handleInputChange(
-          //     i,
-          //     selected?.value ? Number(selected?.value) : NEW_PLAYER.id
-          //   )
-          // }
-        />
-      )}
     </div>
   );
 }

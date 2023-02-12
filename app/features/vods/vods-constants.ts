@@ -1,4 +1,4 @@
-import type { VideoMatch } from "~/db/types";
+import type { Video } from "~/db/types";
 import { assertType } from "~/utils/types";
 
 export const videoMatchTypes = [
@@ -7,7 +7,4 @@ export const videoMatchTypes = [
   "SCRIM",
   "MATCHMAKING",
 ] as const;
-assertType<
-  (typeof videoMatchTypes)[number],
-  Array<VideoMatch["type"]>[number]
->();
+assertType<(typeof videoMatchTypes)[number], Array<Video["type"]>[number]>();
