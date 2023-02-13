@@ -8,7 +8,7 @@ module.exports.up = function (db) {
     "youtubeId" text not null,
     "youtubeDate" integer not null,
     "submitterUserId" integer not null,
-    "valitedAt" integer,
+    "validatedAt" integer,
     "eventId" integer,
     foreign key ("submitterUserId") references "User"("id") on delete restrict,
     foreign key ("eventId") references "CalendarEvent"("id") on delete restrict
@@ -31,6 +31,7 @@ module.exports.up = function (db) {
   db.prepare(
     /*sql*/ `
     create table "VideoMatch" (
+      "id" integer primary key,
       "videoId" integer not null,
       "startsAt" integer not null,
       "stageId" integer not null,
@@ -50,7 +51,7 @@ module.exports.up = function (db) {
       "playerUserId" integer not null,
       "playerName" text not null,
       "weaponSplId" integer not null,
-      "teamSide" integer not null,
+      "player" integer not null,
       foreign key ("videoMatchId") references "VideoMatch"("id") on delete cascade,
       foreign key ("playerUserId") references "User"("id") on delete restrict
     ) strict

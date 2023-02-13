@@ -1,3 +1,4 @@
+import type { ActionFunction } from "@remix-run/node";
 import * as React from "react";
 import LiteYouTubeEmbed from "react-lite-youtube-embed";
 import { Button } from "~/components/Button";
@@ -7,18 +8,31 @@ import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import type { Video, VideoMatch } from "~/db/types";
 import { useTranslation } from "~/hooks/useTranslation";
+import { requireUser } from "~/modules/auth";
 import {
   type MainWeaponId,
   stageIds,
   type StageId,
 } from "~/modules/in-game-lists";
 import { modesShort } from "~/modules/in-game-lists/modes";
-import type { SendouRouteHandle } from "~/utils/remix";
+import { parseRequestFormData, type SendouRouteHandle } from "~/utils/remix";
+import { createVod } from "../queries/createVod";
 import { videoMatchTypes } from "../vods-constants";
+import { videoSchema } from "../vods-schemas";
 import type { VideoBeingAdded, VideoMatchBeingAdded } from "../vods-types";
 
 export const handle: SendouRouteHandle = {
   i18n: ["vods", "calendar"],
+};
+
+export const action: ActionFunction = async ({ request }) => {
+  const user = await requireUser(request);
+  const data = await parseRequestFormData({ request, schema: videoSchema });
+
+  createVod({ ...data, submitterUserId: user.id });
+
+  // xxx: redirect
+  return null;
 };
 
 export default function NewVodPage() {
@@ -26,6 +40,9 @@ export default function NewVodPage() {
   const [video, setVideo] = React.useState<VideoBeingAdded>({
     type: "TOURNAMENT",
     matches: [newMatch()],
+    // xxx: add these and youtubeDate
+    youtubeId: "",
+    title: "",
   });
 
   return (
@@ -151,17 +168,17 @@ export default function NewVodPage() {
   );
 }
 
-function newMatch() {
-  return { weapons: [] };
+function newMatch(): VideoMatchBeingAdded {
+  return { weapons: [], mode: "SZ", stageId: 1, startsAt: 0 };
 }
 
-function extractYoutubeIdFromVideoUrl(url: string): string | undefined {
+function extractYoutubeIdFromVideoUrl(url: string): string {
   const match = url.match(
     /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?(.+)$/
   );
 
   const found = match?.[1];
-  if (!found) return;
+  if (!found) return "";
 
   const withoutSearchParams = found.split("&")[0]!;
 
@@ -333,7 +350,7 @@ function Match({
               fullWidth
               id={id}
               inputName="weapon"
-              initialWeaponId={match.weapons[0]}
+              initialWeaponId={match.weapons[0] as MainWeaponId}
               onChange={(selected) =>
                 onChange({
                   ...match,

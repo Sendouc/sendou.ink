@@ -276,10 +276,11 @@ export interface Video {
   eventId: number | null;
   youtubeId: string;
   submitterUserId: number;
-  valitatedAt: number | null;
+  validatedAt: number | null;
 }
 
 export interface VideoMatch {
+  id: number;
   videoId: number;
   startsAt: number;
   stageId: StageId;
@@ -291,5 +292,5 @@ export interface VideoMatchPlayer {
   playerUserId: number | null;
   playerName: string | null;
   weaponSplId: MainWeaponId;
-  team: 1 | 2;
+  player: number;
 }
