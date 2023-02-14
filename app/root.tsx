@@ -14,7 +14,6 @@ import {
   type ShouldRevalidateFunction,
   useLoaderData,
   useMatches,
-  useLocation,
 } from "@remix-run/react";
 import * as React from "react";
 import commonStyles from "~/styles/common.css";
@@ -282,7 +281,6 @@ function Fonts() {
 }
 
 function PlaywireScripts() {
-  const location = useLocation();
   const data = useLoaderData<RootLoaderData>();
 
   if (
@@ -290,7 +288,7 @@ function PlaywireScripts() {
     !data.gtagId ||
     !data.publisherId ||
     !data.websiteId ||
-    location.pathname !== "/test"
+    data.user?.patronTier
   ) {
     return null;
   }

@@ -8,6 +8,7 @@ import { Flipped, Flipper } from "react-flip-toolkit";
 import { z } from "zod";
 import { Alert } from "~/components/Alert";
 import { LinkButton } from "~/components/Button";
+import { Main } from "~/components/Main";
 import { db } from "~/db";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "~/hooks/useTranslation";
@@ -152,7 +153,7 @@ export default function CalendarPage() {
     : data.events;
 
   return (
-    <main className="stack lg layout__main">
+    <Main classNameOverwrite="stack lg layout__main">
       <WeekLinks />
       <EventsToReport />
       <div className="stack md">
@@ -179,7 +180,7 @@ export default function CalendarPage() {
           <div className="calendar__placeholder" />
         )}
       </div>
-    </main>
+    </Main>
   );
 }
 
