@@ -1,7 +1,7 @@
 {
   "customUrl": "カスタム URL",
   "ign": "ゲーム中の名前",
-  "ign.short": "ゲーム内名",
+  "ign.short": "ゲーム中の名前",
   "country": "国",
   "bio": "自己紹介",
   "stickSens": "右スティック感度",
@@ -9,6 +9,8 @@
   "motion": "モーション",
   "stick": "スティック",
   "sens": "感度",
+  "weaponPool": "使用ブキ",
+  "discordExplanation": "ユーザー名、プロファイル画像、YouTube、Twitter と Twitch アカウントは Discord のアカウントに設定されているものが使用されます。詳しくは <1>FAQ</1> をご覧ください。",
 
   "results.title": "結果",
   "results.placing": "順位",
@@ -22,8 +24,12 @@
   "results.highlights.choose": "戦績を選ぶ",
   "results.highlights.explanation": "戦績として選択したい結果を選ぶ",
 
+  "forms.errors.maxWeapons": "最大ブキ数を超えました",
   "forms.errors.invalidCustomUrl.numbers": "カスタム URL は数字のみで作成することはできません",
   "forms.errors.invalidCustomUrl.strangeCharacter": "カスタム URL は特殊文字を含めることはできません",
   "forms.errors.invalidCustomUrl.duplicate": "このカスタム URL はすでに使用されています",
-  "forms.errors.invalidSens": "右スティックの感度が設定されていない場合、感度を設定することはできません"
+  "forms.errors.invalidSens": "右スティックの感度が設定されていない場合、感度を設定することはできません",
+
+  "search.info": "Discord, Splatoon 3, Twitter アカウント名でユーザーを検索する",
+  "search.noResults": "該当ユーザーが見つかりません '{{query}}'"
 }
