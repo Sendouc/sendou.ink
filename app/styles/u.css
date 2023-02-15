@@ -8,28 +8,31 @@
   display: grid;
   justify-content: center;
   column-gap: var(--s-2-5);
-  grid-template-areas: "avatar name" "avatar country" "avatar ." "avatar team" "socials .";
+  grid-template-areas: "avatar name" "avatar team" "avatar ." "avatar ." "socials .";
 }
 
 .u__avatar {
   grid-area: avatar;
 }
 
+.u__team {
+  display: flex;
+  color: var(--text-lighter);
+  font-weight: var(--bold);
+  gap: var(--s-1-5);
+  grid-area: team;
+}
+
 .u__name {
+  display: flex;
+  align-items: center;
   grid-area: name;
   overflow-wrap: anywhere;
 }
 
 .u__discriminator {
   color: var(--text-lighter);
-}
-
-.u__country {
-  display: flex;
-  align-items: center;
-  gap: var(--s-1-5);
-  grid-area: country;
-  line-height: 0.75;
+  margin-inline-end: var(--s-2);
 }
 
 .u__country-name {
@@ -200,6 +203,12 @@
   list-style: none;
 }
 
+.u-search__input {
+  height: 40px !important;
+  margin: 0 auto;
+  font-size: var(--fonts-lg);
+}
+
 .u-search__icon {
   height: 25px;
   margin: auto;
@@ -212,14 +221,12 @@
   text-align: center;
 }
 
-.u-search__input {
-  height: 40px !important;
-  margin: 0 auto;
-  font-size: var(--fonts-lg);
-}
-
 .u__weapon {
   padding: var(--s-2);
   border-radius: 100%;
   background-color: var(--bg-lighter);
+}
+
+.u__build-form {
+  --input-width: min(18rem, 75vw);
 }

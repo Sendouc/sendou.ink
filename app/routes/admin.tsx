@@ -1,32 +1,32 @@
-import { json, redirect } from "@remix-run/node";
 import type {
+  ActionFunction,
   LoaderFunction,
   MetaFunction,
-  ActionFunction,
 } from "@remix-run/node";
-import {
-  Form,
-  useFetcher,
-  useLoaderData,
-  useTransition,
-} from "@remix-run/react";
+import { json, redirect } from "@remix-run/node";
+import { useFetcher, useLoaderData, useTransition } from "@remix-run/react";
 import * as React from "react";
+import { z } from "zod";
 import { Button } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
 import { UserCombobox } from "~/components/Combobox";
 import { Main } from "~/components/Main";
-import { requireUser } from "~/modules/auth";
-import { getUser, isImpersonating } from "~/modules/auth/user.server";
+import { SubmitButton } from "~/components/SubmitButton";
+import { db } from "~/db";
+import {
+  getUserId,
+  isImpersonating,
+  requireUserId,
+} from "~/modules/auth/user.server";
 import { canPerformAdminActions } from "~/permissions";
 import {
   parseRequestFormData,
-  type SendouRouteHandle,
   validate,
+  type SendouRouteHandle,
 } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
+import { assertUnreachable } from "~/utils/types";
 import { impersonateUrl, SEED_URL, STOP_IMPERSONATING_URL } from "~/utils/urls";
-import { db } from "~/db";
-import { z } from "zod";
 import { actualNumber } from "~/utils/zod";
 
 export const meta: MetaFunction = () => {
@@ -35,24 +35,42 @@ export const meta: MetaFunction = () => {
   };
 };
 
-const adminActionSchema = z.object({
-  "old-user[value]": z.preprocess(actualNumber, z.number().positive()),
-  "new-user[value]": z.preprocess(actualNumber, z.number().positive()),
-});
+const adminActionSchema = z.union([
+  z.object({
+    _action: z.literal("MIGRATE"),
+    "old-user[value]": z.preprocess(actualNumber, z.number().positive()),
+    "new-user[value]": z.preprocess(actualNumber, z.number().positive()),
+  }),
+  z.object({
+    _action: z.literal("REFRESH"),
+  }),
+]);
 
 export const action: ActionFunction = async ({ request }) => {
   const data = await parseRequestFormData({
     request,
     schema: adminActionSchema,
   });
-  const user = await requireUser(request);
+  const user = await requireUserId(request);
 
   validate(canPerformAdminActions(user));
 
-  db.users.migrate({
-    oldUserId: data["old-user[value]"],
-    newUserId: data["new-user[value]"],
-  });
+  switch (data._action) {
+    case "MIGRATE": {
+      db.users.migrate({
+        oldUserId: data["old-user[value]"],
+        newUserId: data["new-user[value]"],
+      });
+      break;
+    }
+    case "REFRESH": {
+      db.users.refreshPlusTiers();
+      break;
+    }
+    default: {
+      assertUnreachable(data);
+    }
+  }
 
   return null;
 };
@@ -62,7 +80,7 @@ interface AdminPageLoaderData {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const user = await getUser(request);
+  const user = await getUserId(request);
 
   if (!canPerformAdminActions(user)) {
     return redirect("/");
@@ -82,6 +100,7 @@ export default function AdminPage() {
     <Main className="stack lg">
       <Impersonate />
       <MigrateUser />
+      <RefreshPlusTiers />
       {process.env.NODE_ENV !== "production" && <Seed />}
     </Main>
   );
@@ -127,6 +146,7 @@ function MigrateUser() {
   const [oldUserId, setOldUserId] = React.useState<number>();
   const [newUserId, setNewUserId] = React.useState<number>();
   const transition = useTransition();
+  const fetcher = useFetcher();
 
   const submitButtonText =
     transition.state === "submitting"
@@ -136,7 +156,7 @@ function MigrateUser() {
       : "Migrate";
 
   return (
-    <Form className="stack md" method="post">
+    <fetcher.Form className="stack md" method="post">
       <h2>Migrate user data</h2>
       <div className="stack horizontal md">
         <div>
@@ -159,14 +179,16 @@ function MigrateUser() {
         </div>
       </div>
       <div className="stack horizontal md">
-        <Button
+        <SubmitButton
           type="submit"
           disabled={!oldUserId || !newUserId || transition.state !== "idle"}
+          _action="MIGRATE"
+          state={fetcher.state}
         >
           {submitButtonText}
-        </Button>
+        </SubmitButton>
       </div>
-    </Form>
+    </fetcher.Form>
   );
 }
 
@@ -181,6 +203,19 @@ function Seed() {
     >
       <h2>Seed</h2>
       <Button type="submit">Seed</Button>
+    </fetcher.Form>
+  );
+}
+
+function RefreshPlusTiers() {
+  const fetcher = useFetcher();
+
+  return (
+    <fetcher.Form method="post">
+      <h2>Refresh Plus Tiers</h2>
+      <SubmitButton type="submit" _action="REFRESH" state={fetcher.state}>
+        Refresh
+      </SubmitButton>
     </fetcher.Form>
   );
 }

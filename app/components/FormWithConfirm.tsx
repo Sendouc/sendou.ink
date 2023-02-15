@@ -1,18 +1,23 @@
 import { Form } from "@remix-run/react";
 import React from "react";
 import invariant from "tiny-invariant";
+import { useTranslation } from "~/hooks/useTranslation";
 import { Button } from "./Button";
 import { Dialog } from "./Dialog";
+import { SubmitButton } from "./SubmitButton";
 
 export function FormWithConfirm({
   fields,
   children,
   dialogHeading,
+  deleteButtonText,
 }: {
   fields?: [name: string, value: string | number][];
   children: React.ReactNode;
   dialogHeading: string;
+  deleteButtonText?: string;
 }) {
+  const { t } = useTranslation(["common"]);
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const formRef = React.useRef<HTMLFormElement>(null);
   const id = React.useId();
@@ -33,10 +38,14 @@ export function FormWithConfirm({
         <div className="stack md">
           <h2 className="text-sm">{dialogHeading}</h2>
           <div className="stack horizontal md justify-center">
-            <Button form={id} variant="destructive" type="submit">
-              Delete
-            </Button>
-            <Button onClick={closeDialog}>Cancel</Button>
+            <SubmitButton
+              form={id}
+              variant="destructive"
+              testId={dialogOpen ? "confirm-button" : undefined}
+            >
+              {deleteButtonText ?? t("common:actions.delete")}
+            </SubmitButton>
+            <Button onClick={closeDialog}>{t("common:actions.cancel")}</Button>
           </div>
         </div>
       </Dialog>

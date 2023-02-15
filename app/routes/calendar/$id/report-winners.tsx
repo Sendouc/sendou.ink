@@ -1,17 +1,25 @@
 import type { SerializeFrom } from "@remix-run/node";
 import {
-  type ActionFunction,
-  type LoaderArgs,
   json,
   redirect,
+  type ActionFunction,
+  type LoaderArgs,
 } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
+import clsx from "clsx";
+import * as React from "react";
 import { z } from "zod";
+import { Button } from "~/components/Button";
+import { UserCombobox } from "~/components/Combobox";
+import { FormErrors } from "~/components/FormErrors";
+import { FormMessage } from "~/components/FormMessage";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import { CALENDAR_EVENT_RESULT } from "~/constants";
 import { db } from "~/db";
-import { requireUser } from "~/modules/auth";
+import type { User } from "~/db/types";
+import { useTranslation } from "~/hooks/useTranslation";
+import { requireUserId } from "~/modules/auth/user.server";
 import { canReportCalendarEventWinners } from "~/permissions";
 import {
   notFoundIfFalsy,
@@ -19,17 +27,9 @@ import {
   validate,
   type SendouRouteHandle,
 } from "~/utils/remix";
-import { actualNumber, id, safeJSONParse, toArray } from "~/utils/zod";
-import * as React from "react";
-import type { User } from "~/db/types";
-import { Button } from "~/components/Button";
-import clsx from "clsx";
-import { UserCombobox } from "~/components/Combobox";
-import { FormMessage } from "~/components/FormMessage";
-import { FormErrors } from "~/components/FormErrors";
 import type { Unpacked } from "~/utils/types";
 import { calendarEventPage } from "~/utils/urls";
-import { useTranslation } from "~/hooks/useTranslation";
+import { actualNumber, id, safeJSONParse, toArray } from "~/utils/zod";
 
 const playersSchema = z
   .array(
@@ -97,7 +97,7 @@ const reportWinnersParamsSchema = z.object({
 });
 
 export const action: ActionFunction = async ({ request, params }) => {
-  const user = await requireUser(request);
+  const user = await requireUserId(request);
   const parsedParams = reportWinnersParamsSchema.parse(params);
   const parsedInput = await safeParseRequestFormData({
     request,
@@ -142,7 +142,7 @@ export const handle: SendouRouteHandle = {
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const parsedParams = reportWinnersParamsSchema.parse(params);
-  const user = await requireUser(request);
+  const user = await requireUserId(request);
   const event = notFoundIfFalsy(db.calendarEvents.findById(parsedParams.id));
 
   validate(

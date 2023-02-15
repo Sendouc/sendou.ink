@@ -54,6 +54,15 @@ export function falsyToNull(value: unknown): unknown {
   return null;
 }
 
+export function jsonParseable(value: unknown) {
+  try {
+    JSON.parse(value as string);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export function undefinedToNull(value: unknown): unknown {
   if (value === undefined) return null;
 

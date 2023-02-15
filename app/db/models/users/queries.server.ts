@@ -22,6 +22,8 @@ import updateProfileSql from "./updateProfile.sql";
 import upsertSql from "./upsert.sql";
 import addUserWeaponSql from "./addUserWeapon.sql";
 import deleteUserWeaponsSql from "./deleteUserWeapons.sql";
+import wipePlusTiersSql from "./wipePlusTiers.sql";
+import fillPlusTiersSql from "./fillPlusTiers.sql";
 import { parseDBArray } from "~/utils/sql";
 
 const upsertStm = sql.prepare(upsertSql);
@@ -56,6 +58,7 @@ export const updateProfile = sql.transaction(
     | "motionSens"
     | "stickSens"
     | "inGameName"
+    | "css"
   > & { weapons: MainWeaponId[] }) => {
     deleteUserWeaponsStm.run({ userId: rest.id });
     for (const [i, weaponSplId] of weapons.entries()) {
@@ -112,10 +115,41 @@ export const migrate = sql.transaction(
 
 const findByIdentifierStm = sql.prepare(findByIdentifierSql);
 export function findByIdentifier(identifier: string | number) {
-  const row = findByIdentifierStm.get({ identifier });
+  const {
+    weapons,
+    teamName,
+    teamCustomUrl,
+    teamAvatarUrl,
+    teamId,
+    css,
+    ...row
+  } = findByIdentifierStm.get({ identifier });
 
-  return { ...row, weapons: parseDBArray(row.weapons) } as
-    | (UserWithPlusTier & { weapons: MainWeaponId[] })
+  if (!row.id) return;
+
+  return {
+    ...row,
+    css: css ? JSON.parse(css) : undefined,
+    weapons: parseDBArray(weapons),
+    team: teamName
+      ? {
+          name: teamName,
+          customUrl: teamCustomUrl,
+          avatarUrl: teamAvatarUrl,
+          id: teamId,
+        }
+      : undefined,
+  } as
+    | (Omit<UserWithPlusTier, "css"> & {
+        css: Record<string, string>;
+        weapons: MainWeaponId[];
+        team?: {
+          name: string;
+          customUrl: string;
+          avatarUrl?: string;
+          id: number;
+        };
+      })
     | undefined;
 }
 
@@ -182,3 +216,10 @@ export function search(input: string) {
     >
   >;
 }
+
+const wipePlusTiersStm = sql.prepare(wipePlusTiersSql);
+const fillPlusTiersStm = sql.prepare(fillPlusTiersSql);
+export const refreshPlusTiers = sql.transaction(() => {
+  wipePlusTiersStm.run();
+  fillPlusTiersStm.run();
+});

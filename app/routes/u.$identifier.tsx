@@ -1,4 +1,3 @@
-import * as React from "react";
 import type {
   LinksFunction,
   LoaderArgs,
@@ -7,18 +6,18 @@ import type {
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Outlet, useLoaderData, useLocation } from "@remix-run/react";
-import { countries } from "countries-list";
-import { useTranslation } from "~/hooks/useTranslation";
+import * as React from "react";
+import invariant from "tiny-invariant";
 import { z } from "zod";
+import { Main } from "~/components/Main";
 import { SubNav, SubNavLink } from "~/components/SubNav";
 import { db } from "~/db";
+import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
-import { i18next } from "~/modules/i18n";
-import { translatedCountry } from "~/utils/i18n.server";
+import { canAddCustomizedColorsToUserProfile } from "~/permissions";
+import styles from "~/styles/u.css";
 import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
 import { discordFullName, makeTitle } from "~/utils/strings";
-import styles from "~/styles/u.css";
-import invariant from "tiny-invariant";
 import {
   isCustomUrl,
   navIconUrl,
@@ -28,7 +27,6 @@ import {
   userResultsPage,
   USER_SEARCH_PAGE,
 } from "~/utils/urls";
-import { Main } from "~/components/Main";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -45,7 +43,9 @@ export const meta: MetaFunction = ({ data }: { data: UserPageLoaderData }) => {
 export const handle: SendouRouteHandle = {
   i18n: "user",
   breadcrumb: ({ match }) => {
-    const data = match.data as UserPageLoaderData;
+    const data = match.data as UserPageLoaderData | undefined;
+
+    if (!data) return [];
 
     return [
       {
@@ -66,14 +66,9 @@ export const userParamsSchema = z.object({ identifier: z.string() });
 
 export type UserPageLoaderData = SerializeFrom<typeof loader>;
 
-export const loader = async ({ request, params }: LoaderArgs) => {
-  const locale = await i18next.getLocale(request);
+export const loader = ({ params }: LoaderArgs) => {
   const { identifier } = userParamsSchema.parse(params);
   const user = notFoundIfFalsy(db.users.findByIdentifier(identifier));
-
-  const countryObj = user.country
-    ? countries[user.country as keyof typeof countries]
-    : undefined;
 
   return json({
     id: user.id,
@@ -90,17 +85,9 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     stickSens: user.stickSens,
     inGameName: user.inGameName,
     weapons: user.weapons,
-    country:
-      countryObj && user.country
-        ? {
-            code: user.country,
-            name:
-              translatedCountry({
-                language: locale,
-                countryCode: user.country,
-              }) ?? countryObj.name,
-          }
-        : undefined,
+    team: user.team,
+    country: user.country,
+    css: canAddCustomizedColorsToUserProfile(user) ? user.css : undefined,
     badges: db.badges.countsByUserId(user.id),
     results: db.calendarEvents.findResultsByUserId(user.id),
     buildsCount: db.builds.countByUserId(user.id),
@@ -121,7 +108,7 @@ export default function UserPageLayout() {
       <SubNav>
         <SubNavLink to={userPage(data)}>{t("header.profile")}</SubNavLink>
         {isOwnPage && (
-          <SubNavLink to={userEditProfilePage(data)}>
+          <SubNavLink to={userEditProfilePage(data)} prefetch="intent">
             {t("actions.edit")}
           </SubNavLink>
         )}
@@ -131,7 +118,7 @@ export default function UserPageLayout() {
           </SubNavLink>
         )}
         {(isOwnPage || data.buildsCount > 0) && (
-          <SubNavLink to={userBuildsPage(data)}>
+          <SubNavLink to={userBuildsPage(data)} prefetch="intent">
             {t("pages.builds")} ({data.buildsCount})
           </SubNavLink>
         )}

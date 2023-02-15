@@ -6,6 +6,7 @@ set
   "customUrl" = @customUrl,
   "stickSens" = @stickSens,
   "motionSens" = @motionSens,
-  "inGameName" = @inGameName
+  "inGameName" = @inGameName,
+  "css" = @css
 where
   "id" = @id returning *

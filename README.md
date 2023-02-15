@@ -14,6 +14,7 @@ Competitive Splatoon Hub with over 20k registered users.
 - Plus Server for top player "looking for group purposes" voting and suggestion tools.
 - User pages
 - User search
+- Form teams (featuring uploading profile and banner pictures)
 - Object Damage Calculator (how much does each weapon deal vs. different objects)
 - Build Analyzer (exact stats of your builds)
 - Auth via Discord
@@ -26,6 +27,8 @@ Competitive Splatoon Hub with over 20k registered users.
 - Remix
 - Sqlite3
 - CSS (plain)
+- E2E tests via Playwright
+- Unit tests via uvu
 
 ## Screenshots
 

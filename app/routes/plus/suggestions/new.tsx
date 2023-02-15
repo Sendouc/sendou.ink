@@ -42,7 +42,7 @@ const commentActionSchema = z.object({
       .min(Math.min(...PLUS_TIERS))
       .max(Math.max(...PLUS_TIERS))
   ),
-  text: z.preprocess(
+  comment: z.preprocess(
     trimmedString,
     z.string().min(1).max(PlUS_SUGGESTION_FIRST_COMMENT_MAX_LENGTH)
   ),
@@ -80,7 +80,7 @@ export const action: ActionFunction = async ({ request }) => {
     authorId: user.id,
     suggestedId: suggested.id,
     tier: data.tier,
-    text: data.text,
+    text: data.comment,
     ...nextNonCompletedVoting(new Date()),
   });
 
@@ -222,7 +222,7 @@ export function CommentTextarea({ maxLength }: { maxLength: number }) {
   return (
     <div>
       <Label
-        htmlFor="text"
+        htmlFor="comment"
         valueLimits={{
           current: value.trim().length,
           max: maxLength,
@@ -231,8 +231,8 @@ export function CommentTextarea({ maxLength }: { maxLength: number }) {
         Your comment
       </Label>
       <textarea
-        id="text"
-        name="text"
+        id="comment"
+        name="comment"
         className="plus__modal-textarea"
         rows={4}
         value={value}

@@ -1,5 +1,5 @@
 {
-  "attribute.weight": "Peso:",
+  "attribute.weight": "Peso",
   "attribute.weight.Fast": "Leggero",
   "attribute.weight.Slow": "Pesante",
   "attribute.weight.Normal": "Normale",
@@ -98,10 +98,8 @@
   "value": "Valore",
   "build": "Kit",
   "patch": "Versione gioco:",
-  "abilityPoints": "Punti abilità",
   "abilityPoints.short": "AP",
   "abilityChunks": "Frammenti abilità necessari",
-  "consumptionExplanation": "Questa tabella mostra la quantità di azioni rimaste da eseguire con l'arma principale dopo aver usato l'arma secondaria da 0 a {{maxSubsToUse}} volte. Il numero massimo di armi secondarie da utilizzare consecutivamente con un serbatoio pieno è {{maxSubsToUse}}.",
   "torpedoExplanation": "Non puoi lanciare più di un Torpedinatore alla volta.",
   "trackingSubDefExplanation": "I tempi di localizzazione della cimice, la mina e lo sparalinee sono calcolati contro un nemico con 0AP di Arma sec. impermeabile.",
   "distanceInline": "Distanza: {{value}}",

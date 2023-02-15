@@ -7,7 +7,8 @@ import { LinkButton } from "~/components/Button";
 import { BUILD } from "~/constants";
 import { db } from "~/db";
 import { useTranslation } from "~/hooks/useTranslation";
-import { getUser, requireUser, useUser } from "~/modules/auth";
+import { useUser } from "~/modules/auth";
+import { getUserId, requireUserId } from "~/modules/auth/user.server";
 import { atOrError } from "~/utils/arrays";
 import {
   notFoundIfFalsy,
@@ -23,7 +24,7 @@ const buildsActionSchema = z.object({
 });
 
 export const action: ActionFunction = async ({ request }) => {
-  const user = await requireUser(request);
+  const user = await requireUserId(request);
   const data = await parseRequestFormData({
     request,
     schema: buildsActionSchema,
@@ -47,7 +48,7 @@ export const handle: SendouRouteHandle = {
 };
 
 export const loader = async ({ params, request }: LoaderArgs) => {
-  const loggedInUser = await getUser(request);
+  const loggedInUser = await getUserId(request);
   const { identifier } = userParamsSchema.parse(params);
   const user = notFoundIfFalsy(db.users.findByIdentifier(identifier));
 

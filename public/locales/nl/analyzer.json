@@ -1,5 +1,5 @@
 ﻿{
-  "attribute.weight": "Gewicht:",
+  "attribute.weight": "Gewicht",
   "attribute.weight.Fast": "Licht",
   "attribute.weight.Slow": "Zwaar",
   "attribute.weight.Normal": "Normaal",
@@ -66,9 +66,7 @@
   "value": "Waarde",
   "build": "Uitrusting",
   "patch": "Softwareversie:",
-  "abilityPoints": "Effect punten",
   "abilityPoints.short": "EP",
-  "consumptionExplanation": "Deze tabel laat zien hoeveel keer je nog een bepaalde actie kunt doen met het hoofdwapen na het 0-{{maxSubsToUse}} keer gebruiken van een subwapen. Het maximale aantal dat je een subwapen achter elkaar kan gebruiken is {{maxSubsToUse}} keer.",
   "trackingSubDefExplanation": "Detector, Inktmijn en Ketskogel markeringstijden worden berekend voor een tegenstander met 0 Subtopper EP.",
   "stat.jumpShotSpread": "Kogel spreiding in graden (in de lucht)",
   "stat.groundShotSpread": "Kogel spreiding in graden (op de grond)",

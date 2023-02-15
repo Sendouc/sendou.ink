@@ -10,7 +10,6 @@ import {
 import { Form, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
-import { useTranslation } from "~/hooks/useTranslation";
 import { z } from "zod";
 import type { AlertVariation } from "~/components/Alert";
 import { Alert } from "~/components/Alert";
@@ -18,28 +17,33 @@ import { Badge } from "~/components/Badge";
 import { Button } from "~/components/Button";
 import { DateInput } from "~/components/DateInput";
 import { FormMessage } from "~/components/FormMessage";
+import { CrossIcon } from "~/components/icons/Cross";
 import { TrashIcon } from "~/components/icons/Trash";
 import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import { MapPoolSelector } from "~/components/MapPoolSelector";
 import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
+import { SubmitButton } from "~/components/SubmitButton";
 import { Toggle } from "~/components/Toggle";
 import { CALENDAR_EVENT } from "~/constants";
 import { db } from "~/db";
 import type { Badge as BadgeType, CalendarEventTag } from "~/db/types";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import { requireUser, useUser } from "~/modules/auth";
+import { useTranslation } from "~/hooks/useTranslation";
+import { useUser } from "~/modules/auth";
+import { requireUserId } from "~/modules/auth/user.server";
 import { i18next } from "~/modules/i18n";
 import { MapPool } from "~/modules/map-pool-serializer";
 import { canEditCalendarEvent, canEnableTOTools } from "~/permissions";
 import calendarNewStyles from "~/styles/calendar-new.css";
 import mapsStyles from "~/styles/maps.css";
+import { isDefined } from "~/utils/arrays";
 import {
-  dateToDatabaseTimestamp,
   databaseTimestampToDate,
-  getDateWithHoursOffset,
+  dateToDatabaseTimestamp,
   getDateAtNextFullHour,
+  getDateWithHoursOffset,
 } from "~/utils/dates";
 import {
   badRequestIfFalsy,
@@ -61,9 +65,6 @@ import {
   toArray,
 } from "~/utils/zod";
 import { Tags } from "./components/Tags";
-import { isDefined } from "~/utils/arrays";
-import { CrossIcon } from "~/components/icons/Cross";
-import { SubmitButton } from "~/components/SubmitButton";
 
 const MIN_DATE = new Date(Date.UTC(2015, 4, 28));
 
@@ -130,7 +131,7 @@ const newCalendarEventActionSchema = z.object({
 });
 
 export const action: ActionFunction = async ({ request }) => {
-  const user = await requireUser(request);
+  const user = await requireUserId(request);
   const data = await parseRequestFormData({
     request,
     schema: newCalendarEventActionSchema,
@@ -191,7 +192,7 @@ export const handle: SendouRouteHandle = {
 
 export const loader = async ({ request }: LoaderArgs) => {
   const t = await i18next.getFixedT(request);
-  const user = await requireUser(request);
+  const user = await requireUserId(request);
   const url = new URL(request.url);
 
   const eventId = Number(url.searchParams.get("eventId"));

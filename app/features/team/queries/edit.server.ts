@@ -2,12 +2,13 @@ import { sql } from "~/db/sql";
 import type { Team } from "~/db/types";
 
 const stm = sql.prepare(/*sql*/ `
-  update "Team" 
+  update "AllTeam" 
   set 
     "name" = @name,
     "customUrl" = @customUrl,
     "bio" = @bio,
-    "twitter" = @twitter
+    "twitter" = @twitter,
+    "css" = @css
   where "id" = @id
   returning *
 `);
@@ -18,12 +19,14 @@ export function edit({
   customUrl,
   bio,
   twitter,
-}: Pick<Team, "id" | "name" | "customUrl" | "bio" | "twitter">) {
+  css,
+}: Pick<Team, "id" | "name" | "customUrl" | "bio" | "twitter" | "css">) {
   return stm.get({
     id,
     name,
     customUrl,
     bio,
     twitter,
+    css,
   }) as Team;
 }

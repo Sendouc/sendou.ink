@@ -115,8 +115,8 @@ export type SendouRouteHandle = {
   breadcrumb?: (args: {
     match: RouteMatch;
     t: TFunction<"common", undefined>;
-  }) => Breadcrumb | Array<Breadcrumb>;
+  }) => Breadcrumb | Array<Breadcrumb> | undefined;
 
   /** The name of a navItem that is active on this route. See nav-items.json */
-  navItemName?: typeof navItems[number]["name"];
+  navItemName?: (typeof navItems)[number]["name"];
 };

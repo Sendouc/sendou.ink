@@ -1,8 +1,9 @@
 html {
   --bg: #ebebf0;
   --bg-darker: #f8f8f8;
-  --bg-lighter: #fff;
+  --bg-lighter: rgb(250 250 250);
   --bg-lightest: #fff;
+  --bg-light-variation: #fff;
   --bg-lighter-transparent: hsla(225deg 100% 88% / 50%);
   --bg-darker-very-transparent: rgb(187 208 219 / 29.5%);
   --bg-darker-transparent: hsla(202deg 90% 90% / 65%);
@@ -90,6 +91,7 @@ html.dark {
   --bg-darker: #0a092d;
   --bg-lighter: rgb(169 138 255 / 10%);
   --bg-lighter-transparent: rgb(64 67 108 / 50%);
+  --bg-light-variation: #a98aff30;
   --bg-lightest: rgb(169 138 255 / 30%);
   --bg-darker-very-transparent: hsla(237.3deg 42.3% 26.6% / 50%);
   --bg-darker-transparent: #0a092dce;

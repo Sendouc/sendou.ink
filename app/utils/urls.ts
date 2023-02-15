@@ -14,10 +14,13 @@ import type {
   SpecialWeaponId,
   SubWeaponId,
   StageId,
+  BuildAbilitiesTupleWithUnknown,
 } from "~/modules/in-game-lists/types";
 import type navItems from "~/components/layout/nav-items.json";
 import { type AuthErrorCode } from "~/modules/auth";
 import type { StageBackgroundStyle } from "~/features/map-planner";
+import type { ImageUploadType } from "~/features/img-upload";
+import { serializeBuild } from "~/features/build-analyzer";
 
 const staticAssetsUrl = ({
   folder,
@@ -28,12 +31,22 @@ const staticAssetsUrl = ({
 }) =>
   `https://raw.githubusercontent.com/Sendouc/sendou-ink-assets/main/${folder}/${fileName}`;
 
+// const USER_SUBMITTED_IMAGE_ROOT =
+//   process.env.NODE_ENV === "development"
+//     ? `https://sendou.nyc3.digitaloceanspaces.com`
+//     : `https://assets.sendou.ink`;
+const USER_SUBMITTED_IMAGE_ROOT = "https://sendou.nyc3.digitaloceanspaces.com";
+export const userSubmittedImage = (fileName: string) =>
+  `${USER_SUBMITTED_IMAGE_ROOT}/${fileName}`;
+
 export const SPLATOON_2_SENDOU_IN_URL = "https://spl2.sendou.ink";
 export const PLUS_SERVER_DISCORD_URL = "https://discord.gg/FW4dKrY";
 export const SENDOU_INK_DISCORD_URL = "https://discord.gg/sendou";
 export const SENDOU_TWITTER_URL = "https://twitter.com/sendouc";
 export const SENDOU_INK_TWITTER_URL = "https://twitter.com/sendouink";
 export const SENDOU_INK_PATREON_URL = "https://patreon.com/sendou";
+export const PATREON_HOW_TO_CONNECT_DISCORD_URL =
+  "https://support.patreon.com/hc/en-us/articles/212052266-How-do-I-connect-Discord-to-Patreon-Patron-";
 export const SENDOU_INK_GITHUB_URL = "https://github.com/Sendouc/sendou.ink";
 export const GITHUB_CONTRIBUTORS_URL =
   "https://github.com/Sendouc/sendou.ink/graphs/contributors";
@@ -42,18 +55,25 @@ export const BORZOIC_TWITTER = "https://twitter.com/borzoic_";
 export const LEAN_TWITTER = "https://twitter.com/LeanYoshi";
 export const UBERU_TWITTER = "https://twitter.com/uberu5";
 export const YAGA_TWITTER = "https://twitter.com/a_bog_hag";
+export const ANTARISKA_TWITTER = "https://twitter.com/antariska_spl";
 export const ipLabsMaps = (pool: string) =>
   `https://maps.iplabs.ink/?3&pool=${pool}`;
+
+export const twitterUrl = (accountName: string) =>
+  `https://twitter.com/${accountName}`;
 
 export const LOG_IN_URL = "/auth";
 export const LOG_OUT_URL = "/auth/logout";
 export const ADMIN_PAGE = "/admin";
 export const ARTICLES_MAIN_PAGE = "/a";
 export const FAQ_PAGE = "/faq";
+export const PRIVACY_POLICY_PAGE = "/privacy-policy";
+export const SUPPORT_PAGE = "/support";
 export const CONTRIBUTIONS_PAGE = "/contributions";
 export const BADGES_PAGE = "/badges";
 export const BUILDS_PAGE = "/builds";
 export const USER_SEARCH_PAGE = "/u";
+export const TEAM_SEARCH_PAGE = "/t";
 export const CALENDAR_PAGE = "/calendar";
 export const STOP_IMPERSONATING_URL = "/auth/impersonate/stop";
 export const SEED_URL = "/seed";
@@ -97,10 +117,33 @@ export const userResultsPage = (user: UserLinkArgs) =>
   `${userPage(user)}/results`;
 export const userResultsEditHighlightsPage = (user: UserLinkArgs) =>
   `${userResultsPage(user)}/highlights`;
-export const userNewBuildPage = (user: UserLinkArgs) =>
-  `${userBuildsPage(user)}/new`;
+export const userNewBuildPage = (
+  user: UserLinkArgs,
+  params?: { weapon: MainWeaponId; build: BuildAbilitiesTupleWithUnknown }
+) =>
+  `${userBuildsPage(user)}/new${
+    params
+      ? `?${String(
+          new URLSearchParams({
+            weapon: String(params.weapon),
+            build: serializeBuild(params.build),
+          })
+        )}`
+      : ""
+  }`;
 
 export const teamPage = (customUrl: string) => `/t/${customUrl}`;
+export const editTeamPage = (customUrl: string) =>
+  `${teamPage(customUrl)}/edit`;
+export const manageTeamRosterPage = (customUrl: string) =>
+  `${teamPage(customUrl)}/roster`;
+export const joinTeamPage = ({
+  customUrl,
+  inviteCode,
+}: {
+  customUrl: string;
+  inviteCode: string;
+}) => `${teamPage(customUrl)}/join?code=${inviteCode}`;
 
 export const authErrorUrl = (errorCode: AuthErrorCode) =>
   `/?authError=${errorCode}`;
@@ -141,6 +184,9 @@ export const objectDamageCalculatorPage = (weaponId?: MainWeaponId) =>
     typeof weaponId === "number" ? `?weapon=${weaponId}` : ""
   }`;
 
+export const uploadImagePage = (type: ImageUploadType) =>
+  `/upload?type=${type}`;
+
 export const badgeUrl = ({
   code,
   extension,
@@ -151,12 +197,12 @@ export const badgeUrl = ({
 export const articlePreviewUrl = (slug: string) =>
   `/static-assets/img/article-previews/${slug}.png`;
 
-export const navIconUrl = (navItem: typeof navItems[number]["name"]) =>
+export const navIconUrl = (navItem: (typeof navItems)[number]["name"]) =>
   `/static-assets/img/layout/${navItem}`;
 export const gearImageUrl = (gearType: GearType, gearSplId: number) =>
   `/static-assets/img/gear/${gearType.toLowerCase()}/${gearSplId}`;
 export const weaponCategoryUrl = (
-  category: typeof weaponCategories[number]["name"]
+  category: (typeof weaponCategories)[number]["name"]
 ) => `/static-assets/img/weapon-categories/${category}`;
 export const mainWeaponImageUrl = (mainWeaponSplId: MainWeaponId) =>
   `/static-assets/img/main-weapons/${mainWeaponSplId}`;

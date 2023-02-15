@@ -59,12 +59,6 @@
   font-weight: var(--semi-bold);
 }
 
-.plus__comment {
-  min-width: auto;
-  overflow-wrap: break-word;
-  white-space: pre-wrap;
-}
-
 .plus__comment-time {
   color: var(--text-lighter);
   font-size: var(--fonts-xxs);
@@ -83,7 +77,7 @@
 }
 
 .plus__modal-textarea {
-  width: 100%;
+  width: 100% !important;
   resize: none;
 }
 

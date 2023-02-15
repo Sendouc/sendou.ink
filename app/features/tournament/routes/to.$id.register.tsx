@@ -5,6 +5,7 @@ import type {
 } from "@remix-run/node";
 import { useFetcher, useLoaderData, useOutletContext } from "@remix-run/react";
 import clsx from "clsx";
+import * as React from "react";
 import { useCopyToClipboard } from "react-use";
 import invariant from "tiny-invariant";
 import { Alert } from "~/components/Alert";
@@ -16,7 +17,8 @@ import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
 import { SubmitButton } from "~/components/SubmitButton";
 import { useTranslation } from "~/hooks/useTranslation";
-import { getUser, requireUser, useUser } from "~/modules/auth";
+import { useUser } from "~/modules/auth";
+import { getUserId, requireUserId } from "~/modules/auth/user.server";
 import type { RankedModeShort, StageId } from "~/modules/in-game-lists";
 import { stageIds } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
@@ -46,7 +48,6 @@ import { useSelectCounterpickMapPoolState } from "../tournament-hooks";
 import { registerSchema } from "../tournament-schemas.server";
 import { idFromParams, resolveOwnedTeam } from "../tournament-utils";
 import type { TournamentToolsLoaderData } from "./to.$id";
-import * as React from "react";
 
 export const handle: SendouRouteHandle = {
   breadcrumb: () => ({
@@ -57,7 +58,7 @@ export const handle: SendouRouteHandle = {
 };
 
 export const action: ActionFunction = async ({ request, params }) => {
-  const user = await requireUser(request);
+  const user = await requireUserId(request);
   const data = await parseRequestFormData({ request, schema: registerSchema });
 
   const eventId = idFromParams(params);
@@ -122,7 +123,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
-  const user = await getUser(request);
+  const user = await getUserId(request);
 
   if (!user) return null;
 

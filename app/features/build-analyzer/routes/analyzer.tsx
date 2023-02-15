@@ -1,5 +1,5 @@
 import { type LinksFunction, type MetaFunction } from "@remix-run/node";
-import type { ShouldReloadFunction } from "@remix-run/react";
+import type { ShouldRevalidateFunction } from "@remix-run/react";
 import { Link } from "@remix-run/react";
 import * as React from "react";
 import { useTranslation } from "~/hooks/useTranslation";
@@ -12,7 +12,6 @@ import { Popover } from "~/components/Popover";
 import { Toggle } from "~/components/Toggle";
 import { useSetTitle } from "~/hooks/useSetTitle";
 import {
-  abilities,
   ANGLE_SHOOTER_ID,
   INK_MINE_ID,
   INK_STORM_ID,
@@ -25,6 +24,7 @@ import {
   type BuildAbilitiesTupleWithUnknown,
   type MainWeaponId,
   type SubWeaponId,
+  abilitiesShort,
 } from "~/modules/in-game-lists";
 import styles from "../analyzer.css";
 import { damageTypeTranslationString } from "~/utils/i18next";
@@ -32,10 +32,12 @@ import { type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import {
   ANALYZER_URL,
+  mainWeaponImageUrl,
   navIconUrl,
   objectDamageCalculatorPage,
   specialWeaponImageUrl,
   subWeaponImageUrl,
+  userNewBuildPage,
 } from "~/utils/urls";
 import clsx from "clsx";
 import {
@@ -57,12 +59,16 @@ import {
   MAX_LDE_INTENSITY,
 } from "../analyzer-constants";
 import { useAnalyzeBuild } from "../analyzer-hooks";
+import { Tabs, Tab } from "~/components/Tabs";
+import { buildIsEmpty, isStackableAbility } from "../core/utils";
+import { useUser } from "~/modules/auth";
 
-export const CURRENT_PATCH = "2.0";
+export const CURRENT_PATCH = "2.1";
 
 export const meta: MetaFunction = () => {
   return {
     title: makeTitle("Build Analyzer"),
+    description: "Detailed stats for any weapon and build in Splatoon 3.",
   };
 };
 
@@ -80,35 +86,49 @@ export const handle: SendouRouteHandle = {
 };
 
 // Resolves this Github issue: https://github.com/Sendouc/sendou.ink/issues/1053
-export const unstable_shouldReload: ShouldReloadFunction = () => false;
+export const shouldRevalidate: ShouldRevalidateFunction = () => false;
 
 export default function BuildAnalyzerPage() {
+  const user = useUser();
   const { t } = useTranslation(["analyzer", "common", "weapons"]);
   useSetTitle(t("common:pages.analyzer"));
   const {
     build,
+    build2,
+    focusedBuild,
     mainWeaponId,
     handleChange,
     analyzed,
+    analyzed2,
+    focused,
     abilityPoints,
+    abilityPoints2,
     ldeIntensity,
-    effects,
+    allEffects,
   } = useAnalyzeBuild();
 
-  const objectShredderSelected = build[2][0] === "OS";
+  const statKeyToTuple = (key: keyof AnalyzedBuild["stats"]) => {
+    return [analyzed.stats[key], analyzed2.stats[key]] as [Stat, Stat];
+  };
+
+  const objectShredderSelected = build[2][0] === "OS" || build2[2][0] === "OS";
+
+  const isComparing = !buildIsEmpty(build) && !buildIsEmpty(build2);
 
   const mainWeaponCategoryItems = [
     analyzed.stats.shotSpreadAir && (
       <StatCard
+        isComparing={isComparing}
         abilityPoints={abilityPoints}
         key="jumpShotSpread"
-        stat={analyzed.stats.shotSpreadAir}
+        stat={statKeyToTuple("shotSpreadAir")}
         title={t("analyzer:stat.jumpShotSpread")}
         suffix="°"
       />
     ),
     typeof analyzed.stats.shotSpreadGround === "number" && (
       <StatCard
+        isComparing={isComparing}
         abilityPoints={abilityPoints}
         key="groundShotSpread"
         stat={analyzed.stats.shotSpreadGround}
@@ -118,6 +138,7 @@ export default function BuildAnalyzerPage() {
     ),
     typeof analyzed.stats.mainWeaponWhiteInkSeconds === "number" && (
       <StatCard
+        isComparing={isComparing}
         abilityPoints={abilityPoints}
         key="whiteInkSeconds"
         stat={analyzed.stats.mainWeaponWhiteInkSeconds}
@@ -127,6 +148,7 @@ export default function BuildAnalyzerPage() {
     ),
     typeof analyzed.weapon.brellaCanopyHp === "number" && (
       <StatCard
+        isComparing={isComparing}
         abilityPoints={abilityPoints}
         key="brellaCanopyHp"
         stat={analyzed.weapon.brellaCanopyHp}
@@ -136,6 +158,7 @@ export default function BuildAnalyzerPage() {
     ),
     typeof analyzed.weapon.fullChargeSeconds === "number" && (
       <StatCard
+        isComparing={isComparing}
         abilityPoints={abilityPoints}
         key="fullChargeSeconds"
         stat={analyzed.weapon.fullChargeSeconds}
@@ -145,6 +168,7 @@ export default function BuildAnalyzerPage() {
     ),
     typeof analyzed.weapon.maxChargeHoldSeconds === "number" && (
       <StatCard
+        isComparing={isComparing}
         abilityPoints={abilityPoints}
         key="maxChargeHoldSeconds"
         stat={analyzed.weapon.maxChargeHoldSeconds}
@@ -176,36 +200,96 @@ export default function BuildAnalyzerPage() {
                     newMainWeaponId: Number(opt.value) as MainWeaponId,
                   })
                 }
-                className="w-full-important"
+                fullWidth
                 clearsInputOnFocus
               />
             </div>
-            <WeaponInfoBadges analyzed={analyzed} />
           </div>
-          <div className="stack md items-center">
-            <AbilitiesSelector
-              selectedAbilities={build}
-              onChange={(newBuild) => handleChange({ newBuild })}
-            />
+          <div className="stack md items-center w-full">
+            <div className="w-full">
+              <Tabs className="analyzer__sub-nav">
+                <Tab
+                  active={focused === 1}
+                  onClick={() => handleChange({ newFocused: 1 })}
+                  testId="build1-tab"
+                >
+                  {t("analyzer:build1")}
+                </Tab>
+                <Tab
+                  active={focused === 2}
+                  onClick={() => handleChange({ newFocused: 2 })}
+                  testId="build2-tab"
+                >
+                  {t("analyzer:build2")}
+                </Tab>
+                <Tab
+                  active={focused === 3}
+                  onClick={() => handleChange({ newFocused: 3 })}
+                  testId="ap-tab"
+                >
+                  {t("analyzer:compare")}
+                </Tab>
+              </Tabs>
+              {focusedBuild ? (
+                <AbilitiesSelector
+                  selectedAbilities={focusedBuild}
+                  onChange={(newBuild) => {
+                    const firstBuildIsEmpty = build
+                      .flat()
+                      .every((ability) => ability === "UNKNOWN");
+
+                    const buildWasEmptied =
+                      !firstBuildIsEmpty &&
+                      newBuild
+                        .flat()
+                        .every((ability) => ability === "UNKNOWN") &&
+                      focused === 1;
+
+                    // if we don't do this the
+                    // build2 would be duplicated
+                    if (buildWasEmptied) {
+                      handleChange({
+                        newBuild: build2,
+                        newBuild2: newBuild,
+                        newFocused: 1,
+                      });
+                      return;
+                    }
+
+                    handleChange({
+                      [focused === 1 || firstBuildIsEmpty
+                        ? "newBuild"
+                        : "newBuild2"]: newBuild,
+                      newFocused: firstBuildIsEmpty ? 1 : undefined,
+                    });
+                  }}
+                />
+              ) : (
+                <APCompare
+                  abilityPoints={abilityPoints}
+                  abilityPoints2={abilityPoints2}
+                  build={build}
+                  build2={build2}
+                />
+              )}
+            </div>
             <EffectsSelector
               build={build}
+              build2={build2}
               ldeIntensity={ldeIntensity}
               handleLdeIntensityChange={(newLdeIntensity) =>
                 handleChange({ newLdeIntensity })
               }
               handleAddEffect={(newEffect) =>
-                handleChange({ newEffects: [...effects, newEffect] })
+                handleChange({ newEffects: [...allEffects, newEffect] })
               }
               handleRemoveEffect={(effectToRemove) =>
                 handleChange({
-                  newEffects: effects.filter((e) => e !== effectToRemove),
+                  newEffects: allEffects.filter((e) => e !== effectToRemove),
                 })
               }
-              effects={effects}
+              effects={allEffects}
             />
-            {abilityPoints.size > 0 && (
-              <AbilityPointsDetails abilityPoints={abilityPoints} />
-            )}
             {showAbilityChunksRequired && (
               <AbilityChunksRequired build={build} />
             )}
@@ -216,19 +300,47 @@ export default function BuildAnalyzerPage() {
         </div>
         <div className="stack md">
           {mainWeaponCategoryItems.length > 0 && (
-            <StatCategory title={t("analyzer:stat.category.main")}>
+            <StatCategory
+              title={t("analyzer:stat.category.main")}
+              summaryRightContent={
+                <div className="analyzer__weapon-info-badge">
+                  <Image
+                    path={mainWeaponImageUrl(mainWeaponId)}
+                    width={24}
+                    height={24}
+                    alt={t(`weapons:MAIN_${mainWeaponId}`)}
+                  />
+                  {t(`weapons:MAIN_${mainWeaponId}`)}
+                </div>
+              }
+            >
               {mainWeaponCategoryItems}
             </StatCategory>
           )}
 
-          <StatCategory title={t("analyzer:stat.category.sub")}>
+          <StatCategory
+            title={t("analyzer:stat.category.sub")}
+            summaryRightContent={
+              <div className="analyzer__weapon-info-badge">
+                <Image
+                  path={subWeaponImageUrl(analyzed.weapon.subWeaponSplId)}
+                  width={24}
+                  height={24}
+                  alt={t(`weapons:SUB_${analyzed.weapon.subWeaponSplId}`)}
+                />
+                {t(`weapons:SUB_${analyzed.weapon.subWeaponSplId}`)}
+              </div>
+            }
+          >
             <StatCard
+              isComparing={isComparing}
               abilityPoints={abilityPoints}
-              stat={analyzed.stats.subWeaponInkConsumptionPercentage}
+              stat={statKeyToTuple("subWeaponInkConsumptionPercentage")}
               title={t("analyzer:stat.subWeaponInkConsumptionPercentage")}
               suffix="%"
             />
             <StatCard
+              isComparing={isComparing}
               abilityPoints={abilityPoints}
               stat={analyzed.stats.subWeaponWhiteInkSeconds}
               title={t("analyzer:stat.whiteInk")}
@@ -236,90 +348,119 @@ export default function BuildAnalyzerPage() {
             />
             {analyzed.stats.subVelocity && (
               <StatCard
+                isComparing={isComparing}
                 abilityPoints={abilityPoints}
-                stat={analyzed.stats.subVelocity}
+                stat={statKeyToTuple("subVelocity")}
                 title={t("analyzer:stat.sub.velocity")}
               />
             )}
             {analyzed.stats.subFirstPhaseDuration && (
               <StatCard
+                isComparing={isComparing}
                 abilityPoints={abilityPoints}
-                stat={analyzed.stats.subFirstPhaseDuration}
+                stat={statKeyToTuple("subFirstPhaseDuration")}
                 title={t("analyzer:stat.sub.firstPhaseDuration")}
                 suffix={t("analyzer:suffix.seconds")}
               />
             )}
             {analyzed.stats.subSecondPhaseDuration && (
               <StatCard
+                isComparing={isComparing}
                 abilityPoints={abilityPoints}
-                stat={analyzed.stats.subSecondPhaseDuration}
+                stat={statKeyToTuple("subSecondPhaseDuration")}
                 title={t("analyzer:stat.sub.secondPhaseDuration")}
                 suffix={t("analyzer:suffix.seconds")}
               />
             )}
             {analyzed.stats.subMarkingTimeInSeconds && (
               <StatCard
+                isComparing={isComparing}
                 abilityPoints={abilityPoints}
-                stat={analyzed.stats.subMarkingTimeInSeconds}
+                stat={statKeyToTuple("subMarkingTimeInSeconds")}
                 title={t("analyzer:stat.sub.markingTimeInSeconds")}
                 suffix={t("analyzer:suffix.seconds")}
               />
             )}
             {analyzed.stats.subMarkingRadius && (
               <StatCard
+                isComparing={isComparing}
                 abilityPoints={abilityPoints}
-                stat={analyzed.stats.subMarkingRadius}
+                stat={statKeyToTuple("subMarkingRadius")}
                 title={t("analyzer:stat.sub.markingRadius")}
               />
             )}
             {analyzed.stats.subExplosionRadius && (
               <StatCard
+                isComparing={isComparing}
                 abilityPoints={abilityPoints}
-                stat={analyzed.stats.subExplosionRadius}
+                stat={statKeyToTuple("subExplosionRadius")}
                 title={t("analyzer:stat.sub.explosionRadius")}
               />
             )}
             {analyzed.stats.subHp && (
               <StatCard
+                isComparing={isComparing}
                 abilityPoints={abilityPoints}
-                stat={analyzed.stats.subHp}
+                stat={statKeyToTuple("subHp")}
                 title={t("analyzer:stat.sub.hp")}
                 suffix={t("analyzer:suffix.hp")}
               />
             )}
             {analyzed.stats.subQsjBoost && (
               <StatCard
+                isComparing={isComparing}
                 abilityPoints={abilityPoints}
-                stat={analyzed.stats.subQsjBoost}
+                stat={statKeyToTuple("subQsjBoost")}
                 title={t("analyzer:stat.sub.qsjBoost")}
                 suffix={t("analyzer:abilityPoints.short")}
               />
             )}
           </StatCategory>
 
-          <StatCategory title={t("analyzer:stat.category.special")}>
+          <StatCategory
+            title={t("analyzer:stat.category.special")}
+            summaryRightContent={
+              <div className="analyzer__weapon-info-badge">
+                <Image
+                  path={specialWeaponImageUrl(
+                    analyzed.weapon.specialWeaponSplId
+                  )}
+                  width={24}
+                  height={24}
+                  alt={t(
+                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
+                  )}
+                />
+                {t(`weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`)}
+              </div>
+            }
+          >
             <StatCard
+              isComparing={isComparing}
               abilityPoints={abilityPoints}
-              stat={analyzed.stats.specialPoint}
+              stat={statKeyToTuple("specialPoint")}
               title={t("analyzer:stat.specialPoints")}
               suffix={t("analyzer:suffix.specialPointsShort")}
             />
             <StatCard
+              isComparing={isComparing}
               abilityPoints={abilityPoints}
-              stat={analyzed.stats.specialLost}
+              stat={statKeyToTuple("specialLost")}
               title={t("analyzer:stat.specialLost")}
               suffix="%"
             />
             <StatCard
+              isComparing={isComparing}
               abilityPoints={abilityPoints}
-              stat={analyzed.stats.specialLostSplattedByRP}
+              stat={statKeyToTuple("specialLostSplattedByRP")}
               title={t("analyzer:stat.specialLostSplattedByRP")}
               suffix="%"
             />
             {analyzed.stats.specialDurationInSeconds && (
               <StatCard
+                isComparing={isComparing}
                 abilityPoints={abilityPoints}
-                stat={analyzed.stats.specialDurationInSeconds}
+                stat={statKeyToTuple("specialDurationInSeconds")}
                 title={t("analyzer:stat.special.duration", {
                   weapon: t(
                     `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
@@ -335,8 +476,9 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.specialDamageDistance && (
               <StatCard
+                isComparing={isComparing}
                 abilityPoints={abilityPoints}
-                stat={analyzed.stats.specialDamageDistance}
+                stat={statKeyToTuple("specialDamageDistance")}
                 title={t("analyzer:stat.special.damageDistance", {
                   weapon: t(
                     `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
@@ -346,8 +488,9 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.specialPaintRadius && (
               <StatCard
+                isComparing={isComparing}
                 abilityPoints={abilityPoints}
-                stat={analyzed.stats.specialPaintRadius}
+                stat={statKeyToTuple("specialPaintRadius")}
                 title={t("analyzer:stat.special.paintRadius", {
                   weapon: t(
                     `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
@@ -357,8 +500,9 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.specialFieldHp && (
               <StatCard
+                isComparing={isComparing}
                 abilityPoints={abilityPoints}
-                stat={analyzed.stats.specialFieldHp}
+                stat={statKeyToTuple("specialFieldHp")}
                 title={t("analyzer:stat.special.shieldHp", {
                   weapon: t(
                     `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
@@ -369,8 +513,9 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.specialDeviceHp && (
               <StatCard
+                isComparing={isComparing}
                 abilityPoints={abilityPoints}
-                stat={analyzed.stats.specialDeviceHp}
+                stat={statKeyToTuple("specialDeviceHp")}
                 title={t("analyzer:stat.special.deviceHp", {
                   weapon: t(
                     `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
@@ -381,8 +526,9 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.specialHookInkConsumptionPercentage && (
               <StatCard
+                isComparing={isComparing}
                 abilityPoints={abilityPoints}
-                stat={analyzed.stats.specialHookInkConsumptionPercentage}
+                stat={statKeyToTuple("specialHookInkConsumptionPercentage")}
                 title={t("analyzer:stat.special.inkConsumptionHook", {
                   weapon: t(
                     `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
@@ -393,8 +539,11 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.specialInkConsumptionPerSecondPercentage && (
               <StatCard
+                isComparing={isComparing}
                 abilityPoints={abilityPoints}
-                stat={analyzed.stats.specialInkConsumptionPerSecondPercentage}
+                stat={statKeyToTuple(
+                  "specialInkConsumptionPerSecondPercentage"
+                )}
                 title={t("analyzer:stat.special.inkConsumptionPerSecond", {
                   weapon: t(
                     `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
@@ -405,8 +554,9 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.specialReticleRadius && (
               <StatCard
+                isComparing={isComparing}
                 abilityPoints={abilityPoints}
-                stat={analyzed.stats.specialReticleRadius}
+                stat={statKeyToTuple("specialReticleRadius")}
                 title={t("analyzer:stat.special.reticleRadius", {
                   weapon: t(
                     `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
@@ -416,8 +566,9 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.specialThrowDistance && (
               <StatCard
+                isComparing={isComparing}
                 abilityPoints={abilityPoints}
-                stat={analyzed.stats.specialThrowDistance}
+                stat={statKeyToTuple("specialThrowDistance")}
                 title={t("analyzer:stat.special.throwDistance", {
                   weapon: t(
                     `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
@@ -427,8 +578,9 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.specialAutoChargeRate && (
               <StatCard
+                isComparing={isComparing}
                 abilityPoints={abilityPoints}
-                stat={analyzed.stats.specialAutoChargeRate}
+                stat={statKeyToTuple("specialAutoChargeRate")}
                 title={t("analyzer:stat.special.autoChargeRate", {
                   weapon: t(
                     `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
@@ -438,8 +590,9 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.specialMaxRadius && (
               <StatCard
+                isComparing={isComparing}
                 abilityPoints={abilityPoints}
-                stat={analyzed.stats.specialMaxRadius}
+                stat={statKeyToTuple("specialMaxRadius")}
                 title={t("analyzer:stat.special.maxRadius", {
                   weapon: t(
                     `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
@@ -450,8 +603,9 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.specialRadiusRange && (
               <StatCard
+                isComparing={isComparing}
                 abilityPoints={abilityPoints}
-                stat={analyzed.stats.specialRadiusRange}
+                stat={statKeyToTuple("specialRadiusRange")}
                 title={t("analyzer:stat.special.radiusRange", {
                   weapon: t(
                     `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
@@ -461,8 +615,9 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.specialPowerUpDuration && (
               <StatCard
+                isComparing={isComparing}
                 abilityPoints={abilityPoints}
-                stat={analyzed.stats.specialPowerUpDuration}
+                stat={statKeyToTuple("specialPowerUpDuration")}
                 title={t("analyzer:stat.special.powerUpDuration", {
                   weapon: t(
                     `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
@@ -477,68 +632,77 @@ export default function BuildAnalyzerPage() {
             textBelow={t("analyzer:trackingSubDefExplanation")}
           >
             <StatCard
+              isComparing={isComparing}
               abilityPoints={abilityPoints}
-              stat={analyzed.stats.subDefBombDamageLightPercentage}
+              stat={statKeyToTuple("subDefBombDamageLightPercentage")}
               title={t("analyzer:stat.bombLdamage")}
               suffix="%"
             />
             <StatCard
+              isComparing={isComparing}
               abilityPoints={abilityPoints}
-              stat={analyzed.stats.subDefBombDamageHeavyPercentage}
+              stat={statKeyToTuple("subDefBombDamageHeavyPercentage")}
               title={t("analyzer:stat.bombHdamage")}
               suffix="%"
             />
             <StatCard
+              isComparing={isComparing}
               abilityPoints={abilityPoints}
-              stat={analyzed.stats.subDefAngleShooterDamage}
+              stat={statKeyToTuple("subDefAngleShooterDamage")}
               title={t("analyzer:stat.damage", {
                 weapon: t(`weapons:SUB_${ANGLE_SHOOTER_ID}`),
               })}
               suffix={t("analyzer:suffix.hp")}
             />
             <StatCard
+              isComparing={isComparing}
               abilityPoints={abilityPoints}
-              stat={analyzed.stats.subDefSplashWallDamagePercentage}
+              stat={statKeyToTuple("subDefSplashWallDamagePercentage")}
               title={t("analyzer:stat.damage", {
                 weapon: t(`weapons:SUB_${SPLASH_WALL_ID}`),
               })}
               suffix="%"
             />
             <StatCard
+              isComparing={isComparing}
               abilityPoints={abilityPoints}
-              stat={analyzed.stats.subDefSprinklerDamagePercentage}
+              stat={statKeyToTuple("subDefSprinklerDamagePercentage")}
               title={t("analyzer:stat.damage", {
                 weapon: t(`weapons:SUB_${SPRINKLER_ID}`),
               })}
               suffix="%"
             />
             <StatCard
+              isComparing={isComparing}
               abilityPoints={abilityPoints}
-              stat={analyzed.stats.subDefToxicMistMovementReduction}
+              stat={statKeyToTuple("subDefToxicMistMovementReduction")}
               title={t("analyzer:stat.movementReduction", {
                 weapon: t(`weapons:SUB_${TOXIC_MIST_ID}`),
               })}
               suffix="%"
             />
             <StatCard
+              isComparing={isComparing}
               abilityPoints={abilityPoints}
-              stat={analyzed.stats.subDefPointSensorMarkedTimeInSeconds}
+              stat={statKeyToTuple("subDefPointSensorMarkedTimeInSeconds")}
               title={t("analyzer:stat.markedTime", {
                 weapon: t(`weapons:SUB_${POINT_SENSOR_ID}`),
               })}
               suffix={t("analyzer:suffix.seconds")}
             />
             <StatCard
+              isComparing={isComparing}
               abilityPoints={abilityPoints}
-              stat={analyzed.stats.subDefInkMineMarkedTimeInSeconds}
+              stat={statKeyToTuple("subDefInkMineMarkedTimeInSeconds")}
               title={t("analyzer:stat.markedTime", {
                 weapon: t(`weapons:SUB_${INK_MINE_ID}`),
               })}
               suffix={t("analyzer:suffix.seconds")}
             />
             <StatCard
+              isComparing={isComparing}
               abilityPoints={abilityPoints}
-              stat={analyzed.stats.subDefAngleShooterMarkedTimeInSeconds}
+              stat={statKeyToTuple("subDefAngleShooterMarkedTimeInSeconds")}
               title={t("analyzer:stat.markedTime", {
                 weapon: t(`weapons:SUB_${ANGLE_SHOOTER_ID}`),
               })}
@@ -566,78 +730,103 @@ export default function BuildAnalyzerPage() {
             >
               {/** Hack the :has ;) */}
               {(["ISM", "ISS"] as const).some(
-                (ability) => (abilityPoints.get(ability)?.ap ?? 0) > 0
+                (ability) => (abilityPoints.get(ability) ?? 0) > 0
               ) ? (
                 <div className="analyzer__stat-card-highlighted" />
               ) : null}
               <ConsumptionTable
-                options={analyzed.stats.fullInkTankOptions}
+                isComparing={isComparing}
+                options={[
+                  analyzed.stats.fullInkTankOptions,
+                  analyzed2.stats.fullInkTankOptions,
+                ]}
                 subWeaponId={analyzed.weapon.subWeaponSplId}
               />
             </StatCategory>
           )}
 
-          <StatCategory title={t("analyzer:stat.category.movement")}>
+          <StatCategory
+            title={t("analyzer:stat.category.movement")}
+            testId="movement-category"
+          >
             <StatCard
+              isComparing={isComparing}
+              title={t("analyzer:attribute.weight")}
               abilityPoints={abilityPoints}
-              stat={analyzed.stats.swimSpeed}
-              title={t("analyzer:stat.swimSpeed")}
+              stat={t(`analyzer:attribute.weight.${analyzed.weapon.speedType}`)}
             />
             <StatCard
+              isComparing={isComparing}
               abilityPoints={abilityPoints}
-              stat={analyzed.stats.swimSpeedHoldingRainmaker}
+              stat={statKeyToTuple("swimSpeed")}
+              title={t("analyzer:stat.swimSpeed")}
+              testId="swim-speed"
+            />
+            <StatCard
+              isComparing={isComparing}
+              abilityPoints={abilityPoints}
+              stat={statKeyToTuple("swimSpeedHoldingRainmaker")}
               title={t("analyzer:stat.swimSpeedHoldingRainmaker")}
             />
             <StatCard
+              isComparing={isComparing}
               abilityPoints={abilityPoints}
-              stat={analyzed.stats.runSpeed}
+              stat={statKeyToTuple("runSpeed")}
               title={t("analyzer:stat.runSpeed")}
             />
             {analyzed.stats.shootingRunSpeed && (
               <StatCard
+                isComparing={isComparing}
                 abilityPoints={abilityPoints}
-                stat={analyzed.stats.shootingRunSpeed}
+                stat={statKeyToTuple("shootingRunSpeed")}
                 title={t("analyzer:stat.shootingRunSpeed")}
               />
             )}
             {analyzed.stats.shootingRunSpeedCharging && (
               <StatCard
+                isComparing={isComparing}
                 abilityPoints={abilityPoints}
-                stat={analyzed.stats.shootingRunSpeedCharging}
+                stat={statKeyToTuple("shootingRunSpeedCharging")}
                 title={t("analyzer:stat.shootingRunSpeedCharging")}
               />
             )}
             {analyzed.stats.shootingRunSpeedFullCharge && (
               <StatCard
+                isComparing={isComparing}
                 abilityPoints={abilityPoints}
-                stat={analyzed.stats.shootingRunSpeedFullCharge}
+                stat={statKeyToTuple("shootingRunSpeedFullCharge")}
                 title={t("analyzer:stat.shootingRunSpeedFullCharge")}
               />
             )}
             <StatCard
+              isComparing={isComparing}
               abilityPoints={abilityPoints}
-              stat={analyzed.stats.squidSurgeChargeFrames}
+              stat={statKeyToTuple("squidSurgeChargeFrames")}
               title={t("analyzer:stat.squidSurgeChargeFrames")}
             />
             <StatCard
+              isComparing={isComparing}
               abilityPoints={abilityPoints}
-              stat={analyzed.stats.runSpeedInEnemyInk}
+              stat={statKeyToTuple("runSpeedInEnemyInk")}
               title={t("analyzer:stat.runSpeedInEnemyInk")}
             />
             <StatCard
+              isComparing={isComparing}
               abilityPoints={abilityPoints}
-              stat={analyzed.stats.framesBeforeTakingDamageInEnemyInk}
+              stat={statKeyToTuple("framesBeforeTakingDamageInEnemyInk")}
               title={t("analyzer:stat.framesBeforeTakingDamageInEnemyInk")}
             />
             <StatCard
+              isComparing={isComparing}
               abilityPoints={abilityPoints}
-              stat={analyzed.stats.damageTakenInEnemyInkPerSecond}
+              stat={statKeyToTuple("damageTakenInEnemyInkPerSecond")}
               title={t("analyzer:stat.damageTakenInEnemyInkPerSecond")}
               suffix={t("analyzer:suffix.hp")}
             />
             <StatCard
+              isComparing={isComparing}
               abilityPoints={abilityPoints}
-              stat={analyzed.stats.enemyInkDamageLimit}
+              stat={statKeyToTuple("enemyInkDamageLimit")}
               title={t("analyzer:stat.enemyInkDamageLimit")}
               suffix={t("analyzer:suffix.hp")}
             />
@@ -645,37 +834,43 @@ export default function BuildAnalyzerPage() {
 
           <StatCategory title={t("analyzer:stat.category.misc")}>
             <StatCard
+              isComparing={isComparing}
               abilityPoints={abilityPoints}
-              stat={analyzed.stats.squidFormInkRecoverySeconds}
+              stat={statKeyToTuple("squidFormInkRecoverySeconds")}
               title={t("analyzer:stat.squidFormInkRecoverySeconds")}
               suffix={t("analyzer:suffix.seconds")}
             />
             <StatCard
+              isComparing={isComparing}
               abilityPoints={abilityPoints}
-              stat={analyzed.stats.humanoidFormInkRecoverySeconds}
+              stat={statKeyToTuple("humanoidFormInkRecoverySeconds")}
               title={t("analyzer:stat.humanoidFormInkRecoverySeconds")}
               suffix={t("analyzer:suffix.seconds")}
             />
             <StatCard
+              isComparing={isComparing}
               abilityPoints={abilityPoints}
-              stat={analyzed.stats.quickRespawnTime}
+              stat={statKeyToTuple("quickRespawnTime")}
               title={t("analyzer:stat.quickRespawnTime")}
               suffix={t("analyzer:suffix.seconds")}
             />
             <StatCard
+              isComparing={isComparing}
               abilityPoints={abilityPoints}
-              stat={analyzed.stats.quickRespawnTimeSplattedByRP}
+              stat={statKeyToTuple("quickRespawnTimeSplattedByRP")}
               title={t("analyzer:stat.quickRespawnTimeSplattedByRP")}
               suffix={t("analyzer:suffix.seconds")}
             />
             <StatCard
+              isComparing={isComparing}
               abilityPoints={abilityPoints}
-              stat={analyzed.stats.superJumpTimeGroundFrames}
+              stat={statKeyToTuple("superJumpTimeGroundFrames")}
               title={t("analyzer:stat.superJumpTimeGround")}
             />
             <StatCard
+              isComparing={isComparing}
               abilityPoints={abilityPoints}
-              stat={analyzed.stats.superJumpTimeTotal}
+              stat={statKeyToTuple("superJumpTimeTotal")}
               title={t("analyzer:stat.superJumpTimeTotal")}
               suffix={t("analyzer:suffix.seconds")}
             />
@@ -694,45 +889,112 @@ export default function BuildAnalyzerPage() {
               {t("analyzer:objCalcAd")}
             </Link>
           )}
+          {user && focusedBuild && !buildIsEmpty(focusedBuild) ? (
+            <Link
+              className="analyzer__noticeable-link"
+              to={userNewBuildPage(user, {
+                weapon: mainWeaponId,
+                build: focusedBuild,
+              })}
+              data-testid="new-build-prompt"
+            >
+              <Image
+                path={navIconUrl("builds")}
+                width={24}
+                height={24}
+                alt=""
+              />
+              {t("analyzer:newBuildPrompt")}
+            </Link>
+          ) : null}
         </div>
       </div>
     </Main>
   );
 }
 
-function WeaponInfoBadges({ analyzed }: { analyzed: AnalyzedBuild }) {
-  const { t } = useTranslation(["weapons", "analyzer"]);
+function APCompare({
+  abilityPoints,
+  abilityPoints2,
+  build,
+  build2,
+}: {
+  abilityPoints: AbilityPoints;
+  abilityPoints2: AbilityPoints;
+  build: BuildAbilitiesTupleWithUnknown;
+  build2: BuildAbilitiesTupleWithUnknown;
+}) {
+  const { t } = useTranslation(["analyzer"]);
+
+  const buildMains = build
+    .flat()
+    .filter((ability) => !isStackableAbility(ability) && ability !== "UNKNOWN");
+  const build2Mains = build2
+    .flat()
+    .filter((ability) => !isStackableAbility(ability) && ability !== "UNKNOWN");
+
+  const hasAtLeastOneMainOnlyAbility =
+    buildMains.length > 0 || build2Mains.length > 0;
 
   return (
-    <div className="analyzer__weapon-info-badges">
-      <div className="analyzer__weapon-info-badge">
-        <Image
-          path={subWeaponImageUrl(analyzed.weapon.subWeaponSplId)}
-          width={20}
-          height={20}
-          alt={t(`weapons:SUB_${analyzed.weapon.subWeaponSplId}`)}
-        />
-        {t(`weapons:SUB_${analyzed.weapon.subWeaponSplId}`)}
-      </div>
-      <div className="analyzer__weapon-info-badge">
-        {t("analyzer:attribute.weight")}{" "}
-        {t(`analyzer:attribute.weight.${analyzed.weapon.speedType}`)}
-      </div>
-      <div className="analyzer__weapon-info-badge">
-        <Image
-          path={specialWeaponImageUrl(analyzed.weapon.specialWeaponSplId)}
-          width={20}
-          height={20}
-          alt={t(`weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`)}
-        />
-        {t(`weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`)}
-      </div>
+    <div className="analyzer__ap-compare">
+      {hasAtLeastOneMainOnlyAbility ? (
+        <>
+          <div className="analyzer__ap-compare__mains">
+            {buildMains.map((ability) => (
+              <Ability key={ability} ability={ability} size="TINY" />
+            ))}
+          </div>
+          <div />
+          <div className="analyzer__ap-compare__mains">
+            {build2Mains.map((ability) => (
+              <Ability key={ability} ability={ability} size="TINY" />
+            ))}
+          </div>
+        </>
+      ) : null}
+      {([...abilitiesShort, "UNKNOWN"] as const).map((ability) => {
+        const ap = abilityPoints.get(ability) ?? 0;
+        const ap2 = abilityPoints2.get(ability) ?? 0;
+
+        if (!ap && !ap2) return null;
+
+        return (
+          <React.Fragment key={ability}>
+            <div
+              className={clsx("justify-self-end", {
+                invisible: !ap,
+              })}
+            >
+              {ap}AP
+            </div>
+            <div
+              className={clsx("analyzer__ap-compare__bar", "justify-self-end", {
+                analyzer__better: ap >= ap2,
+              })}
+              style={{ width: `${ap}px` }}
+            />
+            <Ability ability={ability} size="TINY" />
+            <div
+              className={clsx("analyzer__ap-compare__bar", {
+                analyzer__better: ap <= ap2,
+              })}
+              style={{ width: `${ap2}px` }}
+            />
+            <div className={clsx({ invisible: !ap2 })}>
+              {ap2}
+              {t("analyzer:abilityPoints.short")}
+            </div>
+          </React.Fragment>
+        );
+      })}
     </div>
   );
 }
 
 function EffectsSelector({
   build,
+  build2,
   effects,
   ldeIntensity,
   handleLdeIntensityChange,
@@ -740,6 +1002,7 @@ function EffectsSelector({
   handleRemoveEffect,
 }: {
   build: BuildAbilitiesTupleWithUnknown;
+  build2: BuildAbilitiesTupleWithUnknown;
   effects: Array<SpecialEffectType>;
   ldeIntensity: number;
   handleLdeIntensityChange: (newLdeIntensity: number) => void;
@@ -749,7 +1012,10 @@ function EffectsSelector({
   const { t } = useTranslation(["weapons", "analyzer"]);
 
   const effectsToShow = SPECIAL_EFFECTS.filter(
-    (effect) => !isAbility(effect.type) || build.flat().includes(effect.type)
+    (effect) =>
+      !isAbility(effect.type) ||
+      build.flat().includes(effect.type) ||
+      build2.flat().includes(effect.type)
   ).reverse(); // reverse to show Tacticooler first as it always shows
 
   return (
@@ -810,40 +1076,6 @@ function EffectsSelector({
   );
 }
 
-function AbilityPointsDetails({
-  abilityPoints,
-}: {
-  abilityPoints: AbilityPoints;
-}) {
-  const { t } = useTranslation("analyzer");
-
-  return (
-    <details className="w-full">
-      <summary className="analyzer__ap-summary">{t("abilityPoints")}</summary>
-      <div className="stack sm horizontal flex-wrap mt-4">
-        {abilities
-          .filter((a) => (abilityPoints.get(a.name)?.ap ?? 0) > 0)
-          .sort((a, b) => {
-            return (
-              abilityPoints.get(b.name)!.ap - abilityPoints.get(a.name)!.ap
-            );
-          })
-          .map((a) => (
-            <div
-              key={`abilityPointsDetails_${a.name}`}
-              className="stack items-center"
-            >
-              <Ability ability={a.name} size="TINY" />
-              <div className="analyzer__ap-text">
-                {abilityPoints.get(a.name)?.ap}
-              </div>
-            </div>
-          ))}
-      </div>
-    </details>
-  );
-}
-
 function AbilityChunksRequired({
   build,
 }: {
@@ -880,15 +1112,22 @@ function StatCategory({
   children,
   containerClassName = "analyzer__stat-collection",
   textBelow,
+  summaryRightContent,
+  testId,
 }: {
   title: string;
   children: React.ReactNode;
   containerClassName?: string;
   textBelow?: string;
+  summaryRightContent?: React.ReactNode;
+  testId?: string;
 }) {
   return (
     <details className="analyzer__details">
-      <summary className="analyzer__summary">{title}</summary>
+      <summary className="analyzer__summary" data-testid={testId}>
+        {title}
+        {summaryRightContent}
+      </summary>
       <div className={containerClassName}>{children}</div>
       {textBelow && (
         <div className="analyzer__stat-category-explanation">{textBelow}</div>
@@ -903,36 +1142,54 @@ function StatCard({
   suffix,
   popoverInfo,
   abilityPoints,
+  isComparing,
+  testId,
 }: {
   title: string;
-  stat: Stat | Stat<string> | number;
+  stat: [Stat, Stat] | [Stat<string>, Stat<string>] | number | string;
   suffix?: string;
   popoverInfo?: string;
   abilityPoints: AbilityPoints;
+  isComparing: boolean;
+  testId?: string;
 }) {
   const { t } = useTranslation("analyzer");
 
-  const baseValue = typeof stat === "number" ? stat : stat.baseValue;
+  const isStaticValue = typeof stat === "number" || typeof stat === "string";
+  const baseValue = isStaticValue ? stat : stat[0].baseValue;
+
   const showBuildValue = () => {
-    if (typeof stat === "number") return false;
+    if (isStaticValue) return false;
+    if (isComparing) return true;
 
     // slightly hacky but handles the edge case
     // where baseValue === value which can happen when
     // you have Ninja Squid and stack swim speed
     // -> we still want to show the build value
-    return [stat.modifiedBy].flat().some((ability) => {
-      const hasStackable = (abilityPoints.get(ability)?.ap ?? 0) > 0;
-      const hasEffect = stat.baseValue !== stat.value;
+    return [stat[0].modifiedBy].flat().some((ability) => {
+      const hasStackable = (abilityPoints.get(ability) ?? 0) > 0;
+      const hasEffect = baseValue !== stat[0].value;
 
       return hasEffect || hasStackable;
     });
   };
 
+  const showComparison = isComparing && !isStaticValue;
+
+  const isHighlighted = () => {
+    if (!showComparison) return showBuildValue();
+
+    return (
+      stat[0].value !== stat[0].baseValue || stat[1].value !== stat[1].baseValue
+    );
+  };
+
   return (
     <div
       className={clsx("analyzer__stat-card", {
-        "analyzer__stat-card-highlighted": showBuildValue(),
+        "analyzer__stat-card-highlighted": isHighlighted(),
       })}
+      data-testid={testId}
     >
       <div className="analyzer__stat-card__title-and-value-container">
         <h3 className="analyzer__stat-card__title">
@@ -950,20 +1207,30 @@ function StatCard({
         <div className="analyzer__stat-card-values">
           <div className="analyzer__stat-card__value">
             <h4 className="analyzer__stat-card__value__title">
-              {typeof stat === "number" ? t("value") : t("base")}
+              {typeof stat === "number"
+                ? t("value")
+                : showComparison
+                ? t("build1")
+                : t("base")}
             </h4>{" "}
-            <div className="analyzer__stat-card__value__number">
-              {baseValue}
+            <div
+              className="analyzer__stat-card__value__number"
+              data-testid={testId ? `${testId}-base` : undefined}
+            >
+              {showComparison ? (stat as [Stat, Stat])[0].value : baseValue}
               {suffix}
             </div>
           </div>
           {showBuildValue() ? (
             <div className="analyzer__stat-card__value">
-              <h4 className="analyzer__stat-card__value__title">
-                {t("build")}
+              <h4
+                className="analyzer__stat-card__value__title"
+                data-testid={testId ? `${testId}-build-title` : undefined}
+              >
+                {showComparison ? t("build2") : t("build")}
               </h4>{" "}
               <div className="analyzer__stat-card__value__number">
-                {(stat as Stat).value}
+                {(stat as [Stat, Stat])[showComparison ? 1 : 0].value}
                 {suffix}
               </div>
             </div>
@@ -971,8 +1238,8 @@ function StatCard({
         </div>
       </div>
       <div className="analyzer__stat-card__ability-container">
-        {typeof stat !== "number" && (
-          <ModifiedByAbilities abilities={stat.modifiedBy} />
+        {!isStaticValue && (
+          <ModifiedByAbilities abilities={stat[0].modifiedBy} />
         )}
       </div>
     </div>
@@ -1052,18 +1319,25 @@ function DamageTable({
 }
 
 function ConsumptionTable({
+  isComparing,
   options,
   subWeaponId,
 }: {
-  options: AnalyzedBuild["stats"]["fullInkTankOptions"];
+  isComparing: boolean;
+  options: [
+    AnalyzedBuild["stats"]["fullInkTankOptions"],
+    AnalyzedBuild["stats"]["fullInkTankOptions"]
+  ];
   subWeaponId: SubWeaponId;
 }) {
+  const [options1, options2] = options;
+
   const { t } = useTranslation(["analyzer", "weapons"]);
   const maxSubsToUse =
     subWeaponId === TORPEDO_ID
       ? 1
-      : Math.max(...options.map((opt) => opt.subsUsed));
-  const types = Array.from(new Set(options.map((opt) => opt.type)));
+      : Math.max(...options.flat().map((opt) => opt.subsUsed));
+  const types = Array.from(new Set(options1.map((opt) => opt.type)));
 
   return (
     <>
@@ -1078,23 +1352,51 @@ function ConsumptionTable({
         </thead>
         <tbody>
           {new Array(maxSubsToUse + 1).fill(null).map((_, subsUsed) => {
+            const options1ForThisSubsUsed = options1.filter(
+              (opt) => opt.subsUsed === subsUsed
+            );
+            const options2ForThisSubsUsed = options2.filter(
+              (opt) => opt.subsUsed === subsUsed
+            );
+
+            const cells: React.ReactNode[] = [];
+
+            // weird using basic for loop in react code but here we are essentially
+            // zipping these two arrays into one cell and if one of the arrays
+            // doesn't have value then it shows as a dash instead
+            for (
+              let i = 0;
+              i <
+              Math.max(
+                options1ForThisSubsUsed.length,
+                options2ForThisSubsUsed.length
+              );
+              i++
+            ) {
+              const opt1 = options1ForThisSubsUsed[i];
+              const opt2 = options2ForThisSubsUsed[i];
+
+              const contents = !isComparing
+                ? opt1!.value
+                : `${opt1?.value ?? "-"}/${opt2?.value ?? "-"}`;
+
+              cells.push(<td key={opt1?.id ?? opt2!.id}>{contents}</td>);
+            }
+
             return (
-              <tr key={subsUsed} className="bg-darker-important">
+              <tr key={subsUsed}>
                 <td>×{subsUsed}</td>
-                {options
-                  .filter((opt) => opt.subsUsed === subsUsed)
-                  .map((opt) => {
-                    return <td key={opt.id}>{opt.value}</td>;
-                  })}
+                {cells}
               </tr>
             );
           })}
         </tbody>
       </table>
-      <div className="analyzer__consumption-table-explanation">
-        {t("analyzer:consumptionExplanation", { maxSubsToUse })}
-        {subWeaponId === TORPEDO_ID && <> {t("analyzer:torpedoExplanation")}</>}
-      </div>
+      {subWeaponId === TORPEDO_ID && (
+        <div className="analyzer__consumption-table-explanation">
+          <> {t("analyzer:torpedoExplanation")}</>
+        </div>
+      )}
     </>
   );
 }

@@ -6,6 +6,8 @@ module.exports = {
   cacheDirectory: process.env.NODE_ENV === "test" ? ".cache-test" : undefined,
   routes: async (defineRoutes) => {
     return defineRoutes((route) => {
+      route("/upload", "features/img-upload/routes/upload.tsx");
+      route("/upload/admin", "features/img-upload/routes/upload.admin.tsx");
       route("/plans", "features/map-planner/routes/plans.tsx");
       route("/analyzer", "features/build-analyzer/routes/analyzer.tsx");
       route(
@@ -22,8 +24,17 @@ module.exports = {
         route("/to/:id/join", "features/tournament/routes/to.$id.join.tsx");
       });
 
+      route("/privacy-policy", "features/info/routes/privacy-policy.tsx");
+      route("/support", "features/info/routes/support.tsx");
+
+      route("/t", "features/team/routes/t.tsx");
       route("/t/:customUrl", "features/team/routes/t.$customUrl.tsx");
       route("/t/:customUrl/edit", "features/team/routes/t.$customUrl.edit.tsx");
+      route(
+        "/t/:customUrl/roster",
+        "features/team/routes/t.$customUrl.roster.tsx"
+      );
+      route("/t/:customUrl/join", "features/team/routes/t.$customUrl.join.tsx");
     });
   },
 };

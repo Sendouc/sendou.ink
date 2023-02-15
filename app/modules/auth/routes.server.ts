@@ -8,7 +8,7 @@ import {
   IMPERSONATED_SESSION_KEY,
 } from "./authenticator.server";
 import { authSessionStorage } from "./session.server";
-import { getUser } from "./user.server";
+import { getUserId } from "./user.server";
 
 export const callbackLoader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
@@ -38,7 +38,7 @@ export const logInAction: ActionFunction = async ({ request }) => {
 };
 
 export const impersonateAction: ActionFunction = async ({ request }) => {
-  const user = await getUser(request);
+  const user = await getUserId(request);
   if (!canPerformAdminActions(user)) {
     throw new Response(null, { status: 403 });
   }

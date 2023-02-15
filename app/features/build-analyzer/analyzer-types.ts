@@ -117,7 +117,7 @@ export interface SubWeaponParams {
   DirectDamage?: number;
 }
 
-type SpecialWeaponParamsObject = typeof weaponParams["specialWeapons"];
+type SpecialWeaponParamsObject = (typeof weaponParams)["specialWeapons"];
 export type SpecialWeaponParams = SpecialWeaponParamsObject[SpecialWeaponId] & {
   overwrites?: Overwrites;
 };
@@ -134,10 +134,7 @@ export interface Stat<T = number> {
   modifiedBy: Ability | Array<Ability>;
 }
 
-export type AbilityPoints = Map<
-  Ability,
-  { ap: number; apBeforeTacticooler: number }
->;
+export type AbilityPoints = Map<AbilityWithUnknown, number>;
 
 export type AbilityChunks = Map<AbilityWithUnknown, number>;
 
@@ -148,9 +145,10 @@ export interface StatFunctionInput {
   specialWeaponParams: SpecialWeaponParams;
   abilityPoints: AbilityPoints;
   mainOnlyAbilities: Array<Ability>;
+  hasTacticooler: boolean;
 }
 
-export type InkConsumeType = typeof INK_CONSUME_TYPES[number];
+export type InkConsumeType = (typeof INK_CONSUME_TYPES)[number];
 
 export const INK_CONSUME_TYPES = [
   "NORMAL",
@@ -171,7 +169,7 @@ export interface FullInkTankOption {
   type: InkConsumeType;
 }
 
-export type DamageType = typeof DAMAGE_TYPE[number];
+export type DamageType = (typeof DAMAGE_TYPE)[number];
 
 export interface Damage {
   value: number;
@@ -255,6 +253,6 @@ export interface AnalyzedBuild {
   };
 }
 
-export type SpecialEffectType = typeof SPECIAL_EFFECTS[number]["type"];
+export type SpecialEffectType = (typeof SPECIAL_EFFECTS)[number]["type"];
 
 export type AbilityValuesKeys = keyof typeof abilityValues;

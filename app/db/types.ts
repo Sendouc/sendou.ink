@@ -1,3 +1,4 @@
+import type { TEAM_MEMBER_ROLES } from "~/features/team";
 import type {
   Ability,
   MainWeaponId,
@@ -16,6 +17,7 @@ export interface User {
   twitter: string | null;
   youtubeId: string | null;
   bio: string | null;
+  css: string | null;
   country: string | null;
   customUrl: string | null;
   stickSens: number | null;
@@ -240,6 +242,7 @@ export interface UserSubmittedImage {
   id: number;
   validatedAt: number | null;
   url: string;
+  submitterUserId: number;
 }
 
 export interface Team {
@@ -247,6 +250,7 @@ export interface Team {
   name: string;
   customUrl: string;
   inviteCode: string;
+  css: string | null;
   twitter: string | null;
   bio: string | null;
   avatarImgId: number | null;
@@ -255,12 +259,7 @@ export interface Team {
   deletedAt: number | null;
 }
 
-export type MemberRole =
-  | "CAPTAIN"
-  | "FRONTLINE"
-  | "SUPPORT"
-  | "BACKLINE"
-  | "COACH";
+export type MemberRole = (typeof TEAM_MEMBER_ROLES)[number];
 
 export interface TeamMember {
   teamId: number;

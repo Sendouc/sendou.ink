@@ -1,3 +1,4 @@
+import type { AbilityType } from "~/modules/in-game-lists";
 import {
   abilities,
   mainWeaponIds,
@@ -17,6 +18,8 @@ import type {
   SubWeaponParams,
 } from "../analyzer-types";
 import invariant from "tiny-invariant";
+import { EMPTY_BUILD } from "~/constants";
+import { UNKNOWN_SHORT } from "../analyzer-constants";
 
 export function weaponParams(): ParamsJson {
   return weaponParamsJson as ParamsJson;
@@ -31,22 +34,24 @@ export function buildToAbilityPoints(build: BuildAbilitiesTupleWithUnknown) {
       if (ability === "AD") {
         abilityDoublerActive = true;
       }
-      if (!isStackableAbility(ability)) {
+      if (!isStackableAbility(ability) && ability !== "UNKNOWN") {
         continue;
       }
 
       const aps = i === 0 ? 10 : 3;
       const apsDoubled = aps * (abilityDoublerActive ? 2 : 1);
-      const newAp = (result.get(ability)?.ap ?? 0) + apsDoubled;
+      const newAp = (result.get(ability) ?? 0) + apsDoubled;
 
-      result.set(ability, { ap: newAp, apBeforeTacticooler: newAp });
+      result.set(ability, newAp);
     }
   }
 
   return result;
 }
 
-function isStackableAbility(ability: AbilityWithUnknown): ability is Ability {
+export function isStackableAbility(
+  ability: AbilityWithUnknown
+): ability is Ability {
   if (ability === "UNKNOWN") return false;
   const abilityObj = abilities.find((a) => a.name === ability);
   invariant(abilityObj);
@@ -57,13 +62,11 @@ function isStackableAbility(ability: AbilityWithUnknown): ability is Ability {
 export function apFromMap({
   abilityPoints,
   ability,
-  key = "ap",
 }: {
   abilityPoints: AbilityPoints;
   ability: Ability;
-  key?: "ap" | "apBeforeTacticooler";
 }) {
-  return abilityPoints.get(ability)?.[key] ?? 0;
+  return abilityPoints.get(ability) ?? 0;
 }
 
 function abilityValues({
@@ -171,6 +174,64 @@ export function validatedWeaponIdFromSearchParams(
   return weaponCategories[0].weaponIds[0];
 }
 
+function validateAbility(
+  legalTypes: Array<AbilityType>,
+  ability?: string
+): AbilityWithUnknown {
+  if (!ability) throw new Error("Ability missing");
+  if (ability === UNKNOWN_SHORT) return "UNKNOWN";
+
+  const abilityObj = abilities.find(
+    (a) => a.name === ability && legalTypes.includes(a.type)
+  );
+  if (abilityObj) return abilityObj.name;
+
+  throw new Error("Invalid ability");
+}
+
+export function validatedBuildFromSearchParams(
+  searchParams: URLSearchParams,
+  key = "build"
+): BuildAbilitiesTupleWithUnknown {
+  const abilitiesArr = searchParams.get(key)
+    ? searchParams.get(key)?.split(",")
+    : null;
+
+  if (!abilitiesArr) return EMPTY_BUILD;
+
+  try {
+    return [
+      [
+        validateAbility(["STACKABLE", "HEAD_MAIN_ONLY"], abilitiesArr[0]),
+        validateAbility(["STACKABLE"], abilitiesArr[1]),
+        validateAbility(["STACKABLE"], abilitiesArr[2]),
+        validateAbility(["STACKABLE"], abilitiesArr[3]),
+      ],
+      [
+        validateAbility(["STACKABLE", "CLOTHES_MAIN_ONLY"], abilitiesArr[4]),
+        validateAbility(["STACKABLE"], abilitiesArr[5]),
+        validateAbility(["STACKABLE"], abilitiesArr[6]),
+        validateAbility(["STACKABLE"], abilitiesArr[7]),
+      ],
+      [
+        validateAbility(["STACKABLE", "SHOES_MAIN_ONLY"], abilitiesArr[8]),
+        validateAbility(["STACKABLE"], abilitiesArr[9]),
+        validateAbility(["STACKABLE"], abilitiesArr[10]),
+        validateAbility(["STACKABLE"], abilitiesArr[11]),
+      ],
+    ];
+  } catch (err) {
+    return EMPTY_BUILD;
+  }
+}
+
+export function serializeBuild(build: BuildAbilitiesTupleWithUnknown) {
+  return build
+    .flat()
+    .map((ability) => (ability === "UNKNOWN" ? UNKNOWN_SHORT : ability))
+    .join(",");
+}
+
 export const hpDivided = (hp: number) => hp / 10;
 
 export function possibleApValues() {
@@ -184,3 +245,6 @@ export function possibleApValues() {
 
   return Array.from(uniqueValues).sort((a, b) => a - b);
 }
+
+export const buildIsEmpty = (build: BuildAbilitiesTupleWithUnknown) =>
+  build.flat().every((ability) => ability === "UNKNOWN");

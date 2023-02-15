@@ -4,7 +4,7 @@ import type {
   MetaFunction,
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import type { ShouldReloadFunction } from "@remix-run/react";
+import type { ShouldRevalidateFunction } from "@remix-run/react";
 import { Link, Outlet, useLoaderData, useSearchParams } from "@remix-run/react";
 import clsx from "clsx";
 import invariant from "tiny-invariant";
@@ -18,7 +18,7 @@ import { nextNonCompletedVoting } from "~/modules/plus-server";
 import { db } from "~/db";
 import type * as plusSuggestions from "~/db/models/plusSuggestions/queries.server";
 import type { PlusSuggestion, User } from "~/db/types";
-import { getUser, requireUser, useUser } from "~/modules/auth";
+import { requireUser, useUser } from "~/modules/auth";
 import {
   canAddCommentToSuggestionFE,
   canSuggestNewUserFE,
@@ -30,11 +30,12 @@ import { parseRequestFormData, validate } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { discordFullName } from "~/utils/strings";
 import { actualNumber } from "~/utils/zod";
-import { FAQ_PAGE, LOG_IN_URL, userPage } from "~/utils/urls";
+import { userPage } from "~/utils/urls";
 import { RelativeTime } from "~/components/RelativeTime";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { PLUS_TIERS } from "~/constants";
 import { assertUnreachable } from "~/utils/types";
+import { getUserId } from "~/modules/auth/user.server";
 
 export const meta: MetaFunction = () => {
   return {
@@ -133,33 +134,28 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 export interface PlusSuggestionsLoaderData {
-  suggestions?: plusSuggestions.FindVisibleForUser;
+  suggestions: plusSuggestions.FindVisibleForUser;
   suggestedForTiers: number[];
 }
 
-export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
+export const shouldRevalidate: ShouldRevalidateFunction = ({ formMethod }) => {
   // only reload if form submission not when user changes tabs
-  return Boolean(submission);
+  return Boolean(formMethod && formMethod !== "get");
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const user = await getUser(request);
-
-  if (!user) {
-    return json<PlusSuggestionsLoaderData>({
-      suggestedForTiers: [],
-    });
-  }
+  const user = await getUserId(request);
 
   return json<PlusSuggestionsLoaderData>({
-    suggestions: db.plusSuggestions.findVisibleForUser({
+    suggestions: db.plusSuggestions.findAll({
       ...nextNonCompletedVoting(new Date()),
-      plusTier: user.plusTier,
     }),
-    suggestedForTiers: db.plusSuggestions.tiersSuggestedFor({
-      ...nextNonCompletedVoting(new Date()),
-      userId: user.id,
-    }),
+    suggestedForTiers: user
+      ? db.plusSuggestions.tiersSuggestedFor({
+          ...nextNonCompletedVoting(new Date()),
+          userId: user.id,
+        })
+      : [],
   });
 };
 
@@ -173,27 +169,6 @@ export default function PlusSuggestionsPage() {
     setSearchParams({ tier });
   };
 
-  if (!user) {
-    return (
-      <form className="text-sm" action={LOG_IN_URL} method="post">
-        <p className="button-text-paragraph">
-          To view your suggestion status{" "}
-          <Button type="submit" variant="minimal">
-            log in
-          </Button>
-        </p>
-        <p className="mt-2">
-          Not sure what the Plus Server is about? Read the{" "}
-          <Link to={FAQ_PAGE}>FAQ</Link>
-        </p>
-      </form>
-    );
-  }
-
-  if (!data.suggestions) {
-    return <SuggestedForInfo />;
-  }
-
   const visibleSuggestions =
     tierVisible && data.suggestions[tierVisible]
       ? data.suggestions[tierVisible]
@@ -205,7 +180,7 @@ export default function PlusSuggestionsPage() {
       <Outlet />
       <div className="plus__container">
         <div className="stack md">
-          <SuggestedForInfo hideText />
+          <SuggestedForInfo />
           <div className="stack lg">
             <div
               className={clsx("plus__top-container", {
@@ -298,34 +273,13 @@ function tierVisibleInitialState(
   return String(Math.min(...Object.keys(suggestions).map(Number)));
 }
 
-function SuggestedForInfo({ hideText = false }: { hideText?: boolean }) {
+function SuggestedForInfo() {
   const data = useLoaderData<PlusSuggestionsLoaderData>();
-  const user = useUser();
 
-  // no need to show anything if they can't be suggested anyway...
-  if (user?.plusTier === 1) {
-    return null;
-  }
-
-  if (data.suggestedForTiers.length === 0) {
-    if (hideText) return null;
-
-    return (
-      <div className="plus__suggested-info-text">
-        You are not suggested yet this month.
-      </div>
-    );
-  }
+  if (data.suggestedForTiers.length === 0) return null;
 
   return (
     <div className="stack md">
-      {!hideText ? (
-        <div className="plus__suggested-info-text">
-          You are suggested to{" "}
-          {data.suggestedForTiers.map((tier) => `+${tier}`).join(" and ")} this
-          month.
-        </div>
-      ) : null}
       {canDeleteSuggestionOfThemselves() ? (
         <div className="stack horizontal md">
           {data.suggestedForTiers.map((tier) => (

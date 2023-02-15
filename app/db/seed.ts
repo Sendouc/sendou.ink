@@ -25,6 +25,7 @@ import allTags from "~/routes/calendar/tags.json";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import type { UpsertManyPlusVotesArgs } from "./models/plusVotes/queries.server";
 import { nanoid } from "nanoid";
+import { mySlugify } from "~/utils/urls";
 
 const ADMIN_TEST_AVATAR = "1d1d8488ced4cdf478648592fa871101";
 
@@ -36,11 +37,13 @@ const AMOUNT_OF_CALENDAR_EVENTS = 200;
 
 const basicSeeds = [
   adminUser,
+  makeAdminPatron,
   adminUserWeaponPool,
   nzapUser,
   users,
   userProfiles,
   lastMonthsVoting,
+  syncPlusTiers,
   lastMonthSuggestions,
   thisMonthsSuggestions,
   badgesToAdmin,
@@ -56,6 +59,7 @@ const basicSeeds = [
   adminBuilds,
   manySplattershotBuilds,
   detailedTeam,
+  otherTeams,
 ];
 
 export function seed() {
@@ -68,9 +72,9 @@ export function seed() {
 
 function wipeDB() {
   const tablesToDelete = [
-    "UserSubmittedImage",
-    "TeamMember",
-    "Team",
+    "UnvalidatedUserSubmittedImage",
+    "AllTeamMember",
+    "AllTeam",
     "Build",
     "TournamentTeamMember",
     "MapPoolMap",
@@ -81,8 +85,8 @@ function wipeDB() {
     "CalendarEventBadge",
     "CalendarEvent",
     "UserWeapon",
+    "PlusTier",
     "User",
-    "PlusVote",
     "PlusSuggestion",
     "PlusVote",
     "TournamentBadgeOwner",
@@ -104,6 +108,14 @@ function adminUser() {
     discordAvatar: ADMIN_TEST_AVATAR,
     twitter: "sendouc",
   });
+}
+
+function makeAdminPatron() {
+  sql
+    .prepare(
+      `update "User" set "patronTier" = 2, "patronSince" = 1674663454 where id = 1`
+    )
+    .run();
 }
 
 function adminUserWeaponPool() {
@@ -295,6 +307,16 @@ function thisMonthsSuggestions() {
       });
     }
   }
+}
+
+function syncPlusTiers() {
+  sql
+    .prepare(
+      /* sql */ `
+    insert into "PlusTier" ("userId", "tier") select "userId", "tier" from "FreshPlusTier" where "tier" is not null;
+  `
+    )
+    .run();
 }
 
 function badgesToAdmin() {
@@ -877,10 +899,10 @@ function detailedTeam() {
   sql
     .prepare(
       /* sql */ `
-    insert into "UserSubmittedImage" ("validatedAt", "url")
+    insert into "UnvalidatedUserSubmittedImage" ("validatedAt", "url", "submitterUserId")
       values 
-        (1672587342, 'https://abload.de/img/ryri0cnc_400x4005qcyx.jpeg'), 
-        (1672587342, 'https://abload.de/img/fjkfa-uxkamgdbxr3iqn.jpeg')
+        (1672587342, 'AiGSM5T-cxm6BFGT7N_lA-1673297699133.webp', 1), 
+        (1672587342, 'jTbWd95klxU2MzGFIdi1c-1673297932788.webp', 1)
   `
     )
     .run();
@@ -888,7 +910,7 @@ function detailedTeam() {
   sql
     .prepare(
       /* sql */ `
-      insert into "Team" ("name", "customUrl", "inviteCode", "twitter", "bio", "avatarImgId", "bannerImgId")
+      insert into "AllTeam" ("name", "customUrl", "inviteCode", "twitter", "bio", "avatarImgId", "bannerImgId")
        values (
           'Alliance Rogue',
           'alliance-rogue',
@@ -902,14 +924,14 @@ function detailedTeam() {
     )
     .run();
 
-  const userIds = userIdsInRandomOrder(true);
+  const userIds = userIdsInRandomOrder(true).filter((id) => id !== 2);
   for (let i = 0; i < 5; i++) {
-    const userId = i <= 1 ? i + 1 : userIds.shift()!;
+    const userId = i === 0 ? 1 : userIds.shift()!;
 
     sql
       .prepare(
         /*sql*/ `
-      insert into "TeamMember" ("teamId", "userId", "role", "isOwner", "leftAt")
+      insert into "AllTeamMember" ("teamId", "userId", "role", "isOwner", "leftAt")
         values (
           1,
           ${userId},
@@ -920,5 +942,65 @@ function detailedTeam() {
     `
       )
       .run();
+  }
+}
+
+function otherTeams() {
+  const usersInTeam = sql
+    .prepare(
+      /*sql */ `select
+    "userId"
+    from "AllTeamMember"
+    `
+    )
+    .all()
+    .map((row) => row.userId);
+
+  const userIds = userIdsInRandomOrder().filter(
+    (u) => !usersInTeam.includes(u) && u !== 2
+  );
+
+  for (let i = 3; i < 100; i++) {
+    const teamName = `${capitalize(faker.word.adjective())} ${capitalize(
+      faker.word.noun()
+    )}`;
+    const teamCustomUrl = mySlugify(teamName);
+
+    sql
+      .prepare(
+        /* sql */ `
+      insert into "AllTeam" ("id", "name", "customUrl", "inviteCode", "twitter", "bio")
+       values (
+          ${i},
+          '${teamName}',
+          '${teamCustomUrl}',
+          '${nanoid(INVITE_CODE_LENGTH)}',
+          '${faker.internet.userName()}',
+          '${faker.lorem.paragraph()}'
+       )
+    `
+      )
+      .run();
+
+    const numMembers = faker.helpers.arrayElement([
+      1, 2, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 7, 7, 8,
+    ]);
+    for (let j = 0; j < numMembers; j++) {
+      const userId = userIds.shift()!;
+
+      sql
+        .prepare(
+          /*sql*/ `
+        insert into "AllTeamMember" ("teamId", "userId", "role", "isOwner")
+          values (
+            ${i},
+            ${userId},
+            ${j === 0 ? "'CAPTAIN'" : "'FRONTLINE'"},
+            ${j === 0 ? 1 : 0}
+          )
+      `
+        )
+        .run();
+    }
   }
 }

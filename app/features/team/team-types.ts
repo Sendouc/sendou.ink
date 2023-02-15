@@ -3,6 +3,7 @@ import type { MainWeaponId } from "~/modules/in-game-lists";
 
 export interface DetailedTeam {
   id: number;
+  customUrl: string;
   name: string;
   bio?: string;
   twitter?: string;
@@ -18,9 +19,11 @@ export interface DetailedTeamMember {
   discordName: string;
   discordId: string;
   discordAvatar: string | null;
+  discordDiscriminator: string;
   isOwner: boolean;
   weapons: MainWeaponId[];
   role?: MemberRole;
+  patronTier: number | null;
 }
 
 export interface TeamResultPeek {

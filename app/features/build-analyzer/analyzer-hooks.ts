@@ -1,10 +1,8 @@
 import { useSearchParams } from "@remix-run/react";
-import { EMPTY_BUILD } from "~/constants";
 import {
   type BuildAbilitiesTupleWithUnknown,
   type MainWeaponId,
   type Ability,
-  type AbilityType,
   type AbilityWithUnknown,
   abilities,
   isAbility,
@@ -15,126 +13,105 @@ import { buildStats } from "./core/stats";
 import type { SpecialEffectType } from "./analyzer-types";
 import {
   buildToAbilityPoints,
+  serializeBuild,
+  validatedBuildFromSearchParams,
   validatedWeaponIdFromSearchParams,
 } from "./core/utils";
-
-const UNKNOWN_SHORT = "U";
 
 export function useAnalyzeBuild() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const mainWeaponId = validatedWeaponIdFromSearchParams(searchParams);
   const build = validatedBuildFromSearchParams(searchParams);
+  const build2 = validatedBuildFromSearchParams(searchParams, "build2");
   const ldeIntensity = validatedLdeIntensityFromSearchParams(searchParams);
   const effects = validatedEffectsFromSearchParams({ searchParams, build });
+  const effects2 = validatedEffectsFromSearchParams({
+    searchParams,
+    build: build2,
+  });
+  const focused = validatedFocusedFromSearchParams({ searchParams });
 
   const handleChange = ({
     newMainWeaponId = mainWeaponId,
     newBuild = build,
+    newBuild2 = build2,
     newLdeIntensity = ldeIntensity,
     newEffects = effects,
+    newFocused = focused,
   }: {
     newMainWeaponId?: MainWeaponId;
     newBuild?: BuildAbilitiesTupleWithUnknown;
+    newBuild2?: BuildAbilitiesTupleWithUnknown;
     newLdeIntensity?: number;
     newEffects?: Array<SpecialEffectType>;
+    newFocused?: 1 | 2 | 3;
   }) => {
     setSearchParams(
       {
         weapon: String(newMainWeaponId),
         build: serializeBuild(newBuild),
+        build2: serializeBuild(newBuild2),
         lde: String(newLdeIntensity),
         effect: newEffects,
+        focused: String(newFocused),
       },
       { replace: true, state: { scroll: false } }
     );
   };
 
-  const buildsAbilityPoints = buildToAbilityPoints(build);
-
+  const buildAbilityPoints = buildToAbilityPoints(build);
   const abilityPoints = applySpecialEffects({
-    abilityPoints: buildsAbilityPoints,
+    abilityPoints: buildAbilityPoints,
     effects,
     ldeIntensity,
   });
-
+  const hasTacticooler = effects.includes("TACTICOOLER");
   const analyzed = buildStats({
     abilityPoints,
     weaponSplId: mainWeaponId,
     mainOnlyAbilities: build
       .map((row) => row[0])
-      .filter((ability): ability is Ability => {
-        const abilityObj = abilities.find((a) => a.name === ability);
-        return Boolean(abilityObj && abilityObj.type !== "STACKABLE");
-      }),
+      .filter(filterMainOnlyAbilities),
+    hasTacticooler,
+  });
+
+  const buildAbilityPoints2 = buildToAbilityPoints(build2);
+  const abilityPoints2 = applySpecialEffects({
+    abilityPoints: buildAbilityPoints2,
+    effects: effects2,
+    ldeIntensity,
+  });
+  const analyzed2 = buildStats({
+    abilityPoints: abilityPoints2,
+    weaponSplId: mainWeaponId,
+    mainOnlyAbilities: build2
+      .map((row) => row[0])
+      .filter(filterMainOnlyAbilities),
+    hasTacticooler,
   });
 
   return {
     build,
+    build2,
+    focusedBuild: focused === 1 ? build : focused === 2 ? build2 : null,
+    focused,
     mainWeaponId,
     handleChange,
     analyzed,
+    analyzed2,
     abilityPoints,
-    effects,
+    abilityPoints2,
+    allEffects: Array.from(new Set([...effects, ...effects2])),
     ldeIntensity,
   };
 }
 
-function serializeBuild(build: BuildAbilitiesTupleWithUnknown) {
-  return build
-    .flat()
-    .map((ability) => (ability === "UNKNOWN" ? UNKNOWN_SHORT : ability))
-    .join(",");
-}
-
-function validatedBuildFromSearchParams(
-  searchParams: URLSearchParams
-): BuildAbilitiesTupleWithUnknown {
-  const abilitiesArr = searchParams.get("build")
-    ? searchParams.get("build")?.split(",")
-    : null;
-
-  if (!abilitiesArr) return EMPTY_BUILD;
-
-  try {
-    return [
-      [
-        validateAbility(["STACKABLE", "HEAD_MAIN_ONLY"], abilitiesArr[0]),
-        validateAbility(["STACKABLE"], abilitiesArr[1]),
-        validateAbility(["STACKABLE"], abilitiesArr[2]),
-        validateAbility(["STACKABLE"], abilitiesArr[3]),
-      ],
-      [
-        validateAbility(["STACKABLE", "CLOTHES_MAIN_ONLY"], abilitiesArr[4]),
-        validateAbility(["STACKABLE"], abilitiesArr[5]),
-        validateAbility(["STACKABLE"], abilitiesArr[6]),
-        validateAbility(["STACKABLE"], abilitiesArr[7]),
-      ],
-      [
-        validateAbility(["STACKABLE", "SHOES_MAIN_ONLY"], abilitiesArr[8]),
-        validateAbility(["STACKABLE"], abilitiesArr[9]),
-        validateAbility(["STACKABLE"], abilitiesArr[10]),
-        validateAbility(["STACKABLE"], abilitiesArr[11]),
-      ],
-    ];
-  } catch (err) {
-    return EMPTY_BUILD;
-  }
-}
-
-function validateAbility(
-  legalTypes: Array<AbilityType>,
-  ability?: string
-): AbilityWithUnknown {
-  if (!ability) throw new Error("Ability missing");
-  if (ability === UNKNOWN_SHORT) return "UNKNOWN";
-
-  const abilityObj = abilities.find(
-    (a) => a.name === ability && legalTypes.includes(a.type)
-  );
-  if (abilityObj) return abilityObj.name;
-
-  throw new Error("Invalid ability");
+function filterMainOnlyAbilities(
+  ability: AbilityWithUnknown
+): ability is Ability {
+  const abilityObj = abilities.find((a) => a.name === ability);
+  return Boolean(abilityObj && abilityObj.type !== "STACKABLE");
 }
 
 function validatedLdeIntensityFromSearchParams(searchParams: URLSearchParams) {
@@ -187,4 +164,17 @@ function validatedEffectsFromSearchParams({
   }
 
   return result;
+}
+
+function validatedFocusedFromSearchParams({
+  searchParams,
+}: {
+  searchParams: URLSearchParams;
+}) {
+  const focused = searchParams.get("focused");
+
+  if (focused === "2") return 2;
+  if (focused === "3") return 3;
+
+  return 1;
 }

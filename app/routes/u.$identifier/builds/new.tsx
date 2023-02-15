@@ -4,7 +4,7 @@ import {
   type ActionFunction,
   type LoaderArgs,
 } from "@remix-run/node";
-import { Form, useLoaderData } from "@remix-run/react";
+import { Form, useLoaderData, useSearchParams } from "@remix-run/react";
 import * as React from "react";
 import { z } from "zod";
 import { AbilitiesSelector } from "~/components/AbilitiesSelector";
@@ -14,11 +14,16 @@ import { Image } from "~/components/Image";
 import { Label } from "~/components/Label";
 import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
 import { SubmitButton } from "~/components/SubmitButton";
-import { BUILD, EMPTY_BUILD } from "~/constants";
+import { BUILD } from "~/constants";
 import { db } from "~/db";
 import type { GearType } from "~/db/types";
+import {
+  validatedBuildFromSearchParams,
+  validatedWeaponIdFromSearchParams,
+} from "~/features/build-analyzer";
 import { useTranslation } from "~/hooks/useTranslation";
 import { requireUser } from "~/modules/auth";
+import { requireUserId } from "~/modules/auth/user.server";
 import {
   clothesGearIds,
   headGearIds,
@@ -70,7 +75,7 @@ const newBuildActionSchema = z.object({
           z
             .number()
             .refine((val) =>
-              mainWeaponIds.includes(val as typeof mainWeaponIds[number])
+              mainWeaponIds.includes(val as (typeof mainWeaponIds)[number])
             )
         )
       )
@@ -81,14 +86,16 @@ const newBuildActionSchema = z.object({
     actualNumber,
     z
       .number()
-      .refine((val) => headGearIds.includes(val as typeof headGearIds[number]))
+      .refine((val) =>
+        headGearIds.includes(val as (typeof headGearIds)[number])
+      )
   ),
   "CLOTHES[value]": z.preprocess(
     actualNumber,
     z
       .number()
       .refine((val) =>
-        clothesGearIds.includes(val as typeof clothesGearIds[number])
+        clothesGearIds.includes(val as (typeof clothesGearIds)[number])
       )
   ),
   "SHOES[value]": z.preprocess(
@@ -96,7 +103,7 @@ const newBuildActionSchema = z.object({
     z
       .number()
       .refine((val) =>
-        shoesGearIds.includes(val as typeof shoesGearIds[number])
+        shoesGearIds.includes(val as (typeof shoesGearIds)[number])
       )
   ),
   abilities: z.preprocess(
@@ -166,20 +173,23 @@ const newBuildLoaderParamsSchema = z.object({
 });
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const user = await requireUser(request);
+  const user = await requireUserId(request);
   const url = new URL(request.url);
 
   const params = newBuildLoaderParamsSchema.safeParse(
     Object.fromEntries(url.searchParams)
   );
 
-  if (!params.success || params.data.userId !== user.id)
+  if (!params.success || params.data.userId !== user.id) {
     return json({ buildToEdit: null });
+  }
 
   const usersBuilds = db.builds.buildsByUserId(params.data.userId);
   const buildToEdit = usersBuilds.find((b) => b.id === params.data.buildId);
 
-  return json({ buildToEdit });
+  return json({
+    buildToEdit,
+  });
 };
 
 export default function NewBuildPage() {
@@ -187,7 +197,7 @@ export default function NewBuildPage() {
   const { t } = useTranslation();
 
   return (
-    <div className="half-width">
+    <div className="half-width u__build-form">
       <Form className="stack md items-start" method="post">
         {buildToEdit && (
           <input type="hidden" name="buildToEditId" value={buildToEdit.id} />
@@ -295,6 +305,7 @@ function ModeCheckboxes() {
 }
 
 function WeaponsSelector() {
+  const [searchParams] = useSearchParams();
   const { buildToEdit } = useLoaderData<typeof loader>();
   const { t } = useTranslation(["common", "weapons", "builds"]);
   const [count, setCount] = React.useState(buildToEdit?.weapons.length ?? 1);
@@ -313,7 +324,10 @@ function WeaponsSelector() {
                   inputName="weapon"
                   id="weapon"
                   required
-                  initialWeaponId={buildToEdit?.weapons[i]}
+                  initialWeaponId={
+                    buildToEdit?.weapons[i] ??
+                    validatedWeaponIdFromSearchParams(searchParams)
+                  }
                 />
               </div>
               {i === count - 1 && (
@@ -375,10 +389,11 @@ function GearSelector({ type }: { type: GearType }) {
 }
 
 function Abilities() {
+  const [searchParams] = useSearchParams();
   const { buildToEdit } = useLoaderData<typeof loader>();
   const [abilities, setAbilities] =
     React.useState<BuildAbilitiesTupleWithUnknown>(
-      buildToEdit?.abilities ?? EMPTY_BUILD
+      buildToEdit?.abilities ?? validatedBuildFromSearchParams(searchParams)
     );
 
   return (

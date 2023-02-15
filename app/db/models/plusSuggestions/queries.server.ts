@@ -51,13 +51,19 @@ export function findVisibleForUser(
   args: MonthYear &
     Pick<UserWithPlusTier, "plusTier"> & { includeBio?: boolean }
 ): FindVisibleForUser | undefined {
-  if (!args.plusTier) return;
+  if (typeof args.plusTier !== "number") return;
   return sortNewestPlayersToBeSuggestedFirst(
     mapFindVisibleForUserRowsToResult(
       findVisibleForUserStm.all(args),
       args.includeBio
     )
   );
+}
+
+export function findAll(args: MonthYear & { includeBio?: boolean }) {
+  // plusTier 0 is a bit hacky way to get all suggestions
+  // while reusing the query
+  return findVisibleForUser({ ...args, plusTier: 0 })!;
 }
 
 function mapFindVisibleForUserRowsToResult(

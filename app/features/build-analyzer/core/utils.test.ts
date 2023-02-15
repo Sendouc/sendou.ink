@@ -12,12 +12,6 @@ const EMPTY_ROW: [
   AbilityWithUnknown
 ] = ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"];
 
-BuildToAbilityPoints("Empty build leads to empty AP map", () => {
-  const aps = buildToAbilityPoints([EMPTY_ROW, EMPTY_ROW, EMPTY_ROW]);
-
-  assert.equal(aps.size, 0);
-});
-
 BuildToAbilityPoints("Calculates ability points", () => {
   const aps = buildToAbilityPoints([
     ["SS", "SS", "RSU", "RSU"],
@@ -25,8 +19,9 @@ BuildToAbilityPoints("Calculates ability points", () => {
     EMPTY_ROW,
   ]);
 
-  assert.equal(aps.get("SS")?.ap, 13);
-  assert.equal(aps.get("RSU")?.ap, 6);
+  assert.equal(aps.get("SS"), 13);
+  assert.equal(aps.get("RSU"), 6);
+  assert.equal(aps.get("UNKNOWN"), 38);
 });
 
 BuildToAbilityPoints("Handles ability doubler", () => {
@@ -36,7 +31,7 @@ BuildToAbilityPoints("Handles ability doubler", () => {
     EMPTY_ROW,
   ]);
 
-  assert.equal(aps.get("SS")?.ap, 6);
+  assert.equal(aps.get("SS"), 6);
 });
 
 BuildToAbilityPoints("Does not calculate AP for main only abilities", () => {

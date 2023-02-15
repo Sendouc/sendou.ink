@@ -1,24 +1,25 @@
-import * as React from "react";
-import { Form, useMatches, useOutletContext } from "@remix-run/react";
-import { Button, LinkButton } from "~/components/Button";
-import { Dialog } from "~/components/Dialog";
-import { atOrError } from "~/utils/arrays";
-import type { BadgeDetailsContext, BadgeDetailsLoaderData } from "../$id";
-import { discordFullName } from "~/utils/strings";
-import { UserCombobox } from "~/components/Combobox";
-import { TrashIcon } from "~/components/icons/Trash";
-import { z } from "zod";
-import { actualNumber, noDuplicates, safeJSONParse, id } from "~/utils/zod";
-import { redirect } from "@remix-run/node";
 import type { ActionFunction } from "@remix-run/node";
-import { requireUser, useUser } from "~/modules/auth";
-import { parseRequestFormData, validate } from "~/utils/remix";
-import { canEditBadgeManagers, canEditBadgeOwners } from "~/permissions";
-import { assertUnreachable } from "~/utils/types";
+import { redirect } from "@remix-run/node";
+import { Form, useMatches, useOutletContext } from "@remix-run/react";
+import * as React from "react";
+import { z } from "zod";
+import { Button, LinkButton } from "~/components/Button";
+import { UserCombobox } from "~/components/Combobox";
+import { Dialog } from "~/components/Dialog";
+import { TrashIcon } from "~/components/icons/Trash";
+import { Label } from "~/components/Label";
 import { db } from "~/db";
 import type { User } from "~/db/types";
+import { useUser } from "~/modules/auth";
+import { requireUserId } from "~/modules/auth/user.server";
+import { canEditBadgeManagers, canEditBadgeOwners } from "~/permissions";
+import { atOrError } from "~/utils/arrays";
+import { parseRequestFormData, validate } from "~/utils/remix";
+import { discordFullName } from "~/utils/strings";
+import { assertUnreachable } from "~/utils/types";
 import { badgePage } from "~/utils/urls";
-import { Label } from "~/components/Label";
+import { actualNumber, id, noDuplicates, safeJSONParse } from "~/utils/zod";
+import type { BadgeDetailsContext, BadgeDetailsLoaderData } from "../$id";
 
 const editBadgeActionSchema = z.union([
   z.object({
@@ -37,7 +38,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     schema: editBadgeActionSchema,
   });
   const badgeId = z.preprocess(actualNumber, z.number()).parse(params["id"]);
-  const user = await requireUser(request);
+  const user = await requireUserId(request);
 
   switch (data._action) {
     case "MANAGERS": {

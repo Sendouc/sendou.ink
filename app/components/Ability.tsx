@@ -63,7 +63,7 @@ export function Ability({
         } as any
       }
       onClick={onClick}
-      data-cy={`${ability}-ability`}
+      data-testid={`${ability}-ability`}
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
       onDrop={(event) => {

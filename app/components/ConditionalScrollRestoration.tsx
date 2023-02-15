@@ -21,5 +21,5 @@ export function ConditionalScrollRestoration() {
     return null;
   }
 
-  return <ScrollRestoration />;
+  return <ScrollRestoration getKey={(location) => location.pathname} />;
 }

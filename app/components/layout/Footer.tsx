@@ -1,16 +1,17 @@
-import { Link } from "@remix-run/react";
+import { Link, useLocation } from "@remix-run/react";
 import { useTranslation } from "~/hooks/useTranslation";
 import type { RootLoaderData } from "~/root";
 import { discordFullName } from "~/utils/strings";
 import {
   CONTRIBUTIONS_PAGE,
   FAQ_PAGE,
+  PRIVACY_POLICY_PAGE,
   SENDOU_INK_DISCORD_URL,
   SENDOU_INK_GITHUB_URL,
-  SENDOU_INK_PATREON_URL,
   SENDOU_INK_TWITTER_URL,
   SENDOU_LOVE_EMOJI_PATH,
   SPLATOON_2_SENDOU_IN_URL,
+  SUPPORT_PAGE,
   userPage,
 } from "~/utils/urls";
 import { DiscordIcon } from "../icons/Discord";
@@ -31,6 +32,7 @@ export function Footer({
   return (
     <footer className="layout__footer">
       <div className="layout__footer__link-list">
+        <Link to={PRIVACY_POLICY_PAGE}>{t("pages.privacy")}</Link>
         <Link to={CONTRIBUTIONS_PAGE}>{t("pages.contributors")}</Link>
         <Link to={FAQ_PAGE}>{t("pages.faq")}</Link>
         <a href={SPLATOON_2_SENDOU_IN_URL}>{t("pages.s2")}</a>
@@ -69,17 +71,12 @@ export function Footer({
           </div>{" "}
           <DiscordIcon className="layout__footer__social-icon discord" />
         </a>
-        <a
-          className="layout__footer__social-link"
-          href={SENDOU_INK_PATREON_URL}
-          target="_blank"
-          rel="noreferrer"
-        >
+        <Link className="layout__footer__social-link" to={SUPPORT_PAGE}>
           <div className="layout__footer__social-header">
             Patreon<p>{t("footer.patreon.subtitle")}</p>
           </div>{" "}
           <PatreonIcon className="layout__footer__social-icon patreon" />
-        </a>
+        </Link>
       </div>
       {patrons.length > 0 ? (
         <div>
@@ -101,6 +98,7 @@ export function Footer({
           </ul>
         </div>
       ) : null}
+      <PlaywireBadge />
       <div className="layout__copyright-note">
         sendou.ink © Copyright of Sendou and contributors 2019-{currentYear}.
         Original content & source code is licensed under the GPL-3.0 license.
@@ -108,5 +106,38 @@ export function Footer({
         not affiliated with Nintendo.
       </div>
     </footer>
+  );
+}
+
+function PlaywireBadge() {
+  const location = useLocation();
+
+  if (location.pathname !== "/test") return null;
+
+  return (
+    <div className="stack sm">
+      <p>
+        {/* eslint-disable-next-line react/jsx-no-target-blank */}
+        <a href="http://www.playwire.com" rel="noopener" target="_blank">
+          <img
+            className="playwire__img dark-mode-only"
+            src="https://www.playwire.com/hubfs/Powered-by-Playwire-Badges/Powered-by-playwire-2021-standalone-large-white-300px.png"
+            alt="Playwire"
+            width="200"
+            loading="lazy"
+          />
+          <img
+            className="playwire__img light-mode-only"
+            src="https://www.playwire.com/hubfs/Powered-by-Playwire-Badges/Powered-by-playwire-2021-standalone-large-1-1.png"
+            alt="Playwire"
+            width="200"
+            loading="lazy"
+          />
+        </a>
+      </p>
+      <p className="playwire__text">
+        <a href="mailto:sales@playwire.com">Advertise on this site</a>
+      </p>
+    </div>
   );
 }

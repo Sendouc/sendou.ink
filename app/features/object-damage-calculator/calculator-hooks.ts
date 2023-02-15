@@ -23,6 +23,7 @@ export function useObjectDamage() {
   const isMultiShot = validatedMultiShotFromSearchParams(searchParams);
   const analyzed = buildStats({
     weaponSplId: mainWeaponId,
+    hasTacticooler: false,
   });
 
   const damageType = validatedDamageTypeFromSearchParams({
@@ -62,8 +63,8 @@ export function useObjectDamage() {
     damagesToReceivers: damageType
       ? calculateDamage({
           abilityPoints: new Map([
-            ["BRU", { ap: abilityPoints, apBeforeTacticooler: abilityPoints }],
-            ["SPU", { ap: abilityPoints, apBeforeTacticooler: abilityPoints }],
+            ["BRU", abilityPoints],
+            ["SPU", abilityPoints],
           ]),
           analyzed,
           mainWeaponId,
@@ -110,7 +111,10 @@ export const damageTypePriorityList = [
   "SPLATANA_HORIZONTAL_DIRECT",
   "SPLATANA_HORIZONTAL",
 ] as const;
-assertType<typeof damageTypePriorityList[number], typeof DAMAGE_TYPE[number]>();
+assertType<
+  (typeof damageTypePriorityList)[number],
+  (typeof DAMAGE_TYPE)[number]
+>();
 
 function validatedDamageTypeFromSearchParams({
   searchParams,

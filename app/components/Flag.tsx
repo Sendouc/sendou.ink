@@ -12,6 +12,7 @@ export function Flag({
       className={clsx(`twf twf-${countryCode.toLowerCase()}`, {
         "twf-s": tiny,
       })}
+      data-testid={`flag-${countryCode}`}
     />
   );
 }

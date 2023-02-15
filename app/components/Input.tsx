@@ -12,7 +12,7 @@ export function Input({
   icon,
   pattern,
   list,
-  "data-cy": dataCy,
+  testId,
   "aria-label": ariaLabel,
   value,
   placeholder,
@@ -29,7 +29,7 @@ export function Input({
   icon?: React.ReactNode;
   pattern?: string;
   list?: string;
-  "data-cy"?: string;
+  testId?: string;
   "aria-label"?: string;
   value?: string;
   placeholder?: string;
@@ -46,7 +46,7 @@ export function Input({
         defaultValue={defaultValue}
         pattern={pattern}
         list={list}
-        data-cy={dataCy}
+        data-testid={testId}
         value={value}
         onChange={onChange}
         aria-label={ariaLabel}

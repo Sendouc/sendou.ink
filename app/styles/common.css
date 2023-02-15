@@ -138,7 +138,8 @@ a {
   margin-inline-end: var(--s-1);
 }
 
-textarea:not(.plain) {
+/* :not([name="text"]) workaround not to select textarea on map planner  */
+textarea:not(.plain, [name="text"]) {
   width: 18rem;
   max-width: 100%;
   height: 8rem;
@@ -151,14 +152,13 @@ textarea:not(.plain) {
   outline: none;
   overflow-wrap: normal;
   overflow-x: auto;
-  white-space: pre;
 }
 
 progress {
   accent-color: var(--theme);
 }
 
-textarea:not(.plain):focus-within {
+textarea:not(.plain, [name="text"]):focus-within {
   border-color: transparent;
 
   /* TODO: rectangle on Safari */
@@ -166,7 +166,7 @@ textarea:not(.plain):focus-within {
 }
 
 input:not(.plain, [type="radio"]) {
-  width: 12rem;
+  width: var(--input-width, 12rem);
 }
 
 input:not(.plain) {
@@ -272,6 +272,12 @@ select {
   padding-inline: var(--s-3) var(--s-8);
 }
 
+select:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  transform: initial;
+}
+
 /* Temporary solution for issue: https://github.com/Sendouc/sendou.ink/issues/1141 */
 .light select {
   /* TODO: Get color from CSS var */
@@ -333,6 +339,7 @@ dialog {
   border-radius: var(--rounded);
   margin: auto;
   background-color: var(--bg);
+  color: var(--text);
 }
 
 dialog::backdrop {
@@ -488,8 +495,8 @@ dialog::backdrop {
   padding: var(--s-1) var(--s-2);
   border-radius: var(--rounded);
   background-color: var(--bg-lightest);
+  cursor: pointer;
   font-size: var(--fonts-xs);
-  font-weight: var(--semi-bold);
   text-align: center;
   white-space: nowrap;
 }
@@ -536,7 +543,7 @@ dialog::backdrop {
 }
 
 .combobox-input {
-  width: 12rem;
+  width: var(--input-width, 12rem);
 }
 
 .combobox-input.fullWidth {
@@ -546,7 +553,7 @@ dialog::backdrop {
 .combobox-options {
   position: absolute;
   z-index: 2;
-  width: 12rem;
+  width: var(--input-width, 12rem);
   border-radius: var(--rounded);
   margin-top: var(--s-2);
   background-color: var(--bg-darker);
@@ -674,7 +681,13 @@ dialog::backdrop {
 .avatar {
   border-radius: 50%;
   background-color: var(--bg-lightest);
-  background-image: url("/static-assets/svg/new-background-pattern.svg");
+}
+
+/* Hack to deal with Safari bug when the image is loading. See: https://stackoverflow.com/a/73466877 */
+@media not all and (min-resolution: 0.001dpcm) {
+  img[loading="lazy"] {
+    clip-path: inset(0.5px);
+  }
 }
 
 .alert > svg {
@@ -836,7 +849,7 @@ dialog::backdrop {
 
 .build__date-author-row {
   display: flex;
-  font-size: var(--fonts-xxxs);
+  font-size: var(--fonts-xxs);
   gap: var(--s-1);
 }
 
@@ -965,4 +978,31 @@ dialog::backdrop {
 
 .ability-selector__ability-button.is-dragging {
   box-shadow: 0 0 100px inset rgb(255 255 255 / 25%);
+}
+
+.colors__grid {
+  display: grid;
+  width: 100%;
+  justify-content: center;
+  font-size: var(--fonts-sm);
+  font-weight: var(--bold);
+  grid-template-columns: 3fr 2fr 1fr;
+  row-gap: var(--s-3);
+}
+
+.playwire__img {
+  display: block;
+  width: 200px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.playwire__text {
+  font-size: var(--fonts-sm);
+  text-align: center;
+}
+
+#top-leaderboard {
+  min-height: 110px;
+  margin-block-start: var(--s-20);
 }

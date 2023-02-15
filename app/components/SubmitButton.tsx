@@ -11,6 +11,7 @@ export function SubmitButton({
   children,
   state,
   _action,
+  testId,
   ...rest
 }: SubmitButtonProps) {
   const transition = useTransition();
@@ -20,10 +21,11 @@ export function SubmitButton({
   return (
     <Button
       {...rest}
-      disabled={isSubmitting}
+      disabled={rest.disabled || isSubmitting}
       type="submit"
       name={_action ? "_action" : undefined}
       value={_action}
+      data-testid={testId ?? "submit-button"}
     >
       {children}
     </Button>
