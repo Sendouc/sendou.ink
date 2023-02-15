@@ -137,11 +137,11 @@ export const handle: SendouRouteHandle = {
 function Document({
   children,
   data,
-  isCatchBoundary = false,
+  isErrored = false,
 }: {
   children: React.ReactNode;
   data?: RootLoaderData;
-  isCatchBoundary?: boolean;
+  isErrored?: boolean;
 }) {
   const { htmlThemeClass } = useTheme();
   const { i18n } = useTranslation();
@@ -155,7 +155,7 @@ function Document({
     <html lang={locale} dir={i18n.dir()} className={htmlThemeClass}>
       <head>
         <Meta />
-        <PlaywireScripts />
+        <PlaywireScripts data={data} />
         <Links />
         <ThemeHead />
         <link rel="manifest" href="/app.webmanifest" />
@@ -165,7 +165,7 @@ function Document({
       <body style={customizedCSSVars}>
         {process.env.NODE_ENV === "development" && <HydrationTestIndicator />}
         <React.StrictMode>
-          <Layout patrons={data?.patrons} isCatchBoundary={isCatchBoundary}>
+          <Layout data={data} isErrored={isErrored}>
             {children}
           </Layout>
         </React.StrictMode>
@@ -244,7 +244,7 @@ export default function App() {
 export function CatchBoundary() {
   return (
     <ThemeProvider themeSource="static" specifiedTheme={Theme.DARK}>
-      <Document isCatchBoundary>
+      <Document isErrored>
         <Catcher />
       </Document>
     </ThemeProvider>
@@ -256,7 +256,7 @@ export const ErrorBoundary: ErrorBoundaryComponent = ({ error }) => {
 
   return (
     <ThemeProvider themeSource="static" specifiedTheme={Theme.DARK}>
-      <Document>
+      <Document isErrored>
         <Catcher />
       </Document>
     </ThemeProvider>
@@ -284,9 +284,7 @@ function Fonts() {
   );
 }
 
-function PlaywireScripts() {
-  const data = useLoaderData<RootLoaderData>();
-
+function PlaywireScripts({ data }: { data: RootLoaderData | undefined }) {
   if (
     !data ||
     !data.gtagId ||

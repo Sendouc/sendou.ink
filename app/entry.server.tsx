@@ -10,6 +10,8 @@ import { updatePatreonData } from "./modules/patreon";
 import { i18Instance } from "./modules/i18n";
 import { I18nextProvider } from "react-i18next";
 
+// xxx: probably a real issue not just types? https://github.com/remix-run/remix/issues/5073#issuecomment-1380380695
+
 const ABORT_DELAY = 5000;
 
 const handleRequest = (
@@ -45,6 +47,7 @@ const handleBotRequest = (
     void i18Instance(request, remixContext).then((i18n) => {
       const { pipe, abort } = renderToPipeableStream(
         <I18nextProvider i18n={i18n}>
+          {/* @ts-expect-error TODO: fix */}
           <RemixServer context={remixContext} url={request.url} />
         </I18nextProvider>,
         {
@@ -89,6 +92,7 @@ const handleBrowserRequest = (
     void i18Instance(request, remixContext).then((i18n) => {
       const { pipe, abort } = renderToPipeableStream(
         <I18nextProvider i18n={i18n}>
+          {/* @ts-expect-error TODO: fix */}
           <RemixServer context={remixContext} url={request.url} />
         </I18nextProvider>,
         {
