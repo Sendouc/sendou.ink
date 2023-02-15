@@ -14,7 +14,6 @@ import {
   type ShouldRevalidateFunction,
   useLoaderData,
   useMatches,
-  useLocation,
 } from "@remix-run/react";
 import * as React from "react";
 import commonStyles from "~/styles/common.css";
@@ -156,12 +155,12 @@ function Document({
     <html lang={locale} dir={i18n.dir()} className={htmlThemeClass}>
       <head>
         <Meta />
+        <PlaywireScripts />
         <Links />
         <ThemeHead />
         <link rel="manifest" href="/app.webmanifest" />
         <PWALinks />
         <Fonts />
-        <PlaywireScripts />
       </head>
       <body style={customizedCSSVars}>
         {process.env.NODE_ENV === "development" && <HydrationTestIndicator />}
@@ -286,7 +285,6 @@ function Fonts() {
 }
 
 function PlaywireScripts() {
-  const location = useLocation();
   const data = useLoaderData<RootLoaderData>();
 
   if (
@@ -294,7 +292,7 @@ function PlaywireScripts() {
     !data.gtagId ||
     !data.publisherId ||
     !data.websiteId ||
-    location.pathname !== "/test"
+    data.user?.patronTier
   ) {
     return null;
   }
@@ -353,15 +351,17 @@ function PlaywireScripts() {
           __html: `
         var pwUnits = ${JSON.stringify(units)}
     
-        var init = function () {  
-            ramp
-            .addUnits(pwUnits)
-            .then(() => {
-                ramp.displayUnits()
-            }).catch((e) =>{
-                ramp.displayUnits()
-                console.log(e)
-            })
+        var init = function () {
+            ramp.destroyUnits('all').then(() => {
+              ramp
+              .addUnits(pwUnits)
+              .then(() => {
+                  ramp.displayUnits()
+              }).catch((e) =>{
+                  ramp.displayUnits()
+                  console.log(e)
+              })
+            })  
         }
     
         ramp.onReady = function() {

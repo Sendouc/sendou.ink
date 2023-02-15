@@ -36,6 +36,11 @@ const PERKS = [
   },
   {
     tier: 1,
+    name: "adFree",
+    extraInfo: false,
+  },
+  {
+    tier: 1,
     name: "nameInFooter",
     extraInfo: false,
   },

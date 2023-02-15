@@ -142,6 +142,7 @@
   "support.action": "Support on Patreon",
   "support.footer": "After becoming a new patron you should connect <2>your Discord on Patreon.com</2>. Afterwards the perks will take effect within 2 hours. If any questions or problems contact Sendou for support.",
   "support.perk.supportMyWork": "Support my work",
+  "support.perk.adFree": "Ad-free browsing",
   "support.perk.nameInFooter": "Name in footer",
   "support.perk.discordColorRole": "Discord color role",
   "support.perk.discordColorRole.extra": "You can have custom color role on Plus Server and sendou.ink's Discord server. Use the /color command of the Lohi bot.",

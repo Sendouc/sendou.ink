@@ -1001,3 +1001,8 @@ dialog::backdrop {
   font-size: var(--fonts-sm);
   text-align: center;
 }
+
+#top-leaderboard {
+  min-height: 110px;
+  margin-block-start: var(--s-20);
+}
