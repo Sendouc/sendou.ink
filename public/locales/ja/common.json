@@ -145,6 +145,7 @@
   "support.perk.nameInFooter": "フッターの名前",
   "support.perk.discordColorRole": "Discord のカラーロール",
   "support.perk.discordColorRole.extra": "Plus Server と sendou.ink の Discord サーバーでカスタムカラーロールを使用することができます。Lohi bot の /color コマンドを使用してください。.",
+  "support.perk.adFree": "広告なしの閲覧",
   "support.perk.badge": "プロファイル バッジ",
   "support.perk.seePlusPercentage": "Plus Server の投票率を見る",
   "support.perk.seePlusPercentage.extra": "通常、失敗したサジェストのみが投票済みの投票率を見ることができます。これによって、自分の投票率を見ることができます。",
