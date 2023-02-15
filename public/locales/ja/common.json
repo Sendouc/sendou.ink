@@ -142,6 +142,7 @@
   "support.action": "Patreon で支援する",
   "support.footer": "新規で支援者になったら、<2>Patreon.com で Discord のアカウント</2>と連携してください。その後、約2時間ほどで特典が有効になります。質問があれば、Sendou にご連絡ください",
   "support.perk.supportMyWork": "プロジェクトを支援する",
+  "support.perk.adFree": "広告なしの閲覧",
   "support.perk.nameInFooter": "フッターの名前",
   "support.perk.discordColorRole": "Discord のカラーロール",
   "support.perk.discordColorRole.extra": "Plus Server と sendou.ink の Discord サーバーでカスタムカラーロールを使用することができます。Lohi bot の /color コマンドを使用してください。.",
