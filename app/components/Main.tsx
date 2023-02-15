@@ -19,26 +19,23 @@ export const Main = ({
   const showLeaderboard = !user?.patronTier;
 
   return (
-    <>
-      {showLeaderboard ? <div id="top-leaderboard" /> : null}
-      <main
-        className={
-          classNameOverwrite
-            ? clsx(classNameOverwrite, {
-                "half-width": halfWidth,
-                "pt-12-forced": showLeaderboard,
-              })
-            : clsx(
-                "layout__main",
-                "main",
-                { "half-width": halfWidth, "pt-12-forced": showLeaderboard },
-                className
-              )
-        }
-        style={style}
-      >
-        {children}
-      </main>
-    </>
+    <main
+      className={
+        classNameOverwrite
+          ? clsx(classNameOverwrite, {
+              "half-width": halfWidth,
+              "pt-12-forced": showLeaderboard,
+            })
+          : clsx(
+              "layout__main",
+              "main",
+              { "half-width": halfWidth, "pt-12-forced": showLeaderboard },
+              className
+            )
+      }
+      style={style}
+    >
+      {children}
+    </main>
   );
 };
