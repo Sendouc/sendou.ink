@@ -24,6 +24,7 @@ module.exports = {
         route("/to/:id/join", "features/tournament/routes/to.$id.join.tsx");
       });
 
+      route("/privacy-policy", "features/info/routes/privacy-policy.tsx");
       route("/support", "features/info/routes/support.tsx");
 
       route("/t", "features/team/routes/t.tsx");

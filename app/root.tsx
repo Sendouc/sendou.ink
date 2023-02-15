@@ -88,6 +88,9 @@ export interface RootLoaderData {
     | "discordName"
     | "patronTier"
   >;
+  gtagId?: string;
+  publisherId?: string;
+  websiteId?: string;
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -103,6 +106,9 @@ export const loader: LoaderFunction = async ({ request }) => {
       theme: themeSession.getTheme(),
       patrons: db.users.findAllPatrons(),
       baseUrl: process.env["BASE_URL"],
+      gtagId: process.env["GTAG_ID"],
+      publisherId: process.env["PLAYWIRE_PUBLISHER_ID"],
+      websiteId: process.env["PLAYWIRE_WEBSITE_ID"],
       user: user
         ? {
             discordName: user.discordName,
@@ -146,6 +152,7 @@ function Document({
     <html lang={locale} dir={i18n.dir()} className={htmlThemeClass}>
       <head>
         <Meta />
+        <PlaywireScripts />
         <Links />
         <ThemeHead />
         <link rel="manifest" href="/app.webmanifest" />
@@ -268,6 +275,102 @@ function Fonts() {
       <link
         href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&display=swap"
         rel="stylesheet"
+      />
+    </>
+  );
+}
+
+function PlaywireScripts() {
+  const data = useLoaderData<RootLoaderData>();
+
+  if (
+    !data ||
+    !data.gtagId ||
+    !data.publisherId ||
+    !data.websiteId ||
+    data.user?.patronTier
+  ) {
+    return null;
+  }
+
+  const units: Array<{ selectorId?: string; type: string }> = [
+    {
+      selectorId: "top-leaderboard",
+      type: "leaderboard_atf",
+    },
+    {
+      type: "bottom_rail",
+    },
+  ];
+
+  return (
+    <>
+      {/* Step 1. */}
+      <script
+        async
+        src={`https://www.googletagmanager.com/gtag/js?id=${data.gtagId}`}
+      />
+      <script
+        type="text/javascript"
+        dangerouslySetInnerHTML={{
+          __html: `
+      window.ramp = window.ramp || {};
+      window.ramp.que = window.ramp.que || [];
+      window.ramp.passiveMode = true;`,
+        }}
+      />
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+              window._pwGA4PageviewId = ''.concat(Date.now());
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = window.gtag || function () {
+                  dataLayer.push(arguments);
+              };
+              gtag('js', new Date());
+              gtag('config', '${data.gtagId}', { 'send_page_view': false });
+              gtag(
+                  'event',
+                  'ramp_js',
+                  {
+                      'send_to': '${data.gtagId}',
+                      'pageview_id': window._pwGA4PageviewId
+                  }
+              );
+            `,
+        }}
+      />
+      {/* Step 2.-3. */}
+      <script
+        type="text/javascript"
+        dangerouslySetInnerHTML={{
+          __html: `
+        var pwUnits = ${JSON.stringify(units)}
+    
+        var init = function () {
+            ramp.destroyUnits('all').then(() => {
+              ramp
+              .addUnits(pwUnits)
+              .then(() => {
+                  ramp.displayUnits()
+              }).catch((e) =>{
+                  ramp.displayUnits()
+                  console.log(e)
+              })
+            })  
+        }
+    
+        ramp.onReady = function() {
+          init()
+        }
+      `,
+        }}
+      />
+      {/* Step 4. */}
+      <script
+        type="text/javascript"
+        async
+        src={`//cdn.intergient.com/${data.publisherId}/${data.websiteId}/ramp.js`}
       />
     </>
   );

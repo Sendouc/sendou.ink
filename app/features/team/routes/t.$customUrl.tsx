@@ -41,7 +41,11 @@ import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { leaveTeam } from "../queries/leaveTeam.server";
 import { teamParamsSchema } from "../team-schemas.server";
 import type { DetailedTeamMember, TeamResultPeek } from "../team-types";
-import { isTeamMember, isTeamOwner } from "../team-utils";
+import {
+  canAddCustomizedColors,
+  isTeamMember,
+  isTeamOwner,
+} from "../team-utils";
 import styles from "../team.css";
 
 export const meta: MetaFunction = ({
@@ -65,7 +69,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUserId(request);
 
   const { customUrl } = teamParamsSchema.parse(params);
-  const team = notFoundIfFalsy(findByIdentifier(customUrl));
+  const { team } = notFoundIfFalsy(findByIdentifier(customUrl));
 
   validate(isTeamMember({ user, team }) && !isTeamOwner({ user, team }));
 
@@ -99,9 +103,9 @@ export const handle: SendouRouteHandle = {
 export const loader = ({ params }: LoaderArgs) => {
   const { customUrl } = teamParamsSchema.parse(params);
 
-  const team = notFoundIfFalsy(findByIdentifier(customUrl));
+  const { team, css } = notFoundIfFalsy(findByIdentifier(customUrl));
 
-  return { team };
+  return { team, css: canAddCustomizedColors(team) ? css : null };
 };
 
 export default function TeamPage() {

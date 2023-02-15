@@ -14,11 +14,13 @@ import type {
   SpecialWeaponId,
   SubWeaponId,
   StageId,
+  BuildAbilitiesTupleWithUnknown,
 } from "~/modules/in-game-lists/types";
 import type navItems from "~/components/layout/nav-items.json";
 import { type AuthErrorCode } from "~/modules/auth";
 import type { StageBackgroundStyle } from "~/features/map-planner";
 import type { ImageUploadType } from "~/features/img-upload";
+import { serializeBuild } from "~/features/build-analyzer";
 
 const staticAssetsUrl = ({
   folder,
@@ -65,6 +67,7 @@ export const LOG_OUT_URL = "/auth/logout";
 export const ADMIN_PAGE = "/admin";
 export const ARTICLES_MAIN_PAGE = "/a";
 export const FAQ_PAGE = "/faq";
+export const PRIVACY_POLICY_PAGE = "/privacy-policy";
 export const SUPPORT_PAGE = "/support";
 export const CONTRIBUTIONS_PAGE = "/contributions";
 export const BADGES_PAGE = "/badges";
@@ -114,8 +117,20 @@ export const userResultsPage = (user: UserLinkArgs) =>
   `${userPage(user)}/results`;
 export const userResultsEditHighlightsPage = (user: UserLinkArgs) =>
   `${userResultsPage(user)}/highlights`;
-export const userNewBuildPage = (user: UserLinkArgs) =>
-  `${userBuildsPage(user)}/new`;
+export const userNewBuildPage = (
+  user: UserLinkArgs,
+  params?: { weapon: MainWeaponId; build: BuildAbilitiesTupleWithUnknown }
+) =>
+  `${userBuildsPage(user)}/new${
+    params
+      ? `?${String(
+          new URLSearchParams({
+            weapon: String(params.weapon),
+            build: serializeBuild(params.build),
+          })
+        )}`
+      : ""
+  }`;
 
 export const teamPage = (customUrl: string) => `/t/${customUrl}`;
 export const editTeamPage = (customUrl: string) =>

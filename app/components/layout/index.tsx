@@ -50,6 +50,9 @@ export const Layout = React.memo(function Layout({
 
   const isFrontPage = location.pathname === "/";
 
+  const showLeaderboard =
+    !user?.patronTier && !location.pathname.includes("plans");
+
   return (
     <div className="layout__container">
       <header className="layout__header">
@@ -107,6 +110,7 @@ export const Layout = React.memo(function Layout({
         </div>
       </header>
       {!isFrontPage ? <SideNav /> : null}
+      {showLeaderboard ? <div id="top-leaderboard" /> : null}
       {children}
       <Footer patrons={patrons} />
     </div>

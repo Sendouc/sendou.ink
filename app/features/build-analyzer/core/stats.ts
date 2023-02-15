@@ -222,8 +222,16 @@ function specialLost(
 function subWeaponInkConsumptionPercentage(args: StatFunctionInput) {
   return {
     modifiedBy: "ISS" as const,
-    baseValue: roundToNDecimalPlaces(args.subWeaponParams.InkConsume * 100),
-    value: roundToNDecimalPlaces(subWeaponConsume(args).inkConsume * 100),
+    baseValue: roundToNDecimalPlaces(
+      (args.subWeaponParams.InkConsume * 100) / inkTankSize(args.weaponSplId)
+    ),
+    value: roundToNDecimalPlaces(
+      // + 0.004 is a hack to avoid situation where the value is e.g. 50.0005
+      // -> rounds to 50% so it appears you can throw two subs
+      // which is not correct so we force the round upwards
+      (subWeaponConsume(args).inkConsume * 100 + 0.0045) /
+        inkTankSize(args.weaponSplId)
+    ),
   };
 }
 
@@ -255,7 +263,8 @@ function fullInkTankOptions(
         value: effectToRounded(
           (inkTankSize(args.weaponSplId) -
             subWeaponInkConsume * subsFromFullInkTank) /
-            mainWeaponInkConsume
+            mainWeaponInkConsume,
+          2
         ),
       });
     }
@@ -264,8 +273,8 @@ function fullInkTankOptions(
   return result;
 }
 
-function effectToRounded(effect: number) {
-  return Number(effect.toFixed(3));
+function effectToRounded(effect: number, decimals = 3) {
+  return Number(effect.toFixed(decimals));
 }
 
 function subWeaponConsume({
@@ -618,13 +627,12 @@ function respawnTime(
     abilityPoints: args.abilityPoints,
     ability: QUICK_RESPAWN_TIME_ABILITY,
   });
-  const abilityPoints =
-    splattedByRP || hasRespawnPunisher
-      ? qrApAfterRespawnPunish({
-          ap,
-          hasTacticooler: args.hasTacticooler,
-        })
-      : ap;
+  const abilityPoints = splattedByRP
+    ? qrApAfterRespawnPunish({
+        ap,
+        hasTacticooler: args.hasTacticooler,
+      })
+    : ap;
 
   const chase = abilityPointsToEffects({
     abilityPoints,
@@ -1279,6 +1287,9 @@ export function specialDeviceHp(
   };
 }
 
+// GameParameters -> WeaponParam -> InkCapacityRt
+const ZIPCASTER_INKTANK_SIZE = 1.5;
+
 function specialHookInkConsumptionPercentage(
   args: StatFunctionInput
 ): AnalyzedBuild["stats"]["specialHookInkConsumptionPercentage"] {
@@ -1302,8 +1313,10 @@ function specialHookInkConsumptionPercentage(
   });
 
   return {
-    baseValue: roundToNDecimalPlaces(baseEffect * 100),
-    value: roundToNDecimalPlaces(effect * 100),
+    baseValue: roundToNDecimalPlaces(
+      (baseEffect * 100) / ZIPCASTER_INKTANK_SIZE
+    ),
+    value: roundToNDecimalPlaces((effect * 100) / ZIPCASTER_INKTANK_SIZE),
     modifiedBy: SPECIAL_HOOK_INK_CONSUMPTION_PERCENTAGE_KEY,
   };
 }
@@ -1331,8 +1344,10 @@ function specialInkConsumptionPerSecondPercentage(
   });
 
   return {
-    baseValue: roundToNDecimalPlaces(baseEffect * 100),
-    value: roundToNDecimalPlaces(effect * 100),
+    baseValue: roundToNDecimalPlaces(
+      (baseEffect * 100) / ZIPCASTER_INKTANK_SIZE
+    ),
+    value: roundToNDecimalPlaces((effect * 100) / ZIPCASTER_INKTANK_SIZE),
     modifiedBy: SPECIAL_INK_CONSUMPTION_PER_SECOND_PERCENTAGE_KEY,
   };
 }

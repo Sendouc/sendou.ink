@@ -1,5 +1,5 @@
 import { type LinksFunction, type MetaFunction } from "@remix-run/node";
-import type { ShouldReloadFunction } from "@remix-run/react";
+import type { ShouldRevalidateFunction } from "@remix-run/react";
 import { Link } from "@remix-run/react";
 import * as React from "react";
 import { useTranslation } from "~/hooks/useTranslation";
@@ -37,6 +37,7 @@ import {
   objectDamageCalculatorPage,
   specialWeaponImageUrl,
   subWeaponImageUrl,
+  userNewBuildPage,
 } from "~/utils/urls";
 import clsx from "clsx";
 import {
@@ -59,13 +60,15 @@ import {
 } from "../analyzer-constants";
 import { useAnalyzeBuild } from "../analyzer-hooks";
 import { Tabs, Tab } from "~/components/Tabs";
-import { isStackableAbility } from "../core/utils";
+import { buildIsEmpty, isStackableAbility } from "../core/utils";
+import { useUser } from "~/modules/auth";
 
 export const CURRENT_PATCH = "2.1";
 
 export const meta: MetaFunction = () => {
   return {
     title: makeTitle("Build Analyzer"),
+    description: "Detailed stats for any weapon and build in Splatoon 3.",
   };
 };
 
@@ -83,9 +86,10 @@ export const handle: SendouRouteHandle = {
 };
 
 // Resolves this Github issue: https://github.com/Sendouc/sendou.ink/issues/1053
-export const unstable_shouldReload: ShouldReloadFunction = () => false;
+export const shouldRevalidate: ShouldRevalidateFunction = () => false;
 
 export default function BuildAnalyzerPage() {
+  const user = useUser();
   const { t } = useTranslation(["analyzer", "common", "weapons"]);
   useSetTitle(t("common:pages.analyzer"));
   const {
@@ -107,11 +111,9 @@ export default function BuildAnalyzerPage() {
     return [analyzed.stats[key], analyzed2.stats[key]] as [Stat, Stat];
   };
 
-  const objectShredderSelected = build[2][0] === "OS";
+  const objectShredderSelected = build[2][0] === "OS" || build2[2][0] === "OS";
 
-  const isComparing =
-    build.flat().some((ability) => ability !== "UNKNOWN") &&
-    build2.flat().some((ability) => ability !== "UNKNOWN");
+  const isComparing = !buildIsEmpty(build) && !buildIsEmpty(build2);
 
   const mainWeaponCategoryItems = [
     analyzed.stats.shotSpreadAir && (
@@ -209,18 +211,21 @@ export default function BuildAnalyzerPage() {
                 <Tab
                   active={focused === 1}
                   onClick={() => handleChange({ newFocused: 1 })}
+                  testId="build1-tab"
                 >
                   {t("analyzer:build1")}
                 </Tab>
                 <Tab
                   active={focused === 2}
                   onClick={() => handleChange({ newFocused: 2 })}
+                  testId="build2-tab"
                 >
                   {t("analyzer:build2")}
                 </Tab>
                 <Tab
                   active={focused === 3}
                   onClick={() => handleChange({ newFocused: 3 })}
+                  testId="ap-tab"
                 >
                   {t("analyzer:compare")}
                 </Tab>
@@ -730,13 +735,20 @@ export default function BuildAnalyzerPage() {
                 <div className="analyzer__stat-card-highlighted" />
               ) : null}
               <ConsumptionTable
-                options={analyzed.stats.fullInkTankOptions}
+                isComparing={isComparing}
+                options={[
+                  analyzed.stats.fullInkTankOptions,
+                  analyzed2.stats.fullInkTankOptions,
+                ]}
                 subWeaponId={analyzed.weapon.subWeaponSplId}
               />
             </StatCategory>
           )}
 
-          <StatCategory title={t("analyzer:stat.category.movement")}>
+          <StatCategory
+            title={t("analyzer:stat.category.movement")}
+            testId="movement-category"
+          >
             <StatCard
               isComparing={isComparing}
               title={t("analyzer:attribute.weight")}
@@ -748,6 +760,7 @@ export default function BuildAnalyzerPage() {
               abilityPoints={abilityPoints}
               stat={statKeyToTuple("swimSpeed")}
               title={t("analyzer:stat.swimSpeed")}
+              testId="swim-speed"
             />
             <StatCard
               isComparing={isComparing}
@@ -876,6 +889,24 @@ export default function BuildAnalyzerPage() {
               {t("analyzer:objCalcAd")}
             </Link>
           )}
+          {user && focusedBuild && !buildIsEmpty(focusedBuild) ? (
+            <Link
+              className="analyzer__noticeable-link"
+              to={userNewBuildPage(user, {
+                weapon: mainWeaponId,
+                build: focusedBuild,
+              })}
+              data-testid="new-build-prompt"
+            >
+              <Image
+                path={navIconUrl("builds")}
+                width={24}
+                height={24}
+                alt=""
+              />
+              {t("analyzer:newBuildPrompt")}
+            </Link>
+          ) : null}
         </div>
       </div>
     </Main>
@@ -1082,16 +1113,18 @@ function StatCategory({
   containerClassName = "analyzer__stat-collection",
   textBelow,
   summaryRightContent,
+  testId,
 }: {
   title: string;
   children: React.ReactNode;
   containerClassName?: string;
   textBelow?: string;
   summaryRightContent?: React.ReactNode;
+  testId?: string;
 }) {
   return (
     <details className="analyzer__details">
-      <summary className="analyzer__summary">
+      <summary className="analyzer__summary" data-testid={testId}>
         {title}
         {summaryRightContent}
       </summary>
@@ -1110,6 +1143,7 @@ function StatCard({
   popoverInfo,
   abilityPoints,
   isComparing,
+  testId,
 }: {
   title: string;
   stat: [Stat, Stat] | [Stat<string>, Stat<string>] | number | string;
@@ -1117,6 +1151,7 @@ function StatCard({
   popoverInfo?: string;
   abilityPoints: AbilityPoints;
   isComparing: boolean;
+  testId?: string;
 }) {
   const { t } = useTranslation("analyzer");
 
@@ -1154,6 +1189,7 @@ function StatCard({
       className={clsx("analyzer__stat-card", {
         "analyzer__stat-card-highlighted": isHighlighted(),
       })}
+      data-testid={testId}
     >
       <div className="analyzer__stat-card__title-and-value-container">
         <h3 className="analyzer__stat-card__title">
@@ -1177,14 +1213,20 @@ function StatCard({
                 ? t("build1")
                 : t("base")}
             </h4>{" "}
-            <div className="analyzer__stat-card__value__number">
+            <div
+              className="analyzer__stat-card__value__number"
+              data-testid={testId ? `${testId}-base` : undefined}
+            >
               {showComparison ? (stat as [Stat, Stat])[0].value : baseValue}
               {suffix}
             </div>
           </div>
           {showBuildValue() ? (
             <div className="analyzer__stat-card__value">
-              <h4 className="analyzer__stat-card__value__title">
+              <h4
+                className="analyzer__stat-card__value__title"
+                data-testid={testId ? `${testId}-build-title` : undefined}
+              >
                 {showComparison ? t("build2") : t("build")}
               </h4>{" "}
               <div className="analyzer__stat-card__value__number">
@@ -1277,18 +1319,25 @@ function DamageTable({
 }
 
 function ConsumptionTable({
+  isComparing,
   options,
   subWeaponId,
 }: {
-  options: AnalyzedBuild["stats"]["fullInkTankOptions"];
+  isComparing: boolean;
+  options: [
+    AnalyzedBuild["stats"]["fullInkTankOptions"],
+    AnalyzedBuild["stats"]["fullInkTankOptions"]
+  ];
   subWeaponId: SubWeaponId;
 }) {
+  const [options1, options2] = options;
+
   const { t } = useTranslation(["analyzer", "weapons"]);
   const maxSubsToUse =
     subWeaponId === TORPEDO_ID
       ? 1
-      : Math.max(...options.map((opt) => opt.subsUsed));
-  const types = Array.from(new Set(options.map((opt) => opt.type)));
+      : Math.max(...options.flat().map((opt) => opt.subsUsed));
+  const types = Array.from(new Set(options1.map((opt) => opt.type)));
 
   return (
     <>
@@ -1303,23 +1352,51 @@ function ConsumptionTable({
         </thead>
         <tbody>
           {new Array(maxSubsToUse + 1).fill(null).map((_, subsUsed) => {
+            const options1ForThisSubsUsed = options1.filter(
+              (opt) => opt.subsUsed === subsUsed
+            );
+            const options2ForThisSubsUsed = options2.filter(
+              (opt) => opt.subsUsed === subsUsed
+            );
+
+            const cells: React.ReactNode[] = [];
+
+            // weird using basic for loop in react code but here we are essentially
+            // zipping these two arrays into one cell and if one of the arrays
+            // doesn't have value then it shows as a dash instead
+            for (
+              let i = 0;
+              i <
+              Math.max(
+                options1ForThisSubsUsed.length,
+                options2ForThisSubsUsed.length
+              );
+              i++
+            ) {
+              const opt1 = options1ForThisSubsUsed[i];
+              const opt2 = options2ForThisSubsUsed[i];
+
+              const contents = !isComparing
+                ? opt1!.value
+                : `${opt1?.value ?? "-"}/${opt2?.value ?? "-"}`;
+
+              cells.push(<td key={opt1?.id ?? opt2!.id}>{contents}</td>);
+            }
+
             return (
               <tr key={subsUsed}>
                 <td>×{subsUsed}</td>
-                {options
-                  .filter((opt) => opt.subsUsed === subsUsed)
-                  .map((opt) => {
-                    return <td key={opt.id}>{opt.value}</td>;
-                  })}
+                {cells}
               </tr>
             );
           })}
         </tbody>
       </table>
-      <div className="analyzer__consumption-table-explanation">
-        {t("analyzer:consumptionExplanation", { maxSubsToUse })}
-        {subWeaponId === TORPEDO_ID && <> {t("analyzer:torpedoExplanation")}</>}
-      </div>
+      {subWeaponId === TORPEDO_ID && (
+        <div className="analyzer__consumption-table-explanation">
+          <> {t("analyzer:torpedoExplanation")}</>
+        </div>
+      )}
     </>
   );
 }

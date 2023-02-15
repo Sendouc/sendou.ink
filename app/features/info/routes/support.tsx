@@ -36,8 +36,28 @@ const PERKS = [
   },
   {
     tier: 1,
+    name: "adFree",
+    extraInfo: false,
+  },
+  {
+    tier: 1,
     name: "nameInFooter",
     extraInfo: false,
+  },
+  {
+    tier: 2,
+    name: "privateDiscord",
+    extraInfo: true,
+  },
+  {
+    tier: 2,
+    name: "customizedColorsUser",
+    extraInfo: false,
+  },
+  {
+    tier: 2,
+    name: "customizedColorsTeam",
+    extraInfo: true,
   },
   {
     tier: 2,

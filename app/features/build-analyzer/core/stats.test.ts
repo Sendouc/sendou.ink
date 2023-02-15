@@ -83,4 +83,24 @@ AnalyzeBuild("Tacticooler / RP calculated correctly", () => {
   );
 });
 
+AnalyzeBuild(
+  "Accounts for Jr. big ink tank with sub weapon ink consumption %",
+  () => {
+    const analyzedDualieSquelchers = buildStats({
+      weaponSplId: 5030,
+      hasTacticooler: false,
+    });
+
+    const analyzedJr = buildStats({
+      weaponSplId: 10,
+      hasTacticooler: false,
+    });
+
+    assert.ok(
+      analyzedDualieSquelchers.stats.subWeaponInkConsumptionPercentage.value >
+        analyzedJr.stats.subWeaponInkConsumptionPercentage.value
+    );
+  }
+);
+
 AnalyzeBuild.run();

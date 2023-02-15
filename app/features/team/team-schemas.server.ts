@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { falsyToNull, id } from "~/utils/zod";
+import { falsyToNull, id, jsonParseable } from "~/utils/zod";
 import { TEAM, TEAM_MEMBER_ROLES } from "./team-constants";
 
 export const teamParamsSchema = z.object({ customUrl: z.string() });
@@ -23,6 +23,7 @@ export const editTeamSchema = z.union([
       falsyToNull,
       z.string().max(TEAM.TWITTER_MAX_LENGTH).nullable()
     ),
+    css: z.preprocess(falsyToNull, z.string().refine(jsonParseable).nullable()),
   }),
 ]);
 

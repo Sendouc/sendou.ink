@@ -38,6 +38,32 @@ test.describe("User page", () => {
     await page.getByText("Stick 0 / Motion -5").isVisible();
   });
 
+  test("customizes user page colors", async ({ page }) => {
+    await seed(page);
+    await impersonate(page);
+    await navigate({
+      page,
+      url: userPage({ discordId: ADMIN_DISCORD_ID, customUrl: "sendou" }),
+    });
+
+    const body = page.locator("body");
+    const bodyColor = () =>
+      body.evaluate((element) =>
+        window.getComputedStyle(element).getPropertyValue("--bg").trim()
+      );
+
+    await expect(bodyColor()).resolves.toMatch("#ebebf0");
+
+    await goToEditPage(page);
+
+    await page.getByTestId("color-input-bg").fill("#4a412a");
+    await submitEditForm(page);
+
+    // got redirected
+    await expect(page).not.toHaveURL(/edit/);
+    await expect(bodyColor()).resolves.toMatch("#4a412a");
+  });
+
   test("has redirecting custom url", async ({ page }) => {
     await seed(page);
     await impersonate(page);

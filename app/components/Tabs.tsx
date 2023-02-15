@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import * as React from "react";
+import type * as React from "react";
 
 // shares styles with SubNav.tsx
 
@@ -20,11 +20,13 @@ export function Tab({
   className,
   active,
   onClick,
+  testId,
 }: {
   children: React.ReactNode;
   className?: string;
   active: boolean;
   onClick: () => void;
+  testId?: string;
 }) {
   // TODO: improve semantic html here, maybe could use tab component from Headless UI?
   return (
@@ -34,6 +36,7 @@ export function Tab({
       tabIndex={0}
       role="button"
       aria-pressed="false"
+      data-testid={testId}
     >
       <div className={clsx("sub-nav__link", className)}>{children}</div>
       <div className="sub-nav__border-guy" />

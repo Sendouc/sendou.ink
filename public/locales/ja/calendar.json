@@ -5,6 +5,8 @@
   "reportResults": "結果を報告することができます:",
   "day": "Day {{number}}",
   "actions.reportWinners": "勝者を報告する",
+  "actions.delete": "イベントを削除する",
+  "actions.delete.confirm": "{{name}} に関連するデータをすべて削除しますか?",
   "participatedCount": "{{count}} チームが参加しました",
   "members": "メンバー",
   "results": "結果",

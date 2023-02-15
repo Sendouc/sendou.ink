@@ -10,6 +10,7 @@ const teamStm = sql.prepare(/*sql*/ `
     "t"."twitter",
     "t"."bio",
     "t"."customUrl",
+    "t"."css",
     "ia"."url" as "avatarSrc",
     "ib"."url" as "bannerSrc",
     json_group_array("User"."country") as "countries"
@@ -29,6 +30,7 @@ const membersStm = sql.prepare(/*sql*/ `
     "User"."discordAvatar",
     "User"."discordId",
     "User"."discordDiscriminator",
+    "User"."patronTier",
     "TeamMember"."role",
     "TeamMember"."isOwner",
     json_group_array("UserWeapon"."weaponSplId") as "weapons"
@@ -40,7 +42,7 @@ const membersStm = sql.prepare(/*sql*/ `
 `);
 
 type TeamRow =
-  | (Pick<Team, "id" | "name" | "twitter" | "bio" | "customUrl"> & {
+  | (Pick<Team, "id" | "name" | "twitter" | "bio" | "customUrl" | "css"> & {
       avatarSrc: string;
       bannerSrc: string;
       countries: string;
@@ -55,11 +57,14 @@ type MemberRows = Array<
     | "discordAvatar"
     | "discordId"
     | "discordDiscriminator"
+    | "patronTier"
   > &
     Pick<TeamMember, "role" | "isOwner"> & { weapons: string }
 >;
 
-export function findByIdentifier(customUrl: string): DetailedTeam | null {
+export function findByIdentifier(
+  customUrl: string
+): { team: DetailedTeam; css: Record<string, string> | null } | null {
   const team = teamStm.get({ customUrl: customUrl.toLowerCase() }) as TeamRow;
 
   if (!team) return null;
@@ -67,36 +72,40 @@ export function findByIdentifier(customUrl: string): DetailedTeam | null {
   const members = membersStm.all({ teamId: team.id }) as MemberRows;
 
   return {
-    id: team.id,
-    name: team.name,
-    customUrl: team.customUrl,
-    twitter: team.twitter ?? undefined,
-    bio: team.bio ?? undefined,
-    avatarSrc: team.avatarSrc,
-    bannerSrc: team.bannerSrc,
-    countries: removeDuplicates(JSON.parse(team.countries).filter(Boolean)),
-    members: members.map((member) => ({
-      id: member.id,
-      discordAvatar: member.discordAvatar,
-      discordId: member.discordId,
-      discordName: member.discordName,
-      discordDiscriminator: member.discordDiscriminator,
-      role: member.role ?? undefined,
-      isOwner: Boolean(member.isOwner),
-      weapons: JSON.parse(member.weapons).filter(Boolean),
-    })),
-    // results: {
-    //   count: 23,
-    //   placements: [
-    //     {
-    //       count: 10,
-    //       placement: 1,
-    //     },
-    //     {
-    //       count: 5,
-    //       placement: 2,
-    //     },
-    //   ],
-    // },
+    css: team.css ? (JSON.parse(team.css) as Record<string, string>) : null,
+    team: {
+      id: team.id,
+      name: team.name,
+      customUrl: team.customUrl,
+      twitter: team.twitter ?? undefined,
+      bio: team.bio ?? undefined,
+      avatarSrc: team.avatarSrc,
+      bannerSrc: team.bannerSrc,
+      countries: removeDuplicates(JSON.parse(team.countries).filter(Boolean)),
+      members: members.map((member) => ({
+        id: member.id,
+        discordAvatar: member.discordAvatar,
+        discordId: member.discordId,
+        discordName: member.discordName,
+        discordDiscriminator: member.discordDiscriminator,
+        patronTier: member.patronTier,
+        role: member.role ?? undefined,
+        isOwner: Boolean(member.isOwner),
+        weapons: JSON.parse(member.weapons).filter(Boolean),
+      })),
+      // results: {
+      //   count: 23,
+      //   placements: [
+      //     {
+      //       count: 10,
+      //       placement: 1,
+      //     },
+      //     {
+      //       count: 5,
+      //       placement: 2,
+      //     },
+      //   ],
+      // },
+    },
   };
 }

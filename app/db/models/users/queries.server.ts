@@ -22,6 +22,8 @@ import updateProfileSql from "./updateProfile.sql";
 import upsertSql from "./upsert.sql";
 import addUserWeaponSql from "./addUserWeapon.sql";
 import deleteUserWeaponsSql from "./deleteUserWeapons.sql";
+import wipePlusTiersSql from "./wipePlusTiers.sql";
+import fillPlusTiersSql from "./fillPlusTiers.sql";
 import { parseDBArray } from "~/utils/sql";
 
 const upsertStm = sql.prepare(upsertSql);
@@ -214,3 +216,10 @@ export function search(input: string) {
     >
   >;
 }
+
+const wipePlusTiersStm = sql.prepare(wipePlusTiersSql);
+const fillPlusTiersStm = sql.prepare(fillPlusTiersSql);
+export const refreshPlusTiers = sql.transaction(() => {
+  wipePlusTiersStm.run();
+  fillPlusTiersStm.run();
+});
