@@ -78,6 +78,21 @@ export function dateToYearMonthDayHourMinuteString(date: Date) {
   )}:${prefixZero(minute)}`;
 }
 
+/** Returns date as a string with the format YYYY-MM-DD in user's time zone */
+export function dateToYearMonthDayString(date: Date) {
+  const copiedDate = new Date(date.getTime());
+
+  if (!isValidDate(copiedDate)) {
+    throw new Error("tried to format string from invalid date");
+  }
+
+  const year = copiedDate.getFullYear();
+  const month = copiedDate.getMonth() + 1;
+  const day = copiedDate.getDate();
+
+  return `${year}-${prefixZero(month)}-${prefixZero(day)}`;
+}
+
 function prefixZero(number: number) {
   return number < 10 ? `0${number}` : number;
 }

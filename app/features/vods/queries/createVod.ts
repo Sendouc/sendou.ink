@@ -2,7 +2,7 @@ import { sql } from "~/db/sql";
 import type { VideoBeingAdded } from "../vods-types";
 
 const createVideoStm = sql.prepare(/* sql */ `
-  insert into "Video"
+  insert into "UnvalidatedVideo"
     ("title", "type", "youtubeDate", "eventId", "youtubeId", "submitterUserId")
   values
     (@title, @type, @youtubeDate, @eventId, @youtubeId, @submitterUserId)

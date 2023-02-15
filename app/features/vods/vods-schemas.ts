@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { modeShort, stageId, weaponSplId } from "~/utils/zod";
+import { modeShort, safeJSONParse, stageId, weaponSplId } from "~/utils/zod";
 import { videoMatchTypes } from "./vods-constants";
 
 export const videoMatchSchema = z.object({
@@ -14,8 +14,12 @@ export const videoSchema = z.object({
   eventId: z.number().optional(),
   youtubeId: z.string(),
   title: z.string(),
-  youtubeDate: z.number().optional(),
+  youtubeDate: z.number(),
   povUserId: z.number().optional(),
   povUserName: z.string().optional(),
   matches: z.array(videoMatchSchema),
+});
+
+export const videoInputSchema = z.object({
+  video: z.preprocess(safeJSONParse, videoSchema),
 });

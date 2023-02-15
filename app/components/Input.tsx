@@ -30,9 +30,9 @@ export function Input({
   defaultValue?: string;
   leftAddon?: string;
   icon?: React.ReactNode;
-  type?: "number";
+  type?: "number" | "date";
   min?: number;
-  max?: number;
+  max?: number | string;
   pattern?: string;
   list?: string;
   testId?: string;

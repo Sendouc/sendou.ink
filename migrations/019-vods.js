@@ -36,7 +36,7 @@ module.exports.up = function (db) {
       "startsAt" integer not null,
       "stageId" integer not null,
       "mode" text not null,
-      foreign key ("videoId") references "UnvalidatedVideo"("id") on delete set null
+      foreign key ("videoId") references "UnvalidatedVideo"("id") on delete cascade
     ) strict
     `
   ).run();
@@ -48,8 +48,8 @@ module.exports.up = function (db) {
     /*sql*/ `
     create table "VideoMatchPlayer" (
       "videoMatchId" integer not null,
-      "playerUserId" integer not null,
-      "playerName" text not null,
+      "playerUserId" integer,
+      "playerName" text,
       "weaponSplId" integer not null,
       "player" integer not null,
       foreign key ("videoMatchId") references "VideoMatch"("id") on delete cascade,

@@ -86,6 +86,7 @@ function wipeDB() {
     "CalendarEvent",
     "UserWeapon",
     "PlusTier",
+    "UnvalidatedVideo",
     "User",
     "PlusSuggestion",
     "PlusVote",

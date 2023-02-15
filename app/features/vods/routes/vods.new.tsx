@@ -15,11 +15,18 @@ import {
   type StageId,
 } from "~/modules/in-game-lists";
 import { modesShort } from "~/modules/in-game-lists/modes";
+import {
+  databaseTimestampToDate,
+  dateToDatabaseTimestamp,
+} from "~/utils/dates";
 import { parseRequestFormData, type SendouRouteHandle } from "~/utils/remix";
 import { createVod } from "../queries/createVod";
 import { videoMatchTypes } from "../vods-constants";
-import { videoSchema } from "../vods-schemas";
+import { videoInputSchema } from "../vods-schemas";
 import type { VideoBeingAdded, VideoMatchBeingAdded } from "../vods-types";
+import { dateToYearMonthDayString } from "~/utils/dates";
+import { SubmitButton } from "~/components/SubmitButton";
+import { Form } from "@remix-run/react";
 
 export const handle: SendouRouteHandle = {
   i18n: ["vods", "calendar"],
@@ -27,9 +34,12 @@ export const handle: SendouRouteHandle = {
 
 export const action: ActionFunction = async ({ request }) => {
   const user = await requireUser(request);
-  const data = await parseRequestFormData({ request, schema: videoSchema });
+  const data = await parseRequestFormData({
+    request,
+    schema: videoInputSchema,
+  });
 
-  createVod({ ...data, submitterUserId: user.id });
+  createVod({ ...data.video, submitterUserId: user.id });
 
   // xxx: redirect
   return null;
@@ -40,131 +50,171 @@ export default function NewVodPage() {
   const [video, setVideo] = React.useState<VideoBeingAdded>({
     type: "TOURNAMENT",
     matches: [newMatch()],
-    // xxx: add these and youtubeDate
     youtubeId: "",
     title: "",
+    youtubeDate: dateToDatabaseTimestamp(new Date()),
   });
 
   return (
-    <Main halfWidth className="stack md">
-      <div>
-        <Label required>YouTube URL</Label>
-        <Input
-          onChange={(e) =>
-            setVideo({
-              ...video,
-              youtubeId: extractYoutubeIdFromVideoUrl(e.target.value),
-            })
-          }
-        />
-      </div>
-
-      {video.youtubeId ? (
-        <>
-          <LiteYouTubeEmbed id={video.youtubeId} title="" />
-        </>
-      ) : null}
-
-      <div>
-        <Label required>Type</Label>
-        <select
-          name="type"
-          value={video.type}
-          onChange={(e) =>
-            setVideo({ ...video, type: e.target.value as Video["type"] })
-          }
-        >
-          {videoMatchTypes.map((type) => {
-            return (
-              <option key={type} value={type}>
-                {t(`vods:type.${type}`)}
-              </option>
-            );
-          })}
-        </select>
-      </div>
-
-      {video.type !== "CAST" ? (
-        <TransformingPlayerInput
-          match={video}
-          onChange={(newUser) => setVideo({ ...video, ...newUser })}
-          toggleInputType={() => {
-            const isPlainInput = typeof video.povUserName === "string";
-
-            if (isPlainInput) {
+    <Form method="post">
+      <input type="hidden" name="video" value={JSON.stringify(video)} />
+      <Main halfWidth className="stack md">
+        <div>
+          <Label required>YouTube URL</Label>
+          <Input
+            onChange={(e) =>
               setVideo({
                 ...video,
-                povUserId: undefined,
-                povUserName: undefined,
-              });
-            } else {
-              setVideo({
-                ...video,
-                povUserId: undefined,
-                povUserName: "",
-              });
+                youtubeId: extractYoutubeIdFromVideoUrl(e.target.value),
+              })
             }
-          }}
-        />
-      ) : null}
+            placeholder="https://www.youtube.com/watch?v=-dQ6JsVIKdY"
+          />
+        </div>
 
-      {/* xxx: Enable calendar event */}
-      {/* {["TOURNAMENT", "CAST"].includes(video.type as string) ? (
+        <div>
+          <Label required>Video title</Label>
+          <Input
+            onChange={(e) =>
+              setVideo({
+                ...video,
+                title: e.target.value,
+              })
+            }
+            placeholder="[SCL 47] (Grand Finals) Team Olive vs. Kraken Paradise"
+          />
+        </div>
+
+        <div>
+          <Label required>Video date</Label>
+          <Input
+            type="date"
+            max={dateToYearMonthDayString(new Date())}
+            value={dateToYearMonthDayString(
+              databaseTimestampToDate(video.youtubeDate)
+            )}
+            onChange={(e) => {
+              setVideo({
+                ...video,
+                youtubeDate: dateToDatabaseTimestamp(new Date(e.target.value)),
+              });
+            }}
+          />
+        </div>
+
+        {video.youtubeId ? (
+          <>
+            <LiteYouTubeEmbed id={video.youtubeId} title="" />
+          </>
+        ) : null}
+
+        <div>
+          <Label required>Type</Label>
+          <select
+            name="type"
+            value={video.type}
+            onChange={(e) =>
+              setVideo({ ...video, type: e.target.value as Video["type"] })
+            }
+          >
+            {videoMatchTypes.map((type) => {
+              return (
+                <option key={type} value={type}>
+                  {t(`vods:type.${type}`)}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+
+        {video.type !== "CAST" ? (
+          <TransformingPlayerInput
+            match={video}
+            onChange={(newUser) => setVideo({ ...video, ...newUser })}
+            toggleInputType={() => {
+              const isPlainInput = typeof video.povUserName === "string";
+
+              if (isPlainInput) {
+                setVideo({
+                  ...video,
+                  povUserId: undefined,
+                  povUserName: undefined,
+                });
+              } else {
+                setVideo({
+                  ...video,
+                  povUserId: undefined,
+                  povUserName: "",
+                });
+              }
+            }}
+          />
+        ) : null}
+
+        {/* xxx: Enable calendar event */}
+        {/* {["TOURNAMENT", "CAST"].includes(video.type as string) ? (
         <div>
           <Label>Calendar Event</Label>
           <Input />
         </div>
       ) : null} */}
 
-      {video.matches.map((match, i) => {
-        return (
-          <Match
-            key={i}
-            match={match}
-            number={i + 1}
-            onChange={(newMatch) => {
-              setVideo({
-                ...video,
-                matches: video.matches.map((match, j) =>
-                  i === j ? newMatch : match
-                ),
-              });
-            }}
-            type={video.type}
-          />
-        );
-      })}
-      <div className="stack horizontal md">
-        <Button
-          className="self-start mt-4"
-          variant="outlined"
-          onClick={() =>
-            setVideo({
-              ...video,
-              matches: [...video.matches, newMatch()],
-            })
-          }
-        >
-          Add match
-        </Button>
-        {video.matches.length > 1 ? (
+        {video.matches.map((match, i) => {
+          return (
+            <Match
+              key={i}
+              match={match}
+              number={i + 1}
+              onChange={(newMatch) => {
+                setVideo({
+                  ...video,
+                  matches: video.matches.map((match, j) =>
+                    i === j ? newMatch : match
+                  ),
+                });
+              }}
+              type={video.type}
+            />
+          );
+        })}
+        <div className="stack horizontal md justify-end">
           <Button
             className="self-start mt-4"
-            variant="destructive"
+            variant="outlined"
             onClick={() =>
               setVideo({
                 ...video,
-                matches: video.matches.filter(
-                  (_, i) => i !== video.matches.length - 1
-                ),
+                matches: [...video.matches, newMatch()],
               })
             }
+            size="tiny"
           >
-            Delete match
+            Add match
           </Button>
-        ) : null}
-      </div>
-    </Main>
+          {video.matches.length > 1 ? (
+            <Button
+              className="self-start mt-4"
+              variant="destructive"
+              onClick={() =>
+                setVideo({
+                  ...video,
+                  matches: video.matches.filter(
+                    (_, i) => i !== video.matches.length - 1
+                  ),
+                })
+              }
+              size="tiny"
+            >
+              Delete match
+            </Button>
+          ) : null}
+        </div>
+
+        <div className="stack items-start">
+          <SubmitButton size="big">Submit</SubmitButton>
+        </div>
+      </Main>
+    </Form>
   );
 }
 
