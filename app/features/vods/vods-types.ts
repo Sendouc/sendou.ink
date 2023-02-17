@@ -18,7 +18,7 @@ export interface Vod {
       >
     | string;
   title: Video["title"];
-  date: Video["youtubeDate"];
+  youtubeDate: Video["youtubeDate"];
   youtubeId: Video["youtubeId"];
   matches: Array<VodMatch>;
 }

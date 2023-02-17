@@ -21,6 +21,9 @@ import styles from "../vods.css";
 import * as React from "react";
 import { discordFullName } from "~/utils/strings";
 import { Avatar } from "~/components/Avatar";
+import { useIsMounted } from "~/hooks/useIsMounted";
+import clsx from "clsx";
+import { databaseTimestampToDate } from "~/utils/dates";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -33,13 +36,14 @@ export const loader = ({ params }: LoaderArgs) => {
 };
 
 // xxx: 4v4 weapons
-// xxx: date
 export default function VodPage() {
   const [start, setStart] = useSearchParamState({
     name: "start",
     defaultValue: 0,
     revive: Number,
   });
+  const { i18n } = useTranslation();
+  const isMounted = useIsMounted();
   const [autoplay, setAutoplay] = React.useState(false);
   const data = useLoaderData<typeof loader>();
 
@@ -53,7 +57,24 @@ export default function VodPage() {
           autoplay={autoplay}
         />
         <h2 className="text-sm">{data.vod.title}</h2>
-        <PovUser pov={data.vod.pov} />
+        <div className="stack horizontal sm items-center">
+          <PovUser pov={data.vod.pov} />
+          <time
+            className={clsx("text-lighter text-xs", {
+              invisible: !isMounted,
+            })}
+          >
+            {isMounted
+              ? databaseTimestampToDate(
+                  data.vod.youtubeDate
+                ).toLocaleDateString(i18n.language, {
+                  day: "numeric",
+                  month: "numeric",
+                  year: "numeric",
+                })
+              : "t"}
+          </time>
+        </div>
       </div>
       <div className="vods__matches">
         {data.vod.matches.map((match) => (
