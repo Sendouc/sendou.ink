@@ -1,6 +1,5 @@
 import type { ActionFunction } from "@remix-run/node";
 import * as React from "react";
-import LiteYouTubeEmbed from "react-lite-youtube-embed";
 import { Button } from "~/components/Button";
 import { UserCombobox, WeaponCombobox } from "~/components/Combobox";
 import { Input } from "~/components/Input";
@@ -28,6 +27,7 @@ import { dateToYearMonthDayString } from "~/utils/dates";
 import { SubmitButton } from "~/components/SubmitButton";
 import { Form } from "@remix-run/react";
 import { isAdmin } from "~/permissions";
+import { YouTubeEmbed } from "~/components/YouTubeEmbed";
 
 export const handle: SendouRouteHandle = {
   i18n: ["vods", "calendar"],
@@ -109,7 +109,7 @@ export default function NewVodPage() {
 
         {video.youtubeId ? (
           <>
-            <LiteYouTubeEmbed id={video.youtubeId} title="" />
+            <YouTubeEmbed id={video.youtubeId} />
           </>
         ) : null}
 

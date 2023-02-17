@@ -42,8 +42,6 @@ import { isTheme } from "./modules/theme/provider";
 import { useIsMounted } from "./hooks/useIsMounted";
 import invariant from "tiny-invariant";
 import { CUSTOMIZED_CSS_VARS_NAME } from "./constants";
-import { cssBundleHref } from "@remix-run/css-bundle";
-import "react-lite-youtube-embed/dist/LiteYouTubeEmbed.css";
 
 export const shouldRevalidate: ShouldRevalidateFunction = ({ nextUrl }) => {
   // // reload on language change so the selected language gets set into the cookie
@@ -60,7 +58,6 @@ export const links: LinksFunction = () => {
     { rel: "stylesheet", href: utilStyles },
     { rel: "stylesheet", href: layoutStyles },
     { rel: "stylesheet", href: flagsStyles },
-    ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
   ];
 };
 

@@ -11,7 +11,7 @@
   text-align: center;
   flex-direction: column;
   font-size: var(--fonts-xs);
-  line-height: 1.15;
+  line-height: 1.3;
   gap: var(--s-2);
   font-weight: var(--semi-bold);
   flex-grow: 1;
