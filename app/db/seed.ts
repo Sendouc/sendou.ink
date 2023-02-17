@@ -26,6 +26,8 @@ import { dateToDatabaseTimestamp } from "~/utils/dates";
 import type { UpsertManyPlusVotesArgs } from "./models/plusVotes/queries.server";
 import { nanoid } from "nanoid";
 import { mySlugify } from "~/utils/urls";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+import { createVod } from "~/features/vods/queries/createVod";
 
 const ADMIN_TEST_AVATAR = "1d1d8488ced4cdf478648592fa871101";
 
@@ -60,6 +62,7 @@ const basicSeeds = [
   manySplattershotBuilds,
   detailedTeam,
   otherTeams,
+  realVideo,
 ];
 
 export function seed() {
@@ -1004,4 +1007,43 @@ function otherTeams() {
         .run();
     }
   }
+}
+
+function realVideo() {
+  createVod({
+    type: "TOURNAMENT",
+    youtubeId: "M4aV-BQWlVg",
+    youtubeDate: dateToDatabaseTimestamp(new Date("02-02-2023")),
+    submitterUserId: 1,
+    title: "LUTI Division X Tournament - ABBF (THRONE) vs. Ascension",
+    povUserId: 2,
+    isValidated: true,
+    matches: [
+      {
+        mode: "SZ",
+        stageId: 8,
+        startsAt: 13,
+        weapons: [3040],
+      },
+      {
+        mode: "CB",
+        stageId: 6,
+        startsAt: 76,
+        weapons: [3040],
+      },
+      {
+        mode: "TC",
+        stageId: 2,
+        startsAt: 680,
+        weapons: [3040],
+      },
+      {
+        mode: "SZ",
+        stageId: 9,
+        startsAt: 1186,
+        weapons: [3040],
+      },
+      // there are other matches too...
+    ],
+  });
 }

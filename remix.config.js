@@ -41,6 +41,7 @@ module.exports = {
       route("/t/:customUrl/join", "features/team/routes/t.$customUrl.join.tsx");
 
       route("/vods/new", "features/vods/routes/vods.new.tsx");
+      route("/vods/:id", "features/vods/routes/vods.$id.tsx");
     });
   },
 };

@@ -1,11 +1,12 @@
 import { sql } from "~/db/sql";
+import { dateToDatabaseTimestamp } from "~/utils/dates";
 import type { VideoBeingAdded } from "../vods-types";
 
 const createVideoStm = sql.prepare(/* sql */ `
   insert into "UnvalidatedVideo"
-    ("title", "type", "youtubeDate", "eventId", "youtubeId", "submitterUserId")
+    ("title", "type", "youtubeDate", "eventId", "youtubeId", "submitterUserId", "validatedAt")
   values
-    (@title, @type, @youtubeDate, @eventId, @youtubeId, @submitterUserId)
+    (@title, @type, @youtubeDate, @eventId, @youtubeId, @submitterUserId, @validatedAt)
   returning *
 `);
 
@@ -25,7 +26,9 @@ const createVideoMatchPlayerStm = sql.prepare(/* sql */ `
 `);
 
 export const createVod = sql.transaction(
-  (args: VideoBeingAdded & { submitterUserId: number }) => {
+  (
+    args: VideoBeingAdded & { submitterUserId: number; isValidated: boolean }
+  ) => {
     const video = createVideoStm.get({
       title: args.title,
       type: args.type,
@@ -33,6 +36,9 @@ export const createVod = sql.transaction(
       eventId: args.eventId,
       youtubeId: args.youtubeId,
       submitterUserId: args.submitterUserId,
+      validatedAt: args.isValidated
+        ? dateToDatabaseTimestamp(new Date())
+        : null,
     });
 
     for (const match of args.matches) {

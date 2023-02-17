@@ -27,6 +27,7 @@ import type { VideoBeingAdded, VideoMatchBeingAdded } from "../vods-types";
 import { dateToYearMonthDayString } from "~/utils/dates";
 import { SubmitButton } from "~/components/SubmitButton";
 import { Form } from "@remix-run/react";
+import { isAdmin } from "~/permissions";
 
 export const handle: SendouRouteHandle = {
   i18n: ["vods", "calendar"],
@@ -39,7 +40,11 @@ export const action: ActionFunction = async ({ request }) => {
     schema: videoInputSchema,
   });
 
-  createVod({ ...data.video, submitterUserId: user.id });
+  createVod({
+    ...data.video,
+    submitterUserId: user.id,
+    isValidated: isAdmin(user),
+  });
 
   // xxx: redirect
   return null;
