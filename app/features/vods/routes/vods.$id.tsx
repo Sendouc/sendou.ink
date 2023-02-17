@@ -1,5 +1,5 @@
 import type { LinksFunction, LoaderArgs } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
 import { Button } from "~/components/Button";
 import { Image } from "~/components/Image";
 import { Main } from "~/components/Main";
@@ -13,11 +13,14 @@ import {
   modeImageUrl,
   outlinedMainWeaponImageUrl,
   stageImageUrl,
+  userPage,
 } from "~/utils/urls";
 import { findVodById } from "../queries/findVodById";
 import type { Vod } from "../vods-types";
 import styles from "../vods.css";
 import * as React from "react";
+import { discordFullName } from "~/utils/strings";
+import { Avatar } from "~/components/Avatar";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -29,6 +32,8 @@ export const loader = ({ params }: LoaderArgs) => {
   return { vod };
 };
 
+// xxx: 4v4 weapons
+// xxx: date
 export default function VodPage() {
   const [start, setStart] = useSearchParamState({
     name: "start",
@@ -40,7 +45,7 @@ export default function VodPage() {
 
   return (
     <Main className="stack lg">
-      <div>
+      <div className="stack sm">
         <YouTubeEmbed
           key={start}
           id={data.vod.youtubeId}
@@ -48,6 +53,7 @@ export default function VodPage() {
           autoplay={autoplay}
         />
         <h2 className="text-sm">{data.vod.title}</h2>
+        <PovUser pov={data.vod.pov} />
       </div>
       <div className="vods__matches">
         {data.vod.matches.map((match) => (
@@ -63,6 +69,21 @@ export default function VodPage() {
         ))}
       </div>
     </Main>
+  );
+}
+
+function PovUser({ pov }: { pov: Vod["pov"] }) {
+  if (!pov) return null;
+
+  if (typeof pov === "string") {
+    return <div className="text-sm">{pov}</div>;
+  }
+
+  return (
+    <Link to={userPage(pov)} className="stack horizontal xs">
+      <Avatar user={pov} size="xxs" />
+      <span className="text-sm font-semi-bold">{discordFullName(pov)}</span>
+    </Link>
   );
 }
 
