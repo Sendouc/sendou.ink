@@ -1,11 +1,14 @@
 .vods__matches {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--s-4);
+  column-gap: var(--s-4);
+  row-gap: var(--s-8);
   justify-content: space-between;
+  margin-block-start: var(--s-2);
 }
 
 .vods__match {
+  position: relative;
   display: flex;
   align-items: center;
   text-align: center;
@@ -15,4 +18,16 @@
   gap: var(--s-2);
   font-weight: var(--semi-bold);
   flex-grow: 1;
+}
+
+.vods__match__weapon {
+  position: absolute;
+  top: -15px;
+  left: 20px;
+}
+
+.vods__match__mode {
+  position: absolute;
+  top: -15px;
+  right: 25px;
 }

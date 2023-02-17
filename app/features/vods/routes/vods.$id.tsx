@@ -9,7 +9,11 @@ import { useTranslation } from "~/hooks/useTranslation";
 import { secondsToMinutes } from "~/utils/number";
 import { notFoundIfFalsy } from "~/utils/remix";
 import type { Unpacked } from "~/utils/types";
-import { stageImageUrl } from "~/utils/urls";
+import {
+  modeImageUrl,
+  outlinedMainWeaponImageUrl,
+  stageImageUrl,
+} from "~/utils/urls";
 import { findVodById } from "../queries/findVodById";
 import type { Vod } from "../vods-types";
 import styles from "../vods.css";
@@ -70,6 +74,9 @@ function Match({
   setStart: (start: number) => void;
 }) {
   const { t } = useTranslation(["game-misc", "weapons"]);
+
+  const weapon = match.weapons.length === 1 ? match.weapons[0]! : null;
+
   return (
     <div className="vods__match">
       <Image
@@ -78,14 +85,26 @@ function Match({
         width={100}
         className="rounded"
       />
+      {weapon ? (
+        <Image
+          alt=""
+          path={outlinedMainWeaponImageUrl(weapon)}
+          width={42}
+          className="vods__match__weapon"
+        />
+      ) : null}
+      <Image
+        alt=""
+        path={modeImageUrl(match.mode)}
+        width={32}
+        className="vods__match__mode"
+      />
       <div>
         <div>
           {t(`game-misc:MODE_SHORT_${match.mode}`)}{" "}
           {t(`game-misc:STAGE_${match.stageId}`)}
         </div>
-        {match.weapons.length === 1 ? (
-          <div>{t(`weapons:MAIN_${match.weapons[0]!}`)}</div>
-        ) : null}
+        {weapon ? <div>{t(`weapons:MAIN_${weapon}`)}</div> : null}
       </div>
       <Button size="tiny" onClick={() => setStart(match.startsAt)}>
         {secondsToMinutes(match.startsAt)}
