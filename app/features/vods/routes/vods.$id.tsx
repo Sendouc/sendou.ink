@@ -53,6 +53,7 @@ export default function VodPage() {
             setStart={(newStart) => {
               setStart(newStart);
               setAutoplay(true);
+              window.scrollTo(0, 0);
             }}
           />
         ))}
