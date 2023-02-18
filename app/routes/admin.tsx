@@ -19,6 +19,7 @@ import {
   requireUserId,
 } from "~/modules/auth/user.server";
 import { canPerformAdminActions } from "~/permissions";
+import { dateToDatabaseTimestamp } from "~/utils/dates";
 import {
   parseRequestFormData,
   validate,
@@ -44,6 +45,12 @@ const adminActionSchema = z.union([
   z.object({
     _action: z.literal("REFRESH"),
   }),
+  z.object({
+    _action: z.literal("FORCE_PATRON"),
+    "user[value]": z.preprocess(actualNumber, z.number().positive()),
+    patronTier: z.preprocess(actualNumber, z.number()),
+    patronTill: z.string(),
+  }),
 ]);
 
 export const action: ActionFunction = async ({ request }) => {
@@ -65,6 +72,15 @@ export const action: ActionFunction = async ({ request }) => {
     }
     case "REFRESH": {
       db.users.refreshPlusTiers();
+      break;
+    }
+    case "FORCE_PATRON": {
+      db.users.forcePatron({
+        id: data["user[value]"],
+        patronSince: dateToDatabaseTimestamp(new Date()),
+        patronTier: data.patronTier,
+        patronTill: dateToDatabaseTimestamp(new Date(data.patronTill)),
+      });
       break;
     }
     default: {
@@ -100,6 +116,7 @@ export default function AdminPage() {
     <Main className="stack lg">
       <Impersonate />
       <MigrateUser />
+      <ForcePatron />
       <RefreshPlusTiers />
       {process.env.NODE_ENV !== "production" && <Seed />}
     </Main>
@@ -192,17 +209,41 @@ function MigrateUser() {
   );
 }
 
-function Seed() {
+function ForcePatron() {
   const fetcher = useFetcher();
 
   return (
-    <fetcher.Form
-      className="stack md items-start"
-      method="post"
-      action={SEED_URL}
-    >
-      <h2>Seed</h2>
-      <Button type="submit">Seed</Button>
+    <fetcher.Form className="stack md" method="post">
+      <h2>Force patron</h2>
+      <div className="stack horizontal md">
+        <div>
+          <label>User</label>
+          <UserCombobox inputName="user" />
+        </div>
+
+        <div>
+          <label>Tier</label>
+          <select name="patronTier">
+            <option value="1">Support</option>
+            <option value="2">Supporter</option>
+            <option value="3">Supporter+</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Patron till</label>
+          <input name="patronTill" type="date" />
+        </div>
+      </div>
+      <div className="stack horizontal md">
+        <SubmitButton
+          type="submit"
+          _action="FORCE_PATRON"
+          state={fetcher.state}
+        >
+          Save
+        </SubmitButton>
+      </div>
     </fetcher.Form>
   );
 }
@@ -216,6 +257,21 @@ function RefreshPlusTiers() {
       <SubmitButton type="submit" _action="REFRESH" state={fetcher.state}>
         Refresh
       </SubmitButton>
+    </fetcher.Form>
+  );
+}
+
+function Seed() {
+  const fetcher = useFetcher();
+
+  return (
+    <fetcher.Form
+      className="stack md items-start"
+      method="post"
+      action={SEED_URL}
+    >
+      <h2>Seed</h2>
+      <Button type="submit">Seed</Button>
     </fetcher.Form>
   );
 }

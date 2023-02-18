@@ -5,6 +5,8 @@ import type {
   UserWithPlusTier,
 } from "../../types";
 import type { MainWeaponId } from "~/modules/in-game-lists";
+import { parseDBArray } from "~/utils/sql";
+import { dateToDatabaseTimestamp } from "~/utils/dates";
 
 import addPatronDataSql from "./addPatronData.sql";
 import addResultHighlightSql from "./addResultHighlight.sql";
@@ -24,7 +26,7 @@ import addUserWeaponSql from "./addUserWeapon.sql";
 import deleteUserWeaponsSql from "./deleteUserWeapons.sql";
 import wipePlusTiersSql from "./wipePlusTiers.sql";
 import fillPlusTiersSql from "./fillPlusTiers.sql";
-import { parseDBArray } from "~/utils/sql";
+import forcePatronSql from "./forcePatron.sql";
 
 const upsertStm = sql.prepare(upsertSql);
 export function upsert(
@@ -92,7 +94,7 @@ export type UpdatePatronDataArgs = Array<
 >;
 export const updatePatronData = sql.transaction(
   (argsArr: UpdatePatronDataArgs) => {
-    deleteAllPatronDataStm.run();
+    deleteAllPatronDataStm.run({ now: dateToDatabaseTimestamp(new Date()) });
 
     for (const args of argsArr) {
       addPatronDataStm.run(args);
@@ -179,6 +181,13 @@ export type FindAllPatrons = Array<
 >;
 export function findAllPatrons() {
   return findAllPatronsStm.all() as FindAllPatrons;
+}
+
+const forcePatronStm = sql.prepare(forcePatronSql);
+export function forcePatron(
+  user: Pick<User, "id" | "patronSince" | "patronTill" | "patronTier">
+) {
+  forcePatronStm.run(user);
 }
 
 const deleteAllResultHighlightsStm = sql.prepare(deleteAllResultHighlightsSql);

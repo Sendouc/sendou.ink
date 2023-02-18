@@ -1,8 +1,8 @@
 update
-  "User"
+  User
 set
   "patronTier" = @patronTier,
   "patronSince" = @patronSince,
-  "patronTill" = null
+  "patronTill" = @patronTill
 where
-  "discordId" = @discordId
+  "id" = @id;
