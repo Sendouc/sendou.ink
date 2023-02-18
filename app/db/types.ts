@@ -25,6 +25,8 @@ export interface User {
   inGameName: string | null;
   patronTier: number | null;
   patronSince: number | null;
+  /** Used to overwrite normal patron giving process and force give the patron status till this date */
+  patronTill: number | null;
 }
 
 /** User table after joined with PlusTier table */
