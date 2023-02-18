@@ -1,4 +1,9 @@
-import type { LinksFunction, LoaderArgs } from "@remix-run/node";
+import type {
+  LinksFunction,
+  LoaderArgs,
+  MetaFunction,
+  SerializeFrom,
+} from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { Button } from "~/components/Button";
 import { Image, WeaponImage } from "~/components/Image";
@@ -14,7 +19,7 @@ import { findVodById } from "../queries/findVodById";
 import type { Vod } from "../vods-types";
 import styles from "../vods.css";
 import * as React from "react";
-import { discordFullName } from "~/utils/strings";
+import { discordFullName, makeTitle } from "~/utils/strings";
 import { Avatar } from "~/components/Avatar";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import clsx from "clsx";
@@ -24,13 +29,22 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
+export const meta: MetaFunction = (args) => {
+  const data = args.data as SerializeFrom<typeof loader> | null;
+
+  if (!data) return {};
+
+  return {
+    title: makeTitle(data.vod.title),
+  };
+};
+
 export const loader = ({ params }: LoaderArgs) => {
   const vod = notFoundIfFalsy(findVodById(Number(params["id"])));
 
   return { vod };
 };
 
-// xxx: title
 export default function VodPage() {
   const [start, setStart] = useSearchParamState({
     name: "start",
