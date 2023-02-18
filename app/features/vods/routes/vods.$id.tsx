@@ -1,7 +1,7 @@
 import type { LinksFunction, LoaderArgs } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { Button } from "~/components/Button";
-import { Image } from "~/components/Image";
+import { Image, WeaponImage } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { YouTubeEmbed } from "~/components/YouTubeEmbed";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
@@ -9,12 +9,7 @@ import { useTranslation } from "~/hooks/useTranslation";
 import { secondsToMinutes } from "~/utils/number";
 import { notFoundIfFalsy } from "~/utils/remix";
 import type { Unpacked } from "~/utils/types";
-import {
-  modeImageUrl,
-  outlinedMainWeaponImageUrl,
-  stageImageUrl,
-  userPage,
-} from "~/utils/urls";
+import { modeImageUrl, stageImageUrl, userPage } from "~/utils/urls";
 import { findVodById } from "../queries/findVodById";
 import type { Vod } from "../vods-types";
 import styles from "../vods.css";
@@ -35,7 +30,7 @@ export const loader = ({ params }: LoaderArgs) => {
   return { vod };
 };
 
-// xxx: 4v4 weapons
+// xxx: title
 export default function VodPage() {
   const [start, setStart] = useSearchParamState({
     name: "start",
@@ -118,39 +113,70 @@ function Match({
   const { t } = useTranslation(["game-misc", "weapons"]);
 
   const weapon = match.weapons.length === 1 ? match.weapons[0]! : null;
+  const weapons = match.weapons.length === 8 ? match.weapons : null;
 
   return (
-    <div className="vods__match">
-      <Image
-        alt=""
-        path={stageImageUrl(match.stageId)}
-        width={100}
-        className="rounded"
-      />
-      {weapon ? (
+    <div>
+      <div className="vods__match">
         <Image
           alt=""
-          path={outlinedMainWeaponImageUrl(weapon)}
-          width={42}
-          className="vods__match__weapon"
+          path={stageImageUrl(match.stageId)}
+          width={100}
+          className="rounded"
         />
-      ) : null}
-      <Image
-        alt=""
-        path={modeImageUrl(match.mode)}
-        width={32}
-        className="vods__match__mode"
-      />
-      <div>
-        <div>
-          {t(`game-misc:MODE_SHORT_${match.mode}`)}{" "}
-          {t(`game-misc:STAGE_${match.stageId}`)}
+        {weapon ? (
+          <WeaponImage
+            weaponSplId={weapon}
+            variant="badge"
+            width={42}
+            className="vods__match__weapon"
+          />
+        ) : null}
+        <Image
+          alt=""
+          path={modeImageUrl(match.mode)}
+          width={32}
+          className="vods__match__mode"
+        />
+        <div className="vods__match__text">
+          <div>
+            {t(`game-misc:MODE_SHORT_${match.mode}`)}{" "}
+            {t(`game-misc:STAGE_${match.stageId}`)}
+          </div>
+          {weapon ? <div>{t(`weapons:MAIN_${weapon}`)}</div> : null}
         </div>
-        {weapon ? <div>{t(`weapons:MAIN_${weapon}`)}</div> : null}
+        {weapons ? (
+          <div className="stack horizontal md">
+            <div className="vods__match__weapons">
+              {weapons.slice(0, 4).map((weapon) => {
+                return (
+                  <WeaponImage
+                    key={weapon}
+                    weaponSplId={weapon}
+                    variant="badge"
+                    width={30}
+                  />
+                );
+              })}
+            </div>
+            <div className="vods__match__weapons">
+              {weapons.slice(4).map((weapon) => {
+                return (
+                  <WeaponImage
+                    key={weapon}
+                    weaponSplId={weapon}
+                    variant="badge"
+                    width={30}
+                  />
+                );
+              })}
+            </div>
+          </div>
+        ) : null}
+        <Button size="tiny" onClick={() => setStart(match.startsAt)}>
+          {secondsToMinutes(match.startsAt)}
+        </Button>
       </div>
-      <Button size="tiny" onClick={() => setStart(match.startsAt)}>
-        {secondsToMinutes(match.startsAt)}
-      </Button>
     </div>
   );
 }

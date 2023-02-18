@@ -63,6 +63,7 @@ const basicSeeds = [
   detailedTeam,
   otherTeams,
   realVideo,
+  realVideoCast,
 ];
 
 export function seed() {
@@ -1028,7 +1029,7 @@ function realVideo() {
       {
         mode: "CB",
         stageId: 6,
-        startsAt: 76,
+        startsAt: 307,
         weapons: [3040],
       },
       {
@@ -1042,6 +1043,45 @@ function realVideo() {
         stageId: 9,
         startsAt: 1186,
         weapons: [3040],
+      },
+      // there are other matches too...
+    ],
+  });
+}
+
+function realVideoCast() {
+  createVod({
+    type: "CAST",
+    youtubeId: "M4aV-BQWlVg",
+    youtubeDate: dateToDatabaseTimestamp(new Date("02-02-2023")),
+    submitterUserId: 1,
+    title: "LUTI Division X Tournament - ABBF (THRONE) vs. Ascension",
+    povUserId: 2,
+    isValidated: true,
+    matches: [
+      {
+        mode: "SZ",
+        stageId: 8,
+        startsAt: 13,
+        weapons: [3040, 1000, 2000, 4000, 5000, 6000, 7010, 8000],
+      },
+      {
+        mode: "CB",
+        stageId: 6,
+        startsAt: 307,
+        weapons: [3040, 1001, 2010, 4001, 5001, 6010, 7020, 8010],
+      },
+      {
+        mode: "TC",
+        stageId: 2,
+        startsAt: 680,
+        weapons: [3040, 1010, 2020, 4010, 5010, 6020, 7010, 8000],
+      },
+      {
+        mode: "SZ",
+        stageId: 9,
+        startsAt: 1186,
+        weapons: [3040, 1020, 2030, 4020, 5020, 6020, 7020, 8010],
       },
       // there are other matches too...
     ],

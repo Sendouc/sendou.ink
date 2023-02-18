@@ -15,19 +15,28 @@
   flex-direction: column;
   font-size: var(--fonts-xs);
   line-height: 1.3;
-  gap: var(--s-2);
   font-weight: var(--semi-bold);
   flex-grow: 1;
+}
+
+.vods__match__text {
+  margin-block: var(--s-2);
 }
 
 .vods__match__weapon {
   position: absolute;
   top: -15px;
-  left: 20px;
+  left: 15px;
+}
+
+.vods__match__weapons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  margin-block-end: var(--s-2);
 }
 
 .vods__match__mode {
   position: absolute;
   top: -15px;
-  right: 25px;
+  right: 15px;
 }
