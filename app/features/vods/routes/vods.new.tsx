@@ -21,7 +21,7 @@ import {
 } from "~/utils/dates";
 import { parseRequestFormData, type SendouRouteHandle } from "~/utils/remix";
 import { createVod } from "../queries/createVod";
-import { videoMatchTypes } from "../vods-constants";
+import { videoMatchTypes, VOD } from "../vods-constants";
 import { videoInputSchema } from "../vods-schemas";
 import type { VideoBeingAdded, VideoMatchBeingAdded } from "../vods-types";
 import { dateToYearMonthDayString } from "~/utils/dates";
@@ -75,6 +75,7 @@ export default function NewVodPage() {
               })
             }
             placeholder="https://www.youtube.com/watch?v=-dQ6JsVIKdY"
+            required
           />
         </div>
 
@@ -88,6 +89,9 @@ export default function NewVodPage() {
               })
             }
             placeholder="[SCL 47] (Grand Finals) Team Olive vs. Kraken Paradise"
+            minLength={VOD.TITLE_MIN_LENGTH}
+            maxLength={VOD.TITLE_MAX_LENGTH}
+            required
           />
         </div>
 
@@ -105,6 +109,7 @@ export default function NewVodPage() {
                 youtubeDate: dateToDatabaseTimestamp(new Date(e.target.value)),
               });
             }}
+            required
           />
         </div>
 
@@ -279,8 +284,9 @@ function TransformingPlayerInput({
           id="pov"
           value={match.povUserName ?? ""}
           onChange={(e) => onChange({ ...match, povUserName: e.target.value })}
-          // xxx: max length
-          // max={CALENDAR_EVENT_RESULT.MAX_PLAYER_NAME_LENGTH}
+          min={VOD.PLAYER_NAME_MIN_LENGTH}
+          max={VOD.PLAYER_NAME_MAX_LENGTH}
+          required
         />
       ) : (
         <UserCombobox
@@ -293,6 +299,7 @@ function TransformingPlayerInput({
               povUserId: selected?.value ? Number(selected.value) : undefined,
             })
           }
+          required
         />
       )}
     </div>
@@ -416,6 +423,7 @@ function Match({
 
                       onChange({ ...match, weapons });
                     }}
+                    required
                   />
                 );
               })}
@@ -440,6 +448,7 @@ function Match({
 
                         onChange({ ...match, weapons });
                       }}
+                      required
                     />
                   );
                 })}
@@ -464,6 +473,7 @@ function Match({
                     : [],
                 })
               }
+              required
             />
           </>
         )}
