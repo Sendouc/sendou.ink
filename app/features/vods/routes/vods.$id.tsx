@@ -4,26 +4,26 @@ import type {
   MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
+import clsx from "clsx";
+import * as React from "react";
 import { Button } from "~/components/Button";
 import { Image, WeaponImage } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { YouTubeEmbed } from "~/components/YouTubeEmbed";
+import { useIsMounted } from "~/hooks/useIsMounted";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
 import { useTranslation } from "~/hooks/useTranslation";
+import { databaseTimestampToDate } from "~/utils/dates";
 import { secondsToMinutes } from "~/utils/number";
 import { notFoundIfFalsy } from "~/utils/remix";
+import { makeTitle } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
-import { modeImageUrl, stageImageUrl, userPage } from "~/utils/urls";
+import { modeImageUrl, stageImageUrl } from "~/utils/urls";
+import { PovUser } from "../components/VodPov";
 import { findVodById } from "../queries/findVodById";
 import type { Vod } from "../vods-types";
 import styles from "../vods.css";
-import * as React from "react";
-import { discordFullName, makeTitle } from "~/utils/strings";
-import { Avatar } from "~/components/Avatar";
-import { useIsMounted } from "~/hooks/useIsMounted";
-import clsx from "clsx";
-import { databaseTimestampToDate } from "~/utils/dates";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -99,21 +99,6 @@ export default function VodPage() {
         ))}
       </div>
     </Main>
-  );
-}
-
-function PovUser({ pov }: { pov: Vod["pov"] }) {
-  if (!pov) return null;
-
-  if (typeof pov === "string") {
-    return <div className="text-sm">{pov}</div>;
-  }
-
-  return (
-    <Link to={userPage(pov)} className="stack horizontal xs">
-      <Avatar user={pov} size="xxs" />
-      <span className="text-sm font-semi-bold">{discordFullName(pov)}</span>
-    </Link>
   );
 }
 

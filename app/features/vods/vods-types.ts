@@ -29,3 +29,8 @@ export type VodMatch = Pick<
 > & {
   weapons: Array<MainWeaponId>;
 };
+
+export type ListVod = Omit<Vod, "youtubeDate" | "matches"> & {
+  weapons: Array<MainWeaponId>;
+  type: Video["type"];
+};

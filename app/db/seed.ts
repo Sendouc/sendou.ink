@@ -1056,7 +1056,6 @@ function realVideoCast() {
     youtubeDate: dateToDatabaseTimestamp(new Date("02-02-2023")),
     submitterUserId: 1,
     title: "LUTI Division X Tournament - ABBF (THRONE) vs. Ascension",
-    povUserId: 2,
     isValidated: true,
     matches: [
       {

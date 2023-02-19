@@ -40,3 +40,37 @@
   top: -15px;
   right: 15px;
 }
+
+.vods__listing__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-6);
+  justify-content: center;
+}
+
+.vods__listing {
+  max-width: 355px;
+}
+
+.vods__listing__info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.vods__listing__cast-text {
+  font-size: var(--fonts-sm);
+  font-weight: var(--semi-bold);
+  color: var(--text-lighter);
+}
+
+.vods__listing__weapons-not-shown {
+  background-color: var(--bg-lighter);
+  border-radius: 100%;
+  display: grid;
+  place-items: center;
+  font-weight: var(--semi-bold);
+  width: 38px;
+  height: 38px;
+  font-size: var(--fonts-sm);
+}
