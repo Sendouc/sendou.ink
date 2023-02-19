@@ -37,7 +37,7 @@ const videoMatchesStm = sql.prepare(/* sql */ `
   left join "User" u on vp."playerUserId" = u."id"
   where vm."videoId" = @id
   group by vm."id"
-  order by vm."startsAt" asc
+  order by vm."startsAt" asc, vp."player" asc
 `);
 
 export function findVodById(id: Vod["id"]): Vod | null {
