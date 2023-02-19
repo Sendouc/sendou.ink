@@ -1,4 +1,5 @@
 import type { ActionFunction } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import * as React from "react";
 import { Button } from "~/components/Button";
 import { UserCombobox, WeaponCombobox } from "~/components/Combobox";
@@ -28,6 +29,7 @@ import { SubmitButton } from "~/components/SubmitButton";
 import { Form } from "@remix-run/react";
 import { isAdmin } from "~/permissions";
 import { YouTubeEmbed } from "~/components/YouTubeEmbed";
+import { vodVideoPage } from "~/utils/urls";
 
 export const handle: SendouRouteHandle = {
   i18n: ["vods", "calendar"],
@@ -40,14 +42,13 @@ export const action: ActionFunction = async ({ request }) => {
     schema: videoInputSchema,
   });
 
-  createVod({
+  const video = createVod({
     ...data.video,
     submitterUserId: user.id,
     isValidated: isAdmin(user),
   });
 
-  // xxx: redirect
-  return null;
+  return redirect(vodVideoPage(video.id));
 };
 
 export default function NewVodPage() {
@@ -156,14 +157,6 @@ export default function NewVodPage() {
           />
         ) : null}
 
-        {/* xxx: Enable calendar event */}
-        {/* {["TOURNAMENT", "CAST"].includes(video.type as string) ? (
-        <div>
-          <Label>Calendar Event</Label>
-          <Input />
-        </div>
-      ) : null} */}
-
         {video.matches.map((match, i) => {
           return (
             <Match
@@ -189,7 +182,7 @@ export default function NewVodPage() {
             onClick={() =>
               setVideo({
                 ...video,
-                matches: [...video.matches, newMatch()],
+                matches: [...video.matches, newMatch(video.matches)],
               })
             }
             size="tiny"
@@ -223,8 +216,18 @@ export default function NewVodPage() {
   );
 }
 
-function newMatch(): VideoMatchBeingAdded {
-  return { weapons: [], mode: "SZ", stageId: 1, startsAt: 0 };
+function newMatch(matches?: VideoBeingAdded["matches"]): VideoMatchBeingAdded {
+  const previousMatch = matches?.[matches.length - 1];
+  if (!previousMatch) {
+    return { weapons: [], mode: "SZ", stageId: 1, startsAt: 0 };
+  }
+
+  return {
+    weapons: previousMatch.weapons,
+    mode: "SZ",
+    stageId: 1,
+    startsAt: 0,
+  };
 }
 
 function extractYoutubeIdFromVideoUrl(url: string): string {
@@ -394,9 +397,56 @@ function Match({
         </div>
       </div>
 
-      {/* xxx: many weapons for cast */}
-      <div className="stack sm">
-        {type === "CAST" ? null : (
+      <div>
+        {type === "CAST" ? (
+          <div>
+            <Label required>Weapons (Team 1)</Label>
+            <div className="stack sm">
+              {new Array(4).fill(null).map((_, i) => {
+                return (
+                  <WeaponCombobox
+                    fullWidth
+                    key={i}
+                    inputName="weapon"
+                    initialWeaponId={match.weapons[i] as MainWeaponId}
+                    onChange={(selected) => {
+                      if (!selected) return;
+                      const weapons = [...match.weapons];
+                      weapons[i] = Number(selected.value) as MainWeaponId;
+
+                      onChange({ ...match, weapons });
+                    }}
+                  />
+                );
+              })}
+            </div>
+            <div className="mt-4">
+              <Label required>Weapons (Team 2)</Label>
+              <div className="stack sm">
+                {new Array(4).fill(null).map((_, i) => {
+                  const adjustedI = i + 4;
+                  return (
+                    <WeaponCombobox
+                      fullWidth
+                      key={i}
+                      inputName="weapon"
+                      initialWeaponId={match.weapons[adjustedI] as MainWeaponId}
+                      onChange={(selected) => {
+                        if (!selected) return;
+                        const weapons = [...match.weapons];
+                        weapons[adjustedI] = Number(
+                          selected.value
+                        ) as MainWeaponId;
+
+                        onChange({ ...match, weapons });
+                      }}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        ) : (
           <>
             <Label required htmlFor={id}>
               Weapon

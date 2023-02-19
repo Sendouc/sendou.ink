@@ -1,4 +1,5 @@
 import { sql } from "~/db/sql";
+import type { Video } from "~/db/types";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import type { VideoBeingAdded } from "../vods-types";
 
@@ -39,7 +40,7 @@ export const createVod = sql.transaction(
       validatedAt: args.isValidated
         ? dateToDatabaseTimestamp(new Date())
         : null,
-    });
+    }) as Video;
 
     for (const match of args.matches) {
       const videoMatch = createVideoMatchStm.get({
@@ -59,5 +60,7 @@ export const createVod = sql.transaction(
         });
       }
     }
+
+    return video;
   }
 );

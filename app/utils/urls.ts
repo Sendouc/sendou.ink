@@ -31,10 +31,6 @@ const staticAssetsUrl = ({
 }) =>
   `https://raw.githubusercontent.com/Sendouc/sendou-ink-assets/main/${folder}/${fileName}`;
 
-// const USER_SUBMITTED_IMAGE_ROOT =
-//   process.env.NODE_ENV === "development"
-//     ? `https://sendou.nyc3.digitaloceanspaces.com`
-//     : `https://assets.sendou.ink`;
 const USER_SUBMITTED_IMAGE_ROOT = "https://sendou.nyc3.digitaloceanspaces.com";
 export const userSubmittedImage = (fileName: string) =>
   `${USER_SUBMITTED_IMAGE_ROOT}/${fileName}`;
@@ -81,6 +77,7 @@ export const PLANNER_URL = "/plans";
 export const MAPS_URL = "/maps";
 export const ANALYZER_URL = "/analyzer";
 export const OBJECT_DAMAGE_CALCULATOR_URL = "/object-damage-calculator";
+export const VODS_PAGE = "/vods";
 
 export const BLANK_IMAGE_URL = "/static-assets/img/blank.gif";
 export const COMMON_PREVIEW_IMAGE =
@@ -186,6 +183,8 @@ export const objectDamageCalculatorPage = (weaponId?: MainWeaponId) =>
 
 export const uploadImagePage = (type: ImageUploadType) =>
   `/upload?type=${type}`;
+
+export const vodVideoPage = (videoId: number) => `${VODS_PAGE}/${videoId}`;
 
 export const badgeUrl = ({
   code,
