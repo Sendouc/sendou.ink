@@ -2,4 +2,7 @@ update
   "User"
 set
   "patronTier" = null,
-  "patronSince" = null
+  "patronSince" = null,
+  "patronTill" = null
+where
+  "patronTill" < @now;
