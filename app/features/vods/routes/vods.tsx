@@ -27,7 +27,6 @@ export const loader = ({ request }: LoaderArgs) => {
   return { vods };
 };
 
-// xxx: if filter is no vods show message how to add one
 // xxx: fix stage value -> no value problem
 
 export default function VodsSearchPage() {
@@ -36,11 +35,18 @@ export default function VodsSearchPage() {
   return (
     <Main className="stack lg">
       <Filters />
-      <div className="vods__listing__list">
-        {data.vods.map((vod) => (
-          <VodListing key={vod.id} vod={vod} />
-        ))}
-      </div>
+      {data.vods.length > 0 ? (
+        <div className="vods__listing__list">
+          {data.vods.map((vod) => (
+            <VodListing key={vod.id} vod={vod} />
+          ))}
+        </div>
+      ) : (
+        <div className="text-lg text-lighter">
+          No videos found matching this filter. Are we missing something?
+          Message Sendou on Discord to get YouTube video submission permissions.
+        </div>
+      )}
     </Main>
   );
 }
