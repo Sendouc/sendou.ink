@@ -69,7 +69,7 @@ ApplySpecialEffects("Applies many effects", () => {
     ldeIntensity: 0,
   });
 
-  assert.equal(aps.get("SSU"), 21);
+  assert.equal(aps.get("SSU"), 41);
 });
 
 ApplySpecialEffects("Applies LDE", () => {
