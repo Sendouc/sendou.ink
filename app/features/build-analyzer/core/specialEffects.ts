@@ -7,15 +7,15 @@ export const SPECIAL_EFFECTS = [
     values: [
       {
         type: "SSU",
-        ap: 10,
+        ap: 30,
       },
       {
         type: "RSU",
-        ap: 10,
+        ap: 30,
       },
       {
         type: "RES",
-        ap: 10,
+        ap: 30,
       },
     ],
   },
