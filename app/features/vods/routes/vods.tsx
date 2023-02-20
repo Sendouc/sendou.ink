@@ -22,12 +22,14 @@ export const links: LinksFunction = () => {
 export const loader = ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
 
-  const vods = findVods(Object.fromEntries(url.searchParams.entries()));
+  const vods = findVods(
+    Object.fromEntries(
+      Array.from(url.searchParams.entries()).filter(([, value]) => value)
+    )
+  );
 
   return { vods };
 };
-
-// xxx: fix stage value -> no value problem
 
 export default function VodsSearchPage() {
   const data = useLoaderData<typeof loader>();
@@ -84,7 +86,7 @@ function Filters() {
         <Label>Mode</Label>
         <select
           name="mode"
-          value={mode}
+          value={mode ?? ""}
           onChange={(e) => addToSearchParams("mode", e.target.value)}
         >
           <option value="">-</option>
@@ -101,7 +103,7 @@ function Filters() {
         <Label>Stage</Label>
         <select
           name="stage"
-          value={stageId}
+          value={stageId ?? ""}
           onChange={(e) => addToSearchParams("stageId", e.target.value)}
         >
           <option value="">-</option>
@@ -133,7 +135,7 @@ function Filters() {
         <select
           name="type"
           className="vods__type-select"
-          value={type}
+          value={type ?? ""}
           onChange={(e) => addToSearchParams("type", e.target.value)}
         >
           <option value="">-</option>
