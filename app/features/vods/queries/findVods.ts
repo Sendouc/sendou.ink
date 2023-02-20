@@ -29,26 +29,30 @@ const stm = sql.prepare(/* sql */ `
   left join "VideoMatch" vm on v."id" = vm."videoId"
   left join "VideoMatchPlayer" vp on vm."id" = vp."videoMatchId"
   left join "User" u on vp."playerUserId" = u."id"
+  where v."type" = coalesce(@type, v."type")
+    and vm."mode" = coalesce(@mode, vm."mode")
+    and vm."stageId" = coalesce(@stageId, vm."stageId")
+    and vp."weaponSplId" = coalesce(@weapon, vp."weaponSplId")
   group by v."id"
   order by v."youtubeDate" desc
   limit @limit
 `);
 
 export function findVods({
-  // weapon,
-  // mode,
-  // stageId,
-  // type,
-  limit,
+  weapon,
+  mode,
+  stageId,
+  type,
+  limit = 25,
 }: {
   weapon?: MainWeaponId;
   mode?: ModeShort;
   stageId?: StageId;
   type?: Video["type"];
-  limit: number;
+  limit?: number;
 }): Array<ListVod> {
   return stm
-    .all({ limit })
+    .all({ weapon, mode, stageId, type, limit })
     .map(({ playerNames: playerNamesRaw, players: playersRaw, ...vod }) => {
       const playerNames = parseDBArray(playerNamesRaw);
       const players = parseDBJsonArray(playersRaw);
