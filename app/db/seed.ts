@@ -965,7 +965,7 @@ function otherTeams() {
     (u) => !usersInTeam.includes(u) && u !== 2
   );
 
-  for (let i = 3; i < 100; i++) {
+  for (let i = 3; i < 50; i++) {
     const teamName = `${capitalize(faker.word.adjective())} ${capitalize(
       faker.word.noun()
     )}`;
