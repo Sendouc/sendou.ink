@@ -5,7 +5,7 @@ import { parseDBArray, parseDBJsonArray } from "~/utils/sql";
 import type { ListVod } from "../vods-types";
 import { removeDuplicates } from "~/utils/arrays";
 
-const stm = sql.prepare(/* sql */ `
+const query = (byUser?: true) => /* sql */ `
   select
     v."id",
     v."title",
@@ -29,30 +29,42 @@ const stm = sql.prepare(/* sql */ `
   left join "VideoMatch" vm on v."id" = vm."videoId"
   left join "VideoMatchPlayer" vp on vm."id" = vp."videoMatchId"
   left join "User" u on vp."playerUserId" = u."id"
-  where v."type" = coalesce(@type, v."type")
+  where ${
+    byUser
+      ? /* sql */ `u."id" = @userId`
+      : /* sql */ `
+    v."type" = coalesce(@type, v."type")
     and vm."mode" = coalesce(@mode, vm."mode")
     and vm."stageId" = coalesce(@stageId, vm."stageId")
-    and vp."weaponSplId" = coalesce(@weapon, vp."weaponSplId")
+    and vp."weaponSplId" = coalesce(@weapon, vp."weaponSplId")`
+  }
   group by v."id"
   order by v."youtubeDate" desc
   limit @limit
-`);
+`;
+
+const stm = sql.prepare(query());
+const stmByUser = sql.prepare(query(true));
 
 export function findVods({
   weapon,
   mode,
   stageId,
   type,
+  userId,
   limit = 25,
 }: {
   weapon?: MainWeaponId;
   mode?: ModeShort;
   stageId?: StageId;
   type?: Video["type"];
+  userId?: number;
   limit?: number;
 }): Array<ListVod> {
-  return stm
-    .all({ weapon, mode, stageId, type, limit })
+  const stmToUse = userId ? stmByUser : stm;
+
+  return stmToUse
+    .all({ weapon, mode, stageId, type, limit, userId })
     .map(({ playerNames: playerNamesRaw, players: playersRaw, ...vod }) => {
       const playerNames = parseDBArray(playerNamesRaw);
       const players = parseDBJsonArray(playersRaw);

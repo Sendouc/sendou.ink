@@ -112,6 +112,7 @@ export const userBuildsPage = (user: UserLinkArgs) =>
   `${userPage(user)}/builds`;
 export const userResultsPage = (user: UserLinkArgs) =>
   `${userPage(user)}/results`;
+export const userVodsPage = (user: UserLinkArgs) => `${userPage(user)}/vods`;
 export const userResultsEditHighlightsPage = (user: UserLinkArgs) =>
   `${userResultsPage(user)}/highlights`;
 export const userNewBuildPage = (

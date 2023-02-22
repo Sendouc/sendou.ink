@@ -1,7 +1,7 @@
 import { Link } from "@remix-run/react";
 import { Avatar } from "~/components/Avatar";
 import { discordFullName } from "~/utils/strings";
-import { userPage } from "~/utils/urls";
+import { userVodsPage } from "~/utils/urls";
 import type { Vod } from "../vods-types";
 
 export function PovUser({ pov }: { pov: Vod["pov"] }) {
@@ -12,7 +12,7 @@ export function PovUser({ pov }: { pov: Vod["pov"] }) {
   }
 
   return (
-    <Link to={userPage(pov)} className="stack horizontal xs">
+    <Link to={userVodsPage(pov)} className="stack horizontal xs">
       <Avatar user={pov} size="xxs" />
       <span className="text-sm font-semi-bold">{discordFullName(pov)}</span>
     </Link>

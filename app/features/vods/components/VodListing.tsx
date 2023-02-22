@@ -1,10 +1,19 @@
 import { Link } from "@remix-run/react";
 import { WeaponImage } from "~/components/Image";
+import { useTranslation } from "~/hooks/useTranslation";
 import { vodVideoPage } from "~/utils/urls";
 import type { ListVod } from "../vods-types";
 import { PovUser } from "./VodPov";
 
-export function VodListing({ vod }: { vod: ListVod }) {
+export function VodListing({
+  vod,
+  showUser = true,
+}: {
+  vod: ListVod;
+  showUser?: boolean;
+}) {
+  const { t } = useTranslation(["vods"]);
+
   return (
     <div className="vods__listing">
       <Link to={vodVideoPage(vod.id)} className="stack sm">
@@ -12,8 +21,10 @@ export function VodListing({ vod }: { vod: ListVod }) {
         <h2 className="text-sm text-main-forced">{vod.title}</h2>
       </Link>
       <div className="vods__listing__info">
-        {vod.type === "CAST" ? (
-          <div className="vods__listing__cast-text">Cast</div>
+        {vod.type === "CAST" || !showUser ? (
+          <div className="vods__listing__cast-text">
+            {t(`vods:type.${vod.type}`)}
+          </div>
         ) : (
           <PovUser pov={vod.pov} />
         )}
