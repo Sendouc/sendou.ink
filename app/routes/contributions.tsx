@@ -57,6 +57,10 @@ const TRANSLATORS: Array<{
     language: "ko",
   },
   {
+    translators: ["diamo"],
+    language: "pl",
+  },
+  {
     translators: ["Ferrari"],
     language: "nl",
   },
