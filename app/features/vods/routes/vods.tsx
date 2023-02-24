@@ -123,10 +123,9 @@ function Filters() {
           inputName="weapon"
           initialWeaponId={weapon}
           onChange={(selected) => {
-            if (!selected) return;
-
-            addToSearchParams("weapon", selected.value);
+            addToSearchParams("weapon", selected?.value ?? "");
           }}
+          nullable
         />
       </div>
 
