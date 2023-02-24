@@ -14,7 +14,11 @@ export interface Vod {
   pov?:
     | Pick<
         User,
-        "discordName" | "discordId" | "discordAvatar" | "discordDiscriminator"
+        | "discordName"
+        | "discordId"
+        | "discordAvatar"
+        | "discordDiscriminator"
+        | "customUrl"
       >
     | string;
   title: Video["title"];
