@@ -1,12 +1,13 @@
 import test from "@playwright/test";
 import {
   impersonate,
+  isNotVisible,
   navigate,
   seed,
   selectWeapon,
   submit,
 } from "~/utils/playwright";
-import { NEW_VOD_PAGE } from "~/utils/urls";
+import { NEW_VOD_PAGE, VODS_PAGE } from "~/utils/urls";
 
 test.describe("VoDs page", () => {
   test("adds video (pov)", async ({ page }) => {
@@ -103,5 +104,17 @@ test.describe("VoDs page", () => {
         .getByTestId(`weapon-img-${i < 4 ? 200 : 6010}-${i}`)
         .isVisible();
     }
+  });
+
+  test("operates vod filters", async ({ page }) => {
+    await seed(page);
+    await navigate({
+      page,
+      url: VODS_PAGE,
+    });
+
+    await page.getByText("N-ZAP").isVisible();
+    await selectWeapon({ page, name: "Carbon Roller" });
+    await isNotVisible(page.getByText("N-ZAP"));
   });
 });
