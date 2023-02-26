@@ -4,10 +4,6 @@
 module.exports = {
   ignoredRouteFiles: ["**/.*", "**/*.json", "**/components/*"],
   cacheDirectory: process.env.NODE_ENV === "test" ? ".cache-test" : undefined,
-  serverDependenciesToBundle: [/^@react-lite-youtube-embed/],
-  future: {
-    unstable_cssSideEffectImports: true,
-  },
   routes: async (defineRoutes) => {
     return defineRoutes((route) => {
       route("/upload", "features/img-upload/routes/upload.tsx");
