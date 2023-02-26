@@ -32,6 +32,7 @@ export const loader = ({ request }: LoaderArgs) => {
 };
 
 export default function VodsSearchPage() {
+  const { t } = useTranslation(["vods"]);
   const data = useLoaderData<typeof loader>();
 
   return (
@@ -44,10 +45,7 @@ export default function VodsSearchPage() {
           ))}
         </div>
       ) : (
-        <div className="text-lg text-lighter">
-          No videos found matching this filter. Are we missing something?
-          Message Sendou on Discord to get YouTube video submission permissions.
-        </div>
+        <div className="text-lg text-lighter">{t("vods:noVods")}</div>
       )}
     </Main>
   );
@@ -83,7 +81,7 @@ function Filters() {
   return (
     <div className="stack sm horizontal flex-wrap">
       <div>
-        <Label>Mode</Label>
+        <Label>{t("vods:forms.title.mode")}</Label>
         <select
           name="mode"
           value={mode ?? ""}
@@ -100,7 +98,7 @@ function Filters() {
         </select>
       </div>
       <div>
-        <Label>Stage</Label>
+        <Label>{t("vods:forms.title.stage")}</Label>
         <select
           name="stage"
           value={stageId ?? ""}
@@ -118,7 +116,7 @@ function Filters() {
       </div>
 
       <div>
-        <Label>Weapon</Label>
+        <Label>{t("vods:forms.title.weapon")}</Label>
         <WeaponCombobox
           inputName="weapon"
           initialWeaponId={weapon}
@@ -130,7 +128,7 @@ function Filters() {
       </div>
 
       <div>
-        <Label>Type</Label>
+        <Label>{t("vods:forms.title.type")}</Label>
         <select
           name="type"
           className="vods__type-select"

@@ -29,7 +29,9 @@ const videoMatchesStm = sql.prepare(/* sql */ `
         'discordAvatar',
         "u"."discordAvatar",
         'discordDiscriminator',
-        "u"."discordDiscriminator"
+        "u"."discordDiscriminator",
+        'customUrl',
+        "u"."customUrl"
       )
     ) as "players"
   from "VideoMatch" vm

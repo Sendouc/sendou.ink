@@ -67,7 +67,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export default function NewVodPage() {
-  const { t } = useTranslation(["vods"]);
+  const { t } = useTranslation(["vods", "common"]);
   const [video, setVideo] = React.useState<VideoBeingAdded>({
     type: "TOURNAMENT",
     matches: [newMatch()],
@@ -81,7 +81,7 @@ export default function NewVodPage() {
       <input type="hidden" name="video" value={JSON.stringify(video)} />
       <Main halfWidth className="stack md">
         <div>
-          <Label required>YouTube URL</Label>
+          <Label required>{t("vods:forms.title.youtubeUrl")}</Label>
           <Input
             onChange={(e) =>
               setVideo({
@@ -95,7 +95,7 @@ export default function NewVodPage() {
         </div>
 
         <div>
-          <Label required>Video title</Label>
+          <Label required>{t("vods:forms.title.videoTitle")}</Label>
           <Input
             onChange={(e) =>
               setVideo({
@@ -111,7 +111,7 @@ export default function NewVodPage() {
         </div>
 
         <div>
-          <Label required>Video date</Label>
+          <Label required>{t("vods:forms.title.videoDate")}</Label>
           <Input
             type="date"
             max={dateToYearMonthDayString(new Date())}
@@ -135,7 +135,7 @@ export default function NewVodPage() {
         ) : null}
 
         <div>
-          <Label required>Type</Label>
+          <Label required>{t("vods:forms.title.type")}</Label>
           <select
             name="type"
             value={video.type}
@@ -207,7 +207,7 @@ export default function NewVodPage() {
             }
             size="tiny"
           >
-            Add match
+            {t("vods:forms.action.addMatch")}
           </Button>
           {video.matches.length > 1 ? (
             <Button
@@ -223,13 +223,13 @@ export default function NewVodPage() {
               }
               size="tiny"
             >
-              Delete match
+              {t("vods:forms.action.deleteMatch")}
             </Button>
           ) : null}
         </div>
 
         <div className="stack items-start">
-          <SubmitButton size="big">Submit</SubmitButton>
+          <SubmitButton size="big">{t("common:actions.submit")}</SubmitButton>
         </div>
       </Main>
     </Form>
@@ -272,7 +272,7 @@ function TransformingPlayerInput({
   onChange: (match: Pick<VideoBeingAdded, "povUserId" | "povUserName">) => void;
   toggleInputType: () => void;
 }) {
-  const { t } = useTranslation(["calendar"]);
+  const { t } = useTranslation(["calendar", "vods"]);
 
   // if null or number we render combobox
   const asPlainInput = typeof match.povUserName === "string";
@@ -281,7 +281,7 @@ function TransformingPlayerInput({
     <div>
       <div className="stack horizontal md items-center mb-1">
         <Label required htmlFor="pov" className="mb-0">
-          Player (PoV)
+          {t("vods:forms.title.pov")}
         </Label>
         <Button
           size="tiny"
@@ -347,7 +347,7 @@ function Match({
       <h2>{t("vods:gameCount", { count: number })}</h2>
 
       <div>
-        <Label required>Start timestamp</Label>
+        <Label required>{t("vods:forms.title.startTimestamp")}</Label>
         <div className="stack horizontal sm">
           <div className="stack horizontal sm items-center text-sm">
             <Input
@@ -362,7 +362,7 @@ function Match({
                 onChange({ ...match, startsAt: value * 60 + seconds });
               }}
             />
-            min
+            {t("vods:minShort")}
           </div>
           <div className="stack horizontal sm items-center text-sm">
             <Input
@@ -377,14 +377,14 @@ function Match({
                 onChange({ ...match, startsAt: value + minutes * 60 });
               }}
             />
-            sec
+            {t("vods:secShort")}
           </div>
         </div>
       </div>
 
       <div className="stack horizontal sm">
         <div>
-          <Label required>Mode</Label>
+          <Label required>{t("vods:forms.title.mode")}</Label>
           <select
             value={match.mode}
             onChange={(e) =>
@@ -401,7 +401,7 @@ function Match({
           </select>
         </div>
         <div>
-          <Label required>Stage</Label>
+          <Label required>{t("vods:forms.title.stage")}</Label>
           <select
             value={match.stageId}
             onChange={(e) =>
@@ -422,7 +422,7 @@ function Match({
       <div>
         {type === "CAST" ? (
           <div>
-            <Label required>Weapons (Team 1)</Label>
+            <Label required>{t("vods:forms.title.weaponsTeamOne")}</Label>
             <div className="stack sm">
               {new Array(4).fill(null).map((_, i) => {
                 return (
@@ -444,7 +444,7 @@ function Match({
               })}
             </div>
             <div className="mt-4">
-              <Label required>Weapons (Team 2)</Label>
+              <Label required>{t("vods:forms.title.weaponsTeamTwo")}</Label>
               <div className="stack sm">
                 {new Array(4).fill(null).map((_, i) => {
                   const adjustedI = i + 4;
@@ -473,7 +473,7 @@ function Match({
         ) : (
           <>
             <Label required htmlFor={id}>
-              Weapon
+              {t("vods:forms.title.weapon")}
             </Label>
             <WeaponCombobox
               fullWidth
