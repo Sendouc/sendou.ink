@@ -51,6 +51,10 @@ const adminActionSchema = z.union([
     patronTier: z.preprocess(actualNumber, z.number()),
     patronTill: z.string(),
   }),
+  z.object({
+    _action: z.literal("VIDEO_ADDER"),
+    "user[value]": z.preprocess(actualNumber, z.number().positive()),
+  }),
 ]);
 
 export const action: ActionFunction = async ({ request }) => {
@@ -81,6 +85,10 @@ export const action: ActionFunction = async ({ request }) => {
         patronTier: data.patronTier,
         patronTill: dateToDatabaseTimestamp(new Date(data.patronTill)),
       });
+      break;
+    }
+    case "VIDEO_ADDER": {
+      db.users.makeVideoAdder(data["user[value]"]);
       break;
     }
     default: {
@@ -115,6 +123,7 @@ export default function AdminPage() {
   return (
     <Main className="stack lg">
       <Impersonate />
+      <GiveVideoAdder />
       <MigrateUser />
       <ForcePatron />
       <RefreshPlusTiers />
@@ -203,6 +212,27 @@ function MigrateUser() {
           state={fetcher.state}
         >
           {submitButtonText}
+        </SubmitButton>
+      </div>
+    </fetcher.Form>
+  );
+}
+
+function GiveVideoAdder() {
+  const fetcher = useFetcher();
+
+  return (
+    <fetcher.Form className="stack md" method="post">
+      <h2>Give video adder</h2>
+      <div className="stack horizontal md">
+        <div>
+          <label>User</label>
+          <UserCombobox inputName="user" />
+        </div>
+      </div>
+      <div className="stack horizontal md">
+        <SubmitButton type="submit" _action="VIDEO_ADDER" state={fetcher.state}>
+          Add as video adder
         </SubmitButton>
       </div>
     </fetcher.Form>

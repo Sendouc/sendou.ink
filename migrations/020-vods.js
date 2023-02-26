@@ -1,5 +1,9 @@
 module.exports.up = function (db) {
   db.prepare(
+    `alter table "User" add column "isVideoAdder" integer default 0`
+  ).run();
+
+  db.prepare(
     /*sql*/ `
   create table "UnvalidatedVideo" (
     "id" integer primary key,

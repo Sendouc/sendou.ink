@@ -27,6 +27,7 @@ export interface User {
   patronSince: number | null;
   /** Used to overwrite normal patron giving process and force give the patron status till this date */
   patronTill: number | null;
+  isVideoAdder: number;
 }
 
 /** User table after joined with PlusTier table */
