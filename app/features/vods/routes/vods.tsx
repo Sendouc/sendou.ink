@@ -1,10 +1,13 @@
 import type { LinksFunction, LoaderArgs } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import { useLoaderData, useSearchParams } from "@remix-run/react";
 import { WeaponCombobox } from "~/components/Combobox";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import { useTranslation } from "~/hooks/useTranslation";
+import { requireUserId } from "~/modules/auth/user.server";
 import { mainWeaponIds, modesShort, stageIds } from "~/modules/in-game-lists";
+import { isAdmin } from "~/permissions";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { VodListing } from "../components/VodListing";
 import { findVods } from "../queries/findVods";
@@ -19,7 +22,12 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const loader = ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderArgs) => {
+  const user = await requireUserId(request);
+
+  if (!isAdmin(user)) {
+    throw redirect("/");
+  }
   const url = new URL(request.url);
 
   const vods = findVods(

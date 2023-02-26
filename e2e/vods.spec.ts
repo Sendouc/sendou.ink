@@ -108,6 +108,7 @@ test.describe("VoDs page", () => {
 
   test("operates vod filters", async ({ page }) => {
     await seed(page);
+    await impersonate(page);
     await navigate({
       page,
       url: VODS_PAGE,
