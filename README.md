@@ -156,7 +156,7 @@ npm run add-badge -- sundae "4v4 Sundaes"
 ### Rename display name of a badge
 
 ```bash
-npm run rename-badge -- sundae "New 4v4 Sundaes"
+npm run rename-badge -- 10 "New 4v4 Sundaes"
 ```
 
 ### Convert many .png files to .avif
