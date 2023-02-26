@@ -1,4 +1,4 @@
-import type { ActionFunction } from "@remix-run/node";
+import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import * as React from "react";
 import { Button } from "~/components/Button";
@@ -29,7 +29,8 @@ import { SubmitButton } from "~/components/SubmitButton";
 import { Form } from "@remix-run/react";
 import { isAdmin } from "~/permissions";
 import { YouTubeEmbed } from "~/components/YouTubeEmbed";
-import { vodVideoPage } from "~/utils/urls";
+import { VODS_PAGE, vodVideoPage } from "~/utils/urls";
+import { canAddVideo } from "../vods-utils";
 
 export const handle: SendouRouteHandle = {
   i18n: ["vods", "calendar"],
@@ -42,6 +43,10 @@ export const action: ActionFunction = async ({ request }) => {
     schema: videoInputSchema,
   });
 
+  if (!canAddVideo(user)) {
+    throw new Response(null, { status: 401 });
+  }
+
   const video = createVod({
     ...data.video,
     submitterUserId: user.id,
@@ -49,6 +54,16 @@ export const action: ActionFunction = async ({ request }) => {
   });
 
   return redirect(vodVideoPage(video.id));
+};
+
+export const loader: LoaderFunction = async ({ request }) => {
+  const user = await requireUser(request);
+
+  if (!canAddVideo(user)) {
+    return redirect(VODS_PAGE);
+  }
+
+  return null;
 };
 
 export default function NewVodPage() {
