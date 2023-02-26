@@ -222,6 +222,8 @@
 }
 
 .layout__copyright-note {
+  display: flex;
+  flex-direction: column;
   color: var(--text-lighter);
   font-size: var(--fonts-xxs);
   text-align: center;

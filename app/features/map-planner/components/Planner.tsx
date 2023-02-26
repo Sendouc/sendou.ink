@@ -385,6 +385,7 @@ const ourLanguageToTldrawLanguageMap: Record<LanguageCode, string> = {
   it: "it",
   ja: "ja",
   ru: "ru",
+  pl: "pl",
 };
 function ourLanguageToTldrawLanguage(ourLanguageUserSelected: string) {
   for (const [ourLanguage, tldrawLanguage] of Object.entries(

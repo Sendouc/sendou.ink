@@ -100,10 +100,14 @@ export function Footer({
       ) : null}
       <PlaywireBadge />
       <div className="layout__copyright-note">
-        sendou.ink © Copyright of Sendou and contributors 2019-{currentYear}.
-        Original content & source code is licensed under the GPL-3.0 license.
-        Splatoon is trademark & © of Nintendo 2014-{currentYear}. Sendou.ink is
-        not affiliated with Nintendo.
+        <p>
+          sendou.ink © Copyright of Sendou and contributors 2019-{currentYear}.
+          Original content & source code is licensed under the GPL-3.0 license.
+        </p>
+        <p>
+          Splatoon is trademark & © of Nintendo 2014-{currentYear}. sendou.ink
+          is not affiliated with Nintendo.
+        </p>
       </div>
     </footer>
   );

@@ -38,6 +38,10 @@ export const languages = [
     name: "한국어",
   },
   {
+    code: "pl",
+    name: "Polski",
+  },
+  {
     code: "nl",
     name: "Nederlands",
   },
