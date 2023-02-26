@@ -25,5 +25,23 @@
   },
   "QUALIFIER": {
     "color": "#FFC0CB"
+  },
+  "SZ": {
+    "color": "#F44336"
+  },
+  "TW": {
+    "color": "#D50000"
+  },
+  "S1": {
+    "color": "#E5E4E2"
+  },
+  "S2": {
+    "color": "#388E3C"
+  },
+  "SR": {
+    "color": "#FBCEB1"
+  },
+  "CARDS": {
+    "color": "#E4D00A"
   }
 }
