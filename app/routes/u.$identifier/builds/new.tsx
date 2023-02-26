@@ -27,7 +27,6 @@ import { requireUserId } from "~/modules/auth/user.server";
 import {
   clothesGearIds,
   headGearIds,
-  mainWeaponIds,
   modesShort,
   shoesGearIds,
 } from "~/modules/in-game-lists";
@@ -52,6 +51,7 @@ import {
   shoesMainSlotAbility,
   stackableAbility,
   toArray,
+  weaponSplId,
 } from "~/utils/zod";
 
 const newBuildActionSchema = z.object({
@@ -68,19 +68,7 @@ const newBuildActionSchema = z.object({
   CB: z.preprocess(checkboxValueToBoolean, z.boolean()),
   "weapon[value]": z.preprocess(
     processMany(toArray, removeDuplicates),
-    z
-      .array(
-        z.preprocess(
-          actualNumber,
-          z
-            .number()
-            .refine((val) =>
-              mainWeaponIds.includes(val as (typeof mainWeaponIds)[number])
-            )
-        )
-      )
-      .min(1)
-      .max(BUILD.MAX_WEAPONS_COUNT)
+    z.array(weaponSplId).min(1).max(BUILD.MAX_WEAPONS_COUNT)
   ),
   "HEAD[value]": z.preprocess(
     actualNumber,

@@ -27,6 +27,7 @@ export interface User {
   patronSince: number | null;
   /** Used to overwrite normal patron giving process and force give the patron status till this date */
   patronTill: number | null;
+  isVideoAdder: number;
 }
 
 /** User table after joined with PlusTier table */
@@ -238,8 +239,6 @@ export interface TournamentMatchGameResult {
   createdAt: number;
 }
 
-/** TODO: incomplete team tables */
-
 export interface UserSubmittedImage {
   id: number;
   validatedAt: number | null;
@@ -270,4 +269,31 @@ export interface TeamMember {
   isOwner: number;
   createdAt: number;
   leftAt: number | null;
+}
+
+export interface Video {
+  id: number;
+  title: string;
+  type: "SCRIM" | "TOURNAMENT" | "MATCHMAKING" | "CAST";
+  youtubeDate: number;
+  eventId: number | null;
+  youtubeId: string;
+  submitterUserId: number;
+  validatedAt: number | null;
+}
+
+export interface VideoMatch {
+  id: number;
+  videoId: number;
+  startsAt: number;
+  stageId: StageId;
+  mode: ModeShort;
+}
+
+export interface VideoMatchPlayer {
+  videoMatchId: number;
+  playerUserId: number | null;
+  playerName: string | null;
+  weaponSplId: MainWeaponId;
+  player: number;
 }

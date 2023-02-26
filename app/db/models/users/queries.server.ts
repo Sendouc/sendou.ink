@@ -27,6 +27,7 @@ import deleteUserWeaponsSql from "./deleteUserWeapons.sql";
 import wipePlusTiersSql from "./wipePlusTiers.sql";
 import fillPlusTiersSql from "./fillPlusTiers.sql";
 import forcePatronSql from "./forcePatron.sql";
+import makeVideoAdderSql from "./makeVideoAdder.sql";
 
 const upsertStm = sql.prepare(upsertSql);
 export function upsert(
@@ -232,3 +233,8 @@ export const refreshPlusTiers = sql.transaction(() => {
   wipePlusTiersStm.run();
   fillPlusTiersStm.run();
 });
+
+const makeVideoAdderStm = sql.prepare(makeVideoAdderSql);
+export function makeVideoAdder(id: User["id"]) {
+  return makeVideoAdderStm.run({ id });
+}

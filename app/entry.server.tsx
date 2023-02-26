@@ -45,6 +45,7 @@ const handleBotRequest = (
     void i18Instance(request, remixContext).then((i18n) => {
       const { pipe, abort } = renderToPipeableStream(
         <I18nextProvider i18n={i18n}>
+          {/* @ts-expect-error TODO: fix since probably a real issue not just types? https://github.com/remix-run/remix/issues/5073#issuecomment-1380380695 */}
           <RemixServer context={remixContext} url={request.url} />
         </I18nextProvider>,
         {
@@ -89,6 +90,7 @@ const handleBrowserRequest = (
     void i18Instance(request, remixContext).then((i18n) => {
       const { pipe, abort } = renderToPipeableStream(
         <I18nextProvider i18n={i18n}>
+          {/* @ts-expect-error TODO: fix */}
           <RemixServer context={remixContext} url={request.url} />
         </I18nextProvider>,
         {

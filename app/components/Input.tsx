@@ -10,6 +10,9 @@ export function Input({
   defaultValue,
   leftAddon,
   icon,
+  type,
+  min,
+  max,
   pattern,
   list,
   testId,
@@ -27,6 +30,9 @@ export function Input({
   defaultValue?: string;
   leftAddon?: string;
   icon?: React.ReactNode;
+  type?: "number" | "date";
+  min?: number;
+  max?: number | string;
   pattern?: string;
   list?: string;
   testId?: string;
@@ -43,6 +49,8 @@ export function Input({
         id={id}
         minLength={minLength}
         maxLength={maxLength}
+        min={min}
+        max={max}
         defaultValue={defaultValue}
         pattern={pattern}
         list={list}
@@ -52,6 +60,7 @@ export function Input({
         aria-label={ariaLabel}
         required={required}
         placeholder={placeholder}
+        type={type}
       />
       {icon}
     </div>

@@ -39,6 +39,7 @@ interface ComboboxProps<T> {
   clearsInputOnFocus?: boolean;
   onChange?: (selectedOption: ComboboxOption<T> | null) => void;
   fullWidth?: boolean;
+  nullable?: true;
   fuseOptions?: Fuse.IFuseOptions<ComboboxOption<T>>;
 }
 
@@ -52,6 +53,7 @@ export function Combobox<T extends Record<string, string | null | number>>({
   required,
   className,
   id,
+  nullable,
   isLoading = false,
   fullWidth = false,
   fuseOptions = {},
@@ -102,6 +104,8 @@ export function Combobox<T extends Record<string, string | null | number>>({
         }}
         name={inputName}
         disabled={!selectedOption && isLoading}
+        // TODO: remove hack that prevents TS from freaking out. probably related: https://github.com/tailwindlabs/headlessui/issues/1895
+        nullable={nullable as true}
       >
         <HeadlessCombobox.Input
           onFocus={() => {
@@ -241,6 +245,7 @@ export function WeaponCombobox({
   clearsInputOnFocus,
   weaponIdsToOmit,
   fullWidth,
+  nullable,
 }: Pick<
   ComboboxProps<ComboboxBaseOption>,
   | "inputName"
@@ -250,6 +255,7 @@ export function WeaponCombobox({
   | "required"
   | "clearsInputOnFocus"
   | "fullWidth"
+  | "nullable"
 > & {
   initialWeaponId?: (typeof mainWeaponIds)[number];
   weaponIdsToOmit?: Set<MainWeaponId>;
@@ -278,6 +284,7 @@ export function WeaponCombobox({
       required={required}
       clearsInputOnFocus={clearsInputOnFocus}
       fullWidth={fullWidth}
+      nullable={nullable}
     />
   );
 }

@@ -35,6 +35,10 @@ module.exports = {
         "features/team/routes/t.$customUrl.roster.tsx"
       );
       route("/t/:customUrl/join", "features/team/routes/t.$customUrl.join.tsx");
+
+      route("/vods", "features/vods/routes/vods.tsx");
+      route("/vods/new", "features/vods/routes/vods.new.tsx");
+      route("/vods/:id", "features/vods/routes/vods.$id.tsx");
     });
   },
 };
