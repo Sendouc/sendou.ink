@@ -40,6 +40,7 @@ const AMOUNT_OF_CALENDAR_EVENTS = 200;
 const basicSeeds = [
   adminUser,
   makeAdminPatron,
+  makeAdminVideoAdder,
   adminUserWeaponPool,
   nzapUser,
   users,
@@ -121,6 +122,10 @@ function makeAdminPatron() {
       `update "User" set "patronTier" = 2, "patronSince" = 1674663454 where id = 1`
     )
     .run();
+}
+
+function makeAdminVideoAdder() {
+  sql.prepare(`update "User" set "isVideoAdder" = 1 where id = 1`).run();
 }
 
 function adminUserWeaponPool() {

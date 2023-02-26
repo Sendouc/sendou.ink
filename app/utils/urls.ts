@@ -78,6 +78,7 @@ export const MAPS_URL = "/maps";
 export const ANALYZER_URL = "/analyzer";
 export const OBJECT_DAMAGE_CALCULATOR_URL = "/object-damage-calculator";
 export const VODS_PAGE = "/vods";
+export const NEW_VOD_PAGE = `${VODS_PAGE}/new`;
 
 export const BLANK_IMAGE_URL = "/static-assets/img/blank.gif";
 export const COMMON_PREVIEW_IMAGE =

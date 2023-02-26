@@ -81,8 +81,11 @@ export default function NewVodPage() {
       <input type="hidden" name="video" value={JSON.stringify(video)} />
       <Main halfWidth className="stack md">
         <div>
-          <Label required>{t("vods:forms.title.youtubeUrl")}</Label>
+          <Label required htmlFor="url">
+            {t("vods:forms.title.youtubeUrl")}
+          </Label>
           <Input
+            id="url"
             onChange={(e) =>
               setVideo({
                 ...video,
@@ -95,8 +98,11 @@ export default function NewVodPage() {
         </div>
 
         <div>
-          <Label required>{t("vods:forms.title.videoTitle")}</Label>
+          <Label required htmlFor="title">
+            {t("vods:forms.title.videoTitle")}
+          </Label>
           <Input
+            id="title"
             onChange={(e) =>
               setVideo({
                 ...video,
@@ -111,8 +117,11 @@ export default function NewVodPage() {
         </div>
 
         <div>
-          <Label required>{t("vods:forms.title.videoDate")}</Label>
+          <Label required htmlFor="date">
+            {t("vods:forms.title.videoDate")}
+          </Label>
           <Input
+            id="date"
             type="date"
             max={dateToYearMonthDayString(new Date())}
             value={dateToYearMonthDayString(
@@ -135,8 +144,11 @@ export default function NewVodPage() {
         ) : null}
 
         <div>
-          <Label required>{t("vods:forms.title.type")}</Label>
+          <Label required htmlFor="type">
+            {t("vods:forms.title.type")}
+          </Label>
           <select
+            id="type"
             name="type"
             value={video.type}
             onChange={(e) =>
@@ -206,6 +218,7 @@ export default function NewVodPage() {
               })
             }
             size="tiny"
+            testId="add-match"
           >
             {t("vods:forms.action.addMatch")}
           </Button>
@@ -361,6 +374,7 @@ function Match({
                 setMinutes(value);
                 onChange({ ...match, startsAt: value * 60 + seconds });
               }}
+              testId={`match-${number}-minutes`}
             />
             {t("vods:minShort")}
           </div>
@@ -376,6 +390,7 @@ function Match({
                 setSeconds(value);
                 onChange({ ...match, startsAt: value + minutes * 60 });
               }}
+              testId={`match-${number}-seconds`}
             />
             {t("vods:secShort")}
           </div>
@@ -384,8 +399,12 @@ function Match({
 
       <div className="stack horizontal sm">
         <div>
-          <Label required>{t("vods:forms.title.mode")}</Label>
+          <Label required htmlFor={`match-${number}-mode`}>
+            {t("vods:forms.title.mode")}
+          </Label>
           <select
+            id={`match-${number}-mode`}
+            data-testid={`match-${number}-mode`}
             value={match.mode}
             onChange={(e) =>
               handleChange({ mode: e.target.value as VideoMatch["mode"] })
@@ -401,8 +420,12 @@ function Match({
           </select>
         </div>
         <div>
-          <Label required>{t("vods:forms.title.stage")}</Label>
+          <Label required htmlFor={`match-${number}-stage`}>
+            {t("vods:forms.title.stage")}
+          </Label>
           <select
+            id={`match-${number}-stage`}
+            data-testid={`match-${number}-stage`}
             value={match.stageId}
             onChange={(e) =>
               handleChange({ stageId: Number(e.target.value) as StageId })
@@ -429,7 +452,7 @@ function Match({
                   <WeaponCombobox
                     fullWidth
                     key={i}
-                    inputName="weapon"
+                    inputName={`player-${i}-weapon`}
                     initialWeaponId={match.weapons[i] as MainWeaponId}
                     onChange={(selected) => {
                       if (!selected) return;
@@ -452,7 +475,7 @@ function Match({
                     <WeaponCombobox
                       fullWidth
                       key={i}
-                      inputName="weapon"
+                      inputName={`player-${adjustedI}-weapon`}
                       initialWeaponId={match.weapons[adjustedI] as MainWeaponId}
                       onChange={(selected) => {
                         if (!selected) return;
@@ -478,7 +501,7 @@ function Match({
             <WeaponCombobox
               fullWidth
               id={id}
-              inputName="weapon"
+              inputName={`match-${number}-weapon`}
               initialWeaponId={match.weapons[0] as MainWeaponId}
               onChange={(selected) =>
                 onChange({

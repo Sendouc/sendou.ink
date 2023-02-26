@@ -129,6 +129,7 @@ function Match({
             variant="badge"
             width={42}
             className="vods__match__weapon"
+            testId={`weapon-img-${weapon}`}
           />
         ) : null}
         <Image
@@ -147,10 +148,11 @@ function Match({
         {weapons ? (
           <div className="stack horizontal md">
             <div className="vods__match__weapons">
-              {weapons.slice(0, 4).map((weapon) => {
+              {weapons.slice(0, 4).map((weapon, i) => {
                 return (
                   <WeaponImage
-                    key={weapon}
+                    key={i}
+                    testId={`weapon-img-${weapon}-${i}`}
                     weaponSplId={weapon}
                     variant="badge"
                     width={30}
@@ -159,10 +161,12 @@ function Match({
               })}
             </div>
             <div className="vods__match__weapons">
-              {weapons.slice(4).map((weapon) => {
+              {weapons.slice(4).map((weapon, i) => {
+                const adjustedI = i + 4;
                 return (
                   <WeaponImage
-                    key={weapon}
+                    key={i}
+                    testId={`weapon-img-${weapon}-${adjustedI}`}
                     weaponSplId={weapon}
                     variant="badge"
                     width={30}
