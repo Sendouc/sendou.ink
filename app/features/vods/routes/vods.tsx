@@ -1,4 +1,9 @@
-import type { LinksFunction, LoaderArgs } from "@remix-run/node";
+import type {
+  LinksFunction,
+  LoaderArgs,
+  MetaFunction,
+  SerializeFrom,
+} from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { useLoaderData, useSearchParams } from "@remix-run/react";
 import { WeaponCombobox } from "~/components/Combobox";
@@ -6,9 +11,11 @@ import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import { useTranslation } from "~/hooks/useTranslation";
 import { requireUserId } from "~/modules/auth/user.server";
+import { i18next } from "~/modules/i18n";
 import { mainWeaponIds, modesShort, stageIds } from "~/modules/in-game-lists";
 import { isAdmin } from "~/permissions";
 import type { SendouRouteHandle } from "~/utils/remix";
+import { makeTitle } from "~/utils/strings";
 import { VodListing } from "../components/VodListing";
 import { findVods } from "../queries/findVods";
 import { videoMatchTypes } from "../vods-constants";
@@ -22,7 +29,18 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
+export const meta: MetaFunction = (args) => {
+  const data = args.data as SerializeFrom<typeof loader> | null;
+
+  if (!data) return {};
+
+  return {
+    title: makeTitle(data.title),
+  };
+};
+
 export const loader = async ({ request }: LoaderArgs) => {
+  const t = await i18next.getFixedT(request);
   const user = await requireUserId(request);
 
   if (!isAdmin(user)) {
@@ -36,7 +54,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     )
   );
 
-  return { vods };
+  return { vods, title: makeTitle(t("pages.vods")) };
 };
 
 export default function VodsSearchPage() {
