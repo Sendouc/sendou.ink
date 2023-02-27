@@ -10,6 +10,7 @@ export const TEAM_MEMBER_ROLES = [
   "CAPTAIN",
   "FRONTLINE",
   "SUPPORT",
+  "MIDLINE",
   "BACKLINE",
   "COACH",
 ] as const;
