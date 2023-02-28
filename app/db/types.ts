@@ -167,6 +167,7 @@ export interface BuildAbility {
   gearType: "HEAD" | "CLOTHES" | "SHOES";
   ability: Ability;
   slotIndex: 0 | 1 | 2 | 3;
+  abilityPoints: number; // 3 or 10
 }
 
 export interface MapPoolMap {
