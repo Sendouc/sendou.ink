@@ -13,6 +13,19 @@
       "InkRecoverStop": 15,
       "InkConsume": 0.008
     },
+    "1": {
+      "SpecialPoint": 180,
+      "subWeaponId": 8,
+      "specialWeaponId": 9,
+      "WeaponSpeedType": "Fast",
+      "MoveSpeed": 0.08,
+      "DamageParam_ValueMax": 380,
+      "DamageParam_ValueMin": 190,
+      "Jump_DegSwerve": 18,
+      "Stand_DegSwerve": 12,
+      "InkRecoverStop": 15,
+      "InkConsume": 0.008
+    },
     "10": {
       "SpecialPoint": 180,
       "subWeaponId": 0,
@@ -51,8 +64,20 @@
       "Stand_DegSwerve": 0,
       "InkConsume": 0.008
     },
+    "21": {
+      "SpecialPoint": 200,
+      "subWeaponId": 1,
+      "specialWeaponId": 14,
+      "WeaponSpeedType": "Fast",
+      "MoveSpeed": 0.072,
+      "DamageParam_ValueMax": 280,
+      "DamageParam_ValueMin": 140,
+      "Jump_DegSwerve": 0,
+      "Stand_DegSwerve": 0,
+      "InkConsume": 0.008
+    },
     "30": {
-      "SpecialPoint": 190,
+      "SpecialPoint": 180,
       "subWeaponId": 5,
       "specialWeaponId": 13,
       "WeaponSpeedType": "Fast",
@@ -122,9 +147,21 @@
       "InkConsume": 0.013
     },
     "60": {
-      "SpecialPoint": 190,
+      "SpecialPoint": 180,
       "subWeaponId": 1,
       "specialWeaponId": 15,
+      "WeaponSpeedType": "Fast",
+      "MoveSpeed": 0.084,
+      "DamageParam_ValueMax": 280,
+      "DamageParam_ValueMin": 140,
+      "Jump_DegSwerve": 12,
+      "Stand_DegSwerve": 6,
+      "InkConsume": 0.008
+    },
+    "61": {
+      "SpecialPoint": 180,
+      "subWeaponId": 7,
+      "specialWeaponId": 16,
       "WeaponSpeedType": "Fast",
       "MoveSpeed": 0.084,
       "DamageParam_ValueMax": 280,
@@ -178,10 +215,32 @@
       "Stand_DegSwerve": 4,
       "InkConsume": 0.025
     },
+    "81": {
+      "SpecialPoint": 200,
+      "subWeaponId": 4,
+      "specialWeaponId": 17,
+      "MoveSpeed": 0.04,
+      "DamageParam_ValueMax": 620,
+      "DamageParam_ValueMin": 350,
+      "Jump_DegSwerve": 11.3511,
+      "Stand_DegSwerve": 4,
+      "InkConsume": 0.025
+    },
     "90": {
       "SpecialPoint": 190,
       "subWeaponId": 12,
       "specialWeaponId": 8,
+      "MoveSpeed": 0.06,
+      "DamageParam_ValueMax": 320,
+      "DamageParam_ValueMin": 160,
+      "Jump_DegSwerve": 8,
+      "Stand_DegSwerve": 2.5,
+      "InkConsume": 0.016
+    },
+    "91": {
+      "SpecialPoint": 180,
+      "subWeaponId": 11,
+      "specialWeaponId": 5,
       "MoveSpeed": 0.06,
       "DamageParam_ValueMax": 320,
       "DamageParam_ValueMin": 160,
@@ -341,10 +400,63 @@
       "InkRecoverStop": 40,
       "InkConsume": 0.04
     },
+    "231": {
+      "SpecialPoint": 180,
+      "subWeaponId": 6,
+      "specialWeaponId": 16,
+      "overwrites": {
+        "ReduceJumpSwerveRate": {
+          "Mid": 0.5
+        }
+      },
+      "WeaponSpeedType": "Fast",
+      "MoveSpeed": 0.065,
+      "DamageParam_ValueDirect": 600,
+      "BlastParam_DistanceDamage": [
+        {
+          "Damage": 300,
+          "Distance": 1
+        },
+        {
+          "Damage": 300,
+          "Distance": 4
+        }
+      ],
+      "Jump_DegSwerve": 8,
+      "Stand_DegSwerve": 0,
+      "InkRecoverStop": 40,
+      "InkConsume": 0.04
+    },
     "240": {
       "SpecialPoint": 200,
       "subWeaponId": 10,
       "specialWeaponId": 14,
+      "overwrites": {
+        "ReduceJumpSwerveRate": {
+          "Mid": 0.5
+        }
+      },
+      "MoveSpeed": 0.055,
+      "DamageParam_ValueDirect": 850,
+      "BlastParam_DistanceDamage": [
+        {
+          "Damage": 350,
+          "Distance": 0.94
+        },
+        {
+          "Damage": 350,
+          "Distance": 3.3
+        }
+      ],
+      "Jump_DegSwerve": 8,
+      "Stand_DegSwerve": 0,
+      "InkRecoverStop": 50,
+      "InkConsume": 0.07
+    },
+    "241": {
+      "SpecialPoint": 200,
+      "subWeaponId": 13,
+      "specialWeaponId": 10,
       "overwrites": {
         "ReduceJumpSwerveRate": {
           "Mid": 0.5
@@ -406,6 +518,19 @@
       "InkRecoverStop": 25,
       "InkConsume": 0.0115
     },
+    "301": {
+      "SpecialPoint": 200,
+      "subWeaponId": 2,
+      "specialWeaponId": 11,
+      "TripleShotSpanFrame": 8,
+      "MoveSpeed": 0.08,
+      "DamageParam_ValueMax": 290,
+      "DamageParam_ValueMin": 145,
+      "Jump_DegSwerve": 6,
+      "Stand_DegSwerve": 1,
+      "InkRecoverStop": 25,
+      "InkConsume": 0.0115
+    },
     "310": {
       "SpecialPoint": 190,
       "subWeaponId": 9,
@@ -454,6 +579,12 @@
       "SpecialPoint": 180,
       "subWeaponId": 6,
       "specialWeaponId": 2,
+      "InkConsume_WeaponSwingParam": 0.085
+    },
+    "1011": {
+      "SpecialPoint": 180,
+      "subWeaponId": 8,
+      "specialWeaponId": 17,
       "InkConsume_WeaponSwingParam": 0.085
     },
     "1020": {
@@ -527,10 +658,33 @@
       "InkConsumeFullCharge": 0.18,
       "InkConsumeMinCharge": 0.0225
     },
+    "2011": {
+      "SpecialPoint": 210,
+      "subWeaponId": 4,
+      "specialWeaponId": 14,
+      "MoveSpeedFullCharge": 0.02,
+      "DamageParam_ValueFullCharge": 1600,
+      "DamageParam_ValueMaxCharge": 800,
+      "DamageParam_ValueMinCharge": 400,
+      "KeepChargeFullFrame": 75,
+      "InkConsumeFullCharge": 0.18,
+      "InkConsumeMinCharge": 0.0225
+    },
     "2020": {
       "SpecialPoint": 200,
       "subWeaponId": 0,
       "specialWeaponId": 8,
+      "MoveSpeedFullCharge": 0.02,
+      "DamageParam_ValueFullCharge": 1600,
+      "DamageParam_ValueMaxCharge": 800,
+      "DamageParam_ValueMinCharge": 400,
+      "InkConsumeFullCharge": 0.18,
+      "InkConsumeMinCharge": 0.0225
+    },
+    "2021": {
+      "SpecialPoint": 210,
+      "subWeaponId": 4,
+      "specialWeaponId": 14,
       "MoveSpeedFullCharge": 0.02,
       "DamageParam_ValueFullCharge": 1600,
       "DamageParam_ValueMaxCharge": 800,
@@ -636,9 +790,20 @@
       "InkConsumeSlosher": 0.07
     },
     "3010": {
-      "SpecialPoint": 190,
+      "SpecialPoint": 180,
       "subWeaponId": 11,
       "specialWeaponId": 10,
+      "WeaponSpeedType": "Fast",
+      "MoveSpeed": 0.066,
+      "DamageParam_ValueDirectMax": 620,
+      "DamageParam_ValueDirectMin": 350,
+      "InkRecoverStop": 35,
+      "InkConsumeSlosher": 0.06
+    },
+    "3011": {
+      "SpecialPoint": 180,
+      "subWeaponId": 5,
+      "specialWeaponId": 15,
       "WeaponSpeedType": "Fast",
       "MoveSpeed": 0.066,
       "DamageParam_ValueDirectMax": 620,
@@ -769,7 +934,7 @@
       "InkConsumeFullChargeSplatling": 0.35
     },
     "4030": {
-      "SpecialPoint": 200,
+      "SpecialPoint": 190,
       "subWeaponId": 5,
       "specialWeaponId": 10,
       "overwrites": {
@@ -919,7 +1084,7 @@
       "InkConsume_WeaponShelterShotgunParam": 0.04
     },
     "7010": {
-      "SpecialPoint": 200,
+      "SpecialPoint": 190,
       "subWeaponId": 11,
       "specialWeaponId": 9,
       "MoveSpeedFullCharge": 0.06,
@@ -1025,7 +1190,7 @@
       },
       "SubInkSaveLv": 0,
       "InkConsume": 0.4,
-      "InkRecoverStop": 50,
+      "InkRecoverStop": 60,
       "DistanceDamage": [
         {
           "Damage": 350,
@@ -1398,7 +1563,7 @@
         "SpecialDurationFrame": {
           "High": 240,
           "Low": 180,
-          "Mid": 210
+          "Mid": 220
         }
       }
     },
@@ -1489,6 +1654,34 @@
           "High": 1500,
           "Low": 900,
           "Mid": 1200
+        }
+      }
+    },
+    "16": {
+      "overwrites": {
+        "CrossPaintCheckLength": {
+          "High": 3,
+          "Low": 2.5,
+          "Mid": 2.75
+        },
+        "CrossPaintRadius": {
+          "High": 3,
+          "Low": 2.5,
+          "Mid": 2.75
+        },
+        "DistanceDamageDistanceRate": {
+          "High": 1.2,
+          "Low": 1,
+          "Mid": 1.1
+        }
+      }
+    },
+    "17": {
+      "overwrites": {
+        "SpecialDurationFrame": {
+          "High": 600,
+          "Low": 480,
+          "Mid": 540
         }
       }
     }

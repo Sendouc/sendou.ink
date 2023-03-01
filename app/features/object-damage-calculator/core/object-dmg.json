@@ -17,6 +17,10 @@
         "rate": 1.6
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "Gachihoko_Barrier",
         "rate": 1.9
       },
@@ -90,6 +94,10 @@
       {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
       },
       {
         "target": "Gachihoko_Barrier",
@@ -169,6 +177,10 @@
         "rate": 1.6
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "Gachihoko_Barrier",
         "rate": 1.9
       },
@@ -228,7 +240,8 @@
   },
   "Blaster": {
     "mainWeaponIds": [
-      250, 20250, 10250, 230, 20230, 10230, 240, 20240, 10240, 220, 20220, 10220
+      250, 20250, 10250, 230, 231, 20230, 10230, 240, 241, 20240, 10240, 220,
+      20220, 10220
     ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
@@ -244,6 +257,10 @@
       {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.6
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
       },
       {
         "target": "Gachihoko_Barrier",
@@ -321,6 +338,10 @@
         "rate": 7
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "Chariot",
         "rate": 2.8
       },
@@ -366,11 +387,26 @@
       }
     ]
   },
+  "BlowerExhale": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [8, 10008],
+    "rates": [
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
+      }
+    ]
+  },
   "BlowerInhale": {
     "mainWeaponIds": [],
     "subWeaponIds": [],
     "specialWeaponIds": [8, 10008],
     "rates": [
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
       {
         "target": "GreatBarrier_Barrier",
         "rate": 1
@@ -386,6 +422,10 @@
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
       {
         "target": "GreatBarrier_Barrier",
         "rate": 1
@@ -472,6 +512,10 @@
         "rate": 2
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "CoopEnemySakeTamaire",
         "rate": 1
       },
@@ -553,6 +597,10 @@
       {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 3.6
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
       },
       {
         "target": "Chariot",
@@ -646,6 +694,10 @@
         "rate": 2
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "CoopEnemySakelienCupTwins",
         "rate": 10
       },
@@ -725,6 +777,10 @@
         "rate": 4
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "Chariot",
         "rate": 2
       },
@@ -796,6 +852,10 @@
     "specialWeaponIds": [],
     "rates": [
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "CoopEnemySakelienCupTwins",
         "rate": 10
       },
@@ -837,6 +897,10 @@
       {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
       },
       {
         "target": "CoopEnemySakelienCupTwins",
@@ -929,6 +993,10 @@
         "rate": 2
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "CoopEnemySakeTamaire",
         "rate": 1
       },
@@ -1002,6 +1070,10 @@
     "specialWeaponIds": [],
     "rates": [
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "CoopGoldenIkuraBox",
         "rate": 1
       },
@@ -1071,6 +1143,10 @@
         "rate": 1.5
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "Chariot",
         "rate": 1.4
       },
@@ -1126,12 +1202,79 @@
     "specialWeaponIds": [],
     "rates": [
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "GreatBarrier_Barrier",
         "rate": 1
       },
       {
         "target": "GreatBarrier_WeakPoint",
         "rate": 1
+      }
+    ]
+  },
+  "Castle": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [17],
+    "rates": [
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 5
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 5
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 5
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
+        "target": "Chariot",
+        "rate": 4
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 5
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 5
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 5
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 5
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 4
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 100
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 7.5
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 100
       }
     ]
   },
@@ -1151,6 +1294,10 @@
       {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
       },
       {
         "target": "Chariot",
@@ -1232,6 +1379,10 @@
         "rate": 2.4
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "Chariot",
         "rate": 1.3
       },
@@ -1295,7 +1446,8 @@
   },
   "ChargerFull": {
     "mainWeaponIds": [
-      2060, 22060, 12060, 2020, 12020, 2010, 22010, 12010, 2000, 22000, 12000
+      2060, 22060, 12060, 2020, 2021, 12020, 2010, 2011, 22010, 12010, 2000,
+      22000, 12000
     ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
@@ -1311,6 +1463,10 @@
       {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
       },
       {
         "target": "Chariot",
@@ -1392,6 +1548,10 @@
         "rate": 2
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "Chariot",
         "rate": 0.8
       },
@@ -1471,6 +1631,10 @@
         "rate": 2.4
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "Chariot",
         "rate": 1.3
       },
@@ -1530,7 +1694,8 @@
   },
   "Charger": {
     "mainWeaponIds": [
-      2060, 22060, 12060, 2020, 12020, 2010, 22010, 12010, 2000, 22000, 12000
+      2060, 22060, 12060, 2020, 2021, 12020, 2010, 2011, 22010, 12010, 2000,
+      22000, 12000
     ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
@@ -1546,6 +1711,10 @@
       {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
       },
       {
         "target": "Chariot",
@@ -1611,6 +1780,10 @@
     "specialWeaponIds": [12, 20012, 10012],
     "rates": [
       {
+        "target": "CastleKnockBack",
+        "rate": 0.3
+      },
+      {
         "target": "EnemyRockBall",
         "rate": 10
       },
@@ -1652,6 +1825,10 @@
       {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 3
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
       },
       {
         "target": "Chariot",
@@ -1711,19 +1888,75 @@
       }
     ]
   },
+  "CoopEnemyRush": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
+      }
+    ]
+  },
+  "CoopEnemySakeSaucerFall": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
+      }
+    ]
+  },
+  "CoopEnemySakeTamaireBombDamage": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
+      }
+    ]
+  },
+  "CoopEnemySakelienBomberBlast": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "CoopEnemySakelienCupTwins",
+        "rate": 10
+      }
+    ]
+  },
+  "CoopEnemySakerocketBlast": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "CoopEnemySakelienCupTwins",
+        "rate": 10
+      }
+    ]
+  },
   "Default": {
     "mainWeaponIds": [
       20900, 220, 20220, 10220, 210, 20210, 10210, 30200, 30210, 20200, 10200,
       1100, 1101, 21100, 11100, 1110, 21110, 11110, 31100, 31110, 22900, 2060,
       22060, 12060, 2050, 22050, 12050, 2040, 12040, 2030, 42030, 22030, 12030,
-      2020, 12020, 2010, 22010, 12010, 2070, 22070, 2000, 22000, 12000, 40000,
-      1000, 1001, 21000, 11000, 1020, 21020, 11020, 1030, 21030, 11030, 1010,
-      21010, 11010, 31000, 31010, 1040, 21040, 26900, 6020, 26020, 16020, 6000,
-      26000, 16000, 36000, 36010, 6010, 26010, 16010, 40040, 40042, 40041
+      2020, 2021, 12020, 2010, 2011, 22010, 12010, 2070, 22070, 2000, 22000,
+      12000, 40000, 1000, 1001, 21000, 11000, 1020, 21020, 11020, 1030, 21030,
+      11030, 1010, 1011, 21010, 11010, 31000, 31010, 1040, 21040, 26900, 6020,
+      26020, 16020, 6000, 26000, 16000, 36000, 36010, 6010, 26010, 16010, 40040,
+      40042, 40041
     ],
     "subWeaponIds": [8, 6, 11006, 10006, 30006, 12, 10012, 9, 11, 10100],
     "specialWeaponIds": [
-      12, 20012, 10012, 15, 20, 2, 30002, 10100, 7, 20007, 10007, 30007
+      12, 20012, 10012, 15, 16, 20, 2, 30002, 10100, 7, 20007, 10007, 30007
     ],
     "rates": [
       {
@@ -1736,6 +1969,10 @@
       },
       {
         "target": "BulletUmbrellaCanopyWide",
+        "rate": 1
+      },
+      {
+        "target": "CastleKnockBack",
         "rate": 1
       },
       {
@@ -1757,6 +1994,10 @@
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
       {
         "target": "GreatBarrier_Barrier",
         "rate": 1
@@ -1793,6 +2034,10 @@
         "rate": 1
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 0.5
+      },
+      {
         "target": "GreatBarrier_Barrier",
         "rate": 1
       },
@@ -1822,6 +2067,10 @@
       {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 0.5
       },
       {
         "target": "Gachihoko_Barrier",
@@ -1879,6 +2128,10 @@
     "specialWeaponIds": [20],
     "rates": [
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "GreatBarrier_Barrier",
         "rate": 1
       },
@@ -1892,11 +2145,26 @@
       }
     ]
   },
+  "GeyserOnline": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
+      }
+    ]
+  },
   "Geyser": {
     "mainWeaponIds": [],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
       {
         "target": "GreatBarrier_Barrier",
         "rate": 1
@@ -1912,6 +2180,10 @@
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
       {
         "target": "CoopEnemySakelienCupTwins",
         "rate": 10
@@ -1933,6 +2205,10 @@
     "rates": [
       {
         "target": "BlowerInhale",
+        "rate": 1
+      },
+      {
+        "target": "CastleKnockBack",
         "rate": 1
       }
     ]
@@ -1957,6 +2233,10 @@
       {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 3
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
       },
       {
         "target": "Chariot",
@@ -2014,8 +2294,12 @@
         "rate": 3.5
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "Chariot",
-        "rate": 1.4
+        "rate": 3.5
       },
       {
         "target": "CoopEnemySakelienCupTwins",
@@ -2101,8 +2385,12 @@
         "rate": 3.5
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "Chariot",
-        "rate": 0.8334
+        "rate": 2.0835
       },
       {
         "target": "CoopEnemySakeTamaireOneBomb",
@@ -2188,6 +2476,10 @@
         "rate": 1
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "CoopEnemySakelienCupTwins",
         "rate": 10
       },
@@ -2251,6 +2543,14 @@
         "rate": 2
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
+        "target": "Chariot",
+        "rate": 2.5
+      },
+      {
         "target": "Gachihoko_Barrier",
         "rate": 2.8
       },
@@ -2302,6 +2602,10 @@
         "rate": 1.1
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "Chariot",
         "rate": 1
       },
@@ -2340,6 +2644,10 @@
         "rate": 0.7
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "Chariot",
         "rate": 1
       },
@@ -2373,6 +2681,10 @@
       {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
       },
       {
         "target": "Chariot",
@@ -2430,6 +2742,10 @@
         "rate": 1
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "GreatBarrier_Barrier",
         "rate": 1
       },
@@ -2473,6 +2789,10 @@
     "specialWeaponIds": [],
     "rates": [
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "GreatBarrier_Barrier",
         "rate": 1
       },
@@ -2508,6 +2828,10 @@
     "specialWeaponIds": [],
     "rates": [
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "GreatBarrier_Barrier",
         "rate": 1
       },
@@ -2541,6 +2865,10 @@
       {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
       },
       {
         "target": "Chariot",
@@ -2626,6 +2954,10 @@
         "rate": 1.5
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "Chariot",
         "rate": 1.5
       },
@@ -2689,6 +3021,10 @@
         "rate": 2.5
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 5
+      },
+      {
         "target": "Chariot",
         "rate": 2
       },
@@ -2740,8 +3076,16 @@
         "rate": 1.3
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "Chariot",
         "rate": 1.3
+      },
+      {
+        "target": "Decoy",
+        "rate": 2
       },
       {
         "target": "Gachihoko_Barrier",
@@ -2788,11 +3132,15 @@
   "RollerCore": {
     "mainWeaponIds": [
       1000, 1001, 21000, 11000, 1020, 21020, 11020, 1030, 21030, 11030, 1010,
-      21010, 11010, 31000, 31010, 1040, 21040
+      1011, 21010, 11010, 31000, 31010, 1040, 21040
     ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
       {
         "target": "CoopEnemySakelienTowerUnite",
         "rate": 1
@@ -2844,7 +3192,7 @@
     ]
   },
   "RollerSplash_Compact": {
-    "mainWeaponIds": [1000, 1001, 21000, 11000, 1040],
+    "mainWeaponIds": [1000, 1001, 21000, 11000],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -2859,6 +3207,10 @@
       {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.8
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
       },
       {
         "target": "Chariot",
@@ -2919,7 +3271,7 @@
     ]
   },
   "RollerSplash_Heavy": {
-    "mainWeaponIds": [1020, 21020, 11020, 21040],
+    "mainWeaponIds": [1020, 21020, 11020],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -2934,6 +3286,10 @@
       {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.5
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
       },
       {
         "target": "Chariot",
@@ -3015,6 +3371,10 @@
         "rate": 1.5
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "Chariot",
         "rate": 1.4
       },
@@ -3072,8 +3432,179 @@
       }
     ]
   },
+  "RollerSplash_Wide": {
+    "mainWeaponIds": [1040, 21040],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "AttractTarget",
+        "rate": 2
+      },
+      {
+        "target": "BlowerInhale",
+        "rate": 2
+      },
+      {
+        "target": "Bomb_TorpedoBullet",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 3
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 3.4
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 3.6
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
+        "target": "Chariot",
+        "rate": 2.8
+      },
+      {
+        "target": "CoopEnemySakelienGiant",
+        "rate": 1
+      },
+      {
+        "target": "CoopEnemySakelienTowerUnite",
+        "rate": 1
+      },
+      {
+        "target": "CoopGoldenIkuraBox",
+        "rate": 1
+      },
+      {
+        "target": "CoopSpawnBox",
+        "rate": 1
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 3.6
+      },
+      {
+        "target": "GeyserOnline",
+        "rate": 1
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 3.6
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 3.6
+      },
+      {
+        "target": "InkRail",
+        "rate": 2
+      },
+      {
+        "target": "MsnBossWeak",
+        "rate": 2
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 2
+      },
+      {
+        "target": "MsnBoxL",
+        "rate": 2
+      },
+      {
+        "target": "MsnBoxS",
+        "rate": 2
+      },
+      {
+        "target": "MsnEnemy",
+        "rate": 2
+      },
+      {
+        "target": "MsnEnemyEscape",
+        "rate": 2
+      },
+      {
+        "target": "MsnEnemyShield",
+        "rate": 2
+      },
+      {
+        "target": "MsnEnemyTakopodDEV",
+        "rate": 2
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 6
+      },
+      {
+        "target": "MsnLeaderMoray",
+        "rate": 2
+      },
+      {
+        "target": "MsnMantaShadow",
+        "rate": 2
+      },
+      {
+        "target": "MsnRailKingHand",
+        "rate": 2
+      },
+      {
+        "target": "MsnSharkKing",
+        "rate": 2
+      },
+      {
+        "target": "MsnYakan",
+        "rate": 2
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 2.86
+      },
+      {
+        "target": "Propeller",
+        "rate": 3
+      },
+      {
+        "target": "PropellerOnline",
+        "rate": 1
+      },
+      {
+        "target": "SalmonBuddy",
+        "rate": 2
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 2.4
+      },
+      {
+        "target": "SnakeBlock",
+        "rate": 2
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 5.76
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 4.8
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 5.76
+      }
+    ]
+  },
   "RollerSplash": {
-    "mainWeaponIds": [1010, 21010, 11010, 31000, 31010],
+    "mainWeaponIds": [1010, 1011, 21010, 11010, 31000, 31010],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -3088,6 +3619,10 @@
       {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.78
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
       },
       {
         "target": "Chariot",
@@ -3169,6 +3704,10 @@
         "rate": 4.8
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "Chariot",
         "rate": 2.6
       },
@@ -3242,6 +3781,10 @@
       {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.2
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
       },
       {
         "target": "Chariot",
@@ -3331,6 +3874,10 @@
         "rate": 1.2
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "Chariot",
         "rate": 0.65
       },
@@ -3410,6 +3957,10 @@
         "rate": 4.8
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "Chariot",
         "rate": 2.6
       },
@@ -3481,6 +4032,10 @@
         "rate": 2.4
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "Chariot",
         "rate": 1.3
       },
@@ -3544,6 +4099,10 @@
     "specialWeaponIds": [],
     "rates": [
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "Chariot",
         "rate": 2.5
       },
@@ -3585,6 +4144,10 @@
       {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 5
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 0.3
       },
       {
         "target": "CoopEnemySakelienTowerUnite",
@@ -3654,6 +4217,10 @@
         "rate": 5
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 0.3
+      },
+      {
         "target": "CoopEnemySakelienTowerUnite",
         "rate": 1
       },
@@ -3721,6 +4288,10 @@
         "rate": 5
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 0.3
+      },
+      {
         "target": "CoopEnemySakelienTowerUnite",
         "rate": 1
       },
@@ -3786,6 +4357,10 @@
       {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
       },
       {
         "target": "Chariot",
@@ -3863,6 +4438,10 @@
         "rate": 2
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "Chariot",
         "rate": 1.3
       },
@@ -3934,6 +4513,10 @@
         "rate": 2
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "Chariot",
         "rate": 1.3
       },
@@ -3997,6 +4580,10 @@
     "specialWeaponIds": [],
     "rates": [
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "Gachihoko_Barrier",
         "rate": 0.2
       },
@@ -4023,6 +4610,10 @@
     "subWeaponIds": [],
     "specialWeaponIds": [7, 20007, 10007, 30007],
     "rates": [
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
       {
         "target": "Chariot",
         "rate": 2
@@ -4075,6 +4666,10 @@
         "rate": 1.1
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "Chariot",
         "rate": 1
       },
@@ -4108,6 +4703,10 @@
       {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 0.7
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
       },
       {
         "target": "Chariot",
@@ -4145,6 +4744,10 @@
         "rate": 1.1
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "Chariot",
         "rate": 1
       },
@@ -4178,6 +4781,10 @@
       {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 0.7
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
       },
       {
         "target": "Chariot",
@@ -4227,6 +4834,10 @@
         "rate": 0.7
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "Chariot",
         "rate": 1
       },
@@ -4274,6 +4885,10 @@
         "rate": 0.7
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "Chariot",
         "rate": 1
       },
@@ -4300,7 +4915,7 @@
     ]
   },
   "Shooter_Heavy": {
-    "mainWeaponIds": [80],
+    "mainWeaponIds": [80, 81],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -4315,6 +4930,10 @@
       {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 0.7
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
       },
       {
         "target": "Chariot",
@@ -4343,7 +4962,7 @@
     ]
   },
   "Shooter_Long": {
-    "mainWeaponIds": [90, 20090, 10090],
+    "mainWeaponIds": [90, 91, 20090, 10090],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -4358,6 +4977,10 @@
       {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 0.7
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
       },
       {
         "target": "Chariot",
@@ -4378,7 +5001,7 @@
     ]
   },
   "Shooter_Precision": {
-    "mainWeaponIds": [20, 20020, 10020],
+    "mainWeaponIds": [20, 21, 20020, 10020],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -4393,6 +5016,10 @@
       {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.1
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
       },
       {
         "target": "Chariot",
@@ -4413,7 +5040,7 @@
     ]
   },
   "Shooter_Short": {
-    "mainWeaponIds": [0, 20000, 10000],
+    "mainWeaponIds": [0, 1, 20000, 10000],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -4428,6 +5055,10 @@
       {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.1
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
       },
       {
         "target": "Chariot",
@@ -4473,6 +5104,10 @@
         "rate": 0.8
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "Chariot",
         "rate": 1
       },
@@ -4507,7 +5142,7 @@
     ]
   },
   "Shooter_TripleQuick": {
-    "mainWeaponIds": [300],
+    "mainWeaponIds": [300, 301],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -4522,6 +5157,10 @@
       {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 0.85
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
       },
       {
         "target": "Chariot",
@@ -4560,8 +5199,8 @@
   "Shooter": {
     "mainWeaponIds": [
       400, 20400, 10400, 20050, 10050, 20080, 10080, 10900, 10910, 10920, 40,
-      41, 20040, 45, 10040, 100, 20100, 60, 20060, 10060, 30000, 30010, 20310,
-      10310, 20300, 10300
+      41, 20040, 45, 10040, 100, 20100, 60, 61, 20060, 10060, 30000, 30010,
+      20310, 10310, 20300, 10300
     ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
@@ -4577,6 +5216,10 @@
       {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 0.7
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
       },
       {
         "target": "Chariot",
@@ -4612,6 +5255,10 @@
       {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 100
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
       },
       {
         "target": "Chariot",
@@ -4675,6 +5322,10 @@
       {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 6
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
       },
       {
         "target": "Chariot",
@@ -4744,6 +5395,10 @@
         "rate": 1.6
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "Default",
         "rate": 1
       },
@@ -4805,6 +5460,10 @@
       {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
       },
       {
         "target": "CoopEnemyHardBody",
@@ -4876,6 +5535,10 @@
       {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
       },
       {
         "target": "CoopEnemySakeTamaireOneBomb",
@@ -4957,6 +5620,10 @@
         "rate": 2
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "CoopEnemySakelienCupTwins",
         "rate": 10
       },
@@ -5012,8 +5679,8 @@
   },
   "Slosher": {
     "mainWeaponIds": [
-      3010, 23010, 13010, 3020, 23020, 13020, 33000, 33010, 3000, 3001, 23000,
-      13000
+      3010, 3011, 23010, 13010, 3020, 23020, 13020, 33000, 33010, 3000, 3001,
+      23000, 13000
     ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
@@ -5029,6 +5696,10 @@
       {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
       },
       {
         "target": "CoopEnemySakelienTowerUnite",
@@ -5105,6 +5776,10 @@
         "rate": 0.7
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "Chariot",
         "rate": 1
       },
@@ -5130,6 +5805,10 @@
       {
         "target": "Bomb_TorpedoBullet",
         "rate": 0.5
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
       },
       {
         "target": "Gachihoko_Barrier",
@@ -5165,6 +5844,10 @@
       {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 1.5556
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
       },
       {
         "target": "Gachihoko_Barrier",
@@ -5216,6 +5899,10 @@
       {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
       },
       {
         "target": "Chariot",
@@ -5299,6 +5986,10 @@
       {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 0.3
       },
       {
         "target": "CoopEnemySakelienCupTwins",
@@ -5386,6 +6077,10 @@
       {
         "target": "BulletUmbrellaCanopyWide",
         "rate": 2
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
       },
       {
         "target": "CoopEnemySakelienCupTwins",
@@ -5507,6 +6202,10 @@
         "rate": 2
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 10
+      },
+      {
         "target": "Chariot",
         "rate": 2
       },
@@ -5578,8 +6277,12 @@
         "rate": 6
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "Chariot",
-        "rate": 1.5
+        "rate": 1.8
       },
       {
         "target": "CoopEnemySakelienCupTwins",
@@ -5653,8 +6356,12 @@
         "rate": 20
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "Chariot",
-        "rate": 1.5
+        "rate": 4.5
       },
       {
         "target": "EnemyRockBall",
@@ -5728,8 +6435,12 @@
         "rate": 5
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "Chariot",
-        "rate": 2
+        "rate": 6
       },
       {
         "target": "EnemyRockBall",
@@ -5795,8 +6506,12 @@
         "rate": 4.091
       },
       {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
         "target": "Chariot",
-        "rate": 1.091
+        "rate": 3.273
       },
       {
         "target": "EnemyRockBall",
