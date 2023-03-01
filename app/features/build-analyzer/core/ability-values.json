@@ -65,5 +65,6 @@
   "SplashAroundVelocityMax": [0.0, 0.0, 0.0],
   "SplashAroundPaintRadius": [0.0, 0.0, 0.0],
   "SpecialTotalFrame": [0.0, 0.0, 0.0],
-  "PowerUpFrame": [0.0, 0.0, 0.0]
+  "PowerUpFrame": [0.0, 0.0, 0.0],
+  "CrossPaintRadius": [0.0, 0.0, 0.0]
 }
