@@ -257,14 +257,14 @@
 }
 
 .layout__side-nav-image-container .tooltip-text {
-  visibility: hidden;
   width: 120px;
+  visibility: hidden;
   background-color: black;
   color: #fff;
-  text-align: center;
-  border-radius: 6px;
-  padding: 2px;
   position: absolute;
+  padding: 2px;
+  border-radius: 6px;
+  text-align: center;
   z-index: 1;
   left: 110%;
   opacity: 0;
@@ -272,8 +272,8 @@
 }
 
 .layout__side-nav-image-container:hover .tooltip-text {
-  visibility: visible;
   opacity: 1;
+  visibility: visible;
 }
 
 @media screen and (display-mode: standalone) {
