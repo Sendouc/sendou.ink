@@ -241,6 +241,7 @@
 }
 
 .layout__side-nav-image-container {
+  position: relative;
   display: grid;
   width: 40px;
   height: 40px;
@@ -252,6 +253,29 @@
 
 .layout__side-nav-image-container:hover {
   background-color: var(--theme-transparent);
+}
+
+.layout__side-nav-image-container .tooltip-text {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  left: 120%;
+  margin-left: -10px;
+
+  /* Fade in tooltip - takes 1 second to go from 0% to 100% opac: */
+  opacity: 0;
+  transition: opacity 1s;
+}
+
+.layout__side-nav-image-container:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
 }
 
 @media screen and (display-mode: standalone) {
