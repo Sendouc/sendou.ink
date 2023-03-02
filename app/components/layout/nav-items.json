@@ -45,7 +45,7 @@
     ]
   },
   {
-    "name": "user-search",
+    "name": "u",
     "url": "u",
     "prefetch": false,
     "filters": [
@@ -90,7 +90,7 @@
     ]
   },
   {
-    "name": "team-search",
+    "name": "t",
     "url": "t",
     "prefetch": false,
     "filters": [
