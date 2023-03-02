@@ -257,18 +257,18 @@
 }
 
 .layout__side-nav-image-container .tooltip-text {
-  width: 120px;
-  visibility: hidden;
-  background-color: black;
-  color: #fff;
   position: absolute;
-  padding: 2px;
-  border-radius: 6px;
-  text-align: center;
   z-index: 1;
   left: 110%;
+  width: 120px;
+  padding: 2px;
+  border-radius: 6px;
+  background-color: black;
+  color: #fff;
   opacity: 0;
+  text-align: center;
   transition: opacity 1s;
+  visibility: hidden;
 }
 
 .layout__side-nav-image-container:hover .tooltip-text {
