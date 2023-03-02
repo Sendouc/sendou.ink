@@ -24,7 +24,7 @@ export function SideNav() {
                 alt={t(`common:pages.${item.name}` as any)}
               />
               <span className="tooltip-text">
-                {item.name.replace("-", " ")}
+                {item.name.replace(/-/g, " ")}
               </span>
             </div>
           </Link>
