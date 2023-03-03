@@ -39,6 +39,11 @@ module.exports = {
       route("/vods", "features/vods/routes/vods.tsx");
       route("/vods/new", "features/vods/routes/vods.new.tsx");
       route("/vods/:id", "features/vods/routes/vods.$id.tsx");
+
+      route(
+        "/builds/:slug/stats",
+        "features/build-stats/routes/builds.$slug.stats.tsx"
+      );
     });
   },
 };
