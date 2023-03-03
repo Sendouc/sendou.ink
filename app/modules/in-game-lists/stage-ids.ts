@@ -14,4 +14,6 @@ export const stageIds = [
   11, // Wahoo World
   12, // Flounder Heights
   13, // Brinewater Springs
+  14, // Manta Maria
+  15, // Um'ami Ruins
 ] as const;

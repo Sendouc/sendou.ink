@@ -14,14 +14,14 @@ import {
   translationJsonFolderName,
 } from "./utils";
 
-const CURRENT_SEASON = 2;
+const CURRENT_SEASON = 3;
 const OUTPUT_DIR_PATH = path.join(__dirname, "output");
 
 const LEAN_HEAD_CODE = "Hed";
 const LEAN_CLOTHES_CODE = "Clt";
 const LEAN_SHOES_CODE = "Shs";
 
-const AVAILABLE_SR_GEAR = [21010, 21011, 21015, 21013, 21012, 21014];
+const AVAILABLE_SR_GEAR = [21010, 21011, 21015, 21013, 21012, 21014, 21012];
 
 async function main() {
   const allGear: Array<{

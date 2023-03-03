@@ -167,6 +167,8 @@ While in the folder with the images:
 for i in *.png; do npx @squoosh/cli --avif '{"cqLevel":33,"cqAlphaLevel":-1,"denoiseLevel":0,"tileColsLog2":0,"tileRowsLog2":0,"speed":6,"subsample":1,"chromaDeltaQ":false,"sharpness":0,"tune":0}' $i; done
 ```
 
+Note: it only works with Node 16.
+
 ## How to...
 
 ### Download production database from Render.com
@@ -187,7 +189,7 @@ Note: This is only useful if you have access to a production running on Render.c
    - Couple other at the root: `GearInfoClothes.json`, `GearInfoHead.json`, `GearInfoShoes.json`, `spl__DamageRateInfoConfig.pp__CombinationDataTableData.json`, `SplPlayer.game__GameParameterTable.json`, `WeaponInfoMain.json`, `WeaponInfoSpecial.json` and `WeaponInfoSub.json`
 2. Update `AVAILABLE_SR_GEAR` with new SR gear
 3. Update all `CURRENT_SEASON` constants
-4. Update `CURRENT_PATH` constants
+4. Update `CURRENT_PATCH` constants
 5. `npm run create-misc-json`
 6. `npm run create-gear-json`
 7. `npm run create-analyzer-json`

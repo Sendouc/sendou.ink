@@ -23,6 +23,17 @@ export const objectDamageJsonKeyPriority: Record<
   keyof typeof objectDamages,
   Array<DamageType> | null
 > = {
+  // added in fresh season 2022
+  BlowerExhale: null,
+  Castle: null,
+  CoopEnemyRush: null,
+  CoopEnemySakelienBomberBlast: null,
+  CoopEnemySakerocketBlast: null,
+  CoopEnemySakeSaucerFall: null,
+  CoopEnemySakeTamaireBombDamage: null,
+  GeyserOnline: null,
+  RollerSplash_Wide: null,
+  // original
   Blaster_BlasterMiddle: null,
   Blaster_BlasterShort: null,
   Blaster_KillOneShot: ["DIRECT"],

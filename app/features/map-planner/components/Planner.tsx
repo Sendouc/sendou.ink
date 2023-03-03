@@ -297,6 +297,8 @@ function WeaponImageSelector({
   );
 }
 
+const stageIdsWithBackgrounds = stageIds.slice(0, 14);
+
 function StageBackgroundSelector({
   onAddBackground,
 }: {
@@ -320,7 +322,7 @@ function StageBackgroundSelector({
         onChange={(e) => setStageId(Number(e.target.value) as StageId)}
         aria-label="Select stage"
       >
-        {stageIds.map((stageId) => {
+        {stageIdsWithBackgrounds.map((stageId) => {
           return (
             <option value={stageId} key={stageId}>
               {t(`game-misc:STAGE_${stageId}`)}
