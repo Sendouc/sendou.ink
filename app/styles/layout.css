@@ -232,7 +232,7 @@
 .layout__side-nav {
   position: fixed;
   display: flex;
-  width: 100%;
+  width: 20%;
   height: 100vh;
   flex-direction: column;
   justify-content: center;
@@ -261,7 +261,7 @@
   z-index: 1;
   left: 110%;
   width: 120px;
-  padding: 2px;
+  padding: 1px;
   border-radius: 6px;
   background-color: black;
   color: #fff;
