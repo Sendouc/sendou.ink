@@ -272,6 +272,7 @@
 }
 
 .layout__side-nav-image-container:hover .tooltip-text {
+  z-index: 5;
   opacity: 1;
   visibility: visible;
 }
