@@ -366,7 +366,6 @@ function Match({
             <Input
               type="number"
               min={0}
-              max={59}
               value={String(minutes)}
               onChange={(e) => {
                 const value = Number(e.target.value);
