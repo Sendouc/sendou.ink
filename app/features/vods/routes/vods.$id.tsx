@@ -19,10 +19,16 @@ import { requireUserId } from "~/modules/auth/user.server";
 import { isAdmin } from "~/permissions";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { secondsToMinutes } from "~/utils/number";
-import { notFoundIfFalsy } from "~/utils/remix";
+import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
-import { modeImageUrl, stageImageUrl } from "~/utils/urls";
+import {
+  modeImageUrl,
+  navIconUrl,
+  stageImageUrl,
+  VODS_PAGE,
+  vodVideoPage,
+} from "~/utils/urls";
 import { PovUser } from "../components/VodPov";
 import { findVodById } from "../queries/findVodById";
 import type { Vod } from "../vods-types";
@@ -30,6 +36,27 @@ import styles from "../vods.css";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
+};
+
+export const handle: SendouRouteHandle = {
+  breadcrumb: ({ match }) => {
+    const data = match.data as SerializeFrom<typeof loader> | undefined;
+
+    if (!data) return [];
+
+    return [
+      {
+        imgPath: navIconUrl("vods"),
+        href: VODS_PAGE,
+        type: "IMAGE",
+      },
+      {
+        text: data.vod.title,
+        href: vodVideoPage(data.vod.id),
+        type: "TEXT",
+      },
+    ];
+  },
 };
 
 export const meta: MetaFunction = (args) => {
