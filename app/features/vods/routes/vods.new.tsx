@@ -27,7 +27,6 @@ import type { VideoBeingAdded, VideoMatchBeingAdded } from "../vods-types";
 import { dateToYearMonthDayString } from "~/utils/dates";
 import { SubmitButton } from "~/components/SubmitButton";
 import { Form } from "@remix-run/react";
-import { isAdmin } from "~/permissions";
 import { YouTubeEmbed } from "~/components/YouTubeEmbed";
 import { VODS_PAGE, vodVideoPage } from "~/utils/urls";
 import { canAddVideo } from "../vods-utils";
@@ -50,7 +49,7 @@ export const action: ActionFunction = async ({ request }) => {
   const video = createVod({
     ...data.video,
     submitterUserId: user.id,
-    isValidated: isAdmin(user),
+    isValidated: true,
   });
 
   return redirect(vodVideoPage(video.id));
