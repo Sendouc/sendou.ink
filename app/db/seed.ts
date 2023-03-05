@@ -1049,6 +1049,18 @@ function realVideo() {
         startsAt: 1186,
         weapons: [3040],
       },
+      {
+        mode: "RM",
+        stageId: 2,
+        startsAt: 1386,
+        weapons: [3000],
+      },
+      {
+        mode: "TC",
+        stageId: 4,
+        startsAt: 1586,
+        weapons: [1110],
+      },
       // there are other matches too...
     ],
   });

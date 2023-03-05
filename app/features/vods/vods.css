@@ -1,5 +1,6 @@
 .vods__matches {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   flex-wrap: wrap;
   column-gap: var(--s-4);
   row-gap: var(--s-8);
@@ -38,7 +39,7 @@
 .vods__match__mode {
   position: absolute;
   top: -15px;
-  right: 15px;
+  right: 20px;
 }
 
 .vods__listing__list {
