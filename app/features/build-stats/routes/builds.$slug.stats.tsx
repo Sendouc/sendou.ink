@@ -22,6 +22,8 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
+// xxx: add title + translated breadcrumb
+
 export const handle: SendouRouteHandle = {
   i18n: ["weapons", "builds", "analyzer"],
   breadcrumb: ({ match }) => {
