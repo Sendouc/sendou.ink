@@ -15,8 +15,7 @@ import { db } from "~/db";
 import { findVods } from "~/features/vods";
 import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
-import { requireUserId } from "~/modules/auth/user.server";
-import { canAddCustomizedColorsToUserProfile, isAdmin } from "~/permissions";
+import { canAddCustomizedColorsToUserProfile } from "~/permissions";
 import styles from "~/styles/u.css";
 import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
 import { discordFullName, makeTitle } from "~/utils/strings";
@@ -69,8 +68,7 @@ export const userParamsSchema = z.object({ identifier: z.string() });
 
 export type UserPageLoaderData = SerializeFrom<typeof loader>;
 
-export const loader = async ({ params, request }: LoaderArgs) => {
-  const loggedInUser = await requireUserId(request);
+export const loader = ({ params }: LoaderArgs) => {
   const { identifier } = userParamsSchema.parse(params);
   const user = notFoundIfFalsy(db.users.findByIdentifier(identifier));
 
@@ -95,7 +93,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     badges: db.badges.countsByUserId(user.id),
     results: db.calendarEvents.findResultsByUserId(user.id),
     buildsCount: db.builds.countByUserId(user.id),
-    vods: isAdmin(loggedInUser) ? findVods({ userId: user.id }) : [],
+    vods: findVods({ userId: user.id }),
   });
 };
 

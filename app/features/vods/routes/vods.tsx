@@ -4,16 +4,13 @@ import type {
   MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
-import { redirect } from "@remix-run/node";
 import { useLoaderData, useSearchParams } from "@remix-run/react";
 import { WeaponCombobox } from "~/components/Combobox";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import { useTranslation } from "~/hooks/useTranslation";
-import { requireUserId } from "~/modules/auth/user.server";
 import { i18next } from "~/modules/i18n";
 import { mainWeaponIds, modesShort, stageIds } from "~/modules/in-game-lists";
-import { isAdmin } from "~/permissions";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { navIconUrl, VODS_PAGE } from "~/utils/urls";
@@ -47,11 +44,6 @@ export const meta: MetaFunction = (args) => {
 
 export const loader = async ({ request }: LoaderArgs) => {
   const t = await i18next.getFixedT(request);
-  const user = await requireUserId(request);
-
-  if (!isAdmin(user)) {
-    throw redirect("/");
-  }
   const url = new URL(request.url);
 
   const vods = findVods(

@@ -4,7 +4,6 @@ import type {
   MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
-import { redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
@@ -15,8 +14,6 @@ import { YouTubeEmbed } from "~/components/YouTubeEmbed";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
 import { useTranslation } from "~/hooks/useTranslation";
-import { requireUserId } from "~/modules/auth/user.server";
-import { isAdmin } from "~/permissions";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { secondsToMinutes } from "~/utils/number";
 import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
@@ -69,12 +66,7 @@ export const meta: MetaFunction = (args) => {
   };
 };
 
-export const loader = async ({ params, request }: LoaderArgs) => {
-  const user = await requireUserId(request);
-  if (!isAdmin(user)) {
-    throw redirect("/");
-  }
-
+export const loader = ({ params }: LoaderArgs) => {
   const vod = notFoundIfFalsy(findVodById(Number(params["id"])));
 
   return { vod };
