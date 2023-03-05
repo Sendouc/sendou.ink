@@ -202,6 +202,10 @@
   justify-self: flex-end;
 }
 
+.justify-self-center {
+  justify-self: center;
+}
+
 .self-center {
   align-self: center;
 }

@@ -55,7 +55,8 @@ export function abilityPointCountsToAverages({
           ),
         },
       };
-    });
+    })
+    .sort((a, b) => b.percentage.weapon - a.percentage.weapon);
 
   const stackableAbilities = abilities
     .filter((ability) => ability.type === "STACKABLE")
@@ -78,7 +79,8 @@ export function abilityPointCountsToAverages({
           ),
         },
       };
-    });
+    })
+    .sort((a, b) => b.apAverage.weapon - a.apAverage.weapon);
 
   return {
     mainOnlyAbilities,
