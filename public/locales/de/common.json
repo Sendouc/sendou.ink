@@ -119,7 +119,7 @@
   "weapon.category.BRELLAS": "Pluviatoren",
   "weapon.category.STRINGERS": "Stringer",
   "weapon.category.SPLATANAS": "Splatanas",
-  "weapon.category.subs": "Sekundärwaffen
+  "weapon.category.subs": "Sekundärwaffen",
   "weapon.category.specials": "Spezialwaffen",
   
   "plans.poweredBy": "Ermöglicht durch {{name}}",
@@ -162,7 +162,7 @@
   "support.perk.customizedColorsTeam": "Farben anpassen (Team-Seite)",
   "support.perk.customizedColorsTeam.extra": "Nur ein Team-Mitglied muss Patron sein, um diesen Vorteil zu erhalten.",
   "support.perk.privateDiscord": "Zugang zu einem exklusiven Discord-Kanal",
-  "support.perk.privateDiscord.extra": "Zum Austausch gelegentlicher "Work in progress"-Updates, für priorisierten Support und der Möglichkeit zur priorisierten Erfüllung von Verbesserungsideen.",
+  "support.perk.privateDiscord.extra": "Zum Austausch gelegentlicher 'Work in progress'-Updates, für priorisierten Support und der Möglichkeit zur priorisierten Erfüllung von Verbesserungsideen.",
 
   "custom.colors.title": "Eigene Farben",
   "custom.colors.bg": "Hintergrund",
