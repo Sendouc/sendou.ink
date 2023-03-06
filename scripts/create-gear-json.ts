@@ -21,7 +21,12 @@ const LEAN_HEAD_CODE = "Hed";
 const LEAN_CLOTHES_CODE = "Clt";
 const LEAN_SHOES_CODE = "Shs";
 
-const AVAILABLE_SR_GEAR = [21010, 21011, 21015, 21013, 21012, 21014, 21012];
+// some items have duplicate ID so redundant to have them here many times
+// but it's just for clarity
+const AVAILABLE_SR_GEAR = [
+  21010, 21011, 21015, 21013, 21012, 21014, 21012, 21000, 21001, 21002, 21001,
+  21002, 21001,
+];
 
 async function main() {
   const allGear: Array<{
