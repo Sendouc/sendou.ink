@@ -9,5 +9,11 @@
   "a3": "Wenn du deinen Benutzernamen oder Avatar auf Discord aktualisierst, werden sie nicht sofort auf sendou.ink aktualisiert. Um dies zu erreichen, hast du zwei Möglichkeiten:\n\n1) Wenn du Mitglied im Discord oder auf dem Plus-Server dieser Website bist, kannst du einfach warten. Es gibt eine Routine, die einmal täglich gestartet wird und sich um die Aktualisierung kümmert.\n\n2) Wenn du sie sofort aktualisieren willst, kannst du dich ausloggen und wieder auf sendou.ink einloggen.",
 
   "q4": "Ich habe auf Patreon abonniert, sehe aber keine Änderung auf der Webseite?",
-  "a4": "Stelle sicher, dass dein Discord auf Patreon.com verknüpft ist. Danach kann es bis zu 2 Stunden dauern, bis der Status auf der Webseite aktualisiert wird. Sende bei Problemen eine DM an Sendou, um Hilfe zu erhalten."
+  "a4": "Stelle sicher, dass dein Discord auf Patreon.com verknüpft ist. Danach kann es bis zu 2 Stunden dauern, bis der Status auf der Webseite aktualisiert wird. Sende bei Problemen eine DM an Sendou, um Hilfe zu erhalten.",
+
+  "q5": "Gibt es eine sendou.ink App?",
+  "a5": "Nein, aber sendou.ink kann als 'Progressive Web App' installiert werden. Dies bietet viele der Vorteile einer App, wie Vollbildmodus, Icon auf dem Homebildschirm oder separater Browser-Prozess. Google nach 'wie pwa auf *deinem browser* installieren' für eine Anleitung.",
+
+  "q6": "Wie füge ich Twitch/Twitter/YouTube zu meinem Profil hinzu?",
+  "a6": "Dafür wird dein Discord-Profil verwendet. Verknüpfe und verifiziere deine Profile auf Discord und logge dich dann auf sendou.ink aus und wieder ein, um sie zu aktualisieren."
 }
