@@ -121,13 +121,13 @@
   "weapon.category.SPLATANAS": "Splatanas",
   "weapon.category.subs": "Sekundärwaffen",
   "weapon.category.specials": "Spezialwaffen",
-  
+
   "plans.poweredBy": "Ermöglicht durch {{name}}",
   "plans.blueprint": "Entwurf",
   "plans.bgStyle.OVER": "Vogelperspektive",
   "plans.bgStyle.MINI": "Mini-Karte (leer)",
   "plans.bgStyle.ITEMS": "Mini-Karte",
-  
+
   "articles.by": "von {{author}}",
 
   "theme.light": "Hell",
@@ -135,7 +135,7 @@
   "theme.auto": "Auto",
 
   "websiteSubtitle": "Hub für Competitive Splatoon",
-  
+
   "upload.imageToUpload": "Bild hochladen",
   "upload.title": "{{type}} wird hochgeladen. Empfohlene Größe: {{width}}×{{height}}.",
   "upload.type.team-pfp": "Team-Profilbild",
