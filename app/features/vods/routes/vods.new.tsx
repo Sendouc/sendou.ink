@@ -20,7 +20,7 @@ import {
   dateToDatabaseTimestamp,
 } from "~/utils/dates";
 import { parseRequestFormData, type SendouRouteHandle } from "~/utils/remix";
-import { createVod } from "../queries/createVod";
+import { createVod } from "../queries/createVod.server";
 import { videoMatchTypes, VOD } from "../vods-constants";
 import { videoInputSchema } from "../vods-schemas";
 import type { VideoBeingAdded, VideoMatchBeingAdded } from "../vods-types";

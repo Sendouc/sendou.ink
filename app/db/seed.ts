@@ -27,7 +27,7 @@ import type { UpsertManyPlusVotesArgs } from "./models/plusVotes/queries.server"
 import { nanoid } from "nanoid";
 import { mySlugify } from "~/utils/urls";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { createVod } from "~/features/vods/queries/createVod";
+import { createVod } from "~/features/vods/queries/createVod.server";
 
 const ADMIN_TEST_AVATAR = "1d1d8488ced4cdf478648592fa871101";
 

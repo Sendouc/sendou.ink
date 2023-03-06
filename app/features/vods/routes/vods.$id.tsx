@@ -27,7 +27,7 @@ import {
   vodVideoPage,
 } from "~/utils/urls";
 import { PovUser } from "../components/VodPov";
-import { findVodById } from "../queries/findVodById";
+import { findVodById } from "../queries/findVodById.server";
 import type { Vod } from "../vods-types";
 import styles from "../vods.css";
 

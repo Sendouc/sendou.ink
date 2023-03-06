@@ -15,7 +15,7 @@ import type { SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { navIconUrl, VODS_PAGE } from "~/utils/urls";
 import { VodListing } from "../components/VodListing";
-import { findVods } from "../queries/findVods";
+import { findVods } from "../queries/findVods.server";
 import { videoMatchTypes } from "../vods-constants";
 import styles from "../vods.css";
 
