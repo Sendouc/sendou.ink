@@ -15,3 +15,5 @@ export const VOD = {
   PLAYER_NAME_MIN_LENGTH: 1,
   PLAYER_NAME_MAX_LENGTH: 100,
 };
+
+export const VODS_PAGE_BATCH_SIZE = 24;

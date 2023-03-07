@@ -4,6 +4,7 @@ import type { MainWeaponId, ModeShort, StageId } from "~/modules/in-game-lists";
 import { parseDBArray, parseDBJsonArray } from "~/utils/sql";
 import type { ListVod } from "../vods-types";
 import { removeDuplicates } from "~/utils/arrays";
+import { VODS_PAGE_BATCH_SIZE } from "../vods-constants";
 
 const query = (byUser?: true) => /* sql */ `
   select
@@ -54,7 +55,7 @@ export function findVods({
   stageId,
   type,
   userId,
-  limit = 25,
+  limit = VODS_PAGE_BATCH_SIZE,
 }: {
   weapon?: MainWeaponId;
   mode?: ModeShort;

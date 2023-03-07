@@ -5,6 +5,7 @@ import type {
   SerializeFrom,
 } from "@remix-run/node";
 import { useLoaderData, useSearchParams } from "@remix-run/react";
+import { Button } from "~/components/Button";
 import { WeaponCombobox } from "~/components/Combobox";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
@@ -16,7 +17,7 @@ import { makeTitle } from "~/utils/strings";
 import { navIconUrl, VODS_PAGE } from "~/utils/urls";
 import { VodListing } from "../components/VodListing";
 import { findVods } from "../queries/findVods.server";
-import { videoMatchTypes } from "../vods-constants";
+import { videoMatchTypes, VODS_PAGE_BATCH_SIZE } from "../vods-constants";
 import styles from "../vods.css";
 
 export const handle: SendouRouteHandle = {
@@ -46,28 +47,63 @@ export const loader = async ({ request }: LoaderArgs) => {
   const t = await i18next.getFixedT(request);
   const url = new URL(request.url);
 
-  const vods = findVods(
-    Object.fromEntries(
-      Array.from(url.searchParams.entries()).filter(([, value]) => value)
-    )
-  );
+  const limit = Number(url.searchParams.get("limit") ?? VODS_PAGE_BATCH_SIZE);
 
-  return { vods, title: makeTitle(t("pages.vods")) };
+  const vods = findVods({
+    ...Object.fromEntries(
+      Array.from(url.searchParams.entries()).filter(([, value]) => value)
+    ),
+    limit: limit + 1,
+  });
+
+  let hasMoreVods = false;
+  if (vods.length > limit) {
+    vods.pop();
+    hasMoreVods = true;
+  }
+
+  return {
+    vods,
+    title: makeTitle(t("pages.vods")),
+    limit,
+    hasMoreVods,
+  };
 };
 
 export default function VodsSearchPage() {
-  const { t } = useTranslation(["vods"]);
+  const { t } = useTranslation(["vods", "common"]);
   const data = useLoaderData<typeof loader>();
+  const [, setSearchParams] = useSearchParams();
+
+  const addToSearchParams = (key: string, value: string | number) => {
+    setSearchParams((params) => ({
+      ...Object.fromEntries(params.entries()),
+      [key]: String(value),
+    }));
+  };
 
   return (
     <Main className="stack lg">
-      <Filters />
+      <Filters addToSearchParams={addToSearchParams} />
       {data.vods.length > 0 ? (
-        <div className="vods__listing__list">
-          {data.vods.map((vod) => (
-            <VodListing key={vod.id} vod={vod} />
-          ))}
-        </div>
+        <>
+          <div className="vods__listing__list">
+            {data.vods.map((vod) => (
+              <VodListing key={vod.id} vod={vod} />
+            ))}
+          </div>
+          {data.hasMoreVods && (
+            <Button
+              className="m-0-auto"
+              size="tiny"
+              onClick={() =>
+                addToSearchParams("limit", data.limit + VODS_PAGE_BATCH_SIZE)
+              }
+            >
+              {t("common:actions.loadMore")}
+            </Button>
+          )}
+        </>
       ) : (
         <div className="text-lg text-lighter">{t("vods:noVods")}</div>
       )}
@@ -75,10 +111,14 @@ export default function VodsSearchPage() {
   );
 }
 
-function Filters() {
+function Filters({
+  addToSearchParams,
+}: {
+  addToSearchParams: (key: string, value: string | number) => void;
+}) {
   const { t } = useTranslation(["game-misc", "vods"]);
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const mode = modesShort.find(
     (mode) => searchParams.get("mode") && mode === searchParams.get("mode")
   );
@@ -94,13 +134,6 @@ function Filters() {
   const type = videoMatchTypes.find(
     (type) => searchParams.get("type") && type === searchParams.get("type")
   );
-
-  const addToSearchParams = (key: string, value: string | number) => {
-    setSearchParams((params) => ({
-      ...Object.fromEntries(params.entries()),
-      [key]: String(value),
-    }));
-  };
 
   return (
     <div className="stack sm horizontal flex-wrap">
