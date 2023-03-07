@@ -142,71 +142,67 @@ function Match({
   const weapons = match.weapons.length === 8 ? match.weapons : null;
 
   return (
-    <div>
-      <div className="vods__match">
-        <Image
-          alt=""
-          path={stageImageUrl(match.stageId)}
-          width={100}
-          className="rounded"
+    <div className="vods__match">
+      <Image
+        alt=""
+        path={stageImageUrl(match.stageId)}
+        width={120}
+        className="rounded"
+      />
+      {weapon ? (
+        <WeaponImage
+          weaponSplId={weapon}
+          variant="badge"
+          width={42}
+          className="vods__match__weapon"
+          testId={`weapon-img-${weapon}`}
         />
-        {weapon ? (
-          <WeaponImage
-            weaponSplId={weapon}
-            variant="badge"
-            width={42}
-            className="vods__match__weapon"
-            testId={`weapon-img-${weapon}`}
-          />
-        ) : null}
-        <Image
-          alt=""
-          path={modeImageUrl(match.mode)}
-          width={32}
-          className="vods__match__mode"
-        />
-        <div className="vods__match__text">
-          <div>
-            {t(`game-misc:MODE_SHORT_${match.mode}`)}{" "}
-            {t(`game-misc:STAGE_${match.stageId}`)}
+      ) : null}
+      <Image
+        path={modeImageUrl(match.mode)}
+        width={32}
+        className={clsx("vods__match__mode", { cast: Boolean(weapons) })}
+        alt={t(`game-misc:MODE_LONG_${match.mode}`)}
+        title={t(`game-misc:MODE_LONG_${match.mode}`)}
+      />
+      {weapons ? (
+        <div className="stack horizontal md">
+          <div className="vods__match__weapons">
+            {weapons.slice(0, 4).map((weapon, i) => {
+              return (
+                <WeaponImage
+                  key={i}
+                  testId={`weapon-img-${weapon}-${i}`}
+                  weaponSplId={weapon}
+                  variant="badge"
+                  width={30}
+                />
+              );
+            })}
           </div>
-          {weapon ? <div>{t(`weapons:MAIN_${weapon}`)}</div> : null}
+          <div className="vods__match__weapons">
+            {weapons.slice(4).map((weapon, i) => {
+              const adjustedI = i + 4;
+              return (
+                <WeaponImage
+                  key={i}
+                  testId={`weapon-img-${weapon}-${adjustedI}`}
+                  weaponSplId={weapon}
+                  variant="badge"
+                  width={30}
+                />
+              );
+            })}
+          </div>
         </div>
-        {weapons ? (
-          <div className="stack horizontal md">
-            <div className="vods__match__weapons">
-              {weapons.slice(0, 4).map((weapon, i) => {
-                return (
-                  <WeaponImage
-                    key={i}
-                    testId={`weapon-img-${weapon}-${i}`}
-                    weaponSplId={weapon}
-                    variant="badge"
-                    width={30}
-                  />
-                );
-              })}
-            </div>
-            <div className="vods__match__weapons">
-              {weapons.slice(4).map((weapon, i) => {
-                const adjustedI = i + 4;
-                return (
-                  <WeaponImage
-                    key={i}
-                    testId={`weapon-img-${weapon}-${adjustedI}`}
-                    weaponSplId={weapon}
-                    variant="badge"
-                    width={30}
-                  />
-                );
-              })}
-            </div>
-          </div>
-        ) : null}
-        <Button size="tiny" onClick={() => setStart(match.startsAt)}>
-          {secondsToMinutes(match.startsAt)}
-        </Button>
-      </div>
+      ) : null}
+      <Button
+        size="tiny"
+        onClick={() => setStart(match.startsAt)}
+        variant="outlined"
+      >
+        {secondsToMinutes(match.startsAt)}
+      </Button>
     </div>
   );
 }
