@@ -9,12 +9,14 @@ export const Main = ({
   className,
   classNameOverwrite,
   halfWidth,
+  bigger,
   style,
 }: {
   children: React.ReactNode;
   className?: string;
   classNameOverwrite?: string;
   halfWidth?: boolean;
+  bigger?: boolean;
   style?: React.CSSProperties;
 }) => {
   const data = useMatches()[0]?.data as RootLoaderData | undefined;
@@ -32,7 +34,11 @@ export const Main = ({
           : clsx(
               "layout__main",
               "main",
-              { "half-width": halfWidth, "pt-12-forced": showLeaderboard },
+              {
+                "half-width": halfWidth,
+                bigger,
+                "pt-12-forced": showLeaderboard,
+              },
               className
             )
       }

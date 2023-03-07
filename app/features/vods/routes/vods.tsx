@@ -83,7 +83,7 @@ export default function VodsSearchPage() {
   };
 
   return (
-    <Main className="stack lg">
+    <Main className="stack lg" bigger>
       <Filters addToSearchParams={addToSearchParams} />
       {data.vods.length > 0 ? (
         <>

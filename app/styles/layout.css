@@ -101,6 +101,12 @@
   margin: 0 auto;
 }
 
+.bigger {
+  width: 100%;
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
 .layout__main {
   padding-block-end: var(--s-32);
   padding-block-start: var(--s-20);
