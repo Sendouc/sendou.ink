@@ -5,7 +5,7 @@ import { weaponNameSlugToId } from "~/utils/unslugify.server";
 import { averageAbilityPoints } from "../queries/averageAbilityPoints.server";
 import { abilityPointCountsToAverages } from "../build-stats-utils";
 import { Ability } from "~/components/Ability";
-import styles from "../build-stats-styles.css";
+import styles from "../build-stats.css";
 import { WeaponImage } from "~/components/Image";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { notFoundIfFalsy } from "~/utils/remix";
