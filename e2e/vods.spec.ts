@@ -1,4 +1,4 @@
-import test from "@playwright/test";
+import test, { expect } from "@playwright/test";
 import {
   impersonate,
   isNotVisible,
@@ -7,7 +7,7 @@ import {
   selectWeapon,
   submit,
 } from "~/utils/playwright";
-import { NEW_VOD_PAGE, VODS_PAGE } from "~/utils/urls";
+import { newVodPage, VODS_PAGE, vodVideoPage } from "~/utils/urls";
 
 test.describe("VoDs page", () => {
   test("adds video (pov)", async ({ page }) => {
@@ -15,7 +15,7 @@ test.describe("VoDs page", () => {
     await impersonate(page);
     await navigate({
       page,
-      url: NEW_VOD_PAGE,
+      url: newVodPage(),
     });
 
     await page
@@ -67,7 +67,7 @@ test.describe("VoDs page", () => {
     await impersonate(page);
     await navigate({
       page,
-      url: NEW_VOD_PAGE,
+      url: newVodPage(),
     });
 
     await page
@@ -104,6 +104,29 @@ test.describe("VoDs page", () => {
         .getByTestId(`weapon-img-${i < 4 ? 200 : 6010}-${i}`)
         .isVisible();
     }
+  });
+
+  test("edits vod", async ({ page }) => {
+    await seed(page);
+    await impersonate(page);
+    await navigate({
+      page,
+      url: vodVideoPage(1),
+    });
+
+    await page.getByTestId("edit-vod-button").click();
+
+    await selectWeapon({
+      name: "Luna Blaster",
+      page,
+      inputName: "match-4-weapon",
+    });
+
+    await submit(page);
+
+    await expect(page).toHaveURL(vodVideoPage(1));
+
+    await page.getByTestId(`weapon-img-200-4`).isVisible();
   });
 
   test("operates vod filters", async ({ page }) => {

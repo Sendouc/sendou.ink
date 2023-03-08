@@ -7,7 +7,9 @@ const videoStm = sql.prepare(/* sql */ `
     v."id",
     v."title",
     v."youtubeDate",
-    v."youtubeId"
+    v."youtubeId",
+    v."type",
+    v."submitterUserId"
   from "Video" v
   where v."id" = @id
 `);
@@ -31,7 +33,9 @@ const videoMatchesStm = sql.prepare(/* sql */ `
         'discordDiscriminator',
         "u"."discordDiscriminator",
         'customUrl',
-        "u"."customUrl"
+        "u"."customUrl",
+        'id',
+        "u"."id"
       )
     ) as "players"
   from "VideoMatch" vm

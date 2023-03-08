@@ -198,6 +198,10 @@
   justify-content: flex-end;
 }
 
+.justify-between {
+  justify-content: space-between;
+}
+
 .justify-self-end {
   justify-self: flex-end;
 }

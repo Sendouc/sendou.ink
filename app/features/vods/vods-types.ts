@@ -19,12 +19,15 @@ export interface Vod {
         | "discordAvatar"
         | "discordDiscriminator"
         | "customUrl"
+        | "id"
       >
     | string;
   title: Video["title"];
+  type: Video["type"];
   youtubeDate: Video["youtubeDate"];
   youtubeId: Video["youtubeId"];
   matches: Array<VodMatch>;
+  submitterUserId: Video["submitterUserId"];
 }
 
 export type VodMatch = Pick<

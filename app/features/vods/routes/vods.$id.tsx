@@ -7,13 +7,14 @@ import type {
 import { useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
-import { Button } from "~/components/Button";
+import { Button, LinkButton } from "~/components/Button";
 import { Image, WeaponImage } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { YouTubeEmbed } from "~/components/YouTubeEmbed";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
 import { useTranslation } from "~/hooks/useTranslation";
+import { useUser } from "~/modules/auth";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { secondsToMinutes } from "~/utils/number";
 import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
@@ -22,6 +23,7 @@ import type { Unpacked } from "~/utils/types";
 import {
   modeImageUrl,
   navIconUrl,
+  newVodPage,
   stageImageUrl,
   VODS_PAGE,
   vodVideoPage,
@@ -29,6 +31,7 @@ import {
 import { PovUser } from "../components/VodPov";
 import { findVodById } from "../queries/findVodById.server";
 import type { Vod } from "../vods-types";
+import { canEditVideo } from "../vods-utils";
 import styles from "../vods.css";
 
 export const links: LinksFunction = () => {
@@ -82,6 +85,8 @@ export default function VodPage() {
   const isMounted = useIsMounted();
   const [autoplay, setAutoplay] = React.useState(false);
   const data = useLoaderData<typeof loader>();
+  const { t } = useTranslation(["common"]);
+  const user = useUser();
 
   return (
     <Main className="stack lg">
@@ -93,23 +98,40 @@ export default function VodPage() {
           autoplay={autoplay}
         />
         <h2 className="text-sm">{data.vod.title}</h2>
-        <div className="stack horizontal sm items-center">
-          <PovUser pov={data.vod.pov} />
-          <time
-            className={clsx("text-lighter text-xs", {
-              invisible: !isMounted,
-            })}
-          >
-            {isMounted
-              ? databaseTimestampToDate(
-                  data.vod.youtubeDate
-                ).toLocaleDateString(i18n.language, {
-                  day: "numeric",
-                  month: "numeric",
-                  year: "numeric",
-                })
-              : "t"}
-          </time>
+        <div className="stack horizontal justify-between">
+          <div className="stack horizontal sm items-center">
+            <PovUser pov={data.vod.pov} />
+            <time
+              className={clsx("text-lighter text-xs", {
+                invisible: !isMounted,
+              })}
+            >
+              {isMounted
+                ? databaseTimestampToDate(
+                    data.vod.youtubeDate
+                  ).toLocaleDateString(i18n.language, {
+                    day: "numeric",
+                    month: "numeric",
+                    year: "numeric",
+                  })
+                : "t"}
+            </time>
+          </div>
+
+          {canEditVideo({
+            submitterUserId: data.vod.submitterUserId,
+            userId: user?.id,
+            povUserId:
+              typeof data.vod.pov === "string" ? undefined : data.vod.pov?.id,
+          }) ? (
+            <LinkButton
+              to={newVodPage(data.vod.id)}
+              size="tiny"
+              testId="edit-vod-button"
+            >
+              {t("common:actions.edit")}
+            </LinkButton>
+          ) : null}
         </div>
       </div>
       <div className="vods__matches">

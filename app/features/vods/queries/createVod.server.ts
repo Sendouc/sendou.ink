@@ -5,10 +5,15 @@ import type { VideoBeingAdded } from "../vods-types";
 
 const createVideoStm = sql.prepare(/* sql */ `
   insert into "UnvalidatedVideo"
-    ("title", "type", "youtubeDate", "eventId", "youtubeId", "submitterUserId", "validatedAt")
+    ("id", "title", "type", "youtubeDate", "eventId", "youtubeId", "submitterUserId", "validatedAt")
   values
-    (@title, @type, @youtubeDate, @eventId, @youtubeId, @submitterUserId, @validatedAt)
+    (@id, @title, @type, @youtubeDate, @eventId, @youtubeId, @submitterUserId, @validatedAt)
   returning *
+`);
+
+const deleteVideoStm = sql.prepare(/* sql */ `
+  delete from "UnvalidatedVideo"
+    where "id" = @id
 `);
 
 const createVideoMatchStm = sql.prepare(/* sql */ `
@@ -28,9 +33,14 @@ const createVideoMatchPlayerStm = sql.prepare(/* sql */ `
 
 export const createVod = sql.transaction(
   (
-    args: VideoBeingAdded & { submitterUserId: number; isValidated: boolean }
+    args: VideoBeingAdded & {
+      submitterUserId: number;
+      isValidated: boolean;
+      id?: number;
+    }
   ) => {
     const video = createVideoStm.get({
+      id: args.id,
       title: args.title,
       type: args.type,
       youtubeDate: args.youtubeDate,
@@ -60,6 +70,21 @@ export const createVod = sql.transaction(
         });
       }
     }
+
+    return video;
+  }
+);
+
+export const updateVodByReplacing = sql.transaction(
+  (
+    args: VideoBeingAdded & {
+      submitterUserId: number;
+      isValidated: boolean;
+      id: number;
+    }
+  ) => {
+    deleteVideoStm.run({ id: args.id });
+    const video = createVod(args);
 
     return video;
   }

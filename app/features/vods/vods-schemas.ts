@@ -1,5 +1,11 @@
 import { z } from "zod";
-import { modeShort, safeJSONParse, stageId, weaponSplId } from "~/utils/zod";
+import {
+  id,
+  modeShort,
+  safeJSONParse,
+  stageId,
+  weaponSplId,
+} from "~/utils/zod";
 import { videoMatchTypes, VOD } from "./vods-constants";
 
 export const videoMatchSchema = z.object({
@@ -51,4 +57,5 @@ export const videoSchema = z
 
 export const videoInputSchema = z.object({
   video: z.preprocess(safeJSONParse, videoSchema),
+  vodToEditId: id.optional(),
 });

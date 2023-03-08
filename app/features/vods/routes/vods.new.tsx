@@ -1,35 +1,46 @@
-import type { ActionFunction, LoaderFunction } from "@remix-run/node";
-import { redirect } from "@remix-run/node";
+import {
+  type ActionFunction,
+  type LoaderArgs,
+  redirect,
+} from "@remix-run/node";
+import { Form, useLoaderData } from "@remix-run/react";
 import * as React from "react";
+import { z } from "zod";
 import { Button } from "~/components/Button";
 import { UserCombobox, WeaponCombobox } from "~/components/Combobox";
 import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
+import { SubmitButton } from "~/components/SubmitButton";
+import { YouTubeEmbed } from "~/components/YouTubeEmbed";
 import type { Video, VideoMatch } from "~/db/types";
 import { useTranslation } from "~/hooks/useTranslation";
 import { requireUser } from "~/modules/auth";
 import {
-  type MainWeaponId,
   stageIds,
+  type MainWeaponId,
   type StageId,
 } from "~/modules/in-game-lists";
 import { modesShort } from "~/modules/in-game-lists/modes";
 import {
   databaseTimestampToDate,
   dateToDatabaseTimestamp,
+  dateToYearMonthDayString,
 } from "~/utils/dates";
-import { parseRequestFormData, type SendouRouteHandle } from "~/utils/remix";
-import { createVod } from "../queries/createVod.server";
+import { secondsToMinutesNumberTuple } from "~/utils/number";
+import {
+  notFoundIfFalsy,
+  parseRequestFormData,
+  type SendouRouteHandle,
+} from "~/utils/remix";
+import { VODS_PAGE, vodVideoPage } from "~/utils/urls";
+import { actualNumber, id } from "~/utils/zod";
+import { createVod, updateVodByReplacing } from "../queries/createVod.server";
+import { findVodById } from "../queries/findVodById.server";
 import { videoMatchTypes, VOD } from "../vods-constants";
 import { videoInputSchema } from "../vods-schemas";
 import type { VideoBeingAdded, VideoMatchBeingAdded } from "../vods-types";
-import { dateToYearMonthDayString } from "~/utils/dates";
-import { SubmitButton } from "~/components/SubmitButton";
-import { Form } from "@remix-run/react";
-import { YouTubeEmbed } from "~/components/YouTubeEmbed";
-import { VODS_PAGE, vodVideoPage } from "~/utils/urls";
-import { canAddVideo } from "../vods-utils";
+import { canAddVideo, canEditVideo, vodToVideoBeingAdded } from "../vods-utils";
 
 export const handle: SendouRouteHandle = {
   i18n: ["vods", "calendar"],
@@ -46,38 +57,92 @@ export const action: ActionFunction = async ({ request }) => {
     throw new Response(null, { status: 401 });
   }
 
-  const video = createVod({
-    ...data.video,
-    submitterUserId: user.id,
-    isValidated: true,
-  });
+  let video;
+  if (data.vodToEditId) {
+    const vod = notFoundIfFalsy(findVodById(data.vodToEditId));
+
+    if (
+      !canEditVideo({
+        userId: user.id,
+        submitterUserId: vod.submitterUserId,
+        povUserId: typeof vod.pov === "string" ? undefined : vod.pov?.id,
+      })
+    ) {
+      throw new Response("no permissions to edit this vod", { status: 401 });
+    }
+
+    video = updateVodByReplacing({
+      ...data.video,
+      submitterUserId: user.id,
+      isValidated: true,
+      id: data.vodToEditId,
+    });
+  } else {
+    video = createVod({
+      ...data.video,
+      submitterUserId: user.id,
+      isValidated: true,
+    });
+  }
 
   return redirect(vodVideoPage(video.id));
 };
 
-export const loader: LoaderFunction = async ({ request }) => {
+const newVodLoaderParamsSchema = z.object({
+  vod: z.preprocess(actualNumber, id),
+});
+
+export const loader = async ({ request }: LoaderArgs) => {
   const user = await requireUser(request);
 
   if (!canAddVideo(user)) {
-    return redirect(VODS_PAGE);
+    throw redirect(VODS_PAGE);
   }
 
-  return null;
+  const url = new URL(request.url);
+  const params = newVodLoaderParamsSchema.safeParse(
+    Object.fromEntries(url.searchParams)
+  );
+
+  if (!params.success) {
+    return { vodToEdit: null };
+  }
+
+  const vod = notFoundIfFalsy(findVodById(params.data.vod));
+  const vodToEdit = vodToVideoBeingAdded(vod);
+
+  if (
+    !canEditVideo({
+      submitterUserId: vod.submitterUserId,
+      userId: user.id,
+      povUserId: vodToEdit.povUserId,
+    })
+  ) {
+    return { vodToEdit: null };
+  }
+
+  return { vodToEdit, vodToEditId: vod.id };
 };
 
 export default function NewVodPage() {
+  const data = useLoaderData<typeof loader>();
   const { t } = useTranslation(["vods", "common"]);
-  const [video, setVideo] = React.useState<VideoBeingAdded>({
-    type: "TOURNAMENT",
-    matches: [newMatch()],
-    youtubeId: "",
-    title: "",
-    youtubeDate: dateToDatabaseTimestamp(new Date()),
-  });
+  const [video, setVideo] = React.useState<VideoBeingAdded>(
+    data.vodToEdit ?? {
+      type: "TOURNAMENT",
+      matches: [newMatch()],
+      youtubeId: "",
+      title: "",
+      youtubeDate: dateToDatabaseTimestamp(new Date()),
+    }
+  );
 
   return (
     <Form method="post">
       <input type="hidden" name="video" value={JSON.stringify(video)} />
+      {data.vodToEdit ? (
+        <input type="hidden" name="vodToEditId" value={data.vodToEditId} />
+      ) : null}
       <Main halfWidth className="stack md">
         <div>
           <Label required htmlFor="url">
@@ -85,6 +150,11 @@ export default function NewVodPage() {
           </Label>
           <Input
             id="url"
+            defaultValue={
+              data.vodToEdit && video.youtubeId
+                ? `https://www.youtube.com/watch?v=${video.youtubeId}`
+                : undefined
+            }
             onChange={(e) =>
               setVideo({
                 ...video,
@@ -102,6 +172,7 @@ export default function NewVodPage() {
           </Label>
           <Input
             id="title"
+            value={video.title}
             onChange={(e) =>
               setVideo({
                 ...video,
@@ -345,8 +416,13 @@ function Match({
   type: Video["type"];
 }) {
   const id = React.useId();
-  const [minutes, setMinutes] = React.useState(0);
-  const [seconds, setSeconds] = React.useState(0);
+
+  const [minutes, setMinutes] = React.useState(
+    secondsToMinutesNumberTuple(match.startsAt)[0]
+  );
+  const [seconds, setSeconds] = React.useState(
+    secondsToMinutesNumberTuple(match.startsAt)[1]
+  );
 
   const { t } = useTranslation(["game-misc", "vods"]);
 
