@@ -42,6 +42,10 @@
   color: var(--theme-warning);
 }
 
+.text-theme {
+  color: var(--theme);
+}
+
 .fill-success {
   fill: var(--theme-success);
 }

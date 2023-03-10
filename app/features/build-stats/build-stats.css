@@ -9,7 +9,7 @@
   font-weight: var(--semi-bold);
   display: grid;
   align-items: center;
-  grid-template-columns: max-content 60px 1fr;
+  grid-template-columns: max-content 65px 1fr;
   column-gap: var(--s-2);
   row-gap: var(--s-1);
 }

@@ -22,6 +22,8 @@ import {
   weaponBuildPage,
 } from "~/utils/urls";
 import { Main } from "~/components/Main";
+import { ChartBarIcon } from "~/components/icons/ChartBar";
+import { FireIcon } from "~/components/icons/Fire";
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
@@ -90,10 +92,28 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
 export default function WeaponsBuildsPage() {
   const data = useLoaderData<typeof loader>();
-  const { t } = useTranslation(["common"]);
+  const { t } = useTranslation(["common", "builds"]);
 
   return (
     <Main className="stack lg">
+      <div className="builds-buttons">
+        <LinkButton
+          to="stats"
+          variant="outlined"
+          icon={<ChartBarIcon />}
+          size="tiny"
+        >
+          {t("builds:linkButton.abilityStats")}
+        </LinkButton>
+        <LinkButton
+          to="popular"
+          variant="outlined"
+          icon={<FireIcon />}
+          size="tiny"
+        >
+          {t("builds:linkButton.popularBuilds")}
+        </LinkButton>
+      </div>
       <div className="builds-container">
         {data.builds.map((build) => {
           return (

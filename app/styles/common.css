@@ -824,6 +824,12 @@ dialog::backdrop {
   row-gap: var(--s-4);
 }
 
+.builds-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--s-2);
+}
+
 .build {
   position: relative;
   display: flex;

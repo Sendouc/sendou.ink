@@ -44,6 +44,10 @@ module.exports = {
         "/builds/:slug/stats",
         "features/build-stats/routes/builds.$slug.stats.tsx"
       );
+      route(
+        "/builds/:slug/popular",
+        "features/build-stats/routes/builds.$slug.popular.tsx"
+      );
     });
   },
 };

@@ -1,4 +1,9 @@
-import type { LinksFunction, LoaderArgs, SerializeFrom } from "@remix-run/node";
+import type {
+  LinksFunction,
+  LoaderArgs,
+  MetaFunction,
+  SerializeFrom,
+} from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { Main } from "~/components/Main";
 import { weaponNameSlugToId } from "~/utils/unslugify.server";
@@ -17,12 +22,22 @@ import {
   outlinedMainWeaponImageUrl,
   weaponBuildPage,
 } from "~/utils/urls";
+import { i18next } from "~/modules/i18n";
+import { makeTitle } from "~/utils/strings";
+
+export const meta: MetaFunction = (args) => {
+  const data = args.data as SerializeFrom<typeof loader> | null;
+
+  if (!data) return {};
+
+  return {
+    title: data.meta.title,
+  };
+};
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
-
-// xxx: add title + translated breadcrumb
 
 export const handle: SendouRouteHandle = {
   i18n: ["weapons", "builds", "analyzer"],
@@ -39,20 +54,23 @@ export const handle: SendouRouteHandle = {
       },
       {
         imgPath: outlinedMainWeaponImageUrl(data.weaponId),
-        href: weaponBuildPage(data.slug),
+        href: weaponBuildPage(data.meta.slug),
         type: "IMAGE",
       },
       {
         href: "/",
-        text: "Stats",
+        text: data.meta.breadcrumbText,
         type: "TEXT",
       },
     ];
   },
 };
 
-export const loader = ({ params }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderArgs) => {
+  const t = await i18next.getFixedT(request, ["builds", "weapons", "common"]);
   const weaponId = notFoundIfFalsy(weaponNameSlugToId(params["slug"]));
+
+  const weaponName = t(`weapons:MAIN_${weaponId}`);
 
   return {
     stats: abilityPointCountsToAverages({
@@ -60,7 +78,15 @@ export const loader = ({ params }: LoaderArgs) => {
       weaponAbilities: averageAbilityPoints(weaponId),
     }),
     weaponId,
-    slug: params["slug"]!,
+    meta: {
+      slug: params["slug"]!,
+      title: makeTitle([
+        t("builds:linkButton.abilityStats"),
+        weaponName,
+        t("common:pages.builds"),
+      ]),
+      breadcrumbText: t("builds:linkButton.abilityStats"),
+    },
   };
 };
 
