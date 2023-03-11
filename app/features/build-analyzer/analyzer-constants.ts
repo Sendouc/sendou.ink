@@ -2,7 +2,6 @@ import type { DamageType } from "./analyzer-types";
 import { type MainWeaponId } from "~/modules/in-game-lists";
 
 export const MAX_LDE_INTENSITY = 21;
-export const MAX_AP = 57;
 
 export const DAMAGE_TYPE = [
   "NORMAL_MIN",

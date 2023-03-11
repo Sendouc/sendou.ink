@@ -11,5 +11,14 @@
   "forms.gear.CLOTHES": "Gear (clothes)",
   "forms.gear.SHOES": "Gear (shoes)",
 
-  "deleteConfirm": "Delete build '{{title}}'?"
+  "deleteConfirm": "Delete build '{{title}}'?",
+
+  "stats.count.title": "Stats from {{count}} {{weapon}} builds",
+  "stats.ap.title": "Ability point averages",
+  "stats.percentage.title": "Primary-only ability appearance",
+  "stats.all": "All",
+
+  "linkButton.abilityStats": "Ability stats",
+  "linkButton.popularBuilds": "Popular builds",
+  "noPopularBuilds": "It seems there is no popular builds for this weapon at this moment."
 }
