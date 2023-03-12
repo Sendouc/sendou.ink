@@ -296,7 +296,9 @@ function WeaponsSelector() {
   const [searchParams] = useSearchParams();
   const { buildToEdit } = useLoaderData<typeof loader>();
   const { t } = useTranslation(["common", "weapons", "builds"]);
-  const [count, setCount] = React.useState(buildToEdit?.weapons.length ?? 1);
+  const [weapons, setWeapons] = React.useState(
+    buildToEdit?.weapons ?? [validatedWeaponIdFromSearchParams(searchParams)]
+  );
 
   return (
     <div>
@@ -304,7 +306,7 @@ function WeaponsSelector() {
         {t("builds:forms.weapons")}
       </Label>
       <div className="stack sm">
-        {new Array(count).fill(null).map((_, i) => {
+        {weapons.map((weapon, i) => {
           return (
             <div key={i} className="stack horizontal sm items-center">
               <div>
@@ -312,25 +314,37 @@ function WeaponsSelector() {
                   inputName="weapon"
                   id="weapon"
                   required
-                  initialWeaponId={
-                    buildToEdit?.weapons[i] ??
-                    validatedWeaponIdFromSearchParams(searchParams)
+                  onChange={(opt) =>
+                    opt &&
+                    setWeapons((weapons) => {
+                      const newWeapons = [...weapons];
+                      newWeapons[i] = Number(opt.value) as MainWeaponId;
+                      return newWeapons;
+                    })
                   }
+                  initialWeaponId={weapon ?? undefined}
+                  clearsInputOnFocus
                 />
               </div>
-              {i === count - 1 && (
+              {i === weapons.length - 1 && (
                 <>
                   <Button
                     size="tiny"
-                    disabled={count === BUILD.MAX_WEAPONS_COUNT}
-                    onClick={() => setCount((count) => count + 1)}
+                    disabled={weapons.length === BUILD.MAX_WEAPONS_COUNT}
+                    onClick={() => setWeapons((weapons) => [...weapons, 0])}
                   >
                     {t("common:actions.add")}
                   </Button>
-                  {count > 1 && (
+                  {weapons.length > 1 && (
                     <Button
                       size="tiny"
-                      onClick={() => setCount((count) => count - 1)}
+                      onClick={() =>
+                        setWeapons((weapons) => {
+                          const newWeapons = [...weapons];
+                          newWeapons.pop();
+                          return newWeapons;
+                        })
+                      }
                       variant="destructive"
                     >
                       {t("common:actions.remove")}
