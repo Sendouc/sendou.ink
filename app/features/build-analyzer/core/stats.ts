@@ -70,7 +70,8 @@ export function buildStats({
     weapon: {
       subWeaponSplId: mainWeaponParams.subWeaponId,
       specialWeaponSplId: mainWeaponParams.specialWeaponId,
-      brellaCanopyHp: mainWeaponParams.CanopyHP,
+      brellaCanopyHp:
+        mainWeaponParams.CanopyHP && mainWeaponParams.CanopyHP / 10,
       fullChargeSeconds: mainWeaponParams.ChargeFrameFullCharge
         ? framesToSeconds(mainWeaponParams.ChargeFrameFullCharge)
         : undefined,
