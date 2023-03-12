@@ -10,6 +10,8 @@ import { z } from "zod";
 import { AbilitiesSelector } from "~/components/AbilitiesSelector";
 import { Button } from "~/components/Button";
 import { GearCombobox, WeaponCombobox } from "~/components/Combobox";
+import { CrossIcon } from "~/components/icons/Cross";
+import { PlusIcon } from "~/components/icons/Plus";
 import { Image } from "~/components/Image";
 import { Label } from "~/components/Label";
 import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
@@ -313,6 +315,7 @@ function WeaponsSelector() {
                 <WeaponCombobox
                   inputName="weapon"
                   id="weapon"
+                  className="u__build-form__weapon"
                   required
                   onChange={(opt) =>
                     opt &&
@@ -332,9 +335,8 @@ function WeaponsSelector() {
                     size="tiny"
                     disabled={weapons.length === BUILD.MAX_WEAPONS_COUNT}
                     onClick={() => setWeapons((weapons) => [...weapons, 0])}
-                  >
-                    {t("common:actions.add")}
-                  </Button>
+                    icon={<PlusIcon />}
+                  />
                   {weapons.length > 1 && (
                     <Button
                       size="tiny"
@@ -346,9 +348,8 @@ function WeaponsSelector() {
                         })
                       }
                       variant="destructive"
-                    >
-                      {t("common:actions.remove")}
-                    </Button>
+                      icon={<CrossIcon />}
+                    />
                   )}
                 </>
               )}

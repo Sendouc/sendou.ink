@@ -130,7 +130,7 @@ a {
 }
 
 .button-icon.lonely {
-  margin-inline-end: 0;
+  margin-inline-end: 0 !important;
 }
 
 :is(button, .button).tiny > .button-icon {

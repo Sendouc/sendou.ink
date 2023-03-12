@@ -230,3 +230,7 @@
 .u__build-form {
   --input-width: min(18rem, 75vw);
 }
+
+.u__build-form__weapon {
+  --input-width: 16rem;
+}
