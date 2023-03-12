@@ -71,3 +71,6 @@ export const LOHI_TOKEN_HEADER_NAME = "Lohi-Token";
 export const CUSTOMIZED_CSS_VARS_NAME = "css";
 
 export const MAX_AP = 57;
+
+export const ONE_HOUR_IN_MS = 60 * 60 * 1000;
+export const TWELVE_HOURS_IN_MS = 12 * ONE_HOUR_IN_MS;

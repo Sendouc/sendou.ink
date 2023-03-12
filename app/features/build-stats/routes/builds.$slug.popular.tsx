@@ -1,5 +1,6 @@
 import type { LoaderArgs, MetaFunction, SerializeFrom } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
+import { cachified } from "cachified";
 import clsx from "clsx";
 import { Ability } from "~/components/Ability";
 import { Main } from "~/components/Main";
@@ -16,6 +17,8 @@ import {
 } from "~/utils/urls";
 import { popularBuilds } from "../build-stats-utils";
 import { abilitiesByWeaponId } from "../queries/abilitiesByWeaponId.server";
+import { cache } from "~/utils/cache.server";
+import { ONE_HOUR_IN_MS, TWELVE_HOURS_IN_MS } from "~/constants";
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
@@ -58,12 +61,22 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const t = await i18next.getFixedT(request, ["builds", "weapons", "common"]);
   const slug = params["slug"];
   const weaponId = notFoundIfFalsy(weaponNameSlugToId(slug));
-  const abilities = abilitiesByWeaponId(weaponId);
 
   const weaponName = t(`weapons:MAIN_${weaponId}`);
 
+  const cachedPopularBuilds = await cachified({
+    key: `popular-builds-${weaponId}`,
+    cache,
+    ttl: ONE_HOUR_IN_MS,
+    staleWhileRevalidate: TWELVE_HOURS_IN_MS,
+    // eslint-disable-next-line @typescript-eslint/require-await
+    async getFreshValue() {
+      return popularBuilds(abilitiesByWeaponId(weaponId));
+    },
+  });
+
   return {
-    popularBuilds: popularBuilds(abilities),
+    popularBuilds: cachedPopularBuilds,
     meta: {
       weaponId,
       slug: slug!,
