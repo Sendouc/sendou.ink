@@ -241,6 +241,10 @@
   padding-inline: var(--s-4);
 }
 
+.nav-item {
+  pointer-events: none;
+}
+
 .layout__side-nav-image-container {
   position: relative;
   display: grid;
@@ -249,32 +253,35 @@
   border-radius: var(--rounded);
   background-color: var(--bg-lighter);
   place-items: center;
+  pointer-events: auto;
   transition: all 0.2s ease-out;
 }
 
 .layout__side-nav-image-container:hover {
   background-color: var(--theme-transparent);
+  cursor: pointer;
 }
 
-.layout__side-nav-image-container .tooltip-text {
+.tooltip-text {
   position: absolute;
   z-index: 1;
-  left: 110%;
+  top: 50%;
+  left: calc(100% + var(--s-2));
   width: 120px;
   padding: 1px;
   border-radius: 6px;
   background-color: black;
   color: #fff;
   opacity: 0;
+  pointer-events: none;
   text-align: center;
+  transform: translateY(-50%);
   transition: opacity 1s;
-  visibility: hidden;
 }
 
 .layout__side-nav-image-container:hover .tooltip-text {
   z-index: 5;
   opacity: 1;
-  visibility: visible;
 }
 
 @media screen and (display-mode: standalone) {
