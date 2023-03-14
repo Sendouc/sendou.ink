@@ -101,7 +101,7 @@ export default function FrontPage() {
                 path={navIconUrl(item.name)}
                 height={48}
                 width={48}
-                alt=""
+                alt={item.name}
               />
             </div>
             <div>{t(`common:pages.${item.name}` as any)}</div>
