@@ -298,3 +298,26 @@ export interface VideoMatchPlayer {
   weaponSplId: MainWeaponId;
   player: number;
 }
+
+export interface SplatoonPlacement {
+  weaponSplId: MainWeaponId;
+  name: string;
+  nameDiscriminator: string;
+  power: number;
+  rank: number;
+  title: string;
+  badges: string; // badge id's separated by comma
+  bannerSplId: number;
+  playerId: number;
+  month: number;
+  year: number;
+  type: "SPLATFEST" | "XRANK";
+  region: "WEST" | "JPN";
+  team: "A" | "B" | "C" | null;
+}
+
+export interface SplatoonPlayer {
+  id: number;
+  userId: number;
+  splId: string;
+}
