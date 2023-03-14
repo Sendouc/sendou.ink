@@ -25,7 +25,7 @@ export function SideNav() {
                   alt={t(`common:pages.${item.name}` as any)}
                 />
               </Link>
-              <span className="tooltip-text">
+              <span className="layout__tooltip-text">
                 {t(`common:pages.${item.name}` as any)}
               </span>
             </div>
