@@ -14,6 +14,7 @@ module.exports.up = function (db) {
     "playerId" integer not null,
     "month" integer not null,
     "year" integer not null,
+    "mode" text,
     "type" text not null,
     "region" text not null,
     "team" text,

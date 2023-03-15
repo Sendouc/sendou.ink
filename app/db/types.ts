@@ -3,6 +3,7 @@ import type {
   Ability,
   MainWeaponId,
   ModeShort,
+  RankedModeShort,
   StageId,
 } from "~/modules/in-game-lists";
 import type allTags from "../routes/calendar/tags.json";
@@ -311,6 +312,7 @@ export interface SplatoonPlacement {
   playerId: number;
   month: number;
   year: number;
+  mode: RankedModeShort | null;
   type: "SPLATFEST" | "XRANK";
   region: "WEST" | "JPN";
   team: "A" | "B" | "C" | null;
