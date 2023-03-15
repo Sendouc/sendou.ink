@@ -11,6 +11,12 @@ type Placements = Array<
 >;
 
 const modes = ["splatzones", "towercontrol", "rainmaker", "clamblitz"] as const;
+const modeToShort = {
+  splatzones: "SZ",
+  towercontrol: "TC",
+  rainmaker: "RM",
+  clamblitz: "CB",
+} as const;
 const regions = ["a", "p"] as const;
 
 void main();
@@ -85,6 +91,7 @@ async function processJson(args: {
       weaponSplId: weaponId as MainWeaponId,
       month,
       year,
+      mode: modeToShort[args.mode],
       playerSplId: parsePlayerId(placement.id),
     });
   }
