@@ -3,25 +3,40 @@ import type { SplatoonPlacement } from "~/db/types";
 
 const stm = sql.prepare(/* sql */ `
   select
-    p."weaponSplId",
-    p."name",
-    p."power",
-    p."rank"
+    "weaponSplId",
+    "name",
+    "power",
+    "rank",
+    "team",
+    "month",
+    "year",
+    "type",
+    "region",
+    "playerId"
   from
-    "SplatoonPlacement" p
+    "SplatoonPlacement"
   where
-    p."type" = @type,
-    p."mode" = @mode,
-    p."region" = @region,
-    p."month" = @month,
-    p."year" = @year
+    "type" = @type and
+    "mode" = @mode and
+    "region" = @region and
+    "month" = @month and
+    "year" = @year
   order by
-    p."rank" asc
+    "rank" asc
 `);
 
 type FindPlacement = Pick<
   SplatoonPlacement,
-  "weaponSplId" | "name" | "power" | "rank"
+  | "weaponSplId"
+  | "name"
+  | "power"
+  | "rank"
+  | "team"
+  | "month"
+  | "year"
+  | "type"
+  | "region"
+  | "playerId"
 >;
 
 export function findPlacements(
