@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import "dotenv/config";
 
 import invariant from "tiny-invariant";
@@ -108,7 +109,7 @@ function parsePlayerId(encoded: string) {
 }
 
 function resolveMonthYear(number: number) {
-  const start = new Date("2022-03-15");
+  const start = new Date("2023-03-15");
   // 2 is the first X Rank month
   // 3 is the length of x rank season
   const monthsToAdd = (number - 2) * 3;
@@ -142,7 +143,8 @@ const addPlacementStm = sql.prepare(/* sql */ `
     "year",
     "type",
     "region",
-    "team"
+    "team",
+    "mode"
   )
   values (
     @weaponSplId,
@@ -158,7 +160,8 @@ const addPlacementStm = sql.prepare(/* sql */ `
     @year,
     @type,
     @region,
-    @team
+    @team,
+    @mode
   )
 `);
 
