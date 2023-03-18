@@ -11,25 +11,20 @@ export function SideNav() {
     <nav className="layout__side-nav">
       {navItems.map((item) => {
         return (
-          <div className="nav-item" key={item.name}>
+          <Link
+            to={item.url}
+            key={item.name}
+            prefetch={item.prefetch ? "render" : undefined}
+          >
             <div className="layout__side-nav-image-container">
-              <Link
-                to={item.url}
-                key={item.name}
-                prefetch={item.prefetch ? "render" : undefined}
-              >
-                <Image
-                  path={navIconUrl(item.name)}
-                  height={32}
-                  width={32}
-                  alt={t(`common:pages.${item.name}` as any)}
-                />
-              </Link>
-              <span className="layout__tooltip-text">
-                {t(`common:pages.${item.name}` as any)}
-              </span>
+              <Image
+                path={navIconUrl(item.name)}
+                height={32}
+                width={32}
+                alt={t(`common:pages.${item.name}` as any)}
+              />
             </div>
-          </div>
+          </Link>
         );
       })}
     </nav>
