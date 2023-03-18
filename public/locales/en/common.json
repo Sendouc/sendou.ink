@@ -169,5 +169,8 @@
   "custom.colors.bg-lighter": "Background lighter",
   "custom.colors.text": "Text",
   "custom.colors.text-lighter": "Text lighter",
-  "custom.colors.theme": "Theme"
+  "custom.colors.theme": "Theme",
+
+  "divisions.WEST": "Tentatek",
+  "divisions.JPN": "Takoroka"
 }
