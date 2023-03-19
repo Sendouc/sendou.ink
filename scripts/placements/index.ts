@@ -8,7 +8,7 @@ import { type MainWeaponId, mainWeaponIds } from "~/modules/in-game-lists";
 import { xRankSchema } from "./schemas";
 
 type Placements = Array<
-  Omit<SplatoonPlacement, "playerId"> & { playerSplId: string }
+  Omit<SplatoonPlacement, "playerId" | "id"> & { playerSplId: string }
 >;
 
 const modes = ["splatzones", "towercontrol", "rainmaker", "clamblitz"] as const;
