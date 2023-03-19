@@ -17,6 +17,7 @@
   "pages.t": "队伍",
   "pages.support": "赞助",
   "pages.privacy": "隐私条款",
+  "pages.vods": "视频",
 
   "header.profile": "个人资料",
   "header.logout": "登出",
@@ -100,6 +101,12 @@
   "tag.name.COUNT": "队伍数量限制",
   "tag.name.LAN": "线下",
   "tag.name.QUALIFIER": "资格赛",
+  "tag.name.SZ": "仅限区域模式",
+  "tag.name.TW": "包含占地对战",
+  "tag.name.S1": "斯普拉遁1",
+  "tag.name.S2": "斯普拉遁2",
+  "tag.name.SR": "鲑鱼跑",
+  "tag.name.CARDS": "占地斗士",
 
   "weapon.category.SHOOTERS": "射击枪",
   "weapon.category.BLASTERS": "爆破枪",
