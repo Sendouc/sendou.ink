@@ -11,5 +11,14 @@
   "forms.gear.CLOTHES": "服装",
   "forms.gear.SHOES": "鞋子",
 
-  "deleteConfirm": "删除配装'{{title}}'？"
+  "deleteConfirm": "删除配装'{{title}}'？",
+
+  "stats.count.title": "{{count}} 件 {{weapon}} 配装的数据",
+  "stats.ap.title": "平均技能点数",
+  "stats.percentage.title": "主技能出现率",
+  "stats.all": "全部",
+
+  "linkButton.abilityStats": "技能数据",
+  "linkButton.popularBuilds": "热门配装",
+  "noPopularBuilds": "目前尚无该武器的热门配装。"
 }
