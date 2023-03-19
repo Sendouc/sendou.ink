@@ -17,6 +17,7 @@
   "roles.CAPTAIN": "队长",
   "roles.FRONTLINE": "前排",
   "roles.SUPPORT": "辅助",
+  "roles.MIDLINE": "中排",
   "roles.BACKLINE": "后排",
   "roles.COACH": "教练",
   "forms.fields.teamTwitter": "队伍Twitter",
