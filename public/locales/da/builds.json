@@ -11,5 +11,14 @@
   "forms.gear.CLOTHES": "Udstyr (tøj)",
   "forms.gear.SHOES": "Udstyr (sko)",
 
-  "deleteConfirm": "Vil du slette sættet '{{title}}'?"
+  "deleteConfirm": "Vil du slette sættet '{{title}}'?",
+
+  "stats.count.title": "Gennemsnit fra {{count}} {{weapon}}-sæt",
+  "stats.ap.title": "Egenskabspointssnit",
+  "stats.percentage.title": "Kun primære egenskaber",
+  "stats.all": "Alle",
+
+  "linkButton.abilityStats": "Egenskabsstatistikker",
+  "linkButton.popularBuilds": "Populære sæt",
+  "noPopularBuilds": "Der er på nuværende tidspunkt ingen populære sæt for det valgte våben."
 }

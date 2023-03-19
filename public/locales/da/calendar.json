@@ -55,5 +55,11 @@
   "tag.desc.LOW": "Deltagelse i denne turnering kræver, at deltagerne har de nødvendige kvalifikationer.",
   "tag.desc.COUNT": "Der er et loft over antalet af hold, der kan registrere sig til denne begivenhed.",
   "tag.desc.LAN": "Denne begivenhed spilles på en fysisk lokation.",
-  "tag.desc.QUALIFIER": "Dette er en kvalifikationsturnering."
+  "tag.desc.QUALIFIER": "Dette er en kvalifikationsturnering.",
+  "tag.desc.SZ": "Distriktsdyst er den eneste spilstand, der bliver spillet.",
+  "tag.desc.TW": "Revierkamp bliver spillet",
+  "tag.desc.S1": "Spilles i Splatoon 1.",
+  "tag.desc.S2": "Spilles i Splatoon 2.",
+  "tag.desc.SR": "Salmon Run begivenhed.",
+  "tag.desc.CARDS": "Tableturf Battle begivenhed."
 }
