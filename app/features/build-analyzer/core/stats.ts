@@ -70,7 +70,8 @@ export function buildStats({
     weapon: {
       subWeaponSplId: mainWeaponParams.subWeaponId,
       specialWeaponSplId: mainWeaponParams.specialWeaponId,
-      brellaCanopyHp: mainWeaponParams.CanopyHP,
+      brellaCanopyHp:
+        mainWeaponParams.CanopyHP && mainWeaponParams.CanopyHP / 10,
       fullChargeSeconds: mainWeaponParams.ChargeFrameFullCharge
         ? framesToSeconds(mainWeaponParams.ChargeFrameFullCharge)
         : undefined,
@@ -1218,25 +1219,29 @@ function specialDamageDistance(
 function specialPaintRadius(
   args: StatFunctionInput
 ): AnalyzedBuild["stats"]["specialPaintRadius"] {
-  if (!hasEffect({ key: "PaintRadius", weapon: args.specialWeaponParams })) {
-    return;
+  for (const key of ["PaintRadius", "CrossPaintRadius"] as const) {
+    if (!hasEffect({ key, weapon: args.specialWeaponParams })) {
+      continue;
+    }
+
+    const SPECIAL_PAINT_RADIUS_KEY = "SPU";
+    const { baseEffect, effect } = abilityPointsToEffects({
+      abilityPoints: apFromMap({
+        abilityPoints: args.abilityPoints,
+        ability: SPECIAL_PAINT_RADIUS_KEY,
+      }),
+      key,
+      weapon: args.specialWeaponParams,
+    });
+
+    return {
+      baseValue: roundToNDecimalPlaces(baseEffect),
+      value: roundToNDecimalPlaces(effect),
+      modifiedBy: SPECIAL_PAINT_RADIUS_KEY,
+    };
   }
 
-  const SPECIAL_PAINT_RADIUS_KEY = "SPU";
-  const { baseEffect, effect } = abilityPointsToEffects({
-    abilityPoints: apFromMap({
-      abilityPoints: args.abilityPoints,
-      ability: SPECIAL_PAINT_RADIUS_KEY,
-    }),
-    key: "PaintRadius",
-    weapon: args.specialWeaponParams,
-  });
-
-  return {
-    baseValue: roundToNDecimalPlaces(baseEffect),
-    value: roundToNDecimalPlaces(effect),
-    modifiedBy: SPECIAL_PAINT_RADIUS_KEY,
-  };
+  return;
 }
 
 export function specialFieldHp(

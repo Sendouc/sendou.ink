@@ -3,11 +3,13 @@ import { expect, type Locator, type Page } from "@playwright/test";
 export async function selectWeapon({
   page,
   name,
+  inputName = "weapon",
 }: {
   page: Page;
   name: string;
+  inputName?: string;
 }) {
-  const weaponCombobox = page.getByTestId("weapon-combobox-input");
+  const weaponCombobox = page.getByTestId(`${inputName}-combobox-input`);
   await weaponCombobox.clear();
   await weaponCombobox.fill(name);
   await weaponCombobox.press("Enter");

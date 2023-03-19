@@ -26,6 +26,8 @@ const stages = [
   "Wahoo World",
   "Flounder Heights",
   "Brinewater Springs",
+  "Manta Maria",
+  "Um'ami Ruins",
 ] as const;
 
 async function main() {

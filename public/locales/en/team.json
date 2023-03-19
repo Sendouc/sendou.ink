@@ -17,6 +17,7 @@
   "roles.CAPTAIN": "Captain",
   "roles.FRONTLINE": "Frontline",
   "roles.SUPPORT": "Support",
+  "roles.MIDLINE": "Midline",
   "roles.BACKLINE": "Backline",
   "roles.COACH": "Coach",
   "forms.fields.teamTwitter": "Team Twitter",

@@ -12,18 +12,20 @@ import { applySpecialEffects, SPECIAL_EFFECTS } from "./core/specialEffects";
 import { buildStats } from "./core/stats";
 import type { SpecialEffectType } from "./analyzer-types";
 import {
+  buildIsEmpty,
   buildToAbilityPoints,
   serializeBuild,
   validatedBuildFromSearchParams,
   validatedWeaponIdFromSearchParams,
 } from "./core/utils";
+import invariant from "tiny-invariant";
 
 export function useAnalyzeBuild() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const mainWeaponId = validatedWeaponIdFromSearchParams(searchParams);
   const build = validatedBuildFromSearchParams(searchParams);
-  const build2 = validatedBuildFromSearchParams(searchParams, "build2");
+  const build2 = validatedBuildFromSearchParams(searchParams, "build2", build);
   const ldeIntensity = validatedLdeIntensityFromSearchParams(searchParams);
   const effects = validatedEffectsFromSearchParams({ searchParams, build });
   const effects2 = validatedEffectsFromSearchParams({
@@ -31,6 +33,11 @@ export function useAnalyzeBuild() {
     build: build2,
   });
   const focused = validatedFocusedFromSearchParams({ searchParams });
+
+  invariant(
+    !(buildIsEmpty(build) && !buildIsEmpty(build2)),
+    "build1 is empty but build2 isn't"
+  );
 
   const handleChange = ({
     newMainWeaponId = mainWeaponId,

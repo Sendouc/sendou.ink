@@ -1,0 +1,45 @@
+{
+  "tabs.info": "Info",
+  "tabs.teams": "Drużyny ({{count}})",
+  "tabs.admin": "Admin",
+
+  "pre.footerNote": "Uwaga: możesz zmienić twoją pule map i roster drużyny do woli przed rozpoczęciem turnieju.",
+  "pre.deleteTeam": "Usuń drużynę",
+
+  "preview": "Sprawdź generator listy map (tylko admin)",
+  "pre.steps.register": "1. Rejestruj się na",
+  "pre.steps.register.summary": "Wpisz nazwę drużyny z którą zagrasz",
+  "pre.steps.mapPool": "2. Pula map",
+  "pre.steps.mapPool.explanation": "Możesz grać bez wybierania listy map, ale wtedy twoi przeciwnicy wybierają mapy. Mapy Tiebreaker są zaznaczone na niebiesko.",
+  "pre.steps.mapPool.summary": "Wybierz mapy twojej drużyny",
+  "pre.steps.roster": "3. Podaj roster",
+  "pre.steps.roster.explanation": "Podanie rosteru nie jest obowiązkowe ale możesz być położony/a niżej jeśli tego nie zrobisz.",
+  "pre.steps.roster.summary": "Wpisz roster",
+  "pre.steps.roster.fullTeamError": "Drużyna jest pełna.",
+
+  "bracket.type.DE_WINNERS": "Runda Zwycięzców",
+  "bracket.type.DE_LOSERS": "Runda Przegranych",
+  "bracket.type.SE": "Runda",
+  "bracket.type.SWISS": "Runda Swiss",
+  "bracket.type.GROUPS": "Runda Grupowa",
+
+  "round.label": "Runda",
+
+  "team.label": "Drużyna",
+  "team.unlisted": "Drużyna nie katalogowana",
+
+  "bestOf.label.short": "Bo",
+
+  "pickInfo.team": "Drużyna {{number}} wybiera",
+  "pickInfo.tiebreaker": "Tiebreaker",
+  "pickInfo.both": "Oba wybrane",
+  "pickInfo.default": "Domyślna mapa",
+
+  "generator.error": "Zmiany nie zostały zapisane z powodu rozpoczęcia turnieju",
+
+  "teams.mapsPickedStatus": "Status wybranych map",
+  "admin.eventStarted": "Wydarzenie rozpoczęte",
+  "admin.eventStarted.explanation": "Po rozpoczęciu drużyny mogą generować listy map ale nie będą mogły zmieniać swoją pule map lub ich roster.",
+  "admin.download": "Zapisz uczestników",
+  "admin.download.discord": "Lista Discord"
+}

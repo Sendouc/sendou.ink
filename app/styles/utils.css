@@ -42,6 +42,10 @@
   color: var(--theme-warning);
 }
 
+.text-theme {
+  color: var(--theme);
+}
+
 .fill-success {
   fill: var(--theme-success);
 }
@@ -198,8 +202,16 @@
   justify-content: flex-end;
 }
 
+.justify-between {
+  justify-content: space-between;
+}
+
 .justify-self-end {
   justify-self: flex-end;
+}
+
+.justify-self-center {
+  justify-self: center;
 }
 
 .self-center {

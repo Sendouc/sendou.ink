@@ -90,6 +90,15 @@
     ]
   },
   {
+    "name": "vods",
+    "url": "vods",
+    "prefetch": false,
+    "filters": [
+      "invert(80%) sepia(15%) saturate(6333%) hue-rotate(359deg) brightness(104%) contrast(102%)",
+      "invert(11%) sepia(100%) saturate(4695%) hue-rotate(257deg) brightness(99%) contrast(136%)"
+    ]
+  },
+  {
     "name": "t",
     "url": "t",
     "prefetch": false,

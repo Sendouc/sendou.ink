@@ -55,5 +55,11 @@
   "tag.desc.LOW": "Dieses Event besitzt eine Skill-Grenze.",
   "tag.desc.COUNT": "Nur eine beschränkte Anzahl an Teams dürfen mitspielen.",
   "tag.desc.LAN": "Dieses Event wird lokal gespielt.",
-  "tag.desc.QUALIFIER": "Dieses Turnier ist eine Qualifikation für ein anderes Event."
+  "tag.desc.QUALIFIER": "Dieses Turnier ist eine Qualifikation für ein anderes Event.",
+  "tag.desc.SZ": "Es wird nur Herrschaft gespielt.",
+  "tag.desc.TW": "Es wird Revierkampf gespielt.",
+  "tag.desc.S1": "Es wird Splatoon 1 gespielt.",
+  "tag.desc.S2": "Es wird Splatoon 2 gespielt.",
+  "tag.desc.SR": "Es wird Salmon Run gespielt.",
+  "tag.desc.CARDS": "Es wird Revierdecks gespielt."
 }

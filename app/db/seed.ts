@@ -26,6 +26,8 @@ import { dateToDatabaseTimestamp } from "~/utils/dates";
 import type { UpsertManyPlusVotesArgs } from "./models/plusVotes/queries.server";
 import { nanoid } from "nanoid";
 import { mySlugify } from "~/utils/urls";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+import { createVod } from "~/features/vods/queries/createVod.server";
 
 const ADMIN_TEST_AVATAR = "1d1d8488ced4cdf478648592fa871101";
 
@@ -38,6 +40,7 @@ const AMOUNT_OF_CALENDAR_EVENTS = 200;
 const basicSeeds = [
   adminUser,
   makeAdminPatron,
+  makeAdminVideoAdder,
   adminUserWeaponPool,
   nzapUser,
   users,
@@ -60,6 +63,8 @@ const basicSeeds = [
   manySplattershotBuilds,
   detailedTeam,
   otherTeams,
+  realVideo,
+  realVideoCast,
 ];
 
 export function seed() {
@@ -86,6 +91,7 @@ function wipeDB() {
     "CalendarEvent",
     "UserWeapon",
     "PlusTier",
+    "UnvalidatedVideo",
     "User",
     "PlusSuggestion",
     "PlusVote",
@@ -116,6 +122,10 @@ function makeAdminPatron() {
       `update "User" set "patronTier" = 2, "patronSince" = 1674663454 where id = 1`
     )
     .run();
+}
+
+function makeAdminVideoAdder() {
+  sql.prepare(`update "User" set "isVideoAdder" = 1 where id = 1`).run();
 }
 
 function adminUserWeaponPool() {
@@ -960,7 +970,7 @@ function otherTeams() {
     (u) => !usersInTeam.includes(u) && u !== 2
   );
 
-  for (let i = 3; i < 100; i++) {
+  for (let i = 3; i < 50; i++) {
     const teamName = `${capitalize(faker.word.adjective())} ${capitalize(
       faker.word.noun()
     )}`;
@@ -1003,4 +1013,93 @@ function otherTeams() {
         .run();
     }
   }
+}
+
+function realVideo() {
+  createVod({
+    type: "TOURNAMENT",
+    youtubeId: "M4aV-BQWlVg",
+    youtubeDate: dateToDatabaseTimestamp(new Date("02-02-2023")),
+    submitterUserId: 1,
+    title: "LUTI Division X Tournament - ABBF (THRONE) vs. Ascension",
+    povUserId: 2,
+    isValidated: true,
+    matches: [
+      {
+        mode: "SZ",
+        stageId: 8,
+        startsAt: 13,
+        weapons: [3040],
+      },
+      {
+        mode: "CB",
+        stageId: 6,
+        startsAt: 307,
+        weapons: [3040],
+      },
+      {
+        mode: "TC",
+        stageId: 2,
+        startsAt: 680,
+        weapons: [3040],
+      },
+      {
+        mode: "SZ",
+        stageId: 9,
+        startsAt: 1186,
+        weapons: [3040],
+      },
+      {
+        mode: "RM",
+        stageId: 2,
+        startsAt: 1386,
+        weapons: [3000],
+      },
+      {
+        mode: "TC",
+        stageId: 4,
+        startsAt: 1586,
+        weapons: [1110],
+      },
+      // there are other matches too...
+    ],
+  });
+}
+
+function realVideoCast() {
+  createVod({
+    type: "CAST",
+    youtubeId: "M4aV-BQWlVg",
+    youtubeDate: dateToDatabaseTimestamp(new Date("02-02-2023")),
+    submitterUserId: 1,
+    title: "LUTI Division X Tournament - ABBF (THRONE) vs. Ascension",
+    isValidated: true,
+    matches: [
+      {
+        mode: "SZ",
+        stageId: 8,
+        startsAt: 13,
+        weapons: [3040, 1000, 2000, 4000, 5000, 6000, 7010, 8000],
+      },
+      {
+        mode: "CB",
+        stageId: 6,
+        startsAt: 307,
+        weapons: [3040, 1001, 2010, 4001, 5001, 6010, 7020, 8010],
+      },
+      {
+        mode: "TC",
+        stageId: 2,
+        startsAt: 680,
+        weapons: [3040, 1010, 2020, 4010, 5010, 6020, 7010, 8000],
+      },
+      {
+        mode: "SZ",
+        stageId: 9,
+        startsAt: 1186,
+        weapons: [3040, 1020, 2030, 4020, 5020, 6020, 7020, 8010],
+      },
+      // there are other matches too...
+    ],
+  });
 }

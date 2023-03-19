@@ -191,13 +191,15 @@ function validateAbility(
 
 export function validatedBuildFromSearchParams(
   searchParams: URLSearchParams,
-  key = "build"
+  key = "build",
+  otherBuild?: BuildAbilitiesTupleWithUnknown
 ): BuildAbilitiesTupleWithUnknown {
   const abilitiesArr = searchParams.get(key)
     ? searchParams.get(key)?.split(",")
     : null;
 
   if (!abilitiesArr) return EMPTY_BUILD;
+  if (otherBuild && buildIsEmpty(otherBuild)) return EMPTY_BUILD;
 
   try {
     return [

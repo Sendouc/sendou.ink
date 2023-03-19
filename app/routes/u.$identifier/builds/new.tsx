@@ -10,6 +10,8 @@ import { z } from "zod";
 import { AbilitiesSelector } from "~/components/AbilitiesSelector";
 import { Button } from "~/components/Button";
 import { GearCombobox, WeaponCombobox } from "~/components/Combobox";
+import { CrossIcon } from "~/components/icons/Cross";
+import { PlusIcon } from "~/components/icons/Plus";
 import { Image } from "~/components/Image";
 import { Label } from "~/components/Label";
 import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
@@ -27,7 +29,6 @@ import { requireUserId } from "~/modules/auth/user.server";
 import {
   clothesGearIds,
   headGearIds,
-  mainWeaponIds,
   modesShort,
   shoesGearIds,
 } from "~/modules/in-game-lists";
@@ -52,6 +53,7 @@ import {
   shoesMainSlotAbility,
   stackableAbility,
   toArray,
+  weaponSplId,
 } from "~/utils/zod";
 
 const newBuildActionSchema = z.object({
@@ -68,19 +70,7 @@ const newBuildActionSchema = z.object({
   CB: z.preprocess(checkboxValueToBoolean, z.boolean()),
   "weapon[value]": z.preprocess(
     processMany(toArray, removeDuplicates),
-    z
-      .array(
-        z.preprocess(
-          actualNumber,
-          z
-            .number()
-            .refine((val) =>
-              mainWeaponIds.includes(val as (typeof mainWeaponIds)[number])
-            )
-        )
-      )
-      .min(1)
-      .max(BUILD.MAX_WEAPONS_COUNT)
+    z.array(weaponSplId).min(1).max(BUILD.MAX_WEAPONS_COUNT)
   ),
   "HEAD[value]": z.preprocess(
     actualNumber,
@@ -308,7 +298,9 @@ function WeaponsSelector() {
   const [searchParams] = useSearchParams();
   const { buildToEdit } = useLoaderData<typeof loader>();
   const { t } = useTranslation(["common", "weapons", "builds"]);
-  const [count, setCount] = React.useState(buildToEdit?.weapons.length ?? 1);
+  const [weapons, setWeapons] = React.useState(
+    buildToEdit?.weapons ?? [validatedWeaponIdFromSearchParams(searchParams)]
+  );
 
   return (
     <div>
@@ -316,37 +308,48 @@ function WeaponsSelector() {
         {t("builds:forms.weapons")}
       </Label>
       <div className="stack sm">
-        {new Array(count).fill(null).map((_, i) => {
+        {weapons.map((weapon, i) => {
           return (
             <div key={i} className="stack horizontal sm items-center">
               <div>
                 <WeaponCombobox
                   inputName="weapon"
                   id="weapon"
+                  className="u__build-form__weapon"
                   required
-                  initialWeaponId={
-                    buildToEdit?.weapons[i] ??
-                    validatedWeaponIdFromSearchParams(searchParams)
+                  onChange={(opt) =>
+                    opt &&
+                    setWeapons((weapons) => {
+                      const newWeapons = [...weapons];
+                      newWeapons[i] = Number(opt.value) as MainWeaponId;
+                      return newWeapons;
+                    })
                   }
+                  initialWeaponId={weapon ?? undefined}
+                  clearsInputOnFocus
                 />
               </div>
-              {i === count - 1 && (
+              {i === weapons.length - 1 && (
                 <>
                   <Button
                     size="tiny"
-                    disabled={count === BUILD.MAX_WEAPONS_COUNT}
-                    onClick={() => setCount((count) => count + 1)}
-                  >
-                    {t("common:actions.add")}
-                  </Button>
-                  {count > 1 && (
+                    disabled={weapons.length === BUILD.MAX_WEAPONS_COUNT}
+                    onClick={() => setWeapons((weapons) => [...weapons, 0])}
+                    icon={<PlusIcon />}
+                  />
+                  {weapons.length > 1 && (
                     <Button
                       size="tiny"
-                      onClick={() => setCount((count) => count - 1)}
+                      onClick={() =>
+                        setWeapons((weapons) => {
+                          const newWeapons = [...weapons];
+                          newWeapons.pop();
+                          return newWeapons;
+                        })
+                      }
                       variant="destructive"
-                    >
-                      {t("common:actions.remove")}
-                    </Button>
+                      icon={<CrossIcon />}
+                    />
                   )}
                 </>
               )}

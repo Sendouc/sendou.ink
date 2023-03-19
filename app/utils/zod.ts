@@ -1,5 +1,10 @@
 import { z } from "zod";
-import { abilities } from "~/modules/in-game-lists";
+import {
+  abilities,
+  mainWeaponIds,
+  modesShort,
+  stageIds,
+} from "~/modules/in-game-lists";
 
 export const id = z.coerce.number().int().positive();
 
@@ -23,6 +28,26 @@ export const shoesMainSlotAbility = z
 export const stackableAbility = z
   .string()
   .refine((val) => abilityNameToType(val) === "STACKABLE");
+
+export const weaponSplId = z.preprocess(
+  actualNumber,
+  z
+    .number()
+    .refine((val) =>
+      mainWeaponIds.includes(val as (typeof mainWeaponIds)[number])
+    )
+);
+
+export const modeShort = z
+  .string()
+  .refine((val) => modesShort.includes(val as any));
+
+export const stageId = z.preprocess(
+  actualNumber,
+  z
+    .number()
+    .refine((val) => stageIds.includes(val as (typeof stageIds)[number]))
+);
 
 export function processMany(
   ...processFuncs: Array<(value: unknown) => unknown>

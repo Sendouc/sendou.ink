@@ -134,11 +134,11 @@ export const handle: SendouRouteHandle = {
 function Document({
   children,
   data,
-  isCatchBoundary = false,
+  isErrored = false,
 }: {
   children: React.ReactNode;
   data?: RootLoaderData;
-  isCatchBoundary?: boolean;
+  isErrored?: boolean;
 }) {
   const { htmlThemeClass } = useTheme();
   const { i18n } = useTranslation();
@@ -152,7 +152,7 @@ function Document({
     <html lang={locale} dir={i18n.dir()} className={htmlThemeClass}>
       <head>
         <Meta />
-        <PlaywireScripts />
+        <PlaywireScripts data={data} />
         <Links />
         <ThemeHead />
         <link rel="manifest" href="/app.webmanifest" />
@@ -162,7 +162,7 @@ function Document({
       <body style={customizedCSSVars}>
         {process.env.NODE_ENV === "development" && <HydrationTestIndicator />}
         <React.StrictMode>
-          <Layout patrons={data?.patrons} isCatchBoundary={isCatchBoundary}>
+          <Layout data={data} isErrored={isErrored}>
             {children}
           </Layout>
         </React.StrictMode>
@@ -193,6 +193,7 @@ export const namespaceJsonsToPreloadObj: Record<
   weapons: true,
   tournament: true,
   team: true,
+  vods: true,
 };
 const namespaceJsonsToPreload = Object.keys(namespaceJsonsToPreloadObj);
 
@@ -240,7 +241,7 @@ export default function App() {
 export function CatchBoundary() {
   return (
     <ThemeProvider themeSource="static" specifiedTheme={Theme.DARK}>
-      <Document isCatchBoundary>
+      <Document isErrored>
         <Catcher />
       </Document>
     </ThemeProvider>
@@ -252,7 +253,7 @@ export const ErrorBoundary: ErrorBoundaryComponent = ({ error }) => {
 
   return (
     <ThemeProvider themeSource="static" specifiedTheme={Theme.DARK}>
-      <Document>
+      <Document isErrored>
         <Catcher />
       </Document>
     </ThemeProvider>
@@ -273,16 +274,14 @@ function Fonts() {
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
       <link
-        href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap"
         rel="stylesheet"
       />
     </>
   );
 }
 
-function PlaywireScripts() {
-  const data = useLoaderData<RootLoaderData>();
-
+function PlaywireScripts({ data }: { data: RootLoaderData | undefined }) {
   if (
     !data ||
     !data.gtagId ||

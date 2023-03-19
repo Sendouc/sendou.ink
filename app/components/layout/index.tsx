@@ -12,7 +12,6 @@ import { ThemeChanger } from "./ThemeChanger";
 import { LinkButton } from "../Button";
 import { SUPPORT_PAGE } from "~/utils/urls";
 import { HeartIcon } from "../icons/Heart";
-import { useUser } from "~/modules/auth";
 
 function useBreadcrumbs() {
   const { t } = useTranslation();
@@ -36,14 +35,13 @@ function useBreadcrumbs() {
 
 export const Layout = React.memo(function Layout({
   children,
-  patrons,
-  isCatchBoundary = false,
+  data,
+  isErrored = false,
 }: {
   children: React.ReactNode;
-  patrons?: RootLoaderData["patrons"];
-  isCatchBoundary?: boolean;
+  data?: RootLoaderData;
+  isErrored?: boolean;
 }) {
-  const user = useUser();
   const { t } = useTranslation(["common"]);
   const location = useLocation();
   const breadcrumbs = useBreadcrumbs();
@@ -51,7 +49,10 @@ export const Layout = React.memo(function Layout({
   const isFrontPage = location.pathname === "/";
 
   const showLeaderboard =
-    !user?.patronTier && !location.pathname.includes("plans");
+    data &&
+    data.gtagId &&
+    !data?.user?.patronTier &&
+    !location.pathname.includes("plans");
 
   return (
     <div className="layout__container">
@@ -79,7 +80,7 @@ export const Layout = React.memo(function Layout({
               <div className="layout__breadcrumb mobile-hidden">
                 {t("common:websiteSubtitle")}
               </div>
-              {typeof user?.patronTier !== "number" ? (
+              {data && typeof data?.user?.patronTier !== "number" ? (
                 <LinkButton
                   to={SUPPORT_PAGE}
                   size="tiny"
@@ -94,7 +95,7 @@ export const Layout = React.memo(function Layout({
           ) : null}
         </div>
         <div className="layout__header__right-container">
-          {typeof user?.patronTier !== "number" ? (
+          {data && typeof data?.user?.patronTier !== "number" ? (
             <LinkButton
               to={SUPPORT_PAGE}
               size="tiny"
@@ -106,13 +107,13 @@ export const Layout = React.memo(function Layout({
           ) : null}
           <LanguageChanger />
           <ThemeChanger />
-          {!isCatchBoundary ? <UserItem /> : null}
+          {!isErrored ? <UserItem /> : null}
         </div>
       </header>
       {!isFrontPage ? <SideNav /> : null}
       {showLeaderboard ? <div id="top-leaderboard" /> : null}
       {children}
-      <Footer patrons={patrons} />
+      <Footer patrons={data?.patrons} />
     </div>
   );
 });

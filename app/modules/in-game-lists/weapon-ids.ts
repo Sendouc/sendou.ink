@@ -4,17 +4,17 @@ export const weaponCategories = [
   {
     name: "SHOOTERS",
     weaponIds: [
-      0, 10, 11, 20, 30, 31, 40, 41, 45, 50, 60, 70, 71, 80, 90, 100, 300, 310,
-      400,
+      0, 1, 10, 11, 20, 21, 30, 31, 40, 41, 45, 50, 60, 61, 70, 71, 80, 81, 90,
+      91, 100, 300, 301, 310, 400,
     ],
   },
   {
     name: "BLASTERS",
-    weaponIds: [200, 201, 210, 220, 230, 240, 250],
+    weaponIds: [200, 201, 210, 220, 230, 231, 240, 241, 250],
   },
   {
     name: "ROLLERS",
-    weaponIds: [1000, 1001, 1010, 1020, 1030, 1040],
+    weaponIds: [1000, 1001, 1010, 1011, 1020, 1030, 1040],
   },
   {
     name: "BRUSHES",
@@ -22,11 +22,11 @@ export const weaponCategories = [
   },
   {
     name: "CHARGERS",
-    weaponIds: [2000, 2010, 2020, 2030, 2040, 2050, 2060, 2070],
+    weaponIds: [2000, 2010, 2011, 2020, 2021, 2030, 2040, 2050, 2060, 2070],
   },
   {
     name: "SLOSHERS",
-    weaponIds: [3000, 3001, 3010, 3020, 3030, 3040],
+    weaponIds: [3000, 3001, 3010, 3011, 3020, 3030, 3040],
   },
   {
     name: "SPLATLINGS",
@@ -107,6 +107,8 @@ export const CRAB_TANK_ID = 12;
 export const REEF_SLIDER_ID = 13;
 export const TRIPLE_INKSTRIKE_ID = 14;
 export const TACTICOOLER_ID = 15;
+export const SUPER_CHUMP_ID = 16;
+export const KRAKEN_ROYALE_ID = 17;
 
 export const specialWeaponIds = [
   TRIZOOKA_ID,
@@ -124,4 +126,6 @@ export const specialWeaponIds = [
   REEF_SLIDER_ID,
   TRIPLE_INKSTRIKE_ID,
   TACTICOOLER_ID,
+  SUPER_CHUMP_ID,
+  KRAKEN_ROYALE_ID,
 ] as const;

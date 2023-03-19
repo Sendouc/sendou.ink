@@ -52,7 +52,7 @@ test.describe("User page", () => {
         window.getComputedStyle(element).getPropertyValue("--bg").trim()
       );
 
-    await expect(bodyColor()).resolves.toMatch("#ebebf0");
+    await expect(bodyColor()).resolves.toMatch(/#ebebf0/);
 
     await goToEditPage(page);
 
@@ -61,7 +61,7 @@ test.describe("User page", () => {
 
     // got redirected
     await expect(page).not.toHaveURL(/edit/);
-    await expect(bodyColor()).resolves.toMatch("#4a412a");
+    await expect(bodyColor()).resolves.toMatch(/#4a412a/);
   });
 
   test("has redirecting custom url", async ({ page }) => {

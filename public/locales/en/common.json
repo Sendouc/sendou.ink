@@ -17,6 +17,7 @@
   "pages.t": "Teams",
   "pages.support": "Support",
   "pages.privacy": "Privacy Policy",
+  "pages.vods": "Videos",
 
   "header.profile": "Profile",
   "header.logout": "Log out",
@@ -100,6 +101,12 @@
   "tag.name.COUNT": "Entry limit",
   "tag.name.LAN": "LAN",
   "tag.name.QUALIFIER": "Qualifier",
+  "tag.name.SZ": "SZ Only",
+  "tag.name.TW": "Includes TW",
+  "tag.name.S1": "Splatoon 1",
+  "tag.name.S2": "Splatoon 2",
+  "tag.name.SR": "Salmon Run",
+  "tag.name.CARDS": "Tableturf Battle",
 
   "weapon.category.SHOOTERS": "Shooters",
   "weapon.category.BLASTERS": "Blasters",
