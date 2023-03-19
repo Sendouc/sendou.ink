@@ -17,6 +17,7 @@
   "pages.t": "Hold",
   "pages.support": "Støt siden",
   "pages.privacy": "Privatlivspolitik",
+  "pages.vods": "Videoer",
 
   "header.profile": "Profil",
   "header.logout": "Log ud",
@@ -97,6 +98,12 @@
   "tag.name.COUNT": "Tilmeldingsloft",
   "tag.name.LAN": "LAN",
   "tag.name.QUALIFIER": "Kvalifikationsturnering",
+  "tag.name.SZ": "Kun DD (SZ)",
+  "tag.name.TW": "RK (TW) Inkluderet",
+  "tag.name.S1": "Splatoon 1",
+  "tag.name.S2": "Splatoon 2",
+  "tag.name.SR": "Salmon Run",
+  "tag.name.CARDS": "Tableturf Battle",
 
   "weapon.category.SHOOTERS": "Skydere",
   "weapon.category.BLASTERS": "Blastere",
