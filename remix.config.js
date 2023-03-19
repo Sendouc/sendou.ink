@@ -50,6 +50,10 @@ module.exports = {
       );
 
       route("/xsearch", "features/placements/routes/xsearch.tsx");
+      route(
+        "/xsearch/player/:id",
+        "features/placements/routes/xsearch.player.$id.tsx"
+      );
     });
   },
 };

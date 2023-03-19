@@ -1,7 +1,7 @@
 import type { LinksFunction, LoaderArgs } from "@remix-run/node";
 import { useLoaderData, useSearchParams } from "@remix-run/react";
 import { Main } from "~/components/Main";
-import { findPlacements } from "../queries/findPlacements.server";
+import { findPlacementsOfMonth } from "../queries/findPlacements.server";
 import styles from "../placements.css";
 import { PlacementsTable } from "../components/Placements";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
@@ -10,6 +10,11 @@ import type { RankedModeShort } from "~/modules/in-game-lists";
 import { nanoid } from "nanoid";
 import { useTranslation } from "~/hooks/useTranslation";
 import invariant from "tiny-invariant";
+import type { MonthYear } from "../placements-utils";
+
+export const links: LinksFunction = () => {
+  return [{ rel: "stylesheet", href: styles }];
+};
 
 export const loader = ({ request }: LoaderArgs) => {
   // #region parse URL params
@@ -64,7 +69,7 @@ export const loader = ({ request }: LoaderArgs) => {
   })();
   // #endregion
 
-  const placements = findPlacements({
+  const placements = findPlacementsOfMonth({
     type: "XRANK",
     mode,
     region,
@@ -75,10 +80,6 @@ export const loader = ({ request }: LoaderArgs) => {
   return {
     placements,
   };
-};
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
 };
 
 export default function XSearchPage() {
@@ -132,10 +133,6 @@ export default function XSearchPage() {
   );
 }
 
-type MonthYear = {
-  month: number;
-  year: number;
-};
 function selectOptions() {
   const options: Array<{
     id: string;

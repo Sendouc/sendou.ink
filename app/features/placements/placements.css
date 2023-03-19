@@ -37,6 +37,18 @@
   border-radius: 100%;
 }
 
+.placements__table__mode {
+  background-color: var(--bg-darker);
+  border-radius: 100%;
+  padding: var(--s-1);
+}
+
+.placements__time {
+  font-size: var(--fonts-xs);
+  font-weight: var(--semi-bold);
+  color: var(--text-lighter);
+}
+
 .placements__table__inner-row {
   display: flex;
   align-items: center;

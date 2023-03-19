@@ -301,6 +301,7 @@ export interface VideoMatchPlayer {
 }
 
 export interface SplatoonPlacement {
+  id: number;
   weaponSplId: MainWeaponId;
   name: string;
   nameDiscriminator: string;
@@ -312,7 +313,7 @@ export interface SplatoonPlacement {
   playerId: number;
   month: number;
   year: number;
-  mode: RankedModeShort | null;
+  mode: RankedModeShort;
   type: "SPLATFEST" | "XRANK";
   region: "WEST" | "JPN";
   team: "A" | "B" | "C" | null;

@@ -1,53 +1,52 @@
 import { Link } from "@remix-run/react";
-import { WeaponImage } from "~/components/Image";
-import type { SplatoonPlacement } from "~/db/types";
-import { xSearchPlayerPage } from "~/utils/urls";
+import { Image, WeaponImage } from "~/components/Image";
+import { modeImageUrl, xSearchPlayerPage } from "~/utils/urls";
+import { monthYearToSpan } from "../placements-utils";
+import type { FindPlacement } from "../queries/findPlacements.server";
 
-type PlacementTablePlacement = Pick<
-  SplatoonPlacement,
-  | "weaponSplId"
-  | "name"
-  | "power"
-  | "rank"
-  | "team"
-  | "month"
-  | "year"
-  | "type"
-  | "region"
-  | "playerId"
->;
-interface PlacementsProps {
-  placements: Array<PlacementTablePlacement>;
+interface PlacementsTableProps {
+  placements: Array<FindPlacement>;
+  type?: "PLAYER_NAME" | "MODE_INFO";
 }
 
-export function PlacementsTable({ placements }: PlacementsProps) {
+export function PlacementsTable({
+  placements,
+  type = "PLAYER_NAME",
+}: PlacementsTableProps) {
   return (
     <div className="placements__table">
       {placements.map((placement) => (
         <Link
           to={xSearchPlayerPage(placement.playerId)}
-          key={placementId(placement)}
+          key={placement.id}
           className="placements__table__row"
         >
           <div className="placements__table__inner-row">
             <div className="placements__table__rank">{placement.rank}</div>
+            {type === "MODE_INFO" ? (
+              <div className="placements__table__mode">
+                <Image alt="" path={modeImageUrl(placement.mode)} width={24} />
+              </div>
+            ) : null}
             <WeaponImage
               className="placements__table__weapon"
               variant="build"
               weaponSplId={placement.weaponSplId}
               width={32}
             />
-            <div>{placement.name}</div>
+            {type === "PLAYER_NAME" ? <div>{placement.name}</div> : null}
+            {type === "MODE_INFO" ? (
+              <div className="placements__time">
+                {monthYearToSpan(placement).from.month}/
+                {monthYearToSpan(placement).from.year} -{" "}
+                {monthYearToSpan(placement).to.month}/
+                {monthYearToSpan(placement).to.year}
+              </div>
+            ) : null}
           </div>
           <div>{placement.power}</div>
         </Link>
       ))}
     </div>
   );
-}
-
-function placementId(placement: PlacementTablePlacement) {
-  return `${placement.rank}-${placement.month}-${placement.year}-${
-    placement.type
-  }-${placement.region}-${placement.team ?? ""}`;
 }
