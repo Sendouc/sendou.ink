@@ -55,6 +55,11 @@ const adminActionSchema = z.union([
     _action: z.literal("VIDEO_ADDER"),
     "user[value]": z.preprocess(actualNumber, z.number().positive()),
   }),
+  z.object({
+    _action: z.literal("LINK_PLAYER"),
+    "user[value]": z.preprocess(actualNumber, z.number().positive()),
+    playerId: z.preprocess(actualNumber, z.number().positive()),
+  }),
 ]);
 
 export const action: ActionFunction = async ({ request }) => {
@@ -91,6 +96,14 @@ export const action: ActionFunction = async ({ request }) => {
       db.users.makeVideoAdder(data["user[value]"]);
       break;
     }
+    case "LINK_PLAYER": {
+      db.users.linkPlayer({
+        userId: data["user[value]"],
+        playerId: data.playerId,
+      });
+
+      break;
+    }
     default: {
       assertUnreachable(data);
     }
@@ -123,6 +136,7 @@ export default function AdminPage() {
   return (
     <Main className="stack lg">
       <Impersonate />
+      <LinkPlayer />
       <GiveVideoAdder />
       <MigrateUser />
       <ForcePatron />
@@ -212,6 +226,31 @@ function MigrateUser() {
           state={fetcher.state}
         >
           {submitButtonText}
+        </SubmitButton>
+      </div>
+    </fetcher.Form>
+  );
+}
+
+function LinkPlayer() {
+  const fetcher = useFetcher();
+
+  return (
+    <fetcher.Form className="stack md" method="post">
+      <h2>Link player</h2>
+      <div className="stack horizontal md">
+        <div>
+          <label>User</label>
+          <UserCombobox inputName="user" />
+        </div>
+        <div>
+          <label>Player ID</label>
+          <input type="number" name="playerId" />
+        </div>
+      </div>
+      <div className="stack horizontal md">
+        <SubmitButton type="submit" _action="LINK_PLAYER" state={fetcher.state}>
+          Link player
         </SubmitButton>
       </div>
     </fetcher.Form>

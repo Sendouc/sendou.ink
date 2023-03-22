@@ -1,6 +1,7 @@
 import { sql } from "../../sql";
 import type {
   CalendarEventResultTeam,
+  SplatoonPlayer,
   User,
   UserWithPlusTier,
 } from "../../types";
@@ -28,6 +29,7 @@ import wipePlusTiersSql from "./wipePlusTiers.sql";
 import fillPlusTiersSql from "./fillPlusTiers.sql";
 import forcePatronSql from "./forcePatron.sql";
 import makeVideoAdderSql from "./makeVideoAdder.sql";
+import linkPlayerSql from "./linkPlayer.sql";
 
 const upsertStm = sql.prepare(upsertSql);
 export function upsert(
@@ -237,4 +239,15 @@ export const refreshPlusTiers = sql.transaction(() => {
 const makeVideoAdderStm = sql.prepare(makeVideoAdderSql);
 export function makeVideoAdder(id: User["id"]) {
   return makeVideoAdderStm.run({ id });
+}
+
+const linkPlayerStm = sql.prepare(linkPlayerSql);
+export function linkPlayer({
+  userId,
+  playerId,
+}: {
+  userId: User["id"];
+  playerId: SplatoonPlayer["id"];
+}) {
+  linkPlayerStm.run({ userId, playerId });
 }
