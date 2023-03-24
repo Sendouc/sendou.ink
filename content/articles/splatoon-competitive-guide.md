@@ -45,4 +45,4 @@ Latest news on Splatoon 3 including tournaments and other competitive events.
 
 
 ## Takeaways
-Inkopolis Crosswalk is your friend everything you need is there. Participating in events will help get your name out there so just play a lot. Hopefully, this was helpful in your Splatoon journey.
+Inkopolis Crosswalk is your friend, everything you need, tournaments, guides, content creators, all that is there. Participating in events will help get your name out there so just play a lot. Hopefully, this was helpful in your Splatoon journey.
