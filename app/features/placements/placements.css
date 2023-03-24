@@ -32,6 +32,10 @@
   border-radius: 0 0 var(--rounded) var(--rounded);
 }
 
+.placements__table__row:only-child {
+  border-radius: var(--rounded);
+}
+
 .placements__table__weapon {
   background-color: var(--bg-darker);
   border-radius: 100%;
