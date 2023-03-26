@@ -160,6 +160,12 @@ npm run add-badge -- sundae "4v4 Sundaes"
 npm run rename-badge -- 10 "New 4v4 Sundaes"
 ```
 
+### Add many badge owners
+
+```bash
+npm run add-badge-winners -- 10 "750705955909664791,79237403620945920"
+```
+
 ### Convert many .png files to .avif
 
 While in the folder with the images:
