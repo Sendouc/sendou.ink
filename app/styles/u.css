@@ -12,6 +12,7 @@
 }
 
 .u__avatar {
+  min-width: 125px;
   grid-area: avatar;
 }
 
@@ -25,6 +26,7 @@
 
 .u__name {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   grid-area: name;
   overflow-wrap: anywhere;

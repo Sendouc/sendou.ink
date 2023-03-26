@@ -39,11 +39,13 @@ export default function UserInfoPage() {
         <Avatar user={data} size="lg" className="u__avatar" />
         <div>
           <h2 className="u__name">
-            {data.discordName}
-            <span className="u__discriminator">
-              <wbr />#{data.discordDiscriminator}
-            </span>
-            {data.country ? <Flag countryCode={data.country} tiny /> : null}
+            <div>{data.discordName}</div>
+            <div>
+              <span className="u__discriminator">
+                <wbr />#{data.discordDiscriminator}
+              </span>
+              {data.country ? <Flag countryCode={data.country} tiny /> : null}
+            </div>
           </h2>
           <TeamInfo />
         </div>
