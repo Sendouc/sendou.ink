@@ -17,6 +17,7 @@ Competitive Splatoon Hub with over 20k registered users.
 - Form teams (featuring uploading profile and banner pictures)
 - Object Damage Calculator (how much does each weapon deal vs. different objects)
 - Build Analyzer (exact stats of your builds)
+- Add and search for videos by weapon, stage, player and more
 - Auth via Discord
 - Light and dark mode
 - Localization
