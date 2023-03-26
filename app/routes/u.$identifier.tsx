@@ -12,6 +12,7 @@ import { z } from "zod";
 import { Main } from "~/components/Main";
 import { SubNav, SubNavLink } from "~/components/SubNav";
 import { db } from "~/db";
+import { userTopPlacements } from "~/features/placements";
 import { findVods } from "~/features/vods";
 import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
@@ -72,6 +73,7 @@ export const loader = ({ params }: LoaderArgs) => {
   const { identifier } = userParamsSchema.parse(params);
   const user = notFoundIfFalsy(db.users.findByIdentifier(identifier));
 
+  const { playerId, topPlacements } = userTopPlacements(user.id);
   return json({
     id: user.id,
     discordAvatar: user.discordAvatar,
@@ -94,6 +96,8 @@ export const loader = ({ params }: LoaderArgs) => {
     results: db.calendarEvents.findResultsByUserId(user.id),
     buildsCount: db.builds.countByUserId(user.id),
     vods: findVods({ userId: user.id }),
+    playerId,
+    topPlacements,
   });
 };
 
