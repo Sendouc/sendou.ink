@@ -30,6 +30,7 @@ import fillPlusTiersSql from "./fillPlusTiers.sql";
 import forcePatronSql from "./forcePatron.sql";
 import makeVideoAdderSql from "./makeVideoAdder.sql";
 import linkPlayerSql from "./linkPlayer.sql";
+import unlinkPlayerSql from "./unlinkPlayer.sql";
 
 const upsertStm = sql.prepare(upsertSql);
 export function upsert(
@@ -242,6 +243,7 @@ export function makeVideoAdder(id: User["id"]) {
 }
 
 const linkPlayerStm = sql.prepare(linkPlayerSql);
+const unlinkPlayerStm = sql.prepare(unlinkPlayerSql);
 export function linkPlayer({
   userId,
   playerId,
@@ -249,5 +251,6 @@ export function linkPlayer({
   userId: User["id"];
   playerId: SplatoonPlayer["id"];
 }) {
+  unlinkPlayerStm.run({ userId });
   linkPlayerStm.run({ userId, playerId });
 }

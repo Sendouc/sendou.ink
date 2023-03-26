@@ -18,6 +18,7 @@
   align-items: center;
   justify-content: space-between;
   color: var(--text);
+  transition: 0.1s ease-in-out background-color;
 }
 
 .placements__table__row:hover {

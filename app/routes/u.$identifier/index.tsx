@@ -8,13 +8,19 @@ import { Flag } from "~/components/Flag";
 import { TwitchIcon } from "~/components/icons/Twitch";
 import { TwitterIcon } from "~/components/icons/Twitter";
 import { YouTubeIcon } from "~/components/icons/YouTube";
-import { WeaponImage } from "~/components/Image";
+import { Image, WeaponImage } from "~/components/Image";
 import { useTranslation } from "~/hooks/useTranslation";
+import { modesShort } from "~/modules/in-game-lists";
 import { type SendouRouteHandle } from "~/utils/remix";
 import { rawSensToString } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
 import { assertUnreachable } from "~/utils/types";
-import { teamPage, userSubmittedImage } from "~/utils/urls";
+import {
+  modeImageUrl,
+  teamPage,
+  userSubmittedImage,
+  xSearchPlayerPage,
+} from "~/utils/urls";
 import { badgeExplanationText } from "../badges/$id";
 import type { UserPageLoaderData } from "../u.$identifier";
 
@@ -57,7 +63,8 @@ export default function UserInfoPage() {
       </div>
       <ExtraInfos />
       <WeaponPool />
-      <BadgeContainer badges={data.badges} />
+      <TopPlacements />
+      <BadgeContainer badges={data.badges} key={data.id} />
       {data.bio && <article>{data.bio}</article>}
     </div>
   );
@@ -196,14 +203,36 @@ function WeaponPool() {
   );
 }
 
+function TopPlacements() {
+  const [, parentRoute] = useMatches();
+  invariant(parentRoute);
+  const data = parentRoute.data as UserPageLoaderData;
+
+  if (!data.playerId) return null;
+
+  return (
+    <Link to={xSearchPlayerPage(data.playerId)} className="u__placements">
+      {modesShort.map((mode) => {
+        const placement = data.topPlacements[mode];
+
+        if (!placement) return null;
+
+        return (
+          <div key={mode} className="u__placements__mode">
+            <Image path={modeImageUrl(mode)} alt="" width={32} height={32} />
+            <div>
+              {placement.rank} / {placement.power}
+            </div>
+          </div>
+        );
+      })}
+    </Link>
+  );
+}
+
 function BadgeContainer(props: { badges: UserPageLoaderData["badges"] }) {
   const { t } = useTranslation("badges");
   const [badges, setBadges] = React.useState(props.badges);
-
-  // keep badges in sync when route changes from one user profile to another
-  React.useEffect(() => {
-    setBadges(props.badges);
-  }, [props.badges]);
 
   const [bigBadge, ...smallBadges] = badges;
   if (!bigBadge) return null;

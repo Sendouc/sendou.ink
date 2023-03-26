@@ -236,3 +236,28 @@
 .u__build-form__weapon {
   --input-width: 16rem;
 }
+
+.u__placements {
+  display: flex;
+  flex-wrap: wrap;
+  padding: var(--s-4);
+  border-radius: var(--rounded);
+  margin: 0 auto;
+  background-color: var(--bg-lighter);
+  color: var(--text);
+  gap: var(--s-10);
+  transition: 0.1s ease-in-out background-color;
+}
+
+.u__placements:hover {
+  background-color: var(--theme-transparent);
+}
+
+.u__placements__mode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: var(--fonts-sm);
+  font-weight: var(--semi-bold);
+  gap: var(--s-1-5);
+}

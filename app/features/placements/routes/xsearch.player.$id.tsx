@@ -23,6 +23,8 @@ export default function XSearchPlayerPage() {
 
   // xxx: add player aliases
   // xxx: make placements table link to months results
+  // xxx: takoroka/tentatek
+  // xxx: link to user page, how?
   return (
     <Main halfWidth className="stack lg">
       <h2 className="text-lg">{data.placements[0]!.name}&apos;s placements</h2>
