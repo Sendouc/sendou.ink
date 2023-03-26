@@ -17,9 +17,18 @@ const stm = sql.prepare(
   /* sql */ `insert into "TournamentBadgeOwner" ("badgeId", "userId") values (@badgeId, (select "id" from "User" where "discordId" = @userId))`
 );
 
+const userStm = sql.prepare(
+  /* sql */ `select "id" from "User" where "discordId" = @discordId`
+);
+
 const users = discordIds.split(",");
 
 for (const userId of users) {
+  const user = userStm.get({ discordId: userId });
+  if (!user) {
+    console.log(`User with discord id ${userId} not found`);
+    continue;
+  }
   stm.run({ badgeId: Number(badgeId), userId });
 }
 
