@@ -10,7 +10,6 @@ import {
   SENDOU_INK_GITHUB_URL,
   SENDOU_INK_TWITTER_URL,
   SENDOU_LOVE_EMOJI_PATH,
-  SPLATOON_2_SENDOU_IN_URL,
   SUPPORT_PAGE,
   userPage,
 } from "~/utils/urls";
