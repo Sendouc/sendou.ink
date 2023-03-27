@@ -35,10 +35,10 @@ Content Creators (might have other socials then the ones linked):
 Has a great guide for Splatoon 2 competitive, but it still holds up well today as not much has changed. In general they make a lot of easy to follow guides in Splatoon competitive.
 
 [ProChara](https://www.youtube.com/@ProChara):
-Chara provides a ton of information regarding meta and the state of competitive. Regularly features other import figures in Splatoon competitive.
+Chara provides a ton of information regarding meta and the state of competitive. Regularly features other import figures in Splatoon competitive. Chara is a competitive player for Last Resort Splatoon
 
 [Squid School](https://www.youtube.com/@SquidSchool):
-Exactly what it sounds like but 10x more fun. They have a lot of lessons on how to get better. Great if you're trying to improve as an individual.
+Exactly what it sounds like but 10x more fun. They have a lot of lessons on how to get better. Great if you're trying to improve as an individual. The channel is run by pro player, Gem.
 
 [Splatoon News](https://twitter.com/SplatoonNews_):
 Latest news on Splatoon 3 including tournaments and other competitive events.
