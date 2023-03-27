@@ -104,6 +104,9 @@ export function badgeExplanationText(
   if (badge.code === "patreon_plus") {
     return t("patreon+");
   }
+  if (badge.code.startsWith("xp")) {
+    return t("xp", { xpText: badge.displayName });
+  }
 
   return t("tournament", {
     count: badge.count ?? 1,

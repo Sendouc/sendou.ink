@@ -10,7 +10,6 @@ import {
   SENDOU_INK_GITHUB_URL,
   SENDOU_INK_TWITTER_URL,
   SENDOU_LOVE_EMOJI_PATH,
-  SPLATOON_2_SENDOU_IN_URL,
   SUPPORT_PAGE,
   userPage,
 } from "~/utils/urls";
@@ -35,7 +34,6 @@ export function Footer({
         <Link to={PRIVACY_POLICY_PAGE}>{t("pages.privacy")}</Link>
         <Link to={CONTRIBUTIONS_PAGE}>{t("pages.contributors")}</Link>
         <Link to={FAQ_PAGE}>{t("pages.faq")}</Link>
-        <a href={SPLATOON_2_SENDOU_IN_URL}>{t("pages.s2")}</a>
       </div>
       <div className="layout__footer__socials">
         <a
