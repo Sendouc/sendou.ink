@@ -232,7 +232,7 @@
 .layout__side-nav {
   position: fixed;
   display: flex;
-  width: 21%;
+  width: 10%;
   height: 100vh;
   flex-direction: column;
   justify-content: center;
@@ -264,25 +264,24 @@
 
 .layout__tooltip-text {
   position: absolute;
-  z-index: 1;
+  z-index: 2;
   top: 50%;
-  left: calc(100% + var(--s-2));
-  width: max-content;
+  left: 50%;
+  max-width: fit-content;
   border: 2px solid var(--border);
   border-radius: var(--rounded);
   background-color: var(--bg-darker);
-  font-size: var(--fonts-sm);
+  font-size: var(--fonts-xs);
   font-weight: var(--semi-bold);
   opacity: 0;
   padding-inline: var(--s-2-5);
   pointer-events: none;
   text-align: center;
-  transform: translateY(-50%);
+  transform: translate(-40%, -50%);
   transition: opacity 0.3s;
 }
 
 .layout__side-nav-image-container:hover .layout__tooltip-text {
-  z-index: 5;
   opacity: 1;
 }
 
