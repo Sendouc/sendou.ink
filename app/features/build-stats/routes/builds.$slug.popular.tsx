@@ -6,7 +6,7 @@ import { Ability } from "~/components/Ability";
 import { Main } from "~/components/Main";
 import { useTranslation } from "~/hooks/useTranslation";
 import { i18next } from "~/modules/i18n";
-import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
+import { notFoundIfNullLike, type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { weaponNameSlugToId } from "~/utils/unslugify.server";
 import {
@@ -60,7 +60,7 @@ export const handle: SendouRouteHandle = {
 export const loader = async ({ params, request }: LoaderArgs) => {
   const t = await i18next.getFixedT(request, ["builds", "weapons", "common"]);
   const slug = params["slug"];
-  const weaponId = notFoundIfFalsy(weaponNameSlugToId(slug));
+  const weaponId = notFoundIfNullLike(weaponNameSlugToId(slug));
 
   const weaponName = t(`weapons:MAIN_${weaponId}`);
 

@@ -12,8 +12,7 @@ import { abilityPointCountsToAverages } from "../build-stats-utils";
 import { Ability } from "~/components/Ability";
 import styles from "../build-stats.css";
 import { WeaponImage } from "~/components/Image";
-import type { SendouRouteHandle } from "~/utils/remix";
-import { notFoundIfFalsy } from "~/utils/remix";
+import { notFoundIfNullLike, type SendouRouteHandle } from "~/utils/remix";
 import { MAX_AP, ONE_HOUR_IN_MS } from "~/constants";
 import { useTranslation } from "~/hooks/useTranslation";
 import {
@@ -70,7 +69,7 @@ export const handle: SendouRouteHandle = {
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const t = await i18next.getFixedT(request, ["builds", "weapons", "common"]);
-  const weaponId = notFoundIfFalsy(weaponNameSlugToId(params["slug"]));
+  const weaponId = notFoundIfNullLike(weaponNameSlugToId(params["slug"]));
 
   const weaponName = t(`weapons:MAIN_${weaponId}`);
 

@@ -9,6 +9,13 @@ export function notFoundIfFalsy<T>(value: T | null | undefined): T {
   return value;
 }
 
+export function notFoundIfNullLike<T>(value: T | null | undefined): T {
+  if (value === null || value === undefined)
+    throw new Response(null, { status: 404 });
+
+  return value;
+}
+
 export function badRequestIfFalsy<T>(value: T | null | undefined): T {
   if (!value) throw new Response(null, { status: 400 });
 
