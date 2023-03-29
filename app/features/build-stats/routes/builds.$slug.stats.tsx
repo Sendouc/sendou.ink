@@ -12,7 +12,7 @@ import { abilityPointCountsToAverages } from "../build-stats-utils";
 import { Ability } from "~/components/Ability";
 import styles from "../build-stats.css";
 import { WeaponImage } from "~/components/Image";
-import { type SendouRouteHandle, notFoundIfNullLike } from "~/utils/remix";
+import { notFoundIfNullLike, type SendouRouteHandle } from "~/utils/remix";
 import { MAX_AP, ONE_HOUR_IN_MS } from "~/constants";
 import { useTranslation } from "~/hooks/useTranslation";
 import {
