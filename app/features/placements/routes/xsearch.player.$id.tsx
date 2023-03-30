@@ -32,7 +32,6 @@ export default function XSearchPlayerPage() {
 
   const hasUserLinked = Boolean(data.placements[0]!.discordId);
 
-  // xxx: make placements table link to months results
   return (
     <Main halfWidth className="stack lg">
       <div>

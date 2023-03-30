@@ -4,6 +4,7 @@ import type {
   CalendarEvent,
   GearType,
   MapPoolMap,
+  SplatoonPlacement,
   User,
 } from "~/db/types";
 import type { ModeShort, weaponCategories } from "~/modules/in-game-lists";
@@ -144,7 +145,15 @@ export const joinTeamPage = ({
   inviteCode: string;
 }) => `${teamPage(customUrl)}/join?code=${inviteCode}`;
 
-export const xSearchPage = () => "/xsearch";
+export const xSearchPage = (args?: {
+  month: number;
+  year: number;
+  mode: ModeShort;
+  region: SplatoonPlacement["region"];
+}) =>
+  args
+    ? `/xsearch?month=${args.month}&year=${args.year}&mode=${args.mode}&region=${args.region}`
+    : "/xsearch";
 export const xSearchPlayerPage = (playerId: number) =>
   `${xSearchPage()}/player/${playerId}`;
 
