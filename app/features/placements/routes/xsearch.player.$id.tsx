@@ -5,6 +5,7 @@ import { notFoundIfFalsy } from "~/utils/remix";
 import { PlacementsTable } from "../components/Placements";
 import { findPlacementsByPlayerId } from "../queries/findPlacements.server";
 import styles from "../placements.css";
+import { removeDuplicates } from "~/utils/arrays";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -21,13 +22,26 @@ export const loader = ({ params }: LoaderArgs) => {
 export default function XSearchPlayerPage() {
   const data = useLoaderData<typeof loader>();
 
-  // xxx: add player aliases
+  const firstName = data.placements[0]!.name;
+  const aliases = removeDuplicates(
+    data.placements
+      .map((placement) => placement.name)
+      .filter((name) => name !== firstName)
+  );
+
   // xxx: make placements table link to months results
   // xxx: takoroka/tentatek
   // xxx: link to user page, how?
   return (
     <Main halfWidth className="stack lg">
-      <h2 className="text-lg">{data.placements[0]!.name}&apos;s placements</h2>
+      <div>
+        <h2 className="text-lg">{firstName}&apos;s placements</h2>
+        {aliases.length > 0 ? (
+          <div className="text-lighter text-sm">
+            Aliases: {aliases.join(", ")}
+          </div>
+        ) : null}
+      </div>
       <PlacementsTable placements={data.placements} type="MODE_INFO" />
     </Main>
   );
