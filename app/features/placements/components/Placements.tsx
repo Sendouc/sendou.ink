@@ -1,6 +1,7 @@
 import { Link } from "@remix-run/react";
 import { Image, WeaponImage } from "~/components/Image";
-import { modeImageUrl, xSearchPlayerPage } from "~/utils/urls";
+import { useTranslation } from "~/hooks/useTranslation";
+import { brandImageUrl, modeImageUrl, xSearchPlayerPage } from "~/utils/urls";
 import { monthYearToSpan } from "../placements-utils";
 import type { FindPlacement } from "../queries/findPlacements.server";
 
@@ -13,6 +14,8 @@ export function PlacementsTable({
   placements,
   type = "PLAYER_NAME",
 }: PlacementsTableProps) {
+  const { t } = useTranslation(["game-misc"]);
+
   return (
     <div className="placements__table">
       {placements.map((placement) => (
@@ -24,9 +27,29 @@ export function PlacementsTable({
           <div className="placements__table__inner-row">
             <div className="placements__table__rank">{placement.rank}</div>
             {type === "MODE_INFO" ? (
-              <div className="placements__table__mode">
-                <Image alt="" path={modeImageUrl(placement.mode)} width={24} />
-              </div>
+              <>
+                <div className="placements__table__mode">
+                  <Image
+                    alt={
+                      placement.region === "WEST"
+                        ? "Tentatek Division"
+                        : "Takoroka Division"
+                    }
+                    path={brandImageUrl(
+                      placement.region === "WEST" ? "tentatek" : "takoroka"
+                    )}
+                    width={24}
+                  />
+                </div>
+
+                <div className="placements__table__mode">
+                  <Image
+                    alt={t(`game-misc:MODE_LONG_${placement.mode}`)}
+                    path={modeImageUrl(placement.mode)}
+                    width={24}
+                  />
+                </div>
+              </>
             ) : null}
             <WeaponImage
               className="placements__table__weapon"

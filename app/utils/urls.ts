@@ -223,6 +223,8 @@ export const modeImageUrl = (mode: ModeShort) =>
   `/static-assets/img/modes/${mode}`;
 export const stageImageUrl = (stageId: StageId) =>
   `/static-assets/img/stages/${stageId}`;
+export const brandImageUrl = (brand: "tentatek" | "takoroka") =>
+  `/static-assets/img/layout/${brand}`;
 export const stageMinimapImageUrlWithEnding = ({
   stageId,
   mode,
