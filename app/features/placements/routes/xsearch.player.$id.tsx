@@ -1,11 +1,12 @@
 import type { LinksFunction, LoaderArgs } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
 import { Main } from "~/components/Main";
 import { notFoundIfFalsy } from "~/utils/remix";
 import { PlacementsTable } from "../components/Placements";
 import { findPlacementsByPlayerId } from "../queries/findPlacements.server";
 import styles from "../placements.css";
 import { removeDuplicates } from "~/utils/arrays";
+import { userPage } from "~/utils/urls";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -29,12 +30,20 @@ export default function XSearchPlayerPage() {
       .filter((name) => name !== firstName)
   );
 
+  const hasUserLinked = Boolean(data.placements[0]!.discordId);
+
   // xxx: make placements table link to months results
-  // xxx: link to user page, how?
   return (
     <Main halfWidth className="stack lg">
       <div>
-        <h2 className="text-lg">{firstName}&apos;s placements</h2>
+        <h2 className="text-lg">
+          {hasUserLinked ? (
+            <Link to={userPage(data.placements[0]!)}>{firstName}</Link>
+          ) : (
+            <>{firstName}</>
+          )}
+          &apos;s placements
+        </h2>
         {aliases.length > 0 ? (
           <div className="text-lighter text-sm">
             Aliases: {aliases.join(", ")}

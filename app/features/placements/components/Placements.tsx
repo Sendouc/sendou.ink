@@ -56,6 +56,7 @@ export function PlacementsTable({
               variant="build"
               weaponSplId={placement.weaponSplId}
               width={32}
+              height={32}
             />
             {type === "PLAYER_NAME" ? <div>{placement.name}</div> : null}
             {type === "MODE_INFO" ? (
