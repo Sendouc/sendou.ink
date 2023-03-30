@@ -30,7 +30,6 @@ export default function XSearchPlayerPage() {
   );
 
   // xxx: make placements table link to months results
-  // xxx: takoroka/tentatek
   // xxx: link to user page, how?
   return (
     <Main halfWidth className="stack lg">
