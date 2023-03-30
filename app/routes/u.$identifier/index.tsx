@@ -184,6 +184,8 @@ function WeaponPool() {
   invariant(parentRoute);
   const data = parentRoute.data as UserPageLoaderData;
 
+  if (data.weapons.length === 0) return null;
+
   return (
     <div className="stack horizontal sm justify-center">
       {data.weapons.map((weapon, i) => {
