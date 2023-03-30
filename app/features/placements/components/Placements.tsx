@@ -1,7 +1,12 @@
 import { Link } from "@remix-run/react";
 import { Image, WeaponImage } from "~/components/Image";
 import { useTranslation } from "~/hooks/useTranslation";
-import { brandImageUrl, modeImageUrl, xSearchPlayerPage } from "~/utils/urls";
+import {
+  brandImageUrl,
+  modeImageUrl,
+  xSearchPage,
+  xSearchPlayerPage,
+} from "~/utils/urls";
 import { monthYearToSpan } from "../placements-utils";
 import type { FindPlacement } from "../queries/findPlacements.server";
 
@@ -20,7 +25,11 @@ export function PlacementsTable({
     <div className="placements__table">
       {placements.map((placement) => (
         <Link
-          to={xSearchPlayerPage(placement.playerId)}
+          to={
+            type === "MODE_INFO"
+              ? xSearchPage(placement)
+              : xSearchPlayerPage(placement.playerId)
+          }
           key={placement.id}
           className="placements__table__row"
         >
