@@ -36,7 +36,7 @@ import { useObjectDamage } from "../calculator-hooks";
 import { type DamageType, possibleApValues } from "~/features/build-analyzer";
 import type { DamageReceiver } from "../calculator-types";
 
-export const CURRENT_PATCH = "3.0";
+export const CURRENT_PATCH = "3.1";
 
 export const shouldRevalidate: ShouldRevalidateFunction = () => false;
 

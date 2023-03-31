@@ -63,7 +63,7 @@ import { Tabs, Tab } from "~/components/Tabs";
 import { buildIsEmpty, isStackableAbility } from "../core/utils";
 import { useUser } from "~/modules/auth";
 
-export const CURRENT_PATCH = "3.0";
+export const CURRENT_PATCH = "3.1";
 
 export const meta: MetaFunction = () => {
   return {
