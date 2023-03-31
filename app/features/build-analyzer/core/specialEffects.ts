@@ -139,7 +139,7 @@ export function applySpecialEffects({
   ldeIntensity,
 }: {
   abilityPoints: AbilityPoints;
-  effects: Array<typeof SPECIAL_EFFECTS[number]["type"]>;
+  effects: Array<(typeof SPECIAL_EFFECTS)[number]["type"]>;
   ldeIntensity: number;
 }): AbilityPoints {
   const result: AbilityPoints = new Map(abilityPoints);
@@ -168,7 +168,7 @@ function effectObjToValuesArr({
   effectObj,
   ldeIntensity,
 }: {
-  effectObj: typeof SPECIAL_EFFECTS[number];
+  effectObj: (typeof SPECIAL_EFFECTS)[number];
   ldeIntensity: number;
 }) {
   if (typeof effectObj.values === "function") {
