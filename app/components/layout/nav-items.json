@@ -81,6 +81,15 @@
     ]
   },
   {
+    "name": "xsearch",
+    "url": "xsearch",
+    "prefetch": false,
+    "filters": [
+      "invert(35%) sepia(80%) saturate(4189%) hue-rotate(351deg) brightness(106%) contrast(99%)",
+      "invert(99%) sepia(1%) saturate(1035%) hue-rotate(293deg) brightness(100%) contrast(98%)"
+    ]
+  },
+  {
     "name": "articles",
     "url": "a",
     "prefetch": false,
