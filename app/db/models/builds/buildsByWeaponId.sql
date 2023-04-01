@@ -1,4 +1,28 @@
-with "BuildFiltered" as (
+with "Top500Weapon" as (
+  select
+    "BuildWeapon".*,
+    min("SplatoonPlacement"."rank") as "minRank",
+    max("SplatoonPlacement"."power") as "maxPower",
+    (
+      (
+        "BuildWeapon"."weaponSplId" = @weaponId
+        or "BuildWeapon"."weaponSplId" = @altWeaponId
+      )
+      and "SplatoonPlacement"."rank" <= 500
+    ) as "relevant"
+  from
+    "BuildWeapon"
+    left join "Build" on "Build"."id" = "BuildWeapon"."buildId"
+    left join "SplatoonPlayer" on "SplatoonPlayer"."userId" = "Build"."ownerId"
+    left join "SplatoonPlacement" on "SplatoonPlacement"."playerId" = "SplatoonPlayer"."id"
+    and "SplatoonPlacement"."mode" != 'TW'
+    and "SplatoonPlacement"."rank" <= 500
+    and "SplatoonPlacement"."weaponSplId" = "BuildWeapon"."weaponSplId"
+  group by
+    "BuildWeapon"."buildId",
+    "BuildWeapon"."weaponSplId"
+),
+"BuildFiltered" as (
   select
     "id",
     "title",
@@ -8,23 +32,33 @@ with "BuildFiltered" as (
     "clothesGearSplId",
     "shoesGearSplId",
     "updatedAt",
-    "ownerId"
+    "ownerId",
+    max("Top500Weapon"."relevant") as "isTop500"
   from
     "Build"
-    left join "BuildWeapon" on "BuildWeapon"."buildId" = "Build"."id"
+    left join "Top500Weapon" on "Top500Weapon"."buildId" = "Build"."id"
   where
-    "BuildWeapon"."weaponSplId" = @weaponId
-    or "BuildWeapon"."weaponSplId" = @altWeaponId
+    "Top500Weapon"."weaponSplId" = @weaponId
+    or "Top500Weapon"."weaponSplId" = @altWeaponId
   group by
     "Build"."id"
 ),
 "BuildWithWeapon" as (
   select
     "BuildFiltered".*,
-    json_group_array("BuildWeapon"."weaponSplId") as "weapons"
+    json_group_array(
+      json_object(
+        'weaponSplId',
+        "Top500Weapon"."weaponSplId",
+        'maxPower',
+        "Top500Weapon"."maxPower",
+        'minRank',
+        "Top500Weapon"."minRank"
+      )
+    ) as "weapons"
   from
     "BuildFiltered"
-    left join "BuildWeapon" on "BuildWeapon"."buildId" = "BuildFiltered"."id"
+    left join "Top500Weapon" on "Top500Weapon"."buildId" = "BuildFiltered"."id"
   group by
     "BuildFiltered"."id"
 )
@@ -52,6 +86,7 @@ from
 group by
   "BuildWithWeapon"."id"
 order by
+  "BuildWithWeapon"."isTop500" desc,
   case
     when "PlusTier"."tier" is null then 4
     else "PlusTier"."tier"
