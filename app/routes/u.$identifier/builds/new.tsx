@@ -299,7 +299,9 @@ function WeaponsSelector() {
   const { buildToEdit } = useLoaderData<typeof loader>();
   const { t } = useTranslation(["common", "weapons", "builds"]);
   const [weapons, setWeapons] = React.useState(
-    buildToEdit?.weapons ?? [validatedWeaponIdFromSearchParams(searchParams)]
+    buildToEdit?.weapons.map((wpn) => wpn.weaponSplId) ?? [
+      validatedWeaponIdFromSearchParams(searchParams),
+    ]
   );
 
   return (

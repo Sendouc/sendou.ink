@@ -9,7 +9,10 @@ import type {
 import { type ModeShort, weaponIdToAltId } from "~/modules/in-game-lists";
 import { modesShort } from "~/modules/in-game-lists";
 import invariant from "tiny-invariant";
-import type { BuildAbilitiesTuple } from "~/modules/in-game-lists/types";
+import type {
+  BuildAbilitiesTuple,
+  MainWeaponId,
+} from "~/modules/in-game-lists/types";
 
 import createBuildSql from "./createBuild.sql";
 import createBuildWeaponSql from "./createBuildWeapon.sql";
@@ -89,6 +92,12 @@ export function countByUserId(userId: Build["ownerId"]) {
   return (countByUserIdStm.get({ userId })?.count ?? 0) as number;
 }
 
+export interface BuildWeaponWithTop500Info {
+  weaponSplId: MainWeaponId;
+  minRank: number | null;
+  maxPower: number | null;
+}
+
 type BuildsByUserRow = Pick<
   Build,
   | "id"
@@ -99,7 +108,10 @@ type BuildsByUserRow = Pick<
   | "clothesGearSplId"
   | "shoesGearSplId"
   | "updatedAt"
-> & { weapons: string; abilities: string };
+> & {
+  weapons: string;
+  abilities: string;
+};
 export function buildsByUserId(userId: Build["ownerId"]) {
   const rows = buildsByUserIdStm.all({ userId }) as Array<BuildsByUserRow>;
 
@@ -129,14 +141,17 @@ export function buildsByWeaponId({
   return rows.map(augmentBuild);
 }
 
-function augmentBuild<T>(
-  row: T & { modes: Build["modes"]; weapons: string; abilities: string }
-) {
-  const modes = row.modes ? (JSON.parse(row.modes) as ModeShort[]) : null;
+function augmentBuild<T>({
+  weapons: rawWeapons,
+  modes: rawModes,
+  abilities: rawAbilities,
+  ...row
+}: T & { modes: Build["modes"]; weapons: string; abilities: string }) {
+  const modes = rawModes ? (JSON.parse(rawModes) as ModeShort[]) : null;
   const weapons = (
-    JSON.parse(row.weapons) as Array<BuildWeapon["weaponSplId"]>
-  ).sort((a, b) => a - b);
-  const abilities = JSON.parse(row.abilities) as Array<
+    JSON.parse(rawWeapons) as Array<BuildWeaponWithTop500Info>
+  ).sort((a, b) => a.weaponSplId - b.weaponSplId);
+  const abilities = JSON.parse(rawAbilities) as Array<
     Pick<BuildAbility, "ability" | "gearType" | "slotIndex">
   >;
 
