@@ -17,7 +17,6 @@ module.exports.up = function (db) {
     "mode" text not null,
     "type" text not null,
     "region" text not null,
-    "team" text,
     foreign key ("playerId") references "SplatoonPlayer"("id") on delete cascade,
     unique("rank", "month", "year", "type", "region", "team") on conflict rollback
   ) strict

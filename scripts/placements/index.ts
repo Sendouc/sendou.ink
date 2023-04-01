@@ -84,7 +84,6 @@ async function processJson(args: {
       ),
       nameDiscriminator: placement.nameId,
       power: placement.xPower,
-      team: null,
       rank: placement.rank,
       region: args.region === "p" ? "JPN" : "WEST",
       title: placement.byname,

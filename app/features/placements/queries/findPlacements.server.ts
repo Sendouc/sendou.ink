@@ -57,7 +57,6 @@ export type FindPlacement = Pick<
   | "name"
   | "power"
   | "rank"
-  | "team"
   | "month"
   | "year"
   | "type"
