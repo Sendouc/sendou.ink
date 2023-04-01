@@ -166,7 +166,6 @@ interface SelectOption {
 
 function selectOptions() {
   const options: SelectOption[][] = [];
-  // TODO: splatfest
   // TODO: get month, year options from API
   for (const monthYear of [{ month: 3, year: 2023 }]) {
     for (const region of ["WEST", "JPN"] as const) {
