@@ -90,6 +90,15 @@
     ]
   },
   {
+    "name": "leaderboards",
+    "url": "leaderboards",
+    "prefetch": false,
+    "filters": [
+      "invert(66%) sepia(77%) saturate(6299%) hue-rotate(346deg) brightness(99%) contrast(107%)",
+      "invert(26%) sepia(85%) saturate(3333%) hue-rotate(313deg) brightness(99%) contrast(99%)"
+    ]
+  },
+  {
     "name": "articles",
     "url": "a",
     "prefetch": false,
