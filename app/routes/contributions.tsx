@@ -10,6 +10,7 @@ import {
   GITHUB_CONTRIBUTORS_URL,
   LEAN_TWITTER,
   SENDOU_TWITTER_URL,
+  SPLATOON_3_INK,
   UBERU_TWITTER,
   YAGA_TWITTER,
 } from "~/utils/urls";
@@ -125,6 +126,12 @@ export default function ContributionsPage() {
             Antariska
           </a>{" "}
           - {t("contributions:antariska")}
+        </li>
+        <li>
+          <a href={SPLATOON_3_INK} target="_blank" rel="noreferrer">
+            splatoon3.ink
+          </a>{" "}
+          - {t("contributions:splatoon3ink")}
         </li>
         {TRANSLATORS.map(({ translators, language }) => (
           <li key={language}>
