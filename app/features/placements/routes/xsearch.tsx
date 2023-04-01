@@ -18,6 +18,7 @@ import invariant from "tiny-invariant";
 import type { MonthYear } from "../placements-utils";
 import { i18next } from "~/modules/i18n";
 import { makeTitle } from "~/utils/strings";
+import { monthYears } from "../queries/monthYears";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -35,6 +36,9 @@ export const meta: MetaFunction = (args) => {
 };
 
 export const loader = async ({ request }: LoaderArgs) => {
+  const availableMonthYears = monthYears();
+  const { month: latestMonth, year: latestYear } = availableMonthYears[0]!;
+
   // #region parse URL params
   const url = new URL(request.url);
   const mode = (() => {
@@ -62,8 +66,7 @@ export const loader = async ({ request }: LoaderArgs) => {
       }
     }
 
-    // TODO: return latest
-    return 3;
+    return latestMonth;
   })();
   const year = (() => {
     const year = url.searchParams.get("year");
@@ -74,8 +77,7 @@ export const loader = async ({ request }: LoaderArgs) => {
       }
     }
 
-    // TODO: return latest
-    return 2023;
+    return latestYear;
   })();
   // #endregion
 
@@ -92,6 +94,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   return {
     title: makeTitle(t("pages.xsearch")),
     placements,
+    availableMonthYears,
   };
 };
 
@@ -115,12 +118,11 @@ export default function XSearchPage() {
     });
   };
 
-  // TODO: get latest month/year from API
-  const selectValue = `${searchParams.get("month") ?? 3}-${
-    searchParams.get("year") ?? 2023
-  }-${searchParams.get("mode") ?? "SZ"}-${
-    searchParams.get("region") ?? "WEST"
-  }`;
+  const selectValue = `${
+    searchParams.get("month") ?? data.availableMonthYears[0]!.month
+  }-${searchParams.get("year") ?? data.availableMonthYears[0]!.year}-${
+    searchParams.get("mode") ?? "SZ"
+  }-${searchParams.get("region") ?? "WEST"}`;
 
   return (
     <Main halfWidth className="stack lg">
@@ -129,7 +131,7 @@ export default function XSearchPage() {
         onChange={handleSelectChange}
         value={selectValue}
       >
-        {selectOptions().map((group) => (
+        {selectOptions(data.availableMonthYears).map((group) => (
           <optgroup
             key={group[0]!.id}
             label={t(`common:divisions.${group[0]!.region}`)}
@@ -164,10 +166,9 @@ interface SelectOption {
   };
 }
 
-function selectOptions() {
+function selectOptions(monthYears: MonthYear[]) {
   const options: SelectOption[][] = [];
-  // TODO: get month, year options from API
-  for (const monthYear of [{ month: 3, year: 2023 }]) {
+  for (const monthYear of monthYears) {
     for (const region of ["WEST", "JPN"] as const) {
       const regionOptions: SelectOption[] = [];
       for (const mode of rankedModesShort) {
