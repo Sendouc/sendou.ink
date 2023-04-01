@@ -116,16 +116,23 @@ export default function XSearchPage() {
         onChange={handleSelectChange}
         value={selectValue}
       >
-        {selectOptions().map((option) => (
-          <option
-            key={option.id}
-            value={`${option.span.value.month}-${option.span.value.year}-${option.mode}-${option.region}`}
+        {selectOptions().map((group) => (
+          <optgroup
+            key={group[0]!.id}
+            label={t(`common:divisions.${group[0]!.region}`)}
           >
-            {option.span.from.month}/{option.span.from.year} -{" "}
-            {option.span.to.month}/{option.span.to.year} /{" "}
-            {t(`game-misc:MODE_SHORT_${option.mode}`)} /{" "}
-            {t(`common:divisions.${option.region}`)}
-          </option>
+            {group.map((option) => (
+              <option
+                key={option.id}
+                value={`${option.span.value.month}-${option.span.value.year}-${option.mode}-${option.region}`}
+              >
+                {option.span.from.month}/{option.span.from.year} -{" "}
+                {option.span.to.month}/{option.span.to.year} /{" "}
+                {t(`game-misc:MODE_SHORT_${option.mode}`)} /{" "}
+                {t(`common:divisions.${option.region}`)}
+              </option>
+            ))}
+          </optgroup>
         ))}
       </select>
       <PlacementsTable placements={data.placements} />
@@ -133,29 +140,34 @@ export default function XSearchPage() {
   );
 }
 
+interface SelectOption {
+  id: string;
+  region: SplatoonPlacement["region"];
+  mode: RankedModeShort;
+  span: {
+    from: MonthYear;
+    to: MonthYear;
+    value: MonthYear;
+  };
+}
+
 function selectOptions() {
-  const options: Array<{
-    id: string;
-    region: SplatoonPlacement["region"];
-    mode: RankedModeShort;
-    span: {
-      from: MonthYear;
-      to: MonthYear;
-      value: MonthYear;
-    };
-  }> = [];
+  const options: SelectOption[][] = [];
   // TODO: splatfest
   // TODO: get month, year options from API
   for (const monthYear of [{ month: 3, year: 2023 }]) {
     for (const region of ["WEST", "JPN"] as const) {
+      const regionOptions: SelectOption[] = [];
       for (const mode of rankedModesShort) {
-        options.push({
+        regionOptions.push({
           id: nanoid(),
           region,
           mode,
           span: monthYearToSpan(monthYear),
         });
       }
+
+      options.push(regionOptions);
     }
   }
 
