@@ -1,4 +1,9 @@
-import type { LinksFunction, LoaderArgs } from "@remix-run/node";
+import type {
+  LinksFunction,
+  LoaderArgs,
+  MetaFunction,
+  SerializeFrom,
+} from "@remix-run/node";
 import { useLoaderData, useSearchParams } from "@remix-run/react";
 import { Main } from "~/components/Main";
 import { findPlacementsOfMonth } from "../queries/findPlacements.server";
@@ -11,22 +16,27 @@ import { nanoid } from "nanoid";
 import { useTranslation } from "~/hooks/useTranslation";
 import invariant from "tiny-invariant";
 import type { MonthYear } from "../placements-utils";
+import { i18next } from "~/modules/i18n";
+import { makeTitle } from "~/utils/strings";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const loader = ({ request }: LoaderArgs) => {
+export const meta: MetaFunction = (args) => {
+  const data = args.data as SerializeFrom<typeof loader> | null;
+
+  if (!data) return {};
+
+  return {
+    title: data.title,
+    description: "Splatoon 3 X Battle results",
+  };
+};
+
+export const loader = async ({ request }: LoaderArgs) => {
   // #region parse URL params
   const url = new URL(request.url);
-  // const type = (() => {
-  //   const type = url.searchParams.get("type");
-  //   if (type === "XRANK" || type === "SPLATFEST") {
-  //     return type;
-  //   }
-
-  //   return "XRANK";
-  // })();
   const mode = (() => {
     const mode = url.searchParams.get("mode");
     if (rankedModesShort.includes(mode as any)) {
@@ -77,7 +87,10 @@ export const loader = ({ request }: LoaderArgs) => {
     year,
   });
 
+  const t = await i18next.getFixedT(request);
+
   return {
+    title: makeTitle(t("pages.xsearch")),
     placements,
   };
 };
