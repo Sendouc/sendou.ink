@@ -13,10 +13,7 @@ import type {
   Ability as AbilityType,
   ModeShort,
 } from "~/modules/in-game-lists";
-import type {
-  BuildAbilitiesTuple,
-  MainWeaponId,
-} from "~/modules/in-game-lists/types";
+import type { BuildAbilitiesTuple } from "~/modules/in-game-lists/types";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { discordFullName, gearTypeToInitial } from "~/utils/strings";
 import {
