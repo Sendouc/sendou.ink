@@ -1,4 +1,20 @@
-with "BuildWithWeapon" as (
+with "Top500Weapon" as (
+  select
+    "BuildWeapon".*,
+    min("SplatoonPlacement"."rank") as "minRank",
+    max("SplatoonPlacement"."power") as "maxPower"
+  from
+    "BuildWeapon"
+    left join "SplatoonPlayer" on "SplatoonPlayer"."userId" = @userId
+    left join "SplatoonPlacement" on "SplatoonPlacement"."playerId" = "SplatoonPlayer"."id"
+    and "SplatoonPlacement"."mode" != 'TW'
+    and "SplatoonPlacement"."rank" <= 500
+    and "SplatoonPlacement"."weaponSplId" = "BuildWeapon"."weaponSplId"
+  group by
+    "BuildWeapon"."buildId",
+    "BuildWeapon"."weaponSplId"
+),
+"BuildWithWeapon" as (
   select
     "id",
     "title",
@@ -8,10 +24,19 @@ with "BuildWithWeapon" as (
     "clothesGearSplId",
     "shoesGearSplId",
     "updatedAt",
-    json_group_array("BuildWeapon"."weaponSplId") as "weapons"
+    json_group_array(
+      json_object(
+        'weaponSplId',
+        "Top500Weapon"."weaponSplId",
+        'maxPower',
+        "Top500Weapon"."maxPower",
+        'minRank',
+        "Top500Weapon"."minRank"
+      )
+    ) as "weapons"
   from
     "Build"
-    left join "BuildWeapon" on "BuildWeapon"."buildId" = "Build"."id"
+    left join "Top500Weapon" on "Top500Weapon"."buildId" = "Build"."id"
   where
     "Build"."ownerId" = @userId
   group by
