@@ -7,7 +7,12 @@ import { useLoaderData } from "@remix-run/react";
 import { useTranslation } from "~/hooks/useTranslation";
 import { BuildCard } from "~/components/BuildCard";
 import { LinkButton } from "~/components/Button";
-import { BUILDS_PAGE_BATCH_SIZE, BUILDS_PAGE_MAX_BUILDS } from "~/constants";
+import {
+  BUILDS_PAGE_BATCH_SIZE,
+  BUILDS_PAGE_MAX_BUILDS,
+  ONE_HOUR_IN_MS,
+  TWELVE_HOURS_IN_MS,
+} from "~/constants";
 import { db } from "~/db";
 import { i18next } from "~/modules/i18n";
 import { weaponIdIsNotAlt } from "~/modules/in-game-lists";
@@ -24,6 +29,8 @@ import {
 import { Main } from "~/components/Main";
 import { ChartBarIcon } from "~/components/icons/ChartBar";
 import { FireIcon } from "~/components/icons/Fire";
+import { cachified } from "cachified";
+import { cache } from "~/utils/cache.server";
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
@@ -77,14 +84,25 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const slug = mySlugify(t(`weapons:MAIN_${weaponId}`, { lng: "en" }));
 
+  const cachedBuilds = await cachified({
+    key: `builds-${weaponId}`,
+    cache,
+    ttl: ONE_HOUR_IN_MS,
+    staleWhileRevalidate: TWELVE_HOURS_IN_MS,
+    // eslint-disable-next-line @typescript-eslint/require-await
+    async getFreshValue() {
+      return db.builds.buildsByWeaponId({
+        weaponId,
+        limit: BUILDS_PAGE_MAX_BUILDS,
+      });
+    },
+  });
+
   return {
     weaponId,
     weaponName,
     title: makeTitle([weaponName, t("common:pages.builds")]),
-    builds: db.builds.buildsByWeaponId({
-      weaponId,
-      limit,
-    }),
+    builds: cachedBuilds.slice(0, limit),
     limit,
     slug,
   };
