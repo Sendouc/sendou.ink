@@ -11,7 +11,6 @@ import {
   BUILDS_PAGE_BATCH_SIZE,
   BUILDS_PAGE_MAX_BUILDS,
   ONE_HOUR_IN_MS,
-  TWELVE_HOURS_IN_MS,
 } from "~/constants";
 import { db } from "~/db";
 import { i18next } from "~/modules/i18n";
@@ -88,7 +87,6 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     key: `builds-${weaponId}`,
     cache,
     ttl: ONE_HOUR_IN_MS,
-    staleWhileRevalidate: TWELVE_HOURS_IN_MS,
     // eslint-disable-next-line @typescript-eslint/require-await
     async getFreshValue() {
       return db.builds.buildsByWeaponId({
