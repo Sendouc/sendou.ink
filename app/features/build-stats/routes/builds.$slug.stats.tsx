@@ -14,7 +14,7 @@ import styles from "../build-stats.css";
 import { WeaponImage } from "~/components/Image";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { notFoundIfFalsy } from "~/utils/remix";
-import { MAX_AP, ONE_HOUR_IN_MS, TWELVE_HOURS_IN_MS } from "~/constants";
+import { MAX_AP, ONE_HOUR_IN_MS } from "~/constants";
 import { useTranslation } from "~/hooks/useTranslation";
 import {
   BUILDS_PAGE,
@@ -78,7 +78,6 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     key: `build-stats-${weaponId}`,
     cache,
     ttl: ONE_HOUR_IN_MS,
-    staleWhileRevalidate: TWELVE_HOURS_IN_MS,
     // eslint-disable-next-line @typescript-eslint/require-await
     async getFreshValue() {
       return abilityPointCountsToAverages({
