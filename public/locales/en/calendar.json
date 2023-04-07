@@ -1,7 +1,7 @@
 {
   "inYourTimeZone": "Times in your local time zone:",
   "addNew": "Add new",
-  "noEvents": "No events for selected week",
+  "noEvents": "No events for the selected week",
   "reportResults": "You can report results:",
   "day": "Day {{number}}",
   "actions.reportWinners": "Report winners",
@@ -33,7 +33,7 @@
   "forms.team.player.header": "Player {{number}}",
   "forms.team.player.add": "Add player",
   "forms.team.player.remove": "Remove player",
-  "forms.team.player.addAsUser": "Add as user (recommended)",
+  "forms.team.player.addAsUser": "Add as a user (recommended)",
   "forms.team.player.addAsText": "Add as text",
 
   "forms.errors.uniqueTeamName": "Each team needs a unique name.",
@@ -41,19 +41,19 @@
   "forms.errors.emptyTeam": "Each team must have at least one player.",
 
   "forms.toTools.header": "Enable TO Tools",
-  "forms.toTools.explanation": "With TO Tools your tournament will use prepicked maps and seed creator tool is available.",
+  "forms.toTools.explanation": "With TO Tools your tournament will use prepicked maps and the seed creator tool is available.",
 
   "week.this": "This Week",
   "week.next": "Next Week",
   "week.last": "Last Week",
 
   "tag.desc.BADGE": "Winner of this event gets a sendou.ink badge.",
-  "tag.desc.SPECIAL": "Ruleset that differ from the standard e.g. limited what weapons can be used.",
+  "tag.desc.SPECIAL": "Ruleset that differs from the standard e.g. limited what weapons can be used.",
   "tag.desc.ART": "You can win art by playing in this tournament.",
   "tag.desc.MONEY": "You can win money by playing in this tournament.",
   "tag.desc.REGION": "Limited who can play in this event based on location.",
   "tag.desc.LOW": "Who can play in this event is limited by skill.",
-  "tag.desc.COUNT": "Only limited amount of teams can register.",
+  "tag.desc.COUNT": "Only a limited amount of teams can register.",
   "tag.desc.LAN": "This event is played locally.",
   "tag.desc.QUALIFIER": "This tournament is a qualifier for another event.",
   "tag.desc.SZ": "Splat Zones is the only mode played.",

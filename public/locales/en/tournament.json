@@ -6,11 +6,11 @@
   "pre.footerNote": "Note: you can change your map pool and roster as many times as you want before the tournament starts.",
   "pre.deleteTeam": "Delete team",
 
-  "preview": "Preview maplist generator (admin only)",
+  "preview": "Preview map list generator (admin only)",
   "pre.steps.register": "1. Register on",
   "pre.steps.register.summary": "Enter team name you register with",
   "pre.steps.mapPool": "2. Map pool",
-  "pre.steps.mapPool.explanation": "You can play without selecting a map pool but then your opponent gets to decide what maps get played. Tie breaker maps marked in blue.",
+  "pre.steps.mapPool.explanation": "You can play without selecting a map pool but then your opponent gets to decide what maps get played. Tie-breaker maps marked in blue.",
   "pre.steps.mapPool.summary": "Pick your team's maps",
   "pre.steps.roster": "3. Submit roster",
   "pre.steps.roster.explanation": "Submitting roster is optional but you might be seeded lower if you don't.",
@@ -35,12 +35,12 @@
   "pickInfo.both": "Both picked",
   "pickInfo.default": "Default map",
 
-  "generator.error": "Changes you made weren't saved since tournament has started",
+  "generator.error": "Changes you made weren't saved since the tournament started",
 
   "teams.mapsPickedStatus": "Maps picked status",
 
   "admin.eventStarted": "Event started",
-  "admin.eventStarted.explanation": "After start teams can generate map lists but won't be able to edit their map pools or rosters.",
+  "admin.eventStarted.explanation": "After the start, teams can generate map lists but won't be able to edit their map pools or rosters.",
   "admin.download": "Download participants",
   "admin.download.discord": "Discord list"
 }

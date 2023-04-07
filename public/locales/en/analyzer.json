@@ -36,7 +36,7 @@
   "stat.runSpeedInEnemyInk": "Run speed in enemy ink",
   "stat.shootingRunSpeed": "Run speed while shooting",
   "stat.shootingRunSpeedCharging": "Run speed while charging",
-  "stat.shootingRunSpeedFullCharge": "Run speed (holding full charge)",
+  "stat.shootingRunSpeedFullCharge": "Run speed (holding a full charge)",
   "stat.framesBeforeTakingDamageInEnemyInk": "Frames before enemy ink damage",
   "stat.damageTakenInEnemyInkPerSecond": "Damage from enemy ink per second",
   "stat.enemyInkDamageLimit": "Max damage from enemy ink",
