@@ -17,8 +17,8 @@ import {
 } from "~/utils/urls";
 import { popularBuilds } from "../build-stats-utils";
 import { abilitiesByWeaponId } from "../queries/abilitiesByWeaponId.server";
-import { cache } from "~/utils/cache.server";
-import { ONE_HOUR_IN_MS, TWELVE_HOURS_IN_MS } from "~/constants";
+import { cache, ttl } from "~/utils/cache.server";
+import { ONE_HOUR_IN_MS } from "~/constants";
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
@@ -67,8 +67,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const cachedPopularBuilds = await cachified({
     key: `popular-builds-${weaponId}`,
     cache,
-    ttl: ONE_HOUR_IN_MS,
-    staleWhileRevalidate: TWELVE_HOURS_IN_MS,
+    ttl: ttl(ONE_HOUR_IN_MS),
     // eslint-disable-next-line @typescript-eslint/require-await
     async getFreshValue() {
       return popularBuilds(abilitiesByWeaponId(weaponId));

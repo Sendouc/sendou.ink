@@ -17,6 +17,8 @@
   "pages.support": "Support",
   "pages.privacy": "Privacy Policy",
   "pages.vods": "Videos",
+  "pages.xsearch": "Top Search",
+  "pages.leaderboards": "Leaderboards",
 
   "header.profile": "Profile",
   "header.logout": "Log out",
@@ -169,5 +171,10 @@
   "custom.colors.bg-lighter": "Background lighter",
   "custom.colors.text": "Text",
   "custom.colors.text-lighter": "Text lighter",
-  "custom.colors.theme": "Theme"
+  "custom.colors.theme": "Theme",
+
+  "divisions.WEST": "Tentatek",
+  "divisions.JPN": "Takoroka",
+  "xsearch.placements": "placements",
+  "xsearch.aliases": "Aliases:"
 }

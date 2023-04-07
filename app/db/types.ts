@@ -3,6 +3,7 @@ import type {
   Ability,
   MainWeaponId,
   ModeShort,
+  RankedModeShort,
   StageId,
 } from "~/modules/in-game-lists";
 import type allTags from "../routes/calendar/tags.json";
@@ -215,7 +216,7 @@ export interface TournamentRound {
 export interface TournamentMatch {
   id: number;
   roundId: number;
-  // xxx: why we need both?
+  // TODO tournament: why we need both?
   number: number | null;
   position: number;
   winnerDestinationMatchId: number | null;
@@ -297,4 +298,27 @@ export interface VideoMatchPlayer {
   playerName: string | null;
   weaponSplId: MainWeaponId;
   player: number;
+}
+
+export interface XRankPlacement {
+  id: number;
+  weaponSplId: MainWeaponId;
+  name: string;
+  nameDiscriminator: string;
+  power: number;
+  rank: number;
+  title: string;
+  badges: string; // badge id's separated by comma
+  bannerSplId: number;
+  playerId: number;
+  month: number;
+  year: number;
+  mode: RankedModeShort;
+  region: "WEST" | "JPN";
+}
+
+export interface SplatoonPlayer {
+  id: number;
+  userId: number;
+  splId: string;
 }

@@ -22,6 +22,7 @@
     "check-translation-jsons:no-write": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/check-translation-jsons.ts --no-write",
     "replace-img-names": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/replace-img-names.ts",
     "replace-weapon-names": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/replace-weapon-names.ts",
+    "placements": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/placements/index.ts",
     "hex-to-filter": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/hex-to-filter.ts",
     "lint:ts": "eslint . --ext .ts,.tsx",
     "lint:styles": "stylelint \"app/styles/**/*.css\"",
@@ -31,7 +32,8 @@
     "test:unit": "uvu -r tsm -r tsconfig-paths/register -i e2e",
     "test:e2e": "npx playwright test",
     "checks": "npm run test:unit && npm run lint:styles && npm run lint:ts && npm run prettier:check && npm run typecheck",
-    "cf": "npm run test:unit && npm run check-translation-jsons && npm run lint:styles -- --fix && npm run lint:ts -- --fix && npm run prettier:write && npm run typecheck && npm run test:e2e"
+    "cf": "npm run test:unit && npm run check-translation-jsons && npm run lint:styles -- --fix && npm run lint:ts -- --fix && npm run prettier:write && npm run typecheck && npm run test:e2e",
+    "cf:noe2e": "npm run test:unit && npm run check-translation-jsons && npm run lint:styles -- --fix && npm run lint:ts -- --fix && npm run prettier:write && npm run typecheck"
   },
   "dependencies": {
     "@faker-js/faker": "^7.6.0",

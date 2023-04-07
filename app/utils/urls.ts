@@ -4,6 +4,7 @@ import type {
   CalendarEvent,
   GearType,
   MapPoolMap,
+  XRankPlacement,
   User,
 } from "~/db/types";
 import type { ModeShort, weaponCategories } from "~/modules/in-game-lists";
@@ -53,6 +54,7 @@ export const YAGA_TWITTER = "https://twitter.com/a_bog_hag";
 export const ANTARISKA_TWITTER = "https://twitter.com/antariska_spl";
 export const ipLabsMaps = (pool: string) =>
   `https://maps.iplabs.ink/?3&pool=${pool}`;
+export const SPLATOON_3_INK = "https://splatoon3.ink/";
 
 export const twitterUrl = (accountName: string) =>
   `https://twitter.com/${accountName}`;
@@ -144,6 +146,18 @@ export const joinTeamPage = ({
   inviteCode: string;
 }) => `${teamPage(customUrl)}/join?code=${inviteCode}`;
 
+export const topSearchPage = (args?: {
+  month: number;
+  year: number;
+  mode: ModeShort;
+  region: XRankPlacement["region"];
+}) =>
+  args
+    ? `/xsearch?month=${args.month}&year=${args.year}&mode=${args.mode}&region=${args.region}`
+    : "/xsearch";
+export const topSearchPlayerPage = (playerId: number) =>
+  `${topSearchPage()}/player/${playerId}`;
+
 export const authErrorUrl = (errorCode: AuthErrorCode) =>
   `/?authError=${errorCode}`;
 export const impersonateUrl = (idToLogInAs: number) =>
@@ -219,6 +233,8 @@ export const modeImageUrl = (mode: ModeShort) =>
   `/static-assets/img/modes/${mode}`;
 export const stageImageUrl = (stageId: StageId) =>
   `/static-assets/img/stages/${stageId}`;
+export const brandImageUrl = (brand: "tentatek" | "takoroka") =>
+  `/static-assets/img/layout/${brand}`;
 export const stageMinimapImageUrlWithEnding = ({
   stageId,
   mode,

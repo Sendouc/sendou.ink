@@ -48,6 +48,12 @@ module.exports = {
         "/builds/:slug/popular",
         "features/build-stats/routes/builds.$slug.popular.tsx"
       );
+
+      route("/xsearch", "features/top-search/routes/xsearch.tsx");
+      route(
+        "/xsearch/player/:id",
+        "features/top-search/routes/xsearch.player.$id.tsx"
+      );
     });
   },
 };

@@ -13,7 +13,7 @@ import { Ability } from "~/components/Ability";
 import styles from "../build-stats.css";
 import { WeaponImage } from "~/components/Image";
 import { notFoundIfNullLike, type SendouRouteHandle } from "~/utils/remix";
-import { MAX_AP, ONE_HOUR_IN_MS, TWELVE_HOURS_IN_MS } from "~/constants";
+import { MAX_AP, ONE_HOUR_IN_MS } from "~/constants";
 import { useTranslation } from "~/hooks/useTranslation";
 import {
   BUILDS_PAGE,
@@ -23,7 +23,7 @@ import {
 } from "~/utils/urls";
 import { i18next } from "~/modules/i18n";
 import { makeTitle } from "~/utils/strings";
-import { cache } from "~/utils/cache.server";
+import { cache, ttl } from "~/utils/cache.server";
 import { cachified } from "cachified";
 
 export const meta: MetaFunction = (args) => {
@@ -76,8 +76,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const cachedStats = await cachified({
     key: `build-stats-${weaponId}`,
     cache,
-    ttl: ONE_HOUR_IN_MS,
-    staleWhileRevalidate: TWELVE_HOURS_IN_MS,
+    ttl: ttl(ONE_HOUR_IN_MS),
     // eslint-disable-next-line @typescript-eslint/require-await
     async getFreshValue() {
       return abilityPointCountsToAverages({

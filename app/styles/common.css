@@ -263,7 +263,7 @@ select {
   background: var(--select-background, var(--bg-input));
 
   /* TODO: Get color from CSS var */
-  background-image: url('data:image/svg+xml;utf8,<svg width="1rem" color="rgb(255 255 255 / 55%)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>');
+  background-image: url('data:image/svg+xml;utf8,<svg width="17px" color="rgb(255 255 255 / 55%)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg>');
   background-position: center right var(--s-3);
   background-repeat: no-repeat;
   cursor: pointer;
@@ -869,9 +869,16 @@ dialog::backdrop {
 }
 
 .build__weapon {
+  position: relative;
   padding: var(--s-0-5);
   border-radius: 50%;
   background-color: var(--bg-darker-very-transparent);
+}
+
+.build__top500 {
+  position: absolute;
+  top: -14px;
+  right: 8px;
 }
 
 .build__weapon-text {

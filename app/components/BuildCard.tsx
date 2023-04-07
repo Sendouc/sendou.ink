@@ -13,10 +13,7 @@ import type {
   Ability as AbilityType,
   ModeShort,
 } from "~/modules/in-game-lists";
-import type {
-  BuildAbilitiesTuple,
-  MainWeaponId,
-} from "~/modules/in-game-lists/types";
+import type { BuildAbilitiesTuple } from "~/modules/in-game-lists/types";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { discordFullName, gearTypeToInitial } from "~/utils/strings";
 import {
@@ -37,6 +34,7 @@ import { EditIcon } from "./icons/Edit";
 import { Image } from "./Image";
 import { Popover } from "./Popover";
 import { InfoIcon } from "./icons/Info";
+import type { BuildWeaponWithTop500Info } from "~/db/models/builds/queries.server";
 
 interface BuildProps {
   build: Pick<
@@ -51,7 +49,11 @@ interface BuildProps {
   > & {
     abilities: BuildAbilitiesTuple;
     modes: ModeShort[] | null;
-    weapons: Array<BuildWeapon["weaponSplId"]>;
+    weapons: Array<{
+      weaponSplId: BuildWeapon["weaponSplId"];
+      minRank: number | null;
+      maxPower: number | null;
+    }>;
   };
   owner?: Pick<
     UserWithPlusTier,
@@ -127,12 +129,12 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
         </div>
       </div>
       <div className="build__weapons">
-        {weapons.map((weaponSplId) => (
-          <RoundWeaponImage key={weaponSplId} weaponSplId={weaponSplId} />
+        {weapons.map((weapon) => (
+          <RoundWeaponImage key={weapon.weaponSplId} weapon={weapon} />
         ))}
         {weapons.length === 1 && (
           <div className="build__weapon-text">
-            {t(`weapons:MAIN_${weapons[0]!}` as any)}
+            {t(`weapons:MAIN_${weapons[0]!.weaponSplId}` as any)}
           </div>
         )}
       </div>
@@ -156,7 +158,7 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
       <div className="build__bottom-row">
         <Link
           to={analyzerPage({
-            weaponId: weapons[0]!,
+            weaponId: weapons[0]!.weaponSplId,
             abilities: abilities.flat(),
           })}
         >
@@ -204,12 +206,27 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
   );
 }
 
-function RoundWeaponImage({ weaponSplId }: { weaponSplId: MainWeaponId }) {
+function RoundWeaponImage({ weapon }: { weapon: BuildWeaponWithTop500Info }) {
+  const { weaponSplId, maxPower, minRank } = weapon;
+
   const { t } = useTranslation(["weapons"]);
   const slug = mySlugify(t(`weapons:MAIN_${weaponSplId}`, { lng: "en" }));
 
+  const isTop500 = typeof maxPower === "number" && typeof minRank === "number";
+
   return (
     <div key={weaponSplId} className="build__weapon">
+      {isTop500 ? (
+        <Image
+          className="build__top500"
+          path={navIconUrl("xsearch")}
+          alt=""
+          title={`Max X Power: ${maxPower} | Best Rank: ${minRank}`}
+          height={24}
+          width={24}
+          testId="top500-crown"
+        />
+      ) : null}
       <Link to={weaponBuildPage(slug)}>
         <Image
           path={mainWeaponImageUrl(weaponSplId)}
