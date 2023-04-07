@@ -23,7 +23,7 @@ import {
 } from "~/utils/urls";
 import { i18next } from "~/modules/i18n";
 import { makeTitle } from "~/utils/strings";
-import { cache } from "~/utils/cache.server";
+import { cache, ttl } from "~/utils/cache.server";
 import { cachified } from "cachified";
 
 export const meta: MetaFunction = (args) => {
@@ -76,7 +76,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const cachedStats = await cachified({
     key: `build-stats-${weaponId}`,
     cache,
-    ttl: ONE_HOUR_IN_MS,
+    ttl: ttl(ONE_HOUR_IN_MS),
     // eslint-disable-next-line @typescript-eslint/require-await
     async getFreshValue() {
       return abilityPointCountsToAverages({
