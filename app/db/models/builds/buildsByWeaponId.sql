@@ -1,23 +1,21 @@
 with "Top500Weapon" as (
   select
     "BuildWeapon".*,
-    min("SplatoonPlacement"."rank") as "minRank",
-    max("SplatoonPlacement"."power") as "maxPower",
+    min("XRankPlacement"."rank") as "minRank",
+    max("XRankPlacement"."power") as "maxPower",
     (
       (
         "BuildWeapon"."weaponSplId" = @weaponId
         or "BuildWeapon"."weaponSplId" = @altWeaponId
       )
-      and "SplatoonPlacement"."rank" <= 500
+      and "XRankPlacement"."rank" is not null
     ) as "relevant"
   from
     "BuildWeapon"
     left join "Build" on "Build"."id" = "BuildWeapon"."buildId"
     left join "SplatoonPlayer" on "SplatoonPlayer"."userId" = "Build"."ownerId"
-    left join "SplatoonPlacement" on "SplatoonPlacement"."playerId" = "SplatoonPlayer"."id"
-    and "SplatoonPlacement"."mode" != 'TW'
-    and "SplatoonPlacement"."rank" <= 500
-    and "SplatoonPlacement"."weaponSplId" = "BuildWeapon"."weaponSplId"
+    left join "XRankPlacement" on "XRankPlacement"."playerId" = "SplatoonPlayer"."id"
+    and "XRankPlacement"."weaponSplId" = "BuildWeapon"."weaponSplId"
   group by
     "BuildWeapon"."buildId",
     "BuildWeapon"."weaponSplId"

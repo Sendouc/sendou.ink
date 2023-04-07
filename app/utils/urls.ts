@@ -4,7 +4,7 @@ import type {
   CalendarEvent,
   GearType,
   MapPoolMap,
-  SplatoonPlacement,
+  XRankPlacement,
   User,
 } from "~/db/types";
 import type { ModeShort, weaponCategories } from "~/modules/in-game-lists";
@@ -150,7 +150,7 @@ export const xSearchPage = (args?: {
   month: number;
   year: number;
   mode: ModeShort;
-  region: SplatoonPlacement["region"];
+  region: XRankPlacement["region"];
 }) =>
   args
     ? `/xsearch?month=${args.month}&year=${args.year}&mode=${args.mode}&region=${args.region}`

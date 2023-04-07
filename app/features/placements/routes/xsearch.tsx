@@ -10,7 +10,7 @@ import { findPlacementsOfMonth } from "../queries/findPlacements.server";
 import styles from "../placements.css";
 import { PlacementsTable } from "../components/Placements";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
-import type { SplatoonPlacement } from "~/db/types";
+import type { XRankPlacement } from "~/db/types";
 import type { RankedModeShort } from "~/modules/in-game-lists";
 import { nanoid } from "nanoid";
 import { useTranslation } from "~/hooks/useTranslation";
@@ -82,7 +82,6 @@ export const loader = async ({ request }: LoaderArgs) => {
   // #endregion
 
   const placements = findPlacementsOfMonth({
-    type: "XRANK",
     mode,
     region,
     month,
@@ -157,7 +156,7 @@ export default function XSearchPage() {
 
 interface SelectOption {
   id: string;
-  region: SplatoonPlacement["region"];
+  region: XRankPlacement["region"];
   mode: RankedModeShort;
   span: {
     from: MonthYear;

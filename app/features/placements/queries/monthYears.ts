@@ -5,7 +5,7 @@ const smt = sql.prepare(/* sql */ `
   select
     "month",
     "year"
-  from "SplatoonPlacement"
+  from "XRankPlacement"
   group by "month", "year"
   order by "year" desc, "month" desc
 `);
