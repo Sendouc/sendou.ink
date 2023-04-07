@@ -4,8 +4,8 @@ import { useTranslation } from "~/hooks/useTranslation";
 import {
   brandImageUrl,
   modeImageUrl,
-  xSearchPage,
-  xSearchPlayerPage,
+  topSearchPage,
+  topSearchPlayerPage,
 } from "~/utils/urls";
 import { monthYearToSpan } from "../placements-utils";
 import type { FindPlacement } from "../queries/findPlacements.server";
@@ -27,8 +27,8 @@ export function PlacementsTable({
         <Link
           to={
             type === "MODE_INFO"
-              ? xSearchPage(placement)
-              : xSearchPlayerPage(placement.playerId)
+              ? topSearchPage(placement)
+              : topSearchPlayerPage(placement.playerId)
           }
           key={placement.id}
           className="placements__table__row"

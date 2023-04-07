@@ -79,7 +79,6 @@ export const MAPS_URL = "/maps";
 export const ANALYZER_URL = "/analyzer";
 export const OBJECT_DAMAGE_CALCULATOR_URL = "/object-damage-calculator";
 export const VODS_PAGE = "/vods";
-export const TOP_SEARCH_PAGE = "/xsearch";
 
 export const BLANK_IMAGE_URL = "/static-assets/img/blank.gif";
 export const COMMON_PREVIEW_IMAGE =
@@ -147,7 +146,7 @@ export const joinTeamPage = ({
   inviteCode: string;
 }) => `${teamPage(customUrl)}/join?code=${inviteCode}`;
 
-export const xSearchPage = (args?: {
+export const topSearchPage = (args?: {
   month: number;
   year: number;
   mode: ModeShort;
@@ -156,8 +155,8 @@ export const xSearchPage = (args?: {
   args
     ? `/xsearch?month=${args.month}&year=${args.year}&mode=${args.mode}&region=${args.region}`
     : "/xsearch";
-export const xSearchPlayerPage = (playerId: number) =>
-  `${xSearchPage()}/player/${playerId}`;
+export const topSearchPlayerPage = (playerId: number) =>
+  `${topSearchPage()}/player/${playerId}`;
 
 export const authErrorUrl = (errorCode: AuthErrorCode) =>
   `/?authError=${errorCode}`;

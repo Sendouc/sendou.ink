@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { navigate, seed } from "~/utils/playwright";
-import { TOP_SEARCH_PAGE, userPage, weaponBuildPage } from "~/utils/urls";
+import { topSearchPage, userPage, weaponBuildPage } from "~/utils/urls";
 
 test.describe("Top search", () => {
   test("views different x rank placements", async ({ page }) => {
@@ -8,7 +8,7 @@ test.describe("Top search", () => {
 
     await navigate({
       page,
-      url: TOP_SEARCH_PAGE,
+      url: topSearchPage(),
     });
 
     await page.getByTestId("xsearch-select").selectOption("3-2023-TC-WEST");

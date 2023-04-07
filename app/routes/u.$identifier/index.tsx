@@ -19,7 +19,7 @@ import {
   modeImageUrl,
   teamPage,
   userSubmittedImage,
-  xSearchPlayerPage,
+  topSearchPlayerPage,
 } from "~/utils/urls";
 import { badgeExplanationText } from "../badges/$id";
 import type { UserPageLoaderData } from "../u.$identifier";
@@ -214,7 +214,7 @@ function TopPlacements() {
 
   return (
     <Link
-      to={xSearchPlayerPage(data.playerId)}
+      to={topSearchPlayerPage(data.playerId)}
       className="u__placements"
       data-testid="placements-box"
     >
