@@ -174,5 +174,7 @@
   "custom.colors.theme": "Theme",
 
   "divisions.WEST": "Tentatek",
-  "divisions.JPN": "Takoroka"
+  "divisions.JPN": "Takoroka",
+  "xsearch.placements": "placements",
+  "xsearch.aliases": "Aliases:"
 }
