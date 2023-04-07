@@ -224,6 +224,7 @@ function RoundWeaponImage({ weapon }: { weapon: BuildWeaponWithTop500Info }) {
           title={`Max X Power: ${maxPower} | Best Rank: ${minRank}`}
           height={24}
           width={24}
+          testId="top500-crown"
         />
       ) : null}
       <Link to={weaponBuildPage(slug)}>

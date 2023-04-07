@@ -129,6 +129,7 @@ export default function XSearchPage() {
         className="text-sm"
         onChange={handleSelectChange}
         value={selectValue}
+        data-testid="xsearch-select"
       >
         {selectOptions(data.availableMonthYears).map((group) => (
           <optgroup
