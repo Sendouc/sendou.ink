@@ -29,7 +29,7 @@ import { Main } from "~/components/Main";
 import { ChartBarIcon } from "~/components/icons/ChartBar";
 import { FireIcon } from "~/components/icons/Fire";
 import { cachified } from "cachified";
-import { cache } from "~/utils/cache.server";
+import { cache, ttl } from "~/utils/cache.server";
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
@@ -86,7 +86,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const cachedBuilds = await cachified({
     key: `builds-${weaponId}`,
     cache,
-    ttl: ONE_HOUR_IN_MS,
+    ttl: ttl(ONE_HOUR_IN_MS),
     // eslint-disable-next-line @typescript-eslint/require-await
     async getFreshValue() {
       return db.builds.buildsByWeaponId({
