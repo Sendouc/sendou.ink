@@ -12,7 +12,7 @@ import { z } from "zod";
 import { Main } from "~/components/Main";
 import { SubNav, SubNavLink } from "~/components/SubNav";
 import { db } from "~/db";
-import { userTopPlacements } from "~/features/placements";
+import { userTopPlacements } from "~/features/top-search";
 import { findVods } from "~/features/vods";
 import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";

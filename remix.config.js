@@ -49,10 +49,10 @@ module.exports = {
         "features/build-stats/routes/builds.$slug.popular.tsx"
       );
 
-      route("/xsearch", "features/placements/routes/xsearch.tsx");
+      route("/xsearch", "features/top-search/routes/xsearch.tsx");
       route(
         "/xsearch/player/:id",
-        "features/placements/routes/xsearch.player.$id.tsx"
+        "features/top-search/routes/xsearch.player.$id.tsx"
       );
     });
   },
