@@ -216,7 +216,7 @@ export interface TournamentRound {
 export interface TournamentMatch {
   id: number;
   roundId: number;
-  // xxx: why we need both?
+  // TODO tournament: why we need both?
   number: number | null;
   position: number;
   winnerDestinationMatchId: number | null;

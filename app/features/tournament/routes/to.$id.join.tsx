@@ -26,7 +26,7 @@ export const action: ActionFunction = async ({ request }) => {
   const user = await requireUserId(request);
   const url = new URL(request.url);
   const inviteCode = url.searchParams.get("code");
-  // xxx: don't throw here
+  // TODO tournament: don't throw here
   invariant(inviteCode, "code is missing");
 
   const leanTeam = notFoundIfFalsy(findByInviteCode(inviteCode));

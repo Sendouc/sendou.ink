@@ -75,7 +75,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       );
 
       validate(!userIsInTeam);
-      // xxx: make sure tournament has not started
+      // TODO tournament: make sure tournament has not started
 
       createTeam({ calendarEventId: idFromParams(params), ownerId: user.id });
       break;
@@ -83,7 +83,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     case "UPDATE_TEAM_INFO": {
       validate(ownTeam);
 
-      // xxx: make sure not changing name AND tournament is happening
+      // TODO tournament: make sure not changing name AND tournament is happening
 
       updateTeamInfo({
         friendCode: data.friendCode,
@@ -97,7 +97,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       validate(ownTeam.members.some((member) => member.userId === data.userId));
       validate(data.userId !== user.id);
 
-      // xxx: make sure tournament not happening
+      // TODO tournament: make sure tournament not happening
 
       deleteTeamMember({ tournamentTeamId: ownTeam.id, userId: data.userId });
       break;
@@ -107,7 +107,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       validate(ownTeam);
       validate(validateCounterPickMapPool(mapPool) === "VALID");
 
-      // xxx: make sure tournament not happening
+      // TODO tournament: make sure tournament not happening
       upsertCounterpickMaps({
         tournamentTeamId: ownTeam.id,
         mapPool: new MapPool(data.mapPool),
@@ -150,7 +150,7 @@ export default function TournamentRegisterPage() {
   return (
     <div className="stack lg">
       <div className="tournament__logo-container">
-        {/* xxx: dynamic image */}
+        {/* TODO tournament: dynamic image */}
         <img
           src="https://abload.de/img/screenshot2022-12-15ap0ca1.png"
           alt=""
@@ -240,7 +240,7 @@ function FillRoster({
     0
   );
 
-  // xxx: + tournament has not started
+  // TODO tournament: + tournament has not started
   const showDeleteMemberSection = ownTeamMembers.length > 1;
 
   return (

@@ -51,7 +51,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const event = notFoundIfFalsy(findByIdentifier(eventId));
 
   return {
-    // xxx: remove isBeforeStart
+    // TODO tournament: remove isBeforeStart
     event: { ...event, isBeforeStart: true },
     tieBreakerMapPool:
       db.calendarEvents.findTieBreakerMapPoolByEventId(eventId),
