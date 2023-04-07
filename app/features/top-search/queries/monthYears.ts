@@ -1,5 +1,5 @@
 import { sql } from "~/db/sql";
-import type { MonthYear } from "../placements-utils";
+import type { MonthYear } from "../top-search-utils";
 
 const smt = sql.prepare(/* sql */ `
   select

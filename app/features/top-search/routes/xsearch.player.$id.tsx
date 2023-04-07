@@ -9,7 +9,7 @@ import { Main } from "~/components/Main";
 import { notFoundIfFalsy } from "~/utils/remix";
 import { PlacementsTable } from "../components/Placements";
 import { findPlacementsByPlayerId } from "../queries/findPlacements.server";
-import styles from "../placements.css";
+import styles from "../top-search.css";
 import { removeDuplicates } from "~/utils/arrays";
 import { userPage } from "~/utils/urls";
 import { i18next } from "~/modules/i18n";

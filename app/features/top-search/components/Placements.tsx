@@ -7,7 +7,7 @@ import {
   topSearchPage,
   topSearchPlayerPage,
 } from "~/utils/urls";
-import { monthYearToSpan } from "../placements-utils";
+import { monthYearToSpan } from "../top-search-utils";
 import type { FindPlacement } from "../queries/findPlacements.server";
 
 interface PlacementsTableProps {

@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker";
 import capitalize from "just-capitalize";
 import shuffle from "just-shuffle";
 import invariant from "tiny-invariant";
-import { ADMIN_DISCORD_ID, INVITE_CODE_LENGTH } from "~/constants";
+import { ADMIN_DISCORD_ID, ADMIN_ID, INVITE_CODE_LENGTH } from "~/constants";
 import { db } from "~/db";
 import { sql } from "~/db/sql";
 import {
@@ -810,7 +810,10 @@ function adminBuilds() {
     const randomOrderHeadGear = shuffle(headGearIds.slice());
     const randomOrderClothesGear = shuffle(clothesGearIds.slice());
     const randomOrderShoesGear = shuffle(shoesGearIds.slice());
-    const randomOrderWeaponIds = shuffle(mainWeaponIds.slice());
+    // filter out sshot to prevent test flaking
+    const randomOrderWeaponIds = shuffle(
+      mainWeaponIds.filter((id) => id !== 40).slice()
+    );
 
     db.builds.create({
       title: `${capitalize(faker.word.adjective())} ${capitalize(
@@ -856,7 +859,10 @@ function adminBuilds() {
 
 function manySplattershotBuilds() {
   // ensure 500 has at least one splattershot build for x placement test
-  const users = [...userIdsInRandomOrder().filter((id) => id !== 500), 500];
+  const users = [
+    ...userIdsInRandomOrder().filter((id) => id !== 500 && id !== ADMIN_ID),
+    500,
+  ];
 
   for (let i = 0; i < 500; i++) {
     const SPLATTERSHOT_ID = 40;
