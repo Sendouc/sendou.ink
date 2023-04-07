@@ -213,7 +213,11 @@ function TopPlacements() {
   if (!data.playerId) return null;
 
   return (
-    <Link to={xSearchPlayerPage(data.playerId)} className="u__placements">
+    <Link
+      to={xSearchPlayerPage(data.playerId)}
+      className="u__placements"
+      data-testid="placements-box"
+    >
       {modesShort.map((mode) => {
         const placement = data.topPlacements[mode];
 

@@ -26,7 +26,7 @@ export function Image({
   containerClassName,
 }: ImageProps) {
   return (
-    <picture data-testid={testId} title={title} className={containerClassName}>
+    <picture title={title} className={containerClassName}>
       <source
         type="image/avif"
         srcSet={`${path}.avif`}
@@ -42,6 +42,7 @@ export function Image({
         height={height}
         style={style}
         draggable="false"
+        data-testid={testId}
       />
     </picture>
   );

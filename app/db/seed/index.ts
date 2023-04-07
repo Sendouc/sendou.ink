@@ -855,6 +855,9 @@ function adminBuilds() {
 }
 
 function manySplattershotBuilds() {
+  // ensure 500 has at least one splattershot build for x placement test
+  const users = [...userIdsInRandomOrder().filter((id) => id !== 500), 500];
+
   for (let i = 0; i < 500; i++) {
     const SPLATTERSHOT_ID = 40;
 
@@ -864,7 +867,6 @@ function manySplattershotBuilds() {
     const randomOrderWeaponIds = shuffle(mainWeaponIds.slice()).filter(
       (id) => id !== SPLATTERSHOT_ID
     );
-    const users = userIdsInRandomOrder();
 
     db.builds.create({
       title: `${capitalize(faker.word.adjective())} ${capitalize(
@@ -1156,7 +1158,7 @@ function xRankPlacements() {
         // admin
         if (placement.playerSplId === "qx6imlx72tfeqrhqfnmm") return 1;
         // user in top 500 who is not plus server member
-        if (i === 0) return 200;
+        if (i === 0) return 500;
 
         return null;
       };

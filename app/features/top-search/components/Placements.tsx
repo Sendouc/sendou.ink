@@ -23,7 +23,7 @@ export function PlacementsTable({
 
   return (
     <div className="placements__table">
-      {placements.map((placement) => (
+      {placements.map((placement, i) => (
         <Link
           to={
             type === "MODE_INFO"
@@ -32,6 +32,7 @@ export function PlacementsTable({
           }
           key={placement.id}
           className="placements__table__row"
+          data-testid={`placement-row-${i}`}
         >
           <div className="placements__table__inner-row">
             <div className="placements__table__rank">{placement.rank}</div>
