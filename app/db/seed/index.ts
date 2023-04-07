@@ -23,13 +23,15 @@ import {
 } from "~/modules/plus-server";
 import allTags from "~/routes/calendar/tags.json";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
-import type { UpsertManyPlusVotesArgs } from "./models/plusVotes/queries.server";
+import type { UpsertManyPlusVotesArgs } from "../models/plusVotes/queries.server";
 import { nanoid } from "nanoid";
 import { mySlugify } from "~/utils/urls";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { createVod } from "~/features/vods/queries/createVod.server";
 
-const ADMIN_TEST_AVATAR = "1d1d8488ced4cdf478648592fa871101";
+import placements from "./placements.json";
+
+const ADMIN_TEST_AVATAR = "f34d6169979e60dfe63de0f96c8050f3";
 
 const NZAP_TEST_DISCORD_ID = "455039198672453645";
 const NZAP_TEST_AVATAR = "f809176af93132c3db5f0a5019e96339"; // https://cdn.discordapp.com/avatars/455039198672453645/f809176af93132c3db5f0a5019e96339.webp?size=160
@@ -65,6 +67,7 @@ const basicSeeds = [
   otherTeams,
   realVideo,
   realVideoCast,
+  xRankPlacements,
 ];
 
 export function seed() {
@@ -92,6 +95,8 @@ function wipeDB() {
     "UserWeapon",
     "PlusTier",
     "UnvalidatedVideo",
+    "XRankPlacement",
+    "SplatoonPlayer",
     "User",
     "PlusSuggestion",
     "PlusVote",
@@ -1102,4 +1107,64 @@ function realVideoCast() {
       // there are other matches too...
     ],
   });
+}
+
+// some copy+paste from placements script
+const addPlayerStm = sql.prepare(/* sql */ `
+  insert into "SplatoonPlayer" ("splId", "userId")
+  values (@splId, @userId)
+  on conflict ("splId") do nothing
+`);
+
+const addPlacementStm = sql.prepare(/* sql */ `
+  insert into "XRankPlacement" (
+    "weaponSplId",
+    "name",
+    "nameDiscriminator",
+    "power",
+    "rank",
+    "title",
+    "badges",
+    "bannerSplId",
+    "playerId",
+    "month",
+    "year",
+    "region",
+    "mode"
+  )
+  values (
+    @weaponSplId,
+    @name,
+    @nameDiscriminator,
+    @power,
+    @rank,
+    @title,
+    @badges,
+    @bannerSplId,
+    (select "id" from "SplatoonPlayer" where "splId" = @playerSplId),
+    @month,
+    @year,
+    @region,
+    @mode
+  )
+`);
+
+function xRankPlacements() {
+  sql.transaction(() => {
+    for (const [i, placement] of placements.entries()) {
+      const userId = () => {
+        // admin
+        if (placement.playerSplId === "qx6imlx72tfeqrhqfnmm") return 1;
+        // user in top 500 who is not plus server member
+        if (i === 0) return 200;
+
+        return null;
+      };
+      addPlayerStm.run({
+        splId: placement.playerSplId,
+        userId: userId(),
+      });
+      addPlacementStm.run(placement);
+    }
+  })();
 }
