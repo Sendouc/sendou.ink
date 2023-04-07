@@ -245,7 +245,7 @@
   margin: 0 auto;
   background-color: var(--bg-lighter);
   color: var(--text);
-  gap: var(--s-10);
+  gap: var(--s-6);
   transition: 0.1s ease-in-out background-color;
 }
 
@@ -257,7 +257,17 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: var(--fonts-sm);
+  font-size: var(--fonts-xs);
   font-weight: var(--semi-bold);
   gap: var(--s-1-5);
+}
+
+@media screen and (min-width: 480px) {
+  .u__placements {
+    gap: var(--s-10);
+  }
+
+  .u__placements__mode {
+    font-size: var(--fonts-sm);
+  }
 }
