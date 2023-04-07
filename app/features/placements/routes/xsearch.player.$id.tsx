@@ -14,6 +14,7 @@ import { removeDuplicates } from "~/utils/arrays";
 import { userPage } from "~/utils/urls";
 import { i18next } from "~/modules/i18n";
 import { makeTitle } from "~/utils/strings";
+import { useTranslation } from "~/hooks/useTranslation";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -46,6 +47,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 };
 
 export default function XSearchPlayerPage() {
+  const { t } = useTranslation(["common"]);
   const data = useLoaderData<typeof loader>();
 
   const firstName = data.placements[0]!.name;
@@ -65,12 +67,12 @@ export default function XSearchPlayerPage() {
             <Link to={userPage(data.placements[0]!)}>{firstName}</Link>
           ) : (
             <>{firstName}</>
-          )}
-          &apos;s placements
+          )}{" "}
+          {t("common:xsearch.placements")}
         </h2>
         {aliases.length > 0 ? (
           <div className="text-lighter text-sm">
-            Aliases: {aliases.join(", ")}
+            {t("common:xsearch.aliases")} {aliases.join(", ")}
           </div>
         ) : null}
       </div>
