@@ -8,6 +8,7 @@
   "actions.delete": "Delete event",
   "actions.delete.confirm": "Delete all data related to {{name}}?",
   "participatedCount": "{{count}} teams participated",
+  "participatedPlayerCount": "{{count}} players participated",
   "members": "Members",
   "results": "Results",
   "createMapList": "Create map list",
