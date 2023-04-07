@@ -221,7 +221,7 @@ function TopPlacements() {
 
         return (
           <div key={mode} className="u__placements__mode">
-            <Image path={modeImageUrl(mode)} alt="" width={32} height={32} />
+            <Image path={modeImageUrl(mode)} alt="" width={24} height={24} />
             <div>
               {placement.rank} / {placement.power}
             </div>
