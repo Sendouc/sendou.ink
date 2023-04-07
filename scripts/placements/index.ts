@@ -7,6 +7,14 @@ import type { XRankPlacement } from "~/db/types";
 import { type MainWeaponId, mainWeaponIds } from "~/modules/in-game-lists";
 import { xRankSchema } from "./schemas";
 
+const rawJsonNumber = process.argv[2]?.trim();
+invariant(rawJsonNumber, "jsonNumber is required (argument 1)");
+const jsonNumber = Number(rawJsonNumber);
+invariant(
+  Number.isInteger(jsonNumber),
+  "jsonNumber must be an integer (argument 1)"
+);
+
 type Placements = Array<
   Omit<XRankPlacement, "playerId" | "id"> & { playerSplId: string }
 >;
@@ -29,7 +37,12 @@ async function main() {
     for (const region of regions) {
       for (const includeWeapon of [false]) {
         placements.push(
-          ...(await processJson({ includeWeapon, mode, region, number: 2 }))
+          ...(await processJson({
+            includeWeapon,
+            mode,
+            region,
+            number: jsonNumber,
+          }))
         );
       }
     }
