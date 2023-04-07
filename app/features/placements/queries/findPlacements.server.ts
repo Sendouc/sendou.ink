@@ -1,49 +1,46 @@
 import { sql } from "~/db/sql";
-import type { SplatoonPlacement, User } from "~/db/types";
+import type { XRankPlacement, User } from "~/db/types";
 
 const query = (byPlayer?: boolean) => /* sql */ `
   select
-    "SplatoonPlacement"."id",
-    "SplatoonPlacement"."weaponSplId",
-    "SplatoonPlacement"."name",
-    "SplatoonPlacement"."power",
-    "SplatoonPlacement"."rank",
-    "SplatoonPlacement"."team",
-    "SplatoonPlacement"."month",
-    "SplatoonPlacement"."year",
-    "SplatoonPlacement"."type",
-    "SplatoonPlacement"."region",
-    "SplatoonPlacement"."playerId",
-    "SplatoonPlacement"."month", 
-    "SplatoonPlacement"."year", 
-    "SplatoonPlacement"."mode",
+    "XRankPlacement"."id",
+    "XRankPlacement"."weaponSplId",
+    "XRankPlacement"."name",
+    "XRankPlacement"."power",
+    "XRankPlacement"."rank",
+    "XRankPlacement"."month",
+    "XRankPlacement"."year",
+    "XRankPlacement"."region",
+    "XRankPlacement"."playerId",
+    "XRankPlacement"."month", 
+    "XRankPlacement"."year", 
+    "XRankPlacement"."mode",
     "User"."discordId",
     "User"."customUrl"
   from
-    "SplatoonPlacement"
+    "XRankPlacement"
   left join "SplatoonPlayer" on
-    "SplatoonPlayer"."id" = "SplatoonPlacement"."playerId"
+    "SplatoonPlayer"."id" = "XRankPlacement"."playerId"
   left join "User" on
     "User"."id" = "SplatoonPlayer"."userId"
   ${
     byPlayer
       ? /* sql */ `
   where
-    "SplatoonPlacement"."playerId" = @playerId
+    "XRankPlacement"."playerId" = @playerId
   order by
-    "SplatoonPlacement"."year" desc,
-    "SplatoonPlacement"."month" desc,
-    "SplatoonPlacement"."rank" asc
+    "XRankPlacement"."year" desc,
+    "XRankPlacement"."month" desc,
+    "XRankPlacement"."rank" asc
         `
       : /* sql */ `
   where
-    "SplatoonPlacement"."type" = @type and
-    "SplatoonPlacement"."mode" = @mode and
-    "SplatoonPlacement"."region" = @region and
-    "SplatoonPlacement"."month" = @month and
-    "SplatoonPlacement"."year" = @year
+    "XRankPlacement"."mode" = @mode and
+    "XRankPlacement"."region" = @region and
+    "XRankPlacement"."month" = @month and
+    "XRankPlacement"."year" = @year
   order by
-    "SplatoonPlacement"."rank" asc`
+    "XRankPlacement"."rank" asc`
   }
 `;
 
@@ -51,7 +48,7 @@ const ofMonthStm = sql.prepare(query());
 const byPlayerStm = sql.prepare(query(true));
 
 export type FindPlacement = Pick<
-  SplatoonPlacement,
+  XRankPlacement,
   | "id"
   | "weaponSplId"
   | "name"
@@ -59,7 +56,6 @@ export type FindPlacement = Pick<
   | "rank"
   | "month"
   | "year"
-  | "type"
   | "region"
   | "playerId"
   | "month"
@@ -69,14 +65,12 @@ export type FindPlacement = Pick<
   Pick<User, "customUrl" | "discordId">;
 
 export function findPlacementsOfMonth(
-  args: Pick<SplatoonPlacement, "type" | "mode" | "region" | "month" | "year">
+  args: Pick<XRankPlacement, "mode" | "region" | "month" | "year">
 ) {
   return ofMonthStm.all(args) as Array<FindPlacement>;
 }
 
-export function findPlacementsByPlayerId(
-  playerId: SplatoonPlacement["playerId"]
-) {
+export function findPlacementsByPlayerId(playerId: XRankPlacement["playerId"]) {
   const results = byPlayerStm.all({ playerId }) as Array<FindPlacement>;
   if (!results) return null;
 

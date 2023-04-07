@@ -1,5 +1,5 @@
 import { sql } from "~/db/sql";
-import type { SplatoonPlacement } from "~/db/types";
+import type { XRankPlacement } from "~/db/types";
 import type { ModeShort } from "~/modules/in-game-lists";
 
 const smt = sql.prepare(/* sql */ `
@@ -8,14 +8,14 @@ const smt = sql.prepare(/* sql */ `
     "rank",
     "mode",
     "playerId"
-  from "SplatoonPlacement"
-  left join "SplatoonPlayer" on "SplatoonPlayer"."id" = "SplatoonPlacement"."playerId"
+  from "XRankPlacement"
+  left join "SplatoonPlayer" on "SplatoonPlayer"."id" = "XRankPlacement"."playerId"
   left join "User" on "User"."id" = "SplatoonPlayer"."userId"
   where
     "User"."id" = @userId
 `);
 
-type Row = Pick<SplatoonPlacement, "power" | "rank" | "mode" | "playerId">;
+type Row = Pick<XRankPlacement, "power" | "rank" | "mode" | "playerId">;
 export const userTopPlacements = (userId: number) => {
   const rows = smt.all({ userId }) as Row[];
 
@@ -25,7 +25,7 @@ export const userTopPlacements = (userId: number) => {
 };
 
 type TopPlacements = Partial<
-  Record<ModeShort, Pick<SplatoonPlacement, "power" | "rank">>
+  Record<ModeShort, Pick<XRankPlacement, "power" | "rank">>
 >;
 
 function resolveTopPlacements(placements: Row[]) {

@@ -300,7 +300,7 @@ export interface VideoMatchPlayer {
   player: number;
 }
 
-export interface SplatoonPlacement {
+export interface XRankPlacement {
   id: number;
   weaponSplId: MainWeaponId;
   name: string;
@@ -314,7 +314,6 @@ export interface SplatoonPlacement {
   month: number;
   year: number;
   mode: RankedModeShort;
-  type: "SPLATFEST" | "XRANK";
   region: "WEST" | "JPN";
 }
 

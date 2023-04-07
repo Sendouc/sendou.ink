@@ -3,12 +3,12 @@ import "dotenv/config";
 
 import invariant from "tiny-invariant";
 import { sql } from "~/db/sql";
-import type { SplatoonPlacement } from "~/db/types";
+import type { XRankPlacement } from "~/db/types";
 import { type MainWeaponId, mainWeaponIds } from "~/modules/in-game-lists";
 import { xRankSchema } from "./schemas";
 
 type Placements = Array<
-  Omit<SplatoonPlacement, "playerId" | "id"> & { playerSplId: string }
+  Omit<XRankPlacement, "playerId" | "id"> & { playerSplId: string }
 >;
 
 const modes = ["splatzones", "towercontrol", "rainmaker", "clamblitz"] as const;
@@ -87,7 +87,6 @@ async function processJson(args: {
       rank: placement.rank,
       region: args.region === "p" ? "JPN" : "WEST",
       title: placement.byname,
-      type: "XRANK",
       weaponSplId: weaponId as MainWeaponId,
       month,
       year,
@@ -128,7 +127,7 @@ const addPlayerStm = sql.prepare(/* sql */ `
 `);
 
 const addPlacementStm = sql.prepare(/* sql */ `
-  insert into "SplatoonPlacement" (
+  insert into "XRankPlacement" (
     "weaponSplId",
     "name",
     "nameDiscriminator",
@@ -140,9 +139,7 @@ const addPlacementStm = sql.prepare(/* sql */ `
     "playerId",
     "month",
     "year",
-    "type",
     "region",
-    "team",
     "mode"
   )
   values (
@@ -157,9 +154,7 @@ const addPlacementStm = sql.prepare(/* sql */ `
     (select "id" from "SplatoonPlayer" where "splId" = @playerSplId),
     @month,
     @year,
-    @type,
     @region,
-    @team,
     @mode
   )
 `);
