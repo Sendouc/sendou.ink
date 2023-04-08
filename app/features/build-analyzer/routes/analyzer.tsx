@@ -965,6 +965,7 @@ function APCompare({
               className={clsx("justify-self-end", {
                 invisible: !ap,
               })}
+              data-testid="ap-compare-1"
             >
               {ap}
               {t("analyzer:abilityPoints.short")}
@@ -982,7 +983,10 @@ function APCompare({
               })}
               style={{ width: `${ap2}px` }}
             />
-            <div className={clsx({ invisible: !ap2 })}>
+            <div
+              className={clsx({ invisible: !ap2 })}
+              data-testid="ap-compare-2"
+            >
               {ap2}
               {t("analyzer:abilityPoints.short")}
             </div>

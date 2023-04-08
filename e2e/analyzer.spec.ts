@@ -70,8 +70,12 @@ test.describe("Build Analyzer", () => {
     await swimSpeedAbilityButtonLocator.click();
 
     await page.getByTestId("ap-tab").click();
-    await page.getByText("10AP").isVisible();
-    await page.getByText("13AP").isVisible();
+    await expect(page.getByTestId("ap-compare-1").first()).toContainText(
+      "10AP"
+    );
+    await expect(page.getByTestId("ap-compare-2").first()).toContainText(
+      "13AP"
+    );
 
     await page.getByTestId("swim-speed").getByText("BUILD 2").isVisible();
   });
