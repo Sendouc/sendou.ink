@@ -19,6 +19,7 @@ import { INK_CONSUME_TYPES } from "../analyzer-types";
 import invariant from "tiny-invariant";
 import {
   abilityPointsToEffects,
+  abilityValues,
   apFromMap,
   hasEffect,
   hpDivided,
@@ -1142,18 +1143,26 @@ function subQsjBoost(
   }
 
   const SUB_QSJ_BOOST_KEY = "BRU";
-  const { baseEffect, effect } = abilityPointsToEffects({
-    abilityPoints: apFromMap({
-      abilityPoints: args.abilityPoints,
-      ability: SUB_QSJ_BOOST_KEY,
-    }),
-    key: "SubSpecUpParam",
-    weapon: args.subWeaponParams,
-  });
+
+  // Lean: This is the base that is used with their weird formula (I didn't even bother renaming the vars and just used what my disassembler gave me)
+  const calculate = (ap: number) => {
+    const multiplier = abilityValues({
+      key: "SubSpecUpParam",
+      weapon: args.subWeaponParams,
+    });
+
+    const v7 =
+      ((multiplier[1] - multiplier[2]) / multiplier[0] - 17.8 / multiplier[0]) /
+      ((17.8 / multiplier[0]) * (17.8 / multiplier[0] + -1.0));
+
+    const v8 = (ap / multiplier[0]) * ((ap / multiplier[0]) * v7 + (1.0 - v7));
+
+    return Math.floor(multiplier[2] + (multiplier[0] - multiplier[2]) * v8);
+  };
 
   return {
-    baseValue: Math.floor(baseEffect),
-    value: Math.floor(effect),
+    baseValue: calculate(0),
+    value: calculate(args.abilityPoints.get(SUB_QSJ_BOOST_KEY) ?? 0),
     modifiedBy: SUB_QSJ_BOOST_KEY,
   };
 }

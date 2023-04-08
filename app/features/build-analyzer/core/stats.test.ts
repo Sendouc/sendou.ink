@@ -103,4 +103,30 @@ AnalyzeBuild(
   }
 );
 
+const subPowerApToQuickSuperJumpAp = new Map([
+  [0, 0],
+  [3, 4],
+  [6, 9],
+  [13, 18],
+  [28, 36],
+  [57, 57],
+]);
+
+AnalyzeBuild("Sub Power Up Beakon AP boost matches Lean", () => {
+  for (const [subPowerAp, quickSuperJumpAp] of subPowerApToQuickSuperJumpAp) {
+    const analyzed = buildStats({
+      weaponSplId: 1011,
+      abilityPoints: new Map([["BRU" as const, subPowerAp]]),
+      hasTacticooler: false,
+    });
+
+    assert.ok(
+      analyzed.stats.subQsjBoost?.value === quickSuperJumpAp,
+      `Wrong AP boost for ${subPowerAp}AP of Sub Power Up: ${
+        analyzed.stats.subQsjBoost!.value
+      } (expected ${quickSuperJumpAp}))`
+    );
+  }
+});
+
 AnalyzeBuild.run();

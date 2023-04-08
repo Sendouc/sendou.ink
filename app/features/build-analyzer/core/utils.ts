@@ -69,7 +69,7 @@ export function apFromMap({
   return abilityPoints.get(ability) ?? 0;
 }
 
-function abilityValues({
+export function abilityValues({
   key,
   weapon,
 }: {
