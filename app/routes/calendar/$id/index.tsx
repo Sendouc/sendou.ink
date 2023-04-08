@@ -248,6 +248,9 @@ function Results() {
 
   if (!data.results.length) return null;
 
+  // check if all the teams only contain 1 player
+  const isTeam:boolean = ;
+
   return (
     <Section title={t("calendar:results")} className="event__results-section">
       {data.event.participantCount && (
@@ -343,4 +346,9 @@ function Description() {
       </div>
     </Section>
   );
+}
+
+function checkIfIsTeam():boolean{
+
+  return true;
 }
