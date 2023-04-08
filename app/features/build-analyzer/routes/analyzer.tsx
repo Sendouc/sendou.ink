@@ -966,7 +966,8 @@ function APCompare({
                 invisible: !ap,
               })}
             >
-              {ap}AP
+              {ap}
+              {t("analyzer:abilityPoints.short")}
             </div>
             <div
               className={clsx("analyzer__ap-compare__bar", "justify-self-end", {
