@@ -64,6 +64,7 @@ import {
   isStackableAbility,
 } from "../core/utils";
 import { useUser } from "~/modules/auth";
+import { atOrError } from "~/utils/arrays";
 
 export const CURRENT_PATCH = "3.1";
 
@@ -1261,6 +1262,12 @@ function DamageTable({
 
   const showDistanceColumn = values.some((val) => val.distance);
 
+  const firstRow = atOrError(values, 0);
+  const showDamageColumn =
+    !damageIsSubWeaponDamage(firstRow) ||
+    // essentially checking that we are using some sub resistance up
+    values.some((val) => val.value !== (val as any).baseValue);
+
   return (
     <>
       <table>
@@ -1270,10 +1277,10 @@ function DamageTable({
             {showDistanceColumn && (
               <th>{t("analyzer:damage.header.distance")}</th>
             )}
-            {damageIsSubWeaponDamage(values[0]!) ? (
+            {damageIsSubWeaponDamage(firstRow) ? (
               <th>{t("analyzer:damage.header.baseDamage")}</th>
             ) : null}
-            <th>{t("analyzer:damage.header.damage")}</th>
+            {showDamageColumn && <th>{t("analyzer:damage.header.damage")}</th>}
           </tr>
         </thead>
         <tbody>
@@ -1311,16 +1318,18 @@ function DamageTable({
                   </td>
                 )}
                 {damageIsSubWeaponDamage(val) && <td>{val.baseValue}</td>}
-                <td>
-                  {damage}{" "}
-                  {val.shotsToSplat && (
-                    <span className="analyzer__shots-to-splat">
-                      {t("analyzer:damage.toSplat", {
-                        count: val.shotsToSplat,
-                      })}
-                    </span>
-                  )}
-                </td>
+                {showDamageColumn && (
+                  <td>
+                    {damage}{" "}
+                    {val.shotsToSplat && (
+                      <span className="analyzer__shots-to-splat">
+                        {t("analyzer:damage.toSplat", {
+                          count: val.shotsToSplat,
+                        })}
+                      </span>
+                    )}
+                  </td>
+                )}
               </tr>
             );
           })}
