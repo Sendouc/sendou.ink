@@ -429,6 +429,24 @@ function damages(args: StatFunctionInput): AnalyzedBuild["stats"]["damages"] {
   return result;
 }
 
+function shotsToSplat({
+  value,
+  type,
+  multiShots,
+}: {
+  value: number;
+  type: DamageType;
+  multiShots?: number;
+}) {
+  if (!["NORMAL_MAX", "NORMAL_MAX_FULL_CHARGE", "DIRECT"].includes(type)) {
+    return;
+  }
+
+  const multiplier = multiShots ? multiShots : 1;
+
+  return Math.ceil(1000 / (value * multiplier));
+}
+
 function subWeaponDefenseDamages(
   args: StatFunctionInput
 ): AnalyzedBuild["stats"]["subWeaponDefenseDamages"] {
@@ -471,24 +489,6 @@ function subWeaponDefenseDamages(
   }
 
   return result;
-}
-
-function shotsToSplat({
-  value,
-  type,
-  multiShots,
-}: {
-  value: number;
-  type: DamageType;
-  multiShots?: number;
-}) {
-  if (!["NORMAL_MAX", "NORMAL_MAX_FULL_CHARGE", "DIRECT"].includes(type)) {
-    return;
-  }
-
-  const multiplier = multiShots ? multiShots : 1;
-
-  return Math.ceil(1000 / (value * multiplier));
 }
 
 const framesToSeconds = (frames: number) =>
