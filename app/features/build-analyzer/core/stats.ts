@@ -41,7 +41,11 @@ import {
 } from "./utils";
 import { assertUnreachable } from "~/utils/types";
 import { semiRandomId } from "~/utils/strings";
-import { cutToNDecimalPlaces, roundToNDecimalPlaces } from "~/utils/number";
+import {
+  cutToNDecimalPlaces,
+  roundToNDecimalPlaces,
+  sumArray,
+} from "~/utils/number";
 import type abilityValuesJson from "./ability-values.json";
 
 export function buildStats({
@@ -476,8 +480,10 @@ function subWeaponDefenseDamages(
       const value = params[key as keyof SubWeaponParams];
 
       if (Array.isArray(value)) {
+        const arrayValues: AnalyzedBuild["stats"]["subWeaponDefenseDamages"] =
+          [];
         for (const subValue of value.flat()) {
-          result.push({
+          arrayValues.push({
             type,
             baseValue: subValue.Damage / 10,
             value: subWeaponDamageValue({
@@ -491,6 +497,23 @@ function subWeaponDefenseDamages(
             subWeaponId: id,
           });
         }
+
+        if (id === BURST_BOMB_ID) {
+          // Burst Bomb direct damage
+          arrayValues.unshift({
+            id: semiRandomId(),
+            subWeaponId: id,
+            distance: 0,
+            baseValue: sumArray(arrayValues.map((v) => v.baseValue)),
+            value: cutToNDecimalPlaces(
+              sumArray(arrayValues.map((v) => v.value)),
+              1
+            ),
+            type,
+          });
+        }
+
+        result.push(...arrayValues);
 
         continue;
       }
@@ -565,113 +588,6 @@ function subWeaponDamageValue({
   // Lean: The HP are ints between 0 and 1000 consistently
   return cutToNDecimalPlaces(baseValue * effect, 1);
 }
-
-// function subDefAngleShooterDamage(
-//   args: StatFunctionInput
-// ): AnalyzedBuild["stats"]["subDefAngleShooterDamage"] {
-//   const SUB_DEF_ANGLE_SHOOTER_DAMAGE_KEY = "SRU";
-//   const { baseEffect, effect } = abilityPointsToEffects({
-//     abilityPoints: apFromMap({
-//       abilityPoints: args.abilityPoints,
-//       ability: SUB_DEF_ANGLE_SHOOTER_DAMAGE_KEY,
-//     }),
-//     key: "DamageRt_LineMarker",
-//     weapon: args.mainWeaponParams,
-//   });
-
-//   const angleShooterDirectDamage =
-//     weaponParams().subWeapons[ANGLE_SHOOTER_ID].DirectDamage;
-//   invariant(angleShooterDirectDamage);
-
-//   return {
-//     baseValue: roundToNDecimalPlaces(
-//       (angleShooterDirectDamage * baseEffect) / 10,
-//       1
-//     ),
-//     value: roundToNDecimalPlaces((angleShooterDirectDamage * effect) / 10, 1),
-//     modifiedBy: SUB_DEF_ANGLE_SHOOTER_DAMAGE_KEY,
-//   };
-// }
-
-// function subDefSplashWallDamagePercentage(
-//   args: StatFunctionInput
-// ): AnalyzedBuild["stats"]["subDefSplashWallDamagePercentage"] {
-//   const SUB_DEF_SPLASH_WALL_DAMAGE_PERCENTAGE_KEY = "SRU";
-//   const { baseEffect, effect } = abilityPointsToEffects({
-//     abilityPoints: apFromMap({
-//       abilityPoints: args.abilityPoints,
-//       ability: SUB_DEF_SPLASH_WALL_DAMAGE_PERCENTAGE_KEY,
-//     }),
-//     key: "DamageRt_Shield",
-//     weapon: args.mainWeaponParams,
-//   });
-
-//   return {
-//     baseValue: roundToNDecimalPlaces(baseEffect * 100),
-//     value: roundToNDecimalPlaces(effect * 100),
-//     modifiedBy: SUB_DEF_SPLASH_WALL_DAMAGE_PERCENTAGE_KEY,
-//   };
-// }
-
-// function subDefSprinklerDamagePercentage(
-//   args: StatFunctionInput
-// ): AnalyzedBuild["stats"]["subDefSprinklerDamagePercentage"] {
-//   const SUB_DEF_SPRINKLER_DAMAGE_PERCENTAGE_KEY = "SRU";
-//   const { baseEffect, effect } = abilityPointsToEffects({
-//     abilityPoints: apFromMap({
-//       abilityPoints: args.abilityPoints,
-//       ability: SUB_DEF_SPRINKLER_DAMAGE_PERCENTAGE_KEY,
-//     }),
-//     key: "DamageRt_Sprinkler",
-//     weapon: args.mainWeaponParams,
-//   });
-
-//   return {
-//     baseValue: roundToNDecimalPlaces(baseEffect * 100),
-//     value: roundToNDecimalPlaces(effect * 100),
-//     modifiedBy: SUB_DEF_SPRINKLER_DAMAGE_PERCENTAGE_KEY,
-//   };
-// }
-
-// function subDefBombDamageLightPercentage(
-//   args: StatFunctionInput
-// ): AnalyzedBuild["stats"]["subDefBombDamageLightPercentage"] {
-//   const SUB_DEF_BOMB_DAMAGE_LIGHT_PERCENTAGE_KEY = "SRU";
-//   const { baseEffect, effect } = abilityPointsToEffects({
-//     abilityPoints: apFromMap({
-//       abilityPoints: args.abilityPoints,
-//       ability: SUB_DEF_BOMB_DAMAGE_LIGHT_PERCENTAGE_KEY,
-//     }),
-//     key: "DamageRt_BombL",
-//     weapon: args.mainWeaponParams,
-//   });
-
-//   return {
-//     baseValue: roundToNDecimalPlaces(baseEffect * 100),
-//     value: roundToNDecimalPlaces(effect * 100),
-//     modifiedBy: SUB_DEF_BOMB_DAMAGE_LIGHT_PERCENTAGE_KEY,
-//   };
-// }
-
-// function subDefBombDamageHeavyPercentage(
-//   args: StatFunctionInput
-// ): AnalyzedBuild["stats"]["subDefBombDamageHeavyPercentage"] {
-//   const SUB_DEF_BOMB_DAMAGE_HEAVY_PERCENTAGE_KEY = "SRU";
-//   const { baseEffect, effect } = abilityPointsToEffects({
-//     abilityPoints: apFromMap({
-//       abilityPoints: args.abilityPoints,
-//       ability: SUB_DEF_BOMB_DAMAGE_HEAVY_PERCENTAGE_KEY,
-//     }),
-//     key: "DamageRt_BombH",
-//     weapon: args.mainWeaponParams,
-//   });
-
-//   return {
-//     baseValue: roundToNDecimalPlaces(baseEffect * 100),
-//     value: roundToNDecimalPlaces(effect * 100),
-//     modifiedBy: SUB_DEF_BOMB_DAMAGE_HEAVY_PERCENTAGE_KEY,
-//   };
-// }
 
 const framesToSeconds = (frames: number) =>
   effectToRounded(Math.ceil(frames) / 60);

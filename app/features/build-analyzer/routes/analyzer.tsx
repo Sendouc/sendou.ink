@@ -697,7 +697,6 @@ export default function BuildAnalyzerPage() {
               title={t("analyzer:stat.category.damage")}
               containerClassName="analyzer__table-container"
             >
-              {/* xxx: rename to Main Weapon Damage */}
               <DamageTable
                 values={analyzed.stats.damages}
                 multiShots={analyzed.weapon.multiShots}
@@ -1246,7 +1245,6 @@ function ModifiedByAbilities({ abilities }: { abilities: Stat["modifiedBy"] }) {
   );
 }
 
-// xxx: missing burst bomb direct
 // xxx: missing curling bomb direct
 // xxx: missing splash wall
 // xxx: missing sprinkler

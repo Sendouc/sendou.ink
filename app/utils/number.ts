@@ -20,3 +20,7 @@ export function secondsToMinutesNumberTuple(seconds: number) {
   const secondsLeft = seconds % 60;
   return [minutes, secondsLeft] as const;
 }
+
+export function sumArray(arr: number[]) {
+  return arr.reduce((acc, curr) => acc + curr, 0);
+}
