@@ -1270,6 +1270,9 @@ function DamageTable({
             {showDistanceColumn && (
               <th>{t("analyzer:damage.header.distance")}</th>
             )}
+            {damageIsSubWeaponDamage(values[0]!) ? (
+              <th>{t("analyzer:damage.header.baseDamage")}</th>
+            ) : null}
             <th>{t("analyzer:damage.header.damage")}</th>
           </tr>
         </thead>
@@ -1301,6 +1304,7 @@ function DamageTable({
                   {t(typeRowName)}
                 </td>
                 {showDistanceColumn && <td>{val.distance}</td>}
+                {damageIsSubWeaponDamage(val) && <td>{val.baseValue}</td>}
                 <td>
                   {damage}{" "}
                   {val.shotsToSplat && (

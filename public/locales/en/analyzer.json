@@ -81,6 +81,7 @@
   "stat.special.powerUpDuration": "{{weapon}} drink effect duration",
   "damage.header.type": "Type",
   "damage.header.damage": "Damage",
+  "damage.header.baseDamage": "Base damage",
   "damage.header.distance": "Distance",
   "damage.toSplat_one": "{{count}} hit to splat",
   "damage.toSplat_other": "{{count}} hits to splat",

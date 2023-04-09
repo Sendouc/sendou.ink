@@ -180,6 +180,7 @@ export interface Damage {
 }
 
 export interface SubWeaponDamage extends Damage {
+  baseValue: number;
   subWeaponId: SubWeaponId;
 }
 
