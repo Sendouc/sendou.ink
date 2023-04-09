@@ -12,14 +12,17 @@ import weaponParamsJson from "./weapon-params.json";
 import abilityValuesJson from "./ability-values.json";
 import type {
   AbilityPoints,
+  AnalyzedBuild,
   MainWeaponParams,
   ParamsJson,
   SpecialWeaponParams,
+  SubWeaponDamage,
   SubWeaponParams,
 } from "../analyzer-types";
 import invariant from "tiny-invariant";
 import { EMPTY_BUILD } from "~/constants";
 import { UNKNOWN_SHORT } from "../analyzer-constants";
+import type { Unpacked } from "~/utils/types";
 
 export function weaponParams(): ParamsJson {
   return weaponParamsJson as ParamsJson;
@@ -250,3 +253,11 @@ export function possibleApValues() {
 
 export const buildIsEmpty = (build: BuildAbilitiesTupleWithUnknown) =>
   build.flat().every((ability) => ability === "UNKNOWN");
+
+export function damageIsSubWeaponDamage(
+  damage:
+    | Unpacked<AnalyzedBuild["stats"]["damages"]>
+    | Unpacked<AnalyzedBuild["stats"]["subWeaponDefenseDamages"]>
+): damage is Unpacked<AnalyzedBuild["stats"]["subWeaponDefenseDamages"]> {
+  return typeof (damage as SubWeaponDamage).subWeaponId === "number";
+}

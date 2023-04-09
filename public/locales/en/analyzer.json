@@ -11,6 +11,7 @@
   "stat.category.subDef": "Sub weapon defense",
   "stat.category.actionsPerInkTank": "Actions per ink tank",
   "stat.category.damage": "Damage",
+  "stat.category.subWeaponDefenseDamages": "Sub weapon damage defense",
   "stat.category.movement": "Movement",
   "stat.category.misc": "Miscellaneous",
   "stat.canopyHp": "Canopy durability",

@@ -1,4 +1,8 @@
-import type { Ability, MainWeaponId } from "~/modules/in-game-lists";
+import {
+  type Ability,
+  type MainWeaponId,
+  subWeaponIds,
+} from "~/modules/in-game-lists";
 import { ANGLE_SHOOTER_ID } from "~/modules/in-game-lists";
 import { INK_MINE_ID, POINT_SENSOR_ID } from "~/modules/in-game-lists";
 import type {
@@ -88,6 +92,7 @@ export function buildStats({
       specialLostSplattedByRP: specialLost(input, true),
       fullInkTankOptions: fullInkTankOptions(input),
       damages: damages(input),
+      subWeaponDefenseDamages: subWeaponDefenseDamages(input),
       mainWeaponWhiteInkSeconds:
         typeof mainWeaponParams.InkRecoverStop === "number"
           ? framesToSeconds(mainWeaponParams.InkRecoverStop)
@@ -390,6 +395,7 @@ const damageTypeToParamsKey: Record<
   BOMB_DIRECT: "DirectDamage",
 };
 
+// xxx: remove sub weapon damages
 function damages(args: StatFunctionInput): AnalyzedBuild["stats"]["damages"] {
   const result: AnalyzedBuild["stats"]["damages"] = [];
 
@@ -430,6 +436,50 @@ function damages(args: StatFunctionInput): AnalyzedBuild["stats"]["damages"] {
       }),
       multiShots: isMainWeaponParam ? multiShot[args.weaponSplId] : undefined,
     });
+  }
+
+  return result;
+}
+
+function subWeaponDefenseDamages(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["subWeaponDefenseDamages"] {
+  const result: AnalyzedBuild["stats"]["subWeaponDefenseDamages"] = [];
+
+  for (const id of subWeaponIds) {
+    const params = weaponParams()["subWeapons"][id];
+
+    for (const type of DAMAGE_TYPE) {
+      const key = damageTypeToParamsKey[type];
+      const value = params[key as keyof SubWeaponParams];
+
+      if (Array.isArray(value)) {
+        for (const subValue of value.flat()) {
+          result.push({
+            type,
+            value: subValue.Damage / 10,
+            distance: subValue.Distance,
+            id: semiRandomId(),
+            subWeaponId: id,
+          });
+        }
+
+        continue;
+      }
+
+      if (typeof value !== "number") continue;
+
+      result.push({
+        id: semiRandomId(),
+        type,
+        value: value / 10,
+        shotsToSplat: shotsToSplat({
+          value,
+          type,
+        }),
+        subWeaponId: id,
+      });
+    }
   }
 
   return result;

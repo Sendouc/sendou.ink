@@ -179,6 +179,10 @@ export interface Damage {
   multiShots?: number;
 }
 
+export interface SubWeaponDamage extends Damage {
+  subWeaponId: SubWeaponId;
+}
+
 export interface AnalyzedBuild {
   weapon: {
     subWeaponSplId: SubWeaponId;
@@ -198,6 +202,7 @@ export interface AnalyzedBuild {
     subWeaponInkConsumptionPercentage: Stat;
     fullInkTankOptions: Array<FullInkTankOption & { id: string }>;
     damages: Array<Damage & { id: string }>;
+    subWeaponDefenseDamages: Array<SubWeaponDamage & { id: string }>;
     squidFormInkRecoverySeconds: Stat;
     humanoidFormInkRecoverySeconds: Stat;
     runSpeed: Stat;

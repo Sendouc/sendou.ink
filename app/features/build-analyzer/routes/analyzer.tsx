@@ -60,7 +60,11 @@ import {
 } from "../analyzer-constants";
 import { useAnalyzeBuild } from "../analyzer-hooks";
 import { Tabs, Tab } from "~/components/Tabs";
-import { buildIsEmpty, isStackableAbility } from "../core/utils";
+import {
+  buildIsEmpty,
+  damageIsSubWeaponDamage,
+  isStackableAbility,
+} from "../core/utils";
 import { useUser } from "~/modules/auth";
 
 export const CURRENT_PATCH = "3.1";
@@ -710,11 +714,25 @@ export default function BuildAnalyzerPage() {
             />
           </StatCategory>
 
+          {analyzed.stats.subWeaponDefenseDamages.length > 0 && (
+            <StatCategory
+              title={t("analyzer:stat.category.subWeaponDefenseDamages")}
+              containerClassName="analyzer__table-container"
+            >
+              <DamageTable
+                values={analyzed.stats.subWeaponDefenseDamages}
+                multiShots={analyzed.weapon.multiShots}
+                subWeaponId={analyzed.weapon.subWeaponSplId}
+              />
+            </StatCategory>
+          )}
+
           {analyzed.stats.damages.length > 0 && (
             <StatCategory
               title={t("analyzer:stat.category.damage")}
               containerClassName="analyzer__table-container"
             >
+              {/* xxx: rename to Main Weapon Damage */}
               <DamageTable
                 values={analyzed.stats.damages}
                 multiShots={analyzed.weapon.multiShots}
@@ -1263,12 +1281,20 @@ function ModifiedByAbilities({ abilities }: { abilities: Stat["modifiedBy"] }) {
   );
 }
 
+// xxx: missing burst bomb direct
+// xxx: missing curling bomb direct
+// xxx: missing splash wall
+// xxx: missing sprinkler
+// xxx: missing fizzy
+// xxx: missing torpedo
 function DamageTable({
   values,
   multiShots,
   subWeaponId,
 }: {
-  values: AnalyzedBuild["stats"]["damages"];
+  values:
+    | AnalyzedBuild["stats"]["damages"]
+    | AnalyzedBuild["stats"]["subWeaponDefenseDamages"];
   multiShots: AnalyzedBuild["weapon"]["multiShots"];
   subWeaponId: SubWeaponId;
 }) {
@@ -1282,10 +1308,10 @@ function DamageTable({
         <thead>
           <tr>
             <th>{t("analyzer:damage.header.type")}</th>
-            <th>{t("analyzer:damage.header.damage")}</th>
             {showDistanceColumn && (
               <th>{t("analyzer:damage.header.distance")}</th>
             )}
+            <th>{t("analyzer:damage.header.damage")}</th>
           </tr>
         </thead>
         <tbody>
@@ -1295,14 +1321,17 @@ function DamageTable({
                 ? new Array(multiShots).fill(val.value).join(" + ")
                 : val.value;
 
-            const typeRowName = damageTypeTranslationString({
-              damageType: val.type,
-              subWeaponId,
-            });
+            const typeRowName = damageIsSubWeaponDamage(val)
+              ? t(`weapons:SUB_${val.subWeaponId}`)
+              : damageTypeTranslationString({
+                  damageType: val.type,
+                  subWeaponId,
+                });
 
             return (
               <tr key={val.id}>
                 <td>{t(typeRowName)}</td>
+                {showDistanceColumn && <td>{val.distance}</td>}
                 <td>
                   {damage}{" "}
                   {val.shotsToSplat && (
@@ -1313,7 +1342,6 @@ function DamageTable({
                     </span>
                   )}
                 </td>
-                {showDistanceColumn && <td>{val.distance}</td>}
               </tr>
             );
           })}
