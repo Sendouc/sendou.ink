@@ -1243,7 +1243,6 @@ function ModifiedByAbilities({ abilities }: { abilities: Stat["modifiedBy"] }) {
   );
 }
 
-// xxx: missing curling bomb direct
 // xxx: missing splash wall
 // xxx: missing sprinkler
 // xxx: missing torpedo

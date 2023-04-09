@@ -517,7 +517,7 @@ function subWeaponDefenseDamages(
           }
 
           // Unify Fizzy Bounces {
-          if (id === FIZZY_BOMB_ID) {
+          if (id === FIZZY_BOMB_ID || id === CURLING_BOMB_ID) {
             const allArrayValues = arrayValues.sort(
               (a, b) => a.baseValue - b.baseValue
             );
@@ -535,21 +535,6 @@ function subWeaponDefenseDamages(
                 subWeaponId: id,
                 distance: [
                   Math.min(
-                    ...firstHalfValues.map((value) => value.distance as number)
-                  ),
-                  Math.max(
-                    ...firstHalfValues.map((value) => value.distance as number)
-                  ),
-                ],
-                baseValue: firstHalfValues[0]!.baseValue,
-                value: firstHalfValues[0]!.value,
-                type,
-              },
-              {
-                id: semiRandomId(),
-                subWeaponId: id,
-                distance: [
-                  Math.min(
                     ...secondHalfValues.map((value) => value.distance as number)
                   ),
                   Math.max(
@@ -558,6 +543,21 @@ function subWeaponDefenseDamages(
                 ],
                 baseValue: secondHalfValues[0]!.baseValue,
                 value: secondHalfValues[0]!.value,
+                type,
+              },
+              {
+                id: semiRandomId(),
+                subWeaponId: id,
+                distance: [
+                  Math.min(
+                    ...firstHalfValues.map((value) => value.distance as number)
+                  ),
+                  Math.max(
+                    ...firstHalfValues.map((value) => value.distance as number)
+                  ),
+                ],
+                baseValue: firstHalfValues[0]!.baseValue,
+                value: firstHalfValues[0]!.value,
                 type,
               },
             ];
@@ -581,6 +581,7 @@ function subWeaponDefenseDamages(
             params: args.subWeaponParams,
           }),
           subWeaponId: id,
+          distance: 0,
         });
       }
     }

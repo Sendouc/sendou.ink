@@ -102,11 +102,7 @@ export interface SubWeaponParams {
   /** Amount of frames white ink (=no ink recovery during this time) takes */
   InkRecoverStop: number;
   /** Damage dealt at different radiuses */
-  DistanceDamage?: Array<DistanceDamage>;
-  /** Damage dealt by explosion at different radiuses (curling bomb charged all the way) */
-  DistanceDamage_BlastParamMaxCharge?: Array<DistanceDamage>;
-  /** Damage dealt by explosion at different radiuses (curling bomb not charged) */
-  DistanceDamage_BlastParamMinCharge?: Array<DistanceDamage>;
+  DistanceDamage?: Array<DistanceDamage | DistanceDamage[]>;
   /** Damage dealt by explosion at different radiuses (fizzy bomb bounces) */
   DistanceDamage_BlastParamArray?: Array<DistanceDamage | DistanceDamage[]>;
   /** Damage dealt by explosion at different radiuses (torpedo explosion air to ground) */

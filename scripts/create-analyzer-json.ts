@@ -320,11 +320,13 @@ function parametersToSubWeaponResult(
     SubInkSaveLv,
     InkConsume: params["WeaponParam"]["InkConsume"] ?? 0.7,
     InkRecoverStop: params["WeaponParam"]["InkRecoverStop"],
-    DistanceDamage: params["BlastParam"]?.["DistanceDamage"],
-    DistanceDamage_BlastParamMaxCharge:
-      params["BlastParamMaxCharge"]?.["DistanceDamage"],
-    DistanceDamage_BlastParamMinCharge:
-      params["BlastParamMinCharge"]?.["DistanceDamage"],
+    DistanceDamage: params["BlastParamMaxCharge"]?.["DistanceDamage"]
+      ? // curling bomb difference charge to same key
+        [
+          params["BlastParamMaxCharge"]["DistanceDamage"],
+          params["BlastParamMinCharge"]?.["DistanceDamage"],
+        ]
+      : params["BlastParam"]?.["DistanceDamage"],
     DirectDamage:
       params["MoveParam"]?.["DirectDamage"] ??
       params["MoveParam"]?.["DamageDirectHit"],
