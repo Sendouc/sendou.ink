@@ -227,11 +227,6 @@ export interface AnalyzedBuild {
     subDefInkMineMarkedTimeInSeconds: Stat;
     subDefAngleShooterMarkedTimeInSeconds: Stat;
     subDefToxicMistMovementReduction: Stat;
-    subDefAngleShooterDamage: Stat;
-    subDefSplashWallDamagePercentage: Stat;
-    subDefSprinklerDamagePercentage: Stat;
-    subDefBombDamageLightPercentage: Stat;
-    subDefBombDamageHeavyPercentage: Stat;
 
     subVelocity?: Stat;
     subFirstPhaseDuration?: Stat;

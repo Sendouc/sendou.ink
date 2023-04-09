@@ -638,47 +638,6 @@ export default function BuildAnalyzerPage() {
             <StatCard
               isComparing={isComparing}
               abilityPoints={abilityPoints}
-              stat={statKeyToTuple("subDefBombDamageLightPercentage")}
-              title={t("analyzer:stat.bombLdamage")}
-              suffix="%"
-            />
-            <StatCard
-              isComparing={isComparing}
-              abilityPoints={abilityPoints}
-              stat={statKeyToTuple("subDefBombDamageHeavyPercentage")}
-              title={t("analyzer:stat.bombHdamage")}
-              suffix="%"
-            />
-            <StatCard
-              isComparing={isComparing}
-              abilityPoints={abilityPoints}
-              stat={statKeyToTuple("subDefAngleShooterDamage")}
-              title={t("analyzer:stat.damage", {
-                weapon: t(`weapons:SUB_${ANGLE_SHOOTER_ID}`),
-              })}
-              suffix={t("analyzer:suffix.hp")}
-            />
-            <StatCard
-              isComparing={isComparing}
-              abilityPoints={abilityPoints}
-              stat={statKeyToTuple("subDefSplashWallDamagePercentage")}
-              title={t("analyzer:stat.damage", {
-                weapon: t(`weapons:SUB_${SPLASH_WALL_ID}`),
-              })}
-              suffix="%"
-            />
-            <StatCard
-              isComparing={isComparing}
-              abilityPoints={abilityPoints}
-              stat={statKeyToTuple("subDefSprinklerDamagePercentage")}
-              title={t("analyzer:stat.damage", {
-                weapon: t(`weapons:SUB_${SPRINKLER_ID}`),
-              })}
-              suffix="%"
-            />
-            <StatCard
-              isComparing={isComparing}
-              abilityPoints={abilityPoints}
               stat={statKeyToTuple("subDefToxicMistMovementReduction")}
               title={t("analyzer:stat.movementReduction", {
                 weapon: t(`weapons:SUB_${TOXIC_MIST_ID}`),
