@@ -1289,7 +1289,17 @@ function DamageTable({
 
             return (
               <tr key={val.id}>
-                <td>{t(typeRowName)}</td>
+                <td className="stack horizontal xs items-center">
+                  {damageIsSubWeaponDamage(val) ? (
+                    <Image
+                      alt=""
+                      path={subWeaponImageUrl(val.subWeaponId)}
+                      width={12}
+                      height={12}
+                    />
+                  ) : null}{" "}
+                  {t(typeRowName)}
+                </td>
                 {showDistanceColumn && <td>{val.distance}</td>}
                 <td>
                   {damage}{" "}
