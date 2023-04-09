@@ -3,6 +3,15 @@ import {
   type MainWeaponId,
   subWeaponIds,
   type SubWeaponId,
+  SPLAT_BOMB_ID,
+  SUCTION_BOMB_ID,
+  BURST_BOMB_ID,
+  SPRINKLER_ID,
+  SPLASH_WALL_ID,
+  FIZZY_BOMB_ID,
+  CURLING_BOMB_ID,
+  AUTO_BOMB_ID,
+  TORPEDO_ID,
 } from "~/modules/in-game-lists";
 import { ANGLE_SHOOTER_ID } from "~/modules/in-game-lists";
 import { INK_MINE_ID, POINT_SENSOR_ID } from "~/modules/in-game-lists";
@@ -32,7 +41,7 @@ import {
 } from "./utils";
 import { assertUnreachable } from "~/utils/types";
 import { semiRandomId } from "~/utils/strings";
-import { roundToNDecimalPlaces } from "~/utils/number";
+import { cutToNDecimalPlaces, roundToNDecimalPlaces } from "~/utils/number";
 import type abilityValuesJson from "./ability-values.json";
 
 export function buildStats({
@@ -510,11 +519,26 @@ function subWeaponIdToEffectKey(
   subWeaponId: SubWeaponId
 ): keyof typeof abilityValuesJson {
   switch (subWeaponId) {
+    case SPLAT_BOMB_ID:
+    case SUCTION_BOMB_ID:
+    case CURLING_BOMB_ID:
+    case AUTO_BOMB_ID:
+    case INK_MINE_ID:
+    case TORPEDO_ID:
+      return "DamageRt_BombH";
+    case BURST_BOMB_ID:
+    case FIZZY_BOMB_ID:
+      return "DamageRt_BombL";
     case ANGLE_SHOOTER_ID:
       return "DamageRt_LineMarker";
-    // xxx: remove default
+    case SPRINKLER_ID:
+      return "DamageRt_Sprinkler";
+    case SPLASH_WALL_ID:
+      return "DamageRt_Shield";
     default:
-      return "DamageRt_LineMarker";
+      throw new Error(
+        `No damage rate for the sub weapon with id: ${subWeaponId}`
+      );
   }
 }
 
@@ -529,13 +553,17 @@ function subWeaponDamageValue({
   params: SubWeaponParams;
   abilityPoints: number;
 }): number {
+  // lethal damage cannot be lowered
+  if (baseValue > 100) return baseValue;
+
   const { effect } = abilityPointsToEffects({
     abilityPoints,
     key: subWeaponIdToEffectKey(subWeaponId),
     weapon: params,
   });
 
-  return roundToNDecimalPlaces(baseValue * effect, 1);
+  // Lean: The HP are ints between 0 and 1000 consistently
+  return cutToNDecimalPlaces(baseValue * effect, 1);
 }
 
 // function subDefAngleShooterDamage(

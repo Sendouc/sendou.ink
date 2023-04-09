@@ -678,6 +678,12 @@ export default function BuildAnalyzerPage() {
               title={t("analyzer:stat.category.subWeaponDefenseDamages")}
               containerClassName="analyzer__table-container"
             >
+              {/** Hack the :has ;) */}
+              {(["SRU"] as const).some(
+                (ability) => (abilityPoints.get(ability) ?? 0) > 0
+              ) ? (
+                <div className="analyzer__stat-card-highlighted" />
+              ) : null}
               <DamageTable
                 values={analyzed.stats.subWeaponDefenseDamages}
                 multiShots={analyzed.weapon.multiShots}
