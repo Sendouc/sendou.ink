@@ -17,8 +17,6 @@ import {
   INK_STORM_ID,
   isAbility,
   POINT_SENSOR_ID,
-  SPLASH_WALL_ID,
-  SPRINKLER_ID,
   TOXIC_MIST_ID,
   TORPEDO_ID,
   type BuildAbilitiesTupleWithUnknown,
@@ -1248,7 +1246,6 @@ function ModifiedByAbilities({ abilities }: { abilities: Stat["modifiedBy"] }) {
 // xxx: missing curling bomb direct
 // xxx: missing splash wall
 // xxx: missing sprinkler
-// xxx: missing fizzy
 // xxx: missing torpedo
 function DamageTable({
   values,
@@ -1307,7 +1304,13 @@ function DamageTable({
                   ) : null}{" "}
                   {t(typeRowName)}
                 </td>
-                {showDistanceColumn && <td>{val.distance}</td>}
+                {showDistanceColumn && (
+                  <td>
+                    {typeof val.distance === "number"
+                      ? val.distance
+                      : val.distance?.join("-")}
+                  </td>
+                )}
                 {damageIsSubWeaponDamage(val) && <td>{val.baseValue}</td>}
                 <td>
                   {damage}{" "}

@@ -174,7 +174,7 @@ export type DamageType = (typeof DAMAGE_TYPE)[number];
 export interface Damage {
   value: number;
   type: DamageType;
-  distance?: number;
+  distance?: number | [number, number];
   shotsToSplat?: number;
   multiShots?: number;
 }

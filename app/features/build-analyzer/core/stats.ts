@@ -384,7 +384,9 @@ function inkConsumeTypeToParamsKeys(
 
 const damageTypeToParamsKey: Record<
   DamageType,
-  keyof MainWeaponParams | keyof SubWeaponParams
+  | keyof MainWeaponParams
+  | keyof SubWeaponParams
+  | Array<keyof MainWeaponParams | keyof SubWeaponParams>
 > = {
   NORMAL_MIN: "DamageParam_ValueMin",
   NORMAL_MAX: "DamageParam_ValueMax",
@@ -392,7 +394,7 @@ const damageTypeToParamsKey: Record<
   DIRECT: "DamageParam_ValueDirect",
   DIRECT_MIN: "DamageParam_ValueDirectMin",
   DIRECT_MAX: "DamageParam_ValueDirectMax",
-  DISTANCE: "BlastParam_DistanceDamage",
+  DISTANCE: ["BlastParam_DistanceDamage", "DistanceDamage_BlastParamArray"],
   SPLASH: "BlastParam_SplashDamage",
   FULL_CHARGE: "DamageParam_ValueFullCharge",
   MAX_CHARGE: "DamageParam_ValueMaxCharge",
@@ -409,36 +411,37 @@ function damages(args: StatFunctionInput): AnalyzedBuild["stats"]["damages"] {
   const result: AnalyzedBuild["stats"]["damages"] = [];
 
   for (const type of DAMAGE_TYPE) {
-    const key = damageTypeToParamsKey[type];
-    const value = args.mainWeaponParams[key as keyof MainWeaponParams];
+    for (const key of [damageTypeToParamsKey[type]].flat()) {
+      const value = args.mainWeaponParams[key as keyof MainWeaponParams];
 
-    if (Array.isArray(value)) {
-      for (const subValue of value.flat()) {
-        result.push({
-          type,
-          value: subValue.Damage / 10,
-          distance: subValue.Distance,
-          id: semiRandomId(),
-          multiShots: multiShot[args.weaponSplId],
-        });
+      if (Array.isArray(value)) {
+        for (const subValue of value.flat()) {
+          result.push({
+            type,
+            value: subValue.Damage / 10,
+            distance: subValue.Distance,
+            id: semiRandomId(),
+            multiShots: multiShot[args.weaponSplId],
+          });
+        }
+
+        continue;
       }
 
-      continue;
-    }
+      if (typeof value !== "number") continue;
 
-    if (typeof value !== "number") continue;
-
-    result.push({
-      id: semiRandomId(),
-      type,
-      value: value / 10,
-      shotsToSplat: shotsToSplat({
-        value,
+      result.push({
+        id: semiRandomId(),
         type,
+        value: value / 10,
+        shotsToSplat: shotsToSplat({
+          value,
+          type,
+          multiShots: multiShot[args.weaponSplId],
+        }),
         multiShots: multiShot[args.weaponSplId],
-      }),
-      multiShots: multiShot[args.weaponSplId],
-    });
+      });
+    }
   }
 
   return result;
@@ -476,62 +479,110 @@ function subWeaponDefenseDamages(
     const params = weaponParams()["subWeapons"][id];
 
     for (const type of DAMAGE_TYPE) {
-      const key = damageTypeToParamsKey[type];
-      const value = params[key as keyof SubWeaponParams];
+      for (const key of [damageTypeToParamsKey[type]].flat()) {
+        const value = params[key as keyof SubWeaponParams];
 
-      if (Array.isArray(value)) {
-        const arrayValues: AnalyzedBuild["stats"]["subWeaponDefenseDamages"] =
-          [];
-        for (const subValue of value.flat()) {
-          arrayValues.push({
-            type,
-            baseValue: subValue.Damage / 10,
-            value: subWeaponDamageValue({
+        if (Array.isArray(value)) {
+          let arrayValues: AnalyzedBuild["stats"]["subWeaponDefenseDamages"] =
+            [];
+          for (const subValue of value.flat()) {
+            arrayValues.push({
+              type,
               baseValue: subValue.Damage / 10,
+              value: subWeaponDamageValue({
+                baseValue: subValue.Damage / 10,
+                subWeaponId: id,
+                abilityPoints,
+                params: args.subWeaponParams,
+              }),
+              distance: subValue.Distance,
+              id: semiRandomId(),
               subWeaponId: id,
-              abilityPoints,
-              params: args.subWeaponParams,
-            }),
-            distance: subValue.Distance,
-            id: semiRandomId(),
-            subWeaponId: id,
-          });
-        }
+            });
+          }
 
-        if (id === BURST_BOMB_ID) {
           // Burst Bomb direct damage
-          arrayValues.unshift({
-            id: semiRandomId(),
-            subWeaponId: id,
-            distance: 0,
-            baseValue: sumArray(arrayValues.map((v) => v.baseValue)),
-            value: cutToNDecimalPlaces(
-              sumArray(arrayValues.map((v) => v.value)),
-              1
-            ),
-            type,
-          });
+          if (id === BURST_BOMB_ID) {
+            arrayValues.unshift({
+              id: semiRandomId(),
+              subWeaponId: id,
+              distance: 0,
+              baseValue: sumArray(arrayValues.map((v) => v.baseValue)),
+              value: cutToNDecimalPlaces(
+                sumArray(arrayValues.map((v) => v.value)),
+                1
+              ),
+              type,
+            });
+          }
+
+          // Unify Fizzy Bounces {
+          if (id === FIZZY_BOMB_ID) {
+            const allArrayValues = arrayValues.sort(
+              (a, b) => a.baseValue - b.baseValue
+            );
+            const firstHalfValues = allArrayValues.slice(
+              0,
+              allArrayValues.length / 2
+            );
+            const secondHalfValues = allArrayValues.slice(
+              allArrayValues.length / 2
+            );
+
+            arrayValues = [
+              {
+                id: semiRandomId(),
+                subWeaponId: id,
+                distance: [
+                  Math.min(
+                    ...firstHalfValues.map((value) => value.distance as number)
+                  ),
+                  Math.max(
+                    ...firstHalfValues.map((value) => value.distance as number)
+                  ),
+                ],
+                baseValue: firstHalfValues[0]!.baseValue,
+                value: firstHalfValues[0]!.value,
+                type,
+              },
+              {
+                id: semiRandomId(),
+                subWeaponId: id,
+                distance: [
+                  Math.min(
+                    ...secondHalfValues.map((value) => value.distance as number)
+                  ),
+                  Math.max(
+                    ...secondHalfValues.map((value) => value.distance as number)
+                  ),
+                ],
+                baseValue: secondHalfValues[0]!.baseValue,
+                value: secondHalfValues[0]!.value,
+                type,
+              },
+            ];
+          }
+
+          result.push(...arrayValues);
+
+          continue;
         }
 
-        result.push(...arrayValues);
+        if (typeof value !== "number") continue;
 
-        continue;
-      }
-
-      if (typeof value !== "number") continue;
-
-      result.push({
-        id: semiRandomId(),
-        type,
-        baseValue: value / 10,
-        value: subWeaponDamageValue({
+        result.push({
+          id: semiRandomId(),
+          type,
           baseValue: value / 10,
+          value: subWeaponDamageValue({
+            baseValue: value / 10,
+            subWeaponId: id,
+            abilityPoints,
+            params: args.subWeaponParams,
+          }),
           subWeaponId: id,
-          abilityPoints,
-          params: args.subWeaponParams,
-        }),
-        subWeaponId: id,
-      });
+        });
+      }
     }
   }
 
