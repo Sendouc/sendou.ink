@@ -17,6 +17,8 @@
   "pages.support": "赞助",
   "pages.privacy": "隐私条款",
   "pages.vods": "视频",
+  "pages.xsearch": "顶尖搜索",
+  "pages.leaderboards": "排行榜",
 
   "header.profile": "个人资料",
   "header.logout": "登出",
@@ -169,5 +171,10 @@
   "custom.colors.bg-lighter": "浅色背景",
   "custom.colors.text": "字体",
   "custom.colors.text-lighter": "字体提亮",
-  "custom.colors.theme": "主题"
+  "custom.colors.theme": "主题",
+
+  "divisions.WEST": "艾洛眼",
+  "divisions.JPN": "暇谷",
+  "xsearch.placements": "排位",
+  "xsearch.aliases": "别名："
 }
