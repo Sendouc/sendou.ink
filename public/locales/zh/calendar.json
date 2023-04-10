@@ -8,6 +8,7 @@
   "actions.delete": "删除活动",
   "actions.delete.confirm": "要删除 {{name}} 相关的所有数据吗？",
   "participatedCount": "队伍数量: {{count}}",
+  "participatedPlayerCount": "玩家数量: {{count}}",
   "members": "成员",
   "results": "结果",
   "createMapList": "创建地图列表",

@@ -248,13 +248,19 @@ function Results() {
 
   if (!data.results.length) return null;
 
+  const isTeam = checkIfIsTeam(data.results);
+
   return (
     <Section title={t("calendar:results")} className="event__results-section">
       {data.event.participantCount && (
         <div className="event__results-participant-count">
-          {t("calendar:participatedCount", {
-            count: data.event.participantCount,
-          })}
+          {isTeam
+            ? t("calendar:participatedCount", {
+                count: data.event.participantCount,
+              })
+            : t("calendar:participatedPlayerCount", {
+                count: data.event.participantCount,
+              })}
         </div>
       )}
       <table>
@@ -343,4 +349,29 @@ function Description() {
       </div>
     </Section>
   );
+}
+
+// Check if any team has more than 1 player
+function checkIfIsTeam(
+  results: {
+    teamName: string;
+    placement: number;
+    players: (
+      | string
+      | {
+          id: number;
+          discordName: string;
+          discordDiscriminator: string;
+          discordId: string;
+          discordAvatar: string | null;
+        }
+    )[];
+  }[]
+): boolean {
+  for (const result of results) {
+    if (result.players.length > 1) {
+      return true;
+    }
+  }
+  return false;
 }
