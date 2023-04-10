@@ -102,11 +102,7 @@ export interface SubWeaponParams {
   /** Amount of frames white ink (=no ink recovery during this time) takes */
   InkRecoverStop: number;
   /** Damage dealt at different radiuses */
-  DistanceDamage?: Array<DistanceDamage>;
-  /** Damage dealt by explosion at different radiuses (curling bomb charged all the way) */
-  DistanceDamage_BlastParamMaxCharge?: Array<DistanceDamage>;
-  /** Damage dealt by explosion at different radiuses (curling bomb not charged) */
-  DistanceDamage_BlastParamMinCharge?: Array<DistanceDamage>;
+  DistanceDamage?: Array<DistanceDamage | DistanceDamage[]>;
   /** Damage dealt by explosion at different radiuses (fizzy bomb bounces) */
   DistanceDamage_BlastParamArray?: Array<DistanceDamage | DistanceDamage[]>;
   /** Damage dealt by explosion at different radiuses (torpedo explosion air to ground) */
@@ -174,9 +170,14 @@ export type DamageType = (typeof DAMAGE_TYPE)[number];
 export interface Damage {
   value: number;
   type: DamageType;
-  distance?: number;
+  distance?: number | [number, number];
   shotsToSplat?: number;
   multiShots?: number;
+}
+
+export interface SubWeaponDamage extends Damage {
+  baseValue: number;
+  subWeaponId: SubWeaponId;
 }
 
 export interface AnalyzedBuild {
@@ -198,6 +199,7 @@ export interface AnalyzedBuild {
     subWeaponInkConsumptionPercentage: Stat;
     fullInkTankOptions: Array<FullInkTankOption & { id: string }>;
     damages: Array<Damage & { id: string }>;
+    subWeaponDefenseDamages: Array<SubWeaponDamage & { id: string }>;
     squidFormInkRecoverySeconds: Stat;
     humanoidFormInkRecoverySeconds: Stat;
     runSpeed: Stat;
@@ -222,11 +224,6 @@ export interface AnalyzedBuild {
     subDefInkMineMarkedTimeInSeconds: Stat;
     subDefAngleShooterMarkedTimeInSeconds: Stat;
     subDefToxicMistMovementReduction: Stat;
-    subDefAngleShooterDamage: Stat;
-    subDefSplashWallDamagePercentage: Stat;
-    subDefSprinklerDamagePercentage: Stat;
-    subDefBombDamageLightPercentage: Stat;
-    subDefBombDamageHeavyPercentage: Stat;
 
     subVelocity?: Stat;
     subFirstPhaseDuration?: Stat;

@@ -1,4 +1,18 @@
-import type { Ability, MainWeaponId } from "~/modules/in-game-lists";
+import {
+  type Ability,
+  type MainWeaponId,
+  subWeaponIds,
+  type SubWeaponId,
+  SPLAT_BOMB_ID,
+  SUCTION_BOMB_ID,
+  BURST_BOMB_ID,
+  SPRINKLER_ID,
+  SPLASH_WALL_ID,
+  FIZZY_BOMB_ID,
+  CURLING_BOMB_ID,
+  AUTO_BOMB_ID,
+  TORPEDO_ID,
+} from "~/modules/in-game-lists";
 import { ANGLE_SHOOTER_ID } from "~/modules/in-game-lists";
 import { INK_MINE_ID, POINT_SENSOR_ID } from "~/modules/in-game-lists";
 import type {
@@ -27,7 +41,12 @@ import {
 } from "./utils";
 import { assertUnreachable } from "~/utils/types";
 import { semiRandomId } from "~/utils/strings";
-import { roundToNDecimalPlaces } from "~/utils/number";
+import {
+  cutToNDecimalPlaces,
+  roundToNDecimalPlaces,
+  sumArray,
+} from "~/utils/number";
+import type abilityValuesJson from "./ability-values.json";
 
 export function buildStats({
   weaponSplId,
@@ -88,6 +107,7 @@ export function buildStats({
       specialLostSplattedByRP: specialLost(input, true),
       fullInkTankOptions: fullInkTankOptions(input),
       damages: damages(input),
+      subWeaponDefenseDamages: subWeaponDefenseDamages(input),
       mainWeaponWhiteInkSeconds:
         typeof mainWeaponParams.InkRecoverStop === "number"
           ? framesToSeconds(mainWeaponParams.InkRecoverStop)
@@ -124,11 +144,6 @@ export function buildStats({
       subDefAngleShooterMarkedTimeInSeconds:
         subDefAngleShooterMarkedTimeInSeconds(input),
       subDefToxicMistMovementReduction: subDefToxicMistMovementReduction(input),
-      subDefAngleShooterDamage: subDefAngleShooterDamage(input),
-      subDefSplashWallDamagePercentage: subDefSplashWallDamagePercentage(input),
-      subDefSprinklerDamagePercentage: subDefSprinklerDamagePercentage(input),
-      subDefBombDamageLightPercentage: subDefBombDamageLightPercentage(input),
-      subDefBombDamageHeavyPercentage: subDefBombDamageHeavyPercentage(input),
       subQsjBoost: subQsjBoost(input),
       ...subStats(input),
       specialDurationInSeconds: specialDurationInSeconds(input),
@@ -369,7 +384,9 @@ function inkConsumeTypeToParamsKeys(
 
 const damageTypeToParamsKey: Record<
   DamageType,
-  keyof MainWeaponParams | keyof SubWeaponParams
+  | keyof MainWeaponParams
+  | keyof SubWeaponParams
+  | Array<keyof MainWeaponParams | keyof SubWeaponParams>
 > = {
   NORMAL_MIN: "DamageParam_ValueMin",
   NORMAL_MAX: "DamageParam_ValueMax",
@@ -377,8 +394,12 @@ const damageTypeToParamsKey: Record<
   DIRECT: "DamageParam_ValueDirect",
   DIRECT_MIN: "DamageParam_ValueDirectMin",
   DIRECT_MAX: "DamageParam_ValueDirectMax",
-  DISTANCE: "BlastParam_DistanceDamage",
-  SPLASH: "BlastParam_SplashDamage",
+  DISTANCE: [
+    "BlastParam_DistanceDamage",
+    "DistanceDamage_BlastParamArray",
+    "DistanceDamage_BlastParamChase",
+  ],
+  SPLASH: ["BlastParam_SplashDamage", "DistanceDamage_SplashBlastParam"],
   FULL_CHARGE: "DamageParam_ValueFullCharge",
   MAX_CHARGE: "DamageParam_ValueMaxCharge",
   TAP_SHOT: "DamageParam_ValueMinCharge",
@@ -394,42 +415,37 @@ function damages(args: StatFunctionInput): AnalyzedBuild["stats"]["damages"] {
   const result: AnalyzedBuild["stats"]["damages"] = [];
 
   for (const type of DAMAGE_TYPE) {
-    const key = damageTypeToParamsKey[type];
-    const value =
-      args.mainWeaponParams[key as keyof MainWeaponParams] ??
-      args.subWeaponParams[key as keyof SubWeaponParams];
+    for (const key of [damageTypeToParamsKey[type]].flat()) {
+      const value = args.mainWeaponParams[key as keyof MainWeaponParams];
 
-    const isMainWeaponParam = key in args.mainWeaponParams;
+      if (Array.isArray(value)) {
+        for (const subValue of value.flat()) {
+          result.push({
+            type,
+            value: subValue.Damage / 10,
+            distance: subValue.Distance,
+            id: semiRandomId(),
+            multiShots: multiShot[args.weaponSplId],
+          });
+        }
 
-    if (Array.isArray(value)) {
-      for (const subValue of value.flat()) {
-        result.push({
-          type,
-          value: subValue.Damage / 10,
-          distance: subValue.Distance,
-          id: semiRandomId(),
-          multiShots: isMainWeaponParam
-            ? multiShot[args.weaponSplId]
-            : undefined,
-        });
+        continue;
       }
 
-      continue;
-    }
+      if (typeof value !== "number") continue;
 
-    if (typeof value !== "number") continue;
-
-    result.push({
-      id: semiRandomId(),
-      type,
-      value: value / 10,
-      shotsToSplat: shotsToSplat({
-        value,
+      result.push({
+        id: semiRandomId(),
         type,
+        value: value / 10,
+        shotsToSplat: shotsToSplat({
+          value,
+          type,
+          multiShots: multiShot[args.weaponSplId],
+        }),
         multiShots: multiShot[args.weaponSplId],
-      }),
-      multiShots: isMainWeaponParam ? multiShot[args.weaponSplId] : undefined,
-    });
+      });
+    }
   }
 
   return result;
@@ -451,6 +467,182 @@ function shotsToSplat({
   const multiplier = multiShots ? multiShots : 1;
 
   return Math.ceil(1000 / (value * multiplier));
+}
+
+function subWeaponDefenseDamages(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["subWeaponDefenseDamages"] {
+  const result: AnalyzedBuild["stats"]["subWeaponDefenseDamages"] = [];
+
+  const abilityPoints = apFromMap({
+    ability: "SRU",
+    abilityPoints: args.abilityPoints,
+  });
+
+  for (const id of subWeaponIds) {
+    const params = weaponParams()["subWeapons"][id];
+
+    for (const type of DAMAGE_TYPE) {
+      for (const key of [damageTypeToParamsKey[type]].flat()) {
+        const value = params[key as keyof SubWeaponParams];
+
+        if (Array.isArray(value)) {
+          let arrayValues: AnalyzedBuild["stats"]["subWeaponDefenseDamages"] =
+            [];
+          for (const subValue of value.flat()) {
+            arrayValues.push({
+              type,
+              baseValue: subValue.Damage / 10,
+              value: subWeaponDamageValue({
+                baseValue: subValue.Damage / 10,
+                subWeaponId: id,
+                abilityPoints,
+                params: args.subWeaponParams,
+              }),
+              distance: subValue.Distance,
+              id: semiRandomId(),
+              subWeaponId: id,
+            });
+          }
+
+          // Burst Bomb direct damage
+          if (id === BURST_BOMB_ID) {
+            arrayValues.unshift({
+              id: semiRandomId(),
+              subWeaponId: id,
+              distance: 0,
+              baseValue: sumArray(arrayValues.map((v) => v.baseValue)),
+              value: cutToNDecimalPlaces(
+                sumArray(arrayValues.map((v) => v.value)),
+                1
+              ),
+              type,
+            });
+          }
+
+          // Flatten many values into one
+          if (id === FIZZY_BOMB_ID || id === CURLING_BOMB_ID) {
+            const allArrayValues = arrayValues.sort(
+              (a, b) => a.baseValue - b.baseValue
+            );
+            const firstHalfValues = allArrayValues.slice(
+              0,
+              allArrayValues.length / 2
+            );
+            const secondHalfValues = allArrayValues.slice(
+              allArrayValues.length / 2
+            );
+
+            arrayValues = [
+              {
+                id: semiRandomId(),
+                subWeaponId: id,
+                distance: [
+                  Math.min(
+                    ...secondHalfValues.map((value) => value.distance as number)
+                  ),
+                  Math.max(
+                    ...secondHalfValues.map((value) => value.distance as number)
+                  ),
+                ],
+                baseValue: secondHalfValues[0]!.baseValue,
+                value: secondHalfValues[0]!.value,
+                type,
+              },
+              {
+                id: semiRandomId(),
+                subWeaponId: id,
+                distance: [
+                  Math.min(
+                    ...firstHalfValues.map((value) => value.distance as number)
+                  ),
+                  Math.max(
+                    ...firstHalfValues.map((value) => value.distance as number)
+                  ),
+                ],
+                baseValue: firstHalfValues[0]!.baseValue,
+                value: firstHalfValues[0]!.value,
+                type,
+              },
+            ];
+          }
+
+          result.push(...arrayValues);
+
+          continue;
+        }
+
+        if (typeof value !== "number") continue;
+
+        result.push({
+          id: semiRandomId(),
+          type,
+          baseValue: value / 10,
+          value: subWeaponDamageValue({
+            baseValue: value / 10,
+            subWeaponId: id,
+            abilityPoints,
+            params: args.subWeaponParams,
+          }),
+          subWeaponId: id,
+          distance: 0,
+        });
+      }
+    }
+  }
+
+  return result;
+}
+
+function subWeaponIdToEffectKey(
+  subWeaponId: SubWeaponId
+): keyof typeof abilityValuesJson {
+  switch (subWeaponId) {
+    case SPLAT_BOMB_ID:
+    case SUCTION_BOMB_ID:
+    case CURLING_BOMB_ID:
+    case AUTO_BOMB_ID:
+    case INK_MINE_ID:
+    case TORPEDO_ID:
+      return "DamageRt_BombH";
+    case BURST_BOMB_ID:
+    case FIZZY_BOMB_ID:
+      return "DamageRt_BombL";
+    case ANGLE_SHOOTER_ID:
+      return "DamageRt_LineMarker";
+    case SPRINKLER_ID:
+      return "DamageRt_Sprinkler";
+    case SPLASH_WALL_ID:
+      return "DamageRt_Shield";
+    default:
+      throw new Error(
+        `No damage rate for the sub weapon with id: ${subWeaponId}`
+      );
+  }
+}
+
+function subWeaponDamageValue({
+  baseValue,
+  subWeaponId,
+  abilityPoints,
+  params,
+}: {
+  baseValue: number;
+  subWeaponId: SubWeaponId;
+  params: SubWeaponParams;
+  abilityPoints: number;
+}): number {
+  // lethal damage cannot be lowered
+  if (baseValue > 100) return baseValue;
+
+  const { effect } = abilityPointsToEffects({
+    abilityPoints,
+    key: subWeaponIdToEffectKey(subWeaponId),
+    weapon: params,
+  });
+
+  // Lean: The HP are ints between 0 and 1000 consistently
+  return cutToNDecimalPlaces(baseValue * effect, 1);
 }
 
 const framesToSeconds = (frames: number) =>
@@ -1020,113 +1212,6 @@ function subDefToxicMistMovementReduction(
     baseValue: roundToNDecimalPlaces(baseEffect * 100),
     value: roundToNDecimalPlaces(effect * 100),
     modifiedBy: SUB_DEF_TOXIC_MIST_MOVEMENT_REDUCTION_KEY,
-  };
-}
-
-function subDefAngleShooterDamage(
-  args: StatFunctionInput
-): AnalyzedBuild["stats"]["subDefAngleShooterDamage"] {
-  const SUB_DEF_ANGLE_SHOOTER_DAMAGE_KEY = "SRU";
-  const { baseEffect, effect } = abilityPointsToEffects({
-    abilityPoints: apFromMap({
-      abilityPoints: args.abilityPoints,
-      ability: SUB_DEF_ANGLE_SHOOTER_DAMAGE_KEY,
-    }),
-    key: "DamageRt_LineMarker",
-    weapon: args.mainWeaponParams,
-  });
-
-  const angleShooterDirectDamage =
-    weaponParams().subWeapons[ANGLE_SHOOTER_ID].DirectDamage;
-  invariant(angleShooterDirectDamage);
-
-  return {
-    baseValue: roundToNDecimalPlaces(
-      (angleShooterDirectDamage * baseEffect) / 10,
-      1
-    ),
-    value: roundToNDecimalPlaces((angleShooterDirectDamage * effect) / 10, 1),
-    modifiedBy: SUB_DEF_ANGLE_SHOOTER_DAMAGE_KEY,
-  };
-}
-
-function subDefSplashWallDamagePercentage(
-  args: StatFunctionInput
-): AnalyzedBuild["stats"]["subDefSplashWallDamagePercentage"] {
-  const SUB_DEF_SPLASH_WALL_DAMAGE_PERCENTAGE_KEY = "SRU";
-  const { baseEffect, effect } = abilityPointsToEffects({
-    abilityPoints: apFromMap({
-      abilityPoints: args.abilityPoints,
-      ability: SUB_DEF_SPLASH_WALL_DAMAGE_PERCENTAGE_KEY,
-    }),
-    key: "DamageRt_Shield",
-    weapon: args.mainWeaponParams,
-  });
-
-  return {
-    baseValue: roundToNDecimalPlaces(baseEffect * 100),
-    value: roundToNDecimalPlaces(effect * 100),
-    modifiedBy: SUB_DEF_SPLASH_WALL_DAMAGE_PERCENTAGE_KEY,
-  };
-}
-
-function subDefSprinklerDamagePercentage(
-  args: StatFunctionInput
-): AnalyzedBuild["stats"]["subDefSprinklerDamagePercentage"] {
-  const SUB_DEF_SPRINKLER_DAMAGE_PERCENTAGE_KEY = "SRU";
-  const { baseEffect, effect } = abilityPointsToEffects({
-    abilityPoints: apFromMap({
-      abilityPoints: args.abilityPoints,
-      ability: SUB_DEF_SPRINKLER_DAMAGE_PERCENTAGE_KEY,
-    }),
-    key: "DamageRt_Sprinkler",
-    weapon: args.mainWeaponParams,
-  });
-
-  return {
-    baseValue: roundToNDecimalPlaces(baseEffect * 100),
-    value: roundToNDecimalPlaces(effect * 100),
-    modifiedBy: SUB_DEF_SPRINKLER_DAMAGE_PERCENTAGE_KEY,
-  };
-}
-
-function subDefBombDamageLightPercentage(
-  args: StatFunctionInput
-): AnalyzedBuild["stats"]["subDefBombDamageLightPercentage"] {
-  const SUB_DEF_BOMB_DAMAGE_LIGHT_PERCENTAGE_KEY = "SRU";
-  const { baseEffect, effect } = abilityPointsToEffects({
-    abilityPoints: apFromMap({
-      abilityPoints: args.abilityPoints,
-      ability: SUB_DEF_BOMB_DAMAGE_LIGHT_PERCENTAGE_KEY,
-    }),
-    key: "DamageRt_BombL",
-    weapon: args.mainWeaponParams,
-  });
-
-  return {
-    baseValue: roundToNDecimalPlaces(baseEffect * 100),
-    value: roundToNDecimalPlaces(effect * 100),
-    modifiedBy: SUB_DEF_BOMB_DAMAGE_LIGHT_PERCENTAGE_KEY,
-  };
-}
-
-function subDefBombDamageHeavyPercentage(
-  args: StatFunctionInput
-): AnalyzedBuild["stats"]["subDefBombDamageHeavyPercentage"] {
-  const SUB_DEF_BOMB_DAMAGE_HEAVY_PERCENTAGE_KEY = "SRU";
-  const { baseEffect, effect } = abilityPointsToEffects({
-    abilityPoints: apFromMap({
-      abilityPoints: args.abilityPoints,
-      ability: SUB_DEF_BOMB_DAMAGE_HEAVY_PERCENTAGE_KEY,
-    }),
-    key: "DamageRt_BombH",
-    weapon: args.mainWeaponParams,
-  });
-
-  return {
-    baseValue: roundToNDecimalPlaces(baseEffect * 100),
-    value: roundToNDecimalPlaces(effect * 100),
-    modifiedBy: SUB_DEF_BOMB_DAMAGE_HEAVY_PERCENTAGE_KEY,
   };
 }
 

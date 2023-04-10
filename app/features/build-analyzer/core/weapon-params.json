@@ -1286,25 +1286,27 @@
       "SubInkSaveLv": 2,
       "InkConsume": 0.7,
       "InkRecoverStop": 70,
-      "DistanceDamage_BlastParamMaxCharge": [
-        {
-          "Damage": 1800,
-          "Distance": 4.6
-        },
-        {
-          "Damage": 300,
-          "Distance": 8
-        }
-      ],
-      "DistanceDamage_BlastParamMinCharge": [
-        {
-          "Damage": 1800,
-          "Distance": 1.6
-        },
-        {
-          "Damage": 300,
-          "Distance": 5
-        }
+      "DistanceDamage": [
+        [
+          {
+            "Damage": 1800,
+            "Distance": 4.6
+          },
+          {
+            "Damage": 300,
+            "Distance": 8
+          }
+        ],
+        [
+          {
+            "Damage": 1800,
+            "Distance": 1.6
+          },
+          {
+            "Damage": 300,
+            "Distance": 5
+          }
+        ]
       ],
       "DirectDamage": 200
     },

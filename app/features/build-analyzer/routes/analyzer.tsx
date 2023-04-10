@@ -17,8 +17,6 @@ import {
   INK_STORM_ID,
   isAbility,
   POINT_SENSOR_ID,
-  SPLASH_WALL_ID,
-  SPRINKLER_ID,
   TOXIC_MIST_ID,
   TORPEDO_ID,
   type BuildAbilitiesTupleWithUnknown,
@@ -60,8 +58,13 @@ import {
 } from "../analyzer-constants";
 import { useAnalyzeBuild } from "../analyzer-hooks";
 import { Tabs, Tab } from "~/components/Tabs";
-import { buildIsEmpty, isStackableAbility } from "../core/utils";
+import {
+  buildIsEmpty,
+  damageIsSubWeaponDamage,
+  isStackableAbility,
+} from "../core/utils";
 import { useUser } from "~/modules/auth";
+import { atOrError } from "~/utils/arrays";
 
 export const CURRENT_PATCH = "3.1";
 
@@ -634,47 +637,6 @@ export default function BuildAnalyzerPage() {
             <StatCard
               isComparing={isComparing}
               abilityPoints={abilityPoints}
-              stat={statKeyToTuple("subDefBombDamageLightPercentage")}
-              title={t("analyzer:stat.bombLdamage")}
-              suffix="%"
-            />
-            <StatCard
-              isComparing={isComparing}
-              abilityPoints={abilityPoints}
-              stat={statKeyToTuple("subDefBombDamageHeavyPercentage")}
-              title={t("analyzer:stat.bombHdamage")}
-              suffix="%"
-            />
-            <StatCard
-              isComparing={isComparing}
-              abilityPoints={abilityPoints}
-              stat={statKeyToTuple("subDefAngleShooterDamage")}
-              title={t("analyzer:stat.damage", {
-                weapon: t(`weapons:SUB_${ANGLE_SHOOTER_ID}`),
-              })}
-              suffix={t("analyzer:suffix.hp")}
-            />
-            <StatCard
-              isComparing={isComparing}
-              abilityPoints={abilityPoints}
-              stat={statKeyToTuple("subDefSplashWallDamagePercentage")}
-              title={t("analyzer:stat.damage", {
-                weapon: t(`weapons:SUB_${SPLASH_WALL_ID}`),
-              })}
-              suffix="%"
-            />
-            <StatCard
-              isComparing={isComparing}
-              abilityPoints={abilityPoints}
-              stat={statKeyToTuple("subDefSprinklerDamagePercentage")}
-              title={t("analyzer:stat.damage", {
-                weapon: t(`weapons:SUB_${SPRINKLER_ID}`),
-              })}
-              suffix="%"
-            />
-            <StatCard
-              isComparing={isComparing}
-              abilityPoints={abilityPoints}
               stat={statKeyToTuple("subDefToxicMistMovementReduction")}
               title={t("analyzer:stat.movementReduction", {
                 weapon: t(`weapons:SUB_${TOXIC_MIST_ID}`),
@@ -710,6 +672,25 @@ export default function BuildAnalyzerPage() {
             />
           </StatCategory>
 
+          {analyzed.stats.subWeaponDefenseDamages.length > 0 && (
+            <StatCategory
+              title={t("analyzer:stat.category.subWeaponDefenseDamages")}
+              containerClassName="analyzer__table-container"
+              textBelow={t("analyzer:damageSubDefExplanation")}
+            >
+              {(["SRU"] as const).some(
+                (ability) => (abilityPoints.get(ability) ?? 0) > 0
+              ) ? (
+                <div className="analyzer__stat-card-highlighted" />
+              ) : null}
+              <DamageTable
+                values={analyzed.stats.subWeaponDefenseDamages}
+                multiShots={analyzed.weapon.multiShots}
+                subWeaponId={analyzed.weapon.subWeaponSplId}
+              />
+            </StatCategory>
+          )}
+
           {analyzed.stats.damages.length > 0 && (
             <StatCategory
               title={t("analyzer:stat.category.damage")}
@@ -728,7 +709,6 @@ export default function BuildAnalyzerPage() {
               title={t("analyzer:stat.category.actionsPerInkTank")}
               containerClassName="analyzer__table-container"
             >
-              {/** Hack the :has ;) */}
               {(["ISM", "ISS"] as const).some(
                 (ability) => (abilityPoints.get(ability) ?? 0) > 0
               ) ? (
@@ -1268,7 +1248,9 @@ function DamageTable({
   multiShots,
   subWeaponId,
 }: {
-  values: AnalyzedBuild["stats"]["damages"];
+  values:
+    | AnalyzedBuild["stats"]["damages"]
+    | AnalyzedBuild["stats"]["subWeaponDefenseDamages"];
   multiShots: AnalyzedBuild["weapon"]["multiShots"];
   subWeaponId: SubWeaponId;
 }) {
@@ -1276,16 +1258,25 @@ function DamageTable({
 
   const showDistanceColumn = values.some((val) => val.distance);
 
+  const firstRow = atOrError(values, 0);
+  const showDamageColumn =
+    !damageIsSubWeaponDamage(firstRow) ||
+    // essentially checking that we are using some sub resistance up
+    values.some((val) => val.value !== (val as any).baseValue);
+
   return (
     <>
       <table>
         <thead>
           <tr>
             <th>{t("analyzer:damage.header.type")}</th>
-            <th>{t("analyzer:damage.header.damage")}</th>
             {showDistanceColumn && (
               <th>{t("analyzer:damage.header.distance")}</th>
             )}
+            {damageIsSubWeaponDamage(firstRow) ? (
+              <th>{t("analyzer:damage.header.baseDamage")}</th>
+            ) : null}
+            {showDamageColumn && <th>{t("analyzer:damage.header.damage")}</th>}
           </tr>
         </thead>
         <tbody>
@@ -1295,25 +1286,49 @@ function DamageTable({
                 ? new Array(multiShots).fill(val.value).join(" + ")
                 : val.value;
 
-            const typeRowName = damageTypeTranslationString({
-              damageType: val.type,
-              subWeaponId,
-            });
+            const typeRowName = damageIsSubWeaponDamage(val)
+              ? t(`weapons:SUB_${val.subWeaponId}`)
+              : damageTypeTranslationString({
+                  damageType: val.type,
+                  subWeaponId,
+                });
 
             return (
               <tr key={val.id}>
-                <td>{t(typeRowName)}</td>
-                <td>
-                  {damage}{" "}
-                  {val.shotsToSplat && (
-                    <span className="analyzer__shots-to-splat">
-                      {t("analyzer:damage.toSplat", {
-                        count: val.shotsToSplat,
-                      })}
-                    </span>
-                  )}
+                <td className="stack horizontal xs items-center">
+                  {damageIsSubWeaponDamage(val) ? (
+                    <Image
+                      alt=""
+                      path={subWeaponImageUrl(val.subWeaponId)}
+                      width={12}
+                      height={12}
+                    />
+                  ) : null}{" "}
+                  {t(typeRowName)}{" "}
+                  {damageIsSubWeaponDamage(val) && val.type === "SPLASH" ? (
+                    <>({t("analyzer:damage.SPLASH")})</>
+                  ) : null}
                 </td>
-                {showDistanceColumn && <td>{val.distance}</td>}
+                {showDistanceColumn && (
+                  <td>
+                    {typeof val.distance === "number"
+                      ? val.distance
+                      : val.distance?.join("-")}
+                  </td>
+                )}
+                {damageIsSubWeaponDamage(val) && <td>{val.baseValue}</td>}
+                {showDamageColumn && (
+                  <td>
+                    {damage}{" "}
+                    {val.shotsToSplat && (
+                      <span className="analyzer__shots-to-splat">
+                        {t("analyzer:damage.toSplat", {
+                          count: val.shotsToSplat,
+                        })}
+                      </span>
+                    )}
+                  </td>
+                )}
               </tr>
             );
           })}

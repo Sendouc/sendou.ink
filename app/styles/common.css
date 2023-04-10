@@ -295,7 +295,7 @@ select:focus {
 
 table {
   width: 100%;
-  border-collapse: separate;
+  border-collapse: collapse;
   border-spacing: 0 var(--s-1-5);
   font-size: var(--fonts-xs);
   text-align: left;
