@@ -248,7 +248,7 @@ function Results() {
 
   if (!data.results.length) return null;
 
-  const isTeam: boolean = checkIfIsTeam(data.results);
+  const isTeam = checkIfIsTeam(data.results);
 
   return (
     <Section title={t("calendar:results")} className="event__results-section">
