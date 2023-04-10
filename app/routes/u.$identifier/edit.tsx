@@ -389,6 +389,8 @@ function WeaponPoolSelect({
               if (!weapon) return;
               setWeapons([...weapons, Number(weapon.value) as MainWeaponId]);
             }}
+            // empty on selection
+            key={weapons[weapons.length - 1]}
             weaponIdsToOmit={new Set(weapons)}
             fullWidth
           />

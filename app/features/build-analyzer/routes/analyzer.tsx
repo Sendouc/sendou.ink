@@ -196,7 +196,6 @@ export default function BuildAnalyzerPage() {
             <div className="w-full">
               <WeaponCombobox
                 inputName="weapon"
-                initialWeaponId={mainWeaponId}
                 onChange={(opt) =>
                   opt &&
                   handleChange({
@@ -204,7 +203,6 @@ export default function BuildAnalyzerPage() {
                   })
                 }
                 fullWidth
-                clearsInputOnFocus
               />
             </div>
           </div>
@@ -309,8 +307,8 @@ export default function BuildAnalyzerPage() {
                 <div className="analyzer__weapon-info-badge">
                   <Image
                     path={mainWeaponImageUrl(mainWeaponId)}
-                    width={24}
-                    height={24}
+                    width={20}
+                    height={20}
                     alt={t(`weapons:MAIN_${mainWeaponId}`)}
                   />
                   {t(`weapons:MAIN_${mainWeaponId}`)}
@@ -327,8 +325,8 @@ export default function BuildAnalyzerPage() {
               <div className="analyzer__weapon-info-badge">
                 <Image
                   path={subWeaponImageUrl(analyzed.weapon.subWeaponSplId)}
-                  width={24}
-                  height={24}
+                  width={20}
+                  height={20}
                   alt={t(`weapons:SUB_${analyzed.weapon.subWeaponSplId}`)}
                 />
                 {t(`weapons:SUB_${analyzed.weapon.subWeaponSplId}`)}
@@ -428,8 +426,8 @@ export default function BuildAnalyzerPage() {
                   path={specialWeaponImageUrl(
                     analyzed.weapon.specialWeaponSplId
                   )}
-                  width={24}
-                  height={24}
+                  width={20}
+                  height={20}
                   alt={t(
                     `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
                   )}
@@ -686,7 +684,6 @@ export default function BuildAnalyzerPage() {
               <DamageTable
                 values={analyzed.stats.subWeaponDefenseDamages}
                 multiShots={analyzed.weapon.multiShots}
-                subWeaponId={analyzed.weapon.subWeaponSplId}
               />
             </StatCategory>
           )}
@@ -699,7 +696,6 @@ export default function BuildAnalyzerPage() {
               <DamageTable
                 values={analyzed.stats.damages}
                 multiShots={analyzed.weapon.multiShots}
-                subWeaponId={analyzed.weapon.subWeaponSplId}
               />
             </StatCategory>
           )}
@@ -1246,13 +1242,11 @@ function ModifiedByAbilities({ abilities }: { abilities: Stat["modifiedBy"] }) {
 function DamageTable({
   values,
   multiShots,
-  subWeaponId,
 }: {
   values:
     | AnalyzedBuild["stats"]["damages"]
     | AnalyzedBuild["stats"]["subWeaponDefenseDamages"];
   multiShots: AnalyzedBuild["weapon"]["multiShots"];
-  subWeaponId: SubWeaponId;
 }) {
   const { t } = useTranslation(["weapons", "analyzer"]);
 
@@ -1290,7 +1284,6 @@ function DamageTable({
               ? t(`weapons:SUB_${val.subWeaponId}`)
               : damageTypeTranslationString({
                   damageType: val.type,
-                  subWeaponId,
                 });
 
             return (

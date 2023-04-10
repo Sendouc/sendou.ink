@@ -54,8 +54,10 @@ export function useObjectDamage() {
   };
 
   return {
-    mainWeaponId,
-    subWeaponId: analyzed.weapon.subWeaponSplId,
+    weapon: {
+      type: "MAIN" as const,
+      id: mainWeaponId,
+    },
     isMultiShot,
     multiShotCount: analyzed.stats.damages.find((d) => d.type === damageType)
       ?.multiShots,

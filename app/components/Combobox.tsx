@@ -36,7 +36,6 @@ interface ComboboxProps<T> {
   isLoading?: boolean;
   required?: boolean;
   initialValue: ComboboxOption<T> | null;
-  clearsInputOnFocus?: boolean;
   onChange?: (selectedOption: ComboboxOption<T> | null) => void;
   fullWidth?: boolean;
   nullable?: true;
@@ -48,7 +47,6 @@ export function Combobox<T extends Record<string, string | null | number>>({
   inputName,
   placeholder,
   initialValue,
-  clearsInputOnFocus = false,
   onChange,
   required,
   className,
@@ -63,15 +61,7 @@ export function Combobox<T extends Record<string, string | null | number>>({
   const [selectedOption, setSelectedOption] = React.useState<Unpacked<
     typeof options
   > | null>(initialValue);
-  const [lastSelectedOption, setLastSelectedOption] = React.useState<Unpacked<
-    typeof options
-  > | null>(initialValue);
   const [query, setQuery] = React.useState("");
-
-  React.useEffect(() => {
-    setSelectedOption(initialValue);
-    setLastSelectedOption(initialValue);
-  }, [initialValue]);
 
   const filteredOptions = (() => {
     if (!query) return [];
@@ -100,7 +90,6 @@ export function Combobox<T extends Record<string, string | null | number>>({
         onChange={(selected) => {
           onChange?.(selected);
           setSelectedOption(selected);
-          setLastSelectedOption(selected);
         }}
         name={inputName}
         disabled={!selectedOption && isLoading}
@@ -108,23 +97,12 @@ export function Combobox<T extends Record<string, string | null | number>>({
         nullable={nullable as true}
       >
         <HeadlessCombobox.Input
-          onFocus={() => {
-            if (clearsInputOnFocus) {
-              setSelectedOption(null);
-            }
-          }}
-          onBlur={() => {
-            if (!selectedOption && clearsInputOnFocus) {
-              setSelectedOption(lastSelectedOption);
-            }
-          }}
           onChange={(event) => setQuery(event.target.value)}
           placeholder={isLoading ? t("actions.loading") : placeholder}
           className={clsx("combobox-input", className, {
             fullWidth,
           })}
-          // To make SSR prefill work in an uncontrolled component
-          defaultValue={initialValue ? displayValue(initialValue) : undefined}
+          defaultValue={initialValue}
           displayValue={displayValue}
           data-testid={`${inputName}-combobox-input`}
           id={id}
@@ -231,6 +209,8 @@ export function UserCombobox({
       id={id}
       required={required}
       fuseOptions={USER_COMBOBOX_FUSE_OPTIONS}
+      // reload after users have loaded
+      key={String(!!initialValue)}
     />
   );
 }
@@ -242,7 +222,6 @@ export function WeaponCombobox({
   inputName,
   onChange,
   initialWeaponId,
-  clearsInputOnFocus,
   weaponIdsToOmit,
   fullWidth,
   nullable,
@@ -253,7 +232,6 @@ export function WeaponCombobox({
   | "className"
   | "id"
   | "required"
-  | "clearsInputOnFocus"
   | "fullWidth"
   | "nullable"
 > & {
@@ -282,7 +260,6 @@ export function WeaponCombobox({
       className={className}
       id={id}
       required={required}
-      clearsInputOnFocus={clearsInputOnFocus}
       fullWidth={fullWidth}
       nullable={nullable}
     />

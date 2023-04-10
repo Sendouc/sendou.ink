@@ -185,7 +185,7 @@ input:user-invalid {
   outline: 2px solid var(--theme-error);
 }
 
-input:not(.plain):focus-within {
+input:not(.plain, .combobox-input):focus-within {
   border-color: transparent;
 
   /* TODO: rectangle on Safari */

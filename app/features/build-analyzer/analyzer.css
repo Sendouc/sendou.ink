@@ -100,7 +100,7 @@
   align-items: center;
   background-color: var(--bg-darker);
   border-radius: var(--rounded);
-  padding: var(--s-0-5) var(--s-3);
+  padding: var(--s-1) var(--s-3);
   margin-inline-start: auto;
   /** Decided to do it absolutely because  
   summary really dislikes becoming a flex 

@@ -328,7 +328,6 @@ function WeaponsSelector() {
                     })
                   }
                   initialWeaponId={weapon ?? undefined}
-                  clearsInputOnFocus
                 />
               </div>
               {i === weapons.length - 1 && (

@@ -1,5 +1,5 @@
 import { WeaponCombobox } from "~/components/Combobox";
-import { Image } from "~/components/Image";
+import { Image, WeaponImage } from "~/components/Image";
 import { Main } from "~/components/Main";
 import {
   type MainWeaponId,
@@ -56,8 +56,7 @@ export const handle: SendouRouteHandle = {
 export default function ObjectDamagePage() {
   const { t } = useTranslation(["analyzer"]);
   const {
-    mainWeaponId,
-    subWeaponId,
+    weapon,
     handleChange,
     damagesToReceivers,
     abilityPoints,
@@ -76,7 +75,6 @@ export default function ObjectDamagePage() {
             <WeaponCombobox
               id="weapon"
               inputName="weapon"
-              initialWeaponId={mainWeaponId}
               onChange={(opt) =>
                 opt &&
                 handleChange({
@@ -84,14 +82,12 @@ export default function ObjectDamagePage() {
                 })
               }
               fullWidth
-              clearsInputOnFocus
             />
           </div>
           <div className={clsx({ invisible: !damagesToReceivers })}>
             <Label htmlFor="damage">{t("analyzer:labels.damageType")}</Label>
             <DamageTypesSelect
               handleChange={handleChange}
-              subWeaponId={subWeaponId}
               damageType={damageType}
               allDamageTypes={allDamageTypes}
             />
@@ -115,9 +111,9 @@ export default function ObjectDamagePage() {
       </div>
       {damagesToReceivers ? (
         <DamageReceiversGrid
-          subWeaponId={subWeaponId}
           damagesToReceivers={damagesToReceivers}
           abilityPoints={abilityPoints}
+          weapon={weapon}
         >
           <div>
             <select
@@ -155,11 +151,10 @@ export default function ObjectDamagePage() {
 function DamageTypesSelect({
   allDamageTypes,
   handleChange,
-  subWeaponId,
   damageType,
 }: Pick<
   ReturnType<typeof useObjectDamage>,
-  "handleChange" | "subWeaponId" | "damageType" | "allDamageTypes"
+  "handleChange" | "damageType" | "allDamageTypes"
 >) {
   const { t } = useTranslation(["analyzer"]);
 
@@ -178,7 +173,6 @@ function DamageTypesSelect({
             {t(
               damageTypeTranslationString({
                 damageType,
-                subWeaponId,
               })
             )}
           </option>
@@ -217,12 +211,12 @@ const damageReceiverAp: Partial<Record<DamageReceiver, JSX.Element>> = {
 };
 
 function DamageReceiversGrid({
-  subWeaponId,
+  weapon,
   damagesToReceivers,
   children,
   abilityPoints,
 }: {
-  subWeaponId: ReturnType<typeof useObjectDamage>["subWeaponId"];
+  weapon: ReturnType<typeof useObjectDamage>["weapon"];
   damagesToReceivers: NonNullable<
     ReturnType<typeof useObjectDamage>["damagesToReceivers"]
   >;
@@ -252,14 +246,24 @@ function DamageReceiversGrid({
       <div>{children}</div>
       {damagesToReceivers[0]?.damages.map((damage) => (
         <div key={damage.id} className="object-damage__table-header">
-          <div className="stack horizontal sm justify-center items-center">
-            {t(
-              damageTypeTranslationString({
-                damageType: damage.type,
-                subWeaponId: subWeaponId,
-              })
-            )}
-            {damage.objectShredder && <Ability ability="OS" size="TINY" />}
+          <div className="stack xs">
+            <div className="stack horizontal sm justify-center items-center">
+              {t(
+                damageTypeTranslationString({
+                  damageType: damage.type,
+                })
+              )}
+              {damage.objectShredder && <Ability ability="OS" size="TINY" />}
+            </div>
+            <div className="text-lighter stack horizontal sm justify-center items-center">
+              <WeaponImage
+                weaponSplId={weapon.id}
+                width={24}
+                height={24}
+                variant="build"
+              />
+              {t(`weapons:MAIN_${weapon.id}`)}
+            </div>
           </div>
           <div
             className={clsx("object-damage__distance", {
