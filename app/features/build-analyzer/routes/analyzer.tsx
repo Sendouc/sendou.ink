@@ -1246,7 +1246,6 @@ function ModifiedByAbilities({ abilities }: { abilities: Stat["modifiedBy"] }) {
 
 // xxx: missing splash wall
 // xxx: missing sprinkler
-// xxx: missing torpedo
 function DamageTable({
   values,
   multiShots,
@@ -1308,7 +1307,10 @@ function DamageTable({
                       height={12}
                     />
                   ) : null}{" "}
-                  {t(typeRowName)}
+                  {t(typeRowName)}{" "}
+                  {damageIsSubWeaponDamage(val) && val.type === "SPLASH" ? (
+                    <>({t("analyzer:damage.SPLASH")})</>
+                  ) : null}
                 </td>
                 {showDistanceColumn && (
                   <td>
