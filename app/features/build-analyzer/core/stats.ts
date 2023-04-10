@@ -520,7 +520,7 @@ function subWeaponDefenseDamages(
             });
           }
 
-          // Unify Fizzy Bounces {
+          // Flatten many values into one
           if (id === FIZZY_BOMB_ID || id === CURLING_BOMB_ID) {
             const allArrayValues = arrayValues.sort(
               (a, b) => a.baseValue - b.baseValue
