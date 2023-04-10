@@ -4,7 +4,7 @@ import type {
   MetaFunction,
 } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { useFetcher, useLoaderData, useTransition } from "@remix-run/react";
+import { useFetcher, useLoaderData, useNavigation } from "@remix-run/react";
 import * as React from "react";
 import { z } from "zod";
 import { Button } from "~/components/Button";
@@ -185,13 +185,13 @@ function Impersonate() {
 function MigrateUser() {
   const [oldUserId, setOldUserId] = React.useState<number>();
   const [newUserId, setNewUserId] = React.useState<number>();
-  const transition = useTransition();
+  const navigation = useNavigation();
   const fetcher = useFetcher();
 
   const submitButtonText =
-    transition.state === "submitting"
+    navigation.state === "submitting"
       ? "Migrating..."
-      : transition.state === "loading"
+      : navigation.state === "loading"
       ? "Migrated!"
       : "Migrate";
 
@@ -221,7 +221,7 @@ function MigrateUser() {
       <div className="stack horizontal md">
         <SubmitButton
           type="submit"
-          disabled={!oldUserId || !newUserId || transition.state !== "idle"}
+          disabled={!oldUserId || !newUserId || navigation.state !== "idle"}
           _action="MIGRATE"
           state={fetcher.state}
         >

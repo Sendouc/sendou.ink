@@ -1,4 +1,4 @@
-import { type FetcherWithComponents, useTransition } from "@remix-run/react";
+import { type FetcherWithComponents, useNavigation } from "@remix-run/react";
 import { Button, type ButtonProps } from "./Button";
 
 interface SubmitButtonProps extends ButtonProps {
@@ -14,9 +14,9 @@ export function SubmitButton({
   testId,
   ...rest
 }: SubmitButtonProps) {
-  const transition = useTransition();
+  const navigation = useNavigation();
 
-  const isSubmitting = state ? state !== "idle" : transition.state !== "idle";
+  const isSubmitting = state ? state !== "idle" : navigation.state !== "idle";
 
   return (
     <Button
