@@ -114,6 +114,7 @@
   "abilityChunks": "Ability Chunks Required",
   "torpedoExplanation": "You can't launch more than one torpedo at a time due to game mechanics.",
   "trackingSubDefExplanation": "Point Sensor, Ink Mine and Angle Shooter tracking times are calculated against an opponent with 0AP of Sub Power Up.",
+  "damageSubDefExplanation": "Sprinkler and Splash Wall are not shown in the table but the damage caused by them can also be lowered by Sub Resistance Up",
   "distanceInline": "Distance: {{value}}",
   "damageShort": "DMG",
   "hitsToDestroyLong": "Hits to destroy",

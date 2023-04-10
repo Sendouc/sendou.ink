@@ -676,8 +676,8 @@ export default function BuildAnalyzerPage() {
             <StatCategory
               title={t("analyzer:stat.category.subWeaponDefenseDamages")}
               containerClassName="analyzer__table-container"
+              textBelow={t("analyzer:damageSubDefExplanation")}
             >
-              {/** Hack the :has ;) */}
               {(["SRU"] as const).some(
                 (ability) => (abilityPoints.get(ability) ?? 0) > 0
               ) ? (
@@ -709,7 +709,6 @@ export default function BuildAnalyzerPage() {
               title={t("analyzer:stat.category.actionsPerInkTank")}
               containerClassName="analyzer__table-container"
             >
-              {/** Hack the :has ;) */}
               {(["ISM", "ISS"] as const).some(
                 (ability) => (abilityPoints.get(ability) ?? 0) > 0
               ) ? (
@@ -1244,8 +1243,6 @@ function ModifiedByAbilities({ abilities }: { abilities: Stat["modifiedBy"] }) {
   );
 }
 
-// xxx: missing splash wall
-// xxx: missing sprinkler
 function DamageTable({
   values,
   multiShots,
