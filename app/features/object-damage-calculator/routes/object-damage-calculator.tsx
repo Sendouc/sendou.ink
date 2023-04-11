@@ -246,24 +246,13 @@ function DamageReceiversGrid({
       <div>{children}</div>
       {damagesToReceivers[0]?.damages.map((damage) => (
         <div key={damage.id} className="object-damage__table-header">
-          <div className="stack xs">
-            <div className="stack horizontal sm justify-center items-center">
-              {t(
-                damageTypeTranslationString({
-                  damageType: damage.type,
-                })
-              )}
-              {damage.objectShredder && <Ability ability="OS" size="TINY" />}
-            </div>
-            <div className="text-lighter stack horizontal sm justify-center items-center">
-              <WeaponImage
-                weaponSplId={weapon.id}
-                width={24}
-                height={24}
-                variant="build"
-              />
-              {t(`weapons:MAIN_${weapon.id}`)}
-            </div>
+          <div className="stack horizontal sm justify-center items-center">
+            {t(
+              damageTypeTranslationString({
+                damageType: damage.type,
+              })
+            )}
+            {damage.objectShredder && <Ability ability="OS" size="TINY" />}
           </div>
           <div
             className={clsx("object-damage__distance", {
@@ -271,6 +260,16 @@ function DamageReceiversGrid({
             })}
           >
             {t("analyzer:distanceInline", { value: damage.distance })}
+          </div>
+          <div className="text-lighter stack horizontal sm justify-center items-center">
+            <WeaponImage
+              weaponSplId={weapon.id}
+              width={24}
+              height={24}
+              variant="build"
+              className="object-damage__weapon-image"
+            />
+            {t(`weapons:MAIN_${weapon.id}`)}
           </div>
         </div>
       ))}

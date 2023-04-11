@@ -52,10 +52,14 @@
   white-space: nowrap;
 }
 
+.object-damage__weapon-image {
+  min-width: 24px;
+}
+
 .object-damage__distance {
   color: var(--text-lighter);
   font-size: var(--fonts-xxs);
-  margin-block-start: var(--s-1);
+  margin-block-start: var(--s-0-5);
 }
 
 .object-damage__receiver-image {
