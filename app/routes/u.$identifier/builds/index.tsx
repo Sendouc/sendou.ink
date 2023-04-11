@@ -82,7 +82,7 @@ export default function UserBuildsPage() {
               <button className="tiny" disabled>
                 {t("addBuild")}
               </button>
-              <span className="info-message">{t("reachMaxBuildCount")}</span>
+              <span className="info-message">{t("reachBuildMaxCount")}</span>
             </>
           )}
         </div>

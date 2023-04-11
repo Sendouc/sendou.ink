@@ -1,6 +1,6 @@
 {
   "addBuild": "Add build",
-  "reachMaxBuildCount": "You've reached the max amount of builds.",
+  "reachBuildMaxCount": "You've reached the max amount of builds.",
   "noBuilds": "No builds yet. Add your first one!",
   "buildCard.info": "Info",
   "buildCard.edit": "Edit",
