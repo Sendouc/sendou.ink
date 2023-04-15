@@ -1,8 +1,7 @@
 import { Combobox as HeadlessCombobox } from "@headlessui/react";
-import * as React from "react";
-import Fuse from "fuse.js";
 import clsx from "clsx";
-import type { Unpacked } from "~/utils/types";
+import Fuse from "fuse.js";
+import * as React from "react";
 import type { GearType, UserWithPlusTier } from "~/db/types";
 import { useAllEventsWithMapPools, useUsers } from "~/hooks/swr";
 import { useTranslation } from "~/hooks/useTranslation";
@@ -10,13 +9,20 @@ import type { MainWeaponId } from "~/modules/in-game-lists";
 import {
   clothesGearIds,
   headGearIds,
-  shoesGearIds,
   mainWeaponIds,
+  shoesGearIds,
+  subWeaponIds,
   weaponCategories,
 } from "~/modules/in-game-lists";
-import { gearImageUrl, mainWeaponImageUrl } from "~/utils/urls";
-import { Image } from "./Image";
+import { nonBombSubWeaponIds } from "~/modules/in-game-lists/weapon-ids";
 import { type SerializedMapPoolEvent } from "~/routes/calendar/map-pool-events";
+import type { Unpacked } from "~/utils/types";
+import {
+  gearImageUrl,
+  mainWeaponImageUrl,
+  subWeaponImageUrl,
+} from "~/utils/urls";
+import { Image } from "./Image";
 
 const MAX_RESULTS_SHOWN = 6;
 
@@ -262,6 +268,56 @@ export function WeaponCombobox({
       required={required}
       fullWidth={fullWidth}
       nullable={nullable}
+    />
+  );
+}
+
+export function AllWeaponCombobox({
+  id,
+  inputName,
+  onChange,
+  fullWidth,
+}: Pick<
+  ComboboxProps<ComboboxBaseOption>,
+  "inputName" | "onChange" | "id" | "fullWidth"
+>) {
+  const { t } = useTranslation("weapons");
+
+  const options = () => {
+    const result: ComboboxProps<
+      Record<string, string | null | number>
+    >["options"] = [];
+
+    for (const mainWeaponId of mainWeaponIds) {
+      result.push({
+        value: `MAIN_${mainWeaponId}`,
+        label: t(`MAIN_${mainWeaponId}`),
+        imgPath: mainWeaponImageUrl(mainWeaponId),
+      });
+    }
+
+    for (const subWeaponId of subWeaponIds) {
+      if (nonBombSubWeaponIds.includes(subWeaponId)) continue;
+
+      result.push({
+        value: `SUB_${subWeaponId}`,
+        label: t(`SUB_${subWeaponId}`),
+        imgPath: subWeaponImageUrl(subWeaponId),
+      });
+    }
+
+    return result;
+  };
+
+  return (
+    <Combobox
+      inputName={inputName}
+      options={options()}
+      initialValue={null}
+      placeholder={t(`MAIN_${weaponCategories[0].weaponIds[0]}`)}
+      onChange={onChange}
+      id={id}
+      fullWidth={fullWidth}
     />
   );
 }

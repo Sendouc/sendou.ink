@@ -1281,7 +1281,7 @@ function DamageTable({
                 : val.value;
 
             const typeRowName = damageIsSubWeaponDamage(val)
-              ? t(`weapons:SUB_${val.subWeaponId}`)
+              ? (`weapons:SUB_${val.subWeaponId}` as const)
               : damageTypeTranslationString({
                   damageType: val.type,
                 });

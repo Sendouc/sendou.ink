@@ -25,7 +25,7 @@ function calculate({
   return calculateDamage({
     abilityPoints,
     analyzed,
-    mainWeaponId,
+    anyWeapon: { type: "MAIN", id: mainWeaponId },
     damageType,
     isMultiShot: true,
   });

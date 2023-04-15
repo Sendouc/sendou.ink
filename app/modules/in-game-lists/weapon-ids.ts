@@ -1,4 +1,4 @@
-import type { MainWeaponId } from "./types";
+import type { MainWeaponId, SubWeaponId } from "./types";
 
 export const weaponCategories = [
   {
@@ -91,6 +91,14 @@ export const subWeaponIds = [
   ANGLE_SHOOTER_ID,
   TORPEDO_ID,
 ] as const;
+
+export const nonBombSubWeaponIds = [
+  SPRINKLER_ID,
+  SPLASH_WALL_ID,
+  SQUID_BEAKON_ID,
+  POINT_SENSOR_ID,
+  TOXIC_MIST_ID,
+] as SubWeaponId[];
 
 export const TRIZOOKA_ID = 1;
 export const BIG_BUBBLER_ID = 2;

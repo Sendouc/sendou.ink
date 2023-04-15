@@ -100,6 +100,8 @@
   "damage.SPLATANA_VERTICAL": "Vertical",
   "damage.SPLATANA_HORIZONTAL_DIRECT": "Horizontal direct",
   "damage.SPLATANA_HORIZONTAL": "Horizontal",
+  "damage.BOMB_DIRECT": "Direct",
+  "damage.BOMB_NORMAL": "Splash",
   "suffix.seconds": "s",
   "suffix.hp": "hp",
   "suffix.specialPointsShort": "p",

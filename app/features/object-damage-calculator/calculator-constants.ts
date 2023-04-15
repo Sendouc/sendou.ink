@@ -2,6 +2,7 @@ import { type MainWeaponId, mainWeaponIds } from "~/modules/in-game-lists";
 import type { DamageType } from "~/features/build-analyzer";
 import type objectDamages from "./core/object-dmg.json";
 import invariant from "tiny-invariant";
+import type { CombineWith } from "./calculator-types";
 
 export const DAMAGE_RECEIVERS = [
   "Chariot", // Crab Tank
@@ -136,15 +137,7 @@ export const objectDamageJsonKeyPriority: Record<
 };
 
 export const damageTypesToCombine: Partial<
-  Record<
-    MainWeaponId,
-    Array<{
-      when: DamageType;
-      combineWith: DamageType;
-      /** for this weapon "when" damage already includes "combineWith" damage, so calculating multiplier only */
-      multiplierOnly?: boolean;
-    }>
-  >
+  Record<MainWeaponId, Array<CombineWith>>
 > = {
   // Explosher
   3040: [{ when: "DIRECT", combineWith: "DISTANCE" }],

@@ -1,15 +1,18 @@
 import { useSearchParams } from "@remix-run/react";
 import { assertType } from "~/utils/types";
-import { type MainWeaponId } from "~/modules/in-game-lists";
 import {
   type DAMAGE_TYPE,
   buildStats,
   possibleApValues,
-  validatedWeaponIdFromSearchParams,
+  validatedAnyWeaponFromSearchParams,
   type AnalyzedBuild,
   type DamageType,
 } from "~/features/build-analyzer";
-import { calculateDamage } from "./core/objectDamage";
+import {
+  calculateDamage,
+  resolveAllUniqueDamageTypes,
+} from "./core/objectDamage";
+import type { AnyWeapon } from "../build-analyzer/analyzer-types";
 
 const ABILITY_POINTS_SP_KEY = "ap";
 const DAMAGE_TYPE_SP_KEY = "dmg";
@@ -18,11 +21,11 @@ const MULTI_SHOT_SP_KEY = "multi";
 export function useObjectDamage() {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const mainWeaponId = validatedWeaponIdFromSearchParams(searchParams);
+  const anyWeapon = validatedAnyWeaponFromSearchParams(searchParams);
   const abilityPoints = validatedAbilityPointsFromSearchParams(searchParams);
   const isMultiShot = validatedMultiShotFromSearchParams(searchParams);
   const analyzed = buildStats({
-    weaponSplId: mainWeaponId,
+    weaponSplId: anyWeapon.type === "MAIN" ? anyWeapon.id : 0,
     hasTacticooler: false,
   });
 
@@ -32,19 +35,19 @@ export function useObjectDamage() {
   });
 
   const handleChange = ({
-    newMainWeaponId = mainWeaponId,
+    newAnyWeapon = anyWeapon,
     newAbilityPoints = abilityPoints,
     newDamageType = damageType,
     newIsMultiShot = isMultiShot,
   }: {
-    newMainWeaponId?: MainWeaponId;
+    newAnyWeapon?: AnyWeapon;
     newAbilityPoints?: number;
     newDamageType?: DamageType;
     newIsMultiShot?: boolean;
   }) => {
     setSearchParams(
       {
-        weapon: String(newMainWeaponId),
+        weapon: `${newAnyWeapon.type}_${newAnyWeapon.id}`,
         [ABILITY_POINTS_SP_KEY]: String(newAbilityPoints),
         [DAMAGE_TYPE_SP_KEY]: newDamageType ?? "",
         [MULTI_SHOT_SP_KEY]: String(newIsMultiShot),
@@ -54,10 +57,7 @@ export function useObjectDamage() {
   };
 
   return {
-    weapon: {
-      type: "MAIN" as const,
-      id: mainWeaponId,
-    },
+    weapon: anyWeapon,
     isMultiShot,
     multiShotCount: analyzed.stats.damages.find((d) => d.type === damageType)
       ?.multiShots,
@@ -69,16 +69,14 @@ export function useObjectDamage() {
             ["SPU", abilityPoints],
           ]),
           analyzed,
-          mainWeaponId,
+          anyWeapon,
           damageType,
           isMultiShot,
         })
       : null,
     abilityPoints: String(abilityPoints),
     damageType,
-    allDamageTypes: Array.from(
-      new Set(analyzed.stats.damages.map((d) => d.type))
-    ),
+    allDamageTypes: resolveAllUniqueDamageTypes({ analyzed, anyWeapon }),
   };
 }
 

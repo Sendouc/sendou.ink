@@ -253,3 +253,7 @@ export interface AnalyzedBuild {
 export type SpecialEffectType = (typeof SPECIAL_EFFECTS)[number]["type"];
 
 export type AbilityValuesKeys = keyof typeof abilityValues;
+
+export type AnyWeapon =
+  | { type: "MAIN"; id: MainWeaponId }
+  | { type: "SUB"; id: SubWeaponId };
