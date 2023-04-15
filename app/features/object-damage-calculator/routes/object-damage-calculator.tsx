@@ -1,40 +1,40 @@
-import { WeaponCombobox } from "~/components/Combobox";
+import type { LinksFunction } from "@remix-run/node";
+import type { ShouldRevalidateFunction } from "@remix-run/react";
+import clsx from "clsx";
+import React from "react";
+import { Ability } from "~/components/Ability";
+import { AllWeaponCombobox } from "~/components/Combobox";
 import { Image, WeaponImage } from "~/components/Image";
+import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
+import { Toggle } from "~/components/Toggle";
+import type { AnyWeapon } from "~/features/build-analyzer";
+import { possibleApValues, type DamageType } from "~/features/build-analyzer";
+import { useSetTitle } from "~/hooks/useSetTitle";
+import { useTranslation } from "~/hooks/useTranslation";
 import {
-  type MainWeaponId,
   BIG_BUBBLER_ID,
   BOOYAH_BOMB_ID,
   CRAB_TANK_ID,
   SPLASH_WALL_ID,
+  SPRINKLER_ID,
   SQUID_BEAKON_ID,
   TORPEDO_ID,
   WAVE_BREAKER_ID,
-  SPRINKLER_ID,
 } from "~/modules/in-game-lists";
+import { damageTypeTranslationString } from "~/utils/i18next";
+import type { SendouRouteHandle } from "~/utils/remix";
 import {
+  OBJECT_DAMAGE_CALCULATOR_URL,
   mainWeaponImageUrl,
   modeImageUrl,
   navIconUrl,
-  OBJECT_DAMAGE_CALCULATOR_URL,
   specialWeaponImageUrl,
   subWeaponImageUrl,
 } from "~/utils/urls";
-import styles from "../calculator.css";
-import type { LinksFunction } from "@remix-run/node";
-import type { SendouRouteHandle } from "~/utils/remix";
-import React from "react";
-import { useTranslation } from "~/hooks/useTranslation";
-import clsx from "clsx";
-import { Label } from "~/components/Label";
-import { Ability } from "~/components/Ability";
-import { damageTypeTranslationString } from "~/utils/i18next";
-import { useSetTitle } from "~/hooks/useSetTitle";
-import type { ShouldRevalidateFunction } from "@remix-run/react";
-import { Toggle } from "~/components/Toggle";
 import { useObjectDamage } from "../calculator-hooks";
-import { type DamageType, possibleApValues } from "~/features/build-analyzer";
 import type { DamageReceiver } from "../calculator-types";
+import styles from "../calculator.css";
 
 export const CURRENT_PATCH = "3.1";
 
@@ -72,19 +72,29 @@ export default function ObjectDamagePage() {
         <div className="object-damage__selects">
           <div className="object-damage__selects__weapon">
             <Label htmlFor="weapon">{t("analyzer:labels.weapon")}</Label>
-            <WeaponCombobox
+            <AllWeaponCombobox
               id="weapon"
               inputName="weapon"
-              onChange={(opt) =>
-                opt &&
+              onChange={(opt) => {
+                if (!opt) return;
+
+                const [type, id] = opt.value.split("_");
+
                 handleChange({
-                  newMainWeaponId: Number(opt.value) as MainWeaponId,
-                })
-              }
+                  newAnyWeapon: {
+                    id: Number(id),
+                    type,
+                  } as AnyWeapon,
+                });
+              }}
               fullWidth
             />
           </div>
-          <div className={clsx({ invisible: !damagesToReceivers })}>
+          <div
+            className={clsx({
+              invisible: !damagesToReceivers || allDamageTypes.length === 1,
+            })}
+          >
             <Label htmlFor="damage">{t("analyzer:labels.damageType")}</Label>
             <DamageTypesSelect
               handleChange={handleChange}
@@ -259,17 +269,31 @@ function DamageReceiversGrid({
               invisible: !damage.distance,
             })}
           >
-            {t("analyzer:distanceInline", { value: damage.distance })}
+            {t("analyzer:distanceInline", {
+              value: Array.isArray(damage.distance)
+                ? damage.distance.join("-")
+                : damage.distance,
+            })}
           </div>
           <div className="text-lighter stack horizontal sm justify-center items-center">
-            <WeaponImage
-              weaponSplId={weapon.id}
-              width={24}
-              height={24}
-              variant="build"
-              className="object-damage__weapon-image"
-            />
-            {t(`weapons:MAIN_${weapon.id}`)}
+            {weapon.type === "MAIN" ? (
+              <WeaponImage
+                weaponSplId={weapon.id}
+                width={24}
+                height={24}
+                variant="build"
+                className="object-damage__weapon-image"
+              />
+            ) : (
+              <Image
+                alt=""
+                path={subWeaponImageUrl(weapon.id)}
+                width={24}
+                height={24}
+                className="object-damage__weapon-image"
+              />
+            )}
+            {t(`weapons:${weapon.type}_${weapon.id}` as any)}
           </div>
         </div>
       ))}

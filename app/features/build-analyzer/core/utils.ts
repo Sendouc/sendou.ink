@@ -1,4 +1,5 @@
-import type { AbilityType } from "~/modules/in-game-lists";
+import type { AbilityType, SubWeaponId } from "~/modules/in-game-lists";
+import { subWeaponIds } from "~/modules/in-game-lists";
 import {
   abilities,
   mainWeaponIds,
@@ -13,6 +14,7 @@ import abilityValuesJson from "./ability-values.json";
 import type {
   AbilityPoints,
   AnalyzedBuild,
+  AnyWeapon,
   MainWeaponParams,
   ParamsJson,
   SpecialWeaponParams,
@@ -23,6 +25,7 @@ import invariant from "tiny-invariant";
 import { EMPTY_BUILD } from "~/constants";
 import { UNKNOWN_SHORT } from "../analyzer-constants";
 import type { Unpacked } from "~/utils/types";
+import { nonBombSubWeaponIds } from "~/modules/in-game-lists/weapon-ids";
 
 export function weaponParams(): ParamsJson {
   return weaponParamsJson as ParamsJson;
@@ -161,6 +164,43 @@ export function hasEffect({
   const [high, mid, low] = abilityValues({ key, weapon });
 
   return high !== mid || mid !== low;
+}
+
+const DEFAULT_ANY_WEAPON = {
+  type: "MAIN",
+  id: weaponCategories[0].weaponIds[0],
+} as const;
+export function validatedAnyWeaponFromSearchParams(
+  searchParams: URLSearchParams
+): AnyWeapon {
+  const rawWeapon = searchParams.get("weapon");
+  if (!rawWeapon) return DEFAULT_ANY_WEAPON;
+
+  if (rawWeapon?.startsWith("SUB_")) {
+    const id = Number(rawWeapon.replace("SUB_", ""));
+
+    if (
+      !subWeaponIds
+        .filter((id) => !nonBombSubWeaponIds.includes(id))
+        .includes(id as any)
+    ) {
+      return DEFAULT_ANY_WEAPON;
+    }
+
+    return { type: "SUB", id: id as SubWeaponId };
+  }
+
+  if (rawWeapon?.startsWith("MAIN_")) {
+    const id = Number(rawWeapon.replace("MAIN_", ""));
+
+    if (!mainWeaponIds.includes(id as any)) {
+      return DEFAULT_ANY_WEAPON;
+    }
+
+    return { type: "MAIN", id: id as MainWeaponId };
+  }
+
+  return { type: "MAIN", id: validatedWeaponIdFromSearchParams(searchParams) };
 }
 
 export function validatedWeaponIdFromSearchParams(

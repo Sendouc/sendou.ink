@@ -3,7 +3,6 @@ import type {
   AnalyzedBuild,
   DamageType,
 } from "~/features/build-analyzer";
-import { damageTypeToWeaponType } from "~/features/build-analyzer";
 import objectDamages from "./object-dmg.json";
 import type {
   MainWeaponId,
@@ -18,7 +17,9 @@ import {
   DAMAGE_RECEIVERS,
   objectDamageJsonKeyPriority,
 } from "../calculator-constants";
-import type { DamageReceiver } from "../calculator-types";
+import type { CombineWith, DamageReceiver } from "../calculator-types";
+import type { AnyWeapon } from "~/features/build-analyzer";
+import { removeDuplicates } from "~/utils/arrays";
 
 export function damageTypeToMultipliers({
   type,
@@ -101,25 +102,43 @@ export function multipliersToRecordWithFallbacks(
   ) as Record<DamageReceiver, number>;
 }
 
-const objectShredderMultipliers = objectDamages.ObjectEffect_Up.rates;
-export function calculateDamage({
+export function resolveAllUniqueDamageTypes({
   analyzed,
-  mainWeaponId,
-  abilityPoints,
-  damageType,
-  isMultiShot,
+  anyWeapon,
 }: {
   analyzed: AnalyzedBuild;
-  mainWeaponId: MainWeaponId;
-  abilityPoints: AbilityPoints;
+  anyWeapon: AnyWeapon;
+}) {
+  const damageTypes =
+    anyWeapon.type === "SUB"
+      ? analyzed.stats.subWeaponDefenseDamages
+          .filter((damage) => damage.subWeaponId === anyWeapon.id)
+          .map((d) => d.type)
+      : analyzed.stats.damages.map((d) => d.type);
+
+  return removeDuplicates(damageTypes);
+}
+
+function resolveFilteredDamages({
+  analyzed,
+  damageType,
+  isMultiShot,
+  toCombine,
+  anyWeapon,
+}: {
+  analyzed: AnalyzedBuild;
   damageType: DamageType;
   isMultiShot: boolean;
+  toCombine?: CombineWith;
+  anyWeapon: AnyWeapon;
 }) {
-  const toCombine = (damageTypesToCombine[mainWeaponId] ?? []).find(
-    (c) => c.when === damageType
-  );
+  if (anyWeapon.type === "SUB") {
+    return analyzed.stats.subWeaponDefenseDamages.filter(
+      (damage) => damage.subWeaponId === anyWeapon.id
+    );
+  }
 
-  const filteredDamages = analyzed.stats.damages
+  return analyzed.stats.damages
     .filter((d) => d.type === damageType || toCombine?.combineWith === d.type)
     .map((damage) => {
       if (!isMultiShot || !damage.multiShots) return damage;
@@ -129,24 +148,46 @@ export function calculateDamage({
         value: damage.value * damage.multiShots,
       };
     });
+}
+
+const objectShredderMultipliers = objectDamages.ObjectEffect_Up.rates;
+export function calculateDamage({
+  analyzed,
+  anyWeapon,
+  abilityPoints,
+  damageType,
+  isMultiShot,
+}: {
+  analyzed: AnalyzedBuild;
+  anyWeapon: AnyWeapon;
+  abilityPoints: AbilityPoints;
+  damageType: DamageType;
+  isMultiShot: boolean;
+}) {
+  const toCombine =
+    anyWeapon.type == "MAIN"
+      ? (damageTypesToCombine[anyWeapon.id] ?? []).find(
+          (c) => c.when === damageType
+        )
+      : undefined;
+
+  const filteredDamages = resolveFilteredDamages({
+    analyzed,
+    damageType,
+    isMultiShot,
+    toCombine,
+    anyWeapon,
+  });
 
   const hitPoints = objectHitPoints(abilityPoints);
   const multipliers = Object.fromEntries(
     filteredDamages.map((damage) => {
-      const weaponType = damageTypeToWeaponType[damage.type];
-      const weaponId: any =
-        weaponType === "MAIN"
-          ? mainWeaponId
-          : weaponType === "SUB"
-          ? analyzed.weapon.subWeaponSplId
-          : analyzed.weapon.specialWeaponSplId;
-
       return [
         damage.type,
         multipliersToRecordWithFallbacks(
           damageTypeToMultipliers({
             type: damage.type,
-            weapon: { type: weaponType, id: weaponId },
+            weapon: anyWeapon,
           })
         ),
       ];

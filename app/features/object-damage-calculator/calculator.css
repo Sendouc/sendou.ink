@@ -47,9 +47,12 @@
   font-size: var(--fonts-xs);
   font-weight: var(--semi-bold);
   padding-block: var(--s-2);
-  padding-inline: var(--s-2);
+  padding-inline: var(--s-4);
   text-align: center;
   white-space: nowrap;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1-5);
 }
 
 .object-damage__weapon-image {

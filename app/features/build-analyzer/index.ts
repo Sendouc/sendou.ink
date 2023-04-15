@@ -4,6 +4,7 @@ export {
   validatedBuildFromSearchParams,
   serializeBuild,
   hpDivided,
+  validatedAnyWeaponFromSearchParams,
 } from "./core/utils";
 export type {
   DamageType,
@@ -11,6 +12,7 @@ export type {
   AnalyzedBuild,
   SpecialWeaponParams,
   SubWeaponParams,
+  AnyWeapon,
 } from "./analyzer-types";
 export {
   buildStats,
