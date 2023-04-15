@@ -6,5 +6,3 @@ export const TOURNAMENT = {
   TEAM_MAX_MEMBERS: 6,
   AVAILABLE_BEST_OF: [3, 5, 7] as const,
 } as const;
-
-export const FRIEND_CODE_REGEX_PATTERN = "^\\d{4}-\\d{4}-\\d{4}$";

@@ -182,6 +182,7 @@ export interface MapPoolMap {
 export interface TournamentTeam {
   id: number;
   name: string | null;
+  // TODO: remove
   friendCode: string | null;
   createdAt: number;
   seed: number | null;

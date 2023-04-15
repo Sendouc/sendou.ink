@@ -11,7 +11,6 @@ import invariant from "tiny-invariant";
 import { Alert } from "~/components/Alert";
 import { Avatar } from "~/components/Avatar";
 import { Button } from "~/components/Button";
-import { FormMessage } from "~/components/FormMessage";
 import { Image } from "~/components/Image";
 import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
@@ -43,7 +42,7 @@ import { findOwnTeam } from "../queries/findOwnTeam.server";
 import { findTeamsByEventId } from "../queries/findTeamsByEventId.server";
 import { updateTeamInfo } from "../queries/updateTeamInfo.server";
 import { upsertCounterpickMaps } from "../queries/upsertCounterpickMaps.server";
-import { FRIEND_CODE_REGEX_PATTERN, TOURNAMENT } from "../tournament-constants";
+import { TOURNAMENT } from "../tournament-constants";
 import { useSelectCounterpickMapPoolState } from "../tournament-hooks";
 import { registerSchema } from "../tournament-schemas.server";
 import { idFromParams, resolveOwnedTeam } from "../tournament-utils";
@@ -86,7 +85,6 @@ export const action: ActionFunction = async ({ request, params }) => {
       // TODO tournament: make sure not changing name AND tournament is happening
 
       updateTeamInfo({
-        friendCode: data.friendCode,
         name: data.teamName,
         id: ownTeam.id,
       });
@@ -362,20 +360,6 @@ function TeamInfo({
               maxLength={TOURNAMENT.TEAM_NAME_MAX_LENGTH}
               defaultValue={ownTeam.name ?? undefined}
             />
-          </div>
-          <div className="tournament__section__input-container">
-            <Label htmlFor="friendCode">Friend code</Label>
-            <Input
-              name="friendCode"
-              id="friendCode"
-              required
-              placeholder="1209-3932-9498"
-              pattern={String(FRIEND_CODE_REGEX_PATTERN)}
-              defaultValue={ownTeam.friendCode ?? undefined}
-            />
-            <FormMessage type="info">
-              The friend code your opponents should add during tournament
-            </FormMessage>
           </div>
           <SubmitButton _action="UPDATE_TEAM_INFO" state={fetcher.state}>
             Save
