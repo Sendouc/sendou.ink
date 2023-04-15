@@ -73,7 +73,7 @@ export default function EditBadgePage() {
   const { badgeName } = useOutletContext<BadgeDetailsContext>();
 
   return (
-    <Dialog isOpen>
+    <Dialog isOpen className="overflow-visible">
       <Form method="post" className="stack md">
         <div>
           <h2 className="badges-edit__big-header">
