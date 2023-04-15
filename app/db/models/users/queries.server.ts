@@ -65,6 +65,7 @@ export const updateProfile = sql.transaction(
     | "stickSens"
     | "inGameName"
     | "css"
+    | "favBadgeId"
   > & { weapons: MainWeaponId[] }) => {
     deleteUserWeaponsStm.run({ userId: rest.id });
     for (const [i, weaponSplId] of weapons.entries()) {

@@ -4,7 +4,7 @@ import {
   type LinksFunction,
   type LoaderArgs,
 } from "@remix-run/node";
-import { Form, Link, useLoaderData, useMatches } from "@remix-run/react";
+import {Form, Link, useLoaderData, useMatches, useSearchParams} from "@remix-run/react";
 import { countries } from "countries-list";
 import * as React from "react";
 import { Trans } from "react-i18next";
@@ -20,7 +20,7 @@ import { WeaponImage } from "~/components/Image";
 import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
 import { SubmitButton } from "~/components/SubmitButton";
-import { USER } from "~/constants";
+import {BUILD, USER} from "~/constants";
 import { db } from "~/db";
 import { type User } from "~/db/types";
 import { useTranslation } from "~/hooks/useTranslation";
@@ -45,6 +45,9 @@ import {
   undefinedToNull,
 } from "~/utils/zod";
 import { userParamsSchema, type UserPageLoaderData } from "../u.$identifier";
+import {validatedWeaponIdFromSearchParams} from "~/features/build-analyzer";
+import {PlusIcon} from "~/components/icons/Plus";
+import {CrossIcon} from "~/components/icons/Cross";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -218,6 +221,7 @@ export default function UserEditPage() {
         <SensSelects parentRouteData={parentRouteData} />
         <CountrySelect parentRouteData={parentRouteData} />
         <WeaponPoolSelect parentRouteData={parentRouteData} />
+        <FavBadgeSelect parentRouteData={parentRouteData} />
         <BioTextarea initialValue={parentRouteData.bio} />
         <FormMessage type="info">
           <Trans i18nKey={"user:discordExplanation"} t={t}>
@@ -292,6 +296,7 @@ const SENS_OPTIONS = [
   -50, -45, -40, -35, -30, -25, -20, -15, -10, -5, 0, 5, 10, 15, 20, 25, 30, 35,
   40, 45, 50,
 ];
+
 function SensSelects({
   parentRouteData,
 }: {
@@ -446,6 +451,78 @@ function BioTextarea({ initialValue }: { initialValue: User["bio"] }) {
         onChange={(e) => setValue(e.target.value)}
         maxLength={USER.BIO_MAX_LENGTH}
       />
+    </div>
+  );
+}
+
+function FavBadgeSelect({
+  parentRouteData,
+}: {
+  parentRouteData: UserPageLoaderData;
+}) {
+  const [searchParams] = useSearchParams();
+  const { buildToEdit } = useLoaderData<typeof loader>();
+  const { t } = useTranslation(["common", "weapons", "builds"]);
+  const [weapons, setWeapons] = React.useState(
+    buildToEdit?.weapons.map((wpn) => wpn.weaponSplId) ?? [
+      validatedWeaponIdFromSearchParams(searchParams),
+    ]
+  );
+
+  return (
+    <div>
+      <Label required htmlFor="weapon">
+        {t("builds:forms.weapons")}
+      </Label>
+      <div className="stack sm">
+        {weapons.map((weapon, i) => {
+          return (
+            <div key={i} className="stack horizontal sm items-center">
+              <div>
+                <WeaponCombobox
+                  inputName="weapon"
+                  id="weapon"
+                  className="u__build-form__weapon"
+                  required
+                  onChange={(opt) =>
+                    opt &&
+                    setWeapons((weapons) => {
+                      const newWeapons = [...weapons];
+                      newWeapons[i] = Number(opt.value) as MainWeaponId;
+                      return newWeapons;
+                    })
+                  }
+                  initialWeaponId={weapon ?? undefined}
+                />
+              </div>
+              {i === weapons.length - 1 && (
+                <>
+                  <Button
+                    size="tiny"
+                    disabled={weapons.length === BUILD.MAX_WEAPONS_COUNT}
+                    onClick={() => setWeapons((weapons) => [...weapons, 0])}
+                    icon={<PlusIcon />}
+                  />
+                  {weapons.length > 1 && (
+                    <Button
+                      size="tiny"
+                      onClick={() =>
+                        setWeapons((weapons) => {
+                          const newWeapons = [...weapons];
+                          newWeapons.pop();
+                          return newWeapons;
+                        })
+                      }
+                      variant="destructive"
+                      icon={<CrossIcon />}
+                    />
+                  )}
+                </>
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
