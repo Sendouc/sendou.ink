@@ -22,6 +22,7 @@ module.exports = {
         );
         route("/to/:id/teams", "features/tournament/routes/to.$id.teams.tsx");
         route("/to/:id/join", "features/tournament/routes/to.$id.join.tsx");
+        route("/to/:id/admin", "features/tournament/routes/to.$id.admin.tsx");
       });
 
       route("/privacy-policy", "features/info/routes/privacy-policy.tsx");

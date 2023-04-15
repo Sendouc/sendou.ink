@@ -116,6 +116,7 @@ export interface CalendarEvent {
   customUrl: string | null;
   /** Is tournament tools page visible */
   toToolsEnabled: number;
+  isBeforeStart: number;
 }
 
 export type CalendarEventTag = keyof typeof allTags;
@@ -181,9 +182,8 @@ export interface MapPoolMap {
 
 export interface TournamentTeam {
   id: number;
-  name: string | null;
-  // TODO: remove
-  friendCode: string | null;
+  // TODO: make non-nullable in database as well
+  name: string;
   createdAt: number;
   seed: number | null;
   calendarEventId: number;

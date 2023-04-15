@@ -5,12 +5,13 @@ const stm = sql.prepare(/*sql*/ `
   select
   "CalendarEvent"."name",
   "CalendarEvent"."description",
-    "CalendarEvent"."id",
-    "CalendarEvent"."bracketUrl",
-    "CalendarEvent"."authorId",
-    "User"."discordName",
-    "User"."discordDiscriminator",
-    "User"."discordId"
+  "CalendarEvent"."id",
+  "CalendarEvent"."bracketUrl",
+  "CalendarEvent"."authorId",
+  "CalendarEvent"."isBeforeStart",
+  "User"."discordName",
+  "User"."discordDiscriminator",
+  "User"."discordId"
   from "CalendarEvent"
     left join "User" on "CalendarEvent"."authorId" = "User"."id"
   where
@@ -24,7 +25,12 @@ const stm = sql.prepare(/*sql*/ `
 type FindByIdentifierRow =
   | (Pick<
       CalendarEvent,
-      "bracketUrl" | "id" | "name" | "description" | "authorId"
+      | "bracketUrl"
+      | "id"
+      | "name"
+      | "description"
+      | "authorId"
+      | "isBeforeStart"
     > &
       Pick<User, "discordId" | "discordName" | "discordDiscriminator">)
   | null;
