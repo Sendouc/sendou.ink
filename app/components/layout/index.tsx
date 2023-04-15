@@ -50,7 +50,7 @@ export const Layout = React.memo(function Layout({
 
   const showLeaderboard =
     data &&
-    data.gtagId &&
+    data.publisherId &&
     !data?.user?.patronTier &&
     !location.pathname.includes("plans");
 
