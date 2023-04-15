@@ -68,6 +68,7 @@ const basicSeeds = [
   realVideo,
   realVideoCast,
   xRankPlacements,
+  userFavBadges,
 ];
 
 export function seed() {
@@ -1175,4 +1176,8 @@ function xRankPlacements() {
       addPlacementStm.run(placement);
     }
   })();
+}
+
+function userFavBadges(){
+
 }
