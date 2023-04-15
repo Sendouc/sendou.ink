@@ -175,6 +175,9 @@ export const calendarEditPage = (eventId?: number) =>
 export const calendarReportWinnersPage = (eventId: number) =>
   `/calendar/${eventId}/report-winners`;
 export const toToolsPage = (eventId: number) => `/to/${eventId}`;
+export const toToolsRegisterPage = (eventId: number) =>
+  `/to/${eventId}/register`;
+export const toToolsMapsPage = (eventId: number) => `/to/${eventId}/maps`;
 
 export const mapsPage = (eventId?: MapPoolMap["calendarEventId"]) =>
   `/maps${eventId ? `?eventId=${eventId}` : ""}`;

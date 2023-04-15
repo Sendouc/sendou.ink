@@ -1,7 +1,8 @@
-import type {
-  ActionFunction,
-  LoaderArgs,
-  SerializeFrom,
+import {
+  type ActionFunction,
+  type LoaderArgs,
+  type SerializeFrom,
+  redirect,
 } from "@remix-run/node";
 import { useFetcher, useLoaderData, useOutletContext } from "@remix-run/react";
 import clsx from "clsx";
@@ -23,6 +24,7 @@ import { stageIds } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { MapPool } from "~/modules/map-pool-serializer";
 import {
+  notFoundIfFalsy,
   parseRequestFormData,
   validate,
   type SendouRouteHandle,
@@ -35,9 +37,11 @@ import {
   LOG_IN_URL,
   modeImageUrl,
   navIconUrl,
+  toToolsMapsPage,
 } from "~/utils/urls";
 import { createTeam } from "../queries/createTeam.server";
 import deleteTeamMember from "../queries/deleteTeamMember.server";
+import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { findOwnTeam } from "../queries/findOwnTeam.server";
 import { findTeamsByEventId } from "../queries/findTeamsByEventId.server";
 import { updateTeamInfo } from "../queries/updateTeamInfo.server";
@@ -121,8 +125,14 @@ export const action: ActionFunction = async ({ request, params }) => {
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
-  const user = await getUserId(request);
+  const eventId = idFromParams(params);
+  const event = notFoundIfFalsy(findByIdentifier(eventId));
 
+  if (!event.isBeforeStart) {
+    throw redirect(toToolsMapsPage(event.id));
+  }
+
+  const user = await getUserId(request);
   if (!user) return null;
 
   const ownTeam = findOwnTeam({
