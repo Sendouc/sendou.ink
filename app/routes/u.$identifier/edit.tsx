@@ -449,3 +449,69 @@ function BioTextarea({ initialValue }: { initialValue: User["bio"] }) {
     </div>
   );
 }
+
+
+function FavBadgeSelect({
+  parentRouteData,
+}: {
+  parentRouteData: UserPageLoaderData;
+}) {
+  const { t } = useTranslation(["user"]);
+
+  return (
+    <div>
+      <Label required htmlFor="favBadge">
+        {t("user:favoriteBadge")}
+      </Label>
+      <div className="stack sm">
+        {weapons.map((weapon, i) => {
+          return (
+            <div key={i} className="stack horizontal sm items-center">
+              <div>
+                <WeaponCombobox
+                  inputName="weapon"
+                  id="weapon"
+                  className="u__build-form__weapon"
+                  required
+                  onChange={(opt) =>
+                    opt &&
+                    setWeapons((weapons) => {
+                      const newWeapons = [...weapons];
+                      newWeapons[i] = Number(opt.value) as MainWeaponId;
+                      return newWeapons;
+                    })
+                  }
+                  initialWeaponId={weapon ?? undefined}
+                />
+              </div>
+              {i === weapons.length - 1 && (
+                <>
+                  <Button
+                    size="tiny"
+                    disabled={weapons.length === BUILD.MAX_WEAPONS_COUNT}
+                    onClick={() => setWeapons((weapons) => [...weapons, 0])}
+                    icon={<PlusIcon />}
+                  />
+                  {weapons.length > 1 && (
+                    <Button
+                      size="tiny"
+                      onClick={() =>
+                        setWeapons((weapons) => {
+                          const newWeapons = [...weapons];
+                          newWeapons.pop();
+                          return newWeapons;
+                        })
+                      }
+                      variant="destructive"
+                      icon={<CrossIcon />}
+                    />
+                  )}
+                </>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
