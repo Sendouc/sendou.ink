@@ -36,7 +36,9 @@ export function createTournamentMapList(
     }
 
     const stageList =
-      mapList.length < input.bestOf - 1
+      mapList.length < input.bestOf - 1 ||
+      // in 1 mode only the tiebreaker is not a thing
+      (input.modesIncluded && input.modesIncluded.length === 1)
         ? stages
         : input.tiebreakerMaps.stageModePairs.map((p) => ({
             ...p,
@@ -130,6 +132,10 @@ export function createTournamentMapList(
     ModeWithStageAndScore,
     "score" | "stageId" | "mode"
   >;
+
+  // adding rules here can achieve to things
+  // 1) adjust what kind of map list is generated
+  // 2) optimize the algorithm my eliminating subtrees from consideration
   function stageIsOk(stage: StageValidatorInput, index: number) {
     if (usedStages.has(index)) return false;
     if (isEarlyModeRepeat(stage)) return false;
@@ -137,6 +143,7 @@ export function createTournamentMapList(
     if (isMakingThingsUnfair(stage)) return false;
     if (isStageRepeatWithoutBreak(stage)) return false;
     if (isSecondPickBySameTeamInRow(stage)) return false;
+    if (wouldPreventTiebreaker(stage)) return false;
 
     return true;
   }
@@ -209,6 +216,35 @@ export function createTournamentMapList(
     return lastStage.score === stage.score;
   }
 
+  function wouldPreventTiebreaker(stage: StageValidatorInput) {
+    // tiebreaker always guaranteed if not one mode
+    if (!input.modesIncluded || input.modesIncluded.length !== 1) return false;
+
+    const commonMaps = input.teams[0].maps.stageModePairs.filter(
+      ({ stageId, mode }) =>
+        input.teams[1].maps.stageModePairs.some(
+          (pair) => pair.stageId === stageId && pair.mode === mode
+        )
+    );
+
+    const newMapList = [...mapList, stage];
+
+    const newCommonMaps = commonMaps.filter(
+      ({ stageId, mode }) =>
+        !newMapList.some(
+          (pair) => pair.stageId === stageId && pair.mode === mode
+        )
+    );
+
+    // there was at least one possible common map
+    // to pick as tiebreaker but it (or they) got picked too early
+    return (
+      commonMaps.length > 0 &&
+      newCommonMaps.length === 0 &&
+      newMapList.length !== input.bestOf
+    );
+  }
+
   function rateMapList() {
     // not a full map list
     if (mapList.length !== input.bestOf) return;
@@ -226,6 +262,32 @@ export function createTournamentMapList(
       appearedMaps.set(stage.stageId, timesAppeared + 1);
     }
 
+    if (!lastMapIsAGoodTieBreaker()) {
+      score += 1;
+    }
+
     return score;
+  }
+
+  function lastMapIsAGoodTieBreaker() {
+    // guaranteed to be good if more than one mode
+    if (!input.modesIncluded || input.modesIncluded.length !== 1) return true;
+
+    // we can't have a map from pools of both teams if both didn't submit maps
+    if (input.teams.some((team) => team.maps.stageModePairs.length === 0)) {
+      return true;
+    }
+
+    const tieBreakerMap = mapList[mapList.length - 1]!;
+
+    let appearanceCount = 0;
+
+    for (const team of input.teams) {
+      for (const stage of team.maps.stages) {
+        if (stage === tieBreakerMap.stageId) appearanceCount++;
+      }
+    }
+
+    return appearanceCount === 2;
   }
 }

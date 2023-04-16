@@ -385,6 +385,7 @@ TournamentMapListGeneratorOneMode(
         },
       ],
       modesIncluded: ["SZ"],
+      tiebreakerMaps: new MapPool([]),
     });
     for (let i = 0; i < mapList.length - 1; i++) {
       assert.equal(mapList[i]!.mode, "SZ");
@@ -407,6 +408,7 @@ TournamentMapListGeneratorOneMode(
         },
       ],
       modesIncluded: ["SZ"],
+      tiebreakerMaps: new MapPool([]),
     });
     for (let i = 0; i < mapList.length - 1; i++) {
       assert.equal(mapList[i]!.mode, "SZ");
@@ -429,6 +431,7 @@ TournamentMapListGeneratorOneMode(
         },
       ],
       modesIncluded: ["SZ"],
+      tiebreakerMaps: new MapPool([]),
     });
 
     const stages = new Set(mapList.map(({ stageId }) => stageId));
@@ -436,7 +439,41 @@ TournamentMapListGeneratorOneMode(
   }
 );
 
-// xxx: tiebreaker is always from the maps of the teams
+TournamentMapListGeneratorOneMode(
+  "Tiebreaker is always from the maps of the teams",
+  () => {
+    for (let i = 1; i <= 10; i++) {
+      const mapList = generateMaps({
+        teams: [
+          {
+            id: 1,
+            maps: team1SZPicks,
+          },
+          {
+            id: 2,
+            maps: team2SZPicks,
+          },
+        ],
+        modesIncluded: ["SZ"],
+        roundNumber: i,
+        tiebreakerMaps: new MapPool([]),
+      });
+
+      const last = mapList[mapList.length - 1];
+
+      assert.equal(last?.mode, "SZ");
+      assert.equal(last?.stageId, 9);
+    }
+  }
+);
+
+// xxx: check can't submit sz only maps and no modesIncluded
+
+// xxx: handles tiebreaker when no overlap in map pools
+
+// xxx: handles worst case duplication
+
+// xxx: handles one team submitted no maps
 
 TournamentMapListGenerator.run();
 TournamentMapListGeneratorOneMode.run();
