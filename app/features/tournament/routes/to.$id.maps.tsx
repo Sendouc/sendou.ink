@@ -20,6 +20,7 @@ import type { TournamentToolsLoaderData } from "./to.$id";
 import type { MapPoolMap } from "~/db/types";
 import { resolveOwnedTeam } from "../tournament-utils";
 import { useUser } from "~/modules/auth";
+import { rankedModesShort } from "~/modules/in-game-lists/modes";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: mapsStyles }];
@@ -120,6 +121,7 @@ export default function TournamentToolsMapsPage() {
         bestOf={bestOf}
         bracketType={bracketType}
         roundNumber={roundNumber}
+        modesIncluded={[...rankedModesShort]}
       />
     </div>
   );
