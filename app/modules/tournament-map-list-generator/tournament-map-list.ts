@@ -15,6 +15,13 @@ const OPTIMAL_MAPLIST_SCORE = 0;
 export function createTournamentMapList(
   input: TournamentMaplistInput
 ): Array<TournamentMapListMap> {
+  invariant(
+    countModes() === (input.modesIncluded?.length ?? 4),
+    `mismatch between maplists modes count ${countModes()} and modesIncluded (${
+      input.modesIncluded?.length ?? 4
+    })`
+  );
+
   const { shuffle } = seededRandom(`${input.bracketType}-${input.roundNumber}`);
   const stages = shuffle(resolveStages());
   const mapList: Array<ModeWithStageAndScore & { score: number }> = [];
@@ -131,7 +138,7 @@ export function createTournamentMapList(
     return true;
   }
 
-  function tournamentIsOneModeOnly() {
+  function countModes() {
     const modes = new Set();
 
     for (const team of input.teams) {
@@ -140,7 +147,11 @@ export function createTournamentMapList(
       }
     }
 
-    return modes.size === 1;
+    return modes.size || 4;
+  }
+
+  function tournamentIsOneModeOnly() {
+    return input.modesIncluded && input.modesIncluded.length === 1;
   }
 
   function isEarlyModeRepeat(stage: StageValidatorInput) {

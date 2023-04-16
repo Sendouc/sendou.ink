@@ -53,6 +53,7 @@ const generateMaps = ({
     },
   ],
   tiebreakerMaps = tiebreakerPicks,
+  modesIncluded,
 }: Partial<TournamentMaplistInput> = {}) => {
   return createTournamentMapList({
     bestOf,
@@ -60,6 +61,7 @@ const generateMaps = ({
     roundNumber,
     teams,
     tiebreakerMaps,
+    modesIncluded,
   });
 };
 
@@ -382,12 +384,17 @@ TournamentMapListGeneratorOneMode(
           maps: team2SZPicks,
         },
       ],
+      modesIncluded: ["SZ"],
     });
     for (let i = 0; i < mapList.length - 1; i++) {
       assert.equal(mapList[i]!.mode, "SZ");
     }
   }
 );
+
+// xxx: generates one mode map list from empty map lists
+
+// xxx: tiebreaker is always from the maps of the teams
 
 TournamentMapListGenerator.run();
 TournamentMapListGeneratorOneMode.run();
