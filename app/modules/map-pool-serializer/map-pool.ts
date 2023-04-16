@@ -103,6 +103,15 @@ export class MapPool {
     return this.parsed;
   }
 
+  [Symbol.iterator]() {
+    var index = -1;
+    var data = this.stageModePairs;
+
+    return {
+      next: () => ({ value: data[++index]!, done: !(index in data) }),
+    };
+  }
+
   static EMPTY = new MapPool({
     SZ: [],
     TC: [],

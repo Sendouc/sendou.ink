@@ -7,6 +7,9 @@ import { MapPool } from "../map-pool-serializer";
 import type { TournamentMaplistInput } from "./types";
 
 const TournamentMapListGenerator = suite("Tournament map list generator");
+const TournamentMapListGeneratorOneMode = suite(
+  "Tournament map list generator (one mode)"
+);
 
 const team1Picks = new MapPool([
   { mode: "SZ", stageId: 4 },
@@ -348,4 +351,43 @@ TournamentMapListGenerator("No map picked by same team twice in row", () => {
   }
 });
 
+const team1SZPicks = new MapPool([
+  { mode: "SZ", stageId: 4 },
+  { mode: "SZ", stageId: 5 },
+  { mode: "SZ", stageId: 6 },
+  { mode: "SZ", stageId: 7 },
+  { mode: "SZ", stageId: 8 },
+  { mode: "SZ", stageId: 9 },
+]);
+const team2SZPicks = new MapPool([
+  { mode: "SZ", stageId: 1 },
+  { mode: "SZ", stageId: 2 },
+  { mode: "SZ", stageId: 3 },
+  { mode: "SZ", stageId: 9 },
+  { mode: "SZ", stageId: 10 },
+  { mode: "SZ", stageId: 11 },
+]);
+
+TournamentMapListGeneratorOneMode(
+  "Creates map list for one mode inferring from the team picks",
+  () => {
+    const mapList = generateMaps({
+      teams: [
+        {
+          id: 1,
+          maps: team1SZPicks,
+        },
+        {
+          id: 2,
+          maps: team2SZPicks,
+        },
+      ],
+    });
+    for (let i = 0; i < mapList.length - 1; i++) {
+      assert.equal(mapList[i]!.mode, "SZ");
+    }
+  }
+);
+
 TournamentMapListGenerator.run();
+TournamentMapListGeneratorOneMode.run();

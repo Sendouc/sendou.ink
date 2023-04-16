@@ -131,7 +131,21 @@ export function createTournamentMapList(
     return true;
   }
 
+  function tournamentIsOneModeOnly() {
+    const modes = new Set();
+
+    for (const team of input.teams) {
+      for (const map of team.maps) {
+        modes.add(map.mode);
+      }
+    }
+
+    return modes.size === 1;
+  }
+
   function isEarlyModeRepeat(stage: StageValidatorInput) {
+    if (tournamentIsOneModeOnly()) return false;
+
     // all modes already appeared
     if (mapList.length >= 4) return false;
 
@@ -147,6 +161,8 @@ export function createTournamentMapList(
   }
 
   function isNotFollowingModePattern(stage: StageValidatorInput) {
+    if (tournamentIsOneModeOnly()) return false;
+
     // not all modes appeared yet
     if (mapList.length < 4) return false;
 
