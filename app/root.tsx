@@ -458,9 +458,8 @@ function PWALinks() {
   );
 }
 
-const Ramp = React.lazy(() => import("./components/Ramp"));
+const Ramp = React.lazy(() => import("./components/ramp/Ramp"));
 function MyRamp({ data }: { data: RootLoaderData | undefined }) {
-  const location = useLocation();
   if (
     !data ||
     !data.publisherId ||
@@ -471,11 +470,5 @@ function MyRamp({ data }: { data: RootLoaderData | undefined }) {
     return null;
   }
 
-  return (
-    <Ramp
-      publisherId={data.publisherId}
-      id={data.websiteId}
-      forcePath={location.pathname}
-    />
-  );
+  return <Ramp publisherId={data.publisherId} id={data.websiteId} />;
 }
