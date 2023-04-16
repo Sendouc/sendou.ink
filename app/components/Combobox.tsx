@@ -2,7 +2,7 @@ import { Combobox as HeadlessCombobox } from "@headlessui/react";
 import clsx from "clsx";
 import Fuse from "fuse.js";
 import * as React from "react";
-import type { Badge, GearType, UserWithPlusTier } from "~/db/types";
+import type { GearType, UserWithPlusTier } from "~/db/types";
 import { useAllEventsWithMapPools, useUsers } from "~/hooks/swr";
 import { useTranslation } from "~/hooks/useTranslation";
 import type { MainWeaponId } from "~/modules/in-game-lists";
@@ -18,13 +18,11 @@ import { nonBombSubWeaponIds } from "~/modules/in-game-lists/weapon-ids";
 import { type SerializedMapPoolEvent } from "~/routes/calendar/map-pool-events";
 import type { Unpacked } from "~/utils/types";
 import {
-  badgeUrl,
   gearImageUrl,
   mainWeaponImageUrl,
   subWeaponImageUrl,
 } from "~/utils/urls";
 import { Image } from "./Image";
-import type { CountsByUserId } from "~/db/models/badges/queries.server";
 
 const MAX_RESULTS_SHOWN = 6;
 
@@ -431,55 +429,6 @@ export function MapPoolEventsCombobox({
       required={required}
       isLoading={isLoading}
       fullWidth
-    />
-  );
-}
-
-export function BadgeCombobox({
-  id,
-  required,
-  className,
-  inputName,
-  onChange,
-  badges,
-  initialBadge,
-  fullWidth,
-  nullable,
-}: Pick<
-  ComboboxProps<ComboboxBaseOption>,
-  | "inputName"
-  | "onChange"
-  | "className"
-  | "id"
-  | "required"
-  | "fullWidth"
-  | "nullable"
-> & {
-  badges: CountsByUserId;
-  initialBadge?: Pick<Badge, "code" | "displayName" | "id" | "hue">;
-}) {
-  const { t } = useTranslation(["user"]);
-
-  const badgeToOption = (
-    badge: Pick<Badge, "code" | "displayName" | "id" | "hue">
-  ) => ({
-    value: badge.id.toString(),
-    label: badge.displayName,
-    imgPath: badgeUrl({ code: badge.code }),
-  });
-
-  return (
-    <Combobox
-      inputName={inputName}
-      options={badges.map(badgeToOption)}
-      initialValue={initialBadge ? badgeToOption(initialBadge) : null}
-      placeholder={t("user:favoriteBadgePlaceholder")}
-      onChange={onChange}
-      className={className}
-      id={id}
-      required={required}
-      fullWidth={fullWidth}
-      nullable={nullable}
     />
   );
 }
