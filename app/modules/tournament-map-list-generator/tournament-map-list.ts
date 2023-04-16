@@ -1,5 +1,5 @@
 import invariant from "tiny-invariant";
-import type { ModeShort, StageId } from "../in-game-lists";
+import { type ModeShort, type StageId, stageIds } from "../in-game-lists";
 import { DEFAULT_MAP_POOL } from "./constants";
 import type {
   TournamentMaplistInput,
@@ -15,13 +15,6 @@ const OPTIMAL_MAPLIST_SCORE = 0;
 export function createTournamentMapList(
   input: TournamentMaplistInput
 ): Array<TournamentMapListMap> {
-  invariant(
-    countModes() === (input.modesIncluded?.length ?? 4),
-    `mismatch between maplists modes count ${countModes()} and modesIncluded (${
-      input.modesIncluded?.length ?? 4
-    })`
-  );
-
   const { shuffle } = seededRandom(`${input.bracketType}-${input.roundNumber}`);
   const stages = shuffle(resolveStages());
   const mapList: Array<ModeWithStageAndScore & { score: number }> = [];
@@ -101,7 +94,7 @@ export function createTournamentMapList(
     ) {
       // neither team submitted map, we go default
       result.push(
-        ...DEFAULT_MAP_POOL.stageModePairs.map((pair) => ({
+        ...getDefaultMapPool().map((pair) => ({
           ...pair,
           score: 0,
           source: "DEFAULT" as const,
@@ -123,6 +116,16 @@ export function createTournamentMapList(
     );
   }
 
+  function getDefaultMapPool() {
+    if (input.modesIncluded && input.modesIncluded.length === 1) {
+      const mode = input.modesIncluded[0]!;
+
+      return stageIds.map((id) => ({ mode, stageId: id }));
+    }
+
+    return DEFAULT_MAP_POOL.stageModePairs;
+  }
+
   type StageValidatorInput = Pick<
     ModeWithStageAndScore,
     "score" | "stageId" | "mode"
@@ -136,18 +139,6 @@ export function createTournamentMapList(
     if (isSecondPickBySameTeamInRow(stage)) return false;
 
     return true;
-  }
-
-  function countModes() {
-    const modes = new Set();
-
-    for (const team of input.teams) {
-      for (const map of team.maps) {
-        modes.add(map.mode);
-      }
-    }
-
-    return modes.size || 4;
   }
 
   function tournamentIsOneModeOnly() {

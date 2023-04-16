@@ -392,7 +392,49 @@ TournamentMapListGeneratorOneMode(
   }
 );
 
-// xxx: generates one mode map list from empty map lists
+TournamentMapListGeneratorOneMode(
+  "Creates one mode map list from empty map lists",
+  () => {
+    const mapList = generateMaps({
+      teams: [
+        {
+          id: 1,
+          maps: new MapPool([]),
+        },
+        {
+          id: 2,
+          maps: new MapPool([]),
+        },
+      ],
+      modesIncluded: ["SZ"],
+    });
+    for (let i = 0; i < mapList.length - 1; i++) {
+      assert.equal(mapList[i]!.mode, "SZ");
+    }
+  }
+);
+
+TournamentMapListGeneratorOneMode(
+  "Creates all different maps from empty map lists",
+  () => {
+    const mapList = generateMaps({
+      teams: [
+        {
+          id: 1,
+          maps: new MapPool([]),
+        },
+        {
+          id: 2,
+          maps: new MapPool([]),
+        },
+      ],
+      modesIncluded: ["SZ"],
+    });
+
+    const stages = new Set(mapList.map(({ stageId }) => stageId));
+    assert.equal(stages.size, 5);
+  }
+);
 
 // xxx: tiebreaker is always from the maps of the teams
 
