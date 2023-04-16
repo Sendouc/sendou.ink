@@ -4,7 +4,7 @@ import {
   type LinksFunction,
   type LoaderArgs,
 } from "@remix-run/node";
-import {Form, Link, useLoaderData, useMatches, useSearchParams} from "@remix-run/react";
+import { Form, Link, useLoaderData, useMatches } from "@remix-run/react";
 import { countries } from "countries-list";
 import * as React from "react";
 import { Trans } from "react-i18next";
@@ -20,7 +20,7 @@ import { WeaponImage } from "~/components/Image";
 import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
 import { SubmitButton } from "~/components/SubmitButton";
-import {BUILD, USER} from "~/constants";
+import { USER } from "~/constants";
 import { db } from "~/db";
 import { type User } from "~/db/types";
 import { useTranslation } from "~/hooks/useTranslation";
@@ -45,9 +45,6 @@ import {
   undefinedToNull,
 } from "~/utils/zod";
 import { userParamsSchema, type UserPageLoaderData } from "../u.$identifier";
-import {validatedWeaponIdFromSearchParams} from "~/features/build-analyzer";
-import {PlusIcon} from "~/components/icons/Plus";
-import {CrossIcon} from "~/components/icons/Cross";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -296,7 +293,6 @@ const SENS_OPTIONS = [
   -50, -45, -40, -35, -30, -25, -20, -15, -10, -5, 0, 5, 10, 15, 20, 25, 30, 35,
   40, 45, 50,
 ];
-
 function SensSelects({
   parentRouteData,
 }: {
@@ -460,19 +456,12 @@ function FavBadgeSelect({
 }: {
   parentRouteData: UserPageLoaderData;
 }) {
-  const [searchParams] = useSearchParams();
-  const { buildToEdit } = useLoaderData<typeof loader>();
-  const { t } = useTranslation(["common", "weapons", "builds"]);
-  const [weapons, setWeapons] = React.useState(
-    buildToEdit?.weapons.map((wpn) => wpn.weaponSplId) ?? [
-      validatedWeaponIdFromSearchParams(searchParams),
-    ]
-  );
+  const { t } = useTranslation(["user"]);
 
   return (
     <div>
-      <Label required htmlFor="weapon">
-        {t("builds:forms.weapons")}
+      <Label required htmlFor="favBadge">
+        {t("user:favoriteBadge")}
       </Label>
       <div className="stack sm">
         {weapons.map((weapon, i) => {

@@ -432,3 +432,54 @@ export function MapPoolEventsCombobox({
     />
   );
 }
+
+export function BadgeCombobox({
+  id,
+  required,
+  className,
+  inputName,
+  onChange,
+  initialWeaponId,
+  weaponIdsToOmit,
+  fullWidth,
+  nullable,
+}: Pick<
+  ComboboxProps<ComboboxBaseOption>,
+  | "inputName"
+  | "onChange"
+  | "className"
+  | "id"
+  | "required"
+  | "fullWidth"
+  | "nullable"
+> & {
+  initialWeaponId?: (typeof mainWeaponIds)[number];
+  weaponIdsToOmit?: Set<MainWeaponId>;
+}) {
+  const { t } = useTranslation("weapons");
+
+  const idToWeapon = (id: (typeof mainWeaponIds)[number]) => ({
+    value: String(id),
+    label: t(`MAIN_${id}`),
+    imgPath: mainWeaponImageUrl(id),
+  });
+
+  return (
+    <Combobox
+      inputName={inputName}
+      options={mainWeaponIds
+        .filter((id) => !weaponIdsToOmit?.has(id))
+        .map(idToWeapon)}
+      initialValue={
+        typeof initialWeaponId === "number" ? idToWeapon(initialWeaponId) : null
+      }
+      placeholder={t(`MAIN_${weaponCategories[0].weaponIds[0]}`)}
+      onChange={onChange}
+      className={className}
+      id={id}
+      required={required}
+      fullWidth={fullWidth}
+      nullable={nullable}
+    />
+  );
+}

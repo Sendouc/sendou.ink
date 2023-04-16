@@ -29,7 +29,7 @@ export interface User {
   /** Used to overwrite normal patron giving process and force give the patron status till this date */
   patronTill: number | null;
   isVideoAdder: number;
-  favBadgeId: number;
+  favoriteBadgeId: number;
 }
 
 /** User table after joined with PlusTier table */
