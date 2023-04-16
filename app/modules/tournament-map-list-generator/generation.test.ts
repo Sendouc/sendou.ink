@@ -534,7 +534,26 @@ TournamentMapListGeneratorOneMode("Handles worst case duplication", () => {
   }
 });
 
-// xxx: handles one team submitted no maps
+TournamentMapListGeneratorOneMode("Handles one team submitted no maps", () => {
+  const mapList = generateMaps({
+    teams: [
+      {
+        id: 1,
+        maps: team1SZPicks,
+      },
+      {
+        id: 2,
+        maps: new MapPool([]),
+      },
+    ],
+    modesIncluded: ["SZ"],
+    tiebreakerMaps: new MapPool([]),
+  });
+
+  for (const stage of mapList) {
+    assert.equal(stage.source, 1);
+  }
+});
 
 TournamentMapListGenerator.run();
 TournamentMapListGeneratorOneMode.run();
