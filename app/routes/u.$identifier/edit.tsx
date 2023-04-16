@@ -218,6 +218,7 @@ export default function UserEditPage() {
         <SensSelects parentRouteData={parentRouteData} />
         <CountrySelect parentRouteData={parentRouteData} />
         <WeaponPoolSelect parentRouteData={parentRouteData} />
+        <FavBadgeSelect parentRouteData={parentRouteData} />
         <BioTextarea initialValue={parentRouteData.bio} />
         <FormMessage type="info">
           <Trans i18nKey={"user:discordExplanation"} t={t}>
@@ -464,7 +465,7 @@ function FavBadgeSelect({
         {t("user:favoriteBadge")}
       </Label>
       <div className="stack sm">
-        {weapons.map((weapon, i) => {
+        {parentRouteData.badges.map((badge, i) => {
           return (
             <div key={i} className="stack horizontal sm items-center">
               <div>
