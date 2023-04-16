@@ -38,7 +38,7 @@ export function createTournamentMapList(
     const stageList =
       mapList.length < input.bestOf - 1 ||
       // in 1 mode only the tiebreaker is not a thing
-      (input.modesIncluded && input.modesIncluded.length === 1)
+      tournamentIsOneModeOnly()
         ? stages
         : input.tiebreakerMaps.stageModePairs.map((p) => ({
             ...p,
@@ -119,7 +119,7 @@ export function createTournamentMapList(
   }
 
   function getDefaultMapPool() {
-    if (input.modesIncluded && input.modesIncluded.length === 1) {
+    if (tournamentIsOneModeOnly()) {
       const mode = input.modesIncluded[0]!;
 
       return stageIds.map((id) => ({ mode, stageId: id }));
@@ -149,7 +149,7 @@ export function createTournamentMapList(
   }
 
   function tournamentIsOneModeOnly() {
-    return input.modesIncluded && input.modesIncluded.length === 1;
+    return input.modesIncluded.length === 1;
   }
 
   function isEarlyModeRepeat(stage: StageValidatorInput) {
@@ -218,7 +218,7 @@ export function createTournamentMapList(
 
   function wouldPreventTiebreaker(stage: StageValidatorInput) {
     // tiebreaker always guaranteed if not one mode
-    if (!input.modesIncluded || input.modesIncluded.length !== 1) return false;
+    if (!tournamentIsOneModeOnly()) return false;
 
     const commonMaps = input.teams[0].maps.stageModePairs.filter(
       ({ stageId, mode }) =>
@@ -271,7 +271,7 @@ export function createTournamentMapList(
 
   function lastMapIsAGoodTieBreaker() {
     // guaranteed to be good if more than one mode
-    if (!input.modesIncluded || input.modesIncluded.length !== 1) return true;
+    if (!tournamentIsOneModeOnly()) return true;
 
     // we can't have a map from pools of both teams if both didn't submit maps
     if (input.teams.some((team) => team.maps.stageModePairs.length === 0)) {

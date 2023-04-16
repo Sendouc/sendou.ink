@@ -23,7 +23,7 @@ export interface TournamentMaplistInput {
     }
   ];
   tiebreakerMaps: MapPool;
-  modesIncluded?: ModeShort[];
+  modesIncluded: ModeShort[];
 }
 
 export type TournamentMaplistSource =

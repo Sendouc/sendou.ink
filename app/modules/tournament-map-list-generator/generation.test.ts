@@ -53,7 +53,7 @@ const generateMaps = ({
     },
   ],
   tiebreakerMaps = tiebreakerPicks,
-  modesIncluded,
+  modesIncluded = [...rankedModesShort],
 }: Partial<TournamentMaplistInput> = {}) => {
   return createTournamentMapList({
     bestOf,
