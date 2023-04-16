@@ -12,6 +12,7 @@
   "weaponPool": "武器池",
   "discordExplanation": "用户名、头像、Youtube、Twitter和Twitch账号皆来自你的Discord账号。查看 <1>FAQ</1> 以获得更多相关信息。",
   "favoriteBadge": "最喜爱的徽章",
+  "favoriteBadgePlaceholder": "选择您最喜爱的徽章或留空",
 
   "results.title": "成绩",
   "results.placing": "排名",

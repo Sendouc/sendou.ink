@@ -293,6 +293,7 @@ const SENS_OPTIONS = [
   -50, -45, -40, -35, -30, -25, -20, -15, -10, -5, 0, 5, 10, 15, 20, 25, 30, 35,
   40, 45, 50,
 ];
+
 function SensSelects({
   parentRouteData,
 }: {
@@ -451,7 +452,6 @@ function BioTextarea({ initialValue }: { initialValue: User["bio"] }) {
   );
 }
 
-
 function FavBadgeSelect({
   parentRouteData,
 }: {
@@ -459,14 +459,10 @@ function FavBadgeSelect({
 }) {
   const { t } = useTranslation(["user"]);
 
-  // initial favorite badge is "none", id = 0
-  const initialBadge = {
-    id: 0,
-    code: "",
-    displayName: "none",
-    count: 0,
-    hue: 0
-  };
+  // user's current favorite badge is the initial value
+  const initialBadge = parentRouteData.badges.find(
+    (badge) => badge.id === parentRouteData.favoriteBadgeId
+  );
 
   return (
     <div>
@@ -474,14 +470,24 @@ function FavBadgeSelect({
         {t("user:favoriteBadge")}
       </Label>
       <div>
-        <BadgeCombobox
-          id="favBadge"
-          inputName="favBadge"
-          className=""
-          required
-          badges={[initialBadge, ...parentRouteData.badges]}
-          initialBadge={initialBadge}
-        />
+        {initialBadge ? (
+          <BadgeCombobox
+            id="favBadge"
+            inputName="favBadge"
+            className=""
+            required={false}
+            badges={parentRouteData.badges}
+            initialBadge={initialBadge}
+          />
+        ) : (
+          <BadgeCombobox
+            id="favBadge"
+            inputName="favBadge"
+            className=""
+            required={false}
+            badges={parentRouteData.badges}
+          />
+        )}
       </div>
     </div>
   );

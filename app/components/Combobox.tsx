@@ -460,21 +460,20 @@ export function BadgeCombobox({
 }) {
   const { t } = useTranslation(["user"]);
 
-  const badgeToOption = (badge: Pick<Badge, "code" | "displayName" | "id" | "hue">) => ({
+  const badgeToOption = (
+    badge: Pick<Badge, "code" | "displayName" | "id" | "hue">
+  ) => ({
     value: badge.id.toString(),
     label: badge.displayName,
     imgPath: badgeUrl({ code: badge.code }),
   });
 
-
   return (
     <Combobox
       inputName={inputName}
       options={badges.map(badgeToOption)}
-      initialValue={
-        initialBadge ? badgeToOption(initialBadge) : null
-      }
-      placeholder={t("user:favoriteBadge")}
+      initialValue={initialBadge ? badgeToOption(initialBadge) : null}
+      placeholder={t("user:favoriteBadgePlaceholder")}
       onChange={onChange}
       className={className}
       id={id}
