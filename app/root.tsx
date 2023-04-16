@@ -14,7 +14,6 @@ import {
   type ShouldRevalidateFunction,
   useLoaderData,
   useMatches,
-  useLocation,
 } from "@remix-run/react";
 import * as React from "react";
 import commonStyles from "~/styles/common.css";
