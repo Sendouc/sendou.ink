@@ -11,7 +11,7 @@ import { Trans } from "react-i18next";
 import invariant from "tiny-invariant";
 import { z } from "zod";
 import { Button } from "~/components/Button";
-import { WeaponCombobox } from "~/components/Combobox";
+import { BadgeCombobox, WeaponCombobox } from "~/components/Combobox";
 import { CustomizedColorsInput } from "~/components/CustomizedColorsInput";
 import { FormErrors } from "~/components/FormErrors";
 import { FormMessage } from "~/components/FormMessage";
@@ -459,59 +459,29 @@ function FavBadgeSelect({
 }) {
   const { t } = useTranslation(["user"]);
 
+  // initial favorite badge is "none", id = 0
+  const initialBadge = {
+    id: 0,
+    code: "",
+    displayName: "none",
+    count: 0,
+    hue: 0
+  };
+
   return (
     <div>
-      <Label required htmlFor="favBadge">
+      <Label htmlFor="favBadge" required>
         {t("user:favoriteBadge")}
       </Label>
-      <div className="stack sm">
-        {parentRouteData.badges.map((badge, i) => {
-          return (
-            <div key={i} className="stack horizontal sm items-center">
-              <div>
-                <WeaponCombobox
-                  inputName="weapon"
-                  id="weapon"
-                  className="u__build-form__weapon"
-                  required
-                  onChange={(opt) =>
-                    opt &&
-                    setWeapons((weapons) => {
-                      const newWeapons = [...weapons];
-                      newWeapons[i] = Number(opt.value) as MainWeaponId;
-                      return newWeapons;
-                    })
-                  }
-                  initialWeaponId={weapon ?? undefined}
-                />
-              </div>
-              {i === weapons.length - 1 && (
-                <>
-                  <Button
-                    size="tiny"
-                    disabled={weapons.length === BUILD.MAX_WEAPONS_COUNT}
-                    onClick={() => setWeapons((weapons) => [...weapons, 0])}
-                    icon={<PlusIcon />}
-                  />
-                  {weapons.length > 1 && (
-                    <Button
-                      size="tiny"
-                      onClick={() =>
-                        setWeapons((weapons) => {
-                          const newWeapons = [...weapons];
-                          newWeapons.pop();
-                          return newWeapons;
-                        })
-                      }
-                      variant="destructive"
-                      icon={<CrossIcon />}
-                    />
-                  )}
-                </>
-              )}
-            </div>
-          );
-        })}
+      <div>
+        <BadgeCombobox
+          id="favBadge"
+          inputName="favBadge"
+          className=""
+          required
+          badges={[initialBadge, ...parentRouteData.badges]}
+          initialBadge={initialBadge}
+        />
       </div>
     </div>
   );
