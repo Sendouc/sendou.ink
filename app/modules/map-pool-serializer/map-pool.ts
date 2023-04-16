@@ -87,6 +87,10 @@ export class MapPool {
     );
   }
 
+  overlaps(other: MapPool): boolean {
+    return this.stageModePairs.some((pair) => other.has(pair));
+  }
+
   isEmpty(): boolean {
     return Object.values(this.parsed).every((stages) => stages.length === 0);
   }

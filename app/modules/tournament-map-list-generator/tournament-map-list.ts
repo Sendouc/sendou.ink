@@ -16,7 +16,7 @@ export function createTournamentMapList(
   input: TournamentMaplistInput
 ): Array<TournamentMapListMap> {
   const { shuffle } = seededRandom(`${input.bracketType}-${input.roundNumber}`);
-  const stages = shuffle(resolveStages());
+  const stages = shuffle(resolveCommonStages());
   const mapList: Array<ModeWithStageAndScore & { score: number }> = [];
   const bestMapList: { maps?: Array<ModeWithStageAndScore>; score: number } = {
     score: Infinity,
@@ -39,7 +39,7 @@ export function createTournamentMapList(
       mapList.length < input.bestOf - 1 ||
       // in 1 mode only the tiebreaker is not a thing
       tournamentIsOneModeOnly()
-        ? stages
+        ? resolveOneModeOnlyStages()
         : input.tiebreakerMaps.stageModePairs.map((p) => ({
             ...p,
             score: 0,
@@ -64,7 +64,7 @@ export function createTournamentMapList(
 
   throw new Error("couldn't generate maplist");
 
-  function resolveStages() {
+  function resolveCommonStages() {
     const sorted = input.teams
       .slice()
       .sort((a, b) => a.id - b.id) as TournamentMaplistInput["teams"];
@@ -116,6 +116,30 @@ export function createTournamentMapList(
     return result.sort((a, b) =>
       `${a.stageId}-${a.mode}`.localeCompare(`${b.stageId}-${b.mode}`)
     );
+  }
+
+  function resolveOneModeOnlyStages() {
+    if (
+      mapList.length === input.bestOf - 1 &&
+      input.teams.every((team) => !team.maps.isEmpty()) &&
+      !input.teams[0].maps.overlaps(input.teams[1].maps)
+    ) {
+      // no overlap so we need to use a random map for tiebreaker
+      return shuffle([...stageIds])
+        .filter(
+          (stageId) =>
+            !input.teams[0].maps.hasStage(stageId) &&
+            !input.teams[1].maps.hasStage(stageId)
+        )
+        .map((stageId) => ({
+          stageId,
+          mode: input.modesIncluded[0]!,
+          score: 0,
+          source: "TIEBREAKER" as const,
+        }));
+    }
+
+    return stages;
   }
 
   function getDefaultMapPool() {
@@ -272,6 +296,10 @@ export function createTournamentMapList(
   function lastMapIsAGoodTieBreaker() {
     // guaranteed to be good if more than one mode
     if (!tournamentIsOneModeOnly()) return true;
+
+    // specifically made tiebreaker map is considered good
+    const last = mapList[mapList.length - 1]!;
+    if (last.source === "TIEBREAKER") return true;
 
     // we can't have a map from pools of both teams if both didn't submit maps
     if (input.teams.some((team) => team.maps.stageModePairs.length === 0)) {

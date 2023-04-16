@@ -369,6 +369,14 @@ const team2SZPicks = new MapPool([
   { mode: "SZ", stageId: 10 },
   { mode: "SZ", stageId: 11 },
 ]);
+const team2SZPicksNoOverlap = new MapPool([
+  { mode: "SZ", stageId: 1 },
+  { mode: "SZ", stageId: 2 },
+  { mode: "SZ", stageId: 3 },
+  { mode: "SZ", stageId: 14 },
+  { mode: "SZ", stageId: 10 },
+  { mode: "SZ", stageId: 11 },
+]);
 
 TournamentMapListGeneratorOneMode(
   "Creates map list for one mode inferring from the team picks",
@@ -440,7 +448,7 @@ TournamentMapListGeneratorOneMode(
 );
 
 TournamentMapListGeneratorOneMode(
-  "Tiebreaker is always from the maps of the teams",
+  "Tiebreaker is always from the maps of the teams when possible",
   () => {
     for (let i = 1; i <= 10; i++) {
       const mapList = generateMaps({
@@ -467,9 +475,38 @@ TournamentMapListGeneratorOneMode(
   }
 );
 
-// xxx: check can't submit sz only maps and no modesIncluded
+TournamentMapListGeneratorOneMode(
+  "Tiebreaker is from neither team's pool if no overlap",
+  () => {
+    const mapList = generateMaps({
+      teams: [
+        {
+          id: 1,
+          maps: team1SZPicks,
+        },
+        {
+          id: 2,
+          maps: team2SZPicksNoOverlap,
+        },
+      ],
+      modesIncluded: ["SZ"],
+      tiebreakerMaps: new MapPool([]),
+    });
 
-// xxx: handles tiebreaker when no overlap in map pools
+    const last = mapList[mapList.length - 1];
+
+    assert.not.ok(
+      team1SZPicks.stageModePairs.some(
+        ({ stageId }) => stageId === last?.stageId
+      )
+    );
+    assert.not.ok(
+      team2SZPicksNoOverlap.stageModePairs.some(
+        ({ stageId }) => stageId === last?.stageId
+      )
+    );
+  }
+);
 
 // xxx: handles worst case duplication
 
