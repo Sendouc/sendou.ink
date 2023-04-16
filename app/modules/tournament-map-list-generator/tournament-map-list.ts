@@ -119,11 +119,7 @@ export function createTournamentMapList(
   }
 
   function resolveOneModeOnlyStages() {
-    if (
-      mapList.length === input.bestOf - 1 &&
-      input.teams.every((team) => !team.maps.isEmpty()) &&
-      !input.teams[0].maps.overlaps(input.teams[1].maps)
-    ) {
+    if (utilizeOtherStageIdsInOneModeOnlyTournament()) {
       // no overlap so we need to use a random map for tiebreaker
       return shuffle([...stageIds])
         .filter(
@@ -140,6 +136,28 @@ export function createTournamentMapList(
     }
 
     return stages;
+  }
+
+  function utilizeOtherStageIdsInOneModeOnlyTournament() {
+    if (mapList.length < input.bestOf - 1) return false;
+
+    if (
+      input.teams.every((team) => !team.maps.isEmpty()) &&
+      !input.teams[0].maps.overlaps(input.teams[1].maps)
+    ) {
+      return true;
+    }
+
+    const teamsMapsLeftNotPicked =
+      [...input.teams[0].maps, ...input.teams[1].maps].filter(
+        (stage) =>
+          !mapList.some(
+            (map) => map.stageId === stage.stageId && map.mode === stage.mode
+          )
+      ).length > 0;
+    if (!teamsMapsLeftNotPicked) return true;
+
+    return false;
   }
 
   function getDefaultMapPool() {
@@ -264,6 +282,8 @@ export function createTournamentMapList(
     // to pick as tiebreaker but it (or they) got picked too early
     return (
       commonMaps.length > 0 &&
+      // handles special case where both teams have the same maps in their pool
+      commonMaps.length !== input.teams[0].maps.stageModePairs.length &&
       newCommonMaps.length === 0 &&
       newMapList.length !== input.bestOf
     );

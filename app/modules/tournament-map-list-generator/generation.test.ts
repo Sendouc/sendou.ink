@@ -508,7 +508,31 @@ TournamentMapListGeneratorOneMode(
   }
 );
 
-// xxx: handles worst case duplication
+TournamentMapListGeneratorOneMode("Handles worst case duplication", () => {
+  const mapList = generateMaps({
+    teams: [
+      {
+        id: 1,
+        maps: team1SZPicks,
+      },
+      {
+        id: 2,
+        maps: team1SZPicks,
+      },
+    ],
+    modesIncluded: ["SZ"],
+    tiebreakerMaps: new MapPool([]),
+    bestOf: 7,
+  });
+
+  for (const [i, stage] of mapList.entries()) {
+    if (i === 6) {
+      assert.equal(stage?.source, "TIEBREAKER");
+    } else {
+      assert.equal(stage?.source, "BOTH");
+    }
+  }
+});
 
 // xxx: handles one team submitted no maps
 
