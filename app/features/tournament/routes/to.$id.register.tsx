@@ -187,45 +187,35 @@ export default function TournamentRegisterPage() {
       <div>{parentRouteData.event.description}</div>
       {teamRegularMemberOf ? (
         <Alert>You are in a team for this event</Alert>
-      ) : !data?.ownTeam ? (
-        <Register />
       ) : (
-        <div>
-          <EditTeam ownTeam={data.ownTeam} />
-        </div>
+        <EditTeam ownTeam={data?.ownTeam} />
       )}
     </div>
   );
 }
 
-function Register() {
-  const user = useUser();
-  const fetcher = useFetcher();
-
-  if (!user) {
-    return (
-      <form className="stack items-center" action={LOG_IN_URL} method="post">
-        <Button size="big" type="submit">
-          Log in to register
-        </Button>
-      </form>
-    );
-  }
-
+function PleaseLogIn() {
   return (
-    <fetcher.Form className="stack items-center" method="post">
-      <SubmitButton size="big" state={fetcher.state} _action="CREATE_TEAM">
-        Register now
-      </SubmitButton>
-    </fetcher.Form>
+    <form className="stack items-center" action={LOG_IN_URL} method="post">
+      <Button size="big" type="submit">
+        Log in to register
+      </Button>
+    </form>
   );
 }
 
 function EditTeam({
   ownTeam,
 }: {
-  ownTeam: NonNullable<SerializeFrom<typeof loader>>["ownTeam"];
+  ownTeam?: NonNullable<SerializeFrom<typeof loader>>["ownTeam"];
 }) {
+  const user = useUser();
+
+  if (!user) return <PleaseLogIn />;
+
+  // xxx: todo
+  if (!ownTeam) return null;
+
   return (
     <div className="stack lg">
       <FillRoster ownTeam={ownTeam} />
