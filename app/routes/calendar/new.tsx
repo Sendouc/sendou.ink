@@ -586,6 +586,7 @@ function BadgesAdder() {
   );
 }
 
+// xxx: no map pool if one mode
 function TOToolsAndMapPool() {
   const user = useUser();
   const { eventToEdit } = useLoaderData<typeof loader>();

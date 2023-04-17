@@ -169,7 +169,7 @@ export default function TournamentRegisterPage() {
   return (
     <div className="stack lg">
       <div className="tournament__logo-container">
-        {/* TODO tournament: dynamic image */}
+        {/* xxx: dynamic image */}
         <img
           src="https://abload.de/img/screenshot2022-12-15ap0ca1.png"
           alt=""
