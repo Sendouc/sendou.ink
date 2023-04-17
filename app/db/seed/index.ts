@@ -1183,8 +1183,8 @@ function userFavBadges() {
   const badgeList = shuffle(sql
     .prepare(`select "badgeId" from "BadgeOwner" where "userId" = 1`)
     .all()
-    .map((row)=>row.badgeId));
+    .map((row) => row.badgeId));
   sql
     .prepare(`update "User" set "favoriteBadgeId" = $id where "id" = 1`)
-    .run({ id: badgeList[0] });
+    .run({id: badgeList[0]});
 }
