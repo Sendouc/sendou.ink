@@ -263,7 +263,6 @@ function FillRoster({
     0
   );
 
-  // TODO tournament: + tournament has not started
   const showDeleteMemberSection = ownTeamMembers.length > 1;
 
   return (
