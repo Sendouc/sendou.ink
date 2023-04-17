@@ -22,7 +22,7 @@ export default function TournamentToolsTeamsPage() {
           const hasMapPool = () => {
             // before start empty array is returned if team has map list
             // after start empty array means team has no map list
-            if (data.event.isBeforeStart) {
+            if (!data.mapListGeneratorAvailable) {
               return Boolean(team.mapPool);
             }
 

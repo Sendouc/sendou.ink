@@ -20,6 +20,8 @@ import type { TournamentToolsLoaderData } from "./to.$id";
 import type { MapPoolMap } from "~/db/types";
 import { HACKY_modesIncluded, resolveOwnedTeam } from "../tournament-utils";
 import { useUser } from "~/modules/auth";
+import { Redirect } from "~/components/Redirect";
+import { toToolsPage } from "~/utils/urls";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: mapsStyles }];
@@ -81,6 +83,10 @@ export default function TournamentToolsMapsPage() {
     id: -1,
     mapPool: [],
   };
+
+  if (!data.mapListGeneratorAvailable) {
+    return <Redirect to={toToolsPage(data.event.id)} />;
+  }
 
   return (
     <div className="stack md">
