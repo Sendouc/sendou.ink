@@ -230,9 +230,7 @@ function TeamsSelect({
           setTeam(Number(e.target.value));
         }}
       >
-        {otherTeam.id !== -1 && (
-          <option value={-1}>({t("tournament:team.unlisted")})</option>
-        )}
+        <option value={-1}>({t("tournament:team.unlisted")})</option>
         {data.teams
           .filter((t) => t.id !== otherTeam.id)
           .map((team) => (
