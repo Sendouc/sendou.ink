@@ -39,8 +39,10 @@ import { assertUnreachable } from "~/utils/types";
 import {
   CALENDAR_PAGE,
   LOG_IN_URL,
+  SENDOU_INK_BASE_URL,
   modeImageUrl,
   navIconUrl,
+  toToolsJoinPage,
   toToolsMapsPage,
 } from "~/utils/urls";
 import { createTeam } from "../queries/createTeam.server";
@@ -244,8 +246,10 @@ function FillRoster({
   const [, copyToClipboard] = useCopyToClipboard();
   const { t } = useTranslation(["common"]);
 
-  // xxx: fix
-  const inviteLink = `https://sendou.ink/to/201/join?code=${ownTeam.inviteCode}`;
+  const inviteLink = `${SENDOU_INK_BASE_URL}${toToolsJoinPage({
+    eventId: parentRouteData.event.id,
+    inviteCode: ownTeam.inviteCode,
+  })}`;
 
   const { members: ownTeamMembers } =
     resolveOwnedTeam({
