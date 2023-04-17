@@ -24,6 +24,7 @@ export function createTournamentMapList(
   const usedStages = new Set<number>();
 
   const backtrack = () => {
+    invariant(mapList.length <= input.bestOf, "mapList.length > input.bestOf");
     const mapListScore = rateMapList();
     if (typeof mapListScore === "number" && mapListScore < bestMapList.score) {
       bestMapList.maps = [...mapList];
@@ -180,6 +181,7 @@ export function createTournamentMapList(
   // 2) optimize the algorithm my eliminating subtrees from consideration
   function stageIsOk(stage: StageValidatorInput, index: number) {
     if (usedStages.has(index)) return false;
+    if (mapListAlreadyFull()) return false;
     if (isEarlyModeRepeat(stage)) return false;
     if (isNotFollowingModePattern(stage)) return false;
     if (isMakingThingsUnfair(stage)) return false;
@@ -192,6 +194,10 @@ export function createTournamentMapList(
 
   function tournamentIsOneModeOnly() {
     return input.modesIncluded.length === 1;
+  }
+
+  function mapListAlreadyFull() {
+    return mapList.length === input.bestOf;
   }
 
   function isEarlyModeRepeat(stage: StageValidatorInput) {
