@@ -195,6 +195,7 @@
   font-size: var(--fonts-xs);
   font-weight: var(--semi-bold);
   text-align: center;
+  color: var(--text-lighter);
 }
 
 .tournament__section__map-select-row {

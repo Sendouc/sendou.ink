@@ -5,7 +5,6 @@ import {
   redirect,
 } from "@remix-run/node";
 import { useFetcher, useLoaderData, useOutletContext } from "@remix-run/react";
-import clsx from "clsx";
 import * as React from "react";
 import { useCopyToClipboard } from "react-use";
 import invariant from "tiny-invariant";
@@ -303,16 +302,9 @@ function FillRoster({
           <DeleteMember members={ownTeamMembers} />
         ) : null}
       </section>
-      <div
-        className={clsx("tournament__section__warning", {
-          "text-warning":
-            ownTeamMembers.length < TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
-          "text-success":
-            ownTeamMembers.length >= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
-        })}
-      >
-        {TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL}-{TOURNAMENT.TEAM_MAX_MEMBERS}{" "}
-        members needed to play
+      <div className="tournament__section__warning">
+        You can still play without submitting roster, but you might be seeded
+        lower in the bracket.
       </div>
     </div>
   );
@@ -512,6 +504,10 @@ function CounterPickMapPoolPicker() {
           )}
         </fetcher.Form>
       </section>
+      <div className="tournament__section__warning">
+        Picking a map pool is optional, but if you don&apos;t then you will be
+        playing on your opponent&apos;s picks.
+      </div>
     </div>
   );
 }
