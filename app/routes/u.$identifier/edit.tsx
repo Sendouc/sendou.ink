@@ -11,7 +11,7 @@ import { Trans } from "react-i18next";
 import invariant from "tiny-invariant";
 import { z } from "zod";
 import { Button } from "~/components/Button";
-import { BadgeCombobox, WeaponCombobox } from "~/components/Combobox";
+import { WeaponCombobox } from "~/components/Combobox";
 import { CustomizedColorsInput } from "~/components/CustomizedColorsInput";
 import { FormErrors } from "~/components/FormErrors";
 import { FormMessage } from "~/components/FormMessage";
@@ -122,6 +122,21 @@ const userEditActionSchema = z
         )
         .max(USER.WEAPON_POOL_MAX_SIZE)
     ),
+    favoriteBadgeId: z.preprocess(
+      falsyToNull,
+      z
+        .number()
+        .refine((val) => {
+          const [, parentRoute] = useMatches();
+          invariant(parentRoute);
+          const parentRouteData = parentRoute.data as UserPageLoaderData;
+          return parentRouteData.badges
+            .map((badge) => badge.id)
+            .concat(0)
+            .includes(val);
+        })
+        .default(0)
+    ),
   })
   .refine(
     (val) => {
@@ -217,8 +232,8 @@ export default function UserEditPage() {
         <InGameNameInputs parentRouteData={parentRouteData} />
         <SensSelects parentRouteData={parentRouteData} />
         <CountrySelect parentRouteData={parentRouteData} />
-        <WeaponPoolSelect parentRouteData={parentRouteData} />
         <FavBadgeSelect parentRouteData={parentRouteData} />
+        <WeaponPoolSelect parentRouteData={parentRouteData} />
         <BioTextarea initialValue={parentRouteData.bio} />
         <FormMessage type="info">
           <Trans i18nKey={"user:discordExplanation"} t={t}>
@@ -466,29 +481,22 @@ function FavBadgeSelect({
 
   return (
     <div>
-      <Label htmlFor="favBadge" required>
-        {t("user:favoriteBadge")}
-      </Label>
-      <div>
-        {initialBadge ? (
-          <BadgeCombobox
-            id="favBadge"
-            inputName="favBadge"
-            className=""
-            required={false}
-            badges={parentRouteData.badges}
-            initialBadge={initialBadge}
-          />
-        ) : (
-          <BadgeCombobox
-            id="favBadge"
-            inputName="favBadge"
-            className=""
-            required={false}
-            badges={parentRouteData.badges}
-          />
-        )}
-      </div>
+      <label htmlFor="favoriteBadgeId">{t("user:favoriteBadge")}</label>
+      <select
+        className=""
+        name="favoriteBadgeId"
+        id="favoriteBadgeId"
+        defaultValue={initialBadge ? initialBadge.id : 0}
+      >
+        <option key={0} value={0}>
+          none
+        </option>
+        {parentRouteData.badges.map((badge) => (
+          <option key={badge.id} value={badge.id}>
+            {`${badge.displayName}`}
+          </option>
+        ))}
+      </select>
     </div>
   );
 }
