@@ -5,6 +5,7 @@ import type { FindTeamsByEventId } from "./queries/findTeamsByEventId.server";
 import type { TournamentToolsLoaderData } from "./routes/to.$id";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import type { ModeShort } from "~/modules/in-game-lists";
+import { TOURNAMENT } from "./tournament-constants";
 
 export function resolveOwnedTeam({
   teams,
@@ -27,10 +28,26 @@ export function idFromParams(params: Params<string>) {
   return result;
 }
 
+const SZ_TOURNAMENT_NAME = "In The Zone";
+
 export function HACKY_modesIncluded(
   event: TournamentToolsLoaderData["event"]
 ): ModeShort[] {
-  if (event.name.includes("In The Zone")) return ["SZ"];
+  if (event.name.includes(SZ_TOURNAMENT_NAME)) return ["SZ"];
 
   return [...rankedModesShort];
+}
+
+export function HACKY_isOneModeTournamentOf(
+  event: TournamentToolsLoaderData["event"]
+) {
+  if (event.name.includes(SZ_TOURNAMENT_NAME)) return "SZ";
+
+  return null;
+}
+
+export function mapPickCountPerMode(event: TournamentToolsLoaderData["event"]) {
+  return HACKY_isOneModeTournamentOf(event)
+    ? TOURNAMENT.COUNTERPICK_ONE_MODE_TOURNAMENT_MAPS_PER_MODE
+    : TOURNAMENT.COUNTERPICK_MAPS_PER_MODE;
 }

@@ -19,7 +19,11 @@ import { SubmitButton } from "~/components/SubmitButton";
 import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
 import { getUserId, requireUserId } from "~/modules/auth/user.server";
-import type { RankedModeShort, StageId } from "~/modules/in-game-lists";
+import type {
+  ModeShort,
+  RankedModeShort,
+  StageId,
+} from "~/modules/in-game-lists";
 import { stageIds } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { MapPool } from "~/modules/map-pool-serializer";
@@ -49,7 +53,11 @@ import { upsertCounterpickMaps } from "../queries/upsertCounterpickMaps.server";
 import { TOURNAMENT } from "../tournament-constants";
 import { useSelectCounterpickMapPoolState } from "../tournament-hooks";
 import { registerSchema } from "../tournament-schemas.server";
-import { idFromParams, resolveOwnedTeam } from "../tournament-utils";
+import {
+  HACKY_isOneModeTournamentOf,
+  idFromParams,
+  resolveOwnedTeam,
+} from "../tournament-utils";
 import type { TournamentToolsLoaderData } from "./to.$id";
 
 export const handle: SendouRouteHandle = {
@@ -65,6 +73,9 @@ export const action: ActionFunction = async ({ request, params }) => {
   const data = await parseRequestFormData({ request, schema: registerSchema });
 
   const eventId = idFromParams(params);
+  const event = notFoundIfFalsy(findByIdentifier(eventId));
+
+  invariant(event.isBeforeStart);
 
   const teams = findTeamsByEventId(eventId);
   const ownTeam = teams.find((team) =>
@@ -78,15 +89,12 @@ export const action: ActionFunction = async ({ request, params }) => {
       );
 
       validate(!userIsInTeam);
-      // TODO tournament: make sure tournament has not started
 
       createTeam({ calendarEventId: idFromParams(params), ownerId: user.id });
       break;
     }
     case "UPDATE_TEAM_INFO": {
       validate(ownTeam);
-
-      // TODO tournament: make sure not changing name AND tournament is happening
 
       updateTeamInfo({
         name: data.teamName,
@@ -99,17 +107,19 @@ export const action: ActionFunction = async ({ request, params }) => {
       validate(ownTeam.members.some((member) => member.userId === data.userId));
       validate(data.userId !== user.id);
 
-      // TODO tournament: make sure tournament not happening
-
       deleteTeamMember({ tournamentTeamId: ownTeam.id, userId: data.userId });
       break;
     }
     case "UPDATE_MAP_POOL": {
       const mapPool = new MapPool(data.mapPool);
       validate(ownTeam);
-      validate(validateCounterPickMapPool(mapPool) === "VALID");
+      validate(
+        validateCounterPickMapPool(
+          mapPool,
+          HACKY_isOneModeTournamentOf(event)
+        ) === "VALID"
+      );
 
-      // TODO tournament: make sure tournament not happening
       upsertCounterpickMaps({
         tournamentTeamId: ownTeam.id,
         mapPool: new MapPool(data.mapPool),
@@ -234,6 +244,7 @@ function FillRoster({
   const [, copyToClipboard] = useCopyToClipboard();
   const { t } = useTranslation(["common"]);
 
+  // xxx: fix
   const inviteLink = `https://sendou.ink/to/201/join?code=${ownTeam.inviteCode}`;
 
   const { members: ownTeamMembers } =
@@ -414,58 +425,73 @@ function CounterPickMapPoolPicker() {
             name="mapPool"
             value={counterPickMapPool.serialized}
           />
-          {rankedModesShort.map((mode) => {
-            const tiebreakerStageId = parentRouteData.tieBreakerMapPool.find(
-              (stage) => stage.mode === mode
-            )?.stageId;
+          {rankedModesShort
+            .filter(
+              (mode) =>
+                !HACKY_isOneModeTournamentOf(parentRouteData.event) ||
+                HACKY_isOneModeTournamentOf(parentRouteData.event) === mode
+            )
+            .map((mode) => {
+              const tiebreakerStageId = parentRouteData.tieBreakerMapPool.find(
+                (stage) => stage.mode === mode
+              )?.stageId;
 
-            return (
-              <div key={mode} className="stack md">
-                <div className="stack sm">
-                  <div className="stack horizontal sm items-center font-bold">
-                    <Image
-                      path={modeImageUrl(mode)}
-                      width={32}
-                      height={32}
-                      alt=""
-                    />
-                    {t(`game-misc:MODE_LONG_${mode}`)}
+              return (
+                <div key={mode} className="stack md">
+                  <div className="stack sm">
+                    <div className="stack horizontal sm items-center font-bold">
+                      <Image
+                        path={modeImageUrl(mode)}
+                        width={32}
+                        height={32}
+                        alt=""
+                      />
+                      {t(`game-misc:MODE_LONG_${mode}`)}
+                    </div>
+                    {typeof tiebreakerStageId === "number" ? (
+                      <div className="text-xs text-lighter">
+                        Tiebreaker: {t(`game-misc:STAGE_${tiebreakerStageId}`)}
+                      </div>
+                    ) : null}
                   </div>
-                  {typeof tiebreakerStageId === "number" ? (
-                    <div className="text-xs text-lighter">
-                      Tiebreaker: {t(`game-misc:STAGE_${tiebreakerStageId}`)}
-                    </div>
-                  ) : null}
+                  {new Array(
+                    HACKY_isOneModeTournamentOf(parentRouteData.event)
+                      ? TOURNAMENT.COUNTERPICK_ONE_MODE_TOURNAMENT_MAPS_PER_MODE
+                      : TOURNAMENT.COUNTERPICK_MAPS_PER_MODE
+                  )
+                    .fill(null)
+                    .map((_, i) => {
+                      return (
+                        <div
+                          key={i}
+                          className="tournament__section__map-select-row"
+                        >
+                          Pick {i + 1}{" "}
+                          <select
+                            value={counterpickMaps[mode][i] ?? undefined}
+                            onChange={handleCounterpickMapPoolSelect(mode, i)}
+                          >
+                            <option value=""></option>
+                            {stageIds
+                              .filter((id) => id !== tiebreakerStageId)
+                              .map((stageId) => {
+                                return (
+                                  <option key={stageId} value={stageId}>
+                                    {t(`game-misc:STAGE_${stageId}`)}
+                                  </option>
+                                );
+                              })}
+                          </select>
+                        </div>
+                      );
+                    })}
                 </div>
-                {new Array(2).fill(null).map((_, i) => {
-                  return (
-                    <div
-                      key={i}
-                      className="tournament__section__map-select-row"
-                    >
-                      Pick {i + 1}{" "}
-                      <select
-                        value={counterpickMaps[mode][i] ?? undefined}
-                        onChange={handleCounterpickMapPoolSelect(mode, i)}
-                      >
-                        <option value=""></option>
-                        {stageIds
-                          .filter((id) => id !== tiebreakerStageId)
-                          .map((stageId) => {
-                            return (
-                              <option key={stageId} value={stageId}>
-                                {t(`game-misc:STAGE_${stageId}`)}
-                              </option>
-                            );
-                          })}
-                      </select>
-                    </div>
-                  );
-                })}
-              </div>
-            );
-          })}
-          {validateCounterPickMapPool(counterPickMapPool) === "VALID" ? (
+              );
+            })}
+          {validateCounterPickMapPool(
+            counterPickMapPool,
+            HACKY_isOneModeTournamentOf(parentRouteData.event)
+          ) === "VALID" ? (
             <SubmitButton
               _action="UPDATE_MAP_POOL"
               state={fetcher.state}
@@ -475,7 +501,10 @@ function CounterPickMapPoolPicker() {
             </SubmitButton>
           ) : (
             <MapPoolValidationStatusMessage
-              status={validateCounterPickMapPool(counterPickMapPool)}
+              status={validateCounterPickMapPool(
+                counterPickMapPool,
+                HACKY_isOneModeTournamentOf(parentRouteData.event)
+              )}
             />
           )}
         </fetcher.Form>
@@ -510,14 +539,19 @@ type CounterPickValidationStatus =
   | "TOO_MUCH_STAGE_REPEAT";
 
 function validateCounterPickMapPool(
-  mapPool: MapPool
+  mapPool: MapPool,
+  isOneModeOnlyTournamentFor: ModeShort | null
 ): CounterPickValidationStatus {
   const stageCounts = new Map<StageId, number>();
   for (const stageId of mapPool.stages) {
     if (!stageCounts.has(stageId)) {
       stageCounts.set(stageId, 0);
     }
-    if (stageCounts.get(stageId)! === TOURNAMENT.COUNTERPICK_MAX_STAGE_REPEAT) {
+
+    if (
+      stageCounts.get(stageId)! >= TOURNAMENT.COUNTERPICK_MAX_STAGE_REPEAT ||
+      (isOneModeOnlyTournamentFor && stageCounts.get(stageId)! >= 1)
+    ) {
       return "TOO_MUCH_STAGE_REPEAT";
     }
 
@@ -525,10 +559,19 @@ function validateCounterPickMapPool(
   }
 
   if (
-    mapPool.parsed.SZ.length !== TOURNAMENT.COUNTERPICK_MAPS_PER_MODE ||
-    mapPool.parsed.TC.length !== TOURNAMENT.COUNTERPICK_MAPS_PER_MODE ||
-    mapPool.parsed.RM.length !== TOURNAMENT.COUNTERPICK_MAPS_PER_MODE ||
-    mapPool.parsed.CB.length !== TOURNAMENT.COUNTERPICK_MAPS_PER_MODE
+    !isOneModeOnlyTournamentFor &&
+    (mapPool.parsed.SZ.length !== TOURNAMENT.COUNTERPICK_MAPS_PER_MODE ||
+      mapPool.parsed.TC.length !== TOURNAMENT.COUNTERPICK_MAPS_PER_MODE ||
+      mapPool.parsed.RM.length !== TOURNAMENT.COUNTERPICK_MAPS_PER_MODE ||
+      mapPool.parsed.CB.length !== TOURNAMENT.COUNTERPICK_MAPS_PER_MODE)
+  ) {
+    return "PICKING";
+  }
+
+  if (
+    isOneModeOnlyTournamentFor &&
+    mapPool.parsed[isOneModeOnlyTournamentFor].length !==
+      TOURNAMENT.COUNTERPICK_ONE_MODE_TOURNAMENT_MAPS_PER_MODE
   ) {
     return "PICKING";
   }
