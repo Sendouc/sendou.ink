@@ -123,17 +123,16 @@ const userEditActionSchema = z
         .max(USER.WEAPON_POOL_MAX_SIZE)
     ),
     favoriteBadgeId: z.preprocess(
-      falsyToNull,
+      processMany(actualNumber, undefinedToNull),
       z
         .number()
         .refine((val) => {
-          const [, parentRoute] = useMatches();
-          invariant(parentRoute);
-          const parentRouteData = parentRoute.data as UserPageLoaderData;
-          return parentRouteData.badges
-            .map((badge) => badge.id)
-            .concat(0)
-            .includes(val);
+          // unable to hook here
+          // return parentRouteData.badges
+          //   .map((badge) => badge.id)
+          //   .concat(0)
+          //   .includes(val);
+          return val >= 0;
         })
         .default(0)
     ),
@@ -489,7 +488,7 @@ function FavBadgeSelect({
         defaultValue={initialBadge ? initialBadge.id : 0}
       >
         <option key={0} value={0}>
-          none
+          {"-"}
         </option>
         {parentRouteData.badges.map((badge) => (
           <option key={badge.id} value={badge.id}>
