@@ -7,6 +7,7 @@ set
   "stickSens" = @stickSens,
   "motionSens" = @motionSens,
   "inGameName" = @inGameName,
-  "css" = @css
+  "css" = @css,
+  "favoriteBadgeId" = @favoriteBadgeId
 where
   "id" = @id returning *

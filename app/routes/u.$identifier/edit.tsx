@@ -122,6 +122,20 @@ const userEditActionSchema = z
         )
         .max(USER.WEAPON_POOL_MAX_SIZE)
     ),
+    favoriteBadgeId: z.preprocess(
+      processMany(actualNumber, undefinedToNull),
+      z
+        .number()
+        .refine((val) => {
+          // unable to hook here
+          // return parentRouteData.badges
+          //   .map((badge) => badge.id)
+          //   .concat(0)
+          //   .includes(val);
+          return val >= 0;
+        })
+        .default(0)
+    ),
   })
   .refine(
     (val) => {
@@ -217,6 +231,7 @@ export default function UserEditPage() {
         <InGameNameInputs parentRouteData={parentRouteData} />
         <SensSelects parentRouteData={parentRouteData} />
         <CountrySelect parentRouteData={parentRouteData} />
+        <FavBadgeSelect parentRouteData={parentRouteData} />
         <WeaponPoolSelect parentRouteData={parentRouteData} />
         <BioTextarea initialValue={parentRouteData.bio} />
         <FormMessage type="info">
@@ -446,6 +461,40 @@ function BioTextarea({ initialValue }: { initialValue: User["bio"] }) {
         onChange={(e) => setValue(e.target.value)}
         maxLength={USER.BIO_MAX_LENGTH}
       />
+    </div>
+  );
+}
+
+function FavBadgeSelect({
+  parentRouteData,
+}: {
+  parentRouteData: UserPageLoaderData;
+}) {
+  const { t } = useTranslation(["user"]);
+
+  // user's current favorite badge is the initial value
+  const initialBadge = parentRouteData.badges.find(
+    (badge) => badge.id === parentRouteData.favoriteBadgeId
+  );
+
+  return (
+    <div>
+      <label htmlFor="favoriteBadgeId">{t("user:favoriteBadge")}</label>
+      <select
+        className=""
+        name="favoriteBadgeId"
+        id="favoriteBadgeId"
+        defaultValue={initialBadge ? initialBadge.id : 0}
+      >
+        <option key={0} value={0}>
+          {"-"}
+        </option>
+        {parentRouteData.badges.map((badge) => (
+          <option key={badge.id} value={badge.id}>
+            {`${badge.displayName}`}
+          </option>
+        ))}
+      </select>
     </div>
   );
 }
