@@ -28,26 +28,33 @@ export function idFromParams(params: Params<string>) {
   return result;
 }
 
-const SZ_TOURNAMENT_NAME = "In The Zone";
-
-export function HACKY_modesIncluded(
+export function modesIncluded(
   event: TournamentToolsLoaderData["event"]
 ): ModeShort[] {
-  if (event.name.includes(SZ_TOURNAMENT_NAME)) return ["SZ"];
+  if (event.toToolsMode) return [event.toToolsMode];
 
   return [...rankedModesShort];
 }
 
-export function HACKY_isOneModeTournamentOf(
+export function isOneModeTournamentOf(
   event: TournamentToolsLoaderData["event"]
 ) {
-  if (event.name.includes(SZ_TOURNAMENT_NAME)) return "SZ";
+  if (event.toToolsMode) return event.toToolsMode;
 
   return null;
 }
 
+export function HACKY_resolvePicture(
+  event: TournamentToolsLoaderData["event"]
+) {
+  if (event.name.includes("In The Zone"))
+    return "https://abload.de/img/screenshot2023-04-19a2bfv0.png";
+
+  return "https://abload.de/img/screenshot2022-12-15ap0ca1.png";
+}
+
 export function mapPickCountPerMode(event: TournamentToolsLoaderData["event"]) {
-  return HACKY_isOneModeTournamentOf(event)
+  return isOneModeTournamentOf(event)
     ? TOURNAMENT.COUNTERPICK_ONE_MODE_TOURNAMENT_MAPS_PER_MODE
     : TOURNAMENT.COUNTERPICK_MAPS_PER_MODE;
 }

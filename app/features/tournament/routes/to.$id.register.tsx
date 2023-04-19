@@ -44,7 +44,6 @@ import {
   toToolsJoinPage,
   toToolsMapsPage,
 } from "~/utils/urls";
-import { createTeam } from "../queries/createTeam.server";
 import deleteTeamMember from "../queries/deleteTeamMember.server";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { findOwnTeam } from "../queries/findOwnTeam.server";
@@ -55,11 +54,13 @@ import { TOURNAMENT } from "../tournament-constants";
 import { useSelectCounterpickMapPoolState } from "../tournament-hooks";
 import { registerSchema } from "../tournament-schemas.server";
 import {
-  HACKY_isOneModeTournamentOf,
+  isOneModeTournamentOf,
+  HACKY_resolvePicture,
   idFromParams,
   resolveOwnedTeam,
 } from "../tournament-utils";
 import type { TournamentToolsLoaderData } from "./to.$id";
+import { createTeam } from "../queries/createTeam.server";
 
 export const handle: SendouRouteHandle = {
   breadcrumb: () => ({
@@ -84,23 +85,19 @@ export const action: ActionFunction = async ({ request, params }) => {
   );
 
   switch (data._action) {
-    case "CREATE_TEAM": {
-      const userIsInTeam = teams.some((team) =>
-        team.members.some((member) => member.userId === user.id)
-      );
-
-      validate(!userIsInTeam);
-
-      createTeam({ calendarEventId: idFromParams(params), ownerId: user.id });
-      break;
-    }
-    case "UPDATE_TEAM_INFO": {
-      validate(ownTeam);
-
-      updateTeamInfo({
-        name: data.teamName,
-        id: ownTeam.id,
-      });
+    case "UPSERT_TEAM": {
+      if (ownTeam) {
+        updateTeamInfo({
+          name: data.teamName,
+          id: ownTeam.id,
+        });
+      } else {
+        createTeam({
+          name: data.teamName,
+          calendarEventId: eventId,
+          ownerId: user.id,
+        });
+      }
       break;
     }
     case "DELETE_TEAM_MEMBER": {
@@ -115,10 +112,8 @@ export const action: ActionFunction = async ({ request, params }) => {
       const mapPool = new MapPool(data.mapPool);
       validate(ownTeam);
       validate(
-        validateCounterPickMapPool(
-          mapPool,
-          HACKY_isOneModeTournamentOf(event)
-        ) === "VALID"
+        validateCounterPickMapPool(mapPool, isOneModeTournamentOf(event)) ===
+          "VALID"
       );
 
       upsertCounterpickMaps({
@@ -169,9 +164,8 @@ export default function TournamentRegisterPage() {
   return (
     <div className="stack lg">
       <div className="tournament__logo-container">
-        {/* xxx: dynamic image */}
         <img
-          src="https://abload.de/img/screenshot2022-12-15ap0ca1.png"
+          src={HACKY_resolvePicture(parentRouteData.event)}
           alt=""
           className="tournament__logo"
           width={124}
@@ -188,7 +182,7 @@ export default function TournamentRegisterPage() {
       {teamRegularMemberOf ? (
         <Alert>You are in a team for this event</Alert>
       ) : (
-        <EditTeam ownTeam={data?.ownTeam} />
+        <RegistrationForms ownTeam={data?.ownTeam} />
       )}
     </div>
   );
@@ -204,7 +198,7 @@ function PleaseLogIn() {
   );
 }
 
-function EditTeam({
+function RegistrationForms({
   ownTeam,
 }: {
   ownTeam?: NonNullable<SerializeFrom<typeof loader>>["ownTeam"];
@@ -213,14 +207,69 @@ function EditTeam({
 
   if (!user) return <PleaseLogIn />;
 
-  // xxx: todo
-  if (!ownTeam) return null;
-
   return (
     <div className="stack lg">
-      <FillRoster ownTeam={ownTeam} />
+      <RegisterToBracket />
       <TeamInfo ownTeam={ownTeam} />
-      <CounterPickMapPoolPicker />
+      {ownTeam ? (
+        <>
+          <FillRoster ownTeam={ownTeam} />
+          <CounterPickMapPoolPicker />
+        </>
+      ) : null}
+    </div>
+  );
+}
+
+function RegisterToBracket() {
+  const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
+
+  return (
+    <div>
+      <h3 className="tournament__section-header">1. Register</h3>
+      <section className="tournament__section text-center text-sm font-semi-bold">
+        Register on{" "}
+        <a
+          href={parentRouteData.event.bracketUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {parentRouteData.event.bracketUrl}
+        </a>
+      </section>
+    </div>
+  );
+}
+
+function TeamInfo({
+  ownTeam,
+}: {
+  ownTeam?: NonNullable<SerializeFrom<typeof loader>>["ownTeam"];
+}) {
+  const fetcher = useFetcher();
+  return (
+    <div>
+      <h3 className="tournament__section-header">2. Team info</h3>
+      <section className="tournament__section">
+        <fetcher.Form method="post" className="stack md items-center">
+          <div className="tournament__section__input-container">
+            <Label htmlFor="teamName">Team name</Label>
+            <Input
+              name="teamName"
+              id="teamName"
+              required
+              maxLength={TOURNAMENT.TEAM_NAME_MAX_LENGTH}
+              defaultValue={ownTeam?.name ?? undefined}
+            />
+          </div>
+          <SubmitButton _action="UPSERT_TEAM" state={fetcher.state}>
+            Save
+          </SubmitButton>
+        </fetcher.Form>
+      </section>
+      <div className="tournament__section__warning">
+        Use the same name as on the bracket
+      </div>
     </div>
   );
 }
@@ -256,7 +305,7 @@ function FillRoster({
 
   return (
     <div>
-      <h3 className="tournament__section-header">1. Fill roster</h3>
+      <h3 className="tournament__section-header">3. Fill roster</h3>
       <section className="tournament__section stack lg items-center">
         <div className="stack md items-center">
           <div className="text-center text-sm">
@@ -346,36 +395,6 @@ function DeleteMember({
   );
 }
 
-function TeamInfo({
-  ownTeam,
-}: {
-  ownTeam: NonNullable<SerializeFrom<typeof loader>>["ownTeam"];
-}) {
-  const fetcher = useFetcher();
-  return (
-    <div>
-      <h3 className="tournament__section-header">2. Team info</h3>
-      <section className="tournament__section">
-        <fetcher.Form method="post" className="stack md items-center">
-          <div className="tournament__section__input-container">
-            <Label htmlFor="teamName">Team name</Label>
-            <Input
-              name="teamName"
-              id="teamName"
-              required
-              maxLength={TOURNAMENT.TEAM_NAME_MAX_LENGTH}
-              defaultValue={ownTeam.name ?? undefined}
-            />
-          </div>
-          <SubmitButton _action="UPDATE_TEAM_INFO" state={fetcher.state}>
-            Save
-          </SubmitButton>
-        </fetcher.Form>
-      </section>
-    </div>
-  );
-}
-
 function CounterPickMapPoolPicker() {
   const { t } = useTranslation(["common", "game-misc"]);
   const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
@@ -399,7 +418,7 @@ function CounterPickMapPoolPicker() {
 
   return (
     <div>
-      <h3 className="tournament__section-header">3. Pick map pool</h3>
+      <h3 className="tournament__section-header">4. Pick map pool</h3>
       <section className="tournament__section">
         <fetcher.Form
           method="post"
@@ -413,8 +432,8 @@ function CounterPickMapPoolPicker() {
           {rankedModesShort
             .filter(
               (mode) =>
-                !HACKY_isOneModeTournamentOf(parentRouteData.event) ||
-                HACKY_isOneModeTournamentOf(parentRouteData.event) === mode
+                !isOneModeTournamentOf(parentRouteData.event) ||
+                isOneModeTournamentOf(parentRouteData.event) === mode
             )
             .map((mode) => {
               const tiebreakerStageId = parentRouteData.tieBreakerMapPool.find(
@@ -440,7 +459,7 @@ function CounterPickMapPoolPicker() {
                     ) : null}
                   </div>
                   {new Array(
-                    HACKY_isOneModeTournamentOf(parentRouteData.event)
+                    isOneModeTournamentOf(parentRouteData.event)
                       ? TOURNAMENT.COUNTERPICK_ONE_MODE_TOURNAMENT_MAPS_PER_MODE
                       : TOURNAMENT.COUNTERPICK_MAPS_PER_MODE
                   )
@@ -475,7 +494,7 @@ function CounterPickMapPoolPicker() {
             })}
           {validateCounterPickMapPool(
             counterPickMapPool,
-            HACKY_isOneModeTournamentOf(parentRouteData.event)
+            isOneModeTournamentOf(parentRouteData.event)
           ) === "VALID" ? (
             <SubmitButton
               _action="UPDATE_MAP_POOL"
@@ -488,7 +507,7 @@ function CounterPickMapPoolPicker() {
             <MapPoolValidationStatusMessage
               status={validateCounterPickMapPool(
                 counterPickMapPool,
-                HACKY_isOneModeTournamentOf(parentRouteData.event)
+                isOneModeTournamentOf(parentRouteData.event)
               )}
             />
           )}

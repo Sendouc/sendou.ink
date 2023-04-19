@@ -116,6 +116,7 @@ export interface CalendarEvent {
   customUrl: string | null;
   /** Is tournament tools page visible */
   toToolsEnabled: number;
+  toToolsMode: RankedModeShort | null;
   isBeforeStart: number;
 }
 

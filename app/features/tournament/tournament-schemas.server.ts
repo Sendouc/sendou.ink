@@ -3,9 +3,8 @@ import { id } from "~/utils/zod";
 import { TOURNAMENT } from "./tournament-constants";
 
 export const registerSchema = z.union([
-  z.object({ _action: z.literal("CREATE_TEAM") }),
   z.object({
-    _action: z.literal("UPDATE_TEAM_INFO"),
+    _action: z.literal("UPSERT_TEAM"),
     teamName: z.string().min(1).max(TOURNAMENT.TEAM_NAME_MAX_LENGTH),
   }),
   z.object({

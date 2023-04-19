@@ -621,7 +621,8 @@ function calendarEventWithToTools(sz?: boolean) {
         "discordInviteCode",
         "bracketUrl",
         "authorId",
-        "toToolsEnabled"
+        "toToolsEnabled",
+        "toToolsMode"
       ) values (
         $id,
         $name,
@@ -629,7 +630,8 @@ function calendarEventWithToTools(sz?: boolean) {
         $discordInviteCode,
         $bracketUrl,
         $authorId,
-        $toToolsEnabled
+        $toToolsEnabled,
+        $toToolsMode
       )
       `
     )
@@ -641,6 +643,7 @@ function calendarEventWithToTools(sz?: boolean) {
       bracketUrl: faker.internet.url(),
       authorId: 1,
       toToolsEnabled: 1,
+      toToolsMode: sz ? "SZ" : null,
     });
 
   sql

@@ -9,6 +9,7 @@ const stm = sql.prepare(/*sql*/ `
   "CalendarEvent"."bracketUrl",
   "CalendarEvent"."authorId",
   "CalendarEvent"."isBeforeStart",
+  "CalendarEvent"."toToolsMode",
   "User"."discordName",
   "User"."discordDiscriminator",
   "User"."discordId"
@@ -31,6 +32,7 @@ type FindByIdentifierRow =
       | "description"
       | "authorId"
       | "isBeforeStart"
+      | "toToolsMode"
     > &
       Pick<User, "discordId" | "discordName" | "discordDiscriminator">)
   | null;

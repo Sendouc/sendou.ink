@@ -65,6 +65,8 @@ import {
   toArray,
 } from "~/utils/zod";
 import { Tags } from "./components/Tags";
+import type { RankedModeShort } from "~/modules/in-game-lists";
+import { rankedModesShort } from "~/modules/in-game-lists/modes";
 
 const MIN_DATE = new Date(Date.UTC(2015, 4, 28));
 
@@ -128,6 +130,7 @@ const newCalendarEventActionSchema = z.object({
   ),
   pool: z.string().optional(),
   toToolsEnabled: z.preprocess(checkboxValueToBoolean, z.boolean()),
+  toToolsMode: z.enum(["ALL", "SZ", "TC", "RM", "CB"]).optional(),
 });
 
 export const action: ActionFunction = async ({ request }) => {
@@ -154,8 +157,12 @@ export const action: ActionFunction = async ({ request }) => {
       : data.tags,
     badges: data.badges ?? [],
     toToolsEnabled: canEnableTOTools(user) ? Number(data.toToolsEnabled) : 0,
+    toToolsMode:
+      rankedModesShort.find((mode) => mode === data.toToolsMode) ?? null,
   };
 
+  // TODO: messing with these and "one mode selection" can cause problems when teams
+  // have already chosend maps for their pools
   const deserializedMaps = (() => {
     if (!data.pool) return;
 
@@ -586,20 +593,37 @@ function BadgesAdder() {
   );
 }
 
-// xxx: no map pool if one mode
 function TOToolsAndMapPool() {
   const user = useUser();
   const { eventToEdit } = useLoaderData<typeof loader>();
   const [checked, setChecked] = React.useState(
     Boolean(eventToEdit?.toToolsEnabled)
   );
+  const [mode, setMode] = React.useState<"ALL" | RankedModeShort>("ALL");
 
   return (
     <>
       {canEnableTOTools(user) && (
         <TOToolsEnabler checked={checked} setChecked={setChecked} />
       )}
-      {checked ? <CounterPickMapPoolSection /> : <MapPoolSection />}
+      {checked ? (
+        <>
+          <select
+            className="calendar-new__select"
+            onChange={(e) => setMode(e.target.value as RankedModeShort)}
+            name="toToolsMode"
+          >
+            <option value="ALL">All modes</option>
+            <option value="SZ">SZ only</option>
+            <option value="TC">TC only</option>
+            <option value="RM">RM only</option>
+            <option value="CB">CB only</option>
+          </select>
+          {mode === "ALL" ? <CounterPickMapPoolSection /> : null}
+        </>
+      ) : (
+        <MapPoolSection />
+      )}
     </>
   );
 }

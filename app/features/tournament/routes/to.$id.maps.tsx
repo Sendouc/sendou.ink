@@ -18,7 +18,7 @@ import { type SendouRouteHandle } from "~/utils/remix";
 import { TOURNAMENT } from "../tournament-constants";
 import type { TournamentToolsLoaderData } from "./to.$id";
 import type { MapPoolMap } from "~/db/types";
-import { HACKY_modesIncluded, resolveOwnedTeam } from "../tournament-utils";
+import { modesIncluded, resolveOwnedTeam } from "../tournament-utils";
 import { useUser } from "~/modules/auth";
 import { Redirect } from "~/components/Redirect";
 import { toToolsPage } from "~/utils/urls";
@@ -126,7 +126,7 @@ export default function TournamentToolsMapsPage() {
         bestOf={bestOf}
         bracketType={bracketType}
         roundNumber={roundNumber}
-        modesIncluded={HACKY_modesIncluded(data.event)}
+        modesIncluded={modesIncluded(data.event)}
       />
     </div>
   );
