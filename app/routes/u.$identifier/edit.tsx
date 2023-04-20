@@ -472,6 +472,10 @@ function FavBadgeSelect({
 }) {
   const { t } = useTranslation(["user"]);
 
+  // doesn't make sense to select favorite badge
+  // if user has no badges or only has 1 badge
+  if (parentRouteData.badges.length < 2) return null;
+
   // user's current favorite badge is the initial value
   const initialBadge = parentRouteData.badges.find(
     (badge) => badge.id === parentRouteData.favoriteBadgeId
