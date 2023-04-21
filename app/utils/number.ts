@@ -1,5 +1,5 @@
 export function roundToNDecimalPlaces(num: number, n = 2) {
-  return Number((Math.round(num * (10 ** n)) / (10 ** n)).toFixed(n));
+  return Number((Math.round(num * 10 ** n) / 10 ** n).toFixed(n));
 }
 
 export function cutToNDecimalPlaces(num: number, n = 2) {
