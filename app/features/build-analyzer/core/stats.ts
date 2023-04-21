@@ -1040,7 +1040,7 @@ const SUB_WEAPON_STATS = [
   {
     analyzedBuildKey: "subVelocity",
     abilityValuesKey: "SpawnSpeedZSpecUp",
-    type: "NO_CHANGE",
+    type: "SUB_VELOCITY",
   },
   {
     analyzedBuildKey: "subFirstPhaseDuration",
@@ -1092,6 +1092,8 @@ export function subStats(
       switch (type) {
         case "NO_CHANGE":
           return roundToNDecimalPlaces(effect);
+        case "SUB_VELOCITY":
+          return roundToNDecimalPlaces(effect, 3);
         case "HP":
           return roundToNDecimalPlaces(hpDivided(effect), 1);
         case "TIME":
