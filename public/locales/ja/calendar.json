@@ -8,6 +8,7 @@
   "actions.delete": "イベントを削除する",
   "actions.delete.confirm": "{{name}} に関連するデータをすべて削除しますか?",
   "participatedCount": "{{count}} チームが参加しました",
+  "participatedPlayerCount": "{{count}} 名のプレイヤーが参加しました",
   "members": "メンバー",
   "results": "結果",
   "createMapList": "ステージリストを作成する",
@@ -55,5 +56,11 @@
   "tag.desc.LOW": "このイベントはプレイヤースキルが制限されています。",
   "tag.desc.COUNT": "参加チーム数が限定されています。",
   "tag.desc.LAN": "このイベントは地域限定です。",
-  "tag.desc.QUALIFIER": "このトーナメントは他のイベントへの出場資格です。"
+  "tag.desc.QUALIFIER": "このトーナメントは他のイベントへの出場資格です。",
+  "tag.desc.SZ": "ルールはガチエリアのみ",
+  "tag.desc.TW": "ナワバリバトルがプレイされます",
+  "tag.desc.S1": "スプラトゥーン1でプレイされます",
+  "tag.desc.S2": "スプラトゥーン2でプレイされます",
+  "tag.desc.SR": "サーモンランイベント",
+  "tag.desc.CARDS": "ナワバリバトルイベント"
 }

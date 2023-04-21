@@ -6,8 +6,8 @@
   "pages.contributors": "コントリビューター",
   "pages.calendar": "イベント予定表",
   "pages.faq": "FAQ",
-  "pages.builds": "セットアップ",
-  "pages.analyzer": "セットアップ・アナライザー",
+  "pages.builds": "ギア構成",
+  "pages.analyzer": "ギア構成分析",
   "pages.maps": "ステージ一覧",
   "pages.plans": "戦略プランナー",
   "pages.object-damage-calculator": "オブジェクトダメージ計算",
@@ -16,6 +16,9 @@
   "pages.t": "チーム",
   "pages.support": "サポート",
   "pages.privacy": "プライバシーポリシー",
+  "pages.vods": "動画一覧",
+  "pages.xsearch": "上位プレイヤー検索",
+  "pages.leaderboards": "リーダー一覧",
 
   "header.profile": "プロファイル",
   "header.logout": "ログアウト",
@@ -99,6 +102,12 @@
   "tag.name.COUNT": "参加数限定",
   "tag.name.LAN": "オフライン",
   "tag.name.QUALIFIER": "参加資格",
+  "tag.name.SZ": "エリアのみ",
+  "tag.name.TW": "ナワバリあり",
+  "tag.name.S1": "スプラトゥーン 1",
+  "tag.name.S2": "スプラトゥーン 2",
+  "tag.name.SR": "サーモンラン",
+  "tag.name.CARDS": "ナワバトラー",
 
   "weapon.category.SHOOTERS": "シューター",
   "weapon.category.BLASTERS": "ブラスター",
@@ -162,5 +171,10 @@
   "custom.colors.bg-lighter": "バックグラウンド 明るめ",
   "custom.colors.text": "テキスト",
   "custom.colors.text-lighter": "テキスト 明るめ",
-  "custom.colors.theme": "テーマ"
+  "custom.colors.theme": "テーマ",
+
+  "divisions.WEST": "アロメ",
+  "divisions.JPN": "ヤコ",
+  "xsearch.placements": "順位",
+  "xsearch.aliases": "別名:"
 }
