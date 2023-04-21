@@ -58,9 +58,14 @@ import {
   HACKY_resolvePicture,
   idFromParams,
   resolveOwnedTeam,
+  HACKY_resolveCheckInTime,
 } from "../tournament-utils";
 import type { TournamentToolsLoaderData } from "./to.$id";
 import { createTeam } from "../queries/createTeam.server";
+import { ClockIcon } from "~/components/icons/Clock";
+import { databaseTimestampToDate } from "~/utils/dates";
+import { UserIcon } from "~/components/icons/User";
+import { useIsMounted } from "~/hooks/useIsMounted";
 
 export const handle: SendouRouteHandle = {
   breadcrumb: () => ({
@@ -152,7 +157,12 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   };
 };
 
+// xxx: check xxx in css
+// xxx: basic test checking that can register
+// xxx: basic test that can start tournament and people can access map list generator tool
 export default function TournamentRegisterPage() {
+  const isMounted = useIsMounted();
+  const { i18n } = useTranslation();
   const user = useUser();
   const data = useLoaderData<typeof loader>();
   const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
@@ -174,7 +184,24 @@ export default function TournamentRegisterPage() {
         <div>
           <div className="tournament__title">{parentRouteData.event.name}</div>
           <div className="tournament__by">
-            by {discordFullName(parentRouteData.event.author)}
+            <div className="stack horizontal xs items-center">
+              <UserIcon className="tournament__info__icon" />{" "}
+              {discordFullName(parentRouteData.event.author)}
+            </div>
+            <div className="stack horizontal xs items-center">
+              <ClockIcon className="tournament__info__icon" />{" "}
+              {isMounted
+                ? databaseTimestampToDate(
+                    parentRouteData.event.startTime
+                  ).toLocaleString(i18n.language, {
+                    timeZoneName: "short",
+                    minute: "numeric",
+                    hour: "numeric",
+                    day: "numeric",
+                    month: "numeric",
+                  })
+                : null}
+            </div>
           </div>
         </div>
       </div>
@@ -215,6 +242,7 @@ function RegistrationForms({
         <>
           <FillRoster ownTeam={ownTeam} />
           <CounterPickMapPoolPicker />
+          <RememberToCheckin />
         </>
       ) : null}
     </div>
@@ -585,4 +613,36 @@ function validateCounterPickMapPool(
   }
 
   return "VALID";
+}
+
+function RememberToCheckin() {
+  const { i18n } = useTranslation();
+  const isMounted = useIsMounted();
+  const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
+
+  const checkInStartsString = isMounted
+    ? HACKY_resolveCheckInTime(parentRouteData.event).toLocaleTimeString(
+        i18n.language,
+        {
+          minute: "numeric",
+          hour: "numeric",
+        }
+      )
+    : "";
+
+  return (
+    <div>
+      <h3 className="tournament__section-header">5. Check-in</h3>
+      <section className="tournament__section text-center text-sm font-semi-bold">
+        Check in starts at {checkInStartsString} here:{" "}
+        <a
+          href={parentRouteData.event.bracketUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {parentRouteData.event.bracketUrl}
+        </a>
+      </section>
+    </div>
+  );
 }

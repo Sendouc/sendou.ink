@@ -1,6 +1,7 @@
 import { sql } from "~/db/sql";
-import type { CalendarEvent, User } from "~/db/types";
+import type { CalendarEvent, CalendarEventDate, User } from "~/db/types";
 
+// TODO: doesn't work if many start times
 const stm = sql.prepare(/*sql*/ `
   select
   "CalendarEvent"."name",
@@ -10,17 +11,20 @@ const stm = sql.prepare(/*sql*/ `
   "CalendarEvent"."authorId",
   "CalendarEvent"."isBeforeStart",
   "CalendarEvent"."toToolsMode",
+  "CalendarEventDate"."startTime",
   "User"."discordName",
   "User"."discordDiscriminator",
   "User"."discordId"
   from "CalendarEvent"
     left join "User" on "CalendarEvent"."authorId" = "User"."id"
+    left join "CalendarEventDate" on "CalendarEvent"."id" = "CalendarEventDate"."eventId"
   where
   (
     "CalendarEvent"."id" = @identifier
     or "CalendarEvent"."customUrl" = @identifier
   )
   and "CalendarEvent"."toToolsEnabled" = 1
+  group by "CalendarEvent"."id"
 `);
 
 type FindByIdentifierRow =
@@ -34,7 +38,8 @@ type FindByIdentifierRow =
       | "isBeforeStart"
       | "toToolsMode"
     > &
-      Pick<User, "discordId" | "discordName" | "discordDiscriminator">)
+      Pick<User, "discordId" | "discordName" | "discordDiscriminator"> &
+      Pick<CalendarEventDate, "startTime">)
   | null;
 
 export function findByIdentifier(identifier: string | number) {

@@ -152,7 +152,6 @@
 .tournament__logo-container {
   display: flex;
   align-items: center;
-  margin: 0 auto;
   gap: var(--s-4);
 }
 
@@ -161,9 +160,13 @@
 }
 
 .tournament__title {
-  color: var(--theme);
   font-size: var(--fonts-xl);
   font-weight: var(--bold);
+}
+
+.tournament__info__icon {
+  width: 18px;
+  padding: var(--s-1) 0;
 }
 
 .tournament__by {

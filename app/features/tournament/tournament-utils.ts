@@ -6,6 +6,7 @@ import type { TournamentToolsLoaderData } from "./routes/to.$id";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import type { ModeShort } from "~/modules/in-game-lists";
 import { TOURNAMENT } from "./tournament-constants";
+import { databaseTimestampToDate } from "~/utils/dates";
 
 export function resolveOwnedTeam({
   teams,
@@ -51,6 +52,14 @@ export function HACKY_resolvePicture(
     return "https://abload.de/img/screenshot2023-04-19a2bfv0.png";
 
   return "https://abload.de/img/screenshot2022-12-15ap0ca1.png";
+}
+
+// hacky because db query not taking in account possibility of many start times
+// AND always assumed check-in starts 1h before
+export function HACKY_resolveCheckInTime(
+  event: TournamentToolsLoaderData["event"]
+) {
+  return databaseTimestampToDate(event.startTime - 60 * 60);
 }
 
 export function mapPickCountPerMode(event: TournamentToolsLoaderData["event"]) {
