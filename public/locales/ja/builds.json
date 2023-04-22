@@ -1,6 +1,7 @@
 {
-  "addBuild": "セットアップを追加",
-  "noBuilds": "セットアップは作成されていません。最初のセットアップを作成しましょう!",
+  "addBuild": "ギア構成を追加",
+  "reachBuildMaxCount": "作成可能なギア構成の上限に到達しました。",
+  "noBuilds": "ギア構成はまだ作成されていません。最初のギア構成を作成しましょう!",
   "buildCard.info": "詳細",
   "buildCard.edit": "編集",
 
@@ -11,5 +12,14 @@
   "forms.gear.CLOTHES": "ギア (フク)",
   "forms.gear.SHOES": "ギア (クツ)",
 
-  "deleteConfirm": "'{{title}}'を削除しますか?"
+  "deleteConfirm": "'{{title}}'を削除しますか?",
+
+  "stats.count.title": "{{count}} による統計 {{weapon}} のギア構成",
+  "stats.ap.title": "ギアポイント平均",
+  "stats.percentage.title": "基本ギアのみの見た目",
+  "stats.all": "すべて",
+
+  "linkButton.abilityStats": "ギア統計",
+  "linkButton.popularBuilds": "人気のあるギア構成",
+  "noPopularBuilds": "現在、このブキに対する人気のギア構成はないようです。"
 }
