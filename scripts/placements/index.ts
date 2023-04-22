@@ -33,6 +33,7 @@ void main();
 async function main() {
   const placements: Placements = [];
 
+  wipeMonthYearPlacements(resolveMonthYear(jsonNumber));
   for (const mode of modes) {
     for (const region of regions) {
       for (const includeWeapon of [false]) {
@@ -179,4 +180,20 @@ function addPlacements(placements: Placements) {
       addPlacementStm.run(placement);
     }
   })();
+}
+
+function wipeMonthYearPlacements({
+  month,
+  year,
+}: {
+  month: number;
+  year: number;
+}) {
+  const wipeMonthYearPlacementsStm = sql.prepare(/* sql */ `
+  delete from "XRankPlacement"
+    where "month" = @month
+    and "year" = @year
+`);
+
+  wipeMonthYearPlacementsStm.run({ month, year });
 }
