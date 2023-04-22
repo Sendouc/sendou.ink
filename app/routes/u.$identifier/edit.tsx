@@ -273,7 +273,7 @@ function InGameNameInputs({
   return (
     <div className="stack items-start">
       <Label>{t("user:ign")}</Label>
-      <div className="stack horizontal sm">
+      <div className="stack horizontal sm items-center">
         <Input
           className="u-edit__in-game-name-text"
           name="inGameNameText"
