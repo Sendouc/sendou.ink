@@ -39,6 +39,10 @@ const NZAP_TEST_ID = 2;
 
 const AMOUNT_OF_CALENDAR_EVENTS = 200;
 
+const calendarEventWithToToolsSz = () => calendarEventWithToTools(true);
+const calendarEventWithToToolsTeamsSz = () =>
+  calendarEventWithToToolsTeams(true);
+
 const basicSeeds = [
   adminUser,
   makeAdminPatron,
@@ -61,6 +65,8 @@ const basicSeeds = [
   calendarEventWithToTools,
   calendarEventWithToToolsTieBreakerMapPool,
   calendarEventWithToToolsTeams,
+  calendarEventWithToToolsSz,
+  calendarEventWithToToolsTeamsSz,
   adminBuilds,
   manySplattershotBuilds,
   detailedTeam,
@@ -603,7 +609,9 @@ function calendarEventResults() {
 }
 
 const TO_TOOLS_CALENDAR_EVENT_ID = 201;
-function calendarEventWithToTools() {
+function calendarEventWithToTools(sz?: boolean) {
+  const eventId = TO_TOOLS_CALENDAR_EVENT_ID + (sz ? 1 : 0);
+
   sql
     .prepare(
       `
@@ -614,7 +622,8 @@ function calendarEventWithToTools() {
         "discordInviteCode",
         "bracketUrl",
         "authorId",
-        "toToolsEnabled"
+        "toToolsEnabled",
+        "toToolsMode"
       ) values (
         $id,
         $name,
@@ -622,18 +631,20 @@ function calendarEventWithToTools() {
         $discordInviteCode,
         $bracketUrl,
         $authorId,
-        $toToolsEnabled
+        $toToolsEnabled,
+        $toToolsMode
       )
       `
     )
     .run({
-      id: TO_TOOLS_CALENDAR_EVENT_ID,
-      name: "PICNIC #2",
+      id: eventId,
+      name: sz ? "In The Zone 22" : "PICNIC #2",
       description: faker.lorem.paragraph(),
       discordInviteCode: faker.lorem.word(),
       bracketUrl: faker.internet.url(),
       authorId: 1,
       toToolsEnabled: 1,
+      toToolsMode: sz ? "SZ" : null,
     });
 
   sql
@@ -649,7 +660,7 @@ function calendarEventWithToTools() {
       `
     )
     .run({
-      eventId: TO_TOOLS_CALENDAR_EVENT_ID,
+      eventId,
       startTime: dateToDatabaseTimestamp(new Date()),
     });
 }
@@ -693,7 +704,7 @@ const availablePairs = rankedModesShort
     availableStages.map((stageId) => ({ mode, stageId: stageId }))
   )
   .filter((pair) => !tiebreakerPicks.has(pair));
-function calendarEventWithToToolsTeams() {
+function calendarEventWithToToolsTeams(sz?: boolean) {
   const userIds = userIdsInRandomOrder(true);
   for (let id = 1; id <= 40; id++) {
     sql
@@ -715,10 +726,10 @@ function calendarEventWithToToolsTeams() {
       `
       )
       .run({
-        id,
+        id: id + (sz ? 100 : 0),
         name: names.pop(),
         createdAt: dateToDatabaseTimestamp(new Date()),
-        calendarEventId: TO_TOOLS_CALENDAR_EVENT_ID,
+        calendarEventId: TO_TOOLS_CALENDAR_EVENT_ID + (sz ? 1 : 0),
         inviteCode: nanoid(INVITE_CODE_LENGTH),
       });
 
@@ -744,7 +755,7 @@ function calendarEventWithToToolsTeams() {
       `
         )
         .run({
-          tournamentTeamId: id,
+          tournamentTeamId: id + (sz ? 100 : 0),
           userId: userIds.pop()!,
           isOwner: i === 0 ? 1 : 0,
           createdAt: dateToDatabaseTimestamp(new Date()),
@@ -761,12 +772,14 @@ function calendarEventWithToToolsTeams() {
       const stageUsedCounts: Partial<Record<StageId, number>> = {};
 
       for (const pair of shuffledPairs) {
-        if (pair.mode === "SZ" && SZ >= 2) continue;
+        if (sz && pair.mode !== "SZ") continue;
+
+        if (pair.mode === "SZ" && SZ >= (sz ? 6 : 2)) continue;
         if (pair.mode === "TC" && TC >= 2) continue;
         if (pair.mode === "RM" && RM >= 2) continue;
         if (pair.mode === "CB" && CB >= 2) continue;
 
-        if (stageUsedCounts[pair.stageId] === 2) continue;
+        if (stageUsedCounts[pair.stageId] === (sz ? 1 : 2)) continue;
 
         stageUsedCounts[pair.stageId] =
           (stageUsedCounts[pair.stageId] ?? 0) + 1;
@@ -786,7 +799,7 @@ function calendarEventWithToToolsTeams() {
         `
           )
           .run({
-            tournamentTeamId: id,
+            tournamentTeamId: id + (sz ? 100 : 0),
             stageId: pair.stageId,
             mode: pair.mode,
           });

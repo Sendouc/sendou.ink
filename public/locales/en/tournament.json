@@ -2,13 +2,15 @@
   "tabs.info": "Info",
   "tabs.teams": "Teams ({{count}})",
   "tabs.admin": "Admin",
+  "tabs.register": "Register",
+  "tabs.maps": "Maps",
 
   "pre.footerNote": "Note: you can change your map pool and roster as many times as you want before the tournament starts.",
   "pre.deleteTeam": "Delete team",
 
   "preview": "Preview map list generator (admin only)",
   "pre.steps.register": "1. Register on",
-  "pre.steps.register.summary": "Enter team name you register with",
+  "pre.steps.register.summary": "Enter the team name you registered with",
   "pre.steps.mapPool": "2. Map pool",
   "pre.steps.mapPool.explanation": "You can play without selecting a map pool but then your opponent gets to decide what maps get played. Tie-breaker maps marked in blue.",
   "pre.steps.mapPool.summary": "Pick your team's maps",

@@ -7,6 +7,9 @@ import { MapPool } from "../map-pool-serializer";
 import type { TournamentMaplistInput } from "./types";
 
 const TournamentMapListGenerator = suite("Tournament map list generator");
+const TournamentMapListGeneratorOneMode = suite(
+  "Tournament map list generator (one mode)"
+);
 
 const team1Picks = new MapPool([
   { mode: "SZ", stageId: 4 },
@@ -50,6 +53,7 @@ const generateMaps = ({
     },
   ],
   tiebreakerMaps = tiebreakerPicks,
+  modesIncluded = [...rankedModesShort],
 }: Partial<TournamentMaplistInput> = {}) => {
   return createTournamentMapList({
     bestOf,
@@ -57,6 +61,7 @@ const generateMaps = ({
     roundNumber,
     teams,
     tiebreakerMaps,
+    modesIncluded,
   });
 };
 
@@ -348,4 +353,207 @@ TournamentMapListGenerator("No map picked by same team twice in row", () => {
   }
 });
 
+const team1SZPicks = new MapPool([
+  { mode: "SZ", stageId: 4 },
+  { mode: "SZ", stageId: 5 },
+  { mode: "SZ", stageId: 6 },
+  { mode: "SZ", stageId: 7 },
+  { mode: "SZ", stageId: 8 },
+  { mode: "SZ", stageId: 9 },
+]);
+const team2SZPicks = new MapPool([
+  { mode: "SZ", stageId: 1 },
+  { mode: "SZ", stageId: 2 },
+  { mode: "SZ", stageId: 3 },
+  { mode: "SZ", stageId: 9 },
+  { mode: "SZ", stageId: 10 },
+  { mode: "SZ", stageId: 11 },
+]);
+const team2SZPicksNoOverlap = new MapPool([
+  { mode: "SZ", stageId: 1 },
+  { mode: "SZ", stageId: 2 },
+  { mode: "SZ", stageId: 3 },
+  { mode: "SZ", stageId: 14 },
+  { mode: "SZ", stageId: 10 },
+  { mode: "SZ", stageId: 11 },
+]);
+
+TournamentMapListGeneratorOneMode(
+  "Creates map list for one mode inferring from the team picks",
+  () => {
+    const mapList = generateMaps({
+      teams: [
+        {
+          id: 1,
+          maps: team1SZPicks,
+        },
+        {
+          id: 2,
+          maps: team2SZPicks,
+        },
+      ],
+      modesIncluded: ["SZ"],
+      tiebreakerMaps: new MapPool([]),
+    });
+    for (let i = 0; i < mapList.length - 1; i++) {
+      assert.equal(mapList[i]!.mode, "SZ");
+    }
+  }
+);
+
+TournamentMapListGeneratorOneMode(
+  "Creates one mode map list from empty map lists",
+  () => {
+    const mapList = generateMaps({
+      teams: [
+        {
+          id: 1,
+          maps: new MapPool([]),
+        },
+        {
+          id: 2,
+          maps: new MapPool([]),
+        },
+      ],
+      modesIncluded: ["SZ"],
+      tiebreakerMaps: new MapPool([]),
+    });
+    for (let i = 0; i < mapList.length - 1; i++) {
+      assert.equal(mapList[i]!.mode, "SZ");
+    }
+  }
+);
+
+TournamentMapListGeneratorOneMode(
+  "Creates all different maps from empty map lists",
+  () => {
+    const mapList = generateMaps({
+      teams: [
+        {
+          id: 1,
+          maps: new MapPool([]),
+        },
+        {
+          id: 2,
+          maps: new MapPool([]),
+        },
+      ],
+      modesIncluded: ["SZ"],
+      tiebreakerMaps: new MapPool([]),
+    });
+
+    const stages = new Set(mapList.map(({ stageId }) => stageId));
+    assert.equal(stages.size, 5);
+  }
+);
+
+TournamentMapListGeneratorOneMode(
+  "Tiebreaker is always from the maps of the teams when possible",
+  () => {
+    for (let i = 1; i <= 10; i++) {
+      const mapList = generateMaps({
+        teams: [
+          {
+            id: 1,
+            maps: team1SZPicks,
+          },
+          {
+            id: 2,
+            maps: team2SZPicks,
+          },
+        ],
+        modesIncluded: ["SZ"],
+        roundNumber: i,
+        tiebreakerMaps: new MapPool([]),
+      });
+
+      const last = mapList[mapList.length - 1];
+
+      assert.equal(last?.mode, "SZ");
+      assert.equal(last?.stageId, 9);
+    }
+  }
+);
+
+TournamentMapListGeneratorOneMode(
+  "Tiebreaker is from neither team's pool if no overlap",
+  () => {
+    const mapList = generateMaps({
+      teams: [
+        {
+          id: 1,
+          maps: team1SZPicks,
+        },
+        {
+          id: 2,
+          maps: team2SZPicksNoOverlap,
+        },
+      ],
+      modesIncluded: ["SZ"],
+      tiebreakerMaps: new MapPool([]),
+    });
+
+    const last = mapList[mapList.length - 1];
+
+    assert.not.ok(
+      team1SZPicks.stageModePairs.some(
+        ({ stageId }) => stageId === last?.stageId
+      )
+    );
+    assert.not.ok(
+      team2SZPicksNoOverlap.stageModePairs.some(
+        ({ stageId }) => stageId === last?.stageId
+      )
+    );
+  }
+);
+
+TournamentMapListGeneratorOneMode("Handles worst case duplication", () => {
+  const mapList = generateMaps({
+    teams: [
+      {
+        id: 1,
+        maps: team1SZPicks,
+      },
+      {
+        id: 2,
+        maps: team1SZPicks,
+      },
+    ],
+    modesIncluded: ["SZ"],
+    tiebreakerMaps: new MapPool([]),
+    bestOf: 7,
+  });
+
+  for (const [i, stage] of mapList.entries()) {
+    if (i === 6) {
+      assert.equal(stage?.source, "TIEBREAKER");
+    } else {
+      assert.equal(stage?.source, "BOTH");
+    }
+  }
+});
+
+TournamentMapListGeneratorOneMode("Handles one team submitted no maps", () => {
+  const mapList = generateMaps({
+    teams: [
+      {
+        id: 1,
+        maps: team1SZPicks,
+      },
+      {
+        id: 2,
+        maps: new MapPool([]),
+      },
+    ],
+    modesIncluded: ["SZ"],
+    tiebreakerMaps: new MapPool([]),
+  });
+
+  for (const stage of mapList) {
+    assert.equal(stage.source, 1);
+  }
+});
+
 TournamentMapListGenerator.run();
+TournamentMapListGeneratorOneMode.run();

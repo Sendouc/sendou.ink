@@ -313,7 +313,7 @@ export function canEnableTOTools(user?: IsAdminUser) {
 }
 
 interface CanAdminCalendarTOTools {
-  user?: Pick<User, "id" | "discordId">;
+  user?: Pick<User, "id">;
   event: Pick<CalendarEvent, "authorId">;
 }
 export function canAdminCalendarTOTools({

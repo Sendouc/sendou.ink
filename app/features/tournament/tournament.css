@@ -1,5 +1,3 @@
-/** xxx: remove all unused **/
-
 .tournament__action-section {
   padding: var(--s-6);
   border-radius: var(--rounded);
@@ -147,12 +145,9 @@
   width: 1rem;
 }
 
-/** xxx: all new from here **/
-
 .tournament__logo-container {
   display: flex;
   align-items: center;
-  margin: 0 auto;
   gap: var(--s-4);
 }
 
@@ -161,9 +156,13 @@
 }
 
 .tournament__title {
-  color: var(--theme);
   font-size: var(--fonts-xl);
   font-weight: var(--bold);
+}
+
+.tournament__info__icon {
+  width: 18px;
+  padding: var(--s-1) 0;
 }
 
 .tournament__by {
@@ -195,6 +194,7 @@
   font-size: var(--fonts-xs);
   font-weight: var(--semi-bold);
   text-align: center;
+  color: var(--text-lighter);
 }
 
 .tournament__section__map-select-row {

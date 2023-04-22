@@ -5,7 +5,6 @@ const stm = sql.prepare(/*sql*/ `
   select
     "TournamentTeam"."id",
     "TournamentTeam"."name",
-    "TournamentTeam"."friendCode",
     "TournamentTeam"."checkedInAt",
     "TournamentTeam"."inviteCode"
   from
@@ -20,7 +19,7 @@ const stm = sql.prepare(/*sql*/ `
 
 type FindOwnTeam = Pick<
   TournamentTeam,
-  "id" | "name" | "friendCode" | "checkedInAt" | "inviteCode"
+  "id" | "name" | "checkedInAt" | "inviteCode"
 > | null;
 
 export function findOwnTeam({

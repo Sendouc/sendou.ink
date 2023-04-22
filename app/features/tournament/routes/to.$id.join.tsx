@@ -100,15 +100,7 @@ export default function JoinTeamPage() {
       case "VALID": {
         invariant(teamToJoin);
 
-        const teamName = teamToJoin.name;
-        if (!teamName) {
-          const owner = teamToJoin.members.find((member) => member.isOwner);
-          invariant(owner);
-
-          return `Join ${owner.discordName}'s team for ${parentRouteData.event.name}?`;
-        }
-
-        return `Join ${teamName} for ${parentRouteData.event.name}?`;
+        return `Join ${teamToJoin.name} for ${parentRouteData.event.name}?`;
       }
       default: {
         assertUnreachable(validationStatus);
@@ -144,7 +136,7 @@ function validateCanJoin({
   if (!teamToJoin) {
     return "NO_TEAM_MATCHING_CODE";
   }
-  if (teamToJoin.members.length >= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL) {
+  if (teamToJoin.members.length >= TOURNAMENT.TEAM_MAX_MEMBERS) {
     return "TEAM_FULL";
   }
   if (teamToJoin.members.some((member) => member.userId === userId)) {

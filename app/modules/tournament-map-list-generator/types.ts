@@ -1,4 +1,4 @@
-import type { ModeWithStage } from "../in-game-lists";
+import type { ModeShort, ModeWithStage } from "../in-game-lists";
 import type { MapPool } from "../map-pool-serializer";
 
 export type BracketType =
@@ -23,6 +23,7 @@ export interface TournamentMaplistInput {
     }
   ];
   tiebreakerMaps: MapPool;
+  modesIncluded: ModeShort[];
 }
 
 export type TournamentMaplistSource =

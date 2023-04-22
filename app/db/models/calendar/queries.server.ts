@@ -66,6 +66,7 @@ export type CreateArgs = Pick<
   | "discordInviteCode"
   | "bracketUrl"
   | "toToolsEnabled"
+  | "toToolsMode"
 > & {
   startTimes: Array<CalendarEventDate["startTime"]>;
   badges: Array<CalendarEventBadge["badgeId"]>;

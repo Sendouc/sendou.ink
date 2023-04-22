@@ -32,6 +32,8 @@ const staticAssetsUrl = ({
 }) =>
   `https://raw.githubusercontent.com/Sendouc/sendou-ink-assets/main/${folder}/${fileName}`;
 
+export const SENDOU_INK_BASE_URL = "https://sendou.ink";
+
 const USER_SUBMITTED_IMAGE_ROOT = "https://sendou.nyc3.digitaloceanspaces.com";
 export const userSubmittedImage = (fileName: string) =>
   `${USER_SUBMITTED_IMAGE_ROOT}/${fileName}`;
@@ -175,6 +177,16 @@ export const calendarEditPage = (eventId?: number) =>
 export const calendarReportWinnersPage = (eventId: number) =>
   `/calendar/${eventId}/report-winners`;
 export const toToolsPage = (eventId: number) => `/to/${eventId}`;
+export const toToolsRegisterPage = (eventId: number) =>
+  `/to/${eventId}/register`;
+export const toToolsMapsPage = (eventId: number) => `/to/${eventId}/maps`;
+export const toToolsJoinPage = ({
+  eventId,
+  inviteCode,
+}: {
+  eventId: number;
+  inviteCode: string;
+}) => `/to/${eventId}/join?code=${inviteCode}`;
 
 export const mapsPage = (eventId?: MapPoolMap["calendarEventId"]) =>
   `/maps${eventId ? `?eventId=${eventId}` : ""}`;

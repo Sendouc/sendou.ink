@@ -50,15 +50,20 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const eventId = idFromParams(params);
   const event = notFoundIfFalsy(findByIdentifier(eventId));
 
+  const mapListGeneratorAvailable =
+    canAdminCalendarTOTools({ user, event }) || !event.isBeforeStart;
+
   return {
-    // TODO tournament: remove isBeforeStart
-    event: { ...event, isBeforeStart: true },
+    event,
     tieBreakerMapPool:
       db.calendarEvents.findTieBreakerMapPoolByEventId(eventId),
     teams: censorMapPools(findTeamsByEventId(eventId)),
+    mapListGeneratorAvailable,
   };
 
   function censorMapPools(teams: FindTeamsByEventId): FindTeamsByEventId {
+    if (mapListGeneratorAvailable) return teams;
+
     return teams.map((team) =>
       team.members.some(
         (member) => member.userId === user?.id && member.isOwner
@@ -85,7 +90,12 @@ export default function TournamentToolsLayout() {
   return (
     <Main>
       <SubNav>
-        <SubNavLink to="register">Register</SubNavLink>
+        {data.event.isBeforeStart ? (
+          <SubNavLink to="register">{t("tournament:tabs.register")}</SubNavLink>
+        ) : null}
+        {data.mapListGeneratorAvailable ? (
+          <SubNavLink to="maps">{t("tournament:tabs.maps")}</SubNavLink>
+        ) : null}
         <SubNavLink to="teams">
           {t("tournament:tabs.teams", { count: data.teams.length })}
         </SubNavLink>
