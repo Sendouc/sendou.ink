@@ -11,6 +11,7 @@
   "sens": "Sens",
   "weaponPool": "Weapon pool",
   "discordExplanation": "Username, profile picture, YouTube, Twitter and Twitch accounts come from your Discord account. See <1>FAQ</1> for more information.",
+  "favoriteBadge": "Favorite Badge",
 
   "results.title": "Results",
   "results.placing": "Placing",
@@ -29,6 +30,7 @@
   "forms.errors.invalidCustomUrl.strangeCharacter": "Custom URL can't contain special characters",
   "forms.errors.invalidCustomUrl.duplicate": "Someone is already using this custom URL",
   "forms.errors.invalidSens": "Motion sens can't be set if R-stick sens isn't",
+  "forms.info.favoriteBadge": "Your favorite badge is shown as big by default on your profile.",
 
   "search.info": "Search for users by Discord, Splatoon 3 or Twitter name",
   "search.noResults": "No users found matching '{{query}}'"

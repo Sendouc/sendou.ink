@@ -12,3 +12,13 @@ where
 group by
   "BadgeOwner"."badgeId",
   "BadgeOwner"."userId"
+order by
+  "Badge"."id" = (
+    select
+      "favoriteBadgeId"
+    from
+      "User"
+    where
+      "id" = @userId
+  ) desc,
+  "Badge"."id" asc

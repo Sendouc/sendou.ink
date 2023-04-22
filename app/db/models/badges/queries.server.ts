@@ -5,7 +5,7 @@ import deleteManyManagersSql from "./deleteManyManagers.sql";
 import createManagerSql from "./createManager.sql";
 import deleteManyOwnersSql from "./deleteManyOwners.sql";
 import createOwnerSql from "./createOwner.sql";
-import countsByUserIdSql from "./countsByUserId.sql";
+import findByOwnerIdSql from "./findByOwnerId.sql";
 import findAllSql from "./findAll.sql";
 import ownersByBadgeIdSql from "./ownersByBadgeId.sql";
 import managersByBadgeIdSql from "./managersByBadgeId.sql";
@@ -57,16 +57,16 @@ export const upsertManyOwners = sql.transaction(
   }
 );
 
-const countsByUserIdStm = sql.prepare(countsByUserIdSql);
+const findByOwnerIdStm = sql.prepare(findByOwnerIdSql);
 
-export type CountsByUserId = Array<
+export type FindByOwnerId = Array<
   Pick<Badge, "code" | "displayName" | "id" | "hue"> & {
     count: number;
   }
 >;
 
-export function countsByUserId(userId: User["id"]) {
-  return countsByUserIdStm.all({ userId }) as CountsByUserId;
+export function findByOwnerId(userId: User["id"]) {
+  return findByOwnerIdStm.all({ userId }) as FindByOwnerId;
 }
 
 const findAllStm = sql.prepare(findAllSql);

@@ -74,6 +74,7 @@ const basicSeeds = [
   realVideo,
   realVideoCast,
   xRankPlacements,
+  userFavBadges,
 ];
 
 export function seed() {
@@ -1188,4 +1189,17 @@ function xRankPlacements() {
       addPlacementStm.run(placement);
     }
   })();
+}
+
+function userFavBadges() {
+  // randomly choose Sendou's favorite badge
+  const badgeList = shuffle(
+    sql
+      .prepare(`select "badgeId" from "BadgeOwner" where "userId" = 1`)
+      .all()
+      .map((row) => row.badgeId)
+  );
+  sql
+    .prepare(`update "User" set "favoriteBadgeId" = $id where "id" = 1`)
+    .run({ id: badgeList[0] });
 }

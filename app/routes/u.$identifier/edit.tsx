@@ -25,7 +25,7 @@ import { db } from "~/db";
 import { type User } from "~/db/types";
 import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
-import { requireUserId } from "~/modules/auth/user.server";
+import { requireUser, requireUserId } from "~/modules/auth/user.server";
 import { i18next } from "~/modules/i18n";
 import { mainWeaponIds, type MainWeaponId } from "~/modules/in-game-lists";
 import { canAddCustomizedColorsToUserProfile } from "~/permissions";
@@ -38,6 +38,7 @@ import { FAQ_PAGE, isCustomUrl, userPage } from "~/utils/urls";
 import {
   actualNumber,
   falsyToNull,
+  id,
   jsonParseable,
   processMany,
   removeDuplicates,
@@ -122,6 +123,10 @@ const userEditActionSchema = z
         )
         .max(USER.WEAPON_POOL_MAX_SIZE)
     ),
+    favoriteBadgeId: z.preprocess(
+      processMany(actualNumber, undefinedToNull),
+      id.nullable()
+    ),
   })
   .refine(
     (val) => {
@@ -178,7 +183,7 @@ export const action: ActionFunction = async ({ request }) => {
 export const loader = async ({ request, params }: LoaderArgs) => {
   const locale = await i18next.getLocale(request);
 
-  const user = await requireUserId(request);
+  const user = await requireUser(request);
   const { identifier } = userParamsSchema.parse(params);
   const userToBeEdited = notFoundIfFalsy(db.users.findByIdentifier(identifier));
   if (user.id !== userToBeEdited.id) {
@@ -186,6 +191,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   }
 
   return {
+    favoriteBadgeId: user.favoriteBadgeId,
     countries: Object.entries(countries)
       .map(([code, country]) => ({
         code,
@@ -217,6 +223,7 @@ export default function UserEditPage() {
         <InGameNameInputs parentRouteData={parentRouteData} />
         <SensSelects parentRouteData={parentRouteData} />
         <CountrySelect parentRouteData={parentRouteData} />
+        <FavBadgeSelect parentRouteData={parentRouteData} />
         <WeaponPoolSelect parentRouteData={parentRouteData} />
         <BioTextarea initialValue={parentRouteData.bio} />
         <FormMessage type="info">
@@ -446,6 +453,45 @@ function BioTextarea({ initialValue }: { initialValue: User["bio"] }) {
         onChange={(e) => setValue(e.target.value)}
         maxLength={USER.BIO_MAX_LENGTH}
       />
+    </div>
+  );
+}
+
+function FavBadgeSelect({
+  parentRouteData,
+}: {
+  parentRouteData: UserPageLoaderData;
+}) {
+  const data = useLoaderData<typeof loader>();
+  const { t } = useTranslation(["user"]);
+
+  // doesn't make sense to select favorite badge
+  // if user has no badges or only has 1 badge
+  if (parentRouteData.badges.length < 2) return null;
+
+  // user's current favorite badge is the initial value
+  const initialBadge = parentRouteData.badges.find(
+    (badge) => badge.id === data.favoriteBadgeId
+  );
+
+  return (
+    <div>
+      <label htmlFor="favoriteBadgeId">{t("user:favoriteBadge")}</label>
+      <select
+        className=""
+        name="favoriteBadgeId"
+        id="favoriteBadgeId"
+        defaultValue={initialBadge?.id}
+      >
+        {parentRouteData.badges.map((badge) => (
+          <option key={badge.id} value={badge.id}>
+            {`${badge.displayName}`}
+          </option>
+        ))}
+      </select>
+      <FormMessage type="info">
+        {t("user:forms.info.favoriteBadge")}
+      </FormMessage>
     </div>
   );
 }

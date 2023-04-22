@@ -21,7 +21,7 @@ export const Main = ({
 }) => {
   const data = useMatches()[0]?.data as RootLoaderData | undefined;
   const user = useUser();
-  const showLeaderboard = data?.gtagId && !user?.patronTier;
+  const showLeaderboard = data?.publisherId && !user?.patronTier;
 
   return (
     <main

@@ -12,6 +12,7 @@ import { ThemeChanger } from "./ThemeChanger";
 import { LinkButton } from "../Button";
 import { SUPPORT_PAGE } from "~/utils/urls";
 import { HeartIcon } from "../icons/Heart";
+import { useIsMounted } from "~/hooks/useIsMounted";
 
 function useBreadcrumbs() {
   const { t } = useTranslation();
@@ -50,7 +51,7 @@ export const Layout = React.memo(function Layout({
 
   const showLeaderboard =
     data &&
-    data.gtagId &&
+    data.publisherId &&
     !data?.user?.patronTier &&
     !location.pathname.includes("plans");
 
@@ -111,7 +112,7 @@ export const Layout = React.memo(function Layout({
         </div>
       </header>
       {!isFrontPage ? <SideNav /> : null}
-      {showLeaderboard ? <div id="top-leaderboard" /> : null}
+      {showLeaderboard ? <MyRampUnit /> : null}
       {children}
       <Footer patrons={data?.patrons} />
     </div>
@@ -132,4 +133,13 @@ function BreadcrumbLink({ data }: { data: Breadcrumb }) {
       {data.text}
     </Link>
   );
+}
+const RampUnit = React.lazy(() => import("../ramp/RampUnit"));
+function MyRampUnit() {
+  const isMounted = useIsMounted();
+  if (!isMounted) {
+    return <div className="top-leaderboard" />;
+  }
+
+  return <RampUnit type="leaderboard_atf" cssClass="top-leaderboard" />;
 }
