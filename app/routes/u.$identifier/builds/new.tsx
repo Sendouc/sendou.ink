@@ -257,17 +257,7 @@ function ModeCheckboxes() {
   const { buildToEdit } = useLoaderData<typeof loader>();
   const { t } = useTranslation("builds");
 
-  let currentBuildModes:
-    | typeof modesShort
-    | typeof rankedModesShort
-    | null
-    | undefined = buildToEdit?.modes;
-
-  // Use the Ranked Modes by default for brand new builds (so that the checkboxes can be checked by default)
-  // See issue for more info: https://github.com/Sendouc/sendou.ink/issues/1150
-  if (!currentBuildModes) {
-    currentBuildModes = rankedModesShort;
-  }
+  const modes = buildToEdit?.modes ?? rankedModesShort;
 
   return (
     <div>
@@ -282,9 +272,7 @@ function ModeCheckboxes() {
               id={mode}
               name={mode}
               type="checkbox"
-              defaultChecked={currentBuildModes?.some(
-                (currentMode) => currentMode == mode
-              )}
+              defaultChecked={modes.includes(mode)}
               data-cy={`${mode}-checkbox`}
             />
           </div>
