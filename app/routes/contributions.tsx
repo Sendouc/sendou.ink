@@ -16,6 +16,7 @@ import {
 } from "~/utils/urls";
 import { type SendouRouteHandle } from "~/utils/remix";
 import { useTranslation } from "~/hooks/useTranslation";
+import * as React from "react";
 
 export const meta: MetaFunction = () => {
   return {
@@ -35,7 +36,7 @@ const PROGRAMMERS = [
 ] as const;
 
 const TRANSLATORS: Array<{
-  translators: Array<string>;
+  translators: Array<string | { name: string; twitter: string }>;
   language: (typeof languages)[number]["code"];
 }> = [
   {
@@ -43,7 +44,10 @@ const TRANSLATORS: Array<{
     language: "da",
   },
   {
-    translators: ["NoAim™bUrn", "Alice"],
+    translators: [
+      { name: "NoAim™bUrn", twitter: "noaim_brn" },
+      { name: "Alice", twitter: "Aloschus" },
+    ],
     language: "de",
   },
   {
@@ -55,7 +59,7 @@ const TRANSLATORS: Array<{
     language: "fr",
   },
   {
-    translators: ["funyaaa", "taqm"],
+    translators: [{ name: "funyaaa", twitter: "funyaaa1" }, "taqm"],
     language: "ja",
   },
   {
@@ -67,11 +71,11 @@ const TRANSLATORS: Array<{
     language: "pl",
   },
   {
-    translators: ["Ferrari"],
+    translators: [{ name: "Ferrari", twitter: "Blusling" }],
     language: "nl",
   },
   {
-    translators: ["DoubleCookies", "yaga"],
+    translators: [{ name: "DoubleCookies", twitter: "DblCookies" }, "yaga"],
     language: "ru",
   },
   {
@@ -140,7 +144,28 @@ export default function ContributionsPage() {
         </li>
         {TRANSLATORS.map(({ translators, language }) => (
           <li key={language}>
-            {translators.join(", ")} - {t("contributions:translation")} (
+            {translators
+              .map((t) =>
+                typeof t === "string" ? (
+                  t
+                ) : (
+                  <a
+                    key={t.name}
+                    href={`https://twitter.com/${t.twitter}`}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    {t.name}
+                  </a>
+                )
+              )
+              .map((element, i, arr) => (
+                <React.Fragment key={i}>
+                  {element}
+                  {i !== arr.length - 1 ? ", " : null}
+                </React.Fragment>
+              ))}{" "}
+            - {t("contributions:translation")} (
             {languages.find((lang) => lang.code === language)!.name})
           </li>
         ))}
