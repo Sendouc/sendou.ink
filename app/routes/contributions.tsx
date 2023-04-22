@@ -27,7 +27,12 @@ export const handle: SendouRouteHandle = {
   i18n: "contributions",
 };
 
-const PROGRAMMERS = ["DoubleCookies", "ElementUser", "remmycat"] as const;
+const PROGRAMMERS = [
+  "DoubleCookies",
+  "ElementUser",
+  "remmycat",
+  "zenpk",
+] as const;
 
 const TRANSLATORS: Array<{
   translators: Array<string>;
