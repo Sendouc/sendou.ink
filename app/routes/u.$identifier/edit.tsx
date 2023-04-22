@@ -25,7 +25,7 @@ import { db } from "~/db";
 import { type User } from "~/db/types";
 import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
-import { requireUserId } from "~/modules/auth/user.server";
+import { requireUser, requireUserId } from "~/modules/auth/user.server";
 import { i18next } from "~/modules/i18n";
 import { mainWeaponIds, type MainWeaponId } from "~/modules/in-game-lists";
 import { canAddCustomizedColorsToUserProfile } from "~/permissions";
@@ -38,6 +38,7 @@ import { FAQ_PAGE, isCustomUrl, userPage } from "~/utils/urls";
 import {
   actualNumber,
   falsyToNull,
+  id,
   jsonParseable,
   processMany,
   removeDuplicates,
@@ -124,17 +125,7 @@ const userEditActionSchema = z
     ),
     favoriteBadgeId: z.preprocess(
       processMany(actualNumber, undefinedToNull),
-      z
-        .number()
-        .refine((val) => {
-          // unable to hook here
-          // return parentRouteData.badges
-          //   .map((badge) => badge.id)
-          //   .concat(0)
-          //   .includes(val);
-          return val >= 0;
-        })
-        .default(0)
+      id.nullable()
     ),
   })
   .refine(
@@ -192,7 +183,7 @@ export const action: ActionFunction = async ({ request }) => {
 export const loader = async ({ request, params }: LoaderArgs) => {
   const locale = await i18next.getLocale(request);
 
-  const user = await requireUserId(request);
+  const user = await requireUser(request);
   const { identifier } = userParamsSchema.parse(params);
   const userToBeEdited = notFoundIfFalsy(db.users.findByIdentifier(identifier));
   if (user.id !== userToBeEdited.id) {
@@ -200,6 +191,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   }
 
   return {
+    favoriteBadgeId: user.favoriteBadgeId,
     countries: Object.entries(countries)
       .map(([code, country]) => ({
         code,
@@ -470,6 +462,7 @@ function FavBadgeSelect({
 }: {
   parentRouteData: UserPageLoaderData;
 }) {
+  const data = useLoaderData<typeof loader>();
   const { t } = useTranslation(["user"]);
 
   // doesn't make sense to select favorite badge
@@ -478,7 +471,7 @@ function FavBadgeSelect({
 
   // user's current favorite badge is the initial value
   const initialBadge = parentRouteData.badges.find(
-    (badge) => badge.id === parentRouteData.favoriteBadgeId
+    (badge) => badge.id === data.favoriteBadgeId
   );
 
   return (
@@ -488,17 +481,17 @@ function FavBadgeSelect({
         className=""
         name="favoriteBadgeId"
         id="favoriteBadgeId"
-        defaultValue={initialBadge ? initialBadge.id : 0}
+        defaultValue={initialBadge?.id}
       >
-        <option key={0} value={0}>
-          {"-"}
-        </option>
         {parentRouteData.badges.map((badge) => (
           <option key={badge.id} value={badge.id}>
             {`${badge.displayName}`}
           </option>
         ))}
       </select>
+      <FormMessage type="info">
+        {t("user:forms.info.favoriteBadge")}
+      </FormMessage>
     </div>
   );
 }

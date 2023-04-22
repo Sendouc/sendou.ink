@@ -93,7 +93,6 @@ export const loader = ({ params }: LoaderArgs) => {
     country: user.country,
     css: canAddCustomizedColorsToUserProfile(user) ? user.css : undefined,
     badges: db.badges.countsByUserId(user.id),
-    favoriteBadgeId: user.favoriteBadgeId,
     results: db.calendarEvents.findResultsByUserId(user.id),
     buildsCount: db.builds.countByUserId(user.id),
     vods: findVods({ userId: user.id }),
