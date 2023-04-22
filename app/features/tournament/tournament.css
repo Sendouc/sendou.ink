@@ -1,5 +1,3 @@
-/** xxx: remove all unused **/
-
 .tournament__action-section {
   padding: var(--s-6);
   border-radius: var(--rounded);
@@ -146,8 +144,6 @@
 .tournament__pick-status-container > svg {
   width: 1rem;
 }
-
-/** xxx: all new from here **/
 
 .tournament__logo-container {
   display: flex;

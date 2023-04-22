@@ -157,9 +157,6 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   };
 };
 
-// xxx: check xxx in css
-// xxx: basic test checking that can register
-// xxx: basic test that can start tournament and people can access map list generator tool
 export default function TournamentRegisterPage() {
   const isMounted = useIsMounted();
   const { i18n } = useTranslation();
