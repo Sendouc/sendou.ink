@@ -1,6 +1,7 @@
 import { sql } from "~/db/sql";
 import type { Ability, MainWeaponId } from "~/modules/in-game-lists";
 
+// TODO: could consider removing private builds from this
 const stm = sql.prepare(/* sql */ `
   with "GroupedAbilities" as (
     select 

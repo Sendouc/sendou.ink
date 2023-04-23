@@ -40,6 +40,7 @@ interface CreateArgs {
   shoesGearSplId: Build["shoesGearSplId"];
   weaponSplIds: Array<BuildWeapon["weaponSplId"]>;
   abilities: BuildAbilitiesTuple;
+  private: Build["private"];
 }
 export const create = sql.transaction((build: CreateArgs) => {
   const createdBuild = createBuildStm.get({
@@ -57,6 +58,7 @@ export const create = sql.transaction((build: CreateArgs) => {
     headGearSplId: build.headGearSplId,
     clothesGearSplId: build.clothesGearSplId,
     shoesGearSplId: build.shoesGearSplId,
+    private: build.private,
   }) as Build;
 
   for (const weaponSplId of build.weaponSplIds) {
@@ -108,12 +110,22 @@ type BuildsByUserRow = Pick<
   | "clothesGearSplId"
   | "shoesGearSplId"
   | "updatedAt"
+  | "private"
 > & {
   weapons: string;
   abilities: string;
 };
-export function buildsByUserId(userId: Build["ownerId"]) {
-  const rows = buildsByUserIdStm.all({ userId }) as Array<BuildsByUserRow>;
+export function buildsByUserId({
+  userId,
+  loggedInUserId,
+}: {
+  userId: Build["ownerId"];
+  loggedInUserId?: UserWithPlusTier["id"];
+}) {
+  const rows = buildsByUserIdStm.all({
+    userId,
+    loggedInUserId,
+  }) as Array<BuildsByUserRow>;
 
   return rows.map(augmentBuild);
 }

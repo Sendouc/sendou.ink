@@ -36,8 +36,11 @@ with "Top500Weapon" as (
     "Build"
     left join "Top500Weapon" on "Top500Weapon"."buildId" = "Build"."id"
   where
-    "Top500Weapon"."weaponSplId" = @weaponId
-    or "Top500Weapon"."weaponSplId" = @altWeaponId
+    (
+      "Top500Weapon"."weaponSplId" = @weaponId
+      or "Top500Weapon"."weaponSplId" = @altWeaponId
+    )
+    and "Build"."private" = 0
   group by
     "Build"."id"
 ),

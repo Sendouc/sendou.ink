@@ -7,6 +7,7 @@ import {
 } from "~/modules/in-game-lists";
 
 export const id = z.coerce.number().int().positive();
+export const dbBoolean = z.coerce.number().min(0).max(1).int();
 
 const abilityNameToType = (val: string) =>
   abilities.find((ability) => ability.name === val)?.type;
@@ -144,4 +145,10 @@ export function checkboxValueToBoolean(value: unknown) {
   }
 
   return value === "on";
+}
+
+export function checkboxValueToDbBoolean(value: unknown) {
+  if (checkboxValueToBoolean(value)) return 1;
+
+  return 0;
 }

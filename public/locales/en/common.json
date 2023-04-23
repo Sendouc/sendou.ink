@@ -176,5 +176,7 @@
   "divisions.WEST": "Tentatek",
   "divisions.JPN": "Takoroka",
   "xsearch.placements": "placements",
-  "xsearch.aliases": "Aliases:"
+  "xsearch.aliases": "Aliases:",
+
+  "build.private": "Private"
 }

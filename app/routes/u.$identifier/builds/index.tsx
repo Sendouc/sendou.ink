@@ -32,7 +32,7 @@ export const action: ActionFunction = async ({ request }) => {
 
   if (
     !db.builds
-      .buildsByUserId(user.id)
+      .buildsByUserId({ userId: user.id, loggedInUserId: user?.id })
       .some((build) => build.id === data.buildToDeleteId)
   ) {
     throw new Response(null, { status: 400 });
@@ -52,7 +52,10 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const { identifier } = userParamsSchema.parse(params);
   const user = notFoundIfFalsy(db.users.findByIdentifier(identifier));
 
-  const builds = db.builds.buildsByUserId(user.id);
+  const builds = db.builds.buildsByUserId({
+    userId: user.id,
+    loggedInUserId: loggedInUser?.id,
+  });
 
   if (builds.length === 0 && loggedInUser?.id !== user.id) {
     throw new Response(null, { status: 404 });

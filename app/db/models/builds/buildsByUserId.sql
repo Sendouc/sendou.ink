@@ -22,6 +22,7 @@ with "Top500Weapon" as (
     "clothesGearSplId",
     "shoesGearSplId",
     "updatedAt",
+    "private",
     json_group_array(
       json_object(
         'weaponSplId',
@@ -37,6 +38,10 @@ with "Top500Weapon" as (
     left join "Top500Weapon" on "Top500Weapon"."buildId" = "Build"."id"
   where
     "Build"."ownerId" = @userId
+    and (
+      "Build"."private" = 0
+      or "Build"."ownerId" = @loggedInUserId
+    )
   group by
     "Build"."id"
 )

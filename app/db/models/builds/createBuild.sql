@@ -6,7 +6,8 @@ insert into
     "modes",
     "headGearSplId",
     "clothesGearSplId",
-    "shoesGearSplId"
+    "shoesGearSplId",
+    "private"
   )
 values
   (
@@ -16,5 +17,6 @@ values
     @modes,
     @headGearSplId,
     @clothesGearSplId,
-    @shoesGearSplId
+    @shoesGearSplId,
+    @private
   ) returning *

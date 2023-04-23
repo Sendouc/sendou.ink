@@ -1,6 +1,7 @@
 import { sql } from "~/db/sql";
 import type { Ability, MainWeaponId } from "~/modules/in-game-lists";
 
+// TODO: could consider removing private builds from this
 const query = (includeWeaponId: boolean) => /* sql */ `
   select "BuildAbility"."ability", sum("BuildAbility"."abilityPoints") as "abilityPointsSum"
     from "BuildAbility"

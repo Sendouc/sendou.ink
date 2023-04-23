@@ -10,6 +10,7 @@ import { z } from "zod";
 import { AbilitiesSelector } from "~/components/AbilitiesSelector";
 import { Button } from "~/components/Button";
 import { GearCombobox, WeaponCombobox } from "~/components/Combobox";
+import { FormMessage } from "~/components/FormMessage";
 import { CrossIcon } from "~/components/icons/Cross";
 import { PlusIcon } from "~/components/icons/Plus";
 import { Image } from "~/components/Image";
@@ -43,7 +44,9 @@ import { modeImageUrl, userBuildsPage } from "~/utils/urls";
 import {
   actualNumber,
   checkboxValueToBoolean,
+  checkboxValueToDbBoolean,
   clothesMainSlotAbility,
+  dbBoolean,
   falsyToNull,
   headMainSlotAbility,
   id,
@@ -68,6 +71,7 @@ const newBuildActionSchema = z.object({
   TC: z.preprocess(checkboxValueToBoolean, z.boolean()),
   RM: z.preprocess(checkboxValueToBoolean, z.boolean()),
   CB: z.preprocess(checkboxValueToBoolean, z.boolean()),
+  private: z.preprocess(checkboxValueToDbBoolean, dbBoolean),
   "weapon[value]": z.preprocess(
     processMany(toArray, removeDuplicates),
     z.array(weaponSplId).min(1).max(BUILD.MAX_WEAPONS_COUNT)
@@ -128,7 +132,10 @@ export const action: ActionFunction = async ({ request }) => {
     schema: newBuildActionSchema,
   });
 
-  const usersBuilds = db.builds.buildsByUserId(user.id);
+  const usersBuilds = db.builds.buildsByUserId({
+    userId: user.id,
+    loggedInUserId: user.id,
+  });
   if (usersBuilds.length >= BUILD.MAX_COUNT) {
     throw new Response(null, { status: 400 });
   }
@@ -143,6 +150,7 @@ export const action: ActionFunction = async ({ request }) => {
     modes: modesShort.filter((mode) => data[mode]),
     weaponSplIds: data["weapon[value]"] as Array<MainWeaponId>,
     ownerId: user.id,
+    private: data.private,
   };
   if (data.buildToEditId) {
     db.builds.updateByReplacing({ id: data.buildToEditId, ...commonArgs });
@@ -174,7 +182,10 @@ export const loader = async ({ request }: LoaderArgs) => {
     return json({ buildToEdit: null });
   }
 
-  const usersBuilds = db.builds.buildsByUserId(params.data.userId);
+  const usersBuilds = db.builds.buildsByUserId({
+    userId: params.data.userId,
+    loggedInUserId: user.id,
+  });
   const buildToEdit = usersBuilds.find((b) => b.id === params.data.buildId);
 
   return json({
@@ -200,6 +211,7 @@ export default function NewBuildPage() {
         <TitleInput />
         <DescriptionTextarea />
         <ModeCheckboxes />
+        <PrivateCheckbox />
         <SubmitButton className="mt-4">{t("actions.submit")}</SubmitButton>
       </Form>
     </div>
@@ -278,6 +290,26 @@ function ModeCheckboxes() {
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+function PrivateCheckbox() {
+  const { buildToEdit } = useLoaderData<typeof loader>();
+  const { t } = useTranslation(["builds", "common"]);
+
+  return (
+    <div>
+      <Label htmlFor="private">{t("common:build.private")}</Label>
+      <input
+        id="private"
+        name="private"
+        type="checkbox"
+        defaultChecked={Boolean(buildToEdit?.private)}
+      />
+      <FormMessage type="info" className="mt-0">
+        {t("builds:forms.private.info")}
+      </FormMessage>
     </div>
   );
 }

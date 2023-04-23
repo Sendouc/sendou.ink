@@ -834,6 +834,7 @@ function adminBuilds() {
         faker.word.noun()
       )}`,
       ownerId: 1,
+      private: 0,
       description: Math.random() < 0.75 ? faker.lorem.paragraph() : null,
       headGearSplId: randomOrderHeadGear[0]!,
       clothesGearSplId: randomOrderClothesGear[0]!,
@@ -889,6 +890,7 @@ function manySplattershotBuilds() {
     );
 
     db.builds.create({
+      private: 0,
       title: `${capitalize(faker.word.adjective())} ${capitalize(
         faker.word.noun()
       )}`,

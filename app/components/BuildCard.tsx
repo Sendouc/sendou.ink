@@ -35,6 +35,7 @@ import { Image } from "./Image";
 import { Popover } from "./Popover";
 import { InfoIcon } from "./icons/Info";
 import type { BuildWeaponWithTop500Info } from "~/db/models/builds/queries.server";
+import { LockIcon } from "./icons/Lock";
 
 interface BuildProps {
   build: Pick<
@@ -46,6 +47,7 @@ interface BuildProps {
     | "headGearSplId"
     | "shoesGearSplId"
     | "updatedAt"
+    | "private"
   > & {
     abilities: BuildAbilitiesTuple;
     modes: ModeShort[] | null;
@@ -82,7 +84,7 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
   } = build;
 
   return (
-    <div className="build">
+    <div className={clsx("build", { build__private: build.private })}>
       <div>
         <div className="build__top-row">
           {modes && modes.length > 0 && (
@@ -114,18 +116,26 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
               <div>•</div>
             </>
           ) : null}
-          <time className={clsx({ invisible: !isMounted })}>
-            {isMounted
-              ? databaseTimestampToDate(updatedAt).toLocaleDateString(
-                  i18n.language,
-                  {
-                    day: "numeric",
-                    month: "numeric",
-                    year: "numeric",
-                  }
-                )
-              : "t"}
-          </time>
+          <div className="stack horizontal sm">
+            {build.private ? (
+              <div className="build__private-text">
+                <LockIcon className="build__private-icon" />{" "}
+                {t("common:build.private")}
+              </div>
+            ) : null}
+            <time className={clsx({ invisible: !isMounted })}>
+              {isMounted
+                ? databaseTimestampToDate(updatedAt).toLocaleDateString(
+                    i18n.language,
+                    {
+                      day: "numeric",
+                      month: "numeric",
+                      year: "numeric",
+                    }
+                  )
+                : "t"}
+            </time>
+          </div>
         </div>
       </div>
       <div className="build__weapons">

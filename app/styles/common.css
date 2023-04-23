@@ -840,6 +840,23 @@ dialog::backdrop {
   gap: var(--s-3);
 }
 
+.build__private {
+  background-color: var(--bg-lighter-transparent);
+}
+
+.build__private-text {
+  display: flex;
+  justify-content: center;
+  font-weight: var(--semi-bold);
+  gap: var(--s-1);
+}
+
+.build__private-icon {
+  width: 16px;
+  margin-block-end: var(--s-1);
+  stroke-width: 2px;
+}
+
 .build__title {
   overflow: hidden;
   height: 2.5rem;
