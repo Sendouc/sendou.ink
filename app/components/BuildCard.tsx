@@ -84,7 +84,10 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
   } = build;
 
   return (
-    <div className={clsx("build", { build__private: build.private })}>
+    <div
+      className={clsx("build", { build__private: build.private })}
+      data-testid="build-card"
+    >
       <div>
         <div className="build__top-row">
           {modes && modes.length > 0 && (
@@ -101,7 +104,9 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
               ))}
             </div>
           )}
-          <h2 className="build__title">{title}</h2>
+          <h2 className="build__title" data-testid="build-title">
+            {title}
+          </h2>
         </div>
         <div className="build__date-author-row">
           {owner && (
@@ -193,6 +198,7 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
               variant="minimal"
               size="tiny"
               to={`new?buildId=${id}&userId=${user!.id}`}
+              testId="edit-build"
             >
               <EditIcon className="build__icon" />
             </LinkButton>

@@ -77,7 +77,11 @@ export default function UserBuildsPage() {
       {isOwnPage && (
         <div className="stack sm horizontal items-center justify-end">
           {data.builds.length < BUILD.MAX_COUNT ? (
-            <LinkButton to={userNewBuildPage(parentPageData)} size="tiny">
+            <LinkButton
+              to={userNewBuildPage(parentPageData)}
+              size="tiny"
+              testId="new-build-button"
+            >
               {t("addBuild")}
             </LinkButton>
           ) : (

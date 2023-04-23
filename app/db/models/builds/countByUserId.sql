@@ -3,4 +3,8 @@ select
 from
   "Build"
 where
-  "ownerId" = @userId;
+  "Build"."ownerId" = @userId
+  and (
+    "Build"."private" = 0
+    or "Build"."ownerId" = @loggedInUserId
+  )

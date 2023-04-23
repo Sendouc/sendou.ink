@@ -228,6 +228,7 @@ function TitleInput() {
         {t("forms.title")}
       </Label>
       <input
+        id="title"
         name="title"
         required
         minLength={BUILD.TITLE_MIN_LENGTH}
@@ -285,7 +286,7 @@ function ModeCheckboxes() {
               name={mode}
               type="checkbox"
               defaultChecked={modes.includes(mode)}
-              data-cy={`${mode}-checkbox`}
+              data-testid={`${mode}-checkbox`}
             />
           </div>
         ))}
@@ -357,6 +358,7 @@ function WeaponsSelector() {
                     disabled={weapons.length === BUILD.MAX_WEAPONS_COUNT}
                     onClick={() => setWeapons((weapons) => [...weapons, 0])}
                     icon={<PlusIcon />}
+                    testId="add-weapon-button"
                   />
                   {weapons.length > 1 && (
                     <Button

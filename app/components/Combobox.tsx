@@ -221,6 +221,7 @@ export function UserCombobox({
   );
 }
 
+// TODO: [object Object] flickers when server rendered with initialValue
 export function WeaponCombobox({
   id,
   required,

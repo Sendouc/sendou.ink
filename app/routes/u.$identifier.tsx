@@ -16,6 +16,7 @@ import { userTopPlacements } from "~/features/top-search";
 import { findVods } from "~/features/vods";
 import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
+import { getUserId } from "~/modules/auth/user.server";
 import { canAddCustomizedColorsToUserProfile } from "~/permissions";
 import styles from "~/styles/u.css";
 import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
@@ -69,7 +70,8 @@ export const userParamsSchema = z.object({ identifier: z.string() });
 
 export type UserPageLoaderData = SerializeFrom<typeof loader>;
 
-export const loader = ({ params }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderArgs) => {
+  const loggedInUser = await getUserId(request);
   const { identifier } = userParamsSchema.parse(params);
   const user = notFoundIfFalsy(db.users.findByIdentifier(identifier));
 
@@ -94,7 +96,10 @@ export const loader = ({ params }: LoaderArgs) => {
     css: canAddCustomizedColorsToUserProfile(user) ? user.css : undefined,
     badges: db.badges.findByOwnerId(user.id),
     results: db.calendarEvents.findResultsByUserId(user.id),
-    buildsCount: db.builds.countByUserId(user.id),
+    buildsCount: db.builds.countByUserId({
+      userId: user.id,
+      loggedInUserId: loggedInUser?.id,
+    }),
     vods: findVods({ userId: user.id }),
     playerId,
     topPlacements,
@@ -125,7 +130,11 @@ export default function UserPageLayout() {
           </SubNavLink>
         )}
         {(isOwnPage || data.buildsCount > 0) && (
-          <SubNavLink to={userBuildsPage(data)} prefetch="intent">
+          <SubNavLink
+            to={userBuildsPage(data)}
+            prefetch="intent"
+            data-testid="builds-tab"
+          >
             {t("pages.builds")} ({data.buildsCount})
           </SubNavLink>
         )}

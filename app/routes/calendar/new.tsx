@@ -162,7 +162,7 @@ export const action: ActionFunction = async ({ request }) => {
   };
 
   // TODO: messing with these and "one mode selection" can cause problems when teams
-  // have already chosend maps for their pools
+  // have already chosen maps for their pools
   const deserializedMaps = (() => {
     if (!data.pool) return;
 

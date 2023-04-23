@@ -9,10 +9,27 @@ export async function selectWeapon({
   name: string;
   inputName?: string;
 }) {
-  const weaponCombobox = page.getByTestId(`${inputName}-combobox-input`);
-  await weaponCombobox.clear();
-  await weaponCombobox.fill(name);
-  await weaponCombobox.press("Enter");
+  return selectComboboxValue({ page, value: name, inputName });
+}
+
+export async function selectComboboxValue({
+  page,
+  value,
+  inputName,
+  locator,
+}: {
+  page: Page;
+  value: string;
+  inputName?: string;
+  locator?: Locator;
+}) {
+  if (!locator && !inputName) {
+    throw new Error("Must provide either locator or inputName");
+  }
+  const combobox = locator ?? page.getByTestId(`${inputName!}-combobox-input`);
+  await combobox.clear();
+  await combobox.fill(value);
+  await combobox.press("Enter");
 }
 
 /** page.goto that waits for the page to be hydrated before proceeding */

@@ -90,8 +90,15 @@ export const updateByReplacing = sql.transaction(
   }
 );
 
-export function countByUserId(userId: Build["ownerId"]) {
-  return (countByUserIdStm.get({ userId })?.count ?? 0) as number;
+export function countByUserId({
+  userId,
+  loggedInUserId,
+}: {
+  userId: Build["ownerId"];
+  loggedInUserId?: UserWithPlusTier["id"];
+}) {
+  return (countByUserIdStm.get({ userId, loggedInUserId })?.count ??
+    0) as number;
 }
 
 export interface BuildWeaponWithTop500Info {
