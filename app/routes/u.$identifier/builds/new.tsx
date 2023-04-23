@@ -5,6 +5,7 @@ import {
   type LoaderArgs,
 } from "@remix-run/node";
 import { Form, useLoaderData, useSearchParams } from "@remix-run/react";
+import clone from "just-clone";
 import * as React from "react";
 import { z } from "zod";
 import { AbilitiesSelector } from "~/components/AbilitiesSelector";
@@ -28,6 +29,7 @@ import { useTranslation } from "~/hooks/useTranslation";
 import { requireUser } from "~/modules/auth";
 import { requireUserId } from "~/modules/auth/user.server";
 import {
+  type Ability,
   clothesGearIds,
   headGearIds,
   modesShort,
@@ -39,7 +41,11 @@ import type {
   BuildAbilitiesTupleWithUnknown,
   MainWeaponId,
 } from "~/modules/in-game-lists/types";
-import { parseRequestFormData, type SendouRouteHandle } from "~/utils/remix";
+import {
+  parseRequestFormData,
+  validate,
+  type SendouRouteHandle,
+} from "~/utils/remix";
 import { modeImageUrl, userBuildsPage } from "~/utils/urls";
 import {
   actualNumber,
@@ -136,9 +142,14 @@ export const action: ActionFunction = async ({ request }) => {
     userId: user.id,
     loggedInUserId: user.id,
   });
+
   if (usersBuilds.length >= BUILD.MAX_COUNT) {
-    throw new Response(null, { status: 400 });
+    throw new Response("Max amount of builds reached", { status: 400 });
   }
+  validate(
+    !data.buildToEditId ||
+      usersBuilds.some((build) => build.id === data.buildToEditId)
+  );
 
   const commonArgs = {
     title: data.title,
@@ -167,7 +178,6 @@ export const handle: SendouRouteHandle = {
 
 const newBuildLoaderParamsSchema = z.object({
   buildId: z.preprocess(actualNumber, id),
-  userId: z.preprocess(actualNumber, id),
 });
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -178,24 +188,38 @@ export const loader = async ({ request }: LoaderArgs) => {
     Object.fromEntries(url.searchParams)
   );
 
-  if (!params.success || params.data.userId !== user.id) {
-    return json({ buildToEdit: null });
-  }
-
   const usersBuilds = db.builds.buildsByUserId({
-    userId: params.data.userId,
+    userId: user.id,
     loggedInUserId: user.id,
   });
-  const buildToEdit = usersBuilds.find((b) => b.id === params.data.buildId);
+  const buildToEdit = usersBuilds.find(
+    (b) => params.success && b.id === params.data.buildId
+  );
 
   return json({
     buildToEdit,
+    gearIdToAbilities: resolveGearIdToAbilities(),
   });
+
+  function resolveGearIdToAbilities() {
+    return usersBuilds.reduce((acc, build) => {
+      acc[`HEAD_${build.headGearSplId}`] = build.abilities[0];
+      acc[`CLOTHES_${build.clothesGearSplId}`] = build.abilities[1];
+      acc[`SHOES_${build.shoesGearSplId}`] = build.abilities[2];
+
+      return acc;
+    }, {} as Record<string, [Ability, Ability, Ability, Ability]>);
+  }
 };
 
 export default function NewBuildPage() {
   const { buildToEdit } = useLoaderData<typeof loader>();
   const { t } = useTranslation();
+  const [searchParams] = useSearchParams();
+  const [abilities, setAbilities] =
+    React.useState<BuildAbilitiesTupleWithUnknown>(
+      buildToEdit?.abilities ?? validatedBuildFromSearchParams(searchParams)
+    );
 
   return (
     <div className="half-width u__build-form">
@@ -204,10 +228,22 @@ export default function NewBuildPage() {
           <input type="hidden" name="buildToEditId" value={buildToEdit.id} />
         )}
         <WeaponsSelector />
-        <GearSelector type="HEAD" />
-        <GearSelector type="CLOTHES" />
-        <GearSelector type="SHOES" />
-        <Abilities />
+        <GearSelector
+          type="HEAD"
+          abilities={abilities}
+          setAbilities={setAbilities}
+        />
+        <GearSelector
+          type="CLOTHES"
+          abilities={abilities}
+          setAbilities={setAbilities}
+        />
+        <GearSelector
+          type="SHOES"
+          abilities={abilities}
+          setAbilities={setAbilities}
+        />
+        <Abilities abilities={abilities} setAbilities={setAbilities} />
         <TitleInput />
         <DescriptionTextarea />
         <ModeCheckboxes />
@@ -384,8 +420,16 @@ function WeaponsSelector() {
   );
 }
 
-function GearSelector({ type }: { type: GearType }) {
-  const { buildToEdit } = useLoaderData<typeof loader>();
+function GearSelector({
+  type,
+  abilities,
+  setAbilities,
+}: {
+  type: GearType;
+  abilities: BuildAbilitiesTupleWithUnknown;
+  setAbilities: (abilities: BuildAbilitiesTupleWithUnknown) => void;
+}) {
+  const { buildToEdit, gearIdToAbilities } = useLoaderData<typeof loader>();
   const { t } = useTranslation("builds");
 
   const initialGearId = !buildToEdit
@@ -408,20 +452,41 @@ function GearSelector({ type }: { type: GearType }) {
           id={type}
           required
           initialGearId={initialGearId}
+          // onChange only exists to copy abilities from existing gear
+          // actual value of combobox is handled in uncontrolled manner
+          onChange={(opt) => {
+            if (!opt) return;
+
+            const abilitiesFromExistingGear =
+              gearIdToAbilities[`${type}_${opt.value}`];
+
+            if (!abilitiesFromExistingGear) return;
+
+            const gearIndex = type === "HEAD" ? 0 : type === "CLOTHES" ? 1 : 2;
+
+            const currentAbilities = abilities[gearIndex];
+
+            // let's not overwrite current selections
+            if (!currentAbilities.every((a) => a === "UNKNOWN")) return;
+
+            const newAbilities = clone(abilities);
+            newAbilities[gearIndex] = abilitiesFromExistingGear;
+
+            setAbilities(newAbilities);
+          }}
         />
       </div>
     </div>
   );
 }
 
-function Abilities() {
-  const [searchParams] = useSearchParams();
-  const { buildToEdit } = useLoaderData<typeof loader>();
-  const [abilities, setAbilities] =
-    React.useState<BuildAbilitiesTupleWithUnknown>(
-      buildToEdit?.abilities ?? validatedBuildFromSearchParams(searchParams)
-    );
-
+function Abilities({
+  abilities,
+  setAbilities,
+}: {
+  abilities: BuildAbilitiesTupleWithUnknown;
+  setAbilities: (abilities: BuildAbilitiesTupleWithUnknown) => void;
+}) {
   return (
     <div>
       <RequiredHiddenInput
