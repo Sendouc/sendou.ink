@@ -58,13 +58,17 @@ test.describe("Builds", () => {
 
     await expect(page.getByTestId("new-build-button")).toBeVisible();
 
-    await expect(page.getByAltText("Tenta Brella")).toBeVisible();
-    await expect(page.getByAltText("Splat Brella")).toBeVisible();
+    const firstBuildCard = page.getByTestId("build-card").first();
 
-    await expect(page.getByAltText("Tower Control")).toBeVisible();
-    await expect(page.getByAltText("Splat Zones")).not.toBeVisible();
+    await expect(firstBuildCard.getByAltText("Tenta Brella")).toBeVisible();
+    await expect(firstBuildCard.getByAltText("Splat Brella")).toBeVisible();
 
-    await expect(page.getByTestId("build-title")).toContainText("Test Build");
+    await expect(firstBuildCard.getByAltText("Tower Control")).toBeVisible();
+    await expect(firstBuildCard.getByAltText("Splat Zones")).not.toBeVisible();
+
+    await expect(firstBuildCard.getByTestId("build-title")).toContainText(
+      "Test Build"
+    );
   });
 
   test("makes build private", async ({ page }) => {

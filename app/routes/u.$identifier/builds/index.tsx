@@ -3,7 +3,7 @@ import { json, type LoaderArgs } from "@remix-run/node";
 import { useLoaderData, useMatches } from "@remix-run/react";
 import { z } from "zod";
 import { BuildCard } from "~/components/BuildCard";
-import { LinkButton } from "~/components/Button";
+import { Button, LinkButton } from "~/components/Button";
 import { BUILD } from "~/constants";
 import { db } from "~/db";
 import { useTranslation } from "~/hooks/useTranslation";
@@ -18,6 +18,10 @@ import {
 import { userNewBuildPage } from "~/utils/urls";
 import { actualNumber, id } from "~/utils/zod";
 import { userParamsSchema, type UserPageLoaderData } from "../../u.$identifier";
+import type { MainWeaponId } from "~/modules/in-game-lists";
+import { mainWeaponIds } from "~/modules/in-game-lists";
+import { WeaponImage } from "~/components/Image";
+import { useSearchParamState } from "~/hooks/useSearchParamState";
 
 const buildsActionSchema = z.object({
   buildToDeleteId: z.preprocess(actualNumber, id),
@@ -61,7 +65,20 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     throw new Response(null, { status: 404 });
   }
 
-  return json({ builds });
+  return json({
+    builds,
+    weaponCounts: calculateWeaponCounts(),
+  });
+
+  function calculateWeaponCounts() {
+    return builds.reduce((acc, build) => {
+      for (const weapon of build.weapons) {
+        acc[weapon.weaponSplId] = (acc[weapon.weaponSplId] ?? 0) + 1;
+      }
+
+      return acc;
+    }, {} as Record<MainWeaponId, number>);
+  }
 };
 
 export default function UserBuildsPage() {
@@ -69,8 +86,25 @@ export default function UserBuildsPage() {
   const user = useUser();
   const parentPageData = atOrError(useMatches(), -2).data as UserPageLoaderData;
   const data = useLoaderData<typeof loader>();
+  const [weaponFilter, setWeaponFilter] = useSearchParamState<
+    "ALL" | MainWeaponId
+  >({
+    defaultValue: "ALL",
+    name: "weapon",
+    revive: (value) =>
+      value === "ALL"
+        ? value
+        : mainWeaponIds.find((id) => id === Number(value)),
+  });
 
   const isOwnPage = user?.id === parentPageData.id;
+
+  const builds =
+    weaponFilter === "ALL"
+      ? data.builds
+      : data.builds.filter((build) =>
+          build.weapons.map((wpn) => wpn.weaponSplId).includes(weaponFilter)
+        );
 
   return (
     <div className="stack lg">
@@ -94,9 +128,13 @@ export default function UserBuildsPage() {
           )}
         </div>
       )}
-      {data.builds.length > 0 ? (
+      <WeaponFilters
+        weaponFilter={weaponFilter}
+        setWeaponFilter={setWeaponFilter}
+      />
+      {builds.length > 0 ? (
         <div className="builds-container">
-          {data.builds.map((build) => (
+          {builds.map((build) => (
             <BuildCard key={build.id} build={build} canEdit={isOwnPage} />
           ))}
         </div>
@@ -105,6 +143,48 @@ export default function UserBuildsPage() {
           {t("noBuilds")}
         </div>
       )}
+    </div>
+  );
+}
+
+function WeaponFilters({
+  weaponFilter,
+  setWeaponFilter,
+}: {
+  weaponFilter: "ALL" | MainWeaponId;
+  setWeaponFilter: (weaponFilter: "ALL" | MainWeaponId) => void;
+}) {
+  const { t } = useTranslation(["weapons", "builds"]);
+  const data = useLoaderData<typeof loader>();
+
+  return (
+    <div className="stack horizontal sm flex-wrap">
+      <Button
+        onClick={() => setWeaponFilter("ALL")}
+        variant={weaponFilter === "ALL" ? undefined : "outlined"}
+        size="tiny"
+        className="u__build-filter-button"
+      >
+        {t("builds:stats.all")} ({data.builds.length})
+      </Button>
+      {mainWeaponIds.map((weaponId) => {
+        const count = data.weaponCounts[weaponId];
+
+        if (!count) return null;
+
+        return (
+          <Button
+            key={weaponId}
+            onClick={() => setWeaponFilter(weaponId)}
+            variant={weaponFilter === weaponId ? undefined : "outlined"}
+            size="tiny"
+            className="u__build-filter-button"
+          >
+            <WeaponImage weaponSplId={weaponId} variant="build" width={20} />
+            {t(`weapons:MAIN_${weaponId}`)} ({count})
+          </Button>
+        );
+      })}
     </div>
   );
 }

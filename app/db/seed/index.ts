@@ -418,7 +418,8 @@ function patrons() {
   const userIds = sql
     .prepare(`select "id" from "User" order by random() limit 50`)
     .all()
-    .map((u) => u.id);
+    .map((u) => u.id)
+    .filter((id) => id !== NZAP_TEST_ID);
 
   for (const id of userIds) {
     sql
@@ -818,6 +819,7 @@ const randomAbility = (legalTypes: AbilityType[]) => {
   return randomOrderAbilities.find((a) => legalTypes.includes(a.type))!.name;
 };
 
+const adminWeaponPool = mainWeaponIds.filter(() => Math.random() > 0.8);
 function adminBuilds() {
   for (let i = 0; i < 50; i++) {
     const randomOrderHeadGear = shuffle(headGearIds.slice());
@@ -825,7 +827,7 @@ function adminBuilds() {
     const randomOrderShoesGear = shuffle(shoesGearIds.slice());
     // filter out sshot to prevent test flaking
     const randomOrderWeaponIds = shuffle(
-      mainWeaponIds.filter((id) => id !== 40).slice()
+      adminWeaponPool.filter((id) => id !== 40).slice()
     );
 
     db.builds.create({
