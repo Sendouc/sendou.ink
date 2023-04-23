@@ -39,6 +39,12 @@ test.describe("Top search", () => {
       url: weaponBuildPage("splattershot"),
     });
 
-    await expect(page.getByTestId("top500-crown")).toBeVisible();
+    await expect(
+      page
+        .getByTestId("build-card")
+        .first()
+        .locator(page.getByTestId("top500-crown"))
+        .first()
+    ).toBeVisible();
   });
 });
