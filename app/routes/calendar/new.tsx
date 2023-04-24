@@ -599,7 +599,9 @@ function TOToolsAndMapPool() {
   const [checked, setChecked] = React.useState(
     Boolean(eventToEdit?.toToolsEnabled)
   );
-  const [mode, setMode] = React.useState<"ALL" | RankedModeShort>("ALL");
+  const [mode, setMode] = React.useState<"ALL" | RankedModeShort>(
+    eventToEdit?.toToolsMode ?? "ALL"
+  );
 
   return (
     <>
@@ -612,6 +614,7 @@ function TOToolsAndMapPool() {
             className="calendar-new__select"
             onChange={(e) => setMode(e.target.value as RankedModeShort)}
             name="toToolsMode"
+            defaultValue={mode}
           >
             <option value="ALL">All modes</option>
             <option value="SZ">SZ only</option>

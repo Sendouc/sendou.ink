@@ -355,6 +355,7 @@ export function findById(id: CalendarEvent["id"]) {
       | "authorId"
       | "participantCount"
       | "toToolsEnabled"
+      | "toToolsMode"
     > &
       Pick<CalendarEventDate, "startTime" | "eventId"> &
       Pick<

@@ -7,6 +7,7 @@ select
   "CalendarEvent"."tags",
   "CalendarEvent"."participantCount",
   "CalendarEvent"."toToolsEnabled",
+  "CalendarEvent"."toToolsMode",
   "User"."id" as "authorId",
   exists (
     select
