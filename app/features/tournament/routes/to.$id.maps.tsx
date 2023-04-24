@@ -53,12 +53,12 @@ export default function TournamentToolsMapsPage() {
     name: "team-one",
     defaultValue:
       resolveOwnedTeam({ teams: data.teams, userId: user?.id })?.id ??
-      data.teams[0]!.id,
+      data.teams[0]?.id,
     revive: reviveTeam(data.teams.map((t) => t.id)),
   });
   const [teamTwoId, setTeamTwoId] = useSearchParamState({
     name: "team-two",
-    defaultValue: data.teams[1]!.id,
+    defaultValue: data.teams[1]?.id,
     revive: reviveTeam(
       data.teams.map((t) => t.id),
       teamOneId
