@@ -94,10 +94,14 @@ function formDataToObject(formData: FormData) {
 
 /** Asserts condition is truthy. Throws a new `Response` with given status code if falsy.  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- same format as TS docs: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#assertion-functions
-export function validate(condition: any, status = 400): asserts condition {
+export function validate(
+  condition: any,
+  status = 400,
+  body?: string
+): asserts condition {
   if (condition) return;
 
-  throw new Response(null, { status });
+  throw new Response(body, { status });
 }
 
 export type Breadcrumb =

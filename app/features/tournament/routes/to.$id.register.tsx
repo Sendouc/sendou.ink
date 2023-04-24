@@ -82,7 +82,11 @@ export const action: ActionFunction = async ({ request, params }) => {
   const eventId = idFromParams(params);
   const event = notFoundIfFalsy(findByIdentifier(eventId));
 
-  invariant(event.isBeforeStart);
+  validate(
+    event.isBeforeStart,
+    400,
+    "Tournament has started, cannot make edits to registration"
+  );
 
   const teams = findTeamsByEventId(eventId);
   const ownTeam = teams.find((team) =>
