@@ -176,5 +176,6 @@
   "divisions.WEST": "アロメ",
   "divisions.JPN": "ヤコ",
   "xsearch.placements": "順位",
-  "xsearch.aliases": "別名:"
+  "xsearch.aliases": "別名:",
+  "build.private": "非公開"
 }
