@@ -31,6 +31,10 @@
   height: 52%;
 }
 
+.brackets-viewer .match.connect-next.straight::after {
+  top: 1px;
+}
+
 .brackets-viewer h3 {
   border-radius: var(--rounded-sm);
 }
