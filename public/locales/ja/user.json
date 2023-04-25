@@ -30,6 +30,7 @@
   "forms.errors.invalidCustomUrl.strangeCharacter": "カスタム URL は特殊文字を含めることはできません",
   "forms.errors.invalidCustomUrl.duplicate": "このカスタム URL はすでに使用されています",
   "forms.errors.invalidSens": "右スティックの感度が設定されていない場合、感度を設定することはできません",
+  "forms.info.favoriteBadge": "お気に入りバッジはデフォルトでプロファイルに大きく表示されます",
 
   "search.info": "Discord, Splatoon 3, Twitter アカウント名でユーザーを検索する",
   "search.noResults": "該当ユーザーが見つかりません '{{query}}'"

@@ -11,6 +11,7 @@
   "forms.gear.HEAD": "ギア (アタマ)",
   "forms.gear.CLOTHES": "ギア (フク)",
   "forms.gear.SHOES": "ギア (クツ)",
+  "forms.private.info": "非公開ギア構成は作成者しか見ることができません",
 
   "deleteConfirm": "'{{title}}'を削除しますか?",
 

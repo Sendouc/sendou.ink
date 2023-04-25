@@ -2,6 +2,8 @@
   "tabs.info": "情報",
   "tabs.teams": "チーム ({{count}})",
   "tabs.admin": "管理",
+  "tabs.register": "登録",
+  "tabs.maps": "マップ一覧",
 
   "pre.footerNote": "メモ: トーナメント開始前であれば、マップリストと参加者を何回でも変更できます。",
   "pre.deleteTeam": "チームを削除",
