@@ -26,3 +26,19 @@
   font-family: Lexend, sans-serif !important;
   font-weight: var(--semi-bold) !important;
 }
+
+.brackets-viewer .opponents.connect-previous::before {
+  width: 52%;
+}
+
+.brackets-viewer h3 {
+  border-radius: var(--rounded-sm);
+}
+
+.brackets-viewer .bracket h2 {
+  color: transparent;
+}
+
+.brackets-viewer h1 {
+  display: none;
+}
