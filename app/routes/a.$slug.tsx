@@ -51,13 +51,13 @@ export const meta: V2_MetaFunction = (args) => {
 
   return [
     { title: makeTitle(data.title) },
-    { name: "og:title", content: data.title },
+    { property: "og:title", content: data.title },
     { name: "description", content: description },
-    { name: "og:description", content: description },
+    { property: "og:description", content: description },
     { name: "twitter:card", content: "summary_large_image" },
-    { name: "og:image", content: articlePreviewUrl(args.params["slug"]) },
-    { name: "og:type", content: "article" },
-    { name: "og:site_name", content: "sendou.ink" },
+    { property: "og:image", content: articlePreviewUrl(args.params["slug"]) },
+    { property: "og:type", content: "article" },
+    { property: "og:site_name", content: "sendou.ink" },
   ];
 };
 

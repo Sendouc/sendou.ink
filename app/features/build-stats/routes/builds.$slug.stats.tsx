@@ -1,8 +1,8 @@
 import type {
   LinksFunction,
   LoaderArgs,
-  SerializeFrom,
   V2_MetaFunction,
+  SerializeFrom,
 } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { Main } from "~/components/Main";
