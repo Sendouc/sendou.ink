@@ -1,4 +1,4 @@
-import type { MetaFunction } from "@remix-run/node";
+import type { V2_MetaFunction } from "@remix-run/node";
 import { Trans } from "react-i18next";
 import { Main } from "~/components/Main";
 import { useSetTitle } from "~/hooks/useSetTitle";
@@ -18,10 +18,8 @@ import { type SendouRouteHandle } from "~/utils/remix";
 import { useTranslation } from "~/hooks/useTranslation";
 import * as React from "react";
 
-export const meta: MetaFunction = () => {
-  return {
-    title: makeTitle("Contributions"),
-  };
+export const meta: V2_MetaFunction = () => {
+  return [{ title: makeTitle("Contributions") }];
 };
 
 export const handle: SendouRouteHandle = {

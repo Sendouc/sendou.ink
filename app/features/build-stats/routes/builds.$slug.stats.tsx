@@ -1,8 +1,8 @@
 import type {
   LinksFunction,
   LoaderArgs,
-  MetaFunction,
   SerializeFrom,
+  V2_MetaFunction,
 } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { Main } from "~/components/Main";
@@ -26,14 +26,12 @@ import { makeTitle } from "~/utils/strings";
 import { cache, ttl } from "~/utils/cache.server";
 import { cachified } from "cachified";
 
-export const meta: MetaFunction = (args) => {
+export const meta: V2_MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
 
-  if (!data) return {};
+  if (!data) return [];
 
-  return {
-    title: data.meta.title,
-  };
+  return [{ title: data.meta.title }];
 };
 
 export const links: LinksFunction = () => {

@@ -4,7 +4,7 @@ import {
   json,
   type SerializeFrom,
   type LoaderArgs,
-  type MetaFunction,
+  type V2_MetaFunction,
 } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import * as React from "react";
@@ -41,24 +41,24 @@ export const handle: SendouRouteHandle = {
   },
 };
 
-export const meta: MetaFunction = (args) => {
+export const meta: V2_MetaFunction = (args) => {
   invariant(args.params["slug"]);
   const data = args.data as SerializeFrom<typeof loader> | null;
 
-  if (!data) return {};
+  if (!data) return [];
 
   const description = data.content.trim().split("\n")[0];
 
-  return {
-    title: makeTitle(data.title),
-    "og:title": data.title,
-    description,
-    "og:description": description,
-    "twitter:card": "summary_large_image",
-    "og:image": articlePreviewUrl(args.params["slug"]),
-    "og:type": "article",
-    "og:site_name": "sendou.ink",
-  };
+  return [
+    { title: makeTitle(data.title) },
+    { name: "og:title", content: data.title },
+    { name: "description", content: description },
+    { name: "og:description", content: description },
+    { name: "twitter:card", content: "summary_large_image" },
+    { name: "og:image", content: articlePreviewUrl(args.params["slug"]) },
+    { name: "og:type", content: "article" },
+    { name: "og:site_name", content: "sendou.ink" },
+  ];
 };
 
 export const loader = ({ params }: LoaderArgs) => {

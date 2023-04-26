@@ -1,6 +1,6 @@
 import {
   type LoaderArgs,
-  type MetaFunction,
+  type V2_MetaFunction,
   type SerializeFrom,
 } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
@@ -31,14 +31,12 @@ import { FireIcon } from "~/components/icons/Fire";
 import { cachified } from "cachified";
 import { cache, ttl } from "~/utils/cache.server";
 
-export const meta: MetaFunction = (args) => {
+export const meta: V2_MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
 
-  if (!data) return {};
+  if (!data) return [];
 
-  return {
-    title: data.title,
-  };
+  return [{ title: data.title }];
 };
 
 export const handle: SendouRouteHandle = {
