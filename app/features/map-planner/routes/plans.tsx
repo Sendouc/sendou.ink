@@ -1,5 +1,5 @@
 import { lazy } from "react";
-import type { LinksFunction, MetaFunction } from "@remix-run/node";
+import type { LinksFunction, V2_MetaFunction } from "@remix-run/node";
 import styles from "../plans.css";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { useIsMounted } from "~/hooks/useIsMounted";
@@ -8,12 +8,15 @@ import { makeTitle } from "~/utils/strings";
 import { useTranslation } from "~/hooks/useTranslation";
 import { useSetTitle } from "~/hooks/useSetTitle";
 
-export const meta: MetaFunction = () => {
-  return {
-    title: makeTitle("Planner"),
-    description:
-      "Make the perfect Splatoon 3 battle plans by drawing on maps and adding weapon images",
-  };
+export const meta: V2_MetaFunction = () => {
+  return [
+    { title: makeTitle("Planner") },
+    {
+      name: "description",
+      content:
+        "Make the perfect Splatoon 3 battle plans by drawing on maps and adding weapon images",
+    },
+  ];
 };
 
 export const handle: SendouRouteHandle = {

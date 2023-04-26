@@ -2,7 +2,7 @@ import type {
   ActionFunction,
   LinksFunction,
   LoaderArgs,
-  MetaFunction,
+  V2_MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
@@ -42,16 +42,14 @@ import { TEAM } from "../team-constants";
 import { createTeamSchema } from "../team-schemas.server";
 import styles from "../team.css";
 
-export const meta: MetaFunction = ({
+export const meta: V2_MetaFunction = ({
   data,
 }: {
   data: SerializeFrom<typeof loader>;
 }) => {
-  if (!data) return {};
+  if (!data) return [];
 
-  return {
-    title: data.title,
-  };
+  return [{ title: data.title }];
 };
 
 export const links: LinksFunction = () => {
