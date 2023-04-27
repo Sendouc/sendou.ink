@@ -1,7 +1,7 @@
 import { sql } from "~/db/sql";
 import type {
-  CalendarEvent,
   MapPoolMap,
+  Tournament,
   TournamentTeam,
   TournamentTeamMember,
   UserWithPlusTier,
@@ -37,7 +37,7 @@ const stm = sql.prepare(/*sql*/ `
       left join "User" on "User"."id" = "TournamentTeamMember"."userId"
       left join "PlusTier" on "User"."id" = "PlusTier"."userId"
     where
-      "TournamentTeam"."calendarEventId" = @calendarEventId
+      "TournamentTeam"."tournamentId" = @tournamentId
     group by
       "TournamentTeam"."id"
   )
@@ -78,8 +78,8 @@ export interface FindTeamsByEventIdItem {
 }
 export type FindTeamsByEventId = Array<FindTeamsByEventIdItem>;
 
-export function findTeamsByEventId(calendarEventId: CalendarEvent["id"]) {
-  const rows = stm.all({ calendarEventId });
+export function findTeamsByEventId(tournamentId: Tournament["id"]) {
+  const rows = stm.all({ tournamentId });
 
   return rows.map((row) => {
     return {

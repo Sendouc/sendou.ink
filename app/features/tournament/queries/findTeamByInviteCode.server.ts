@@ -3,7 +3,7 @@ import { sql } from "~/db/sql";
 const stm = sql.prepare(/*sql */ `
   select 
     "TournamentTeam"."id",
-    "TournamentTeam"."calendarEventId"
+    "TournamentTeam"."tournamentId"
   from "TournamentTeam"
     where "TournamentTeam"."inviteCode" = @inviteCode
 `);
@@ -11,6 +11,6 @@ const stm = sql.prepare(/*sql */ `
 export function findByInviteCode(inviteCode: string) {
   return stm.get({ inviteCode }) as {
     id: number;
-    calendarEventId: number;
+    tournamentId: number;
   } | null;
 }

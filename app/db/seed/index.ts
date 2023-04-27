@@ -93,6 +93,7 @@ function wipeDB() {
     "TournamentTeamMember",
     "MapPoolMap",
     "TournamentTeam",
+    "Tournament",
     "CalendarEventDate",
     "CalendarEventResultPlayer",
     "CalendarEventResultTeam",
@@ -610,7 +611,28 @@ function calendarEventResults() {
 
 const TO_TOOLS_CALENDAR_EVENT_ID = 201;
 function calendarEventWithToTools(sz?: boolean) {
+  const tournamentId = sz ? 2 : 1;
   const eventId = TO_TOOLS_CALENDAR_EVENT_ID + (sz ? 1 : 0);
+
+  sql
+    .prepare(
+      `
+      insert into "Tournament" (
+        "id",
+        "mapPickingStyle",
+        "format"
+      ) values (
+        $id,
+        $mapPickingStyle,
+        $format
+      ) returning *
+      `
+    )
+    .run({
+      id: tournamentId,
+      format: "DE",
+      mapPickingStyle: sz ? "AUTO_SZ" : "AUTO_ALL",
+    });
 
   sql
     .prepare(
@@ -622,8 +644,7 @@ function calendarEventWithToTools(sz?: boolean) {
         "discordInviteCode",
         "bracketUrl",
         "authorId",
-        "toToolsEnabled",
-        "toToolsMode"
+        "tournamentId"
       ) values (
         $id,
         $name,
@@ -631,8 +652,7 @@ function calendarEventWithToTools(sz?: boolean) {
         $discordInviteCode,
         $bracketUrl,
         $authorId,
-        $toToolsEnabled,
-        $toToolsMode
+        $tournamentId
       )
       `
     )
@@ -643,8 +663,7 @@ function calendarEventWithToTools(sz?: boolean) {
       discordInviteCode: faker.lorem.word(),
       bracketUrl: faker.internet.url(),
       authorId: 1,
-      toToolsEnabled: 1,
-      toToolsMode: sz ? "SZ" : null,
+      tournamentId,
     });
 
   sql
@@ -706,7 +725,7 @@ const availablePairs = rankedModesShort
   .filter((pair) => !tiebreakerPicks.has(pair));
 function calendarEventWithToToolsTeams(sz?: boolean) {
   const userIds = userIdsInRandomOrder(true);
-  for (let id = 1; id <= 40; id++) {
+  for (let id = 1; id <= 14; id++) {
     sql
       .prepare(
         `
@@ -714,13 +733,13 @@ function calendarEventWithToToolsTeams(sz?: boolean) {
         "id",
         "name",
         "createdAt",
-        "calendarEventId",
+        "tournamentId",
         "inviteCode"
       ) values (
         $id,
         $name,
         $createdAt,
-        $calendarEventId,
+        $tournamentId,
         $inviteCode
       )
       `
@@ -729,7 +748,7 @@ function calendarEventWithToToolsTeams(sz?: boolean) {
         id: id + (sz ? 100 : 0),
         name: names.pop(),
         createdAt: dateToDatabaseTimestamp(new Date()),
-        calendarEventId: TO_TOOLS_CALENDAR_EVENT_ID + (sz ? 1 : 0),
+        tournamentId: sz ? 2 : 1,
         inviteCode: nanoid(INVITE_CODE_LENGTH),
       });
 

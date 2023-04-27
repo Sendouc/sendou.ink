@@ -114,11 +114,7 @@ export interface CalendarEvent {
   discordUrl: string | null;
   bracketUrl: string;
   participantCount: number | null;
-  customUrl: string | null;
-  /** Is tournament tools page visible */
-  toToolsEnabled: number;
-  toToolsMode: RankedModeShort | null;
-  isBeforeStart: number;
+  tournamentId: number | null;
 }
 
 export type CalendarEventTag = keyof typeof allTags;
@@ -184,13 +180,32 @@ export interface MapPoolMap {
   mode: ModeShort;
 }
 
+// AUTO = style where teams pick their map pool ahead of time and the map lists are automatically made for each round
+// could also have the traditional style where TO picks the maps later
+type TournamentMapPickingStyle =
+  | "AUTO_ALL"
+  | "AUTO_SZ"
+  | "AUTO_TC"
+  | "AUTO_RM"
+  | "AUTO_CB";
+
+// TODO: later also e.g. RR_TO_DE where we also need an additional field
+// describing how many teams advance
+type TournamentFormat = "SE" | "DE";
+
+// xxx: isBeforeStart not working with this
+export interface Tournament {
+  id: number;
+  mapPickingStyle: TournamentMapPickingStyle;
+  format: TournamentFormat;
+}
+
 export interface TournamentTeam {
   id: number;
-  // TODO: make non-nullable in database as well
   name: string;
   createdAt: number;
   seed: number | null;
-  calendarEventId: number;
+  tournamentId: number;
   inviteCode: string;
   checkedInAt?: number;
 }
@@ -202,38 +217,38 @@ export interface TournamentTeamMember {
   createdAt: number;
 }
 
-export type BracketType = "SE" | "DE";
-
-export interface TournamentBracket {
+export interface TournamentStage {
   id: number;
-  calendarEventId: number;
-  type: BracketType;
+  tournamentId: number;
+  name: string;
+  type: string; // enum
+  settings: string; // json
+  number: number;
+}
+
+export interface TournamentGroup {
+  id: number;
+  stageId: number;
+  number: number;
 }
 
 export interface TournamentRound {
   id: number;
-  // position of the round 1 for Round 1, 2 for Round 2, -1 for Losers Round 1 etc.
-  position: number;
-  bracketId: number;
-  bestOf: number;
+  stageId: number;
+  groupId: number;
+  number: number;
 }
 
 export interface TournamentMatch {
   id: number;
+  childCount: number;
   roundId: number;
-  // TODO tournament: why we need both?
-  number: number | null;
-  position: number;
-  winnerDestinationMatchId: number | null;
-  loserDestinationMatchId: number | null;
-}
-
-export type TeamOrder = "UPPER" | "LOWER";
-
-export interface TournamentMatchParticipant {
-  order: TeamOrder;
-  teamId: number;
-  matchId: number;
+  stageId: number;
+  groupId: number;
+  number: number;
+  opponentOne: string; // json
+  opponentTwo: string; // json
+  status: number;
 }
 
 export interface TournamentMatchGameResult {
@@ -244,6 +259,11 @@ export interface TournamentMatchGameResult {
   winnerTeamId: number;
   reporterId: number;
   createdAt: number;
+}
+
+export interface TournamentMatchGameResultParticipant {
+  matchGameResultId: number;
+  userId: number;
 }
 
 export interface UserSubmittedImage {

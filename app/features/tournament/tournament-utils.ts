@@ -1,6 +1,6 @@
 import type { Params } from "@remix-run/react";
 import invariant from "tiny-invariant";
-import type { User } from "~/db/types";
+import type { Tournament, User } from "~/db/types";
 import type { FindTeamsByEventId } from "./queries/findTeamsByEventId.server";
 import type { TournamentToolsLoaderData } from "./routes/to.$id";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
@@ -30,19 +30,33 @@ export function idFromParams(params: Params<string>) {
 }
 
 export function modesIncluded(
-  event: TournamentToolsLoaderData["event"]
+  tournament: Pick<Tournament, "mapPickingStyle">
 ): ModeShort[] {
-  if (event.toToolsMode) return [event.toToolsMode];
-
-  return [...rankedModesShort];
+  switch (tournament.mapPickingStyle) {
+    case "AUTO_SZ": {
+      return ["SZ"];
+    }
+    case "AUTO_TC": {
+      return ["TC"];
+    }
+    case "AUTO_RM": {
+      return ["RM"];
+    }
+    case "AUTO_CB": {
+      return ["CB"];
+    }
+    default: {
+      return [...rankedModesShort];
+    }
+  }
 }
 
 export function isOneModeTournamentOf(
-  event: TournamentToolsLoaderData["event"]
+  tournament: Pick<Tournament, "mapPickingStyle">
 ) {
-  if (event.toToolsMode) return event.toToolsMode;
-
-  return null;
+  return modesIncluded(tournament).length === 1
+    ? modesIncluded(tournament)[0]!
+    : null;
 }
 
 export function HACKY_resolvePicture(

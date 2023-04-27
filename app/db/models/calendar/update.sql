@@ -6,7 +6,6 @@ set
   "description" = @description,
   "discordInviteCode" = @discordInviteCode,
   "bracketUrl" = @bracketUrl,
-  "toToolsEnabled" = @toToolsEnabled,
-  "toToolsMode" = @toToolsMode
+  "tournamentId" = @tournamentId
 where
   "id" = @eventId

@@ -79,8 +79,8 @@ export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUserId(request);
   const data = await parseRequestFormData({ request, schema: registerSchema });
 
-  const eventId = idFromParams(params);
-  const event = notFoundIfFalsy(findByIdentifier(eventId));
+  const tournamentId = idFromParams(params);
+  const event = notFoundIfFalsy(findByIdentifier(tournamentId));
 
   validate(
     event.isBeforeStart,
@@ -88,7 +88,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     "Tournament has started, cannot make edits to registration"
   );
 
-  const teams = findTeamsByEventId(eventId);
+  const teams = findTeamsByEventId(tournamentId);
   const ownTeam = teams.find((team) =>
     team.members.some((member) => member.userId === user.id && member.isOwner)
   );
@@ -103,7 +103,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       } else {
         createTeam({
           name: data.teamName,
-          calendarEventId: eventId,
+          tournamentId: tournamentId,
           ownerId: user.id,
         });
       }
@@ -151,7 +151,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   if (!user) return null;
 
   const ownTeam = findOwnTeam({
-    calendarEventId: idFromParams(params),
+    tournamentId: idFromParams(params),
     userId: user.id,
   });
   if (!ownTeam) return null;
@@ -296,9 +296,6 @@ function TeamInfo({
           </SubmitButton>
         </fetcher.Form>
       </section>
-      <div className="tournament__section__warning">
-        Use the same name as on the bracket
-      </div>
     </div>
   );
 }
@@ -370,6 +367,7 @@ function FillRoster({
           <DeleteMember members={ownTeamMembers} />
         ) : null}
       </section>
+      {/* xxx: fix */}
       <div className="tournament__section__warning">
         You can still play without submitting roster, but you might be seeded
         lower in the bracket.
@@ -616,6 +614,7 @@ function validateCounterPickMapPool(
   return "VALID";
 }
 
+// xxx: turn into full check-in
 function RememberToCheckin() {
   const { i18n } = useTranslation();
   const isMounted = useIsMounted();

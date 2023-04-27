@@ -13,7 +13,7 @@ const stm = sql.prepare(/*sql*/ `
       "TournamentTeamMember"."tournamentTeamId" = "TournamentTeam"."id" 
       and "TournamentTeamMember"."isOwner" = 1
   where
-    "TournamentTeam"."calendarEventId" = @calendarEventId
+    "TournamentTeam"."tournamentId" = @tournamentId
     and "TournamentTeamMember"."userId" = @userId
 `);
 
@@ -23,14 +23,14 @@ type FindOwnTeam = Pick<
 > | null;
 
 export function findOwnTeam({
-  calendarEventId,
+  tournamentId,
   userId,
 }: {
-  calendarEventId: number;
+  tournamentId: number;
   userId: number;
 }) {
   return stm.get({
-    calendarEventId,
+    tournamentId,
     userId,
   }) as FindOwnTeam;
 }

@@ -161,8 +161,6 @@ export const action: ActionFunction = async ({ request }) => {
       rankedModesShort.find((mode) => mode === data.toToolsMode) ?? null,
   };
 
-  // TODO: messing with these and "one mode selection" can cause problems when teams
-  // have already chosen maps for their pools
   const deserializedMaps = (() => {
     if (!data.pool) return;
 
@@ -178,6 +176,10 @@ export const action: ActionFunction = async ({ request }) => {
     db.calendarEvents.update({
       eventId: data.eventToEditId,
       mapPoolMaps: deserializedMaps,
+      createTournament: data.toToolsEnabled,
+      mapPickingStyle: data.toToolsMode
+        ? `AUTO_${data.toToolsMode}`
+        : "AUTO_ALL",
       ...commonArgs,
     });
 
@@ -186,6 +188,10 @@ export const action: ActionFunction = async ({ request }) => {
     const createdEventId = db.calendarEvents.create({
       authorId: user.id,
       mapPoolMaps: deserializedMaps,
+      createTournament: data.toToolsEnabled,
+      mapPickingStyle: data.toToolsMode
+        ? `AUTO_${data.toToolsMode}`
+        : "AUTO_ALL",
       ...commonArgs,
     });
 

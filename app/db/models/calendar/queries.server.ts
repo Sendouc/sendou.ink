@@ -10,6 +10,7 @@ import type {
   CalendarEventResultTeam,
   CalendarEventResultPlayer,
   MapPoolMap,
+  Tournament,
 } from "../../types";
 import { MapPool } from "~/modules/map-pool-serializer";
 
@@ -39,6 +40,7 @@ import findRecentMapPoolsByAuthorIdSql from "./findRecentMapPoolsByAuthorId.sql"
 import findAllEventsWithMapPoolsSql from "./findAllEventsWithMapPools.sql";
 import findTieBreakerMapPoolByEventIdSql from "./findTieBreakerMapPoolByEventId.sql";
 import deleteByIdSql from "./deleteById.sql";
+import createTournamentSql from "./createTournament.sql";
 
 const createStm = sql.prepare(createSql);
 const updateStm = sql.prepare(updateSql);
@@ -56,6 +58,11 @@ const findTieBreakerMapPoolByEventIdtm = sql.prepare(
   findTieBreakerMapPoolByEventIdSql
 );
 const deleteByIdStm = sql.prepare(deleteByIdSql);
+const createTournamentStm = sql.prepare(createTournamentSql);
+
+const createTournament = (args: Omit<Tournament, "id">) => {
+  return createTournamentStm.get(args) as Tournament;
+};
 
 export type CreateArgs = Pick<
   CalendarEvent,
@@ -65,12 +72,12 @@ export type CreateArgs = Pick<
   | "description"
   | "discordInviteCode"
   | "bracketUrl"
-  | "toToolsEnabled"
-  | "toToolsMode"
 > & {
   startTimes: Array<CalendarEventDate["startTime"]>;
   badges: Array<CalendarEventBadge["badgeId"]>;
   mapPoolMaps?: Array<Pick<MapPoolMap, "mode" | "stageId">>;
+  createTournament: boolean;
+  mapPickingStyle: Tournament["mapPickingStyle"];
 };
 export const create = sql.transaction(
   ({
@@ -79,7 +86,18 @@ export const create = sql.transaction(
     mapPoolMaps = [],
     ...calendarEventArgs
   }: CreateArgs) => {
-    const createdEvent = createStm.get(calendarEventArgs) as CalendarEvent;
+    let tournamentId;
+    if (calendarEventArgs.createTournament) {
+      tournamentId = createTournament({
+        // xxx: format picking
+        format: "DE",
+        mapPickingStyle: calendarEventArgs.mapPickingStyle,
+      }).id;
+    }
+    const createdEvent = createStm.get({
+      ...calendarEventArgs,
+      tournamentId,
+    }) as CalendarEvent;
 
     for (const startTime of startTimes) {
       createDateStm.run({
@@ -98,7 +116,7 @@ export const create = sql.transaction(
     upsertMapPool({
       eventId: createdEvent.id,
       mapPoolMaps,
-      toToolsEnabled: calendarEventArgs.toToolsEnabled,
+      isFullTournament: calendarEventArgs.createTournament,
     });
 
     return createdEvent.id;
@@ -116,6 +134,11 @@ export const update = sql.transaction(
     mapPoolMaps = [],
     ...calendarEventArgs
   }: Update) => {
+    // xxx: implement robust updating flow
+    if (calendarEventArgs.createTournament) {
+      throw new Error("Editing tournament is not supported yet");
+    }
+
     updateStm.run({ ...calendarEventArgs, eventId });
 
     deleteDatesByEventIdStm.run({ eventId });
@@ -137,7 +160,7 @@ export const update = sql.transaction(
     upsertMapPool({
       eventId,
       mapPoolMaps,
-      toToolsEnabled: calendarEventArgs.toToolsEnabled,
+      isFullTournament: calendarEventArgs.createTournament,
     });
   }
 );
@@ -145,14 +168,14 @@ export const update = sql.transaction(
 function upsertMapPool({
   eventId,
   mapPoolMaps,
-  toToolsEnabled,
+  isFullTournament,
 }: {
   eventId: Update["eventId"];
   mapPoolMaps: NonNullable<Update["mapPoolMaps"]>;
-  toToolsEnabled: Update["toToolsEnabled"];
+  isFullTournament: boolean;
 }) {
   deleteMapPoolMapsStm.run({ calendarEventId: eventId });
-  if (toToolsEnabled) {
+  if (isFullTournament) {
     for (const mapPoolArgs of mapPoolMaps) {
       createTieBreakerMapPoolMapStm.run({
         calendarEventId: eventId,
@@ -354,8 +377,6 @@ export function findById(id: CalendarEvent["id"]) {
       | "tags"
       | "authorId"
       | "participantCount"
-      | "toToolsEnabled"
-      | "toToolsMode"
     > &
       Pick<CalendarEventDate, "startTime" | "eventId"> &
       Pick<
@@ -370,6 +391,9 @@ export function findById(id: CalendarEvent["id"]) {
     ...firstRow,
     startTimes: [firstRow, ...rest].map((row) => row.startTime),
     startTime: undefined,
+    // xxx: fix
+    toToolsEnabled: true,
+    toToolsMode: "SZ" as const,
   });
 }
 

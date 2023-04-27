@@ -5,11 +5,11 @@ import { INVITE_CODE_LENGTH } from "~/constants";
 
 const createTeamStm = sql.prepare(/*sql*/ `
   insert into "TournamentTeam" (
-    "calendarEventId",
+    "tournamentId",
     "inviteCode",
     "name"
   ) values (
-    @calendarEventId,
+    @tournamentId,
     @inviteCode,
     @name
   ) returning *
@@ -29,16 +29,16 @@ const createMemberStm = sql.prepare(/*sql*/ `
 
 export const createTeam = sql.transaction(
   ({
-    calendarEventId,
+    tournamentId,
     name,
     ownerId,
   }: {
-    calendarEventId: TournamentTeam["calendarEventId"];
+    tournamentId: TournamentTeam["tournamentId"];
     name: TournamentTeam["name"];
     ownerId: User["id"];
   }) => {
     const team = createTeamStm.get({
-      calendarEventId,
+      tournamentId,
       name,
       inviteCode: nanoid(INVITE_CODE_LENGTH),
     }) as TournamentTeam;

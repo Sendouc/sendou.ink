@@ -30,7 +30,7 @@ export const action: ActionFunction = async ({ request }) => {
   invariant(inviteCode, "code is missing");
 
   const leanTeam = notFoundIfFalsy(findByInviteCode(inviteCode));
-  const teams = findTeamsByEventId(leanTeam.calendarEventId);
+  const teams = findTeamsByEventId(leanTeam.tournamentId);
 
   const teamToJoin = teams.find((team) => team.id === leanTeam.id);
   const previousTeam = teams.find((team) =>
@@ -55,7 +55,7 @@ export const action: ActionFunction = async ({ request }) => {
       : "LEAVE",
   });
 
-  return redirect(toToolsPage(leanTeam.calendarEventId));
+  return redirect(toToolsPage(leanTeam.tournamentId));
 };
 
 export const loader = ({ request }: LoaderArgs) => {

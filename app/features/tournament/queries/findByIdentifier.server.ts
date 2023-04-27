@@ -1,43 +1,36 @@
 import { sql } from "~/db/sql";
-import type { CalendarEvent, CalendarEventDate, User } from "~/db/types";
+import type {
+  CalendarEvent,
+  CalendarEventDate,
+  Tournament,
+  User,
+} from "~/db/types";
 
-// TODO: doesn't work if many start times
+// xxx: doesn't work if many start times
 const stm = sql.prepare(/*sql*/ `
-  select
+select
+  "Tournament"."id",
+  "Tournament"."mapPickingStyle",
+  "Tournament"."format",
   "CalendarEvent"."name",
   "CalendarEvent"."description",
-  "CalendarEvent"."id",
   "CalendarEvent"."bracketUrl",
   "CalendarEvent"."authorId",
-  "CalendarEvent"."isBeforeStart",
-  "CalendarEvent"."toToolsMode",
   "CalendarEventDate"."startTime",
   "User"."discordName",
   "User"."discordDiscriminator",
   "User"."discordId"
-  from "CalendarEvent"
+  from "Tournament"
+    left join "CalendarEvent" on "Tournament"."id" = "CalendarEvent"."tournamentId"
     left join "User" on "CalendarEvent"."authorId" = "User"."id"
     left join "CalendarEventDate" on "CalendarEvent"."id" = "CalendarEventDate"."eventId"
-  where
-  (
-    "CalendarEvent"."id" = @identifier
-    or "CalendarEvent"."customUrl" = @identifier
-  )
-  and "CalendarEvent"."toToolsEnabled" = 1
+  where "Tournament"."id" = @identifier
   group by "CalendarEvent"."id"
 `);
 
 type FindByIdentifierRow =
-  | (Pick<
-      CalendarEvent,
-      | "bracketUrl"
-      | "id"
-      | "name"
-      | "description"
-      | "authorId"
-      | "isBeforeStart"
-      | "toToolsMode"
-    > &
+  | (Pick<CalendarEvent, "bracketUrl" | "name" | "description" | "authorId"> &
+      Pick<Tournament, "id" | "format" | "mapPickingStyle"> &
       Pick<User, "discordId" | "discordName" | "discordDiscriminator"> &
       Pick<CalendarEventDate, "startTime">)
   | null;
@@ -51,6 +44,7 @@ export function findByIdentifier(identifier: string | number) {
 
   return {
     ...rest,
+    isBeforeStart: true,
     author: {
       discordId,
       discordName,
