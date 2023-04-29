@@ -7,11 +7,18 @@ import { Form, useLoaderData } from "@remix-run/react";
 import * as React from "react";
 import styles from "../brackets-viewer.css";
 import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
-import { idFromParams } from "../tournament-utils";
+import {
+  idFromParams,
+  resolveTournamentStageName,
+  resolveTournamentStageSettings,
+  resolveTournamentStageType,
+} from "../tournament-utils";
 import { Alert } from "~/components/Alert";
 import { SubmitButton } from "~/components/SubmitButton";
 import { getTournamentManager } from "../brackets-manager";
 import hasTournamentStarted from "../queries/hasTournamentStarted.server";
+import { findByIdentifier } from "../queries/findByIdentifier.server";
+import { notFoundIfFalsy } from "~/utils/remix";
 
 export const links: LinksFunction = () => {
   return [
@@ -33,16 +40,16 @@ export const action: ActionFunction = async ({ params }) => {
   const manager = getTournamentManager("SQL");
 
   const tournamentId = idFromParams(params);
+  const tournament = notFoundIfFalsy(findByIdentifier(tournamentId));
 
-  // xxx: function to get name and get type
   await manager.create({
     tournamentId,
-    name: "Elimination stage",
-    type: "double_elimination",
+    name: resolveTournamentStageName(tournament.format),
+    type: resolveTournamentStageType(tournament.format),
     seeding: fillWithNullTillPowerOfTwo(
       findTeamsByTournamentId(tournamentId).map((team) => team.name)
     ),
-    settings: { grandFinal: "double" },
+    settings: resolveTournamentStageSettings(tournament.format),
   });
 
   return null;
@@ -50,6 +57,7 @@ export const action: ActionFunction = async ({ params }) => {
 
 export const loader = async ({ params }: LoaderArgs) => {
   const tournamentId = idFromParams(params);
+  const tournament = notFoundIfFalsy(findByIdentifier(tournamentId));
 
   const hasStarted = hasTournamentStarted(tournamentId);
   const manager = getTournamentManager(hasStarted ? "SQL" : "IN_MEMORY");
@@ -57,12 +65,12 @@ export const loader = async ({ params }: LoaderArgs) => {
   if (!hasStarted) {
     await manager.create({
       tournamentId,
-      name: "Elimination stage",
-      type: "double_elimination",
+      name: resolveTournamentStageName(tournament.format),
+      type: resolveTournamentStageType(tournament.format),
       seeding: fillWithNullTillPowerOfTwo(
         findTeamsByTournamentId(tournamentId).map((team) => team.name)
       ),
-      settings: { grandFinal: "double" },
+      settings: resolveTournamentStageSettings(tournament.format),
     });
   }
 

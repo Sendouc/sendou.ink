@@ -191,7 +191,7 @@ type TournamentMapPickingStyle =
 
 // TODO: later also e.g. RR_TO_DE where we also need an additional field
 // describing how many teams advance
-type TournamentFormat = "SE" | "DE";
+export type TournamentFormat = "SE" | "DE";
 
 // xxx: isBeforeStart not working with this
 export interface Tournament {

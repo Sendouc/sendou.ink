@@ -1,12 +1,19 @@
 import type { Params } from "@remix-run/react";
 import invariant from "tiny-invariant";
-import type { Tournament, User } from "~/db/types";
+import type {
+  Tournament,
+  TournamentFormat,
+  TournamentStage,
+  User,
+} from "~/db/types";
 import type { FindTeamsByTournamentId } from "./queries/findTeamsByTournamentId.server";
 import type { TournamentToolsLoaderData } from "./routes/to.$id";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import type { ModeShort } from "~/modules/in-game-lists";
 import { TOURNAMENT } from "./tournament-constants";
 import { databaseTimestampToDate } from "~/utils/dates";
+import { assertUnreachable } from "~/utils/types";
+import type { DataTypes } from "brackets-manager/dist/types";
 
 export function resolveOwnedTeam({
   teams,
@@ -80,4 +87,43 @@ export function mapPickCountPerMode(event: TournamentToolsLoaderData["event"]) {
   return isOneModeTournamentOf(event)
     ? TOURNAMENT.COUNTERPICK_ONE_MODE_TOURNAMENT_MAPS_PER_MODE
     : TOURNAMENT.COUNTERPICK_MAPS_PER_MODE;
+}
+
+export function resolveTournamentStageName(format: TournamentFormat) {
+  switch (format) {
+    case "SE":
+    case "DE":
+      return "Elimination stage";
+    default: {
+      assertUnreachable(format);
+    }
+  }
+}
+
+export function resolveTournamentStageType(
+  format: TournamentFormat
+): TournamentStage["type"] {
+  switch (format) {
+    case "SE":
+      return "single_elimination";
+    case "DE":
+      return "double_elimination";
+    default: {
+      assertUnreachable(format);
+    }
+  }
+}
+
+export function resolveTournamentStageSettings(
+  format: TournamentFormat
+): DataTypes["stage"]["settings"] {
+  switch (format) {
+    case "SE":
+      return {};
+    case "DE":
+      return { grandFinal: "double" };
+    default: {
+      assertUnreachable(format);
+    }
+  }
 }
