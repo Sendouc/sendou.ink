@@ -3,7 +3,12 @@ import type {
   LinksFunction,
   LoaderArgs,
 } from "@remix-run/node";
-import { Form, useLoaderData } from "@remix-run/react";
+import {
+  Form,
+  useLoaderData,
+  useNavigate,
+  useOutletContext,
+} from "@remix-run/react";
 import * as React from "react";
 import styles from "../brackets-viewer.css";
 import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
@@ -19,6 +24,8 @@ import { getTournamentManager } from "../brackets-manager";
 import hasTournamentStarted from "../queries/hasTournamentStarted.server";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { notFoundIfFalsy } from "~/utils/remix";
+import { toToolsMatchPage } from "~/utils/urls";
+import type { TournamentToolsLoaderData } from "./to.$id";
 
 export const links: LinksFunction = () => {
   return [
@@ -35,7 +42,6 @@ export const links: LinksFunction = () => {
 
 // xxx: validate can perform this action
 // xxx: not a transaction so maybe getting lock on db would be most correct
-// xxx: cascasde delete in DB?
 export const action: ActionFunction = async ({ params }) => {
   const manager = getTournamentManager("SQL");
 
@@ -85,9 +91,19 @@ export const loader = async ({ params }: LoaderArgs) => {
 export default function TournamentBracketsPage() {
   const data = useLoaderData<typeof loader>();
   const ref = React.useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+  const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
 
   React.useEffect(() => {
-    // @ts-expect-error TODO: type this
+    // @ts-expect-error - brackets-viewer is not typed
+    window.bracketsViewer.onMatchClicked = (match) =>
+      navigate(
+        toToolsMatchPage({
+          eventId: parentRouteData.event.id,
+          matchId: match.id,
+        })
+      );
+    // @ts-expect-error - brackets-viewer is not typed
     window.bracketsViewer.render({
       stages: data.bracket.stage,
       matches: data.bracket.match,

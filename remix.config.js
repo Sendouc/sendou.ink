@@ -28,6 +28,10 @@ module.exports = {
           "/to/:id/brackets",
           "features/tournament/routes/to.$id.brackets.tsx"
         );
+        route(
+          "/to/:id/matches/:mid",
+          "features/tournament/routes/to.$id.matches.$mid.tsx"
+        );
       });
 
       route("/privacy-policy", "features/info/routes/privacy-policy.tsx");
