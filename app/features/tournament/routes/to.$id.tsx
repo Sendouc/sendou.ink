@@ -17,10 +17,10 @@ import { makeTitle } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
 import type {
-  FindTeamsByEventId,
-  FindTeamsByEventIdItem,
-} from "../queries/findTeamsByEventId.server";
-import { findTeamsByEventId } from "../queries/findTeamsByEventId.server";
+  FindTeamsByTournamentId,
+  FindTeamsByTournamentIdItem,
+} from "../queries/findTeamsByTournamentId.server";
+import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
 import { idFromParams } from "../tournament-utils";
 import styles from "../tournament.css";
 
@@ -57,11 +57,13 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     event,
     tieBreakerMapPool:
       db.calendarEvents.findTieBreakerMapPoolByEventId(eventId),
-    teams: censorMapPools(findTeamsByEventId(eventId)),
+    teams: censorMapPools(findTeamsByTournamentId(eventId)),
     mapListGeneratorAvailable,
   };
 
-  function censorMapPools(teams: FindTeamsByEventId): FindTeamsByEventId {
+  function censorMapPools(
+    teams: FindTeamsByTournamentId
+  ): FindTeamsByTournamentId {
     if (mapListGeneratorAvailable) return teams;
 
     return teams.map((team) =>
@@ -75,7 +77,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
               // can be used to show checkmark in UI if team has submitted
               // the map pool without revealing the contents
               (team.mapPool?.length ?? 0) > 0
-                ? ([] as FindTeamsByEventIdItem["mapPool"])
+                ? ([] as FindTeamsByTournamentIdItem["mapPool"])
                 : undefined,
           }
     );

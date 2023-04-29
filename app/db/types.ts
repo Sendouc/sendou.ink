@@ -221,7 +221,7 @@ export interface TournamentStage {
   id: number;
   tournamentId: number;
   name: string;
-  type: string; // enum
+  type: "round_robin" | "single_elimination" | "double_elimination";
   settings: string; // json
   number: number;
 }

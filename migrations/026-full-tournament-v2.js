@@ -131,12 +131,14 @@ module.exports.up = function (db) {
     "id" integer primary key,
     "childCount" integer not null,
     "roundId" integer not null,
+    "stageId" integer not null,
     "groupId" integer not null,
     "number" integer not null,
     "opponentOne" text not null,
     "opponentTwo" text not null,
     "status" integer not null,
     foreign key ("roundId") references "TournamentRound"("id") on delete cascade,
+    foreign key ("stageId") references "TournamentStage"("id") on delete cascade,
     foreign key ("groupId") references "TournamentGroup"("id") on delete cascade,
     unique("number", "roundId") on conflict rollback
   ) strict
@@ -144,6 +146,9 @@ module.exports.up = function (db) {
   ).run();
   db.prepare(
     `create index tournament_match_round_id on "TournamentMatch"("roundId")`
+  ).run();
+  db.prepare(
+    `create index tournament_match_stage_id on "TournamentMatch"("stageId")`
   ).run();
   db.prepare(
     `create index tournament_match_group_id on "TournamentMatch"("groupId")`

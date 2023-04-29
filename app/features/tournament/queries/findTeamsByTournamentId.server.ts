@@ -60,7 +60,7 @@ const stm = sql.prepare(/*sql*/ `
     "TeamWithMembers"."name" asc
 `);
 
-export interface FindTeamsByEventIdItem {
+export interface FindTeamsByTournamentIdItem {
   id: TournamentTeam["id"];
   name: TournamentTeam["name"];
   members: Array<
@@ -76,9 +76,9 @@ export interface FindTeamsByEventIdItem {
   >;
   mapPool?: Array<Pick<MapPoolMap, "mode" | "stageId">>;
 }
-export type FindTeamsByEventId = Array<FindTeamsByEventIdItem>;
+export type FindTeamsByTournamentId = Array<FindTeamsByTournamentIdItem>;
 
-export function findTeamsByEventId(tournamentId: Tournament["id"]) {
+export function findTeamsByTournamentId(tournamentId: Tournament["id"]) {
   const rows = stm.all({ tournamentId });
 
   return rows.map((row) => {
@@ -87,5 +87,5 @@ export function findTeamsByEventId(tournamentId: Tournament["id"]) {
       members: parseDBJsonArray(row.members),
       mapPool: parseDBJsonArray(row.mapPool),
     };
-  }) as FindTeamsByEventId;
+  }) as FindTeamsByTournamentId;
 }

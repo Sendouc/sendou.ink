@@ -47,7 +47,7 @@ import {
 import deleteTeamMember from "../queries/deleteTeamMember.server";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { findOwnTeam } from "../queries/findOwnTeam.server";
-import { findTeamsByEventId } from "../queries/findTeamsByEventId.server";
+import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
 import { updateTeamInfo } from "../queries/updateTeamInfo.server";
 import { upsertCounterpickMaps } from "../queries/upsertCounterpickMaps.server";
 import { TOURNAMENT } from "../tournament-constants";
@@ -88,7 +88,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     "Tournament has started, cannot make edits to registration"
   );
 
-  const teams = findTeamsByEventId(tournamentId);
+  const teams = findTeamsByTournamentId(tournamentId);
   const ownTeam = teams.find((team) =>
     team.members.some((member) => member.userId === user.id && member.isOwner)
   );

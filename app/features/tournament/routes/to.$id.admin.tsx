@@ -12,7 +12,7 @@ import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { discordFullName } from "~/utils/strings";
 import { checkboxValueToBoolean } from "~/utils/zod";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
-import { findTeamsByEventId } from "../queries/findTeamsByEventId.server";
+import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
 import { updateIsBeforeStart } from "../queries/updateIsBeforeStart.server";
 import { requireUserId } from "~/modules/auth/user.server";
 import { idFromParams } from "../tournament-utils";
@@ -52,7 +52,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   // but getting them again for the most fresh data
   return {
     event,
-    teams: findTeamsByEventId(event.id),
+    teams: findTeamsByTournamentId(event.id),
   };
 };
 

@@ -5,7 +5,7 @@ import { CheckmarkIcon } from "~/components/icons/Checkmark";
 import { Image } from "~/components/Image";
 import { useTranslation } from "~/hooks/useTranslation";
 import { navIconUrl, userPage } from "~/utils/urls";
-import type { FindTeamsByEventIdItem } from "../queries/findTeamsByEventId.server";
+import type { FindTeamsByTournamentIdItem } from "../queries/findTeamsByTournamentId.server";
 import { TOURNAMENT } from "../tournament-constants";
 import type { TournamentToolsLoaderData, TournamentToolsTeam } from "./to.$id";
 
@@ -56,7 +56,7 @@ export default function TournamentToolsTeamsPage() {
 function TeamWithRoster({
   team,
 }: {
-  team: Pick<FindTeamsByEventIdItem, "members" | "name">;
+  team: Pick<FindTeamsByTournamentIdItem, "members" | "name">;
 }) {
   return (
     <div className="tournament__team-with-roster">

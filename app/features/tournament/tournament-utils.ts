@@ -1,7 +1,7 @@
 import type { Params } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import type { Tournament, User } from "~/db/types";
-import type { FindTeamsByEventId } from "./queries/findTeamsByEventId.server";
+import type { FindTeamsByTournamentId } from "./queries/findTeamsByTournamentId.server";
 import type { TournamentToolsLoaderData } from "./routes/to.$id";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import type { ModeShort } from "~/modules/in-game-lists";
@@ -12,7 +12,7 @@ export function resolveOwnedTeam({
   teams,
   userId,
 }: {
-  teams: FindTeamsByEventId;
+  teams: FindTeamsByTournamentId;
   userId?: User["id"];
 }) {
   if (typeof userId !== "number") return;

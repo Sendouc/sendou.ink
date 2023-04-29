@@ -10,8 +10,8 @@ import { notFoundIfFalsy, validate } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
 import { toToolsPage } from "~/utils/urls";
 import { findByInviteCode } from "../queries/findTeamByInviteCode.server";
-import type { FindTeamsByEventIdItem } from "../queries/findTeamsByEventId.server";
-import { findTeamsByEventId } from "../queries/findTeamsByEventId.server";
+import type { FindTeamsByTournamentIdItem } from "../queries/findTeamsByTournamentId.server";
+import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
 import { joinTeam } from "../queries/joinTeam.server";
 import { TOURNAMENT } from "../tournament-constants";
 import type { TournamentToolsLoaderData } from "./to.$id";
@@ -30,7 +30,7 @@ export const action: ActionFunction = async ({ request }) => {
   invariant(inviteCode, "code is missing");
 
   const leanTeam = notFoundIfFalsy(findByInviteCode(inviteCode));
-  const teams = findTeamsByEventId(leanTeam.tournamentId);
+  const teams = findTeamsByTournamentId(leanTeam.tournamentId);
 
   const teamToJoin = teams.find((team) => team.id === leanTeam.id);
   const previousTeam = teams.find((team) =>
@@ -124,7 +124,7 @@ function validateCanJoin({
   userId,
 }: {
   inviteCode: string;
-  teamToJoin?: FindTeamsByEventIdItem;
+  teamToJoin?: FindTeamsByTournamentIdItem;
   userId?: number;
 }) {
   if (typeof userId !== "number") {
