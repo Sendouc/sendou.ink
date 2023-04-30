@@ -47,17 +47,18 @@ export type TournamentToolsLoaderData = SerializeFrom<typeof loader>;
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const user = await getUserId(request);
-  const eventId = idFromParams(params);
-  const event = notFoundIfFalsy(findByIdentifier(eventId));
+  const tournamentId = idFromParams(params);
+  const event = notFoundIfFalsy(findByIdentifier(tournamentId));
 
   const mapListGeneratorAvailable =
     canAdminCalendarTOTools({ user, event }) || !event.isBeforeStart;
 
   return {
     event,
-    tieBreakerMapPool:
-      db.calendarEvents.findTieBreakerMapPoolByEventId(eventId),
-    teams: censorMapPools(findTeamsByTournamentId(eventId)),
+    tieBreakerMapPool: db.calendarEvents.findTieBreakerMapPoolByEventId(
+      event.eventId
+    ),
+    teams: censorMapPools(findTeamsByTournamentId(tournamentId)),
     mapListGeneratorAvailable,
   };
 
