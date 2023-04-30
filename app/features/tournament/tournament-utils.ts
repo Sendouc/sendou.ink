@@ -1,4 +1,5 @@
 import type { Params } from "@remix-run/react";
+import type { DataTypes } from "brackets-manager/dist/types";
 import invariant from "tiny-invariant";
 import type {
   Tournament,
@@ -6,14 +7,13 @@ import type {
   TournamentStage,
   User,
 } from "~/db/types";
-import type { FindTeamsByTournamentId } from "./queries/findTeamsByTournamentId.server";
-import type { TournamentToolsLoaderData } from "./routes/to.$id";
-import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import type { ModeShort } from "~/modules/in-game-lists";
-import { TOURNAMENT } from "./tournament-constants";
+import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { assertUnreachable } from "~/utils/types";
-import type { DataTypes } from "brackets-manager/dist/types";
+import type { FindTeamsByTournamentId } from "./queries/findTeamsByTournamentId.server";
+import type { TournamentToolsLoaderData } from "./routes/to.$id";
+import { TOURNAMENT } from "./tournament-constants";
 
 export function resolveOwnedTeam({
   teams,
@@ -32,6 +32,13 @@ export function resolveOwnedTeam({
 export function idFromParams(params: Params<string>) {
   const result = Number(params["id"]);
   invariant(!Number.isNaN(result), "id is not a number");
+
+  return result;
+}
+
+export function matchIdFromParams(params: Params<string>) {
+  const result = Number(params["mid"]);
+  invariant(!Number.isNaN(result), "mid is not a number");
 
   return result;
 }

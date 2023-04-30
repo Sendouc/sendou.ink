@@ -145,10 +145,23 @@ export class Stage {
   }
 }
 
+const group_getByIdStm = sql.prepare(/*sql*/ `
+  select *
+    from "TournamentGroup"
+    where "TournamentGroup"."id" = @id
+`);
+
 const group_getByStageIdStm = sql.prepare(/*sql*/ `
   select *
     from "TournamentGroup"
     where "TournamentGroup"."stageId" = @stageId
+`);
+
+const group_getByStageAndNumberStm = sql.prepare(/*sql*/ `
+  select *
+    from "TournamentGroup"
+    where "TournamentGroup"."stageId" = @stageId
+      and "TournamentGroup"."number" = @number
 `);
 
 const group_insertStm = sql.prepare(/*sql*/ `
@@ -183,8 +196,21 @@ export class Group {
     };
   }
 
+  static getById(id: TournamentGroup["id"]): DataTypes["group"] {
+    return this.#convertGroup(group_getByIdStm.get({ id }));
+  }
+
   static getByStageId(stageId: TournamentStage["id"]): DataTypes["group"][] {
     return group_getByStageIdStm.all({ stageId }).map(this.#convertGroup);
+  }
+
+  static getByStageAndNumber(
+    stageId: TournamentStage["id"],
+    number: TournamentGroup["number"]
+  ): DataTypes["group"] {
+    return this.#convertGroup(
+      group_getByStageAndNumberStm.get({ stageId, number })
+    );
   }
 
   insert() {
@@ -199,10 +225,29 @@ export class Group {
   }
 }
 
+const round_getByIdStm = sql.prepare(/*sql*/ `
+  select *
+    from "TournamentRound"
+    where "TournamentRound"."id" = @id
+`);
+
+const round_getByGroupIdStm = sql.prepare(/*sql*/ `
+  select *
+    from "TournamentRound"
+    where "TournamentRound"."groupId" = @groupId
+`);
+
 const round_getByStageIdStm = sql.prepare(/*sql*/ `
   select *
     from "TournamentRound"
     where "TournamentRound"."stageId" = @stageId
+`);
+
+const round_getByGroupAndNumberStm = sql.prepare(/*sql*/ `
+  select *
+    from "TournamentRound"
+    where "TournamentRound"."groupId" = @groupId
+      and "TournamentRound"."number" = @number
 `);
 
 const round_insertStm = sql.prepare(/*sql*/ `
@@ -256,12 +301,42 @@ export class Round {
   static getByStageId(stageId: TournamentStage["id"]): DataTypes["round"][] {
     return round_getByStageIdStm.all({ stageId }).map(this.#convertRound);
   }
+
+  static getByGroupId(groupId: TournamentGroup["id"]): DataTypes["round"][] {
+    return round_getByGroupIdStm.all({ groupId }).map(this.#convertRound);
+  }
+
+  static getByGroupAndNumber(
+    groupId: TournamentGroup["id"],
+    number: TournamentRound["number"]
+  ): DataTypes["round"] {
+    return this.#convertRound(
+      round_getByGroupAndNumberStm.get({ groupId, number })
+    );
+  }
+
+  static getById(id: TournamentRound["id"]): DataTypes["round"] {
+    return this.#convertRound(round_getByIdStm.get({ id }));
+  }
 }
+
+const match_getByIdStm = sql.prepare(/*sql*/ `
+  select *
+    from "TournamentMatch"
+    where "TournamentMatch"."id" = @id
+`);
 
 const match_getByStageIdStm = sql.prepare(/*sql*/ `
   select *
     from "TournamentMatch"
     where "TournamentMatch"."stageId" = @stageId
+`);
+
+const match_getByRoundAndNumberStm = sql.prepare(/*sql*/ `
+  select *
+    from "TournamentMatch"
+    where "TournamentMatch"."roundId" = @roundId
+      and "TournamentMatch"."number" = @number
 `);
 
 const match_insertStm = sql.prepare(/*sql*/ `
@@ -271,6 +346,21 @@ const match_insertStm = sql.prepare(/*sql*/ `
   values
     (@childCount, @roundId, @stageId, @groupId, @number, @opponentOne, @opponentTwo, @status)
   returning *
+`);
+
+const match_updateStm = sql.prepare(/*sql*/ `
+  update "TournamentMatch"
+    set
+      "childCount" = @childCount,
+      "roundId" = @roundId,
+      "stageId" = @stageId,
+      "groupId" = @groupId,
+      "number" = @number,
+      "opponentOne" = @opponentOne,
+      "opponentTwo" = @opponentTwo,
+      "status" = @status
+    where
+      "TournamentMatch"."id" = @id
 `);
 
 export class Match {
@@ -309,6 +399,8 @@ export class Match {
     this.status = status;
   }
 
+  // xxx: to this convert and others make it take undefined and return undefined,
+  // handle generic
   static #convertMatch(rawMatch: TournamentMatch): DataTypes["match"] {
     return {
       id: rawMatch.id,
@@ -323,8 +415,21 @@ export class Match {
     };
   }
 
+  static getById(id: TournamentMatch["id"]): DataTypes["match"] {
+    return this.#convertMatch(match_getByIdStm.get({ id }));
+  }
+
   static getByStageId(stageId: TournamentStage["id"]): DataTypes["match"][] {
     return match_getByStageIdStm.all({ stageId }).map(this.#convertMatch);
+  }
+
+  static getByRoundAndNumber(
+    roundId: TournamentRound["id"],
+    number: TournamentMatch["number"]
+  ): DataTypes["match"] {
+    return this.#convertMatch(
+      match_getByRoundAndNumberStm.get({ roundId, number })
+    );
   }
 
   insert() {
@@ -340,6 +445,22 @@ export class Match {
     });
 
     this.id = match.id;
+
+    return true;
+  }
+
+  update() {
+    match_updateStm.run({
+      id: this.id,
+      childCount: this.childCount,
+      roundId: this.roundId,
+      stageId: this.stageId,
+      groupId: this.groupId,
+      number: this.number,
+      opponentOne: this.opponentOne,
+      opponentTwo: this.opponentTwo,
+      status: this.status,
+    });
 
     return true;
   }

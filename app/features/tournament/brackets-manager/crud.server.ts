@@ -114,18 +114,12 @@ export class SqlDatabase {
         }
 
         if (typeof arg === "number") {
-          throw new Error("not implemented");
-          const group = await Group.getById(arg);
-          return group && convertGroup(group);
+          return Group.getById(arg);
         }
 
         if (arg.stage_id && arg.number) {
-          throw new Error("not implemented");
-          const group = await Group.getByStageAndNumber(
-            arg.stage_id,
-            arg.number
-          );
-          return group && [convertGroup(group)];
+          const group = Group.getByStageAndNumber(arg.stage_id, arg.number);
+          return group && [group];
         }
 
         if (arg.stage_id) {
@@ -142,24 +136,16 @@ export class SqlDatabase {
         }
 
         if (typeof arg === "number") {
-          throw new Error("not implemented");
-          const round = await Round.getById(arg);
-          return round && convertRound(round);
+          return Round.getById(arg);
         }
 
         if (arg.group_id && arg.number) {
-          throw new Error("not implemented");
-          const round = await Round.getByGroupAndNumber(
-            arg.group_id,
-            arg.number
-          );
-          return round && [convertRound(round)];
+          const round = Round.getByGroupAndNumber(arg.group_id, arg.number);
+          return round && [round];
         }
 
         if (arg.group_id) {
-          throw new Error("not implemented");
-          const rounds = await Round.getByGroupId(arg.group_id);
-          return rounds && rounds.map(convertRound);
+          return Round.getByGroupId(arg.group_id);
         }
 
         if (arg.stage_id) {
@@ -176,18 +162,12 @@ export class SqlDatabase {
         }
 
         if (typeof arg === "number") {
-          throw new Error("not implemented");
-          const match = await Match.getById(arg);
-          return match && convertMatch(match);
+          return Match.getById(arg);
         }
 
         if (arg.round_id && arg.number) {
-          throw new Error("not implemented");
-          const match = await Match.getByRoundAndNumber(
-            arg.round_id,
-            arg.number
-          );
-          return match && [convertMatch(match)];
+          const match = Match.getByRoundAndNumber(arg.round_id, arg.number);
+          return match && [match];
         }
 
         if (arg.stage_id) {
@@ -244,7 +224,6 @@ export class SqlDatabase {
         break;
 
       case "match":
-        throw new Error("not implemented");
         if (typeof query === "number") {
           const match = new Match(
             query,
@@ -261,7 +240,7 @@ export class SqlDatabase {
             JSON.stringify(update.opponent2)
           );
 
-          return await match.update();
+          return match.update();
         }
 
         if (query.stage_id)
