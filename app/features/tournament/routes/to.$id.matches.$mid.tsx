@@ -11,6 +11,8 @@ import { LinkButton } from "~/components/Button";
 import { ArrowLongLeftIcon } from "~/components/icons/ArrowLongLeft";
 import { toToolsBracketsPage } from "~/utils/urls";
 import invariant from "tiny-invariant";
+import { canAdminCalendarTOTools } from "~/permissions";
+import { useUser } from "~/modules/auth";
 
 export type TournamentMatchLoaderData = typeof loader;
 
@@ -26,13 +28,25 @@ export const loader = ({ params }: LoaderArgs) => {
   };
 };
 
+// xxx: some kind of header
 export default function TournamentMatchPage() {
+  const user = useUser();
   const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
   const data = useLoaderData<typeof loader>();
 
-  // xxx: if match is over return different UI
-  // xxx: if waiting for teams OR in progress and can't edit show one UI
-  // xxx: handle when input shown (101 below)
+  const matchHasTwoTeams = Boolean(
+    data.match.opponentOne?.id && data.match.opponentTwo?.id
+  );
+
+  const matchIsOver =
+    data.match.opponentOne?.result === "win" ||
+    data.match.opponentTwo?.result === "win";
+
+  const canEditScore =
+    !matchIsOver &&
+    (data.match.opponentOne?.id === parentRouteData.ownedTeamId ||
+      data.match.opponentTwo?.id === parentRouteData.ownedTeamId ||
+      canAdminCalendarTOTools({ user, event: parentRouteData.event }));
 
   return (
     <div className="stack lg">
@@ -45,7 +59,11 @@ export default function TournamentMatchPage() {
       >
         Back to bracket
       </LinkButton>
-      {data.match.opponentOne?.id && data.match.opponentTwo?.id && 101 ? (
+      {!matchHasTwoTeams ? <div>TODO: UI when not 2 teams</div> : null}
+      {matchIsOver ? <div>TODO: match is over UI</div> : null}
+      {canEditScore &&
+      typeof data.match.opponentOne?.id === "number" &&
+      typeof data.match.opponentTwo?.id === "number" ? (
         <MapListSection
           teams={[data.match.opponentOne.id, data.match.opponentTwo.id]}
         />

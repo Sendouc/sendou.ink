@@ -106,7 +106,7 @@ function ReportScoreButtons({
   if (!winnerName) {
     return (
       <p className="tournament-bracket__during-match-actions__amount-warning-paragraph">
-        Please select the winning team
+        Please select the winner of this map
       </p>
     );
   }
