@@ -217,6 +217,8 @@ export interface TournamentTeamMember {
   createdAt: number;
 }
 
+/** A stage is an intermediate phase in a tournament.
+ * Supported stage types are round-robin, single elimination and double elimination. */
 export interface TournamentStage {
   id: number;
   tournamentId: number;
@@ -226,12 +228,28 @@ export interface TournamentStage {
   number: number;
 }
 
+/** A group is a logical structure used to group multiple rounds together.
+
+- In round-robin stages, a group is a pool.
+- In elimination stages, a group is a bracket.
+    - A single elimination stage can have one or two groups:
+      - The unique bracket.
+      - If enabled, the Consolation Final.
+    - A double elimination stage can have two or three groups:
+      - Upper and lower brackets.
+      - If enabled, the Grand Final. */
 export interface TournamentGroup {
   id: number;
   stageId: number;
   number: number;
 }
 
+/** 
+ * A round is a logical structure used to group multiple matches together.
+
+  - In round-robin stages, a round can be viewed as a day or just as a list of matches that can be played at the same time.
+  - In elimination stages, a round is a round of a bracket, e.g. 8th finals, semi-finals, etc.
+ */
 export interface TournamentRound {
   id: number;
   stageId: number;
@@ -239,6 +257,8 @@ export interface TournamentRound {
   number: number;
 }
 
+/** A match between two participants (more participants are not allowed).
+ * Participants can be teams or individuals. */
 export interface TournamentMatch {
   id: number;
   childCount: number;
