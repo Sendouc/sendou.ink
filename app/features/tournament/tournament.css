@@ -405,6 +405,26 @@
   text-overflow: ellipsis;
 }
 
+.tournament-bracket__mode-progress {
+  display: flex;
+  margin-bottom: var(--s-4);
+  gap: var(--s-4);
+  justify-content: center;
+}
+
+.tournament-bracket__mode-progress__image {
+  background-color: var(--bg-lighter);
+  border-radius: 100%;
+  padding: var(--s-2-5);
+  outline: 2px solid var(--bg-lightest);
+}
+
+.tournament-bracket__mode-progress__image__notable {
+  background-color: var(--bg-lightest);
+  border: none;
+  outline: 2px solid var(--bg-lightest);
+}
+
 @media screen and (min-width: 640px) {
   .tournament__section {
     margin: 0;

@@ -3,7 +3,7 @@ import clsx from "clsx";
 import { Image } from "~/components/Image";
 import { SubmitButton } from "~/components/SubmitButton";
 import { useTranslation } from "~/hooks/useTranslation";
-import type { StageId } from "~/modules/in-game-lists";
+import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator";
 import { modeImageUrl } from "~/utils/urls";
 import type {
@@ -18,13 +18,16 @@ import {
 } from "../tournament-utils";
 import { ScoreReporterRosters } from "./ScoreReporterRosters";
 
-// xxx: show igns in radios (fallback to discord name if ign is not set)
 export function ScoreReporter({
   teams,
   currentStageWithMode,
+  modes,
+  scoreSum,
 }: {
   teams: [TournamentToolsTeam, TournamentToolsTeam];
   currentStageWithMode: TournamentMapListMap;
+  modes: ModeShort[];
+  scoreSum: number;
 }) {
   const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
   const data = useLoaderData<TournamentMatchLoaderData>();
@@ -75,6 +78,11 @@ export function ScoreReporter({
           </Form>
         )}
       </FancyStageBanner>
+      <ModeProgressIndicator
+        modes={modes}
+        scoreSum={scoreSum}
+        bestOf={data.bestOf}
+      />
       <ActionSectionWrapper>
         <ScoreReporterRosters
           // Without the key prop when switching to another match the winnerId is remembered
@@ -159,6 +167,46 @@ function FancyStageBanner({
         </div>
       )}
     </>
+  );
+}
+
+// xxx: TODO highlight winners
+function ModeProgressIndicator({
+  modes,
+  scoreSum,
+  bestOf,
+}: {
+  modes: ModeShort[];
+  scoreSum: number;
+  bestOf: number;
+}) {
+  const { t } = useTranslation(["game-misc"]);
+
+  const maxIndexThatWillBePlayedForSure = Math.ceil(bestOf / 2) + scoreSum - 1;
+
+  return (
+    <div className="tournament-bracket__mode-progress">
+      {modes.map((mode, i) => {
+        return (
+          <Image
+            containerClassName={clsx(
+              "tournament-bracket__mode-progress__image",
+              {
+                "tournament-bracket__mode-progress__image__notable":
+                  i <= maxIndexThatWillBePlayedForSure,
+              }
+            )}
+            // xxx: check if correct
+            key={i}
+            path={modeImageUrl(mode)}
+            height={20}
+            width={20}
+            alt={t(`game-misc:MODE_LONG_${mode}`)}
+            title={t(`game-misc:MODE_LONG_${mode}`)}
+          />
+        );
+      })}
+    </div>
   );
 }
 

@@ -94,6 +94,8 @@ function MapListSection({ teams }: { teams: [id: number, id: number] }) {
     <ScoreReporter
       currentStageWithMode={currentStageWithMode}
       teams={[teamOne, teamTwo]}
+      modes={maps.map((map) => map.mode)}
+      scoreSum={scoreSum}
     />
   );
 }
