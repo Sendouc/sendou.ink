@@ -124,8 +124,7 @@ export default function TournamentToolsMapsPage() {
           { ...teamTwo, maps: new MapPool(teamTwo.mapPool ?? []) },
         ]}
         bestOf={bestOf}
-        bracketType={bracketType}
-        roundNumber={roundNumber}
+        seed={`${bracketType}-${roundNumber}`}
         modesIncluded={modesIncluded(data.event)}
       />
     </div>
@@ -169,8 +168,8 @@ function RoundSelect({
   bracketType,
   handleChange,
 }: {
-  roundNumber: TournamentMaplistInput["roundNumber"];
-  bracketType: TournamentMaplistInput["bracketType"];
+  roundNumber: number;
+  bracketType: string;
   handleChange: (roundNumber: number, bracketType: BracketType) => void;
 }) {
   const { t } = useTranslation(["tournament"]);

@@ -40,8 +40,7 @@ const tiebreakerPicks = new MapPool([
 
 const generateMaps = ({
   bestOf = 5,
-  bracketType = "SE",
-  roundNumber = 3,
+  seed = "test",
   teams = [
     {
       id: 1,
@@ -57,8 +56,7 @@ const generateMaps = ({
 }: Partial<TournamentMaplistInput> = {}) => {
   return createTournamentMapList({
     bestOf,
-    bracketType,
-    roundNumber,
+    seed,
     teams,
     tiebreakerMaps,
     modesIncluded,
@@ -343,7 +341,7 @@ TournamentMapListGenerator("No map picked by same team twice in row", () => {
           maps: team2Picks,
         },
       ],
-      roundNumber: i,
+      seed: String(i),
     });
 
     for (let j = 0; j < mapList.length - 1; j++) {
@@ -463,7 +461,7 @@ TournamentMapListGeneratorOneMode(
           },
         ],
         modesIncluded: ["SZ"],
-        roundNumber: i,
+        seed: String(i),
         tiebreakerMaps: new MapPool([]),
       });
 

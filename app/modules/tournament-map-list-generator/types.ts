@@ -10,8 +10,7 @@ export type BracketType =
 
 export interface TournamentMaplistInput {
   bestOf: 3 | 5 | 7;
-  roundNumber: number;
-  bracketType: BracketType;
+  seed: string;
   teams: [
     {
       id: number;

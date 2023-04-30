@@ -15,7 +15,7 @@ const OPTIMAL_MAPLIST_SCORE = 0;
 export function createTournamentMapList(
   input: TournamentMaplistInput
 ): Array<TournamentMapListMap> {
-  const { shuffle } = seededRandom(`${input.bracketType}-${input.roundNumber}`);
+  const { shuffle } = seededRandom(input.seed);
   const stages = shuffle(resolveCommonStages());
   const mapList: Array<ModeWithStageAndScore & { score: number }> = [];
   const bestMapList: { maps?: Array<ModeWithStageAndScore>; score: number } = {
