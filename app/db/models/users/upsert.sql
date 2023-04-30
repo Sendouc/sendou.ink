@@ -6,7 +6,8 @@ insert into
     "discordAvatar",
     "twitch",
     "twitter",
-    "youtubeId"
+    "youtubeId",
+    "inGameName"
   )
 values
   (
@@ -16,7 +17,8 @@ values
     @discordAvatar,
     @twitch,
     @twitter,
-    @youtubeId
+    @youtubeId,
+    @inGameName
   ) on conflict("discordId") do
 update
 set

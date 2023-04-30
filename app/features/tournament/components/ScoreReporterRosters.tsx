@@ -80,6 +80,7 @@ function checkedPlayersInitialState([teamOne, teamTwo]: [
   return result;
 }
 
+// xxx: popup confirm when set will be ended
 function ReportScoreButtons({
   checkedPlayers,
   winnerName,

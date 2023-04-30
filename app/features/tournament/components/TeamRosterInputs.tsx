@@ -8,6 +8,7 @@ import type {
   TournamentToolsTeam,
 } from "../routes/to.$id";
 import type { Unpacked } from "~/utils/types";
+import { inGameNameWithoutDiscriminator } from "~/utils/strings";
 
 export type TeamRosterInputsType = "DEFAULT" | "DISABLED" | "PRESENTATIONAL";
 
@@ -140,33 +141,37 @@ function TeamRosterInputsCheckboxes({
 
   return (
     <div className="tournament-bracket__during-match-actions__team-players">
-      {team.members.map((member) => (
-        <div
-          key={member.userId}
-          className={clsx(
-            "tournament-bracket__during-match-actions__checkbox-name",
-            { "disabled-opaque": mode === "DISABLED" },
-            { presentational: mode === "PRESENTATIONAL" }
-          )}
-        >
-          <input
-            className="plain tournament-bracket__during-match-actions__checkbox"
-            type="checkbox"
-            id={`${member.userId}-${id}`}
-            name="playerName"
-            disabled={mode === "DISABLED" || mode === "PRESENTATIONAL"}
-            value={member.userId}
-            checked={checkedPlayers.flat().includes(member.userId)}
-            onChange={() => handlePlayerClick(member.userId)}
-          />{" "}
-          <Label
-            className="tournament-bracket__during-match-actions__player-name"
-            htmlFor={`${member.userId}-${id}`}
+      {team.members.map((member) => {
+        return (
+          <div
+            key={member.userId}
+            className={clsx(
+              "tournament-bracket__during-match-actions__checkbox-name",
+              { "disabled-opaque": mode === "DISABLED" },
+              { presentational: mode === "PRESENTATIONAL" }
+            )}
           >
-            {member.discordName}
-          </Label>
-        </div>
-      ))}
+            <input
+              className="plain tournament-bracket__during-match-actions__checkbox"
+              type="checkbox"
+              id={`${member.userId}-${id}`}
+              name="playerName"
+              disabled={mode === "DISABLED" || mode === "PRESENTATIONAL"}
+              value={member.userId}
+              checked={checkedPlayers.flat().includes(member.userId)}
+              onChange={() => handlePlayerClick(member.userId)}
+            />{" "}
+            <Label
+              className="tournament-bracket__during-match-actions__player-name"
+              htmlFor={`${member.userId}-${id}`}
+            >
+              {member.inGameName
+                ? inGameNameWithoutDiscriminator(member.inGameName)
+                : member.discordName}
+            </Label>
+          </div>
+        );
+      })}
     </div>
   );
 }

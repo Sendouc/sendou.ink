@@ -37,6 +37,8 @@ import {
   NZAP_TEST_ID,
   AMOUNT_OF_CALENDAR_EVENTS,
 } from "./constants";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+import { TOURNAMENT } from "~/features/tournament/tournament-constants";
 
 const calendarEventWithToToolsSz = () => calendarEventWithToTools(true);
 const calendarEventWithToToolsTeamsSz = () =>
@@ -125,6 +127,7 @@ function adminUser() {
     youtubeId: "UCWbJLXByvsfQvTcR4HLPs5Q",
     discordAvatar: ADMIN_TEST_AVATAR,
     twitter: "sendouc",
+    inGameName: "Sendou#1234",
   });
 }
 
@@ -162,6 +165,7 @@ function nzapUser() {
     youtubeId: null,
     discordAvatar: NZAP_TEST_AVATAR,
     twitter: null,
+    inGameName: "N-ZAP#5678",
   });
 }
 
@@ -178,7 +182,6 @@ function userProfiles() {
       customUrl: "sendou",
       motionSens: 50,
       stickSens: 5,
-      inGameName: "Sendou#1234",
     },
     {
       userId: 2,
@@ -186,7 +189,6 @@ function userProfiles() {
       customUrl: "nzap",
       motionSens: -40,
       stickSens: 0,
-      inGameName: "N-ZAP#5678",
     },
   ]) {
     sql
@@ -196,8 +198,7 @@ function userProfiles() {
           country = $country,
           customUrl = $customUrl,
           motionSens = $motionSens,
-          stickSens = $stickSens,
-          inGameName = $inGameName
+          stickSens = $stickSens
         WHERE id = $userId`
       )
       .run(args);
@@ -216,6 +217,13 @@ function userProfiles() {
   }
 }
 
+const validInGameName = () => {
+  while (true) {
+    const name = faker.internet.userName();
+    if (name.length <= 10) return name;
+  }
+};
+
 function fakeUser(usedNames: Set<string>) {
   return () => ({
     discordAvatar: null,
@@ -225,6 +233,10 @@ function fakeUser(usedNames: Set<string>) {
     twitch: null,
     twitter: null,
     youtubeId: null,
+    inGameName:
+      Math.random() > 0.3
+        ? validInGameName() + `#${faker.random.numeric(4)}`
+        : null,
   });
 }
 
@@ -714,8 +726,15 @@ function calendarEventWithToToolsTieBreakerMapPool() {
   }
 }
 
+const validTournamentTeamName = () => {
+  while (true) {
+    const name = faker.music.songName();
+    if (name.length <= TOURNAMENT.TEAM_NAME_MAX_LENGTH) return name;
+  }
+};
+
 const names = Array.from(
-  new Set(new Array(100).fill(null).map(() => faker.music.songName()))
+  new Set(new Array(100).fill(null).map(() => validTournamentTeamName()))
 );
 const availableStages: StageId[] = [1, 2, 3, 4, 6, 7, 8, 10, 11];
 const availablePairs = rankedModesShort

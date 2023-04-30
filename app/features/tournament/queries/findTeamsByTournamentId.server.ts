@@ -28,6 +28,8 @@ const stm = sql.prepare(/*sql*/ `
           "User"."discordId",
           'discordAvatar',
           "User"."discordAvatar",
+          'inGameName',
+          "User"."inGameName",
           'plusTier',
           "PlusTier"."tier"
         )
@@ -74,6 +76,7 @@ export interface FindTeamsByTournamentIdItem {
         | "discordName"
         | "plusTier"
         | "discordDiscriminator"
+        | "inGameName"
       >
   >;
   mapPool?: Array<Pick<MapPoolMap, "mode" | "stageId">>;
