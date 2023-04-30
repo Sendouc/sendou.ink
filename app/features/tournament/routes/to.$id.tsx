@@ -53,12 +53,19 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const mapListGeneratorAvailable =
     canAdminCalendarTOTools({ user, event }) || !event.isBeforeStart;
 
+  const teams = findTeamsByTournamentId(tournamentId);
+
+  const ownedTeamId = teams.find((team) =>
+    team.members.some((member) => member.userId === user?.id && member.isOwner)
+  )?.id;
+
   return {
     event,
     tieBreakerMapPool: db.calendarEvents.findTieBreakerMapPoolByEventId(
       event.eventId
     ),
-    teams: censorMapPools(findTeamsByTournamentId(tournamentId)),
+    ownedTeamId,
+    teams: censorMapPools(teams),
     mapListGeneratorAvailable,
   };
 
@@ -68,9 +75,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     if (mapListGeneratorAvailable) return teams;
 
     return teams.map((team) =>
-      team.members.some(
-        (member) => member.userId === user?.id && member.isOwner
-      )
+      team.id === ownedTeamId
         ? team
         : {
             ...team,

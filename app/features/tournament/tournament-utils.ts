@@ -4,6 +4,7 @@ import invariant from "tiny-invariant";
 import type {
   Tournament,
   TournamentFormat,
+  TournamentMatch,
   TournamentStage,
   User,
 } from "~/db/types";
@@ -12,8 +13,12 @@ import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { assertUnreachable } from "~/utils/types";
 import type { FindTeamsByTournamentId } from "./queries/findTeamsByTournamentId.server";
-import type { TournamentToolsLoaderData } from "./routes/to.$id";
+import type {
+  TournamentToolsLoaderData,
+  TournamentToolsTeam,
+} from "./routes/to.$id";
 import { TOURNAMENT } from "./tournament-constants";
+import { seededRandom } from "~/modules/tournament-map-list-generator/utils";
 
 export function resolveOwnedTeam({
   teams,
@@ -90,10 +95,44 @@ export function HACKY_resolveCheckInTime(
   return databaseTimestampToDate(event.startTime - 60 * 60);
 }
 
+export function HACKY_resolvePoolCode(
+  event: TournamentToolsLoaderData["event"]
+) {
+  if (event.name.includes("In The Zone")) return "ITZ";
+
+  return "PICNIC";
+}
+
+const passNumbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+export function resolveRoomPass(matchId: TournamentMatch["id"]) {
+  let result = "";
+
+  for (let i = 0; i < 4; i++) {
+    const { shuffle } = seededRandom(`${matchId}-${i}`);
+
+    result += shuffle(passNumbers)[0];
+  }
+
+  return result;
+}
+
 export function mapPickCountPerMode(event: TournamentToolsLoaderData["event"]) {
   return isOneModeTournamentOf(event)
     ? TOURNAMENT.COUNTERPICK_ONE_MODE_TOURNAMENT_MAPS_PER_MODE
     : TOURNAMENT.COUNTERPICK_MAPS_PER_MODE;
+}
+
+export function resolveHostingTeam(
+  teams: [TournamentToolsTeam, TournamentToolsTeam]
+) {
+  if (!teams[0].seed && !teams[1].seed) return teams[0];
+  if (!teams[0].seed) return teams[1];
+  if (!teams[1].seed) return teams[0];
+  if (teams[0].seed < teams[1].seed) return teams[0];
+  if (teams[1].seed < teams[0].seed) return teams[1];
+
+  console.error("resolveHostingTeam: unexpected default");
+  return teams[0];
 }
 
 export function resolveTournamentStageName(format: TournamentFormat) {

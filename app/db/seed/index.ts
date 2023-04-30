@@ -754,7 +754,7 @@ function calendarEventWithToToolsTeams(sz?: boolean) {
 
     for (
       let i = 0;
-      i < faker.helpers.arrayElement([1, 2, 3, 4, 4, 4, 4, 4, 4, 5, 6, 7, 8]);
+      i < faker.helpers.arrayElement([4, 4, 4, 4, 4, 4, 5, 6, 7, 8]);
       i++
     ) {
       sql

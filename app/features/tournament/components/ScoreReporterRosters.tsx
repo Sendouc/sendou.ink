@@ -1,33 +1,33 @@
 import * as React from "react";
 import { Form } from "@remix-run/react";
-import type { TournamentToolsLoaderData } from "../routes/to.$id";
+import type {
+  TournamentToolsLoaderData,
+  TournamentToolsTeam,
+} from "../routes/to.$id";
 import type { Unpacked } from "~/utils/types";
 import { TOURNAMENT } from "../tournament-constants";
 import { SubmitButton } from "~/components/SubmitButton";
 import { TeamRosterInputs } from "./TeamRosterInputs";
 
 export function ScoreReporterRosters({
-  ownTeam,
-  opponentTeam,
+  teams,
   matchId,
   position,
 }: {
-  ownTeam: Unpacked<TournamentToolsLoaderData["teams"]>;
-  opponentTeam: Unpacked<TournamentToolsLoaderData["teams"]>;
-  matchId: string;
+  teams: [TournamentToolsTeam, TournamentToolsTeam];
+  matchId: number;
   position: number;
 }) {
   const [checkedPlayers, setCheckedPlayers] = React.useState<
     [number[], number[]]
-  >(checkedPlayersInitialState([ownTeam, opponentTeam]));
+  >(checkedPlayersInitialState(teams));
   const [winnerId, setWinnerId] = React.useState<number | undefined>();
 
   return (
     <Form method="post" className="width-full">
       <div>
         <TeamRosterInputs
-          teamUpper={ownTeam}
-          teamLower={opponentTeam}
+          teams={teams}
           winnerId={winnerId}
           setWinnerId={setWinnerId}
           checkedPlayers={checkedPlayers}
@@ -55,8 +55,8 @@ export function ScoreReporterRosters({
 
   function winningTeam() {
     if (!winnerId) return;
-    if (ownTeam.id === winnerId) return ownTeam.name;
-    if (opponentTeam.id === winnerId) return opponentTeam.name;
+    if (teams[0].id === winnerId) return teams[0].name;
+    if (teams[1].id === winnerId) return teams[1].name;
 
     throw new Error("No winning team matching the id");
   }

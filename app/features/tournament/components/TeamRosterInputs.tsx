@@ -3,23 +3,24 @@ import clone from "just-clone";
 import * as React from "react";
 import { TOURNAMENT } from "../tournament-constants";
 import { Label } from "~/components/Label";
-import type { TournamentToolsLoaderData } from "../routes/to.$id";
+import type {
+  TournamentToolsLoaderData,
+  TournamentToolsTeam,
+} from "../routes/to.$id";
 import type { Unpacked } from "~/utils/types";
 
 export type TeamRosterInputsType = "DEFAULT" | "DISABLED" | "PRESENTATIONAL";
 
 /** Inputs to select who played for teams in a match as well as the winner. Can also be used in a presentational way. */
 export function TeamRosterInputs({
-  teamUpper,
-  teamLower,
+  teams,
   winnerId,
   setWinnerId,
   checkedPlayers,
   setCheckedPlayers,
   presentational = false,
 }: {
-  teamUpper: Unpacked<TournamentToolsLoaderData["teams"]>;
-  teamLower: Unpacked<TournamentToolsLoaderData["teams"]>;
+  teams: [TournamentToolsTeam, TournamentToolsTeam];
   winnerId?: number | null;
   setWinnerId?: (newId: number) => void;
   checkedPlayers: [number[], number[]];
@@ -43,8 +44,11 @@ export function TeamRosterInputs({
 
   return (
     <div className="tournament-bracket__during-match-actions__rosters">
-      {[teamUpper, teamLower].map((team, teamI) => (
+      {teams.map((team, teamI) => (
         <div key={team.id}>
+          <div className="text-xs text-lighter font-semi-bold">
+            Team {teamI + 1}
+          </div>
           <h4>{team.name}</h4>
           <WinnerRadio
             presentational={presentational}

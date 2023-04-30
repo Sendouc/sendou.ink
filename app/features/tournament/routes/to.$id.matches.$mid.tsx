@@ -6,6 +6,13 @@ import { createTournamentMapList } from "~/modules/tournament-map-list-generator
 import { notFoundIfFalsy } from "~/utils/remix";
 import type { TournamentToolsLoaderData } from "./to.$id";
 import { MapPool } from "~/modules/map-pool-serializer";
+import { ScoreReporter } from "../components/ScoreReporter";
+import { LinkButton } from "~/components/Button";
+import { ArrowLongLeftIcon } from "~/components/icons/ArrowLongLeft";
+import { toToolsBracketsPage } from "~/utils/urls";
+import invariant from "tiny-invariant";
+
+export type TournamentMatchLoaderData = typeof loader;
 
 export const loader = ({ params }: LoaderArgs) => {
   const matchId = matchIdFromParams(params);
@@ -20,12 +27,25 @@ export const loader = ({ params }: LoaderArgs) => {
 };
 
 export default function TournamentMatchPage() {
+  const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
   const data = useLoaderData<typeof loader>();
 
+  // xxx: if match is over return different UI
+  // xxx: if waiting for teams OR in progress and can't edit show one UI
+  // xxx: handle when input shown (101 below)
+
   return (
-    <div>
-      hello
-      {data.match.opponentOne?.id && data.match.opponentTwo?.id ? (
+    <div className="stack lg">
+      <LinkButton
+        to={toToolsBracketsPage(parentRouteData.event.id)}
+        variant="outlined"
+        size="tiny"
+        className="w-max"
+        icon={<ArrowLongLeftIcon />}
+      >
+        Back to bracket
+      </LinkButton>
+      {data.match.opponentOne?.id && data.match.opponentTwo?.id && 101 ? (
         <MapListSection
           teams={[data.match.opponentOne.id, data.match.opponentTwo.id]}
         />
@@ -38,12 +58,13 @@ function MapListSection({ teams }: { teams: [id: number, id: number] }) {
   const data = useLoaderData<typeof loader>();
   const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
 
-  const teamOneMaps = new MapPool(
-    parentRouteData.teams.find((team) => team.id === teams[0])?.mapPool ?? []
-  );
-  const teamTwoMaps = new MapPool(
-    parentRouteData.teams.find((team) => team.id === teams[1])?.mapPool ?? []
-  );
+  const teamOne = parentRouteData.teams.find((team) => team.id === teams[0]);
+  const teamTwo = parentRouteData.teams.find((team) => team.id === teams[1]);
+
+  if (!teamOne || !teamTwo) return null;
+
+  const teamOneMaps = new MapPool(teamOne.mapPool ?? []);
+  const teamTwoMaps = new MapPool(teamTwo.mapPool ?? []);
 
   const maps = createTournamentMapList({
     bestOf: data.bestOf,
@@ -62,7 +83,17 @@ function MapListSection({ teams }: { teams: [id: number, id: number] }) {
     ],
   });
 
-  console.log({ maps });
+  const scoreSum =
+    (data.match.opponentOne?.score ?? 0) + (data.match.opponentTwo?.score ?? 0);
 
-  return <div>map list</div>;
+  const currentStageWithMode = maps[scoreSum];
+
+  invariant(currentStageWithMode, "No map found for this score");
+
+  return (
+    <ScoreReporter
+      currentStageWithMode={currentStageWithMode}
+      teams={[teamOne, teamTwo]}
+    />
+  );
 }

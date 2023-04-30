@@ -1,49 +1,68 @@
-import { Form, useOutletContext } from "@remix-run/react";
-import { ScoreReporterRosters } from "./ScoreReporterRosters";
-import { SubmitButton } from "~/components/SubmitButton";
-import invariant from "tiny-invariant";
+import { Form, useLoaderData, useOutletContext } from "@remix-run/react";
 import clsx from "clsx";
-import type { TournamentToolsLoaderData } from "../routes/to.$id";
-import type { RankedModeShort } from "~/modules/in-game-lists";
+import { Image } from "~/components/Image";
+import { SubmitButton } from "~/components/SubmitButton";
+import { useTranslation } from "~/hooks/useTranslation";
+import type { StageId } from "~/modules/in-game-lists";
+import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator";
+import { modeImageUrl } from "~/utils/urls";
+import type {
+  TournamentToolsLoaderData,
+  TournamentToolsTeam,
+} from "../routes/to.$id";
+import type { TournamentMatchLoaderData } from "../routes/to.$id.matches.$mid";
+import {
+  HACKY_resolvePoolCode,
+  resolveHostingTeam,
+  resolveRoomPass,
+} from "../tournament-utils";
+import { ScoreReporterRosters } from "./ScoreReporterRosters";
 
-export function ScoreReporter() {
+// xxx: show igns in radios (fallback to discord name if ign is not set)
+export function ScoreReporter({
+  teams,
+  currentStageWithMode,
+}: {
+  teams: [TournamentToolsTeam, TournamentToolsTeam];
+  currentStageWithMode: TournamentMapListMap;
+}) {
   const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
+  const data = useLoaderData<TournamentMatchLoaderData>();
 
-  const opponentTeam = parentRouteData.teams.find(
-    (team) =>
-      [currentMatch.participants?.[0], currentMatch.participants?.[1]].includes(
-        team.name
-      ) && team.id !== ownTeam.id
-  );
-  invariant(opponentTeam, "opponentTeam is undefined");
+  const scoreOne = data.match.opponentOne?.score ?? 0;
+  const scoreTwo = data.match.opponentTwo?.score ?? 0;
 
-  const currentPosition =
-    currentMatch.score?.reduce((acc, cur) => acc + cur, 1) ?? 1;
-  const currentStage = currentRound.stages.find(
-    (s) => s.position === currentPosition
-  );
-  invariant(currentStage, "currentStage is undefined");
-  const { stage } = currentStage;
+  const currentPosition = scoreOne + scoreTwo;
 
   const roundInfos = [
     <>
-      <b>{currentMatch.score?.join("-")}</b> (Best of{" "}
-      {currentRound.stages.length})
+      <b>{resolveHostingTeam(teams).name}</b> hosts
+    </>,
+    <>
+      Pass <b>{resolveRoomPass(data.match.id)}</b>
+    </>,
+    <>
+      Pool <b>{HACKY_resolvePoolCode(parentRouteData.event)}</b>
+    </>,
+    <>
+      <b>
+        {scoreOne}-{scoreTwo}
+      </b>{" "}
+      (Best of {data.bestOf})
     </>,
   ];
 
   return (
     <div className="tournament-bracket__during-match-actions">
       <FancyStageBanner
-        stage={stage}
-        roundNumber={currentPosition}
+        stage={currentStageWithMode}
         infos={roundInfos}
+        teams={teams}
       >
         {currentPosition > 1 && (
           <Form method="post">
             <input type="hidden" name="_action" value="UNDO_REPORT_SCORE" />
             <input type="hidden" name="position" value={currentPosition - 1} />
-            <input type="hidden" name="matchId" value={currentMatch.id} />
             <div className="tournament-bracket__stage-banner__bottom-bar">
               <SubmitButton
                 _action="UNDO_REPORT_SCORE"
@@ -61,10 +80,9 @@ export function ScoreReporter() {
           // Without the key prop when switching to another match the winnerId is remembered
           // which causes "No winning team matching the id" error.
           // Switching the key props forces the component to remount.
-          key={currentMatch.id}
-          ownTeam={ownTeam}
-          opponentTeam={opponentTeam}
-          matchId={currentMatch.id}
+          key={data.match.id}
+          teams={teams}
+          matchId={data.match.id}
           position={currentPosition}
         />
       </ActionSectionWrapper>
@@ -74,22 +92,40 @@ export function ScoreReporter() {
 
 function FancyStageBanner({
   stage,
-  roundNumber,
   infos,
   children,
+  teams,
 }: {
-  stage: { mode: RankedModeShort; name: string };
-  roundNumber: number;
+  stage: TournamentMapListMap;
   infos?: JSX.Element[];
   children?: React.ReactNode;
+  teams: [TournamentToolsTeam, TournamentToolsTeam];
 }) {
+  const { t } = useTranslation(["game-misc", "tournament"]);
+
   // xxx: dynamic stage img
-  const stageNameToBannerImageUrl = (name: string) => {
+  const stageNameToBannerImageUrl = (_stageId: StageId) => {
     return "https://raw.githubusercontent.com/Sendouc/sendou.ink/1e1f02fb2a98eb8dd5798f67567f2e2f1d3e6513/public/img/stage-banners/goby-arena.png";
   };
 
   const style = {
-    "--_tournament-bg-url": `url("${stageNameToBannerImageUrl(stage.name)}")`,
+    "--_tournament-bg-url": `url("${stageNameToBannerImageUrl(
+      stage.stageId
+    )}")`,
+  };
+
+  const pickInfoText = () => {
+    if (stage.source === teams[0].id)
+      return t("tournament:pickInfo.team", { number: 1 });
+    if (stage.source === teams[1].id)
+      return t("tournament:pickInfo.team", { number: 2 });
+    if (stage.source === "TIEBREAKER")
+      return t("tournament:pickInfo.tiebreaker");
+    if (stage.source === "BOTH") return t("tournament:pickInfo.both");
+    if (stage.source === "DEFAULT") return t("tournament:pickInfo.default");
+
+    console.error(`Unknown source: ${String(stage.source)}`);
+    return "";
   };
 
   return (
@@ -102,14 +138,16 @@ function FancyStageBanner({
       >
         <div className="tournament-bracket__stage-banner__top-bar">
           <h4 className="tournament-bracket__stage-banner__top-bar__header">
-            <img
+            <Image
               className="tournament-bracket__stage-banner__top-bar__mode-image"
-              src={modeToImageUrl(stage.mode)}
+              path={modeImageUrl(stage.mode)}
               alt=""
+              width={24}
             />
-            {modesShortToLong[stage.mode]} on {stage.name}
+            {t(`game-misc:MODE_LONG_${stage.mode}`)} on{" "}
+            {t(`game-misc:STAGE_${stage.stageId}`)}
           </h4>
-          <h4>Stage {roundNumber}</h4>
+          <h4>{pickInfoText()}</h4>
         </div>
         {children}
       </div>
