@@ -95,14 +95,17 @@ export default function TournamentBracketsPage() {
   const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
 
   React.useEffect(() => {
-    // @ts-expect-error - brackets-viewer is not typed
-    window.bracketsViewer.onMatchClicked = (match) =>
-      navigate(
-        toToolsMatchPage({
-          eventId: parentRouteData.event.id,
-          matchId: match.id,
-        })
-      );
+    // matches aren't generated before tournament starts
+    if (data.hasStarted) {
+      // @ts-expect-error - brackets-viewer is not typed
+      window.bracketsViewer.onMatchClicked = (match) =>
+        navigate(
+          toToolsMatchPage({
+            eventId: parentRouteData.event.id,
+            matchId: match.id,
+          })
+        );
+    }
     // @ts-expect-error - brackets-viewer is not typed
     window.bracketsViewer.render({
       stages: data.bracket.stage,
@@ -117,7 +120,7 @@ export default function TournamentBracketsPage() {
 
       element.innerHTML = "";
     };
-  }, [data.bracket]);
+  }, [data.bracket, navigate, parentRouteData.event.id, data.hasStarted]);
 
   // xxx: show alert with controls if admin
   // xxx: show dialog that shows which teams are not included in bracket due to lacking players or not being checked in
