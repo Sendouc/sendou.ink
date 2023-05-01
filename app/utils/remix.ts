@@ -37,11 +37,7 @@ export async function parseRequestFormData<T extends z.ZodTypeAny>({
   } catch (e) {
     if (e instanceof z.ZodError) {
       console.error(e);
-      let errorMessage = "Request had following issues: ";
-      for (const issue of e.issues) {
-        errorMessage += `${issue.message} (path: ${issue.path.join(",")});`;
-      }
-      throw new Response(errorMessage, { status: 400 });
+      throw new Response(JSON.stringify(e), { status: 400 });
     }
 
     throw e;

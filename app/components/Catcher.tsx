@@ -62,10 +62,13 @@ export function Catcher() {
       return (
         <Main>
           <h2>Error {caught.status}</h2>
-          {caught.data ? (
-            <code>{JSON.stringify(caught.data, null, 2)}</code>
-          ) : null}
           <GetHelp />
+          <div className="text-sm text-lighter font-semi-bold">
+            Please the message below and an explanation on what you were doing:
+          </div>
+          {caught.data ? (
+            <pre>{JSON.stringify(JSON.parse(caught.data), null, 2)}</pre>
+          ) : null}
         </Main>
       );
   }

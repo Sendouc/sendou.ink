@@ -11,11 +11,9 @@ import { TeamRosterInputs } from "./TeamRosterInputs";
 
 export function ScoreReporterRosters({
   teams,
-  matchId,
   position,
 }: {
   teams: [TournamentToolsTeam, TournamentToolsTeam];
-  matchId: number;
   position: number;
 }) {
   const [checkedPlayers, setCheckedPlayers] = React.useState<
@@ -34,8 +32,6 @@ export function ScoreReporterRosters({
           setCheckedPlayers={setCheckedPlayers}
         />
         <div className="tournament-bracket__during-match-actions__actions">
-          <input type="hidden" name="_action" value="REPORT_SCORE" />
-          <input type="hidden" name="matchId" value={matchId} />
           <input type="hidden" name="winnerTeamId" value={winnerId ?? ""} />
           <input
             type="hidden"

@@ -90,7 +90,6 @@ export function ScoreReporter({
           // Switching the key props forces the component to remount.
           key={data.match.id}
           teams={teams}
-          matchId={data.match.id}
           position={currentPosition}
         />
       </ActionSectionWrapper>

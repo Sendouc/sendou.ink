@@ -1,9 +1,9 @@
-import type { LoaderArgs } from "@remix-run/node";
+import type { ActionFunction, LoaderArgs } from "@remix-run/node";
 import { findMatchById } from "../queries/findMatchById.server";
 import { matchIdFromParams, modesIncluded } from "../tournament-utils";
 import { useLoaderData, useOutletContext } from "@remix-run/react";
 import { createTournamentMapList } from "~/modules/tournament-map-list-generator";
-import { notFoundIfFalsy } from "~/utils/remix";
+import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import type { TournamentToolsLoaderData } from "./to.$id";
 import { MapPool } from "~/modules/map-pool-serializer";
 import { ScoreReporter } from "../components/ScoreReporter";
@@ -13,6 +13,45 @@ import { toToolsBracketsPage } from "~/utils/urls";
 import invariant from "tiny-invariant";
 import { canAdminCalendarTOTools } from "~/permissions";
 import { useUser } from "~/modules/auth";
+import { getTournamentManager } from "../brackets-manager";
+import { matchSchema } from "../tournament-schemas.server";
+import { assertUnreachable } from "~/utils/types";
+
+export const action: ActionFunction = async ({ params, request }) => {
+  const matchId = matchIdFromParams(params);
+  const match = notFoundIfFalsy(findMatchById(matchId));
+  const data = await parseRequestFormData({
+    request,
+    schema: matchSchema,
+  });
+
+  const manager = getTournamentManager("SQL");
+
+  const matchIsOver =
+    match.opponentOne?.result === "win" || match.opponentTwo?.result === "win";
+
+  validate(!matchIsOver, 400, "Match is over");
+
+  switch (data._action) {
+    case "REPORT_SCORE": {
+      return null;
+    }
+    case "UNDO_REPORT_SCORE": {
+      return null;
+    }
+    default: {
+      assertUnreachable(data);
+    }
+  }
+
+  return null;
+
+  // await manager.update.match({
+  //   id: match.id, // First match of winner bracket (round 1)
+  //   opponent1: { score: 16, result: 'win' },
+  //   opponent2: { score: 12 },
+  // });
+};
 
 export type TournamentMatchLoaderData = typeof loader;
 
