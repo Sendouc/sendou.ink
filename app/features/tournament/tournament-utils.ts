@@ -173,3 +173,16 @@ export function resolveTournamentStageSettings(
     }
   }
 }
+
+export function mapCountPlayedInSetWithCertainty({
+  bestOf,
+  scores,
+}: {
+  bestOf: number;
+  scores: [number, number];
+}) {
+  const maxScore = Math.max(...scores);
+  const scoreSum = scores.reduce((acc, curr) => acc + curr, 0);
+
+  return scoreSum + (Math.ceil(bestOf / 2) - maxScore);
+}

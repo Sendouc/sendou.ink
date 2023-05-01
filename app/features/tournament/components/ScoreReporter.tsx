@@ -13,6 +13,7 @@ import type {
 import type { TournamentMatchLoaderData } from "../routes/to.$id.matches.$mid";
 import {
   HACKY_resolvePoolCode,
+  mapCountPlayedInSetWithCertainty,
   resolveHostingTeam,
   resolveRoomPass,
 } from "../tournament-utils";
@@ -80,7 +81,7 @@ export function ScoreReporter({
       </FancyStageBanner>
       <ModeProgressIndicator
         modes={modes}
-        scoreSum={scoreSum}
+        scores={[scoreOne, scoreTwo]}
         bestOf={data.match.bestOf}
       />
       <ActionSectionWrapper>
@@ -172,17 +173,18 @@ function FancyStageBanner({
 
 function ModeProgressIndicator({
   modes,
-  scoreSum,
+  scores,
   bestOf,
 }: {
   modes: ModeShort[];
-  scoreSum: number;
+  scores: [number, number];
   bestOf: number;
 }) {
   const data = useLoaderData<TournamentMatchLoaderData>();
   const { t } = useTranslation(["game-misc"]);
 
-  const maxIndexThatWillBePlayedForSure = Math.ceil(bestOf / 2) + scoreSum - 1;
+  const maxIndexThatWillBePlayedForSure =
+    mapCountPlayedInSetWithCertainty({ bestOf, scores }) - 1;
 
   return (
     <div className="tournament-bracket__mode-progress">
