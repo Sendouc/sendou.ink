@@ -170,7 +170,6 @@ function FancyStageBanner({
   );
 }
 
-// xxx: TODO highlight winners
 function ModeProgressIndicator({
   modes,
   scoreSum,
@@ -180,6 +179,7 @@ function ModeProgressIndicator({
   scoreSum: number;
   bestOf: number;
 }) {
+  const data = useLoaderData<TournamentMatchLoaderData>();
   const { t } = useTranslation(["game-misc"]);
 
   const maxIndexThatWillBePlayedForSure = Math.ceil(bestOf / 2) + scoreSum - 1;
@@ -194,9 +194,14 @@ function ModeProgressIndicator({
               {
                 "tournament-bracket__mode-progress__image__notable":
                   i <= maxIndexThatWillBePlayedForSure,
+                "tournament-bracket__mode-progress__image__team-one-win":
+                  data.results[i] &&
+                  data.results[i]!.winnerTeamId === data.match.opponentOne?.id,
+                "tournament-bracket__mode-progress__image__team-two-win":
+                  data.results[i] &&
+                  data.results[i]!.winnerTeamId === data.match.opponentTwo?.id,
               }
             )}
-            // xxx: check if correct
             key={i}
             path={modeImageUrl(mode)}
             height={20}

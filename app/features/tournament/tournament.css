@@ -425,6 +425,28 @@
   outline: 2px solid var(--bg-lightest);
 }
 
+.tournament-bracket__mode-progress__image__team-one-win {
+  outline: 2px solid var(--theme);
+}
+
+.tournament-bracket__mode-progress__image__team-two-win {
+  outline: 2px solid var(--theme-secondary);
+}
+
+.tournament-bracket__team-one-dot {
+  border-radius: 100%;
+  background-color: var(--theme);
+  width: 8px;
+  height: 8px;
+}
+
+.tournament-bracket__team-two-dot {
+  border-radius: 100%;
+  background-color: var(--theme-secondary);
+  width: 8px;
+  height: 8px;
+}
+
 @media screen and (min-width: 640px) {
   .tournament__section {
     margin: 0;

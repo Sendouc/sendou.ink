@@ -14,6 +14,7 @@ import type { TournamentMatchLoaderData } from "../routes/to.$id.matches.$mid";
 
 export type TeamRosterInputsType = "DEFAULT" | "DISABLED" | "PRESENTATIONAL";
 
+// xxx: inconsistent click behavior
 /** Inputs to select who played for teams in a match as well as the winner. Can also be used in a presentational way. */
 export function TeamRosterInputs({
   teams,
@@ -54,7 +55,14 @@ export function TeamRosterInputs({
     <div className="tournament-bracket__during-match-actions__rosters">
       {teams.map((team, teamI) => (
         <div key={team.id}>
-          <div className="text-xs text-lighter font-semi-bold">
+          <div className="text-xs text-lighter font-semi-bold stack horizontal xs items-center justify-center">
+            <div
+              className={
+                teamI === 0
+                  ? "tournament-bracket__team-one-dot"
+                  : "tournament-bracket__team-two-dot"
+              }
+            />
             Team {teamI + 1}
           </div>
           <h4>{team.name}</h4>

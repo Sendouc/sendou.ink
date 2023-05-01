@@ -19,6 +19,7 @@ import { assertUnreachable } from "~/utils/types";
 import { insertTournamentMatchGameResult } from "../queries/insertTournamentMatchGameResult.server";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import { insertTournamentMatchGameResultParticipant } from "../queries/insertTournamentMatchGameResultParticipant.server";
+import { findResultsByMatchId } from "../queries/findResultsByMatchId.server";
 
 export const action: ActionFunction = async ({ params, request }) => {
   const user = await requireUser(request);
@@ -114,6 +115,7 @@ export const loader = ({ params }: LoaderArgs) => {
 
   return {
     match,
+    results: findResultsByMatchId(matchId),
   };
 };
 
