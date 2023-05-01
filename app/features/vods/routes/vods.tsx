@@ -1,7 +1,7 @@
 import type {
   LinksFunction,
   LoaderArgs,
-  MetaFunction,
+  V2_MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
 import { useLoaderData, useSearchParams } from "@remix-run/react";
@@ -33,14 +33,12 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const meta: MetaFunction = (args) => {
+export const meta: V2_MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
 
-  if (!data) return {};
+  if (!data) return [];
 
-  return {
-    title: makeTitle(data.title),
-  };
+  return [{ title: makeTitle(data.title) }];
 };
 
 export const loader = async ({ request }: LoaderArgs) => {

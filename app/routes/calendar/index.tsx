@@ -1,4 +1,8 @@
-import type { LoaderArgs, MetaFunction, SerializeFrom } from "@remix-run/node";
+import type {
+  LoaderArgs,
+  V2_MetaFunction,
+  SerializeFrom,
+} from "@remix-run/node";
 import { json, type LinksFunction } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
@@ -39,19 +43,22 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const meta: MetaFunction = (args) => {
+export const meta: V2_MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
 
-  if (!data) return {};
+  if (!data) return [];
 
-  return {
-    title: data.title,
-    description: `${data.events.length} events happening during week ${
-      data.displayedWeek
-    } including ${joinListToNaturalString(
-      data.events.slice(0, 3).map((e) => e.name)
-    )}`,
-  };
+  return [
+    { title: data.title },
+    {
+      name: "description",
+      content: `${data.events.length} events happening during week ${
+        data.displayedWeek
+      } including ${joinListToNaturalString(
+        data.events.slice(0, 3).map((e) => e.name)
+      )}`,
+    },
+  ];
 };
 
 export const handle: SendouRouteHandle = {

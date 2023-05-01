@@ -1,7 +1,7 @@
 import type {
   ActionFunction,
   LoaderFunction,
-  MetaFunction,
+  V2_MetaFunction,
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
@@ -30,10 +30,8 @@ import { assertType, assertUnreachable } from "~/utils/types";
 import { safeJSONParse } from "~/utils/zod";
 import { PlusSuggestionComments } from "../suggestions";
 
-export const meta: MetaFunction = () => {
-  return {
-    title: makeTitle("Plus Server voting"),
-  };
+export const meta: V2_MetaFunction = () => {
+  return [{ title: makeTitle("Plus Server voting") }];
 };
 
 const voteSchema = z.object({

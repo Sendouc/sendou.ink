@@ -4,7 +4,7 @@ import {
   redirect,
   type LinksFunction,
   type LoaderArgs,
-  type MetaFunction,
+  type V2_MetaFunction,
 } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { Link } from "@remix-run/react/dist/components";
@@ -81,15 +81,15 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export const meta: MetaFunction = (args) => {
+export const meta: V2_MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader>;
 
-  if (!data) return {};
+  if (!data) return [];
 
-  return {
-    title: data.title,
-    description: data.event.description,
-  };
+  return [
+    { title: data.title },
+    { name: "description", content: data.event.description },
+  ];
 };
 
 export const handle: SendouRouteHandle = {

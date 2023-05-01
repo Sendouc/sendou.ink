@@ -3,7 +3,7 @@ import {
   json,
   type LinksFunction,
   type LoaderFunction,
-  type MetaFunction,
+  type V2_MetaFunction,
 } from "@remix-run/node";
 import {
   Links,
@@ -61,17 +61,16 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export const meta: MetaFunction = () => ({
-  charset: "utf-8",
-  title: "sendou.ink",
-  description:
-    "Competitive Splatoon Hub featuring gear planner, event calendar, builds by top players, and more!",
-  viewport: "initial-scale=1, viewport-fit=cover, user-scalable=no",
-  "apple-mobile-web-app-status-bar-style": "black-translucent",
-  "apple-mobile-web-app-capable": "yes",
-  "theme-color": "#010115",
-  "og:image": COMMON_PREVIEW_IMAGE,
-});
+export const meta: V2_MetaFunction = () => {
+  return [
+    { title: "sendou.ink" },
+    {
+      name: "description",
+      content:
+        "Competitive Splatoon Hub featuring gear planner, event calendar, builds by top players, and more!",
+    },
+  ];
+};
 
 export interface RootLoaderData {
   locale: string;
@@ -149,6 +148,18 @@ function Document({
   return (
     <html lang={locale} dir={i18n.dir()} className={htmlThemeClass}>
       <head>
+        <meta charSet="utf-8" />
+        <meta
+          name="viewport"
+          content="initial-scale=1, viewport-fit=cover, user-scalable=no"
+        />
+        <meta
+          name="apple-mobile-web-app-status-bar-style"
+          content="black-translucent"
+        />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="theme-color" content="#010115" />
+        <meta property="og:image" content={COMMON_PREVIEW_IMAGE} />
         <Meta />
         <Links />
         <ThemeHead />
