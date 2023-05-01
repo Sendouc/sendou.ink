@@ -241,7 +241,7 @@ export interface TournamentStage {
 export interface TournamentGroup {
   id: number;
   stageId: number;
-  /** In double elimination 1 = Winners, 2 = Losers, 3 = Grand Finals */
+  /** In double elimination 1 = Winners, 2 = Losers, 3 = Grand Finals+Bracket Reset */
   number: number;
 }
 

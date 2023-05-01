@@ -26,6 +26,9 @@ import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { notFoundIfFalsy } from "~/utils/remix";
 import { toToolsMatchPage } from "~/utils/urls";
 import type { TournamentToolsLoaderData } from "./to.$id";
+import { resolveBestOfs } from "../core/bestOf.server";
+import { findAllMatchesByTournamentId } from "../queries/findAllMatchesByTournamentId.server";
+import { setBestOf } from "../queries/setBestOf.server";
 
 export const links: LinksFunction = () => {
   return [
@@ -57,6 +60,11 @@ export const action: ActionFunction = async ({ params }) => {
     ),
     settings: resolveTournamentStageSettings(tournament.format),
   });
+
+  const bestOfs = resolveBestOfs(findAllMatchesByTournamentId(tournamentId));
+  for (const [bestOf, id] of bestOfs) {
+    setBestOf({ bestOf, id });
+  }
 
   return null;
 };
