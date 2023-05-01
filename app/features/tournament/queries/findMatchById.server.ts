@@ -6,20 +6,21 @@ const stm = sql.prepare(/* sql */ `
   select 
     id,
     opponentOne,
-    opponentTwo
+    opponentTwo,
+    bestOf
   from "TournamentMatch"
   where id = @id
 `);
 
 export const findMatchById = (id: number) => {
   const row = stm.get({ id }) as
-    | Pick<TournamentMatch, "id" | "opponentOne" | "opponentTwo">
+    | Pick<TournamentMatch, "id" | "opponentOne" | "opponentTwo" | "bestOf">
     | undefined;
 
   if (!row) return;
 
   return {
-    id: row.id,
+    ...row,
     opponentOne: JSON.parse(row.opponentOne) as DataTypes["match"]["opponent1"],
     opponentTwo: JSON.parse(row.opponentTwo) as DataTypes["match"]["opponent2"],
   };

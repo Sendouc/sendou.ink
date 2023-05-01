@@ -62,8 +62,6 @@ export const loader = ({ params }: LoaderArgs) => {
 
   return {
     match,
-    // xxx: resolve it
-    bestOf: 3 as const,
   };
 };
 
@@ -124,7 +122,7 @@ function MapListSection({ teams }: { teams: [id: number, id: number] }) {
   const teamTwoMaps = new MapPool(teamTwo.mapPool ?? []);
 
   const maps = createTournamentMapList({
-    bestOf: data.bestOf,
+    bestOf: data.match.bestOf,
     seed: String(data.match.id),
     modesIncluded: modesIncluded(parentRouteData.event),
     tiebreakerMaps: new MapPool(parentRouteData.tieBreakerMapPool),

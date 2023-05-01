@@ -130,6 +130,7 @@ module.exports.up = function (db) {
   create table "TournamentMatch" (
     "id" integer primary key,
     "childCount" integer not null,
+    "bestOf" integer not null default 3,
     "roundId" integer not null,
     "stageId" integer not null,
     "groupId" integer not null,

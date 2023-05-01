@@ -241,6 +241,7 @@ export interface TournamentStage {
 export interface TournamentGroup {
   id: number;
   stageId: number;
+  /** In double elimination 1 = Winners, 2 = Losers, 3 = Grand Finals */
   number: number;
 }
 
@@ -261,7 +262,9 @@ export interface TournamentRound {
  * Participants can be teams or individuals. */
 export interface TournamentMatch {
   id: number;
+  /** Not used */
   childCount: number;
+  bestOf: 3 | 5 | 7;
   roundId: number;
   stageId: number;
   groupId: number;

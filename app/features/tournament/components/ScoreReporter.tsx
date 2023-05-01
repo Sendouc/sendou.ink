@@ -51,7 +51,7 @@ export function ScoreReporter({
       <b>
         {scoreOne}-{scoreTwo}
       </b>{" "}
-      (Best of {data.bestOf})
+      (Best of {data.match.bestOf})
     </>,
   ];
 
@@ -81,7 +81,7 @@ export function ScoreReporter({
       <ModeProgressIndicator
         modes={modes}
         scoreSum={scoreSum}
-        bestOf={data.bestOf}
+        bestOf={data.match.bestOf}
       />
       <ActionSectionWrapper>
         <ScoreReporterRosters
