@@ -13,7 +13,7 @@ import { toToolsBracketsPage } from "~/utils/urls";
 import invariant from "tiny-invariant";
 import { canAdminCalendarTOTools } from "~/permissions";
 import { useUser } from "~/modules/auth";
-import { getTournamentManager } from "../brackets-manager";
+import { getTournamentManager } from "../core/brackets-manager";
 import { matchSchema } from "../tournament-schemas.server";
 import { assertUnreachable } from "~/utils/types";
 

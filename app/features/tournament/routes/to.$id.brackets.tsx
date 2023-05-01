@@ -20,7 +20,7 @@ import {
 } from "../tournament-utils";
 import { Alert } from "~/components/Alert";
 import { SubmitButton } from "~/components/SubmitButton";
-import { getTournamentManager } from "../brackets-manager";
+import { getTournamentManager } from "../core/brackets-manager";
 import hasTournamentStarted from "../queries/hasTournamentStarted.server";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { notFoundIfFalsy } from "~/utils/remix";
