@@ -176,14 +176,14 @@ function TeamRosterInputsCheckboxes({
               checked={checkedPlayers.flat().includes(member.userId)}
               onChange={() => handlePlayerClick(member.userId)}
             />{" "}
-            <Label
+            <label
               className="tournament-bracket__during-match-actions__player-name"
               htmlFor={`${member.userId}-${id}`}
             >
               {member.inGameName
                 ? inGameNameWithoutDiscriminator(member.inGameName)
                 : member.discordName}
-            </Label>
+            </label>
           </div>
         );
       })}

@@ -97,6 +97,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 
       return null;
     }
+    // xxx: implement
     case "UNDO_REPORT_SCORE": {
       return null;
     }

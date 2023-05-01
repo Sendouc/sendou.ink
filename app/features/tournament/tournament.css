@@ -366,6 +366,7 @@
   background-color: var(--theme-transparent);
   border-end-start-radius: var(--rounded);
   border-start-start-radius: var(--rounded);
+  cursor: pointer;
 }
 
 .tournament-bracket__during-match-actions__checkbox:checked {
@@ -403,6 +404,8 @@
   border-start-end-radius: var(--rounded);
   overflow-x: hidden;
   text-overflow: ellipsis;
+  user-select: none;
+  cursor: pointer;
 }
 
 .tournament-bracket__mode-progress {
