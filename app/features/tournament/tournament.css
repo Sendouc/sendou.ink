@@ -302,8 +302,6 @@
 
 .tournament-bracket__during-match-actions__actions {
   display: flex;
-  width: 100%;
-  height: 2rem;
   justify-content: center;
   color: var(--theme-warning);
   margin-block-start: var(--s-6);
@@ -312,7 +310,14 @@
 .tournament-bracket__during-match-actions__amount-warning-paragraph {
   display: flex;
   align-items: center;
+  text-align: center;
   font-size: var(--fonts-xs);
+}
+
+.tournament-bracket__during-match-actions__confirm-score-text {
+  font-size: var(--fonts-xs);
+  color: var(--text);
+  text-align: center;
 }
 
 .tournament-bracket__during-match-actions__rosters {

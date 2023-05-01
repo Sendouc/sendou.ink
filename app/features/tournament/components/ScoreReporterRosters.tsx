@@ -9,6 +9,7 @@ import { TOURNAMENT } from "../tournament-constants";
 import { SubmitButton } from "~/components/SubmitButton";
 import { TeamRosterInputs } from "./TeamRosterInputs";
 import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator";
+import { useTranslation } from "~/hooks/useTranslation";
 
 export function ScoreReporterRosters({
   teams,
@@ -51,6 +52,7 @@ export function ScoreReporterRosters({
           <ReportScoreButtons
             checkedPlayers={checkedPlayers}
             winnerName={winningTeam()}
+            currentStageWithMode={currentStageWithMode}
           />
         </div>
       </div>
@@ -88,10 +90,14 @@ function checkedPlayersInitialState([teamOne, teamTwo]: [
 function ReportScoreButtons({
   checkedPlayers,
   winnerName,
+  currentStageWithMode,
 }: {
   checkedPlayers: number[][];
   winnerName?: string;
+  currentStageWithMode: TournamentMapListMap;
 }) {
+  const { t } = useTranslation(["game-misc"]);
+
   if (
     !checkedPlayers.every(
       (team) => team.length === TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL
@@ -114,8 +120,18 @@ function ReportScoreButtons({
   }
 
   return (
-    <SubmitButton variant="minimal" _action="REPORT_SCORE">
-      Report {winnerName} win
-    </SubmitButton>
+    <div className="stack sm items-center">
+      <div className="tournament-bracket__during-match-actions__confirm-score-text">
+        Report <b>{winnerName}</b> win on{" "}
+        <b>
+          {t(`game-misc:MODE_LONG_${currentStageWithMode.mode}`)}{" "}
+          {t(`game-misc:STAGE_${currentStageWithMode.stageId}`)}
+        </b>
+        ?
+      </div>
+      <SubmitButton size="tiny" _action="REPORT_SCORE">
+        Report
+      </SubmitButton>
+    </div>
   );
 }

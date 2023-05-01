@@ -133,6 +133,7 @@ export default function TournamentBracketsPage() {
   // xxx: show alert with controls if admin
   // xxx: show dialog that shows which teams are not included in bracket due to lacking players or not being checked in
   // xxx: button inside alert not responsive, should it be in its own component?
+  // xxx: show floating prompt if active match
   return (
     <div>
       {!data.hasStarted ? (
