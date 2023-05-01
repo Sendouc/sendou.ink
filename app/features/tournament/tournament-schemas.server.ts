@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { actualNumber, id, safeJSONParse } from "~/utils/zod";
+import { id, modeShort, safeJSONParse, stageId } from "~/utils/zod";
 import { TOURNAMENT } from "./tournament-constants";
 
 export const registerSchema = z.union([
@@ -26,6 +26,7 @@ const reportedMatchPosition = z.preprocess(
   Number,
   z
     .number()
+    .int()
     .min(0)
     .max(Math.max(...TOURNAMENT.AVAILABLE_BEST_OF) - 1)
 );
@@ -33,9 +34,11 @@ const reportedMatchPosition = z.preprocess(
 export const matchSchema = z.union([
   z.object({
     _action: z.literal("REPORT_SCORE"),
-    winnerTeamId: z.preprocess(actualNumber, id),
+    winnerTeamId: id,
     position: reportedMatchPosition,
     playerIds: reportedMatchPlayerIds,
+    stageId,
+    mode: modeShort,
   }),
   z.object({
     _action: z.literal("UNDO_REPORT_SCORE"),

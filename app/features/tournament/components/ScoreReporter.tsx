@@ -91,6 +91,7 @@ export function ScoreReporter({
           key={data.match.id}
           teams={teams}
           position={currentPosition}
+          currentStageWithMode={currentStageWithMode}
         />
       </ActionSectionWrapper>
     </div>

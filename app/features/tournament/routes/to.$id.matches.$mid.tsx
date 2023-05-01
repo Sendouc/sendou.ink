@@ -12,12 +12,16 @@ import { ArrowLongLeftIcon } from "~/components/icons/ArrowLongLeft";
 import { toToolsBracketsPage } from "~/utils/urls";
 import invariant from "tiny-invariant";
 import { canAdminCalendarTOTools } from "~/permissions";
-import { useUser } from "~/modules/auth";
+import { requireUser, useUser } from "~/modules/auth";
 import { getTournamentManager } from "../core/brackets-manager";
 import { matchSchema } from "../tournament-schemas.server";
 import { assertUnreachable } from "~/utils/types";
+import { insertTournamentMatchGameResult } from "../queries/insertTournamentMatchGameResult.server";
+import type { ModeShort, StageId } from "~/modules/in-game-lists";
+import { insertTournamentMatchGameResultParticipant } from "../queries/insertTournamentMatchGameResultParticipant.server";
 
 export const action: ActionFunction = async ({ params, request }) => {
+  const user = await requireUser(request);
   const matchId = matchIdFromParams(params);
   const match = notFoundIfFalsy(findMatchById(matchId));
   const data = await parseRequestFormData({
@@ -33,7 +37,63 @@ export const action: ActionFunction = async ({ params, request }) => {
   validate(!matchIsOver, 400, "Match is over");
 
   switch (data._action) {
+    // xxx: database lock
+    // xxx: permission check
     case "REPORT_SCORE": {
+      const scores: [number, number] = [
+        match.opponentOne?.score ?? 0,
+        match.opponentTwo?.score ?? 0,
+      ];
+
+      // they are trying to report score that was already reported
+      // assume that it was already reported and make their page refresh
+      if (data.position !== scores[0] + scores[1]) {
+        return null;
+      }
+
+      const scoreToIncrement = () => {
+        if (data.winnerTeamId === match.opponentOne?.id) return 0;
+        if (data.winnerTeamId === match.opponentTwo?.id) return 1;
+
+        validate(false, 400, "Winner team id is invalid");
+      };
+
+      scores[scoreToIncrement()]++;
+
+      await manager.update.match({
+        id: match.id,
+        opponent1: {
+          score: scores[0],
+          result: scores[0] === Math.ceil(match.bestOf / 2) ? "win" : undefined,
+        },
+        opponent2: {
+          score: scores[1],
+          result: scores[1] === Math.ceil(match.bestOf / 2) ? "win" : undefined,
+        },
+      });
+
+      validate(
+        match.opponentOne?.id === data.winnerTeamId ||
+          match.opponentTwo?.id === data.winnerTeamId,
+        400,
+        "Winner team id is invalid"
+      );
+      const result = insertTournamentMatchGameResult({
+        matchId: match.id,
+        mode: data.mode as ModeShort,
+        stageId: data.stageId as StageId,
+        reporterId: user.id,
+        winnerTeamId: data.winnerTeamId,
+        number: data.position + 1,
+      });
+
+      for (const userId of data.playerIds) {
+        insertTournamentMatchGameResultParticipant({
+          matchGameResultId: result.id,
+          userId,
+        });
+      }
+
       return null;
     }
     case "UNDO_REPORT_SCORE": {
@@ -43,14 +103,6 @@ export const action: ActionFunction = async ({ params, request }) => {
       assertUnreachable(data);
     }
   }
-
-  return null;
-
-  // await manager.update.match({
-  //   id: match.id, // First match of winner bracket (round 1)
-  //   opponent1: { score: 16, result: 'win' },
-  //   opponent2: { score: 12 },
-  // });
 };
 
 export type TournamentMatchLoaderData = typeof loader;

@@ -6,6 +6,7 @@ module.exports.up = function (db) {
   db.prepare(/*sql*/ `drop table "TournamentMatch"`).run();
   db.prepare(/*sql*/ `drop table "TournamentTeam"`).run();
   db.prepare(/*sql*/ `drop table "TournamentTeamMember"`).run();
+  db.prepare(/*sql*/ `drop table "TournamentMatchGameResult"`).run();
 
   db.prepare(
     /* sql */ `alter table "CalendarEvent" drop column "customUrl"`
@@ -153,6 +154,31 @@ module.exports.up = function (db) {
   ).run();
   db.prepare(
     `create index tournament_match_group_id on "TournamentMatch"("groupId")`
+  ).run();
+
+  db.prepare(
+    /*sql*/ `
+    create table "TournamentMatchGameResult" (
+      "id" integer primary key,
+      "matchId" integer not null,
+      "number" integer not null,
+      "stageId" integer not null,
+      "mode" text not null,
+      "winnerTeamId" integer not null,
+      "reporterId" integer not null,
+      "createdAt" integer default (strftime('%s', 'now')) not null,
+      foreign key ("matchId") references "TournamentMatch"("id") on delete cascade,
+      foreign key ("winnerTeamId") references "TournamentTeam"("id") on delete restrict,
+      foreign key ("reporterId") references "User"("id") on delete restrict,
+      unique("matchId", "number") on conflict rollback
+    ) strict
+    `
+  ).run();
+  db.prepare(
+    /*sql*/ `create index tournament_match_game_result_match_id on "TournamentMatchGameResult"("matchId")`
+  ).run();
+  db.prepare(
+    /*sql*/ `create index tournament_match_game_result_winner_team_id on "TournamentMatchGameResult"("winnerTeamId")`
   ).run();
 
   db.prepare(

@@ -277,6 +277,7 @@ export interface TournamentMatch {
 export interface TournamentMatchGameResult {
   id: number;
   matchId: number;
+  number: number;
   stageId: StageId;
   mode: ModeShort;
   winnerTeamId: number;

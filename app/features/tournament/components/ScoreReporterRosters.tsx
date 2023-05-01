@@ -8,13 +8,16 @@ import type { Unpacked } from "~/utils/types";
 import { TOURNAMENT } from "../tournament-constants";
 import { SubmitButton } from "~/components/SubmitButton";
 import { TeamRosterInputs } from "./TeamRosterInputs";
+import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator";
 
 export function ScoreReporterRosters({
   teams,
   position,
+  currentStageWithMode,
 }: {
   teams: [TournamentToolsTeam, TournamentToolsTeam];
   position: number;
+  currentStageWithMode: TournamentMapListMap;
 }) {
   const [checkedPlayers, setCheckedPlayers] = React.useState<
     [number[], number[]]
@@ -39,6 +42,12 @@ export function ScoreReporterRosters({
             value={JSON.stringify(checkedPlayers.flat())}
           />
           <input type="hidden" name="position" value={position} />
+          <input
+            type="hidden"
+            name="stageId"
+            value={currentStageWithMode.stageId}
+          />
+          <input type="hidden" name="mode" value={currentStageWithMode.mode} />
           <ReportScoreButtons
             checkedPlayers={checkedPlayers}
             winnerName={winningTeam()}
