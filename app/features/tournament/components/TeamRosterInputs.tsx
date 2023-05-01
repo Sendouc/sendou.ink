@@ -9,6 +9,8 @@ import type {
 } from "../routes/to.$id";
 import type { Unpacked } from "~/utils/types";
 import { inGameNameWithoutDiscriminator } from "~/utils/strings";
+import { useLoaderData } from "@remix-run/react";
+import type { TournamentMatchLoaderData } from "../routes/to.$id.matches.$mid";
 
 export type TeamRosterInputsType = "DEFAULT" | "DISABLED" | "PRESENTATIONAL";
 
@@ -23,11 +25,12 @@ export function TeamRosterInputs({
 }: {
   teams: [TournamentToolsTeam, TournamentToolsTeam];
   winnerId?: number | null;
-  setWinnerId?: (newId: number) => void;
+  setWinnerId: (newId?: number) => void;
   checkedPlayers: [number[], number[]];
   setCheckedPlayers?: (newPlayerIds: [number[], number[]]) => void;
   presentational?: boolean;
 }) {
+  const data = useLoaderData<TournamentMatchLoaderData>();
   const inputMode = (
     team: Unpacked<TournamentToolsLoaderData["teams"]>
   ): TeamRosterInputsType => {
@@ -42,6 +45,10 @@ export function TeamRosterInputs({
 
     return "DEFAULT";
   };
+
+  React.useEffect(() => {
+    setWinnerId(undefined);
+  }, [data, setWinnerId]);
 
   return (
     <div className="tournament-bracket__during-match-actions__rosters">

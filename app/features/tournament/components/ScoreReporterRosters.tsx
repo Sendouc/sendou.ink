@@ -51,7 +51,6 @@ export function ScoreReporterRosters({
           <ReportScoreButtons
             checkedPlayers={checkedPlayers}
             winnerName={winningTeam()}
-            clearWinner={() => setWinnerId(undefined)}
           />
         </div>
       </div>
@@ -89,11 +88,9 @@ function checkedPlayersInitialState([teamOne, teamTwo]: [
 function ReportScoreButtons({
   checkedPlayers,
   winnerName,
-  clearWinner,
 }: {
   checkedPlayers: number[][];
   winnerName?: string;
-  clearWinner: () => void;
 }) {
   if (
     !checkedPlayers.every(
@@ -117,13 +114,7 @@ function ReportScoreButtons({
   }
 
   return (
-    <SubmitButton
-      variant="minimal"
-      _action="REPORT_SCORE"
-      loadingText={`Reporting ${winnerName} win...`}
-      // xxx: implement
-      // onSuccess={clearWinner}
-    >
+    <SubmitButton variant="minimal" _action="REPORT_SCORE">
       Report {winnerName} win
     </SubmitButton>
   );
