@@ -11,6 +11,7 @@
   "forms.gear.HEAD": "头部装备",
   "forms.gear.CLOTHES": "服装",
   "forms.gear.SHOES": "鞋子",
+  "forms.private.info": "私人配装仅对您可见",
 
   "deleteConfirm": "删除配装'{{title}}'？",
 
