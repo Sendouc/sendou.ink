@@ -1,7 +1,7 @@
 import type {
   LinksFunction,
   LoaderArgs,
-  MetaFunction,
+  V2_MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
 import type { ShouldRevalidateFunction } from "@remix-run/react";
@@ -50,14 +50,12 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const meta: MetaFunction = (args) => {
+export const meta: V2_MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
 
-  if (!data) return {};
+  if (!data) return [];
 
-  return {
-    title: data.title,
-  };
+  return [{ title: data.title }];
 };
 
 export const handle: SendouRouteHandle = {

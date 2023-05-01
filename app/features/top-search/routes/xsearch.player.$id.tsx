@@ -1,7 +1,7 @@
 import type {
   LinksFunction,
   LoaderArgs,
-  MetaFunction,
+  V2_MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
@@ -20,17 +20,18 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const meta: MetaFunction = (args) => {
+export const meta: V2_MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
 
-  if (!data) return {};
+  if (!data) return [];
 
-  return {
-    title: data.title,
-    description: `Splatoon 3 X Battle for the player ${
-      data.placements[0]!.name
-    }`,
-  };
+  return [
+    { title: data.title },
+    {
+      name: "description",
+      content: `Splatoon 3 X Battle for the player ${data.placements[0]!.name}`,
+    },
+  ];
 };
 
 export const loader = async ({ params, request }: LoaderArgs) => {

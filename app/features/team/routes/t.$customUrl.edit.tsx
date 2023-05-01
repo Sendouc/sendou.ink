@@ -1,6 +1,6 @@
 import type {
   LinksFunction,
-  MetaFunction,
+  V2_MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
 import {
@@ -47,16 +47,14 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const meta: MetaFunction = ({
+export const meta: V2_MetaFunction = ({
   data,
 }: {
   data: SerializeFrom<typeof loader>;
 }) => {
-  if (!data) return {};
+  if (!data) return [];
 
-  return {
-    title: makeTitle(data.team.name),
-  };
+  return [{ title: makeTitle(data.team.name) }];
 };
 
 export const handle: SendouRouteHandle = {

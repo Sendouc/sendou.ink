@@ -1,7 +1,7 @@
 import type {
   LinksFunction,
   LoaderArgs,
-  MetaFunction,
+  V2_MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
@@ -36,12 +36,14 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const meta: MetaFunction = ({ data }: { data: UserPageLoaderData }) => {
-  if (!data) return {};
+export const meta: V2_MetaFunction = ({
+  data,
+}: {
+  data: UserPageLoaderData;
+}) => {
+  if (!data) return [];
 
-  return {
-    title: makeTitle(discordFullName(data)),
-  };
+  return [{ title: makeTitle(discordFullName(data)) }];
 };
 
 export const handle: SendouRouteHandle = {

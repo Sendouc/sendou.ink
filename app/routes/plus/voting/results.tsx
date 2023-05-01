@@ -1,7 +1,7 @@
 import type {
   LinksFunction,
   LoaderFunction,
-  MetaFunction,
+  V2_MetaFunction,
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
@@ -22,13 +22,16 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const meta: MetaFunction = () => {
+export const meta: V2_MetaFunction = () => {
   const { month, year } = lastCompletedVoting(new Date());
 
-  return {
-    title: makeTitle("Plus Server voting history"),
-    description: `Plus Server voting results for ${month + 1}/${year}`,
-  };
+  return [
+    { title: makeTitle("Plus Server voting history") },
+    {
+      name: "description",
+      content: `Plus Server voting results for ${month + 1}/${year}`,
+    },
+  ];
 };
 
 interface PlusVotingResultsLoaderData {

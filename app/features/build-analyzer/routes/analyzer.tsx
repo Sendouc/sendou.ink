@@ -1,4 +1,4 @@
-import { type LinksFunction, type MetaFunction } from "@remix-run/node";
+import { type LinksFunction, type V2_MetaFunction } from "@remix-run/node";
 import type { ShouldRevalidateFunction } from "@remix-run/react";
 import { Link } from "@remix-run/react";
 import * as React from "react";
@@ -68,11 +68,14 @@ import { atOrError } from "~/utils/arrays";
 
 export const CURRENT_PATCH = "3.1";
 
-export const meta: MetaFunction = () => {
-  return {
-    title: makeTitle("Build Analyzer"),
-    description: "Detailed stats for any weapon and build in Splatoon 3.",
-  };
+export const meta: V2_MetaFunction = () => {
+  return [
+    { title: makeTitle("Build Analyzer") },
+    {
+      name: "description",
+      content: "Detailed stats for any weapon and build in Splatoon 3.",
+    },
+  ];
 };
 
 export const links: LinksFunction = () => {

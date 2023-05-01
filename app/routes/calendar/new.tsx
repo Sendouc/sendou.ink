@@ -5,7 +5,7 @@ import {
   type ActionFunction,
   type LinksFunction,
   type LoaderArgs,
-  type MetaFunction,
+  type V2_MetaFunction,
 } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
@@ -80,14 +80,12 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export const meta: MetaFunction = (args) => {
+export const meta: V2_MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
 
-  if (!data) return {};
+  if (!data) return [];
 
-  return {
-    title: data.title,
-  };
+  return [{ title: data.title }];
 };
 
 const newCalendarEventActionSchema = z.object({

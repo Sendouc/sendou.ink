@@ -1,7 +1,7 @@
 import type {
   ActionFunction,
   LoaderFunction,
-  MetaFunction,
+  V2_MetaFunction,
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import type { ShouldRevalidateFunction } from "@remix-run/react";
@@ -37,11 +37,14 @@ import { PLUS_TIERS } from "~/constants";
 import { assertUnreachable } from "~/utils/types";
 import { getUserId } from "~/modules/auth/user.server";
 
-export const meta: MetaFunction = () => {
-  return {
-    title: makeTitle("Plus Server suggestions"),
-    description: "This month's suggestions for +1, +2 and +3.",
-  };
+export const meta: V2_MetaFunction = () => {
+  return [
+    { title: makeTitle("Plus Server suggestions") },
+    {
+      name: "description",
+      content: "This month's suggestions for +1, +2 and +3.",
+    },
+  ];
 };
 
 const suggestionActionSchema = z.union([

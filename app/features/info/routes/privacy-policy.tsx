@@ -1,11 +1,9 @@
-import type { MetaFunction } from "@remix-run/node";
+import type { V2_MetaFunction } from "@remix-run/node";
 import { Main } from "~/components/Main";
 import { makeTitle } from "~/utils/strings";
 
-export const meta: MetaFunction = () => {
-  return {
-    title: makeTitle("Privacy Policy"),
-  };
+export const meta: V2_MetaFunction = () => {
+  return [{ title: makeTitle("Privacy Policy") }];
 };
 
 export default function PrivacyPolicyPage() {

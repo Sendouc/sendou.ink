@@ -1,7 +1,7 @@
 import type {
   LinksFunction,
   LoaderArgs,
-  MetaFunction,
+  V2_MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
 import { Outlet, useLoaderData } from "@remix-run/react";
@@ -24,14 +24,12 @@ import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.serv
 import { idFromParams } from "../tournament-utils";
 import styles from "../tournament.css";
 
-export const meta: MetaFunction = (args) => {
+export const meta: V2_MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader>;
 
-  if (!data) return {};
+  if (!data) return [];
 
-  return {
-    title: makeTitle(data.event.name),
-  };
+  return [{ title: makeTitle(data.event.name) }];
 };
 
 export const links: LinksFunction = () => {
