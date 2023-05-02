@@ -43,7 +43,6 @@ export function upsert(
     | "twitch"
     | "twitter"
     | "youtubeId"
-    | "inGameName"
   >
 ) {
   return upsertStm.get(input) as User;

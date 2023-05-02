@@ -128,7 +128,6 @@ function adminUser() {
     youtubeId: "UCWbJLXByvsfQvTcR4HLPs5Q",
     discordAvatar: ADMIN_TEST_AVATAR,
     twitter: "sendouc",
-    inGameName: "Sendou#1234",
   });
 }
 
@@ -166,7 +165,6 @@ function nzapUser() {
     youtubeId: null,
     discordAvatar: NZAP_TEST_AVATAR,
     twitter: null,
-    inGameName: "N-ZAP#5678",
   });
 }
 
@@ -183,6 +181,7 @@ function userProfiles() {
       customUrl: "sendou",
       motionSens: 50,
       stickSens: 5,
+      inGameName: "Sendou#1234",
     },
     {
       userId: 2,
@@ -190,6 +189,7 @@ function userProfiles() {
       customUrl: "nzap",
       motionSens: -40,
       stickSens: 0,
+      inGameName: "N-ZAP#5678",
     },
   ]) {
     sql
@@ -199,7 +199,8 @@ function userProfiles() {
           country = $country,
           customUrl = $customUrl,
           motionSens = $motionSens,
-          stickSens = $stickSens
+          stickSens = $stickSens,
+          inGameName = $inGameName
         WHERE id = $userId`
       )
       .run(args);
@@ -218,13 +219,6 @@ function userProfiles() {
   }
 }
 
-const validInGameName = () => {
-  while (true) {
-    const name = faker.internet.userName();
-    if (name.length <= 10) return name;
-  }
-};
-
 function fakeUser(usedNames: Set<string>) {
   return () => ({
     discordAvatar: null,
@@ -234,10 +228,6 @@ function fakeUser(usedNames: Set<string>) {
     twitch: null,
     twitter: null,
     youtubeId: null,
-    inGameName:
-      Math.random() > 0.3
-        ? validInGameName() + `#${faker.random.numeric(4)}`
-        : null,
   });
 }
 
