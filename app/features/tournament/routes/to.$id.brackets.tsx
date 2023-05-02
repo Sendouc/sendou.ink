@@ -23,12 +23,14 @@ import { SubmitButton } from "~/components/SubmitButton";
 import { getTournamentManager } from "../core/brackets-manager";
 import hasTournamentStarted from "../queries/hasTournamentStarted.server";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
-import { notFoundIfFalsy } from "~/utils/remix";
+import { notFoundIfFalsy, validate } from "~/utils/remix";
 import { toToolsMatchPage } from "~/utils/urls";
 import type { TournamentToolsLoaderData } from "./to.$id";
 import { resolveBestOfs } from "../core/bestOf.server";
 import { findAllMatchesByTournamentId } from "../queries/findAllMatchesByTournamentId.server";
 import { setBestOf } from "../queries/setBestOf.server";
+import { canAdminTournament } from "~/permissions";
+import { requireUser, useUser } from "~/modules/auth";
 
 export const links: LinksFunction = () => {
   return [
@@ -43,13 +45,17 @@ export const links: LinksFunction = () => {
   ];
 };
 
-// xxx: validate can perform this action
 // xxx: not a transaction so maybe getting lock on db would be most correct
-export const action: ActionFunction = async ({ params }) => {
+export const action: ActionFunction = async ({ params, request }) => {
+  const user = await requireUser(request);
   const manager = getTournamentManager("SQL");
 
   const tournamentId = idFromParams(params);
   const tournament = notFoundIfFalsy(findByIdentifier(tournamentId));
+  const hasStarted = hasTournamentStarted(tournamentId);
+
+  validate(canAdminTournament({ user, event: tournament }));
+  validate(!hasStarted);
 
   await manager.create({
     tournamentId,
@@ -97,6 +103,7 @@ export const loader = async ({ params }: LoaderArgs) => {
 };
 
 export default function TournamentBracketsPage() {
+  const user = useUser();
   const data = useLoaderData<typeof loader>();
   const ref = React.useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
@@ -130,7 +137,6 @@ export default function TournamentBracketsPage() {
     };
   }, [data.bracket, navigate, parentRouteData.event.id, data.hasStarted]);
 
-  // xxx: show alert with controls if admin
   // xxx: show dialog that shows which teams are not included in bracket due to lacking players or not being checked in
   // xxx: button inside alert not responsive, should it be in its own component?
   // xxx: show floating prompt if active match
@@ -139,7 +145,7 @@ export default function TournamentBracketsPage() {
     <div>
       {!data.hasStarted ? (
         <Form method="post">
-          {false ? (
+          {!canAdminTournament({ user, event: parentRouteData.event }) ? (
             <Alert variation="INFO" alertClassName="w-max">
               This bracket is a preview and subject to change
             </Alert>

@@ -11,7 +11,7 @@ import { db } from "~/db";
 import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
 import { getUserId } from "~/modules/auth/user.server";
-import { canAdminCalendarTOTools } from "~/permissions";
+import { canAdminTournament } from "~/permissions";
 import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
@@ -49,7 +49,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const event = notFoundIfFalsy(findByIdentifier(tournamentId));
 
   const mapListGeneratorAvailable =
-    canAdminCalendarTOTools({ user, event }) || !event.isBeforeStart;
+    canAdminTournament({ user, event }) || !event.isBeforeStart;
 
   const teams = findTeamsByTournamentId(tournamentId);
 
@@ -105,7 +105,7 @@ export default function TournamentToolsLayout() {
         <SubNavLink to="teams">
           {t("tournament:tabs.teams", { count: data.teams.length })}
         </SubNavLink>
-        {canAdminCalendarTOTools({ user, event: data.event }) && (
+        {canAdminTournament({ user, event: data.event }) && (
           <SubNavLink to="admin">{t("tournament:tabs.admin")}</SubNavLink>
         )}
       </SubNav>

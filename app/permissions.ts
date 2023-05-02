@@ -312,14 +312,11 @@ export function canEnableTOTools(user?: IsAdminUser) {
   return isAdmin(user);
 }
 
-interface CanAdminCalendarTOTools {
+interface CanAdminTournament {
   user?: Pick<User, "id">;
   event: Pick<CalendarEvent, "authorId">;
 }
-export function canAdminCalendarTOTools({
-  user,
-  event,
-}: CanAdminCalendarTOTools) {
+export function canAdminTournament({ user, event }: CanAdminTournament) {
   return adminOverride(user)(user?.id === event.authorId);
 }
 

@@ -7,7 +7,7 @@ import { Button } from "~/components/Button";
 import { FormMessage } from "~/components/FormMessage";
 import { Toggle } from "~/components/Toggle";
 import { useTranslation } from "~/hooks/useTranslation";
-import { canAdminCalendarTOTools } from "~/permissions";
+import { canAdminTournament } from "~/permissions";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { discordFullName } from "~/utils/strings";
 import { checkboxValueToBoolean } from "~/utils/zod";
@@ -31,7 +31,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   const eventId = idFromParams(params);
   const event = notFoundIfFalsy(findByIdentifier(eventId));
 
-  validate(canAdminCalendarTOTools({ user, event }));
+  validate(canAdminTournament({ user, event }));
 
   updateIsBeforeStart({
     id: event.id,
@@ -46,7 +46,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const eventId = idFromParams(params);
 
   const event = notFoundIfFalsy(findByIdentifier(eventId));
-  notFoundIfFalsy(canAdminCalendarTOTools({ user, event }));
+  notFoundIfFalsy(canAdminTournament({ user, event }));
 
   // could also get these from the layout page
   // but getting them again for the most fresh data

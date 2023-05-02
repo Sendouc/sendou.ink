@@ -11,7 +11,7 @@ import { LinkButton } from "~/components/Button";
 import { ArrowLongLeftIcon } from "~/components/icons/ArrowLongLeft";
 import { toToolsBracketsPage } from "~/utils/urls";
 import invariant from "tiny-invariant";
-import { canAdminCalendarTOTools } from "~/permissions";
+import { canAdminTournament } from "~/permissions";
 import { requireUser, useUser } from "~/modules/auth";
 import { getTournamentManager } from "../core/brackets-manager";
 import { matchSchema } from "../tournament-schemas.server";
@@ -164,7 +164,7 @@ export default function TournamentMatchPage() {
     !matchIsOver &&
     (data.match.opponentOne?.id === parentRouteData.ownedTeamId ||
       data.match.opponentTwo?.id === parentRouteData.ownedTeamId ||
-      canAdminCalendarTOTools({ user, event: parentRouteData.event }));
+      canAdminTournament({ user, event: parentRouteData.event }));
 
   return (
     <div className="stack lg">
