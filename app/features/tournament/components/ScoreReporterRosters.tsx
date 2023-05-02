@@ -10,20 +10,25 @@ import { SubmitButton } from "~/components/SubmitButton";
 import { TeamRosterInputs } from "./TeamRosterInputs";
 import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator";
 import { useTranslation } from "~/hooks/useTranslation";
+import type { Result } from "./ScoreReporter";
 
 export function ScoreReporterRosters({
   teams,
   position,
   currentStageWithMode,
+  result,
 }: {
   teams: [TournamentToolsTeam, TournamentToolsTeam];
   position: number;
   currentStageWithMode: TournamentMapListMap;
+  result?: Result;
 }) {
   const [checkedPlayers, setCheckedPlayers] = React.useState<
     [number[], number[]]
   >(checkedPlayersInitialState(teams));
   const [winnerId, setWinnerId] = React.useState<number | undefined>();
+
+  const presentational = Boolean(result);
 
   return (
     <Form method="post" className="width-full">
@@ -34,27 +39,34 @@ export function ScoreReporterRosters({
           setWinnerId={setWinnerId}
           checkedPlayers={checkedPlayers}
           setCheckedPlayers={setCheckedPlayers}
+          result={result}
         />
-        <div className="tournament-bracket__during-match-actions__actions">
-          <input type="hidden" name="winnerTeamId" value={winnerId ?? ""} />
-          <input
-            type="hidden"
-            name="playerIds"
-            value={JSON.stringify(checkedPlayers.flat())}
-          />
-          <input type="hidden" name="position" value={position} />
-          <input
-            type="hidden"
-            name="stageId"
-            value={currentStageWithMode.stageId}
-          />
-          <input type="hidden" name="mode" value={currentStageWithMode.mode} />
-          <ReportScoreButtons
-            checkedPlayers={checkedPlayers}
-            winnerName={winningTeam()}
-            currentStageWithMode={currentStageWithMode}
-          />
-        </div>
+        {!presentational ? (
+          <div className="tournament-bracket__during-match-actions__actions">
+            <input type="hidden" name="winnerTeamId" value={winnerId ?? ""} />
+            <input
+              type="hidden"
+              name="playerIds"
+              value={JSON.stringify(checkedPlayers.flat())}
+            />
+            <input type="hidden" name="position" value={position} />
+            <input
+              type="hidden"
+              name="stageId"
+              value={currentStageWithMode.stageId}
+            />
+            <input
+              type="hidden"
+              name="mode"
+              value={currentStageWithMode.mode}
+            />
+            <ReportScoreButtons
+              checkedPlayers={checkedPlayers}
+              winnerName={winningTeam()}
+              currentStageWithMode={currentStageWithMode}
+            />
+          </div>
+        ) : null}
       </div>
     </Form>
   );
@@ -86,7 +98,6 @@ function checkedPlayersInitialState([teamOne, teamTwo]: [
   return result;
 }
 
-// xxx: popup confirm when set will be ended
 function ReportScoreButtons({
   checkedPlayers,
   winnerName,

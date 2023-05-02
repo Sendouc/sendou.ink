@@ -18,15 +18,28 @@ import {
   resolveRoomPass,
 } from "../tournament-utils";
 import { ScoreReporterRosters } from "./ScoreReporterRosters";
+import type { SerializeFrom } from "@remix-run/node";
+import type { Unpacked } from "~/utils/types";
+
+export type Result = Unpacked<
+  SerializeFrom<TournamentMatchLoaderData>["results"]
+>;
 
 export function ScoreReporter({
   teams,
   currentStageWithMode,
   modes,
+  selectedResultIndex,
+  setSelectedResultIndex,
+  result,
 }: {
   teams: [TournamentToolsTeam, TournamentToolsTeam];
   currentStageWithMode: TournamentMapListMap;
   modes: ModeShort[];
+  selectedResultIndex?: number;
+  // if this is set it means the component is being used in presentation manner
+  setSelectedResultIndex?: (index: number) => void;
+  result?: Result;
 }) {
   const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
   const data = useLoaderData<TournamentMatchLoaderData>();
@@ -36,16 +49,24 @@ export function ScoreReporter({
 
   const currentPosition = scoreOne + scoreTwo;
 
+  const presentational = Boolean(setSelectedResultIndex);
+
   const roundInfos = [
-    <>
-      <b>{resolveHostingTeam(teams).name}</b> hosts
-    </>,
-    <>
-      Pass <b>{resolveRoomPass(data.match.id)}</b>
-    </>,
-    <>
-      Pool <b>{HACKY_resolvePoolCode(parentRouteData.event)}</b>
-    </>,
+    !presentational ? (
+      <>
+        <b>{resolveHostingTeam(teams).name}</b> hosts
+      </>
+    ) : null,
+    !presentational ? (
+      <>
+        Pass <b>{resolveRoomPass(data.match.id)}</b>
+      </>
+    ) : null,
+    !presentational ? (
+      <>
+        Pool <b>{HACKY_resolvePoolCode(parentRouteData.event)}</b>
+      </>
+    ) : null,
     <>
       <b>
         {scoreOne}-{scoreTwo}
@@ -61,7 +82,7 @@ export function ScoreReporter({
         infos={roundInfos}
         teams={teams}
       >
-        {currentPosition > 0 && (
+        {currentPosition > 0 && !presentational && (
           <Form method="post">
             <input type="hidden" name="position" value={currentPosition - 1} />
             <div className="tournament-bracket__stage-banner__bottom-bar">
@@ -79,6 +100,8 @@ export function ScoreReporter({
         modes={modes}
         scores={[scoreOne, scoreTwo]}
         bestOf={data.match.bestOf}
+        selectedResultIndex={selectedResultIndex}
+        setSelectedResultIndex={setSelectedResultIndex}
       />
       <ActionSectionWrapper>
         <ScoreReporterRosters
@@ -89,6 +112,7 @@ export function ScoreReporter({
           teams={teams}
           position={currentPosition}
           currentStageWithMode={currentStageWithMode}
+          result={result}
         />
       </ActionSectionWrapper>
     </div>
@@ -102,7 +126,7 @@ function FancyStageBanner({
   teams,
 }: {
   stage: TournamentMapListMap;
-  infos?: JSX.Element[];
+  infos?: (JSX.Element | null)[];
   children?: React.ReactNode;
   teams: [TournamentToolsTeam, TournamentToolsTeam];
 }) {
@@ -158,7 +182,7 @@ function FancyStageBanner({
       </div>
       {infos && (
         <div className="tournament-bracket__infos">
-          {infos.map((info, i) => (
+          {infos.filter(Boolean).map((info, i) => (
             <div key={i}>{info}</div>
           ))}
         </div>
@@ -171,10 +195,14 @@ function ModeProgressIndicator({
   modes,
   scores,
   bestOf,
+  selectedResultIndex,
+  setSelectedResultIndex,
 }: {
   modes: ModeShort[];
   scores: [number, number];
   bestOf: number;
+  selectedResultIndex?: number;
+  setSelectedResultIndex?: (index: number) => void;
 }) {
   const data = useLoaderData<TournamentMatchLoaderData>();
   const { t } = useTranslation(["game-misc"]);
@@ -182,6 +210,7 @@ function ModeProgressIndicator({
   const maxIndexThatWillBePlayedForSure =
     mapCountPlayedInSetWithCertainty({ bestOf, scores }) - 1;
 
+  // TODO: this should be button when we click on it
   return (
     <div className="tournament-bracket__mode-progress">
       {modes.map((mode, i) => {
@@ -198,6 +227,9 @@ function ModeProgressIndicator({
                 "tournament-bracket__mode-progress__image__team-two-win":
                   data.results[i] &&
                   data.results[i]!.winnerTeamId === data.match.opponentTwo?.id,
+                "tournament-bracket__mode-progress__image__selected":
+                  i === selectedResultIndex,
+                "cursor-pointer": Boolean(setSelectedResultIndex),
               }
             )}
             key={i}
@@ -206,6 +238,7 @@ function ModeProgressIndicator({
             width={20}
             alt={t(`game-misc:MODE_LONG_${mode}`)}
             title={t(`game-misc:MODE_LONG_${mode}`)}
+            onClick={() => setSelectedResultIndex?.(i)}
           />
         );
       })}

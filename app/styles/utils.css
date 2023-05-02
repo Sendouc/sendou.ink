@@ -46,6 +46,10 @@
   color: var(--theme);
 }
 
+.text-theme-secondary {
+  color: var(--theme-secondary);
+}
+
 .fill-success {
   fill: var(--theme-success);
 }
@@ -256,6 +260,10 @@
 
 .desktop-hidden {
   display: inherit;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
 
 @media screen and (min-width: 480px) {

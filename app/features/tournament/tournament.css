@@ -329,12 +329,6 @@
   text-align: center;
 }
 
-.tournament-bracket__during-match-actions__winner-text {
-  color: var(--theme-secondary);
-  font-size: var(--fonts-xs);
-  font-weight: var(--bold);
-}
-
 .tournament-bracket__during-match-actions__radio-container {
   display: flex;
   align-items: center;
@@ -439,6 +433,10 @@
 
 .tournament-bracket__mode-progress__image__team-two-win {
   outline: 2px solid var(--theme-secondary);
+}
+
+.tournament-bracket__mode-progress__image__selected {
+  background-color: var(--bg-lighter);
 }
 
 .tournament-bracket__team-one-dot {

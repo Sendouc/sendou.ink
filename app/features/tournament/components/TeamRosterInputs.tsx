@@ -11,6 +11,7 @@ import type { Unpacked } from "~/utils/types";
 import { inGameNameWithoutDiscriminator } from "~/utils/strings";
 import { useLoaderData } from "@remix-run/react";
 import type { TournamentMatchLoaderData } from "../routes/to.$id.matches.$mid";
+import type { Result } from "./ScoreReporter";
 
 export type TeamRosterInputsType = "DEFAULT" | "DISABLED" | "PRESENTATIONAL";
 
@@ -21,15 +22,17 @@ export function TeamRosterInputs({
   setWinnerId,
   checkedPlayers,
   setCheckedPlayers,
-  presentational = false,
+  result,
 }: {
   teams: [TournamentToolsTeam, TournamentToolsTeam];
   winnerId?: number | null;
   setWinnerId: (newId?: number) => void;
   checkedPlayers: [number[], number[]];
   setCheckedPlayers?: (newPlayerIds: [number[], number[]]) => void;
-  presentational?: boolean;
+  result?: Result;
 }) {
+  const presentational = Boolean(result);
+
   const data = useLoaderData<TournamentMatchLoaderData>();
   const inputMode = (
     team: Unpacked<TournamentToolsLoaderData["teams"]>
@@ -67,13 +70,16 @@ export function TeamRosterInputs({
           <h4>{team.name}</h4>
           <WinnerRadio
             presentational={presentational}
-            checked={winnerId === team.id}
+            checked={
+              result ? result.winnerTeamId === team.id : winnerId === team.id
+            }
             teamId={team.id}
             onChange={() => setWinnerId?.(team.id)}
+            team={teamI + 1}
           />
           <TeamRosterInputsCheckboxes
             team={team}
-            checkedPlayers={checkedPlayers[teamI]!}
+            checkedPlayers={result?.participantIds ?? checkedPlayers[teamI]!}
             mode={inputMode(team)}
             handlePlayerClick={(playerId: number) => {
               const newCheckedPlayers = () => {
@@ -103,21 +109,24 @@ function WinnerRadio({
   teamId,
   checked,
   onChange,
+  team,
 }: {
   presentational: boolean;
   teamId: number;
   checked: boolean;
   onChange: () => void;
+  team: number;
 }) {
   const id = React.useId();
 
   if (presentational) {
     return (
       <div
-        className={clsx(
-          "tournament-bracket__during-match-actions__winner-text",
-          { invisible: !checked }
-        )}
+        className={clsx("text-xs font-bold", {
+          invisible: !checked,
+          "text-theme": team === 1,
+          "text-theme-secondary": team === 2,
+        })}
       >
         Winner
       </div>

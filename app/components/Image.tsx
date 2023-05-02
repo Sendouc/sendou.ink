@@ -12,6 +12,7 @@ interface ImageProps {
   height?: number;
   style?: React.CSSProperties;
   testId?: string;
+  onClick?: () => void;
 }
 
 export function Image({
@@ -24,9 +25,10 @@ export function Image({
   style,
   testId,
   containerClassName,
+  onClick,
 }: ImageProps) {
   return (
-    <picture title={title} className={containerClassName}>
+    <picture title={title} className={containerClassName} onClick={onClick}>
       <source
         type="image/avif"
         srcSet={`${path}.avif`}

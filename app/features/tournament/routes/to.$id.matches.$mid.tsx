@@ -21,6 +21,7 @@ import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import { insertTournamentMatchGameResultParticipant } from "../queries/insertTournamentMatchGameResultParticipant.server";
 import { findResultsByMatchId } from "../queries/findResultsByMatchId.server";
 import { deleteTournamentMatchGameResultById } from "../queries/deleteTournamentMatchGameResultById.server";
+import { useSearchParamState } from "~/hooks/useSearchParamState";
 
 export const action: ActionFunction = async ({ params, request }) => {
   const user = await requireUser(request);
@@ -178,7 +179,7 @@ export default function TournamentMatchPage() {
         Back to bracket
       </LinkButton>
       {!matchHasTwoTeams ? <div>TODO: UI when not 2 teams</div> : null}
-      {matchIsOver ? <div>TODO: match is over UI</div> : null}
+      {matchIsOver ? <ResultsSection /> : null}
       {canEditScore &&
       typeof data.match.opponentOne?.id === "number" &&
       typeof data.match.opponentTwo?.id === "number" ? (
@@ -231,6 +232,52 @@ function MapListSection({ teams }: { teams: [id: number, id: number] }) {
       currentStageWithMode={currentStageWithMode}
       teams={[teamOne, teamTwo]}
       modes={maps.map((map) => map.mode)}
+    />
+  );
+}
+
+function ResultsSection() {
+  const data = useLoaderData<typeof loader>();
+  const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
+  const [selectedResultIndex, setSelectedResultIndex] = useSearchParamState({
+    defaultValue: 0,
+    name: "result",
+    revive: (value) => {
+      const maybeIndex = Number(value);
+      if (!Number.isInteger(maybeIndex)) return;
+      if (maybeIndex < 0 || maybeIndex >= data.results.length) return;
+
+      return maybeIndex;
+    },
+  });
+
+  const result = data.results[selectedResultIndex];
+  invariant(result, "Result is missing");
+
+  const teamOne = parentRouteData.teams.find(
+    (team) => team.id === data.match.opponentOne?.id
+  );
+  const teamTwo = parentRouteData.teams.find(
+    (team) => team.id === data.match.opponentTwo?.id
+  );
+
+  if (!teamOne || !teamTwo) {
+    throw new Error("Team is missing");
+  }
+
+  // xxx: persist source in DB and use it here
+  return (
+    <ScoreReporter
+      currentStageWithMode={{
+        mode: result.mode,
+        stageId: result.stageId,
+        source: "BOTH",
+      }}
+      teams={[teamOne, teamTwo]}
+      modes={data.results.map((result) => result.mode)}
+      selectedResultIndex={selectedResultIndex}
+      setSelectedResultIndex={setSelectedResultIndex}
+      result={result}
     />
   );
 }
