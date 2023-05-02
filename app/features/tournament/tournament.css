@@ -277,7 +277,7 @@
 
 .tournament-bracket__stage-banner__undo-button {
   border: 0;
-  background-color: var(--theme-error-transparent);
+  background-color: var(--theme-error-semi-transparent);
   color: var(--text);
   font-size: var(--fonts-xxs);
   padding-block: var(--s-1);

@@ -14,7 +14,6 @@ import type { TournamentMatchLoaderData } from "../routes/to.$id.matches.$mid";
 
 export type TeamRosterInputsType = "DEFAULT" | "DISABLED" | "PRESENTATIONAL";
 
-// xxx: inconsistent click behavior
 /** Inputs to select who played for teams in a match as well as the winner. Can also be used in a presentational way. */
 export function TeamRosterInputs({
   teams,

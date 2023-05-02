@@ -94,6 +94,7 @@ function wipeDB() {
     "Build",
     "TournamentTeamMember",
     "MapPoolMap",
+    "TournamentMatchGameResult",
     "TournamentTeam",
     "Tournament",
     "CalendarEventDate",

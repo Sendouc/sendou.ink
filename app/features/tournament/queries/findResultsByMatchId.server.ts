@@ -3,6 +3,7 @@ import type { TournamentMatchGameResult } from "~/db/types";
 
 const stm = sql.prepare(/* sql */ `
   select
+    "id",
     "winnerTeamId"
   from "TournamentMatchGameResult"
   where "TournamentMatchGameResult"."matchId" = @matchId
@@ -12,6 +13,6 @@ const stm = sql.prepare(/* sql */ `
 export function findResultsByMatchId(matchId: number) {
   return stm.all({ matchId }) as Pick<
     TournamentMatchGameResult,
-    "winnerTeamId"
+    "id" | "winnerTeamId"
   >[];
 }

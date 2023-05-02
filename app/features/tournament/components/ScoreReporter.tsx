@@ -23,12 +23,10 @@ export function ScoreReporter({
   teams,
   currentStageWithMode,
   modes,
-  scoreSum,
 }: {
   teams: [TournamentToolsTeam, TournamentToolsTeam];
   currentStageWithMode: TournamentMapListMap;
   modes: ModeShort[];
-  scoreSum: number;
 }) {
   const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
   const data = useLoaderData<TournamentMatchLoaderData>();
@@ -63,15 +61,13 @@ export function ScoreReporter({
         infos={roundInfos}
         teams={teams}
       >
-        {currentPosition > 1 && (
+        {currentPosition > 0 && (
           <Form method="post">
-            <input type="hidden" name="_action" value="UNDO_REPORT_SCORE" />
             <input type="hidden" name="position" value={currentPosition - 1} />
             <div className="tournament-bracket__stage-banner__bottom-bar">
               <SubmitButton
                 _action="UNDO_REPORT_SCORE"
                 className="tournament-bracket__stage-banner__undo-button"
-                loadingText="Undoing..."
               >
                 Undo last score
               </SubmitButton>

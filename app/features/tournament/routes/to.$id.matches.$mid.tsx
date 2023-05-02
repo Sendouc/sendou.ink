@@ -20,6 +20,7 @@ import { insertTournamentMatchGameResult } from "../queries/insertTournamentMatc
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import { insertTournamentMatchGameResultParticipant } from "../queries/insertTournamentMatchGameResultParticipant.server";
 import { findResultsByMatchId } from "../queries/findResultsByMatchId.server";
+import { deleteTournamentMatchGameResultById } from "../queries/deleteTournamentMatchGameResultById.server";
 
 export const action: ActionFunction = async ({ params, request }) => {
   const user = await requireUser(request);
@@ -37,15 +38,15 @@ export const action: ActionFunction = async ({ params, request }) => {
 
   validate(!matchIsOver, 400, "Match is over");
 
-  switch (data._action) {
-    // xxx: database lock
-    // xxx: permission check
-    case "REPORT_SCORE": {
-      const scores: [number, number] = [
-        match.opponentOne?.score ?? 0,
-        match.opponentTwo?.score ?? 0,
-      ];
+  const scores: [number, number] = [
+    match.opponentOne?.score ?? 0,
+    match.opponentTwo?.score ?? 0,
+  ];
 
+  // xxx: permission check
+  // xxx: database lock
+  switch (data._action) {
+    case "REPORT_SCORE": {
       // they are trying to report score that was already reported
       // assume that it was already reported and make their page refresh
       if (data.position !== scores[0] + scores[1]) {
@@ -97,8 +98,33 @@ export const action: ActionFunction = async ({ params, request }) => {
 
       return null;
     }
-    // xxx: implement
     case "UNDO_REPORT_SCORE": {
+      // they are trying to remove score from the past
+      if (data.position !== scores[0] + scores[1] - 1) {
+        return null;
+      }
+
+      const results = findResultsByMatchId(matchId);
+      const lastResult = results[results.length - 1];
+      invariant(lastResult, "Last result is missing");
+
+      deleteTournamentMatchGameResultById(lastResult.id);
+      await manager.update.match({
+        id: match.id,
+        opponent1: {
+          score:
+            lastResult.winnerTeamId === match.opponentOne?.id
+              ? scores[0] - 1
+              : scores[0],
+        },
+        opponent2: {
+          score:
+            lastResult.winnerTeamId === match.opponentTwo?.id
+              ? scores[1] - 1
+              : scores[1],
+        },
+      });
+
       return null;
     }
     default: {
@@ -205,7 +231,6 @@ function MapListSection({ teams }: { teams: [id: number, id: number] }) {
       currentStageWithMode={currentStageWithMode}
       teams={[teamOne, teamTwo]}
       modes={maps.map((map) => map.mode)}
-      scoreSum={scoreSum}
     />
   );
 }
