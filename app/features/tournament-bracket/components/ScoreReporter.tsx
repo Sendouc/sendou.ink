@@ -6,20 +6,20 @@ import { useTranslation } from "~/hooks/useTranslation";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator";
 import { modeImageUrl } from "~/utils/urls";
-import type {
-  TournamentToolsLoaderData,
-  TournamentToolsTeam,
-} from "../routes/to.$id";
 import type { TournamentMatchLoaderData } from "../routes/to.$id.matches.$mid";
 import {
   HACKY_resolvePoolCode,
   mapCountPlayedInSetWithCertainty,
   resolveHostingTeam,
   resolveRoomPass,
-} from "../tournament-utils";
+} from "../tournament-bracket-utils";
 import { ScoreReporterRosters } from "./ScoreReporterRosters";
 import type { SerializeFrom } from "@remix-run/node";
 import type { Unpacked } from "~/utils/types";
+import type {
+  TournamentToolsTeam,
+  TournamentToolsLoaderData,
+} from "~/features/tournament";
 
 export type Result = Unpacked<
   SerializeFrom<TournamentMatchLoaderData>["results"]

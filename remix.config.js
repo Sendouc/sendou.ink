@@ -24,13 +24,14 @@ module.exports = {
         route("/to/:id/join", "features/tournament/routes/to.$id.join.tsx");
         route("/to/:id/admin", "features/tournament/routes/to.$id.admin.tsx");
         route("/to/:id/maps", "features/tournament/routes/to.$id.maps.tsx");
+
         route(
           "/to/:id/brackets",
-          "features/tournament/routes/to.$id.brackets.tsx"
+          "features/tournament-bracket/routes/to.$id.brackets.tsx"
         );
         route(
           "/to/:id/matches/:mid",
-          "features/tournament/routes/to.$id.matches.$mid.tsx"
+          "features/tournament-bracket/routes/to.$id.matches.$mid.tsx"
         );
       });
 

@@ -1,12 +1,12 @@
 import clsx from "clsx";
 import clone from "just-clone";
 import * as React from "react";
-import { TOURNAMENT } from "../tournament-constants";
+import { TOURNAMENT } from "../../tournament/tournament-constants";
 import { Label } from "~/components/Label";
 import type {
   TournamentToolsLoaderData,
   TournamentToolsTeam,
-} from "../routes/to.$id";
+} from "../../tournament/routes/to.$id";
 import type { Unpacked } from "~/utils/types";
 import { inGameNameWithoutDiscriminator } from "~/utils/strings";
 import { useLoaderData } from "@remix-run/react";

@@ -1,15 +1,12 @@
-import type { ActionFunction, LoaderArgs } from "@remix-run/node";
+import type {
+  ActionFunction,
+  LinksFunction,
+  LoaderArgs,
+} from "@remix-run/node";
 import { findMatchById } from "../queries/findMatchById.server";
-import {
-  checkSourceIsValid,
-  matchIdFromParams,
-  modesIncluded,
-  tournamentIdFromParams,
-} from "../tournament-utils";
 import { useLoaderData, useOutletContext } from "@remix-run/react";
 import { createTournamentMapList } from "~/modules/tournament-map-list-generator";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
-import type { TournamentToolsLoaderData } from "./to.$id";
 import { MapPool } from "~/modules/map-pool-serializer";
 import { ScoreReporter } from "../components/ScoreReporter";
 import { LinkButton } from "~/components/Button";
@@ -19,16 +16,33 @@ import invariant from "tiny-invariant";
 import { canReportTournamentScore } from "~/permissions";
 import { requireUser, useUser } from "~/modules/auth";
 import { getTournamentManager } from "../core/brackets-manager";
-import { matchSchema } from "../tournament-schemas.server";
 import { assertUnreachable } from "~/utils/types";
 import { insertTournamentMatchGameResult } from "../queries/insertTournamentMatchGameResult.server";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
-import { insertTournamentMatchGameResultParticipant } from "../queries/insertTournamentMatchGameResultParticipant.server";
 import { findResultsByMatchId } from "../queries/findResultsByMatchId.server";
 import { deleteTournamentMatchGameResultById } from "../queries/deleteTournamentMatchGameResultById.server";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
-import { findByIdentifier } from "../queries/findByIdentifier.server";
-import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
+import { findByIdentifier } from "../../tournament/queries/findByIdentifier.server";
+import { findTeamsByTournamentId } from "../../tournament/queries/findTeamsByTournamentId.server";
+import {
+  checkSourceIsValid,
+  matchIdFromParams,
+} from "../tournament-bracket-utils";
+import { matchSchema } from "../tournament-bracket-schemas.server";
+import {
+  modesIncluded,
+  tournamentIdFromParams,
+  type TournamentToolsLoaderData,
+} from "~/features/tournament";
+import { insertTournamentMatchGameResultParticipant } from "../queries/insertTournamentMatchGameResultParticipant.server";
+import bracketStyles from "../tournament-bracket.css";
+
+export const links: LinksFunction = () => [
+  {
+    rel: "stylesheet",
+    href: bracketStyles,
+  },
+];
 
 export const action: ActionFunction = async ({ params, request }) => {
   const user = await requireUser(request);

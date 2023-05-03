@@ -1,26 +1,12 @@
 import type { Params } from "@remix-run/react";
-import type { DataTypes } from "brackets-manager/dist/types";
 import invariant from "tiny-invariant";
-import type {
-  Tournament,
-  TournamentFormat,
-  TournamentMatch,
-  TournamentStage,
-  User,
-} from "~/db/types";
+import type { Tournament, User } from "~/db/types";
 import type { ModeShort } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { databaseTimestampToDate } from "~/utils/dates";
-import { assertUnreachable } from "~/utils/types";
 import type { FindTeamsByTournamentId } from "./queries/findTeamsByTournamentId.server";
-import type {
-  TournamentToolsLoaderData,
-  TournamentToolsTeam,
-} from "./routes/to.$id";
+import type { TournamentToolsLoaderData } from "./routes/to.$id";
 import { TOURNAMENT } from "./tournament-constants";
-import { seededRandom } from "~/modules/tournament-map-list-generator/utils";
-import type { FindMatchById } from "./queries/findMatchById.server";
-import { sourceTypes } from "~/modules/tournament-map-list-generator";
 
 export function resolveOwnedTeam({
   teams,
@@ -39,13 +25,6 @@ export function resolveOwnedTeam({
 export function tournamentIdFromParams(params: Params<string>) {
   const result = Number(params["id"]);
   invariant(!Number.isNaN(result), "id is not a number");
-
-  return result;
-}
-
-export function matchIdFromParams(params: Params<string>) {
-  const result = Number(params["mid"]);
-  invariant(!Number.isNaN(result), "mid is not a number");
 
   return result;
 }
@@ -97,111 +76,8 @@ export function HACKY_resolveCheckInTime(
   return databaseTimestampToDate(event.startTime - 60 * 60);
 }
 
-export function HACKY_resolvePoolCode(
-  event: TournamentToolsLoaderData["event"]
-) {
-  if (event.name.includes("In The Zone")) return "ITZ";
-
-  return "PICNIC";
-}
-
-const passNumbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-export function resolveRoomPass(matchId: TournamentMatch["id"]) {
-  let result = "";
-
-  for (let i = 0; i < 4; i++) {
-    const { shuffle } = seededRandom(`${matchId}-${i}`);
-
-    result += shuffle(passNumbers)[0];
-  }
-
-  return result;
-}
-
 export function mapPickCountPerMode(event: TournamentToolsLoaderData["event"]) {
   return isOneModeTournamentOf(event)
     ? TOURNAMENT.COUNTERPICK_ONE_MODE_TOURNAMENT_MAPS_PER_MODE
     : TOURNAMENT.COUNTERPICK_MAPS_PER_MODE;
-}
-
-export function resolveHostingTeam(
-  teams: [TournamentToolsTeam, TournamentToolsTeam]
-) {
-  if (!teams[0].seed && !teams[1].seed) return teams[0];
-  if (!teams[0].seed) return teams[1];
-  if (!teams[1].seed) return teams[0];
-  if (teams[0].seed < teams[1].seed) return teams[0];
-  if (teams[1].seed < teams[0].seed) return teams[1];
-
-  console.error("resolveHostingTeam: unexpected default");
-  return teams[0];
-}
-
-export function resolveTournamentStageName(format: TournamentFormat) {
-  switch (format) {
-    case "SE":
-    case "DE":
-      return "Elimination stage";
-    default: {
-      assertUnreachable(format);
-    }
-  }
-}
-
-export function resolveTournamentStageType(
-  format: TournamentFormat
-): TournamentStage["type"] {
-  switch (format) {
-    case "SE":
-      return "single_elimination";
-    case "DE":
-      return "double_elimination";
-    default: {
-      assertUnreachable(format);
-    }
-  }
-}
-
-export function resolveTournamentStageSettings(
-  format: TournamentFormat
-): DataTypes["stage"]["settings"] {
-  switch (format) {
-    case "SE":
-      return {};
-    case "DE":
-      return { grandFinal: "double" };
-    default: {
-      assertUnreachable(format);
-    }
-  }
-}
-
-export function mapCountPlayedInSetWithCertainty({
-  bestOf,
-  scores,
-}: {
-  bestOf: number;
-  scores: [number, number];
-}) {
-  const maxScore = Math.max(...scores);
-  const scoreSum = scores.reduce((acc, curr) => acc + curr, 0);
-
-  return scoreSum + (Math.ceil(bestOf / 2) - maxScore);
-}
-
-export function checkSourceIsValid({
-  source,
-  match,
-}: {
-  source: string;
-  match: NonNullable<FindMatchById>;
-}) {
-  if (sourceTypes.includes(source as any)) return true;
-
-  const asTeamId = Number(source);
-
-  if (match.opponentOne?.id === asTeamId) return true;
-  if (match.opponentTwo?.id === asTeamId) return true;
-
-  return false;
 }

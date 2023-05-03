@@ -1,6 +1,6 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
-import { mapCountPlayedInSetWithCertainty } from "./tournament-utils";
+import { mapCountPlayedInSetWithCertainty } from "./tournament-bracket-utils";
 
 const MapCountPlayedInSetWithCertainty = suite(
   "mapCountPlayedInSetWithCertainty()"

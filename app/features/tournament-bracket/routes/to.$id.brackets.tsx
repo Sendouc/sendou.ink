@@ -10,27 +10,28 @@ import {
   useOutletContext,
 } from "@remix-run/react";
 import * as React from "react";
-import styles from "../brackets-viewer.css";
-import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
-import {
-  tournamentIdFromParams,
-  resolveTournamentStageName,
-  resolveTournamentStageSettings,
-  resolveTournamentStageType,
-} from "../tournament-utils";
+import bracketViewerStyles from "../brackets-viewer.css";
+import bracketStyles from "../tournament-bracket.css";
+import { findTeamsByTournamentId } from "../../tournament/queries/findTeamsByTournamentId.server";
 import { Alert } from "~/components/Alert";
 import { SubmitButton } from "~/components/SubmitButton";
 import { getTournamentManager } from "../core/brackets-manager";
-import hasTournamentStarted from "../queries/hasTournamentStarted.server";
-import { findByIdentifier } from "../queries/findByIdentifier.server";
+import hasTournamentStarted from "../../tournament/queries/hasTournamentStarted.server";
+import { findByIdentifier } from "../../tournament/queries/findByIdentifier.server";
 import { notFoundIfFalsy, validate } from "~/utils/remix";
 import { toToolsMatchPage } from "~/utils/urls";
-import type { TournamentToolsLoaderData } from "./to.$id";
+import type { TournamentToolsLoaderData } from "../../tournament/routes/to.$id";
 import { resolveBestOfs } from "../core/bestOf.server";
 import { findAllMatchesByTournamentId } from "../queries/findAllMatchesByTournamentId.server";
 import { setBestOf } from "../queries/setBestOf.server";
 import { canAdminTournament } from "~/permissions";
 import { requireUser, useUser } from "~/modules/auth";
+import { tournamentIdFromParams } from "~/features/tournament";
+import {
+  resolveTournamentStageName,
+  resolveTournamentStageSettings,
+  resolveTournamentStageType,
+} from "../tournament-bracket-utils";
 
 export const links: LinksFunction = () => {
   return [
@@ -40,7 +41,11 @@ export const links: LinksFunction = () => {
     },
     {
       rel: "stylesheet",
-      href: styles,
+      href: bracketViewerStyles,
+    },
+    {
+      rel: "stylesheet",
+      href: bracketStyles,
     },
   ];
 };
@@ -145,7 +150,6 @@ export default function TournamentBracketsPage() {
   // xxx: show dialog that shows which teams are not included in bracket due to lacking players or not being checked in
   // xxx: button inside alert not responsive, should it be in its own component?
   // xxx: show floating prompt if active match
-  // xxx: move to a separate feature folder
   return (
     <div>
       {!data.hasStarted ? (

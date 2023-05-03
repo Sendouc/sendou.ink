@@ -3,9 +3,9 @@ import { Form } from "@remix-run/react";
 import type {
   TournamentToolsLoaderData,
   TournamentToolsTeam,
-} from "../routes/to.$id";
+} from "../../tournament/routes/to.$id";
 import type { Unpacked } from "~/utils/types";
-import { TOURNAMENT } from "../tournament-constants";
+import { TOURNAMENT } from "../../tournament/tournament-constants";
 import { SubmitButton } from "~/components/SubmitButton";
 import { TeamRosterInputs } from "./TeamRosterInputs";
 import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator";

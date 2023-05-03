@@ -11,7 +11,7 @@ import { ADMIN_ID, LOHI_TOKEN_HEADER_NAME } from "./constants";
 import invariant from "tiny-invariant";
 import type { ManagersByBadgeId } from "./db/models/badges/queries.server";
 import { databaseTimestampToDate } from "./utils/dates";
-import type { FindMatchById } from "./features/tournament/queries/findMatchById.server";
+import type { FindMatchById } from "./features/tournament-bracket/queries/findMatchById.server";
 
 // TODO: 1) move "root checkers" to one file and utils to one file 2) make utils const for more terseness
 
