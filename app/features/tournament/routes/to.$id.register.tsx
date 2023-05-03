@@ -56,7 +56,7 @@ import { registerSchema } from "../tournament-schemas.server";
 import {
   isOneModeTournamentOf,
   HACKY_resolvePicture,
-  idFromParams,
+  tournamentIdFromParams,
   resolveOwnedTeam,
   HACKY_resolveCheckInTime,
 } from "../tournament-utils";
@@ -79,7 +79,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUserId(request);
   const data = await parseRequestFormData({ request, schema: registerSchema });
 
-  const tournamentId = idFromParams(params);
+  const tournamentId = tournamentIdFromParams(params);
   const event = notFoundIfFalsy(findByIdentifier(tournamentId));
 
   validate(
@@ -140,7 +140,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
-  const eventId = idFromParams(params);
+  const eventId = tournamentIdFromParams(params);
   const event = notFoundIfFalsy(findByIdentifier(eventId));
 
   if (!event.isBeforeStart) {
@@ -151,7 +151,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   if (!user) return null;
 
   const ownTeam = findOwnTeam({
-    tournamentId: idFromParams(params),
+    tournamentId: tournamentIdFromParams(params),
     userId: user.id,
   });
   if (!ownTeam) return null;

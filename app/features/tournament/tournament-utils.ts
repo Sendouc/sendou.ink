@@ -36,7 +36,7 @@ export function resolveOwnedTeam({
   );
 }
 
-export function idFromParams(params: Params<string>) {
+export function tournamentIdFromParams(params: Params<string>) {
   const result = Number(params["id"]);
   invariant(!Number.isNaN(result), "id is not a number");
 

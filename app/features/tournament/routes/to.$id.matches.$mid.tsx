@@ -4,6 +4,7 @@ import {
   checkSourceIsValid,
   matchIdFromParams,
   modesIncluded,
+  tournamentIdFromParams,
 } from "../tournament-utils";
 import { useLoaderData, useOutletContext } from "@remix-run/react";
 import { createTournamentMapList } from "~/modules/tournament-map-list-generator";
@@ -15,7 +16,7 @@ import { LinkButton } from "~/components/Button";
 import { ArrowLongLeftIcon } from "~/components/icons/ArrowLongLeft";
 import { toToolsBracketsPage } from "~/utils/urls";
 import invariant from "tiny-invariant";
-import { canAdminTournament } from "~/permissions";
+import { canReportTournamentScore } from "~/permissions";
 import { requireUser, useUser } from "~/modules/auth";
 import { getTournamentManager } from "../core/brackets-manager";
 import { matchSchema } from "../tournament-schemas.server";
@@ -26,6 +27,8 @@ import { insertTournamentMatchGameResultParticipant } from "../queries/insertTou
 import { findResultsByMatchId } from "../queries/findResultsByMatchId.server";
 import { deleteTournamentMatchGameResultById } from "../queries/deleteTournamentMatchGameResultById.server";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
+import { findByIdentifier } from "../queries/findByIdentifier.server";
+import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
 
 export const action: ActionFunction = async ({ params, request }) => {
   const user = await requireUser(request);
@@ -35,6 +38,28 @@ export const action: ActionFunction = async ({ params, request }) => {
     request,
     schema: matchSchema,
   });
+
+  // TODO: this is pretty heavy logic so we could just do separate queries for these
+  {
+    const tournamentId = tournamentIdFromParams(params);
+    const event = notFoundIfFalsy(findByIdentifier(tournamentId));
+    const teams = findTeamsByTournamentId(tournamentId);
+    const ownedTeamId = teams.find((team) =>
+      team.members.some(
+        (member) => member.userId === user?.id && member.isOwner
+      )
+    )?.id;
+    validate(
+      canReportTournamentScore({
+        event,
+        match,
+        ownedTeamId,
+        user,
+      }),
+      401,
+      "No permissions"
+    );
+  }
 
   const manager = getTournamentManager("SQL");
 
@@ -48,10 +73,21 @@ export const action: ActionFunction = async ({ params, request }) => {
     match.opponentTwo?.score ?? 0,
   ];
 
-  // xxx: permission check
   // xxx: database lock
   switch (data._action) {
     case "REPORT_SCORE": {
+      validate(
+        match.opponentOne?.id === data.winnerTeamId ||
+          match.opponentTwo?.id === data.winnerTeamId,
+        400,
+        "Winner team id is invalid"
+      );
+      validate(
+        checkSourceIsValid({ source: data.source, match }),
+        400,
+        "Source is invalid"
+      );
+
       // they are trying to report score that was already reported
       // assume that it was already reported and make their page refresh
       if (data.position !== scores[0] + scores[1]) {
@@ -78,18 +114,6 @@ export const action: ActionFunction = async ({ params, request }) => {
           result: scores[1] === Math.ceil(match.bestOf / 2) ? "win" : undefined,
         },
       });
-
-      validate(
-        match.opponentOne?.id === data.winnerTeamId ||
-          match.opponentTwo?.id === data.winnerTeamId,
-        400,
-        "Winner team id is invalid"
-      );
-      validate(
-        checkSourceIsValid({ source: data.source, match }),
-        400,
-        "Source is invalid"
-      );
 
       const result = insertTournamentMatchGameResult({
         matchId: match.id,
@@ -158,7 +182,6 @@ export const loader = ({ params }: LoaderArgs) => {
   };
 };
 
-// xxx: some kind of header
 export default function TournamentMatchPage() {
   const user = useUser();
   const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
@@ -172,26 +195,33 @@ export default function TournamentMatchPage() {
     data.match.opponentOne?.result === "win" ||
     data.match.opponentTwo?.result === "win";
 
-  const canEditScore =
-    !matchIsOver &&
-    (data.match.opponentOne?.id === parentRouteData.ownedTeamId ||
-      data.match.opponentTwo?.id === parentRouteData.ownedTeamId ||
-      canAdminTournament({ user, event: parentRouteData.event }));
-
   return (
     <div className="stack lg">
-      <LinkButton
-        to={toToolsBracketsPage(parentRouteData.event.id)}
-        variant="outlined"
-        size="tiny"
-        className="w-max"
-        icon={<ArrowLongLeftIcon />}
-      >
-        Back to bracket
-      </LinkButton>
-      {!matchHasTwoTeams ? <div>TODO: UI when not 2 teams</div> : null}
+      <div className="flex horizontal justify-between items-center">
+        {/* TODO: better title */}
+        <h2 className="text-lighter text-lg">Match #{data.match.id}</h2>
+        <LinkButton
+          to={toToolsBracketsPage(parentRouteData.event.id)}
+          variant="outlined"
+          size="tiny"
+          className="w-max"
+          icon={<ArrowLongLeftIcon />}
+        >
+          Back to bracket
+        </LinkButton>
+      </div>
+      {!matchHasTwoTeams ? (
+        <div className="text-lg text-lighter font-semi-bold text-center">
+          Waiting for teams
+        </div>
+      ) : null}
       {matchIsOver ? <ResultsSection /> : null}
-      {canEditScore &&
+      {canReportTournamentScore({
+        event: parentRouteData.event,
+        match: data.match,
+        ownedTeamId: parentRouteData.ownedTeamId,
+        user,
+      }) &&
       typeof data.match.opponentOne?.id === "number" &&
       typeof data.match.opponentTwo?.id === "number" ? (
         <MapListSection
@@ -251,7 +281,7 @@ function ResultsSection() {
   const data = useLoaderData<typeof loader>();
   const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
   const [selectedResultIndex, setSelectedResultIndex] = useSearchParamState({
-    defaultValue: 0,
+    defaultValue: data.results.length - 1,
     name: "result",
     revive: (value) => {
       const maybeIndex = Number(value);

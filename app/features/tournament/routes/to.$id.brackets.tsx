@@ -13,7 +13,7 @@ import * as React from "react";
 import styles from "../brackets-viewer.css";
 import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
 import {
-  idFromParams,
+  tournamentIdFromParams,
   resolveTournamentStageName,
   resolveTournamentStageSettings,
   resolveTournamentStageType,
@@ -50,7 +50,7 @@ export const action: ActionFunction = async ({ params, request }) => {
   const user = await requireUser(request);
   const manager = getTournamentManager("SQL");
 
-  const tournamentId = idFromParams(params);
+  const tournamentId = tournamentIdFromParams(params);
   const tournament = notFoundIfFalsy(findByIdentifier(tournamentId));
   const hasStarted = hasTournamentStarted(tournamentId);
 
@@ -76,7 +76,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 };
 
 export const loader = async ({ params }: LoaderArgs) => {
-  const tournamentId = idFromParams(params);
+  const tournamentId = tournamentIdFromParams(params);
   const tournament = notFoundIfFalsy(findByIdentifier(tournamentId));
 
   const hasStarted = hasTournamentStarted(tournamentId);
@@ -113,13 +113,18 @@ export default function TournamentBracketsPage() {
     // matches aren't generated before tournament starts
     if (data.hasStarted) {
       // @ts-expect-error - brackets-viewer is not typed
-      window.bracketsViewer.onMatchClicked = (match) =>
+      window.bracketsViewer.onMatchClicked = (match) => {
+        // can't view match page of a bye
+        if (match.opponent1 === null || match.opponent2 === null) {
+          return;
+        }
         navigate(
           toToolsMatchPage({
             eventId: parentRouteData.event.id,
             matchId: match.id,
           })
         );
+      };
     }
     // @ts-expect-error - brackets-viewer is not typed
     window.bracketsViewer.render({

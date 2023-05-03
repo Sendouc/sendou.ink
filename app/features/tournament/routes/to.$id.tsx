@@ -4,7 +4,7 @@ import type {
   V2_MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
-import { Outlet, useLoaderData } from "@remix-run/react";
+import { Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import { Main } from "~/components/Main";
 import { SubNav, SubNavLink } from "~/components/SubNav";
 import { db } from "~/db";
@@ -21,7 +21,7 @@ import type {
   FindTeamsByTournamentIdItem,
 } from "../queries/findTeamsByTournamentId.server";
 import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
-import { idFromParams } from "../tournament-utils";
+import { tournamentIdFromParams } from "../tournament-utils";
 import styles from "../tournament.css";
 
 export const meta: V2_MetaFunction = (args) => {
@@ -45,7 +45,7 @@ export type TournamentToolsLoaderData = SerializeFrom<typeof loader>;
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const user = await getUserId(request);
-  const tournamentId = idFromParams(params);
+  const tournamentId = tournamentIdFromParams(params);
   const event = notFoundIfFalsy(findByIdentifier(tournamentId));
 
   const mapListGeneratorAvailable =
@@ -92,9 +92,12 @@ export default function TournamentToolsLayout() {
   const { t } = useTranslation(["tournament"]);
   const user = useUser();
   const data = useLoaderData<typeof loader>();
+  const location = useLocation();
+
+  const onBracketsPage = location.pathname.includes("brackets");
 
   return (
-    <Main>
+    <Main bigger={onBracketsPage}>
       <SubNav>
         {data.event.isBeforeStart ? (
           <SubNavLink to="register">{t("tournament:tabs.register")}</SubNavLink>

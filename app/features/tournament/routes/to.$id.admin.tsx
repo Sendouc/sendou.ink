@@ -15,7 +15,7 @@ import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
 import { updateIsBeforeStart } from "../queries/updateIsBeforeStart.server";
 import { requireUserId } from "~/modules/auth/user.server";
-import { idFromParams } from "../tournament-utils";
+import { tournamentIdFromParams } from "../tournament-utils";
 
 const tournamentToolsActionSchema = z.object({
   started: z.preprocess(checkboxValueToBoolean, z.boolean()),
@@ -28,7 +28,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     schema: tournamentToolsActionSchema,
   });
 
-  const eventId = idFromParams(params);
+  const eventId = tournamentIdFromParams(params);
   const event = notFoundIfFalsy(findByIdentifier(eventId));
 
   validate(canAdminTournament({ user, event }));
@@ -43,7 +43,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const user = await requireUserId(request);
-  const eventId = idFromParams(params);
+  const eventId = tournamentIdFromParams(params);
 
   const event = notFoundIfFalsy(findByIdentifier(eventId));
   notFoundIfFalsy(canAdminTournament({ user, event }));
