@@ -13,7 +13,7 @@ import { LinkButton } from "~/components/Button";
 import { ArrowLongLeftIcon } from "~/components/icons/ArrowLongLeft";
 import { toToolsBracketsPage } from "~/utils/urls";
 import invariant from "tiny-invariant";
-import { canReportTournamentScore } from "~/permissions";
+import { canAdminTournament, canReportTournamentScore } from "~/permissions";
 import { requireUser, useUser } from "~/modules/auth";
 import { getTournamentManager } from "../core/brackets-manager";
 import { assertUnreachable } from "~/utils/types";
@@ -53,16 +53,17 @@ export const action: ActionFunction = async ({ params, request }) => {
     schema: matchSchema,
   });
 
-  // TODO: this is pretty heavy logic so we could just do separate queries for these
-  {
-    const tournamentId = tournamentIdFromParams(params);
-    const event = notFoundIfFalsy(findByIdentifier(tournamentId));
+  const tournamentId = tournamentIdFromParams(params);
+  const event = notFoundIfFalsy(findByIdentifier(tournamentId));
+
+  const validateCanReportScore = () => {
     const teams = findTeamsByTournamentId(tournamentId);
     const ownedTeamId = teams.find((team) =>
       team.members.some(
         (member) => member.userId === user?.id && member.isOwner
       )
     )?.id;
+
     validate(
       canReportTournamentScore({
         event,
@@ -73,14 +74,9 @@ export const action: ActionFunction = async ({ params, request }) => {
       401,
       "No permissions"
     );
-  }
+  };
 
   const manager = getTournamentManager("SQL");
-
-  const matchIsOver =
-    match.opponentOne?.result === "win" || match.opponentTwo?.result === "win";
-
-  validate(!matchIsOver, 400, "Match is over");
 
   const scores: [number, number] = [
     match.opponentOne?.score ?? 0,
@@ -90,6 +86,7 @@ export const action: ActionFunction = async ({ params, request }) => {
   // xxx: database lock
   switch (data._action) {
     case "REPORT_SCORE": {
+      validateCanReportScore();
       validate(
         match.opponentOne?.id === data.winnerTeamId ||
           match.opponentTwo?.id === data.winnerTeamId,
@@ -149,6 +146,7 @@ export const action: ActionFunction = async ({ params, request }) => {
       return null;
     }
     case "UNDO_REPORT_SCORE": {
+      validateCanReportScore();
       // they are trying to remove score from the past
       if (data.position !== scores[0] + scores[1] - 1) {
         return null;
@@ -158,20 +156,55 @@ export const action: ActionFunction = async ({ params, request }) => {
       const lastResult = results[results.length - 1];
       invariant(lastResult, "Last result is missing");
 
+      const shouldReset = results.length === 1;
+
       deleteTournamentMatchGameResultById(lastResult.id);
       await manager.update.match({
         id: match.id,
         opponent1: {
-          score:
-            lastResult.winnerTeamId === match.opponentOne?.id
-              ? scores[0] - 1
-              : scores[0],
+          score: shouldReset
+            ? undefined
+            : lastResult.winnerTeamId === match.opponentOne?.id
+            ? scores[0] - 1
+            : scores[0],
         },
         opponent2: {
-          score:
-            lastResult.winnerTeamId === match.opponentTwo?.id
-              ? scores[1] - 1
-              : scores[1],
+          score: shouldReset
+            ? undefined
+            : lastResult.winnerTeamId === match.opponentTwo?.id
+            ? scores[1] - 1
+            : scores[1],
+        },
+        // xxx: figure how to reset status of the PREVIOUS match
+        // status: shouldReset ? 2 : undefined,
+      });
+
+      return null;
+    }
+    // xxx: gracefully handle error when match is locked
+    case "REOPEN_MATCH": {
+      const scoreOne = match.opponentOne?.score ?? 0;
+      const scoreTwo = match.opponentTwo?.score ?? 0;
+      invariant(typeof scoreOne === "number", "Score one is missing");
+      invariant(typeof scoreTwo === "number", "Score two is missing");
+      invariant(scoreOne !== scoreTwo, "Scores are equal");
+
+      validate(canAdminTournament({ event, user }));
+
+      const results = findResultsByMatchId(matchId);
+      const lastResult = results[results.length - 1];
+      invariant(lastResult, "Last result is missing");
+
+      deleteTournamentMatchGameResultById(lastResult.id);
+      await manager.update.match({
+        id: match.id,
+        opponent1: {
+          score: scoreOne > scoreTwo ? scoreOne - 1 : scoreOne,
+          result: undefined,
+        },
+        opponent2: {
+          score: scoreTwo > scoreOne ? scoreTwo - 1 : scoreTwo,
+          result: undefined,
         },
       });
 

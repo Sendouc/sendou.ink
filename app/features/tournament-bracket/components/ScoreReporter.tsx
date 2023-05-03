@@ -20,6 +20,8 @@ import type {
   TournamentToolsTeam,
   TournamentToolsLoaderData,
 } from "~/features/tournament";
+import { canAdminTournament } from "~/permissions";
+import { useUser } from "~/modules/auth";
 
 export type Result = Unpacked<
   SerializeFrom<TournamentMatchLoaderData>["results"]
@@ -41,6 +43,7 @@ export function ScoreReporter({
   setSelectedResultIndex?: (index: number) => void;
   result?: Result;
 }) {
+  const user = useUser();
   const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
   const data = useLoaderData<TournamentMatchLoaderData>();
 
@@ -95,6 +98,19 @@ export function ScoreReporter({
             </div>
           </Form>
         )}
+        {canAdminTournament({ user, event: parentRouteData.event }) &&
+          presentational && (
+            <Form method="post">
+              <div className="tournament-bracket__stage-banner__bottom-bar">
+                <SubmitButton
+                  _action="REOPEN_MATCH"
+                  className="tournament-bracket__stage-banner__undo-button"
+                >
+                  Reopen match
+                </SubmitButton>
+              </div>
+            </Form>
+          )}
       </FancyStageBanner>
       <ModeProgressIndicator
         modes={modes}

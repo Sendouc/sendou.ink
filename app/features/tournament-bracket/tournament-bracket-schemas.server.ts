@@ -30,4 +30,7 @@ export const matchSchema = z.union([
     _action: z.literal("UNDO_REPORT_SCORE"),
     position: reportedMatchPosition,
   }),
+  z.object({
+    _action: z.literal("REOPEN_MATCH"),
+  }),
 ]);
