@@ -1,5 +1,6 @@
 import type { ModeShort, ModeWithStage } from "../in-game-lists";
 import type { MapPool } from "../map-pool-serializer";
+import type { sourceTypes } from "./constants";
 
 export type BracketType =
   | "GROUPS"
@@ -25,11 +26,7 @@ export interface TournamentMaplistInput {
   modesIncluded: ModeShort[];
 }
 
-export type TournamentMaplistSource =
-  | number
-  | "DEFAULT"
-  | "TIEBREAKER"
-  | "BOTH";
+export type TournamentMaplistSource = number | (typeof sourceTypes)[number];
 
 export type TournamentMapListMap = ModeWithStage & {
   source: TournamentMaplistSource;

@@ -1,6 +1,10 @@
 import type { ActionFunction, LoaderArgs } from "@remix-run/node";
 import { findMatchById } from "../queries/findMatchById.server";
-import { matchIdFromParams, modesIncluded } from "../tournament-utils";
+import {
+  checkSourceIsValid,
+  matchIdFromParams,
+  modesIncluded,
+} from "../tournament-utils";
 import { useLoaderData, useOutletContext } from "@remix-run/react";
 import { createTournamentMapList } from "~/modules/tournament-map-list-generator";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
@@ -81,6 +85,12 @@ export const action: ActionFunction = async ({ params, request }) => {
         400,
         "Winner team id is invalid"
       );
+      validate(
+        checkSourceIsValid({ source: data.source, match }),
+        400,
+        "Source is invalid"
+      );
+
       const result = insertTournamentMatchGameResult({
         matchId: match.id,
         mode: data.mode as ModeShort,
@@ -88,6 +98,7 @@ export const action: ActionFunction = async ({ params, request }) => {
         reporterId: user.id,
         winnerTeamId: data.winnerTeamId,
         number: data.position + 1,
+        source: data.source,
       });
 
       for (const userId of data.playerIds) {
@@ -265,14 +276,9 @@ function ResultsSection() {
     throw new Error("Team is missing");
   }
 
-  // xxx: persist source in DB and use it here
   return (
     <ScoreReporter
-      currentStageWithMode={{
-        mode: result.mode,
-        stageId: result.stageId,
-        source: "BOTH",
-      }}
+      currentStageWithMode={result}
       teams={[teamOne, teamTwo]}
       modes={data.results.map((result) => result.mode)}
       selectedResultIndex={selectedResultIndex}

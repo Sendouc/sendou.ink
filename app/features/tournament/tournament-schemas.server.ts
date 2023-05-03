@@ -39,6 +39,7 @@ export const matchSchema = z.union([
     playerIds: reportedMatchPlayerIds,
     stageId,
     mode: modeShort,
+    source: z.string(),
   }),
   z.object({
     _action: z.literal("UNDO_REPORT_SCORE"),

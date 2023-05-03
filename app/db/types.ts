@@ -280,6 +280,8 @@ export interface TournamentMatchGameResult {
   number: number;
   stageId: StageId;
   mode: ModeShort;
+  /** serialized TournamentMaplistSource */
+  source: string;
   winnerTeamId: number;
   reporterId: number;
   createdAt: number;

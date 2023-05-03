@@ -164,6 +164,7 @@ module.exports.up = function (db) {
       "number" integer not null,
       "stageId" integer not null,
       "mode" text not null,
+      "source" text not null,
       "winnerTeamId" integer not null,
       "reporterId" integer not null,
       "createdAt" integer default (strftime('%s', 'now')) not null,

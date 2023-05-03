@@ -12,6 +12,8 @@ const stm = sql.prepare(/* sql */ `
   where id = @id
 `);
 
+export type FindMatchById = ReturnType<typeof findMatchById>;
+
 export const findMatchById = (id: number) => {
   const row = stm.get({ id }) as
     | Pick<TournamentMatch, "id" | "opponentOne" | "opponentTwo" | "bestOf">

@@ -60,6 +60,11 @@ export function ScoreReporterRosters({
               name="mode"
               value={currentStageWithMode.mode}
             />
+            <input
+              type="hidden"
+              name="source"
+              value={currentStageWithMode.source}
+            />
             <ReportScoreButtons
               checkedPlayers={checkedPlayers}
               winnerName={winningTeam()}

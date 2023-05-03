@@ -1,5 +1,6 @@
 import { sql } from "~/db/sql";
 import type { TournamentMatchGameResult, User } from "~/db/types";
+import type { TournamentMaplistSource } from "~/modules/tournament-map-list-generator";
 import { parseDBArray } from "~/utils/sql";
 
 const stm = sql.prepare(/* sql */ `
@@ -8,6 +9,7 @@ const stm = sql.prepare(/* sql */ `
     "TournamentMatchGameResult"."winnerTeamId",
     "TournamentMatchGameResult"."stageId",
     "TournamentMatchGameResult"."mode",
+    "TournamentMatchGameResult"."source",
     json_group_array("TournamentMatchGameResultParticipant"."userId") as "participantIds"
   from "TournamentMatchGameResult"
   left join "TournamentMatchGameResultParticipant"
@@ -23,6 +25,7 @@ interface FindResultsByMatchIdResult {
   stageId: TournamentMatchGameResult["stageId"];
   mode: TournamentMatchGameResult["mode"];
   participantIds: Array<User["id"]>;
+  source: TournamentMaplistSource;
 }
 
 export function findResultsByMatchId(
@@ -32,6 +35,7 @@ export function findResultsByMatchId(
 
   return rows.map((row) => ({
     ...row,
+    source: isNaN(row.source) ? row.source : Number(row.source),
     participantIds: parseDBArray(row.participantIds),
   }));
 }

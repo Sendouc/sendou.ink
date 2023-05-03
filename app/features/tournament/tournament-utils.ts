@@ -19,6 +19,8 @@ import type {
 } from "./routes/to.$id";
 import { TOURNAMENT } from "./tournament-constants";
 import { seededRandom } from "~/modules/tournament-map-list-generator/utils";
+import type { FindMatchById } from "./queries/findMatchById.server";
+import { sourceTypes } from "~/modules/tournament-map-list-generator";
 
 export function resolveOwnedTeam({
   teams,
@@ -185,4 +187,21 @@ export function mapCountPlayedInSetWithCertainty({
   const scoreSum = scores.reduce((acc, curr) => acc + curr, 0);
 
   return scoreSum + (Math.ceil(bestOf / 2) - maxScore);
+}
+
+export function checkSourceIsValid({
+  source,
+  match,
+}: {
+  source: string;
+  match: NonNullable<FindMatchById>;
+}) {
+  if (sourceTypes.includes(source as any)) return true;
+
+  const asTeamId = Number(source);
+
+  if (match.opponentOne?.id === asTeamId) return true;
+  if (match.opponentTwo?.id === asTeamId) return true;
+
+  return false;
 }
