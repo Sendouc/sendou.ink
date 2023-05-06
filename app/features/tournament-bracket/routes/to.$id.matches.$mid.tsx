@@ -190,7 +190,6 @@ export const action: ActionFunction = async ({ params, request }) => {
 
       return null;
     }
-    // xxx: gracefully handle error when match is locked - also should this be merged with the above?
     case "REOPEN_MATCH": {
       const scoreOne = match.opponentOne?.score ?? 0;
       const scoreTwo = match.opponentTwo?.score ?? 0;
@@ -204,20 +203,30 @@ export const action: ActionFunction = async ({ params, request }) => {
       const lastResult = results[results.length - 1];
       invariant(lastResult, "Last result is missing");
 
-      sql.transaction(() => {
-        deleteTournamentMatchGameResultById(lastResult.id);
-        manager.update.match({
-          id: match.id,
-          opponent1: {
-            score: scoreOne > scoreTwo ? scoreOne - 1 : scoreOne,
-            result: undefined,
-          },
-          opponent2: {
-            score: scoreTwo > scoreOne ? scoreTwo - 1 : scoreTwo,
-            result: undefined,
-          },
-        });
-      })();
+      try {
+        sql.transaction(() => {
+          deleteTournamentMatchGameResultById(lastResult.id);
+          manager.update.match({
+            id: match.id,
+            opponent1: {
+              score: scoreOne > scoreTwo ? scoreOne - 1 : scoreOne,
+              result: undefined,
+            },
+            opponent2: {
+              score: scoreTwo > scoreOne ? scoreTwo - 1 : scoreTwo,
+              result: undefined,
+            },
+          });
+        })();
+      } catch (err) {
+        if (!(err instanceof Error)) throw err;
+
+        if (err.message.includes("locked")) {
+          return { error: "locked" };
+        }
+
+        throw err;
+      }
 
       return null;
     }

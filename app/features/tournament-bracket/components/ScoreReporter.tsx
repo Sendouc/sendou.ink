@@ -1,4 +1,9 @@
-import { Form, useLoaderData, useOutletContext } from "@remix-run/react";
+import {
+  Form,
+  useActionData,
+  useLoaderData,
+  useOutletContext,
+} from "@remix-run/react";
 import clsx from "clsx";
 import { Image } from "~/components/Image";
 import { SubmitButton } from "~/components/SubmitButton";
@@ -43,6 +48,7 @@ export function ScoreReporter({
   setSelectedResultIndex?: (index: number) => void;
   result?: Result;
 }) {
+  const actionData = useActionData<{ error?: "locked" }>();
   const user = useUser();
   const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
   const data = useLoaderData<TournamentMatchLoaderData>();
@@ -78,6 +84,8 @@ export function ScoreReporter({
     </>,
   ];
 
+  const matchIsLockedError = actionData?.error === "locked";
+
   return (
     <div className="tournament-bracket__during-match-actions">
       <FancyStageBanner
@@ -99,7 +107,8 @@ export function ScoreReporter({
           </Form>
         )}
         {canAdminTournament({ user, event: parentRouteData.event }) &&
-          presentational && (
+          presentational &&
+          !matchIsLockedError && (
             <Form method="post">
               <div className="tournament-bracket__stage-banner__bottom-bar">
                 <SubmitButton
@@ -111,6 +120,17 @@ export function ScoreReporter({
               </div>
             </Form>
           )}
+        {matchIsLockedError && (
+          <div className="tournament-bracket__stage-banner__bottom-bar">
+            <SubmitButton
+              _action="REOPEN_MATCH"
+              className="tournament-bracket__stage-banner__undo-button"
+              disabled
+            >
+              Match is locked
+            </SubmitButton>
+          </div>
+        )}
       </FancyStageBanner>
       <ModeProgressIndicator
         modes={modes}
