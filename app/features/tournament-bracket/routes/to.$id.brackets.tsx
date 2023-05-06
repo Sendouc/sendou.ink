@@ -62,7 +62,7 @@ export const action: ActionFunction = async ({ params, request }) => {
   validate(canAdminTournament({ user, event: tournament }));
   validate(!hasStarted);
 
-  await manager.create({
+  manager.create({
     tournamentId,
     name: resolveTournamentStageName(tournament.format),
     type: resolveTournamentStageType(tournament.format),
@@ -80,7 +80,7 @@ export const action: ActionFunction = async ({ params, request }) => {
   return null;
 };
 
-export const loader = async ({ params }: LoaderArgs) => {
+export const loader = ({ params }: LoaderArgs) => {
   const tournamentId = tournamentIdFromParams(params);
   const tournament = notFoundIfFalsy(findByIdentifier(tournamentId));
 
@@ -88,7 +88,7 @@ export const loader = async ({ params }: LoaderArgs) => {
   const manager = getTournamentManager(hasStarted ? "SQL" : "IN_MEMORY");
 
   if (!hasStarted) {
-    await manager.create({
+    manager.create({
       tournamentId,
       name: resolveTournamentStageName(tournament.format),
       type: resolveTournamentStageType(tournament.format),
@@ -100,7 +100,7 @@ export const loader = async ({ params }: LoaderArgs) => {
   }
 
   // TODO: use get.stageData
-  const data = await manager.get.tournamentData(tournamentId);
+  const data = manager.get.tournamentData(tournamentId);
 
   return {
     bracket: data,

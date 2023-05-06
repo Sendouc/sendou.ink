@@ -144,10 +144,7 @@ export interface CrudInterface {
    * @param table Where to insert.
    * @param value What to insert.
    */
-  insert<T extends Table>(
-    table: T,
-    value: OmitId<DataTypes[T]>
-  ): Promise<number>;
+  insert<T extends Table>(table: T, value: OmitId<DataTypes[T]>): number;
 
   /**
    * Inserts multiple values in the database.
@@ -155,17 +152,14 @@ export interface CrudInterface {
    * @param table Where to insert.
    * @param values What to insert.
    */
-  insert<T extends Table>(
-    table: T,
-    values: OmitId<DataTypes[T]>[]
-  ): Promise<boolean>;
+  insert<T extends Table>(table: T, values: OmitId<DataTypes[T]>[]): boolean;
 
   /**
    * Gets all data from a table in the database.
    *
    * @param table Where to get from.
    */
-  select<T extends Table>(table: T): Promise<Array<DataTypes[T]> | null>;
+  select<T extends Table>(table: T): Array<DataTypes[T]> | null;
 
   /**
    * Gets specific data from a table in the database.
@@ -173,7 +167,7 @@ export interface CrudInterface {
    * @param table Where to get from.
    * @param id What to get.
    */
-  select<T extends Table>(table: T, id: number): Promise<DataTypes[T] | null>;
+  select<T extends Table>(table: T, id: number): DataTypes[T] | null;
 
   /**
    * Gets data from a table in the database with a filter.
@@ -184,7 +178,7 @@ export interface CrudInterface {
   select<T extends Table>(
     table: T,
     filter: Partial<DataTypes[T]>
-  ): Promise<Array<DataTypes[T]> | null>;
+  ): Array<DataTypes[T]> | null;
 
   /**
    * Updates data in a table.
@@ -193,11 +187,7 @@ export interface CrudInterface {
    * @param id What to update.
    * @param value How to update.
    */
-  update<T extends Table>(
-    table: T,
-    id: number,
-    value: DataTypes[T]
-  ): Promise<boolean>;
+  update<T extends Table>(table: T, id: number, value: DataTypes[T]): boolean;
 
   /**
    * Updates data in a table.
@@ -210,14 +200,14 @@ export interface CrudInterface {
     table: T,
     filter: Partial<DataTypes[T]>,
     value: Partial<DataTypes[T]>
-  ): Promise<boolean>;
+  ): boolean;
 
   /**
    * Empties a table completely.
    *
    * @param table Where to delete everything.
    */
-  delete<T extends Table>(table: T): Promise<boolean>;
+  delete<T extends Table>(table: T): boolean;
 
   /**
    * Delete data in a table, based on a filter.
@@ -225,19 +215,16 @@ export interface CrudInterface {
    * @param table Where to delete in.
    * @param filter An object to filter data.
    */
-  delete<T extends Table>(
-    table: T,
-    filter: Partial<DataTypes[T]>
-  ): Promise<boolean>;
+  delete<T extends Table>(table: T, filter: Partial<DataTypes[T]>): boolean;
 }
 
 export interface Storage extends CrudInterface {
   selectFirst<T extends Table>(
     table: T,
     filter: Partial<DataTypes[T]>
-  ): Promise<DataTypes[T] | null>;
+  ): DataTypes[T] | null;
   selectLast<T extends Table>(
     table: T,
     filter: Partial<DataTypes[T]>
-  ): Promise<DataTypes[T] | null>;
+  ): DataTypes[T] | null;
 }

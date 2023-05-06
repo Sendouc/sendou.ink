@@ -1,4 +1,4 @@
-import type { DataTypes } from "brackets-manager/dist/types";
+import type { Stage } from "brackets-model";
 import type {
   TournamentFormat,
   TournamentMatch,
@@ -77,7 +77,7 @@ export function resolveTournamentStageType(
 
 export function resolveTournamentStageSettings(
   format: TournamentFormat
-): DataTypes["stage"]["settings"] {
+): Stage["settings"] {
   switch (format) {
     case "SE":
       return {};

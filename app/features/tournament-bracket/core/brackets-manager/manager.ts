@@ -1,4 +1,4 @@
-import { InMemoryDatabase } from "brackets-memory-db";
+import { InMemoryDatabase } from "~/modules/brackets-memory-db";
 import { SqlDatabase } from "./crud.server";
 import { BracketsManager } from "~/modules/brackets-manager";
 

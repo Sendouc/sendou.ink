@@ -22,22 +22,22 @@ export class Delete {
    *
    * @param stageId ID of the stage.
    */
-  public async stage(stageId: number): Promise<void> {
+  public stage(stageId: number): void {
     // The order is important here, because the abstract storage can possibly have foreign key checks (e.g. SQL).
 
-    if (!(await this.storage.delete("match_game", { stage_id: stageId })))
+    if (!this.storage.delete("match_game", { stage_id: stageId }))
       throw Error("Could not delete match games.");
 
-    if (!(await this.storage.delete("match", { stage_id: stageId })))
+    if (!this.storage.delete("match", { stage_id: stageId }))
       throw Error("Could not delete matches.");
 
-    if (!(await this.storage.delete("round", { stage_id: stageId })))
+    if (!this.storage.delete("round", { stage_id: stageId }))
       throw Error("Could not delete rounds.");
 
-    if (!(await this.storage.delete("group", { stage_id: stageId })))
+    if (!this.storage.delete("group", { stage_id: stageId }))
       throw Error("Could not delete groups.");
 
-    if (!(await this.storage.delete("stage", { id: stageId })))
+    if (!this.storage.delete("stage", { id: stageId }))
       throw Error("Could not delete the stage.");
   }
 
@@ -48,13 +48,12 @@ export class Delete {
    *
    * @param tournamentId ID of the tournament.
    */
-  public async tournament(tournamentId: number): Promise<void> {
-    const stages = await this.storage.select("stage", {
+  public tournament(tournamentId: number): void {
+    const stages = this.storage.select("stage", {
       tournament_id: tournamentId,
     });
     if (!stages) throw Error("Error getting the stages.");
 
-    // Not doing this in a `Promise.all()` since this can be a heavy operation.
-    for (const stage of stages) await this.stage(stage.id);
+    for (const stage of stages) this.stage(stage.id);
   }
 }

@@ -1,4 +1,4 @@
-import type { DataTypes } from "brackets-manager/dist/types";
+import type { Match } from "brackets-model";
 import { sql } from "~/db/sql";
 import type { TournamentMatch } from "~/db/types";
 
@@ -23,7 +23,7 @@ export const findMatchById = (id: number) => {
 
   return {
     ...row,
-    opponentOne: JSON.parse(row.opponentOne) as DataTypes["match"]["opponent1"],
-    opponentTwo: JSON.parse(row.opponentTwo) as DataTypes["match"]["opponent2"],
+    opponentOne: JSON.parse(row.opponentOne) as Match["opponent1"],
+    opponentTwo: JSON.parse(row.opponentTwo) as Match["opponent2"],
   };
 };

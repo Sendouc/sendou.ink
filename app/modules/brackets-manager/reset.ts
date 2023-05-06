@@ -10,8 +10,8 @@ export class Reset extends BaseUpdater {
    *
    * @param matchId ID of the match.
    */
-  public async matchResults(matchId: number): Promise<void> {
-    const stored = await this.storage.select("match", matchId);
+  public matchResults(matchId: number): void {
+    const stored = this.storage.select("match", matchId);
     if (!stored) throw Error("Match not found.");
 
     // The user can handle forfeits with matches which have child games in two possible ways:
@@ -30,17 +30,17 @@ export class Reset extends BaseUpdater {
         "The parent match is controlled by its child games and its result cannot be reset."
       );
 
-    const stage = await this.storage.select("stage", stored.stage_id);
+    const stage = this.storage.select("stage", stored.stage_id);
     if (!stage) throw Error("Stage not found.");
 
-    const group = await this.storage.select("group", stored.group_id);
+    const group = this.storage.select("group", stored.group_id);
     if (!group) throw Error("Group not found.");
 
-    const { roundNumber, roundCount } = await this.getRoundPositionalInfo(
+    const { roundNumber, roundCount } = this.getRoundPositionalInfo(
       stored.round_id
     );
     const matchLocation = helpers.getMatchLocation(stage.type, group.number);
-    const nextMatches = await this.getNextMatches(
+    const nextMatches = this.getNextMatches(
       stored,
       matchLocation,
       stage,
@@ -59,10 +59,10 @@ export class Reset extends BaseUpdater {
       throw Error("The match is locked.");
 
     helpers.resetMatchResults(stored);
-    await this.applyMatchUpdate(stored);
+    this.applyMatchUpdate(stored);
 
     if (!helpers.isRoundRobin(stage))
-      await this.updateRelatedMatches(stored, true, true);
+      this.updateRelatedMatches(stored, true, true);
   }
 
   /**
@@ -70,21 +70,21 @@ export class Reset extends BaseUpdater {
    *
    * @param gameId ID of the match game.
    */
-  public async matchGameResults(gameId: number): Promise<void> {
-    const stored = await this.storage.select("match_game", gameId);
+  public matchGameResults(gameId: number): void {
+    const stored = this.storage.select("match_game", gameId);
     if (!stored) throw Error("Match game not found.");
 
-    const stage = await this.storage.select("stage", stored.stage_id);
+    const stage = this.storage.select("stage", stored.stage_id);
     if (!stage) throw Error("Stage not found.");
 
     const inRoundRobin = helpers.isRoundRobin(stage);
 
     helpers.resetMatchResults(stored);
 
-    if (!(await this.storage.update("match_game", stored.id, stored)))
+    if (!this.storage.update("match_game", stored.id, stored))
       throw Error("Could not update the match game.");
 
-    await this.updateParentMatch(stored.parent_id, inRoundRobin);
+    this.updateParentMatch(stored.parent_id, inRoundRobin);
   }
 
   /**
@@ -92,7 +92,7 @@ export class Reset extends BaseUpdater {
    *
    * @param stageId ID of the stage.
    */
-  public async seeding(stageId: number): Promise<void> {
-    await this.updateSeeding(stageId, null);
+  public seeding(stageId: number): void {
+    this.updateSeeding(stageId, null);
   }
 }

@@ -17,10 +17,10 @@ export class Get extends BaseGetter {
    *
    * @param stageId ID of the stage.
    */
-  public async stageData(stageId: number): Promise<Database> {
-    const stageData = await this.getStageSpecificData(stageId);
+  public stageData(stageId: number): Database {
+    const stageData = this.getStageSpecificData(stageId);
 
-    const participants = await this.storage.select("participant", {
+    const participants = this.storage.select("participant", {
       tournament_id: stageData.stage.tournament_id,
     });
     if (!participants) throw Error("Error getting participants.");
@@ -40,17 +40,17 @@ export class Get extends BaseGetter {
    *
    * @param tournamentId ID of the tournament.
    */
-  public async tournamentData(tournamentId: number): Promise<Database> {
-    const stages = await this.storage.select("stage", {
+  public tournamentData(tournamentId: number): Database {
+    const stages = this.storage.select("stage", {
       tournament_id: tournamentId,
     });
     if (!stages) throw Error("Error getting stages.");
 
-    const stagesData = await Promise.all(
-      stages.map((stage) => this.getStageSpecificData(stage.id))
+    const stagesData = stages.map((stage) =>
+      this.getStageSpecificData(stage.id)
     );
 
-    const participants = await this.storage.select("participant", {
+    const participants = this.storage.select("participant", {
       tournament_id: tournamentId,
     });
     if (!participants) throw Error("Error getting participants.");
@@ -82,13 +82,11 @@ export class Get extends BaseGetter {
    *
    * @param matches A list of matches.
    */
-  public async matchGames(matches: Match[]): Promise<MatchGame[]> {
+  public matchGames(matches: Match[]): MatchGame[] {
     const parentMatches = matches.filter((match) => match.child_count > 0);
 
-    const matchGamesQueries = await Promise.all(
-      parentMatches.map((match) =>
-        this.storage.select("match_game", { parent_id: match.id })
-      )
+    const matchGamesQueries = parentMatches.map((match) =>
+      this.storage.select("match_game", { parent_id: match.id })
     );
     if (matchGamesQueries.some((game) => game === null))
       throw Error("Error getting match games.");
@@ -102,14 +100,14 @@ export class Get extends BaseGetter {
    *
    * @param tournamentId ID of the tournament.
    */
-  public async currentStage(tournamentId: number): Promise<Stage | null> {
-    const stages = await this.storage.select("stage", {
+  public currentStage(tournamentId: number): Stage | null {
+    const stages = this.storage.select("stage", {
       tournament_id: tournamentId,
     });
     if (!stages) throw Error("Error getting stages.");
 
     for (const stage of stages) {
-      const matches = await this.storage.select("match", {
+      const matches = this.storage.select("match", {
         stage_id: stage.id,
       });
       if (!matches) throw Error("Error getting matches.");
@@ -133,12 +131,12 @@ export class Get extends BaseGetter {
    * If you don't know the stage id, you can first get the current stage.
    * ```js
    * const tournamentId = 3;
-   * const currentStage = await manager.get.currentStage(tournamentId);
-   * const currentRound = await manager.get.currentRound(currentStage.id);
+   * const currentStage =  manager.get.currentStage(tournamentId);
+   * const currentRound =  manager.get.currentRound(currentStage.id);
    * ```
    */
-  public async currentRound(stageId: number): Promise<Round | null> {
-    const matches = await this.storage.select("match", { stage_id: stageId });
+  public currentRound(stageId: number): Round | null {
+    const matches = this.storage.select("match", { stage_id: stageId });
     if (!matches) throw Error("Error getting matches.");
 
     const matchesByRound = helpers.splitBy(matches, "round_id");
@@ -147,10 +145,7 @@ export class Get extends BaseGetter {
       if (roundMatches.every((match) => match.status >= Status.Completed))
         continue;
 
-      const round = await this.storage.select(
-        "round",
-        roundMatches[0].round_id
-      );
+      const round = this.storage.select("round", roundMatches[0].round_id);
       if (!round) throw Error("Round not found.");
       return round;
     }
@@ -169,12 +164,12 @@ export class Get extends BaseGetter {
    * If you don't know the stage id, you can first get the current stage.
    * ```js
    * const tournamentId = 3;
-   * const currentStage = await manager.get.currentStage(tournamentId);
-   * const currentMatches = await manager.get.currentMatches(currentStage.id);
+   * const currentStage =  manager.get.currentStage(tournamentId);
+   * const currentMatches =  manager.get.currentMatches(currentStage.id);
    * ```
    */
-  public async currentMatches(stageId: number): Promise<Match[]> {
-    const stage = await this.storage.select("stage", stageId);
+  public currentMatches(stageId: number): Match[] {
+    const stage = this.storage.select("stage", stageId);
     if (!stage) throw Error("Stage not found.");
 
     // TODO: Implement this for all stage types.
@@ -185,7 +180,7 @@ export class Get extends BaseGetter {
         "Not implemented for round robin and double elimination. Ask if needed."
       );
 
-    const matches = await this.storage.select("match", { stage_id: stageId });
+    const matches = this.storage.select("match", { stage_id: stageId });
     if (!matches) throw Error("Error getting matches.");
 
     const matchesByRound = helpers.splitBy(matches, "round_id");
@@ -226,8 +221,8 @@ export class Get extends BaseGetter {
    *
    * @param stageId ID of the stage.
    */
-  public async seeding(stageId: number): Promise<ParticipantSlot[]> {
-    const stage = await this.storage.select("stage", stageId);
+  public seeding(stageId: number): ParticipantSlot[] {
+    const stage = this.storage.select("stage", stageId);
     if (!stage) throw Error("Stage not found.");
 
     const pickRelevantProps = (slot: ParticipantSlot): ParticipantSlot => {
@@ -237,9 +232,9 @@ export class Get extends BaseGetter {
     };
 
     if (stage.type === "round_robin")
-      return (await this.roundRobinSeeding(stage)).map(pickRelevantProps);
+      return this.roundRobinSeeding(stage).map(pickRelevantProps);
 
-    return (await this.eliminationSeeding(stage)).map(pickRelevantProps);
+    return this.eliminationSeeding(stage).map(pickRelevantProps);
   }
 
   /**
@@ -247,8 +242,8 @@ export class Get extends BaseGetter {
    *
    * @param stageId ID of the stage.
    */
-  public async finalStandings(stageId: number): Promise<FinalStandingsItem[]> {
-    const stage = await this.storage.select("stage", stageId);
+  public finalStandings(stageId: number): FinalStandingsItem[] {
+    const stage = this.storage.select("stage", stageId);
     if (!stage) throw Error("Stage not found.");
 
     switch (stage.type) {
@@ -268,11 +263,11 @@ export class Get extends BaseGetter {
    *
    * @param stage The stage.
    */
-  private async roundRobinSeeding(stage: Stage): Promise<ParticipantSlot[]> {
+  private roundRobinSeeding(stage: Stage): ParticipantSlot[] {
     if (stage.settings.size === undefined)
       throw Error("The size of the seeding is undefined.");
 
-    const matches = await this.storage.select("match", { stage_id: stage.id });
+    const matches = this.storage.select("match", { stage_id: stage.id });
     if (!matches) throw Error("Error getting matches.");
 
     const slots = helpers.convertMatchesToSeeding(matches);
@@ -294,14 +289,14 @@ export class Get extends BaseGetter {
    *
    * @param stage The stage.
    */
-  private async eliminationSeeding(stage: Stage): Promise<ParticipantSlot[]> {
-    const round = await this.storage.selectFirst("round", {
+  private eliminationSeeding(stage: Stage): ParticipantSlot[] {
+    const round = this.storage.selectFirst("round", {
       stage_id: stage.id,
       number: 1,
     });
     if (!round) throw Error("Error getting the first round.");
 
-    const matches = await this.storage.select("match", { round_id: round.id });
+    const matches = this.storage.select("match", { round_id: round.id });
     if (!matches) throw Error("Error getting matches.");
 
     return helpers.convertMatchesToSeeding(matches);
@@ -312,9 +307,7 @@ export class Get extends BaseGetter {
    *
    * @param stageId ID of the stage.
    */
-  private async singleEliminationStandings(
-    stageId: number
-  ): Promise<FinalStandingsItem[]> {
+  private singleEliminationStandings(stageId: number): FinalStandingsItem[] {
     const grouped: Participant[][] = [];
 
     const {
@@ -322,7 +315,7 @@ export class Get extends BaseGetter {
       group: groups,
       match: matches,
       participant: participants,
-    } = await this.stageData(stageId);
+    } = this.stageData(stageId);
 
     const [stage] = stages;
     const [singleBracket, finalGroup] = groups;
@@ -371,9 +364,7 @@ export class Get extends BaseGetter {
    *
    * @param stageId ID of the stage.
    */
-  private async doubleEliminationStandings(
-    stageId: number
-  ): Promise<FinalStandingsItem[]> {
+  private doubleEliminationStandings(stageId: number): FinalStandingsItem[] {
     const grouped: Participant[][] = [];
 
     const {
@@ -381,7 +372,7 @@ export class Get extends BaseGetter {
       group: groups,
       match: matches,
       participant: participants,
-    } = await this.stageData(stageId);
+    } = this.stageData(stageId);
 
     const [stage] = stages;
     const [winnerBracket, loserBracket, finalGroup] = groups;
@@ -444,26 +435,26 @@ export class Get extends BaseGetter {
    *
    * @param stageId ID of the stage.
    */
-  private async getStageSpecificData(stageId: number): Promise<{
+  private getStageSpecificData(stageId: number): {
     stage: Stage;
     groups: Group[];
     rounds: Round[];
     matches: Match[];
     matchGames: MatchGame[];
-  }> {
-    const stage = await this.storage.select("stage", stageId);
+  } {
+    const stage = this.storage.select("stage", stageId);
     if (!stage) throw Error("Stage not found.");
 
-    const groups = await this.storage.select("group", { stage_id: stageId });
+    const groups = this.storage.select("group", { stage_id: stageId });
     if (!groups) throw Error("Error getting groups.");
 
-    const rounds = await this.storage.select("round", { stage_id: stageId });
+    const rounds = this.storage.select("round", { stage_id: stageId });
     if (!rounds) throw Error("Error getting rounds.");
 
-    const matches = await this.storage.select("match", { stage_id: stageId });
+    const matches = this.storage.select("match", { stage_id: stageId });
     if (!matches) throw Error("Error getting matches.");
 
-    const matchGames = await this.matchGames(matches);
+    const matchGames = this.matchGames(matches);
 
     return {
       stage,

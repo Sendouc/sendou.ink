@@ -34,20 +34,20 @@ export class BracketsManager {
   constructor(storageInterface: CrudInterface) {
     const storage = storageInterface as Storage;
 
-    storage.selectFirst = async <T extends Table>(
+    storage.selectFirst = <T extends Table>(
       table: T,
       filter: Partial<DataTypes[T]>
-    ): Promise<DataTypes[T] | null> => {
-      const results = await this.storage.select<T>(table, filter);
+    ): DataTypes[T] | null => {
+      const results = this.storage.select<T>(table, filter);
       if (!results || results.length === 0) return null;
       return results[0];
     };
 
-    storage.selectLast = async <T extends Table>(
+    storage.selectLast = <T extends Table>(
       table: T,
       filter: Partial<DataTypes[T]>
-    ): Promise<DataTypes[T] | null> => {
-      const results = await this.storage.select<T>(table, filter);
+    ): DataTypes[T] | null => {
+      const results = this.storage.select<T>(table, filter);
       if (!results || results.length === 0) return null;
       return results[results.length - 1];
     };
@@ -65,7 +65,7 @@ export class BracketsManager {
    *
    * @param stage A stage to create.
    */
-  public async create(stage: InputStage): Promise<Stage> {
+  public create(stage: InputStage): Stage {
     return create.call(this, stage);
   }
 
@@ -75,60 +75,60 @@ export class BracketsManager {
    * @param data Data to import.
    * @param normalizeIds Enable ID normalization: all IDs (and references to them) are remapped to consecutive IDs starting from 0.
    */
-  public async import(data: Database, normalizeIds = false): Promise<void> {
+  public import(data: Database, normalizeIds = false): void {
     if (normalizeIds) data = helpers.normalizeIds(data);
 
-    if (!(await this.storage.delete("participant")))
+    if (!this.storage.delete("participant"))
       throw Error("Could not empty the participant table.");
-    if (!(await this.storage.insert("participant", data.participant)))
+    if (!this.storage.insert("participant", data.participant))
       throw Error("Could not import participants.");
 
-    if (!(await this.storage.delete("stage")))
+    if (!this.storage.delete("stage"))
       throw Error("Could not empty the stage table.");
-    if (!(await this.storage.insert("stage", data.stage)))
+    if (!this.storage.insert("stage", data.stage))
       throw Error("Could not import stages.");
 
-    if (!(await this.storage.delete("group")))
+    if (!this.storage.delete("group"))
       throw Error("Could not empty the group table.");
-    if (!(await this.storage.insert("group", data.group)))
+    if (!this.storage.insert("group", data.group))
       throw Error("Could not import groups.");
 
-    if (!(await this.storage.delete("round")))
+    if (!this.storage.delete("round"))
       throw Error("Could not empty the round table.");
-    if (!(await this.storage.insert("round", data.round)))
+    if (!this.storage.insert("round", data.round))
       throw Error("Could not import rounds.");
 
-    if (!(await this.storage.delete("match")))
+    if (!this.storage.delete("match"))
       throw Error("Could not empty the match table.");
-    if (!(await this.storage.insert("match", data.match)))
+    if (!this.storage.insert("match", data.match))
       throw Error("Could not import matches.");
 
-    if (!(await this.storage.delete("match_game")))
+    if (!this.storage.delete("match_game"))
       throw Error("Could not empty the match_game table.");
-    if (!(await this.storage.insert("match_game", data.match_game)))
+    if (!this.storage.insert("match_game", data.match_game))
       throw Error("Could not import match games.");
   }
 
   /**
    * Exports data from the database.
    */
-  public async export(): Promise<Database> {
-    const participants = await this.storage.select("participant");
+  public export(): Database {
+    const participants = this.storage.select("participant");
     if (!participants) throw Error("Error getting participants.");
 
-    const stages = await this.storage.select("stage");
+    const stages = this.storage.select("stage");
     if (!stages) throw Error("Error getting stages.");
 
-    const groups = await this.storage.select("group");
+    const groups = this.storage.select("group");
     if (!groups) throw Error("Error getting groups.");
 
-    const rounds = await this.storage.select("round");
+    const rounds = this.storage.select("round");
     if (!rounds) throw Error("Error getting rounds.");
 
-    const matches = await this.storage.select("match");
+    const matches = this.storage.select("match");
     if (!matches) throw Error("Error getting matches.");
 
-    const matchGames = await this.get.matchGames(matches);
+    const matchGames = this.get.matchGames(matches);
 
     return {
       participant: participants,

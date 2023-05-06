@@ -114,7 +114,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 
       scores[scoreToIncrement()]++;
 
-      await manager.update.match({
+      manager.update.match({
         id: match.id,
         opponent1: {
           score: scores[0],
@@ -160,7 +160,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 
       deleteTournamentMatchGameResultById(lastResult.id);
 
-      await manager.update.match({
+      manager.update.match({
         id: match.id,
         opponent1: {
           score: shouldReset
@@ -179,7 +179,7 @@ export const action: ActionFunction = async ({ params, request }) => {
       });
 
       if (shouldReset) {
-        await manager.reset.matchResults(match.id);
+        manager.reset.matchResults(match.id);
       }
 
       return null;
@@ -199,7 +199,7 @@ export const action: ActionFunction = async ({ params, request }) => {
       invariant(lastResult, "Last result is missing");
 
       deleteTournamentMatchGameResultById(lastResult.id);
-      await manager.update.match({
+      manager.update.match({
         id: match.id,
         opponent1: {
           score: scoreOne > scoreTwo ? scoreOne - 1 : scoreOne,

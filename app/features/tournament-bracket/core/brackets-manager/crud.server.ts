@@ -6,11 +6,11 @@
 import { Stage, Team, Group, Round, Match } from "./crud-db.server";
 
 export class SqlDatabase {
-  async insert(table, arg) {
+  insert(table, arg) {
     switch (table) {
       case "participant":
         throw new Error("not implemented");
-        return await Team.insertMissing(arg);
+        return Team.insertMissing(arg);
 
       case "stage":
         const stage = new Stage(
@@ -67,16 +67,16 @@ export class SqlDatabase {
           JSON.stringify(arg.opponent1),
           JSON.stringify(arg.opponent2)
         );
-        return (await matchGame.insert()) && matchGame.id;
+        return matchGame.insert() && matchGame.id;
     }
   }
 
-  async select(table, arg) {
+  select(table, arg) {
     switch (table) {
       case "participant":
         if (typeof arg === "number") {
           throw new Error("not implemented");
-          const team = await Team.getById(arg);
+          const team = Team.getById(arg);
           return team && convertTeam(team);
         }
 
@@ -93,7 +93,7 @@ export class SqlDatabase {
 
         if (arg.tournament_id && arg.number) {
           throw new Error("not implemented");
-          const stage = await Stage.getByTournamentAndNumber(
+          const stage = Stage.getByTournamentAndNumber(
             arg.tournament_id,
             arg.number
           );
@@ -109,7 +109,7 @@ export class SqlDatabase {
       case "group":
         if (!arg) {
           throw new Error("not implemented");
-          const groups = await Group.getAll();
+          const groups = Group.getAll();
           return groups && groups.map(convertGroup);
         }
 
@@ -131,7 +131,7 @@ export class SqlDatabase {
       case "round":
         if (!arg) {
           throw new Error("not implemented");
-          const rounds = await Round.getAll();
+          const rounds = Round.getAll();
           return rounds && rounds.map(convertRound);
         }
 
@@ -157,7 +157,7 @@ export class SqlDatabase {
       case "match":
         if (!arg) {
           throw new Error("not implemented");
-          const matches = await Match.getAll();
+          const matches = Match.getAll();
           return matches && matches.map(convertMatch);
         }
 
@@ -176,13 +176,13 @@ export class SqlDatabase {
 
         if (arg.group_id) {
           throw new Error("not implemented");
-          const matches = await Match.getByGroupId(arg.group_id);
+          const matches = Match.getByGroupId(arg.group_id);
           return matches && matches.map(convertMatch);
         }
 
         if (arg.round_id) {
           throw new Error("not implemented");
-          const matches = await Match.getByRoundId(arg.round_id);
+          const matches = Match.getByRoundId(arg.round_id);
           return matches && matches.map(convertMatch);
         }
 
@@ -191,12 +191,12 @@ export class SqlDatabase {
       case "match_game":
         throw new Error("not implemented");
         if (typeof arg === "number") {
-          const game = await MatchGame.getById(arg);
+          const game = MatchGame.getById(arg);
           return game && convertMatchGame(game);
         }
 
         if (arg.parent_id && arg.number) {
-          const game = await MatchGame.getByParentAndNumber(
+          const game = MatchGame.getByParentAndNumber(
             arg.parent_id,
             arg.number
           );
@@ -204,7 +204,7 @@ export class SqlDatabase {
         }
 
         if (arg.parent_id) {
-          const games = await MatchGame.getByParentId(arg.parent_id);
+          const games = MatchGame.getByParentId(arg.parent_id);
           return games && games.map(convertMatchGame);
         }
 
@@ -214,7 +214,7 @@ export class SqlDatabase {
     return null;
   }
 
-  async update(table, query, update) {
+  update(table, query, update) {
     switch (table) {
       case "stage":
         if (typeof query === "number") {
@@ -244,19 +244,19 @@ export class SqlDatabase {
         }
 
         if (query.stage_id)
-          return await Match.updateChildCountByStage(
+          return Match.updateChildCountByStage(
             query.stage_id,
             update.child_count
           );
 
         if (query.group_id)
-          return await Match.updateChildCountByGroup(
+          return Match.updateChildCountByGroup(
             query.group_id,
             update.child_count
           );
 
         if (query.round_id)
-          return await Match.updateChildCountByRound(
+          return Match.updateChildCountByRound(
             query.round_id,
             update.child_count
           );
@@ -279,7 +279,7 @@ export class SqlDatabase {
             JSON.stringify(update.opponent2)
           );
 
-          return await game.update();
+          return game.update();
         }
 
         if (query.parent_id) {
@@ -296,7 +296,7 @@ export class SqlDatabase {
             JSON.stringify(update.opponent2)
           );
 
-          return await game.updateByParentId();
+          return game.updateByParentId();
         }
 
         break;
@@ -305,7 +305,7 @@ export class SqlDatabase {
     return false;
   }
 
-  async delete(table, filter) {
+  delete(table, filter) {
     throw new Error("not implemented");
     switch (table) {
       case "stage":
