@@ -182,6 +182,8 @@ export const toToolsRegisterPage = (eventId: number) =>
 export const toToolsMapsPage = (eventId: number) => `/to/${eventId}/maps`;
 export const toToolsBracketsPage = (eventId: number) =>
   `/to/${eventId}/brackets`;
+export const toToolsBracketsSubscribePage = (eventId: number) =>
+  `/to/${eventId}/brackets/subscribe`;
 export const toToolsMatchPage = ({
   eventId,
   matchId,

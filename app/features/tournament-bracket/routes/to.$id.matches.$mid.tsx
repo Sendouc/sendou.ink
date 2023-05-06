@@ -29,6 +29,7 @@ import { useSearchParamState } from "~/hooks/useSearchParamState";
 import { findByIdentifier } from "../../tournament/queries/findByIdentifier.server";
 import { findTeamsByTournamentId } from "../../tournament/queries/findTeamsByTournamentId.server";
 import {
+  bracketSubscriptionKey,
   checkSourceIsValid,
   matchIdFromParams,
   matchSubscriptionKey,
@@ -171,24 +172,22 @@ export const action: ActionFunction = async ({ params, request }) => {
 
       const shouldReset = results.length === 1;
 
+      if (lastResult.winnerTeamId === match.opponentOne?.id) {
+        scores[0]--;
+      } else {
+        scores[1]--;
+      }
+
       sql.transaction(() => {
         deleteTournamentMatchGameResultById(lastResult.id);
 
         manager.update.match({
           id: match.id,
           opponent1: {
-            score: shouldReset
-              ? undefined
-              : lastResult.winnerTeamId === match.opponentOne?.id
-              ? scores[0] - 1
-              : scores[0],
+            score: shouldReset ? undefined : scores[0],
           },
           opponent2: {
-            score: shouldReset
-              ? undefined
-              : lastResult.winnerTeamId === match.opponentTwo?.id
-              ? scores[1] - 1
-              : scores[1],
+            score: shouldReset ? undefined : scores[1],
           },
         });
 
@@ -212,17 +211,23 @@ export const action: ActionFunction = async ({ params, request }) => {
       const lastResult = results[results.length - 1];
       invariant(lastResult, "Last result is missing");
 
+      if (scoreOne > scoreTwo) {
+        scores[0]--;
+      } else {
+        scores[1]--;
+      }
+
       try {
         sql.transaction(() => {
           deleteTournamentMatchGameResultById(lastResult.id);
           manager.update.match({
             id: match.id,
             opponent1: {
-              score: scoreOne > scoreTwo ? scoreOne - 1 : scoreOne,
+              score: scores[0],
               result: undefined,
             },
             opponent2: {
-              score: scoreTwo > scoreOne ? scoreTwo - 1 : scoreTwo,
+              score: scores[1],
               result: undefined,
             },
           });
@@ -245,6 +250,13 @@ export const action: ActionFunction = async ({ params, request }) => {
   }
 
   emitter.emit(matchSubscriptionKey(match.id), nanoid());
+  emitter.emit(bracketSubscriptionKey(event.id), {
+    matchId: match.id,
+    scores,
+    isOver:
+      scores[0] === Math.ceil(match.bestOf / 2) ||
+      scores[1] === Math.ceil(match.bestOf / 2),
+  });
 
   return null;
 };

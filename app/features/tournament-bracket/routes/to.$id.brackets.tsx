@@ -8,6 +8,7 @@ import {
   useLoaderData,
   useNavigate,
   useOutletContext,
+  useRevalidator,
 } from "@remix-run/react";
 import * as React from "react";
 import bracketViewerStyles from "../brackets-viewer.css";
@@ -19,7 +20,7 @@ import { getTournamentManager } from "../core/brackets-manager";
 import hasTournamentStarted from "../../tournament/queries/hasTournamentStarted.server";
 import { findByIdentifier } from "../../tournament/queries/findByIdentifier.server";
 import { notFoundIfFalsy, validate } from "~/utils/remix";
-import { toToolsMatchPage } from "~/utils/urls";
+import { toToolsBracketsSubscribePage, toToolsMatchPage } from "~/utils/urls";
 import type { TournamentToolsLoaderData } from "../../tournament/routes/to.$id";
 import { resolveBestOfs } from "../core/bestOf.server";
 import { findAllMatchesByTournamentId } from "../queries/findAllMatchesByTournamentId.server";
@@ -28,11 +29,14 @@ import { canAdminTournament } from "~/permissions";
 import { requireUser, useUser } from "~/modules/auth";
 import { tournamentIdFromParams } from "~/features/tournament";
 import {
+  bracketSubscriptionKey,
   resolveTournamentStageName,
   resolveTournamentStageSettings,
   resolveTournamentStageType,
 } from "../tournament-bracket-utils";
 import { sql } from "~/db/sql";
+import { useEventSource } from "remix-utils";
+import { Status } from "~/db/types";
 
 export const links: LinksFunction = () => {
   return [
@@ -155,6 +159,7 @@ export default function TournamentBracketsPage() {
   // xxx: show floating prompt if active match
   return (
     <div>
+      <AutoRefresher />
       {!data.hasStarted ? (
         <Form method="post">
           {!canAdminTournament({ user, event: parentRouteData.event }) ? (
@@ -179,6 +184,52 @@ export default function TournamentBracketsPage() {
       <div className="brackets-viewer" ref={ref}></div>
     </div>
   );
+}
+
+function AutoRefresher() {
+  useAutoRefresh();
+
+  return null;
+}
+
+function useAutoRefresh() {
+  const { revalidate } = useRevalidator();
+  const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
+  const lastEvent = useEventSource(
+    toToolsBracketsSubscribePage(parentRouteData.event.id),
+    {
+      event: bracketSubscriptionKey(parentRouteData.event.id),
+    }
+  );
+
+  React.useEffect(() => {
+    if (!lastEvent) return;
+
+    const [matchIdRaw, scoreOneRaw, scoreTwoRaw, isOverRaw] =
+      lastEvent.split("-");
+    const matchId = Number(matchIdRaw);
+    const scoreOne = Number(scoreOneRaw);
+    const scoreTwo = Number(scoreTwoRaw);
+    const isOver = isOverRaw === "true";
+
+    if (isOver) {
+      // bracketsViewer.updateMatch can't advance bracket
+      // so we revalidate loader when the match is over
+      revalidate();
+    } else {
+      // @ts-expect-error - brackets-viewer is not typed
+      window.bracketsViewer.updateMatch({
+        id: matchId,
+        opponent1: {
+          score: scoreOne,
+        },
+        opponent2: {
+          score: scoreTwo,
+        },
+        status: Status.Running,
+      });
+    }
+  }, [lastEvent, revalidate]);
 }
 
 // xxx: move to utils with testing

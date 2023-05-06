@@ -30,6 +30,10 @@ module.exports = {
           "features/tournament-bracket/routes/to.$id.brackets.tsx"
         );
         route(
+          "/to/:id/brackets/subscribe",
+          "features/tournament-bracket/routes/to.$id.brackets.subscribe.tsx"
+        );
+        route(
           "/to/:id/matches/:mid",
           "features/tournament-bracket/routes/to.$id.matches.$mid.tsx"
         );
