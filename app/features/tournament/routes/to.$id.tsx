@@ -23,6 +23,7 @@ import type {
 import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
 import { tournamentIdFromParams } from "../tournament-utils";
 import styles from "../tournament.css";
+import hasTournamentStarted from "../queries/hasTournamentStarted.server";
 
 export const meta: V2_MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader>;
@@ -70,7 +71,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   function censorMapPools(
     teams: FindTeamsByTournamentId
   ): FindTeamsByTournamentId {
-    if (mapListGeneratorAvailable) return teams;
+    if (hasTournamentStarted(tournamentId)) return teams;
 
     return teams.map((team) =>
       team.id === ownedTeamId
