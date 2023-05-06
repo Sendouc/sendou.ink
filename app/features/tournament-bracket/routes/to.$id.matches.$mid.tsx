@@ -249,7 +249,10 @@ export const action: ActionFunction = async ({ params, request }) => {
     }
   }
 
-  emitter.emit(matchSubscriptionKey(match.id), nanoid());
+  emitter.emit(matchSubscriptionKey(match.id), {
+    eventId: nanoid(),
+    userId: user.id,
+  });
   emitter.emit(bracketSubscriptionKey(event.id), {
     matchId: match.id,
     scores,
@@ -332,7 +335,6 @@ function AutoRefresher() {
   return null;
 }
 
-// xxx: make avoid refresh when own submission
 function useAutoRefresh() {
   const { revalidate } = useRevalidator();
   const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
