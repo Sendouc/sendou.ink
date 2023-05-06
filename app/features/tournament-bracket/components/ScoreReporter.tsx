@@ -39,6 +39,7 @@ export function ScoreReporter({
   selectedResultIndex,
   setSelectedResultIndex,
   result,
+  type,
 }: {
   teams: [TournamentToolsTeam, TournamentToolsTeam];
   currentStageWithMode: TournamentMapListMap;
@@ -47,6 +48,7 @@ export function ScoreReporter({
   // if this is set it means the component is being used in presentation manner
   setSelectedResultIndex?: (index: number) => void;
   result?: Result;
+  type: "EDIT" | "MEMBER" | "OTHER";
 }) {
   const actionData = useActionData<{ error?: "locked" }>();
   const user = useUser();
@@ -60,18 +62,21 @@ export function ScoreReporter({
 
   const presentational = Boolean(setSelectedResultIndex);
 
+  const showFullInfos =
+    !presentational && (type === "EDIT" || type === "MEMBER");
+
   const roundInfos = [
-    !presentational ? (
+    showFullInfos ? (
       <>
         <b>{resolveHostingTeam(teams).name}</b> hosts
       </>
     ) : null,
-    !presentational ? (
+    showFullInfos ? (
       <>
         Pass <b>{resolveRoomPass(data.match.id)}</b>
       </>
     ) : null,
-    !presentational ? (
+    showFullInfos ? (
       <>
         Pool <b>{HACKY_resolvePoolCode(parentRouteData.event)}</b>
       </>
@@ -93,7 +98,7 @@ export function ScoreReporter({
         infos={roundInfos}
         teams={teams}
       >
-        {currentPosition > 0 && !presentational && (
+        {currentPosition > 0 && !presentational && type === "EDIT" && (
           <Form method="post">
             <input type="hidden" name="position" value={currentPosition - 1} />
             <div className="tournament-bracket__stage-banner__bottom-bar">
@@ -139,18 +144,20 @@ export function ScoreReporter({
         selectedResultIndex={selectedResultIndex}
         setSelectedResultIndex={setSelectedResultIndex}
       />
-      <ActionSectionWrapper>
-        <ScoreReporterRosters
-          // Without the key prop when switching to another match the winnerId is remembered
-          // which causes "No winning team matching the id" error.
-          // Switching the key props forces the component to remount.
-          key={data.match.id}
-          teams={teams}
-          position={currentPosition}
-          currentStageWithMode={currentStageWithMode}
-          result={result}
-        />
-      </ActionSectionWrapper>
+      {type === "EDIT" || presentational ? (
+        <ActionSectionWrapper>
+          <ScoreReporterRosters
+            // Without the key prop when switching to another match the winnerId is remembered
+            // which causes "No winning team matching the id" error.
+            // Switching the key props forces the component to remount.
+            key={data.match.id}
+            teams={teams}
+            position={currentPosition}
+            currentStageWithMode={currentStageWithMode}
+            result={result}
+          />
+        </ActionSectionWrapper>
+      ) : null}
     </div>
   );
 }

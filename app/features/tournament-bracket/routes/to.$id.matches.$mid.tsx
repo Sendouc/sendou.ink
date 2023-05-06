@@ -277,9 +277,7 @@ export const loader = ({ params }: LoaderArgs) => {
   };
 };
 
-// xxx: what to show when viewing in progress match as not logged in?
 export default function TournamentMatchPage() {
-  const user = useUser();
   const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
   const data = useLoaderData<typeof loader>();
 
@@ -313,12 +311,7 @@ export default function TournamentMatchPage() {
         </div>
       ) : null}
       {matchIsOver ? <ResultsSection /> : null}
-      {canReportTournamentScore({
-        event: parentRouteData.event,
-        match: data.match,
-        ownedTeamId: parentRouteData.ownedTeamId,
-        user,
-      }) &&
+      {!matchIsOver &&
       typeof data.match.opponentOne?.id === "number" &&
       typeof data.match.opponentTwo?.id === "number" ? (
         <MapListSection
@@ -357,6 +350,7 @@ function useAutoRefresh() {
 }
 
 function MapListSection({ teams }: { teams: [id: number, id: number] }) {
+  const user = useUser();
   const data = useLoaderData<typeof loader>();
   const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
 
@@ -392,11 +386,27 @@ function MapListSection({ teams }: { teams: [id: number, id: number] }) {
 
   invariant(currentStageWithMode, "No map found for this score");
 
+  const isMemberOfATeam =
+    teamOne.members.some((m) => m.userId === user?.id) ||
+    teamTwo.members.some((m) => m.userId === user?.id);
+
   return (
     <ScoreReporter
       currentStageWithMode={currentStageWithMode}
       teams={[teamOne, teamTwo]}
       modes={maps.map((map) => map.mode)}
+      type={
+        canReportTournamentScore({
+          event: parentRouteData.event,
+          match: data.match,
+          ownedTeamId: parentRouteData.ownedTeamId,
+          user,
+        })
+          ? "EDIT"
+          : isMemberOfATeam
+          ? "MEMBER"
+          : "OTHER"
+      }
     />
   );
 }
@@ -438,6 +448,7 @@ function ResultsSection() {
       selectedResultIndex={selectedResultIndex}
       setSelectedResultIndex={setSelectedResultIndex}
       result={result}
+      type="OTHER"
     />
   );
 }
