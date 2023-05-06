@@ -4,14 +4,18 @@ import type {
   LoaderArgs,
 } from "@remix-run/node";
 import { findMatchById } from "../queries/findMatchById.server";
-import { useLoaderData, useOutletContext } from "@remix-run/react";
+import {
+  useLoaderData,
+  useOutletContext,
+  useRevalidator,
+} from "@remix-run/react";
 import { createTournamentMapList } from "~/modules/tournament-map-list-generator";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { MapPool } from "~/modules/map-pool-serializer";
 import { ScoreReporter } from "../components/ScoreReporter";
 import { LinkButton } from "~/components/Button";
 import { ArrowLongLeftIcon } from "~/components/icons/ArrowLongLeft";
-import { toToolsBracketsPage } from "~/utils/urls";
+import { toToolsBracketsPage, toToolsMatchSubscribePage } from "~/utils/urls";
 import invariant from "tiny-invariant";
 import { canAdminTournament, canReportTournamentScore } from "~/permissions";
 import { requireUser, useUser } from "~/modules/auth";
@@ -37,6 +41,11 @@ import {
 import { insertTournamentMatchGameResultParticipant } from "../queries/insertTournamentMatchGameResultParticipant.server";
 import bracketStyles from "../tournament-bracket.css";
 import { sql } from "~/db/sql";
+import { nanoid } from "nanoid";
+import { emitter } from "../core/emitters.server";
+import { useEventSource } from "remix-utils";
+import { EVENTS } from "../tournament-bracket-contants";
+import * as React from "react";
 
 export const links: LinksFunction = () => [
   {
@@ -147,7 +156,7 @@ export const action: ActionFunction = async ({ params, request }) => {
         }
       })();
 
-      return null;
+      break;
     }
     case "UNDO_REPORT_SCORE": {
       validateCanReportScore();
@@ -188,7 +197,7 @@ export const action: ActionFunction = async ({ params, request }) => {
         }
       })();
 
-      return null;
+      break;
     }
     case "REOPEN_MATCH": {
       const scoreOne = match.opponentOne?.score ?? 0;
@@ -228,12 +237,16 @@ export const action: ActionFunction = async ({ params, request }) => {
         throw err;
       }
 
-      return null;
+      break;
     }
     default: {
       assertUnreachable(data);
     }
   }
+
+  emitter.emit(EVENTS.MATCH_CHANGED, nanoid());
+
+  return null;
 };
 
 export type TournamentMatchLoaderData = typeof loader;
@@ -249,10 +262,13 @@ export const loader = ({ params }: LoaderArgs) => {
   };
 };
 
+// xxx: what to show when viewing in progress match as not logged in?
 export default function TournamentMatchPage() {
   const user = useUser();
   const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
   const data = useLoaderData<typeof loader>();
+
+  useAutoRefresh();
 
   const matchHasTwoTeams = Boolean(
     data.match.opponentOne?.id && data.match.opponentTwo?.id
@@ -297,6 +313,28 @@ export default function TournamentMatchPage() {
       ) : null}
     </div>
   );
+}
+
+// xxx: make avoid refresh when own submission
+function useAutoRefresh() {
+  const { revalidate } = useRevalidator();
+  const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
+  const data = useLoaderData<typeof loader>();
+  const lastEventId = useEventSource(
+    toToolsMatchSubscribePage({
+      eventId: parentRouteData.event.id,
+      matchId: data.match.id,
+    }),
+    {
+      event: EVENTS.MATCH_CHANGED,
+    }
+  );
+
+  React.useEffect(() => {
+    if (lastEventId) {
+      revalidate();
+    }
+  }, [lastEventId, revalidate]);
 }
 
 function MapListSection({ teams }: { teams: [id: number, id: number] }) {

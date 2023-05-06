@@ -33,6 +33,10 @@ module.exports = {
           "/to/:id/matches/:mid",
           "features/tournament-bracket/routes/to.$id.matches.$mid.tsx"
         );
+        route(
+          "/to/:id/matches/:mid/subscribe",
+          "features/tournament-bracket/routes/to.$id.matches.$mid.subscribe.tsx"
+        );
       });
 
       route("/privacy-policy", "features/info/routes/privacy-policy.tsx");

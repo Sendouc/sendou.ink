@@ -189,6 +189,13 @@ export const toToolsMatchPage = ({
   eventId: number;
   matchId: number;
 }) => `/to/${eventId}/matches/${matchId}`;
+export const toToolsMatchSubscribePage = ({
+  eventId,
+  matchId,
+}: {
+  eventId: number;
+  matchId: number;
+}) => `/to/${eventId}/matches/${matchId}/subscribe`;
 export const toToolsJoinPage = ({
   eventId,
   inviteCode,

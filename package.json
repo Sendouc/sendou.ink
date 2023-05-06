@@ -76,6 +76,7 @@
     "remix-auth": "^3.4.0",
     "remix-auth-oauth2": "^1.6.0",
     "remix-i18next": "^4.1.1",
+    "remix-utils": "^6.3.0",
     "slugify": "^1.6.6",
     "swr": "^2.1.2",
     "tiny-invariant": "^1.3.1",
