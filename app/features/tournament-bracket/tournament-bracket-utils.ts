@@ -126,3 +126,11 @@ export function HACKY_resolvePoolCode(
 
   return "PICNIC";
 }
+
+export function bracketSubscriptionKey(tournamentId: number) {
+  return `BRACKET_CHANGED_${tournamentId}`;
+}
+
+export function matchSubscriptionKey(matchId: number) {
+  return `MATCH_CHANGED_${matchId}`;
+}

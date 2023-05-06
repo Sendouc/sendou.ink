@@ -2,17 +2,22 @@ import type { LoaderArgs } from "@remix-run/node";
 import { eventStream } from "remix-utils";
 
 import { emitter } from "../core/emitters.server";
-import { EVENTS } from "../tournament-bracket-contants";
+import {
+  matchIdFromParams,
+  matchSubscriptionKey,
+} from "../tournament-bracket-utils";
 
-export const loader = ({ request }: LoaderArgs) => {
+export const loader = ({ request, params }: LoaderArgs) => {
+  const matchId = matchIdFromParams(params);
+
   return eventStream(request.signal, (send) => {
     const handler = (id: string) => {
-      send({ event: EVENTS.MATCH_CHANGED, data: id });
+      send({ event: matchSubscriptionKey(matchId), data: id });
     };
 
-    emitter.addListener(EVENTS.MATCH_CHANGED, handler);
+    emitter.addListener(matchSubscriptionKey(matchId), handler);
     return () => {
-      emitter.removeListener(EVENTS.MATCH_CHANGED, handler);
+      emitter.removeListener(matchSubscriptionKey(matchId), handler);
     };
   });
 };

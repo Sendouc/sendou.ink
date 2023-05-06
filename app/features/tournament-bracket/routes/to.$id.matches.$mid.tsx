@@ -31,6 +31,7 @@ import { findTeamsByTournamentId } from "../../tournament/queries/findTeamsByTou
 import {
   checkSourceIsValid,
   matchIdFromParams,
+  matchSubscriptionKey,
 } from "../tournament-bracket-utils";
 import { matchSchema } from "../tournament-bracket-schemas.server";
 import {
@@ -44,7 +45,6 @@ import { sql } from "~/db/sql";
 import { nanoid } from "nanoid";
 import { emitter } from "../core/emitters.server";
 import { useEventSource } from "remix-utils";
-import { EVENTS } from "../tournament-bracket-contants";
 import * as React from "react";
 
 export const links: LinksFunction = () => [
@@ -244,7 +244,7 @@ export const action: ActionFunction = async ({ params, request }) => {
     }
   }
 
-  emitter.emit(EVENTS.MATCH_CHANGED, nanoid());
+  emitter.emit(matchSubscriptionKey(match.id), nanoid());
 
   return null;
 };
@@ -268,8 +268,6 @@ export default function TournamentMatchPage() {
   const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
   const data = useLoaderData<typeof loader>();
 
-  useAutoRefresh();
-
   const matchHasTwoTeams = Boolean(
     data.match.opponentOne?.id && data.match.opponentTwo?.id
   );
@@ -280,6 +278,7 @@ export default function TournamentMatchPage() {
 
   return (
     <div className="stack lg">
+      {!matchIsOver ? <AutoRefresher /> : null}
       <div className="flex horizontal justify-between items-center">
         {/* TODO: better title */}
         <h2 className="text-lighter text-lg">Match #{data.match.id}</h2>
@@ -315,6 +314,12 @@ export default function TournamentMatchPage() {
   );
 }
 
+function AutoRefresher() {
+  useAutoRefresh();
+
+  return null;
+}
+
 // xxx: make avoid refresh when own submission
 function useAutoRefresh() {
   const { revalidate } = useRevalidator();
@@ -326,7 +331,7 @@ function useAutoRefresh() {
       matchId: data.match.id,
     }),
     {
-      event: EVENTS.MATCH_CHANGED,
+      event: matchSubscriptionKey(data.match.id),
     }
   );
 
