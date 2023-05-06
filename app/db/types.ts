@@ -258,6 +258,26 @@ export interface TournamentRound {
   number: number;
 }
 
+export enum Status {
+  /** The two matches leading to this one are not completed yet. */
+  Locked = 0,
+
+  /** One participant is ready and waiting for the other one. */
+  Waiting = 1,
+
+  /** Both participants are ready to start. */
+  Ready = 2,
+
+  /** The match is running. */
+  Running = 3,
+
+  /** The match is completed. */
+  Completed = 4,
+
+  /** At least one participant started their following match. */
+  Archived = 5,
+}
+
 /** A match between two participants (more participants are not allowed).
  * Participants can be teams or individuals. */
 export interface TournamentMatch {
@@ -271,7 +291,7 @@ export interface TournamentMatch {
   number: number;
   opponentOne: string; // json
   opponentTwo: string; // json
-  status: number;
+  status: Status;
 }
 
 export interface TournamentMatchGameResult {

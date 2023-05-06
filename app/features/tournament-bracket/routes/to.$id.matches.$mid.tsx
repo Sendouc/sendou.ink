@@ -159,6 +159,7 @@ export const action: ActionFunction = async ({ params, request }) => {
       const shouldReset = results.length === 1;
 
       deleteTournamentMatchGameResultById(lastResult.id);
+
       await manager.update.match({
         id: match.id,
         opponent1: {
@@ -175,13 +176,15 @@ export const action: ActionFunction = async ({ params, request }) => {
             ? scores[1] - 1
             : scores[1],
         },
-        // xxx: figure how to reset status of the PREVIOUS match
-        // status: shouldReset ? 2 : undefined,
       });
+
+      if (shouldReset) {
+        await manager.reset.matchResults(match.id);
+      }
 
       return null;
     }
-    // xxx: gracefully handle error when match is locked
+    // xxx: gracefully handle error when match is locked - also should this be merged with the above?
     case "REOPEN_MATCH": {
       const scoreOne = match.opponentOne?.score ?? 0;
       const scoreTwo = match.opponentTwo?.score ?? 0;
