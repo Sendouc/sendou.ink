@@ -1393,10 +1393,10 @@ function ConsumptionTable({
               const opt2 = options2ForThisSubsUsed[i];
 
               const contents = !isComparing
-                ? opt1!.value
+                ? opt1.value
                 : `${opt1?.value ?? "-"}/${opt2?.value ?? "-"}`;
 
-              cells.push(<td key={opt1?.id ?? opt2!.id}>{contents}</td>);
+              cells.push(<td key={opt1?.id ?? opt2.id}>{contents}</td>);
             }
 
             return (

@@ -18,7 +18,7 @@
     "noEmit": true,
     "forceConsistentCasingInFileNames": true,
     "allowJs": false,
-    "noUncheckedIndexedAccess": true,
+    "noUncheckedIndexedAccess": false,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,

@@ -43,7 +43,7 @@ export const loader: LoaderFunction = ({ params }) => {
 export default function BadgeDetailsPage() {
   const user = useUser();
   const [, parentRoute] = useMatches();
-  const { badges } = parentRoute!.data as BadgesLoaderData;
+  const { badges } = parentRoute.data as BadgesLoaderData;
   const params = useParams();
   const data = useLoaderData<BadgeDetailsLoaderData>();
   const { t } = useTranslation("badges");

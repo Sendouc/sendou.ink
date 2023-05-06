@@ -1,6 +1,6 @@
 import { InMemoryDatabase } from "brackets-memory-db";
 import { SqlDatabase } from "./crud.server";
-import { BracketsManager } from "brackets-manager";
+import { BracketsManager } from "~/modules/brackets-manager";
 
 export function getTournamentManager(type: "SQL" | "IN_MEMORY") {
   const storage =

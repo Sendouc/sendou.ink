@@ -46,7 +46,6 @@
     "@tldraw/tldraw": "^1.29.2",
     "aws-sdk": "^2.1354.0",
     "better-sqlite3": "^8.3.0",
-    "brackets-manager": "^1.5.8",
     "brackets-memory-db": "^1.0.4",
     "cachified": "^3.1.0",
     "clsx": "^1.2.1",
