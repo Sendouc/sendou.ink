@@ -32,6 +32,7 @@ import {
   resolveTournamentStageSettings,
   resolveTournamentStageType,
 } from "../tournament-bracket-utils";
+import { sql } from "~/db/sql";
 
 export const links: LinksFunction = () => {
   return [
@@ -50,7 +51,6 @@ export const links: LinksFunction = () => {
   ];
 };
 
-// xxx: not a transaction so maybe getting lock on db would be most correct
 export const action: ActionFunction = async ({ params, request }) => {
   const user = await requireUser(request);
   const manager = getTournamentManager("SQL");
@@ -62,20 +62,22 @@ export const action: ActionFunction = async ({ params, request }) => {
   validate(canAdminTournament({ user, event: tournament }));
   validate(!hasStarted);
 
-  manager.create({
-    tournamentId,
-    name: resolveTournamentStageName(tournament.format),
-    type: resolveTournamentStageType(tournament.format),
-    seeding: fillWithNullTillPowerOfTwo(
-      findTeamsByTournamentId(tournamentId).map((team) => team.name)
-    ),
-    settings: resolveTournamentStageSettings(tournament.format),
-  });
+  sql.transaction(() => {
+    manager.create({
+      tournamentId,
+      name: resolveTournamentStageName(tournament.format),
+      type: resolveTournamentStageType(tournament.format),
+      seeding: fillWithNullTillPowerOfTwo(
+        findTeamsByTournamentId(tournamentId).map((team) => team.name)
+      ),
+      settings: resolveTournamentStageSettings(tournament.format),
+    });
 
-  const bestOfs = resolveBestOfs(findAllMatchesByTournamentId(tournamentId));
-  for (const [bestOf, id] of bestOfs) {
-    setBestOf({ bestOf, id });
-  }
+    const bestOfs = resolveBestOfs(findAllMatchesByTournamentId(tournamentId));
+    for (const [bestOf, id] of bestOfs) {
+      setBestOf({ bestOf, id });
+    }
+  })();
 
   return null;
 };

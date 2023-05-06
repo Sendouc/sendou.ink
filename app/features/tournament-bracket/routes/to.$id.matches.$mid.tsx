@@ -36,6 +36,7 @@ import {
 } from "~/features/tournament";
 import { insertTournamentMatchGameResultParticipant } from "../queries/insertTournamentMatchGameResultParticipant.server";
 import bracketStyles from "../tournament-bracket.css";
+import { sql } from "~/db/sql";
 
 export const links: LinksFunction = () => [
   {
@@ -83,7 +84,6 @@ export const action: ActionFunction = async ({ params, request }) => {
     match.opponentTwo?.score ?? 0,
   ];
 
-  // xxx: database lock
   switch (data._action) {
     case "REPORT_SCORE": {
       validateCanReportScore();
@@ -114,34 +114,38 @@ export const action: ActionFunction = async ({ params, request }) => {
 
       scores[scoreToIncrement()]++;
 
-      manager.update.match({
-        id: match.id,
-        opponent1: {
-          score: scores[0],
-          result: scores[0] === Math.ceil(match.bestOf / 2) ? "win" : undefined,
-        },
-        opponent2: {
-          score: scores[1],
-          result: scores[1] === Math.ceil(match.bestOf / 2) ? "win" : undefined,
-        },
-      });
-
-      const result = insertTournamentMatchGameResult({
-        matchId: match.id,
-        mode: data.mode as ModeShort,
-        stageId: data.stageId as StageId,
-        reporterId: user.id,
-        winnerTeamId: data.winnerTeamId,
-        number: data.position + 1,
-        source: data.source,
-      });
-
-      for (const userId of data.playerIds) {
-        insertTournamentMatchGameResultParticipant({
-          matchGameResultId: result.id,
-          userId,
+      sql.transaction(() => {
+        manager.update.match({
+          id: match.id,
+          opponent1: {
+            score: scores[0],
+            result:
+              scores[0] === Math.ceil(match.bestOf / 2) ? "win" : undefined,
+          },
+          opponent2: {
+            score: scores[1],
+            result:
+              scores[1] === Math.ceil(match.bestOf / 2) ? "win" : undefined,
+          },
         });
-      }
+
+        const result = insertTournamentMatchGameResult({
+          matchId: match.id,
+          mode: data.mode as ModeShort,
+          stageId: data.stageId as StageId,
+          reporterId: user.id,
+          winnerTeamId: data.winnerTeamId,
+          number: data.position + 1,
+          source: data.source,
+        });
+
+        for (const userId of data.playerIds) {
+          insertTournamentMatchGameResultParticipant({
+            matchGameResultId: result.id,
+            userId,
+          });
+        }
+      })();
 
       return null;
     }
@@ -158,29 +162,31 @@ export const action: ActionFunction = async ({ params, request }) => {
 
       const shouldReset = results.length === 1;
 
-      deleteTournamentMatchGameResultById(lastResult.id);
+      sql.transaction(() => {
+        deleteTournamentMatchGameResultById(lastResult.id);
 
-      manager.update.match({
-        id: match.id,
-        opponent1: {
-          score: shouldReset
-            ? undefined
-            : lastResult.winnerTeamId === match.opponentOne?.id
-            ? scores[0] - 1
-            : scores[0],
-        },
-        opponent2: {
-          score: shouldReset
-            ? undefined
-            : lastResult.winnerTeamId === match.opponentTwo?.id
-            ? scores[1] - 1
-            : scores[1],
-        },
-      });
+        manager.update.match({
+          id: match.id,
+          opponent1: {
+            score: shouldReset
+              ? undefined
+              : lastResult.winnerTeamId === match.opponentOne?.id
+              ? scores[0] - 1
+              : scores[0],
+          },
+          opponent2: {
+            score: shouldReset
+              ? undefined
+              : lastResult.winnerTeamId === match.opponentTwo?.id
+              ? scores[1] - 1
+              : scores[1],
+          },
+        });
 
-      if (shouldReset) {
-        manager.reset.matchResults(match.id);
-      }
+        if (shouldReset) {
+          manager.reset.matchResults(match.id);
+        }
+      })();
 
       return null;
     }
@@ -198,18 +204,20 @@ export const action: ActionFunction = async ({ params, request }) => {
       const lastResult = results[results.length - 1];
       invariant(lastResult, "Last result is missing");
 
-      deleteTournamentMatchGameResultById(lastResult.id);
-      manager.update.match({
-        id: match.id,
-        opponent1: {
-          score: scoreOne > scoreTwo ? scoreOne - 1 : scoreOne,
-          result: undefined,
-        },
-        opponent2: {
-          score: scoreTwo > scoreOne ? scoreTwo - 1 : scoreTwo,
-          result: undefined,
-        },
-      });
+      sql.transaction(() => {
+        deleteTournamentMatchGameResultById(lastResult.id);
+        manager.update.match({
+          id: match.id,
+          opponent1: {
+            score: scoreOne > scoreTwo ? scoreOne - 1 : scoreOne,
+            result: undefined,
+          },
+          opponent2: {
+            score: scoreTwo > scoreOne ? scoreTwo - 1 : scoreTwo,
+            result: undefined,
+          },
+        });
+      })();
 
       return null;
     }
