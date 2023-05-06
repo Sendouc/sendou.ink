@@ -1,12 +1,16 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
-import { mapCountPlayedInSetWithCertainty } from "./tournament-bracket-utils";
+import {
+  fillWithNullTillPowerOfTwo,
+  mapCountPlayedInSetWithCertainty,
+} from "./tournament-bracket-utils";
 
 const MapCountPlayedInSetWithCertainty = suite(
   "mapCountPlayedInSetWithCertainty()"
 );
+const FillWithNullTillPowerOfTwo = suite("fillWithNullTillPowerOfTwo()");
 
-const paramsToResult: {
+const mapCountParamsToResult: {
   bestOf: number;
   scores: [number, number];
   expected: number;
@@ -22,7 +26,7 @@ const paramsToResult: {
   { bestOf: 7, scores: [2, 2], expected: 6 },
 ];
 
-for (const { bestOf, scores, expected } of paramsToResult) {
+for (const { bestOf, scores, expected } of mapCountParamsToResult) {
   MapCountPlayedInSetWithCertainty(
     `bestOf=${bestOf}, scores=${scores.join(",")} -> ${expected}`,
     () => {
@@ -34,4 +38,31 @@ for (const { bestOf, scores, expected } of paramsToResult) {
   );
 }
 
+const powerOfTwoParamsToResults: [
+  amountOfTeams: number,
+  expectedNullCount: number
+][] = [
+  [32, 0],
+  [16, 0],
+  [8, 0],
+  [31, 1],
+  [0, 0],
+  [17, 15],
+];
+
+for (const [amountOfTeams, expectedNullCount] of powerOfTwoParamsToResults) {
+  FillWithNullTillPowerOfTwo(
+    `amountOfTeams=${amountOfTeams} -> ${expectedNullCount}`,
+    () => {
+      assert.equal(
+        fillWithNullTillPowerOfTwo(Array(amountOfTeams).fill("team")).filter(
+          (x) => x === null
+        ).length,
+        expectedNullCount
+      );
+    }
+  );
+}
+
 MapCountPlayedInSetWithCertainty.run();
+FillWithNullTillPowerOfTwo.run();

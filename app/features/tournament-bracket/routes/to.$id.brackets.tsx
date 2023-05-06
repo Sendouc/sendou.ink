@@ -30,6 +30,7 @@ import { requireUser, useUser } from "~/modules/auth";
 import { tournamentIdFromParams } from "~/features/tournament";
 import {
   bracketSubscriptionKey,
+  fillWithNullTillPowerOfTwo,
   resolveTournamentStageName,
   resolveTournamentStageSettings,
   resolveTournamentStageType,
@@ -230,12 +231,4 @@ function useAutoRefresh() {
       });
     }
   }, [lastEvent, revalidate]);
-}
-
-// xxx: move to utils with testing
-function fillWithNullTillPowerOfTwo(teams: string[]) {
-  const nextPowerOfTwo = Math.pow(2, Math.ceil(Math.log2(teams.length)));
-  const nullsToAdd = nextPowerOfTwo - teams.length;
-
-  return [...teams, ...new Array(nullsToAdd).fill(null)];
 }

@@ -134,3 +134,10 @@ export function bracketSubscriptionKey(tournamentId: number) {
 export function matchSubscriptionKey(matchId: number) {
   return `MATCH_CHANGED_${matchId}`;
 }
+
+export function fillWithNullTillPowerOfTwo<T>(arr: T[]) {
+  const nextPowerOfTwo = Math.pow(2, Math.ceil(Math.log2(arr.length)));
+  const nullsToAdd = nextPowerOfTwo - arr.length;
+
+  return [...arr, ...new Array(nullsToAdd).fill(null)];
+}
