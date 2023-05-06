@@ -155,14 +155,13 @@ export default function TournamentBracketsPage() {
     };
   }, [data.bracket, navigate, parentRouteData.event.id, data.hasStarted]);
 
-  // xxx: show dialog that shows which teams are not included in bracket due to lacking players or not being checked in
-  // xxx: button inside alert not responsive, should it be in its own component?
   // xxx: show floating prompt if active match
+  // xxx: bracket id in the url?
   return (
     <div>
       <AutoRefresher />
       {!data.hasStarted ? (
-        <Form method="post">
+        <Form method="post" className="stack items-center">
           {!canAdminTournament({ user, event: parentRouteData.event }) ? (
             <Alert variation="INFO" alertClassName="w-max">
               This bracket is a preview and subject to change
@@ -170,8 +169,8 @@ export default function TournamentBracketsPage() {
           ) : (
             <Alert
               variation="INFO"
-              alertClassName="w-max"
-              textClassName="stack horizontal sm items-center"
+              alertClassName="tournament-bracket__start-bracket-alert"
+              textClassName="stack horizontal md items-center"
             >
               When everything looks good, finalize the bracket to start the
               tournament{" "}
@@ -187,6 +186,7 @@ export default function TournamentBracketsPage() {
   );
 }
 
+// TODO: don't render this guy if tournament is over
 function AutoRefresher() {
   useAutoRefresh();
 
