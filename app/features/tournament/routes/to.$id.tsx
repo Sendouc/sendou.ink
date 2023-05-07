@@ -44,6 +44,8 @@ export const handle: SendouRouteHandle = {
 export type TournamentToolsTeam = Unpacked<TournamentToolsLoaderData["teams"]>;
 export type TournamentToolsLoaderData = SerializeFrom<typeof loader>;
 
+// xxx: probably want to control how these revalidate
+
 export const loader = async ({ params, request }: LoaderArgs) => {
   const user = await getUserId(request);
   const tournamentId = tournamentIdFromParams(params);
@@ -58,6 +60,8 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     team.members.some((member) => member.userId === user?.id && member.isOwner)
   )?.id;
 
+  const hasStarted = hasTournamentStarted(tournamentId);
+
   return {
     event,
     tieBreakerMapPool: db.calendarEvents.findTieBreakerMapPoolByEventId(
@@ -66,12 +70,13 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     ownedTeamId,
     teams: censorMapPools(teams),
     mapListGeneratorAvailable,
+    hasStarted,
   };
 
   function censorMapPools(
     teams: FindTeamsByTournamentId
   ): FindTeamsByTournamentId {
-    if (hasTournamentStarted(tournamentId)) return teams;
+    if (hasStarted) return teams;
 
     return teams.map((team) =>
       team.id === ownedTeamId
@@ -100,9 +105,10 @@ export default function TournamentToolsLayout() {
   return (
     <Main bigger={onBracketsPage}>
       <SubNav>
-        {data.event.isBeforeStart ? (
+        {!data.hasStarted ? (
           <SubNavLink to="register">{t("tournament:tabs.register")}</SubNavLink>
         ) : null}
+        <SubNavLink to="brackets">Brackets</SubNavLink>
         {data.mapListGeneratorAvailable ? (
           <SubNavLink to="maps">{t("tournament:tabs.maps")}</SubNavLink>
         ) : null}

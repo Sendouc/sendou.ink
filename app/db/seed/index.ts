@@ -683,7 +683,7 @@ function calendarEventWithToTools(sz?: boolean) {
     )
     .run({
       eventId,
-      startTime: dateToDatabaseTimestamp(new Date()),
+      startTime: dateToDatabaseTimestamp(new Date(Date.now() + 1000 * 60 * 60)),
     });
 }
 

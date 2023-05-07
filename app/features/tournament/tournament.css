@@ -204,6 +204,10 @@
   white-space: nowrap;
 }
 
+.tournament__section__icon {
+  width: 2rem;
+}
+
 .tournament__missing-player {
   width: 62px;
   height: 62px;
@@ -212,6 +216,10 @@
   border: 2px solid var(--theme-transparent);
   display: grid;
   place-items: center;
+}
+
+.tournament__missing-player__optional {
+  border: 2px dashed var(--theme-transparent);
 }
 
 .tournament__invite-container {

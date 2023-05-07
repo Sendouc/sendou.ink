@@ -64,7 +64,8 @@ export function Catcher() {
           <h2>Error {caught.status}</h2>
           <GetHelp />
           <div className="text-sm text-lighter font-semi-bold">
-            Please the message below and an explanation on what you were doing:
+            Please include the message below if any and an explanation on what
+            you were doing:
           </div>
           {caught.data ? (
             <pre>{JSON.stringify(JSON.parse(caught.data), null, 2)}</pre>

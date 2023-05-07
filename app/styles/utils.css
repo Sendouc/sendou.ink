@@ -58,6 +58,10 @@
   fill: var(--theme-warning);
 }
 
+.fill-error {
+  fill: var(--theme-error);
+}
+
 .bg-transparent-important {
   background-color: transparent !important;
 }

@@ -15,4 +15,7 @@ export const registerSchema = z.union([
     _action: z.literal("DELETE_TEAM_MEMBER"),
     userId: id,
   }),
+  z.object({
+    _action: z.literal("CHECK_IN"),
+  }),
 ]);

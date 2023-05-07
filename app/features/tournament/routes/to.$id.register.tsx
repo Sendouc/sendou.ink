@@ -41,8 +41,8 @@ import {
   SENDOU_INK_BASE_URL,
   modeImageUrl,
   navIconUrl,
+  toToolsBracketsPage,
   toToolsJoinPage,
-  toToolsMapsPage,
 } from "~/utils/urls";
 import deleteTeamMember from "../queries/deleteTeamMember.server";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
@@ -66,6 +66,12 @@ import { ClockIcon } from "~/components/icons/Clock";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { UserIcon } from "~/components/icons/User";
 import { useIsMounted } from "~/hooks/useIsMounted";
+import hasTournamentStarted from "../queries/hasTournamentStarted.server";
+import { CheckmarkIcon } from "~/components/icons/Checkmark";
+import { CrossIcon } from "~/components/icons/Cross";
+import clsx from "clsx";
+import { checkIn } from "../queries/checkIn.server";
+import { useAutoRerender } from "~/hooks/useAutoRerender";
 
 export const handle: SendouRouteHandle = {
   breadcrumb: () => ({
@@ -80,10 +86,11 @@ export const action: ActionFunction = async ({ request, params }) => {
   const data = await parseRequestFormData({ request, schema: registerSchema });
 
   const tournamentId = tournamentIdFromParams(params);
+  const hasStarted = hasTournamentStarted(tournamentId);
   const event = notFoundIfFalsy(findByIdentifier(tournamentId));
 
   validate(
-    event.isBeforeStart,
+    !hasStarted,
     400,
     "Tournament has started, cannot make edits to registration"
   );
@@ -131,6 +138,14 @@ export const action: ActionFunction = async ({ request, params }) => {
       });
       break;
     }
+    case "CHECK_IN": {
+      validate(ownTeam);
+      validate(ownTeam.members.length >= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL);
+      validate(ownTeam.mapPool && ownTeam.mapPool.length > 0);
+
+      checkIn(ownTeam.id);
+      break;
+    }
     default: {
       assertUnreachable(data);
     }
@@ -141,10 +156,10 @@ export const action: ActionFunction = async ({ request, params }) => {
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const eventId = tournamentIdFromParams(params);
-  const event = notFoundIfFalsy(findByIdentifier(eventId));
+  const hasStarted = hasTournamentStarted(eventId);
 
-  if (!event.isBeforeStart) {
-    throw redirect(toToolsMapsPage(event.id));
+  if (hasStarted) {
+    throw redirect(toToolsBracketsPage(eventId));
   }
 
   const user = await getUserId(request);
@@ -237,36 +252,163 @@ function RegistrationForms({
 
   return (
     <div className="stack lg">
-      <RegisterToBracket />
+      <RegistrationProgress checkedIn={Boolean(ownTeam?.checkedInAt)} />
       <TeamInfo ownTeam={ownTeam} />
       {ownTeam ? (
         <>
           <FillRoster ownTeam={ownTeam} />
           <CounterPickMapPoolPicker />
-          <RememberToCheckin />
         </>
       ) : null}
     </div>
   );
 }
 
-function RegisterToBracket() {
+function RegistrationProgress({ checkedIn }: { checkedIn?: boolean }) {
+  const user = useUser();
   const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
+
+  const ownTeam = resolveOwnedTeam({
+    teams: parentRouteData.teams,
+    userId: user?.id,
+  });
+
+  const steps = [
+    {
+      name: "Team name",
+      completed: Boolean(ownTeam?.name),
+    },
+    {
+      name: "Full roster",
+      completed:
+        ownTeam?.members &&
+        ownTeam?.members.length >= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
+    },
+    {
+      name: "Map pool",
+      completed: ownTeam?.mapPool && ownTeam.mapPool.length > 0,
+    },
+    {
+      name: "Check-in",
+      completed: checkedIn,
+    },
+  ];
+
+  const checkInStartsDate = HACKY_resolveCheckInTime(parentRouteData.event);
+  const checkInEndsDate = databaseTimestampToDate(
+    parentRouteData.event.startTime
+  );
+  const now = new Date();
+
+  const checkInIsOpen =
+    now.getTime() > checkInStartsDate.getTime() &&
+    now.getTime() < checkInEndsDate.getTime();
+
+  const checkInIsOver =
+    now.getTime() > checkInEndsDate.getTime() &&
+    now.getTime() > checkInStartsDate.getTime();
 
   return (
     <div>
-      <h3 className="tournament__section-header">1. Register</h3>
-      <section className="tournament__section text-center text-sm font-semi-bold">
-        Register on{" "}
-        <a
-          href={parentRouteData.event.bracketUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {parentRouteData.event.bracketUrl}
-        </a>
+      <h3 className="tournament__section-header text-center">
+        Complete these steps to play
+      </h3>
+      <section className="tournament__section stack md">
+        <div className="stack horizontal lg justify-center text-sm font-semi-bold">
+          {steps.map((step) => {
+            return (
+              <div
+                key={step.name}
+                className="stack sm items-center text-center"
+              >
+                {step.name}
+                {step.completed ? (
+                  <CheckmarkIcon className="tournament__section__icon fill-success" />
+                ) : (
+                  <CrossIcon className="tournament__section__icon fill-error" />
+                )}
+              </div>
+            );
+          })}
+        </div>
+        {!checkedIn ? (
+          <CheckIn
+            canCheckIn={steps.map((step) => !step.completed).length === 1}
+            status={
+              checkInIsOpen ? "OPEN" : checkInIsOver ? "OVER" : "UPCOMING"
+            }
+            startDate={checkInStartsDate}
+            endDate={checkInEndsDate}
+          />
+        ) : null}
       </section>
+      <div className="tournament__section__warning">
+        Free editing of any information before the tournament starts allowed.
+      </div>
     </div>
+  );
+}
+
+function CheckIn({
+  status,
+  canCheckIn,
+  startDate,
+  endDate,
+}: {
+  status: "OVER" | "OPEN" | "UPCOMING";
+  canCheckIn: boolean;
+  startDate: Date;
+  endDate: Date;
+}) {
+  const { i18n } = useTranslation();
+  const isMounted = useIsMounted();
+  const fetcher = useFetcher();
+
+  useAutoRerender();
+
+  const checkInStartsString = isMounted
+    ? startDate.toLocaleTimeString(i18n.language, {
+        minute: "numeric",
+        hour: "numeric",
+        day: "2-digit",
+        month: "2-digit",
+      })
+    : "";
+
+  const checkInEndsString = isMounted
+    ? endDate.toLocaleTimeString(i18n.language, {
+        minute: "numeric",
+        hour: "numeric",
+        day: "2-digit",
+        month: "2-digit",
+      })
+    : "";
+
+  if (status === "UPCOMING") {
+    return (
+      <div className={clsx("text-center text-xs", { invisible: !isMounted })}>
+        Check-in is open between {checkInStartsString} and {checkInEndsString}
+      </div>
+    );
+  }
+
+  if (status === "OVER") {
+    return <div className="text-center text-xs">Check-in is over</div>;
+  }
+
+  return (
+    <fetcher.Form method="post" className="stack items-center">
+      <SubmitButton
+        size="tiny"
+        _action="CHECK_IN"
+        // TODO: better UX than just disabling the button
+        // do they have other steps left to complete than checking in?
+        disabled={!canCheckIn}
+        state={fetcher.state}
+      >
+        Check in
+      </SubmitButton>
+    </fetcher.Form>
   );
 }
 
@@ -278,7 +420,7 @@ function TeamInfo({
   const fetcher = useFetcher();
   return (
     <div>
-      <h3 className="tournament__section-header">2. Team info</h3>
+      <h3 className="tournament__section-header">1. Team info</h3>
       <section className="tournament__section">
         <fetcher.Form method="post" className="stack md items-center">
           <div className="tournament__section__input-container">
@@ -327,11 +469,16 @@ function FillRoster({
     0
   );
 
+  const optionalMembers = Math.max(
+    TOURNAMENT.TEAM_MAX_MEMBERS - ownTeamMembers.length - missingMembers,
+    0
+  );
+
   const showDeleteMemberSection = ownTeamMembers.length > 1;
 
   return (
     <div>
-      <h3 className="tournament__section-header">3. Fill roster</h3>
+      <h3 className="tournament__section-header">2. Fill roster</h3>
       <section className="tournament__section stack lg items-center">
         <div className="stack md items-center">
           <div className="text-center text-sm">
@@ -343,7 +490,7 @@ function FillRoster({
             </Button>
           </div>
         </div>
-        <div className="stack lg horizontal mt-2">
+        <div className="stack lg horizontal mt-2 flex-wrap justify-center">
           {ownTeamMembers.map((member) => {
             return (
               <div
@@ -362,15 +509,25 @@ function FillRoster({
               </div>
             );
           })}
+          {new Array(optionalMembers).fill(null).map((_, i) => {
+            return (
+              <div
+                key={i}
+                className="tournament__missing-player tournament__missing-player__optional"
+              >
+                ?
+              </div>
+            );
+          })}
         </div>
         {showDeleteMemberSection ? (
           <DeleteMember members={ownTeamMembers} />
         ) : null}
       </section>
-      {/* xxx: fix */}
       <div className="tournament__section__warning">
-        You can still play without submitting roster, but you might be seeded
-        lower in the bracket.
+        At least {TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL} members are required to
+        participate. Max roster size is {TOURNAMENT.TEAM_MAX_MEMBERS} members
+        are allowed in the roster.
       </div>
     </div>
   );
@@ -422,6 +579,8 @@ function DeleteMember({
   );
 }
 
+// xxx: error if repeating same map in same mode
+// xxx: when "Can't pick stage more than 2 times" highlight those in red
 function CounterPickMapPoolPicker() {
   const { t } = useTranslation(["common", "game-misc"]);
   const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
@@ -445,7 +604,7 @@ function CounterPickMapPoolPicker() {
 
   return (
     <div>
-      <h3 className="tournament__section-header">4. Pick map pool</h3>
+      <h3 className="tournament__section-header">3. Pick map pool</h3>
       <section className="tournament__section">
         <fetcher.Form
           method="post"
@@ -540,10 +699,6 @@ function CounterPickMapPoolPicker() {
           )}
         </fetcher.Form>
       </section>
-      <div className="tournament__section__warning">
-        Picking a map pool is optional, but if you don&apos;t then you will be
-        playing on your opponent&apos;s picks.
-      </div>
     </div>
   );
 }
@@ -612,37 +767,4 @@ function validateCounterPickMapPool(
   }
 
   return "VALID";
-}
-
-// xxx: turn into full check-in
-function RememberToCheckin() {
-  const { i18n } = useTranslation();
-  const isMounted = useIsMounted();
-  const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
-
-  const checkInStartsString = isMounted
-    ? HACKY_resolveCheckInTime(parentRouteData.event).toLocaleTimeString(
-        i18n.language,
-        {
-          minute: "numeric",
-          hour: "numeric",
-        }
-      )
-    : "";
-
-  return (
-    <div>
-      <h3 className="tournament__section-header">5. Check-in</h3>
-      <section className="tournament__section text-center text-sm font-semi-bold">
-        Check in starts at {checkInStartsString} here:{" "}
-        <a
-          href={parentRouteData.event.bracketUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {parentRouteData.event.bracketUrl}
-        </a>
-      </section>
-    </div>
-  );
 }
