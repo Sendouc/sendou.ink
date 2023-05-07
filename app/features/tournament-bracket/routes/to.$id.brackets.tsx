@@ -157,6 +157,7 @@ export default function TournamentBracketsPage() {
 
   // xxx: show floating prompt if active match
   // xxx: bracket id in the url?
+  // xxx: teams all before check-in, and only checked in when check-in is open
   return (
     <div>
       <AutoRefresher />

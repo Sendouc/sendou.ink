@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { id } from "~/utils/zod";
+import { id, safeJSONParse } from "~/utils/zod";
 import { TOURNAMENT } from "./tournament-constants";
 
 export const registerSchema = z.union([
@@ -19,3 +19,7 @@ export const registerSchema = z.union([
     _action: z.literal("CHECK_IN"),
   }),
 ]);
+
+export const seedsActionSchema = z.object({
+  seeds: z.preprocess(safeJSONParse, z.array(id)),
+});

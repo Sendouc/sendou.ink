@@ -60,7 +60,7 @@ const stm = sql.prepare(/*sql*/ `
   group by
     "TeamWithMembers"."id"
   order by
-    "TeamWithMembers"."name" asc
+    "TeamWithMembers"."seed" asc
 `);
 
 export interface FindTeamsByTournamentIdItem {
