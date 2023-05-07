@@ -73,6 +73,7 @@
   "maps.template.preset.ALL": "All Modes",
   "maps.template.preset.onlyMode": "Only {{modeName}}",
   "maps.validation.PICKING": "Pick one stage per mode",
+  "maps.validation.STAGE_REPEAT_IN_SAME_MODE": "Can't pick the same map twice in the same mode",
   "maps.validation.NOT_ONE_MAP_PER_MODE": "Pick only one stage per mode",
   "maps.validation.MAP_REPEATED": "Can't pick the same stage more than once",
   "maps.validation.MODE_REPEATED": "Can't pick the same mode more than once",

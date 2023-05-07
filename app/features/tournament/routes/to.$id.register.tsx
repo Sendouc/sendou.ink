@@ -579,8 +579,8 @@ function DeleteMember({
   );
 }
 
-// xxx: error if repeating same map in same mode
-// xxx: when "Can't pick stage more than 2 times" highlight those in red
+// TODO: when "Can't pick stage more than 2 times" highlight those selects in red
+// TODO: useBlocker to prevent leaving page if made changes without saving
 function CounterPickMapPoolPicker() {
   const { t } = useTranslation(["common", "game-misc"]);
   const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
@@ -710,7 +710,11 @@ function MapPoolValidationStatusMessage({
 }) {
   const { t } = useTranslation(["common"]);
 
-  if (status !== "TOO_MUCH_STAGE_REPEAT") return null;
+  if (
+    status !== "TOO_MUCH_STAGE_REPEAT" &&
+    status !== "STAGE_REPEAT_IN_SAME_MODE"
+  )
+    return null;
 
   return (
     <div className="mt-4">
@@ -726,7 +730,8 @@ function MapPoolValidationStatusMessage({
 type CounterPickValidationStatus =
   | "PICKING"
   | "VALID"
-  | "TOO_MUCH_STAGE_REPEAT";
+  | "TOO_MUCH_STAGE_REPEAT"
+  | "STAGE_REPEAT_IN_SAME_MODE";
 
 function validateCounterPickMapPool(
   mapPool: MapPool,
@@ -746,6 +751,13 @@ function validateCounterPickMapPool(
     }
 
     stageCounts.set(stageId, stageCounts.get(stageId)! + 1);
+  }
+
+  if (
+    new MapPool(mapPool.serialized).stageModePairs.length !==
+    mapPool.stageModePairs.length
+  ) {
+    return "STAGE_REPEAT_IN_SAME_MODE";
   }
 
   if (
