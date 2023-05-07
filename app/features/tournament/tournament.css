@@ -134,17 +134,6 @@
   white-space: nowrap;
 }
 
-.tournament__pick-status-container {
-  display: flex;
-  width: 100%;
-  justify-content: center;
-  gap: var(--s-1);
-}
-
-.tournament__pick-status-container > svg {
-  width: 1rem;
-}
-
 .tournament__logo-container {
   display: flex;
   align-items: center;

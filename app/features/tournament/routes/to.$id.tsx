@@ -16,10 +16,7 @@ import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
-import type {
-  FindTeamsByTournamentId,
-  FindTeamsByTournamentIdItem,
-} from "../queries/findTeamsByTournamentId.server";
+import type { FindTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
 import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
 import { tournamentIdFromParams } from "../tournament-utils";
 import styles from "../tournament.css";
@@ -83,12 +80,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
         ? team
         : {
             ...team,
-            mapPool:
-              // can be used to show checkmark in UI if team has submitted
-              // the map pool without revealing the contents
-              (team.mapPool?.length ?? 0) > 0
-                ? ([] as FindTeamsByTournamentIdItem["mapPool"])
-                : undefined,
+            mapPool: undefined,
           }
     );
   }

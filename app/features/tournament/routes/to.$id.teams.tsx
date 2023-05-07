@@ -1,16 +1,11 @@
 import { Link, useOutletContext } from "@remix-run/react";
 import { Avatar } from "~/components/Avatar";
-import { AlertIcon } from "~/components/icons/Alert";
-import { CheckmarkIcon } from "~/components/icons/Checkmark";
-import { Image } from "~/components/Image";
-import { useTranslation } from "~/hooks/useTranslation";
-import { navIconUrl, userPage } from "~/utils/urls";
+import { userPage } from "~/utils/urls";
 import type { FindTeamsByTournamentIdItem } from "../queries/findTeamsByTournamentId.server";
 import { TOURNAMENT } from "../tournament-constants";
 import type { TournamentToolsLoaderData, TournamentToolsTeam } from "./to.$id";
 
 export default function TournamentToolsTeamsPage() {
-  const { t } = useTranslation(["tournament"]);
   const data = useOutletContext<TournamentToolsLoaderData>();
 
   return (
@@ -19,35 +14,7 @@ export default function TournamentToolsTeamsPage() {
         .slice()
         .sort(fullTeamAndHigherPlusStatusOnTop)
         .map((team) => {
-          const hasMapPool = () => {
-            // before start empty array is returned if team has map list
-            // after start empty array means team has no map list
-            if (!data.mapListGeneratorAvailable) {
-              return Boolean(team.mapPool);
-            }
-
-            return team.mapPool && team.mapPool.length > 0;
-          };
-
-          return (
-            <div key={team.id} className="stack sm items-center">
-              <div className="tournament__pick-status-container">
-                <Image
-                  path={navIconUrl("maps")}
-                  alt={t("tournament:teams.mapsPickedStatus")}
-                  title={t("tournament:teams.mapsPickedStatus")}
-                  height={16}
-                  width={16}
-                />
-                {hasMapPool() ? (
-                  <CheckmarkIcon className="fill-success" />
-                ) : (
-                  <AlertIcon className="fill-warning" />
-                )}
-              </div>
-              <TeamWithRoster team={team} />
-            </div>
-          );
+          return <TeamWithRoster key={team.id} team={team} />;
         })}
     </div>
   );
