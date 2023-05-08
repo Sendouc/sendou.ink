@@ -107,9 +107,8 @@ export default function TournamentToolsLayout() {
         <SubNavLink to="teams">
           {t("tournament:tabs.teams", { count: data.teams.length })}
         </SubNavLink>
-        {canAdminTournament({ user, event: data.event }) && (
-          <SubNavLink to="seeds">Seeds</SubNavLink>
-        )}
+        {canAdminTournament({ user, event: data.event }) &&
+          !data.hasStarted && <SubNavLink to="seeds">Seeds</SubNavLink>}
         {canAdminTournament({ user, event: data.event }) && (
           <SubNavLink to="admin">{t("tournament:tabs.admin")}</SubNavLink>
         )}
