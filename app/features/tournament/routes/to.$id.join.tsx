@@ -15,22 +15,22 @@ import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.serv
 import { joinTeam } from "../queries/joinTeam.server";
 import { TOURNAMENT } from "../tournament-constants";
 import type { TournamentToolsLoaderData } from "./to.$id";
-
-// TODO: handle tournament over
-
-// 1) no team, can join
-// 2) team but not captain, can leave and join IF tournament not checked in
-// 3) team and captain, can join, tournament disbands IF tournament not checked in
+import hasTournamentStarted from "../queries/hasTournamentStarted.server";
 
 export const action: ActionFunction = async ({ request }) => {
   const user = await requireUserId(request);
   const url = new URL(request.url);
   const inviteCode = url.searchParams.get("code");
-  // TODO tournament: don't throw here
   invariant(inviteCode, "code is missing");
 
   const leanTeam = notFoundIfFalsy(findByInviteCode(inviteCode));
   const teams = findTeamsByTournamentId(leanTeam.tournamentId);
+
+  validate(
+    !hasTournamentStarted(leanTeam.tournamentId),
+    400,
+    "Tournament has started"
+  );
 
   const teamToJoin = teams.find((team) => team.id === leanTeam.id);
   const previousTeam = teams.find((team) =>
@@ -42,17 +42,25 @@ export const action: ActionFunction = async ({ request }) => {
     validateCanJoin({ inviteCode, teamToJoin, userId: user.id }) === "VALID"
   );
 
+  const whatToDoWithPreviousTeam = !previousTeam
+    ? undefined
+    : previousTeam.members.some(
+        (member) => member.userId === user.id && member.isOwner
+      )
+    ? "DELETE"
+    : "LEAVE";
+
   joinTeam({
     userId: user.id,
     newTeamId: teamToJoin.id,
     previousTeamId: previousTeam?.id,
-    whatToDoWithPreviousTeam: !previousTeam
-      ? undefined
-      : previousTeam.members.some(
-          (member) => member.userId === user.id && member.isOwner
-        )
-      ? "DELETE"
-      : "LEAVE",
+    // making sure they aren't unfilling one checking in condition i.e. having full roster
+    // and then having members leave without it affecting the checking in status
+    checkOutTeam:
+      whatToDoWithPreviousTeam === "LEAVE" &&
+      previousTeam &&
+      previousTeam.members.length <= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
+    whatToDoWithPreviousTeam,
   });
 
   return redirect(toToolsPage(leanTeam.tournamentId));
@@ -61,9 +69,11 @@ export const action: ActionFunction = async ({ request }) => {
 export const loader = ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
   const inviteCode = url.searchParams.get("code");
-  invariant(inviteCode, "code is missing");
 
-  return { teamId: findByInviteCode(inviteCode)?.id, inviteCode };
+  return {
+    teamId: inviteCode ? findByInviteCode(inviteCode)?.id : null,
+    inviteCode,
+  };
 };
 
 export default function JoinTeamPage() {
@@ -82,8 +92,11 @@ export default function JoinTeamPage() {
 
   const textPrompt = () => {
     switch (validationStatus) {
+      case "MISSING_CODE": {
+        return "Invite code is missing. Was the full URL copied?";
+      }
       case "SHORT_CODE": {
-        return "Invite code is not the right length. Did you copy the full URL?";
+        return "Invite code is not the right length. Was the full URL copied?";
       }
       case "NO_TEAM_MATCHING_CODE": {
         return "No team matching the invite code.";
@@ -123,10 +136,13 @@ function validateCanJoin({
   teamToJoin,
   userId,
 }: {
-  inviteCode: string;
+  inviteCode?: string | null;
   teamToJoin?: FindTeamsByTournamentIdItem;
   userId?: number;
 }) {
+  if (typeof inviteCode !== "string") {
+    return "MISSING_CODE";
+  }
   if (typeof userId !== "number") {
     return "NOT_LOGGED_IN";
   }

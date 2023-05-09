@@ -16,6 +16,10 @@ import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.serv
 import { updateIsBeforeStart } from "../queries/updateIsBeforeStart.server";
 import { requireUserId } from "~/modules/auth/user.server";
 import { tournamentIdFromParams } from "../tournament-utils";
+import { TournamentToolsTeam } from "./to.$id";
+import { SubmitButton } from "~/components/SubmitButton";
+import { UserCombobox } from "~/components/Combobox";
+import { satisfies } from "semver";
 
 const tournamentToolsActionSchema = z.object({
   started: z.preprocess(checkboxValueToBoolean, z.boolean()),
@@ -41,6 +45,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   return null;
 };
 
+// xxx: remove loader tbh
 export const loader = async ({ params, request }: LoaderArgs) => {
   const user = await requireUserId(request);
   const eventId = tournamentIdFromParams(params);
@@ -57,13 +62,121 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 };
 
 export default function TournamentToolsAdminPage() {
+  return (
+    <div className="stack md">
+      <AdminActions />
+      <EnableMapList />
+      <DownloadParticipants />
+    </div>
+  );
+}
+
+// xxx: implement when but its just frontend check, more checks needed in backend
+type Input = "USER" | "ROSTER_MEMBER";
+const actions = [
+  {
+    type: "CHANGE_CAPTAIN",
+    inputs: ["ROSTER_MEMBER"] as Input[],
+    when: [],
+  },
+  {
+    type: "CHECK_IN",
+    inputs: [] as Input[],
+    when: ["CHECK_IN_OPEN"],
+  },
+  {
+    type: "CHECK_OUT",
+    inputs: [] as Input[],
+    when: ["CHECK_IN_OPEN"],
+  },
+  {
+    type: "ADD_MEMBER",
+    inputs: ["USER"] as Input[],
+    when: [],
+  },
+  {
+    type: "REMOVE_MEMBER",
+    inputs: ["ROSTER_MEMBER"] as Input[],
+    when: ["TOURNAMENT_BEFORE_START"],
+  },
+  {
+    type: "DELETE_TEAM",
+    inputs: [] as Input[],
+    when: ["TOURNAMENT_BEFORE_START"],
+  },
+] as const;
+
+function AdminActions() {
   const { t } = useTranslation(["tournament"]);
-  const submit = useSubmit();
   const data = useLoaderData<typeof loader>();
+  const [selectedTeamI, setSelectedTeamI] = React.useState(0);
+  const [selectedAction, setSelectedAction] = React.useState<
+    (typeof actions)[number]
+  >(actions[0]);
+
+  const selectedTeam: TournamentToolsTeam | undefined =
+    data.teams[selectedTeamI];
+
+  return (
+    <div className="stack horizontal sm items-end">
+      <div>
+        <label>Action</label>
+        <select
+          name="action"
+          value={selectedAction.type}
+          onChange={(e) =>
+            setSelectedAction(actions.find((a) => a.type === e.target.value)!)
+          }
+        >
+          {actions.map((action) => (
+            <option key={action.type} value={action.type}>
+              {t(`tournament:admin.actions.${action.type}`)}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div>
+        <label>Team</label>
+        <select
+          name="team"
+          value={selectedTeamI}
+          onChange={(e) => setSelectedTeamI(Number(e.target.value))}
+        >
+          {data.teams.map((team, i) => (
+            <option key={team.id} value={i}>
+              {team.name}
+            </option>
+          ))}
+        </select>
+      </div>
+      {selectedTeam && selectedAction.inputs.includes("ROSTER_MEMBER") ? (
+        <div>
+          <label>Member</label>
+          <select>
+            {selectedTeam.members.map((member) => (
+              <option key={member.userId}>{discordFullName(member)}</option>
+            ))}
+          </select>
+        </div>
+      ) : null}
+      {selectedAction.inputs.includes("USER") ? (
+        <div>
+          <label>User</label>
+          <UserCombobox inputName="user" />
+        </div>
+      ) : null}
+      <SubmitButton>Go</SubmitButton>
+    </div>
+  );
+}
+
+function EnableMapList() {
+  const { t } = useTranslation(["tournament"]);
+  const data = useLoaderData<typeof loader>();
+  const submit = useSubmit();
   const [eventStarted, setEventStarted] = React.useState(
     Boolean(!data.event.isBeforeStart)
   );
-
   function handleToggle(toggled: boolean) {
     setEventStarted(toggled);
 
@@ -72,6 +185,21 @@ export default function TournamentToolsAdminPage() {
 
     submit(data, { method: "post" });
   }
+
+  return (
+    <div>
+      <label>{t("tournament:admin.eventStarted")}</label>
+      <Toggle checked={eventStarted} setChecked={handleToggle} name="started" />
+      <FormMessage type="info">
+        {t("tournament:admin.eventStarted.explanation")}
+      </FormMessage>
+    </div>
+  );
+}
+
+function DownloadParticipants() {
+  const { t } = useTranslation(["tournament"]);
+  const data = useLoaderData<typeof loader>();
 
   function discordListContent() {
     return data.teams
@@ -89,33 +217,20 @@ export default function TournamentToolsAdminPage() {
   }
 
   return (
-    <div className="stack md half-width">
-      <div>
-        <label>{t("tournament:admin.eventStarted")}</label>
-        <Toggle
-          checked={eventStarted}
-          setChecked={handleToggle}
-          name="started"
-        />
-        <FormMessage type="info">
-          {t("tournament:admin.eventStarted.explanation")}
-        </FormMessage>
-      </div>
-      <div>
-        <label>{t("tournament:admin.download")}</label>
-        <div className="stack horizontal sm">
-          <Button
-            size="tiny"
-            onClick={() =>
-              handleDownload({
-                filename: "discord.txt",
-                content: discordListContent(),
-              })
-            }
-          >
-            {t("tournament:admin.download.discord")}
-          </Button>
-        </div>
+    <div>
+      <label>{t("tournament:admin.download")}</label>
+      <div className="stack horizontal sm">
+        <Button
+          size="tiny"
+          onClick={() =>
+            handleDownload({
+              filename: "discord.txt",
+              content: discordListContent(),
+            })
+          }
+        >
+          {t("tournament:admin.download.discord")}
+        </Button>
       </div>
     </div>
   );

@@ -121,6 +121,18 @@ export const action: ActionFunction = async ({ request, params }) => {
       validate(ownTeam.members.some((member) => member.userId === data.userId));
       validate(data.userId !== user.id);
 
+      const detailedOwnTeam = findOwnTeam({
+        tournamentId,
+        userId: user.id,
+      });
+      // making sure they aren't unfilling one checking in condition i.e. having full roster
+      // and then having members kicked without it affecting the checking in status
+      validate(
+        detailedOwnTeam &&
+          (!detailedOwnTeam.checkedInAt ||
+            ownTeam.members.length > TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL)
+      );
+
       deleteTeamMember({ tournamentTeamId: ownTeam.id, userId: data.userId });
       break;
     }
@@ -154,6 +166,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   return null;
 };
 
+// xxx: could we get all data we need in findOwnTeam (rename to findDetailedOwnTeam?) so we can not run to.id loader and use array to get our team
 export const loader = async ({ request, params }: LoaderArgs) => {
   const eventId = tournamentIdFromParams(params);
   const hasStarted = hasTournamentStarted(eventId);
@@ -333,7 +346,7 @@ function RegistrationProgress({ checkedIn }: { checkedIn?: boolean }) {
         </div>
         {!checkedIn ? (
           <CheckIn
-            canCheckIn={steps.map((step) => !step.completed).length === 1}
+            canCheckIn={steps.filter((step) => !step.completed).length === 1}
             status={
               checkInIsOpen ? "OPEN" : checkInIsOver ? "OVER" : "UPCOMING"
             }
@@ -474,7 +487,10 @@ function FillRoster({
     0
   );
 
-  const showDeleteMemberSection = ownTeamMembers.length > 1;
+  const showDeleteMemberSection =
+    (!ownTeam.checkedInAt && ownTeamMembers.length > 1) ||
+    (ownTeam.checkedInAt &&
+      ownTeamMembers.length > TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL);
 
   return (
     <div>
