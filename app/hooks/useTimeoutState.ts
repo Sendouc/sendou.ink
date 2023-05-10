@@ -1,4 +1,3 @@
-// xxx: remove .tsx hooks
 import * as React from "react";
 
 // TODO: fix causes memory leak
