@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { id, safeJSONParse } from "~/utils/zod";
+import { checkboxValueToBoolean, id, safeJSONParse } from "~/utils/zod";
 import { TOURNAMENT } from "./tournament-constants";
 
 export const registerSchema = z.union([
@@ -23,3 +23,15 @@ export const registerSchema = z.union([
 export const seedsActionSchema = z.object({
   seeds: z.preprocess(safeJSONParse, z.array(id)),
 });
+
+export const adminActionSchema = z.union([
+  z.object({
+    _action: z.literal("UPDATE_SHOW_MAP_LIST_GENERATOR"),
+    started: z.preprocess(checkboxValueToBoolean, z.boolean()),
+  }),
+  z.object({
+    _action: z.literal("CHANGE_TEAM_OWNER"),
+    teamId: id,
+    memberId: id,
+  }),
+]);

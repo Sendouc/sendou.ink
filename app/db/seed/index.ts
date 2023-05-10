@@ -449,6 +449,13 @@ function userIdsInRandomOrder(specialLast = false) {
   return [...rows.filter((id) => id !== 1 && id !== 2), 1, 2];
 }
 
+function userIdsInAscendingOrderById() {
+  return sql
+    .prepare(`select "id" from "User" order by id asc`)
+    .all()
+    .map((u) => u.id) as number[];
+}
+
 function calendarEvents() {
   const userIds = userIdsInRandomOrder();
 
@@ -734,7 +741,7 @@ const availablePairs = rankedModesShort
   )
   .filter((pair) => !tiebreakerPicks.has(pair));
 function calendarEventWithToToolsTeams(sz?: boolean) {
-  const userIds = userIdsInRandomOrder(true);
+  const userIds = userIdsInAscendingOrderById();
   for (let id = 1; id <= 14; id++) {
     sql
       .prepare(
@@ -785,7 +792,7 @@ function calendarEventWithToToolsTeams(sz?: boolean) {
         )
         .run({
           tournamentTeamId: id + (sz ? 100 : 0),
-          userId: userIds.pop()!,
+          userId: userIds.shift()!,
           isOwner: i === 0 ? 1 : 0,
           createdAt: dateToDatabaseTimestamp(new Date()),
         });

@@ -45,7 +45,7 @@
   "admin.eventStarted.explanation": "After the start, teams can generate map lists but won't be able to edit their map pools or rosters.",
   "admin.download": "Download participants",
   "admin.download.discord": "Discord list",
-  "admin.actions.CHANGE_CAPTAIN": "Change captain",
+  "admin.actions.CHANGE_TEAM_OWNER": "Change captain",
   "admin.actions.CHECK_IN": "Check in",
   "admin.actions.CHECK_OUT": "Check out",
   "admin.actions.ADD_MEMBER": "Add member",
