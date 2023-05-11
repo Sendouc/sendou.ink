@@ -12,6 +12,23 @@ export async function selectWeapon({
   return selectComboboxValue({ page, value: name, inputName });
 }
 
+export async function selectUser({
+  page,
+  userName,
+  labelName,
+}: {
+  page: Page;
+  userName: string;
+  labelName: string;
+}) {
+  const combobox = page.getByLabel(labelName);
+  await expect(combobox).not.toBeDisabled();
+
+  await combobox.clear();
+  await combobox.type(userName);
+  await page.keyboard.press("Enter");
+}
+
 export async function selectComboboxValue({
   page,
   value,
@@ -46,8 +63,12 @@ export function impersonate(page: Page, userId = 1) {
   return page.request.post(`/auth/impersonate?id=${userId}`);
 }
 
-export function submit(page: Page) {
-  return page.getByTestId("submit-button").click();
+export async function submit(page: Page) {
+  const responsePromise = page.waitForResponse(
+    (res) => res.request().method() === "POST"
+  );
+  await page.getByTestId("submit-button").click();
+  await responsePromise;
 }
 
 export function isNotVisible(locator: Locator) {

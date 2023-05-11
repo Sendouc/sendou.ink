@@ -56,3 +56,13 @@ export const joinTeam = sql.transaction(
     createTeamMemberStm.run({ tournamentTeamId: newTeamId, userId });
   }
 );
+
+export const leaveTeam = ({
+  teamId,
+  userId,
+}: {
+  teamId: number;
+  userId: number;
+}) => {
+  deleteMemberStm.run({ tournamentTeamId: teamId, userId });
+};

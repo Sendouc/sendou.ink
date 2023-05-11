@@ -1,5 +1,10 @@
 import type { LoaderArgs, ActionFunction } from "@remix-run/node";
-import { useFetcher, useLoaderData, useSubmit } from "@remix-run/react";
+import {
+  useFetcher,
+  useLoaderData,
+  useOutletContext,
+  useSubmit,
+} from "@remix-run/react";
 import * as React from "react";
 import { Button } from "~/components/Button";
 import { FormMessage } from "~/components/FormMessage";
@@ -12,12 +17,24 @@ import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
 import { updateIsBeforeStart } from "../queries/updateIsBeforeStart.server";
 import { requireUserId } from "~/modules/auth/user.server";
-import { tournamentIdFromParams } from "../tournament-utils";
+import {
+  HACKY_resolveCheckInTime,
+  tournamentIdFromParams,
+  validateCanCheckIn,
+} from "../tournament-utils";
 import { SubmitButton } from "~/components/SubmitButton";
 import { UserCombobox } from "~/components/Combobox";
 import { adminActionSchema } from "../tournament-schemas.server";
 import { changeTeamOwner } from "../queries/changeTeamOwner.server";
 import invariant from "tiny-invariant";
+import { assertUnreachable } from "~/utils/types";
+import { checkIn } from "../queries/checkIn.server";
+import { checkOut } from "../queries/checkOut.server";
+import hasTournamentStarted from "../queries/hasTournamentStarted.server";
+import type { TournamentToolsLoaderData } from "./to.$id";
+import { joinTeam, leaveTeam } from "../queries/joinLeaveTeam.server";
+import { TOURNAMENT } from "../tournament-constants";
+import { deleteTeam } from "../queries/deleteTeam.server";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUserId(request);
@@ -56,6 +73,71 @@ export const action: ActionFunction = async ({ request, params }) => {
 
       break;
     }
+    case "CHECK_IN": {
+      const team = teams.find((t) => t.id === data.teamId);
+      validate(team, 400, "Invalid team id");
+      validateCanCheckIn({ event, team });
+
+      checkIn(team.id);
+      break;
+    }
+    case "CHECK_OUT": {
+      const team = teams.find((t) => t.id === data.teamId);
+      validate(team, 400, "Invalid team id");
+      validate(!hasTournamentStarted(event.id), 400, "Tournament has started");
+
+      checkOut(team.id);
+      break;
+    }
+    case "REMOVE_MEMBER": {
+      const team = teams.find((t) => t.id === data.teamId);
+      validate(team, 400, "Invalid team id");
+      validate(!team.checkedInAt, 400, "Team is checked in");
+      validate(
+        !team.members.find((m) => m.userId === data.memberId)?.isOwner,
+        400,
+        "Cannot remove team owner"
+      );
+
+      leaveTeam({
+        userId: data.memberId,
+        teamId: team.id,
+      });
+      break;
+    }
+    case "ADD_MEMBER": {
+      const team = teams.find((t) => t.id === data.teamId);
+      validate(team, 400, "Invalid team id");
+      validate(
+        team.members.length < TOURNAMENT.TEAM_MAX_MEMBERS,
+        400,
+        "Team is full"
+      );
+      validate(
+        !teams.some((t) =>
+          t.members.some((m) => m.userId === data["user[value]"])
+        ),
+        400,
+        "User is already on a team"
+      );
+
+      joinTeam({
+        userId: data["user[value]"],
+        newTeamId: team.id,
+      });
+      break;
+    }
+    case "DELETE_TEAM": {
+      const team = teams.find((t) => t.id === data.teamId);
+      validate(team, 400, "Invalid team id");
+      validate(!hasTournamentStarted(event.id), 400, "Tournament has started");
+
+      deleteTeam(team.id);
+      break;
+    }
+    default: {
+      assertUnreachable(data);
+    }
   }
 
   return null;
@@ -88,6 +170,7 @@ export default function TournamentToolsAdminPage() {
 }
 
 // xxx: implement when but its just frontend check, more checks needed in backend
+// xxx: feature flag to disable both in backend and frontend
 type Input = "USER" | "ROSTER_MEMBER";
 const actions = [
   {
@@ -98,12 +181,12 @@ const actions = [
   {
     type: "CHECK_IN",
     inputs: [] as Input[],
-    when: ["CHECK_IN_OPEN"],
+    when: ["CHECK_IN_STARTED", "TOURNAMENT_BEFORE_START"],
   },
   {
     type: "CHECK_OUT",
     inputs: [] as Input[],
-    when: ["CHECK_IN_OPEN"],
+    when: ["CHECK_IN_STARTED", "TOURNAMENT_BEFORE_START"],
   },
   {
     type: "ADD_MEMBER",
@@ -122,16 +205,43 @@ const actions = [
   },
 ] as const;
 
+// xxx: confirmation if trying to delete team?
 function AdminActions() {
   const fetcher = useFetcher();
   const { t } = useTranslation(["tournament"]);
   const data = useLoaderData<typeof loader>();
+  const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
   const [selectedTeamId, setSelectedTeamId] = React.useState(data.teams[0]?.id);
   const [selectedAction, setSelectedAction] = React.useState<
     (typeof actions)[number]
   >(actions[0]);
 
   const selectedTeam = data.teams.find((team) => team.id === selectedTeamId);
+
+  const actionsToShow = actions.filter((action) => {
+    for (const when of action.when) {
+      switch (when) {
+        case "CHECK_IN_STARTED": {
+          if (HACKY_resolveCheckInTime(data.event).getTime() > Date.now()) {
+            return false;
+          }
+
+          break;
+        }
+        case "TOURNAMENT_BEFORE_START": {
+          if (parentRouteData.hasStarted) {
+            return false;
+          }
+          break;
+        }
+        default: {
+          assertUnreachable(when);
+        }
+      }
+    }
+
+    return true;
+  });
 
   return (
     <fetcher.Form
@@ -148,7 +258,7 @@ function AdminActions() {
             setSelectedAction(actions.find((a) => a.type === e.target.value)!)
           }
         >
-          {actions.map((action) => (
+          {actionsToShow.map((action) => (
             <option key={action.type} value={action.type}>
               {t(`tournament:admin.actions.${action.type}`)}
             </option>
@@ -184,8 +294,8 @@ function AdminActions() {
       ) : null}
       {selectedAction.inputs.includes("USER") ? (
         <div>
-          <label>User</label>
-          <UserCombobox inputName="user" />
+          <label htmlFor="user">User</label>
+          <UserCombobox inputName="user" id="user" />
         </div>
       ) : null}
       <SubmitButton _action={selectedAction.type} state={fetcher.state}>

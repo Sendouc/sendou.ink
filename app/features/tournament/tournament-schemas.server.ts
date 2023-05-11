@@ -34,4 +34,26 @@ export const adminActionSchema = z.union([
     teamId: id,
     memberId: id,
   }),
+  z.object({
+    _action: z.literal("CHECK_IN"),
+    teamId: id,
+  }),
+  z.object({
+    _action: z.literal("CHECK_OUT"),
+    teamId: id,
+  }),
+  z.object({
+    _action: z.literal("ADD_MEMBER"),
+    teamId: id,
+    "user[value]": id,
+  }),
+  z.object({
+    _action: z.literal("REMOVE_MEMBER"),
+    teamId: id,
+    memberId: id,
+  }),
+  z.object({
+    _action: z.literal("DELETE_TEAM"),
+    teamId: id,
+  }),
 ]);

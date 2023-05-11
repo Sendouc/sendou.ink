@@ -751,13 +751,15 @@ function calendarEventWithToToolsTeams(sz?: boolean) {
         "name",
         "createdAt",
         "tournamentId",
-        "inviteCode"
+        "inviteCode",
+        "checkedInAt"
       ) values (
         $id,
         $name,
         $createdAt,
         $tournamentId,
-        $inviteCode
+        $inviteCode,
+        $checkedInAt
       )
       `
       )
@@ -767,6 +769,7 @@ function calendarEventWithToToolsTeams(sz?: boolean) {
         createdAt: dateToDatabaseTimestamp(new Date()),
         tournamentId: sz ? 2 : 1,
         inviteCode: nanoid(INVITE_CODE_LENGTH),
+        checkedInAt: id !== 1 ? dateToDatabaseTimestamp(new Date()) : null,
       });
 
     for (

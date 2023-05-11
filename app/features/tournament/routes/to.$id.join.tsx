@@ -10,11 +10,10 @@ import { notFoundIfFalsy, validate } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
 import { toToolsPage } from "~/utils/urls";
 import { findByInviteCode } from "../queries/findTeamByInviteCode.server";
-import type { FindTeamsByTournamentIdItem } from "../queries/findTeamsByTournamentId.server";
 import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
-import { joinTeam } from "../queries/joinTeam.server";
+import { joinTeam } from "../queries/joinLeaveTeam.server";
 import { TOURNAMENT } from "../tournament-constants";
-import type { TournamentToolsLoaderData } from "./to.$id";
+import type { TournamentToolsLoaderData, TournamentToolsTeam } from "./to.$id";
 import hasTournamentStarted from "../queries/hasTournamentStarted.server";
 
 export const action: ActionFunction = async ({ request }) => {
@@ -137,7 +136,7 @@ function validateCanJoin({
   userId,
 }: {
   inviteCode?: string | null;
-  teamToJoin?: FindTeamsByTournamentIdItem;
+  teamToJoin?: TournamentToolsTeam;
   userId?: number;
 }) {
   if (typeof inviteCode !== "string") {

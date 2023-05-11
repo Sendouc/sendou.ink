@@ -5,14 +5,18 @@ import type { ModeShort } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { databaseTimestampToDate } from "~/utils/dates";
 import type { FindTeamsByTournamentId } from "./queries/findTeamsByTournamentId.server";
-import type { TournamentToolsLoaderData } from "./routes/to.$id";
+import type {
+  TournamentToolsLoaderData,
+  TournamentToolsTeam,
+} from "./routes/to.$id";
 import { TOURNAMENT } from "./tournament-constants";
+import { validate } from "~/utils/remix";
 
 export function resolveOwnedTeam({
   teams,
   userId,
 }: {
-  teams: FindTeamsByTournamentId;
+  teams: Array<TournamentToolsTeam>;
   userId?: User["id"];
 }) {
   if (typeof userId !== "number") return;
@@ -80,4 +84,30 @@ export function mapPickCountPerMode(event: TournamentToolsLoaderData["event"]) {
   return isOneModeTournamentOf(event)
     ? TOURNAMENT.COUNTERPICK_ONE_MODE_TOURNAMENT_MAPS_PER_MODE
     : TOURNAMENT.COUNTERPICK_MAPS_PER_MODE;
+}
+
+export function validateCanCheckIn({
+  event,
+  team,
+}: {
+  event: TournamentToolsLoaderData["event"];
+  team: FindTeamsByTournamentId[number];
+}) {
+  validate(
+    HACKY_resolveCheckInTime(event).getTime() < Date.now(),
+    400,
+    "Check-in has not started yet"
+  );
+  validate(
+    team.members.length >= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
+    400,
+    "Team does not have enough members"
+  );
+  validate(
+    team.mapPool && team.mapPool.length > 0,
+    400,
+    "Team does not have a map pool"
+  );
+
+  return true;
 }

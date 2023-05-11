@@ -59,6 +59,7 @@ import {
   tournamentIdFromParams,
   resolveOwnedTeam,
   HACKY_resolveCheckInTime,
+  validateCanCheckIn,
 } from "../tournament-utils";
 import type { TournamentToolsLoaderData } from "./to.$id";
 import { createTeam } from "../queries/createTeam.server";
@@ -152,8 +153,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     }
     case "CHECK_IN": {
       validate(ownTeam);
-      validate(ownTeam.members.length >= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL);
-      validate(ownTeam.mapPool && ownTeam.mapPool.length > 0);
+      validateCanCheckIn({ event, team: ownTeam });
 
       checkIn(ownTeam.id);
       break;

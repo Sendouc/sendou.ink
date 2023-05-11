@@ -86,6 +86,8 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   }
 };
 
+// xxx: icons to nav
+// xxx: remove tiebreaker maps for better stats?
 export default function TournamentToolsLayout() {
   const { t } = useTranslation(["tournament"]);
   const user = useUser();
