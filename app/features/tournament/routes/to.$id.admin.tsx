@@ -1,10 +1,5 @@
-import type { LoaderArgs, ActionFunction } from "@remix-run/node";
-import {
-  useFetcher,
-  useLoaderData,
-  useOutletContext,
-  useSubmit,
-} from "@remix-run/react";
+import type { ActionFunction } from "@remix-run/node";
+import { useFetcher, useOutletContext, useSubmit } from "@remix-run/react";
 import * as React from "react";
 import { Button } from "~/components/Button";
 import { FormMessage } from "~/components/FormMessage";
@@ -141,22 +136,6 @@ export const action: ActionFunction = async ({ request, params }) => {
   return null;
 };
 
-// xxx: remove loader tbh
-export const loader = async ({ params, request }: LoaderArgs) => {
-  const user = await requireUserId(request);
-  const eventId = tournamentIdFromParams(params);
-
-  const event = notFoundIfFalsy(findByIdentifier(eventId));
-  notFoundIfFalsy(canAdminTournament({ user, event }));
-
-  // could also get these from the layout page
-  // but getting them again for the most fresh data
-  return {
-    event,
-    teams: findTeamsByTournamentId(event.id),
-  };
-};
-
 export default function TournamentToolsAdminPage() {
   return (
     <div className="stack md">
@@ -167,7 +146,6 @@ export default function TournamentToolsAdminPage() {
   );
 }
 
-// xxx: implement when but its just frontend check, more checks needed in backend
 // xxx: feature flag to disable both in backend and frontend
 type Input = "USER" | "ROSTER_MEMBER";
 const actions = [
@@ -207,7 +185,7 @@ const actions = [
 function AdminActions() {
   const fetcher = useFetcher();
   const { t } = useTranslation(["tournament"]);
-  const data = useLoaderData<typeof loader>();
+  const data = useOutletContext<TournamentToolsLoaderData>();
   const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
   const [selectedTeamId, setSelectedTeamId] = React.useState(data.teams[0]?.id);
   const [selectedAction, setSelectedAction] = React.useState<
@@ -305,7 +283,7 @@ function AdminActions() {
 
 function EnableMapList() {
   const { t } = useTranslation(["tournament"]);
-  const data = useLoaderData<typeof loader>();
+  const data = useOutletContext<TournamentToolsLoaderData>();
   const submit = useSubmit();
   const [eventStarted, setEventStarted] = React.useState(
     Boolean(!data.event.isBeforeStart)
@@ -333,7 +311,7 @@ function EnableMapList() {
 
 function DownloadParticipants() {
   const { t } = useTranslation(["tournament"]);
-  const data = useLoaderData<typeof loader>();
+  const data = useOutletContext<TournamentToolsLoaderData>();
 
   function discordListContent() {
     return data.teams
