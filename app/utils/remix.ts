@@ -89,17 +89,21 @@ function formDataToObject(formData: FormData) {
 }
 
 // xxx: switch around status and body
-// xxx: also message should be as json: "SyntaxError: Unexpected token 'T', "Team does "... is not valid JSON"
 /** Asserts condition is truthy. Throws a new `Response` with given status code if falsy.  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- same format as TS docs: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#assertion-functions
 export function validate(
   condition: any,
   status = 400,
-  body?: string
+  message?: string
 ): asserts condition {
   if (condition) return;
 
-  throw new Response(body, { status });
+  throw new Response(
+    message ? JSON.stringify({ validationError: message }) : undefined,
+    {
+      status,
+    }
+  );
 }
 
 export type Breadcrumb =
