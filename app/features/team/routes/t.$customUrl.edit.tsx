@@ -85,7 +85,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   const { team } = notFoundIfFalsy(findByIdentifier(customUrl));
 
-  validate(isTeamOwner({ team, user }));
+  validate(isTeamOwner({ team, user }), "You are not the team owner");
 
   const data = await parseRequestFormData({
     request,

@@ -65,8 +65,7 @@ export const action: ActionFunction = async ({ params, request }) => {
       user,
       event,
       startTime: databaseTimestampToDate(event.startTimes[0]!),
-    }),
-    403
+    })
   );
 
   db.calendarEvents.deleteById(event.eventId);

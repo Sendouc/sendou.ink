@@ -82,8 +82,8 @@ export const action: ActionFunction = async ({ params, request }) => {
         ownedTeamId,
         user,
       }),
-      401,
-      "No permissions"
+      "Unauthorized",
+      401
     );
   };
 
@@ -100,12 +100,10 @@ export const action: ActionFunction = async ({ params, request }) => {
       validate(
         match.opponentOne?.id === data.winnerTeamId ||
           match.opponentTwo?.id === data.winnerTeamId,
-        400,
         "Winner team id is invalid"
       );
       validate(
         checkSourceIsValid({ source: data.source, match }),
-        400,
         "Source is invalid"
       );
 
@@ -119,7 +117,7 @@ export const action: ActionFunction = async ({ params, request }) => {
         if (data.winnerTeamId === match.opponentOne?.id) return 0;
         if (data.winnerTeamId === match.opponentTwo?.id) return 1;
 
-        validate(false, 400, "Winner team id is invalid");
+        validate(false, "Winner team id is invalid");
       };
 
       scores[scoreToIncrement()]++;

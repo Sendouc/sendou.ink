@@ -18,7 +18,7 @@ export const action: ActionFunction = async ({ request }) => {
     request,
   });
 
-  validate(isAdmin(user));
+  validate(isAdmin(user), "Only admins can validate images");
 
   validateImage(data.imageId);
 

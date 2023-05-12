@@ -27,7 +27,6 @@ export const action: ActionFunction = async ({ request }) => {
 
   validate(
     !hasTournamentStarted(leanTeam.tournamentId),
-    400,
     "Tournament has started"
   );
 
@@ -36,9 +35,10 @@ export const action: ActionFunction = async ({ request }) => {
     team.members.some((member) => member.userId === user.id)
   );
 
-  validate(teamToJoin);
+  validate(teamToJoin, "Not team of this tournament");
   validate(
-    validateCanJoin({ inviteCode, teamToJoin, userId: user.id }) === "VALID"
+    validateCanJoin({ inviteCode, teamToJoin, userId: user.id }) === "VALID",
+    "Invite code is invalid"
   );
 
   const whatToDoWithPreviousTeam = !previousTeam

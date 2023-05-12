@@ -169,7 +169,11 @@ export const action: ActionFunction = async ({ request }) => {
     const eventToEdit = badRequestIfFalsy(
       db.calendarEvents.findById(data.eventToEditId)
     );
-    validate(canEditCalendarEvent({ user, event: eventToEdit }), 401);
+    validate(
+      canEditCalendarEvent({ user, event: eventToEdit }),
+      "Not authorized",
+      401
+    );
 
     db.calendarEvents.update({
       eventId: data.eventToEditId,

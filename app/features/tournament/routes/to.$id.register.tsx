@@ -92,7 +92,6 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   validate(
     !hasStarted,
-    400,
     "Tournament has started, cannot make edits to registration"
   );
 

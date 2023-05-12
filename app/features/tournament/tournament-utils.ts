@@ -95,17 +95,14 @@ export function validateCanCheckIn({
 }) {
   validate(
     HACKY_resolveCheckInTime(event).getTime() < Date.now(),
-    400,
     "Check-in has not started yet"
   );
   validate(
     team.members.length >= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
-    400,
     "Team does not have enough members"
   );
   validate(
     team.mapPool && team.mapPool.length > 0,
-    400,
     "Team does not have a map pool"
   );
 

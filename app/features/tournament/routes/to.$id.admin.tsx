@@ -47,7 +47,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   const event = notFoundIfFalsy(findByIdentifier(eventId));
   const teams = findTeamsByTournamentId(event.id);
 
-  validate(canAdminTournament({ user, event }));
+  validate(canAdminTournament({ user, event }), "Unauthorized", 401);
 
   switch (data._action) {
     case "UPDATE_SHOW_MAP_LIST_GENERATOR": {
@@ -59,11 +59,11 @@ export const action: ActionFunction = async ({ request, params }) => {
     }
     case "CHANGE_TEAM_OWNER": {
       const team = teams.find((t) => t.id === data.teamId);
-      validate(team, 400, "Invalid team id");
+      validate(team, "Invalid team id");
       const oldCaptain = team.members.find((m) => m.isOwner);
       invariant(oldCaptain, "Team has no captain");
       const newCaptain = team.members.find((m) => m.userId === data.memberId);
-      validate(newCaptain, 400, "Invalid member id");
+      validate(newCaptain, "Invalid member id");
 
       changeTeamOwner({
         newCaptainId: data.memberId,
@@ -75,7 +75,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     }
     case "CHECK_IN": {
       const team = teams.find((t) => t.id === data.teamId);
-      validate(team, 400, "Invalid team id");
+      validate(team, "Invalid team id");
       validateCanCheckIn({ event, team });
 
       checkIn(team.id);
@@ -83,19 +83,19 @@ export const action: ActionFunction = async ({ request, params }) => {
     }
     case "CHECK_OUT": {
       const team = teams.find((t) => t.id === data.teamId);
-      validate(team, 400, "Invalid team id");
-      validate(!hasTournamentStarted(event.id), 400, "Tournament has started");
+      validate(team, "Invalid team id");
+      validate(!hasTournamentStarted(event.id), "Tournament has started");
 
       checkOut(team.id);
       break;
     }
     case "REMOVE_MEMBER": {
       const team = teams.find((t) => t.id === data.teamId);
-      validate(team, 400, "Invalid team id");
-      validate(!team.checkedInAt, 400, "Team is checked in");
+      validate(team, "Invalid team id");
+      validate(!team.checkedInAt, "Team is checked in");
       validate(
         !team.members.find((m) => m.userId === data.memberId)?.isOwner,
-        400,
+
         "Cannot remove team owner"
       );
 
@@ -107,17 +107,15 @@ export const action: ActionFunction = async ({ request, params }) => {
     }
     case "ADD_MEMBER": {
       const team = teams.find((t) => t.id === data.teamId);
-      validate(team, 400, "Invalid team id");
+      validate(team, "Invalid team id");
       validate(
         team.members.length < TOURNAMENT.TEAM_MAX_MEMBERS,
-        400,
         "Team is full"
       );
       validate(
         !teams.some((t) =>
           t.members.some((m) => m.userId === data["user[value]"])
         ),
-        400,
         "User is already on a team"
       );
 
@@ -129,8 +127,8 @@ export const action: ActionFunction = async ({ request, params }) => {
     }
     case "DELETE_TEAM": {
       const team = teams.find((t) => t.id === data.teamId);
-      validate(team, 400, "Invalid team id");
-      validate(!hasTournamentStarted(event.id), 400, "Tournament has started");
+      validate(team, "Invalid team id");
+      validate(!hasTournamentStarted(event.id), "Tournament has started");
 
       deleteTeam(team.id);
       break;
