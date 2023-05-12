@@ -156,7 +156,6 @@ export default function TournamentBracketsPage() {
   }, [data.bracket, navigate, parentRouteData.event.id, data.hasStarted]);
 
   // xxx: show floating prompt if active match
-  // xxx: bracket id in the url?
   // xxx: teams all before check-in, and only checked in when check-in is open
   return (
     <div>

@@ -146,7 +146,6 @@ export default function TournamentToolsAdminPage() {
   );
 }
 
-// xxx: feature flag to disable both in backend and frontend
 type Input = "USER" | "ROSTER_MEMBER";
 const actions = [
   {
@@ -181,7 +180,6 @@ const actions = [
   },
 ] as const;
 
-// xxx: confirmation if trying to delete team?
 function AdminActions() {
   const fetcher = useFetcher();
   const { t } = useTranslation(["tournament"]);
@@ -274,7 +272,13 @@ function AdminActions() {
           <UserCombobox inputName="user" id="user" />
         </div>
       ) : null}
-      <SubmitButton _action={selectedAction.type} state={fetcher.state}>
+      <SubmitButton
+        _action={selectedAction.type}
+        state={fetcher.state}
+        variant={
+          selectedAction.type === "DELETE_TEAM" ? "destructive" : undefined
+        }
+      >
         Go
       </SubmitButton>
     </fetcher.Form>
