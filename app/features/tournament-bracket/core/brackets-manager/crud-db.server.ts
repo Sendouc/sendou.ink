@@ -128,7 +128,9 @@ export class Stage {
   }
 
   static getById(id: TournamentStage["id"]): StageType {
-    return this.#convertStage(stage_getByIdStm.get({ id }));
+    const stage = stage_getByIdStm.get({ id });
+    if (!stage) return stage;
+    return this.#convertStage(stage);
   }
 
   static getByTournamentId(tournamentId: Tournament["id"]): Participant[] {
@@ -199,7 +201,9 @@ export class Group {
   }
 
   static getById(id: TournamentGroup["id"]): GroupType {
-    return this.#convertGroup(group_getByIdStm.get({ id }));
+    const group = group_getByIdStm.get({ id });
+    if (!group) return group;
+    return this.#convertGroup(group);
   }
 
   static getByStageId(stageId: TournamentStage["id"]): GroupType[] {
@@ -210,9 +214,9 @@ export class Group {
     stageId: TournamentStage["id"],
     number: TournamentGroup["number"]
   ): GroupType {
-    return this.#convertGroup(
-      group_getByStageAndNumberStm.get({ stageId, number })
-    );
+    const group = group_getByStageAndNumberStm.get({ stageId, number });
+    if (!group) return group;
+    return this.#convertGroup(group_getByStageAndNumberStm.get(group));
   }
 
   insert() {
@@ -312,13 +316,15 @@ export class Round {
     groupId: TournamentGroup["id"],
     number: TournamentRound["number"]
   ): RoundType {
-    return this.#convertRound(
-      round_getByGroupAndNumberStm.get({ groupId, number })
-    );
+    const round = round_getByGroupAndNumberStm.get({ groupId, number });
+    if (!round) return round;
+    return this.#convertRound(round);
   }
 
   static getById(id: TournamentRound["id"]): RoundType {
-    return this.#convertRound(round_getByIdStm.get({ id }));
+    const round = round_getByIdStm.get({ id });
+    if (!round) return round;
+    return this.#convertRound(round);
   }
 }
 
@@ -401,8 +407,6 @@ export class Match {
     this.status = status;
   }
 
-  // xxx: to this convert and others make it take undefined and return undefined,
-  // handle generic
   static #convertMatch(rawMatch: TournamentMatch): MatchType {
     return {
       id: rawMatch.id,
@@ -418,7 +422,9 @@ export class Match {
   }
 
   static getById(id: TournamentMatch["id"]): MatchType {
-    return this.#convertMatch(match_getByIdStm.get({ id }));
+    const match = match_getByIdStm.get({ id });
+    if (!match) return match;
+    return this.#convertMatch(match);
   }
 
   static getByStageId(stageId: TournamentStage["id"]): MatchType[] {
@@ -429,9 +435,9 @@ export class Match {
     roundId: TournamentRound["id"],
     number: TournamentMatch["number"]
   ): MatchType {
-    return this.#convertMatch(
-      match_getByRoundAndNumberStm.get({ roundId, number })
-    );
+    const match = match_getByRoundAndNumberStm.get({ roundId, number });
+    if (!match) return match;
+    return this.#convertMatch(match);
   }
 
   insert() {
