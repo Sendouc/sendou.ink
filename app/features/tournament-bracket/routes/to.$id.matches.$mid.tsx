@@ -196,6 +196,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 
       break;
     }
+    // TODO: bug where you can reopen losers finals after winners finals
     case "REOPEN_MATCH": {
       const scoreOne = match.opponentOne?.score ?? 0;
       const scoreTwo = match.opponentTwo?.score ?? 0;
