@@ -351,6 +351,118 @@ TournamentMapListGenerator("No map picked by same team twice in row", () => {
   }
 });
 
+// TODO: figure out how to handle this
+// checks for case were there is complete overlap in one mode but not others
+// which means with forced tiebreaker the map list would become unbalanced
+// TournamentMapListGenerator.only(
+//   "Handles impossible duplication situation by using BOTH as tiebreaker",
+//   () => {
+//     const maps = generateMaps({
+//       teams: [
+//         {
+//           id: 11,
+//           maps: new MapPool([
+//             // dupe
+//             {
+//               stageId: 11,
+//               mode: "RM",
+//             },
+//             {
+//               stageId: 11,
+//               mode: "TC",
+//             },
+//             {
+//               stageId: 3,
+//               mode: "SZ",
+//             },
+//             // dupe
+//             {
+//               stageId: 1,
+//               mode: "RM",
+//             },
+//             {
+//               stageId: 4,
+//               mode: "SZ",
+//             },
+//             {
+//               stageId: 10,
+//               mode: "CB",
+//             },
+//             {
+//               stageId: 3,
+//               mode: "TC",
+//             },
+//             {
+//               stageId: 2,
+//               mode: "CB",
+//             },
+//           ]),
+//         },
+//         {
+//           id: 4,
+//           maps: new MapPool([
+//             {
+//               stageId: 2,
+//               mode: "SZ",
+//             },
+//             {
+//               stageId: 10,
+//               mode: "TC",
+//             },
+//             {
+//               stageId: 8,
+//               mode: "SZ",
+//             },
+//             {
+//               stageId: 11,
+//               mode: "RM",
+//             },
+//             {
+//               stageId: 6,
+//               mode: "TC",
+//             },
+//             {
+//               stageId: 1,
+//               mode: "RM",
+//             },
+//             {
+//               stageId: 11,
+//               mode: "CB",
+//             },
+//             {
+//               stageId: 6,
+//               mode: "CB",
+//             },
+//           ]),
+//         },
+//       ],
+//       seed: String(1),
+//       bestOf: 5,
+//       modesIncluded: ["SZ", "TC", "RM", "CB"],
+//       tiebreakerMaps: new MapPool([
+//         {
+//           stageId: 1,
+//           mode: "SZ",
+//         },
+//         {
+//           stageId: 2,
+//           mode: "TC",
+//         },
+//         {
+//           stageId: 3,
+//           mode: "RM",
+//         },
+//         {
+//           stageId: 4,
+//           mode: "CB",
+//         },
+//       ]),
+//     });
+
+//     assert.equal(maps[maps.length - 1].source, "BOTH");
+//   }
+// );
+
 const team1SZPicks = new MapPool([
   { mode: "SZ", stageId: 4 },
   { mode: "SZ", stageId: 5 },
