@@ -73,6 +73,8 @@ export const action: ActionFunction = async ({ params, request }) => {
     teams = teams.filter(teamHasCheckedIn);
   }
 
+  validate(teams.length >= 2, "Not enough teams registered");
+
   sql.transaction(() => {
     manager.create({
       tournamentId,
@@ -103,7 +105,7 @@ export const loader = ({ params }: LoaderArgs) => {
     teams = teams.filter(teamHasCheckedIn);
   }
 
-  if (!hasStarted) {
+  if (!hasStarted && teams.length >= 2) {
     manager.create({
       tournamentId,
       name: resolveTournamentStageName(tournament.format),
@@ -129,7 +131,11 @@ export default function TournamentBracketsPage() {
   const navigate = useNavigate();
   const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
 
+  const lessThanTwoTeamsRegistered = parentRouteData.teams.length < 2;
+
   React.useEffect(() => {
+    if (lessThanTwoTeamsRegistered) return;
+
     // matches aren't generated before tournament starts
     if (data.hasStarted) {
       // @ts-expect-error - brackets-viewer is not typed
@@ -160,13 +166,19 @@ export default function TournamentBracketsPage() {
 
       element.innerHTML = "";
     };
-  }, [data.bracket, navigate, parentRouteData.event.id, data.hasStarted]);
+  }, [
+    data.bracket,
+    navigate,
+    parentRouteData.event.id,
+    data.hasStarted,
+    lessThanTwoTeamsRegistered,
+  ]);
 
   // TODO: show floating prompt if active match
   return (
     <div>
       <AutoRefresher />
-      {!data.hasStarted ? (
+      {!data.hasStarted && !lessThanTwoTeamsRegistered ? (
         <Form method="post" className="stack items-center">
           {!canAdminTournament({ user, event: parentRouteData.event }) ? (
             <Alert variation="INFO" alertClassName="w-max">
@@ -188,6 +200,11 @@ export default function TournamentBracketsPage() {
         </Form>
       ) : null}
       <div className="brackets-viewer" ref={ref}></div>
+      {lessThanTwoTeamsRegistered ? (
+        <div className="text-center text-lg font-semi-bold text-lighter">
+          Bracket will be shown here when at least 2 teams have registered
+        </div>
+      ) : null}
     </div>
   );
 }
