@@ -6,7 +6,6 @@ import type {
   User,
 } from "~/db/types";
 
-// xxx: doesn't work if many start times
 const stm = sql.prepare(/*sql*/ `
 select
   "Tournament"."id",
@@ -31,21 +30,21 @@ select
 `);
 
 type FindByIdentifierRow =
-  | ((Pick<CalendarEvent, "bracketUrl" | "name" | "description" | "authorId"> &
+  | (Pick<CalendarEvent, "bracketUrl" | "name" | "description" | "authorId"> &
       Pick<
         Tournament,
         "id" | "format" | "mapPickingStyle" | "showMapListGenerator"
       > &
       Pick<User, "discordId" | "discordName" | "discordDiscriminator"> &
-      Pick<CalendarEventDate, "startTime">) & { eventId: CalendarEvent["id"] })
-  | null;
+      Pick<CalendarEventDate, "startTime">) & { eventId: CalendarEvent["id"] };
 
 export function findByIdentifier(identifier: string | number) {
-  const row = stm.get({ identifier }) as FindByIdentifierRow;
+  const rows = stm.all({ identifier }) as FindByIdentifierRow[];
+  if (rows.length === 0) return null;
 
-  if (!row) return null;
+  const tournament = { ...rows[0], startTime: resolveEarliestStartTime(rows) };
 
-  const { discordId, discordName, discordDiscriminator, ...rest } = row;
+  const { discordId, discordName, discordDiscriminator, ...rest } = tournament;
 
   return {
     ...rest,
@@ -55,4 +54,10 @@ export function findByIdentifier(identifier: string | number) {
       discordDiscriminator,
     },
   };
+}
+
+function resolveEarliestStartTime(
+  rows: Pick<CalendarEventDate, "startTime">[]
+) {
+  return Math.min(...rows.map((row) => row.startTime));
 }
