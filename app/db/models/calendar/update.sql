@@ -5,7 +5,6 @@ set
   "tags" = @tags,
   "description" = @description,
   "discordInviteCode" = @discordInviteCode,
-  "bracketUrl" = @bracketUrl,
-  "tournamentId" = @tournamentId
+  "bracketUrl" = @bracketUrl
 where
-  "id" = @eventId
+  "id" = @eventId returning *;

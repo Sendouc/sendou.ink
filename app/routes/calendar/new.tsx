@@ -28,7 +28,11 @@ import { SubmitButton } from "~/components/SubmitButton";
 import { Toggle } from "~/components/Toggle";
 import { CALENDAR_EVENT } from "~/constants";
 import { db } from "~/db";
-import type { Badge as BadgeType, CalendarEventTag } from "~/db/types";
+import type {
+  Badge as BadgeType,
+  CalendarEventTag,
+  Tournament,
+} from "~/db/types";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
@@ -178,10 +182,6 @@ export const action: ActionFunction = async ({ request }) => {
     db.calendarEvents.update({
       eventId: data.eventToEditId,
       mapPoolMaps: deserializedMaps,
-      createTournament: data.toToolsEnabled,
-      mapPickingStyle: data.toToolsMode
-        ? `AUTO_${data.toToolsMode}`
-        : "AUTO_ALL",
       ...commonArgs,
     });
 
@@ -226,8 +226,10 @@ export const loader = async ({ request }: LoaderArgs) => {
     eventToEdit: canEditEvent
       ? {
           ...eventToEdit,
-          // "BADGE" tag is special and can't be edited like other tags
-          tags: eventToEdit.tags.filter((tag) => tag !== "BADGE"),
+          // "BADGE" and "FULL_TOURNAMENT" tags are special and can't be edited like other tags
+          tags: eventToEdit.tags.filter(
+            (tag) => tag !== "BADGE" && tag !== "FULL_TOURNAMENT"
+          ),
           badges: db.calendarEvents.findBadgesByEventId(eventId),
           mapPool: db.calendarEvents.findMapPoolByEventId(eventId),
           tieBreakerMapPool:
@@ -259,7 +261,7 @@ export default function CalendarNewEventPage() {
         <DiscordLinkInput />
         <TagsAdder />
         <BadgesAdder />
-        <TOToolsAndMapPool />
+        {!eventToEdit ? <TOToolsAndMapPool /> : null}
         <SubmitButton className="mt-4">{t("actions.submit")}</SubmitButton>
       </Form>
     </Main>
@@ -446,6 +448,7 @@ function DatesInput() {
   );
 }
 
+// TODO: when full tournament this doesn't really make sense
 function BracketUrlInput() {
   const { t } = useTranslation("calendar");
   const { eventToEdit } = useLoaderData<typeof loader>();
@@ -492,7 +495,7 @@ function TagsAdder() {
   const id = React.useId();
 
   const tagsForSelect = CALENDAR_EVENT.TAGS.filter(
-    (tag) => !tags.includes(tag) && tag !== "BADGE"
+    (tag) => !tags.includes(tag) && tag !== "BADGE" && tag !== "FULL_TOURNAMENT"
   );
 
   return (
@@ -601,14 +604,26 @@ function BadgesAdder() {
   );
 }
 
+const mapPickingStyleToShort: Record<
+  Tournament["mapPickingStyle"],
+  "ALL" | RankedModeShort
+> = {
+  AUTO_ALL: "ALL",
+  AUTO_SZ: "SZ",
+  AUTO_TC: "TC",
+  AUTO_RM: "RM",
+  AUTO_CB: "CB",
+};
 function TOToolsAndMapPool() {
   const user = useUser();
   const { eventToEdit } = useLoaderData<typeof loader>();
   const [checked, setChecked] = React.useState(
-    Boolean(eventToEdit?.toToolsEnabled)
+    Boolean(eventToEdit?.tournamentId)
   );
   const [mode, setMode] = React.useState<"ALL" | RankedModeShort>(
-    eventToEdit?.toToolsMode ?? "ALL"
+    eventToEdit?.mapPickingStyle
+      ? mapPickingStyleToShort[eventToEdit.mapPickingStyle]
+      : "ALL"
   );
 
   return (

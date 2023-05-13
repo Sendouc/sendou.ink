@@ -35,6 +35,7 @@ import {
   CALENDAR_PAGE,
   navIconUrl,
   resolveBaseUrl,
+  toToolsPage,
 } from "~/utils/urls";
 import { actualNumber } from "~/utils/zod";
 import { Tags } from "./components/Tags";
@@ -371,11 +372,19 @@ function EventsList({
                           })}
                         </time>
                         <div className="calendar__event__author">
-                          From {discordFullName(calendarEvent)}
+                          {t("from", {
+                            author: discordFullName(calendarEvent),
+                          })}
                         </div>
                       </div>
                       <div className="stack xs">
-                        <Link to={String(calendarEvent.eventId)}>
+                        <Link
+                          to={
+                            calendarEvent.tournamentId
+                              ? toToolsPage(calendarEvent.tournamentId)
+                              : String(calendarEvent.eventId)
+                          }
+                        >
                           <h2 className="calendar__event__title">
                             {calendarEvent.name}{" "}
                             {calendarEvent.nthAppearance > 1 ? (
@@ -404,14 +413,16 @@ function EventsList({
                           Discord
                         </LinkButton>
                       ) : null}
-                      <LinkButton
-                        to={calendarEvent.bracketUrl}
-                        variant="outlined"
-                        size="tiny"
-                        isExternal
-                      >
-                        {resolveBaseUrl(calendarEvent.bracketUrl)}
-                      </LinkButton>
+                      {!calendarEvent.tournamentId ? (
+                        <LinkButton
+                          to={calendarEvent.bracketUrl}
+                          variant="outlined"
+                          size="tiny"
+                          isExternal
+                        >
+                          {resolveBaseUrl(calendarEvent.bracketUrl)}
+                        </LinkButton>
+                      ) : null}
                     </div>
                   </section>
                 );

@@ -16,3 +16,4 @@ where
   and "startTime" > @lowerLimitTime
   and "startTime" < @upperLimitTime
   and "CalendarEvent"."participantCount" is null
+  and "CalendarEvent"."tournamentId" is null

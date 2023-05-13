@@ -49,6 +49,7 @@ import {
   readonlyMapsPage,
   resolveBaseUrl,
   userPage,
+  toToolsPage,
 } from "~/utils/urls";
 import { actualNumber, id } from "~/utils/zod";
 import { Tags } from "../components/Tags";
@@ -119,6 +120,10 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     .object({ id: z.preprocess(actualNumber, id) })
     .parse(params);
   const event = notFoundIfFalsy(db.calendarEvents.findById(parsedParams.id));
+
+  if (event.tournamentId) {
+    throw redirect(toToolsPage(event.tournamentId));
+  }
 
   return json({
     event,

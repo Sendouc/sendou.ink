@@ -60,7 +60,9 @@ const findTieBreakerMapPoolByEventIdtm = sql.prepare(
 const deleteByIdStm = sql.prepare(deleteByIdSql);
 const createTournamentStm = sql.prepare(createTournamentSql);
 
-const createTournament = (args: Omit<Tournament, "id">) => {
+const createTournament = (
+  args: Omit<Tournament, "id" | "showMapListGenerator">
+) => {
   return createTournamentStm.get(args) as Tournament;
 };
 
@@ -89,7 +91,7 @@ export const create = sql.transaction(
     let tournamentId;
     if (calendarEventArgs.createTournament) {
       tournamentId = createTournament({
-        // xxx: format picking
+        // TODO: format picking
         format: "DE",
         mapPickingStyle: calendarEventArgs.mapPickingStyle,
       }).id;
@@ -123,23 +125,24 @@ export const create = sql.transaction(
   }
 );
 
-export type Update = Omit<CreateArgs, "authorId"> & {
+export type Update = Omit<
+  CreateArgs,
+  "authorId" | "createTournament" | "mapPickingStyle"
+> & {
   eventId: CalendarEvent["id"];
 };
 export const update = sql.transaction(
   ({
     startTimes,
     badges,
-    eventId,
     mapPoolMaps = [],
+    eventId,
     ...calendarEventArgs
   }: Update) => {
-    // xxx: implement robust updating flow
-    if (calendarEventArgs.createTournament) {
-      throw new Error("Editing tournament is not supported yet");
-    }
-
-    updateStm.run({ ...calendarEventArgs, eventId });
+    const event = updateStm.get({
+      ...calendarEventArgs,
+      eventId,
+    }) as CalendarEvent;
 
     deleteDatesByEventIdStm.run({ eventId });
     for (const startTime of startTimes) {
@@ -157,11 +160,14 @@ export const update = sql.transaction(
       });
     }
 
-    upsertMapPool({
-      eventId,
-      mapPoolMaps,
-      isFullTournament: calendarEventArgs.createTournament,
-    });
+    // can't edit tournament specific info after creation
+    if (!event.tournamentId) {
+      upsertMapPool({
+        eventId,
+        mapPoolMaps,
+        isFullTournament: false,
+      });
+    }
   }
 );
 
@@ -332,12 +338,17 @@ const findAllBetweenTwoTimestampsStm = sql.prepare(
 );
 
 function addTagArray<
-  T extends { hasBadge: number; tags?: CalendarEvent["tags"] }
+  T extends {
+    hasBadge: number;
+    tags?: CalendarEvent["tags"];
+    tournamentId: CalendarEvent["tournamentId"];
+  }
 >(arg: T) {
   const { hasBadge, ...row } = arg;
   const tags = (row.tags ? row.tags.split(",") : []) as Array<CalendarEventTag>;
 
   if (hasBadge) tags.unshift("BADGE");
+  if (row.tournamentId) tags.unshift("FULL_TOURNAMENT");
 
   return { ...row, tags };
 }
@@ -353,7 +364,10 @@ export function findAllBetweenTwoTimestamps({
     startTime: dateToDatabaseTimestamp(startTime),
     endTime: dateToDatabaseTimestamp(endTime),
   }) as Array<
-    Pick<CalendarEvent, "name" | "discordUrl" | "bracketUrl" | "tags"> &
+    Pick<
+      CalendarEvent,
+      "name" | "discordUrl" | "bracketUrl" | "tags" | "tournamentId"
+    > &
       Pick<CalendarEventDate, "eventId" | "startTime"> & {
         eventDateId: CalendarEventDate["id"];
       } & Pick<User, "discordName" | "discordDiscriminator"> & {
@@ -377,7 +391,9 @@ export function findById(id: CalendarEvent["id"]) {
       | "tags"
       | "authorId"
       | "participantCount"
+      | "tournamentId"
     > &
+      Pick<Tournament, "mapPickingStyle"> &
       Pick<CalendarEventDate, "startTime" | "eventId"> &
       Pick<
         User,
@@ -391,9 +407,6 @@ export function findById(id: CalendarEvent["id"]) {
     ...firstRow,
     startTimes: [firstRow, ...rest].map((row) => row.startTime),
     startTime: undefined,
-    // xxx: fix
-    toToolsEnabled: true,
-    toToolsMode: "SZ" as const,
   });
 }
 

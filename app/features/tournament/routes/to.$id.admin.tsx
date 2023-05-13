@@ -1,7 +1,7 @@
 import type { ActionFunction } from "@remix-run/node";
 import { useFetcher, useOutletContext, useSubmit } from "@remix-run/react";
 import * as React from "react";
-import { Button } from "~/components/Button";
+import { Button, LinkButton } from "~/components/Button";
 import { Toggle } from "~/components/Toggle";
 import { useTranslation } from "~/hooks/useTranslation";
 import { canAdminTournament, isAdmin } from "~/permissions";
@@ -30,7 +30,7 @@ import { joinTeam, leaveTeam } from "../queries/joinLeaveTeam.server";
 import { TOURNAMENT } from "../tournament-constants";
 import { deleteTeam } from "../queries/deleteTeam.server";
 import { useUser } from "~/modules/auth";
-import { toToolsPage } from "~/utils/urls";
+import { calendarEditPage, toToolsPage } from "~/utils/urls";
 import { Redirect } from "~/components/Redirect";
 
 export const action: ActionFunction = async ({ request, params }) => {
@@ -151,6 +151,15 @@ export default function TournamentToolsAdminPage() {
       <AdminActions />
       {isAdmin(user) ? <EnableMapList /> : null}
       <DownloadParticipants />
+      <div className="stack items-start mt-4">
+        <LinkButton
+          to={calendarEditPage(data.event.eventId)}
+          size="tiny"
+          variant="outlined"
+        >
+          Edit event info
+        </LinkButton>
+      </div>
     </div>
   );
 }

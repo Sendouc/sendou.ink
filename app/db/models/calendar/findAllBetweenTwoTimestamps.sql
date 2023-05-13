@@ -3,6 +3,7 @@ select
   "CalendarEvent"."discordUrl",
   "CalendarEvent"."bracketUrl",
   "CalendarEvent"."tags",
+  "CalendarEvent"."tournamentId",
   "CalendarEventDate"."id" as "eventDateId",
   "CalendarEventDate"."eventId",
   "CalendarEventDate"."startTime",
