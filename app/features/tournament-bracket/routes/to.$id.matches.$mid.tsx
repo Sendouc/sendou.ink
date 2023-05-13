@@ -360,22 +360,47 @@ function MapListSection({ teams }: { teams: [id: number, id: number] }) {
   const teamOneMaps = new MapPool(teamOne.mapPool ?? []);
   const teamTwoMaps = new MapPool(teamTwo.mapPool ?? []);
 
-  const maps = createTournamentMapList({
-    bestOf: data.match.bestOf,
-    seed: String(data.match.id),
-    modesIncluded: modesIncluded(parentRouteData.event),
-    tiebreakerMaps: new MapPool(parentRouteData.tieBreakerMapPool),
-    teams: [
-      {
-        id: teams[0],
-        maps: teamOneMaps,
-      },
-      {
-        id: teams[1],
-        maps: teamTwoMaps,
-      },
-    ],
-  });
+  let maps;
+  try {
+    maps = createTournamentMapList({
+      bestOf: data.match.bestOf,
+      seed: String(data.match.id),
+      modesIncluded: modesIncluded(parentRouteData.event),
+      tiebreakerMaps: new MapPool(parentRouteData.tieBreakerMapPool),
+      teams: [
+        {
+          id: teams[0],
+          maps: teamOneMaps,
+        },
+        {
+          id: teams[1],
+          maps: teamTwoMaps,
+        },
+      ],
+    });
+  } catch (e) {
+    console.error(
+      "Failed to create map list. Falling back to default maps.",
+      e
+    );
+
+    maps = createTournamentMapList({
+      bestOf: data.match.bestOf,
+      seed: String(data.match.id),
+      modesIncluded: modesIncluded(parentRouteData.event),
+      tiebreakerMaps: new MapPool(parentRouteData.tieBreakerMapPool),
+      teams: [
+        {
+          id: -1,
+          maps: new MapPool([]),
+        },
+        {
+          id: -2,
+          maps: new MapPool([]),
+        },
+      ],
+    });
+  }
 
   const scoreSum =
     (data.match.opponentOne?.score ?? 0) + (data.match.opponentTwo?.score ?? 0);
