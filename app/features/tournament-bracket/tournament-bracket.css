@@ -35,6 +35,8 @@
   border-start-end-radius: var(--rounded);
   border-start-start-radius: var(--rounded);
   grid-area: img;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .tournament-bracket__stage-banner__top-bar {

@@ -10,7 +10,7 @@ import { SubmitButton } from "~/components/SubmitButton";
 import { useTranslation } from "~/hooks/useTranslation";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator";
-import { modeImageUrl } from "~/utils/urls";
+import { modeImageUrl, stageImageUrl } from "~/utils/urls";
 import type { TournamentMatchLoaderData } from "../routes/to.$id.matches.$mid";
 import {
   HACKY_resolvePoolCode,
@@ -175,9 +175,8 @@ function FancyStageBanner({
 }) {
   const { t } = useTranslation(["game-misc", "tournament"]);
 
-  // xxx: dynamic stage img
-  const stageNameToBannerImageUrl = (_stageId: StageId) => {
-    return "https://raw.githubusercontent.com/Sendouc/sendou.ink/1e1f02fb2a98eb8dd5798f67567f2e2f1d3e6513/public/img/stage-banners/goby-arena.png";
+  const stageNameToBannerImageUrl = (stageId: StageId) => {
+    return stageImageUrl(stageId) + ".png";
   };
 
   const style = {
