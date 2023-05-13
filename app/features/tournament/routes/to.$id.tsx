@@ -4,7 +4,12 @@ import type {
   V2_MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
-import { Outlet, useLoaderData, useLocation } from "@remix-run/react";
+import {
+  type ShouldRevalidateFunction,
+  Outlet,
+  useLoaderData,
+  useLocation,
+} from "@remix-run/react";
 import { Main } from "~/components/Main";
 import { SubNav, SubNavLink } from "~/components/SubNav";
 import { db } from "~/db";
@@ -21,6 +26,24 @@ import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.serv
 import { tournamentIdFromParams } from "../tournament-utils";
 import styles from "../tournament.css";
 import hasTournamentStarted from "../queries/hasTournamentStarted.server";
+
+export const shouldRevalidate: ShouldRevalidateFunction = (args) => {
+  const wasMutation = args.formMethod === "post";
+  const wasOnMatchPage = args.formAction?.includes("matches");
+
+  if (wasMutation && wasOnMatchPage) {
+    return false;
+  }
+
+  const wasRevalidation = !args.formMethod;
+  const wasOnBracketPage = args.currentUrl.href.includes("brackets");
+
+  if (wasRevalidation && wasOnBracketPage) {
+    return false;
+  }
+
+  return args.defaultShouldRevalidate;
+};
 
 export const meta: V2_MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader>;
@@ -40,8 +63,6 @@ export const handle: SendouRouteHandle = {
 
 export type TournamentToolsTeam = Unpacked<TournamentToolsLoaderData["teams"]>;
 export type TournamentToolsLoaderData = SerializeFrom<typeof loader>;
-
-// xxx: probably want to control how these revalidate
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const user = await getUserId(request);
@@ -86,7 +107,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   }
 };
 
-// xxx: icons to nav
+// TODO: icons to nav could be nice
 // xxx: remove tiebreaker maps for better stats?
 export default function TournamentToolsLayout() {
   const { t } = useTranslation(["tournament"]);

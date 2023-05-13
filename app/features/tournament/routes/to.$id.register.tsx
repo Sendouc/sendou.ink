@@ -165,7 +165,6 @@ export const action: ActionFunction = async ({ request, params }) => {
   return null;
 };
 
-// xxx: could we get all data we need in findOwnTeam (rename to findDetailedOwnTeam?) so we can not run to.id loader and use array to get our team
 export const loader = async ({ request, params }: LoaderArgs) => {
   const eventId = tournamentIdFromParams(params);
   const hasStarted = hasTournamentStarted(eventId);

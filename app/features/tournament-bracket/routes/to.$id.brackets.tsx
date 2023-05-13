@@ -162,7 +162,7 @@ export default function TournamentBracketsPage() {
     };
   }, [data.bracket, navigate, parentRouteData.event.id, data.hasStarted]);
 
-  // xxx: show floating prompt if active match
+  // TODO: show floating prompt if active match
   return (
     <div>
       <AutoRefresher />

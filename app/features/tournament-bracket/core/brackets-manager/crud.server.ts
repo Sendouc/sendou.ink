@@ -1,8 +1,6 @@
 /* eslint-disable */
 // @ts-nocheck TODO
 
-// xxx: would be best to check this
-
 import { Stage, Team, Group, Round, Match } from "./crud-db.server";
 
 export class SqlDatabase {
