@@ -100,9 +100,13 @@ export default function TournamentToolsLayout() {
     <Main bigger={onBracketsPage}>
       <SubNav>
         {!data.hasStarted ? (
-          <SubNavLink to="register">{t("tournament:tabs.register")}</SubNavLink>
+          <SubNavLink to="register" data-testid="register-tab">
+            {t("tournament:tabs.register")}
+          </SubNavLink>
         ) : null}
-        <SubNavLink to="brackets">Brackets</SubNavLink>
+        <SubNavLink to="brackets" data-testid="brackets-tab">
+          Brackets
+        </SubNavLink>
         {data.mapListGeneratorAvailable ? (
           <SubNavLink to="maps">{t("tournament:tabs.maps")}</SubNavLink>
         ) : null}

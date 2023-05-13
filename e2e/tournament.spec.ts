@@ -4,12 +4,13 @@ import type { TournamentToolsLoaderData } from "~/features/tournament";
 import {
   fetchSendouInk,
   impersonate,
+  isNotVisible,
   navigate,
   seed,
   selectUser,
   submit,
 } from "~/utils/playwright";
-import { toToolsPage } from "~/utils/urls";
+import { toToolsBracketsPage, toToolsPage } from "~/utils/urls";
 
 const fetchTournamentLoaderData = () =>
   fetchSendouInk<TournamentToolsLoaderData>(
@@ -137,5 +138,23 @@ test.describe("Tournament", () => {
 
     data = await fetchTournamentLoaderData();
     expect(data.teams.find((t) => t.id === 1)).toBeFalsy();
+  });
+
+  test("checks in and appears on the bracket", async ({ page }) => {
+    await seed(page);
+    await impersonate(page);
+
+    await navigate({
+      page,
+      url: toToolsBracketsPage(1),
+    });
+
+    await isNotVisible(page.getByText("Chimera"));
+
+    await page.getByTestId("register-tab").click();
+    await page.getByTestId("check-in-button").click();
+
+    await page.getByTestId("brackets-tab").click();
+    await page.getByText("#1 Chimera").waitFor();
   });
 });

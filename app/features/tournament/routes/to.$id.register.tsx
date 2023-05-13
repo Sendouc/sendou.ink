@@ -417,6 +417,7 @@ function CheckIn({
         // do they have other steps left to complete than checking in?
         disabled={!canCheckIn}
         state={fetcher.state}
+        testId="check-in-button"
       >
         Check in
       </SubmitButton>

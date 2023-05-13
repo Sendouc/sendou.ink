@@ -733,7 +733,7 @@ const validTournamentTeamName = () => {
 
 const names = Array.from(
   new Set(new Array(100).fill(null).map(() => validTournamentTeamName()))
-);
+).concat("Chimera");
 const availableStages: StageId[] = [1, 2, 3, 4, 6, 7, 8, 10, 11];
 const availablePairs = rankedModesShort
   .flatMap((mode) =>

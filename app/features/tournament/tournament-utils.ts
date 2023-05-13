@@ -26,6 +26,12 @@ export function resolveOwnedTeam({
   );
 }
 
+export function teamHasCheckedIn(
+  team: Pick<TournamentToolsTeam, "checkedInAt">
+) {
+  return Boolean(team.checkedInAt);
+}
+
 export function tournamentIdFromParams(params: Params<string>) {
   const result = Number(params["id"]);
   invariant(!Number.isNaN(result), "id is not a number");
@@ -75,7 +81,7 @@ export function HACKY_resolvePicture(
 // hacky because db query not taking in account possibility of many start times
 // AND always assumed check-in starts 1h before
 export function HACKY_resolveCheckInTime(
-  event: TournamentToolsLoaderData["event"]
+  event: Pick<TournamentToolsLoaderData["event"], "startTime">
 ) {
   return databaseTimestampToDate(event.startTime - 60 * 60);
 }
@@ -86,17 +92,20 @@ export function mapPickCountPerMode(event: TournamentToolsLoaderData["event"]) {
     : TOURNAMENT.COUNTERPICK_MAPS_PER_MODE;
 }
 
+export function checkInHasStarted(
+  event: Pick<TournamentToolsLoaderData["event"], "startTime">
+) {
+  return HACKY_resolveCheckInTime(event).getTime() < Date.now();
+}
+
 export function validateCanCheckIn({
   event,
   team,
 }: {
-  event: TournamentToolsLoaderData["event"];
+  event: Pick<TournamentToolsLoaderData["event"], "startTime">;
   team: FindTeamsByTournamentId[number];
 }) {
-  validate(
-    HACKY_resolveCheckInTime(event).getTime() < Date.now(),
-    "Check-in has not started yet"
-  );
+  validate(checkInHasStarted(event), "Check-in has not started yet");
   validate(
     team.members.length >= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
     "Team does not have enough members"

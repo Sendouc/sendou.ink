@@ -38,6 +38,7 @@ import {
 import { sql } from "~/db/sql";
 import { useEventSource } from "remix-utils";
 import { Status } from "~/db/types";
+import { checkInHasStarted, teamHasCheckedIn } from "~/features/tournament";
 
 export const links: LinksFunction = () => {
   return [
@@ -67,14 +68,17 @@ export const action: ActionFunction = async ({ params, request }) => {
   validate(canAdminTournament({ user, event: tournament }));
   validate(!hasStarted);
 
+  let teams = findTeamsByTournamentId(tournamentId);
+  if (checkInHasStarted(tournament)) {
+    teams = teams.filter(teamHasCheckedIn);
+  }
+
   sql.transaction(() => {
     manager.create({
       tournamentId,
       name: resolveTournamentStageName(tournament.format),
       type: resolveTournamentStageType(tournament.format),
-      seeding: fillWithNullTillPowerOfTwo(
-        findTeamsByTournamentId(tournamentId).map((team) => team.name)
-      ),
+      seeding: fillWithNullTillPowerOfTwo(teams.map((team) => team.name)),
       settings: resolveTournamentStageSettings(tournament.format),
     });
 
@@ -94,14 +98,17 @@ export const loader = ({ params }: LoaderArgs) => {
   const hasStarted = hasTournamentStarted(tournamentId);
   const manager = getTournamentManager(hasStarted ? "SQL" : "IN_MEMORY");
 
+  let teams = findTeamsByTournamentId(tournamentId);
+  if (checkInHasStarted(tournament)) {
+    teams = teams.filter(teamHasCheckedIn);
+  }
+
   if (!hasStarted) {
     manager.create({
       tournamentId,
       name: resolveTournamentStageName(tournament.format),
       type: resolveTournamentStageType(tournament.format),
-      seeding: fillWithNullTillPowerOfTwo(
-        findTeamsByTournamentId(tournamentId).map((team) => team.name)
-      ),
+      seeding: fillWithNullTillPowerOfTwo(teams.map((team) => team.name)),
       settings: resolveTournamentStageSettings(tournament.format),
     });
   }
@@ -156,7 +163,6 @@ export default function TournamentBracketsPage() {
   }, [data.bracket, navigate, parentRouteData.event.id, data.hasStarted]);
 
   // xxx: show floating prompt if active match
-  // xxx: teams all before check-in, and only checked in when check-in is open
   return (
     <div>
       <AutoRefresher />
