@@ -29,8 +29,6 @@
   "pickInfo.default": "Scenario predefinito",
   "generator.error": "I cambiamenti che hai fatto non sono stati salvati visto che il torneo è già cominciato.",
   "teams.mapsPickedStatus": "Stato scenari selezionati",
-  "admin.eventStarted": "Evento iniziato",
-  "admin.eventStarted.explanation": "Dopo l'inizio dell'evento, le squadre possono generare liste di scenari, ma non sarà possibile cambiare le pool di scenari o gli elenchi.",
   "admin.download": "Download partecipanti",
   "admin.download.discord": "Lista Discord"
 }

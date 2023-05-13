@@ -2,15 +2,14 @@ import type { ActionFunction } from "@remix-run/node";
 import { useFetcher, useOutletContext, useSubmit } from "@remix-run/react";
 import * as React from "react";
 import { Button } from "~/components/Button";
-import { FormMessage } from "~/components/FormMessage";
 import { Toggle } from "~/components/Toggle";
 import { useTranslation } from "~/hooks/useTranslation";
-import { canAdminTournament } from "~/permissions";
+import { canAdminTournament, isAdmin } from "~/permissions";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { discordFullName } from "~/utils/strings";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
-import { updateIsBeforeStart } from "../queries/updateIsBeforeStart.server";
+import { updateShowMapListGenerator } from "../queries/updateShowMapListGenerator.server";
 import { requireUserId } from "~/modules/auth/user.server";
 import {
   HACKY_resolveCheckInTime,
@@ -30,6 +29,9 @@ import type { TournamentToolsLoaderData } from "./to.$id";
 import { joinTeam, leaveTeam } from "../queries/joinLeaveTeam.server";
 import { TOURNAMENT } from "../tournament-constants";
 import { deleteTeam } from "../queries/deleteTeam.server";
+import { useUser } from "~/modules/auth";
+import { toToolsPage } from "~/utils/urls";
+import { Redirect } from "~/components/Redirect";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUserId(request);
@@ -46,9 +48,9 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   switch (data._action) {
     case "UPDATE_SHOW_MAP_LIST_GENERATOR": {
-      updateIsBeforeStart({
-        id: event.id,
-        isBeforeStart: Number(!data.started),
+      updateShowMapListGenerator({
+        tournamentId: event.id,
+        showMapListGenerator: Number(data.show),
       });
       break;
     }
@@ -137,10 +139,17 @@ export const action: ActionFunction = async ({ request, params }) => {
 };
 
 export default function TournamentToolsAdminPage() {
+  const data = useOutletContext<TournamentToolsLoaderData>();
+  const user = useUser();
+
+  if (!canAdminTournament({ user, event: data.event })) {
+    return <Redirect to={toToolsPage(data.event.id)} />;
+  }
+
   return (
     <div className="stack md">
       <AdminActions />
-      <EnableMapList />
+      {isAdmin(user) ? <EnableMapList /> : null}
       <DownloadParticipants />
     </div>
   );
@@ -286,29 +295,25 @@ function AdminActions() {
 }
 
 function EnableMapList() {
-  const { t } = useTranslation(["tournament"]);
   const data = useOutletContext<TournamentToolsLoaderData>();
   const submit = useSubmit();
   const [eventStarted, setEventStarted] = React.useState(
-    Boolean(!data.event.isBeforeStart)
+    Boolean(data.event.showMapListGenerator)
   );
   function handleToggle(toggled: boolean) {
     setEventStarted(toggled);
 
     const data = new FormData();
     data.append("_action", "UPDATE_SHOW_MAP_LIST_GENERATOR");
-    data.append("started", toggled ? "on" : "off");
+    data.append("show", toggled ? "on" : "off");
 
     submit(data, { method: "post" });
   }
 
   return (
     <div>
-      <label>{t("tournament:admin.eventStarted")}</label>
-      <Toggle checked={eventStarted} setChecked={handleToggle} name="started" />
-      <FormMessage type="info">
-        {t("tournament:admin.eventStarted.explanation")}
-      </FormMessage>
+      <label>Public map list generator tool</label>
+      <Toggle checked={eventStarted} setChecked={handleToggle} name="show" />
     </div>
   );
 }

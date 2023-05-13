@@ -39,8 +39,6 @@
 
   "teams.mapsPickedStatus": "Statut du choix de stages",
 
-  "admin.eventStarted": "L'événement a commencé",
-  "admin.eventStarted.explanation": "Après le lancement de l'événement, les équipes peuvent générer des listes de stages mais ne peuvent pas changer leur pool de cartes ou leur roster",
   "admin.download": "Télécharger les participants",
   "admin.download.discord": "Liste Discord"
 }

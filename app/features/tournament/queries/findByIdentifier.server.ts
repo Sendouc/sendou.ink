@@ -12,6 +12,7 @@ select
   "Tournament"."id",
   "Tournament"."mapPickingStyle",
   "Tournament"."format",
+  "Tournament"."showMapListGenerator",
   "CalendarEvent"."id" as "eventId",
   "CalendarEvent"."name",
   "CalendarEvent"."description",
@@ -31,7 +32,10 @@ select
 
 type FindByIdentifierRow =
   | ((Pick<CalendarEvent, "bracketUrl" | "name" | "description" | "authorId"> &
-      Pick<Tournament, "id" | "format" | "mapPickingStyle"> &
+      Pick<
+        Tournament,
+        "id" | "format" | "mapPickingStyle" | "showMapListGenerator"
+      > &
       Pick<User, "discordId" | "discordName" | "discordDiscriminator"> &
       Pick<CalendarEventDate, "startTime">) & { eventId: CalendarEvent["id"] })
   | null;
@@ -45,7 +49,6 @@ export function findByIdentifier(identifier: string | number) {
 
   return {
     ...rest,
-    isBeforeStart: true,
     author: {
       discordId,
       discordName,

@@ -193,11 +193,11 @@ type TournamentMapPickingStyle =
 // describing how many teams advance
 export type TournamentFormat = "SE" | "DE";
 
-// xxx: isBeforeStart not working with this
 export interface Tournament {
   id: number;
   mapPickingStyle: TournamentMapPickingStyle;
   format: TournamentFormat;
+  showMapListGenerator: number;
 }
 
 export interface TournamentTeam {

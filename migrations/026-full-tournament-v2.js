@@ -33,7 +33,8 @@ module.exports.up = function (db) {
   create table "Tournament" (
     "id" integer primary key,
     "mapPickingStyle" text not null,
-    "format" text not null
+    "format" text not null,
+    "showMapListGenerator" integer default 0
   ) strict
   `
   ).run();

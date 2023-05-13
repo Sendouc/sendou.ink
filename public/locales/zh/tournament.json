@@ -41,8 +41,6 @@
 
   "teams.mapsPickedStatus": "地图的选择情况",
 
-  "admin.eventStarted": "比赛开始",
-  "admin.eventStarted.explanation": "比赛开始后，参赛队伍可以制作地图列表，但是不能更改他们的地图池或者队伍阵容。",
   "admin.download": "下载参赛者",
   "admin.download.discord": "Discord列表"
 }

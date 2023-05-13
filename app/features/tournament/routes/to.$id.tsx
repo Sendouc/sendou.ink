@@ -70,7 +70,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const event = notFoundIfFalsy(findByIdentifier(tournamentId));
 
   const mapListGeneratorAvailable =
-    canAdminTournament({ user, event }) || !event.isBeforeStart;
+    canAdminTournament({ user, event }) || event.showMapListGenerator;
 
   const teams = findTeamsByTournamentId(tournamentId);
 
@@ -94,7 +94,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   function censorMapPools(
     teams: FindTeamsByTournamentId
   ): FindTeamsByTournamentId {
-    if (hasStarted) return teams;
+    if (hasStarted || mapListGeneratorAvailable) return teams;
 
     return teams.map((team) =>
       team.id === ownedTeamId
