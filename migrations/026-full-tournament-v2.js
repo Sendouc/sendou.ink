@@ -200,4 +200,22 @@ module.exports.up = function (db) {
   db.prepare(
     `create index tournament_match_game_result_participant_user_id on "TournamentMatchGameResultParticipant"("userId")`
   ).run();
+
+  db.prepare(
+    /*sql*/ `
+  create table "TrustRelationship" (
+    "trustGiverUserId" integer not null,
+    "trustReceiverUserId" integer not null,
+    foreign key ("trustGiverUserId") references "User"("id") on delete cascade,
+    foreign key ("trustReceiverUserId") references "User"("id") on delete cascade,
+    unique("trustGiverUserId", "trustReceiverUserId") on conflict ignore
+  ) strict
+  `
+  ).run();
+  db.prepare(
+    `create index trust_relationship_trust_giver_user_id on "TrustRelationship"("trustGiverUserId")`
+  ).run();
+  db.prepare(
+    `create index trust_relationship_trust_receiver_user_id on "TrustRelationship"("trustReceiverUserId")`
+  ).run();
 };

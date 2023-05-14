@@ -61,3 +61,7 @@ export const adminActionSchema = z.union([
     teamId: id,
   }),
 ]);
+
+export const joinSchema = z.object({
+  trust: z.preprocess(checkboxValueToBoolean, z.boolean()),
+});

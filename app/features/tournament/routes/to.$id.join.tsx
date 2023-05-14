@@ -6,7 +6,7 @@ import { SubmitButton } from "~/components/SubmitButton";
 import { INVITE_CODE_LENGTH } from "~/constants";
 import { useUser } from "~/modules/auth";
 import { requireUserId } from "~/modules/auth/user.server";
-import { notFoundIfFalsy, validate } from "~/utils/remix";
+import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
 import { toToolsPage } from "~/utils/urls";
 import { findByInviteCode } from "../queries/findTeamByInviteCode.server";
@@ -15,11 +15,16 @@ import { joinTeam } from "../queries/joinLeaveTeam.server";
 import { TOURNAMENT } from "../tournament-constants";
 import type { TournamentToolsLoaderData, TournamentToolsTeam } from "./to.$id";
 import hasTournamentStarted from "../queries/hasTournamentStarted.server";
+import React from "react";
+import { discordFullName } from "~/utils/strings";
+import { joinSchema } from "../tournament-schemas.server";
+import { giveTrust } from "../queries/giveTrust.server";
 
 export const action: ActionFunction = async ({ request }) => {
   const user = await requireUserId(request);
   const url = new URL(request.url);
   const inviteCode = url.searchParams.get("code");
+  const data = await parseRequestFormData({ request, schema: joinSchema });
   invariant(inviteCode, "code is missing");
 
   const leanTeam = notFoundIfFalsy(findByInviteCode(inviteCode));
@@ -61,6 +66,16 @@ export const action: ActionFunction = async ({ request }) => {
       previousTeam.members.length <= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
     whatToDoWithPreviousTeam,
   });
+  if (data.trust) {
+    const inviterUserId = teamToJoin.members.find(
+      (member) => member.isOwner
+    )?.userId;
+    invariant(inviterUserId, "Inviter user could not be resolved");
+    giveTrust({
+      trustGiverUserId: user.id,
+      trustReceiverUserId: inviterUserId,
+    });
+  }
 
   return redirect(toToolsPage(leanTeam.tournamentId));
 };
@@ -76,6 +91,7 @@ export const loader = ({ request }: LoaderArgs) => {
 };
 
 export default function JoinTeamPage() {
+  const id = React.useId();
   const user = useUser();
   const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
   const data = useLoaderData<typeof loader>();
@@ -83,6 +99,7 @@ export default function JoinTeamPage() {
   const teamToJoin = parentRouteData.teams.find(
     (team) => team.id === data.teamId
   );
+  const captain = teamToJoin?.members.find((member) => member.isOwner);
   const validationStatus = validateCanJoin({
     inviteCode: data.inviteCode,
     teamToJoin,
@@ -122,7 +139,18 @@ export default function JoinTeamPage() {
 
   return (
     <Form method="post" className="tournament__invite-container">
-      <div className="text-center">{textPrompt()}</div>
+      <div className="stack sm">
+        <div className="text-center">{textPrompt()}</div>
+        {validationStatus === "VALID" ? (
+          <div className="text-lighter text-sm stack horizontal sm items-center">
+            <input id={id} type="checkbox" name="trust" />{" "}
+            <label htmlFor={id} className="mb-0">
+              Trust {captain ? discordFullName(captain) : ""} to add you on
+              their own to future tournaments?
+            </label>
+          </div>
+        ) : null}
+      </div>
       {validationStatus === "VALID" ? (
         <SubmitButton size="big">Join</SubmitButton>
       ) : null}

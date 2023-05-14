@@ -312,6 +312,11 @@ export interface TournamentMatchGameResultParticipant {
   userId: number;
 }
 
+export interface TrustRelationship {
+  trustGiverUserId: number;
+  trustReceiverUserId: number;
+}
+
 export interface UserSubmittedImage {
   id: number;
   validatedAt: number | null;

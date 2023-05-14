@@ -17,7 +17,7 @@ import { Label } from "~/components/Label";
 import { SubmitButton } from "~/components/SubmitButton";
 import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
-import { getUser, requireUserId } from "~/modules/auth/user.server";
+import { getUser, requireUser } from "~/modules/auth/user.server";
 import type {
   ModeShort,
   RankedModeShort,
@@ -87,7 +87,7 @@ export const handle: SendouRouteHandle = {
 };
 
 export const action: ActionFunction = async ({ request, params }) => {
-  const user = await requireUserId(request);
+  const user = await requireUser(request);
   const data = await parseRequestFormData({ request, schema: registerSchema });
 
   const tournamentId = tournamentIdFromParams(params);
@@ -169,6 +169,13 @@ export const action: ActionFunction = async ({ request, params }) => {
         "User is already in a team"
       );
       validate(ownTeam);
+      validate(
+        findTrustedPlayers({
+          userId: user.id,
+          teamId: user.team?.id,
+        }).some((trustedPlayer) => trustedPlayer.id === data.userId),
+        "No trust given from this user"
+      );
 
       joinTeam({
         userId: data.userId,
