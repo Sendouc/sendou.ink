@@ -15,6 +15,7 @@ const stm = sql.prepare(/*sql*/ `
       "TournamentTeam"."name",
       "TournamentTeam"."seed",
       "TournamentTeam"."checkedInAt",
+      "TournamentTeam"."prefersNotToHost",
       json_group_array(
         json_object(
           'userId',
@@ -69,6 +70,7 @@ export interface FindTeamsByTournamentIdItem {
   name: TournamentTeam["name"];
   seed: TournamentTeam["seed"];
   checkedInAt: TournamentTeam["checkedInAt"];
+  prefersNotToHost: TournamentTeam["prefersNotToHost"];
   members: Array<
     Pick<TournamentTeamMember, "userId" | "isOwner"> &
       Pick<

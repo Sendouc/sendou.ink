@@ -7,11 +7,13 @@ const createTeamStm = sql.prepare(/*sql*/ `
   insert into "TournamentTeam" (
     "tournamentId",
     "inviteCode",
-    "name"
+    "name",
+    "prefersNotToHost"
   ) values (
     @tournamentId,
     @inviteCode,
-    @name
+    @name,
+    @prefersNotToHost
   ) returning *
 `);
 
@@ -32,15 +34,18 @@ export const createTeam = sql.transaction(
     tournamentId,
     name,
     ownerId,
+    prefersNotToHost,
   }: {
     tournamentId: TournamentTeam["tournamentId"];
     name: TournamentTeam["name"];
     ownerId: User["id"];
+    prefersNotToHost: TournamentTeam["prefersNotToHost"];
   }) => {
     const team = createTeamStm.get({
       tournamentId,
       name,
       inviteCode: nanoid(INVITE_CODE_LENGTH),
+      prefersNotToHost,
     }) as TournamentTeam;
 
     createMemberStm.run({ tournamentTeamId: team.id, userId: ownerId });

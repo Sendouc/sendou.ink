@@ -207,6 +207,7 @@ export interface TournamentTeam {
   seed: number | null;
   tournamentId: number;
   inviteCode: string;
+  prefersNotToHost: number;
   checkedInAt?: number;
 }
 

@@ -40,6 +40,8 @@ export function resolveRoomPass(matchId: TournamentMatch["id"]) {
 export function resolveHostingTeam(
   teams: [TournamentToolsTeam, TournamentToolsTeam]
 ) {
+  if (teams[0].prefersNotToHost && !teams[1].prefersNotToHost) return teams[1];
+  if (!teams[0].prefersNotToHost && teams[1].prefersNotToHost) return teams[0];
   if (!teams[0].seed && !teams[1].seed) return teams[0];
   if (!teams[0].seed) return teams[1];
   if (!teams[1].seed) return teams[0];

@@ -77,6 +77,7 @@ import type { TrustedPlayer } from "../queries/findTrustedPlayers.server";
 import { findTrustedPlayers } from "../queries/findTrustedPlayers.server";
 import { Divider } from "~/components/Divider";
 import { joinTeam } from "../queries/joinLeaveTeam.server";
+import { booleanToInt } from "~/utils/sql";
 
 export const handle: SendouRouteHandle = {
   breadcrumb: () => ({
@@ -110,12 +111,14 @@ export const action: ActionFunction = async ({ request, params }) => {
         updateTeamInfo({
           name: data.teamName,
           id: ownTeam.id,
+          prefersNotToHost: booleanToInt(data.prefersNotToHost),
         });
       } else {
         createTeam({
           name: data.teamName,
           tournamentId: tournamentId,
           ownerId: user.id,
+          prefersNotToHost: booleanToInt(data.prefersNotToHost),
         });
       }
       break;
@@ -288,13 +291,27 @@ function RegistrationForms({
   ownTeam?: NonNullable<SerializeFrom<typeof loader>>["ownTeam"];
 }) {
   const user = useUser();
+  const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
 
   if (!user) return <PleaseLogIn />;
 
+  const ownTeamFromList = resolveOwnedTeam({
+    teams: parentRouteData.teams,
+    userId: user?.id,
+  });
+
   return (
     <div className="stack lg">
-      <RegistrationProgress checkedIn={Boolean(ownTeam?.checkedInAt)} />
-      <TeamInfo ownTeam={ownTeam} />
+      <RegistrationProgress
+        checkedIn={Boolean(ownTeam?.checkedInAt)}
+        name={ownTeam?.name}
+        mapPool={ownTeamFromList?.mapPool}
+        members={ownTeamFromList?.members}
+      />
+      <TeamInfo
+        name={ownTeam?.name}
+        prefersNotToHost={ownTeamFromList?.prefersNotToHost}
+      />
       {ownTeam ? (
         <>
           <FillRoster ownTeam={ownTeam} />
@@ -305,29 +322,32 @@ function RegistrationForms({
   );
 }
 
-function RegistrationProgress({ checkedIn }: { checkedIn?: boolean }) {
-  const user = useUser();
+function RegistrationProgress({
+  checkedIn,
+  name,
+  members,
+  mapPool,
+}: {
+  checkedIn?: boolean;
+  name?: string;
+  members?: unknown[];
+  mapPool?: unknown[];
+}) {
   const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
-
-  const ownTeam = resolveOwnedTeam({
-    teams: parentRouteData.teams,
-    userId: user?.id,
-  });
 
   const steps = [
     {
       name: "Team name",
-      completed: Boolean(ownTeam?.name),
+      completed: Boolean(name),
     },
     {
       name: "Full roster",
       completed:
-        ownTeam?.members &&
-        ownTeam?.members.length >= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
+        members && members.length >= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
     },
     {
       name: "Map pool",
-      completed: ownTeam?.mapPool && ownTeam.mapPool.length > 0,
+      completed: mapPool && mapPool.length > 0,
     },
     {
       name: "Check-in",
@@ -455,25 +475,43 @@ function CheckIn({
 }
 
 function TeamInfo({
-  ownTeam,
+  name,
+  prefersNotToHost = 0,
 }: {
-  ownTeam?: NonNullable<SerializeFrom<typeof loader>>["ownTeam"];
+  name?: string;
+  prefersNotToHost?: number;
 }) {
+  const id = React.useId();
   const fetcher = useFetcher();
   return (
     <div>
       <h3 className="tournament__section-header">1. Team info</h3>
       <section className="tournament__section">
         <fetcher.Form method="post" className="stack md items-center">
-          <div className="tournament__section__input-container">
-            <Label htmlFor="teamName">Team name</Label>
-            <Input
-              name="teamName"
-              id="teamName"
-              required
-              maxLength={TOURNAMENT.TEAM_NAME_MAX_LENGTH}
-              defaultValue={ownTeam?.name ?? undefined}
-            />
+          <div className="stack sm items-center">
+            <div className="tournament__section__input-container">
+              <Label htmlFor="teamName">Team name</Label>
+              <Input
+                name="teamName"
+                id="teamName"
+                required
+                maxLength={TOURNAMENT.TEAM_NAME_MAX_LENGTH}
+                defaultValue={name ?? undefined}
+              />
+            </div>
+            <div>
+              <div className="text-lighter text-sm stack horizontal sm items-center">
+                <input
+                  id={id}
+                  type="checkbox"
+                  name="prefersNotToHost"
+                  defaultChecked={Boolean(prefersNotToHost)}
+                />
+                <label htmlFor={id} className="mb-0">
+                  My team prefers not to host rooms
+                </label>
+              </div>
+            </div>
           </div>
           <SubmitButton _action="UPSERT_TEAM" state={fetcher.state}>
             Save

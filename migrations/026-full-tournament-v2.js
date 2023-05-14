@@ -49,6 +49,7 @@ module.exports.up = function (db) {
       "checkedInAt" integer,
       "inviteCode" text not null unique,
       "tournamentId" integer not null,
+      "prefersNotToHost" integer not null default 0,
       foreign key ("tournamentId") references "Tournament"("id") on delete cascade,
       unique("tournamentId", "name") on conflict rollback
     ) strict

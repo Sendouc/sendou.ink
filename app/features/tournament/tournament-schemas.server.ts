@@ -6,6 +6,7 @@ export const registerSchema = z.union([
   z.object({
     _action: z.literal("UPSERT_TEAM"),
     teamName: z.string().min(1).max(TOURNAMENT.TEAM_NAME_MAX_LENGTH),
+    prefersNotToHost: z.preprocess(checkboxValueToBoolean, z.boolean()),
   }),
   z.object({
     _action: z.literal("UPDATE_MAP_POOL"),
