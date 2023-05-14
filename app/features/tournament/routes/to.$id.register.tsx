@@ -17,7 +17,7 @@ import { Label } from "~/components/Label";
 import { SubmitButton } from "~/components/SubmitButton";
 import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
-import { getUserId, requireUserId } from "~/modules/auth/user.server";
+import { getUser, requireUserId } from "~/modules/auth/user.server";
 import type {
   ModeShort,
   RankedModeShort,
@@ -73,6 +73,10 @@ import { CrossIcon } from "~/components/icons/Cross";
 import clsx from "clsx";
 import { checkIn } from "../queries/checkIn.server";
 import { useAutoRerender } from "~/hooks/useAutoRerender";
+import type { TrustedPlayer } from "../queries/findTrustedPlayers.server";
+import { findTrustedPlayers } from "../queries/findTrustedPlayers.server";
+import { Divider } from "~/components/Divider";
+import { joinTeam } from "../queries/joinLeaveTeam.server";
 
 export const handle: SendouRouteHandle = {
   breadcrumb: () => ({
@@ -157,6 +161,21 @@ export const action: ActionFunction = async ({ request, params }) => {
       checkIn(ownTeam.id);
       break;
     }
+    case "ADD_PLAYER": {
+      validate(
+        teams.every((team) =>
+          team.members.every((member) => member.userId !== data.userId)
+        ),
+        "User is already in a team"
+      );
+      validate(ownTeam);
+
+      joinTeam({
+        userId: data.userId,
+        newTeamId: ownTeam.id,
+      });
+      break;
+    }
     default: {
       assertUnreachable(data);
     }
@@ -173,7 +192,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     throw redirect(toToolsBracketsPage(eventId));
   }
 
-  const user = await getUserId(request);
+  const user = await getUser(request);
   if (!user) return null;
 
   const ownTeam = findOwnTeam({
@@ -184,6 +203,10 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   return {
     ownTeam,
+    trustedPlayers: findTrustedPlayers({
+      userId: user.id,
+      teamId: user.team?.id,
+    }),
   };
 };
 
@@ -459,6 +482,7 @@ function FillRoster({
 }: {
   ownTeam: NonNullable<SerializeFrom<typeof loader>>["ownTeam"];
 }) {
+  const data = useLoaderData<typeof loader>();
   const user = useUser();
   const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
   const [, copyToClipboard] = useCopyToClipboard();
@@ -491,20 +515,42 @@ function FillRoster({
     (ownTeam.checkedInAt &&
       ownTeamMembers.length > TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL);
 
+  const playersAvailableToDirectlyAdd = (() => {
+    return data!.trustedPlayers.filter((user) => {
+      return parentRouteData.teams.every((team) =>
+        team.members.every((member) => member.userId !== user.id)
+      );
+    });
+  })();
+
+  const teamIsFull = ownTeamMembers.length >= TOURNAMENT.TEAM_MAX_MEMBERS;
+
   return (
     <div>
       <h3 className="tournament__section-header">2. Fill roster</h3>
       <section className="tournament__section stack lg items-center">
-        <div className="stack md items-center">
-          <div className="text-center text-sm">
-            Share your invite link to add members: {inviteLink}
+        {playersAvailableToDirectlyAdd.length > 0 && !teamIsFull ? (
+          <>
+            <DirectlyAddPlayerSelect players={playersAvailableToDirectlyAdd} />
+            <Divider>OR</Divider>
+          </>
+        ) : null}
+        {!teamIsFull ? (
+          <div className="stack md items-center">
+            <div className="text-center text-sm">
+              Share your invite link to add members: {inviteLink}
+            </div>
+            <div>
+              <Button
+                size="tiny"
+                onClick={() => copyToClipboard(inviteLink)}
+                variant="outlined"
+              >
+                {t("common:actions.copyToClipboard")}
+              </Button>
+            </div>
           </div>
-          <div>
-            <Button size="tiny" onClick={() => copyToClipboard(inviteLink)}>
-              {t("common:actions.copyToClipboard")}
-            </Button>
-          </div>
-        </div>
+        ) : null}
         <div className="stack lg horizontal mt-2 flex-wrap justify-center">
           {ownTeamMembers.map((member) => {
             return (
@@ -541,10 +587,33 @@ function FillRoster({
       </section>
       <div className="tournament__section__warning">
         At least {TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL} members are required to
-        participate. Max roster size is {TOURNAMENT.TEAM_MAX_MEMBERS} members
-        are allowed in the roster.
+        participate. Max roster size is {TOURNAMENT.TEAM_MAX_MEMBERS}.
       </div>
     </div>
+  );
+}
+
+function DirectlyAddPlayerSelect({ players }: { players: TrustedPlayer[] }) {
+  const fetcher = useFetcher();
+  const id = React.useId();
+  return (
+    <fetcher.Form method="post" className="stack horizontal sm items-end">
+      <div>
+        <Label htmlFor={id}>Add people you have played with</Label>
+        <select id={id} name="userId">
+          {players.map((player) => {
+            return (
+              <option key={player.id} value={player.id}>
+                {discordFullName(player)}
+              </option>
+            );
+          })}
+        </select>
+      </div>
+      <SubmitButton _action="ADD_PLAYER" state={fetcher.state}>
+        Add
+      </SubmitButton>
+    </fetcher.Form>
   );
 }
 

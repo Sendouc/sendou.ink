@@ -18,6 +18,10 @@ export const registerSchema = z.union([
   z.object({
     _action: z.literal("CHECK_IN"),
   }),
+  z.object({
+    _action: z.literal("ADD_PLAYER"),
+    userId: id,
+  }),
 ]);
 
 export const seedsActionSchema = z.object({
