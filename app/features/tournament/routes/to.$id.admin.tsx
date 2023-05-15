@@ -30,7 +30,7 @@ import { joinTeam, leaveTeam } from "../queries/joinLeaveTeam.server";
 import { TOURNAMENT } from "../tournament-constants";
 import { deleteTeam } from "../queries/deleteTeam.server";
 import { useUser } from "~/modules/auth";
-import { calendarEditPage, toToolsPage } from "~/utils/urls";
+import { calendarEditPage, tournamentPage } from "~/utils/urls";
 import { Redirect } from "~/components/Redirect";
 
 export const action: ActionFunction = async ({ request, params }) => {
@@ -143,7 +143,7 @@ export default function TournamentToolsAdminPage() {
   const user = useUser();
 
   if (!canAdminTournament({ user, event: data.event })) {
-    return <Redirect to={toToolsPage(data.event.id)} />;
+    return <Redirect to={tournamentPage(data.event.id)} />;
   }
 
   return (

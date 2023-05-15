@@ -35,7 +35,7 @@ import {
   CALENDAR_PAGE,
   navIconUrl,
   resolveBaseUrl,
-  toToolsPage,
+  tournamentPage,
 } from "~/utils/urls";
 import { actualNumber } from "~/utils/zod";
 import { Tags } from "./components/Tags";
@@ -381,7 +381,7 @@ function EventsList({
                         <Link
                           to={
                             calendarEvent.tournamentId
-                              ? toToolsPage(calendarEvent.tournamentId)
+                              ? tournamentPage(calendarEvent.tournamentId)
                               : String(calendarEvent.eventId)
                           }
                         >

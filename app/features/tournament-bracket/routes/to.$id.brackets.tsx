@@ -20,7 +20,10 @@ import { getTournamentManager } from "../core/brackets-manager";
 import hasTournamentStarted from "../../tournament/queries/hasTournamentStarted.server";
 import { findByIdentifier } from "../../tournament/queries/findByIdentifier.server";
 import { notFoundIfFalsy, validate } from "~/utils/remix";
-import { toToolsBracketsSubscribePage, toToolsMatchPage } from "~/utils/urls";
+import {
+  tournamentBracketsSubscribePage,
+  tournamentMatchPage,
+} from "~/utils/urls";
 import type { TournamentToolsLoaderData } from "../../tournament/routes/to.$id";
 import { resolveBestOfs } from "../core/bestOf.server";
 import { findAllMatchesByTournamentId } from "../queries/findAllMatchesByTournamentId.server";
@@ -145,7 +148,7 @@ export default function TournamentBracketsPage() {
           return;
         }
         navigate(
-          toToolsMatchPage({
+          tournamentMatchPage({
             eventId: parentRouteData.event.id,
             matchId: match.id,
           })
@@ -220,7 +223,7 @@ function useAutoRefresh() {
   const { revalidate } = useRevalidator();
   const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
   const lastEvent = useEventSource(
-    toToolsBracketsSubscribePage(parentRouteData.event.id),
+    tournamentBracketsSubscribePage(parentRouteData.event.id),
     {
       event: bracketSubscriptionKey(parentRouteData.event.id),
     }

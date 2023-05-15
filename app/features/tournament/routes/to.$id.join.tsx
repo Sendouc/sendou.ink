@@ -8,7 +8,7 @@ import { useUser } from "~/modules/auth";
 import { requireUserId } from "~/modules/auth/user.server";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
-import { toToolsPage } from "~/utils/urls";
+import { tournamentPage } from "~/utils/urls";
 import { findByInviteCode } from "../queries/findTeamByInviteCode.server";
 import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
 import { joinTeam } from "../queries/joinLeaveTeam.server";
@@ -77,7 +77,7 @@ export const action: ActionFunction = async ({ request }) => {
     });
   }
 
-  return redirect(toToolsPage(leanTeam.tournamentId));
+  return redirect(tournamentPage(leanTeam.tournamentId));
 };
 
 export const loader = ({ request }: LoaderArgs) => {

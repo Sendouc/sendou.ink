@@ -41,8 +41,8 @@ import {
   SENDOU_INK_BASE_URL,
   modeImageUrl,
   navIconUrl,
-  toToolsBracketsPage,
-  toToolsJoinPage,
+  tournamentBracketsPage,
+  tournamentJoinPage,
 } from "~/utils/urls";
 import deleteTeamMember from "../queries/deleteTeamMember.server";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
@@ -199,7 +199,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const hasStarted = hasTournamentStarted(eventId);
 
   if (hasStarted) {
-    throw redirect(toToolsBracketsPage(eventId));
+    throw redirect(tournamentBracketsPage(eventId));
   }
 
   const user = await getUser(request);
@@ -533,7 +533,7 @@ function FillRoster({
   const [, copyToClipboard] = useCopyToClipboard();
   const { t } = useTranslation(["common"]);
 
-  const inviteLink = `${SENDOU_INK_BASE_URL}${toToolsJoinPage({
+  const inviteLink = `${SENDOU_INK_BASE_URL}${tournamentJoinPage({
     eventId: parentRouteData.event.id,
     inviteCode: ownTeam.inviteCode,
   })}`;

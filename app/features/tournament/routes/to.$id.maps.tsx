@@ -21,7 +21,7 @@ import type { MapPoolMap } from "~/db/types";
 import { modesIncluded, resolveOwnedTeam } from "../tournament-utils";
 import { useUser } from "~/modules/auth";
 import { Redirect } from "~/components/Redirect";
-import { toToolsPage } from "~/utils/urls";
+import { tournamentPage } from "~/utils/urls";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: mapsStyles }];
@@ -85,7 +85,7 @@ export default function TournamentToolsMapsPage() {
   };
 
   if (!data.mapListGeneratorAvailable) {
-    return <Redirect to={toToolsPage(data.event.id)} />;
+    return <Redirect to={tournamentPage(data.event.id)} />;
   }
 
   return (

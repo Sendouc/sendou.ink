@@ -10,7 +10,7 @@ import {
   selectUser,
   submit,
 } from "~/utils/playwright";
-import { toToolsBracketsPage, toToolsPage } from "~/utils/urls";
+import { tournamentBracketsPage, tournamentPage } from "~/utils/urls";
 
 const fetchTournamentLoaderData = () =>
   fetchSendouInk<TournamentToolsLoaderData>(
@@ -51,7 +51,7 @@ test.describe("Tournament", () => {
 
     await navigate({
       page,
-      url: toToolsPage(1),
+      url: tournamentPage(1),
     });
 
     await page.getByTestId("admin-tab").click();
@@ -146,7 +146,7 @@ test.describe("Tournament", () => {
 
     await navigate({
       page,
-      url: toToolsBracketsPage(1),
+      url: tournamentBracketsPage(1),
     });
 
     await isNotVisible(page.getByText("Chimera"));

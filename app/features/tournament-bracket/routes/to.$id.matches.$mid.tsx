@@ -15,7 +15,10 @@ import { MapPool } from "~/modules/map-pool-serializer";
 import { ScoreReporter } from "../components/ScoreReporter";
 import { LinkButton } from "~/components/Button";
 import { ArrowLongLeftIcon } from "~/components/icons/ArrowLongLeft";
-import { toToolsBracketsPage, toToolsMatchSubscribePage } from "~/utils/urls";
+import {
+  tournamentBracketsPage,
+  tournamentMatchSubscribePage,
+} from "~/utils/urls";
 import invariant from "tiny-invariant";
 import { canAdminTournament, canReportTournamentScore } from "~/permissions";
 import { requireUser, useUser } from "~/modules/auth";
@@ -295,7 +298,7 @@ export default function TournamentMatchPage() {
         {/* TODO: better title */}
         <h2 className="text-lighter text-lg">Match #{data.match.id}</h2>
         <LinkButton
-          to={toToolsBracketsPage(parentRouteData.event.id)}
+          to={tournamentBracketsPage(parentRouteData.event.id)}
           variant="outlined"
           size="tiny"
           className="w-max"
@@ -332,7 +335,7 @@ function useAutoRefresh() {
   const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
   const data = useLoaderData<typeof loader>();
   const lastEventId = useEventSource(
-    toToolsMatchSubscribePage({
+    tournamentMatchSubscribePage({
       eventId: parentRouteData.event.id,
       matchId: data.match.id,
     }),

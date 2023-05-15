@@ -32,7 +32,7 @@ import { Draggable } from "~/components/Draggable";
 import { useTimeoutState } from "~/hooks/useTimeoutState";
 import type { TournamentToolsLoaderData, TournamentToolsTeam } from "./to.$id";
 import { Image } from "~/components/Image";
-import { navIconUrl, toToolsBracketsPage } from "~/utils/urls";
+import { navIconUrl, tournamentBracketsPage } from "~/utils/urls";
 import { maxXPowers } from "../queries/maxXPowers.server";
 import { requireUser } from "~/modules/auth";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
@@ -71,7 +71,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const tournament = notFoundIfFalsy(findByIdentifier(tournamentId));
 
   if (!canAdminTournament({ user, event: tournament }) || hasStarted) {
-    throw redirect(toToolsBracketsPage(tournamentId));
+    throw redirect(tournamentBracketsPage(tournamentId));
   }
 
   return {
