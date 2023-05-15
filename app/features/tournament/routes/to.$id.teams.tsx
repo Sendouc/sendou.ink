@@ -3,10 +3,10 @@ import { Avatar } from "~/components/Avatar";
 import { userPage } from "~/utils/urls";
 import type { FindTeamsByTournamentIdItem } from "../queries/findTeamsByTournamentId.server";
 import { TOURNAMENT } from "../tournament-constants";
-import type { TournamentToolsLoaderData, TournamentToolsTeam } from "./to.$id";
+import type { TournamentLoaderData, TournamentLoaderTeam } from "./to.$id";
 
-export default function TournamentToolsTeamsPage() {
-  const data = useOutletContext<TournamentToolsLoaderData>();
+export default function TournamentTeamsPage() {
+  const data = useOutletContext<TournamentLoaderData>();
 
   return (
     <div className="stack lg">
@@ -49,8 +49,8 @@ function TeamWithRoster({
 }
 
 function fullTeamAndHigherPlusStatusOnTop(
-  teamA: TournamentToolsTeam,
-  teamB: TournamentToolsTeam
+  teamA: TournamentLoaderTeam,
+  teamB: TournamentLoaderTeam
 ) {
   if (
     teamA.members.length >= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL &&

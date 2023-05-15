@@ -61,7 +61,7 @@ import {
   HACKY_resolveCheckInTime,
   validateCanCheckIn,
 } from "../tournament-utils";
-import type { TournamentToolsLoaderData } from "./to.$id";
+import type { TournamentLoaderData } from "./to.$id";
 import { createTeam } from "../queries/createTeam.server";
 import { ClockIcon } from "~/components/icons/Clock";
 import { databaseTimestampToDate } from "~/utils/dates";
@@ -225,7 +225,7 @@ export default function TournamentRegisterPage() {
   const { i18n } = useTranslation();
   const user = useUser();
   const data = useLoaderData<typeof loader>();
-  const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
+  const parentRouteData = useOutletContext<TournamentLoaderData>();
 
   const teamRegularMemberOf = parentRouteData.teams.find((team) =>
     team.members.some((member) => member.userId === user?.id && !member.isOwner)
@@ -291,7 +291,7 @@ function RegistrationForms({
   ownTeam?: NonNullable<SerializeFrom<typeof loader>>["ownTeam"];
 }) {
   const user = useUser();
-  const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
+  const parentRouteData = useOutletContext<TournamentLoaderData>();
 
   if (!user) return <PleaseLogIn />;
 
@@ -333,7 +333,7 @@ function RegistrationProgress({
   members?: unknown[];
   mapPool?: unknown[];
 }) {
-  const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
+  const parentRouteData = useOutletContext<TournamentLoaderData>();
 
   const steps = [
     {
@@ -529,7 +529,7 @@ function FillRoster({
 }) {
   const data = useLoaderData<typeof loader>();
   const user = useUser();
-  const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
+  const parentRouteData = useOutletContext<TournamentLoaderData>();
   const [, copyToClipboard] = useCopyToClipboard();
   const { t } = useTranslation(["common"]);
 
@@ -665,7 +665,7 @@ function DirectlyAddPlayerSelect({ players }: { players: TrustedPlayer[] }) {
 function DeleteMember({
   members,
 }: {
-  members: Unpacked<TournamentToolsLoaderData["teams"]>["members"];
+  members: Unpacked<TournamentLoaderData["teams"]>["members"];
 }) {
   const id = React.useId();
   const fetcher = useFetcher();
@@ -712,7 +712,7 @@ function DeleteMember({
 // TODO: useBlocker to prevent leaving page if made changes without saving
 function CounterPickMapPoolPicker() {
   const { t } = useTranslation(["common", "game-misc"]);
-  const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
+  const parentRouteData = useOutletContext<TournamentLoaderData>();
   const fetcher = useFetcher();
 
   const { counterpickMaps, handleCounterpickMapPoolSelect } =

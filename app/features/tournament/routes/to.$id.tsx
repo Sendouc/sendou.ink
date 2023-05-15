@@ -61,8 +61,8 @@ export const handle: SendouRouteHandle = {
   i18n: ["tournament"],
 };
 
-export type TournamentToolsTeam = Unpacked<TournamentToolsLoaderData["teams"]>;
-export type TournamentToolsLoaderData = SerializeFrom<typeof loader>;
+export type TournamentLoaderTeam = Unpacked<TournamentLoaderData["teams"]>;
+export type TournamentLoaderData = SerializeFrom<typeof loader>;
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const user = await getUserId(request);
@@ -108,7 +108,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 };
 
 // TODO: icons to nav could be nice
-export default function TournamentToolsLayout() {
+export default function TournamentLayout() {
   const { t } = useTranslation(["tournament"]);
   const user = useUser();
   const data = useLoaderData<typeof loader>();

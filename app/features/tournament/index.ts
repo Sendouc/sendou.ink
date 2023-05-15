@@ -1,7 +1,7 @@
 export { TOURNAMENT } from "./tournament-constants";
 export type {
-  TournamentToolsTeam,
-  TournamentToolsLoaderData,
+  TournamentLoaderTeam,
+  TournamentLoaderData,
 } from "./routes/to.$id";
 export {
   tournamentIdFromParams,

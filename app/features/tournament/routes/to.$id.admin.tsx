@@ -25,7 +25,7 @@ import { assertUnreachable } from "~/utils/types";
 import { checkIn } from "../queries/checkIn.server";
 import { checkOut } from "../queries/checkOut.server";
 import hasTournamentStarted from "../queries/hasTournamentStarted.server";
-import type { TournamentToolsLoaderData } from "./to.$id";
+import type { TournamentLoaderData } from "./to.$id";
 import { joinTeam, leaveTeam } from "../queries/joinLeaveTeam.server";
 import { TOURNAMENT } from "../tournament-constants";
 import { deleteTeam } from "../queries/deleteTeam.server";
@@ -138,8 +138,8 @@ export const action: ActionFunction = async ({ request, params }) => {
   return null;
 };
 
-export default function TournamentToolsAdminPage() {
-  const data = useOutletContext<TournamentToolsLoaderData>();
+export default function TournamentAdminPage() {
+  const data = useOutletContext<TournamentLoaderData>();
   const user = useUser();
 
   if (!canAdminTournament({ user, event: data.event })) {
@@ -201,8 +201,8 @@ const actions = [
 function AdminActions() {
   const fetcher = useFetcher();
   const { t } = useTranslation(["tournament"]);
-  const data = useOutletContext<TournamentToolsLoaderData>();
-  const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
+  const data = useOutletContext<TournamentLoaderData>();
+  const parentRouteData = useOutletContext<TournamentLoaderData>();
   const [selectedTeamId, setSelectedTeamId] = React.useState(data.teams[0]?.id);
   const [selectedAction, setSelectedAction] = React.useState<
     (typeof actions)[number]
@@ -304,7 +304,7 @@ function AdminActions() {
 }
 
 function EnableMapList() {
-  const data = useOutletContext<TournamentToolsLoaderData>();
+  const data = useOutletContext<TournamentLoaderData>();
   const submit = useSubmit();
   const [eventStarted, setEventStarted] = React.useState(
     Boolean(data.event.showMapListGenerator)
@@ -329,7 +329,7 @@ function EnableMapList() {
 
 function DownloadParticipants() {
   const { t } = useTranslation(["tournament"]);
-  const data = useOutletContext<TournamentToolsLoaderData>();
+  const data = useOutletContext<TournamentLoaderData>();
 
   function discordListContent() {
     return data.teams

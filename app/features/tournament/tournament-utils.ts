@@ -6,8 +6,8 @@ import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { databaseTimestampToDate } from "~/utils/dates";
 import type { FindTeamsByTournamentId } from "./queries/findTeamsByTournamentId.server";
 import type {
-  TournamentToolsLoaderData,
-  TournamentToolsTeam,
+  TournamentLoaderData,
+  TournamentLoaderTeam,
 } from "./routes/to.$id";
 import { TOURNAMENT } from "./tournament-constants";
 import { validate } from "~/utils/remix";
@@ -16,7 +16,7 @@ export function resolveOwnedTeam({
   teams,
   userId,
 }: {
-  teams: Array<TournamentToolsTeam>;
+  teams: Array<TournamentLoaderTeam>;
   userId?: User["id"];
 }) {
   if (typeof userId !== "number") return;
@@ -27,7 +27,7 @@ export function resolveOwnedTeam({
 }
 
 export function teamHasCheckedIn(
-  team: Pick<TournamentToolsTeam, "checkedInAt">
+  team: Pick<TournamentLoaderTeam, "checkedInAt">
 ) {
   return Boolean(team.checkedInAt);
 }
@@ -69,9 +69,7 @@ export function isOneModeTournamentOf(
     : null;
 }
 
-export function HACKY_resolvePicture(
-  event: TournamentToolsLoaderData["event"]
-) {
+export function HACKY_resolvePicture(event: TournamentLoaderData["event"]) {
   if (event.name.includes("In The Zone"))
     return "https://abload.de/img/screenshot2023-04-19a2bfv0.png";
 
@@ -81,19 +79,19 @@ export function HACKY_resolvePicture(
 // hacky because db query not taking in account possibility of many start times
 // AND always assumed check-in starts 1h before
 export function HACKY_resolveCheckInTime(
-  event: Pick<TournamentToolsLoaderData["event"], "startTime">
+  event: Pick<TournamentLoaderData["event"], "startTime">
 ) {
   return databaseTimestampToDate(event.startTime - 60 * 60);
 }
 
-export function mapPickCountPerMode(event: TournamentToolsLoaderData["event"]) {
+export function mapPickCountPerMode(event: TournamentLoaderData["event"]) {
   return isOneModeTournamentOf(event)
     ? TOURNAMENT.COUNTERPICK_ONE_MODE_TOURNAMENT_MAPS_PER_MODE
     : TOURNAMENT.COUNTERPICK_MAPS_PER_MODE;
 }
 
 export function checkInHasStarted(
-  event: Pick<TournamentToolsLoaderData["event"], "startTime">
+  event: Pick<TournamentLoaderData["event"], "startTime">
 ) {
   return HACKY_resolveCheckInTime(event).getTime() < Date.now();
 }
@@ -102,7 +100,7 @@ export function validateCanCheckIn({
   event,
   team,
 }: {
-  event: Pick<TournamentToolsLoaderData["event"], "startTime">;
+  event: Pick<TournamentLoaderData["event"], "startTime">;
   team: FindTeamsByTournamentId[number];
 }) {
   validate(checkInHasStarted(event), "Check-in has not started yet");

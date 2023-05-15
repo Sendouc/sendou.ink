@@ -30,7 +30,7 @@ import { Button } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
 import { Draggable } from "~/components/Draggable";
 import { useTimeoutState } from "~/hooks/useTimeoutState";
-import type { TournamentToolsLoaderData, TournamentToolsTeam } from "./to.$id";
+import type { TournamentLoaderData, TournamentLoaderTeam } from "./to.$id";
 import { Image } from "~/components/Image";
 import { navIconUrl, tournamentBracketsPage } from "~/utils/urls";
 import { maxXPowers } from "../queries/maxXPowers.server";
@@ -82,11 +82,11 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 export default function TournamentSeedsPage() {
   const data = useLoaderData<typeof loader>();
   const [, parentRoute] = useMatches();
-  const { teams } = parentRoute.data as TournamentToolsLoaderData;
+  const { teams } = parentRoute.data as TournamentLoaderData;
   const navigation = useNavigation();
   const [teamOrder, setTeamOrder] = React.useState(teams.map((t) => t.id));
   const [activeTeam, setActiveTeam] =
-    React.useState<TournamentToolsTeam | null>(null);
+    React.useState<TournamentLoaderTeam | null>(null);
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -104,7 +104,7 @@ export default function TournamentSeedsPage() {
     2: 3000,
     1: 4000,
   } as const;
-  const rankTeam = (team: TournamentToolsTeam) => {
+  const rankTeam = (team: TournamentLoaderTeam) => {
     const plusTiers = team.members.map((m) => m.plusTier ?? 999);
     plusTiers.sort((a, b) => a - b);
     plusTiers.slice(0, 4);
@@ -210,7 +210,7 @@ export default function TournamentSeedsPage() {
 }
 
 function SeedAlert({ teamOrder }: { teamOrder: number[] }) {
-  const data = useOutletContext<TournamentToolsLoaderData>();
+  const data = useOutletContext<TournamentLoaderData>();
   const [teamOrderInDb, setTeamOrderInDb] = React.useState(teamOrder);
   const [showSuccess, setShowSuccess] = useTimeoutState(false);
   const fetcher = useFetcher();
@@ -263,7 +263,7 @@ function RowContents({
   team,
   seed,
 }: {
-  team: TournamentToolsTeam;
+  team: TournamentLoaderTeam;
   seed?: number;
 }) {
   const data = useLoaderData<typeof loader>();

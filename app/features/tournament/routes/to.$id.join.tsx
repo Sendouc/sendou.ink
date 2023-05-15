@@ -13,7 +13,7 @@ import { findByInviteCode } from "../queries/findTeamByInviteCode.server";
 import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
 import { joinTeam } from "../queries/joinLeaveTeam.server";
 import { TOURNAMENT } from "../tournament-constants";
-import type { TournamentToolsLoaderData, TournamentToolsTeam } from "./to.$id";
+import type { TournamentLoaderData, TournamentLoaderTeam } from "./to.$id";
 import hasTournamentStarted from "../queries/hasTournamentStarted.server";
 import React from "react";
 import { discordFullName } from "~/utils/strings";
@@ -93,7 +93,7 @@ export const loader = ({ request }: LoaderArgs) => {
 export default function JoinTeamPage() {
   const id = React.useId();
   const user = useUser();
-  const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
+  const parentRouteData = useOutletContext<TournamentLoaderData>();
   const data = useLoaderData<typeof loader>();
 
   const teamToJoin = parentRouteData.teams.find(
@@ -164,7 +164,7 @@ function validateCanJoin({
   userId,
 }: {
   inviteCode?: string | null;
-  teamToJoin?: TournamentToolsTeam;
+  teamToJoin?: TournamentLoaderTeam;
   userId?: number;
 }) {
   if (typeof inviteCode !== "string") {

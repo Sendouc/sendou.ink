@@ -16,7 +16,7 @@ import {
 import mapsStyles from "~/styles/maps.css";
 import { type SendouRouteHandle } from "~/utils/remix";
 import { TOURNAMENT } from "../tournament-constants";
-import type { TournamentToolsLoaderData } from "./to.$id";
+import type { TournamentLoaderData } from "./to.$id";
 import type { MapPoolMap } from "~/db/types";
 import { modesIncluded, resolveOwnedTeam } from "../tournament-utils";
 import { useUser } from "~/modules/auth";
@@ -36,11 +36,11 @@ type TeamInState = {
   mapPool?: Pick<MapPoolMap, "mode" | "stageId">[];
 };
 
-export default function TournamentToolsMapsPage() {
+export default function TournamentMapsPage() {
   const user = useUser();
   const { t } = useTranslation(["tournament"]);
   const actionData = useActionData<{ failed?: boolean }>();
-  const data = useOutletContext<TournamentToolsLoaderData>();
+  const data = useOutletContext<TournamentLoaderData>();
 
   const [bestOf, setBestOf] = useSearchParamState<
     (typeof TOURNAMENT)["AVAILABLE_BEST_OF"][number]
@@ -214,7 +214,7 @@ function TeamsSelect({
   setTeam: (newTeamId: number) => void;
 }) {
   const { t } = useTranslation(["tournament"]);
-  const data = useOutletContext<TournamentToolsLoaderData>();
+  const data = useOutletContext<TournamentLoaderData>();
 
   return (
     <div className="tournament__select-container">
@@ -274,7 +274,7 @@ function BestOfRadios({
 
 function MapList(props: Omit<TournamentMaplistInput, "tiebreakerMaps">) {
   const { t } = useTranslation(["game-misc"]);
-  const data = useOutletContext<TournamentToolsLoaderData>();
+  const data = useOutletContext<TournamentLoaderData>();
 
   let mapList: Array<TournamentMapListMap>;
 

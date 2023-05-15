@@ -22,8 +22,8 @@ import { ScoreReporterRosters } from "./ScoreReporterRosters";
 import type { SerializeFrom } from "@remix-run/node";
 import type { Unpacked } from "~/utils/types";
 import type {
-  TournamentToolsTeam,
-  TournamentToolsLoaderData,
+  TournamentLoaderTeam,
+  TournamentLoaderData,
 } from "~/features/tournament";
 import { canAdminTournament } from "~/permissions";
 import { useUser } from "~/modules/auth";
@@ -41,7 +41,7 @@ export function ScoreReporter({
   result,
   type,
 }: {
-  teams: [TournamentToolsTeam, TournamentToolsTeam];
+  teams: [TournamentLoaderTeam, TournamentLoaderTeam];
   currentStageWithMode: TournamentMapListMap;
   modes: ModeShort[];
   selectedResultIndex?: number;
@@ -52,7 +52,7 @@ export function ScoreReporter({
 }) {
   const actionData = useActionData<{ error?: "locked" }>();
   const user = useUser();
-  const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
+  const parentRouteData = useOutletContext<TournamentLoaderData>();
   const data = useLoaderData<TournamentMatchLoaderData>();
 
   const scoreOne = data.match.opponentOne?.score ?? 0;
@@ -171,7 +171,7 @@ function FancyStageBanner({
   stage: TournamentMapListMap;
   infos?: (JSX.Element | null)[];
   children?: React.ReactNode;
-  teams: [TournamentToolsTeam, TournamentToolsTeam];
+  teams: [TournamentLoaderTeam, TournamentLoaderTeam];
 }) {
   const { t } = useTranslation(["game-misc", "tournament"]);
 

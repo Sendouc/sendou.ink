@@ -41,7 +41,7 @@ import { matchSchema } from "../tournament-bracket-schemas.server";
 import {
   modesIncluded,
   tournamentIdFromParams,
-  type TournamentToolsLoaderData,
+  type TournamentLoaderData,
 } from "~/features/tournament";
 import { insertTournamentMatchGameResultParticipant } from "../queries/insertTournamentMatchGameResultParticipant.server";
 import bracketStyles from "../tournament-bracket.css";
@@ -280,7 +280,7 @@ export const loader = ({ params }: LoaderArgs) => {
 };
 
 export default function TournamentMatchPage() {
-  const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
+  const parentRouteData = useOutletContext<TournamentLoaderData>();
   const data = useLoaderData<typeof loader>();
 
   const matchHasTwoTeams = Boolean(
@@ -332,7 +332,7 @@ function AutoRefresher() {
 
 function useAutoRefresh() {
   const { revalidate } = useRevalidator();
-  const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
+  const parentRouteData = useOutletContext<TournamentLoaderData>();
   const data = useLoaderData<typeof loader>();
   const lastEventId = useEventSource(
     tournamentMatchSubscribePage({
@@ -354,7 +354,7 @@ function useAutoRefresh() {
 function MapListSection({ teams }: { teams: [id: number, id: number] }) {
   const user = useUser();
   const data = useLoaderData<typeof loader>();
-  const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
+  const parentRouteData = useOutletContext<TournamentLoaderData>();
 
   const teamOne = parentRouteData.teams.find((team) => team.id === teams[0]);
   const teamTwo = parentRouteData.teams.find((team) => team.id === teams[1]);
@@ -440,7 +440,7 @@ function MapListSection({ teams }: { teams: [id: number, id: number] }) {
 
 function ResultsSection() {
   const data = useLoaderData<typeof loader>();
-  const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
+  const parentRouteData = useOutletContext<TournamentLoaderData>();
   const [selectedResultIndex, setSelectedResultIndex] = useSearchParamState({
     defaultValue: data.results.length - 1,
     name: "result",

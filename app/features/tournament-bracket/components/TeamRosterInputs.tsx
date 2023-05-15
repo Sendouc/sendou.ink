@@ -4,8 +4,8 @@ import * as React from "react";
 import { TOURNAMENT } from "../../tournament/tournament-constants";
 import { Label } from "~/components/Label";
 import type {
-  TournamentToolsLoaderData,
-  TournamentToolsTeam,
+  TournamentLoaderData,
+  TournamentLoaderTeam,
 } from "../../tournament/routes/to.$id";
 import type { Unpacked } from "~/utils/types";
 import { inGameNameWithoutDiscriminator } from "~/utils/strings";
@@ -24,7 +24,7 @@ export function TeamRosterInputs({
   setCheckedPlayers,
   result,
 }: {
-  teams: [TournamentToolsTeam, TournamentToolsTeam];
+  teams: [TournamentLoaderTeam, TournamentLoaderTeam];
   winnerId?: number | null;
   setWinnerId: (newId?: number) => void;
   checkedPlayers: [number[], number[]];
@@ -35,7 +35,7 @@ export function TeamRosterInputs({
 
   const data = useLoaderData<TournamentMatchLoaderData>();
   const inputMode = (
-    team: Unpacked<TournamentToolsLoaderData["teams"]>
+    team: Unpacked<TournamentLoaderData["teams"]>
   ): TeamRosterInputsType => {
     if (presentational) return "PRESENTATIONAL";
 
@@ -154,7 +154,7 @@ function TeamRosterInputsCheckboxes({
   handlePlayerClick,
   mode,
 }: {
-  team: Unpacked<TournamentToolsLoaderData["teams"]>;
+  team: Unpacked<TournamentLoaderData["teams"]>;
   checkedPlayers: number[];
   handlePlayerClick: (playerId: number) => void;
   /** DEFAULT = inputs work, DISABLED = inputs disabled and look disabled, PRESENTATION = inputs disabled but look like in DEFAULT (without hover styles) */

@@ -24,7 +24,7 @@ import {
   tournamentBracketsSubscribePage,
   tournamentMatchPage,
 } from "~/utils/urls";
-import type { TournamentToolsLoaderData } from "../../tournament/routes/to.$id";
+import type { TournamentLoaderData } from "../../tournament/routes/to.$id";
 import { resolveBestOfs } from "../core/bestOf.server";
 import { findAllMatchesByTournamentId } from "../queries/findAllMatchesByTournamentId.server";
 import { setBestOf } from "../queries/setBestOf.server";
@@ -132,7 +132,7 @@ export default function TournamentBracketsPage() {
   const data = useLoaderData<typeof loader>();
   const ref = React.useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
+  const parentRouteData = useOutletContext<TournamentLoaderData>();
 
   const lessThanTwoTeamsRegistered = parentRouteData.teams.length < 2;
 
@@ -221,7 +221,7 @@ function AutoRefresher() {
 
 function useAutoRefresh() {
   const { revalidate } = useRevalidator();
-  const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
+  const parentRouteData = useOutletContext<TournamentLoaderData>();
   const lastEvent = useEventSource(
     tournamentBracketsSubscribePage(parentRouteData.event.id),
     {

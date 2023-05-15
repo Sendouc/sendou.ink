@@ -11,8 +11,8 @@ import {
 import { assertUnreachable } from "~/utils/types";
 import type { FindMatchById } from "../tournament-bracket/queries/findMatchById.server";
 import type {
-  TournamentToolsLoaderData,
-  TournamentToolsTeam,
+  TournamentLoaderData,
+  TournamentLoaderTeam,
 } from "~/features/tournament";
 import type { Params } from "@remix-run/react";
 import invariant from "tiny-invariant";
@@ -38,7 +38,7 @@ export function resolveRoomPass(matchId: TournamentMatch["id"]) {
 }
 
 export function resolveHostingTeam(
-  teams: [TournamentToolsTeam, TournamentToolsTeam]
+  teams: [TournamentLoaderTeam, TournamentLoaderTeam]
 ) {
   if (teams[0].prefersNotToHost && !teams[1].prefersNotToHost) return teams[1];
   if (!teams[0].prefersNotToHost && teams[1].prefersNotToHost) return teams[0];
@@ -121,9 +121,7 @@ export function checkSourceIsValid({
   return false;
 }
 
-export function HACKY_resolvePoolCode(
-  event: TournamentToolsLoaderData["event"]
-) {
+export function HACKY_resolvePoolCode(event: TournamentLoaderData["event"]) {
   if (event.name.includes("In The Zone")) return "ITZ";
 
   return "PICNIC";

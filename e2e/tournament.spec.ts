@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 import invariant from "tiny-invariant";
-import type { TournamentToolsLoaderData } from "~/features/tournament";
+import type { TournamentLoaderData } from "~/features/tournament";
 import {
   fetchSendouInk,
   impersonate,
@@ -13,7 +13,7 @@ import {
 import { tournamentBracketsPage, tournamentPage } from "~/utils/urls";
 
 const fetchTournamentLoaderData = () =>
-  fetchSendouInk<TournamentToolsLoaderData>(
+  fetchSendouInk<TournamentLoaderData>(
     "/to/1/admin?_data=features%2Ftournament%2Froutes%2Fto.%24id"
   );
 
@@ -22,7 +22,7 @@ const getIsOwnerOfUser = ({
   userId,
   teamId,
 }: {
-  data: TournamentToolsLoaderData;
+  data: TournamentLoaderData;
   userId: number;
   teamId: number;
 }) => {
@@ -36,7 +36,7 @@ const getTeamCheckedInAt = ({
   data,
   teamId,
 }: {
-  data: TournamentToolsLoaderData;
+  data: TournamentLoaderData;
   teamId: number;
 }) => {
   const team = data.teams.find((t) => t.id === teamId);

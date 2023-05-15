@@ -1,8 +1,8 @@
 import * as React from "react";
 import { Form } from "@remix-run/react";
 import type {
-  TournamentToolsLoaderData,
-  TournamentToolsTeam,
+  TournamentLoaderData,
+  TournamentLoaderTeam,
 } from "../../tournament/routes/to.$id";
 import type { Unpacked } from "~/utils/types";
 import { TOURNAMENT } from "../../tournament/tournament-constants";
@@ -18,7 +18,7 @@ export function ScoreReporterRosters({
   currentStageWithMode,
   result,
 }: {
-  teams: [TournamentToolsTeam, TournamentToolsTeam];
+  teams: [TournamentLoaderTeam, TournamentLoaderTeam];
   position: number;
   currentStageWithMode: TournamentMapListMap;
   result?: Result;
@@ -87,8 +87,8 @@ export function ScoreReporterRosters({
 
 // TODO: remember what previously selected for our team
 function checkedPlayersInitialState([teamOne, teamTwo]: [
-  Unpacked<TournamentToolsLoaderData["teams"]>,
-  Unpacked<TournamentToolsLoaderData["teams"]>
+  Unpacked<TournamentLoaderData["teams"]>,
+  Unpacked<TournamentLoaderData["teams"]>
 ]): [number[], number[]] {
   const result: [number[], number[]] = [[], []];
 
