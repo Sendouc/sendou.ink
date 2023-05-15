@@ -124,6 +124,7 @@ export const loader = ({ params }: LoaderArgs) => {
   return {
     bracket: data,
     hasStarted,
+    teamsForBracketCount: teams.length,
   };
 };
 
@@ -134,7 +135,7 @@ export default function TournamentBracketsPage() {
   const navigate = useNavigate();
   const parentRouteData = useOutletContext<TournamentLoaderData>();
 
-  const lessThanTwoTeamsRegistered = parentRouteData.teams.length < 2;
+  const lessThanTwoTeamsRegistered = data.teamsForBracketCount < 2;
 
   React.useEffect(() => {
     if (lessThanTwoTeamsRegistered) return;
