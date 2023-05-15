@@ -73,6 +73,7 @@
   "maps.template.preset.ALL": "All Modes",
   "maps.template.preset.onlyMode": "Only {{modeName}}",
   "maps.validation.PICKING": "Pick one stage per mode",
+  "maps.validation.STAGE_REPEAT_IN_SAME_MODE": "Can't pick the same map twice in the same mode",
   "maps.validation.NOT_ONE_MAP_PER_MODE": "Pick only one stage per mode",
   "maps.validation.MAP_REPEATED": "Can't pick the same stage more than once",
   "maps.validation.MODE_REPEATED": "Can't pick the same mode more than once",
@@ -108,6 +109,7 @@
   "tag.name.S2": "Splatoon 2",
   "tag.name.SR": "Salmon Run",
   "tag.name.CARDS": "Tableturf Battle",
+  "tag.name.FULL_TOURNAMENT": "Hosted on sendou.ink",
 
   "weapon.category.SHOOTERS": "Shooters",
   "weapon.category.BLASTERS": "Blasters",

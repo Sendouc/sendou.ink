@@ -10,3 +10,5 @@ export const DEFAULT_MAP_POOL = new MapPool([
   { mode: "CB", stageId: 8 },
   { mode: "CB", stageId: 3 },
 ]);
+
+export const sourceTypes = ["DEFAULT", "TIEBREAKER", "BOTH"] as const;

@@ -164,6 +164,11 @@ function Document({
         <Links />
         <ThemeHead />
         <link rel="manifest" href="/app.webmanifest" />
+        {/* TODO: preferably don't load this for every route */}
+        <script
+          type="text/javascript"
+          src="https://cdn.jsdelivr.net/npm/brackets-viewer@latest/dist/brackets-viewer.min.js"
+        ></script>
         <PWALinks />
         <Fonts />
       </head>

@@ -1,8 +1,9 @@
 import { sql } from "~/db/sql";
 import type {
-  CalendarEvent,
   MapPoolMap,
+  Tournament,
   TournamentTeam,
+  TournamentTeamCheckIn,
   TournamentTeamMember,
   UserWithPlusTier,
 } from "~/db/types";
@@ -13,6 +14,9 @@ const stm = sql.prepare(/*sql*/ `
     select
       "TournamentTeam"."id",
       "TournamentTeam"."name",
+      "TournamentTeam"."seed",
+      "TournamentTeamCheckIn"."checkedInAt",
+      "TournamentTeam"."prefersNotToHost",
       json_group_array(
         json_object(
           'userId',
@@ -27,17 +31,20 @@ const stm = sql.prepare(/*sql*/ `
           "User"."discordId",
           'discordAvatar',
           "User"."discordAvatar",
+          'inGameName',
+          "User"."inGameName",
           'plusTier',
           "PlusTier"."tier"
         )
       ) as "members"
     from
       "TournamentTeam"
+      left join "TournamentTeamCheckIn" on "TournamentTeamCheckIn"."tournamentTeamId" = "TournamentTeam"."id"
       left join "TournamentTeamMember" on "TournamentTeamMember"."tournamentTeamId" = "TournamentTeam"."id"
       left join "User" on "User"."id" = "TournamentTeamMember"."userId"
       left join "PlusTier" on "User"."id" = "PlusTier"."userId"
     where
-      "TournamentTeam"."calendarEventId" = @calendarEventId
+      "TournamentTeam"."tournamentId" = @tournamentId
     group by
       "TournamentTeam"."id"
   )
@@ -57,12 +64,15 @@ const stm = sql.prepare(/*sql*/ `
   group by
     "TeamWithMembers"."id"
   order by
-    "TeamWithMembers"."name" asc
+    "TeamWithMembers"."seed" asc
 `);
 
-export interface FindTeamsByEventIdItem {
+export interface FindTeamsByTournamentIdItem {
   id: TournamentTeam["id"];
   name: TournamentTeam["name"];
+  seed: TournamentTeam["seed"];
+  checkedInAt: TournamentTeamCheckIn["checkedInAt"];
+  prefersNotToHost: TournamentTeam["prefersNotToHost"];
   members: Array<
     Pick<TournamentTeamMember, "userId" | "isOwner"> &
       Pick<
@@ -72,14 +82,15 @@ export interface FindTeamsByEventIdItem {
         | "discordName"
         | "plusTier"
         | "discordDiscriminator"
+        | "inGameName"
       >
   >;
   mapPool?: Array<Pick<MapPoolMap, "mode" | "stageId">>;
 }
-export type FindTeamsByEventId = Array<FindTeamsByEventIdItem>;
+export type FindTeamsByTournamentId = Array<FindTeamsByTournamentIdItem>;
 
-export function findTeamsByEventId(calendarEventId: CalendarEvent["id"]) {
-  const rows = stm.all({ calendarEventId });
+export function findTeamsByTournamentId(tournamentId: Tournament["id"]) {
+  const rows = stm.all({ tournamentId });
 
   return rows.map((row) => {
     return {
@@ -87,5 +98,5 @@ export function findTeamsByEventId(calendarEventId: CalendarEvent["id"]) {
       members: parseDBJsonArray(row.members),
       mapPool: parseDBJsonArray(row.mapPool),
     };
-  }) as FindTeamsByEventId;
+  }) as FindTeamsByTournamentId;
 }

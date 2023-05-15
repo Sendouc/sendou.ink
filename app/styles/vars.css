@@ -21,6 +21,7 @@ html {
   --divider: #f5a2c8;
   --theme-error: rgb(199 13 6);
   --theme-error-transparent: rgba(199 13 6 / 55%);
+  --theme-error-semi-transparent: rgba(199 13 6 / 70%);
   --theme-warning: #c9c900;
   --theme-warning-transparent: #c9c90052;
   --theme-success: #00a514;
@@ -110,6 +111,7 @@ html.dark {
   --divider: #ffbedb2f;
   --theme-error: rgb(219 70 65);
   --theme-error-transparent: rgba(219 70 65 / 55%);
+  --theme-error-semi-transparent: rgba(199 13 6 / 70%);
   --theme-warning: #f5f587;
   --theme-success: #a3ffae;
   --theme-success-transparent: #a3ffae52;

@@ -39,8 +39,5 @@
 
   "teams.mapsPickedStatus": "Статус выбранных карт",
 
-  "admin.eventStarted": "Начать мероприятие",
-  "admin.eventStarted.explanation": "После начала турнира команды смогут создавать новые списки карт, но редактирование пулов карт или ростеров будет недоступно.",
-  "admin.download": "Скачать участников",
-  "admin.download.discord": "Discord список"
+  "admin.download": "Скачать участников"
 }

@@ -65,9 +65,11 @@ export const action: ActionFunction = async ({ request }) => {
 
   const teams = allTeams();
 
-  // user creating team isn't in a team yet
   validate(
-    teams.every((team) => team.members.every((member) => member.id !== user.id))
+    teams.every((team) =>
+      team.members.every((member) => member.id !== user.id)
+    ),
+    "Already in a team"
   );
 
   // two teams can't have same customUrl

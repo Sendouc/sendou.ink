@@ -37,12 +37,15 @@ import {
   NZAP_TEST_ID,
   AMOUNT_OF_CALENDAR_EVENTS,
 } from "./constants";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+import { TOURNAMENT } from "~/features/tournament/tournament-constants";
+import type { SeedVariation } from "~/routes/seed";
 
 const calendarEventWithToToolsSz = () => calendarEventWithToTools(true);
 const calendarEventWithToToolsTeamsSz = () =>
   calendarEventWithToToolsTeams(true);
 
-const basicSeeds = [
+const basicSeeds = (variation?: SeedVariation | null) => [
   adminUser,
   makeAdminPatron,
   makeAdminVideoAdder,
@@ -63,9 +66,13 @@ const basicSeeds = [
   calendarEventResults,
   calendarEventWithToTools,
   calendarEventWithToToolsTieBreakerMapPool,
-  calendarEventWithToToolsTeams,
-  calendarEventWithToToolsSz,
-  calendarEventWithToToolsTeamsSz,
+  variation === "NO_TOURNAMENT_TEAMS"
+    ? undefined
+    : calendarEventWithToToolsTeams,
+  variation === "NO_TOURNAMENT_TEAMS" ? undefined : calendarEventWithToToolsSz,
+  variation === "NO_TOURNAMENT_TEAMS"
+    ? undefined
+    : calendarEventWithToToolsTeamsSz,
   adminBuilds,
   manySplattershotBuilds,
   detailedTeam,
@@ -76,10 +83,11 @@ const basicSeeds = [
   userFavBadges,
 ];
 
-export function seed() {
+export function seed(variation?: SeedVariation | null) {
   wipeDB();
 
-  for (const seedFunc of basicSeeds) {
+  for (const seedFunc of basicSeeds(variation)) {
+    if (!seedFunc) continue;
     seedFunc();
   }
 }
@@ -92,7 +100,9 @@ function wipeDB() {
     "Build",
     "TournamentTeamMember",
     "MapPoolMap",
+    "TournamentMatchGameResult",
     "TournamentTeam",
+    "Tournament",
     "CalendarEventDate",
     "CalendarEventResultPlayer",
     "CalendarEventResultTeam",
@@ -445,6 +455,13 @@ function userIdsInRandomOrder(specialLast = false) {
   return [...rows.filter((id) => id !== 1 && id !== 2), 1, 2];
 }
 
+function userIdsInAscendingOrderById() {
+  return sql
+    .prepare(`select "id" from "User" order by id asc`)
+    .all()
+    .map((u) => u.id) as number[];
+}
+
 function calendarEvents() {
   const userIds = userIdsInRandomOrder();
 
@@ -610,7 +627,28 @@ function calendarEventResults() {
 
 const TO_TOOLS_CALENDAR_EVENT_ID = 201;
 function calendarEventWithToTools(sz?: boolean) {
+  const tournamentId = sz ? 2 : 1;
   const eventId = TO_TOOLS_CALENDAR_EVENT_ID + (sz ? 1 : 0);
+
+  sql
+    .prepare(
+      `
+      insert into "Tournament" (
+        "id",
+        "mapPickingStyle",
+        "format"
+      ) values (
+        $id,
+        $mapPickingStyle,
+        $format
+      ) returning *
+      `
+    )
+    .run({
+      id: tournamentId,
+      format: "DE",
+      mapPickingStyle: sz ? "AUTO_SZ" : "AUTO_ALL",
+    });
 
   sql
     .prepare(
@@ -622,8 +660,7 @@ function calendarEventWithToTools(sz?: boolean) {
         "discordInviteCode",
         "bracketUrl",
         "authorId",
-        "toToolsEnabled",
-        "toToolsMode"
+        "tournamentId"
       ) values (
         $id,
         $name,
@@ -631,8 +668,7 @@ function calendarEventWithToTools(sz?: boolean) {
         $discordInviteCode,
         $bracketUrl,
         $authorId,
-        $toToolsEnabled,
-        $toToolsMode
+        $tournamentId
       )
       `
     )
@@ -643,8 +679,7 @@ function calendarEventWithToTools(sz?: boolean) {
       discordInviteCode: faker.lorem.word(),
       bracketUrl: faker.internet.url(),
       authorId: 1,
-      toToolsEnabled: 1,
-      toToolsMode: sz ? "SZ" : null,
+      tournamentId,
     });
 
   sql
@@ -661,7 +696,7 @@ function calendarEventWithToTools(sz?: boolean) {
     )
     .run({
       eventId,
-      startTime: dateToDatabaseTimestamp(new Date()),
+      startTime: dateToDatabaseTimestamp(new Date(Date.now() + 1000 * 60 * 60)),
     });
 }
 
@@ -695,9 +730,16 @@ function calendarEventWithToToolsTieBreakerMapPool() {
   }
 }
 
+const validTournamentTeamName = () => {
+  while (true) {
+    const name = faker.music.songName();
+    if (name.length <= TOURNAMENT.TEAM_NAME_MAX_LENGTH) return name;
+  }
+};
+
 const names = Array.from(
-  new Set(new Array(100).fill(null).map(() => faker.music.songName()))
-);
+  new Set(new Array(100).fill(null).map(() => validTournamentTeamName()))
+).concat("Chimera");
 const availableStages: StageId[] = [1, 2, 3, 4, 6, 7, 8, 10, 11];
 const availablePairs = rankedModesShort
   .flatMap((mode) =>
@@ -705,8 +747,8 @@ const availablePairs = rankedModesShort
   )
   .filter((pair) => !tiebreakerPicks.has(pair));
 function calendarEventWithToToolsTeams(sz?: boolean) {
-  const userIds = userIdsInRandomOrder(true);
-  for (let id = 1; id <= 40; id++) {
+  const userIds = userIdsInAscendingOrderById();
+  for (let id = 1; id <= 14; id++) {
     sql
       .prepare(
         `
@@ -714,13 +756,13 @@ function calendarEventWithToToolsTeams(sz?: boolean) {
         "id",
         "name",
         "createdAt",
-        "calendarEventId",
+        "tournamentId",
         "inviteCode"
       ) values (
         $id,
         $name,
         $createdAt,
-        $calendarEventId,
+        $tournamentId,
         $inviteCode
       )
       `
@@ -729,13 +771,32 @@ function calendarEventWithToToolsTeams(sz?: boolean) {
         id: id + (sz ? 100 : 0),
         name: names.pop(),
         createdAt: dateToDatabaseTimestamp(new Date()),
-        calendarEventId: TO_TOOLS_CALENDAR_EVENT_ID + (sz ? 1 : 0),
+        tournamentId: sz ? 2 : 1,
         inviteCode: nanoid(INVITE_CODE_LENGTH),
       });
 
+    if (id !== 1) {
+      sql
+        .prepare(
+          `
+      insert into "TournamentTeamCheckIn" (
+        "tournamentTeamId",
+        "checkedInAt"
+      ) values (
+        $tournamentTeamId,
+        $checkedInAt
+      )
+      `
+        )
+        .run({
+          tournamentTeamId: id + (sz ? 100 : 0),
+          checkedInAt: dateToDatabaseTimestamp(new Date()),
+        });
+    }
+
     for (
       let i = 0;
-      i < faker.helpers.arrayElement([1, 2, 3, 4, 4, 4, 4, 4, 4, 5, 6, 7, 8]);
+      i < faker.helpers.arrayElement([4, 4, 4, 4, 4, 5, 5, 6]);
       i++
     ) {
       sql
@@ -756,7 +817,7 @@ function calendarEventWithToToolsTeams(sz?: boolean) {
         )
         .run({
           tournamentTeamId: id + (sz ? 100 : 0),
-          userId: userIds.pop()!,
+          userId: userIds.shift()!,
           isOwner: i === 0 ? 1 : 0,
           createdAt: dateToDatabaseTimestamp(new Date()),
         });

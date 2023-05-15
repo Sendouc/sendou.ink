@@ -1,4 +1,5 @@
 import { expect, type Locator, type Page } from "@playwright/test";
+import type { SeedVariation } from "~/routes/seed";
 
 export async function selectWeapon({
   page,
@@ -10,6 +11,23 @@ export async function selectWeapon({
   inputName?: string;
 }) {
   return selectComboboxValue({ page, value: name, inputName });
+}
+
+export async function selectUser({
+  page,
+  userName,
+  labelName,
+}: {
+  page: Page;
+  userName: string;
+  labelName: string;
+}) {
+  const combobox = page.getByLabel(labelName);
+  await expect(combobox).not.toBeDisabled();
+
+  await combobox.clear();
+  await combobox.type(userName);
+  await page.keyboard.press("Enter");
 }
 
 export async function selectComboboxValue({
@@ -38,16 +56,22 @@ export async function navigate({ page, url }: { page: Page; url: string }) {
   await expect(page.getByTestId("hydrated")).toHaveCount(1);
 }
 
-export function seed(page: Page) {
-  return page.request.post("/seed");
+export function seed(page: Page, variation?: SeedVariation) {
+  return page.request.post("/seed", {
+    form: { variation: variation ?? "DEFAULT" },
+  });
 }
 
 export function impersonate(page: Page, userId = 1) {
   return page.request.post(`/auth/impersonate?id=${userId}`);
 }
 
-export function submit(page: Page) {
-  return page.getByTestId("submit-button").click();
+export async function submit(page: Page) {
+  const responsePromise = page.waitForResponse(
+    (res) => res.request().method() === "POST"
+  );
+  await page.getByTestId("submit-button").click();
+  await responsePromise;
 }
 
 export function isNotVisible(locator: Locator) {
@@ -56,4 +80,11 @@ export function isNotVisible(locator: Locator) {
 
 export function modalClickConfirmButton(page: Page) {
   return page.getByTestId("confirm-button").click();
+}
+
+export async function fetchSendouInk<T>(url: string) {
+  const res = await fetch(`http://localhost:5800${url}`);
+  if (!res.ok) throw new Error("Response not successful");
+
+  return res.json() as T;
 }

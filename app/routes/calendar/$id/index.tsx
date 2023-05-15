@@ -49,6 +49,7 @@ import {
   readonlyMapsPage,
   resolveBaseUrl,
   userPage,
+  tournamentPage,
 } from "~/utils/urls";
 import { actualNumber, id } from "~/utils/zod";
 import { Tags } from "../components/Tags";
@@ -65,8 +66,7 @@ export const action: ActionFunction = async ({ params, request }) => {
       user,
       event,
       startTime: databaseTimestampToDate(event.startTimes[0]!),
-    }),
-    403
+    })
   );
 
   db.calendarEvents.deleteById(event.eventId);
@@ -120,6 +120,10 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     .object({ id: z.preprocess(actualNumber, id) })
     .parse(params);
   const event = notFoundIfFalsy(db.calendarEvents.findById(parsedParams.id));
+
+  if (event.tournamentId) {
+    throw redirect(tournamentPage(event.tournamentId));
+  }
 
   return json({
     event,

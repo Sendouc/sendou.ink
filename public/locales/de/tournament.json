@@ -39,8 +39,5 @@
 
   "teams.mapsPickedStatus": "Status ausgewähler Arenen",
 
-  "admin.eventStarted": "Event gestartet",
-  "admin.eventStarted.explanation": "Nach dem Start können Teams Arenen-Listen erstellen, aber ihre Arenen-Pools und Aufstellungen nicht mehr bearbeiten.",
-  "admin.download": "Teilnehmerliste herunterladen",
-  "admin.download.discord": "Discord-Liste"
+  "admin.download": "Teilnehmerliste herunterladen"
 }

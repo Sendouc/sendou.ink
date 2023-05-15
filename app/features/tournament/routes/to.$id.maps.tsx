@@ -16,12 +16,12 @@ import {
 import mapsStyles from "~/styles/maps.css";
 import { type SendouRouteHandle } from "~/utils/remix";
 import { TOURNAMENT } from "../tournament-constants";
-import type { TournamentToolsLoaderData } from "./to.$id";
+import type { TournamentLoaderData } from "./to.$id";
 import type { MapPoolMap } from "~/db/types";
 import { modesIncluded, resolveOwnedTeam } from "../tournament-utils";
 import { useUser } from "~/modules/auth";
 import { Redirect } from "~/components/Redirect";
-import { toToolsPage } from "~/utils/urls";
+import { tournamentPage } from "~/utils/urls";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: mapsStyles }];
@@ -36,11 +36,11 @@ type TeamInState = {
   mapPool?: Pick<MapPoolMap, "mode" | "stageId">[];
 };
 
-export default function TournamentToolsMapsPage() {
+export default function TournamentMapsPage() {
   const user = useUser();
   const { t } = useTranslation(["tournament"]);
   const actionData = useActionData<{ failed?: boolean }>();
-  const data = useOutletContext<TournamentToolsLoaderData>();
+  const data = useOutletContext<TournamentLoaderData>();
 
   const [bestOf, setBestOf] = useSearchParamState<
     (typeof TOURNAMENT)["AVAILABLE_BEST_OF"][number]
@@ -85,7 +85,7 @@ export default function TournamentToolsMapsPage() {
   };
 
   if (!data.mapListGeneratorAvailable) {
-    return <Redirect to={toToolsPage(data.event.id)} />;
+    return <Redirect to={tournamentPage(data.event.id)} />;
   }
 
   return (
@@ -124,8 +124,7 @@ export default function TournamentToolsMapsPage() {
           { ...teamTwo, maps: new MapPool(teamTwo.mapPool ?? []) },
         ]}
         bestOf={bestOf}
-        bracketType={bracketType}
-        roundNumber={roundNumber}
+        seed={`${bracketType}-${roundNumber}`}
         modesIncluded={modesIncluded(data.event)}
       />
     </div>
@@ -169,8 +168,8 @@ function RoundSelect({
   bracketType,
   handleChange,
 }: {
-  roundNumber: TournamentMaplistInput["roundNumber"];
-  bracketType: TournamentMaplistInput["bracketType"];
+  roundNumber: number;
+  bracketType: string;
   handleChange: (roundNumber: number, bracketType: BracketType) => void;
 }) {
   const { t } = useTranslation(["tournament"]);
@@ -215,7 +214,7 @@ function TeamsSelect({
   setTeam: (newTeamId: number) => void;
 }) {
   const { t } = useTranslation(["tournament"]);
-  const data = useOutletContext<TournamentToolsLoaderData>();
+  const data = useOutletContext<TournamentLoaderData>();
 
   return (
     <div className="tournament__select-container">
@@ -275,7 +274,7 @@ function BestOfRadios({
 
 function MapList(props: Omit<TournamentMaplistInput, "tiebreakerMaps">) {
   const { t } = useTranslation(["game-misc"]);
-  const data = useOutletContext<TournamentToolsLoaderData>();
+  const data = useOutletContext<TournamentLoaderData>();
 
   let mapList: Array<TournamentMapListMap>;
 

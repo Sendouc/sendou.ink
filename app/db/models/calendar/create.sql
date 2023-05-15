@@ -6,8 +6,7 @@ insert into
     "description",
     "discordInviteCode",
     "bracketUrl",
-    "toToolsEnabled",
-    "toToolsMode"
+    "tournamentId"
   )
 values
   (
@@ -17,6 +16,5 @@ values
     @description,
     @discordInviteCode,
     @bracketUrl,
-    @toToolsEnabled,
-    @toToolsMode
+    @tournamentId
   ) returning *

@@ -68,7 +68,6 @@ module.exports.up = function (db) {
     `
   ).run();
 
-  // xxx: add some unique constraint here
   db.prepare(
     /*sql*/ `
     create table "TournamentMatch" (

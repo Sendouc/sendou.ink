@@ -2,12 +2,12 @@ import { useOutletContext } from "@remix-run/react";
 import * as React from "react";
 import { useUser } from "~/modules/auth";
 import type { RankedModeShort, StageId } from "~/modules/in-game-lists";
-import type { TournamentToolsLoaderData } from "./routes/to.$id";
+import type { TournamentLoaderData } from "./routes/to.$id";
 import { mapPickCountPerMode, resolveOwnedTeam } from "./tournament-utils";
 
 export function useSelectCounterpickMapPoolState() {
   const user = useUser();
-  const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
+  const parentRouteData = useOutletContext<TournamentLoaderData>();
 
   const resolveInitialMapPool = (mode: RankedModeShort) => {
     const ownMapPool =

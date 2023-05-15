@@ -46,12 +46,20 @@
   color: var(--theme);
 }
 
+.text-theme-secondary {
+  color: var(--theme-secondary);
+}
+
 .fill-success {
   fill: var(--theme-success);
 }
 
 .fill-warning {
   fill: var(--theme-warning);
+}
+
+.fill-error {
+  fill: var(--theme-error);
 }
 
 .bg-transparent-important {
@@ -154,6 +162,10 @@
   margin-inline-start: auto;
 }
 
+.ml-2 {
+  margin-inline-start: var(--s-2);
+}
+
 .mr-auto {
   margin-inline-end: auto;
 }
@@ -252,6 +264,10 @@
 
 .desktop-hidden {
   display: inherit;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
 
 @media screen and (min-width: 480px) {

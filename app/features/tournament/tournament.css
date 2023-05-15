@@ -134,17 +134,6 @@
   white-space: nowrap;
 }
 
-.tournament__pick-status-container {
-  display: flex;
-  width: 100%;
-  justify-content: center;
-  gap: var(--s-1);
-}
-
-.tournament__pick-status-container > svg {
-  width: 1rem;
-}
-
 .tournament__logo-container {
   display: flex;
   align-items: center;
@@ -204,6 +193,10 @@
   white-space: nowrap;
 }
 
+.tournament__section__icon {
+  width: 2rem;
+}
+
 .tournament__missing-player {
   width: 62px;
   height: 62px;
@@ -214,12 +207,98 @@
   place-items: center;
 }
 
+.tournament__missing-player__optional {
+  border: 2px dashed var(--theme-transparent);
+}
+
 .tournament__invite-container {
   margin-block-start: var(--s-14);
   display: flex;
   flex-direction: column;
   gap: var(--s-12);
   align-items: center;
+}
+
+.tournament__seeds__form {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.tournament__seeds__order-button {
+  margin-block-start: var(--s-2);
+  margin-inline-end: auto;
+}
+
+/* TODO: overflow-x scroll */
+.tournament__seeds__teams-list-row {
+  display: grid;
+  width: 100%;
+  align-items: center;
+  padding: var(--s-1-5) var(--s-3);
+  border-radius: var(--rounded);
+  column-gap: var(--s-1);
+  font-size: var(--fonts-xs);
+  grid-template-columns: 3rem 8rem 1fr;
+  list-style: none;
+  row-gap: var(--s-1-5);
+}
+
+.tournament__seeds__teams-list-row.sortable:not(.disabled) {
+  cursor: grab;
+}
+
+.tournament__seeds__teams-list-row.sortable:hover:not(.disabled)
+  .tournament__seeds__team-member {
+  background-color: var(--bg-lighter-transparent);
+}
+
+.tournament__seeds__teams-list-row.active .tournament__seeds__team-member {
+  background-color: var(--bg-lighter-transparent);
+}
+
+.tournament__seeds__teams-list-row.active {
+  cursor: grabbing;
+}
+
+.tournament__seeds__teams-list-row.sortable:active:not(.disabled) {
+  cursor: grabbing !important;
+}
+
+.tournament__seeds__teams-container__header {
+  font-weight: var(--bold);
+}
+
+.tournament__seeds__team-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tournament__seeds__team-member {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  grid-column-gap: var(--s-2-5);
+  background-color: var(--bg-lighter);
+  border-radius: var(--rounded);
+  padding: var(--s-1) var(--s-3);
+  place-items: center;
+}
+
+.tournament__seeds__team-member__name {
+  grid-column: 1 / span 2;
+  font-weight: var(--semi-bold);
+}
+
+.tournament__seeds__lonely-stat {
+  grid-column: 1 / span 2;
+}
+
+.tournament__seeds__plus-info {
+  display: inline-flex;
+  align-items: center;
+  margin-inline-end: var(--s-4);
+  min-width: 2rem;
 }
 
 @media screen and (min-width: 640px) {

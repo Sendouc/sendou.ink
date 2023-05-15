@@ -17,7 +17,7 @@ import { Label } from "~/components/Label";
 import { SubmitButton } from "~/components/SubmitButton";
 import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
-import { getUserId, requireUserId } from "~/modules/auth/user.server";
+import { getUser, requireUser } from "~/modules/auth/user.server";
 import type {
   ModeShort,
   RankedModeShort,
@@ -41,13 +41,13 @@ import {
   SENDOU_INK_BASE_URL,
   modeImageUrl,
   navIconUrl,
-  toToolsJoinPage,
-  toToolsMapsPage,
+  tournamentBracketsPage,
+  tournamentJoinPage,
 } from "~/utils/urls";
 import deleteTeamMember from "../queries/deleteTeamMember.server";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { findOwnTeam } from "../queries/findOwnTeam.server";
-import { findTeamsByEventId } from "../queries/findTeamsByEventId.server";
+import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
 import { updateTeamInfo } from "../queries/updateTeamInfo.server";
 import { upsertCounterpickMaps } from "../queries/upsertCounterpickMaps.server";
 import { TOURNAMENT } from "../tournament-constants";
@@ -56,16 +56,28 @@ import { registerSchema } from "../tournament-schemas.server";
 import {
   isOneModeTournamentOf,
   HACKY_resolvePicture,
-  idFromParams,
+  tournamentIdFromParams,
   resolveOwnedTeam,
   HACKY_resolveCheckInTime,
+  validateCanCheckIn,
 } from "../tournament-utils";
-import type { TournamentToolsLoaderData } from "./to.$id";
+import type { TournamentLoaderData } from "./to.$id";
 import { createTeam } from "../queries/createTeam.server";
 import { ClockIcon } from "~/components/icons/Clock";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { UserIcon } from "~/components/icons/User";
 import { useIsMounted } from "~/hooks/useIsMounted";
+import hasTournamentStarted from "../queries/hasTournamentStarted.server";
+import { CheckmarkIcon } from "~/components/icons/Checkmark";
+import { CrossIcon } from "~/components/icons/Cross";
+import clsx from "clsx";
+import { checkIn } from "../queries/checkIn.server";
+import { useAutoRerender } from "~/hooks/useAutoRerender";
+import type { TrustedPlayer } from "../queries/findTrustedPlayers.server";
+import { findTrustedPlayers } from "../queries/findTrustedPlayers.server";
+import { Divider } from "~/components/Divider";
+import { joinTeam } from "../queries/joinLeaveTeam.server";
+import { booleanToInt } from "~/utils/sql";
 
 export const handle: SendouRouteHandle = {
   breadcrumb: () => ({
@@ -76,19 +88,19 @@ export const handle: SendouRouteHandle = {
 };
 
 export const action: ActionFunction = async ({ request, params }) => {
-  const user = await requireUserId(request);
+  const user = await requireUser(request);
   const data = await parseRequestFormData({ request, schema: registerSchema });
 
-  const eventId = idFromParams(params);
-  const event = notFoundIfFalsy(findByIdentifier(eventId));
+  const tournamentId = tournamentIdFromParams(params);
+  const hasStarted = hasTournamentStarted(tournamentId);
+  const event = notFoundIfFalsy(findByIdentifier(tournamentId));
 
   validate(
-    event.isBeforeStart,
-    400,
+    !hasStarted,
     "Tournament has started, cannot make edits to registration"
   );
 
-  const teams = findTeamsByEventId(eventId);
+  const teams = findTeamsByTournamentId(tournamentId);
   const ownTeam = teams.find((team) =>
     team.members.some((member) => member.userId === user.id && member.isOwner)
   );
@@ -99,12 +111,14 @@ export const action: ActionFunction = async ({ request, params }) => {
         updateTeamInfo({
           name: data.teamName,
           id: ownTeam.id,
+          prefersNotToHost: booleanToInt(data.prefersNotToHost),
         });
       } else {
         createTeam({
           name: data.teamName,
-          calendarEventId: eventId,
+          tournamentId: tournamentId,
           ownerId: user.id,
+          prefersNotToHost: booleanToInt(data.prefersNotToHost),
         });
       }
       break;
@@ -113,6 +127,18 @@ export const action: ActionFunction = async ({ request, params }) => {
       validate(ownTeam);
       validate(ownTeam.members.some((member) => member.userId === data.userId));
       validate(data.userId !== user.id);
+
+      const detailedOwnTeam = findOwnTeam({
+        tournamentId,
+        userId: user.id,
+      });
+      // making sure they aren't unfilling one checking in condition i.e. having full roster
+      // and then having members kicked without it affecting the checking in status
+      validate(
+        detailedOwnTeam &&
+          (!detailedOwnTeam.checkedInAt ||
+            ownTeam.members.length > TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL)
+      );
 
       deleteTeamMember({ tournamentTeamId: ownTeam.id, userId: data.userId });
       break;
@@ -131,6 +157,35 @@ export const action: ActionFunction = async ({ request, params }) => {
       });
       break;
     }
+    case "CHECK_IN": {
+      validate(ownTeam);
+      validateCanCheckIn({ event, team: ownTeam });
+
+      checkIn(ownTeam.id);
+      break;
+    }
+    case "ADD_PLAYER": {
+      validate(
+        teams.every((team) =>
+          team.members.every((member) => member.userId !== data.userId)
+        ),
+        "User is already in a team"
+      );
+      validate(ownTeam);
+      validate(
+        findTrustedPlayers({
+          userId: user.id,
+          teamId: user.team?.id,
+        }).some((trustedPlayer) => trustedPlayer.id === data.userId),
+        "No trust given from this user"
+      );
+
+      joinTeam({
+        userId: data.userId,
+        newTeamId: ownTeam.id,
+      });
+      break;
+    }
     default: {
       assertUnreachable(data);
     }
@@ -140,24 +195,28 @@ export const action: ActionFunction = async ({ request, params }) => {
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
-  const eventId = idFromParams(params);
-  const event = notFoundIfFalsy(findByIdentifier(eventId));
+  const eventId = tournamentIdFromParams(params);
+  const hasStarted = hasTournamentStarted(eventId);
 
-  if (!event.isBeforeStart) {
-    throw redirect(toToolsMapsPage(event.id));
+  if (hasStarted) {
+    throw redirect(tournamentBracketsPage(eventId));
   }
 
-  const user = await getUserId(request);
+  const user = await getUser(request);
   if (!user) return null;
 
   const ownTeam = findOwnTeam({
-    calendarEventId: idFromParams(params),
+    tournamentId: tournamentIdFromParams(params),
     userId: user.id,
   });
   if (!ownTeam) return null;
 
   return {
     ownTeam,
+    trustedPlayers: findTrustedPlayers({
+      userId: user.id,
+      teamId: user.team?.id,
+    }),
   };
 };
 
@@ -166,7 +225,7 @@ export default function TournamentRegisterPage() {
   const { i18n } = useTranslation();
   const user = useUser();
   const data = useLoaderData<typeof loader>();
-  const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
+  const parentRouteData = useOutletContext<TournamentLoaderData>();
 
   const teamRegularMemberOf = parentRouteData.teams.find((team) =>
     team.members.some((member) => member.userId === user?.id && !member.isOwner)
@@ -232,73 +291,240 @@ function RegistrationForms({
   ownTeam?: NonNullable<SerializeFrom<typeof loader>>["ownTeam"];
 }) {
   const user = useUser();
+  const parentRouteData = useOutletContext<TournamentLoaderData>();
 
   if (!user) return <PleaseLogIn />;
 
+  const ownTeamFromList = resolveOwnedTeam({
+    teams: parentRouteData.teams,
+    userId: user?.id,
+  });
+
   return (
     <div className="stack lg">
-      <RegisterToBracket />
-      <TeamInfo ownTeam={ownTeam} />
+      <RegistrationProgress
+        checkedIn={Boolean(ownTeam?.checkedInAt)}
+        name={ownTeam?.name}
+        mapPool={ownTeamFromList?.mapPool}
+        members={ownTeamFromList?.members}
+      />
+      <TeamInfo
+        name={ownTeam?.name}
+        prefersNotToHost={ownTeamFromList?.prefersNotToHost}
+      />
       {ownTeam ? (
         <>
           <FillRoster ownTeam={ownTeam} />
           <CounterPickMapPoolPicker />
-          <RememberToCheckin />
         </>
       ) : null}
     </div>
   );
 }
 
-function RegisterToBracket() {
-  const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
+function RegistrationProgress({
+  checkedIn,
+  name,
+  members,
+  mapPool,
+}: {
+  checkedIn?: boolean;
+  name?: string;
+  members?: unknown[];
+  mapPool?: unknown[];
+}) {
+  const parentRouteData = useOutletContext<TournamentLoaderData>();
+
+  const steps = [
+    {
+      name: "Team name",
+      completed: Boolean(name),
+    },
+    {
+      name: "Full roster",
+      completed:
+        members && members.length >= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
+    },
+    {
+      name: "Map pool",
+      completed: mapPool && mapPool.length > 0,
+    },
+    {
+      name: "Check-in",
+      completed: checkedIn,
+    },
+  ];
+
+  const checkInStartsDate = HACKY_resolveCheckInTime(parentRouteData.event);
+  const checkInEndsDate = databaseTimestampToDate(
+    parentRouteData.event.startTime
+  );
+  const now = new Date();
+
+  const checkInIsOpen =
+    now.getTime() > checkInStartsDate.getTime() &&
+    now.getTime() < checkInEndsDate.getTime();
+
+  const checkInIsOver =
+    now.getTime() > checkInEndsDate.getTime() &&
+    now.getTime() > checkInStartsDate.getTime();
 
   return (
     <div>
-      <h3 className="tournament__section-header">1. Register</h3>
-      <section className="tournament__section text-center text-sm font-semi-bold">
-        Register on{" "}
-        <a
-          href={parentRouteData.event.bracketUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {parentRouteData.event.bracketUrl}
-        </a>
+      <h3 className="tournament__section-header text-center">
+        Complete these steps to play
+      </h3>
+      <section className="tournament__section stack md">
+        <div className="stack horizontal lg justify-center text-sm font-semi-bold">
+          {steps.map((step, i) => {
+            return (
+              <div
+                key={step.name}
+                className="stack sm items-center text-center"
+              >
+                {step.name}
+                {step.completed ? (
+                  <CheckmarkIcon
+                    className="tournament__section__icon fill-success"
+                    testId={`checkmark-icon-num-${i + 1}`}
+                  />
+                ) : (
+                  <CrossIcon className="tournament__section__icon fill-error" />
+                )}
+              </div>
+            );
+          })}
+        </div>
+        {!checkedIn ? (
+          <CheckIn
+            canCheckIn={steps.filter((step) => !step.completed).length === 1}
+            status={
+              checkInIsOpen ? "OPEN" : checkInIsOver ? "OVER" : "UPCOMING"
+            }
+            startDate={checkInStartsDate}
+            endDate={checkInEndsDate}
+          />
+        ) : null}
       </section>
+      <div className="tournament__section__warning">
+        Free editing of any information before the tournament starts allowed.
+      </div>
     </div>
   );
 }
 
-function TeamInfo({
-  ownTeam,
+function CheckIn({
+  status,
+  canCheckIn,
+  startDate,
+  endDate,
 }: {
-  ownTeam?: NonNullable<SerializeFrom<typeof loader>>["ownTeam"];
+  status: "OVER" | "OPEN" | "UPCOMING";
+  canCheckIn: boolean;
+  startDate: Date;
+  endDate: Date;
 }) {
+  const { i18n } = useTranslation();
+  const isMounted = useIsMounted();
+  const fetcher = useFetcher();
+
+  useAutoRerender();
+
+  const checkInStartsString = isMounted
+    ? startDate.toLocaleTimeString(i18n.language, {
+        minute: "numeric",
+        hour: "numeric",
+        day: "2-digit",
+        month: "2-digit",
+      })
+    : "";
+
+  const checkInEndsString = isMounted
+    ? endDate.toLocaleTimeString(i18n.language, {
+        minute: "numeric",
+        hour: "numeric",
+        day: "2-digit",
+        month: "2-digit",
+      })
+    : "";
+
+  if (status === "UPCOMING") {
+    return (
+      <div className={clsx("text-center text-xs", { invisible: !isMounted })}>
+        Check-in is open between {checkInStartsString} and {checkInEndsString}
+      </div>
+    );
+  }
+
+  if (status === "OVER") {
+    return <div className="text-center text-xs">Check-in is over</div>;
+  }
+
+  return (
+    <fetcher.Form method="post" className="stack items-center">
+      <SubmitButton
+        size="tiny"
+        _action="CHECK_IN"
+        // TODO: better UX than just disabling the button
+        // do they have other steps left to complete than checking in?
+        disabled={!canCheckIn}
+        state={fetcher.state}
+        testId="check-in-button"
+      >
+        Check in
+      </SubmitButton>
+    </fetcher.Form>
+  );
+}
+
+function TeamInfo({
+  name,
+  prefersNotToHost = 0,
+}: {
+  name?: string;
+  prefersNotToHost?: number;
+}) {
+  const id = React.useId();
   const fetcher = useFetcher();
   return (
     <div>
-      <h3 className="tournament__section-header">2. Team info</h3>
+      <h3 className="tournament__section-header">1. Team info</h3>
       <section className="tournament__section">
         <fetcher.Form method="post" className="stack md items-center">
-          <div className="tournament__section__input-container">
-            <Label htmlFor="teamName">Team name</Label>
-            <Input
-              name="teamName"
-              id="teamName"
-              required
-              maxLength={TOURNAMENT.TEAM_NAME_MAX_LENGTH}
-              defaultValue={ownTeam?.name ?? undefined}
-            />
+          <div className="stack sm items-center">
+            <div className="tournament__section__input-container">
+              <Label htmlFor="teamName">Team name</Label>
+              <Input
+                name="teamName"
+                id="teamName"
+                required
+                maxLength={TOURNAMENT.TEAM_NAME_MAX_LENGTH}
+                defaultValue={name ?? undefined}
+              />
+            </div>
+            <div>
+              <div className="text-lighter text-sm stack horizontal sm items-center">
+                <input
+                  id={id}
+                  type="checkbox"
+                  name="prefersNotToHost"
+                  defaultChecked={Boolean(prefersNotToHost)}
+                />
+                <label htmlFor={id} className="mb-0">
+                  My team prefers not to host rooms
+                </label>
+              </div>
+            </div>
           </div>
-          <SubmitButton _action="UPSERT_TEAM" state={fetcher.state}>
+          <SubmitButton
+            _action="UPSERT_TEAM"
+            state={fetcher.state}
+            testId="save-team-button"
+          >
             Save
           </SubmitButton>
         </fetcher.Form>
       </section>
-      <div className="tournament__section__warning">
-        Use the same name as on the bracket
-      </div>
     </div>
   );
 }
@@ -308,12 +534,13 @@ function FillRoster({
 }: {
   ownTeam: NonNullable<SerializeFrom<typeof loader>>["ownTeam"];
 }) {
+  const data = useLoaderData<typeof loader>();
   const user = useUser();
-  const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
+  const parentRouteData = useOutletContext<TournamentLoaderData>();
   const [, copyToClipboard] = useCopyToClipboard();
   const { t } = useTranslation(["common"]);
 
-  const inviteLink = `${SENDOU_INK_BASE_URL}${toToolsJoinPage({
+  const inviteLink = `${SENDOU_INK_BASE_URL}${tournamentJoinPage({
     eventId: parentRouteData.event.id,
     inviteCode: ownTeam.inviteCode,
   })}`;
@@ -330,28 +557,59 @@ function FillRoster({
     0
   );
 
-  const showDeleteMemberSection = ownTeamMembers.length > 1;
+  const optionalMembers = Math.max(
+    TOURNAMENT.TEAM_MAX_MEMBERS - ownTeamMembers.length - missingMembers,
+    0
+  );
+
+  const showDeleteMemberSection =
+    (!ownTeam.checkedInAt && ownTeamMembers.length > 1) ||
+    (ownTeam.checkedInAt &&
+      ownTeamMembers.length > TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL);
+
+  const playersAvailableToDirectlyAdd = (() => {
+    return data!.trustedPlayers.filter((user) => {
+      return parentRouteData.teams.every((team) =>
+        team.members.every((member) => member.userId !== user.id)
+      );
+    });
+  })();
+
+  const teamIsFull = ownTeamMembers.length >= TOURNAMENT.TEAM_MAX_MEMBERS;
 
   return (
     <div>
-      <h3 className="tournament__section-header">3. Fill roster</h3>
+      <h3 className="tournament__section-header">2. Fill roster</h3>
       <section className="tournament__section stack lg items-center">
-        <div className="stack md items-center">
-          <div className="text-center text-sm">
-            Share your invite link to add members: {inviteLink}
+        {playersAvailableToDirectlyAdd.length > 0 && !teamIsFull ? (
+          <>
+            <DirectlyAddPlayerSelect players={playersAvailableToDirectlyAdd} />
+            <Divider>OR</Divider>
+          </>
+        ) : null}
+        {!teamIsFull ? (
+          <div className="stack md items-center">
+            <div className="text-center text-sm">
+              Share your invite link to add members: {inviteLink}
+            </div>
+            <div>
+              <Button
+                size="tiny"
+                onClick={() => copyToClipboard(inviteLink)}
+                variant="outlined"
+              >
+                {t("common:actions.copyToClipboard")}
+              </Button>
+            </div>
           </div>
-          <div>
-            <Button size="tiny" onClick={() => copyToClipboard(inviteLink)}>
-              {t("common:actions.copyToClipboard")}
-            </Button>
-          </div>
-        </div>
-        <div className="stack lg horizontal mt-2">
-          {ownTeamMembers.map((member) => {
+        ) : null}
+        <div className="stack lg horizontal mt-2 flex-wrap justify-center">
+          {ownTeamMembers.map((member, i) => {
             return (
               <div
                 key={member.userId}
                 className="stack sm items-center text-sm"
+                data-testid={`member-num-${i + 1}`}
               >
                 <Avatar size="xsm" user={member} />
                 {member.discordName}
@@ -365,23 +623,61 @@ function FillRoster({
               </div>
             );
           })}
+          {new Array(optionalMembers).fill(null).map((_, i) => {
+            return (
+              <div
+                key={i}
+                className="tournament__missing-player tournament__missing-player__optional"
+              >
+                ?
+              </div>
+            );
+          })}
         </div>
         {showDeleteMemberSection ? (
           <DeleteMember members={ownTeamMembers} />
         ) : null}
       </section>
       <div className="tournament__section__warning">
-        You can still play without submitting roster, but you might be seeded
-        lower in the bracket.
+        At least {TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL} members are required to
+        participate. Max roster size is {TOURNAMENT.TEAM_MAX_MEMBERS}.
       </div>
     </div>
+  );
+}
+
+function DirectlyAddPlayerSelect({ players }: { players: TrustedPlayer[] }) {
+  const fetcher = useFetcher();
+  const id = React.useId();
+  return (
+    <fetcher.Form method="post" className="stack horizontal sm items-end">
+      <div>
+        <Label htmlFor={id}>Add people you have played with</Label>
+        <select id={id} name="userId">
+          {players.map((player) => {
+            return (
+              <option key={player.id} value={player.id}>
+                {discordFullName(player)}
+              </option>
+            );
+          })}
+        </select>
+      </div>
+      <SubmitButton
+        _action="ADD_PLAYER"
+        state={fetcher.state}
+        testId="add-player-button"
+      >
+        Add
+      </SubmitButton>
+    </fetcher.Form>
   );
 }
 
 function DeleteMember({
   members,
 }: {
-  members: Unpacked<TournamentToolsLoaderData["teams"]>["members"];
+  members: Unpacked<TournamentLoaderData["teams"]>["members"];
 }) {
   const id = React.useId();
   const fetcher = useFetcher();
@@ -424,9 +720,11 @@ function DeleteMember({
   );
 }
 
+// TODO: when "Can't pick stage more than 2 times" highlight those selects in red
+// TODO: useBlocker to prevent leaving page if made changes without saving
 function CounterPickMapPoolPicker() {
   const { t } = useTranslation(["common", "game-misc"]);
-  const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
+  const parentRouteData = useOutletContext<TournamentLoaderData>();
   const fetcher = useFetcher();
 
   const { counterpickMaps, handleCounterpickMapPoolSelect } =
@@ -447,7 +745,7 @@ function CounterPickMapPoolPicker() {
 
   return (
     <div>
-      <h3 className="tournament__section-header">4. Pick map pool</h3>
+      <h3 className="tournament__section-header">3. Pick map pool</h3>
       <section className="tournament__section">
         <fetcher.Form
           method="post"
@@ -503,6 +801,9 @@ function CounterPickMapPoolPicker() {
                           <select
                             value={counterpickMaps[mode][i] ?? undefined}
                             onChange={handleCounterpickMapPoolSelect(mode, i)}
+                            data-testid={`counterpick-map-pool-${mode}-num-${
+                              i + 1
+                            }`}
                           >
                             <option value=""></option>
                             {stageIds
@@ -529,6 +830,7 @@ function CounterPickMapPoolPicker() {
               _action="UPDATE_MAP_POOL"
               state={fetcher.state}
               className="self-center mt-4"
+              testId="save-map-list-button"
             >
               {t("common:actions.save")}
             </SubmitButton>
@@ -542,10 +844,6 @@ function CounterPickMapPoolPicker() {
           )}
         </fetcher.Form>
       </section>
-      <div className="tournament__section__warning">
-        Picking a map pool is optional, but if you don&apos;t then you will be
-        playing on your opponent&apos;s picks.
-      </div>
     </div>
   );
 }
@@ -557,7 +855,11 @@ function MapPoolValidationStatusMessage({
 }) {
   const { t } = useTranslation(["common"]);
 
-  if (status !== "TOO_MUCH_STAGE_REPEAT") return null;
+  if (
+    status !== "TOO_MUCH_STAGE_REPEAT" &&
+    status !== "STAGE_REPEAT_IN_SAME_MODE"
+  )
+    return null;
 
   return (
     <div className="mt-4">
@@ -573,7 +875,8 @@ function MapPoolValidationStatusMessage({
 type CounterPickValidationStatus =
   | "PICKING"
   | "VALID"
-  | "TOO_MUCH_STAGE_REPEAT";
+  | "TOO_MUCH_STAGE_REPEAT"
+  | "STAGE_REPEAT_IN_SAME_MODE";
 
 function validateCounterPickMapPool(
   mapPool: MapPool,
@@ -596,6 +899,13 @@ function validateCounterPickMapPool(
   }
 
   if (
+    new MapPool(mapPool.serialized).stageModePairs.length !==
+    mapPool.stageModePairs.length
+  ) {
+    return "STAGE_REPEAT_IN_SAME_MODE";
+  }
+
+  if (
     !isOneModeOnlyTournamentFor &&
     (mapPool.parsed.SZ.length !== TOURNAMENT.COUNTERPICK_MAPS_PER_MODE ||
       mapPool.parsed.TC.length !== TOURNAMENT.COUNTERPICK_MAPS_PER_MODE ||
@@ -614,36 +924,4 @@ function validateCounterPickMapPool(
   }
 
   return "VALID";
-}
-
-function RememberToCheckin() {
-  const { i18n } = useTranslation();
-  const isMounted = useIsMounted();
-  const parentRouteData = useOutletContext<TournamentToolsLoaderData>();
-
-  const checkInStartsString = isMounted
-    ? HACKY_resolveCheckInTime(parentRouteData.event).toLocaleTimeString(
-        i18n.language,
-        {
-          minute: "numeric",
-          hour: "numeric",
-        }
-      )
-    : "";
-
-  return (
-    <div>
-      <h3 className="tournament__section-header">5. Check-in</h3>
-      <section className="tournament__section text-center text-sm font-semi-bold">
-        Check in starts at {checkInStartsString} here:{" "}
-        <a
-          href={parentRouteData.event.bracketUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {parentRouteData.event.bracketUrl}
-        </a>
-      </section>
-    </div>
-  );
 }

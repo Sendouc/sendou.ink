@@ -37,11 +37,7 @@ export async function parseRequestFormData<T extends z.ZodTypeAny>({
   } catch (e) {
     if (e instanceof z.ZodError) {
       console.error(e);
-      let errorMessage = "Request had following issues: ";
-      for (const issue of e.issues) {
-        errorMessage += `${issue.message} (path: ${issue.path.join(",")});`;
-      }
-      throw new Response(errorMessage, { status: 400 });
+      throw new Response(JSON.stringify(e), { status: 400 });
     }
 
     throw e;
@@ -96,12 +92,17 @@ function formDataToObject(formData: FormData) {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- same format as TS docs: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#assertion-functions
 export function validate(
   condition: any,
-  status = 400,
-  body?: string
+  message?: string,
+  status = 400
 ): asserts condition {
   if (condition) return;
 
-  throw new Response(body, { status });
+  throw new Response(
+    message ? JSON.stringify({ validationError: message }) : undefined,
+    {
+      status,
+    }
+  );
 }
 
 export type Breadcrumb =

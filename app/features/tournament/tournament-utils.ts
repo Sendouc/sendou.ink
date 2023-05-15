@@ -1,18 +1,22 @@
 import type { Params } from "@remix-run/react";
 import invariant from "tiny-invariant";
-import type { User } from "~/db/types";
-import type { FindTeamsByEventId } from "./queries/findTeamsByEventId.server";
-import type { TournamentToolsLoaderData } from "./routes/to.$id";
-import { rankedModesShort } from "~/modules/in-game-lists/modes";
+import type { Tournament, User } from "~/db/types";
 import type { ModeShort } from "~/modules/in-game-lists";
-import { TOURNAMENT } from "./tournament-constants";
+import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { databaseTimestampToDate } from "~/utils/dates";
+import type { FindTeamsByTournamentId } from "./queries/findTeamsByTournamentId.server";
+import type {
+  TournamentLoaderData,
+  TournamentLoaderTeam,
+} from "./routes/to.$id";
+import { TOURNAMENT } from "./tournament-constants";
+import { validate } from "~/utils/remix";
 
 export function resolveOwnedTeam({
   teams,
   userId,
 }: {
-  teams: FindTeamsByEventId;
+  teams: Array<TournamentLoaderTeam>;
   userId?: User["id"];
 }) {
   if (typeof userId !== "number") return;
@@ -22,7 +26,13 @@ export function resolveOwnedTeam({
   );
 }
 
-export function idFromParams(params: Params<string>) {
+export function teamHasCheckedIn(
+  team: Pick<TournamentLoaderTeam, "checkedInAt">
+) {
+  return Boolean(team.checkedInAt);
+}
+
+export function tournamentIdFromParams(params: Params<string>) {
   const result = Number(params["id"]);
   invariant(!Number.isNaN(result), "id is not a number");
 
@@ -30,24 +40,36 @@ export function idFromParams(params: Params<string>) {
 }
 
 export function modesIncluded(
-  event: TournamentToolsLoaderData["event"]
+  tournament: Pick<Tournament, "mapPickingStyle">
 ): ModeShort[] {
-  if (event.toToolsMode) return [event.toToolsMode];
-
-  return [...rankedModesShort];
+  switch (tournament.mapPickingStyle) {
+    case "AUTO_SZ": {
+      return ["SZ"];
+    }
+    case "AUTO_TC": {
+      return ["TC"];
+    }
+    case "AUTO_RM": {
+      return ["RM"];
+    }
+    case "AUTO_CB": {
+      return ["CB"];
+    }
+    default: {
+      return [...rankedModesShort];
+    }
+  }
 }
 
 export function isOneModeTournamentOf(
-  event: TournamentToolsLoaderData["event"]
+  tournament: Pick<Tournament, "mapPickingStyle">
 ) {
-  if (event.toToolsMode) return event.toToolsMode;
-
-  return null;
+  return modesIncluded(tournament).length === 1
+    ? modesIncluded(tournament)[0]!
+    : null;
 }
 
-export function HACKY_resolvePicture(
-  event: TournamentToolsLoaderData["event"]
-) {
+export function HACKY_resolvePicture(event: TournamentLoaderData["event"]) {
   if (event.name.includes("In The Zone"))
     return "https://abload.de/img/screenshot2023-04-19a2bfv0.png";
 
@@ -57,13 +79,39 @@ export function HACKY_resolvePicture(
 // hacky because db query not taking in account possibility of many start times
 // AND always assumed check-in starts 1h before
 export function HACKY_resolveCheckInTime(
-  event: TournamentToolsLoaderData["event"]
+  event: Pick<TournamentLoaderData["event"], "startTime">
 ) {
   return databaseTimestampToDate(event.startTime - 60 * 60);
 }
 
-export function mapPickCountPerMode(event: TournamentToolsLoaderData["event"]) {
+export function mapPickCountPerMode(event: TournamentLoaderData["event"]) {
   return isOneModeTournamentOf(event)
     ? TOURNAMENT.COUNTERPICK_ONE_MODE_TOURNAMENT_MAPS_PER_MODE
     : TOURNAMENT.COUNTERPICK_MAPS_PER_MODE;
+}
+
+export function checkInHasStarted(
+  event: Pick<TournamentLoaderData["event"], "startTime">
+) {
+  return HACKY_resolveCheckInTime(event).getTime() < Date.now();
+}
+
+export function validateCanCheckIn({
+  event,
+  team,
+}: {
+  event: Pick<TournamentLoaderData["event"], "startTime">;
+  team: FindTeamsByTournamentId[number];
+}) {
+  validate(checkInHasStarted(event), "Check-in has not started yet");
+  validate(
+    team.members.length >= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
+    "Team does not have enough members"
+  );
+  validate(
+    team.mapPool && team.mapPool.length > 0,
+    "Team does not have a map pool"
+  );
+
+  return true;
 }

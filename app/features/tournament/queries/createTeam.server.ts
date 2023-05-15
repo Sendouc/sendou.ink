@@ -5,13 +5,15 @@ import { INVITE_CODE_LENGTH } from "~/constants";
 
 const createTeamStm = sql.prepare(/*sql*/ `
   insert into "TournamentTeam" (
-    "calendarEventId",
+    "tournamentId",
     "inviteCode",
-    "name"
+    "name",
+    "prefersNotToHost"
   ) values (
-    @calendarEventId,
+    @tournamentId,
     @inviteCode,
-    @name
+    @name,
+    @prefersNotToHost
   ) returning *
 `);
 
@@ -29,18 +31,21 @@ const createMemberStm = sql.prepare(/*sql*/ `
 
 export const createTeam = sql.transaction(
   ({
-    calendarEventId,
+    tournamentId,
     name,
     ownerId,
+    prefersNotToHost,
   }: {
-    calendarEventId: TournamentTeam["calendarEventId"];
+    tournamentId: TournamentTeam["tournamentId"];
     name: TournamentTeam["name"];
     ownerId: User["id"];
+    prefersNotToHost: TournamentTeam["prefersNotToHost"];
   }) => {
     const team = createTeamStm.get({
-      calendarEventId,
+      tournamentId,
       name,
       inviteCode: nanoid(INVITE_CODE_LENGTH),
+      prefersNotToHost,
     }) as TournamentTeam;
 
     createMemberStm.run({ tournamentTeamId: team.id, userId: ownerId });
