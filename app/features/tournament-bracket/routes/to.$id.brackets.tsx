@@ -156,13 +156,28 @@ export default function TournamentBracketsPage() {
         );
       };
     }
+
     // @ts-expect-error - brackets-viewer is not typed
-    window.bracketsViewer.render({
-      stages: data.bracket.stage,
-      matches: data.bracket.match,
-      matchGames: data.bracket.match_game,
-      participants: data.bracket.participant,
-    });
+    window.bracketsViewer.render(
+      {
+        stages: data.bracket.stage,
+        matches: data.bracket.match,
+        matchGames: data.bracket.match_game,
+        participants: data.bracket.participant,
+      },
+      {
+        customRoundName: (info: any) => {
+          if (info.groupType === "final-group" && info.roundNumber === 1) {
+            return "Grand Finals";
+          }
+          if (info.groupType === "final-group" && info.roundNumber === 2) {
+            return "Bracket Reset";
+          }
+
+          return undefined;
+        },
+      }
+    );
 
     const element = ref.current;
     return () => {
