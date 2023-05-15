@@ -8,6 +8,12 @@ export function resolveBestOfs(
   // 3 is default
   const result: [bestOf: 5 | 7, id: number][] = [];
 
+  // special case: only 2 teams
+  if (matches.length === 1) {
+    result.push([7, matches[0]!.matchId]);
+    return result;
+  }
+
   /// Best of 7
 
   // 1) Grand Finals
@@ -45,7 +51,8 @@ export function resolveBestOfs(
   );
 
   const losersFinals = matches.filter(
-    (match) => match.roundNumber === maxLosersRoundNumber
+    (match) =>
+      match.roundNumber === maxLosersRoundNumber && match.groupNumber === 2
   );
   invariant(losersFinals.length === 1, "losersFinals must be 1");
 
