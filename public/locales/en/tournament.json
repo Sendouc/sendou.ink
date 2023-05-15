@@ -42,7 +42,6 @@
   "teams.mapsPickedStatus": "Maps picked status",
 
   "admin.download": "Download participants",
-  "admin.download.discord": "Discord list",
   "admin.actions.CHANGE_TEAM_OWNER": "Change captain",
   "admin.actions.CHECK_IN": "Check in",
   "admin.actions.CHECK_OUT": "Check out",

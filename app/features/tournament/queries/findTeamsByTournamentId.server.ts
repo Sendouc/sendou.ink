@@ -3,6 +3,7 @@ import type {
   MapPoolMap,
   Tournament,
   TournamentTeam,
+  TournamentTeamCheckIn,
   TournamentTeamMember,
   UserWithPlusTier,
 } from "~/db/types";
@@ -14,7 +15,7 @@ const stm = sql.prepare(/*sql*/ `
       "TournamentTeam"."id",
       "TournamentTeam"."name",
       "TournamentTeam"."seed",
-      "TournamentTeam"."checkedInAt",
+      "TournamentTeamCheckIn"."checkedInAt",
       "TournamentTeam"."prefersNotToHost",
       json_group_array(
         json_object(
@@ -38,6 +39,7 @@ const stm = sql.prepare(/*sql*/ `
       ) as "members"
     from
       "TournamentTeam"
+      left join "TournamentTeamCheckIn" on "TournamentTeamCheckIn"."tournamentTeamId" = "TournamentTeam"."id"
       left join "TournamentTeamMember" on "TournamentTeamMember"."tournamentTeamId" = "TournamentTeam"."id"
       left join "User" on "User"."id" = "TournamentTeamMember"."userId"
       left join "PlusTier" on "User"."id" = "PlusTier"."userId"
@@ -69,7 +71,7 @@ export interface FindTeamsByTournamentIdItem {
   id: TournamentTeam["id"];
   name: TournamentTeam["name"];
   seed: TournamentTeam["seed"];
-  checkedInAt: TournamentTeam["checkedInAt"];
+  checkedInAt: TournamentTeamCheckIn["checkedInAt"];
   prefersNotToHost: TournamentTeam["prefersNotToHost"];
   members: Array<
     Pick<TournamentTeamMember, "userId" | "isOwner"> &

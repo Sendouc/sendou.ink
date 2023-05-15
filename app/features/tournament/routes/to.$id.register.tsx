@@ -376,7 +376,7 @@ function RegistrationProgress({
       </h3>
       <section className="tournament__section stack md">
         <div className="stack horizontal lg justify-center text-sm font-semi-bold">
-          {steps.map((step) => {
+          {steps.map((step, i) => {
             return (
               <div
                 key={step.name}
@@ -384,7 +384,10 @@ function RegistrationProgress({
               >
                 {step.name}
                 {step.completed ? (
-                  <CheckmarkIcon className="tournament__section__icon fill-success" />
+                  <CheckmarkIcon
+                    className="tournament__section__icon fill-success"
+                    testId={`checkmark-icon-num-${i + 1}`}
+                  />
                 ) : (
                   <CrossIcon className="tournament__section__icon fill-error" />
                 )}
@@ -513,7 +516,11 @@ function TeamInfo({
               </div>
             </div>
           </div>
-          <SubmitButton _action="UPSERT_TEAM" state={fetcher.state}>
+          <SubmitButton
+            _action="UPSERT_TEAM"
+            state={fetcher.state}
+            testId="save-team-button"
+          >
             Save
           </SubmitButton>
         </fetcher.Form>
@@ -597,11 +604,12 @@ function FillRoster({
           </div>
         ) : null}
         <div className="stack lg horizontal mt-2 flex-wrap justify-center">
-          {ownTeamMembers.map((member) => {
+          {ownTeamMembers.map((member, i) => {
             return (
               <div
                 key={member.userId}
                 className="stack sm items-center text-sm"
+                data-testid={`member-num-${i + 1}`}
               >
                 <Avatar size="xsm" user={member} />
                 {member.discordName}
@@ -655,7 +663,11 @@ function DirectlyAddPlayerSelect({ players }: { players: TrustedPlayer[] }) {
           })}
         </select>
       </div>
-      <SubmitButton _action="ADD_PLAYER" state={fetcher.state}>
+      <SubmitButton
+        _action="ADD_PLAYER"
+        state={fetcher.state}
+        testId="add-player-button"
+      >
         Add
       </SubmitButton>
     </fetcher.Form>
@@ -789,6 +801,9 @@ function CounterPickMapPoolPicker() {
                           <select
                             value={counterpickMaps[mode][i] ?? undefined}
                             onChange={handleCounterpickMapPoolSelect(mode, i)}
+                            data-testid={`counterpick-map-pool-${mode}-num-${
+                              i + 1
+                            }`}
                           >
                             <option value=""></option>
                             {stageIds
@@ -815,6 +830,7 @@ function CounterPickMapPoolPicker() {
               _action="UPDATE_MAP_POOL"
               state={fetcher.state}
               className="self-center mt-4"
+              testId="save-map-list-button"
             >
               {t("common:actions.save")}
             </SubmitButton>

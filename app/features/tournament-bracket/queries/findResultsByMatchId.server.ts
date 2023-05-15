@@ -10,6 +10,7 @@ const stm = sql.prepare(/* sql */ `
     "TournamentMatchGameResult"."stageId",
     "TournamentMatchGameResult"."mode",
     "TournamentMatchGameResult"."source",
+    "TournamentMatchGameResult"."createdAt",
     json_group_array("TournamentMatchGameResultParticipant"."userId") as "participantIds"
   from "TournamentMatchGameResult"
   left join "TournamentMatchGameResultParticipant"
@@ -26,6 +27,7 @@ interface FindResultsByMatchIdResult {
   mode: TournamentMatchGameResult["mode"];
   participantIds: Array<User["id"]>;
   source: TournamentMaplistSource;
+  createdAt: TournamentMatchGameResult["createdAt"];
 }
 
 export function findResultsByMatchId(

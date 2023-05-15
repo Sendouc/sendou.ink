@@ -46,7 +46,6 @@ module.exports.up = function (db) {
       "name" text not null,
       "createdAt" integer default (strftime('%s', 'now')) not null,
       "seed" integer,
-      "checkedInAt" integer,
       "inviteCode" text not null unique,
       "tournamentId" integer not null,
       "prefersNotToHost" integer not null default 0,
@@ -57,6 +56,19 @@ module.exports.up = function (db) {
   ).run();
   db.prepare(
     /*sql*/ `create index tournament_team_tournament_id on "TournamentTeam"("tournamentId")`
+  ).run();
+
+  db.prepare(
+    /*sql*/ `
+    create table "TournamentTeamCheckIn" (
+      "tournamentTeamId" integer not null,
+      "checkedInAt" integer not null,
+      foreign key ("tournamentTeamId") references "TournamentTeam"("id") on delete cascade
+    ) strict
+    `
+  ).run();
+  db.prepare(
+    /*sql*/ `create index tournament_team_check_in_tournament_team_id on "TournamentTeamCheckIn"("tournamentTeamId")`
   ).run();
 
   db.prepare(

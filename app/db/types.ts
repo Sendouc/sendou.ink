@@ -208,7 +208,11 @@ export interface TournamentTeam {
   tournamentId: number;
   inviteCode: string;
   prefersNotToHost: number;
-  checkedInAt?: number;
+}
+
+export interface TournamentTeamCheckIn {
+  tournamentTeamId: number;
+  checkedInAt: number;
 }
 
 export interface TournamentTeamMember {

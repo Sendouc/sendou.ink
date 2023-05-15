@@ -1,9 +1,10 @@
 import { sql } from "~/db/sql";
 
 const stm = sql.prepare(/* sql */ `
-  update "TournamentTeam"
-  set "checkedInAt" = strftime('%s', 'now')
-  where "id" = @tournamentTeamId
+  insert into "TournamentTeamCheckIn" 
+    ("tournamentTeamId", "checkedInAt")
+  values 
+    (@tournamentTeamId, strftime('%s', 'now'))
 `);
 
 export function checkIn(tournamentTeamId: number) {

@@ -39,6 +39,5 @@
 
   "teams.mapsPickedStatus": "Status ausgewähler Arenen",
 
-  "admin.download": "Teilnehmerliste herunterladen",
-  "admin.download.discord": "Discord-Liste"
+  "admin.download": "Teilnehmerliste herunterladen"
 }

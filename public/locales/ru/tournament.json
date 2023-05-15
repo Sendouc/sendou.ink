@@ -39,6 +39,5 @@
 
   "teams.mapsPickedStatus": "Статус выбранных карт",
 
-  "admin.download": "Скачать участников",
-  "admin.download.discord": "Discord список"
+  "admin.download": "Скачать участников"
 }
