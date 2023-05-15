@@ -1,9 +1,8 @@
 import { sql } from "~/db/sql";
 
 const stm = sql.prepare(/* sql */ `
-  update "TournamentTeam"
-  set "checkedInAt" = null
-  where "id" = @tournamentTeamId
+  delete from "TournamentTeamCheckIn"
+    where "tournamentTeamId" = @tournamentTeamId
 `);
 
 export function checkOut(tournamentTeamId: number) {

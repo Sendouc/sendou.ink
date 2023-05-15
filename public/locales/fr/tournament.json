@@ -39,6 +39,5 @@
 
   "teams.mapsPickedStatus": "Statut du choix de stages",
 
-  "admin.download": "Télécharger les participants",
-  "admin.download.discord": "Liste Discord"
+  "admin.download": "Télécharger les participants"
 }

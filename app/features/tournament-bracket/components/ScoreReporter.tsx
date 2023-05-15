@@ -27,6 +27,8 @@ import type {
 } from "~/features/tournament";
 import { canAdminTournament } from "~/permissions";
 import { useUser } from "~/modules/auth";
+import { useIsMounted } from "~/hooks/useIsMounted";
+import { databaseTimestampToDate } from "~/utils/dates";
 
 export type Result = Unpacked<
   SerializeFrom<TournamentMatchLoaderData>["results"]
@@ -50,6 +52,7 @@ export function ScoreReporter({
   result?: Result;
   type: "EDIT" | "MEMBER" | "OTHER";
 }) {
+  const isMounted = useIsMounted();
   const actionData = useActionData<{ error?: "locked" }>();
   const user = useUser();
   const parentRouteData = useOutletContext<TournamentLoaderData>();
@@ -157,6 +160,17 @@ export function ScoreReporter({
             result={result}
           />
         </ActionSectionWrapper>
+      ) : null}
+      {result ? (
+        <div
+          className={clsx("text-center text-xs text-lighter", {
+            invisible: !isMounted,
+          })}
+        >
+          {isMounted
+            ? databaseTimestampToDate(result.createdAt).toLocaleString()
+            : "t"}
+        </div>
       ) : null}
     </div>
   );

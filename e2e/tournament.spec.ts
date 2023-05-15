@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 import invariant from "tiny-invariant";
 import type { TournamentLoaderData } from "~/features/tournament";
+import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import {
   fetchSendouInk,
   impersonate,
@@ -45,6 +46,57 @@ const getTeamCheckedInAt = ({
 };
 
 test.describe("Tournament", () => {
+  test("registers for tournament", async ({ page }) => {
+    await seed(page, "NO_TOURNAMENT_TEAMS");
+    await impersonate(page);
+
+    await navigate({
+      page,
+      url: tournamentPage(1),
+    });
+
+    await page.getByLabel("Team name").type("Chimera");
+    await page.getByTestId("save-team-button").click();
+
+    await page.getByTestId("add-player-button").click();
+    await expect(page.getByTestId("member-num-2")).toBeVisible();
+    await page.getByTestId("add-player-button").click();
+    await expect(page.getByTestId("member-num-3")).toBeVisible();
+    await page.getByTestId("add-player-button").click();
+    await expect(page.getByTestId("member-num-4")).toBeVisible();
+
+    let stage = 5;
+    for (const mode of rankedModesShort) {
+      for (const num of [1, 2]) {
+        await page
+          .getByTestId(`counterpick-map-pool-${mode}-num-${num}`)
+          .selectOption(String(stage));
+        stage++;
+      }
+    }
+    await page.getByTestId("save-map-list-button").click();
+
+    await expect(page.getByTestId("checkmark-icon-num-3")).toBeVisible();
+  });
+
+  test("checks in and appears on the bracket", async ({ page }) => {
+    await seed(page);
+    await impersonate(page);
+
+    await navigate({
+      page,
+      url: tournamentBracketsPage(1),
+    });
+
+    await isNotVisible(page.getByText("Chimera"));
+
+    await page.getByTestId("register-tab").click();
+    await page.getByTestId("check-in-button").click();
+
+    await page.getByTestId("brackets-tab").click();
+    await page.getByText("#1 Chimera").waitFor();
+  });
+
   test("operates admin controls", async ({ page }) => {
     await seed(page);
     await impersonate(page);
@@ -138,23 +190,5 @@ test.describe("Tournament", () => {
 
     data = await fetchTournamentLoaderData();
     expect(data.teams.find((t) => t.id === 1)).toBeFalsy();
-  });
-
-  test("checks in and appears on the bracket", async ({ page }) => {
-    await seed(page);
-    await impersonate(page);
-
-    await navigate({
-      page,
-      url: tournamentBracketsPage(1),
-    });
-
-    await isNotVisible(page.getByText("Chimera"));
-
-    await page.getByTestId("register-tab").click();
-    await page.getByTestId("check-in-button").click();
-
-    await page.getByTestId("brackets-tab").click();
-    await page.getByText("#1 Chimera").waitFor();
   });
 });

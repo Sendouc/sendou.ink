@@ -39,6 +39,5 @@
 
   "teams.mapsPickedStatus": "Status for banevalg",
 
-  "admin.download": "Hent liste over deltagere",
-  "admin.download.discord": "Hent Discord-liste"
+  "admin.download": "Hent liste over deltagere"
 }

@@ -39,12 +39,13 @@ import {
 } from "./constants";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { TOURNAMENT } from "~/features/tournament/tournament-constants";
+import type { SeedVariation } from "~/routes/seed";
 
 const calendarEventWithToToolsSz = () => calendarEventWithToTools(true);
 const calendarEventWithToToolsTeamsSz = () =>
   calendarEventWithToToolsTeams(true);
 
-const basicSeeds = [
+const basicSeeds = (variation?: SeedVariation | null) => [
   adminUser,
   makeAdminPatron,
   makeAdminVideoAdder,
@@ -65,9 +66,13 @@ const basicSeeds = [
   calendarEventResults,
   calendarEventWithToTools,
   calendarEventWithToToolsTieBreakerMapPool,
-  calendarEventWithToToolsTeams,
-  calendarEventWithToToolsSz,
-  calendarEventWithToToolsTeamsSz,
+  variation === "NO_TOURNAMENT_TEAMS"
+    ? undefined
+    : calendarEventWithToToolsTeams,
+  variation === "NO_TOURNAMENT_TEAMS" ? undefined : calendarEventWithToToolsSz,
+  variation === "NO_TOURNAMENT_TEAMS"
+    ? undefined
+    : calendarEventWithToToolsTeamsSz,
   adminBuilds,
   manySplattershotBuilds,
   detailedTeam,
@@ -78,10 +83,11 @@ const basicSeeds = [
   userFavBadges,
 ];
 
-export function seed() {
+export function seed(variation?: SeedVariation | null) {
   wipeDB();
 
-  for (const seedFunc of basicSeeds) {
+  for (const seedFunc of basicSeeds(variation)) {
+    if (!seedFunc) continue;
     seedFunc();
   }
 }
@@ -751,15 +757,13 @@ function calendarEventWithToToolsTeams(sz?: boolean) {
         "name",
         "createdAt",
         "tournamentId",
-        "inviteCode",
-        "checkedInAt"
+        "inviteCode"
       ) values (
         $id,
         $name,
         $createdAt,
         $tournamentId,
-        $inviteCode,
-        $checkedInAt
+        $inviteCode
       )
       `
       )
@@ -769,8 +773,26 @@ function calendarEventWithToToolsTeams(sz?: boolean) {
         createdAt: dateToDatabaseTimestamp(new Date()),
         tournamentId: sz ? 2 : 1,
         inviteCode: nanoid(INVITE_CODE_LENGTH),
-        checkedInAt: id !== 1 ? dateToDatabaseTimestamp(new Date()) : null,
       });
+
+    if (id !== 1) {
+      sql
+        .prepare(
+          `
+      insert into "TournamentTeamCheckIn" (
+        "tournamentTeamId",
+        "checkedInAt"
+      ) values (
+        $tournamentTeamId,
+        $checkedInAt
+      )
+      `
+        )
+        .run({
+          tournamentTeamId: id + (sz ? 100 : 0),
+          checkedInAt: dateToDatabaseTimestamp(new Date()),
+        });
+    }
 
     for (
       let i = 0;

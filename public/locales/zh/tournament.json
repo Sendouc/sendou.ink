@@ -41,6 +41,5 @@
 
   "teams.mapsPickedStatus": "地图的选择情况",
 
-  "admin.download": "下载参赛者",
-  "admin.download.discord": "Discord列表"
+  "admin.download": "下载参赛者"
 }

@@ -331,7 +331,7 @@ function DownloadParticipants() {
   const { t } = useTranslation(["tournament"]);
   const data = useOutletContext<TournamentLoaderData>();
 
-  function discordListContent() {
+  function allParticipantsContent() {
     return data.teams
       .slice()
       .sort((a, b) => a.name.localeCompare(b.name))
@@ -346,20 +346,46 @@ function DownloadParticipants() {
       .join("\n");
   }
 
+  function notCheckedInParticipantsContent() {
+    return data.teams
+      .slice()
+      .sort((a, b) => a.name.localeCompare(b.name))
+      .filter((team) => !team.checkedInAt)
+      .map((team) => {
+        return `${team.name} - ${team.members
+          .map(
+            (member) => `${discordFullName(member)} - <@${member.discordId}>`
+          )
+          .join(" / ")}`;
+      })
+      .join("\n");
+  }
+
   return (
     <div>
-      <label>{t("tournament:admin.download")}</label>
+      <label>{t("tournament:admin.download")} (Discord format)</label>
       <div className="stack horizontal sm">
         <Button
           size="tiny"
           onClick={() =>
             handleDownload({
-              filename: "discord.txt",
-              content: discordListContent(),
+              filename: "all-participants.txt",
+              content: allParticipantsContent(),
             })
           }
         >
-          {t("tournament:admin.download.discord")}
+          All participants
+        </Button>
+        <Button
+          size="tiny"
+          onClick={() =>
+            handleDownload({
+              filename: "not-checked-in-participants.txt",
+              content: notCheckedInParticipantsContent(),
+            })
+          }
+        >
+          Not checked in participants
         </Button>
       </div>
     </div>

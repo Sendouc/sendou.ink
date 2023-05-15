@@ -41,6 +41,5 @@
 
   "teams.mapsPickedStatus": "マップの選択状況",
 
-  "admin.download": "参加者リストをダウンロード",
-  "admin.download.discord": "Discord 一覧をダウンロード"
+  "admin.download": "参加者リストをダウンロード"
 }

@@ -1,4 +1,5 @@
 import { expect, type Locator, type Page } from "@playwright/test";
+import type { SeedVariation } from "~/routes/seed";
 
 export async function selectWeapon({
   page,
@@ -55,8 +56,10 @@ export async function navigate({ page, url }: { page: Page; url: string }) {
   await expect(page.getByTestId("hydrated")).toHaveCount(1);
 }
 
-export function seed(page: Page) {
-  return page.request.post("/seed");
+export function seed(page: Page, variation?: SeedVariation) {
+  return page.request.post("/seed", {
+    form: { variation: variation ?? "DEFAULT" },
+  });
 }
 
 export function impersonate(page: Page, userId = 1) {
