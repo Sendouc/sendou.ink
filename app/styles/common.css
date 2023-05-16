@@ -1075,3 +1075,8 @@ dialog::backdrop {
 .divider:not(:empty)::after {
   margin-left: 0.25em;
 }
+
+#nprogress .bar {
+  background: var(--theme) !important;
+  margin-top: 3rem !important;
+}
