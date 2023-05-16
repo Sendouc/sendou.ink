@@ -58,7 +58,7 @@ export const links: LinksFunction = () => {
 };
 
 export const handle: SendouRouteHandle = {
-  i18n: ["tournament"],
+  i18n: ["tournament", "calendar"],
 };
 
 export type TournamentLoaderTeam = Unpacked<TournamentLoaderData["teams"]>;

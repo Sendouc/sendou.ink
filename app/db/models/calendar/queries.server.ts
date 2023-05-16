@@ -41,6 +41,7 @@ import findAllEventsWithMapPoolsSql from "./findAllEventsWithMapPools.sql";
 import findTieBreakerMapPoolByEventIdSql from "./findTieBreakerMapPoolByEventId.sql";
 import deleteByIdSql from "./deleteById.sql";
 import createTournamentSql from "./createTournament.sql";
+import deleteTournamentByIdSql from "./deleteTournamentById.sql";
 
 const createStm = sql.prepare(createSql);
 const updateStm = sql.prepare(updateSql);
@@ -58,6 +59,7 @@ const findTieBreakerMapPoolByEventIdtm = sql.prepare(
   findTieBreakerMapPoolByEventIdSql
 );
 const deleteByIdStm = sql.prepare(deleteByIdSql);
+const deleteTournamentByIdStm = sql.prepare(deleteTournamentByIdSql);
 const createTournamentStm = sql.prepare(createTournamentSql);
 
 const createTournament = (
@@ -512,6 +514,15 @@ export function findTieBreakerMapPoolByEventId(
   >;
 }
 
-export function deleteById(id: CalendarEvent["id"]) {
-  return deleteByIdStm.run({ id });
-}
+export const deleteById = sql.transaction(
+  ({
+    eventId,
+    tournamentId,
+  }: {
+    eventId: number;
+    tournamentId: number | null;
+  }) => {
+    deleteByIdStm.run({ id: eventId });
+    if (tournamentId) deleteTournamentByIdStm.run({ id: tournamentId });
+  }
+);

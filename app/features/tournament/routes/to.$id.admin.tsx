@@ -30,8 +30,13 @@ import { joinTeam, leaveTeam } from "../queries/joinLeaveTeam.server";
 import { TOURNAMENT } from "../tournament-constants";
 import { deleteTeam } from "../queries/deleteTeam.server";
 import { useUser } from "~/modules/auth";
-import { calendarEditPage, tournamentPage } from "~/utils/urls";
+import {
+  calendarEditPage,
+  calendarEventPage,
+  tournamentPage,
+} from "~/utils/urls";
 import { Redirect } from "~/components/Redirect";
+import { FormWithConfirm } from "~/components/FormWithConfirm";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUserId(request);
@@ -138,7 +143,9 @@ export const action: ActionFunction = async ({ request, params }) => {
   return null;
 };
 
+// xxx: seed order for challonge download
 export default function TournamentAdminPage() {
+  const { t } = useTranslation(["calendar"]);
   const data = useOutletContext<TournamentLoaderData>();
   const user = useUser();
 
@@ -151,7 +158,7 @@ export default function TournamentAdminPage() {
       <AdminActions />
       {isAdmin(user) ? <EnableMapList /> : null}
       <DownloadParticipants />
-      <div className="stack items-start mt-4">
+      <div className="stack horizontal items-end mt-4">
         <LinkButton
           to={calendarEditPage(data.event.eventId)}
           size="tiny"
@@ -159,6 +166,23 @@ export default function TournamentAdminPage() {
         >
           Edit event info
         </LinkButton>
+        {!data.hasStarted ? (
+          <FormWithConfirm
+            dialogHeading={t("calendar:actions.delete.confirm", {
+              name: data.event.name,
+            })}
+            action={calendarEventPage(data.event.eventId)}
+          >
+            <Button
+              className="ml-auto"
+              size="tiny"
+              variant="minimal-destructive"
+              type="submit"
+            >
+              {t("calendar:actions.delete")}
+            </Button>
+          </FormWithConfirm>
+        ) : null}
       </div>
     </div>
   );

@@ -69,7 +69,10 @@ export const action: ActionFunction = async ({ params, request }) => {
     })
   );
 
-  db.calendarEvents.deleteById(event.eventId);
+  db.calendarEvents.deleteById({
+    eventId: event.eventId,
+    tournamentId: event.tournamentId,
+  });
 
   return redirect(CALENDAR_PAGE);
 };
