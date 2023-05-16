@@ -211,7 +211,11 @@ export default function TournamentBracketsPage() {
             >
               When everything looks good, finalize the bracket to start the
               tournament{" "}
-              <SubmitButton variant="outlined" size="tiny">
+              <SubmitButton
+                variant="outlined"
+                size="tiny"
+                testId="finalize-bracket-button"
+              >
                 Finalize
               </SubmitButton>
             </Alert>

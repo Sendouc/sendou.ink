@@ -748,7 +748,7 @@ const availablePairs = rankedModesShort
   .filter((pair) => !tiebreakerPicks.has(pair));
 function calendarEventWithToToolsTeams(sz?: boolean) {
   const userIds = userIdsInAscendingOrderById();
-  for (let id = 1; id <= 14; id++) {
+  for (let id = 1; id <= 10; id++) {
     sql
       .prepare(
         `
@@ -799,6 +799,14 @@ function calendarEventWithToToolsTeams(sz?: boolean) {
       i < faker.helpers.arrayElement([4, 4, 4, 4, 4, 5, 5, 6]);
       i++
     ) {
+      let userId = userIds.shift()!;
+      // make sure Sendou and N-ZAP are on different teams, and N-ZAP team is not the highest seed
+      if (userId === NZAP_TEST_ID && (id === 1 || id === 2)) {
+        const newUserId = userIds.shift()!;
+        userIds.unshift(userId);
+        userId = newUserId;
+      }
+
       sql
         .prepare(
           `
@@ -817,7 +825,7 @@ function calendarEventWithToToolsTeams(sz?: boolean) {
         )
         .run({
           tournamentTeamId: id + (sz ? 100 : 0),
-          userId: userIds.shift()!,
+          userId,
           isOwner: i === 0 ? 1 : 0,
           createdAt: dateToDatabaseTimestamp(new Date()),
         });
