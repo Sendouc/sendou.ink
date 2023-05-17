@@ -91,7 +91,9 @@ export function findByIdentifier(
         patronTier: member.patronTier,
         role: member.role ?? undefined,
         isOwner: Boolean(member.isOwner),
-        weapons: JSON.parse(member.weapons).filter(Boolean),
+        weapons: JSON.parse(member.weapons).filter(
+          (value: any) => typeof value === "number"
+        ),
       })),
       // results: {
       //   count: 23,
