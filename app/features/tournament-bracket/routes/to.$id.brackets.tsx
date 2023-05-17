@@ -128,6 +128,7 @@ export const loader = ({ params }: LoaderArgs) => {
   };
 };
 
+// xxx: banner that shows for participants not mobile friendly
 export default function TournamentBracketsPage() {
   const user = useUser();
   const data = useLoaderData<typeof loader>();

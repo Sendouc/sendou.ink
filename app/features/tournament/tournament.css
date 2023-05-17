@@ -154,6 +154,12 @@
   padding: var(--s-1) 0;
 }
 
+.tournament___info__mode-container {
+  background-color: var(--bg-lighter);
+  border-radius: 100%;
+  padding: var(--s-2);
+}
+
 .tournament__by {
   color: var(--text-lighter);
   font-size: var(--fonts-sm);

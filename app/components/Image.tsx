@@ -1,6 +1,10 @@
 import { useTranslation } from "~/hooks/useTranslation";
-import type { MainWeaponId } from "~/modules/in-game-lists";
-import { mainWeaponImageUrl, outlinedMainWeaponImageUrl } from "~/utils/urls";
+import type { MainWeaponId, ModeShort } from "~/modules/in-game-lists";
+import {
+  mainWeaponImageUrl,
+  modeImageUrl,
+  outlinedMainWeaponImageUrl,
+} from "~/utils/urls";
 
 interface ImageProps {
   path: string;
@@ -10,6 +14,7 @@ interface ImageProps {
   containerClassName?: string;
   width?: number;
   height?: number;
+  size?: number;
   style?: React.CSSProperties;
   testId?: string;
   onClick?: () => void;
@@ -22,6 +27,7 @@ export function Image({
   className,
   width,
   height,
+  size,
   style,
   testId,
   containerClassName,
@@ -40,8 +46,8 @@ export function Image({
         alt={alt}
         src={`${path}.png`}
         className={className}
-        width={width}
-        height={height}
+        width={size ?? width}
+        height={size ?? height}
         style={style}
         draggable="false"
         data-testid={testId}
@@ -74,6 +80,24 @@ export function WeaponImage({
           ? outlinedMainWeaponImageUrl(weaponSplId)
           : mainWeaponImageUrl(weaponSplId)
       }
+    />
+  );
+}
+
+type ModeImageProps = {
+  mode: ModeShort;
+} & Omit<ImageProps, "path" | "alt" | "title">;
+
+export function ModeImage({ mode, testId, ...rest }: ModeImageProps) {
+  const { t } = useTranslation(["game-misc"]);
+
+  return (
+    <Image
+      {...rest}
+      alt={t(`game-misc:MODE_LONG_${mode}`)}
+      title={t(`game-misc:MODE_LONG_${mode}`)}
+      testId={testId}
+      path={modeImageUrl(mode)}
     />
   );
 }

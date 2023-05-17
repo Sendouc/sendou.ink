@@ -23,7 +23,7 @@ import type { Unpacked } from "~/utils/types";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
 import type { FindTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
 import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
-import { tournamentIdFromParams } from "../tournament-utils";
+import { teamHasCheckedIn, tournamentIdFromParams } from "../tournament-utils";
 import styles from "../tournament.css";
 import hasTournamentStarted from "../queries/hasTournamentStarted.server";
 
@@ -72,13 +72,15 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const mapListGeneratorAvailable =
     canAdminTournament({ user, event }) || event.showMapListGenerator;
 
-  const teams = findTeamsByTournamentId(tournamentId);
+  const hasStarted = hasTournamentStarted(tournamentId);
+  let teams = findTeamsByTournamentId(tournamentId);
+  if (hasStarted) {
+    teams = teams.filter(teamHasCheckedIn);
+  }
 
   const ownedTeamId = teams.find((team) =>
     team.members.some((member) => member.userId === user?.id && member.isOwner)
   )?.id;
-
-  const hasStarted = hasTournamentStarted(tournamentId);
 
   return {
     event,

@@ -1,4 +1,4 @@
-import { Form, useFetcher } from "@remix-run/react";
+import { useFetcher } from "@remix-run/react";
 import React from "react";
 import invariant from "tiny-invariant";
 import { useTranslation } from "~/hooks/useTranslation";
@@ -12,12 +12,14 @@ export function FormWithConfirm({
   dialogHeading,
   deleteButtonText,
   action,
+  submitButtonTestId = "submit-button",
 }: {
   fields?: [name: string, value: string | number][];
   children: React.ReactNode;
   dialogHeading: string;
   deleteButtonText?: string;
   action?: string;
+  submitButtonTestId?: string;
 }) {
   const fetcher = useFetcher();
   const { t } = useTranslation(["common"]);
@@ -50,7 +52,7 @@ export function FormWithConfirm({
             <SubmitButton
               form={id}
               variant="destructive"
-              testId={dialogOpen ? "confirm-button" : undefined}
+              testId={dialogOpen ? "confirm-button" : submitButtonTestId}
             >
               {deleteButtonText ?? t("common:actions.delete")}
             </SubmitButton>

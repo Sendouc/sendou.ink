@@ -1077,6 +1077,14 @@ dialog::backdrop {
 }
 
 #nprogress .bar {
-  background: var(--theme) !important;
   margin-top: 3rem !important;
+  background: var(--theme) !important;
+}
+
+#nprogress .spinner {
+  display: none !important;
+}
+
+#nprogress .peg {
+  display: none !important;
 }

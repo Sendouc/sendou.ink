@@ -57,7 +57,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   const hasStarted = hasTournamentStarted(tournamentId);
 
   validate(canAdminTournament({ user, event: tournament }));
-  validate(hasStarted, "Tournament has started");
+  validate(!hasStarted, "Tournament has started");
 
   updateTeamSeeds({ tournamentId, teamIds: data.seeds });
 

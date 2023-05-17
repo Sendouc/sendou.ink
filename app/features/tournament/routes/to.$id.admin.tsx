@@ -143,7 +143,6 @@ export const action: ActionFunction = async ({ request, params }) => {
   return null;
 };
 
-// xxx: seed order for challonge download
 export default function TournamentAdminPage() {
   const { t } = useTranslation(["calendar"]);
   const data = useOutletContext<TournamentLoaderData>();
@@ -172,6 +171,7 @@ export default function TournamentAdminPage() {
               name: data.event.name,
             })}
             action={calendarEventPage(data.event.eventId)}
+            submitButtonTestId="delete-submit-button"
           >
             <Button
               className="ml-auto"
@@ -385,6 +385,15 @@ function DownloadParticipants() {
       .join("\n");
   }
 
+  function simpleListInSeededOrder() {
+    return data.teams
+      .slice()
+      .sort((a, b) => (a.seed ?? Infinity) - (b.seed ?? Infinity))
+      .filter((team) => team.checkedInAt)
+      .map((team) => team.name)
+      .join("\n");
+  }
+
   return (
     <div>
       <label>{t("tournament:admin.download")} (Discord format)</label>
@@ -410,6 +419,17 @@ function DownloadParticipants() {
           }
         >
           Not checked in participants
+        </Button>
+        <Button
+          size="tiny"
+          onClick={() =>
+            handleDownload({
+              filename: "teams-in-seeded-order.txt",
+              content: simpleListInSeededOrder(),
+            })
+          }
+        >
+          Simple list in seeded order
         </Button>
       </div>
     </div>

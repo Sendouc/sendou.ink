@@ -1,20 +1,28 @@
 import {
+  redirect,
   type ActionFunction,
   type LoaderArgs,
   type SerializeFrom,
-  redirect,
 } from "@remix-run/node";
 import { useFetcher, useLoaderData, useOutletContext } from "@remix-run/react";
+import clsx from "clsx";
 import * as React from "react";
 import { useCopyToClipboard } from "react-use";
 import invariant from "tiny-invariant";
 import { Alert } from "~/components/Alert";
 import { Avatar } from "~/components/Avatar";
 import { Button } from "~/components/Button";
-import { Image } from "~/components/Image";
+import { Divider } from "~/components/Divider";
+import { Image, ModeImage } from "~/components/Image";
 import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
 import { SubmitButton } from "~/components/SubmitButton";
+import { CheckmarkIcon } from "~/components/icons/Checkmark";
+import { ClockIcon } from "~/components/icons/Clock";
+import { CrossIcon } from "~/components/icons/Cross";
+import { UserIcon } from "~/components/icons/User";
+import { useAutoRerender } from "~/hooks/useAutoRerender";
+import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
 import { getUser, requireUser } from "~/modules/auth/user.server";
@@ -26,12 +34,14 @@ import type {
 import { stageIds } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { MapPool } from "~/modules/map-pool-serializer";
+import { databaseTimestampToDate } from "~/utils/dates";
 import {
   notFoundIfFalsy,
   parseRequestFormData,
   validate,
   type SendouRouteHandle,
 } from "~/utils/remix";
+import { booleanToInt } from "~/utils/sql";
 import { discordFullName } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
 import { assertUnreachable } from "~/utils/types";
@@ -44,40 +54,31 @@ import {
   tournamentBracketsPage,
   tournamentJoinPage,
 } from "~/utils/urls";
+import { checkIn } from "../queries/checkIn.server";
+import { createTeam } from "../queries/createTeam.server";
 import deleteTeamMember from "../queries/deleteTeamMember.server";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { findOwnTeam } from "../queries/findOwnTeam.server";
 import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
+import type { TrustedPlayer } from "../queries/findTrustedPlayers.server";
+import { findTrustedPlayers } from "../queries/findTrustedPlayers.server";
+import hasTournamentStarted from "../queries/hasTournamentStarted.server";
+import { joinTeam } from "../queries/joinLeaveTeam.server";
 import { updateTeamInfo } from "../queries/updateTeamInfo.server";
 import { upsertCounterpickMaps } from "../queries/upsertCounterpickMaps.server";
 import { TOURNAMENT } from "../tournament-constants";
 import { useSelectCounterpickMapPoolState } from "../tournament-hooks";
 import { registerSchema } from "../tournament-schemas.server";
 import {
-  isOneModeTournamentOf,
-  HACKY_resolvePicture,
-  tournamentIdFromParams,
-  resolveOwnedTeam,
   HACKY_resolveCheckInTime,
+  HACKY_resolvePicture,
+  isOneModeTournamentOf,
+  modesIncluded,
+  resolveOwnedTeam,
+  tournamentIdFromParams,
   validateCanCheckIn,
 } from "../tournament-utils";
 import type { TournamentLoaderData } from "./to.$id";
-import { createTeam } from "../queries/createTeam.server";
-import { ClockIcon } from "~/components/icons/Clock";
-import { databaseTimestampToDate } from "~/utils/dates";
-import { UserIcon } from "~/components/icons/User";
-import { useIsMounted } from "~/hooks/useIsMounted";
-import hasTournamentStarted from "../queries/hasTournamentStarted.server";
-import { CheckmarkIcon } from "~/components/icons/Checkmark";
-import { CrossIcon } from "~/components/icons/Cross";
-import clsx from "clsx";
-import { checkIn } from "../queries/checkIn.server";
-import { useAutoRerender } from "~/hooks/useAutoRerender";
-import type { TrustedPlayer } from "../queries/findTrustedPlayers.server";
-import { findTrustedPlayers } from "../queries/findTrustedPlayers.server";
-import { Divider } from "~/components/Divider";
-import { joinTeam } from "../queries/joinLeaveTeam.server";
-import { booleanToInt } from "~/utils/sql";
 
 export const handle: SendouRouteHandle = {
   breadcrumb: () => ({
@@ -261,6 +262,13 @@ export default function TournamentRegisterPage() {
                     month: "numeric",
                   })
                 : null}
+            </div>
+            <div className="stack horizontal sm mt-1">
+              {modesIncluded(parentRouteData.event).map((mode) => (
+                <div key={mode} className="tournament___info__mode-container">
+                  <ModeImage mode={mode} size={18} />
+                </div>
+              ))}
             </div>
           </div>
         </div>
