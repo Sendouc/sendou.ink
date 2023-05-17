@@ -23,6 +23,9 @@ export const registerSchema = z.union([
     _action: z.literal("ADD_PLAYER"),
     userId: id,
   }),
+  z.object({
+    _action: z.literal("UNREGISTER"),
+  }),
 ]);
 
 export const seedsActionSchema = z.object({

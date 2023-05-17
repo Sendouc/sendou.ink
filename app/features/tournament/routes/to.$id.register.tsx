@@ -79,6 +79,8 @@ import {
   validateCanCheckIn,
 } from "../tournament-utils";
 import type { TournamentLoaderData } from "./to.$id";
+import { FormWithConfirm } from "~/components/FormWithConfirm";
+import { deleteTeam } from "../queries/deleteTeam.server";
 
 export const handle: SendouRouteHandle = {
   breadcrumb: () => ({
@@ -185,6 +187,13 @@ export const action: ActionFunction = async ({ request, params }) => {
         userId: data.userId,
         newTeamId: ownTeam.id,
       });
+      break;
+    }
+    case "UNREGISTER": {
+      validate(ownTeam, "You are not registered to this tournament");
+      validate(!ownTeam.checkedInAt, "You cannot unregister after checking in");
+
+      deleteTeam(ownTeam.id);
       break;
     }
     default: {
@@ -319,6 +328,7 @@ function RegistrationForms({
       <TeamInfo
         name={ownTeam?.name}
         prefersNotToHost={ownTeamFromList?.prefersNotToHost}
+        canUnregister={Boolean(ownTeam && !ownTeam.checkedInAt)}
       />
       {ownTeam ? (
         <>
@@ -488,15 +498,35 @@ function CheckIn({
 function TeamInfo({
   name,
   prefersNotToHost = 0,
+  canUnregister,
 }: {
   name?: string;
   prefersNotToHost?: number;
+  canUnregister: boolean;
 }) {
   const id = React.useId();
   const fetcher = useFetcher();
   return (
     <div>
-      <h3 className="tournament__section-header">1. Team info</h3>
+      <div className="stack horizontal justify-between">
+        <h3 className="tournament__section-header">1. Team info</h3>
+        {canUnregister ? (
+          <FormWithConfirm
+            dialogHeading="Unregister from the tournament and delete team info?"
+            deleteButtonText="Unregister"
+            fields={[["_action", "UNREGISTER"]]}
+          >
+            <Button
+              className="build__small-text"
+              variant="minimal-destructive"
+              size="tiny"
+              type="submit"
+            >
+              Unregister
+            </Button>
+          </FormWithConfirm>
+        ) : null}
+      </div>
       <section className="tournament__section">
         <fetcher.Form method="post" className="stack md items-center">
           <div className="stack sm items-center">
