@@ -32,7 +32,7 @@ jobs:
       - name: Lint TS
         run: npm run lint:ts
       - name: Stylelint
-        run: npm run lint:styles
+        run: npm run lint:css
       - name: Typecheck
         run: npm run typecheck
       - name: Check translations jsons
