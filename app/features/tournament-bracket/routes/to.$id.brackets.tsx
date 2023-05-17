@@ -128,7 +128,6 @@ export const loader = ({ params }: LoaderArgs) => {
   };
 };
 
-// xxx: banner that shows for participants not mobile friendly
 export default function TournamentBracketsPage() {
   const user = useUser();
   const data = useLoaderData<typeof loader>();
@@ -201,7 +200,11 @@ export default function TournamentBracketsPage() {
       {!data.hasStarted && !lessThanTwoTeamsRegistered ? (
         <Form method="post" className="stack items-center">
           {!canAdminTournament({ user, event: parentRouteData.event }) ? (
-            <Alert variation="INFO" alertClassName="w-max">
+            <Alert
+              variation="INFO"
+              alertClassName="tournament-bracket__start-bracket-alert"
+              textClassName="stack horizontal md items-center text-center"
+            >
               This bracket is a preview and subject to change
             </Alert>
           ) : (
