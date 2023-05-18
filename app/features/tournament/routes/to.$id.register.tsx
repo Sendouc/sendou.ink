@@ -81,6 +81,7 @@ import {
 import type { TournamentLoaderData } from "./to.$id";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { deleteTeam } from "../queries/deleteTeam.server";
+import { HACKY_resolvePoolCode } from "~/features/tournament-bracket";
 
 export const handle: SendouRouteHandle = {
   breadcrumb: () => ({
@@ -413,16 +414,13 @@ function RegistrationProgress({
             );
           })}
         </div>
-        {!checkedIn ? (
-          <CheckIn
-            canCheckIn={steps.filter((step) => !step.completed).length === 1}
-            status={
-              checkInIsOpen ? "OPEN" : checkInIsOver ? "OVER" : "UPCOMING"
-            }
-            startDate={checkInStartsDate}
-            endDate={checkInEndsDate}
-          />
-        ) : null}
+        <CheckIn
+          canCheckIn={steps.filter((step) => !step.completed).length === 1}
+          status={checkInIsOpen ? "OPEN" : checkInIsOver ? "OVER" : "UPCOMING"}
+          startDate={checkInStartsDate}
+          endDate={checkInEndsDate}
+          checkedIn={checkedIn}
+        />
       </section>
       <div className="tournament__section__warning">
         Free editing of any information before the tournament starts allowed.
@@ -436,12 +434,15 @@ function CheckIn({
   canCheckIn,
   startDate,
   endDate,
+  checkedIn,
 }: {
   status: "OVER" | "OPEN" | "UPCOMING";
   canCheckIn: boolean;
   startDate: Date;
   endDate: Date;
+  checkedIn?: boolean;
 }) {
+  const data = useOutletContext<TournamentLoaderData>();
   const { i18n } = useTranslation();
   const isMounted = useIsMounted();
   const fetcher = useFetcher();
@@ -476,6 +477,15 @@ function CheckIn({
 
   if (status === "OVER") {
     return <div className="text-center text-xs">Check-in is over</div>;
+  }
+
+  if (checkedIn) {
+    return (
+      <div className="text-center text-xs">
+        Your team is checked in. Please join the Pool{" "}
+        <b>{HACKY_resolvePoolCode(data.event)}</b>
+      </div>
+    );
   }
 
   return (
