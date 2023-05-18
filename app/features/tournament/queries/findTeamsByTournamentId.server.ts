@@ -8,6 +8,8 @@ import type {
   UserWithPlusTier,
 } from "~/db/types";
 import { parseDBJsonArray } from "~/utils/sql";
+import { TOURNAMENT } from "../tournament-constants";
+import type { Unpacked } from "~/utils/types";
 
 const stm = sql.prepare(/*sql*/ `
   with "TeamWithMembers" as (
@@ -63,8 +65,6 @@ const stm = sql.prepare(/*sql*/ `
     left join "MapPoolMap" on "MapPoolMap"."tournamentTeamId" = "TeamWithMembers"."id"
   group by
     "TeamWithMembers"."id"
-  order by
-    "TeamWithMembers"."seed" asc
 `);
 
 export interface FindTeamsByTournamentIdItem {
@@ -92,11 +92,56 @@ export type FindTeamsByTournamentId = Array<FindTeamsByTournamentIdItem>;
 export function findTeamsByTournamentId(tournamentId: Tournament["id"]) {
   const rows = stm.all({ tournamentId });
 
-  return rows.map((row) => {
-    return {
-      ...row,
-      members: parseDBJsonArray(row.members),
-      mapPool: parseDBJsonArray(row.mapPool),
-    };
-  }) as FindTeamsByTournamentId;
+  return (
+    rows.map((row) => {
+      return {
+        ...row,
+        members: parseDBJsonArray(row.members),
+        mapPool: parseDBJsonArray(row.mapPool),
+      };
+    }) as FindTeamsByTournamentId
+  ).sort(teamSorter);
+}
+
+function teamSorter(
+  teamA: Unpacked<FindTeamsByTournamentId>,
+  teamB: Unpacked<FindTeamsByTournamentId>
+) {
+  if (
+    teamA.members.length >= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL &&
+    teamB.members.length < TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL
+  ) {
+    return -1;
+  }
+
+  if (
+    teamA.members.length < TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL &&
+    teamB.members.length >= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL
+  ) {
+    return 1;
+  }
+
+  if (teamA.seed || teamB.seed) {
+    const teamASeed = teamA.seed ?? Infinity;
+    const teamBSeed = teamB.seed ?? Infinity;
+
+    return teamASeed - teamBSeed;
+  }
+
+  const lowestATeamPlusTier = Math.min(
+    ...teamA.members.map((m) => m.plusTier ?? Infinity)
+  );
+  const lowestBTeamPlusTier = Math.min(
+    ...teamB.members.map((m) => m.plusTier ?? Infinity)
+  );
+
+  if (lowestATeamPlusTier > lowestBTeamPlusTier) {
+    return 1;
+  }
+
+  if (lowestATeamPlusTier < lowestBTeamPlusTier) {
+    return -1;
+  }
+
+  return 0;
 }
