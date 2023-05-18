@@ -42,6 +42,8 @@ import { sql } from "~/db/sql";
 import { useEventSource } from "remix-utils";
 import { Status } from "~/db/types";
 import { checkInHasStarted, teamHasCheckedIn } from "~/features/tournament";
+import clsx from "clsx";
+import { LinkButton } from "~/components/Button";
 
 export const links: LinksFunction = () => {
   return [
@@ -193,7 +195,10 @@ export default function TournamentBracketsPage() {
     lessThanTwoTeamsRegistered,
   ]);
 
-  // TODO: show floating prompt if active match
+  const myTeam = parentRouteData.teams.find((team) =>
+    team.members.some((m) => m.userId === user?.id)
+  );
+
   return (
     <div>
       <AutoRefresher />
@@ -221,6 +226,9 @@ export default function TournamentBracketsPage() {
             </Alert>
           )}
         </Form>
+      ) : null}
+      {parentRouteData.hasStarted && myTeam ? (
+        <TournamentProgressPrompt ownedTeamId={myTeam.id} />
       ) : null}
       <div className="brackets-viewer" ref={ref}></div>
       {lessThanTwoTeamsRegistered ? (
@@ -277,4 +285,113 @@ function useAutoRefresh() {
       });
     }
   }, [lastEvent, revalidate]);
+}
+
+function TournamentProgressPrompt({ ownedTeamId }: { ownedTeamId: number }) {
+  const parentRouteData = useOutletContext<TournamentLoaderData>();
+  const data = useLoaderData<typeof loader>();
+
+  const { progress, currentMatchId, currentOpponent } = (() => {
+    let lowestStatus = Infinity;
+    let currentMatchId: number | undefined;
+    let currentOpponent: string | undefined;
+
+    for (const match of data.bracket.match) {
+      // BYE
+      if (match.opponent1 === null || match.opponent2 === null) {
+        continue;
+      }
+
+      if (
+        (match.opponent1.id === ownedTeamId ||
+          match.opponent2.id === ownedTeamId) &&
+        lowestStatus > match.status
+      ) {
+        lowestStatus = match.status;
+        currentMatchId = match.id;
+        const otherTeam =
+          match.opponent1.id === ownedTeamId
+            ? match.opponent2
+            : match.opponent1;
+        currentOpponent = parentRouteData.teams.find(
+          (team) => team.id === otherTeam.id
+        )?.name;
+      }
+    }
+
+    return { progress: lowestStatus, currentMatchId, currentOpponent };
+  })();
+
+  if (progress === Infinity) {
+    console.error("Unexpected no status");
+    return null;
+  }
+
+  if (progress === Status.Waiting) {
+    return (
+      <TournamentProgressContainer>
+        <WaitingForMatchText />
+      </TournamentProgressContainer>
+    );
+  }
+
+  if (progress >= Status.Completed) {
+    return (
+      <TournamentProgressContainer>
+        Thanks for playing in {parentRouteData.event.name}!
+      </TournamentProgressContainer>
+    );
+  }
+
+  if (!currentMatchId || !currentOpponent) {
+    console.error("Unexpected no match id or opponent");
+    return null;
+  }
+
+  return (
+    <TournamentProgressContainer>
+      Current opponent: {currentOpponent}
+      <LinkButton
+        to={tournamentMatchPage({
+          matchId: currentMatchId,
+          eventId: parentRouteData.event.id,
+        })}
+        size="tiny"
+        variant="outlined"
+      >
+        View
+      </LinkButton>
+    </TournamentProgressContainer>
+  );
+}
+
+function TournamentProgressContainer({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="stack items-center">
+      <div className="tournament-bracket__progress">{children}</div>
+    </div>
+  );
+}
+
+function WaitingForMatchText() {
+  const [showDot, setShowDot] = React.useState(false);
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setShowDot((prev) => !prev);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  });
+
+  return (
+    <div>
+      Waiting for match..
+      <span className={clsx({ invisible: !showDot })}>.</span>
+    </div>
+  );
 }

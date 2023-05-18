@@ -236,6 +236,16 @@
   height: 8px;
 }
 
+.tournament-bracket__progress {
+  display: flex;
+  align-items: center;
+  background-color: var(--bg-lighter-transparent);
+  border-radius: var(--rounded);
+  padding: var(--s-2) var(--s-5);
+  font-weight: var(--semi-bold);
+  gap: var(--s-3);
+}
+
 @media screen and (min-width: 480px) {
   .tournament-bracket__infos {
     flex-direction: row;
