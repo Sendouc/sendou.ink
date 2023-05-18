@@ -318,6 +318,9 @@ interface CanAdminTournament {
   event: Pick<CalendarEvent, "authorId">;
 }
 export function canAdminTournament({ user, event }: CanAdminTournament) {
+  // temporary hack to let Njok admin tournaments as well
+  if (user?.id === 14710) return true;
+
   return adminOverride(user)(user?.id === event.authorId);
 }
 
