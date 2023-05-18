@@ -10,6 +10,7 @@ import type {
 import { parseDBJsonArray } from "~/utils/sql";
 import { TOURNAMENT } from "../tournament-constants";
 import type { Unpacked } from "~/utils/types";
+import { modesShort } from "~/modules/in-game-lists";
 
 const stm = sql.prepare(/*sql*/ `
   with "TeamWithMembers" as (
@@ -97,7 +98,15 @@ export function findTeamsByTournamentId(tournamentId: Tournament["id"]) {
       return {
         ...row,
         members: parseDBJsonArray(row.members),
-        mapPool: parseDBJsonArray(row.mapPool),
+        mapPool: (
+          parseDBJsonArray(
+            row.mapPool
+          ) as FindTeamsByTournamentIdItem["mapPool"]
+        )?.sort((a, b) => {
+          if (a.mode === b.mode) return a.stageId - b.stageId;
+
+          return modesShort.indexOf(a.mode) - modesShort.indexOf(b.mode);
+        }),
       };
     }) as FindTeamsByTournamentId
   ).sort(teamSorter);

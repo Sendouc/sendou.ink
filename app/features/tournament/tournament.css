@@ -119,12 +119,34 @@
   gap: var(--s-2);
   list-style: none;
   padding-inline-start: var(--s-4);
+  padding-block: var(--s-3);
 }
 
 .tournament__team-with-roster__member {
   display: grid;
   gap: var(--s-1-5);
   grid-template-columns: max-content max-content 1fr;
+}
+
+.tournament__team-with-roster__map-pool {
+  display: grid;
+  grid-template-columns: max-content max-content max-content max-content;
+  border-radius: var(--rounded);
+  border: 2px solid var(--theme);
+  width: max-content;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.tournament__team-with-roster__map-pool__mode-info {
+  background-color: var(--bg-darker);
+  display: flex;
+  font-size: var(--fonts-xxs);
+  justify-content: center;
+  align-items: center;
+  gap: var(--s-1);
+  font-weight: var(--semi-bold);
+  padding-block: var(--s-0-5);
 }
 
 .tournament__team-member-name {

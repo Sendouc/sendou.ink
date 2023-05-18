@@ -1,9 +1,10 @@
 import { useTranslation } from "~/hooks/useTranslation";
-import type { MainWeaponId, ModeShort } from "~/modules/in-game-lists";
+import type { MainWeaponId, ModeShort, StageId } from "~/modules/in-game-lists";
 import {
   mainWeaponImageUrl,
   modeImageUrl,
   outlinedMainWeaponImageUrl,
+  stageImageUrl,
 } from "~/utils/urls";
 
 interface ImageProps {
@@ -98,6 +99,24 @@ export function ModeImage({ mode, testId, ...rest }: ModeImageProps) {
       title={t(`game-misc:MODE_LONG_${mode}`)}
       testId={testId}
       path={modeImageUrl(mode)}
+    />
+  );
+}
+
+type StageImageProps = {
+  stageId: StageId;
+} & Omit<ImageProps, "path" | "alt" | "title">;
+
+export function StageImage({ stageId, testId, ...rest }: StageImageProps) {
+  const { t } = useTranslation(["game-misc"]);
+
+  return (
+    <Image
+      {...rest}
+      alt={t(`game-misc:STAGE_${stageId}`)}
+      title={t(`game-misc:STAGE_${stageId}`)}
+      testId={testId}
+      path={stageImageUrl(stageId)}
     />
   );
 }
