@@ -96,6 +96,12 @@ export function checkInHasStarted(
   return HACKY_resolveCheckInTime(event).getTime() < Date.now();
 }
 
+export function checkInHasEnded(
+  event: Pick<TournamentLoaderData["event"], "startTime">
+) {
+  return databaseTimestampToDate(event.startTime).getTime() < Date.now();
+}
+
 export function validateCanCheckIn({
   event,
   team,

@@ -72,6 +72,7 @@ import { registerSchema } from "../tournament-schemas.server";
 import {
   HACKY_resolveCheckInTime,
   HACKY_resolvePicture,
+  checkInHasEnded,
   isOneModeTournamentOf,
   modesIncluded,
   resolveOwnedTeam,
@@ -326,11 +327,13 @@ function RegistrationForms({
         mapPool={ownTeamFromList?.mapPool}
         members={ownTeamFromList?.members}
       />
-      <TeamInfo
-        name={ownTeam?.name}
-        prefersNotToHost={ownTeamFromList?.prefersNotToHost}
-        canUnregister={Boolean(ownTeam && !ownTeam.checkedInAt)}
-      />
+      {ownTeam || !checkInHasEnded(parentRouteData.event) ? (
+        <TeamInfo
+          name={ownTeam?.name}
+          prefersNotToHost={ownTeamFromList?.prefersNotToHost}
+          canUnregister={Boolean(ownTeam && !ownTeam.checkedInAt)}
+        />
+      ) : null}
       {ownTeam ? (
         <>
           <FillRoster ownTeam={ownTeam} />
@@ -475,10 +478,6 @@ function CheckIn({
     );
   }
 
-  if (status === "OVER") {
-    return <div className="text-center text-xs">Check-in is over</div>;
-  }
-
   if (checkedIn) {
     return (
       <div className="text-center text-xs">
@@ -486,6 +485,10 @@ function CheckIn({
         <b>{HACKY_resolvePoolCode(data.event)}</b>
       </div>
     );
+  }
+
+  if (status === "OVER") {
+    return <div className="text-center text-xs">Check-in is over</div>;
   }
 
   return (
