@@ -52,3 +52,7 @@
   top: -11px;
   color: var(--text-lighter);
 }
+
+.bye {
+  color: var(--text-lighter);
+}
