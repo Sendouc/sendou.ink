@@ -138,6 +138,10 @@
   overflow: hidden;
 }
 
+.tournament__team-with-roster__map-pool.tournament__team-with-roster__map-pool__3-columns {
+  grid-template-columns: max-content max-content max-content;
+}
+
 .tournament__team-with-roster__map-pool__mode-info {
   background-color: var(--bg-darker);
   display: flex;

@@ -4,6 +4,7 @@ import { ModeImage, StageImage } from "~/components/Image";
 import { userPage } from "~/utils/urls";
 import type { FindTeamsByTournamentIdItem } from "../queries/findTeamsByTournamentId.server";
 import type { TournamentLoaderData } from "./to.$id";
+import clsx from "clsx";
 
 export default function TournamentTeamsPage() {
   const data = useOutletContext<TournamentLoaderData>();
@@ -56,7 +57,12 @@ function TeamMapPool({
   mapPool: NonNullable<FindTeamsByTournamentIdItem["mapPool"]>;
 }) {
   return (
-    <div className="tournament__team-with-roster__map-pool">
+    <div
+      className={clsx("tournament__team-with-roster__map-pool", {
+        "tournament__team-with-roster__map-pool__3-columns":
+          mapPool.length % 3 === 0,
+      })}
+    >
       {mapPool.map(({ mode, stageId }, i) => {
         return (
           <div key={i}>
