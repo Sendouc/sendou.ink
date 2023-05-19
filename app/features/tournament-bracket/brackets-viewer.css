@@ -56,3 +56,16 @@
 .bye {
   color: var(--text-lighter);
 }
+
+.brackets-viewer .participant .name > span {
+  color: var(--theme);
+  display: none;
+}
+
+.brackets-viewer .participant .name::before {
+  content: var(--seed);
+  font-weight: initial;
+  color: var(--theme);
+  font-size: var(--fonts-xxs);
+  margin-inline-end: var(--space-after-seed);
+}

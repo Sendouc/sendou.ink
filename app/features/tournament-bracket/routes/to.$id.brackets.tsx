@@ -182,6 +182,21 @@ export default function TournamentBracketsPage() {
       }
     );
 
+    // my beautiful hack to show seeds
+    // clean up probably not needed as it's not harmful to append more than one
+    appendStyleTagToHead(
+      parentRouteData.teams
+        .map(
+          (team, i) => `
+      [data-participant-id="${team.id}"] {
+        --seed: "${i + 1}  ";
+        --space-after-seed: ${i < 10 ? "6px" : "0px"};
+      }
+    `
+        )
+        .join("\n")
+    );
+
     const element = ref.current;
     return () => {
       if (!element) return;
@@ -191,7 +206,7 @@ export default function TournamentBracketsPage() {
   }, [
     data.bracket,
     navigate,
-    parentRouteData.event.id,
+    parentRouteData,
     data.hasStarted,
     lessThanTwoTeamsRegistered,
   ]);
@@ -246,6 +261,16 @@ function AutoRefresher() {
   useAutoRefresh();
 
   return null;
+}
+
+function appendStyleTagToHead(content: string) {
+  const head = document.head || document.getElementsByTagName("head")[0];
+  const style = document.createElement("style");
+
+  head.appendChild(style);
+
+  style.type = "text/css";
+  style.appendChild(document.createTextNode(content));
 }
 
 function useAutoRefresh() {
