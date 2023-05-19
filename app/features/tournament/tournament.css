@@ -153,6 +153,12 @@
   padding-block: var(--s-0-5);
 }
 
+.tournament__team-with-roster__seed {
+  font-size: var(--fonts-xs);
+  font-weight: var(--semi-bold);
+  color: var(--theme);
+}
+
 .tournament__team-member-name {
   overflow: hidden;
   color: var(--text);

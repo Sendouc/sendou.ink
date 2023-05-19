@@ -11,8 +11,8 @@ export default function TournamentTeamsPage() {
 
   return (
     <div className="stack lg">
-      {data.teams.map((team) => {
-        return <TeamWithRoster key={team.id} team={team} />;
+      {data.teams.map((team, i) => {
+        return <TeamWithRoster key={team.id} team={team} seed={i + 1} />;
       })}
     </div>
   );
@@ -20,13 +20,18 @@ export default function TournamentTeamsPage() {
 
 function TeamWithRoster({
   team,
+  seed,
 }: {
   team: Pick<FindTeamsByTournamentIdItem, "members" | "name" | "mapPool">;
+  seed: number;
 }) {
   return (
     <div>
       <div className="tournament__team-with-roster">
-        <div className="tournament__team-with-roster__name">{team.name}</div>
+        <div className="tournament__team-with-roster__name">
+          <span className="tournament__team-with-roster__seed">#{seed}</span>{" "}
+          {team.name}
+        </div>
         <ul className="tournament__team-with-roster__members">
           {team.members.map((member) => (
             <li
