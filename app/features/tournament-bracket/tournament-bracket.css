@@ -190,6 +190,11 @@
   cursor: pointer;
 }
 
+.tournament-bracket__during-match-actions__seed {
+  font-size: var(--fonts-xxs);
+  color: var(--theme);
+}
+
 .tournament-bracket__mode-progress {
   display: flex;
   margin-bottom: var(--s-4);

@@ -67,7 +67,12 @@ export function TeamRosterInputs({
             />
             Team {teamI + 1}
           </div>
-          <h4>{team.name}</h4>
+          <h4>
+            <span className="tournament-bracket__during-match-actions__seed">
+              #{data.seeds[teamI]}
+            </span>{" "}
+            {team.name}
+          </h4>
           <WinnerRadio
             presentational={presentational}
             checked={

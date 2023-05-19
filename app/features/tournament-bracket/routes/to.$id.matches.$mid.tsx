@@ -276,7 +276,25 @@ export const loader = ({ params }: LoaderArgs) => {
   return {
     match,
     results: findResultsByMatchId(matchId),
+    seeds: resolveSeeds(),
   };
+
+  function resolveSeeds() {
+    const tournamentId = tournamentIdFromParams(params);
+    const teams = findTeamsByTournamentId(tournamentId);
+
+    const teamOneIndex = teams.findIndex(
+      (team) => team.id === match.opponentOne?.id
+    );
+    const teamTwoIndex = teams.findIndex(
+      (team) => team.id === match.opponentTwo?.id
+    );
+
+    return [
+      teamOneIndex !== -1 ? teamOneIndex + 1 : null,
+      teamTwoIndex !== -1 ? teamTwoIndex + 1 : null,
+    ];
+  }
 };
 
 export default function TournamentMatchPage() {
