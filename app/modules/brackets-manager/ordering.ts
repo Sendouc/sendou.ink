@@ -2,6 +2,7 @@
 
 import type { SeedOrdering } from "brackets-model";
 import type { OrderingMap } from "./types";
+import invariant from "tiny-invariant";
 
 export const ordering: OrderingMap = {
   natural: <T>(array: T[]) => [...array],
@@ -19,6 +20,34 @@ export const ordering: OrderingMap = {
     for (let i = 0; i < array.length; i += 2)
       result.push(array[i + 1], array[i]);
     return result;
+  },
+  // https://stackoverflow.com/a/11631472
+  space_between: <T>(array: T[]) => {
+    const numPlayers = array.length;
+
+    const rounds = Math.log(numPlayers) / Math.log(2) - 1;
+    let pls = [1, 2];
+    for (let i = 0; i < rounds; i++) {
+      pls = nextLayer(pls);
+    }
+    return seedsToOrderedArray(pls);
+    function nextLayer(pls: number[]) {
+      const out: number[] = [];
+      const length = pls.length * 2 + 1;
+      pls.forEach(function (d) {
+        out.push(d);
+        out.push(length - d);
+      });
+      return out;
+    }
+    // this part added to the SO answer
+    function seedsToOrderedArray(seeds: number[]) {
+      return seeds.map((seed) => {
+        const participant = array[seed - 1];
+        invariant(participant !== undefined, `No participant for seed ${seed}`);
+        return participant;
+      });
+    }
   },
   inner_outer: <T>(array: T[]) => {
     if (array.length === 2) return array;
