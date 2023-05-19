@@ -44,6 +44,7 @@ import { Status } from "~/db/types";
 import { checkInHasStarted, teamHasCheckedIn } from "~/features/tournament";
 import clsx from "clsx";
 import { LinkButton } from "~/components/Button";
+import { useVisibilityChange } from "~/hooks/useVisibilityChange";
 
 export const links: LinksFunction = () => {
   return [
@@ -131,6 +132,8 @@ export const loader = ({ params }: LoaderArgs) => {
 };
 
 export default function TournamentBracketsPage() {
+  const visibility = useVisibilityChange();
+  const { revalidate } = useRevalidator();
   const user = useUser();
   const data = useLoaderData<typeof loader>();
   const ref = React.useRef<HTMLDivElement>(null);
@@ -212,13 +215,20 @@ export default function TournamentBracketsPage() {
     lessThanTwoTeamsRegistered,
   ]);
 
+  // TODO: also disable autorefresh (don't render component) and don't trigger revalidate after tournament is finalized
+  React.useEffect(() => {
+    if (visibility !== "visible") return;
+
+    revalidate();
+  }, [visibility, revalidate]);
+
   const myTeam = parentRouteData.teams.find((team) =>
     team.members.some((m) => m.userId === user?.id)
   );
 
   return (
     <div>
-      <AutoRefresher />
+      {visibility !== "hidden" ? <AutoRefresher /> : null}
       {!data.hasStarted && !lessThanTwoTeamsRegistered ? (
         <Form method="post" className="stack items-center">
           {!canAdminTournament({ user, event: parentRouteData.event }) ? (
@@ -299,6 +309,7 @@ function useAutoRefresh() {
       // so we revalidate loader when the match is over
       revalidate();
     } else {
+      // TODO: shows 1 - "-" when updating match where other score is 0
       // @ts-expect-error - brackets-viewer is not typed
       window.bracketsViewer.updateMatch({
         id: matchId,

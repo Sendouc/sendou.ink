@@ -50,6 +50,7 @@ import { nanoid } from "nanoid";
 import { emitter } from "../core/emitters.server";
 import { useEventSource } from "remix-utils";
 import * as React from "react";
+import { useVisibilityChange } from "~/hooks/useVisibilityChange";
 
 export const links: LinksFunction = () => [
   {
@@ -298,20 +299,28 @@ export const loader = ({ params }: LoaderArgs) => {
 };
 
 export default function TournamentMatchPage() {
+  const visibility = useVisibilityChange();
+  const { revalidate } = useRevalidator();
   const parentRouteData = useOutletContext<TournamentLoaderData>();
   const data = useLoaderData<typeof loader>();
-
-  const matchHasTwoTeams = Boolean(
-    data.match.opponentOne?.id && data.match.opponentTwo?.id
-  );
 
   const matchIsOver =
     data.match.opponentOne?.result === "win" ||
     data.match.opponentTwo?.result === "win";
 
+  const matchHasTwoTeams = Boolean(
+    data.match.opponentOne?.id && data.match.opponentTwo?.id
+  );
+
+  React.useEffect(() => {
+    if (visibility !== "visible" || matchIsOver) return;
+
+    revalidate();
+  }, [visibility, revalidate, matchIsOver]);
+
   return (
     <div className="stack lg">
-      {!matchIsOver ? <AutoRefresher /> : null}
+      {!matchIsOver && visibility !== "hidden" ? <AutoRefresher /> : null}
       <div className="flex horizontal justify-between items-center">
         {/* TODO: better title */}
         <h2 className="text-lighter text-lg">Match #{data.match.id}</h2>

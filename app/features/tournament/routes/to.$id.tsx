@@ -36,9 +36,8 @@ export const shouldRevalidate: ShouldRevalidateFunction = (args) => {
   }
 
   const wasRevalidation = !args.formMethod;
-  const wasOnBracketPage = args.currentUrl.href.includes("brackets");
 
-  if (wasRevalidation && wasOnBracketPage) {
+  if (wasRevalidation) {
     return false;
   }
 
