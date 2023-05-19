@@ -43,7 +43,12 @@ function TeamWithRoster({
                 to={userPage(member)}
                 className="tournament__team-member-name"
               >
-                {member.discordName}
+                {member.discordName}{" "}
+                {member.isOwner ? (
+                  <span className="tournament__team-member-name__captain">
+                    (C)
+                  </span>
+                ) : null}
               </Link>
             </li>
           ))}
