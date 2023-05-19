@@ -46,3 +46,9 @@
 .brackets-viewer h1 {
   display: none;
 }
+
+.brackets-viewer .opponents > span {
+  background-color: var(--bg-light-variation);
+  top: -11px;
+  color: var(--text-lighter);
+}

@@ -178,6 +178,7 @@ export default function TournamentBracketsPage() {
 
           return undefined;
         },
+        separatedChildCountLabel: true,
       }
     );
 
