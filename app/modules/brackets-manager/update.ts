@@ -4,8 +4,8 @@ import type {
   Round,
   Seeding,
   SeedOrdering,
-} from "brackets-model";
-import { Status } from "brackets-model";
+} from "~/modules/brackets-model";
+import { Status } from "~/modules/brackets-model";
 import { ordering } from "./ordering";
 import { BaseUpdater } from "./base/updater";
 import type { ChildCountLevel, DeepPartial } from "./types";

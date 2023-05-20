@@ -49,7 +49,6 @@
     "@tldraw/tldraw": "^1.29.2",
     "aws-sdk": "^2.1354.0",
     "better-sqlite3": "^8.3.0",
-    "brackets-model": "^1.4.0",
     "cachified": "^3.1.0",
     "clsx": "^1.2.1",
     "compressorjs": "^1.2.1",

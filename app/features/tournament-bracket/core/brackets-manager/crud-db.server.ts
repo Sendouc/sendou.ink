@@ -6,7 +6,7 @@ import type {
   Group as GroupType,
   Round as RoundType,
   Match as MatchType,
-} from "brackets-model";
+} from "~/modules/brackets-model";
 import { sql } from "~/db/sql";
 import type {
   Tournament,

@@ -1,4 +1,4 @@
-import type { Group, Match, MatchGame } from "brackets-model";
+import type { Group, Match, MatchGame } from "~/modules/brackets-model";
 import { BaseGetter } from "./base/getter";
 import * as helpers from "./helpers";
 

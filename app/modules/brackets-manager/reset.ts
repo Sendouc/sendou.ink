@@ -1,4 +1,4 @@
-import { Status } from "brackets-model";
+import { Status } from "~/modules/brackets-model";
 import { BaseUpdater } from "./base/updater";
 import * as helpers from "./helpers";
 

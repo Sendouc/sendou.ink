@@ -13,8 +13,8 @@ import type {
   Stage,
   StageType,
   GroupType,
-} from "brackets-model";
-import { Status } from "brackets-model";
+} from "~/modules/brackets-model";
+import { Status } from "~/modules/brackets-model";
 
 import type {
   Database,

@@ -8,7 +8,7 @@ import type {
   Seeding,
   SeedOrdering,
   Stage,
-} from "brackets-model";
+} from "~/modules/brackets-model";
 import { defaultMinorOrdering, ordering } from "./ordering";
 import type {
   Duel,

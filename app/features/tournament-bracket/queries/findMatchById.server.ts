@@ -1,4 +1,4 @@
-import type { Match } from "brackets-model";
+import type { Match } from "~/modules/brackets-model";
 import { sql } from "~/db/sql";
 import type { TournamentMatch } from "~/db/types";
 

@@ -5,7 +5,7 @@ import type {
   Storage,
   Table,
 } from "./types";
-import type { InputStage, Stage } from "brackets-model";
+import type { InputStage, Stage } from "~/modules/brackets-model";
 import { create } from "./create";
 import { Get } from "./get";
 import { Update } from "./update";

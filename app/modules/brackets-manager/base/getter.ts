@@ -8,7 +8,7 @@ import type {
   Stage,
   StageType,
   GroupType,
-} from "brackets-model";
+} from "~/modules/brackets-model";
 import type { RoundPositionalInfo } from "../types";
 import type { Create } from "../create";
 import * as helpers from "../helpers";

@@ -6,7 +6,7 @@ import type {
   Round,
   SeedOrdering,
   Stage,
-} from "brackets-model";
+} from "~/modules/brackets-model";
 
 /**
  * Type of an object implementing every ordering method.

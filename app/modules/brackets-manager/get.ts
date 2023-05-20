@@ -5,8 +5,8 @@ import type {
   Match,
   MatchGame,
   Participant,
-} from "brackets-model";
-import { Status } from "brackets-model";
+} from "~/modules/brackets-model";
+import { Status } from "~/modules/brackets-model";
 import type { Database, FinalStandingsItem, ParticipantSlot } from "./types";
 import { BaseGetter } from "./base/getter";
 import * as helpers from "./helpers";

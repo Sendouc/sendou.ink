@@ -1,4 +1,4 @@
-import type { Stage } from "brackets-model";
+import type { Stage } from "~/modules/brackets-model";
 import type {
   TournamentFormat,
   TournamentMatch,
@@ -86,7 +86,7 @@ export function resolveTournamentStageSettings(
     case "DE":
       return {
         grandFinal: "double",
-        seedOrdering: ["space_between"] as any,
+        seedOrdering: ["space_between"],
       };
     default: {
       assertUnreachable(format);
