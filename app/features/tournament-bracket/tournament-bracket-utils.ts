@@ -86,7 +86,7 @@ export function resolveTournamentStageSettings(
     case "DE":
       return {
         grandFinal: "double",
-        seedOrdering: ["space_between"],
+        seedOrdering: ["space_between"] as any,
       };
     default: {
       assertUnreachable(format);
