@@ -30,7 +30,7 @@ import { findAllMatchesByTournamentId } from "../queries/findAllMatchesByTournam
 import { setBestOf } from "../queries/setBestOf.server";
 import { canAdminTournament } from "~/permissions";
 import { requireUser, useUser } from "~/modules/auth";
-import { tournamentIdFromParams } from "~/features/tournament";
+import { TOURNAMENT, tournamentIdFromParams } from "~/features/tournament";
 import {
   bracketSubscriptionKey,
   fillWithNullTillPowerOfTwo,
@@ -101,17 +101,27 @@ export const action: ActionFunction = async ({ params, request }) => {
 
 export const loader = ({ params }: LoaderArgs) => {
   const tournamentId = tournamentIdFromParams(params);
-  const tournament = notFoundIfFalsy(findByIdentifier(tournamentId));
 
   const hasStarted = hasTournamentStarted(tournamentId);
   const manager = getTournamentManager(hasStarted ? "SQL" : "IN_MEMORY");
+
+  if (hasStarted) {
+    return {
+      hasStarted: true,
+      enoughTeams: true,
+      bracket: manager.get.tournamentData(tournamentId),
+    };
+  }
+
+  const tournament = notFoundIfFalsy(findByIdentifier(tournamentId));
 
   let teams = findTeamsByTournamentId(tournamentId);
   if (checkInHasStarted(tournament)) {
     teams = teams.filter(teamHasCheckedIn);
   }
 
-  if (!hasStarted && teams.length >= 2) {
+  const enoughTeams = teams.length >= TOURNAMENT.ENOUGH_TEAMS_TO_START;
+  if (enoughTeams) {
     manager.create({
       tournamentId,
       name: resolveTournamentStageName(tournament.format),
@@ -127,7 +137,7 @@ export const loader = ({ params }: LoaderArgs) => {
   return {
     bracket: data,
     hasStarted,
-    teamsForBracketCount: teams.length,
+    enoughTeams,
   };
 };
 
@@ -140,10 +150,8 @@ export default function TournamentBracketsPage() {
   const navigate = useNavigate();
   const parentRouteData = useOutletContext<TournamentLoaderData>();
 
-  const lessThanTwoTeamsRegistered = data.teamsForBracketCount < 2;
-
   React.useEffect(() => {
-    if (lessThanTwoTeamsRegistered) return;
+    if (!data.enoughTeams) return;
 
     // matches aren't generated before tournament starts
     if (data.hasStarted) {
@@ -211,13 +219,7 @@ export default function TournamentBracketsPage() {
 
       element.innerHTML = "";
     };
-  }, [
-    data.bracket,
-    navigate,
-    parentRouteData,
-    data.hasStarted,
-    lessThanTwoTeamsRegistered,
-  ]);
+  }, [data, navigate, parentRouteData]);
 
   // TODO: also disable autorefresh (don't render component) and don't trigger revalidate after tournament is finalized
   React.useEffect(() => {
@@ -233,7 +235,7 @@ export default function TournamentBracketsPage() {
   return (
     <div>
       {visibility !== "hidden" ? <AutoRefresher /> : null}
-      {!data.hasStarted && !lessThanTwoTeamsRegistered ? (
+      {!data.hasStarted && data.enoughTeams ? (
         <Form method="post" className="stack items-center">
           {!canAdminTournament({ user, event: parentRouteData.event }) ? (
             <Alert
@@ -262,9 +264,10 @@ export default function TournamentBracketsPage() {
         <TournamentProgressPrompt ownedTeamId={myTeam.id} />
       ) : null}
       <div className="brackets-viewer" ref={ref}></div>
-      {lessThanTwoTeamsRegistered ? (
+      {!data.enoughTeams ? (
         <div className="text-center text-lg font-semi-bold text-lighter">
-          Bracket will be shown here when at least 2 teams have registered
+          Bracket will be shown here when at least{" "}
+          {TOURNAMENT.ENOUGH_TEAMS_TO_START} teams have registered
         </div>
       ) : null}
     </div>

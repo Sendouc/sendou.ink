@@ -6,4 +6,5 @@ export const TOURNAMENT = {
   TEAM_MIN_MEMBERS_FOR_FULL: 4,
   TEAM_MAX_MEMBERS: 6,
   AVAILABLE_BEST_OF: [3, 5, 7] as const,
+  ENOUGH_TEAMS_TO_START: 2,
 } as const;
