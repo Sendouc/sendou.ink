@@ -466,6 +466,7 @@ function FinalStandings({ standings }: { standings: FinalStanding[] }) {
           <div
             className="tournament-bracket__standing"
             key={standing.tournamentTeam.id}
+            data-placement={standing.placement}
           >
             <div>
               <Placement placement={standing.placement} size={40} />

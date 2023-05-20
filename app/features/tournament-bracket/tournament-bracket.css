@@ -254,15 +254,33 @@
 .tournament-bracket__standings {
   background-color: var(--bg-lighter-transparent);
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr;
   border-radius: var(--rounded);
   padding: var(--s-3);
   gap: var(--s-2);
   max-width: max-content;
   margin: 0 auto;
 }
-.tournament-bracket__stadings__full-row-taker {
-  grid-column: 1 / 4;
+[data-placement="1"] {
+  order: -1;
+}
+[data-placement="2"] {
+  order: -1;
+}
+
+@media screen and (min-width: 480px) {
+  .tournament-bracket__standings {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  .tournament-bracket__stadings__full-row-taker {
+    grid-column: 1 / 4;
+  }
+  [data-placement="1"] {
+    order: unset;
+  }
+  [data-placement="2"] {
+    order: unset;
+  }
 }
 
 .tournament-bracket__standing {
