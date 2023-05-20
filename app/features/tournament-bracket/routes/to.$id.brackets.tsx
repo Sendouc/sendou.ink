@@ -187,19 +187,23 @@ export default function TournamentBracketsPage() {
 
     // my beautiful hack to show seeds
     // clean up probably not needed as it's not harmful to append more than one
-    appendStyleTagToHead(
-      parentRouteData.teams
-        .map((team, i) => {
-          const participantId = data.hasStarted ? team.id : i;
-          return `
-            [data-participant-id="${participantId}"] {
-              --seed: "${i + 1}  ";
-              --space-after-seed: ${i < 10 ? "6px" : "0px"};
-            }
-          `;
-        })
-        .join("\n")
-    );
+    const cssRulesToAppend = parentRouteData.teams.map((team, i) => {
+      const participantId = data.hasStarted ? team.id : i;
+      return `
+        [data-participant-id="${participantId}"] {
+          --seed: "${i + 1}  ";
+          --space-after-seed: ${i < 10 ? "6px" : "0px"};
+        }
+      `;
+    });
+    if (parentRouteData.teamMemberOfName) {
+      cssRulesToAppend.push(`
+        [title="${parentRouteData.teamMemberOfName}"] {
+          --team-text-color: var(--theme-secondary);
+        }
+      `);
+    }
+    appendStyleTagToHead(cssRulesToAppend.join("\n"));
 
     const element = ref.current;
     return () => {

@@ -69,3 +69,7 @@
   font-size: var(--fonts-xxs);
   margin-inline-end: var(--space-after-seed);
 }
+
+.participant > .name {
+  color: var(--team-text-color);
+}

@@ -80,6 +80,9 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const ownedTeamId = teams.find((team) =>
     team.members.some((member) => member.userId === user?.id && member.isOwner)
   )?.id;
+  const teamMemberOfName = teams.find((team) =>
+    team.members.some((member) => member.userId === user?.id)
+  )?.name;
 
   return {
     event,
@@ -87,6 +90,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
       event.eventId
     ),
     ownedTeamId,
+    teamMemberOfName,
     teams: censorMapPools(teams),
     mapListGeneratorAvailable,
     hasStarted,
