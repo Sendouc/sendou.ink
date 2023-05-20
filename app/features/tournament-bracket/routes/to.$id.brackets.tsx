@@ -253,12 +253,11 @@ export default function TournamentBracketsPage() {
     };
   }, [data, navigate, parentRouteData]);
 
-  // TODO: also disable autorefresh (don't render component) and don't trigger revalidate after tournament is finalized
   React.useEffect(() => {
-    if (visibility !== "visible") return;
+    if (visibility !== "visible" || data.everyMatchIsOver) return;
 
     revalidate();
-  }, [visibility, revalidate]);
+  }, [visibility, revalidate, data.everyMatchIsOver]);
 
   const myTeam = parentRouteData.teams.find((team) =>
     team.members.some((m) => m.userId === user?.id)
@@ -266,7 +265,9 @@ export default function TournamentBracketsPage() {
 
   return (
     <div>
-      {visibility !== "hidden" ? <AutoRefresher /> : null}
+      {visibility !== "hidden" && !data.everyMatchIsOver ? (
+        <AutoRefresher />
+      ) : null}
       {!data.hasStarted && data.enoughTeams ? (
         <Form method="post" className="stack items-center">
           {!canAdminTournament({ user, event: parentRouteData.event }) ? (
@@ -309,7 +310,6 @@ export default function TournamentBracketsPage() {
   );
 }
 
-// TODO: don't render this guy if tournament is over
 function AutoRefresher() {
   useAutoRefresh();
 
