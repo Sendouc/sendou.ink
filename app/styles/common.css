@@ -759,6 +759,10 @@ dialog::backdrop {
   gap: var(--s-8);
 }
 
+.stack.xl {
+  gap: var(--s-12);
+}
+
 .stack.horizontal {
   flex-direction: row;
 }

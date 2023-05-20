@@ -1,3 +1,11 @@
-export function Divider({ children }: { children: React.ReactNode }) {
-  return <div className="divider">{children}</div>;
+import clsx from "clsx";
+
+export function Divider({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return <div className={clsx("divider", className)}>{children}</div>;
 }

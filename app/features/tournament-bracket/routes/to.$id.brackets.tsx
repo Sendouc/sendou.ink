@@ -2,9 +2,11 @@ import type {
   ActionFunction,
   LinksFunction,
   LoaderArgs,
+  SerializeFrom,
 } from "@remix-run/node";
 import {
   Form,
+  Link,
   useLoaderData,
   useNavigate,
   useOutletContext,
@@ -23,6 +25,7 @@ import { notFoundIfFalsy, validate } from "~/utils/remix";
 import {
   tournamentBracketsSubscribePage,
   tournamentMatchPage,
+  userPage,
 } from "~/utils/urls";
 import type { TournamentLoaderData } from "../../tournament/routes/to.$id";
 import { resolveBestOfs } from "../core/bestOf.server";
@@ -33,6 +36,7 @@ import { requireUser, useUser } from "~/modules/auth";
 import { TOURNAMENT, tournamentIdFromParams } from "~/features/tournament";
 import {
   bracketSubscriptionKey,
+  everyMatchIsOver,
   fillWithNullTillPowerOfTwo,
   resolveTournamentStageName,
   resolveTournamentStageSettings,
@@ -43,9 +47,15 @@ import { useEventSource } from "remix-utils";
 import { Status } from "~/db/types";
 import { checkInHasStarted, teamHasCheckedIn } from "~/features/tournament";
 import clsx from "clsx";
-import { LinkButton } from "~/components/Button";
+import { Button, LinkButton } from "~/components/Button";
 import { useVisibilityChange } from "~/hooks/useVisibilityChange";
 import { bestOfsByTournamentId } from "../queries/bestOfsByTournamentId.server";
+import type { FinalStanding } from "../core/finalStandings.server";
+import { finalStandings } from "../core/finalStandings.server";
+import { Placement } from "~/components/Placement";
+import { Avatar } from "~/components/Avatar";
+import { Divider } from "~/components/Divider";
+import { removeDuplicates } from "~/utils/arrays";
 
 export const links: LinksFunction = () => {
   return [
@@ -100,6 +110,8 @@ export const action: ActionFunction = async ({ params, request }) => {
   return null;
 };
 
+export type TournamentBracketLoaderData = SerializeFrom<typeof loader>;
+
 export const loader = ({ params }: LoaderArgs) => {
   const tournamentId = tournamentIdFromParams(params);
 
@@ -107,11 +119,17 @@ export const loader = ({ params }: LoaderArgs) => {
   const manager = getTournamentManager(hasStarted ? "SQL" : "IN_MEMORY");
 
   if (hasStarted) {
+    const bracket = manager.get.tournamentData(tournamentId);
+    const _everyMatchIsOver = everyMatchIsOver(bracket);
     return {
       hasStarted: true,
       enoughTeams: true,
-      bracket: manager.get.tournamentData(tournamentId),
+      bracket,
       roundBestOfs: bestOfsByTournamentId(tournamentId),
+      everyMatchIsOver: _everyMatchIsOver,
+      finalStandings: _everyMatchIsOver
+        ? finalStandings({ manager, tournamentId })
+        : null,
     };
   }
 
@@ -140,7 +158,9 @@ export const loader = ({ params }: LoaderArgs) => {
     bracket: data,
     hasStarted,
     enoughTeams,
+    everyMatchIsOver: false,
     roundBestOfs: null,
+    finalStandings: null,
   };
 };
 
@@ -274,6 +294,9 @@ export default function TournamentBracketsPage() {
       ) : null}
       {parentRouteData.hasStarted && myTeam ? (
         <TournamentProgressPrompt ownedTeamId={myTeam.id} />
+      ) : null}
+      {data.finalStandings ? (
+        <FinalStandings standings={data.finalStandings} />
       ) : null}
       <div className="brackets-viewer" ref={ref}></div>
       {!data.enoughTeams ? (
@@ -419,6 +442,127 @@ function TournamentProgressPrompt({ ownedTeamId }: { ownedTeamId: number }) {
         View
       </LinkButton>
     </TournamentProgressContainer>
+  );
+}
+
+function FinalStandings({ standings }: { standings: FinalStanding[] }) {
+  const [viewAll, setViewAll] = React.useState(false);
+
+  if (standings.length < 3) {
+    console.error("Unexpectedly few standings");
+    return null;
+  }
+
+  const [first, second, third, ...rest] = standings;
+
+  const nonTopThreePlacements = viewAll
+    ? removeDuplicates(rest.map((s) => s.placement))
+    : [];
+
+  return (
+    <div className="tournament-bracket__standings">
+      {[third, first, second].map((standing) => {
+        return (
+          <div
+            className="tournament-bracket__standing"
+            key={standing.tournamentTeam.id}
+          >
+            <div>
+              <Placement placement={standing.placement} size={40} />
+            </div>
+            <div className="tournament-bracket__standing__team-name tournament-bracket__standing__team-name__big">
+              {standing.tournamentTeam.name}
+            </div>
+            <div className="stack horizontal sm flex-wrap justify-center">
+              {standing.players.map((player) => {
+                return (
+                  <Link
+                    to={userPage(player)}
+                    key={player.id}
+                    className="stack items-center text-xs"
+                  >
+                    <Avatar user={player} size="xxs" />
+                  </Link>
+                );
+              })}
+            </div>
+            <div className="stack horizontal sm flex-wrap justify-center">
+              {standing.players.map((player) => {
+                return (
+                  <Link
+                    to={userPage(player)}
+                    key={player.id}
+                    className="stack items-center text-xs"
+                  >
+                    {player.discordName}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
+      {nonTopThreePlacements.map((placement) => {
+        return (
+          <React.Fragment key={placement}>
+            <Divider className="tournament-bracket__stadings__full-row-taker">
+              <Placement placement={placement} />
+            </Divider>
+            <div className="stack xl horizontal justify-center tournament-bracket__stadings__full-row-taker">
+              {standings
+                .filter((s) => s.placement === placement)
+                .map((standing) => {
+                  return (
+                    <div
+                      className="tournament-bracket__standing"
+                      key={standing.tournamentTeam.id}
+                    >
+                      <div className="tournament-bracket__standing__team-name">
+                        {standing.tournamentTeam.name}
+                      </div>
+                      <div className="stack horizontal sm flex-wrap justify-center">
+                        {standing.players.map((player) => {
+                          return (
+                            <Link
+                              to={userPage(player)}
+                              key={player.id}
+                              className="stack items-center text-xs"
+                            >
+                              <Avatar user={player} size="xxs" />
+                            </Link>
+                          );
+                        })}
+                      </div>
+                      <div className="stack horizontal sm flex-wrap justify-center">
+                        {standing.players.map((player) => {
+                          return (
+                            <Link
+                              to={userPage(player)}
+                              key={player.id}
+                              className="stack items-center text-xs"
+                            >
+                              {player.discordName}
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
+            </div>
+          </React.Fragment>
+        );
+      })}
+      <div />
+      <Button
+        variant="outlined"
+        className="tournament-bracket__standings__show-more"
+        size="tiny"
+        onClick={() => setViewAll((v) => !v)}
+      >
+        {viewAll ? "Show less" : "Show more"}
+      </Button>
+    </div>
   );
 }
 

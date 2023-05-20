@@ -251,6 +251,42 @@
   gap: var(--s-3);
 }
 
+.tournament-bracket__standings {
+  background-color: var(--bg-lighter-transparent);
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  border-radius: var(--rounded);
+  padding: var(--s-3);
+  gap: var(--s-2);
+  max-width: max-content;
+  margin: 0 auto;
+}
+.tournament-bracket__stadings__full-row-taker {
+  grid-column: 1 / 4;
+}
+
+.tournament-bracket__standing {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+.tournament-bracket__standing__team-name {
+  font-weight: var(--semi-bold);
+  text-align: center;
+  font-size: var(-fonts-sm);
+}
+
+.tournament-bracket__standing__team-name__big {
+  font-size: var(--fonts-lg);
+}
+
+.tournament-bracket__standings__show-more {
+  margin-block-start: var(--s-2);
+  margin-inline: auto;
+}
+
 @media screen and (min-width: 480px) {
   .tournament-bracket__infos {
     flex-direction: row;

@@ -9,6 +9,7 @@ export type PlacementProps = {
   placement: number;
   iconClassName?: string;
   textClassName?: string;
+  size?: number;
 };
 
 const getSpecialPlacementIconPath = (placement: number): string | null => {
@@ -28,6 +29,7 @@ export function Placement({
   placement,
   iconClassName,
   textClassName,
+  size = 20,
 }: PlacementProps) {
   const { t } = useTranslation(undefined, {});
 
@@ -62,8 +64,8 @@ export function Placement({
       title={placementString}
       src={iconPath}
       className={iconClassName}
-      height={20}
-      width={20}
+      height={size}
+      width={size}
     />
   );
 }

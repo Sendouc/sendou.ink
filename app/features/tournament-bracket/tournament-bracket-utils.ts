@@ -16,6 +16,7 @@ import type {
 } from "~/features/tournament";
 import type { Params } from "@remix-run/react";
 import invariant from "tiny-invariant";
+import type { DataTypes, ValueToArray } from "~/modules/brackets-manager/types";
 
 export function matchIdFromParams(params: Params<string>) {
   const result = Number(params["mid"]);
@@ -143,4 +144,32 @@ export function fillWithNullTillPowerOfTwo<T>(arr: T[]) {
   const nullsToAdd = nextPowerOfTwo - arr.length;
 
   return [...arr, ...new Array(nullsToAdd).fill(null)];
+}
+
+export function everyMatchIsOver(bracket: ValueToArray<DataTypes>) {
+  let lastWinner = -1;
+  for (const [i, match] of bracket.match.entries()) {
+    // special case - bracket reset might not be played depending on who wins in the grands
+    if (
+      match.group_id === 3 &&
+      i === bracket.match.length - 1 &&
+      lastWinner === 1
+    ) {
+      continue;
+    }
+    // BYE
+    if (match.opponent1 === null || match.opponent2 === null) {
+      continue;
+    }
+    if (
+      match.opponent1?.result !== "win" &&
+      match.opponent2?.result !== "win"
+    ) {
+      return false;
+    }
+
+    lastWinner = match.opponent1?.result === "win" ? 1 : 2;
+  }
+
+  return true;
 }
