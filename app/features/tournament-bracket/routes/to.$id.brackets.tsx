@@ -45,6 +45,7 @@ import { checkInHasStarted, teamHasCheckedIn } from "~/features/tournament";
 import clsx from "clsx";
 import { LinkButton } from "~/components/Button";
 import { useVisibilityChange } from "~/hooks/useVisibilityChange";
+import { bestOfsByTournamentId } from "../queries/bestOfsByTournamentId.server";
 
 export const links: LinksFunction = () => {
   return [
@@ -110,6 +111,7 @@ export const loader = ({ params }: LoaderArgs) => {
       hasStarted: true,
       enoughTeams: true,
       bracket: manager.get.tournamentData(tournamentId),
+      roundBestOfs: bestOfsByTournamentId(tournamentId),
     };
   }
 
@@ -138,6 +140,7 @@ export const loader = ({ params }: LoaderArgs) => {
     bracket: data,
     hasStarted,
     enoughTeams,
+    roundBestOfs: null,
   };
 };
 
@@ -197,7 +200,7 @@ export default function TournamentBracketsPage() {
     // clean up probably not needed as it's not harmful to append more than one
     const cssRulesToAppend = parentRouteData.teams.map((team, i) => {
       const participantId = data.hasStarted ? team.id : i;
-      return `
+      return /* css */ `
         [data-participant-id="${participantId}"] {
           --seed: "${i + 1}  ";
           --space-after-seed: ${i < 10 ? "6px" : "0px"};
@@ -205,11 +208,20 @@ export default function TournamentBracketsPage() {
       `;
     });
     if (parentRouteData.teamMemberOfName) {
-      cssRulesToAppend.push(`
+      cssRulesToAppend.push(/* css */ `
         [title="${parentRouteData.teamMemberOfName}"] {
           --team-text-color: var(--theme-secondary);
         }
       `);
+    }
+    if (data.roundBestOfs) {
+      for (const { bestOf, roundId } of data.roundBestOfs) {
+        cssRulesToAppend.push(/* css */ `
+          [data-round-id="${roundId}"] {
+            --best-of-text: "Bo${bestOf}";
+          }
+        `);
+      }
     }
     appendStyleTagToHead(cssRulesToAppend.join("\n"));
 

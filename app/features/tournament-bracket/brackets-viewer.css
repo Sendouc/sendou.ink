@@ -73,3 +73,10 @@
 .participant > .name {
   color: var(--team-text-color);
 }
+
+.round > h3::after {
+  content: var(--best-of-text);
+  margin-inline-start: var(--s-1-5);
+  font-size: var(--fonts-xxxs);
+  color: var(--theme);
+}
