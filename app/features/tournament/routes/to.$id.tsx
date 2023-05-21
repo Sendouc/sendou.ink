@@ -26,6 +26,7 @@ import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.serv
 import { teamHasCheckedIn, tournamentIdFromParams } from "../tournament-utils";
 import styles from "../tournament.css";
 import hasTournamentStarted from "../queries/hasTournamentStarted.server";
+import { streamsByTournamentId } from "../core/streams.server";
 
 export const shouldRevalidate: ShouldRevalidateFunction = (args) => {
   const wasMutation = args.formMethod === "post";
@@ -94,6 +95,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     teams: censorMapPools(teams),
     mapListGeneratorAvailable,
     hasStarted,
+    streamsCount: (await streamsByTournamentId(tournamentId)).length,
   };
 
   function censorMapPools(
@@ -138,6 +140,10 @@ export default function TournamentLayout() {
         <SubNavLink to="teams">
           {t("tournament:tabs.teams", { count: data.teams.length })}
         </SubNavLink>
+        {/* TODO: don't show when tournament finalized */}
+        {data.hasStarted ? (
+          <SubNavLink to="streams">Streams ({data.streamsCount})</SubNavLink>
+        ) : null}
         {canAdminTournament({ user, event: data.event }) &&
           !data.hasStarted && <SubNavLink to="seeds">Seeds</SubNavLink>}
         {canAdminTournament({ user, event: data.event }) && (

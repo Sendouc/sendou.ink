@@ -53,6 +53,20 @@
   color: var(--text-lighter);
 }
 
+/** TODO: handle logic when to show */
+.opponents::after {
+  display: none;
+  content: "🔴 Live";
+  position: absolute;
+  top: -11px;
+  right: 0;
+  background-color: var(--bg-light-variation);
+  color: var(--text-lighter);
+  font-size: 0.8em;
+  border-radius: 3px;
+  padding: 0 5px;
+}
+
 .bye {
   color: var(--text-lighter);
 }

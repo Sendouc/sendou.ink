@@ -223,7 +223,7 @@ export default function TournamentBracketsPage() {
       return /* css */ `
         [data-participant-id="${participantId}"] {
           --seed: "${i + 1}  ";
-          --space-after-seed: ${i < 10 ? "6px" : "0px"};
+          --space-after-seed: ${i < 9 ? "6px" : "0px"};
         }
       `;
     });

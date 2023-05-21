@@ -25,6 +25,10 @@ module.exports = {
         route("/to/:id/admin", "features/tournament/routes/to.$id.admin.tsx");
         route("/to/:id/seeds", "features/tournament/routes/to.$id.seeds.tsx");
         route("/to/:id/maps", "features/tournament/routes/to.$id.maps.tsx");
+        route(
+          "/to/:id/streams",
+          "features/tournament/routes/to.$id.streams.tsx"
+        );
 
         route(
           "/to/:id/brackets",

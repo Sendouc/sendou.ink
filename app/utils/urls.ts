@@ -60,6 +60,8 @@ export const SPLATOON_3_INK = "https://splatoon3.ink/";
 
 export const twitterUrl = (accountName: string) =>
   `https://twitter.com/${accountName}`;
+export const twitchUrl = (accountName: string) =>
+  `https://twitch.tv/${accountName}`;
 
 export const LOG_IN_URL = "/auth";
 export const LOG_OUT_URL = "/auth/logout";

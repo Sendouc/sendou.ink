@@ -345,6 +345,31 @@
   min-width: 2rem;
 }
 
+.tournament__stream__user-container {
+  font-size: var(--fonts-xs);
+  display: flex;
+  gap: var(--s-2);
+  align-items: center;
+  font-weight: var(--semi-bold);
+}
+
+.tournament__stream__team-name {
+  color: var(--theme-secondary);
+}
+
+.tournament__stream__viewer-count {
+  font-size: var(--fonts-xs);
+  display: flex;
+  gap: var(--s-2);
+  align-items: center;
+  margin-block-start: -5px;
+  color: var(--text-lighter);
+}
+
+.tournament__stream__viewer-count > svg {
+  width: 0.75rem;
+}
+
 @media screen and (min-width: 640px) {
   .tournament__section {
     margin: 0;
