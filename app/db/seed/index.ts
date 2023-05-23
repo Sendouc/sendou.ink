@@ -748,7 +748,9 @@ const availablePairs = rankedModesShort
   .filter((pair) => !tiebreakerPicks.has(pair));
 function calendarEventWithToToolsTeams(sz?: boolean) {
   const userIds = userIdsInAscendingOrderById();
-  for (let id = 1; id <= 14; id++) {
+  for (let id = 1; id <= 16; id++) {
+    const teamId = id + (sz ? 100 : 0);
+
     sql
       .prepare(
         `
@@ -768,14 +770,14 @@ function calendarEventWithToToolsTeams(sz?: boolean) {
       `
       )
       .run({
-        id: id + (sz ? 100 : 0),
+        id: teamId,
         name: names.pop(),
         createdAt: dateToDatabaseTimestamp(new Date()),
         tournamentId: sz ? 2 : 1,
         inviteCode: nanoid(INVITE_CODE_LENGTH),
       });
 
-    if (id !== 1) {
+    if (sz || id !== 1) {
       sql
         .prepare(
           `
@@ -794,11 +796,14 @@ function calendarEventWithToToolsTeams(sz?: boolean) {
         });
     }
 
-    for (
-      let i = 0;
-      i < faker.helpers.arrayElement([4, 4, 4, 4, 4, 5, 5, 6]);
-      i++
-    ) {
+    for (let i = 0; i < (id < 10 ? 4 : 5); i++) {
+      let userId = userIds.shift()!;
+      // ensure N-ZAP is in different team than Sendou for ITZ
+      if (userId === NZAP_TEST_ID && teamId === 101) {
+        userId = userIds.shift()!;
+        userIds.unshift(NZAP_TEST_ID);
+      }
+
       sql
         .prepare(
           `
@@ -817,7 +822,7 @@ function calendarEventWithToToolsTeams(sz?: boolean) {
         )
         .run({
           tournamentTeamId: id + (sz ? 100 : 0),
-          userId: userIds.shift()!,
+          userId,
           isOwner: i === 0 ? 1 : 0,
           createdAt: dateToDatabaseTimestamp(new Date()),
         });

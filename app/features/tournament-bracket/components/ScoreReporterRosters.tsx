@@ -145,7 +145,11 @@ function ReportScoreButtons({
         </b>
         ?
       </div>
-      <SubmitButton size="tiny" _action="REPORT_SCORE">
+      <SubmitButton
+        size="tiny"
+        _action="REPORT_SCORE"
+        testId="report-score-button"
+      >
         Report
       </SubmitButton>
     </div>

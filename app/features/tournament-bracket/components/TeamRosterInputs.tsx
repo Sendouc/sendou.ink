@@ -145,6 +145,7 @@ function WinnerRadio({
         id={`${teamId}-${id}`}
         onChange={onChange}
         checked={checked}
+        data-testid={`winner-radio-${team}`}
       />
       <Label className="mb-0 ml-2" htmlFor={`${teamId}-${id}`}>
         Winner
@@ -169,7 +170,7 @@ function TeamRosterInputsCheckboxes({
 
   return (
     <div className="tournament-bracket__during-match-actions__team-players">
-      {team.members.map((member) => {
+      {team.members.map((member, i) => {
         return (
           <div
             key={member.userId}
@@ -188,6 +189,7 @@ function TeamRosterInputsCheckboxes({
               value={member.userId}
               checked={checkedPlayers.flat().includes(member.userId)}
               onChange={() => handlePlayerClick(member.userId)}
+              data-testid={`player-checkbox-${i}`}
             />{" "}
             <label
               className="tournament-bracket__during-match-actions__player-name"

@@ -108,6 +108,7 @@ export function ScoreReporter({
               <SubmitButton
                 _action="UNDO_REPORT_SCORE"
                 className="tournament-bracket__stage-banner__undo-button"
+                testId="undo-score-button"
               >
                 Undo last score
               </SubmitButton>
@@ -122,6 +123,7 @@ export function ScoreReporter({
                 <SubmitButton
                   _action="REOPEN_MATCH"
                   className="tournament-bracket__stage-banner__undo-button"
+                  testId="reopen-match-button"
                 >
                   Reopen match
                 </SubmitButton>
@@ -134,6 +136,7 @@ export function ScoreReporter({
               _action="REOPEN_MATCH"
               className="tournament-bracket__stage-banner__undo-button"
               disabled
+              testId="match-is-locked-button"
             >
               Match is locked
             </SubmitButton>
@@ -166,6 +169,7 @@ export function ScoreReporter({
           className={clsx("text-center text-xs text-lighter", {
             invisible: !isMounted,
           })}
+          data-testid="report-timestamp"
         >
           {isMounted
             ? databaseTimestampToDate(result.createdAt).toLocaleString()

@@ -330,6 +330,7 @@ export default function TournamentMatchPage() {
           size="tiny"
           className="w-max"
           icon={<ArrowLongLeftIcon />}
+          testId="back-to-bracket-button"
         >
           Back to bracket
         </LinkButton>
