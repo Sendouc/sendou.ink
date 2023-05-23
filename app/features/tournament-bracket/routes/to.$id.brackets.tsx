@@ -56,6 +56,7 @@ import { Placement } from "~/components/Placement";
 import { Avatar } from "~/components/Avatar";
 import { Divider } from "~/components/Divider";
 import { removeDuplicates } from "~/utils/arrays";
+import { Flag } from "~/components/Flag";
 
 export const links: LinksFunction = () => {
   return [
@@ -286,7 +287,11 @@ export default function TournamentBracketsPage() {
             >
               When everything looks good, finalize the bracket to start the
               tournament{" "}
-              <SubmitButton variant="outlined" size="tiny">
+              <SubmitButton
+                variant="outlined"
+                size="tiny"
+                testId="finalize-bracket-button"
+              >
                 Finalize
               </SubmitButton>
             </Alert>
@@ -490,13 +495,17 @@ function FinalStandings({ standings }: { standings: FinalStanding[] }) {
             <div className="stack horizontal sm flex-wrap justify-center">
               {standing.players.map((player) => {
                 return (
-                  <Link
-                    to={userPage(player)}
-                    key={player.id}
-                    className="stack items-center text-xs"
-                  >
-                    {player.discordName}
-                  </Link>
+                  <div key={player.id} className="stack items-center">
+                    {player.country ? (
+                      <Flag countryCode={player.country} tiny />
+                    ) : null}
+                    <Link
+                      to={userPage(player)}
+                      className="stack items-center text-xs mt-auto"
+                    >
+                      {player.discordName}
+                    </Link>
+                  </div>
                 );
               })}
             </div>
@@ -537,13 +546,17 @@ function FinalStandings({ standings }: { standings: FinalStanding[] }) {
                       <div className="stack horizontal sm flex-wrap justify-center">
                         {standing.players.map((player) => {
                           return (
-                            <Link
-                              to={userPage(player)}
-                              key={player.id}
-                              className="stack items-center text-xs"
-                            >
-                              {player.discordName}
-                            </Link>
+                            <div key={player.id} className="stack items-center">
+                              {player.country ? (
+                                <Flag countryCode={player.country} tiny />
+                              ) : null}
+                              <Link
+                                to={userPage(player)}
+                                className="stack items-center text-xs mt-auto"
+                              >
+                                {player.discordName}
+                              </Link>
+                            </div>
                           );
                         })}
                       </div>

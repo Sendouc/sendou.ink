@@ -7,7 +7,8 @@ const stm = sql.prepare(/* sql */ `
     "User"."discordName",
     "User"."discordAvatar",
     "User"."discordId",
-    "User"."customUrl"
+    "User"."customUrl",
+    "User"."country"
   from "TournamentTeam"
     left join "TournamentTeamMember" on "TournamentTeamMember"."tournamentTeamId" = "TournamentTeam"."id"
     left join "User" on "User"."id" = "TournamentTeamMember"."userId"
@@ -25,7 +26,7 @@ const stm = sql.prepare(/* sql */ `
 
 export type PlayerThatPlayedByTeamId = Pick<
   User,
-  "id" | "discordName" | "discordAvatar" | "discordId" | "customUrl"
+  "id" | "discordName" | "discordAvatar" | "discordId" | "customUrl" | "country"
 >;
 
 export function playersThatPlayedByTeamId(

@@ -130,6 +130,10 @@
   padding-block-start: var(--s-12) !important;
 }
 
+.mt-auto {
+  margin-block-start: auto;
+}
+
 .mt-0 {
   margin-block-start: var(--s-0);
 }
