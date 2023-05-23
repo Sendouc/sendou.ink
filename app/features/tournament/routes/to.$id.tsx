@@ -95,7 +95,9 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     teams: censorMapPools(teams),
     mapListGeneratorAvailable,
     hasStarted,
-    streamsCount: (await streamsByTournamentId(tournamentId)).length,
+    streamsCount: hasStarted
+      ? (await streamsByTournamentId(tournamentId)).length
+      : 0,
   };
 
   function censorMapPools(
