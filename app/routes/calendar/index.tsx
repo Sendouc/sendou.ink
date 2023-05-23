@@ -25,6 +25,7 @@ import {
   databaseTimestampToDate,
   dateToThisWeeksMonday,
   dateToWeekNumber,
+  getWeekStartsAtMondayDay,
   weekNumberToDate,
 } from "~/utils/dates";
 import { type SendouRouteHandle } from "~/utils/remix";
@@ -39,6 +40,7 @@ import {
 } from "~/utils/urls";
 import { actualNumber } from "~/utils/zod";
 import { Tags } from "./components/Tags";
+import { Divider } from "~/components/Divider";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -98,6 +100,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   return json({
     currentWeek,
     displayedWeek,
+    currentDay: new Date().getDay(),
     nearbyStartTimes: db.calendarEvents.startTimesOfRange({
       startTime: subMonths(
         weekNumberToDate({ week: displayedWeek, year: displayedYear }),
@@ -333,14 +336,36 @@ function EventsList({
 }: {
   events: SerializeFrom<typeof loader>["events"];
 }) {
+  const data = useLoaderData<typeof loader>();
   const { t, i18n } = useTranslation("calendar");
 
+  const sortPastEventsLast = data.currentWeek === data.displayedWeek;
+
+  const eventsGrouped = eventsGroupedByDay(events);
+  if (sortPastEventsLast) {
+    eventsGrouped.sort(pastEventsLast(data.currentDay));
+  }
+
+  let dividerRendered = false;
   return (
     <div className="calendar__events-container">
-      {eventsGroupedByDay(events).map(([daysDate, events]) => {
+      {eventsGrouped.map(([daysDate, events]) => {
+        const renderDivider =
+          sortPastEventsLast &&
+          !dividerRendered &&
+          getWeekStartsAtMondayDay(daysDate) < data.currentDay;
+        if (renderDivider) {
+          dividerRendered = true;
+        }
+
         return (
           <React.Fragment key={daysDate.getTime()}>
             <div className="calendar__event__date-container">
+              {renderDivider ? (
+                <Divider className="calendar__event__divider">
+                  {t("pastEvents.dividerText")}
+                </Divider>
+              ) : null}
               <div className="calendar__event__date main">
                 {daysDate.toLocaleDateString(i18n.language, {
                   weekday: "long",
@@ -435,8 +460,9 @@ function EventsList({
   );
 }
 
+type EventsGrouped = [Date, SerializeFrom<typeof loader>["events"]];
 function eventsGroupedByDay(events: SerializeFrom<typeof loader>["events"]) {
-  const result: Array<[Date, SerializeFrom<typeof loader>["events"]]> = [];
+  const result: EventsGrouped[] = [];
 
   for (const calendarEvent of events) {
     const previousIterationEvents = result[result.length - 1] ?? null;
@@ -453,4 +479,21 @@ function eventsGroupedByDay(events: SerializeFrom<typeof loader>["events"]) {
   }
 
   return result;
+}
+
+function pastEventsLast(currentDay: number) {
+  return function (a: EventsGrouped, b: EventsGrouped) {
+    const aDay = getWeekStartsAtMondayDay(a[0]);
+    const bDay = getWeekStartsAtMondayDay(b[0]);
+
+    if (aDay < currentDay && bDay >= currentDay) {
+      return 1;
+    }
+
+    if (aDay >= currentDay && bDay < currentDay) {
+      return -1;
+    }
+
+    return 0;
+  };
 }

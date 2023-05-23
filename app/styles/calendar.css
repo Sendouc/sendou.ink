@@ -120,6 +120,10 @@
   background-color: var(--bg);
 }
 
+.calendar__event__divider {
+  padding-block-start: 40px;
+}
+
 .calendar__event__date {
   font-weight: var(--semi-bold);
   padding-block-start: var(--s-6);

@@ -13,6 +13,7 @@
   "results": "Results",
   "createMapList": "Create map list",
   "from": "From {{author}}",
+  "pastEvents.dividerText": "Past events",
 
   "forms.dates": "Dates",
   "forms.bracketUrl": "Bracket URL",

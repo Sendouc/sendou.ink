@@ -26,6 +26,12 @@ export function dateToThisWeeksMonday(date: Date) {
   return copiedDate;
 }
 
+export function getWeekStartsAtMondayDay(date: Date) {
+  const currentDay = date.getDay();
+
+  return currentDay === 0 ? 7 : currentDay;
+}
+
 // https://stackoverflow.com/a/71336659
 export function weekNumberToDate({
   week,
