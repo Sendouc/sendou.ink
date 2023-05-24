@@ -1,5 +1,6 @@
 import { getStreams } from "~/modules/twitch";
 import { participantTwitchUsersByTournamentId } from "../queries/participantTwitchUsersByTournamentId.server";
+import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
 
 export async function streamsByTournamentId(tournamentId: number) {
   const twitchUsersOfTournament =
@@ -21,4 +22,15 @@ export async function streamsByTournamentId(tournamentId: number) {
   });
 
   return tournamentStreams;
+}
+
+export async function streamingTournamentTeamIds(tournamentId: number) {
+  const streamingUserIds = (await streamsByTournamentId(tournamentId)).map(
+    (s) => s.userId
+  );
+  const teams = findTeamsByTournamentId(tournamentId);
+
+  return teams
+    .filter((t) => t.members.some((m) => streamingUserIds.includes(m.userId)))
+    .map((t) => t.id);
 }

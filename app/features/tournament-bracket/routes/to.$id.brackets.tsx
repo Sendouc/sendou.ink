@@ -33,7 +33,11 @@ import { findAllMatchesByTournamentId } from "../queries/findAllMatchesByTournam
 import { setBestOf } from "../queries/setBestOf.server";
 import { canAdminTournament } from "~/permissions";
 import { requireUser, useUser } from "~/modules/auth";
-import { TOURNAMENT, tournamentIdFromParams } from "~/features/tournament";
+import {
+  TOURNAMENT,
+  streamingTournamentTeamIds,
+  tournamentIdFromParams,
+} from "~/features/tournament";
 import {
   bracketSubscriptionKey,
   everyMatchIsOver,
@@ -113,7 +117,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 
 export type TournamentBracketLoaderData = SerializeFrom<typeof loader>;
 
-export const loader = ({ params }: LoaderArgs) => {
+export const loader = async ({ params }: LoaderArgs) => {
   const tournamentId = tournamentIdFromParams(params);
 
   const hasStarted = hasTournamentStarted(tournamentId);
@@ -131,6 +135,7 @@ export const loader = ({ params }: LoaderArgs) => {
       finalStandings: _everyMatchIsOver
         ? finalStandings({ manager, tournamentId })
         : null,
+      streamingTeamIds: await streamingTournamentTeamIds(tournamentId),
     };
   }
 
@@ -162,6 +167,7 @@ export const loader = ({ params }: LoaderArgs) => {
     everyMatchIsOver: false,
     roundBestOfs: null,
     finalStandings: null,
+    streamingTeamIds: [],
   };
 };
 
