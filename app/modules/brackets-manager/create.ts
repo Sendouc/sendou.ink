@@ -782,7 +782,7 @@ export class Create {
    * Returns the ordering method for the first round of the upper bracket of an elimination stage.
    */
   public getStandardBracketFirstRoundOrdering(): SeedOrdering {
-    return this.getOrdering(0, "elimination", "inner_outer");
+    return this.getOrdering(0, "elimination", "space_between");
   }
 
   /**
