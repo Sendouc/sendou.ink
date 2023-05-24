@@ -41,6 +41,7 @@ import {
 import { actualNumber } from "~/utils/zod";
 import { Tags } from "./components/Tags";
 import { Divider } from "~/components/Divider";
+import { UsersIcon } from "~/components/icons/Users";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -403,24 +404,39 @@ function EventsList({
                         </div>
                       </div>
                       <div className="stack xs">
-                        <Link
-                          to={
-                            calendarEvent.tournamentId
-                              ? tournamentPage(calendarEvent.tournamentId)
-                              : String(calendarEvent.eventId)
-                          }
-                        >
-                          <h2 className="calendar__event__title">
-                            {calendarEvent.name}{" "}
-                            {calendarEvent.nthAppearance > 1 ? (
-                              <span className="calendar__event__day">
-                                {t("day", {
-                                  number: calendarEvent.nthAppearance,
-                                })}
-                              </span>
-                            ) : null}
-                          </h2>
-                        </Link>
+                        <div>
+                          <Link
+                            to={
+                              calendarEvent.tournamentId
+                                ? tournamentPage(calendarEvent.tournamentId)
+                                : String(calendarEvent.eventId)
+                            }
+                          >
+                            <h2 className="calendar__event__title">
+                              {calendarEvent.name}{" "}
+                              {calendarEvent.nthAppearance > 1 ? (
+                                <span className="calendar__event__day">
+                                  {t("day", {
+                                    number: calendarEvent.nthAppearance,
+                                  })}
+                                </span>
+                              ) : null}
+                            </h2>
+                          </Link>
+                          {calendarEvent.participantCounts &&
+                          calendarEvent.participantCounts.teams > 0 ? (
+                            <div className="calendar__event__participant-counts">
+                              <UsersIcon />{" "}
+                              {t("count.teams", {
+                                count: calendarEvent.participantCounts.teams,
+                              })}{" "}
+                              /{" "}
+                              {t("count.players", {
+                                count: calendarEvent.participantCounts.players,
+                              })}
+                            </div>
+                          ) : null}
+                        </div>
                         <Tags
                           tags={calendarEvent.tags}
                           badges={calendarEvent.badgePrizes}
