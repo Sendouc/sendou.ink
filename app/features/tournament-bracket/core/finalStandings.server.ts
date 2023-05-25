@@ -15,9 +15,11 @@ const STANDINGS_TO_INCLUDE = 8;
 export function finalStandings({
   manager,
   tournamentId,
+  includeAll,
 }: {
   manager: BracketsManager;
   tournamentId: Tournament["id"];
+  includeAll?: boolean;
 }): Array<FinalStanding> | null {
   let standings: FinalStandingsItem[];
   try {
@@ -32,14 +34,15 @@ export function finalStandings({
 
     throw e;
   }
+  if (!includeAll) {
+    standings = standings.slice(0, STANDINGS_TO_INCLUDE);
+  }
 
   const result: Array<FinalStanding> = [];
 
   let lastRank = 1;
   let currentPlacement = 1;
-  for (const [i, standing] of standings
-    .slice(0, STANDINGS_TO_INCLUDE)
-    .entries()) {
+  for (const [i, standing] of standings.entries()) {
     if (lastRank !== standing.rank) {
       lastRank = standing.rank;
       currentPlacement = i + 1;
@@ -55,4 +58,23 @@ export function finalStandings({
   }
 
   return result;
+}
+
+export function finalStandingOfTeam({
+  manager,
+  tournamentId,
+  tournamentTeamId,
+}: {
+  manager: BracketsManager;
+  tournamentId: Tournament["id"];
+  tournamentTeamId: TournamentTeam["id"];
+}) {
+  const standings = finalStandings({ manager, tournamentId, includeAll: true });
+  if (!standings) return null;
+
+  return (
+    standings.find(
+      (standing) => standing.tournamentTeam.id === tournamentTeamId
+    )?.placement ?? null
+  );
 }

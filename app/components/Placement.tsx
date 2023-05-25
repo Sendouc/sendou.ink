@@ -10,6 +10,7 @@ export type PlacementProps = {
   iconClassName?: string;
   textClassName?: string;
   size?: number;
+  textOnly?: boolean;
 };
 
 const getSpecialPlacementIconPath = (placement: number): string | null => {
@@ -30,6 +31,7 @@ export function Placement({
   iconClassName,
   textClassName,
   size = 20,
+  textOnly = false,
 }: PlacementProps) {
   const { t } = useTranslation(undefined, {});
 
@@ -45,7 +47,7 @@ export function Placement({
   const isSuperscript = ordinalSuffix.startsWith("^");
   const ordinalSuffixText = ordinalSuffix.replace(/^\^/, "");
 
-  const iconPath = getSpecialPlacementIconPath(placement);
+  const iconPath = textOnly ? null : getSpecialPlacementIconPath(placement);
 
   if (!iconPath) {
     return (

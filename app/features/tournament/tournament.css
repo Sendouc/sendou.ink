@@ -156,7 +156,6 @@
 .tournament__team-with-roster__seed {
   font-size: var(--fonts-xs);
   font-weight: var(--semi-bold);
-  color: var(--theme);
 }
 
 .tournament__team-member-name {
@@ -370,9 +369,51 @@
   width: 0.75rem;
 }
 
+.tournament__team__stats {
+  background-color: var(--bg-lighter);
+  border-radius: var(--rounded);
+  padding: var(--s-4);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-4);
+  margin: 0 auto;
+}
+
+.tournament__team__stat {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 2fr 1fr;
+  place-items: center;
+  font-weight: var(--bold);
+  text-align: center;
+}
+
+.tournament__team__stat__main {
+  font-size: var(--fonts-xl);
+  font-weight: var(--semi-bold);
+}
+
+.tournament__team__stat__main:has(sup) {
+  margin-block-start: -5px;
+}
+
+.tournament__team__stat__main sup {
+  font-size: var(--fonts-sm);
+  font-weight: var(--semi-bold);
+}
+
+.tournament__team__stat__sub {
+  color: var(--text-lighter);
+  font-size: var(--fonts-sm);
+}
+
 @media screen and (min-width: 640px) {
   .tournament__section {
     margin: 0;
     border-radius: var(--rounded);
+  }
+
+  .tournament__team__stats {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
   }
 }
