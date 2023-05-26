@@ -1,5 +1,6 @@
 import type { User } from "~/db/types";
 import type { ModeShort } from "~/modules/in-game-lists";
+// import { setHistoryByTeamId } from "../queries/setHistoryByTeamId.server";
 
 export interface PlayedSet {
   tournamentMatchId: number;
@@ -27,5 +28,6 @@ export interface PlayedSet {
 }
 
 export function tournamentTeamSets(_tournamentTeamId: number): PlayedSet[] {
+  // const sets = setHistoryByTeamId(tournamentTeamId);
   return [];
 }

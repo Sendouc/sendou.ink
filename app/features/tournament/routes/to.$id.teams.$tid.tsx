@@ -32,10 +32,11 @@ export const loader = ({ params }: LoaderArgs) => {
   return {
     tournamentTeamId,
     placement,
-    sets: tournamentTeamSets(tournamentId),
+    sets: tournamentTeamSets(tournamentTeamId),
   };
 };
 
+// xxx: mode icons popup stage too + source
 export default function TournamentTeamPage() {
   const data = useLoaderData<typeof loader>();
   const parentRouteData = useOutletContext<TournamentLoaderData>();
@@ -45,6 +46,7 @@ export default function TournamentTeamPage() {
   const team = parentRouteData.teams[teamIndex];
   invariant(team, "Team not found");
 
+  // xxx: grey out players who did not play yet
   return (
     <div className="stack lg">
       <TeamWithRoster team={team} />
