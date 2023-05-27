@@ -8,7 +8,7 @@ import {
   getTournamentManager,
 } from "~/features/tournament-bracket";
 import { TeamWithRoster } from "../components/TeamWithRoster";
-import { tournamentTeamSets } from "../core/sets.server";
+import { tournamentTeamSets, winCounts } from "../core/sets.server";
 import {
   tournamentIdFromParams,
   tournamentTeamIdFromParams,
@@ -29,14 +29,18 @@ export const loader = ({ params }: LoaderArgs) => {
     ? finalStandingOfTeam({ manager, tournamentId, tournamentTeamId })
     : null;
 
+  const sets = tournamentTeamSets({ tournamentTeamId, tournamentId });
+
   return {
     tournamentTeamId,
     placement,
-    sets: tournamentTeamSets(tournamentTeamId),
+    sets,
+    winCounts: winCounts(sets),
   };
 };
 
 // xxx: mode icons popup stage too + source
+// TODO: could cache this after tournament is finalized
 export default function TournamentTeamPage() {
   const data = useLoaderData<typeof loader>();
   const parentRouteData = useOutletContext<TournamentLoaderData>();
@@ -71,14 +75,22 @@ function StatSquares({
     <div className="tournament__team__stats">
       <div className="tournament__team__stat">
         <div className="tournament__team__stat__title">Set wins</div>
-        <div className="tournament__team__stat__main">3 / 3</div>
-        <div className="tournament__team__stat__sub">100%</div>
+        <div className="tournament__team__stat__main">
+          {data.winCounts.sets.won} / {data.winCounts.sets.total}
+        </div>
+        <div className="tournament__team__stat__sub">
+          {data.winCounts.sets.percentage}%
+        </div>
       </div>
 
       <div className="tournament__team__stat">
         <div className="tournament__team__stat__title">Map wins</div>
-        <div className="tournament__team__stat__main">6 / 9</div>
-        <div className="tournament__team__stat__sub">77%</div>
+        <div className="tournament__team__stat__main">
+          {data.winCounts.maps.won} / {data.winCounts.maps.total}
+        </div>
+        <div className="tournament__team__stat__sub">
+          {data.winCounts.maps.percentage}%
+        </div>
       </div>
 
       <div className="tournament__team__stat">

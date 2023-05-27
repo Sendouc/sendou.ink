@@ -294,6 +294,7 @@
   font-weight: var(--semi-bold);
   text-align: center;
   font-size: var(-fonts-sm);
+  color: var(--text);
 }
 
 .tournament-bracket__standing__team-name__big {

@@ -25,6 +25,7 @@ import { notFoundIfFalsy, validate } from "~/utils/remix";
 import {
   tournamentBracketsSubscribePage,
   tournamentMatchPage,
+  tournamentTeamPage,
   userPage,
 } from "~/utils/urls";
 import type { TournamentLoaderData } from "../../tournament/routes/to.$id";
@@ -451,6 +452,7 @@ function TournamentProgressPrompt({ ownedTeamId }: { ownedTeamId: number }) {
 }
 
 function FinalStandings({ standings }: { standings: FinalStanding[] }) {
+  const parentRouteData = useOutletContext<TournamentLoaderData>();
   const [viewAll, setViewAll] = React.useState(false);
 
   if (standings.length < 3) {
@@ -476,9 +478,15 @@ function FinalStandings({ standings }: { standings: FinalStanding[] }) {
             <div>
               <Placement placement={standing.placement} size={40} />
             </div>
-            <div className="tournament-bracket__standing__team-name tournament-bracket__standing__team-name__big">
+            <Link
+              to={tournamentTeamPage({
+                eventId: parentRouteData.event.id,
+                tournamentTeamId: standing.tournamentTeam.id,
+              })}
+              className="tournament-bracket__standing__team-name tournament-bracket__standing__team-name__big"
+            >
               {standing.tournamentTeam.name}
-            </div>
+            </Link>
             <div className="stack horizontal sm flex-wrap justify-center">
               {standing.players.map((player) => {
                 return (
@@ -527,9 +535,15 @@ function FinalStandings({ standings }: { standings: FinalStanding[] }) {
                       className="tournament-bracket__standing"
                       key={standing.tournamentTeam.id}
                     >
-                      <div className="tournament-bracket__standing__team-name">
+                      <Link
+                        to={tournamentTeamPage({
+                          eventId: parentRouteData.event.id,
+                          tournamentTeamId: standing.tournamentTeam.id,
+                        })}
+                        className="tournament-bracket__standing__team-name"
+                      >
                         {standing.tournamentTeam.name}
-                      </div>
+                      </Link>
                       <div className="stack horizontal sm flex-wrap justify-center">
                         {standing.players.map((player) => {
                           return (

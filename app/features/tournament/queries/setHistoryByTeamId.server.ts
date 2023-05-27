@@ -10,6 +10,10 @@ const stm = sql.prepare(/* sql */ `
       "m"."id" as "tournamentMatchId",
       "m"."opponentOne" ->> '$.score' as "opponentOneScore",
       "m"."opponentTwo" ->> '$.score' as "opponentTwoScore",
+      "otherTeam"."name" as "otherTeamName",
+      "otherTeam"."id" as "otherTeamId",
+      "round"."number" as "roundNumber",
+      "group"."number" as "groupNumber",
       json_group_array(
         json_object(
           'mode',
@@ -20,6 +24,19 @@ const stm = sql.prepare(/* sql */ `
       ) as "matches"
     from "TournamentMatch" as "m"
     left join "TournamentMatchGameResult" as "r" on "m"."id" = "r"."matchId"
+    left join "TournamentRound" as "round" on "m"."roundId" = "round"."id"
+    left join "TournamentGroup" as "group" on "m"."groupId" = "group"."id"
+    left join "TournamentTeam" as "otherTeam" on 
+      (
+      "m"."opponentOne" ->> '$.id' != @tournamentTeamId 
+        and 
+      "m"."opponentOne" ->> '$.id' = "otherTeam"."id"
+      ) or
+      (
+        "m"."opponentTwo" ->> '$.id' != @tournamentTeamId 
+          and 
+        "m"."opponentTwo" ->> '$.id' = "otherTeam"."id"
+      )
     where 
     (
         "m"."opponentOne" ->> '$.id' = @tournamentTeamId
@@ -64,13 +81,20 @@ interface SetHistoryByTeamIdItem {
   tournamentMatchId: number;
   opponentOneScore: number | null;
   opponentTwoScore: number | null;
+  otherTeamName: string;
+  otherTeamId: number;
+  roundNumber: number;
+  groupNumber: number;
   matches: {
     mode: ModeShort;
     wasWinner: number;
   }[];
-  players: {
-    userId: number;
-  }[];
+  players: Array<
+    Pick<
+      User,
+      "id" | "discordName" | "discordAvatar" | "discordId" | "customUrl"
+    >
+  >;
 }
 
 export function setHistoryByTeamId(
