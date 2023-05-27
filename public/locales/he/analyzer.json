@@ -59,7 +59,7 @@
   "stat.sub.velocity": "מהירות (קובע טווח)",
   "stat.sub.firstPhaseDuration": "משך הזמן של השלב עם עוצמה מלאה",
   "stat.sub.secondPhaseDuration": "משך הזמן של השלב האמצעי",
-  "stat.sub.markingTimeInSeconds": "Marking duration", "משך זמן",
+  "stat.sub.markingTimeInSeconds": "משך זמן",
   "stat.sub.markingRadius": "משך זמן הסימון",
   "stat.sub.explosionRadius": "רדיוס הפיצוץ",
   "stat.sub.hp": "עמידות",

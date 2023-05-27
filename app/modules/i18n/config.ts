@@ -26,6 +26,10 @@ export const languages = [
     name: "Français",
   },
   {
+    code: "he",
+    name: "עִבְרִית",
+  },
+  {
     code: "it",
     name: "Italiano",
   },

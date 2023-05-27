@@ -144,7 +144,7 @@
   "upload.type.team-pfp": "תמונת פרופיל של הקבוצה",
   "upload.type.team-banner": "תמונת באנר של הקבוצה",
   "upload.commonExplanation": "לפני שהתמונה תוצג לציבור, בודק יאמת אותה. תמונות שהועלו על ידי פטרונים מוצגות ללא אימות.",
-"upload.afterExplanation_one": "יש לכם תמונה {{count}} בהמתנה. התמונה תופיע אוטומטית לאחר האימות.",
+  "upload.afterExplanation_one": "יש לכם תמונה {{count}} בהמתנה. התמונה תופיע אוטומטית לאחר האימות.",
   "upload.afterExplanation_other": "יש לכם {{count}} תמונות בהמתנה. התמונות יופיעו אוטומטית לאחר האימות.",
 
   "support.intro.first": "שלום! אני Sendou ו- sendou.ink הוא הפרויקט שלי לספק כלים ומשאבים לקהילת Splatoon. המטרה היא לעזור לכולם להשתפר וליהנות מ-Splatoon בין אם אתם חדשים במשחק או שחקנים ותיקים.",
