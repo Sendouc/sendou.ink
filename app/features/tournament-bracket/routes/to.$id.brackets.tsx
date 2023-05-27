@@ -58,6 +58,7 @@ import { Avatar } from "~/components/Avatar";
 import { Divider } from "~/components/Divider";
 import { removeDuplicates } from "~/utils/arrays";
 import { Flag } from "~/components/Flag";
+import { databaseTimestampToDate } from "~/utils/dates";
 
 export const links: LinksFunction = () => {
   return [
@@ -265,6 +266,17 @@ export default function TournamentBracketsPage() {
     team.members.some((m) => m.userId === user?.id)
   );
 
+  // TODO: more informative UI
+  const adminCantStart = () => {
+    // for testing, is always possible to start in development
+    if (process.env.NODE_ENV === "development") return false;
+
+    return (
+      databaseTimestampToDate(parentRouteData.event.startTime).getTime() >
+      Date.now()
+    );
+  };
+
   return (
     <div>
       {visibility !== "hidden" && !data.everyMatchIsOver ? (
@@ -272,7 +284,8 @@ export default function TournamentBracketsPage() {
       ) : null}
       {!data.hasStarted && data.enoughTeams ? (
         <Form method="post" className="stack items-center">
-          {!canAdminTournament({ user, event: parentRouteData.event }) ? (
+          {!canAdminTournament({ user, event: parentRouteData.event }) ||
+          adminCantStart() ? (
             <Alert
               variation="INFO"
               alertClassName="tournament-bracket__start-bracket-alert"

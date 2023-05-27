@@ -261,7 +261,7 @@ export default function CalendarNewEventPage() {
         <DiscordLinkInput />
         <TagsAdder />
         <BadgesAdder />
-        {!eventToEdit ? <TOToolsAndMapPool /> : null}
+        <TOToolsAndMapPool />
         <SubmitButton className="mt-4">{t("actions.submit")}</SubmitButton>
       </Form>
     </Main>
@@ -626,9 +626,12 @@ function TOToolsAndMapPool() {
       : "ALL"
   );
 
+  // currently not possible to edit "tournament" data after submitting it
+  if (eventToEdit?.tournamentId) return null;
+
   return (
     <>
-      {canEnableTOTools(user) && (
+      {canEnableTOTools(user) && !eventToEdit && (
         <TOToolsEnabler checked={checked} setChecked={setChecked} />
       )}
       {checked ? (
