@@ -14,6 +14,10 @@
   "createMapList": "Create map list",
   "from": "From {{author}}",
   "pastEvents.dividerText": "Past events",
+  "count.teams_one": "{{count}} team",
+  "count.players_one": "{{count}} player",
+  "count.teams_other": "{{count}} teams",
+  "count.players_other": "{{count}} players",
 
   "forms.dates": "Dates",
   "forms.bracketUrl": "Bracket URL",

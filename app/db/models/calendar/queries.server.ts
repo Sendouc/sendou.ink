@@ -42,6 +42,8 @@ import findTieBreakerMapPoolByEventIdSql from "./findTieBreakerMapPoolByEventId.
 import deleteByIdSql from "./deleteById.sql";
 import createTournamentSql from "./createTournament.sql";
 import deleteTournamentByIdSql from "./deleteTournamentById.sql";
+import findTournamentTeamMemberCountsByEventIdSql from "./findTournamentTeamMemberCountsByEventId.sql";
+import { sumArray } from "~/utils/number";
 
 const createStm = sql.prepare(createSql);
 const updateStm = sql.prepare(updateSql);
@@ -355,6 +357,30 @@ function addTagArray<
   return { ...row, tags };
 }
 
+const findTournamentTeamMemberCountsByEventIdStm = sql.prepare(
+  findTournamentTeamMemberCountsByEventIdSql
+);
+
+function addParticipantsCounts<
+  T extends { tournamentId: CalendarEvent["tournamentId"] }
+>(arg: T) {
+  if (!arg.tournamentId) return arg;
+
+  const counts = findTournamentTeamMemberCountsByEventIdStm.all({
+    tournamentId: arg.tournamentId,
+  }) as Array<{
+    memberCount: number;
+  }>;
+
+  return {
+    ...arg,
+    participantCounts: {
+      teams: counts.length,
+      players: sumArray(counts.map((c) => c.memberCount)),
+    },
+  };
+}
+
 export function findAllBetweenTwoTimestamps({
   startTime,
   endTime,
@@ -374,10 +400,12 @@ export function findAllBetweenTwoTimestamps({
         eventDateId: CalendarEventDate["id"];
       } & Pick<User, "discordName" | "discordDiscriminator"> & {
         nthAppearance: number;
-      } & { hasBadge: number }
+      } & { hasBadge: number } & {
+        participantCounts?: { teams: number; players: number };
+      }
   >;
 
-  return rows.map(addTagArray).map(addBadges);
+  return rows.map(addTagArray).map(addBadges).map(addParticipantsCounts);
 }
 
 const findByIdStm = sql.prepare(findByIdSql);

@@ -155,6 +155,20 @@
   color: var(--text-lighter);
 }
 
+.calendar__event__participant-counts {
+  display: flex;
+  align-items: center;
+  color: var(--text-lighter);
+  font-size: var(--fonts-xs);
+  gap: var(--s-2);
+  margin-block-end: var(--s-1);
+}
+
+.calendar__event__participant-counts > svg {
+  width: 1rem;
+  margin-block-end: 1px;
+}
+
 .calendar__event__bottom-info-container {
   display: flex;
   align-items: center;

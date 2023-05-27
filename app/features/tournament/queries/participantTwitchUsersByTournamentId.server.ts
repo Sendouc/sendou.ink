@@ -8,7 +8,9 @@ const stm = sql.prepare(/* sql */ `
   from "User"
   left join "TournamentTeamMember" on "TournamentTeamMember"."userId" = "User"."id"
   left join "TournamentTeam" on "TournamentTeam"."id" = "TournamentTeamMember"."tournamentTeamId"
+  left join "TournamentTeamCheckIn" on "TournamentTeamCheckIn"."tournamentTeamId" = "TournamentTeam"."id"
   where "TournamentTeam"."tournamentId" = @tournamentId
+    and "TournamentTeamCheckIn"."checkedInAt" is not null
     and "User"."twitch" is not null
 `);
 
