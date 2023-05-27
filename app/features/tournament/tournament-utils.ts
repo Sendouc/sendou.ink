@@ -11,6 +11,7 @@ import type {
 } from "./routes/to.$id";
 import { TOURNAMENT } from "./tournament-constants";
 import { validate } from "~/utils/remix";
+import type { PlayedSet } from "./core/sets.server";
 
 export function resolveOwnedTeam({
   teams,
@@ -127,4 +128,14 @@ export function validateCanCheckIn({
   );
 
   return true;
+}
+
+export function tournamentRoundI18nKey(round: PlayedSet["round"]) {
+  if (round.round === "grand_finals") return `bracket.grand_finals` as const;
+  if (round.round === "bracket_reset") {
+    return `bracket.grand_finals.bracket_reset` as const;
+  }
+  if (round.round === "finals") return `bracket.${round.type}.finals` as const;
+
+  return `bracket.${round.type}` as const;
 }

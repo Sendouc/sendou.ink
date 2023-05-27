@@ -1,5 +1,5 @@
 import type { LoaderArgs } from "@remix-run/node";
-import { useLoaderData, useOutletContext } from "@remix-run/react";
+import { Link, useLoaderData, useOutletContext } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { Placement } from "~/components/Placement";
 import {
@@ -15,9 +15,19 @@ import {
 } from "../core/sets.server";
 import {
   tournamentIdFromParams,
+  tournamentRoundI18nKey,
   tournamentTeamIdFromParams,
 } from "../tournament-utils";
 import type { TournamentLoaderData } from "./to.$id";
+import { ModeImage } from "~/components/Image";
+import clsx from "clsx";
+import { Avatar } from "~/components/Avatar";
+import {
+  tournamentMatchPage,
+  tournamentTeamPage,
+  userPage,
+} from "~/utils/urls";
+import { useTranslation } from "~/hooks/useTranslation";
 
 export const loader = ({ params }: LoaderArgs) => {
   const tournamentId = tournamentIdFromParams(params);
@@ -56,7 +66,7 @@ export default function TournamentTeamPage() {
 
   // xxx: grey out players who did not play yet
   return (
-    <div className="stack lg">
+    <div className="stack xl">
       <TeamWithRoster team={team} />
       <StatSquares
         seed={teamIndex + 1}
@@ -121,11 +131,68 @@ function StatSquares({
 }
 
 function SetInfo({ set }: { set: PlayedSet }) {
+  const { t } = useTranslation(["tournament"]);
+  const parentRouteData = useOutletContext<TournamentLoaderData>();
   return (
-    <div>
-      <div className="stack horizontal sm">
-        <div>{set.score.join("-")}</div>
-        <div>Losers Finals - Elimination Bracket</div>
+    <div className="tournament__team__set">
+      <div className="stack horizontal sm items-end">
+        <div className="tournament__team__set__score">
+          {set.score.join("-")}
+        </div>
+        <Link
+          to={tournamentMatchPage({
+            matchId: set.tournamentMatchId,
+            eventId: parentRouteData.event.id,
+          })}
+          className="tournament__team__set__round-name"
+        >
+          {t(`tournament:${tournamentRoundI18nKey(set.round)}`, {
+            round: set.round,
+          })}{" "}
+          - {t(`tournament:bracket.${set.bracket}`)}
+        </Link>
+      </div>
+      <div className="overlap-divider">
+        <div className="stack horizontal sm">
+          {set.maps.map(({ modeShort, result }, i) => {
+            return (
+              <ModeImage
+                key={i}
+                mode={modeShort}
+                size={20}
+                containerClassName={clsx("tournament__team__set__mode", {
+                  tournament__team__set__mode__loss: result === "loss",
+                })}
+              />
+            );
+          })}
+        </div>
+      </div>
+      <div className="tournament__team__set__opponent">
+        <div className="tournament__team__set__opponent__vs">vs.</div>
+        <Link
+          to={tournamentTeamPage({
+            tournamentTeamId: set.opponent.id,
+            eventId: parentRouteData.event.id,
+          })}
+          className="tournament__team__set__opponent__team"
+        >
+          {set.opponent.name}
+        </Link>
+        <div className="tournament__team__set__opponent__members">
+          {set.opponent.roster.map((user) => {
+            return (
+              <Link
+                to={userPage(user)}
+                key={user.id}
+                className="tournament__team__set__opponent__member"
+              >
+                <Avatar user={user} size="xxs" />
+                {user.discordName}
+              </Link>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
