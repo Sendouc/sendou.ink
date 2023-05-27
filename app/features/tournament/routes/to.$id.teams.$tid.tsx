@@ -8,7 +8,11 @@ import {
   getTournamentManager,
 } from "~/features/tournament-bracket";
 import { TeamWithRoster } from "../components/TeamWithRoster";
-import { tournamentTeamSets, winCounts } from "../core/sets.server";
+import {
+  type PlayedSet,
+  tournamentTeamSets,
+  winCounts,
+} from "../core/sets.server";
 import {
   tournamentIdFromParams,
   tournamentTeamIdFromParams,
@@ -58,6 +62,9 @@ export default function TournamentTeamPage() {
         seed={teamIndex + 1}
         teamsCount={parentRouteData.teams.length}
       />
+      {data.sets.map((set) => {
+        return <SetInfo key={set.tournamentMatchId} set={set} />;
+      })}
     </div>
   );
 }
@@ -108,6 +115,17 @@ function StatSquares({
             "-"
           )}
         </div>
+      </div>
+    </div>
+  );
+}
+
+function SetInfo({ set }: { set: PlayedSet }) {
+  return (
+    <div>
+      <div className="stack horizontal sm">
+        <div>{set.score.join("-")}</div>
+        <div>Losers Finals - Elimination Bracket</div>
       </div>
     </div>
   );

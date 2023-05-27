@@ -393,10 +393,6 @@
   font-weight: var(--semi-bold);
 }
 
-.tournament__team__stat__main:has(sup) {
-  margin-block-start: -5px;
-}
-
 .tournament__team__stat__main sup {
   font-size: var(--fonts-sm);
   font-weight: var(--semi-bold);
