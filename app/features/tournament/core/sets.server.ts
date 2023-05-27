@@ -1,6 +1,9 @@
 import type { User } from "~/db/types";
 import type { ModeShort } from "~/modules/in-game-lists";
-import { setHistoryByTeamId } from "../queries/setHistoryByTeamId.server";
+import {
+  type SetHistoryByTeamIdItem,
+  setHistoryByTeamId,
+} from "../queries/setHistoryByTeamId.server";
 import { findRoundNumbersByTournamentId } from "../queries/findRoundNumbersByTournamentId.server";
 
 export interface PlayedSet {
@@ -109,7 +112,7 @@ export function tournamentTeamSets({
         modeShort: match.mode,
         result: match.wasWinner ? "win" : "loss",
       })),
-      score: [set.opponentOneScore ?? 0, set.opponentTwoScore ?? 0],
+      score: flipScoreIfNeeded(set),
       opponent: {
         id: set.otherTeamId,
         name: set.otherTeamName,
@@ -118,6 +121,27 @@ export function tournamentTeamSets({
     };
   });
 }
+
+function flipScoreIfNeeded(set: SetHistoryByTeamIdItem): [number, number] {
+  const score: [number, number] = [
+    set.opponentOneScore ?? 0,
+    set.opponentTwoScore ?? 0,
+  ];
+
+  const wonTheSet =
+    set.matches.reduce((acc, cur) => cur.wasWinner + acc, 0) >
+    set.matches.length / 2;
+
+  if (
+    (wonTheSet && score[0] < score[1]) ||
+    (!wonTheSet && score[0] > score[1])
+  ) {
+    return [score[1], score[0]];
+  }
+
+  return score;
+}
+
 // TODO: this only works for DE
 function resolveRoundType({ groupNumber }: { groupNumber: number }) {
   if (groupNumber === 1 || groupNumber === 3) {

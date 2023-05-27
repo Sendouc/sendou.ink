@@ -66,15 +66,17 @@ export default function TournamentTeamPage() {
 
   // xxx: grey out players who did not play yet
   return (
-    <div className="stack xl">
+    <div className="stack lg">
       <TeamWithRoster team={team} />
       <StatSquares
         seed={teamIndex + 1}
         teamsCount={parentRouteData.teams.length}
       />
-      {data.sets.map((set) => {
-        return <SetInfo key={set.tournamentMatchId} set={set} />;
-      })}
+      <div className="tournament__team__sets">
+        {data.sets.map((set) => {
+          return <SetInfo key={set.tournamentMatchId} set={set} />;
+        })}
+      </div>
     </div>
   );
 }
@@ -130,12 +132,13 @@ function StatSquares({
   );
 }
 
+// xxx: mobile UI
 function SetInfo({ set }: { set: PlayedSet }) {
   const { t } = useTranslation(["tournament"]);
   const parentRouteData = useOutletContext<TournamentLoaderData>();
   return (
     <div className="tournament__team__set">
-      <div className="stack horizontal sm items-end">
+      <div className="stack horizontal sm items-end justify-center">
         <div className="tournament__team__set__score">
           {set.score.join("-")}
         </div>
@@ -147,7 +150,7 @@ function SetInfo({ set }: { set: PlayedSet }) {
           className="tournament__team__set__round-name"
         >
           {t(`tournament:${tournamentRoundI18nKey(set.round)}`, {
-            round: set.round,
+            round: set.round.round,
           })}{" "}
           - {t(`tournament:bracket.${set.bracket}`)}
         </Link>

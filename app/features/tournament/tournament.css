@@ -413,12 +413,21 @@
   }
 }
 
-.tournament__team__set {
+.tournament__team__sets {
+  display: flex;
+  flex-direction: column;
   max-width: 32rem;
+  margin: 0 auto;
+  gap: var(--s-8);
+}
+
+.tournament__team__set {
   display: flex;
   flex-direction: column;
   gap: var(--s-2-5);
-  margin: 0 auto;
+  background-color: var(--bg-lighter);
+  border-radius: var(--rounded);
+  padding: var(--s-3) var(--s-6);
 }
 
 .tournament__team__set__score {

@@ -50,6 +50,7 @@ const stm = sql.prepare(/* sql */ `
         "m"."opponentTwo" ->> '$.result' = 'win'
     )
     group by "m"."id"
+    order by "groupNumber" asc, "roundNumber" asc, "r"."number" asc
   )
   select 
     "q1".*,
@@ -77,7 +78,7 @@ const stm = sql.prepare(/* sql */ `
   group by "q1"."tournamentMatchId"
 `);
 
-interface SetHistoryByTeamIdItem {
+export interface SetHistoryByTeamIdItem {
   tournamentMatchId: number;
   opponentOneScore: number | null;
   opponentTwoScore: number | null;
