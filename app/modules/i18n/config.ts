@@ -27,7 +27,7 @@ export const languages = [
   },
   {
     code: "he",
-    name: "עִבְרִית",
+    name: "עברית",
   },
   {
     code: "it",
