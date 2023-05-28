@@ -74,6 +74,10 @@
   border-radius: var(--rounded);
 }
 
+.rounded-sm {
+  border-radius: var(--rounded-sm);
+}
+
 .rounded-full {
   border-radius: 100%;
 }

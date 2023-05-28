@@ -179,6 +179,13 @@ export const calendarEditPage = (eventId?: number) =>
 export const calendarReportWinnersPage = (eventId: number) =>
   `/calendar/${eventId}/report-winners`;
 export const tournamentPage = (eventId: number) => `/to/${eventId}`;
+export const tournamentTeamPage = ({
+  eventId,
+  tournamentTeamId,
+}: {
+  eventId: number;
+  tournamentTeamId: number;
+}) => `/to/${eventId}/teams/${tournamentTeamId}`;
 export const tournamentRegisterPage = (eventId: number) =>
   `/to/${eventId}/register`;
 export const tournamentMapsPage = (eventId: number) => `/to/${eventId}/maps`;

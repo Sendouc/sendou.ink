@@ -21,6 +21,10 @@ module.exports = {
           "features/tournament/routes/to.$id.register.tsx"
         );
         route("/to/:id/teams", "features/tournament/routes/to.$id.teams.tsx");
+        route(
+          "/to/:id/teams/:tid",
+          "features/tournament/routes/to.$id.teams.$tid.tsx"
+        );
         route("/to/:id/join", "features/tournament/routes/to.$id.join.tsx");
         route("/to/:id/admin", "features/tournament/routes/to.$id.admin.tsx");
         route("/to/:id/seeds", "features/tournament/routes/to.$id.seeds.tsx");
