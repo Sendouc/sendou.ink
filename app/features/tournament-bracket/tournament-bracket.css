@@ -195,6 +195,11 @@
   color: var(--theme);
 }
 
+.tournament-bracket__during-match-actions__team-name {
+  color: var(--text);
+  font-weight: var(--bold);
+}
+
 .tournament-bracket__mode-progress {
   display: flex;
   margin-bottom: var(--s-4);
@@ -294,6 +299,7 @@
   font-weight: var(--semi-bold);
   text-align: center;
   font-size: var(-fonts-sm);
+  color: var(--text);
 }
 
 .tournament-bracket__standing__team-name__big {

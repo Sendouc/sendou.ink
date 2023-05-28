@@ -29,7 +29,11 @@ export function dateToThisWeeksMonday(date: Date) {
 export function getWeekStartsAtMondayDay(date: Date) {
   const currentDay = date.getDay();
 
-  return currentDay === 0 ? 7 : currentDay;
+  return dayToWeekStartsAtMondayDay(currentDay);
+}
+
+export function dayToWeekStartsAtMondayDay(day: number) {
+  return day === 0 ? 7 : day;
 }
 
 // https://stackoverflow.com/a/71336659

@@ -314,7 +314,6 @@ function ActionSectionWrapper({
   children: React.ReactNode;
   icon?: "warning" | "info" | "success" | "error";
   "justify-center"?: boolean;
-  "data-cy"?: string;
 }) {
   // todo: flex-dir: column on mobile
   const style = icon
@@ -323,11 +322,7 @@ function ActionSectionWrapper({
       }
     : undefined;
   return (
-    <section
-      className="tournament__action-section"
-      style={style as any}
-      data-cy={rest["data-cy"]}
-    >
+    <section className="tournament__action-section" style={style as any}>
       <div
         className={clsx("tournament__action-section__content", {
           "justify-center": rest["justify-center"],

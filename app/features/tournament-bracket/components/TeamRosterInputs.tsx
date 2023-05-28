@@ -9,9 +9,10 @@ import type {
 } from "../../tournament/routes/to.$id";
 import type { Unpacked } from "~/utils/types";
 import { inGameNameWithoutDiscriminator } from "~/utils/strings";
-import { useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData, useOutletContext } from "@remix-run/react";
 import type { TournamentMatchLoaderData } from "../routes/to.$id.matches.$mid";
 import type { Result } from "./ScoreReporter";
+import { tournamentTeamPage } from "~/utils/urls";
 
 export type TeamRosterInputsType = "DEFAULT" | "DISABLED" | "PRESENTATIONAL";
 
@@ -33,6 +34,7 @@ export function TeamRosterInputs({
 }) {
   const presentational = Boolean(result);
 
+  const parentRouteData = useOutletContext<TournamentLoaderData>();
   const data = useLoaderData<TournamentMatchLoaderData>();
   const inputMode = (
     team: Unpacked<TournamentLoaderData["teams"]>
@@ -71,7 +73,15 @@ export function TeamRosterInputs({
             <span className="tournament-bracket__during-match-actions__seed">
               #{data.seeds[teamI]}
             </span>{" "}
-            {team.name}
+            <Link
+              to={tournamentTeamPage({
+                eventId: parentRouteData.event.id,
+                tournamentTeamId: team.id,
+              })}
+              className="tournament-bracket__during-match-actions__team-name"
+            >
+              {team.name}
+            </Link>
           </h4>
           <WinnerRadio
             presentational={presentational}

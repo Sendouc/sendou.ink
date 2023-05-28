@@ -25,6 +25,7 @@ import {
   databaseTimestampToDate,
   dateToThisWeeksMonday,
   dateToWeekNumber,
+  dayToWeekStartsAtMondayDay,
   getWeekStartsAtMondayDay,
   weekNumberToDate,
 } from "~/utils/dates";
@@ -344,7 +345,9 @@ function EventsList({
 
   const eventsGrouped = eventsGroupedByDay(events);
   if (sortPastEventsLast) {
-    eventsGrouped.sort(pastEventsLast(data.currentDay));
+    eventsGrouped.sort(
+      pastEventsLast(dayToWeekStartsAtMondayDay(data.currentDay))
+    );
   }
 
   let dividerRendered = false;
@@ -354,7 +357,8 @@ function EventsList({
         const renderDivider =
           sortPastEventsLast &&
           !dividerRendered &&
-          getWeekStartsAtMondayDay(daysDate) < data.currentDay;
+          getWeekStartsAtMondayDay(daysDate) <
+            dayToWeekStartsAtMondayDay(data.currentDay);
         if (renderDivider) {
           dividerRendered = true;
         }

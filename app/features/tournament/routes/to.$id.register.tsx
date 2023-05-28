@@ -83,6 +83,7 @@ import type { TournamentLoaderData } from "./to.$id";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { deleteTeam } from "../queries/deleteTeam.server";
 import { HACKY_resolvePoolCode } from "~/features/tournament-bracket";
+import { Popover } from "~/components/Popover";
 
 export const handle: SendouRouteHandle = {
   breadcrumb: () => ({
@@ -491,14 +492,21 @@ function CheckIn({
     return <div className="text-center text-xs">Check-in is over</div>;
   }
 
+  if (!canCheckIn) {
+    return (
+      <div className="stack items-center">
+        <Popover buttonChildren={<>Check in</>} triggerClassName="tiny">
+          Complete the previous steps before checking in
+        </Popover>
+      </div>
+    );
+  }
+
   return (
     <fetcher.Form method="post" className="stack items-center">
       <SubmitButton
         size="tiny"
         _action="CHECK_IN"
-        // TODO: better UX than just disabling the button
-        // do they have other steps left to complete than checking in?
-        disabled={!canCheckIn}
         state={fetcher.state}
         testId="check-in-button"
       >
