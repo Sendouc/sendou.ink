@@ -32,6 +32,6 @@
   "forms.errors.invalidSens": "לא ניתן להגדיר את רגישות התנועה אם רגישות הסטיק לא מוגדרת",
   "forms.info.favoriteBadge": "התג האהוב עליכם מוצג בגדול כברירת מחדל בפרופיל שלכם.",
 
-  "search.info": "חיפוש משתמשים לפי שם ב-Discord, Splatoon 3, or Twitter",
+  "search.info": "חיפוש משתמשים לפי שם ב-Discord, Splatoon 3, או Twitter",
   "search.noResults": "לא נמצאו משתמשים התואמים '{{query}}'"
 }

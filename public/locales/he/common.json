@@ -1,6 +1,6 @@
 {
   "pages.admin": "מנהל",
-  "pages.articles": "מאמרים",
+  "pages.articles": "כתבות",
   "pages.badges": "תגים",
   "pages.plus": "שרת פלוס",
   "pages.contributors": "תורמים",
@@ -17,7 +17,7 @@
   "pages.support": "תמיכה",
   "pages.privacy": "מדיניות הפרטיות",
   "pages.vods": "סרטונים",
-  "pages.xsearch": "חיפוש מוביל",
+  "pages.xsearch": "חיפוש בטופ",
   "pages.leaderboards": "לוח תוצאות",
 
   "header.profile": "פרופיל",
