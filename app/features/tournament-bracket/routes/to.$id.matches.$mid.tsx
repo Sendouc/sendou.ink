@@ -3,54 +3,50 @@ import type {
   LinksFunction,
   LoaderArgs,
 } from "@remix-run/node";
-import { findMatchById } from "../queries/findMatchById.server";
 import {
   useLoaderData,
   useOutletContext,
   useRevalidator,
 } from "@remix-run/react";
-import { createTournamentMapList } from "~/modules/tournament-map-list-generator";
-import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
-import { MapPool } from "~/modules/map-pool-serializer";
-import { ScoreReporter } from "../components/ScoreReporter";
+import { nanoid } from "nanoid";
+import * as React from "react";
+import { useEventSource } from "remix-utils";
+import invariant from "tiny-invariant";
 import { LinkButton } from "~/components/Button";
 import { ArrowLongLeftIcon } from "~/components/icons/ArrowLongLeft";
+import { sql } from "~/db/sql";
+import {
+  tournamentIdFromParams,
+  type TournamentLoaderData,
+} from "~/features/tournament";
+import { useSearchParamState } from "~/hooks/useSearchParamState";
+import { useVisibilityChange } from "~/hooks/useVisibilityChange";
+import { requireUser, useUser } from "~/modules/auth";
+import { canAdminTournament, canReportTournamentScore } from "~/permissions";
+import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
+import { assertUnreachable } from "~/utils/types";
 import {
   tournamentBracketsPage,
   tournamentMatchSubscribePage,
 } from "~/utils/urls";
-import invariant from "tiny-invariant";
-import { canAdminTournament, canReportTournamentScore } from "~/permissions";
-import { requireUser, useUser } from "~/modules/auth";
-import { getTournamentManager } from "../core/brackets-manager";
-import { assertUnreachable } from "~/utils/types";
-import { insertTournamentMatchGameResult } from "../queries/insertTournamentMatchGameResult.server";
-import type { ModeShort, StageId } from "~/modules/in-game-lists";
-import { findResultsByMatchId } from "../queries/findResultsByMatchId.server";
-import { deleteTournamentMatchGameResultById } from "../queries/deleteTournamentMatchGameResultById.server";
-import { useSearchParamState } from "~/hooks/useSearchParamState";
 import { findByIdentifier } from "../../tournament/queries/findByIdentifier.server";
 import { findTeamsByTournamentId } from "../../tournament/queries/findTeamsByTournamentId.server";
+import { ScoreReporter } from "../components/ScoreReporter";
+import { getTournamentManager } from "../core/brackets-manager";
+import { emitter } from "../core/emitters.server";
+import { resolveMapList } from "../core/mapList.server";
+import { deleteTournamentMatchGameResultById } from "../queries/deleteTournamentMatchGameResultById.server";
+import { findMatchById } from "../queries/findMatchById.server";
+import { findResultsByMatchId } from "../queries/findResultsByMatchId.server";
+import { insertTournamentMatchGameResult } from "../queries/insertTournamentMatchGameResult.server";
+import { insertTournamentMatchGameResultParticipant } from "../queries/insertTournamentMatchGameResultParticipant.server";
+import { matchSchema } from "../tournament-bracket-schemas.server";
 import {
   bracketSubscriptionKey,
-  checkSourceIsValid,
   matchIdFromParams,
   matchSubscriptionKey,
 } from "../tournament-bracket-utils";
-import { matchSchema } from "../tournament-bracket-schemas.server";
-import {
-  modesIncluded,
-  tournamentIdFromParams,
-  type TournamentLoaderData,
-} from "~/features/tournament";
-import { insertTournamentMatchGameResultParticipant } from "../queries/insertTournamentMatchGameResultParticipant.server";
 import bracketStyles from "../tournament-bracket.css";
-import { sql } from "~/db/sql";
-import { nanoid } from "nanoid";
-import { emitter } from "../core/emitters.server";
-import { useEventSource } from "remix-utils";
-import * as React from "react";
-import { useVisibilityChange } from "~/hooks/useVisibilityChange";
 
 export const links: LinksFunction = () => [
   {
@@ -100,22 +96,31 @@ export const action: ActionFunction = async ({ params, request }) => {
 
   switch (data._action) {
     case "REPORT_SCORE": {
+      // they are trying to report score that was already reported
+      // assume that it was already reported and make their page refresh
+      if (data.position !== scores[0] + scores[1]) {
+        return null;
+      }
+
       validateCanReportScore();
       validate(
         match.opponentOne?.id === data.winnerTeamId ||
           match.opponentTwo?.id === data.winnerTeamId,
         "Winner team id is invalid"
       );
-      validate(
-        checkSourceIsValid({ source: data.source, match }),
-        "Source is invalid"
-      );
 
-      // they are trying to report score that was already reported
-      // assume that it was already reported and make their page refresh
-      if (data.position !== scores[0] + scores[1]) {
-        return null;
-      }
+      const mapList =
+        match.opponentOne?.id && match.opponentTwo?.id
+          ? resolveMapList({
+              bestOf: match.bestOf,
+              tournamentId,
+              matchId,
+              teams: [match.opponentOne.id, match.opponentTwo.id],
+              mapPickingStyle: match.mapPickingStyle,
+            })
+          : null;
+      const currentMap = mapList?.[data.position];
+      invariant(currentMap, "Can't resolve current map");
 
       const scoreToIncrement = () => {
         if (data.winnerTeamId === match.opponentOne?.id) return 0;
@@ -143,12 +148,12 @@ export const action: ActionFunction = async ({ params, request }) => {
 
         const result = insertTournamentMatchGameResult({
           matchId: match.id,
-          mode: data.mode as ModeShort,
-          stageId: data.stageId as StageId,
+          mode: currentMap.mode,
+          stageId: currentMap.stageId,
           reporterId: user.id,
           winnerTeamId: data.winnerTeamId,
           number: data.position + 1,
-          source: data.source,
+          source: String(currentMap.source),
         });
 
         for (const userId of data.playerIds) {
@@ -270,14 +275,33 @@ export const action: ActionFunction = async ({ params, request }) => {
 export type TournamentMatchLoaderData = typeof loader;
 
 export const loader = ({ params }: LoaderArgs) => {
+  const tournamentId = tournamentIdFromParams(params);
   const matchId = matchIdFromParams(params);
 
   const match = notFoundIfFalsy(findMatchById(matchId));
+
+  const mapList =
+    match.opponentOne?.id && match.opponentTwo?.id
+      ? resolveMapList({
+          bestOf: match.bestOf,
+          tournamentId,
+          matchId,
+          teams: [match.opponentOne.id, match.opponentTwo.id],
+          mapPickingStyle: match.mapPickingStyle,
+        })
+      : null;
+
+  const scoreSum =
+    (match.opponentOne?.score ?? 0) + (match.opponentTwo?.score ?? 0);
+
+  const currentMap = mapList?.[scoreSum];
 
   return {
     match,
     results: findResultsByMatchId(matchId),
     seeds: resolveSeeds(),
+    currentMap,
+    modes: mapList?.map((map) => map.mode),
   };
 
   function resolveSeeds() {
@@ -389,57 +413,8 @@ function MapListSection({ teams }: { teams: [id: number, id: number] }) {
 
   if (!teamOne || !teamTwo) return null;
 
-  const teamOneMaps = new MapPool(teamOne.mapPool ?? []);
-  const teamTwoMaps = new MapPool(teamTwo.mapPool ?? []);
-
-  let maps;
-  try {
-    maps = createTournamentMapList({
-      bestOf: data.match.bestOf,
-      seed: String(data.match.id),
-      modesIncluded: modesIncluded(parentRouteData.event),
-      tiebreakerMaps: new MapPool(parentRouteData.tieBreakerMapPool),
-      teams: [
-        {
-          id: teams[0],
-          maps: teamOneMaps,
-        },
-        {
-          id: teams[1],
-          maps: teamTwoMaps,
-        },
-      ],
-    });
-  } catch (e) {
-    console.error(
-      "Failed to create map list. Falling back to default maps.",
-      e
-    );
-
-    maps = createTournamentMapList({
-      bestOf: data.match.bestOf,
-      seed: String(data.match.id),
-      modesIncluded: modesIncluded(parentRouteData.event),
-      tiebreakerMaps: new MapPool(parentRouteData.tieBreakerMapPool),
-      teams: [
-        {
-          id: -1,
-          maps: new MapPool([]),
-        },
-        {
-          id: -2,
-          maps: new MapPool([]),
-        },
-      ],
-    });
-  }
-
-  const scoreSum =
-    (data.match.opponentOne?.score ?? 0) + (data.match.opponentTwo?.score ?? 0);
-
-  const currentStageWithMode = maps[scoreSum];
-
-  invariant(currentStageWithMode, "No map found for this score");
+  invariant(data.currentMap, "No map found for this score");
+  invariant(data.modes, "No modes found for this map list");
 
   const isMemberOfATeam =
     teamOne.members.some((m) => m.userId === user?.id) ||
@@ -447,9 +422,9 @@ function MapListSection({ teams }: { teams: [id: number, id: number] }) {
 
   return (
     <ScoreReporter
-      currentStageWithMode={currentStageWithMode}
+      currentStageWithMode={data.currentMap}
       teams={[teamOne, teamTwo]}
-      modes={maps.map((map) => map.mode)}
+      modes={data.modes}
       type={
         canReportTournamentScore({
           event: parentRouteData.event,

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { id, modeShort, safeJSONParse, stageId } from "~/utils/zod";
+import { id, safeJSONParse } from "~/utils/zod";
 import { TOURNAMENT } from "../tournament/tournament-constants";
 
 const reportedMatchPlayerIds = z.preprocess(
@@ -22,9 +22,6 @@ export const matchSchema = z.union([
     winnerTeamId: id,
     position: reportedMatchPosition,
     playerIds: reportedMatchPlayerIds,
-    stageId,
-    mode: modeShort,
-    source: z.string(),
   }),
   z.object({
     _action: z.literal("UNDO_REPORT_SCORE"),

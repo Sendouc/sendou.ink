@@ -50,21 +50,6 @@ export function ScoreReporterRosters({
               value={JSON.stringify(checkedPlayers.flat())}
             />
             <input type="hidden" name="position" value={position} />
-            <input
-              type="hidden"
-              name="stageId"
-              value={currentStageWithMode.stageId}
-            />
-            <input
-              type="hidden"
-              name="mode"
-              value={currentStageWithMode.mode}
-            />
-            <input
-              type="hidden"
-              name="source"
-              value={currentStageWithMode.source}
-            />
             <ReportScoreButtons
               checkedPlayers={checkedPlayers}
               winnerName={winningTeam()}
