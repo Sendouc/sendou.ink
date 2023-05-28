@@ -146,6 +146,9 @@ export function fillWithNullTillPowerOfTwo<T>(arr: T[]) {
 }
 
 export function everyMatchIsOver(bracket: ValueToArray<DataTypes>) {
+  // tournament didn't start yet
+  if (bracket.match.length === 0) return false;
+
   let lastWinner = -1;
   for (const [i, match] of bracket.match.entries()) {
     // special case - bracket reset might not be played depending on who wins in the grands

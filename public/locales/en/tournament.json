@@ -33,6 +33,7 @@
   "bestOf.label.short": "Bo",
 
   "pickInfo.team": "Team {{number}} pick",
+  "pickInfo.team.specific": "{{team}} picked",
   "pickInfo.tiebreaker": "Tiebreaker",
   "pickInfo.both": "Both picked",
   "pickInfo.default": "Default map",

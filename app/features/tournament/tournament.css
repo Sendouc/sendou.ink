@@ -440,6 +440,22 @@
   padding: var(--s-3) var(--s-6);
 }
 
+.tournament__team__set__top-container {
+  display: flex;
+  justify-content: center;
+  gap: var(--s-2);
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+@media screen and (min-width: 480px) {
+  .tournament__team__set__top-container {
+    flex-direction: row;
+    align-items: flex-end;
+  }
+}
+
 .tournament__team__set__score {
   font-size: var(--fonts-xl);
   font-weight: var(--bold);
@@ -461,6 +477,16 @@
 
 .tournament__team__set__mode__loss {
   border-color: var(--text-lighter);
+}
+
+.tournament__team__set__stage-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  align-items: center;
+  font-size: var(--fonts-xs);
+  font-weight: var(--semi-bold);
+  color: var(--text);
 }
 
 .tournament__team__set__opponent {
@@ -490,6 +516,7 @@
   grid-area: members;
   display: flex;
   gap: var(--s-2);
+  flex-wrap: wrap;
 }
 
 .tournament__team__set__opponent__member {

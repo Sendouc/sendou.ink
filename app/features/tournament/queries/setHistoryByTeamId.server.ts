@@ -1,6 +1,6 @@
 import { sql } from "~/db/sql";
-import type { User } from "~/db/types";
-import type { ModeShort } from "~/modules/in-game-lists";
+import type { TournamentMatchGameResult, User } from "~/db/types";
+import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import { removeDuplicatesByProperty } from "~/utils/arrays";
 import { parseDBArray } from "~/utils/sql";
 
@@ -18,8 +18,12 @@ const stm = sql.prepare(/* sql */ `
         json_object(
           'mode',
           "r"."mode",
+          'stageId',
+          "r"."stageId",
           'wasWinner',
-          "r"."winnerTeamId" == @tournamentTeamId
+          "r"."winnerTeamId" == @tournamentTeamId,
+          'source',
+          "r"."source"
         )
       ) as "matches"
     from "TournamentMatch" as "m"
@@ -82,6 +86,8 @@ export interface SetHistoryByTeamIdItem {
   roundNumber: number;
   groupNumber: number;
   matches: {
+    stageId: StageId;
+    source: TournamentMatchGameResult["source"];
     mode: ModeShort;
     wasWinner: number;
   }[];

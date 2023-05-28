@@ -1,10 +1,13 @@
 import type { User } from "~/db/types";
-import type { ModeShort } from "~/modules/in-game-lists";
+import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import {
   type SetHistoryByTeamIdItem,
   setHistoryByTeamId,
 } from "../queries/setHistoryByTeamId.server";
 import { findRoundNumbersByTournamentId } from "../queries/findRoundNumbersByTournamentId.server";
+import type { TournamentMaplistSource } from "~/modules/tournament-map-list-generator";
+import { sourceTypes } from "~/modules/tournament-map-list-generator";
+import invariant from "tiny-invariant";
 
 export interface PlayedSet {
   tournamentMatchId: number;
@@ -15,8 +18,10 @@ export interface PlayedSet {
   };
   bracket: "main" | "underground";
   maps: Array<{
+    stageId: StageId;
     modeShort: ModeShort;
     result: "win" | "loss";
+    source: TournamentMaplistSource;
   }>;
   opponent: {
     id: number;
@@ -109,8 +114,10 @@ export function tournamentTeamSets({
         type: resolveRoundType({ groupNumber: set.groupNumber }),
       },
       maps: set.matches.map((match) => ({
+        stageId: match.stageId,
         modeShort: match.mode,
         result: match.wasWinner ? "win" : "loss",
+        source: parseTournamentMaplistSource(match.source),
       })),
       score: flipScoreIfNeeded(set),
       opponent: {
@@ -120,6 +127,18 @@ export function tournamentTeamSets({
       },
     };
   });
+}
+
+function parseTournamentMaplistSource(source: string): TournamentMaplistSource {
+  if (sourceTypes.includes(source as any)) {
+    return source as TournamentMaplistSource;
+  }
+
+  const parsed = Number(source);
+
+  invariant(!Number.isNaN(parsed), `Invalid source: ${source}`);
+
+  return parsed;
 }
 
 function flipScoreIfNeeded(set: SetHistoryByTeamIdItem): [number, number] {

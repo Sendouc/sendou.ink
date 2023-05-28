@@ -1,6 +1,5 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { Link, useLoaderData, useOutletContext } from "@remix-run/react";
-import invariant from "tiny-invariant";
 import { Placement } from "~/components/Placement";
 import {
   everyMatchIsOver,
@@ -19,22 +18,24 @@ import {
   tournamentTeamIdFromParams,
 } from "../tournament-utils";
 import type { TournamentLoaderData } from "./to.$id";
-import { ModeImage } from "~/components/Image";
+import { ModeImage, StageImage } from "~/components/Image";
 import clsx from "clsx";
 import { Avatar } from "~/components/Avatar";
 import {
   tournamentMatchPage,
+  tournamentPage,
   tournamentTeamPage,
   userPage,
 } from "~/utils/urls";
 import { useTranslation } from "~/hooks/useTranslation";
+import { Redirect } from "~/components/Redirect";
+import { Popover } from "~/components/Popover";
+import type { TournamentMaplistSource } from "~/modules/tournament-map-list-generator";
+import type { FindTeamsByTournamentIdItem } from "../queries/findTeamsByTournamentId.server";
 
 export const loader = ({ params }: LoaderArgs) => {
   const tournamentId = tournamentIdFromParams(params);
   const tournamentTeamId = tournamentTeamIdFromParams(params);
-
-  // xxx: Handle redirect 404
-  // xxx: no links and redirect if tournament didn't start yet
 
   const manager = getTournamentManager("SQL");
   const bracket = manager.get.tournamentData(tournamentId);
@@ -54,8 +55,6 @@ export const loader = ({ params }: LoaderArgs) => {
   };
 };
 
-// xxx: mode icons popup stage too + source
-// xxx: check behavior during tournament
 // TODO: could cache this after tournament is finalized
 export default function TournamentTeamPage() {
   const data = useLoaderData<typeof loader>();
@@ -64,18 +63,22 @@ export default function TournamentTeamPage() {
     (t) => t.id === data.tournamentTeamId
   );
   const team = parentRouteData.teams[teamIndex];
-  invariant(team, "Team not found");
+  if (!team) {
+    return <Redirect to={tournamentPage(parentRouteData.event.id)} />;
+  }
 
   return (
     <div className="stack lg">
       <TeamWithRoster team={team} activePlayers={data.playersThatPlayed} />
-      <StatSquares
-        seed={teamIndex + 1}
-        teamsCount={parentRouteData.teams.length}
-      />
+      {data.winCounts.sets.total > 0 ? (
+        <StatSquares
+          seed={teamIndex + 1}
+          teamsCount={parentRouteData.teams.length}
+        />
+      ) : null}
       <div className="tournament__team__sets">
         {data.sets.map((set) => {
-          return <SetInfo key={set.tournamentMatchId} set={set} />;
+          return <SetInfo key={set.tournamentMatchId} set={set} team={team} />;
         })}
       </div>
     </div>
@@ -133,13 +136,36 @@ function StatSquares({
   );
 }
 
-// xxx: mobile UI
-function SetInfo({ set }: { set: PlayedSet }) {
+function SetInfo({
+  set,
+  team,
+}: {
+  set: PlayedSet;
+  team: FindTeamsByTournamentIdItem;
+}) {
   const { t } = useTranslation(["tournament"]);
   const parentRouteData = useOutletContext<TournamentLoaderData>();
+
+  const sourceToText = (source: TournamentMaplistSource) => {
+    switch (source) {
+      case "BOTH":
+        return t("tournament:pickInfo.both");
+      case "DEFAULT":
+        return t("tournament:pickInfo.default");
+      case "TIEBREAKER":
+        return t("tournament:pickInfo.tiebreaker");
+      default: {
+        const teamName =
+          source === set.opponent.id ? set.opponent.name : team.name;
+
+        return t("tournament:pickInfo.team.specific", { team: teamName });
+      }
+    }
+  };
+
   return (
     <div className="tournament__team__set">
-      <div className="stack horizontal sm items-end justify-center">
+      <div className="tournament__team__set__top-container">
         <div className="tournament__team__set__score">
           {set.score.join("-")}
         </div>
@@ -158,16 +184,30 @@ function SetInfo({ set }: { set: PlayedSet }) {
       </div>
       <div className="overlap-divider">
         <div className="stack horizontal sm">
-          {set.maps.map(({ modeShort, result }, i) => {
+          {set.maps.map(({ stageId, modeShort, result, source }, i) => {
             return (
-              <ModeImage
+              <Popover
                 key={i}
-                mode={modeShort}
-                size={20}
-                containerClassName={clsx("tournament__team__set__mode", {
-                  tournament__team__set__mode__loss: result === "loss",
-                })}
-              />
+                buttonChildren={
+                  <ModeImage
+                    mode={modeShort}
+                    size={20}
+                    containerClassName={clsx("tournament__team__set__mode", {
+                      tournament__team__set__mode__loss: result === "loss",
+                    })}
+                  />
+                }
+                placement="top"
+              >
+                <div className="tournament__team__set__stage-container">
+                  <StageImage
+                    stageId={stageId}
+                    width={125}
+                    className="rounded-sm"
+                  />
+                  {sourceToText(source)}
+                </div>
+              </Popover>
             );
           })}
         </div>
