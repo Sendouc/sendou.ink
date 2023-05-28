@@ -8,7 +8,8 @@ const stm = sql.prepare(/* sql */ `
     "User"."discordAvatar",
     "User"."discordId",
     "User"."customUrl",
-    "User"."country"
+    "User"."country",
+    "TournamentTeam"."id" as "tournamentTeamId"
   from "TournamentTeam"
     left join "TournamentTeamMember" on "TournamentTeamMember"."tournamentTeamId" = "TournamentTeam"."id"
     left join "User" on "User"."id" = "TournamentTeamMember"."userId"
@@ -20,17 +21,17 @@ const stm = sql.prepare(/* sql */ `
       and
       "TournamentTeamMember"."userId" = "TournamentMatchGameResultParticipant"."userId"
 
-  where "TournamentTeam"."id" = @tournamentTeamId
+  where "TournamentTeam"."tournamentId" = @tournamentId
   group by "User"."id"
 `);
 
 export type PlayerThatPlayedByTeamId = Pick<
   User,
   "id" | "discordName" | "discordAvatar" | "discordId" | "customUrl" | "country"
->;
+> & { tournamentTeamId: number };
 
-export function playersThatPlayedByTeamId(
-  tournamentTeamId: number
+export function playersThatPlayedByTournamentId(
+  tournamentId: number
 ): PlayerThatPlayedByTeamId[] {
-  return stm.all({ tournamentTeamId });
+  return stm.all({ tournamentId });
 }

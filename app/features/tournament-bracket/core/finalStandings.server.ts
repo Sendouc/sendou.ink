@@ -2,7 +2,7 @@ import type { Tournament, TournamentTeam } from "~/db/types";
 import type { BracketsManager } from "~/modules/brackets-manager";
 import type { FinalStandingsItem } from "~/modules/brackets-manager/types";
 import type { PlayerThatPlayedByTeamId } from "../queries/playersThatPlayedByTeamId.server";
-import { playersThatPlayedByTeamId } from "../queries/playersThatPlayedByTeamId.server";
+import { playersThatPlayedByTournamentId } from "../queries/playersThatPlayedByTeamId.server";
 
 export interface FinalStanding {
   tournamentTeam: Pick<TournamentTeam, "id" | "name">;
@@ -38,6 +38,8 @@ export function finalStandings({
     standings = standings.slice(0, STANDINGS_TO_INCLUDE);
   }
 
+  const playersThatPlayed = playersThatPlayedByTournamentId(tournamentId);
+
   const result: Array<FinalStanding> = [];
 
   let lastRank = 1;
@@ -53,7 +55,9 @@ export function finalStandings({
         name: standing.name,
       },
       placement: currentPlacement,
-      players: playersThatPlayedByTeamId(standing.id),
+      players: playersThatPlayed.filter(
+        (p) => p.tournamentTeamId === standing.id
+      ),
     });
   }
 
