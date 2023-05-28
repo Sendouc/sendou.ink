@@ -43,12 +43,7 @@ const stm = sql.prepare(/* sql */ `
       or
         "m"."opponentTwo" ->> '$.id' = @tournamentTeamId
     )
-    and
-    (
-        "m"."opponentOne" ->> '$.result' = 'win'
-      or
-        "m"."opponentTwo" ->> '$.result' = 'win'
-    )
+    and "m"."status" >= 4
     group by "m"."id"
     order by "groupNumber" asc, "roundNumber" asc, "r"."number" asc
   )
@@ -74,7 +69,7 @@ const stm = sql.prepare(/* sql */ `
   left join "User" as "u" on "p"."userId" = "u"."id"
   -- filters out own team results
   inner join "TournamentTeamMember" as "m" on "p"."userId" = "m"."userId" 
-    and "m"."tournamentTeamId" != @tournamentTeamId
+    and "m"."tournamentTeamId" == "q1"."otherTeamId"
   group by "q1"."tournamentMatchId"
 `);
 

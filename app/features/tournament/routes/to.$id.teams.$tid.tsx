@@ -54,6 +54,7 @@ export const loader = ({ params }: LoaderArgs) => {
 };
 
 // xxx: mode icons popup stage too + source
+// xxx: check behavior during tournament
 // TODO: could cache this after tournament is finalized
 export default function TournamentTeamPage() {
   const data = useLoaderData<typeof loader>();
