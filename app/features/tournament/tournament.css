@@ -128,6 +128,16 @@
   grid-template-columns: max-content max-content 1fr;
 }
 
+.tournament__team-with-roster__member__inactive {
+  text-decoration: line-through;
+  color: var(--text-lighter);
+  text-decoration-thickness: 2px;
+}
+
+.tournament__team-with-roster__member__avatar-inactive {
+  opacity: 0.4;
+}
+
 .tournament__team-with-roster__map-pool {
   display: grid;
   grid-template-columns: max-content max-content max-content max-content;

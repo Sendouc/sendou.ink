@@ -39,7 +39,7 @@ export const loader = ({ params }: LoaderArgs) => {
   const manager = getTournamentManager("SQL");
   const bracket = manager.get.tournamentData(tournamentId);
   const _everyMatchIsOver = everyMatchIsOver(bracket);
-  const placement = _everyMatchIsOver
+  const standing = _everyMatchIsOver
     ? finalStandingOfTeam({ manager, tournamentId, tournamentTeamId })
     : null;
 
@@ -47,9 +47,10 @@ export const loader = ({ params }: LoaderArgs) => {
 
   return {
     tournamentTeamId,
-    placement,
+    placement: standing?.placement,
     sets,
     winCounts: winCounts(sets),
+    playersThatPlayed: standing?.players.map((p) => p.id),
   };
 };
 
@@ -65,10 +66,9 @@ export default function TournamentTeamPage() {
   const team = parentRouteData.teams[teamIndex];
   invariant(team, "Team not found");
 
-  // xxx: grey out players who did not play yet
   return (
     <div className="stack lg">
-      <TeamWithRoster team={team} />
+      <TeamWithRoster team={team} activePlayers={data.playersThatPlayed} />
       <StatSquares
         seed={teamIndex + 1}
         teamsCount={parentRouteData.teams.length}

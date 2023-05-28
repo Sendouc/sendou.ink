@@ -79,6 +79,6 @@ export function finalStandingOfTeam({
   return (
     standings.find(
       (standing) => standing.tournamentTeam.id === tournamentTeamId
-    )?.placement ?? null
+    ) ?? null
   );
 }

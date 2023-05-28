@@ -4,15 +4,18 @@ import { Avatar } from "~/components/Avatar";
 import { userPage } from "~/utils/urls";
 import { ModeImage, StageImage } from "~/components/Image";
 import clsx from "clsx";
+import type { User } from "~/db/types";
 
 export function TeamWithRoster({
   team,
   seed,
   teamPageUrl,
+  activePlayers,
 }: {
   team: Pick<FindTeamsByTournamentIdItem, "members" | "name" | "mapPool">;
   seed?: number;
   teamPageUrl?: string;
+  activePlayers?: User["id"][];
 }) {
   return (
     <div>
@@ -27,9 +30,20 @@ export function TeamWithRoster({
           {team.members.map((member) => (
             <li
               key={member.userId}
-              className="tournament__team-with-roster__member"
+              className={clsx("tournament__team-with-roster__member", {
+                "tournament__team-with-roster__member__inactive":
+                  activePlayers && !activePlayers.includes(member.userId),
+              })}
             >
-              <Avatar user={member} size="xxs" />
+              <Avatar
+                user={member}
+                size="xxs"
+                className={
+                  activePlayers && !activePlayers.includes(member.userId)
+                    ? "tournament__team-with-roster__member__avatar-inactive"
+                    : undefined
+                }
+              />
               <Link
                 to={userPage(member)}
                 className="tournament__team-member-name"
