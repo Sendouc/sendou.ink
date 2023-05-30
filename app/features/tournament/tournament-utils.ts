@@ -113,19 +113,18 @@ export function checkInHasEnded(
 export function validateCanCheckIn({
   event,
   team,
+  mapPool,
 }: {
   event: Pick<TournamentLoaderData["event"], "startTime">;
   team: FindTeamsByTournamentId[number];
+  mapPool: unknown[] | null;
 }) {
   validate(checkInHasStarted(event), "Check-in has not started yet");
   validate(
     team.members.length >= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
     "Team does not have enough members"
   );
-  validate(
-    team.mapPool && team.mapPool.length > 0,
-    "Team does not have a map pool"
-  );
+  validate(mapPool && mapPool.length > 0, "Team does not have a map pool");
 
   return true;
 }

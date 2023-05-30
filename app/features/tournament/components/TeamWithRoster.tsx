@@ -4,15 +4,17 @@ import { Avatar } from "~/components/Avatar";
 import { userPage } from "~/utils/urls";
 import { ModeImage, StageImage } from "~/components/Image";
 import clsx from "clsx";
-import type { User } from "~/db/types";
+import type { MapPoolMap, User } from "~/db/types";
 
 export function TeamWithRoster({
   team,
+  mapPool,
   seed,
   teamPageUrl,
   activePlayers,
 }: {
-  team: Pick<FindTeamsByTournamentIdItem, "members" | "name" | "mapPool">;
+  team: Pick<FindTeamsByTournamentIdItem, "members" | "name">;
+  mapPool?: Array<Pick<MapPoolMap, "stageId" | "mode">> | null;
   seed?: number;
   teamPageUrl?: string;
   activePlayers?: User["id"][];
@@ -59,9 +61,7 @@ export function TeamWithRoster({
           ))}
         </ul>
       </div>
-      {team.mapPool && team.mapPool.length > 0 ? (
-        <TeamMapPool mapPool={team.mapPool} />
-      ) : null}
+      {mapPool && mapPool.length > 0 ? <TeamMapPool mapPool={mapPool} /> : null}
     </div>
   );
 }
@@ -69,7 +69,7 @@ export function TeamWithRoster({
 function TeamMapPool({
   mapPool,
 }: {
-  mapPool: NonNullable<FindTeamsByTournamentIdItem["mapPool"]>;
+  mapPool: Array<Pick<MapPoolMap, "stageId" | "mode">>;
 }) {
   return (
     <div

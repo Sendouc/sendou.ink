@@ -37,6 +37,7 @@ import {
 } from "~/utils/urls";
 import { Redirect } from "~/components/Redirect";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
+import { findMapPoolByTeamId } from "~/features/tournament-bracket";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUserId(request);
@@ -78,7 +79,11 @@ export const action: ActionFunction = async ({ request, params }) => {
     case "CHECK_IN": {
       const team = teams.find((t) => t.id === data.teamId);
       validate(team, "Invalid team id");
-      validateCanCheckIn({ event, team });
+      validateCanCheckIn({
+        event,
+        team,
+        mapPool: findMapPoolByTeamId(team.id),
+      });
 
       checkIn(team.id);
       break;

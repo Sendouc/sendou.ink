@@ -32,6 +32,8 @@ import { Redirect } from "~/components/Redirect";
 import { Popover } from "~/components/Popover";
 import type { TournamentMaplistSource } from "~/modules/tournament-map-list-generator";
 import type { FindTeamsByTournamentIdItem } from "../queries/findTeamsByTournamentId.server";
+import { findMapPoolByTeamId } from "~/features/tournament-bracket";
+import hasTournamentStarted from "../queries/hasTournamentStarted.server";
 
 export const loader = ({ params }: LoaderArgs) => {
   const tournamentId = tournamentIdFromParams(params);
@@ -45,9 +47,11 @@ export const loader = ({ params }: LoaderArgs) => {
     : null;
 
   const sets = tournamentTeamSets({ tournamentTeamId, tournamentId });
+  const revealMapPool = hasTournamentStarted(tournamentId);
 
   return {
     tournamentTeamId,
+    mapPool: revealMapPool ? findMapPoolByTeamId(tournamentTeamId) : null,
     placement: standing?.placement,
     sets,
     winCounts: winCounts(sets),
@@ -69,7 +73,11 @@ export default function TournamentTeamPage() {
 
   return (
     <div className="stack lg">
-      <TeamWithRoster team={team} activePlayers={data.playersThatPlayed} />
+      <TeamWithRoster
+        team={team}
+        mapPool={data.mapPool}
+        activePlayers={data.playersThatPlayed}
+      />
       {data.winCounts.sets.total > 0 ? (
         <StatSquares
           seed={teamIndex + 1}

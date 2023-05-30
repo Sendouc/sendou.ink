@@ -84,6 +84,7 @@ import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { deleteTeam } from "../queries/deleteTeam.server";
 import { HACKY_resolvePoolCode } from "~/features/tournament-bracket";
 import { Popover } from "~/components/Popover";
+import { findMapPoolByTeamId } from "~/features/tournament-bracket";
 
 export const handle: SendouRouteHandle = {
   breadcrumb: () => ({
@@ -165,7 +166,11 @@ export const action: ActionFunction = async ({ request, params }) => {
     }
     case "CHECK_IN": {
       validate(ownTeam);
-      validateCanCheckIn({ event, team: ownTeam });
+      validateCanCheckIn({
+        event,
+        team: ownTeam,
+        mapPool: findMapPoolByTeamId(ownTeam.id),
+      });
 
       checkIn(ownTeam.id);
       break;
@@ -207,6 +212,8 @@ export const action: ActionFunction = async ({ request, params }) => {
   return null;
 };
 
+export type TournamentRegisterPageLoader = typeof loader;
+
 export const loader = async ({ request, params }: LoaderArgs) => {
   const eventId = tournamentIdFromParams(params);
   const hasStarted = hasTournamentStarted(eventId);
@@ -226,6 +233,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   return {
     ownTeam,
+    mapPool: findMapPoolByTeamId(ownTeam.id),
     trustedPlayers: findTrustedPlayers({
       userId: user.id,
       teamId: user.team?.id,
@@ -310,6 +318,7 @@ function RegistrationForms({
 }: {
   ownTeam?: NonNullable<SerializeFrom<typeof loader>>["ownTeam"];
 }) {
+  const data = useLoaderData<typeof loader>();
   const user = useUser();
   const parentRouteData = useOutletContext<TournamentLoaderData>();
 
@@ -325,7 +334,7 @@ function RegistrationForms({
       <RegistrationProgress
         checkedIn={Boolean(ownTeam?.checkedInAt)}
         name={ownTeam?.name}
-        mapPool={ownTeamFromList?.mapPool}
+        mapPool={data?.mapPool}
         members={ownTeamFromList?.members}
       />
       {ownTeam || !checkInHasEnded(parentRouteData.event) ? (
