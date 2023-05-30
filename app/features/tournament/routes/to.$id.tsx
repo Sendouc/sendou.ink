@@ -60,7 +60,6 @@ export const handle: SendouRouteHandle = {
   i18n: ["tournament", "calendar"],
 };
 
-// xxx: remove map pools, move tie breaker to register, call map pool on tournament team page
 export type TournamentLoaderTeam = Unpacked<TournamentLoaderData["teams"]>;
 export type TournamentLoaderData = SerializeFrom<typeof loader>;
 
@@ -68,9 +67,6 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const user = await getUserId(request);
   const tournamentId = tournamentIdFromParams(params);
   const event = notFoundIfFalsy(findByIdentifier(tournamentId));
-
-  const mapListGeneratorAvailable =
-    canAdminTournament({ user, event }) || event.showMapListGenerator;
 
   const hasStarted = hasTournamentStarted(tournamentId);
   let teams = findTeamsByTournamentId(tournamentId);
@@ -93,7 +89,6 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     ownedTeamId,
     teamMemberOfName,
     teams,
-    mapListGeneratorAvailable,
     hasStarted,
     streamsCount: hasStarted
       ? (await streamsByTournamentId(tournamentId)).length
@@ -121,7 +116,7 @@ export default function TournamentLayout() {
         <SubNavLink to="brackets" data-testid="brackets-tab">
           Brackets
         </SubNavLink>
-        {data.mapListGeneratorAvailable ? (
+        {data.event.showMapListGenerator ? (
           <SubNavLink to="maps">{t("tournament:tabs.maps")}</SubNavLink>
         ) : null}
         <SubNavLink to="teams">
