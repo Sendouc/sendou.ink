@@ -59,6 +59,7 @@ import { Divider } from "~/components/Divider";
 import { removeDuplicates } from "~/utils/arrays";
 import { Flag } from "~/components/Flag";
 import { databaseTimestampToDate } from "~/utils/dates";
+import { Popover } from "~/components/Popover";
 
 export const links: LinksFunction = () => {
   return [
@@ -266,13 +267,12 @@ export default function TournamentBracketsPage() {
     team.members.some((m) => m.userId === user?.id)
   );
 
-  // TODO: more informative UI
-  const adminCantStart = () => {
+  const adminCanStart = () => {
     // for testing, is always possible to start in development
-    if (process.env.NODE_ENV === "development") return false;
+    if (process.env.NODE_ENV === "development") return true;
 
     return (
-      databaseTimestampToDate(parentRouteData.event.startTime).getTime() >
+      databaseTimestampToDate(parentRouteData.event.startTime).getTime() <
       Date.now()
     );
   };
@@ -284,8 +284,7 @@ export default function TournamentBracketsPage() {
       ) : null}
       {!data.hasStarted && data.enoughTeams ? (
         <Form method="post" className="stack items-center">
-          {!canAdminTournament({ user, event: parentRouteData.event }) ||
-          adminCantStart() ? (
+          {!canAdminTournament({ user, event: parentRouteData.event }) ? (
             <Alert
               variation="INFO"
               alertClassName="tournament-bracket__start-bracket-alert"
@@ -301,13 +300,23 @@ export default function TournamentBracketsPage() {
             >
               When everything looks good, finalize the bracket to start the
               tournament{" "}
-              <SubmitButton
-                variant="outlined"
-                size="tiny"
-                testId="finalize-bracket-button"
-              >
-                Finalize
-              </SubmitButton>
+              {adminCanStart() ? (
+                <SubmitButton
+                  variant="outlined"
+                  size="tiny"
+                  testId="finalize-bracket-button"
+                >
+                  Finalize
+                </SubmitButton>
+              ) : (
+                <Popover
+                  buttonChildren={<>Finalize</>}
+                  triggerClassName="tiny outlined"
+                >
+                  Bracket can&apos;t be started yet as it is before the start
+                  time
+                </Popover>
+              )}
             </Alert>
           )}
         </Form>
