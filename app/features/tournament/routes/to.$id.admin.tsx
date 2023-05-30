@@ -116,10 +116,6 @@ export const action: ActionFunction = async ({ request, params }) => {
       const team = teams.find((t) => t.id === data.teamId);
       validate(team, "Invalid team id");
       validate(
-        team.members.length < TOURNAMENT.TEAM_MAX_MEMBERS,
-        "Team is full"
-      );
-      validate(
         !teams.some((t) =>
           t.members.some((m) => m.userId === data["user[value]"])
         ),
