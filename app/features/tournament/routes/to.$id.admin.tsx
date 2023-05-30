@@ -294,11 +294,14 @@ function AdminActions() {
           value={selectedTeamId}
           onChange={(e) => setSelectedTeamId(Number(e.target.value))}
         >
-          {data.teams.map((team) => (
-            <option key={team.id} value={team.id}>
-              {team.name}
-            </option>
-          ))}
+          {data.teams
+            .slice()
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map((team) => (
+              <option key={team.id} value={team.id}>
+                {team.name}
+              </option>
+            ))}
         </select>
       </div>
       {selectedTeam && selectedAction.inputs.includes("ROSTER_MEMBER") ? (
