@@ -161,6 +161,15 @@ export const damageTypesToCombine: Partial<
       multiplierOnly: true,
     },
   ],
+  // Splatana Wiper Deco
+  8011: [
+    { when: "SPLATANA_VERTICAL_DIRECT", combineWith: "SPLATANA_VERTICAL" },
+    {
+      when: "SPLATANA_HORIZONTAL_DIRECT",
+      combineWith: "SPLATANA_HORIZONTAL",
+      multiplierOnly: true,
+    },
+  ],
 };
 invariant(
   mainWeaponIds.every((id) => {

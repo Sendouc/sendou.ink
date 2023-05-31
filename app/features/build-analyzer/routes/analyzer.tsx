@@ -66,7 +66,7 @@ import {
 import { useUser } from "~/modules/auth";
 import { atOrError } from "~/utils/arrays";
 
-export const CURRENT_PATCH = "3.1";
+export const CURRENT_PATCH = "4.0";
 
 export const meta: V2_MetaFunction = () => {
   return [

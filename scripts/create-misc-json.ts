@@ -28,6 +28,8 @@ const stages = [
   "Brinewater Springs",
   "Manta Maria",
   "Um'ami Ruins",
+  "Humpback Pump Track",
+  "Barnacle & Dime",
 ] as const;
 
 async function main() {
