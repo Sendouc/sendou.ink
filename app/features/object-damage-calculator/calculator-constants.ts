@@ -24,6 +24,8 @@ export const objectDamageJsonKeyPriority: Record<
   keyof typeof objectDamages,
   Array<DamageType> | null
 > = {
+  // added in chill season 2023
+  Maneuver_SideStep_BombCore: null,
   // added in fresh season 2022
   BlowerExhale: null,
   Castle: null,

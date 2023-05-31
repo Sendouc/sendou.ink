@@ -10,6 +10,7 @@ const AnalyzeBuild = suite("Analyze build");
 const weaponsWithoutDmg: MainWeaponId[] = [
   1000, 1010, 1020, 1030, 1100, 1110, 7010, 7020, 8000, 8010,
   /* chill season, */ 1001, 1040, 1101, /* fresh season */ 1011,
+  /* sizzle season  */ 1041, 1120,
 ];
 AnalyzeBuild("Every main weapon has damage", () => {
   const weaponsWithoutDamage: MainWeaponId[] = [];

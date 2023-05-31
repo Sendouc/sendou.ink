@@ -27,7 +27,6 @@ import { checkOut } from "../queries/checkOut.server";
 import hasTournamentStarted from "../queries/hasTournamentStarted.server";
 import type { TournamentLoaderData } from "./to.$id";
 import { joinTeam, leaveTeam } from "../queries/joinLeaveTeam.server";
-import { TOURNAMENT } from "../tournament-constants";
 import { deleteTeam } from "../queries/deleteTeam.server";
 import { useUser } from "~/modules/auth";
 import {
