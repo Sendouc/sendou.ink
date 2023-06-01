@@ -1,5 +1,6 @@
 {
   "addBuild": "Lav et udrustningssæt",
+  "reachBuildMaxCount": "Du har nået grænsen for, hvor mange sæt du kan lave.",
   "noBuilds": "Her er ingen sæt. Lav dit første sæt!",
   "buildCard.info": "Info",
   "buildCard.edit": "Rediger",
@@ -10,6 +11,7 @@
   "forms.gear.HEAD": "Udstyr (hovedbeklædning)",
   "forms.gear.CLOTHES": "Udstyr (tøj)",
   "forms.gear.SHOES": "Udstyr (sko)",
+  "forms.private.info": "Private udrustningssæt er kun synlige for dig",
 
   "deleteConfirm": "Vil du slette sættet '{{title}}'?",
 
