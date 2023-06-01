@@ -7,10 +7,17 @@
   "actions.reportWinners": "Vis vinderne",
   "actions.delete": "Slet begivenhed",
   "actions.delete.confirm": "Slet alt data vedrørende {{name}}?",
+  "participatedPlayerCount": "{{count}} spillere deltog",
   "participatedCount": "{{count}} hold deltog",
   "members": "Medlemmer",
   "results": "Resultater",
   "createMapList": "Lav bane-liste",
+  "from": "Fra {{author}}",
+  "pastEvents.dividerText": "Past events",
+  "count.teams_one": "{{count}} hold",
+  "count.players_one": "{{count}} spiller",
+  "count.teams_other": "{{count}} hold",
+  "count.players_other": "{{count}} spillere",
 
   "forms.dates": "Datoer",
   "forms.bracketUrl": "Turneringsplans-URL",
@@ -61,5 +68,6 @@
   "tag.desc.S1": "Spilles i Splatoon 1.",
   "tag.desc.S2": "Spilles i Splatoon 2.",
   "tag.desc.SR": "Salmon Run begivenhed.",
-  "tag.desc.CARDS": "Tableturf Battle begivenhed."
+  "tag.desc.CARDS": "Tableturf Battle begivenhed.",
+  "tag.desc.FULL_TOURNAMENT": "Sendou.ink er værten for turneringen."
 }
