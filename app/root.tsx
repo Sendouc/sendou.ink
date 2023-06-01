@@ -3,7 +3,7 @@ import {
   json,
   type LinksFunction,
   type LoaderFunction,
-  type MetaFunction,
+  type V2_MetaFunction,
 } from "@remix-run/node";
 import {
   Links,
@@ -14,6 +14,8 @@ import {
   type ShouldRevalidateFunction,
   useLoaderData,
   useMatches,
+  useFetchers,
+  useNavigation,
 } from "@remix-run/react";
 import * as React from "react";
 import commonStyles from "~/styles/common.css";
@@ -42,6 +44,8 @@ import { isTheme } from "./modules/theme/provider";
 import { useIsMounted } from "./hooks/useIsMounted";
 import invariant from "tiny-invariant";
 import { CUSTOMIZED_CSS_VARS_NAME } from "./constants";
+import NProgress from "nprogress";
+import nProgressStyles from "nprogress/nprogress.css";
 
 export const shouldRevalidate: ShouldRevalidateFunction = ({ nextUrl }) => {
   // // reload on language change so the selected language gets set into the cookie
@@ -58,20 +62,20 @@ export const links: LinksFunction = () => {
     { rel: "stylesheet", href: utilStyles },
     { rel: "stylesheet", href: layoutStyles },
     { rel: "stylesheet", href: flagsStyles },
+    { rel: "stylesheet", href: nProgressStyles },
   ];
 };
 
-export const meta: MetaFunction = () => ({
-  charset: "utf-8",
-  title: "sendou.ink",
-  description:
-    "Competitive Splatoon Hub featuring gear planner, event calendar, builds by top players, and more!",
-  viewport: "initial-scale=1, viewport-fit=cover, user-scalable=no",
-  "apple-mobile-web-app-status-bar-style": "black-translucent",
-  "apple-mobile-web-app-capable": "yes",
-  "theme-color": "#010115",
-  "og:image": COMMON_PREVIEW_IMAGE,
-});
+export const meta: V2_MetaFunction = () => {
+  return [
+    { title: "sendou.ink" },
+    {
+      name: "description",
+      content:
+        "Competitive Splatoon Hub featuring gear planner, event calendar, builds by top players, and more!",
+    },
+  ];
+};
 
 export interface RootLoaderData {
   locale: string;
@@ -144,15 +148,33 @@ function Document({
 
   useChangeLanguage(locale);
   usePreloadTranslation();
+  useLoadingIndicator();
   const customizedCSSVars = useCustomizedCSSVars();
 
   return (
     <html lang={locale} dir={i18n.dir()} className={htmlThemeClass}>
       <head>
+        <meta charSet="utf-8" />
+        <meta
+          name="viewport"
+          content="initial-scale=1, viewport-fit=cover, user-scalable=no"
+        />
+        <meta
+          name="apple-mobile-web-app-status-bar-style"
+          content="black-translucent"
+        />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="theme-color" content="#010115" />
+        <meta property="og:image" content={COMMON_PREVIEW_IMAGE} />
         <Meta />
         <Links />
         <ThemeHead />
         <link rel="manifest" href="/app.webmanifest" />
+        {/* TODO: preferably don't load this for every route */}
+        <script
+          type="text/javascript"
+          src="https://cdn.jsdelivr.net/npm/brackets-viewer@1.5.1/dist/brackets-viewer.min.js"
+        ></script>
         <PWALinks />
         <Fonts />
       </head>
@@ -170,6 +192,38 @@ function Document({
       </body>
     </html>
   );
+}
+
+function useLoadingIndicator() {
+  const transition = useNavigation();
+
+  const fetchers = useFetchers();
+
+  /**
+   * This gets the state of every fetcher active on the app and combine it with
+   * the state of the global transition (Link and Form), then use them to
+   * determine if the app is idle or if it's loading.
+   * Here we consider both loading and submitting as loading.
+   */
+  const state = React.useMemo<"idle" | "loading">(
+    function getGlobalState() {
+      const states = [
+        transition.state,
+        ...fetchers.map((fetcher) => fetcher.state),
+      ];
+      if (states.every((state) => state === "idle")) return "idle";
+      return "loading";
+    },
+    [transition.state, fetchers]
+  );
+
+  React.useEffect(() => {
+    // and when it's something else it means it's either submitting a form or
+    // waiting for the loaders of the next location so we start it
+    if (state === "loading") NProgress.start();
+    // when the state is idle then we can to complete the progress bar
+    if (state === "idle") NProgress.done();
+  }, [state]);
 }
 
 // TODO: this should be an array if we can figure out how to make Typescript

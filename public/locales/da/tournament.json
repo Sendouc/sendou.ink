@@ -39,8 +39,5 @@
 
   "teams.mapsPickedStatus": "Status for banevalg",
 
-  "admin.eventStarted": "Begivenheden er startet",
-  "admin.eventStarted.explanation": "Efter begivenheden er startet, kan hold stadigvæk lave nye banepuljer. De kan dog ikke ændre deres banepulje eller holdlister.",
-  "admin.download": "Hent liste over deltagere",
-  "admin.download.discord": "Hent Discord-liste"
+  "admin.download": "Hent liste over deltagere"
 }

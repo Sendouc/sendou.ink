@@ -1,10 +1,17 @@
-export function CheckmarkIcon({ className }: { className?: string }) {
+export function CheckmarkIcon({
+  className,
+  testId,
+}: {
+  className?: string;
+  testId?: string;
+}) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       className={className}
       viewBox="0 0 20 20"
       fill="currentColor"
+      data-testid={testId}
     >
       <path
         fillRule="evenodd"

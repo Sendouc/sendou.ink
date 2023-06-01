@@ -4,7 +4,7 @@ import {
   redirect,
   type LinksFunction,
   type LoaderArgs,
-  type MetaFunction,
+  type V2_MetaFunction,
 } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { Link } from "@remix-run/react/dist/components";
@@ -49,6 +49,7 @@ import {
   readonlyMapsPage,
   resolveBaseUrl,
   userPage,
+  tournamentPage,
 } from "~/utils/urls";
 import { actualNumber, id } from "~/utils/zod";
 import { Tags } from "../components/Tags";
@@ -65,11 +66,13 @@ export const action: ActionFunction = async ({ params, request }) => {
       user,
       event,
       startTime: databaseTimestampToDate(event.startTimes[0]!),
-    }),
-    403
+    })
   );
 
-  db.calendarEvents.deleteById(event.eventId);
+  db.calendarEvents.deleteById({
+    eventId: event.eventId,
+    tournamentId: event.tournamentId,
+  });
 
   return redirect(CALENDAR_PAGE);
 };
@@ -81,15 +84,15 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export const meta: MetaFunction = (args) => {
+export const meta: V2_MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader>;
 
-  if (!data) return {};
+  if (!data) return [];
 
-  return {
-    title: data.title,
-    description: data.event.description,
-  };
+  return [
+    { title: data.title },
+    { name: "description", content: data.event.description },
+  ];
 };
 
 export const handle: SendouRouteHandle = {
@@ -120,6 +123,10 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     .object({ id: z.preprocess(actualNumber, id) })
     .parse(params);
   const event = notFoundIfFalsy(db.calendarEvents.findById(parsedParams.id));
+
+  if (event.tournamentId) {
+    throw redirect(tournamentPage(event.tournamentId));
+  }
 
   return json({
     event,

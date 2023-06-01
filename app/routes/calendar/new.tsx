@@ -5,7 +5,7 @@ import {
   type ActionFunction,
   type LinksFunction,
   type LoaderArgs,
-  type MetaFunction,
+  type V2_MetaFunction,
 } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
@@ -28,7 +28,11 @@ import { SubmitButton } from "~/components/SubmitButton";
 import { Toggle } from "~/components/Toggle";
 import { CALENDAR_EVENT } from "~/constants";
 import { db } from "~/db";
-import type { Badge as BadgeType, CalendarEventTag } from "~/db/types";
+import type {
+  Badge as BadgeType,
+  CalendarEventTag,
+  Tournament,
+} from "~/db/types";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
@@ -80,14 +84,12 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export const meta: MetaFunction = (args) => {
+export const meta: V2_MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
 
-  if (!data) return {};
+  if (!data) return [];
 
-  return {
-    title: data.title,
-  };
+  return [{ title: data.title }];
 };
 
 const newCalendarEventActionSchema = z.object({
@@ -161,8 +163,6 @@ export const action: ActionFunction = async ({ request }) => {
       rankedModesShort.find((mode) => mode === data.toToolsMode) ?? null,
   };
 
-  // TODO: messing with these and "one mode selection" can cause problems when teams
-  // have already chosen maps for their pools
   const deserializedMaps = (() => {
     if (!data.pool) return;
 
@@ -173,7 +173,11 @@ export const action: ActionFunction = async ({ request }) => {
     const eventToEdit = badRequestIfFalsy(
       db.calendarEvents.findById(data.eventToEditId)
     );
-    validate(canEditCalendarEvent({ user, event: eventToEdit }), 401);
+    validate(
+      canEditCalendarEvent({ user, event: eventToEdit }),
+      "Not authorized",
+      401
+    );
 
     db.calendarEvents.update({
       eventId: data.eventToEditId,
@@ -186,6 +190,10 @@ export const action: ActionFunction = async ({ request }) => {
     const createdEventId = db.calendarEvents.create({
       authorId: user.id,
       mapPoolMaps: deserializedMaps,
+      createTournament: data.toToolsEnabled,
+      mapPickingStyle: data.toToolsMode
+        ? `AUTO_${data.toToolsMode}`
+        : "AUTO_ALL",
       ...commonArgs,
     });
 
@@ -218,8 +226,10 @@ export const loader = async ({ request }: LoaderArgs) => {
     eventToEdit: canEditEvent
       ? {
           ...eventToEdit,
-          // "BADGE" tag is special and can't be edited like other tags
-          tags: eventToEdit.tags.filter((tag) => tag !== "BADGE"),
+          // "BADGE" and "FULL_TOURNAMENT" tags are special and can't be edited like other tags
+          tags: eventToEdit.tags.filter(
+            (tag) => tag !== "BADGE" && tag !== "FULL_TOURNAMENT"
+          ),
           badges: db.calendarEvents.findBadgesByEventId(eventId),
           mapPool: db.calendarEvents.findMapPoolByEventId(eventId),
           tieBreakerMapPool:
@@ -438,6 +448,7 @@ function DatesInput() {
   );
 }
 
+// TODO: when full tournament this doesn't really make sense
 function BracketUrlInput() {
   const { t } = useTranslation("calendar");
   const { eventToEdit } = useLoaderData<typeof loader>();
@@ -484,7 +495,7 @@ function TagsAdder() {
   const id = React.useId();
 
   const tagsForSelect = CALENDAR_EVENT.TAGS.filter(
-    (tag) => !tags.includes(tag) && tag !== "BADGE"
+    (tag) => !tags.includes(tag) && tag !== "BADGE" && tag !== "FULL_TOURNAMENT"
   );
 
   return (
@@ -593,19 +604,34 @@ function BadgesAdder() {
   );
 }
 
+const mapPickingStyleToShort: Record<
+  Tournament["mapPickingStyle"],
+  "ALL" | RankedModeShort
+> = {
+  AUTO_ALL: "ALL",
+  AUTO_SZ: "SZ",
+  AUTO_TC: "TC",
+  AUTO_RM: "RM",
+  AUTO_CB: "CB",
+};
 function TOToolsAndMapPool() {
   const user = useUser();
   const { eventToEdit } = useLoaderData<typeof loader>();
   const [checked, setChecked] = React.useState(
-    Boolean(eventToEdit?.toToolsEnabled)
+    Boolean(eventToEdit?.tournamentId)
   );
   const [mode, setMode] = React.useState<"ALL" | RankedModeShort>(
-    eventToEdit?.toToolsMode ?? "ALL"
+    eventToEdit?.mapPickingStyle
+      ? mapPickingStyleToShort[eventToEdit.mapPickingStyle]
+      : "ALL"
   );
+
+  // currently not possible to edit "tournament" data after submitting it
+  if (eventToEdit?.tournamentId) return null;
 
   return (
     <>
-      {canEnableTOTools(user) && (
+      {canEnableTOTools(user) && !eventToEdit && (
         <TOToolsEnabler checked={checked} setChecked={setChecked} />
       )}
       {checked ? (

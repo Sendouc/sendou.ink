@@ -1,4 +1,8 @@
-import type { LoaderArgs, MetaFunction, SerializeFrom } from "@remix-run/node";
+import type {
+  LoaderArgs,
+  V2_MetaFunction,
+  SerializeFrom,
+} from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { cachified } from "cachified";
 import clsx from "clsx";
@@ -20,14 +24,12 @@ import { abilitiesByWeaponId } from "../queries/abilitiesByWeaponId.server";
 import { cache, ttl } from "~/utils/cache.server";
 import { ONE_HOUR_IN_MS } from "~/constants";
 
-export const meta: MetaFunction = (args) => {
+export const meta: V2_MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
 
-  if (!data) return {};
+  if (!data) return [];
 
-  return {
-    title: data.meta.title,
-  };
+  return [{ title: data.meta.title }];
 };
 
 export const handle: SendouRouteHandle = {

@@ -1,6 +1,6 @@
 {
   "Blaster_BlasterMiddle": {
-    "mainWeaponIds": [20900, 210, 20210, 10210, 30200, 30210],
+    "mainWeaponIds": [20900, 210, 20210, 10210, 260, 30200, 30210],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -19,6 +19,10 @@
       {
         "target": "CastleKnockBack",
         "rate": 1
+      },
+      {
+        "target": "CoopPropeller",
+        "rate": 2
       },
       {
         "target": "Gachihoko_Barrier",
@@ -54,7 +58,7 @@
       },
       {
         "target": "PropellerOnline",
-        "rate": 2
+        "rate": 1.5
       },
       {
         "target": "ShockSonar",
@@ -100,6 +104,10 @@
         "rate": 1
       },
       {
+        "target": "CoopPropeller",
+        "rate": 2
+      },
+      {
         "target": "Gachihoko_Barrier",
         "rate": 2.1
       },
@@ -133,7 +141,7 @@
       },
       {
         "target": "PropellerOnline",
-        "rate": 2
+        "rate": 1.5
       },
       {
         "target": "ShockSonar",
@@ -159,7 +167,8 @@
   },
   "Blaster_KillOneShot": {
     "mainWeaponIds": [
-      20900, 220, 20220, 10220, 210, 20210, 10210, 30200, 30210, 20200, 10200
+      20900, 220, 20220, 10220, 210, 20210, 10210, 260, 30200, 30210, 20200,
+      10200
     ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
@@ -179,6 +188,10 @@
       {
         "target": "CastleKnockBack",
         "rate": 1
+      },
+      {
+        "target": "CoopPropeller",
+        "rate": 2
       },
       {
         "target": "Gachihoko_Barrier",
@@ -214,7 +227,7 @@
       },
       {
         "target": "PropellerOnline",
-        "rate": 2
+        "rate": 1.5
       },
       {
         "target": "ShockSonar",
@@ -240,8 +253,8 @@
   },
   "Blaster": {
     "mainWeaponIds": [
-      250, 20250, 10250, 230, 231, 20230, 10230, 240, 241, 20240, 10240, 220,
-      20220, 10220
+      250, 251, 20250, 10250, 230, 231, 20230, 10230, 240, 241, 20240, 10240,
+      220, 20220, 10220
     ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
@@ -261,6 +274,10 @@
       {
         "target": "CastleKnockBack",
         "rate": 1
+      },
+      {
+        "target": "CoopPropeller",
+        "rate": 2
       },
       {
         "target": "Gachihoko_Barrier",
@@ -296,7 +313,7 @@
       },
       {
         "target": "PropellerOnline",
-        "rate": 2
+        "rate": 1.5
       },
       {
         "target": "ShockSonar",
@@ -351,11 +368,11 @@
       },
       {
         "target": "GreatBarrier_Barrier",
-        "rate": 5.6
+        "rate": 4.2
       },
       {
         "target": "GreatBarrier_WeakPoint",
-        "rate": 2.8
+        "rate": 2.1
       },
       {
         "target": "MsnGoal",
@@ -454,6 +471,10 @@
         "rate": 10
       },
       {
+        "target": "CoopPropeller",
+        "rate": 3
+      },
+      {
         "target": "GreatBarrier_Barrier",
         "rate": 1
       },
@@ -471,7 +492,7 @@
       },
       {
         "target": "PropellerOnline",
-        "rate": 3
+        "rate": 1
       },
       {
         "target": "Wsb_Flag",
@@ -524,6 +545,10 @@
         "rate": 10
       },
       {
+        "target": "CoopPropeller",
+        "rate": 5
+      },
+      {
         "target": "Gachihoko_Barrier",
         "rate": 2
       },
@@ -561,7 +586,7 @@
       },
       {
         "target": "PropellerOnline",
-        "rate": 5
+        "rate": 3
       },
       {
         "target": "Wsb_Flag",
@@ -611,6 +636,10 @@
         "rate": 10
       },
       {
+        "target": "CoopPropeller",
+        "rate": 5
+      },
+      {
         "target": "Gachihoko_Barrier",
         "rate": 3.6
       },
@@ -648,7 +677,7 @@
       },
       {
         "target": "PropellerOnline",
-        "rate": 5
+        "rate": 4.8
       },
       {
         "target": "ShockSonar",
@@ -702,6 +731,10 @@
         "rate": 10
       },
       {
+        "target": "CoopPropeller",
+        "rate": 5
+      },
+      {
         "target": "Gachihoko_Barrier",
         "rate": 2
       },
@@ -739,7 +772,7 @@
       },
       {
         "target": "PropellerOnline",
-        "rate": 5
+        "rate": 3
       },
       {
         "target": "Sponge_Versus",
@@ -787,6 +820,10 @@
       {
         "target": "CoopEnemySakelienCupTwins",
         "rate": 10
+      },
+      {
+        "target": "CoopPropeller",
+        "rate": 5
       },
       {
         "target": "Gachihoko_Barrier",
@@ -860,6 +897,10 @@
         "rate": 10
       },
       {
+        "target": "CoopPropeller",
+        "rate": 5
+      },
+      {
         "target": "GreatBarrier_Barrier",
         "rate": 1
       },
@@ -873,7 +914,7 @@
       },
       {
         "target": "PropellerOnline",
-        "rate": 5
+        "rate": 1
       }
     ]
   },
@@ -905,6 +946,10 @@
       {
         "target": "CoopEnemySakelienCupTwins",
         "rate": 10
+      },
+      {
+        "target": "CoopPropeller",
+        "rate": 5
       },
       {
         "target": "Gachihoko_Barrier",
@@ -948,7 +993,7 @@
       },
       {
         "target": "PropellerOnline",
-        "rate": 5
+        "rate": 1
       },
       {
         "target": "Sponge_Versus",
@@ -1005,6 +1050,10 @@
         "rate": 10
       },
       {
+        "target": "CoopPropeller",
+        "rate": 5
+      },
+      {
         "target": "Gachihoko_Barrier",
         "rate": 2
       },
@@ -1042,7 +1091,7 @@
       },
       {
         "target": "PropellerOnline",
-        "rate": 5
+        "rate": 3
       },
       {
         "target": "Sponge_Versus",
@@ -1064,7 +1113,7 @@
   },
   "BrushCore": {
     "mainWeaponIds": [
-      1100, 1101, 21100, 11100, 1110, 21110, 11110, 31100, 31110
+      1120, 21120, 1100, 1101, 21100, 11100, 1110, 21110, 11110, 31100, 31110
     ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
@@ -1125,7 +1174,7 @@
   },
   "BrushSplash": {
     "mainWeaponIds": [
-      1100, 1101, 21100, 11100, 1110, 21110, 11110, 31100, 31110
+      1120, 21120, 1100, 1101, 21100, 11100, 1110, 21110, 11110, 31100, 31110
     ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
@@ -1246,11 +1295,11 @@
       },
       {
         "target": "GreatBarrier_Barrier",
-        "rate": 5
+        "rate": 2.5
       },
       {
         "target": "GreatBarrier_WeakPoint",
-        "rate": 5
+        "rate": 2.5
       },
       {
         "target": "NiceBall_Armor",
@@ -1306,6 +1355,10 @@
       {
         "target": "CoopEnemySakelienTowerUnite",
         "rate": 1
+      },
+      {
+        "target": "CoopPropeller",
+        "rate": 2
       },
       {
         "target": "Gachihoko_Barrier",
@@ -1389,6 +1442,10 @@
       {
         "target": "CoopEnemySakelienTowerUnite",
         "rate": 1
+      },
+      {
+        "target": "CoopPropeller",
+        "rate": 2
       },
       {
         "target": "Gachihoko_Barrier",
@@ -1475,6 +1532,10 @@
       {
         "target": "CoopEnemySakelienTowerUnite",
         "rate": 1
+      },
+      {
+        "target": "CoopPropeller",
+        "rate": 2
       },
       {
         "target": "Gachihoko_Barrier",
@@ -1796,6 +1857,10 @@
         "rate": 1
       },
       {
+        "target": "PropellerOnline",
+        "rate": 1
+      },
+      {
         "target": "Wsb_Flag",
         "rate": 100
       },
@@ -1865,6 +1930,10 @@
       {
         "target": "NiceBall_Armor",
         "rate": 2
+      },
+      {
+        "target": "PropellerOnline",
+        "rate": 3
       },
       {
         "target": "ShockSonar",
@@ -1945,14 +2014,14 @@
   },
   "Default": {
     "mainWeaponIds": [
-      20900, 220, 20220, 10220, 210, 20210, 10210, 30200, 30210, 20200, 10200,
-      1100, 1101, 21100, 11100, 1110, 21110, 11110, 31100, 31110, 22900, 2060,
-      22060, 12060, 2050, 22050, 12050, 2040, 12040, 2030, 42030, 22030, 12030,
-      2020, 2021, 12020, 2010, 2011, 22010, 12010, 2070, 22070, 2000, 22000,
-      12000, 40000, 1000, 1001, 21000, 11000, 1020, 21020, 11020, 1030, 21030,
-      11030, 1010, 1011, 21010, 11010, 31000, 31010, 1040, 21040, 26900, 6020,
-      26020, 16020, 6000, 26000, 16000, 36000, 36010, 6010, 26010, 16010, 40040,
-      40042, 40041
+      20900, 220, 20220, 10220, 210, 20210, 10210, 260, 20260, 30200, 30210,
+      20200, 10200, 1120, 21120, 1100, 1101, 21100, 11100, 1110, 21110, 11110,
+      31100, 31110, 22900, 2060, 22060, 12060, 2050, 22050, 12050, 2040, 12040,
+      2030, 42030, 22030, 12030, 2020, 2021, 12020, 2010, 2011, 22010, 12010,
+      2070, 22070, 2000, 22000, 12000, 40000, 1000, 1001, 21000, 11000, 1020,
+      21020, 11020, 1030, 21030, 11030, 1010, 1011, 21010, 11010, 31000, 31010,
+      1040, 1041, 21040, 26900, 6020, 26020, 16020, 6000, 26000, 16000, 36000,
+      36010, 6010, 6011, 26010, 16010, 40040, 40042, 40041
     ],
     "subWeaponIds": [8, 6, 11006, 10006, 30006, 12, 10012, 9, 11, 10100],
     "specialWeaponIds": [
@@ -1999,6 +2068,10 @@
         "rate": 1
       },
       {
+        "target": "CoopPropeller",
+        "rate": 5
+      },
+      {
         "target": "GreatBarrier_Barrier",
         "rate": 1
       },
@@ -2012,7 +2085,7 @@
       },
       {
         "target": "PropellerOnline",
-        "rate": 5
+        "rate": 1
       }
     ]
   },
@@ -2073,6 +2146,10 @@
         "rate": 0.5
       },
       {
+        "target": "CoopPropeller",
+        "rate": 5
+      },
+      {
         "target": "Gachihoko_Barrier",
         "rate": 2
       },
@@ -2098,7 +2175,7 @@
       },
       {
         "target": "PropellerOnline",
-        "rate": 5
+        "rate": 1
       },
       {
         "target": "ShockSonar",
@@ -2142,6 +2219,10 @@
       {
         "target": "Propeller",
         "rate": 1
+      },
+      {
+        "target": "PropellerOnline",
+        "rate": 1.2
       }
     ]
   },
@@ -2306,16 +2387,20 @@
         "rate": 10
       },
       {
+        "target": "CoopPropeller",
+        "rate": 5
+      },
+      {
         "target": "Gachihoko_Barrier",
         "rate": 2.8
       },
       {
         "target": "GreatBarrier_Barrier",
-        "rate": 2.8
+        "rate": 2.1
       },
       {
         "target": "GreatBarrier_WeakPoint",
-        "rate": 2.1
+        "rate": 1.575
       },
       {
         "target": "MsnBoxHard",
@@ -2339,7 +2424,7 @@
       },
       {
         "target": "PropellerOnline",
-        "rate": 5
+        "rate": 3
       },
       {
         "target": "ShockSonar",
@@ -2401,16 +2486,20 @@
         "rate": 10
       },
       {
+        "target": "CoopPropeller",
+        "rate": 5
+      },
+      {
         "target": "Gachihoko_Barrier",
         "rate": 2.8
       },
       {
         "target": "GreatBarrier_Barrier",
-        "rate": 2.8
+        "rate": 2.1
       },
       {
         "target": "GreatBarrier_WeakPoint",
-        "rate": 2.1
+        "rate": 1.575
       },
       {
         "target": "MsnBoxHard",
@@ -2434,7 +2523,7 @@
       },
       {
         "target": "PropellerOnline",
-        "rate": 5
+        "rate": 1
       },
       {
         "target": "ShockSonar",
@@ -2484,6 +2573,10 @@
         "rate": 10
       },
       {
+        "target": "CoopPropeller",
+        "rate": 5
+      },
+      {
         "target": "Gachihoko_Barrier",
         "rate": 1
       },
@@ -2497,7 +2590,7 @@
       },
       {
         "target": "PropellerOnline",
-        "rate": 5
+        "rate": 1
       },
       {
         "target": "ShockSonar",
@@ -2623,10 +2716,101 @@
       }
     ]
   },
+  "Maneuver_SideStep_BombCore": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [],
+    "rates": [
+      {
+        "target": "Bomb_TorpedoBullet",
+        "rate": 0.6
+      },
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 2
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 2
+      },
+      {
+        "target": "CastleKnockBack",
+        "rate": 1
+      },
+      {
+        "target": "CoopEnemySakelienCupTwins",
+        "rate": 10
+      },
+      {
+        "target": "CoopPropeller",
+        "rate": 2
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 2
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 2
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 0.5
+      },
+      {
+        "target": "MsnBoxHard",
+        "rate": 2
+      },
+      {
+        "target": "MsnBoxL",
+        "rate": 2.5
+      },
+      {
+        "target": "MsnBoxS",
+        "rate": 2
+      },
+      {
+        "target": "MsnGoal",
+        "rate": 10
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 1.5
+      },
+      {
+        "target": "Propeller",
+        "rate": 1
+      },
+      {
+        "target": "PropellerOnline",
+        "rate": 2
+      },
+      {
+        "target": "Sponge_Versus",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 2
+      }
+    ]
+  },
   "Maneuver": {
     "mainWeaponIds": [
-      5030, 25030, 15030, 5020, 25020, 15020, 5010, 25010, 15010, 35000, 35010,
-      5040, 25040, 15040
+      5030, 5031, 25030, 15030, 5020, 25020, 15020, 5010, 25010, 15010, 35000,
+      35010, 5040, 5041, 25040, 15040
     ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
@@ -2746,6 +2930,10 @@
         "rate": 1
       },
       {
+        "target": "CoopPropeller",
+        "rate": 5
+      },
+      {
         "target": "GreatBarrier_Barrier",
         "rate": 1
       },
@@ -2775,7 +2963,7 @@
       },
       {
         "target": "PropellerOnline",
-        "rate": 5
+        "rate": 1
       },
       {
         "target": "Sponge_Versus",
@@ -2875,12 +3063,16 @@
         "rate": 1.5
       },
       {
+        "target": "CoopPropeller",
+        "rate": 5
+      },
+      {
         "target": "GreatBarrier_Barrier",
-        "rate": 1
+        "rate": 0.5
       },
       {
         "target": "GreatBarrier_WeakPoint",
-        "rate": 0.75
+        "rate": 0.375
       },
       {
         "target": "MsnBoxHard",
@@ -2908,7 +3100,7 @@
       },
       {
         "target": "PropellerOnline",
-        "rate": 5
+        "rate": 2.5
       },
       {
         "target": "ShockSonar",
@@ -2963,11 +3155,11 @@
       },
       {
         "target": "GreatBarrier_Barrier",
-        "rate": 1
+        "rate": 0.5
       },
       {
         "target": "GreatBarrier_WeakPoint",
-        "rate": 0.75
+        "rate": 0.375
       },
       {
         "target": "MsnBoxHard",
@@ -3042,11 +3234,11 @@
       },
       {
         "target": "GreatBarrier_Barrier",
-        "rate": 3
+        "rate": 1.5
       },
       {
         "target": "GreatBarrier_WeakPoint",
-        "rate": 3
+        "rate": 1.5
       },
       {
         "target": "NiceBall_Armor",
@@ -3132,7 +3324,7 @@
   "RollerCore": {
     "mainWeaponIds": [
       1000, 1001, 21000, 11000, 1020, 21020, 11020, 1030, 21030, 11030, 1010,
-      1011, 21010, 11010, 31000, 31010, 1040, 21040
+      1011, 21010, 11010, 31000, 31010, 1040, 1041, 21040
     ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
@@ -3148,6 +3340,10 @@
       {
         "target": "CoopGoldenIkuraBox",
         "rate": 1
+      },
+      {
+        "target": "CoopPropeller",
+        "rate": 0.5
       },
       {
         "target": "GreatBarrier_Barrier",
@@ -3175,7 +3371,7 @@
       },
       {
         "target": "PropellerOnline",
-        "rate": 0.5
+        "rate": 1
       },
       {
         "target": "Sponge_Versus",
@@ -3250,7 +3446,7 @@
       },
       {
         "target": "PropellerOnline",
-        "rate": 1
+        "rate": 1.7
       },
       {
         "target": "ShockSonar",
@@ -3333,7 +3529,7 @@
       },
       {
         "target": "PropellerOnline",
-        "rate": 1
+        "rate": 1.7
       },
       {
         "target": "ShockSonar",
@@ -3412,7 +3608,7 @@
       },
       {
         "target": "PropellerOnline",
-        "rate": 1
+        "rate": 1.7
       },
       {
         "target": "ShockSonar",
@@ -3433,7 +3629,7 @@
     ]
   },
   "RollerSplash_Wide": {
-    "mainWeaponIds": [1040, 21040],
+    "mainWeaponIds": [1040, 1041, 21040],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -3571,7 +3767,7 @@
       },
       {
         "target": "PropellerOnline",
-        "rate": 1
+        "rate": 3.4
       },
       {
         "target": "SalmonBuddy",
@@ -3662,7 +3858,7 @@
       },
       {
         "target": "PropellerOnline",
-        "rate": 1
+        "rate": 1.7
       },
       {
         "target": "ShockSonar",
@@ -3683,7 +3879,7 @@
     ]
   },
   "Saber_ChargeShot": {
-    "mainWeaponIds": [28900, 8010, 28010, 8000, 28000, 18000],
+    "mainWeaponIds": [28900, 8010, 8011, 28010, 8000, 28000, 18000],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -3737,6 +3933,10 @@
       },
       {
         "target": "NiceBall_Armor",
+        "rate": 2.6
+      },
+      {
+        "target": "PropellerOnline",
         "rate": 2.6
       },
       {
@@ -3853,7 +4053,7 @@
     ]
   },
   "Saber_ChargeSlash": {
-    "mainWeaponIds": [28900, 8010, 28010, 8000, 28000, 18000],
+    "mainWeaponIds": [28900, 8010, 8011, 28010, 8000, 28000, 18000],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -3914,6 +4114,10 @@
         "rate": 0.65
       },
       {
+        "target": "PropellerOnline",
+        "rate": 0.65
+      },
+      {
         "target": "ShockSonar",
         "rate": 1.2
       },
@@ -3936,7 +4140,7 @@
     ]
   },
   "Saber_Shot": {
-    "mainWeaponIds": [28900, 8010, 28010, 8000, 28000, 18000],
+    "mainWeaponIds": [28900, 8010, 8011, 28010, 8000, 28000, 18000],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -3989,6 +4193,10 @@
         "rate": 2.6
       },
       {
+        "target": "PropellerOnline",
+        "rate": 2.6
+      },
+      {
         "target": "ShockSonar",
         "rate": 4.8
       },
@@ -4011,7 +4219,7 @@
     ]
   },
   "Saber_Slash": {
-    "mainWeaponIds": [28900, 8010, 28010, 8000, 28000, 18000],
+    "mainWeaponIds": [28900, 8010, 8011, 28010, 8000, 28000, 18000],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -4069,6 +4277,10 @@
       },
       {
         "target": "NiceBall_Armor",
+        "rate": 1.3
+      },
+      {
+        "target": "PropellerOnline",
         "rate": 1.3
       },
       {
@@ -4196,7 +4408,7 @@
     ]
   },
   "ShelterCanopy_Wide": {
-    "mainWeaponIds": [6010, 26010, 16010],
+    "mainWeaponIds": [6010, 6011, 26010, 16010],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -4392,7 +4604,7 @@
       },
       {
         "target": "PropellerOnline",
-        "rate": 1
+        "rate": 1.3
       },
       {
         "target": "ShockSonar",
@@ -4417,7 +4629,7 @@
     ]
   },
   "ShelterShot_Wide": {
-    "mainWeaponIds": [6010, 26010, 16010],
+    "mainWeaponIds": [6010, 6011, 26010, 16010],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -4467,7 +4679,7 @@
       },
       {
         "target": "PropellerOnline",
-        "rate": 1
+        "rate": 1.3
       },
       {
         "target": "ShockSonar",
@@ -4550,7 +4762,7 @@
       },
       {
         "target": "PropellerOnline",
-        "rate": 1
+        "rate": 1.3
       },
       {
         "target": "ShockSonar",
@@ -5087,7 +5299,7 @@
     ]
   },
   "Shooter_TripleMiddle": {
-    "mainWeaponIds": [310],
+    "mainWeaponIds": [310, 311],
     "subWeaponIds": [],
     "specialWeaponIds": [],
     "rates": [
@@ -5199,7 +5411,7 @@
   "Shooter": {
     "mainWeaponIds": [
       400, 20400, 10400, 20050, 10050, 20080, 10080, 10900, 10910, 10920, 40,
-      41, 20040, 45, 10040, 100, 20100, 60, 61, 20060, 10060, 30000, 30010,
+      41, 20040, 45, 10040, 100, 101, 20100, 60, 61, 20060, 10060, 30000, 30010,
       20310, 10310, 20300, 10300
     ],
     "subWeaponIds": [],
@@ -5424,7 +5636,7 @@
       },
       {
         "target": "PropellerOnline",
-        "rate": 1
+        "rate": 1.3
       },
       {
         "target": "Sponge_Versus",
@@ -5470,6 +5682,10 @@
         "rate": 1
       },
       {
+        "target": "CoopPropeller",
+        "rate": 2
+      },
+      {
         "target": "Gachihoko_Barrier",
         "rate": 2.4
       },
@@ -5495,7 +5711,7 @@
       },
       {
         "target": "PropellerOnline",
-        "rate": 2
+        "rate": 1
       },
       {
         "target": "ShockSonar",
@@ -5549,6 +5765,10 @@
         "rate": 10
       },
       {
+        "target": "CoopPropeller",
+        "rate": 5
+      },
+      {
         "target": "Gachihoko_Barrier",
         "rate": 3.2
       },
@@ -5582,7 +5802,7 @@
       },
       {
         "target": "PropellerOnline",
-        "rate": 5
+        "rate": 1
       },
       {
         "target": "Sponge_Versus",
@@ -5731,7 +5951,7 @@
       },
       {
         "target": "PropellerOnline",
-        "rate": 1
+        "rate": 1.3
       },
       {
         "target": "ShockSonar",
@@ -5758,7 +5978,7 @@
   "Spinner": {
     "mainWeaponIds": [
       4030, 24030, 14030, 4020, 24020, 14020, 4000, 4001, 24000, 14000, 4040,
-      24040, 14040, 4010, 24010, 14010
+      24040, 14040, 4010, 4011, 24010, 14010
     ],
     "subWeaponIds": [],
     "specialWeaponIds": [],
@@ -5909,6 +6129,10 @@
         "rate": 1.3
       },
       {
+        "target": "CoopPropeller",
+        "rate": 2
+      },
+      {
         "target": "Gachihoko_Barrier",
         "rate": 2
       },
@@ -5996,6 +6220,10 @@
         "rate": 10
       },
       {
+        "target": "CoopPropeller",
+        "rate": 5
+      },
+      {
         "target": "Gachihoko_Barrier",
         "rate": 2
       },
@@ -6033,7 +6261,7 @@
       },
       {
         "target": "PropellerOnline",
-        "rate": 5
+        "rate": 1
       },
       {
         "target": "SnakeBlock",
@@ -6085,6 +6313,10 @@
       {
         "target": "CoopEnemySakelienCupTwins",
         "rate": 10
+      },
+      {
+        "target": "CoopPropeller",
+        "rate": 5
       },
       {
         "target": "EnemyRockBall",
@@ -6156,7 +6388,7 @@
       },
       {
         "target": "PropellerOnline",
-        "rate": 5
+        "rate": 1
       },
       {
         "target": "SnakeBlock",
@@ -6223,11 +6455,11 @@
       },
       {
         "target": "GreatBarrier_Barrier",
-        "rate": 2
+        "rate": 1
       },
       {
         "target": "GreatBarrier_WeakPoint",
-        "rate": 2
+        "rate": 1
       },
       {
         "target": "NiceBall_Armor",
@@ -6298,11 +6530,11 @@
       },
       {
         "target": "GreatBarrier_Barrier",
-        "rate": 2
+        "rate": 1.5
       },
       {
         "target": "GreatBarrier_WeakPoint",
-        "rate": 1.5
+        "rate": 1.125
       },
       {
         "target": "MsnBoxHard",
@@ -6373,11 +6605,11 @@
       },
       {
         "target": "GreatBarrier_Barrier",
-        "rate": 3
+        "rate": 1.5
       },
       {
         "target": "GreatBarrier_WeakPoint",
-        "rate": 3
+        "rate": 1.5
       },
       {
         "target": "MsnEnemyShield",
@@ -6390,6 +6622,10 @@
       {
         "target": "NiceBall_Armor",
         "rate": 1.8
+      },
+      {
+        "target": "PropellerOnline",
+        "rate": 1.5
       },
       {
         "target": "ShockSonar",
@@ -6461,6 +6697,10 @@
       {
         "target": "NiceBall_Armor",
         "rate": 2.5
+      },
+      {
+        "target": "PropellerOnline",
+        "rate": 2
       },
       {
         "target": "ShockSonar",
@@ -6536,6 +6776,10 @@
       {
         "target": "NiceBall_Armor",
         "rate": 1.364
+      },
+      {
+        "target": "PropellerOnline",
+        "rate": 1.636
       },
       {
         "target": "ShockSonar",

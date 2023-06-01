@@ -43,5 +43,8 @@
   },
   "CARDS": {
     "color": "#E4D00A"
+  },
+  "FULL_TOURNAMENT": {
+    "color": "#FFC0CB"
   }
 }

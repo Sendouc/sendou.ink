@@ -1,4 +1,4 @@
-import { type LinksFunction, type MetaFunction } from "@remix-run/node";
+import { type LinksFunction, type V2_MetaFunction } from "@remix-run/node";
 import type { ShouldRevalidateFunction } from "@remix-run/react";
 import { Link } from "@remix-run/react";
 import * as React from "react";
@@ -66,13 +66,16 @@ import {
 import { useUser } from "~/modules/auth";
 import { atOrError } from "~/utils/arrays";
 
-export const CURRENT_PATCH = "3.1";
+export const CURRENT_PATCH = "4.0";
 
-export const meta: MetaFunction = () => {
-  return {
-    title: makeTitle("Build Analyzer"),
-    description: "Detailed stats for any weapon and build in Splatoon 3.",
-  };
+export const meta: V2_MetaFunction = () => {
+  return [
+    { title: makeTitle("Build Analyzer") },
+    {
+      name: "description",
+      content: "Detailed stats for any weapon and build in Splatoon 3.",
+    },
+  ];
 };
 
 export const links: LinksFunction = () => {
@@ -1390,10 +1393,10 @@ function ConsumptionTable({
               const opt2 = options2ForThisSubsUsed[i];
 
               const contents = !isComparing
-                ? opt1!.value
+                ? opt1.value
                 : `${opt1?.value ?? "-"}/${opt2?.value ?? "-"}`;
 
-              cells.push(<td key={opt1?.id ?? opt2!.id}>{contents}</td>);
+              cells.push(<td key={opt1?.id ?? opt2.id}>{contents}</td>);
             }
 
             return (

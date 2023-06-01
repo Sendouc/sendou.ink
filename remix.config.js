@@ -21,9 +21,35 @@ module.exports = {
           "features/tournament/routes/to.$id.register.tsx"
         );
         route("/to/:id/teams", "features/tournament/routes/to.$id.teams.tsx");
+        route(
+          "/to/:id/teams/:tid",
+          "features/tournament/routes/to.$id.teams.$tid.tsx"
+        );
         route("/to/:id/join", "features/tournament/routes/to.$id.join.tsx");
         route("/to/:id/admin", "features/tournament/routes/to.$id.admin.tsx");
+        route("/to/:id/seeds", "features/tournament/routes/to.$id.seeds.tsx");
         route("/to/:id/maps", "features/tournament/routes/to.$id.maps.tsx");
+        route(
+          "/to/:id/streams",
+          "features/tournament/routes/to.$id.streams.tsx"
+        );
+
+        route(
+          "/to/:id/brackets",
+          "features/tournament-bracket/routes/to.$id.brackets.tsx"
+        );
+        route(
+          "/to/:id/brackets/subscribe",
+          "features/tournament-bracket/routes/to.$id.brackets.subscribe.tsx"
+        );
+        route(
+          "/to/:id/matches/:mid",
+          "features/tournament-bracket/routes/to.$id.matches.$mid.tsx"
+        );
+        route(
+          "/to/:id/matches/:mid/subscribe",
+          "features/tournament-bracket/routes/to.$id.matches.$mid.subscribe.tsx"
+        );
       });
 
       route("/privacy-policy", "features/info/routes/privacy-policy.tsx");
@@ -57,5 +83,8 @@ module.exports = {
         "features/top-search/routes/xsearch.player.$id.tsx"
       );
     });
+  },
+  future: {
+    v2_meta: true,
   },
 };

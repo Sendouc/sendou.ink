@@ -1,6 +1,6 @@
 import type {
   LinksFunction,
-  MetaFunction,
+  V2_MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
 import {
@@ -47,16 +47,14 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const meta: MetaFunction = ({
+export const meta: V2_MetaFunction = ({
   data,
 }: {
   data: SerializeFrom<typeof loader>;
 }) => {
-  if (!data) return {};
+  if (!data) return [];
 
-  return {
-    title: makeTitle(data.team.name),
-  };
+  return [{ title: makeTitle(data.team.name) }];
 };
 
 export const action: ActionFunction = async ({ request, params }) => {
@@ -64,7 +62,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   const { customUrl } = teamParamsSchema.parse(params);
   const { team } = notFoundIfFalsy(findByIdentifier(customUrl));
-  validate(isTeamOwner({ team, user }));
+  validate(isTeamOwner({ team, user }), "Only team owner can manage roster");
 
   const data = await parseRequestFormData({
     request,
@@ -73,7 +71,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   switch (data._action) {
     case "DELETE_MEMBER": {
-      validate(data.userId !== user.id);
+      validate(data.userId !== user.id, "Can't delete yourself");
       leaveTeam({ teamId: team.id, userId: data.userId });
       break;
     }

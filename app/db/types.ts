@@ -114,11 +114,7 @@ export interface CalendarEvent {
   discordUrl: string | null;
   bracketUrl: string;
   participantCount: number | null;
-  customUrl: string | null;
-  /** Is tournament tools page visible */
-  toToolsEnabled: number;
-  toToolsMode: RankedModeShort | null;
-  isBeforeStart: number;
+  tournamentId: number | null;
 }
 
 export type CalendarEventTag = keyof typeof allTags;
@@ -184,15 +180,39 @@ export interface MapPoolMap {
   mode: ModeShort;
 }
 
+// AUTO = style where teams pick their map pool ahead of time and the map lists are automatically made for each round
+// could also have the traditional style where TO picks the maps later
+type TournamentMapPickingStyle =
+  | "AUTO_ALL"
+  | "AUTO_SZ"
+  | "AUTO_TC"
+  | "AUTO_RM"
+  | "AUTO_CB";
+
+// TODO: later also e.g. RR_TO_DE where we also need an additional field
+// describing how many teams advance
+export type TournamentFormat = "SE" | "DE";
+
+export interface Tournament {
+  id: number;
+  mapPickingStyle: TournamentMapPickingStyle;
+  format: TournamentFormat;
+  showMapListGenerator: number;
+}
+
 export interface TournamentTeam {
   id: number;
-  // TODO: make non-nullable in database as well
   name: string;
   createdAt: number;
   seed: number | null;
-  calendarEventId: number;
+  tournamentId: number;
   inviteCode: string;
-  checkedInAt?: number;
+  prefersNotToHost: number;
+}
+
+export interface TournamentTeamCheckIn {
+  tournamentTeamId: number;
+  checkedInAt: number;
 }
 
 export interface TournamentTeamMember {
@@ -202,48 +222,104 @@ export interface TournamentTeamMember {
   createdAt: number;
 }
 
-export type BracketType = "SE" | "DE";
-
-export interface TournamentBracket {
+/** A stage is an intermediate phase in a tournament.
+ * Supported stage types are round-robin, single elimination and double elimination. */
+export interface TournamentStage {
   id: number;
-  calendarEventId: number;
-  type: BracketType;
+  tournamentId: number;
+  name: string;
+  type: "round_robin" | "single_elimination" | "double_elimination";
+  settings: string; // json
+  number: number;
 }
 
+/** A group is a logical structure used to group multiple rounds together.
+
+- In round-robin stages, a group is a pool.
+- In elimination stages, a group is a bracket.
+    - A single elimination stage can have one or two groups:
+      - The unique bracket.
+      - If enabled, the Consolation Final.
+    - A double elimination stage can have two or three groups:
+      - Upper and lower brackets.
+      - If enabled, the Grand Final. */
+export interface TournamentGroup {
+  id: number;
+  stageId: number;
+  /** In double elimination 1 = Winners, 2 = Losers, 3 = Grand Finals+Bracket Reset */
+  number: number;
+}
+
+/** 
+ * A round is a logical structure used to group multiple matches together.
+
+  - In round-robin stages, a round can be viewed as a day or just as a list of matches that can be played at the same time.
+  - In elimination stages, a round is a round of a bracket, e.g. 8th finals, semi-finals, etc.
+ */
 export interface TournamentRound {
   id: number;
-  // position of the round 1 for Round 1, 2 for Round 2, -1 for Losers Round 1 etc.
-  position: number;
-  bracketId: number;
-  bestOf: number;
+  stageId: number;
+  groupId: number;
+  number: number;
 }
 
+export enum Status {
+  /** The two matches leading to this one are not completed yet. */
+  Locked = 0,
+
+  /** One participant is ready and waiting for the other one. */
+  Waiting = 1,
+
+  /** Both participants are ready to start. */
+  Ready = 2,
+
+  /** The match is running. */
+  Running = 3,
+
+  /** The match is completed. */
+  Completed = 4,
+
+  /** At least one participant started their following match. */
+  Archived = 5,
+}
+
+/** A match between two participants (more participants are not allowed).
+ * Participants can be teams or individuals. */
 export interface TournamentMatch {
   id: number;
+  /** Not used */
+  childCount: number;
+  bestOf: 3 | 5 | 7;
   roundId: number;
-  // TODO tournament: why we need both?
-  number: number | null;
-  position: number;
-  winnerDestinationMatchId: number | null;
-  loserDestinationMatchId: number | null;
-}
-
-export type TeamOrder = "UPPER" | "LOWER";
-
-export interface TournamentMatchParticipant {
-  order: TeamOrder;
-  teamId: number;
-  matchId: number;
+  stageId: number;
+  groupId: number;
+  number: number;
+  opponentOne: string; // json
+  opponentTwo: string; // json
+  status: Status;
 }
 
 export interface TournamentMatchGameResult {
   id: number;
   matchId: number;
+  number: number;
   stageId: StageId;
   mode: ModeShort;
+  /** serialized TournamentMaplistSource */
+  source: string;
   winnerTeamId: number;
   reporterId: number;
   createdAt: number;
+}
+
+export interface TournamentMatchGameResultParticipant {
+  matchGameResultId: number;
+  userId: number;
+}
+
+export interface TrustRelationship {
+  trustGiverUserId: number;
+  trustReceiverUserId: number;
 }
 
 export interface UserSubmittedImage {

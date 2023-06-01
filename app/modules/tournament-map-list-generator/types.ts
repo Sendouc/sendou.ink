@@ -1,5 +1,6 @@
 import type { ModeShort, ModeWithStage } from "../in-game-lists";
 import type { MapPool } from "../map-pool-serializer";
+import type { sourceTypes } from "./constants";
 
 export type BracketType =
   | "GROUPS"
@@ -10,8 +11,7 @@ export type BracketType =
 
 export interface TournamentMaplistInput {
   bestOf: 3 | 5 | 7;
-  roundNumber: number;
-  bracketType: BracketType;
+  seed: string;
   teams: [
     {
       id: number;
@@ -26,11 +26,7 @@ export interface TournamentMaplistInput {
   modesIncluded: ModeShort[];
 }
 
-export type TournamentMaplistSource =
-  | number
-  | "DEFAULT"
-  | "TIEBREAKER"
-  | "BOTH";
+export type TournamentMaplistSource = number | (typeof sourceTypes)[number];
 
 export type TournamentMapListMap = ModeWithStage & {
   source: TournamentMaplistSource;

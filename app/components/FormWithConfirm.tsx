@@ -1,4 +1,4 @@
-import { Form } from "@remix-run/react";
+import { useFetcher } from "@remix-run/react";
 import React from "react";
 import invariant from "tiny-invariant";
 import { useTranslation } from "~/hooks/useTranslation";
@@ -11,12 +11,17 @@ export function FormWithConfirm({
   children,
   dialogHeading,
   deleteButtonText,
+  action,
+  submitButtonTestId = "submit-button",
 }: {
   fields?: [name: string, value: string | number][];
   children: React.ReactNode;
   dialogHeading: string;
   deleteButtonText?: string;
+  action?: string;
+  submitButtonTestId?: string;
 }) {
+  const fetcher = useFetcher();
   const { t } = useTranslation(["common"]);
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const formRef = React.useRef<HTMLFormElement>(null);
@@ -29,11 +34,17 @@ export function FormWithConfirm({
 
   return (
     <>
-      <Form id={id} className="hidden" ref={formRef} method="post">
+      <fetcher.Form
+        id={id}
+        className="hidden"
+        ref={formRef}
+        method="post"
+        action={action}
+      >
         {fields?.map(([name, value]) => (
           <input type="hidden" key={name} name={name} value={value} />
         ))}
-      </Form>
+      </fetcher.Form>
       <Dialog isOpen={dialogOpen} close={closeDialog} className="text-center">
         <div className="stack md">
           <h2 className="text-sm">{dialogHeading}</h2>
@@ -41,7 +52,7 @@ export function FormWithConfirm({
             <SubmitButton
               form={id}
               variant="destructive"
-              testId={dialogOpen ? "confirm-button" : undefined}
+              testId={dialogOpen ? "confirm-button" : submitButtonTestId}
             >
               {deleteButtonText ?? t("common:actions.delete")}
             </SubmitButton>

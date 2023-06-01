@@ -10,6 +10,7 @@ import type {
   CalendarEventResultTeam,
   CalendarEventResultPlayer,
   MapPoolMap,
+  Tournament,
 } from "../../types";
 import { MapPool } from "~/modules/map-pool-serializer";
 
@@ -39,6 +40,10 @@ import findRecentMapPoolsByAuthorIdSql from "./findRecentMapPoolsByAuthorId.sql"
 import findAllEventsWithMapPoolsSql from "./findAllEventsWithMapPools.sql";
 import findTieBreakerMapPoolByEventIdSql from "./findTieBreakerMapPoolByEventId.sql";
 import deleteByIdSql from "./deleteById.sql";
+import createTournamentSql from "./createTournament.sql";
+import deleteTournamentByIdSql from "./deleteTournamentById.sql";
+import findTournamentTeamMemberCountsByEventIdSql from "./findTournamentTeamMemberCountsByEventId.sql";
+import { sumArray } from "~/utils/number";
 
 const createStm = sql.prepare(createSql);
 const updateStm = sql.prepare(updateSql);
@@ -56,6 +61,14 @@ const findTieBreakerMapPoolByEventIdtm = sql.prepare(
   findTieBreakerMapPoolByEventIdSql
 );
 const deleteByIdStm = sql.prepare(deleteByIdSql);
+const deleteTournamentByIdStm = sql.prepare(deleteTournamentByIdSql);
+const createTournamentStm = sql.prepare(createTournamentSql);
+
+const createTournament = (
+  args: Omit<Tournament, "id" | "showMapListGenerator">
+) => {
+  return createTournamentStm.get(args) as Tournament;
+};
 
 export type CreateArgs = Pick<
   CalendarEvent,
@@ -65,12 +78,12 @@ export type CreateArgs = Pick<
   | "description"
   | "discordInviteCode"
   | "bracketUrl"
-  | "toToolsEnabled"
-  | "toToolsMode"
 > & {
   startTimes: Array<CalendarEventDate["startTime"]>;
   badges: Array<CalendarEventBadge["badgeId"]>;
   mapPoolMaps?: Array<Pick<MapPoolMap, "mode" | "stageId">>;
+  createTournament: boolean;
+  mapPickingStyle: Tournament["mapPickingStyle"];
 };
 export const create = sql.transaction(
   ({
@@ -79,7 +92,18 @@ export const create = sql.transaction(
     mapPoolMaps = [],
     ...calendarEventArgs
   }: CreateArgs) => {
-    const createdEvent = createStm.get(calendarEventArgs) as CalendarEvent;
+    let tournamentId;
+    if (calendarEventArgs.createTournament) {
+      tournamentId = createTournament({
+        // TODO: format picking
+        format: "DE",
+        mapPickingStyle: calendarEventArgs.mapPickingStyle,
+      }).id;
+    }
+    const createdEvent = createStm.get({
+      ...calendarEventArgs,
+      tournamentId,
+    }) as CalendarEvent;
 
     for (const startTime of startTimes) {
       createDateStm.run({
@@ -98,25 +122,31 @@ export const create = sql.transaction(
     upsertMapPool({
       eventId: createdEvent.id,
       mapPoolMaps,
-      toToolsEnabled: calendarEventArgs.toToolsEnabled,
+      isFullTournament: calendarEventArgs.createTournament,
     });
 
     return createdEvent.id;
   }
 );
 
-export type Update = Omit<CreateArgs, "authorId"> & {
+export type Update = Omit<
+  CreateArgs,
+  "authorId" | "createTournament" | "mapPickingStyle"
+> & {
   eventId: CalendarEvent["id"];
 };
 export const update = sql.transaction(
   ({
     startTimes,
     badges,
-    eventId,
     mapPoolMaps = [],
+    eventId,
     ...calendarEventArgs
   }: Update) => {
-    updateStm.run({ ...calendarEventArgs, eventId });
+    const event = updateStm.get({
+      ...calendarEventArgs,
+      eventId,
+    }) as CalendarEvent;
 
     deleteDatesByEventIdStm.run({ eventId });
     for (const startTime of startTimes) {
@@ -134,25 +164,28 @@ export const update = sql.transaction(
       });
     }
 
-    upsertMapPool({
-      eventId,
-      mapPoolMaps,
-      toToolsEnabled: calendarEventArgs.toToolsEnabled,
-    });
+    // can't edit tournament specific info after creation
+    if (!event.tournamentId) {
+      upsertMapPool({
+        eventId,
+        mapPoolMaps,
+        isFullTournament: false,
+      });
+    }
   }
 );
 
 function upsertMapPool({
   eventId,
   mapPoolMaps,
-  toToolsEnabled,
+  isFullTournament,
 }: {
   eventId: Update["eventId"];
   mapPoolMaps: NonNullable<Update["mapPoolMaps"]>;
-  toToolsEnabled: Update["toToolsEnabled"];
+  isFullTournament: boolean;
 }) {
   deleteMapPoolMapsStm.run({ calendarEventId: eventId });
-  if (toToolsEnabled) {
+  if (isFullTournament) {
     for (const mapPoolArgs of mapPoolMaps) {
       createTieBreakerMapPoolMapStm.run({
         calendarEventId: eventId,
@@ -309,14 +342,43 @@ const findAllBetweenTwoTimestampsStm = sql.prepare(
 );
 
 function addTagArray<
-  T extends { hasBadge: number; tags?: CalendarEvent["tags"] }
+  T extends {
+    hasBadge: number;
+    tags?: CalendarEvent["tags"];
+    tournamentId: CalendarEvent["tournamentId"];
+  }
 >(arg: T) {
   const { hasBadge, ...row } = arg;
   const tags = (row.tags ? row.tags.split(",") : []) as Array<CalendarEventTag>;
 
   if (hasBadge) tags.unshift("BADGE");
+  if (row.tournamentId) tags.unshift("FULL_TOURNAMENT");
 
   return { ...row, tags };
+}
+
+const findTournamentTeamMemberCountsByEventIdStm = sql.prepare(
+  findTournamentTeamMemberCountsByEventIdSql
+);
+
+function addParticipantsCounts<
+  T extends { tournamentId: CalendarEvent["tournamentId"] }
+>(arg: T) {
+  if (!arg.tournamentId) return arg;
+
+  const counts = findTournamentTeamMemberCountsByEventIdStm.all({
+    tournamentId: arg.tournamentId,
+  }) as Array<{
+    memberCount: number;
+  }>;
+
+  return {
+    ...arg,
+    participantCounts: {
+      teams: counts.length,
+      players: sumArray(counts.map((c) => c.memberCount)),
+    },
+  };
 }
 
 export function findAllBetweenTwoTimestamps({
@@ -330,15 +392,20 @@ export function findAllBetweenTwoTimestamps({
     startTime: dateToDatabaseTimestamp(startTime),
     endTime: dateToDatabaseTimestamp(endTime),
   }) as Array<
-    Pick<CalendarEvent, "name" | "discordUrl" | "bracketUrl" | "tags"> &
+    Pick<
+      CalendarEvent,
+      "name" | "discordUrl" | "bracketUrl" | "tags" | "tournamentId"
+    > &
       Pick<CalendarEventDate, "eventId" | "startTime"> & {
         eventDateId: CalendarEventDate["id"];
       } & Pick<User, "discordName" | "discordDiscriminator"> & {
         nthAppearance: number;
-      } & { hasBadge: number }
+      } & { hasBadge: number } & {
+        participantCounts?: { teams: number; players: number };
+      }
   >;
 
-  return rows.map(addTagArray).map(addBadges);
+  return rows.map(addTagArray).map(addBadges).map(addParticipantsCounts);
 }
 
 const findByIdStm = sql.prepare(findByIdSql);
@@ -354,9 +421,9 @@ export function findById(id: CalendarEvent["id"]) {
       | "tags"
       | "authorId"
       | "participantCount"
-      | "toToolsEnabled"
-      | "toToolsMode"
+      | "tournamentId"
     > &
+      Pick<Tournament, "mapPickingStyle"> &
       Pick<CalendarEventDate, "startTime" | "eventId"> &
       Pick<
         User,
@@ -475,6 +542,15 @@ export function findTieBreakerMapPoolByEventId(
   >;
 }
 
-export function deleteById(id: CalendarEvent["id"]) {
-  return deleteByIdStm.run({ id });
-}
+export const deleteById = sql.transaction(
+  ({
+    eventId,
+    tournamentId,
+  }: {
+    eventId: number;
+    tournamentId: number | null;
+  }) => {
+    deleteByIdStm.run({ id: eventId });
+    if (tournamentId) deleteTournamentByIdStm.run({ id: tournamentId });
+  }
+);

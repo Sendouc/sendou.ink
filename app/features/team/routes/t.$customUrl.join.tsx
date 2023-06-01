@@ -43,7 +43,8 @@ export const action: ActionFunction = async ({ request, params }) => {
       realInviteCode,
       team,
       user,
-    }) === "VALID"
+    }) === "VALID",
+    "Invite code is invalid"
   );
 
   addNewTeamMember({ teamId: team.id, userId: user.id });

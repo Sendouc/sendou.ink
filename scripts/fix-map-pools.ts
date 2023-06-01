@@ -4,7 +4,7 @@ import { sql } from "~/db/sql";
 
 const faultyTournamentTeamIds = sql
   .prepare(
-    "select tournamentTeamId from mappoolmap where tournamentteamid is not null and mode != 'SZ' group by tournamentteamid"
+    "select tournamentTeamId from mappoolmap where tournamentteamid is not null and mode = 'SZ' group by tournamentteamid"
   )
   .all()
   .map((row) => row.tournamentTeamId);

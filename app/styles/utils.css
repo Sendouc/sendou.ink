@@ -46,12 +46,20 @@
   color: var(--theme);
 }
 
+.text-theme-secondary {
+  color: var(--theme-secondary);
+}
+
 .fill-success {
   fill: var(--theme-success);
 }
 
 .fill-warning {
   fill: var(--theme-warning);
+}
+
+.fill-error {
+  fill: var(--theme-error);
 }
 
 .bg-transparent-important {
@@ -64,6 +72,10 @@
 
 .rounded {
   border-radius: var(--rounded);
+}
+
+.rounded-sm {
+  border-radius: var(--rounded-sm);
 }
 
 .rounded-full {
@@ -122,8 +134,16 @@
   padding-block-start: var(--s-12) !important;
 }
 
+.mt-auto {
+  margin-block-start: auto;
+}
+
 .mt-0 {
   margin-block-start: var(--s-0);
+}
+
+.mt-1 {
+  margin-block-start: var(--s-1);
 }
 
 .mt-2 {
@@ -152,6 +172,10 @@
 
 .ml-auto {
   margin-inline-start: auto;
+}
+
+.ml-2 {
+  margin-inline-start: var(--s-2);
 }
 
 .mr-auto {
@@ -252,6 +276,10 @@
 
 .desktop-hidden {
   display: inherit;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
 
 @media screen and (min-width: 480px) {

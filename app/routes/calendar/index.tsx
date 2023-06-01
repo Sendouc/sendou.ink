@@ -1,4 +1,8 @@
-import type { LoaderArgs, MetaFunction, SerializeFrom } from "@remix-run/node";
+import type {
+  LoaderArgs,
+  V2_MetaFunction,
+  SerializeFrom,
+} from "@remix-run/node";
 import { json, type LinksFunction } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
@@ -21,6 +25,8 @@ import {
   databaseTimestampToDate,
   dateToThisWeeksMonday,
   dateToWeekNumber,
+  dayToWeekStartsAtMondayDay,
+  getWeekStartsAtMondayDay,
   weekNumberToDate,
 } from "~/utils/dates";
 import { type SendouRouteHandle } from "~/utils/remix";
@@ -31,27 +37,33 @@ import {
   CALENDAR_PAGE,
   navIconUrl,
   resolveBaseUrl,
+  tournamentPage,
 } from "~/utils/urls";
 import { actualNumber } from "~/utils/zod";
 import { Tags } from "./components/Tags";
+import { Divider } from "~/components/Divider";
+import { UsersIcon } from "~/components/icons/Users";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const meta: MetaFunction = (args) => {
+export const meta: V2_MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
 
-  if (!data) return {};
+  if (!data) return [];
 
-  return {
-    title: data.title,
-    description: `${data.events.length} events happening during week ${
-      data.displayedWeek
-    } including ${joinListToNaturalString(
-      data.events.slice(0, 3).map((e) => e.name)
-    )}`,
-  };
+  return [
+    { title: data.title },
+    {
+      name: "description",
+      content: `${data.events.length} events happening during week ${
+        data.displayedWeek
+      } including ${joinListToNaturalString(
+        data.events.slice(0, 3).map((e) => e.name)
+      )}`,
+    },
+  ];
 };
 
 export const handle: SendouRouteHandle = {
@@ -90,6 +102,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   return json({
     currentWeek,
     displayedWeek,
+    currentDay: new Date().getDay(),
     nearbyStartTimes: db.calendarEvents.startTimesOfRange({
       startTime: subMonths(
         weekNumberToDate({ week: displayedWeek, year: displayedYear }),
@@ -325,14 +338,39 @@ function EventsList({
 }: {
   events: SerializeFrom<typeof loader>["events"];
 }) {
+  const data = useLoaderData<typeof loader>();
   const { t, i18n } = useTranslation("calendar");
 
+  const sortPastEventsLast = data.currentWeek === data.displayedWeek;
+
+  const eventsGrouped = eventsGroupedByDay(events);
+  if (sortPastEventsLast) {
+    eventsGrouped.sort(
+      pastEventsLast(dayToWeekStartsAtMondayDay(data.currentDay))
+    );
+  }
+
+  let dividerRendered = false;
   return (
     <div className="calendar__events-container">
-      {eventsGroupedByDay(events).map(([daysDate, events]) => {
+      {eventsGrouped.map(([daysDate, events]) => {
+        const renderDivider =
+          sortPastEventsLast &&
+          !dividerRendered &&
+          getWeekStartsAtMondayDay(daysDate) <
+            dayToWeekStartsAtMondayDay(data.currentDay);
+        if (renderDivider) {
+          dividerRendered = true;
+        }
+
         return (
           <React.Fragment key={daysDate.getTime()}>
             <div className="calendar__event__date-container">
+              {renderDivider ? (
+                <Divider className="calendar__event__divider">
+                  {t("pastEvents.dividerText")}
+                </Divider>
+              ) : null}
               <div className="calendar__event__date main">
                 {daysDate.toLocaleDateString(i18n.language, {
                   weekday: "long",
@@ -364,22 +402,45 @@ function EventsList({
                           })}
                         </time>
                         <div className="calendar__event__author">
-                          From {discordFullName(calendarEvent)}
+                          {t("from", {
+                            author: discordFullName(calendarEvent),
+                          })}
                         </div>
                       </div>
                       <div className="stack xs">
-                        <Link to={String(calendarEvent.eventId)}>
-                          <h2 className="calendar__event__title">
-                            {calendarEvent.name}{" "}
-                            {calendarEvent.nthAppearance > 1 ? (
-                              <span className="calendar__event__day">
-                                {t("day", {
-                                  number: calendarEvent.nthAppearance,
-                                })}
-                              </span>
-                            ) : null}
-                          </h2>
-                        </Link>
+                        <div>
+                          <Link
+                            to={
+                              calendarEvent.tournamentId
+                                ? tournamentPage(calendarEvent.tournamentId)
+                                : String(calendarEvent.eventId)
+                            }
+                          >
+                            <h2 className="calendar__event__title">
+                              {calendarEvent.name}{" "}
+                              {calendarEvent.nthAppearance > 1 ? (
+                                <span className="calendar__event__day">
+                                  {t("day", {
+                                    number: calendarEvent.nthAppearance,
+                                  })}
+                                </span>
+                              ) : null}
+                            </h2>
+                          </Link>
+                          {calendarEvent.participantCounts &&
+                          calendarEvent.participantCounts.teams > 0 ? (
+                            <div className="calendar__event__participant-counts">
+                              <UsersIcon />{" "}
+                              {t("count.teams", {
+                                count: calendarEvent.participantCounts.teams,
+                              })}{" "}
+                              /{" "}
+                              {t("count.players", {
+                                count: calendarEvent.participantCounts.players,
+                              })}
+                            </div>
+                          ) : null}
+                        </div>
                         <Tags
                           tags={calendarEvent.tags}
                           badges={calendarEvent.badgePrizes}
@@ -397,14 +458,16 @@ function EventsList({
                           Discord
                         </LinkButton>
                       ) : null}
-                      <LinkButton
-                        to={calendarEvent.bracketUrl}
-                        variant="outlined"
-                        size="tiny"
-                        isExternal
-                      >
-                        {resolveBaseUrl(calendarEvent.bracketUrl)}
-                      </LinkButton>
+                      {!calendarEvent.tournamentId ? (
+                        <LinkButton
+                          to={calendarEvent.bracketUrl}
+                          variant="outlined"
+                          size="tiny"
+                          isExternal
+                        >
+                          {resolveBaseUrl(calendarEvent.bracketUrl)}
+                        </LinkButton>
+                      ) : null}
                     </div>
                   </section>
                 );
@@ -417,8 +480,9 @@ function EventsList({
   );
 }
 
+type EventsGrouped = [Date, SerializeFrom<typeof loader>["events"]];
 function eventsGroupedByDay(events: SerializeFrom<typeof loader>["events"]) {
-  const result: Array<[Date, SerializeFrom<typeof loader>["events"]]> = [];
+  const result: EventsGrouped[] = [];
 
   for (const calendarEvent of events) {
     const previousIterationEvents = result[result.length - 1] ?? null;
@@ -435,4 +499,21 @@ function eventsGroupedByDay(events: SerializeFrom<typeof loader>["events"]) {
   }
 
   return result;
+}
+
+function pastEventsLast(currentDay: number) {
+  return function (a: EventsGrouped, b: EventsGrouped) {
+    const aDay = getWeekStartsAtMondayDay(a[0]);
+    const bDay = getWeekStartsAtMondayDay(b[0]);
+
+    if (aDay < currentDay && bDay >= currentDay) {
+      return 1;
+    }
+
+    if (aDay >= currentDay && bDay < currentDay) {
+      return -1;
+    }
+
+    return 0;
+  };
 }

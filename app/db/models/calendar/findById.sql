@@ -5,9 +5,9 @@ select
   "CalendarEvent"."discordUrl",
   "CalendarEvent"."bracketUrl",
   "CalendarEvent"."tags",
+  "CalendarEvent"."tournamentId",
   "CalendarEvent"."participantCount",
-  "CalendarEvent"."toToolsEnabled",
-  "CalendarEvent"."toToolsMode",
+  "Tournament"."mapPickingStyle",
   "User"."id" as "authorId",
   exists (
     select
@@ -27,6 +27,7 @@ from
   "CalendarEvent"
   join "CalendarEventDate" on "CalendarEvent"."id" = "CalendarEventDate"."eventId"
   join "User" on "CalendarEvent"."authorId" = "User"."id"
+  left join "Tournament" on "CalendarEvent"."tournamentId" = "Tournament"."id"
 where
   "CalendarEvent"."id" = @id
 order by

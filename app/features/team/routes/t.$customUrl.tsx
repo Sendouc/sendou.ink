@@ -2,7 +2,7 @@ import type {
   ActionFunction,
   LinksFunction,
   LoaderArgs,
-  MetaFunction,
+  V2_MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
@@ -48,17 +48,17 @@ import {
 } from "../team-utils";
 import styles from "../team.css";
 
-export const meta: MetaFunction = ({
+export const meta: V2_MetaFunction = ({
   data,
 }: {
   data: SerializeFrom<typeof loader>;
 }) => {
-  if (!data) return {};
+  if (!data) return [];
 
-  return {
-    title: makeTitle(data.team.name),
-    description: data.team.bio,
-  };
+  return [
+    { title: makeTitle(data.team.name) },
+    { name: "description", content: data.team.bio },
+  ];
 };
 
 export const links: LinksFunction = () => {
@@ -71,7 +71,10 @@ export const action: ActionFunction = async ({ request, params }) => {
   const { customUrl } = teamParamsSchema.parse(params);
   const { team } = notFoundIfFalsy(findByIdentifier(customUrl));
 
-  validate(isTeamMember({ user, team }) && !isTeamOwner({ user, team }));
+  validate(
+    isTeamMember({ user, team }) && !isTeamOwner({ user, team }),
+    "You are not a regular member of this team"
+  );
 
   leaveTeam({ userId: user.id, teamId: team.id });
 

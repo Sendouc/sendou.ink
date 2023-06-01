@@ -5,20 +5,20 @@ export const weaponCategories = [
     name: "SHOOTERS",
     weaponIds: [
       0, 1, 10, 11, 20, 21, 30, 31, 40, 41, 45, 50, 60, 61, 70, 71, 80, 81, 90,
-      91, 100, 300, 301, 310, 400,
+      91, 100, 101, 300, 301, 310, 311, 400,
     ],
   },
   {
     name: "BLASTERS",
-    weaponIds: [200, 201, 210, 220, 230, 231, 240, 241, 250],
+    weaponIds: [200, 201, 210, 220, 230, 231, 240, 241, 250, 251, 260],
   },
   {
     name: "ROLLERS",
-    weaponIds: [1000, 1001, 1010, 1011, 1020, 1030, 1040],
+    weaponIds: [1000, 1001, 1010, 1011, 1020, 1030, 1040, 1041],
   },
   {
     name: "BRUSHES",
-    weaponIds: [1100, 1101, 1110],
+    weaponIds: [1100, 1101, 1110, 1120],
   },
   {
     name: "CHARGERS",
@@ -30,15 +30,15 @@ export const weaponCategories = [
   },
   {
     name: "SPLATLINGS",
-    weaponIds: [4000, 4001, 4010, 4020, 4030, 4040],
+    weaponIds: [4000, 4001, 4010, 4011, 4020, 4030, 4040],
   },
   {
     name: "DUALIES",
-    weaponIds: [5000, 5001, 5010, 5020, 5030, 5040],
+    weaponIds: [5000, 5001, 5010, 5020, 5030, 5031, 5040, 5041],
   },
   {
     name: "BRELLAS",
-    weaponIds: [6000, 6010, 6020],
+    weaponIds: [6000, 6010, 6011, 6020],
   },
   {
     name: "STRINGERS",
@@ -46,7 +46,7 @@ export const weaponCategories = [
   },
   {
     name: "SPLATANAS",
-    weaponIds: [8000, 8010],
+    weaponIds: [8000, 8010, 8011],
   },
 ] as const;
 

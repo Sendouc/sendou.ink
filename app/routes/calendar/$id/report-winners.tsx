@@ -117,6 +117,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       event,
       startTimes: event.startTimes,
     }),
+    "Unauthorized",
     401
   );
 
@@ -150,8 +151,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
       user,
       event,
       startTimes: event.startTimes,
-    }),
-    401
+    })
   );
 
   return json({

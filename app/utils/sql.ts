@@ -14,9 +14,13 @@ export function parseDBJsonArray(value: any) {
 export function parseDBArray(value: any) {
   const parsed = JSON.parse(value);
 
-  if (parsed.length === 1 && parsed[0] === null) {
+  if (!parsed || (parsed.length === 1 && parsed[0] === null)) {
     return [];
   }
 
   return parsed;
+}
+
+export function booleanToInt(value: boolean) {
+  return value ? 1 : 0;
 }

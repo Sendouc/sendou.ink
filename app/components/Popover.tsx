@@ -1,4 +1,5 @@
 import { Popover as HeadlessPopover } from "@headlessui/react";
+import type { Placement } from "@popperjs/core";
 import * as React from "react";
 import { usePopper } from "react-popper";
 
@@ -8,15 +9,27 @@ export function Popover({
   buttonChildren,
   triggerClassName,
   containerClassName,
+  placement,
 }: {
   children: React.ReactNode;
   buttonChildren: React.ReactNode;
   triggerClassName?: string;
   containerClassName?: string;
+  placement?: Placement;
 }) {
   const [referenceElement, setReferenceElement] = React.useState();
   const [popperElement, setPopperElement] = React.useState();
-  const { styles, attributes } = usePopper(referenceElement, popperElement);
+  const { styles, attributes } = usePopper(referenceElement, popperElement, {
+    placement,
+    modifiers: [
+      {
+        name: "offset",
+        options: {
+          offset: [0, 8],
+        },
+      },
+    ],
+  });
 
   return (
     <HeadlessPopover className={containerClassName}>

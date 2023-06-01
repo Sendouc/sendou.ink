@@ -1,7 +1,7 @@
 import type {
   ActionFunction,
   LoaderFunction,
-  MetaFunction,
+  V2_MetaFunction,
 } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { useFetcher, useLoaderData, useNavigation } from "@remix-run/react";
@@ -30,10 +30,8 @@ import { assertUnreachable } from "~/utils/types";
 import { impersonateUrl, SEED_URL, STOP_IMPERSONATING_URL } from "~/utils/urls";
 import { actualNumber } from "~/utils/zod";
 
-export const meta: MetaFunction = () => {
-  return {
-    title: makeTitle("Admin page"),
-  };
+export const meta: V2_MetaFunction = () => {
+  return [{ title: makeTitle("Admin page") }];
 };
 
 const adminActionSchema = z.union([

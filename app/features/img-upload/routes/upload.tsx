@@ -34,14 +34,20 @@ export const action = async ({ request }: ActionArgs) => {
   const user = await requireUser(request);
 
   const validatedType = requestToImgType(request);
-  validate(validatedType);
+  validate(validatedType, "Invalid image type");
 
-  validate(user.team);
+  validate(user.team, "You must be on a team to upload images");
   const detailed = findByIdentifier(user.team.customUrl);
-  validate(detailed && isTeamOwner({ team: detailed.team, user }));
+  validate(
+    detailed && isTeamOwner({ team: detailed.team, user }),
+    "You must be the team owner to upload images"
+  );
 
   // TODO: graceful error handling when uploading many images
-  validate(countUnvalidatedImg(user.id) < MAX_UNVALIDATED_IMG_COUNT);
+  validate(
+    countUnvalidatedImg(user.id) < MAX_UNVALIDATED_IMG_COUNT,
+    "Too many unvalidated images"
+  );
 
   const uploadHandler: UploadHandler = composeUploadHandlers(
     s3UploadHandler,

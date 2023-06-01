@@ -1,16 +1,14 @@
-import { type LoaderArgs, redirect } from "@remix-run/node";
-import { idFromParams } from "../tournament-utils";
-import { notFoundIfFalsy } from "~/utils/remix";
-import { findByIdentifier } from "../queries/findByIdentifier.server";
-import { toToolsMapsPage, toToolsRegisterPage } from "~/utils/urls";
+import { redirect, type LoaderArgs } from "@remix-run/node";
+import { tournamentBracketsPage, tournamentRegisterPage } from "~/utils/urls";
+import hasTournamentStarted from "../queries/hasTournamentStarted.server";
+import { tournamentIdFromParams } from "../tournament-utils";
 
 export const loader = ({ params }: LoaderArgs) => {
-  const eventId = idFromParams(params);
-  const event = notFoundIfFalsy(findByIdentifier(eventId));
+  const eventId = tournamentIdFromParams(params);
 
-  if (event.isBeforeStart) {
-    throw redirect(toToolsRegisterPage(event.id));
+  if (!hasTournamentStarted(eventId)) {
+    throw redirect(tournamentRegisterPage(eventId));
   }
 
-  throw redirect(toToolsMapsPage(event.id));
+  throw redirect(tournamentBracketsPage(eventId));
 };

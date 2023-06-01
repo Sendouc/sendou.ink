@@ -60,6 +60,8 @@ export const SPLATOON_3_INK = "https://splatoon3.ink/";
 
 export const twitterUrl = (accountName: string) =>
   `https://twitter.com/${accountName}`;
+export const twitchUrl = (accountName: string) =>
+  `https://twitch.tv/${accountName}`;
 
 export const LOG_IN_URL = "/auth";
 export const LOG_OUT_URL = "/auth/logout";
@@ -176,11 +178,36 @@ export const calendarEditPage = (eventId?: number) =>
   `/calendar/new${eventId ? `?eventId=${eventId}` : ""}`;
 export const calendarReportWinnersPage = (eventId: number) =>
   `/calendar/${eventId}/report-winners`;
-export const toToolsPage = (eventId: number) => `/to/${eventId}`;
-export const toToolsRegisterPage = (eventId: number) =>
+export const tournamentPage = (eventId: number) => `/to/${eventId}`;
+export const tournamentTeamPage = ({
+  eventId,
+  tournamentTeamId,
+}: {
+  eventId: number;
+  tournamentTeamId: number;
+}) => `/to/${eventId}/teams/${tournamentTeamId}`;
+export const tournamentRegisterPage = (eventId: number) =>
   `/to/${eventId}/register`;
-export const toToolsMapsPage = (eventId: number) => `/to/${eventId}/maps`;
-export const toToolsJoinPage = ({
+export const tournamentMapsPage = (eventId: number) => `/to/${eventId}/maps`;
+export const tournamentBracketsPage = (eventId: number) =>
+  `/to/${eventId}/brackets`;
+export const tournamentBracketsSubscribePage = (eventId: number) =>
+  `/to/${eventId}/brackets/subscribe`;
+export const tournamentMatchPage = ({
+  eventId,
+  matchId,
+}: {
+  eventId: number;
+  matchId: number;
+}) => `/to/${eventId}/matches/${matchId}`;
+export const tournamentMatchSubscribePage = ({
+  eventId,
+  matchId,
+}: {
+  eventId: number;
+  matchId: number;
+}) => `/to/${eventId}/matches/${matchId}/subscribe`;
+export const tournamentJoinPage = ({
   eventId,
   inviteCode,
 }: {

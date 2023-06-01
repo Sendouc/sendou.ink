@@ -2,6 +2,8 @@
   "tabs.info": "比赛信息",
   "tabs.teams": "参赛队伍 ({{count}})",
   "tabs.admin": "管理",
+  "tabs.register": "报名",
+  "tabs.maps": "地图",
 
   "pre.footerNote": "请注意: 在比赛开始前，您可以随意更改您的地图池和队伍阵容。",
   "pre.deleteTeam": "删除队伍",
@@ -39,8 +41,5 @@
 
   "teams.mapsPickedStatus": "地图的选择情况",
 
-  "admin.eventStarted": "比赛开始",
-  "admin.eventStarted.explanation": "比赛开始后，参赛队伍可以制作地图列表，但是不能更改他们的地图池或者队伍阵容。",
-  "admin.download": "下载参赛者",
-  "admin.download.discord": "Discord列表"
+  "admin.download": "下载参赛者"
 }

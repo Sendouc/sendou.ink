@@ -26,7 +26,7 @@ import {
   translationJsonFolderName,
 } from "./utils";
 
-const CURRENT_SEASON = 3;
+const CURRENT_SEASON = 4;
 
 type MainWeapon = (typeof weapons)[number];
 type SubWeapon = (typeof subWeapons)[number];
@@ -303,17 +303,11 @@ function combineSwingsIfSame(params: MainWeaponParams): MainWeaponParams {
   };
 }
 
-// const LEGAL_SUB_INK_SAVE_LV = [0, 1, 2, 3];
 function parametersToSubWeaponResult(
   subWeapon: SubWeapon,
   params: any
 ): SubWeaponParams {
   const SubInkSaveLv = params["SubWeaponSetting"]?.["SubInkSaveLv"] ?? 2;
-  // xxx: enable when all sub weapons have SubInkSaveLv's
-  // invariant(
-  //   LEGAL_SUB_INK_SAVE_LV.includes(SubInkSaveLv),
-  //   `Unknown SubInkSaveLv ${SubInkSaveLv} for ${subWeapon.__RowId}`
-  // );
 
   return {
     overwrites: resolveSubWeaponOverwrites(subWeapon, params),

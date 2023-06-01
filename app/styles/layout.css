@@ -27,13 +27,11 @@
   overflow: initial;
 }
 
-/** use css var */
 .layout__breadcrumb-separator {
   font-size: 20px;
 }
 
 .layout__header {
-  /** xxx: remove */
   --item-size: 1.9rem;
 
   position: fixed;

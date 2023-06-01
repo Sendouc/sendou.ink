@@ -1,7 +1,7 @@
 import type {
   LinksFunction,
   LoaderArgs,
-  MetaFunction,
+  V2_MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
@@ -59,14 +59,12 @@ export const handle: SendouRouteHandle = {
   },
 };
 
-export const meta: MetaFunction = (args) => {
+export const meta: V2_MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
 
-  if (!data) return {};
+  if (!data) return [];
 
-  return {
-    title: makeTitle(data.vod.title),
-  };
+  return [{ title: makeTitle(data.vod.title) }];
 };
 
 export const loader = ({ params }: LoaderArgs) => {

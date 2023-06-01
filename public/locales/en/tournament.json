@@ -33,6 +33,7 @@
   "bestOf.label.short": "Bo",
 
   "pickInfo.team": "Team {{number}} pick",
+  "pickInfo.team.specific": "{{team}} picked",
   "pickInfo.tiebreaker": "Tiebreaker",
   "pickInfo.both": "Both picked",
   "pickInfo.default": "Default map",
@@ -41,8 +42,22 @@
 
   "teams.mapsPickedStatus": "Maps picked status",
 
-  "admin.eventStarted": "Event started",
-  "admin.eventStarted.explanation": "After the start, teams can generate map lists but won't be able to edit their map pools or rosters.",
   "admin.download": "Download participants",
-  "admin.download.discord": "Discord list"
+  "admin.actions.CHANGE_TEAM_OWNER": "Change captain",
+  "admin.actions.CHECK_IN": "Check in",
+  "admin.actions.CHECK_OUT": "Check out",
+  "admin.actions.ADD_MEMBER": "Add member",
+  "admin.actions.REMOVE_MEMBER": "Remove member",
+  "admin.actions.DELETE_TEAM": "Delete team",
+
+  "bracket.winners": "Winners Round {{round}}",
+  "bracket.winners.finals": "Winners Finals",
+  "bracket.losers": "Losers Round {{round}}",
+  "bracket.losers.finals": "Losers Finals",
+  "bracket.single_elim": "Round {{round}}",
+  "bracket.single_elim.finals": "Finals",
+  "bracket.grand_finals": "Grand Finals",
+  "bracket.grand_finals.bracket_reset": "Bracket Reset",
+  "bracket.main": "Main Bracket",
+  "bracket.underground": "Underground Bracket"
 }
