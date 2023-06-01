@@ -17,6 +17,8 @@
   "pages.support": "Støt siden",
   "pages.privacy": "Privatlivspolitik",
   "pages.vods": "Videoer",
+  "pages.xsearch": "X-kamp rangliste",
+  "pages.leaderboards": "Pointtavler",
 
   "header.profile": "Profil",
   "header.logout": "Log ud",
@@ -71,6 +73,7 @@
   "maps.template.preset.ALL": "Alle spiltilstande",
   "maps.template.preset.onlyMode": "Kun {{modeName}}",
   "maps.validation.PICKING": "Vælg en bane per spiltilstand",
+  "maps.validation.STAGE_REPEAT_IN_SAME_MODE": "Man kan ikke vælge den samme bane to gange i den samme spiltilstand",
   "maps.validation.NOT_ONE_MAP_PER_MODE": "Vælg kun en bane per spiltilstand",
   "maps.validation.MAP_REPEATED": "Man kan ikke vælge den samme bane 2 gange",
   "maps.validation.MODE_REPEATED": "Man kan ikke vælge den samme spiltilstand 2 gange",
@@ -103,6 +106,7 @@
   "tag.name.S2": "Splatoon 2",
   "tag.name.SR": "Salmon Run",
   "tag.name.CARDS": "Tableturf Battle",
+  "tag.name.FULL_TOURNAMENT": "Hosted på sendou.ink",
 
   "weapon.category.SHOOTERS": "Skydere",
   "weapon.category.BLASTERS": "Blastere",
@@ -166,5 +170,11 @@
   "custom.colors.bg-lighter": "Lysere baggrund",
   "custom.colors.text": "Tekts",
   "custom.colors.text-lighter": "Lysere tekst",
-  "custom.colors.theme": "Tema"
+  "custom.colors.theme": "Tema",
+
+  "divisions.WEST": "Tentatek",
+  "divisions.JPN": "Takoroka",
+  "xsearch.placements": "placeringer",
+
+  "build.private": "Privat"
 }
