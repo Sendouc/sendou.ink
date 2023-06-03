@@ -830,8 +830,31 @@ dialog::backdrop {
 
 .builds-buttons {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+}
+
+.builds-buttons__link {
+  display: flex;
+  flex-direction: column;
   gap: var(--s-2);
+}
+
+@media screen and (min-width: 480px) {
+  .builds-buttons__link {
+    flex-direction: row;
+  }
+}
+
+.build__filter {
+  display: flex;
+  padding: var(--s-2-5);
+  border-radius: var(--rounded);
+  background-color: var(--bg-lighter);
+  gap: var(--s-2);
+}
+
+.build__filter__ap-input {
+  max-width: 100px;
 }
 
 .build {
