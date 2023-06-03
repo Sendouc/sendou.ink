@@ -42,6 +42,7 @@ import {
 import { buildFiltersSearchParams } from "../builds-schemas.server";
 import type { BuildFilter } from "../builds-types";
 import { buildsByWeaponId } from "../queries/buildsBy.server";
+import { filterBuilds } from "../core/filter.server";
 
 export const meta: V2_MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
@@ -107,9 +108,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   });
 
   const rawFilters = url.searchParams.get("f");
-  console.log("rawFilters", rawFilters);
   const filters = buildFiltersSearchParams.safeParse(rawFilters ?? "[]");
-  console.log({ filters });
 
   if (!filters.success) {
     console.error(
@@ -118,11 +117,20 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     );
   }
 
+  const filteredBuilds =
+    filters.success && filters.data && filters.data.length > 0
+      ? filterBuilds({
+          builds: cachedBuilds,
+          filters: filters.data,
+          count: limit,
+        })
+      : cachedBuilds.slice(0, limit);
+
   return {
     weaponId,
     weaponName,
     title: makeTitle([weaponName, t("common:pages.builds")]),
-    builds: cachedBuilds.slice(0, limit),
+    builds: filteredBuilds,
     limit,
     slug,
   };
@@ -150,6 +158,7 @@ const BuildCards = React.memo(function BuildCards({
 });
 
 // xxx: max filter count + error message
+// xxx: AND divider?
 export default function WeaponsBuildsPage() {
   const data = useLoaderData<typeof loader>();
   const { t } = useTranslation(["common", "builds"]);
@@ -262,6 +271,7 @@ export default function WeaponsBuildsPage() {
 
 // xxx: implement ability select with real names and images (as combobox)
 // xxx: mobile ui
+// xxx: i18n
 function FilterSection({
   number,
   filter,
