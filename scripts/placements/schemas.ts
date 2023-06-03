@@ -7,7 +7,7 @@ const placements = z.object({
         id: z.string(),
         name: z.string(),
         rank: z.number(),
-        rankDiff: z.null(),
+        rankDiff: z.union([z.string(), z.null()]),
         xPower: z.number(),
         weapon: z.object({
           name: z.string(),
@@ -34,10 +34,13 @@ const placements = z.object({
         nameId: z.string(),
         nameplate: z.object({
           badges: z.array(
-            z.object({
-              image: z.object({ url: z.string() }),
-              id: z.string(),
-            })
+            z.union([
+              z.object({
+                image: z.object({ url: z.string() }),
+                id: z.string(),
+              }),
+              z.null(),
+            ])
           ),
           background: z.object({
             textColor: z.object({
