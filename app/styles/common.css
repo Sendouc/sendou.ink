@@ -853,8 +853,8 @@ dialog::backdrop {
   gap: var(--s-2);
 }
 
-.build__filter__ap-input {
-  max-width: 100px;
+.build__filter__ap-select {
+  width: 75px;
 }
 
 .build {

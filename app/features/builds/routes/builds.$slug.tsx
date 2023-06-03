@@ -43,6 +43,7 @@ import { buildFiltersSearchParams } from "../builds-schemas.server";
 import type { BuildFilter } from "../builds-types";
 import { buildsByWeaponId } from "../queries/buildsBy.server";
 import { filterBuilds } from "../core/filter.server";
+import { possibleApValues } from "~/features/build-analyzer";
 
 export const meta: V2_MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
@@ -339,18 +340,17 @@ function FilterSection({
         ) : null}
         {abilityObject.type === "STACKABLE" ? (
           <div className="stack horizontal sm items-center">
-            <input
-              className="build__filter__ap-input"
-              id="ap"
-              type="number"
-              name="ap"
-              min={0}
-              max={57}
+            <select
               onChange={(e) => onChange({ value: Number(e.target.value) })}
-              value={
-                typeof filter.value === "number" ? filter.value : undefined
-              }
-            />
+              value={typeof filter.value === "number" ? filter.value : "0"}
+              className="build__filter__ap-select"
+            >
+              {possibleApValues().map((value) => (
+                <option key={value} value={value}>
+                  {value}
+                </option>
+              ))}
+            </select>
             <div className="text-sm">{t("analyzer:abilityPoints.short")}</div>
           </div>
         ) : null}
