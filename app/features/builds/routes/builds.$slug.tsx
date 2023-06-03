@@ -353,6 +353,7 @@ export default function WeaponsBuildsPage() {
 // xxx: implement ability select with real names and images (as combobox)
 // xxx: mobile ui
 // xxx: i18n
+// xxx: e2e test
 function FilterSection({
   number,
   filter,
