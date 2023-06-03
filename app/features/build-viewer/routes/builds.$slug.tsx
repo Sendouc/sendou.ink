@@ -25,8 +25,11 @@ import {
 import { db } from "~/db";
 import { useTranslation } from "~/hooks/useTranslation";
 import { i18next } from "~/modules/i18n";
-import { Ability } from "~/modules/in-game-lists";
-import { abilities, weaponIdIsNotAlt } from "~/modules/in-game-lists";
+import {
+  type Ability,
+  abilities,
+  weaponIdIsNotAlt,
+} from "~/modules/in-game-lists";
 import { cache, ttl } from "~/utils/cache.server";
 import { type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
