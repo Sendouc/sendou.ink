@@ -9,7 +9,6 @@ import clone from "just-clone";
 import { nanoid } from "nanoid";
 import * as React from "react";
 import { useDebounce } from "react-use";
-import { z } from "zod";
 import { BuildCard } from "~/components/BuildCard";
 import { Button, LinkButton } from "~/components/Button";
 import { Main } from "~/components/Main";
@@ -22,13 +21,12 @@ import {
   BUILDS_PAGE_MAX_BUILDS,
   ONE_HOUR_IN_MS,
 } from "~/constants";
-import { db } from "~/db";
 import { useTranslation } from "~/hooks/useTranslation";
 import { i18next } from "~/modules/i18n";
 import {
-  type Ability,
   abilities,
   weaponIdIsNotAlt,
+  type Ability,
 } from "~/modules/in-game-lists";
 import { cache, ttl } from "~/utils/cache.server";
 import { type SendouRouteHandle } from "~/utils/remix";
@@ -41,24 +39,9 @@ import {
   outlinedMainWeaponImageUrl,
   weaponBuildPage,
 } from "~/utils/urls";
-import { safeJSONParse } from "~/utils/zod";
-
-const buildFilterSchema = z.object({
-  ability: z.string(), // xxx: narrow down
-  value: z.union([z.number(), z.boolean()]),
-  comparison: z.enum(["AT_LEAST", "AT_MOST"]),
-});
-const buildFiltersSearchParams = z.preprocess(
-  safeJSONParse,
-  z.union([z.null(), z.array(buildFilterSchema)])
-);
-interface BuildFilter {
-  id: string;
-  ability: Ability;
-  /** Ability points value or "has"/"doesn't have" */
-  value?: number | boolean;
-  comparison: "AT_LEAST" | "AT_MOST";
-}
+import { buildFiltersSearchParams } from "../builds-schemas.server";
+import type { BuildFilter } from "../builds-types";
+import { buildsByWeaponId } from "../queries/buildsBy.server";
 
 export const meta: V2_MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
@@ -116,7 +99,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     ttl: ttl(ONE_HOUR_IN_MS),
     // eslint-disable-next-line @typescript-eslint/require-await
     async getFreshValue() {
-      return db.builds.buildsByWeaponId({
+      return buildsByWeaponId({
         weaponId,
         limit: BUILDS_PAGE_MAX_BUILDS,
       });
