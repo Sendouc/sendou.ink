@@ -839,18 +839,23 @@ dialog::backdrop {
   gap: var(--s-2);
 }
 
-@media screen and (min-width: 480px) {
-  .builds-buttons__link {
-    flex-direction: row;
-  }
-}
-
 .build__filter {
   display: flex;
   padding: var(--s-2-5);
   border-radius: var(--rounded);
   background-color: var(--bg-lighter);
   gap: var(--s-2);
+  flex-direction: column;
+}
+
+@media screen and (min-width: 480px) {
+  .builds-buttons__link {
+    flex-direction: row;
+  }
+
+  .build__filter {
+    flex-direction: row;
+  }
 }
 
 .build__filter__ap-select {
