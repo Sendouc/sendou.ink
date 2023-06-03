@@ -12,7 +12,6 @@ import { cachified } from "cachified";
 import clone from "just-clone";
 import { nanoid } from "nanoid";
 import * as React from "react";
-import { useDebounce } from "react-use";
 import { BuildCard } from "~/components/BuildCard";
 import { Button, LinkButton } from "~/components/Button";
 import { Main } from "~/components/Main";
@@ -55,22 +54,25 @@ import type { Unpacked } from "~/utils/types";
 
 const FILTER_SEARCH_PARAM_KEY = "f";
 
-const filterMeaninglessFilters = (
+const filterOutMeaninglessFilters = (
   filter: Unpacked<BuildFiltersFromSearchParams>
-) => !(filter.comparison === "AT_LEAST" && filter.value === 0);
+) =>
+  filter.comparison !== "AT_LEAST" ||
+  typeof filter.value !== "number" ||
+  filter.value > 0;
 export const shouldRevalidate: ShouldRevalidateFunction = (args) => {
   const rawOldFilters = args.currentUrl.searchParams.get(
     FILTER_SEARCH_PARAM_KEY
   );
   const oldFilters = rawOldFilters
     ? (JSON.parse(rawOldFilters) as BuildFiltersFromSearchParams).filter(
-        filterMeaninglessFilters
+        filterOutMeaninglessFilters
       )
     : null;
   const rawNewFilters = args.nextUrl.searchParams.get(FILTER_SEARCH_PARAM_KEY);
   const newFilters = rawNewFilters
     ? (JSON.parse(rawNewFilters) as BuildFiltersFromSearchParams).filter(
-        filterMeaninglessFilters
+        filterOutMeaninglessFilters
       )
     : null;
 
@@ -225,38 +227,37 @@ export default function WeaponsBuildsPage() {
   const data = useLoaderData<typeof loader>();
   const { t } = useTranslation(["common", "builds"]);
   const [filters, setFilters] = React.useState<BuildFilter[]>([]);
-  // xxx: remove
-  useDebounce(
-    () => {
-      const filtersForSearchParams = filters.map((f) => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { id, ...rest } = f;
-        return rest;
-      });
-
-      setSearchParams(
-        filtersForSearchParams.length > 0
-          ? {
-              [FILTER_SEARCH_PARAM_KEY]: JSON.stringify(filtersForSearchParams),
-            }
-          : {}
-      );
-    },
-    1500,
-    [filters]
-  );
   const [, setSearchParams] = useSearchParams();
 
+  const syncSearchParams = (newFilters: BuildFilter[]) => {
+    const filtersForSearchParams = newFilters.map((f) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { id, ...rest } = f;
+      return rest;
+    });
+
+    setSearchParams(
+      filtersForSearchParams.length > 0
+        ? {
+            [FILTER_SEARCH_PARAM_KEY]: JSON.stringify(filtersForSearchParams),
+          }
+        : {}
+    );
+  };
+
   const handleFilterAdd = () => {
-    setFilters((prev) => [
-      ...prev,
+    const newFilters = [
+      ...filters,
       {
         id: nanoid(),
         ability: "ISM",
         comparison: "AT_LEAST",
         value: 0,
-      },
-    ]);
+      } as const,
+    ];
+    setFilters(newFilters);
+
+    // no need to sync as this doesn't have effect till they make other choices
   };
 
   const handleFilterChange = (i: number, newFilter: Partial<BuildFilter>) => {
@@ -265,10 +266,15 @@ export default function WeaponsBuildsPage() {
     newFilters[i] = { ...filters[i], ...newFilter };
 
     setFilters(newFilters);
+
+    syncSearchParams(newFilters);
   };
 
   const handleFilterDelete = (i: number) => {
-    setFilters((f) => f.filter((_, index) => index !== i));
+    const newFilters = filters.filter((_, index) => index !== i);
+    setFilters(newFilters);
+
+    syncSearchParams(newFilters);
   };
 
   return (
