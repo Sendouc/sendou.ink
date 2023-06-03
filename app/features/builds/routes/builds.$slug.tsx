@@ -3,7 +3,11 @@ import {
   type SerializeFrom,
   type V2_MetaFunction,
 } from "@remix-run/node";
-import { useLoaderData, useSearchParams } from "@remix-run/react";
+import {
+  type ShouldRevalidateFunction,
+  useLoaderData,
+  useSearchParams,
+} from "@remix-run/react";
 import { cachified } from "cachified";
 import clone from "just-clone";
 import { nanoid } from "nanoid";
@@ -39,11 +43,66 @@ import {
   outlinedMainWeaponImageUrl,
   weaponBuildPage,
 } from "~/utils/urls";
-import { buildFiltersSearchParams } from "../builds-schemas.server";
+import {
+  type BuildFiltersFromSearchParams,
+  buildFiltersSearchParams,
+} from "../builds-schemas.server";
 import type { BuildFilter } from "../builds-types";
 import { buildsByWeaponId } from "../queries/buildsBy.server";
 import { filterBuilds } from "../core/filter.server";
 import { possibleApValues } from "~/features/build-analyzer";
+import type { Unpacked } from "~/utils/types";
+
+const FILTER_SEARCH_PARAM_KEY = "f";
+
+const filterMeaninglessFilters = (
+  filter: Unpacked<BuildFiltersFromSearchParams>
+) => !(filter.comparison === "AT_LEAST" && filter.value === 0);
+export const shouldRevalidate: ShouldRevalidateFunction = (args) => {
+  const rawOldFilters = args.currentUrl.searchParams.get(
+    FILTER_SEARCH_PARAM_KEY
+  );
+  const oldFilters = rawOldFilters
+    ? (JSON.parse(rawOldFilters) as BuildFiltersFromSearchParams).filter(
+        filterMeaninglessFilters
+      )
+    : null;
+  const rawNewFilters = args.nextUrl.searchParams.get(FILTER_SEARCH_PARAM_KEY);
+  const newFilters = rawNewFilters
+    ? (JSON.parse(rawNewFilters) as BuildFiltersFromSearchParams).filter(
+        filterMeaninglessFilters
+      )
+    : null;
+
+  // meaningful filter was added/removed -> revalidate
+  if (oldFilters && newFilters && oldFilters.length !== newFilters.length) {
+    return true;
+  }
+  // no meaningful filters were or going to be in use -> skip revalidation
+  if (
+    oldFilters &&
+    newFilters &&
+    oldFilters.length === 0 &&
+    newFilters.length === 0
+  ) {
+    return false;
+  }
+  // all meaningful filters identical -> skip revalidation
+  if (
+    newFilters?.every((f1) =>
+      oldFilters?.some(
+        (f2) =>
+          f1.ability === f2.ability &&
+          f1.comparison === f2.comparison &&
+          f1.value === f2.value
+      )
+    )
+  ) {
+    return false;
+  }
+
+  return args.defaultShouldRevalidate;
+};
 
 export const meta: V2_MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
@@ -108,7 +167,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     },
   });
 
-  const rawFilters = url.searchParams.get("f");
+  const rawFilters = url.searchParams.get(FILTER_SEARCH_PARAM_KEY);
   const filters = buildFiltersSearchParams.safeParse(rawFilters ?? "[]");
 
   if (!filters.success) {
@@ -160,10 +219,13 @@ const BuildCards = React.memo(function BuildCards({
 
 // xxx: max filter count + error message
 // xxx: AND divider?
+// xxx: init state from search params
+// xxx: main ability filter doesn't prog by default
 export default function WeaponsBuildsPage() {
   const data = useLoaderData<typeof loader>();
   const { t } = useTranslation(["common", "builds"]);
   const [filters, setFilters] = React.useState<BuildFilter[]>([]);
+  // xxx: remove
   useDebounce(
     () => {
       const filtersForSearchParams = filters.map((f) => {
@@ -174,7 +236,9 @@ export default function WeaponsBuildsPage() {
 
       setSearchParams(
         filtersForSearchParams.length > 0
-          ? { f: JSON.stringify(filtersForSearchParams) }
+          ? {
+              [FILTER_SEARCH_PARAM_KEY]: JSON.stringify(filtersForSearchParams),
+            }
           : {}
       );
     },
