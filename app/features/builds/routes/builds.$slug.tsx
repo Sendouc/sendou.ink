@@ -52,6 +52,7 @@ import { filterBuilds } from "../core/filter.server";
 import { possibleApValues } from "~/features/build-analyzer";
 import type { Unpacked } from "~/utils/types";
 import { safeJSONParse } from "~/utils/json";
+import { MAX_BUILD_FILTERS } from "../builds-constants";
 
 const FILTER_SEARCH_PARAM_KEY = "f";
 
@@ -221,8 +222,6 @@ const BuildCards = React.memo(function BuildCards({
   );
 });
 
-// xxx: max filter count + error message
-// xxx: AND divider?
 export default function WeaponsBuildsPage() {
   const data = useLoaderData<typeof loader>();
   const { t } = useTranslation(["common", "builds"]);
@@ -231,10 +230,12 @@ export default function WeaponsBuildsPage() {
     const rawFilters = searchParams.get(FILTER_SEARCH_PARAM_KEY);
     if (!rawFilters) return [];
 
-    return safeJSONParse(rawFilters, []).map((f: any) => ({
-      ...f,
-      id: nanoid(),
-    })) as BuildFilter[];
+    return safeJSONParse(rawFilters, [])
+      .slice(0, MAX_BUILD_FILTERS)
+      .map((f: any) => ({
+        ...f,
+        id: nanoid(),
+      })) as BuildFilter[];
   });
 
   const syncSearchParams = (newFilters: BuildFilter[]) => {
@@ -294,6 +295,7 @@ export default function WeaponsBuildsPage() {
             size="tiny"
             icon={<FilterIcon />}
             onClick={handleFilterAdd}
+            disabled={filters.length >= MAX_BUILD_FILTERS}
           >
             {t("builds:addFilter")}
           </Button>
@@ -415,6 +417,7 @@ function FilterSection({
         ) : null}
         {abilityObject.type === "STACKABLE" ? (
           <select
+            value={filter.comparison}
             onChange={(e) =>
               onChange({
                 comparison: e.target.value as BuildFilter["comparison"],
@@ -428,9 +431,9 @@ function FilterSection({
         {abilityObject.type === "STACKABLE" ? (
           <div className="stack horizontal sm items-center">
             <select
-              onChange={(e) => onChange({ value: Number(e.target.value) })}
-              value={typeof filter.value === "number" ? filter.value : "0"}
               className="build__filter__ap-select"
+              value={typeof filter.value === "number" ? filter.value : "0"}
+              onChange={(e) => onChange({ value: Number(e.target.value) })}
             >
               {possibleApValues().map((value) => (
                 <option key={value} value={value}>
