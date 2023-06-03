@@ -222,7 +222,6 @@ const BuildCards = React.memo(function BuildCards({
 // xxx: max filter count + error message
 // xxx: AND divider?
 // xxx: init state from search params
-// xxx: main ability filter doesn't prog by default
 export default function WeaponsBuildsPage() {
   const data = useLoaderData<typeof loader>();
   const { t } = useTranslation(["common", "builds"]);
@@ -375,7 +374,16 @@ function FilterSection({
       <div className="build__filter">
         <select
           value={filter.ability}
-          onChange={(e) => onChange({ ability: e.target.value as Ability })}
+          onChange={(e) =>
+            onChange({
+              ability: e.target.value as Ability,
+              value:
+                abilities.find((a) => a.name === e.target.value)!.type ===
+                "STACKABLE"
+                  ? 0
+                  : true,
+            })
+          }
         >
           {abilities.map((ability) => {
             return (
