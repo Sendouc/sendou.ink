@@ -51,6 +51,7 @@ import { buildsByWeaponId } from "../queries/buildsBy.server";
 import { filterBuilds } from "../core/filter.server";
 import { possibleApValues } from "~/features/build-analyzer";
 import type { Unpacked } from "~/utils/types";
+import { safeJSONParse } from "~/utils/json";
 
 const FILTER_SEARCH_PARAM_KEY = "f";
 
@@ -65,13 +66,14 @@ export const shouldRevalidate: ShouldRevalidateFunction = (args) => {
     FILTER_SEARCH_PARAM_KEY
   );
   const oldFilters = rawOldFilters
-    ? (JSON.parse(rawOldFilters) as BuildFiltersFromSearchParams).filter(
+    ? safeJSONParse<BuildFiltersFromSearchParams>(rawOldFilters, []).filter(
         filterOutMeaninglessFilters
       )
     : null;
   const rawNewFilters = args.nextUrl.searchParams.get(FILTER_SEARCH_PARAM_KEY);
   const newFilters = rawNewFilters
-    ? (JSON.parse(rawNewFilters) as BuildFiltersFromSearchParams).filter(
+    ? // no safeJSONParse as the value should be coming from app code and should be trustworthy
+      (JSON.parse(rawNewFilters) as BuildFiltersFromSearchParams).filter(
         filterOutMeaninglessFilters
       )
     : null;
@@ -221,12 +223,19 @@ const BuildCards = React.memo(function BuildCards({
 
 // xxx: max filter count + error message
 // xxx: AND divider?
-// xxx: init state from search params
 export default function WeaponsBuildsPage() {
   const data = useLoaderData<typeof loader>();
   const { t } = useTranslation(["common", "builds"]);
-  const [filters, setFilters] = React.useState<BuildFilter[]>([]);
-  const [, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [filters, setFilters] = React.useState(() => {
+    const rawFilters = searchParams.get(FILTER_SEARCH_PARAM_KEY);
+    if (!rawFilters) return [];
+
+    return safeJSONParse(rawFilters, []).map((f: any) => ({
+      ...f,
+      id: nanoid(),
+    })) as BuildFilter[];
+  });
 
   const syncSearchParams = (newFilters: BuildFilter[]) => {
     const filtersForSearchParams = newFilters.map((f) => {
