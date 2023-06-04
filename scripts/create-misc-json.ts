@@ -95,7 +95,6 @@ async function main() {
       })
     );
 
-    // xxx: decode unicode
     for (const ability of abilitiesShort) {
       const internalName = abilityShortToInternalName.get(ability);
       invariant(internalName, `Missing internal name for ${ability}`);
