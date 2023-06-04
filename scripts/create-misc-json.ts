@@ -9,6 +9,7 @@ import {
 import fs from "fs";
 import path from "path";
 import invariant from "tiny-invariant";
+import { abilitiesShort } from "~/modules/in-game-lists";
 
 // ⚠️ keep same order as https://github.com/IPLSplatoon/IPLMapGen2/blob/splat3/data.js
 const stages = [
@@ -28,7 +29,38 @@ const stages = [
   "Brinewater Springs",
   "Manta Maria",
   "Um'ami Ruins",
+  "Humpback Pump Track",
+  "Barnacle & Dime",
 ] as const;
+
+const abilityShortToInternalName = new Map([
+  ["ISM", "MainInk_Save"],
+  ["ISS", "SubInk_Save"],
+  ["IRU", "InkRecovery_Up"],
+  ["RSU", "HumanMove_Up"],
+  ["SSU", "SquidMove_Up"],
+  ["SCU", "SpecialIncrease_Up"],
+  ["SS", "RespawnSpecialGauge_Save"],
+  ["SPU", "SpecialSpec_Up"],
+  ["QR", "RespawnTime_Save"],
+  ["QSJ", "JumpTime_Save"],
+  ["BRU", "SubSpec_Up"],
+  ["RES", "OpInkEffect_Reduction"],
+  ["SRU", "SubEffect_Reduction"],
+  ["IA", "Action_Up"],
+  ["OG", "StartAllUp"],
+  ["LDE", "EndAllUp"],
+  ["T", "MinorityUp"],
+  ["CB", "ComeBack"],
+  ["NS", "SquidMoveSpatter_Reduction"],
+  ["H", "DeathMarking"],
+  ["TI", "ThermalInk"],
+  ["RP", "Exorcist"],
+  ["AD", "ExSkillDouble"],
+  ["SJ", "SuperJumpSign_Hide"],
+  ["OS", "ObjectEffect_Up"],
+  ["DR", "SomersaultLanding"],
+]);
 
 async function main() {
   const langDicts = await loadLangDicts();
@@ -62,6 +94,17 @@ async function main() {
         return [`STAGE_${i}`, langDict["CommonMsg/VS/VSStageName"][codeName]];
       })
     );
+
+    for (const ability of abilitiesShort) {
+      const internalName = abilityShortToInternalName.get(ability);
+      invariant(internalName, `Missing internal name for ${ability}`);
+
+      const translation = decodeURIComponent(
+        langDict["CommonMsg/Gear/GearPowerName"][internalName]
+      );
+
+      translationsMap[`ABILITY_${ability}`] = translation;
+    }
 
     fs.writeFileSync(
       path.join(

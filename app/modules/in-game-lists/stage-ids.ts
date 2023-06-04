@@ -1,4 +1,4 @@
-// when adding new stage id also create new language dicts via create-misc-json.ts
+// when adding new stage id also update the array in create-misc-json.ts and regenerate the jsons
 export const stageIds = [
   0, // Scorch Gorge
   1, // Eeltail Alley
@@ -16,4 +16,6 @@ export const stageIds = [
   13, // Brinewater Springs
   14, // Manta Maria
   15, // Um'ami Ruins
+  16, // Humpback Pump Track
+  17, // Barnacle & Dime
 ] as const;

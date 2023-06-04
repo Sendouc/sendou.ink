@@ -117,6 +117,7 @@ export function StageImage({ stageId, testId, ...rest }: StageImageProps) {
       title={t(`game-misc:STAGE_${stageId}`)}
       testId={testId}
       path={stageImageUrl(stageId)}
+      height={rest.height ?? (rest.width ? rest.width * 0.5625 : undefined)}
     />
   );
 }

@@ -1,10 +1,13 @@
 import { z } from "zod";
+import type { abilitiesShort } from "~/modules/in-game-lists";
 import {
   abilities,
   mainWeaponIds,
   modesShort,
   stageIds,
 } from "~/modules/in-game-lists";
+import { assertType } from "./types";
+import type { Unpacked } from "./types";
 
 export const id = z.coerce.number().int().positive();
 export const dbBoolean = z.coerce.number().min(0).max(1).int();
@@ -29,6 +32,37 @@ export const shoesMainSlotAbility = z
 export const stackableAbility = z
   .string()
   .refine((val) => abilityNameToType(val) === "STACKABLE");
+
+export const ability = z.enum([
+  "ISM",
+  "ISS",
+  "IRU",
+  "RSU",
+  "SSU",
+  "SCU",
+  "SS",
+  "SPU",
+  "QR",
+  "QSJ",
+  "BRU",
+  "RES",
+  "SRU",
+  "IA",
+  "OG",
+  "LDE",
+  "T",
+  "CB",
+  "NS",
+  "H",
+  "TI",
+  "RP",
+  "AD",
+  "SJ",
+  "OS",
+  "DR",
+]);
+// keep in-game-lists and the zod enum in sync
+assertType<z.infer<typeof ability>, Unpacked<typeof abilitiesShort>>();
 
 export const weaponSplId = z.preprocess(
   actualNumber,

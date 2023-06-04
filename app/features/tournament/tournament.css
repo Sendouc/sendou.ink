@@ -476,7 +476,7 @@
 }
 
 .tournament__team__set__mode__loss {
-  border-color: var(--text-lighter);
+  border-color: var(--bg-lighter-transparent);
 }
 
 .tournament__team__set__stage-container {

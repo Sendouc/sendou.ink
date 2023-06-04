@@ -1,6 +1,5 @@
 import { sql } from "~/db/sql";
 import type {
-  MapPoolMap,
   Tournament,
   TournamentTeam,
   TournamentTeamCheckIn,
@@ -8,64 +7,46 @@ import type {
   UserWithPlusTier,
 } from "~/db/types";
 import { parseDBJsonArray } from "~/utils/sql";
-import { TOURNAMENT } from "../tournament-constants";
 import type { Unpacked } from "~/utils/types";
-import { modesShort } from "~/modules/in-game-lists";
+import { TOURNAMENT } from "../tournament-constants";
 
 const stm = sql.prepare(/*sql*/ `
-  with "TeamWithMembers" as (
-    select
-      "TournamentTeam"."id",
-      "TournamentTeam"."name",
-      "TournamentTeam"."seed",
-      "TournamentTeamCheckIn"."checkedInAt",
-      "TournamentTeam"."prefersNotToHost",
-      json_group_array(
-        json_object(
-          'userId',
-          "TournamentTeamMember"."userId",
-          'isOwner',
-          "TournamentTeamMember"."isOwner",
-          'discordName',
-          "User"."discordName",
-          'discordDiscriminator',
-          "User"."discordDiscriminator",
-          'discordId',
-          "User"."discordId",
-          'discordAvatar',
-          "User"."discordAvatar",
-          'inGameName',
-          "User"."inGameName",
-          'plusTier',
-          "PlusTier"."tier"
-        )
-      ) as "members"
-    from
-      "TournamentTeam"
-      left join "TournamentTeamCheckIn" on "TournamentTeamCheckIn"."tournamentTeamId" = "TournamentTeam"."id"
-      left join "TournamentTeamMember" on "TournamentTeamMember"."tournamentTeamId" = "TournamentTeam"."id"
-      left join "User" on "User"."id" = "TournamentTeamMember"."userId"
-      left join "PlusTier" on "User"."id" = "PlusTier"."userId"
-    where
-      "TournamentTeam"."tournamentId" = @tournamentId
-    group by
-      "TournamentTeam"."id"
-  )
   select
-    "TeamWithMembers".*,
+    "TournamentTeam"."id",
+    "TournamentTeam"."name",
+    "TournamentTeam"."seed",
+    "TournamentTeamCheckIn"."checkedInAt",
+    "TournamentTeam"."prefersNotToHost",
     json_group_array(
       json_object(
-        'stageId',
-        "MapPoolMap"."stageId",
-        'mode',
-        "MapPoolMap"."mode"
+        'userId',
+        "TournamentTeamMember"."userId",
+        'isOwner',
+        "TournamentTeamMember"."isOwner",
+        'discordName',
+        "User"."discordName",
+        'discordDiscriminator',
+        "User"."discordDiscriminator",
+        'discordId',
+        "User"."discordId",
+        'discordAvatar',
+        "User"."discordAvatar",
+        'inGameName',
+        "User"."inGameName",
+        'plusTier',
+        "PlusTier"."tier"
       )
-    ) as "mapPool"
-  from
-    "TeamWithMembers"
-    left join "MapPoolMap" on "MapPoolMap"."tournamentTeamId" = "TeamWithMembers"."id"
-  group by
-    "TeamWithMembers"."id"
+    ) as "members"
+    from
+    "TournamentTeam"
+    left join "TournamentTeamCheckIn" on "TournamentTeamCheckIn"."tournamentTeamId" = "TournamentTeam"."id"
+    left join "TournamentTeamMember" on "TournamentTeamMember"."tournamentTeamId" = "TournamentTeam"."id"
+    left join "User" on "User"."id" = "TournamentTeamMember"."userId"
+    left join "PlusTier" on "User"."id" = "PlusTier"."userId"
+    where
+    "TournamentTeam"."tournamentId" = @tournamentId
+    group by
+    "TournamentTeam"."id"
 `);
 
 export interface FindTeamsByTournamentIdItem {
@@ -86,27 +67,17 @@ export interface FindTeamsByTournamentIdItem {
         | "inGameName"
       >
   >;
-  mapPool?: Array<Pick<MapPoolMap, "mode" | "stageId">>;
 }
 export type FindTeamsByTournamentId = Array<FindTeamsByTournamentIdItem>;
 
 export function findTeamsByTournamentId(tournamentId: Tournament["id"]) {
-  const rows = stm.all({ tournamentId });
+  const rows = stm.all({ tournamentId }) as any[];
 
   return (
     rows.map((row) => {
       return {
         ...row,
         members: parseDBJsonArray(row.members),
-        mapPool: (
-          parseDBJsonArray(
-            row.mapPool
-          ) as FindTeamsByTournamentIdItem["mapPool"]
-        )?.sort((a, b) => {
-          if (a.mode === b.mode) return a.stageId - b.stageId;
-
-          return modesShort.indexOf(a.mode) - modesShort.indexOf(b.mode);
-        }),
       };
     }) as FindTeamsByTournamentId
   ).sort(teamSorter);

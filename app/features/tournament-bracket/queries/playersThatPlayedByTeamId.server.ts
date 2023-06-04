@@ -30,8 +30,6 @@ export type PlayerThatPlayedByTeamId = Pick<
   "id" | "discordName" | "discordAvatar" | "discordId" | "customUrl" | "country"
 > & { tournamentTeamId: number };
 
-export function playersThatPlayedByTournamentId(
-  tournamentId: number
-): PlayerThatPlayedByTeamId[] {
-  return stm.all({ tournamentId });
+export function playersThatPlayedByTournamentId(tournamentId: number) {
+  return stm.all({ tournamentId }) as PlayerThatPlayedByTeamId[];
 }

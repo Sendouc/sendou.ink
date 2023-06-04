@@ -66,16 +66,16 @@ export function findVods({
 }): Array<ListVod> {
   const stmToUse = userId ? stmByUser : stm;
 
-  return stmToUse
-    .all({ weapon, mode, stageId, type, limit, userId })
-    .map(({ playerNames: playerNamesRaw, players: playersRaw, ...vod }) => {
-      const playerNames = parseDBArray(playerNamesRaw);
-      const players = parseDBJsonArray(playersRaw);
+  return (
+    stmToUse.all({ weapon, mode, stageId, type, limit, userId }) as any[]
+  ).map(({ playerNames: playerNamesRaw, players: playersRaw, ...vod }) => {
+    const playerNames = parseDBArray(playerNamesRaw);
+    const players = parseDBJsonArray(playersRaw);
 
-      return {
-        ...vod,
-        weapons: removeDuplicates(parseDBArray(vod.weapons)),
-        pov: playerNames[0] ?? players[0],
-      };
-    });
+    return {
+      ...vod,
+      weapons: removeDuplicates(parseDBArray(vod.weapons)),
+      pov: playerNames[0] ?? players[0],
+    };
+  });
 }

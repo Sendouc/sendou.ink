@@ -1,5 +1,5 @@
 import type { CacheEntry } from "cachified";
-import LRUCache from "lru-cache";
+import { LRUCache } from "lru-cache";
 
 declare global {
   // This preserves the LRU cache during development
@@ -13,3 +13,14 @@ export const cache = (global.__lruCache = global.__lruCache
 
 export const ttl = (ms: number) =>
   process.env.NODE_ENV === "production" ? ms : 0;
+
+export function syncCached<T>(key: string, getFreshValue: () => T) {
+  if (cache.has(key)) {
+    return cache.get(key) as T;
+  }
+
+  const value = getFreshValue();
+  cache.set(key, value as any);
+
+  return value;
+}

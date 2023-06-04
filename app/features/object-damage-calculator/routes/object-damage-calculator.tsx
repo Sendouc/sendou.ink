@@ -36,7 +36,7 @@ import { useObjectDamage } from "../calculator-hooks";
 import type { DamageReceiver } from "../calculator-types";
 import styles from "../calculator.css";
 
-export const CURRENT_PATCH = "3.1";
+export const CURRENT_PATCH = "4.0";
 
 export const shouldRevalidate: ShouldRevalidateFunction = () => false;
 
@@ -45,7 +45,7 @@ export const links: LinksFunction = () => {
 };
 
 export const handle: SendouRouteHandle = {
-  i18n: ["weapons", "analyzer"],
+  i18n: ["weapons", "analyzer", "builds"],
   breadcrumb: () => ({
     imgPath: navIconUrl("object-damage-calculator"),
     href: OBJECT_DAMAGE_CALCULATOR_URL,

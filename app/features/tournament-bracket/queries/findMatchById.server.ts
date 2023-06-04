@@ -1,22 +1,26 @@
 import type { Match } from "~/modules/brackets-model";
 import { sql } from "~/db/sql";
-import type { TournamentMatch } from "~/db/types";
+import type { Tournament, TournamentMatch } from "~/db/types";
 
 const stm = sql.prepare(/* sql */ `
   select 
-    id,
-    opponentOne,
-    opponentTwo,
-    bestOf
+    "TournamentMatch"."id",
+    "TournamentMatch"."opponentOne",
+    "TournamentMatch"."opponentTwo",
+    "TournamentMatch"."bestOf",
+    "Tournament"."mapPickingStyle"
   from "TournamentMatch"
-  where id = @id
+  left join "TournamentStage" on "TournamentStage"."id" = "TournamentMatch"."stageId"
+  left join "Tournament" on "Tournament"."id" = "TournamentStage"."tournamentId"
+  where "TournamentMatch"."id" = @id
 `);
 
 export type FindMatchById = ReturnType<typeof findMatchById>;
 
 export const findMatchById = (id: number) => {
   const row = stm.get({ id }) as
-    | Pick<TournamentMatch, "id" | "opponentOne" | "opponentTwo" | "bestOf">
+    | (Pick<TournamentMatch, "id" | "opponentOne" | "opponentTwo" | "bestOf"> &
+        Pick<Tournament, "mapPickingStyle">)
     | undefined;
 
   if (!row) return;

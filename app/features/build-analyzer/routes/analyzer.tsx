@@ -66,7 +66,7 @@ import {
 import { useUser } from "~/modules/auth";
 import { atOrError } from "~/utils/arrays";
 
-export const CURRENT_PATCH = "3.1";
+export const CURRENT_PATCH = "4.0";
 
 export const meta: V2_MetaFunction = () => {
   return [
@@ -83,7 +83,7 @@ export const links: LinksFunction = () => {
 };
 
 export const handle: SendouRouteHandle = {
-  i18n: ["weapons", "analyzer"],
+  i18n: ["weapons", "analyzer", "builds"],
   breadcrumb: () => ({
     imgPath: navIconUrl("analyzer"),
     href: ANALYZER_URL,

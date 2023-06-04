@@ -27,7 +27,6 @@ import { checkOut } from "../queries/checkOut.server";
 import hasTournamentStarted from "../queries/hasTournamentStarted.server";
 import type { TournamentLoaderData } from "./to.$id";
 import { joinTeam, leaveTeam } from "../queries/joinLeaveTeam.server";
-import { TOURNAMENT } from "../tournament-constants";
 import { deleteTeam } from "../queries/deleteTeam.server";
 import { useUser } from "~/modules/auth";
 import {
@@ -37,6 +36,7 @@ import {
 } from "~/utils/urls";
 import { Redirect } from "~/components/Redirect";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
+import { findMapPoolByTeamId } from "~/features/tournament-bracket";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUserId(request);
@@ -78,7 +78,11 @@ export const action: ActionFunction = async ({ request, params }) => {
     case "CHECK_IN": {
       const team = teams.find((t) => t.id === data.teamId);
       validate(team, "Invalid team id");
-      validateCanCheckIn({ event, team });
+      validateCanCheckIn({
+        event,
+        team,
+        mapPool: findMapPoolByTeamId(team.id),
+      });
 
       checkIn(team.id);
       break;
@@ -110,10 +114,6 @@ export const action: ActionFunction = async ({ request, params }) => {
     case "ADD_MEMBER": {
       const team = teams.find((t) => t.id === data.teamId);
       validate(team, "Invalid team id");
-      validate(
-        team.members.length < TOURNAMENT.TEAM_MAX_MEMBERS,
-        "Team is full"
-      );
       validate(
         !teams.some((t) =>
           t.members.some((m) => m.userId === data["user[value]"])
@@ -289,11 +289,14 @@ function AdminActions() {
           value={selectedTeamId}
           onChange={(e) => setSelectedTeamId(Number(e.target.value))}
         >
-          {data.teams.map((team) => (
-            <option key={team.id} value={team.id}>
-              {team.name}
-            </option>
-          ))}
+          {data.teams
+            .slice()
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map((team) => (
+              <option key={team.id} value={team.id}>
+                {team.name}
+              </option>
+            ))}
         </select>
       </div>
       {selectedTeam && selectedAction.inputs.includes("ROSTER_MEMBER") ? (

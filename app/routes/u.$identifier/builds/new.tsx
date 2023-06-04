@@ -25,6 +25,7 @@ import {
   validatedBuildFromSearchParams,
   validatedWeaponIdFromSearchParams,
 } from "~/features/build-analyzer";
+import { buildsByUserId } from "~/features/builds";
 import { useTranslation } from "~/hooks/useTranslation";
 import { requireUser } from "~/modules/auth";
 import { requireUserId } from "~/modules/auth/user.server";
@@ -138,7 +139,7 @@ export const action: ActionFunction = async ({ request }) => {
     schema: newBuildActionSchema,
   });
 
-  const usersBuilds = db.builds.buildsByUserId({
+  const usersBuilds = buildsByUserId({
     userId: user.id,
     loggedInUserId: user.id,
   });
@@ -188,7 +189,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     Object.fromEntries(url.searchParams)
   );
 
-  const usersBuilds = db.builds.buildsByUserId({
+  const usersBuilds = buildsByUserId({
     userId: user.id,
     loggedInUserId: user.id,
   });

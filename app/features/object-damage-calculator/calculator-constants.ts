@@ -24,6 +24,8 @@ export const objectDamageJsonKeyPriority: Record<
   keyof typeof objectDamages,
   Array<DamageType> | null
 > = {
+  // added in chill season 2023
+  Maneuver_SideStep_BombCore: null,
   // added in fresh season 2022
   BlowerExhale: null,
   Castle: null,
@@ -154,6 +156,15 @@ export const damageTypesToCombine: Partial<
   ],
   // Splatana Wiper
   8010: [
+    { when: "SPLATANA_VERTICAL_DIRECT", combineWith: "SPLATANA_VERTICAL" },
+    {
+      when: "SPLATANA_HORIZONTAL_DIRECT",
+      combineWith: "SPLATANA_HORIZONTAL",
+      multiplierOnly: true,
+    },
+  ],
+  // Splatana Wiper Deco
+  8011: [
     { when: "SPLATANA_VERTICAL_DIRECT", combineWith: "SPLATANA_VERTICAL" },
     {
       when: "SPLATANA_HORIZONTAL_DIRECT",

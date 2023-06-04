@@ -33,7 +33,7 @@ interface FindResultsByMatchIdResult {
 export function findResultsByMatchId(
   matchId: number
 ): Array<FindResultsByMatchIdResult> {
-  const rows = stm.all({ matchId });
+  const rows = stm.all({ matchId }) as any[];
 
   return rows.map((row) => ({
     ...row,

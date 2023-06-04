@@ -88,7 +88,7 @@ async function processJson(args: {
     result.push({
       name: placement.name,
       badges: placement.nameplate.badges
-        .map((badge) => atob(badge.id).replace("Badge-", ""))
+        .map((badge) => (badge ? atob(badge.id).replace("Badge-", "") : "null"))
         .join(","),
       bannerSplId: Number(
         atob(placement.nameplate.background.id).replace(
