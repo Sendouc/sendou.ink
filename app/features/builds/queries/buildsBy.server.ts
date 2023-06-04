@@ -1,0 +1,286 @@
+import invariant from "tiny-invariant";
+import { sql } from "~/db/sql";
+import type {
+  Build,
+  BuildAbility,
+  BuildWeapon,
+  UserWithPlusTier,
+} from "~/db/types";
+import { weaponIdToAltId, type ModeShort } from "~/modules/in-game-lists";
+import type {
+  BuildAbilitiesTuple,
+  MainWeaponId,
+} from "~/modules/in-game-lists/types";
+
+const buildsByWeaponIdStm = sql.prepare(/* sql */ `
+with "Top500Weapon" as (
+  select
+    "BuildWeapon".*,
+    min("XRankPlacement"."rank") as "minRank",
+    max("XRankPlacement"."power") as "maxPower",
+    (
+      (
+        "BuildWeapon"."weaponSplId" = @weaponId
+        or "BuildWeapon"."weaponSplId" = @altWeaponId
+      )
+      and "XRankPlacement"."rank" is not null
+    ) as "relevant"
+  from
+    "BuildWeapon"
+    left join "Build" on "Build"."id" = "BuildWeapon"."buildId"
+    left join "SplatoonPlayer" on "SplatoonPlayer"."userId" = "Build"."ownerId"
+    left join "XRankPlacement" on "XRankPlacement"."playerId" = "SplatoonPlayer"."id"
+    and "XRankPlacement"."weaponSplId" = "BuildWeapon"."weaponSplId"
+  group by
+    "BuildWeapon"."buildId",
+    "BuildWeapon"."weaponSplId"
+),
+"BuildFiltered" as (
+  select
+    "id",
+    "title",
+    "description",
+    "modes",
+    "headGearSplId",
+    "clothesGearSplId",
+    "shoesGearSplId",
+    "updatedAt",
+    "ownerId",
+    max("Top500Weapon"."relevant") as "isTop500"
+  from
+    "Build"
+    left join "Top500Weapon" on "Top500Weapon"."buildId" = "Build"."id"
+  where
+    (
+      "Top500Weapon"."weaponSplId" = @weaponId
+      or "Top500Weapon"."weaponSplId" = @altWeaponId
+    )
+    and "Build"."private" = 0
+  group by
+    "Build"."id"
+),
+"BuildWithWeapon" as (
+  select
+    "BuildFiltered".*,
+    json_group_array(
+      json_object(
+        'weaponSplId',
+        "Top500Weapon"."weaponSplId",
+        'maxPower',
+        "Top500Weapon"."maxPower",
+        'minRank',
+        "Top500Weapon"."minRank"
+      )
+    ) as "weapons"
+  from
+    "BuildFiltered"
+    left join "Top500Weapon" on "Top500Weapon"."buildId" = "BuildFiltered"."id"
+  group by
+    "BuildFiltered"."id"
+)
+select
+  "BuildWithWeapon".*,
+  "User"."discordId",
+  "User"."discordName",
+  "User"."discordDiscriminator",
+  "PlusTier"."tier" as "plusTier",
+  json_group_array(
+    json_object(
+      'ability',
+      "BuildAbility"."ability",
+      'gearType',
+      "BuildAbility"."gearType",
+      'slotIndex',
+      "BuildAbility"."slotIndex"
+    )
+  ) as "abilities"
+from
+  "BuildWithWeapon"
+  left join "BuildAbility" on "BuildAbility"."buildId" = "BuildWithWeapon"."id"
+  left join "PlusTier" on "PlusTier"."userId" = "BuildWithWeapon"."ownerId"
+  left join "User" on "User"."id" = "BuildWithWeapon"."ownerId"
+group by
+  "BuildWithWeapon"."id"
+order by
+  "BuildWithWeapon"."isTop500" desc,
+  case
+    when "PlusTier"."tier" is null then 4
+    else "PlusTier"."tier"
+  end asc,
+  "BuildWithWeapon"."updatedAt" desc
+limit
+  @limit
+`);
+
+const buildsByUserIdStm = sql.prepare(/* sql */ `
+with "Top500Weapon" as (
+  select
+    "BuildWeapon".*,
+    min("XRankPlacement"."rank") as "minRank",
+    max("XRankPlacement"."power") as "maxPower"
+  from
+    "BuildWeapon"
+    left join "SplatoonPlayer" on "SplatoonPlayer"."userId" = @userId
+    left join "XRankPlacement" on "XRankPlacement"."playerId" = "SplatoonPlayer"."id"
+    and "XRankPlacement"."weaponSplId" = "BuildWeapon"."weaponSplId"
+  group by
+    "BuildWeapon"."buildId",
+    "BuildWeapon"."weaponSplId"
+),
+"BuildWithWeapon" as (
+  select
+    "id",
+    "title",
+    "description",
+    "modes",
+    "headGearSplId",
+    "clothesGearSplId",
+    "shoesGearSplId",
+    "updatedAt",
+    "private",
+    json_group_array(
+      json_object(
+        'weaponSplId',
+        "Top500Weapon"."weaponSplId",
+        'maxPower',
+        "Top500Weapon"."maxPower",
+        'minRank',
+        "Top500Weapon"."minRank"
+      )
+    ) as "weapons"
+  from
+    "Build"
+    left join "Top500Weapon" on "Top500Weapon"."buildId" = "Build"."id"
+  where
+    "Build"."ownerId" = @userId
+    and (
+      "Build"."private" = 0
+      or "Build"."ownerId" = @loggedInUserId
+    )
+  group by
+    "Build"."id"
+)
+select
+  "BuildWithWeapon".*,
+  json_group_array(
+    json_object(
+      'ability',
+      "BuildAbility"."ability",
+      'gearType',
+      "BuildAbility"."gearType",
+      'slotIndex',
+      "BuildAbility"."slotIndex"
+    )
+  ) as "abilities"
+from
+  "BuildWithWeapon"
+  left join "BuildAbility" on "BuildAbility"."buildId" = "BuildWithWeapon"."id"
+group by
+  "BuildWithWeapon"."id"
+order by
+  "BuildWithWeapon"."updatedAt" desc
+`);
+
+type BuildsByWeaponIdRow = BuildsByUserRow &
+  Pick<
+    UserWithPlusTier,
+    "discordId" | "discordName" | "discordDiscriminator" | "plusTier"
+  >;
+
+export function buildsByWeaponId({
+  weaponId,
+  limit,
+}: {
+  weaponId: BuildWeapon["weaponSplId"];
+  limit: number;
+}) {
+  const rows = buildsByWeaponIdStm.all({
+    weaponId,
+    // default to impossible weapon id so we can always have same amount of placeholder values
+    altWeaponId: weaponIdToAltId.get(weaponId) ?? -1,
+    limit,
+  }) as Array<BuildsByWeaponIdRow>;
+
+  return rows.map(augmentBuild);
+}
+
+type BuildsByUserRow = Pick<
+  Build,
+  | "id"
+  | "title"
+  | "description"
+  | "modes"
+  | "headGearSplId"
+  | "clothesGearSplId"
+  | "shoesGearSplId"
+  | "updatedAt"
+  | "private"
+> & {
+  weapons: string;
+  abilities: string;
+};
+
+export interface BuildWeaponWithTop500Info {
+  weaponSplId: MainWeaponId;
+  minRank: number | null;
+  maxPower: number | null;
+}
+
+export function buildsByUserId({
+  userId,
+  loggedInUserId,
+}: {
+  userId: Build["ownerId"];
+  loggedInUserId?: UserWithPlusTier["id"];
+}) {
+  const rows = buildsByUserIdStm.all({
+    userId,
+    loggedInUserId,
+  }) as Array<BuildsByUserRow>;
+
+  return rows.map(augmentBuild);
+}
+
+function augmentBuild<T>({
+  weapons: rawWeapons,
+  modes: rawModes,
+  abilities: rawAbilities,
+  ...row
+}: T & { modes: Build["modes"]; weapons: string; abilities: string }) {
+  const modes = rawModes ? (JSON.parse(rawModes) as ModeShort[]) : null;
+  const weapons = (
+    JSON.parse(rawWeapons) as Array<BuildWeaponWithTop500Info>
+  ).sort((a, b) => a.weaponSplId - b.weaponSplId);
+  const abilities = JSON.parse(rawAbilities) as Array<
+    Pick<BuildAbility, "ability" | "gearType" | "slotIndex">
+  >;
+
+  return {
+    ...row,
+    modes,
+    weapons,
+    abilities: dbAbilitiesToArrayOfArrays(abilities),
+  };
+}
+
+const gearOrder: Array<BuildAbility["gearType"]> = ["HEAD", "CLOTHES", "SHOES"];
+function dbAbilitiesToArrayOfArrays(
+  abilities: Array<Pick<BuildAbility, "ability" | "gearType" | "slotIndex">>
+): BuildAbilitiesTuple {
+  const sorted = abilities
+    .slice()
+    .sort((a, b) => {
+      if (a.gearType === b.gearType) return a.slotIndex - b.slotIndex;
+
+      return gearOrder.indexOf(a.gearType) - gearOrder.indexOf(b.gearType);
+    })
+    .map((a) => a.ability);
+
+  invariant(sorted.length === 12, "expected 12 abilities");
+
+  return [
+    [sorted[0]!, sorted[1]!, sorted[2]!, sorted[3]!],
+    [sorted[4]!, sorted[5]!, sorted[6]!, sorted[7]!],
+    [sorted[8]!, sorted[9]!, sorted[10]!, sorted[11]!],
+  ];
+}

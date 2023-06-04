@@ -34,8 +34,8 @@ import { EditIcon } from "./icons/Edit";
 import { Image } from "./Image";
 import { Popover } from "./Popover";
 import { InfoIcon } from "./icons/Info";
-import type { BuildWeaponWithTop500Info } from "~/db/models/builds/queries.server";
 import { LockIcon } from "./icons/Lock";
+import type { BuildWeaponWithTop500Info } from "~/features/builds";
 
 interface BuildProps {
   build: Pick<

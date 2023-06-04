@@ -83,7 +83,7 @@ export const links: LinksFunction = () => {
 };
 
 export const handle: SendouRouteHandle = {
-  i18n: ["weapons", "analyzer"],
+  i18n: ["weapons", "analyzer", "builds"],
   breadcrumb: () => ({
     imgPath: navIconUrl("analyzer"),
     href: ANALYZER_URL,

@@ -186,6 +186,10 @@
   margin: 0 auto;
 }
 
+.mx-2 {
+  margin-inline: var(--s-2);
+}
+
 .my-4 {
   margin-block: var(--s-4);
 }

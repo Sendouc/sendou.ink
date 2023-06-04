@@ -7,6 +7,7 @@ import {
   seed,
   selectComboboxValue,
 } from "~/utils/playwright";
+import { BUILDS_PAGE } from "~/utils/urls";
 import { userBuildsPage, userNewBuildPage } from "~/utils/urls";
 
 test.describe("Builds", () => {
@@ -99,5 +100,25 @@ test.describe("Builds", () => {
     await expect(page.getByTestId("build-card").first()).not.toContainText(
       "Private"
     );
+  });
+
+  test("filters builds", async ({ page }) => {
+    await seed(page);
+    await navigate({
+      page,
+      url: BUILDS_PAGE,
+    });
+
+    await page.getByTestId("weapon-40-link").click();
+
+    await page.getByTestId("add-filter-button").click();
+    await page.getByTestId("comparison-select").selectOption("AT_MOST");
+
+    await expect(page.getByTestId("ISM-ability")).toHaveCount(1);
+
+    await page.getByTestId("delete-filter-button").click();
+
+    // are we seeing builds with ISM again?
+    await expect(page.getByTestId("ISM-ability").nth(1)).toBeVisible();
   });
 });

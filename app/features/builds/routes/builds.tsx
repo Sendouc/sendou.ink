@@ -72,6 +72,7 @@ export default function BuildsPage() {
                   key={weaponId}
                   to={weaponIdToSlug(weaponId)}
                   className="builds__category__weapon"
+                  data-testid={`weapon-${weaponId}-link`}
                 >
                   <Image
                     className="builds__category__weapon__img"
