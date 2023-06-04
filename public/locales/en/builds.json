@@ -23,5 +23,7 @@
   "addFilter": "Add filter",
   "linkButton.abilityStats": "Ability stats",
   "linkButton.popularBuilds": "Popular builds",
-  "noPopularBuilds": "It seems there are no popular builds for this weapon at this moment."
+  "noPopularBuilds": "It seems there are no popular builds for this weapon at this moment.",
+
+  "emptyAbilitySlot": "Empty ability slot"
 }

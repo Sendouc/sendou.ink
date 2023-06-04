@@ -29,7 +29,7 @@ import { i18next } from "~/modules/i18n";
 import {
   abilities,
   weaponIdIsNotAlt,
-  type Ability,
+  type Ability as AbilityType,
 } from "~/modules/in-game-lists";
 import { cache, ttl } from "~/utils/cache.server";
 import { type SendouRouteHandle } from "~/utils/remix";
@@ -53,6 +53,7 @@ import { possibleApValues } from "~/features/build-analyzer";
 import type { Unpacked } from "~/utils/types";
 import { safeJSONParse } from "~/utils/json";
 import { MAX_BUILD_FILTERS } from "../builds-constants";
+import { Ability } from "~/components/Ability";
 
 const FILTER_SEARCH_PARAM_KEY = "f";
 
@@ -365,7 +366,7 @@ function FilterSection({
   onChange: (filter: Partial<BuildFilter>) => void;
   remove: () => void;
 }) {
-  const { t } = useTranslation(["analyzer"]);
+  const { t } = useTranslation(["analyzer", "game-misc"]);
 
   const abilityObject = abilities.find((a) => a.name === filter.ability)!;
 
@@ -384,11 +385,14 @@ function FilterSection({
         </div>
       </div>
       <div className="build__filter">
+        <div className="build__filter__ability">
+          <Ability ability={filter.ability} size="TINY" />
+        </div>
         <select
           value={filter.ability}
           onChange={(e) =>
             onChange({
-              ability: e.target.value as Ability,
+              ability: e.target.value as AbilityType,
               value:
                 abilities.find((a) => a.name === e.target.value)!.type ===
                 "STACKABLE"
@@ -400,7 +404,7 @@ function FilterSection({
           {abilities.map((ability) => {
             return (
               <option key={ability.name} value={ability.name}>
-                {ability.name}
+                {t(`game-misc:ABILITY_${ability.name}`)}
               </option>
             );
           })}

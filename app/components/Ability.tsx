@@ -3,6 +3,7 @@ import React from "react";
 import type { AbilityWithUnknown } from "~/modules/in-game-lists/types";
 import { abilityImageUrl } from "~/utils/urls";
 import { Image } from "./Image";
+import { useTranslation } from "~/hooks/useTranslation";
 
 const sizeMap = {
   MAIN: 42,
@@ -27,6 +28,7 @@ export function Ability({
   onDrop?: (event: React.DragEvent) => void;
   className?: string;
 }) {
+  const { t } = useTranslation(["game-misc", "builds"]);
   const sizeNumber = sizeMap[size];
 
   const [isDragTarget, setIsDragTarget] = React.useState(false);
@@ -44,6 +46,11 @@ export function Ability({
 
   // Render an ability as a button only if it is meant to be draggable (i.e., not readonly)
   const AbilityTag = readonly ? "div" : "button";
+
+  const altText =
+    ability !== "UNKNOWN"
+      ? t(`game-misc:ABILITY_${ability}`)
+      : t("builds:emptyAbilitySlot");
 
   return (
     <AbilityTag
@@ -72,7 +79,7 @@ export function Ability({
       }}
       type={readonly ? undefined : "button"}
     >
-      <Image alt="" path={abilityImageUrl(ability)} />
+      <Image alt={altText} title={altText} path={abilityImageUrl(ability)} />
     </AbilityTag>
   );
 }
