@@ -1,0 +1,51 @@
+{
+  "tabs.info": "מידע",
+  "tabs.teams": "צוותים ({{count}})",
+  "tabs.admin": "מנהל",
+  "tabs.register": "הרשמה",
+  "tabs.maps": "מפות",
+
+  "pre.footerNote": "הערה: אתם יכולים לשנות את מאגר המפות והצוות שלכם פעמים שתרצו לפני תחילת כמה הטורניר.",
+  "pre.deleteTeam": "מחיקת צוות",
+
+  "preview": "תצוגה מקדימה של מחולל רשימת המפות (מנהל בלבד)",
+  "pre.steps.register": "1. הרשמה ב-",
+  "pre.steps.register.summary": "נא להזין את שם הצוות שאיתו נרשמתם",
+  "pre.steps.mapPool": "2. מאגר מפות",
+  "pre.steps.mapPool.explanation": "אתם יכולים לשחק גם בלי לבחור מאגר מפות, אבל אז יריבכם יכולים להחליט אילו מפות תשחקו. מפות שוברות שוויון מסומנות בכחול.",
+  "pre.steps.mapPool.summary": "בחרו את המפות של הצוות שלכם",
+  "pre.steps.roster": "3. שליחת צוות",
+  "pre.steps.roster.explanation": "שליחת הצוות היא אופציונלית, אבל אם לא תעשו זאת, אתם עשויים להיות מוצבים נמוך יותר.",
+  "pre.steps.roster.summary": "הכנס צוות",
+  "pre.steps.roster.fullTeamError": "הצוות מלא.",
+
+  "bracket.type.DE_WINNERS": "סיבוב מנצחים",
+  "bracket.type.DE_LOSERS": "סיבוב מפסידים",
+  "bracket.type.SE": "סיבוב",
+  "bracket.type.SWISS": "סיבוב לפי השיטה השוויצרית",
+  "bracket.type.GROUPS": "סיבוב קבוצות",
+
+  "round.label": "סיבוב",
+
+  "team.label": "צוות",
+  "team.unlisted": "צוות לא רשום",
+
+  "bestOf.label.short": "הטוב מ-",
+
+  "pickInfo.team": "צוות {{number}} בחרו",
+  "pickInfo.tiebreaker": "שובר שיוויון",
+  "pickInfo.both": "שניהם בחרו",
+  "pickInfo.default": "מפת ברירת מחדל",
+
+  "generator.error": "שינויים שביצעת לא נשמרו מאז תחילת הטורניר",
+
+  "teams.mapsPickedStatus": "סטטוס בחירת המפות",
+
+  "admin.download": "הורדת משתתפים",
+  "admin.actions.CHANGE_TEAM_OWNER": "שינוי קפטן",
+  "admin.actions.CHECK_IN": "קבלה",
+  "admin.actions.CHECK_OUT": "יציאה",
+  "admin.actions.ADD_MEMBER": "הוספת חבר צוות",
+  "admin.actions.REMOVE_MEMBER": "הורדת חבר צוות",
+  "admin.actions.DELETE_TEAM": "מחיקת צוות"
+}
