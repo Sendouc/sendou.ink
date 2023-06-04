@@ -25,5 +25,11 @@
   "linkButton.popularBuilds": "Popular builds",
   "noPopularBuilds": "It seems there are no popular builds for this weapon at this moment.",
 
-  "emptyAbilitySlot": "Empty ability slot"
+  "emptyAbilitySlot": "Empty ability slot",
+
+  "filters.title": "Filter {{number}}",
+  "filters.has": "Has",
+  "filters.does.not.have": "Doesn't have",
+  "filters.atLeast": "At least",
+  "filters.atMost": "At most"
 }

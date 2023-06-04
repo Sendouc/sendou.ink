@@ -351,9 +351,6 @@ export default function WeaponsBuildsPage() {
   );
 }
 
-// xxx: implement ability select with real names and images (as combobox)
-// xxx: mobile ui
-// xxx: i18n
 // xxx: e2e test
 function FilterSection({
   number,
@@ -366,14 +363,16 @@ function FilterSection({
   onChange: (filter: Partial<BuildFilter>) => void;
   remove: () => void;
 }) {
-  const { t } = useTranslation(["analyzer", "game-misc"]);
+  const { t } = useTranslation(["analyzer", "game-misc", "builds"]);
 
   const abilityObject = abilities.find((a) => a.name === filter.ability)!;
 
   return (
     <section>
       <div className="stack horizontal justify-between mx-2">
-        <div className="text-xs font-bold">Filter {number}</div>
+        <div className="text-xs font-bold">
+          {t("builds:filters.title", { number })}
+        </div>
         <div>
           <Button
             icon={<CrossIcon />}
@@ -416,8 +415,8 @@ function FilterSection({
               onChange({ value: e.target.value === "true" ? true : false })
             }
           >
-            <option value="true">Has</option>
-            <option value="false">Doesn&apos;t have</option>
+            <option value="true">{t("builds:filters.has")}</option>
+            <option value="false">{t("builds:filters.does.not.have")}</option>
           </select>
         ) : null}
         {abilityObject.type === "STACKABLE" ? (
@@ -429,8 +428,8 @@ function FilterSection({
               })
             }
           >
-            <option value="AT_LEAST">At least</option>
-            <option value="AT_MOST">At most</option>
+            <option value="AT_LEAST">{t("builds:filters.atLeast")}</option>
+            <option value="AT_MOST">{t("builds:filters.atMost")}</option>
           </select>
         ) : null}
         {abilityObject.type === "STACKABLE" ? (
