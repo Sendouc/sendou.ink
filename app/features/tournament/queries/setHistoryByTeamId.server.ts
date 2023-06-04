@@ -102,7 +102,7 @@ export interface SetHistoryByTeamIdItem {
 export function setHistoryByTeamId(
   tournamentTeamId: number
 ): Array<SetHistoryByTeamIdItem> {
-  const rows = stm.all({ tournamentTeamId });
+  const rows = stm.all({ tournamentTeamId }) as any[];
 
   return rows.map((row) => {
     return {

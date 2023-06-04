@@ -87,7 +87,7 @@ export function countByUserId({
   userId: Build["ownerId"];
   loggedInUserId?: UserWithPlusTier["id"];
 }) {
-  return (countByUserIdStm.get({ userId, loggedInUserId })?.count ??
+  return ((countByUserIdStm.get({ userId, loggedInUserId }) as any)?.count ??
     0) as number;
 }
 

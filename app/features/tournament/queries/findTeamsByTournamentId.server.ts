@@ -71,7 +71,7 @@ export interface FindTeamsByTournamentIdItem {
 export type FindTeamsByTournamentId = Array<FindTeamsByTournamentIdItem>;
 
 export function findTeamsByTournamentId(tournamentId: Tournament["id"]) {
-  const rows = stm.all({ tournamentId });
+  const rows = stm.all({ tournamentId }) as any[];
 
   return (
     rows.map((row) => {

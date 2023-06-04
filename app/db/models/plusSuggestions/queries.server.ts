@@ -132,7 +132,9 @@ function sortNewestPlayersToBeSuggestedFirst(
 
 const tiersSuggestedForStm = sql.prepare(tiersSuggestedForSql);
 export function tiersSuggestedFor(args: MonthYear & { userId: User["id"] }) {
-  return JSON.parse(tiersSuggestedForStm.pluck().get(args)) as User["id"][];
+  return JSON.parse(
+    tiersSuggestedForStm.pluck().get(args) as any
+  ) as User["id"][];
 }
 
 const deleteStm = sql.prepare(deleteSql);

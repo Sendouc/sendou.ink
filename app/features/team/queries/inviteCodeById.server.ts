@@ -7,5 +7,5 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export function inviteCodeById(teamId: number): string | null {
-  return stm.get({ teamId })?.inviteCode ?? null;
+  return (stm.get({ teamId }) as any)?.inviteCode ?? null;
 }

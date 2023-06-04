@@ -130,7 +130,7 @@ export function findByIdentifier(identifier: string | number) {
     teamId,
     css,
     ...row
-  } = findByIdentifierStm.get({ identifier });
+  } = findByIdentifierStm.get({ identifier }) as any;
 
   if (!row.id) return;
 

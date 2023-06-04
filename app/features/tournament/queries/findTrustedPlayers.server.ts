@@ -33,5 +33,5 @@ export function findTrustedPlayers({
   userId: number;
 }): Array<TrustedPlayer> {
   if (!teamId) return [];
-  return stm.all({ teamId, userId });
+  return stm.all({ teamId, userId }) as any[];
 }

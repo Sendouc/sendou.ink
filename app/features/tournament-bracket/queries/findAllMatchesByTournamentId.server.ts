@@ -18,8 +18,6 @@ export interface FindAllMatchesByTournamentIdMatch {
   groupNumber: number;
 }
 
-export function findAllMatchesByTournamentId(
-  tournamentId: number
-): Array<FindAllMatchesByTournamentIdMatch> {
-  return stm.all({ tournamentId });
+export function findAllMatchesByTournamentId(tournamentId: number) {
+  return stm.all({ tournamentId }) as Array<FindAllMatchesByTournamentIdMatch>;
 }

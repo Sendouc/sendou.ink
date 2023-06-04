@@ -19,6 +19,6 @@ type UnvalidatedImage = Pick<
   "id" | "url" | "submitterUserId"
 >;
 
-export function oneUnvalidatedImage(): UnvalidatedImage | null {
-  return stm.get();
+export function oneUnvalidatedImage() {
+  return stm.get() as UnvalidatedImage | null;
 }

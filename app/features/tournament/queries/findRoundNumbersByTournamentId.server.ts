@@ -12,10 +12,10 @@ const stm = sql.prepare(/* sql */ `
   group by "TournamentStage"."id", "TournamentRound"."number", "TournamentGroup"."number"
 `);
 
-export function findRoundNumbersByTournamentId(tournamentId: number): Array<{
-  stageId: number;
-  roundNumber: number;
-  groupNumber: number;
-}> {
-  return stm.all({ tournamentId });
+export function findRoundNumbersByTournamentId(tournamentId: number) {
+  return stm.all({ tournamentId }) as Array<{
+    stageId: number;
+    roundNumber: number;
+    groupNumber: number;
+  }>;
 }
