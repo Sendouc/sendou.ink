@@ -297,6 +297,7 @@ export default function WeaponsBuildsPage() {
             icon={<FilterIcon />}
             onClick={handleFilterAdd}
             disabled={filters.length >= MAX_BUILD_FILTERS}
+            testId="add-filter-button"
           >
             {t("builds:addFilter")}
           </Button>
@@ -351,7 +352,6 @@ export default function WeaponsBuildsPage() {
   );
 }
 
-// xxx: e2e test
 function FilterSection({
   number,
   filter,
@@ -380,6 +380,7 @@ function FilterSection({
             variant="minimal-destructive"
             onClick={remove}
             aria-label="Delete filter"
+            testId="delete-filter-button"
           />
         </div>
       </div>
@@ -427,6 +428,7 @@ function FilterSection({
                 comparison: e.target.value as BuildFilter["comparison"],
               })
             }
+            data-testid="comparison-select"
           >
             <option value="AT_LEAST">{t("builds:filters.atLeast")}</option>
             <option value="AT_MOST">{t("builds:filters.atMost")}</option>
