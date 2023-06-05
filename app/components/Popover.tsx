@@ -1,5 +1,6 @@
 import { Popover as HeadlessPopover } from "@headlessui/react";
 import type { Placement } from "@popperjs/core";
+import clsx from "clsx";
 import * as React from "react";
 import { usePopper } from "react-popper";
 
@@ -8,13 +9,17 @@ export function Popover({
   children,
   buttonChildren,
   triggerClassName,
+  triggerTestId,
   containerClassName,
+  contentClassName,
   placement,
 }: {
   children: React.ReactNode;
   buttonChildren: React.ReactNode;
   triggerClassName?: string;
+  triggerTestId?: string;
   containerClassName?: string;
+  contentClassName?: string;
   placement?: Placement;
 }) {
   const [referenceElement, setReferenceElement] = React.useState();
@@ -37,6 +42,7 @@ export function Popover({
         // @ts-expect-error Popper docs: https://popper.js.org/react-popper/v2/
         ref={setReferenceElement}
         className={triggerClassName ?? "minimal tiny"}
+        data-testid={triggerTestId}
       >
         {buttonChildren}
       </HeadlessPopover.Button>
@@ -44,7 +50,7 @@ export function Popover({
       <HeadlessPopover.Panel
         // @ts-expect-error Popper docs: https://popper.js.org/react-popper/v2/
         ref={setPopperElement}
-        className="popover-content"
+        className={clsx("popover-content", contentClassName)}
         style={styles["popper"]}
         {...attributes["popper"]}
       >

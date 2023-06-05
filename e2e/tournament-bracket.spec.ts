@@ -1,17 +1,15 @@
 import { type Page, test, expect } from "@playwright/test";
 import { NZAP_TEST_ID } from "~/db/seed/constants";
-import { impersonate, navigate, seed } from "~/utils/playwright";
+import { impersonate, navigate, seed, submit } from "~/utils/playwright";
 import { tournamentBracketsPage } from "~/utils/urls";
 
-const TOURNAMENT_ID = 2;
-
-const startBracket = async (page: Page) => {
+const startBracket = async (page: Page, tournamentId = 2) => {
   await seed(page);
   await impersonate(page);
 
   await navigate({
     page,
-    url: tournamentBracketsPage(TOURNAMENT_ID),
+    url: tournamentBracketsPage(tournamentId),
   });
 
   await page.getByTestId("finalize-bracket-button").click();
@@ -63,24 +61,25 @@ const expectScore = (page: Page, score: [number, number]) =>
 // 7) As N-ZAP, undo all scores and switch to different team sweeping
 test.describe("Tournament bracket", () => {
   test("reports score and sees bracket update", async ({ page }) => {
+    const tournamentId = 2;
     await startBracket(page);
 
     await impersonate(page, NZAP_TEST_ID);
     await navigate({
       page,
-      url: tournamentBracketsPage(TOURNAMENT_ID),
+      url: tournamentBracketsPage(tournamentId),
     });
 
     // 1)
     await page.locator('[data-match-id="5"]').click();
-    await reportResult(page, 2);
+    await reportResult(page, tournamentId);
     await backToBracket(page);
 
     // 2)
     await impersonate(page);
     await navigate({
       page,
-      url: tournamentBracketsPage(TOURNAMENT_ID),
+      url: tournamentBracketsPage(tournamentId),
     });
     await page.locator('[data-match-id="6"]').click();
     await reportResult(page, 2);
@@ -112,7 +111,7 @@ test.describe("Tournament bracket", () => {
     await impersonate(page, 2);
     await navigate({
       page,
-      url: tournamentBracketsPage(TOURNAMENT_ID),
+      url: tournamentBracketsPage(tournamentId),
     });
     await page.locator('[data-match-id="5"]').click();
     await page.getByTestId("undo-score-button").click();
@@ -122,5 +121,39 @@ test.describe("Tournament bracket", () => {
     await expect(
       page.locator("[data-round-id='5'] [data-participant-id='102']")
     ).toBeVisible();
+  });
+
+  test("adds a sub mid tournament (from non checked in team)", async ({
+    page,
+  }) => {
+    const tournamentId = 1;
+    await startBracket(page, tournamentId);
+
+    // captain of the first team
+    await impersonate(page, 5);
+    await navigate({
+      page,
+      url: tournamentBracketsPage(tournamentId),
+    });
+
+    await page.getByTestId("add-sub-button").click();
+    await page.getByTestId("copy-invite-link-button").click();
+
+    const inviteLinkProd: string = await page.evaluate(
+      "navigator.clipboard.readText()"
+    );
+    const inviteLink = inviteLinkProd.replace(
+      "https://sendou.ink",
+      "http://localhost:5800"
+    );
+
+    await impersonate(page, NZAP_TEST_ID);
+    await navigate({
+      page,
+      url: inviteLink,
+    });
+
+    await submit(page);
+    await expect(page).toHaveURL(/brackets/);
   });
 });
