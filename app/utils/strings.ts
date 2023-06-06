@@ -1,9 +1,15 @@
 import type { GearType, User } from "~/db/types";
 import { assertUnreachable } from "./types";
 
+export const isNewDiscordUniqueName = (discordDiscriminator: string) =>
+  discordDiscriminator === "0";
+
 export function discordFullName(
   user: Pick<User, "discordName" | "discordDiscriminator">
 ) {
+  if (isNewDiscordUniqueName(user.discordDiscriminator)) {
+    return capitalize(user.discordName);
+  }
   return `${user.discordName}#${user.discordDiscriminator}`;
 }
 
@@ -61,4 +67,8 @@ export function gearTypeToInitial(gearType: GearType) {
     default:
       assertUnreachable(gearType);
   }
+}
+
+export function capitalize(str: string) {
+  return str[0].toUpperCase() + str.slice(1);
 }
