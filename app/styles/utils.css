@@ -170,6 +170,10 @@
   margin-block-end: var(--s-1);
 }
 
+.mb-4 {
+  margin-block-end: var(--s-4);
+}
+
 .ml-auto {
   margin-inline-start: auto;
 }
@@ -188,6 +192,10 @@
 
 .mx-2 {
   margin-inline: var(--s-2);
+}
+
+.my-2 {
+  margin-block: var(--s-2);
 }
 
 .my-4 {

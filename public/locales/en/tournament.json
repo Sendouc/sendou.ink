@@ -59,5 +59,11 @@
   "bracket.grand_finals": "Grand Finals",
   "bracket.grand_finals.bracket_reset": "Bracket Reset",
   "bracket.main": "Main Bracket",
-  "bracket.underground": "Underground Bracket"
+  "bracket.underground": "Underground Bracket",
+
+  "actions.addSub": "Add sub",
+  "actions.shareLink": "Share your invite link to add members: {{inviteLink}}",
+  "actions.sub.prompt_other": "You can still add {{count}} subs to your roster",
+  "actions.sub.prompt_one": "You can still add {{count}} sub to your roster",
+  "actions.sub.prompt_zero": "Your roster is full and more subs can't be added"
 }

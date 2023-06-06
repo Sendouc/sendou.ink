@@ -26,6 +26,7 @@ import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.serv
 import hasTournamentStarted from "../queries/hasTournamentStarted.server";
 import { teamHasCheckedIn, tournamentIdFromParams } from "../tournament-utils";
 import styles from "../tournament.css";
+import { findOwnTeam } from "../queries/findOwnTeam.server";
 
 export const shouldRevalidate: ShouldRevalidateFunction = (args) => {
   const wasMutation = args.formMethod === "post";
@@ -74,9 +75,6 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     teams = teams.filter(teamHasCheckedIn);
   }
 
-  const ownedTeamId = teams.find((team) =>
-    team.members.some((member) => member.userId === user?.id && member.isOwner)
-  )?.id;
   const teamMemberOfName = teams.find((team) =>
     team.members.some((member) => member.userId === user?.id)
   )?.name;
@@ -86,7 +84,12 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     tieBreakerMapPool: db.calendarEvents.findTieBreakerMapPoolByEventId(
       event.eventId
     ),
-    ownedTeamId,
+    ownTeam: user
+      ? findOwnTeam({
+          tournamentId,
+          userId: user.id,
+        })
+      : null,
     teamMemberOfName,
     teams,
     hasStarted,

@@ -2,7 +2,6 @@ import {
   redirect,
   type ActionFunction,
   type LoaderArgs,
-  type SerializeFrom,
 } from "@remix-run/node";
 import { useFetcher, useLoaderData, useOutletContext } from "@remix-run/react";
 import clsx from "clsx";
@@ -232,7 +231,6 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   if (!ownTeam) return null;
 
   return {
-    ownTeam,
     mapPool: findMapPoolByTeamId(ownTeam.id),
     trustedPlayers: findTrustedPlayers({
       userId: user.id,
@@ -245,7 +243,6 @@ export default function TournamentRegisterPage() {
   const isMounted = useIsMounted();
   const { i18n } = useTranslation();
   const user = useUser();
-  const data = useLoaderData<typeof loader>();
   const parentRouteData = useOutletContext<TournamentLoaderData>();
 
   const teamRegularMemberOf = parentRouteData.teams.find((team) =>
@@ -297,7 +294,7 @@ export default function TournamentRegisterPage() {
       {teamRegularMemberOf ? (
         <Alert>You are in a team for this event</Alert>
       ) : (
-        <RegistrationForms ownTeam={data?.ownTeam} />
+        <RegistrationForms ownTeam={parentRouteData?.ownTeam} />
       )}
     </div>
   );
@@ -316,7 +313,7 @@ function PleaseLogIn() {
 function RegistrationForms({
   ownTeam,
 }: {
-  ownTeam?: NonNullable<SerializeFrom<typeof loader>>["ownTeam"];
+  ownTeam?: TournamentLoaderData["ownTeam"];
 }) {
   const data = useLoaderData<typeof loader>();
   const user = useUser();
@@ -600,13 +597,13 @@ function TeamInfo({
 function FillRoster({
   ownTeam,
 }: {
-  ownTeam: NonNullable<SerializeFrom<typeof loader>>["ownTeam"];
+  ownTeam: NonNullable<TournamentLoaderData["ownTeam"]>;
 }) {
   const data = useLoaderData<typeof loader>();
   const user = useUser();
   const parentRouteData = useOutletContext<TournamentLoaderData>();
   const [, copyToClipboard] = useCopyToClipboard();
-  const { t } = useTranslation(["common"]);
+  const { t } = useTranslation(["common", "tournament"]);
 
   const inviteLink = `${SENDOU_INK_BASE_URL}${tournamentJoinPage({
     eventId: parentRouteData.event.id,
@@ -626,7 +623,9 @@ function FillRoster({
   );
 
   const optionalMembers = Math.max(
-    TOURNAMENT.TEAM_MAX_MEMBERS - ownTeamMembers.length - missingMembers,
+    TOURNAMENT.TEAM_MAX_MEMBERS_BEFORE_START -
+      ownTeamMembers.length -
+      missingMembers,
     0
   );
 
@@ -643,7 +642,8 @@ function FillRoster({
     });
   })();
 
-  const teamIsFull = ownTeamMembers.length >= TOURNAMENT.TEAM_MAX_MEMBERS;
+  const teamIsFull =
+    ownTeamMembers.length >= TOURNAMENT.TEAM_MAX_MEMBERS_BEFORE_START;
 
   return (
     <div>
@@ -658,7 +658,7 @@ function FillRoster({
         {!teamIsFull ? (
           <div className="stack md items-center">
             <div className="text-center text-sm">
-              Share your invite link to add members: {inviteLink}
+              {t("tournament:actions.shareLink", { inviteLink })}
             </div>
             <div>
               <Button
@@ -708,7 +708,8 @@ function FillRoster({
       </section>
       <div className="tournament__section__warning">
         At least {TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL} members are required to
-        participate. Max roster size is {TOURNAMENT.TEAM_MAX_MEMBERS}.
+        participate. Max roster size is{" "}
+        {TOURNAMENT.TEAM_MAX_MEMBERS_BEFORE_START}.
       </div>
     </div>
   );

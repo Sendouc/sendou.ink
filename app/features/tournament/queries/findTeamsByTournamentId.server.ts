@@ -53,7 +53,7 @@ export interface FindTeamsByTournamentIdItem {
   id: TournamentTeam["id"];
   name: TournamentTeam["name"];
   seed: TournamentTeam["seed"];
-  checkedInAt: TournamentTeamCheckIn["checkedInAt"];
+  checkedInAt: TournamentTeamCheckIn["checkedInAt"] | null;
   prefersNotToHost: TournamentTeam["prefersNotToHost"];
   members: Array<
     Pick<TournamentTeamMember, "userId" | "isOwner"> &

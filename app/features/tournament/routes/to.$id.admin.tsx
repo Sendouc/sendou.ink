@@ -111,19 +111,31 @@ export const action: ActionFunction = async ({ request, params }) => {
       });
       break;
     }
+    // TODO: could also handle the case of admin trying
+    // to add members from a checked in team
     case "ADD_MEMBER": {
       const team = teams.find((t) => t.id === data.teamId);
       validate(team, "Invalid team id");
-      validate(
-        !teams.some((t) =>
-          t.members.some((m) => m.userId === data["user[value]"])
-        ),
-        "User is already on a team"
+
+      const previousTeam = teams.find((t) =>
+        t.members.some((m) => m.userId === data["user[value]"])
       );
+
+      if (hasTournamentStarted(event.id)) {
+        validate(
+          !previousTeam || !previousTeam.checkedInAt,
+          "User is already on a checked in team"
+        );
+      } else {
+        validate(!previousTeam, "User is already on a team");
+      }
 
       joinTeam({
         userId: data["user[value]"],
         newTeamId: team.id,
+        previousTeamId: previousTeam?.id,
+        // this team is not checked in so we can simply delete it
+        whatToDoWithPreviousTeam: previousTeam ? "DELETE" : undefined,
       });
       break;
     }

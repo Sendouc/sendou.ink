@@ -138,3 +138,10 @@ export function tournamentRoundI18nKey(round: PlayedSet["round"]) {
 
   return `bracket.${round.type}` as const;
 }
+
+export function tournamentTeamMaxSize(tournamentHasStarted: boolean) {
+  // ensuring every team can add at least one sub while the tournament is ongoing
+  return (
+    TOURNAMENT.TEAM_MAX_MEMBERS_BEFORE_START + Number(tournamentHasStarted)
+  );
+}
