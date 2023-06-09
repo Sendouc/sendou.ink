@@ -23,6 +23,7 @@ import {
   tournamentIdFromParams,
   tournamentTeamMaxSize,
 } from "../tournament-utils";
+import { useTranslation } from "~/hooks/useTranslation";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const tournamentId = tournamentIdFromParams(params);
@@ -106,6 +107,7 @@ export const loader = ({ request, params }: LoaderArgs) => {
 };
 
 export default function JoinTeamPage() {
+  const { t } = useTranslation(["tournament", "common"]);
   const id = React.useId();
   const user = useUser();
   const parentRouteData = useOutletContext<TournamentLoaderData>();
@@ -124,28 +126,20 @@ export default function JoinTeamPage() {
 
   const textPrompt = () => {
     switch (validationStatus) {
-      case "MISSING_CODE": {
-        return "Invite code is missing. Was the full URL copied?";
-      }
-      case "SHORT_CODE": {
-        return "Invite code is not the right length. Was the full URL copied?";
-      }
-      case "NO_TEAM_MATCHING_CODE": {
-        return "No team matching the invite code.";
-      }
-      case "TEAM_FULL": {
-        return "Team you are trying to join is full.";
-      }
-      case "ALREADY_JOINED": {
-        return "You're already a member of this team.";
-      }
-      case "NOT_LOGGED_IN": {
-        return "You must be logged in to join a team.";
-      }
+      case "MISSING_CODE":
+      case "SHORT_CODE":
+      case "NO_TEAM_MATCHING_CODE":
+      case "TEAM_FULL":
+      case "ALREADY_JOINED":
+      case "NOT_LOGGED_IN":
+        return t(`tournament:join.error.${validationStatus}`);
       case "VALID": {
         invariant(teamToJoin);
 
-        return `Join ${teamToJoin.name} for ${parentRouteData.event.name}?`;
+        return t("tournament:join.VALID", {
+          teamName: teamToJoin.name,
+          eventName: parentRouteData.event.name,
+        });
       }
       default: {
         assertUnreachable(validationStatus);
@@ -161,14 +155,15 @@ export default function JoinTeamPage() {
           <div className="text-lighter text-sm stack horizontal sm items-center">
             <input id={id} type="checkbox" name="trust" />{" "}
             <label htmlFor={id} className="mb-0">
-              Trust {captain ? discordFullName(captain) : ""} to add you on
-              their own to future tournaments?
+              {t("tournament:join.giveTrust", {
+                name: captain ? discordFullName(captain) : "",
+              })}
             </label>
           </div>
         ) : null}
       </div>
       {validationStatus === "VALID" ? (
-        <SubmitButton size="big">Join</SubmitButton>
+        <SubmitButton size="big">{t("common:actions.join")}</SubmitButton>
       ) : null}
     </Form>
   );

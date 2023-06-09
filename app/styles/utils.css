@@ -50,6 +50,10 @@
   color: var(--theme-secondary);
 }
 
+.text-uppercase {
+  text-transform: uppercase;
+}
+
 .fill-success {
   fill: var(--theme-success);
 }
