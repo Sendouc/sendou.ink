@@ -3,12 +3,54 @@ import navItems from "~/components/layout/nav-items.json";
 import { useTranslation } from "~/hooks/useTranslation";
 import { navIconUrl } from "~/utils/urls";
 import { Image } from "../Image";
+import { useEffect, useState } from "react";
 
 export function SideNav() {
   const { t } = useTranslation(["common"]);
+  const [isOverflowed, setIsOverflowed] = useState(false);
+
+  function overflowDetector() {
+    const firstLink = document.querySelector<HTMLAnchorElement>(
+      ".layout__side-nav > :first-child"
+    );
+    const header = document.querySelector<HTMLElement>("header");
+    return !!(
+      firstLink &&
+      header &&
+      firstLink.offsetTop < +header.style.height
+    );
+  }
+
+  useEffect(() => {
+    function overflowHandler() {
+      if (overflowDetector()) {
+        setIsOverflowed(true);
+      } else {
+        setIsOverflowed(false);
+      }
+    }
+
+    overflowHandler(); // call it once when the nav is mounted
+
+    window.addEventListener("resize", overflowHandler);
+    return () => {
+      window.removeEventListener("resize", overflowHandler);
+    };
+  }, []); // isOverflowed is not added here to prevent loop
+
+  // every time isOverflowed changes, double check it
+  useEffect(() => {
+    if (overflowDetector()) {
+      setIsOverflowed(true);
+    }
+  }, [isOverflowed]);
 
   return (
-    <nav className="layout__side-nav layout__item_size">
+    <nav
+      className={`layout__side-nav layout__item_size ${
+        isOverflowed ? "layout__side-nav-flex-start" : ""
+      }`}
+    >
       {navItems.map((item) => {
         return (
           <Link

@@ -243,11 +243,15 @@
   display: flex;
   height: calc(100vh - var(--top-size));
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: safe center;
   gap: var(--s-6);
   overflow-y: auto;
   padding-block: var(--s-2);
   padding-inline: var(--s-4);
+}
+
+.layout__side-nav-flex-start {
+  justify-content: flex-start;
 }
 
 .layout__side-nav-image-container {
