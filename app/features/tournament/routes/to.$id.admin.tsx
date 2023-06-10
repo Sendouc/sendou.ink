@@ -155,6 +155,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   return null;
 };
 
+// TODO: translations
 export default function TournamentAdminPage() {
   const { t } = useTranslation(["calendar"]);
   const data = useOutletContext<TournamentLoaderData>();

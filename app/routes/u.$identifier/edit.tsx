@@ -106,8 +106,7 @@ const userEditActionSchema = z
       falsyToNull,
       z
         .string()
-        .length(USER.IN_GAME_NAME_DISCRIMINATOR_LENGTH)
-        .refine((val) => /^[0-9]{4}$/.test(val))
+        .refine((val) => /^[0-9a-z]{4,5}$/.test(val))
         .nullable()
     ),
     css: z.preprocess(falsyToNull, z.string().refine(jsonParseable).nullable()),
@@ -286,8 +285,8 @@ function InGameNameInputs({
           className="u-edit__in-game-name-discriminator"
           name="inGameNameDiscriminator"
           aria-label="In game name discriminator"
-          maxLength={USER.IN_GAME_NAME_DISCRIMINATOR_LENGTH}
-          pattern="[0-9]{4}"
+          maxLength={USER.IN_GAME_NAME_DISCRIMINATOR_MAX_LENGTH}
+          pattern="[0-9a-z]{4,5}"
           defaultValue={inGameNameParts?.[1]}
         />
       </div>

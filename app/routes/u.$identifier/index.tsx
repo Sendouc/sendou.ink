@@ -12,7 +12,11 @@ import { Image, WeaponImage } from "~/components/Image";
 import { useTranslation } from "~/hooks/useTranslation";
 import { modesShort } from "~/modules/in-game-lists";
 import { type SendouRouteHandle } from "~/utils/remix";
-import { rawSensToString } from "~/utils/strings";
+import {
+  capitalize,
+  isNewDiscordUniqueName,
+  rawSensToString,
+} from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
 import { assertUnreachable } from "~/utils/types";
 import {
@@ -39,10 +43,19 @@ export default function UserInfoPage() {
         <Avatar user={data} size="lg" className="u__avatar" />
         <div>
           <h2 className="u__name">
-            <div>{data.discordName}</div>
+            <div>
+              {isNewDiscordUniqueName(data.discordDiscriminator)
+                ? capitalize(data.discordName)
+                : data.discordName}
+            </div>
             <div>
               <span className="u__discriminator">
-                <wbr />#{data.discordDiscriminator}
+                {!isNewDiscordUniqueName(data.discordDiscriminator) ? (
+                  <>
+                    #{data.discordDiscriminator}
+                    <wbr />
+                  </>
+                ) : null}
               </span>
               {data.country ? <Flag countryCode={data.country} tiny /> : null}
             </div>

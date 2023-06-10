@@ -241,7 +241,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
 export default function TournamentRegisterPage() {
   const isMounted = useIsMounted();
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation(["tournament"]);
   const user = useUser();
   const parentRouteData = useOutletContext<TournamentLoaderData>();
 
@@ -292,7 +292,7 @@ export default function TournamentRegisterPage() {
       </div>
       <div>{parentRouteData.event.description}</div>
       {teamRegularMemberOf ? (
-        <Alert>You are in a team for this event</Alert>
+        <Alert>{t("tournament:pre.inATeam")}</Alert>
       ) : (
         <RegistrationForms ownTeam={parentRouteData?.ownTeam} />
       )}
@@ -301,10 +301,12 @@ export default function TournamentRegisterPage() {
 }
 
 function PleaseLogIn() {
+  const { t } = useTranslation(["tournament"]);
+
   return (
     <form className="stack items-center" action={LOG_IN_URL} method="post">
       <Button size="big" type="submit">
-        Log in to register
+        {t("tournament:pre.logIn")}
       </Button>
     </form>
   );
@@ -362,24 +364,25 @@ function RegistrationProgress({
   members?: unknown[];
   mapPool?: unknown[];
 }) {
+  const { t } = useTranslation(["tournament"]);
   const parentRouteData = useOutletContext<TournamentLoaderData>();
 
   const steps = [
     {
-      name: "Team name",
+      name: t("tournament:pre.steps.name"),
       completed: Boolean(name),
     },
     {
-      name: "Full roster",
+      name: t("tournament:pre.steps.roster"),
       completed:
         members && members.length >= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
     },
     {
-      name: "Map pool",
+      name: t("tournament:pre.steps.pool"),
       completed: mapPool && mapPool.length > 0,
     },
     {
-      name: "Check-in",
+      name: t("tournament:pre.steps.check-in"),
       completed: checkedIn,
     },
   ];
@@ -401,7 +404,7 @@ function RegistrationProgress({
   return (
     <div>
       <h3 className="tournament__section-header text-center">
-        Complete these steps to play
+        {t("tournament:pre.steps.header")}
       </h3>
       <section className="tournament__section stack md">
         <div className="stack horizontal lg justify-center text-sm font-semi-bold">
@@ -433,7 +436,7 @@ function RegistrationProgress({
         />
       </section>
       <div className="tournament__section__warning">
-        Free editing of any information before the tournament starts allowed.
+        {t("tournament:pre.footer")}
       </div>
     </div>
   );
@@ -453,7 +456,7 @@ function CheckIn({
   checkedIn?: boolean;
 }) {
   const data = useOutletContext<TournamentLoaderData>();
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation(["tournament"]);
   const isMounted = useIsMounted();
   const fetcher = useFetcher();
 
@@ -480,7 +483,10 @@ function CheckIn({
   if (status === "UPCOMING") {
     return (
       <div className={clsx("text-center text-xs", { invisible: !isMounted })}>
-        Check-in is open between {checkInStartsString} and {checkInEndsString}
+        {t("tournament:pre.checkIn.range", {
+          start: checkInStartsString,
+          finish: checkInEndsString,
+        })}
       </div>
     );
   }
@@ -488,21 +494,29 @@ function CheckIn({
   if (checkedIn) {
     return (
       <div className="text-center text-xs">
-        Your team is checked in. Please join the Pool{" "}
-        <b>{HACKY_resolvePoolCode(data.event)}</b>
+        {t("tournament:pre.checkIn.checkedIn", {
+          pool: HACKY_resolvePoolCode(data.event),
+        })}
       </div>
     );
   }
 
   if (status === "OVER") {
-    return <div className="text-center text-xs">Check-in is over</div>;
+    return (
+      <div className="text-center text-xs">
+        {t("tournament:pre.checkIn.over")}
+      </div>
+    );
   }
 
   if (!canCheckIn) {
     return (
       <div className="stack items-center">
-        <Popover buttonChildren={<>Check in</>} triggerClassName="tiny">
-          Complete the previous steps before checking in
+        <Popover
+          buttonChildren={<>{t("tournament:pre.checkIn.button")}</>}
+          triggerClassName="tiny"
+        >
+          {t("tournament:pre.checkIn.cant")}
         </Popover>
       </div>
     );
@@ -516,7 +530,7 @@ function CheckIn({
         state={fetcher.state}
         testId="check-in-button"
       >
-        Check in
+        {t("tournament:pre.checkIn.button")}
       </SubmitButton>
     </fetcher.Form>
   );
@@ -531,16 +545,20 @@ function TeamInfo({
   prefersNotToHost?: number;
   canUnregister: boolean;
 }) {
+  const { t } = useTranslation(["tournament", "common"]);
   const id = React.useId();
   const fetcher = useFetcher();
+
   return (
     <div>
       <div className="stack horizontal justify-between">
-        <h3 className="tournament__section-header">1. Team info</h3>
+        <h3 className="tournament__section-header">
+          1. {t("tournament:pre.info.header")}
+        </h3>
         {canUnregister ? (
           <FormWithConfirm
-            dialogHeading="Unregister from the tournament and delete team info?"
-            deleteButtonText="Unregister"
+            dialogHeading={t("tournament:pre.info.unregister.confirm")}
+            deleteButtonText={t("tournament:pre.info.unregister")}
             fields={[["_action", "UNREGISTER"]]}
           >
             <Button
@@ -549,7 +567,7 @@ function TeamInfo({
               size="tiny"
               type="submit"
             >
-              Unregister
+              {t("tournament:pre.info.unregister")}
             </Button>
           </FormWithConfirm>
         ) : null}
@@ -558,7 +576,7 @@ function TeamInfo({
         <fetcher.Form method="post" className="stack md items-center">
           <div className="stack sm items-center">
             <div className="tournament__section__input-container">
-              <Label htmlFor="teamName">Team name</Label>
+              <Label htmlFor="teamName">{t("tournament:pre.steps.name")}</Label>
               <Input
                 name="teamName"
                 id="teamName"
@@ -576,7 +594,7 @@ function TeamInfo({
                   defaultChecked={Boolean(prefersNotToHost)}
                 />
                 <label htmlFor={id} className="mb-0">
-                  My team prefers not to host rooms
+                  {t("tournament:pre.info.noHost")}
                 </label>
               </div>
             </div>
@@ -586,7 +604,7 @@ function TeamInfo({
             state={fetcher.state}
             testId="save-team-button"
           >
-            Save
+            {t("common:actions.save")}
           </SubmitButton>
         </fetcher.Form>
       </section>
@@ -647,12 +665,14 @@ function FillRoster({
 
   return (
     <div>
-      <h3 className="tournament__section-header">2. Fill roster</h3>
+      <h3 className="tournament__section-header">
+        2. {t("tournament:pre.roster.header")}
+      </h3>
       <section className="tournament__section stack lg items-center">
         {playersAvailableToDirectlyAdd.length > 0 && !teamIsFull ? (
           <>
             <DirectlyAddPlayerSelect players={playersAvailableToDirectlyAdd} />
-            <Divider>OR</Divider>
+            <Divider className="text-uppercase">{t("common:or")}</Divider>
           </>
         ) : null}
         {!teamIsFull ? (
@@ -707,21 +727,26 @@ function FillRoster({
         ) : null}
       </section>
       <div className="tournament__section__warning">
-        At least {TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL} members are required to
-        participate. Max roster size is{" "}
-        {TOURNAMENT.TEAM_MAX_MEMBERS_BEFORE_START}.
+        {t("tournament:pre.roster.footer", {
+          atLeastCount: TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
+          maxCount: TOURNAMENT.TEAM_MAX_MEMBERS_BEFORE_START,
+        })}
       </div>
     </div>
   );
 }
 
 function DirectlyAddPlayerSelect({ players }: { players: TrustedPlayer[] }) {
+  const { t } = useTranslation(["tournament", "common"]);
   const fetcher = useFetcher();
   const id = React.useId();
+
   return (
     <fetcher.Form method="post" className="stack horizontal sm items-end">
       <div>
-        <Label htmlFor={id}>Add people you have played with</Label>
+        <Label htmlFor={id}>
+          {t("tournament:pre.roster.addTrusted.header")}
+        </Label>
         <select id={id} name="userId">
           {players.map((player) => {
             return (
@@ -737,7 +762,7 @@ function DirectlyAddPlayerSelect({ players }: { players: TrustedPlayer[] }) {
         state={fetcher.state}
         testId="add-player-button"
       >
-        Add
+        {t("common:actions.add")}
       </SubmitButton>
     </fetcher.Form>
   );
@@ -748,6 +773,7 @@ function DeleteMember({
 }: {
   members: Unpacked<TournamentLoaderData["teams"]>["members"];
 }) {
+  const { t } = useTranslation(["tournament", "common"]);
   const id = React.useId();
   const fetcher = useFetcher();
   const [expanded, setExpanded] = React.useState(false);
@@ -759,14 +785,14 @@ function DeleteMember({
         variant="minimal-destructive"
         onClick={() => setExpanded(true)}
       >
-        Delete member
+        {t("tournament:pre.roster.delete.button")}
       </Button>
     );
   }
 
   return (
     <fetcher.Form method="post">
-      <Label htmlFor={id}>User to delete</Label>
+      <Label htmlFor={id}>{t("tournament:pre.roster.delete.header")}</Label>
       <div className="stack md horizontal">
         <select name="userId" id={id}>
           {members
@@ -782,7 +808,7 @@ function DeleteMember({
           _action="DELETE_TEAM_MEMBER"
           variant="minimal-destructive"
         >
-          Delete
+          {t("common:actions.delete")}
         </SubmitButton>
       </div>
     </fetcher.Form>
@@ -792,7 +818,7 @@ function DeleteMember({
 // TODO: when "Can't pick stage more than 2 times" highlight those selects in red
 // TODO: useBlocker to prevent leaving page if made changes without saving
 function CounterPickMapPoolPicker() {
-  const { t } = useTranslation(["common", "game-misc"]);
+  const { t } = useTranslation(["common", "game-misc", "tournament"]);
   const parentRouteData = useOutletContext<TournamentLoaderData>();
   const fetcher = useFetcher();
 
@@ -814,7 +840,9 @@ function CounterPickMapPoolPicker() {
 
   return (
     <div>
-      <h3 className="tournament__section-header">3. Pick map pool</h3>
+      <h3 className="tournament__section-header">
+        3. {t("tournament:pre.pool.header")}
+      </h3>
       <section className="tournament__section">
         <fetcher.Form
           method="post"
@@ -850,7 +878,9 @@ function CounterPickMapPoolPicker() {
                     </div>
                     {typeof tiebreakerStageId === "number" ? (
                       <div className="text-xs text-lighter">
-                        Tiebreaker: {t(`game-misc:STAGE_${tiebreakerStageId}`)}
+                        {t("tournament:pre.pool.tiebreaker", {
+                          stage: t(`game-misc:STAGE_${tiebreakerStageId}`),
+                        })}
                       </div>
                     ) : null}
                   </div>
@@ -866,7 +896,7 @@ function CounterPickMapPoolPicker() {
                           key={i}
                           className="tournament__section__map-select-row"
                         >
-                          Pick {i + 1}{" "}
+                          {t("tournament:pre.pool.pick", { number: i + 1 })}
                           <select
                             value={counterpickMaps[mode][i] ?? undefined}
                             onChange={handleCounterpickMapPoolSelect(mode, i)}
