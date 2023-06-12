@@ -14,20 +14,13 @@ export function SideNav() {
       ".layout__side-nav > :first-child"
     );
     const header = document.querySelector<HTMLElement>("header");
-    return !!(
-      firstLink &&
-      header &&
-      firstLink.offsetTop < +header.style.height
-    );
+    if (!firstLink || !header) return false;
+    return firstLink.offsetTop < +header.style.height;
   }
 
   useEffect(() => {
     function overflowHandler() {
-      if (overflowDetector()) {
-        setIsOverflowed(true);
-      } else {
-        setIsOverflowed(false);
-      }
+      setIsOverflowed(overflowDetector());
     }
 
     overflowHandler(); // call it once when the nav is mounted
@@ -38,7 +31,7 @@ export function SideNav() {
     };
   }, []); // isOverflowed is not added here to prevent loop
 
-  // every time isOverflowed changes, double check it
+  // every time isOverflowed changes, check it again
   useEffect(() => {
     if (overflowDetector()) {
       setIsOverflowed(true);
