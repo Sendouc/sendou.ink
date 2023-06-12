@@ -90,7 +90,7 @@
   "forms.name": "שם",
   "forms.description": "תיאור",
   "forms.errors.title": "יש לתקן את השגיאות הבאות",
-  "forms.errors.noSearchMatches": "לא נמצא התאמה",
+  "forms.errors.noSearchMatches": "לא נמצאה התאמה",
 
   "errors.genericReload": "משהו השתבש. נסו לטעון מחדש את העמוד.",
 
@@ -101,7 +101,7 @@
   "tag.name.REGION": "תלוי אזור",
   "tag.name.LOW": "מגבלת כישרון",
   "tag.name.COUNT": "מגבלת כניסה",
-  "tag.name.LAN": "לאן",
+  "tag.name.LAN": "רשת מקומית",
   "tag.name.QUALIFIER": "מוקדמות",
   "tag.name.SZ": "רק SZ",
   "tag.name.TW": "מכיל TW",
