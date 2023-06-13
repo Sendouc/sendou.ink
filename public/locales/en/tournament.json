@@ -4,6 +4,10 @@
   "tabs.admin": "Admin",
   "tabs.register": "Register",
   "tabs.maps": "Maps",
+  "tabs.brackets": "Brackets",
+  "tabs.seeds": "Seeds",
+  "tabs.streams": "Streams ({{count}})",
+  "tabs.subs": "Subs ({{count}})",
 
   "pre.steps.header": "Complete these steps to play",
   "pre.steps.name": "Team name",

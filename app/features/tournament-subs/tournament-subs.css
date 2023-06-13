@@ -1,0 +1,49 @@
+.sub__section {
+  display: grid;
+  grid-template-areas:
+    "avatar name weapon-top-text weapon-top-images"
+    "avatar info weapon-bottom-text weapon-bottom-images"
+    "message message message message";
+  border-radius: var(--rounded);
+  background-color: var(--bg-lighter);
+  padding: var(--s-4);
+}
+
+.sub__section__avatar {
+  grid-area: avatar;
+}
+
+.sub__section__name {
+  grid-area: name;
+}
+
+.sub__section__info {
+  grid-area: info;
+}
+
+.sub__section__message {
+  grid-area: message;
+  font-size: var(--fonts-sm);
+  text-align: center;
+}
+
+.sub__section__weapon-top-text {
+  grid-area: weapon-top-text;
+}
+
+.sub__section__weapon-bottom-text {
+  grid-area: weapon-bottom-text;
+}
+
+.sub__section__weapon-images {
+  display: flex;
+  gap: var(--s-1);
+}
+
+.sub__section__weapon-top-images {
+  grid-area: weapon-top-images;
+}
+
+.sub__section__weapon-bottom-images {
+  grid-area: weapon-bottom-images;
+}

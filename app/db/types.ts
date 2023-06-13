@@ -317,6 +317,17 @@ export interface TournamentMatchGameResultParticipant {
   userId: number;
 }
 
+export interface TournamentSub {
+  userId: number;
+  tournamentId: number;
+  canVc: number;
+  bestWeapons: string;
+  okWeapons: string | null;
+  message: string | null;
+  visibility: "+1" | "+2" | "+3" | "ALL";
+  createdAt: number;
+}
+
 export interface TrustRelationship {
   trustGiverUserId: number;
   trustReceiverUserId: number;

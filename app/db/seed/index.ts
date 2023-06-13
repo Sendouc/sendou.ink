@@ -40,6 +40,7 @@ import {
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { TOURNAMENT } from "~/features/tournament/tournament-constants";
 import type { SeedVariation } from "~/routes/seed";
+import { nullFilledArray, pickRandomItem } from "~/utils/arrays";
 
 const calendarEventWithToToolsSz = () => calendarEventWithToTools(true);
 const calendarEventWithToToolsTeamsSz = () =>
@@ -73,6 +74,7 @@ const basicSeeds = (variation?: SeedVariation | null) => [
   variation === "NO_TOURNAMENT_TEAMS"
     ? undefined
     : calendarEventWithToToolsTeamsSz,
+  tournamentSubs,
   adminBuilds,
   manySplattershotBuilds,
   detailedTeam,
@@ -875,6 +877,55 @@ function calendarEventWithToToolsTeams(sz?: boolean) {
       }
     }
   }
+}
+
+function tournamentSubs() {
+  for (let id = 100; id < 120; id++) {
+    sql
+      .prepare(
+        /* sql */ `
+      insert into "TournamentSub" (
+        "userId",
+        "tournamentId",
+        "canVc",
+        "bestWeapons",
+        "okWeapons",
+        "message",
+        "visibility"
+      ) values (
+        @userId,
+        @tournamentId,
+        @canVc,
+        @bestWeapons,
+        @okWeapons,
+        @message,
+        @visibility
+      )
+    `
+      )
+      .run({
+        userId: id,
+        tournamentId: 1,
+        canVc: Number(Math.random() > 0.5),
+        bestWeapons: nullFilledArray(
+          faker.helpers.arrayElement([1, 1, 1, 2, 2, 3, 4, 5])
+        )
+          .map(() => pickRandomItem(mainWeaponIds))
+          .join(","),
+        okWeapons:
+          Math.random() > 0.5
+            ? null
+            : nullFilledArray(
+                faker.helpers.arrayElement([1, 1, 1, 2, 2, 3, 4, 5])
+              )
+                .map(() => pickRandomItem(mainWeaponIds))
+                .join(","),
+        message: faker.lorem.paragraph(),
+        visibility: id < 105 ? "+1" : id < 110 ? "+2" : id < 115 ? "+2" : "ALL",
+      });
+  }
+
+  return null;
 }
 
 const randomAbility = (legalTypes: AbilityType[]) => {

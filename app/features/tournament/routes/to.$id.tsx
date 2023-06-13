@@ -27,6 +27,7 @@ import hasTournamentStarted from "../queries/hasTournamentStarted.server";
 import { teamHasCheckedIn, tournamentIdFromParams } from "../tournament-utils";
 import styles from "../tournament.css";
 import { findOwnTeam } from "../queries/findOwnTeam.server";
+import { subsCount } from "~/features/tournament-subs";
 
 export const shouldRevalidate: ShouldRevalidateFunction = (args) => {
   const wasMutation = args.formMethod === "post";
@@ -93,6 +94,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     teamMemberOfName,
     teams,
     hasStarted,
+    subsCount: subsCount(tournamentId),
     streamsCount: hasStarted
       ? (await streamsByTournamentId(tournamentId)).length
       : 0,
@@ -117,7 +119,7 @@ export default function TournamentLayout() {
           </SubNavLink>
         ) : null}
         <SubNavLink to="brackets" data-testid="brackets-tab">
-          Brackets
+          {t("tournament:tabs.brackets")}
         </SubNavLink>
         {data.event.showMapListGenerator ? (
           <SubNavLink to="maps">{t("tournament:tabs.maps")}</SubNavLink>
@@ -126,11 +128,19 @@ export default function TournamentLayout() {
           {t("tournament:tabs.teams", { count: data.teams.length })}
         </SubNavLink>
         {/* TODO: don't show when tournament finalized */}
+        <SubNavLink to="subs">
+          {t("tournament:tabs.subs", { count: data.subsCount })}
+        </SubNavLink>
+        {/* TODO: don't show when tournament finalized */}
         {data.hasStarted ? (
-          <SubNavLink to="streams">Streams ({data.streamsCount})</SubNavLink>
+          <SubNavLink to="streams">
+            {t("tournament:tabs.streams", { count: data.streamsCount })}
+          </SubNavLink>
         ) : null}
         {canAdminTournament({ user, event: data.event }) &&
-          !data.hasStarted && <SubNavLink to="seeds">Seeds</SubNavLink>}
+          !data.hasStarted && (
+            <SubNavLink to="seeds">{t("tournament:tabs.seeds")}</SubNavLink>
+          )}
         {canAdminTournament({ user, event: data.event }) && (
           <SubNavLink to="admin" data-testid="admin-tab">
             {t("tournament:tabs.admin")}
