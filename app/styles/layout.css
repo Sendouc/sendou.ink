@@ -31,9 +31,11 @@
   font-size: 20px;
 }
 
-.layout__header {
+.layout__item_size {
   --item-size: 1.9rem;
+}
 
+.layout__header {
   position: fixed;
   z-index: 501;
   top: 0;
@@ -234,13 +236,17 @@
 }
 
 .layout__side-nav {
+  --top-size: calc(var(--item-size) + 2 * var(--s-2));
+
   position: fixed;
+  top: var(--top-size);
   display: flex;
-  height: 100vh;
+  height: calc(100vh - var(--top-size));
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   gap: var(--s-6);
   overflow-y: auto;
+  padding-block: var(--s-3);
   padding-inline: var(--s-4);
 }
 
