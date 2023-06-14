@@ -246,7 +246,7 @@
   justify-content: flex-start;
   gap: var(--s-6);
   overflow-y: auto;
-  padding-block: var(--s-2);
+  padding-block: var(--s-3);
   padding-inline: var(--s-4);
 }
 
