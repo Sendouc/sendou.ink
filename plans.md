@@ -18,5 +18,8 @@ to.id.subs
 - Choose visibility and filter visibility
 - Filter by weapon
 - Tab that visible while tournament is happening but hidden after tournament is finalized
+- best weapons / ok weapons can't share weapons
+- Sort subs so that +1 is highest then +2 etc. tiebreaker = createdAt
+- Before registering team show "No team? Register as a sub" text with link
 
 ![Alt text](image.png)

@@ -1,5 +1,6 @@
 .sub__section {
   display: grid;
+  grid-template-columns: max-content 1fr max-content max-content;
   grid-template-areas:
     "avatar name weapon-top-text weapon-top-images"
     "avatar info weapon-bottom-text weapon-bottom-images"
@@ -7,24 +8,52 @@
   border-radius: var(--rounded);
   background-color: var(--bg-lighter);
   padding: var(--s-4);
+  column-gap: var(--s-2-5);
 }
 
 .sub__section__avatar {
   grid-area: avatar;
+  align-self: center;
 }
 
 .sub__section__name {
   grid-area: name;
+  align-self: flex-end;
 }
 
 .sub__section__info {
   grid-area: info;
+  font-size: var(--fonts-xs);
+  gap: var(--s-3);
+  color: var(--text-lighter);
+  display: flex;
+  height: 32px;
+  white-space: nowrap;
+  align-items: center;
+}
+
+.sub__section__info__vc {
+  display: flex;
+  align-items: center;
+  gap: var(--s-0-5);
+}
+
+.sub__section__info__vc > svg {
+  width: 14px;
+  stroke-width: 2;
 }
 
 .sub__section__message {
   grid-area: message;
   font-size: var(--fonts-sm);
   text-align: center;
+  padding-block-start: var(--s-4);
+}
+
+.sub__section__weapon-text {
+  font-weight: var(--semi-bold);
+  font-size: var(--fonts-xs);
+  align-self: center;
 }
 
 .sub__section__weapon-top-text {
@@ -38,6 +67,8 @@
 .sub__section__weapon-images {
   display: flex;
   gap: var(--s-1);
+  width: 11rem;
+  align-items: center;
 }
 
 .sub__section__weapon-top-images {

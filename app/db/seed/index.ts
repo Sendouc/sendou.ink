@@ -217,13 +217,18 @@ function userProfiles() {
   for (let id = 3; id < 500; id++) {
     if (Math.random() < 0.25) continue; // 75% have bio
 
-    sql.prepare(`UPDATE "User" SET bio = $bio WHERE id = $id`).run({
-      id,
-      bio: faker.lorem.paragraphs(
-        faker.helpers.arrayElement([1, 1, 1, 2, 3, 4]),
-        "\n\n"
-      ),
-    });
+    sql
+      .prepare(
+        `UPDATE "User" SET bio = $bio, country = $country WHERE id = $id`
+      )
+      .run({
+        id,
+        bio: faker.lorem.paragraphs(
+          faker.helpers.arrayElement([1, 1, 1, 2, 3, 4]),
+          "\n\n"
+        ),
+        country: Math.random() > 0.5 ? faker.location.countryCode() : null,
+      });
   }
 }
 
@@ -920,7 +925,7 @@ function tournamentSubs() {
               )
                 .map(() => pickRandomItem(mainWeaponIds))
                 .join(","),
-        message: faker.lorem.paragraph(),
+        message: Math.random() > 0.5 ? null : faker.lorem.paragraph(),
         visibility: id < 105 ? "+1" : id < 110 ? "+2" : id < 115 ? "+2" : "ALL",
       });
   }
