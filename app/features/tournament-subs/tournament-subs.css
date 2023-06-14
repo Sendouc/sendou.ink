@@ -1,10 +1,13 @@
 .sub__section {
   display: grid;
-  grid-template-columns: max-content 1fr max-content max-content;
+  grid-template-columns: max-content 1fr;
   grid-template-areas:
-    "avatar name weapon-top-text weapon-top-images"
-    "avatar info weapon-bottom-text weapon-bottom-images"
-    "message message message message";
+    "avatar name"
+    "avatar info"
+    "spacer spacer"
+    "weapon-top-text weapon-top-images"
+    "weapon-bottom-text weapon-bottom-images"
+    "message message";
   border-radius: var(--rounded);
   background-color: var(--bg-lighter);
   padding: var(--s-4);
@@ -23,8 +26,8 @@
 
 .sub__section__info {
   grid-area: info;
-  font-size: var(--fonts-xs);
-  gap: var(--s-3);
+  font-size: var(--fonts-sm);
+  gap: var(--s-2);
   color: var(--text-lighter);
   display: flex;
   height: 32px;
@@ -39,14 +42,12 @@
 }
 
 .sub__section__info__vc > svg {
-  width: 14px;
-  stroke-width: 2;
+  width: 18px;
 }
 
 .sub__section__message {
   grid-area: message;
   font-size: var(--fonts-sm);
-  text-align: center;
   padding-block-start: var(--s-4);
 }
 
@@ -77,4 +78,19 @@
 
 .sub__section__weapon-bottom-images {
   grid-area: weapon-bottom-images;
+}
+
+.sub__section__spacer {
+  grid-area: spacer;
+  height: 18px;
+}
+
+@media screen and (min-width: 640px) {
+  .sub__section {
+    grid-template-columns: max-content 1fr max-content max-content;
+    grid-template-areas:
+      "avatar name weapon-top-text weapon-top-images"
+      "avatar info weapon-bottom-text weapon-bottom-images"
+      "message message message message";
+  }
 }

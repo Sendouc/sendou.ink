@@ -13,7 +13,6 @@ import { discordFullName } from "~/utils/strings";
 import { userPage } from "~/utils/urls";
 import { WeaponImage } from "~/components/Image";
 import { Flag } from "~/components/Flag";
-import type React from "react";
 import { MicrophoneIcon } from "~/components/icons/Microphone";
 
 export const links: LinksFunction = () => {
@@ -31,6 +30,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const tournamentId = tournamentIdFromParams(params);
 
   return {
+    // eslint-disable-next-line array-callback-return
     subs: findSubsByTournamentId(tournamentId).filter((sub) => {
       if (sub.visibility === "ALL") return true;
 
@@ -68,19 +68,20 @@ export default function TournamentSubsPage() {
 }
 
 function SubInfoSection({ sub }: { sub: SubByTournamentId }) {
-  const infos: React.ReactNode[] = [];
+  const infos = [
+    <div key="vc" className="sub__section__info__vc">
+      <MicrophoneIcon className={sub.canVc ? "text-success" : "text-warning"} />
+      {sub.canVc ? "Can VC" : "No VC"}
+    </div>,
+  ];
   if (sub.plusTier) {
+    infos.push(<>/</>);
     infos.push(<div key="plus">+{sub.plusTier}</div>);
   }
   if (sub.country) {
+    infos.push(<>/</>);
     infos.push(<Flag key="flag" countryCode={sub.country} tiny />);
   }
-  infos.push(
-    <div key="vc" className="sub__section__info__vc">
-      <MicrophoneIcon />
-      {sub.canVc ? "Can vc" : "No vc"}
-    </div>
-  );
 
   return (
     <section className="sub__section">
@@ -88,6 +89,7 @@ function SubInfoSection({ sub }: { sub: SubByTournamentId }) {
       <Link to={userPage(sub)} className="sub__section__name">
         {discordFullName(sub)}
       </Link>
+      <div className="sub__section__spacer" />
       <div className="sub__section__info">{infos}</div>
       <div className="sub__section__weapon-top-text sub__section__weapon-text">
         Prefers to play
@@ -114,7 +116,9 @@ function SubInfoSection({ sub }: { sub: SubByTournamentId }) {
           </div>
         </>
       ) : null}
-      <div className="sub__section__message">{sub.message}</div>
+      {sub.message ? (
+        <div className="sub__section__message">{sub.message}</div>
+      ) : null}
     </section>
   );
 }
