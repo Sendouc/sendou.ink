@@ -3,9 +3,13 @@ import {
   type SubByTournamentId,
   findSubsByTournamentId,
 } from "../queries/findSubsByTournamentId.server";
-import type { LinksFunction, LoaderArgs } from "@remix-run/node";
+import type {
+  ActionFunction,
+  LinksFunction,
+  LoaderArgs,
+} from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
-import { getUser } from "~/modules/auth";
+import { getUser, requireUser, useUser } from "~/modules/auth";
 import { assertUnreachable } from "~/utils/types";
 import styles from "../tournament-subs.css";
 import { Avatar } from "~/components/Avatar";
@@ -14,7 +18,11 @@ import { userPage } from "~/utils/urls";
 import { WeaponImage } from "~/components/Image";
 import { Flag } from "~/components/Flag";
 import { MicrophoneIcon } from "~/components/icons/Microphone";
-import { LinkButton } from "~/components/Button";
+import { Button, LinkButton } from "~/components/Button";
+import { deleteSub } from "../queries/deleteSub.server";
+import { FormWithConfirm } from "~/components/FormWithConfirm";
+import { TrashIcon } from "~/components/icons/Trash";
+import { useTranslation } from "~/hooks/useTranslation";
 
 export const links: LinksFunction = () => {
   return [
@@ -23,6 +31,18 @@ export const links: LinksFunction = () => {
       href: styles,
     },
   ];
+};
+
+export const action: ActionFunction = async ({ request, params }) => {
+  const user = await requireUser(request);
+  const tournamentId = tournamentIdFromParams(params);
+
+  deleteSub({
+    tournamentId,
+    userId: user.id,
+  });
+
+  return null;
 };
 
 export const loader = async ({ params, request }: LoaderArgs) => {
@@ -76,6 +96,9 @@ export default function TournamentSubsPage() {
 }
 
 function SubInfoSection({ sub }: { sub: SubByTournamentId }) {
+  const { t } = useTranslation(["common"]);
+  const user = useUser();
+
   const infos = [
     <div key="vc" className="sub__section__info__vc">
       <MicrophoneIcon className={sub.canVc ? "text-success" : "text-warning"} />
@@ -92,41 +115,62 @@ function SubInfoSection({ sub }: { sub: SubByTournamentId }) {
   }
 
   return (
-    <section className="sub__section">
-      <Avatar user={sub} size="sm" className="sub__section__avatar" />
-      <Link to={userPage(sub)} className="sub__section__name">
-        {discordFullName(sub)}
-      </Link>
-      <div className="sub__section__spacer" />
-      <div className="sub__section__info">{infos}</div>
-      <div className="sub__section__weapon-top-text sub__section__weapon-text">
-        Prefers to play
-      </div>
-      <div className="sub__section__weapon-top-images sub__section__weapon-images">
-        {sub.bestWeapons.map((wpn) => (
-          <WeaponImage key={wpn} weaponSplId={wpn} size={32} variant="badge" />
-        ))}
-      </div>
-      {sub.okWeapons ? (
-        <>
-          <div className="sub__section__weapon-bottom-text sub__section__weapon-text">
-            Can play
-          </div>
-          <div className="sub__section__weapon-bottom-images sub__section__weapon-images">
-            {sub.okWeapons.map((wpn) => (
-              <WeaponImage
-                key={wpn}
-                weaponSplId={wpn}
-                size={32}
-                variant="badge"
-              />
-            ))}
-          </div>
-        </>
+    <div>
+      <section className="sub__section">
+        <Avatar user={sub} size="sm" className="sub__section__avatar" />
+        <Link to={userPage(sub)} className="sub__section__name">
+          {discordFullName(sub)}
+        </Link>
+        <div className="sub__section__spacer" />
+        <div className="sub__section__info">{infos}</div>
+        <div className="sub__section__weapon-top-text sub__section__weapon-text">
+          Prefers to play
+        </div>
+        <div className="sub__section__weapon-top-images sub__section__weapon-images">
+          {sub.bestWeapons.map((wpn) => (
+            <WeaponImage
+              key={wpn}
+              weaponSplId={wpn}
+              size={32}
+              variant="badge"
+            />
+          ))}
+        </div>
+        {sub.okWeapons ? (
+          <>
+            <div className="sub__section__weapon-bottom-text sub__section__weapon-text">
+              Can play
+            </div>
+            <div className="sub__section__weapon-bottom-images sub__section__weapon-images">
+              {sub.okWeapons.map((wpn) => (
+                <WeaponImage
+                  key={wpn}
+                  weaponSplId={wpn}
+                  size={32}
+                  variant="badge"
+                />
+              ))}
+            </div>
+          </>
+        ) : null}
+        {sub.message ? (
+          <div className="sub__section__message">{sub.message}</div>
+        ) : null}
+      </section>
+      {user?.id === sub.userId ? (
+        <div className="stack mt-1 items-end">
+          <FormWithConfirm dialogHeading="Delete your sub post?">
+            <Button
+              variant="minimal-destructive"
+              size="tiny"
+              type="submit"
+              icon={<TrashIcon />}
+            >
+              {t("common:actions.delete")}
+            </Button>
+          </FormWithConfirm>
+        </div>
       ) : null}
-      {sub.message ? (
-        <div className="sub__section__message">{sub.message}</div>
-      ) : null}
-    </section>
+    </div>
   );
 }
