@@ -94,3 +94,13 @@
       "message message message message";
   }
 }
+
+.sub__selected-weapon {
+  padding: var(--s-2);
+  border-radius: 100%;
+  background-color: var(--bg-lighter);
+}
+
+.sub__weapon-pool {
+  width: 20rem;
+}

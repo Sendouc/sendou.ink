@@ -22,6 +22,7 @@ const stm = sql.prepare(/* sql */ `
   left join "User" on "User"."id" = "TournamentSub"."userId"
   left join "PlusTier" on "PlusTier"."userId" = "User"."id"
   where "TournamentSub"."tournamentId" = @tournamentId
+  order by "plusTier" asc, "TournamentSub"."createdAt" desc
 `);
 
 export interface SubByTournamentId {

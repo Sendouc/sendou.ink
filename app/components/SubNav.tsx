@@ -14,12 +14,14 @@ export function SubNav({ children }: { children: React.ReactNode }) {
 export function SubNavLink({
   children,
   className,
+  end = true,
   ...props
 }: LinkProps & {
+  end?: boolean;
   children: React.ReactNode;
 }) {
   return (
-    <NavLink className={"sub-nav__link__container"} end {...props}>
+    <NavLink className={"sub-nav__link__container"} end={end} {...props}>
       <div className={clsx("sub-nav__link", className)}>{children}</div>
       <div className="sub-nav__border-guy" />
     </NavLink>

@@ -14,6 +14,7 @@ import { userPage } from "~/utils/urls";
 import { WeaponImage } from "~/components/Image";
 import { Flag } from "~/components/Flag";
 import { MicrophoneIcon } from "~/components/icons/Microphone";
+import { LinkButton } from "~/components/Button";
 
 export const links: LinksFunction = () => {
   return [
@@ -26,7 +27,6 @@ export const links: LinksFunction = () => {
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const user = await getUser(request);
-
   const tournamentId = tournamentIdFromParams(params);
 
   return {
@@ -60,6 +60,11 @@ export default function TournamentSubsPage() {
 
   return (
     <div className="stack lg">
+      <div className="stack items-end">
+        <LinkButton to="new" size="tiny">
+          Add yourself as sub
+        </LinkButton>
+      </div>
       {data.subs.map((sub) => {
         return <SubInfoSection key={sub.userId} sub={sub} />;
       })}

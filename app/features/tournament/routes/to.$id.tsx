@@ -124,11 +124,11 @@ export default function TournamentLayout() {
         {data.event.showMapListGenerator ? (
           <SubNavLink to="maps">{t("tournament:tabs.maps")}</SubNavLink>
         ) : null}
-        <SubNavLink to="teams">
+        <SubNavLink to="teams" end={false}>
           {t("tournament:tabs.teams", { count: data.teams.length })}
         </SubNavLink>
         {/* TODO: don't show when tournament finalized */}
-        <SubNavLink to="subs">
+        <SubNavLink to="subs" end={false}>
           {t("tournament:tabs.subs", { count: data.subsCount })}
         </SubNavLink>
         {/* TODO: don't show when tournament finalized */}
