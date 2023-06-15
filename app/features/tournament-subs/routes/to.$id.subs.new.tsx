@@ -22,7 +22,7 @@ import { tournamentIdFromParams } from "~/features/tournament";
 import { parseRequestFormData, type SendouRouteHandle } from "~/utils/remix";
 import { FormMessage } from "~/components/FormMessage";
 import { subSchema } from "../tournament-subs-schemas.server";
-import { addSub } from "../queries/addSub.server";
+import { upsertSub } from "../queries/upsertSub.server";
 import { tournamentSubsPage } from "~/utils/urls";
 
 export const handle: SendouRouteHandle = {
@@ -48,7 +48,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 
   // TODO: validate tournament is not finalized
 
-  addSub({
+  upsertSub({
     bestWeapons: data.bestWeapons.join(","),
     okWeapons: data.okWeapons.join(","),
     canVc: data.canVc,
@@ -116,18 +116,33 @@ export default function NewTournamentSubPage() {
 }
 
 function VCRadios() {
+  const data = useLoaderData<typeof loader>();
+
   return (
     <div>
       <Label required>Can you voice chat?</Label>
       <div className="stack xs">
         <div className="stack horizontal sm items-center">
-          <input type="radio" id="vc-true" name="canVc" value="on" required />
+          <input
+            type="radio"
+            id="vc-true"
+            name="canVc"
+            value="on"
+            required
+            defaultChecked={data.sub && Boolean(data.sub.canVc)}
+          />
           <label htmlFor="vc-true" className="mb-0">
             Yes
           </label>
         </div>
         <div className="stack horizontal sm items-center">
-          <input type="radio" id="vc-false" name="canVc" value="off" />
+          <input
+            type="radio"
+            id="vc-false"
+            name="canVc"
+            value="off"
+            defaultChecked={data.sub && !data.sub.canVc}
+          />
           <label htmlFor="vc-false" className="mb-0">
             No
           </label>
@@ -138,8 +153,8 @@ function VCRadios() {
 }
 
 function Message() {
-  const initialValue = "";
-  const [value, setValue] = React.useState(initialValue ?? "");
+  const data = useLoaderData<typeof loader>();
+  const [value, setValue] = React.useState(data.sub?.message ?? "");
 
   return (
     <div className="u-edit__bio-container">
@@ -164,6 +179,7 @@ function Message() {
 }
 
 function VisibilityRadios() {
+  const data = useLoaderData<typeof loader>();
   const user = useUser();
 
   const userPlusTier = user?.plusTier ?? 4;
@@ -179,7 +195,13 @@ function VisibilityRadios() {
 
             return (
               <div key={tier} className="stack horizontal sm items-center">
-                <input type="radio" id={id} name="visibility" value={id} />
+                <input
+                  type="radio"
+                  id={id}
+                  name="visibility"
+                  value={id}
+                  defaultChecked={data.sub?.visibility === id}
+                />
                 <label htmlFor={id} className="mb-0">
                   +{tier} {tier !== 1 && <>(and above)</>}
                 </label>
@@ -187,7 +209,14 @@ function VisibilityRadios() {
             );
           })}
         <div className="stack horizontal sm items-center">
-          <input type="radio" id="all" name="visibility" value="ALL" required />
+          <input
+            type="radio"
+            id="all"
+            name="visibility"
+            value="ALL"
+            required
+            defaultChecked={data.sub?.visibility === "ALL"}
+          />
           <label htmlFor="all" className="mb-0">
             Everyone
           </label>

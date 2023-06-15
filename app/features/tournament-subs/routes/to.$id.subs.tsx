@@ -29,28 +29,31 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const user = await getUser(request);
   const tournamentId = tournamentIdFromParams(params);
 
-  return {
-    // eslint-disable-next-line array-callback-return
-    subs: findSubsByTournamentId(tournamentId).filter((sub) => {
-      if (sub.visibility === "ALL") return true;
+  // eslint-disable-next-line array-callback-return
+  const subs = findSubsByTournamentId(tournamentId).filter((sub) => {
+    if (sub.visibility === "ALL") return true;
 
-      const userPlusTier = user?.plusTier ?? 4;
+    const userPlusTier = user?.plusTier ?? 4;
 
-      switch (sub.visibility) {
-        case "+1": {
-          return userPlusTier === 1;
-        }
-        case "+2": {
-          return userPlusTier <= 2;
-        }
-        case "+3": {
-          return userPlusTier <= 3;
-        }
-        default: {
-          assertUnreachable(sub.visibility);
-        }
+    switch (sub.visibility) {
+      case "+1": {
+        return userPlusTier === 1;
       }
-    }),
+      case "+2": {
+        return userPlusTier <= 2;
+      }
+      case "+3": {
+        return userPlusTier <= 3;
+      }
+      default: {
+        assertUnreachable(sub.visibility);
+      }
+    }
+  });
+
+  return {
+    subs,
+    hasOwnSubPost: subs.some((sub) => sub.userId === user?.id),
   };
 };
 
@@ -62,7 +65,7 @@ export default function TournamentSubsPage() {
     <div className="stack lg">
       <div className="stack items-end">
         <LinkButton to="new" size="tiny">
-          Add yourself as sub
+          {data.hasOwnSubPost ? "Edit sub post" : "Add yourself as sub"}
         </LinkButton>
       </div>
       {data.subs.map((sub) => {

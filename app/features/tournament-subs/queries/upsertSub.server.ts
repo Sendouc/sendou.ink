@@ -20,8 +20,16 @@ const stm = sql.prepare(/* sql */ `
     @message,
     @visibility
   )
+  on conflict ("userId", "tournamentId") do
+  update
+  set
+    "canVc" = @canVc,
+    "bestWeapons" = @bestWeapons,
+    "okWeapons" = @okWeapons,
+    "message" = @message,
+    "visibility" = @visibility
 `);
 
-export function addSub(args: Omit<TournamentSub, "createdAt">) {
+export function upsertSub(args: Omit<TournamentSub, "createdAt">) {
   stm.run(args);
 }
