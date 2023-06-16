@@ -1,4 +1,7 @@
-import { tournamentIdFromParams } from "~/features/tournament";
+import {
+  type TournamentLoaderData,
+  tournamentIdFromParams,
+} from "~/features/tournament";
 import {
   type SubByTournamentId,
   findSubsByTournamentId,
@@ -8,7 +11,7 @@ import type {
   LinksFunction,
   LoaderArgs,
 } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData, useOutletContext } from "@remix-run/react";
 import { getUser, requireUser, useUser } from "~/modules/auth";
 import { assertUnreachable } from "~/utils/types";
 import styles from "../tournament-subs.css";
@@ -23,6 +26,7 @@ import { deleteSub } from "../queries/deleteSub.server";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { TrashIcon } from "~/components/icons/Trash";
 import { useTranslation } from "~/hooks/useTranslation";
+import React from "react";
 
 export const links: LinksFunction = () => {
   return [
@@ -49,8 +53,11 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const user = await getUser(request);
   const tournamentId = tournamentIdFromParams(params);
 
-  // eslint-disable-next-line array-callback-return
-  const subs = findSubsByTournamentId(tournamentId).filter((sub) => {
+  const subs = findSubsByTournamentId({
+    tournamentId,
+    userId: user?.id,
+    // eslint-disable-next-line array-callback-return
+  }).filter((sub) => {
     if (sub.visibility === "ALL") return true;
 
     const userPlusTier = user?.plusTier ?? 4;
@@ -77,17 +84,22 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   };
 };
 
-// xxx: handle visibility in count as well or later?
 export default function TournamentSubsPage() {
+  const { t } = useTranslation(["tournament"]);
   const data = useLoaderData<typeof loader>();
+  const parentRouteData = useOutletContext<TournamentLoaderData>();
 
   return (
     <div className="stack lg">
-      <div className="stack items-end">
-        <LinkButton to="new" size="tiny">
-          {data.hasOwnSubPost ? "Edit sub post" : "Add yourself as sub"}
-        </LinkButton>
-      </div>
+      {!parentRouteData.teamMemberOfName ? (
+        <div className="stack items-end">
+          <LinkButton to="new" size="tiny">
+            {data.hasOwnSubPost
+              ? t("tournament:subs.editPost")
+              : t("tournament:subs.addPost")}
+          </LinkButton>
+        </div>
+      ) : null}
       {data.subs.map((sub) => {
         return <SubInfoSection key={sub.userId} sub={sub} />;
       })}
@@ -96,21 +108,21 @@ export default function TournamentSubsPage() {
 }
 
 function SubInfoSection({ sub }: { sub: SubByTournamentId }) {
-  const { t } = useTranslation(["common"]);
+  const { t } = useTranslation(["common", "tournament"]);
   const user = useUser();
 
   const infos = [
     <div key="vc" className="sub__section__info__vc">
       <MicrophoneIcon className={sub.canVc ? "text-success" : "text-warning"} />
-      {sub.canVc ? "Can VC" : "No VC"}
+      {sub.canVc ? t("tournament:subs.canVC") : t("tournament:subs.noVC")}
     </div>,
   ];
   if (sub.plusTier) {
-    infos.push(<>/</>);
+    infos.push(<React.Fragment key="slash-1">/</React.Fragment>);
     infos.push(<div key="plus">+{sub.plusTier}</div>);
   }
   if (sub.country) {
-    infos.push(<>/</>);
+    infos.push(<React.Fragment key="slash-2">/</React.Fragment>);
     infos.push(<Flag key="flag" countryCode={sub.country} tiny />);
   }
 
@@ -124,7 +136,7 @@ function SubInfoSection({ sub }: { sub: SubByTournamentId }) {
         <div className="sub__section__spacer" />
         <div className="sub__section__info">{infos}</div>
         <div className="sub__section__weapon-top-text sub__section__weapon-text">
-          Prefers to play
+          {t("tournament:subs.prefersToPlay")}
         </div>
         <div className="sub__section__weapon-top-images sub__section__weapon-images">
           {sub.bestWeapons.map((wpn) => (
@@ -139,7 +151,7 @@ function SubInfoSection({ sub }: { sub: SubByTournamentId }) {
         {sub.okWeapons ? (
           <>
             <div className="sub__section__weapon-bottom-text sub__section__weapon-text">
-              Can play
+              {t("tournament:subs.canPlay")}
             </div>
             <div className="sub__section__weapon-bottom-images sub__section__weapon-images">
               {sub.okWeapons.map((wpn) => (

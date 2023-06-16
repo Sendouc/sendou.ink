@@ -93,6 +93,10 @@
       "avatar info weapon-bottom-text weapon-bottom-images"
       "message message message message";
   }
+
+  .sub__section__spacer {
+    display: none;
+  }
 }
 
 .sub__selected-weapon {

@@ -1,1 +1,2 @@
-export { subsCount } from "./queries/subsCount.server";
+export { deleteSub } from "./queries/deleteSub.server";
+export { findSubsByTournamentId } from "./queries/findSubsByTournamentId.server";

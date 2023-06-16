@@ -39,6 +39,8 @@
   "pre.pool.tiebreaker": "Tiebreaker: {{stage}}",
   "pre.pool.pick": "Pick {{number}}",
 
+  "pre.sub.prompt": "No team in mind for this event? You can also join the list of subs.",
+
   "bracket.type.DE_WINNERS": "Winners Round",
   "bracket.type.DE_LOSERS": "Losers Round",
   "bracket.type.SE": "Round",
@@ -116,5 +118,19 @@
   "join.error.ALREADY_JOINED": "You're already a member of this team.",
   "join.error.NOT_LOGGED_IN": "You must be logged in to join a team.",
   "join.VALID": "Join {{teamName}} for {{eventName}}?",
-  "join.giveTrust": "Trust {{name}} to add you on their own to future tournaments?"
+  "join.giveTrust": "Trust {{name}} to add you on their own to future tournaments?",
+
+  "subs.prefersToPlay": "Prefers to play",
+  "subs.canPlay": "Can play",
+  "subs.canVC": "Can VC",
+  "subs.noVC": "No VC",
+  "subs.editPost": "Edit sub post",
+  "subs.addPost": "Add yourself as sub",
+  "subs.vc.header": "Can you voice chat?",
+  "subs.weapons.prefer.header": "Weapons you prefer to play",
+  "subs.weapons.ok.header": "Weapons you are ok with playing",
+  "subs.weapons.info": "Choose between {{min}} and {{max}}",
+  "subs.message.header": "Message",
+  "subs.visibility.header": "Visibility",
+  "subs.visibility.everyone": "Everyone"
 }

@@ -79,6 +79,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       previousTeam &&
       previousTeam.members.length <= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
     whatToDoWithPreviousTeam,
+    tournamentId,
   });
   if (data.trust) {
     const inviterUserId = teamToJoin.members.find(

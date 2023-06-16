@@ -15,11 +15,11 @@ import { SubNav, SubNavLink } from "~/components/SubNav";
 import { db } from "~/db";
 import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
-import { getUserId } from "~/modules/auth/user.server";
+import { getUser } from "~/modules/auth/user.server";
 import { canAdminTournament } from "~/permissions";
 import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
-import type { Unpacked } from "~/utils/types";
+import { assertUnreachable, type Unpacked } from "~/utils/types";
 import { streamsByTournamentId } from "../core/streams.server";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
@@ -27,7 +27,7 @@ import hasTournamentStarted from "../queries/hasTournamentStarted.server";
 import { teamHasCheckedIn, tournamentIdFromParams } from "../tournament-utils";
 import styles from "../tournament.css";
 import { findOwnTeam } from "../queries/findOwnTeam.server";
-import { subsCount } from "~/features/tournament-subs";
+import { findSubsByTournamentId } from "~/features/tournament-subs";
 
 export const shouldRevalidate: ShouldRevalidateFunction = (args) => {
   const wasMutation = args.formMethod === "post";
@@ -66,7 +66,7 @@ export type TournamentLoaderTeam = Unpacked<TournamentLoaderData["teams"]>;
 export type TournamentLoaderData = SerializeFrom<typeof loader>;
 
 export const loader = async ({ params, request }: LoaderArgs) => {
-  const user = await getUserId(request);
+  const user = await getUser(request);
   const tournamentId = tournamentIdFromParams(params);
   const event = notFoundIfFalsy(findByIdentifier(tournamentId));
 
@@ -79,6 +79,31 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const teamMemberOfName = teams.find((team) =>
     team.members.some((member) => member.userId === user?.id)
   )?.name;
+
+  const subsCount = findSubsByTournamentId({
+    tournamentId,
+    userId: user?.id,
+    // eslint-disable-next-line array-callback-return
+  }).filter((sub) => {
+    if (sub.visibility === "ALL") return true;
+
+    const userPlusTier = user?.plusTier ?? 4;
+
+    switch (sub.visibility) {
+      case "+1": {
+        return userPlusTier === 1;
+      }
+      case "+2": {
+        return userPlusTier <= 2;
+      }
+      case "+3": {
+        return userPlusTier <= 3;
+      }
+      default: {
+        assertUnreachable(sub.visibility);
+      }
+    }
+  }).length;
 
   return {
     event,
@@ -94,7 +119,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     teamMemberOfName,
     teams,
     hasStarted,
-    subsCount: subsCount(tournamentId),
+    subsCount,
     streamsCount: hasStarted
       ? (await streamsByTournamentId(tournamentId)).length
       : 0,

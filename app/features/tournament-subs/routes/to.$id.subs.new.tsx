@@ -65,7 +65,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const user = await requireUser(request);
   const tournamentId = tournamentIdFromParams(params);
 
-  const sub = findSubsByTournamentId(tournamentId).find(
+  const sub = findSubsByTournamentId({ tournamentId }).find(
     (sub) => sub.userId === user.id
   );
 
@@ -76,7 +76,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
 export default function NewTournamentSubPage() {
   const user = useUser();
-  const { t } = useTranslation(["common"]);
+  const { t } = useTranslation(["common", "tournament"]);
   const data = useLoaderData<typeof loader>();
   const [bestWeapons, setBestWeapons] = React.useState<MainWeaponId[]>(
     data.sub?.bestWeapons ?? []
@@ -88,24 +88,30 @@ export default function NewTournamentSubPage() {
   return (
     <div className="half-width">
       <Form method="post" className="stack md items-start">
-        <h2>Add yourself as a sub</h2>
+        <h2>{t("tournament:subs.addPost")}</h2>
         <VCRadios />
         <WeaponPoolSelect
-          label="Weapons you prefer to play"
+          label={t("tournament:subs.weapons.prefer.header")}
           weapons={bestWeapons}
           otherWeapons={okWeapons}
           setWeapons={setBestWeapons}
           id="bestWeapons"
-          infoText="Choose between 1 and 5"
+          infoText={t("tournament:subs.weapons.info", {
+            min: 1,
+            max: TOURNAMENT_SUB.WEAPON_POOL_MAX_SIZE,
+          })}
           required
         />
         <WeaponPoolSelect
-          label="Weapons you are ok with playing"
+          label={t("tournament:subs.weapons.ok.header")}
           weapons={okWeapons}
           otherWeapons={bestWeapons}
           setWeapons={setOkWeapons}
           id="okWeapons"
-          infoText="Choose between 0 and 5"
+          infoText={t("tournament:subs.weapons.info", {
+            min: 0,
+            max: TOURNAMENT_SUB.WEAPON_POOL_MAX_SIZE,
+          })}
         />
         <Message />
         {user?.plusTier ? <VisibilityRadios /> : null}
@@ -116,11 +122,12 @@ export default function NewTournamentSubPage() {
 }
 
 function VCRadios() {
+  const { t } = useTranslation(["common", "tournament"]);
   const data = useLoaderData<typeof loader>();
 
   return (
     <div>
-      <Label required>Can you voice chat?</Label>
+      <Label required>{t("tournament:subs.vc.header")}</Label>
       <div className="stack xs">
         <div className="stack horizontal sm items-center">
           <input
@@ -132,7 +139,7 @@ function VCRadios() {
             defaultChecked={data.sub && Boolean(data.sub.canVc)}
           />
           <label htmlFor="vc-true" className="mb-0">
-            Yes
+            {t("common:yes")}
           </label>
         </div>
         <div className="stack horizontal sm items-center">
@@ -144,7 +151,7 @@ function VCRadios() {
             defaultChecked={data.sub && !data.sub.canVc}
           />
           <label htmlFor="vc-false" className="mb-0">
-            No
+            {t("common:no")}
           </label>
         </div>
       </div>
@@ -153,6 +160,7 @@ function VCRadios() {
 }
 
 function Message() {
+  const { t } = useTranslation(["tournament"]);
   const data = useLoaderData<typeof loader>();
   const [value, setValue] = React.useState(data.sub?.message ?? "");
 
@@ -165,7 +173,7 @@ function Message() {
           max: TOURNAMENT_SUB.MESSAGE_MAX_LENGTH,
         }}
       >
-        Message
+        {t("tournament:subs.message.header")}
       </Label>
       <textarea
         id="message"
@@ -179,6 +187,7 @@ function Message() {
 }
 
 function VisibilityRadios() {
+  const { t } = useTranslation(["tournament"]);
   const data = useLoaderData<typeof loader>();
   const user = useUser();
 
@@ -186,7 +195,7 @@ function VisibilityRadios() {
 
   return (
     <div>
-      <Label required>Visibility</Label>
+      <Label required>{t("tournament:subs.visibility.header")}</Label>
       <div className="stack xs">
         {[1, 2, 3]
           .filter((tier) => tier >= userPlusTier)
@@ -218,7 +227,7 @@ function VisibilityRadios() {
             defaultChecked={data.sub?.visibility === "ALL"}
           />
           <label htmlFor="all" className="mb-0">
-            Everyone
+            {t("tournament:subs.visibility.everyone")}
           </label>
         </div>
       </div>
@@ -274,28 +283,32 @@ function WeaponPoolSelect({
           </span>
         )}
       </div>
-      <div className="stack horizontal sm justify-center">
-        {weapons.map((weapon) => {
-          return (
-            <div key={weapon} className="stack xs">
-              <div className="sub__selected-weapon">
-                <WeaponImage
-                  weaponSplId={weapon}
-                  variant="badge"
-                  width={38}
-                  height={38}
+      {weapons.length > 0 ? (
+        <div className="stack horizontal sm justify-center">
+          {weapons.map((weapon) => {
+            return (
+              <div key={weapon} className="stack xs">
+                <div className="sub__selected-weapon">
+                  <WeaponImage
+                    weaponSplId={weapon}
+                    variant="badge"
+                    width={38}
+                    height={38}
+                  />
+                </div>
+                <Button
+                  icon={<TrashIcon />}
+                  variant="minimal-destructive"
+                  aria-label="Delete weapon"
+                  onClick={() =>
+                    setWeapons(weapons.filter((w) => w !== weapon))
+                  }
                 />
               </div>
-              <Button
-                icon={<TrashIcon />}
-                variant="minimal-destructive"
-                aria-label="Delete weapon"
-                onClick={() => setWeapons(weapons.filter((w) => w !== weapon))}
-              />
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      ) : null}
     </div>
   );
 }

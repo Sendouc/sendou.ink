@@ -5,6 +5,7 @@ import invariant from "tiny-invariant";
 import { ADMIN_DISCORD_ID, ADMIN_ID, INVITE_CODE_LENGTH } from "~/constants";
 import { db } from "~/db";
 import { sql } from "~/db/sql";
+import type { MainWeaponId } from "~/modules/in-game-lists";
 import {
   abilities,
   clothesGearIds,
@@ -886,6 +887,8 @@ function calendarEventWithToToolsTeams(sz?: boolean) {
 
 function tournamentSubs() {
   for (let id = 100; id < 120; id++) {
+    const includedWeaponIds: MainWeaponId[] = [];
+
     sql
       .prepare(
         /* sql */ `
@@ -915,7 +918,15 @@ function tournamentSubs() {
         bestWeapons: nullFilledArray(
           faker.helpers.arrayElement([1, 1, 1, 2, 2, 3, 4, 5])
         )
-          .map(() => pickRandomItem(mainWeaponIds))
+          .map(() => {
+            while (true) {
+              const weaponId = pickRandomItem(mainWeaponIds);
+              if (!includedWeaponIds.includes(weaponId)) {
+                includedWeaponIds.push(weaponId);
+                return weaponId;
+              }
+            }
+          })
           .join(","),
         okWeapons:
           Math.random() > 0.5
@@ -923,7 +934,15 @@ function tournamentSubs() {
             : nullFilledArray(
                 faker.helpers.arrayElement([1, 1, 1, 2, 2, 3, 4, 5])
               )
-                .map(() => pickRandomItem(mainWeaponIds))
+                .map(() => {
+                  while (true) {
+                    const weaponId = pickRandomItem(mainWeaponIds);
+                    if (!includedWeaponIds.includes(weaponId)) {
+                      includedWeaponIds.push(weaponId);
+                      return weaponId;
+                    }
+                  }
+                })
                 .join(","),
         message: Math.random() > 0.5 ? null : faker.lorem.paragraph(),
         visibility: id < 105 ? "+1" : id < 110 ? "+2" : id < 115 ? "+2" : "ALL",

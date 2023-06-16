@@ -22,7 +22,13 @@ const stm = sql.prepare(/* sql */ `
   left join "User" on "User"."id" = "TournamentSub"."userId"
   left join "PlusTier" on "PlusTier"."userId" = "User"."id"
   where "TournamentSub"."tournamentId" = @tournamentId
-  order by "plusTier" asc, "TournamentSub"."createdAt" desc
+  order by 
+    "TournamentSub"."userId" = @userId desc,
+    case
+      when "plusTier" is null then 4
+      else "plusTier"
+    end asc, 
+    "TournamentSub"."createdAt" desc
 `);
 
 export interface SubByTournamentId {
@@ -47,10 +53,14 @@ const parseWeaponsArray = (value: string | null) => {
 
   return value.split(",").map(Number);
 };
-export function findSubsByTournamentId(
-  tournamentId: number
-): SubByTournamentId[] {
-  const rows = stm.all({ tournamentId }) as any[];
+export function findSubsByTournamentId({
+  tournamentId,
+  userId,
+}: {
+  tournamentId: number;
+  userId?: number;
+}): SubByTournamentId[] {
+  const rows = stm.all({ tournamentId, userId }) as any[];
 
   return rows.map((row) => ({
     ...row,

@@ -45,8 +45,8 @@ export const action: ActionFunction = async ({ request, params }) => {
     schema: adminActionSchema,
   });
 
-  const eventId = tournamentIdFromParams(params);
-  const event = notFoundIfFalsy(findByIdentifier(eventId));
+  const tournamentId = tournamentIdFromParams(params);
+  const event = notFoundIfFalsy(findByIdentifier(tournamentId));
   const teams = findTeamsByTournamentId(event.id);
 
   validate(canAdminTournament({ user, event }), "Unauthorized", 401);
@@ -136,6 +136,7 @@ export const action: ActionFunction = async ({ request, params }) => {
         previousTeamId: previousTeam?.id,
         // this team is not checked in so we can simply delete it
         whatToDoWithPreviousTeam: previousTeam ? "DELETE" : undefined,
+        tournamentId,
       });
       break;
     }
