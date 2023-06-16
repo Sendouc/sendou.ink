@@ -3,7 +3,12 @@ import {
   type ActionFunction,
   type LoaderArgs,
 } from "@remix-run/node";
-import { useFetcher, useLoaderData, useOutletContext } from "@remix-run/react";
+import {
+  Link,
+  useFetcher,
+  useLoaderData,
+  useOutletContext,
+} from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
 import { useCopyToClipboard } from "react-use";
@@ -52,6 +57,7 @@ import {
   navIconUrl,
   tournamentBracketsPage,
   tournamentJoinPage,
+  tournamentSubsPage,
 } from "~/utils/urls";
 import { checkIn } from "../queries/checkIn.server";
 import { createTeam } from "../queries/createTeam.server";
@@ -193,6 +199,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       joinTeam({
         userId: data.userId,
         newTeamId: ownTeam.id,
+        tournamentId,
       });
       break;
     }
@@ -242,11 +249,10 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 export default function TournamentRegisterPage() {
   const isMounted = useIsMounted();
   const { t, i18n } = useTranslation(["tournament"]);
-  const user = useUser();
   const parentRouteData = useOutletContext<TournamentLoaderData>();
 
-  const teamRegularMemberOf = parentRouteData.teams.find((team) =>
-    team.members.some((member) => member.userId === user?.id && !member.isOwner)
+  const isRegularMemberOfATeam = Boolean(
+    parentRouteData.teamMemberOfName && !parentRouteData.ownTeam
   );
 
   return (
@@ -291,11 +297,19 @@ export default function TournamentRegisterPage() {
         </div>
       </div>
       <div>{parentRouteData.event.description}</div>
-      {teamRegularMemberOf ? (
+      {isRegularMemberOfATeam ? (
         <Alert>{t("tournament:pre.inATeam")}</Alert>
       ) : (
         <RegistrationForms ownTeam={parentRouteData?.ownTeam} />
       )}
+      {!parentRouteData.teamMemberOfName ? (
+        <Link
+          to={tournamentSubsPage(parentRouteData.event.id)}
+          className="text-xs text-center"
+        >
+          {t("tournament:pre.sub.prompt")}
+        </Link>
+      ) : null}
     </div>
   );
 }

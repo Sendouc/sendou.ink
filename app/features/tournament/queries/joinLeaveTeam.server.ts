@@ -1,6 +1,7 @@
 import invariant from "tiny-invariant";
 import { sql } from "~/db/sql";
 import { checkOut } from "./checkOut.server";
+import { deleteSub } from "~/features/tournament-subs";
 
 const createTeamMemberStm = sql.prepare(/*sql*/ `
   insert into "TournamentTeamMember" (
@@ -30,18 +31,24 @@ export const joinTeam = sql.transaction(
     whatToDoWithPreviousTeam,
     newTeamId,
     userId,
+    tournamentId,
     checkOutTeam = false,
   }: {
     previousTeamId?: number;
     whatToDoWithPreviousTeam?: "LEAVE" | "DELETE";
     newTeamId: number;
     userId: number;
+    tournamentId: number;
     checkOutTeam?: boolean;
   }) => {
     if (whatToDoWithPreviousTeam === "DELETE") {
       deleteTeamStm.run({ tournamentTeamId: previousTeamId });
     } else if (whatToDoWithPreviousTeam === "LEAVE") {
       deleteMemberStm.run({ tournamentTeamId: previousTeamId, userId });
+    }
+
+    if (!previousTeamId) {
+      deleteSub({ tournamentId, userId });
     }
 
     if (checkOutTeam) {

@@ -182,5 +182,7 @@
 
   "build.private": "Private",
 
-  "or": "Or"
+  "or": "Or",
+  "yes": "Yes",
+  "no": "No"
 }

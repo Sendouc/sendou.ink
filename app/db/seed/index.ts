@@ -5,6 +5,7 @@ import invariant from "tiny-invariant";
 import { ADMIN_DISCORD_ID, ADMIN_ID, INVITE_CODE_LENGTH } from "~/constants";
 import { db } from "~/db";
 import { sql } from "~/db/sql";
+import type { MainWeaponId } from "~/modules/in-game-lists";
 import {
   abilities,
   clothesGearIds,
@@ -40,6 +41,7 @@ import {
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { TOURNAMENT } from "~/features/tournament/tournament-constants";
 import type { SeedVariation } from "~/routes/seed";
+import { nullFilledArray, pickRandomItem } from "~/utils/arrays";
 
 const calendarEventWithToToolsSz = () => calendarEventWithToTools(true);
 const calendarEventWithToToolsTeamsSz = () =>
@@ -73,6 +75,7 @@ const basicSeeds = (variation?: SeedVariation | null) => [
   variation === "NO_TOURNAMENT_TEAMS"
     ? undefined
     : calendarEventWithToToolsTeamsSz,
+  tournamentSubs,
   adminBuilds,
   manySplattershotBuilds,
   detailedTeam,
@@ -215,13 +218,18 @@ function userProfiles() {
   for (let id = 3; id < 500; id++) {
     if (Math.random() < 0.25) continue; // 75% have bio
 
-    sql.prepare(`UPDATE "User" SET bio = $bio WHERE id = $id`).run({
-      id,
-      bio: faker.lorem.paragraphs(
-        faker.helpers.arrayElement([1, 1, 1, 2, 3, 4]),
-        "\n\n"
-      ),
-    });
+    sql
+      .prepare(
+        `UPDATE "User" SET bio = $bio, country = $country WHERE id = $id`
+      )
+      .run({
+        id,
+        bio: faker.lorem.paragraphs(
+          faker.helpers.arrayElement([1, 1, 1, 2, 3, 4]),
+          "\n\n"
+        ),
+        country: Math.random() > 0.5 ? faker.location.countryCode() : null,
+      });
   }
 }
 
@@ -875,6 +883,73 @@ function calendarEventWithToToolsTeams(sz?: boolean) {
       }
     }
   }
+}
+
+function tournamentSubs() {
+  for (let id = 100; id < 120; id++) {
+    const includedWeaponIds: MainWeaponId[] = [];
+
+    sql
+      .prepare(
+        /* sql */ `
+      insert into "TournamentSub" (
+        "userId",
+        "tournamentId",
+        "canVc",
+        "bestWeapons",
+        "okWeapons",
+        "message",
+        "visibility"
+      ) values (
+        @userId,
+        @tournamentId,
+        @canVc,
+        @bestWeapons,
+        @okWeapons,
+        @message,
+        @visibility
+      )
+    `
+      )
+      .run({
+        userId: id,
+        tournamentId: 1,
+        canVc: Number(Math.random() > 0.5),
+        bestWeapons: nullFilledArray(
+          faker.helpers.arrayElement([1, 1, 1, 2, 2, 3, 4, 5])
+        )
+          .map(() => {
+            while (true) {
+              const weaponId = pickRandomItem(mainWeaponIds);
+              if (!includedWeaponIds.includes(weaponId)) {
+                includedWeaponIds.push(weaponId);
+                return weaponId;
+              }
+            }
+          })
+          .join(","),
+        okWeapons:
+          Math.random() > 0.5
+            ? null
+            : nullFilledArray(
+                faker.helpers.arrayElement([1, 1, 1, 2, 2, 3, 4, 5])
+              )
+                .map(() => {
+                  while (true) {
+                    const weaponId = pickRandomItem(mainWeaponIds);
+                    if (!includedWeaponIds.includes(weaponId)) {
+                      includedWeaponIds.push(weaponId);
+                      return weaponId;
+                    }
+                  }
+                })
+                .join(","),
+        message: Math.random() > 0.5 ? null : faker.lorem.paragraph(),
+        visibility: id < 105 ? "+1" : id < 110 ? "+2" : id < 115 ? "+2" : "ALL",
+      });
+  }
+
+  return null;
 }
 
 const randomAbility = (legalTypes: AbilityType[]) => {

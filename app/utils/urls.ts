@@ -214,6 +214,9 @@ export const tournamentJoinPage = ({
   eventId: number;
   inviteCode: string;
 }) => `/to/${eventId}/join?code=${inviteCode}`;
+export const tournamentSubsPage = (tournamentId: number) => {
+  return `/to/${tournamentId}/subs`;
+};
 
 export const mapsPage = (eventId?: MapPoolMap["calendarEventId"]) =>
   `/maps${eventId ? `?eventId=${eventId}` : ""}`;

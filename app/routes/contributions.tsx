@@ -81,7 +81,7 @@ const TRANSLATORS: Array<{
     language: "ru",
   },
   {
-    translators: ["たここ", "ShanglinMo", "gellneko", "zenpk"],
+    translators: ["たここ", "ShanglinMo", "gellneko", "zenpk", "chenyenru"],
     language: "zh",
   },
 ];

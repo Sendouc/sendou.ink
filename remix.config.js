@@ -35,6 +35,15 @@ module.exports = {
         );
 
         route(
+          "/to/:id/subs",
+          "features/tournament-subs/routes/to.$id.subs.tsx"
+        );
+        route(
+          "/to/:id/subs/new",
+          "features/tournament-subs/routes/to.$id.subs.new.tsx"
+        );
+
+        route(
           "/to/:id/brackets",
           "features/tournament-bracket/routes/to.$id.brackets.tsx"
         );
