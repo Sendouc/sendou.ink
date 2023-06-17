@@ -1,10 +1,5 @@
 {
-  "extends": [
-    "stylelint-config-standard",
-    "stylelint-config-prettier",
-    "stylelint-config-idiomatic-order"
-  ],
-  "plugins": ["stylelint-order"],
+  "extends": ["stylelint-config-standard"],
   "rules": {
     "selector-pseudo-class-no-unknown": [
       true,
@@ -14,6 +9,7 @@
     ],
     "selector-class-pattern": ["[a-z-_]+"],
     "custom-property-pattern": "(?<=_?)",
+    "media-feature-range-notation": "prefix",
     "property-no-vendor-prefix": [
       true,
       {
