@@ -98,5 +98,6 @@ module.exports = {
   serverModuleFormat: "cjs",
   future: {
     v2_meta: true,
+    v2_normalizeFormMethod: true,
   },
 };

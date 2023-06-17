@@ -30,7 +30,7 @@ import { findOwnTeam } from "../queries/findOwnTeam.server";
 import { findSubsByTournamentId } from "~/features/tournament-subs";
 
 export const shouldRevalidate: ShouldRevalidateFunction = (args) => {
-  const wasMutation = args.formMethod === "post";
+  const wasMutation = args.formMethod === "POST";
   const wasOnMatchPage = args.formAction?.includes("matches");
 
   if (wasMutation && wasOnMatchPage) {
