@@ -227,6 +227,14 @@
   margin-block-start: var(--s-2);
 }
 
+.layout__footer__patron-list__patron {
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+}
+
 .layout__copyright-note {
   display: flex;
   flex-direction: column;
