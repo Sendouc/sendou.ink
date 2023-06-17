@@ -56,6 +56,10 @@
   border-radius: 50%;
 }
 
+.u__extra-info__heading > svg {
+  width: 0.8rem;
+}
+
 .u__social-link > svg {
   width: 0.9rem;
 }
@@ -108,10 +112,6 @@
 .u__extra-info__heading {
   color: var(--theme);
   font-weight: var(--bold);
-}
-
-.u__extra-info__heading > svg {
-  width: 0.8rem;
 }
 
 .u__badges {

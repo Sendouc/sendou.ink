@@ -1,4 +1,4 @@
 insert into
-  "UserWeapon" ("userId", "weaponSplId", "order")
+  "UserWeapon" ("userId", "weaponSplId", "order", "isFavorite")
 values
-  (@userId, @weaponSplId, @order);
+  (@userId, @weaponSplId, @order, @isFavorite);

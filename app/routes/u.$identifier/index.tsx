@@ -216,11 +216,11 @@ function WeaponPool() {
     <div className="stack horizontal sm justify-center">
       {data.weapons.map((weapon, i) => {
         return (
-          <div key={weapon} className="u__weapon">
+          <div key={weapon.weaponSplId} className="u__weapon">
             <WeaponImage
-              testId={`${weapon}-${i + 1}`}
-              weaponSplId={weapon}
-              variant="badge"
+              testId={`${weapon.weaponSplId}-${i + 1}`}
+              weaponSplId={weapon.weaponSplId}
+              variant={weapon.isFavorite ? "badge-5-star" : "badge"}
               width={38}
               height={38}
             />

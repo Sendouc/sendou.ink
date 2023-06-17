@@ -22,12 +22,13 @@ import { Label } from "~/components/Label";
 import { SubmitButton } from "~/components/SubmitButton";
 import { USER } from "~/constants";
 import { db } from "~/db";
+import type { UserWeapon } from "~/db/types";
 import { type User } from "~/db/types";
 import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
 import { requireUser, requireUserId } from "~/modules/auth/user.server";
 import { i18next } from "~/modules/i18n";
-import { mainWeaponIds, type MainWeaponId } from "~/modules/in-game-lists";
+import { type MainWeaponId } from "~/modules/in-game-lists";
 import { canAddCustomizedColorsToUserProfile } from "~/permissions";
 import styles from "~/styles/u-edit.css";
 import { translatedCountry } from "~/utils/i18n.server";
@@ -43,12 +44,14 @@ import {
   id,
   jsonParseable,
   processMany,
-  removeDuplicates,
+  weaponSplId,
   safeJSONParse,
   undefinedToNull,
 } from "~/utils/zod";
 import { userParamsSchema, type UserPageLoaderData } from "../u.$identifier";
 import { Toggle } from "~/components/Toggle";
+import { StarIcon } from "~/components/icons/Star";
+import { StarFilledIcon } from "~/components/icons/StarFilled";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -114,14 +117,13 @@ const userEditActionSchema = z
     ),
     css: z.preprocess(falsyToNull, z.string().refine(jsonParseable).nullable()),
     weapons: z.preprocess(
-      processMany(safeJSONParse, removeDuplicates),
+      safeJSONParse,
       z
         .array(
-          z
-            .number()
-            .refine((val) =>
-              mainWeaponIds.includes(val as (typeof mainWeaponIds)[number])
-            )
+          z.object({
+            weaponSplId,
+            isFavorite: dbBoolean,
+          })
         )
         .max(USER.WEAPON_POOL_MAX_SIZE)
     ),
@@ -163,7 +165,9 @@ export const action: ActionFunction = async ({ request }) => {
   try {
     const editedUser = db.users.updateProfile({
       ...data,
-      weapons: data.weapons as MainWeaponId[],
+      weapons: data.weapons as Array<
+        Pick<UserWeapon, "weaponSplId" | "isFavorite">
+      >,
       inGameName:
         inGameNameText && inGameNameDiscriminator
           ? `${inGameNameText}#${inGameNameDiscriminator}`
@@ -389,10 +393,10 @@ function WeaponPoolSelect({
 }: {
   parentRouteData: UserPageLoaderData;
 }) {
-  const [weapons, setWeapons] = React.useState<Array<MainWeaponId>>(
-    parentRouteData.weapons
-  );
+  const [weapons, setWeapons] = React.useState(parentRouteData.weapons);
   const { t } = useTranslation(["user"]);
+
+  const latestWeapon = weapons[weapons.length - 1];
 
   return (
     <div className="stack md u-edit__weapon-pool">
@@ -405,11 +409,17 @@ function WeaponPoolSelect({
             id="weapon"
             onChange={(weapon) => {
               if (!weapon) return;
-              setWeapons([...weapons, Number(weapon.value) as MainWeaponId]);
+              setWeapons([
+                ...weapons,
+                {
+                  weaponSplId: Number(weapon.value) as MainWeaponId,
+                  isFavorite: 0,
+                },
+              ]);
             }}
             // empty on selection
-            key={weapons[weapons.length - 1]}
-            weaponIdsToOmit={new Set(weapons)}
+            key={latestWeapon?.weaponSplId ?? "empty"}
+            weaponIdsToOmit={new Set(weapons.map((w) => w.weaponSplId))}
             fullWidth
           />
         ) : (
@@ -421,22 +431,48 @@ function WeaponPoolSelect({
       <div className="stack horizontal sm justify-center">
         {weapons.map((weapon) => {
           return (
-            <div key={weapon} className="stack xs">
+            <div key={weapon.weaponSplId} className="stack xs">
               <div className="u__weapon">
                 <WeaponImage
-                  weaponSplId={weapon}
-                  variant="badge"
+                  weaponSplId={weapon.weaponSplId}
+                  variant={weapon.isFavorite ? "badge-5-star" : "badge"}
                   width={38}
                   height={38}
                 />
               </div>
-              <Button
-                icon={<TrashIcon />}
-                variant="minimal-destructive"
-                aria-label="Delete weapon"
-                onClick={() => setWeapons(weapons.filter((w) => w !== weapon))}
-                testId={`delete-weapon-${weapon}`}
-              />
+              <div className="stack sm horizontal items-center justify-center">
+                <Button
+                  icon={weapon.isFavorite ? <StarFilledIcon /> : <StarIcon />}
+                  variant="minimal"
+                  aria-label="Favorite weapon"
+                  onClick={() =>
+                    setWeapons(
+                      weapons.map((w) =>
+                        w.weaponSplId === weapon.weaponSplId
+                          ? {
+                              ...weapon,
+                              isFavorite: weapon.isFavorite === 1 ? 0 : 1,
+                            }
+                          : w
+                      )
+                    )
+                  }
+                />
+                <Button
+                  icon={<TrashIcon />}
+                  variant="minimal-destructive"
+                  aria-label="Delete weapon"
+                  onClick={() =>
+                    setWeapons(
+                      weapons.filter(
+                        (w) => w.weaponSplId !== weapon.weaponSplId
+                      )
+                    )
+                  }
+                  testId={`delete-weapon-${weapon.weaponSplId}`}
+                  size="tiny"
+                />
+              </div>
             </div>
           );
         })}

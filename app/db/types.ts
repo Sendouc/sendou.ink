@@ -46,6 +46,7 @@ export interface UserWeapon {
   weaponSplId: MainWeaponId;
   createdAt: number;
   order: number;
+  isFavorite: number;
 }
 
 export interface PlusSuggestion {

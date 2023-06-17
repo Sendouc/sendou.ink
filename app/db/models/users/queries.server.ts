@@ -3,9 +3,9 @@ import type {
   CalendarEventResultTeam,
   SplatoonPlayer,
   User,
+  UserWeapon,
   UserWithPlusTier,
 } from "../../types";
-import type { MainWeaponId } from "~/modules/in-game-lists";
 import { parseDBArray } from "~/utils/sql";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 
@@ -68,10 +68,15 @@ export const updateProfile = sql.transaction(
     | "css"
     | "favoriteBadgeId"
     | "showDiscordUniqueName"
-  > & { weapons: MainWeaponId[] }) => {
+  > & { weapons: Pick<UserWeapon, "weaponSplId" | "isFavorite">[] }) => {
     deleteUserWeaponsStm.run({ userId: rest.id });
-    for (const [i, weaponSplId] of weapons.entries()) {
-      addUserWeaponStm.run({ userId: rest.id, weaponSplId, order: i + 1 });
+    for (const [i, weapon] of weapons.entries()) {
+      addUserWeaponStm.run({
+        userId: rest.id,
+        weaponSplId: weapon.weaponSplId,
+        isFavorite: weapon.isFavorite,
+        order: i + 1,
+      });
     }
 
     return updateProfileStm.get(rest) as User;
@@ -151,7 +156,7 @@ export function findByIdentifier(identifier: string | number) {
   } as
     | (Omit<UserWithPlusTier, "css"> & {
         css: Record<string, string>;
-        weapons: MainWeaponId[];
+        weapons: Pick<UserWeapon, "weaponSplId" | "isFavorite">[];
         team?: {
           name: string;
           customUrl: string;
