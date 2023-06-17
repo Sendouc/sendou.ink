@@ -110,6 +110,13 @@ export const damageTypePriorityList = [
   "SPLATANA_VERTICAL",
   "SPLATANA_HORIZONTAL_DIRECT",
   "SPLATANA_HORIZONTAL",
+  "SPLASH_MIN",
+  "SPLASH_MAX",
+  "SPLASH_VERTICAL_MIN",
+  "SPLASH_VERTICAL_MAX",
+  "SPLASH_HORIZONTAL_MIN",
+  "SPLASH_HORIZONTAL_MAX",
+  "ROLL_OVER",
 ] as const;
 assertType<
   (typeof damageTypePriorityList)[number],

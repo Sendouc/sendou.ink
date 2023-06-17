@@ -196,6 +196,32 @@ function parametersToMainWeaponResult(
     params["BulletSaberHorizontalParam"]?.["DamageParam"]?.["HitDamage"] +
     params["BulletSaberSlashHorizontalParam"]?.["DamageParam"]?.["DamageValue"];
 
+  const resolveMin = (
+    valueOne: number | null | undefined,
+    valueTwo: number | null | undefined
+  ) => {
+    if (typeof valueOne !== "number" && typeof valueTwo !== "number")
+      return undefined;
+
+    if (typeof valueOne !== "number") return valueTwo;
+    if (typeof valueTwo !== "number") return valueOne;
+
+    return Math.min(valueOne, valueTwo);
+  };
+
+  const resolveMax = (
+    valueOne: number | null | undefined,
+    valueTwo: number | null | undefined
+  ) => {
+    if (typeof valueOne !== "number" && typeof valueTwo !== "number")
+      return undefined;
+
+    if (typeof valueOne !== "number") return valueTwo;
+    if (typeof valueTwo !== "number") return valueOne;
+
+    return Math.max(valueOne, valueTwo);
+  };
+
   return {
     SpecialPoint: weapon.SpecialPoint,
     subWeaponId: resolveSubWeaponId(weapon),
@@ -246,6 +272,56 @@ function parametersToMainWeaponResult(
       : DamageParam_SplatanaHorizontalDirect,
     DamageParam_SplatanaHorizontal:
       params["BulletSaberHorizontalParam"]?.["DamageParam"]?.["HitDamage"],
+    BodyParam_Damage: params["BodyParam"]?.["Damage"],
+    SwingUnitGroupParam_DamageParam_DamageMinValue: resolveMin(
+      params["SwingUnitGroupParam"]?.["DamageParam"]?.["Inside"]?.[
+        "DamageMinValue"
+      ],
+      params["SwingUnitGroupParam"]?.["DamageParam"]?.["Outside"]?.[
+        "DamageMinValue"
+      ]
+    ),
+    SwingUnitGroupParam_DamageParam_DamageMaxValue: resolveMax(
+      params["SwingUnitGroupParam"]?.["DamageParam"]?.["Inside"]?.[
+        "DamageMaxValue"
+      ],
+      params["SwingUnitGroupParam"]?.["DamageParam"]?.["Outside"]?.[
+        "DamageMaxValue"
+      ]
+    ),
+    // roller splash damages
+    VerticalSwingUnitGroupParam_DamageParam_DamageMinValue: resolveMin(
+      params["VerticalSwingUnitGroupParam"]?.["DamageParam"]?.["Inside"]?.[
+        "DamageMinValue"
+      ],
+      params["VerticalSwingUnitGroupParam"]?.["DamageParam"]?.["Outside"]?.[
+        "DamageMinValue"
+      ]
+    ),
+    VerticalSwingUnitGroupParam_DamageParam_DamageMaxValue: resolveMax(
+      params["VerticalSwingUnitGroupParam"]?.["DamageParam"]?.["Inside"]?.[
+        "DamageMaxValue"
+      ],
+      params["VerticalSwingUnitGroupParam"]?.["DamageParam"]?.["Outside"]?.[
+        "DamageMaxValue"
+      ]
+    ),
+    WideSwingUnitGroupParam_DamageParam_DamageMinValue: resolveMin(
+      params["WideSwingUnitGroupParam"]?.["DamageParam"]?.["Inside"]?.[
+        "DamageMinValue"
+      ],
+      params["WideSwingUnitGroupParam"]?.["DamageParam"]?.["Outside"]?.[
+        "DamageMinValue"
+      ]
+    ),
+    WideSwingUnitGroupParam_DamageParam_DamageMaxValue: resolveMax(
+      params["WideSwingUnitGroupParam"]?.["DamageParam"]?.["Inside"]?.[
+        "DamageMaxValue"
+      ],
+      params["WideSwingUnitGroupParam"]?.["DamageParam"]?.["Outside"]?.[
+        "DamageMaxValue"
+      ]
+    ),
     CanopyHP: params["spl__BulletShelterCanopyParam"]?.["CanopyHP"],
     ChargeFrameFullCharge:
       params["WeaponParam"]?.["ChargeFrameFullCharge"] ??

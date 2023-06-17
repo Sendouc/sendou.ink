@@ -648,6 +648,11 @@
       "subWeaponId": 7,
       "specialWeaponId": 3,
       "WeaponSpeedType": "Fast",
+      "BodyParam_Damage": 700,
+      "VerticalSwingUnitGroupParam_DamageParam_DamageMinValue": 350,
+      "VerticalSwingUnitGroupParam_DamageParam_DamageMaxValue": 1200,
+      "WideSwingUnitGroupParam_DamageParam_DamageMinValue": 250,
+      "WideSwingUnitGroupParam_DamageParam_DamageMaxValue": 1000,
       "InkConsume_WeaponSwingParam": 0.0396
     },
     "1001": {
@@ -655,18 +660,33 @@
       "subWeaponId": 2,
       "specialWeaponId": 1,
       "WeaponSpeedType": "Fast",
+      "BodyParam_Damage": 700,
+      "VerticalSwingUnitGroupParam_DamageParam_DamageMinValue": 350,
+      "VerticalSwingUnitGroupParam_DamageParam_DamageMaxValue": 1200,
+      "WideSwingUnitGroupParam_DamageParam_DamageMinValue": 250,
+      "WideSwingUnitGroupParam_DamageParam_DamageMaxValue": 1000,
       "InkConsume_WeaponSwingParam": 0.0396
     },
     "1010": {
       "SpecialPoint": 180,
       "subWeaponId": 6,
       "specialWeaponId": 2,
+      "BodyParam_Damage": 1250,
+      "VerticalSwingUnitGroupParam_DamageParam_DamageMinValue": 400,
+      "VerticalSwingUnitGroupParam_DamageParam_DamageMaxValue": 1500,
+      "WideSwingUnitGroupParam_DamageParam_DamageMinValue": 350,
+      "WideSwingUnitGroupParam_DamageParam_DamageMaxValue": 1500,
       "InkConsume_WeaponSwingParam": 0.085
     },
     "1011": {
       "SpecialPoint": 180,
       "subWeaponId": 8,
       "specialWeaponId": 17,
+      "BodyParam_Damage": 1250,
+      "VerticalSwingUnitGroupParam_DamageParam_DamageMinValue": 400,
+      "VerticalSwingUnitGroupParam_DamageParam_DamageMaxValue": 1500,
+      "WideSwingUnitGroupParam_DamageParam_DamageMinValue": 350,
+      "WideSwingUnitGroupParam_DamageParam_DamageMaxValue": 1500,
       "InkConsume_WeaponSwingParam": 0.085
     },
     "1020": {
@@ -680,12 +700,22 @@
         }
       },
       "WeaponSpeedType": "Slow",
+      "BodyParam_Damage": 1250,
+      "VerticalSwingUnitGroupParam_DamageParam_DamageMinValue": 400,
+      "VerticalSwingUnitGroupParam_DamageParam_DamageMaxValue": 1800,
+      "WideSwingUnitGroupParam_DamageParam_DamageMinValue": 400,
+      "WideSwingUnitGroupParam_DamageParam_DamageMaxValue": 1800,
       "InkConsume_WeaponSwingParam": 0.18
     },
     "1030": {
       "SpecialPoint": 210,
       "subWeaponId": 10,
       "specialWeaponId": 4,
+      "BodyParam_Damage": 1250,
+      "VerticalSwingUnitGroupParam_DamageParam_DamageMinValue": 400,
+      "VerticalSwingUnitGroupParam_DamageParam_DamageMaxValue": 1500,
+      "WideSwingUnitGroupParam_DamageParam_DamageMinValue": 300,
+      "WideSwingUnitGroupParam_DamageParam_DamageMaxValue": 1500,
       "InkConsume_WeaponVerticalSwingParam": 0.12,
       "InkConsume_WeaponWideSwingParam": 0.08
     },
@@ -693,12 +723,22 @@
       "SpecialPoint": 200,
       "subWeaponId": 4,
       "specialWeaponId": 8,
+      "BodyParam_Damage": 700,
+      "VerticalSwingUnitGroupParam_DamageParam_DamageMinValue": 400,
+      "VerticalSwingUnitGroupParam_DamageParam_DamageMaxValue": 1200,
+      "WideSwingUnitGroupParam_DamageParam_DamageMinValue": 350,
+      "WideSwingUnitGroupParam_DamageParam_DamageMaxValue": 700,
       "InkConsume_WeaponSwingParam": 0.1
     },
     "1041": {
       "SpecialPoint": 200,
       "subWeaponId": 12,
       "specialWeaponId": 5,
+      "BodyParam_Damage": 700,
+      "VerticalSwingUnitGroupParam_DamageParam_DamageMinValue": 400,
+      "VerticalSwingUnitGroupParam_DamageParam_DamageMaxValue": 1200,
+      "WideSwingUnitGroupParam_DamageParam_DamageMinValue": 350,
+      "WideSwingUnitGroupParam_DamageParam_DamageMaxValue": 700,
       "InkConsume_WeaponSwingParam": 0.1
     },
     "1100": {
@@ -706,6 +746,9 @@
       "subWeaponId": 0,
       "specialWeaponId": 9,
       "WeaponSpeedType": "Fast",
+      "BodyParam_Damage": 200,
+      "SwingUnitGroupParam_DamageParam_DamageMinValue": 150,
+      "SwingUnitGroupParam_DamageParam_DamageMaxValue": 300,
       "InkConsume_WeaponSwingParam": 0.02
     },
     "1101": {
@@ -713,18 +756,27 @@
       "subWeaponId": 10,
       "specialWeaponId": 11,
       "WeaponSpeedType": "Fast",
+      "BodyParam_Damage": 200,
+      "SwingUnitGroupParam_DamageParam_DamageMinValue": 150,
+      "SwingUnitGroupParam_DamageParam_DamageMaxValue": 300,
       "InkConsume_WeaponSwingParam": 0.02
     },
     "1110": {
       "SpecialPoint": 200,
       "subWeaponId": 1,
       "specialWeaponId": 3,
+      "BodyParam_Damage": 250,
+      "SwingUnitGroupParam_DamageParam_DamageMinValue": 200,
+      "SwingUnitGroupParam_DamageParam_DamageMaxValue": 400,
       "InkConsume_WeaponSwingParam": 0.03
     },
     "1120": {
       "SpecialPoint": 200,
       "subWeaponId": 6,
       "specialWeaponId": 7,
+      "BodyParam_Damage": 300,
+      "SwingUnitGroupParam_DamageParam_DamageMinValue": 250,
+      "SwingUnitGroupParam_DamageParam_DamageMaxValue": 600,
       "InkConsume_WeaponSwingParam": 0.064
     },
     "2000": {

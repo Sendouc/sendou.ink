@@ -42,6 +42,13 @@ export interface MainWeaponParams {
   DamageParam_SplatanaVertical?: number;
   DamageParam_SplatanaHorizontalDirect?: number;
   DamageParam_SplatanaHorizontal?: number;
+  BodyParam_Damage?: number;
+  SwingUnitGroupParam_DamageParam_DamageMinValue?: number;
+  SwingUnitGroupParam_DamageParam_DamageMaxValue?: number;
+  VerticalSwingUnitGroupParam_DamageParam_DamageMinValue?: number;
+  VerticalSwingUnitGroupParam_DamageParam_DamageMaxValue?: number;
+  WideSwingUnitGroupParam_DamageParam_DamageMinValue?: number;
+  WideSwingUnitGroupParam_DamageParam_DamageMaxValue?: number;
   Jump_DegSwerve?: number;
   Stand_DegSwerve?: number;
   /** Damage caused by charger's full charged shot */
