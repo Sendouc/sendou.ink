@@ -96,7 +96,6 @@ export function Footer({
           </ul>
         </div>
       ) : null}
-      <PlaywireBadge />
       <div className="layout__copyright-note">
         <p>
           sendou.ink © Copyright of Sendou and contributors 2019-{currentYear}.
@@ -108,38 +107,5 @@ export function Footer({
         </p>
       </div>
     </footer>
-  );
-}
-
-function PlaywireBadge() {
-  const location = useLocation();
-
-  if (location.pathname !== "/test") return null;
-
-  return (
-    <div className="stack sm">
-      <p>
-        {/* eslint-disable-next-line react/jsx-no-target-blank */}
-        <a href="http://www.playwire.com" rel="noopener" target="_blank">
-          <img
-            className="playwire__img dark-mode-only"
-            src="https://www.playwire.com/hubfs/Powered-by-Playwire-Badges/Powered-by-playwire-2021-standalone-large-white-300px.png"
-            alt="Playwire"
-            width="200"
-            loading="lazy"
-          />
-          <img
-            className="playwire__img light-mode-only"
-            src="https://www.playwire.com/hubfs/Powered-by-Playwire-Badges/Powered-by-playwire-2021-standalone-large-1-1.png"
-            alt="Playwire"
-            width="200"
-            loading="lazy"
-          />
-        </a>
-      </p>
-      <p className="playwire__text">
-        <a href="mailto:sales@playwire.com">Advertise on this site</a>
-      </p>
-    </div>
   );
 }
