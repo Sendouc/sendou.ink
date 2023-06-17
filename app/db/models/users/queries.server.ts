@@ -6,7 +6,7 @@ import type {
   UserWeapon,
   UserWithPlusTier,
 } from "../../types";
-import { parseDBArray } from "~/utils/sql";
+import { parseDBJsonArray } from "~/utils/sql";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 
 import addPatronDataSql from "./addPatronData.sql";
@@ -144,7 +144,7 @@ export function findByIdentifier(identifier: string | number) {
   return {
     ...row,
     css: css ? JSON.parse(css) : undefined,
-    weapons: parseDBArray(weapons),
+    weapons: parseDBJsonArray(weapons),
     team: teamName
       ? {
           name: teamName,
