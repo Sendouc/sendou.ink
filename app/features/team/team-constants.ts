@@ -12,5 +12,6 @@ export const TEAM_MEMBER_ROLES = [
   "SUPPORT",
   "MIDLINE",
   "BACKLINE",
+  "FLEX",
   "COACH",
 ] as const;
