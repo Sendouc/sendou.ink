@@ -43,6 +43,7 @@ export function upsert(
     | "twitch"
     | "twitter"
     | "youtubeId"
+    | "discordUniqueName"
   >
 ) {
   return upsertStm.get(input) as User;
@@ -66,6 +67,7 @@ export const updateProfile = sql.transaction(
     | "inGameName"
     | "css"
     | "favoriteBadgeId"
+    | "showDiscordUniqueName"
   > & { weapons: MainWeaponId[] }) => {
     deleteUserWeaponsStm.run({ userId: rest.id });
     for (const [i, weaponSplId] of weapons.entries()) {
@@ -82,7 +84,7 @@ export const updateMany = sql.transaction(
     argsArr: Array<
       Pick<
         User,
-        "discordAvatar" | "discordName" | "discordDiscriminator" | "discordId"
+        "discordAvatar" | "discordName" | "discordUniqueName" | "discordId"
       >
     >
   ) => {

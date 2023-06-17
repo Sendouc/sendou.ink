@@ -37,6 +37,8 @@ import { rawSensToString } from "~/utils/strings";
 import { FAQ_PAGE, isCustomUrl, userPage } from "~/utils/urls";
 import {
   actualNumber,
+  checkboxValueToDbBoolean,
+  dbBoolean,
   falsyToNull,
   id,
   jsonParseable,
@@ -46,6 +48,7 @@ import {
   undefinedToNull,
 } from "~/utils/zod";
 import { userParamsSchema, type UserPageLoaderData } from "../u.$identifier";
+import { Toggle } from "~/components/Toggle";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -126,6 +129,7 @@ const userEditActionSchema = z
       processMany(actualNumber, undefinedToNull),
       id.nullable()
     ),
+    showDiscordUniqueName: z.preprocess(checkboxValueToDbBoolean, dbBoolean),
   })
   .refine(
     (val) => {
@@ -165,6 +169,7 @@ export const action: ActionFunction = async ({ request }) => {
           ? `${inGameNameText}#${inGameNameDiscriminator}`
           : null,
       id: user.id,
+      showDiscordUniqueName: data.showDiscordUniqueName,
     });
 
     return redirect(userPage(editedUser));
@@ -191,6 +196,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   return {
     favoriteBadgeId: user.favoriteBadgeId,
+    discordUniqueName: userToBeEdited.discordUniqueName,
     countries: Object.entries(countries)
       .map(([code, country]) => ({
         code,
@@ -211,6 +217,7 @@ export default function UserEditPage() {
   const [, parentRoute] = useMatches();
   invariant(parentRoute);
   const parentRouteData = parentRoute.data as UserPageLoaderData;
+  const data = useLoaderData<typeof loader>();
 
   return (
     <div className="half-width">
@@ -225,6 +232,11 @@ export default function UserEditPage() {
         <FavBadgeSelect parentRouteData={parentRouteData} />
         <WeaponPoolSelect parentRouteData={parentRouteData} />
         <BioTextarea initialValue={parentRouteData.bio} />
+        {data.discordUniqueName ? (
+          <ShowUniqueDiscordNameToggle parentRouteData={parentRouteData} />
+        ) : (
+          <input type="hidden" name="showDiscordUniqueName" value="on" />
+        )}
         <FormMessage type="info">
           <Trans i18nKey={"user:discordExplanation"} t={t}>
             Username, profile picture, YouTube, Twitter and Twitch accounts come
@@ -490,6 +502,36 @@ function FavBadgeSelect({
       </select>
       <FormMessage type="info">
         {t("user:forms.info.favoriteBadge")}
+      </FormMessage>
+    </div>
+  );
+}
+
+function ShowUniqueDiscordNameToggle({
+  parentRouteData,
+}: {
+  parentRouteData: UserPageLoaderData;
+}) {
+  const { t } = useTranslation(["user"]);
+  const data = useLoaderData<typeof loader>();
+  const [checked, setChecked] = React.useState(
+    Boolean(parentRouteData.showDiscordUniqueName)
+  );
+
+  return (
+    <div>
+      <label htmlFor="showDiscordUniqueName">
+        {t("user:forms.showDiscordUniqueName")}
+      </label>
+      <Toggle
+        checked={checked}
+        setChecked={setChecked}
+        name="showDiscordUniqueName"
+      />
+      <FormMessage type="info">
+        {t("user:forms.showDiscordUniqueName.info", {
+          discordUniqueName: data.discordUniqueName,
+        })}
       </FormMessage>
     </div>
   );

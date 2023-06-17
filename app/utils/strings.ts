@@ -8,7 +8,7 @@ export function discordFullName(
   user: Pick<User, "discordName" | "discordDiscriminator">
 ) {
   if (isNewDiscordUniqueName(user.discordDiscriminator)) {
-    return capitalize(user.discordName);
+    return user.discordName;
   }
   return `${user.discordName}#${user.discordDiscriminator}`;
 }

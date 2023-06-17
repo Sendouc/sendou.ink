@@ -11,9 +11,13 @@ import type allTags from "../routes/calendar/tags.json";
 export interface User {
   id: number;
   discordId: string;
+  /** Discord display name aka global name (non-unique) */
   discordName: string;
   discordDiscriminator: string;
   discordAvatar: string | null;
+  /** Discord username (unique) */
+  discordUniqueName: string | null;
+  showDiscordUniqueName: number;
   twitch: string | null;
   twitter: string | null;
   youtubeId: string | null;

@@ -130,13 +130,14 @@ function wipeDB() {
 
 function adminUser() {
   db.users.upsert({
-    discordDiscriminator: "4059",
+    discordDiscriminator: "0",
     discordId: ADMIN_DISCORD_ID,
     discordName: "Sendou",
     twitch: "Sendou",
     youtubeId: "UCWbJLXByvsfQvTcR4HLPs5Q",
     discordAvatar: ADMIN_TEST_AVATAR,
     twitter: "sendouc",
+    discordUniqueName: "sendou",
   });
 }
 
@@ -174,6 +175,7 @@ function nzapUser() {
     youtubeId: null,
     discordAvatar: NZAP_TEST_AVATAR,
     twitter: null,
+    discordUniqueName: null,
   });
 }
 
@@ -242,6 +244,7 @@ function fakeUser(usedNames: Set<string>) {
     twitch: null,
     twitter: null,
     youtubeId: null,
+    discordUniqueName: null,
   });
 }
 

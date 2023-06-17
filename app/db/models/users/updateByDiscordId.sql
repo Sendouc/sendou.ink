@@ -2,7 +2,7 @@ update
   "User"
 set
   "discordAvatar" = @discordAvatar,
-  "discordName" = @discordName,
-  "discordDiscriminator" = @discordDiscriminator
+  "discordName" = coalesce(@discordName, "discordName"),
+  "discordUniqueName" = coalesce(@discordUniqueName, "discordUniqueName")
 where
   "discordId" = @discordId

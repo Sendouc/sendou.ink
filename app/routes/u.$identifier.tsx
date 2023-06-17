@@ -84,6 +84,10 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     discordDiscriminator: user.discordDiscriminator,
     discordId: user.discordId,
     discordName: user.discordName,
+    discordUniqueName: user.showDiscordUniqueName
+      ? user.discordUniqueName
+      : null,
+    showDiscordUniqueName: user.showDiscordUniqueName,
     twitch: user.twitch,
     twitter: user.twitter,
     youtubeId: user.youtubeId,

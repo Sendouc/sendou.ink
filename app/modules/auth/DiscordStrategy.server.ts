@@ -17,6 +17,7 @@ const partialDiscordUserSchema = z.object({
   discriminator: z.string(),
   id: z.string(),
   username: z.string(),
+  global_name: z.string().nullish(),
 });
 const partialDiscordConnectionsSchema = z.array(
   z.object({
@@ -79,7 +80,8 @@ export class DiscordStrategy extends OAuth2Strategy<
           discordAvatar: user.avatar ?? null,
           discordDiscriminator: user.discriminator,
           discordId: user.id,
-          discordName: user.username,
+          discordName: user.global_name ?? user.username,
+          discordUniqueName: user.global_name ? user.username : null,
           ...this.parseConnections(connections),
         });
 
