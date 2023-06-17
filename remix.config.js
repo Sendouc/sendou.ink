@@ -95,6 +95,7 @@ module.exports = {
       );
     });
   },
+  serverModuleFormat: "cjs",
   future: {
     v2_meta: true,
   },
