@@ -389,6 +389,7 @@ const damageTypeToParamsKey: Record<
   DamageType,
   | keyof MainWeaponParams
   | keyof SubWeaponParams
+  | keyof SpecialWeaponParams
   | Array<
       keyof MainWeaponParams | keyof SubWeaponParams | keyof SpecialWeaponParams
     >
@@ -421,6 +422,7 @@ const damageTypeToParamsKey: Record<
   SPLATANA_HORIZONTAL_DIRECT: "DamageParam_SplatanaHorizontalDirect",
   BOMB_NORMAL: "DistanceDamage",
   BOMB_DIRECT: "DirectDamage",
+  WAVE: "WaveDamage",
 };
 
 function damages(args: StatFunctionInput): AnalyzedBuild["stats"]["damages"] {

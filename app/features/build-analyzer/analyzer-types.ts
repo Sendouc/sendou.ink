@@ -123,6 +123,8 @@ export interface SubWeaponParams {
 type SpecialWeaponParamsObject = (typeof weaponParams)["specialWeapons"];
 export type SpecialWeaponParams = SpecialWeaponParamsObject[SpecialWeaponId] & {
   overwrites?: Overwrites;
+  // no idea why this is not inferred
+  WaveDamage?: number;
 };
 
 export type ParamsJson = {

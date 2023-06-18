@@ -15,6 +15,7 @@ export const DAMAGE_TYPE = [
   "TAP_SHOT",
   "DISTANCE",
   "SPLASH",
+  "WAVE",
   "BOMB_DIRECT",
   "BOMB_NORMAL",
   "SPLATANA_VERTICAL",
@@ -30,8 +31,6 @@ export const DAMAGE_TYPE = [
   "ROLL_OVER",
 ] as const;
 
-// a bit weird there is no SPECIAL here listed but it is used
-// only to determine if the damage type is for main weapon or not
 export const damageTypeToWeaponType: Record<
   DamageType,
   "MAIN" | "SUB" | "SPECIAL"
@@ -60,6 +59,7 @@ export const damageTypeToWeaponType: Record<
   SPLASH_VERTICAL_MAX: "MAIN",
   SPLASH_VERTICAL_MIN: "MAIN",
   ROLL_OVER: "MAIN",
+  WAVE: "SPECIAL",
 };
 
 export const multiShot: Partial<Record<MainWeaponId, number>> = {

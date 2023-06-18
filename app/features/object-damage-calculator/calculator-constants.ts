@@ -129,7 +129,7 @@ export const objectDamageJsonKeyPriority: Record<
   ShelterShot_Wide: null,
   ShelterShot: null,
   Shield: null,
-  ShockSonar_Wave: null,
+  ShockSonar_Wave: ["WAVE"],
   Shooter_Blaze: ["NORMAL_MAX", "NORMAL_MIN"],
   Shooter_Expert: ["NORMAL_MAX", "NORMAL_MIN"],
   Shooter_First: ["NORMAL_MAX", "NORMAL_MIN"],

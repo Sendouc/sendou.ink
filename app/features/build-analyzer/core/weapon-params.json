@@ -1793,7 +1793,9 @@
           "Low": 20,
           "Mid": 24
         }
-      }
+      },
+      "DirectDamage": 300,
+      "WaveDamage": 450
     },
     "8": {
       "overwrites": {

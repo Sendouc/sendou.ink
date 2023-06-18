@@ -110,6 +110,7 @@
   "damage.SPLATANA_HORIZONTAL": "Horizontal",
   "damage.BOMB_DIRECT": "Direct",
   "damage.BOMB_NORMAL": "Splash",
+  "damage.WAVE": "Wave",
   "suffix.seconds": "s",
   "suffix.hp": "hp",
   "suffix.specialPointsShort": "p",

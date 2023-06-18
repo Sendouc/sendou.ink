@@ -111,6 +111,7 @@ export const damageTypePriorityList = [
   "SPLASH",
   "TAP_SHOT",
   "DISTANCE",
+  "WAVE",
   "BOMB_DIRECT",
   "BOMB_NORMAL",
   "SPLATANA_VERTICAL_DIRECT",
