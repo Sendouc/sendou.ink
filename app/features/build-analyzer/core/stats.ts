@@ -12,6 +12,7 @@ import {
   CURLING_BOMB_ID,
   AUTO_BOMB_ID,
   TORPEDO_ID,
+  ZIPCASTER_ID,
 } from "~/modules/in-game-lists";
 import { ANGLE_SHOOTER_ID } from "~/modules/in-game-lists";
 import { INK_MINE_ID, POINT_SENSOR_ID } from "~/modules/in-game-lists";
@@ -500,6 +501,16 @@ function specialWeaponDamages(
         multiShots: multiShot[args.weaponSplId],
       });
     }
+  }
+
+  // Zipcaster direct damage
+  if (args.mainWeaponParams.specialWeaponId === ZIPCASTER_ID) {
+    result.unshift({
+      id: semiRandomId(),
+      distance: 0,
+      value: sumArray(result.map((v) => v.value)),
+      type: "BOMB_NORMAL",
+    });
   }
 
   return result;

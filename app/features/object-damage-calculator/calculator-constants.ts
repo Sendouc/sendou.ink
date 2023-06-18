@@ -154,7 +154,7 @@ export const objectDamageJsonKeyPriority: Record<
   Sprinkler: null,
   Stringer_Short: ["NORMAL_MAX", "NORMAL_MIN", "DISTANCE"],
   Stringer: ["NORMAL_MAX", "NORMAL_MIN", "DISTANCE"],
-  SuperHook: null,
+  SuperHook: ["BOMB_NORMAL"],
   SuperLanding: null,
   TripleTornado: null,
   UltraShot: ["BOMB_NORMAL", "BOMB_DIRECT"],

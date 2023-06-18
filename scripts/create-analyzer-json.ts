@@ -461,7 +461,9 @@ function parametersToSpecialWeaponResult(params: any) {
   return {
     ArmorHP: params["WeaponSpChariotParam"]?.["ArmorHP"],
     overwrites: resultUnwrapped,
-    DistanceDamage: params["BlastParam"]?.["DistanceDamage"],
+    DistanceDamage:
+      params["BlastParam"]?.["DistanceDamage"] ??
+      params["HookBlastParam"]?.["DistanceDamage"],
     DirectDamage: params["DamageParam"]?.["DirectHitDamage"],
   };
 }
