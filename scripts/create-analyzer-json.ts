@@ -461,6 +461,8 @@ function parametersToSpecialWeaponResult(params: any) {
   }
 
   const isUltraStamp = () => !!params["SwingBigBlastParam"];
+  const isCrabTank = () => !!params["CannonParam"];
+
   const SwingDamage = () => {
     if (!isUltraStamp()) return;
 
@@ -474,6 +476,18 @@ function parametersToSpecialWeaponResult(params: any) {
     if (!isUltraStamp()) return;
 
     return params["ThrowBlastParam"]["DistanceDamage"];
+  };
+
+  const Cannon = () => {
+    if (!isCrabTank()) return;
+
+    return [
+      {
+        Damage: 600,
+        Distance: 1,
+      },
+      ...params["CannonParam"]?.["BlastParam"]?.["DistanceDamage"],
+    ];
   };
 
   return {
@@ -500,6 +514,10 @@ function parametersToSpecialWeaponResult(params: any) {
     SwingDamage: SwingDamage(),
     ThrowDamage: ThrowDamage(),
     ThrowDirectDamage: params["ThrowMoveParam"]?.["DirectDamageValue"],
+    BulletDamageMin: params["ShooterDamageParam"]?.["ValueMin"],
+    BulletDamageMax: params["ShooterDamageParam"]?.["ValueMax"],
+    CannonDamage: Cannon(),
+    BumpDamage: isCrabTank() ? 400 : undefined,
   };
 }
 

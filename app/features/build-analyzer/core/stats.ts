@@ -13,6 +13,7 @@ import {
   AUTO_BOMB_ID,
   TORPEDO_ID,
   ZIPCASTER_ID,
+  CRAB_TANK_ID,
 } from "~/modules/in-game-lists";
 import { ANGLE_SHOOTER_ID } from "~/modules/in-game-lists";
 import { INK_MINE_ID, POINT_SENSOR_ID } from "~/modules/in-game-lists";
@@ -428,6 +429,10 @@ const damageTypeToParamsKey: Record<
   SPECIAL_SWING: "SwingDamage",
   SPECIAL_THROW: "ThrowDamage",
   SPECIAL_THROW_DIRECT: "ThrowDirectDamage",
+  SPECIAL_BULLET_MAX: "BulletDamageMax",
+  SPECIAL_BULLET_MIN: "BulletDamageMin",
+  SPECIAL_CANNON: "CannonDamage",
+  SPECIAL_BUMP: "BumpDamage",
 };
 
 function damages(args: StatFunctionInput): AnalyzedBuild["stats"]["damages"] {
@@ -510,13 +515,26 @@ function specialWeaponDamages(
     }
   }
 
-  // Zipcaster direct damage
+  // Artifically combined damages
   if (args.mainWeaponParams.specialWeaponId === ZIPCASTER_ID) {
     result.unshift({
       id: semiRandomId(),
       distance: 0,
       value: sumArray(result.map((v) => v.value)),
-      type: "BOMB_NORMAL",
+      type: result[0].type,
+    });
+  }
+  if (args.mainWeaponParams.specialWeaponId === CRAB_TANK_ID) {
+    const cannonDamages = result.filter((d) => d.type === "SPECIAL_CANNON");
+    const firstCannonDamageIdx = result.findIndex(
+      (d) => d.type === "SPECIAL_CANNON"
+    );
+
+    result.splice(firstCannonDamageIdx, 0, {
+      id: semiRandomId(),
+      distance: 0,
+      value: sumArray(cannonDamages.map((v) => v.value)),
+      type: "SPECIAL_CANNON",
     });
   }
 

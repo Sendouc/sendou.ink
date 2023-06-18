@@ -1910,7 +1910,20 @@
           "Low": 480,
           "Mid": 570
         }
-      }
+      },
+      "BulletDamageMin": 160,
+      "BulletDamageMax": 320,
+      "CannonDamage": [
+        {
+          "Damage": 600,
+          "Distance": 1
+        },
+        {
+          "Damage": 300,
+          "Distance": 5.6
+        }
+      ],
+      "BumpDamage": 400
     },
     "13": {
       "overwrites": {
