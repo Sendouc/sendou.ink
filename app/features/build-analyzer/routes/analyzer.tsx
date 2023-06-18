@@ -211,7 +211,7 @@ export default function BuildAnalyzerPage() {
           </div>
           <div className="stack md items-center w-full">
             <div className="w-full">
-              <Tabs className="analyzer__sub-nav">
+              <Tabs className="analyzer__sub-nav" compact>
                 <Tab
                   active={focused === 1}
                   onClick={() => handleChange({ newFocused: 1 })}

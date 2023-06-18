@@ -500,6 +500,10 @@ dialog::backdrop {
   white-space: nowrap;
 }
 
+.sub-nav__container.compact .sub-nav__link {
+  padding: var(--s-1) var(--s-2);
+}
+
 .sub-nav__border-guy {
   width: 78%;
   height: 3px;

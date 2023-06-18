@@ -6,12 +6,16 @@ import type * as React from "react";
 export function Tabs({
   children,
   className,
+  compact = false,
 }: {
   children: React.ReactNode;
   className?: string;
+  compact?: boolean;
 }) {
   return (
-    <div className={clsx("sub-nav__container", className)}>{children}</div>
+    <div className={clsx("sub-nav__container", className, { compact })}>
+      {children}
+    </div>
   );
 }
 
