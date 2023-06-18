@@ -127,6 +127,9 @@ export const damageTypePriorityList = [
   "ROLL_OVER",
   "SPECIAL_MAX_CHARGE",
   "SPECIAL_MIN_CHARGE",
+  "SPECIAL_THROW_DIRECT",
+  "SPECIAL_THROW",
+  "SPECIAL_SWING",
 ] as const;
 assertType<
   (typeof damageTypePriorityList)[number],

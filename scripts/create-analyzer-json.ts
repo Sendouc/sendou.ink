@@ -410,6 +410,8 @@ function parametersToSubWeaponResult(
   };
 }
 
+// some specials lack damage values in the params
+// so they are instead hardcoded here as a workaround
 function parametersToSpecialWeaponResult(params: any) {
   const result: any = {};
 
@@ -458,6 +460,22 @@ function parametersToSpecialWeaponResult(params: any) {
     resultUnwrapped["SplashAroundPaintRadius"] = undefined;
   }
 
+  const isUltraStamp = () => !!params["SwingBigBlastParam"];
+  const SwingDamage = () => {
+    if (!isUltraStamp()) return;
+
+    return [
+      { Damage: 1000, Distance: 0 },
+      ...params["SwingBigBlastParam"]["DistanceDamage"],
+    ];
+  };
+
+  const ThrowDamage = () => {
+    if (!isUltraStamp()) return;
+
+    return params["ThrowBlastParam"]["DistanceDamage"];
+  };
+
   return {
     ArmorHP: params["WeaponSpChariotParam"]?.["ArmorHP"],
     overwrites: resultUnwrapped,
@@ -479,6 +497,9 @@ function parametersToSpecialWeaponResult(params: any) {
       params["ExhaleBlastParamMinCharge"]?.["DistanceDamage"],
     ExhaleBlastParamMaxChargeDistanceDamage:
       params["ExhaleBlastParamMaxCharge"]?.["DistanceDamage"],
+    SwingDamage: SwingDamage(),
+    ThrowDamage: ThrowDamage(),
+    ThrowDirectDamage: params["ThrowMoveParam"]?.["DirectDamageValue"],
   };
 }
 

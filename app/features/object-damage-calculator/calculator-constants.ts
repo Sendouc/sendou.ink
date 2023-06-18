@@ -158,9 +158,9 @@ export const objectDamageJsonKeyPriority: Record<
   SuperLanding: null,
   TripleTornado: null,
   UltraShot: ["BOMB_NORMAL", "BOMB_DIRECT"],
-  UltraStamp_Swing: null,
-  UltraStamp_Throw_BombCore: null,
-  UltraStamp_Throw: null,
+  UltraStamp_Swing: ["SPECIAL_SWING"],
+  UltraStamp_Throw_BombCore: ["SPECIAL_THROW_DIRECT"],
+  UltraStamp_Throw: ["SPECIAL_THROW"],
 };
 
 export const damageTypesToCombine: Partial<

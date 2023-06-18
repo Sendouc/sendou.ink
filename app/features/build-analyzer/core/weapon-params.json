@@ -1879,7 +1879,28 @@
           "Low": 450,
           "Mid": 570
         }
-      }
+      },
+      "SwingDamage": [
+        {
+          "Damage": 1000,
+          "Distance": 0
+        },
+        {
+          "Damage": 400,
+          "Distance": 4
+        }
+      ],
+      "ThrowDamage": [
+        {
+          "Damage": 600,
+          "Distance": 4
+        },
+        {
+          "Damage": 300,
+          "Distance": 8
+        }
+      ],
+      "ThrowDirectDamage": 2200
     },
     "12": {
       "ArmorHP": 5000,
