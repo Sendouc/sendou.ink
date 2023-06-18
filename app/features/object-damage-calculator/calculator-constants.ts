@@ -157,7 +157,7 @@ export const objectDamageJsonKeyPriority: Record<
   SuperHook: null,
   SuperLanding: null,
   TripleTornado: null,
-  UltraShot: null,
+  UltraShot: ["BOMB_NORMAL", "BOMB_DIRECT"],
   UltraStamp_Swing: null,
   UltraStamp_Throw_BombCore: null,
   UltraStamp_Throw: null,

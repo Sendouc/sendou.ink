@@ -1688,7 +1688,14 @@
           "Low": 360,
           "Mid": 420
         }
-      }
+      },
+      "DistanceDamage": [
+        {
+          "Damage": 400,
+          "Distance": 4
+        }
+      ],
+      "DirectDamage": 2200
     },
     "2": {
       "overwrites": {
@@ -1814,7 +1821,17 @@
           "Low": 0.63,
           "Mid": 0.665
         }
-      }
+      },
+      "DistanceDamage": [
+        {
+          "Damage": 500,
+          "Distance": 3
+        },
+        {
+          "Damage": 300,
+          "Distance": 5
+        }
+      ]
     },
     "11": {
       "overwrites": {

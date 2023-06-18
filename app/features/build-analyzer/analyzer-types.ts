@@ -206,6 +206,7 @@ export interface AnalyzedBuild {
     subWeaponInkConsumptionPercentage: Stat;
     fullInkTankOptions: Array<FullInkTankOption & { id: string }>;
     damages: Array<Damage & { id: string }>;
+    specialWeaponDamages: Array<Damage & { id: string }>;
     subWeaponDefenseDamages: Array<SubWeaponDamage & { id: string }>;
     squidFormInkRecoverySeconds: Stat;
     humanoidFormInkRecoverySeconds: Stat;
@@ -263,4 +264,5 @@ export type AbilityValuesKeys = keyof typeof abilityValues;
 
 export type AnyWeapon =
   | { type: "MAIN"; id: MainWeaponId }
-  | { type: "SUB"; id: SubWeaponId };
+  | { type: "SUB"; id: SubWeaponId }
+  | { type: "SPECIAL"; id: SpecialWeaponId };

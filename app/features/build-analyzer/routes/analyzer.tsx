@@ -703,6 +703,19 @@ export default function BuildAnalyzerPage() {
             </StatCategory>
           )}
 
+          {analyzed.stats.specialWeaponDamages.length > 0 && (
+            <StatCategory
+              title={t("analyzer:stat.category.special.damage", {
+                specialWeapon: t(
+                  `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
+                ),
+              })}
+              containerClassName="analyzer__table-container"
+            >
+              <DamageTable values={analyzed.stats.specialWeaponDamages} />
+            </StatCategory>
+          )}
+
           {analyzed.stats.fullInkTankOptions.length > 0 && (
             <StatCategory
               title={t("analyzer:stat.category.actionsPerInkTank")}
@@ -1249,7 +1262,7 @@ function DamageTable({
   values:
     | AnalyzedBuild["stats"]["damages"]
     | AnalyzedBuild["stats"]["subWeaponDefenseDamages"];
-  multiShots: AnalyzedBuild["weapon"]["multiShots"];
+  multiShots?: AnalyzedBuild["weapon"]["multiShots"];
 }) {
   const { t } = useTranslation(["weapons", "analyzer"]);
 

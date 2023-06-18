@@ -13,6 +13,7 @@ import {
   resolveAllUniqueDamageTypes,
 } from "./core/objectDamage";
 import type { AnyWeapon } from "../build-analyzer/analyzer-types";
+import { exampleMainWeaponIdWithSpecialWeaponId } from "~/modules/in-game-lists";
 
 const ABILITY_POINTS_SP_KEY = "ap";
 const DAMAGE_TYPE_SP_KEY = "dmg";
@@ -25,13 +26,19 @@ export function useObjectDamage() {
   const abilityPoints = validatedAbilityPointsFromSearchParams(searchParams);
   const isMultiShot = validatedMultiShotFromSearchParams(searchParams);
   const analyzed = buildStats({
-    weaponSplId: anyWeapon.type === "MAIN" ? anyWeapon.id : 0,
+    weaponSplId:
+      anyWeapon.type === "MAIN"
+        ? anyWeapon.id
+        : anyWeapon.type === "SPECIAL"
+        ? exampleMainWeaponIdWithSpecialWeaponId(anyWeapon.id)
+        : 0,
     hasTacticooler: false,
   });
 
   const damageType = validatedDamageTypeFromSearchParams({
     searchParams,
     analyzed,
+    anyWeapon,
   });
 
   const handleChange = ({
@@ -126,18 +133,24 @@ assertType<
 function validatedDamageTypeFromSearchParams({
   searchParams,
   analyzed,
+  anyWeapon,
 }: {
   searchParams: URLSearchParams;
   analyzed: AnalyzedBuild;
+  anyWeapon: AnyWeapon;
 }) {
+  const damages =
+    anyWeapon.type === "SPECIAL"
+      ? analyzed.stats.specialWeaponDamages
+      : analyzed.stats.damages;
   const damageType = searchParams.get(DAMAGE_TYPE_SP_KEY);
 
-  const found = analyzed.stats.damages.find((d) => d.type === damageType);
+  const found = damages.find((d) => d.type === damageType);
 
   if (found) return found.type;
 
   const fallbackFound = damageTypePriorityList.find((type) =>
-    analyzed.stats.damages.some((d) => d.type === type)
+    damages.some((d) => d.type === type)
   );
 
   return fallbackFound;

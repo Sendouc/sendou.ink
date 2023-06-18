@@ -21,6 +21,7 @@ import type {
   DamageType,
   InkConsumeType,
   MainWeaponParams,
+  SpecialWeaponParams,
   StatFunctionInput,
   SubWeaponParams,
 } from "../analyzer-types";
@@ -107,6 +108,7 @@ export function buildStats({
       specialLostSplattedByRP: specialLost(input, true),
       fullInkTankOptions: fullInkTankOptions(input),
       damages: damages(input),
+      specialWeaponDamages: specialWeaponDamages(input),
       subWeaponDefenseDamages: subWeaponDefenseDamages(input),
       mainWeaponWhiteInkSeconds:
         typeof mainWeaponParams.InkRecoverStop === "number"
@@ -386,7 +388,9 @@ const damageTypeToParamsKey: Record<
   DamageType,
   | keyof MainWeaponParams
   | keyof SubWeaponParams
-  | Array<keyof MainWeaponParams | keyof SubWeaponParams>
+  | Array<
+      keyof MainWeaponParams | keyof SubWeaponParams | keyof SpecialWeaponParams
+    >
 > = {
   NORMAL_MIN: "DamageParam_ValueMin",
   NORMAL_MAX: "DamageParam_ValueMax",
@@ -424,6 +428,49 @@ function damages(args: StatFunctionInput): AnalyzedBuild["stats"]["damages"] {
   for (const type of DAMAGE_TYPE) {
     for (const key of [damageTypeToParamsKey[type]].flat()) {
       const value = args.mainWeaponParams[key as keyof MainWeaponParams];
+
+      if (Array.isArray(value)) {
+        for (const subValue of value.flat()) {
+          result.push({
+            type,
+            value: subValue.Damage / 10,
+            distance: subValue.Distance,
+            id: semiRandomId(),
+            multiShots: multiShot[args.weaponSplId],
+          });
+        }
+
+        continue;
+      }
+
+      if (typeof value !== "number") continue;
+
+      result.push({
+        id: semiRandomId(),
+        type,
+        value: value / 10,
+        shotsToSplat: shotsToSplat({
+          value,
+          type,
+          multiShots: multiShot[args.weaponSplId],
+        }),
+        multiShots: multiShot[args.weaponSplId],
+      });
+    }
+  }
+
+  return result;
+}
+
+// xxx: TODO: handle damage distance increasing e.g. inkzooka, small special power up icon next to the distance
+function specialWeaponDamages(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["specialWeaponDamages"] {
+  const result: AnalyzedBuild["stats"]["specialWeaponDamages"] = [];
+
+  for (const type of DAMAGE_TYPE) {
+    for (const key of [damageTypeToParamsKey[type]].flat()) {
+      const value = args.specialWeaponParams[key as keyof SpecialWeaponParams];
 
       if (Array.isArray(value)) {
         for (const subValue of value.flat()) {

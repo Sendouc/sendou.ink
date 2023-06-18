@@ -284,10 +284,18 @@ function DamageReceiversGrid({
                 variant="build"
                 className="object-damage__weapon-image"
               />
-            ) : (
+            ) : weapon.type === "SUB" ? (
               <Image
                 alt=""
                 path={subWeaponImageUrl(weapon.id)}
+                width={24}
+                height={24}
+                className="object-damage__weapon-image"
+              />
+            ) : (
+              <Image
+                alt=""
+                path={specialWeaponImageUrl(weapon.id)}
                 width={24}
                 height={24}
                 className="object-damage__weapon-image"
