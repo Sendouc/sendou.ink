@@ -1830,7 +1830,8 @@
           "Low": 180,
           "Mid": 220
         }
-      }
+      },
+      "DirectDamage": 30
     },
     "10": {
       "overwrites": {

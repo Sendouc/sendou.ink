@@ -83,7 +83,7 @@ export const objectDamageJsonKeyPriority: Record<
   Jetpack_Jet: null,
   Maneuver_Short: null,
   Maneuver: null,
-  MicroLaser: null,
+  MicroLaser: ["BOMB_DIRECT"],
   MissionSalmonBuddy: null,
   MovePainter_Burst: null,
   MovePainter_Direct: null,

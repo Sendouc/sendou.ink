@@ -467,7 +467,12 @@ function parametersToSpecialWeaponResult(params: any) {
       params["spl__BulletBlastParam"]?.["DistanceDamage"],
     DirectDamage:
       params["DamageParam"]?.["DirectHitDamage"] ??
-      params["spl__BulletSpShockSonarParam"]?.["GeneratorParam"]?.["HitDamage"],
+      params["spl__BulletSpShockSonarParam"]?.["GeneratorParam"]?.[
+        "HitDamage"
+      ] ??
+      params["spl__BulletSpMicroLaserBitParam"]?.["LaserParam"]?.[
+        "LaserDamage"
+      ],
     WaveDamage:
       params["spl__BulletSpShockSonarParam"]?.["WaveParam"]?.["Damage"],
     ExhaleBlastParamMinChargeDistanceDamage:
