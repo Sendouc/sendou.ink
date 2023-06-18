@@ -123,8 +123,10 @@ export interface SubWeaponParams {
 type SpecialWeaponParamsObject = (typeof weaponParams)["specialWeapons"];
 export type SpecialWeaponParams = SpecialWeaponParamsObject[SpecialWeaponId] & {
   overwrites?: Overwrites;
-  // no idea why this is not inferred
+  // no idea why these is not inferred
   WaveDamage?: number;
+  ExhaleBlastParamMaxChargeDistanceDamage?: Array<DistanceDamage>;
+  ExhaleBlastParamMinChargeDistanceDamage?: Array<DistanceDamage>;
 };
 
 export type ParamsJson = {

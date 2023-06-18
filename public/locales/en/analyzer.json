@@ -111,6 +111,8 @@
   "damage.BOMB_DIRECT": "Direct",
   "damage.BOMB_NORMAL": "Splash",
   "damage.WAVE": "Wave",
+  "damage.SPECIAL_MAX_CHARGE": "Maximum charge",
+  "damage.SPECIAL_MIN_CHARGE": "Minimum charge",
   "suffix.seconds": "s",
   "suffix.hp": "hp",
   "suffix.specialPointsShort": "p",

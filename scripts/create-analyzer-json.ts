@@ -470,6 +470,10 @@ function parametersToSpecialWeaponResult(params: any) {
       params["spl__BulletSpShockSonarParam"]?.["GeneratorParam"]?.["HitDamage"],
     WaveDamage:
       params["spl__BulletSpShockSonarParam"]?.["WaveParam"]?.["Damage"],
+    ExhaleBlastParamMinChargeDistanceDamage:
+      params["ExhaleBlastParamMinCharge"]?.["DistanceDamage"],
+    ExhaleBlastParamMaxChargeDistanceDamage:
+      params["ExhaleBlastParamMaxCharge"]?.["DistanceDamage"],
   };
 }
 

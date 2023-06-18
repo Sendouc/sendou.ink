@@ -29,6 +29,8 @@ export const DAMAGE_TYPE = [
   "SPLASH_HORIZONTAL_MIN",
   "SPLASH_HORIZONTAL_MAX",
   "ROLL_OVER",
+  "SPECIAL_MAX_CHARGE",
+  "SPECIAL_MIN_CHARGE",
 ] as const;
 
 export const damageTypeToWeaponType: Record<
@@ -60,6 +62,8 @@ export const damageTypeToWeaponType: Record<
   SPLASH_VERTICAL_MIN: "MAIN",
   ROLL_OVER: "MAIN",
   WAVE: "SPECIAL",
+  SPECIAL_MAX_CHARGE: "SPECIAL",
+  SPECIAL_MIN_CHARGE: "SPECIAL",
 };
 
 export const multiShot: Partial<Record<MainWeaponId, number>> = {

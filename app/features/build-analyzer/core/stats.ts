@@ -423,6 +423,8 @@ const damageTypeToParamsKey: Record<
   BOMB_NORMAL: "DistanceDamage",
   BOMB_DIRECT: "DirectDamage",
   WAVE: "WaveDamage",
+  SPECIAL_MAX_CHARGE: "ExhaleBlastParamMaxChargeDistanceDamage",
+  SPECIAL_MIN_CHARGE: "ExhaleBlastParamMinChargeDistanceDamage",
 };
 
 function damages(args: StatFunctionInput): AnalyzedBuild["stats"]["damages"] {

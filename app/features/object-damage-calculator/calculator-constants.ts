@@ -46,7 +46,7 @@ export const objectDamageJsonKeyPriority: Record<
   Blaster_BlasterShort: null,
   Blaster_KillOneShot: ["DIRECT"],
   Blaster: null,
-  BlowerExhale_BombCore: null,
+  BlowerExhale_BombCore: ["SPECIAL_MAX_CHARGE", "SPECIAL_MIN_CHARGE"],
   BlowerInhale: null,
   BombFlower: null,
   Bomb_CurlingBullet: null,

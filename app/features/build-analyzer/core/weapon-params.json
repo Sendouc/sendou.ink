@@ -1809,7 +1809,19 @@
           "Low": 0.8,
           "Mid": 1.1
         }
-      }
+      },
+      "ExhaleBlastParamMinChargeDistanceDamage": [
+        {
+          "Damage": 2200,
+          "Distance": 4
+        }
+      ],
+      "ExhaleBlastParamMaxChargeDistanceDamage": [
+        {
+          "Damage": 2200,
+          "Distance": 8
+        }
+      ]
     },
     "9": {
       "overwrites": {
