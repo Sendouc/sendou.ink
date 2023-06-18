@@ -1994,7 +1994,21 @@
           "Low": 1,
           "Mid": 1.1
         }
-      }
+      },
+      "DistanceDamage": [
+        {
+          "Damage": 600,
+          "Distance": 2.6
+        },
+        {
+          "Damage": 350,
+          "Distance": 3.8
+        },
+        {
+          "Damage": 350,
+          "Distance": 5
+        }
+      ]
     },
     "17": {
       "overwrites": {
