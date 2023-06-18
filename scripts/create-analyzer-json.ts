@@ -463,7 +463,8 @@ function parametersToSpecialWeaponResult(params: any) {
     overwrites: resultUnwrapped,
     DistanceDamage:
       params["BlastParam"]?.["DistanceDamage"] ??
-      params["HookBlastParam"]?.["DistanceDamage"],
+      params["HookBlastParam"]?.["DistanceDamage"] ??
+      params["spl__BulletBlastParam"]?.["DistanceDamage"],
     DirectDamage: params["DamageParam"]?.["DirectHitDamage"],
   };
 }

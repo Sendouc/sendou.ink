@@ -1742,7 +1742,21 @@
           "Low": 140,
           "Mid": 190
         }
-      }
+      },
+      "DistanceDamage": [
+        {
+          "Damage": 1500,
+          "Distance": 1.1
+        },
+        {
+          "Damage": 500,
+          "Distance": 2.1
+        },
+        {
+          "Damage": 300,
+          "Distance": 5
+        }
+      ]
     },
     "5": {
       "overwrites": {

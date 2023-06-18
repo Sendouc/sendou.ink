@@ -87,7 +87,7 @@ export const objectDamageJsonKeyPriority: Record<
   MissionSalmonBuddy: null,
   MovePainter_Burst: null,
   MovePainter_Direct: null,
-  MultiMissile_BombCore: null,
+  MultiMissile_BombCore: ["BOMB_NORMAL"],
   MultiMissile_Bullet: null,
   NiceBall: null,
   ObjectEffect_Up: null,
