@@ -1947,7 +1947,17 @@
           "Low": 0.7,
           "Mid": 0.75
         }
-      }
+      },
+      "DistanceDamage": [
+        {
+          "Damage": 2200,
+          "Distance": 7.5
+        },
+        {
+          "Damage": 700,
+          "Distance": 13.5
+        }
+      ]
     },
     "14": {
       "overwrites": {

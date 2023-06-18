@@ -148,7 +148,7 @@ export const objectDamageJsonKeyPriority: Record<
   Shooter_TripleQuick: ["NORMAL_MAX", "NORMAL_MIN"],
   Shooter: null,
   Skewer_Body: null,
-  Skewer: null,
+  Skewer: ["BOMB_NORMAL"],
   Slosher_Bathtub: ["DIRECT", "DIRECT_MAX", "DIRECT_MIN", "DISTANCE", "SPLASH"],
   Slosher_Bear: ["DIRECT", "DIRECT_MAX", "DIRECT_MIN", "DISTANCE", "SPLASH"],
   Slosher_WashtubBombCore: ["DIRECT", "DIRECT_MAX", "DIRECT_MIN"],
