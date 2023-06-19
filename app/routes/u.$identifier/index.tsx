@@ -12,11 +12,7 @@ import { YouTubeIcon } from "~/components/icons/YouTube";
 import { useTranslation } from "~/hooks/useTranslation";
 import { modesShort } from "~/modules/in-game-lists";
 import { type SendouRouteHandle } from "~/utils/remix";
-import {
-  capitalize,
-  isNewDiscordUniqueName,
-  rawSensToString,
-} from "~/utils/strings";
+import { isNewDiscordUniqueName, rawSensToString } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
 import { assertUnreachable } from "~/utils/types";
 import {
@@ -44,11 +40,7 @@ export default function UserInfoPage() {
         <Avatar user={data} size="lg" className="u__avatar" />
         <div>
           <h2 className="u__name">
-            <div>
-              {isNewDiscordUniqueName(data.discordDiscriminator)
-                ? capitalize(data.discordName)
-                : data.discordName}
-            </div>
+            <div>{data.discordName}</div>
             <div>
               <span className="u__discriminator">
                 {!isNewDiscordUniqueName(data.discordDiscriminator) ? (
