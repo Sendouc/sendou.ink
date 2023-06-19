@@ -333,6 +333,42 @@ export interface TournamentSub {
   createdAt: number;
 }
 
+export interface Skill {
+  id: number;
+  mu: number;
+  sigma: number;
+  ordinal: number;
+  userId: number;
+  /** Tournament that caused the skill to change */
+  tournamentId: number | null;
+}
+
+export interface MapResult {
+  mode: ModeShort;
+  stageId: StageId;
+  userId: number;
+  wins: number;
+  losses: number;
+}
+
+export interface PlayerResult {
+  ownerUserId: number;
+  otherUserId: number;
+  mapWins: number;
+  mapLosses: number;
+  setWins: number;
+  setLosses: number;
+  type: "MATE" | "ENEMY";
+}
+
+export interface TournamentResult {
+  tournamentId: number;
+  userId: number;
+  placement: number;
+  participantsCount: number;
+  tournamentTeamId: number;
+}
+
 export interface TrustRelationship {
   trustGiverUserId: number;
   trustReceiverUserId: number;
