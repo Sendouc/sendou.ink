@@ -1870,7 +1870,8 @@
           "Damage": 300,
           "Distance": 5
         }
-      ]
+      ],
+      "DirectDamage": 1200
     },
     "11": {
       "overwrites": {

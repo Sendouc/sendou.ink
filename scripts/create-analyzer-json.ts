@@ -463,6 +463,7 @@ function parametersToSpecialWeaponResult(params: any) {
   const isUltraStamp = () => !!params["SwingBigBlastParam"];
   const isCrabTank = () => !!params["CannonParam"];
   const isKraken = () => !!params["BodyParam"]?.["DamageJumpValue"];
+  const isInkjet = () => !!params["JetParam"];
 
   const SwingDamage = () => {
     if (!isUltraStamp()) return;
@@ -497,6 +498,12 @@ function parametersToSpecialWeaponResult(params: any) {
     return 1200;
   };
 
+  const InkjetDirectDamage = () => {
+    if (!isInkjet()) return;
+
+    return 1200;
+  };
+
   return {
     ArmorHP: params["WeaponSpChariotParam"]?.["ArmorHP"],
     overwrites: resultUnwrapped,
@@ -514,7 +521,8 @@ function parametersToSpecialWeaponResult(params: any) {
       params["spl__BulletSpMicroLaserBitParam"]?.["LaserParam"]?.[
         "LaserDamage"
       ] ??
-      KrakenDirectDamage(),
+      KrakenDirectDamage() ??
+      InkjetDirectDamage(),
     WaveDamage:
       params["spl__BulletSpShockSonarParam"]?.["WaveParam"]?.["Damage"],
     ExhaleBlastParamMinChargeDistanceDamage:
