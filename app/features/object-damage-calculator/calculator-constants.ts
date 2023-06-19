@@ -28,7 +28,7 @@ export const objectDamageJsonKeyPriority: Record<
   Maneuver_SideStep_BombCore: null,
   // added in fresh season 2022
   BlowerExhale: null,
-  Castle: null,
+  Castle: ["BOMB_DIRECT", "SPECIAL_JUMP"],
   CoopEnemyRush: null,
   CoopEnemySakelienBomberBlast: null,
   CoopEnemySakerocketBlast: null,

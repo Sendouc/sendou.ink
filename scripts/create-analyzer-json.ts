@@ -462,6 +462,7 @@ function parametersToSpecialWeaponResult(params: any) {
 
   const isUltraStamp = () => !!params["SwingBigBlastParam"];
   const isCrabTank = () => !!params["CannonParam"];
+  const isKraken = () => !!params["BodyParam"]?.["DamageJumpValue"];
 
   const SwingDamage = () => {
     if (!isUltraStamp()) return;
@@ -490,6 +491,12 @@ function parametersToSpecialWeaponResult(params: any) {
     ];
   };
 
+  const KrakenDirectDamage = () => {
+    if (!isKraken()) return;
+
+    return 1200;
+  };
+
   return {
     ArmorHP: params["WeaponSpChariotParam"]?.["ArmorHP"],
     overwrites: resultUnwrapped,
@@ -506,7 +513,8 @@ function parametersToSpecialWeaponResult(params: any) {
       ] ??
       params["spl__BulletSpMicroLaserBitParam"]?.["LaserParam"]?.[
         "LaserDamage"
-      ],
+      ] ??
+      KrakenDirectDamage(),
     WaveDamage:
       params["spl__BulletSpShockSonarParam"]?.["WaveParam"]?.["Damage"],
     ExhaleBlastParamMinChargeDistanceDamage:
@@ -520,6 +528,7 @@ function parametersToSpecialWeaponResult(params: any) {
     BulletDamageMax: params["ShooterDamageParam"]?.["ValueMax"],
     CannonDamage: Cannon(),
     BumpDamage: isCrabTank() ? 400 : undefined,
+    JumpDamage: params["BodyParam"]?.["DamageJumpValue"],
   };
 }
 

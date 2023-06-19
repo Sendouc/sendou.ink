@@ -120,6 +120,7 @@
   "damage.SPECIAL_BULLET_MAX": "Bullet (Maximum)",
   "damage.SPECIAL_CANNON": "Cannon",
   "damage.SPECIAL_BUMP": "Bump",
+  "damage.SPECIAL_JUMP": "Jump",
   "suffix.seconds": "s",
   "suffix.hp": "hp",
   "suffix.specialPointsShort": "p",

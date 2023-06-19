@@ -134,6 +134,7 @@ export type SpecialWeaponParams = SpecialWeaponParamsObject[SpecialWeaponId] & {
   BulletDamageMax?: number;
   CannonDamage?: Array<DistanceDamage>;
   BumpDamage?: number;
+  JumpDamage?: number;
 };
 
 export type ParamsJson = {

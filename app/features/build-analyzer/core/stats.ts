@@ -433,6 +433,7 @@ const damageTypeToParamsKey: Record<
   SPECIAL_BULLET_MIN: "BulletDamageMin",
   SPECIAL_CANNON: "CannonDamage",
   SPECIAL_BUMP: "BumpDamage",
+  SPECIAL_JUMP: "JumpDamage",
 };
 
 function damages(args: StatFunctionInput): AnalyzedBuild["stats"]["damages"] {

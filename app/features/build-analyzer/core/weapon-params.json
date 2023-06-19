@@ -2017,7 +2017,9 @@
           "Low": 480,
           "Mid": 540
         }
-      }
+      },
+      "DirectDamage": 1200,
+      "JumpDamage": 600
     }
   }
 }
