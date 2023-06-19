@@ -80,7 +80,7 @@ export const objectDamageJsonKeyPriority: Record<
   Geyser: null,
   GoldenIkuraAttack: null,
   InkStormRain: null,
-  InkStorm: null,
+  InkStorm: ["SPECIAL_TICK"],
   Jetpack_BombCore: ["BOMB_DIRECT"],
   Jetpack_Bullet: ["BOMB_NORMAL"],
   Jetpack_Coop: null,

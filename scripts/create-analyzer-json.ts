@@ -464,6 +464,7 @@ function parametersToSpecialWeaponResult(params: any) {
   const isCrabTank = () => !!params["CannonParam"];
   const isKraken = () => !!params["BodyParam"]?.["DamageJumpValue"];
   const isInkjet = () => !!params["JetParam"];
+  const isInkStorm = () => !!params["CloudParam"];
   const isBooyahBomb = () =>
     params["BlastParam"]?.["$type"] === "spl__BulletSpNiceBallBlastParam";
 
@@ -512,6 +513,12 @@ function parametersToSpecialWeaponResult(params: any) {
     return 33;
   };
 
+  const InkStormTickDamage = () => {
+    if (!isInkStorm()) return;
+
+    return 4;
+  };
+
   return {
     ArmorHP: params["WeaponSpChariotParam"]?.["ArmorHP"],
     overwrites: resultUnwrapped,
@@ -544,6 +551,7 @@ function parametersToSpecialWeaponResult(params: any) {
     JumpDamage: params["BodyParam"]?.["DamageJumpValue"],
     TickDamage:
       BooyahBombTickDamage() ??
+      InkStormTickDamage() ??
       params["spl__BulletSpMicroLaserBitParam"]?.["LaserParam"]?.[
         "LaserDamage"
       ],
