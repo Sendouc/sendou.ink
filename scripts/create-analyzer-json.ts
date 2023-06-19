@@ -526,9 +526,6 @@ function parametersToSpecialWeaponResult(params: any) {
       params["spl__BulletSpShockSonarParam"]?.["GeneratorParam"]?.[
         "HitDamage"
       ] ??
-      params["spl__BulletSpMicroLaserBitParam"]?.["LaserParam"]?.[
-        "LaserDamage"
-      ] ??
       KrakenDirectDamage() ??
       InkjetDirectDamage(),
     WaveDamage:
@@ -545,7 +542,11 @@ function parametersToSpecialWeaponResult(params: any) {
     CannonDamage: Cannon(),
     BumpDamage: isCrabTank() ? 400 : undefined,
     JumpDamage: params["BodyParam"]?.["DamageJumpValue"],
-    TickDamage: BooyahBombTickDamage(),
+    TickDamage:
+      BooyahBombTickDamage() ??
+      params["spl__BulletSpMicroLaserBitParam"]?.["LaserParam"]?.[
+        "LaserDamage"
+      ],
   };
 }
 

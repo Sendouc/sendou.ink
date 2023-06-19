@@ -1832,7 +1832,7 @@
           "Mid": 220
         }
       },
-      "DirectDamage": 30
+      "TickDamage": 30
     },
     "10": {
       "overwrites": {
