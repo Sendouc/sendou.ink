@@ -464,6 +464,8 @@ function parametersToSpecialWeaponResult(params: any) {
   const isCrabTank = () => !!params["CannonParam"];
   const isKraken = () => !!params["BodyParam"]?.["DamageJumpValue"];
   const isInkjet = () => !!params["JetParam"];
+  const isBooyahBomb = () =>
+    params["BlastParam"]?.["$type"] === "spl__BulletSpNiceBallBlastParam";
 
   const SwingDamage = () => {
     if (!isUltraStamp()) return;
@@ -504,6 +506,12 @@ function parametersToSpecialWeaponResult(params: any) {
     return 1200;
   };
 
+  const BooyahBombTickDamage = () => {
+    if (!isBooyahBomb()) return;
+
+    return 33;
+  };
+
   return {
     ArmorHP: params["WeaponSpChariotParam"]?.["ArmorHP"],
     overwrites: resultUnwrapped,
@@ -537,6 +545,7 @@ function parametersToSpecialWeaponResult(params: any) {
     CannonDamage: Cannon(),
     BumpDamage: isCrabTank() ? 400 : undefined,
     JumpDamage: params["BodyParam"]?.["DamageJumpValue"],
+    TickDamage: BooyahBombTickDamage(),
   };
 }
 

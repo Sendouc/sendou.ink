@@ -1779,7 +1779,8 @@
           "Low": 0.002,
           "Mid": 0.006
         }
-      }
+      },
+      "TickDamage": 33
     },
     "7": {
       "overwrites": {

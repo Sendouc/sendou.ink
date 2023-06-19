@@ -434,6 +434,7 @@ const damageTypeToParamsKey: Record<
   SPECIAL_CANNON: "CannonDamage",
   SPECIAL_BUMP: "BumpDamage",
   SPECIAL_JUMP: "JumpDamage",
+  SPECIAL_TICK: "TickDamage",
 };
 
 function damages(args: StatFunctionInput): AnalyzedBuild["stats"]["damages"] {
@@ -476,7 +477,6 @@ function damages(args: StatFunctionInput): AnalyzedBuild["stats"]["damages"] {
   return result;
 }
 
-// xxx: TODO: handle damage distance increasing e.g. inkzooka, small special power up icon next to the distance
 function specialWeaponDamages(
   args: StatFunctionInput
 ): AnalyzedBuild["stats"]["specialWeaponDamages"] {

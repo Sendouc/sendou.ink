@@ -121,6 +121,7 @@
   "damage.SPECIAL_CANNON": "Cannon",
   "damage.SPECIAL_BUMP": "Bump",
   "damage.SPECIAL_JUMP": "Jump",
+  "damage.SPECIAL_TICK": "Tick",
   "suffix.seconds": "s",
   "suffix.hp": "hp",
   "suffix.specialPointsShort": "p",

@@ -39,6 +39,7 @@ export const DAMAGE_TYPE = [
   "SPECIAL_BULLET_MIN",
   "SPECIAL_BUMP",
   "SPECIAL_JUMP",
+  "SPECIAL_TICK",
 ] as const;
 
 export const damageTypeToWeaponType: Record<
@@ -80,6 +81,7 @@ export const damageTypeToWeaponType: Record<
   SPECIAL_CANNON: "SPECIAL",
   SPECIAL_BUMP: "SPECIAL",
   SPECIAL_JUMP: "SPECIAL",
+  SPECIAL_TICK: "SPECIAL",
 };
 
 export const multiShot: Partial<Record<MainWeaponId, number>> = {

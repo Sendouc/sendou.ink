@@ -93,7 +93,7 @@ export const objectDamageJsonKeyPriority: Record<
   MovePainter_Direct: null,
   MultiMissile_BombCore: ["BOMB_NORMAL"],
   MultiMissile_Bullet: null,
-  NiceBall: null,
+  NiceBall: ["SPECIAL_TICK"],
   ObjectEffect_Up: null,
   RollerCore: ["ROLL_OVER"],
   RollerSplash_Compact: [

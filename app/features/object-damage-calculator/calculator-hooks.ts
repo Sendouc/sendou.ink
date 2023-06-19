@@ -135,6 +135,7 @@ export const damageTypePriorityList = [
   "SPECIAL_BULLET_MIN",
   "SPECIAL_BUMP",
   "SPECIAL_JUMP",
+  "SPECIAL_TICK",
 ] as const;
 assertType<
   (typeof damageTypePriorityList)[number],
