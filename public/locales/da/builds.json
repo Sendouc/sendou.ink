@@ -20,7 +20,16 @@
   "stats.percentage.title": "Kun primære egenskaber",
   "stats.all": "Alle",
 
+  "addFilter": "Tilføj filter",
   "linkButton.abilityStats": "Egenskabsstatistikker",
   "linkButton.popularBuilds": "Populære sæt",
-  "noPopularBuilds": "Der er på nuværende tidspunkt ingen populære sæt for det valgte våben."
+  "noPopularBuilds": "Der er på nuværende tidspunkt ingen populære sæt for det valgte våben.",
+
+  "emptyAbilitySlot": "Tomt egenskabsfelt",
+
+  "filters.title": "Filter {{number}}",
+  "filters.has": "Indeholder",
+  "filters.does.not.have": "Indeholder ikke",
+  "filters.atLeast": "Mindst",
+  "filters.atMost": "Maks"
 }
