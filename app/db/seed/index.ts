@@ -5,6 +5,7 @@ import invariant from "tiny-invariant";
 import { ADMIN_DISCORD_ID, ADMIN_ID, INVITE_CODE_LENGTH } from "~/constants";
 import { db } from "~/db";
 import { sql } from "~/db/sql";
+import type { MainWeaponId } from "~/modules/in-game-lists";
 import {
   abilities,
   clothesGearIds,
@@ -40,6 +41,7 @@ import {
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { TOURNAMENT } from "~/features/tournament/tournament-constants";
 import type { SeedVariation } from "~/routes/seed";
+import { nullFilledArray, pickRandomItem } from "~/utils/arrays";
 
 const calendarEventWithToToolsSz = () => calendarEventWithToTools(true);
 const calendarEventWithToToolsTeamsSz = () =>
@@ -73,6 +75,7 @@ const basicSeeds = (variation?: SeedVariation | null) => [
   variation === "NO_TOURNAMENT_TEAMS"
     ? undefined
     : calendarEventWithToToolsTeamsSz,
+  tournamentSubs,
   adminBuilds,
   manySplattershotBuilds,
   detailedTeam,
@@ -127,13 +130,14 @@ function wipeDB() {
 
 function adminUser() {
   db.users.upsert({
-    discordDiscriminator: "4059",
+    discordDiscriminator: "0",
     discordId: ADMIN_DISCORD_ID,
     discordName: "Sendou",
     twitch: "Sendou",
     youtubeId: "UCWbJLXByvsfQvTcR4HLPs5Q",
     discordAvatar: ADMIN_TEST_AVATAR,
     twitter: "sendouc",
+    discordUniqueName: "sendou",
   });
 }
 
@@ -171,6 +175,7 @@ function nzapUser() {
     youtubeId: null,
     discordAvatar: NZAP_TEST_AVATAR,
     twitter: null,
+    discordUniqueName: null,
   });
 }
 
@@ -215,32 +220,38 @@ function userProfiles() {
   for (let id = 3; id < 500; id++) {
     if (Math.random() < 0.25) continue; // 75% have bio
 
-    sql.prepare(`UPDATE "User" SET bio = $bio WHERE id = $id`).run({
-      id,
-      bio: faker.lorem.paragraphs(
-        faker.helpers.arrayElement([1, 1, 1, 2, 3, 4]),
-        "\n\n"
-      ),
-    });
+    sql
+      .prepare(
+        `UPDATE "User" SET bio = $bio, country = $country WHERE id = $id`
+      )
+      .run({
+        id,
+        bio: faker.lorem.paragraphs(
+          faker.helpers.arrayElement([1, 1, 1, 2, 3, 4]),
+          "\n\n"
+        ),
+        country: Math.random() > 0.5 ? faker.location.countryCode() : null,
+      });
   }
 }
 
 function fakeUser(usedNames: Set<string>) {
   return () => ({
     discordAvatar: null,
-    discordDiscriminator: String(faker.random.numeric(4)),
-    discordId: String(faker.random.numeric(17)),
+    discordDiscriminator: String(faker.string.numeric(4)),
+    discordId: String(faker.string.numeric(17)),
     discordName: uniqueDiscordName(usedNames),
     twitch: null,
     twitter: null,
     youtubeId: null,
+    discordUniqueName: null,
   });
 }
 
 function uniqueDiscordName(usedNames: Set<string>) {
-  let result = faker.random.word();
+  let result = faker.internet.userName();
   while (usedNames.has(result)) {
-    result = faker.random.word();
+    result = faker.internet.userName();
   }
   usedNames.add(result);
 
@@ -352,10 +363,7 @@ function syncPlusTiers() {
 
 function badgesToAdmin() {
   const availableBadgeIds = shuffle(
-    sql
-      .prepare(`select "id" from "Badge"`)
-      .all()
-      .map((b) => b.id)
+    (sql.prepare(`select "id" from "Badge"`).all() as any[]).map((b) => b.id)
   ).slice(0, 8) as number[];
 
   const badgesWithDuplicates = availableBadgeIds.flatMap((id) =>
@@ -375,27 +383,25 @@ function badgesToAdmin() {
 
 function getAvailableBadgeIds() {
   return shuffle(
-    sql
-      .prepare(`select "id" from "Badge"`)
-      .all()
-      .map((b) => b.id)
+    (sql.prepare(`select "id" from "Badge"`).all() as any[]).map((b) => b.id)
   );
 }
 
 function badgesToUsers() {
   const availableBadgeIds = getAvailableBadgeIds();
 
-  let userIds = sql
-    .prepare(`select "id" from "User" where id != 2`) // no badges for N-ZAP
-    .all()
-    .map((u) => u.id) as number[];
+  let userIds = (
+    sql
+      .prepare(`select "id" from "User" where id != 2`) // no badges for N-ZAP
+      .all() as any[]
+  ).map((u) => u.id) as number[];
 
   for (const id of availableBadgeIds) {
     userIds = shuffle(userIds);
     for (
       let i = 0;
       i <
-      faker.datatype.number({
+      faker.number.int({
         min: 1,
         max: 24,
       });
@@ -425,9 +431,11 @@ function badgeManagers() {
 }
 
 function patrons() {
-  const userIds = sql
-    .prepare(`select "id" from "User" order by random() limit 50`)
-    .all()
+  const userIds = (
+    sql
+      .prepare(`select "id" from "User" order by random() limit 50`)
+      .all() as any[]
+  )
     .map((u) => u.id)
     .filter((id) => id !== NZAP_TEST_ID);
 
@@ -445,10 +453,9 @@ function patrons() {
 }
 
 function userIdsInRandomOrder(specialLast = false) {
-  const rows = sql
-    .prepare(`select "id" from "User" order by random()`)
-    .all()
-    .map((u) => u.id) as number[];
+  const rows = (
+    sql.prepare(`select "id" from "User" order by random()`).all() as any[]
+  ).map((u) => u.id) as number[];
 
   if (!specialLast) return rows;
 
@@ -456,10 +463,9 @@ function userIdsInRandomOrder(specialLast = false) {
 }
 
 function userIdsInAscendingOrderById() {
-  return sql
-    .prepare(`select "id" from "User" order by id asc`)
-    .all()
-    .map((u) => u.id) as number[];
+  return (
+    sql.prepare(`select "id" from "User" order by id asc`).all() as any[]
+  ).map((u) => u.id) as number[];
 }
 
 function calendarEvents() {
@@ -514,7 +520,9 @@ function calendarEvents() {
 
     const twoDayEvent = Math.random() > 0.9;
     const startTime =
-      id % 2 === 0 ? faker.date.soon(42) : faker.date.recent(42);
+      id % 2 === 0
+        ? faker.date.soon({ days: 42 })
+        : faker.date.recent({ days: 42 });
     startTime.setMinutes(0, 0, 0);
 
     sql
@@ -582,15 +590,16 @@ function calendarEventBadges() {
 function calendarEventResults() {
   let userIds = userIdsInRandomOrder();
   const eventIdsOfPast = new Set<number>(
-    sql
-      .prepare(
-        `select "CalendarEvent"."id" 
+    (
+      sql
+        .prepare(
+          `select "CalendarEvent"."id" 
           from "CalendarEvent" 
           join "CalendarEventDate" on "CalendarEventDate"."eventId" = "CalendarEvent"."id"
           where "CalendarEventDate"."startTime" < $startTime`
-      )
-      .all({ startTime: dateToDatabaseTimestamp(new Date()) })
-      .map((r) => r.id)
+        )
+        .all({ startTime: dateToDatabaseTimestamp(new Date()) }) as any[]
+    ).map((r) => r.id)
   );
 
   for (const eventId of eventIdsOfPast) {
@@ -599,7 +608,7 @@ function calendarEventResults() {
 
     db.calendarEvents.upsertReportedScores({
       eventId,
-      participantCount: faker.datatype.number({ min: 10, max: 250 }),
+      participantCount: faker.number.int({ min: 10, max: 250 }),
       results: new Array(faker.helpers.arrayElement([1, 1, 2, 3, 3, 3, 8, 8]))
         .fill(null)
         // eslint-disable-next-line no-loop-func
@@ -614,7 +623,7 @@ function calendarEventResults() {
               const withStringName = Math.random() < 0.2;
 
               return {
-                name: withStringName ? faker.name.firstName() : null,
+                name: withStringName ? faker.person.firstName() : null,
                 userId: withStringName ? null : userIds.pop()!,
               };
             }),
@@ -879,6 +888,73 @@ function calendarEventWithToToolsTeams(sz?: boolean) {
   }
 }
 
+function tournamentSubs() {
+  for (let id = 100; id < 120; id++) {
+    const includedWeaponIds: MainWeaponId[] = [];
+
+    sql
+      .prepare(
+        /* sql */ `
+      insert into "TournamentSub" (
+        "userId",
+        "tournamentId",
+        "canVc",
+        "bestWeapons",
+        "okWeapons",
+        "message",
+        "visibility"
+      ) values (
+        @userId,
+        @tournamentId,
+        @canVc,
+        @bestWeapons,
+        @okWeapons,
+        @message,
+        @visibility
+      )
+    `
+      )
+      .run({
+        userId: id,
+        tournamentId: 1,
+        canVc: Number(Math.random() > 0.5),
+        bestWeapons: nullFilledArray(
+          faker.helpers.arrayElement([1, 1, 1, 2, 2, 3, 4, 5])
+        )
+          .map(() => {
+            while (true) {
+              const weaponId = pickRandomItem(mainWeaponIds);
+              if (!includedWeaponIds.includes(weaponId)) {
+                includedWeaponIds.push(weaponId);
+                return weaponId;
+              }
+            }
+          })
+          .join(","),
+        okWeapons:
+          Math.random() > 0.5
+            ? null
+            : nullFilledArray(
+                faker.helpers.arrayElement([1, 1, 1, 2, 2, 3, 4, 5])
+              )
+                .map(() => {
+                  while (true) {
+                    const weaponId = pickRandomItem(mainWeaponIds);
+                    if (!includedWeaponIds.includes(weaponId)) {
+                      includedWeaponIds.push(weaponId);
+                      return weaponId;
+                    }
+                  }
+                })
+                .join(","),
+        message: Math.random() > 0.5 ? null : faker.lorem.paragraph(),
+        visibility: id < 105 ? "+1" : id < 110 ? "+2" : id < 115 ? "+2" : "ALL",
+      });
+  }
+
+  return null;
+}
+
 const randomAbility = (legalTypes: AbilityType[]) => {
   const randomOrderAbilities = shuffle([...abilities]);
 
@@ -1054,15 +1130,16 @@ function detailedTeam() {
 }
 
 function otherTeams() {
-  const usersInTeam = sql
-    .prepare(
-      /*sql */ `select
+  const usersInTeam = (
+    sql
+      .prepare(
+        /*sql */ `select
     "userId"
     from "AllTeamMember"
     `
-    )
-    .all()
-    .map((row) => row.userId);
+      )
+      .all() as any[]
+  ).map((row) => row.userId);
 
   const userIds = userIdsInRandomOrder().filter(
     (u) => !usersInTeam.includes(u) && u !== 2
@@ -1265,10 +1342,11 @@ function xRankPlacements() {
 function userFavBadges() {
   // randomly choose Sendou's favorite badge
   const badgeList = shuffle(
-    sql
-      .prepare(`select "badgeId" from "BadgeOwner" where "userId" = 1`)
-      .all()
-      .map((row) => row.badgeId)
+    (
+      sql
+        .prepare(`select "badgeId" from "BadgeOwner" where "userId" = 1`)
+        .all() as any[]
+    ).map((row) => row.badgeId)
   );
   sql
     .prepare(`update "User" set "favoriteBadgeId" = $id where "id" = 1`)

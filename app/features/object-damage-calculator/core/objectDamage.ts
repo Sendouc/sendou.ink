@@ -114,6 +114,8 @@ export function resolveAllUniqueDamageTypes({
       ? analyzed.stats.subWeaponDefenseDamages
           .filter((damage) => damage.subWeaponId === anyWeapon.id)
           .map((d) => d.type)
+      : anyWeapon.type === "SPECIAL"
+      ? analyzed.stats.specialWeaponDamages.map((d) => d.type)
       : analyzed.stats.damages.map((d) => d.type);
 
   return removeDuplicates(damageTypes);
@@ -138,7 +140,12 @@ function resolveFilteredDamages({
     );
   }
 
-  return analyzed.stats.damages
+  const damages =
+    anyWeapon.type === "SPECIAL"
+      ? analyzed.stats.specialWeaponDamages
+      : analyzed.stats.damages;
+
+  return damages
     .filter((d) => d.type === damageType || toCombine?.combineWith === d.type)
     .map((damage) => {
       if (!isMultiShot || !damage.multiShots) return damage;

@@ -429,7 +429,7 @@ function MapListSection({ teams }: { teams: [id: number, id: number] }) {
         canReportTournamentScore({
           event: parentRouteData.event,
           match: data.match,
-          ownedTeamId: parentRouteData.ownedTeamId,
+          ownedTeamId: parentRouteData.ownTeam?.id,
           user,
         })
           ? "EDIT"

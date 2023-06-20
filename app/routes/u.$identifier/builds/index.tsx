@@ -22,6 +22,7 @@ import type { MainWeaponId } from "~/modules/in-game-lists";
 import { mainWeaponIds } from "~/modules/in-game-lists";
 import { WeaponImage } from "~/components/Image";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
+import { buildsByUserId } from "~/features/builds";
 
 const buildsActionSchema = z.object({
   buildToDeleteId: z.preprocess(actualNumber, id),
@@ -35,9 +36,9 @@ export const action: ActionFunction = async ({ request }) => {
   });
 
   if (
-    !db.builds
-      .buildsByUserId({ userId: user.id, loggedInUserId: user?.id })
-      .some((build) => build.id === data.buildToDeleteId)
+    !buildsByUserId({ userId: user.id, loggedInUserId: user?.id }).some(
+      (build) => build.id === data.buildToDeleteId
+    )
   ) {
     throw new Response(null, { status: 400 });
   }
@@ -56,7 +57,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const { identifier } = userParamsSchema.parse(params);
   const user = notFoundIfFalsy(db.users.findByIdentifier(identifier));
 
-  const builds = db.builds.buildsByUserId({
+  const builds = buildsByUserId({
     userId: user.id,
     loggedInUserId: loggedInUser?.id,
   });

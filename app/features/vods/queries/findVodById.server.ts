@@ -47,10 +47,10 @@ const videoMatchesStm = sql.prepare(/* sql */ `
 `);
 
 export function findVodById(id: Vod["id"]): Vod | null {
-  const video = videoStm.get({ id });
+  const video = videoStm.get({ id }) as any;
   if (!video) return null;
 
-  const matches = videoMatchesStm.all({ id });
+  const matches = videoMatchesStm.all({ id }) as any[];
 
   return {
     ...video,

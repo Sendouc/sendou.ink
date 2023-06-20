@@ -33,7 +33,7 @@ export type AllTeams = Array<
 >;
 
 export function allTeams(): AllTeams {
-  const rows = stm.all();
+  const rows = stm.all() as any[];
 
   return rows.map((row) => {
     return {

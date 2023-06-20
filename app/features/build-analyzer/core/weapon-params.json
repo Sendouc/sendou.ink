@@ -648,6 +648,11 @@
       "subWeaponId": 7,
       "specialWeaponId": 3,
       "WeaponSpeedType": "Fast",
+      "BodyParam_Damage": 700,
+      "VerticalSwingUnitGroupParam_DamageParam_DamageMinValue": 350,
+      "VerticalSwingUnitGroupParam_DamageParam_DamageMaxValue": 1200,
+      "WideSwingUnitGroupParam_DamageParam_DamageMinValue": 250,
+      "WideSwingUnitGroupParam_DamageParam_DamageMaxValue": 1000,
       "InkConsume_WeaponSwingParam": 0.0396
     },
     "1001": {
@@ -655,18 +660,33 @@
       "subWeaponId": 2,
       "specialWeaponId": 1,
       "WeaponSpeedType": "Fast",
+      "BodyParam_Damage": 700,
+      "VerticalSwingUnitGroupParam_DamageParam_DamageMinValue": 350,
+      "VerticalSwingUnitGroupParam_DamageParam_DamageMaxValue": 1200,
+      "WideSwingUnitGroupParam_DamageParam_DamageMinValue": 250,
+      "WideSwingUnitGroupParam_DamageParam_DamageMaxValue": 1000,
       "InkConsume_WeaponSwingParam": 0.0396
     },
     "1010": {
       "SpecialPoint": 180,
       "subWeaponId": 6,
       "specialWeaponId": 2,
+      "BodyParam_Damage": 1250,
+      "VerticalSwingUnitGroupParam_DamageParam_DamageMinValue": 400,
+      "VerticalSwingUnitGroupParam_DamageParam_DamageMaxValue": 1500,
+      "WideSwingUnitGroupParam_DamageParam_DamageMinValue": 350,
+      "WideSwingUnitGroupParam_DamageParam_DamageMaxValue": 1500,
       "InkConsume_WeaponSwingParam": 0.085
     },
     "1011": {
       "SpecialPoint": 180,
       "subWeaponId": 8,
       "specialWeaponId": 17,
+      "BodyParam_Damage": 1250,
+      "VerticalSwingUnitGroupParam_DamageParam_DamageMinValue": 400,
+      "VerticalSwingUnitGroupParam_DamageParam_DamageMaxValue": 1500,
+      "WideSwingUnitGroupParam_DamageParam_DamageMinValue": 350,
+      "WideSwingUnitGroupParam_DamageParam_DamageMaxValue": 1500,
       "InkConsume_WeaponSwingParam": 0.085
     },
     "1020": {
@@ -680,12 +700,22 @@
         }
       },
       "WeaponSpeedType": "Slow",
+      "BodyParam_Damage": 1250,
+      "VerticalSwingUnitGroupParam_DamageParam_DamageMinValue": 400,
+      "VerticalSwingUnitGroupParam_DamageParam_DamageMaxValue": 1800,
+      "WideSwingUnitGroupParam_DamageParam_DamageMinValue": 400,
+      "WideSwingUnitGroupParam_DamageParam_DamageMaxValue": 1800,
       "InkConsume_WeaponSwingParam": 0.18
     },
     "1030": {
       "SpecialPoint": 210,
       "subWeaponId": 10,
       "specialWeaponId": 4,
+      "BodyParam_Damage": 1250,
+      "VerticalSwingUnitGroupParam_DamageParam_DamageMinValue": 400,
+      "VerticalSwingUnitGroupParam_DamageParam_DamageMaxValue": 1500,
+      "WideSwingUnitGroupParam_DamageParam_DamageMinValue": 300,
+      "WideSwingUnitGroupParam_DamageParam_DamageMaxValue": 1500,
       "InkConsume_WeaponVerticalSwingParam": 0.12,
       "InkConsume_WeaponWideSwingParam": 0.08
     },
@@ -693,12 +723,22 @@
       "SpecialPoint": 200,
       "subWeaponId": 4,
       "specialWeaponId": 8,
+      "BodyParam_Damage": 700,
+      "VerticalSwingUnitGroupParam_DamageParam_DamageMinValue": 400,
+      "VerticalSwingUnitGroupParam_DamageParam_DamageMaxValue": 1200,
+      "WideSwingUnitGroupParam_DamageParam_DamageMinValue": 350,
+      "WideSwingUnitGroupParam_DamageParam_DamageMaxValue": 700,
       "InkConsume_WeaponSwingParam": 0.1
     },
     "1041": {
       "SpecialPoint": 200,
       "subWeaponId": 12,
       "specialWeaponId": 5,
+      "BodyParam_Damage": 700,
+      "VerticalSwingUnitGroupParam_DamageParam_DamageMinValue": 400,
+      "VerticalSwingUnitGroupParam_DamageParam_DamageMaxValue": 1200,
+      "WideSwingUnitGroupParam_DamageParam_DamageMinValue": 350,
+      "WideSwingUnitGroupParam_DamageParam_DamageMaxValue": 700,
       "InkConsume_WeaponSwingParam": 0.1
     },
     "1100": {
@@ -706,6 +746,9 @@
       "subWeaponId": 0,
       "specialWeaponId": 9,
       "WeaponSpeedType": "Fast",
+      "BodyParam_Damage": 200,
+      "SwingUnitGroupParam_DamageParam_DamageMinValue": 150,
+      "SwingUnitGroupParam_DamageParam_DamageMaxValue": 300,
       "InkConsume_WeaponSwingParam": 0.02
     },
     "1101": {
@@ -713,18 +756,27 @@
       "subWeaponId": 10,
       "specialWeaponId": 11,
       "WeaponSpeedType": "Fast",
+      "BodyParam_Damage": 200,
+      "SwingUnitGroupParam_DamageParam_DamageMinValue": 150,
+      "SwingUnitGroupParam_DamageParam_DamageMaxValue": 300,
       "InkConsume_WeaponSwingParam": 0.02
     },
     "1110": {
       "SpecialPoint": 200,
       "subWeaponId": 1,
       "specialWeaponId": 3,
+      "BodyParam_Damage": 250,
+      "SwingUnitGroupParam_DamageParam_DamageMinValue": 200,
+      "SwingUnitGroupParam_DamageParam_DamageMaxValue": 400,
       "InkConsume_WeaponSwingParam": 0.03
     },
     "1120": {
       "SpecialPoint": 200,
       "subWeaponId": 6,
       "specialWeaponId": 7,
+      "BodyParam_Damage": 300,
+      "SwingUnitGroupParam_DamageParam_DamageMinValue": 250,
+      "SwingUnitGroupParam_DamageParam_DamageMaxValue": 600,
       "InkConsume_WeaponSwingParam": 0.064
     },
     "2000": {
@@ -1636,7 +1688,14 @@
           "Low": 360,
           "Mid": 420
         }
-      }
+      },
+      "DistanceDamage": [
+        {
+          "Damage": 400,
+          "Distance": 4
+        }
+      ],
+      "DirectDamage": 2200
     },
     "2": {
       "overwrites": {
@@ -1664,7 +1723,17 @@
           "Low": 0.15,
           "Mid": 0.1305
         }
-      }
+      },
+      "DistanceDamage": [
+        {
+          "Damage": 350,
+          "Distance": 3.2
+        },
+        {
+          "Damage": 250,
+          "Distance": 4
+        }
+      ]
     },
     "4": {
       "overwrites": {
@@ -1673,7 +1742,21 @@
           "Low": 140,
           "Mid": 190
         }
-      }
+      },
+      "DistanceDamage": [
+        {
+          "Damage": 1500,
+          "Distance": 1.1
+        },
+        {
+          "Damage": 500,
+          "Distance": 2.1
+        },
+        {
+          "Damage": 300,
+          "Distance": 5
+        }
+      ]
     },
     "5": {
       "overwrites": {
@@ -1687,7 +1770,8 @@
           "Low": 480,
           "Mid": 540
         }
-      }
+      },
+      "TickDamage": 4
     },
     "6": {
       "overwrites": {
@@ -1696,7 +1780,8 @@
           "Low": 0.002,
           "Mid": 0.006
         }
-      }
+      },
+      "TickDamage": 33
     },
     "7": {
       "overwrites": {
@@ -1710,7 +1795,9 @@
           "Low": 20,
           "Mid": 24
         }
-      }
+      },
+      "DirectDamage": 300,
+      "WaveDamage": 450
     },
     "8": {
       "overwrites": {
@@ -1724,7 +1811,19 @@
           "Low": 0.8,
           "Mid": 1.1
         }
-      }
+      },
+      "ExhaleBlastParamMinChargeDistanceDamage": [
+        {
+          "Damage": 2200,
+          "Distance": 4
+        }
+      ],
+      "ExhaleBlastParamMaxChargeDistanceDamage": [
+        {
+          "Damage": 2200,
+          "Distance": 8
+        }
+      ]
     },
     "9": {
       "overwrites": {
@@ -1733,7 +1832,8 @@
           "Low": 180,
           "Mid": 220
         }
-      }
+      },
+      "TickDamage": 30
     },
     "10": {
       "overwrites": {
@@ -1762,7 +1862,18 @@
           "Low": 0.63,
           "Mid": 0.665
         }
-      }
+      },
+      "DistanceDamage": [
+        {
+          "Damage": 500,
+          "Distance": 3
+        },
+        {
+          "Damage": 300,
+          "Distance": 5
+        }
+      ],
+      "DirectDamage": 1200
     },
     "11": {
       "overwrites": {
@@ -1771,7 +1882,28 @@
           "Low": 450,
           "Mid": 570
         }
-      }
+      },
+      "SwingDamage": [
+        {
+          "Damage": 1000,
+          "Distance": 0
+        },
+        {
+          "Damage": 400,
+          "Distance": 4
+        }
+      ],
+      "ThrowDamage": [
+        {
+          "Damage": 600,
+          "Distance": 4
+        },
+        {
+          "Damage": 300,
+          "Distance": 8
+        }
+      ],
+      "ThrowDirectDamage": 2200
     },
     "12": {
       "ArmorHP": 5000,
@@ -1781,7 +1913,20 @@
           "Low": 480,
           "Mid": 570
         }
-      }
+      },
+      "BulletDamageMin": 160,
+      "BulletDamageMax": 320,
+      "CannonDamage": [
+        {
+          "Damage": 600,
+          "Distance": 1
+        },
+        {
+          "Damage": 300,
+          "Distance": 5.6
+        }
+      ],
+      "BumpDamage": 400
     },
     "13": {
       "overwrites": {
@@ -1805,7 +1950,17 @@
           "Low": 0.7,
           "Mid": 0.75
         }
-      }
+      },
+      "DistanceDamage": [
+        {
+          "Damage": 2200,
+          "Distance": 7.5
+        },
+        {
+          "Damage": 700,
+          "Distance": 13.5
+        }
+      ]
     },
     "14": {
       "overwrites": {
@@ -1842,7 +1997,21 @@
           "Low": 1,
           "Mid": 1.1
         }
-      }
+      },
+      "DistanceDamage": [
+        {
+          "Damage": 600,
+          "Distance": 2.6
+        },
+        {
+          "Damage": 350,
+          "Distance": 3.8
+        },
+        {
+          "Damage": 350,
+          "Distance": 5
+        }
+      ]
     },
     "17": {
       "overwrites": {
@@ -1851,7 +2020,9 @@
           "Low": 480,
           "Mid": 540
         }
-      }
+      },
+      "DirectDamage": 1200,
+      "JumpDamage": 600
     }
   }
 }

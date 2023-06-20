@@ -23,7 +23,9 @@ import hasTournamentStarted from "../../tournament/queries/hasTournamentStarted.
 import { findByIdentifier } from "../../tournament/queries/findByIdentifier.server";
 import { notFoundIfFalsy, validate } from "~/utils/remix";
 import {
+  SENDOU_INK_BASE_URL,
   tournamentBracketsSubscribePage,
+  tournamentJoinPage,
   tournamentMatchPage,
   tournamentTeamPage,
   userPage,
@@ -60,6 +62,8 @@ import { removeDuplicates } from "~/utils/arrays";
 import { Flag } from "~/components/Flag";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { Popover } from "~/components/Popover";
+import { useCopyToClipboard } from "react-use";
+import { useTranslation } from "~/hooks/useTranslation";
 
 export const links: LinksFunction = () => {
   return [
@@ -169,6 +173,7 @@ export const loader = ({ params }: LoaderArgs) => {
 };
 
 export default function TournamentBracketsPage() {
+  const { t } = useTranslation(["tournament"]);
   const visibility = useVisibilityChange();
   const { revalidate } = useRevalidator();
   const user = useUser();
@@ -177,6 +182,7 @@ export default function TournamentBracketsPage() {
   const navigate = useNavigate();
   const parentRouteData = useOutletContext<TournamentLoaderData>();
 
+  // TODO: bracket i18n
   React.useEffect(() => {
     if (!data.enoughTeams) return;
 
@@ -290,7 +296,7 @@ export default function TournamentBracketsPage() {
               alertClassName="tournament-bracket__start-bracket-alert"
               textClassName="stack horizontal md items-center text-center"
             >
-              This bracket is a preview and subject to change
+              {t("tournament:bracket.wip")}
             </Alert>
           ) : (
             <Alert
@@ -298,23 +304,23 @@ export default function TournamentBracketsPage() {
               alertClassName="tournament-bracket__start-bracket-alert"
               textClassName="stack horizontal md items-center"
             >
-              When everything looks good, finalize the bracket to start the
-              tournament{" "}
+              {t("tournament:bracket.finalize.text")}{" "}
               {adminCanStart() ? (
                 <SubmitButton
                   variant="outlined"
                   size="tiny"
                   testId="finalize-bracket-button"
                 >
-                  Finalize
+                  {t("tournament:bracket.finalize.action")}
                 </SubmitButton>
               ) : (
                 <Popover
-                  buttonChildren={<>Finalize</>}
+                  buttonChildren={
+                    <>{t("tournament:bracket.finalize.action")}</>
+                  }
                   triggerClassName="tiny outlined"
                 >
-                  Bracket can&apos;t be started yet as it is before the start
-                  time
+                  {t("tournament:bracket.beforeStart")}
                 </Popover>
               )}
             </Alert>
@@ -324,14 +330,25 @@ export default function TournamentBracketsPage() {
       {parentRouteData.hasStarted && myTeam ? (
         <TournamentProgressPrompt ownedTeamId={myTeam.id} />
       ) : null}
+      {/* TODO: also hide this if out of the tournament */}
+      {!data.finalStandings &&
+      myTeam &&
+      parentRouteData.hasStarted &&
+      parentRouteData.ownTeam ? (
+        <AddSubsPopOver
+          members={myTeam.members}
+          inviteCode={parentRouteData.ownTeam.inviteCode}
+        />
+      ) : null}
       {data.finalStandings ? (
         <FinalStandings standings={data.finalStandings} />
       ) : null}
       <div className="brackets-viewer" ref={ref}></div>
       {!data.enoughTeams ? (
         <div className="text-center text-lg font-semi-bold text-lighter">
-          Bracket will be shown here when at least{" "}
-          {TOURNAMENT.ENOUGH_TEAMS_TO_START} teams have registered
+          {t("tournament:bracket.waiting", {
+            count: TOURNAMENT.ENOUGH_TEAMS_TO_START,
+          })}
         </div>
       ) : null}
     </div>
@@ -396,6 +413,7 @@ function useAutoRefresh() {
 }
 
 function TournamentProgressPrompt({ ownedTeamId }: { ownedTeamId: number }) {
+  const { t } = useTranslation(["tournament"]);
   const parentRouteData = useOutletContext<TournamentLoaderData>();
   const data = useLoaderData<typeof loader>();
 
@@ -446,7 +464,9 @@ function TournamentProgressPrompt({ ownedTeamId }: { ownedTeamId: number }) {
   if (progress >= Status.Completed) {
     return (
       <TournamentProgressContainer>
-        Thanks for playing in {parentRouteData.event.name}!
+        {t("tournament:bracket.progress.thanksForPlaying", {
+          eventName: parentRouteData.event.name,
+        })}
       </TournamentProgressContainer>
     );
   }
@@ -458,7 +478,7 @@ function TournamentProgressPrompt({ ownedTeamId }: { ownedTeamId: number }) {
 
   return (
     <TournamentProgressContainer>
-      Current opponent: {currentOpponent}
+      {t("tournament:bracket.progress.match", { opponent: currentOpponent })}
       <LinkButton
         to={tournamentMatchPage({
           matchId: currentMatchId,
@@ -467,13 +487,63 @@ function TournamentProgressPrompt({ ownedTeamId }: { ownedTeamId: number }) {
         size="tiny"
         variant="outlined"
       >
-        View
+        {t("tournament:bracket.progress.match.action")}
       </LinkButton>
     </TournamentProgressContainer>
   );
 }
 
+function AddSubsPopOver({
+  members,
+  inviteCode,
+}: {
+  members: unknown[];
+  inviteCode: string;
+}) {
+  const parentRouteData = useOutletContext<TournamentLoaderData>();
+  const { t } = useTranslation(["common", "tournament"]);
+  const [, copyToClipboard] = useCopyToClipboard();
+
+  const subsAvailableToAdd =
+    TOURNAMENT.TEAM_MAX_MEMBERS_BEFORE_START + 1 - members.length;
+
+  const inviteLink = `${SENDOU_INK_BASE_URL}${tournamentJoinPage({
+    eventId: parentRouteData.event.id,
+    inviteCode,
+  })}`;
+
+  return (
+    <Popover
+      buttonChildren={<>{t("tournament:actions.addSub")}</>}
+      triggerClassName="tiny outlined ml-auto"
+      triggerTestId="add-sub-button"
+      containerClassName="mt-4"
+      contentClassName="text-xs"
+    >
+      {t("tournament:actions.sub.prompt", { count: subsAvailableToAdd })}
+      {subsAvailableToAdd > 0 ? (
+        <>
+          <Divider className="my-2" />
+          <div>{t("tournament:actions.shareLink", { inviteLink })}</div>
+          <div className="my-2 flex justify-center">
+            <Button
+              size="tiny"
+              onClick={() => copyToClipboard(inviteLink)}
+              variant="minimal"
+              className="tiny"
+              testId="copy-invite-link-button"
+            >
+              {t("common:actions.copyToClipboard")}
+            </Button>
+          </div>
+        </>
+      ) : null}
+    </Popover>
+  );
+}
+
 function FinalStandings({ standings }: { standings: FinalStanding[] }) {
+  const { t } = useTranslation(["tournament"]);
   const parentRouteData = useOutletContext<TournamentLoaderData>();
   const [viewAll, setViewAll] = React.useState(false);
 
@@ -610,7 +680,9 @@ function FinalStandings({ standings }: { standings: FinalStanding[] }) {
         size="tiny"
         onClick={() => setViewAll((v) => !v)}
       >
-        {viewAll ? "Show less" : "Show more"}
+        {viewAll
+          ? t("tournament:bracket.standings.showLess")
+          : t("tournament:bracket.standings.showMore")}
       </Button>
     </div>
   );
@@ -629,6 +701,7 @@ function TournamentProgressContainer({
 }
 
 function WaitingForMatchText() {
+  const { t } = useTranslation(["tournament"]);
   const [showDot, setShowDot] = React.useState(false);
 
   React.useEffect(() => {
@@ -641,7 +714,7 @@ function WaitingForMatchText() {
 
   return (
     <div>
-      Waiting for match..
+      {t("tournament:bracket.progress.waiting")}..
       <span className={clsx({ invisible: !showDot })}>.</span>
     </div>
   );

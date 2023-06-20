@@ -1,5 +1,5 @@
 import type { CacheEntry } from "cachified";
-import LRUCache from "lru-cache";
+import { LRUCache } from "lru-cache";
 
 declare global {
   // This preserves the LRU cache during development

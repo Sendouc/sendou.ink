@@ -8,6 +8,7 @@ set
   "motionSens" = @motionSens,
   "inGameName" = @inGameName,
   "css" = @css,
-  "favoriteBadgeId" = @favoriteBadgeId
+  "favoriteBadgeId" = @favoriteBadgeId,
+  "showDiscordUniqueName" = @showDiscordUniqueName
 where
   "id" = @id returning *

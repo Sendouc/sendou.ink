@@ -58,7 +58,7 @@ export const createVod = sql.transaction(
         startsAt: match.startsAt,
         stageId: match.stageId,
         mode: match.mode,
-      });
+      }) as any;
 
       for (const [i, weaponSplId] of match.weapons.entries()) {
         createVideoMatchPlayerStm.run({

@@ -6,12 +6,6 @@ import { buildStats } from "./stats";
 
 const AnalyzeBuild = suite("Analyze build");
 
-// TODO: all weapons should have damage
-const weaponsWithoutDmg: MainWeaponId[] = [
-  1000, 1010, 1020, 1030, 1100, 1110, 7010, 7020, 8000, 8010,
-  /* chill season, */ 1001, 1040, 1101, /* fresh season */ 1011,
-  /* sizzle season  */ 1041, 1120,
-];
 AnalyzeBuild("Every main weapon has damage", () => {
   const weaponsWithoutDamage: MainWeaponId[] = [];
 
@@ -26,7 +20,7 @@ AnalyzeBuild("Every main weapon has damage", () => {
         (dmg) => damageTypeToWeaponType[dmg.type] === "MAIN"
       ).length > 0;
 
-    if (!hasDamage && !weaponsWithoutDmg.includes(weaponSplId)) {
+    if (!hasDamage) {
       weaponsWithoutDamage.push(weaponSplId);
     }
   }

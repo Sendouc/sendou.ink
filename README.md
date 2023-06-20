@@ -201,6 +201,7 @@ Note: This is only useful if you have access to a production running on Render.c
 6. `npm run create-misc-json`
 7. `npm run create-gear-json`
 8. `npm run create-analyzer-json`
+   8a. Double check that no hard-coded special damages changed
 9. `npm run create-object-dmg-json`
 10. Fill new weapon IDs by category to `weapon-ids.ts` (easy to take from the diff of English weapons.json)
 11. Get gear IDs for each slot from /output folder and also update gear id files.

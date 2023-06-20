@@ -38,12 +38,12 @@ export const updateAllCommand: BotCommand = {
 
 async function getUsersToUpdate(client: Client<boolean>) {
   const usersSeen = new Set<string>();
-  const userUpdates: Array<
-    Pick<
-      User,
-      "discordId" | "discordName" | "discordDiscriminator" | "discordAvatar"
-    >
-  > = [];
+  const userUpdates: Array<{
+    discordId: string;
+    discordAvatar: string | null;
+    discordName: string | null;
+    discordUniqueName: string | null;
+  }> = [];
   for (const guildId of guildsToCrawlForUpdates) {
     const guild = client.guilds.cache.find((g) => g.id === guildId);
     invariant(guild);
@@ -51,11 +51,14 @@ async function getUsersToUpdate(client: Client<boolean>) {
     for (const [, { user }] of await guild.members.fetch()) {
       if (usersSeen.has(user.id)) continue;
 
+      const hasUniqueUsername = user.discriminator === "0";
+
+      // TODO: global_name when discord.js supports it
       userUpdates.push({
         discordId: user.id,
         discordAvatar: user.avatar,
-        discordDiscriminator: user.discriminator,
-        discordName: user.username,
+        discordName: hasUniqueUsername ? null : user.username,
+        discordUniqueName: hasUniqueUsername ? user.username : null,
       });
 
       usersSeen.add(user.id);

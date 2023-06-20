@@ -5,6 +5,7 @@ export {
   serializeBuild,
   hpDivided,
   validatedAnyWeaponFromSearchParams,
+  buildToAbilityPoints,
 } from "./core/utils";
 export type {
   DamageType,

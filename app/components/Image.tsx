@@ -3,6 +3,7 @@ import type { MainWeaponId, ModeShort, StageId } from "~/modules/in-game-lists";
 import {
   mainWeaponImageUrl,
   modeImageUrl,
+  outlinedFiveStarMainWeaponImageUrl,
   outlinedMainWeaponImageUrl,
   stageImageUrl,
 } from "~/utils/urls";
@@ -59,7 +60,7 @@ export function Image({
 
 type WeaponImageProps = {
   weaponSplId: MainWeaponId;
-  variant: "badge" | "build";
+  variant: "badge" | "badge-5-star" | "build";
 } & Omit<ImageProps, "path" | "alt" | "title">;
 
 export function WeaponImage({
@@ -79,6 +80,8 @@ export function WeaponImage({
       path={
         variant === "badge"
           ? outlinedMainWeaponImageUrl(weaponSplId)
+          : variant == "badge-5-star"
+          ? outlinedFiveStarMainWeaponImageUrl(weaponSplId)
           : mainWeaponImageUrl(weaponSplId)
       }
     />

@@ -83,7 +83,7 @@ export const links: LinksFunction = () => {
 };
 
 export const handle: SendouRouteHandle = {
-  i18n: ["weapons", "analyzer"],
+  i18n: ["weapons", "analyzer", "builds"],
   breadcrumb: () => ({
     imgPath: navIconUrl("analyzer"),
     href: ANALYZER_URL,
@@ -211,7 +211,7 @@ export default function BuildAnalyzerPage() {
           </div>
           <div className="stack md items-center w-full">
             <div className="w-full">
-              <Tabs className="analyzer__sub-nav">
+              <Tabs className="analyzer__sub-nav" compact>
                 <Tab
                   active={focused === 1}
                   onClick={() => handleChange({ newFocused: 1 })}
@@ -700,6 +700,19 @@ export default function BuildAnalyzerPage() {
                 values={analyzed.stats.damages}
                 multiShots={analyzed.weapon.multiShots}
               />
+            </StatCategory>
+          )}
+
+          {analyzed.stats.specialWeaponDamages.length > 0 && (
+            <StatCategory
+              title={t("analyzer:stat.category.special.damage", {
+                specialWeapon: t(
+                  `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
+                ),
+              })}
+              containerClassName="analyzer__table-container"
+            >
+              <DamageTable values={analyzed.stats.specialWeaponDamages} />
             </StatCategory>
           )}
 
@@ -1249,7 +1262,7 @@ function DamageTable({
   values:
     | AnalyzedBuild["stats"]["damages"]
     | AnalyzedBuild["stats"]["subWeaponDefenseDamages"];
-  multiShots: AnalyzedBuild["weapon"]["multiShots"];
+  multiShots?: AnalyzedBuild["weapon"]["multiShots"];
 }) {
   const { t } = useTranslation(["weapons", "analyzer"]);
 

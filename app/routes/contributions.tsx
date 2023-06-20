@@ -57,6 +57,10 @@ const TRANSLATORS: Array<{
     language: "fr",
   },
   {
+    translators: ["shachar700"],
+    language: "he",
+  },
+  {
     translators: [{ name: "funyaaa", twitter: "funyaaa1" }, "taqm"],
     language: "ja",
   },
@@ -77,7 +81,7 @@ const TRANSLATORS: Array<{
     language: "ru",
   },
   {
-    translators: ["たここ", "ShanglinMo", "gellneko", "zenpk"],
+    translators: ["たここ", "ShanglinMo", "gellneko", "zenpk", "chenyenru"],
     language: "zh",
   },
 ];

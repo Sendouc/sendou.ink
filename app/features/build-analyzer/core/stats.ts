@@ -12,6 +12,8 @@ import {
   CURLING_BOMB_ID,
   AUTO_BOMB_ID,
   TORPEDO_ID,
+  ZIPCASTER_ID,
+  CRAB_TANK_ID,
 } from "~/modules/in-game-lists";
 import { ANGLE_SHOOTER_ID } from "~/modules/in-game-lists";
 import { INK_MINE_ID, POINT_SENSOR_ID } from "~/modules/in-game-lists";
@@ -21,6 +23,7 @@ import type {
   DamageType,
   InkConsumeType,
   MainWeaponParams,
+  SpecialWeaponParams,
   StatFunctionInput,
   SubWeaponParams,
 } from "../analyzer-types";
@@ -107,6 +110,7 @@ export function buildStats({
       specialLostSplattedByRP: specialLost(input, true),
       fullInkTankOptions: fullInkTankOptions(input),
       damages: damages(input),
+      specialWeaponDamages: specialWeaponDamages(input),
       subWeaponDefenseDamages: subWeaponDefenseDamages(input),
       mainWeaponWhiteInkSeconds:
         typeof mainWeaponParams.InkRecoverStop === "number"
@@ -386,7 +390,10 @@ const damageTypeToParamsKey: Record<
   DamageType,
   | keyof MainWeaponParams
   | keyof SubWeaponParams
-  | Array<keyof MainWeaponParams | keyof SubWeaponParams>
+  | keyof SpecialWeaponParams
+  | Array<
+      keyof MainWeaponParams | keyof SubWeaponParams | keyof SpecialWeaponParams
+    >
 > = {
   NORMAL_MIN: "DamageParam_ValueMin",
   NORMAL_MAX: "DamageParam_ValueMax",
@@ -400,6 +407,13 @@ const damageTypeToParamsKey: Record<
     "DistanceDamage_BlastParamChase",
   ],
   SPLASH: ["BlastParam_SplashDamage", "DistanceDamage_SplashBlastParam"],
+  SPLASH_MIN: "SwingUnitGroupParam_DamageParam_DamageMinValue",
+  SPLASH_MAX: "SwingUnitGroupParam_DamageParam_DamageMaxValue",
+  SPLASH_HORIZONTAL_MIN: "WideSwingUnitGroupParam_DamageParam_DamageMinValue",
+  SPLASH_HORIZONTAL_MAX: "WideSwingUnitGroupParam_DamageParam_DamageMaxValue",
+  SPLASH_VERTICAL_MIN: "VerticalSwingUnitGroupParam_DamageParam_DamageMinValue",
+  SPLASH_VERTICAL_MAX: "VerticalSwingUnitGroupParam_DamageParam_DamageMaxValue",
+  ROLL_OVER: "BodyParam_Damage",
   FULL_CHARGE: "DamageParam_ValueFullCharge",
   MAX_CHARGE: "DamageParam_ValueMaxCharge",
   TAP_SHOT: "DamageParam_ValueMinCharge",
@@ -409,6 +423,18 @@ const damageTypeToParamsKey: Record<
   SPLATANA_HORIZONTAL_DIRECT: "DamageParam_SplatanaHorizontalDirect",
   BOMB_NORMAL: "DistanceDamage",
   BOMB_DIRECT: "DirectDamage",
+  WAVE: "WaveDamage",
+  SPECIAL_MAX_CHARGE: "ExhaleBlastParamMaxChargeDistanceDamage",
+  SPECIAL_MIN_CHARGE: "ExhaleBlastParamMinChargeDistanceDamage",
+  SPECIAL_SWING: "SwingDamage",
+  SPECIAL_THROW: "ThrowDamage",
+  SPECIAL_THROW_DIRECT: "ThrowDirectDamage",
+  SPECIAL_BULLET_MAX: "BulletDamageMax",
+  SPECIAL_BULLET_MIN: "BulletDamageMin",
+  SPECIAL_CANNON: "CannonDamage",
+  SPECIAL_BUMP: "BumpDamage",
+  SPECIAL_JUMP: "JumpDamage",
+  SPECIAL_TICK: "TickDamage",
 };
 
 function damages(args: StatFunctionInput): AnalyzedBuild["stats"]["damages"] {
@@ -446,6 +472,71 @@ function damages(args: StatFunctionInput): AnalyzedBuild["stats"]["damages"] {
         multiShots: multiShot[args.weaponSplId],
       });
     }
+  }
+
+  return result;
+}
+
+function specialWeaponDamages(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["specialWeaponDamages"] {
+  const result: AnalyzedBuild["stats"]["specialWeaponDamages"] = [];
+
+  for (const type of DAMAGE_TYPE) {
+    for (const key of [damageTypeToParamsKey[type]].flat()) {
+      const value = args.specialWeaponParams[key as keyof SpecialWeaponParams];
+
+      if (Array.isArray(value)) {
+        for (const subValue of value.flat()) {
+          result.push({
+            type,
+            value: subValue.Damage / 10,
+            distance: subValue.Distance,
+            id: semiRandomId(),
+            multiShots: multiShot[args.weaponSplId],
+          });
+        }
+
+        continue;
+      }
+
+      if (typeof value !== "number") continue;
+
+      result.push({
+        id: semiRandomId(),
+        type,
+        value: value / 10,
+        shotsToSplat: shotsToSplat({
+          value,
+          type,
+          multiShots: multiShot[args.weaponSplId],
+        }),
+        multiShots: multiShot[args.weaponSplId],
+      });
+    }
+  }
+
+  // Artifically combined damages
+  if (args.mainWeaponParams.specialWeaponId === ZIPCASTER_ID) {
+    result.unshift({
+      id: semiRandomId(),
+      distance: 0,
+      value: sumArray(result.map((v) => v.value)),
+      type: result[0].type,
+    });
+  }
+  if (args.mainWeaponParams.specialWeaponId === CRAB_TANK_ID) {
+    const cannonDamages = result.filter((d) => d.type === "SPECIAL_CANNON");
+    const firstCannonDamageIdx = result.findIndex(
+      (d) => d.type === "SPECIAL_CANNON"
+    );
+
+    result.splice(firstCannonDamageIdx, 0, {
+      id: semiRandomId(),
+      distance: 0,
+      value: sumArray(cannonDamages.map((v) => v.value)),
+      type: "SPECIAL_CANNON",
+    });
   }
 
   return result;

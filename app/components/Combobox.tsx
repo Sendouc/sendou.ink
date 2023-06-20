@@ -14,12 +14,17 @@ import {
   subWeaponIds,
   weaponCategories,
 } from "~/modules/in-game-lists";
-import { nonBombSubWeaponIds } from "~/modules/in-game-lists/weapon-ids";
+import {
+  nonBombSubWeaponIds,
+  nonDamagingSpecialWeaponIds,
+  specialWeaponIds,
+} from "~/modules/in-game-lists/weapon-ids";
 import { type SerializedMapPoolEvent } from "~/routes/calendar/map-pool-events";
 import type { Unpacked } from "~/utils/types";
 import {
   gearImageUrl,
   mainWeaponImageUrl,
+  specialWeaponImageUrl,
   subWeaponImageUrl,
 } from "~/utils/urls";
 import { Image } from "./Image";
@@ -304,6 +309,16 @@ export function AllWeaponCombobox({
         value: `SUB_${subWeaponId}`,
         label: t(`SUB_${subWeaponId}`),
         imgPath: subWeaponImageUrl(subWeaponId),
+      });
+    }
+
+    for (const specialWeaponId of specialWeaponIds) {
+      if (nonDamagingSpecialWeaponIds.includes(specialWeaponId)) continue;
+
+      result.push({
+        value: `SPECIAL_${specialWeaponId}`,
+        label: t(`SPECIAL_${specialWeaponId}`),
+        imgPath: specialWeaponImageUrl(specialWeaponId),
       });
     }
 

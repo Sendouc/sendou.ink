@@ -42,6 +42,13 @@ export interface MainWeaponParams {
   DamageParam_SplatanaVertical?: number;
   DamageParam_SplatanaHorizontalDirect?: number;
   DamageParam_SplatanaHorizontal?: number;
+  BodyParam_Damage?: number;
+  SwingUnitGroupParam_DamageParam_DamageMinValue?: number;
+  SwingUnitGroupParam_DamageParam_DamageMaxValue?: number;
+  VerticalSwingUnitGroupParam_DamageParam_DamageMinValue?: number;
+  VerticalSwingUnitGroupParam_DamageParam_DamageMaxValue?: number;
+  WideSwingUnitGroupParam_DamageParam_DamageMinValue?: number;
+  WideSwingUnitGroupParam_DamageParam_DamageMaxValue?: number;
   Jump_DegSwerve?: number;
   Stand_DegSwerve?: number;
   /** Damage caused by charger's full charged shot */
@@ -116,6 +123,19 @@ export interface SubWeaponParams {
 type SpecialWeaponParamsObject = (typeof weaponParams)["specialWeapons"];
 export type SpecialWeaponParams = SpecialWeaponParamsObject[SpecialWeaponId] & {
   overwrites?: Overwrites;
+  // no idea why these is not inferred
+  WaveDamage?: number;
+  ExhaleBlastParamMaxChargeDistanceDamage?: Array<DistanceDamage>;
+  ExhaleBlastParamMinChargeDistanceDamage?: Array<DistanceDamage>;
+  SwingDamage?: Array<DistanceDamage>;
+  ThrowDamage?: Array<DistanceDamage>;
+  ThrowDirectDamage?: number;
+  BulletDamageMin?: number;
+  BulletDamageMax?: number;
+  CannonDamage?: Array<DistanceDamage>;
+  BumpDamage?: number;
+  JumpDamage?: number;
+  TickDamage?: number;
 };
 
 export type ParamsJson = {
@@ -199,6 +219,7 @@ export interface AnalyzedBuild {
     subWeaponInkConsumptionPercentage: Stat;
     fullInkTankOptions: Array<FullInkTankOption & { id: string }>;
     damages: Array<Damage & { id: string }>;
+    specialWeaponDamages: Array<Damage & { id: string }>;
     subWeaponDefenseDamages: Array<SubWeaponDamage & { id: string }>;
     squidFormInkRecoverySeconds: Stat;
     humanoidFormInkRecoverySeconds: Stat;
@@ -256,4 +277,5 @@ export type AbilityValuesKeys = keyof typeof abilityValues;
 
 export type AnyWeapon =
   | { type: "MAIN"; id: MainWeaponId }
-  | { type: "SUB"; id: SubWeaponId };
+  | { type: "SUB"; id: SubWeaponId }
+  | { type: "SPECIAL"; id: SpecialWeaponId };

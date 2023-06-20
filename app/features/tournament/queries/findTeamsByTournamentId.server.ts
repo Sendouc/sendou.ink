@@ -53,7 +53,7 @@ export interface FindTeamsByTournamentIdItem {
   id: TournamentTeam["id"];
   name: TournamentTeam["name"];
   seed: TournamentTeam["seed"];
-  checkedInAt: TournamentTeamCheckIn["checkedInAt"];
+  checkedInAt: TournamentTeamCheckIn["checkedInAt"] | null;
   prefersNotToHost: TournamentTeam["prefersNotToHost"];
   members: Array<
     Pick<TournamentTeamMember, "userId" | "isOwner"> &
@@ -71,7 +71,7 @@ export interface FindTeamsByTournamentIdItem {
 export type FindTeamsByTournamentId = Array<FindTeamsByTournamentIdItem>;
 
 export function findTeamsByTournamentId(tournamentId: Tournament["id"]) {
-  const rows = stm.all({ tournamentId });
+  const rows = stm.all({ tournamentId }) as any[];
 
   return (
     rows.map((row) => {

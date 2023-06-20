@@ -100,12 +100,15 @@ function StatSquares({
   seed: number;
   teamsCount: number;
 }) {
+  const { t } = useTranslation(["tournament"]);
   const data = useLoaderData<typeof loader>();
 
   return (
     <div className="tournament__team__stats">
       <div className="tournament__team__stat">
-        <div className="tournament__team__stat__title">Set wins</div>
+        <div className="tournament__team__stat__title">
+          {t("tournament:team.setWins")}
+        </div>
         <div className="tournament__team__stat__main">
           {data.winCounts.sets.won} / {data.winCounts.sets.total}
         </div>
@@ -115,7 +118,9 @@ function StatSquares({
       </div>
 
       <div className="tournament__team__stat">
-        <div className="tournament__team__stat__title">Map wins</div>
+        <div className="tournament__team__stat__title">
+          {t("tournament:team.mapWins")}
+        </div>
         <div className="tournament__team__stat__main">
           {data.winCounts.maps.won} / {data.winCounts.maps.total}
         </div>
@@ -125,13 +130,19 @@ function StatSquares({
       </div>
 
       <div className="tournament__team__stat">
-        <div className="tournament__team__stat__title">Seed</div>
+        <div className="tournament__team__stat__title">
+          {t("tournament:team.seed")}
+        </div>
         <div className="tournament__team__stat__main">{seed}</div>
-        <div className="tournament__team__stat__sub">out of {teamsCount}</div>
+        <div className="tournament__team__stat__sub">
+          {t("tournament:team.seed.footer", { count: teamsCount })}
+        </div>
       </div>
 
       <div className="tournament__team__stat">
-        <div className="tournament__team__stat__title">Placement</div>
+        <div className="tournament__team__stat__title">
+          {t("tournament:team.placement")}
+        </div>
         <div className="tournament__team__stat__main">
           {data.placement ? (
             <Placement placement={data.placement} textOnly />

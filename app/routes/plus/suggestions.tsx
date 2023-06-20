@@ -143,7 +143,7 @@ export interface PlusSuggestionsLoaderData {
 
 export const shouldRevalidate: ShouldRevalidateFunction = ({ formMethod }) => {
   // only reload if form submission not when user changes tabs
-  return Boolean(formMethod && formMethod !== "get");
+  return Boolean(formMethod && formMethod !== "GET");
 };
 
 export const loader: LoaderFunction = async ({ request }) => {

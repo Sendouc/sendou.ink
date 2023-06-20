@@ -54,10 +54,9 @@ export const Layout = React.memo(function Layout({
     data.publisherId &&
     !data?.user?.patronTier &&
     !location.pathname.includes("plans");
-
   return (
     <div className="layout__container">
-      <header className="layout__header">
+      <header className="layout__header layout__item_size">
         <div className="layout__breadcrumb-container">
           <Link to="/" className="layout__breadcrumb logo">
             sendou.ink

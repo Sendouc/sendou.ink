@@ -1,5 +1,10 @@
 // TODO: when more examples of permissions profile difference between
 // this implementation and one that takes arrays
+
+import clone from "just-clone";
+import shuffle from "just-shuffle";
+import invariant from "tiny-invariant";
+
 // (not all arrays need to necessarily run but they need to be defined)
 export function allTruthy(arr: unknown[]) {
   return arr.every(Boolean);
@@ -63,4 +68,16 @@ export function removeDuplicatesByProperty<T>(
 
     return true;
   });
+}
+
+export function nullFilledArray(size: number) {
+  return new Array(size).fill(null);
+}
+
+export function pickRandomItem<T>(array: T[]): T {
+  invariant(array.length > 0, "Can't pick from empty array");
+
+  const shuffled = shuffle(clone(array));
+
+  return shuffled[0];
 }

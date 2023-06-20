@@ -31,6 +31,8 @@
   "forms.errors.invalidCustomUrl.duplicate": "Someone is already using this custom URL",
   "forms.errors.invalidSens": "Motion sens can't be set if R-stick sens isn't",
   "forms.info.favoriteBadge": "Your favorite badge is shown as big by default on your profile.",
+  "forms.showDiscordUniqueName": "Show Discord username",
+  "forms.showDiscordUniqueName.info": "Show your unique Discord name ({{discordUniqueName}}) publicly?",
 
   "search.info": "Search for users by Discord, Splatoon 3 or Twitter name",
   "search.noResults": "No users found matching '{{query}}'"

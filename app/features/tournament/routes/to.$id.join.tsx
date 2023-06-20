@@ -19,8 +19,14 @@ import React from "react";
 import { discordFullName } from "~/utils/strings";
 import { joinSchema } from "../tournament-schemas.server";
 import { giveTrust } from "../queries/giveTrust.server";
+import {
+  tournamentIdFromParams,
+  tournamentTeamMaxSize,
+} from "../tournament-utils";
+import { useTranslation } from "~/hooks/useTranslation";
 
-export const action: ActionFunction = async ({ request }) => {
+export const action: ActionFunction = async ({ request, params }) => {
+  const tournamentId = tournamentIdFromParams(params);
   const user = await requireUserId(request);
   const url = new URL(request.url);
   const inviteCode = url.searchParams.get("code");
@@ -30,20 +36,28 @@ export const action: ActionFunction = async ({ request }) => {
   const leanTeam = notFoundIfFalsy(findByInviteCode(inviteCode));
   const teams = findTeamsByTournamentId(leanTeam.tournamentId);
 
-  validate(
-    !hasTournamentStarted(leanTeam.tournamentId),
-    "Tournament has started"
-  );
-
   const teamToJoin = teams.find((team) => team.id === leanTeam.id);
   const previousTeam = teams.find((team) =>
     team.members.some((member) => member.userId === user.id)
   );
 
+  const tournamentHasStarted = hasTournamentStarted(tournamentId);
+
+  if (tournamentHasStarted) {
+    validate(
+      !previousTeam || !previousTeam.checkedInAt,
+      "Can't leave checked in team mid tournament"
+    );
+  }
   validate(teamToJoin, "Not team of this tournament");
   validate(
-    validateCanJoin({ inviteCode, teamToJoin, userId: user.id }) === "VALID",
-    "Invite code is invalid"
+    validateCanJoin({
+      inviteCode,
+      teamToJoin,
+      userId: user.id,
+      tournamentHasStarted,
+    }) === "VALID",
+    "Cannot join this team or invite code is invalid"
   );
 
   const whatToDoWithPreviousTeam = !previousTeam
@@ -65,6 +79,7 @@ export const action: ActionFunction = async ({ request }) => {
       previousTeam &&
       previousTeam.members.length <= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
     whatToDoWithPreviousTeam,
+    tournamentId,
   });
   if (data.trust) {
     const inviterUserId = teamToJoin.members.find(
@@ -80,17 +95,20 @@ export const action: ActionFunction = async ({ request }) => {
   return redirect(tournamentPage(leanTeam.tournamentId));
 };
 
-export const loader = ({ request }: LoaderArgs) => {
+export const loader = ({ request, params }: LoaderArgs) => {
+  const tournamentId = tournamentIdFromParams(params);
   const url = new URL(request.url);
   const inviteCode = url.searchParams.get("code");
 
   return {
     teamId: inviteCode ? findByInviteCode(inviteCode)?.id : null,
     inviteCode,
+    tournamentHasStarted: hasTournamentStarted(tournamentId),
   };
 };
 
 export default function JoinTeamPage() {
+  const { t } = useTranslation(["tournament", "common"]);
   const id = React.useId();
   const user = useUser();
   const parentRouteData = useOutletContext<TournamentLoaderData>();
@@ -104,32 +122,25 @@ export default function JoinTeamPage() {
     inviteCode: data.inviteCode,
     teamToJoin,
     userId: user?.id,
+    tournamentHasStarted: data.tournamentHasStarted,
   });
 
   const textPrompt = () => {
     switch (validationStatus) {
-      case "MISSING_CODE": {
-        return "Invite code is missing. Was the full URL copied?";
-      }
-      case "SHORT_CODE": {
-        return "Invite code is not the right length. Was the full URL copied?";
-      }
-      case "NO_TEAM_MATCHING_CODE": {
-        return "No team matching the invite code.";
-      }
-      case "TEAM_FULL": {
-        return "Team you are trying to join is full.";
-      }
-      case "ALREADY_JOINED": {
-        return "You're already a member of this team.";
-      }
-      case "NOT_LOGGED_IN": {
-        return "You must be logged in to join a team.";
-      }
+      case "MISSING_CODE":
+      case "SHORT_CODE":
+      case "NO_TEAM_MATCHING_CODE":
+      case "TEAM_FULL":
+      case "ALREADY_JOINED":
+      case "NOT_LOGGED_IN":
+        return t(`tournament:join.error.${validationStatus}`);
       case "VALID": {
         invariant(teamToJoin);
 
-        return `Join ${teamToJoin.name} for ${parentRouteData.event.name}?`;
+        return t("tournament:join.VALID", {
+          teamName: teamToJoin.name,
+          eventName: parentRouteData.event.name,
+        });
       }
       default: {
         assertUnreachable(validationStatus);
@@ -145,14 +156,15 @@ export default function JoinTeamPage() {
           <div className="text-lighter text-sm stack horizontal sm items-center">
             <input id={id} type="checkbox" name="trust" />{" "}
             <label htmlFor={id} className="mb-0">
-              Trust {captain ? discordFullName(captain) : ""} to add you on
-              their own to future tournaments?
+              {t("tournament:join.giveTrust", {
+                name: captain ? discordFullName(captain) : "",
+              })}
             </label>
           </div>
         ) : null}
       </div>
       {validationStatus === "VALID" ? (
-        <SubmitButton size="big">Join</SubmitButton>
+        <SubmitButton size="big">{t("common:actions.join")}</SubmitButton>
       ) : null}
     </Form>
   );
@@ -162,10 +174,12 @@ function validateCanJoin({
   inviteCode,
   teamToJoin,
   userId,
+  tournamentHasStarted,
 }: {
   inviteCode?: string | null;
   teamToJoin?: TournamentLoaderTeam;
   userId?: number;
+  tournamentHasStarted: boolean;
 }) {
   if (typeof inviteCode !== "string") {
     return "MISSING_CODE";
@@ -179,7 +193,9 @@ function validateCanJoin({
   if (!teamToJoin) {
     return "NO_TEAM_MATCHING_CODE";
   }
-  if (teamToJoin.members.length >= TOURNAMENT.TEAM_MAX_MEMBERS) {
+  if (
+    teamToJoin.members.length >= tournamentTeamMaxSize(tournamentHasStarted)
+  ) {
     return "TEAM_FULL";
   }
   if (teamToJoin.members.some((member) => member.userId === userId)) {

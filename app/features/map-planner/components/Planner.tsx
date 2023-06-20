@@ -377,6 +377,7 @@ const ourLanguageToTldrawLanguageMap: Record<LanguageCode, string> = {
   ko: "ko-kr",
   nl: "en",
   zh: "zh-ch",
+  he: "he",
   // map to itself
   da: "da",
   de: "de",

@@ -489,9 +489,7 @@ function DiscordLinkInput() {
 function TagsAdder() {
   const { t } = useTranslation(["common", "calendar"]);
   const { eventToEdit } = useLoaderData<typeof loader>();
-  const [tags, setTags] = React.useState(
-    (eventToEdit?.tags ?? []) as Array<CalendarEventTag>
-  );
+  const [tags, setTags] = React.useState(eventToEdit?.tags ?? []);
   const id = React.useId();
 
   const tagsForSelect = CALENDAR_EVENT.TAGS.filter(

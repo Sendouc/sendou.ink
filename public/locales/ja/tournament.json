@@ -5,20 +5,6 @@
   "tabs.register": "登録",
   "tabs.maps": "マップ一覧",
 
-  "pre.footerNote": "メモ: トーナメント開始前であれば、マップリストと参加者を何回でも変更できます。",
-  "pre.deleteTeam": "チームを削除",
-
-  "preview": "マップリストジェネレーターのプレビュー (管理者のみ)",
-  "pre.steps.register": "1. 登録",
-  "pre.steps.register.summary": "登録するチーム名を入力してください",
-  "pre.steps.mapPool": "2. マップリスト",
-  "pre.steps.mapPool.explanation": "マップリストを選択せずにプレイできますが、その場合相手チームがプレイするマップを決定します。タイブレイカーのマップは青で表示されます。",
-  "pre.steps.mapPool.summary": "チーム側で指定するマップを選択してください",
-  "pre.steps.roster": "3. 参加メンバーを登録してください",
-  "pre.steps.roster.explanation": "参加メンバーの登録は任意ですが、その場合シード権の順位が低くなる可能性があります。",
-  "pre.steps.roster.summary": "参加メンバーを登録",
-  "pre.steps.roster.fullTeamError": "参加チームがいっぱいです。",
-
   "bracket.type.DE_WINNERS": "勝者ラウンド",
   "bracket.type.DE_LOSERS": "敗者ラウンド",
   "bracket.type.SE": "ラウンド",

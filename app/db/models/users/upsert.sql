@@ -4,6 +4,7 @@ insert into
     "discordName",
     "discordDiscriminator",
     "discordAvatar",
+    "discordUniqueName",
     "twitch",
     "twitter",
     "youtubeId"
@@ -14,6 +15,7 @@ values
     @discordName,
     @discordDiscriminator,
     @discordAvatar,
+    @discordUniqueName,
     @twitch,
     @twitter,
     @youtubeId
@@ -23,6 +25,7 @@ set
   "discordName" = excluded."discordName",
   "discordDiscriminator" = excluded."discordDiscriminator",
   "discordAvatar" = excluded."discordAvatar",
+  "discordUniqueName" = excluded."discordUniqueName",
   "twitch" = excluded."twitch",
   "twitter" = excluded."twitter",
   "youtubeId" = excluded."youtubeId" returning *

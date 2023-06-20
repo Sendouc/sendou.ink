@@ -7,8 +7,10 @@ export function parseDBJsonArray(value: any) {
 
   // If the returned array of JSON objects from DB is empty
   // it will be returned as object with all values being null
-  // this is a workaround for that
-  return parsed.filter((item: any) => Object.values(item).some(Boolean));
+  // this is a (hacky) workaround for that
+  return parsed.filter((item: any) =>
+    Object.values(item).some((val) => val !== null)
+  );
 }
 
 export function parseDBArray(value: any) {

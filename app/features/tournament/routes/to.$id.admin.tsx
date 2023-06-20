@@ -45,8 +45,8 @@ export const action: ActionFunction = async ({ request, params }) => {
     schema: adminActionSchema,
   });
 
-  const eventId = tournamentIdFromParams(params);
-  const event = notFoundIfFalsy(findByIdentifier(eventId));
+  const tournamentId = tournamentIdFromParams(params);
+  const event = notFoundIfFalsy(findByIdentifier(tournamentId));
   const teams = findTeamsByTournamentId(event.id);
 
   validate(canAdminTournament({ user, event }), "Unauthorized", 401);
@@ -111,19 +111,32 @@ export const action: ActionFunction = async ({ request, params }) => {
       });
       break;
     }
+    // TODO: could also handle the case of admin trying
+    // to add members from a checked in team
     case "ADD_MEMBER": {
       const team = teams.find((t) => t.id === data.teamId);
       validate(team, "Invalid team id");
-      validate(
-        !teams.some((t) =>
-          t.members.some((m) => m.userId === data["user[value]"])
-        ),
-        "User is already on a team"
+
+      const previousTeam = teams.find((t) =>
+        t.members.some((m) => m.userId === data["user[value]"])
       );
+
+      if (hasTournamentStarted(event.id)) {
+        validate(
+          !previousTeam || !previousTeam.checkedInAt,
+          "User is already on a checked in team"
+        );
+      } else {
+        validate(!previousTeam, "User is already on a team");
+      }
 
       joinTeam({
         userId: data["user[value]"],
         newTeamId: team.id,
+        previousTeamId: previousTeam?.id,
+        // this team is not checked in so we can simply delete it
+        whatToDoWithPreviousTeam: previousTeam ? "DELETE" : undefined,
+        tournamentId,
       });
       break;
     }
@@ -143,6 +156,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   return null;
 };
 
+// TODO: translations
 export default function TournamentAdminPage() {
   const { t } = useTranslation(["calendar"]);
   const data = useOutletContext<TournamentLoaderData>();
