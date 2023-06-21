@@ -34,7 +34,7 @@ const stm = sql.prepare(/* sql */ `
     "TournamentMatch" as "m"
   left join "TournamentStage" on "TournamentStage"."id" = "m"."stageId"
   left join "q1" on "q1"."matchId" = "m"."id"
-  where "TournamentStage"."tournamentId" = 1 
+  where "TournamentStage"."tournamentId" = @tournamentId
     and "opponentOneId" is not null 
     and "opponentTwoId" is not null
     and "opponentOneResult" is not null

@@ -5,13 +5,13 @@ import type {
   TournamentResult,
 } from "~/db/types";
 import type { AllMatchResult } from "../queries/allMatchResultsByTournamentId.server";
-import type { FindTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
+import type { FindTeamsByTournamentId } from "../../tournament/queries/findTeamsByTournamentId.server";
 import invariant from "tiny-invariant";
 import { removeDuplicates } from "~/utils/arrays";
-import { type FinalStanding } from "~/features/tournament-bracket/core/finalStandings.server";
+import { type FinalStanding } from "./finalStandings.server";
 
-interface TournamentSummary {
-  skills: Skill[];
+export interface TournamentSummary {
+  skills: Omit<Skill, "tournamentId">[];
   mapResultDeltas: MapResult[];
   playerResultDeltas: PlayerResult[];
   tournamentResults: Omit<TournamentResult, "tournamentId">[];
@@ -54,6 +54,7 @@ function userIdsToTeamIdRecord(teams: FindTeamsByTournamentId) {
 }
 
 function skills(): Skill[] {
+  // xxx: implement skill summarization
   return [];
 }
 

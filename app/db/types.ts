@@ -338,7 +338,10 @@ export interface Skill {
   mu: number;
   sigma: number;
   ordinal: number;
-  userId: number;
+  userId: number | null;
+  /** e.g. 12-24-44-1024 for "team skills" */
+  identifier: string | null;
+  matchesCount: number;
   /** Tournament that caused the skill to change */
   tournamentId: number | null;
 }

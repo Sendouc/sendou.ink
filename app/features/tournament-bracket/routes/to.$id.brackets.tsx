@@ -21,7 +21,7 @@ import { SubmitButton } from "~/components/SubmitButton";
 import { getTournamentManager } from "../core/brackets-manager";
 import hasTournamentStarted from "../../tournament/queries/hasTournamentStarted.server";
 import { findByIdentifier } from "../../tournament/queries/findByIdentifier.server";
-import { notFoundIfFalsy, validate } from "~/utils/remix";
+import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import {
   SENDOU_INK_BASE_URL,
   tournamentBracketsSubscribePage,
@@ -64,6 +64,13 @@ import { databaseTimestampToDate } from "~/utils/dates";
 import { Popover } from "~/components/Popover";
 import { useCopyToClipboard } from "react-use";
 import { useTranslation } from "~/hooks/useTranslation";
+import { bracketSchema } from "../tournament-bracket-schemas.server";
+import { addSummary } from "../queries/addSummary.server";
+import { tournamentSummary } from "../core/summarizer.server";
+import invariant from "tiny-invariant";
+import { allMatchResultsByTournamentId } from "../queries/allMatchResultsByTournamentId.server";
+import fs from "node:fs";
+import { FormWithConfirm } from "~/components/FormWithConfirm";
 
 export const links: LinksFunction = () => {
   return [
@@ -84,38 +91,91 @@ export const links: LinksFunction = () => {
 
 export const action: ActionFunction = async ({ params, request }) => {
   const user = await requireUser(request);
-  const manager = getTournamentManager("SQL");
-
   const tournamentId = tournamentIdFromParams(params);
   const tournament = notFoundIfFalsy(findByIdentifier(tournamentId));
-  const hasStarted = hasTournamentStarted(tournamentId);
+  const data = await parseRequestFormData({ request, schema: bracketSchema });
+  const manager = getTournamentManager("SQL");
 
   validate(canAdminTournament({ user, event: tournament }));
-  validate(!hasStarted);
 
-  let teams = findTeamsByTournamentId(tournamentId);
-  if (checkInHasStarted(tournament)) {
-    teams = teams.filter(teamHasCheckedIn);
-  }
+  switch (data._action) {
+    case "START_TOURNAMENT": {
+      const hasStarted = hasTournamentStarted(tournamentId);
 
-  validate(teams.length >= 2, "Not enough teams registered");
+      validate(!hasStarted);
 
-  sql.transaction(() => {
-    manager.create({
-      tournamentId,
-      name: resolveTournamentStageName(tournament.format),
-      type: resolveTournamentStageType(tournament.format),
-      seeding: fillWithNullTillPowerOfTwo(teams.map((team) => team.name)),
-      settings: resolveTournamentStageSettings(tournament.format),
-    });
+      let teams = findTeamsByTournamentId(tournamentId);
+      if (checkInHasStarted(tournament)) {
+        teams = teams.filter(teamHasCheckedIn);
+      }
 
-    const bestOfs = resolveBestOfs(findAllMatchesByTournamentId(tournamentId));
-    for (const [bestOf, id] of bestOfs) {
-      setBestOf({ bestOf, id });
+      validate(teams.length >= 2, "Not enough teams registered");
+
+      sql.transaction(() => {
+        manager.create({
+          tournamentId,
+          name: resolveTournamentStageName(tournament.format),
+          type: resolveTournamentStageType(tournament.format),
+          seeding: fillWithNullTillPowerOfTwo(teams.map((team) => team.name)),
+          settings: resolveTournamentStageSettings(tournament.format),
+        });
+
+        const bestOfs = resolveBestOfs(
+          findAllMatchesByTournamentId(tournamentId)
+        );
+        for (const [bestOf, id] of bestOfs) {
+          setBestOf({ bestOf, id });
+        }
+      })();
+
+      return null;
     }
-  })();
+    case "FINALIZE_TOURNAMENT": {
+      const bracket = manager.get.tournamentData(tournamentId);
+      const _everyMatchIsOver = everyMatchIsOver(bracket);
+      validate(_everyMatchIsOver, "Not every match is over");
 
-  return null;
+      let teams = findTeamsByTournamentId(tournamentId);
+      if (checkInHasStarted(tournament)) {
+        teams = teams.filter(teamHasCheckedIn);
+      }
+
+      const _finalStandings =
+        finalStandings({ manager, tournamentId, includeAll: true }) ?? [];
+      invariant(
+        _finalStandings.length === teams.length,
+        `Final standings length (${_finalStandings.length}) does not match teams length (${teams.length})`
+      );
+
+      const results = allMatchResultsByTournamentId(tournamentId);
+      invariant(results.length > 0, "No results found");
+
+      fs.writeFileSync(
+        "summary.json",
+        JSON.stringify(
+          tournamentSummary({
+            teams,
+            finalStandings: _finalStandings,
+            results,
+          }),
+          null,
+          2
+        )
+      );
+      return null;
+
+      addSummary({
+        tournamentId,
+        summary: tournamentSummary({
+          teams,
+          finalStandings: _finalStandings,
+          results,
+        }),
+      });
+
+      return null;
+    }
+  }
 };
 
 export type TournamentBracketLoaderData = SerializeFrom<typeof loader>;
@@ -288,6 +348,22 @@ export default function TournamentBracketsPage() {
       {visibility !== "hidden" && !data.everyMatchIsOver ? (
         <AutoRefresher />
       ) : null}
+      {/* xxx: hide when already finalized */}
+      {data.finalStandings ? (
+        <div className="tournament-bracket__finalize">
+          When you have checked everything{" "}
+          <FormWithConfirm
+            dialogHeading="Are you sure you want to finalize the tournament (can't be undone)?"
+            fields={[["_action", "FINALIZE_TOURNAMENT"]]}
+            deleteButtonText="Finalize"
+            submitButtonVariant="outlined"
+          >
+            <Button variant="minimal">
+              finalize tournament and process the results
+            </Button>
+          </FormWithConfirm>
+        </div>
+      ) : null}
       {!data.hasStarted && data.enoughTeams ? (
         <Form method="post" className="stack items-center">
           {!canAdminTournament({ user, event: parentRouteData.event }) ? (
@@ -310,6 +386,7 @@ export default function TournamentBracketsPage() {
                   variant="outlined"
                   size="tiny"
                   testId="finalize-bracket-button"
+                  _action="START_TOURNAMENT"
                 >
                   {t("tournament:bracket.finalize.action")}
                 </SubmitButton>
