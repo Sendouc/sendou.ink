@@ -4,9 +4,11 @@ import { type MainWeaponId } from "~/modules/in-game-lists";
 export const MAX_LDE_INTENSITY = 21;
 
 export const DAMAGE_TYPE = [
-  "NORMAL_MIN",
-  "NORMAL_MAX",
+  "TURRET_MAX",
+  "TURRET_MIN",
   "NORMAL_MAX_FULL_CHARGE", // Hydra Splatling goes from 32 to 40 dmg when fully charged
+  "NORMAL_MAX",
+  "NORMAL_MIN",
   "DIRECT",
   "DIRECT_MIN",
   "DIRECT_MAX",
@@ -48,6 +50,8 @@ export const damageTypeToWeaponType: Record<
 > = {
   NORMAL_MIN: "MAIN",
   NORMAL_MAX: "MAIN",
+  TURRET_MAX: "MAIN",
+  TURRET_MIN: "MAIN",
   NORMAL_MAX_FULL_CHARGE: "MAIN",
   DIRECT: "MAIN",
   DIRECT_MIN: "MAIN",

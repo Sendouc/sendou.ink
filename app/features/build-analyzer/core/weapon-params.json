@@ -1184,6 +1184,8 @@
       "MoveSpeed": 0.06,
       "DamageParam_ValueMax": 360,
       "DamageParam_ValueMin": 180,
+      "DamageLapOverParam_ValueMax": 525,
+      "DamageLapOverParam_ValueMin": 263,
       "Jump_DegSwerve": 8,
       "Stand_DegSwerve": 3.2,
       "InkConsume": 0.014,

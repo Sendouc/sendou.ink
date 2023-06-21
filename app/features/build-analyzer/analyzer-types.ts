@@ -42,6 +42,8 @@ export interface MainWeaponParams {
   DamageParam_SplatanaVertical?: number;
   DamageParam_SplatanaHorizontalDirect?: number;
   DamageParam_SplatanaHorizontal?: number;
+  DamageLapOverParam_ValueMax?: number;
+  DamageLapOverParam_ValueMin?: number;
   BodyParam_Damage?: number;
   SwingUnitGroupParam_DamageParam_DamageMinValue?: number;
   SwingUnitGroupParam_DamageParam_DamageMaxValue?: number;

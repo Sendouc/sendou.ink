@@ -122,6 +122,8 @@
   "damage.SPECIAL_BUMP": "Bump",
   "damage.SPECIAL_JUMP": "Jump",
   "damage.SPECIAL_TICK": "Tick",
+  "damage.TURRET_MIN": "Turret (Minimum)",
+  "damage.TURRET_MAX": "Turret (Maximum)",
   "suffix.seconds": "s",
   "suffix.hp": "hp",
   "suffix.specialPointsShort": "p",

@@ -100,6 +100,8 @@ function validatedMultiShotFromSearchParams(searchParams: URLSearchParams) {
 }
 
 export const damageTypePriorityList = [
+  "TURRET_MAX",
+  "TURRET_MIN",
   "DIRECT_MAX",
   "DIRECT",
   "DIRECT_MIN",

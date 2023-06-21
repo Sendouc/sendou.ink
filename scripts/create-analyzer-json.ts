@@ -250,6 +250,9 @@ function parametersToMainWeaponResult(
       : undefined,
     DamageParam_ValueDirect,
     ...slosherDirectDamage(),
+    // Glooga turret mode damage
+    DamageLapOverParam_ValueMax: params["DamageLapOverParam"]?.["ValueMax"],
+    DamageLapOverParam_ValueMin: params["DamageLapOverParam"]?.["ValueMin"],
     BlastParam_SplashDamage: isSloshingMachine
       ? params["UnitGroupParam"]?.["Unit"]?.[1]?.["DamageParam"]?.["ValueMax"]
       : undefined,

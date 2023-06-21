@@ -398,6 +398,8 @@ const damageTypeToParamsKey: Record<
   NORMAL_MIN: "DamageParam_ValueMin",
   NORMAL_MAX: "DamageParam_ValueMax",
   NORMAL_MAX_FULL_CHARGE: "DamageParam_ValueFullChargeMax",
+  TURRET_MAX: "DamageLapOverParam_ValueMax",
+  TURRET_MIN: "DamageLapOverParam_ValueMin",
   DIRECT: "DamageParam_ValueDirect",
   DIRECT_MIN: "DamageParam_ValueDirectMin",
   DIRECT_MAX: "DamageParam_ValueDirectMax",
