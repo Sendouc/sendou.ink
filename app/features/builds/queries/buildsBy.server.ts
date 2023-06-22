@@ -102,11 +102,11 @@ from
 group by
   "BuildWithWeapon"."id"
 order by
-  "BuildWithWeapon"."isTop500" desc,
   case
     when "PlusTier"."tier" is null then 4
     else "PlusTier"."tier"
   end asc,
+  "BuildWithWeapon"."isTop500" desc,
   "BuildWithWeapon"."updatedAt" desc
 limit
   @limit
