@@ -1,7 +1,14 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
-import type { MainWeaponId } from "~/modules/in-game-lists";
+import type { SubWeaponId, SpecialWeaponId } from "~/modules/in-game-lists";
+import {
+  mainWeaponIds,
+  type MainWeaponId,
+  specialWeaponIds,
+  exampleMainWeaponIdWithSpecialWeaponId,
+} from "~/modules/in-game-lists";
 import { calculateDamage } from "./objectDamage";
+import type { AnalyzedBuild } from "~/features/build-analyzer";
 import {
   buildStats,
   type DamageType,
@@ -10,28 +17,84 @@ import {
 
 function calculate({
   mainWeaponId = 10,
+  subWeaponId,
+  specialWeaponId,
   abilityPoints = new Map(),
   damageType = "NORMAL_MAX",
+  preAnalyzed,
 }: {
   mainWeaponId?: MainWeaponId;
+  subWeaponId?: SubWeaponId;
+  specialWeaponId?: SpecialWeaponId;
   abilityPoints?: AbilityPoints;
   damageType?: DamageType;
+  preAnalyzed?: AnalyzedBuild;
 }) {
-  const analyzed = buildStats({
-    weaponSplId: mainWeaponId,
-    hasTacticooler: false,
-  });
+  const analyzed =
+    preAnalyzed ??
+    buildStats({
+      weaponSplId: mainWeaponId,
+      hasTacticooler: false,
+    });
 
   return calculateDamage({
     abilityPoints,
     analyzed,
-    anyWeapon: { type: "MAIN", id: mainWeaponId },
+    anyWeapon:
+      typeof subWeaponId === "number"
+        ? { type: "SUB", id: subWeaponId }
+        : typeof specialWeaponId === "number"
+        ? { type: "SPECIAL", id: specialWeaponId }
+        : { type: "MAIN", id: mainWeaponId },
     damageType,
     isMultiShot: true,
   });
 }
 
 const CalculateDamage = suite("calculateDamage()");
+
+// the function throws if weapon resolves to more than one set of damage rates
+// so this test goes through all of them to make sure they all work
+CalculateDamage("Every weapon can calculate damage", () => {
+  for (const mainWeaponId of mainWeaponIds) {
+    const analyzed = buildStats({
+      weaponSplId: mainWeaponId,
+      hasTacticooler: false,
+    });
+
+    for (const damage of analyzed.stats.damages) {
+      calculate({ mainWeaponId, damageType: damage.type });
+    }
+  }
+
+  const analyzed = buildStats({
+    weaponSplId: 0,
+    hasTacticooler: false,
+  });
+
+  for (const damage of analyzed.stats.subWeaponDefenseDamages) {
+    calculate({
+      subWeaponId: damage.subWeaponId,
+      damageType: damage.type,
+      preAnalyzed: analyzed,
+    });
+  }
+
+  for (const specialWeaponId of specialWeaponIds) {
+    const analyzedWithSpecialWeapon = buildStats({
+      weaponSplId: exampleMainWeaponIdWithSpecialWeaponId(specialWeaponId),
+      hasTacticooler: false,
+    });
+
+    for (const damage of analyzedWithSpecialWeapon.stats.specialWeaponDamages) {
+      calculate({
+        specialWeaponId,
+        damageType: damage.type,
+        preAnalyzed: analyzedWithSpecialWeapon,
+      });
+    }
+  }
+});
 
 CalculateDamage("BRU increases Splash Wall hitpoints", () => {
   const withoutBRU = calculate({});
@@ -81,29 +144,30 @@ const shotsToPopRM: Array<
   [220, "DIRECT", 5, 4],
   // .96 Gal
   [80, "NORMAL_MAX", 17, 15],
+  // Luna Blaster
+  [200, "DIRECT", 4, 4],
   // Splat Charger
   [2010, "FULL_CHARGE", 4, 3],
   // E-liter 4K
   [2030, "TAP_SHOT", 13, 12],
-  // TODO: Explosher damage wrong
-  // Explosher
-  // [3040, "DIRECT", 4, 3],
   // Hydra Splatling
   [4020, "NORMAL_MAX", 32, 29],
   // Sloshing Machine
   [3020, "DIRECT_MAX", 6, 5],
   // Splat Dualies
   [5010, "NORMAL_MAX", 34, 31],
+  // Tenta Brella
+  [6010, "NORMAL_MAX", 4, 4],
+  // // Tri-Stringer
+  [7010, "NORMAL_MAX", 3, 3],
+  // REEF-LUX
+  [7020, "NORMAL_MIN", 8, 7],
   // Splatana Wiper
   [8010, "SPLATANA_HORIZONTAL", 11, 10],
   // Splatana Wiper
   [8010, "SPLATANA_HORIZONTAL_DIRECT", 9, 8],
   // Splatana Stamper
   [8000, "SPLATANA_VERTICAL_DIRECT", 3, 3],
-  // // Tri-Stringer
-  [7010, "NORMAL_MAX", 3, 3],
-  // REEF-LUX
-  [7020, "NORMAL_MIN", 8, 7],
 ];
 
 CalculateDamage(

@@ -90,18 +90,20 @@ export default function ObjectDamagePage() {
               fullWidth
             />
           </div>
-          <div
-            className={clsx({
-              invisible: !damagesToReceivers || allDamageTypes.length === 1,
-            })}
-          >
-            <Label htmlFor="damage">{t("analyzer:labels.damageType")}</Label>
-            <DamageTypesSelect
-              handleChange={handleChange}
-              damageType={damageType}
-              allDamageTypes={allDamageTypes}
-            />
-          </div>
+          {allDamageTypes.length > 0 ? (
+            <div
+              className={clsx({
+                invisible: !damagesToReceivers || allDamageTypes.length === 1,
+              })}
+            >
+              <Label htmlFor="damage">{t("analyzer:labels.damageType")}</Label>
+              <DamageTypesSelect
+                handleChange={handleChange}
+                damageType={damageType}
+                allDamageTypes={allDamageTypes}
+              />
+            </div>
+          ) : null}
         </div>
         {multiShotCount ? (
           <div className="stack sm horizontal items-center label-no-spacing">

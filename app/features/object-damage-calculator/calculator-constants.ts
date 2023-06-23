@@ -1,8 +1,8 @@
 import { type MainWeaponId, mainWeaponIds } from "~/modules/in-game-lists";
-import type { DamageType } from "~/features/build-analyzer";
-import type objectDamages from "./core/object-dmg.json";
 import invariant from "tiny-invariant";
 import type { CombineWith } from "./calculator-types";
+import type { AnyWeapon, DamageType } from "../build-analyzer";
+import type objectDamages from "./core/object-dmg.json";
 
 export const DAMAGE_RECEIVERS = [
   "Chariot", // Crab Tank
@@ -20,152 +20,92 @@ export const DAMAGE_RECEIVERS = [
   "BulletUmbrellaCanopyWide", // Tenta Brella Canopy
 ] as const;
 
-export const objectDamageJsonKeyPriority: Record<
-  keyof typeof objectDamages,
-  Array<DamageType> | null
-> = {
-  // added in chill season 2023
-  Maneuver_SideStep_BombCore: null,
-  // added in fresh season 2022
-  BlowerExhale: null,
-  Castle: ["BOMB_DIRECT", "SPECIAL_JUMP"],
-  CoopEnemyRush: null,
-  CoopEnemySakelienBomberBlast: null,
-  CoopEnemySakerocketBlast: null,
-  CoopEnemySakeSaucerFall: null,
-  CoopEnemySakeTamaireBombDamage: null,
-  GeyserOnline: null,
-  RollerSplash_Wide: [
-    "SPLASH_VERTICAL_MIN",
-    "SPLASH_VERTICAL_MAX",
-    "SPLASH_HORIZONTAL_MIN",
-    "SPLASH_HORIZONTAL_MAX",
-  ],
-  // original
-  Blaster_BlasterMiddle: null,
-  Blaster_BlasterShort: null,
-  Blaster_KillOneShot: ["DIRECT"],
-  Blaster: null,
-  BlowerExhale_BombCore: ["SPECIAL_MAX_CHARGE", "SPECIAL_MIN_CHARGE"],
-  BlowerInhale: null,
-  BombFlower: null,
-  Bomb_CurlingBullet: null,
-  Bomb_DirectHit: ["BOMB_DIRECT"],
-  Bomb_Fizzy: null,
-  Bomb_Suction: null,
-  Bomb_TorpedoBullet: null,
-  Bomb_TorpedoSplashBurst: null,
-  Bomb_Trap: null,
-  Bomb: null,
-  BrushCore: ["ROLL_OVER"],
-  BrushSplash: ["SPLASH_MIN", "SPLASH_MAX"],
-  CannonMissile: null,
-  ChargerFull_Light: ["FULL_CHARGE"],
-  ChargerFull_Long: ["FULL_CHARGE"],
-  ChargerFull: ["FULL_CHARGE"],
-  Charger_Light: ["MAX_CHARGE", "TAP_SHOT"],
-  Charger_Long: ["MAX_CHARGE", "TAP_SHOT"],
-  Charger: ["MAX_CHARGE", "TAP_SHOT"],
-  Chariot_Body: ["SPECIAL_BUMP"],
-  Chariot_Cannon: [
-    "SPECIAL_BULLET_MIN",
-    "SPECIAL_BULLET_MAX",
-    "SPECIAL_CANNON",
-  ],
-  Default: null,
-  EnemyFlyingHohei_BombCore: null,
-  GachihokoTimeUpBurst: null,
-  Gachihoko_BombCore: null,
-  Gachihoko_Bullet: null,
-  Geyser: null,
-  GoldenIkuraAttack: null,
-  InkStormRain: null,
-  InkStorm: ["SPECIAL_TICK"],
-  Jetpack_BombCore: ["BOMB_DIRECT"],
-  Jetpack_Bullet: ["BOMB_NORMAL"],
-  Jetpack_Coop: null,
-  Jetpack_Jet: null,
-  Maneuver_Short: null,
-  Maneuver: null,
-  MicroLaser: ["SPECIAL_TICK"],
-  MissionSalmonBuddy: null,
-  MovePainter_Burst: null,
-  MovePainter_Direct: null,
-  MultiMissile_BombCore: ["BOMB_NORMAL"],
-  MultiMissile_Bullet: null,
-  NiceBall: ["SPECIAL_TICK"],
-  ObjectEffect_Up: null,
-  RollerCore: ["ROLL_OVER"],
-  RollerSplash_Compact: [
-    "SPLASH_VERTICAL_MIN",
-    "SPLASH_VERTICAL_MAX",
-    "SPLASH_HORIZONTAL_MIN",
-    "SPLASH_HORIZONTAL_MAX",
-  ],
-  RollerSplash_Heavy: [
-    "SPLASH_VERTICAL_MIN",
-    "SPLASH_VERTICAL_MAX",
-    "SPLASH_HORIZONTAL_MIN",
-    "SPLASH_HORIZONTAL_MAX",
-  ],
-  RollerSplash_Hunter: [
-    "SPLASH_VERTICAL_MIN",
-    "SPLASH_VERTICAL_MAX",
-    "SPLASH_HORIZONTAL_MIN",
-    "SPLASH_HORIZONTAL_MAX",
-  ],
-  RollerSplash: [
-    "SPLASH_VERTICAL_MIN",
-    "SPLASH_VERTICAL_MAX",
-    "SPLASH_HORIZONTAL_MIN",
-    "SPLASH_HORIZONTAL_MAX",
-  ],
-  Saber_ChargeShot: ["SPLATANA_VERTICAL"],
-  Saber_ChargeSlash: ["SPLATANA_VERTICAL_DIRECT"],
-  Saber_Shot: ["SPLATANA_HORIZONTAL"],
-  Saber_Slash: ["SPLATANA_HORIZONTAL_DIRECT"],
-  Saber_ChargeSlash_Penetrate: null,
-  SakerocketBullet: null,
-  ShelterCanopy_Compact: null,
-  ShelterCanopy_Wide: null,
-  ShelterCanopy: null,
-  ShelterShot_Compact: null,
-  ShelterShot_Wide: null,
-  ShelterShot: null,
-  Shield: null,
-  ShockSonar_Wave: ["WAVE"],
-  Shooter_Blaze: ["NORMAL_MAX", "NORMAL_MIN"],
-  Shooter_Expert: ["NORMAL_MAX", "NORMAL_MIN"],
-  Shooter_First: ["NORMAL_MAX", "NORMAL_MIN"],
-  Shooter_FlashRepeat: ["NORMAL_MAX", "NORMAL_MIN"],
-  Shooter_Flash: ["NORMAL_MAX", "NORMAL_MIN"],
-  Shooter_Gravity: ["NORMAL_MAX", "NORMAL_MIN"],
-  Shooter_Heavy: ["NORMAL_MAX", "NORMAL_MIN"],
-  Shooter_Long: ["NORMAL_MAX", "NORMAL_MIN"],
-  Shooter_Precision: ["NORMAL_MAX", "NORMAL_MIN"],
-  Shooter_Short: ["NORMAL_MAX", "NORMAL_MIN"],
-  Shooter_TripleMiddle: ["NORMAL_MAX", "NORMAL_MIN"],
-  Shooter_TripleQuick: ["NORMAL_MAX", "NORMAL_MIN"],
-  Shooter: null,
-  Skewer_Body: null,
-  Skewer: ["BOMB_NORMAL"],
-  Slosher_Bathtub: ["DIRECT", "DIRECT_MAX", "DIRECT_MIN", "DISTANCE", "SPLASH"],
-  Slosher_Bear: ["DIRECT", "DIRECT_MAX", "DIRECT_MIN", "DISTANCE", "SPLASH"],
-  Slosher_WashtubBombCore: ["DIRECT", "DIRECT_MAX", "DIRECT_MIN"],
-  Slosher_Washtub: ["DISTANCE", "SPLASH"],
-  Slosher: ["DIRECT", "DIRECT_MAX", "DIRECT_MIN", "DISTANCE", "SPLASH"],
-  Spinner: ["NORMAL_MAX", "NORMAL_MIN", "NORMAL_MAX_FULL_CHARGE", "SPLASH"],
-  Sprinkler: null,
-  Stringer_Short: ["NORMAL_MAX", "NORMAL_MIN", "DISTANCE"],
-  Stringer: ["NORMAL_MAX", "NORMAL_MIN", "DISTANCE"],
-  SuperHook: ["BOMB_NORMAL"],
-  SuperLanding: null,
-  TripleTornado: null,
-  UltraShot: ["BOMB_NORMAL", "BOMB_DIRECT"],
-  UltraStamp_Swing: ["SPECIAL_SWING"],
-  UltraStamp_Throw_BombCore: ["SPECIAL_THROW_DIRECT"],
-  UltraStamp_Throw: ["SPECIAL_THROW"],
-};
+export const damagePriorities: Array<
+  [
+    AnyWeapon["type"],
+    Array<AnyWeapon["id"]>,
+    DamageType,
+    keyof typeof objectDamages
+  ]
+> = [
+  ["MAIN", [210, 220, 260], "DIRECT", "Blaster_KillOneShot"],
+  ["MAIN", [210, 260], "DISTANCE", "Blaster_BlasterMiddle"],
+  ["MAIN", [220], "DISTANCE", "Blaster"],
+
+  ["MAIN", [400], "NORMAL_MAX", "Shooter_Flash"], // xxx: TODO Squeezer autofire
+  ["MAIN", [400], "NORMAL_MIN", "Shooter_Flash"],
+
+  ["MAIN", [1000], "SPLASH_VERTICAL_MIN", "RollerSplash_Compact"],
+  ["MAIN", [1000], "SPLASH_VERTICAL_MAX", "RollerSplash_Compact"],
+  ["MAIN", [1000], "SPLASH_HORIZONTAL_MIN", "RollerSplash_Compact"],
+  ["MAIN", [1000], "SPLASH_HORIZONTAL_MAX", "RollerSplash_Compact"],
+  ["MAIN", [1000, 1010, 1020, 1030, 1040], "ROLL_OVER", "RollerCore"],
+  ["MAIN", [1010], "SPLASH_VERTICAL_MIN", "RollerSplash"],
+  ["MAIN", [1010], "SPLASH_VERTICAL_MAX", "RollerSplash"],
+  ["MAIN", [1010], "SPLASH_HORIZONTAL_MIN", "RollerSplash"],
+  ["MAIN", [1010], "SPLASH_HORIZONTAL_MAX", "RollerSplash"],
+  ["MAIN", [1020], "SPLASH_VERTICAL_MIN", "RollerSplash_Heavy"],
+  ["MAIN", [1020], "SPLASH_VERTICAL_MAX", "RollerSplash_Heavy"],
+  ["MAIN", [1020], "SPLASH_HORIZONTAL_MIN", "RollerSplash_Heavy"],
+  ["MAIN", [1020], "SPLASH_HORIZONTAL_MAX", "RollerSplash_Heavy"],
+  ["MAIN", [1030], "SPLASH_VERTICAL_MIN", "RollerSplash_Hunter"],
+  ["MAIN", [1030], "SPLASH_VERTICAL_MAX", "RollerSplash_Hunter"],
+  ["MAIN", [1030], "SPLASH_HORIZONTAL_MIN", "RollerSplash_Hunter"],
+  ["MAIN", [1030], "SPLASH_HORIZONTAL_MAX", "RollerSplash_Hunter"],
+  ["MAIN", [1040], "SPLASH_VERTICAL_MIN", "RollerSplash_Wide"],
+  ["MAIN", [1040], "SPLASH_VERTICAL_MAX", "RollerSplash_Wide"],
+  ["MAIN", [1040], "SPLASH_HORIZONTAL_MIN", "RollerSplash_Wide"],
+  ["MAIN", [1040], "SPLASH_HORIZONTAL_MAX", "RollerSplash_Wide"],
+
+  ["MAIN", [1100, 1110, 1120], "ROLL_OVER", "BrushCore"],
+  ["MAIN", [1100, 1110, 1120], "SPLASH_MIN", "BrushSplash"],
+  ["MAIN", [1100, 1110, 1120], "SPLASH_MAX", "BrushSplash"],
+
+  ["MAIN", [2000, 2010, 2020, 2060], "FULL_CHARGE", "ChargerFull"],
+  ["MAIN", [2000, 2010, 2020, 2060], "MAX_CHARGE", "Charger"],
+  ["MAIN", [2000, 2010, 2020, 2060], "TAP_SHOT", "Charger"],
+  ["MAIN", [2030, 2040], "FULL_CHARGE", "ChargerFull_Long"],
+  ["MAIN", [2030, 2040], "MAX_CHARGE", "Charger_Long"],
+  ["MAIN", [2030, 2040], "TAP_SHOT", "Charger_Long"],
+  ["MAIN", [2050, 2070], "FULL_CHARGE", "ChargerFull_Light"],
+  ["MAIN", [2050, 2070], "MAX_CHARGE", "Charger_Light"],
+  ["MAIN", [2050, 2070], "TAP_SHOT", "Charger_Light"],
+
+  ["MAIN", [3040], "DIRECT", "Slosher_WashtubBombCore"],
+  ["MAIN", [3040], "DISTANCE", "Slosher_Washtub"],
+
+  ["MAIN", [6000], "NORMAL_MAX", "ShelterShot"], // TODO: could also list damage caused by Shield bump
+  ["MAIN", [6000], "NORMAL_MIN", "ShelterShot"],
+  ["MAIN", [6010], "NORMAL_MAX", "ShelterShot_Wide"],
+  ["MAIN", [6010], "NORMAL_MIN", "ShelterShot_Wide"],
+  ["MAIN", [6020], "NORMAL_MAX", "ShelterShot_Compact"],
+  ["MAIN", [6020], "NORMAL_MIN", "ShelterShot_Compact"],
+
+  ["MAIN", [8000, 8010], "SPLATANA_VERTICAL", "Saber_ChargeShot"],
+  ["MAIN", [8000, 8010], "SPLATANA_VERTICAL_DIRECT", "Saber_ChargeSlash"],
+  ["MAIN", [8000, 8010], "SPLATANA_HORIZONTAL", "Saber_Shot"],
+  ["MAIN", [8000, 8010], "SPLATANA_HORIZONTAL_DIRECT", "Saber_Slash"],
+
+  ["SUB", [0, 2, 7], "BOMB_NORMAL", "Bomb"], // TODO: could also consider "Bomb_DirectHit" it is almost the same but has different ratio for Big Bubbler core: 0.5 vs. 1.5
+  ["SUB", [6], "BOMB_DIRECT", "Bomb_CurlingBullet"],
+  ["SUB", [6], "BOMB_NORMAL", "Bomb"],
+  ["SUB", [13], "SPLASH", "Bomb_TorpedoSplashBurst"],
+  ["SUB", [13], "BOMB_DIRECT", "Bomb_TorpedoBullet"],
+
+  ["SPECIAL", [4], "BOMB_NORMAL", "MultiMissile_Bullet"], // There is also "MultiMissile_BombCore" but it seems to contain same rates as MultiMissile_Bullet
+  ["SPECIAL", [8], "SPECIAL_MAX_CHARGE", "BlowerExhale_BombCore"],
+  ["SPECIAL", [8], "SPECIAL_MIN_CHARGE", "BlowerExhale_BombCore"],
+  ["SPECIAL", [10], "BOMB_DIRECT", "Jetpack_BombCore"],
+  ["SPECIAL", [10], "BOMB_NORMAL", "Jetpack_Bullet"],
+  ["SPECIAL", [11], "SPECIAL_THROW_DIRECT", "UltraStamp_Throw_BombCore"],
+  ["SPECIAL", [11], "SPECIAL_THROW", "UltraStamp_Throw"],
+  ["SPECIAL", [11], "SPECIAL_SWING", "UltraStamp_Swing"],
+  ["SPECIAL", [12], "SPECIAL_CANNON", "Chariot_Cannon"],
+  ["SPECIAL", [12], "SPECIAL_BULLET_MAX", "Chariot_Cannon"],
+  ["SPECIAL", [12], "SPECIAL_BULLET_MIN", "Chariot_Cannon"],
+  ["SPECIAL", [12], "SPECIAL_BUMP", "Chariot_Body"],
+  ["SPECIAL", [13], "BOMB_NORMAL", "Skewer"],
+];
 
 export const damageTypesToCombine: Partial<
   Record<MainWeaponId, Array<CombineWith>>
