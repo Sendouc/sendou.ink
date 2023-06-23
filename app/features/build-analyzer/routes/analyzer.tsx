@@ -142,6 +142,28 @@ export default function BuildAnalyzerPage() {
         suffix="°"
       />
     ),
+    // Squeezer
+    analyzed.stats.shotAutofireSpreadAir && (
+      <StatCard
+        isComparing={isComparing}
+        abilityPoints={abilityPoints}
+        key="shotAutofireSpreadAir"
+        stat={statKeyToTuple("shotAutofireSpreadAir")}
+        title={t("analyzer:stat.shotAutofireSpreadAir")}
+        suffix="°"
+      />
+    ),
+    typeof analyzed.stats.shotAutofireSpreadGround === "number" && (
+      <StatCard
+        isComparing={isComparing}
+        abilityPoints={abilityPoints}
+        key="shotAutofireSpreadGround"
+        stat={analyzed.stats.shotAutofireSpreadGround}
+        title={t("analyzer:stat.shotAutofireSpreadGround")}
+        suffix="°"
+      />
+    ),
+
     typeof analyzed.stats.mainWeaponWhiteInkSeconds === "number" && (
       <StatCard
         isComparing={isComparing}

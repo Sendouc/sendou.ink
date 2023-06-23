@@ -42,6 +42,8 @@ export const DAMAGE_TYPE = [
   "SPECIAL_BUMP",
   "SPECIAL_JUMP",
   "SPECIAL_TICK",
+  "SECONDARY_MODE_MAX",
+  "SECONDARY_MODE_MIN",
 ] as const;
 
 export const damageTypeToWeaponType: Record<
@@ -52,6 +54,8 @@ export const damageTypeToWeaponType: Record<
   NORMAL_MAX: "MAIN",
   TURRET_MAX: "MAIN",
   TURRET_MIN: "MAIN",
+  SECONDARY_MODE_MAX: "MAIN",
+  SECONDARY_MODE_MIN: "MAIN",
   NORMAL_MAX_FULL_CHARGE: "MAIN",
   DIRECT: "MAIN",
   DIRECT_MIN: "MAIN",

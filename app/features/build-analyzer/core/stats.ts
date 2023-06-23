@@ -141,6 +141,8 @@ export function buildStats({
       superJumpTimeTotal: superJumpTimeTotal(input),
       shotSpreadAir: shotSpreadAir(input),
       shotSpreadGround: mainWeaponParams.Stand_DegSwerve,
+      shotAutofireSpreadAir: shotAutofireSpreadAir(input),
+      shotAutofireSpreadGround: mainWeaponParams.Variable_Stand_DegSwerve,
       squidSurgeChargeFrames: squidSurgeChargeFrames(input),
       subDefPointSensorMarkedTimeInSeconds:
         subDefPointSensorMarkedTimeInSeconds(input),
@@ -400,6 +402,8 @@ const damageTypeToParamsKey: Record<
   NORMAL_MAX_FULL_CHARGE: "DamageParam_ValueFullChargeMax",
   TURRET_MAX: "DamageLapOverParam_ValueMax",
   TURRET_MIN: "DamageLapOverParam_ValueMin",
+  SECONDARY_MODE_MAX: "Variable_Damage_ValueMax",
+  SECONDARY_MODE_MIN: "Variable_Damage_ValueMin",
   DIRECT: "DamageParam_ValueDirect",
   DIRECT_MIN: "DamageParam_ValueDirectMin",
   DIRECT_MAX: "DamageParam_ValueDirectMax",
@@ -1013,6 +1017,39 @@ function shotSpreadAir(
   const SHOT_SPREAD_AIR_ABILITY = "IA";
   const groundSpread = args.mainWeaponParams.Stand_DegSwerve;
   const jumpSpread = args.mainWeaponParams.Jump_DegSwerve;
+
+  if (
+    typeof jumpSpread !== "number" ||
+    typeof groundSpread !== "number" ||
+    jumpSpread === groundSpread
+  )
+    return;
+
+  const { effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: SHOT_SPREAD_AIR_ABILITY,
+    }),
+    key: "ReduceJumpSwerveRate",
+    weapon: args.mainWeaponParams,
+  });
+
+  const extraSpread = jumpSpread - groundSpread;
+  const reducedExtraSpread = extraSpread * (1 - effect);
+
+  return {
+    baseValue: roundToNDecimalPlaces(jumpSpread),
+    value: roundToNDecimalPlaces(reducedExtraSpread + groundSpread),
+    modifiedBy: SHOT_SPREAD_AIR_ABILITY,
+  };
+}
+
+function shotAutofireSpreadAir(
+  args: StatFunctionInput
+): AnalyzedBuild["stats"]["shotAutofireSpreadAir"] {
+  const SHOT_SPREAD_AIR_ABILITY = "IA";
+  const groundSpread = args.mainWeaponParams.Variable_Stand_DegSwerve;
+  const jumpSpread = args.mainWeaponParams.Variable_Jump_DegSwerve;
 
   if (
     typeof jumpSpread !== "number" ||

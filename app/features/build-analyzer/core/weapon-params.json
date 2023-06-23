@@ -639,8 +639,12 @@
       "MoveSpeed": 0.072,
       "DamageParam_ValueMax": 380,
       "DamageParam_ValueMin": 190,
+      "Variable_Damage_ValueMax": 300,
+      "Variable_Damage_ValueMin": 150,
       "Jump_DegSwerve": 0,
       "Stand_DegSwerve": 0,
+      "Variable_Jump_DegSwerve": 13,
+      "Variable_Stand_DegSwerve": 8,
       "InkConsume": 0.022
     },
     "1000": {
@@ -1113,6 +1117,8 @@
       "MoveSpeed_Charge": 0.086,
       "DamageParam_ValueMax": 280,
       "DamageParam_ValueMin": 140,
+      "Variable_Damage_ValueMax": 300,
+      "Variable_Damage_ValueMin": 150,
       "Jump_DegSwerve": 12,
       "Stand_DegSwerve": 6,
       "InkRecoverStop": 40,

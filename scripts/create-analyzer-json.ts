@@ -276,6 +276,8 @@ function parametersToMainWeaponResult(
     DamageParam_SplatanaHorizontal:
       params["BulletSaberHorizontalParam"]?.["DamageParam"]?.["HitDamage"],
     BodyParam_Damage: params["BodyParam"]?.["Damage"],
+    Variable_Damage_ValueMax: params["VariableDamageParam"]?.["ValueMax"],
+    Variable_Damage_ValueMin: params["VariableDamageParam"]?.["ValueMin"],
     SwingUnitGroupParam_DamageParam_DamageMinValue: resolveMin(
       params["SwingUnitGroupParam"]?.["DamageParam"]?.["Inside"]?.[
         "DamageMinValue"
@@ -335,6 +337,9 @@ function parametersToMainWeaponResult(
       KeepChargeFullFrame !== 1 ? KeepChargeFullFrame : undefined,
     Jump_DegSwerve: params["WeaponParam"]?.["Jump_DegSwerve"],
     Stand_DegSwerve: params["WeaponParam"]?.["Stand_DegSwerve"],
+    Variable_Jump_DegSwerve: params["VariableWeaponParam"]?.["Jump_DegSwerve"],
+    Variable_Stand_DegSwerve:
+      params["VariableWeaponParam"]?.["Stand_DegSwerve"],
     InkRecoverStop: params["WeaponParam"]?.["InkRecoverStop"],
     InkConsume,
     InkConsumeSlosher,

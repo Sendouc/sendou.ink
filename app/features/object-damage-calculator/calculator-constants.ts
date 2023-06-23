@@ -32,7 +32,9 @@ export const damagePriorities: Array<
   ["MAIN", [210, 260], "DISTANCE", "Blaster_BlasterMiddle"],
   ["MAIN", [220], "DISTANCE", "Blaster"],
 
-  ["MAIN", [400], "NORMAL_MAX", "Shooter_Flash"], // xxx: TODO Squeezer autofire
+  ["MAIN", [400], "NORMAL_MAX", "Shooter_Flash"],
+  ["MAIN", [400], "SECONDARY_MODE_MAX", "Shooter_FlashRepeat"],
+  ["MAIN", [400], "SECONDARY_MODE_MIN", "Shooter_FlashRepeat"],
   ["MAIN", [400], "NORMAL_MIN", "Shooter_Flash"],
 
   ["MAIN", [1000], "SPLASH_VERTICAL_MIN", "RollerSplash_Compact"],

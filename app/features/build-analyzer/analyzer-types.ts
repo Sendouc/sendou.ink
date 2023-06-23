@@ -44,6 +44,8 @@ export interface MainWeaponParams {
   DamageParam_SplatanaHorizontal?: number;
   DamageLapOverParam_ValueMax?: number;
   DamageLapOverParam_ValueMin?: number;
+  Variable_Damage_ValueMax?: number;
+  Variable_Damage_ValueMin?: number;
   BodyParam_Damage?: number;
   SwingUnitGroupParam_DamageParam_DamageMinValue?: number;
   SwingUnitGroupParam_DamageParam_DamageMaxValue?: number;
@@ -53,6 +55,8 @@ export interface MainWeaponParams {
   WideSwingUnitGroupParam_DamageParam_DamageMaxValue?: number;
   Jump_DegSwerve?: number;
   Stand_DegSwerve?: number;
+  Variable_Jump_DegSwerve?: number;
+  Variable_Stand_DegSwerve?: number;
   /** Damage caused by charger's full charged shot */
   DamageParam_ValueFullCharge?: number;
   /** Max damage caused by charger's charged shot before fully charged */
@@ -241,6 +245,8 @@ export interface AnalyzedBuild {
     superJumpTimeTotal: Stat;
     shotSpreadAir?: Stat;
     shotSpreadGround?: number;
+    shotAutofireSpreadAir?: Stat;
+    shotAutofireSpreadGround?: number;
     squidSurgeChargeFrames: Stat;
 
     subDefPointSensorMarkedTimeInSeconds: Stat;
