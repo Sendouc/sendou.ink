@@ -241,6 +241,7 @@ function parametersToMainWeaponResult(
       params["spl__WeaponStringerParam"]?.["ChargeParam"]?.[
         "MoveSpeedFullCharge"
       ],
+    MoveSpeedVariable: params["VariableShotParam"]?.["MoveSpeed"],
     DamageParam_ValueMax: DamageParam_ValueMax(),
     DamageParam_ValueMin: !DamageParam_ValueDirect
       ? params["DamageParam"]?.["ValueMin"] ??

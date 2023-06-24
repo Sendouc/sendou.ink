@@ -812,6 +812,14 @@ export default function BuildAnalyzerPage() {
                 title={t("analyzer:stat.shootingRunSpeedFullCharge")}
               />
             )}
+            {analyzed.stats.shootingRunSpeedSecondaryMode && (
+              <StatCard
+                isComparing={isComparing}
+                abilityPoints={abilityPoints}
+                stat={statKeyToTuple("shootingRunSpeedSecondaryMode")}
+                title={t("analyzer:stat.shootingRunSpeedSecondaryMode")}
+              />
+            )}
             <StatCard
               isComparing={isComparing}
               abilityPoints={abilityPoints}

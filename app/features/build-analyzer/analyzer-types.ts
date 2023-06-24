@@ -32,6 +32,7 @@ export interface MainWeaponParams {
   MoveSpeed?: number;
   MoveSpeed_Charge?: number;
   MoveSpeedFullCharge?: number;
+  MoveSpeedVariable?: number;
   DamageParam_ValueMax?: number;
   DamageParam_ValueMin?: number;
   DamageParam_ValueFullChargeMax?: number;
@@ -233,6 +234,7 @@ export interface AnalyzedBuild {
     shootingRunSpeed?: Stat;
     shootingRunSpeedCharging?: Stat;
     shootingRunSpeedFullCharge?: Stat;
+    shootingRunSpeedSecondaryMode?: Stat;
     swimSpeed: Stat;
     swimSpeedHoldingRainmaker: Stat;
     runSpeedInEnemyInk: Stat;

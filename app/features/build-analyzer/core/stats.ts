@@ -128,6 +128,10 @@ export function buildStats({
         input,
         "MoveSpeedFullCharge"
       ),
+      shootingRunSpeedSecondaryMode: shootingRunSpeed(
+        input,
+        "MoveSpeedVariable"
+      ),
       swimSpeed: swimSpeed(input),
       swimSpeedHoldingRainmaker: swimSpeedHoldingRainmaker(input),
       runSpeedInEnemyInk: runSpeedInEnemyInk(input),
@@ -826,7 +830,11 @@ function runSpeedInEnemyInk(
 
 function shootingRunSpeed(
   args: StatFunctionInput,
-  keyName: "MoveSpeed" | "MoveSpeed_Charge" | "MoveSpeedFullCharge"
+  keyName:
+    | "MoveSpeed"
+    | "MoveSpeed_Charge"
+    | "MoveSpeedFullCharge"
+    | "MoveSpeedVariable"
 ): AnalyzedBuild["stats"]["shootingRunSpeed"] {
   const SHOOTING_RUN_SPEED_ABILITY = "RSU";
   const moveSpeed = args.mainWeaponParams[keyName];

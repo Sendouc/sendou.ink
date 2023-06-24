@@ -1115,6 +1115,7 @@
       },
       "MoveSpeed": 0.086,
       "MoveSpeed_Charge": 0.086,
+      "MoveSpeedVariable": 0.05,
       "DamageParam_ValueMax": 280,
       "DamageParam_ValueMin": 140,
       "Variable_Damage_ValueMax": 300,
