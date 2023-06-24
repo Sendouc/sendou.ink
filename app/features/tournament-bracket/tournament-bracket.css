@@ -1,10 +1,10 @@
 .tournament-bracket__finalize {
   font-size: var(--fonts-sm);
   margin-block-end: var(--s-4);
-  font-weight: var(--semi-bold);
   display: flex;
   gap: var(--s-1);
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .tournament-bracket__start-bracket-alert {

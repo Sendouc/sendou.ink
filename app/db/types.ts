@@ -346,6 +346,11 @@ export interface Skill {
   tournamentId: number | null;
 }
 
+export interface SkillTeamUser {
+  userId: number;
+  skillId: number;
+}
+
 export interface MapResult {
   mode: ModeShort;
   stageId: StageId;

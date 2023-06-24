@@ -69,7 +69,6 @@ import { addSummary } from "../queries/addSummary.server";
 import { tournamentSummary } from "../core/summarizer.server";
 import invariant from "tiny-invariant";
 import { allMatchResultsByTournamentId } from "../queries/allMatchResultsByTournamentId.server";
-import fs from "node:fs";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 
 export const links: LinksFunction = () => {
@@ -150,20 +149,6 @@ export const action: ActionFunction = async ({ params, request }) => {
       const results = allMatchResultsByTournamentId(tournamentId);
       invariant(results.length > 0, "No results found");
 
-      fs.writeFileSync(
-        "summary.json",
-        JSON.stringify(
-          tournamentSummary({
-            teams,
-            finalStandings: _finalStandings,
-            results,
-          }),
-          null,
-          2
-        )
-      );
-      return null;
-
       addSummary({
         tournamentId,
         summary: tournamentSummary({
@@ -190,7 +175,6 @@ export const loader = ({ params }: LoaderArgs) => {
     const bracket = manager.get.tournamentData(tournamentId);
     const _everyMatchIsOver = everyMatchIsOver(bracket);
     return {
-      hasStarted: true,
       enoughTeams: true,
       bracket,
       roundBestOfs: bestOfsByTournamentId(tournamentId),
@@ -224,7 +208,6 @@ export const loader = ({ params }: LoaderArgs) => {
 
   return {
     bracket: data,
-    hasStarted,
     enoughTeams,
     everyMatchIsOver: false,
     roundBestOfs: null,
@@ -247,7 +230,7 @@ export default function TournamentBracketsPage() {
     if (!data.enoughTeams) return;
 
     // matches aren't generated before tournament starts
-    if (data.hasStarted) {
+    if (parentRouteData.hasStarted) {
       // @ts-expect-error - brackets-viewer is not typed
       window.bracketsViewer.onMatchClicked = (match) => {
         // can't view match page of a bye
@@ -289,7 +272,7 @@ export default function TournamentBracketsPage() {
     // my beautiful hack to show seeds
     // clean up probably not needed as it's not harmful to append more than one
     const cssRulesToAppend = parentRouteData.teams.map((team, i) => {
-      const participantId = data.hasStarted ? team.id : i;
+      const participantId = parentRouteData.hasStarted ? team.id : i;
       return /* css */ `
         [data-participant-id="${participantId}"] {
           --seed: "${i + 1}  ";
@@ -348,10 +331,9 @@ export default function TournamentBracketsPage() {
       {visibility !== "hidden" && !data.everyMatchIsOver ? (
         <AutoRefresher />
       ) : null}
-      {/* xxx: hide when already finalized */}
-      {data.finalStandings ? (
+      {data.finalStandings && !parentRouteData.hasFinalized ? (
         <div className="tournament-bracket__finalize">
-          When you have checked everything{" "}
+          When you have checked that reported scores are correct{" "}
           <FormWithConfirm
             dialogHeading="Are you sure you want to finalize the tournament (can't be undone)?"
             fields={[["_action", "FINALIZE_TOURNAMENT"]]}
@@ -364,7 +346,7 @@ export default function TournamentBracketsPage() {
           </FormWithConfirm>
         </div>
       ) : null}
-      {!data.hasStarted && data.enoughTeams ? (
+      {!parentRouteData.hasStarted && data.enoughTeams ? (
         <Form method="post" className="stack items-center">
           {!canAdminTournament({ user, event: parentRouteData.event }) ? (
             <Alert

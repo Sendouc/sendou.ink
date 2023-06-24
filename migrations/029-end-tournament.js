@@ -31,6 +31,25 @@ module.exports.up = function (db) {
 
   db.prepare(
     /*sql*/ `
+    create table "SkillTeamUser" (
+      "userId" integer not null,
+      "skillId" integer not null,
+      foreign key ("userId") references "User"("id") on delete cascade,
+      foreign key ("skillId") references "Skill"("id") on delete cascade,
+      unique("userId", "skillId") on conflict rollback 
+    ) strict
+  `
+  ).run();
+
+  db.prepare(
+    `create index skill_team_user_user_id on "SkillTeamUser"("userId")`
+  ).run();
+  db.prepare(
+    `create index skill_team_user_skill_id on "SkillTeamUser"("skillId")`
+  ).run();
+
+  db.prepare(
+    /*sql*/ `
     create table "MapResult" (
       "mode" text not null,
       "stageId" integer not null,

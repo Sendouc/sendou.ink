@@ -1,5 +1,7 @@
 import { sql } from "~/db/sql";
 import type { TournamentSummary } from "../core/summarizer.server";
+import { ordinal } from "openskill";
+import type { Skill } from "~/db/types";
 
 const addSkillStm = sql.prepare(/* sql */ `
   insert into "Skill" (
@@ -18,8 +20,18 @@ const addSkillStm = sql.prepare(/* sql */ `
     @ordinal,
     @userId,
     @identifier,
-    @matchesCount
-  )
+    @matchesCount + coalesce((select max("matchesCount") from "Skill" where "userId" = @userId or "identifier" = @identifier), 0)
+  ) returning *
+`);
+
+const addSkillTeamUserStm = sql.prepare(/* sql */ `
+  insert into "SkillTeamUser" (
+    "skillId",
+    "userId"
+  ) values (
+    @skillId,
+    @userId
+  ) on conflict("skillId", "userId") do nothing
 `);
 
 const addMapResultDeltaStm = sql.prepare(/* sql */ `
@@ -93,15 +105,24 @@ export const addSummary = sql.transaction(
     summary: TournamentSummary;
   }) => {
     for (const skill of summary.skills) {
-      addSkillStm.run({
+      const insertedSkill = addSkillStm.get({
         tournamentId,
         mu: skill.mu,
         sigma: skill.sigma,
-        ordinal: skill.ordinal,
+        ordinal: ordinal(skill),
         userId: skill.userId,
         identifier: skill.identifier,
         matchesCount: skill.matchesCount,
-      });
+      }) as Skill;
+
+      if (insertedSkill.identifier) {
+        for (const userIdString of insertedSkill.identifier.split("-")) {
+          addSkillTeamUserStm.run({
+            skillId: insertedSkill.id,
+            userId: Number(userIdString),
+          });
+        }
+      }
     }
 
     for (const mapResultDelta of summary.mapResultDeltas) {

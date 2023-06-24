@@ -28,6 +28,7 @@ import { teamHasCheckedIn, tournamentIdFromParams } from "../tournament-utils";
 import styles from "../tournament.css";
 import { findOwnTeam } from "../queries/findOwnTeam.server";
 import { findSubsByTournamentId } from "~/features/tournament-subs";
+import hasTournamentFinalized from "../queries/hasTournamentFinalized.server";
 
 export const shouldRevalidate: ShouldRevalidateFunction = (args) => {
   const wasMutation = args.formMethod === "POST";
@@ -119,6 +120,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     teamMemberOfName,
     teams,
     hasStarted,
+    hasFinalized: hasTournamentFinalized(tournamentId),
     subsCount,
     streamsCount: hasStarted
       ? (await streamsByTournamentId(tournamentId)).length

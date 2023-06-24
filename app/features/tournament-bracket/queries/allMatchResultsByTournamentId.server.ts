@@ -39,6 +39,7 @@ const stm = sql.prepare(/* sql */ `
     and "opponentTwoId" is not null
     and "opponentOneResult" is not null
   group by "m"."id"
+  order by "m"."id" asc
 `);
 
 interface Opponent {
