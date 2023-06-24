@@ -40,7 +40,7 @@ test.describe("Build Analyzer", () => {
 
     // on new build page with preselected values
     await newBuildPrompt.click();
-    await expect(page).toHaveURL(/new/);
+    await expect(page.getByTestId("HEAD-combobox-input")).toBeVisible();
     await expect(page.getByTestId("weapon-combobox-input")).toHaveValue(
       "Luna Blaster"
     );
