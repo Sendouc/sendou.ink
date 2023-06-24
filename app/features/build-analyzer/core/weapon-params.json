@@ -1121,6 +1121,8 @@
       "Variable_Damage_ValueMin": 150,
       "Jump_DegSwerve": 12,
       "Stand_DegSwerve": 6,
+      "Variable_Jump_DegSwerve": 4,
+      "Variable_Stand_DegSwerve": 1,
       "InkRecoverStop": 40,
       "InkConsumeFullChargeSplatling": 0.25
     },

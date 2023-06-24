@@ -337,9 +337,12 @@ function parametersToMainWeaponResult(
       KeepChargeFullFrame !== 1 ? KeepChargeFullFrame : undefined,
     Jump_DegSwerve: params["WeaponParam"]?.["Jump_DegSwerve"],
     Stand_DegSwerve: params["WeaponParam"]?.["Stand_DegSwerve"],
-    Variable_Jump_DegSwerve: params["VariableWeaponParam"]?.["Jump_DegSwerve"],
+    Variable_Jump_DegSwerve:
+      params["VariableWeaponParam"]?.["Jump_DegSwerve"] ??
+      params["VariableShotParam"]?.["Jump_DegSwerve"],
     Variable_Stand_DegSwerve:
-      params["VariableWeaponParam"]?.["Stand_DegSwerve"],
+      params["VariableWeaponParam"]?.["Stand_DegSwerve"] ??
+      params["VariableShotParam"]?.["Stand_DegSwerve"],
     InkRecoverStop: params["WeaponParam"]?.["InkRecoverStop"],
     InkConsume,
     InkConsumeSlosher,
