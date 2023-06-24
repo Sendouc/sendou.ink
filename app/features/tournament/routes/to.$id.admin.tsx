@@ -160,9 +160,10 @@ export const action: ActionFunction = async ({ request, params }) => {
 export default function TournamentAdminPage() {
   const { t } = useTranslation(["calendar"]);
   const data = useOutletContext<TournamentLoaderData>();
+
   const user = useUser();
 
-  if (!canAdminTournament({ user, event: data.event })) {
+  if (!canAdminTournament({ user, event: data.event }) || data.hasFinalized) {
     return <Redirect to={tournamentPage(data.event.id)} />;
   }
 

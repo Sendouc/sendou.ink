@@ -154,12 +154,12 @@ export default function TournamentLayout() {
         <SubNavLink to="teams" end={false}>
           {t("tournament:tabs.teams", { count: data.teams.length })}
         </SubNavLink>
-        {/* TODO: don't show when tournament finalized */}
-        <SubNavLink to="subs" end={false}>
-          {t("tournament:tabs.subs", { count: data.subsCount })}
-        </SubNavLink>
-        {/* TODO: don't show when tournament finalized */}
-        {data.hasStarted ? (
+        {!data.hasFinalized && (
+          <SubNavLink to="subs" end={false}>
+            {t("tournament:tabs.subs", { count: data.subsCount })}
+          </SubNavLink>
+        )}
+        {data.hasStarted && !data.hasFinalized ? (
           <SubNavLink to="streams">
             {t("tournament:tabs.streams", { count: data.streamsCount })}
           </SubNavLink>
@@ -168,11 +168,12 @@ export default function TournamentLayout() {
           !data.hasStarted && (
             <SubNavLink to="seeds">{t("tournament:tabs.seeds")}</SubNavLink>
           )}
-        {canAdminTournament({ user, event: data.event }) && (
-          <SubNavLink to="admin" data-testid="admin-tab">
-            {t("tournament:tabs.admin")}
-          </SubNavLink>
-        )}
+        {canAdminTournament({ user, event: data.event }) &&
+          !data.hasFinalized && (
+            <SubNavLink to="admin" data-testid="admin-tab">
+              {t("tournament:tabs.admin")}
+            </SubNavLink>
+          )}
       </SubNav>
       <Outlet context={data} />
     </Main>

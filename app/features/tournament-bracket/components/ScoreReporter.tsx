@@ -116,6 +116,7 @@ export function ScoreReporter({
           </Form>
         )}
         {canAdminTournament({ user, event: parentRouteData.event }) &&
+          !parentRouteData.hasFinalized &&
           presentational &&
           !matchIsLockedError && (
             <Form method="post">
