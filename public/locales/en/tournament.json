@@ -111,6 +111,14 @@
   "bracket.standings.showLess": "Show less",
   "bracket.standings.showMore": "Show more",
 
+  "match.hosts": "{{teamName}} hosts",
+  "match.pass": "Pass {{pass}}",
+  "match.pool": "Pool {{code}}",
+  "match.score": "{{scoreOne}}-{{scoreTwo}} (Best of {{bestOf}})",
+  "match.action.undoLastScore": "Undo last score",
+  "match.action.reopenMatch": "Reopen match",
+  "match.action.matchIsLocked": "Match is locked",
+
   "join.error.MISSING_CODE": "Invite code is missing. Was the full URL copied?",
   "join.error.SHORT_CODE": "Invite code is not the right length. Was the full URL copied?",
   "join.error.NO_TEAM_MATCHING_CODE": "No team matching the invite code.",
