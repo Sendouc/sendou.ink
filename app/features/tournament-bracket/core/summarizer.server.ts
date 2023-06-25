@@ -22,7 +22,7 @@ export interface TournamentSummary {
   skills: Omit<Skill, "tournamentId" | "id" | "ordinal">[];
   mapResultDeltas: MapResult[];
   playerResultDeltas: PlayerResult[];
-  tournamentResults: Omit<TournamentResult, "tournamentId">[];
+  tournamentResults: Omit<TournamentResult, "tournamentId" | "isHighlight">[];
 }
 
 type UserIdToTeamId = Record<number, number>;

@@ -143,6 +143,11 @@ export interface CalendarEventResultPlayer {
   name: string | null;
 }
 
+export interface UserResultHighlight {
+  teamId: number;
+  userId: number;
+}
+
 export interface CalendarEventBadge {
   eventId: number;
   badgeId: number;
@@ -375,6 +380,7 @@ export interface TournamentResult {
   placement: number;
   participantCount: number;
   tournamentTeamId: number;
+  isHighlight: number;
 }
 
 export interface TrustRelationship {

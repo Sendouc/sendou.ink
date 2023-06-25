@@ -2,6 +2,7 @@ import { sql } from "../../sql";
 import type {
   CalendarEventResultTeam,
   SplatoonPlayer,
+  TournamentTeam,
   User,
   UserWeapon,
   UserWithPlusTier,
@@ -11,8 +12,10 @@ import { dateToDatabaseTimestamp } from "~/utils/dates";
 
 import addPatronDataSql from "./addPatronData.sql";
 import addResultHighlightSql from "./addResultHighlight.sql";
+import addTournamentResultHighlightSql from "./addTournamentResultHighlight.sql";
 import deleteAllPatronDataSql from "./deleteAllPatronData.sql";
 import deleteAllResultHighlightsSql from "./deleteAllResultHighlights.sql";
+import deleteAllTournamentResultHighlightsSql from "./deleteAllTournamentResultHighlights.sql";
 import deleteByIdSql from "./deleteById.sql";
 import findAllSql from "./findAll.sql";
 import findAllPatronsSql from "./findAllPatrons.sql";
@@ -203,16 +206,31 @@ export function forcePatron(
 }
 
 const deleteAllResultHighlightsStm = sql.prepare(deleteAllResultHighlightsSql);
+const deleteAllTournamentResultHighlightsStm = sql.prepare(
+  deleteAllTournamentResultHighlightsSql
+);
 const addResultHighlightStm = sql.prepare(addResultHighlightSql);
+const addTournamentResultHighlightStm = sql.prepare(
+  addTournamentResultHighlightSql
+);
 export type UpdateResultHighlightsArgs = {
   userId: User["id"];
   resultTeamIds: Array<CalendarEventResultTeam["id"]>;
+  resultTournamentTeamIds: Array<TournamentTeam["id"]>;
 };
 export const updateResultHighlights = sql.transaction(
-  ({ userId, resultTeamIds }: UpdateResultHighlightsArgs) => {
+  ({
+    userId,
+    resultTeamIds,
+    resultTournamentTeamIds,
+  }: UpdateResultHighlightsArgs) => {
     deleteAllResultHighlightsStm.run({ userId });
+    deleteAllTournamentResultHighlightsStm.run({ userId });
     for (const teamId of resultTeamIds) {
       addResultHighlightStm.run({ userId, teamId });
+    }
+    for (const tournamentTeamId of resultTournamentTeamIds) {
+      addTournamentResultHighlightStm.run({ userId, tournamentTeamId });
     }
   }
 );

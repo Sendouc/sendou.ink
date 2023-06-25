@@ -47,8 +47,7 @@ select
     where
       "eventId" = "CalendarEvent"."id"
   ) as "startTime",
-  -- xxx: isHighlight
-  0 as "isHighlight"
+  "TournamentResult"."isHighlight"
 from
   "TournamentResult"
   left join "TournamentTeam" on "TournamentTeam"."id" = "TournamentResult"."tournamentTeamId"

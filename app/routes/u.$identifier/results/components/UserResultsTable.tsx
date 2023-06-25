@@ -19,6 +19,7 @@ export type UserResultsTableProps = {
 };
 
 export const HIGHLIGHT_CHECKBOX_NAME = "highlightTeamIds";
+export const HIGHLIGHT_TOURNAMENT_CHECKBOX_NAME = "highlightTournamentTeamIds";
 
 export function UserResultsTable({
   results,
@@ -59,7 +60,11 @@ export function UserResultsTable({
                   <input
                     value={result.teamId}
                     aria-labelledby={checkboxLabelIds}
-                    name={HIGHLIGHT_CHECKBOX_NAME}
+                    name={
+                      result.tournamentId
+                        ? HIGHLIGHT_TOURNAMENT_CHECKBOX_NAME
+                        : HIGHLIGHT_CHECKBOX_NAME
+                    }
                     type="checkbox"
                     defaultChecked={result.isHighlight}
                   />

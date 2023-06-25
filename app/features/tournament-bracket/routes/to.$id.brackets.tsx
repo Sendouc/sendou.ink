@@ -331,7 +331,9 @@ export default function TournamentBracketsPage() {
       {visibility !== "hidden" && !data.everyMatchIsOver ? (
         <AutoRefresher />
       ) : null}
-      {data.finalStandings && !parentRouteData.hasFinalized ? (
+      {data.finalStandings &&
+      !parentRouteData.hasFinalized &&
+      canAdminTournament({ user, event: parentRouteData.event }) ? (
         <div className="tournament-bracket__finalize">
           When you have checked that reported scores are correct{" "}
           <FormWithConfirm
@@ -475,6 +477,8 @@ function TournamentProgressPrompt({ ownedTeamId }: { ownedTeamId: number }) {
   const { t } = useTranslation(["tournament"]);
   const parentRouteData = useOutletContext<TournamentLoaderData>();
   const data = useLoaderData<typeof loader>();
+
+  if (data.finalStandings) return null;
 
   const { progress, currentMatchId, currentOpponent } = (() => {
     let lowestStatus = Infinity;
