@@ -43,7 +43,7 @@ export function tournamentSummary({
     mapResultDeltas: mapResultDeltas({ results, userIdsToTeamId }),
     playerResultDeltas: playerResultDeltas({ results, userIdsToTeamId }),
     tournamentResults: tournamentResults({
-      participantsCount: teams.length,
+      participantCount: teams.length,
       finalStandings,
     }),
   };
@@ -395,10 +395,10 @@ function playerResultDeltas({
 }
 
 function tournamentResults({
-  participantsCount,
+  participantCount,
   finalStandings,
 }: {
-  participantsCount: number;
+  participantCount: number;
   finalStandings: FinalStanding[];
 }) {
   const result: TournamentSummary["tournamentResults"] = [];
@@ -406,7 +406,7 @@ function tournamentResults({
   for (const standing of finalStandings) {
     for (const player of standing.players) {
       result.push({
-        participantsCount,
+        participantCount,
         placement: standing.placement,
         tournamentTeamId: standing.tournamentTeam.id,
         userId: player.id,

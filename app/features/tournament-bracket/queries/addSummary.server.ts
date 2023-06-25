@@ -85,13 +85,13 @@ const addTournamentResultStm = sql.prepare(/* sql */ `
     "tournamentId",
     "userId",
     "placement",
-    "participantsCount",
+    "participantCount",
     "tournamentTeamId"
   ) values (
     @tournamentId,
     @userId,
     @placement,
-    @participantsCount,
+    @participantCount,
     @tournamentTeamId
   )
 `);
@@ -152,7 +152,7 @@ export const addSummary = sql.transaction(
         tournamentId,
         userId: tournamentResult.userId,
         placement: tournamentResult.placement,
-        participantsCount: tournamentResult.participantsCount,
+        participantCount: tournamentResult.participantCount,
         tournamentTeamId: tournamentResult.tournamentTeamId,
       });
     }

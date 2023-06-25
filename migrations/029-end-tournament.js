@@ -94,7 +94,7 @@ module.exports.up = function (db) {
       "tournamentId" integer not null,
       "userId" integer not null,
       "placement" integer not null,
-      "participantsCount" integer not null,
+      "participantCount" integer not null,
       "tournamentTeamId" integer not null,
       foreign key ("userId") references "User"("id") on delete cascade,
       foreign key ("tournamentId") references "Tournament"("id") on delete cascade,

@@ -5,7 +5,12 @@ import { Placement } from "~/components/Placement";
 import { type UserPageLoaderData } from "~/routes/u.$identifier";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { discordFullName } from "~/utils/strings";
-import { calendarEventPage, userPage } from "~/utils/urls";
+import {
+  calendarEventPage,
+  tournamentBracketsPage,
+  tournamentTeamPage,
+  userPage,
+} from "~/utils/urls";
 
 export type UserResultsTableProps = {
   results: UserPageLoaderData["results"];
@@ -63,11 +68,31 @@ export function UserResultsTable({
               <td className="pl-4" id={placementCellId}>
                 <Placement placement={result.placement} />
               </td>
-              <td>{result.teamName}</td>
+              <td>
+                {result.tournamentId ? (
+                  <Link
+                    to={tournamentTeamPage({
+                      eventId: result.tournamentId,
+                      tournamentTeamId: result.teamId,
+                    })}
+                  >
+                    {result.teamName}
+                  </Link>
+                ) : (
+                  <>{result.teamName}</>
+                )}
+              </td>
               <td id={nameCellId}>
-                <Link to={calendarEventPage(result.eventId)}>
-                  {result.eventName}
-                </Link>
+                {result.eventId ? (
+                  <Link to={calendarEventPage(result.eventId)}>
+                    {result.eventName}
+                  </Link>
+                ) : null}
+                {result.tournamentId ? (
+                  <Link to={tournamentBracketsPage(result.tournamentId)}>
+                    {result.eventName}
+                  </Link>
+                ) : null}
               </td>
               <td>{result.participantCount}</td>
               <td>

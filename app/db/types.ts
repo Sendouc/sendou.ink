@@ -373,7 +373,7 @@ export interface TournamentResult {
   tournamentId: number;
   userId: number;
   placement: number;
-  participantsCount: number;
+  participantCount: number;
   tournamentTeamId: number;
 }
 
