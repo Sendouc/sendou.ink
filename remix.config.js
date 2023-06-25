@@ -93,6 +93,8 @@ module.exports = {
         "/xsearch/player/:id",
         "features/top-search/routes/xsearch.player.$id.tsx"
       );
+
+      route("/leaderboards", "features/leaderboards/routes/leaderboards.tsx");
     });
   },
   serverModuleFormat: "cjs",

@@ -35,6 +35,7 @@ export const meta: V2_MetaFunction = (args) => {
   ];
 };
 
+// xxx: add icon to nav and make sure proper path for player page too
 export const loader = async ({ request }: LoaderArgs) => {
   const availableMonthYears = monthYears();
   const { month: latestMonth, year: latestYear } = availableMonthYears[0]!;

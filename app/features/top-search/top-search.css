@@ -54,8 +54,13 @@
   color: var(--text-lighter);
 }
 
+.placements__table__power {
+  margin-inline-start: auto;
+}
+
 .placements__table__inner-row {
   display: flex;
   align-items: center;
   gap: var(--s-2-5);
+  width: 100%;
 }

@@ -1,4 +1,4 @@
-import { rating, ordinal, rate as openskillRate } from "openskill";
+import { rating, rate as openskillRate } from "openskill";
 import { findCurrentSkillByUserId } from "./queries/findCurrentSkillByUserId.server";
 import type { Team } from "openskill/dist/types";
 import { findCurrentTeamSkillByIdentifier } from "./queries/findCurrentTeamSkillByIdentifier.server";
@@ -6,8 +6,8 @@ import invariant from "tiny-invariant";
 
 const TAU = 0.3;
 
-export function muSigmaToSP(skill: { mu: number; sigma: number }) {
-  return toTwoDecimals(ordinal(rating(skill)) * 10 + 1000);
+export function ordinalToSp(ordinal: number) {
+  return toTwoDecimals(ordinal * 10 + 1000);
 }
 
 function toTwoDecimals(value: number) {
