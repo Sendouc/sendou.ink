@@ -27,6 +27,7 @@ export interface TournamentSummary {
 
 type UserIdToTeamId = Record<number, number>;
 
+// xxx: tests
 export function tournamentSummary({
   results,
   teams,

@@ -21,7 +21,7 @@
   transition: 0.1s ease-in-out background-color;
 }
 
-.placements__table__row:hover {
+a.placements__table__row:hover {
   background-color: var(--theme-transparent);
 }
 

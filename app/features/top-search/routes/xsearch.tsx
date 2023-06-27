@@ -19,6 +19,16 @@ import type { MonthYear } from "../top-search-utils";
 import { i18next } from "~/modules/i18n";
 import { makeTitle } from "~/utils/strings";
 import { monthYears } from "../queries/monthYears";
+import type { SendouRouteHandle } from "~/utils/remix";
+import { navIconUrl, topSearchPage } from "~/utils/urls";
+
+export const handle: SendouRouteHandle = {
+  breadcrumb: () => ({
+    imgPath: navIconUrl("xsearch"),
+    href: topSearchPage(),
+    type: "IMAGE",
+  }),
+};
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -35,7 +45,6 @@ export const meta: V2_MetaFunction = (args) => {
   ];
 };
 
-// xxx: add icon to nav and make sure proper path for player page too
 export const loader = async ({ request }: LoaderArgs) => {
   const availableMonthYears = monthYears();
   const { month: latestMonth, year: latestYear } = availableMonthYears[0]!;

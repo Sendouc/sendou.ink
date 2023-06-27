@@ -1,7 +1,6 @@
 import { sql } from "~/db/sql";
 import type { Skill } from "~/db/types";
 
-// xxx: implement most recent logic
 const stm = sql.prepare(/* sql */ `
   select
     "mu",
@@ -10,6 +9,12 @@ const stm = sql.prepare(/* sql */ `
     "Skill"
   where
     "userId" = @userId
+    and "id" = (
+      select max("id")
+        from "Skill"
+      where "userId" = @userId
+      group by "userId"
+    )
 `);
 
 export function findCurrentSkillByUserId(userId: number) {

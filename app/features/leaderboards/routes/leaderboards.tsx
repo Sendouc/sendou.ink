@@ -1,15 +1,28 @@
-import type { LinksFunction } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
+import type { LinksFunction, LoaderArgs } from "@remix-run/node";
+import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
 import { Avatar } from "~/components/Avatar";
 import { Main } from "~/components/Main";
 import { discordFullName } from "~/utils/strings";
-import { LEADERBOARDS_PAGE, navIconUrl, userPage } from "~/utils/urls";
+import {
+  LEADERBOARDS_PAGE,
+  navIconUrl,
+  teamPage,
+  userPage,
+  userSubmittedImage,
+} from "~/utils/urls";
 import styles from "../../top-search/top-search.css";
 import {
-  type UserSPLeaderboardItem,
   userSPLeaderboard,
+  type UserSPLeaderboardItem,
 } from "../queries/userSPLeaderboard.server";
 import type { SendouRouteHandle } from "~/utils/remix";
+import {
+  type TeamSPLeaderboardItem,
+  teamSPLeaderboard,
+} from "../queries/teamSPLeaderboard.server";
+import React from "react";
+import { LEADERBOARD_TYPES } from "../leaderboards-constants";
+import { useTranslation } from "~/hooks/useTranslation";
 
 export const handle: SendouRouteHandle = {
   i18n: ["vods"],
@@ -24,79 +37,61 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const loader = () => {
+const TYPE_SEARCH_PARAM_KEY = "type";
+
+export const loader = ({ request }: LoaderArgs) => {
+  const unvalidatedType = new URL(request.url).searchParams.get(
+    TYPE_SEARCH_PARAM_KEY
+  );
+
+  const type =
+    LEADERBOARD_TYPES.find((type) => type === unvalidatedType) ??
+    LEADERBOARD_TYPES[0];
+
   return {
-    leaderboard: userSPLeaderboard(),
+    userLeaderboard: type === "USER" ? userSPLeaderboard() : null,
+    teamLeaderboard: type === "TEAM" ? teamSPLeaderboard() : null,
   };
 };
 
 export default function LeaderboardsPage() {
-  // const [searchParams, setSearchParams] = useSearchParams();
+  const { t } = useTranslation(["common"]);
+  const [searchParams, setSearchParams] = useSearchParams();
   const data = useLoaderData<typeof loader>();
-
-  // const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-  // const [month, year, mode, region] = event.target.value.split("-");
-  // invariant(month, "month is missing");
-  // invariant(year, "year is missing");
-  // invariant(mode, "mode is missing");
-  // invariant(region, "region is missing");
-  // setSearchParams({
-  //   month,
-  //   year,
-  //   mode,
-  //   region,
-  // });
-  // }
-
-  // const selectValue = `${
-  //   searchParams.get("month") ?? data.availableMonthYears[0]!.month
-  // }-${searchParams.get("year") ?? data.availableMonthYears[0]!.year}-${
-  //   searchParams.get("mode") ?? "SZ"
-  // }-${searchParams.get("region") ?? "WEST"}`;
 
   return (
     <Main halfWidth className="stack lg">
-      {/* <select
+      <select
         className="text-sm"
-        onChange={handleSelectChange}
-        value={selectValue}
-        data-testid="xsearch-select"
+        value={searchParams.get(TYPE_SEARCH_PARAM_KEY) ?? LEADERBOARD_TYPES[0]}
+        onChange={(e) =>
+          setSearchParams({ [TYPE_SEARCH_PARAM_KEY]: e.target.value })
+        }
       >
-        {selectOptions(data.availableMonthYears).map((group) => (
-          <optgroup
-            key={group[0]!.id}
-            label={t(`common:divisions.${group[0]!.region}`)}
-          >
-            {group.map((option) => (
-              <option
-                key={option.id}
-                value={`${option.span.value.month}-${option.span.value.year}-${option.mode}-${option.region}`}
-              >
-                {option.span.from.month}/{option.span.from.year} -{" "}
-                {option.span.to.month}/{option.span.to.year} /{" "}
-                {t(`game-misc:MODE_SHORT_${option.mode}`)} /{" "}
-                {t(`common:divisions.${option.region}`)}
+        <optgroup label="SP">
+          {LEADERBOARD_TYPES.map((type) => {
+            return (
+              <option key={type} value={type}>
+                {t(`common:leaderboard.type.${type}`)}
               </option>
-            ))}
-          </optgroup>
-        ))}
-      </select> */}
-      <PlayersTable entries={data.leaderboard} />
+            );
+          })}
+        </optgroup>
+      </select>
+      {data.userLeaderboard ? (
+        <PlayersTable entries={data.userLeaderboard} />
+      ) : null}
+      {data.teamLeaderboard ? (
+        <TeamTable entries={data.teamLeaderboard} />
+      ) : null}
     </Main>
   );
 }
 
 function PlayersTable({ entries }: { entries: UserSPLeaderboardItem[] }) {
-  let rank = 0;
-  let previousPower = -1;
   return (
     <div className="placements__table">
-      {entries.map((entry, i) => {
-        if (previousPower !== entry.power) {
-          rank = i + 1;
-          previousPower = entry.power;
-        }
-
+      {entries.map((entry) => {
         return (
           <Link
             to={userPage(entry)}
@@ -104,7 +99,9 @@ function PlayersTable({ entries }: { entries: UserSPLeaderboardItem[] }) {
             className="placements__table__row"
           >
             <div className="placements__table__inner-row">
-              <div className="placements__table__rank">{rank}</div>
+              <div className="placements__table__rank">
+                {entry.placementRank}
+              </div>
               <div>
                 <Avatar size="xxs" user={entry} />
               </div>
@@ -112,6 +109,46 @@ function PlayersTable({ entries }: { entries: UserSPLeaderboardItem[] }) {
               <div className="placements__table__power">{entry.power}</div>
             </div>
           </Link>
+        );
+      })}
+    </div>
+  );
+}
+
+function TeamTable({ entries }: { entries: TeamSPLeaderboardItem[] }) {
+  return (
+    <div className="placements__table">
+      {entries.map((entry) => {
+        return (
+          <div key={entry.entryId} className="placements__table__row">
+            <div className="placements__table__inner-row">
+              <div className="placements__table__rank">
+                {entry.placementRank}
+              </div>
+              {entry.team?.avatarImgUrl ? (
+                <Link
+                  to={teamPage(entry.team.customUrl)}
+                  title={entry.team.name}
+                >
+                  <Avatar
+                    size="xxs"
+                    url={userSubmittedImage(entry.team.avatarImgUrl)}
+                  />
+                </Link>
+              ) : null}
+              <div className="text-xs">
+                {entry.members.map((member, i) => {
+                  return (
+                    <React.Fragment key={member.id}>
+                      <Link to={userPage(member)}>{member.discordName}</Link>
+                      {i !== entry.members.length - 1 ? ", " : null}
+                    </React.Fragment>
+                  );
+                })}
+              </div>
+              <div className="placements__table__power">{entry.power}</div>
+            </div>
+          </div>
         );
       })}
     </div>

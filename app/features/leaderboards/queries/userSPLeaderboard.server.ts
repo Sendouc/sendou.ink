@@ -15,7 +15,10 @@ const stm = sql.prepare(/* sql */ `
     "User"."discordAvatar",
     "User"."discordDiscriminator",
     "User"."discordId",
-    "User"."customUrl"
+    "User"."customUrl",
+    rank () over ( 
+      order by "Skill"."Ordinal" desc
+    ) "placementRank"
   from 
     "Skill"
     left join "User" on "User"."id" = "Skill"."userId"
@@ -42,6 +45,7 @@ export interface UserSPLeaderboardItem {
   discordDiscriminator: User["discordDiscriminator"];
   discordId: User["discordId"];
   customUrl: User["customUrl"];
+  placementRank: number;
 }
 
 export function userSPLeaderboard(): UserSPLeaderboardItem[] {
