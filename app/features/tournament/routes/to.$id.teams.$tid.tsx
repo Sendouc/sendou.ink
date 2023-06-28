@@ -34,16 +34,29 @@ import type { TournamentMaplistSource } from "~/modules/tournament-map-list-gene
 import type { FindTeamsByTournamentIdItem } from "../queries/findTeamsByTournamentId.server";
 import { findMapPoolByTeamId } from "~/features/tournament-bracket";
 import hasTournamentStarted from "../queries/hasTournamentStarted.server";
+import invariant from "tiny-invariant";
 
 export const loader = ({ params }: LoaderArgs) => {
   const tournamentId = tournamentIdFromParams(params);
   const tournamentTeamId = tournamentTeamIdFromParams(params);
 
   const manager = getTournamentManager("SQL");
+
   const bracket = manager.get.tournamentData(tournamentId);
+  invariant(
+    bracket.stage.length === 1,
+    "Bracket doesn't have exactly one stage"
+  );
+  const stage = bracket.stage[0];
+
   const _everyMatchIsOver = everyMatchIsOver(bracket);
   const standing = _everyMatchIsOver
-    ? finalStandingOfTeam({ manager, tournamentId, tournamentTeamId })
+    ? finalStandingOfTeam({
+        manager,
+        tournamentId,
+        tournamentTeamId,
+        stageId: stage.id,
+      })
     : null;
 
   const sets = tournamentTeamSets({ tournamentTeamId, tournamentId });

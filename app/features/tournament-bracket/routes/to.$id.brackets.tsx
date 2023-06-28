@@ -132,6 +132,12 @@ export const action: ActionFunction = async ({ params, request }) => {
     }
     case "FINALIZE_TOURNAMENT": {
       const bracket = manager.get.tournamentData(tournamentId);
+      invariant(
+        bracket.stage.length === 1,
+        "Bracket doesn't have exactly one stage"
+      );
+      const stage = bracket.stage[0];
+
       const _everyMatchIsOver = everyMatchIsOver(bracket);
       validate(_everyMatchIsOver, "Not every match is over");
 
@@ -141,7 +147,12 @@ export const action: ActionFunction = async ({ params, request }) => {
       }
 
       const _finalStandings =
-        finalStandings({ manager, tournamentId, includeAll: true }) ?? [];
+        finalStandings({
+          manager,
+          tournamentId,
+          includeAll: true,
+          stageId: stage.id,
+        }) ?? [];
       invariant(
         _finalStandings.length === teams.length,
         `Final standings length (${_finalStandings.length}) does not match teams length (${teams.length})`
@@ -176,6 +187,12 @@ export const loader = ({ params }: LoaderArgs) => {
 
   if (hasStarted) {
     const bracket = manager.get.tournamentData(tournamentId);
+    invariant(
+      bracket.stage.length === 1,
+      "Bracket doesn't have exactly one stage"
+    );
+    const stage = bracket.stage[0];
+
     const _everyMatchIsOver = everyMatchIsOver(bracket);
     return {
       enoughTeams: true,
@@ -183,7 +200,7 @@ export const loader = ({ params }: LoaderArgs) => {
       roundBestOfs: bestOfsByTournamentId(tournamentId),
       everyMatchIsOver: _everyMatchIsOver,
       finalStandings: _everyMatchIsOver
-        ? finalStandings({ manager, tournamentId })
+        ? finalStandings({ manager, tournamentId, stageId: stage.id })
         : null,
     };
   }
@@ -612,12 +629,15 @@ function FinalStandings({ standings }: { standings: FinalStanding[] }) {
   const parentRouteData = useOutletContext<TournamentLoaderData>();
   const [viewAll, setViewAll] = React.useState(false);
 
-  if (standings.length < 3) {
+  if (standings.length < 2) {
     console.error("Unexpectedly few standings");
     return null;
   }
 
-  const [first, second, third, ...rest] = standings;
+  // eslint-disable-next-line prefer-const
+  let [first, second, third, ...rest] = standings;
+
+  const onlyTwoTeams = !third;
 
   const nonTopThreePlacements = viewAll
     ? removeDuplicates(rest.map((s) => s.placement))
@@ -625,7 +645,8 @@ function FinalStandings({ standings }: { standings: FinalStanding[] }) {
 
   return (
     <div className="tournament-bracket__standings">
-      {[third, first, second].map((standing) => {
+      {[third, first, second].map((standing, i) => {
+        if (onlyTwoTeams && i == 0) return <div key="placeholder" />;
         return (
           <div
             className="tournament-bracket__standing"
@@ -738,17 +759,21 @@ function FinalStandings({ standings }: { standings: FinalStanding[] }) {
           </React.Fragment>
         );
       })}
-      <div />
-      <Button
-        variant="outlined"
-        className="tournament-bracket__standings__show-more"
-        size="tiny"
-        onClick={() => setViewAll((v) => !v)}
-      >
-        {viewAll
-          ? t("tournament:bracket.standings.showLess")
-          : t("tournament:bracket.standings.showMore")}
-      </Button>
+      {rest.length > 0 ? (
+        <>
+          <div />
+          <Button
+            variant="outlined"
+            className="tournament-bracket__standings__show-more"
+            size="tiny"
+            onClick={() => setViewAll((v) => !v)}
+          >
+            {viewAll
+              ? t("tournament:bracket.standings.showLess")
+              : t("tournament:bracket.standings.showMore")}
+          </Button>
+        </>
+      ) : null}
     </div>
   );
 }
