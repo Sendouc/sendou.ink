@@ -338,15 +338,14 @@ export default function TournamentBracketsPage() {
       !parentRouteData.hasFinalized &&
       canAdminTournament({ user, event: parentRouteData.event }) ? (
         <div className="tournament-bracket__finalize">
-          When you have checked that reported scores are correct{" "}
           <FormWithConfirm
-            dialogHeading="Are you sure you want to finalize the tournament (can't be undone)?"
+            dialogHeading={t("tournament:actions.finalize.confirm")}
             fields={[["_action", "FINALIZE_TOURNAMENT"]]}
-            deleteButtonText="Finalize"
+            deleteButtonText={t("tournament:actions.finalize.action")}
             submitButtonVariant="outlined"
           >
             <Button variant="minimal">
-              finalize tournament and process the results
+              {t("tournament:actions.finalize.question")}
             </Button>
           </FormWithConfirm>
         </div>
