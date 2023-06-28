@@ -7,7 +7,7 @@
 }
 
 .placements__table__rank {
-  width: 28px;
+  min-width: 28px;
   text-align: right;
 }
 
@@ -63,4 +63,9 @@ a.placements__table__row:hover {
   align-items: center;
   gap: var(--s-2-5);
   width: 100%;
+}
+
+.placements__avatar {
+  min-width: 24px;
+  min-height: 24px;
 }

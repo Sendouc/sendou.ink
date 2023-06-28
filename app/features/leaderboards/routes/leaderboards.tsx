@@ -133,6 +133,7 @@ function TeamTable({ entries }: { entries: TeamSPLeaderboardItem[] }) {
                   <Avatar
                     size="xxs"
                     url={userSubmittedImage(entry.team.avatarImgUrl)}
+                    className="placements__avatar"
                   />
                 </Link>
               ) : null}
