@@ -20,7 +20,7 @@ const addSkillStm = sql.prepare(/* sql */ `
     @ordinal,
     @userId,
     @identifier,
-    @matchesCount + coalesce((select max("matchesCount") from "Skill" where "userId" = @userId or "identifier" = @identifier), 0)
+    @matchesCount + coalesce((select max("matchesCount") from "Skill" where "userId" = @userId or "identifier" = @identifier group by "userId", "identifier"), 0)
   ) returning *
 `);
 
