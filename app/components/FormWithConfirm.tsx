@@ -2,7 +2,7 @@ import { useFetcher } from "@remix-run/react";
 import React from "react";
 import invariant from "tiny-invariant";
 import { useTranslation } from "~/hooks/useTranslation";
-import { Button } from "./Button";
+import { Button, type ButtonProps } from "./Button";
 import { Dialog } from "./Dialog";
 import { SubmitButton } from "./SubmitButton";
 
@@ -13,6 +13,7 @@ export function FormWithConfirm({
   deleteButtonText,
   action,
   submitButtonTestId = "submit-button",
+  submitButtonVariant = "destructive",
 }: {
   fields?: [name: string, value: string | number][];
   children: React.ReactNode;
@@ -20,6 +21,7 @@ export function FormWithConfirm({
   deleteButtonText?: string;
   action?: string;
   submitButtonTestId?: string;
+  submitButtonVariant?: ButtonProps["variant"];
 }) {
   const fetcher = useFetcher();
   const { t } = useTranslation(["common"]);
@@ -51,7 +53,7 @@ export function FormWithConfirm({
           <div className="stack horizontal md justify-center">
             <SubmitButton
               form={id}
-              variant="destructive"
+              variant={submitButtonVariant}
               testId={dialogOpen ? "confirm-button" : submitButtonTestId}
             >
               {deleteButtonText ?? t("common:actions.delete")}

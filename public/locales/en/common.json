@@ -184,5 +184,8 @@
 
   "or": "Or",
   "yes": "Yes",
-  "no": "No"
+  "no": "No",
+
+  "leaderboard.type.USER": "User",
+  "leaderboard.type.TEAM": "Team"
 }

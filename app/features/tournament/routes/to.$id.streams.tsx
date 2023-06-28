@@ -22,8 +22,7 @@ export default function TournamentStreamsPage() {
   const parentRouteData = useOutletContext<TournamentLoaderData>();
   const data = useLoaderData<typeof loader>();
 
-  // TODO: or tournament has finalized
-  if (!parentRouteData.hasStarted) {
+  if (!parentRouteData.hasStarted || parentRouteData.hasFinalized) {
     return <Redirect to={tournamentRegisterPage(parentRouteData.event.id)} />;
   }
 

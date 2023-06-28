@@ -17,7 +17,7 @@ import { assertUnreachable } from "~/utils/types";
 import styles from "../tournament-subs.css";
 import { Avatar } from "~/components/Avatar";
 import { discordFullName } from "~/utils/strings";
-import { userPage } from "~/utils/urls";
+import { tournamentRegisterPage, userPage } from "~/utils/urls";
 import { WeaponImage } from "~/components/Image";
 import { Flag } from "~/components/Flag";
 import { MicrophoneIcon } from "~/components/icons/Microphone";
@@ -27,6 +27,7 @@ import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { TrashIcon } from "~/components/icons/Trash";
 import { useTranslation } from "~/hooks/useTranslation";
 import React from "react";
+import { Redirect } from "~/components/Redirect";
 
 export const links: LinksFunction = () => {
   return [
@@ -88,6 +89,10 @@ export default function TournamentSubsPage() {
   const { t } = useTranslation(["tournament"]);
   const data = useLoaderData<typeof loader>();
   const parentRouteData = useOutletContext<TournamentLoaderData>();
+
+  if (parentRouteData.hasFinalized) {
+    return <Redirect to={tournamentRegisterPage(parentRouteData.event.id)} />;
+  }
 
   return (
     <div className="stack lg">

@@ -6,15 +6,43 @@ import type {
 } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { Main } from "~/components/Main";
-import { notFoundIfFalsy } from "~/utils/remix";
+import { type SendouRouteHandle, notFoundIfFalsy } from "~/utils/remix";
 import { PlacementsTable } from "../components/Placements";
 import { findPlacementsByPlayerId } from "../queries/findPlacements.server";
 import styles from "../top-search.css";
 import { removeDuplicates } from "~/utils/arrays";
-import { userPage } from "~/utils/urls";
+import {
+  navIconUrl,
+  topSearchPage,
+  topSearchPlayerPage,
+  userPage,
+} from "~/utils/urls";
 import { i18next } from "~/modules/i18n";
 import { makeTitle } from "~/utils/strings";
 import { useTranslation } from "~/hooks/useTranslation";
+
+export const handle: SendouRouteHandle = {
+  breadcrumb: ({ match }) => {
+    const data = match.data as SerializeFrom<typeof loader> | undefined;
+
+    if (!data) return [];
+
+    const firstName = data.placements[0]!.name;
+
+    return [
+      {
+        imgPath: navIconUrl("xsearch"),
+        href: topSearchPage(),
+        type: "IMAGE",
+      },
+      {
+        text: firstName,
+        type: "TEXT",
+        href: topSearchPlayerPage(data.placements[0]!.playerId),
+      },
+    ];
+  },
+};
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];

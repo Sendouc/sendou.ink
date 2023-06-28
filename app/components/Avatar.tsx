@@ -14,12 +14,14 @@ const dimensions = {
 
 export function Avatar({
   user,
+  url,
   size = "sm",
   className,
   alt = "",
   ...rest
 }: {
-  user: Pick<User, "discordId" | "discordAvatar">;
+  user?: Pick<User, "discordId" | "discordAvatar">;
+  url?: string;
   className?: string;
   alt?: string;
   size: keyof typeof dimensions;
@@ -30,18 +32,20 @@ export function Avatar({
 
   React.useEffect(() => {
     setIsErrored(false);
-  }, [user.discordAvatar]);
+  }, [user?.discordAvatar]);
+
+  const src =
+    url ??
+    (user?.discordAvatar && !isErrored
+      ? `https://cdn.discordapp.com/avatars/${user.discordId}/${
+          user.discordAvatar
+        }.webp${size === "lg" ? "?size=240" : "?size=80"}`
+      : BLANK_IMAGE_URL); // avoid broken image placeholder
 
   return (
     <img
       className={clsx("avatar", className)}
-      src={
-        user.discordAvatar && !isErrored
-          ? `https://cdn.discordapp.com/avatars/${user.discordId}/${
-              user.discordAvatar
-            }.webp${size === "lg" ? "?size=240" : "?size=80"}`
-          : BLANK_IMAGE_URL // avoid broken image placeholder
-      }
+      src={src}
       alt={alt}
       title={alt ? alt : undefined}
       width={dimensions[size]}

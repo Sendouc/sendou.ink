@@ -143,6 +143,11 @@ export interface CalendarEventResultPlayer {
   name: string | null;
 }
 
+export interface UserResultHighlight {
+  teamId: number;
+  userId: number;
+}
+
 export interface CalendarEventBadge {
   eventId: number;
   badgeId: number;
@@ -331,6 +336,51 @@ export interface TournamentSub {
   message: string | null;
   visibility: "+1" | "+2" | "+3" | "ALL";
   createdAt: number;
+}
+
+export interface Skill {
+  id: number;
+  mu: number;
+  sigma: number;
+  ordinal: number;
+  userId: number | null;
+  /** e.g. 12-24-44-1024 for "team skills" */
+  identifier: string | null;
+  matchesCount: number;
+  /** Tournament that caused the skill to change */
+  tournamentId: number | null;
+}
+
+export interface SkillTeamUser {
+  userId: number;
+  skillId: number;
+}
+
+export interface MapResult {
+  mode: ModeShort;
+  stageId: StageId;
+  userId: number;
+  wins: number;
+  losses: number;
+}
+
+export interface PlayerResult {
+  ownerUserId: number;
+  otherUserId: number;
+  mapWins: number;
+  mapLosses: number;
+  setWins: number;
+  setLosses: number;
+  type: "MATE" | "ENEMY";
+}
+
+export interface TournamentResult {
+  tournamentId: number;
+  userId: number;
+  placement: number;
+  participantCount: number;
+  tournamentTeamId: number;
+  isHighlight: number;
 }
 
 export interface TrustRelationship {

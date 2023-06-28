@@ -101,6 +101,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     country: user.country,
     css: canAddCustomizedColorsToUserProfile(user) ? user.css : undefined,
     badges: db.badges.findByOwnerId(user.id),
+    // TODO: could load only on results page
     results: db.calendarEvents.findResultsByUserId(user.id),
     buildsCount: db.builds.countByUserId({
       userId: user.id,
