@@ -1,7 +1,12 @@
 import { type Page, test, expect } from "@playwright/test";
+import { ADMIN_DISCORD_ID } from "~/constants";
 import { NZAP_TEST_ID } from "~/db/seed/constants";
 import { impersonate, navigate, seed, submit } from "~/utils/playwright";
-import { tournamentBracketsPage } from "~/utils/urls";
+import {
+  tournamentBracketsPage,
+  tournamentPage,
+  userResultsPage,
+} from "~/utils/urls";
 
 const startBracket = async (page: Page, tournamentId = 2) => {
   await seed(page);
@@ -17,7 +22,7 @@ const startBracket = async (page: Page, tournamentId = 2) => {
 
 const reportResult = async (
   page: Page,
-  amountOfMapsToReport: 1 | 2,
+  amountOfMapsToReport: 1 | 2 | 4,
   sidesWithMoreThanFourPlayers: ("first" | "last")[] = ["last"],
   winner: 1 | 2 = 1
 ) => {
@@ -38,7 +43,23 @@ const reportResult = async (
   await page.getByTestId("report-score-button").click();
   await expect(page.getByText(winner === 1 ? "1-0" : "0-1")).toBeVisible();
 
-  if (amountOfMapsToReport === 2) {
+  if (amountOfMapsToReport >= 2) {
+    await page.getByTestId(`winner-radio-${winner}`).click();
+    await page.getByTestId("report-score-button").click();
+
+    if (amountOfMapsToReport === 2) {
+      await expect(page.getByTestId("report-timestamp")).toBeVisible();
+    }
+  }
+
+  if (amountOfMapsToReport === 4) {
+    await expect(page.getByText("2-0")).toBeVisible();
+
+    await page.getByTestId(`winner-radio-${winner}`).click();
+    await page.getByTestId("report-score-button").click();
+
+    await expect(page.getByText("3-0")).toBeVisible();
+
     await page.getByTestId(`winner-radio-${winner}`).click();
     await page.getByTestId("report-score-button").click();
 
@@ -155,5 +176,47 @@ test.describe("Tournament bracket", () => {
 
     await submit(page);
     await expect(page).toHaveURL(/brackets/);
+  });
+
+  test("completes and finalizes a small tournament", async ({ page }) => {
+    const tournamentId = 2;
+
+    await seed(page);
+    await impersonate(page);
+
+    await navigate({
+      page,
+      url: tournamentPage(tournamentId),
+    });
+
+    await page.getByTestId("admin-tab").click();
+
+    await page.getByLabel("Action").selectOption("CHECK_OUT");
+
+    for (let id = 103; id < 117; id++) {
+      await page.getByLabel("Team").selectOption(String(id));
+      await submit(page);
+    }
+
+    await navigate({
+      page,
+      url: tournamentBracketsPage(tournamentId),
+    });
+
+    await page.getByTestId("finalize-bracket-button").click();
+
+    await page.locator('[data-match-id="1"]').click();
+    await reportResult(page, 4, []);
+    await backToBracket(page);
+
+    await page.getByTestId("finalize-tournament-button").click();
+    await page.getByTestId("confirm-button").click();
+
+    await navigate({
+      page,
+      url: userResultsPage({ discordId: ADMIN_DISCORD_ID }),
+    });
+
+    await expect(page.getByText("In The Zone 22")).toBeVisible();
   });
 });

@@ -361,7 +361,7 @@ export default function TournamentBracketsPage() {
             deleteButtonText={t("tournament:actions.finalize.action")}
             submitButtonVariant="outlined"
           >
-            <Button variant="minimal">
+            <Button variant="minimal" testId="finalize-tournament-button">
               {t("tournament:actions.finalize.question")}
             </Button>
           </FormWithConfirm>
