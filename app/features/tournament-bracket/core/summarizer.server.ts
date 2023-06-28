@@ -5,18 +5,16 @@ import type {
   TournamentResult,
 } from "~/db/types";
 import type { AllMatchResult } from "../queries/allMatchResultsByTournamentId.server";
-import type { FindTeamsByTournamentId } from "../../tournament/queries/findTeamsByTournamentId.server";
+import type { FindTeamsByTournamentIdItem } from "../../tournament/queries/findTeamsByTournamentId.server";
 import invariant from "tiny-invariant";
 import { removeDuplicates } from "~/utils/arrays";
-import { type FinalStanding } from "./finalStandings.server";
+import type { FinalStanding } from "./finalStandings.server";
 import type { Rating } from "openskill/dist/types";
-import {
-  queryCurrentTeamRating,
-  queryCurrentUserRating,
-  rate,
-  userIdsToIdentifier,
-} from "~/features/mmr";
+// hacky workaround to stop db from being imported in tests
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+import { rate, userIdsToIdentifier } from "~/features/mmr/mmr-utils";
 import shuffle from "just-shuffle";
+import type { Unpacked } from "~/utils/types";
 
 export interface TournamentSummary {
   skills: Omit<Skill, "tournamentId" | "id" | "ordinal">[];
@@ -27,20 +25,42 @@ export interface TournamentSummary {
 
 type UserIdToTeamId = Record<number, number>;
 
-// xxx: tests
+type TeamsArg = Array<{
+  id: FindTeamsByTournamentIdItem["id"];
+  members: Array<
+    Pick<Unpacked<FindTeamsByTournamentIdItem["members"]>, "userId">
+  >;
+}>;
+type FinalStandingsArg = Array<{
+  placement: FinalStanding["placement"];
+  tournamentTeam: {
+    id: FinalStanding["tournamentTeam"]["id"];
+  };
+  players: Array<{ id: number }>;
+}>;
+
 export function tournamentSummary({
   results,
   teams,
   finalStandings,
+  queryCurrentTeamRating,
+  queryCurrentUserRating,
 }: {
   results: AllMatchResult[];
-  teams: FindTeamsByTournamentId;
-  finalStandings: FinalStanding[];
+  teams: TeamsArg;
+  finalStandings: FinalStandingsArg;
+  queryCurrentTeamRating: (identifier: string) => Rating;
+  queryCurrentUserRating: (userId: number) => Rating;
 }): TournamentSummary {
   const userIdsToTeamId = userIdsToTeamIdRecord(teams);
 
   return {
-    skills: skills({ results, userIdsToTeamId }),
+    skills: skills({
+      results,
+      userIdsToTeamId,
+      queryCurrentTeamRating,
+      queryCurrentUserRating,
+    }),
     mapResultDeltas: mapResultDeltas({ results, userIdsToTeamId }),
     playerResultDeltas: playerResultDeltas({ results, userIdsToTeamId }),
     tournamentResults: tournamentResults({
@@ -50,7 +70,7 @@ export function tournamentSummary({
   };
 }
 
-function userIdsToTeamIdRecord(teams: FindTeamsByTournamentId) {
+function userIdsToTeamIdRecord(teams: TeamsArg) {
   const result: UserIdToTeamId = {};
 
   for (const team of teams) {
@@ -62,17 +82,16 @@ function userIdsToTeamIdRecord(teams: FindTeamsByTournamentId) {
   return result;
 }
 
-function skills({
-  results,
-  userIdsToTeamId,
-}: {
+function skills(args: {
   results: AllMatchResult[];
   userIdsToTeamId: UserIdToTeamId;
+  queryCurrentTeamRating: (identifier: string) => Rating;
+  queryCurrentUserRating: (userId: number) => Rating;
 }) {
   const result: TournamentSummary["skills"] = [];
 
-  result.push(...calculateIndividualPlayerSkills({ results, userIdsToTeamId }));
-  result.push(...calculateTeamSkills({ results, userIdsToTeamId }));
+  result.push(...calculateIndividualPlayerSkills(args));
+  result.push(...calculateTeamSkills(args));
 
   return result;
 }
@@ -80,9 +99,11 @@ function skills({
 function calculateIndividualPlayerSkills({
   results,
   userIdsToTeamId,
+  queryCurrentUserRating,
 }: {
   results: AllMatchResult[];
   userIdsToTeamId: UserIdToTeamId;
+  queryCurrentUserRating: (userId: number) => Rating;
 }) {
   const userRatings = new Map<number, Rating>();
   const userMatchesCount = new Map<number, number>();
@@ -146,9 +167,11 @@ function calculateIndividualPlayerSkills({
 function calculateTeamSkills({
   results,
   userIdsToTeamId,
+  queryCurrentTeamRating,
 }: {
   results: AllMatchResult[];
   userIdsToTeamId: UserIdToTeamId;
+  queryCurrentTeamRating: (identifier: string) => Rating;
 }) {
   const teamRatings = new Map<string, Rating>();
   const teamMatchesCount = new Map<string, number>();
@@ -400,7 +423,7 @@ function tournamentResults({
   finalStandings,
 }: {
   participantCount: number;
-  finalStandings: FinalStanding[];
+  finalStandings: FinalStandingsArg;
 }) {
   const result: TournamentSummary["tournamentResults"] = [];
 

@@ -70,6 +70,7 @@ import { tournamentSummary } from "../core/summarizer.server";
 import invariant from "tiny-invariant";
 import { allMatchResultsByTournamentId } from "../queries/allMatchResultsByTournamentId.server";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
+import { queryCurrentTeamRating, queryCurrentUserRating } from "~/features/mmr";
 
 export const links: LinksFunction = () => {
   return [
@@ -155,6 +156,8 @@ export const action: ActionFunction = async ({ params, request }) => {
           teams,
           finalStandings: _finalStandings,
           results,
+          queryCurrentTeamRating,
+          queryCurrentUserRating,
         }),
       });
 

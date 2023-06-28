@@ -310,7 +310,6 @@ const findMatesByResultTeamIdStm = sql.prepare(findMatesByResultTeamIdSql);
 const findMatesByTournamentTeamIdStm = sql.prepare(
   findMatesByTournamentTeamIdSql
 );
-// xxx: load only on results page
 export function findResultsByUserId(userId: User["id"]) {
   return (
     findResultsByUserIdStm.all({ userId }) as Array<{

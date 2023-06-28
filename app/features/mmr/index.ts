@@ -1,7 +1,6 @@
 export {
   queryCurrentUserRating,
   queryCurrentTeamRating,
-  rate,
-  userIdsToIdentifier,
-  ordinalToSp,
 } from "./mmr-utils.server";
+
+export { rate, userIdsToIdentifier, ordinalToSp } from "./mmr-utils";
