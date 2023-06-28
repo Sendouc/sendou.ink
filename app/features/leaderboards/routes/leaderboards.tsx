@@ -1,8 +1,13 @@
-import type { LinksFunction, LoaderArgs } from "@remix-run/node";
+import type {
+  LinksFunction,
+  LoaderArgs,
+  SerializeFrom,
+  V2_MetaFunction,
+} from "@remix-run/node";
 import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
 import { Avatar } from "~/components/Avatar";
 import { Main } from "~/components/Main";
-import { discordFullName } from "~/utils/strings";
+import { discordFullName, makeTitle } from "~/utils/strings";
 import {
   LEADERBOARDS_PAGE,
   navIconUrl,
@@ -23,6 +28,7 @@ import {
 import React from "react";
 import { LEADERBOARD_TYPES } from "../leaderboards-constants";
 import { useTranslation } from "~/hooks/useTranslation";
+import { i18next } from "~/modules/i18n";
 
 export const handle: SendouRouteHandle = {
   i18n: ["vods"],
@@ -33,13 +39,29 @@ export const handle: SendouRouteHandle = {
   }),
 };
 
+export const meta: V2_MetaFunction = (args) => {
+  const data = args.data as SerializeFrom<typeof loader> | null;
+
+  if (!data) return [];
+
+  return [
+    { title: data.title },
+    {
+      name: "description",
+      content:
+        "Leaderboards of top Splatoon players ranked by their X Power and tournament results",
+    },
+  ];
+};
+
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
 const TYPE_SEARCH_PARAM_KEY = "type";
 
-export const loader = ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderArgs) => {
+  const t = await i18next.getFixedT(request);
   const unvalidatedType = new URL(request.url).searchParams.get(
     TYPE_SEARCH_PARAM_KEY
   );
@@ -51,6 +73,7 @@ export const loader = ({ request }: LoaderArgs) => {
   return {
     userLeaderboard: type === "USER" ? userSPLeaderboard() : null,
     teamLeaderboard: type === "TEAM" ? teamSPLeaderboard() : null,
+    title: makeTitle(t("pages.leaderboards")),
   };
 };
 
