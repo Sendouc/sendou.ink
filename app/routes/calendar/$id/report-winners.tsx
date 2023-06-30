@@ -1,9 +1,8 @@
-import type { SerializeFrom } from "@remix-run/node";
-import {
-  json,
-  redirect,
-  type ActionFunction,
-  type LoaderArgs,
+import { json, redirect } from "@remix-run/node";
+import type {
+  SerializeFrom,
+  ActionFunction,
+  LoaderArgs,
 } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";

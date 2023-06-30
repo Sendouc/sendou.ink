@@ -15,8 +15,11 @@ import {
   ZIPCASTER_ID,
   CRAB_TANK_ID,
 } from "~/modules/in-game-lists";
-import { ANGLE_SHOOTER_ID } from "~/modules/in-game-lists";
-import { INK_MINE_ID, POINT_SENSOR_ID } from "~/modules/in-game-lists";
+import {
+  ANGLE_SHOOTER_ID,
+  INK_MINE_ID,
+  POINT_SENSOR_ID,
+} from "~/modules/in-game-lists";
 import type {
   AbilityPoints,
   AnalyzedBuild,

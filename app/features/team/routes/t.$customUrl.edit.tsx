@@ -1,12 +1,10 @@
+import { redirect } from "@remix-run/node";
 import type {
   LinksFunction,
   V2_MetaFunction,
   SerializeFrom,
-} from "@remix-run/node";
-import {
-  redirect,
-  type ActionFunction,
-  type LoaderArgs,
+  ActionFunction,
+  LoaderArgs,
 } from "@remix-run/node";
 import { Form, Link, useLoaderData } from "@remix-run/react";
 import * as React from "react";

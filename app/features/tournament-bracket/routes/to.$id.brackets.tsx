@@ -36,7 +36,12 @@ import { findAllMatchesByTournamentId } from "../queries/findAllMatchesByTournam
 import { setBestOf } from "../queries/setBestOf.server";
 import { canAdminTournament } from "~/permissions";
 import { requireUser, useUser } from "~/modules/auth";
-import { TOURNAMENT, tournamentIdFromParams } from "~/features/tournament";
+import {
+  TOURNAMENT,
+  tournamentIdFromParams,
+  checkInHasStarted,
+  teamHasCheckedIn,
+} from "~/features/tournament";
 import {
   bracketSubscriptionKey,
   everyMatchIsOver,
@@ -48,7 +53,6 @@ import {
 import { sql } from "~/db/sql";
 import { useEventSource } from "remix-utils";
 import { Status } from "~/db/types";
-import { checkInHasStarted, teamHasCheckedIn } from "~/features/tournament";
 import clsx from "clsx";
 import { Button, LinkButton } from "~/components/Button";
 import { useVisibilityChange } from "~/hooks/useVisibilityChange";

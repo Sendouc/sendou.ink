@@ -1,5 +1,5 @@
-import type { ActionFunction } from "@remix-run/node";
-import { json, type LoaderArgs } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import type { ActionFunction, LoaderArgs } from "@remix-run/node";
 import { useLoaderData, useMatches } from "@remix-run/react";
 import { z } from "zod";
 import { BuildCard } from "~/components/BuildCard";

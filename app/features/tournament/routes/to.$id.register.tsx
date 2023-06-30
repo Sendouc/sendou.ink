@@ -87,9 +87,11 @@ import {
 import type { TournamentLoaderData } from "./to.$id";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { deleteTeam } from "../queries/deleteTeam.server";
-import { HACKY_resolvePoolCode } from "~/features/tournament-bracket";
+import {
+  HACKY_resolvePoolCode,
+  findMapPoolByTeamId,
+} from "~/features/tournament-bracket";
 import { Popover } from "~/components/Popover";
-import { findMapPoolByTeamId } from "~/features/tournament-bracket";
 
 export const handle: SendouRouteHandle = {
   breadcrumb: () => ({

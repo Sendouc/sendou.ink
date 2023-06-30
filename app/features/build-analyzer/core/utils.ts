@@ -2,21 +2,19 @@ import type {
   AbilityType,
   SpecialWeaponId,
   SubWeaponId,
+  Ability,
+  BuildAbilitiesTupleWithUnknown,
+  AbilityWithUnknown,
+  MainWeaponId,
 } from "~/modules/in-game-lists";
 import {
   subWeaponIds,
   nonBombSubWeaponIds,
   nonDamagingSpecialWeaponIds,
   specialWeaponIds,
-} from "~/modules/in-game-lists";
-import {
   abilities,
   mainWeaponIds,
   weaponCategories,
-  type Ability,
-  type BuildAbilitiesTupleWithUnknown,
-  type AbilityWithUnknown,
-  type MainWeaponId,
 } from "~/modules/in-game-lists";
 import weaponParamsJson from "./weapon-params.json";
 import abilityValuesJson from "./ability-values.json";

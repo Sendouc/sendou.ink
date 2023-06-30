@@ -1,10 +1,10 @@
-import type { ActionFunction, SerializeFrom } from "@remix-run/node";
-import {
-  json,
-  redirect,
-  type LinksFunction,
-  type LoaderArgs,
-  type V2_MetaFunction,
+import { json, redirect } from "@remix-run/node";
+import type {
+  ActionFunction,
+  SerializeFrom,
+  LinksFunction,
+  LoaderArgs,
+  V2_MetaFunction,
 } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { Link } from "@remix-run/react/dist/components";

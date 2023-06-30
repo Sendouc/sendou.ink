@@ -5,6 +5,7 @@ import {
   everyMatchIsOver,
   finalStandingOfTeam,
   getTournamentManager,
+  findMapPoolByTeamId,
 } from "~/features/tournament-bracket";
 import { TeamWithRoster } from "../components/TeamWithRoster";
 import {
@@ -32,7 +33,6 @@ import { Redirect } from "~/components/Redirect";
 import { Popover } from "~/components/Popover";
 import type { TournamentMaplistSource } from "~/modules/tournament-map-list-generator";
 import type { FindTeamsByTournamentIdItem } from "../queries/findTeamsByTournamentId.server";
-import { findMapPoolByTeamId } from "~/features/tournament-bracket";
 import hasTournamentStarted from "../queries/hasTournamentStarted.server";
 import invariant from "tiny-invariant";
 

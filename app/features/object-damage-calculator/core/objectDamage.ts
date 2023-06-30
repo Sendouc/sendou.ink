@@ -2,6 +2,7 @@ import type {
   AbilityPoints,
   AnalyzedBuild,
   DamageType,
+  AnyWeapon,
 } from "~/features/build-analyzer";
 import objectDamages from "./object-dmg.json";
 import type {
@@ -18,7 +19,6 @@ import {
   damagePriorities,
 } from "../calculator-constants";
 import type { CombineWith, DamageReceiver } from "../calculator-types";
-import type { AnyWeapon } from "~/features/build-analyzer";
 import { removeDuplicates } from "~/utils/arrays";
 
 export function damageTypeToMultipliers({

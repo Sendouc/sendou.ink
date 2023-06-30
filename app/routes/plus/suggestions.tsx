@@ -27,8 +27,7 @@ import {
   isFirstSuggestion,
 } from "~/permissions";
 import { parseRequestFormData, validate } from "~/utils/remix";
-import { makeTitle } from "~/utils/strings";
-import { discordFullName } from "~/utils/strings";
+import { makeTitle, discordFullName } from "~/utils/strings";
 import { actualNumber } from "~/utils/zod";
 import { userPage } from "~/utils/urls";
 import { RelativeTime } from "~/components/RelativeTime";

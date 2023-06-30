@@ -1,9 +1,9 @@
-import type { ErrorBoundaryComponent } from "@remix-run/node";
-import {
-  json,
-  type LinksFunction,
-  type LoaderFunction,
-  type V2_MetaFunction,
+import { json } from "@remix-run/node";
+import type {
+  ErrorBoundaryComponent,
+  LinksFunction,
+  LoaderFunction,
+  V2_MetaFunction,
 } from "@remix-run/node";
 import {
   Links,
@@ -300,7 +300,11 @@ export function CatchBoundary() {
   );
 }
 
-export const ErrorBoundary: ErrorBoundaryComponent = ({ error }) => {
+export const ErrorBoundary: ErrorBoundaryComponent = ({
+  error,
+}: {
+  error: any;
+}) => {
   console.error(error);
 
   return (

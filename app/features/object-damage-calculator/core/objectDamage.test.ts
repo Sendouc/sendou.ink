@@ -1,18 +1,21 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
-import type { SubWeaponId, SpecialWeaponId } from "~/modules/in-game-lists";
 import {
   mainWeaponIds,
-  type MainWeaponId,
   specialWeaponIds,
   exampleMainWeaponIdWithSpecialWeaponId,
 } from "~/modules/in-game-lists";
+import type {
+  SubWeaponId,
+  SpecialWeaponId,
+  MainWeaponId,
+} from "~/modules/in-game-lists";
 import { calculateDamage } from "./objectDamage";
-import type { AnalyzedBuild } from "~/features/build-analyzer";
-import {
-  buildStats,
-  type DamageType,
-  type AbilityPoints,
+import { buildStats } from "~/features/build-analyzer";
+import type {
+  AnalyzedBuild,
+  DamageType,
+  AbilityPoints,
 } from "~/features/build-analyzer";
 
 function calculate({

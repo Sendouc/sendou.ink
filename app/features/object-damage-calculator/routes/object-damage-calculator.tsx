@@ -8,8 +8,8 @@ import { Image, WeaponImage } from "~/components/Image";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import { Toggle } from "~/components/Toggle";
-import type { AnyWeapon } from "~/features/build-analyzer";
-import { possibleApValues, type DamageType } from "~/features/build-analyzer";
+import { possibleApValues } from "~/features/build-analyzer";
+import type { AnyWeapon, DamageType } from "~/features/build-analyzer";
 import { useSetTitle } from "~/hooks/useSetTitle";
 import { useTranslation } from "~/hooks/useTranslation";
 import {

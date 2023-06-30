@@ -13,8 +13,8 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import type { LoaderArgs } from "@remix-run/node";
-import { type ActionFunction, redirect } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
+import type { LoaderArgs, ActionFunction } from "@remix-run/node";
 import {
   useFetcher,
   useLoaderData,

@@ -5,7 +5,6 @@ import invariant from "tiny-invariant";
 import { ADMIN_DISCORD_ID, ADMIN_ID, INVITE_CODE_LENGTH } from "~/constants";
 import { db } from "~/db";
 import { sql } from "~/db/sql";
-import type { MainWeaponId } from "~/modules/in-game-lists";
 import {
   abilities,
   clothesGearIds,
@@ -13,8 +12,11 @@ import {
   mainWeaponIds,
   modesShort,
   shoesGearIds,
-  type StageId,
-  type AbilityType,
+} from "~/modules/in-game-lists";
+import type {
+  MainWeaponId,
+  StageId,
+  AbilityType,
 } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { MapPool } from "~/modules/map-pool-serializer";
@@ -749,9 +751,6 @@ const validTournamentTeamName = () => {
   }
 };
 
-const names = Array.from(
-  new Set(new Array(100).fill(null).map(() => validTournamentTeamName()))
-).concat("Chimera");
 const availableStages: StageId[] = [1, 2, 3, 4, 6, 7, 8, 10, 11];
 const availablePairs = rankedModesShort
   .flatMap((mode) =>
@@ -760,8 +759,15 @@ const availablePairs = rankedModesShort
   .filter((pair) => !tiebreakerPicks.has(pair));
 function calendarEventWithToToolsTeams(sz?: boolean) {
   const userIds = userIdsInAscendingOrderById();
+  const names = Array.from(
+    new Set(new Array(100).fill(null).map(() => validTournamentTeamName()))
+  ).concat("Chimera");
+
   for (let id = 1; id <= 16; id++) {
     const teamId = id + (sz ? 100 : 0);
+
+    const name = names.pop();
+    invariant(name, "tournament team name is falsy");
 
     sql
       .prepare(
@@ -783,7 +789,7 @@ function calendarEventWithToToolsTeams(sz?: boolean) {
       )
       .run({
         id: teamId,
-        name: names.pop(),
+        name,
         createdAt: dateToDatabaseTimestamp(new Date()),
         tournamentId: sz ? 2 : 1,
         inviteCode: nanoid(INVITE_CODE_LENGTH),

@@ -24,8 +24,7 @@ import {
 } from "~/modules/plus-server";
 import { isVotingActive } from "~/permissions";
 import { parseRequestFormData } from "~/utils/remix";
-import { makeTitle } from "~/utils/strings";
-import { discordFullName } from "~/utils/strings";
+import { makeTitle, discordFullName } from "~/utils/strings";
 import { assertType, assertUnreachable } from "~/utils/types";
 import { safeJSONParse } from "~/utils/zod";
 import { PlusSuggestionComments } from "../suggestions";

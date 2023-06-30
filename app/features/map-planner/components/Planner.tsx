@@ -1,19 +1,17 @@
-import type { TDImageAsset } from "@tldraw/tldraw";
-import {
-  ColorStyle,
-  TDAssetType,
-  TDShapeType,
-  Tldraw,
-  type TldrawApp,
-} from "@tldraw/tldraw";
+import { ColorStyle, TDAssetType, TDShapeType, Tldraw } from "@tldraw/tldraw";
+import type { TDImageAsset, TldrawApp } from "@tldraw/tldraw";
 import randomInt from "just-random-integer";
 import * as React from "react";
 import { usePlannerBg } from "~/hooks/usePlannerBg";
 import { useTranslation } from "~/hooks/useTranslation";
 import type { LanguageCode } from "~/modules/i18n";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
-import { specialWeaponIds, subWeaponIds } from "~/modules/in-game-lists";
-import { stageIds, weaponCategories } from "~/modules/in-game-lists";
+import {
+  specialWeaponIds,
+  subWeaponIds,
+  stageIds,
+  weaponCategories,
+} from "~/modules/in-game-lists";
 import { modesShort } from "~/modules/in-game-lists/modes";
 import { semiRandomId } from "~/utils/strings";
 import {

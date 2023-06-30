@@ -1,4 +1,4 @@
-import type { DeepPartial, Storage } from "../types";
+import type { DeepPartial, Storage, RoundPositionalInfo } from "../types";
 import type {
   Group,
   Match,
@@ -9,7 +9,6 @@ import type {
   StageType,
   GroupType,
 } from "~/modules/brackets-model";
-import type { RoundPositionalInfo } from "../types";
 import type { Create } from "../create";
 import * as helpers from "../helpers";
 

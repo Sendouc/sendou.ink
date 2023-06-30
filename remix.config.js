@@ -101,5 +101,6 @@ module.exports = {
   future: {
     v2_meta: true,
     v2_normalizeFormMethod: true,
+    v2_dev: true,
   },
 };
