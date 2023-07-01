@@ -14,7 +14,6 @@ import {
 } from "~/utils/urls";
 import { Trans } from "react-i18next";
 import { useTranslation } from "~/hooks/useTranslation";
-import { useAnimateListEntry } from "~/hooks/useAnimateListEntry";
 import { type SendouRouteHandle } from "~/utils/remix";
 
 export const links: LinksFunction = () => {
@@ -42,11 +41,9 @@ export default function BadgesPageLayout() {
   const { t } = useTranslation("badges");
   const data = useLoaderData<BadgesLoaderData>();
 
-  const containerRef = useAnimateListEntry(".badges__nav-link");
-
   return (
     <Main>
-      <div className="badges__container" ref={containerRef}>
+      <div className="badges__container">
         <Outlet />
         <div className="badges__small-badges">
           {data.badges.map((badge) => (
