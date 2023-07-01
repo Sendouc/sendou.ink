@@ -6,7 +6,7 @@
   "leaveTeam.header": "Êtes-vous sûr de vouloir quitter {{teamName}}?",
   "actionButtons.leaveTeam.confirm": "Quitter",
   "actionButtons.editTeam": "Modifier l'équipe",
-  "actionButtons.manageRoster": "Gerer Roster",
+  "actionButtons.manageRoster": "Gerer la composition de l'équipe",
   "actionButtons.deleteTeam": "Supprimer l'équipe",
   "actionButtons.kick": "Retirer",
   "kick.header": "Retirer {{user}} de {{teamName}}?",
