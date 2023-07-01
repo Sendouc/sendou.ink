@@ -12,6 +12,7 @@ import {
   LEADERBOARDS_PAGE,
   navIconUrl,
   teamPage,
+  topSearchPlayerPage,
   userPage,
   userSubmittedImage,
 } from "~/utils/urls";
@@ -29,6 +30,19 @@ import React from "react";
 import { LEADERBOARD_TYPES } from "../leaderboards-constants";
 import { useTranslation } from "~/hooks/useTranslation";
 import { i18next } from "~/modules/i18n";
+import {
+  type XPLeaderboardItem,
+  allXPLeaderboard,
+  modeXPLeaderboard,
+  weaponXPLeaderboard,
+} from "../queries/XPLeaderboard.server";
+import { WeaponImage } from "~/components/Image";
+import {
+  weaponCategories,
+  type MainWeaponId,
+  type RankedModeShort,
+} from "~/modules/in-game-lists";
+import { rankedModesShort } from "~/modules/in-game-lists/modes";
 
 export const handle: SendouRouteHandle = {
   i18n: ["vods"],
@@ -73,12 +87,20 @@ export const loader = async ({ request }: LoaderArgs) => {
   return {
     userLeaderboard: type === "USER" ? userSPLeaderboard() : null,
     teamLeaderboard: type === "TEAM" ? teamSPLeaderboard() : null,
+    xpLeaderboard:
+      type === "XP-ALL"
+        ? allXPLeaderboard()
+        : type.startsWith("XP-MODE")
+        ? modeXPLeaderboard(type.split("-")[2] as RankedModeShort)
+        : type.startsWith("XP-WEAPON")
+        ? weaponXPLeaderboard(Number(type.split("-")[2]) as MainWeaponId)
+        : null,
     title: makeTitle(t("pages.leaderboards")),
   };
 };
 
 export default function LeaderboardsPage() {
-  const { t } = useTranslation(["common"]);
+  const { t } = useTranslation(["common", "game-misc", "weapons"]);
   const [searchParams, setSearchParams] = useSearchParams();
   const data = useLoaderData<typeof loader>();
 
@@ -92,14 +114,42 @@ export default function LeaderboardsPage() {
         }
       >
         <optgroup label="SP">
-          {LEADERBOARD_TYPES.map((type) => {
+          {LEADERBOARD_TYPES.filter((type) => !type.includes("XP")).map(
+            (type) => {
+              return (
+                <option key={type} value={type}>
+                  {t(`common:leaderboard.type.${type as "USER" | "TEAM"}`)}
+                </option>
+              );
+            }
+          )}
+        </optgroup>
+        <optgroup label="XP">
+          <option value="XP-ALL">{t(`common:leaderboard.type.XP-ALL`)}</option>
+          {rankedModesShort.map((mode) => {
             return (
-              <option key={type} value={type}>
-                {t(`common:leaderboard.type.${type}`)}
+              <option key={mode} value={`XP-MODE-${mode}`}>
+                {t(`game-misc:MODE_LONG_${mode}`)}
               </option>
             );
           })}
         </optgroup>
+        {weaponCategories.map((category) => {
+          return (
+            <optgroup
+              key={category.name}
+              label={`XP (${t(`common:weapon.category.${category.name}`)})`}
+            >
+              {category.weaponIds.map((weaponId) => {
+                return (
+                  <option key={weaponId} value={`XP-WEAPON-${weaponId}`}>
+                    {t(`weapons:MAIN_${weaponId}`)}
+                  </option>
+                );
+              })}
+            </optgroup>
+          );
+        })}
       </select>
       {data.userLeaderboard ? (
         <PlayersTable entries={data.userLeaderboard} />
@@ -107,6 +157,7 @@ export default function LeaderboardsPage() {
       {data.teamLeaderboard ? (
         <TeamTable entries={data.teamLeaderboard} />
       ) : null}
+      {data.xpLeaderboard ? <XPTable entries={data.xpLeaderboard} /> : null}
     </Main>
   );
 }
@@ -173,6 +224,40 @@ function TeamTable({ entries }: { entries: TeamSPLeaderboardItem[] }) {
               <div className="placements__table__power">{entry.power}</div>
             </div>
           </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function XPTable({ entries }: { entries: XPLeaderboardItem[] }) {
+  return (
+    <div className="placements__table">
+      {entries.map((entry) => {
+        return (
+          <Link
+            to={topSearchPlayerPage(entry.playerId)}
+            key={entry.entryId}
+            className="placements__table__row"
+          >
+            <div className="placements__table__inner-row">
+              <div className="placements__table__rank">
+                {entry.placementRank}
+              </div>
+              {entry.discordId ? (
+                <Avatar size="xxs" user={entry as any} />
+              ) : null}
+              <WeaponImage
+                className="placements__table__weapon"
+                variant="build"
+                weaponSplId={entry.weaponSplId}
+                width={32}
+                height={32}
+              />
+              <div>{entry.name}</div>
+              <div className="placements__table__power">{entry.power}</div>
+            </div>
+          </Link>
         );
       })}
     </div>

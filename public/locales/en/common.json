@@ -187,5 +187,6 @@
   "no": "No",
 
   "leaderboard.type.USER": "User",
-  "leaderboard.type.TEAM": "Team"
+  "leaderboard.type.TEAM": "Team",
+  "leaderboard.type.XP-ALL": "All"
 }
