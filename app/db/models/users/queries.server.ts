@@ -34,6 +34,7 @@ import forcePatronSql from "./forcePatron.sql";
 import makeVideoAdderSql from "./makeVideoAdder.sql";
 import linkPlayerSql from "./linkPlayer.sql";
 import unlinkPlayerSql from "./unlinkPlayer.sql";
+import { syncXPBadges } from "~/features/badges";
 
 const upsertStm = sql.prepare(upsertSql);
 export function upsert(
@@ -279,4 +280,5 @@ export function linkPlayer({
 }) {
   unlinkPlayerStm.run({ userId });
   linkPlayerStm.run({ userId, playerId });
+  syncXPBadges();
 }
