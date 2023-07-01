@@ -477,7 +477,7 @@ dialog::backdrop {
 
 .sub-nav__link__container {
   display: flex;
-  max-width: 105px;
+  max-width: 110px;
   flex: 1;
   flex-direction: column;
   align-items: center;
