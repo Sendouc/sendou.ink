@@ -55,10 +55,11 @@
 
   /* TODO: add fallback from Firefox */
   backdrop-filter: blur(5px);
-  background: rgb(0 0 0 / 25%);
+  background: rgb(0 0 0 / 40%);
   border-start-end-radius: var(--rounded);
   border-start-start-radius: var(--rounded);
   color: var(--badge-text);
+  font-size: var(--fonts-xs);
 }
 
 .tournament-bracket__stage-banner__bottom-bar {
@@ -81,6 +82,24 @@
   align-items: center;
   justify-content: center;
   gap: var(--s-2);
+}
+
+.tournament-bracket__stage-banner__top-bar__map-text-big {
+  display: none;
+}
+
+@media screen and (min-width: 480px) {
+  .tournament-bracket__stage-banner__top-bar {
+    font-size: initial;
+  }
+
+  .tournament-bracket__stage-banner__top-bar__map-text-small {
+    display: none;
+  }
+
+  .tournament-bracket__stage-banner__top-bar__map-text-big {
+    display: initial;
+  }
 }
 
 .tournament-bracket__during-match-actions {

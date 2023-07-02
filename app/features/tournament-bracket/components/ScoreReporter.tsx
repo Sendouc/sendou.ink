@@ -242,8 +242,14 @@ function FancyStageBanner({
               alt=""
               width={24}
             />
-            {t(`game-misc:MODE_LONG_${stage.mode}`)} on{" "}
-            {t(`game-misc:STAGE_${stage.stageId}`)}
+            <span className="tournament-bracket__stage-banner__top-bar__map-text-small">
+              {t(`game-misc:MODE_SHORT_${stage.mode}`)}{" "}
+              {t(`game-misc:STAGE_${stage.stageId}`)}
+            </span>
+            <span className="tournament-bracket__stage-banner__top-bar__map-text-big">
+              {t(`game-misc:MODE_LONG_${stage.mode}`)} on{" "}
+              {t(`game-misc:STAGE_${stage.stageId}`)}
+            </span>
           </h4>
           <h4>{pickInfoText()}</h4>
         </div>
