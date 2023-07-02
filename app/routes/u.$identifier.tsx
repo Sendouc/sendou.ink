@@ -84,6 +84,10 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     discordDiscriminator: user.discordDiscriminator,
     discordId: user.discordId,
     discordName: user.discordName,
+    discordUniqueName: user.showDiscordUniqueName
+      ? user.discordUniqueName
+      : null,
+    showDiscordUniqueName: user.showDiscordUniqueName,
     twitch: user.twitch,
     twitter: user.twitter,
     youtubeId: user.youtubeId,
@@ -97,6 +101,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     country: user.country,
     css: canAddCustomizedColorsToUserProfile(user) ? user.css : undefined,
     badges: db.badges.findByOwnerId(user.id),
+    // TODO: could load only on results page
     results: db.calendarEvents.findResultsByUserId(user.id),
     buildsCount: db.builds.countByUserId({
       userId: user.id,

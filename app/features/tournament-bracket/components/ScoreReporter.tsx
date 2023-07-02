@@ -52,6 +52,7 @@ export function ScoreReporter({
   result?: Result;
   type: "EDIT" | "MEMBER" | "OTHER";
 }) {
+  const { t } = useTranslation(["tournament"]);
   const isMounted = useIsMounted();
   const actionData = useActionData<{ error?: "locked" }>();
   const user = useUser();
@@ -71,24 +72,29 @@ export function ScoreReporter({
   const roundInfos = [
     showFullInfos ? (
       <>
-        <b>{resolveHostingTeam(teams).name}</b> hosts
+        {t("tournament:match.hosts", {
+          teamName: resolveHostingTeam(teams).name,
+        })}
       </>
     ) : null,
     showFullInfos ? (
       <>
-        Pass <b>{resolveRoomPass(data.match.id)}</b>
+        {t("tournament:match.pass", { pass: resolveRoomPass(data.match.id) })}
       </>
     ) : null,
     showFullInfos ? (
       <>
-        Pool <b>{HACKY_resolvePoolCode(parentRouteData.event)}</b>
+        {t("tournament:match.pool", {
+          code: HACKY_resolvePoolCode(parentRouteData.event),
+        })}
       </>
     ) : null,
     <>
-      <b>
-        {scoreOne}-{scoreTwo}
-      </b>{" "}
-      (Best of {data.match.bestOf})
+      {t("tournament:match.score", {
+        scoreOne,
+        scoreTwo,
+        bestOf: data.match.bestOf,
+      })}
     </>,
   ];
 
@@ -110,12 +116,13 @@ export function ScoreReporter({
                 className="tournament-bracket__stage-banner__undo-button"
                 testId="undo-score-button"
               >
-                Undo last score
+                {t("tournament:match.action.undoLastScore")}
               </SubmitButton>
             </div>
           </Form>
         )}
         {canAdminTournament({ user, event: parentRouteData.event }) &&
+          !parentRouteData.hasFinalized &&
           presentational &&
           !matchIsLockedError && (
             <Form method="post">
@@ -125,7 +132,7 @@ export function ScoreReporter({
                   className="tournament-bracket__stage-banner__undo-button"
                   testId="reopen-match-button"
                 >
-                  Reopen match
+                  {t("tournament:match.action.reopenMatch")}
                 </SubmitButton>
               </div>
             </Form>
@@ -138,7 +145,7 @@ export function ScoreReporter({
               disabled
               testId="match-is-locked-button"
             >
-              Match is locked
+              {t("tournament:match.action.matchIsLocked")}
             </SubmitButton>
           </div>
         )}

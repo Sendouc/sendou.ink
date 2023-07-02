@@ -5,7 +5,14 @@ select
   "Team"."id" as "teamId",
   "UserSubmittedImage"."url" as "teamAvatarUrl",
   "PlusTier"."tier" as "plusTier",
-  json_group_array("UserWeapon"."weaponSplId") as "weapons"
+  json_group_array(
+    json_object(
+      'weaponSplId',
+      "UserWeapon"."weaponSplId",
+      'isFavorite',
+      "UserWeapon"."isFavorite"
+    )
+  ) as "weapons"
 from
   "User"
   left join "PlusTier" on "PlusTier"."userId" = "User"."id"

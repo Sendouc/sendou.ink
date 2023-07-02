@@ -2,17 +2,20 @@ import { sql } from "../../sql";
 import type {
   CalendarEventResultTeam,
   SplatoonPlayer,
+  TournamentTeam,
   User,
+  UserWeapon,
   UserWithPlusTier,
 } from "../../types";
-import type { MainWeaponId } from "~/modules/in-game-lists";
-import { parseDBArray } from "~/utils/sql";
+import { parseDBJsonArray } from "~/utils/sql";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 
 import addPatronDataSql from "./addPatronData.sql";
 import addResultHighlightSql from "./addResultHighlight.sql";
+import addTournamentResultHighlightSql from "./addTournamentResultHighlight.sql";
 import deleteAllPatronDataSql from "./deleteAllPatronData.sql";
 import deleteAllResultHighlightsSql from "./deleteAllResultHighlights.sql";
+import deleteAllTournamentResultHighlightsSql from "./deleteAllTournamentResultHighlights.sql";
 import deleteByIdSql from "./deleteById.sql";
 import findAllSql from "./findAll.sql";
 import findAllPatronsSql from "./findAllPatrons.sql";
@@ -31,6 +34,7 @@ import forcePatronSql from "./forcePatron.sql";
 import makeVideoAdderSql from "./makeVideoAdder.sql";
 import linkPlayerSql from "./linkPlayer.sql";
 import unlinkPlayerSql from "./unlinkPlayer.sql";
+import { syncXPBadges } from "~/features/badges";
 
 const upsertStm = sql.prepare(upsertSql);
 export function upsert(
@@ -43,6 +47,7 @@ export function upsert(
     | "twitch"
     | "twitter"
     | "youtubeId"
+    | "discordUniqueName"
   >
 ) {
   return upsertStm.get(input) as User;
@@ -66,10 +71,16 @@ export const updateProfile = sql.transaction(
     | "inGameName"
     | "css"
     | "favoriteBadgeId"
-  > & { weapons: MainWeaponId[] }) => {
+    | "showDiscordUniqueName"
+  > & { weapons: Pick<UserWeapon, "weaponSplId" | "isFavorite">[] }) => {
     deleteUserWeaponsStm.run({ userId: rest.id });
-    for (const [i, weaponSplId] of weapons.entries()) {
-      addUserWeaponStm.run({ userId: rest.id, weaponSplId, order: i + 1 });
+    for (const [i, weapon] of weapons.entries()) {
+      addUserWeaponStm.run({
+        userId: rest.id,
+        weaponSplId: weapon.weaponSplId,
+        isFavorite: weapon.isFavorite,
+        order: i + 1,
+      });
     }
 
     return updateProfileStm.get(rest) as User;
@@ -82,7 +93,7 @@ export const updateMany = sql.transaction(
     argsArr: Array<
       Pick<
         User,
-        "discordAvatar" | "discordName" | "discordDiscriminator" | "discordId"
+        "discordAvatar" | "discordName" | "discordUniqueName" | "discordId"
       >
     >
   ) => {
@@ -137,7 +148,7 @@ export function findByIdentifier(identifier: string | number) {
   return {
     ...row,
     css: css ? JSON.parse(css) : undefined,
-    weapons: parseDBArray(weapons),
+    weapons: parseDBJsonArray(weapons),
     team: teamName
       ? {
           name: teamName,
@@ -149,7 +160,7 @@ export function findByIdentifier(identifier: string | number) {
   } as
     | (Omit<UserWithPlusTier, "css"> & {
         css: Record<string, string>;
-        weapons: MainWeaponId[];
+        weapons: Pick<UserWeapon, "weaponSplId" | "isFavorite">[];
         team?: {
           name: string;
           customUrl: string;
@@ -196,16 +207,31 @@ export function forcePatron(
 }
 
 const deleteAllResultHighlightsStm = sql.prepare(deleteAllResultHighlightsSql);
+const deleteAllTournamentResultHighlightsStm = sql.prepare(
+  deleteAllTournamentResultHighlightsSql
+);
 const addResultHighlightStm = sql.prepare(addResultHighlightSql);
+const addTournamentResultHighlightStm = sql.prepare(
+  addTournamentResultHighlightSql
+);
 export type UpdateResultHighlightsArgs = {
   userId: User["id"];
   resultTeamIds: Array<CalendarEventResultTeam["id"]>;
+  resultTournamentTeamIds: Array<TournamentTeam["id"]>;
 };
 export const updateResultHighlights = sql.transaction(
-  ({ userId, resultTeamIds }: UpdateResultHighlightsArgs) => {
+  ({
+    userId,
+    resultTeamIds,
+    resultTournamentTeamIds,
+  }: UpdateResultHighlightsArgs) => {
     deleteAllResultHighlightsStm.run({ userId });
+    deleteAllTournamentResultHighlightsStm.run({ userId });
     for (const teamId of resultTeamIds) {
       addResultHighlightStm.run({ userId, teamId });
+    }
+    for (const tournamentTeamId of resultTournamentTeamIds) {
+      addTournamentResultHighlightStm.run({ userId, tournamentTeamId });
     }
   }
 );
@@ -254,4 +280,5 @@ export function linkPlayer({
 }) {
   unlinkPlayerStm.run({ userId });
   linkPlayerStm.run({ userId, playerId });
+  syncXPBadges();
 }

@@ -1,9 +1,10 @@
+import { json } from "@remix-run/node";
 import type {
   LoaderArgs,
   V2_MetaFunction,
   SerializeFrom,
+  LinksFunction,
 } from "@remix-run/node";
-import { json, type LinksFunction } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import { addDays, addMonths, subDays, subMonths } from "date-fns";

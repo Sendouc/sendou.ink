@@ -13,6 +13,7 @@ import {
   resolveAllUniqueDamageTypes,
 } from "./core/objectDamage";
 import type { AnyWeapon } from "../build-analyzer/analyzer-types";
+import { exampleMainWeaponIdWithSpecialWeaponId } from "~/modules/in-game-lists";
 
 const ABILITY_POINTS_SP_KEY = "ap";
 const DAMAGE_TYPE_SP_KEY = "dmg";
@@ -25,13 +26,19 @@ export function useObjectDamage() {
   const abilityPoints = validatedAbilityPointsFromSearchParams(searchParams);
   const isMultiShot = validatedMultiShotFromSearchParams(searchParams);
   const analyzed = buildStats({
-    weaponSplId: anyWeapon.type === "MAIN" ? anyWeapon.id : 0,
+    weaponSplId:
+      anyWeapon.type === "MAIN"
+        ? anyWeapon.id
+        : anyWeapon.type === "SPECIAL"
+        ? exampleMainWeaponIdWithSpecialWeaponId(anyWeapon.id)
+        : 0,
     hasTacticooler: false,
   });
 
   const damageType = validatedDamageTypeFromSearchParams({
     searchParams,
     analyzed,
+    anyWeapon,
   });
 
   const handleChange = ({
@@ -93,6 +100,8 @@ function validatedMultiShotFromSearchParams(searchParams: URLSearchParams) {
 }
 
 export const damageTypePriorityList = [
+  "TURRET_MAX",
+  "TURRET_MIN",
   "DIRECT_MAX",
   "DIRECT",
   "DIRECT_MIN",
@@ -104,12 +113,33 @@ export const damageTypePriorityList = [
   "SPLASH",
   "TAP_SHOT",
   "DISTANCE",
+  "WAVE",
   "BOMB_DIRECT",
   "BOMB_NORMAL",
   "SPLATANA_VERTICAL_DIRECT",
   "SPLATANA_VERTICAL",
   "SPLATANA_HORIZONTAL_DIRECT",
   "SPLATANA_HORIZONTAL",
+  "SPLASH_MIN",
+  "SPLASH_MAX",
+  "SPLASH_VERTICAL_MAX",
+  "SPLASH_VERTICAL_MIN",
+  "SPLASH_HORIZONTAL_MAX",
+  "SPLASH_HORIZONTAL_MIN",
+  "ROLL_OVER",
+  "SPECIAL_MAX_CHARGE",
+  "SPECIAL_MIN_CHARGE",
+  "SPECIAL_THROW_DIRECT",
+  "SPECIAL_THROW",
+  "SPECIAL_SWING",
+  "SPECIAL_CANNON",
+  "SPECIAL_BULLET_MAX",
+  "SPECIAL_BULLET_MIN",
+  "SPECIAL_BUMP",
+  "SPECIAL_JUMP",
+  "SPECIAL_TICK",
+  "SECONDARY_MODE_MAX",
+  "SECONDARY_MODE_MIN",
 ] as const;
 assertType<
   (typeof damageTypePriorityList)[number],
@@ -119,18 +149,24 @@ assertType<
 function validatedDamageTypeFromSearchParams({
   searchParams,
   analyzed,
+  anyWeapon,
 }: {
   searchParams: URLSearchParams;
   analyzed: AnalyzedBuild;
+  anyWeapon: AnyWeapon;
 }) {
+  const damages =
+    anyWeapon.type === "SPECIAL"
+      ? analyzed.stats.specialWeaponDamages
+      : analyzed.stats.damages;
   const damageType = searchParams.get(DAMAGE_TYPE_SP_KEY);
 
-  const found = analyzed.stats.damages.find((d) => d.type === damageType);
+  const found = damages.find((d) => d.type === damageType);
 
   if (found) return found.type;
 
   const fallbackFound = damageTypePriorityList.find((type) =>
-    analyzed.stats.damages.some((d) => d.type === type)
+    damages.some((d) => d.type === type)
   );
 
   return fallbackFound;

@@ -5,6 +5,7 @@ import {
   everyMatchIsOver,
   finalStandingOfTeam,
   getTournamentManager,
+  findMapPoolByTeamId,
 } from "~/features/tournament-bracket";
 import { TeamWithRoster } from "../components/TeamWithRoster";
 import {
@@ -32,18 +33,30 @@ import { Redirect } from "~/components/Redirect";
 import { Popover } from "~/components/Popover";
 import type { TournamentMaplistSource } from "~/modules/tournament-map-list-generator";
 import type { FindTeamsByTournamentIdItem } from "../queries/findTeamsByTournamentId.server";
-import { findMapPoolByTeamId } from "~/features/tournament-bracket";
 import hasTournamentStarted from "../queries/hasTournamentStarted.server";
+import invariant from "tiny-invariant";
 
 export const loader = ({ params }: LoaderArgs) => {
   const tournamentId = tournamentIdFromParams(params);
   const tournamentTeamId = tournamentTeamIdFromParams(params);
 
   const manager = getTournamentManager("SQL");
+
   const bracket = manager.get.tournamentData(tournamentId);
+  invariant(
+    bracket.stage.length === 1,
+    "Bracket doesn't have exactly one stage"
+  );
+  const stage = bracket.stage[0];
+
   const _everyMatchIsOver = everyMatchIsOver(bracket);
   const standing = _everyMatchIsOver
-    ? finalStandingOfTeam({ manager, tournamentId, tournamentTeamId })
+    ? finalStandingOfTeam({
+        manager,
+        tournamentId,
+        tournamentTeamId,
+        stageId: stage.id,
+      })
     : null;
 
   const sets = tournamentTeamSets({ tournamentTeamId, tournamentId });
@@ -100,12 +113,15 @@ function StatSquares({
   seed: number;
   teamsCount: number;
 }) {
+  const { t } = useTranslation(["tournament"]);
   const data = useLoaderData<typeof loader>();
 
   return (
     <div className="tournament__team__stats">
       <div className="tournament__team__stat">
-        <div className="tournament__team__stat__title">Set wins</div>
+        <div className="tournament__team__stat__title">
+          {t("tournament:team.setWins")}
+        </div>
         <div className="tournament__team__stat__main">
           {data.winCounts.sets.won} / {data.winCounts.sets.total}
         </div>
@@ -115,7 +131,9 @@ function StatSquares({
       </div>
 
       <div className="tournament__team__stat">
-        <div className="tournament__team__stat__title">Map wins</div>
+        <div className="tournament__team__stat__title">
+          {t("tournament:team.mapWins")}
+        </div>
         <div className="tournament__team__stat__main">
           {data.winCounts.maps.won} / {data.winCounts.maps.total}
         </div>
@@ -125,13 +143,19 @@ function StatSquares({
       </div>
 
       <div className="tournament__team__stat">
-        <div className="tournament__team__stat__title">Seed</div>
+        <div className="tournament__team__stat__title">
+          {t("tournament:team.seed")}
+        </div>
         <div className="tournament__team__stat__main">{seed}</div>
-        <div className="tournament__team__stat__sub">out of {teamsCount}</div>
+        <div className="tournament__team__stat__sub">
+          {t("tournament:team.seed.footer", { count: teamsCount })}
+        </div>
       </div>
 
       <div className="tournament__team__stat">
-        <div className="tournament__team__stat__title">Placement</div>
+        <div className="tournament__team__stat__title">
+          {t("tournament:team.placement")}
+        </div>
         <div className="tournament__team__stat__main">
           {data.placement ? (
             <Placement placement={data.placement} textOnly />

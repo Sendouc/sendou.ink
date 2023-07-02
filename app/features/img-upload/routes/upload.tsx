@@ -27,8 +27,7 @@ import {
 } from "../upload-constants";
 import type { ImageUploadType } from "../upload-types";
 import { requestToImgType } from "../upload-utils";
-import { findByIdentifier } from "~/features/team";
-import { isTeamOwner } from "~/features/team";
+import { findByIdentifier, isTeamOwner } from "~/features/team";
 
 export const action = async ({ request }: ActionArgs) => {
   const user = await requireUser(request);

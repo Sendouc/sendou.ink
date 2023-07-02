@@ -196,6 +196,32 @@ function parametersToMainWeaponResult(
     params["BulletSaberHorizontalParam"]?.["DamageParam"]?.["HitDamage"] +
     params["BulletSaberSlashHorizontalParam"]?.["DamageParam"]?.["DamageValue"];
 
+  const resolveMin = (
+    valueOne: number | null | undefined,
+    valueTwo: number | null | undefined
+  ) => {
+    if (typeof valueOne !== "number" && typeof valueTwo !== "number")
+      return undefined;
+
+    if (typeof valueOne !== "number") return valueTwo;
+    if (typeof valueTwo !== "number") return valueOne;
+
+    return Math.min(valueOne, valueTwo);
+  };
+
+  const resolveMax = (
+    valueOne: number | null | undefined,
+    valueTwo: number | null | undefined
+  ) => {
+    if (typeof valueOne !== "number" && typeof valueTwo !== "number")
+      return undefined;
+
+    if (typeof valueOne !== "number") return valueTwo;
+    if (typeof valueTwo !== "number") return valueOne;
+
+    return Math.max(valueOne, valueTwo);
+  };
+
   return {
     SpecialPoint: weapon.SpecialPoint,
     subWeaponId: resolveSubWeaponId(weapon),
@@ -215,6 +241,7 @@ function parametersToMainWeaponResult(
       params["spl__WeaponStringerParam"]?.["ChargeParam"]?.[
         "MoveSpeedFullCharge"
       ],
+    MoveSpeedVariable: params["VariableShotParam"]?.["MoveSpeed"],
     DamageParam_ValueMax: DamageParam_ValueMax(),
     DamageParam_ValueMin: !DamageParam_ValueDirect
       ? params["DamageParam"]?.["ValueMin"] ??
@@ -224,6 +251,9 @@ function parametersToMainWeaponResult(
       : undefined,
     DamageParam_ValueDirect,
     ...slosherDirectDamage(),
+    // Glooga turret mode damage
+    DamageLapOverParam_ValueMax: params["DamageLapOverParam"]?.["ValueMax"],
+    DamageLapOverParam_ValueMin: params["DamageLapOverParam"]?.["ValueMin"],
     BlastParam_SplashDamage: isSloshingMachine
       ? params["UnitGroupParam"]?.["Unit"]?.[1]?.["DamageParam"]?.["ValueMax"]
       : undefined,
@@ -246,6 +276,58 @@ function parametersToMainWeaponResult(
       : DamageParam_SplatanaHorizontalDirect,
     DamageParam_SplatanaHorizontal:
       params["BulletSaberHorizontalParam"]?.["DamageParam"]?.["HitDamage"],
+    BodyParam_Damage: params["BodyParam"]?.["Damage"],
+    Variable_Damage_ValueMax: params["VariableDamageParam"]?.["ValueMax"],
+    Variable_Damage_ValueMin: params["VariableDamageParam"]?.["ValueMin"],
+    SwingUnitGroupParam_DamageParam_DamageMinValue: resolveMin(
+      params["SwingUnitGroupParam"]?.["DamageParam"]?.["Inside"]?.[
+        "DamageMinValue"
+      ],
+      params["SwingUnitGroupParam"]?.["DamageParam"]?.["Outside"]?.[
+        "DamageMinValue"
+      ]
+    ),
+    SwingUnitGroupParam_DamageParam_DamageMaxValue: resolveMax(
+      params["SwingUnitGroupParam"]?.["DamageParam"]?.["Inside"]?.[
+        "DamageMaxValue"
+      ],
+      params["SwingUnitGroupParam"]?.["DamageParam"]?.["Outside"]?.[
+        "DamageMaxValue"
+      ]
+    ),
+    // roller splash damages
+    VerticalSwingUnitGroupParam_DamageParam_DamageMinValue: resolveMin(
+      params["VerticalSwingUnitGroupParam"]?.["DamageParam"]?.["Inside"]?.[
+        "DamageMinValue"
+      ],
+      params["VerticalSwingUnitGroupParam"]?.["DamageParam"]?.["Outside"]?.[
+        "DamageMinValue"
+      ]
+    ),
+    VerticalSwingUnitGroupParam_DamageParam_DamageMaxValue: resolveMax(
+      params["VerticalSwingUnitGroupParam"]?.["DamageParam"]?.["Inside"]?.[
+        "DamageMaxValue"
+      ],
+      params["VerticalSwingUnitGroupParam"]?.["DamageParam"]?.["Outside"]?.[
+        "DamageMaxValue"
+      ]
+    ),
+    WideSwingUnitGroupParam_DamageParam_DamageMinValue: resolveMin(
+      params["WideSwingUnitGroupParam"]?.["DamageParam"]?.["Inside"]?.[
+        "DamageMinValue"
+      ],
+      params["WideSwingUnitGroupParam"]?.["DamageParam"]?.["Outside"]?.[
+        "DamageMinValue"
+      ]
+    ),
+    WideSwingUnitGroupParam_DamageParam_DamageMaxValue: resolveMax(
+      params["WideSwingUnitGroupParam"]?.["DamageParam"]?.["Inside"]?.[
+        "DamageMaxValue"
+      ],
+      params["WideSwingUnitGroupParam"]?.["DamageParam"]?.["Outside"]?.[
+        "DamageMaxValue"
+      ]
+    ),
     CanopyHP: params["spl__BulletShelterCanopyParam"]?.["CanopyHP"],
     ChargeFrameFullCharge:
       params["WeaponParam"]?.["ChargeFrameFullCharge"] ??
@@ -256,6 +338,12 @@ function parametersToMainWeaponResult(
       KeepChargeFullFrame !== 1 ? KeepChargeFullFrame : undefined,
     Jump_DegSwerve: params["WeaponParam"]?.["Jump_DegSwerve"],
     Stand_DegSwerve: params["WeaponParam"]?.["Stand_DegSwerve"],
+    Variable_Jump_DegSwerve:
+      params["VariableWeaponParam"]?.["Jump_DegSwerve"] ??
+      params["VariableShotParam"]?.["Jump_DegSwerve"],
+    Variable_Stand_DegSwerve:
+      params["VariableWeaponParam"]?.["Stand_DegSwerve"] ??
+      params["VariableShotParam"]?.["Stand_DegSwerve"],
     InkRecoverStop: params["WeaponParam"]?.["InkRecoverStop"],
     InkConsume,
     InkConsumeSlosher,
@@ -334,6 +422,8 @@ function parametersToSubWeaponResult(
   };
 }
 
+// some specials lack damage values in the params
+// so they are instead hardcoded here as a workaround
 function parametersToSpecialWeaponResult(params: any) {
   const result: any = {};
 
@@ -382,9 +472,101 @@ function parametersToSpecialWeaponResult(params: any) {
     resultUnwrapped["SplashAroundPaintRadius"] = undefined;
   }
 
+  const isUltraStamp = () => !!params["SwingBigBlastParam"];
+  const isCrabTank = () => !!params["CannonParam"];
+  const isKraken = () => !!params["BodyParam"]?.["DamageJumpValue"];
+  const isInkjet = () => !!params["JetParam"];
+  const isInkStorm = () => !!params["CloudParam"];
+  const isBooyahBomb = () =>
+    params["BlastParam"]?.["$type"] === "spl__BulletSpNiceBallBlastParam";
+
+  const SwingDamage = () => {
+    if (!isUltraStamp()) return;
+
+    return [
+      { Damage: 1000, Distance: 0 },
+      ...params["SwingBigBlastParam"]["DistanceDamage"],
+    ];
+  };
+
+  const ThrowDamage = () => {
+    if (!isUltraStamp()) return;
+
+    return params["ThrowBlastParam"]["DistanceDamage"];
+  };
+
+  const Cannon = () => {
+    if (!isCrabTank()) return;
+
+    return [
+      {
+        Damage: 600,
+        Distance: 1,
+      },
+      ...params["CannonParam"]?.["BlastParam"]?.["DistanceDamage"],
+    ];
+  };
+
+  const KrakenDirectDamage = () => {
+    if (!isKraken()) return;
+
+    return 1200;
+  };
+
+  const InkjetDirectDamage = () => {
+    if (!isInkjet()) return;
+
+    return 1200;
+  };
+
+  const BooyahBombTickDamage = () => {
+    if (!isBooyahBomb()) return;
+
+    return 33;
+  };
+
+  const InkStormTickDamage = () => {
+    if (!isInkStorm()) return;
+
+    return 4;
+  };
+
   return {
     ArmorHP: params["WeaponSpChariotParam"]?.["ArmorHP"],
     overwrites: resultUnwrapped,
+    DistanceDamage:
+      params["BlastParam"]?.["DistanceDamage"] ??
+      params["HookBlastParam"]?.["DistanceDamage"] ??
+      params["spl__BulletBlastParam"]?.["DistanceDamage"] ??
+      params["BulletBlastParam"]?.["DistanceDamage"] ??
+      params["IceParam"]?.["BlastParam"]?.["DistanceDamage"],
+    DirectDamage:
+      params["DamageParam"]?.["DirectHitDamage"] ??
+      params["spl__BulletSpShockSonarParam"]?.["GeneratorParam"]?.[
+        "HitDamage"
+      ] ??
+      KrakenDirectDamage() ??
+      InkjetDirectDamage(),
+    WaveDamage:
+      params["spl__BulletSpShockSonarParam"]?.["WaveParam"]?.["Damage"],
+    ExhaleBlastParamMinChargeDistanceDamage:
+      params["ExhaleBlastParamMinCharge"]?.["DistanceDamage"],
+    ExhaleBlastParamMaxChargeDistanceDamage:
+      params["ExhaleBlastParamMaxCharge"]?.["DistanceDamage"],
+    SwingDamage: SwingDamage(),
+    ThrowDamage: ThrowDamage(),
+    ThrowDirectDamage: params["ThrowMoveParam"]?.["DirectDamageValue"],
+    BulletDamageMin: params["ShooterDamageParam"]?.["ValueMin"],
+    BulletDamageMax: params["ShooterDamageParam"]?.["ValueMax"],
+    CannonDamage: Cannon(),
+    BumpDamage: isCrabTank() ? 400 : undefined,
+    JumpDamage: params["BodyParam"]?.["DamageJumpValue"],
+    TickDamage:
+      BooyahBombTickDamage() ??
+      InkStormTickDamage() ??
+      params["spl__BulletSpMicroLaserBitParam"]?.["LaserParam"]?.[
+        "LaserDamage"
+      ],
   };
 }
 

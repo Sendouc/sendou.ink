@@ -8,8 +8,8 @@ import { Image, WeaponImage } from "~/components/Image";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import { Toggle } from "~/components/Toggle";
-import type { AnyWeapon } from "~/features/build-analyzer";
-import { possibleApValues, type DamageType } from "~/features/build-analyzer";
+import { possibleApValues } from "~/features/build-analyzer";
+import type { AnyWeapon, DamageType } from "~/features/build-analyzer";
 import { useSetTitle } from "~/hooks/useSetTitle";
 import { useTranslation } from "~/hooks/useTranslation";
 import {
@@ -90,18 +90,20 @@ export default function ObjectDamagePage() {
               fullWidth
             />
           </div>
-          <div
-            className={clsx({
-              invisible: !damagesToReceivers || allDamageTypes.length === 1,
-            })}
-          >
-            <Label htmlFor="damage">{t("analyzer:labels.damageType")}</Label>
-            <DamageTypesSelect
-              handleChange={handleChange}
-              damageType={damageType}
-              allDamageTypes={allDamageTypes}
-            />
-          </div>
+          {allDamageTypes.length > 0 ? (
+            <div
+              className={clsx({
+                invisible: !damagesToReceivers || allDamageTypes.length === 1,
+              })}
+            >
+              <Label htmlFor="damage">{t("analyzer:labels.damageType")}</Label>
+              <DamageTypesSelect
+                handleChange={handleChange}
+                damageType={damageType}
+                allDamageTypes={allDamageTypes}
+              />
+            </div>
+          ) : null}
         </div>
         {multiShotCount ? (
           <div className="stack sm horizontal items-center label-no-spacing">
@@ -284,10 +286,18 @@ function DamageReceiversGrid({
                 variant="build"
                 className="object-damage__weapon-image"
               />
-            ) : (
+            ) : weapon.type === "SUB" ? (
               <Image
                 alt=""
                 path={subWeaponImageUrl(weapon.id)}
+                width={24}
+                height={24}
+                className="object-damage__weapon-image"
+              />
+            ) : (
+              <Image
+                alt=""
+                path={specialWeaponImageUrl(weapon.id)}
                 width={24}
                 height={24}
                 className="object-damage__weapon-image"

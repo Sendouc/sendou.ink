@@ -73,6 +73,7 @@
   "maps.template.preset.ALL": "全部模式",
   "maps.template.preset.onlyMode": "仅限 {{modeName}}",
   "maps.validation.PICKING": "给每个模式选择一张地图",
+  "maps.validation.STAGE_REPEAT_IN_SAME_MODE": "无法在相同的模式下选择重复的地图",
   "maps.validation.NOT_ONE_MAP_PER_MODE": "每个模式只能选择一张地图",
   "maps.validation.MAP_REPEATED": "每张地图只能选择一次",
   "maps.validation.MODE_REPEATED": "每个模式只能选择一次",
@@ -108,6 +109,7 @@
   "tag.name.S2": "斯普拉遁2",
   "tag.name.SR": "鲑鱼跑",
   "tag.name.CARDS": "占地斗士",
+  "tag.name.FULL_TOURNAMENT": "由sendou.ink举办",
 
   "weapon.category.SHOOTERS": "射击枪",
   "weapon.category.BLASTERS": "爆破枪",
@@ -178,5 +180,7 @@
   "xsearch.placements": "排位",
   "xsearch.aliases": "别名：",
 
-  "build.private": "私人"
+  "build.private": "私人",
+
+  "or": "或"
 }

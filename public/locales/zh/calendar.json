@@ -12,6 +12,12 @@
   "members": "成员",
   "results": "结果",
   "createMapList": "创建地图列表",
+  "from": "由{{author}}创建",
+  "pastEvents.dividerText": "Past events",
+  "count.teams_one": "{{count}} 隊",
+  "count.players_one": "{{count}} 名玩家",
+  "count.teams_other": "{{count}} 隊",
+  "count.players_other": "{{count}} 名玩家",
 
   "forms.dates": "日期",
   "forms.bracketUrl": "对战表链接",
@@ -62,5 +68,6 @@
   "tag.desc.S1": "本次比赛为斯普拉遁1的比赛。",
   "tag.desc.S2": "本次比赛为斯普拉遁2的比赛。",
   "tag.desc.SR": "鲑鱼跑活动。",
-  "tag.desc.CARDS": "占地斗士活动。"
+  "tag.desc.CARDS": "占地斗士活动。",
+  "tag.desc.FULL_TOURNAMENT": "本次比赛由sendou.ink举办"
 }

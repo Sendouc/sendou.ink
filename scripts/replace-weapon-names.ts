@@ -24,15 +24,31 @@ const DIR_PATH_2 = path.join(
   "main-weapons-outlined"
 );
 
+const DIR_PATH_3 = path.join(
+  __dirname,
+  "..",
+  "public",
+  "static-assets",
+  "img",
+  "main-weapons-outlined-2"
+);
+
 async function main() {
-  for (const dir of [DIR_PATH_1, DIR_PATH_2]) {
+  for (const [i, dir] of [DIR_PATH_1, DIR_PATH_2, DIR_PATH_3].entries()) {
     const files = await fs.promises.readdir(dir);
 
     for (const file of files) {
       // skip if already replaced
       if (file.length <= 8) continue;
 
-      if (file.includes(".webp") || file.includes("Lv01")) {
+      const differentLevelBadge = (fileName: string) => {
+        if (i === 1 && fileName.includes("Lv01")) return true;
+        if (i === 2 && fileName.includes("Lv00")) return true;
+
+        return false;
+      };
+
+      if (file.includes(".webp") || differentLevelBadge(file)) {
         await fs.promises.unlink(path.join(dir, file));
         continue;
       }

@@ -1,13 +1,20 @@
-import type { AbilityType, SubWeaponId } from "~/modules/in-game-lists";
-import { subWeaponIds } from "~/modules/in-game-lists";
+import type {
+  AbilityType,
+  SpecialWeaponId,
+  SubWeaponId,
+  Ability,
+  BuildAbilitiesTupleWithUnknown,
+  AbilityWithUnknown,
+  MainWeaponId,
+} from "~/modules/in-game-lists";
 import {
+  subWeaponIds,
+  nonBombSubWeaponIds,
+  nonDamagingSpecialWeaponIds,
+  specialWeaponIds,
   abilities,
   mainWeaponIds,
   weaponCategories,
-  type Ability,
-  type BuildAbilitiesTupleWithUnknown,
-  type AbilityWithUnknown,
-  type MainWeaponId,
 } from "~/modules/in-game-lists";
 import weaponParamsJson from "./weapon-params.json";
 import abilityValuesJson from "./ability-values.json";
@@ -25,7 +32,6 @@ import invariant from "tiny-invariant";
 import { EMPTY_BUILD } from "~/constants";
 import { UNKNOWN_SHORT } from "../analyzer-constants";
 import type { Unpacked } from "~/utils/types";
-import { nonBombSubWeaponIds } from "~/modules/in-game-lists/weapon-ids";
 
 export function weaponParams(): ParamsJson {
   return weaponParamsJson as ParamsJson;
@@ -188,6 +194,20 @@ export function validatedAnyWeaponFromSearchParams(
     }
 
     return { type: "SUB", id: id as SubWeaponId };
+  }
+
+  if (rawWeapon?.startsWith("SPECIAL_")) {
+    const id = Number(rawWeapon.replace("SPECIAL_", ""));
+
+    if (
+      !specialWeaponIds
+        .filter((id) => !nonDamagingSpecialWeaponIds.includes(id))
+        .includes(id as any)
+    ) {
+      return DEFAULT_ANY_WEAPON;
+    }
+
+    return { type: "SPECIAL", id: id as SpecialWeaponId };
   }
 
   if (rawWeapon?.startsWith("MAIN_")) {

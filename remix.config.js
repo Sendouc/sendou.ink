@@ -35,6 +35,15 @@ module.exports = {
         );
 
         route(
+          "/to/:id/subs",
+          "features/tournament-subs/routes/to.$id.subs.tsx"
+        );
+        route(
+          "/to/:id/subs/new",
+          "features/tournament-subs/routes/to.$id.subs.new.tsx"
+        );
+
+        route(
           "/to/:id/brackets",
           "features/tournament-bracket/routes/to.$id.brackets.tsx"
         );
@@ -84,9 +93,14 @@ module.exports = {
         "/xsearch/player/:id",
         "features/top-search/routes/xsearch.player.$id.tsx"
       );
+
+      route("/leaderboards", "features/leaderboards/routes/leaderboards.tsx");
     });
   },
+  serverModuleFormat: "cjs",
   future: {
     v2_meta: true,
+    v2_normalizeFormMethod: true,
+    v2_dev: true,
   },
 };

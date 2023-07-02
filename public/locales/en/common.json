@@ -180,5 +180,13 @@
   "xsearch.placements": "placements",
   "xsearch.aliases": "Aliases:",
 
-  "build.private": "Private"
+  "build.private": "Private",
+
+  "or": "Or",
+  "yes": "Yes",
+  "no": "No",
+
+  "leaderboard.type.USER": "User",
+  "leaderboard.type.TEAM": "Team",
+  "leaderboard.type.XP-ALL": "All"
 }

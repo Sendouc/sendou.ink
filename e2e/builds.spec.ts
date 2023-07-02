@@ -7,8 +7,7 @@ import {
   seed,
   selectComboboxValue,
 } from "~/utils/playwright";
-import { BUILDS_PAGE } from "~/utils/urls";
-import { userBuildsPage, userNewBuildPage } from "~/utils/urls";
+import { BUILDS_PAGE, userBuildsPage, userNewBuildPage } from "~/utils/urls";
 
 test.describe("Builds", () => {
   test("adds a build", async ({ page }) => {

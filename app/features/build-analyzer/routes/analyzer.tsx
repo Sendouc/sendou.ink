@@ -142,6 +142,28 @@ export default function BuildAnalyzerPage() {
         suffix="°"
       />
     ),
+    // Squeezer
+    analyzed.stats.shotAutofireSpreadAir && (
+      <StatCard
+        isComparing={isComparing}
+        abilityPoints={abilityPoints}
+        key="shotAutofireSpreadAir"
+        stat={statKeyToTuple("shotAutofireSpreadAir")}
+        title={t("analyzer:stat.shotAutofireSpreadAir")}
+        suffix="°"
+      />
+    ),
+    typeof analyzed.stats.shotAutofireSpreadGround === "number" && (
+      <StatCard
+        isComparing={isComparing}
+        abilityPoints={abilityPoints}
+        key="shotAutofireSpreadGround"
+        stat={analyzed.stats.shotAutofireSpreadGround}
+        title={t("analyzer:stat.shotAutofireSpreadGround")}
+        suffix="°"
+      />
+    ),
+
     typeof analyzed.stats.mainWeaponWhiteInkSeconds === "number" && (
       <StatCard
         isComparing={isComparing}
@@ -211,7 +233,7 @@ export default function BuildAnalyzerPage() {
           </div>
           <div className="stack md items-center w-full">
             <div className="w-full">
-              <Tabs className="analyzer__sub-nav">
+              <Tabs className="analyzer__sub-nav" compact>
                 <Tab
                   active={focused === 1}
                   onClick={() => handleChange({ newFocused: 1 })}
@@ -703,6 +725,19 @@ export default function BuildAnalyzerPage() {
             </StatCategory>
           )}
 
+          {analyzed.stats.specialWeaponDamages.length > 0 && (
+            <StatCategory
+              title={t("analyzer:stat.category.special.damage", {
+                specialWeapon: t(
+                  `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
+                ),
+              })}
+              containerClassName="analyzer__table-container"
+            >
+              <DamageTable values={analyzed.stats.specialWeaponDamages} />
+            </StatCategory>
+          )}
+
           {analyzed.stats.fullInkTankOptions.length > 0 && (
             <StatCategory
               title={t("analyzer:stat.category.actionsPerInkTank")}
@@ -775,6 +810,14 @@ export default function BuildAnalyzerPage() {
                 abilityPoints={abilityPoints}
                 stat={statKeyToTuple("shootingRunSpeedFullCharge")}
                 title={t("analyzer:stat.shootingRunSpeedFullCharge")}
+              />
+            )}
+            {analyzed.stats.shootingRunSpeedSecondaryMode && (
+              <StatCard
+                isComparing={isComparing}
+                abilityPoints={abilityPoints}
+                stat={statKeyToTuple("shootingRunSpeedSecondaryMode")}
+                title={t("analyzer:stat.shootingRunSpeedSecondaryMode")}
               />
             )}
             <StatCard
@@ -1249,7 +1292,7 @@ function DamageTable({
   values:
     | AnalyzedBuild["stats"]["damages"]
     | AnalyzedBuild["stats"]["subWeaponDefenseDamages"];
-  multiShots: AnalyzedBuild["weapon"]["multiShots"];
+  multiShots?: AnalyzedBuild["weapon"]["multiShots"];
 }) {
   const { t } = useTranslation(["weapons", "analyzer"]);
 

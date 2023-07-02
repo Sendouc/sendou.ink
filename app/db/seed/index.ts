@@ -12,8 +12,11 @@ import {
   mainWeaponIds,
   modesShort,
   shoesGearIds,
-  type StageId,
-  type AbilityType,
+} from "~/modules/in-game-lists";
+import type {
+  MainWeaponId,
+  StageId,
+  AbilityType,
 } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { MapPool } from "~/modules/map-pool-serializer";
@@ -40,6 +43,7 @@ import {
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { TOURNAMENT } from "~/features/tournament/tournament-constants";
 import type { SeedVariation } from "~/routes/seed";
+import { nullFilledArray, pickRandomItem } from "~/utils/arrays";
 
 const calendarEventWithToToolsSz = () => calendarEventWithToTools(true);
 const calendarEventWithToToolsTeamsSz = () =>
@@ -73,6 +77,7 @@ const basicSeeds = (variation?: SeedVariation | null) => [
   variation === "NO_TOURNAMENT_TEAMS"
     ? undefined
     : calendarEventWithToToolsTeamsSz,
+  tournamentSubs,
   adminBuilds,
   manySplattershotBuilds,
   detailedTeam,
@@ -102,6 +107,9 @@ function wipeDB() {
     "MapPoolMap",
     "TournamentMatchGameResult",
     "TournamentTeam",
+    "TournamentStage",
+    "Skill",
+    "TournamentResult",
     "Tournament",
     "CalendarEventDate",
     "CalendarEventResultPlayer",
@@ -127,13 +135,14 @@ function wipeDB() {
 
 function adminUser() {
   db.users.upsert({
-    discordDiscriminator: "4059",
+    discordDiscriminator: "0",
     discordId: ADMIN_DISCORD_ID,
     discordName: "Sendou",
     twitch: "Sendou",
     youtubeId: "UCWbJLXByvsfQvTcR4HLPs5Q",
     discordAvatar: ADMIN_TEST_AVATAR,
     twitter: "sendouc",
+    discordUniqueName: "sendou",
   });
 }
 
@@ -171,6 +180,7 @@ function nzapUser() {
     youtubeId: null,
     discordAvatar: NZAP_TEST_AVATAR,
     twitter: null,
+    discordUniqueName: null,
   });
 }
 
@@ -215,13 +225,18 @@ function userProfiles() {
   for (let id = 3; id < 500; id++) {
     if (Math.random() < 0.25) continue; // 75% have bio
 
-    sql.prepare(`UPDATE "User" SET bio = $bio WHERE id = $id`).run({
-      id,
-      bio: faker.lorem.paragraphs(
-        faker.helpers.arrayElement([1, 1, 1, 2, 3, 4]),
-        "\n\n"
-      ),
-    });
+    sql
+      .prepare(
+        `UPDATE "User" SET bio = $bio, country = $country WHERE id = $id`
+      )
+      .run({
+        id,
+        bio: faker.lorem.paragraphs(
+          faker.helpers.arrayElement([1, 1, 1, 2, 3, 4]),
+          "\n\n"
+        ),
+        country: Math.random() > 0.5 ? faker.location.countryCode() : null,
+      });
   }
 }
 
@@ -234,6 +249,7 @@ function fakeUser(usedNames: Set<string>) {
     twitch: null,
     twitter: null,
     youtubeId: null,
+    discordUniqueName: null,
   });
 }
 
@@ -735,9 +751,6 @@ const validTournamentTeamName = () => {
   }
 };
 
-const names = Array.from(
-  new Set(new Array(100).fill(null).map(() => validTournamentTeamName()))
-).concat("Chimera");
 const availableStages: StageId[] = [1, 2, 3, 4, 6, 7, 8, 10, 11];
 const availablePairs = rankedModesShort
   .flatMap((mode) =>
@@ -746,8 +759,15 @@ const availablePairs = rankedModesShort
   .filter((pair) => !tiebreakerPicks.has(pair));
 function calendarEventWithToToolsTeams(sz?: boolean) {
   const userIds = userIdsInAscendingOrderById();
+  const names = Array.from(
+    new Set(new Array(100).fill(null).map(() => validTournamentTeamName()))
+  ).concat("Chimera");
+
   for (let id = 1; id <= 16; id++) {
     const teamId = id + (sz ? 100 : 0);
+
+    const name = names.pop();
+    invariant(name, "tournament team name is falsy");
 
     sql
       .prepare(
@@ -769,7 +789,7 @@ function calendarEventWithToToolsTeams(sz?: boolean) {
       )
       .run({
         id: teamId,
-        name: names.pop(),
+        name,
         createdAt: dateToDatabaseTimestamp(new Date()),
         tournamentId: sz ? 2 : 1,
         inviteCode: nanoid(INVITE_CODE_LENGTH),
@@ -875,6 +895,73 @@ function calendarEventWithToToolsTeams(sz?: boolean) {
       }
     }
   }
+}
+
+function tournamentSubs() {
+  for (let id = 100; id < 120; id++) {
+    const includedWeaponIds: MainWeaponId[] = [];
+
+    sql
+      .prepare(
+        /* sql */ `
+      insert into "TournamentSub" (
+        "userId",
+        "tournamentId",
+        "canVc",
+        "bestWeapons",
+        "okWeapons",
+        "message",
+        "visibility"
+      ) values (
+        @userId,
+        @tournamentId,
+        @canVc,
+        @bestWeapons,
+        @okWeapons,
+        @message,
+        @visibility
+      )
+    `
+      )
+      .run({
+        userId: id,
+        tournamentId: 1,
+        canVc: Number(Math.random() > 0.5),
+        bestWeapons: nullFilledArray(
+          faker.helpers.arrayElement([1, 1, 1, 2, 2, 3, 4, 5])
+        )
+          .map(() => {
+            while (true) {
+              const weaponId = pickRandomItem(mainWeaponIds);
+              if (!includedWeaponIds.includes(weaponId)) {
+                includedWeaponIds.push(weaponId);
+                return weaponId;
+              }
+            }
+          })
+          .join(","),
+        okWeapons:
+          Math.random() > 0.5
+            ? null
+            : nullFilledArray(
+                faker.helpers.arrayElement([1, 1, 1, 2, 2, 3, 4, 5])
+              )
+                .map(() => {
+                  while (true) {
+                    const weaponId = pickRandomItem(mainWeaponIds);
+                    if (!includedWeaponIds.includes(weaponId)) {
+                      includedWeaponIds.push(weaponId);
+                      return weaponId;
+                    }
+                  }
+                })
+                .join(","),
+        message: Math.random() > 0.5 ? null : faker.lorem.paragraph(),
+        visibility: id < 105 ? "+1" : id < 110 ? "+2" : id < 115 ? "+2" : "ALL",
+      });
+  }
+
+  return null;
 }
 
 const randomAbility = (legalTypes: AbilityType[]) => {

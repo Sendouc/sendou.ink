@@ -7,6 +7,7 @@ import { Avatar } from "~/components/Avatar";
 import { Redirect } from "~/components/Redirect";
 import { tournamentRegisterPage, twitchUrl } from "~/utils/urls";
 import { UserIcon } from "~/components/icons/User";
+import { useTranslation } from "~/hooks/useTranslation";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const tournamentId = tournamentIdFromParams(params);
@@ -17,18 +18,18 @@ export const loader = async ({ params }: LoaderArgs) => {
 };
 
 export default function TournamentStreamsPage() {
+  const { t } = useTranslation(["tournament"]);
   const parentRouteData = useOutletContext<TournamentLoaderData>();
   const data = useLoaderData<typeof loader>();
 
-  // TODO: or tournament has finalized
-  if (!parentRouteData.hasStarted) {
+  if (!parentRouteData.hasStarted || parentRouteData.hasFinalized) {
     return <Redirect to={tournamentRegisterPage(parentRouteData.event.id)} />;
   }
 
   if (data.streams.length === 0) {
     return (
       <div className="text-center text-lg font-semi-bold text-lighter">
-        No live streams of this tournament available currently
+        {t("tournament:streams.none")}
       </div>
     );
   }

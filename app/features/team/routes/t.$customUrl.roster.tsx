@@ -1,12 +1,10 @@
+import { redirect } from "@remix-run/node";
 import type {
   LinksFunction,
   V2_MetaFunction,
   SerializeFrom,
-} from "@remix-run/node";
-import {
-  redirect,
-  type ActionFunction,
-  type LoaderArgs,
+  ActionFunction,
+  LoaderArgs,
 } from "@remix-run/node";
 import { Form, useFetcher, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";

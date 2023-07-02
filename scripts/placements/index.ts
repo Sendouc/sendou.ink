@@ -6,6 +6,7 @@ import { sql } from "~/db/sql";
 import type { XRankPlacement } from "~/db/types";
 import { type MainWeaponId, mainWeaponIds } from "~/modules/in-game-lists";
 import { xRankSchema } from "./schemas";
+import { syncXPBadges } from "~/features/badges";
 
 const rawJsonNumber = process.argv[2]?.trim();
 invariant(rawJsonNumber, "jsonNumber is required (argument 1)");
@@ -50,6 +51,7 @@ async function main() {
   }
 
   addPlacements(placements);
+  syncXPBadges();
   console.log(`done reading in ${placements.length} placements`);
 }
 

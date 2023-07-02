@@ -26,6 +26,7 @@ import insertResultTeamSql from "./insertResultTeam.sql";
 import insertResultPlayerSql from "./insertResultPlayer.sql";
 import findWinnersByEventIdSql from "./findWinnersByEventId.sql";
 import findResultsByUserIdSql from "./findResultsByUserId.sql";
+import findMatesByTournamentTeamIdSql from "./findMatesByTournamentTeamId.sql";
 import findMatesByResultTeamIdSql from "./findMatesByResultTeamId.sql";
 import findAllBetweenTwoTimestampsSql from "./findAllBetweenTwoTimestamps.sql";
 import findByIdSql from "./findById.sql";
@@ -306,10 +307,14 @@ export function findResultsByEventId(eventId: CalendarEvent["id"]) {
 
 const findResultsByUserIdStm = sql.prepare(findResultsByUserIdSql);
 const findMatesByResultTeamIdStm = sql.prepare(findMatesByResultTeamIdSql);
+const findMatesByTournamentTeamIdStm = sql.prepare(
+  findMatesByTournamentTeamIdSql
+);
 export function findResultsByUserId(userId: User["id"]) {
   return (
     findResultsByUserIdStm.all({ userId }) as Array<{
-      eventId: CalendarEvent["id"];
+      eventId: CalendarEvent["id"] | null;
+      tournamentId: CalendarEvent["tournamentId"] | null;
       teamId: CalendarEventResultTeam["id"];
       eventName: CalendarEvent["name"];
       teamName: CalendarEventResultTeam["name"];
@@ -322,7 +327,10 @@ export function findResultsByUserId(userId: User["id"]) {
     ...row,
     isHighlight: Boolean(row.isHighlight),
     mates: (
-      findMatesByResultTeamIdStm.all({
+      (row.tournamentId
+        ? findMatesByTournamentTeamIdStm
+        : findMatesByResultTeamIdStm
+      ).all({
         teamId: row.teamId,
         userId,
       }) as Array<{

@@ -83,6 +83,7 @@ export const MAPS_URL = "/maps";
 export const ANALYZER_URL = "/analyzer";
 export const OBJECT_DAMAGE_CALCULATOR_URL = "/object-damage-calculator";
 export const VODS_PAGE = "/vods";
+export const LEADERBOARDS_PAGE = "/leaderboards";
 
 export const BLANK_IMAGE_URL = "/static-assets/img/blank.gif";
 export const COMMON_PREVIEW_IMAGE =
@@ -214,6 +215,9 @@ export const tournamentJoinPage = ({
   eventId: number;
   inviteCode: string;
 }) => `/to/${eventId}/join?code=${inviteCode}`;
+export const tournamentSubsPage = (tournamentId: number) => {
+  return `/to/${tournamentId}/subs`;
+};
 
 export const mapsPage = (eventId?: MapPoolMap["calendarEventId"]) =>
   `/maps${eventId ? `?eventId=${eventId}` : ""}`;
@@ -262,6 +266,9 @@ export const mainWeaponImageUrl = (mainWeaponSplId: MainWeaponId) =>
   `/static-assets/img/main-weapons/${mainWeaponSplId}`;
 export const outlinedMainWeaponImageUrl = (mainWeaponSplId: MainWeaponId) =>
   `/static-assets/img/main-weapons-outlined/${mainWeaponSplId}`;
+export const outlinedFiveStarMainWeaponImageUrl = (
+  mainWeaponSplId: MainWeaponId
+) => `/static-assets/img/main-weapons-outlined-2/${mainWeaponSplId}`;
 export const subWeaponImageUrl = (subWeaponSplId: SubWeaponId) =>
   `/static-assets/img/sub-weapons/${subWeaponSplId}`;
 export const specialWeaponImageUrl = (specialWeaponSplId: SpecialWeaponId) =>

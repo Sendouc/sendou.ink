@@ -1,4 +1,4 @@
-import type { Tournament, TournamentTeam } from "~/db/types";
+import type { Tournament, TournamentStage, TournamentTeam } from "~/db/types";
 import type { BracketsManager } from "~/modules/brackets-manager";
 import type { FinalStandingsItem } from "~/modules/brackets-manager/types";
 import type { PlayerThatPlayedByTeamId } from "../queries/playersThatPlayedByTeamId.server";
@@ -14,16 +14,18 @@ const STANDINGS_TO_INCLUDE = 8;
 
 export function finalStandings({
   manager,
+  stageId,
   tournamentId,
   includeAll,
 }: {
   manager: BracketsManager;
+  stageId: TournamentStage["id"];
   tournamentId: Tournament["id"];
   includeAll?: boolean;
 }): Array<FinalStanding> | null {
   let standings: FinalStandingsItem[];
   try {
-    standings = manager.get.finalStandings(tournamentId);
+    standings = manager.get.finalStandings(stageId);
   } catch (e) {
     if (!(e instanceof Error)) throw e;
 
@@ -68,12 +70,19 @@ export function finalStandingOfTeam({
   manager,
   tournamentId,
   tournamentTeamId,
+  stageId,
 }: {
   manager: BracketsManager;
   tournamentId: Tournament["id"];
   tournamentTeamId: TournamentTeam["id"];
+  stageId: TournamentStage["id"];
 }) {
-  const standings = finalStandings({ manager, tournamentId, includeAll: true });
+  const standings = finalStandings({
+    manager,
+    tournamentId,
+    includeAll: true,
+    stageId,
+  });
   if (!standings) return null;
 
   return (

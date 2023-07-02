@@ -18,6 +18,7 @@ import { BADGES_PAGE } from "~/utils/urls";
 import { type BadgesLoaderData } from "../badges";
 import { type TFunction } from "react-i18next";
 import { useTranslation } from "~/hooks/useTranslation";
+import { SPLATOON_3_XP_BADGE_VALUES } from "~/constants";
 
 export interface BadgeDetailsContext {
   badgeName: string;
@@ -104,7 +105,10 @@ export function badgeExplanationText(
   if (badge.code === "patreon_plus") {
     return t("patreon+");
   }
-  if (badge.code.startsWith("xp")) {
+  if (
+    badge.code.startsWith("xp") ||
+    SPLATOON_3_XP_BADGE_VALUES.includes(Number(badge.code) as any)
+  ) {
     return t("xp", { xpText: badge.displayName });
   }
 

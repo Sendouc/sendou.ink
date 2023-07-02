@@ -9,7 +9,7 @@ export const USER = {
   BIO_MAX_LENGTH: DISCORD_MESSAGE_MAX_LENGTH,
   CUSTOM_URL_MAX_LENGTH: 32,
   IN_GAME_NAME_TEXT_MAX_LENGTH: 20,
-  IN_GAME_NAME_DISCRIMINATOR_LENGTH: 4,
+  IN_GAME_NAME_DISCRIMINATOR_MAX_LENGTH: 5,
   WEAPON_POOL_MAX_SIZE: 5,
 };
 
@@ -73,3 +73,16 @@ export const CUSTOMIZED_CSS_VARS_NAME = "css";
 export const MAX_AP = 57;
 
 export const ONE_HOUR_IN_MS = 60 * 60 * 1000;
+
+export const SPLATOON_3_XP_BADGE_VALUES = [
+  3400, 3300, 3200, 3100, 3000, 2900, 2800, 2700, 2600,
+] as const;
+export const findSplatoon3XpBadgeValue = (xPower: number) => {
+  for (const value of SPLATOON_3_XP_BADGE_VALUES) {
+    if (xPower >= value) {
+      return value;
+    }
+  }
+
+  return null;
+};

@@ -31,3 +31,12 @@ export const matchSchema = z.union([
     _action: z.literal("REOPEN_MATCH"),
   }),
 ]);
+
+export const bracketSchema = z.union([
+  z.object({
+    _action: z.literal("START_TOURNAMENT"),
+  }),
+  z.object({
+    _action: z.literal("FINALIZE_TOURNAMENT"),
+  }),
+]);

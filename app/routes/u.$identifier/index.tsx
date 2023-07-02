@@ -5,24 +5,25 @@ import invariant from "tiny-invariant";
 import { Avatar } from "~/components/Avatar";
 import { Badge } from "~/components/Badge";
 import { Flag } from "~/components/Flag";
+import { Image, WeaponImage } from "~/components/Image";
 import { TwitchIcon } from "~/components/icons/Twitch";
 import { TwitterIcon } from "~/components/icons/Twitter";
 import { YouTubeIcon } from "~/components/icons/YouTube";
-import { Image, WeaponImage } from "~/components/Image";
 import { useTranslation } from "~/hooks/useTranslation";
 import { modesShort } from "~/modules/in-game-lists";
 import { type SendouRouteHandle } from "~/utils/remix";
-import { rawSensToString } from "~/utils/strings";
+import { isNewDiscordUniqueName, rawSensToString } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
 import { assertUnreachable } from "~/utils/types";
 import {
   modeImageUrl,
   teamPage,
-  userSubmittedImage,
   topSearchPlayerPage,
+  userSubmittedImage,
 } from "~/utils/urls";
 import { badgeExplanationText } from "../badges/$id";
 import type { UserPageLoaderData } from "../u.$identifier";
+import { DiscordIcon } from "~/components/icons/Discord";
 
 export const handle: SendouRouteHandle = {
   i18n: "badges",
@@ -42,7 +43,12 @@ export default function UserInfoPage() {
             <div>{data.discordName}</div>
             <div>
               <span className="u__discriminator">
-                <wbr />#{data.discordDiscriminator}
+                {!isNewDiscordUniqueName(data.discordDiscriminator) ? (
+                  <>
+                    #{data.discordDiscriminator}
+                    <wbr />
+                  </>
+                ) : null}
               </span>
               {data.country ? <Flag countryCode={data.country} tiny /> : null}
             </div>
@@ -156,12 +162,24 @@ function ExtraInfos() {
       ? ` / ${t("user:motion")} ${rawSensToString(data.motionSens)}`
       : "";
 
-  if (!data.inGameName && typeof data.stickSens !== "number") {
+  if (
+    !data.inGameName &&
+    typeof data.stickSens !== "number" &&
+    !data.discordUniqueName
+  ) {
     return null;
   }
 
   return (
     <div className="u__extra-infos">
+      {data.discordUniqueName && (
+        <div className="u__extra-info">
+          <span className="u__extra-info__heading">
+            <DiscordIcon />
+          </span>{" "}
+          {data.discordUniqueName}
+        </div>
+      )}
       {data.inGameName && (
         <div className="u__extra-info">
           <span className="u__extra-info__heading">{t("user:ign.short")}</span>{" "}
@@ -190,11 +208,11 @@ function WeaponPool() {
     <div className="stack horizontal sm justify-center">
       {data.weapons.map((weapon, i) => {
         return (
-          <div key={weapon} className="u__weapon">
+          <div key={weapon.weaponSplId} className="u__weapon">
             <WeaponImage
-              testId={`${weapon}-${i + 1}`}
-              weaponSplId={weapon}
-              variant="badge"
+              testId={`${weapon.weaponSplId}-${i + 1}`}
+              weaponSplId={weapon.weaponSplId}
+              variant={weapon.isFavorite ? "badge-5-star" : "badge"}
               width={38}
               height={38}
             />

@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { navigate, seed } from "~/utils/playwright";
-import { topSearchPage, userPage, weaponBuildPage } from "~/utils/urls";
+import { topSearchPage, userPage } from "~/utils/urls";
 
 test.describe("Top search", () => {
   test("views different x rank placements", async ({ page }) => {
@@ -29,22 +29,5 @@ test.describe("Top search", () => {
     await page.getByTestId("placement-row-0").click();
 
     await expect(page.getByText("Twig?")).toBeVisible();
-  });
-
-  test("sorts top 500 builds first", async ({ page }) => {
-    await seed(page);
-
-    await navigate({
-      page,
-      url: weaponBuildPage("splattershot"),
-    });
-
-    await expect(
-      page
-        .getByTestId("build-card")
-        .first()
-        .locator(page.getByTestId("top500-crown"))
-        .first()
-    ).toBeVisible();
   });
 });

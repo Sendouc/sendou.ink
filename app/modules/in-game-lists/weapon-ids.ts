@@ -1,4 +1,5 @@
-import type { MainWeaponId, SubWeaponId } from "./types";
+import { assertUnreachable } from "~/utils/types";
+import type { MainWeaponId, SpecialWeaponId, SubWeaponId } from "./types";
 
 export const weaponCategories = [
   {
@@ -137,3 +138,49 @@ export const specialWeaponIds = [
   SUPER_CHUMP_ID,
   KRAKEN_ROYALE_ID,
 ] as const;
+
+export const nonDamagingSpecialWeaponIds = [BIG_BUBBLER_ID, TACTICOOLER_ID];
+
+export const exampleMainWeaponIdWithSpecialWeaponId = (
+  specialWeaponId: SpecialWeaponId
+): MainWeaponId => {
+  switch (specialWeaponId) {
+    case TRIZOOKA_ID:
+      return 40;
+    case BIG_BUBBLER_ID:
+      return 10;
+    case ZIPCASTER_ID:
+      return 8000;
+    case TENTA_MISSILES_ID:
+      return 1030;
+    case INK_STORM_ID:
+      return 3040;
+    case BOOYAH_BOMB_ID:
+      return 3020;
+    case WAVE_BREAKER_ID:
+      return 220;
+    case INK_VAC_ID:
+      return 2010;
+    case KILLER_WAIL_ID:
+      return 50;
+    case INKJET_ID:
+      return 3010;
+    case ULTRA_STAMP_ID:
+      return 4000;
+    case CRAB_TANK_ID:
+      return 20;
+    case REEF_SLIDER_ID:
+      return 5040;
+    case TRIPLE_INKSTRIKE_ID:
+      return 41;
+    case TACTICOOLER_ID:
+      return 60;
+    case SUPER_CHUMP_ID:
+      return 61;
+    case KRAKEN_ROYALE_ID:
+      return 4011;
+    default: {
+      assertUnreachable(specialWeaponId);
+    }
+  }
+};

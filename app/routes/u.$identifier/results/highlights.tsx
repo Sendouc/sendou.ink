@@ -12,12 +12,16 @@ import { parseRequestFormData } from "~/utils/remix";
 import { userResultsPage } from "~/utils/urls";
 import {
   HIGHLIGHT_CHECKBOX_NAME,
+  HIGHLIGHT_TOURNAMENT_CHECKBOX_NAME,
   UserResultsTable,
 } from "./components/UserResultsTable";
 import { SubmitButton } from "~/components/SubmitButton";
 
 const editHighlightsActionSchema = z.object({
   [HIGHLIGHT_CHECKBOX_NAME]: z.optional(
+    z.union([z.array(z.string()), z.string()])
+  ),
+  [HIGHLIGHT_TOURNAMENT_CHECKBOX_NAME]: z.optional(
     z.union([z.array(z.string()), z.string()])
   ),
 });
@@ -32,10 +36,14 @@ export const action: ActionFunction = async ({ request }) => {
   const resultTeamIds = normalizeFormFieldArray(
     data[HIGHLIGHT_CHECKBOX_NAME]
   ).map((id) => parseInt(id, 10));
+  const resultTournamentTeamIds = normalizeFormFieldArray(
+    data[HIGHLIGHT_TOURNAMENT_CHECKBOX_NAME]
+  ).map((id) => parseInt(id, 10));
 
   db.users.updateResultHighlights({
     userId: user.id,
     resultTeamIds,
+    resultTournamentTeamIds,
   });
 
   return redirect(userResultsPage(user));

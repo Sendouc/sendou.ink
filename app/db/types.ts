@@ -11,9 +11,13 @@ import type allTags from "../routes/calendar/tags.json";
 export interface User {
   id: number;
   discordId: string;
+  /** Discord display name aka global name (non-unique) */
   discordName: string;
   discordDiscriminator: string;
   discordAvatar: string | null;
+  /** Discord username (unique) */
+  discordUniqueName: string | null;
+  showDiscordUniqueName: number;
   twitch: string | null;
   twitter: string | null;
   youtubeId: string | null;
@@ -42,6 +46,7 @@ export interface UserWeapon {
   weaponSplId: MainWeaponId;
   createdAt: number;
   order: number;
+  isFavorite: number;
 }
 
 export interface PlusSuggestion {
@@ -136,6 +141,11 @@ export interface CalendarEventResultPlayer {
   teamId: number;
   userId: number | null;
   name: string | null;
+}
+
+export interface UserResultHighlight {
+  teamId: number;
+  userId: number;
 }
 
 export interface CalendarEventBadge {
@@ -315,6 +325,62 @@ export interface TournamentMatchGameResult {
 export interface TournamentMatchGameResultParticipant {
   matchGameResultId: number;
   userId: number;
+}
+
+export interface TournamentSub {
+  userId: number;
+  tournamentId: number;
+  canVc: number;
+  bestWeapons: string;
+  okWeapons: string | null;
+  message: string | null;
+  visibility: "+1" | "+2" | "+3" | "ALL";
+  createdAt: number;
+}
+
+export interface Skill {
+  id: number;
+  mu: number;
+  sigma: number;
+  ordinal: number;
+  userId: number | null;
+  /** e.g. 12-24-44-1024 for "team skills" */
+  identifier: string | null;
+  matchesCount: number;
+  /** Tournament that caused the skill to change */
+  tournamentId: number | null;
+}
+
+export interface SkillTeamUser {
+  userId: number;
+  skillId: number;
+}
+
+export interface MapResult {
+  mode: ModeShort;
+  stageId: StageId;
+  userId: number;
+  wins: number;
+  losses: number;
+}
+
+export interface PlayerResult {
+  ownerUserId: number;
+  otherUserId: number;
+  mapWins: number;
+  mapLosses: number;
+  setWins: number;
+  setLosses: number;
+  type: "MATE" | "ENEMY";
+}
+
+export interface TournamentResult {
+  tournamentId: number;
+  userId: number;
+  placement: number;
+  participantCount: number;
+  tournamentTeamId: number;
+  isHighlight: number;
 }
 
 export interface TrustRelationship {

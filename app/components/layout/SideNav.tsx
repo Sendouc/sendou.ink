@@ -8,7 +8,7 @@ export function SideNav() {
   const { t } = useTranslation(["common"]);
 
   return (
-    <nav className="layout__side-nav">
+    <nav className="layout__side-nav layout__item_size">
       {navItems.map((item) => {
         return (
           <Link

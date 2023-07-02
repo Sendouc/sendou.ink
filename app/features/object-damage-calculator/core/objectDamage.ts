@@ -2,6 +2,7 @@ import type {
   AbilityPoints,
   AnalyzedBuild,
   DamageType,
+  AnyWeapon,
 } from "~/features/build-analyzer";
 import objectDamages from "./object-dmg.json";
 import type {
@@ -15,10 +16,9 @@ import { objectHitPoints } from "./objectHitPoints";
 import {
   damageTypesToCombine,
   DAMAGE_RECEIVERS,
-  objectDamageJsonKeyPriority,
+  damagePriorities,
 } from "../calculator-constants";
 import type { CombineWith, DamageReceiver } from "../calculator-types";
-import type { AnyWeapon } from "~/features/build-analyzer";
 import { removeDuplicates } from "~/utils/arrays";
 
 export function damageTypeToMultipliers({
@@ -26,69 +26,80 @@ export function damageTypeToMultipliers({
   weapon,
 }: {
   type: DamageType;
-  weapon:
-    | {
-        type: "MAIN";
-        id: MainWeaponId;
-      }
-    | {
-        type: "SUB";
-        id: SubWeaponId;
-      }
-    | {
-        type: "SPECIAL";
-        id: SpecialWeaponId;
-      };
+  weapon: AnyWeapon;
 }) {
-  for (const key of jsonKeysToCeck(type)) {
-    const objectDamagesObj = objectDamages[key];
+  const matchingKeys: Array<keyof typeof objectDamages> = [];
 
-    let ok = false;
-
-    if (weapon.type === "MAIN") {
-      ok = (objectDamagesObj.mainWeaponIds as MainWeaponId[]).includes(
+  for (const [key, objectDamagesObj] of Object.entries(objectDamages)) {
+    if (
+      weapon.type === "MAIN" &&
+      (objectDamagesObj.mainWeaponIds as MainWeaponId[]).includes(weapon.id)
+    ) {
+      matchingKeys.push(key as keyof typeof objectDamages);
+    } else if (
+      weapon.type === "SUB" &&
+      (objectDamagesObj.subWeaponIds as SubWeaponId[]).includes(weapon.id)
+    ) {
+      matchingKeys.push(key as keyof typeof objectDamages);
+    } else if (
+      weapon.type === "SPECIAL" &&
+      (objectDamagesObj.specialWeaponIds as SpecialWeaponId[]).includes(
         weapon.id
-      );
-    } else if (weapon.type === "SUB") {
-      ok = (objectDamagesObj.subWeaponIds as SubWeaponId[]).includes(weapon.id);
-    } else if (weapon.type === "SPECIAL") {
-      ok = (objectDamagesObj.specialWeaponIds as SpecialWeaponId[]).includes(
-        weapon.id
-      );
-    }
-
-    if (ok) {
-      return objectDamagesObj.rates;
+      )
+    ) {
+      matchingKeys.push(key as keyof typeof objectDamages);
     }
   }
 
-  return null;
+  if (matchingKeys.length === 0) return null;
+
+  const relevantKey = resolveRelevantKey({ keys: matchingKeys, type, weapon });
+
+  return objectDamages[relevantKey].rates;
 }
-const objectDamageJsonKeyPriorityEntries = Object.entries(
-  objectDamageJsonKeyPriority
-);
 
-// for example blaster belongs to both Blaster_KillOneShot
-// and Blaster categories so it needs to be specified
-// which damage type uses which
-function jsonKeysToCeck(type: DamageType) {
-  const result: Array<keyof typeof objectDamages> = [];
+function resolveRelevantKey({
+  keys,
+  type,
+  weapon,
+}: {
+  keys: Array<keyof typeof objectDamages>;
+  type: DamageType;
+  weapon: AnyWeapon;
+}): keyof typeof objectDamages {
+  if (keys.length === 1) return keys[0];
 
-  for (const [key, value] of objectDamageJsonKeyPriorityEntries) {
-    if (value?.includes(type)) {
-      result.push(key as keyof typeof objectDamages);
+  const actualKeys = keys.filter((k) => k !== "Default");
+  if (actualKeys.length === 1) return actualKeys[0];
+
+  for (const [weaponType, weaponIds, damageType, key] of damagePriorities) {
+    // handle alt kits e.g. Splatteshot might have id 10 but Tentatek Splattershot has id 11
+    // but in the context of this function they are one and the same
+    const normalizedWeaponId =
+      weapon.type === "MAIN" && weapon.id % 10 !== 0
+        ? ((weapon.id - 1) as MainWeaponId)
+        : weapon.id;
+
+    if (weaponType !== weapon.type) continue;
+    if (!weaponIds.includes(normalizedWeaponId)) continue;
+    if (damageType !== type) continue;
+
+    if (!actualKeys.includes(key)) {
+      throw new Error(
+        `Invalid damagePriorities (no key in object-dmg.json for the weapon): ${JSON.stringify(
+          [weaponType, weaponIds, damageType, key]
+        )}`
+      );
     }
+
+    return key;
   }
 
-  if (result.length) return result;
-
-  for (const [key, value] of objectDamageJsonKeyPriorityEntries) {
-    if (!value) {
-      result.push(key as keyof typeof objectDamages);
-    }
-  }
-
-  return result;
+  throw new Error(
+    `Could not resolve relevant key from ${actualKeys.join(", ")}; weapon: ${
+      weapon.type
+    }_${weapon.id}; damage type: ${type} - please update damagePriorities`
+  );
 }
 
 export function multipliersToRecordWithFallbacks(
@@ -111,9 +122,9 @@ export function resolveAllUniqueDamageTypes({
 }) {
   const damageTypes =
     anyWeapon.type === "SUB"
-      ? analyzed.stats.subWeaponDefenseDamages
-          .filter((damage) => damage.subWeaponId === anyWeapon.id)
-          .map((d) => d.type)
+      ? []
+      : anyWeapon.type === "SPECIAL"
+      ? analyzed.stats.specialWeaponDamages.map((d) => d.type)
       : analyzed.stats.damages.map((d) => d.type);
 
   return removeDuplicates(damageTypes);
@@ -138,7 +149,12 @@ function resolveFilteredDamages({
     );
   }
 
-  return analyzed.stats.damages
+  const damages =
+    anyWeapon.type === "SPECIAL"
+      ? analyzed.stats.specialWeaponDamages
+      : analyzed.stats.damages;
+
+  return damages
     .filter((d) => d.type === damageType || toCombine?.combineWith === d.type)
     .map((damage) => {
       if (!isMultiShot || !damage.multiShots) return damage;

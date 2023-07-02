@@ -5,20 +5,6 @@
   "tabs.register": "הרשמה",
   "tabs.maps": "מפות",
 
-  "pre.footerNote": "הערה: אתם יכולים לשנות את מאגר המפות והצוות שלכם פעמים שתרצו לפני תחילת כמה הטורניר.",
-  "pre.deleteTeam": "מחיקת צוות",
-
-  "preview": "תצוגה מקדימה של מחולל רשימת המפות (מנהל בלבד)",
-  "pre.steps.register": "1. הרשמה ב-",
-  "pre.steps.register.summary": "נא להזין את שם הצוות שאיתו נרשמתם",
-  "pre.steps.mapPool": "2. מאגר מפות",
-  "pre.steps.mapPool.explanation": "אתם יכולים לשחק גם בלי לבחור מאגר מפות, אבל אז יריבכם יכולים להחליט אילו מפות תשחקו. מפות שוברות שוויון מסומנות בכחול.",
-  "pre.steps.mapPool.summary": "בחרו את המפות של הצוות שלכם",
-  "pre.steps.roster": "3. שליחת צוות",
-  "pre.steps.roster.explanation": "שליחת הצוות היא אופציונלית, אבל אם לא תעשו זאת, אתם עשויים להיות מוצבים נמוך יותר.",
-  "pre.steps.roster.summary": "הכנס צוות",
-  "pre.steps.roster.fullTeamError": "הצוות מלא.",
-
   "bracket.type.DE_WINNERS": "סיבוב מנצחים",
   "bracket.type.DE_LOSERS": "סיבוב מפסידים",
   "bracket.type.SE": "סיבוב",

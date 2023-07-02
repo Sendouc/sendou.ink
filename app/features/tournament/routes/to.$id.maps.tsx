@@ -14,12 +14,12 @@ import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
 import { getUserId } from "~/modules/auth/user.server";
 import { MapPool } from "~/modules/map-pool-serializer";
-import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator";
-import {
-  createTournamentMapList,
-  type BracketType,
-  type TournamentMaplistInput,
-  type TournamentMaplistSource,
+import { createTournamentMapList } from "~/modules/tournament-map-list-generator";
+import type {
+  TournamentMapListMap,
+  BracketType,
+  TournamentMaplistInput,
+  TournamentMaplistSource,
 } from "~/modules/tournament-map-list-generator";
 import { canAdminTournament } from "~/permissions";
 import mapsStyles from "~/styles/maps.css";
