@@ -7,14 +7,11 @@ import type {
   TournamentLoaderData,
   TournamentLoaderTeam,
 } from "../../tournament/routes/to.$id";
-import type { Unpacked } from "~/utils/types";
 import { inGameNameWithoutDiscriminator } from "~/utils/strings";
 import { Link, useLoaderData, useOutletContext } from "@remix-run/react";
 import type { TournamentMatchLoaderData } from "../routes/to.$id.matches.$mid";
 import type { Result } from "./ScoreReporter";
 import { tournamentTeamPage } from "~/utils/urls";
-
-export type TeamRosterInputsType = "DEFAULT" | "DISABLED" | "PRESENTATIONAL";
 
 /** Inputs to select who played for teams in a match as well as the winner. Can also be used in a presentational way. */
 export function TeamRosterInputs({
@@ -36,20 +33,6 @@ export function TeamRosterInputs({
 
   const parentRouteData = useOutletContext<TournamentLoaderData>();
   const data = useLoaderData<TournamentMatchLoaderData>();
-  const inputMode = (
-    team: Unpacked<TournamentLoaderData["teams"]>
-  ): TeamRosterInputsType => {
-    if (presentational) return "PRESENTATIONAL";
-
-    // Disabled in this case because we expect a result to have exactly
-    // TOURNAMENT_TEAM_ROSTER_MIN_SIZE members per team when reporting it
-    // so there is no point to let user to change them around
-    if (team.members.length <= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL) {
-      return "DISABLED";
-    }
-
-    return "DEFAULT";
-  };
 
   React.useEffect(() => {
     setWinnerId(undefined);
@@ -93,9 +76,9 @@ export function TeamRosterInputs({
             team={teamI + 1}
           />
           <TeamRosterInputsCheckboxes
-            team={team}
+            teamId={team.id}
             checkedPlayers={result?.participantIds ?? checkedPlayers[teamI]!}
-            mode={inputMode(team)}
+            presentational={presentational}
             handlePlayerClick={(playerId: number) => {
               const newCheckedPlayers = () => {
                 const newPlayers = clone(checkedPlayers);
@@ -165,45 +148,62 @@ function WinnerRadio({
 }
 
 function TeamRosterInputsCheckboxes({
-  team,
+  teamId,
   checkedPlayers,
   handlePlayerClick,
-  mode,
+  presentational,
 }: {
-  team: Unpacked<TournamentLoaderData["teams"]>;
+  teamId: number;
   checkedPlayers: number[];
   handlePlayerClick: (playerId: number) => void;
-  /** DEFAULT = inputs work, DISABLED = inputs disabled and look disabled, PRESENTATION = inputs disabled but look like in DEFAULT (without hover styles) */
-  mode: TeamRosterInputsType;
+  presentational: boolean;
 }) {
+  const data = useLoaderData<TournamentMatchLoaderData>();
   const id = React.useId();
+
+  const members = data.match.players.filter(
+    (p) => p.tournamentTeamId === teamId
+  );
+
+  const mode = () => {
+    if (presentational) return "PRESENTATIONAL";
+
+    // Disabled in this case because we expect a result to have exactly
+    // TOURNAMENT_TEAM_ROSTER_MIN_SIZE members per team when reporting it
+    // so there is no point to let user to change them around
+    if (members.length <= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL) {
+      return "DISABLED";
+    }
+
+    return "DEFAULT";
+  };
 
   return (
     <div className="tournament-bracket__during-match-actions__team-players">
-      {team.members.map((member, i) => {
+      {members.map((member, i) => {
         return (
           <div
-            key={member.userId}
+            key={member.id}
             className={clsx(
               "tournament-bracket__during-match-actions__checkbox-name",
-              { "disabled-opaque": mode === "DISABLED" },
-              { presentational: mode === "PRESENTATIONAL" }
+              { "disabled-opaque": mode() === "DISABLED" },
+              { presentational: mode() === "PRESENTATIONAL" }
             )}
           >
             <input
               className="plain tournament-bracket__during-match-actions__checkbox"
               type="checkbox"
-              id={`${member.userId}-${id}`}
+              id={`${member.id}-${id}`}
               name="playerName"
-              disabled={mode === "DISABLED" || mode === "PRESENTATIONAL"}
-              value={member.userId}
-              checked={checkedPlayers.flat().includes(member.userId)}
-              onChange={() => handlePlayerClick(member.userId)}
+              disabled={mode() === "DISABLED" || mode() === "PRESENTATIONAL"}
+              value={member.id}
+              checked={checkedPlayers.flat().includes(member.id)}
+              onChange={() => handlePlayerClick(member.id)}
               data-testid={`player-checkbox-${i}`}
             />{" "}
             <label
               className="tournament-bracket__during-match-actions__player-name"
-              htmlFor={`${member.userId}-${id}`}
+              htmlFor={`${member.id}-${id}`}
             >
               {member.inGameName
                 ? inGameNameWithoutDiscriminator(member.inGameName)

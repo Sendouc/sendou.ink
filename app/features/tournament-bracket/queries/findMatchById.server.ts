@@ -1,6 +1,12 @@
 import type { Match } from "~/modules/brackets-model";
 import { sql } from "~/db/sql";
-import type { Tournament, TournamentMatch } from "~/db/types";
+import type {
+  Tournament,
+  TournamentMatch,
+  TournamentTeamMember,
+  User,
+} from "~/db/types";
+import { parseDBArray } from "~/utils/sql";
 
 const stm = sql.prepare(/* sql */ `
   select 
@@ -8,11 +14,29 @@ const stm = sql.prepare(/* sql */ `
     "TournamentMatch"."opponentOne",
     "TournamentMatch"."opponentTwo",
     "TournamentMatch"."bestOf",
-    "Tournament"."mapPickingStyle"
+    "Tournament"."mapPickingStyle",
+    json_group_array(
+      json_object(
+        'id',
+        "User"."id",
+        'discordName',
+        "User"."discordName",
+        'tournamentTeamId',
+        "TournamentTeamMember"."tournamentTeamId",
+        'inGameName',
+        "User"."inGameName"
+      )
+    ) as "players"
   from "TournamentMatch"
   left join "TournamentStage" on "TournamentStage"."id" = "TournamentMatch"."stageId"
   left join "Tournament" on "Tournament"."id" = "TournamentStage"."tournamentId"
+  left join "TournamentTeamMember" on 
+    "TournamentTeamMember"."tournamentTeamId" = "TournamentMatch"."opponentOne" ->> '$.id'
+    or
+    "TournamentTeamMember"."tournamentTeamId" = "TournamentMatch"."opponentTwo" ->> '$.id'
+  left join "User" on "User"."id" = "TournamentTeamMember"."userId"
   where "TournamentMatch"."id" = @id
+  group by "TournamentMatch"."id"
 `);
 
 export type FindMatchById = ReturnType<typeof findMatchById>;
@@ -20,7 +44,7 @@ export type FindMatchById = ReturnType<typeof findMatchById>;
 export const findMatchById = (id: number) => {
   const row = stm.get({ id }) as
     | (Pick<TournamentMatch, "id" | "opponentOne" | "opponentTwo" | "bestOf"> &
-        Pick<Tournament, "mapPickingStyle">)
+        Pick<Tournament, "mapPickingStyle"> & { players: string })
     | undefined;
 
   if (!row) return;
@@ -29,5 +53,11 @@ export const findMatchById = (id: number) => {
     ...row,
     opponentOne: JSON.parse(row.opponentOne) as Match["opponent1"],
     opponentTwo: JSON.parse(row.opponentTwo) as Match["opponent2"],
+    players: parseDBArray(row.players) as Array<{
+      id: User["id"];
+      discordName: User["discordName"];
+      tournamentTeamId: TournamentTeamMember["tournamentTeamId"];
+      inGameName: User["inGameName"];
+    }>,
   };
 };

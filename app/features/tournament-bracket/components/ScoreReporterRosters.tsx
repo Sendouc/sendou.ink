@@ -1,16 +1,14 @@
 import * as React from "react";
-import { Form } from "@remix-run/react";
-import type {
-  TournamentLoaderData,
-  TournamentLoaderTeam,
-} from "../../tournament/routes/to.$id";
-import type { Unpacked } from "~/utils/types";
+import { Form, useLoaderData } from "@remix-run/react";
+import type { TournamentLoaderTeam } from "../../tournament/routes/to.$id";
 import { TOURNAMENT } from "../../tournament/tournament-constants";
 import { SubmitButton } from "~/components/SubmitButton";
 import { TeamRosterInputs } from "./TeamRosterInputs";
 import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator";
 import { useTranslation } from "~/hooks/useTranslation";
 import type { Result } from "./ScoreReporter";
+import type { TournamentMatchLoaderData } from "../routes/to.$id.matches.$mid";
+import type { SerializeFrom } from "@remix-run/node";
 
 export function ScoreReporterRosters({
   teams,
@@ -23,9 +21,16 @@ export function ScoreReporterRosters({
   currentStageWithMode: TournamentMapListMap;
   result?: Result;
 }) {
+  const data = useLoaderData<TournamentMatchLoaderData>();
   const [checkedPlayers, setCheckedPlayers] = React.useState<
     [number[], number[]]
-  >(checkedPlayersInitialState(teams));
+  >(
+    checkedPlayersInitialState({
+      teamOneId: teams[0].id,
+      teamTwoId: teams[1].id,
+      players: data.match.players,
+    })
+  );
   const [winnerId, setWinnerId] = React.useState<number | undefined>();
 
   const presentational = Boolean(result);
@@ -71,18 +76,30 @@ export function ScoreReporterRosters({
 }
 
 // TODO: remember what previously selected for our team
-function checkedPlayersInitialState([teamOne, teamTwo]: [
-  Unpacked<TournamentLoaderData["teams"]>,
-  Unpacked<TournamentLoaderData["teams"]>
-]): [number[], number[]] {
+function checkedPlayersInitialState({
+  teamOneId,
+  teamTwoId,
+  players,
+}: {
+  teamOneId: number;
+  teamTwoId: number;
+  players: SerializeFrom<TournamentMatchLoaderData>["match"]["players"];
+}): [number[], number[]] {
   const result: [number[], number[]] = [[], []];
 
-  if (teamOne.members.length === TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL) {
-    result[0].push(...teamOne.members.map((member) => member.userId));
+  const teamOneMembers = players.filter(
+    (player) => player.tournamentTeamId === teamOneId
+  );
+  const teamTwoMembers = players.filter(
+    (player) => player.tournamentTeamId === teamTwoId
+  );
+
+  if (teamOneMembers.length === TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL) {
+    result[0].push(...teamOneMembers.map((member) => member.id));
   }
 
-  if (teamTwo.members.length === TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL) {
-    result[1].push(...teamTwo.members.map((member) => member.userId));
+  if (teamTwoMembers.length === TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL) {
+    result[1].push(...teamTwoMembers.map((member) => member.id));
   }
 
   return result;
