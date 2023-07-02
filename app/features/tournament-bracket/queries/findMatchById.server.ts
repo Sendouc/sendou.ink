@@ -24,7 +24,13 @@ const stm = sql.prepare(/* sql */ `
         'tournamentTeamId',
         "TournamentTeamMember"."tournamentTeamId",
         'inGameName',
-        "User"."inGameName"
+        "User"."inGameName",
+        'discordId',
+        "User"."discordId",
+        'customUrl',
+        "User"."customUrl",
+        'discordAvatar',
+        "User"."discordAvatar"
       )
     ) as "players"
   from "TournamentMatch"
@@ -58,6 +64,9 @@ export const findMatchById = (id: number) => {
       discordName: User["discordName"];
       tournamentTeamId: TournamentTeamMember["tournamentTeamId"];
       inGameName: User["inGameName"];
+      discordId: User["discordId"];
+      customUrl: User["customUrl"];
+      discordAvatar: User["discordAvatar"];
     }>,
   };
 };

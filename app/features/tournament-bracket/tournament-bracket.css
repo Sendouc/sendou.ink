@@ -209,6 +209,27 @@
   font-weight: var(--bold);
 }
 
+.tournament-bracket__rosters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-8);
+  font-size: var(--fonts-xs);
+  font-weight: var(--semi-bold);
+  flex-direction: column;
+}
+
+.tournament-bracket__rosters ul {
+  padding: 0;
+  list-style: none;
+}
+
+@media screen and (min-width: 640px) {
+  .tournament-bracket__rosters {
+    justify-content: space-evenly;
+    flex-direction: row;
+  }
+}
+
 .tournament-bracket__mode-progress {
   display: flex;
   margin-bottom: var(--s-4);

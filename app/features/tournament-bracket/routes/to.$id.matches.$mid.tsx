@@ -4,6 +4,7 @@ import type {
   LoaderArgs,
 } from "@remix-run/node";
 import {
+  Link,
   useLoaderData,
   useOutletContext,
   useRevalidator,
@@ -28,6 +29,8 @@ import { assertUnreachable } from "~/utils/types";
 import {
   tournamentBracketsPage,
   tournamentMatchSubscribePage,
+  tournamentTeamPage,
+  userPage,
 } from "~/utils/urls";
 import { findByIdentifier } from "../../tournament/queries/findByIdentifier.server";
 import { findTeamsByTournamentId } from "../../tournament/queries/findTeamsByTournamentId.server";
@@ -47,6 +50,8 @@ import {
   matchSubscriptionKey,
 } from "../tournament-bracket-utils";
 import bracketStyles from "../tournament-bracket.css";
+import clsx from "clsx";
+import { Avatar } from "~/components/Avatar";
 
 export const links: LinksFunction = () => [
   {
@@ -323,6 +328,7 @@ export const loader = ({ params }: LoaderArgs) => {
 };
 
 export default function TournamentMatchPage() {
+  const user = useUser();
   const visibility = useVisibilityChange();
   const { revalidate } = useRevalidator();
   const parentRouteData = useOutletContext<TournamentLoaderData>();
@@ -332,15 +338,32 @@ export default function TournamentMatchPage() {
     data.match.opponentOne?.result === "win" ||
     data.match.opponentTwo?.result === "win";
 
-  const matchHasTwoTeams = Boolean(
-    data.match.opponentOne?.id && data.match.opponentTwo?.id
-  );
-
   React.useEffect(() => {
     if (visibility !== "visible" || matchIsOver) return;
 
     revalidate();
   }, [visibility, revalidate, matchIsOver]);
+
+  const isMemberOfATeam = data.match.players.some((p) => p.id === user?.id);
+
+  const type = canReportTournamentScore({
+    event: parentRouteData.event,
+    match: data.match,
+    ownedTeamId: parentRouteData.ownTeam?.id,
+    user,
+  })
+    ? "EDIT"
+    : isMemberOfATeam
+    ? "MEMBER"
+    : "OTHER";
+
+  const showRosterPeek = () => {
+    if (matchIsOver) return false;
+
+    if (!data.match.opponentOne?.id || !data.match.opponentTwo?.id) return true;
+
+    return type !== "EDIT";
+  };
 
   return (
     <div className="stack lg">
@@ -359,17 +382,18 @@ export default function TournamentMatchPage() {
           Back to bracket
         </LinkButton>
       </div>
-      {!matchHasTwoTeams ? (
-        <div className="text-lg text-lighter font-semi-bold text-center">
-          Waiting for teams
-        </div>
-      ) : null}
       {matchIsOver ? <ResultsSection /> : null}
       {!matchIsOver &&
       typeof data.match.opponentOne?.id === "number" &&
       typeof data.match.opponentTwo?.id === "number" ? (
         <MapListSection
           teams={[data.match.opponentOne.id, data.match.opponentTwo.id]}
+          type={type}
+        />
+      ) : null}
+      {showRosterPeek() ? (
+        <Rosters
+          teams={[data.match.opponentOne?.id, data.match.opponentTwo?.id]}
         />
       ) : null}
     </div>
@@ -403,8 +427,13 @@ function useAutoRefresh() {
   }, [lastEventId, revalidate]);
 }
 
-function MapListSection({ teams }: { teams: [id: number, id: number] }) {
-  const user = useUser();
+function MapListSection({
+  teams,
+  type,
+}: {
+  teams: [id: number, id: number];
+  type: "EDIT" | "MEMBER" | "OTHER";
+}) {
   const data = useLoaderData<typeof loader>();
   const parentRouteData = useOutletContext<TournamentLoaderData>();
 
@@ -416,27 +445,12 @@ function MapListSection({ teams }: { teams: [id: number, id: number] }) {
   invariant(data.currentMap, "No map found for this score");
   invariant(data.modes, "No modes found for this map list");
 
-  const isMemberOfATeam =
-    teamOne.members.some((m) => m.userId === user?.id) ||
-    teamTwo.members.some((m) => m.userId === user?.id);
-
   return (
     <ScoreReporter
       currentStageWithMode={data.currentMap}
       teams={[teamOne, teamTwo]}
       modes={data.modes}
-      type={
-        canReportTournamentScore({
-          event: parentRouteData.event,
-          match: data.match,
-          ownedTeamId: parentRouteData.ownTeam?.id,
-          user,
-        })
-          ? "EDIT"
-          : isMemberOfATeam
-          ? "MEMBER"
-          : "OTHER"
-      }
+      type={type}
     />
   );
 }
@@ -480,5 +494,102 @@ function ResultsSection() {
       result={result}
       type="OTHER"
     />
+  );
+}
+
+function Rosters({
+  teams,
+}: {
+  teams: [id: number | null | undefined, id: number | null | undefined];
+}) {
+  const data = useLoaderData<typeof loader>();
+  const parentRouteData = useOutletContext<TournamentLoaderData>();
+
+  const teamOne = parentRouteData.teams.find((team) => team.id === teams[0]);
+  const teamTwo = parentRouteData.teams.find((team) => team.id === teams[1]);
+  const teamOnePlayers = data.match.players.filter(
+    (p) => p.tournamentTeamId === teamOne?.id
+  );
+  const teamTwoPlayers = data.match.players.filter(
+    (p) => p.tournamentTeamId === teamTwo?.id
+  );
+
+  return (
+    <div className="tournament-bracket__rosters">
+      <div>
+        <div className="stack xs horizontal items-center text-lighter">
+          <div className="tournament-bracket__team-one-dot" />
+          Team 1
+        </div>
+        <h2
+          className={clsx("text-sm", {
+            "text-lighter": !teamOne,
+          })}
+        >
+          {teamOne ? (
+            <Link
+              to={tournamentTeamPage({
+                eventId: parentRouteData.event.id,
+                tournamentTeamId: teamOne.id,
+              })}
+              className="text-main-forced font-bold"
+            >
+              {teamOne.name}
+            </Link>
+          ) : (
+            "Waiting on team"
+          )}
+        </h2>
+        {teamOnePlayers.length > 0 ? (
+          <ul className="stack xs mt-2">
+            {teamOnePlayers.map((p) => {
+              return (
+                <li key={p.id}>
+                  <Link to={userPage(p)} className="stack horizontal sm">
+                    <Avatar user={p} size="xxs" />
+                    {p.discordName}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        ) : null}
+      </div>
+      <div>
+        <div className="stack xs horizontal items-center text-lighter">
+          <div className="tournament-bracket__team-two-dot" />
+          Team 2
+        </div>
+        <h2 className={clsx("text-sm", { "text-lighter": !teamTwo })}>
+          {teamTwo ? (
+            <Link
+              to={tournamentTeamPage({
+                eventId: parentRouteData.event.id,
+                tournamentTeamId: teamTwo.id,
+              })}
+              className="text-main-forced font-bold"
+            >
+              {teamTwo.name}
+            </Link>
+          ) : (
+            "Waiting on team"
+          )}
+        </h2>
+        {teamTwoPlayers.length > 0 ? (
+          <ul className="stack xs mt-2">
+            {teamTwoPlayers.map((p) => {
+              return (
+                <li key={p.id}>
+                  <Link to={userPage(p)} className="stack horizontal sm">
+                    <Avatar user={p} size="xxs" />
+                    {p.discordName}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        ) : null}
+      </div>
+    </div>
   );
 }
