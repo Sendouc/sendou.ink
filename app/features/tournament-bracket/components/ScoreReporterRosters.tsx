@@ -131,6 +131,14 @@ function ReportScoreButtons({
 }) {
   const { t } = useTranslation(["game-misc"]);
 
+  if (checkedPlayers.some((team) => team.length === 0)) {
+    return (
+      <p className="tournament-bracket__during-match-actions__amount-warning-paragraph">
+        Please select rosters to report the score
+      </p>
+    );
+  }
+
   if (
     !checkedPlayers.every(
       (team) => team.length === TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL
@@ -138,8 +146,8 @@ function ReportScoreButtons({
   ) {
     return (
       <p className="tournament-bracket__during-match-actions__amount-warning-paragraph">
-        Please choose exactly {TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL}+
-        {TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL} players to report score
+        Please choose {TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL} players from both
+        teams to report the score
       </p>
     );
   }
