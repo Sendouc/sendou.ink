@@ -164,10 +164,12 @@ export function ScoreReporter({
             // which causes "No winning team matching the id" error.
             // Switching the key props forces the component to remount.
             key={data.match.id}
+            scores={[scoreOne, scoreTwo]}
             teams={teams}
             position={currentPosition}
             currentStageWithMode={currentStageWithMode}
             result={result}
+            bestOf={data.match.bestOf}
           />
         </ActionSectionWrapper>
       ) : null}

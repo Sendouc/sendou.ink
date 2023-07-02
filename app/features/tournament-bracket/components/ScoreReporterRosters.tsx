@@ -9,17 +9,23 @@ import { useTranslation } from "~/hooks/useTranslation";
 import type { Result } from "./ScoreReporter";
 import type { TournamentMatchLoaderData } from "../routes/to.$id.matches.$mid";
 import type { SerializeFrom } from "@remix-run/node";
+import { stageImageUrl } from "~/utils/urls";
+import { Image } from "~/components/Image";
 
 export function ScoreReporterRosters({
   teams,
   position,
   currentStageWithMode,
   result,
+  scores,
+  bestOf,
 }: {
   teams: [TournamentLoaderTeam, TournamentLoaderTeam];
   position: number;
   currentStageWithMode: TournamentMapListMap;
   result?: Result;
+  scores: [number, number];
+  bestOf: number;
 }) {
   const data = useLoaderData<TournamentMatchLoaderData>();
   const [checkedPlayers, setCheckedPlayers] = React.useState<
@@ -34,6 +40,12 @@ export function ScoreReporterRosters({
   const [winnerId, setWinnerId] = React.useState<number | undefined>();
 
   const presentational = Boolean(result);
+
+  const newScore = [
+    scores[0] + (winnerId === teams[0].id ? 1 : 0),
+    scores[1] + (winnerId === teams[1].id ? 1 : 0),
+  ];
+  const wouldEndSet = newScore.some((score) => score > bestOf / 2);
 
   return (
     <Form method="post" className="width-full">
@@ -59,6 +71,7 @@ export function ScoreReporterRosters({
               checkedPlayers={checkedPlayers}
               winnerName={winningTeam()}
               currentStageWithMode={currentStageWithMode}
+              wouldEndSet={wouldEndSet}
             />
           </div>
         ) : null}
@@ -109,10 +122,12 @@ function ReportScoreButtons({
   checkedPlayers,
   winnerName,
   currentStageWithMode,
+  wouldEndSet,
 }: {
   checkedPlayers: number[][];
   winnerName?: string;
   currentStageWithMode: TournamentMapListMap;
+  wouldEndSet: boolean;
 }) {
   const { t } = useTranslation(["game-misc"]);
 
@@ -139,6 +154,13 @@ function ReportScoreButtons({
 
   return (
     <div className="stack sm items-center">
+      <Image
+        path={stageImageUrl(currentStageWithMode.stageId)}
+        width={64}
+        height={36}
+        alt=""
+        className="rounded-sm"
+      />
       <div className="tournament-bracket__during-match-actions__confirm-score-text">
         Report <b>{winnerName}</b> win on{" "}
         <b>
@@ -152,7 +174,7 @@ function ReportScoreButtons({
         _action="REPORT_SCORE"
         testId="report-score-button"
       >
-        Report
+        {wouldEndSet ? "Report & end set" : "Report"}
       </SubmitButton>
     </div>
   );
