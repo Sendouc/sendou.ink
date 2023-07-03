@@ -124,5 +124,14 @@
       "invert(99%) sepia(3%) saturate(615%) hue-rotate(199deg) brightness(115%) contrast(88%)",
       "invert(23%) sepia(90%) saturate(2049%) hue-rotate(329deg) brightness(95%) contrast(107%)"
     ]
+  },
+  {
+    "name": "links",
+    "url": "links",
+    "prefetch": true,
+    "filters": [
+      "invert(76%) sepia(19%) saturate(6678%) hue-rotate(55deg) brightness(106%) contrast(122%)",
+      "invert(99%) sepia(57%) saturate(1676%) hue-rotate(333deg) brightness(86%) contrast(79%)"
+    ]
   }
 ]

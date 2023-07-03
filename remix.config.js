@@ -95,6 +95,8 @@ module.exports = {
       );
 
       route("/leaderboards", "features/leaderboards/routes/leaderboards.tsx");
+
+      route("/links", "features/links/routes/links.tsx");
     });
   },
   serverModuleFormat: "cjs",

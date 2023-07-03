@@ -1119,6 +1119,18 @@ dialog::backdrop {
   margin-left: 0.25em;
 }
 
+.discord-icon {
+  width: 1rem;
+  display: inline;
+  fill: #7289da;
+}
+
+.youtube-icon {
+  width: 1rem;
+  display: inline;
+  fill: #f00;
+}
+
 #nprogress .bar {
   margin-top: 3rem !important;
   background: var(--theme) !important;
