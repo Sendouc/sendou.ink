@@ -288,6 +288,21 @@ MatchUpdateDoubleElimination("should determine matches in grand final", () => {
     storage.select<any>("match", 6).opponent2.id, // Determined opponent for the grand final (round 2)
     storage.select<any>("match", 1).opponent2.id // Winner of LB Final
   );
+
+  assert.equal(storage.select<any>("match", 2).status, Status.Archived);
+  assert.equal(storage.select<any>("match", 4).status, Status.Archived);
+
+  assert.equal(storage.select<any>("match", 5).status, Status.Completed); // Grand final (round 1)
+  assert.equal(storage.select<any>("match", 6).status, Status.Ready); // Grand final (round 2)
+
+  manager.update.match({
+    id: 6, // Grand Final round 2
+    opponent1: { score: 16, result: "win" },
+    opponent2: { score: 10 },
+  });
+
+  assert.equal(storage.select<any>("match", 5).status, Status.Archived); // Grand final (round 1)
+  assert.equal(storage.select<any>("match", 6).status, Status.Archived); // Grand final (round 2)
 });
 
 MatchUpdateDoubleElimination(

@@ -489,7 +489,7 @@ UpdateMatchGames(
     });
 
     finalMatchStatus = storage.select<any>("match", 2).status;
-    assert.equal(finalMatchStatus, Status.Completed);
+    assert.equal(finalMatchStatus, Status.Archived);
     assert.equal(finalMatchStatus, storage.select<any>("match_game", 4).status);
 
     const semi1Status = storage.select<any>("match", 0).status;
@@ -742,7 +742,7 @@ UpdateMatchGames(
 
     manager.update.matchGame({ id: 0, opponent1: { result: "win" } });
     manager.update.matchGame({ id: 1, opponent1: { result: "win" } });
-    assert.equal(storage.select<any>("match", 0).status, Status.Completed);
+    assert.equal(storage.select<any>("match", 0).status, Status.Archived); // Completed, but single match in the stage.
 
     manager.reset.matchGameResults(0);
     assert.equal(storage.select<any>("match", 0).status, Status.Running);

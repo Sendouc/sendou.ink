@@ -163,18 +163,6 @@ ExtraFields("Extra fields when updating a match game", () => {
     opponent2: {
       score: 1,
       result: "loss",
-    },
-  });
-
-  manager.update.matchGame({
-    id: 2,
-    opponent1: {
-      score: 3,
-      result: "win",
-    },
-    opponent2: {
-      score: 1,
-      result: "loss",
       // @ts-expect-error incomplete types
       info: { replacements: [1, 2] }, // Extra field.
     },
@@ -182,7 +170,7 @@ ExtraFields("Extra fields when updating a match game", () => {
 
   assert.equal(storage.select<any>("match_game", 0).weather, "rainy");
   assert.equal(storage.select<any>("match_game", 1).opponent1.foo, 42);
-  assert.equal(storage.select<any>("match_game", 2).opponent2.info, {
+  assert.equal(storage.select<any>("match_game", 1).opponent2.info, {
     replacements: [1, 2],
   });
 });
