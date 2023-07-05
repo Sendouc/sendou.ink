@@ -1,11 +1,11 @@
 .front__nav-items-container {
-  display: grid;
-  max-width: 340px;
+  display: flex;
   margin: 0 auto;
   column-gap: var(--s-4);
   font-size: 13px;
-  grid-template-columns: repeat(3, 100px);
+  flex-wrap: wrap;
   row-gap: var(--s-4);
+  justify-content: center;
 }
 
 .front__nav-item {
@@ -16,6 +16,7 @@
   font-weight: bold;
   gap: var(--s-1);
   text-align: center;
+  width: 100px;
 }
 
 .front__log-in-button {
