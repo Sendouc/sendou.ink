@@ -1,7 +1,6 @@
 import { Main } from "~/components/Main";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { ART_PAGE, navIconUrl, userArtPage } from "~/utils/urls";
-import type { ShowcaseArt } from "../queries/showcaseArts.server";
 import { showcaseArts } from "../queries/showcaseArts.server";
 import { Link, useLoaderData } from "@remix-run/react";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
@@ -17,6 +16,7 @@ import type {
   V2_MetaFunction,
 } from "@remix-run/node";
 import { i18next } from "~/modules/i18n";
+import type { ListedArt } from "../art-types";
 
 export const handle: SendouRouteHandle = {
   breadcrumb: () => ({
@@ -49,7 +49,7 @@ export default function ArtPage() {
 
   const arts = !showOpenCommissions
     ? data.arts
-    : data.arts.filter((art) => art.commissionsOpen);
+    : data.arts.filter((art) => art.author.commissionsOpen);
 
   return (
     <Main className="stack lg">
@@ -70,7 +70,7 @@ export default function ArtPage() {
 
 // xxx: to separate file
 // xxx: add pagination
-function ArtGrid({ arts }: { arts: ShowcaseArt[] }) {
+function ArtGrid({ arts }: { arts: ListedArt[] }) {
   const isMounted = useIsMounted();
 
   if (!isMounted) return null;
@@ -80,11 +80,11 @@ function ArtGrid({ arts }: { arts: ShowcaseArt[] }) {
       <Masonry gutter="1rem">
         {arts.map((art) => {
           return (
-            <Link key={art.id} to={userArtPage(art)}>
+            <Link key={art.id} to={userArtPage(art.author)}>
               <img alt="" src={art.url} loading="lazy" />
               <div className="stack sm horizontal text-xs items-center mt-1">
-                <Avatar user={art} size="xxs" />
-                {discordFullName(art)}
+                <Avatar user={art.author} size="xxs" />
+                {discordFullName(art.author)}
               </div>
             </Link>
           );

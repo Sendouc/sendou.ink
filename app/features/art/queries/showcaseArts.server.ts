@@ -1,5 +1,5 @@
 import { sql } from "~/db/sql";
-import type { Art, User, UserSubmittedImage } from "~/db/types";
+import type { ListedArt } from "../art-types";
 
 const stm = sql.prepare(/* sql */ `
   select
@@ -19,16 +19,16 @@ const stm = sql.prepare(/* sql */ `
   order by random()
 `);
 
-export interface ShowcaseArt {
-  id: Art["id"];
-  discordId: User["discordId"];
-  discordName: User["discordName"];
-  discordDiscriminator: User["discordDiscriminator"];
-  discordAvatar: User["discordAvatar"];
-  commissionsOpen: User["commissionsOpen"];
-  url: UserSubmittedImage["url"];
-}
-
-export function showcaseArts(): ShowcaseArt[] {
-  return stm.all() as any;
+export function showcaseArts(): ListedArt[] {
+  return stm.all().map((a: any) => ({
+    id: a.id,
+    url: a.url,
+    author: {
+      commissionsOpen: a.commissionsOpen,
+      discordAvatar: a.discordAvatar,
+      discordDiscriminator: a.discordDiscriminator,
+      discordId: a.discordId,
+      discordName: a.discordName,
+    },
+  }));
 }
