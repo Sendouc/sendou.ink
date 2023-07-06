@@ -53,6 +53,22 @@ export function ArtGrid({
 
             if (!art.author) return img;
 
+            // whole thing is not a link so we can preview the image
+            if (enablePreview) {
+              return (
+                <div key={art.id}>
+                  {img}
+                  <Link
+                    to={userArtPage(art.author)}
+                    className="stack sm horizontal text-xs items-center mt-1"
+                  >
+                    <Avatar user={art.author} size="xxs" />
+                    {discordFullName(art.author)}
+                  </Link>
+                </div>
+              );
+            }
+
             return (
               <Link key={art.id} to={userArtPage(art.author)}>
                 {img}
