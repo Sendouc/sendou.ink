@@ -12,6 +12,7 @@ import { z } from "zod";
 import { Main } from "~/components/Main";
 import { SubNav, SubNavLink } from "~/components/SubNav";
 import { db } from "~/db";
+import { countArtByUserId } from "~/features/art";
 import { userTopPlacements } from "~/features/top-search";
 import { findVods } from "~/features/vods";
 import { useTranslation } from "~/hooks/useTranslation";
@@ -30,6 +31,7 @@ import {
   userResultsPage,
   userVodsPage,
   USER_SEARCH_PAGE,
+  userArtPage,
 } from "~/utils/urls";
 
 export const links: LinksFunction = () => {
@@ -108,6 +110,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
       loggedInUserId: loggedInUser?.id,
     }),
     vods: findVods({ userId: user.id }),
+    artCount: countArtByUserId(user.id),
     playerId,
     topPlacements,
   });
@@ -148,6 +151,11 @@ export default function UserPageLayout() {
         {data.vods.length > 0 && (
           <SubNavLink to={userVodsPage(data)}>
             {t("pages.vods")} ({data.vods.length})
+          </SubNavLink>
+        )}
+        {data.artCount > 0 && (
+          <SubNavLink to={userArtPage(data)}>
+            {t("pages.art")} ({data.artCount})
           </SubNavLink>
         )}
       </SubNav>
