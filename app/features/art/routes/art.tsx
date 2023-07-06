@@ -1,22 +1,19 @@
-import { Main } from "~/components/Main";
-import type { SendouRouteHandle } from "~/utils/remix";
-import { ART_PAGE, navIconUrl, userArtPage } from "~/utils/urls";
-import { showcaseArts } from "../queries/showcaseArts.server";
-import { Link, useLoaderData } from "@remix-run/react";
-import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
-import { Avatar } from "~/components/Avatar";
-import { discordFullName, makeTitle } from "~/utils/strings";
-import * as React from "react";
-import { Toggle } from "~/components/Toggle";
-import { Label } from "~/components/Label";
-import { useIsMounted } from "~/hooks/useIsMounted";
 import type {
   LoaderArgs,
   SerializeFrom,
   V2_MetaFunction,
 } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
+import * as React from "react";
+import { Label } from "~/components/Label";
+import { Main } from "~/components/Main";
+import { Toggle } from "~/components/Toggle";
 import { i18next } from "~/modules/i18n";
-import type { ListedArt } from "../art-types";
+import type { SendouRouteHandle } from "~/utils/remix";
+import { makeTitle } from "~/utils/strings";
+import { ART_PAGE, navIconUrl } from "~/utils/urls";
+import { ArtGrid } from "../components/ArtGrid";
+import { showcaseArts } from "../queries/showcaseArts.server";
 
 export const handle: SendouRouteHandle = {
   breadcrumb: () => ({
@@ -65,31 +62,5 @@ export default function ArtPage() {
       </div>
       <ArtGrid arts={arts} />
     </Main>
-  );
-}
-
-// xxx: to separate file
-// xxx: add pagination
-function ArtGrid({ arts }: { arts: ListedArt[] }) {
-  const isMounted = useIsMounted();
-
-  if (!isMounted) return null;
-
-  return (
-    <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}>
-      <Masonry gutter="1rem">
-        {arts.map((art) => {
-          return (
-            <Link key={art.id} to={userArtPage(art.author)}>
-              <img alt="" src={art.url} loading="lazy" />
-              <div className="stack sm horizontal text-xs items-center mt-1">
-                <Avatar user={art.author} size="xxs" />
-                {discordFullName(art.author)}
-              </div>
-            </Link>
-          );
-        })}
-      </Masonry>
-    </ResponsiveMasonry>
   );
 }
