@@ -1,6 +1,6 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { userParamsSchema } from "../u.$identifier";
-import { notFoundIfFalsy } from "~/utils/remix";
+import { notFoundIfFalsy, validate } from "~/utils/remix";
 import { db } from "~/db";
 import {
   artsByUserId,
@@ -10,8 +10,16 @@ import {
 } from "~/features/art";
 import { useLoaderData } from "@remix-run/react";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
+import { requireUser } from "~/modules/auth";
+import { temporaryCanAccessArtCheck } from "~/features/art";
 
-export const loader = ({ params }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderArgs) => {
+  const loggedInUser = await requireUser(request);
+  validate(
+    temporaryCanAccessArtCheck(loggedInUser),
+    "Insufficient permissions"
+  );
+
   const { identifier } = userParamsSchema.parse(params);
   const user = notFoundIfFalsy(db.users.findByIdentifier(identifier));
 
@@ -20,6 +28,7 @@ export const loader = ({ params }: LoaderArgs) => {
   };
 };
 
+// xxx: opening preview scrolls page to top
 export default function UserArtPage() {
   const data = useLoaderData<typeof loader>();
   const [type, setType] = useSearchParamState<ArtSouce>({

@@ -1372,14 +1372,12 @@ const addArtStm = sql.prepare(/* sql */ `
     "imgId",
     "authorId",
     "isShowcase",
-    "title",
     "description"
   )
   values (
     @imgId,
     @authorId,
     @isShowcase,
-    @title,
     @description
   ) returning *
 `);
@@ -1443,8 +1441,6 @@ function arts() {
 
   for (const userId of artUsers) {
     for (let i = 0; i < faker.helpers.arrayElement([1, 2, 3, 3, 3, 4]); i++) {
-      const title = Math.random() > 0.5 ? faker.lorem.words(3) : null;
-
       const getUrl = () => {
         if (urls.length === 0) {
           urls.push(...artImgUrls);
@@ -1463,9 +1459,7 @@ function arts() {
         ).id,
         authorId: userId,
         isShowcase: i === 0 ? 1 : 0,
-        title,
-        description:
-          title && Math.random() > 0.75 ? faker.lorem.paragraph() : null,
+        description: Math.random() > 0.5 ? faker.lorem.paragraph() : null,
       }) as Art;
 
       if (i === 1) {

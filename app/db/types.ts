@@ -33,6 +33,7 @@ export interface User {
   /** Used to overwrite normal patron giving process and force give the patron status till this date */
   patronTill: number | null;
   isVideoAdder: number;
+  isArtist: number;
   favoriteBadgeId: number | null;
   commissionsOpen: number;
   commissionText: string | null;
@@ -478,7 +479,6 @@ export interface Art {
   authorId: number;
   // xxx: make first art always showcase
   isShowcase: number;
-  title: string | null;
   description: string | null;
   createdAt: number;
 }

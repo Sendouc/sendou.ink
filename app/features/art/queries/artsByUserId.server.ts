@@ -4,7 +4,6 @@ import type { ListedArt } from "../art-types";
 const stm = sql.prepare(/* sql */ `
   select
     "Art"."id",
-    "Art"."title",
     "Art"."description",
     "Art"."createdAt",
     "User"."discordId",
@@ -24,7 +23,6 @@ const stm = sql.prepare(/* sql */ `
 
   select
     "Art"."id",
-    "Art"."title",
     "Art"."description",
     "Art"."createdAt",
     null, -- discordId
@@ -45,10 +43,7 @@ export function artsByUserId(userId: number): ListedArt[] {
   return stm.all({ userId }).map((a: any) => ({
     id: a.id,
     url: a.url,
-    info: {
-      title: a.title,
-      description: a.description,
-    },
+    description: a.description,
     author: a.discordId
       ? {
           commissionsOpen: a.commissionsOpen,

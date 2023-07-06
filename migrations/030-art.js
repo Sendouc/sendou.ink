@@ -2,6 +2,9 @@ module.exports.up = function (db) {
   db.prepare(
     /* sql */ `alter table "User" add "commissionsOpen" integer default 0`
   ).run();
+  db.prepare(
+    /* sql */ `alter table "User" add "isArtist" integer default 0`
+  ).run();
   db.prepare(/* sql */ `alter table "User" add "commissionText" text`).run();
 
   db.prepare(
@@ -11,7 +14,6 @@ module.exports.up = function (db) {
       "imgId" integer not null,
       "authorId" integer not null,
       "isShowcase" integer not null default 0,
-      "title" text,
       "description" text,
       "createdAt" integer default (strftime('%s', 'now')) not null,
       foreign key ("authorId") references "User"("id") on delete set null,
