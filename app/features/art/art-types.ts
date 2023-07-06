@@ -16,3 +16,6 @@ export interface ListedArt {
     commissionsOpen?: User["commissionsOpen"];
   };
 }
+
+export const ART_SOURCES = ["ALL", "MADE-BY", "MADE-OF"] as const;
+export type ArtSouce = (typeof ART_SOURCES)[number];

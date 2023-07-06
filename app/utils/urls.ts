@@ -22,6 +22,7 @@ import { type AuthErrorCode } from "~/modules/auth";
 import type { StageBackgroundStyle } from "~/features/map-planner";
 import type { ImageUploadType } from "~/features/img-upload";
 import { serializeBuild } from "~/features/build-analyzer";
+import type { ArtSouce } from "~/features/art";
 
 const staticAssetsUrl = ({
   folder,
@@ -125,7 +126,8 @@ export const newVodPage = (vodToEditId?: number) =>
   `${VODS_PAGE}/new${vodToEditId ? `?vod=${vodToEditId}` : ""}`;
 export const userResultsEditHighlightsPage = (user: UserLinkArgs) =>
   `${userResultsPage(user)}/highlights`;
-export const userArtPage = (user: UserLinkArgs) => `${userPage(user)}/art`;
+export const userArtPage = (user: UserLinkArgs, source?: ArtSouce) =>
+  `${userPage(user)}/art${source ? `?source=${source}` : ""}`;
 export const userNewBuildPage = (
   user: UserLinkArgs,
   params?: { weapon: MainWeaponId; build: BuildAbilitiesTupleWithUnknown }

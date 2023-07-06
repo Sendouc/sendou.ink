@@ -59,7 +59,7 @@ export function ArtGrid({
                 <div key={art.id}>
                   {img}
                   <Link
-                    to={userArtPage(art.author)}
+                    to={userArtPage(art.author, "MADE-BY")}
                     className="stack sm horizontal text-xs items-center mt-1"
                   >
                     <Avatar user={art.author} size="xxs" />
@@ -70,7 +70,7 @@ export function ArtGrid({
             }
 
             return (
-              <Link key={art.id} to={userArtPage(art.author)}>
+              <Link key={art.id} to={userArtPage(art.author, "MADE-BY")}>
                 {img}
                 <div className="stack sm horizontal text-xs items-center mt-1">
                   <Avatar user={art.author} size="xxs" />

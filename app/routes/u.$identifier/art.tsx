@@ -2,9 +2,14 @@ import type { LoaderArgs } from "@remix-run/node";
 import { userParamsSchema } from "../u.$identifier";
 import { notFoundIfFalsy } from "~/utils/remix";
 import { db } from "~/db";
-import { artsByUserId, ArtGrid } from "~/features/art";
+import {
+  artsByUserId,
+  ArtGrid,
+  type ArtSouce,
+  ART_SOURCES,
+} from "~/features/art";
 import { useLoaderData } from "@remix-run/react";
-import * as React from "react";
+import { useSearchParamState } from "~/hooks/useSearchParamState";
 
 export const loader = ({ params }: LoaderArgs) => {
   const { identifier } = userParamsSchema.parse(params);
@@ -17,14 +22,18 @@ export const loader = ({ params }: LoaderArgs) => {
 
 export default function UserArtPage() {
   const data = useLoaderData<typeof loader>();
-  const [type, setType] = React.useState<"ALL" | "MADE-BY" | "MADE-OF">("ALL");
+  const [type, setType] = useSearchParamState<ArtSouce>({
+    defaultValue: "ALL",
+    name: "source",
+    revive: (value) => ART_SOURCES.find((s) => s === value),
+  });
 
   const hasBothArtMadeByAndMadeOf =
     data.arts.some((a) => a.author) && data.arts.some((a) => !a.author);
 
   const arts =
     type === "ALL"
-      ? data.arts
+      ? data.arts || !hasBothArtMadeByAndMadeOf
       : type === "MADE-BY"
       ? data.arts.filter((a) => !a.author)
       : data.arts.filter((a) => a.author);
