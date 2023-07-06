@@ -34,6 +34,8 @@ export interface User {
   patronTill: number | null;
   isVideoAdder: number;
   favoriteBadgeId: number | null;
+  commissionsOpen: number;
+  commissionText: string | null;
 }
 
 /** User table after joined with PlusTier table */
@@ -468,4 +470,27 @@ export interface SplatoonPlayer {
   id: number;
   userId: number;
   splId: string;
+}
+
+export interface Art {
+  id: number;
+  imgId: number;
+  authorId: number;
+  // xxx: make first art always showcase
+  isShowcase: number;
+  title: string | null;
+  description: string | null;
+  createdAt: number;
+}
+
+// xxx: inclure or not?
+// export interface ArtMetadata {
+//   artId: number;
+//   type: "GEAR_HEAD" | "GEAR_CLOTHES" | "GEAR_SHOES" | "WEAPON";
+//   splId: number;
+// }
+
+export interface ArtUserMetadata {
+  artId: number;
+  userId: number;
 }
