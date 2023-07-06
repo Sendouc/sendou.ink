@@ -1131,6 +1131,23 @@ dialog::backdrop {
   fill: #f00;
 }
 
+.art__dialog__image-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background-color: transparent;
+  padding: 0;
+}
+
+.art__dialog__image-container img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
 #nprogress .bar {
   margin-top: 3rem !important;
   background: var(--theme) !important;

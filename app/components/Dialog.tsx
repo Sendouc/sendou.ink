@@ -6,17 +6,20 @@ export function Dialog({
   isOpen,
   close,
   className,
+  closeOnAnyClick,
 }: {
   children: React.ReactNode;
   isOpen: boolean;
   close?: () => void;
   className?: string;
+  closeOnAnyClick?: boolean;
 }) {
   const ref = useDOMSync(isOpen);
 
   // https://stackoverflow.com/a/26984690
   const closeOnOutsideClick = close
     ? (event: React.MouseEvent<HTMLDialogElement, MouseEvent>) => {
+        if (closeOnAnyClick) return close();
         const rect: DOMRect = ref.current.getBoundingClientRect();
         const isInDialog =
           rect.top <= event.clientY &&

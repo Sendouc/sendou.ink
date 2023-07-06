@@ -68,7 +68,7 @@ export default function UserArtPage() {
           </div>
         </div>
       ) : null}
-      <ArtGrid arts={arts} />
+      <ArtGrid arts={arts} enablePreview />
     </div>
   );
 }
