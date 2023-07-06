@@ -16,9 +16,13 @@ export function ArtGrid({ arts }: { arts: ListedArt[] }) {
     <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}>
       <Masonry gutter="1rem">
         {arts.map((art) => {
+          const img = <img key={art.id} alt="" src={art.url} loading="lazy" />;
+
+          if (!art.author) return img;
+
           return (
             <Link key={art.id} to={userArtPage(art.author)}>
-              <img alt="" src={art.url} loading="lazy" />
+              {img}
               <div className="stack sm horizontal text-xs items-center mt-1">
                 <Avatar user={art.author} size="xxs" />
                 {discordFullName(art.author)}

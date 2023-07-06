@@ -46,7 +46,7 @@ export default function ArtPage() {
 
   const arts = !showOpenCommissions
     ? data.arts
-    : data.arts.filter((art) => art.author.commissionsOpen);
+    : data.arts.filter((art) => art.author?.commissionsOpen);
 
   return (
     <Main className="stack lg">
