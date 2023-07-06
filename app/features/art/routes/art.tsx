@@ -4,14 +4,19 @@ import { ART_PAGE, navIconUrl, userArtPage } from "~/utils/urls";
 import type { ShowcaseArt } from "../queries/showcaseArts.server";
 import { showcaseArts } from "../queries/showcaseArts.server";
 import { Link, useLoaderData } from "@remix-run/react";
-import type { LinksFunction } from "@remix-run/node";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { Avatar } from "~/components/Avatar";
-import { discordFullName } from "~/utils/strings";
+import { discordFullName, makeTitle } from "~/utils/strings";
 import * as React from "react";
 import { Toggle } from "~/components/Toggle";
 import { Label } from "~/components/Label";
 import { useIsMounted } from "~/hooks/useIsMounted";
+import type {
+  LoaderArgs,
+  SerializeFrom,
+  V2_MetaFunction,
+} from "@remix-run/node";
+import { i18next } from "~/modules/i18n";
 
 export const handle: SendouRouteHandle = {
   breadcrumb: () => ({
@@ -21,9 +26,20 @@ export const handle: SendouRouteHandle = {
   }),
 };
 
-export const loader = () => {
+export const meta: V2_MetaFunction = (args) => {
+  const data = args.data as SerializeFrom<typeof loader> | null;
+
+  if (!data) return [];
+
+  return [{ title: data.title }];
+};
+
+export const loader = async ({ request }: LoaderArgs) => {
+  const t = await i18next.getFixedT(request);
+
   return {
     arts: showcaseArts(),
+    title: makeTitle(t("pages.art")),
   };
 };
 
