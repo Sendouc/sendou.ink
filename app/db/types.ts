@@ -483,7 +483,7 @@ export interface Art {
   createdAt: number;
 }
 
-// xxx: inclure or not?
+// xxx: include or not?
 // export interface ArtMetadata {
 //   artId: number;
 //   type: "GEAR_HEAD" | "GEAR_CLOTHES" | "GEAR_SHOES" | "WEAPON";

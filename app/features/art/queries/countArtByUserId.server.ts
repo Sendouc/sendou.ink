@@ -2,10 +2,11 @@ import { sql } from "~/db/sql";
 
 const stm = sql.prepare(/* sql */ `
   select
-    count(*) as "count"
+    count(distinct "Art"."id") as "count"
   from
     "Art"
   left join "ArtUserMetadata" on "ArtUserMetadata"."artId" = "Art"."id"
+  inner join "UserSubmittedImage" on "UserSubmittedImage"."id" = "Art"."imgId"
   where "Art"."authorId" = @userId
     or "ArtUserMetadata"."userId" = @userId
 `);
