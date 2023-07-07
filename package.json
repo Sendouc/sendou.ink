@@ -106,7 +106,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "ley": "^0.8.1",
     "prettier": "2.8.8",
-    "stylelint": "^15.9.0",
+    "stylelint": "^15.10.1",
     "stylelint-config-standard": "^33.0.0",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
