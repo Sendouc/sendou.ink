@@ -483,13 +483,6 @@ export interface Art {
   createdAt: number;
 }
 
-// xxx: include or not?
-// export interface ArtMetadata {
-//   artId: number;
-//   type: "GEAR_HEAD" | "GEAR_CLOTHES" | "GEAR_SHOES" | "WEAPON";
-//   splId: number;
-// }
-
 export interface ArtUserMetadata {
   artId: number;
   userId: number;

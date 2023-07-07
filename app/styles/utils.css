@@ -178,6 +178,10 @@
   margin-block-end: var(--s-1);
 }
 
+.mb-2 {
+  margin-block-end: var(--s-2);
+}
+
 .mb-4 {
   margin-block-end: var(--s-4);
 }
@@ -204,6 +208,10 @@
 
 .my-2 {
   margin-block: var(--s-2);
+}
+
+.my-3 {
+  margin-block: var(--s-3);
 }
 
 .my-4 {
