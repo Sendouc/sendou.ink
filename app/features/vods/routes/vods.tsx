@@ -68,6 +68,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   };
 };
 
+// xxx: make add vods button appear but prompt to get access like art
 export default function VodsSearchPage() {
   const { t } = useTranslation(["vods", "common"]);
   const data = useLoaderData<typeof loader>();

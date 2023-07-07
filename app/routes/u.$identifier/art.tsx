@@ -11,9 +11,12 @@ import {
 } from "~/features/art";
 import { useLoaderData, useMatches } from "@remix-run/react";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
-import { requireUser } from "~/modules/auth";
+import { requireUser, useUser } from "~/modules/auth";
 import { temporaryCanAccessArtCheck } from "~/features/art";
 import invariant from "tiny-invariant";
+import { LinkButton } from "~/components/Button";
+import { NEW_ART_PAGE } from "~/utils/urls";
+import { Popover } from "~/components/Popover";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const loggedInUser = await requireUser(request);
@@ -34,6 +37,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 // xxx: show unvalidated images with a different style as well
 // xxx: allow setting showcase image
 export default function UserArtPage() {
+  const user = useUser();
   const data = useLoaderData<typeof loader>();
   const [type, setType] = useSearchParamState<ArtSouce>({
     defaultValue: "ALL",
@@ -56,6 +60,9 @@ export default function UserArtPage() {
 
   return (
     <div className="stack md">
+      {userPageData.id === user?.id ? (
+        <AddArtButton isArtist={Boolean(user.isArtist)} />
+      ) : null}
       {hasBothArtMadeByAndMadeOf ? (
         <div className="stack md horizontal">
           <div className="stack xs horizontal items-center">
@@ -104,6 +111,30 @@ export default function UserArtPage() {
       ) : null}
 
       <ArtGrid arts={arts} enablePreview />
+    </div>
+  );
+}
+
+function AddArtButton({ isArtist }: { isArtist?: boolean }) {
+  if (!isArtist) {
+    return (
+      <div className="stack items-end">
+        <Popover
+          buttonChildren={<>Add art</>}
+          triggerClassName="tiny"
+          containerClassName="text-center"
+        >
+          Please send a message to Sendou on Discord to gain permissions
+        </Popover>
+      </div>
+    );
+  }
+
+  return (
+    <div className="stack items-end">
+      <LinkButton to={NEW_ART_PAGE} size="tiny">
+        Add art
+      </LinkButton>
     </div>
   );
 }
