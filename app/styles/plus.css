@@ -48,6 +48,10 @@
   gap: var(--s-2);
 }
 
+.plus__comment {
+  white-space: pre-wrap;
+}
+
 .plus__comment-button {
   max-width: 12rem;
   margin-inline-start: auto;
