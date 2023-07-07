@@ -36,6 +36,9 @@ export function ArtGrid({
             loading="lazy"
             className="art__dialog__img"
           />
+          {bigArt.description ? (
+            <div className="art__dialog__description">{bigArt.description}</div>
+          ) : null}
         </Dialog>
       ) : null}
       <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}>

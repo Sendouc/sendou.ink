@@ -1133,13 +1133,19 @@ dialog::backdrop {
 
 .art__dialog__image-container {
   width: 100vw;
-  height: 100vh;
+  height: 90vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
   background-color: transparent;
   padding: 0;
+  overflow: visible;
+  flex-direction: column;
+}
+
+.art__dialog__description {
+  font-size: var(--fonts-sm);
+  text-align: center;
 }
 
 .art__dialog__image-container img {
