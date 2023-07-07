@@ -131,6 +131,11 @@ const userEditActionSchema = z
       id.nullable()
     ),
     showDiscordUniqueName: z.preprocess(checkboxValueToDbBoolean, dbBoolean),
+    commissionsOpen: z.preprocess(checkboxValueToDbBoolean, dbBoolean),
+    commissionText: z.preprocess(
+      falsyToNull,
+      z.string().max(USER.COMMISSION_TEXT_MAX_LENGTH).nullable()
+    ),
   })
   .refine(
     (val) => {
@@ -239,6 +244,17 @@ export default function UserEditPage() {
           <ShowUniqueDiscordNameToggle parentRouteData={parentRouteData} />
         ) : (
           <input type="hidden" name="showDiscordUniqueName" value="on" />
+        )}
+        {user?.isArtist ? (
+          <>
+            <CommissionsOpenToggle parentRouteData={parentRouteData} />
+            <CommissionTextArea initialValue={parentRouteData.commissionText} />
+          </>
+        ) : (
+          <>
+            <input type="hidden" name="commissionsOpen" value="off" />
+            <input type="hidden" name="commissionText" value="" />
+          </>
         )}
         <FormMessage type="info">
           <Trans i18nKey={"user:discordExplanation"} t={t}>
@@ -567,6 +583,61 @@ function ShowUniqueDiscordNameToggle({
         {t("user:forms.showDiscordUniqueName.info", {
           discordUniqueName: data.discordUniqueName,
         })}
+      </FormMessage>
+    </div>
+  );
+}
+
+function CommissionsOpenToggle({
+  parentRouteData,
+}: {
+  parentRouteData: UserPageLoaderData;
+}) {
+  const { t } = useTranslation(["user"]);
+  const [checked, setChecked] = React.useState(
+    Boolean(parentRouteData.commissionsOpen)
+  );
+
+  return (
+    <div>
+      <label htmlFor="commissionsOpen">{t("user:forms.commissionsOpen")}</label>
+      <Toggle
+        checked={checked}
+        setChecked={setChecked}
+        name="commissionsOpen"
+      />
+    </div>
+  );
+}
+
+function CommissionTextArea({
+  initialValue,
+}: {
+  initialValue: User["commissionText"];
+}) {
+  const { t } = useTranslation(["user"]);
+  const [value, setValue] = React.useState(initialValue ?? "");
+
+  return (
+    <div className="u-edit__bio-container">
+      <Label
+        htmlFor="commissionText"
+        valueLimits={{
+          current: value.length,
+          max: USER.COMMISSION_TEXT_MAX_LENGTH,
+        }}
+      >
+        {t("user:forms.commissionText")}
+      </Label>
+      <textarea
+        id="commissionText"
+        name="commissionText"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        maxLength={USER.COMMISSION_TEXT_MAX_LENGTH}
+      />
+      <FormMessage type="info">
+        {t("user:forms.commissionText.info")}
       </FormMessage>
     </div>
   );

@@ -1,4 +1,5 @@
 import type { LoaderArgs } from "@remix-run/node";
+import type { UserPageLoaderData } from "../u.$identifier";
 import { userParamsSchema } from "../u.$identifier";
 import { notFoundIfFalsy, validate } from "~/utils/remix";
 import { db } from "~/db";
@@ -8,10 +9,11 @@ import {
   type ArtSouce,
   ART_SOURCES,
 } from "~/features/art";
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData, useMatches } from "@remix-run/react";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
 import { requireUser } from "~/modules/auth";
 import { temporaryCanAccessArtCheck } from "~/features/art";
+import invariant from "tiny-invariant";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const loggedInUser = await requireUser(request);
@@ -29,6 +31,8 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 };
 
 // xxx: opening preview scrolls page to top
+// xxx: show unvalidated images with a different style as well
+// xxx: allow setting showcase image
 export default function UserArtPage() {
   const data = useLoaderData<typeof loader>();
   const [type, setType] = useSearchParamState<ArtSouce>({
@@ -36,6 +40,9 @@ export default function UserArtPage() {
     name: "source",
     revive: (value) => ART_SOURCES.find((s) => s === value),
   });
+  const [, parentRoute] = useMatches();
+  invariant(parentRoute);
+  const userPageData = parentRoute.data as UserPageLoaderData;
 
   const hasBothArtMadeByAndMadeOf =
     data.arts.some((a) => a.author) && data.arts.some((a) => !a.author);
@@ -86,6 +93,16 @@ export default function UserArtPage() {
           </div>
         </div>
       ) : null}
+
+      {userPageData.commissionsOpen ? (
+        <div className="whitespace-pre-wrap">
+          <span className="art__comms-open-header">
+            Commissions are open {">>>"}
+          </span>{" "}
+          {userPageData.commissionText}
+        </div>
+      ) : null}
+
       <ArtGrid arts={arts} enablePreview />
     </div>
   );

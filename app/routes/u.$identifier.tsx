@@ -111,6 +111,8 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     }),
     vods: findVods({ userId: user.id }),
     artCount: countArtByUserId(user.id),
+    commissionsOpen: user.commissionsOpen,
+    commissionText: user.commissionText,
     playerId,
     topPlacements,
   });

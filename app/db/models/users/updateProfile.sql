@@ -9,6 +9,8 @@ set
   "inGameName" = @inGameName,
   "css" = @css,
   "favoriteBadgeId" = @favoriteBadgeId,
-  "showDiscordUniqueName" = @showDiscordUniqueName
+  "showDiscordUniqueName" = @showDiscordUniqueName,
+  "commissionsOpen" = @commissionsOpen,
+  "commissionText" = @commissionText
 where
   "id" = @id returning *

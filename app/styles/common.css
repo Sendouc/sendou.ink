@@ -1154,6 +1154,12 @@ dialog::backdrop {
   object-fit: contain;
 }
 
+.art__comms-open-header {
+  font-weight: var(--bold);
+  color: var(--theme);
+  font-size: var(--fonts-sm);
+}
+
 #nprogress .bar {
   margin-top: 3rem !important;
   background: var(--theme) !important;
