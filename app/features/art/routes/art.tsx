@@ -4,7 +4,6 @@ import type {
   V2_MetaFunction,
 } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import * as React from "react";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import { Toggle } from "~/components/Toggle";
@@ -16,6 +15,7 @@ import { ArtGrid } from "../components/ArtGrid";
 import { showcaseArts } from "../queries/showcaseArts.server";
 import { requireUser } from "~/modules/auth";
 import { temporaryCanAccessArtCheck } from "../art-utils";
+import { useSearchParamState } from "~/hooks/useSearchParamState";
 
 export const handle: SendouRouteHandle = {
   breadcrumb: () => ({
@@ -47,7 +47,11 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 export default function ArtPage() {
   const data = useLoaderData<typeof loader>();
-  const [showOpenCommissions, setShowOpenCommissions] = React.useState(false);
+  const [showOpenCommissions, setShowOpenCommissions] = useSearchParamState({
+    defaultValue: false,
+    name: "open",
+    revive: (value) => value === "true",
+  });
 
   const arts = !showOpenCommissions
     ? data.arts
