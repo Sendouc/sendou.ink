@@ -1160,6 +1160,18 @@ dialog::backdrop {
   font-size: var(--fonts-sm);
 }
 
+.pagination__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background-color: var(--theme-transparent);
+  transition: all 0.2s ease;
+}
+
+.pagination__dot__active {
+  background-color: var(--theme);
+}
+
 #nprogress .bar {
   margin-top: 3rem !important;
   background: var(--theme) !important;
