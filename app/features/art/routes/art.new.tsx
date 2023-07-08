@@ -126,8 +126,6 @@ export const loader = async ({ request }: LoaderArgs) => {
   return { art };
 };
 
-// xxx: delete image
-
 export default function NewArtPage() {
   const data = useLoaderData<typeof loader>();
   const [img, setImg] = React.useState<File | null>(null);

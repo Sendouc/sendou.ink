@@ -21,6 +21,8 @@ import clsx from "clsx";
 import { EditIcon } from "~/components/icons/Edit";
 import { useTranslation } from "~/hooks/useTranslation";
 import { previewUrl } from "../art-utils";
+import { TrashIcon } from "~/components/icons/Trash";
+import { FormWithConfirm } from "~/components/FormWithConfirm";
 
 // xxx: jump with edit icon, description when loads
 export function ArtGrid({
@@ -86,7 +88,7 @@ export function ArtGrid({
               return (
                 <div key={art.id}>
                   {img}
-                  <div className="stack horizontal justify-end mt-2">
+                  <div className="stack horizontal justify-between mt-2">
                     <LinkButton
                       to={newArtPage(art.id)}
                       size="tiny"
@@ -95,6 +97,16 @@ export function ArtGrid({
                     >
                       {t("common:actions.edit")}
                     </LinkButton>
+                    <FormWithConfirm
+                      dialogHeading="Are you sure you want to delete the art?"
+                      fields={[["id", art.id]]}
+                    >
+                      <Button
+                        icon={<TrashIcon />}
+                        variant="destructive"
+                        size="tiny"
+                      />
+                    </FormWithConfirm>
                   </div>
                 </div>
               );

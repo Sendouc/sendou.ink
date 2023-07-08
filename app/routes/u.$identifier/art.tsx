@@ -1,10 +1,11 @@
-import type { LoaderArgs } from "@remix-run/node";
+import type { ActionFunction, LoaderArgs } from "@remix-run/node";
 import type { UserPageLoaderData } from "../u.$identifier";
 import { userParamsSchema } from "../u.$identifier";
 import {
   type SendouRouteHandle,
   notFoundIfFalsy,
   validate,
+  parseRequestFormData,
 } from "~/utils/remix";
 import { db } from "~/db";
 import {
@@ -12,11 +13,16 @@ import {
   ArtGrid,
   type ArtSouce,
   ART_SOURCES,
+  findArtById,
 } from "~/features/art";
 import { useLoaderData, useMatches } from "@remix-run/react";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
 import { requireUser, useUser } from "~/modules/auth";
-import { temporaryCanAccessArtCheck } from "~/features/art";
+import {
+  temporaryCanAccessArtCheck,
+  deleteArt,
+  deleteArtSchema,
+} from "~/features/art";
 import invariant from "tiny-invariant";
 import { LinkButton } from "~/components/Button";
 import { Popover } from "~/components/Popover";
@@ -26,6 +32,24 @@ import { newArtPage } from "~/utils/urls";
 
 export const handle: SendouRouteHandle = {
   i18n: ["art"],
+};
+
+export const action: ActionFunction = async ({ request }) => {
+  const user = await requireUser(request);
+  const data = await parseRequestFormData({
+    request,
+    schema: deleteArtSchema,
+  });
+
+  // this actually doesn't delete the image itself from the static hosting
+  // but the idea is that storage is cheap anyway and if needed later
+  // then we can have a routine that checks all the images still current and nukes the rest
+  const artToDelete = findArtById(data.id);
+  validate(artToDelete?.authorId === user.id, "Insufficient permissions", 401);
+
+  deleteArt(data.id);
+
+  return null;
 };
 
 export const loader = async ({ params, request }: LoaderArgs) => {

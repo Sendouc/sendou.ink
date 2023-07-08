@@ -28,3 +28,7 @@ export const editArtSchema = z.object({
   linkedUsers,
   isShowcase: z.preprocess(checkboxValueToDbBoolean, dbBoolean),
 });
+
+export const deleteArtSchema = z.object({
+  id,
+});
