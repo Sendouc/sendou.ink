@@ -477,7 +477,6 @@ export interface Art {
   id: number;
   imgId: number;
   authorId: number;
-  // xxx: make first art always showcase
   isShowcase: number;
   description: string | null;
   createdAt: number;

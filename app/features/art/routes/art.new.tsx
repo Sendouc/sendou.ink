@@ -1,19 +1,72 @@
-import type { LoaderArgs } from "@remix-run/node";
+import type { ActionFunction, LoaderArgs } from "@remix-run/node";
+import {
+  unstable_composeUploadHandlers as composeUploadHandlers,
+  unstable_createMemoryUploadHandler as createMemoryUploadHandler,
+  unstable_parseMultipartFormData as parseMultipartFormData,
+} from "@remix-run/node";
+import { Form } from "@remix-run/react";
+import Compressor from "compressorjs";
+import clone from "just-clone";
+import { nanoid } from "nanoid";
+import * as React from "react";
+import { useFetcher } from "react-router-dom";
+import invariant from "tiny-invariant";
+import { Button } from "~/components/Button";
+import { UserCombobox } from "~/components/Combobox";
 import { FormMessage } from "~/components/FormMessage";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
-import { requireUser } from "~/modules/auth";
-import { validate } from "~/utils/remix";
-import { ART } from "../art-constants";
-import * as React from "react";
 import { Toggle } from "~/components/Toggle";
-import { SubmitButton } from "~/components/SubmitButton";
-import { useTranslation } from "~/hooks/useTranslation";
-import { UserCombobox } from "~/components/Combobox";
-import { Button } from "~/components/Button";
 import { CrossIcon } from "~/components/icons/Cross";
-import { nanoid } from "nanoid";
-import clone from "just-clone";
+import { s3UploadHandler } from "~/features/img-upload";
+import { useTranslation } from "~/hooks/useTranslation";
+import { requireUser } from "~/modules/auth";
+import { dateToDatabaseTimestamp } from "~/utils/dates";
+import { validate, type SendouRouteHandle, parseFormData } from "~/utils/remix";
+import { ART_PAGE, navIconUrl } from "~/utils/urls";
+import { ART } from "../art-constants";
+import { newArtSchema } from "../art-schemas.server";
+import { addNewArt } from "../queries/addNewArt.server";
+
+export const handle: SendouRouteHandle = {
+  breadcrumb: () => ({
+    imgPath: navIconUrl("art"),
+    href: ART_PAGE,
+    type: "IMAGE",
+  }),
+};
+
+// xxx: edit
+export const action: ActionFunction = async ({ request }) => {
+  const user = await requireUser(request);
+
+  const uploadHandler = composeUploadHandlers(
+    // xxx: remove test
+    s3UploadHandler(`test-${nanoid()}-${Date.now()}`),
+    createMemoryUploadHandler()
+  );
+  const formData = await parseMultipartFormData(request, uploadHandler);
+  const imgSrc = formData.get("img") as string | null;
+  invariant(imgSrc);
+
+  const urlParts = imgSrc.split("/");
+  const fileName = urlParts[urlParts.length - 1];
+  invariant(fileName);
+
+  const data = parseFormData({
+    formData,
+    schema: newArtSchema,
+  });
+
+  addNewArt({
+    authorId: user.id,
+    description: data.description,
+    url: fileName,
+    validatedAt: user.patronTier ? dateToDatabaseTimestamp(new Date()) : null,
+  });
+
+  return null;
+};
 
 export const loader = async ({ request }: LoaderArgs) => {
   const user = await requireUser(request);
@@ -24,26 +77,115 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 // xxx: image
+// xxx: delete image
 
 export default function NewArtPage() {
+  const [img, setImg] = React.useState<File | null>(null);
+  const [smallImg, setSmallImg] = React.useState<File | null>(null);
   const { t } = useTranslation(["common"]);
+  const ref = React.useRef<HTMLFormElement>(null);
+  const fetcher = useFetcher();
 
+  // xxx:
   const isValidated = true;
+  const isEditing = false;
+
+  const handleSubmit = () => {
+    invariant(img && smallImg, "Image is required");
+    const formData = new FormData(ref.current!);
+
+    formData.append("img", img, img.name);
+    formData.append("smallImg", smallImg, smallImg.name);
+
+    fetcher.submit(formData, {
+      encType: "multipart/form-data",
+      method: "post",
+    });
+  };
 
   return (
-    <Main className="stack md" halfWidth>
-      <FormMessage type="info">
-        Few things to note: 1) Only upload Splatoon art 2) Only upload art you
-        made yourself 3) No NSFW art. There is a validation process before art
-        is shown to other users.
-      </FormMessage>
-      <Description />
-      <LinkedUsers />
-      {isValidated ? <ShowcaseToggle /> : null}
-      <div>
-        <SubmitButton>{t("common:actions.save")}</SubmitButton>
-      </div>
+    <Main halfWidth>
+      <Form ref={ref} className="stack md">
+        {isEditing ? (
+          <input type="hidden" name="_action" value="EDIT" />
+        ) : (
+          <input type="hidden" name="_action" value="NEW" />
+        )}
+        <FormMessage type="info">
+          Few things to note: 1) Only upload Splatoon art 2) Only upload art you
+          made yourself 3) No NSFW art. There is a validation process before art
+          is shown to other users.
+        </FormMessage>
+        <ImageUpload img={img} setImg={setImg} setSmallImg={setSmallImg} />
+        <Description />
+        <LinkedUsers />
+        {isValidated ? <ShowcaseToggle /> : null}
+        <div>
+          <Button onClick={handleSubmit} disabled={!img}>
+            {t("common:actions.save")}
+          </Button>
+        </div>
+      </Form>
     </Main>
+  );
+}
+
+// xxx: only show preview when editing
+function ImageUpload({
+  img,
+  setImg,
+  setSmallImg,
+}: {
+  img: File | null;
+  setImg: (file: File | null) => void;
+  setSmallImg: (file: File | null) => void;
+}) {
+  const { t } = useTranslation(["common"]);
+
+  return (
+    <div>
+      <label htmlFor="img-field">{t("common:upload.imageToUpload")}</label>
+      <input
+        id="img-field"
+        className="plain"
+        type="file"
+        name="img"
+        accept="image/png, image/jpeg, image/jpg, image/webp"
+        onChange={(e) => {
+          const uploadedFile = e.target.files?.[0];
+          if (!uploadedFile) {
+            setImg(null);
+            return;
+          }
+
+          new Compressor(uploadedFile, {
+            success(result) {
+              invariant(result instanceof Blob);
+              const file = new File([result], uploadedFile.name);
+
+              setImg(file);
+            },
+            error(err) {
+              console.error(err.message);
+            },
+          });
+
+          new Compressor(uploadedFile, {
+            maxWidth: ART.THUMBNAIL_WIDTH,
+            success(result) {
+              invariant(result instanceof Blob);
+              const file = new File([result], uploadedFile.name);
+
+              setSmallImg(file);
+            },
+            error(err) {
+              console.error(err.message);
+            },
+          });
+        }}
+      />
+      {img && <img src={URL.createObjectURL(img)} alt="" className="mt-4" />}
+    </div>
   );
 }
 

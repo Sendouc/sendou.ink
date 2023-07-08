@@ -3,6 +3,7 @@ import { tournamentTeamPage } from "~/utils/urls";
 import { TeamWithRoster } from "../components/TeamWithRoster";
 import type { TournamentLoaderData } from "./to.$id";
 
+// xxx: add SimplePagination
 export default function TournamentTeamsPage() {
   const data = useOutletContext<TournamentLoaderData>();
 

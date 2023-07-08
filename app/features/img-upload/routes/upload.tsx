@@ -49,7 +49,7 @@ export const action = async ({ request }: ActionArgs) => {
   );
 
   const uploadHandler: UploadHandler = composeUploadHandlers(
-    s3UploadHandler,
+    s3UploadHandler(),
     createMemoryUploadHandler()
   );
   const formData = await parseMultipartFormData(request, uploadHandler);
