@@ -234,6 +234,10 @@
   white-space: pre-wrap;
 }
 
+.whitespace-no-wrap {
+  white-space: nowrap;
+}
+
 .flex {
   display: flex;
 }

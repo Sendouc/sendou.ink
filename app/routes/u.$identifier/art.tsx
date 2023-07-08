@@ -21,7 +21,6 @@ import invariant from "tiny-invariant";
 import { LinkButton } from "~/components/Button";
 import { Popover } from "~/components/Popover";
 import { countUnvalidatedArt } from "~/features/img-upload";
-import { Alert } from "~/components/Alert";
 import { useTranslation } from "~/hooks/useTranslation";
 import { newArtPage } from "~/utils/urls";
 
@@ -72,9 +71,16 @@ export default function UserArtPage() {
 
   return (
     <div className="stack md">
-      {userPageData.id === user?.id ? (
-        <AddArtButton isArtist={Boolean(user.isArtist)} />
-      ) : null}
+      <div className="stack horizontal justify-between items-start text-xs text-lighter">
+        <div>
+          {data.unvalidatedArtCount > 0
+            ? t("art:pendingApproval", { count: data.unvalidatedArtCount })
+            : null}
+        </div>
+        {userPageData.id === user?.id ? (
+          <AddArtButton isArtist={Boolean(user.isArtist)} />
+        ) : null}
+      </div>
 
       {hasBothArtMadeByAndMadeOf ? (
         <div className="stack md horizontal">
@@ -123,12 +129,6 @@ export default function UserArtPage() {
         </div>
       ) : null}
 
-      {data.unvalidatedArtCount > 0 ? (
-        <Alert>
-          {t("art:pendingApproval", { count: data.unvalidatedArtCount })}
-        </Alert>
-      ) : null}
-
       <ArtGrid
         arts={arts}
         enablePreview
@@ -141,23 +141,19 @@ export default function UserArtPage() {
 function AddArtButton({ isArtist }: { isArtist?: boolean }) {
   if (!isArtist) {
     return (
-      <div className="stack items-end">
-        <Popover
-          buttonChildren={<>Add art</>}
-          triggerClassName="tiny"
-          containerClassName="text-center"
-        >
-          Please send a message to Sendou on Discord to gain permissions
-        </Popover>
-      </div>
+      <Popover
+        buttonChildren={<>Add art</>}
+        triggerClassName="tiny"
+        containerClassName="text-center"
+      >
+        Please send a message to Sendou on Discord to gain permissions
+      </Popover>
     );
   }
 
   return (
-    <div className="stack items-end">
-      <LinkButton to={newArtPage()} size="tiny">
-        Add art
-      </LinkButton>
-    </div>
+    <LinkButton to={newArtPage()} size="tiny" className="whitespace-no-wrap">
+      Add art
+    </LinkButton>
   );
 }
