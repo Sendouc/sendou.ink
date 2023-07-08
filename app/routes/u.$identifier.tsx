@@ -157,7 +157,7 @@ export default function UserPageLayout() {
         )}
         {(isOwnPage || data.artCount > 0) &&
           temporaryCanAccessArtCheck(user) && (
-            <SubNavLink to={userArtPage(data)}>
+            <SubNavLink to={userArtPage(data)} end={false}>
               {t("pages.art")} ({data.artCount})
             </SubNavLink>
           )}
