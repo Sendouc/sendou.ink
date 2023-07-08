@@ -16,8 +16,8 @@ module.exports.up = function (db) {
       "isShowcase" integer not null default 0,
       "description" text,
       "createdAt" integer default (strftime('%s', 'now')) not null,
-      foreign key ("authorId") references "User"("id") on delete set null,
-      foreign key ("imgId") references "UnvalidatedUserSubmittedImage"("id") on delete cascade
+      foreign key ("authorId") references "User"("id") on delete restrict,
+      foreign key ("imgId") references "UnvalidatedUserSubmittedImage"("id") on delete restrict
     ) strict
   `
   ).run();
@@ -30,7 +30,7 @@ module.exports.up = function (db) {
     create table "ArtUserMetadata" (
       "artId" integer not null,
       "userId" integer not null,
-      foreign key ("artId") references "Art"("id") on delete set null,
+      foreign key ("artId") references "Art"("id") on delete cascade,
       foreign key ("userId") references "User"("id") on delete cascade
     ) strict
   `

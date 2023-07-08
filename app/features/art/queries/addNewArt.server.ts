@@ -32,12 +32,24 @@ const addArtStm = sql.prepare(/* sql */ `
           "authorId" = @authorId
       )
     )
+  returning *
+`);
+
+const addArtUserMetadataStm = sql.prepare(/* sql */ `
+  insert into "ArtUserMetadata"
+    ("artId", "userId")
+  values
+    (@artId, @userId)
 `);
 
 type AddNewArtArgs = Pick<Art, "authorId" | "description"> &
-  Pick<UserSubmittedImage, "url" | "validatedAt">;
+  Pick<UserSubmittedImage, "url" | "validatedAt"> & { linkedUsers: number[] };
 
 export const addNewArt = sql.transaction((args: AddNewArtArgs) => {
   const img = addImgStm.get(args) as UserSubmittedImage;
-  addArtStm.run({ ...args, imgId: img.id });
+  const art = addArtStm.get({ ...args, imgId: img.id }) as Art;
+
+  for (const userId of args.linkedUsers) {
+    addArtUserMetadataStm.run({ artId: art.id, userId });
+  }
 });

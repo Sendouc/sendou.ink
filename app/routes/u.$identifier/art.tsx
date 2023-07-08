@@ -1,7 +1,11 @@
 import type { LoaderArgs } from "@remix-run/node";
 import type { UserPageLoaderData } from "../u.$identifier";
 import { userParamsSchema } from "../u.$identifier";
-import { notFoundIfFalsy, validate } from "~/utils/remix";
+import {
+  type SendouRouteHandle,
+  notFoundIfFalsy,
+  validate,
+} from "~/utils/remix";
 import { db } from "~/db";
 import {
   artsByUserId,
@@ -17,6 +21,13 @@ import invariant from "tiny-invariant";
 import { LinkButton } from "~/components/Button";
 import { NEW_ART_PAGE } from "~/utils/urls";
 import { Popover } from "~/components/Popover";
+import { countUnvalidatedArt } from "~/features/img-upload";
+import { Alert } from "~/components/Alert";
+import { useTranslation } from "~/hooks/useTranslation";
+
+export const handle: SendouRouteHandle = {
+  i18n: ["art"],
+};
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const loggedInUser = await requireUser(request);
@@ -30,6 +41,8 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 
   return {
     arts: artsByUserId(user.id),
+    unvalidatedArtCount:
+      user.id === loggedInUser.id ? countUnvalidatedArt(user.id) : 0,
   };
 };
 
@@ -37,6 +50,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 // xxx: show unvalidated images with a different style as well
 // xxx: allow setting showcase image
 export default function UserArtPage() {
+  const { t } = useTranslation(["art"]);
   const user = useUser();
   const data = useLoaderData<typeof loader>();
   const [type, setType] = useSearchParamState<ArtSouce>({
@@ -52,8 +66,8 @@ export default function UserArtPage() {
     data.arts.some((a) => a.author) && data.arts.some((a) => !a.author);
 
   const arts =
-    type === "ALL"
-      ? data.arts || !hasBothArtMadeByAndMadeOf
+    type === "ALL" || !hasBothArtMadeByAndMadeOf
+      ? data.arts
       : type === "MADE-BY"
       ? data.arts.filter((a) => !a.author)
       : data.arts.filter((a) => a.author);
@@ -63,6 +77,7 @@ export default function UserArtPage() {
       {userPageData.id === user?.id ? (
         <AddArtButton isArtist={Boolean(user.isArtist)} />
       ) : null}
+
       {hasBothArtMadeByAndMadeOf ? (
         <div className="stack md horizontal">
           <div className="stack xs horizontal items-center">
@@ -108,6 +123,12 @@ export default function UserArtPage() {
           </span>{" "}
           {userPageData.commissionText}
         </div>
+      ) : null}
+
+      {data.unvalidatedArtCount > 0 ? (
+        <Alert>
+          {t("art:pendingApproval", { count: data.unvalidatedArtCount })}
+        </Alert>
       ) : null}
 
       <ArtGrid arts={arts} enablePreview />

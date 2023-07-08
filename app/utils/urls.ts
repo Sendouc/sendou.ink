@@ -38,6 +38,9 @@ export const SENDOU_INK_BASE_URL = "https://sendou.ink";
 const USER_SUBMITTED_IMAGE_ROOT = "https://sendou.nyc3.digitaloceanspaces.com";
 export const userSubmittedImage = (fileName: string) =>
   `${USER_SUBMITTED_IMAGE_ROOT}/${fileName}`;
+// images with https are not hosted on spaces, this is used for local development
+export const conditionalUserSubmittedImage = (fileName: string) =>
+  fileName.includes("https") ? fileName : userSubmittedImage(fileName);
 
 export const PLUS_SERVER_DISCORD_URL = "https://discord.gg/FW4dKrY";
 export const SENDOU_INK_DISCORD_URL = "https://discord.gg/sendou";

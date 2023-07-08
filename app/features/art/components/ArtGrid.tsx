@@ -3,7 +3,7 @@ import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { Avatar } from "~/components/Avatar";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { discordFullName } from "~/utils/strings";
-import { userArtPage } from "~/utils/urls";
+import { conditionalUserSubmittedImage, userArtPage } from "~/utils/urls";
 import type { ListedArt } from "../art-types";
 import { Dialog } from "~/components/Dialog";
 import * as React from "react";
@@ -38,6 +38,14 @@ export function ArtGrid({
 
   if (!isMounted) return null;
 
+  const previewUrl = (url: string) => {
+    // images with https are not hosted on spaces, this is used for local development
+    if (url.includes("https")) return url;
+
+    const parts = url.split(".");
+    return `${parts[0]}-small.${parts[1]}`;
+  };
+
   return (
     <>
       {bigArt ? (
@@ -49,7 +57,7 @@ export function ArtGrid({
         >
           <img
             alt=""
-            src={bigArt.url}
+            src={conditionalUserSubmittedImage(bigArt.url)}
             loading="lazy"
             className="art__dialog__img"
           />
@@ -65,7 +73,7 @@ export function ArtGrid({
               <img
                 key={art.id}
                 alt=""
-                src={art.url}
+                src={conditionalUserSubmittedImage(previewUrl(art.url))}
                 loading="lazy"
                 onClick={enablePreview ? () => setBigArt(art) : undefined}
               />

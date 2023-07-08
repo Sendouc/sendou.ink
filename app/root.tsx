@@ -248,6 +248,7 @@ export const namespaceJsonsToPreloadObj: Record<
   tournament: true,
   team: true,
   vods: true,
+  art: true,
 };
 const namespaceJsonsToPreload = Object.keys(namespaceJsonsToPreloadObj);
 

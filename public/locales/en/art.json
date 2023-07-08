@@ -1,0 +1,4 @@
+{
+  "pendingApproval_one": "You have {{count}} image pending moderator approval",
+  "pendingApproval_other": "You have {{count}} images pending moderator approval"
+}

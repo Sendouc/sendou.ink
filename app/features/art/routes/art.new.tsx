@@ -63,6 +63,7 @@ export const action: ActionFunction = async ({ request }) => {
     description: data.description,
     url: fileName,
     validatedAt: user.patronTier ? dateToDatabaseTimestamp(new Date()) : null,
+    linkedUsers: data.linkedUsers,
   });
 
   return null;
