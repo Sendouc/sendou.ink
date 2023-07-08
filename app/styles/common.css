@@ -658,7 +658,7 @@ dialog::backdrop {
   font-size: var(--fonts-sm);
   font-weight: var(--semi-bold);
   gap: var(--s-2);
-  line-height: 0.75;
+  line-height: 1.2;
   margin-inline: auto;
   padding-block: var(--s-1-5);
   padding-inline-end: var(--s-4);
@@ -1135,12 +1135,16 @@ dialog::backdrop {
   width: 100vw;
   height: 90vh;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   background-color: transparent;
   padding: 0;
   overflow: visible;
   flex-direction: column;
+}
+
+.art__dialog__image-container:focus-visible {
+  outline: none;
 }
 
 .art__dialog__description {

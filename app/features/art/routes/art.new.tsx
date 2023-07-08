@@ -3,8 +3,9 @@ import {
   unstable_composeUploadHandlers as composeUploadHandlers,
   unstable_createMemoryUploadHandler as createMemoryUploadHandler,
   unstable_parseMultipartFormData as parseMultipartFormData,
+  redirect,
 } from "@remix-run/node";
-import { Form } from "@remix-run/react";
+import { Form, useLoaderData } from "@remix-run/react";
 import Compressor from "compressorjs";
 import clone from "just-clone";
 import { nanoid } from "nanoid";
@@ -22,11 +23,23 @@ import { s3UploadHandler } from "~/features/img-upload";
 import { useTranslation } from "~/hooks/useTranslation";
 import { requireUser } from "~/modules/auth";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
-import { validate, type SendouRouteHandle, parseFormData } from "~/utils/remix";
-import { ART_PAGE, navIconUrl } from "~/utils/urls";
-import { ART } from "../art-constants";
-import { newArtSchema } from "../art-schemas.server";
-import { addNewArt } from "../queries/addNewArt.server";
+import {
+  validate,
+  type SendouRouteHandle,
+  parseFormData,
+  parseRequestFormData,
+} from "~/utils/remix";
+import {
+  ART_PAGE,
+  conditionalUserSubmittedImage,
+  navIconUrl,
+  userArtPage,
+} from "~/utils/urls";
+import { ART, NEW_ART_EXISTING_SEARCH_PARAM_KEY } from "../art-constants";
+import { editArtSchema, newArtSchema } from "../art-schemas.server";
+import { addNewArt, editArt } from "../queries/addNewArt.server";
+import { findArtById } from "../queries/findArtById.server";
+import { previewUrl } from "../art-utils";
 
 export const handle: SendouRouteHandle = {
   breadcrumb: () => ({
@@ -36,37 +49,64 @@ export const handle: SendouRouteHandle = {
   }),
 };
 
-// xxx: edit
 export const action: ActionFunction = async ({ request }) => {
   const user = await requireUser(request);
 
-  const uploadHandler = composeUploadHandlers(
-    // xxx: remove test
-    s3UploadHandler(`test-${nanoid()}-${Date.now()}`),
-    createMemoryUploadHandler()
-  );
-  const formData = await parseMultipartFormData(request, uploadHandler);
-  const imgSrc = formData.get("img") as string | null;
-  invariant(imgSrc);
+  const searchParams = new URL(request.url).searchParams;
+  const artIdRaw = searchParams.get(NEW_ART_EXISTING_SEARCH_PARAM_KEY);
 
-  const urlParts = imgSrc.split("/");
-  const fileName = urlParts[urlParts.length - 1];
-  invariant(fileName);
+  // updating logic
+  if (artIdRaw) {
+    const artId = Number(artIdRaw);
 
-  const data = parseFormData({
-    formData,
-    schema: newArtSchema,
-  });
+    const existingArt = findArtById(artId);
+    validate(
+      existingArt?.authorId === user.id,
+      "Insufficient permissions",
+      401
+    );
 
-  addNewArt({
-    authorId: user.id,
-    description: data.description,
-    url: fileName,
-    validatedAt: user.patronTier ? dateToDatabaseTimestamp(new Date()) : null,
-    linkedUsers: data.linkedUsers,
-  });
+    const data = await parseRequestFormData({
+      request,
+      schema: editArtSchema,
+    });
 
-  return null;
+    editArt({
+      authorId: user.id,
+      artId,
+      description: data.description,
+      isShowcase: data.isShowcase,
+      linkedUsers: data.linkedUsers,
+    });
+  } else {
+    const uploadHandler = composeUploadHandlers(
+      // xxx: remove test
+      s3UploadHandler(`test-${nanoid()}-${Date.now()}`),
+      createMemoryUploadHandler()
+    );
+    const formData = await parseMultipartFormData(request, uploadHandler);
+    const imgSrc = formData.get("img") as string | null;
+    invariant(imgSrc);
+
+    const urlParts = imgSrc.split("/");
+    const fileName = urlParts[urlParts.length - 1];
+    invariant(fileName);
+
+    const data = parseFormData({
+      formData,
+      schema: newArtSchema,
+    });
+
+    addNewArt({
+      authorId: user.id,
+      description: data.description,
+      url: fileName,
+      validatedAt: user.patronTier ? dateToDatabaseTimestamp(new Date()) : null,
+      linkedUsers: data.linkedUsers,
+    });
+  }
+
+  return redirect(userArtPage(user));
 };
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -74,29 +114,33 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   validate(user.isArtist, "No artist role", 401);
 
-  return null;
+  const artIdRaw = new URL(request.url).searchParams.get(
+    NEW_ART_EXISTING_SEARCH_PARAM_KEY
+  );
+  if (!artIdRaw) return null;
+  const artId = Number(artIdRaw);
+
+  const art = findArtById(artId);
+  if (!art || art.authorId !== user.id) return null;
+
+  return { art };
 };
 
-// xxx: image
 // xxx: delete image
 
 export default function NewArtPage() {
+  const data = useLoaderData<typeof loader>();
   const [img, setImg] = React.useState<File | null>(null);
   const [smallImg, setSmallImg] = React.useState<File | null>(null);
   const { t } = useTranslation(["common"]);
   const ref = React.useRef<HTMLFormElement>(null);
   const fetcher = useFetcher();
 
-  // xxx:
-  const isValidated = true;
-  const isEditing = false;
-
   const handleSubmit = () => {
-    invariant(img && smallImg, "Image is required");
     const formData = new FormData(ref.current!);
 
-    formData.append("img", img, img.name);
-    formData.append("smallImg", smallImg, smallImg.name);
+    if (img) formData.append("img", img, img.name);
+    if (smallImg) formData.append("smallImg", smallImg, smallImg.name);
 
     fetcher.submit(formData, {
       encType: "multipart/form-data",
@@ -107,11 +151,6 @@ export default function NewArtPage() {
   return (
     <Main halfWidth>
       <Form ref={ref} className="stack md">
-        {isEditing ? (
-          <input type="hidden" name="_action" value="EDIT" />
-        ) : (
-          <input type="hidden" name="_action" value="NEW" />
-        )}
         <FormMessage type="info">
           Few things to note: 1) Only upload Splatoon art 2) Only upload art you
           made yourself 3) No NSFW art. There is a validation process before art
@@ -120,9 +159,9 @@ export default function NewArtPage() {
         <ImageUpload img={img} setImg={setImg} setSmallImg={setSmallImg} />
         <Description />
         <LinkedUsers />
-        {isValidated ? <ShowcaseToggle /> : null}
+        {data?.art ? <ShowcaseToggle /> : null}
         <div>
-          <Button onClick={handleSubmit} disabled={!img}>
+          <Button onClick={handleSubmit} disabled={!img && !data?.art}>
             {t("common:actions.save")}
           </Button>
         </div>
@@ -131,7 +170,6 @@ export default function NewArtPage() {
   );
 }
 
-// xxx: only show preview when editing
 function ImageUpload({
   img,
   setImg,
@@ -141,7 +179,17 @@ function ImageUpload({
   setImg: (file: File | null) => void;
   setSmallImg: (file: File | null) => void;
 }) {
+  const data = useLoaderData<typeof loader>();
   const { t } = useTranslation(["common"]);
+
+  if (data?.art) {
+    return (
+      <img
+        src={conditionalUserSubmittedImage(previewUrl(data.art.url))}
+        alt=""
+      />
+    );
+  }
 
   return (
     <div>
@@ -191,7 +239,8 @@ function ImageUpload({
 }
 
 function Description() {
-  const [value, setValue] = React.useState("");
+  const data = useLoaderData<typeof loader>();
+  const [value, setValue] = React.useState(data?.art.description ?? "");
 
   return (
     <div>
@@ -213,9 +262,14 @@ function Description() {
 }
 
 function LinkedUsers() {
+  const data = useLoaderData<typeof loader>();
   const [users, setUsers] = React.useState<
     { inputId: string; userId?: number }[]
-  >([{ inputId: nanoid() }]);
+  >(
+    (data?.art.linkedUsers ?? []).length > 0
+      ? data!.art.linkedUsers.map((userId) => ({ userId, inputId: nanoid() }))
+      : [{ inputId: nanoid() }]
+  );
 
   return (
     <div>
@@ -227,7 +281,7 @@ function LinkedUsers() {
           users.filter((u) => u.userId).map((u) => u.userId)
         )}
       />
-      {users.map(({ inputId }, i) => {
+      {users.map(({ inputId, userId }, i) => {
         return (
           <div key={inputId} className="stack horizontal sm mb-2 items-center">
             <UserCombobox
@@ -239,6 +293,7 @@ function LinkedUsers() {
 
                 setUsers(newUsers);
               }}
+              initialUserId={userId}
             />
             {users.length > 1 || users[0].userId ? (
               <Button
@@ -274,12 +329,19 @@ function LinkedUsers() {
 }
 
 function ShowcaseToggle() {
-  const [checked, setChecked] = React.useState(false);
+  const data = useLoaderData<typeof loader>();
+  const isCurrentlyShowcase = Boolean(data?.art.isShowcase);
+  const [checked, setChecked] = React.useState(isCurrentlyShowcase);
 
   return (
     <div>
       <label htmlFor="isShowcase">Showcase</label>
-      <Toggle checked={checked} setChecked={setChecked} name="isShowcase" />
+      <Toggle
+        checked={checked}
+        setChecked={setChecked}
+        name="isShowcase"
+        disabled={isCurrentlyShowcase}
+      />
       <FormMessage type="info">
         Your showcase piece is shown on the common /art page. Only one piece can
         be your showcase at a time.

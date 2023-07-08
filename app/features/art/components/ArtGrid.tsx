@@ -3,24 +3,34 @@ import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { Avatar } from "~/components/Avatar";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { discordFullName } from "~/utils/strings";
-import { conditionalUserSubmittedImage, userArtPage } from "~/utils/urls";
+import {
+  conditionalUserSubmittedImage,
+  newArtPage,
+  userArtPage,
+} from "~/utils/urls";
 import type { ListedArt } from "../art-types";
 import { Dialog } from "~/components/Dialog";
 import * as React from "react";
 import { useSimplePagination } from "~/hooks/useSimplePagination";
 import { ART_PER_PAGE } from "../art-constants";
-import { Button } from "~/components/Button";
+import { Button, LinkButton } from "~/components/Button";
 import { ArrowRightIcon } from "~/components/icons/ArrowRight";
 import { ArrowLeftIcon } from "~/components/icons/ArrowLeft";
 import { nullFilledArray } from "~/utils/arrays";
 import clsx from "clsx";
+import { EditIcon } from "~/components/icons/Edit";
+import { useTranslation } from "~/hooks/useTranslation";
+import { previewUrl } from "../art-utils";
 
+// xxx: jump with edit icon, description when loads
 export function ArtGrid({
   arts,
   enablePreview = false,
+  canEdit = false,
 }: {
   arts: ListedArt[];
   enablePreview?: boolean;
+  canEdit?: boolean;
 }) {
   const {
     itemsToDisplay,
@@ -33,18 +43,11 @@ export function ArtGrid({
     items: arts,
     pageSize: ART_PER_PAGE,
   });
+  const { t } = useTranslation(["common"]);
   const [bigArt, setBigArt] = React.useState<ListedArt | null>(null);
   const isMounted = useIsMounted();
 
   if (!isMounted) return null;
-
-  const previewUrl = (url: string) => {
-    // images with https are not hosted on spaces, this is used for local development
-    if (url.includes("https")) return url;
-
-    const parts = url.split(".");
-    return `${parts[0]}-small.${parts[1]}`;
-  };
 
   return (
     <>
@@ -79,6 +82,23 @@ export function ArtGrid({
               />
             );
 
+            if (!art.author && canEdit) {
+              return (
+                <div key={art.id}>
+                  {img}
+                  <div className="stack horizontal justify-end mt-2">
+                    <LinkButton
+                      to={newArtPage(art.id)}
+                      size="tiny"
+                      variant="outlined"
+                      icon={<EditIcon />}
+                    >
+                      {t("common:actions.edit")}
+                    </LinkButton>
+                  </div>
+                </div>
+              );
+            }
             if (!art.author) return img;
 
             // whole thing is not a link so we can preview the image

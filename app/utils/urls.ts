@@ -6,6 +6,7 @@ import type {
   MapPoolMap,
   XRankPlacement,
   User,
+  Art,
 } from "~/db/types";
 import type { ModeShort, weaponCategories } from "~/modules/in-game-lists";
 import type {
@@ -23,6 +24,7 @@ import type { StageBackgroundStyle } from "~/features/map-planner";
 import type { ImageUploadType } from "~/features/img-upload";
 import { serializeBuild } from "~/features/build-analyzer";
 import type { ArtSouce } from "~/features/art";
+import { NEW_ART_EXISTING_SEARCH_PARAM_KEY } from "~/features/art";
 
 const staticAssetsUrl = ({
   folder,
@@ -90,7 +92,6 @@ export const VODS_PAGE = "/vods";
 export const LEADERBOARDS_PAGE = "/leaderboards";
 export const LINKS_PAGE = "/links";
 export const ART_PAGE = "/art";
-export const NEW_ART_PAGE = "/art/new";
 
 export const BLANK_IMAGE_URL = "/static-assets/img/blank.gif";
 export const COMMON_PREVIEW_IMAGE =
@@ -132,6 +133,10 @@ export const userResultsEditHighlightsPage = (user: UserLinkArgs) =>
   `${userResultsPage(user)}/highlights`;
 export const userArtPage = (user: UserLinkArgs, source?: ArtSouce) =>
   `${userPage(user)}/art${source ? `?source=${source}` : ""}`;
+export const newArtPage = (artId?: Art["id"]) =>
+  `${ART_PAGE}/new${
+    artId ? `?${NEW_ART_EXISTING_SEARCH_PARAM_KEY}=${artId}` : ""
+  }`;
 export const userNewBuildPage = (
   user: UserLinkArgs,
   params?: { weapon: MainWeaponId; build: BuildAbilitiesTupleWithUnknown }

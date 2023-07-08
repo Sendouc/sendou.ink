@@ -19,11 +19,11 @@ import { requireUser, useUser } from "~/modules/auth";
 import { temporaryCanAccessArtCheck } from "~/features/art";
 import invariant from "tiny-invariant";
 import { LinkButton } from "~/components/Button";
-import { NEW_ART_PAGE } from "~/utils/urls";
 import { Popover } from "~/components/Popover";
 import { countUnvalidatedArt } from "~/features/img-upload";
 import { Alert } from "~/components/Alert";
 import { useTranslation } from "~/hooks/useTranslation";
+import { newArtPage } from "~/utils/urls";
 
 export const handle: SendouRouteHandle = {
   i18n: ["art"],
@@ -47,8 +47,6 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 };
 
 // xxx: opening preview scrolls page to top
-// xxx: show unvalidated images with a different style as well
-// xxx: allow setting showcase image
 export default function UserArtPage() {
   const { t } = useTranslation(["art"]);
   const user = useUser();
@@ -131,7 +129,11 @@ export default function UserArtPage() {
         </Alert>
       ) : null}
 
-      <ArtGrid arts={arts} enablePreview />
+      <ArtGrid
+        arts={arts}
+        enablePreview
+        canEdit={userPageData.id === user?.id}
+      />
     </div>
   );
 }
@@ -153,7 +155,7 @@ function AddArtButton({ isArtist }: { isArtist?: boolean }) {
 
   return (
     <div className="stack items-end">
-      <LinkButton to={NEW_ART_PAGE} size="tiny">
+      <LinkButton to={newArtPage()} size="tiny">
         Add art
       </LinkButton>
     </div>
