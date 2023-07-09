@@ -2,7 +2,13 @@ import { sql } from "~/db/sql";
 
 const stm = sql.prepare(/*sql*/ `
   select count(*) as "count" from "UnvalidatedUserSubmittedImage"
-  where "validatedAt" is null
+  left join "Team" on 
+    "UnvalidatedUserSubmittedImage"."id" = "Team"."avatarImgId" or 
+    "UnvalidatedUserSubmittedImage"."id" = "Team"."bannerImgId"
+  left join "Art" on
+    "UnvalidatedUserSubmittedImage"."id" = "Art"."imgId"
+  where "UnvalidatedUserSubmittedImage"."validatedAt" is null
+    and ("Team"."id" is not null or "Art"."id" is not null)
 `);
 
 export function countAllUnvalidatedImg() {
