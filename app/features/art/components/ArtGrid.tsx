@@ -130,6 +130,7 @@ function ImagePreview({
       loading="lazy"
       onClick={onClick}
       onLoad={() => setImageLoaded(true)}
+      className={enablePreview ? "art__thumbnail" : undefined}
     />
   );
 

@@ -1143,6 +1143,15 @@ dialog::backdrop {
   flex-direction: column;
 }
 
+.art__thumbnail {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.art__thumbnail:hover {
+  scale: 1.025;
+}
+
 .art__dialog__image-container:focus-visible {
   outline: none;
 }
