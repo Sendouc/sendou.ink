@@ -1,0 +1,18 @@
+{
+  "pendingApproval_one": "您有 {{count}} 张图片正等待管理员审核",
+  "pendingApproval_other": "您有 {{count}} 张图片正等待管理员审核",
+  "radios.all": "全部",
+  "radios.madeBy": "创作者为",
+  "radios.madeFor": "创作对象为",
+  "commissionsOpen": "委托开放中",
+  "openCommissionsOnly": "显示开放委托的创作者",
+  "gainPerms": "请在Discord私信Sendou以获得权限",
+  "addArt": "添加作品",
+  "forms.caveats": "请注意：1) 只上传斯普拉遁相关作品 2) 只上传由您本人创作的作品 3) 禁止NSFW作品。在作品对其他用户可见前会有一个审核的过程。",
+  "forms.description.title": "描述",
+  "forms.linkedUsers.title": "关联用户",
+  "forms.linkedUsers.anotherOne": "另一个",
+  "forms.linkedUsers.info": "作品里都有谁？关联用户可以让您的作品显示在对方的资料页面里。",
+  "forms.showcase.title": "展示区",
+  "forms.showcase.info": "您的展示作品将会显示在插画的主页面。只有一个作品可以作为展示作品。"
+}
