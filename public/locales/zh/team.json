@@ -19,6 +19,7 @@
   "roles.SUPPORT": "辅助",
   "roles.MIDLINE": "中排",
   "roles.BACKLINE": "后排",
+  "roles.FLEX": "自由人",
   "roles.COACH": "教练",
   "forms.fields.teamTwitter": "队伍Twitter",
   "forms.fields.bio": "简介",
