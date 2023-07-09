@@ -658,7 +658,7 @@ dialog::backdrop {
   font-size: var(--fonts-sm);
   font-weight: var(--semi-bold);
   gap: var(--s-2);
-  line-height: 0.75;
+  line-height: 1.2;
   margin-inline: auto;
   padding-block: var(--s-1-5);
   padding-inline-end: var(--s-4);
@@ -1129,6 +1129,51 @@ dialog::backdrop {
   width: 1rem;
   display: inline;
   fill: #f00;
+}
+
+.art__dialog__image-container {
+  width: 100vw;
+  height: 90vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+  padding: 0;
+  overflow: visible;
+  flex-direction: column;
+}
+
+.art__dialog__image-container:focus-visible {
+  outline: none;
+}
+
+.art__dialog__description {
+  font-size: var(--fonts-sm);
+  text-align: center;
+}
+
+.art__dialog__image-container img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.art__comms-open-header {
+  font-weight: var(--bold);
+  color: var(--theme);
+  font-size: var(--fonts-sm);
+}
+
+.pagination__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background-color: var(--theme-transparent);
+  transition: all 0.2s ease;
+}
+
+.pagination__dot__active {
+  background-color: var(--theme);
 }
 
 #nprogress .bar {

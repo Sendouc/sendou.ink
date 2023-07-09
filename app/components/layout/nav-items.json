@@ -117,6 +117,15 @@
     ]
   },
   {
+    "name": "art",
+    "url": "art",
+    "prefetch": false,
+    "filters": [
+      "invert(37%) sepia(48%) saturate(6454%) hue-rotate(218deg) brightness(100%) contrast(97%)",
+      "invert(21%) sepia(63%) saturate(4439%) hue-rotate(294deg) brightness(99%) contrast(119%)"
+    ]
+  },
+  {
     "name": "t",
     "url": "t",
     "prefetch": false,

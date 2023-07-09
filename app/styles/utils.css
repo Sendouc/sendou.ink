@@ -138,6 +138,10 @@
   padding-block-start: var(--s-12) !important;
 }
 
+.m-auto-0 {
+  margin: auto 0;
+}
+
 .mt-auto {
   margin-block-start: auto;
 }
@@ -174,6 +178,10 @@
   margin-block-end: var(--s-1);
 }
 
+.mb-2 {
+  margin-block-end: var(--s-2);
+}
+
 .mb-4 {
   margin-block-end: var(--s-4);
 }
@@ -202,6 +210,10 @@
   margin-block: var(--s-2);
 }
 
+.my-3 {
+  margin-block: var(--s-3);
+}
+
 .my-4 {
   margin-block: var(--s-4);
 }
@@ -220,6 +232,10 @@
 
 .whitespace-pre-wrap {
   white-space: pre-wrap;
+}
+
+.whitespace-no-wrap {
+  white-space: nowrap;
 }
 
 .flex {
