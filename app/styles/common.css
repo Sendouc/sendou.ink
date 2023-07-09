@@ -1135,7 +1135,7 @@ dialog::backdrop {
   width: 100vw;
   height: 90vh;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   background-color: transparent;
   padding: 0;

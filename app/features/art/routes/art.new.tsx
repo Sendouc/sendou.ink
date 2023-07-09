@@ -80,8 +80,7 @@ export const action: ActionFunction = async ({ request }) => {
     });
   } else {
     const uploadHandler = composeUploadHandlers(
-      // xxx: remove test
-      s3UploadHandler(`test-${nanoid()}-${Date.now()}`),
+      s3UploadHandler(`art-${nanoid()}-${Date.now()}`),
       createMemoryUploadHandler()
     );
     const formData = await parseMultipartFormData(request, uploadHandler);

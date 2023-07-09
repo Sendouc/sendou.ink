@@ -73,72 +73,15 @@ export function ArtGrid({
       ) : null}
       <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}>
         <Masonry gutter="1rem">
-          {itemsToDisplay.map((art) => {
-            const img = (
-              <img
-                key={art.id}
-                alt=""
-                src={conditionalUserSubmittedImage(previewUrl(art.url))}
-                loading="lazy"
-                onClick={enablePreview ? () => setBigArt(art) : undefined}
-              />
-            );
-
-            if (!art.author && canEdit) {
-              return (
-                <div key={art.id}>
-                  {img}
-                  <div className="stack horizontal justify-between mt-2">
-                    <LinkButton
-                      to={newArtPage(art.id)}
-                      size="tiny"
-                      variant="outlined"
-                      icon={<EditIcon />}
-                    >
-                      {t("common:actions.edit")}
-                    </LinkButton>
-                    <FormWithConfirm
-                      dialogHeading="Are you sure you want to delete the art?"
-                      fields={[["id", art.id]]}
-                    >
-                      <Button
-                        icon={<TrashIcon />}
-                        variant="destructive"
-                        size="tiny"
-                      />
-                    </FormWithConfirm>
-                  </div>
-                </div>
-              );
-            }
-            if (!art.author) return img;
-
-            // whole thing is not a link so we can preview the image
-            if (enablePreview) {
-              return (
-                <div key={art.id}>
-                  {img}
-                  <Link
-                    to={userArtPage(art.author, "MADE-BY")}
-                    className="stack sm horizontal text-xs items-center mt-1"
-                  >
-                    <Avatar user={art.author} size="xxs" />
-                    {discordFullName(art.author)}
-                  </Link>
-                </div>
-              );
-            }
-
-            return (
-              <Link key={art.id} to={userArtPage(art.author, "MADE-BY")}>
-                {img}
-                <div className="stack sm horizontal text-xs items-center mt-1">
-                  <Avatar user={art.author} size="xxs" />
-                  {discordFullName(art.author)}
-                </div>
-              </Link>
-            );
-          })}
+          {itemsToDisplay.map((art) => (
+            <ImagePreview
+              key={art.id}
+              art={art}
+              canEdit={canEdit}
+              enablePreview={enablePreview}
+              onClick={enablePreview ? () => setBigArt(art) : undefined}
+            />
+          ))}
         </Masonry>
       </ResponsiveMasonry>
       {!everythingVisible ? (
@@ -150,6 +93,80 @@ export function ArtGrid({
         />
       ) : null}
     </>
+  );
+}
+
+function ImagePreview({
+  art,
+  onClick,
+  enablePreview = false,
+  canEdit = false,
+}: {
+  art: ListedArt;
+  onClick?: () => void;
+  enablePreview?: boolean;
+  canEdit?: boolean;
+}) {
+  const { t } = useTranslation(["common"]);
+
+  const img = (
+    <img
+      alt=""
+      src={conditionalUserSubmittedImage(previewUrl(art.url))}
+      loading="lazy"
+      onClick={onClick}
+    />
+  );
+
+  if (!art.author && canEdit) {
+    return (
+      <div>
+        {img}
+        <div className="stack horizontal justify-between mt-2">
+          <LinkButton
+            to={newArtPage(art.id)}
+            size="tiny"
+            variant="outlined"
+            icon={<EditIcon />}
+          >
+            {t("common:actions.edit")}
+          </LinkButton>
+          <FormWithConfirm
+            dialogHeading="Are you sure you want to delete the art?"
+            fields={[["id", art.id]]}
+          >
+            <Button icon={<TrashIcon />} variant="destructive" size="tiny" />
+          </FormWithConfirm>
+        </div>
+      </div>
+    );
+  }
+  if (!art.author) return img;
+
+  // whole thing is not a link so we can preview the image
+  if (enablePreview) {
+    return (
+      <div>
+        {img}
+        <Link
+          to={userArtPage(art.author, "MADE-BY")}
+          className="stack sm horizontal text-xs items-center mt-1"
+        >
+          <Avatar user={art.author} size="xxs" />
+          {discordFullName(art.author)}
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <Link to={userArtPage(art.author, "MADE-BY")}>
+      {img}
+      <div className="stack sm horizontal text-xs items-center mt-1">
+        <Avatar user={art.author} size="xxs" />
+        {discordFullName(art.author)}
+      </div>
+    </Link>
   );
 }
 
