@@ -69,7 +69,6 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   };
 };
 
-// xxx: opening preview scrolls page to top
 export default function UserArtPage() {
   const { t } = useTranslation(["art"]);
   const user = useUser();
@@ -116,7 +115,7 @@ export default function UserArtPage() {
               onChange={() => setType("ALL")}
             />
             <label htmlFor="all" className="mb-0">
-              All
+              {t("art:radios.all")}
             </label>
           </div>
           <div className="stack xs horizontal items-center">
@@ -127,7 +126,7 @@ export default function UserArtPage() {
               onChange={() => setType("MADE-BY")}
             />
             <label htmlFor="made-by" className="mb-0">
-              Art made by
+              {t("art:radios.madeBy")}
             </label>
           </div>
           <div className="stack xs horizontal items-center">
@@ -138,7 +137,7 @@ export default function UserArtPage() {
               onChange={() => setType("MADE-OF")}
             />
             <label htmlFor="made-of" className="mb-0">
-              Art made of
+              {t("art:radios.madeFor")}
             </label>
           </div>
         </div>
@@ -147,7 +146,7 @@ export default function UserArtPage() {
       {userPageData.commissionsOpen ? (
         <div className="whitespace-pre-wrap">
           <span className="art__comms-open-header">
-            Commissions are open {">>>"}
+            {t("art:commissionsOpen")} {">>>"}
           </span>{" "}
           {userPageData.commissionText}
         </div>
@@ -163,21 +162,23 @@ export default function UserArtPage() {
 }
 
 function AddArtButton({ isArtist }: { isArtist?: boolean }) {
+  const { t } = useTranslation(["art"]);
+
   if (!isArtist) {
     return (
       <Popover
-        buttonChildren={<>Add art</>}
+        buttonChildren={<>{t("art:addArt")}</>}
         triggerClassName="tiny"
         containerClassName="text-center"
       >
-        Please send a message to Sendou on Discord to gain permissions
+        {t("art:commissionsOpen")}
       </Popover>
     );
   }
 
   return (
     <LinkButton to={newArtPage()} size="tiny" className="whitespace-no-wrap">
-      Add art
+      {t("art:addArt")}
     </LinkButton>
   );
 }

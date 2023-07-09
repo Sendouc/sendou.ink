@@ -42,6 +42,7 @@ import { findArtById } from "../queries/findArtById.server";
 import { previewUrl } from "../art-utils";
 
 export const handle: SendouRouteHandle = {
+  i18n: ["art"],
   breadcrumb: () => ({
     imgPath: navIconUrl("art"),
     href: ART_PAGE,
@@ -129,7 +130,7 @@ export default function NewArtPage() {
   const data = useLoaderData<typeof loader>();
   const [img, setImg] = React.useState<File | null>(null);
   const [smallImg, setSmallImg] = React.useState<File | null>(null);
-  const { t } = useTranslation(["common"]);
+  const { t } = useTranslation(["common", "art"]);
   const ref = React.useRef<HTMLFormElement>(null);
   const fetcher = useFetcher();
 
@@ -148,11 +149,7 @@ export default function NewArtPage() {
   return (
     <Main halfWidth>
       <Form ref={ref} className="stack md">
-        <FormMessage type="info">
-          Few things to note: 1) Only upload Splatoon art 2) Only upload art you
-          made yourself 3) No NSFW art. There is a validation process before art
-          is shown to other users.
-        </FormMessage>
+        <FormMessage type="info">{t("art:forms.caveats")}</FormMessage>
         <ImageUpload img={img} setImg={setImg} setSmallImg={setSmallImg} />
         <Description />
         <LinkedUsers />
@@ -236,6 +233,7 @@ function ImageUpload({
 }
 
 function Description() {
+  const { t } = useTranslation(["art"]);
   const data = useLoaderData<typeof loader>();
   const [value, setValue] = React.useState(data?.art.description ?? "");
 
@@ -245,7 +243,7 @@ function Description() {
         htmlFor="description"
         valueLimits={{ current: value.length, max: ART.DESCRIPTION_MAX_LENGTH }}
       >
-        Description
+        {t("art:forms.description.title")}
       </Label>
       <textarea
         id="description"
@@ -259,6 +257,7 @@ function Description() {
 }
 
 function LinkedUsers() {
+  const { t } = useTranslation(["art"]);
   const data = useLoaderData<typeof loader>();
   const [users, setUsers] = React.useState<
     { inputId: string; userId?: number }[]
@@ -270,7 +269,7 @@ function LinkedUsers() {
 
   return (
     <div>
-      <label htmlFor="user">Linked users</label>
+      <label htmlFor="user">{t("art:forms.linkedUsers.title")}</label>
       <input
         type="hidden"
         name="linkedUsers"
@@ -315,34 +314,29 @@ function LinkedUsers() {
         disabled={users.length >= ART.LINKED_USERS_MAX_LENGTH}
         className="my-3"
       >
-        Another one
+        {t("art:forms.linkedUsers.anotherOne")}
       </Button>
-      <FormMessage type="info">
-        Who is in the art? Linking users allows your art to show up on their
-        profile.
-      </FormMessage>
+      <FormMessage type="info">{t("art:forms.linkedUsers.info")}</FormMessage>
     </div>
   );
 }
 
 function ShowcaseToggle() {
+  const { t } = useTranslation(["art"]);
   const data = useLoaderData<typeof loader>();
   const isCurrentlyShowcase = Boolean(data?.art.isShowcase);
   const [checked, setChecked] = React.useState(isCurrentlyShowcase);
 
   return (
     <div>
-      <label htmlFor="isShowcase">Showcase</label>
+      <label htmlFor="isShowcase">{t("art:forms.showcase.title")}</label>
       <Toggle
         checked={checked}
         setChecked={setChecked}
         name="isShowcase"
         disabled={isCurrentlyShowcase}
       />
-      <FormMessage type="info">
-        Your showcase piece is shown on the common /art page. Only one piece can
-        be your showcase at a time.
-      </FormMessage>
+      <FormMessage type="info">{t("art:forms.showcase.info")}</FormMessage>
     </div>
   );
 }

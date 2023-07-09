@@ -16,8 +16,10 @@ import { showcaseArts } from "../queries/showcaseArts.server";
 import { requireUser } from "~/modules/auth";
 import { temporaryCanAccessArtCheck } from "../art-utils";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
+import { useTranslation } from "~/hooks/useTranslation";
 
 export const handle: SendouRouteHandle = {
+  i18n: ["art"],
   breadcrumb: () => ({
     imgPath: navIconUrl("art"),
     href: ART_PAGE,
@@ -46,6 +48,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 export default function ArtPage() {
+  const { t } = useTranslation(["art"]);
   const data = useLoaderData<typeof loader>();
   const [showOpenCommissions, setShowOpenCommissions] = useSearchParamState({
     defaultValue: false,
@@ -66,7 +69,7 @@ export default function ArtPage() {
           id="open"
         />
         <Label htmlFor="open" className="m-auto-0">
-          Show artists with open commissions
+          {t("art:openCommissionsOnly")}
         </Label>
       </div>
       <ArtGrid arts={arts} />
