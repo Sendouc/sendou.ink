@@ -1167,9 +1167,9 @@ dialog::backdrop {
   object-fit: contain;
 }
 
-.art__comms-open-header {
+.art__comms-header {
   font-weight: var(--bold);
-  color: var(--theme);
+  color: var(--theme-secondary);
   font-size: var(--fonts-sm);
 }
 

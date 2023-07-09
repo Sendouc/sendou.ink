@@ -143,11 +143,17 @@ export default function UserArtPage() {
         </div>
       ) : null}
 
-      {userPageData.commissionsOpen ? (
+      {userPageData.commissionsOpen || userPageData.commissionText ? (
         <div className="whitespace-pre-wrap">
-          <span className="art__comms-open-header">
-            {t("art:commissionsOpen")} {">>>"}
-          </span>{" "}
+          {userPageData.commissionsOpen ? (
+            <span className="art__comms-header">
+              {t("art:commissionsOpen")} {">>>"}
+            </span>
+          ) : (
+            <span className="art__comms-header text-lighter">
+              {t("art:commissionsClosed")} {">>>"}
+            </span>
+          )}{" "}
           {userPageData.commissionText}
         </div>
       ) : null}
