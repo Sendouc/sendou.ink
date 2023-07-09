@@ -19,6 +19,7 @@
   "pages.vods": "视频",
   "pages.xsearch": "顶尖搜索",
   "pages.leaderboards": "排行榜",
+  "pages.links": "链接",
 
   "header.profile": "个人资料",
   "header.logout": "登出",
@@ -182,5 +183,11 @@
 
   "build.private": "私人",
 
-  "or": "或"
+  "or": "或",
+  "yes": "是",
+  "no": "否",
+
+  "leaderboard.type.USER": "用户",
+  "leaderboard.type.TEAM": "队伍",
+  "leaderboard.type.XP-ALL": "全部"
 }
