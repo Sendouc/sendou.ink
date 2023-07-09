@@ -121,7 +121,7 @@ function ImagePreview({
   canEdit?: boolean;
 }) {
   const [imageLoaded, setImageLoaded] = React.useState(false);
-  const { t } = useTranslation(["common"]);
+  const { t } = useTranslation(["common", "art"]);
 
   const img = (
     <img
@@ -174,7 +174,7 @@ function ImagePreview({
           })}
         >
           <Avatar user={art.author} size="xxs" />
-          {discordFullName(art.author)}
+          {t("art:madeBy")} {discordFullName(art.author)}
         </Link>
       </div>
     );

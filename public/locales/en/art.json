@@ -1,6 +1,7 @@
 {
   "pendingApproval_one": "You have {{count}} image pending moderator approval",
   "pendingApproval_other": "You have {{count}} images pending moderator approval",
+  "madeBy": "Made by",
   "radios.all": "All",
   "radios.madeBy": "Art made by",
   "radios.madeFor": "Art made for",
