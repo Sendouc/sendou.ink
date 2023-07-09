@@ -24,7 +24,6 @@ import type { StageBackgroundStyle } from "~/features/map-planner";
 import type { ImageUploadType } from "~/features/img-upload";
 import { serializeBuild } from "~/features/build-analyzer";
 import type { ArtSouce } from "~/features/art";
-import { NEW_ART_EXISTING_SEARCH_PARAM_KEY } from "~/features/art";
 
 const staticAssetsUrl = ({
   folder,
@@ -134,9 +133,7 @@ export const userResultsEditHighlightsPage = (user: UserLinkArgs) =>
 export const userArtPage = (user: UserLinkArgs, source?: ArtSouce) =>
   `${userPage(user)}/art${source ? `?source=${source}` : ""}`;
 export const newArtPage = (artId?: Art["id"]) =>
-  `${ART_PAGE}/new${
-    artId ? `?${NEW_ART_EXISTING_SEARCH_PARAM_KEY}=${artId}` : ""
-  }`;
+  `${ART_PAGE}/new${artId ? `?art=${artId}` : ""}`;
 export const userNewBuildPage = (
   user: UserLinkArgs,
   params?: { weapon: MainWeaponId; build: BuildAbilitiesTupleWithUnknown }

@@ -102,6 +102,8 @@ export function seed(variation?: SeedVariation | null) {
 
 function wipeDB() {
   const tablesToDelete = [
+    "ArtUserMetadata",
+    "Art",
     "UnvalidatedUserSubmittedImage",
     "AllTeamMember",
     "AllTeam",
@@ -124,8 +126,6 @@ function wipeDB() {
     "UnvalidatedVideo",
     "XRankPlacement",
     "SplatoonPlayer",
-    "ArtUserMetadata",
-    "Art",
     "User",
     "PlusSuggestion",
     "PlusVote",
