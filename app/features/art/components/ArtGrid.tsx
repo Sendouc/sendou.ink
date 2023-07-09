@@ -107,6 +107,7 @@ function ImagePreview({
   enablePreview?: boolean;
   canEdit?: boolean;
 }) {
+  const [imageLoaded, setImageLoaded] = React.useState(false);
   const { t } = useTranslation(["common"]);
 
   const img = (
@@ -115,6 +116,7 @@ function ImagePreview({
       src={conditionalUserSubmittedImage(previewUrl(art.url))}
       loading="lazy"
       onClick={onClick}
+      onLoad={() => setImageLoaded(true)}
     />
   );
 
@@ -122,7 +124,11 @@ function ImagePreview({
     return (
       <div>
         {img}
-        <div className="stack horizontal justify-between mt-2">
+        <div
+          className={clsx("stack horizontal justify-between mt-2", {
+            invisible: !imageLoaded,
+          })}
+        >
           <LinkButton
             to={newArtPage(art.id)}
             size="tiny"
@@ -150,7 +156,9 @@ function ImagePreview({
         {img}
         <Link
           to={userArtPage(art.author, "MADE-BY")}
-          className="stack sm horizontal text-xs items-center mt-1"
+          className={clsx("stack sm horizontal text-xs items-center mt-1", {
+            invisible: !imageLoaded,
+          })}
         >
           <Avatar user={art.author} size="xxs" />
           {discordFullName(art.author)}
@@ -162,7 +170,11 @@ function ImagePreview({
   return (
     <Link to={userArtPage(art.author, "MADE-BY")}>
       {img}
-      <div className="stack sm horizontal text-xs items-center mt-1">
+      <div
+        className={clsx("stack sm horizontal text-xs items-center mt-1", {
+          invisible: !imageLoaded,
+        })}
+      >
         <Avatar user={art.author} size="xxs" />
         {discordFullName(art.author)}
       </div>
