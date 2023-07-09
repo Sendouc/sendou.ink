@@ -74,19 +74,26 @@ export async function uploadStreamToS3(data: any, filename: string) {
   return file.Location;
 }
 
-export const s3UploadHandler: UploadHandler = async ({
-  name,
-  filename,
-  data,
-}) => {
-  if (name !== "img") {
-    return undefined;
-  }
+// predeciding file name is useful when you are uploading more than one asset
+// and want them to share name
+export const s3UploadHandler =
+  (preDecidedFilename?: string): UploadHandler =>
+  async ({ name, filename, data }) => {
+    invariant(
+      name !== "smallImg" || preDecidedFilename,
+      "must have predecided filename when uploading many images"
+    );
 
-  const [, ending] = filename!.split(".");
-  invariant(ending);
-  const newFilename = `${nanoid()}-${Date.now()}.${ending}`;
+    if (name !== "img" && name !== "smallImg") {
+      return undefined;
+    }
 
-  const uploadedFileLocation = await uploadStreamToS3(data, newFilename);
-  return uploadedFileLocation;
-};
+    const [, ending] = filename!.split(".");
+    invariant(ending);
+    const newFilename = preDecidedFilename
+      ? `${preDecidedFilename}${name === "smallImg" ? "-small" : ""}.${ending}`
+      : `${nanoid()}-${Date.now()}.${ending}`;
+
+    const uploadedFileLocation = await uploadStreamToS3(data, newFilename);
+    return uploadedFileLocation;
+  };

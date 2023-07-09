@@ -91,6 +91,7 @@ export interface RootLoaderData {
     | "customUrl"
     | "discordName"
     | "patronTier"
+    | "isArtist"
   >;
   publisherId?: string;
   websiteId?: string;
@@ -120,6 +121,7 @@ export const loader: LoaderFunction = async ({ request }) => {
             plusTier: user.plusTier,
             customUrl: user.customUrl,
             patronTier: user.patronTier,
+            isArtist: user.isArtist,
           }
         : undefined,
     },
@@ -246,6 +248,7 @@ export const namespaceJsonsToPreloadObj: Record<
   tournament: true,
   team: true,
   vods: true,
+  art: true,
 };
 const namespaceJsonsToPreload = Object.keys(namespaceJsonsToPreloadObj);
 

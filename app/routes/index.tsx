@@ -27,6 +27,7 @@ import * as React from "react";
 import { ThemeChanger } from "~/components/layout/ThemeChanger";
 import { SelectedThemeIcon } from "~/components/layout/SelectedThemeIcon";
 import { useTheme } from "~/modules/theme";
+import { temporaryCanAccessArtCheck } from "~/features/art";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -88,25 +89,30 @@ export default function FrontPage() {
           </div>
         )}
 
-        {navItems.map((item) => (
-          <Link
-            to={item.url}
-            className="front__nav-item"
-            key={item.name}
-            prefetch={item.prefetch ? "render" : undefined}
-            onMouseEnter={() => setFilters(item.filters as [string, string])}
-          >
-            <div className="front__nav-image-container">
-              <Image
-                path={navIconUrl(item.name)}
-                height={48}
-                width={48}
-                alt=""
-              />
-            </div>
-            <div>{t(`common:pages.${item.name}` as any)}</div>
-          </Link>
-        ))}
+        {navItems
+          .filter(
+            (navItem) =>
+              temporaryCanAccessArtCheck(user) || navItem.name !== "art"
+          )
+          .map((item) => (
+            <Link
+              to={item.url}
+              className="front__nav-item"
+              key={item.name}
+              prefetch={item.prefetch ? "render" : undefined}
+              onMouseEnter={() => setFilters(item.filters as [string, string])}
+            >
+              <div className="front__nav-image-container">
+                <Image
+                  path={navIconUrl(item.name)}
+                  height={48}
+                  width={48}
+                  alt=""
+                />
+              </div>
+              <div>{t(`common:pages.${item.name}` as any)}</div>
+            </Link>
+          ))}
       </div>
       {user ? (
         <div className="front__log-out-container">

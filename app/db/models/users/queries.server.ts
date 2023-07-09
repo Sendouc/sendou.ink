@@ -72,6 +72,8 @@ export const updateProfile = sql.transaction(
     | "css"
     | "favoriteBadgeId"
     | "showDiscordUniqueName"
+    | "commissionText"
+    | "commissionsOpen"
   > & { weapons: Pick<UserWeapon, "weaponSplId" | "isFavorite">[] }) => {
     deleteUserWeaponsStm.run({ userId: rest.id });
     for (const [i, weapon] of weapons.entries()) {
