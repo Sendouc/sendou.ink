@@ -24,7 +24,6 @@ import { previewUrl } from "../art-utils";
 import { TrashIcon } from "~/components/icons/Trash";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 
-// xxx: jump with edit icon, description when loads
 export function ArtGrid({
   arts,
   enablePreview = false,
@@ -45,7 +44,6 @@ export function ArtGrid({
     items: arts,
     pageSize: ART_PER_PAGE,
   });
-  const { t } = useTranslation(["common"]);
   const [bigArt, setBigArt] = React.useState<ListedArt | null>(null);
   const isMounted = useIsMounted();
 
@@ -54,22 +52,7 @@ export function ArtGrid({
   return (
     <>
       {bigArt ? (
-        <Dialog
-          isOpen
-          close={() => setBigArt(null)}
-          className="art__dialog__image-container"
-          closeOnAnyClick
-        >
-          <img
-            alt=""
-            src={conditionalUserSubmittedImage(bigArt.url)}
-            loading="lazy"
-            className="art__dialog__img"
-          />
-          {bigArt.description ? (
-            <div className="art__dialog__description">{bigArt.description}</div>
-          ) : null}
-        </Dialog>
+        <BigImageDialog close={() => setBigArt(null)} art={bigArt} />
       ) : null}
       <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}>
         <Masonry gutter="1rem">
@@ -93,6 +76,36 @@ export function ArtGrid({
         />
       ) : null}
     </>
+  );
+}
+
+function BigImageDialog({ close, art }: { close: () => void; art: ListedArt }) {
+  const [imageLoaded, setImageLoaded] = React.useState(false);
+
+  return (
+    <Dialog
+      isOpen
+      close={close}
+      className="art__dialog__image-container"
+      closeOnAnyClick
+    >
+      <img
+        alt=""
+        src={conditionalUserSubmittedImage(art.url)}
+        loading="lazy"
+        className="art__dialog__img"
+        onLoad={() => setImageLoaded(true)}
+      />
+      {art.description ? (
+        <div
+          className={clsx("art__dialog__description", {
+            invisible: !imageLoaded,
+          })}
+        >
+          {art.description}
+        </div>
+      ) : null}
+    </Dialog>
   );
 }
 
