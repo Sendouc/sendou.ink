@@ -1,0 +1,28 @@
+.twf {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.q__clocks-container {
+  display: flex;
+  gap: var(--s-2);
+}
+
+.q__clock {
+  font-size: var(--fonts-sm);
+  font-weight: var(--bold);
+  color: var(--text-lighter);
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  flex: 1 1 0;
+  line-height: 1.3;
+}
+
+.q__clock-country {
+  color: var(--text) !important;
+  white-space: no-wrap;
+  font-size: var(--fonts-xs);
+}

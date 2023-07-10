@@ -100,6 +100,8 @@ module.exports = {
 
       route("/art", "features/art/routes/art.tsx");
       route("/art/new", "features/art/routes/art.new.tsx");
+
+      route("/q", "features/sendouq/routes/q.tsx");
     });
   },
   serverModuleFormat: "cjs",
