@@ -26,3 +26,16 @@
   white-space: no-wrap;
   font-size: var(--fonts-xs);
 }
+
+.q__header {
+  font-size: var(--fonts-lg);
+}
+
+.q__map-preference-label {
+  margin-block-end: 0;
+  font-weight: var(--semi-bold);
+  display: flex;
+  align-items: center;
+  gap: var(--s-1);
+  color: var(--text-lighter);
+}

@@ -15,6 +15,7 @@ import type tournament from "../public/locales/en/tournament.json";
 import type team from "../public/locales/en/team.json";
 import type vods from "../public/locales/en/vods.json";
 import type art from "../public/locales/en/art.json";
+import type q from "../public/locales/en/q.json";
 
 declare module "react-i18next" {
   interface CustomTypeOptions {
@@ -35,6 +36,7 @@ declare module "react-i18next" {
       team: typeof team;
       vods: typeof vods;
       art: typeof art;
+      q: typeof q;
     };
   }
 }
