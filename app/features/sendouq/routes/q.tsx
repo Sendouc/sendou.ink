@@ -12,9 +12,15 @@ import { assertUnreachable } from "~/utils/types";
 import * as React from "react";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import clsx from "clsx";
+import { SENDOUQ_PAGE, navIconUrl } from "~/utils/urls";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
+  breadcrumb: () => ({
+    imgPath: navIconUrl("sendouq"),
+    href: SENDOUQ_PAGE,
+    type: "IMAGE",
+  }),
 };
 
 export const links: LinksFunction = () => {
