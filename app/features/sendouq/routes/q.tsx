@@ -10,6 +10,8 @@ import type { SendouRouteHandle } from "~/utils/remix";
 import { ModeImage } from "~/components/Image";
 import { assertUnreachable } from "~/utils/types";
 import * as React from "react";
+import { useIsMounted } from "~/hooks/useIsMounted";
+import clsx from "clsx";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -42,15 +44,22 @@ const countries = [
   { id: 3, countryCode: "FR", timeZone: "Europe/Paris", city: "Paris" },
   { id: 4, countryCode: "JP", timeZone: "Asia/Tokyo", city: "Tokyo" },
 ] as const;
-const formatter = (timeZone: string) =>
-  new Intl.DateTimeFormat([], {
+const formatter = ({
+  timeZone,
+  locale,
+}: {
+  timeZone: string;
+  locale: string;
+}) =>
+  new Intl.DateTimeFormat([locale], {
     timeZone,
     hour: "numeric",
     minute: "numeric",
     weekday: "long",
   });
-// xxx: handle SSR
 function Clocks() {
+  const isMounted = useIsMounted();
+  const { i18n } = useTranslation();
   useAutoRerender();
 
   return (
@@ -60,7 +69,15 @@ function Clocks() {
           <div key={country.id} className="q__clock">
             <div className="q__clock-country">{country.city}</div>
             <Flag countryCode={country.countryCode} />
-            {formatter(country.timeZone).format(new Date())}
+            <span className={clsx({ invisible: !isMounted })}>
+              {isMounted
+                ? formatter({
+                    timeZone: country.timeZone,
+                    locale: i18n.language,
+                  }).format(new Date())
+                : // take space
+                  "Monday 0:00 AM"}
+            </span>
           </div>
         );
       })}
@@ -74,7 +91,7 @@ function MapPreference() {
 
   return (
     <div className="stack">
-      <label htmlFor="map">Maplist preference</label>
+      <label>Maplist preference</label>
       {MAP_LIST_PREFERENCE_OPTIONS.map((option) => {
         const comparisonSign = (() => {
           switch (option) {
