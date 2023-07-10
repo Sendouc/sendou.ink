@@ -498,3 +498,53 @@ export interface ArtUserMetadata {
   artId: number;
   userId: number;
 }
+
+export interface Group {
+  id: number;
+  createdAt: number;
+  latestActionAt: number;
+  mapListPreference:
+    | "SZ_ONLY"
+    | "ALL_MODES_ONLY"
+    | "PREFER_SZ"
+    | "PREFER_ALL_MODES"
+    | "NO_PREFERENCE";
+  isRanked: number;
+  inviteCode: string;
+  status: "PREPARING" | "ACTIVE" | "INACTIVE";
+}
+
+// xxx: somehow unique so that user is not in multiple groups
+export interface GroupMember {
+  groupId: number;
+  userId: number;
+  role: "OWNER" | "MANAGER" | "REGULAR";
+  bestWeapons: string | null;
+  okWeapons: string | null;
+  createdAt: number;
+}
+
+export interface GroupLike {
+  likerGroupId: number;
+  targetGroupId: number;
+  createdAt: number;
+}
+
+export interface GroupMatch {
+  id: number;
+  alphaGroupId: number;
+  bravoGroupId: number;
+  createdAt: number;
+  reportedAt: number | null;
+  reportedByUserId: number | null;
+}
+
+export interface GroupMatchMap {
+  matchId: number;
+  index: number;
+  mode: ModeShort;
+  stageId: StageId;
+  /** serialized TournamentMaplistSource */
+  source: string;
+  winnerGroupId: number | null;
+}
