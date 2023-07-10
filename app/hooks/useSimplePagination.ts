@@ -32,6 +32,12 @@ export function useSimplePagination<T>({
   const thereIsNextPage = currentPage < pagesCount;
   const thereIsPreviousPage = currentPage > 1;
 
+  // if the list changes from externally it might be that we are on a page that doesn't exist anymore
+  // setting state inside render looks weird but should be ok
+  if (itemsToDisplay.length === 0 && currentPage > 1) {
+    setCurrentPage(1);
+  }
+
   return {
     pagesCount,
     currentPage,
