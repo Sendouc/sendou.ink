@@ -52,6 +52,7 @@ export const handle: SendouRouteHandle = {
 
 export const action: ActionFunction = async ({ request }) => {
   const user = await requireUser(request);
+  validate(user.isArtist, "Lacking artist role", 403);
 
   const searchParams = new URL(request.url).searchParams;
   const artIdRaw = searchParams.get(NEW_ART_EXISTING_SEARCH_PARAM_KEY);
@@ -111,8 +112,7 @@ export const action: ActionFunction = async ({ request }) => {
 
 export const loader = async ({ request }: LoaderArgs) => {
   const user = await requireUser(request);
-
-  validate(user.isArtist, "No artist role", 401);
+  validate(user.isArtist, "Lacking artist role", 403);
 
   const artIdRaw = new URL(request.url).searchParams.get(
     NEW_ART_EXISTING_SEARCH_PARAM_KEY

@@ -17,25 +17,22 @@ import {
 } from "~/features/art";
 import { useLoaderData, useMatches } from "@remix-run/react";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
-import { requireUser, useUser } from "~/modules/auth";
-import {
-  temporaryCanAccessArtCheck,
-  deleteArt,
-  deleteArtSchema,
-} from "~/features/art";
+import { useUser } from "~/modules/auth";
+import { deleteArt, deleteArtSchema } from "~/features/art";
 import invariant from "tiny-invariant";
 import { LinkButton } from "~/components/Button";
 import { Popover } from "~/components/Popover";
 import { countUnvalidatedArt } from "~/features/img-upload";
 import { useTranslation } from "~/hooks/useTranslation";
 import { newArtPage } from "~/utils/urls";
+import { requireUserId } from "~/modules/auth/user.server";
 
 export const handle: SendouRouteHandle = {
   i18n: ["art"],
 };
 
 export const action: ActionFunction = async ({ request }) => {
-  const user = await requireUser(request);
+  const user = await requireUserId(request);
   const data = await parseRequestFormData({
     request,
     schema: deleteArtSchema,
@@ -53,11 +50,7 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 export const loader = async ({ params, request }: LoaderArgs) => {
-  const loggedInUser = await requireUser(request);
-  validate(
-    temporaryCanAccessArtCheck(loggedInUser),
-    "Insufficient permissions"
-  );
+  const loggedInUser = await requireUserId(request);
 
   const { identifier } = userParamsSchema.parse(params);
   const user = notFoundIfFalsy(db.users.findByIdentifier(identifier));
@@ -177,7 +170,7 @@ function AddArtButton({ isArtist }: { isArtist?: boolean }) {
         triggerClassName="tiny"
         containerClassName="text-center"
       >
-        {t("art:commissionsOpen")}
+        {t("art:gainPerms")}
       </Popover>
     );
   }

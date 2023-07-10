@@ -8,13 +8,11 @@ import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import { Toggle } from "~/components/Toggle";
 import { i18next } from "~/modules/i18n";
-import { validate, type SendouRouteHandle } from "~/utils/remix";
+import { type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { ART_PAGE, navIconUrl } from "~/utils/urls";
 import { ArtGrid } from "../components/ArtGrid";
 import { showcaseArts } from "../queries/showcaseArts.server";
-import { requireUser } from "~/modules/auth";
-import { temporaryCanAccessArtCheck } from "../art-utils";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
 import { useTranslation } from "~/hooks/useTranslation";
 
@@ -36,9 +34,6 @@ export const meta: V2_MetaFunction = (args) => {
 };
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const user = await requireUser(request);
-  validate(temporaryCanAccessArtCheck(user), "Insufficient permissions");
-
   const t = await i18next.getFixedT(request);
 
   return {

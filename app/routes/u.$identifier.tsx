@@ -12,7 +12,7 @@ import { z } from "zod";
 import { Main } from "~/components/Main";
 import { SubNav, SubNavLink } from "~/components/SubNav";
 import { db } from "~/db";
-import { countArtByUserId, temporaryCanAccessArtCheck } from "~/features/art";
+import { countArtByUserId } from "~/features/art";
 import { userTopPlacements } from "~/features/top-search";
 import { findVods } from "~/features/vods";
 import { useTranslation } from "~/hooks/useTranslation";
@@ -155,12 +155,11 @@ export default function UserPageLayout() {
             {t("pages.vods")} ({data.vods.length})
           </SubNavLink>
         )}
-        {(isOwnPage || data.artCount > 0) &&
-          temporaryCanAccessArtCheck(user) && (
-            <SubNavLink to={userArtPage(data)} end={false}>
-              {t("pages.art")} ({data.artCount})
-            </SubNavLink>
-          )}
+        {(isOwnPage || data.artCount > 0) && (
+          <SubNavLink to={userArtPage(data)} end={false}>
+            {t("pages.art")} ({data.artCount})
+          </SubNavLink>
+        )}
       </SubNav>
       <Outlet />
     </Main>
