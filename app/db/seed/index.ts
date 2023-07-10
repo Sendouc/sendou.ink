@@ -1435,7 +1435,7 @@ const artImgUrls = [
 ];
 
 function arts() {
-  const artUsers = [2, 3, 4, 5, 6, 7, 8, 9];
+  const artUsers = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
   const allUsers = userIdsInRandomOrder();
   const urls = [...artImgUrls];
 
@@ -1443,7 +1443,7 @@ function arts() {
     for (let i = 0; i < faker.helpers.arrayElement([1, 2, 3, 3, 3, 4]); i++) {
       const getUrl = () => {
         if (urls.length === 0) {
-          urls.push(...artImgUrls);
+          return faker.image.url();
         }
 
         return urls.pop();
