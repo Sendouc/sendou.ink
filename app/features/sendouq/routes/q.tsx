@@ -2,15 +2,20 @@ import { Flag } from "~/components/Flag";
 import { Main } from "~/components/Main";
 import { useAutoRerender } from "~/hooks/useAutoRerender";
 import styles from "../q.css";
-import {
-  redirect,
-  type ActionFunction,
-  type LinksFunction,
+import { redirect } from "@remix-run/node";
+import type {
+  LoaderArgs,
+  ActionFunction,
+  LinksFunction,
 } from "@remix-run/node";
 import { Form } from "@remix-run/react";
 import { useTranslation } from "~/hooks/useTranslation";
 import { MAP_LIST_PREFERENCE_OPTIONS, SENDOUQ } from "../q-constants";
-import { parseRequestFormData, type SendouRouteHandle } from "~/utils/remix";
+import {
+  parseRequestFormData,
+  validate,
+  type SendouRouteHandle,
+} from "~/utils/remix";
 import { Image, ModeImage } from "~/components/Image";
 import { assertUnreachable } from "~/utils/types";
 import * as React from "react";
@@ -28,11 +33,13 @@ import { stageIds } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { MapPool } from "~/modules/map-pool-serializer";
 import { SubmitButton } from "~/components/SubmitButton";
-import { requireUserId } from "~/modules/auth/user.server";
+import { getUserId, requireUserId } from "~/modules/auth/user.server";
 import { createGroupSchema } from "../q-schemas.server";
 import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
 import { createGroup } from "../queries/createGroup.server";
 import { booleanToInt } from "~/utils/sql";
+import { findActiveGroupByUserId } from "../queries/findActiveGroupByUserId.server";
+import { groupRedirectLocationByCurrentLocation } from "../q-utils";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -55,7 +62,7 @@ export const action: ActionFunction = async ({ request }) => {
     schema: createGroupSchema,
   });
 
-  // xxx: checks, at least if active group exists
+  validate(!findActiveGroupByUserId(user.id), "Already in a group");
 
   createGroup({
     isRanked: booleanToInt(data.rankingType === "ranked"),
@@ -69,9 +76,25 @@ export const action: ActionFunction = async ({ request }) => {
   );
 };
 
+export const loader = async ({ request }: LoaderArgs) => {
+  const user = await getUserId(request);
+
+  const redirectLocation = groupRedirectLocationByCurrentLocation({
+    group: user ? findActiveGroupByUserId(user.id) : undefined,
+    currentLocation: "default",
+  });
+
+  if (redirectLocation) {
+    throw redirect(redirectLocation);
+  }
+
+  return null;
+};
+
 // xxx: load latest group and get initial settings from that
 // xxx: teams looking for scrim?
 // xxx: link to yt video explaining it
+// xxx: UI when not logged in
 export default function QPage() {
   return (
     <Main halfWidth className="stack lg">

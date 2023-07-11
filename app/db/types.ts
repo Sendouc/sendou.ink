@@ -511,6 +511,7 @@ export interface Group {
     | "NO_PREFERENCE";
   isRanked: number;
   inviteCode: string;
+  // xxx: index?
   status: "PREPARING" | "ACTIVE" | "INACTIVE";
 }
 
