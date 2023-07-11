@@ -519,8 +519,6 @@ export interface GroupMember {
   groupId: number;
   userId: number;
   role: "OWNER" | "MANAGER" | "REGULAR";
-  bestWeapons: string | null;
-  okWeapons: string | null;
   createdAt: number;
 }
 

@@ -19,8 +19,6 @@ module.exports.up = function (db) {
       "groupId" integer not null,
       "userId" integer not null,
       "role" text not null,
-      "bestWeapons" text,
-      "okWeapons" text,
       "createdAt" integer default (strftime('%s', 'now')) not null,
       foreign key ("userId") references "User"("id") on delete restrict,
       foreign key ("groupId") references "Group"("id") on delete cascade,

@@ -2,21 +2,37 @@ import { Flag } from "~/components/Flag";
 import { Main } from "~/components/Main";
 import { useAutoRerender } from "~/hooks/useAutoRerender";
 import styles from "../q.css";
-import type { LinksFunction } from "@remix-run/node";
+import {
+  redirect,
+  type ActionFunction,
+  type LinksFunction,
+} from "@remix-run/node";
 import { Form } from "@remix-run/react";
 import { useTranslation } from "~/hooks/useTranslation";
 import { MAP_LIST_PREFERENCE_OPTIONS, SENDOUQ } from "../q-constants";
-import type { SendouRouteHandle } from "~/utils/remix";
+import { parseRequestFormData, type SendouRouteHandle } from "~/utils/remix";
 import { Image, ModeImage } from "~/components/Image";
 import { assertUnreachable } from "~/utils/types";
 import * as React from "react";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import clsx from "clsx";
-import { SENDOUQ_PAGE, navIconUrl, stageImageUrl } from "~/utils/urls";
+import {
+  SENDOUQ_LOOKING_PAGE,
+  SENDOUQ_PAGE,
+  SENDOUQ_PREPARING_PAGE,
+  navIconUrl,
+  stageImageUrl,
+} from "~/utils/urls";
 import type { ModeShort } from "~/modules/in-game-lists";
 import { stageIds } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { MapPool } from "~/modules/map-pool-serializer";
+import { SubmitButton } from "~/components/SubmitButton";
+import { requireUserId } from "~/modules/auth/user.server";
+import { createGroupSchema } from "../q-schemas.server";
+import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
+import { createGroup } from "../queries/createGroup.server";
+import { booleanToInt } from "~/utils/sql";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -31,17 +47,54 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
+// xxx: persist and validate map pool
+export const action: ActionFunction = async ({ request }) => {
+  const user = await requireUserId(request);
+  const data = await parseRequestFormData({
+    request,
+    schema: createGroupSchema,
+  });
+
+  // xxx: checks, at least if active group exists
+
+  createGroup({
+    isRanked: booleanToInt(data.rankingType === "ranked"),
+    mapListPreference: data.mapListPreference,
+    status: data.direct === "true" ? "ACTIVE" : "PREPARING",
+    userId: user.id,
+  });
+
+  return redirect(
+    data.direct === "true" ? SENDOUQ_LOOKING_PAGE : SENDOUQ_PREPARING_PAGE
+  );
+};
+
 // xxx: load latest group and get initial settings from that
 // xxx: teams looking for scrim?
+// xxx: link to yt video explaining it
 export default function QPage() {
   return (
     <Main halfWidth className="stack lg">
       <Clocks />
-      <Form className="stack md">
+      <Form className="stack md" method="post">
         <h2 className="q__header">Join the queue!</h2>
         <RankedOrScrim />
         <MapPreference />
         <MapPoolSelector />
+        <div className="stack md items-center mt-4">
+          <SubmitButton>Add team members</SubmitButton>
+          <div className="text-lighter text-xs text-center">
+            No team members in mind yet? <br />
+            <SubmitButton
+              variant="minimal"
+              className="text-xs mx-auto"
+              name="direct"
+              value="true"
+            >
+              Join the queue directly.
+            </SubmitButton>
+          </div>
+        </div>
       </Form>
     </Main>
   );
@@ -104,13 +157,19 @@ function RankedOrScrim() {
     <div className="stack">
       <label>Type</label>
       <div className="stack sm horizontal items-center">
-        <input type="radio" name="rankingType" id="ranked" defaultChecked />
+        <input
+          type="radio"
+          name="rankingType"
+          id="ranked"
+          value="ranked"
+          defaultChecked
+        />
         <label htmlFor="ranked" className="mb-0">
           Ranked
         </label>
       </div>
       <div className="stack sm horizontal items-center">
-        <input type="radio" name="rankingType" id="scrim" />
+        <input type="radio" name="rankingType" id="scrim" value="scrim" />
         <label htmlFor="scrim" className="mb-0">
           Scrim
         </label>
@@ -198,9 +257,42 @@ function MapPoolSelector() {
   const countModeInPool = (mode: ModeShort) =>
     mapPool.stageModePairs.filter((pair) => pair.mode === mode).length;
 
+  const mapPoolOk = () => {
+    for (const modeShort of rankedModesShort) {
+      if (
+        modeShort === "SZ" &&
+        countModeInPool(modeShort) !== SENDOUQ.SZ_MAP_COUNT
+      ) {
+        return false;
+      }
+
+      if (
+        modeShort !== "SZ" &&
+        countModeInPool(modeShort) !== SENDOUQ.OTHER_MODE_MAP_COUNT
+      ) {
+        return false;
+      }
+    }
+
+    for (const stageId of stageIds) {
+      if (
+        mapPool.stageModePairs.filter((pair) => pair.stageId === stageId)
+          .length > SENDOUQ.MAX_STAGE_REPEAT_COUNT
+      ) {
+        return false;
+      }
+    }
+
+    return true;
+  };
+
   return (
     <div className="q__map-pool-grid">
-      <input type="hidden" name="mapPool" value={mapPool.serialized} />
+      <RequiredHiddenInput
+        value={mapPool.serialized}
+        isValid={mapPoolOk()}
+        name="mapPool"
+      />
       <div />
       <div />
       {rankedModesShort.map((modeShort) => {
@@ -209,7 +301,7 @@ function MapPoolSelector() {
       <div />
       {stageIds.map((stageId) => {
         return (
-          <>
+          <React.Fragment key={stageId}>
             <div>
               <Image
                 alt=""
@@ -259,7 +351,7 @@ function MapPoolSelector() {
             >
               max {SENDOUQ.MAX_STAGE_REPEAT_COUNT}
             </div>
-          </>
+          </React.Fragment>
         );
       })}
       <div />

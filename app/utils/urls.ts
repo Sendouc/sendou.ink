@@ -7,6 +7,7 @@ import type {
   XRankPlacement,
   User,
   Art,
+  GroupMatch,
 } from "~/db/types";
 import type { ModeShort, weaponCategories } from "~/modules/in-game-lists";
 import type {
@@ -90,6 +91,10 @@ export const OBJECT_DAMAGE_CALCULATOR_URL = "/object-damage-calculator";
 export const VODS_PAGE = "/vods";
 export const LEADERBOARDS_PAGE = "/leaderboards";
 export const LINKS_PAGE = "/links";
+export const ART_PAGE = "/art";
+export const SENDOUQ_PAGE = "/q";
+export const SENDOUQ_PREPARING_PAGE = "/q/preparing";
+export const SENDOUQ_LOOKING_PAGE = "/q/looking";
 
 export const BLANK_IMAGE_URL = "/static-assets/img/blank.gif";
 export const COMMON_PREVIEW_IMAGE =
@@ -228,6 +233,10 @@ export const tournamentJoinPage = ({
 }) => `/to/${eventId}/join?code=${inviteCode}`;
 export const tournamentSubsPage = (tournamentId: number) => {
   return `/to/${tournamentId}/subs`;
+};
+
+export const sendouQMatchPage = (id: GroupMatch["id"]) => {
+  return `${SENDOUQ_PAGE}/match/${id}`;
 };
 
 export const mapsPage = (eventId?: MapPoolMap["calendarEventId"]) =>

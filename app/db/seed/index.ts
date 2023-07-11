@@ -102,6 +102,7 @@ export function seed(variation?: SeedVariation | null) {
 
 function wipeDB() {
   const tablesToDelete = [
+    "Group",
     "ArtUserMetadata",
     "Art",
     "UnvalidatedUserSubmittedImage",
