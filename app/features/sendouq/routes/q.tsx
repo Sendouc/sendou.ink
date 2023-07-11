@@ -31,8 +31,9 @@ export default function QPage() {
   return (
     <Main halfWidth className="stack lg">
       <Clocks />
-      <Form className="stack lg">
+      <Form className="stack md">
         <h2 className="q__header">Join the queue!</h2>
+        <RankedOrScrim />
         <MapPreference />
       </Form>
     </Main>
@@ -87,6 +88,26 @@ function Clocks() {
           </div>
         );
       })}
+    </div>
+  );
+}
+
+function RankedOrScrim() {
+  return (
+    <div className="stack">
+      <label>Type</label>
+      <div className="stack sm horizontal items-center">
+        <input type="radio" name="rankingType" id="ranked" defaultChecked />
+        <label htmlFor="ranked" className="mb-0">
+          Ranked
+        </label>
+      </div>
+      <div className="stack sm horizontal items-center">
+        <input type="radio" name="rankingType" id="scrim" />
+        <label htmlFor="scrim" className="mb-0">
+          Scrim
+        </label>
+      </div>
     </div>
   );
 }
