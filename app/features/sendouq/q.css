@@ -39,3 +39,15 @@
   gap: var(--s-1);
   color: var(--text-lighter);
 }
+
+.q__map-pool-grid {
+  display: grid;
+  grid-template-columns: repeat(7, max-content);
+  gap: var(--s-2-5);
+  font-size: var(--fonts-xs);
+  align-items: center;
+}
+
+.q__map-pool-grid__stage-image {
+  border-radius: 7px;
+}

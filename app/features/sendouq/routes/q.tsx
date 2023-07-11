@@ -5,14 +5,18 @@ import styles from "../q.css";
 import type { LinksFunction } from "@remix-run/node";
 import { Form } from "@remix-run/react";
 import { useTranslation } from "~/hooks/useTranslation";
-import { MAP_LIST_PREFERENCE_OPTIONS } from "../q-constants";
+import { MAP_LIST_PREFERENCE_OPTIONS, SENDOUQ } from "../q-constants";
 import type { SendouRouteHandle } from "~/utils/remix";
-import { ModeImage } from "~/components/Image";
+import { Image, ModeImage } from "~/components/Image";
 import { assertUnreachable } from "~/utils/types";
 import * as React from "react";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import clsx from "clsx";
-import { SENDOUQ_PAGE, navIconUrl } from "~/utils/urls";
+import { SENDOUQ_PAGE, navIconUrl, stageImageUrl } from "~/utils/urls";
+import type { ModeShort } from "~/modules/in-game-lists";
+import { stageIds } from "~/modules/in-game-lists";
+import { rankedModesShort } from "~/modules/in-game-lists/modes";
+import { MapPool } from "~/modules/map-pool-serializer";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -27,6 +31,8 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
+// xxx: load latest group and get initial settings from that
+// xxx: teams looking for scrim?
 export default function QPage() {
   return (
     <Main halfWidth className="stack lg">
@@ -35,6 +41,7 @@ export default function QPage() {
         <h2 className="q__header">Join the queue!</h2>
         <RankedOrScrim />
         <MapPreference />
+        <MapPoolSelector />
       </Form>
     </Main>
   );
@@ -180,6 +187,119 @@ function MapPreference() {
           })}
         </div>
       ) : null}
+    </div>
+  );
+}
+
+function MapPoolSelector() {
+  const { t } = useTranslation(["game-misc"]);
+  const [mapPool, setMapPool] = React.useState<MapPool>(new MapPool([]));
+
+  const countModeInPool = (mode: ModeShort) =>
+    mapPool.stageModePairs.filter((pair) => pair.mode === mode).length;
+
+  return (
+    <div className="q__map-pool-grid">
+      <input type="hidden" name="mapPool" value={mapPool.serialized} />
+      <div />
+      <div />
+      {rankedModesShort.map((modeShort) => {
+        return <ModeImage key={modeShort} mode={modeShort} size={22} />;
+      })}
+      <div />
+      {stageIds.map((stageId) => {
+        return (
+          <>
+            <div>
+              <Image
+                alt=""
+                path={stageImageUrl(stageId)}
+                width={32}
+                height={18}
+                className="q__map-pool-grid__stage-image"
+              />
+            </div>
+            <div>{t(`game-misc:STAGE_${stageId}`)}</div>
+            {rankedModesShort.map((modeShort) => {
+              const id = `${stageId}-${modeShort}`;
+              return (
+                <input
+                  key={id}
+                  type="checkbox"
+                  id={id}
+                  checked={mapPool.has({ stageId, mode: modeShort })}
+                  onChange={(e) => {
+                    const checked = e.target.checked;
+                    setMapPool((prev) => {
+                      if (checked) {
+                        return new MapPool([
+                          ...prev.stageModePairs,
+                          { stageId, mode: modeShort },
+                        ]);
+                      } else {
+                        return new MapPool([
+                          ...prev.stageModePairs.filter(
+                            (pair) =>
+                              pair.stageId !== stageId ||
+                              pair.mode !== modeShort
+                          ),
+                        ]);
+                      }
+                    });
+                  }}
+                />
+              );
+            })}
+            <div
+              className={clsx("text-warning", {
+                invisible:
+                  mapPool.stageModePairs.filter((p) => p.stageId === stageId)
+                    .length <= SENDOUQ.MAX_STAGE_REPEAT_COUNT,
+              })}
+            >
+              max {SENDOUQ.MAX_STAGE_REPEAT_COUNT}
+            </div>
+          </>
+        );
+      })}
+      <div />
+      <div />
+      <div
+        className={clsx({
+          "text-warning": countModeInPool("SZ") > SENDOUQ.SZ_MAP_COUNT,
+          "text-success": countModeInPool("SZ") === SENDOUQ.SZ_MAP_COUNT,
+        })}
+      >
+        {countModeInPool("SZ")}/{SENDOUQ.SZ_MAP_COUNT}
+      </div>
+      <div
+        className={clsx({
+          "text-warning": countModeInPool("TC") > SENDOUQ.OTHER_MODE_MAP_COUNT,
+          "text-success":
+            countModeInPool("TC") === SENDOUQ.OTHER_MODE_MAP_COUNT,
+        })}
+      >
+        {countModeInPool("TC")}/{SENDOUQ.OTHER_MODE_MAP_COUNT}
+      </div>
+      <div
+        className={clsx({
+          "text-warning": countModeInPool("RM") > SENDOUQ.OTHER_MODE_MAP_COUNT,
+          "text-success":
+            countModeInPool("RM") === SENDOUQ.OTHER_MODE_MAP_COUNT,
+        })}
+      >
+        {countModeInPool("RM")}/{SENDOUQ.OTHER_MODE_MAP_COUNT}
+      </div>
+      <div
+        className={clsx({
+          "text-warning": countModeInPool("CB") > SENDOUQ.OTHER_MODE_MAP_COUNT,
+          "text-success":
+            countModeInPool("CB") === SENDOUQ.OTHER_MODE_MAP_COUNT,
+        })}
+      >
+        {countModeInPool("CB")}/{SENDOUQ.OTHER_MODE_MAP_COUNT}
+      </div>
+      <div />
     </div>
   );
 }

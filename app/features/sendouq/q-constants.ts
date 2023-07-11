@@ -16,3 +16,9 @@ assertType<
   (typeof MAP_LIST_PREFERENCE_OPTIONS)[number],
   Group["mapListPreference"]
 >();
+
+export const SENDOUQ = {
+  SZ_MAP_COUNT: 6,
+  OTHER_MODE_MAP_COUNT: 3,
+  MAX_STAGE_REPEAT_COUNT: 2,
+} as const;
