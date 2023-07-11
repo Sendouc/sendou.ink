@@ -25,7 +25,7 @@ import { Popover } from "~/components/Popover";
 import { countUnvalidatedArt } from "~/features/img-upload";
 import { useTranslation } from "~/hooks/useTranslation";
 import { newArtPage } from "~/utils/urls";
-import { requireUserId } from "~/modules/auth/user.server";
+import { getUserId, requireUserId } from "~/modules/auth/user.server";
 
 export const handle: SendouRouteHandle = {
   i18n: ["art"],
@@ -50,7 +50,7 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 export const loader = async ({ params, request }: LoaderArgs) => {
-  const loggedInUser = await requireUserId(request);
+  const loggedInUser = await getUserId(request);
 
   const { identifier } = userParamsSchema.parse(params);
   const user = notFoundIfFalsy(db.users.findByIdentifier(identifier));
@@ -58,7 +58,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   return {
     arts: artsByUserId(user.id),
     unvalidatedArtCount:
-      user.id === loggedInUser.id ? countUnvalidatedArt(user.id) : 0,
+      user.id === loggedInUser?.id ? countUnvalidatedArt(user.id) : 0,
   };
 };
 
