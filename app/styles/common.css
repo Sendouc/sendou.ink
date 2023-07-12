@@ -1175,8 +1175,8 @@ dialog::backdrop {
 }
 
 .pagination__dot {
-  width: 0.5rem;
-  height: 0.5rem;
+  width: 0.6rem;
+  height: 0.6rem;
   border-radius: 50%;
   background-color: var(--theme-transparent);
   transition: all 0.2s ease;

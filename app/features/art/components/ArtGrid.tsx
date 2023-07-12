@@ -40,6 +40,7 @@ export function ArtGrid({
     pagesCount,
     nextPage,
     previousPage,
+    setPage,
   } = useSimplePagination({
     items: arts,
     pageSize: ART_PER_PAGE,
@@ -73,6 +74,7 @@ export function ArtGrid({
           pagesCount={pagesCount}
           nextPage={nextPage}
           previousPage={previousPage}
+          setPage={setPage}
         />
       ) : null}
     </>
@@ -201,11 +203,13 @@ function SimplePagination({
   pagesCount,
   nextPage,
   previousPage,
+  setPage,
 }: {
   currentPage: number;
   pagesCount: number;
   nextPage: () => void;
   previousPage: () => void;
+  setPage: (page: number) => void;
 }) {
   return (
     <div className="stack sm horizontal items-center justify-center flex-wrap">
@@ -222,6 +226,7 @@ function SimplePagination({
           className={clsx("pagination__dot", {
             pagination__dot__active: i === currentPage - 1,
           })}
+          onClick={() => setPage(i + 1)}
         />
       ))}
       <Button
