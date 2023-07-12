@@ -189,6 +189,7 @@ export interface MapPoolMap {
   calendarEventId: number | null; // Part of tournament's map pool
   tournamentTeamId: number | null; // Part of team's map pool
   tieBreakerCalendarEventId: number | null; // Part of the tournament's tiebreaker pool
+  groupId: number | null; // Part of SendouQ group's map pool
   stageId: StageId;
   mode: ModeShort;
 }

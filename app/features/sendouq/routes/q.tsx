@@ -28,7 +28,6 @@ import {
   navIconUrl,
   stageImageUrl,
 } from "~/utils/urls";
-import type { ModeShort } from "~/modules/in-game-lists";
 import { stageIds } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { MapPool } from "~/modules/map-pool-serializer";
@@ -39,7 +38,7 @@ import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
 import { createGroup } from "../queries/createGroup.server";
 import { booleanToInt } from "~/utils/sql";
 import { findActiveGroupByUserId } from "../queries/findActiveGroupByUserId.server";
-import { groupRedirectLocationByCurrentLocation } from "../q-utils";
+import { groupRedirectLocationByCurrentLocation, mapPoolOk } from "../q-utils";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -54,7 +53,6 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-// xxx: persist and validate map pool
 export const action: ActionFunction = async ({ request }) => {
   const user = await requireUserId(request);
   const data = await parseRequestFormData({
@@ -64,11 +62,15 @@ export const action: ActionFunction = async ({ request }) => {
 
   validate(!findActiveGroupByUserId(user.id), "Already in a group");
 
+  const mapPool = new MapPool(data.mapPool);
+  validate(mapPoolOk(mapPool), "Invalid map pool");
+
   createGroup({
     isRanked: booleanToInt(data.rankingType === "ranked"),
     mapListPreference: data.mapListPreference,
     status: data.direct === "true" ? "ACTIVE" : "PREPARING",
     userId: user.id,
+    mapPool,
   });
 
   return redirect(
@@ -95,6 +97,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 // xxx: teams looking for scrim?
 // xxx: link to yt video explaining it
 // xxx: UI when not logged in
+// xxx: show streams?
 export default function QPage() {
   return (
     <Main halfWidth className="stack lg">
@@ -277,43 +280,11 @@ function MapPoolSelector() {
   const { t } = useTranslation(["game-misc"]);
   const [mapPool, setMapPool] = React.useState<MapPool>(new MapPool([]));
 
-  const countModeInPool = (mode: ModeShort) =>
-    mapPool.stageModePairs.filter((pair) => pair.mode === mode).length;
-
-  const mapPoolOk = () => {
-    for (const modeShort of rankedModesShort) {
-      if (
-        modeShort === "SZ" &&
-        countModeInPool(modeShort) !== SENDOUQ.SZ_MAP_COUNT
-      ) {
-        return false;
-      }
-
-      if (
-        modeShort !== "SZ" &&
-        countModeInPool(modeShort) !== SENDOUQ.OTHER_MODE_MAP_COUNT
-      ) {
-        return false;
-      }
-    }
-
-    for (const stageId of stageIds) {
-      if (
-        mapPool.stageModePairs.filter((pair) => pair.stageId === stageId)
-          .length > SENDOUQ.MAX_STAGE_REPEAT_COUNT
-      ) {
-        return false;
-      }
-    }
-
-    return true;
-  };
-
   return (
     <div className="q__map-pool-grid">
       <RequiredHiddenInput
         value={mapPool.serialized}
-        isValid={mapPoolOk()}
+        isValid={mapPoolOk(mapPool)}
         name="mapPool"
       />
       <div />
@@ -381,38 +352,42 @@ function MapPoolSelector() {
       <div />
       <div
         className={clsx({
-          "text-warning": countModeInPool("SZ") > SENDOUQ.SZ_MAP_COUNT,
-          "text-success": countModeInPool("SZ") === SENDOUQ.SZ_MAP_COUNT,
+          "text-warning": mapPool.countMapsByMode("SZ") > SENDOUQ.SZ_MAP_COUNT,
+          "text-success":
+            mapPool.countMapsByMode("SZ") === SENDOUQ.SZ_MAP_COUNT,
         })}
       >
-        {countModeInPool("SZ")}/{SENDOUQ.SZ_MAP_COUNT}
+        {mapPool.countMapsByMode("SZ")}/{SENDOUQ.SZ_MAP_COUNT}
       </div>
       <div
         className={clsx({
-          "text-warning": countModeInPool("TC") > SENDOUQ.OTHER_MODE_MAP_COUNT,
+          "text-warning":
+            mapPool.countMapsByMode("TC") > SENDOUQ.OTHER_MODE_MAP_COUNT,
           "text-success":
-            countModeInPool("TC") === SENDOUQ.OTHER_MODE_MAP_COUNT,
+            mapPool.countMapsByMode("TC") === SENDOUQ.OTHER_MODE_MAP_COUNT,
         })}
       >
-        {countModeInPool("TC")}/{SENDOUQ.OTHER_MODE_MAP_COUNT}
+        {mapPool.countMapsByMode("TC")}/{SENDOUQ.OTHER_MODE_MAP_COUNT}
       </div>
       <div
         className={clsx({
-          "text-warning": countModeInPool("RM") > SENDOUQ.OTHER_MODE_MAP_COUNT,
+          "text-warning":
+            mapPool.countMapsByMode("RM") > SENDOUQ.OTHER_MODE_MAP_COUNT,
           "text-success":
-            countModeInPool("RM") === SENDOUQ.OTHER_MODE_MAP_COUNT,
+            mapPool.countMapsByMode("RM") === SENDOUQ.OTHER_MODE_MAP_COUNT,
         })}
       >
-        {countModeInPool("RM")}/{SENDOUQ.OTHER_MODE_MAP_COUNT}
+        {mapPool.countMapsByMode("RM")}/{SENDOUQ.OTHER_MODE_MAP_COUNT}
       </div>
       <div
         className={clsx({
-          "text-warning": countModeInPool("CB") > SENDOUQ.OTHER_MODE_MAP_COUNT,
+          "text-warning":
+            mapPool.countMapsByMode("CB") > SENDOUQ.OTHER_MODE_MAP_COUNT,
           "text-success":
-            countModeInPool("CB") === SENDOUQ.OTHER_MODE_MAP_COUNT,
+            mapPool.countMapsByMode("CB") === SENDOUQ.OTHER_MODE_MAP_COUNT,
         })}
       >
-        {countModeInPool("CB")}/{SENDOUQ.OTHER_MODE_MAP_COUNT}
+        {mapPool.countMapsByMode("CB")}/{SENDOUQ.OTHER_MODE_MAP_COUNT}
       </div>
       <div />
     </div>

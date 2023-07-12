@@ -1,10 +1,14 @@
 import type { Group } from "~/db/types";
+import { rankedModesShort } from "~/modules/in-game-lists/modes";
+import type { MapPool } from "~/modules/map-pool-serializer";
 import {
   SENDOUQ_LOOKING_PAGE,
   SENDOUQ_PAGE,
   SENDOUQ_PREPARING_PAGE,
   sendouQMatchPage,
 } from "~/utils/urls";
+import { SENDOUQ } from "./q-constants";
+import { stageIds } from "~/modules/in-game-lists";
 
 function groupRedirectLocation(
   group?: Pick<Group, "status"> & { matchId?: number }
@@ -34,4 +38,33 @@ export function groupRedirectLocationByCurrentLocation({
   if (currentLocation === "match" && newLocation.includes("match")) return;
 
   return newLocation;
+}
+
+export function mapPoolOk(mapPool: MapPool) {
+  for (const modeShort of rankedModesShort) {
+    if (
+      modeShort === "SZ" &&
+      mapPool.countMapsByMode(modeShort) !== SENDOUQ.SZ_MAP_COUNT
+    ) {
+      return false;
+    }
+
+    if (
+      modeShort !== "SZ" &&
+      mapPool.countMapsByMode(modeShort) !== SENDOUQ.OTHER_MODE_MAP_COUNT
+    ) {
+      return false;
+    }
+  }
+
+  for (const stageId of stageIds) {
+    if (
+      mapPool.stageModePairs.filter((pair) => pair.stageId === stageId).length >
+      SENDOUQ.MAX_STAGE_REPEAT_COUNT
+    ) {
+      return false;
+    }
+  }
+
+  return true;
 }

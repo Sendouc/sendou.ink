@@ -1,4 +1,9 @@
 module.exports.up = function (db) {
+  db.prepare(/* sql */ `alter table "MapPoolMap" add "groupId" integer`).run();
+  db.prepare(
+    `create index map_pool_map_group_id on "MapPoolMap"("groupId")`
+  ).run();
+
   db.prepare(
     /*sql*/ `
     create table "Group" (

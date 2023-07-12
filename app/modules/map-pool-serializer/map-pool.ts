@@ -95,6 +95,10 @@ export class MapPool {
     return Object.values(this.parsed).every((stages) => stages.length === 0);
   }
 
+  countMapsByMode(mode: ModeShort): number {
+    return this.parsed[mode].length;
+  }
+
   getClonedObject(): MapPoolObject {
     return clone(this.parsed) as MapPoolObject;
   }
