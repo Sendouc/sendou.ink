@@ -4,6 +4,7 @@ export interface ListedArt {
   id: Art["id"];
   url: UserSubmittedImage["url"];
   description?: Art["description"];
+  tags?: string[];
   author?: {
     discordId: User["discordId"];
     discordName: User["discordName"];

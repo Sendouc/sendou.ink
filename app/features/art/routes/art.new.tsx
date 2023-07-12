@@ -261,10 +261,12 @@ function Description() {
 }
 
 function Tags() {
-  const [creationMode, setCreationMode] = React.useState(false);
-  const [tags, setTags] = React.useState<{ name?: string; id?: number }[]>([]);
-  const [newTagValue, setNewTagValue] = React.useState("");
   const data = useLoaderData<typeof loader>();
+  const [creationMode, setCreationMode] = React.useState(false);
+  const [tags, setTags] = React.useState<{ name?: string; id?: number }[]>(
+    data?.art.tags ?? []
+  );
+  const [newTagValue, setNewTagValue] = React.useState("");
 
   const existingTags = data?.tags ?? [];
   const unselectedTags = existingTags.filter(

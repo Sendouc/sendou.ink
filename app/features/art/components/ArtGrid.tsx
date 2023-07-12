@@ -98,6 +98,15 @@ function BigImageDialog({ close, art }: { close: () => void; art: ListedArt }) {
         className="art__dialog__img"
         onLoad={() => setImageLoaded(true)}
       />
+      {art.tags ? (
+        <div className="stack sm horizontal">
+          {art.tags.map((tag) => (
+            <div key={tag} className="art__dialog__tag">
+              #{tag}
+            </div>
+          ))}
+        </div>
+      ) : null}
       {art.description ? (
         <div
           className={clsx("art__dialog__description", {
