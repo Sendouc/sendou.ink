@@ -13,7 +13,7 @@ import * as React from "react";
 import { useFetcher } from "react-router-dom";
 import invariant from "tiny-invariant";
 import { Button } from "~/components/Button";
-import { UserCombobox } from "~/components/Combobox";
+import { Combobox, UserCombobox } from "~/components/Combobox";
 import { FormMessage } from "~/components/FormMessage";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
@@ -30,7 +30,7 @@ import {
   parseRequestFormData,
 } from "~/utils/remix";
 import {
-  ART_PAGE,
+  artPage,
   conditionalUserSubmittedImage,
   navIconUrl,
   userArtPage,
@@ -40,12 +40,13 @@ import { editArtSchema, newArtSchema } from "../art-schemas.server";
 import { addNewArt, editArt } from "../queries/addNewArt.server";
 import { findArtById } from "../queries/findArtById.server";
 import { previewUrl } from "../art-utils";
+import { allArtTags } from "../queries/allArtTags.server";
 
 export const handle: SendouRouteHandle = {
   i18n: ["art"],
   breadcrumb: () => ({
     imgPath: navIconUrl("art"),
-    href: ART_PAGE,
+    href: artPage(),
     type: "IMAGE",
   }),
 };
@@ -79,6 +80,7 @@ export const action: ActionFunction = async ({ request }) => {
       description: data.description,
       isShowcase: data.isShowcase,
       linkedUsers: data.linkedUsers,
+      tags: data.tags,
     });
   } else {
     const uploadHandler = composeUploadHandlers(
@@ -104,6 +106,7 @@ export const action: ActionFunction = async ({ request }) => {
       url: fileName,
       validatedAt: user.patronTier ? dateToDatabaseTimestamp(new Date()) : null,
       linkedUsers: data.linkedUsers,
+      tags: data.tags,
     });
   }
 
@@ -123,7 +126,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const art = findArtById(artId);
   if (!art || art.authorId !== user.id) return null;
 
-  return { art };
+  return { art, tags: allArtTags() };
 };
 
 export default function NewArtPage() {
@@ -152,6 +155,7 @@ export default function NewArtPage() {
         <FormMessage type="info">{t("art:forms.caveats")}</FormMessage>
         <ImageUpload img={img} setImg={setImg} setSmallImg={setSmallImg} />
         <Description />
+        <Tags />
         <LinkedUsers />
         {data?.art ? <ShowcaseToggle /> : null}
         <div>
@@ -256,6 +260,128 @@ function Description() {
   );
 }
 
+function Tags() {
+  const data = useLoaderData<typeof loader>();
+  const [creationMode, setCreationMode] = React.useState(false);
+  const [tags, setTags] = React.useState<{ name?: string; id?: number }[]>(
+    data?.art.tags ?? []
+  );
+  const [newTagValue, setNewTagValue] = React.useState("");
+
+  const existingTags = data?.tags ?? [];
+  const unselectedTags = existingTags.filter(
+    (t) => !tags.some((tag) => tag.id === t.id)
+  );
+
+  const handleAddNewTag = () => {
+    const normalizedNewTagValue = newTagValue
+      .trim()
+      // replace many whitespaces with one
+      .replace(/\s\s+/g, " ")
+      .toLowerCase();
+
+    if (
+      normalizedNewTagValue.length === 0 ||
+      normalizedNewTagValue.length > ART.TAG_MAX_LENGTH
+    ) {
+      return;
+    }
+
+    const alreadyCreatedTag = existingTags.find(
+      (t) => t.name === normalizedNewTagValue
+    );
+
+    if (alreadyCreatedTag) {
+      setTags((tags) => [...tags, alreadyCreatedTag]);
+    } else if (tags.every((tag) => tag.name !== normalizedNewTagValue)) {
+      setTags((tags) => [...tags, { name: normalizedNewTagValue }]);
+    }
+
+    setNewTagValue("");
+    setCreationMode(false);
+  };
+
+  return (
+    <div className="stack xs items-start">
+      <Label htmlFor="tags" className="mb-0">
+        Tags
+      </Label>
+      <input type="hidden" name="tags" value={JSON.stringify(tags)} />
+      {creationMode ? (
+        <div className="art__creation-mode-switcher-container">
+          <Button variant="minimal" onClick={() => setCreationMode(false)}>
+            Select from existing tags
+          </Button>
+        </div>
+      ) : (
+        <div className="stack horizontal sm text-xs text-lighter art__creation-mode-switcher-container">
+          Can&apos;t find an existing tag?{" "}
+          <Button variant="minimal" onClick={() => setCreationMode(true)}>
+            Create a new one.
+          </Button>
+        </div>
+      )}
+      {tags.length >= ART.TAGS_MAX_LENGTH ? (
+        <div className="text-sm text-warning">Max tags reached</div>
+      ) : creationMode ? (
+        <div className="stack horizontal sm items-center">
+          <input
+            placeholder="Create a new tag"
+            name="tag"
+            value={newTagValue}
+            onChange={(e) => setNewTagValue(e.target.value)}
+            onKeyDown={(event) => {
+              if (event.code === "Enter") {
+                handleAddNewTag();
+              }
+            }}
+          />
+          <Button size="tiny" variant="outlined" onClick={handleAddNewTag}>
+            Add
+          </Button>
+        </div>
+      ) : (
+        <Combobox
+          // empty combobox on select
+          key={tags.length}
+          options={unselectedTags.map((t) => ({
+            label: t.name,
+            value: String(t.id),
+          }))}
+          inputName="tags"
+          placeholder="Search existing tags"
+          initialValue={null}
+          onChange={(selection) => {
+            if (!selection) return;
+            setTags([
+              ...tags,
+              { name: selection.label, id: Number(selection.value) },
+            ]);
+          }}
+        />
+      )}
+      <div className="text-sm stack sm flex-wrap horizontal">
+        {tags.map((t) => {
+          return (
+            <div key={t.name} className="stack horizontal">
+              {t.name}{" "}
+              <Button
+                icon={<CrossIcon />}
+                size="tiny"
+                variant="minimal-destructive"
+                className="art__delete-tag-button"
+                onClick={() => {
+                  setTags(tags.filter((tag) => tag.name !== t.name));
+                }}
+              />
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function LinkedUsers() {
   const { t } = useTranslation(["art"]);
   const data = useLoaderData<typeof loader>();
@@ -313,6 +439,7 @@ function LinkedUsers() {
         onClick={() => setUsers([...users, { inputId: nanoid() }])}
         disabled={users.length >= ART.LINKED_USERS_MAX_LENGTH}
         className="my-3"
+        variant="outlined"
       >
         {t("art:forms.linkedUsers.anotherOne")}
       </Button>

@@ -482,6 +482,18 @@ export interface Art {
   createdAt: number;
 }
 
+export interface ArtTag {
+  id: number;
+  name: string;
+  authorId: number;
+  createdAt: number;
+}
+
+export interface TaggedArt {
+  artId: number;
+  tagId: number;
+}
+
 export interface ArtUserMetadata {
   artId: number;
   userId: number;

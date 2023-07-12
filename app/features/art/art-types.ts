@@ -4,6 +4,13 @@ export interface ListedArt {
   id: Art["id"];
   url: UserSubmittedImage["url"];
   description?: Art["description"];
+  tags?: string[];
+  linkedUsers?: Array<{
+    discordId: User["discordId"];
+    discordName: User["discordName"];
+    discordDiscriminator: User["discordDiscriminator"];
+    customUrl: User["customUrl"];
+  }>;
   author?: {
     discordId: User["discordId"];
     discordName: User["discordName"];

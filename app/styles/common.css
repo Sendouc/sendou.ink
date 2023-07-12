@@ -1156,6 +1156,20 @@ dialog::backdrop {
   outline: none;
 }
 
+.art__dialog__tag {
+  background-color: #fff;
+  border-radius: var(--rounded);
+  color: #000;
+  font-size: var(--fonts-xxs);
+  padding-inline: var(--s-1);
+  margin-block-start: var(--s-1);
+  margin-block-end: var(--s-0-5);
+}
+
+.art__dialog__tag__user {
+  background-color: var(--theme);
+}
+
 .art__dialog__description {
   font-size: var(--fonts-sm);
   text-align: center;
@@ -1174,9 +1188,18 @@ dialog::backdrop {
   font-size: var(--fonts-sm);
 }
 
+.art__delete-tag-button {
+  margin-block-start: -5px;
+  margin-inline-start: 1px;
+}
+
+.art__creation-mode-switcher-container {
+  height: 20px;
+}
+
 .pagination__dot {
-  width: 0.5rem;
-  height: 0.5rem;
+  width: 0.6rem;
+  height: 0.6rem;
   border-radius: 50%;
   background-color: var(--theme-transparent);
   transition: all 0.2s ease;

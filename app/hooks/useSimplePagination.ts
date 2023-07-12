@@ -29,6 +29,16 @@ export function useSimplePagination<T>({
     }
   }, [currentPage]);
 
+  const setPage = React.useCallback(
+    (page: number) => {
+      if (page > 0 && page <= pagesCount) {
+        setCurrentPage(page);
+        window.scrollTo(0, 0);
+      }
+    },
+    [pagesCount]
+  );
+
   const thereIsNextPage = currentPage < pagesCount;
   const thereIsPreviousPage = currentPage > 1;
 
@@ -44,6 +54,7 @@ export function useSimplePagination<T>({
     itemsToDisplay,
     nextPage,
     previousPage,
+    setPage,
     thereIsNextPage,
     thereIsPreviousPage,
     everythingVisible: items.length === itemsToDisplay.length,
