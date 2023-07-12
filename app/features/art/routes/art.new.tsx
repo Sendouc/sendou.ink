@@ -80,6 +80,7 @@ export const action: ActionFunction = async ({ request }) => {
       description: data.description,
       isShowcase: data.isShowcase,
       linkedUsers: data.linkedUsers,
+      tags: data.tags,
     });
   } else {
     const uploadHandler = composeUploadHandlers(
@@ -105,6 +106,7 @@ export const action: ActionFunction = async ({ request }) => {
       url: fileName,
       validatedAt: user.patronTier ? dateToDatabaseTimestamp(new Date()) : null,
       linkedUsers: data.linkedUsers,
+      tags: data.tags,
     });
   }
 
@@ -302,6 +304,7 @@ function Tags() {
       <Label htmlFor="tags" className="mb-0">
         Tags
       </Label>
+      <input type="hidden" name="tags" value={JSON.stringify(tags)} />
       {creationMode ? (
         <div className="art__creation-mode-switcher-container">
           <Button variant="minimal" onClick={() => setCreationMode(false)}>
@@ -316,7 +319,9 @@ function Tags() {
           </Button>
         </div>
       )}
-      {creationMode ? (
+      {tags.length >= ART.TAGS_MAX_LENGTH ? (
+        <div className="text-sm text-warning">Max tags reached</div>
+      ) : creationMode ? (
         <div className="stack horizontal sm items-center">
           <input
             placeholder="Create a new tag"
