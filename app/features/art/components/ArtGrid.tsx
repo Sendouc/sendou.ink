@@ -4,9 +4,11 @@ import { Avatar } from "~/components/Avatar";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { discordFullName } from "~/utils/strings";
 import {
+  artPage,
   conditionalUserSubmittedImage,
   newArtPage,
   userArtPage,
+  userPage,
 } from "~/utils/urls";
 import type { ListedArt } from "../art-types";
 import { Dialog } from "~/components/Dialog";
@@ -106,12 +108,21 @@ function BigImageDialog({ close, art }: { close: () => void; art: ListedArt }) {
         className="art__dialog__img"
         onLoad={() => setImageLoaded(true)}
       />
-      {art.tags ? (
+      {art.tags || art.linkedUsers ? (
         <div className="stack sm horizontal">
-          {art.tags.map((tag) => (
-            <div key={tag} className="art__dialog__tag">
+          {art.linkedUsers?.map((user) => (
+            <Link
+              to={userPage(user)}
+              key={user.discordId}
+              className="art__dialog__tag art__dialog__tag__user"
+            >
+              {discordFullName(user)}
+            </Link>
+          ))}
+          {art.tags?.map((tag) => (
+            <Link to={artPage(tag)} key={tag} className="art__dialog__tag">
               #{tag}
-            </div>
+            </Link>
           ))}
         </div>
       ) : null}

@@ -13,7 +13,7 @@ import { useTranslation } from "~/hooks/useTranslation";
 import { i18next } from "~/modules/i18n";
 import { type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
-import { ART_PAGE, navIconUrl } from "~/utils/urls";
+import { artPage, navIconUrl } from "~/utils/urls";
 import { ArtGrid } from "../components/ArtGrid";
 import { allArtTags } from "../queries/allArtTags.server";
 import {
@@ -39,7 +39,7 @@ export const handle: SendouRouteHandle = {
   i18n: ["art"],
   breadcrumb: () => ({
     imgPath: navIconUrl("art"),
-    href: ART_PAGE,
+    href: artPage(),
     type: "IMAGE",
   }),
 };

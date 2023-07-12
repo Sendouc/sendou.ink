@@ -30,7 +30,7 @@ import {
   parseRequestFormData,
 } from "~/utils/remix";
 import {
-  ART_PAGE,
+  artPage,
   conditionalUserSubmittedImage,
   navIconUrl,
   userArtPage,
@@ -46,7 +46,7 @@ export const handle: SendouRouteHandle = {
   i18n: ["art"],
   breadcrumb: () => ({
     imgPath: navIconUrl("art"),
-    href: ART_PAGE,
+    href: artPage(),
     type: "IMAGE",
   }),
 };
