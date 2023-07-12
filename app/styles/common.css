@@ -1174,6 +1174,15 @@ dialog::backdrop {
   font-size: var(--fonts-sm);
 }
 
+.art__delete-tag-button {
+  margin-block-start: -5px;
+  margin-inline-start: 1px;
+}
+
+.art__creation-mode-switcher-container {
+  height: 20px;
+}
+
 .pagination__dot {
   width: 0.6rem;
   height: 0.6rem;
