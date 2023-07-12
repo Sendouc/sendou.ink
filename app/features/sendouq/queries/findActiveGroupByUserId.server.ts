@@ -4,6 +4,7 @@ import type { Group } from "~/db/types";
 
 const stm = sql.prepare(/* sql */ `
   select
+    "Group"."id",
     "Group"."status",
     "GroupMatch"."id" as "matchId"
   from
@@ -16,7 +17,7 @@ const stm = sql.prepare(/* sql */ `
     and "GroupMember"."userId" = @userId
 `);
 
-type ActiveGroup = Pick<Group, "status"> & { matchId?: number };
+type ActiveGroup = Pick<Group, "id" | "status"> & { matchId?: number };
 
 export function findActiveGroupByUserId(
   userId: number
