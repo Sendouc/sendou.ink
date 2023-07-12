@@ -19,7 +19,7 @@ const stm = sql.prepare(/* sql */ `
 
 type ActiveGroup = Pick<Group, "id" | "status"> & { matchId?: number };
 
-export function findActiveGroupByUserId(
+export function findCurrentGroupByUserId(
   userId: number
 ): ActiveGroup | undefined {
   const groups = stm.all({ userId }) as any;

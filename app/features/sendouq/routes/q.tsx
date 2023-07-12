@@ -37,7 +37,7 @@ import { createGroupSchema } from "../q-schemas.server";
 import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
 import { createGroup } from "../queries/createGroup.server";
 import { booleanToInt } from "~/utils/sql";
-import { findActiveGroupByUserId } from "../queries/findActiveGroupByUserId.server";
+import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.server";
 import { groupRedirectLocationByCurrentLocation, mapPoolOk } from "../q-utils";
 
 export const handle: SendouRouteHandle = {
@@ -60,7 +60,7 @@ export const action: ActionFunction = async ({ request }) => {
     schema: createGroupSchema,
   });
 
-  validate(!findActiveGroupByUserId(user.id), "Already in a group");
+  validate(!findCurrentGroupByUserId(user.id), "Already in a group");
 
   const mapPool = new MapPool(data.mapPool);
   validate(mapPoolOk(mapPool), "Invalid map pool");
@@ -82,7 +82,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const user = await getUserId(request);
 
   const redirectLocation = groupRedirectLocationByCurrentLocation({
-    group: user ? findActiveGroupByUserId(user.id) : undefined,
+    group: user ? findCurrentGroupByUserId(user.id) : undefined,
     currentLocation: "default",
   });
 

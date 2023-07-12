@@ -1,7 +1,7 @@
 import { Main } from "~/components/Main";
 import { getUserId, requireUser } from "~/modules/auth/user.server";
 import { groupRedirectLocationByCurrentLocation } from "../q-utils";
-import { findActiveGroupByUserId } from "../queries/findActiveGroupByUserId.server";
+import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.server";
 import {
   type LoaderArgs,
   redirect,
@@ -15,14 +15,14 @@ import { Form } from "@remix-run/react";
 
 export const action: ActionFunction = async ({ request }) => {
   const user = await requireUser(request);
-  const activeGroup = findActiveGroupByUserId(user.id);
+  const currentGroup = findCurrentGroupByUserId(user.id);
 
   validate(
-    activeGroup && activeGroup.status === "PREPARING",
+    currentGroup && currentGroup.status === "PREPARING",
     "No group preparing"
   );
 
-  setGroupAsActive(activeGroup.id);
+  setGroupAsActive(currentGroup.id);
 
   return redirect(SENDOUQ_LOOKING_PAGE);
 };
@@ -31,7 +31,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const user = await getUserId(request);
 
   const redirectLocation = groupRedirectLocationByCurrentLocation({
-    group: user ? findActiveGroupByUserId(user.id) : undefined,
+    group: user ? findCurrentGroupByUserId(user.id) : undefined,
     currentLocation: "preparing",
   });
 
