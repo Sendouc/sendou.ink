@@ -23,6 +23,7 @@ import { useTranslation } from "~/hooks/useTranslation";
 import { previewUrl } from "../art-utils";
 import { TrashIcon } from "~/components/icons/Trash";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
+import { useSearchParamState } from "~/hooks/useSearchParamState";
 
 export function ArtGrid({
   arts,
@@ -45,15 +46,22 @@ export function ArtGrid({
     items: arts,
     pageSize: ART_PER_PAGE,
   });
-  const [bigArt, setBigArt] = React.useState<ListedArt | null>(null);
+  const [bigArtId, setBigArtId] = useSearchParamState<number | null>({
+    defaultValue: null,
+    name: "big",
+    revive: (value) =>
+      itemsToDisplay.find((art) => art.id === Number(value))?.id,
+  });
   const isMounted = useIsMounted();
 
   if (!isMounted) return null;
 
+  const bigArt = itemsToDisplay.find((art) => art.id === bigArtId);
+
   return (
     <>
       {bigArt ? (
-        <BigImageDialog close={() => setBigArt(null)} art={bigArt} />
+        <BigImageDialog close={() => setBigArtId(null)} art={bigArt} />
       ) : null}
       <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}>
         <Masonry gutter="1rem">
@@ -63,7 +71,7 @@ export function ArtGrid({
               art={art}
               canEdit={canEdit}
               enablePreview={enablePreview}
-              onClick={enablePreview ? () => setBigArt(art) : undefined}
+              onClick={enablePreview ? () => setBigArtId(art.id) : undefined}
             />
           ))}
         </Masonry>
