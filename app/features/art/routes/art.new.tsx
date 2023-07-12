@@ -120,11 +120,13 @@ export const loader = async ({ request }: LoaderArgs) => {
   const artIdRaw = new URL(request.url).searchParams.get(
     NEW_ART_EXISTING_SEARCH_PARAM_KEY
   );
-  if (!artIdRaw) return null;
+  if (!artIdRaw) return { art: null, tags: allArtTags() };
   const artId = Number(artIdRaw);
 
   const art = findArtById(artId);
-  if (!art || art.authorId !== user.id) return null;
+  if (!art || art.authorId !== user.id) {
+    return { art: null, tags: allArtTags() };
+  }
 
   return { art, tags: allArtTags() };
 };
@@ -157,9 +159,9 @@ export default function NewArtPage() {
         <Description />
         <Tags />
         <LinkedUsers />
-        {data?.art ? <ShowcaseToggle /> : null}
+        {data.art ? <ShowcaseToggle /> : null}
         <div>
-          <Button onClick={handleSubmit} disabled={!img && !data?.art}>
+          <Button onClick={handleSubmit} disabled={!img && !data.art}>
             {t("common:actions.save")}
           </Button>
         </div>
@@ -180,7 +182,7 @@ function ImageUpload({
   const data = useLoaderData<typeof loader>();
   const { t } = useTranslation(["common"]);
 
-  if (data?.art) {
+  if (data.art) {
     return (
       <img
         src={conditionalUserSubmittedImage(previewUrl(data.art.url))}
@@ -239,7 +241,7 @@ function ImageUpload({
 function Description() {
   const { t } = useTranslation(["art"]);
   const data = useLoaderData<typeof loader>();
-  const [value, setValue] = React.useState(data?.art.description ?? "");
+  const [value, setValue] = React.useState(data.art?.description ?? "");
 
   return (
     <div>
@@ -260,15 +262,17 @@ function Description() {
   );
 }
 
+// note: not handling edge case where a tag was added by another user while this
+// user was adding a new art with the same tag -> will crash
 function Tags() {
   const data = useLoaderData<typeof loader>();
   const [creationMode, setCreationMode] = React.useState(false);
   const [tags, setTags] = React.useState<{ name?: string; id?: number }[]>(
-    data?.art.tags ?? []
+    data.art?.tags ?? []
   );
   const [newTagValue, setNewTagValue] = React.useState("");
 
-  const existingTags = data?.tags ?? [];
+  const existingTags = data.tags;
   const unselectedTags = existingTags.filter(
     (t) => !tags.some((tag) => tag.id === t.id)
   );
@@ -388,8 +392,8 @@ function LinkedUsers() {
   const [users, setUsers] = React.useState<
     { inputId: string; userId?: number }[]
   >(
-    (data?.art.linkedUsers ?? []).length > 0
-      ? data!.art.linkedUsers.map((userId) => ({ userId, inputId: nanoid() }))
+    (data.art?.linkedUsers ?? []).length > 0
+      ? data.art!.linkedUsers.map((userId) => ({ userId, inputId: nanoid() }))
       : [{ inputId: nanoid() }]
   );
 
@@ -451,7 +455,7 @@ function LinkedUsers() {
 function ShowcaseToggle() {
   const { t } = useTranslation(["art"]);
   const data = useLoaderData<typeof loader>();
-  const isCurrentlyShowcase = Boolean(data?.art.isShowcase);
+  const isCurrentlyShowcase = Boolean(data.art?.isShowcase);
   const [checked, setChecked] = React.useState(isCurrentlyShowcase);
 
   return (
