@@ -19,6 +19,6 @@ assertType<
 
 export const SENDOUQ = {
   SZ_MAP_COUNT: 6,
-  OTHER_MODE_MAP_COUNT: 3,
+  OTHER_MODE_MAP_COUNT: 2,
   MAX_STAGE_REPEAT_COUNT: 2,
 } as const;
