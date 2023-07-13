@@ -512,7 +512,7 @@ export interface Group {
     | "NO_PREFERENCE";
   isRanked: number;
   inviteCode: string;
-  // xxx: index?
+  // xxx: index? latestActionAt too maybe
   status: "PREPARING" | "ACTIVE" | "INACTIVE";
 }
 
