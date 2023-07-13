@@ -8,7 +8,7 @@ interface DividedGroups {
   likesReceived: LookingGroup[];
   likesGiven: LookingGroup[];
 }
-// xxx: ordering
+// xxx: handle both liked and liked by same group
 export function divideGroups({
   groups,
   ownGroupId,
@@ -23,29 +23,33 @@ export function divideGroups({
   const likesReceived: LookingGroup[] = [];
   const likesGiven: LookingGroup[] = [];
 
+  const unneutralGroupIds = new Set<number>();
+  for (const like of likes) {
+    for (const group of groups) {
+      if (group.id === ownGroupId) continue;
+
+      if (like.likerGroupId === group.id) {
+        likesReceived.push(group);
+        unneutralGroupIds.add(group.id);
+        break;
+      }
+      if (like.targetGroupId === group.id) {
+        likesGiven.push(group);
+        unneutralGroupIds.add(group.id);
+        break;
+      }
+    }
+  }
+
   for (const group of groups) {
     if (group.id === ownGroupId) {
       own = group;
       continue;
     }
 
-    let found = false;
-    for (const like of likes) {
-      if (like.likerGroupId === group.id) {
-        likesReceived.push(group);
-        found = true;
-        break;
-      }
-      if (like.targetGroupId === group.id) {
-        likesGiven.push(group);
-        found = true;
-        break;
-      }
-    }
+    if (unneutralGroupIds.has(group.id)) continue;
 
-    if (!found) {
-      neutral.push(group);
-    }
+    neutral.push(group);
   }
 
   invariant(own, "own group not found");

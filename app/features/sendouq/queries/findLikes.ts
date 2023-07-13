@@ -11,7 +11,7 @@ const stm = sql.prepare(/* sql */ `
     "GroupLike"."likerGroupId" = @groupId
     or "GroupLike"."targetGroupId" = @groupId
   order by
-    "GroupLike"."createdAt" asc
+    "GroupLike"."createdAt" desc
 `);
 
 export function findLikes(
