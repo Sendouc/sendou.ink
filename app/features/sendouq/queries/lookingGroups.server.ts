@@ -1,15 +1,15 @@
 import { sql } from "~/db/sql";
-import { MainWeaponId } from "~/modules/in-game-lists";
+import type { MainWeaponId } from "~/modules/in-game-lists";
 import { parseDBArray, parseDBJsonArray } from "~/utils/sql";
 
 const stm = sql.prepare(/* sql */ `
   with "q1" as (
     select
       "Group"."id",
+      "Group"."createdAt",
       "User"."discordId",
       "User"."discordName",
       "User"."discordAvatar",
-      "User"."discordDiscriminator",
       json_group_array("UserWeapon"."weaponSplId") as "weapons"
     from
       "Group"
@@ -21,7 +21,7 @@ const stm = sql.prepare(/* sql */ `
     where
       "Group"."status" = 'ACTIVE'
     -- only groups that were active in the last half an hour
-    and "Group"."latestActionAt" > (unixepoch() - 1800)
+    and "Group"."latestActionAt" > (unixepoch() - 180000)
     and "GroupMatch"."id" is null
     group by "User"."id"
     order by "UserWeapon"."order" asc
@@ -33,12 +33,12 @@ const stm = sql.prepare(/* sql */ `
         'discordId', "q1"."discordId",
         'discordName', "q1"."discordName",
         'discordAvatar', "q1"."discordAvatar",
-        'discordDiscriminator', "q1"."discordDiscriminator",
         'weapons', "q1"."weapons"
       )
     ) as "members"
   from "q1"
   group by "q1"."id"
+  order by "q1"."createdAt" desc
 `);
 
 export type LookingGroup = {
@@ -47,7 +47,6 @@ export type LookingGroup = {
     discordId: string;
     discordName: string;
     discordAvatar: string;
-    discordDiscriminator: string;
     weapons?: MainWeaponId[];
   }[];
 };
