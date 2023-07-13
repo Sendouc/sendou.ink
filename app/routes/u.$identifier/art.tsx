@@ -136,7 +136,9 @@ export default function UserArtPage() {
               }
               className="w-max"
             >
-              <option value={ALL_TAGS_KEY}>All ({data.arts.length})</option>
+              <option value={ALL_TAGS_KEY}>
+                {t("art:radios.all")} ({data.arts.length})
+              </option>
               {data.tagCounts.map(([tag, count]) => (
                 <option key={tag} value={tag}>
                   #{tag} ({count})

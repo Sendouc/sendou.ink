@@ -271,6 +271,7 @@ function Description() {
 // note: not handling edge case where a tag was added by another user while this
 // user was adding a new art with the same tag -> will crash
 function Tags() {
+  const { t } = useTranslation(["art", "common"]);
   const data = useLoaderData<typeof loader>();
   const [creationMode, setCreationMode] = React.useState(false);
   const [tags, setTags] = React.useState<{ name?: string; id?: number }[]>(
@@ -314,29 +315,31 @@ function Tags() {
   return (
     <div className="stack xs items-start">
       <Label htmlFor="tags" className="mb-0">
-        Tags
+        {t("art:forms.tags.title")}
       </Label>
       <input type="hidden" name="tags" value={JSON.stringify(tags)} />
       {creationMode ? (
         <div className="art__creation-mode-switcher-container">
           <Button variant="minimal" onClick={() => setCreationMode(false)}>
-            Select from existing tags
+            {t("art:forms.tags.selectFromExisting")}
           </Button>
         </div>
       ) : (
         <div className="stack horizontal sm text-xs text-lighter art__creation-mode-switcher-container">
-          Can&apos;t find an existing tag?{" "}
+          {t("art:forms.tags.cantFindExisting")}{" "}
           <Button variant="minimal" onClick={() => setCreationMode(true)}>
-            Create a new one.
+            {t("art:forms.tags.addNew")}
           </Button>
         </div>
       )}
       {tags.length >= ART.TAGS_MAX_LENGTH ? (
-        <div className="text-sm text-warning">Max tags reached</div>
+        <div className="text-sm text-warning">
+          {t("art:forms.tags.maxReached")}
+        </div>
       ) : creationMode ? (
         <div className="stack horizontal sm items-center">
           <input
-            placeholder="Create a new tag"
+            placeholder={t("art:forms.tags.addNew.placeholder")}
             name="tag"
             value={newTagValue}
             onChange={(e) => setNewTagValue(e.target.value)}
@@ -347,7 +350,7 @@ function Tags() {
             }}
           />
           <Button size="tiny" variant="outlined" onClick={handleAddNewTag}>
-            Add
+            {t("common:actions.add")}
           </Button>
         </div>
       ) : (
@@ -359,7 +362,7 @@ function Tags() {
             value: String(t.id),
           }))}
           inputName="tags"
-          placeholder="Search existing tags"
+          placeholder={t("art:forms.tags.searchExisting.placeholder")}
           initialValue={null}
           onChange={(selection) => {
             if (!selection) return;

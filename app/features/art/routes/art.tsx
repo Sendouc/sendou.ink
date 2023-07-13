@@ -70,7 +70,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 export default function ArtPage() {
-  const { t } = useTranslation(["art"]);
+  const { t } = useTranslation(["art", "common"]);
   const data = useLoaderData<typeof loader>();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -106,7 +106,7 @@ export default function ArtPage() {
             value: String(t.id),
           }))}
           inputName="tags"
-          placeholder="Filter by tag"
+          placeholder={t("art:filterByTag")}
           initialValue={null}
           onChange={(selection) => {
             if (!selection) return;
@@ -120,7 +120,7 @@ export default function ArtPage() {
       </div>
       {filteredTag ? (
         <div className="text-xs text-lighter stack md horizontal items-center">
-          Showing results filtered by #{filteredTag}{" "}
+          {t("art:filteringByTag", { tag: filteredTag })}
           <Button
             size="tiny"
             variant="minimal-destructive"
@@ -132,7 +132,7 @@ export default function ArtPage() {
               });
             }}
           >
-            Clear
+            {t("common:actions.clear")}
           </Button>
         </div>
       ) : null}
