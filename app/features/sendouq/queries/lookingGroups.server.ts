@@ -21,7 +21,7 @@ const stm = sql.prepare(/* sql */ `
     where
       "Group"."status" = 'ACTIVE'
     -- only groups that were active in the last half an hour
-    and "Group"."latestActionAt" > (unixepoch() - 180000)
+    and "Group"."latestActionAt" > (unixepoch() - 1800)
     and "GroupMatch"."id" is null
     group by "User"."id"
     order by "UserWeapon"."order" asc
