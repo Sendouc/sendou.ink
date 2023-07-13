@@ -8,7 +8,6 @@ interface DividedGroups {
   likesReceived: LookingGroup[];
   likesGiven: LookingGroup[];
 }
-// xxx: handle both liked and liked by same group
 export function divideGroups({
   groups,
   ownGroupId,
@@ -27,6 +26,12 @@ export function divideGroups({
   for (const like of likes) {
     for (const group of groups) {
       if (group.id === ownGroupId) continue;
+
+      // handles edge case where they liked each other
+      // right after each other so the group didn't morph
+      // so instead it will look so that the group liked us
+      // and there is the option to morph
+      if (unneutralGroupIds.has(group.id)) continue;
 
       if (like.likerGroupId === group.id) {
         likesReceived.push(group);
