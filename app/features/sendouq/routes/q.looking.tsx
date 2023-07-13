@@ -103,7 +103,6 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 // xxx: handle group refresh and warning
-// xxx: maybe show only 3 first weapons?
 export default function QLookingPage() {
   const data = useLoaderData<typeof loader>();
 

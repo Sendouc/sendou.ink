@@ -20,9 +20,10 @@ const stm = sql.prepare(/* sql */ `
       or "GroupMatch"."bravoGroupId" = "Group"."id"
     where
       "Group"."status" = 'ACTIVE'
-    -- only groups that were active in the last half an hour as well as own group
-    and ("Group"."latestActionAt" > (unixepoch() - 1800) or "Group"."id" = @ownGroupId)
-    and "GroupMatch"."id" is null
+      -- only groups that were active in the last half an hour as well as own group
+      and ("Group"."latestActionAt" > (unixepoch() - 1800) or "Group"."id" = @ownGroupId)
+      and "GroupMatch"."id" is null
+      and "UserWeapon"."order" <= 3
     group by "User"."id"
     order by "UserWeapon"."order" asc
   )
