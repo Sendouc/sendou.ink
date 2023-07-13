@@ -62,6 +62,7 @@
   background-color: var(--bg-lighter);
   width: 100%;
   border-radius: var(--rounded);
+  padding: var(--s-2);
 }
 
 .q__group-member {
@@ -69,4 +70,18 @@
   gap: var(--s-2);
   align-items: center;
   font-size: var(--fonts-xs);
+  font-weight: var(--semi-bold);
+  color: var(--text);
+}
+
+.q__group-member-weapons {
+  display: flex;
+  gap: var(--s-1);
+  margin-block-start: -2px;
+}
+
+.q__group-member-weapon {
+  background-color: var(--bg);
+  border-radius: 100%;
+  padding: var(--s-1);
 }

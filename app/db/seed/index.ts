@@ -250,6 +250,35 @@ function userProfiles() {
         country: Math.random() > 0.5 ? faker.location.countryCode() : null,
       });
   }
+
+  for (let id = 3; id < 500; id++) {
+    if (Math.random() < 0.15) continue; // 85% have weapons
+
+    const weapons = shuffle([...mainWeaponIds]);
+
+    for (let j = 0; j < faker.helpers.arrayElement([1, 2, 3, 4, 5]); j++) {
+      sql
+        .prepare(
+          /* sql */ `insert into "UserWeapon" (
+          "userId",
+          "weaponSplId",
+          "order",
+          "isFavorite"
+        ) values (
+          @userId,
+          @weaponSplId,
+          @order,
+          @isFavorite
+        )`
+        )
+        .run({
+          userId: id,
+          weaponSplId: weapons.pop()!,
+          order: j + 1,
+          isFavorite: Math.random() > 0.8 ? 1 : 0,
+        });
+    }
+  }
 }
 
 function fakeUser(usedNames: Set<string>) {

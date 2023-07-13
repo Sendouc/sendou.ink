@@ -6,12 +6,15 @@ import { redirect } from "@remix-run/node";
 import type { LinksFunction, LoaderArgs } from "@remix-run/node";
 import type { LookingGroup } from "../queries/lookingGroups.server";
 import { findLookingGroups } from "../queries/lookingGroups.server";
-import { useLoaderData } from "@remix-run/react";
-import { SENDOUQ_LOOKING_PAGE, navIconUrl } from "~/utils/urls";
+import { Link, useLoaderData } from "@remix-run/react";
+import { SENDOUQ_LOOKING_PAGE, navIconUrl, userPage } from "~/utils/urls";
 import type { SendouRouteHandle } from "~/utils/remix";
 import styles from "../q.css";
 import { Avatar } from "~/components/Avatar";
 import { divideGroups } from "../core/groups.server";
+import { WeaponImage } from "~/components/Image";
+import { Button } from "~/components/Button";
+import * as React from "react";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -60,7 +63,7 @@ export default function QLookingPage() {
         </div>
         <div className="w-full">
           <h2>Neutral</h2>
-          <div className="stack md">
+          <div className="stack sm">
             {data.groups.neutral.map((group) => {
               return <GroupCard key={group.id} group={group} />;
             })}
@@ -80,12 +83,38 @@ function GroupCard({ group }: { group: LookingGroup }) {
       <div className="stack sm">
         {group.members.map((member) => {
           return (
-            <div key={member.discordId} className="q__group-member">
-              <Avatar user={member} size="xxs" />
-              {member.discordName}
-            </div>
+            <React.Fragment key={member.discordId}>
+              <Link
+                to={userPage(member)}
+                className="q__group-member"
+                target="_blank"
+              >
+                <Avatar user={member} size="xxs" />
+                {member.discordName}
+              </Link>
+              {member.weapons ? (
+                <div className="q__group-member-weapons">
+                  {member.weapons.map((weapon) => {
+                    return (
+                      <WeaponImage
+                        key={weapon}
+                        weaponSplId={weapon}
+                        variant="badge"
+                        size={36}
+                        className="q__group-member-weapon"
+                      />
+                    );
+                  })}
+                </div>
+              ) : null}
+            </React.Fragment>
           );
         })}
+      </div>
+      <div className="stack items-center mt-4">
+        <Button size="tiny" variant="outlined">
+          Ask to play
+        </Button>
       </div>
     </section>
   );
