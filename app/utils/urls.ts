@@ -91,7 +91,6 @@ export const OBJECT_DAMAGE_CALCULATOR_URL = "/object-damage-calculator";
 export const VODS_PAGE = "/vods";
 export const LEADERBOARDS_PAGE = "/leaderboards";
 export const LINKS_PAGE = "/links";
-export const ART_PAGE = "/art";
 export const SENDOUQ_PAGE = "/q";
 export const SENDOUQ_PREPARING_PAGE = "/q/preparing";
 export const SENDOUQ_LOOKING_PAGE = "/q/looking";
