@@ -23,7 +23,7 @@ const stm = sql.prepare(/* sql */ `
       -- only groups that were active in the last half an hour as well as own group
       and ("Group"."latestActionAt" > (unixepoch() - 1800) or "Group"."id" = @ownGroupId)
       and "GroupMatch"."id" is null
-      and "UserWeapon"."order" <= 3
+      and ("UserWeapon"."order" is null or "UserWeapon"."order" <= 3)
     group by "User"."id"
     order by "UserWeapon"."order" asc
   )
