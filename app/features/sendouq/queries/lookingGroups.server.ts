@@ -20,8 +20,8 @@ const stm = sql.prepare(/* sql */ `
       or "GroupMatch"."bravoGroupId" = "Group"."id"
     where
       "Group"."status" = 'ACTIVE'
-    -- only groups that were active in the last half an hour
-    and "Group"."latestActionAt" > (unixepoch() - 1800)
+    -- only groups that were active in the last half an hour as well as own group
+    and ("Group"."latestActionAt" > (unixepoch() - 1800) or "Group"."id" = @ownGroupId)
     and "GroupMatch"."id" is null
     group by "User"."id"
     order by "UserWeapon"."order" asc
@@ -51,9 +51,15 @@ export type LookingGroup = {
   }[];
 };
 
-export function findLookingGroups(maxGroupSize: number): LookingGroup[] {
+export function findLookingGroups({
+  maxGroupSize,
+  ownGroupId,
+}: {
+  maxGroupSize: number;
+  ownGroupId: number;
+}): LookingGroup[] {
   return stm
-    .all()
+    .all({ ownGroupId })
     .map((row: any) => {
       return {
         id: row.id,

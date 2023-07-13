@@ -92,13 +92,17 @@ export const loader = async ({ request }: LoaderArgs) => {
     // xxx: TODO pass group size
     // xxx: TODO different query when own group size === 4
     groups: divideGroups({
-      groups: findLookingGroups(3),
+      groups: findLookingGroups({
+        maxGroupSize: 3,
+        ownGroupId: currentGroup!.id,
+      }),
       ownGroupId: currentGroup!.id,
       likes: findLikes(currentGroup!.id),
     }),
   };
 };
 
+// xxx: handle group refresh and warning
 export default function QLookingPage() {
   const data = useLoaderData<typeof loader>();
 
