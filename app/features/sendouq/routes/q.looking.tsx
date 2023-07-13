@@ -1,20 +1,32 @@
 import { Main } from "~/components/Main";
-import { getUserId } from "~/modules/auth/user.server";
+import { getUserId, requireUserId } from "~/modules/auth/user.server";
 import { groupRedirectLocationByCurrentLocation } from "../q-utils";
 import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.server";
 import { redirect } from "@remix-run/node";
-import type { LinksFunction, LoaderArgs } from "@remix-run/node";
+import type {
+  ActionFunction,
+  LinksFunction,
+  LoaderArgs,
+} from "@remix-run/node";
 import type { LookingGroup } from "../queries/lookingGroups.server";
 import { findLookingGroups } from "../queries/lookingGroups.server";
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, useFetcher, useLoaderData } from "@remix-run/react";
 import { SENDOUQ_LOOKING_PAGE, navIconUrl, userPage } from "~/utils/urls";
-import type { SendouRouteHandle } from "~/utils/remix";
+import {
+  validate,
+  type SendouRouteHandle,
+  parseRequestFormData,
+} from "~/utils/remix";
 import styles from "../q.css";
 import { Avatar } from "~/components/Avatar";
 import { divideGroups } from "../core/groups.server";
 import { WeaponImage } from "~/components/Image";
-import { Button } from "~/components/Button";
 import * as React from "react";
+import { lookingSchema } from "../q-schemas.server";
+import { addLike } from "../queries/addLike.server";
+import { deleteLike } from "../queries/deleteLike.server";
+import { SubmitButton } from "~/components/SubmitButton";
+import { findLikes } from "../queries/findLikes";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -27,6 +39,40 @@ export const handle: SendouRouteHandle = {
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
+};
+
+export const action: ActionFunction = async ({ request }) => {
+  const user = await requireUserId(request);
+  const data = await parseRequestFormData({
+    request,
+    schema: lookingSchema,
+  });
+  const currentGroup = findCurrentGroupByUserId(user.id);
+
+  validate(currentGroup, "Not in a group");
+
+  switch (data._action) {
+    case "LIKE": {
+      addLike({
+        likerGroupId: currentGroup.id,
+        targetGroupId: data.targetGroupId,
+      });
+
+      // xxx: morph groups logic
+
+      break;
+    }
+    case "UNLIKE": {
+      deleteLike({
+        likerGroupId: currentGroup.id,
+        targetGroupId: data.targetGroupId,
+      });
+
+      break;
+    }
+  }
+
+  return null;
 };
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -48,6 +94,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     groups: divideGroups({
       groups: findLookingGroups(3),
       ownGroupId: currentGroup!.id,
+      likes: findLikes(currentGroup!.id),
     }),
   };
 };
@@ -59,25 +106,44 @@ export default function QLookingPage() {
     <Main>
       <div className="q__groups-container">
         <div>
-          <h2>Liked received</h2>
+          <h2>Likes received</h2>
+          <div className="stack sm">
+            {data.groups.likesReceived.map((group) => {
+              return (
+                <GroupCard key={group.id} group={group} action="GROUP_UP" />
+              );
+            })}
+          </div>
         </div>
         <div className="w-full">
           <h2>Neutral</h2>
           <div className="stack sm">
             {data.groups.neutral.map((group) => {
-              return <GroupCard key={group.id} group={group} />;
+              return <GroupCard key={group.id} group={group} action="LIKE" />;
             })}
           </div>
         </div>
         <div>
           <h2>Liked given</h2>
+          <div className="stack sm">
+            {data.groups.likesGiven.map((group) => {
+              return <GroupCard key={group.id} group={group} action="UNLIKE" />;
+            })}
+          </div>
         </div>
       </div>
     </Main>
   );
 }
 
-function GroupCard({ group }: { group: LookingGroup }) {
+function GroupCard({
+  group,
+  action,
+}: {
+  group: LookingGroup;
+  action: "LIKE" | "UNLIKE" | "GROUP_UP";
+}) {
+  const fetcher = useFetcher();
   return (
     <section className="q__group">
       <div className="stack sm">
@@ -111,11 +177,17 @@ function GroupCard({ group }: { group: LookingGroup }) {
           );
         })}
       </div>
-      <div className="stack items-center mt-4">
-        <Button size="tiny" variant="outlined">
-          Ask to play
-        </Button>
-      </div>
+      <fetcher.Form className="stack items-center mt-4" method="post">
+        <input type="hidden" name="targetGroupId" value={group.id} />
+        <SubmitButton
+          size="tiny"
+          variant={action === "UNLIKE" ? "destructive" : "outlined"}
+          _action={action}
+          state={fetcher.state}
+        >
+          {action === "LIKE" ? "Ask to play" : "Undo"}
+        </SubmitButton>
+      </fetcher.Form>
     </section>
   );
 }

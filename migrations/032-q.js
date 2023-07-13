@@ -43,11 +43,11 @@ module.exports.up = function (db) {
     /*sql*/ `
     create table "GroupLike" (
       "likerGroupId" integer not null,
-      "likedGroupId" integer not null,
+      "targetGroupId" integer not null,
       "createdAt" integer default (strftime('%s', 'now')) not null,
       foreign key ("likerGroupId") references "Group"("id") on delete cascade,
-      foreign key ("likedGroupId") references "Group"("id") on delete cascade,
-      unique("likerGroupId", "likedGroupId") on conflict rollback
+      foreign key ("targetGroupId") references "Group"("id") on delete cascade,
+      unique("likerGroupId", "targetGroupId") on conflict rollback
     ) strict
   `
   ).run();
@@ -56,7 +56,7 @@ module.exports.up = function (db) {
     `create index group_like_liker_group_id on "GroupLike"("likerGroupId")`
   ).run();
   db.prepare(
-    `create index group_like_liked_group_id on "GroupLike"("likedGroupId")`
+    `create index group_like_target_group_id on "GroupLike"("targetGroupId")`
   ).run();
 
   db.prepare(
