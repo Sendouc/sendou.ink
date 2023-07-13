@@ -1197,6 +1197,15 @@ dialog::backdrop {
   height: 20px;
 }
 
+.art__tags-container {
+  display: flex;
+  column-gap: var(--s-2);
+  row-gap: var(--s-0-5);
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-block-start: var(--s-0-5);
+}
+
 .pagination__dot {
   width: 0.6rem;
   height: 0.6rem;

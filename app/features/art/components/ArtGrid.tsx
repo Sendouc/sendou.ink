@@ -109,7 +109,9 @@ function BigImageDialog({ close, art }: { close: () => void; art: ListedArt }) {
         onLoad={() => setImageLoaded(true)}
       />
       {art.tags || art.linkedUsers ? (
-        <div className="stack sm horizontal">
+        <div
+          className={clsx("art__tags-container", { invisible: !imageLoaded })}
+        >
           {art.linkedUsers?.map((user) => (
             <Link
               to={userPage(user)}
