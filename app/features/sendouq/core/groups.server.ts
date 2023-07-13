@@ -61,3 +61,7 @@ export function divideGroups({
     likesReceived,
   };
 }
+
+export function membersNeededForFull(currentSize: number) {
+  return 4 - currentSize;
+}

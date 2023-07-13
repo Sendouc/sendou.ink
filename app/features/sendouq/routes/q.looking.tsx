@@ -19,7 +19,7 @@ import {
 } from "~/utils/remix";
 import styles from "../q.css";
 import { Avatar } from "~/components/Avatar";
-import { divideGroups } from "../core/groups.server";
+import { divideGroups, membersNeededForFull } from "../core/groups.server";
 import { WeaponImage } from "~/components/Image";
 import * as React from "react";
 import { lookingSchema } from "../q-schemas.server";
@@ -27,6 +27,8 @@ import { addLike } from "../queries/addLike.server";
 import { deleteLike } from "../queries/deleteLike.server";
 import { SubmitButton } from "~/components/SubmitButton";
 import { findLikes } from "../queries/findLikes";
+import { groupSize } from "../queries/groupSize.server";
+import invariant from "tiny-invariant";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -88,16 +90,17 @@ export const loader = async ({ request }: LoaderArgs) => {
     throw redirect(redirectLocation);
   }
 
+  invariant(currentGroup, "currentGroup is undefined");
+
   return {
-    // xxx: TODO pass group size
     // xxx: TODO different query when own group size === 4
     groups: divideGroups({
       groups: findLookingGroups({
-        maxGroupSize: 3,
-        ownGroupId: currentGroup!.id,
+        maxGroupSize: membersNeededForFull(groupSize(currentGroup.id)),
+        ownGroupId: currentGroup.id,
       }),
-      ownGroupId: currentGroup!.id,
-      likes: findLikes(currentGroup!.id),
+      ownGroupId: currentGroup.id,
+      likes: findLikes(currentGroup.id),
     }),
   };
 };
