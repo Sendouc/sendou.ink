@@ -151,6 +151,12 @@ export default function NewArtPage() {
     });
   };
 
+  const submitButtonDisabled = () => {
+    if (fetcher.state !== "idle") return true;
+
+    return !img && !data.art;
+  };
+
   return (
     <Main halfWidth>
       <Form ref={ref} className="stack md">
@@ -161,7 +167,7 @@ export default function NewArtPage() {
         <LinkedUsers />
         {data.art ? <ShowcaseToggle /> : null}
         <div>
-          <Button onClick={handleSubmit} disabled={!img && !data.art}>
+          <Button onClick={handleSubmit} disabled={submitButtonDisabled()}>
             {t("common:actions.save")}
           </Button>
         </div>
