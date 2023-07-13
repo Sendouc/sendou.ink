@@ -55,4 +55,6 @@ export const createGroup = sql.transaction((args: CreateGroupArgs) => {
       groupId: group.id,
     });
   }
+
+  return group;
 });

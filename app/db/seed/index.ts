@@ -45,6 +45,11 @@ import { TOURNAMENT } from "~/features/tournament/tournament-constants";
 import type { SeedVariation } from "~/routes/seed";
 import { nullFilledArray, pickRandomItem } from "~/utils/arrays";
 import type { Art, UserSubmittedImage } from "../types";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+import { createGroup } from "~/features/sendouq/queries/createGroup.server";
+import { booleanToInt } from "~/utils/sql";
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+import { MAP_LIST_PREFERENCE_OPTIONS } from "~/features/sendouq/q-constants";
 
 const calendarEventWithToToolsSz = () => calendarEventWithToTools(true);
 const calendarEventWithToToolsTeamsSz = () =>
@@ -89,6 +94,7 @@ const basicSeeds = (variation?: SeedVariation | null) => [
   userFavBadges,
   arts,
   commissionsOpen,
+  groups,
 ];
 
 export function seed(variation?: SeedVariation | null) {
@@ -1171,16 +1177,23 @@ function otherTeams() {
         /* sql */ `
       insert into "AllTeam" ("id", "name", "customUrl", "inviteCode", "twitter", "bio")
        values (
-          ${i},
-          '${teamName}',
-          '${teamCustomUrl}',
-          '${nanoid(INVITE_CODE_LENGTH)}',
-          '${faker.internet.userName()}',
-          '${faker.lorem.paragraph()}'
+          @id,
+          @name,
+          @customUrl,
+          @inviteCode,
+          @twitter,
+          @bio
        )
     `
       )
-      .run();
+      .run({
+        id: i,
+        name: teamName,
+        customUrl: teamCustomUrl,
+        inviteCode: nanoid(INVITE_CODE_LENGTH),
+        twitter: faker.internet.userName(),
+        bio: faker.lorem.paragraph(),
+      });
 
     const numMembers = faker.helpers.arrayElement([
       1, 2, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 7, 7, 8,
@@ -1496,6 +1509,58 @@ function commissionsOpen() {
         commissionText: faker.lorem.paragraph(),
         userId,
       });
+    }
+  }
+}
+
+function groups() {
+  const users = userIdsInAscendingOrderById().filter(
+    (id) => id !== ADMIN_ID && id !== NZAP_TEST_ID
+  );
+  users.push(NZAP_TEST_ID);
+
+  for (let i = 0; i < 15; i++) {
+    const group = createGroup({
+      isRanked: booleanToInt(i < 13),
+      mapListPreference: faker.helpers.arrayElement(
+        MAP_LIST_PREFERENCE_OPTIONS
+      ),
+      status: "ACTIVE",
+      userId: users.pop()!,
+      mapPool: new MapPool([
+        { mode: "SZ", stageId: 1 },
+        { mode: "SZ", stageId: 2 },
+        { mode: "SZ", stageId: 3 },
+        { mode: "SZ", stageId: 4 },
+        { mode: "SZ", stageId: 5 },
+        { mode: "SZ", stageId: 6 },
+        { mode: "TC", stageId: 7 },
+        { mode: "TC", stageId: 8 },
+        { mode: "TC", stageId: 9 },
+        { mode: "RM", stageId: 10 },
+        { mode: "RM", stageId: 11 },
+        { mode: "RM", stageId: 12 },
+        { mode: "CB", stageId: 13 },
+        { mode: "CB", stageId: 14 },
+        { mode: "CB", stageId: 15 },
+      ]),
+    });
+
+    const amountOfAdditionalMembers = i % 3;
+
+    for (let j = 0; j < amountOfAdditionalMembers; j++) {
+      sql
+        .prepare(
+          /* sql */ `
+        insert into "GroupMember" ("groupId", "userId", "role")
+        values (@groupId, @userId, @role)
+      `
+        )
+        .run({
+          groupId: group.id,
+          userId: users.pop()!,
+          role: "MEMBER",
+        });
     }
   }
 }
