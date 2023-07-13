@@ -33,7 +33,10 @@ export interface User {
   /** Used to overwrite normal patron giving process and force give the patron status till this date */
   patronTill: number | null;
   isVideoAdder: number;
+  isArtist: number;
   favoriteBadgeId: number | null;
+  commissionsOpen: number;
+  commissionText: string | null;
 }
 
 /** User table after joined with PlusTier table */
@@ -468,4 +471,30 @@ export interface SplatoonPlayer {
   id: number;
   userId: number;
   splId: string;
+}
+
+export interface Art {
+  id: number;
+  imgId: number;
+  authorId: number;
+  isShowcase: number;
+  description: string | null;
+  createdAt: number;
+}
+
+export interface ArtTag {
+  id: number;
+  name: string;
+  authorId: number;
+  createdAt: number;
+}
+
+export interface TaggedArt {
+  artId: number;
+  tagId: number;
+}
+
+export interface ArtUserMetadata {
+  artId: number;
+  userId: number;
 }

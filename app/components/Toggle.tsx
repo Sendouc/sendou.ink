@@ -7,12 +7,14 @@ export function Toggle({
   tiny,
   id,
   name,
+  disabled,
 }: {
   checked: boolean;
   setChecked: (checked: boolean) => void;
   tiny?: boolean;
   id?: string;
   name?: string;
+  disabled?: boolean;
 }) {
   return (
     <Switch
@@ -22,6 +24,7 @@ export function Toggle({
       id={id}
       name={name}
       data-testid={id ? `toggle-${id}` : null}
+      disabled={disabled}
     >
       <span className={clsx("toggle-dot", { checked, tiny })} />
     </Switch>

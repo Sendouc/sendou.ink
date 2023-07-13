@@ -164,10 +164,12 @@ export function ScoreReporter({
             // which causes "No winning team matching the id" error.
             // Switching the key props forces the component to remount.
             key={data.match.id}
+            scores={[scoreOne, scoreTwo]}
             teams={teams}
             position={currentPosition}
             currentStageWithMode={currentStageWithMode}
             result={result}
+            bestOf={data.match.bestOf}
           />
         </ActionSectionWrapper>
       ) : null}
@@ -240,8 +242,14 @@ function FancyStageBanner({
               alt=""
               width={24}
             />
-            {t(`game-misc:MODE_LONG_${stage.mode}`)} on{" "}
-            {t(`game-misc:STAGE_${stage.stageId}`)}
+            <span className="tournament-bracket__stage-banner__top-bar__map-text-small">
+              {t(`game-misc:MODE_SHORT_${stage.mode}`)}{" "}
+              {t(`game-misc:STAGE_${stage.stageId}`)}
+            </span>
+            <span className="tournament-bracket__stage-banner__top-bar__map-text-big">
+              {t(`game-misc:MODE_LONG_${stage.mode}`)} on{" "}
+              {t(`game-misc:STAGE_${stage.stageId}`)}
+            </span>
           </h4>
           <h4>{pickInfoText()}</h4>
         </div>

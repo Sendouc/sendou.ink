@@ -13,6 +13,7 @@ import { UserCombobox } from "~/components/Combobox";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { db } from "~/db";
+import { makeArtist } from "~/features/art";
 import {
   getUserId,
   isImpersonating,
@@ -54,6 +55,10 @@ const adminActionSchema = z.union([
     "user[value]": z.preprocess(actualNumber, z.number().positive()),
   }),
   z.object({
+    _action: z.literal("ARTIST"),
+    "user[value]": z.preprocess(actualNumber, z.number().positive()),
+  }),
+  z.object({
     _action: z.literal("LINK_PLAYER"),
     "user[value]": z.preprocess(actualNumber, z.number().positive()),
     playerId: z.preprocess(actualNumber, z.number().positive()),
@@ -88,6 +93,10 @@ export const action: ActionFunction = async ({ request }) => {
         patronTier: data.patronTier,
         patronTill: dateToDatabaseTimestamp(new Date(data.patronTill)),
       });
+      break;
+    }
+    case "ARTIST": {
+      makeArtist(data["user[value]"]);
       break;
     }
     case "VIDEO_ADDER": {
@@ -135,6 +144,7 @@ export default function AdminPage() {
     <Main className="stack lg">
       <Impersonate />
       <LinkPlayer />
+      <GiveArtist />
       <GiveVideoAdder />
       <MigrateUser />
       <ForcePatron />
@@ -249,6 +259,27 @@ function LinkPlayer() {
       <div className="stack horizontal md">
         <SubmitButton type="submit" _action="LINK_PLAYER" state={fetcher.state}>
           Link player
+        </SubmitButton>
+      </div>
+    </fetcher.Form>
+  );
+}
+
+function GiveArtist() {
+  const fetcher = useFetcher();
+
+  return (
+    <fetcher.Form className="stack md" method="post">
+      <h2>Add as artist</h2>
+      <div className="stack horizontal md">
+        <div>
+          <label>User</label>
+          <UserCombobox inputName="user" />
+        </div>
+      </div>
+      <div className="stack horizontal md">
+        <SubmitButton type="submit" _action="ARTIST" state={fetcher.state}>
+          Add as artist
         </SubmitButton>
       </div>
     </fetcher.Form>

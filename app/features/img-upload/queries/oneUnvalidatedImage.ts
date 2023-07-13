@@ -7,10 +7,13 @@ const stm = sql.prepare(/* sql */ `
     "UnvalidatedUserSubmittedImage"."url",
     "UnvalidatedUserSubmittedImage"."submitterUserId"
   from "UnvalidatedUserSubmittedImage"
-  inner join "Team" on 
+  left join "Team" on 
     "UnvalidatedUserSubmittedImage"."id" = "Team"."avatarImgId" or 
     "UnvalidatedUserSubmittedImage"."id" = "Team"."bannerImgId"
+  left join "Art" on
+    "UnvalidatedUserSubmittedImage"."id" = "Art"."imgId"
   where "UnvalidatedUserSubmittedImage"."validatedAt" is null
+    and ("Team"."id" is not null or "Art"."id" is not null)
   limit 1
 `);
 

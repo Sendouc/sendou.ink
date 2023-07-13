@@ -42,5 +42,15 @@
   "ABILITY_AD": "추가 기어 파워 2배",
   "ABILITY_SJ": "스텔스 점프",
   "ABILITY_OS": "오브젝트 공격력 업",
-  "ABILITY_DR": "낙법"
+  "ABILITY_DR": "낙법",
+  "MODE_SHORT_TW": "영역",
+  "MODE_SHORT_SZ": "에어리어",
+  "MODE_SHORT_TC": "타워",
+  "MODE_SHORT_RM": "피시",
+  "MODE_SHORT_CB": "바지락",
+  "MODE_LONG_TW": "영역 배틀",
+  "MODE_LONG_SZ": "랭크 에어리어",
+  "MODE_LONG_TC": "랭크 타워",
+  "MODE_LONG_RM": "랭크 피시 배틀",
+  "MODE_LONG_CB": "랭크 바지락"
 }

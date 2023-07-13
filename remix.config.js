@@ -95,6 +95,11 @@ module.exports = {
       );
 
       route("/leaderboards", "features/leaderboards/routes/leaderboards.tsx");
+
+      route("/links", "features/links/routes/links.tsx");
+
+      route("/art", "features/art/routes/art.tsx");
+      route("/art/new", "features/art/routes/art.new.tsx");
     });
   },
   serverModuleFormat: "cjs",

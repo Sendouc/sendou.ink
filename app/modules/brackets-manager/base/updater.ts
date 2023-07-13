@@ -284,6 +284,8 @@ export class BaseUpdater extends BaseGetter {
    */
   protected archiveMatches(matches: Match[]): void {
     for (const match of matches) {
+      if (match.status === Status.Archived) continue;
+
       match.status = Status.Archived;
       this.applyMatchUpdate(match);
     }
@@ -324,7 +326,13 @@ export class BaseUpdater extends BaseGetter {
       roundNumber,
       roundCount
     );
-    if (nextMatches.length === 0) return;
+    if (nextMatches.length === 0) {
+      // Archive match if it doesn't have following matches and is completed.
+      // When the stage is fully complete, all matches should be archived.
+      if (match.status === Status.Completed) this.archiveMatches([match]);
+
+      return;
+    }
 
     const winnerSide = helpers.getMatchResult(match);
     const actualRoundNumber =

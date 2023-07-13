@@ -38,7 +38,7 @@ export const meta: V2_MetaFunction = (args) => {
 
   if (!data) return [];
 
-  return [{ title: makeTitle(data.title) }];
+  return [{ title: data.title }];
 };
 
 export const loader = async ({ request }: LoaderArgs) => {

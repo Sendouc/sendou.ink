@@ -53,7 +53,7 @@ const TRANSLATORS: Array<{
     language: "es-ES",
   },
   {
-    translators: ["Charakiga"],
+    translators: ["Charakiga", "marie-maxime"],
     language: "fr",
   },
   {
