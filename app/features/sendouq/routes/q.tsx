@@ -17,7 +17,6 @@ import {
   type SendouRouteHandle,
 } from "~/utils/remix";
 import { Image, ModeImage } from "~/components/Image";
-import { assertUnreachable } from "~/utils/types";
 import * as React from "react";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import clsx from "clsx";
@@ -39,6 +38,7 @@ import { createGroup } from "../queries/createGroup.server";
 import { booleanToInt } from "~/utils/sql";
 import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.server";
 import { groupRedirectLocationByCurrentLocation, mapPoolOk } from "../q-utils";
+import { ModePreferenceIcons } from "../components/ModePrefenceIcons";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -212,22 +212,6 @@ function MapPreference() {
     <div className="stack">
       <label>Maplist preference</label>
       {MAP_LIST_PREFERENCE_OPTIONS.map((option) => {
-        const comparisonSign = (() => {
-          switch (option) {
-            case "SZ_ONLY":
-            case "ALL_MODES_ONLY":
-              return null;
-            case "NO_PREFERENCE":
-              return "=";
-            case "PREFER_ALL_MODES":
-              return "<";
-            case "PREFER_SZ":
-              return ">";
-            default:
-              assertUnreachable(option);
-          }
-        })();
-
         return (
           <div key={option} className="stack sm horizontal items-center">
             <input
@@ -239,20 +223,7 @@ function MapPreference() {
               onChange={() => setValue(option)}
             />
             <label htmlFor={option} className="q__map-preference-label">
-              {option !== "ALL_MODES_ONLY" ? (
-                <ModeImage mode="SZ" size={16} />
-              ) : null}
-              {comparisonSign ? (
-                <span className="text-main-forced">{comparisonSign}</span>
-              ) : null}
-              {option !== "SZ_ONLY" ? (
-                <>
-                  <ModeImage mode="SZ" size={16} />
-                  <ModeImage mode="TC" size={16} />
-                  <ModeImage mode="RM" size={16} />
-                  <ModeImage mode="CB" size={16} />
-                </>
-              ) : null}
+              <ModePreferenceIcons preference={option} />
               {t(`q:mapListPreference.${option}`)}
             </label>
           </div>

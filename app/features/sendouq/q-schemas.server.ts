@@ -18,4 +18,8 @@ export const lookingSchema = z.union([
     _action: z.literal("UNLIKE"),
     targetGroupId: id,
   }),
+  z.object({
+    _action: z.literal("GROUP_UP"),
+    targetGroupId: id,
+  }),
 ]);

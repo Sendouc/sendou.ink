@@ -29,6 +29,13 @@ import { SubmitButton } from "~/components/SubmitButton";
 import { findLikes } from "../queries/findLikes";
 import { groupSize } from "../queries/groupSize.server";
 import invariant from "tiny-invariant";
+import { UsersIcon } from "~/components/icons/Users";
+import { StarFilledIcon } from "~/components/icons/StarFilled";
+import UndoIcon from "~/components/icons/Undo";
+import type { Group } from "~/db/types";
+import { groupAfterMorph } from "../core/groups";
+import { ModePreferenceIcons } from "../components/ModePrefenceIcons";
+import clsx from "clsx";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -116,8 +123,20 @@ export default function QLookingPage() {
           <h2>Likes received</h2>
           <div className="stack sm">
             {data.groups.likesReceived.map((group) => {
+              const { isRanked, mapListPreference } = groupAfterMorph({
+                liker: "THEM",
+                ourGroup: data.groups.own,
+                theirGroup: group,
+              });
+
               return (
-                <GroupCard key={group.id} group={group} action="GROUP_UP" />
+                <GroupCard
+                  key={group.id}
+                  group={group}
+                  action="GROUP_UP"
+                  isRanked={isRanked}
+                  mapListPreference={mapListPreference}
+                />
               );
             })}
           </div>
@@ -126,15 +145,43 @@ export default function QLookingPage() {
           <h2>Neutral</h2>
           <div className="stack sm">
             {data.groups.neutral.map((group) => {
-              return <GroupCard key={group.id} group={group} action="LIKE" />;
+              const { isRanked, mapListPreference } = groupAfterMorph({
+                liker: "US",
+                ourGroup: data.groups.own,
+                theirGroup: group,
+              });
+
+              return (
+                <GroupCard
+                  key={group.id}
+                  group={group}
+                  action="LIKE"
+                  isRanked={isRanked}
+                  mapListPreference={mapListPreference}
+                />
+              );
             })}
           </div>
         </div>
         <div>
-          <h2>Liked given</h2>
+          <h2>Likes given</h2>
           <div className="stack sm">
             {data.groups.likesGiven.map((group) => {
-              return <GroupCard key={group.id} group={group} action="UNLIKE" />;
+              const { isRanked, mapListPreference } = groupAfterMorph({
+                liker: "US",
+                ourGroup: data.groups.own,
+                theirGroup: group,
+              });
+
+              return (
+                <GroupCard
+                  key={group.id}
+                  group={group}
+                  action="UNLIKE"
+                  isRanked={isRanked}
+                  mapListPreference={mapListPreference}
+                />
+              );
             })}
           </div>
         </div>
@@ -146,13 +193,30 @@ export default function QLookingPage() {
 function GroupCard({
   group,
   action,
+  isRanked,
+  mapListPreference,
 }: {
   group: LookingGroup;
   action: "LIKE" | "UNLIKE" | "GROUP_UP";
+  isRanked: Group["isRanked"];
+  mapListPreference: Group["mapListPreference"];
 }) {
   const fetcher = useFetcher();
   return (
     <section className="q__group">
+      <div className="stack horizontal justify-between items-center">
+        <div className="stack xs horizontal items-center">
+          <ModePreferenceIcons preference={mapListPreference} />
+        </div>
+        <div
+          className={clsx("text-xs font-semi-bold", {
+            "text-info": isRanked,
+            "text-theme-secondary": !isRanked,
+          })}
+        >
+          {isRanked ? "Ranked" : "Scrim"}
+        </div>
+      </div>
       <div className="stack sm">
         {group.members.map((member) => {
           return (
@@ -184,15 +248,28 @@ function GroupCard({
           );
         })}
       </div>
-      <fetcher.Form className="stack items-center mt-4" method="post">
+      <fetcher.Form className="stack items-center" method="post">
         <input type="hidden" name="targetGroupId" value={group.id} />
         <SubmitButton
           size="tiny"
           variant={action === "UNLIKE" ? "destructive" : "outlined"}
           _action={action}
           state={fetcher.state}
+          icon={
+            action === "LIKE" ? (
+              <StarFilledIcon />
+            ) : action === "GROUP_UP" ? (
+              <UsersIcon />
+            ) : (
+              <UndoIcon />
+            )
+          }
         >
-          {action === "LIKE" ? "Ask to play" : "Undo"}
+          {action === "LIKE"
+            ? "Ask to play"
+            : action === "GROUP_UP"
+            ? "Group up"
+            : "Undo"}
         </SubmitButton>
       </fetcher.Form>
     </section>

@@ -1,12 +1,19 @@
 import { sql } from "~/db/sql";
+import type { Group } from "~/db/types";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { parseDBArray, parseDBJsonArray } from "~/utils/sql";
+
+// groups visible for longer to make development easier
+const SECONDS_TILL_STALE =
+  process.env.NODE_ENV === "development" ? 1_000_000 : 1800;
 
 const stm = sql.prepare(/* sql */ `
   with "q1" as (
     select
       "Group"."id",
       "Group"."createdAt",
+      "Group"."mapListPreference",
+      "Group"."isRanked",
       "User"."discordId",
       "User"."discordName",
       "User"."discordAvatar",
@@ -21,7 +28,7 @@ const stm = sql.prepare(/* sql */ `
     where
       "Group"."status" = 'ACTIVE'
       -- only groups that were active in the last half an hour as well as own group
-      and ("Group"."latestActionAt" > (unixepoch() - 1800) or "Group"."id" = @ownGroupId)
+      and ("Group"."latestActionAt" > (unixepoch() - ${SECONDS_TILL_STALE}) or "Group"."id" = @ownGroupId)
       and "GroupMatch"."id" is null
       and ("UserWeapon"."order" is null or "UserWeapon"."order" <= 3)
     group by "User"."id"
@@ -29,6 +36,8 @@ const stm = sql.prepare(/* sql */ `
   )
   select 
     "q1"."id",
+    "q1"."mapListPreference",
+    "q1"."isRanked",
     json_group_array(
       json_object(
         'discordId', "q1"."discordId",
@@ -44,6 +53,8 @@ const stm = sql.prepare(/* sql */ `
 
 export type LookingGroup = {
   id: number;
+  mapListPreference: Group["mapListPreference"];
+  isRanked: Group["isRanked"];
   members: {
     discordId: string;
     discordName: string;
@@ -64,6 +75,8 @@ export function findLookingGroups({
     .map((row: any) => {
       return {
         id: row.id,
+        mapListPreference: row.mapListPreference,
+        isRanked: row.isRanked,
         members: parseDBJsonArray(row.members).map((member: any) => {
           const weapons = parseDBArray(member.weapons);
 
