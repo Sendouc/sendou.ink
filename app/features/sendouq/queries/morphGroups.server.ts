@@ -10,6 +10,12 @@ const addGroupMemberStm = sql.prepare(/* sql */ `
   values (@groupId, @userId, @role)
 `);
 
+const deleteLikesStm = sql.prepare(/* sql */ `
+  delete from "GroupLike"
+  where "likerGroupId" = @groupId
+    or "targetGroupId" = @groupId
+`);
+
 export const morphGroups = sql.transaction(
   ({
     survivingGroupId,
@@ -21,6 +27,8 @@ export const morphGroups = sql.transaction(
     newMembers: number[];
   }) => {
     deleteGroupStm.run({ groupId: otherGroupId });
+
+    deleteLikesStm.run({ groupId: survivingGroupId });
 
     for (const userId of newMembers) {
       addGroupMemberStm.run({
