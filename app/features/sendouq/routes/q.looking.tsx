@@ -11,7 +11,12 @@ import type {
 import type { LookingGroup } from "../queries/lookingGroups.server";
 import { findLookingGroups } from "../queries/lookingGroups.server";
 import { Link, useFetcher, useLoaderData } from "@remix-run/react";
-import { SENDOUQ_LOOKING_PAGE, navIconUrl, userPage } from "~/utils/urls";
+import {
+  SENDOUQ_LOOKING_PAGE,
+  SENDOUQ_PAGE,
+  navIconUrl,
+  userPage,
+} from "~/utils/urls";
 import {
   validate,
   type SendouRouteHandle,
@@ -173,7 +178,7 @@ export const action: ActionFunction = async ({ request }) => {
         wasOwner: currentGroup.role === "OWNER",
       });
 
-      break;
+      throw redirect(SENDOUQ_PAGE);
     }
     default: {
       assertUnreachable(data);

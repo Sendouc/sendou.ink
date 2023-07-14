@@ -97,7 +97,6 @@ export const loader = async ({ request }: LoaderArgs) => {
 // xxx: link to yt video explaining it
 // xxx: UI when not logged in
 // xxx: show streams?
-// xxx: after leaving group and redirected there is a loading indicator that never resolves
 export default function QPage() {
   return (
     <Main halfWidth className="stack lg">
