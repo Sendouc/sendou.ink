@@ -54,6 +54,7 @@
 
 .q__own-group-container {
   margin: 0 auto;
+  min-width: 300px;
 }
 
 .q__groups-container {

@@ -38,6 +38,9 @@ import { ModePreferenceIcons } from "../components/ModePrefenceIcons";
 import clsx from "clsx";
 import { likeExists } from "../queries/likeExists.server";
 import { morphGroups } from "../queries/morphGroups.server";
+import { assertUnreachable } from "~/utils/types";
+import { addManagerRole } from "../queries/addManagerRole.server";
+import { removeManagerRole } from "../queries/removeManagerRole.server";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -62,6 +65,8 @@ export const action: ActionFunction = async ({ request }) => {
 
   validate(currentGroup, "Not in a group");
 
+  const validateIsGroupOwner = () =>
+    validate(currentGroup.role === "OWNER", "Not  owner");
   const validateIsGroupManager = () =>
     validate(
       currentGroup.role === "MANAGER" || currentGroup.role === "OWNER",
@@ -130,6 +135,29 @@ export const action: ActionFunction = async ({ request }) => {
       });
 
       break;
+    }
+    case "GIVE_MANAGER": {
+      validateIsGroupOwner();
+
+      addManagerRole({
+        groupId: currentGroup.id,
+        userId: data.userId,
+      });
+
+      break;
+    }
+    case "REMOVE_MANAGER": {
+      validateIsGroupOwner();
+
+      removeManagerRole({
+        groupId: currentGroup.id,
+        userId: data.userId,
+      });
+
+      break;
+    }
+    default: {
+      assertUnreachable(data);
     }
   }
 
@@ -283,14 +311,10 @@ function GroupCard({
         {group.members.map((member) => {
           return (
             <React.Fragment key={member.discordId}>
-              <Link
-                to={userPage(member)}
-                className="q__group-member"
-                target="_blank"
-              >
-                <Avatar user={member} size="xxs" />
-                {member.discordName}
-              </Link>
+              <GroupMember
+                member={member}
+                ownGroup={group.id === data.groups.own.id}
+              />
               {member.weapons ? (
                 <div className="q__group-member-weapons">
                   {member.weapons.map((weapon) => {
@@ -337,5 +361,46 @@ function GroupCard({
         </fetcher.Form>
       ) : null}
     </section>
+  );
+}
+
+function GroupMember({
+  member,
+  ownGroup,
+}: {
+  member: LookingGroup["members"][number];
+  ownGroup: boolean;
+}) {
+  const data = useLoaderData<typeof loader>();
+  const fetcher = useFetcher();
+
+  return (
+    <fetcher.Form className="stack sm horizontal" method="post">
+      <input type="hidden" name="userId" value={member.id} />
+      <Link to={userPage(member)} className="q__group-member" target="_blank">
+        <Avatar user={member} size="xxs" />
+        {member.discordName}
+      </Link>
+      {ownGroup && member.role === "REGULAR" && data.role === "OWNER" ? (
+        <SubmitButton
+          variant="minimal"
+          size="tiny"
+          _action="GIVE_MANAGER"
+          state={fetcher.state}
+        >
+          Give manager
+        </SubmitButton>
+      ) : null}
+      {ownGroup && member.role === "MANAGER" && data.role === "OWNER" ? (
+        <SubmitButton
+          variant="minimal-destructive"
+          size="tiny"
+          _action="REMOVE_MANAGER"
+          state={fetcher.state}
+        >
+          Remove manager
+        </SubmitButton>
+      ) : null}
+    </fetcher.Form>
   );
 }

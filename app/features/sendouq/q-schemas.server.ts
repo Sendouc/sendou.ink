@@ -22,4 +22,12 @@ export const lookingSchema = z.union([
     _action: z.literal("GROUP_UP"),
     targetGroupId: id,
   }),
+  z.object({
+    _action: z.literal("GIVE_MANAGER"),
+    userId: id,
+  }),
+  z.object({
+    _action: z.literal("REMOVE_MANAGER"),
+    userId: id,
+  }),
 ]);

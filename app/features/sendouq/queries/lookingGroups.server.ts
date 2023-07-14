@@ -1,5 +1,5 @@
 import { sql } from "~/db/sql";
-import type { Group } from "~/db/types";
+import type { Group, GroupMember } from "~/db/types";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { parseDBArray, parseDBJsonArray } from "~/utils/sql";
 
@@ -18,6 +18,7 @@ const stm = sql.prepare(/* sql */ `
       "User"."discordId",
       "User"."discordName",
       "User"."discordAvatar",
+      "GroupMember"."role",
       json_group_array("UserWeapon"."weaponSplId") as "weapons"
     from
       "Group"
@@ -45,6 +46,7 @@ const stm = sql.prepare(/* sql */ `
         'discordId', "q1"."discordId",
         'discordName', "q1"."discordName",
         'discordAvatar', "q1"."discordAvatar",
+        'role', "q1"."role",
         'weapons', "q1"."weapons"
       )
     ) as "members"
@@ -62,6 +64,7 @@ export type LookingGroup = {
     discordId: string;
     discordName: string;
     discordAvatar: string;
+    role: GroupMember["role"];
     weapons?: MainWeaponId[];
   }[];
 };
