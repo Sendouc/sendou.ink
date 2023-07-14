@@ -138,7 +138,18 @@ const countries = [
   { id: 3, countryCode: "FR", timeZone: "Europe/Paris", city: "Paris" },
   { id: 4, countryCode: "JP", timeZone: "Asia/Tokyo", city: "Tokyo" },
 ] as const;
-const formatter = ({
+const weekdayFormatter = ({
+  timeZone,
+  locale,
+}: {
+  timeZone: string;
+  locale: string;
+}) =>
+  new Intl.DateTimeFormat([locale], {
+    timeZone,
+    weekday: "long",
+  });
+const clockFormatter = ({
   timeZone,
   locale,
 }: {
@@ -149,9 +160,7 @@ const formatter = ({
     timeZone,
     hour: "numeric",
     minute: "numeric",
-    weekday: "long",
   });
-// xxx: date and time different divs for consistency
 function Clocks() {
   const isMounted = useIsMounted();
   const { i18n } = useTranslation();
@@ -164,15 +173,24 @@ function Clocks() {
           <div key={country.id} className="q__clock">
             <div className="q__clock-country">{country.city}</div>
             <Flag countryCode={country.countryCode} />
-            <span className={clsx({ invisible: !isMounted })}>
+            <div>
               {isMounted
-                ? formatter({
+                ? weekdayFormatter({
                     timeZone: country.timeZone,
                     locale: i18n.language,
                   }).format(new Date())
                 : // take space
-                  "Monday 0:00 AM"}
-            </span>
+                  "Monday"}
+            </div>
+            <div>
+              {isMounted
+                ? clockFormatter({
+                    timeZone: country.timeZone,
+                    locale: i18n.language,
+                  }).format(new Date())
+                : // take space
+                  "0:00 PM"}
+            </div>
           </div>
         );
       })}
