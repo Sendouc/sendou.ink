@@ -62,8 +62,16 @@ export const action: ActionFunction = async ({ request }) => {
 
   validate(currentGroup, "Not in a group");
 
+  const validateIsGroupManager = () =>
+    validate(
+      currentGroup.role === "MANAGER" || currentGroup.role === "OWNER",
+      "Not manager or owner"
+    );
+
   switch (data._action) {
     case "LIKE": {
+      validateIsGroupManager();
+
       addLike({
         likerGroupId: currentGroup.id,
         targetGroupId: data.targetGroupId,
@@ -72,6 +80,8 @@ export const action: ActionFunction = async ({ request }) => {
       break;
     }
     case "UNLIKE": {
+      validateIsGroupManager();
+
       deleteLike({
         likerGroupId: currentGroup.id,
         targetGroupId: data.targetGroupId,
@@ -81,6 +91,7 @@ export const action: ActionFunction = async ({ request }) => {
     }
     // xxx: maybe just return null instead of throwing an error
     case "GROUP_UP": {
+      validateIsGroupManager();
       validate(
         likeExists({
           targetGroupId: currentGroup.id,
@@ -150,6 +161,7 @@ export const loader = async ({ request }: LoaderArgs) => {
       ownGroupId: currentGroup.id,
       likes: findLikes(currentGroup.id),
     }),
+    role: currentGroup.role,
   };
 };
 
@@ -250,6 +262,8 @@ function GroupCard({
   mapListPreference: Group["mapListPreference"];
 }) {
   const fetcher = useFetcher();
+  const data = useLoaderData<typeof loader>();
+
   return (
     <section className="q__group">
       <div className="stack lg horizontal justify-between items-center">
@@ -296,7 +310,7 @@ function GroupCard({
           );
         })}
       </div>
-      {action ? (
+      {action && (data.role === "OWNER" || data.role === "MANAGER") ? (
         <fetcher.Form className="stack items-center" method="post">
           <input type="hidden" name="targetGroupId" value={group.id} />
           <SubmitButton

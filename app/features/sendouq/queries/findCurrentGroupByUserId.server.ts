@@ -1,12 +1,13 @@
 import invariant from "tiny-invariant";
 import { sql } from "~/db/sql";
-import type { Group } from "~/db/types";
+import type { Group, GroupMember } from "~/db/types";
 
 const stm = sql.prepare(/* sql */ `
   select
     "Group"."id",
     "Group"."status",
-    "GroupMatch"."id" as "matchId"
+    "GroupMatch"."id" as "matchId",
+    "GroupMember"."role"
   from
     "Group"
   left join "GroupMember" on "GroupMember"."groupId" = "Group"."id"
@@ -17,7 +18,10 @@ const stm = sql.prepare(/* sql */ `
     and "GroupMember"."userId" = @userId
 `);
 
-type ActiveGroup = Pick<Group, "id" | "status"> & { matchId?: number };
+type ActiveGroup = Pick<Group, "id" | "status"> & {
+  matchId?: number;
+  role: GroupMember["role"];
+};
 
 export function findCurrentGroupByUserId(
   userId: number
