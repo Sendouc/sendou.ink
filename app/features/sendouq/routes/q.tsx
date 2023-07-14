@@ -93,7 +93,6 @@ export const loader = async ({ request }: LoaderArgs) => {
   return null;
 };
 
-// xxx: initial settings from local storage
 // xxx: teams looking for scrim?
 // xxx: link to yt video explaining it
 // xxx: UI when not logged in
@@ -198,7 +197,24 @@ function Clocks() {
   );
 }
 
+const RANKED_OR_SCRIM_LOCAL_STORAGE_KEY = "q_rankedOrScrim";
 function RankedOrScrim() {
+  const [value, setValue] = React.useState<string | null>();
+
+  React.useEffect(() => {
+    const storedValue = localStorage.getItem(RANKED_OR_SCRIM_LOCAL_STORAGE_KEY);
+    if (storedValue) {
+      setValue(storedValue);
+    } else {
+      setValue("ranked");
+    }
+  }, []);
+
+  const handleChange = (newValue: "ranked" | "scrim") => () => {
+    setValue(newValue);
+    localStorage.setItem(RANKED_OR_SCRIM_LOCAL_STORAGE_KEY, newValue);
+  };
+
   return (
     <div className="stack">
       <label>Type</label>
@@ -208,14 +224,22 @@ function RankedOrScrim() {
           name="rankingType"
           id="ranked"
           value="ranked"
-          defaultChecked
+          checked={value === "ranked"}
+          onChange={handleChange("ranked")}
         />
         <label htmlFor="ranked" className="mb-0">
           Ranked
         </label>
       </div>
       <div className="stack sm horizontal items-center">
-        <input type="radio" name="rankingType" id="scrim" value="scrim" />
+        <input
+          type="radio"
+          name="rankingType"
+          id="scrim"
+          value="scrim"
+          checked={value === "scrim"}
+          onChange={handleChange("scrim")}
+        />
         <label htmlFor="scrim" className="mb-0">
           Scrim
         </label>
@@ -224,9 +248,19 @@ function RankedOrScrim() {
   );
 }
 
+const MAP_PREFERENCE_LOCAL_STORAGE_KEY = "q_mapPreference";
 function MapPreference() {
-  const [value, setValue] = React.useState("NO_PREFERENCE");
+  const [value, setValue] = React.useState<string | null>(null);
   const { t } = useTranslation(["q"]);
+
+  React.useEffect(() => {
+    const storedValue = localStorage.getItem(MAP_PREFERENCE_LOCAL_STORAGE_KEY);
+    if (storedValue) {
+      setValue(storedValue);
+    } else {
+      setValue("NO_PREFERENCE");
+    }
+  }, []);
 
   return (
     <div className="stack">
@@ -240,7 +274,10 @@ function MapPreference() {
               id={option}
               value={option}
               checked={value === option}
-              onChange={() => setValue(option)}
+              onChange={() => {
+                setValue(option);
+                localStorage.setItem(MAP_PREFERENCE_LOCAL_STORAGE_KEY, option);
+              }}
             />
             <label htmlFor={option} className="q__map-preference-label">
               <ModePreferenceIcons preference={option} />
@@ -267,9 +304,21 @@ function MapPreference() {
   );
 }
 
+const MAP_POOL_LOCAL_STORAGE_KEY = "q_mapPool";
 function MapPoolSelector() {
   const { t } = useTranslation(["game-misc"]);
   const [mapPool, setMapPool] = React.useState<MapPool>(new MapPool([]));
+
+  React.useEffect(() => {
+    try {
+      const mapPool = localStorage.getItem(MAP_POOL_LOCAL_STORAGE_KEY);
+      if (mapPool) {
+        setMapPool(new MapPool(JSON.parse(mapPool)));
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
 
   return (
     <div className="q__map-pool-grid">
@@ -308,13 +357,14 @@ function MapPoolSelector() {
                   onChange={(e) => {
                     const checked = e.target.checked;
                     setMapPool((prev) => {
+                      let newMapPool: MapPool;
                       if (checked) {
-                        return new MapPool([
+                        newMapPool = new MapPool([
                           ...prev.stageModePairs,
                           { stageId, mode: modeShort },
                         ]);
                       } else {
-                        return new MapPool([
+                        newMapPool = new MapPool([
                           ...prev.stageModePairs.filter(
                             (pair) =>
                               pair.stageId !== stageId ||
@@ -322,6 +372,13 @@ function MapPoolSelector() {
                           ),
                         ]);
                       }
+
+                      localStorage.setItem(
+                        MAP_POOL_LOCAL_STORAGE_KEY,
+                        JSON.stringify(newMapPool.stageModePairs)
+                      );
+
+                      return newMapPool;
                     });
                   }}
                 />
