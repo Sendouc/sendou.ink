@@ -10,7 +10,12 @@ import type {
 } from "@remix-run/node";
 import type { LookingGroup } from "../queries/lookingGroups.server";
 import { findLookingGroups } from "../queries/lookingGroups.server";
-import { Link, useFetcher, useLoaderData } from "@remix-run/react";
+import {
+  Link,
+  useFetcher,
+  useLoaderData,
+  useRevalidator,
+} from "@remix-run/react";
 import {
   SENDOUQ_LOOKING_PAGE,
   SENDOUQ_PAGE,
@@ -58,6 +63,7 @@ import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "~/hooks/useTranslation";
 import { refreshGroup } from "../queries/refreshGroup.server";
 import { Flipped, Flipper } from "react-flip-toolkit";
+import { useVisibilityChange } from "~/hooks/useVisibilityChange";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -240,6 +246,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 // xxx: mobile view
 export default function QLookingPage() {
   const data = useLoaderData<typeof loader>();
+  useAutoRefresh();
 
   return (
     <Main className="stack lg">
@@ -333,6 +340,29 @@ export default function QLookingPage() {
       ) : null}
     </Main>
   );
+}
+
+// TODO: could be improved e.g. don't refresh when group has expired
+// or we got new data in the last 20 seconds
+function useAutoRefresh() {
+  const { revalidate } = useRevalidator();
+  const visibility = useVisibilityChange();
+
+  React.useEffect(() => {
+    // when user comes back to this tab
+    if (visibility === "visible") {
+      revalidate();
+    }
+
+    // ...as well as every 20 seconds
+    const interval = setInterval(() => {
+      revalidate();
+    }, 20 * 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [visibility, revalidate]);
 }
 
 function InfoText() {
