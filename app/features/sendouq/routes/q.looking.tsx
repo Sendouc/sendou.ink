@@ -41,6 +41,9 @@ import { morphGroups } from "../queries/morphGroups.server";
 import { assertUnreachable } from "~/utils/types";
 import { addManagerRole } from "../queries/addManagerRole.server";
 import { removeManagerRole } from "../queries/removeManagerRole.server";
+import { useUser } from "~/modules/auth";
+import { leaveGroup } from "../queries/leaveGroup.server";
+import { groupSuccessorOwner } from "../queries/groupSuccessorOwner";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -152,6 +155,20 @@ export const action: ActionFunction = async ({ request }) => {
       removeManagerRole({
         groupId: currentGroup.id,
         userId: data.userId,
+      });
+
+      break;
+    }
+    case "LEAVE_GROUP": {
+      let newOwnerId: number | null = null;
+      if (currentGroup.role === "OWNER") {
+        newOwnerId = groupSuccessorOwner(currentGroup.id);
+      }
+
+      leaveGroup({
+        groupId: currentGroup.id,
+        userId: user.id,
+        newOwnerId,
       });
 
       break;
@@ -371,6 +388,7 @@ function GroupMember({
   member: LookingGroup["members"][number];
   ownGroup: boolean;
 }) {
+  const user = useUser();
   const data = useLoaderData<typeof loader>();
   const fetcher = useFetcher();
 
@@ -399,6 +417,16 @@ function GroupMember({
           state={fetcher.state}
         >
           Remove manager
+        </SubmitButton>
+      ) : null}
+      {ownGroup && member.id === user?.id ? (
+        <SubmitButton
+          variant="minimal-destructive"
+          size="tiny"
+          _action="LEAVE_GROUP"
+          state={fetcher.state}
+        >
+          Leave group
         </SubmitButton>
       ) : null}
     </fetcher.Form>

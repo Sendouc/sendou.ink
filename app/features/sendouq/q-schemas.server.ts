@@ -30,4 +30,7 @@ export const lookingSchema = z.union([
     _action: z.literal("REMOVE_MANAGER"),
     userId: id,
   }),
+  z.object({
+    _action: z.literal("LEAVE_GROUP"),
+  }),
 ]);

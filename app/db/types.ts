@@ -516,7 +516,6 @@ export interface Group {
   status: "PREPARING" | "ACTIVE" | "INACTIVE";
 }
 
-// xxx: somehow unique so that user is not in multiple groups
 export interface GroupMember {
   groupId: number;
   userId: number;
