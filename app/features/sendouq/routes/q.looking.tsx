@@ -78,6 +78,9 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
+// this function doesn't throw normally because we are assuming
+// if there is a validation error the user saw stale data
+// and when we return null we just force a refresh
 export const action: ActionFunction = async ({ request }) => {
   const user = await requireUserId(request);
   const data = await parseRequestFormData({
@@ -85,20 +88,17 @@ export const action: ActionFunction = async ({ request }) => {
     schema: lookingSchema,
   });
   const currentGroup = findCurrentGroupByUserId(user.id);
+  if (!currentGroup) return null;
 
-  validate(currentGroup, "Not in a group");
-
+  // this throws because there should normally be no way user loses ownership by the action of some other user
   const validateIsGroupOwner = () =>
     validate(currentGroup.role === "OWNER", "Not  owner");
-  const validateIsGroupManager = () =>
-    validate(
-      currentGroup.role === "MANAGER" || currentGroup.role === "OWNER",
-      "Not manager or owner"
-    );
+  const isGroupManager = () =>
+    currentGroup.role === "MANAGER" || currentGroup.role === "OWNER";
 
   switch (data._action) {
     case "LIKE": {
-      validateIsGroupManager();
+      if (!isGroupManager()) return null;
 
       addLike({
         likerGroupId: currentGroup.id,
@@ -109,7 +109,7 @@ export const action: ActionFunction = async ({ request }) => {
       break;
     }
     case "UNLIKE": {
-      validateIsGroupManager();
+      if (!isGroupManager()) return null;
 
       deleteLike({
         likerGroupId: currentGroup.id,
@@ -119,16 +119,16 @@ export const action: ActionFunction = async ({ request }) => {
 
       break;
     }
-    // xxx: maybe just return null instead of throwing an error
     case "GROUP_UP": {
-      validateIsGroupManager();
-      validate(
-        likeExists({
+      if (!isGroupManager()) return null;
+      if (
+        !likeExists({
           targetGroupId: currentGroup.id,
           likerGroupId: data.targetGroupId,
-        }),
-        "No like"
-      );
+        })
+      ) {
+        return null;
+      }
 
       const lookingGroups = findLookingGroups({
         maxGroupSize: membersNeededForFull(groupSize(currentGroup.id)),
@@ -138,11 +138,11 @@ export const action: ActionFunction = async ({ request }) => {
       const ourGroup = lookingGroups.find(
         (group) => group.id === currentGroup.id
       );
-      invariant(ourGroup, "Our group not found");
+      if (!ourGroup) return null;
       const theirGroup = lookingGroups.find(
         (group) => group.id === data.targetGroupId
       );
-      invariant(theirGroup, "Target group not found");
+      if (!theirGroup) return null;
 
       const { id: survivingGroupId } = groupAfterMorph({
         liker: "THEM",
