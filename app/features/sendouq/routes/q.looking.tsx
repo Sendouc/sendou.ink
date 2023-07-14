@@ -168,7 +168,7 @@ export default function QLookingPage() {
       </div>
       <div className="q__groups-container">
         <div>
-          <h2>Likes received</h2>
+          <h2 className="text-sm text-center mb-2">Likes received</h2>
           <div className="stack sm">
             {data.groups.likesReceived.map((group) => {
               const { isRanked, mapListPreference } = groupAfterMorph({
@@ -190,7 +190,7 @@ export default function QLookingPage() {
           </div>
         </div>
         <div className="w-full">
-          <h2>Neutral</h2>
+          <h2 className="text-sm text-center mb-2 invisible">Neutral</h2>
           <div className="stack sm">
             {data.groups.neutral.map((group) => {
               const { isRanked, mapListPreference } = groupAfterMorph({
@@ -212,7 +212,7 @@ export default function QLookingPage() {
           </div>
         </div>
         <div>
-          <h2>Likes given</h2>
+          <h2 className="text-sm text-center mb-2">Likes given</h2>
           <div className="stack sm">
             {data.groups.likesGiven.map((group) => {
               const { isRanked, mapListPreference } = groupAfterMorph({
