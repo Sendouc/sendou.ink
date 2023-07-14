@@ -386,7 +386,7 @@ function InfoText() {
       })}
     >
       {isMounted
-        ? `Last updated ${new Date(data.lastUpdated).toLocaleTimeString(
+        ? `Last updated at ${new Date(data.lastUpdated).toLocaleTimeString(
             i18n.language
           )}`
         : "Placeholder"}

@@ -93,4 +93,5 @@
   background-color: var(--bg);
   border-radius: 100%;
   padding: var(--s-1);
+  overflow: visible;
 }
