@@ -1,3 +1,4 @@
+import invariant from "tiny-invariant";
 import { sql } from "~/db/sql";
 
 const makeMemberOwnerStm = sql.prepare(/* sql */ `
@@ -23,11 +24,20 @@ export const leaveGroup = sql.transaction(
     groupId,
     userId,
     newOwnerId,
+    wasOwner,
   }: {
     groupId: number;
     userId: number;
     newOwnerId: number | null;
+    wasOwner: boolean;
   }) => {
+    invariant(!wasOwner || newOwnerId, "newOwnerId must be set if wasOwner");
+
+    if (!wasOwner) {
+      deleteGroupMemberStm.run({ groupId, userId });
+      return;
+    }
+
     if (newOwnerId) {
       makeMemberOwnerStm.run({ groupId, userId: newOwnerId });
       deleteGroupMemberStm.run({ groupId, userId });

@@ -93,11 +93,12 @@ export const loader = async ({ request }: LoaderArgs) => {
   return null;
 };
 
-// xxx: load latest group and get initial settings from that
+// xxx: initial settings from local storage
 // xxx: teams looking for scrim?
 // xxx: link to yt video explaining it
 // xxx: UI when not logged in
 // xxx: show streams?
+// xxx: after leaving group and redirected there is a loading indicator that never resolves
 export default function QPage() {
   return (
     <Main halfWidth className="stack lg">
@@ -150,6 +151,7 @@ const formatter = ({
     minute: "numeric",
     weekday: "long",
   });
+// xxx: date and time different divs for consistency
 function Clocks() {
   const isMounted = useIsMounted();
   const { i18n } = useTranslation();

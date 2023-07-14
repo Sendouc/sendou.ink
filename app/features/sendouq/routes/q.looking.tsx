@@ -41,9 +41,10 @@ import { morphGroups } from "../queries/morphGroups.server";
 import { assertUnreachable } from "~/utils/types";
 import { addManagerRole } from "../queries/addManagerRole.server";
 import { removeManagerRole } from "../queries/removeManagerRole.server";
-import { useUser } from "~/modules/auth";
 import { leaveGroup } from "../queries/leaveGroup.server";
 import { groupSuccessorOwner } from "../queries/groupSuccessorOwner";
+import { FormWithConfirm } from "~/components/FormWithConfirm";
+import { Button } from "~/components/Button";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -169,6 +170,7 @@ export const action: ActionFunction = async ({ request }) => {
         groupId: currentGroup.id,
         userId: user.id,
         newOwnerId,
+        wasOwner: currentGroup.role === "OWNER",
       });
 
       break;
@@ -309,6 +311,8 @@ function GroupCard({
   const fetcher = useFetcher();
   const data = useLoaderData<typeof loader>();
 
+  const ownGroup = group.id === data.groups.own.id;
+
   return (
     <section className="q__group">
       <div className="stack lg horizontal justify-between items-center">
@@ -328,10 +332,7 @@ function GroupCard({
         {group.members.map((member) => {
           return (
             <React.Fragment key={member.discordId}>
-              <GroupMember
-                member={member}
-                ownGroup={group.id === data.groups.own.id}
-              />
+              <GroupMember member={member} ownGroup={ownGroup} />
               {member.weapons ? (
                 <div className="q__group-member-weapons">
                   {member.weapons.map((weapon) => {
@@ -377,6 +378,17 @@ function GroupCard({
           </SubmitButton>
         </fetcher.Form>
       ) : null}
+      {ownGroup ? (
+        <FormWithConfirm
+          dialogHeading="Leave this group?"
+          fields={[["_action", "LEAVE_GROUP"]]}
+          deleteButtonText="Leave"
+        >
+          <Button variant="minimal-destructive" size="tiny">
+            Leave group
+          </Button>
+        </FormWithConfirm>
+      ) : null}
     </section>
   );
 }
@@ -388,7 +400,6 @@ function GroupMember({
   member: LookingGroup["members"][number];
   ownGroup: boolean;
 }) {
-  const user = useUser();
   const data = useLoaderData<typeof loader>();
   const fetcher = useFetcher();
 
@@ -417,16 +428,6 @@ function GroupMember({
           state={fetcher.state}
         >
           Remove manager
-        </SubmitButton>
-      ) : null}
-      {ownGroup && member.id === user?.id ? (
-        <SubmitButton
-          variant="minimal-destructive"
-          size="tiny"
-          _action="LEAVE_GROUP"
-          state={fetcher.state}
-        >
-          Leave group
         </SubmitButton>
       ) : null}
     </fetcher.Form>
