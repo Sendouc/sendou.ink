@@ -33,4 +33,7 @@ export const lookingSchema = z.union([
   z.object({
     _action: z.literal("LEAVE_GROUP"),
   }),
+  z.object({
+    _action: z.literal("REFRESH_GROUP"),
+  }),
 ]);

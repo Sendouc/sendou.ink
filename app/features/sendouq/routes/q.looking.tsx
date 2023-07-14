@@ -24,7 +24,11 @@ import {
 } from "~/utils/remix";
 import styles from "../q.css";
 import { Avatar } from "~/components/Avatar";
-import { divideGroups, membersNeededForFull } from "../core/groups.server";
+import {
+  divideGroups,
+  groupExpiryStatus,
+  membersNeededForFull,
+} from "../core/groups.server";
 import { WeaponImage } from "~/components/Image";
 import * as React from "react";
 import { lookingSchema } from "../q-schemas.server";
@@ -50,6 +54,9 @@ import { leaveGroup } from "../queries/leaveGroup.server";
 import { groupSuccessorOwner } from "../queries/groupSuccessorOwner";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { Button } from "~/components/Button";
+import { useIsMounted } from "~/hooks/useIsMounted";
+import { useTranslation } from "~/hooks/useTranslation";
+import { refreshGroup } from "../queries/refreshGroup.server";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -90,6 +97,7 @@ export const action: ActionFunction = async ({ request }) => {
         likerGroupId: currentGroup.id,
         targetGroupId: data.targetGroupId,
       });
+      refreshGroup(currentGroup.id);
 
       break;
     }
@@ -100,6 +108,7 @@ export const action: ActionFunction = async ({ request }) => {
         likerGroupId: currentGroup.id,
         targetGroupId: data.targetGroupId,
       });
+      refreshGroup(currentGroup.id);
 
       break;
     }
@@ -142,6 +151,7 @@ export const action: ActionFunction = async ({ request }) => {
         otherGroupId: otherGroup.id,
         newMembers: otherGroup.members.map((m) => m.id),
       });
+      refreshGroup(survivingGroupId);
 
       break;
     }
@@ -152,6 +162,7 @@ export const action: ActionFunction = async ({ request }) => {
         groupId: currentGroup.id,
         userId: data.userId,
       });
+      refreshGroup(currentGroup.id);
 
       break;
     }
@@ -162,6 +173,7 @@ export const action: ActionFunction = async ({ request }) => {
         groupId: currentGroup.id,
         userId: data.userId,
       });
+      refreshGroup(currentGroup.id);
 
       break;
     }
@@ -179,6 +191,11 @@ export const action: ActionFunction = async ({ request }) => {
       });
 
       throw redirect(SENDOUQ_PAGE);
+    }
+    case "REFRESH_GROUP": {
+      refreshGroup(currentGroup.id);
+
+      break;
     }
     default: {
       assertUnreachable(data);
@@ -214,91 +231,157 @@ export const loader = async ({ request }: LoaderArgs) => {
       likes: findLikes(currentGroup.id),
     }),
     role: currentGroup.role,
+    lastUpdated: new Date().getTime(),
+    expiryStatus: groupExpiryStatus(currentGroup),
   };
 };
 
-// xxx: handle group refresh and warning
+// xxx: mobile view
 export default function QLookingPage() {
   const data = useLoaderData<typeof loader>();
 
   return (
     <Main className="stack lg">
-      <div className="q__own-group-container">
-        <GroupCard
-          group={data.groups.own}
-          isRanked={data.groups.own.isRanked}
-          mapListPreference={data.groups.own.mapListPreference}
-        />
-      </div>
-      <div className="q__groups-container">
-        <div>
-          <h2 className="text-sm text-center mb-2">Likes received</h2>
-          <div className="stack sm">
-            {data.groups.likesReceived.map((group) => {
-              const { isRanked, mapListPreference } = groupAfterMorph({
-                liker: "THEM",
-                ourGroup: data.groups.own,
-                theirGroup: group,
-              });
-
-              return (
-                <GroupCard
-                  key={group.id}
-                  group={group}
-                  action="GROUP_UP"
-                  isRanked={isRanked}
-                  mapListPreference={mapListPreference}
-                />
-              );
-            })}
-          </div>
-        </div>
-        <div className="w-full">
-          <h2 className="text-sm text-center mb-2 invisible">Neutral</h2>
-          <div className="stack sm">
-            {data.groups.neutral.map((group) => {
-              const { isRanked, mapListPreference } = groupAfterMorph({
-                liker: "US",
-                ourGroup: data.groups.own,
-                theirGroup: group,
-              });
-
-              return (
-                <GroupCard
-                  key={group.id}
-                  group={group}
-                  action="LIKE"
-                  isRanked={isRanked}
-                  mapListPreference={mapListPreference}
-                />
-              );
-            })}
-          </div>
-        </div>
-        <div>
-          <h2 className="text-sm text-center mb-2">Likes given</h2>
-          <div className="stack sm">
-            {data.groups.likesGiven.map((group) => {
-              const { isRanked, mapListPreference } = groupAfterMorph({
-                liker: "US",
-                ourGroup: data.groups.own,
-                theirGroup: group,
-              });
-
-              return (
-                <GroupCard
-                  key={group.id}
-                  group={group}
-                  action="UNLIKE"
-                  isRanked={isRanked}
-                  mapListPreference={mapListPreference}
-                />
-              );
-            })}
-          </div>
+      <div className="stack sm">
+        <InfoText />
+        <div className="q__own-group-container">
+          <GroupCard
+            group={data.groups.own}
+            isRanked={data.groups.own.isRanked}
+            mapListPreference={data.groups.own.mapListPreference}
+          />
         </div>
       </div>
+      {!data.expiryStatus ? (
+        <div className="q__groups-container">
+          <div>
+            <h2 className="text-sm text-center mb-2">Likes received</h2>
+            <div className="stack sm">
+              {data.groups.likesReceived.map((group) => {
+                const { isRanked, mapListPreference } = groupAfterMorph({
+                  liker: "THEM",
+                  ourGroup: data.groups.own,
+                  theirGroup: group,
+                });
+
+                return (
+                  <GroupCard
+                    key={group.id}
+                    group={group}
+                    action="GROUP_UP"
+                    isRanked={isRanked}
+                    mapListPreference={mapListPreference}
+                  />
+                );
+              })}
+            </div>
+          </div>
+          <div className="w-full">
+            <h2 className="text-sm text-center mb-2 invisible">Neutral</h2>
+            <div className="stack sm">
+              {data.groups.neutral.map((group) => {
+                const { isRanked, mapListPreference } = groupAfterMorph({
+                  liker: "US",
+                  ourGroup: data.groups.own,
+                  theirGroup: group,
+                });
+
+                return (
+                  <GroupCard
+                    key={group.id}
+                    group={group}
+                    action="LIKE"
+                    isRanked={isRanked}
+                    mapListPreference={mapListPreference}
+                  />
+                );
+              })}
+            </div>
+          </div>
+          <div>
+            <h2 className="text-sm text-center mb-2">Likes given</h2>
+            <div className="stack sm">
+              {data.groups.likesGiven.map((group) => {
+                const { isRanked, mapListPreference } = groupAfterMorph({
+                  liker: "US",
+                  ourGroup: data.groups.own,
+                  theirGroup: group,
+                });
+
+                return (
+                  <GroupCard
+                    key={group.id}
+                    group={group}
+                    action="UNLIKE"
+                    isRanked={isRanked}
+                    mapListPreference={mapListPreference}
+                  />
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      ) : null}
     </Main>
+  );
+}
+
+function InfoText() {
+  const { i18n } = useTranslation();
+  const isMounted = useIsMounted();
+  const data = useLoaderData<typeof loader>();
+  const fetcher = useFetcher();
+
+  if (data.expiryStatus === "EXPIRED") {
+    return (
+      <fetcher.Form
+        method="post"
+        className="text-xs text-lighter ml-auto text-error stack horizontal sm"
+      >
+        Group hidden due to inactivity. Still looking?{" "}
+        <SubmitButton
+          size="tiny"
+          variant="minimal"
+          _action="REFRESH_GROUP"
+          state={fetcher.state}
+        >
+          Click here
+        </SubmitButton>
+      </fetcher.Form>
+    );
+  }
+
+  if (data.expiryStatus === "EXPIRING") {
+    return (
+      <fetcher.Form
+        method="post"
+        className="text-xs text-lighter ml-auto text-warning stack horizontal sm"
+      >
+        Group will be hidden soon due to inactivity. Still looking?{" "}
+        <SubmitButton
+          size="tiny"
+          variant="minimal"
+          _action="REFRESH_GROUP"
+          state={fetcher.state}
+        >
+          Click here
+        </SubmitButton>
+      </fetcher.Form>
+    );
+  }
+
+  return (
+    <div
+      className={clsx("text-xs text-lighter ml-auto", {
+        invisible: !isMounted,
+      })}
+    >
+      {isMounted
+        ? `Last updated ${new Date(data.lastUpdated).toLocaleTimeString(
+            i18n.language
+          )}`
+        : "Placeholder"}
+    </div>
   );
 }
 

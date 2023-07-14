@@ -6,6 +6,7 @@ const stm = sql.prepare(/* sql */ `
   select
     "Group"."id",
     "Group"."status",
+    "Group"."latestActionAt",
     "GroupMatch"."id" as "matchId",
     "GroupMember"."role"
   from
@@ -18,7 +19,7 @@ const stm = sql.prepare(/* sql */ `
     and "GroupMember"."userId" = @userId
 `);
 
-type ActiveGroup = Pick<Group, "id" | "status"> & {
+type ActiveGroup = Pick<Group, "id" | "status" | "latestActionAt"> & {
   matchId?: number;
   role: GroupMember["role"];
 };

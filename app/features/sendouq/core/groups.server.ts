@@ -1,6 +1,7 @@
 import invariant from "tiny-invariant";
 import type { LookingGroup } from "../queries/lookingGroups.server";
-import type { GroupLike } from "~/db/types";
+import type { Group, GroupLike } from "~/db/types";
+import { databaseTimestampToDate } from "~/utils/dates";
 
 interface DividedGroups {
   own: LookingGroup;
@@ -69,4 +70,24 @@ export function divideGroups({
 
 export function membersNeededForFull(currentSize: number) {
   return 4 - currentSize;
+}
+
+export function groupExpiryStatus(group: Pick<Group, "latestActionAt">) {
+  // group expires in 30min without actions performed
+  const groupExpiresAt =
+    databaseTimestampToDate(group.latestActionAt).getTime() + 30 * 60 * 1000;
+
+  const now = new Date().getTime();
+
+  if (now > groupExpiresAt) {
+    return "EXPIRED";
+  }
+
+  const tenMinutesFromNow = now + 10 * 60 * 1000;
+
+  if (tenMinutesFromNow > groupExpiresAt) {
+    return "EXPIRING_SOON";
+  }
+
+  return null;
 }
