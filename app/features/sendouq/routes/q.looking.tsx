@@ -57,6 +57,7 @@ import { Button } from "~/components/Button";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "~/hooks/useTranslation";
 import { refreshGroup } from "../queries/refreshGroup.server";
+import { Flipped, Flipper } from "react-flip-toolkit";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -253,74 +254,82 @@ export default function QLookingPage() {
         </div>
       </div>
       {!data.expiryStatus ? (
-        <div className="q__groups-container">
-          <div>
-            <h2 className="text-sm text-center mb-2">Likes received</h2>
-            <div className="stack sm">
-              {data.groups.likesReceived.map((group) => {
-                const { isRanked, mapListPreference } = groupAfterMorph({
-                  liker: "THEM",
-                  ourGroup: data.groups.own,
-                  theirGroup: group,
-                });
+        <Flipper
+          flipKey={`${data.groups.likesReceived
+            .map((g) => g.id)
+            .join("")}-${data.groups.neutral
+            .map((g) => g.id)
+            .join("")}-${data.groups.likesGiven.map((g) => g.id).join("")}`}
+        >
+          <div className="q__groups-container">
+            <div>
+              <h2 className="text-sm text-center mb-2">Likes received</h2>
+              <div className="stack sm">
+                {data.groups.likesReceived.map((group) => {
+                  const { isRanked, mapListPreference } = groupAfterMorph({
+                    liker: "THEM",
+                    ourGroup: data.groups.own,
+                    theirGroup: group,
+                  });
 
-                return (
-                  <GroupCard
-                    key={group.id}
-                    group={group}
-                    action="GROUP_UP"
-                    isRanked={isRanked}
-                    mapListPreference={mapListPreference}
-                  />
-                );
-              })}
+                  return (
+                    <GroupCard
+                      key={group.id}
+                      group={group}
+                      action="GROUP_UP"
+                      isRanked={isRanked}
+                      mapListPreference={mapListPreference}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+            <div className="w-full">
+              <h2 className="text-sm text-center mb-2 invisible">Neutral</h2>
+              <div className="stack sm">
+                {data.groups.neutral.map((group) => {
+                  const { isRanked, mapListPreference } = groupAfterMorph({
+                    liker: "US",
+                    ourGroup: data.groups.own,
+                    theirGroup: group,
+                  });
+
+                  return (
+                    <GroupCard
+                      key={group.id}
+                      group={group}
+                      action="LIKE"
+                      isRanked={isRanked}
+                      mapListPreference={mapListPreference}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+            <div>
+              <h2 className="text-sm text-center mb-2">Likes given</h2>
+              <div className="stack sm">
+                {data.groups.likesGiven.map((group) => {
+                  const { isRanked, mapListPreference } = groupAfterMorph({
+                    liker: "US",
+                    ourGroup: data.groups.own,
+                    theirGroup: group,
+                  });
+
+                  return (
+                    <GroupCard
+                      key={group.id}
+                      group={group}
+                      action="UNLIKE"
+                      isRanked={isRanked}
+                      mapListPreference={mapListPreference}
+                    />
+                  );
+                })}
+              </div>
             </div>
           </div>
-          <div className="w-full">
-            <h2 className="text-sm text-center mb-2 invisible">Neutral</h2>
-            <div className="stack sm">
-              {data.groups.neutral.map((group) => {
-                const { isRanked, mapListPreference } = groupAfterMorph({
-                  liker: "US",
-                  ourGroup: data.groups.own,
-                  theirGroup: group,
-                });
-
-                return (
-                  <GroupCard
-                    key={group.id}
-                    group={group}
-                    action="LIKE"
-                    isRanked={isRanked}
-                    mapListPreference={mapListPreference}
-                  />
-                );
-              })}
-            </div>
-          </div>
-          <div>
-            <h2 className="text-sm text-center mb-2">Likes given</h2>
-            <div className="stack sm">
-              {data.groups.likesGiven.map((group) => {
-                const { isRanked, mapListPreference } = groupAfterMorph({
-                  liker: "US",
-                  ourGroup: data.groups.own,
-                  theirGroup: group,
-                });
-
-                return (
-                  <GroupCard
-                    key={group.id}
-                    group={group}
-                    action="UNLIKE"
-                    isRanked={isRanked}
-                    mapListPreference={mapListPreference}
-                  />
-                );
-              })}
-            </div>
-          </div>
-        </div>
+        </Flipper>
       ) : null}
     </Main>
   );
@@ -402,82 +411,84 @@ function GroupCard({
   const ownGroup = group.id === data.groups.own.id;
 
   return (
-    <section className="q__group">
-      <div className="stack lg horizontal justify-between items-center">
-        <div className="stack xs horizontal items-center">
-          <ModePreferenceIcons preference={mapListPreference} />
-        </div>
-        <div
-          className={clsx("text-xs font-semi-bold", {
-            "text-info": isRanked,
-            "text-theme-secondary": !isRanked,
-          })}
-        >
-          {isRanked ? "Ranked" : "Scrim"}
-        </div>
-      </div>
-      <div className="stack sm">
-        {group.members.map((member) => {
-          return (
-            <React.Fragment key={member.discordId}>
-              <GroupMember member={member} ownGroup={ownGroup} />
-              {member.weapons ? (
-                <div className="q__group-member-weapons">
-                  {member.weapons.map((weapon) => {
-                    return (
-                      <WeaponImage
-                        key={weapon}
-                        weaponSplId={weapon}
-                        variant="badge"
-                        size={36}
-                        className="q__group-member-weapon"
-                      />
-                    );
-                  })}
-                </div>
-              ) : null}
-            </React.Fragment>
-          );
-        })}
-      </div>
-      {action && (data.role === "OWNER" || data.role === "MANAGER") ? (
-        <fetcher.Form className="stack items-center" method="post">
-          <input type="hidden" name="targetGroupId" value={group.id} />
-          <SubmitButton
-            size="tiny"
-            variant={action === "UNLIKE" ? "destructive" : "outlined"}
-            _action={action}
-            state={fetcher.state}
-            icon={
-              action === "LIKE" ? (
-                <StarFilledIcon />
-              ) : action === "GROUP_UP" ? (
-                <UsersIcon />
-              ) : (
-                <UndoIcon />
-              )
-            }
+    <Flipped flipId={group.id}>
+      <section className="q__group">
+        <div className="stack lg horizontal justify-between items-center">
+          <div className="stack xs horizontal items-center">
+            <ModePreferenceIcons preference={mapListPreference} />
+          </div>
+          <div
+            className={clsx("text-xs font-semi-bold", {
+              "text-info": isRanked,
+              "text-theme-secondary": !isRanked,
+            })}
           >
-            {action === "LIKE"
-              ? "Ask to play"
-              : action === "GROUP_UP"
-              ? "Group up"
-              : "Undo"}
-          </SubmitButton>
-        </fetcher.Form>
-      ) : null}
-      {ownGroup ? (
-        <FormWithConfirm
-          dialogHeading="Leave this group?"
-          fields={[["_action", "LEAVE_GROUP"]]}
-          deleteButtonText="Leave"
-        >
-          <Button variant="minimal-destructive" size="tiny">
-            Leave group
-          </Button>
-        </FormWithConfirm>
-      ) : null}
-    </section>
+            {isRanked ? "Ranked" : "Scrim"}
+          </div>
+        </div>
+        <div className="stack sm">
+          {group.members.map((member) => {
+            return (
+              <React.Fragment key={member.discordId}>
+                <GroupMember member={member} ownGroup={ownGroup} />
+                {member.weapons ? (
+                  <div className="q__group-member-weapons">
+                    {member.weapons.map((weapon) => {
+                      return (
+                        <WeaponImage
+                          key={weapon}
+                          weaponSplId={weapon}
+                          variant="badge"
+                          size={36}
+                          className="q__group-member-weapon"
+                        />
+                      );
+                    })}
+                  </div>
+                ) : null}
+              </React.Fragment>
+            );
+          })}
+        </div>
+        {action && (data.role === "OWNER" || data.role === "MANAGER") ? (
+          <fetcher.Form className="stack items-center" method="post">
+            <input type="hidden" name="targetGroupId" value={group.id} />
+            <SubmitButton
+              size="tiny"
+              variant={action === "UNLIKE" ? "destructive" : "outlined"}
+              _action={action}
+              state={fetcher.state}
+              icon={
+                action === "LIKE" ? (
+                  <StarFilledIcon />
+                ) : action === "GROUP_UP" ? (
+                  <UsersIcon />
+                ) : (
+                  <UndoIcon />
+                )
+              }
+            >
+              {action === "LIKE"
+                ? "Ask to play"
+                : action === "GROUP_UP"
+                ? "Group up"
+                : "Undo"}
+            </SubmitButton>
+          </fetcher.Form>
+        ) : null}
+        {ownGroup ? (
+          <FormWithConfirm
+            dialogHeading="Leave this group?"
+            fields={[["_action", "LEAVE_GROUP"]]}
+            deleteButtonText="Leave"
+          >
+            <Button variant="minimal-destructive" size="tiny">
+              Leave group
+            </Button>
+          </FormWithConfirm>
+        ) : null}
+      </section>
+    </Flipped>
   );
 }
 
