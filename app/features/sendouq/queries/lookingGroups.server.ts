@@ -93,5 +93,8 @@ export function findLookingGroups({
         }),
       };
     })
-    .filter((group: any) => group.members.length <= maxGroupSize);
+    .filter(
+      (group: any) =>
+        group.id === ownGroupId || group.members.length <= maxGroupSize
+    );
 }

@@ -356,6 +356,7 @@ function useAutoRefresh() {
 
     // ...as well as every 20 seconds
     const interval = setInterval(() => {
+      if (visibility === "hidden") return;
       revalidate();
     }, 20 * 1000);
 

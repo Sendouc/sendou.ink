@@ -1548,7 +1548,7 @@ function groups() {
   );
   users.push(NZAP_TEST_ID);
 
-  for (let i = 0; i < 15; i++) {
+  for (let i = 0; i < 25; i++) {
     const group = createGroup({
       isRanked: booleanToInt(i < 13),
       mapListPreference: faker.helpers.arrayElement(
@@ -1572,7 +1572,7 @@ function groups() {
       ]),
     });
 
-    const amountOfAdditionalMembers = i % 3;
+    const amountOfAdditionalMembers = i === 0 ? 2 : i % 4;
 
     for (let j = 0; j < amountOfAdditionalMembers; j++) {
       sql
@@ -1585,7 +1585,7 @@ function groups() {
         .run({
           groupId: group.id,
           userId: users.pop()!,
-          role: "MEMBER",
+          role: "REGULAR",
         });
     }
   }
