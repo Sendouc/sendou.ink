@@ -36,6 +36,8 @@ import type { Group } from "~/db/types";
 import { groupAfterMorph } from "../core/groups";
 import { ModePreferenceIcons } from "../components/ModePrefenceIcons";
 import clsx from "clsx";
+import { likeExists } from "../queries/likeExists.server";
+import { morphGroups } from "../queries/morphGroups.server";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -67,14 +69,53 @@ export const action: ActionFunction = async ({ request }) => {
         targetGroupId: data.targetGroupId,
       });
 
-      // xxx: morph groups logic
-
       break;
     }
     case "UNLIKE": {
       deleteLike({
         likerGroupId: currentGroup.id,
         targetGroupId: data.targetGroupId,
+      });
+
+      break;
+    }
+    // xxx: maybe just return null instead of throwing an error
+    case "GROUP_UP": {
+      validate(
+        likeExists({
+          targetGroupId: currentGroup.id,
+          likerGroupId: data.targetGroupId,
+        }),
+        "No like"
+      );
+
+      const lookingGroups = findLookingGroups({
+        maxGroupSize: membersNeededForFull(groupSize(currentGroup.id)),
+        ownGroupId: currentGroup.id,
+      });
+
+      const ourGroup = lookingGroups.find(
+        (group) => group.id === currentGroup.id
+      );
+      invariant(ourGroup, "Our group not found");
+      const theirGroup = lookingGroups.find(
+        (group) => group.id === data.targetGroupId
+      );
+      invariant(theirGroup, "Target group not found");
+
+      const { id: survivingGroupId } = groupAfterMorph({
+        liker: "THEM",
+        ourGroup,
+        theirGroup,
+      });
+
+      const otherGroup =
+        ourGroup.id === survivingGroupId ? theirGroup : ourGroup;
+
+      morphGroups({
+        survivingGroupId,
+        otherGroupId: otherGroup.id,
+        newMembers: otherGroup.members.map((m) => m.id),
       });
 
       break;
@@ -117,7 +158,14 @@ export default function QLookingPage() {
   const data = useLoaderData<typeof loader>();
 
   return (
-    <Main>
+    <Main className="stack lg">
+      <div className="q__own-group-container">
+        <GroupCard
+          group={data.groups.own}
+          isRanked={data.groups.own.isRanked}
+          mapListPreference={data.groups.own.mapListPreference}
+        />
+      </div>
       <div className="q__groups-container">
         <div>
           <h2>Likes received</h2>
@@ -197,14 +245,14 @@ function GroupCard({
   mapListPreference,
 }: {
   group: LookingGroup;
-  action: "LIKE" | "UNLIKE" | "GROUP_UP";
+  action?: "LIKE" | "UNLIKE" | "GROUP_UP";
   isRanked: Group["isRanked"];
   mapListPreference: Group["mapListPreference"];
 }) {
   const fetcher = useFetcher();
   return (
     <section className="q__group">
-      <div className="stack horizontal justify-between items-center">
+      <div className="stack lg horizontal justify-between items-center">
         <div className="stack xs horizontal items-center">
           <ModePreferenceIcons preference={mapListPreference} />
         </div>
@@ -248,30 +296,32 @@ function GroupCard({
           );
         })}
       </div>
-      <fetcher.Form className="stack items-center" method="post">
-        <input type="hidden" name="targetGroupId" value={group.id} />
-        <SubmitButton
-          size="tiny"
-          variant={action === "UNLIKE" ? "destructive" : "outlined"}
-          _action={action}
-          state={fetcher.state}
-          icon={
-            action === "LIKE" ? (
-              <StarFilledIcon />
-            ) : action === "GROUP_UP" ? (
-              <UsersIcon />
-            ) : (
-              <UndoIcon />
-            )
-          }
-        >
-          {action === "LIKE"
-            ? "Ask to play"
-            : action === "GROUP_UP"
-            ? "Group up"
-            : "Undo"}
-        </SubmitButton>
-      </fetcher.Form>
+      {action ? (
+        <fetcher.Form className="stack items-center" method="post">
+          <input type="hidden" name="targetGroupId" value={group.id} />
+          <SubmitButton
+            size="tiny"
+            variant={action === "UNLIKE" ? "destructive" : "outlined"}
+            _action={action}
+            state={fetcher.state}
+            icon={
+              action === "LIKE" ? (
+                <StarFilledIcon />
+              ) : action === "GROUP_UP" ? (
+                <UsersIcon />
+              ) : (
+                <UndoIcon />
+              )
+            }
+          >
+            {action === "LIKE"
+              ? "Ask to play"
+              : action === "GROUP_UP"
+              ? "Group up"
+              : "Undo"}
+          </SubmitButton>
+        </fetcher.Form>
+      ) : null}
     </section>
   );
 }

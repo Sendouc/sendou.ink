@@ -52,6 +52,10 @@
   border-radius: 7px;
 }
 
+.q__own-group-container {
+  margin: 0 auto;
+}
+
 .q__groups-container {
   display: grid;
   justify-content: center;

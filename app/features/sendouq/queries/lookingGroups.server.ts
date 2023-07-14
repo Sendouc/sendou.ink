@@ -14,6 +14,7 @@ const stm = sql.prepare(/* sql */ `
       "Group"."createdAt",
       "Group"."mapListPreference",
       "Group"."isRanked",
+      "User"."id" as "userId",
       "User"."discordId",
       "User"."discordName",
       "User"."discordAvatar",
@@ -40,6 +41,7 @@ const stm = sql.prepare(/* sql */ `
     "q1"."isRanked",
     json_group_array(
       json_object(
+        'id', "q1"."userId",
         'discordId', "q1"."discordId",
         'discordName', "q1"."discordName",
         'discordAvatar', "q1"."discordAvatar",
@@ -56,6 +58,7 @@ export type LookingGroup = {
   mapListPreference: Group["mapListPreference"];
   isRanked: Group["isRanked"];
   members: {
+    id: number;
     discordId: string;
     discordName: string;
     discordAvatar: string;
