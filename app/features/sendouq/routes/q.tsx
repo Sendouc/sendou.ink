@@ -172,7 +172,7 @@ function Clocks() {
           <div key={country.id} className="q__clock">
             <div className="q__clock-country">{country.city}</div>
             <Flag countryCode={country.countryCode} />
-            <div>
+            <div className={clsx({ invisible: !isMounted })}>
               {isMounted
                 ? weekdayFormatter({
                     timeZone: country.timeZone,
@@ -181,7 +181,7 @@ function Clocks() {
                 : // take space
                   "Monday"}
             </div>
-            <div>
+            <div className={clsx({ invisible: !isMounted })}>
               {isMounted
                 ? clockFormatter({
                     timeZone: country.timeZone,
