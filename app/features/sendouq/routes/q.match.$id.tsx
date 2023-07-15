@@ -51,7 +51,7 @@ export const loader = ({ params }: LoaderArgs) => {
 };
 
 // xxx: display team if in the same team, needs migration
-// xxx: weapons? as a row where score report is now
+// xxx: weapons? as a row where score report is now¨
 // xxx: after report show "Alpha won" next to pick info, italic "Unplayed" if not played
 // xxx: handle unranked
 export default function QMatchPage() {
@@ -70,7 +70,7 @@ export default function QMatchPage() {
   );
 
   return (
-    <Main className="stack lg">
+    <Main className="stack lg q-match__container">
       <div className="q-match__header">
         <h2>Match #{data.match.id}</h2>
         <div
