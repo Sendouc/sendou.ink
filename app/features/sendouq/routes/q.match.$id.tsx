@@ -1,10 +1,14 @@
-import type { LinksFunction, LoaderArgs } from "@remix-run/node";
+import type {
+  ActionFunction,
+  LinksFunction,
+  LoaderArgs,
+} from "@remix-run/node";
 import { Main } from "~/components/Main";
 import { matchIdFromParams } from "../q-utils";
 import type { SendouRouteHandle } from "~/utils/remix";
-import { notFoundIfFalsy } from "~/utils/remix";
+import { notFoundIfFalsy, parseRequestFormData } from "~/utils/remix";
 import { findMatchById } from "../queries/findMatchById.server";
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, useFetcher, useLoaderData } from "@remix-run/react";
 import { ModeImage, StageImage } from "~/components/Image";
 import { useTranslation } from "~/hooks/useTranslation";
 import { SENDOUQ_PAGE, navIconUrl, userPage } from "~/utils/urls";
@@ -21,6 +25,11 @@ import * as React from "react";
 import { Flipped, Flipper } from "react-flip-toolkit";
 import { animate } from "~/utils/flip";
 import { matchEndedAtIndex } from "../core/match";
+import { SubmitButton } from "~/components/SubmitButton";
+import { requireUserId } from "~/modules/auth/user.server";
+import { matchSchema } from "../q-schemas.server";
+import { assertUnreachable } from "~/utils/types";
+import { reportScore } from "../queries/reportScore.server";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -33,6 +42,40 @@ export const handle: SendouRouteHandle = {
     href: SENDOUQ_PAGE,
     type: "IMAGE",
   }),
+};
+
+export const action: ActionFunction = async ({ request, params }) => {
+  const matchId = matchIdFromParams(params);
+  const user = await requireUserId(request);
+  const data = await parseRequestFormData({
+    request,
+    schema: matchSchema,
+  });
+
+  switch (data._action) {
+    case "REPORT_SCORE": {
+      // xxx: check that is group member + manager/owner
+      // xxx: if score was already reported -> return null
+
+      reportScore({
+        matchId,
+        reportedByUserId: user.id,
+        winners: data.winners,
+      });
+
+      // xxx: add stats MapResult etc. + add season migration to those
+
+      break;
+    }
+    case "PLACEHOLDER": {
+      break;
+    }
+    default: {
+      assertUnreachable(data);
+    }
+  }
+
+  return null;
 };
 
 export const loader = ({ params }: LoaderArgs) => {
@@ -54,6 +97,7 @@ export const loader = ({ params }: LoaderArgs) => {
 // xxx: display team if in the same team, needs migration
 // xxx: weapons? as a row where score report is now¨
 // xxx: after report show "Alpha won" next to pick info, italic "Unplayed" if not played
+// xxx: also after report show who reported the score and when
 // xxx: handle unranked
 export default function QMatchPage() {
   const user = useUser();
@@ -71,7 +115,7 @@ export default function QMatchPage() {
   );
 
   return (
-    <Main className="stack lg q-match__container">
+    <Main className="q-match__container stack lg">
       <div className="q-match__header">
         <h2>Match #{data.match.id}</h2>
         <div
@@ -135,6 +179,7 @@ function MatchGroup({
 function MapList({ canReportScore }: { canReportScore: boolean }) {
   const { t } = useTranslation(["game-misc", "tournament"]);
   const data = useLoaderData<typeof loader>();
+  const fetcher = useFetcher();
   const [winners, setWinners] = React.useState<("ALPHA" | "BRAVO")[]>([]);
 
   const pickInfo = (source: string) => {
@@ -168,87 +213,100 @@ function MapList({ canReportScore }: { canReportScore: boolean }) {
     setWinners(newWinners);
   };
 
+  const scoreCanBeReported = Boolean(matchEndedAtIndex(winners));
   const showWinnerReportRow = (i: number) => {
     if (!canReportScore) return false;
 
     if (i === 0) return true;
 
-    if (matchEndedAtIndex(winners) && !winners[i]) return false;
+    if (scoreCanBeReported && !winners[i]) return false;
 
     const previous = winners[i - 1];
     return Boolean(previous);
   };
 
   return (
-    <Flipper flipKey={winners.join("")}>
-      <div className="stack md w-max mx-auto">
-        {data.match.mapList.map((map, i) => {
-          return (
-            <div key={map.stageId} className="stack xs">
-              <Flipped flipId={map.stageId}>
-                <div className="stack sm horizontal items-center">
-                  <StageImage
-                    stageId={map.stageId}
-                    width={64}
-                    className="rounded-sm"
-                  />
-                  <div>
-                    <div className="text-sm stack horizontal xs items-center">
-                      {i + 1}) <ModeImage mode={map.mode} size={18} />{" "}
-                      {t(`game-misc:STAGE_${map.stageId}`)}
-                    </div>
-                    <div className="text-lighter text-xs">
-                      {pickInfo(map.source)}
-                    </div>
-                  </div>
-                </div>
-              </Flipped>
-              {showWinnerReportRow(i) ? (
-                <Flipped
-                  flipId={`${map.stageId}-report`}
-                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                  onAppear={async (el: HTMLElement) => {
-                    await animate(el, [{ opacity: 0 }, { opacity: 1 }], {
-                      duration: 300,
-                    });
-                    el.style.opacity = "1";
-                  }}
-                >
-                  <div className="stack horizontal sm text-xs">
-                    <label className="mb-0 text-theme-secondary">Winner</label>
-                    <div className="stack sm horizontal items-center font-semi-bold">
-                      <input
-                        type="radio"
-                        name={`winner-${i}`}
-                        value="alpha"
-                        id={`alpha-${i}`}
-                        checked={winners[i] === "ALPHA"}
-                        onChange={handleReportScore(i, "ALPHA")}
-                      />
-                      <label className="mb-0" htmlFor={`alpha-${i}`}>
-                        Alpha
-                      </label>
-                    </div>
-                    <div className="stack sm horizontal items-center font-semi-bold">
-                      <input
-                        type="radio"
-                        name={`winner-${i}`}
-                        value="bravo"
-                        id={`bravo-${i}`}
-                        checked={winners[i] === "BRAVO"}
-                        onChange={handleReportScore(i, "BRAVO")}
-                      />
-                      <label className="mb-0" htmlFor={`bravo-${i}`}>
-                        Bravo
-                      </label>
+    <fetcher.Form method="post">
+      <input type="hidden" name="mapList" value={JSON.stringify(winners)} />
+      <Flipper flipKey={winners.join("")}>
+        <div className="stack md w-max mx-auto">
+          {data.match.mapList.map((map, i) => {
+            return (
+              <div key={map.stageId} className="stack xs">
+                <Flipped flipId={map.stageId}>
+                  <div className="stack sm horizontal items-center">
+                    <StageImage
+                      stageId={map.stageId}
+                      width={64}
+                      className="rounded-sm"
+                    />
+                    <div>
+                      <div className="text-sm stack horizontal xs items-center">
+                        {i + 1}) <ModeImage mode={map.mode} size={18} />{" "}
+                        {t(`game-misc:STAGE_${map.stageId}`)}
+                      </div>
+                      <div className="text-lighter text-xs">
+                        {pickInfo(map.source)}
+                      </div>
                     </div>
                   </div>
                 </Flipped>
-              ) : null}
-            </div>
-          );
-        })}
-      </div>
-    </Flipper>
+                {showWinnerReportRow(i) ? (
+                  <Flipped
+                    flipId={`${map.stageId}-report`}
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                    onAppear={async (el: HTMLElement) => {
+                      await animate(el, [{ opacity: 0 }, { opacity: 1 }], {
+                        duration: 300,
+                      });
+                      el.style.opacity = "1";
+                    }}
+                  >
+                    <div className="stack horizontal sm text-xs">
+                      <label className="mb-0 text-theme-secondary">
+                        Winner
+                      </label>
+                      <div className="stack sm horizontal items-center font-semi-bold">
+                        <input
+                          type="radio"
+                          name={`winner-${i}`}
+                          value="alpha"
+                          id={`alpha-${i}`}
+                          checked={winners[i] === "ALPHA"}
+                          onChange={handleReportScore(i, "ALPHA")}
+                        />
+                        <label className="mb-0" htmlFor={`alpha-${i}`}>
+                          Alpha
+                        </label>
+                      </div>
+                      <div className="stack sm horizontal items-center font-semi-bold">
+                        <input
+                          type="radio"
+                          name={`winner-${i}`}
+                          value="bravo"
+                          id={`bravo-${i}`}
+                          checked={winners[i] === "BRAVO"}
+                          onChange={handleReportScore(i, "BRAVO")}
+                        />
+                        <label className="mb-0" htmlFor={`bravo-${i}`}>
+                          Bravo
+                        </label>
+                      </div>
+                    </div>
+                  </Flipped>
+                ) : null}
+              </div>
+            );
+          })}
+        </div>
+      </Flipper>
+      {scoreCanBeReported ? (
+        <div className="stack items-center mt-4">
+          <SubmitButton _action="REPORT_SCORE" state={fetcher.state}>
+            Submit scores
+          </SubmitButton>
+        </div>
+      ) : null}
+    </fetcher.Form>
   );
 }
