@@ -1,4 +1,4 @@
-import type { LookingGroup } from "../queries/lookingGroups.server";
+import type { LookingGroup } from "../q-types";
 
 // logic is that team who is bigger decides the settings
 // but if groups are the same size then the one who liked
@@ -12,11 +12,14 @@ export function groupAfterMorph({
   theirGroup: LookingGroup;
   liker: "US" | "THEM";
 }) {
-  if (ourGroup.members.length > theirGroup.members.length) {
+  const ourMembers = ourGroup.members ?? [];
+  const theirMembers = theirGroup.members ?? [];
+
+  if (ourMembers.length > theirMembers.length) {
     return ourGroup;
   }
 
-  if (theirGroup.members.length > ourGroup.members.length) {
+  if (theirMembers.length > ourMembers.length) {
     return theirGroup;
   }
 

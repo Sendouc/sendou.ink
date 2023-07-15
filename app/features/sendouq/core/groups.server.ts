@@ -1,14 +1,9 @@
 import invariant from "tiny-invariant";
-import type { LookingGroup } from "../queries/lookingGroups.server";
 import type { Group, GroupLike } from "~/db/types";
 import { databaseTimestampToDate } from "~/utils/dates";
+import { FULL_GROUP_SIZE } from "../q-constants";
+import type { DividedGroups, LookingGroup } from "../q-types";
 
-interface DividedGroups {
-  own: LookingGroup;
-  neutral: LookingGroup[];
-  likesReceived: LookingGroup[];
-  likesGiven: LookingGroup[];
-}
 export function divideGroups({
   groups,
   ownGroupId,
@@ -19,7 +14,7 @@ export function divideGroups({
   likes: Pick<GroupLike, "likerGroupId" | "targetGroupId">[];
 }): DividedGroups {
   let own: LookingGroup | null = null;
-  const neutral: LookingGroup[] = [];
+  let neutral: LookingGroup[] = [];
   const likesReceived: LookingGroup[] = [];
   const likesGiven: LookingGroup[] = [];
 
@@ -58,7 +53,12 @@ export function divideGroups({
     neutral.push(group);
   }
 
-  invariant(own, "own group not found");
+  invariant(own && own.members, "own group not found");
+
+  // unranked groups can't see ranked groups till they like them
+  if (!own.isRanked && own.members.length === FULL_GROUP_SIZE) {
+    neutral = neutral.filter((g) => !g.isRanked);
+  }
 
   return {
     own,
@@ -68,8 +68,30 @@ export function divideGroups({
   };
 }
 
+const censorGroup = (group: LookingGroup) =>
+  group.isRanked
+    ? {
+        ...group,
+        members: undefined,
+      }
+    : {
+        ...group,
+        members: group.members?.map((member) => ({
+          ...member,
+          weapons: undefined,
+        })),
+      };
+export function censorGroups(groups: DividedGroups): DividedGroups {
+  return {
+    own: groups.own,
+    neutral: groups.neutral.map(censorGroup),
+    likesGiven: groups.likesGiven.map(censorGroup),
+    likesReceived: groups.likesReceived.map(censorGroup),
+  };
+}
+
 export function membersNeededForFull(currentSize: number) {
-  return 4 - currentSize;
+  return FULL_GROUP_SIZE - currentSize;
 }
 
 export function groupExpiryStatus(group: Pick<Group, "latestActionAt">) {

@@ -83,6 +83,16 @@
   color: var(--text);
 }
 
+.q__member-placeholder {
+  border-radius: 100%;
+  background-color: var(--bg-lightest);
+  height: 24px;
+  width: 24px;
+  display: grid;
+  place-items: center;
+  font-weight: var(--semi-bold);
+}
+
 .q__group-member-weapons {
   display: flex;
   gap: var(--s-1);

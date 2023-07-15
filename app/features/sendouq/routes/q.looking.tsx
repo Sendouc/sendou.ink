@@ -8,7 +8,6 @@ import type {
   LinksFunction,
   LoaderArgs,
 } from "@remix-run/node";
-import type { LookingGroup } from "../queries/lookingGroups.server";
 import { findLookingGroups } from "../queries/lookingGroups.server";
 import {
   Link,
@@ -30,6 +29,7 @@ import {
 import styles from "../q.css";
 import { Avatar } from "~/components/Avatar";
 import {
+  censorGroups,
   divideGroups,
   groupExpiryStatus,
   membersNeededForFull,
@@ -64,6 +64,8 @@ import { useTranslation } from "~/hooks/useTranslation";
 import { refreshGroup } from "../queries/refreshGroup.server";
 import { Flipped, Flipper } from "react-flip-toolkit";
 import { useVisibilityChange } from "~/hooks/useVisibilityChange";
+import { FULL_GROUP_SIZE } from "../q-constants";
+import type { LookingGroup } from "../q-types";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -152,6 +154,7 @@ export const action: ActionFunction = async ({ request }) => {
 
       const otherGroup =
         ourGroup.id === survivingGroupId ? theirGroup : ourGroup;
+      invariant(otherGroup.members, "other group has no members");
 
       morphGroups({
         survivingGroupId,
@@ -227,16 +230,27 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   invariant(currentGroup, "currentGroup is undefined");
 
-  return {
-    // xxx: TODO different query when own group size === 4
-    groups: divideGroups({
-      groups: findLookingGroups({
-        maxGroupSize: membersNeededForFull(groupSize(currentGroup.id)),
-        ownGroupId: currentGroup.id,
-      }),
+  const currentGroupSize = groupSize(currentGroup.id);
+  const groupIsFull = currentGroupSize === FULL_GROUP_SIZE;
+
+  const dividedGroups = divideGroups({
+    groups: findLookingGroups({
+      maxGroupSize: groupIsFull
+        ? undefined
+        : membersNeededForFull(currentGroupSize),
+      minGroupSize: groupIsFull ? FULL_GROUP_SIZE : undefined,
       ownGroupId: currentGroup.id,
-      likes: findLikes(currentGroup.id),
     }),
+    ownGroupId: currentGroup.id,
+    likes: findLikes(currentGroup.id),
+  });
+
+  const censoredGroups = groupIsFull
+    ? censorGroups(dividedGroups)
+    : dividedGroups;
+
+  return {
+    groups: censoredGroups,
     role: currentGroup.role,
     lastUpdated: new Date().getTime(),
     expiryStatus: groupExpiryStatus(currentGroup),
@@ -244,6 +258,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 // xxx: mobile view
+// xxx: mmr
 export default function QLookingPage() {
   const data = useLoaderData<typeof loader>();
   useAutoRefresh();
@@ -457,8 +472,12 @@ function GroupCard({
             {isRanked ? "Ranked" : "Scrim"}
           </div>
         </div>
-        <div className="stack sm">
-          {group.members.map((member) => {
+        <div
+          className={clsx("stack sm", {
+            "horizontal justify-center": !group.members,
+          })}
+        >
+          {group.members?.map((member) => {
             return (
               <React.Fragment key={member.discordId}>
                 <GroupMember member={member} ownGroup={ownGroup} />
@@ -480,6 +499,15 @@ function GroupCard({
               </React.Fragment>
             );
           })}
+          {!group.members
+            ? new Array(FULL_GROUP_SIZE).fill(null).map((_, i) => {
+                return (
+                  <div key={i} className="q__member-placeholder">
+                    ?
+                  </div>
+                );
+              })
+            : null}
         </div>
         {action && (data.role === "OWNER" || data.role === "MANAGER") ? (
           <fetcher.Form className="stack items-center" method="post">
@@ -527,7 +555,7 @@ function GroupMember({
   member,
   ownGroup,
 }: {
-  member: LookingGroup["members"][number];
+  member: NonNullable<LookingGroup["members"]>[number];
   ownGroup: boolean;
 }) {
   const data = useLoaderData<typeof loader>();

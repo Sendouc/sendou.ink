@@ -22,3 +22,5 @@ export const SENDOUQ = {
   OTHER_MODE_MAP_COUNT: 2,
   MAX_STAGE_REPEAT_COUNT: 2,
 } as const;
+
+export const FULL_GROUP_SIZE = 4;

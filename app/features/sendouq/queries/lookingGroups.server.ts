@@ -1,11 +1,10 @@
 import { sql } from "~/db/sql";
-import type { Group, GroupMember } from "~/db/types";
-import type { MainWeaponId } from "~/modules/in-game-lists";
 import { parseDBArray, parseDBJsonArray } from "~/utils/sql";
+import type { LookingGroup } from "../q-types";
 
 // groups visible for longer to make development easier
 const SECONDS_TILL_STALE =
-  process.env.NODE_ENV === "development" ? 1_000_000 : 1800;
+  process.env.NODE_ENV === "development" ? 1_000_000 : 1_800;
 
 const stm = sql.prepare(/* sql */ `
   with "q1" as (
@@ -55,25 +54,13 @@ const stm = sql.prepare(/* sql */ `
   order by "q1"."createdAt" desc
 `);
 
-export type LookingGroup = {
-  id: number;
-  mapListPreference: Group["mapListPreference"];
-  isRanked: Group["isRanked"];
-  members: {
-    id: number;
-    discordId: string;
-    discordName: string;
-    discordAvatar: string;
-    role: GroupMember["role"];
-    weapons?: MainWeaponId[];
-  }[];
-};
-
 export function findLookingGroups({
+  minGroupSize,
   maxGroupSize,
   ownGroupId,
 }: {
-  maxGroupSize: number;
+  minGroupSize?: number;
+  maxGroupSize?: number;
   ownGroupId: number;
 }): LookingGroup[] {
   return stm
@@ -93,8 +80,11 @@ export function findLookingGroups({
         }),
       };
     })
-    .filter(
-      (group: any) =>
-        group.id === ownGroupId || group.members.length <= maxGroupSize
-    );
+    .filter((group: any) => {
+      if (group.id === ownGroupId) return true;
+      if (maxGroupSize && group.members.length > maxGroupSize) return false;
+      if (minGroupSize && group.members.length < minGroupSize) return false;
+
+      return true;
+    });
 }
