@@ -19,6 +19,7 @@ import {
   SENDOUQ_LOOKING_PAGE,
   SENDOUQ_PAGE,
   navIconUrl,
+  sendouQMatchPage,
   userPage,
 } from "~/utils/urls";
 import {
@@ -66,6 +67,11 @@ import { Flipped, Flipper } from "react-flip-toolkit";
 import { useVisibilityChange } from "~/hooks/useVisibilityChange";
 import { FULL_GROUP_SIZE } from "../q-constants";
 import type { LookingGroup } from "../q-types";
+import { ArrowsPointingInIcon } from "~/components/icons/ArrowsPointingIn";
+import { matchMapList } from "../core/match.server";
+import { mapPoolByGroupId } from "../queries/mapPoolByGroupId.server";
+import { MapPool } from "~/modules/map-pool-serializer";
+import { createMatch } from "../queries/createMatch.server";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -165,6 +171,45 @@ export const action: ActionFunction = async ({ request }) => {
 
       break;
     }
+    case "MATCH_UP": {
+      if (!isGroupManager()) return null;
+      if (
+        !likeExists({
+          targetGroupId: currentGroup.id,
+          likerGroupId: data.targetGroupId,
+        })
+      ) {
+        return null;
+      }
+
+      const lookingGroups = findLookingGroups({
+        minGroupSize: FULL_GROUP_SIZE,
+        ownGroupId: currentGroup.id,
+      });
+
+      const ourGroup = lookingGroups.find(
+        (group) => group.id === currentGroup.id
+      );
+      if (!ourGroup) return null;
+      const theirGroup = lookingGroups.find(
+        (group) => group.id === data.targetGroupId
+      );
+      if (!theirGroup) return null;
+
+      const createdMatch = createMatch({
+        alphaGroupId: ourGroup.id,
+        bravoGroupId: theirGroup.id,
+        mapList: matchMapList({
+          ourGroup,
+          theirGroup,
+          ourMapPool: new MapPool(mapPoolByGroupId(ourGroup.id)),
+          theirMapPool: new MapPool(mapPoolByGroupId(theirGroup.id)),
+        }),
+        isRanked: theirGroup.isRanked,
+      });
+
+      throw redirect(sendouQMatchPage(createdMatch.id));
+    }
     case "GIVE_MANAGER": {
       validateIsGroupOwner();
 
@@ -263,6 +308,8 @@ export default function QLookingPage() {
   const data = useLoaderData<typeof loader>();
   useAutoRefresh();
 
+  const isFullGroup = data.groups.own.members!.length === FULL_GROUP_SIZE;
+
   return (
     <Main className="stack lg">
       <div className="stack sm">
@@ -298,7 +345,7 @@ export default function QLookingPage() {
                     <GroupCard
                       key={group.id}
                       group={group}
-                      action="GROUP_UP"
+                      action={isFullGroup ? "MATCH_UP" : "GROUP_UP"}
                       isRanked={isRanked}
                       mapListPreference={mapListPreference}
                     />
@@ -447,7 +494,7 @@ function GroupCard({
   mapListPreference,
 }: {
   group: LookingGroup;
-  action?: "LIKE" | "UNLIKE" | "GROUP_UP";
+  action?: "LIKE" | "UNLIKE" | "GROUP_UP" | "MATCH_UP";
   isRanked: Group["isRanked"];
   mapListPreference: Group["mapListPreference"];
 }) {
@@ -518,7 +565,9 @@ function GroupCard({
               _action={action}
               state={fetcher.state}
               icon={
-                action === "LIKE" ? (
+                action === "MATCH_UP" ? (
+                  <ArrowsPointingInIcon />
+                ) : action === "LIKE" ? (
                   <StarFilledIcon />
                 ) : action === "GROUP_UP" ? (
                   <UsersIcon />
@@ -527,7 +576,9 @@ function GroupCard({
                 )
               }
             >
-              {action === "LIKE"
+              {action === "MATCH_UP"
+                ? "Start match"
+                : action === "LIKE"
                 ? "Ask to play"
                 : action === "GROUP_UP"
                 ? "Group up"

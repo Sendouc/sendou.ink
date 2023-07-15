@@ -24,3 +24,5 @@ export const SENDOUQ = {
 } as const;
 
 export const FULL_GROUP_SIZE = 4;
+
+export const SENDOUQ_BEST_OF = 7;

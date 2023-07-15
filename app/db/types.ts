@@ -536,6 +536,7 @@ export interface GroupMatch {
   createdAt: number;
   reportedAt: number | null;
   reportedByUserId: number | null;
+  isRanked: number;
 }
 
 export interface GroupMatchMap {

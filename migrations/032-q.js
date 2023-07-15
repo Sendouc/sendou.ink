@@ -68,6 +68,7 @@ module.exports.up = function (db) {
       "createdAt" integer default (strftime('%s', 'now')) not null,
       "repotedAt" integer,
       "reportedByUserId" integer,
+      "isRanked" integer not null,
       foreign key ("alphaGroupId") references "Group"("id") on delete restrict,
       foreign key ("bravoGroupId") references "Group"("id") on delete restrict,
       foreign key ("reportedByUserId") references "User"("id") on delete restrict,
@@ -95,7 +96,7 @@ module.exports.up = function (db) {
       "mode" text not null,
       "stageId" integer not null,
       "source" text not null,
-      "winnerGroupId" integer not null,
+      "winnerGroupId" integer,
       foreign key ("matchId") references "GroupMatch"("id") on delete cascade,
       foreign key ("winnerGroupId") references "Group"("id") on delete restrict,
       unique("matchId", "index") on conflict rollback

@@ -1542,6 +1542,7 @@ function commissionsOpen() {
   }
 }
 
+const SENDOU_IN_FULL_GROUP = true;
 function groups() {
   const users = userIdsInAscendingOrderById().filter(
     (id) => id !== ADMIN_ID && id !== NZAP_TEST_ID
@@ -1572,9 +1573,16 @@ function groups() {
       ]),
     });
 
-    const amountOfAdditionalMembers = i === 0 ? 2 : i % 4;
+    const amountOfAdditionalMembers = () => {
+      if (SENDOU_IN_FULL_GROUP) {
+        if (i === 0) return 3;
+        if (i === 1) return 3;
+      }
 
-    for (let j = 0; j < amountOfAdditionalMembers; j++) {
+      return i === 0 ? 2 : i % 4;
+    };
+
+    for (let j = 0; j < amountOfAdditionalMembers(); j++) {
       sql
         .prepare(
           /* sql */ `
@@ -1587,6 +1595,10 @@ function groups() {
           userId: users.pop()!,
           role: "REGULAR",
         });
+    }
+
+    if (i === 0 && SENDOU_IN_FULL_GROUP) {
+      users.push(ADMIN_ID);
     }
   }
 }
