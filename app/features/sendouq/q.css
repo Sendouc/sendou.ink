@@ -105,3 +105,19 @@
   padding: var(--s-1);
   overflow: visible;
 }
+
+.q-match__header {
+  line-height: 1.2;
+}
+
+.q-match__teams-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s-4);
+}
+
+@media screen and (min-width: 480px) {
+  .q-match__teams-container {
+    grid-template-columns: 1fr 1fr;
+  }
+}

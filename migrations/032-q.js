@@ -66,7 +66,7 @@ module.exports.up = function (db) {
       "alphaGroupId" integer not null,
       "bravoGroupId" integer not null,
       "createdAt" integer default (strftime('%s', 'now')) not null,
-      "repotedAt" integer,
+      "reportedAt" integer,
       "reportedByUserId" integer,
       "isRanked" integer not null,
       foreign key ("alphaGroupId") references "Group"("id") on delete restrict,

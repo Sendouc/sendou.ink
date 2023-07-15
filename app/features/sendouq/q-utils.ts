@@ -9,6 +9,8 @@ import {
 } from "~/utils/urls";
 import { SENDOUQ } from "./q-constants";
 import { stageIds } from "~/modules/in-game-lists";
+import type { Params } from "@remix-run/react";
+import invariant from "tiny-invariant";
 
 function groupRedirectLocation(
   group?: Pick<Group, "status"> & { matchId?: number }
@@ -67,4 +69,11 @@ export function mapPoolOk(mapPool: MapPool) {
   }
 
   return true;
+}
+
+export function matchIdFromParams(params: Params<string>) {
+  const result = Number(params["id"]);
+  invariant(!Number.isNaN(result), "match id is not a number");
+
+  return result;
 }
