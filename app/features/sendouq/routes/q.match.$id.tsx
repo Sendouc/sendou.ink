@@ -20,6 +20,7 @@ import { useUser } from "~/modules/auth";
 import * as React from "react";
 import { Flipped, Flipper } from "react-flip-toolkit";
 import { animate } from "~/utils/flip";
+import { matchEndedAtIndex } from "../core/match";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -152,20 +153,34 @@ function MapList({ canReportScore }: { canReportScore: boolean }) {
     });
   };
 
+  const handleReportScore = (i: number, side: "ALPHA" | "BRAVO") => () => {
+    const newWinners = [...winners];
+    newWinners[i] = side;
+
+    // delete any scores that would have been after set ended (can happen when they go back to edit previously reported scores)
+
+    const matchEndedAt = matchEndedAtIndex(newWinners);
+
+    if (matchEndedAt) {
+      newWinners.splice(matchEndedAt + 1);
+    }
+
+    setWinners(newWinners);
+  };
+
   const showWinnerReportRow = (i: number) => {
     if (!canReportScore) return false;
 
     if (i === 0) return true;
 
+    if (matchEndedAtIndex(winners) && !winners[i]) return false;
+
     const previous = winners[i - 1];
-
-    // xxx: if match is over -> then don't show next... but also handle sometimes them going back and editing scores already reported
-
     return Boolean(previous);
   };
 
   return (
-    <Flipper flipKey={winners.length}>
+    <Flipper flipKey={winners.join("")}>
       <div className="stack md w-max mx-auto">
         {data.match.mapList.map((map, i) => {
           return (
@@ -208,13 +223,7 @@ function MapList({ canReportScore }: { canReportScore: boolean }) {
                         value="alpha"
                         id={`alpha-${i}`}
                         checked={winners[i] === "ALPHA"}
-                        onChange={() => {
-                          setWinners((prev) => {
-                            const newWinners = [...prev];
-                            newWinners[i] = "ALPHA";
-                            return newWinners;
-                          });
-                        }}
+                        onChange={handleReportScore(i, "ALPHA")}
                       />
                       <label className="mb-0" htmlFor={`alpha-${i}`}>
                         Alpha
@@ -227,13 +236,7 @@ function MapList({ canReportScore }: { canReportScore: boolean }) {
                         value="bravo"
                         id={`bravo-${i}`}
                         checked={winners[i] === "BRAVO"}
-                        onChange={() => {
-                          setWinners((prev) => {
-                            const newWinners = [...prev];
-                            newWinners[i] = "BRAVO";
-                            return newWinners;
-                          });
-                        }}
+                        onChange={handleReportScore(i, "BRAVO")}
                       />
                       <label className="mb-0" htmlFor={`bravo-${i}`}>
                         Bravo
