@@ -353,6 +353,10 @@ export interface Skill {
   matchesCount: number;
   /** Tournament that caused the skill to change */
   tournamentId: number | null;
+  /** Group match that caused the skill to change */
+  groupMatchId: number | null;
+  /** If null then is an all-time ranking */
+  season: number | null;
 }
 
 export interface SkillTeamUser {
@@ -502,6 +506,7 @@ export interface ArtUserMetadata {
 
 export interface Group {
   id: number;
+  teamId: number | null;
   createdAt: number;
   latestActionAt: number;
   mapListPreference:
@@ -540,6 +545,7 @@ export interface GroupMatch {
 }
 
 export interface GroupMatchMap {
+  id: number;
   matchId: number;
   index: number;
   mode: ModeShort;
@@ -547,4 +553,10 @@ export interface GroupMatchMap {
   /** serialized TournamentMaplistSource */
   source: string;
   winnerGroupId: number | null;
+}
+
+export interface ReportedWeapon {
+  groupMatchMapId: number | null;
+  weaponSplId: MainWeaponId;
+  userId: User["id"];
 }
