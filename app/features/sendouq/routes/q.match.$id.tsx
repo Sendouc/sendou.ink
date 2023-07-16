@@ -204,7 +204,7 @@ function MatchGroup({
   return (
     <div className="stack sm items-center">
       <h3 className="text-lighter">{side}</h3>
-      <div className="stack sm">
+      <div className="stack sm q-match__members-container">
         {group.members.map((member) => (
           <Link
             key={member.discordId}

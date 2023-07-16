@@ -106,6 +106,10 @@
   overflow: visible;
 }
 
+.q-match__members-container {
+  min-width: 180px;
+}
+
 .q-match__container {
   /** Push footer down to avoid it "flashing" when the score reporter animates */
   padding-bottom: 14rem;
