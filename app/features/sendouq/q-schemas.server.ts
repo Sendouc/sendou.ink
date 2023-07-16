@@ -64,6 +64,7 @@ export const matchSchema = z.union([
     ),
   }),
   z.object({
-    _action: z.literal("PLACEHOLDER"),
+    _action: z.literal("LOOK_AGAIN"),
+    previousGroupId: id,
   }),
 ]);

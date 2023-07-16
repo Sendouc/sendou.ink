@@ -1,8 +1,9 @@
 import { sql } from "~/db/sql";
-import type { GroupMember, User } from "~/db/types";
+import type { Group, GroupMember, User } from "~/db/types";
 
 const stm = sql.prepare(/* sql */ `
   select
+    "Group"."id",
     json_group_array(
       json_object(
         'id', "GroupMember"."userId",
@@ -23,6 +24,7 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export interface GroupForMatch {
+  id: Group["id"];
   members: Array<{
     id: GroupMember["userId"];
     discordId: User["discordId"];

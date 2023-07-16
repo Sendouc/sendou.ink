@@ -1,7 +1,8 @@
-import type {
-  ActionFunction,
-  LinksFunction,
-  LoaderArgs,
+import {
+  redirect,
+  type ActionFunction,
+  type LinksFunction,
+  type LoaderArgs,
 } from "@remix-run/node";
 import { Main } from "~/components/Main";
 import { matchIdFromParams } from "../q-utils";
@@ -11,7 +12,12 @@ import { findMatchById } from "../queries/findMatchById.server";
 import { Link, useFetcher, useLoaderData } from "@remix-run/react";
 import { ModeImage, StageImage } from "~/components/Image";
 import { useTranslation } from "~/hooks/useTranslation";
-import { SENDOUQ_PAGE, navIconUrl, userPage } from "~/utils/urls";
+import {
+  SENDOUQ_PAGE,
+  SENDOUQ_PREPARING_PAGE,
+  navIconUrl,
+  userPage,
+} from "~/utils/urls";
 import type { GroupForMatch } from "../queries/groupForMatch.server";
 import { groupForMatch } from "../queries/groupForMatch.server";
 import invariant from "tiny-invariant";
@@ -31,6 +37,11 @@ import { matchSchema } from "../q-schemas.server";
 import { assertUnreachable } from "~/utils/types";
 import { reportScore } from "../queries/reportScore.server";
 import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.server";
+import { Button } from "~/components/Button";
+import { RefreshArrowsIcon } from "~/components/icons/RefreshArrows";
+import { ArchiveBoxIcon } from "~/components/icons/ArchiveBox";
+import { createGroupFromPreviousGroup } from "../queries/createGroup.server";
+import type { GroupMember } from "~/db/types";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -72,8 +83,27 @@ export const action: ActionFunction = async ({ request, params }) => {
 
       break;
     }
-    case "PLACEHOLDER": {
-      break;
+    case "LOOK_AGAIN": {
+      const previousGroup = groupForMatch(data.previousGroupId);
+      validate(previousGroup, "Previous group not found");
+
+      for (const member of previousGroup.members) {
+        const currentGroup = findCurrentGroupByUserId(member.id);
+        validate(!currentGroup, "Member is already in a group");
+        if (member.id === user.id) {
+          validate(
+            member.role === "OWNER",
+            "You are not the owner of the group"
+          );
+        }
+      }
+
+      createGroupFromPreviousGroup({
+        previousGroupId: data.previousGroupId,
+        members: previousGroup.members.map((m) => ({ id: m.id, role: m.role })),
+      });
+
+      throw redirect(SENDOUQ_PREPARING_PAGE);
     }
     default: {
       assertUnreachable(data);
@@ -100,8 +130,7 @@ export const loader = ({ params }: LoaderArgs) => {
 };
 
 // xxx: display team if in the same team, needs migration
-// xxx: weapons? as a row where score report is now¨
-// xxx: actions after match, look again with same group, report weapons etc.
+// xxx: report weapons? as a row where score report is now¨
 // xxx: handle unranked
 export default function QMatchPage() {
   const user = useUser();
@@ -117,6 +146,12 @@ export default function QMatchPage() {
       ownMember &&
       (ownMember.role === "MANAGER" || ownMember.role === "OWNER")
   );
+
+  const ownGroupId = data.groupAlpha.members.some((m) => m.id === user?.id)
+    ? data.groupAlpha.id
+    : data.groupBravo.members.some((m) => m.id === user?.id)
+    ? data.groupBravo.id
+    : null;
 
   return (
     <Main className="q-match__container stack lg">
@@ -143,7 +178,16 @@ export default function QMatchPage() {
         </div>
       </div>
       {data.match.reportedAt ? (
-        <Score reportedAt={data.match.reportedAt} />
+        <>
+          <Score reportedAt={data.match.reportedAt} />
+          {ownGroupId && ownMember && data.match.reportedAt ? (
+            <AfterMatchActions
+              ownGroupId={ownGroupId}
+              role={ownMember.role}
+              reportedAt={data.match.reportedAt}
+            />
+          ) : null}
+        </>
       ) : null}
       <div className="q-match__teams-container">
         <MatchGroup group={data.groupAlpha} side="ALPHA" />
@@ -191,6 +235,41 @@ function Score({ reportedAt }: { reportedAt: number }) {
           : ""}
       </div>
     </div>
+  );
+}
+
+function AfterMatchActions({
+  ownGroupId,
+  role,
+  reportedAt,
+}: {
+  ownGroupId: number;
+  role: GroupMember["role"];
+  reportedAt: number;
+}) {
+  const fetcher = useFetcher();
+
+  const wasReportedInTheLastHour =
+    databaseTimestampToDate(reportedAt).getTime() > Date.now() - 3600 * 1000;
+  const showLookAgain = role === "OWNER" && wasReportedInTheLastHour;
+
+  return (
+    <fetcher.Form
+      method="post"
+      className="stack horizontal justify-center md flex-wrap"
+    >
+      <input type="hidden" name="previousGroupId" value={ownGroupId} />
+      {showLookAgain ? (
+        <SubmitButton
+          icon={<RefreshArrowsIcon />}
+          state={fetcher.state}
+          _action="LOOK_AGAIN"
+        >
+          Look again with same group
+        </SubmitButton>
+      ) : null}
+      <Button icon={<ArchiveBoxIcon />}>Report used weapons</Button>
+    </fetcher.Form>
   );
 }
 

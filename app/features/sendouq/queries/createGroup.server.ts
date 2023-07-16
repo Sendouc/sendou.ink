@@ -58,3 +58,55 @@ export const createGroup = sql.transaction((args: CreateGroupArgs) => {
 
   return group;
 });
+
+type CreateGroupFromPreviousGroupArgs = {
+  previousGroupId: number;
+  members: {
+    id: number;
+    role: GroupMember["role"];
+  }[];
+};
+
+const createGroupFromPreviousGroupStm = sql.prepare(/* sql */ `
+  insert into "Group"
+    ("mapListPreference", "isRanked", "inviteCode", "status")
+  values
+    (
+      (select "mapListPreference" from "Group" where "id" = @previousGroupId), 
+      (select "isRanked" from "Group" where "id" = @previousGroupId), 
+      @inviteCode, 
+      @status
+    )
+  returning *
+`);
+
+const stealMapPoolStm = sql.prepare(/* sql */ `
+  update "MapPoolMap"
+  set "groupId" = @groupId
+  where "groupId" = @previousGroupId
+`);
+
+export const createGroupFromPreviousGroup = sql.transaction(
+  (args: CreateGroupFromPreviousGroupArgs) => {
+    const group = createGroupFromPreviousGroupStm.get({
+      previousGroupId: args.previousGroupId,
+      inviteCode: nanoid(INVITE_CODE_LENGTH),
+      status: "PREPARING",
+    }) as Group;
+
+    for (const member of args.members) {
+      createGroupMemberStm.run({
+        groupId: group.id,
+        userId: member.id,
+        role: member.role,
+      });
+    }
+
+    stealMapPoolStm.run({
+      previousGroupId: args.previousGroupId,
+      groupId: group.id,
+    });
+
+    return group;
+  }
+);
