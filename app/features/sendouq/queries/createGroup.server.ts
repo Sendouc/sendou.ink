@@ -69,11 +69,12 @@ type CreateGroupFromPreviousGroupArgs = {
 
 const createGroupFromPreviousGroupStm = sql.prepare(/* sql */ `
   insert into "Group"
-    ("mapListPreference", "isRanked", "inviteCode", "status")
+    ("mapListPreference", "isRanked", "teamId", "inviteCode", "status")
   values
     (
       (select "mapListPreference" from "Group" where "id" = @previousGroupId), 
-      (select "isRanked" from "Group" where "id" = @previousGroupId), 
+      (select "isRanked" from "Group" where "id" = @previousGroupId),
+      (select "teamId" from "Group" where "id" = @previousGroupId),
       @inviteCode, 
       @status
     )

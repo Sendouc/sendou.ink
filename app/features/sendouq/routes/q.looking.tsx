@@ -72,6 +72,7 @@ import { matchMapList } from "../core/match.server";
 import { mapPoolByGroupId } from "../queries/mapPoolByGroupId.server";
 import { MapPool } from "~/modules/map-pool-serializer";
 import { createMatch } from "../queries/createMatch.server";
+import { syncGroupTeamId } from "../queries/syncGroupTeamId.server";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -160,6 +161,8 @@ export const action: ActionFunction = async ({ request }) => {
 
       const otherGroup =
         ourGroup.id === survivingGroupId ? theirGroup : ourGroup;
+
+      invariant(ourGroup.members, "our group has no members");
       invariant(otherGroup.members, "other group has no members");
 
       morphGroups({
@@ -168,6 +171,13 @@ export const action: ActionFunction = async ({ request }) => {
         newMembers: otherGroup.members.map((m) => m.id),
       });
       refreshGroup(survivingGroupId);
+
+      if (
+        ourGroup.members.length + otherGroup.members.length ===
+        FULL_GROUP_SIZE
+      ) {
+        syncGroupTeamId(survivingGroupId);
+      }
 
       break;
     }

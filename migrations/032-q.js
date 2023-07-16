@@ -23,7 +23,7 @@ module.exports.up = function (db) {
       "isRanked" integer not null,
       "inviteCode" text not null,
       "status" text not null,
-      foreign key ("teamId") references "Team"("id") on delete restrict
+      foreign key ("teamId") references "AllTeam"("id") on delete restrict
     ) strict
   `
   ).run();

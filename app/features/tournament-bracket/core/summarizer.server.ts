@@ -17,7 +17,10 @@ import shuffle from "just-shuffle";
 import type { Unpacked } from "~/utils/types";
 
 export interface TournamentSummary {
-  skills: Omit<Skill, "tournamentId" | "id" | "ordinal">[];
+  skills: Omit<
+    Skill,
+    "tournamentId" | "id" | "ordinal" | "season" | "groupMatchId"
+  >[];
   mapResultDeltas: MapResult[];
   playerResultDeltas: PlayerResult[];
   tournamentResults: Omit<TournamentResult, "tournamentId" | "isHighlight">[];

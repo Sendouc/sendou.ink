@@ -16,7 +16,9 @@ import {
   SENDOUQ_PAGE,
   SENDOUQ_PREPARING_PAGE,
   navIconUrl,
+  teamPage,
   userPage,
+  userSubmittedImage,
 } from "~/utils/urls";
 import type { GroupForMatch } from "../queries/groupForMatch.server";
 import { groupForMatch } from "../queries/groupForMatch.server";
@@ -129,7 +131,6 @@ export const loader = ({ params }: LoaderArgs) => {
   };
 };
 
-// xxx: display team if in the same team, needs migration
 // xxx: report weapons? as a row where score report is now¨
 // xxx: handle unranked
 export default function QMatchPage() {
@@ -284,6 +285,21 @@ function MatchGroup({
     <div className="stack sm items-center">
       <h3 className="text-lighter">{side}</h3>
       <div className="stack sm q-match__members-container">
+        {group.team ? (
+          <Link
+            to={teamPage(group.team.customUrl)}
+            className="stack horizontal xs font-bold"
+            target="_blank"
+          >
+            {group.team.avatarUrl ? (
+              <Avatar
+                url={userSubmittedImage(group.team.avatarUrl)}
+                size="xxs"
+              />
+            ) : null}
+            {group.team.name}
+          </Link>
+        ) : null}
         {group.members.map((member) => (
           <Link
             key={member.discordId}
