@@ -133,6 +133,7 @@ export const loader = ({ params }: LoaderArgs) => {
 
 // xxx: report weapons? as a row where score report is now¨
 // xxx: handle unranked
+// xxx: admin can rereport both score and weapons
 export default function QMatchPage() {
   const user = useUser();
   const isMounted = useIsMounted();
@@ -383,7 +384,6 @@ function MapList({ canReportScore }: { canReportScore: boolean }) {
     return <>• {winner} won</>;
   };
 
-  // xxx: show report 4-2 WIN or LOSS next to submit button
   return (
     <fetcher.Form method="post">
       <input type="hidden" name="winners" value={JSON.stringify(winners)} />
@@ -461,12 +461,47 @@ function MapList({ canReportScore }: { canReportScore: boolean }) {
         </div>
       </Flipper>
       {scoreCanBeReported ? (
-        <div className="stack items-center mt-4">
+        <div className="stack md items-center mt-4">
+          <ResultSummary winners={winners} />
           <SubmitButton _action="REPORT_SCORE" state={fetcher.state}>
             Submit scores
           </SubmitButton>
         </div>
       ) : null}
     </fetcher.Form>
+  );
+}
+
+function ResultSummary({ winners }: { winners: ("ALPHA" | "BRAVO")[] }) {
+  const user = useUser();
+  const data = useLoaderData<typeof loader>();
+
+  const ownSide = data.groupAlpha.members.some((m) => m.id === user?.id)
+    ? "ALPHA"
+    : "BRAVO";
+
+  const score = winners.reduce(
+    (acc, cur) => {
+      if (cur === "ALPHA") {
+        return [acc[0] + 1, acc[1]];
+      }
+
+      return [acc[0], acc[1] + 1];
+    },
+    [0, 0]
+  );
+
+  const userWon =
+    ownSide === "ALPHA" ? score[0] > score[1] : score[0] < score[1];
+
+  return (
+    <div
+      className={clsx("text-sm font-semi-bold", {
+        "text-success": userWon,
+        "text-warning": !userWon,
+      })}
+    >
+      Reporting {score.join("-")} {userWon ? "win" : "loss"}
+    </div>
   );
 }
