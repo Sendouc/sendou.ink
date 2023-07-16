@@ -16,6 +16,12 @@ const updateMatchMapStm = sql.prepare(/* sql */ `
   where "matchId" = @matchId and "index" = @index
 `);
 
+const groupToInactiveStm = sql.prepare(/* sql */ `
+  update "Group"
+  set "status" = 'INACTIVE'
+  where "id" = @groupId
+`);
+
 export const reportScore = sql.transaction(
   ({
     reportedByUserId,
@@ -42,5 +48,8 @@ export const reportScore = sql.transaction(
         index,
       });
     }
+
+    groupToInactiveStm.run({ groupId: updatedMatch.alphaGroupId });
+    groupToInactiveStm.run({ groupId: updatedMatch.bravoGroupId });
   }
 );

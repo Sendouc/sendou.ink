@@ -6,7 +6,7 @@ import type {
 import { Main } from "~/components/Main";
 import { matchIdFromParams } from "../q-utils";
 import type { SendouRouteHandle } from "~/utils/remix";
-import { notFoundIfFalsy, parseRequestFormData } from "~/utils/remix";
+import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { findMatchById } from "../queries/findMatchById.server";
 import { Link, useFetcher, useLoaderData } from "@remix-run/react";
 import { ModeImage, StageImage } from "~/components/Image";
@@ -30,6 +30,7 @@ import { requireUserId } from "~/modules/auth/user.server";
 import { matchSchema } from "../q-schemas.server";
 import { assertUnreachable } from "~/utils/types";
 import { reportScore } from "../queries/reportScore.server";
+import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.server";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -54,16 +55,20 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   switch (data._action) {
     case "REPORT_SCORE": {
-      // xxx: check that is group member + manager/owner
-      // xxx: if score was already reported -> return null
+      const currentGroup = findCurrentGroupByUserId(user.id);
+      validate(
+        currentGroup && ["MANAGER", "OWNER"].includes(currentGroup.role),
+        "You are not a manager or owner of the group"
+      );
+
+      const match = notFoundIfFalsy(findMatchById(matchId));
+      if (match.reportedAt) return null;
 
       reportScore({
         matchId,
         reportedByUserId: user.id,
         winners: data.winners,
-      });
-
-      // xxx: add stats MapResult etc. + add season migration to those
+      }); // <-- xxx: add stats MapResult etc. + add season migration to Skill
 
       break;
     }
@@ -96,8 +101,7 @@ export const loader = ({ params }: LoaderArgs) => {
 
 // xxx: display team if in the same team, needs migration
 // xxx: weapons? as a row where score report is now¨
-// xxx: after report show "Alpha won" next to pick info, italic "Unplayed" if not played
-// xxx: also after report show who reported the score and when
+// xxx: actions after match, look again with same group, report weapons etc.
 // xxx: handle unranked
 export default function QMatchPage() {
   const user = useUser();
@@ -138,12 +142,55 @@ export default function QMatchPage() {
               "0/0/0 0:00"}
         </div>
       </div>
+      {data.match.reportedAt ? (
+        <Score reportedAt={data.match.reportedAt} />
+      ) : null}
       <div className="q-match__teams-container">
         <MatchGroup group={data.groupAlpha} side="ALPHA" />
         <MatchGroup group={data.groupBravo} side="BRAVO" />
       </div>
       <MapList canReportScore={canReportScore} />
     </Main>
+  );
+}
+
+function Score({ reportedAt }: { reportedAt: number }) {
+  const isMounted = useIsMounted();
+  const { i18n } = useTranslation();
+  const data = useLoaderData<typeof loader>();
+  const reporter =
+    data.groupAlpha.members.find((m) => m.id === data.match.reportedByUserId) ??
+    data.groupBravo.members.find((m) => m.id === data.match.reportedByUserId);
+
+  const score = data.match.mapList.reduce(
+    (acc, cur) => {
+      if (!cur.winnerGroupId) return acc;
+
+      if (cur.winnerGroupId === data.match.alphaGroupId) {
+        return [acc[0] + 1, acc[1]];
+      }
+
+      return [acc[0], acc[1] + 1];
+    },
+    [0, 0]
+  );
+
+  return (
+    <div className="stack items-center line-height-tight">
+      <div className="text-lg font-bold">{score.join(" - ")}</div>
+      <div className={clsx("text-xs text-lighter", { invisible: !isMounted })}>
+        Reported by {reporter?.discordName ?? "???"} at{" "}
+        {isMounted
+          ? databaseTimestampToDate(reportedAt).toLocaleString(i18n.language, {
+              day: "numeric",
+              month: "numeric",
+              year: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+            })
+          : ""}
+      </div>
+    </div>
   );
 }
 
@@ -213,7 +260,8 @@ function MapList({ canReportScore }: { canReportScore: boolean }) {
     setWinners(newWinners);
   };
 
-  const scoreCanBeReported = Boolean(matchEndedAtIndex(winners));
+  const scoreCanBeReported =
+    Boolean(matchEndedAtIndex(winners)) && !data.match.reportedAt;
   const showWinnerReportRow = (i: number) => {
     if (!canReportScore) return false;
 
@@ -225,9 +273,25 @@ function MapList({ canReportScore }: { canReportScore: boolean }) {
     return Boolean(previous);
   };
 
+  const winningInfoText = (winnerId: number | null) => {
+    if (!data.match.reportedAt) return null;
+
+    if (!winnerId)
+      return (
+        <>
+          • <i>Unplayed</i>
+        </>
+      );
+
+    const winner = winnerId === data.match.alphaGroupId ? "Alpha" : "Bravo";
+
+    return <>• {winner} won</>;
+  };
+
+  // xxx: show report 4-2 WIN or LOSS next to submit button
   return (
     <fetcher.Form method="post">
-      <input type="hidden" name="mapList" value={JSON.stringify(winners)} />
+      <input type="hidden" name="winners" value={JSON.stringify(winners)} />
       <Flipper flipKey={winners.join("")}>
         <div className="stack md w-max mx-auto">
           {data.match.mapList.map((map, i) => {
@@ -246,7 +310,8 @@ function MapList({ canReportScore }: { canReportScore: boolean }) {
                         {t(`game-misc:STAGE_${map.stageId}`)}
                       </div>
                       <div className="text-lighter text-xs">
-                        {pickInfo(map.source)}
+                        {pickInfo(map.source)}{" "}
+                        {winningInfoText(map.winnerGroupId)}
                       </div>
                     </div>
                   </div>
