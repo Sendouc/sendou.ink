@@ -345,6 +345,7 @@ dialog {
 dialog::backdrop {
   background: hsla(237deg 98% 1% / 70%);
 }
+
 @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
   dialog::backdrop {
     -webkit-backdrop-filter: blur(7px) brightness(70%);
@@ -448,7 +449,6 @@ dialog::backdrop {
   border: none;
   margin: auto 0;
 }
-
 /* stylelint-enable no-descending-specificity */
 
 .input-container > input:focus-within {
