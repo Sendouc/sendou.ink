@@ -1,17 +1,41 @@
-import {
-  redirect,
-  type ActionFunction,
-  type LinksFunction,
-  type LoaderArgs,
+import { redirect } from "@remix-run/node";
+import type {
+  SerializeFrom,
+  ActionFunction,
+  LinksFunction,
+  LoaderArgs,
 } from "@remix-run/node";
-import { Main } from "~/components/Main";
-import { matchIdFromParams } from "../q-utils";
-import type { SendouRouteHandle } from "~/utils/remix";
-import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
-import { findMatchById } from "../queries/findMatchById.server";
 import { Link, useFetcher, useLoaderData } from "@remix-run/react";
-import { ModeImage, StageImage } from "~/components/Image";
+import clsx from "clsx";
+import * as React from "react";
+import { Flipped, Flipper } from "react-flip-toolkit";
+import invariant from "tiny-invariant";
+import { Avatar } from "~/components/Avatar";
+import { Button } from "~/components/Button";
+import { WeaponCombobox } from "~/components/Combobox";
+import { ModeImage, StageImage, WeaponImage } from "~/components/Image";
+import { Main } from "~/components/Main";
+import { SubmitButton } from "~/components/SubmitButton";
+import { ArchiveBoxIcon } from "~/components/icons/ArchiveBox";
+import { RefreshArrowsIcon } from "~/components/icons/RefreshArrows";
+import type { GroupMember, ReportedWeapon } from "~/db/types";
+import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "~/hooks/useTranslation";
+import { useUser } from "~/modules/auth";
+import { requireUserId } from "~/modules/auth/user.server";
+import type { MainWeaponId } from "~/modules/in-game-lists";
+import { isAdmin } from "~/permissions";
+import { databaseTimestampToDate } from "~/utils/dates";
+import { animate } from "~/utils/flip";
+import type { SendouRouteHandle } from "~/utils/remix";
+import {
+  badRequestIfFalsy,
+  notFoundIfFalsy,
+  parseRequestFormData,
+  validate,
+} from "~/utils/remix";
+import type { Unpacked } from "~/utils/types";
+import { assertUnreachable } from "~/utils/types";
 import {
   SENDOUQ_PAGE,
   SENDOUQ_PREPARING_PAGE,
@@ -20,30 +44,19 @@ import {
   userPage,
   userSubmittedImage,
 } from "~/utils/urls";
+import { matchEndedAtIndex } from "../core/match";
+import { FULL_GROUP_SIZE } from "../q-constants";
+import { matchSchema } from "../q-schemas.server";
+import { matchIdFromParams } from "../q-utils";
+import styles from "../q.css";
+import { addReportedWeapons } from "../queries/addReportedWeapons.server";
+import { createGroupFromPreviousGroup } from "../queries/createGroup.server";
+import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.server";
+import { findMatchById } from "../queries/findMatchById.server";
 import type { GroupForMatch } from "../queries/groupForMatch.server";
 import { groupForMatch } from "../queries/groupForMatch.server";
-import invariant from "tiny-invariant";
-import { databaseTimestampToDate } from "~/utils/dates";
-import { useIsMounted } from "~/hooks/useIsMounted";
-import clsx from "clsx";
-import styles from "../q.css";
-import { Avatar } from "~/components/Avatar";
-import { useUser } from "~/modules/auth";
-import * as React from "react";
-import { Flipped, Flipper } from "react-flip-toolkit";
-import { animate } from "~/utils/flip";
-import { matchEndedAtIndex } from "../core/match";
-import { SubmitButton } from "~/components/SubmitButton";
-import { requireUserId } from "~/modules/auth/user.server";
-import { matchSchema } from "../q-schemas.server";
-import { assertUnreachable } from "~/utils/types";
 import { reportScore } from "../queries/reportScore.server";
-import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.server";
-import { Button } from "~/components/Button";
-import { RefreshArrowsIcon } from "~/components/icons/RefreshArrows";
-import { ArchiveBoxIcon } from "~/components/icons/ArchiveBox";
-import { createGroupFromPreviousGroup } from "../queries/createGroup.server";
-import type { GroupMember } from "~/db/types";
+import { reportedWeaponsByMatchId } from "../queries/reportedWeaponsByMatchId.server";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -107,6 +120,43 @@ export const action: ActionFunction = async ({ request, params }) => {
 
       throw redirect(SENDOUQ_PREPARING_PAGE);
     }
+    case "REPORT_WEAPONS": {
+      const match = notFoundIfFalsy(findMatchById(matchId));
+      validate(match.reportedAt, "Match has not been reported yet");
+
+      if (reportedWeaponsByMatchId(matchId).length > 0 && !isAdmin(user)) {
+        return null;
+      }
+
+      const reportedMaps = match.mapList.reduce(
+        (acc, cur) => acc + (cur.winnerGroupId ? 1 : 0),
+        0
+      );
+      validate(
+        reportedMaps === data.weapons.length,
+        "Not reporting weapons for all maps"
+      );
+
+      const groupAlpha = badRequestIfFalsy(groupForMatch(match.alphaGroupId));
+      const groupBravo = badRequestIfFalsy(groupForMatch(match.bravoGroupId));
+      const users = [
+        ...groupAlpha.members.map((m) => m.id),
+        ...groupBravo.members.map((m) => m.id),
+      ];
+      addReportedWeapons(
+        match.mapList
+          .filter((m) => m.winnerGroupId)
+          .flatMap((matchMap, i) =>
+            data.weapons[i].map((weaponSplId, j) => ({
+              groupMatchMapId: matchMap.id,
+              weaponSplId: weaponSplId as MainWeaponId,
+              userId: users[j],
+            }))
+          )
+      );
+
+      break;
+    }
     default: {
       assertUnreachable(data);
     }
@@ -128,17 +178,20 @@ export const loader = ({ params }: LoaderArgs) => {
     match,
     groupAlpha,
     groupBravo,
+    reportedWeapons: match.reportedAt
+      ? reportedWeaponsByMatchId(matchId)
+      : undefined,
   };
 };
 
-// xxx: report weapons? as a row where score report is now¨
 // xxx: handle unranked
-// xxx: admin can rereport both score and weapons
+// xxx: admin can rereport score and weapons
 export default function QMatchPage() {
   const user = useUser();
   const isMounted = useIsMounted();
   const { i18n } = useTranslation();
   const data = useLoaderData<typeof loader>();
+  const [showWeaponsForm, setShowWeaponsForm] = React.useState(false);
 
   const ownMember =
     data.groupAlpha.members.find((m) => m.id === user?.id) ??
@@ -187,15 +240,21 @@ export default function QMatchPage() {
               ownGroupId={ownGroupId}
               role={ownMember.role}
               reportedAt={data.match.reportedAt}
+              showWeaponsForm={showWeaponsForm}
+              setShowWeaponsForm={setShowWeaponsForm}
             />
           ) : null}
         </>
       ) : null}
-      <div className="q-match__teams-container">
-        <MatchGroup group={data.groupAlpha} side="ALPHA" />
-        <MatchGroup group={data.groupBravo} side="BRAVO" />
-      </div>
-      <MapList canReportScore={canReportScore} />
+      {!showWeaponsForm ? (
+        <>
+          <div className="q-match__teams-container">
+            <MatchGroup group={data.groupAlpha} side="ALPHA" />
+            <MatchGroup group={data.groupBravo} side="BRAVO" />
+          </div>
+          <MapList canReportScore={canReportScore} />
+        </>
+      ) : null}
     </Main>
   );
 }
@@ -244,34 +303,181 @@ function AfterMatchActions({
   ownGroupId,
   role,
   reportedAt,
+  showWeaponsForm,
+  setShowWeaponsForm,
 }: {
   ownGroupId: number;
   role: GroupMember["role"];
   reportedAt: number;
+  showWeaponsForm: boolean;
+  setShowWeaponsForm: (show: boolean) => void;
 }) {
-  const fetcher = useFetcher();
+  const user = useUser();
+  const { t } = useTranslation(["game-misc"]);
+  const data = useLoaderData<typeof loader>();
+  const lookAgainFetcher = useFetcher();
+  const weaponsFetcher = useFetcher();
+
+  const playedMaps = data.match.mapList.filter((m) => m.winnerGroupId);
+  const [weaponsUsage, setWeaponsUsage] = React.useState<
+    (null | MainWeaponId)[][]
+  >(playedMaps.map(() => new Array(FULL_GROUP_SIZE * 2).fill(null)));
 
   const wasReportedInTheLastHour =
     databaseTimestampToDate(reportedAt).getTime() > Date.now() - 3600 * 1000;
   const showLookAgain = role === "OWNER" && wasReportedInTheLastHour;
 
+  const showWeaponsFormButton = isAdmin(user) || !data.reportedWeapons;
+
+  const winners = playedMaps.map((m) =>
+    m.winnerGroupId === data.match.alphaGroupId ? "ALPHA" : "BRAVO"
+  );
+
   return (
-    <fetcher.Form
-      method="post"
-      className="stack horizontal justify-center md flex-wrap"
-    >
-      <input type="hidden" name="previousGroupId" value={ownGroupId} />
-      {showLookAgain ? (
-        <SubmitButton
-          icon={<RefreshArrowsIcon />}
-          state={fetcher.state}
-          _action="LOOK_AGAIN"
-        >
-          Look again with same group
-        </SubmitButton>
+    <div className="stack lg">
+      <lookAgainFetcher.Form
+        method="post"
+        className="stack horizontal justify-center md flex-wrap"
+      >
+        <input type="hidden" name="previousGroupId" value={ownGroupId} />
+        {showLookAgain ? (
+          <SubmitButton
+            icon={<RefreshArrowsIcon />}
+            state={lookAgainFetcher.state}
+            _action="LOOK_AGAIN"
+          >
+            Look again with same group
+          </SubmitButton>
+        ) : null}
+        {showWeaponsFormButton ? (
+          <Button
+            icon={<ArchiveBoxIcon />}
+            onClick={() => setShowWeaponsForm(!showWeaponsForm)}
+          >
+            Report used weapons
+          </Button>
+        ) : null}
+      </lookAgainFetcher.Form>
+      {showWeaponsForm ? (
+        <weaponsFetcher.Form method="post" className="stack lg">
+          <input
+            type="hidden"
+            name="weapons"
+            value={JSON.stringify(weaponsUsage)}
+          />
+          <div className="stack md w-max mx-auto">
+            {playedMaps.map((map, i) => {
+              return (
+                <div key={map.stageId} className="stack md">
+                  <MapListMap
+                    canReportScore={false}
+                    i={i}
+                    map={map}
+                    winners={winners}
+                  />
+                  {i !== 0 ? (
+                    <Button
+                      size="tiny"
+                      variant="outlined"
+                      className="self-center"
+                      onClick={() => {
+                        setWeaponsUsage((val) => {
+                          const newVal = [...val];
+                          newVal[i] = [...newVal[i - 1]];
+                          return newVal;
+                        });
+                      }}
+                    >
+                      Copy weapons from above map
+                    </Button>
+                  ) : null}
+                  <div className="stack sm">
+                    {[
+                      ...data.groupAlpha.members,
+                      ...data.groupBravo.members,
+                    ].map((m, j) => {
+                      return (
+                        <div
+                          key={m.id}
+                          className="stack horizontal sm justify-between items-center"
+                        >
+                          <div className="stack sm horizontal">
+                            <Avatar user={m} size="xxs" /> {m.discordName}
+                          </div>
+                          <WeaponCombobox
+                            inputName="weapon"
+                            value={weaponsUsage[i][j]}
+                            onChange={(weapon) => {
+                              if (!weapon) return;
+
+                              setWeaponsUsage((val) => {
+                                const newVal = [...val];
+                                newVal[i] = [...newVal[i]];
+                                newVal[i][j] = Number(
+                                  weapon.value
+                                ) as MainWeaponId;
+                                return newVal;
+                              });
+                            }}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <div className="stack sm">
+            {weaponsUsage.map((match, i) => {
+              return (
+                <div key={i} className="stack xs">
+                  <div className="text-sm font-semi-bold text-center">
+                    {t(`game-misc:MODE_SHORT_${data.match.mapList[i].mode}`)}{" "}
+                    {t(`game-misc:STAGE_${data.match.mapList[i].stageId}`)}
+                  </div>
+                  <div className="stack sm horizontal justify-center items-center">
+                    {match.map((weapon, j) => {
+                      return (
+                        <>
+                          {typeof weapon === "number" ? (
+                            <WeaponImage
+                              key={j}
+                              weaponSplId={weapon}
+                              variant="badge"
+                              size={32}
+                            />
+                          ) : (
+                            <span
+                              className="text-lg font-bold text-center q-match__weapon-grid-item"
+                              key={j}
+                            >
+                              ?
+                            </span>
+                          )}
+                          {j === 3 ? <div className="w-4" /> : null}
+                        </>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          {weaponsUsage.flat().some((val) => val === null) ? (
+            <div className="text-sm text-center text-warning font-semi-bold">
+              Report all weapons to submit
+            </div>
+          ) : (
+            <div className="stack items-center">
+              <SubmitButton _action="REPORT_WEAPONS">
+                Report weapons
+              </SubmitButton>
+            </div>
+          )}
+        </weaponsFetcher.Form>
       ) : null}
-      <Button icon={<ArchiveBoxIcon />}>Report used weapons</Button>
-    </fetcher.Form>
+    </div>
   );
 }
 
@@ -320,10 +526,64 @@ function MatchGroup({
 }
 
 function MapList({ canReportScore }: { canReportScore: boolean }) {
-  const { t } = useTranslation(["game-misc", "tournament"]);
   const data = useLoaderData<typeof loader>();
   const fetcher = useFetcher();
   const [winners, setWinners] = React.useState<("ALPHA" | "BRAVO")[]>([]);
+
+  const scoreCanBeReported =
+    Boolean(matchEndedAtIndex(winners)) && !data.match.reportedAt;
+
+  return (
+    <fetcher.Form method="post">
+      <input type="hidden" name="winners" value={JSON.stringify(winners)} />
+      <Flipper flipKey={winners.join("")}>
+        <div className="stack md w-max mx-auto">
+          {data.match.mapList.map((map, i) => {
+            return (
+              <MapListMap
+                key={map.stageId}
+                canReportScore={canReportScore}
+                i={i}
+                map={map}
+                winners={winners}
+                setWinners={setWinners}
+                weapons={data.reportedWeapons?.filter(
+                  (w) => w.groupMatchMapId === map.id
+                )}
+              />
+            );
+          })}
+        </div>
+      </Flipper>
+      {scoreCanBeReported ? (
+        <div className="stack md items-center mt-4">
+          <ResultSummary winners={winners} />
+          <SubmitButton _action="REPORT_SCORE" state={fetcher.state}>
+            Submit scores
+          </SubmitButton>
+        </div>
+      ) : null}
+    </fetcher.Form>
+  );
+}
+
+function MapListMap({
+  i,
+  map,
+  winners,
+  setWinners,
+  canReportScore,
+  weapons,
+}: {
+  i: number;
+  map: Unpacked<SerializeFrom<typeof loader>["match"]["mapList"]>;
+  winners: ("ALPHA" | "BRAVO")[];
+  setWinners?: (winners: ("ALPHA" | "BRAVO")[]) => void;
+  canReportScore: boolean;
+  weapons?: ReportedWeapon[];
+}) {
+  const data = useLoaderData<typeof loader>();
+  const { t } = useTranslation(["game-misc", "tournament"]);
 
   const pickInfo = (source: string) => {
     if (source === "TIEBREAKER") return t("tournament:pickInfo.tiebreaker");
@@ -353,7 +613,7 @@ function MapList({ canReportScore }: { canReportScore: boolean }) {
       newWinners.splice(matchEndedAt + 1);
     }
 
-    setWinners(newWinners);
+    setWinners?.(newWinners);
   };
 
   const scoreCanBeReported =
@@ -385,90 +645,80 @@ function MapList({ canReportScore }: { canReportScore: boolean }) {
   };
 
   return (
-    <fetcher.Form method="post">
-      <input type="hidden" name="winners" value={JSON.stringify(winners)} />
-      <Flipper flipKey={winners.join("")}>
-        <div className="stack md w-max mx-auto">
-          {data.match.mapList.map((map, i) => {
+    <div key={map.stageId} className="stack xs">
+      <Flipped flipId={map.stageId}>
+        <div className="stack sm horizontal items-center">
+          <StageImage stageId={map.stageId} width={64} className="rounded-sm" />
+          <div>
+            <div className="text-sm stack horizontal xs items-center">
+              {i + 1}) <ModeImage mode={map.mode} size={18} />{" "}
+              {t(`game-misc:STAGE_${map.stageId}`)}
+            </div>
+            <div className="text-lighter text-xs">
+              {pickInfo(map.source)} {winningInfoText(map.winnerGroupId)}
+            </div>
+          </div>
+        </div>
+      </Flipped>
+      {weapons ? (
+        <div className="stack sm horizontal">
+          {weapons.map((w, i) => {
             return (
-              <div key={map.stageId} className="stack xs">
-                <Flipped flipId={map.stageId}>
-                  <div className="stack sm horizontal items-center">
-                    <StageImage
-                      stageId={map.stageId}
-                      width={64}
-                      className="rounded-sm"
-                    />
-                    <div>
-                      <div className="text-sm stack horizontal xs items-center">
-                        {i + 1}) <ModeImage mode={map.mode} size={18} />{" "}
-                        {t(`game-misc:STAGE_${map.stageId}`)}
-                      </div>
-                      <div className="text-lighter text-xs">
-                        {pickInfo(map.source)}{" "}
-                        {winningInfoText(map.winnerGroupId)}
-                      </div>
-                    </div>
-                  </div>
-                </Flipped>
-                {showWinnerReportRow(i) ? (
-                  <Flipped
-                    flipId={`${map.stageId}-report`}
-                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                    onAppear={async (el: HTMLElement) => {
-                      await animate(el, [{ opacity: 0 }, { opacity: 1 }], {
-                        duration: 300,
-                      });
-                      el.style.opacity = "1";
-                    }}
-                  >
-                    <div className="stack horizontal sm text-xs">
-                      <label className="mb-0 text-theme-secondary">
-                        Winner
-                      </label>
-                      <div className="stack sm horizontal items-center font-semi-bold">
-                        <input
-                          type="radio"
-                          name={`winner-${i}`}
-                          value="alpha"
-                          id={`alpha-${i}`}
-                          checked={winners[i] === "ALPHA"}
-                          onChange={handleReportScore(i, "ALPHA")}
-                        />
-                        <label className="mb-0" htmlFor={`alpha-${i}`}>
-                          Alpha
-                        </label>
-                      </div>
-                      <div className="stack sm horizontal items-center font-semi-bold">
-                        <input
-                          type="radio"
-                          name={`winner-${i}`}
-                          value="bravo"
-                          id={`bravo-${i}`}
-                          checked={winners[i] === "BRAVO"}
-                          onChange={handleReportScore(i, "BRAVO")}
-                        />
-                        <label className="mb-0" htmlFor={`bravo-${i}`}>
-                          Bravo
-                        </label>
-                      </div>
-                    </div>
-                  </Flipped>
-                ) : null}
-              </div>
+              <React.Fragment key={w.userId}>
+                <WeaponImage
+                  weaponSplId={w.weaponSplId}
+                  size={30}
+                  variant="badge"
+                />
+                {i === 3 ? <div className="w-4" /> : null}
+              </React.Fragment>
             );
           })}
         </div>
-      </Flipper>
-      {scoreCanBeReported ? (
-        <div className="stack md items-center mt-4">
-          <ResultSummary winners={winners} />
-          <SubmitButton _action="REPORT_SCORE" state={fetcher.state}>
-            Submit scores
-          </SubmitButton>
-        </div>
       ) : null}
-    </fetcher.Form>
+      {showWinnerReportRow(i) ? (
+        <Flipped
+          flipId={`${map.stageId}-report`}
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          onAppear={async (el: HTMLElement) => {
+            await animate(el, [{ opacity: 0 }, { opacity: 1 }], {
+              duration: 300,
+            });
+            el.style.opacity = "1";
+          }}
+        >
+          <div className="stack horizontal sm text-xs">
+            <label className="mb-0 text-theme-secondary">Winner</label>
+            <div className="stack sm horizontal items-center font-semi-bold">
+              <input
+                type="radio"
+                name={`winner-${i}`}
+                value="alpha"
+                id={`alpha-${i}`}
+                checked={winners[i] === "ALPHA"}
+                onChange={handleReportScore(i, "ALPHA")}
+              />
+              <label className="mb-0" htmlFor={`alpha-${i}`}>
+                Alpha
+              </label>
+            </div>
+            <div className="stack sm horizontal items-center font-semi-bold">
+              <input
+                type="radio"
+                name={`winner-${i}`}
+                value="bravo"
+                id={`bravo-${i}`}
+                checked={winners[i] === "BRAVO"}
+                onChange={handleReportScore(i, "BRAVO")}
+              />
+              <label className="mb-0" htmlFor={`bravo-${i}`}>
+                Bravo
+              </label>
+            </div>
+          </div>
+        </Flipped>
+      ) : null}
+    </div>
   );
 }
 

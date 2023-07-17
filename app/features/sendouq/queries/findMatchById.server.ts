@@ -13,6 +13,7 @@ const stm = sql.prepare(/* sql */ `
     "GroupMatch"."isRanked",
     json_group_array(
       json_object(
+        'id', "GroupMatchMap"."id",
         'mode', "GroupMatchMap"."mode",
         'stageId', "GroupMatchMap"."stageId",
         'source', "GroupMatchMap"."source",
@@ -35,7 +36,7 @@ export interface MatchById {
   reportedByUserId: GroupMatch["reportedByUserId"];
   isRanked: GroupMatch["isRanked"];
   mapList: Array<
-    Pick<GroupMatchMap, "mode" | "stageId" | "source" | "winnerGroupId">
+    Pick<GroupMatchMap, "id" | "mode" | "stageId" | "source" | "winnerGroupId">
   >;
 }
 

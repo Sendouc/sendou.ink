@@ -1,6 +1,10 @@
 import { z } from "zod";
-import { MAP_LIST_PREFERENCE_OPTIONS, SENDOUQ_BEST_OF } from "./q-constants";
-import { id, safeJSONParse } from "~/utils/zod";
+import {
+  FULL_GROUP_SIZE,
+  MAP_LIST_PREFERENCE_OPTIONS,
+  SENDOUQ_BEST_OF,
+} from "./q-constants";
+import { id, safeJSONParse, weaponSplId } from "~/utils/zod";
 import { matchEndedAtIndex } from "./core/match";
 
 export const createGroupSchema = z.object({
@@ -66,5 +70,12 @@ export const matchSchema = z.union([
   z.object({
     _action: z.literal("LOOK_AGAIN"),
     previousGroupId: id,
+  }),
+  z.object({
+    _action: z.literal("REPORT_WEAPONS"),
+    weapons: z.preprocess(
+      safeJSONParse,
+      z.array(z.array(weaponSplId).length(FULL_GROUP_SIZE * 2))
+    ),
   }),
 ]);

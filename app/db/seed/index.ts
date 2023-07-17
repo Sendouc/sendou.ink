@@ -108,6 +108,8 @@ export function seed(variation?: SeedVariation | null) {
 
 function wipeDB() {
   const tablesToDelete = [
+    "GroupMatchMap",
+    "GroupMatch",
     "Group",
     "ArtUserMetadata",
     "Art",

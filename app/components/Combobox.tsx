@@ -46,6 +46,7 @@ interface ComboboxProps<T> {
   id?: string;
   isLoading?: boolean;
   required?: boolean;
+  value?: ComboboxOption<T> | null;
   initialValue: ComboboxOption<T> | null;
   onChange?: (selectedOption: ComboboxOption<T> | null) => void;
   fullWidth?: boolean;
@@ -57,6 +58,7 @@ export function Combobox<T extends Record<string, string | null | number>>({
   options,
   inputName,
   placeholder,
+  value,
   initialValue,
   onChange,
   required,
@@ -69,7 +71,7 @@ export function Combobox<T extends Record<string, string | null | number>>({
 }: ComboboxProps<T>) {
   const { t } = useTranslation();
 
-  const [selectedOption, setSelectedOption] = React.useState<Unpacked<
+  const [_selectedOption, setSelectedOption] = React.useState<Unpacked<
     typeof options
   > | null>(initialValue);
   const [query, setQuery] = React.useState("");
@@ -93,6 +95,8 @@ export function Combobox<T extends Record<string, string | null | number>>({
   const displayValue = (option: Unpacked<typeof options>) => {
     return option?.label ?? "";
   };
+
+  const selectedOption = value ?? _selectedOption;
 
   return (
     <div className="combobox-wrapper">
@@ -237,6 +241,7 @@ export function WeaponCombobox({
   weaponIdsToOmit,
   fullWidth,
   nullable,
+  value,
 }: Pick<
   ComboboxProps<ComboboxBaseOption>,
   | "inputName"
@@ -249,6 +254,7 @@ export function WeaponCombobox({
 > & {
   initialWeaponId?: (typeof mainWeaponIds)[number];
   weaponIdsToOmit?: Set<MainWeaponId>;
+  value?: MainWeaponId | null;
 }) {
   const { t } = useTranslation("weapons");
 
@@ -264,6 +270,7 @@ export function WeaponCombobox({
       options={mainWeaponIds
         .filter((id) => !weaponIdsToOmit?.has(id))
         .map(idToWeapon)}
+      value={typeof value === "number" ? idToWeapon(value) : null}
       initialValue={
         typeof initialWeaponId === "number" ? idToWeapon(initialWeaponId) : null
       }

@@ -125,6 +125,11 @@
   gap: var(--s-4);
 }
 
+.q-match__weapon-grid-item {
+  width: 32px;
+  height: 32px;
+}
+
 @media screen and (min-width: 480px) {
   .q-match__teams-container {
     grid-template-columns: 1fr 1fr;

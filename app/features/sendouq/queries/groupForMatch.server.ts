@@ -26,6 +26,7 @@ const stm = sql.prepare(/* sql */ `
   where
     "Group"."id" = @id
   group by "Group"."id"
+  order by "GroupMember"."userId" asc
 `);
 
 export interface GroupForMatch {
