@@ -145,9 +145,9 @@
   "upload.title": "{{type}} 업로드 중. {{width}}×{{height}}의 크기를 추천합니다.",
   "upload.type.team-pfp": "팀 프로필 사진",
   "upload.type.team-banner": "팀 프로필 배너",
-  "upload.commonExplanation": "Before the image is publicly displayed a moderator will validate it. Images uploaded by patrons are shown without validation.",
-  "upload.afterExplanation_one": "You have {{count}} image pending. The image will show up automatically after validation.",
-  "upload.afterExplanation_other": "You have {{count}} images pending. The images will show up automatically after validation.",
+  "upload.commonExplanation": "이미지는 공개 전에 관리자의 확인을 거칩니다. 후원자들의 이미지는 확인 없이 공개됩니다.",
+  "upload.afterExplanation_one": "{{count}} 개의 이미지가 대기 중입니다. 이미지는 확인 이후 자동으로 나타납니다.",
+  "upload.afterExplanation_other": "{{count}} 개의 이미지가 대기 중입니다. 이미지는 확인 이후 자동으로 나타납니다.",
 
   "support.intro.first": "Hello! I'm Sendou and sendou.ink is my project to provide tools and resources for the Splatoon community. The goal is to help everyone to improve and enjoy Splatoon whether you are brand new to the game or a seasoned veteran.",
   "support.intro.second": "If you like what I'm doing this page details how you can support my work and gain perks. Your support helps me pay for the hosting as well as sponsor my time spent on continuously improving the project.",
@@ -188,7 +188,7 @@
   "yes": "네",
   "no": "아니오",
 
-  "leaderboard.type.USER": "User",
-  "leaderboard.type.TEAM": "Team",
-  "leaderboard.type.XP-ALL": "All"
+  "leaderboard.type.USER": "유저",
+  "leaderboard.type.TEAM": "팀",
+  "leaderboard.type.XP-ALL": "전체"
 }
