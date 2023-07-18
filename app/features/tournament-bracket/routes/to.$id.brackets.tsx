@@ -171,8 +171,10 @@ export const action: ActionFunction = async ({ params, request }) => {
           teams,
           finalStandings: _finalStandings,
           results,
-          queryCurrentTeamRating,
-          queryCurrentUserRating,
+          queryCurrentTeamRating: (identifier) =>
+            queryCurrentTeamRating({ identifier }),
+          queryCurrentUserRating: (userId) =>
+            queryCurrentUserRating({ userId }),
         }),
       });
 

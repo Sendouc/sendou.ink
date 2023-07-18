@@ -10,6 +10,12 @@ const updateMatchStm = sql.prepare(/* sql */ `
   returning *
 `);
 
+const clearMatchMapWinnersStm = sql.prepare(/* sql */ `
+  update "GroupMatchMap"
+  set "winnerGroupId" = null
+  where "matchId" = @matchId
+`);
+
 const updateMatchMapStm = sql.prepare(/* sql */ `
   update "GroupMatchMap"
   set "winnerGroupId" = @winnerGroupId
@@ -22,34 +28,34 @@ const groupToInactiveStm = sql.prepare(/* sql */ `
   where "id" = @groupId
 `);
 
-export const reportScore = sql.transaction(
-  ({
+export const reportScore = ({
+  reportedByUserId,
+  winners,
+  matchId,
+}: {
+  reportedByUserId: number;
+  winners: ("ALPHA" | "BRAVO")[];
+  matchId: number;
+}) => {
+  const updatedMatch = updateMatchStm.get({
+    reportedAt: dateToDatabaseTimestamp(new Date()),
     reportedByUserId,
-    winners,
     matchId,
-  }: {
-    reportedByUserId: number;
-    winners: ("ALPHA" | "BRAVO")[];
-    matchId: number;
-  }) => {
-    const updatedMatch = updateMatchStm.get({
-      reportedAt: dateToDatabaseTimestamp(new Date()),
-      reportedByUserId,
+  }) as GroupMatch;
+
+  clearMatchMapWinnersStm.run({ matchId });
+
+  for (const [index, winner] of winners.entries()) {
+    updateMatchMapStm.run({
+      winnerGroupId:
+        winner === "ALPHA"
+          ? updatedMatch.alphaGroupId
+          : updatedMatch.bravoGroupId,
       matchId,
-    }) as GroupMatch;
-
-    for (const [index, winner] of winners.entries()) {
-      updateMatchMapStm.run({
-        winnerGroupId:
-          winner === "ALPHA"
-            ? updatedMatch.alphaGroupId
-            : updatedMatch.bravoGroupId,
-        matchId,
-        index,
-      });
-    }
-
-    groupToInactiveStm.run({ groupId: updatedMatch.alphaGroupId });
-    groupToInactiveStm.run({ groupId: updatedMatch.bravoGroupId });
+      index,
+    });
   }
-);
+
+  groupToInactiveStm.run({ groupId: updatedMatch.alphaGroupId });
+  groupToInactiveStm.run({ groupId: updatedMatch.bravoGroupId });
+};

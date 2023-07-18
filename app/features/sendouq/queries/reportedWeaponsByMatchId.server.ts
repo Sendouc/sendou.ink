@@ -15,5 +15,9 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export function reportedWeaponsByMatchId(matchId: number) {
-  return stm.all({ matchId }) as Array<ReportedWeapon>;
+  const rows = stm.all({ matchId }) as Array<ReportedWeapon>;
+
+  if (rows.length === 0) return null;
+
+  return rows;
 }

@@ -2,8 +2,14 @@ import { rating } from "openskill";
 import { findCurrentSkillByUserId } from "./queries/findCurrentSkillByUserId.server";
 import { findCurrentTeamSkillByIdentifier } from "./queries/findCurrentTeamSkillByIdentifier.server";
 
-export function queryCurrentUserRating(userId: number) {
-  const skill = findCurrentSkillByUserId(userId);
+export function queryCurrentUserRating({
+  userId,
+  season,
+}: {
+  userId: number;
+  season?: number | null;
+}) {
+  const skill = findCurrentSkillByUserId({ userId, season: season ?? null });
 
   if (!skill) {
     return rating();
@@ -12,8 +18,17 @@ export function queryCurrentUserRating(userId: number) {
   return rating(skill);
 }
 
-export function queryCurrentTeamRating(identifier: string) {
-  const skill = findCurrentTeamSkillByIdentifier(identifier);
+export function queryCurrentTeamRating({
+  identifier,
+  season,
+}: {
+  identifier: string;
+  season?: number | null;
+}) {
+  const skill = findCurrentTeamSkillByIdentifier({
+    identifier,
+    season: season ?? null,
+  });
 
   if (!skill) {
     return rating();

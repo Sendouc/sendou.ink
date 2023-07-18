@@ -42,6 +42,7 @@ type FinalStandingsArg = Array<{
   players: Array<{ id: number }>;
 }>;
 
+// xxx: add skill of a season
 export function tournamentSummary({
   results,
   teams,

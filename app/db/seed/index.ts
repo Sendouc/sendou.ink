@@ -108,6 +108,8 @@ export function seed(variation?: SeedVariation | null) {
 
 function wipeDB() {
   const tablesToDelete = [
+    "Skill",
+    "ReportedWeapon",
     "GroupMatchMap",
     "GroupMatch",
     "Group",
@@ -122,7 +124,6 @@ function wipeDB() {
     "TournamentMatchGameResult",
     "TournamentTeam",
     "TournamentStage",
-    "Skill",
     "TournamentResult",
     "Tournament",
     "CalendarEventDate",

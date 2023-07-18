@@ -97,6 +97,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 // xxx: link to yt video explaining it
 // xxx: UI when not logged in
 // xxx: show streams?
+// xxx: script to recalc skills
 export default function QPage() {
   return (
     <Main halfWidth className="stack lg">

@@ -47,25 +47,30 @@ export const lookingSchema = z.union([
   }),
 ]);
 
+const winners = z.preprocess(
+  safeJSONParse,
+  z
+    .array(z.enum(["ALPHA", "BRAVO"]))
+    .min(Math.ceil(SENDOUQ_BEST_OF / 2))
+    .max(SENDOUQ_BEST_OF)
+    .refine((val) => {
+      const matchEndedAt = matchEndedAtIndex(val);
+
+      // match did end
+      if (matchEndedAt === null) return true;
+
+      // no extra scores after match ended
+      return val.length === matchEndedAt + 1;
+    })
+);
 export const matchSchema = z.union([
   z.object({
     _action: z.literal("REPORT_SCORE"),
-    winners: z.preprocess(
-      safeJSONParse,
-      z
-        .array(z.enum(["ALPHA", "BRAVO"]))
-        .min(Math.ceil(SENDOUQ_BEST_OF / 2))
-        .max(SENDOUQ_BEST_OF)
-        .refine((val) => {
-          const matchEndedAt = matchEndedAtIndex(val);
-
-          // match did end
-          if (matchEndedAt === null) return true;
-
-          // no extra scores after match ended
-          return val.length === matchEndedAt + 1;
-        })
-    ),
+    winners,
+  }),
+  z.object({
+    _action: z.literal("REPORT_SCORE_AGAIN"),
+    winners,
   }),
   z.object({
     _action: z.literal("LOOK_AGAIN"),

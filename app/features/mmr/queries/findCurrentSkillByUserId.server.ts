@@ -8,15 +8,21 @@ const stm = sql.prepare(/* sql */ `
   from
     "Skill"
   where
-    "userId" = @userId
-    and "id" = (
+    "id" = (
       select max("id")
         from "Skill"
       where "userId" = @userId
+        and "season" = @season
       group by "userId"
     )
 `);
 
-export function findCurrentSkillByUserId(userId: number) {
-  return stm.get({ userId }) as Pick<Skill, "mu" | "sigma"> | null;
+export function findCurrentSkillByUserId({
+  userId,
+  season,
+}: {
+  userId: number;
+  season: number | null;
+}) {
+  return stm.get({ userId, season }) as Pick<Skill, "mu" | "sigma"> | null;
 }

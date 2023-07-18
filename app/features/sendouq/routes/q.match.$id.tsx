@@ -47,7 +47,7 @@ import {
 import { matchEndedAtIndex } from "../core/match";
 import { FULL_GROUP_SIZE } from "../q-constants";
 import { matchSchema } from "../q-schemas.server";
-import { matchIdFromParams } from "../q-utils";
+import { matchIdFromParams, winnersArrayToWinner } from "../q-utils";
 import styles from "../q.css";
 import { addReportedWeapons } from "../queries/addReportedWeapons.server";
 import { createGroupFromPreviousGroup } from "../queries/createGroup.server";
@@ -57,6 +57,9 @@ import type { GroupForMatch } from "../queries/groupForMatch.server";
 import { groupForMatch } from "../queries/groupForMatch.server";
 import { reportScore } from "../queries/reportScore.server";
 import { reportedWeaponsByMatchId } from "../queries/reportedWeaponsByMatchId.server";
+import { sql } from "~/db/sql";
+import { calculateMatchSkills } from "../core/skills.server";
+import { addSkills } from "../queries/addSkills.server";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -88,13 +91,52 @@ export const action: ActionFunction = async ({ request, params }) => {
       );
 
       const match = notFoundIfFalsy(findMatchById(matchId));
+      validate(match.isRanked, "Unranked match cannot be reported");
       if (match.reportedAt) return null;
 
-      reportScore({
-        matchId,
-        reportedByUserId: user.id,
-        winners: data.winners,
-      }); // <-- xxx: add stats MapResult etc. + add season migration to Skill
+      const winner = winnersArrayToWinner(data.winners);
+      const winnerTeamId =
+        winner === "ALPHA" ? match.alphaGroupId : match.bravoGroupId;
+      const loserTeamId =
+        winner === "ALPHA" ? match.bravoGroupId : match.alphaGroupId;
+
+      const newSkills = calculateMatchSkills({
+        groupMatchId: match.id,
+        winner: {
+          userIds: groupForMatch(winnerTeamId)!.members.map((m) => m.id),
+          teamId: winnerTeamId,
+        },
+        loser: {
+          userIds: groupForMatch(loserTeamId)!.members.map((m) => m.id),
+          teamId: loserTeamId,
+        },
+      });
+
+      sql.transaction(() => {
+        reportScore({
+          matchId,
+          reportedByUserId: user.id,
+          winners: data.winners,
+        });
+        addSkills(newSkills);
+      })();
+
+      break;
+    }
+    case "REPORT_SCORE_AGAIN": {
+      validate(isAdmin(user), "Only admins can report score again");
+
+      const match = notFoundIfFalsy(findMatchById(matchId));
+      validate(match.isRanked, "Unranked match cannot be reported");
+      validate(match.reportedAt, "Match has not been reported yet");
+
+      sql.transaction(() => {
+        reportScore({
+          matchId,
+          reportedByUserId: user.id,
+          winners: data.winners,
+        });
+      })();
 
       break;
     }
@@ -124,7 +166,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       const match = notFoundIfFalsy(findMatchById(matchId));
       validate(match.reportedAt, "Match has not been reported yet");
 
-      if (reportedWeaponsByMatchId(matchId).length > 0 && !isAdmin(user)) {
+      if (reportedWeaponsByMatchId(matchId) && !isAdmin(user)) {
         return null;
       }
 
@@ -185,13 +227,17 @@ export const loader = ({ params }: LoaderArgs) => {
 };
 
 // xxx: handle unranked
-// xxx: admin can rereport score and weapons
+// xxx: admin rereport score (frontend)
 export default function QMatchPage() {
   const user = useUser();
   const isMounted = useIsMounted();
   const { i18n } = useTranslation();
   const data = useLoaderData<typeof loader>();
   const [showWeaponsForm, setShowWeaponsForm] = React.useState(false);
+
+  React.useEffect(() => {
+    setShowWeaponsForm(false);
+  }, [data.reportedWeapons]);
 
   const ownMember =
     data.groupAlpha.members.find((m) => m.id === user?.id) ??
@@ -242,6 +288,7 @@ export default function QMatchPage() {
               reportedAt={data.match.reportedAt}
               showWeaponsForm={showWeaponsForm}
               setShowWeaponsForm={setShowWeaponsForm}
+              key={data.reportedWeapons?.map((w) => w.weaponSplId).join("")}
             />
           ) : null}
         </>
@@ -319,9 +366,32 @@ function AfterMatchActions({
   const weaponsFetcher = useFetcher();
 
   const playedMaps = data.match.mapList.filter((m) => m.winnerGroupId);
+
+  const weaponsUsageInitialValue = () => {
+    if (!data.reportedWeapons)
+      return playedMaps.map(() => new Array(FULL_GROUP_SIZE * 2).fill(null));
+
+    const result: MainWeaponId[][] = [];
+
+    const players = [...data.groupAlpha.members, ...data.groupBravo.members];
+    for (const matchMap of data.match.mapList.filter((m) => m.winnerGroupId)) {
+      result.push(
+        players.map((u) => {
+          const weaponSplId = data.reportedWeapons?.find(
+            (rw) => rw.groupMatchMapId === matchMap.id && rw.userId === u.id
+          )?.weaponSplId;
+
+          invariant(weaponSplId, "weaponSplId is null");
+          return weaponSplId;
+        })
+      );
+    }
+
+    return result;
+  };
   const [weaponsUsage, setWeaponsUsage] = React.useState<
     (null | MainWeaponId)[][]
-  >(playedMaps.map(() => new Array(FULL_GROUP_SIZE * 2).fill(null)));
+  >(weaponsUsageInitialValue());
 
   const wasReportedInTheLastHour =
     databaseTimestampToDate(reportedAt).getTime() > Date.now() - 3600 * 1000;
