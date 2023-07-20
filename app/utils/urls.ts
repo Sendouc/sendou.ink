@@ -90,7 +90,6 @@ export const OBJECT_DAMAGE_CALCULATOR_URL = "/object-damage-calculator";
 export const VODS_PAGE = "/vods";
 export const LEADERBOARDS_PAGE = "/leaderboards";
 export const LINKS_PAGE = "/links";
-export const ART_PAGE = "/art";
 
 export const BLANK_IMAGE_URL = "/static-assets/img/blank.gif";
 export const COMMON_PREVIEW_IMAGE =
@@ -130,10 +129,11 @@ export const newVodPage = (vodToEditId?: number) =>
   `${VODS_PAGE}/new${vodToEditId ? `?vod=${vodToEditId}` : ""}`;
 export const userResultsEditHighlightsPage = (user: UserLinkArgs) =>
   `${userResultsPage(user)}/highlights`;
+export const artPage = (tag?: string) => `/art${tag ? `?tag=${tag}` : ""}`;
 export const userArtPage = (user: UserLinkArgs, source?: ArtSouce) =>
   `${userPage(user)}/art${source ? `?source=${source}` : ""}`;
 export const newArtPage = (artId?: Art["id"]) =>
-  `${ART_PAGE}/new${artId ? `?art=${artId}` : ""}`;
+  `${artPage()}/new${artId ? `?art=${artId}` : ""}`;
 export const userNewBuildPage = (
   user: UserLinkArgs,
   params?: { weapon: MainWeaponId; build: BuildAbilitiesTupleWithUnknown }

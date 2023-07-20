@@ -13,7 +13,7 @@ import * as React from "react";
 import { useFetcher } from "react-router-dom";
 import invariant from "tiny-invariant";
 import { Button } from "~/components/Button";
-import { UserCombobox } from "~/components/Combobox";
+import { Combobox, UserCombobox } from "~/components/Combobox";
 import { FormMessage } from "~/components/FormMessage";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
@@ -30,7 +30,7 @@ import {
   parseRequestFormData,
 } from "~/utils/remix";
 import {
-  ART_PAGE,
+  artPage,
   conditionalUserSubmittedImage,
   navIconUrl,
   userArtPage,
@@ -40,12 +40,13 @@ import { editArtSchema, newArtSchema } from "../art-schemas.server";
 import { addNewArt, editArt } from "../queries/addNewArt.server";
 import { findArtById } from "../queries/findArtById.server";
 import { previewUrl } from "../art-utils";
+import { allArtTags } from "../queries/allArtTags.server";
 
 export const handle: SendouRouteHandle = {
   i18n: ["art"],
   breadcrumb: () => ({
     imgPath: navIconUrl("art"),
-    href: ART_PAGE,
+    href: artPage(),
     type: "IMAGE",
   }),
 };
@@ -79,6 +80,7 @@ export const action: ActionFunction = async ({ request }) => {
       description: data.description,
       isShowcase: data.isShowcase,
       linkedUsers: data.linkedUsers,
+      tags: data.tags,
     });
   } else {
     const uploadHandler = composeUploadHandlers(
@@ -104,6 +106,7 @@ export const action: ActionFunction = async ({ request }) => {
       url: fileName,
       validatedAt: user.patronTier ? dateToDatabaseTimestamp(new Date()) : null,
       linkedUsers: data.linkedUsers,
+      tags: data.tags,
     });
   }
 
@@ -117,13 +120,15 @@ export const loader = async ({ request }: LoaderArgs) => {
   const artIdRaw = new URL(request.url).searchParams.get(
     NEW_ART_EXISTING_SEARCH_PARAM_KEY
   );
-  if (!artIdRaw) return null;
+  if (!artIdRaw) return { art: null, tags: allArtTags() };
   const artId = Number(artIdRaw);
 
   const art = findArtById(artId);
-  if (!art || art.authorId !== user.id) return null;
+  if (!art || art.authorId !== user.id) {
+    return { art: null, tags: allArtTags() };
+  }
 
-  return { art };
+  return { art, tags: allArtTags() };
 };
 
 export default function NewArtPage() {
@@ -146,16 +151,23 @@ export default function NewArtPage() {
     });
   };
 
+  const submitButtonDisabled = () => {
+    if (fetcher.state !== "idle") return true;
+
+    return !img && !data.art;
+  };
+
   return (
     <Main halfWidth>
       <Form ref={ref} className="stack md">
         <FormMessage type="info">{t("art:forms.caveats")}</FormMessage>
         <ImageUpload img={img} setImg={setImg} setSmallImg={setSmallImg} />
         <Description />
+        <Tags />
         <LinkedUsers />
-        {data?.art ? <ShowcaseToggle /> : null}
+        {data.art ? <ShowcaseToggle /> : null}
         <div>
-          <Button onClick={handleSubmit} disabled={!img && !data?.art}>
+          <Button onClick={handleSubmit} disabled={submitButtonDisabled()}>
             {t("common:actions.save")}
           </Button>
         </div>
@@ -176,7 +188,7 @@ function ImageUpload({
   const data = useLoaderData<typeof loader>();
   const { t } = useTranslation(["common"]);
 
-  if (data?.art) {
+  if (data.art) {
     return (
       <img
         src={conditionalUserSubmittedImage(previewUrl(data.art.url))}
@@ -235,7 +247,7 @@ function ImageUpload({
 function Description() {
   const { t } = useTranslation(["art"]);
   const data = useLoaderData<typeof loader>();
-  const [value, setValue] = React.useState(data?.art.description ?? "");
+  const [value, setValue] = React.useState(data.art?.description ?? "");
 
   return (
     <div>
@@ -256,14 +268,141 @@ function Description() {
   );
 }
 
+// note: not handling edge case where a tag was added by another user while this
+// user was adding a new art with the same tag -> will crash
+function Tags() {
+  const { t } = useTranslation(["art", "common"]);
+  const data = useLoaderData<typeof loader>();
+  const [creationMode, setCreationMode] = React.useState(false);
+  const [tags, setTags] = React.useState<{ name?: string; id?: number }[]>(
+    data.art?.tags ?? []
+  );
+  const [newTagValue, setNewTagValue] = React.useState("");
+
+  const existingTags = data.tags;
+  const unselectedTags = existingTags.filter(
+    (t) => !tags.some((tag) => tag.id === t.id)
+  );
+
+  const handleAddNewTag = () => {
+    const normalizedNewTagValue = newTagValue
+      .trim()
+      // replace many whitespaces with one
+      .replace(/\s\s+/g, " ")
+      .toLowerCase();
+
+    if (
+      normalizedNewTagValue.length === 0 ||
+      normalizedNewTagValue.length > ART.TAG_MAX_LENGTH
+    ) {
+      return;
+    }
+
+    const alreadyCreatedTag = existingTags.find(
+      (t) => t.name === normalizedNewTagValue
+    );
+
+    if (alreadyCreatedTag) {
+      setTags((tags) => [...tags, alreadyCreatedTag]);
+    } else if (tags.every((tag) => tag.name !== normalizedNewTagValue)) {
+      setTags((tags) => [...tags, { name: normalizedNewTagValue }]);
+    }
+
+    setNewTagValue("");
+    setCreationMode(false);
+  };
+
+  return (
+    <div className="stack xs items-start">
+      <Label htmlFor="tags" className="mb-0">
+        {t("art:forms.tags.title")}
+      </Label>
+      <input type="hidden" name="tags" value={JSON.stringify(tags)} />
+      {creationMode ? (
+        <div className="art__creation-mode-switcher-container">
+          <Button variant="minimal" onClick={() => setCreationMode(false)}>
+            {t("art:forms.tags.selectFromExisting")}
+          </Button>
+        </div>
+      ) : (
+        <div className="stack horizontal sm text-xs text-lighter art__creation-mode-switcher-container">
+          {t("art:forms.tags.cantFindExisting")}{" "}
+          <Button variant="minimal" onClick={() => setCreationMode(true)}>
+            {t("art:forms.tags.addNew")}
+          </Button>
+        </div>
+      )}
+      {tags.length >= ART.TAGS_MAX_LENGTH ? (
+        <div className="text-sm text-warning">
+          {t("art:forms.tags.maxReached")}
+        </div>
+      ) : creationMode ? (
+        <div className="stack horizontal sm items-center">
+          <input
+            placeholder={t("art:forms.tags.addNew.placeholder")}
+            name="tag"
+            value={newTagValue}
+            onChange={(e) => setNewTagValue(e.target.value)}
+            onKeyDown={(event) => {
+              if (event.code === "Enter") {
+                handleAddNewTag();
+              }
+            }}
+          />
+          <Button size="tiny" variant="outlined" onClick={handleAddNewTag}>
+            {t("common:actions.add")}
+          </Button>
+        </div>
+      ) : (
+        <Combobox
+          // empty combobox on select
+          key={tags.length}
+          options={unselectedTags.map((t) => ({
+            label: t.name,
+            value: String(t.id),
+          }))}
+          inputName="tags"
+          placeholder={t("art:forms.tags.searchExisting.placeholder")}
+          initialValue={null}
+          onChange={(selection) => {
+            if (!selection) return;
+            setTags([
+              ...tags,
+              { name: selection.label, id: Number(selection.value) },
+            ]);
+          }}
+        />
+      )}
+      <div className="text-sm stack sm flex-wrap horizontal">
+        {tags.map((t) => {
+          return (
+            <div key={t.name} className="stack horizontal">
+              {t.name}{" "}
+              <Button
+                icon={<CrossIcon />}
+                size="tiny"
+                variant="minimal-destructive"
+                className="art__delete-tag-button"
+                onClick={() => {
+                  setTags(tags.filter((tag) => tag.name !== t.name));
+                }}
+              />
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function LinkedUsers() {
   const { t } = useTranslation(["art"]);
   const data = useLoaderData<typeof loader>();
   const [users, setUsers] = React.useState<
     { inputId: string; userId?: number }[]
   >(
-    (data?.art.linkedUsers ?? []).length > 0
-      ? data!.art.linkedUsers.map((userId) => ({ userId, inputId: nanoid() }))
+    (data.art?.linkedUsers ?? []).length > 0
+      ? data.art!.linkedUsers.map((userId) => ({ userId, inputId: nanoid() }))
       : [{ inputId: nanoid() }]
   );
 
@@ -313,6 +452,7 @@ function LinkedUsers() {
         onClick={() => setUsers([...users, { inputId: nanoid() }])}
         disabled={users.length >= ART.LINKED_USERS_MAX_LENGTH}
         className="my-3"
+        variant="outlined"
       >
         {t("art:forms.linkedUsers.anotherOne")}
       </Button>
@@ -324,7 +464,7 @@ function LinkedUsers() {
 function ShowcaseToggle() {
   const { t } = useTranslation(["art"]);
   const data = useLoaderData<typeof loader>();
-  const isCurrentlyShowcase = Boolean(data?.art.isShowcase);
+  const isCurrentlyShowcase = Boolean(data.art?.isShowcase);
   const [checked, setChecked] = React.useState(isCurrentlyShowcase);
 
   return (

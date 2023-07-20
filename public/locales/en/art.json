@@ -5,6 +5,8 @@
   "radios.all": "All",
   "radios.madeBy": "Art made by",
   "radios.madeFor": "Art made for",
+  "filterByTag": "Filter by tag",
+  "filteringByTag": "Showing results filtered by #{{tag}}",
   "commissionsOpen": "Commissions are open",
   "commissionsClosed": "Commissions are closed",
   "openCommissionsOnly": "Show artists with open commissions",
@@ -16,5 +18,12 @@
   "forms.linkedUsers.anotherOne": "Another one",
   "forms.linkedUsers.info": "Who is in the art? Linking users allows your art to show up on their profile.",
   "forms.showcase.title": "Showcase",
-  "forms.showcase.info": "Your showcase piece is shown on the common /art page. Only one piece can be your showcase at a time."
+  "forms.showcase.info": "Your showcase piece is shown on the common /art page. Only one piece can be your showcase at a time.",
+  "forms.tags.title": "Tags",
+  "forms.tags.selectFromExisting": "Select from existing tags",
+  "forms.tags.cantFindExisting": "Can't find an existing tag?",
+  "forms.tags.addNew": "Create a new one.",
+  "forms.tags.addNew.placeholder": "Create a new tag",
+  "forms.tags.searchExisting.placeholder": "Search existing tags",
+  "forms.tags.maxReached": "Max tags reached"
 }

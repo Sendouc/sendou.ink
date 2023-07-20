@@ -4,9 +4,11 @@ import { Avatar } from "~/components/Avatar";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { discordFullName } from "~/utils/strings";
 import {
+  artPage,
   conditionalUserSubmittedImage,
   newArtPage,
   userArtPage,
+  userPage,
 } from "~/utils/urls";
 import type { ListedArt } from "../art-types";
 import { Dialog } from "~/components/Dialog";
@@ -23,6 +25,7 @@ import { useTranslation } from "~/hooks/useTranslation";
 import { previewUrl } from "../art-utils";
 import { TrashIcon } from "~/components/icons/Trash";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
+import { useSearchParamState } from "~/hooks/useSearchParamState";
 
 export function ArtGrid({
   arts,
@@ -40,19 +43,27 @@ export function ArtGrid({
     pagesCount,
     nextPage,
     previousPage,
+    setPage,
   } = useSimplePagination({
     items: arts,
     pageSize: ART_PER_PAGE,
   });
-  const [bigArt, setBigArt] = React.useState<ListedArt | null>(null);
+  const [bigArtId, setBigArtId] = useSearchParamState<number | null>({
+    defaultValue: null,
+    name: "big",
+    revive: (value) =>
+      itemsToDisplay.find((art) => art.id === Number(value))?.id,
+  });
   const isMounted = useIsMounted();
 
   if (!isMounted) return null;
 
+  const bigArt = itemsToDisplay.find((art) => art.id === bigArtId);
+
   return (
     <>
       {bigArt ? (
-        <BigImageDialog close={() => setBigArt(null)} art={bigArt} />
+        <BigImageDialog close={() => setBigArtId(null)} art={bigArt} />
       ) : null}
       <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}>
         <Masonry gutter="1rem">
@@ -62,7 +73,7 @@ export function ArtGrid({
               art={art}
               canEdit={canEdit}
               enablePreview={enablePreview}
-              onClick={enablePreview ? () => setBigArt(art) : undefined}
+              onClick={enablePreview ? () => setBigArtId(art.id) : undefined}
             />
           ))}
         </Masonry>
@@ -73,6 +84,7 @@ export function ArtGrid({
           pagesCount={pagesCount}
           nextPage={nextPage}
           previousPage={previousPage}
+          setPage={setPage}
         />
       ) : null}
     </>
@@ -96,6 +108,26 @@ function BigImageDialog({ close, art }: { close: () => void; art: ListedArt }) {
         className="art__dialog__img"
         onLoad={() => setImageLoaded(true)}
       />
+      {art.tags || art.linkedUsers ? (
+        <div
+          className={clsx("art__tags-container", { invisible: !imageLoaded })}
+        >
+          {art.linkedUsers?.map((user) => (
+            <Link
+              to={userPage(user)}
+              key={user.discordId}
+              className="art__dialog__tag art__dialog__tag__user"
+            >
+              {discordFullName(user)}
+            </Link>
+          ))}
+          {art.tags?.map((tag) => (
+            <Link to={artPage(tag)} key={tag} className="art__dialog__tag">
+              #{tag}
+            </Link>
+          ))}
+        </div>
+      ) : null}
       {art.description ? (
         <div
           className={clsx("art__dialog__description", {
@@ -201,11 +233,13 @@ function SimplePagination({
   pagesCount,
   nextPage,
   previousPage,
+  setPage,
 }: {
   currentPage: number;
   pagesCount: number;
   nextPage: () => void;
   previousPage: () => void;
+  setPage: (page: number) => void;
 }) {
   return (
     <div className="stack sm horizontal items-center justify-center flex-wrap">
@@ -222,6 +256,7 @@ function SimplePagination({
           className={clsx("pagination__dot", {
             pagination__dot__active: i === currentPage - 1,
           })}
+          onClick={() => setPage(i + 1)}
         />
       ))}
       <Button
