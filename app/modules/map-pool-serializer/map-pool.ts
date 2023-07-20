@@ -99,6 +99,10 @@ export class MapPool {
     return this.parsed[mode].length;
   }
 
+  get length() {
+    return this.stageModePairs.length;
+  }
+
   getClonedObject(): MapPoolObject {
     return clone(this.parsed) as MapPoolObject;
   }

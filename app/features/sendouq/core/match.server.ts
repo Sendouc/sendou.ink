@@ -24,28 +24,7 @@ export function matchMapList({
     bestOf: SENDOUQ_BEST_OF,
     seed: String(ourGroup.id),
     modesIncluded: type === "SZ" ? ["SZ"] : ["SZ", "TC", "RM", "CB"],
-    // xxx: handle not including tiebreaker maps
-    tiebreakerMaps:
-      type === "SZ"
-        ? new MapPool([])
-        : new MapPool([
-            {
-              mode: "SZ",
-              stageId: 14,
-            },
-            {
-              mode: "TC",
-              stageId: 16,
-            },
-            {
-              mode: "SZ",
-              stageId: 15,
-            },
-            {
-              mode: "SZ",
-              stageId: 13,
-            },
-          ]),
+    tiebreakerMaps: new MapPool([]),
     teams: [
       {
         id: ourGroup.id,

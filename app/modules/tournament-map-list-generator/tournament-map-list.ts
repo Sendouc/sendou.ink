@@ -15,12 +15,6 @@ const OPTIMAL_MAPLIST_SCORE = 0;
 export function createTournamentMapList(
   input: TournamentMaplistInput
 ): Array<TournamentMapListMap> {
-  invariant(
-    input.modesIncluded.length === 1 ||
-      input.tiebreakerMaps.stageModePairs.length > 0,
-    "Must include tiebreaker maps if there are multiple modes"
-  );
-
   const { shuffle } = seededRandom(input.seed);
   const stages = shuffle(resolveCommonStages());
   const mapList: Array<ModeWithStageAndScore & { score: number }> = [];
@@ -43,10 +37,8 @@ export function createTournamentMapList(
     }
 
     const stageList =
-      mapList.length < input.bestOf - 1 ||
-      // in 1 mode only the tiebreaker is not a thing
-      tournamentIsOneModeOnly()
-        ? resolveOneModeOnlyStages()
+      mapList.length < input.bestOf - 1 || input.tiebreakerMaps.length === 0
+        ? resolveStages()
         : input.tiebreakerMaps.stageModePairs.map((p) => ({
             ...p,
             score: 0,
@@ -125,27 +117,42 @@ export function createTournamentMapList(
     );
   }
 
-  function resolveOneModeOnlyStages() {
-    if (utilizeOtherStageIdsInOneModeOnlyTournament()) {
+  function resolveStages() {
+    if (utilizeOtherStageIdsWhenNoTiebreaker()) {
       // no overlap so we need to use a random map for tiebreaker
-      return shuffle([...stageIds])
-        .filter(
-          (stageId) =>
-            !input.teams[0].maps.hasStage(stageId) &&
-            !input.teams[1].maps.hasStage(stageId)
-        )
-        .map((stageId) => ({
-          stageId,
-          mode: input.modesIncluded[0]!,
-          score: 0,
-          source: "TIEBREAKER" as const,
-        }));
+
+      if (tournamentIsOneModeOnly()) {
+        return shuffle([...stageIds])
+          .filter(
+            (stageId) =>
+              !input.teams[0].maps.hasStage(stageId) &&
+              !input.teams[1].maps.hasStage(stageId)
+          )
+          .map((stageId) => ({
+            stageId,
+            mode: input.modesIncluded[0]!,
+            score: 0,
+            source: "TIEBREAKER" as const,
+          }));
+      } else {
+        return DEFAULT_MAP_POOL.stageModePairs
+          .filter(
+            (pair) =>
+              !input.teams[0].maps.has(pair) && !input.teams[1].maps.has(pair)
+          )
+          .map((pair) => ({
+            stageId: pair.stageId,
+            mode: pair.mode,
+            score: 0,
+            source: "TIEBREAKER" as const,
+          }));
+      }
     }
 
     return stages;
   }
 
-  function utilizeOtherStageIdsInOneModeOnlyTournament() {
+  function utilizeOtherStageIdsWhenNoTiebreaker() {
     if (mapList.length < input.bestOf - 1) return false;
 
     if (
@@ -271,8 +278,8 @@ export function createTournamentMapList(
   }
 
   function wouldPreventTiebreaker(stage: StageValidatorInput) {
-    // tiebreaker always guaranteed if not one mode
-    if (!tournamentIsOneModeOnly()) return false;
+    // tiebreaker always guaranteed if maps are explicitly set
+    if (input.tiebreakerMaps.length > 0) return false;
 
     const commonMaps = input.teams[0].maps.stageModePairs.filter(
       ({ stageId, mode }) =>

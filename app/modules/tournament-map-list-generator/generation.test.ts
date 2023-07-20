@@ -5,6 +5,7 @@ import type { RankedModeShort } from "../in-game-lists";
 import { rankedModesShort } from "../in-game-lists/modes";
 import { MapPool } from "../map-pool-serializer";
 import type { TournamentMaplistInput } from "./types";
+import { DEFAULT_MAP_POOL } from "./constants";
 
 const TournamentMapListGenerator = suite("Tournament map list generator");
 const TournamentMapListGeneratorOneMode = suite(
@@ -27,6 +28,16 @@ const team2Picks = new MapPool([
   { mode: "TC", stageId: 2 },
   { mode: "TC", stageId: 8 },
   { mode: "RM", stageId: 7 },
+  { mode: "RM", stageId: 1 },
+  { mode: "CB", stageId: 2 },
+  { mode: "CB", stageId: 3 },
+]);
+const team2PicksNoOverlap = new MapPool([
+  { mode: "SZ", stageId: 11 },
+  { mode: "SZ", stageId: 9 },
+  { mode: "TC", stageId: 2 },
+  { mode: "TC", stageId: 8 },
+  { mode: "RM", stageId: 17 },
   { mode: "RM", stageId: 1 },
   { mode: "CB", stageId: 2 },
   { mode: "CB", stageId: 3 },
@@ -350,6 +361,72 @@ TournamentMapListGenerator("No map picked by same team twice in row", () => {
     }
   }
 });
+
+TournamentMapListGenerator(
+  "Calculates all mode maps without tiebreaker",
+  () => {
+    const mapList = generateMaps({
+      teams: [
+        {
+          id: 1,
+          maps: team1Picks,
+        },
+        {
+          id: 2,
+          maps: team2Picks,
+        },
+      ],
+      bestOf: 7,
+      tiebreakerMaps: new MapPool([]),
+    });
+
+    // the one map both of them picked
+    assert.equal(mapList[6].stageId, 7);
+    assert.equal(mapList[6].mode, "RM");
+  }
+);
+
+TournamentMapListGenerator(
+  "Calculates all mode maps without tiebreaker (no overlap)",
+  () => {
+    const mapList = generateMaps({
+      teams: [
+        {
+          id: 1,
+          maps: team1Picks,
+        },
+        {
+          id: 2,
+          maps: team2PicksNoOverlap,
+        },
+      ],
+      bestOf: 7,
+      tiebreakerMaps: new MapPool([]),
+    });
+
+    // default map pool contains the tiebreaker
+    assert.ok(
+      DEFAULT_MAP_POOL.stageModePairs.some(
+        (pair) =>
+          pair.stageId === mapList[6].stageId && pair.mode === mapList[6].mode
+      )
+    );
+
+    // neither teams map pool contains the tiebreaker
+    assert.not.ok(
+      team1Picks.stageModePairs.some(
+        (pair) =>
+          pair.stageId === mapList[6].stageId && pair.mode === mapList[6].mode
+      )
+    );
+    assert.not.ok(
+      team2PicksNoOverlap.stageModePairs.some(
+        (pair) =>
+          pair.stageId === mapList[6].stageId && pair.mode === mapList[6].mode
+      )
+    );
+  }
+);
 
 // TODO: figure out how to handle this
 // checks for case were there is complete overlap in one mode but not others
