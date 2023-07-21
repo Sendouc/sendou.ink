@@ -23,7 +23,7 @@
 
 .q__clock-country {
   color: var(--text) !important;
-  white-space: no-wrap;
+  white-space: nowrap;
   font-size: var(--fonts-xs);
 }
 
