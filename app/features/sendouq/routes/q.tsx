@@ -35,7 +35,6 @@ import { getUserId, requireUserId } from "~/modules/auth/user.server";
 import { createGroupSchema } from "../q-schemas.server";
 import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
 import { createGroup } from "../queries/createGroup.server";
-import { booleanToInt } from "~/utils/sql";
 import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.server";
 import { groupRedirectLocationByCurrentLocation, mapPoolOk } from "../q-utils";
 import { ModePreferenceIcons } from "../components/ModePrefenceIcons";
@@ -66,7 +65,6 @@ export const action: ActionFunction = async ({ request }) => {
   validate(mapPoolOk(mapPool), "Invalid map pool");
 
   createGroup({
-    isRanked: booleanToInt(data.rankingType === "ranked"),
     mapListPreference: data.mapListPreference,
     status: data.direct === "true" ? "ACTIVE" : "PREPARING",
     userId: user.id,
@@ -104,7 +102,6 @@ export default function QPage() {
       <Clocks />
       <Form className="stack md" method="post">
         <h2 className="q__header">Join the queue!</h2>
-        <RankedOrScrim />
         <MapPreference />
         <MapPoolSelector />
         <div className="stack md items-center mt-4">
@@ -193,57 +190,6 @@ function Clocks() {
           </div>
         );
       })}
-    </div>
-  );
-}
-
-const RANKED_OR_SCRIM_LOCAL_STORAGE_KEY = "q_rankedOrScrim";
-function RankedOrScrim() {
-  const [value, setValue] = React.useState<string | null>();
-
-  React.useEffect(() => {
-    const storedValue = localStorage.getItem(RANKED_OR_SCRIM_LOCAL_STORAGE_KEY);
-    if (storedValue) {
-      setValue(storedValue);
-    } else {
-      setValue("ranked");
-    }
-  }, []);
-
-  const handleChange = (newValue: "ranked" | "scrim") => () => {
-    setValue(newValue);
-    localStorage.setItem(RANKED_OR_SCRIM_LOCAL_STORAGE_KEY, newValue);
-  };
-
-  return (
-    <div className="stack">
-      <label>Type</label>
-      <div className="stack sm horizontal items-center">
-        <input
-          type="radio"
-          name="rankingType"
-          id="ranked"
-          value="ranked"
-          checked={value === "ranked"}
-          onChange={handleChange("ranked")}
-        />
-        <label htmlFor="ranked" className="mb-0">
-          Ranked
-        </label>
-      </div>
-      <div className="stack sm horizontal items-center">
-        <input
-          type="radio"
-          name="rankingType"
-          id="scrim"
-          value="scrim"
-          checked={value === "scrim"}
-          onChange={handleChange("scrim")}
-        />
-        <label htmlFor="scrim" className="mb-0">
-          Scrim
-        </label>
-      </div>
     </div>
   );
 }

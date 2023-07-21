@@ -215,7 +215,6 @@ export const action: ActionFunction = async ({ request }) => {
           ourMapPool: new MapPool(mapPoolByGroupId(ourGroup.id)),
           theirMapPool: new MapPool(mapPoolByGroupId(theirGroup.id)),
         }),
-        isRanked: theirGroup.isRanked,
       });
 
       throw redirect(sendouQMatchPage(createdMatch.id));
@@ -327,7 +326,6 @@ export default function QLookingPage() {
         <div className="q__own-group-container">
           <GroupCard
             group={data.groups.own}
-            isRanked={data.groups.own.isRanked}
             mapListPreference={data.groups.own.mapListPreference}
           />
         </div>
@@ -345,7 +343,7 @@ export default function QLookingPage() {
               <h2 className="text-sm text-center mb-2">Likes received</h2>
               <div className="stack sm">
                 {data.groups.likesReceived.map((group) => {
-                  const { isRanked, mapListPreference } = groupAfterMorph({
+                  const { mapListPreference } = groupAfterMorph({
                     liker: "THEM",
                     ourGroup: data.groups.own,
                     theirGroup: group,
@@ -356,7 +354,6 @@ export default function QLookingPage() {
                       key={group.id}
                       group={group}
                       action={isFullGroup ? "MATCH_UP" : "GROUP_UP"}
-                      isRanked={isRanked}
                       mapListPreference={mapListPreference}
                     />
                   );
@@ -367,7 +364,7 @@ export default function QLookingPage() {
               <h2 className="text-sm text-center mb-2 invisible">Neutral</h2>
               <div className="stack sm">
                 {data.groups.neutral.map((group) => {
-                  const { isRanked, mapListPreference } = groupAfterMorph({
+                  const { mapListPreference } = groupAfterMorph({
                     liker: "US",
                     ourGroup: data.groups.own,
                     theirGroup: group,
@@ -378,7 +375,6 @@ export default function QLookingPage() {
                       key={group.id}
                       group={group}
                       action="LIKE"
-                      isRanked={isRanked}
                       mapListPreference={mapListPreference}
                     />
                   );
@@ -389,7 +385,7 @@ export default function QLookingPage() {
               <h2 className="text-sm text-center mb-2">Likes given</h2>
               <div className="stack sm">
                 {data.groups.likesGiven.map((group) => {
-                  const { isRanked, mapListPreference } = groupAfterMorph({
+                  const { mapListPreference } = groupAfterMorph({
                     liker: "US",
                     ourGroup: data.groups.own,
                     theirGroup: group,
@@ -400,7 +396,6 @@ export default function QLookingPage() {
                       key={group.id}
                       group={group}
                       action="UNLIKE"
-                      isRanked={isRanked}
                       mapListPreference={mapListPreference}
                     />
                   );
@@ -500,12 +495,10 @@ function InfoText() {
 function GroupCard({
   group,
   action,
-  isRanked,
   mapListPreference,
 }: {
   group: LookingGroup;
   action?: "LIKE" | "UNLIKE" | "GROUP_UP" | "MATCH_UP";
-  isRanked: Group["isRanked"];
   mapListPreference: Group["mapListPreference"];
 }) {
   const fetcher = useFetcher();
@@ -516,17 +509,9 @@ function GroupCard({
   return (
     <Flipped flipId={group.id}>
       <section className="q__group">
-        <div className="stack lg horizontal justify-between items-center">
+        <div className="stack lg horizontal justify-center">
           <div className="stack xs horizontal items-center">
             <ModePreferenceIcons preference={mapListPreference} />
-          </div>
-          <div
-            className={clsx("text-xs font-semi-bold", {
-              "text-info": isRanked,
-              "text-theme-secondary": !isRanked,
-            })}
-          >
-            {isRanked ? "Ranked" : "Scrim"}
           </div>
         </div>
         <div

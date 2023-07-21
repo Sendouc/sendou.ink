@@ -20,7 +20,6 @@ module.exports.up = function (db) {
       "createdAt" integer default (strftime('%s', 'now')) not null,
       "latestActionAt" integer default (strftime('%s', 'now')) not null,
       "mapListPreference" text not null,
-      "isRanked" integer not null,
       "inviteCode" text not null,
       "status" text not null,
       foreign key ("teamId") references "AllTeam"("id") on delete restrict
@@ -80,7 +79,6 @@ module.exports.up = function (db) {
       "createdAt" integer default (strftime('%s', 'now')) not null,
       "reportedAt" integer,
       "reportedByUserId" integer,
-      "isRanked" integer not null,
       foreign key ("alphaGroupId") references "Group"("id") on delete restrict,
       foreign key ("bravoGroupId") references "Group"("id") on delete restrict,
       foreign key ("reportedByUserId") references "User"("id") on delete restrict,

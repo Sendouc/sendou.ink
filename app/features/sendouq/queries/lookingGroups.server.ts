@@ -12,7 +12,6 @@ const stm = sql.prepare(/* sql */ `
       "Group"."id",
       "Group"."createdAt",
       "Group"."mapListPreference",
-      "Group"."isRanked",
       "User"."id" as "userId",
       "User"."discordId",
       "User"."discordName",
@@ -38,7 +37,6 @@ const stm = sql.prepare(/* sql */ `
   select 
     "q1"."id",
     "q1"."mapListPreference",
-    "q1"."isRanked",
     json_group_array(
       json_object(
         'id', "q1"."userId",
@@ -69,7 +67,6 @@ export function findLookingGroups({
       return {
         id: row.id,
         mapListPreference: row.mapListPreference,
-        isRanked: row.isRanked,
         members: parseDBJsonArray(row.members).map((member: any) => {
           const weapons = parseDBArray(member.weapons);
 

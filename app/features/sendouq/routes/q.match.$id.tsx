@@ -91,7 +91,6 @@ export const action: ActionFunction = async ({ request, params }) => {
       );
 
       const match = notFoundIfFalsy(findMatchById(matchId));
-      validate(match.isRanked, "Unranked match cannot be reported");
       if (match.reportedAt) return null;
 
       const winner = winnersArrayToWinner(data.winners);
@@ -127,7 +126,6 @@ export const action: ActionFunction = async ({ request, params }) => {
       validate(isAdmin(user), "Only admins can report score again");
 
       const match = notFoundIfFalsy(findMatchById(matchId));
-      validate(match.isRanked, "Unranked match cannot be reported");
       validate(match.reportedAt, "Match has not been reported yet");
 
       sql.transaction(() => {
@@ -226,7 +224,6 @@ export const loader = ({ params }: LoaderArgs) => {
   };
 };
 
-// xxx: handle unranked
 // xxx: admin rereport score (frontend)
 export default function QMatchPage() {
   const user = useUser();
@@ -381,7 +378,7 @@ function AfterMatchActions({
             (rw) => rw.groupMatchMapId === matchMap.id && rw.userId === u.id
           )?.weaponSplId;
 
-          invariant(weaponSplId, "weaponSplId is null");
+          invariant(typeof weaponSplId === "number", "weaponSplId is null");
           return weaponSplId;
         })
       );

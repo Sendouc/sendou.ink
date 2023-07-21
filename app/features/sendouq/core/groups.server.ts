@@ -55,11 +55,6 @@ export function divideGroups({
 
   invariant(own && own.members, "own group not found");
 
-  // unranked groups can't see ranked groups till they like them
-  if (!own.isRanked && own.members.length === FULL_GROUP_SIZE) {
-    neutral = neutral.filter((g) => !g.isRanked);
-  }
-
   return {
     own,
     neutral,
@@ -68,19 +63,10 @@ export function divideGroups({
   };
 }
 
-const censorGroup = (group: LookingGroup) =>
-  group.isRanked
-    ? {
-        ...group,
-        members: undefined,
-      }
-    : {
-        ...group,
-        members: group.members?.map((member) => ({
-          ...member,
-          weapons: undefined,
-        })),
-      };
+const censorGroup = (group: LookingGroup) => ({
+  ...group,
+  members: undefined,
+});
 export function censorGroups(groups: DividedGroups): DividedGroups {
   return {
     own: groups.own,

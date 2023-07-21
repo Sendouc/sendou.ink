@@ -5,12 +5,10 @@ import type { TournamentMapListMap } from "~/modules/tournament-map-list-generat
 const createMatchStm = sql.prepare(/* sql */ `
   insert into "GroupMatch" (
     "alphaGroupId",
-    "bravoGroupId",
-    "isRanked"
+    "bravoGroupId"
   ) values (
     @alphaGroupId,
-    @bravoGroupId,
-    @isRanked
+    @bravoGroupId
   )
   returning *
 `);
@@ -36,17 +34,14 @@ export const createMatch = sql.transaction(
     alphaGroupId,
     bravoGroupId,
     mapList,
-    isRanked,
   }: {
     alphaGroupId: number;
     bravoGroupId: number;
     mapList: TournamentMapListMap[];
-    isRanked: number;
   }) => {
     const match = createMatchStm.get({
       alphaGroupId,
       bravoGroupId,
-      isRanked,
     }) as GroupMatch;
 
     for (const [i, { mode, source, stageId }] of mapList.entries()) {

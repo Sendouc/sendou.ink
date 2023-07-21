@@ -47,7 +47,6 @@ import { nullFilledArray, pickRandomItem } from "~/utils/arrays";
 import type { Art, UserSubmittedImage } from "../types";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { createGroup } from "~/features/sendouq/queries/createGroup.server";
-import { booleanToInt } from "~/utils/sql";
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { MAP_LIST_PREFERENCE_OPTIONS } from "~/features/sendouq/q-constants";
 
@@ -1554,7 +1553,6 @@ function groups() {
 
   for (let i = 0; i < 25; i++) {
     const group = createGroup({
-      isRanked: booleanToInt(i < 13),
       mapListPreference: faker.helpers.arrayElement(
         MAP_LIST_PREFERENCE_OPTIONS
       ),

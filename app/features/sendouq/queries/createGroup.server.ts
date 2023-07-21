@@ -6,9 +6,9 @@ import type { MapPool } from "~/modules/map-pool-serializer";
 
 const createGroupStm = sql.prepare(/* sql */ `
   insert into "Group"
-    ("mapListPreference", "isRanked", "inviteCode", "status")
+    ("mapListPreference", "inviteCode", "status")
   values
-    (@mapListPreference, @isRanked, @inviteCode, @status)
+    (@mapListPreference, @inviteCode, @status)
   returning *
 `);
 
@@ -26,7 +26,7 @@ const createMapPoolMapStm = sql.prepare(/* sql */ `
     (@stageId, @mode, @groupId)
 `);
 
-type CreateGroupArgs = Pick<Group, "mapListPreference" | "isRanked"> & {
+type CreateGroupArgs = Pick<Group, "mapListPreference"> & {
   status: Exclude<Group["status"], "INACTIVE">;
   userId: number;
   mapPool: MapPool;
@@ -37,7 +37,6 @@ const DEFAULT_ROLE: GroupMember["role"] = "OWNER";
 export const createGroup = sql.transaction((args: CreateGroupArgs) => {
   const group = createGroupStm.get({
     mapListPreference: args.mapListPreference,
-    isRanked: args.isRanked,
     inviteCode: nanoid(INVITE_CODE_LENGTH),
     status: args.status,
   }) as Group;
@@ -69,11 +68,10 @@ type CreateGroupFromPreviousGroupArgs = {
 
 const createGroupFromPreviousGroupStm = sql.prepare(/* sql */ `
   insert into "Group"
-    ("mapListPreference", "isRanked", "teamId", "inviteCode", "status")
+    ("mapListPreference", "teamId", "inviteCode", "status")
   values
     (
       (select "mapListPreference" from "Group" where "id" = @previousGroupId), 
-      (select "isRanked" from "Group" where "id" = @previousGroupId),
       (select "teamId" from "Group" where "id" = @previousGroupId),
       @inviteCode, 
       @status

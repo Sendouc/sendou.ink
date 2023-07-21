@@ -515,7 +515,6 @@ export interface Group {
     | "PREFER_SZ"
     | "PREFER_ALL_MODES"
     | "NO_PREFERENCE";
-  isRanked: number;
   inviteCode: string;
   // xxx: index? latestActionAt too maybe
   status: "PREPARING" | "ACTIVE" | "INACTIVE";
@@ -541,7 +540,6 @@ export interface GroupMatch {
   createdAt: number;
   reportedAt: number | null;
   reportedByUserId: number | null;
-  isRanked: number;
 }
 
 export interface GroupMatchMap {
