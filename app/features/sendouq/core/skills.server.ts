@@ -1,4 +1,4 @@
-import type { GroupMatch, Skill, Team, User } from "~/db/types";
+import type { GroupMatch, Skill, User } from "~/db/types";
 import {
   currentSeason,
   queryCurrentTeamRating,
@@ -13,14 +13,8 @@ export function calculateMatchSkills({
   loser,
 }: {
   groupMatchId: GroupMatch["id"];
-  winner: {
-    userIds: User["id"][];
-    teamId?: Team["id"];
-  };
-  loser: {
-    userIds: User["id"][];
-    teamId?: Team["id"];
-  };
+  winner: User["id"][];
+  loser: User["id"][];
 }) {
   const result: Array<
     Pick<
@@ -36,13 +30,11 @@ export function calculateMatchSkills({
   // individual skills
   for (const season of seasonOption) {
     const [winnerTeamNew, loserTeamNew] = rate([
-      winner.userIds.map((userId) =>
-        queryCurrentUserRating({ userId, season })
-      ),
-      loser.userIds.map((userId) => queryCurrentUserRating({ userId, season })),
+      winner.map((userId) => queryCurrentUserRating({ userId, season })),
+      loser.map((userId) => queryCurrentUserRating({ userId, season })),
     ]);
 
-    for (const [index, userId] of winner.userIds.entries()) {
+    for (const [index, userId] of winner.entries()) {
       result.push({
         groupMatchId: groupMatchId,
         identifier: null,
@@ -53,7 +45,7 @@ export function calculateMatchSkills({
       });
     }
 
-    for (const [index, userId] of loser.userIds.entries()) {
+    for (const [index, userId] of loser.entries()) {
       result.push({
         groupMatchId: groupMatchId,
         identifier: null,
@@ -66,12 +58,8 @@ export function calculateMatchSkills({
   }
 
   // team skills
-  const winnerTeamIdentifier = winner.teamId
-    ? String(winner.teamId)
-    : userIdsToIdentifier(winner.userIds);
-  const loserTeamIdentifier = loser.teamId
-    ? String(loser.teamId)
-    : userIdsToIdentifier(loser.userIds);
+  const winnerTeamIdentifier = userIdsToIdentifier(winner);
+  const loserTeamIdentifier = userIdsToIdentifier(loser);
 
   for (const season of seasonOption) {
     const [[winnerTeamNew], [loserTeamNew]] = rate([

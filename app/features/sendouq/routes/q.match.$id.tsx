@@ -101,14 +101,8 @@ export const action: ActionFunction = async ({ request, params }) => {
 
       const newSkills = calculateMatchSkills({
         groupMatchId: match.id,
-        winner: {
-          userIds: groupForMatch(winnerTeamId)!.members.map((m) => m.id),
-          teamId: winnerTeamId,
-        },
-        loser: {
-          userIds: groupForMatch(loserTeamId)!.members.map((m) => m.id),
-          teamId: loserTeamId,
-        },
+        winner: groupForMatch(winnerTeamId)!.members.map((m) => m.id),
+        loser: groupForMatch(loserTeamId)!.members.map((m) => m.id),
       });
 
       sql.transaction(() => {
