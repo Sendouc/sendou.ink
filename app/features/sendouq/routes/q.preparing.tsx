@@ -3,6 +3,7 @@ import type {
   LinksFunction,
   ActionFunction,
   LoaderArgs,
+  V2_MetaFunction,
 } from "@remix-run/node";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
@@ -35,6 +36,7 @@ import { trustedPlayersAvailableToPlay } from "../queries/usersInActiveGroup.ser
 import { deleteGroup } from "../queries/leaveGroup.server";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { useCopyToClipboard } from "react-use";
+import { makeTitle } from "~/utils/strings";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -47,6 +49,10 @@ export const handle: SendouRouteHandle = {
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
+};
+
+export const meta: V2_MetaFunction = () => {
+  return [{ title: makeTitle("SendouQ") }];
 };
 
 export const action: ActionFunction = async ({ request }) => {

@@ -2,6 +2,7 @@ import type {
   ActionFunction,
   LinksFunction,
   LoaderArgs,
+  V2_MetaFunction,
 } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { useFetcher, useLoaderData, useRevalidator } from "@remix-run/react";
@@ -57,6 +58,7 @@ import { morphGroups } from "../queries/morphGroups.server";
 import { refreshGroup } from "../queries/refreshGroup.server";
 import { removeManagerRole } from "../queries/removeManagerRole.server";
 import { syncGroupTeamId } from "../queries/syncGroupTeamId.server";
+import { makeTitle } from "~/utils/strings";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -69,6 +71,10 @@ export const handle: SendouRouteHandle = {
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
+};
+
+export const meta: V2_MetaFunction = () => {
+  return [{ title: makeTitle("SendouQ") }];
 };
 
 // this function doesn't throw normally because we are assuming

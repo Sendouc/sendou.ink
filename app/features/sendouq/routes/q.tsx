@@ -7,6 +7,7 @@ import type {
   LoaderArgs,
   ActionFunction,
   LinksFunction,
+  V2_MetaFunction,
 } from "@remix-run/node";
 import { Form } from "@remix-run/react";
 import { useTranslation } from "~/hooks/useTranslation";
@@ -38,6 +39,7 @@ import { createGroup } from "../queries/createGroup.server";
 import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.server";
 import { groupRedirectLocationByCurrentLocation, mapPoolOk } from "../q-utils";
 import { ModePreferenceIcons } from "../components/ModePrefenceIcons";
+import { makeTitle } from "~/utils/strings";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -50,6 +52,17 @@ export const handle: SendouRouteHandle = {
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
+};
+
+export const meta: V2_MetaFunction = () => {
+  return [
+    { title: makeTitle("SendouQ") },
+    {
+      name: "description",
+      content:
+        "Splatoon 3 competitive ladder. Join by yourself or with your team and play ranked matches.",
+    },
+  ];
 };
 
 export const action: ActionFunction = async ({ request }) => {
