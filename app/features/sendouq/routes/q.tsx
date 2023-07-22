@@ -96,6 +96,8 @@ export const loader = async ({ request }: LoaderArgs) => {
 // xxx: UI when not logged in
 // xxx: show streams?
 // xxx: script to recalc skills
+// xxx: handle join
+// xxx: show when opens if season is not active
 export default function QPage() {
   return (
     <Main halfWidth className="stack lg">

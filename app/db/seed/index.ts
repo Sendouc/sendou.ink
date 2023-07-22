@@ -29,7 +29,6 @@ import { dateToDatabaseTimestamp } from "~/utils/dates";
 import type { UpsertManyPlusVotesArgs } from "../models/plusVotes/queries.server";
 import { nanoid } from "nanoid";
 import { mySlugify } from "~/utils/urls";
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { createVod } from "~/features/vods/queries/createVod.server";
 
 import placements from "./placements.json";
@@ -40,14 +39,11 @@ import {
   NZAP_TEST_ID,
   AMOUNT_OF_CALENDAR_EVENTS,
 } from "./constants";
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { TOURNAMENT } from "~/features/tournament/tournament-constants";
 import type { SeedVariation } from "~/routes/seed";
 import { nullFilledArray, pickRandomItem } from "~/utils/arrays";
 import type { Art, UserSubmittedImage } from "../types";
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { createGroup } from "~/features/sendouq/queries/createGroup.server";
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { MAP_LIST_PREFERENCE_OPTIONS } from "~/features/sendouq/q-constants";
 
 const calendarEventWithToToolsSz = () => calendarEventWithToTools(true);

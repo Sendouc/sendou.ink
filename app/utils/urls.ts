@@ -234,6 +234,9 @@ export const tournamentSubsPage = (tournamentId: number) => {
   return `/to/${tournamentId}/subs`;
 };
 
+export const sendouQInviteLink = (inviteCode: string) =>
+  `${SENDOUQ_PAGE}?join=${inviteCode}`;
+
 export const sendouQMatchPage = (id: GroupMatch["id"]) => {
   return `${SENDOUQ_PAGE}/match/${id}`;
 };

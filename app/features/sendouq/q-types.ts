@@ -14,8 +14,13 @@ export type LookingGroup = {
   }[];
 };
 
+export type LookingGroupWithInviteCode = LookingGroup & {
+  inviteCode: Group["inviteCode"];
+  members: NonNullable<LookingGroup["members"]>;
+};
+
 export interface DividedGroups {
-  own: LookingGroup;
+  own: LookingGroup | LookingGroupWithInviteCode;
   neutral: LookingGroup[];
   likesReceived: LookingGroup[];
   likesGiven: LookingGroup[];

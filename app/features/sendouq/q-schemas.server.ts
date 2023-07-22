@@ -13,6 +13,19 @@ export const createGroupSchema = z.object({
   direct: z.literal("true").nullish(),
 });
 
+export const preparingSchema = z.union([
+  z.object({
+    _action: z.literal("JOIN_QUEUE"),
+  }),
+  z.object({
+    _action: z.literal("DISBAND_GROUP"),
+  }),
+  z.object({
+    _action: z.literal("ADD_TRUSTED"),
+    id,
+  }),
+]);
+
 export const lookingSchema = z.union([
   z.object({
     _action: z.literal("LIKE"),

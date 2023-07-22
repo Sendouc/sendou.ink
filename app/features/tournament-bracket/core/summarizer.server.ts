@@ -10,8 +10,6 @@ import invariant from "tiny-invariant";
 import { removeDuplicates } from "~/utils/arrays";
 import type { FinalStanding } from "./finalStandings.server";
 import type { Rating } from "openskill/dist/types";
-// hacky workaround to stop db from being imported in tests
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { rate, userIdsToIdentifier } from "~/features/mmr/mmr-utils";
 import shuffle from "just-shuffle";
 import type { Unpacked } from "~/utils/types";

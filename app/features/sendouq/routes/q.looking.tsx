@@ -27,7 +27,6 @@ import {
   type SendouRouteHandle,
   parseRequestFormData,
 } from "~/utils/remix";
-import styles from "../q.css";
 import { Avatar } from "~/components/Avatar";
 import {
   censorGroups,
@@ -73,6 +72,7 @@ import { mapPoolByGroupId } from "../queries/mapPoolByGroupId.server";
 import { MapPool } from "~/modules/map-pool-serializer";
 import { createMatch } from "../queries/createMatch.server";
 import { syncGroupTeamId } from "../queries/syncGroupTeamId.server";
+import styles from "../q.css";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -313,6 +313,8 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 // xxx: mobile view
 // xxx: mmr
+// xxx: MemberAdder
+// xxx: GroupCard use common component
 export default function QLookingPage() {
   const data = useLoaderData<typeof loader>();
   useAutoRefresh();
@@ -506,6 +508,8 @@ function GroupCard({
 
   const ownGroup = group.id === data.groups.own.id;
 
+  const moreThanOneMember = group.members && group.members.length > 1;
+
   return (
     <Flipped flipId={group.id}>
       <section className="q__group">
@@ -583,12 +587,14 @@ function GroupCard({
         ) : null}
         {ownGroup ? (
           <FormWithConfirm
-            dialogHeading="Leave this group?"
+            dialogHeading={
+              moreThanOneMember ? "Leave this group?" : "Stop looking?"
+            }
             fields={[["_action", "LEAVE_GROUP"]]}
-            deleteButtonText="Leave"
+            deleteButtonText={moreThanOneMember ? "Leave" : "Stop"}
           >
             <Button variant="minimal-destructive" size="tiny">
-              Leave group
+              {moreThanOneMember ? "Leave group" : "Stop looking"}
             </Button>
           </FormWithConfirm>
         ) : null}

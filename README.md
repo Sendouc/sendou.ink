@@ -137,8 +137,7 @@ Some common files:
 - feature-constants.ts
 - feature-schemas.server.ts
 
-Note: Anything that should be accessed outside of that feature should be re-exported in the index.ts file.
-Note 2: Currently the project is in progress to migrating this style so that's why not everything is using it yet.
+Note: Currently the project is in progress to migrating this style so that's why not everything is using it yet.
 
 ## Commands
 
