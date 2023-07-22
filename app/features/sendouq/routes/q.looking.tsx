@@ -1,78 +1,62 @@
-import { Main } from "~/components/Main";
-import { getUserId, requireUserId } from "~/modules/auth/user.server";
-import { groupRedirectLocationByCurrentLocation } from "../q-utils";
-import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.server";
-import { redirect } from "@remix-run/node";
 import type {
   ActionFunction,
   LinksFunction,
   LoaderArgs,
 } from "@remix-run/node";
-import { findLookingGroups } from "../queries/lookingGroups.server";
+import { redirect } from "@remix-run/node";
+import { useFetcher, useLoaderData, useRevalidator } from "@remix-run/react";
+import clsx from "clsx";
+import * as React from "react";
+import { Flipper } from "react-flip-toolkit";
+import invariant from "tiny-invariant";
+import { Main } from "~/components/Main";
+import { SubmitButton } from "~/components/SubmitButton";
+import { useIsMounted } from "~/hooks/useIsMounted";
+import { useTranslation } from "~/hooks/useTranslation";
+import { useVisibilityChange } from "~/hooks/useVisibilityChange";
+import { getUserId, requireUserId } from "~/modules/auth/user.server";
+import { MapPool } from "~/modules/map-pool-serializer";
 import {
-  Link,
-  useFetcher,
-  useLoaderData,
-  useRevalidator,
-} from "@remix-run/react";
+  parseRequestFormData,
+  validate,
+  type SendouRouteHandle,
+} from "~/utils/remix";
+import { assertUnreachable } from "~/utils/types";
 import {
   SENDOUQ_LOOKING_PAGE,
   SENDOUQ_PAGE,
   navIconUrl,
   sendouQMatchPage,
-  userPage,
 } from "~/utils/urls";
-import {
-  validate,
-  type SendouRouteHandle,
-  parseRequestFormData,
-} from "~/utils/remix";
-import { Avatar } from "~/components/Avatar";
+import { GroupCard } from "../components/GroupCard";
+import { groupAfterMorph } from "../core/groups";
 import {
   censorGroups,
   divideGroups,
   groupExpiryStatus,
   membersNeededForFull,
 } from "../core/groups.server";
-import { WeaponImage } from "~/components/Image";
-import * as React from "react";
+import { matchMapList } from "../core/match.server";
+import { FULL_GROUP_SIZE } from "../q-constants";
 import { lookingSchema } from "../q-schemas.server";
+import { groupRedirectLocationByCurrentLocation } from "../q-utils";
+import styles from "../q.css";
 import { addLike } from "../queries/addLike.server";
+import { addManagerRole } from "../queries/addManagerRole.server";
+import { createMatch } from "../queries/createMatch.server";
 import { deleteLike } from "../queries/deleteLike.server";
-import { SubmitButton } from "~/components/SubmitButton";
+import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.server";
 import { findLikes } from "../queries/findLikes";
 import { groupSize } from "../queries/groupSize.server";
-import invariant from "tiny-invariant";
-import { UsersIcon } from "~/components/icons/Users";
-import { StarFilledIcon } from "~/components/icons/StarFilled";
-import UndoIcon from "~/components/icons/Undo";
-import type { Group } from "~/db/types";
-import { groupAfterMorph } from "../core/groups";
-import { ModePreferenceIcons } from "../components/ModePrefenceIcons";
-import clsx from "clsx";
-import { likeExists } from "../queries/likeExists.server";
-import { morphGroups } from "../queries/morphGroups.server";
-import { assertUnreachable } from "~/utils/types";
-import { addManagerRole } from "../queries/addManagerRole.server";
-import { removeManagerRole } from "../queries/removeManagerRole.server";
-import { leaveGroup } from "../queries/leaveGroup.server";
 import { groupSuccessorOwner } from "../queries/groupSuccessorOwner";
-import { FormWithConfirm } from "~/components/FormWithConfirm";
-import { Button } from "~/components/Button";
-import { useIsMounted } from "~/hooks/useIsMounted";
-import { useTranslation } from "~/hooks/useTranslation";
-import { refreshGroup } from "../queries/refreshGroup.server";
-import { Flipped, Flipper } from "react-flip-toolkit";
-import { useVisibilityChange } from "~/hooks/useVisibilityChange";
-import { FULL_GROUP_SIZE } from "../q-constants";
-import type { LookingGroup } from "../q-types";
-import { ArrowsPointingInIcon } from "~/components/icons/ArrowsPointingIn";
-import { matchMapList } from "../core/match.server";
+import { leaveGroup } from "../queries/leaveGroup.server";
+import { likeExists } from "../queries/likeExists.server";
+import { findLookingGroups } from "../queries/lookingGroups.server";
 import { mapPoolByGroupId } from "../queries/mapPoolByGroupId.server";
-import { MapPool } from "~/modules/map-pool-serializer";
-import { createMatch } from "../queries/createMatch.server";
+import { morphGroups } from "../queries/morphGroups.server";
+import { refreshGroup } from "../queries/refreshGroup.server";
+import { removeManagerRole } from "../queries/removeManagerRole.server";
 import { syncGroupTeamId } from "../queries/syncGroupTeamId.server";
-import styles from "../q.css";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -314,7 +298,6 @@ export const loader = async ({ request }: LoaderArgs) => {
 // xxx: mobile view
 // xxx: mmr
 // xxx: MemberAdder
-// xxx: GroupCard use common component
 export default function QLookingPage() {
   const data = useLoaderData<typeof loader>();
   useAutoRefresh();
@@ -329,6 +312,7 @@ export default function QLookingPage() {
           <GroupCard
             group={data.groups.own}
             mapListPreference={data.groups.own.mapListPreference}
+            ownRole={data.role}
           />
         </div>
       </div>
@@ -491,155 +475,5 @@ function InfoText() {
           )}`
         : "Placeholder"}
     </div>
-  );
-}
-
-function GroupCard({
-  group,
-  action,
-  mapListPreference,
-}: {
-  group: LookingGroup;
-  action?: "LIKE" | "UNLIKE" | "GROUP_UP" | "MATCH_UP";
-  mapListPreference: Group["mapListPreference"];
-}) {
-  const fetcher = useFetcher();
-  const data = useLoaderData<typeof loader>();
-
-  const ownGroup = group.id === data.groups.own.id;
-
-  const moreThanOneMember = group.members && group.members.length > 1;
-
-  return (
-    <Flipped flipId={group.id}>
-      <section className="q__group">
-        <div className="stack lg horizontal justify-center">
-          <div className="stack xs horizontal items-center">
-            <ModePreferenceIcons preference={mapListPreference} />
-          </div>
-        </div>
-        <div
-          className={clsx("stack sm", {
-            "horizontal justify-center": !group.members,
-          })}
-        >
-          {group.members?.map((member) => {
-            return (
-              <React.Fragment key={member.discordId}>
-                <GroupMember member={member} ownGroup={ownGroup} />
-                {member.weapons ? (
-                  <div className="q__group-member-weapons">
-                    {member.weapons.map((weapon) => {
-                      return (
-                        <WeaponImage
-                          key={weapon}
-                          weaponSplId={weapon}
-                          variant="badge"
-                          size={36}
-                          className="q__group-member-weapon"
-                        />
-                      );
-                    })}
-                  </div>
-                ) : null}
-              </React.Fragment>
-            );
-          })}
-          {!group.members
-            ? new Array(FULL_GROUP_SIZE).fill(null).map((_, i) => {
-                return (
-                  <div key={i} className="q__member-placeholder">
-                    ?
-                  </div>
-                );
-              })
-            : null}
-        </div>
-        {action && (data.role === "OWNER" || data.role === "MANAGER") ? (
-          <fetcher.Form className="stack items-center" method="post">
-            <input type="hidden" name="targetGroupId" value={group.id} />
-            <SubmitButton
-              size="tiny"
-              variant={action === "UNLIKE" ? "destructive" : "outlined"}
-              _action={action}
-              state={fetcher.state}
-              icon={
-                action === "MATCH_UP" ? (
-                  <ArrowsPointingInIcon />
-                ) : action === "LIKE" ? (
-                  <StarFilledIcon />
-                ) : action === "GROUP_UP" ? (
-                  <UsersIcon />
-                ) : (
-                  <UndoIcon />
-                )
-              }
-            >
-              {action === "MATCH_UP"
-                ? "Start match"
-                : action === "LIKE"
-                ? "Ask to play"
-                : action === "GROUP_UP"
-                ? "Group up"
-                : "Undo"}
-            </SubmitButton>
-          </fetcher.Form>
-        ) : null}
-        {ownGroup ? (
-          <FormWithConfirm
-            dialogHeading={
-              moreThanOneMember ? "Leave this group?" : "Stop looking?"
-            }
-            fields={[["_action", "LEAVE_GROUP"]]}
-            deleteButtonText={moreThanOneMember ? "Leave" : "Stop"}
-          >
-            <Button variant="minimal-destructive" size="tiny">
-              {moreThanOneMember ? "Leave group" : "Stop looking"}
-            </Button>
-          </FormWithConfirm>
-        ) : null}
-      </section>
-    </Flipped>
-  );
-}
-
-function GroupMember({
-  member,
-  ownGroup,
-}: {
-  member: NonNullable<LookingGroup["members"]>[number];
-  ownGroup: boolean;
-}) {
-  const data = useLoaderData<typeof loader>();
-  const fetcher = useFetcher();
-
-  return (
-    <fetcher.Form className="stack sm horizontal" method="post">
-      <input type="hidden" name="userId" value={member.id} />
-      <Link to={userPage(member)} className="q__group-member" target="_blank">
-        <Avatar user={member} size="xxs" />
-        {member.discordName}
-      </Link>
-      {ownGroup && member.role === "REGULAR" && data.role === "OWNER" ? (
-        <SubmitButton
-          variant="minimal"
-          size="tiny"
-          _action="GIVE_MANAGER"
-          state={fetcher.state}
-        >
-          Give manager
-        </SubmitButton>
-      ) : null}
-      {ownGroup && member.role === "MANAGER" && data.role === "OWNER" ? (
-        <SubmitButton
-          variant="minimal-destructive"
-          size="tiny"
-          _action="REMOVE_MANAGER"
-          state={fetcher.state}
-        >
-          Remove manager
-        </SubmitButton>
-      ) : null}
-    </fetcher.Form>
   );
 }
