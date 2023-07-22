@@ -2,21 +2,26 @@ import invariant from "tiny-invariant";
 import type { Group, GroupLike } from "~/db/types";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { FULL_GROUP_SIZE } from "../q-constants";
-import type { DividedGroups, LookingGroup } from "../q-types";
+import type {
+  DividedGroups,
+  DividedGroupsUncensored,
+  LookingGroup,
+  LookingGroupWithInviteCode,
+} from "../q-types";
 
 export function divideGroups({
   groups,
   ownGroupId,
   likes,
 }: {
-  groups: LookingGroup[];
+  groups: LookingGroupWithInviteCode[];
   ownGroupId: number;
   likes: Pick<GroupLike, "likerGroupId" | "targetGroupId">[];
-}): DividedGroups {
-  let own: LookingGroup | null = null;
-  let neutral: LookingGroup[] = [];
-  const likesReceived: LookingGroup[] = [];
-  const likesGiven: LookingGroup[] = [];
+}): DividedGroupsUncensored {
+  let own: LookingGroupWithInviteCode | null = null;
+  let neutral: LookingGroupWithInviteCode[] = [];
+  const likesReceived: LookingGroupWithInviteCode[] = [];
+  const likesGiven: LookingGroupWithInviteCode[] = [];
 
   const unneutralGroupIds = new Set<number>();
   for (const like of likes) {
@@ -63,16 +68,37 @@ export function divideGroups({
   };
 }
 
-const censorGroup = (group: LookingGroup) => ({
+const censorGroupFully = ({
+  inviteCode: _inviteCode,
+  ...group
+}: LookingGroupWithInviteCode): LookingGroup => ({
   ...group,
   members: undefined,
 });
-export function censorGroups(groups: DividedGroups): DividedGroups {
+const censorGroupPartly = ({
+  inviteCode: _inviteCode,
+  ...group
+}: LookingGroupWithInviteCode): LookingGroup => group;
+export function censorGroups({
+  groups,
+  showMembers,
+  showInviteCode,
+}: {
+  groups: DividedGroupsUncensored;
+  showMembers: boolean;
+  showInviteCode: boolean;
+}): DividedGroups {
   return {
-    own: groups.own,
-    neutral: groups.neutral.map(censorGroup),
-    likesGiven: groups.likesGiven.map(censorGroup),
-    likesReceived: groups.likesReceived.map(censorGroup),
+    own: showInviteCode ? groups.own : censorGroupPartly(groups.own),
+    neutral: groups.neutral.map(
+      showMembers ? censorGroupPartly : censorGroupFully
+    ),
+    likesGiven: groups.likesGiven.map(
+      showMembers ? censorGroupPartly : censorGroupFully
+    ),
+    likesReceived: groups.likesReceived.map(
+      showMembers ? censorGroupPartly : censorGroupFully
+    ),
   };
 }
 

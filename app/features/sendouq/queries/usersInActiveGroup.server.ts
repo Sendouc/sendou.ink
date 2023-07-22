@@ -19,6 +19,8 @@ export function trustedPlayersAvailableToPlay(user: {
     userId: user.id,
     teamId: user.team?.id,
   });
+  if (trusted.length === 0) return trusted;
+
   const activePlayers = (stm.all() as Array<{ userId: number }>).map(
     (u) => u.userId
   );

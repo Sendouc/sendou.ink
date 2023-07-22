@@ -15,7 +15,7 @@ import { SubmitButton } from "~/components/SubmitButton";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "~/hooks/useTranslation";
 import { useVisibilityChange } from "~/hooks/useVisibilityChange";
-import { getUserId, requireUserId } from "~/modules/auth/user.server";
+import { getUser, requireUserId } from "~/modules/auth/user.server";
 import { MapPool } from "~/modules/map-pool-serializer";
 import {
   parseRequestFormData,
@@ -30,7 +30,7 @@ import {
   sendouQMatchPage,
 } from "~/utils/urls";
 import { GroupCard } from "../components/GroupCard";
-import { groupAfterMorph } from "../core/groups";
+import { groupAfterMorph, hasGroupManagerPerms } from "../core/groups";
 import {
   censorGroups,
   divideGroups,
@@ -59,6 +59,9 @@ import { refreshGroup } from "../queries/refreshGroup.server";
 import { removeManagerRole } from "../queries/removeManagerRole.server";
 import { syncGroupTeamId } from "../queries/syncGroupTeamId.server";
 import { makeTitle } from "~/utils/strings";
+import { MemberAdder } from "../components/MemberAdder";
+import type { LookingGroupWithInviteCode } from "../q-types";
+import { trustedPlayersAvailableToPlay } from "../queries/usersInActiveGroup.server";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -260,7 +263,7 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const user = await getUserId(request);
+  const user = await getUser(request);
 
   const currentGroup = user ? findCurrentGroupByUserId(user.id) : undefined;
   const redirectLocation = groupRedirectLocationByCurrentLocation({
@@ -289,26 +292,32 @@ export const loader = async ({ request }: LoaderArgs) => {
     likes: findLikes(currentGroup.id),
   });
 
-  const censoredGroups = groupIsFull
-    ? censorGroups(dividedGroups)
-    : dividedGroups;
+  const censoredGroups = censorGroups({
+    groups: dividedGroups,
+    showMembers: !groupIsFull,
+    showInviteCode: hasGroupManagerPerms(currentGroup.role) && !groupIsFull,
+  });
 
   return {
     groups: censoredGroups,
     role: currentGroup.role,
     lastUpdated: new Date().getTime(),
     expiryStatus: groupExpiryStatus(currentGroup),
+    trustedPlayers: hasGroupManagerPerms(currentGroup.role)
+      ? trustedPlayersAvailableToPlay(user!)
+      : [],
   };
 };
 
 // xxx: mobile view
 // xxx: mmr
-// xxx: MemberAdder
 export default function QLookingPage() {
   const data = useLoaderData<typeof loader>();
   useAutoRefresh();
 
   const isFullGroup = data.groups.own.members!.length === FULL_GROUP_SIZE;
+
+  const ownGroup = data.groups.own as LookingGroupWithInviteCode;
 
   return (
     <Main className="stack lg">
@@ -322,6 +331,12 @@ export default function QLookingPage() {
           />
         </div>
       </div>
+      {ownGroup.inviteCode ? (
+        <MemberAdder
+          inviteCode={ownGroup.inviteCode}
+          trustedPlayers={data.trustedPlayers}
+        />
+      ) : null}
       {!data.expiryStatus ? (
         <Flipper
           flipKey={`${data.groups.likesReceived

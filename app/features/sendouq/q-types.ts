@@ -25,3 +25,10 @@ export interface DividedGroups {
   likesReceived: LookingGroup[];
   likesGiven: LookingGroup[];
 }
+
+export interface DividedGroupsUncensored {
+  own: LookingGroupWithInviteCode;
+  neutral: LookingGroupWithInviteCode[];
+  likesReceived: LookingGroupWithInviteCode[];
+  likesGiven: LookingGroupWithInviteCode[];
+}

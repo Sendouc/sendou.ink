@@ -16,9 +16,7 @@ import {
   SENDOUQ_LOOKING_PAGE,
   SENDOUQ_PAGE,
   SENDOUQ_PREPARING_PAGE,
-  SENDOU_INK_BASE_URL,
   navIconUrl,
-  sendouQInviteLink,
 } from "~/utils/urls";
 import { GroupCard } from "../components/GroupCard";
 import { groupRedirectLocationByCurrentLocation } from "../q-utils";
@@ -35,8 +33,10 @@ import { refreshGroup } from "../queries/refreshGroup.server";
 import { trustedPlayersAvailableToPlay } from "../queries/usersInActiveGroup.server";
 import { deleteGroup } from "../queries/leaveGroup.server";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
-import { useCopyToClipboard } from "react-use";
 import { makeTitle } from "~/utils/strings";
+import { MemberAdder } from "../components/MemberAdder";
+import { hasGroupManagerPerms } from "../core/groups";
+import { groupForMatch } from "../queries/groupForMatch.server";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -64,7 +64,7 @@ export const action: ActionFunction = async ({ request }) => {
 
   const currentGroup = findCurrentGroupByUserId(user.id);
   validate(currentGroup, "No group found");
-  validate(currentGroup.role !== "REGULAR", "Can't manage group");
+  validate(hasGroupManagerPerms(currentGroup.role), "Can't manage group");
 
   switch (data._action) {
     case "JOIN_QUEUE": {
@@ -82,10 +82,10 @@ export const action: ActionFunction = async ({ request }) => {
         "Player not available to play"
       );
 
-      const ownGroupWithMembers = findPreparingGroup(currentGroup.id);
+      const ownGroupWithMembers = groupForMatch(currentGroup.id);
       invariant(ownGroupWithMembers, "No own group found");
       validate(
-        findPreparingGroup(currentGroup.id).members.length < FULL_GROUP_SIZE,
+        ownGroupWithMembers.members.length < FULL_GROUP_SIZE,
         "Group is full"
       );
 
@@ -126,7 +126,9 @@ export const loader = async ({ request }: LoaderArgs) => {
   return {
     group: ownGroup,
     role: currentGroup!.role,
-    trustedPlayers: trustedPlayersAvailableToPlay(user!),
+    trustedPlayers: hasGroupManagerPerms(currentGroup!.role)
+      ? trustedPlayersAvailableToPlay(user!)
+      : [],
   };
 };
 
@@ -142,7 +144,8 @@ export default function QPreparingPage() {
           mapListPreference={data.group.mapListPreference}
         />
       </div>
-      {data.group.members.length < FULL_GROUP_SIZE ? (
+      {data.group.members.length < FULL_GROUP_SIZE &&
+      hasGroupManagerPerms(data.role) ? (
         <MemberAdder
           inviteCode={data.group.inviteCode}
           trustedPlayers={data.trustedPlayers}
@@ -167,56 +170,5 @@ export default function QPreparingPage() {
         </Button>
       </FormWithConfirm>
     </Main>
-  );
-}
-
-function MemberAdder({
-  inviteCode,
-  trustedPlayers,
-}: {
-  inviteCode: string;
-  trustedPlayers: Array<{
-    id: number;
-    discordName: string;
-  }>;
-}) {
-  const fetcher = useFetcher();
-  const inviteLink = `${SENDOU_INK_BASE_URL}${sendouQInviteLink(inviteCode)}`;
-  const [, copyToClipboard] = useCopyToClipboard();
-
-  return (
-    <div className="stack horizontal lg flex-wrap">
-      {trustedPlayers.length > 0 ? (
-        <fetcher.Form method="post">
-          <label htmlFor="players">Add people you have played with</label>
-          <div className="stack horizontal sm items-center">
-            <select name="id" id="players">
-              {trustedPlayers.map((player) => {
-                return (
-                  <option key={player.id} value={player.id}>
-                    {player.discordName}
-                  </option>
-                );
-              })}
-            </select>
-            <SubmitButton variant="outlined" _action="ADD_TRUSTED">
-              Add
-            </SubmitButton>
-          </div>
-        </fetcher.Form>
-      ) : null}
-      <div>
-        <label htmlFor="invite">Share your invite link</label>
-        <div className="stack horizontal sm items-center">
-          <input type="text" value={inviteLink} readOnly id="invite" />
-          <Button
-            variant="outlined"
-            onClick={() => copyToClipboard(inviteLink)}
-          >
-            Copy
-          </Button>
-        </div>
-      </div>
-    </div>
   );
 }

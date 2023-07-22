@@ -1,6 +1,6 @@
 import { sql } from "~/db/sql";
 import { parseDBArray, parseDBJsonArray } from "~/utils/sql";
-import type { LookingGroup } from "../q-types";
+import type { LookingGroupWithInviteCode } from "../q-types";
 
 // groups visible for longer to make development easier
 const SECONDS_TILL_STALE =
@@ -12,6 +12,7 @@ const stm = sql.prepare(/* sql */ `
       "Group"."id",
       "Group"."createdAt",
       "Group"."mapListPreference",
+      "Group"."inviteCode",
       "User"."id" as "userId",
       "User"."discordId",
       "User"."discordName",
@@ -37,6 +38,7 @@ const stm = sql.prepare(/* sql */ `
   select 
     "q1"."id",
     "q1"."mapListPreference",
+    "q1"."inviteCode",
     json_group_array(
       json_object(
         'id', "q1"."userId",
@@ -60,13 +62,14 @@ export function findLookingGroups({
   minGroupSize?: number;
   maxGroupSize?: number;
   ownGroupId: number;
-}): LookingGroup[] {
+}): LookingGroupWithInviteCode[] {
   return stm
     .all({ ownGroupId })
     .map((row: any) => {
       return {
         id: row.id,
         mapListPreference: row.mapListPreference,
+        inviteCode: row.inviteCode,
         members: parseDBJsonArray(row.members).map((member: any) => {
           const weapons = parseDBArray(member.weapons);
 
