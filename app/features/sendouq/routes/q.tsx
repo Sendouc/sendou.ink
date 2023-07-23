@@ -23,6 +23,7 @@ import * as React from "react";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import clsx from "clsx";
 import {
+  LOG_IN_URL,
   SENDOUQ_LOOKING_PAGE,
   SENDOUQ_PAGE,
   SENDOUQ_PREPARING_PAGE,
@@ -44,6 +45,8 @@ import { makeTitle } from "~/utils/strings";
 import { currentSeason } from "~/features/mmr";
 import type { RankingSeason } from "~/features/mmr/season";
 import { nextSeason } from "~/features/mmr/season";
+import { useUser } from "~/modules/auth";
+import { Button } from "~/components/Button";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -117,17 +120,17 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 // xxx: link to yt video explaining it
-// xxx: UI when not logged in
 // xxx: show streams?
 // xxx: script to recalc skills
 // xxx: handle join
 export default function QPage() {
+  const user = useUser();
   const data = useLoaderData<typeof loader>();
 
   return (
     <Main halfWidth className="stack lg">
       <Clocks />
-      {data.season ? (
+      {data.season && user ? (
         <>
           <Form className="stack md" method="post">
             <div>
@@ -152,6 +155,13 @@ export default function QPage() {
             </div>
           </Form>
         </>
+      ) : null}
+      {!user && data.season ? (
+        <form className="stack items-center" action={LOG_IN_URL} method="post">
+          <Button size="big" type="submit">
+            Log in to join SendouQ
+          </Button>
+        </form>
       ) : null}
       {data.upcomingSeason ? (
         <UpcomingSeasonInfo season={data.upcomingSeason} />
