@@ -79,7 +79,7 @@
   "maps.validation.NOT_ONE_MAP_PER_MODE": "모드 당 한 스테이지만 선택하세요.",
   "maps.validation.MAP_REPEATED": "같은 스테이지를 다시 선택할 수 없습니다.",
   "maps.validation.MODE_REPEATED": "같은 모드를 다시 선택할 수 없습니다.",
-  "maps.validation.TOO_MUCH_STAGE_REPEAT": "{maxStageRepeat}}회 이상 스테이지를 선택할 수 없습니다.",
+  "maps.validation.TOO_MUCH_STAGE_REPEAT": "{{maxStageRepeat}}회 이상 스테이지를 선택할 수 없습니다.",
   "maps.validation.VALID": "Map pool ok!",
 
   "results": "결과",
