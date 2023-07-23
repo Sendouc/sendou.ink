@@ -24,9 +24,6 @@ export const preparingSchema = z.union([
     _action: z.literal("JOIN_QUEUE"),
   }),
   z.object({
-    _action: z.literal("DISBAND_GROUP"),
-  }),
-  z.object({
     _action: z.literal("ADD_TRUSTED"),
     id,
   }),

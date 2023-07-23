@@ -43,7 +43,3 @@ export const leaveGroup = sql.transaction(
     }
   }
 );
-
-export function deleteGroup(groupId: number) {
-  deleteGroupStm.run({ groupId });
-}

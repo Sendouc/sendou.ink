@@ -12,7 +12,7 @@ import { StarFilledIcon } from "~/components/icons/StarFilled";
 import UndoIcon from "~/components/icons/Undo";
 import { UsersIcon } from "~/components/icons/Users";
 import type { Group, GroupMember as GroupMemberType } from "~/db/types";
-import { userPage } from "~/utils/urls";
+import { SENDOUQ_LOOKING_PAGE, userPage } from "~/utils/urls";
 import { FULL_GROUP_SIZE } from "../q-constants";
 import type { LookingGroup } from "../q-types";
 import { ModePreferenceIcons } from "./ModePrefenceIcons";
@@ -115,6 +115,7 @@ export function GroupCard({
             dialogHeading="Leave this group?"
             fields={[["_action", "LEAVE_GROUP"]]}
             deleteButtonText="Leave"
+            action={SENDOUQ_LOOKING_PAGE}
           >
             <Button variant="minimal-destructive" size="tiny">
               Leave group
@@ -136,7 +137,11 @@ function GroupMember({
   const fetcher = useFetcher();
 
   return (
-    <fetcher.Form className="stack sm horizontal" method="post">
+    <fetcher.Form
+      className="stack sm horizontal"
+      method="post"
+      action={SENDOUQ_LOOKING_PAGE}
+    >
       <input type="hidden" name="userId" value={member.id} />
       <Link to={userPage(member)} className="q__group-member" target="_blank">
         <Avatar user={member} size="xxs" />

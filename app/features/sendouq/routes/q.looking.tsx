@@ -311,6 +311,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 // xxx: mobile view
 // xxx: mmr
+// xxx: something to deal with situation where Gold Team A is waiting for 30min then Gold Team B and C join and match up each other -> A stays waiting
 export default function QLookingPage() {
   const data = useLoaderData<typeof loader>();
   useAutoRefresh();

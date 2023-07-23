@@ -1,10 +1,10 @@
-import { redirect } from "@remix-run/node";
 import type {
-  LinksFunction,
   ActionFunction,
+  LinksFunction,
   LoaderArgs,
   V2_MetaFunction,
 } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { Main } from "~/components/Main";
@@ -12,31 +12,27 @@ import { SubmitButton } from "~/components/SubmitButton";
 import { getUser, requireUser } from "~/modules/auth/user.server";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { parseRequestFormData, validate } from "~/utils/remix";
+import { makeTitle } from "~/utils/strings";
+import { assertUnreachable } from "~/utils/types";
 import {
   SENDOUQ_LOOKING_PAGE,
-  SENDOUQ_PAGE,
   SENDOUQ_PREPARING_PAGE,
   navIconUrl,
 } from "~/utils/urls";
 import { GroupCard } from "../components/GroupCard";
-import { groupRedirectLocationByCurrentLocation } from "../q-utils";
-import styles from "../q.css";
-import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.server";
-import { findPreparingGroup } from "../queries/findPreparingGroup.server";
-import { setGroupAsActive } from "../queries/setGroupAsActive.server";
-import { Button } from "~/components/Button";
-import { assertUnreachable } from "~/utils/types";
-import { FULL_GROUP_SIZE } from "../q-constants";
-import { preparingSchema } from "../q-schemas.server";
-import { addMember } from "../queries/addMember.server";
-import { refreshGroup } from "../queries/refreshGroup.server";
-import { trustedPlayersAvailableToPlay } from "../queries/usersInActiveGroup.server";
-import { deleteGroup } from "../queries/leaveGroup.server";
-import { FormWithConfirm } from "~/components/FormWithConfirm";
-import { makeTitle } from "~/utils/strings";
 import { MemberAdder } from "../components/MemberAdder";
 import { hasGroupManagerPerms } from "../core/groups";
+import { FULL_GROUP_SIZE } from "../q-constants";
+import { preparingSchema } from "../q-schemas.server";
+import { groupRedirectLocationByCurrentLocation } from "../q-utils";
+import styles from "../q.css";
+import { addMember } from "../queries/addMember.server";
+import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.server";
+import { findPreparingGroup } from "../queries/findPreparingGroup.server";
 import { groupForMatch } from "../queries/groupForMatch.server";
+import { refreshGroup } from "../queries/refreshGroup.server";
+import { setGroupAsActive } from "../queries/setGroupAsActive.server";
+import { trustedPlayersAvailableToPlay } from "../queries/usersInActiveGroup.server";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -96,11 +92,6 @@ export const action: ActionFunction = async ({ request }) => {
 
       return null;
     }
-    case "DISBAND_GROUP": {
-      deleteGroup(currentGroup.id);
-
-      return redirect(SENDOUQ_PAGE);
-    }
     default: {
       assertUnreachable(data);
     }
@@ -142,6 +133,8 @@ export default function QPreparingPage() {
         <GroupCard
           group={data.group}
           mapListPreference={data.group.mapListPreference}
+          ownRole={data.role}
+          ownGroup
         />
       </div>
       {data.group.members.length < FULL_GROUP_SIZE &&
@@ -160,15 +153,6 @@ export default function QPreparingPage() {
           Join the queue
         </SubmitButton>
       </joinQFetcher.Form>
-      <FormWithConfirm
-        dialogHeading="Disband group?"
-        fields={[["_action", "DISBAND_GROUP"]]}
-        deleteButtonText="Disband"
-      >
-        <Button variant="minimal-destructive" size="tiny">
-          Disband group
-        </Button>
-      </FormWithConfirm>
     </Main>
   );
 }
