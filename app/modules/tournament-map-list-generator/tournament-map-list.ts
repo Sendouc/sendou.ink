@@ -15,6 +15,8 @@ const OPTIMAL_MAPLIST_SCORE = 0;
 export function createTournamentMapList(
   input: TournamentMaplistInput
 ): Array<TournamentMapListMap> {
+  validateInput(input);
+
   const { shuffle } = seededRandom(input.seed);
   const stages = shuffle(resolveCommonStages());
   const mapList: Array<ModeWithStageAndScore & { score: number }> = [];
@@ -150,6 +152,17 @@ export function createTournamentMapList(
     }
 
     return stages;
+  }
+
+  function validateInput(input: TournamentMaplistInput) {
+    invariant(
+      input.teams.every((t) =>
+        t.maps.stageModePairs.every((pair) =>
+          input.modesIncluded.includes(pair.mode)
+        )
+      ),
+      "Maps submitted for modes not included in the tournament"
+    );
   }
 
   function utilizeOtherStageIdsWhenNoTiebreaker() {

@@ -4,6 +4,8 @@ import { createTournamentMapList } from "~/modules/tournament-map-list-generator
 import { SENDOUQ_BEST_OF } from "../q-constants";
 import type { LookingGroup } from "../q-types";
 
+const filterMapPoolToSZ = (mapPool: MapPool) =>
+  new MapPool(mapPool.stageModePairs.filter(({ mode }) => mode === "SZ"));
 export function matchMapList({
   ourGroup,
   theirGroup,
@@ -28,11 +30,11 @@ export function matchMapList({
     teams: [
       {
         id: ourGroup.id,
-        maps: ourMapPool,
+        maps: type === "SZ" ? filterMapPoolToSZ(ourMapPool) : ourMapPool,
       },
       {
         id: theirGroup.id,
-        maps: theirMapPool,
+        maps: type === "SZ" ? filterMapPoolToSZ(theirMapPool) : theirMapPool,
       },
     ],
   });

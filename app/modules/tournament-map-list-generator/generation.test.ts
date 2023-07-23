@@ -742,5 +742,26 @@ TournamentMapListGeneratorOneMode("Handles one team submitted no maps", () => {
   }
 });
 
+TournamentMapListGeneratorOneMode(
+  'Throws if including modes not specified in "modesIncluded"',
+  () => {
+    assert.throws(() =>
+      generateMaps({
+        teams: [
+          {
+            id: 1,
+            maps: team1Picks,
+          },
+          {
+            id: 2,
+            maps: new MapPool([]),
+          },
+        ],
+        modesIncluded: ["SZ"],
+      })
+    );
+  }
+);
+
 TournamentMapListGenerator.run();
 TournamentMapListGeneratorOneMode.run();
