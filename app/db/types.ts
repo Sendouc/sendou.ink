@@ -342,6 +342,7 @@ export interface TournamentSub {
   createdAt: number;
 }
 
+// xxx: add currentMatchesCount to be used to decide whether to show on leaderboard or not for seasonal skill
 export interface Skill {
   id: number;
   mu: number;

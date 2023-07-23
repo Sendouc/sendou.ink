@@ -26,3 +26,5 @@ export const SENDOUQ = {
 export const FULL_GROUP_SIZE = 4;
 
 export const SENDOUQ_BEST_OF = 7;
+
+export const JOIN_CODE_SEARCH_PARAM_KEY = "join";

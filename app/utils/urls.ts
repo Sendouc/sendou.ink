@@ -25,6 +25,7 @@ import type { StageBackgroundStyle } from "~/features/map-planner";
 import type { ImageUploadType } from "~/features/img-upload";
 import { serializeBuild } from "~/features/build-analyzer";
 import type { ArtSouce } from "~/features/art";
+import { JOIN_CODE_SEARCH_PARAM_KEY } from "~/features/sendouq/q-constants";
 
 const staticAssetsUrl = ({
   folder,
@@ -235,7 +236,7 @@ export const tournamentSubsPage = (tournamentId: number) => {
 };
 
 export const sendouQInviteLink = (inviteCode: string) =>
-  `${SENDOUQ_PAGE}?join=${inviteCode}`;
+  `${SENDOUQ_PAGE}?${JOIN_CODE_SEARCH_PARAM_KEY}=${inviteCode}`;
 
 export const sendouQMatchPage = (id: GroupMatch["id"]) => {
   return `${SENDOUQ_PAGE}/match/${id}`;

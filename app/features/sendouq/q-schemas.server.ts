@@ -7,11 +7,17 @@ import {
 import { id, safeJSONParse, weaponSplId } from "~/utils/zod";
 import { matchEndedAtIndex } from "./core/match";
 
-export const createGroupSchema = z.object({
-  mapListPreference: z.enum(MAP_LIST_PREFERENCE_OPTIONS),
-  mapPool: z.string(),
-  direct: z.literal("true").nullish(),
-});
+export const frontPageSchema = z.union([
+  z.object({
+    _action: z.literal("JOIN_QUEUE"),
+    mapListPreference: z.enum(MAP_LIST_PREFERENCE_OPTIONS),
+    mapPool: z.string(),
+    direct: z.literal("true").nullish(),
+  }),
+  z.object({
+    _action: z.literal("JOIN_TEAM"),
+  }),
+]);
 
 export const preparingSchema = z.union([
   z.object({

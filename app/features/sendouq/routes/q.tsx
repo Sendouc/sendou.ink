@@ -10,9 +10,14 @@ import type {
   V2_MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
-import { Form, useLoaderData } from "@remix-run/react";
+import { useFetcher, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "~/hooks/useTranslation";
-import { MAP_LIST_PREFERENCE_OPTIONS, SENDOUQ } from "../q-constants";
+import {
+  FULL_GROUP_SIZE,
+  JOIN_CODE_SEARCH_PARAM_KEY,
+  MAP_LIST_PREFERENCE_OPTIONS,
+  SENDOUQ,
+} from "../q-constants";
 import {
   parseRequestFormData,
   validate,
@@ -35,7 +40,7 @@ import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { MapPool } from "~/modules/map-pool-serializer";
 import { SubmitButton } from "~/components/SubmitButton";
 import { getUserId, requireUserId } from "~/modules/auth/user.server";
-import { createGroupSchema } from "../q-schemas.server";
+import { frontPageSchema } from "../q-schemas.server";
 import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
 import { createGroup } from "../queries/createGroup.server";
 import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.server";
@@ -47,6 +52,12 @@ import type { RankingSeason } from "~/features/mmr/season";
 import { nextSeason } from "~/features/mmr/season";
 import { useUser } from "~/modules/auth";
 import { Button } from "~/components/Button";
+import { findTeamByInviteCode } from "../queries/findTeamByInviteCode.server";
+import { Alert } from "~/components/Alert";
+import { Dialog } from "~/components/Dialog";
+import { joinListToNaturalString } from "~/utils/arrays";
+import { assertUnreachable } from "~/utils/types";
+import { addMember } from "../queries/addMember.server";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -76,25 +87,53 @@ export const action: ActionFunction = async ({ request }) => {
   const user = await requireUserId(request);
   const data = await parseRequestFormData({
     request,
-    schema: createGroupSchema,
+    schema: frontPageSchema,
   });
 
   validate(!findCurrentGroupByUserId(user.id), "Already in a group");
   validate(currentSeason(new Date()), "Season is not active");
 
-  const mapPool = new MapPool(data.mapPool);
-  validate(mapPoolOk(mapPool), "Invalid map pool");
+  switch (data._action) {
+    case "JOIN_QUEUE": {
+      const mapPool = new MapPool(data.mapPool);
+      validate(mapPoolOk(mapPool), "Invalid map pool");
 
-  createGroup({
-    mapListPreference: data.mapListPreference,
-    status: data.direct === "true" ? "ACTIVE" : "PREPARING",
-    userId: user.id,
-    mapPool,
-  });
+      createGroup({
+        mapListPreference: data.mapListPreference,
+        status: data.direct === "true" ? "ACTIVE" : "PREPARING",
+        userId: user.id,
+        mapPool,
+      });
 
-  return redirect(
-    data.direct === "true" ? SENDOUQ_LOOKING_PAGE : SENDOUQ_PREPARING_PAGE
-  );
+      return redirect(
+        data.direct === "true" ? SENDOUQ_LOOKING_PAGE : SENDOUQ_PREPARING_PAGE
+      );
+    }
+    case "JOIN_TEAM": {
+      const code = new URL(request.url).searchParams.get(
+        JOIN_CODE_SEARCH_PARAM_KEY
+      );
+
+      const teamInvitedTo =
+        code && user ? findTeamByInviteCode(code) : undefined;
+      validate(teamInvitedTo, "Invite code doesn't match any active team");
+      validate(teamInvitedTo.members.length < FULL_GROUP_SIZE, "Team is full");
+
+      addMember({
+        groupId: teamInvitedTo.id,
+        userId: user.id,
+      });
+
+      return redirect(
+        teamInvitedTo.status === "PREPARING"
+          ? SENDOUQ_PREPARING_PAGE
+          : SENDOUQ_LOOKING_PAGE
+      );
+    }
+    default: {
+      assertUnreachable(data);
+    }
+  }
 };
 
 export const loader = async ({ request }: LoaderArgs) => {
@@ -109,6 +148,11 @@ export const loader = async ({ request }: LoaderArgs) => {
     throw redirect(redirectLocation);
   }
 
+  const code = new URL(request.url).searchParams.get(
+    JOIN_CODE_SEARCH_PARAM_KEY
+  );
+  const teamInvitedTo = code && user ? findTeamByInviteCode(code) : undefined;
+
   const now = new Date();
   const season = currentSeason(now);
   const upcomingSeason = nextSeason(now);
@@ -116,23 +160,39 @@ export const loader = async ({ request }: LoaderArgs) => {
   return {
     season,
     upcomingSeason,
+    teamInvitedTo,
   };
 };
 
 // xxx: link to yt video explaining it
 // xxx: show streams?
 // xxx: script to recalc skills
-// xxx: handle join
 export default function QPage() {
+  const [dialogOpen, setDialogOpen] = React.useState(true);
   const user = useUser();
   const data = useLoaderData<typeof loader>();
+  const fetcher = useFetcher();
 
   return (
     <Main halfWidth className="stack lg">
       <Clocks />
+      {data.teamInvitedTo === null ? (
+        <Alert variation="WARNING">
+          Invite code doesn&apos;t match any active team
+        </Alert>
+      ) : null}
+      {data.teamInvitedTo &&
+      data.teamInvitedTo.members.length < FULL_GROUP_SIZE ? (
+        <JoinTeamDialog
+          open={dialogOpen}
+          close={() => setDialogOpen(false)}
+          members={data.teamInvitedTo.members}
+        />
+      ) : null}
       {data.season && user ? (
         <>
-          <Form className="stack md" method="post">
+          <fetcher.Form className="stack md" method="post">
+            <input type="hidden" name="_action" value="JOIN_QUEUE" />
             <div>
               <h2 className="q__header">Join the queue!</h2>
               <ActiveSeasonInfo season={data.season} />
@@ -148,12 +208,13 @@ export default function QPage() {
                   className="text-xs mx-auto"
                   name="direct"
                   value="true"
+                  state={fetcher.state}
                 >
                   Join the queue directly.
                 </SubmitButton>
               </div>
             </div>
-          </Form>
+          </fetcher.Form>
         </>
       ) : null}
       {!user && data.season ? (
@@ -238,6 +299,40 @@ function Clocks() {
         );
       })}
     </div>
+  );
+}
+
+function JoinTeamDialog({
+  open,
+  close,
+  members,
+}: {
+  open: boolean;
+  close: () => void;
+  members: string[];
+}) {
+  const fetcher = useFetcher();
+
+  return (
+    <Dialog
+      isOpen={open}
+      close={close}
+      closeOnAnyClick={false}
+      className="text-center"
+    >
+      Join group with {joinListToNaturalString(members)}?
+      <fetcher.Form
+        className="stack horizontal justify-center sm mt-4"
+        method="post"
+      >
+        <SubmitButton _action="JOIN_TEAM" state={fetcher.state}>
+          Join
+        </SubmitButton>
+        <Button onClick={close} variant="destructive">
+          No thanks
+        </Button>
+      </fetcher.Form>
+    </Dialog>
   );
 }
 
