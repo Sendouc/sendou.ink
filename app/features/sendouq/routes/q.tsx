@@ -8,8 +8,9 @@ import type {
   ActionFunction,
   LinksFunction,
   V2_MetaFunction,
+  SerializeFrom,
 } from "@remix-run/node";
-import { Form } from "@remix-run/react";
+import { Form, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "~/hooks/useTranslation";
 import { MAP_LIST_PREFERENCE_OPTIONS, SENDOUQ } from "../q-constants";
 import {
@@ -40,6 +41,9 @@ import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.se
 import { groupRedirectLocationByCurrentLocation, mapPoolOk } from "../q-utils";
 import { ModePreferenceIcons } from "../components/ModePrefenceIcons";
 import { makeTitle } from "~/utils/strings";
+import { currentSeason } from "~/features/mmr";
+import type { RankingSeason } from "~/features/mmr/season";
+import { nextSeason } from "~/features/mmr/season";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -73,6 +77,7 @@ export const action: ActionFunction = async ({ request }) => {
   });
 
   validate(!findCurrentGroupByUserId(user.id), "Already in a group");
+  validate(currentSeason(new Date()), "Season is not active");
 
   const mapPool = new MapPool(data.mapPool);
   validate(mapPoolOk(mapPool), "Invalid map pool");
@@ -101,39 +106,56 @@ export const loader = async ({ request }: LoaderArgs) => {
     throw redirect(redirectLocation);
   }
 
-  return null;
+  const now = new Date();
+  const season = currentSeason(now);
+  const upcomingSeason = nextSeason(now);
+
+  return {
+    season,
+    upcomingSeason,
+  };
 };
 
-// xxx: teams looking for scrim?
 // xxx: link to yt video explaining it
 // xxx: UI when not logged in
 // xxx: show streams?
 // xxx: script to recalc skills
 // xxx: handle join
-// xxx: show when opens if season is not active
 export default function QPage() {
+  const data = useLoaderData<typeof loader>();
+
   return (
     <Main halfWidth className="stack lg">
       <Clocks />
-      <Form className="stack md" method="post">
-        <h2 className="q__header">Join the queue!</h2>
-        <MapPreference />
-        <MapPoolSelector />
-        <div className="stack md items-center mt-4">
-          <SubmitButton>Add team members</SubmitButton>
-          <div className="text-lighter text-xs text-center">
-            No team members in mind yet? <br />
-            <SubmitButton
-              variant="minimal"
-              className="text-xs mx-auto"
-              name="direct"
-              value="true"
-            >
-              Join the queue directly.
-            </SubmitButton>
-          </div>
-        </div>
-      </Form>
+      {data.season ? (
+        <>
+          <Form className="stack md" method="post">
+            <div>
+              <h2 className="q__header">Join the queue!</h2>
+              <ActiveSeasonInfo season={data.season} />
+            </div>
+            <MapPreference />
+            <MapPoolSelector />
+            <div className="stack md items-center mt-4">
+              <SubmitButton>Add team members</SubmitButton>
+              <div className="text-lighter text-xs text-center">
+                No team members in mind yet? <br />
+                <SubmitButton
+                  variant="minimal"
+                  className="text-xs mx-auto"
+                  name="direct"
+                  value="true"
+                >
+                  Join the queue directly.
+                </SubmitButton>
+              </div>
+            </div>
+          </Form>
+        </>
+      ) : null}
+      {data.upcomingSeason ? (
+        <UpcomingSeasonInfo season={data.upcomingSeason} />
+      ) : null}
     </Main>
   );
 }
@@ -205,6 +227,66 @@ function Clocks() {
           </div>
         );
       })}
+    </div>
+  );
+}
+
+function ActiveSeasonInfo({
+  season,
+}: {
+  season: SerializeFrom<RankingSeason>;
+}) {
+  const isMounted = useIsMounted();
+
+  const starts = new Date(season.starts);
+  const ends = new Date(season.ends);
+
+  const dateToString = (date: Date) =>
+    date.toLocaleString("en-US", {
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+    });
+
+  return (
+    <div
+      className={clsx("text-lighter text-xs", {
+        invisible: !isMounted,
+      })}
+    >
+      Season {season.nth} open{" "}
+      {isMounted ? (
+        <b>
+          {dateToString(starts)} - {dateToString(ends)}
+        </b>
+      ) : null}
+    </div>
+  );
+}
+
+function UpcomingSeasonInfo({
+  season,
+}: {
+  season: SerializeFrom<RankingSeason>;
+}) {
+  const isMounted = useIsMounted();
+  if (!isMounted) return null;
+
+  const starts = new Date(season.starts);
+
+  const dateToString = (date: Date) =>
+    date.toLocaleString("en-US", {
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+    });
+
+  return (
+    <div className="font-semi-bold text-center">
+      It&apos;s off-season!
+      <br />
+      Join Season {season.nth} starting {dateToString(starts)}
     </div>
   );
 }

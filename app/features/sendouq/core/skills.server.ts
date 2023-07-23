@@ -24,8 +24,8 @@ export function calculateMatchSkills({
   > = [];
 
   // if no ranked season is active, match only affects all-time rankings
-  const seasonOption =
-    typeof currentSeason() === "number" ? [null, currentSeason()] : [null];
+  const season = currentSeason(new Date())?.nth;
+  const seasonOption = typeof season === "number" ? [null, season] : [null];
 
   // individual skills
   for (const season of seasonOption) {
