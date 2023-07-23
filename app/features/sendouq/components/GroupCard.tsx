@@ -22,14 +22,15 @@ export function GroupCard({
   action,
   mapListPreference,
   ownRole,
+  ownGroup = false,
 }: {
   group: LookingGroup;
   action?: "LIKE" | "UNLIKE" | "GROUP_UP" | "MATCH_UP";
   mapListPreference: Group["mapListPreference"];
   ownRole?: GroupMemberType["role"];
+  ownGroup?: boolean;
 }) {
   const fetcher = useFetcher();
-  const ownGroup = Boolean(ownRole);
 
   return (
     <Flipped flipId={group.id}>

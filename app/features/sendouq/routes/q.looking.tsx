@@ -328,6 +328,7 @@ export default function QLookingPage() {
             group={data.groups.own}
             mapListPreference={data.groups.own.mapListPreference}
             ownRole={data.role}
+            ownGroup
           />
         </div>
       </div>
@@ -362,6 +363,7 @@ export default function QLookingPage() {
                       group={group}
                       action={isFullGroup ? "MATCH_UP" : "GROUP_UP"}
                       mapListPreference={mapListPreference}
+                      ownRole={data.role}
                     />
                   );
                 })}
@@ -383,6 +385,7 @@ export default function QLookingPage() {
                       group={group}
                       action="LIKE"
                       mapListPreference={mapListPreference}
+                      ownRole={data.role}
                     />
                   );
                 })}
@@ -404,6 +407,7 @@ export default function QLookingPage() {
                       group={group}
                       action="UNLIKE"
                       mapListPreference={mapListPreference}
+                      ownRole={data.role}
                     />
                   );
                 })}
