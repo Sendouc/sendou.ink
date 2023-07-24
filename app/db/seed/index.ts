@@ -12,6 +12,7 @@ import {
   mainWeaponIds,
   modesShort,
   shoesGearIds,
+  stageIds,
 } from "~/modules/in-game-lists";
 import type {
   MainWeaponId,
@@ -45,6 +46,13 @@ import { nullFilledArray, pickRandomItem } from "~/utils/arrays";
 import type { Art, UserSubmittedImage } from "../types";
 import { createGroup } from "~/features/sendouq/queries/createGroup.server";
 import { MAP_LIST_PREFERENCE_OPTIONS } from "~/features/sendouq/q-constants";
+import { addMember } from "~/features/sendouq/queries/addMember.server";
+import { createMatch } from "~/features/sendouq/queries/createMatch.server";
+import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator";
+import { addSkills } from "~/features/sendouq/queries/addSkills.server";
+import { reportScore } from "~/features/sendouq/queries/reportScore.server";
+import { calculateMatchSkills } from "~/features/sendouq/core/skills.server";
+import { winnersArrayToWinner } from "~/features/sendouq/q-utils";
 
 const calendarEventWithToToolsSz = () => calendarEventWithToTools(true);
 const calendarEventWithToToolsTeamsSz = () =>
@@ -89,6 +97,7 @@ const basicSeeds = (variation?: SeedVariation | null) => [
   userFavBadges,
   arts,
   commissionsOpen,
+  playedMatches,
   groups,
 ];
 
@@ -1597,5 +1606,124 @@ function groups() {
     if (i === 0 && SENDOU_IN_FULL_GROUP) {
       users.push(ADMIN_ID);
     }
+  }
+}
+
+const randomMapList = (
+  groupAlpha: number,
+  groupBravo: number
+): TournamentMapListMap[] => {
+  const szOnly = faker.helpers.arrayElement([true, false]);
+  const modePattern = shuffle([...rankedModesShort]);
+
+  const mapList: TournamentMapListMap[] = [];
+  const stageIdsShuffled = shuffle([...stageIds]);
+
+  for (let i = 0; i < 7; i++) {
+    const rankedMode = modePattern.pop()!;
+    mapList.push({
+      mode: szOnly ? "SZ" : rankedMode,
+      stageId: stageIdsShuffled.pop()!,
+      source: i === 6 ? "BOTH" : i % 2 === 0 ? groupAlpha : groupBravo,
+    });
+
+    modePattern.unshift(rankedMode);
+  }
+
+  return mapList;
+};
+
+const MATCHES_COUNT = 500;
+const _groupMembers = (() => {
+  return new Array(50).fill(null).map(() => {
+    const users = shuffle(userIdsInAscendingOrderById().slice(0, 50));
+
+    return new Array(4).fill(null).map(() => users.pop()!);
+  });
+})();
+// xxx: optimize this
+function playedMatches() {
+  for (let i = 0; i < MATCHES_COUNT; i++) {
+    const groupMembers = shuffle([..._groupMembers]);
+    const groupAlphaMembers = groupMembers.pop()!;
+    invariant(groupAlphaMembers, "groupAlphaMembers not found");
+
+    const getGroupBravo = (): number[] => {
+      const result = groupMembers.pop()!;
+      invariant(result, "groupBravoMembers not found");
+      if (groupAlphaMembers.some((m) => result.includes(m))) {
+        return getGroupBravo();
+      }
+
+      return result;
+    };
+    const groupBravoMembers = getGroupBravo();
+
+    let groupAlpha = 0;
+    let groupBravo = 0;
+    // -> create groups
+    for (let i = 0; i < 2; i++) {
+      const users = i === 0 ? [...groupAlphaMembers] : [...groupBravoMembers];
+      const group = createGroup({
+        // these should not matter here
+        mapListPreference: "NO_PREFERENCE",
+        mapPool: new MapPool([]),
+        status: "ACTIVE",
+        userId: users.pop()!,
+      });
+
+      // -> add regular members of groups
+      for (let i = 0; i < 3; i++) {
+        addMember({
+          groupId: group.id,
+          userId: users.pop()!,
+        });
+      }
+
+      if (i === 0) {
+        groupAlpha = group.id;
+      } else {
+        groupBravo = group.id;
+      }
+    }
+
+    invariant(groupAlpha !== 0 && groupBravo !== 0, "groups not created");
+
+    const match = createMatch({
+      alphaGroupId: groupAlpha,
+      bravoGroupId: groupBravo,
+      mapList: randomMapList(groupAlpha, groupBravo),
+    });
+
+    // -> report score
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+    const winners = faker.helpers.arrayElement([
+      ["ALPHA", "ALPHA", "ALPHA", "ALPHA"],
+      ["ALPHA", "ALPHA", "ALPHA", "BRAVO", "ALPHA"],
+      ["BRAVO", "BRAVO", "BRAVO", "BRAVO"],
+      ["ALPHA", "BRAVO", "BRAVO", "BRAVO", "BRAVO"],
+      ["ALPHA", "ALPHA", "ALPHA", "BRAVO", "BRAVO", "BRAVO", "BRAVO"],
+      ["BRAVO", "ALPHA", "BRAVO", "ALPHA", "BRAVO", "ALPHA", "BRAVO"],
+      ["ALPHA", "BRAVO", "BRAVO", "ALPHA", "ALPHA", "ALPHA"],
+      ["ALPHA", "BRAVO", "ALPHA", "BRAVO", "BRAVO", "BRAVO"],
+    ]) as ("ALPHA" | "BRAVO")[];
+    const winner = winnersArrayToWinner(winners);
+
+    const newSkills = calculateMatchSkills({
+      groupMatchId: match.id,
+      winner: winner === "ALPHA" ? groupAlphaMembers : groupBravoMembers,
+      loser: winner === "ALPHA" ? groupBravoMembers : groupAlphaMembers,
+    });
+    sql.transaction(() => {
+      reportScore({
+        matchId: match.id,
+        reportedByUserId:
+          Math.random() > 0.5 ? groupAlphaMembers[0] : groupBravoMembers[0],
+        winners,
+      });
+      addSkills(newSkills);
+    })();
+
+    // xxx: next: 90% of matches have weapons
   }
 }
