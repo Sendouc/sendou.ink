@@ -2,7 +2,8 @@ import { ordinal } from "openskill";
 import { sql } from "~/db/sql";
 import type { Skill } from "~/db/types";
 
-const stm = sql.prepare(/* sql */ `
+const getStm = (type: "user" | "team") =>
+  sql.prepare(/* sql */ `
   insert into "Skill" ("groupMatchId", "identifier", "mu", "season", "sigma", "ordinal", "userId", "matchesCount")
   values (
     @groupMatchId, 
@@ -13,13 +14,20 @@ const stm = sql.prepare(/* sql */ `
     @ordinal,
     @userId,
     1 + coalesce((
-      select "matchesCount" from "Skill" 
-        where "userId" = @userId and 
-          "identifier" = @identifier and 
-          "season" = @season
+      select max("matchesCount") from "Skill" 
+      where 
+        ${type === "user" ? /* sql */ `"userId" = @userId` : ""}
+        ${type === "team" ? /* sql */ `"identifier" = @identifier` : ""}
+        and "season" = @season
+      group by ${
+        type === "user" ? /* sql */ `"userId"` : /* sql */ `"identifier"`
+      }
     ), 0)
   )
 `);
+
+const userStm = getStm("user");
+const teamStm = getStm("team");
 
 export function addSkills(
   skills: Pick<
@@ -27,6 +35,7 @@ export function addSkills(
     "groupMatchId" | "identifier" | "mu" | "season" | "sigma" | "userId"
   >[]
 ) {
+  const stm = skills[0].userId ? userStm : teamStm;
   for (const skill of skills) {
     stm.run({ ...skill, ordinal: ordinal(skill) });
   }
