@@ -53,6 +53,8 @@ import { addSkills } from "~/features/sendouq/queries/addSkills.server";
 import { reportScore } from "~/features/sendouq/queries/reportScore.server";
 import { calculateMatchSkills } from "~/features/sendouq/core/skills.server";
 import { winnersArrayToWinner } from "~/features/sendouq/q-utils";
+import { addReportedWeapons } from "~/features/sendouq/queries/addReportedWeapons.server";
+import { findMatchById } from "~/features/sendouq/queries/findMatchById.server";
 
 const calendarEventWithToToolsSz = () => calendarEventWithToTools(true);
 const calendarEventWithToToolsTeamsSz = () =>
@@ -1641,6 +1643,15 @@ const _groupMembers = (() => {
     return new Array(4).fill(null).map(() => users.pop()!);
   });
 })();
+const defaultWeapons = Object.fromEntries(
+  userIdsInAscendingOrderById()
+    .slice(0, 50)
+    .map((id) => {
+      const weapons = shuffle([...mainWeaponIds]);
+      return [id, weapons[0]];
+    })
+);
+
 // xxx: optimize this
 function playedMatches() {
   for (let i = 0; i < MATCHES_COUNT; i++) {
@@ -1724,6 +1735,34 @@ function playedMatches() {
       addSkills(newSkills);
     })();
 
-    // xxx: next: 90% of matches have weapons
+    // -> add weapons for 90% of matches
+    if (Math.random() > 0.9) continue;
+    const finishedMatch = findMatchById(match.id)!;
+    const users = [...groupAlphaMembers, ...groupBravoMembers];
+    const mapsWithUsers = users.flatMap((u) =>
+      finishedMatch.mapList.map((m) => ({ map: m, user: u }))
+    );
+
+    addReportedWeapons(
+      mapsWithUsers.map((mu) => {
+        const weapon = () => {
+          if (Math.random() < 0.9) return defaultWeapons[mu.user];
+          if (Math.random() > 0.5)
+            return (
+              mainWeaponIds.find((id) => id > defaultWeapons[mu.user]) ?? 0
+            );
+
+          const shuffled = shuffle([...mainWeaponIds]);
+
+          return shuffled[0];
+        };
+
+        return {
+          groupMatchMapId: mu.map.id,
+          userId: mu.user,
+          weaponSplId: weapon(),
+        };
+      })
+    );
   }
 }
