@@ -74,6 +74,7 @@ const censorGroupFully = ({
 }: LookingGroupWithInviteCode): LookingGroup => ({
   ...group,
   members: undefined,
+  mapListPreference: undefined,
 });
 const censorGroupPartly = ({
   inviteCode: _inviteCode,
@@ -106,7 +107,9 @@ export function membersNeededForFull(currentSize: number) {
   return FULL_GROUP_SIZE - currentSize;
 }
 
-export function groupExpiryStatus(group: Pick<Group, "latestActionAt">) {
+export function groupExpiryStatus(
+  group: Pick<Group, "latestActionAt">
+): null | "EXPIRING_SOON" | "EXPIRED" {
   // group expires in 30min without actions performed
   const groupExpiresAt =
     databaseTimestampToDate(group.latestActionAt).getTime() + 30 * 60 * 1000;

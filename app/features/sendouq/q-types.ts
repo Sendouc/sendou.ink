@@ -3,7 +3,7 @@ import type { MainWeaponId } from "~/modules/in-game-lists";
 
 export type LookingGroup = {
   id: number;
-  mapListPreference: Group["mapListPreference"];
+  mapListPreference?: Group["mapListPreference"];
   members?: {
     id: number;
     discordId: string;

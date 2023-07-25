@@ -311,7 +311,6 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 // xxx: mobile view
 // xxx: mmr
-// xxx: something to deal with situation where Gold Team A is waiting for 30min then Gold Team B and C join and match up each other -> A stays waiting
 export default function QLookingPage() {
   const data = useLoaderData<typeof loader>();
   useAutoRefresh();
@@ -339,7 +338,7 @@ export default function QLookingPage() {
           trustedPlayers={data.trustedPlayers}
         />
       ) : null}
-      {!data.expiryStatus ? (
+      {data.expiryStatus !== "EXPIRED" ? (
         <Flipper
           flipKey={`${data.groups.likesReceived
             .map((g) => g.id)
@@ -470,7 +469,7 @@ function InfoText() {
     );
   }
 
-  if (data.expiryStatus === "EXPIRING") {
+  if (data.expiryStatus === "EXPIRING_SOON") {
     return (
       <fetcher.Form
         method="post"

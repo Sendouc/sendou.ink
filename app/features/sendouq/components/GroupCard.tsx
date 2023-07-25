@@ -26,7 +26,7 @@ export function GroupCard({
 }: {
   group: LookingGroup;
   action?: "LIKE" | "UNLIKE" | "GROUP_UP" | "MATCH_UP";
-  mapListPreference: Group["mapListPreference"];
+  mapListPreference?: Group["mapListPreference"];
   ownRole?: GroupMemberType["role"];
   ownGroup?: boolean;
 }) {
@@ -35,11 +35,13 @@ export function GroupCard({
   return (
     <Flipped flipId={group.id}>
       <section className="q__group">
-        <div className="stack lg horizontal justify-center">
-          <div className="stack xs horizontal items-center">
-            <ModePreferenceIcons preference={mapListPreference} />
+        {mapListPreference ? (
+          <div className="stack lg horizontal justify-center">
+            <div className="stack xs horizontal items-center">
+              <ModePreferenceIcons preference={mapListPreference} />
+            </div>
           </div>
-        </div>
+        ) : null}
         <div
           className={clsx("stack sm", {
             "horizontal justify-center": !group.members,

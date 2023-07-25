@@ -16,6 +16,9 @@ export function groupAfterMorph({
   const ourMembers = ourGroup.members ?? [];
   const theirMembers = theirGroup.members ?? [];
 
+  // if one group is full no mapListPreference is returned and we are not gonna morph anything anymore
+  if (!theirGroup.mapListPreference) return theirGroup;
+
   if (ourMembers.length > theirMembers.length) {
     return ourGroup;
   }
