@@ -1,4 +1,4 @@
-{
+  {
   "pages.admin": "מנהל",
   "pages.articles": "כתבות",
   "pages.badges": "תגים",
@@ -19,6 +19,8 @@
   "pages.vods": "סרטונים",
   "pages.xsearch": "חיפוש בטופ",
   "pages.leaderboards": "לוח תוצאות",
+  "pages.links": "קישורים",
+  "pages.art": "ציור",
 
   "header.profile": "פרופיל",
   "header.logout": "התנתקות",
@@ -96,7 +98,7 @@
 
   "tag.name.BADGE": "פרסי תג",
   "tag.name.SPECIAL": "חוקים מיוחדים",
-  "tag.name.ART": "פרסי אומנות",
+  "tag.name.ART": "פרסי ציור",
   "tag.name.MONEY": "פרסים בכסף",
   "tag.name.REGION": "תלוי אזור",
   "tag.name.LOW": "מגבלת כישרון",
@@ -180,5 +182,13 @@
   "xsearch.placements": "משחקי תיאום מקום",
   "xsearch.aliases": "כינויים:",
 
-  "build.private": "פרטי"
+  "build.private": "פרטי",
+
+  "or": "או",
+  "yes": "כן",
+  "no": "לא",
+
+  "leaderboard.type.USER": "משתמש",
+  "leaderboard.type.TEAM": "צוות",
+  "leaderboard.type.XP-ALL": "הכל"
 }

@@ -19,6 +19,7 @@
   "roles.SUPPORT": "תמיכה",
   "roles.MIDLINE": "קו אמצע",
   "roles.BACKLINE": "קו אחורי",
+  "roles.FLEX": "מעורב",
   "roles.COACH": "מאמן",
   "forms.fields.teamTwitter": "Twitter של הצוות",
   "forms.fields.bio": "ביו",
