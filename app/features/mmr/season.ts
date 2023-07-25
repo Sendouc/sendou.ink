@@ -1,3 +1,4 @@
+// xxx: add test
 const SEASONS =
   process.env.NODE_ENV === "development"
     ? ([
