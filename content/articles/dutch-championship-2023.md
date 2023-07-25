@@ -13,7 +13,7 @@ The winners of the first qualifier were the team Hollandtis. With their members 
 In cooperation with [Dapple Productions](https://dapple.ink/), this qualifier was streamed on Twitch. The teams could show their skills in the game and in the end, Gemakkelijke Slag took the win. [Yoshid](https://sendou.ink/u/yoshid), [Sakeo](https://sendou.ink/u/sakeo), Miyn and [Lucyfer](https://sendou.ink/u/lucyfer) proved themselves to be a solid pickup for this tournament.
 
 3rd Qualifier: (21st of May 2023)
-[Dapple Productions](https://dapple.ink/) continued their streaming to show the world the talented Dutch competition. De Dappere Dodo's took the win this day. Mizu, Shinxed, Jodek and [ArtCase](https://sendou.ink/u/artcase) proved themselves worthy to play in the semi-finals.
+[Dapple Productions](https://dapple.ink/) continued their streaming to show the world the talented Dutch competition. De Dappere Dodo's did not take the win that day, but the other team could not go to the finals. Though Mizu, Shinxed, Jodek and [ArtCase](https://sendou.ink/u/artcase) proved themselves worthy to play in the semi-finals.
 
 4th Qualifier: (24th of May 2023)
 The last tournament brought forth the last team to advance to the semi-finals: Fax Traud. Hero, Riolu, [TNTBlowzUp](https://sendou.ink/u/tntblowzup) and [NomNom](https://sendou.ink/u/756026266762870884) took the last chance and qualified.
