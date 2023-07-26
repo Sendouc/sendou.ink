@@ -28,3 +28,5 @@ export const TIERS = [
     percentile: 100, // 15
   },
 ] as const;
+
+export type TierName = (typeof TIERS)[number]["name"];

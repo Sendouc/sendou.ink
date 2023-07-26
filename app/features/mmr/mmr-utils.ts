@@ -5,7 +5,7 @@ import invariant from "tiny-invariant";
 const TAU = 0.3;
 
 export function ordinalToSp(ordinal: number) {
-  return toTwoDecimals(ordinal * 10 + 1000);
+  return toTwoDecimals(ordinal * 15 + 1000);
 }
 
 function toTwoDecimals(value: number) {

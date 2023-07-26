@@ -62,6 +62,8 @@ import { makeTitle } from "~/utils/strings";
 import { MemberAdder } from "../components/MemberAdder";
 import type { LookingGroupWithInviteCode } from "../q-types";
 import { trustedPlayersAvailableToPlay } from "../queries/usersInActiveGroup.server";
+import { currentSeason } from "~/features/mmr";
+import { skillTierIntervals } from "~/features/mmr/tiers.server";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -276,6 +278,9 @@ export const loader = async ({ request }: LoaderArgs) => {
   }
 
   invariant(currentGroup, "currentGroup is undefined");
+
+  // xxx: implement
+  skillTierIntervals({ season: currentSeason(new Date())!.nth, type: "user" });
 
   const currentGroupSize = groupSize(currentGroup.id);
   const groupIsFull = currentGroupSize === FULL_GROUP_SIZE;
