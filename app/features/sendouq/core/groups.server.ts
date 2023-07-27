@@ -103,6 +103,10 @@ export function censorGroups({
   };
 }
 
+export function addSkillsToGroups(groups: DividedGroups): DividedGroups {
+  return groups;
+}
+
 export function membersNeededForFull(currentSize: number) {
   return FULL_GROUP_SIZE - currentSize;
 }

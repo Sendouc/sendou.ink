@@ -32,6 +32,7 @@ import {
 import { GroupCard } from "../components/GroupCard";
 import { groupAfterMorph, hasGroupManagerPerms } from "../core/groups";
 import {
+  addSkillsToGroups,
   censorGroups,
   divideGroups,
   groupExpiryStatus,
@@ -62,8 +63,6 @@ import { makeTitle } from "~/utils/strings";
 import { MemberAdder } from "../components/MemberAdder";
 import type { LookingGroupWithInviteCode } from "../q-types";
 import { trustedPlayersAvailableToPlay } from "../queries/usersInActiveGroup.server";
-import { currentSeason } from "~/features/mmr";
-import { skillTierIntervals } from "~/features/mmr/tiers.server";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -279,9 +278,6 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   invariant(currentGroup, "currentGroup is undefined");
 
-  // xxx: implement
-  skillTierIntervals({ season: currentSeason(new Date())!.nth, type: "user" });
-
   const currentGroupSize = groupSize(currentGroup.id);
   const groupIsFull = currentGroupSize === FULL_GROUP_SIZE;
 
@@ -303,8 +299,10 @@ export const loader = async ({ request }: LoaderArgs) => {
     showInviteCode: hasGroupManagerPerms(currentGroup.role) && !groupIsFull,
   });
 
+  const groupsWithSkills = addSkillsToGroups(censoredGroups);
+
   return {
-    groups: censoredGroups,
+    groups: groupsWithSkills,
     role: currentGroup.role,
     lastUpdated: new Date().getTime(),
     expiryStatus: groupExpiryStatus(currentGroup),
@@ -316,6 +314,8 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 // xxx: mobile view
 // xxx: mmr
+// xxx: show +1/+2/+3 if a member of the plus server
+// xxx: switch to "Challenge"
 export default function QLookingPage() {
   const data = useLoaderData<typeof loader>();
   useAutoRefresh();

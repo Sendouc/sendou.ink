@@ -5,27 +5,27 @@ export const TIERS = [
   },
   {
     name: "DIAMOND",
-    percentile: 15, // 10
+    percentile: 10,
   },
   {
     name: "PLATINUM",
-    percentile: 30, // 15
+    percentile: 15,
   },
   {
     name: "GOLD",
-    percentile: 47.5, // 17.5
+    percentile: 17.5,
   },
   {
     name: "SILVER",
-    percentile: 67.5, // 20
+    percentile: 20,
   },
   {
     name: "BRONZE",
-    percentile: 85, // 17.5
+    percentile: 17.5,
   },
   {
     name: "IRON",
-    percentile: 100, // 15
+    percentile: 15,
   },
 ] as const;
 
