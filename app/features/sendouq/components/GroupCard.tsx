@@ -121,7 +121,7 @@ export function GroupCard({
               {action === "MATCH_UP"
                 ? "Start match"
                 : action === "LIKE"
-                ? "Ask to play"
+                ? "Challenge"
                 : action === "GROUP_UP"
                 ? "Group up"
                 : "Undo"}

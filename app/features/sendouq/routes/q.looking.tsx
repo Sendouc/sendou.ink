@@ -319,7 +319,6 @@ export const loader = async ({ request }: LoaderArgs) => {
 // xxx: mobile view
 // xxx: mmr
 // xxx: show +1/+2/+3 if a member of the plus server
-// xxx: switch to "Challenge"
 export default function QLookingPage() {
   const data = useLoaderData<typeof loader>();
   useAutoRefresh();
