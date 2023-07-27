@@ -5,17 +5,18 @@ import { Flipped } from "react-flip-toolkit";
 import { Avatar } from "~/components/Avatar";
 import { Button } from "~/components/Button";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
-import { WeaponImage } from "~/components/Image";
+import { Image, WeaponImage } from "~/components/Image";
 import { SubmitButton } from "~/components/SubmitButton";
 import { ArrowsPointingInIcon } from "~/components/icons/ArrowsPointingIn";
 import { StarFilledIcon } from "~/components/icons/StarFilled";
 import UndoIcon from "~/components/icons/Undo";
 import { UsersIcon } from "~/components/icons/Users";
 import type { Group, GroupMember as GroupMemberType } from "~/db/types";
-import { SENDOUQ_LOOKING_PAGE, userPage } from "~/utils/urls";
+import { SENDOUQ_LOOKING_PAGE, tierImageUrl, userPage } from "~/utils/urls";
 import { FULL_GROUP_SIZE } from "../q-constants";
 import type { LookingGroup } from "../q-types";
 import { ModePreferenceIcons } from "./ModePrefenceIcons";
+import { ordinalToRoundedSp } from "~/features/mmr/mmr-utils";
 
 export function GroupCard({
   group,
@@ -54,21 +55,36 @@ export function GroupCard({
                   member={member}
                   showActions={ownGroup && ownRole === "OWNER"}
                 />
-                {member.weapons ? (
-                  <div className="q__group-member-weapons">
-                    {member.weapons.map((weapon) => {
-                      return (
-                        <WeaponImage
-                          key={weapon}
-                          weaponSplId={weapon}
-                          variant="badge"
-                          size={36}
-                          className="q__group-member-weapon"
-                        />
-                      );
-                    })}
-                  </div>
-                ) : null}
+                <div className="stack md horizontal items-center justify-between">
+                  {member.weapons ? (
+                    <div className="q__group-member-weapons">
+                      {member.weapons.map((weapon) => {
+                        return (
+                          <WeaponImage
+                            key={weapon}
+                            weaponSplId={weapon}
+                            variant="badge"
+                            size={36}
+                            className="q__group-member-weapon"
+                          />
+                        );
+                      })}
+                    </div>
+                  ) : null}
+                  {member.skill ? (
+                    <div className="text-xs font-bold text-lighter stack horizontal xxs items-center">
+                      <Image
+                        path={tierImageUrl(member.skill.tier.name)}
+                        alt={member.skill.tier.name}
+                        title={member.skill.tier.name}
+                        width={36}
+                      />
+                      {!member.skill.approximate ? (
+                        <>{ordinalToRoundedSp(member.skill.ordinal)}SP</>
+                      ) : null}
+                    </div>
+                  ) : null}
+                </div>
               </React.Fragment>
             );
           })}

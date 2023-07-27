@@ -26,6 +26,7 @@ import type { ImageUploadType } from "~/features/img-upload";
 import { serializeBuild } from "~/features/build-analyzer";
 import type { ArtSouce } from "~/features/art";
 import { JOIN_CODE_SEARCH_PARAM_KEY } from "~/features/sendouq/q-constants";
+import type { TierName } from "~/features/mmr/mmr-constants";
 
 const staticAssetsUrl = ({
   folder,
@@ -304,6 +305,9 @@ export const stageImageUrl = (stageId: StageId) =>
   `/static-assets/img/stages/${stageId}`;
 export const brandImageUrl = (brand: "tentatek" | "takoroka") =>
   `/static-assets/img/layout/${brand}`;
+// xxx: TODO: tierImageSmallUrl when not used on the season page
+export const tierImageUrl = (_tier: TierName) =>
+  `/static-assets/img/tiers/iron`;
 export const stageMinimapImageUrlWithEnding = ({
   stageId,
   mode,

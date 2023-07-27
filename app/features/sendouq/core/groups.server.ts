@@ -8,6 +8,7 @@ import type {
   LookingGroup,
   LookingGroupWithInviteCode,
 } from "../q-types";
+import type { TieredSkill } from "~/features/mmr/tiered";
 
 export function divideGroups({
   groups,
@@ -103,8 +104,27 @@ export function censorGroups({
   };
 }
 
-export function addSkillsToGroups(groups: DividedGroups): DividedGroups {
-  return groups;
+export function addSkillsToGroups({
+  groups,
+  userSkills,
+}: {
+  groups: DividedGroups;
+  userSkills: Record<string, TieredSkill>;
+}): DividedGroups {
+  const addSkill = (group: LookingGroup) => ({
+    ...group,
+    members: group.members?.map((m) => ({
+      ...m,
+      skill: userSkills[String(m.id)],
+    })),
+  });
+
+  return {
+    own: addSkill(groups.own),
+    neutral: groups.neutral.map(addSkill),
+    likesGiven: groups.likesGiven.map(addSkill),
+    likesReceived: groups.likesReceived.map(addSkill),
+  };
 }
 
 export function membersNeededForFull(currentSize: number) {

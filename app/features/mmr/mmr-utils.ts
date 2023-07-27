@@ -8,6 +8,10 @@ export function ordinalToSp(ordinal: number) {
   return toTwoDecimals(ordinal * 15 + 1000);
 }
 
+export function ordinalToRoundedSp(ordinal: number) {
+  return Math.floor(ordinalToSp(ordinal));
+}
+
 function toTwoDecimals(value: number) {
   return Number(value.toFixed(2));
 }

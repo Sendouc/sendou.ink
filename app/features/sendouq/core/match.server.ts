@@ -3,6 +3,7 @@ import { MapPool } from "~/modules/map-pool-serializer";
 import { createTournamentMapList } from "~/modules/tournament-map-list-generator";
 import { SENDOUQ_BEST_OF } from "../q-constants";
 import type { LookingGroup } from "../q-types";
+import invariant from "tiny-invariant";
 
 const filterMapPoolToSZ = (mapPool: MapPool) =>
   new MapPool(mapPool.stageModePairs.filter(({ mode }) => mode === "SZ"));
@@ -17,6 +18,9 @@ export function matchMapList({
   ourMapPool: MapPool;
   theirMapPool: MapPool;
 }) {
+  invariant(ourGroup.mapListPreference, "ourGroup.mapListPreference");
+  invariant(theirGroup.mapListPreference, "theirGroup.mapListPreference");
+
   const type = mapListType([
     ourGroup.mapListPreference,
     theirGroup.mapListPreference,

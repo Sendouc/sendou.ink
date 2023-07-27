@@ -63,6 +63,7 @@ import { makeTitle } from "~/utils/strings";
 import { MemberAdder } from "../components/MemberAdder";
 import type { LookingGroupWithInviteCode } from "../q-types";
 import { trustedPlayersAvailableToPlay } from "../queries/usersInActiveGroup.server";
+import { userSkills } from "~/features/mmr/tiered";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -299,7 +300,10 @@ export const loader = async ({ request }: LoaderArgs) => {
     showInviteCode: hasGroupManagerPerms(currentGroup.role) && !groupIsFull,
   });
 
-  const groupsWithSkills = addSkillsToGroups(censoredGroups);
+  const groupsWithSkills = addSkillsToGroups({
+    groups: censoredGroups,
+    userSkills: userSkills(),
+  });
 
   return {
     groups: groupsWithSkills,

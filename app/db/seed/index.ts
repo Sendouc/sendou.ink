@@ -1553,9 +1553,9 @@ function commissionsOpen() {
 
 const SENDOU_IN_FULL_GROUP = true;
 function groups() {
-  const users = userIdsInAscendingOrderById().filter(
-    (id) => id !== ADMIN_ID && id !== NZAP_TEST_ID
-  );
+  const users = userIdsInAscendingOrderById()
+    .slice(0, 100)
+    .filter((id) => id !== ADMIN_ID && id !== NZAP_TEST_ID);
   users.push(NZAP_TEST_ID);
 
   for (let i = 0; i < 25; i++) {
