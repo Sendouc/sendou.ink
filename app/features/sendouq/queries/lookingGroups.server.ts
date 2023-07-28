@@ -17,12 +17,14 @@ const stm = sql.prepare(/* sql */ `
       "User"."discordId",
       "User"."discordName",
       "User"."discordAvatar",
+      "PlusTier"."tier" as "plusTier",
       "GroupMember"."role",
       json_group_array("UserWeapon"."weaponSplId") as "weapons"
     from
       "Group"
     left join "GroupMember" on "GroupMember"."groupId" = "Group"."id"
     left join "User" on "User"."id" = "GroupMember"."userId"
+    left join "PlusTier" on "PlusTier"."userId" = "User"."id"
     left join "UserWeapon" on "UserWeapon"."userId" = "User"."id"
     left join "GroupMatch" on "GroupMatch"."alphaGroupId" = "Group"."id"
       or "GroupMatch"."bravoGroupId" = "Group"."id"
@@ -45,6 +47,7 @@ const stm = sql.prepare(/* sql */ `
         'discordId', "q1"."discordId",
         'discordName', "q1"."discordName",
         'discordAvatar', "q1"."discordAvatar",
+        'plusTier', "q1"."plusTier",
         'role', "q1"."role",
         'weapons', "q1"."weapons"
       )

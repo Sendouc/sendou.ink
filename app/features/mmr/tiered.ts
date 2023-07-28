@@ -14,7 +14,10 @@ export interface TieredSkill {
 }
 
 // xxx: cache
-export function userSkills(): Record<string, TieredSkill> {
+export function userSkills(): {
+  userSkills: Record<string, TieredSkill>;
+  intervals: SkillTierInterval[];
+} {
   const points = orderedMMRBySeason({
     season: currentSeason(new Date())!.nth,
     type: "user",
@@ -22,22 +25,27 @@ export function userSkills(): Record<string, TieredSkill> {
 
   const tierIntervals = skillTierIntervals(points);
 
-  return Object.fromEntries(
-    points.map((p) => {
-      const { name, isPlus } = tierIntervals.find(
-        (t) => t.neededOrdinal! <= p.ordinal
-      ) ?? { name: "IRON", isPlus: false };
-      return [
-        p.userId as number,
-        {
-          ordinal: p.ordinal,
-          tier: { name, isPlus },
-          approximate: p.matchesCount < MATCHES_COUNT_NEEDED_FOR_LEADERBOARD,
-        },
-      ];
-    })
-  );
+  return {
+    intervals: tierIntervals,
+    userSkills: Object.fromEntries(
+      points.map((p) => {
+        const { name, isPlus } = tierIntervals.find(
+          (t) => t.neededOrdinal! <= p.ordinal
+        ) ?? { name: "IRON", isPlus: false };
+        return [
+          p.userId as number,
+          {
+            ordinal: p.ordinal,
+            tier: { name, isPlus },
+            approximate: p.matchesCount < MATCHES_COUNT_NEEDED_FOR_LEADERBOARD,
+          },
+        ];
+      })
+    ),
+  };
 }
+
+export type SkillTierInterval = ReturnType<typeof skillTierIntervals>[number];
 
 // xxx: add test maybe
 function skillTierIntervals(

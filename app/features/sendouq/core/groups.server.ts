@@ -8,7 +8,7 @@ import type {
   LookingGroup,
   LookingGroupWithInviteCode,
 } from "../q-types";
-import type { TieredSkill } from "~/features/mmr/tiered";
+import type { SkillTierInterval, TieredSkill } from "~/features/mmr/tiered";
 
 export function divideGroups({
   groups,
@@ -107,16 +107,36 @@ export function censorGroups({
 export function addSkillsToGroups({
   groups,
   userSkills,
+  intervals,
 }: {
-  groups: DividedGroups;
+  groups: DividedGroupsUncensored;
   userSkills: Record<string, TieredSkill>;
-}): DividedGroups {
-  const addSkill = (group: LookingGroup) => ({
+  intervals: SkillTierInterval[];
+}): DividedGroupsUncensored {
+  const resolveGroupSkill = (
+    group: LookingGroupWithInviteCode
+  ): TieredSkill["tier"] | undefined => {
+    if (group.members.length < FULL_GROUP_SIZE) return;
+
+    const skills = group.members
+      .map((m) => userSkills[String(m.id)])
+      .filter(Boolean);
+    const averageOrdinal =
+      skills.reduce((acc, s) => acc + s.ordinal, 0) / skills.length;
+
+    return (
+      intervals.find(
+        (i) => i.neededOrdinal && averageOrdinal > i.neededOrdinal
+      ) ?? { isPlus: false, name: "IRON" }
+    );
+  };
+  const addSkill = (group: LookingGroupWithInviteCode) => ({
     ...group,
     members: group.members?.map((m) => ({
       ...m,
       skill: userSkills[String(m.id)],
     })),
+    tier: resolveGroupSkill(group),
   });
 
   return {

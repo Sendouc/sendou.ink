@@ -98,6 +98,18 @@ export function GroupCard({
               })
             : null}
         </div>
+        {group.tier ? (
+          <div className="stack xs horizontal text-lighter font-bold items-center justify-center text-sm">
+            <Image
+              path={tierImageUrl(group.tier.name)}
+              alt={group.tier.name}
+              title={group.tier.name}
+              width={48}
+            />
+            {group.tier.name}
+            {group.tier.isPlus ? "+" : ""}
+          </div>
+        ) : null}
         {action && (ownRole === "OWNER" || ownRole === "MANAGER") ? (
           <fetcher.Form className="stack items-center" method="post">
             <input type="hidden" name="targetGroupId" value={group.id} />
@@ -120,8 +132,10 @@ export function GroupCard({
             >
               {action === "MATCH_UP"
                 ? "Start match"
-                : action === "LIKE"
+                : action === "LIKE" && !group.members
                 ? "Challenge"
+                : action === "LIKE"
+                ? "Ask to play"
                 : action === "GROUP_UP"
                 ? "Group up"
                 : "Undo"}
@@ -156,7 +170,7 @@ function GroupMember({
 
   return (
     <fetcher.Form
-      className="stack sm horizontal"
+      className="stack sm horizontal items-center font-bold"
       method="post"
       action={SENDOUQ_LOOKING_PAGE}
     >
@@ -165,6 +179,9 @@ function GroupMember({
         <Avatar user={member} size="xxs" />
         {member.discordName}
       </Link>
+      {member.plusTier ? (
+        <div className="text-xs text-lighter">+{member.plusTier}</div>
+      ) : null}
       {member.role === "REGULAR" && showActions ? (
         <SubmitButton
           variant="minimal"

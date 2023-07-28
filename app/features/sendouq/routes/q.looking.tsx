@@ -294,19 +294,19 @@ export const loader = async ({ request }: LoaderArgs) => {
     likes: findLikes(currentGroup.id),
   });
 
-  const censoredGroups = censorGroups({
+  const groupsWithSkills = addSkillsToGroups({
     groups: dividedGroups,
+    ...userSkills(),
+  });
+
+  const censoredGroups = censorGroups({
+    groups: groupsWithSkills,
     showMembers: !groupIsFull,
     showInviteCode: hasGroupManagerPerms(currentGroup.role) && !groupIsFull,
   });
 
-  const groupsWithSkills = addSkillsToGroups({
-    groups: censoredGroups,
-    userSkills: userSkills(),
-  });
-
   return {
-    groups: groupsWithSkills,
+    groups: censoredGroups,
     role: currentGroup.role,
     lastUpdated: new Date().getTime(),
     expiryStatus: groupExpiryStatus(currentGroup),
@@ -317,8 +317,6 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 // xxx: mobile view
-// xxx: mmr
-// xxx: show +1/+2/+3 if a member of the plus server
 export default function QLookingPage() {
   const data = useLoaderData<typeof loader>();
   useAutoRefresh();
@@ -356,7 +354,9 @@ export default function QLookingPage() {
         >
           <div className="q__groups-container">
             <div>
-              <h2 className="text-sm text-center mb-2">Likes received</h2>
+              <h2 className="text-sm text-center mb-2">
+                {isFullGroup ? "Challenges received" : "Groups that asked you"}
+              </h2>
               <div className="stack sm">
                 {data.groups.likesReceived.map((group) => {
                   const { mapListPreference } = groupAfterMorph({
@@ -400,7 +400,9 @@ export default function QLookingPage() {
               </div>
             </div>
             <div>
-              <h2 className="text-sm text-center mb-2">Likes given</h2>
+              <h2 className="text-sm text-center mb-2">
+                {isFullGroup ? "Challenges issued" : "Groups you asked"}
+              </h2>
               <div className="stack sm">
                 {data.groups.likesGiven.map((group) => {
                   const { mapListPreference } = groupAfterMorph({

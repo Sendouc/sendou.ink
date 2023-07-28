@@ -1,16 +1,17 @@
-import type { Group, GroupMember } from "~/db/types";
+import type { Group, GroupMember, PlusTier } from "~/db/types";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import type { TieredSkill } from "../mmr/tiered";
 
 export type LookingGroup = {
   id: number;
   mapListPreference?: Group["mapListPreference"];
-  skill?: TieredSkill;
+  tier?: TieredSkill["tier"];
   members?: {
     id: number;
     discordId: string;
     discordName: string;
     discordAvatar: string;
+    plusTier?: PlusTier["tier"];
     role: GroupMember["role"];
     weapons?: MainWeaponId[];
     skill?: TieredSkill;
