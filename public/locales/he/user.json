@@ -13,6 +13,12 @@
   "discordExplanation": "שם משתמש, תמונת פרופיל, חשבונות YouTube, Twitter ו-Twitch מגיעים מחשבון Discord שלך. ראו <1>שאלות נפוצות</1> למידע נוסף.",
   "favoriteBadge": "תג אהוב",
 
+  "forms.showDiscordUniqueName": "הראה שם משתמש Discord",
+  "forms.showDiscordUniqueName.info": "להראות את שם ה-Discord היחודי שלכם ({{discordUniqueName}}) בפומבי?",
+  "forms.commissionsOpen": "בקשות פתוחות",
+  "forms.commissionText": "מידע עבור בקשות",
+  "forms.commissionText.info": "מחיר, כמות בקשות או מידע אחר שקשור לבקשות אלכם",
+
   "results.title": "תוצאות",
   "results.placing": "מיקום",
   "results.team": "צוות",

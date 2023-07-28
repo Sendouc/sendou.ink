@@ -20,7 +20,16 @@
   "stats.percentage.title": "הופעת יכולת ראשית בלבד",
   "stats.all": "הכל",
 
+  "addFilter": "הוספת מסנן",
   "linkButton.abilityStats": "נתונים סטטיסטיים על היכולות",
   "linkButton.popularBuilds": "ערכות פופולריות",
-  "noPopularBuilds": "נראה שאין ערכות פופולריות לנשק הזה כרגע."
+  "noPopularBuilds": "נראה שאין ערכות פופולריות לנשק זה כרגע.",
+
+  "emptyAbilitySlot": "תא עם יכולת ריקה",
+
+  "filters.title": "מסנן {{number}}",
+  "filters.has": "יש",
+  "filters.does.not.have": "אין",
+  "filters.atLeast": "לפחות",
+  "filters.atMost": "לכל היותר"
 }
