@@ -51,7 +51,7 @@ button[data-state="closed"][aria-haspopup="dialog"] {
   position: fixed;
   z-index: 10;
   top: 10%;
-  width: 150px;
+  width: 200px;
   max-height: 85vh;
   border: 1px solid var(--theme-very-transparent);
   border-radius: 0 var(--rounded) var(--rounded) 0;
