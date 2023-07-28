@@ -133,7 +133,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     })),
   });
 
-  return redirect(calendarEventPage(parsedParams.id));
+  throw redirect(calendarEventPage(parsedParams.id));
 };
 
 export const handle: SendouRouteHandle = {

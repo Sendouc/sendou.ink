@@ -772,6 +772,7 @@ dialog::backdrop {
 
 .lock-scroll {
   overflow: hidden;
+  height: unset;
 }
 
 /* https://stackoverflow.com/questions/50917016/make-a-hidden-field-required/50917245#comment117565184_50917245 */

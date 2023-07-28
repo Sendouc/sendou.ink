@@ -49,7 +49,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   addNewTeamMember({ teamId: team.id, userId: user.id });
 
-  return redirect(teamPage(team.customUrl));
+  throw redirect(teamPage(team.customUrl));
 };
 
 export const handle: SendouRouteHandle = {

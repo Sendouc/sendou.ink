@@ -74,7 +74,7 @@ export const action: ActionFunction = async ({ params, request }) => {
     tournamentId: event.tournamentId,
   });
 
-  return redirect(CALENDAR_PAGE);
+  throw redirect(CALENDAR_PAGE);
 };
 
 export const links: LinksFunction = () => {

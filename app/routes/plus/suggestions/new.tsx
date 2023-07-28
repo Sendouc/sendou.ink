@@ -84,7 +84,7 @@ export const action: ActionFunction = async ({ request }) => {
     ...nextNonCompletedVoting(new Date()),
   });
 
-  return redirect(plusSuggestionPage(data.tier));
+  throw redirect(plusSuggestionPage(data.tier));
 };
 
 export default function PlusNewSuggestionModalPage() {

@@ -13,6 +13,11 @@
   "results": "תוצאות",
   "createMapList": "יצירת רשימת מפות",
   "from": "מאת {{author}}",
+  "pastEvents.dividerText": "אירועי עבר",
+  "count.teams_one": "{{count}} צוות",
+  "count.players_one": "{{count}} שחקן",
+  "count.teams_other": "{{count}} צוות",
+  "count.players_other": "{{count}} שחקנים",
 
   "forms.dates": "תאריכים",
   "forms.bracketUrl": "כתובת URL של מבנה הטורניר",
@@ -51,7 +56,7 @@
 
   "tag.desc.BADGE": "הזוכה באירוע זה מקבל תג ב-sendou.ink.",
   "tag.desc.SPECIAL": "כללים השונים מהתקן הרגיל. (למשל שימוש מוגבל באלו נשקים ניתן להשתמש)",
-  "tag.desc.ART": "ניתן לזכות באומנות על ידי השתתפות בטורניר זה.",
+  "tag.desc.ART": "ניתן לזכות בציור על ידי השתתפות בטורניר זה.",
   "tag.desc.MONEY": "ניתן לזכות בכסף על ידי השתתפות בטורניר זה.",
   "tag.desc.REGION": "הגבלה על מי יכול לשחק באירוע זה על סמך המיקום",
   "tag.desc.LOW": "הגבלה על מי יכול לשחק באירוע על סמך מיומנות.",

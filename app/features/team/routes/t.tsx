@@ -86,7 +86,7 @@ export const action: ActionFunction = async ({ request }) => {
     customUrl,
   });
 
-  return redirect(teamPage(customUrl));
+  throw redirect(teamPage(customUrl));
 };
 
 export const handle: SendouRouteHandle = {

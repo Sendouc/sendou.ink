@@ -58,7 +58,7 @@ export const action: ActionFunction = async ({ params, request }) => {
     userId: user.id,
   });
 
-  return redirect(tournamentSubsPage(tournamentId));
+  throw redirect(tournamentSubsPage(tournamentId));
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {

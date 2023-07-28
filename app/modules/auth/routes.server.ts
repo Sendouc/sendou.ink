@@ -18,7 +18,7 @@ export const callbackLoader: LoaderFunction = async ({ request }) => {
     // nice error handling for this case.
     // https://www.oauth.com/oauth2-servers/server-side-apps/possible-errors/
 
-    return redirect(authErrorUrl("aborted"));
+    throw redirect(authErrorUrl("aborted"));
   }
 
   await authenticator.authenticate(DISCORD_AUTH_KEY, request, {

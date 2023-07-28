@@ -25,6 +25,7 @@
     "placements": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/placements/index.ts",
     "hex-to-filter": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/hex-to-filter.ts",
     "sync-xp-badges": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/sync-xp-badges.ts",
+    "delete-user": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/delete-user.ts",
     "lint:ts": "eslint . --ext .ts,.tsx",
     "lint:css": "stylelint \"app/styles/**/*.css\"",
     "prettier:check": "prettier --check . --loglevel warn",

@@ -85,7 +85,7 @@ export const action: ActionFunction = async ({ request }) => {
     });
   }
 
-  return redirect(vodVideoPage(video.id));
+  throw redirect(vodVideoPage(video.id));
 };
 
 const newVodLoaderParamsSchema = z.object({

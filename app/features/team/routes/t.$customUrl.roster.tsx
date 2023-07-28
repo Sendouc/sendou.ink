@@ -84,7 +84,7 @@ export const action: ActionFunction = async ({ request, params }) => {
         oldOwnerUserId: user.id,
       });
 
-      return redirect(teamPage(customUrl));
+      throw redirect(teamPage(customUrl));
     }
     case "UPDATE_MEMBER_ROLE": {
       editRole({
