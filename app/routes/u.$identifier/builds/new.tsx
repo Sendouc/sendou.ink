@@ -170,7 +170,7 @@ export const action: ActionFunction = async ({ request }) => {
     db.builds.create(commonArgs);
   }
 
-  return redirect(userBuildsPage(user));
+  throw redirect(userBuildsPage(user));
 };
 
 export const handle: SendouRouteHandle = {

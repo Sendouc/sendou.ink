@@ -63,7 +63,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     }
   }
 
-  return redirect(badgePage(badgeId));
+  throw redirect(badgePage(badgeId));
 };
 
 export default function EditBadgePage() {

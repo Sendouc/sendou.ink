@@ -92,7 +92,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     });
   }
 
-  return redirect(tournamentPage(leanTeam.tournamentId));
+  throw redirect(tournamentPage(leanTeam.tournamentId));
 };
 
 export const loader = ({ request, params }: LoaderArgs) => {

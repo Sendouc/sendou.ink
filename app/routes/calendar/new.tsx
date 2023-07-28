@@ -184,7 +184,7 @@ export const action: ActionFunction = async ({ request }) => {
       ...commonArgs,
     });
 
-    return redirect(calendarEventPage(data.eventToEditId));
+    throw redirect(calendarEventPage(data.eventToEditId));
   } else {
     const createdEventId = db.calendarEvents.create({
       authorId: user.id,
@@ -196,7 +196,7 @@ export const action: ActionFunction = async ({ request }) => {
       ...commonArgs,
     });
 
-    return redirect(calendarEventPage(createdEventId));
+    throw redirect(calendarEventPage(createdEventId));
   }
 };
 

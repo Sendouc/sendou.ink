@@ -180,7 +180,7 @@ export const action: ActionFunction = async ({ request }) => {
       showDiscordUniqueName: data.showDiscordUniqueName,
     });
 
-    return redirect(userPage(editedUser));
+    throw redirect(userPage(editedUser));
   } catch (e) {
     if (!errorIsSqliteUniqueConstraintFailure(e)) {
       throw e;

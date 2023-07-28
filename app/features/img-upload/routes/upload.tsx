@@ -73,7 +73,7 @@ export const action = async ({ request }: ActionArgs) => {
   });
 
   if (shouldAutoValidate) {
-    return redirect(teamPage(user.team.customUrl));
+    throw redirect(teamPage(user.team.customUrl));
   }
 
   return null;

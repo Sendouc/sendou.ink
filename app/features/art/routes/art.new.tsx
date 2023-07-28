@@ -110,7 +110,7 @@ export const action: ActionFunction = async ({ request }) => {
     });
   }
 
-  return redirect(userArtPage(user));
+  throw redirect(userArtPage(user));
 };
 
 export const loader = async ({ request }: LoaderArgs) => {

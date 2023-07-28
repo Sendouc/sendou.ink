@@ -46,7 +46,7 @@ export const action: ActionFunction = async ({ request }) => {
     resultTournamentTeamIds,
   });
 
-  return redirect(userResultsPage(user));
+  throw redirect(userResultsPage(user));
 };
 
 export default function ResultHighlightsEditPage() {

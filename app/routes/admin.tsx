@@ -127,7 +127,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   const user = await getUserId(request);
 
   if (!canPerformAdminActions(user)) {
-    return redirect("/");
+    throw redirect("/");
   }
 
   return json<AdminPageLoaderData>({
