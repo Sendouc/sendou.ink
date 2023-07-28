@@ -34,7 +34,7 @@ export default function UserResultsPage() {
       {showHighlightsSection && (
         <Section
           title={t("results.highlights")}
-          className="u__results-table-wrapper u__results-table-highlights stack md items-center"
+          className="u__results-table-wrapper u__results-table-highlights stack md"
         >
           {hasHighlights && (
             <UserResultsTable
