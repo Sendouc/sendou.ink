@@ -968,6 +968,7 @@ dialog::backdrop {
 .build__gear {
   border-radius: 50%;
   background-color: var(--bg-darker-very-transparent);
+  overflow: visible;
 }
 
 .build__ability {
