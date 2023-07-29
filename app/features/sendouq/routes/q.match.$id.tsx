@@ -218,7 +218,7 @@ export const loader = ({ params }: LoaderArgs) => {
   };
 };
 
-// xxx: admin rereport score (frontend)
+// xxx: double report score for confirmation (with admin interaction)
 export default function QMatchPage() {
   const user = useUser();
   const isMounted = useIsMounted();

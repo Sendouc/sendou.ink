@@ -1652,7 +1652,6 @@ const defaultWeapons = Object.fromEntries(
     })
 );
 
-// xxx: optimize this
 function playedMatches() {
   for (let i = 0; i < MATCHES_COUNT; i++) {
     const groupMembers = shuffle([..._groupMembers]);

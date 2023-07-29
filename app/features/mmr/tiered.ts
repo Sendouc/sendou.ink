@@ -47,7 +47,6 @@ export function userSkills(): {
 
 export type SkillTierInterval = ReturnType<typeof skillTierIntervals>[number];
 
-// xxx: add test maybe
 function skillTierIntervals(
   orderedPoints: Array<Pick<Skill, "ordinal" | "matchesCount">>
 ) {

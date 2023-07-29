@@ -164,9 +164,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   };
 };
 
-// xxx: link to yt video explaining it
-// xxx: show streams?
-// xxx: script to recalc skills
+// xxx: pick initial MMR
 export default function QPage() {
   const [dialogOpen, setDialogOpen] = React.useState(true);
   const user = useUser();
