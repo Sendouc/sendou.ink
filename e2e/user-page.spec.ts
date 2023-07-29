@@ -61,6 +61,7 @@ test.describe("User page", () => {
 
     // got redirected
     await expect(page).not.toHaveURL(/edit/);
+    await page.reload();
     await expect(bodyColor()).resolves.toMatch(/#4a412a/);
   });
 

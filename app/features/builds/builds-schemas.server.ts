@@ -4,7 +4,11 @@ import { ability, safeJSONParse } from "~/utils/zod";
 const buildFilterSchema = z.object({
   ability,
   value: z.union([z.number(), z.boolean()]),
-  comparison: z.enum(["AT_LEAST", "AT_MOST"]).nullish(),
+  comparison: z
+    .string()
+    .toUpperCase()
+    .pipe(z.enum(["AT_LEAST", "AT_MOST"]))
+    .nullish(),
 });
 
 export const buildFiltersSearchParams = z.preprocess(
