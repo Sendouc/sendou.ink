@@ -99,12 +99,12 @@ export function GroupCard({
             : null}
         </div>
         {group.tier ? (
-          <div className="stack xs horizontal text-lighter font-bold items-center justify-center text-sm">
+          <div className="stack xs text-lighter font-bold items-center justify-center text-xs">
             <Image
               path={tierImageUrl(group.tier.name)}
               alt={group.tier.name}
               title={group.tier.name}
-              width={48}
+              width={100}
             />
             {group.tier.name}
             {group.tier.isPlus ? "+" : ""}
