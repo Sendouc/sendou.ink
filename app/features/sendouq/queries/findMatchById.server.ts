@@ -10,6 +10,7 @@ const stm = sql.prepare(/* sql */ `
     "GroupMatch"."createdAt",
     "GroupMatch"."reportedAt",
     "GroupMatch"."reportedByUserId",
+    (select exists (select 1 from "Skill" where "Skill"."groupMatchId" = @id)) as "isLocked",
     json_group_array(
       json_object(
         'id', "GroupMatchMap"."id",
@@ -33,6 +34,7 @@ export interface MatchById {
   createdAt: GroupMatch["createdAt"];
   reportedAt: GroupMatch["reportedAt"];
   reportedByUserId: GroupMatch["reportedByUserId"];
+  isLocked: number;
   mapList: Array<
     Pick<GroupMatchMap, "id" | "mode" | "stageId" | "source" | "winnerGroupId">
   >;

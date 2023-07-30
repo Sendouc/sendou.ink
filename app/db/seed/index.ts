@@ -55,6 +55,7 @@ import { calculateMatchSkills } from "~/features/sendouq/core/skills.server";
 import { winnersArrayToWinner } from "~/features/sendouq/q-utils";
 import { addReportedWeapons } from "~/features/sendouq/queries/addReportedWeapons.server";
 import { findMatchById } from "~/features/sendouq/queries/findMatchById.server";
+import { setGroupAsInactive } from "~/features/sendouq/queries/setGroupAsInactive.server";
 
 const calendarEventWithToToolsSz = () => calendarEventWithToTools(true);
 const calendarEventWithToToolsTeamsSz = () =>
@@ -1732,6 +1733,8 @@ function playedMatches() {
         winners,
       });
       addSkills(newSkills);
+      setGroupAsInactive(groupAlpha);
+      setGroupAsInactive(groupBravo);
     })();
 
     // -> add weapons for 90% of matches

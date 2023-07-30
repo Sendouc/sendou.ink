@@ -84,10 +84,6 @@ export const matchSchema = z.union([
     winners,
   }),
   z.object({
-    _action: z.literal("REPORT_SCORE_AGAIN"),
-    winners,
-  }),
-  z.object({
     _action: z.literal("LOOK_AGAIN"),
     previousGroupId: id,
   }),

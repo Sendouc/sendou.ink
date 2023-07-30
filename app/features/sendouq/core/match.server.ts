@@ -4,6 +4,7 @@ import { createTournamentMapList } from "~/modules/tournament-map-list-generator
 import { SENDOUQ_BEST_OF } from "../q-constants";
 import type { LookingGroup } from "../q-types";
 import invariant from "tiny-invariant";
+import type { MatchById } from "../queries/findMatchById.server";
 
 const filterMapPoolToSZ = (mapPool: MapPool) =>
   new MapPool(mapPool.stageModePairs.filter(({ mode }) => mode === "SZ"));
@@ -61,4 +62,41 @@ function mapListType(
   if (score > 0) return "SZ";
 
   return Math.random() < 0.5 ? "ALL_MODES" : "SZ";
+}
+
+export function compareMatchToReportedScores({
+  match,
+  winners,
+  newReporterGroupId,
+  previousReporterGroupId,
+}: {
+  match: MatchById;
+  winners: ("ALPHA" | "BRAVO")[];
+  newReporterGroupId: number;
+  previousReporterGroupId?: number;
+}) {
+  // they are overwriting their previous report, essentially same as first report
+  if (newReporterGroupId === previousReporterGroupId) return "FIRST_REPORT";
+
+  // match has not been reported before
+  if (!match.reportedByUserId) return "FIRST_REPORT";
+
+  for (const [
+    i,
+    { winnerGroupId: previousWinnerGroupId },
+  ] of match.mapList.entries()) {
+    const newWinner = winners[i] ?? null;
+
+    if (!newWinner && !previousWinnerGroupId) continue;
+
+    if (!newWinner && previousWinnerGroupId) return "DIFFERENT";
+    if (newWinner && !previousWinnerGroupId) return "DIFFERENT";
+
+    const previousWinner =
+      previousWinnerGroupId === match.alphaGroupId ? "ALPHA" : "BRAVO";
+
+    if (previousWinner !== newWinner) return "DIFFERENT";
+  }
+
+  return "SAME";
 }

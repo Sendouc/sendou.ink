@@ -1,10 +1,11 @@
-import { redirect } from "@remix-run/node";
 import type {
-  SerializeFrom,
-  ActionFunction,
+  ActionArgs,
   LinksFunction,
   LoaderArgs,
+  SerializeFrom,
 } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
+import type { FetcherWithComponents } from "@remix-run/react";
 import { Link, useFetcher, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
@@ -18,6 +19,7 @@ import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { ArchiveBoxIcon } from "~/components/icons/ArchiveBox";
 import { RefreshArrowsIcon } from "~/components/icons/RefreshArrows";
+import { sql } from "~/db/sql";
 import type { GroupMember, ReportedWeapon } from "~/db/types";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "~/hooks/useTranslation";
@@ -45,11 +47,14 @@ import {
   userSubmittedImage,
 } from "~/utils/urls";
 import { matchEndedAtIndex } from "../core/match";
+import { compareMatchToReportedScores } from "../core/match.server";
+import { calculateMatchSkills } from "../core/skills.server";
 import { FULL_GROUP_SIZE } from "../q-constants";
 import { matchSchema } from "../q-schemas.server";
 import { matchIdFromParams, winnersArrayToWinner } from "../q-utils";
 import styles from "../q.css";
 import { addReportedWeapons } from "../queries/addReportedWeapons.server";
+import { addSkills } from "../queries/addSkills.server";
 import { createGroupFromPreviousGroup } from "../queries/createGroup.server";
 import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.server";
 import { findMatchById } from "../queries/findMatchById.server";
@@ -57,9 +62,7 @@ import type { GroupForMatch } from "../queries/groupForMatch.server";
 import { groupForMatch } from "../queries/groupForMatch.server";
 import { reportScore } from "../queries/reportScore.server";
 import { reportedWeaponsByMatchId } from "../queries/reportedWeaponsByMatchId.server";
-import { sql } from "~/db/sql";
-import { calculateMatchSkills } from "../core/skills.server";
-import { addSkills } from "../queries/addSkills.server";
+import { setGroupAsInactive } from "../queries/setGroupAsInactive.server";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -74,7 +77,7 @@ export const handle: SendouRouteHandle = {
   }),
 };
 
-export const action: ActionFunction = async ({ request, params }) => {
+export const action = async ({ request, params }: ActionArgs) => {
   const matchId = matchIdFromParams(params);
   const user = await requireUserId(request);
   const data = await parseRequestFormData({
@@ -84,14 +87,26 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   switch (data._action) {
     case "REPORT_SCORE": {
-      const currentGroup = findCurrentGroupByUserId(user.id);
-      validate(
-        currentGroup && ["MANAGER", "OWNER"].includes(currentGroup.role),
-        "You are not a manager or owner of the group"
-      );
-
       const match = notFoundIfFalsy(findMatchById(matchId));
-      if (match.reportedAt) return null;
+      validate(
+        !match.isLocked,
+        "Match has already been reported by both teams"
+      );
+      const members = [
+        ...groupForMatch(match.alphaGroupId)!.members.map((m) => ({
+          ...m,
+          groupId: match.alphaGroupId,
+        })),
+        ...groupForMatch(match.bravoGroupId)!.members.map((m) => ({
+          ...m,
+          groupId: match.bravoGroupId,
+        })),
+      ];
+
+      const groupManagerOfId = members.find(
+        (m) => m.id === user.id && ["OWNER", "MANAGER"].includes(m.role)
+      )?.groupId;
+      invariant(groupManagerOfId, "User is not a manager of any group");
 
       const winner = winnersArrayToWinner(data.winners);
       const winnerTeamId =
@@ -99,28 +114,27 @@ export const action: ActionFunction = async ({ request, params }) => {
       const loserTeamId =
         winner === "ALPHA" ? match.bravoGroupId : match.alphaGroupId;
 
-      const newSkills = calculateMatchSkills({
-        groupMatchId: match.id,
-        winner: groupForMatch(winnerTeamId)!.members.map((m) => m.id),
-        loser: groupForMatch(loserTeamId)!.members.map((m) => m.id),
+      const compared = compareMatchToReportedScores({
+        match,
+        winners: data.winners,
+        newReporterGroupId: groupManagerOfId,
+        previousReporterGroupId: match.reportedByUserId
+          ? members.find((m) => m.id === match.reportedByUserId)!.groupId
+          : undefined,
       });
 
-      sql.transaction(() => {
-        reportScore({
-          matchId,
-          reportedByUserId: user.id,
-          winners: data.winners,
-        });
-        addSkills(newSkills);
-      })();
+      if (compared === "DIFFERENT") {
+        return { error: "different" as const };
+      }
 
-      break;
-    }
-    case "REPORT_SCORE_AGAIN": {
-      validate(isAdmin(user), "Only admins can report score again");
-
-      const match = notFoundIfFalsy(findMatchById(matchId));
-      validate(match.reportedAt, "Match has not been reported yet");
+      const newSkills =
+        compared === "SAME"
+          ? calculateMatchSkills({
+              groupMatchId: match.id,
+              winner: groupForMatch(winnerTeamId)!.members.map((m) => m.id),
+              loser: groupForMatch(loserTeamId)!.members.map((m) => m.id),
+            })
+          : null;
 
       sql.transaction(() => {
         reportScore({
@@ -128,6 +142,8 @@ export const action: ActionFunction = async ({ request, params }) => {
           reportedByUserId: user.id,
           winners: data.winners,
         });
+        setGroupAsInactive(groupManagerOfId);
+        if (newSkills) addSkills(newSkills);
       })();
 
       break;
@@ -218,13 +234,14 @@ export const loader = ({ params }: LoaderArgs) => {
   };
 };
 
-// xxx: double report score for confirmation (with admin interaction)
+// xxx: admin score reporting?
 export default function QMatchPage() {
   const user = useUser();
   const isMounted = useIsMounted();
   const { i18n } = useTranslation();
   const data = useLoaderData<typeof loader>();
   const [showWeaponsForm, setShowWeaponsForm] = React.useState(false);
+  const submitScoreFetcher = useFetcher<typeof action>();
 
   React.useEffect(() => {
     setShowWeaponsForm(false);
@@ -234,16 +251,22 @@ export default function QMatchPage() {
     data.groupAlpha.members.find((m) => m.id === user?.id) ??
     data.groupBravo.members.find((m) => m.id === user?.id);
   const canReportScore = Boolean(
-    !data.match.reportedAt &&
+    !data.match.isLocked &&
       ownMember &&
       (ownMember.role === "MANAGER" || ownMember.role === "OWNER")
   );
 
-  const ownGroupId = data.groupAlpha.members.some((m) => m.id === user?.id)
-    ? data.groupAlpha.id
+  const ownGroup = data.groupAlpha.members.some((m) => m.id === user?.id)
+    ? data.groupAlpha
     : data.groupBravo.members.some((m) => m.id === user?.id)
-    ? data.groupBravo.id
+    ? data.groupBravo
     : null;
+
+  const ownTeamReported = Boolean(
+    data.match.reportedByUserId &&
+      ownGroup?.members.some((m) => m.id === data.match.reportedByUserId)
+  );
+  const showScore = data.match.isLocked || ownTeamReported;
 
   return (
     <Main className="q-match__container stack lg">
@@ -269,12 +292,12 @@ export default function QMatchPage() {
               "0/0/0 0:00"}
         </div>
       </div>
-      {data.match.reportedAt ? (
+      {showScore ? (
         <>
-          <Score reportedAt={data.match.reportedAt} />
-          {ownGroupId && ownMember && data.match.reportedAt ? (
+          <Score reportedAt={data.match.reportedAt!} />
+          {ownGroup && ownMember && data.match.reportedAt ? (
             <AfterMatchActions
-              ownGroupId={ownGroupId}
+              ownGroupId={ownGroup.id}
               role={ownMember.role}
               reportedAt={data.match.reportedAt}
               showWeaponsForm={showWeaponsForm}
@@ -290,7 +313,18 @@ export default function QMatchPage() {
             <MatchGroup group={data.groupAlpha} side="ALPHA" />
             <MatchGroup group={data.groupBravo} side="BRAVO" />
           </div>
-          <MapList canReportScore={canReportScore} />
+          <MapList
+            canReportScore={canReportScore}
+            isResubmission={ownTeamReported}
+            fetcher={submitScoreFetcher}
+          />
+          {submitScoreFetcher.data?.error === "different" ? (
+            <div className="text-xs text-warning font-semi-bold text-center">
+              You reported different results than your opponent. Double check
+              the above is correct and otherwise contact the opponent to fix it
+              on their side.
+            </div>
+          ) : null}
         </>
       ) : null}
     </Main>
@@ -321,18 +355,29 @@ function Score({ reportedAt }: { reportedAt: number }) {
   return (
     <div className="stack items-center line-height-tight">
       <div className="text-lg font-bold">{score.join(" - ")}</div>
-      <div className={clsx("text-xs text-lighter", { invisible: !isMounted })}>
-        Reported by {reporter?.discordName ?? "???"} at{" "}
-        {isMounted
-          ? databaseTimestampToDate(reportedAt).toLocaleString(i18n.language, {
-              day: "numeric",
-              month: "numeric",
-              year: "numeric",
-              hour: "numeric",
-              minute: "numeric",
-            })
-          : ""}
-      </div>
+      {data.match.isLocked ? (
+        <div
+          className={clsx("text-xs text-lighter", { invisible: !isMounted })}
+        >
+          Reported by {reporter?.discordName ?? "???"} at{" "}
+          {isMounted
+            ? databaseTimestampToDate(reportedAt).toLocaleString(
+                i18n.language,
+                {
+                  day: "numeric",
+                  month: "numeric",
+                  year: "numeric",
+                  hour: "numeric",
+                  minute: "numeric",
+                }
+              )
+            : ""}
+        </div>
+      ) : (
+        <div className="text-xs text-lighter">
+          SP will be adjusted after opponent confirms the score
+        </div>
+      )}
     </div>
   );
 }
@@ -394,6 +439,7 @@ function AfterMatchActions({
     m.winnerGroupId === data.match.alphaGroupId ? "ALPHA" : "BRAVO"
   );
 
+  // xxx: when reporting weapons, divide groups
   return (
     <div className="stack lg">
       <lookAgainFetcher.Form
@@ -586,13 +632,36 @@ function MatchGroup({
   );
 }
 
-function MapList({ canReportScore }: { canReportScore: boolean }) {
+function MapList({
+  canReportScore,
+  isResubmission,
+  fetcher,
+}: {
+  canReportScore: boolean;
+  isResubmission: boolean;
+  fetcher: FetcherWithComponents<any>;
+}) {
   const data = useLoaderData<typeof loader>();
-  const fetcher = useFetcher();
-  const [winners, setWinners] = React.useState<("ALPHA" | "BRAVO")[]>([]);
 
+  const previouslyReportedWinners = isResubmission
+    ? data.match.mapList
+        .filter((m) => m.winnerGroupId)
+        .map((m) =>
+          m.winnerGroupId === data.groupAlpha.id ? "ALPHA" : "BRAVO"
+        )
+    : [];
+  const [winners, setWinners] = React.useState<("ALPHA" | "BRAVO")[]>(
+    previouslyReportedWinners
+  );
+
+  const newScoresAreDifferent =
+    !previouslyReportedWinners ||
+    previouslyReportedWinners.length !== winners.length ||
+    previouslyReportedWinners.some((w, i) => w !== winners[i]);
   const scoreCanBeReported =
-    Boolean(matchEndedAtIndex(winners)) && !data.match.reportedAt;
+    Boolean(matchEndedAtIndex(winners)) &&
+    !data.match.isLocked &&
+    newScoresAreDifferent;
 
   return (
     <fetcher.Form method="post">
@@ -620,7 +689,7 @@ function MapList({ canReportScore }: { canReportScore: boolean }) {
         <div className="stack md items-center mt-4">
           <ResultSummary winners={winners} />
           <SubmitButton _action="REPORT_SCORE" state={fetcher.state}>
-            Submit scores
+            {isResubmission ? "Submit adjusted scores" : "Submit scores"}
           </SubmitButton>
         </div>
       ) : null}
@@ -678,7 +747,7 @@ function MapListMap({
   };
 
   const scoreCanBeReported =
-    Boolean(matchEndedAtIndex(winners)) && !data.match.reportedAt;
+    Boolean(matchEndedAtIndex(winners)) && !data.match.isLocked;
   const showWinnerReportRow = (i: number) => {
     if (!canReportScore) return false;
 
@@ -691,7 +760,7 @@ function MapListMap({
   };
 
   const winningInfoText = (winnerId: number | null) => {
-    if (!data.match.reportedAt) return null;
+    if (!data.match.isLocked) return null;
 
     if (!winnerId)
       return (
