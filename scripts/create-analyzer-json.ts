@@ -149,6 +149,13 @@ function parametersToMainWeaponResult(
     );
   };
 
+  const InkConsume_WeaponShelterShotgunParam = () => {
+    // Splat Brella ink consumption not listed in params
+    if (weapon.Id === 6000) return 0.0632499977946;
+
+    return params["spl__WeaponShelterShotgunParam"]?.["InkConsume"];
+  };
+
   const BlastParam_DistanceDamage = () => {
     // REEF-LUX has distance damage listed in params
     // but actually doesn't deal it in game
@@ -360,7 +367,7 @@ function parametersToMainWeaponResult(
         ? params["spl__WeaponShelterCanopyParam"]?.["InkConsumeUmbrella"]
         : undefined,
     InkConsume_WeaponShelterShotgunParam:
-      params["spl__WeaponShelterShotgunParam"]?.["InkConsume"],
+      InkConsume_WeaponShelterShotgunParam(),
     InkConsume_SideStepParam: params["SideStepParam"]?.["InkConsume"],
     InkConsume_SwingParam:
       params["spl__WeaponSaberParam"]?.["SwingParam"]?.["InkConsume"],
@@ -468,7 +475,34 @@ function parametersToSpecialWeaponResult(params: any) {
   }
 
   if (resultUnwrapped["SplashAroundPaintRadius"]) {
-    resultUnwrapped["PaintRadius"] = resultUnwrapped["SplashAroundPaintRadius"];
+    // Inkjet
+    if (params["BlastParam"]?.["PaintRadius"]) {
+      const regularPaintRadius = params["BlastParam"]["PaintRadius"];
+
+      resultUnwrapped["PaintRadius"] = {
+        High:
+          resultUnwrapped["SplashAroundPaintRadius"].High + regularPaintRadius,
+        Mid:
+          resultUnwrapped["SplashAroundPaintRadius"].Mid + regularPaintRadius,
+        Low:
+          resultUnwrapped["SplashAroundPaintRadius"].Low + regularPaintRadius,
+      };
+      // Reefslider
+    } else {
+      console.log(resultUnwrapped);
+      resultUnwrapped["PaintRadius"] = {
+        High:
+          resultUnwrapped["SplashAroundPaintRadius"].High +
+          resultUnwrapped["PaintRadius"].High,
+        Mid:
+          resultUnwrapped["SplashAroundPaintRadius"].Mid +
+          resultUnwrapped["PaintRadius"].Mid,
+        Low:
+          resultUnwrapped["SplashAroundPaintRadius"].Low +
+          resultUnwrapped["PaintRadius"].Low,
+      };
+    }
+
     resultUnwrapped["SplashAroundPaintRadius"] = undefined;
   }
 

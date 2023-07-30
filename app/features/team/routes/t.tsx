@@ -38,9 +38,11 @@ import {
 } from "~/utils/urls";
 import { allTeams } from "../queries/allTeams.server";
 import { createNewTeam } from "../queries/createNewTeam.server";
-import { TEAM } from "../team-constants";
+import { TEAM, TEAMS_PER_PAGE } from "../team-constants";
 import { createTeamSchema } from "../team-schemas.server";
 import styles from "../team.css";
+import { usePagination } from "~/hooks/usePagination";
+import { Pagination } from "~/components/Pagination";
 
 export const meta: V2_MetaFunction = ({
   data,
@@ -172,6 +174,19 @@ export default function TeamSearchPage() {
     return false;
   });
 
+  const {
+    itemsToDisplay,
+    everythingVisible,
+    currentPage,
+    pagesCount,
+    nextPage,
+    previousPage,
+    setPage,
+  } = usePagination({
+    items: filteredTeams,
+    pageSize: TEAMS_PER_PAGE,
+  });
+
   return (
     <Main className="stack lg">
       <NewTeamDialog />
@@ -194,7 +209,7 @@ export default function TeamSearchPage() {
         testId="team-search-input"
       />
       <div className="mt-6 stack lg">
-        {filteredTeams.map((team, i) => (
+        {itemsToDisplay.map((team, i) => (
           <Link
             key={team.customUrl}
             to={teamPage(team.customUrl)}
@@ -233,6 +248,15 @@ export default function TeamSearchPage() {
           </Link>
         ))}
       </div>
+      {!everythingVisible ? (
+        <Pagination
+          currentPage={currentPage}
+          pagesCount={pagesCount}
+          nextPage={nextPage}
+          previousPage={previousPage}
+          setPage={setPage}
+        />
+      ) : null}
     </Main>
   );
 }

@@ -708,6 +708,15 @@ export default function BuildAnalyzerPage() {
               ) : null}
               <DamageTable
                 values={analyzed.stats.subWeaponDefenseDamages}
+                comparisonValues={
+                  analyzed2.stats.subWeaponDefenseDamages.some(
+                    (dmg, i) =>
+                      dmg.value !==
+                      analyzed.stats.subWeaponDefenseDamages[i].value
+                  )
+                    ? analyzed2.stats.subWeaponDefenseDamages
+                    : undefined
+                }
                 multiShots={analyzed.weapon.multiShots}
               />
             </StatCategory>
@@ -1287,9 +1296,13 @@ function ModifiedByAbilities({ abilities }: { abilities: Stat["modifiedBy"] }) {
 
 function DamageTable({
   values,
+  comparisonValues,
   multiShots,
 }: {
   values:
+    | AnalyzedBuild["stats"]["damages"]
+    | AnalyzedBuild["stats"]["subWeaponDefenseDamages"];
+  comparisonValues?:
     | AnalyzedBuild["stats"]["damages"]
     | AnalyzedBuild["stats"]["subWeaponDefenseDamages"];
   multiShots?: AnalyzedBuild["weapon"]["multiShots"];
@@ -1314,14 +1327,18 @@ function DamageTable({
               <th>{t("analyzer:damage.header.distance")}</th>
             )}
             {damageIsSubWeaponDamage(firstRow) ? (
-              <th>{t("analyzer:damage.header.baseDamage")}</th>
+              <th>
+                {comparisonValues
+                  ? t("analyzer:damage.header.baseDamage.short")
+                  : t("analyzer:damage.header.baseDamage")}
+              </th>
             ) : null}
             {showDamageColumn && <th>{t("analyzer:damage.header.damage")}</th>}
           </tr>
         </thead>
         <tbody>
-          {values.map((val) => {
-            const damage =
+          {values.map((val, i) => {
+            const damage = (val: AnalyzedBuild["stats"]["damages"][number]) =>
               multiShots && damageTypeToWeaponType[val.type] === "MAIN"
                 ? new Array(multiShots).fill(val.value).join(" + ")
                 : val.value;
@@ -1331,6 +1348,8 @@ function DamageTable({
               : damageTypeTranslationString({
                   damageType: val.type,
                 });
+
+            const comparisonVal = comparisonValues?.[i];
 
             return (
               <tr key={val.id}>
@@ -1358,7 +1377,8 @@ function DamageTable({
                 {damageIsSubWeaponDamage(val) && <td>{val.baseValue}</td>}
                 {showDamageColumn && (
                   <td>
-                    {damage}{" "}
+                    {damage(val)}
+                    {comparisonVal ? `/${damage(comparisonVal)}` : null}{" "}
                     {val.shotsToSplat && (
                       <span className="analyzer__shots-to-splat">
                         {t("analyzer:damage.toSplat", {

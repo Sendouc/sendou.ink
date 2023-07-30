@@ -60,6 +60,10 @@ button[data-state="closed"][aria-haspopup="dialog"] {
   overflow-y: auto;
 }
 
+.plans__weapons-section__wide {
+  width: 175px;
+}
+
 .plans__weapons-summary {
   background-color: var(--bg-lighter);
   font-size: var(--fonts-sm);

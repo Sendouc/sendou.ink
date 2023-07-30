@@ -13,12 +13,9 @@ import {
 import type { ListedArt } from "../art-types";
 import { Dialog } from "~/components/Dialog";
 import * as React from "react";
-import { useSimplePagination } from "~/hooks/useSimplePagination";
+import { usePagination } from "~/hooks/usePagination";
 import { ART_PER_PAGE } from "../art-constants";
 import { Button, LinkButton } from "~/components/Button";
-import { ArrowRightIcon } from "~/components/icons/ArrowRight";
-import { ArrowLeftIcon } from "~/components/icons/ArrowLeft";
-import { nullFilledArray } from "~/utils/arrays";
 import clsx from "clsx";
 import { EditIcon } from "~/components/icons/Edit";
 import { useTranslation } from "~/hooks/useTranslation";
@@ -26,6 +23,7 @@ import { previewUrl } from "../art-utils";
 import { TrashIcon } from "~/components/icons/Trash";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
+import { Pagination } from "~/components/Pagination";
 
 export function ArtGrid({
   arts,
@@ -44,7 +42,7 @@ export function ArtGrid({
     nextPage,
     previousPage,
     setPage,
-  } = useSimplePagination({
+  } = usePagination({
     items: arts,
     pageSize: ART_PER_PAGE,
   });
@@ -79,7 +77,7 @@ export function ArtGrid({
         </Masonry>
       </ResponsiveMasonry>
       {!everythingVisible ? (
-        <SimplePagination
+        <Pagination
           currentPage={currentPage}
           pagesCount={pagesCount}
           nextPage={nextPage}
@@ -225,47 +223,5 @@ function ImagePreview({
         {discordFullName(art.author)}
       </div>
     </Link>
-  );
-}
-
-function SimplePagination({
-  currentPage,
-  pagesCount,
-  nextPage,
-  previousPage,
-  setPage,
-}: {
-  currentPage: number;
-  pagesCount: number;
-  nextPage: () => void;
-  previousPage: () => void;
-  setPage: (page: number) => void;
-}) {
-  return (
-    <div className="stack sm horizontal items-center justify-center flex-wrap">
-      <Button
-        icon={<ArrowLeftIcon />}
-        variant="outlined"
-        disabled={currentPage === 1}
-        onClick={previousPage}
-        aria-label="Previous page"
-      />
-      {nullFilledArray(pagesCount).map((_, i) => (
-        <div
-          key={i}
-          className={clsx("pagination__dot", {
-            pagination__dot__active: i === currentPage - 1,
-          })}
-          onClick={() => setPage(i + 1)}
-        />
-      ))}
-      <Button
-        icon={<ArrowRightIcon />}
-        variant="outlined"
-        disabled={currentPage === pagesCount}
-        onClick={nextPage}
-        aria-label="Next page"
-      />
-    </div>
   );
 }
