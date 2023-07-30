@@ -47,6 +47,7 @@ export default function UserResultsPage() {
               variant="outlined"
               size="tiny"
               to={userResultsEditHighlightsPage(userPageData)}
+              className="mx-auto"
             >
               {t("results.highlights.choose")}
             </LinkButton>
