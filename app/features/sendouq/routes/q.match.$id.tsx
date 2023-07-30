@@ -77,6 +77,7 @@ export const handle: SendouRouteHandle = {
   }),
 };
 
+// xxx: on score report, wipe reported weapons
 export const action = async ({ request, params }: ActionArgs) => {
   const matchId = matchIdFromParams(params);
   const user = await requireUserId(request);
@@ -103,10 +104,8 @@ export const action = async ({ request, params }: ActionArgs) => {
         })),
       ];
 
-      const groupManagerOfId = members.find(
-        (m) => m.id === user.id && ["OWNER", "MANAGER"].includes(m.role)
-      )?.groupId;
-      invariant(groupManagerOfId, "User is not a manager of any group");
+      const groupMemberOfId = members.find((m) => m.id === user.id)?.groupId;
+      invariant(groupMemberOfId, "User is not a manager of any group");
 
       const winner = winnersArrayToWinner(data.winners);
       const winnerTeamId =
@@ -117,7 +116,7 @@ export const action = async ({ request, params }: ActionArgs) => {
       const compared = compareMatchToReportedScores({
         match,
         winners: data.winners,
-        newReporterGroupId: groupManagerOfId,
+        newReporterGroupId: groupMemberOfId,
         previousReporterGroupId: match.reportedByUserId
           ? members.find((m) => m.id === match.reportedByUserId)!.groupId
           : undefined,
@@ -142,7 +141,7 @@ export const action = async ({ request, params }: ActionArgs) => {
           reportedByUserId: user.id,
           winners: data.winners,
         });
-        setGroupAsInactive(groupManagerOfId);
+        setGroupAsInactive(groupMemberOfId);
         if (newSkills) addSkills(newSkills);
       })();
 
@@ -250,11 +249,7 @@ export default function QMatchPage() {
   const ownMember =
     data.groupAlpha.members.find((m) => m.id === user?.id) ??
     data.groupBravo.members.find((m) => m.id === user?.id);
-  const canReportScore = Boolean(
-    !data.match.isLocked &&
-      ownMember &&
-      (ownMember.role === "MANAGER" || ownMember.role === "OWNER")
-  );
+  const canReportScore = Boolean(!data.match.isLocked && ownMember);
 
   const ownGroup = data.groupAlpha.members.some((m) => m.id === user?.id)
     ? data.groupAlpha
