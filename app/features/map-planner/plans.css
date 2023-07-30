@@ -51,13 +51,17 @@ button[data-state="closed"][aria-haspopup="dialog"] {
   position: fixed;
   z-index: 10;
   top: 10%;
-  width: 200px;
+  width: 150px;
   max-height: 85vh;
   border: 1px solid var(--theme-very-transparent);
   border-radius: 0 var(--rounded) var(--rounded) 0;
   background: var(--bg-darker);
   gap: 2px;
   overflow-y: auto;
+}
+
+.plans__weapons-section__wide {
+  width: 175px;
 }
 
 .plans__weapons-summary {
