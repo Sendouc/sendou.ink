@@ -468,7 +468,34 @@ function parametersToSpecialWeaponResult(params: any) {
   }
 
   if (resultUnwrapped["SplashAroundPaintRadius"]) {
-    resultUnwrapped["PaintRadius"] = resultUnwrapped["SplashAroundPaintRadius"];
+    // Inkjet
+    if (params["BlastParam"]?.["PaintRadius"]) {
+      const regularPaintRadius = params["BlastParam"]["PaintRadius"];
+
+      resultUnwrapped["PaintRadius"] = {
+        High:
+          resultUnwrapped["SplashAroundPaintRadius"].High + regularPaintRadius,
+        Mid:
+          resultUnwrapped["SplashAroundPaintRadius"].Mid + regularPaintRadius,
+        Low:
+          resultUnwrapped["SplashAroundPaintRadius"].Low + regularPaintRadius,
+      };
+      // Reefslider
+    } else {
+      console.log(resultUnwrapped);
+      resultUnwrapped["PaintRadius"] = {
+        High:
+          resultUnwrapped["SplashAroundPaintRadius"].High +
+          resultUnwrapped["PaintRadius"].High,
+        Mid:
+          resultUnwrapped["SplashAroundPaintRadius"].Mid +
+          resultUnwrapped["PaintRadius"].Mid,
+        Low:
+          resultUnwrapped["SplashAroundPaintRadius"].Low +
+          resultUnwrapped["PaintRadius"].Low,
+      };
+    }
+
     resultUnwrapped["SplashAroundPaintRadius"] = undefined;
   }
 

@@ -1869,9 +1869,9 @@
           "Mid": 480
         },
         "PaintRadius": {
-          "High": 0.7,
-          "Low": 0.63,
-          "Mid": 0.665
+          "High": 3.9000000000000004,
+          "Mid": 3.865,
+          "Low": 3.83
         }
       },
       "DistanceDamage": [
@@ -1947,9 +1947,9 @@
           "Mid": 1.1
         },
         "PaintRadius": {
-          "High": 1.2,
-          "Low": 1,
-          "Mid": 1.1
+          "High": 11.399999999999999,
+          "Mid": 10.45,
+          "Low": 9.5
         },
         "SplashAroundVelocityMin": {
           "High": 0.7,
