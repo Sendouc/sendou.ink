@@ -75,12 +75,11 @@ export function compareMatchToReportedScores({
   newReporterGroupId: number;
   previousReporterGroupId?: number;
 }) {
-  // they are overwriting their previous report, essentially same as first report
-  if (newReporterGroupId === previousReporterGroupId) return "FIRST_REPORT";
-
   // match has not been reported before
   if (!match.reportedByUserId) return "FIRST_REPORT";
 
+  const sameGroupReporting = newReporterGroupId === previousReporterGroupId;
+  const differentConstant = sameGroupReporting ? "FIX_PREVIOUS" : "DIFFERENT";
   for (const [
     i,
     { winnerGroupId: previousWinnerGroupId },
@@ -89,14 +88,17 @@ export function compareMatchToReportedScores({
 
     if (!newWinner && !previousWinnerGroupId) continue;
 
-    if (!newWinner && previousWinnerGroupId) return "DIFFERENT";
-    if (newWinner && !previousWinnerGroupId) return "DIFFERENT";
+    if (!newWinner && previousWinnerGroupId) return differentConstant;
+    if (newWinner && !previousWinnerGroupId) return differentConstant;
 
     const previousWinner =
       previousWinnerGroupId === match.alphaGroupId ? "ALPHA" : "BRAVO";
 
-    if (previousWinner !== newWinner) return "DIFFERENT";
+    if (previousWinner !== newWinner) return differentConstant;
   }
+
+  // same group reporting the same exact score
+  if (sameGroupReporting) return "DUPLICATE";
 
   return "SAME";
 }

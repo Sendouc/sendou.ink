@@ -63,6 +63,7 @@ import { groupForMatch } from "../queries/groupForMatch.server";
 import { reportScore } from "../queries/reportScore.server";
 import { reportedWeaponsByMatchId } from "../queries/reportedWeaponsByMatchId.server";
 import { setGroupAsInactive } from "../queries/setGroupAsInactive.server";
+import { deleteReporterWeaponsByMatchId } from "../queries/deleteReportedWeaponsByMatchId.server";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -77,7 +78,6 @@ export const handle: SendouRouteHandle = {
   }),
 };
 
-// xxx: on score report, wipe reported weapons
 export const action = async ({ request, params }: ActionArgs) => {
   const matchId = matchIdFromParams(params);
   const user = await requireUserId(request);
@@ -122,6 +122,10 @@ export const action = async ({ request, params }: ActionArgs) => {
           : undefined,
       });
 
+      // same group reporting same score, probably by mistake
+      if (compared === "DUPLICATE") {
+        return null;
+      }
       if (compared === "DIFFERENT") {
         return { error: "different" as const };
       }
@@ -143,6 +147,10 @@ export const action = async ({ request, params }: ActionArgs) => {
         });
         setGroupAsInactive(groupMemberOfId);
         if (newSkills) addSkills(newSkills);
+        // fix edge case where they 1) report score 2) report weapons 3) report score again, but with different amount of maps played
+        if (compared === "FIX_PREVIOUS") {
+          deleteReporterWeaponsByMatchId(matchId);
+        }
       })();
 
       break;
@@ -192,17 +200,20 @@ export const action = async ({ request, params }: ActionArgs) => {
         ...groupAlpha.members.map((m) => m.id),
         ...groupBravo.members.map((m) => m.id),
       ];
-      addReportedWeapons(
-        match.mapList
-          .filter((m) => m.winnerGroupId)
-          .flatMap((matchMap, i) =>
-            data.weapons[i].map((weaponSplId, j) => ({
-              groupMatchMapId: matchMap.id,
-              weaponSplId: weaponSplId as MainWeaponId,
-              userId: users[j],
-            }))
-          )
-      );
+      sql.transaction(() => {
+        deleteReporterWeaponsByMatchId(matchId);
+        addReportedWeapons(
+          match.mapList
+            .filter((m) => m.winnerGroupId)
+            .flatMap((matchMap, i) =>
+              data.weapons[i].map((weaponSplId, j) => ({
+                groupMatchMapId: matchMap.id,
+                weaponSplId: weaponSplId as MainWeaponId,
+                userId: users[j],
+              }))
+            )
+        );
+      })();
 
       break;
     }
@@ -233,7 +244,7 @@ export const loader = ({ params }: LoaderArgs) => {
   };
 };
 
-// xxx: admin score reporting?
+// xxx: admin score reporting? for situation where e.g. one team is not confirming, or fixing their mistake
 export default function QMatchPage() {
   const user = useUser();
   const isMounted = useIsMounted();
@@ -434,7 +445,8 @@ function AfterMatchActions({
     m.winnerGroupId === data.match.alphaGroupId ? "ALPHA" : "BRAVO"
   );
 
-  // xxx: when reporting weapons, divide groups
+  // xxx: when reporting weapons, divide groups visually
+  // xxx: weapon ordering bugged
   return (
     <div className="stack lg">
       <lookAgainFetcher.Form

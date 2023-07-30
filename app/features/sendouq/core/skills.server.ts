@@ -7,6 +7,7 @@ import {
   userIdsToIdentifier,
 } from "~/features/mmr";
 
+// xxx: do we even need all-time skills?
 export function calculateMatchSkills({
   groupMatchId,
   winner,
