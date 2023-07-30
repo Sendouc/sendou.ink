@@ -26,6 +26,7 @@ import {
 import { Button } from "../../../components/Button";
 import { Image } from "../../../components/Image";
 import type { StageBackgroundStyle } from "../plans-types";
+import clsx from "clsx";
 
 export default function Planner() {
   const { t } = useTranslation(["common"]);
@@ -189,9 +190,16 @@ function WeaponImageSelector({
 }: {
   handleAddWeapon: (src: string) => void;
 }) {
-  const { t } = useTranslation(["weapons", "common"]);
+  const { t, i18n } = useTranslation(["weapons", "common"]);
+
+  const isWide = i18n.language === "fr";
+
   return (
-    <div className="plans__weapons-section">
+    <div
+      className={clsx("plans__weapons-section", {
+        "plans__weapons-section__wide": isWide,
+      })}
+    >
       {weaponCategories.map((category) => {
         return (
           <details key={category.name}>
