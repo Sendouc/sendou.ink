@@ -41,7 +41,7 @@ import { createNewTeam } from "../queries/createNewTeam.server";
 import { TEAM, TEAMS_PER_PAGE } from "../team-constants";
 import { createTeamSchema } from "../team-schemas.server";
 import styles from "../team.css";
-import { useSimplePagination } from "~/hooks/useSimplePagination";
+import { usePagination } from "~/hooks/usePagination";
 import { Pagination } from "~/components/Pagination";
 
 export const meta: V2_MetaFunction = ({
@@ -182,7 +182,7 @@ export default function TeamSearchPage() {
     nextPage,
     previousPage,
     setPage,
-  } = useSimplePagination({
+  } = usePagination({
     items: filteredTeams,
     pageSize: TEAMS_PER_PAGE,
   });

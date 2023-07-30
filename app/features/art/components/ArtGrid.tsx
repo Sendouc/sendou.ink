@@ -13,7 +13,7 @@ import {
 import type { ListedArt } from "../art-types";
 import { Dialog } from "~/components/Dialog";
 import * as React from "react";
-import { useSimplePagination } from "~/hooks/useSimplePagination";
+import { usePagination } from "~/hooks/usePagination";
 import { ART_PER_PAGE } from "../art-constants";
 import { Button, LinkButton } from "~/components/Button";
 import clsx from "clsx";
@@ -42,7 +42,7 @@ export function ArtGrid({
     nextPage,
     previousPage,
     setPage,
-  } = useSimplePagination({
+  } = usePagination({
     items: arts,
     pageSize: ART_PER_PAGE,
   });

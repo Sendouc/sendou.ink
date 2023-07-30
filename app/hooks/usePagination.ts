@@ -1,6 +1,6 @@
 import * as React from "react";
 
-export function useSimplePagination<T>({
+export function usePagination<T>({
   items,
   pageSize,
 }: {
