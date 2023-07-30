@@ -16,4 +16,4 @@ export const TEAM_MEMBER_ROLES = [
   "COACH",
 ] as const;
 
-export const TEAMS_PER_PAGE = 20;
+export const TEAMS_PER_PAGE = 40;
