@@ -56,21 +56,19 @@ export function GroupCard({
                   showActions={ownGroup && ownRole === "OWNER"}
                 />
                 <div className="stack md horizontal items-center justify-between">
-                  {member.weapons ? (
-                    <div className="q__group-member-weapons">
-                      {member.weapons.map((weapon) => {
-                        return (
-                          <WeaponImage
-                            key={weapon}
-                            weaponSplId={weapon}
-                            variant="badge"
-                            size={36}
-                            className="q__group-member-weapon"
-                          />
-                        );
-                      })}
-                    </div>
-                  ) : null}
+                  <div className="q__group-member-weapons">
+                    {member.weapons?.map((weapon) => {
+                      return (
+                        <WeaponImage
+                          key={weapon}
+                          weaponSplId={weapon}
+                          variant="badge"
+                          size={36}
+                          className="q__group-member-weapon"
+                        />
+                      );
+                    })}
+                  </div>
                   {member.skill ? (
                     <div className="text-xs font-bold text-lighter stack horizontal xxs items-center">
                       <TierImage tier={member.skill.tier} width={36} />
