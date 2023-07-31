@@ -64,6 +64,8 @@ import { MemberAdder } from "../components/MemberAdder";
 import type { LookingGroupWithInviteCode } from "../q-types";
 import { trustedPlayersAvailableToPlay } from "../queries/usersInActiveGroup.server";
 import { userSkills } from "~/features/mmr/tiered";
+import { useWindowSize } from "~/hooks/useWindowSize";
+import { Tab, Tabs } from "~/components/Tabs";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -316,12 +318,9 @@ export const loader = async ({ request }: LoaderArgs) => {
   };
 };
 
-// xxx: mobile view
 export default function QLookingPage() {
   const data = useLoaderData<typeof loader>();
   useAutoRefresh();
-
-  const isFullGroup = data.groups.own.members!.length === FULL_GROUP_SIZE;
 
   const ownGroup = data.groups.own as LookingGroupWithInviteCode;
 
@@ -435,14 +434,72 @@ function InfoText() {
 function Groups() {
   const data = useLoaderData<typeof loader>();
   const isMounted = useIsMounted();
+  const { width } = useWindowSize();
 
   if (data.expiryStatus === "EXPIRED" || !isMounted) return null;
 
+  if (width < 750) return <MobileGroupCards />;
   return <GroupCardColumns />;
 }
 
 function MobileGroupCards() {
-  return null;
+  const data = useLoaderData<typeof loader>();
+  const [tab, setTab] = React.useState<"received" | "neutral" | "given">(
+    "neutral"
+  );
+
+  const isFullGroup = data.groups.own.members!.length === FULL_GROUP_SIZE;
+
+  const groups =
+    tab === "received"
+      ? data.groups.likesReceived
+      : tab === "given"
+      ? data.groups.likesGiven
+      : data.groups.neutral;
+
+  return (
+    <div className="mt-6">
+      <Tabs compact>
+        <Tab active={tab === "received"} onClick={() => setTab("received")}>
+          Received ({data.groups.likesReceived.length})
+        </Tab>
+        <Tab active={tab === "neutral"} onClick={() => setTab("neutral")}>
+          Neutral ({data.groups.neutral.length})
+        </Tab>
+        <Tab active={tab === "given"} onClick={() => setTab("given")}>
+          Given ({data.groups.likesGiven.length})
+        </Tab>
+      </Tabs>
+      <div className="stack sm q__mobile-groups-container">
+        {groups.map((group) => {
+          const { mapListPreference } = groupAfterMorph({
+            liker: tab === "received" ? "THEM" : "US",
+            ourGroup: data.groups.own,
+            theirGroup: group,
+          });
+
+          const action =
+            tab === "neutral"
+              ? "LIKE"
+              : tab === "given"
+              ? "UNLIKE"
+              : isFullGroup
+              ? "MATCH_UP"
+              : "GROUP_UP";
+
+          return (
+            <GroupCard
+              key={group.id}
+              group={group}
+              action={action}
+              mapListPreference={mapListPreference}
+              ownRole={data.role}
+            />
+          );
+        })}
+      </div>
+    </div>
+  );
 }
 
 function GroupCardColumns() {

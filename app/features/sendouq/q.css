@@ -64,6 +64,11 @@
   gap: var(--s-6);
 }
 
+.q__mobile-groups-container {
+  max-width: 300px;
+  margin: 0 auto;
+}
+
 .q__group {
   background-color: var(--bg-lighter-solid);
   width: 100%;
