@@ -1,13 +1,13 @@
+import invariant from "tiny-invariant";
 import type { GroupMatch, Skill, User } from "~/db/types";
 import {
-  currentSeason,
   queryCurrentTeamRating,
   queryCurrentUserRating,
   rate,
   userIdsToIdentifier,
 } from "~/features/mmr";
+import { previousOrCurrentSeason } from "~/features/mmr/season";
 
-// xxx: do we even need all-time skills?
 export function calculateMatchSkills({
   groupMatchId,
   winner,
@@ -24,12 +24,11 @@ export function calculateMatchSkills({
     >
   > = [];
 
-  // if no ranked season is active, match only affects all-time rankings
-  const season = currentSeason(new Date())?.nth;
-  const seasonOption = typeof season === "number" ? [null, season] : [null];
+  const season = previousOrCurrentSeason(new Date())?.nth;
+  invariant(typeof season === "number", "No ranked season for skills");
 
-  // individual skills
-  for (const season of seasonOption) {
+  {
+    // individual skills
     const [winnerTeamNew, loserTeamNew] = rate([
       winner.map((userId) => queryCurrentUserRating({ userId, season })),
       loser.map((userId) => queryCurrentUserRating({ userId, season })),
@@ -58,11 +57,10 @@ export function calculateMatchSkills({
     }
   }
 
-  // team skills
-  const winnerTeamIdentifier = userIdsToIdentifier(winner);
-  const loserTeamIdentifier = userIdsToIdentifier(loser);
-
-  for (const season of seasonOption) {
+  {
+    // team skills
+    const winnerTeamIdentifier = userIdsToIdentifier(winner);
+    const loserTeamIdentifier = userIdsToIdentifier(loser);
     const [[winnerTeamNew], [loserTeamNew]] = rate([
       [queryCurrentTeamRating({ identifier: winnerTeamIdentifier, season })],
       [queryCurrentTeamRating({ identifier: loserTeamIdentifier, season })],

@@ -17,6 +17,18 @@ const SEASONS =
 
 export type RankingSeason = (typeof SEASONS)[number];
 
+export function previousOrCurrentSeason(date: Date) {
+  const _currentSeason = currentSeason(date);
+  if (_currentSeason) return _currentSeason;
+
+  let latestPreviousSeason;
+  for (const season of SEASONS) {
+    if (date >= season.ends) latestPreviousSeason = season;
+  }
+
+  return latestPreviousSeason;
+}
+
 export function currentSeason(date: Date) {
   for (const season of SEASONS) {
     if (date >= season.starts && date <= season.ends) return season;
