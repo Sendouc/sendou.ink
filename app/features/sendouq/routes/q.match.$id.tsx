@@ -64,6 +64,7 @@ import { reportScore } from "../queries/reportScore.server";
 import { reportedWeaponsByMatchId } from "../queries/reportedWeaponsByMatchId.server";
 import { setGroupAsInactive } from "../queries/setGroupAsInactive.server";
 import { deleteReporterWeaponsByMatchId } from "../queries/deleteReportedWeaponsByMatchId.server";
+import { Divider } from "~/components/Divider";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -445,7 +446,6 @@ function AfterMatchActions({
     m.winnerGroupId === data.match.alphaGroupId ? "ALPHA" : "BRAVO"
   );
 
-  // xxx: when reporting weapons, divide groups visually
   // xxx: weapon ordering bugged
   return (
     <div className="stack lg">
@@ -511,30 +511,38 @@ function AfterMatchActions({
                       ...data.groupBravo.members,
                     ].map((m, j) => {
                       return (
-                        <div
-                          key={m.id}
-                          className="stack horizontal sm justify-between items-center"
-                        >
-                          <div className="stack sm horizontal">
-                            <Avatar user={m} size="xxs" /> {m.discordName}
-                          </div>
-                          <WeaponCombobox
-                            inputName="weapon"
-                            value={weaponsUsage[i][j]}
-                            onChange={(weapon) => {
-                              if (!weapon) return;
+                        <React.Fragment key={m.id}>
+                          {j === 0 ? (
+                            <Divider className="text-sm">Alpha</Divider>
+                          ) : null}
+                          {j === FULL_GROUP_SIZE ? (
+                            <Divider className="text-sm">Bravo</Divider>
+                          ) : null}
+                          <div
+                            key={m.id}
+                            className="stack horizontal sm justify-between items-center"
+                          >
+                            <div className="stack sm horizontal">
+                              <Avatar user={m} size="xxs" /> {m.discordName}
+                            </div>
+                            <WeaponCombobox
+                              inputName="weapon"
+                              value={weaponsUsage[i][j]}
+                              onChange={(weapon) => {
+                                if (!weapon) return;
 
-                              setWeaponsUsage((val) => {
-                                const newVal = [...val];
-                                newVal[i] = [...newVal[i]];
-                                newVal[i][j] = Number(
-                                  weapon.value
-                                ) as MainWeaponId;
-                                return newVal;
-                              });
-                            }}
-                          />
-                        </div>
+                                setWeaponsUsage((val) => {
+                                  const newVal = [...val];
+                                  newVal[i] = [...newVal[i]];
+                                  newVal[i][j] = Number(
+                                    weapon.value
+                                  ) as MainWeaponId;
+                                  return newVal;
+                                });
+                              }}
+                            />
+                          </div>
+                        </React.Fragment>
                       );
                     })}
                   </div>
