@@ -446,7 +446,6 @@ function AfterMatchActions({
     m.winnerGroupId === data.match.alphaGroupId ? "ALPHA" : "BRAVO"
   );
 
-  // xxx: weapon ordering bugged
   return (
     <div className="stack lg">
       <lookAgainFetcher.Form
@@ -678,6 +677,10 @@ function MapList({
     !data.match.isLocked &&
     newScoresAreDifferent;
 
+  const allMembers = [
+    ...data.groupAlpha.members,
+    ...data.groupBravo.members,
+  ].map((m) => m.id);
   return (
     <fetcher.Form method="post">
       <input type="hidden" name="winners" value={JSON.stringify(winners)} />
@@ -692,9 +695,13 @@ function MapList({
                 map={map}
                 winners={winners}
                 setWinners={setWinners}
-                weapons={data.reportedWeapons?.filter(
-                  (w) => w.groupMatchMapId === map.id
-                )}
+                weapons={data.reportedWeapons
+                  ?.filter((w) => w.groupMatchMapId === map.id)
+                  .sort(
+                    (a, b) =>
+                      allMembers.indexOf(a.userId) -
+                      allMembers.indexOf(b.userId)
+                  )}
               />
             );
           })}

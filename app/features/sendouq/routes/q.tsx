@@ -164,7 +164,6 @@ export const loader = async ({ request }: LoaderArgs) => {
   };
 };
 
-// xxx: pick initial MMR
 export default function QPage() {
   const [dialogOpen, setDialogOpen] = React.useState(true);
   const user = useUser();
