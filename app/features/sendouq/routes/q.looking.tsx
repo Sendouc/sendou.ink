@@ -344,88 +344,7 @@ export default function QLookingPage() {
           trustedPlayers={data.trustedPlayers}
         />
       ) : null}
-      {data.expiryStatus !== "EXPIRED" ? (
-        <Flipper
-          flipKey={`${data.groups.likesReceived
-            .map((g) => g.id)
-            .join("")}-${data.groups.neutral
-            .map((g) => g.id)
-            .join("")}-${data.groups.likesGiven.map((g) => g.id).join("")}`}
-        >
-          <div className="q__groups-container">
-            <div>
-              <h2 className="text-sm text-center mb-2">
-                {isFullGroup ? "Challenges received" : "Groups that asked you"}
-              </h2>
-              <div className="stack sm">
-                {data.groups.likesReceived.map((group) => {
-                  const { mapListPreference } = groupAfterMorph({
-                    liker: "THEM",
-                    ourGroup: data.groups.own,
-                    theirGroup: group,
-                  });
-
-                  return (
-                    <GroupCard
-                      key={group.id}
-                      group={group}
-                      action={isFullGroup ? "MATCH_UP" : "GROUP_UP"}
-                      mapListPreference={mapListPreference}
-                      ownRole={data.role}
-                    />
-                  );
-                })}
-              </div>
-            </div>
-            <div className="w-full">
-              <h2 className="text-sm text-center mb-2 invisible">Neutral</h2>
-              <div className="stack sm">
-                {data.groups.neutral.map((group) => {
-                  const { mapListPreference } = groupAfterMorph({
-                    liker: "US",
-                    ourGroup: data.groups.own,
-                    theirGroup: group,
-                  });
-
-                  return (
-                    <GroupCard
-                      key={group.id}
-                      group={group}
-                      action="LIKE"
-                      mapListPreference={mapListPreference}
-                      ownRole={data.role}
-                    />
-                  );
-                })}
-              </div>
-            </div>
-            <div>
-              <h2 className="text-sm text-center mb-2">
-                {isFullGroup ? "Challenges issued" : "Groups you asked"}
-              </h2>
-              <div className="stack sm">
-                {data.groups.likesGiven.map((group) => {
-                  const { mapListPreference } = groupAfterMorph({
-                    liker: "US",
-                    ourGroup: data.groups.own,
-                    theirGroup: group,
-                  });
-
-                  return (
-                    <GroupCard
-                      key={group.id}
-                      group={group}
-                      action="UNLIKE"
-                      mapListPreference={mapListPreference}
-                      ownRole={data.role}
-                    />
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        </Flipper>
-      ) : null}
+      <Groups />
     </Main>
   );
 }
@@ -510,5 +429,107 @@ function InfoText() {
           )}`
         : "Placeholder"}
     </div>
+  );
+}
+
+function Groups() {
+  const data = useLoaderData<typeof loader>();
+  const isMounted = useIsMounted();
+
+  if (data.expiryStatus === "EXPIRED" || !isMounted) return null;
+
+  return <GroupCardColumns />;
+}
+
+function MobileGroupCards() {
+  return null;
+}
+
+function GroupCardColumns() {
+  const data = useLoaderData<typeof loader>();
+
+  const isFullGroup = data.groups.own.members!.length === FULL_GROUP_SIZE;
+
+  return (
+    <Flipper
+      flipKey={`${data.groups.likesReceived
+        .map((g) => g.id)
+        .join("")}-${data.groups.neutral
+        .map((g) => g.id)
+        .join("")}-${data.groups.likesGiven.map((g) => g.id).join("")}`}
+    >
+      <div className="q__groups-container">
+        <div>
+          <h2 className="text-sm text-center mb-2">
+            {isFullGroup ? "Challenges received" : "Groups that asked you"}
+          </h2>
+          <div className="stack sm">
+            {data.groups.likesReceived.map((group) => {
+              const { mapListPreference } = groupAfterMorph({
+                liker: "THEM",
+                ourGroup: data.groups.own,
+                theirGroup: group,
+              });
+
+              return (
+                <GroupCard
+                  key={group.id}
+                  group={group}
+                  action={isFullGroup ? "MATCH_UP" : "GROUP_UP"}
+                  mapListPreference={mapListPreference}
+                  ownRole={data.role}
+                />
+              );
+            })}
+          </div>
+        </div>
+        <div className="w-full">
+          <h2 className="text-sm text-center mb-2 invisible">Neutral</h2>
+          <div className="stack sm">
+            {data.groups.neutral.map((group) => {
+              const { mapListPreference } = groupAfterMorph({
+                liker: "US",
+                ourGroup: data.groups.own,
+                theirGroup: group,
+              });
+
+              return (
+                <GroupCard
+                  key={group.id}
+                  group={group}
+                  action="LIKE"
+                  mapListPreference={mapListPreference}
+                  ownRole={data.role}
+                />
+              );
+            })}
+          </div>
+        </div>
+        <div>
+          <h2 className="text-sm text-center mb-2">
+            {isFullGroup ? "Challenges issued" : "Groups you asked"}
+          </h2>
+          <div className="stack sm">
+            {data.groups.likesGiven.map((group) => {
+              const { mapListPreference } = groupAfterMorph({
+                liker: "US",
+                ourGroup: data.groups.own,
+                theirGroup: group,
+              });
+
+              return (
+                <GroupCard
+                  key={group.id}
+                  group={group}
+                  action="UNLIKE"
+                  mapListPreference={mapListPreference}
+                  ownRole={data.role}
+                />
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </Flipper>
   );
 }
