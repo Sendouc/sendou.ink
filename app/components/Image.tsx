@@ -1,11 +1,14 @@
+import type { TierName } from "~/features/mmr/mmr-constants";
 import { useTranslation } from "~/hooks/useTranslation";
 import type { MainWeaponId, ModeShort, StageId } from "~/modules/in-game-lists";
 import {
+  TIER_PLUS_URL,
   mainWeaponImageUrl,
   modeImageUrl,
   outlinedFiveStarMainWeaponImageUrl,
   outlinedMainWeaponImageUrl,
   stageImageUrl,
+  tierImageUrl,
 } from "~/utils/urls";
 
 interface ImageProps {
@@ -122,5 +125,37 @@ export function StageImage({ stageId, testId, ...rest }: StageImageProps) {
       path={stageImageUrl(stageId)}
       height={rest.height ?? (rest.width ? rest.width * 0.5625 : undefined)}
     />
+  );
+}
+
+type TierImageProps = {
+  tier: { name: TierName; isPlus: boolean };
+} & Omit<ImageProps, "path" | "alt" | "title" | "size" | "height">;
+
+export function TierImage({ tier, width = 200 }: TierImageProps) {
+  const title = `${tier.name}${tier.isPlus ? "+" : ""}`;
+
+  const height = width * 0.8675;
+
+  return (
+    <div className="tier__container">
+      <Image
+        path={tierImageUrl(tier.name)}
+        width={width}
+        height={height}
+        alt={title}
+        title={title}
+        containerClassName="tier__img"
+      />
+      {tier.isPlus ? (
+        <Image
+          path={TIER_PLUS_URL}
+          width={width}
+          height={height}
+          alt=""
+          containerClassName="tier__img"
+        />
+      ) : null}
+    </div>
   );
 }

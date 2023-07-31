@@ -305,9 +305,9 @@ export const stageImageUrl = (stageId: StageId) =>
   `/static-assets/img/stages/${stageId}`;
 export const brandImageUrl = (brand: "tentatek" | "takoroka") =>
   `/static-assets/img/layout/${brand}`;
-// xxx: TODO: tierImageSmallUrl when not used on the season page
-export const tierImageUrl = (_tier: TierName) =>
-  `/static-assets/img/tiers/iron`;
+export const tierImageUrl = (tier: TierName) =>
+  `/static-assets/img/tiers/${tier}`;
+export const TIER_PLUS_URL = `/static-assets/img/tiers/plus`;
 export const stageMinimapImageUrlWithEnding = ({
   stageId,
   mode,

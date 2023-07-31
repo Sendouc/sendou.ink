@@ -1220,6 +1220,15 @@ dialog::backdrop {
   background-color: var(--theme);
 }
 
+.tier__container {
+  display: grid;
+}
+
+.tier__img {
+  grid-column: 1;
+  grid-row: 1;
+}
+
 #nprogress .bar {
   margin-top: 3rem !important;
   background: var(--theme) !important;
