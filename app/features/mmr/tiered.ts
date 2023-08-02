@@ -3,6 +3,10 @@ import type { Skill } from "~/db/types";
 import { MATCHES_COUNT_NEEDED_FOR_LEADERBOARD } from "../leaderboards/leaderboards-constants";
 import { orderedMMRBySeason } from "./queries/orderedMMRBySeason.server";
 import { currentSeason } from "./season";
+import { cachified } from "cachified";
+import { cache, ttl } from "~/utils/cache.server";
+import { HALF_HOUR_IN_MS, ONE_HOUR_IN_MS } from "~/constants";
+import { USER_SKILLS_CACHE_KEY } from "../sendouq/q-constants";
 
 export interface TieredSkill {
   ordinal: number;
@@ -13,8 +17,7 @@ export interface TieredSkill {
   approximate: boolean;
 }
 
-// xxx: cache
-export function userSkills(): {
+export function freshUserSkills(): {
   userSkills: Record<string, TieredSkill>;
   intervals: SkillTierInterval[];
 } {
@@ -43,6 +46,18 @@ export function userSkills(): {
       })
     ),
   };
+}
+
+export function userSkills() {
+  return cachified({
+    key: USER_SKILLS_CACHE_KEY,
+    cache,
+    ttl: ttl(HALF_HOUR_IN_MS),
+    staleWhileRevalidate: ttl(ONE_HOUR_IN_MS),
+    getFreshValue() {
+      return freshUserSkills();
+    },
+  });
 }
 
 export type SkillTierInterval = ReturnType<typeof skillTierIntervals>[number];

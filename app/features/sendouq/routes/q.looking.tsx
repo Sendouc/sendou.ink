@@ -298,7 +298,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   const groupsWithSkills = addSkillsToGroups({
     groups: dividedGroups,
-    ...userSkills(),
+    ...(await userSkills()),
   });
 
   const censoredGroups = censorGroups({

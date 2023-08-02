@@ -49,7 +49,7 @@ import {
 import { matchEndedAtIndex } from "../core/match";
 import { compareMatchToReportedScores } from "../core/match.server";
 import { calculateMatchSkills } from "../core/skills.server";
-import { FULL_GROUP_SIZE } from "../q-constants";
+import { FULL_GROUP_SIZE, USER_SKILLS_CACHE_KEY } from "../q-constants";
 import { matchSchema } from "../q-schemas.server";
 import { matchIdFromParams, winnersArrayToWinner } from "../q-utils";
 import styles from "../q.css";
@@ -65,6 +65,7 @@ import { reportedWeaponsByMatchId } from "../queries/reportedWeaponsByMatchId.se
 import { setGroupAsInactive } from "../queries/setGroupAsInactive.server";
 import { deleteReporterWeaponsByMatchId } from "../queries/deleteReportedWeaponsByMatchId.server";
 import { Divider } from "~/components/Divider";
+import { cache } from "~/utils/cache.server";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -147,7 +148,10 @@ export const action = async ({ request, params }: ActionArgs) => {
           winners: data.winners,
         });
         setGroupAsInactive(groupMemberOfId);
-        if (newSkills) addSkills(newSkills);
+        if (newSkills) {
+          addSkills(newSkills);
+          cache.delete(USER_SKILLS_CACHE_KEY);
+        }
         // fix edge case where they 1) report score 2) report weapons 3) report score again, but with different amount of maps played
         if (compared === "FIX_PREVIOUS") {
           deleteReporterWeaponsByMatchId(matchId);
