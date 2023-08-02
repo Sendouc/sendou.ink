@@ -66,6 +66,7 @@ import { setGroupAsInactive } from "../queries/setGroupAsInactive.server";
 import { deleteReporterWeaponsByMatchId } from "../queries/deleteReportedWeaponsByMatchId.server";
 import { Divider } from "~/components/Divider";
 import { cache } from "~/utils/cache.server";
+import { Toggle } from "~/components/Toggle";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -95,6 +96,10 @@ export const action = async ({ request, params }: ActionArgs) => {
         !match.isLocked,
         "Match has already been reported by both teams"
       );
+      validate(
+        !data.adminReport || isAdmin(user),
+        "Only admins can report scores as admin"
+      );
       const members = [
         ...groupForMatch(match.alphaGroupId)!.members.map((m) => ({
           ...m,
@@ -107,7 +112,10 @@ export const action = async ({ request, params }: ActionArgs) => {
       ];
 
       const groupMemberOfId = members.find((m) => m.id === user.id)?.groupId;
-      invariant(groupMemberOfId, "User is not a manager of any group");
+      invariant(
+        groupMemberOfId || data.adminReport,
+        "User is not a manager of any group"
+      );
 
       const winner = winnersArrayToWinner(data.winners);
       const winnerTeamId =
@@ -115,14 +123,17 @@ export const action = async ({ request, params }: ActionArgs) => {
       const loserTeamId =
         winner === "ALPHA" ? match.bravoGroupId : match.alphaGroupId;
 
-      const compared = compareMatchToReportedScores({
-        match,
-        winners: data.winners,
-        newReporterGroupId: groupMemberOfId,
-        previousReporterGroupId: match.reportedByUserId
-          ? members.find((m) => m.id === match.reportedByUserId)!.groupId
-          : undefined,
-      });
+      // when admin reports match gets locked right away
+      const compared = data.adminReport
+        ? "SAME"
+        : compareMatchToReportedScores({
+            match,
+            winners: data.winners,
+            newReporterGroupId: groupMemberOfId!,
+            previousReporterGroupId: match.reportedByUserId
+              ? members.find((m) => m.id === match.reportedByUserId)!.groupId
+              : undefined,
+          });
 
       // same group reporting same score, probably by mistake
       if (compared === "DUPLICATE") {
@@ -147,7 +158,9 @@ export const action = async ({ request, params }: ActionArgs) => {
           reportedByUserId: user.id,
           winners: data.winners,
         });
-        setGroupAsInactive(groupMemberOfId);
+        // own group gets set inactive
+        if (groupMemberOfId) setGroupAsInactive(groupMemberOfId);
+        // skills only update after both teams have reported
         if (newSkills) {
           addSkills(newSkills);
           cache.delete(USER_SKILLS_CACHE_KEY);
@@ -155,6 +168,11 @@ export const action = async ({ request, params }: ActionArgs) => {
         // fix edge case where they 1) report score 2) report weapons 3) report score again, but with different amount of maps played
         if (compared === "FIX_PREVIOUS") {
           deleteReporterWeaponsByMatchId(matchId);
+        }
+        // admin reporting, just set both groups inactive
+        if (data.adminReport) {
+          setGroupAsInactive(match.alphaGroupId);
+          setGroupAsInactive(match.bravoGroupId);
         }
       })();
 
@@ -249,7 +267,6 @@ export const loader = ({ params }: LoaderArgs) => {
   };
 };
 
-// xxx: admin score reporting? for situation where e.g. one team is not confirming, or fixing their mistake
 export default function QMatchPage() {
   const user = useUser();
   const isMounted = useIsMounted();
@@ -265,7 +282,8 @@ export default function QMatchPage() {
   const ownMember =
     data.groupAlpha.members.find((m) => m.id === user?.id) ??
     data.groupBravo.members.find((m) => m.id === user?.id);
-  const canReportScore = Boolean(!data.match.isLocked && ownMember);
+  const canReportScore =
+    Boolean(!data.match.isLocked && ownMember) || isAdmin(user);
 
   const ownGroup = data.groupAlpha.members.some((m) => m.id === user?.id)
     ? data.groupAlpha
@@ -370,7 +388,7 @@ function Score({ reportedAt }: { reportedAt: number }) {
         <div
           className={clsx("text-xs text-lighter", { invisible: !isMounted })}
         >
-          Reported by {reporter?.discordName ?? "???"} at{" "}
+          Reported by {reporter?.discordName ?? <b>admin</b>} at{" "}
           {isMounted
             ? databaseTimestampToDate(reportedAt).toLocaleString(
                 i18n.language,
@@ -659,7 +677,9 @@ function MapList({
   isResubmission: boolean;
   fetcher: FetcherWithComponents<any>;
 }) {
+  const user = useUser();
   const data = useLoaderData<typeof loader>();
+  const [adminToggleChecked, setAdminToggleChecked] = React.useState(false);
 
   const previouslyReportedWinners = isResubmission
     ? data.match.mapList
@@ -711,6 +731,16 @@ function MapList({
           })}
         </div>
       </Flipper>
+      {scoreCanBeReported && isAdmin(user) ? (
+        <div className="stack sm horizontal items-center text-sm font-semi-bold">
+          <Toggle
+            name="adminReport"
+            checked={adminToggleChecked}
+            setChecked={setAdminToggleChecked}
+          />
+          Report as admin
+        </div>
+      ) : null}
       {scoreCanBeReported ? (
         <div className="stack md items-center mt-4">
           <ResultSummary winners={winners} />

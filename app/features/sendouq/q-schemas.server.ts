@@ -4,7 +4,12 @@ import {
   MAP_LIST_PREFERENCE_OPTIONS,
   SENDOUQ_BEST_OF,
 } from "./q-constants";
-import { id, safeJSONParse, weaponSplId } from "~/utils/zod";
+import {
+  checkboxValueToBoolean,
+  id,
+  safeJSONParse,
+  weaponSplId,
+} from "~/utils/zod";
 import { matchEndedAtIndex } from "./core/match";
 
 export const frontPageSchema = z.union([
@@ -82,6 +87,10 @@ export const matchSchema = z.union([
   z.object({
     _action: z.literal("REPORT_SCORE"),
     winners,
+    adminReport: z.preprocess(
+      checkboxValueToBoolean,
+      z.boolean().nullish().default(false)
+    ),
   }),
   z.object({
     _action: z.literal("LOOK_AGAIN"),
