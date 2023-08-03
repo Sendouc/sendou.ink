@@ -3,7 +3,6 @@ import type { UserSPLeaderboardItem } from "../queries/userSPLeaderboard.server"
 import type { SeasonPopularUsersWeapon } from "../queries/seasonPopularUsersWeapon.server";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 
-// xxx: cache?, notice about cache time
 export function addTiers(entries: UserSPLeaderboardItem[]) {
   const tiers = freshUserSkills();
 

@@ -43,6 +43,9 @@ import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { allSeasons } from "~/features/mmr/season";
 import { addTiers, addWeapons } from "../core/sp.server";
 import { seasonPopularUsersWeapon } from "../queries/seasonPopularUsersWeapon.server";
+import { cachified } from "cachified";
+import { cache, ttl } from "~/utils/cache.server";
+import { HALF_HOUR_IN_MS } from "~/constants";
 
 export const handle: SendouRouteHandle = {
   i18n: ["vods"],
@@ -84,15 +87,25 @@ export const loader = async ({ request }: LoaderArgs) => {
     LEADERBOARD_TYPES.find((type) => type === unvalidatedType) ??
     LEADERBOARD_TYPES[0];
 
-  // xxx: season selection logic
-  return {
-    userLeaderboard:
-      type === "USER"
-        ? addWeapons(
+  const userLeaderboard = type.includes("USER")
+    ? await cachified({
+        // xxx: add season here
+        key: `user-leaderboard-season-${0}`,
+        cache,
+        ttl: ttl(HALF_HOUR_IN_MS),
+        // eslint-disable-next-line @typescript-eslint/require-await
+        async getFreshValue() {
+          return addWeapons(
             addTiers(userSPLeaderboard(0)),
             seasonPopularUsersWeapon(0)
-          )
-        : null,
+          );
+        },
+      })
+    : null;
+
+  // xxx: season selection logic
+  return {
+    userLeaderboard: userLeaderboard,
     teamLeaderboard: type === "TEAM" ? teamSPLeaderboard() : null,
     xpLeaderboard:
       type === "XP-ALL"
@@ -177,6 +190,12 @@ export default function LeaderboardsPage() {
         <TeamTable entries={data.teamLeaderboard} />
       ) : null}
       {data.xpLeaderboard ? <XPTable entries={data.xpLeaderboard} /> : null}
+      {/* xxx: only when viewing current season */}
+      {!data.xpLeaderboard ? (
+        <div className="text-xs text-lighter">
+          Leaderboard is updated once every 30 minutes.
+        </div>
+      ) : null}
     </Main>
   );
 }
