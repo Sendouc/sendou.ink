@@ -44,3 +44,16 @@ export function nextSeason(date: Date) {
 
   return null;
 }
+
+export function seasonObject(nth: number) {
+  return SEASONS[nth];
+}
+
+export function allSeasons(date: Date) {
+  const startedSeasons = SEASONS.filter((s) => date >= s.starts);
+  if (startedSeasons.length > 0) {
+    return startedSeasons.map((s) => s.nth).reverse();
+  }
+
+  return [0];
+}

@@ -7,7 +7,7 @@ import type {
 import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
 import { Avatar } from "~/components/Avatar";
 import { Main } from "~/components/Main";
-import { discordFullName, makeTitle } from "~/utils/strings";
+import { makeTitle } from "~/utils/strings";
 import {
   LEADERBOARDS_PAGE,
   navIconUrl,
@@ -17,10 +17,7 @@ import {
   userSubmittedImage,
 } from "~/utils/urls";
 import styles from "../../top-search/top-search.css";
-import {
-  userSPLeaderboard,
-  type UserSPLeaderboardItem,
-} from "../queries/userSPLeaderboard.server";
+import { userSPLeaderboard } from "../queries/userSPLeaderboard.server";
 import type { SendouRouteHandle } from "~/utils/remix";
 import {
   type TeamSPLeaderboardItem,
@@ -36,13 +33,16 @@ import {
   modeXPLeaderboard,
   weaponXPLeaderboard,
 } from "../queries/XPLeaderboard.server";
-import { WeaponImage } from "~/components/Image";
+import { TierImage, WeaponImage } from "~/components/Image";
 import {
   weaponCategories,
   type MainWeaponId,
   type RankedModeShort,
 } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
+import { allSeasons } from "~/features/mmr/season";
+import { addTiers, addWeapons } from "../core/sp.server";
+import { seasonPopularUsersWeapon } from "../queries/seasonPopularUsersWeapon.server";
 
 export const handle: SendouRouteHandle = {
   i18n: ["vods"],
@@ -84,8 +84,15 @@ export const loader = async ({ request }: LoaderArgs) => {
     LEADERBOARD_TYPES.find((type) => type === unvalidatedType) ??
     LEADERBOARD_TYPES[0];
 
+  // xxx: season selection logic
   return {
-    userLeaderboard: type === "USER" ? userSPLeaderboard() : null,
+    userLeaderboard:
+      type === "USER"
+        ? addWeapons(
+            addTiers(userSPLeaderboard(0)),
+            seasonPopularUsersWeapon(0)
+          )
+        : null,
     teamLeaderboard: type === "TEAM" ? teamSPLeaderboard() : null,
     xpLeaderboard:
       type === "XP-ALL"
@@ -113,17 +120,29 @@ export default function LeaderboardsPage() {
           setSearchParams({ [TYPE_SEARCH_PARAM_KEY]: e.target.value })
         }
       >
-        <optgroup label="SP">
-          {LEADERBOARD_TYPES.filter((type) => !type.includes("XP")).map(
-            (type) => {
-              return (
-                <option key={type} value={type}>
-                  {t(`common:leaderboard.type.${type as "USER" | "TEAM"}`)}
-                </option>
-              );
-            }
-          )}
-        </optgroup>
+        {allSeasons(new Date()).map((season) => {
+          return (
+            <optgroup label={`SP - Season ${season}`} key={season}>
+              {LEADERBOARD_TYPES.filter((type) => !type.includes("XP")).map(
+                (type) => {
+                  const userOrTeam = type.includes("USER") ? "USER" : "TEAM";
+                  const category = weaponCategories.find((c) =>
+                    type.includes(c.name)
+                  )?.name;
+
+                  return (
+                    <option key={type} value={type}>
+                      {t(`common:leaderboard.type.${userOrTeam}`)}
+                      {category
+                        ? ` (${t(`common:weapon.category.${category}`)})`
+                        : ""}
+                    </option>
+                  );
+                }
+              )}
+            </optgroup>
+          );
+        })}
         <optgroup label="XP">
           <option value="XP-ALL">{t(`common:leaderboard.type.XP-ALL`)}</option>
           {rankedModesShort.map((mode) => {
@@ -162,27 +181,48 @@ export default function LeaderboardsPage() {
   );
 }
 
-function PlayersTable({ entries }: { entries: UserSPLeaderboardItem[] }) {
+// xxx: have links lead to season page on user page
+function PlayersTable({
+  entries,
+}: {
+  entries: NonNullable<SerializeFrom<typeof loader>["userLeaderboard"]>;
+}) {
   return (
     <div className="placements__table">
       {entries.map((entry) => {
         return (
-          <Link
-            to={userPage(entry)}
-            key={entry.entryId}
-            className="placements__table__row"
-          >
-            <div className="placements__table__inner-row">
-              <div className="placements__table__rank">
-                {entry.placementRank}
+          <React.Fragment key={entry.entryId}>
+            {entry.tier ? (
+              <div className="placements__tier-header">
+                <TierImage tier={entry.tier} width={32} />
+                {entry.tier.name}
+                {entry.tier.isPlus ? "+" : ""}
               </div>
-              <div>
-                <Avatar size="xxs" user={entry} />
+            ) : null}
+            <Link to={userPage(entry)} className="placements__table__row">
+              <div className="placements__table__inner-row">
+                <div className="placements__table__rank">
+                  {entry.placementRank}
+                </div>
+                <div>
+                  <Avatar size="xxs" user={entry} />
+                </div>
+                {entry.weaponSplId ? (
+                  <WeaponImage
+                    className="placements__table__weapon"
+                    variant="build"
+                    weaponSplId={entry.weaponSplId}
+                    width={32}
+                    height={32}
+                  />
+                ) : null}
+                <div className="placements__table__name">
+                  {entry.discordName}
+                </div>
+                <div className="placements__table__power">{entry.power}</div>
               </div>
-              <div>{discordFullName(entry)}</div>
-              <div className="placements__table__power">{entry.power}</div>
-            </div>
-          </Link>
+            </Link>
+          </React.Fragment>
         );
       })}
     </div>

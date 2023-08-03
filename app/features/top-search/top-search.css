@@ -11,6 +11,21 @@
   text-align: right;
 }
 
+.placements__table__name {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 160px;
+}
+
+.placements__tier-header {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin-block: var(--s-2);
+  color: var(--text-lighter);
+}
+
 .placements__table__row {
   background-color: var(--bg-lighter);
   display: flex;
