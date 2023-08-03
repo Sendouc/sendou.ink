@@ -41,7 +41,11 @@ import {
 } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { allSeasons } from "~/features/mmr/season";
-import { addTiers, addWeapons } from "../core/sp.server";
+import {
+  addTiers,
+  addWeapons,
+  filterByWeaponCategory,
+} from "../core/sp.server";
 import { seasonPopularUsersWeapon } from "../queries/seasonPopularUsersWeapon.server";
 import { cachified } from "cachified";
 import { cache, ttl } from "~/utils/cache.server";
@@ -103,9 +107,17 @@ export const loader = async ({ request }: LoaderArgs) => {
       })
     : null;
 
+  const filteredLeaderboard =
+    userLeaderboard && type !== "USER"
+      ? filterByWeaponCategory(
+          userLeaderboard,
+          type.split("-")[1] as (typeof weaponCategories)[number]["name"]
+        )
+      : userLeaderboard;
+
   // xxx: season selection logic
   return {
-    userLeaderboard: userLeaderboard,
+    userLeaderboard: filteredLeaderboard ?? userLeaderboard,
     teamLeaderboard: type === "TEAM" ? teamSPLeaderboard() : null,
     xpLeaderboard:
       type === "XP-ALL"
@@ -184,7 +196,10 @@ export default function LeaderboardsPage() {
         })}
       </select>
       {data.userLeaderboard ? (
-        <PlayersTable entries={data.userLeaderboard} />
+        <PlayersTable
+          entries={data.userLeaderboard}
+          showTiers={searchParams.get(TYPE_SEARCH_PARAM_KEY) === "USER"}
+        />
       ) : null}
       {data.teamLeaderboard ? (
         <TeamTable entries={data.teamLeaderboard} />
@@ -203,15 +218,17 @@ export default function LeaderboardsPage() {
 // xxx: have links lead to season page on user page
 function PlayersTable({
   entries,
+  showTiers,
 }: {
   entries: NonNullable<SerializeFrom<typeof loader>["userLeaderboard"]>;
+  showTiers?: boolean;
 }) {
   return (
     <div className="placements__table">
       {entries.map((entry) => {
         return (
           <React.Fragment key={entry.entryId}>
-            {entry.tier ? (
+            {entry.tier && showTiers ? (
               <div className="placements__tier-header">
                 <TierImage tier={entry.tier} width={32} />
                 {entry.tier.name}

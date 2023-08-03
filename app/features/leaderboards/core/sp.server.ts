@@ -2,6 +2,7 @@ import { freshUserSkills } from "~/features/mmr/tiered";
 import type { UserSPLeaderboardItem } from "../queries/userSPLeaderboard.server";
 import type { SeasonPopularUsersWeapon } from "../queries/seasonPopularUsersWeapon.server";
 import type { MainWeaponId } from "~/modules/in-game-lists";
+import { weaponCategories } from "~/modules/in-game-lists";
 
 export function addTiers(entries: UserSPLeaderboardItem[]) {
   const tiers = freshUserSkills();
@@ -33,4 +34,16 @@ export function addWeapons(
       weaponSplId,
     };
   });
+}
+
+export function filterByWeaponCategory<
+  T extends { weaponSplId?: MainWeaponId }
+>(entries: Array<T>, category: (typeof weaponCategories)[number]["name"]) {
+  const weaponIdsOfCategory = new Set(
+    weaponCategories.find((c) => c.name === category)!.weaponIds
+  );
+
+  return entries.filter(
+    (entry) => entry.weaponSplId && weaponIdsOfCategory.has(entry.weaponSplId)
+  );
 }
