@@ -116,9 +116,10 @@ export const loader = async ({ request }: LoaderArgs) => {
       : userLeaderboard;
 
   // xxx: season selection logic
+  // xxx: only one user per leaderboard in team leaderboard
   return {
     userLeaderboard: filteredLeaderboard ?? userLeaderboard,
-    teamLeaderboard: type === "TEAM" ? teamSPLeaderboard() : null,
+    teamLeaderboard: type === "TEAM" ? teamSPLeaderboard(0) : null,
     xpLeaderboard:
       type === "XP-ALL"
         ? allXPLeaderboard()

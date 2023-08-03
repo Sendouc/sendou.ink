@@ -23,7 +23,17 @@ const getStm = (type: "user" | "team") =>
         type === "user" ? /* sql */ `"userId"` : /* sql */ `"identifier"`
       }
     ), 0)
-  )
+  ) returning *
+`);
+
+const addSkillTeamUserStm = sql.prepare(/* sql */ `
+  insert into "SkillTeamUser" (
+    "skillId",
+    "userId"
+  ) values (
+    @skillId,
+    @userId
+  ) on conflict("skillId", "userId") do nothing
 `);
 
 const userStm = getStm("user");
@@ -35,8 +45,20 @@ export function addSkills(
     "groupMatchId" | "identifier" | "mu" | "season" | "sigma" | "userId"
   >[]
 ) {
-  const stm = skills[0].userId ? userStm : teamStm;
   for (const skill of skills) {
-    stm.run({ ...skill, ordinal: ordinal(skill) });
+    const stm = skill.userId ? userStm : teamStm;
+    const insertedSkill = stm.get({
+      ...skill,
+      ordinal: ordinal(skill),
+    }) as Skill;
+
+    if (insertedSkill.identifier) {
+      for (const userIdString of insertedSkill.identifier.split("-")) {
+        addSkillTeamUserStm.run({
+          skillId: insertedSkill.id,
+          userId: Number(userIdString),
+        });
+      }
+    }
   }
 }
