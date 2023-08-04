@@ -124,6 +124,8 @@ interface UserLinkArgs {
 
 export const userPage = (user: UserLinkArgs) =>
   `/u/${user.customUrl ?? user.discordId}`;
+export const userSeasonsPage = (user: UserLinkArgs) =>
+  `${userPage(user)}/seasons`;
 export const userEditProfilePage = (user: UserLinkArgs) =>
   `${userPage(user)}/edit`;
 export const userBuildsPage = (user: UserLinkArgs) =>

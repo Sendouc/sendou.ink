@@ -1,3 +1,7 @@
+.text-xl {
+  font-size: var(--fonts-xl);
+}
+
 .text-lg {
   font-size: var(--fonts-lg);
 }
