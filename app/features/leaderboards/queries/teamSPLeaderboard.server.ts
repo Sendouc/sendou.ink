@@ -11,9 +11,6 @@ const stm = sql.prepare(/* sql */ `
   select
     "Skill"."id" as "entryId",
     "Skill"."ordinal",
-    rank () over ( 
-      order by "Skill"."Ordinal" desc
-    ) "placementRank",
     json_group_array(
       json_object(
         'id',

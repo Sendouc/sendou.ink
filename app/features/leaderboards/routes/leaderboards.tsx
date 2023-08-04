@@ -42,10 +42,12 @@ import {
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { allSeasons } from "~/features/mmr/season";
 import {
+  addPlacementRank,
   addTiers,
   addWeapons,
   filterByWeaponCategory,
-} from "../core/sp.server";
+  oneEntryPerUser,
+} from "../core/leaderboards.server";
 import { seasonPopularUsersWeapon } from "../queries/seasonPopularUsersWeapon.server";
 import { cachified } from "cachified";
 import { cache, ttl } from "~/utils/cache.server";
@@ -99,13 +101,30 @@ export const loader = async ({ request }: LoaderArgs) => {
         ttl: ttl(HALF_HOUR_IN_MS),
         // eslint-disable-next-line @typescript-eslint/require-await
         async getFreshValue() {
-          return addWeapons(
-            addTiers(userSPLeaderboard(0)),
-            seasonPopularUsersWeapon(0)
-          );
+          const leaderboard = userSPLeaderboard(0);
+          const withTiers = addTiers(leaderboard);
+
+          return addWeapons(withTiers, seasonPopularUsersWeapon(0));
         },
       })
     : null;
+
+  const teamLeaderboard =
+    type === "TEAM"
+      ? await cachified({
+          // xxx: add season here
+          key: `team-leaderboard-season-${0}`,
+          cache,
+          ttl: ttl(HALF_HOUR_IN_MS),
+          // eslint-disable-next-line @typescript-eslint/require-await
+          async getFreshValue() {
+            const leaderboard = teamSPLeaderboard(0);
+            const filteredByUser = oneEntryPerUser(leaderboard);
+
+            return addPlacementRank(filteredByUser);
+          },
+        })
+      : null;
 
   const filteredLeaderboard =
     userLeaderboard && type !== "USER"
@@ -116,10 +135,9 @@ export const loader = async ({ request }: LoaderArgs) => {
       : userLeaderboard;
 
   // xxx: season selection logic
-  // xxx: only one user per leaderboard in team leaderboard
   return {
     userLeaderboard: filteredLeaderboard ?? userLeaderboard,
-    teamLeaderboard: type === "TEAM" ? teamSPLeaderboard(0) : null,
+    teamLeaderboard,
     xpLeaderboard:
       type === "XP-ALL"
         ? allXPLeaderboard()
