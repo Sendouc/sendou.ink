@@ -76,11 +76,12 @@ function SeasonHeader() {
   );
 }
 
-// xxx: hide peak if same as current
 function Rank() {
   const data = useLoaderData<typeof loader>();
 
   const maxOrdinal = Math.max(...data.skills.map((s) => s.ordinal));
+
+  const peakAndCurrentSame = data.skills[0].ordinal === maxOrdinal;
 
   return (
     <div className="stack horizontal items-center justify-center sm">
@@ -93,9 +94,11 @@ function Rank() {
         <div className="text-lg font-bold">
           {ordinalToSp(data.skills[0].ordinal)}SP
         </div>
-        <div className="text-lighter text-sm">
-          Peak {ordinalToSp(maxOrdinal)}SP
-        </div>
+        {!peakAndCurrentSame ? (
+          <div className="text-lighter text-sm">
+            Peak {ordinalToSp(maxOrdinal)}SP
+          </div>
+        ) : null}
       </div>
     </div>
   );
