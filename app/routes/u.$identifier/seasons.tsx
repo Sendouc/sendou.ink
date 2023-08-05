@@ -1,7 +1,7 @@
 import type { LoaderArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
-import { TierImage } from "~/components/Image";
+import { TierImage, WeaponImage } from "~/components/Image";
 import { db } from "~/db";
 import { ordinalToSp } from "~/features/mmr";
 import { seasonAllMMRByUserId } from "~/features/mmr/queries/seasonAllMMRByUserId.server";
@@ -10,6 +10,9 @@ import { userSkills } from "~/features/mmr/tiered";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { notFoundIfFalsy } from "~/utils/remix";
 import { userParamsSchema } from "../u.$identifier";
+import { seasonReportedWeaponsByUserId } from "~/features/sendouq/queries/seasonReportedWeaponsByUserId.server";
+import { useTranslation } from "~/hooks/useTranslation";
+import { cutToNDecimalPlaces } from "~/utils/number";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const { identifier } = userParamsSchema.parse(params);
@@ -25,6 +28,7 @@ export const loader = async ({ params }: LoaderArgs) => {
   return {
     skills,
     tier,
+    weapons: seasonReportedWeaponsByUserId({ season: 0, userId: user.id }),
   };
 };
 
@@ -34,6 +38,7 @@ export default function UserSeasonsPage() {
     <div className="stack lg">
       <SeasonHeader />
       <Rank />
+      <Weapons />
     </div>
   );
 }
@@ -92,6 +97,38 @@ function Rank() {
           Peak {ordinalToSp(maxOrdinal)}SP
         </div>
       </div>
+    </div>
+  );
+}
+
+function Weapons() {
+  const { t } = useTranslation(["weapons"]);
+  const data = useLoaderData<typeof loader>();
+
+  // xxx: show +n weapons circle
+  const weapons = data.weapons.slice(0, 10);
+
+  const totalCount = data.weapons.reduce((acc, cur) => cur.count + acc, 0);
+  const percentage = (count: number) =>
+    cutToNDecimalPlaces((count / totalCount) * 100);
+
+  return (
+    <div className="stack sm horizontal justify-center flex-wrap">
+      {weapons.map(({ count, weaponSplId }) => (
+        <div key={weaponSplId} className="u__season__weapon-container">
+          <div className="u__season__weapon-border">
+            <WeaponImage
+              weaponSplId={weaponSplId}
+              variant="build"
+              size={36}
+              title={`${t(`weapons:MAIN_${weaponSplId}`)} (${percentage(
+                count
+              )}%)`}
+            />
+          </div>
+          {count}
+        </div>
+      ))}
     </div>
   );
 }

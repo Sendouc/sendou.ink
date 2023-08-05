@@ -64,12 +64,13 @@ export function Image({
 type WeaponImageProps = {
   weaponSplId: MainWeaponId;
   variant: "badge" | "badge-5-star" | "build";
-} & Omit<ImageProps, "path" | "alt" | "title">;
+} & Omit<ImageProps, "path" | "alt">;
 
 export function WeaponImage({
   weaponSplId,
   variant,
   testId,
+  title,
   ...rest
 }: WeaponImageProps) {
   const { t } = useTranslation(["weapons"]);
@@ -77,8 +78,8 @@ export function WeaponImage({
   return (
     <Image
       {...rest}
-      alt={t(`weapons:MAIN_${weaponSplId}`)}
-      title={t(`weapons:MAIN_${weaponSplId}`)}
+      alt={title ?? t(`weapons:MAIN_${weaponSplId}`)}
+      title={title ?? t(`weapons:MAIN_${weaponSplId}`)}
       testId={testId}
       path={
         variant === "badge"

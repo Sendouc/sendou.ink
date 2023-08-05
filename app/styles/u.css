@@ -283,3 +283,17 @@
     font-size: var(--fonts-sm);
   }
 }
+
+.u__season__weapon-container {
+  display: flex;
+  align-items: center;
+  font-size: var(--fonts-sm);
+  flex-direction: column;
+  font-weight: var(--bold);
+}
+
+.u__season__weapon-border {
+  border-radius: 100%;
+  border: 3px solid var(--bg-lightest);
+  padding: var(--s-2);
+}
