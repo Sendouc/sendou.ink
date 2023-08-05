@@ -102,12 +102,12 @@ function Rank() {
 }
 
 const MIN_DEGREE = 5;
+const WEAPONS_TO_SHOW = 9;
 function Weapons() {
   const { t } = useTranslation(["weapons"]);
   const data = useLoaderData<typeof loader>();
 
-  // xxx: show +n weapons circle
-  const weapons = data.weapons.slice(0, 10);
+  const weapons = data.weapons.slice(0, WEAPONS_TO_SHOW);
 
   const totalCount = data.weapons.reduce((acc, cur) => cur.count + acc, 0);
   const percentage = (count: number) =>
@@ -115,29 +115,56 @@ function Weapons() {
   const countToDegree = (count: number) =>
     Math.max((count / totalCount) * 360, MIN_DEGREE);
 
+  const restCount =
+    totalCount - weapons.reduce((acc, cur) => cur.count + acc, 0);
+  const restWeaponsCount = data.weapons.length - WEAPONS_TO_SHOW;
+
   return (
     <div className="stack sm horizontal justify-center flex-wrap">
       {weapons.map(({ count, weaponSplId }) => (
-        <div key={weaponSplId} className="u__season__weapon-container">
-          <div className="u__season__weapon-border__outer-static" />
-          <div
-            className="u__season__weapon-border__outer"
-            style={{ "--degree": `${countToDegree(count)}deg` } as any}
-          >
-            <div className="u__season__weapon-border__inner">
-              <WeaponImage
-                weaponSplId={weaponSplId}
-                variant="build"
-                size={42}
-                title={`${t(`weapons:MAIN_${weaponSplId}`)} (${percentage(
-                  count
-                )}%)`}
-              />
-            </div>
-          </div>
-          <div className="u__season__weapon-count">{count}</div>
-        </div>
+        <WeaponCircle
+          key={weaponSplId}
+          degrees={countToDegree(count)}
+          count={count}
+        >
+          <WeaponImage
+            weaponSplId={weaponSplId}
+            variant="build"
+            size={42}
+            title={`${t(`weapons:MAIN_${weaponSplId}`)} (${percentage(
+              count
+            )}%)`}
+          />
+        </WeaponCircle>
       ))}
+      {restWeaponsCount > 0 ? (
+        <WeaponCircle degrees={countToDegree(restCount)}>
+          +{restWeaponsCount}
+        </WeaponCircle>
+      ) : null}
+    </div>
+  );
+}
+
+function WeaponCircle({
+  degrees,
+  children,
+  count,
+}: {
+  degrees: number;
+  children: React.ReactNode;
+  count?: number;
+}) {
+  return (
+    <div className="u__season__weapon-container">
+      <div className="u__season__weapon-border__outer-static" />
+      <div
+        className="u__season__weapon-border__outer"
+        style={{ "--degree": `${degrees}deg` } as any}
+      >
+        <div className="u__season__weapon-border__inner">{children}</div>
+      </div>
+      {count ? <div className="u__season__weapon-count">{count}</div> : null}
     </div>
   );
 }
