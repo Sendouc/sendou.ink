@@ -290,10 +290,47 @@
   font-size: var(--fonts-sm);
   flex-direction: column;
   font-weight: var(--bold);
+  position: relative;
+  width: 60px;
 }
 
-.u__season__weapon-border {
-  border-radius: 100%;
-  border: 3px solid var(--bg-lightest);
-  padding: var(--s-2);
+.u__season__weapon-border__outer {
+  --degree: 80deg;
+  --smoothing: 0.5deg;
+  --color: var(--theme);
+
+  display: block;
+  content: "";
+  height: 60px;
+  width: 60px;
+  border-radius: 50%;
+  background: conic-gradient(
+    var(--color) var(--degree),
+    transparent calc(var(--degree) + var(--smoothing)) 100%
+  );
+  position: absolute;
+}
+
+.u__season__weapon-border__outer-static {
+  height: 60px;
+  width: 60px;
+  background-color: var(--bg-lighter);
+  position: absolute;
+  border-radius: 50%;
+}
+
+.u__season__weapon-border__inner {
+  height: 84%;
+  width: 84%;
+  top: 8%;
+  left: 8%;
+  position: relative;
+  border-radius: 50%;
+  background: var(--bg);
+  display: grid;
+  place-items: center;
+}
+
+.u__season__weapon-count {
+  margin-top: 62px;
 }

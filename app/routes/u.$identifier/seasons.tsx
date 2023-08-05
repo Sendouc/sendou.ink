@@ -101,6 +101,7 @@ function Rank() {
   );
 }
 
+const MIN_DEGREE = 5;
 function Weapons() {
   const { t } = useTranslation(["weapons"]);
   const data = useLoaderData<typeof loader>();
@@ -111,22 +112,30 @@ function Weapons() {
   const totalCount = data.weapons.reduce((acc, cur) => cur.count + acc, 0);
   const percentage = (count: number) =>
     cutToNDecimalPlaces((count / totalCount) * 100);
+  const countToDegree = (count: number) =>
+    Math.max((count / totalCount) * 360, MIN_DEGREE);
 
   return (
     <div className="stack sm horizontal justify-center flex-wrap">
       {weapons.map(({ count, weaponSplId }) => (
         <div key={weaponSplId} className="u__season__weapon-container">
-          <div className="u__season__weapon-border">
-            <WeaponImage
-              weaponSplId={weaponSplId}
-              variant="build"
-              size={36}
-              title={`${t(`weapons:MAIN_${weaponSplId}`)} (${percentage(
-                count
-              )}%)`}
-            />
+          <div className="u__season__weapon-border__outer-static" />
+          <div
+            className="u__season__weapon-border__outer"
+            style={{ "--degree": `${countToDegree(count)}deg` } as any}
+          >
+            <div className="u__season__weapon-border__inner">
+              <WeaponImage
+                weaponSplId={weaponSplId}
+                variant="build"
+                size={42}
+                title={`${t(`weapons:MAIN_${weaponSplId}`)} (${percentage(
+                  count
+                )}%)`}
+              />
+            </div>
           </div>
-          {count}
+          <div className="u__season__weapon-count">{count}</div>
         </div>
       ))}
     </div>

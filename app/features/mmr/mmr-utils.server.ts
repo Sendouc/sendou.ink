@@ -30,6 +30,7 @@ export function queryCurrentTeamRating({
     season: season ?? null,
   });
 
+  // xxx: base initial rating on user ratings
   if (!skill) {
     return rating();
   }
