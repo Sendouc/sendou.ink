@@ -13,6 +13,7 @@ import { userParamsSchema } from "../u.$identifier";
 import { seasonReportedWeaponsByUserId } from "~/features/sendouq/queries/seasonReportedWeaponsByUserId.server";
 import { useTranslation } from "~/hooks/useTranslation";
 import { cutToNDecimalPlaces } from "~/utils/number";
+import { seasonMatchesByUserId } from "~/features/sendouq/queries/seasonMatchesByUserId.server";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const { identifier } = userParamsSchema.parse(params);
@@ -29,11 +30,16 @@ export const loader = async ({ params }: LoaderArgs) => {
     skills,
     tier,
     weapons: seasonReportedWeaponsByUserId({ season: 0, userId: user.id }),
+    matches: seasonMatchesByUserId({ season: 0, userId: user.id }),
   };
 };
 
 // xxx: support switching seasons
 export default function UserSeasonsPage() {
+  const data = useLoaderData<typeof loader>();
+
+  console.log({ data });
+
   return (
     <div className="stack lg">
       <SeasonHeader />
