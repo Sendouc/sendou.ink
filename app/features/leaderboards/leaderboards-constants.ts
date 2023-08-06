@@ -2,7 +2,6 @@ import { mainWeaponIds, weaponCategories } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 
 export const MATCHES_COUNT_NEEDED_FOR_LEADERBOARD = 7;
-// xxx: remove, or pagination?
 export const LEADERBOARD_MAX_SIZE = 250;
 
 export const LEADERBOARD_TYPES = [

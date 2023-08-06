@@ -269,6 +269,7 @@ function Match({
     [0, 0]
   );
 
+  // make sure user's team is always on the top
   const rows = match.groupAlphaMembers.some((m) => m.id === userId)
     ? [
         <MatchMembersRow

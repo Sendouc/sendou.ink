@@ -132,7 +132,7 @@ export default function UserPageLayout() {
     <Main>
       <SubNav>
         <SubNavLink to={userPage(data)}>{t("header.profile")}</SubNavLink>
-        <SubNavLink to={userSeasonsPage(data)}>Seasons</SubNavLink>
+        <SubNavLink to={userSeasonsPage({ user: data })}>Seasons</SubNavLink>
         {isOwnPage && (
           <SubNavLink to={userEditProfilePage(data)} prefetch="intent">
             {t("actions.edit")}

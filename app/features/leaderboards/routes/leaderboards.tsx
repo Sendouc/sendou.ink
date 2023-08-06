@@ -14,6 +14,7 @@ import {
   teamPage,
   topSearchPlayerPage,
   userPage,
+  userSeasonsPage,
   userSubmittedImage,
 } from "~/utils/urls";
 import styles from "../../top-search/top-search.css";
@@ -95,7 +96,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   const userLeaderboard = type.includes("USER")
     ? await cachified({
-        // xxx: add season here
+        // TODO: add season here
         key: `user-leaderboard-season-${0}`,
         cache,
         ttl: ttl(HALF_HOUR_IN_MS),
@@ -112,7 +113,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const teamLeaderboard =
     type === "TEAM"
       ? await cachified({
-          // xxx: add season here
+          // TODO: add season here
           key: `team-leaderboard-season-${0}`,
           cache,
           ttl: ttl(HALF_HOUR_IN_MS),
@@ -134,7 +135,7 @@ export const loader = async ({ request }: LoaderArgs) => {
         )
       : userLeaderboard;
 
-  // xxx: season selection logic
+  // TODO: season selection logic
   return {
     userLeaderboard: filteredLeaderboard ?? userLeaderboard,
     teamLeaderboard,
@@ -150,7 +151,6 @@ export const loader = async ({ request }: LoaderArgs) => {
   };
 };
 
-// xxx: showing team comp?
 // xxx: team tiers
 export default function LeaderboardsPage() {
   const { t } = useTranslation(["common", "game-misc", "weapons"]);
@@ -226,7 +226,7 @@ export default function LeaderboardsPage() {
         <TeamTable entries={data.teamLeaderboard} />
       ) : null}
       {data.xpLeaderboard ? <XPTable entries={data.xpLeaderboard} /> : null}
-      {/* xxx: only when viewing current season */}
+      {/* TODO: only when viewing current season */}
       {!data.xpLeaderboard ? (
         <div className="text-xs text-lighter">
           Leaderboard is updated once every 30 minutes.
@@ -236,7 +236,6 @@ export default function LeaderboardsPage() {
   );
 }
 
-// xxx: have links lead to season page on user page
 function PlayersTable({
   entries,
   showTiers,
@@ -256,7 +255,11 @@ function PlayersTable({
                 {entry.tier.isPlus ? "+" : ""}
               </div>
             ) : null}
-            <Link to={userPage(entry)} className="placements__table__row">
+            {/* TODO: dynamic season */}
+            <Link
+              to={userSeasonsPage({ user: entry, season: 0 })}
+              className="placements__table__row"
+            >
               <div className="placements__table__inner-row">
                 <div className="placements__table__rank">
                   {entry.placementRank}
