@@ -1,5 +1,5 @@
-import type { LoaderArgs } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import type { LoaderArgs, SerializeFrom } from "@remix-run/node";
+import { Link, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import { TierImage, WeaponImage } from "~/components/Image";
 import { db } from "~/db";
@@ -14,6 +14,8 @@ import { seasonReportedWeaponsByUserId } from "~/features/sendouq/queries/season
 import { useTranslation } from "~/hooks/useTranslation";
 import { cutToNDecimalPlaces } from "~/utils/number";
 import { seasonMatchesByUserId } from "~/features/sendouq/queries/seasonMatchesByUserId.server";
+import { sendouQMatchPage } from "~/utils/urls";
+import { Avatar } from "~/components/Avatar";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const { identifier } = userParamsSchema.parse(params);
@@ -34,17 +36,13 @@ export const loader = async ({ params }: LoaderArgs) => {
   };
 };
 
-// xxx: support switching seasons
 export default function UserSeasonsPage() {
-  const data = useLoaderData<typeof loader>();
-
-  console.log({ data });
-
   return (
     <div className="stack lg">
       <SeasonHeader />
       <Rank />
       <Weapons />
+      <Matches />
     </div>
   );
 }
@@ -174,6 +172,64 @@ function WeaponCircle({
         <div className="u__season__weapon-border__inner">{children}</div>
       </div>
       {count ? <div className="u__season__weapon-count">{count}</div> : null}
+    </div>
+  );
+}
+
+function Matches() {
+  const data = useLoaderData<typeof loader>();
+
+  // xxx: pagination
+  return (
+    <div className="stack sm half-width">
+      {data.matches.slice(0, 10).map((match) => (
+        <Match key={match.id} match={match} />
+      ))}
+    </div>
+  );
+}
+
+function Match({
+  match,
+}: {
+  match: SerializeFrom<typeof loader>["matches"][0];
+}) {
+  const score = match.winnerGroupIds.reduce(
+    (acc, cur) => [
+      acc[0] + (cur === match.alphaGroupId ? 1 : 0),
+      acc[1] + (cur === match.bravoGroupId ? 1 : 0),
+    ],
+    [0, 0]
+  );
+
+  return (
+    <Link to={sendouQMatchPage(match.id)} className="u__season__match">
+      <MatchMembersRow members={match.groupAlphaMembers} score={score[0]} />
+      <MatchMembersRow members={match.groupBravoMembers} score={score[1]} />
+    </Link>
+  );
+}
+
+function MatchMembersRow({
+  score,
+  members,
+}: {
+  score: number;
+  members: SerializeFrom<typeof loader>["matches"][0]["groupAlphaMembers"];
+}) {
+  return (
+    <div className="stack horizontal xs items-center">
+      {members.map((member) => {
+        return (
+          <div key={member.discordId} className="u__season__match__user">
+            <Avatar user={member} size="xxs" />
+            <span className="u__season__match__user__name">
+              {member.discordName}
+            </span>
+          </div>
+        );
+      })}
+      <div className="u__season__match__score">{score}</div>
     </div>
   );
 }

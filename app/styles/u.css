@@ -334,3 +334,40 @@
 .u__season__weapon-count {
   margin-top: 62px;
 }
+
+.u__season__match {
+  background-color: var(--bg-lighter);
+  border-radius: var(--rounded);
+  padding: var(--s-2) var(--s-2-5);
+  color: var(--text);
+  transition: ease-in 0.2s background-color;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+.u__season__match:hover {
+  background-color: var(--theme-transparent);
+}
+
+.u__season__match__user {
+  display: flex;
+  flex-direction: column;
+  font-size: var(--fonts-xs);
+  width: 60px;
+  align-items: center;
+}
+
+.u__season__match__user__name {
+  max-width: 60px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.u__season__match__score {
+  font-size: var(--fonts-lg);
+  font-weight: var(--bold);
+  margin-left: auto;
+  margin-inline-end: var(--s-4);
+}

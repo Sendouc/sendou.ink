@@ -1,5 +1,5 @@
 import { sql } from "~/db/sql";
-import type { GroupMatch, GroupMatchMap } from "~/db/types";
+import type { GroupMatch, GroupMatchMap, User } from "~/db/types";
 import { type RankingSeason, seasonObject } from "~/features/mmr/season";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { parseDBArray, parseDBJsonArray } from "~/utils/sql";
@@ -59,15 +59,15 @@ interface SeasonMatchByUserId {
   alphaGroupId: GroupMatch["alphaGroupId"];
   bravoGroupId: GroupMatch["bravoGroupId"];
   winnerGroupIds: Array<GroupMatchMap["winnerGroupId"]>;
-  alphaGroupMembers: Array<{
-    discordName: string;
-    discordId: string;
-    discordAvatar?: string;
+  groupAlphaMembers: Array<{
+    discordName: User["discordName"];
+    discordId: User["discordId"];
+    discordAvatar: User["discordAvatar"];
   }>;
-  bravoGroupMembers: Array<{
-    discordName: string;
-    discordId: string;
-    discordAvatar?: string;
+  groupBravoMembers: Array<{
+    discordName: User["discordName"];
+    discordId: User["discordId"];
+    discordAvatar: User["discordAvatar"];
   }>;
 }
 
