@@ -56,6 +56,9 @@ import { winnersArrayToWinner } from "~/features/sendouq/q-utils";
 import { addReportedWeapons } from "~/features/sendouq/queries/addReportedWeapons.server";
 import { findMatchById } from "~/features/sendouq/queries/findMatchById.server";
 import { setGroupAsInactive } from "~/features/sendouq/queries/setGroupAsInactive.server";
+import { addMapResults } from "~/features/sendouq/queries/addMapResults.server";
+import { summarizeMaps } from "~/features/sendouq/core/summarizer.server";
+import { groupForMatch } from "~/features/sendouq/queries/groupForMatch.server";
 
 const calendarEventWithToToolsSz = () => calendarEventWithToTools(true);
 const calendarEventWithToToolsTeamsSz = () =>
@@ -1740,12 +1743,23 @@ function playedMatches() {
       ["ALPHA", "BRAVO", "ALPHA", "BRAVO", "BRAVO", "BRAVO"],
     ]) as ("ALPHA" | "BRAVO")[];
     const winner = winnersArrayToWinner(winners);
+    const finishedMatch = findMatchById(match.id)!;
 
     const newSkills = calculateMatchSkills({
       groupMatchId: match.id,
       winner: winner === "ALPHA" ? groupAlphaMembers : groupBravoMembers,
       loser: winner === "ALPHA" ? groupBravoMembers : groupAlphaMembers,
     });
+    const members = [
+      ...groupForMatch(match.alphaGroupId)!.members.map((m) => ({
+        ...m,
+        groupId: match.alphaGroupId,
+      })),
+      ...groupForMatch(match.bravoGroupId)!.members.map((m) => ({
+        ...m,
+        groupId: match.bravoGroupId,
+      })),
+    ];
     sql.transaction(() => {
       reportScore({
         matchId: match.id,
@@ -1756,11 +1770,11 @@ function playedMatches() {
       addSkills(newSkills);
       setGroupAsInactive(groupAlpha);
       setGroupAsInactive(groupBravo);
+      addMapResults(summarizeMaps({ match: finishedMatch, members, winners }));
     })();
 
     // -> add weapons for 90% of matches
     if (Math.random() > 0.9) continue;
-    const finishedMatch = findMatchById(match.id)!;
     const users = [...groupAlphaMembers, ...groupBravoMembers];
     const mapsWithUsers = users.flatMap((u) =>
       finishedMatch.mapList.map((m) => ({ map: m, user: u }))

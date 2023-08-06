@@ -40,14 +40,16 @@ const addMapResultDeltaStm = sql.prepare(/* sql */ `
     "stageId",
     "userId",
     "wins",
-    "losses"
+    "losses",
+    "season"
   ) values (
     @mode,
     @stageId,
     @userId,
     @wins,
-    @losses
-  ) on conflict ("userId", "stageId", "mode") do
+    @losses,
+    @season
+  ) on conflict ("userId", "stageId", "mode", "season") do
   update
   set
     "wins" = "wins" + @wins,
@@ -62,7 +64,8 @@ const addPlayerResultDeltaStm = sql.prepare(/* sql */ `
     "mapLosses",
     "setWins",
     "setLosses",
-    "type"
+    "type",
+    "season"
   ) values (
     @ownerUserId,
     @otherUserId,
@@ -70,8 +73,9 @@ const addPlayerResultDeltaStm = sql.prepare(/* sql */ `
     @mapLosses,
     @setWins,
     @setLosses,
-    @type
-  ) on conflict ("ownerUserId", "otherUserId", "type") do
+    @type,
+    @season
+  ) on conflict ("ownerUserId", "otherUserId", "type", "season") do
   update
   set
     "mapWins" = "mapWins" + @mapWins,
@@ -132,6 +136,8 @@ export const addSummary = sql.transaction(
         userId: mapResultDelta.userId,
         wins: mapResultDelta.wins,
         losses: mapResultDelta.losses,
+        // xxx: add season
+        season: 0,
       });
     }
 
@@ -144,6 +150,8 @@ export const addSummary = sql.transaction(
         setWins: playerResultDelta.setWins,
         setLosses: playerResultDelta.setLosses,
         type: playerResultDelta.type,
+        // xxx: add season
+        season: 0,
       });
     }
 

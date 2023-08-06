@@ -67,6 +67,8 @@ import { deleteReporterWeaponsByMatchId } from "../queries/deleteReportedWeapons
 import { Divider } from "~/components/Divider";
 import { cache } from "~/utils/cache.server";
 import { Toggle } from "~/components/Toggle";
+import { addMapResults } from "../queries/addMapResults.server";
+import { summarizeMaps } from "../core/summarizer.server";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -160,8 +162,11 @@ export const action = async ({ request, params }: ActionArgs) => {
         });
         // own group gets set inactive
         if (groupMemberOfId) setGroupAsInactive(groupMemberOfId);
-        // skills only update after both teams have reported
+        // skills & map/player results only update after both teams have reported
         if (newSkills) {
+          addMapResults(
+            summarizeMaps({ match, members, winners: data.winners })
+          );
           addSkills(newSkills);
           cache.delete(USER_SKILLS_CACHE_KEY);
         }
@@ -282,8 +287,9 @@ export default function QMatchPage() {
   const ownMember =
     data.groupAlpha.members.find((m) => m.id === user?.id) ??
     data.groupBravo.members.find((m) => m.id === user?.id);
-  const canReportScore =
-    Boolean(!data.match.isLocked && ownMember) || isAdmin(user);
+  const canReportScore = Boolean(
+    !data.match.isLocked && (ownMember || isAdmin(user))
+  );
 
   const ownGroup = data.groupAlpha.members.some((m) => m.id === user?.id)
     ? data.groupAlpha

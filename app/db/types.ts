@@ -370,6 +370,7 @@ export interface MapResult {
   userId: number;
   wins: number;
   losses: number;
+  season: number;
 }
 
 export interface PlayerResult {
@@ -380,6 +381,7 @@ export interface PlayerResult {
   setWins: number;
   setLosses: number;
   type: "MATE" | "ENEMY";
+  season: number;
 }
 
 export interface TournamentResult {

@@ -293,6 +293,8 @@ function mapResultDeltas({
         mode: mapResult.mode,
         wins: mapResult.type === "win" ? 1 : 0,
         losses: mapResult.type === "loss" ? 1 : 0,
+        // xxx: season
+        season: 0,
       });
     }
   };
@@ -374,6 +376,8 @@ function playerResultDeltas({
             setWins: 0,
             type:
               ownTournamentTeamId === otherTournamentTeamId ? "MATE" : "ENEMY",
+            // xxx: season
+            season: 0,
           });
         }
       }
@@ -411,6 +415,8 @@ function playerResultDeltas({
           setWins: won ? 1 : 0,
           type:
             ownTournamentTeamId === otherTournamentTeamId ? "MATE" : "ENEMY",
+          // xxx: season
+          season: 0,
         });
       }
     }

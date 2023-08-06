@@ -370,3 +370,9 @@
   font-weight: var(--bold);
   margin-inline: auto;
 }
+
+.u__season__info-container {
+  background-color: var(--bg-lighter);
+  padding: var(--s-2-5) var(--s-2);
+  border-radius: var(--rounded);
+}

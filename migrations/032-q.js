@@ -12,6 +12,51 @@ module.exports.up = function (db) {
   ).run();
   db.prepare(/* sql */ `alter table "Skill" add "season" integer`).run();
 
+  db.prepare(/*sql*/ `drop table "MapResult"`).run();
+  db.prepare(/*sql*/ `drop table "PlayerResult"`).run();
+
+  db.prepare(
+    /*sql*/ `
+    create table "MapResult" (
+      "mode" text not null,
+      "stageId" integer not null,
+      "userId" integer not null,
+      "wins" integer not null,
+      "losses" integer not null,
+      "season" integer not null,
+      foreign key ("userId") references "User"("id") on delete cascade,
+      unique("userId", "stageId", "mode", "season") on conflict rollback 
+    ) strict
+  `
+  ).run();
+
+  db.prepare(`create index map_result_user_id on "MapResult"("userId")`).run();
+
+  db.prepare(
+    /*sql*/ `
+    create table "PlayerResult" (
+      "ownerUserId" integer not null,
+      "otherUserId" integer not null,
+      "mapWins" integer not null,
+      "mapLosses" integer not null,
+      "setWins" integer not null,
+      "setLosses" integer not null,
+      "type" text not null,
+      "season" integer not null,
+      foreign key ("ownerUserId") references "User"("id") on delete cascade,
+      foreign key ("otherUserId") references "User"("id") on delete cascade,
+      unique("ownerUserId", "otherUserId", "type", "season") on conflict rollback 
+    ) strict
+  `
+  ).run();
+
+  db.prepare(
+    `create index player_result_owner_user_id on "PlayerResult"("ownerUserId")`
+  ).run();
+  db.prepare(
+    `create index player_result_other_user_id on "PlayerResult"("otherUserId")`
+  ).run();
+
   db.prepare(
     /*sql*/ `
     create table "Group" (

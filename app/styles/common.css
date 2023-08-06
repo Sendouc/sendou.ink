@@ -475,6 +475,10 @@ dialog::backdrop {
   margin-block-start: -12px;
 }
 
+.sub-nav__container__secondary {
+  margin-block-end: var(--s-2);
+}
+
 .sub-nav__link__container {
   display: flex;
   max-width: 110px;
@@ -500,6 +504,12 @@ dialog::backdrop {
   white-space: nowrap;
 }
 
+.sub-nav__link__secondary {
+  font-size: var(--fonts-xxs);
+  padding: var(--s-0-5) var(--s-2);
+  background-color: var(--bg-lighter-solid);
+}
+
 .sub-nav__container.compact .sub-nav__link {
   padding: var(--s-1) var(--s-2);
 }
@@ -510,6 +520,11 @@ dialog::backdrop {
   border-radius: var(--rounded);
   background-color: var(--bg-lightest);
   visibility: hidden;
+}
+
+.sub-nav__border-guy__secondary {
+  height: 2.5px;
+  background-color: var(--bg-lighter-solid);
 }
 
 .sub-nav__link__container.active > .sub-nav__border-guy {

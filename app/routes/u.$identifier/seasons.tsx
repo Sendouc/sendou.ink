@@ -28,6 +28,7 @@ import invariant from "tiny-invariant";
 import { Pagination } from "~/components/Pagination";
 import * as React from "react";
 import { databaseTimestampToDate } from "~/utils/dates";
+import { SubNav, SubNavLink } from "~/components/SubNav";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const { identifier } = userParamsSchema.parse(params);
@@ -60,11 +61,30 @@ export default function UserSeasonsPage() {
     window.scrollTo(0, 0);
   }, [data]);
 
+  // xxx: search param, also keep page
   return (
     <div className="stack lg half-width">
       <SeasonHeader />
       <Rank />
-      <Weapons />
+      <div>
+        <SubNav secondary>
+          <SubNavLink to="?info=weapons" secondary controlled active>
+            Weapons
+          </SubNavLink>
+          <SubNavLink to="?info=stages" secondary controlled>
+            Stages
+          </SubNavLink>
+          <SubNavLink to="?info=mates" secondary controlled>
+            Teammates
+          </SubNavLink>
+          <SubNavLink to="?info=enemies" secondary controlled>
+            Enemies
+          </SubNavLink>
+        </SubNav>
+        <div className="u__season__info-container">
+          <Weapons />
+        </div>
+      </div>
       <Matches />
     </div>
   );
