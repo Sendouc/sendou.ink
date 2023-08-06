@@ -1,5 +1,5 @@
 import type { LoaderArgs, SerializeFrom } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData, useMatches } from "@remix-run/react";
 import clsx from "clsx";
 import { TierImage, WeaponImage } from "~/components/Image";
 import { db } from "~/db";
@@ -9,13 +9,14 @@ import { seasonObject } from "~/features/mmr/season";
 import { userSkills } from "~/features/mmr/tiered";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { notFoundIfFalsy } from "~/utils/remix";
-import { userParamsSchema } from "../u.$identifier";
+import { type UserPageLoaderData, userParamsSchema } from "../u.$identifier";
 import { seasonReportedWeaponsByUserId } from "~/features/sendouq/queries/seasonReportedWeaponsByUserId.server";
 import { useTranslation } from "~/hooks/useTranslation";
 import { cutToNDecimalPlaces } from "~/utils/number";
 import { seasonMatchesByUserId } from "~/features/sendouq/queries/seasonMatchesByUserId.server";
 import { sendouQMatchPage } from "~/utils/urls";
 import { Avatar } from "~/components/Avatar";
+import invariant from "tiny-invariant";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const { identifier } = userParamsSchema.parse(params);
@@ -38,7 +39,7 @@ export const loader = async ({ params }: LoaderArgs) => {
 
 export default function UserSeasonsPage() {
   return (
-    <div className="stack lg">
+    <div className="stack lg half-width">
       <SeasonHeader />
       <Rank />
       <Weapons />
@@ -176,13 +177,14 @@ function WeaponCircle({
   );
 }
 
+// xxx: date headers
 function Matches() {
   const data = useLoaderData<typeof loader>();
 
   // xxx: pagination
   return (
-    <div className="stack sm half-width">
-      {data.matches.slice(0, 8).map((match) => (
+    <div className="stack sm">
+      {data.matches.map((match) => (
         <Match key={match.id} match={match} />
       ))}
     </div>
@@ -194,6 +196,11 @@ function Match({
 }: {
   match: SerializeFrom<typeof loader>["matches"][0];
 }) {
+  const [, parentRoute] = useMatches();
+  invariant(parentRoute);
+  const userPageData = parentRoute.data as UserPageLoaderData;
+  const userId = userPageData.id;
+
   const score = match.winnerGroupIds.reduce(
     (acc, cur) => [
       acc[0] + (cur === match.alphaGroupId ? 1 : 0),
@@ -202,10 +209,35 @@ function Match({
     [0, 0]
   );
 
+  const rows = match.groupAlphaMembers.some((m) => m.id === userId)
+    ? [
+        <MatchMembersRow
+          key="alpha"
+          members={match.groupAlphaMembers}
+          score={score[0]}
+        />,
+        <MatchMembersRow
+          key="bravo"
+          members={match.groupBravoMembers}
+          score={score[1]}
+        />,
+      ]
+    : [
+        <MatchMembersRow
+          key="bravo"
+          members={match.groupBravoMembers}
+          score={score[1]}
+        />,
+        <MatchMembersRow
+          key="alpha"
+          members={match.groupAlphaMembers}
+          score={score[0]}
+        />,
+      ];
+
   return (
     <Link to={sendouQMatchPage(match.id)} className="u__season__match">
-      <MatchMembersRow members={match.groupAlphaMembers} score={score[0]} />
-      <MatchMembersRow members={match.groupBravoMembers} score={score[1]} />
+      {rows}
     </Link>
   );
 }
@@ -226,6 +258,13 @@ function MatchMembersRow({
             <span className="u__season__match__user__name">
               {member.discordName}
             </span>
+            {member.weaponSplId ? (
+              <WeaponImage
+                weaponSplId={member.weaponSplId}
+                variant="badge"
+                size={28}
+              />
+            ) : null}
           </div>
         );
       })}

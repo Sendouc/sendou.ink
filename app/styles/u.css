@@ -343,7 +343,7 @@
   transition: ease-in 0.2s background-color;
   display: flex;
   flex-direction: column;
-  gap: var(--s-2);
+  gap: var(--s-4);
 }
 
 .u__season__match:hover {
@@ -366,8 +366,7 @@
 }
 
 .u__season__match__score {
-  font-size: var(--fonts-lg);
+  font-size: var(--fonts-xl);
   font-weight: var(--bold);
-  margin-left: auto;
-  margin-inline-end: var(--s-4);
+  margin-inline: auto;
 }
