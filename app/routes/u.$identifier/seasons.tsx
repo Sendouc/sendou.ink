@@ -1,5 +1,10 @@
 import type { LoaderArgs, SerializeFrom } from "@remix-run/node";
-import { Link, useLoaderData, useMatches } from "@remix-run/react";
+import {
+  Link,
+  useLoaderData,
+  useMatches,
+  useSearchParams,
+} from "@remix-run/react";
 import clsx from "clsx";
 import { TierImage, WeaponImage } from "~/components/Image";
 import { db } from "~/db";
@@ -13,13 +18,18 @@ import { type UserPageLoaderData, userParamsSchema } from "../u.$identifier";
 import { seasonReportedWeaponsByUserId } from "~/features/sendouq/queries/seasonReportedWeaponsByUserId.server";
 import { useTranslation } from "~/hooks/useTranslation";
 import { cutToNDecimalPlaces } from "~/utils/number";
-import { seasonMatchesByUserId } from "~/features/sendouq/queries/seasonMatchesByUserId.server";
+import {
+  seasonMatchesByUserId,
+  seasonMatchesByUserIdCount,
+} from "~/features/sendouq/queries/seasonMatchesByUserId.server";
 import { sendouQMatchPage } from "~/utils/urls";
 import { Avatar } from "~/components/Avatar";
 import invariant from "tiny-invariant";
+import { Pagination } from "~/components/Pagination";
 
-export const loader = async ({ params }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderArgs) => {
   const { identifier } = userParamsSchema.parse(params);
+  const page = Number(new URL(request.url).searchParams.get("page") ?? 1);
   const user = notFoundIfFalsy(db.users.findByIdentifier(identifier));
 
   const skills = seasonAllMMRByUserId({ season: 0, userId: user.id });
@@ -33,7 +43,11 @@ export const loader = async ({ params }: LoaderArgs) => {
     skills,
     tier,
     weapons: seasonReportedWeaponsByUserId({ season: 0, userId: user.id }),
-    matches: seasonMatchesByUserId({ season: 0, userId: user.id }),
+    matches: {
+      value: seasonMatchesByUserId({ season: 0, userId: user.id, page }),
+      currentPage: page,
+      pages: seasonMatchesByUserIdCount({ season: 0, userId: user.id }),
+    },
   };
 };
 
@@ -180,13 +194,26 @@ function WeaponCircle({
 // xxx: date headers
 function Matches() {
   const data = useLoaderData<typeof loader>();
+  const [_, setSearchParams] = useSearchParams();
 
-  // xxx: pagination
+  const setPage = (page: number) => {
+    setSearchParams({ page: String(page) });
+  };
+
   return (
-    <div className="stack sm">
-      {data.matches.map((match) => (
-        <Match key={match.id} match={match} />
-      ))}
+    <div className="stack lg">
+      <div className="stack sm">
+        {data.matches.value.map((match) => (
+          <Match key={match.id} match={match} />
+        ))}
+      </div>
+      <Pagination
+        currentPage={data.matches.currentPage}
+        pagesCount={data.matches.pages}
+        nextPage={() => setPage(data.matches.currentPage + 1)}
+        previousPage={() => setPage(data.matches.currentPage - 1)}
+        setPage={(page) => setPage(page)}
+      />
     </div>
   );
 }
@@ -194,7 +221,7 @@ function Matches() {
 function Match({
   match,
 }: {
-  match: SerializeFrom<typeof loader>["matches"][0];
+  match: SerializeFrom<typeof loader>["matches"]["value"][0];
 }) {
   const [, parentRoute] = useMatches();
   invariant(parentRoute);
@@ -247,7 +274,9 @@ function MatchMembersRow({
   members,
 }: {
   score: number;
-  members: SerializeFrom<typeof loader>["matches"][0]["groupAlphaMembers"];
+  members: SerializeFrom<
+    typeof loader
+  >["matches"]["value"][0]["groupAlphaMembers"];
 }) {
   return (
     <div className="stack horizontal xs items-center">

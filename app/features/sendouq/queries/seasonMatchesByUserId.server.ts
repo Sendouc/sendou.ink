@@ -5,7 +5,6 @@ import type { MainWeaponId } from "~/modules/in-game-lists";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { parseDBArray, parseDBJsonArray } from "~/utils/sql";
 
-// xxx: skip
 const stm = sql.prepare(/* sql */ `
   with "q1" as (
     select
@@ -16,7 +15,9 @@ const stm = sql.prepare(/* sql */ `
       "GroupMatch"."bravoGroupId" = "Group"."id"
     left join "GroupMember" on "Group"."id" = "GroupMember"."groupId"
     where "GroupMember"."userId" = @userId
+      and "GroupMatch"."createdAt" between @starts and @ends
     limit 8
+    offset 8 * (@page - 1)
   ),
   "q2" as (
     select
@@ -30,7 +31,6 @@ const stm = sql.prepare(/* sql */ `
       "q1" as "GroupMatch"
     left join "GroupMatchMap" on "GroupMatch"."id" = "GroupMatchMap"."matchId"
     where "GroupMatchMap"."winnerGroupId" is not null
-      and "GroupMatch"."createdAt" between @starts and @ends
     group by "GroupMatch"."id"
   ), "q3" as (
     select 
@@ -111,9 +111,11 @@ interface SeasonMatchByUserId {
 export function seasonMatchesByUserId({
   userId,
   season,
+  page,
 }: {
   userId: number;
   season: RankingSeason["nth"];
+  page: number;
 }): SeasonMatchByUserId[] {
   const { starts, ends } = seasonObject(season);
 
@@ -121,6 +123,7 @@ export function seasonMatchesByUserId({
     userId,
     starts: dateToDatabaseTimestamp(starts),
     ends: dateToDatabaseTimestamp(ends),
+    page,
   }) as any;
 
   return rows.map((row: any) => {
@@ -133,16 +136,49 @@ export function seasonMatchesByUserId({
         (member: any) => ({
           ...member,
           weaponSplId: weapons.find((w: any) => w.userId === member.id)
-            .weaponSplId,
+            ?.weaponSplId,
         })
       ),
       groupBravoMembers: parseDBJsonArray(row.groupBravoMembers).map(
         (member: any) => ({
           ...member,
           weaponSplId: weapons.find((w: any) => w.userId === member.id)
-            .weaponSplId,
+            ?.weaponSplId,
         })
       ),
     };
   });
+}
+
+const pagesStm = sql.prepare(/* sql */ `
+  select
+    count(*) as "count"
+  from "GroupMatch"
+  left join "Group" on 
+    "GroupMatch"."alphaGroupId" = "Group"."id" or 
+    "GroupMatch"."bravoGroupId" = "Group"."id"
+  left join "GroupMember" on "Group"."id" = "GroupMember"."groupId"
+  left join "GroupMatchMap" on "GroupMatch"."id" = "GroupMatchMap"."matchId"
+  where "GroupMember"."userId" = @userId
+    and "GroupMatch"."createdAt" between @starts and @ends
+    and "GroupMatchMap"."winnerGroupId" is not null
+  group by "GroupMatch"."id"
+`);
+
+export function seasonMatchesByUserIdCount({
+  userId,
+  season,
+}: {
+  userId: number;
+  season: RankingSeason["nth"];
+}): number {
+  const { starts, ends } = seasonObject(season);
+
+  const row = pagesStm.get({
+    userId,
+    starts: dateToDatabaseTimestamp(starts),
+    ends: dateToDatabaseTimestamp(ends),
+  }) as any;
+
+  return row.count as number;
 }
