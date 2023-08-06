@@ -12,7 +12,8 @@ const stm = sql.prepare(/* sql */ `
     select
       "GroupMatch"."id",
       "GroupMatch"."alphaGroupId",
-      "GroupMatch"."bravoGroupId"
+      "GroupMatch"."bravoGroupId",
+      "GroupMatch"."createdAt"
     from "GroupMatch"
     left join "Group" on 
       "GroupMatch"."alphaGroupId" = "Group"."id" or 
@@ -96,6 +97,7 @@ interface SeasonMatchByUserId {
   alphaGroupId: GroupMatch["alphaGroupId"];
   bravoGroupId: GroupMatch["bravoGroupId"];
   winnerGroupIds: Array<GroupMatchMap["winnerGroupId"]>;
+  createdAt: GroupMatch["createdAt"];
   groupAlphaMembers: Array<{
     id: User["id"];
     discordName: User["discordName"];

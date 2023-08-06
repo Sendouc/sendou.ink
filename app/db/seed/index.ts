@@ -1654,6 +1654,8 @@ const defaultWeapons = Object.fromEntries(
 );
 
 function playedMatches() {
+  // mid august 2021
+  let matchDate = new Date(Date.UTC(2021, 7, 15, 0, 0, 0, 0));
   for (let i = 0; i < MATCHES_COUNT; i++) {
     const groupMembers = shuffle([..._groupMembers]);
     const groupAlphaMembers = groupMembers.pop()!;
@@ -1705,6 +1707,25 @@ function playedMatches() {
       bravoGroupId: groupBravo,
       mapList: randomMapList(groupAlpha, groupBravo),
     });
+
+    // update match createdAt to the past
+    sql
+      .prepare(
+        /* sql */ `
+      update "GroupMatch"
+      set "createdAt" = @createdAt
+      where "id" = @id
+    `
+      )
+      .run({
+        createdAt: dateToDatabaseTimestamp(matchDate),
+        id: match.id,
+      });
+
+    if (Math.random() > 0.95) {
+      // increment date by 1 day
+      matchDate = new Date(matchDate.getTime() + 1000 * 60 * 60 * 24);
+    }
 
     // -> report score
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion

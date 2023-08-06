@@ -27,6 +27,7 @@ import { Avatar } from "~/components/Avatar";
 import invariant from "tiny-invariant";
 import { Pagination } from "~/components/Pagination";
 import * as React from "react";
+import { databaseTimestampToDate } from "~/utils/dates";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const { identifier } = userParamsSchema.parse(params);
@@ -198,8 +199,8 @@ function WeaponCircle({
   );
 }
 
-// xxx: date headers
 function Matches() {
+  const isMounted = useIsMounted();
   const data = useLoaderData<typeof loader>();
   const [, setSearchParams] = useSearchParams();
 
@@ -207,12 +208,37 @@ function Matches() {
     setSearchParams({ page: String(page) });
   };
 
+  let lastDayRendered: number | null = null;
   return (
     <div className="stack lg">
-      <div className="stack sm">
-        {data.matches.value.map((match) => (
-          <Match key={match.id} match={match} />
-        ))}
+      <div className="stack">
+        {data.matches.value.map((match) => {
+          const day = databaseTimestampToDate(match.createdAt).getDate();
+          const shouldRenderDateHeader = day !== lastDayRendered;
+          lastDayRendered = day;
+
+          return (
+            <React.Fragment key={match.id}>
+              <div
+                className={clsx("text-xs font-semi-bold text-theme-secondary", {
+                  invisible: !isMounted || !shouldRenderDateHeader,
+                })}
+              >
+                {isMounted
+                  ? databaseTimestampToDate(match.createdAt).toLocaleString(
+                      "en",
+                      {
+                        weekday: "long",
+                        month: "long",
+                        day: "numeric",
+                      }
+                    )
+                  : "t"}
+              </div>
+              <Match match={match} />
+            </React.Fragment>
+          );
+        })}
       </div>
       <Pagination
         currentPage={data.matches.currentPage}
