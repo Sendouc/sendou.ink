@@ -20,7 +20,7 @@ import { useTranslation } from "~/hooks/useTranslation";
 import { cutToNDecimalPlaces } from "~/utils/number";
 import {
   seasonMatchesByUserId,
-  seasonMatchesByUserIdCount,
+  seasonMatchesByUserIdPagesCount,
 } from "~/features/sendouq/queries/seasonMatchesByUserId.server";
 import { sendouQMatchPage } from "~/utils/urls";
 import { Avatar } from "~/components/Avatar";
@@ -46,7 +46,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     matches: {
       value: seasonMatchesByUserId({ season: 0, userId: user.id, page }),
       currentPage: page,
-      pages: seasonMatchesByUserIdCount({ season: 0, userId: user.id }),
+      pages: seasonMatchesByUserIdPagesCount({ season: 0, userId: user.id }),
     },
   };
 };
@@ -194,8 +194,9 @@ function WeaponCircle({
 // xxx: date headers
 function Matches() {
   const data = useLoaderData<typeof loader>();
-  const [_, setSearchParams] = useSearchParams();
+  const [, setSearchParams] = useSearchParams();
 
+  // xxx: scroll to top
   const setPage = (page: number) => {
     setSearchParams({ page: String(page) });
   };
