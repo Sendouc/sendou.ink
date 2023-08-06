@@ -182,7 +182,7 @@ function Matches() {
   // xxx: pagination
   return (
     <div className="stack sm half-width">
-      {data.matches.slice(0, 10).map((match) => (
+      {data.matches.slice(0, 8).map((match) => (
         <Match key={match.id} match={match} />
       ))}
     </div>

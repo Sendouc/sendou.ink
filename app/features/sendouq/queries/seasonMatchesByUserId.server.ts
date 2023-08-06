@@ -4,11 +4,20 @@ import { type RankingSeason, seasonObject } from "~/features/mmr/season";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { parseDBArray, parseDBJsonArray } from "~/utils/sql";
 
-// xxx: take user id in account
 // xxx: load weapons
 // xxx: skip
 const stm = sql.prepare(/* sql */ `
   with "q1" as (
+    select
+      "GroupMatch".*
+    from "GroupMatch"
+    left join "Group" on 
+      "GroupMatch"."alphaGroupId" = "Group"."id" or 
+      "GroupMatch"."bravoGroupId" = "Group"."id"
+    left join "GroupMember" on "Group"."id" = "GroupMember"."groupId"
+    where "GroupMember"."userId" = @userId
+  ),
+  "q2" as (
     select
       "GroupMatch"."id",
       "GroupMatch"."alphaGroupId",
@@ -17,14 +26,14 @@ const stm = sql.prepare(/* sql */ `
         "GroupMatchMap"."winnerGroupId"
       ) as "winnerGroupIds"
     from
-      "GroupMatch"
+      "q1" as "GroupMatch"
     left join "GroupMatchMap" on "GroupMatch"."id" = "GroupMatchMap"."matchId"
     where "GroupMatchMap"."winnerGroupId" is not null
       and "GroupMatch"."createdAt" between @starts and @ends
     group by "GroupMatch"."id"
-  ), "q2" as (
+  ), "q3" as (
     select 
-        "q1".*,
+        "q2".*,
         json_group_array(
           json_object(
             'discordName', "User"."discordName",
@@ -32,14 +41,14 @@ const stm = sql.prepare(/* sql */ `
             'discordAvatar', "User"."discordAvatar"
           )
         ) as "groupAlphaMembers"
-      from "q1"
-      left join "Group" on "q1"."alphaGroupId" = "Group"."id"
+      from "q2"
+      left join "Group" on "q2"."alphaGroupId" = "Group"."id"
       left join "GroupMember" on "Group"."id" = "GroupMember"."groupId"
       left join "User" on "GroupMember"."userId" = "User"."id"
-      group by "q1"."id"
+      group by "q2"."id"
   )
   select 
-    "q2".*,
+    "q3".*,
     json_group_array(
       json_object(
         'discordName', "User"."discordName",
@@ -47,11 +56,11 @@ const stm = sql.prepare(/* sql */ `
         'discordAvatar', "User"."discordAvatar"
       )
     ) as "groupBravoMembers"
-  from "q2"
-  left join "Group" on "q2"."bravoGroupId" = "Group"."id"
+  from "q3"
+  left join "Group" on "q3"."bravoGroupId" = "Group"."id"
   left join "GroupMember" on "Group"."id" = "GroupMember"."groupId"
   left join "User" on "GroupMember"."userId" = "User"."id"
-  group by "q2"."id"
+  group by "q3"."id"
 `);
 
 interface SeasonMatchByUserId {
