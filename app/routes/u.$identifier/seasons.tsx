@@ -26,6 +26,7 @@ import { sendouQMatchPage } from "~/utils/urls";
 import { Avatar } from "~/components/Avatar";
 import invariant from "tiny-invariant";
 import { Pagination } from "~/components/Pagination";
+import * as React from "react";
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const { identifier } = userParamsSchema.parse(params);
@@ -52,6 +53,12 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 };
 
 export default function UserSeasonsPage() {
+  const data = useLoaderData<typeof loader>();
+
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [data]);
+
   return (
     <div className="stack lg half-width">
       <SeasonHeader />
@@ -196,7 +203,6 @@ function Matches() {
   const data = useLoaderData<typeof loader>();
   const [, setSearchParams] = useSearchParams();
 
-  // xxx: scroll to top
   const setPage = (page: number) => {
     setSearchParams({ page: String(page) });
   };
