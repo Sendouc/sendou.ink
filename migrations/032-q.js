@@ -1,3 +1,4 @@
+// xxx: test what happens if error in between... -> to transaction?
 module.exports.up = function (db) {
   db.prepare(`create index skill_identifier on "Skill"("identifier")`).run();
 

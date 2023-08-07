@@ -6,7 +6,12 @@ import {
   useSearchParams,
 } from "@remix-run/react";
 import clsx from "clsx";
-import { TierImage, WeaponImage } from "~/components/Image";
+import {
+  ModeImage,
+  StageImage,
+  TierImage,
+  WeaponImage,
+} from "~/components/Image";
 import { db } from "~/db";
 import { ordinalToSp } from "~/features/mmr";
 import { seasonAllMMRByUserId } from "~/features/mmr/queries/seasonAllMMRByUserId.server";
@@ -29,10 +34,25 @@ import { Pagination } from "~/components/Pagination";
 import * as React from "react";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { SubNav, SubNavLink } from "~/components/SubNav";
+import { z } from "zod";
+import { seasonStagesByUserId } from "~/features/sendouq/queries/seasonStagesByUserId.server";
+import { stageIds } from "~/modules/in-game-lists";
+import { rankedModesShort } from "~/modules/in-game-lists/modes";
+
+export const seasonsSearchParamsSchema = z.object({
+  page: z.coerce.number().default(1),
+  info: z.enum(["weapons", "stages", "mates", "enemies"]).default("weapons"),
+});
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const { identifier } = userParamsSchema.parse(params);
-  const page = Number(new URL(request.url).searchParams.get("page") ?? 1);
+  const parsedSearchParams = seasonsSearchParamsSchema.safeParse(
+    Object.fromEntries(new URL(request.url).searchParams)
+  );
+  const { info, page } = parsedSearchParams.success
+    ? parsedSearchParams.data
+    : seasonsSearchParamsSchema.parse({});
+
   const user = notFoundIfFalsy(db.users.findByIdentifier(identifier));
 
   const skills = seasonAllMMRByUserId({ season: 0, userId: user.id });
@@ -45,11 +65,21 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   return {
     skills,
     tier,
-    weapons: seasonReportedWeaponsByUserId({ season: 0, userId: user.id }),
     matches: {
       value: seasonMatchesByUserId({ season: 0, userId: user.id, page }),
       currentPage: page,
       pages: seasonMatchesByUserIdPagesCount({ season: 0, userId: user.id }),
+    },
+    info: {
+      currentTab: info,
+      stages:
+        info === "stages"
+          ? seasonStagesByUserId({ season: 0, userId: user.id })
+          : null,
+      weapons:
+        info === "weapons"
+          ? seasonReportedWeaponsByUserId({ season: 0, userId: user.id })
+          : null,
     },
   };
 };
@@ -61,28 +91,51 @@ export default function UserSeasonsPage() {
     window.scrollTo(0, 0);
   }, [data]);
 
-  // xxx: search param, also keep page
+  const tabLink = (tab: string) =>
+    `?info=${tab}&page=${data.matches.currentPage}`;
+
   return (
     <div className="stack lg half-width">
       <SeasonHeader />
       <Rank />
       <div>
         <SubNav secondary>
-          <SubNavLink to="?info=weapons" secondary controlled active>
+          <SubNavLink
+            to={tabLink("weapons")}
+            secondary
+            controlled
+            active={data.info.currentTab === "weapons"}
+          >
             Weapons
           </SubNavLink>
-          <SubNavLink to="?info=stages" secondary controlled>
+          <SubNavLink
+            to={tabLink("stages")}
+            secondary
+            controlled
+            active={data.info.currentTab === "stages"}
+          >
             Stages
           </SubNavLink>
-          <SubNavLink to="?info=mates" secondary controlled>
+          <SubNavLink
+            to={tabLink("mates")}
+            secondary
+            controlled
+            active={data.info.currentTab === "mates"}
+          >
             Teammates
           </SubNavLink>
-          <SubNavLink to="?info=enemies" secondary controlled>
+          <SubNavLink
+            to={tabLink("enemies")}
+            secondary
+            controlled
+            active={data.info.currentTab === "enemies"}
+          >
             Enemies
           </SubNavLink>
         </SubNav>
         <div className="u__season__info-container">
-          <Weapons />
+          {data.info.weapons ? <Weapons weapons={data.info.weapons} /> : null}
+          {data.info.stages ? <Stages stages={data.info.stages} /> : null}
         </div>
       </div>
       <Matches />
@@ -153,25 +206,28 @@ function Rank() {
 
 const MIN_DEGREE = 5;
 const WEAPONS_TO_SHOW = 9;
-function Weapons() {
+function Weapons({
+  weapons,
+}: {
+  weapons: NonNullable<SerializeFrom<typeof loader>["info"]["weapons"]>;
+}) {
   const { t } = useTranslation(["weapons"]);
-  const data = useLoaderData<typeof loader>();
 
-  const weapons = data.weapons.slice(0, WEAPONS_TO_SHOW);
+  const slicedWeapons = weapons.slice(0, WEAPONS_TO_SHOW);
 
-  const totalCount = data.weapons.reduce((acc, cur) => cur.count + acc, 0);
+  const totalCount = weapons.reduce((acc, cur) => cur.count + acc, 0);
   const percentage = (count: number) =>
     cutToNDecimalPlaces((count / totalCount) * 100);
   const countToDegree = (count: number) =>
     Math.max((count / totalCount) * 360, MIN_DEGREE);
 
   const restCount =
-    totalCount - weapons.reduce((acc, cur) => cur.count + acc, 0);
-  const restWeaponsCount = data.weapons.length - WEAPONS_TO_SHOW;
+    totalCount - slicedWeapons.reduce((acc, cur) => cur.count + acc, 0);
+  const restWeaponsCount = weapons.length - WEAPONS_TO_SHOW;
 
   return (
     <div className="stack sm horizontal justify-center flex-wrap">
-      {weapons.map(({ count, weaponSplId }) => (
+      {slicedWeapons.map(({ count, weaponSplId }) => (
         <WeaponCircle
           key={weaponSplId}
           degrees={countToDegree(count)}
@@ -192,6 +248,50 @@ function Weapons() {
           +{restWeaponsCount}
         </WeaponCircle>
       ) : null}
+    </div>
+  );
+}
+
+function Stages({
+  stages,
+}: {
+  stages: NonNullable<SerializeFrom<typeof loader>["info"]["stages"]>;
+}) {
+  const { t } = useTranslation(["game-misc"]);
+  return (
+    <div className="stack horizontal justify-center md flex-wrap">
+      {stageIds.map((id) => {
+        return (
+          <div key={id} className="stack sm">
+            <StageImage stageId={id} height={48} className="rounded" />
+            {rankedModesShort.map((mode) => {
+              const stats = stages[id]?.[mode];
+              const winPercentage = stats
+                ? cutToNDecimalPlaces(
+                    (stats.wins / (stats.wins + stats.losses)) * 100
+                  )
+                : "";
+              const infoText = `${t(`game-misc:MODE_SHORT_${mode}`)} ${t(
+                `game-misc:STAGE_${id}`
+              )} ${winPercentage}${winPercentage ? "%" : ""}`;
+
+              return (
+                <div
+                  key={mode}
+                  className="stack horizontal items-center xs text-xs font-semi-bold"
+                >
+                  <ModeImage mode={mode} size={18} title={infoText} />
+                  {stats ? (
+                    <div>
+                      {stats.wins}W {stats.losses}L
+                    </div>
+                  ) : null}
+                </div>
+              );
+            })}
+          </div>
+        );
+      })}
     </div>
   );
 }

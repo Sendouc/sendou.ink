@@ -94,16 +94,16 @@ export function WeaponImage({
 
 type ModeImageProps = {
   mode: ModeShort;
-} & Omit<ImageProps, "path" | "alt" | "title">;
+} & Omit<ImageProps, "path" | "alt">;
 
-export function ModeImage({ mode, testId, ...rest }: ModeImageProps) {
+export function ModeImage({ mode, testId, title, ...rest }: ModeImageProps) {
   const { t } = useTranslation(["game-misc"]);
 
   return (
     <Image
       {...rest}
-      alt={t(`game-misc:MODE_LONG_${mode}`)}
-      title={t(`game-misc:MODE_LONG_${mode}`)}
+      alt={title ?? t(`game-misc:MODE_LONG_${mode}`)}
+      title={title ?? t(`game-misc:MODE_LONG_${mode}`)}
       testId={testId}
       path={modeImageUrl(mode)}
     />
