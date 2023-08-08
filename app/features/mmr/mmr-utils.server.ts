@@ -30,9 +30,35 @@ export function queryCurrentTeamRating({
     season: season ?? null,
   });
 
-  // xxx: base initial rating on user ratings
   if (!skill) {
-    return rating();
+    const userRatings = identifier
+      .split("-")
+      .map((userId) =>
+        findCurrentSkillByUserId({
+          userId: Number(userId),
+          season: season ?? null,
+        })
+      )
+      .filter(Boolean);
+
+    if (userRatings.length === 0) return rating();
+
+    let mu =
+      userRatings.reduce((acc, cur) => acc + cur!.mu, 0) / userRatings.length;
+    let sigma =
+      userRatings.reduce((acc, cur) => acc + cur!.sigma, 0) /
+      userRatings.length;
+
+    // add a bit uncertainty if very low certainty
+    if (sigma < 5) {
+      mu--;
+      sigma++;
+    }
+
+    return {
+      mu,
+      sigma,
+    };
   }
 
   return rating(skill);
