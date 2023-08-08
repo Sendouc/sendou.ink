@@ -41,6 +41,7 @@ import { assertUnreachable } from "~/utils/types";
 import {
   SENDOUQ_PAGE,
   SENDOUQ_PREPARING_PAGE,
+  SENDOU_INK_DISCORD_URL,
   navIconUrl,
   teamPage,
   userPage,
@@ -355,6 +356,15 @@ export default function QMatchPage() {
             <MatchGroup group={data.groupAlpha} side="ALPHA" />
             <MatchGroup group={data.groupBravo} side="BRAVO" />
           </div>
+          {!data.match.isLocked ? (
+            <div className="q-match__join-discord-section">
+              Contact your opponent on the <b>#match-meetup</b> channel of the
+              sendou.ink Discord:{" "}
+              <a href={SENDOU_INK_DISCORD_URL} target="_blank" rel="noreferrer">
+                {SENDOU_INK_DISCORD_URL}
+              </a>
+            </div>
+          ) : null}
           <MapList
             canReportScore={canReportScore}
             isResubmission={ownTeamReported}

@@ -116,6 +116,13 @@
   margin: 0 auto;
 }
 
+.q-match__join-discord-section {
+  border-left: 4px solid var(--theme);
+  padding-inline-start: var(--s-4);
+  font-size: var(--fonts-sm);
+  color: var(--text-lighter);
+}
+
 .q-match__members-container {
   min-width: 180px;
 }
