@@ -27,7 +27,7 @@ import {
   seasonMatchesByUserId,
   seasonMatchesByUserIdPagesCount,
 } from "~/features/sendouq/queries/seasonMatchesByUserId.server";
-import { sendouQMatchPage } from "~/utils/urls";
+import { sendouQMatchPage, userSeasonsPage } from "~/utils/urls";
 import { Avatar } from "~/components/Avatar";
 import invariant from "tiny-invariant";
 import { Pagination } from "~/components/Pagination";
@@ -38,6 +38,7 @@ import { z } from "zod";
 import { seasonStagesByUserId } from "~/features/sendouq/queries/seasonStagesByUserId.server";
 import { stageIds } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
+import { seasonsMatesEnemiesByUserId } from "~/features/sendouq/queries/seasonsMatesEnemiesByUserId.server";
 
 export const seasonsSearchParamsSchema = z.object({
   page: z.coerce.number().default(1),
@@ -79,6 +80,14 @@ export const loader = async ({ params, request }: LoaderArgs) => {
       weapons:
         info === "weapons"
           ? seasonReportedWeaponsByUserId({ season: 0, userId: user.id })
+          : null,
+      players:
+        info === "enemies" || info === "mates"
+          ? seasonsMatesEnemiesByUserId({
+              season: 0,
+              userId: user.id,
+              type: info === "enemies" ? "ENEMY" : "MATE",
+            })
           : null,
     },
   };
@@ -136,6 +145,7 @@ export default function UserSeasonsPage() {
         <div className="u__season__info-container">
           {data.info.weapons ? <Weapons weapons={data.info.weapons} /> : null}
           {data.info.stages ? <Stages stages={data.info.stages} /> : null}
+          {data.info.players ? <Players players={data.info.players} /> : null}
         </div>
       </div>
       <Matches />
@@ -289,6 +299,50 @@ function Stages({
                 </div>
               );
             })}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function Players({
+  players,
+}: {
+  players: NonNullable<SerializeFrom<typeof loader>["info"]["players"]>;
+}) {
+  return (
+    <div className="stack md horizontal justify-center flex-wrap">
+      {players.map((player) => {
+        const setWinRate = Math.round(
+          (player.setWins / (player.setWins + player.setLosses)) * 100
+        );
+        const mapWinRate = Math.round(
+          (player.mapWins / (player.mapWins + player.mapLosses)) * 100
+        );
+        return (
+          <div key={player.user.id} className="stack">
+            <Link
+              to={userSeasonsPage({ user: player.user })}
+              className="u__season__player-name"
+            >
+              <Avatar user={player.user} size="xs" className="mx-auto" />
+              {player.user.discordName}
+            </Link>
+            <div
+              className={clsx("text-xs font-bold", {
+                "text-success": setWinRate >= 50,
+                "text-warning": setWinRate < 50,
+              })}
+            >
+              {setWinRate}% ({mapWinRate}%)
+            </div>
+            <div className="text-xs">
+              {player.setWins} ({player.mapWins}) W
+            </div>
+            <div className="text-xs">
+              {player.setLosses} ({player.mapLosses}) L
+            </div>
           </div>
         );
       })}

@@ -335,6 +335,16 @@
   margin-top: 62px;
 }
 
+.u__season__player-name {
+  width: 64px;
+  font-size: var(--fonts-xs);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+  font-weight: var(--semi-bold);
+}
+
 .u__season__match {
   background-color: var(--bg-lighter);
   border-radius: var(--rounded);

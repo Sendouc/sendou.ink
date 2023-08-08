@@ -68,7 +68,11 @@ import { Divider } from "~/components/Divider";
 import { cache } from "~/utils/cache.server";
 import { Toggle } from "~/components/Toggle";
 import { addMapResults } from "../queries/addMapResults.server";
-import { summarizeMaps } from "../core/summarizer.server";
+import {
+  summarizeMaps,
+  summarizePlayerResults,
+} from "../core/summarizer.server";
+import { addPlayerResults } from "../queries/addPlayerResults.server";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -166,6 +170,9 @@ export const action = async ({ request, params }: ActionArgs) => {
         if (newSkills) {
           addMapResults(
             summarizeMaps({ match, members, winners: data.winners })
+          );
+          addPlayerResults(
+            summarizePlayerResults({ match, members, winners: data.winners })
           );
           addSkills(newSkills);
           cache.delete(USER_SKILLS_CACHE_KEY);

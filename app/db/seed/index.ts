@@ -57,8 +57,12 @@ import { addReportedWeapons } from "~/features/sendouq/queries/addReportedWeapon
 import { findMatchById } from "~/features/sendouq/queries/findMatchById.server";
 import { setGroupAsInactive } from "~/features/sendouq/queries/setGroupAsInactive.server";
 import { addMapResults } from "~/features/sendouq/queries/addMapResults.server";
-import { summarizeMaps } from "~/features/sendouq/core/summarizer.server";
+import {
+  summarizeMaps,
+  summarizePlayerResults,
+} from "~/features/sendouq/core/summarizer.server";
 import { groupForMatch } from "~/features/sendouq/queries/groupForMatch.server";
+import { addPlayerResults } from "~/features/sendouq/queries/addPlayerResults.server";
 
 const calendarEventWithToToolsSz = () => calendarEventWithToTools(true);
 const calendarEventWithToToolsTeamsSz = () =>
@@ -1771,6 +1775,9 @@ function playedMatches() {
       setGroupAsInactive(groupAlpha);
       setGroupAsInactive(groupBravo);
       addMapResults(summarizeMaps({ match: finishedMatch, members, winners }));
+      addPlayerResults(
+        summarizePlayerResults({ match: finishedMatch, members, winners })
+      );
     })();
 
     // -> add weapons for 90% of matches
