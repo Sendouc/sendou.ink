@@ -223,6 +223,7 @@ function Rank() {
   );
 }
 
+const now = new Date();
 function PowerChart() {
   const data = useLoaderData<typeof loader>();
 
@@ -230,10 +231,15 @@ function PowerChart() {
     return [
       {
         label: "Power",
-        data: data.skills.map((s) => ({
-          primary: new Date(s.date),
-          secondary: ordinalToSp(s.ordinal),
-        })),
+        data: data.skills.map((s) => {
+          // hack to force shorter bottom axis text
+          const date = new Date(s.date);
+          date.setFullYear(now.getFullYear());
+          return {
+            primary: date,
+            secondary: ordinalToSp(s.ordinal),
+          };
+        }),
       },
     ];
   }, [data]);

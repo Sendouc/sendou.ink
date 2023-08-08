@@ -33,26 +33,10 @@ export default function Chart({
     []
   );
 
-  if (!isMounted)
-    return (
-      <div
-        style={{
-          height: "175px",
-          backgroundColor: "var(--bg-lighter)",
-          borderRadius: "var(--rounded)",
-        }}
-      />
-    );
+  if (!isMounted) return <div className="chart__container" />;
 
   return (
-    <div
-      style={{
-        height: "175px",
-        backgroundColor: "var(--bg-lighter)",
-        borderRadius: "var(--rounded)",
-        color: "white",
-      }}
-    >
+    <div className="chart__container">
       <ReactChart
         options={{
           data: options,

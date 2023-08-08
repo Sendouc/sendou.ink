@@ -1244,6 +1244,12 @@ dialog::backdrop {
   grid-row: 1;
 }
 
+.chart__container {
+  height: 175px;
+  background-color: var(--bg-lighter);
+  border-radius: var(--rounded);
+}
+
 #nprogress .bar {
   margin-top: 3rem !important;
   background: var(--theme) !important;
