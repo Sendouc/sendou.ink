@@ -108,6 +108,7 @@ module.exports = {
     });
   },
   serverModuleFormat: "cjs",
+  serverDependenciesToBundle: ["react-charts", "d3-time-format"],
   future: {
     v2_meta: true,
     v2_normalizeFormMethod: true,

@@ -39,6 +39,7 @@ import { seasonStagesByUserId } from "~/features/sendouq/queries/seasonStagesByU
 import { stageIds } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { seasonsMatesEnemiesByUserId } from "~/features/sendouq/queries/seasonsMatesEnemiesByUserId.server";
+import Chart from "~/components/Chart";
 
 export const seasonsSearchParamsSchema = z.object({
   page: z.coerce.number().default(1),
@@ -56,7 +57,6 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 
   const user = notFoundIfFalsy(db.users.findByIdentifier(identifier));
 
-  const skills = seasonAllMMRByUserId({ season: 0, userId: user.id });
   const { tier } = (await userSkills()).userSkills[user.id] ?? {
     approximate: false,
     ordinal: 0,
@@ -64,7 +64,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   };
 
   return {
-    skills,
+    skills: seasonAllMMRByUserId({ season: 0, userId: user.id }),
     tier,
     matches: {
       value: seasonMatchesByUserId({ season: 0, userId: user.id, page }),
@@ -96,18 +96,27 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 export default function UserSeasonsPage() {
   const data = useLoaderData<typeof loader>();
 
-  React.useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [data]);
-
   const tabLink = (tab: string) =>
     `?info=${tab}&page=${data.matches.currentPage}`;
+
+  if (data.matches.value.length === 0) {
+    return (
+      <div className="text-lg text-lighter font-semi-bold text-center mt-2">
+        This user has not played SendouQ or ranked tournaments yet.
+      </div>
+    );
+  }
 
   return (
     <div className="stack lg half-width">
       <SeasonHeader />
-      <Rank />
-      <div>
+      {data.skills.length > 0 ? (
+        <div className="stack md">
+          <Rank />
+          {data.skills.length >= 3 ? <PowerChart /> : null}
+        </div>
+      ) : null}
+      <div className="mt-4">
         <SubNav secondary>
           <SubNavLink
             to={tabLink("weapons")}
@@ -202,7 +211,7 @@ function Rank() {
           {data.tier.isPlus ? "+" : ""}
         </div>
         <div className="text-lg font-bold">
-          {ordinalToSp(data.skills[0].ordinal)}SP
+          {ordinalToSp(data.skills[data.skills.length - 1].ordinal)}SP
         </div>
         {!peakAndCurrentSame ? (
           <div className="text-lighter text-sm">
@@ -212,6 +221,24 @@ function Rank() {
       </div>
     </div>
   );
+}
+
+function PowerChart() {
+  const data = useLoaderData<typeof loader>();
+
+  const chartOptions = React.useMemo(() => {
+    return [
+      {
+        label: "Power",
+        data: data.skills.map((s) => ({
+          primary: new Date(s.date),
+          secondary: ordinalToSp(s.ordinal),
+        })),
+      },
+    ];
+  }, [data]);
+
+  return <Chart options={chartOptions as any} />;
 }
 
 const MIN_DEGREE = 5;
@@ -377,50 +404,63 @@ function Matches() {
   const isMounted = useIsMounted();
   const data = useLoaderData<typeof loader>();
   const [, setSearchParams] = useSearchParams();
+  const ref = React.useRef<HTMLDivElement>(null);
 
   const setPage = (page: number) => {
     setSearchParams({ page: String(page) });
   };
 
+  React.useEffect(() => {
+    ref.current?.scrollIntoView({
+      block: "center",
+    });
+  }, [data.matches.currentPage]);
+
   let lastDayRendered: number | null = null;
   return (
-    <div className="stack lg">
-      <div className="stack">
-        {data.matches.value.map((match) => {
-          const day = databaseTimestampToDate(match.createdAt).getDate();
-          const shouldRenderDateHeader = day !== lastDayRendered;
-          lastDayRendered = day;
+    <div>
+      <div ref={ref} />
+      <div className="stack lg">
+        <div className="stack">
+          {data.matches.value.map((match) => {
+            const day = databaseTimestampToDate(match.createdAt).getDate();
+            const shouldRenderDateHeader = day !== lastDayRendered;
+            lastDayRendered = day;
 
-          return (
-            <React.Fragment key={match.id}>
-              <div
-                className={clsx("text-xs font-semi-bold text-theme-secondary", {
-                  invisible: !isMounted || !shouldRenderDateHeader,
-                })}
-              >
-                {isMounted
-                  ? databaseTimestampToDate(match.createdAt).toLocaleString(
-                      "en",
-                      {
-                        weekday: "long",
-                        month: "long",
-                        day: "numeric",
-                      }
-                    )
-                  : "t"}
-              </div>
-              <Match match={match} />
-            </React.Fragment>
-          );
-        })}
+            return (
+              <React.Fragment key={match.id}>
+                <div
+                  className={clsx(
+                    "text-xs font-semi-bold text-theme-secondary",
+                    {
+                      invisible: !isMounted || !shouldRenderDateHeader,
+                    }
+                  )}
+                >
+                  {isMounted
+                    ? databaseTimestampToDate(match.createdAt).toLocaleString(
+                        "en",
+                        {
+                          weekday: "long",
+                          month: "long",
+                          day: "numeric",
+                        }
+                      )
+                    : "t"}
+                </div>
+                <Match match={match} />
+              </React.Fragment>
+            );
+          })}
+        </div>
+        <Pagination
+          currentPage={data.matches.currentPage}
+          pagesCount={data.matches.pages}
+          nextPage={() => setPage(data.matches.currentPage + 1)}
+          previousPage={() => setPage(data.matches.currentPage - 1)}
+          setPage={(page) => setPage(page)}
+        />
       </div>
-      <Pagination
-        currentPage={data.matches.currentPage}
-        pagesCount={data.matches.pages}
-        nextPage={() => setPage(data.matches.currentPage + 1)}
-        previousPage={() => setPage(data.matches.currentPage - 1)}
-        setPage={(page) => setPage(page)}
-      />
     </div>
   );
 }
