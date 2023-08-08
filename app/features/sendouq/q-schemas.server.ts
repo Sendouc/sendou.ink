@@ -22,6 +22,10 @@ export const frontPageSchema = z.union([
   z.object({
     _action: z.literal("JOIN_TEAM"),
   }),
+  z.object({
+    _action: z.literal("SET_INITIAL_SP"),
+    tier: z.enum(["higher", "default", "lower"]),
+  }),
 ]);
 
 export const preparingSchema = z.union([

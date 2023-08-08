@@ -58,6 +58,14 @@ import { Dialog } from "~/components/Dialog";
 import { joinListToNaturalString } from "~/utils/arrays";
 import { assertUnreachable } from "~/utils/types";
 import { addMember } from "../queries/addMember.server";
+import { userHasSkill } from "../queries/userHasSkill.server";
+import { FormMessage } from "~/components/FormMessage";
+import { addInitialSkill } from "../queries/addInitialSkill.server";
+import {
+  DEFAULT_SKILL_HIGH,
+  DEFAULT_SKILL_LOW,
+  DEFAULT_SKILL_MID,
+} from "~/features/mmr/mmr-constants";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -90,8 +98,9 @@ export const action: ActionFunction = async ({ request }) => {
     schema: frontPageSchema,
   });
 
+  const season = currentSeason(new Date());
   validate(!findCurrentGroupByUserId(user.id), "Already in a group");
-  validate(currentSeason(new Date()), "Season is not active");
+  validate(season, "Season is not active");
 
   switch (data._action) {
     case "JOIN_QUEUE": {
@@ -130,6 +139,28 @@ export const action: ActionFunction = async ({ request }) => {
           : SENDOUQ_LOOKING_PAGE
       );
     }
+    case "SET_INITIAL_SP": {
+      validate(
+        !userHasSkill({ userId: user.id, season: season.nth }),
+        "Already set initial SP"
+      );
+
+      const defaultSkill =
+        data.tier === "higher"
+          ? DEFAULT_SKILL_HIGH
+          : data.tier === "default"
+          ? DEFAULT_SKILL_MID
+          : DEFAULT_SKILL_LOW;
+
+      addInitialSkill({
+        mu: defaultSkill.mu,
+        season: season.nth,
+        sigma: defaultSkill.sigma,
+        userId: user.id,
+      });
+
+      return null;
+    }
     default: {
       assertUnreachable(data);
     }
@@ -158,6 +189,9 @@ export const loader = async ({ request }: LoaderArgs) => {
   const upcomingSeason = nextSeason(now);
 
   return {
+    hasSkill: season
+      ? userHasSkill({ userId: user!.id, season: season.nth })
+      : null,
     season,
     upcomingSeason,
     teamInvitedTo,
@@ -179,14 +213,16 @@ export default function QPage() {
         </Alert>
       ) : null}
       {data.teamInvitedTo &&
-      data.teamInvitedTo.members.length < FULL_GROUP_SIZE ? (
+      data.teamInvitedTo.members.length < FULL_GROUP_SIZE &&
+      data.hasSkill ? (
         <JoinTeamDialog
           open={dialogOpen}
           close={() => setDialogOpen(false)}
           members={data.teamInvitedTo.members}
         />
       ) : null}
-      {data.season && user ? (
+      {!data.hasSkill ? <StartRank /> : null}
+      {data.season && user && data.hasSkill ? (
         <>
           <fetcher.Form className="stack md" method="post">
             <input type="hidden" name="_action" value="JOIN_QUEUE" />
@@ -390,6 +426,45 @@ function UpcomingSeasonInfo({
       <br />
       Join Season {season.nth} starting {dateToString(starts)}
     </div>
+  );
+}
+
+function StartRank() {
+  const fetcher = useFetcher();
+
+  return (
+    <fetcher.Form method="post" className="stack md items-start">
+      <div>
+        <label>Starting rank</label>
+        {["higher", "default", "lower"].map((tier) => {
+          return (
+            <div key={tier} className="stack sm horizontal items-center">
+              <input
+                type="radio"
+                name="tier"
+                id={tier}
+                value={tier}
+                defaultChecked={tier === "default"}
+              />
+              <label htmlFor={tier} className="mb-0 text-capitalize">
+                {tier}
+              </label>
+            </div>
+          );
+        })}
+        <FormMessage type="info">
+          Decides your starting SP (MMR). &quot;Higher&quot; is recommended for
+          Plus Server level players. &quot;Lower&quot; for Low Ink eligible
+          players. &quot;Default&quot; for everyone else.
+        </FormMessage>
+        <FormMessage type="info" className="font-bold">
+          Setting initial SP is mandatory before you can join SendouQ.
+        </FormMessage>
+      </div>
+      <SubmitButton _action="SET_INITIAL_SP" state={fetcher.state}>
+        Submit
+      </SubmitButton>
+    </fetcher.Form>
   );
 }
 

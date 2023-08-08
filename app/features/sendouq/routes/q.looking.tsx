@@ -431,6 +431,7 @@ function InfoText() {
   );
 }
 
+// xxx: what about tiers when people are initial MMR?
 function Groups() {
   const data = useLoaderData<typeof loader>();
   const isMounted = useIsMounted();
