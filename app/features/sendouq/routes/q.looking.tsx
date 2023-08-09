@@ -318,6 +318,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   };
 };
 
+// xxx: check no conflict in map preferences i.e. full group of "SZ only" shouldn't see "all modes only"
 export default function QLookingPage() {
   const data = useLoaderData<typeof loader>();
   useAutoRefresh();
