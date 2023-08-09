@@ -19,8 +19,8 @@ export interface TournamentSummary {
     Skill,
     "tournamentId" | "id" | "ordinal" | "season" | "groupMatchId"
   >[];
-  mapResultDeltas: MapResult[];
-  playerResultDeltas: PlayerResult[];
+  mapResultDeltas: Omit<MapResult, "season">[];
+  playerResultDeltas: Omit<PlayerResult, "season">[];
   tournamentResults: Omit<TournamentResult, "tournamentId" | "isHighlight">[];
 }
 
@@ -269,8 +269,8 @@ function mapResultDeltas({
 }: {
   results: AllMatchResult[];
   userIdsToTeamId: UserIdToTeamId;
-}): MapResult[] {
-  const result: MapResult[] = [];
+}): TournamentSummary["mapResultDeltas"] {
+  const result: TournamentSummary["mapResultDeltas"] = [];
 
   const addMapResult = (
     mapResult: Pick<MapResult, "stageId" | "mode" | "userId"> & {
@@ -293,8 +293,6 @@ function mapResultDeltas({
         mode: mapResult.mode,
         wins: mapResult.type === "win" ? 1 : 0,
         losses: mapResult.type === "loss" ? 1 : 0,
-        // xxx: season
-        season: 0,
       });
     }
   };
@@ -327,10 +325,12 @@ function playerResultDeltas({
 }: {
   results: AllMatchResult[];
   userIdsToTeamId: UserIdToTeamId;
-}): PlayerResult[] {
-  const result: PlayerResult[] = [];
+}): TournamentSummary["playerResultDeltas"] {
+  const result: TournamentSummary["playerResultDeltas"] = [];
 
-  const addPlayerResult = (playerResult: PlayerResult) => {
+  const addPlayerResult = (
+    playerResult: TournamentSummary["playerResultDeltas"][number]
+  ) => {
     const existingResult = result.find(
       (r) =>
         r.type === playerResult.type &&
@@ -376,8 +376,6 @@ function playerResultDeltas({
             setWins: 0,
             type:
               ownTournamentTeamId === otherTournamentTeamId ? "MATE" : "ENEMY",
-            // xxx: season
-            season: 0,
           });
         }
       }
@@ -415,8 +413,6 @@ function playerResultDeltas({
           setWins: won ? 1 : 0,
           type:
             ownTournamentTeamId === otherTournamentTeamId ? "MATE" : "ENEMY",
-          // xxx: season
-          season: 0,
         });
       }
     }

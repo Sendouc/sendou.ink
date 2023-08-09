@@ -11,7 +11,8 @@ const addSkillStm = sql.prepare(/* sql */ `
     "ordinal",
     "userId",
     "identifier",
-    "matchesCount"
+    "matchesCount",
+    "season"
   )
   values (
     @tournamentId,
@@ -20,7 +21,8 @@ const addSkillStm = sql.prepare(/* sql */ `
     @ordinal,
     @userId,
     @identifier,
-    @matchesCount + coalesce((select max("matchesCount") from "Skill" where "userId" = @userId or "identifier" = @identifier group by "userId", "identifier"), 0)
+    @matchesCount + coalesce((select max("matchesCount") from "Skill" where "userId" = @userId or "identifier" = @identifier group by "userId", "identifier"), 0),
+    @season
   ) returning *
 `);
 
@@ -104,9 +106,11 @@ export const addSummary = sql.transaction(
   ({
     tournamentId,
     summary,
+    season,
   }: {
     tournamentId: number;
     summary: TournamentSummary;
+    season: number;
   }) => {
     for (const skill of summary.skills) {
       const insertedSkill = addSkillStm.get({
@@ -117,6 +121,7 @@ export const addSummary = sql.transaction(
         userId: skill.userId,
         identifier: skill.identifier,
         matchesCount: skill.matchesCount,
+        season,
       }) as Skill;
 
       if (insertedSkill.identifier) {
@@ -136,8 +141,7 @@ export const addSummary = sql.transaction(
         userId: mapResultDelta.userId,
         wins: mapResultDelta.wins,
         losses: mapResultDelta.losses,
-        // xxx: add season
-        season: 0,
+        season,
       });
     }
 
@@ -150,8 +154,7 @@ export const addSummary = sql.transaction(
         setWins: playerResultDelta.setWins,
         setLosses: playerResultDelta.setLosses,
         type: playerResultDelta.type,
-        // xxx: add season
-        season: 0,
+        season,
       });
     }
 

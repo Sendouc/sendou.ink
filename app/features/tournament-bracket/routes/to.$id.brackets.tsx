@@ -74,7 +74,11 @@ import { tournamentSummary } from "../core/summarizer.server";
 import invariant from "tiny-invariant";
 import { allMatchResultsByTournamentId } from "../queries/allMatchResultsByTournamentId.server";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
-import { queryCurrentTeamRating, queryCurrentUserRating } from "~/features/mmr";
+import {
+  currentSeason,
+  queryCurrentTeamRating,
+  queryCurrentUserRating,
+} from "~/features/mmr";
 
 export const links: LinksFunction = () => {
   return [
@@ -165,6 +169,10 @@ export const action: ActionFunction = async ({ params, request }) => {
       const results = allMatchResultsByTournamentId(tournamentId);
       invariant(results.length > 0, "No results found");
 
+      // TODO: support tournaments outside of seasons as well as unranked tournaments
+      const _currentSeason = currentSeason(new Date());
+      validate(_currentSeason, "No current season found");
+
       addSummary({
         tournamentId,
         summary: tournamentSummary({
@@ -176,6 +184,7 @@ export const action: ActionFunction = async ({ params, request }) => {
           queryCurrentUserRating: (userId) =>
             queryCurrentUserRating({ userId }),
         }),
+        season: _currentSeason.nth,
       });
 
       return null;

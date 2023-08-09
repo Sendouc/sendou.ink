@@ -5,7 +5,6 @@ import { seasonObject } from "~/features/mmr/season";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 
-// xxx: tournament weapons
 const stm = sql.prepare(/* sql */ `
   with "q1" as (
     select
