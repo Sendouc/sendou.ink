@@ -35,6 +35,7 @@ import {
   addSkillsToGroups,
   censorGroups,
   divideGroups,
+  filterOutGroupsWithIncompatibleMapListPreference,
   groupExpiryStatus,
   membersNeededForFull,
 } from "../core/groups.server";
@@ -301,8 +302,12 @@ export const loader = async ({ request }: LoaderArgs) => {
     ...(await userSkills()),
   });
 
+  const compatibleGroups = groupIsFull
+    ? filterOutGroupsWithIncompatibleMapListPreference(groupsWithSkills)
+    : groupsWithSkills;
+
   const censoredGroups = censorGroups({
-    groups: groupsWithSkills,
+    groups: compatibleGroups,
     showMembers: !groupIsFull,
     showInviteCode: hasGroupManagerPerms(currentGroup.role) && !groupIsFull,
   });
@@ -318,7 +323,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   };
 };
 
-// xxx: check no conflict in map preferences i.e. full group of "SZ only" shouldn't see "all modes only"
+// xxx: can vc, can listen, no vc
 export default function QLookingPage() {
   const data = useLoaderData<typeof loader>();
   useAutoRefresh();
@@ -432,7 +437,6 @@ function InfoText() {
   );
 }
 
-// xxx: what about tiers when people are initial MMR?
 function Groups() {
   const data = useLoaderData<typeof loader>();
   const isMounted = useIsMounted();

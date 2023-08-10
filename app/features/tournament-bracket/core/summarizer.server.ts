@@ -45,12 +45,14 @@ export function tournamentSummary({
   teams,
   finalStandings,
   queryCurrentTeamRating,
+  queryTeamPlayerRatingAverage,
   queryCurrentUserRating,
 }: {
   results: AllMatchResult[];
   teams: TeamsArg;
   finalStandings: FinalStandingsArg;
   queryCurrentTeamRating: (identifier: string) => Rating;
+  queryTeamPlayerRatingAverage: (identifier: string) => Rating;
   queryCurrentUserRating: (userId: number) => Rating;
 }): TournamentSummary {
   const userIdsToTeamId = userIdsToTeamIdRecord(teams);
@@ -61,6 +63,7 @@ export function tournamentSummary({
       userIdsToTeamId,
       queryCurrentTeamRating,
       queryCurrentUserRating,
+      queryTeamPlayerRatingAverage,
     }),
     mapResultDeltas: mapResultDeltas({ results, userIdsToTeamId }),
     playerResultDeltas: playerResultDeltas({ results, userIdsToTeamId }),
@@ -87,6 +90,7 @@ function skills(args: {
   results: AllMatchResult[];
   userIdsToTeamId: UserIdToTeamId;
   queryCurrentTeamRating: (identifier: string) => Rating;
+  queryTeamPlayerRatingAverage: (identifier: string) => Rating;
   queryCurrentUserRating: (userId: number) => Rating;
 }) {
   const result: TournamentSummary["skills"] = [];
@@ -169,10 +173,12 @@ function calculateTeamSkills({
   results,
   userIdsToTeamId,
   queryCurrentTeamRating,
+  queryTeamPlayerRatingAverage,
 }: {
   results: AllMatchResult[];
   userIdsToTeamId: UserIdToTeamId;
   queryCurrentTeamRating: (identifier: string) => Rating;
+  queryTeamPlayerRatingAverage: (identifier: string) => Rating;
 }) {
   const teamRatings = new Map<string, Rating>();
   const teamMatchesCount = new Map<string, number>();
@@ -207,10 +213,16 @@ function calculateTeamSkills({
     });
     const loserTeamIdentifier = selectMostPopular(loserTeamIdentifiers);
 
-    const [[ratedWinner], [ratedLoser]] = rate([
-      [getTeamRating(winnerTeamIdentifier)],
-      [getTeamRating(loserTeamIdentifier)],
-    ]);
+    const [[ratedWinner], [ratedLoser]] = rate(
+      [
+        [getTeamRating(winnerTeamIdentifier)],
+        [getTeamRating(loserTeamIdentifier)],
+      ],
+      [
+        [queryTeamPlayerRatingAverage(winnerTeamIdentifier)],
+        [queryTeamPlayerRatingAverage(loserTeamIdentifier)],
+      ]
+    );
 
     teamRatings.set(winnerTeamIdentifier, ratedWinner);
     teamRatings.set(loserTeamIdentifier, ratedLoser);

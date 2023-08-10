@@ -79,6 +79,7 @@ import {
   queryCurrentTeamRating,
   queryCurrentUserRating,
 } from "~/features/mmr";
+import { queryTeamPlayerRatingAverage } from "~/features/mmr/mmr-utils.server";
 
 export const links: LinksFunction = () => {
   return [
@@ -180,9 +181,14 @@ export const action: ActionFunction = async ({ params, request }) => {
           finalStandings: _finalStandings,
           results,
           queryCurrentTeamRating: (identifier) =>
-            queryCurrentTeamRating({ identifier }),
+            queryCurrentTeamRating({ identifier, season: _currentSeason.nth }),
           queryCurrentUserRating: (userId) =>
-            queryCurrentUserRating({ userId }),
+            queryCurrentUserRating({ userId, season: _currentSeason.nth }),
+          queryTeamPlayerRatingAverage: (identifier) =>
+            queryTeamPlayerRatingAverage({
+              identifier,
+              season: _currentSeason.nth,
+            }),
         }),
         season: _currentSeason.nth,
       });

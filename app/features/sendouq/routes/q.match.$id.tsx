@@ -358,11 +358,12 @@ export default function QMatchPage() {
           </div>
           {!data.match.isLocked ? (
             <div className="q-match__join-discord-section">
-              Contact your opponent on the <b>#match-meetup</b> channel of the
-              sendou.ink Discord:{" "}
+              If needed, contact your opponent on the <b>#match-meetup</b>{" "}
+              channel of the sendou.ink Discord:{" "}
               <a href={SENDOU_INK_DISCORD_URL} target="_blank" rel="noreferrer">
                 {SENDOU_INK_DISCORD_URL}
               </a>
+              . Alpha team hosts. Pool code is <b>SENDOUQ</b>
             </div>
           ) : null}
           <MapList

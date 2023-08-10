@@ -1644,23 +1644,24 @@ const randomMapList = (
 };
 
 const MATCHES_COUNT = 500;
-const _groupMembers = (() => {
-  return new Array(50).fill(null).map(() => {
-    const users = shuffle(userIdsInAscendingOrderById().slice(0, 50));
-
-    return new Array(4).fill(null).map(() => users.pop()!);
-  });
-})();
-const defaultWeapons = Object.fromEntries(
-  userIdsInAscendingOrderById()
-    .slice(0, 50)
-    .map((id) => {
-      const weapons = shuffle([...mainWeaponIds]);
-      return [id, weapons[0]];
-    })
-);
 
 function playedMatches() {
+  const _groupMembers = (() => {
+    return new Array(50).fill(null).map(() => {
+      const users = shuffle(userIdsInAscendingOrderById().slice(0, 50));
+
+      return new Array(4).fill(null).map(() => users.pop()!);
+    });
+  })();
+  const defaultWeapons = Object.fromEntries(
+    userIdsInAscendingOrderById()
+      .slice(0, 50)
+      .map((id) => {
+        const weapons = shuffle([...mainWeaponIds]);
+        return [id, weapons[0]];
+      })
+  );
+
   // mid august 2021
   let matchDate = new Date(Date.UTC(2021, 7, 15, 0, 0, 0, 0));
   for (let i = 0; i < MATCHES_COUNT; i++) {

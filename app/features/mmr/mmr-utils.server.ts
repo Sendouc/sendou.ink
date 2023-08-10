@@ -18,7 +18,6 @@ export function queryCurrentUserRating({
   return rating(skill);
 }
 
-// xxx: remove specific logic here and make it so that rating compares team rating to player average and gives you the most favorable end result
 export function queryCurrentTeamRating({
   identifier,
   season,
@@ -34,4 +33,27 @@ export function queryCurrentTeamRating({
   if (!skill) return rating();
 
   return rating(skill);
+}
+
+export function queryTeamPlayerRatingAverage({
+  identifier,
+  season,
+}: {
+  identifier: string;
+  season?: number | null;
+}) {
+  const playerRatings = identifier
+    .split("-")
+    .map((id) => queryCurrentUserRating({ userId: Number(id), season }));
+
+  if (playerRatings.length === 0) return rating();
+
+  return {
+    mu:
+      playerRatings.reduce((acc, cur) => acc + cur.mu, 0) /
+      playerRatings.length,
+    sigma:
+      playerRatings.reduce((acc, cur) => acc + cur.sigma, 0) /
+      playerRatings.length,
+  };
 }

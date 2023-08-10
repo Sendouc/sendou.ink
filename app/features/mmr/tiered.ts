@@ -1,4 +1,10 @@
-import { TIERS, type TierName } from "./mmr-constants";
+import {
+  TIERS,
+  USER_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN,
+  type TierName,
+  TEAM_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN,
+  TIERS_BEFORE_LEVIATHAN,
+} from "./mmr-constants";
 import type { Skill } from "~/db/types";
 import { MATCHES_COUNT_NEEDED_FOR_LEADERBOARD } from "../leaderboards/leaderboards-constants";
 import { orderedMMRBySeason } from "./queries/orderedMMRBySeason.server";
@@ -7,6 +13,8 @@ import { cachified } from "cachified";
 import { cache, ttl } from "~/utils/cache.server";
 import { HALF_HOUR_IN_MS, ONE_HOUR_IN_MS } from "~/constants";
 import { USER_SKILLS_CACHE_KEY } from "../sendouq/q-constants";
+
+// xxx: add .server
 
 export interface TieredSkill {
   ordinal: number;
@@ -26,7 +34,7 @@ export function freshUserSkills(): {
     type: "user",
   });
 
-  const tierIntervals = skillTierIntervals(points);
+  const tierIntervals = skillTierIntervals(points, "user");
 
   return {
     intervals: tierIntervals,
@@ -48,6 +56,7 @@ export function freshUserSkills(): {
   };
 }
 
+// xxx: don't cache if amount is very low? e.g. only 1 user
 export function userSkills() {
   return cachified({
     key: USER_SKILLS_CACHE_KEY,
@@ -63,14 +72,28 @@ export function userSkills() {
 export type SkillTierInterval = ReturnType<typeof skillTierIntervals>[number];
 
 function skillTierIntervals(
-  orderedPoints: Array<Pick<Skill, "ordinal" | "matchesCount">>
+  orderedPoints: Array<Pick<Skill, "ordinal" | "matchesCount">>,
+  type: "user" | "team"
 ) {
-  const points = orderedPoints.filter(
+  const LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN =
+    type === "user"
+      ? USER_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN
+      : TEAM_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN;
+  let points = orderedPoints.filter(
     (p) => p.matchesCount >= MATCHES_COUNT_NEEDED_FOR_LEADERBOARD
   );
+  const hasLeviathan = points.length >= LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN;
+  if (!hasLeviathan) {
+    // using all entries, no matter if they have enough to be on the leaderboard
+    // to create the tiers
+    points = orderedPoints;
+  }
+
   const totalPlayers = points.length;
 
-  const allTiers = TIERS.flatMap((tier) =>
+  const tiersToUse = hasLeviathan ? TIERS : TIERS_BEFORE_LEVIATHAN;
+
+  const allTiers = tiersToUse.flatMap((tier) =>
     [true, false].map((isPlus) => ({
       ...tier,
       isPlus,
@@ -84,7 +107,7 @@ function skillTierIntervals(
     neededOrdinal?: number;
   }> = [
     {
-      name: "LEVIATHAN",
+      name: tiersToUse[0].name,
       isPlus: true,
     },
   ];

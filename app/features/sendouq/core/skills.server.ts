@@ -6,6 +6,7 @@ import {
   rate,
   userIdsToIdentifier,
 } from "~/features/mmr";
+import { queryTeamPlayerRatingAverage } from "~/features/mmr/mmr-utils.server";
 import { previousOrCurrentSeason } from "~/features/mmr/season";
 
 export function calculateMatchSkills({
@@ -61,10 +62,26 @@ export function calculateMatchSkills({
     // team skills
     const winnerTeamIdentifier = userIdsToIdentifier(winner);
     const loserTeamIdentifier = userIdsToIdentifier(loser);
-    const [[winnerTeamNew], [loserTeamNew]] = rate([
-      [queryCurrentTeamRating({ identifier: winnerTeamIdentifier, season })],
-      [queryCurrentTeamRating({ identifier: loserTeamIdentifier, season })],
-    ]);
+    const [[winnerTeamNew], [loserTeamNew]] = rate(
+      [
+        [queryCurrentTeamRating({ identifier: winnerTeamIdentifier, season })],
+        [queryCurrentTeamRating({ identifier: loserTeamIdentifier, season })],
+      ],
+      [
+        [
+          queryTeamPlayerRatingAverage({
+            identifier: winnerTeamIdentifier,
+            season,
+          }),
+        ],
+        [
+          queryTeamPlayerRatingAverage({
+            identifier: loserTeamIdentifier,
+            season,
+          }),
+        ],
+      ]
+    );
 
     result.push({
       groupMatchId: groupMatchId,

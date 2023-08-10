@@ -69,6 +69,31 @@ export function divideGroups({
   };
 }
 
+export function filterOutGroupsWithIncompatibleMapListPreference(
+  groups: DividedGroupsUncensored
+): DividedGroupsUncensored {
+  if (
+    groups.own.mapListPreference !== "SZ_ONLY" &&
+    groups.own.mapListPreference !== "ALL_MODES_ONLY"
+  ) {
+    return groups;
+  }
+
+  return {
+    ...groups,
+    neutral: groups.neutral.filter((group) => {
+      if (
+        group.mapListPreference !== "SZ_ONLY" &&
+        group.mapListPreference !== "ALL_MODES_ONLY"
+      ) {
+        return true;
+      }
+
+      return group.mapListPreference === groups.own.mapListPreference;
+    }),
+  };
+}
+
 const censorGroupFully = ({
   inviteCode: _inviteCode,
   ...group
