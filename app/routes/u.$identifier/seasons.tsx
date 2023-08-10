@@ -16,7 +16,7 @@ import { db } from "~/db";
 import { ordinalToSp } from "~/features/mmr";
 import { seasonAllMMRByUserId } from "~/features/mmr/queries/seasonAllMMRByUserId.server";
 import { seasonObject } from "~/features/mmr/season";
-import { userSkills } from "~/features/mmr/tiered";
+import { userSkills } from "~/features/mmr/tiered.server";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { notFoundIfFalsy } from "~/utils/remix";
 import { type UserPageLoaderData, userParamsSchema } from "../u.$identifier";

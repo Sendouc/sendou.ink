@@ -8,7 +8,10 @@ import type {
   LookingGroup,
   LookingGroupWithInviteCode,
 } from "../q-types";
-import type { SkillTierInterval, TieredSkill } from "~/features/mmr/tiered";
+import type {
+  SkillTierInterval,
+  TieredSkill,
+} from "~/features/mmr/tiered.server";
 
 export function divideGroups({
   groups,

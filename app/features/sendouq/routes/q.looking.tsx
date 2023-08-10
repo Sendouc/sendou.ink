@@ -64,7 +64,7 @@ import { makeTitle } from "~/utils/strings";
 import { MemberAdder } from "../components/MemberAdder";
 import type { LookingGroupWithInviteCode } from "../q-types";
 import { trustedPlayersAvailableToPlay } from "../queries/usersInActiveGroup.server";
-import { userSkills } from "~/features/mmr/tiered";
+import { userSkills } from "~/features/mmr/tiered.server";
 import { useWindowSize } from "~/hooks/useWindowSize";
 import { Tab, Tabs } from "~/components/Tabs";
 

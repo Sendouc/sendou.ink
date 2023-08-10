@@ -1,6 +1,6 @@
 import type { Group, GroupMember, PlusTier } from "~/db/types";
 import type { MainWeaponId } from "~/modules/in-game-lists";
-import type { TieredSkill } from "../mmr/tiered";
+import type { TieredSkill } from "../mmr/tiered.server";
 
 export type LookingGroup = {
   id: number;

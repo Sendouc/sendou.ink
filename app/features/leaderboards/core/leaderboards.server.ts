@@ -1,4 +1,4 @@
-import { freshUserSkills } from "~/features/mmr/tiered";
+import { freshUserSkills } from "~/features/mmr/tiered.server";
 import type { UserSPLeaderboardItem } from "../queries/userSPLeaderboard.server";
 import type { SeasonPopularUsersWeapon } from "../queries/seasonPopularUsersWeapon.server";
 import type { MainWeaponId } from "~/modules/in-game-lists";

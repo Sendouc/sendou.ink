@@ -14,8 +14,6 @@ import { cache, ttl } from "~/utils/cache.server";
 import { HALF_HOUR_IN_MS, ONE_HOUR_IN_MS } from "~/constants";
 import { USER_SKILLS_CACHE_KEY } from "../sendouq/q-constants";
 
-// xxx: add .server
-
 export interface TieredSkill {
   ordinal: number;
   tier: {
