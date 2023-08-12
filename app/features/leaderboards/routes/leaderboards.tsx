@@ -218,7 +218,10 @@ export default function LeaderboardsPage() {
       {data.userLeaderboard ? (
         <PlayersTable
           entries={data.userLeaderboard}
-          showTiers={searchParams.get(TYPE_SEARCH_PARAM_KEY) === "USER"}
+          showTiers={
+            !searchParams.get(TYPE_SEARCH_PARAM_KEY) ||
+            searchParams.get(TYPE_SEARCH_PARAM_KEY) === "USER"
+          }
         />
       ) : null}
       {data.teamLeaderboard ? (
