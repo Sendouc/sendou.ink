@@ -94,6 +94,7 @@ export const VODS_PAGE = "/vods";
 export const LEADERBOARDS_PAGE = "/leaderboards";
 export const LINKS_PAGE = "/links";
 export const SENDOUQ_PAGE = "/q";
+export const SENDOUQ_RULES_PAGE = "/q/rules";
 export const SENDOUQ_PREPARING_PAGE = "/q/preparing";
 export const SENDOUQ_LOOKING_PAGE = "/q/looking";
 

@@ -206,6 +206,10 @@
   margin-inline-start: var(--s-2);
 }
 
+.ml-4 {
+  margin-inline-start: var(--s-4);
+}
+
 .mr-auto {
   margin-inline-end: auto;
 }

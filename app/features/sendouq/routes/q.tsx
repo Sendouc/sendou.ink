@@ -10,7 +10,7 @@ import type {
   V2_MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
-import { useFetcher, useLoaderData } from "@remix-run/react";
+import { Link, useFetcher, useLoaderData } from "@remix-run/react";
 import { useTranslation } from "~/hooks/useTranslation";
 import {
   FULL_GROUP_SIZE,
@@ -32,6 +32,7 @@ import {
   SENDOUQ_LOOKING_PAGE,
   SENDOUQ_PAGE,
   SENDOUQ_PREPARING_PAGE,
+  SENDOUQ_RULES_PAGE,
   navIconUrl,
   stageImageUrl,
 } from "~/utils/urls";
@@ -227,7 +228,12 @@ export default function QPage() {
           <fetcher.Form className="stack md" method="post">
             <input type="hidden" name="_action" value="JOIN_QUEUE" />
             <div>
-              <h2 className="q__header">Join the queue!</h2>
+              <div className="stack horizontal items-center justify-between">
+                <h2 className="q__header">Join the queue!</h2>
+                <Link to={SENDOUQ_RULES_PAGE} className="text-xs font-bold">
+                  Rules
+                </Link>
+              </div>
               <ActiveSeasonInfo season={data.season} />
             </div>
             <MapPreference />

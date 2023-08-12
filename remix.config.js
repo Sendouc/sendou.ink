@@ -102,6 +102,7 @@ module.exports = {
       route("/art/new", "features/art/routes/art.new.tsx");
 
       route("/q", "features/sendouq/routes/q.tsx");
+      route("/q/rules", "features/sendouq/routes/q.rules.tsx");
       route("/q/looking", "features/sendouq/routes/q.looking.tsx");
       route("/q/preparing", "features/sendouq/routes/q.preparing.tsx");
       route("/q/match/:id", "features/sendouq/routes/q.match.$id.tsx");

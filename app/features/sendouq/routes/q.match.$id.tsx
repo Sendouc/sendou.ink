@@ -41,6 +41,7 @@ import { assertUnreachable } from "~/utils/types";
 import {
   SENDOUQ_PAGE,
   SENDOUQ_PREPARING_PAGE,
+  SENDOUQ_RULES_PAGE,
   SENDOU_INK_DISCORD_URL,
   navIconUrl,
   teamPage,
@@ -363,7 +364,13 @@ export default function QMatchPage() {
               <a href={SENDOU_INK_DISCORD_URL} target="_blank" rel="noreferrer">
                 {SENDOU_INK_DISCORD_URL}
               </a>
-              . Alpha team hosts. Pool code is <b>SENDOUQ</b>
+              . Alpha team hosts. Pool code is <b>SENDOUQ</b>{" "}
+              <Link
+                to={SENDOUQ_RULES_PAGE}
+                className="text-sm font-bold ml-4 whitespace-nowrap"
+              >
+                Read the rules
+              </Link>
             </div>
           ) : null}
           <MapList
