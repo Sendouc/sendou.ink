@@ -35,7 +35,6 @@ export function queryCurrentTeamRating({
   return rating(skill);
 }
 
-// xxx: split("-") as an util?
 export function queryTeamPlayerRatingAverage({
   identifier,
   season,
@@ -43,9 +42,9 @@ export function queryTeamPlayerRatingAverage({
   identifier: string;
   season: number;
 }) {
-  const playerRatings = identifier
-    .split("-")
-    .map((id) => queryCurrentUserRating({ userId: Number(id), season }));
+  const playerRatings = identifierToUserIds(identifier).map((userId) =>
+    queryCurrentUserRating({ userId, season })
+  );
 
   if (playerRatings.length === 0) return rating();
 
@@ -57,4 +56,8 @@ export function queryTeamPlayerRatingAverage({
       playerRatings.reduce((acc, cur) => acc + cur.sigma, 0) /
       playerRatings.length,
   };
+}
+
+export function identifierToUserIds(identifier: string) {
+  return identifier.split("-").map(Number);
 }

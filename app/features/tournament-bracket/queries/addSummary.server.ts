@@ -2,6 +2,7 @@ import { sql } from "~/db/sql";
 import type { TournamentSummary } from "../core/summarizer.server";
 import { ordinal } from "openskill";
 import type { Skill } from "~/db/types";
+import { identifierToUserIds } from "~/features/mmr/mmr-utils.server";
 
 const addSkillStm = sql.prepare(/* sql */ `
   insert into "Skill" (
@@ -125,10 +126,10 @@ export const addSummary = sql.transaction(
       }) as Skill;
 
       if (insertedSkill.identifier) {
-        for (const userIdString of insertedSkill.identifier.split("-")) {
+        for (const userId of identifierToUserIds(insertedSkill.identifier)) {
           addSkillTeamUserStm.run({
             skillId: insertedSkill.id,
-            userId: Number(userIdString),
+            userId,
           });
         }
       }

@@ -1,6 +1,7 @@
 import { ordinal } from "openskill";
 import { sql } from "~/db/sql";
 import type { Skill } from "~/db/types";
+import { identifierToUserIds } from "~/features/mmr/mmr-utils.server";
 
 const getStm = (type: "user" | "team") =>
   sql.prepare(/* sql */ `
@@ -53,10 +54,10 @@ export function addSkills(
     }) as Skill;
 
     if (insertedSkill.identifier) {
-      for (const userIdString of insertedSkill.identifier.split("-")) {
+      for (const userId of identifierToUserIds(insertedSkill.identifier)) {
         addSkillTeamUserStm.run({
           skillId: insertedSkill.id,
-          userId: Number(userIdString),
+          userId,
         });
       }
     }
