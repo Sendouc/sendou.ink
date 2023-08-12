@@ -33,6 +33,7 @@ import {
   SENDOUQ_PAGE,
   SENDOUQ_PREPARING_PAGE,
   SENDOUQ_RULES_PAGE,
+  SENDOUQ_YOUTUBE_VIDEO,
   navIconUrl,
   stageImageUrl,
 } from "~/utils/urls";
@@ -207,7 +208,20 @@ export default function QPage() {
 
   return (
     <Main halfWidth className="stack lg">
-      <Clocks />
+      <div className="stack sm">
+        <Clocks />
+        <a
+          href={SENDOUQ_YOUTUBE_VIDEO}
+          target="_blank"
+          rel="noreferrer"
+          className="text-xs font-bold text-center"
+        >
+          Watch how-to video (YouTube)
+        </a>
+      </div>
+      {data.upcomingSeason ? (
+        <UpcomingSeasonInfo season={data.upcomingSeason} />
+      ) : null}
       {data.season ? (
         <>
           {data.hasSkill && data.teamInvitedTo === null ? (
@@ -270,9 +284,6 @@ export default function QPage() {
             </form>
           ) : null}
         </>
-      ) : null}
-      {data.upcomingSeason ? (
-        <UpcomingSeasonInfo season={data.upcomingSeason} />
       ) : null}
     </Main>
   );
@@ -435,7 +446,7 @@ function UpcomingSeasonInfo({
     });
 
   return (
-    <div className="font-semi-bold text-center">
+    <div className="font-semi-bold text-center text-sm">
       It&apos;s off-season!
       <br />
       Join Season {season.nth} starting {dateToString(starts)}
