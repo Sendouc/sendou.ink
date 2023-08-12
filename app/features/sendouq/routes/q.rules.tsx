@@ -62,6 +62,9 @@ export default function SendouqRules() {
         the room it is advised to try switching the host.
       </div>
 
+      <h2 className="text-lg mt-4">Spectators</h2>
+      <div>There can be spectators if both teams agree to it.</div>
+
       <h2 className="text-lg mt-4">Intentional losing</h2>
       <div>
         Players are not allowed to intentionally lose a match. This includes
