@@ -75,6 +75,7 @@ import {
   summarizePlayerResults,
 } from "../core/summarizer.server";
 import { addPlayerResults } from "../queries/addPlayerResults.server";
+import { resolveRoomPass } from "~/features/tournament-bracket/tournament-bracket-utils";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -358,19 +359,26 @@ export default function QMatchPage() {
             <MatchGroup group={data.groupBravo} side="BRAVO" />
           </div>
           {!data.match.isLocked ? (
-            <div className="q-match__join-discord-section">
-              If needed, contact your opponent on the <b>#match-meetup</b>{" "}
-              channel of the sendou.ink Discord:{" "}
-              <a href={SENDOU_INK_DISCORD_URL} target="_blank" rel="noreferrer">
-                {SENDOU_INK_DISCORD_URL}
-              </a>
-              . Alpha team hosts. Pool code is <b>SENDOUQ</b>{" "}
-              <Link
-                to={SENDOUQ_RULES_PAGE}
-                className="text-sm font-bold ml-4 whitespace-nowrap"
-              >
-                Read the rules
-              </Link>
+            <div>
+              <div className="stack items-end">
+                <Link to={SENDOUQ_RULES_PAGE} className="text-xs font-bold">
+                  Read the rules
+                </Link>
+              </div>
+              <div className="q-match__join-discord-section">
+                If needed, contact your opponent on the <b>#match-meetup</b>{" "}
+                channel of the sendou.ink Discord:{" "}
+                <a
+                  href={SENDOU_INK_DISCORD_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {SENDOU_INK_DISCORD_URL}
+                </a>
+                . Alpha team hosts. Password should be{" "}
+                <b>{resolveRoomPass(data.match.id)}</b>. Pool code is{" "}
+                <b>SENDOUQ</b>
+              </div>
             </div>
           ) : null}
           <MapList
