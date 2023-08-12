@@ -238,7 +238,7 @@ export default function QPage() {
               members={data.teamInvitedTo.members}
             />
           ) : null}
-          {!data.hasSkill ? <StartRank /> : null}
+          {!data.hasSkill && user ? <StartRank /> : null}
           {user && data.hasSkill ? (
             <>
               <fetcher.Form className="stack md" method="post">
