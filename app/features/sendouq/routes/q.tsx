@@ -208,60 +208,68 @@ export default function QPage() {
   return (
     <Main halfWidth className="stack lg">
       <Clocks />
-      {data.teamInvitedTo === null ? (
-        <Alert variation="WARNING">
-          Invite code doesn&apos;t match any active team
-        </Alert>
-      ) : null}
-      {data.teamInvitedTo &&
-      data.teamInvitedTo.members.length < FULL_GROUP_SIZE &&
-      data.hasSkill ? (
-        <JoinTeamDialog
-          open={dialogOpen}
-          close={() => setDialogOpen(false)}
-          members={data.teamInvitedTo.members}
-        />
-      ) : null}
-      {!data.hasSkill ? <StartRank /> : null}
-      {data.season && user && data.hasSkill ? (
+      {data.season ? (
         <>
-          <fetcher.Form className="stack md" method="post">
-            <input type="hidden" name="_action" value="JOIN_QUEUE" />
-            <div>
-              <div className="stack horizontal items-center justify-between">
-                <h2 className="q__header">Join the queue!</h2>
-                <Link to={SENDOUQ_RULES_PAGE} className="text-xs font-bold">
-                  Rules
-                </Link>
-              </div>
-              <ActiveSeasonInfo season={data.season} />
-            </div>
-            <MapPreference />
-            <MapPoolSelector />
-            <div className="stack md items-center mt-4">
-              <SubmitButton>Add team members</SubmitButton>
-              <div className="text-lighter text-xs text-center">
-                No team members in mind yet? <br />
-                <SubmitButton
-                  variant="minimal"
-                  className="text-xs mx-auto"
-                  name="direct"
-                  value="true"
-                  state={fetcher.state}
-                >
-                  Join the queue directly.
-                </SubmitButton>
-              </div>
-            </div>
-          </fetcher.Form>
+          {data.hasSkill && data.teamInvitedTo === null ? (
+            <Alert variation="WARNING">
+              Invite code doesn&apos;t match any active team
+            </Alert>
+          ) : null}
+          {data.teamInvitedTo &&
+          data.teamInvitedTo.members.length < FULL_GROUP_SIZE &&
+          data.hasSkill ? (
+            <JoinTeamDialog
+              open={dialogOpen}
+              close={() => setDialogOpen(false)}
+              members={data.teamInvitedTo.members}
+            />
+          ) : null}
+          {!data.hasSkill ? <StartRank /> : null}
+          {user && data.hasSkill ? (
+            <>
+              <fetcher.Form className="stack md" method="post">
+                <input type="hidden" name="_action" value="JOIN_QUEUE" />
+                <div>
+                  <div className="stack horizontal items-center justify-between">
+                    <h2 className="q__header">Join the queue!</h2>
+                    <Link to={SENDOUQ_RULES_PAGE} className="text-xs font-bold">
+                      Rules
+                    </Link>
+                  </div>
+                  <ActiveSeasonInfo season={data.season} />
+                </div>
+                <MapPreference />
+                <MapPoolSelector />
+                <div className="stack md items-center mt-4">
+                  <SubmitButton>Add team members</SubmitButton>
+                  <div className="text-lighter text-xs text-center">
+                    No team members in mind yet? <br />
+                    <SubmitButton
+                      variant="minimal"
+                      className="text-xs mx-auto"
+                      name="direct"
+                      value="true"
+                      state={fetcher.state}
+                    >
+                      Join the queue directly.
+                    </SubmitButton>
+                  </div>
+                </div>
+              </fetcher.Form>
+            </>
+          ) : null}
+          {!user ? (
+            <form
+              className="stack items-center"
+              action={LOG_IN_URL}
+              method="post"
+            >
+              <Button size="big" type="submit">
+                Log in to join SendouQ
+              </Button>
+            </form>
+          ) : null}
         </>
-      ) : null}
-      {!user && data.season ? (
-        <form className="stack items-center" action={LOG_IN_URL} method="post">
-          <Button size="big" type="submit">
-            Log in to join SendouQ
-          </Button>
-        </form>
       ) : null}
       {data.upcomingSeason ? (
         <UpcomingSeasonInfo season={data.upcomingSeason} />
