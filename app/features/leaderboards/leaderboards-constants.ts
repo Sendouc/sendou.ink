@@ -5,8 +5,8 @@ export const MATCHES_COUNT_NEEDED_FOR_LEADERBOARD = 7;
 export const LEADERBOARD_MAX_SIZE = 250;
 
 export const LEADERBOARD_TYPES = [
-  "TEAM",
   "USER",
+  "TEAM",
   ...(weaponCategories.map(
     (category) => `USER-${category.name}`
   ) as `USER-${(typeof weaponCategories)[number]["name"]}`[]),
