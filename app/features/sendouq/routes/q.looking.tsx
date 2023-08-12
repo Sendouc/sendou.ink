@@ -323,7 +323,6 @@ export const loader = async ({ request }: LoaderArgs) => {
   };
 };
 
-// xxx: can vc, can listen, no vc
 export default function QLookingPage() {
   const data = useLoaderData<typeof loader>();
   useAutoRefresh();

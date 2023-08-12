@@ -54,9 +54,8 @@ export function freshUserSkills(): {
   };
 }
 
-// xxx: don't cache if amount is very low? e.g. only 1 user
-export function userSkills() {
-  return cachified({
+export async function userSkills() {
+  const cachedSkills = await cachified({
     key: USER_SKILLS_CACHE_KEY,
     cache,
     ttl: ttl(HALF_HOUR_IN_MS),
@@ -65,6 +64,13 @@ export function userSkills() {
       return freshUserSkills();
     },
   });
+
+  // TODO: this can be removed after Season 0 has been kicked off
+  if (Object.keys(cachedSkills.userSkills).length < 10) {
+    return freshUserSkills();
+  }
+
+  return cachedSkills;
 }
 
 export type SkillTierInterval = ReturnType<typeof skillTierIntervals>[number];

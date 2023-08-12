@@ -151,7 +151,6 @@ export const loader = async ({ request }: LoaderArgs) => {
   };
 };
 
-// xxx: team tiers
 export default function LeaderboardsPage() {
   const { t } = useTranslation(["common", "game-misc", "weapons"]);
   const [searchParams, setSearchParams] = useSearchParams();
