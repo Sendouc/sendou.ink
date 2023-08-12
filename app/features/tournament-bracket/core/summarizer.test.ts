@@ -102,6 +102,7 @@ function summarize({ results }: { results?: AllMatchResult[] } = {}) {
     ],
     queryCurrentTeamRating: () => rating(),
     queryCurrentUserRating: () => rating(),
+    queryTeamPlayerRatingAverage: () => rating(),
   });
 }
 

@@ -12,6 +12,7 @@ import {
   mainWeaponIds,
   modesShort,
   shoesGearIds,
+  stageIds,
 } from "~/modules/in-game-lists";
 import type {
   MainWeaponId,
@@ -29,7 +30,6 @@ import { dateToDatabaseTimestamp } from "~/utils/dates";
 import type { UpsertManyPlusVotesArgs } from "../models/plusVotes/queries.server";
 import { nanoid } from "nanoid";
 import { mySlugify } from "~/utils/urls";
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { createVod } from "~/features/vods/queries/createVod.server";
 
 import placements from "./placements.json";
@@ -40,11 +40,29 @@ import {
   NZAP_TEST_ID,
   AMOUNT_OF_CALENDAR_EVENTS,
 } from "./constants";
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { TOURNAMENT } from "~/features/tournament/tournament-constants";
 import type { SeedVariation } from "~/routes/seed";
 import { nullFilledArray, pickRandomItem } from "~/utils/arrays";
 import type { Art, UserSubmittedImage } from "../types";
+import { createGroup } from "~/features/sendouq/queries/createGroup.server";
+import { MAP_LIST_PREFERENCE_OPTIONS } from "~/features/sendouq/q-constants";
+import { addMember } from "~/features/sendouq/queries/addMember.server";
+import { createMatch } from "~/features/sendouq/queries/createMatch.server";
+import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator";
+import { addSkills } from "~/features/sendouq/queries/addSkills.server";
+import { reportScore } from "~/features/sendouq/queries/reportScore.server";
+import { calculateMatchSkills } from "~/features/sendouq/core/skills.server";
+import { winnersArrayToWinner } from "~/features/sendouq/q-utils";
+import { addReportedWeapons } from "~/features/sendouq/queries/addReportedWeapons.server";
+import { findMatchById } from "~/features/sendouq/queries/findMatchById.server";
+import { setGroupAsInactive } from "~/features/sendouq/queries/setGroupAsInactive.server";
+import { addMapResults } from "~/features/sendouq/queries/addMapResults.server";
+import {
+  summarizeMaps,
+  summarizePlayerResults,
+} from "~/features/sendouq/core/summarizer.server";
+import { groupForMatch } from "~/features/sendouq/queries/groupForMatch.server";
+import { addPlayerResults } from "~/features/sendouq/queries/addPlayerResults.server";
 
 const calendarEventWithToToolsSz = () => calendarEventWithToTools(true);
 const calendarEventWithToToolsTeamsSz = () =>
@@ -89,6 +107,8 @@ const basicSeeds = (variation?: SeedVariation | null) => [
   userFavBadges,
   arts,
   commissionsOpen,
+  playedMatches,
+  groups,
 ];
 
 export function seed(variation?: SeedVariation | null) {
@@ -102,6 +122,11 @@ export function seed(variation?: SeedVariation | null) {
 
 function wipeDB() {
   const tablesToDelete = [
+    "Skill",
+    "ReportedWeapon",
+    "GroupMatchMap",
+    "GroupMatch",
+    "Group",
     "ArtUserMetadata",
     "Art",
     "UnvalidatedUserSubmittedImage",
@@ -113,7 +138,6 @@ function wipeDB() {
     "TournamentMatchGameResult",
     "TournamentTeam",
     "TournamentStage",
-    "Skill",
     "TournamentResult",
     "Tournament",
     "CalendarEventDate",
@@ -242,6 +266,35 @@ function userProfiles() {
         ),
         country: Math.random() > 0.5 ? faker.location.countryCode() : null,
       });
+  }
+
+  for (let id = 3; id < 500; id++) {
+    if (Math.random() < 0.15) continue; // 85% have weapons
+
+    const weapons = shuffle([...mainWeaponIds]);
+
+    for (let j = 0; j < faker.helpers.arrayElement([1, 2, 3, 4, 5]); j++) {
+      sql
+        .prepare(
+          /* sql */ `insert into "UserWeapon" (
+          "userId",
+          "weaponSplId",
+          "order",
+          "isFavorite"
+        ) values (
+          @userId,
+          @weaponSplId,
+          @order,
+          @isFavorite
+        )`
+        )
+        .run({
+          userId: id,
+          weaponSplId: weapons.pop()!,
+          order: j + 1,
+          isFavorite: Math.random() > 0.8 ? 1 : 0,
+        });
+    }
   }
 }
 
@@ -1170,16 +1223,23 @@ function otherTeams() {
         /* sql */ `
       insert into "AllTeam" ("id", "name", "customUrl", "inviteCode", "twitter", "bio")
        values (
-          ${i},
-          '${teamName}',
-          '${teamCustomUrl}',
-          '${nanoid(INVITE_CODE_LENGTH)}',
-          '${faker.internet.userName()}',
-          '${faker.lorem.paragraph()}'
+          @id,
+          @name,
+          @customUrl,
+          @inviteCode,
+          @twitter,
+          @bio
        )
     `
       )
-      .run();
+      .run({
+        id: i,
+        name: teamName,
+        customUrl: teamCustomUrl,
+        inviteCode: nanoid(INVITE_CODE_LENGTH),
+        twitter: faker.internet.userName(),
+        bio: faker.lorem.paragraph(),
+      });
 
     const numMembers = faker.helpers.arrayElement([
       1, 2, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 7, 7, 8,
@@ -1496,5 +1556,258 @@ function commissionsOpen() {
         userId,
       });
     }
+  }
+}
+
+const SENDOU_IN_FULL_GROUP = true;
+function groups() {
+  const users = userIdsInAscendingOrderById()
+    .slice(0, 100)
+    .filter((id) => id !== ADMIN_ID && id !== NZAP_TEST_ID);
+  users.push(NZAP_TEST_ID);
+
+  for (let i = 0; i < 25; i++) {
+    const group = createGroup({
+      mapListPreference: faker.helpers.arrayElement(
+        MAP_LIST_PREFERENCE_OPTIONS
+      ),
+      status: "ACTIVE",
+      userId: users.pop()!,
+      mapPool: new MapPool([
+        { mode: "SZ", stageId: 1 },
+        { mode: "SZ", stageId: 2 },
+        { mode: "SZ", stageId: 3 },
+        { mode: "SZ", stageId: 4 },
+        { mode: "SZ", stageId: 5 },
+        { mode: "SZ", stageId: 6 },
+        { mode: "TC", stageId: 7 },
+        { mode: "TC", stageId: 8 },
+        { mode: "RM", stageId: 10 },
+        { mode: "RM", stageId: 11 },
+        { mode: "CB", stageId: 13 },
+        { mode: "CB", stageId: 14 },
+      ]),
+    });
+
+    const amountOfAdditionalMembers = () => {
+      if (SENDOU_IN_FULL_GROUP) {
+        if (i === 0) return 3;
+        if (i === 1) return 3;
+      }
+
+      return i === 0 ? 2 : i % 4;
+    };
+
+    for (let j = 0; j < amountOfAdditionalMembers(); j++) {
+      sql
+        .prepare(
+          /* sql */ `
+        insert into "GroupMember" ("groupId", "userId", "role")
+        values (@groupId, @userId, @role)
+      `
+        )
+        .run({
+          groupId: group.id,
+          userId: users.pop()!,
+          role: "REGULAR",
+        });
+    }
+
+    if (i === 0 && SENDOU_IN_FULL_GROUP) {
+      users.push(ADMIN_ID);
+    }
+  }
+}
+
+const randomMapList = (
+  groupAlpha: number,
+  groupBravo: number
+): TournamentMapListMap[] => {
+  const szOnly = faker.helpers.arrayElement([true, false]);
+  const modePattern = shuffle([...rankedModesShort]);
+
+  const mapList: TournamentMapListMap[] = [];
+  const stageIdsShuffled = shuffle([...stageIds]);
+
+  for (let i = 0; i < 7; i++) {
+    const rankedMode = modePattern.pop()!;
+    mapList.push({
+      mode: szOnly ? "SZ" : rankedMode,
+      stageId: stageIdsShuffled.pop()!,
+      source: i === 6 ? "BOTH" : i % 2 === 0 ? groupAlpha : groupBravo,
+    });
+
+    modePattern.unshift(rankedMode);
+  }
+
+  return mapList;
+};
+
+const MATCHES_COUNT = 500;
+
+function playedMatches() {
+  const _groupMembers = (() => {
+    return new Array(50).fill(null).map(() => {
+      const users = shuffle(userIdsInAscendingOrderById().slice(0, 50));
+
+      return new Array(4).fill(null).map(() => users.pop()!);
+    });
+  })();
+  const defaultWeapons = Object.fromEntries(
+    userIdsInAscendingOrderById()
+      .slice(0, 50)
+      .map((id) => {
+        const weapons = shuffle([...mainWeaponIds]);
+        return [id, weapons[0]];
+      })
+  );
+
+  // mid august 2021
+  let matchDate = new Date(Date.UTC(2021, 7, 15, 0, 0, 0, 0));
+  for (let i = 0; i < MATCHES_COUNT; i++) {
+    const groupMembers = shuffle([..._groupMembers]);
+    const groupAlphaMembers = groupMembers.pop()!;
+    invariant(groupAlphaMembers, "groupAlphaMembers not found");
+
+    const getGroupBravo = (): number[] => {
+      const result = groupMembers.pop()!;
+      invariant(result, "groupBravoMembers not found");
+      if (groupAlphaMembers.some((m) => result.includes(m))) {
+        return getGroupBravo();
+      }
+
+      return result;
+    };
+    const groupBravoMembers = getGroupBravo();
+
+    let groupAlpha = 0;
+    let groupBravo = 0;
+    // -> create groups
+    for (let i = 0; i < 2; i++) {
+      const users = i === 0 ? [...groupAlphaMembers] : [...groupBravoMembers];
+      const group = createGroup({
+        // these should not matter here
+        mapListPreference: "NO_PREFERENCE",
+        mapPool: new MapPool([]),
+        status: "ACTIVE",
+        userId: users.pop()!,
+      });
+
+      // -> add regular members of groups
+      for (let i = 0; i < 3; i++) {
+        addMember({
+          groupId: group.id,
+          userId: users.pop()!,
+        });
+      }
+
+      if (i === 0) {
+        groupAlpha = group.id;
+      } else {
+        groupBravo = group.id;
+      }
+    }
+
+    invariant(groupAlpha !== 0 && groupBravo !== 0, "groups not created");
+
+    const match = createMatch({
+      alphaGroupId: groupAlpha,
+      bravoGroupId: groupBravo,
+      mapList: randomMapList(groupAlpha, groupBravo),
+    });
+
+    // update match createdAt to the past
+    sql
+      .prepare(
+        /* sql */ `
+      update "GroupMatch"
+      set "createdAt" = @createdAt
+      where "id" = @id
+    `
+      )
+      .run({
+        createdAt: dateToDatabaseTimestamp(matchDate),
+        id: match.id,
+      });
+
+    if (Math.random() > 0.95) {
+      // increment date by 1 day
+      matchDate = new Date(matchDate.getTime() + 1000 * 60 * 60 * 24);
+    }
+
+    // -> report score
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+    const winners = faker.helpers.arrayElement([
+      ["ALPHA", "ALPHA", "ALPHA", "ALPHA"],
+      ["ALPHA", "ALPHA", "ALPHA", "BRAVO", "ALPHA"],
+      ["BRAVO", "BRAVO", "BRAVO", "BRAVO"],
+      ["ALPHA", "BRAVO", "BRAVO", "BRAVO", "BRAVO"],
+      ["ALPHA", "ALPHA", "ALPHA", "BRAVO", "BRAVO", "BRAVO", "BRAVO"],
+      ["BRAVO", "ALPHA", "BRAVO", "ALPHA", "BRAVO", "ALPHA", "BRAVO"],
+      ["ALPHA", "BRAVO", "BRAVO", "ALPHA", "ALPHA", "ALPHA"],
+      ["ALPHA", "BRAVO", "ALPHA", "BRAVO", "BRAVO", "BRAVO"],
+    ]) as ("ALPHA" | "BRAVO")[];
+    const winner = winnersArrayToWinner(winners);
+    const finishedMatch = findMatchById(match.id)!;
+
+    const newSkills = calculateMatchSkills({
+      groupMatchId: match.id,
+      winner: winner === "ALPHA" ? groupAlphaMembers : groupBravoMembers,
+      loser: winner === "ALPHA" ? groupBravoMembers : groupAlphaMembers,
+    });
+    const members = [
+      ...groupForMatch(match.alphaGroupId)!.members.map((m) => ({
+        ...m,
+        groupId: match.alphaGroupId,
+      })),
+      ...groupForMatch(match.bravoGroupId)!.members.map((m) => ({
+        ...m,
+        groupId: match.bravoGroupId,
+      })),
+    ];
+    sql.transaction(() => {
+      reportScore({
+        matchId: match.id,
+        reportedByUserId:
+          Math.random() > 0.5 ? groupAlphaMembers[0] : groupBravoMembers[0],
+        winners,
+      });
+      addSkills(newSkills);
+      setGroupAsInactive(groupAlpha);
+      setGroupAsInactive(groupBravo);
+      addMapResults(summarizeMaps({ match: finishedMatch, members, winners }));
+      addPlayerResults(
+        summarizePlayerResults({ match: finishedMatch, members, winners })
+      );
+    })();
+
+    // -> add weapons for 90% of matches
+    if (Math.random() > 0.9) continue;
+    const users = [...groupAlphaMembers, ...groupBravoMembers];
+    const mapsWithUsers = users.flatMap((u) =>
+      finishedMatch.mapList.map((m) => ({ map: m, user: u }))
+    );
+
+    addReportedWeapons(
+      mapsWithUsers.map((mu) => {
+        const weapon = () => {
+          if (Math.random() < 0.9) return defaultWeapons[mu.user];
+          if (Math.random() > 0.5)
+            return (
+              mainWeaponIds.find((id) => id > defaultWeapons[mu.user]) ?? 0
+            );
+
+          const shuffled = shuffle([...mainWeaponIds]);
+
+          return shuffled[0];
+        };
+
+        return {
+          groupMatchMapId: mu.map.id,
+          userId: mu.user,
+          weaponSplId: weapon(),
+        };
+      })
+    );
   }
 }

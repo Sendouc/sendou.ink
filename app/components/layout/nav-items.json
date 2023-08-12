@@ -81,6 +81,15 @@
     ]
   },
   {
+    "name": "sendouq",
+    "url": "q",
+    "prefetch": false,
+    "filters": [
+      "invert(65%) sepia(88%) saturate(376%) hue-rotate(80deg) brightness(97%) contrast(84%)",
+      "invert(63%) sepia(46%) saturate(1700%) hue-rotate(5deg) brightness(102%) contrast(103%)"
+    ]
+  },
+  {
     "name": "xsearch",
     "url": "xsearch",
     "prefetch": false,

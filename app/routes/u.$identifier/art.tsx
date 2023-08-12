@@ -226,7 +226,7 @@ function AddArtButton({ isArtist }: { isArtist?: boolean }) {
   }
 
   return (
-    <LinkButton to={newArtPage()} size="tiny" className="whitespace-no-wrap">
+    <LinkButton to={newArtPage()} size="tiny" className="whitespace-nowrap">
       {t("art:addArt")}
     </LinkButton>
   );

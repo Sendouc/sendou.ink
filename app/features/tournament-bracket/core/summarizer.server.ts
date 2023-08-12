@@ -10,16 +10,17 @@ import invariant from "tiny-invariant";
 import { removeDuplicates } from "~/utils/arrays";
 import type { FinalStanding } from "./finalStandings.server";
 import type { Rating } from "openskill/dist/types";
-// hacky workaround to stop db from being imported in tests
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { rate, userIdsToIdentifier } from "~/features/mmr/mmr-utils";
 import shuffle from "just-shuffle";
 import type { Unpacked } from "~/utils/types";
 
 export interface TournamentSummary {
-  skills: Omit<Skill, "tournamentId" | "id" | "ordinal">[];
-  mapResultDeltas: MapResult[];
-  playerResultDeltas: PlayerResult[];
+  skills: Omit<
+    Skill,
+    "tournamentId" | "id" | "ordinal" | "season" | "groupMatchId"
+  >[];
+  mapResultDeltas: Omit<MapResult, "season">[];
+  playerResultDeltas: Omit<PlayerResult, "season">[];
   tournamentResults: Omit<TournamentResult, "tournamentId" | "isHighlight">[];
 }
 
@@ -44,12 +45,14 @@ export function tournamentSummary({
   teams,
   finalStandings,
   queryCurrentTeamRating,
+  queryTeamPlayerRatingAverage,
   queryCurrentUserRating,
 }: {
   results: AllMatchResult[];
   teams: TeamsArg;
   finalStandings: FinalStandingsArg;
   queryCurrentTeamRating: (identifier: string) => Rating;
+  queryTeamPlayerRatingAverage: (identifier: string) => Rating;
   queryCurrentUserRating: (userId: number) => Rating;
 }): TournamentSummary {
   const userIdsToTeamId = userIdsToTeamIdRecord(teams);
@@ -60,6 +63,7 @@ export function tournamentSummary({
       userIdsToTeamId,
       queryCurrentTeamRating,
       queryCurrentUserRating,
+      queryTeamPlayerRatingAverage,
     }),
     mapResultDeltas: mapResultDeltas({ results, userIdsToTeamId }),
     playerResultDeltas: playerResultDeltas({ results, userIdsToTeamId }),
@@ -86,6 +90,7 @@ function skills(args: {
   results: AllMatchResult[];
   userIdsToTeamId: UserIdToTeamId;
   queryCurrentTeamRating: (identifier: string) => Rating;
+  queryTeamPlayerRatingAverage: (identifier: string) => Rating;
   queryCurrentUserRating: (userId: number) => Rating;
 }) {
   const result: TournamentSummary["skills"] = [];
@@ -168,10 +173,12 @@ function calculateTeamSkills({
   results,
   userIdsToTeamId,
   queryCurrentTeamRating,
+  queryTeamPlayerRatingAverage,
 }: {
   results: AllMatchResult[];
   userIdsToTeamId: UserIdToTeamId;
   queryCurrentTeamRating: (identifier: string) => Rating;
+  queryTeamPlayerRatingAverage: (identifier: string) => Rating;
 }) {
   const teamRatings = new Map<string, Rating>();
   const teamMatchesCount = new Map<string, number>();
@@ -206,10 +213,16 @@ function calculateTeamSkills({
     });
     const loserTeamIdentifier = selectMostPopular(loserTeamIdentifiers);
 
-    const [[ratedWinner], [ratedLoser]] = rate([
-      [getTeamRating(winnerTeamIdentifier)],
-      [getTeamRating(loserTeamIdentifier)],
-    ]);
+    const [[ratedWinner], [ratedLoser]] = rate(
+      [
+        [getTeamRating(winnerTeamIdentifier)],
+        [getTeamRating(loserTeamIdentifier)],
+      ],
+      [
+        [queryTeamPlayerRatingAverage(winnerTeamIdentifier)],
+        [queryTeamPlayerRatingAverage(loserTeamIdentifier)],
+      ]
+    );
 
     teamRatings.set(winnerTeamIdentifier, ratedWinner);
     teamRatings.set(loserTeamIdentifier, ratedLoser);
@@ -268,8 +281,8 @@ function mapResultDeltas({
 }: {
   results: AllMatchResult[];
   userIdsToTeamId: UserIdToTeamId;
-}): MapResult[] {
-  const result: MapResult[] = [];
+}): TournamentSummary["mapResultDeltas"] {
+  const result: TournamentSummary["mapResultDeltas"] = [];
 
   const addMapResult = (
     mapResult: Pick<MapResult, "stageId" | "mode" | "userId"> & {
@@ -324,10 +337,12 @@ function playerResultDeltas({
 }: {
   results: AllMatchResult[];
   userIdsToTeamId: UserIdToTeamId;
-}): PlayerResult[] {
-  const result: PlayerResult[] = [];
+}): TournamentSummary["playerResultDeltas"] {
+  const result: TournamentSummary["playerResultDeltas"] = [];
 
-  const addPlayerResult = (playerResult: PlayerResult) => {
+  const addPlayerResult = (
+    playerResult: TournamentSummary["playerResultDeltas"][number]
+  ) => {
     const existingResult = result.find(
       (r) =>
         r.type === playerResult.type &&

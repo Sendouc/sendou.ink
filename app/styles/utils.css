@@ -1,3 +1,7 @@
+.text-xl {
+  font-size: var(--fonts-xl);
+}
+
 .text-lg {
   font-size: var(--fonts-lg);
 }
@@ -54,6 +58,10 @@
   text-transform: uppercase;
 }
 
+.text-capitalize {
+  text-transform: capitalize;
+}
+
 .fill-success {
   fill: var(--theme-success);
 }
@@ -84,6 +92,10 @@
 
 .rounded-full {
   border-radius: 100%;
+}
+
+.font-body {
+  font-weight: var(--body);
 }
 
 .font-semi-bold {
@@ -194,6 +206,10 @@
   margin-inline-start: var(--s-2);
 }
 
+.ml-4 {
+  margin-inline-start: var(--s-4);
+}
+
 .mr-auto {
   margin-inline-end: auto;
 }
@@ -234,7 +250,7 @@
   white-space: pre-wrap;
 }
 
-.whitespace-no-wrap {
+.whitespace-nowrap {
   white-space: nowrap;
 }
 
@@ -312,6 +328,10 @@
 
 .cursor-pointer {
   cursor: pointer;
+}
+
+.line-height-tight {
+  line-height: 1.3;
 }
 
 @media screen and (min-width: 480px) {

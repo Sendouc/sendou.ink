@@ -11,9 +11,6 @@ const stm = sql.prepare(/* sql */ `
   select
     "Skill"."id" as "entryId",
     "Skill"."ordinal",
-    rank () over ( 
-      order by "Skill"."Ordinal" desc
-    ) "placementRank",
     json_group_array(
       json_object(
         'id',
@@ -54,6 +51,7 @@ const stm = sql.prepare(/* sql */ `
     ) "Latest" on "Skill"."identifier" = "Latest"."identifier" and "Skill"."id" = "Latest"."maxId"
   where
     "Skill"."matchesCount" >= ${MATCHES_COUNT_NEEDED_FOR_LEADERBOARD}
+    and "Skill"."season" = @season
   group by
     "Skill"."identifier"
   order by
@@ -85,18 +83,20 @@ export interface TeamSPLeaderboardItem {
   placementRank: number;
 }
 
-export function teamSPLeaderboard(): TeamSPLeaderboardItem[] {
-  return (stm.all() as any[]).map(({ ordinal, members, teams, ...rest }) => {
-    const parsedTeams = parseDBJsonArray(teams);
-    const sharesSameTeam =
-      parsedTeams.length === 4 &&
-      parsedTeams.every((team: any) => team.id === parsedTeams[0].id);
+export function teamSPLeaderboard(season: number): TeamSPLeaderboardItem[] {
+  return (stm.all({ season }) as any[]).map(
+    ({ ordinal, members, teams, ...rest }) => {
+      const parsedTeams = parseDBJsonArray(teams);
+      const sharesSameTeam =
+        parsedTeams.length === 4 &&
+        parsedTeams.every((team: any) => team.id === parsedTeams[0].id);
 
-    return {
-      ...rest,
-      power: ordinalToSp(ordinal),
-      members: parseDBJsonArray(members),
-      team: sharesSameTeam ? parsedTeams[0] : undefined,
-    };
-  });
+      return {
+        ...rest,
+        power: ordinalToSp(ordinal),
+        members: parseDBJsonArray(members),
+        team: sharesSameTeam ? parsedTeams[0] : undefined,
+      };
+    }
+  );
 }

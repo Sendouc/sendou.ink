@@ -189,6 +189,7 @@ export interface MapPoolMap {
   calendarEventId: number | null; // Part of tournament's map pool
   tournamentTeamId: number | null; // Part of team's map pool
   tieBreakerCalendarEventId: number | null; // Part of the tournament's tiebreaker pool
+  groupId: number | null; // Part of SendouQ group's map pool
   stageId: StageId;
   mode: ModeShort;
 }
@@ -352,6 +353,9 @@ export interface Skill {
   matchesCount: number;
   /** Tournament that caused the skill to change */
   tournamentId: number | null;
+  /** Group match that caused the skill to change */
+  groupMatchId: number | null;
+  season: number;
 }
 
 export interface SkillTeamUser {
@@ -365,6 +369,7 @@ export interface MapResult {
   userId: number;
   wins: number;
   losses: number;
+  season: number;
 }
 
 export interface PlayerResult {
@@ -375,6 +380,7 @@ export interface PlayerResult {
   setWins: number;
   setLosses: number;
   type: "MATE" | "ENEMY";
+  season: number;
 }
 
 export interface TournamentResult {
@@ -497,4 +503,58 @@ export interface TaggedArt {
 export interface ArtUserMetadata {
   artId: number;
   userId: number;
+}
+
+export interface Group {
+  id: number;
+  teamId: number | null;
+  createdAt: number;
+  latestActionAt: number;
+  mapListPreference:
+    | "SZ_ONLY"
+    | "ALL_MODES_ONLY"
+    | "PREFER_SZ"
+    | "PREFER_ALL_MODES"
+    | "NO_PREFERENCE";
+  inviteCode: string;
+  status: "PREPARING" | "ACTIVE" | "INACTIVE";
+}
+
+export interface GroupMember {
+  groupId: number;
+  userId: number;
+  role: "OWNER" | "MANAGER" | "REGULAR";
+  createdAt: number;
+}
+
+export interface GroupLike {
+  likerGroupId: number;
+  targetGroupId: number;
+  createdAt: number;
+}
+
+export interface GroupMatch {
+  id: number;
+  alphaGroupId: number;
+  bravoGroupId: number;
+  createdAt: number;
+  reportedAt: number | null;
+  reportedByUserId: number | null;
+}
+
+export interface GroupMatchMap {
+  id: number;
+  matchId: number;
+  index: number;
+  mode: ModeShort;
+  stageId: StageId;
+  /** serialized TournamentMaplistSource */
+  source: string;
+  winnerGroupId: number | null;
+}
+
+export interface ReportedWeapon {
+  groupMatchMapId: number | null;
+  weaponSplId: MainWeaponId;
+  userId: User["id"];
 }

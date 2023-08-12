@@ -33,6 +33,8 @@ function at<T>(arr: T[], n: number) {
 }
 
 export function joinListToNaturalString(arg: string[], lastSeparator = "and") {
+  if (arg.length === 1) return arg[0];
+
   const list = [...arg];
   const last = list.pop();
   const commaJoined = list.join(", ");

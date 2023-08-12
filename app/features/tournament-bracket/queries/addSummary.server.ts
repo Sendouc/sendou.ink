@@ -2,6 +2,7 @@ import { sql } from "~/db/sql";
 import type { TournamentSummary } from "../core/summarizer.server";
 import { ordinal } from "openskill";
 import type { Skill } from "~/db/types";
+import { identifierToUserIds } from "~/features/mmr/mmr-utils.server";
 
 const addSkillStm = sql.prepare(/* sql */ `
   insert into "Skill" (
@@ -11,7 +12,8 @@ const addSkillStm = sql.prepare(/* sql */ `
     "ordinal",
     "userId",
     "identifier",
-    "matchesCount"
+    "matchesCount",
+    "season"
   )
   values (
     @tournamentId,
@@ -20,7 +22,8 @@ const addSkillStm = sql.prepare(/* sql */ `
     @ordinal,
     @userId,
     @identifier,
-    @matchesCount + coalesce((select max("matchesCount") from "Skill" where "userId" = @userId or "identifier" = @identifier group by "userId", "identifier"), 0)
+    @matchesCount + coalesce((select max("matchesCount") from "Skill" where "userId" = @userId or "identifier" = @identifier group by "userId", "identifier"), 0),
+    @season
   ) returning *
 `);
 
@@ -40,14 +43,16 @@ const addMapResultDeltaStm = sql.prepare(/* sql */ `
     "stageId",
     "userId",
     "wins",
-    "losses"
+    "losses",
+    "season"
   ) values (
     @mode,
     @stageId,
     @userId,
     @wins,
-    @losses
-  ) on conflict ("userId", "stageId", "mode") do
+    @losses,
+    @season
+  ) on conflict ("userId", "stageId", "mode", "season") do
   update
   set
     "wins" = "wins" + @wins,
@@ -62,7 +67,8 @@ const addPlayerResultDeltaStm = sql.prepare(/* sql */ `
     "mapLosses",
     "setWins",
     "setLosses",
-    "type"
+    "type",
+    "season"
   ) values (
     @ownerUserId,
     @otherUserId,
@@ -70,8 +76,9 @@ const addPlayerResultDeltaStm = sql.prepare(/* sql */ `
     @mapLosses,
     @setWins,
     @setLosses,
-    @type
-  ) on conflict ("ownerUserId", "otherUserId", "type") do
+    @type,
+    @season
+  ) on conflict ("ownerUserId", "otherUserId", "type", "season") do
   update
   set
     "mapWins" = "mapWins" + @mapWins,
@@ -100,9 +107,11 @@ export const addSummary = sql.transaction(
   ({
     tournamentId,
     summary,
+    season,
   }: {
     tournamentId: number;
     summary: TournamentSummary;
+    season: number;
   }) => {
     for (const skill of summary.skills) {
       const insertedSkill = addSkillStm.get({
@@ -113,13 +122,14 @@ export const addSummary = sql.transaction(
         userId: skill.userId,
         identifier: skill.identifier,
         matchesCount: skill.matchesCount,
+        season,
       }) as Skill;
 
       if (insertedSkill.identifier) {
-        for (const userIdString of insertedSkill.identifier.split("-")) {
+        for (const userId of identifierToUserIds(insertedSkill.identifier)) {
           addSkillTeamUserStm.run({
             skillId: insertedSkill.id,
-            userId: Number(userIdString),
+            userId,
           });
         }
       }
@@ -132,6 +142,7 @@ export const addSummary = sql.transaction(
         userId: mapResultDelta.userId,
         wins: mapResultDelta.wins,
         losses: mapResultDelta.losses,
+        season,
       });
     }
 
@@ -144,6 +155,7 @@ export const addSummary = sql.transaction(
         setWins: playerResultDelta.setWins,
         setLosses: playerResultDelta.setLosses,
         type: playerResultDelta.type,
+        season,
       });
     }
 

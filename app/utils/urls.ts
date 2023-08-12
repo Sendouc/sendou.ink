@@ -7,6 +7,7 @@ import type {
   XRankPlacement,
   User,
   Art,
+  GroupMatch,
 } from "~/db/types";
 import type { ModeShort, weaponCategories } from "~/modules/in-game-lists";
 import type {
@@ -24,6 +25,8 @@ import type { StageBackgroundStyle } from "~/features/map-planner";
 import type { ImageUploadType } from "~/features/img-upload";
 import { serializeBuild } from "~/features/build-analyzer";
 import type { ArtSouce } from "~/features/art";
+import { JOIN_CODE_SEARCH_PARAM_KEY } from "~/features/sendouq/q-constants";
+import type { TierName } from "~/features/mmr/mmr-constants";
 
 const staticAssetsUrl = ({
   folder,
@@ -90,6 +93,12 @@ export const OBJECT_DAMAGE_CALCULATOR_URL = "/object-damage-calculator";
 export const VODS_PAGE = "/vods";
 export const LEADERBOARDS_PAGE = "/leaderboards";
 export const LINKS_PAGE = "/links";
+export const SENDOUQ_YOUTUBE_VIDEO =
+  "https://www.youtube.com/watch?v=XIRNcTFDYzA";
+export const SENDOUQ_PAGE = "/q";
+export const SENDOUQ_RULES_PAGE = "/q/rules";
+export const SENDOUQ_PREPARING_PAGE = "/q/preparing";
+export const SENDOUQ_LOOKING_PAGE = "/q/looking";
 
 export const BLANK_IMAGE_URL = "/static-assets/img/blank.gif";
 export const COMMON_PREVIEW_IMAGE =
@@ -118,6 +127,16 @@ interface UserLinkArgs {
 
 export const userPage = (user: UserLinkArgs) =>
   `/u/${user.customUrl ?? user.discordId}`;
+export const userSeasonsPage = ({
+  user,
+  season,
+}: {
+  user: UserLinkArgs;
+  season?: number;
+}) =>
+  `${userPage(user)}/seasons${
+    typeof season === "number" ? `?season=${season}` : ""
+  }`;
 export const userEditProfilePage = (user: UserLinkArgs) =>
   `${userPage(user)}/edit`;
 export const userBuildsPage = (user: UserLinkArgs) =>
@@ -230,6 +249,13 @@ export const tournamentSubsPage = (tournamentId: number) => {
   return `/to/${tournamentId}/subs`;
 };
 
+export const sendouQInviteLink = (inviteCode: string) =>
+  `${SENDOUQ_PAGE}?${JOIN_CODE_SEARCH_PARAM_KEY}=${inviteCode}`;
+
+export const sendouQMatchPage = (id: GroupMatch["id"]) => {
+  return `${SENDOUQ_PAGE}/match/${id}`;
+};
+
 export const mapsPage = (eventId?: MapPoolMap["calendarEventId"]) =>
   `/maps${eventId ? `?eventId=${eventId}` : ""}`;
 export const readonlyMapsPage = (eventId: CalendarEvent["id"]) =>
@@ -292,6 +318,9 @@ export const stageImageUrl = (stageId: StageId) =>
   `/static-assets/img/stages/${stageId}`;
 export const brandImageUrl = (brand: "tentatek" | "takoroka") =>
   `/static-assets/img/layout/${brand}`;
+export const tierImageUrl = (tier: TierName) =>
+  `/static-assets/img/tiers/${tier}`;
+export const TIER_PLUS_URL = `/static-assets/img/tiers/plus`;
 export const stageMinimapImageUrlWithEnding = ({
   stageId,
   mode,
