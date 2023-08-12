@@ -10,7 +10,7 @@ const SEASONS =
     : ([
         {
           nth: 0,
-          starts: new Date("2023-08-14T15:00:00.000Z"),
+          starts: new Date("2023-08-14T17:00:00.000Z"),
           ends: new Date("2023-08-27T20:59:59.999Z"),
         },
       ] as const);
