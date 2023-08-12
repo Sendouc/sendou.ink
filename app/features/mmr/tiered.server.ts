@@ -116,6 +116,11 @@ function skillTierIntervals(
     },
   ];
 
+  if (points.length === 1) {
+    result[0].neededOrdinal = points[0].ordinal;
+    return result;
+  }
+
   let previousPercentiles = 0;
   for (let i = 0; i < points.length; i++) {
     const currentTier = allTiers[result.length - 1];
