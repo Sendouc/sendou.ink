@@ -22,7 +22,7 @@ export function findCurrentSkillByUserId({
   season,
 }: {
   userId: number;
-  season: number | null;
+  season: number;
 }) {
   return stm.get({ userId, season }) as Pick<Skill, "mu" | "sigma"> | null;
 }

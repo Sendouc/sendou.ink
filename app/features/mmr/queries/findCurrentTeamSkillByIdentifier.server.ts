@@ -22,7 +22,7 @@ export function findCurrentTeamSkillByIdentifier({
   season,
 }: {
   identifier: string;
-  season: number | null;
+  season: number;
 }) {
   return stm.get({ identifier, season }) as Pick<Skill, "mu" | "sigma"> | null;
 }

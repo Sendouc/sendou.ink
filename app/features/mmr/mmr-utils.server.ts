@@ -7,7 +7,7 @@ export function queryCurrentUserRating({
   season,
 }: {
   userId: number;
-  season?: number | null;
+  season: number;
 }) {
   const skill = findCurrentSkillByUserId({ userId, season: season ?? null });
 
@@ -23,11 +23,11 @@ export function queryCurrentTeamRating({
   season,
 }: {
   identifier: string;
-  season?: number | null;
+  season: number;
 }) {
   const skill = findCurrentTeamSkillByIdentifier({
     identifier,
-    season: season ?? null,
+    season,
   });
 
   if (!skill) return rating();
@@ -35,12 +35,13 @@ export function queryCurrentTeamRating({
   return rating(skill);
 }
 
+// xxx: split("-") as an util?
 export function queryTeamPlayerRatingAverage({
   identifier,
   season,
 }: {
   identifier: string;
-  season?: number | null;
+  season: number;
 }) {
   const playerRatings = identifier
     .split("-")

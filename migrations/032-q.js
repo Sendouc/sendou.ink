@@ -1,5 +1,6 @@
 module.exports.up = function (db) {
   db.transaction(() => {
+    db.prepare(`delete from "Skill"`).run();
     db.prepare(`create index skill_identifier on "Skill"("identifier")`).run();
 
     db.prepare(
@@ -15,7 +16,9 @@ module.exports.up = function (db) {
     db.prepare(
       `create index skill_group_match_id on "Skill"("groupMatchId")`
     ).run();
-    db.prepare(/* sql */ `alter table "Skill" add "season" integer`).run();
+    db.prepare(
+      /* sql */ `alter table "Skill" add "season" integer not null`
+    ).run();
 
     db.prepare(/*sql*/ `drop table "MapResult"`).run();
     db.prepare(/*sql*/ `drop table "PlayerResult"`).run();

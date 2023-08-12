@@ -355,8 +355,7 @@ export interface Skill {
   tournamentId: number | null;
   /** Group match that caused the skill to change */
   groupMatchId: number | null;
-  /** If null then is an all-time ranking */
-  season: number | null;
+  season: number;
 }
 
 export interface SkillTeamUser {
