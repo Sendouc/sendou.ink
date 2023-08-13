@@ -41,7 +41,7 @@ import {
   type RankedModeShort,
 } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
-import { allSeasons } from "~/features/mmr/season";
+import { allSeasons, currentSeason } from "~/features/mmr/season";
 import {
   addPlacementRank,
   addTiers,
@@ -103,7 +103,10 @@ export const loader = async ({ request }: LoaderArgs) => {
         // eslint-disable-next-line @typescript-eslint/require-await
         async getFreshValue() {
           const leaderboard = userSPLeaderboard(0);
-          const withTiers = addTiers(leaderboard);
+          // TODO: handle viewing during off-season
+          const withTiers = currentSeason(new Date())
+            ? addTiers(leaderboard)
+            : leaderboard.map((e) => ({ ...e, tier: undefined }));
 
           return addWeapons(withTiers, seasonPopularUsersWeapon(0));
         },

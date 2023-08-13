@@ -24,8 +24,8 @@ export function addTiers(entries: UserSPLeaderboardItem[]) {
   });
 }
 
-export function addWeapons(
-  entries: ReturnType<typeof addTiers>,
+export function addWeapons<T extends { id: number }>(
+  entries: T[],
   weapons: SeasonPopularUsersWeapon
 ) {
   return entries.map((entry) => {
