@@ -10,6 +10,8 @@ import {
 import { authSessionStorage } from "./session.server";
 import { getUserId } from "./user.server";
 
+const throwOnAuthErrors = process.env["THROW_ON_AUTH_ERROR"] === "true";
+
 export const callbackLoader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
   if (url.searchParams.get("error") === "access_denied") {
@@ -23,7 +25,8 @@ export const callbackLoader: LoaderFunction = async ({ request }) => {
 
   await authenticator.authenticate(DISCORD_AUTH_KEY, request, {
     successRedirect: "/",
-    failureRedirect: authErrorUrl("unknown"),
+    failureRedirect: throwOnAuthErrors ? undefined : authErrorUrl("unknown"),
+    throwOnError: throwOnAuthErrors,
   });
 
   throw new Response("Unknown authentication state", { status: 500 });
