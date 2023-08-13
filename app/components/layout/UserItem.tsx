@@ -5,8 +5,10 @@ import { userPage } from "~/utils/urls";
 import { Avatar } from "../Avatar";
 import { LogInIcon } from "../icons/LogIn";
 import { LogInButtonContainer } from "./LogInButtonContainer";
+import { useRootLoaderData } from "~/hooks/useRootLoaderData";
 
 export function UserItem() {
+  const data = useRootLoaderData();
   const { t } = useTranslation();
   const user = useUser();
 
@@ -23,6 +25,10 @@ export function UserItem() {
         />
       </Link>
     );
+  }
+
+  if (data.loginDisabled) {
+    return false;
   }
 
   return (

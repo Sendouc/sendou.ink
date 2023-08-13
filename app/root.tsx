@@ -95,6 +95,7 @@ export interface RootLoaderData {
   >;
   publisherId?: string;
   websiteId?: string;
+  loginDisabled: boolean;
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -112,6 +113,7 @@ export const loader: LoaderFunction = async ({ request }) => {
       baseUrl: process.env["BASE_URL"],
       publisherId: process.env["PLAYWIRE_PUBLISHER_ID"],
       websiteId: process.env["PLAYWIRE_WEBSITE_ID"],
+      loginDisabled: process.env["LOGIN_DISABLED"] === "true",
       user: user
         ? {
             discordName: user.discordName,

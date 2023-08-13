@@ -9,6 +9,7 @@ import {
 } from "./authenticator.server";
 import { authSessionStorage } from "./session.server";
 import { getUserId } from "./user.server";
+import { validate } from "~/utils/remix";
 
 const throwOnAuthErrors = process.env["THROW_ON_AUTH_ERROR"] === "true";
 
@@ -37,6 +38,11 @@ export const logOutAction: ActionFunction = async ({ request }) => {
 };
 
 export const logInAction: ActionFunction = async ({ request }) => {
+  validate(
+    process.env["LOGIN_DISABLED"] !== "true",
+    "Login is temporarily disabled"
+  );
+
   return authenticator.authenticate(DISCORD_AUTH_KEY, request);
 };
 
