@@ -199,6 +199,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     builds: filteredBuilds,
     limit,
     slug,
+    filters: filters.success ? filters.data : [],
   };
 };
 
@@ -226,18 +227,10 @@ const BuildCards = React.memo(function BuildCards({
 export default function WeaponsBuildsPage() {
   const data = useLoaderData<typeof loader>();
   const { t } = useTranslation(["common", "builds"]);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [filters, setFilters] = React.useState(() => {
-    const rawFilters = searchParams.get(FILTER_SEARCH_PARAM_KEY);
-    if (!rawFilters) return [];
-
-    return safeJSONParse(rawFilters, [])
-      .slice(0, MAX_BUILD_FILTERS)
-      .map((f: any) => ({
-        ...f,
-        id: nanoid(),
-      })) as BuildFilter[];
-  });
+  const [, setSearchParams] = useSearchParams();
+  const [filters, setFilters] = React.useState<BuildFilter[]>(
+    data.filters ? data.filters.map((f) => ({ ...f, id: nanoid() })) : []
+  );
 
   const syncSearchParams = (newFilters: BuildFilter[]) => {
     const filtersForSearchParams = newFilters.map((f) => {
