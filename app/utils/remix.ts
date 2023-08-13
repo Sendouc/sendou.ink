@@ -2,6 +2,7 @@ import { z } from "zod";
 import { type TFunction, type Namespace } from "react-i18next";
 import { type RouteMatch } from "@remix-run/react";
 import type navItems from "~/components/layout/nav-items.json";
+import { json } from "@remix-run/node";
 
 export function notFoundIfFalsy<T>(value: T | null | undefined): T {
   if (!value) throw new Response(null, { status: 404 });
@@ -150,3 +151,13 @@ export type SendouRouteHandle = {
   /** The name of a navItem that is active on this route. See nav-items.json */
   navItemName?: (typeof navItems)[number]["name"];
 };
+
+/** Caches the loader response with "private" Cache-Control meaning that CDN won't cache the response.
+ * To be used when the response is different for each user. This is especially useful when the response
+ * is prefetched on link hover.
+ */
+export function privatelyCachedJson<T>(data: T) {
+  return json(data, {
+    headers: { "Cache-Control": "private, max-age=20" },
+  });
+}

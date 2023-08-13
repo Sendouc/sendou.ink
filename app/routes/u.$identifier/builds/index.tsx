@@ -1,4 +1,3 @@
-import { json } from "@remix-run/node";
 import type { ActionFunction, LoaderArgs } from "@remix-run/node";
 import { useLoaderData, useMatches } from "@remix-run/react";
 import { z } from "zod";
@@ -13,6 +12,7 @@ import { atOrError } from "~/utils/arrays";
 import {
   notFoundIfFalsy,
   parseRequestFormData,
+  privatelyCachedJson,
   type SendouRouteHandle,
 } from "~/utils/remix";
 import { userNewBuildPage } from "~/utils/urls";
@@ -66,7 +66,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     throw new Response(null, { status: 404 });
   }
 
-  return json({
+  return privatelyCachedJson({
     builds,
     weaponCounts: calculateWeaponCounts(),
   });
