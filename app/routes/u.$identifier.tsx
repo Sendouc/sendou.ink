@@ -13,6 +13,7 @@ import { Main } from "~/components/Main";
 import { SubNav, SubNavLink } from "~/components/SubNav";
 import { db } from "~/db";
 import { countArtByUserId } from "~/features/art";
+import { currentSeason } from "~/features/mmr";
 import { userTopPlacements } from "~/features/top-search";
 import { findVods } from "~/features/vods";
 import { useTranslation } from "~/hooks/useTranslation";
@@ -132,7 +133,10 @@ export default function UserPageLayout() {
     <Main>
       <SubNav>
         <SubNavLink to={userPage(data)}>{t("header.profile")}</SubNavLink>
-        <SubNavLink to={userSeasonsPage({ user: data })}>Seasons</SubNavLink>
+        {/* TODO: show also when not current season */}
+        {currentSeason(new Date()) ? (
+          <SubNavLink to={userSeasonsPage({ user: data })}>Seasons</SubNavLink>
+        ) : null}
         {isOwnPage && (
           <SubNavLink to={userEditProfilePage(data)} prefetch="intent">
             {t("actions.edit")}
