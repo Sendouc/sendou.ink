@@ -118,11 +118,12 @@ with "Top500Weapon" as (
     "BuildWeapon".*,
     min("XRankPlacement"."rank") as "minRank",
     max("XRankPlacement"."power") as "maxPower"
-  from
-    "BuildWeapon"
+  from "Build"
+    left join "BuildWeapon" on "BuildWeapon"."buildId" = "Build"."id"
     left join "SplatoonPlayer" on "SplatoonPlayer"."userId" = @userId
     left join "XRankPlacement" on "XRankPlacement"."playerId" = "SplatoonPlayer"."id"
     and "XRankPlacement"."weaponSplId" = "BuildWeapon"."weaponSplId"
+  where "Build"."ownerId" = @userId
   group by
     "BuildWeapon"."buildId",
     "BuildWeapon"."weaponSplId"
