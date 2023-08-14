@@ -204,6 +204,15 @@ export const action: ActionFunction = async ({ request }) => {
       );
       if (!theirGroup) return null;
 
+      validate(
+        ourGroup.members.length === FULL_GROUP_SIZE,
+        "'ourGroup' is not full"
+      );
+      validate(
+        theirGroup.members.length === FULL_GROUP_SIZE,
+        "'theirGroup' is not full"
+      );
+
       const createdMatch = createMatch({
         alphaGroupId: ourGroup.id,
         bravoGroupId: theirGroup.id,
