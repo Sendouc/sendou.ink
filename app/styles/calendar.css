@@ -178,7 +178,7 @@
 
 .calendar__no-events {
   color: var(--text-lighter);
-  padding-block: var(--s-20);
+  padding-block: var(--s-16);
   text-align: center;
 }
 

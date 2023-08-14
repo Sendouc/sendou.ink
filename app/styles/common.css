@@ -472,7 +472,6 @@ dialog::backdrop {
   justify-content: center;
   gap: var(--s-4);
   margin-block-end: var(--s-8);
-  margin-block-start: -12px;
 }
 
 .sub-nav__container__secondary {
@@ -1094,7 +1093,7 @@ dialog::backdrop {
 
 .top-leaderboard {
   min-height: 110px;
-  margin-block-start: var(--s-20);
+  margin-block-start: var(--s-16);
 }
 
 .youtube__container {
