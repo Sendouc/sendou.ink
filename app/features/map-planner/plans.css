@@ -11,6 +11,10 @@ button[data-state="closed"][aria-haspopup="dialog"] {
 #TD-MenuPanel {
   display: none;
 }
+
+#pw-oop-bottom_rail {
+  display: none;
+}
 /* stylelint-enable selector-id-pattern */
 
 .layout__header {
