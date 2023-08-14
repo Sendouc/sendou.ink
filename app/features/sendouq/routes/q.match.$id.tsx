@@ -198,8 +198,8 @@ export const action = async ({ request, params }: ActionArgs) => {
     case "CANCEL_MATCH": {
       const match = notFoundIfFalsy(findMatchById(matchId));
       validate(
-        !match.reportedByUserId,
-        "Match has already been reported by at least one team"
+        !match.isLocked,
+        "Match has already been reported by both teams"
       );
       validate(isAdmin(user), "Only admin can cancel the match");
 
@@ -209,6 +209,7 @@ export const action = async ({ request, params }: ActionArgs) => {
           reportedByUserId: user.id,
           winners: [],
         });
+        deleteReporterWeaponsByMatchId(matchId);
         setGroupAsInactive(match.alphaGroupId);
         setGroupAsInactive(match.bravoGroupId);
         addDummySkill(match.id);
@@ -418,7 +419,7 @@ export default function QMatchPage() {
           ) : null}
         </>
       ) : null}
-      {isAdmin(user) && !data.match.reportedByUserId ? (
+      {isAdmin(user) && !data.match.isLocked ? (
         <FormWithConfirm
           dialogHeading={"Cancel match"}
           fields={[["_action", "CANCEL_MATCH"]]}
