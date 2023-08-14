@@ -409,21 +409,6 @@ export default function QMatchPage() {
             isResubmission={ownTeamReported}
             fetcher={submitScoreFetcher}
           />
-          {isAdmin(user) && !data.match.reportedByUserId ? (
-            <FormWithConfirm
-              dialogHeading={"Cancel match"}
-              fields={[["_action", "CANCEL_MATCH"]]}
-            >
-              <Button
-                className="build__small-text"
-                variant="minimal-destructive"
-                size="tiny"
-                type="submit"
-              >
-                Cancel match
-              </Button>
-            </FormWithConfirm>
-          ) : null}
           {submitScoreFetcher.data?.error === "different" ? (
             <div className="text-xs text-warning font-semi-bold text-center">
               You reported different results than your opponent. Double check
@@ -432,6 +417,21 @@ export default function QMatchPage() {
             </div>
           ) : null}
         </>
+      ) : null}
+      {isAdmin(user) && !data.match.reportedByUserId ? (
+        <FormWithConfirm
+          dialogHeading={"Cancel match"}
+          fields={[["_action", "CANCEL_MATCH"]]}
+        >
+          <Button
+            className="build__small-text"
+            variant="minimal-destructive"
+            size="tiny"
+            type="submit"
+          >
+            Cancel match
+          </Button>
+        </FormWithConfirm>
       ) : null}
     </Main>
   );
