@@ -76,6 +76,8 @@ import {
 } from "../core/summarizer.server";
 import { addPlayerResults } from "../queries/addPlayerResults.server";
 import { resolveRoomPass } from "~/features/tournament-bracket/tournament-bracket-utils";
+import { FormWithConfirm } from "~/components/FormWithConfirm";
+import { addDummySkill } from "../queries/addDummySkill.server";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -189,6 +191,27 @@ export const action = async ({ request, params }: ActionArgs) => {
           setGroupAsInactive(match.alphaGroupId);
           setGroupAsInactive(match.bravoGroupId);
         }
+      })();
+
+      break;
+    }
+    case "CANCEL_MATCH": {
+      const match = notFoundIfFalsy(findMatchById(matchId));
+      validate(
+        !match.reportedByUserId,
+        "Match has already been reported by at least one team"
+      );
+      validate(isAdmin(user), "Only admin can cancel the match");
+
+      sql.transaction(() => {
+        reportScore({
+          matchId,
+          reportedByUserId: user.id,
+          winners: [],
+        });
+        setGroupAsInactive(match.alphaGroupId);
+        setGroupAsInactive(match.bravoGroupId);
+        addDummySkill(match.id);
       })();
 
       break;
@@ -386,6 +409,21 @@ export default function QMatchPage() {
             isResubmission={ownTeamReported}
             fetcher={submitScoreFetcher}
           />
+          {isAdmin(user) && !data.match.reportedByUserId ? (
+            <FormWithConfirm
+              dialogHeading={"Cancel match"}
+              fields={[["_action", "CANCEL_MATCH"]]}
+            >
+              <Button
+                className="build__small-text"
+                variant="minimal-destructive"
+                size="tiny"
+                type="submit"
+              >
+                Cancel match
+              </Button>
+            </FormWithConfirm>
+          ) : null}
           {submitScoreFetcher.data?.error === "different" ? (
             <div className="text-xs text-warning font-semi-bold text-center">
               You reported different results than your opponent. Double check

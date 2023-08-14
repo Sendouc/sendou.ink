@@ -97,6 +97,9 @@ export const matchSchema = z.union([
     ),
   }),
   z.object({
+    _action: z.literal("CANCEL_MATCH"),
+  }),
+  z.object({
     _action: z.literal("LOOK_AGAIN"),
     previousGroupId: id,
   }),
