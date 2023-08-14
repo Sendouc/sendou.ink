@@ -191,9 +191,10 @@ export const loader = async ({ request }: LoaderArgs) => {
   const upcomingSeason = nextSeason(now);
 
   return {
-    hasSkill: season
-      ? userHasSkill({ userId: user!.id, season: season.nth })
-      : null,
+    hasSkill:
+      season && user
+        ? userHasSkill({ userId: user.id, season: season.nth })
+        : null,
     season,
     upcomingSeason,
     teamInvitedTo,
