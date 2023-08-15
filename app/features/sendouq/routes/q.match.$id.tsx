@@ -103,10 +103,10 @@ export const action = async ({ request, params }: ActionArgs) => {
   switch (data._action) {
     case "REPORT_SCORE": {
       const match = notFoundIfFalsy(findMatchById(matchId));
-      validate(
-        !match.isLocked,
-        "Match has already been reported by both teams"
-      );
+      if (match.isLocked) {
+        return null;
+      }
+
       validate(
         !data.adminReport || isAdmin(user),
         "Only admins can report scores as admin"
@@ -243,10 +243,6 @@ export const action = async ({ request, params }: ActionArgs) => {
       const match = notFoundIfFalsy(findMatchById(matchId));
       validate(match.reportedAt, "Match has not been reported yet");
 
-      if (reportedWeaponsByMatchId(matchId) && !isAdmin(user)) {
-        return null;
-      }
-
       const reportedMaps = match.mapList.reduce(
         (acc, cur) => acc + (cur.winnerGroupId ? 1 : 0),
         0
@@ -316,7 +312,7 @@ export default function QMatchPage() {
 
   React.useEffect(() => {
     setShowWeaponsForm(false);
-  }, [data.reportedWeapons]);
+  }, [data.reportedWeapons, data.match.id]);
 
   const ownMember =
     data.groupAlpha.members.find((m) => m.id === user?.id) ??
@@ -336,6 +332,13 @@ export default function QMatchPage() {
       ownGroup?.members.some((m) => m.id === data.match.reportedByUserId)
   );
   const showScore = data.match.isLocked || ownTeamReported;
+
+  const poolCode = () => {
+    const stringId = String(data.match.id);
+    const lastDigit = stringId[stringId.length - 1];
+
+    return `SQ${lastDigit}`;
+  };
 
   return (
     <Main className="q-match__container stack lg">
@@ -379,8 +382,16 @@ export default function QMatchPage() {
       {!showWeaponsForm ? (
         <>
           <div className="q-match__teams-container">
-            <MatchGroup group={data.groupAlpha} side="ALPHA" />
-            <MatchGroup group={data.groupBravo} side="BRAVO" />
+            <MatchGroup
+              group={data.groupAlpha}
+              side="ALPHA"
+              showWeapons={!data.match.isLocked}
+            />
+            <MatchGroup
+              group={data.groupBravo}
+              side="BRAVO"
+              showWeapons={!data.match.isLocked}
+            />
           </div>
           {!data.match.isLocked ? (
             <div>
@@ -401,11 +412,12 @@ export default function QMatchPage() {
                 </a>
                 . Alpha team hosts. Password should be{" "}
                 <b>{resolveRoomPass(data.match.id)}</b>. Pool code is{" "}
-                <b>SENDOUQ</b>
+                <b>{poolCode()}</b>
               </div>
             </div>
           ) : null}
           <MapList
+            key={data.match.id}
             canReportScore={canReportScore}
             isResubmission={ownTeamReported}
             fetcher={submitScoreFetcher}
@@ -502,7 +514,6 @@ function AfterMatchActions({
   showWeaponsForm: boolean;
   setShowWeaponsForm: (show: boolean) => void;
 }) {
-  const user = useUser();
   const { t } = useTranslation(["game-misc"]);
   const data = useLoaderData<typeof loader>();
   const lookAgainFetcher = useFetcher();
@@ -540,7 +551,10 @@ function AfterMatchActions({
     databaseTimestampToDate(reportedAt).getTime() > Date.now() - 3600 * 1000;
   const showLookAgain = role === "OWNER" && wasReportedInTheLastHour;
 
-  const showWeaponsFormButton = isAdmin(user) || !data.reportedWeapons;
+  const wasReportedInTheLastWeek =
+    databaseTimestampToDate(reportedAt).getTime() >
+    Date.now() - 7 * 24 * 3600 * 1000;
+  const showWeaponsFormButton = wasReportedInTheLastWeek;
 
   const winners = playedMaps.map((m) =>
     m.winnerGroupId === data.match.alphaGroupId ? "ALPHA" : "BRAVO"
@@ -705,9 +719,11 @@ function AfterMatchActions({
 function MatchGroup({
   group,
   side,
+  showWeapons,
 }: {
   group: GroupForMatch;
   side: "ALPHA" | "BRAVO";
+  showWeapons: boolean;
 }) {
   return (
     <div className="stack sm items-center">
@@ -717,7 +733,6 @@ function MatchGroup({
           <Link
             to={teamPage(group.team.customUrl)}
             className="stack horizontal xs font-bold"
-            target="_blank"
           >
             {group.team.avatarUrl ? (
               <Avatar
@@ -729,17 +744,39 @@ function MatchGroup({
           </Link>
         ) : null}
         {group.members.map((member) => (
-          <Link
-            key={member.discordId}
-            to={userPage(member)}
-            className="stack horizontal xs items-center"
-            target="_blank"
-          >
-            <Avatar size="xxs" user={member} />
-            <div className="text-sm text-main-forced font-body">
-              {member.discordName}
-            </div>
-          </Link>
+          <React.Fragment key={member.discordId}>
+            <Link
+              to={userPage(member)}
+              className="stack horizontal xs items-center"
+            >
+              <Avatar size="xxs" user={member} />
+              <div className="text-sm text-main-forced font-body">
+                {member.inGameName ? (
+                  <>
+                    <span className="text-lighter font-semi-bold">IGN:</span>{" "}
+                    {member.inGameName}
+                  </>
+                ) : (
+                  member.discordName
+                )}
+              </div>
+            </Link>
+            {showWeapons && member.weapons.length > 0 ? (
+              <div className="q__group-member-weapons">
+                {member.weapons.map((weapon) => {
+                  return (
+                    <WeaponImage
+                      key={weapon}
+                      weaponSplId={weapon}
+                      variant="badge"
+                      size={24}
+                      containerClassName="q__group-member-weapon bg-theme-transparent-important"
+                    />
+                  );
+                })}
+              </div>
+            ) : null}
+          </React.Fragment>
         ))}
       </div>
     </div>

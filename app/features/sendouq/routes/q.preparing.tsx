@@ -33,6 +33,7 @@ import { groupForMatch } from "../queries/groupForMatch.server";
 import { refreshGroup } from "../queries/refreshGroup.server";
 import { setGroupAsActive } from "../queries/setGroupAsActive.server";
 import { trustedPlayersAvailableToPlay } from "../queries/usersInActiveGroup.server";
+import { useAutoRefresh } from "~/hooks/useAutoRefresh";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -60,7 +61,10 @@ export const action: ActionFunction = async ({ request }) => {
 
   const currentGroup = findCurrentGroupByUserId(user.id);
   validate(currentGroup, "No group found");
-  validate(hasGroupManagerPerms(currentGroup.role), "Can't manage group");
+
+  if (!hasGroupManagerPerms(currentGroup.role)) {
+    return null;
+  }
 
   switch (data._action) {
     case "JOIN_QUEUE": {
@@ -126,6 +130,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 export default function QPreparingPage() {
   const data = useLoaderData<typeof loader>();
   const joinQFetcher = useFetcher();
+  useAutoRefresh();
 
   return (
     <Main className="stack lg items-center">

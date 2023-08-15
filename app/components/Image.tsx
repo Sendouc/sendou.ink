@@ -153,7 +153,8 @@ export function TierImage({ tier, width = 200 }: TierImageProps) {
           path={TIER_PLUS_URL}
           width={width}
           height={height}
-          alt=""
+          alt={title}
+          title={title}
           containerClassName="tier__img"
         />
       ) : null}

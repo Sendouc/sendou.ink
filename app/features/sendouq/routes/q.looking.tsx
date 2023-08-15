@@ -67,6 +67,7 @@ import { trustedPlayersAvailableToPlay } from "../queries/usersInActiveGroup.ser
 import { userSkills } from "~/features/mmr/tiered.server";
 import { useWindowSize } from "~/hooks/useWindowSize";
 import { Tab, Tabs } from "~/components/Tabs";
+import { useAutoRefresh } from "~/hooks/useAutoRefresh";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -249,6 +250,7 @@ export const action: ActionFunction = async ({ request }) => {
       break;
     }
     case "LEAVE_GROUP": {
+      validate(!currentGroup.matchId, "Can't leave group while in a match");
       let newOwnerId: number | null = null;
       if (currentGroup.role === "OWNER") {
         newOwnerId = groupSuccessorOwner(currentGroup.id);
@@ -360,30 +362,6 @@ export default function QLookingPage() {
       <Groups />
     </Main>
   );
-}
-
-// TODO: could be improved e.g. don't refresh when group has expired
-// or we got new data in the last 20 seconds
-function useAutoRefresh() {
-  const { revalidate } = useRevalidator();
-  const visibility = useVisibilityChange();
-
-  React.useEffect(() => {
-    // when user comes back to this tab
-    if (visibility === "visible") {
-      revalidate();
-    }
-
-    // ...as well as every 20 seconds
-    const interval = setInterval(() => {
-      if (visibility === "hidden") return;
-      revalidate();
-    }, 20 * 1000);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [visibility, revalidate]);
 }
 
 function InfoText() {

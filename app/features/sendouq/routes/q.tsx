@@ -203,6 +203,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 export default function QPage() {
   const [dialogOpen, setDialogOpen] = React.useState(true);
+  const [hasSubmitted, setHasSubmitted] = React.useState(false);
   const user = useUser();
   const data = useLoaderData<typeof loader>();
   const fetcher = useFetcher();
@@ -254,9 +255,11 @@ export default function QPage() {
                   <ActiveSeasonInfo season={data.season} />
                 </div>
                 <MapPreference />
-                <MapPoolSelector />
+                <MapPoolSelector showErrors={hasSubmitted} />
                 <div className="stack md items-center mt-4">
-                  <SubmitButton>Add team members</SubmitButton>
+                  <SubmitButton onClick={() => setHasSubmitted(true)}>
+                    Add team members
+                  </SubmitButton>
                   <div className="text-lighter text-xs text-center">
                     No team members in mind yet? <br />
                     <SubmitButton
@@ -265,6 +268,7 @@ export default function QPage() {
                       name="direct"
                       value="true"
                       state={fetcher.state}
+                      onClick={() => setHasSubmitted(true)}
                     >
                       Join the queue directly.
                     </SubmitButton>
@@ -551,7 +555,7 @@ function MapPreference() {
 }
 
 const MAP_POOL_LOCAL_STORAGE_KEY = "q_mapPool";
-function MapPoolSelector() {
+function MapPoolSelector({ showErrors }: { showErrors: boolean }) {
   const { t } = useTranslation(["game-misc"]);
   const [mapPool, setMapPool] = React.useState<MapPool>(new MapPool([]));
 
@@ -567,123 +571,132 @@ function MapPoolSelector() {
   }, []);
 
   return (
-    <div className="q__map-pool-grid">
-      <RequiredHiddenInput
-        value={mapPool.serialized}
-        isValid={mapPoolOk(mapPool)}
-        name="mapPool"
-      />
-      <div />
-      <div />
-      {rankedModesShort.map((modeShort) => {
-        return <ModeImage key={modeShort} mode={modeShort} size={22} />;
-      })}
-      <div />
-      {stageIds.map((stageId) => {
-        return (
-          <React.Fragment key={stageId}>
-            <div>
-              <Image
-                alt=""
-                path={stageImageUrl(stageId)}
-                width={32}
-                height={18}
-                className="q__map-pool-grid__stage-image"
-              />
-            </div>
-            <div>{t(`game-misc:STAGE_${stageId}`)}</div>
-            {rankedModesShort.map((modeShort) => {
-              const id = `${stageId}-${modeShort}`;
-              return (
-                <input
-                  key={id}
-                  type="checkbox"
-                  id={id}
-                  checked={mapPool.has({ stageId, mode: modeShort })}
-                  onChange={(e) => {
-                    const checked = e.target.checked;
-                    setMapPool((prev) => {
-                      let newMapPool: MapPool;
-                      if (checked) {
-                        newMapPool = new MapPool([
-                          ...prev.stageModePairs,
-                          { stageId, mode: modeShort },
-                        ]);
-                      } else {
-                        newMapPool = new MapPool([
-                          ...prev.stageModePairs.filter(
-                            (pair) =>
-                              pair.stageId !== stageId ||
-                              pair.mode !== modeShort
-                          ),
-                        ]);
-                      }
-
-                      localStorage.setItem(
-                        MAP_POOL_LOCAL_STORAGE_KEY,
-                        JSON.stringify(newMapPool.stageModePairs)
-                      );
-
-                      return newMapPool;
-                    });
-                  }}
+    <div className="stack md">
+      <div className="q__map-pool-grid">
+        <RequiredHiddenInput
+          value={mapPool.serialized}
+          isValid={mapPoolOk(mapPool)}
+          name="mapPool"
+        />
+        <div />
+        <div />
+        {rankedModesShort.map((modeShort) => {
+          return <ModeImage key={modeShort} mode={modeShort} size={22} />;
+        })}
+        <div />
+        {stageIds.map((stageId) => {
+          return (
+            <React.Fragment key={stageId}>
+              <div>
+                <Image
+                  alt=""
+                  path={stageImageUrl(stageId)}
+                  width={32}
+                  height={18}
+                  className="q__map-pool-grid__stage-image"
                 />
-              );
-            })}
-            <div
-              className={clsx("text-warning", {
-                invisible:
-                  mapPool.stageModePairs.filter((p) => p.stageId === stageId)
-                    .length <= SENDOUQ.MAX_STAGE_REPEAT_COUNT,
+              </div>
+              <div>{t(`game-misc:STAGE_${stageId}`)}</div>
+              {rankedModesShort.map((modeShort) => {
+                const id = `${stageId}-${modeShort}`;
+                return (
+                  <input
+                    key={id}
+                    type="checkbox"
+                    id={id}
+                    checked={mapPool.has({ stageId, mode: modeShort })}
+                    onChange={(e) => {
+                      const checked = e.target.checked;
+                      setMapPool((prev) => {
+                        let newMapPool: MapPool;
+                        if (checked) {
+                          newMapPool = new MapPool([
+                            ...prev.stageModePairs,
+                            { stageId, mode: modeShort },
+                          ]);
+                        } else {
+                          newMapPool = new MapPool([
+                            ...prev.stageModePairs.filter(
+                              (pair) =>
+                                pair.stageId !== stageId ||
+                                pair.mode !== modeShort
+                            ),
+                          ]);
+                        }
+
+                        localStorage.setItem(
+                          MAP_POOL_LOCAL_STORAGE_KEY,
+                          JSON.stringify(newMapPool.stageModePairs)
+                        );
+
+                        return newMapPool;
+                      });
+                    }}
+                  />
+                );
               })}
-            >
-              max {SENDOUQ.MAX_STAGE_REPEAT_COUNT}
-            </div>
-          </React.Fragment>
-        );
-      })}
-      <div />
-      <div />
-      <div
-        className={clsx({
-          "text-warning": mapPool.countMapsByMode("SZ") > SENDOUQ.SZ_MAP_COUNT,
-          "text-success":
-            mapPool.countMapsByMode("SZ") === SENDOUQ.SZ_MAP_COUNT,
+              <div
+                className={clsx("text-warning", {
+                  invisible:
+                    mapPool.stageModePairs.filter((p) => p.stageId === stageId)
+                      .length <= SENDOUQ.MAX_STAGE_REPEAT_COUNT,
+                })}
+              >
+                max {SENDOUQ.MAX_STAGE_REPEAT_COUNT}
+              </div>
+            </React.Fragment>
+          );
         })}
-      >
-        {mapPool.countMapsByMode("SZ")}/{SENDOUQ.SZ_MAP_COUNT}
+        <div />
+        <div />
+        <div
+          className={clsx({
+            "text-warning":
+              mapPool.countMapsByMode("SZ") > SENDOUQ.SZ_MAP_COUNT,
+            "text-success":
+              mapPool.countMapsByMode("SZ") === SENDOUQ.SZ_MAP_COUNT,
+          })}
+        >
+          {mapPool.countMapsByMode("SZ")}/{SENDOUQ.SZ_MAP_COUNT}
+        </div>
+        <div
+          className={clsx({
+            "text-warning":
+              mapPool.countMapsByMode("TC") > SENDOUQ.OTHER_MODE_MAP_COUNT,
+            "text-success":
+              mapPool.countMapsByMode("TC") === SENDOUQ.OTHER_MODE_MAP_COUNT,
+          })}
+        >
+          {mapPool.countMapsByMode("TC")}/{SENDOUQ.OTHER_MODE_MAP_COUNT}
+        </div>
+        <div
+          className={clsx({
+            "text-warning":
+              mapPool.countMapsByMode("RM") > SENDOUQ.OTHER_MODE_MAP_COUNT,
+            "text-success":
+              mapPool.countMapsByMode("RM") === SENDOUQ.OTHER_MODE_MAP_COUNT,
+          })}
+        >
+          {mapPool.countMapsByMode("RM")}/{SENDOUQ.OTHER_MODE_MAP_COUNT}
+        </div>
+        <div
+          className={clsx({
+            "text-warning":
+              mapPool.countMapsByMode("CB") > SENDOUQ.OTHER_MODE_MAP_COUNT,
+            "text-success":
+              mapPool.countMapsByMode("CB") === SENDOUQ.OTHER_MODE_MAP_COUNT,
+          })}
+        >
+          {mapPool.countMapsByMode("CB")}/{SENDOUQ.OTHER_MODE_MAP_COUNT}
+        </div>
+        <div />
       </div>
-      <div
-        className={clsx({
-          "text-warning":
-            mapPool.countMapsByMode("TC") > SENDOUQ.OTHER_MODE_MAP_COUNT,
-          "text-success":
-            mapPool.countMapsByMode("TC") === SENDOUQ.OTHER_MODE_MAP_COUNT,
-        })}
-      >
-        {mapPool.countMapsByMode("TC")}/{SENDOUQ.OTHER_MODE_MAP_COUNT}
-      </div>
-      <div
-        className={clsx({
-          "text-warning":
-            mapPool.countMapsByMode("RM") > SENDOUQ.OTHER_MODE_MAP_COUNT,
-          "text-success":
-            mapPool.countMapsByMode("RM") === SENDOUQ.OTHER_MODE_MAP_COUNT,
-        })}
-      >
-        {mapPool.countMapsByMode("RM")}/{SENDOUQ.OTHER_MODE_MAP_COUNT}
-      </div>
-      <div
-        className={clsx({
-          "text-warning":
-            mapPool.countMapsByMode("CB") > SENDOUQ.OTHER_MODE_MAP_COUNT,
-          "text-success":
-            mapPool.countMapsByMode("CB") === SENDOUQ.OTHER_MODE_MAP_COUNT,
-        })}
-      >
-        {mapPool.countMapsByMode("CB")}/{SENDOUQ.OTHER_MODE_MAP_COUNT}
-      </div>
-      <div />
+      {showErrors && !mapPoolOk(mapPool) ? (
+        <div className="text-warning text-xs text-center">
+          Map pool is invalid. Check that every mode has exactly the required
+          amount of maps. Also make sure that no map is picked more than twice.
+        </div>
+      ) : null}
     </div>
   );
 }

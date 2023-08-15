@@ -934,6 +934,12 @@ dialog::backdrop {
   gap: var(--s-1);
 }
 
+.build__date-author-row__owner {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .build__modes {
   position: absolute;
   right: 0;

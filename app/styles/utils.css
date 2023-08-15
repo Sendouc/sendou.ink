@@ -82,6 +82,10 @@
   background-color: var(--bg-darker-transparent);
 }
 
+.bg-theme-transparent-important {
+  background-color: var(--theme-transparent) !important;
+}
+
 .rounded {
   border-radius: var(--rounded);
 }

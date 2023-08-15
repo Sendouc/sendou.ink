@@ -106,6 +106,8 @@ module.exports = {
       route("/q/looking", "features/sendouq/routes/q.looking.tsx");
       route("/q/preparing", "features/sendouq/routes/q.preparing.tsx");
       route("/q/match/:id", "features/sendouq/routes/q.match.$id.tsx");
+
+      route("/tiers", "features/sendouq/routes/tiers.tsx");
     });
   },
   serverModuleFormat: "cjs",

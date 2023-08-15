@@ -462,13 +462,15 @@ function Matches() {
             );
           })}
         </div>
-        <Pagination
-          currentPage={data.matches.currentPage}
-          pagesCount={data.matches.pages}
-          nextPage={() => setPage(data.matches.currentPage + 1)}
-          previousPage={() => setPage(data.matches.currentPage - 1)}
-          setPage={(page) => setPage(page)}
-        />
+        {data.matches.pages > 1 ? (
+          <Pagination
+            currentPage={data.matches.currentPage}
+            pagesCount={data.matches.pages}
+            nextPage={() => setPage(data.matches.currentPage + 1)}
+            previousPage={() => setPage(data.matches.currentPage - 1)}
+            setPage={(page) => setPage(page)}
+          />
+        ) : null}
       </div>
     </div>
   );
@@ -544,7 +546,7 @@ function MatchMembersRow({
             <span className="u__season__match__user__name">
               {member.discordName}
             </span>
-            {member.weaponSplId ? (
+            {typeof member.weaponSplId === "number" ? (
               <WeaponImage
                 weaponSplId={member.weaponSplId}
                 variant="badge"
