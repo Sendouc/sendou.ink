@@ -5,7 +5,7 @@ import type {
   V2_MetaFunction,
 } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import { useFetcher, useLoaderData, useRevalidator } from "@remix-run/react";
+import { useFetcher, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
 import { Flipper } from "react-flip-toolkit";
@@ -14,7 +14,6 @@ import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "~/hooks/useTranslation";
-import { useVisibilityChange } from "~/hooks/useVisibilityChange";
 import { getUser, requireUserId } from "~/modules/auth/user.server";
 import { MapPool } from "~/modules/map-pool-serializer";
 import {
@@ -68,6 +67,7 @@ import { userSkills } from "~/features/mmr/tiered.server";
 import { useWindowSize } from "~/hooks/useWindowSize";
 import { Tab, Tabs } from "~/components/Tabs";
 import { useAutoRefresh } from "~/hooks/useAutoRefresh";
+import { groupHasMatch } from "../queries/groupHasMatch.server";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -212,6 +212,12 @@ export const action: ActionFunction = async ({ request }) => {
       validate(
         theirGroup.members.length === FULL_GROUP_SIZE,
         "'theirGroup' is not full"
+      );
+
+      validate(!groupHasMatch(ourGroup.id), "Our group already has a match");
+      validate(
+        !groupHasMatch(theirGroup.id),
+        "Their group already has a match"
       );
 
       const createdMatch = createMatch({
