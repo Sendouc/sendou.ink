@@ -14,7 +14,7 @@ import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "~/hooks/useTranslation";
-import { getUser, requireUserId } from "~/modules/auth/user.server";
+import { getUserId, requireUserId } from "~/modules/auth/user.server";
 import { MapPool } from "~/modules/map-pool-serializer";
 import {
   parseRequestFormData,
@@ -31,6 +31,7 @@ import {
 import { GroupCard } from "../components/GroupCard";
 import { groupAfterMorph, hasGroupManagerPerms } from "../core/groups";
 import {
+  addReplayIndicator,
   addSkillsToGroups,
   censorGroups,
   divideGroups,
@@ -68,6 +69,7 @@ import { useWindowSize } from "~/hooks/useWindowSize";
 import { Tab, Tabs } from "~/components/Tabs";
 import { useAutoRefresh } from "~/hooks/useAutoRefresh";
 import { groupHasMatch } from "../queries/groupHasMatch.server";
+import { findRecentMatchPlayersByUserId } from "../queries/findRecentMatchPlayersByUserId.server";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -285,7 +287,7 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const user = await getUser(request);
+  const user = await getUserId(request);
 
   const currentGroup = user ? findCurrentGroupByUserId(user.id) : undefined;
   const redirectLocation = groupRedirectLocationByCurrentLocation({
@@ -323,8 +325,16 @@ export const loader = async ({ request }: LoaderArgs) => {
     ? filterOutGroupsWithIncompatibleMapListPreference(groupsWithSkills)
     : groupsWithSkills;
 
+  const groupsWithReplayIndicator = groupIsFull
+    ? addReplayIndicator({
+        groups: compatibleGroups,
+        recentMatchPlayers: findRecentMatchPlayersByUserId(user!.id),
+        userId: user!.id,
+      })
+    : compatibleGroups;
+
   const censoredGroups = censorGroups({
-    groups: compatibleGroups,
+    groups: groupsWithReplayIndicator,
     showMembers: !groupIsFull,
     showInviteCode: hasGroupManagerPerms(currentGroup.role) && !groupIsFull,
   });

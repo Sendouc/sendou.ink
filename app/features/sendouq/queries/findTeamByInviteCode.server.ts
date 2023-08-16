@@ -1,13 +1,17 @@
 import { sql } from "~/db/sql";
-import type { Group } from "~/db/types";
-import { parseDBArray } from "~/utils/sql";
+import type { Group, GroupMember } from "~/db/types";
+import { parseDBJsonArray } from "~/utils/sql";
 
 const stm = sql.prepare(/* sql */ `
   select
     "Group"."id",
     "Group"."status",
     json_group_array(
-      "User"."discordName"
+      json_object(
+        'id', "User"."id",
+        'discordName', "User"."discordName",
+        'role', "GroupMember"."role"
+      )
     ) as "members"
   from
     "Group"
@@ -19,15 +23,17 @@ const stm = sql.prepare(/* sql */ `
   group by "Group"."id"
 `);
 
-export function findTeamByInviteCode(
-  inviteCode: string
-): { id: number; status: Group["status"]; members: string[] } | null {
+export function findTeamByInviteCode(inviteCode: string): {
+  id: number;
+  status: Group["status"];
+  members: { id: number; discordName: string; role: GroupMember["role"] }[];
+} | null {
   const row = stm.get({ inviteCode }) as any;
   if (!row) return null;
 
   return {
     id: row.id,
     status: row.status,
-    members: parseDBArray(row.members),
+    members: parseDBJsonArray(row.members),
   };
 }

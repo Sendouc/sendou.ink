@@ -68,6 +68,9 @@ import {
   DEFAULT_SKILL_LOW,
   DEFAULT_SKILL_MID,
 } from "~/features/mmr/mmr-constants";
+import { giveTrust } from "~/features/tournament/queries/giveTrust.server";
+import type { GroupMember } from "~/db/types";
+import invariant from "tiny-invariant";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -120,6 +123,7 @@ export const action: ActionFunction = async ({ request }) => {
         data.direct === "true" ? SENDOUQ_LOOKING_PAGE : SENDOUQ_PREPARING_PAGE
       );
     }
+    case "JOIN_TEAM_WITH_TRUST":
     case "JOIN_TEAM": {
       const code = new URL(request.url).searchParams.get(
         JOIN_CODE_SEARCH_PARAM_KEY
@@ -134,6 +138,15 @@ export const action: ActionFunction = async ({ request }) => {
         groupId: teamInvitedTo.id,
         userId: user.id,
       });
+      if (data._action === "JOIN_TEAM_WITH_TRUST") {
+        const owner = teamInvitedTo.members.find((m) => m.role === "OWNER");
+        invariant(owner, "Owner not found");
+
+        giveTrust({
+          trustGiverUserId: user.id,
+          trustReceiverUserId: owner.id,
+        });
+      }
 
       return redirect(
         teamInvitedTo.status === "PREPARING"
@@ -372,9 +385,15 @@ function JoinTeamDialog({
 }: {
   open: boolean;
   close: () => void;
-  members: string[];
+  members: {
+    discordName: string;
+    role: GroupMember["role"];
+  }[];
 }) {
   const fetcher = useFetcher();
+
+  const owner = members.find((m) => m.role === "OWNER");
+  invariant(owner, "Owner not found");
 
   return (
     <Dialog
@@ -383,17 +402,29 @@ function JoinTeamDialog({
       closeOnAnyClick={false}
       className="text-center"
     >
-      Join group with {joinListToNaturalString(members)}?
+      Join the group with{" "}
+      {joinListToNaturalString(members.map((m) => m.discordName))}?
       <fetcher.Form
-        className="stack horizontal justify-center sm mt-4"
+        className="stack horizontal justify-center sm mt-4 flex-wrap"
         method="post"
       >
         <SubmitButton _action="JOIN_TEAM" state={fetcher.state}>
           Join
         </SubmitButton>
+        <SubmitButton
+          _action="JOIN_TEAM_WITH_TRUST"
+          state={fetcher.state}
+          variant="outlined"
+        >
+          Join & trust {owner.discordName}
+        </SubmitButton>
         <Button onClick={close} variant="destructive">
           No thanks
         </Button>
+        <FormMessage type="info">
+          Trusting a user allows them to add you to groups without an invite
+          link in the future
+        </FormMessage>
       </fetcher.Form>
     </Dialog>
   );

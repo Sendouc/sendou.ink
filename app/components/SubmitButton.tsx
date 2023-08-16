@@ -32,24 +32,16 @@ export function SubmitButton({
     return undefined;
   };
 
-  // render action as hidden input to deal with a bug in older Safari versions
-  const isActionValue = name() === "_action";
-
   return (
-    <>
-      {isActionValue ? (
-        <input type="hidden" name="_action" value={_action} />
-      ) : null}
-      <Button
-        {...rest}
-        disabled={rest.disabled || isSubmitting}
-        type="submit"
-        name={!isActionValue ? name() : undefined}
-        value={!isActionValue ? value() : undefined}
-        data-testid={testId ?? "submit-button"}
-      >
-        {children}
-      </Button>
-    </>
+    <Button
+      {...rest}
+      disabled={rest.disabled || isSubmitting}
+      type="submit"
+      name={name()}
+      value={value()}
+      data-testid={testId ?? "submit-button"}
+    >
+      {children}
+    </Button>
   );
 }

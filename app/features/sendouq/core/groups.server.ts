@@ -12,6 +12,7 @@ import type {
   SkillTierInterval,
   TieredSkill,
 } from "~/features/mmr/tiered.server";
+import type { RecentMatchPlayer } from "../queries/findRecentMatchPlayersByUserId.server";
 
 export function divideGroups({
   groups,
@@ -94,6 +95,48 @@ export function filterOutGroupsWithIncompatibleMapListPreference(
 
       return group.mapListPreference === groups.own.mapListPreference;
     }),
+  };
+}
+
+const MIN_PLAYERS_FOR_REPLAY = 3;
+export function addReplayIndicator({
+  groups,
+  recentMatchPlayers,
+  userId,
+}: {
+  groups: DividedGroupsUncensored;
+  recentMatchPlayers: RecentMatchPlayer[];
+  userId: number;
+}): DividedGroupsUncensored {
+  if (!recentMatchPlayers.length) return groups;
+
+  const ownGroupId = recentMatchPlayers.find(
+    (u) => u.userId === userId
+  )?.groupId;
+  invariant(ownGroupId, "own group not found");
+  const otherGroupId = recentMatchPlayers.find(
+    (u) => u.groupId !== ownGroupId
+  )?.groupId;
+  invariant(otherGroupId, "other group not found");
+
+  const opponentPlayers = recentMatchPlayers
+    .filter((u) => u.groupId === otherGroupId)
+    .map((p) => p.userId);
+
+  const addReplayIndicatorIfNeeded = (group: LookingGroupWithInviteCode) => {
+    const samePlayersCount = group.members.reduce(
+      (acc, cur) => (opponentPlayers.includes(cur.id) ? acc + 1 : acc),
+      0
+    );
+
+    return { ...group, isReplay: samePlayersCount >= MIN_PLAYERS_FOR_REPLAY };
+  };
+
+  return {
+    own: groups.own,
+    likesGiven: groups.likesGiven.map(addReplayIndicatorIfNeeded),
+    likesReceived: groups.likesReceived.map(addReplayIndicatorIfNeeded),
+    neutral: groups.neutral.map(addReplayIndicatorIfNeeded),
   };
 }
 

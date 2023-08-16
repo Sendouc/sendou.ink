@@ -6,6 +6,7 @@ export type LookingGroup = {
   id: number;
   mapListPreference?: Group["mapListPreference"];
   tier?: TieredSkill["tier"];
+  isReplay?: boolean;
   members?: {
     id: number;
     discordId: string;

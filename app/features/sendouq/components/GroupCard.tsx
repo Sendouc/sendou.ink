@@ -115,8 +115,15 @@ export function GroupCard({
         {group.tier ? (
           <div className="stack xs text-lighter font-bold items-center justify-center text-xs">
             <TierImage tier={group.tier} width={100} />
-            {group.tier.name}
-            {group.tier.isPlus ? "+" : ""}
+            <div>
+              {group.tier.name}
+              {group.tier.isPlus ? "+" : ""}{" "}
+              {group.isReplay ? (
+                <>
+                  / <span className="text-theme-secondary">REPLAY</span>
+                </>
+              ) : null}
+            </div>
           </div>
         ) : null}
         {action && (ownRole === "OWNER" || ownRole === "MANAGER") ? (
