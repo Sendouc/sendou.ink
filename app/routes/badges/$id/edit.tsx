@@ -18,16 +18,22 @@ import { parseRequestFormData, validate } from "~/utils/remix";
 import { discordFullName } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
 import { badgePage } from "~/utils/urls";
-import { actualNumber, id, noDuplicates, safeJSONParse } from "~/utils/zod";
+import {
+  _action,
+  actualNumber,
+  id,
+  noDuplicates,
+  safeJSONParse,
+} from "~/utils/zod";
 import type { BadgeDetailsContext, BadgeDetailsLoaderData } from "../$id";
 
 const editBadgeActionSchema = z.union([
   z.object({
-    _action: z.literal("MANAGERS"),
+    _action: _action("MANAGERS"),
     managerIds: z.preprocess(safeJSONParse, z.array(id).refine(noDuplicates)),
   }),
   z.object({
-    _action: z.literal("OWNERS"),
+    _action: _action("OWNERS"),
     ownerIds: z.preprocess(safeJSONParse, z.array(id)),
   }),
 ]);

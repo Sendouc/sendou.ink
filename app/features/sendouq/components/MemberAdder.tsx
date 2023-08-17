@@ -24,9 +24,10 @@ export function MemberAdder({
   const inviteLink = `${SENDOU_INK_BASE_URL}${sendouQInviteLink(inviteCode)}`;
   const [, copyToClipboard] = useCopyToClipboard();
 
+  const trustedPlayerIdsJoined = trustedPlayers.map((p) => p.id).join(",");
   React.useEffect(() => {
     setTrustedUser(undefined);
-  }, [trustedPlayers]);
+  }, [trustedPlayerIdsJoined]);
 
   return (
     <div className="stack horizontal lg flex-wrap justify-center">

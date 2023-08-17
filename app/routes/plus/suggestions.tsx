@@ -28,7 +28,7 @@ import {
 } from "~/permissions";
 import { parseRequestFormData, validate } from "~/utils/remix";
 import { makeTitle, discordFullName } from "~/utils/strings";
-import { actualNumber } from "~/utils/zod";
+import { _action, actualNumber } from "~/utils/zod";
 import { userPage } from "~/utils/urls";
 import { RelativeTime } from "~/components/RelativeTime";
 import { databaseTimestampToDate } from "~/utils/dates";
@@ -48,11 +48,11 @@ export const meta: V2_MetaFunction = () => {
 
 const suggestionActionSchema = z.union([
   z.object({
-    _action: z.literal("DELETE_COMMENT"),
+    _action: _action("DELETE_COMMENT"),
     suggestionId: z.preprocess(actualNumber, z.number()),
   }),
   z.object({
-    _action: z.literal("DELETE_SUGGESTION_OF_THEMSELVES"),
+    _action: _action("DELETE_SUGGESTION_OF_THEMSELVES"),
     tier: z.preprocess(
       actualNumber,
       z

@@ -13,7 +13,8 @@ const stm = sql.prepare(/* sql */ `
       "GroupMatch"."id",
       "GroupMatch"."alphaGroupId",
       "GroupMatch"."bravoGroupId",
-      "GroupMatch"."createdAt"
+      "GroupMatch"."createdAt",
+      (select exists (select 1 from "Skill" where "Skill"."groupMatchId" = "GroupMatch"."id")) as "isLocked"
     from "GroupMatch"
     left join "Group" on 
       "GroupMatch"."alphaGroupId" = "Group"."id" or 
@@ -98,6 +99,7 @@ interface SeasonMatchByUserId {
   bravoGroupId: GroupMatch["bravoGroupId"];
   winnerGroupIds: Array<GroupMatchMap["winnerGroupId"]>;
   createdAt: GroupMatch["createdAt"];
+  isLocked: number;
   groupAlphaMembers: Array<{
     id: User["id"];
     discordName: User["discordName"];

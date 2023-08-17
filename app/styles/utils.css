@@ -126,6 +126,10 @@
   width: var(--s-24);
 }
 
+.w-24px {
+  width: 24px;
+}
+
 .w-max {
   width: max-content;
 }

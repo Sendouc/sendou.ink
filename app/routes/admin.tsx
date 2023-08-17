@@ -29,7 +29,7 @@ import {
 import { makeTitle } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
 import { impersonateUrl, SEED_URL, STOP_IMPERSONATING_URL } from "~/utils/urls";
-import { actualNumber } from "~/utils/zod";
+import { _action, actualNumber } from "~/utils/zod";
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: makeTitle("Admin page") }];
@@ -37,29 +37,29 @@ export const meta: V2_MetaFunction = () => {
 
 const adminActionSchema = z.union([
   z.object({
-    _action: z.literal("MIGRATE"),
+    _action: _action("MIGRATE"),
     "old-user[value]": z.preprocess(actualNumber, z.number().positive()),
     "new-user[value]": z.preprocess(actualNumber, z.number().positive()),
   }),
   z.object({
-    _action: z.literal("REFRESH"),
+    _action: _action("REFRESH"),
   }),
   z.object({
-    _action: z.literal("FORCE_PATRON"),
+    _action: _action("FORCE_PATRON"),
     "user[value]": z.preprocess(actualNumber, z.number().positive()),
     patronTier: z.preprocess(actualNumber, z.number()),
     patronTill: z.string(),
   }),
   z.object({
-    _action: z.literal("VIDEO_ADDER"),
+    _action: _action("VIDEO_ADDER"),
     "user[value]": z.preprocess(actualNumber, z.number().positive()),
   }),
   z.object({
-    _action: z.literal("ARTIST"),
+    _action: _action("ARTIST"),
     "user[value]": z.preprocess(actualNumber, z.number().positive()),
   }),
   z.object({
-    _action: z.literal("LINK_PLAYER"),
+    _action: _action("LINK_PLAYER"),
     "user[value]": z.preprocess(actualNumber, z.number().positive()),
     playerId: z.preprocess(actualNumber, z.number().positive()),
   }),

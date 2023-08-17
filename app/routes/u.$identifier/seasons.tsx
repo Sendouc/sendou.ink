@@ -40,6 +40,7 @@ import { stageIds } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { seasonsMatesEnemiesByUserId } from "~/features/sendouq/queries/seasonsMatesEnemiesByUserId.server";
 import Chart from "~/components/Chart";
+import { AlertIcon } from "~/components/icons/Alert";
 
 export const seasonsSearchParamsSchema = z.object({
   page: z.coerce.number().default(1),
@@ -203,7 +204,8 @@ function Rank() {
 
   const maxOrdinal = Math.max(...data.skills.map((s) => s.ordinal));
 
-  const peakAndCurrentSame = data.skills[0].ordinal === maxOrdinal;
+  const peakAndCurrentSame =
+    data.skills[data.skills.length - 1].ordinal === maxOrdinal;
 
   return (
     <div className="stack horizontal items-center justify-center sm">
@@ -524,6 +526,12 @@ function Match({
   return (
     <Link to={sendouQMatchPage(match.id)} className="u__season__match">
       {rows}
+      {!match.isLocked ? (
+        <div className="stack horizontal sm text-xs text-lighter items-center justify-center">
+          <AlertIcon className="text-warning w-24px" />
+          This match has not been processed yet
+        </div>
+      ) : null}
     </Link>
   );
 }

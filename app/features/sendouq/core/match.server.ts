@@ -56,6 +56,11 @@ const typeScore = {
 function mapListType(
   preferences: [Group["mapListPreference"], Group["mapListPreference"]]
 ) {
+  // if neither team has changed the default preference, default to all modes
+  if (preferences.every((p) => p === "NO_PREFERENCE")) {
+    return "ALL_MODES";
+  }
+
   const score = typeScore[preferences[0]] + typeScore[preferences[1]];
 
   if (score < 0) return "ALL_MODES";

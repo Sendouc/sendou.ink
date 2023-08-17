@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { id, safeJSONParse } from "~/utils/zod";
+import { _action, id, safeJSONParse } from "~/utils/zod";
 import { TOURNAMENT } from "../tournament/tournament-constants";
 
 const reportedMatchPlayerIds = z.preprocess(
@@ -18,25 +18,25 @@ const reportedMatchPosition = z.preprocess(
 
 export const matchSchema = z.union([
   z.object({
-    _action: z.literal("REPORT_SCORE"),
+    _action: _action("REPORT_SCORE"),
     winnerTeamId: id,
     position: reportedMatchPosition,
     playerIds: reportedMatchPlayerIds,
   }),
   z.object({
-    _action: z.literal("UNDO_REPORT_SCORE"),
+    _action: _action("UNDO_REPORT_SCORE"),
     position: reportedMatchPosition,
   }),
   z.object({
-    _action: z.literal("REOPEN_MATCH"),
+    _action: _action("REOPEN_MATCH"),
   }),
 ]);
 
 export const bracketSchema = z.union([
   z.object({
-    _action: z.literal("START_TOURNAMENT"),
+    _action: _action("START_TOURNAMENT"),
   }),
   z.object({
-    _action: z.literal("FINALIZE_TOURNAMENT"),
+    _action: _action("FINALIZE_TOURNAMENT"),
   }),
 ]);

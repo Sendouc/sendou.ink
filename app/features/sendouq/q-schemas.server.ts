@@ -5,6 +5,7 @@ import {
   SENDOUQ_BEST_OF,
 } from "./q-constants";
 import {
+  _action,
   checkboxValueToBoolean,
   id,
   safeJSONParse,
@@ -14,63 +15,63 @@ import { matchEndedAtIndex } from "./core/match";
 
 export const frontPageSchema = z.union([
   z.object({
-    _action: z.literal("JOIN_QUEUE"),
+    _action: _action("JOIN_QUEUE"),
     mapListPreference: z.enum(MAP_LIST_PREFERENCE_OPTIONS),
     mapPool: z.string(),
     direct: z.literal("true").nullish(),
   }),
   z.object({
-    _action: z.literal("JOIN_TEAM"),
+    _action: _action("JOIN_TEAM"),
   }),
   z.object({
-    _action: z.literal("JOIN_TEAM_WITH_TRUST"),
+    _action: _action("JOIN_TEAM_WITH_TRUST"),
   }),
   z.object({
-    _action: z.literal("SET_INITIAL_SP"),
+    _action: _action("SET_INITIAL_SP"),
     tier: z.enum(["higher", "default", "lower"]),
   }),
 ]);
 
 export const preparingSchema = z.union([
   z.object({
-    _action: z.literal("JOIN_QUEUE"),
+    _action: _action("JOIN_QUEUE"),
   }),
   z.object({
-    _action: z.literal("ADD_TRUSTED"),
+    _action: _action("ADD_TRUSTED"),
     id,
   }),
 ]);
 
 export const lookingSchema = z.union([
   z.object({
-    _action: z.literal("LIKE"),
+    _action: _action("LIKE"),
     targetGroupId: id,
   }),
   z.object({
-    _action: z.literal("UNLIKE"),
+    _action: _action("UNLIKE"),
     targetGroupId: id,
   }),
   z.object({
-    _action: z.literal("GROUP_UP"),
+    _action: _action("GROUP_UP"),
     targetGroupId: id,
   }),
   z.object({
-    _action: z.literal("MATCH_UP"),
+    _action: _action("MATCH_UP"),
     targetGroupId: id,
   }),
   z.object({
-    _action: z.literal("GIVE_MANAGER"),
+    _action: _action("GIVE_MANAGER"),
     userId: id,
   }),
   z.object({
-    _action: z.literal("REMOVE_MANAGER"),
+    _action: _action("REMOVE_MANAGER"),
     userId: id,
   }),
   z.object({
-    _action: z.literal("LEAVE_GROUP"),
+    _action: _action("LEAVE_GROUP"),
   }),
   z.object({
-    _action: z.literal("REFRESH_GROUP"),
+    _action: _action("REFRESH_GROUP"),
   }),
 ]);
 
@@ -92,7 +93,7 @@ const winners = z.preprocess(
 );
 export const matchSchema = z.union([
   z.object({
-    _action: z.literal("REPORT_SCORE"),
+    _action: _action("REPORT_SCORE"),
     winners,
     adminReport: z.preprocess(
       checkboxValueToBoolean,
@@ -100,14 +101,14 @@ export const matchSchema = z.union([
     ),
   }),
   z.object({
-    _action: z.literal("CANCEL_MATCH"),
+    _action: _action("CANCEL_MATCH"),
   }),
   z.object({
-    _action: z.literal("LOOK_AGAIN"),
+    _action: _action("LOOK_AGAIN"),
     previousGroupId: id,
   }),
   z.object({
-    _action: z.literal("REPORT_WEAPONS"),
+    _action: _action("REPORT_WEAPONS"),
     weapons: z.preprocess(
       safeJSONParse,
       z.array(z.array(weaponSplId).length(FULL_GROUP_SIZE * 2))
