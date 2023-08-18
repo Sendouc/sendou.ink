@@ -105,6 +105,8 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   invariant(process.env["BASE_URL"], "BASE_URL env var is not set");
 
+  if (user?.banned) throw new Response(null, { status: 403 });
+
   return json<RootLoaderData>(
     {
       locale,

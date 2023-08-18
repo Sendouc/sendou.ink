@@ -19,7 +19,7 @@ import { findVods } from "~/features/vods";
 import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
 import { getUserId } from "~/modules/auth/user.server";
-import { canAddCustomizedColorsToUserProfile } from "~/permissions";
+import { canAddCustomizedColorsToUserProfile, isAdmin } from "~/permissions";
 import styles from "~/styles/u.css";
 import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
 import { discordFullName, makeTitle } from "~/utils/strings";
@@ -103,6 +103,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     weapons: user.weapons,
     team: user.team,
     country: user.country,
+    banned: isAdmin(loggedInUser) ? user.banned : undefined,
     css: canAddCustomizedColorsToUserProfile(user) ? user.css : undefined,
     badges: db.badges.findByOwnerId(user.id),
     // TODO: could load only on results page
@@ -167,6 +168,7 @@ export default function UserPageLayout() {
           </SubNavLink>
         )}
       </SubNav>
+      {data.banned ? <div className="text-warning">Banned</div> : null}
       <Outlet />
     </Main>
   );

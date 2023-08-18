@@ -37,6 +37,7 @@ export interface User {
   favoriteBadgeId: number | null;
   commissionsOpen: number;
   commissionText: string | null;
+  banned: number;
 }
 
 /** User table after joined with PlusTier table */
