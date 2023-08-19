@@ -156,7 +156,7 @@ export default function UserSeasonsPage() {
             controlled
             active={data.info.currentTab === "enemies"}
           >
-            Enemies
+            Opponents
           </SubNavLink>
         </SubNav>
         <div className="u__season__info-container">
