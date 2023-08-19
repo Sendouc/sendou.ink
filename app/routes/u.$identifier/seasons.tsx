@@ -275,6 +275,11 @@ function Weapons({
 
   return (
     <div className="stack sm horizontal justify-center flex-wrap">
+      {weapons.length === 0 ? (
+        <div className="text-lighter font-bold my-4">
+          No reported weapons yet
+        </div>
+      ) : null}
       {slicedWeapons.map(({ count, weaponSplId }) => (
         <WeaponCircle
           key={weaponSplId}
