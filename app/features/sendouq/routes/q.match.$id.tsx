@@ -580,8 +580,9 @@ function AfterMatchActions({
           <Button
             icon={<ArchiveBoxIcon />}
             onClick={() => setShowWeaponsForm(!showWeaponsForm)}
+            variant={showWeaponsForm ? "destructive" : undefined}
           >
-            Report used weapons
+            {showWeaponsForm ? "Stop reporting weapons" : "Report used weapons"}
           </Button>
         ) : null}
       </lookAgainFetcher.Form>
