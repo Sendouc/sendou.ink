@@ -14,7 +14,10 @@ import {
 } from "~/components/Image";
 import { db } from "~/db";
 import { ordinalToSp } from "~/features/mmr";
-import { seasonAllMMRByUserId } from "~/features/mmr/queries/seasonAllMMRByUserId.server";
+import {
+  currentMMRByUserId,
+  seasonAllMMRByUserId,
+} from "~/features/mmr/queries/seasonAllMMRByUserId.server";
 import { currentSeason, seasonObject } from "~/features/mmr/season";
 import { userSkills } from "~/features/mmr/tiered.server";
 import { useIsMounted } from "~/hooks/useIsMounted";
@@ -68,6 +71,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   };
 
   return {
+    currentOrdinal: currentMMRByUserId({ season: 0, userId: user.id }),
     skills: seasonAllMMRByUserId({ season: 0, userId: user.id }),
     tier,
     matches: {
@@ -114,9 +118,9 @@ export default function UserSeasonsPage() {
   return (
     <div className="stack lg half-width">
       <SeasonHeader />
-      {data.skills.length > 0 ? (
+      {data.currentOrdinal ? (
         <div className="stack md">
-          <Rank />
+          <Rank currentOrdinal={data.currentOrdinal} />
           {data.skills.length >= 3 ? <PowerChart /> : null}
         </div>
       ) : null}
@@ -199,13 +203,12 @@ function SeasonHeader() {
   );
 }
 
-function Rank() {
+function Rank({ currentOrdinal }: { currentOrdinal: number }) {
   const data = useLoaderData<typeof loader>();
 
   const maxOrdinal = Math.max(...data.skills.map((s) => s.ordinal));
 
-  const peakAndCurrentSame =
-    data.skills[data.skills.length - 1].ordinal === maxOrdinal;
+  const peakAndCurrentSame = currentOrdinal === maxOrdinal;
 
   return (
     <div className="stack horizontal items-center justify-center sm">
@@ -215,9 +218,7 @@ function Rank() {
           {data.tier.name}
           {data.tier.isPlus ? "+" : ""}
         </div>
-        <div className="text-lg font-bold">
-          {ordinalToSp(data.skills[data.skills.length - 1].ordinal)}SP
-        </div>
+        <div className="text-lg font-bold">{ordinalToSp(currentOrdinal)}SP</div>
         {!peakAndCurrentSame ? (
           <div className="text-lighter text-sm">
             Peak {ordinalToSp(maxOrdinal)}SP
