@@ -386,3 +386,11 @@
   padding: var(--s-2-5) var(--s-2);
   border-radius: var(--rounded);
 }
+
+.u__season__winrate {
+  background-color: var(--bg-lighter);
+  padding: var(--s-0-5) var(--s-2);
+  border-radius: var(--rounded);
+  font-size: var(--fonts-xs);
+  font-weight: var(--semi-bold);
+}

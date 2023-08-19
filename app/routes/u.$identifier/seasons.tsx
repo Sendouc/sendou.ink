@@ -44,6 +44,8 @@ import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { seasonsMatesEnemiesByUserId } from "~/features/sendouq/queries/seasonsMatesEnemiesByUserId.server";
 import Chart from "~/components/Chart";
 import { AlertIcon } from "~/components/icons/Alert";
+import { seasonMapWinrateByUserId } from "~/features/sendouq/queries/seasonMapWinrateByUserId.server";
+import { seasonSetWinrateByUserId } from "~/features/sendouq/queries/seasonSetWinrateByUserId.server";
 
 export const seasonsSearchParamsSchema = z.object({
   page: z.coerce.number().default(1),
@@ -72,6 +74,10 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 
   return {
     currentOrdinal: currentMMRByUserId({ season: 0, userId: user.id }),
+    winrates: {
+      maps: seasonMapWinrateByUserId({ season: 0, userId: user.id }),
+      sets: seasonSetWinrateByUserId({ season: 0, userId: user.id }),
+    },
     skills: seasonAllMMRByUserId({ season: 0, userId: user.id }),
     tier,
     matches: {
@@ -121,6 +127,9 @@ export default function UserSeasonsPage() {
       {data.currentOrdinal ? (
         <div className="stack md">
           <Rank currentOrdinal={data.currentOrdinal} />
+          {data.winrates.maps.wins + data.winrates.maps.losses > 0 ? (
+            <Winrates />
+          ) : null}
           {data.skills.length >= 3 ? <PowerChart /> : null}
         </div>
       ) : null}
@@ -198,6 +207,28 @@ function SeasonHeader() {
         ) : (
           "0"
         )}
+      </div>
+    </div>
+  );
+}
+
+function Winrates() {
+  const data = useLoaderData<typeof loader>();
+
+  const winrate = (wins: number, losses: number) =>
+    Math.round((wins / (wins + losses)) * 100);
+
+  return (
+    <div className="stack horizontal sm">
+      <div className="u__season__winrate">
+        <span className="text-theme text-xxs">Sets</span>{" "}
+        {data.winrates.sets.wins}W {data.winrates.sets.losses}L (
+        {winrate(data.winrates.sets.wins, data.winrates.sets.losses)}%)
+      </div>
+      <div className="u__season__winrate">
+        <span className="text-theme text-xxs">Maps</span>{" "}
+        {data.winrates.maps.wins}W {data.winrates.maps.losses}L (
+        {winrate(data.winrates.maps.wins, data.winrates.maps.losses)}%)
       </div>
     </div>
   );
