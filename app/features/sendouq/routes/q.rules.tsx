@@ -20,8 +20,8 @@ export default function SendouqRules() {
             at the time of the DC)
           </li>
           <li>
-            The team without DC&apos;s objective counter was at 30 or lower at
-            the time of the disconnect
+            The team without DC&apos;s objective counter had reached 30 at the
+            time of the disconnect
           </li>
           <li>Team with the disconnection stopped playing without delay</li>
           <li>Disconnection was unintentional</li>
@@ -32,12 +32,21 @@ export default function SendouqRules() {
         for the set (or even if there were no replays left to use from either
         team). Host disconnection can be replayed with the same conditions as
         above.
+        <br />
+        <br /> After the DC replay has been used by the team, further DC&apos;s
+        should be played out.
       </div>
 
       <h2 className="text-lg mt-4">Subs</h2>
       <div>
         There are no subs. If a player is unavailable to play from either team
         then the set must be played with 3 players or forfeited.
+      </div>
+
+      <h2 className="text-lg mt-4">Canceling match</h2>
+      <div>
+        Match can be canceled if both group owners agree. If the groups
+        don&apos;t agree then the match should be played out.
       </div>
 
       <h2 className="text-lg mt-4">Alting</h2>
@@ -70,6 +79,13 @@ export default function SendouqRules() {
         Players are not allowed to intentionally lose a match. This includes
         (but is not limited to) tanking your own rank on purpose or boosting
         another player&apos;s/team&apos;s ranking.
+      </div>
+
+      <h2 className="text-lg mt-4">Unsportsmanlike conduct</h2>
+      <div>
+        It&apos;s not allowed to spawncamp the enemy without pushing the
+        objective provided it can&apos;t be considered a viable strategy taking
+        in account the game situation.
       </div>
 
       <h2 className="text-lg mt-4">Discriminatory language</h2>
