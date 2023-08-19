@@ -142,9 +142,13 @@
   gap: var(--s-4);
 }
 
-.q-match__weapon-grid-item {
-  width: 32px;
-  height: 32px;
+.q-match__report__user-name-container {
+  display: flex;
+  gap: var(--s-2);
+  width: 175px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 @media screen and (min-width: 480px) {

@@ -78,6 +78,7 @@ import { addPlayerResults } from "../queries/addPlayerResults.server";
 import { resolveRoomPass } from "~/features/tournament-bracket/tournament-bracket-utils";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { addDummySkill } from "../queries/addDummySkill.server";
+import { inGameNameWithoutDiscriminator } from "~/utils/strings";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -593,7 +594,7 @@ function AfterMatchActions({
             name="weapons"
             value={JSON.stringify(weaponsUsage)}
           />
-          <div className="stack md w-max mx-auto">
+          <div className="stack md mx-auto">
             {playedMaps.map((map, i) => {
               return (
                 <div key={map.stageId} className="stack md">
@@ -623,9 +624,9 @@ function AfterMatchActions({
                     {[
                       ...data.groupAlpha.members,
                       ...data.groupBravo.members,
-                    ].map((m, j) => {
+                    ].map((member, j) => {
                       return (
-                        <React.Fragment key={m.id}>
+                        <React.Fragment key={member.id}>
                           {j === 0 ? (
                             <Divider className="text-sm">Alpha</Divider>
                           ) : null}
@@ -633,28 +634,50 @@ function AfterMatchActions({
                             <Divider className="text-sm">Bravo</Divider>
                           ) : null}
                           <div
-                            key={m.id}
-                            className="stack horizontal sm justify-between items-center"
+                            key={member.id}
+                            className="stack horizontal sm justify-between items-center flex-wrap"
                           >
-                            <div className="stack sm horizontal">
-                              <Avatar user={m} size="xxs" /> {m.discordName}
+                            <div className="q-match__report__user-name-container">
+                              <Avatar user={member} size="xxs" />{" "}
+                              {member.inGameName ? (
+                                <>
+                                  <span className="text-lighter font-semi-bold">
+                                    IGN:
+                                  </span>{" "}
+                                  {inGameNameWithoutDiscriminator(
+                                    member.inGameName
+                                  )}
+                                </>
+                              ) : (
+                                member.discordName
+                              )}
                             </div>
-                            <WeaponCombobox
-                              inputName="weapon"
-                              value={weaponsUsage[i][j]}
-                              onChange={(weapon) => {
-                                if (!weapon) return;
+                            <div className="stack horizontal sm items-center">
+                              <WeaponImage
+                                weaponSplId={weaponsUsage[i][j] ?? 0}
+                                variant="badge"
+                                width={32}
+                                className={clsx("ml-auto", {
+                                  invisible: !weaponsUsage[i][j],
+                                })}
+                              />
+                              <WeaponCombobox
+                                inputName="weapon"
+                                value={weaponsUsage[i][j]}
+                                onChange={(weapon) => {
+                                  if (!weapon) return;
 
-                                setWeaponsUsage((val) => {
-                                  const newVal = [...val];
-                                  newVal[i] = [...newVal[i]];
-                                  newVal[i][j] = Number(
-                                    weapon.value
-                                  ) as MainWeaponId;
-                                  return newVal;
-                                });
-                              }}
-                            />
+                                  setWeaponsUsage((val) => {
+                                    const newVal = [...val];
+                                    newVal[i] = [...newVal[i]];
+                                    newVal[i][j] = Number(
+                                      weapon.value
+                                    ) as MainWeaponId;
+                                    return newVal;
+                                  });
+                                }}
+                              />
+                            </div>
                           </div>
                         </React.Fragment>
                       );
@@ -675,7 +698,7 @@ function AfterMatchActions({
                   <div className="stack sm horizontal justify-center items-center">
                     {match.map((weapon, j) => {
                       return (
-                        <>
+                        <React.Fragment key={j}>
                           {typeof weapon === "number" ? (
                             <WeaponImage
                               key={j}
@@ -692,7 +715,7 @@ function AfterMatchActions({
                             </span>
                           )}
                           {j === 3 ? <div className="w-4" /> : null}
-                        </>
+                        </React.Fragment>
                       );
                     })}
                   </div>
@@ -755,7 +778,7 @@ function MatchGroup({
                 {member.inGameName ? (
                   <>
                     <span className="text-lighter font-semi-bold">IGN:</span>{" "}
-                    {member.inGameName}
+                    {inGameNameWithoutDiscriminator(member.inGameName)}
                   </>
                 ) : (
                   member.discordName
