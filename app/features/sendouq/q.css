@@ -121,6 +121,7 @@
   padding-inline-start: var(--s-4);
   font-size: var(--fonts-sm);
   color: var(--text-lighter);
+  margin-block-start: var(--s-1);
 }
 
 .q-match__members-container {

@@ -85,6 +85,14 @@ export function compareMatchToReportedScores({
 
   const sameGroupReporting = newReporterGroupId === previousReporterGroupId;
   const differentConstant = sameGroupReporting ? "FIX_PREVIOUS" : "DIFFERENT";
+
+  if (
+    previousReporterGroupId &&
+    match.mapList.filter((m) => m.winnerGroupId).length !== winners.length
+  ) {
+    return differentConstant;
+  }
+
   for (const [
     i,
     { winnerGroupId: previousWinnerGroupId },

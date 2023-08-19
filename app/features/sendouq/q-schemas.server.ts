@@ -80,9 +80,10 @@ const winners = z.preprocess(
   safeJSONParse,
   z
     .array(z.enum(["ALPHA", "BRAVO"]))
-    .min(Math.ceil(SENDOUQ_BEST_OF / 2))
     .max(SENDOUQ_BEST_OF)
     .refine((val) => {
+      if (val.length === 0) return true;
+
       const matchEndedAt = matchEndedAtIndex(val);
 
       // match did end
@@ -100,9 +101,6 @@ export const matchSchema = z.union([
       checkboxValueToBoolean,
       z.boolean().nullish().default(false)
     ),
-  }),
-  z.object({
-    _action: _action("CANCEL_MATCH"),
   }),
   z.object({
     _action: _action("LOOK_AGAIN"),

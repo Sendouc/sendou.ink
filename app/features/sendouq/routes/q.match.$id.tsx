@@ -151,18 +151,27 @@ export const action = async ({ request, params }: ActionArgs) => {
       if (compared === "DUPLICATE") {
         return null;
       }
+
+      const matchIsBeingCanceled = data.winners.length === 0;
       if (compared === "DIFFERENT") {
-        return { error: "different" as const };
+        return {
+          error: matchIsBeingCanceled
+            ? ("cant-cancel" as const)
+            : ("different" as const),
+        };
       }
 
       const newSkills =
-        compared === "SAME"
+        compared === "SAME" && !matchIsBeingCanceled
           ? calculateMatchSkills({
               groupMatchId: match.id,
               winner: groupForMatch(winnerTeamId)!.members.map((m) => m.id),
               loser: groupForMatch(loserTeamId)!.members.map((m) => m.id),
             })
           : null;
+
+      const shouldLockMatchWithoutChangingRecords =
+        compared === "SAME" && matchIsBeingCanceled;
 
       sql.transaction(() => {
         reportScore({
@@ -183,6 +192,9 @@ export const action = async ({ request, params }: ActionArgs) => {
           addSkills(newSkills);
           cache.delete(USER_SKILLS_CACHE_KEY);
         }
+        if (shouldLockMatchWithoutChangingRecords) {
+          addDummySkill(match.id);
+        }
         // fix edge case where they 1) report score 2) report weapons 3) report score again, but with different amount of maps played
         if (compared === "FIX_PREVIOUS") {
           deleteReporterWeaponsByMatchId(matchId);
@@ -192,28 +204,6 @@ export const action = async ({ request, params }: ActionArgs) => {
           setGroupAsInactive(match.alphaGroupId);
           setGroupAsInactive(match.bravoGroupId);
         }
-      })();
-
-      break;
-    }
-    case "CANCEL_MATCH": {
-      const match = notFoundIfFalsy(findMatchById(matchId));
-      validate(
-        !match.isLocked,
-        "Match has already been reported by both teams"
-      );
-      validate(isAdmin(user), "Only admin can cancel the match");
-
-      sql.transaction(() => {
-        reportScore({
-          matchId,
-          reportedByUserId: user.id,
-          winners: [],
-        });
-        deleteReporterWeaponsByMatchId(matchId);
-        setGroupAsInactive(match.alphaGroupId);
-        setGroupAsInactive(match.bravoGroupId);
-        addDummySkill(match.id);
       })();
 
       break;
@@ -310,6 +300,7 @@ export default function QMatchPage() {
   const data = useLoaderData<typeof loader>();
   const [showWeaponsForm, setShowWeaponsForm] = React.useState(false);
   const submitScoreFetcher = useFetcher<typeof action>();
+  const cancelScoreFetcher = useFetcher<typeof action>();
 
   React.useEffect(() => {
     setShowWeaponsForm(false);
@@ -396,10 +387,34 @@ export default function QMatchPage() {
           </div>
           {!data.match.isLocked && ownMember ? (
             <div>
-              <div className="stack items-end">
-                <Link to={SENDOUQ_RULES_PAGE} className="text-xs font-bold">
+              <div className="stack horizontal justify-between">
+                <Link to={SENDOUQ_RULES_PAGE} className="text-xxs font-bold">
                   Read the rules
                 </Link>
+                {canReportScore && !data.match.isLocked ? (
+                  <FormWithConfirm
+                    dialogHeading="Cancel match? (Check rules)"
+                    fields={[
+                      ["_action", "REPORT_SCORE"],
+                      ["winners", "[]"],
+                    ]}
+                    deleteButtonText="Cancel"
+                    cancelButtonText="Nevermind"
+                    fetcher={cancelScoreFetcher}
+                  >
+                    <Button
+                      className="build__small-text"
+                      variant="minimal-destructive"
+                      size="tiny"
+                      type="submit"
+                      disabled={
+                        ownTeamReported && !data.match.mapList[0].winnerGroupId
+                      }
+                    >
+                      Cancel match
+                    </Button>
+                  </FormWithConfirm>
+                ) : null}
               </div>
               <div className="q-match__join-discord-section">
                 If needed, contact your opponent on the <b>#match-meetup</b>{" "}
@@ -417,6 +432,11 @@ export default function QMatchPage() {
               </div>
             </div>
           ) : null}
+          {cancelScoreFetcher.data?.error === "cant-cancel" ? (
+            <div className="text-xs text-warning font-semi-bold text-center">
+              Opponent has already reported score for this match.
+            </div>
+          ) : null}
           <MapList
             key={data.match.id}
             canReportScore={canReportScore}
@@ -431,21 +451,6 @@ export default function QMatchPage() {
             </div>
           ) : null}
         </>
-      ) : null}
-      {isAdmin(user) && !data.match.isLocked ? (
-        <FormWithConfirm
-          dialogHeading={"Cancel match"}
-          fields={[["_action", "CANCEL_MATCH"]]}
-        >
-          <Button
-            className="build__small-text"
-            variant="minimal-destructive"
-            size="tiny"
-            type="submit"
-          >
-            Cancel match
-          </Button>
-        </FormWithConfirm>
       ) : null}
     </Main>
   );
@@ -471,6 +476,19 @@ function Score({ reportedAt }: { reportedAt: number }) {
     },
     [0, 0]
   );
+
+  if (score[0] === 0 && score[1] === 0) {
+    return (
+      <div className="stack items-center line-height-tight">
+        <div className="text-sm font-bold text-warning">Match canceled</div>
+        {!data.match.isLocked ? (
+          <div className="text-xs text-lighter">
+            Pending other team&apos;s confirmation
+          </div>
+        ) : null}
+      </div>
+    );
+  }
 
   return (
     <div className="stack items-center line-height-tight">
@@ -555,7 +573,8 @@ function AfterMatchActions({
   const wasReportedInTheLastWeek =
     databaseTimestampToDate(reportedAt).getTime() >
     Date.now() - 7 * 24 * 3600 * 1000;
-  const showWeaponsFormButton = wasReportedInTheLastWeek;
+  const showWeaponsFormButton =
+    wasReportedInTheLastWeek && data.match.mapList[0].winnerGroupId;
 
   const winners = playedMaps.map((m) =>
     m.winnerGroupId === data.match.alphaGroupId ? "ALPHA" : "BRAVO"

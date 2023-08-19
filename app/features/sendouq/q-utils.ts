@@ -85,5 +85,5 @@ export function winnersArrayToWinner(winners: ("ALPHA" | "BRAVO")[]) {
   if (alphaCount > bravoCount) return "ALPHA";
   if (bravoCount > alphaCount) return "BRAVO";
 
-  throw new Error("no winner");
+  return null;
 }
