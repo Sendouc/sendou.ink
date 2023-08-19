@@ -188,14 +188,17 @@ export function checkboxValueToDbBoolean(value: unknown) {
 }
 
 export const _action = <T extends z.Primitive>(value: T) =>
-  z.preprocess((valueToParse) => {
-    if (typeof valueToParse === "string") return valueToParse;
-    // Fix bug at least in Safari 15 where SubmitButton value might get sent twice
-    if (Array.isArray(valueToParse)) {
-      const [one, two, ...rest] = valueToParse;
-      if (rest.length > 0) return valueToParse;
-      if (one !== two) return valueToParse;
+  z.preprocess(deduplicate, z.literal(value));
 
-      return one;
-    }
-  }, z.literal(value));
+// Fix bug at least in Safari 15 where SubmitButton value might get sent twice
+export function deduplicate(value: unknown) {
+  if (Array.isArray(value)) {
+    const [one, two, ...rest] = value;
+    if (rest.length > 0) return value;
+    if (one !== two) return value;
+
+    return one;
+  }
+
+  return value;
+}

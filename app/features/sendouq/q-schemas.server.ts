@@ -7,6 +7,7 @@ import {
 import {
   _action,
   checkboxValueToBoolean,
+  deduplicate,
   id,
   safeJSONParse,
   weaponSplId,
@@ -18,7 +19,7 @@ export const frontPageSchema = z.union([
     _action: _action("JOIN_QUEUE"),
     mapListPreference: z.enum(MAP_LIST_PREFERENCE_OPTIONS),
     mapPool: z.string(),
-    direct: z.literal("true").nullish(),
+    direct: z.preprocess(deduplicate, z.literal("true").nullish()),
   }),
   z.object({
     _action: _action("JOIN_TEAM"),
