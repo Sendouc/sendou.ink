@@ -9,7 +9,7 @@ export function ordinalToSp(ordinal: number) {
 }
 
 export function ordinalToRoundedSp(ordinal: number) {
-  return Math.floor(ordinalToSp(ordinal));
+  return Math.round(ordinalToSp(ordinal));
 }
 
 function toTwoDecimals(value: number) {
