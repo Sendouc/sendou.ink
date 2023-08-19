@@ -394,7 +394,7 @@ export default function QMatchPage() {
               showWeapons={!data.match.isLocked}
             />
           </div>
-          {!data.match.isLocked ? (
+          {!data.match.isLocked && ownMember ? (
             <div>
               <div className="stack items-end">
                 <Link to={SENDOUQ_RULES_PAGE} className="text-xs font-bold">
