@@ -39,13 +39,19 @@ import { databaseTimestampToDate } from "~/utils/dates";
 import { SubNav, SubNavLink } from "~/components/SubNav";
 import { z } from "zod";
 import { seasonStagesByUserId } from "~/features/sendouq/queries/seasonStagesByUserId.server";
-import { stageIds } from "~/modules/in-game-lists";
+import {
+  type ModeShort,
+  type StageId,
+  stageIds,
+} from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { seasonsMatesEnemiesByUserId } from "~/features/sendouq/queries/seasonsMatesEnemiesByUserId.server";
 import Chart from "~/components/Chart";
 import { AlertIcon } from "~/components/icons/Alert";
 import { seasonMapWinrateByUserId } from "~/features/sendouq/queries/seasonMapWinrateByUserId.server";
 import { seasonSetWinrateByUserId } from "~/features/sendouq/queries/seasonSetWinrateByUserId.server";
+import { Popover } from "~/components/Popover";
+import { useWeaponUsage } from "~/hooks/swr";
 
 export const seasonsSearchParamsSchema = z.object({
   page: z.coerce.number().default(1),
@@ -361,22 +367,53 @@ function Stages({
               )} ${winPercentage}${winPercentage ? "%" : ""}`;
 
               return (
-                <div
+                <Popover
                   key={mode}
-                  className="stack horizontal items-center xs text-xs font-semi-bold"
-                >
-                  <ModeImage mode={mode} size={18} title={infoText} />
-                  {stats ? (
-                    <div>
-                      {stats.wins}W {stats.losses}L
+                  buttonChildren={
+                    <div className="stack horizontal items-center xs text-xs font-semi-bold text-main-forced">
+                      <ModeImage mode={mode} size={18} title={infoText} />
+                      {stats ? (
+                        <div>
+                          {stats.wins}W {stats.losses}L
+                        </div>
+                      ) : null}
                     </div>
-                  ) : null}
-                </div>
+                  }
+                  // triggerClassName="minimal tiny build__small-text"
+                >
+                  <StageWeaponUsageStats
+                    modeShort={mode}
+                    // TODO: dynamic season
+                    season={0}
+                    stageId={id}
+                    // xxx: fix
+                    userId={1}
+                  />
+                </Popover>
               );
             })}
           </div>
         );
       })}
+    </div>
+  );
+}
+
+function StageWeaponUsageStats(props: {
+  userId: number;
+  season: number;
+  modeShort: ModeShort;
+  stageId: StageId;
+}) {
+  const { weaponUsage, isLoading } = useWeaponUsage(props);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <div>
+      <pre>{JSON.stringify(weaponUsage, null, 2)}</pre>
     </div>
   );
 }

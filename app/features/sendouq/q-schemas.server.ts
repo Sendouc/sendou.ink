@@ -11,6 +11,8 @@ import {
   id,
   safeJSONParse,
   weaponSplId,
+  stageId,
+  modeShort,
 } from "~/utils/zod";
 import { matchEndedAtIndex } from "./core/match";
 
@@ -114,3 +116,10 @@ export const matchSchema = z.union([
     ),
   }),
 ]);
+
+export const weaponUsageSearchParamsSchema = z.object({
+  userId: id,
+  season: z.coerce.number().int(),
+  stageId,
+  modeShort,
+});

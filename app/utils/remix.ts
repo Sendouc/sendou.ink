@@ -23,6 +23,26 @@ export function badRequestIfFalsy<T>(value: T | null | undefined): T {
   return value;
 }
 
+export function parseSearchParams<T extends z.ZodTypeAny>({
+  request,
+  schema,
+}: {
+  request: Request;
+  schema: T;
+}): z.infer<T> {
+  try {
+    const url = new URL(request.url);
+    return schema.parse(Object.fromEntries(url.searchParams));
+  } catch (e) {
+    if (e instanceof z.ZodError) {
+      console.error(e);
+      throw new Response(JSON.stringify(e), { status: 400 });
+    }
+
+    throw e;
+  }
+}
+
 /** Parse formData of a request with the given schema. Throws HTTP 400 response if fails. */
 export async function parseRequestFormData<T extends z.ZodTypeAny>({
   request,
