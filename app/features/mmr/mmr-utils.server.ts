@@ -1,6 +1,7 @@
 import { rating } from "openskill";
 import { findCurrentSkillByUserId } from "./queries/findCurrentSkillByUserId.server";
 import { findCurrentTeamSkillByIdentifier } from "./queries/findCurrentTeamSkillByIdentifier.server";
+import { identifierToUserIds } from "./mmr-utils";
 
 export function queryCurrentUserRating({
   userId,
@@ -56,8 +57,4 @@ export function queryTeamPlayerRatingAverage({
       playerRatings.reduce((acc, cur) => acc + cur.sigma, 0) /
       playerRatings.length,
   };
-}
-
-export function identifierToUserIds(identifier: string) {
-  return identifier.split("-").map(Number);
 }

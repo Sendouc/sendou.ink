@@ -72,3 +72,7 @@ export function userIdsToIdentifier(userIds: number[]) {
   invariant(userIds.length === 4, "userIds for identifier must be length 4");
   return [...userIds].sort((a, b) => a - b).join("-");
 }
+
+export function identifierToUserIds(identifier: string) {
+  return identifier.split("-").map(Number);
+}

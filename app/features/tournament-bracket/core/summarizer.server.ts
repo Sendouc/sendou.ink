@@ -10,7 +10,11 @@ import invariant from "tiny-invariant";
 import { removeDuplicates } from "~/utils/arrays";
 import type { FinalStanding } from "./finalStandings.server";
 import type { Rating } from "openskill/dist/types";
-import { rate, userIdsToIdentifier } from "~/features/mmr/mmr-utils";
+import {
+  rate,
+  userIdsToIdentifier,
+  identifierToUserIds,
+} from "~/features/mmr/mmr-utils";
 import shuffle from "just-shuffle";
 import type { Unpacked } from "~/utils/types";
 
@@ -393,10 +397,33 @@ function playerResultDeltas({
       }
     }
 
-    const allUserIds = removeDuplicates(match.maps.flatMap((m) => m.userIds));
+    const mostPopularUserIds = (() => {
+      const alphaIdentifiers: string[] = [];
+      const bravoIdentifiers: string[] = [];
 
-    for (const ownerUserId of allUserIds) {
-      for (const otherUserId of allUserIds) {
+      for (const map of match.maps) {
+        const alphaUserIds = map.userIds.filter(
+          (userId) => userIdsToTeamId[userId] === match.opponentOne.id
+        );
+        const bravoUserIds = map.userIds.filter(
+          (userId) => userIdsToTeamId[userId] === match.opponentTwo.id
+        );
+
+        alphaIdentifiers.push(userIdsToIdentifier(alphaUserIds));
+        bravoIdentifiers.push(userIdsToIdentifier(bravoUserIds));
+      }
+
+      const alphaIdentifier = selectMostPopular(alphaIdentifiers);
+      const bravoIdentifier = selectMostPopular(bravoIdentifiers);
+
+      return [
+        ...identifierToUserIds(alphaIdentifier),
+        ...identifierToUserIds(bravoIdentifier),
+      ];
+    })();
+
+    for (const ownerUserId of mostPopularUserIds) {
+      for (const otherUserId of mostPopularUserIds) {
         if (ownerUserId === otherUserId) continue;
 
         const ownTournamentTeamId = userIdsToTeamId[ownerUserId];

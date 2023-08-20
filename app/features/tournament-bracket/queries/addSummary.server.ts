@@ -2,7 +2,7 @@ import { sql } from "~/db/sql";
 import type { TournamentSummary } from "../core/summarizer.server";
 import { ordinal } from "openskill";
 import type { Skill } from "~/db/types";
-import { identifierToUserIds } from "~/features/mmr/mmr-utils.server";
+import { identifierToUserIds } from "~/features/mmr/mmr-utils";
 
 const addSkillStm = sql.prepare(/* sql */ `
   insert into "Skill" (

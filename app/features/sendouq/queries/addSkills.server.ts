@@ -1,7 +1,7 @@
 import { ordinal } from "openskill";
 import { sql } from "~/db/sql";
 import type { Skill } from "~/db/types";
-import { identifierToUserIds } from "~/features/mmr/mmr-utils.server";
+import { identifierToUserIds } from "~/features/mmr/mmr-utils";
 
 const getStm = (type: "user" | "team") =>
   sql.prepare(/* sql */ `

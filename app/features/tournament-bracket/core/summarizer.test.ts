@@ -267,6 +267,25 @@ TournamentSummary(
   }
 );
 
+TournamentSummary(
+  "In the case of sub calculates player results based on the most common roster",
+  () => {
+    const summary = summarize({
+      results: resultsWithSubbedRoster,
+    });
+
+    assert.not.ok(
+      summary.playerResultDeltas.find(
+        (p) =>
+          p.ownerUserId === 5 &&
+          p.otherUserId === 20 &&
+          (p.setWins > 0 || p.setLosses > 0)
+      ),
+      "player 5 should not have a result against player 20 (sub for only one game)"
+    );
+  }
+);
+
 TournamentSummary("calculates results of mates", () => {
   const summary = summarize();
 
