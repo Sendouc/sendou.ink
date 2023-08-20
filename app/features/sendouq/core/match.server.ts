@@ -27,22 +27,44 @@ export function matchMapList({
     theirGroup.mapListPreference,
   ]);
 
-  return createTournamentMapList({
-    bestOf: SENDOUQ_BEST_OF,
-    seed: String(ourGroup.id),
-    modesIncluded: type === "SZ" ? ["SZ"] : ["SZ", "TC", "RM", "CB"],
-    tiebreakerMaps: new MapPool([]),
-    teams: [
-      {
-        id: ourGroup.id,
-        maps: type === "SZ" ? filterMapPoolToSZ(ourMapPool) : ourMapPool,
-      },
-      {
-        id: theirGroup.id,
-        maps: type === "SZ" ? filterMapPoolToSZ(theirMapPool) : theirMapPool,
-      },
-    ],
-  });
+  try {
+    return createTournamentMapList({
+      bestOf: SENDOUQ_BEST_OF,
+      seed: String(ourGroup.id),
+      modesIncluded: type === "SZ" ? ["SZ"] : ["SZ", "TC", "RM", "CB"],
+      tiebreakerMaps: new MapPool([]),
+      teams: [
+        {
+          id: ourGroup.id,
+          maps: type === "SZ" ? filterMapPoolToSZ(ourMapPool) : ourMapPool,
+        },
+        {
+          id: theirGroup.id,
+          maps: type === "SZ" ? filterMapPoolToSZ(theirMapPool) : theirMapPool,
+        },
+      ],
+    });
+    // in rare cases, the map list generator can fail
+    // in that case, just return a map list from our default set of maps
+  } catch (e) {
+    console.error(e);
+    return createTournamentMapList({
+      bestOf: SENDOUQ_BEST_OF,
+      seed: String(ourGroup.id),
+      modesIncluded: type === "SZ" ? ["SZ"] : ["SZ", "TC", "RM", "CB"],
+      tiebreakerMaps: new MapPool([]),
+      teams: [
+        {
+          id: ourGroup.id,
+          maps: new MapPool([]),
+        },
+        {
+          id: theirGroup.id,
+          maps: new MapPool([]),
+        },
+      ],
+    });
+  }
 }
 
 // type score as const object
