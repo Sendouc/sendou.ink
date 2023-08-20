@@ -2,6 +2,7 @@ import { sql } from "~/db/sql";
 import { seasonObject } from "~/features/mmr/season";
 import type { MainWeaponId, ModeShort, StageId } from "~/modules/in-game-lists";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
+import { assertUnreachable } from "~/utils/types";
 
 const stm = sql.prepare(/* sql */ `
   select
@@ -22,7 +23,7 @@ const stm = sql.prepare(/* sql */ `
     "GroupMatch"."alphaGroupId" = "Group"."id" 
       or "GroupMatch"."bravoGroupId" = "Group"."id"
   left join "GroupMatchMap" on "GroupMatchMap"."matchId" = "GroupMatch"."id"
-  left join "ReportedWeapon" on "ReportedWeapon"."groupMatchMapId" = "GroupMatchMap"."id"
+  inner join "ReportedWeapon" on "ReportedWeapon"."groupMatchMapId" = "GroupMatchMap"."id"
   where
     "GroupMember"."userId" = @userId
     and "GroupMatch"."createdAt" between @starts and @ends
@@ -35,6 +36,8 @@ interface WeaponUsageStat {
   type: "SELF" | "MATE" | "ENEMY";
   weaponSplId: MainWeaponId;
   count: number;
+  wins: number;
+  losses: number;
 }
 
 export function weaponUsageStats({
@@ -66,15 +69,27 @@ export function weaponUsageStats({
 
   const result: WeaponUsageStat[] = [];
 
-  const addDelta = (stat: Omit<WeaponUsageStat, "count">) => {
+  const addDelta = (
+    stat: Omit<WeaponUsageStat, "count" | "wins" | "losses"> & { won: boolean }
+  ) => {
     const existing = result.find(
       (s) => s.weaponSplId === stat.weaponSplId && s.type === stat.type
     );
 
     if (existing) {
       existing.count += 1;
+      if (stat.won) {
+        existing.wins += 1;
+      } else {
+        existing.losses += 1;
+      }
     } else {
-      result.push({ ...stat, count: 1 });
+      result.push({
+        ...stat,
+        count: 1,
+        wins: stat.won ? 1 : 0,
+        losses: stat.won ? 0 : 1,
+      });
     }
   };
   for (const row of rows) {
@@ -85,9 +100,20 @@ export function weaponUsageStats({
         ? "MATE"
         : "ENEMY";
 
+    const won = () => {
+      const targetWon = row.winnerGroupId === row.ownerGroupId;
+
+      if (type === "SELF") return targetWon;
+      if (type === "MATE") return targetWon;
+      if (type === "ENEMY") return !targetWon;
+
+      assertUnreachable(type);
+    };
+
     addDelta({
       type,
       weaponSplId: row.weaponSplId,
+      won: won(),
     });
   }
 
