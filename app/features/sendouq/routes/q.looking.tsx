@@ -5,7 +5,7 @@ import type {
   V2_MetaFunction,
 } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import { useFetcher, useLoaderData } from "@remix-run/react";
+import { useFetcher, useLoaderData, useSearchParams } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
 import { Flipper } from "react-flip-toolkit";
@@ -352,9 +352,12 @@ export const loader = async ({ request }: LoaderArgs) => {
 
 export default function QLookingPage() {
   const data = useLoaderData<typeof loader>();
+  const [searchParams] = useSearchParams();
   useAutoRefresh();
 
   const ownGroup = data.groups.own as LookingGroupWithInviteCode;
+
+  const wasTryingToJoinAnotherTeam = searchParams.get("joining") === "true";
 
   return (
     <Main className="stack lg">
@@ -374,6 +377,11 @@ export default function QLookingPage() {
           inviteCode={ownGroup.inviteCode}
           trustedPlayers={data.trustedPlayers}
         />
+      ) : null}
+      {wasTryingToJoinAnotherTeam ? (
+        <div className="text-warning text-center">
+          Before joining another group, leave the current one
+        </div>
       ) : null}
       <Groups />
     </Main>

@@ -185,18 +185,19 @@ export const action: ActionFunction = async ({ request }) => {
 export const loader = async ({ request }: LoaderArgs) => {
   const user = await getUserId(request);
 
+  const code = new URL(request.url).searchParams.get(
+    JOIN_CODE_SEARCH_PARAM_KEY
+  );
+
   const redirectLocation = groupRedirectLocationByCurrentLocation({
     group: user ? findCurrentGroupByUserId(user.id) : undefined,
     currentLocation: "default",
   });
 
   if (redirectLocation) {
-    throw redirect(redirectLocation);
+    throw redirect(`${redirectLocation}${code ? "?joining=true" : ""}`);
   }
 
-  const code = new URL(request.url).searchParams.get(
-    JOIN_CODE_SEARCH_PARAM_KEY
-  );
   const teamInvitedTo = code && user ? findTeamByInviteCode(code) : undefined;
 
   const now = new Date();
