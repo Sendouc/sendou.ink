@@ -257,6 +257,20 @@ export const sendouQMatchPage = (id: GroupMatch["id"]) => {
   return `${SENDOUQ_PAGE}/match/${id}`;
 };
 
+export const getWeaponUsage = ({
+  userId,
+  season,
+  modeShort,
+  stageId,
+}: {
+  userId: number;
+  season: number;
+  modeShort: ModeShort;
+  stageId: StageId;
+}) => {
+  return `/weapon-usage?userId=${userId}&season=${season}&modeShort=${modeShort}&stageId=${stageId}`;
+};
+
 export const mapsPage = (eventId?: MapPoolMap["calendarEventId"]) =>
   `/maps${eventId ? `?eventId=${eventId}` : ""}`;
 export const readonlyMapsPage = (eventId: CalendarEvent["id"]) =>

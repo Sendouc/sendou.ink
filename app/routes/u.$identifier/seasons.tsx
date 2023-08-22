@@ -39,13 +39,21 @@ import { databaseTimestampToDate } from "~/utils/dates";
 import { SubNav, SubNavLink } from "~/components/SubNav";
 import { z } from "zod";
 import { seasonStagesByUserId } from "~/features/sendouq/queries/seasonStagesByUserId.server";
-import { stageIds } from "~/modules/in-game-lists";
+import {
+  type ModeShort,
+  type StageId,
+  stageIds,
+} from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { seasonsMatesEnemiesByUserId } from "~/features/sendouq/queries/seasonsMatesEnemiesByUserId.server";
 import Chart from "~/components/Chart";
 import { AlertIcon } from "~/components/icons/Alert";
 import { seasonMapWinrateByUserId } from "~/features/sendouq/queries/seasonMapWinrateByUserId.server";
 import { seasonSetWinrateByUserId } from "~/features/sendouq/queries/seasonSetWinrateByUserId.server";
+import { Popover } from "~/components/Popover";
+import { useWeaponUsage } from "~/hooks/swr";
+import { atOrError } from "~/utils/arrays";
+import { Tab, Tabs } from "~/components/Tabs";
 
 export const seasonsSearchParamsSchema = z.object({
   page: z.coerce.number().default(1),
@@ -343,6 +351,8 @@ function Stages({
   stages: NonNullable<SerializeFrom<typeof loader>["info"]["stages"]>;
 }) {
   const { t } = useTranslation(["game-misc"]);
+  const parentPageData = atOrError(useMatches(), -2).data as UserPageLoaderData;
+
   return (
     <div className="stack horizontal justify-center md flex-wrap">
       {stageIds.map((id) => {
@@ -361,22 +371,112 @@ function Stages({
               )} ${winPercentage}${winPercentage ? "%" : ""}`;
 
               return (
-                <div
+                <Popover
                   key={mode}
-                  className="stack horizontal items-center xs text-xs font-semi-bold"
-                >
-                  <ModeImage mode={mode} size={18} title={infoText} />
-                  {stats ? (
-                    <div>
-                      {stats.wins}W {stats.losses}L
+                  buttonChildren={
+                    <div className="stack horizontal items-center xs text-xs font-semi-bold text-main-forced">
+                      <ModeImage mode={mode} size={18} title={infoText} />
+                      {stats ? (
+                        <div>
+                          {stats.wins}W {stats.losses}L
+                        </div>
+                      ) : null}
                     </div>
-                  ) : null}
-                </div>
+                  }
+                >
+                  <StageWeaponUsageStats
+                    modeShort={mode}
+                    // TODO: dynamic season
+                    season={0}
+                    stageId={id}
+                    userId={parentPageData.id}
+                  />
+                </Popover>
               );
             })}
           </div>
         );
       })}
+      <div className="text-xs text-lighter font-semi-bold">
+        Click a row to show weapon usage stats
+      </div>
+    </div>
+  );
+}
+
+function StageWeaponUsageStats(props: {
+  userId: number;
+  season: number;
+  modeShort: ModeShort;
+  stageId: StageId;
+}) {
+  const { t } = useTranslation(["game-misc"]);
+  const [tab, setTab] = React.useState<"SELF" | "MATE" | "ENEMY">("SELF");
+  const { weaponUsage, isLoading } = useWeaponUsage(props);
+
+  if (isLoading) {
+    return (
+      <div className="u__season__weapon-usage__container items-center justify-center text-lighter p-2">
+        Loading...
+      </div>
+    );
+  }
+
+  const usages = (weaponUsage ?? []).filter((u) => u.type === tab);
+
+  if (usages.length === 0) {
+    return (
+      <div className="u__season__weapon-usage__container items-center justify-center text-lighter p-2">
+        No reported weapons yet
+      </div>
+    );
+  }
+
+  return (
+    <div className="u__season__weapon-usage__container">
+      <div className="stack horizontal sm text-xs items-center justify-center">
+        <ModeImage mode={props.modeShort} width={18} />
+        {t(`game-misc:STAGE_${props.stageId}`)}
+      </div>
+      <Tabs compact className="mb-0">
+        <Tab active={tab === "SELF"} onClick={() => setTab("SELF")}>
+          Self
+        </Tab>
+        <Tab active={tab === "MATE"} onClick={() => setTab("MATE")}>
+          Teammates
+        </Tab>
+        <Tab active={tab === "ENEMY"} onClick={() => setTab("ENEMY")}>
+          Opponents
+        </Tab>
+      </Tabs>
+      <div className="u__season__weapon-usage__weapons-container">
+        {usages.map((u) => {
+          const winrate = cutToNDecimalPlaces(
+            (u.wins / (u.wins + u.losses)) * 100
+          );
+
+          return (
+            <div key={u.weaponSplId}>
+              <WeaponImage
+                weaponSplId={u.weaponSplId}
+                variant="build"
+                width={48}
+                className="u__season__weapon-usage__weapon"
+              />
+              <div
+                className={clsx("text-xs font-bold", {
+                  "text-success": winrate >= 50,
+                  "text-warning": winrate < 50,
+                })}
+              >
+                {winrate}%
+              </div>
+              <div className="text-xs">{u.wins} W</div>
+              <div className="text-xs">{u.losses} L</div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
