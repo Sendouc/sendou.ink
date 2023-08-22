@@ -383,7 +383,6 @@ function Stages({
                       ) : null}
                     </div>
                   }
-                  // triggerClassName="minimal tiny build__small-text"
                 >
                   <StageWeaponUsageStats
                     modeShort={mode}
