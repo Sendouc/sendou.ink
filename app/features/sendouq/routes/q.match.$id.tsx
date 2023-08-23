@@ -677,7 +677,8 @@ function AfterMatchActions({
                                 variant="badge"
                                 width={32}
                                 className={clsx("ml-auto", {
-                                  invisible: !weaponsUsage[i][j],
+                                  invisible:
+                                    typeof weaponsUsage[i][j] !== "number",
                                 })}
                               />
                               <WeaponCombobox
