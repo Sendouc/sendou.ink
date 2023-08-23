@@ -195,11 +195,14 @@ export function addSkillsToGroups({
     const averageOrdinal =
       skills.reduce((acc, s) => acc + s.ordinal, 0) / skills.length;
 
-    return (
-      intervals.find(
-        (i) => i.neededOrdinal && averageOrdinal > i.neededOrdinal
-      ) ?? { isPlus: false, name: "IRON" }
-    );
+    const tier = intervals.find(
+      (i) => i.neededOrdinal && averageOrdinal > i.neededOrdinal
+    ) ?? { isPlus: false, name: "IRON" };
+
+    // For Leviathan we don't specify if it's plus or not
+    return tier.name === "LEVIATHAN"
+      ? { name: "LEVIATHAN", isPlus: false }
+      : tier;
   };
   const addSkill = (group: LookingGroupWithInviteCode) => ({
     ...group,
