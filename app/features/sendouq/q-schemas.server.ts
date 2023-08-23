@@ -9,10 +9,12 @@ import {
   checkboxValueToBoolean,
   deduplicate,
   id,
+  noDuplicates,
   safeJSONParse,
   weaponSplId,
 } from "~/utils/zod";
 import { matchEndedAtIndex } from "./core/match";
+import { languagesUnified } from "~/modules/i18n/config";
 
 export const frontPageSchema = z.union([
   z.object({
@@ -20,6 +22,16 @@ export const frontPageSchema = z.union([
     mapListPreference: z.enum(MAP_LIST_PREFERENCE_OPTIONS),
     mapPool: z.string(),
     direct: z.preprocess(deduplicate, z.literal("true").nullish()),
+    vc: z.enum(["YES", "NO", "LISTEN_ONLY"]),
+    languages: z.preprocess(
+      safeJSONParse,
+      z
+        .array(z.string())
+        .refine(noDuplicates)
+        .refine((val) =>
+          val.every((lang) => languagesUnified.some((l) => l.code === lang))
+        )
+    ),
   }),
   z.object({
     _action: _action("JOIN_TEAM"),

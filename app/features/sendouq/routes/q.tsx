@@ -69,8 +69,11 @@ import {
   DEFAULT_SKILL_MID,
 } from "~/features/mmr/mmr-constants";
 import { giveTrust } from "~/features/tournament/queries/giveTrust.server";
-import type { GroupMember } from "~/db/types";
+import type { GroupMember, User } from "~/db/types";
 import invariant from "tiny-invariant";
+import { languagesUnified } from "~/modules/i18n/config";
+import { CrossIcon } from "~/components/icons/Cross";
+import { updateVCStatus } from "../queries/updateVCStatus.server";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -112,6 +115,11 @@ export const action: ActionFunction = async ({ request }) => {
       const mapPool = new MapPool(data.mapPool);
       validate(mapPoolOk(mapPool), "Invalid map pool");
 
+      updateVCStatus({
+        userId: user.id,
+        languages: data.languages,
+        vc: data.vc,
+      });
       createGroup({
         mapListPreference: data.mapListPreference,
         status: data.direct === "true" ? "ACTIVE" : "PREPARING",
@@ -268,6 +276,8 @@ export default function QPage() {
                   </div>
                   <ActiveSeasonInfo season={data.season} />
                 </div>
+                <VoiceChatAbility />
+                <Languages />
                 <MapPreference />
                 <MapPoolSelector showErrors={hasSubmitted} />
                 <div className="stack md items-center mt-4">
@@ -527,6 +537,121 @@ function StartRank() {
         Submit
       </SubmitButton>
     </fetcher.Form>
+  );
+}
+
+const VC_LOCAL_STORAGE_KEY = "q_vc";
+function VoiceChatAbility() {
+  const [value, setValue] = React.useState<User["vc"]>();
+
+  React.useEffect(() => {
+    const storedValue = localStorage.getItem(VC_LOCAL_STORAGE_KEY);
+    if (storedValue) {
+      setValue(storedValue as User["vc"]);
+    }
+  }, []);
+
+  const label = (vc: User["vc"]) => {
+    switch (vc) {
+      case "YES":
+        return "Yes";
+      case "NO":
+        return "No";
+      case "LISTEN_ONLY":
+        return "Listen only";
+      default:
+        assertUnreachable(vc);
+    }
+  };
+
+  return (
+    <div className="stack">
+      <label>Voice chat</label>
+      {(["YES", "NO", "LISTEN_ONLY"] as const).map((option) => {
+        return (
+          <div key={option} className="stack sm horizontal items-center">
+            <input
+              type="radio"
+              name="vc"
+              id={option}
+              value={option}
+              checked={value === option}
+              onChange={() => {
+                setValue(option);
+                localStorage.setItem(VC_LOCAL_STORAGE_KEY, option);
+              }}
+              required
+            />
+            <label
+              htmlFor={option}
+              className="q__map-preference-label text-main-forced"
+            >
+              {label(option)}
+            </label>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+const LANGUAGES_LOCAL_STORAGE_KEY = "q_lang";
+function Languages() {
+  const [value, setValue] = React.useState<string[]>([]);
+
+  React.useEffect(() => {
+    const storedValue = localStorage.getItem(LANGUAGES_LOCAL_STORAGE_KEY);
+    if (storedValue) {
+      setValue(JSON.parse(storedValue));
+    }
+  }, []);
+
+  return (
+    <div className="stack">
+      <RequiredHiddenInput
+        isValid={value.length > 0}
+        name="languages"
+        value={JSON.stringify(value)}
+      />
+      <label>Your languages</label>
+      <select
+        className="w-max"
+        onChange={(e) =>
+          setValue(
+            [...value, e.target.value].sort((a, b) => a.localeCompare(b))
+          )
+        }
+      >
+        <option value="">Select all that apply</option>
+        {languagesUnified
+          .filter((lang) => !value.includes(lang.code))
+          .map((option) => {
+            return (
+              <option key={option.code} value={option.code}>
+                {option.name}
+              </option>
+            );
+          })}
+      </select>
+      <div className="mt-2">
+        {value.map((code) => {
+          const name = languagesUnified.find((l) => l.code === code)?.name;
+
+          return (
+            <div key={code} className="stack horizontal items-center sm">
+              {name}{" "}
+              <Button
+                icon={<CrossIcon />}
+                variant="minimal-destructive"
+                onClick={() =>
+                  setValue(value.filter((codeInArr) => codeInArr !== code))
+                }
+              />
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 }
 

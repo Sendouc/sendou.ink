@@ -63,6 +63,7 @@ import {
 } from "~/features/sendouq/core/summarizer.server";
 import { groupForMatch } from "~/features/sendouq/queries/groupForMatch.server";
 import { addPlayerResults } from "~/features/sendouq/queries/addPlayerResults.server";
+import { updateVCStatus } from "~/features/sendouq/queries/updateVCStatus.server";
 
 const calendarEventWithToToolsSz = () => calendarEventWithToTools(true);
 const calendarEventWithToToolsTeamsSz = () =>
@@ -295,6 +296,24 @@ function userProfiles() {
           isFavorite: Math.random() > 0.8 ? 1 : 0,
         });
     }
+  }
+
+  for (let id = 1; id < 500; id++) {
+    const defaultLanguages = Math.random() > 0.1 ? ["en"] : [];
+    if (Math.random() > 0.9) defaultLanguages.push("es");
+    if (Math.random() > 0.9) defaultLanguages.push("fr");
+    if (Math.random() > 0.9) defaultLanguages.push("de");
+    if (Math.random() > 0.9) defaultLanguages.push("it");
+    if (Math.random() > 0.9) defaultLanguages.push("ja");
+
+    updateVCStatus({
+      languages: defaultLanguages,
+      userId: id,
+      vc:
+        Math.random() > 0.2
+          ? "YES"
+          : faker.helpers.arrayElement(["YES", "NO", "LISTEN_ONLY"]),
+    });
   }
 }
 
