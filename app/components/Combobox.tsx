@@ -33,6 +33,8 @@ const MAX_RESULTS_SHOWN = 6;
 
 interface ComboboxBaseOption {
   label: string;
+  /** Alternative text other than label to match by */
+  alt?: string[];
   value: string;
   imgPath?: string;
 }
@@ -54,7 +56,9 @@ interface ComboboxProps<T> {
   fuseOptions?: Fuse.IFuseOptions<ComboboxOption<T>>;
 }
 
-export function Combobox<T extends Record<string, string | null | number>>({
+export function Combobox<
+  T extends Record<string, string | string[] | null | undefined | number>
+>({
   options,
   inputName,
   placeholder,
@@ -76,13 +80,13 @@ export function Combobox<T extends Record<string, string | null | number>>({
   > | null>(initialValue);
   const [query, setQuery] = React.useState("");
 
+  const fuse = new Fuse(options, {
+    ...fuseOptions,
+    keys: ["label", "alt"],
+  });
+
   const filteredOptions = (() => {
     if (!query) return [];
-
-    const fuse = new Fuse(options, {
-      ...fuseOptions,
-      keys: [...Object.keys(options[0] ?? {})],
-    });
 
     return fuse
       .search(query)
@@ -230,7 +234,6 @@ export function UserCombobox({
   );
 }
 
-// TODO: [object Object] flickers when server rendered with initialValue
 export function WeaponCombobox({
   id,
   required,
@@ -256,12 +259,13 @@ export function WeaponCombobox({
   weaponIdsToOmit?: Set<MainWeaponId>;
   value?: MainWeaponId | null;
 }) {
-  const { t } = useTranslation("weapons");
+  const { t, i18n } = useTranslation("weapons");
 
   const idToWeapon = (id: (typeof mainWeaponIds)[number]) => ({
     value: String(id),
     label: t(`MAIN_${id}`),
     imgPath: mainWeaponImageUrl(id),
+    alt: i18n.language !== "en" ? [t(`MAIN_${id}`, { lng: "en" })] : undefined,
   });
 
   return (
