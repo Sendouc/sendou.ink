@@ -616,11 +616,16 @@ function Languages() {
       <label>Your languages</label>
       <select
         className="w-max"
-        onChange={(e) =>
-          setValue(
-            [...value, e.target.value].sort((a, b) => a.localeCompare(b))
-          )
-        }
+        onChange={(e) => {
+          const newLanguages = [...value, e.target.value].sort((a, b) =>
+            a.localeCompare(b)
+          );
+          setValue(newLanguages);
+          localStorage.setItem(
+            LANGUAGES_LOCAL_STORAGE_KEY,
+            JSON.stringify(newLanguages)
+          );
+        }}
       >
         <option value="">Select all that apply</option>
         {languagesUnified
@@ -643,9 +648,16 @@ function Languages() {
               <Button
                 icon={<CrossIcon />}
                 variant="minimal-destructive"
-                onClick={() =>
-                  setValue(value.filter((codeInArr) => codeInArr !== code))
-                }
+                onClick={() => {
+                  const newLanguages = value.filter(
+                    (codeInArr) => codeInArr !== code
+                  );
+                  setValue(newLanguages);
+                  localStorage.setItem(
+                    LANGUAGES_LOCAL_STORAGE_KEY,
+                    JSON.stringify(newLanguages)
+                  );
+                }}
               />
             </div>
           );

@@ -18,6 +18,12 @@ import type { LookingGroup } from "../q-types";
 import { ModePreferenceIcons } from "./ModePrefenceIcons";
 import { ordinalToRoundedSp } from "~/features/mmr/mmr-utils";
 import { Popover } from "~/components/Popover";
+import { SpeakerIcon } from "~/components/icons/Speaker";
+import { MicrophoneIcon } from "~/components/icons/Microphone";
+import { SpeakerXIcon } from "~/components/icons/SpeakerX";
+import { useTranslation } from "~/hooks/useTranslation";
+import { languagesUnified } from "~/modules/i18n/config";
+import { useUser } from "~/modules/auth";
 
 export function GroupCard({
   group,
@@ -198,6 +204,7 @@ function GroupMember({
       {member.plusTier ? (
         <div className="text-xs text-lighter">+{member.plusTier}</div>
       ) : null}
+      <VoiceChatInfo member={member} />
       {member.role === "REGULAR" && showActions ? (
         <SubmitButton
           variant="minimal"
@@ -219,5 +226,55 @@ function GroupMember({
         </SubmitButton>
       ) : null}
     </fetcher.Form>
+  );
+}
+
+function VoiceChatInfo({
+  member,
+}: {
+  member: NonNullable<LookingGroup["members"]>[number];
+}) {
+  const user = useUser();
+  const { t } = useTranslation(["q"]);
+
+  const Icon =
+    member.vc === "YES"
+      ? MicrophoneIcon
+      : member.vc === "LISTEN_ONLY"
+      ? SpeakerIcon
+      : SpeakerXIcon;
+
+  const color = () => {
+    const languagesMatch = member.languages.some((l) =>
+      user?.languages.includes(l)
+    );
+
+    if (!languagesMatch) return "text-error";
+
+    return member.vc === "YES"
+      ? "text-success"
+      : member.vc === "LISTEN_ONLY"
+      ? "text-warning"
+      : "text-error";
+  };
+
+  const languageToFull = (code: string) =>
+    languagesUnified.find((l) => l.code === code)?.name ?? "";
+
+  const languagesString =
+    member.languages.length > 0
+      ? `(${member.languages.map(languageToFull).join(", ")})`
+      : null;
+
+  return (
+    <Popover
+      buttonChildren={
+        <Icon className={clsx("q__group-member-vc-icon", color())} />
+      }
+      triggerClassName="minimal tiny"
+      containerClassName="ml-auto"
+    >
+      {t(`q:vc.${member.vc}`)} {languagesString}
+    </Popover>
   );
 }

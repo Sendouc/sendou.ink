@@ -92,7 +92,7 @@ export interface RootLoaderData {
     | "discordName"
     | "patronTier"
     | "isArtist"
-  >;
+  > & { languages: string[] };
   publisherId?: string;
   websiteId?: string;
   loginDisabled: boolean;
@@ -126,6 +126,7 @@ export const loader: LoaderFunction = async ({ request }) => {
             customUrl: user.customUrl,
             patronTier: user.patronTier,
             isArtist: user.isArtist,
+            languages: user.languages ? user.languages.split(",") : [],
           }
         : undefined,
     },

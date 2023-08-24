@@ -1,4 +1,4 @@
-import type { Group, GroupMember, PlusTier } from "~/db/types";
+import type { Group, GroupMember, PlusTier, User } from "~/db/types";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import type { TieredSkill } from "../mmr/tiered.server";
 
@@ -16,6 +16,8 @@ export type LookingGroup = {
     role: GroupMember["role"];
     weapons?: MainWeaponId[];
     skill?: TieredSkill;
+    vc: User["vc"];
+    languages: string[];
   }[];
 };
 
