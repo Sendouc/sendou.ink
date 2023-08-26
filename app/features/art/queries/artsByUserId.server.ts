@@ -65,6 +65,7 @@ const stm = sql.prepare(/* sql */ `
   left join "ArtUserMetadata" on "ArtUserMetadata"."artId" = "q2"."id"
   left join "User" as "LinkedUser" on "LinkedUser"."id" = "ArtUserMetadata"."userId"
   group by "q2"."id"
+  order by "q2"."createdAt" desc
 `);
 
 export function artsByUserId(userId: number): ListedArt[] {
