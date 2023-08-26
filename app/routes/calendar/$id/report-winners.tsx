@@ -9,11 +9,11 @@ import clsx from "clsx";
 import * as React from "react";
 import { z } from "zod";
 import { Button } from "~/components/Button";
-import { UserCombobox } from "~/components/Combobox";
 import { FormErrors } from "~/components/FormErrors";
 import { FormMessage } from "~/components/FormMessage";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
+import { UserSearch } from "~/components/UserSearch";
 import { CALENDAR_EVENT_RESULT } from "~/constants";
 import { db } from "~/db";
 import type { User } from "~/db/types";
@@ -412,16 +412,11 @@ function Players({
                 max={CALENDAR_EVENT_RESULT.MAX_PLAYER_NAME_LENGTH}
               />
             ) : (
-              <UserCombobox
+              <UserSearch
                 id={formId}
                 inputName="team-player"
                 initialUserId={player.id}
-                onChange={(selected) =>
-                  handleInputChange(
-                    i,
-                    selected?.value ? Number(selected?.value) : NEW_PLAYER.id
-                  )
-                }
+                onChange={(newUser) => handleInputChange(i, newUser.id)}
               />
             )}
           </div>

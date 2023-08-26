@@ -615,6 +615,13 @@ dialog::backdrop {
   background-color: var(--theme-transparent);
 }
 
+.combobox-username {
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .article > p {
   padding-block: var(--s-2-5);
 }

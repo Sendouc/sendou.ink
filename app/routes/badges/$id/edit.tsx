@@ -4,7 +4,6 @@ import { Form, useMatches, useOutletContext } from "@remix-run/react";
 import * as React from "react";
 import { z } from "zod";
 import { Button, LinkButton } from "~/components/Button";
-import { UserCombobox } from "~/components/Combobox";
 import { Dialog } from "~/components/Dialog";
 import { TrashIcon } from "~/components/icons/Trash";
 import { Label } from "~/components/Label";
@@ -26,6 +25,7 @@ import {
   safeJSONParse,
 } from "~/utils/zod";
 import type { BadgeDetailsContext, BadgeDetailsLoaderData } from "../$id";
+import { UserSearch } from "~/components/UserSearch";
 
 const editBadgeActionSchema = z.union([
   z.object({
@@ -131,15 +131,13 @@ function Managers({ data }: { data: BadgeDetailsLoaderData }) {
         <h3 className="badges-edit__small-header">Managers</h3>
         <div className="text-center my-4">
           <Label className="stack vertical items-center">Add new manager</Label>
-          <UserCombobox
+          <UserSearch
             className="mx-auto"
             inputName="new-manager"
             onChange={(user) => {
-              if (!user) return;
-
               setManagers([
                 ...managers,
-                { discordFullName: user.label, id: Number(user.value) },
+                { discordFullName: user.discordName, id: user.id },
               ]);
             }}
             userIdsToOmit={userIdsToOmitFromCombobox}
@@ -208,17 +206,15 @@ function Owners({ data }: { data: BadgeDetailsLoaderData }) {
         <h3 className="badges-edit__small-header">Owners</h3>
         <div className="text-center my-4">
           <Label className="stack items-center">Add new owner</Label>
-          <UserCombobox
+          <UserSearch
             className="mx-auto"
             inputName="new-owner"
             onChange={(user) => {
-              if (!user) return;
-
               setOwners([
                 ...owners,
                 {
-                  discordFullName: user.label,
-                  id: Number(user.value),
+                  discordFullName: user.discordName,
+                  id: user.id,
                   count: 1,
                 },
               ]);

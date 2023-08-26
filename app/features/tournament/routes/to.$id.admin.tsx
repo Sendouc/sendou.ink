@@ -17,7 +17,6 @@ import {
   validateCanCheckIn,
 } from "../tournament-utils";
 import { SubmitButton } from "~/components/SubmitButton";
-import { UserCombobox } from "~/components/Combobox";
 import { adminActionSchema } from "../tournament-schemas.server";
 import { changeTeamOwner } from "../queries/changeTeamOwner.server";
 import invariant from "tiny-invariant";
@@ -37,6 +36,7 @@ import {
 import { Redirect } from "~/components/Redirect";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { findMapPoolByTeamId } from "~/features/tournament-bracket";
+import { UserSearch } from "~/components/UserSearch";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUserId(request);
@@ -118,7 +118,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       validate(team, "Invalid team id");
 
       const previousTeam = teams.find((t) =>
-        t.members.some((m) => m.userId === data["user[value]"])
+        t.members.some((m) => m.userId === data.userId)
       );
 
       if (hasTournamentStarted(event.id)) {
@@ -131,7 +131,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       }
 
       joinTeam({
-        userId: data["user[value]"],
+        userId: data.userId,
         newTeamId: team.id,
         previousTeamId: previousTeam?.id,
         // this team is not checked in so we can simply delete it
@@ -329,7 +329,7 @@ function AdminActions() {
       {selectedAction.inputs.includes("USER") ? (
         <div>
           <label htmlFor="user">User</label>
-          <UserCombobox inputName="user" id="user" />
+          <UserSearch inputName="userId" id="user" />
         </div>
       ) : null}
       <SubmitButton
