@@ -58,7 +58,7 @@ interface ComboboxProps<T> {
 }
 
 export function Combobox<
-  T extends Record<string, string | string[] | null | undefined | number>
+  T extends Record<string, string | string[] | null | undefined | number>,
 >({
   options,
   inputName,
@@ -346,7 +346,7 @@ export function GearCombobox({
 }
 
 const mapPoolEventToOption = (
-  e: SerializedMapPoolEvent
+  e: SerializedMapPoolEvent,
 ): ComboboxOption<Pick<SerializedMapPoolEvent, "serializedMapPool">> => ({
   serializedMapPool: e.serializedMapPool,
   label: e.name,
@@ -374,13 +374,13 @@ export function MapPoolEventsCombobox({
 
   const options = React.useMemo(
     () => (events ? events.map(mapPoolEventToOption) : []),
-    [events]
+    [events],
   );
 
   // this is important so that we don't trigger the reset to the initialEvent every time
   const initialOption = React.useMemo(
     () => initialEvent && mapPoolEventToOption(initialEvent),
-    [initialEvent]
+    [initialEvent],
   );
 
   if (isError) {
@@ -401,7 +401,7 @@ export function MapPoolEventsCombobox({
             id: parseInt(e.value, 10),
             name: e.label,
             serializedMapPool: e.serializedMapPool,
-          }
+          },
         );
       }}
       className={className}
