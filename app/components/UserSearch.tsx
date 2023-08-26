@@ -16,6 +16,7 @@ export function UserSearch({
   id,
   className,
   userIdsToOmit,
+  required,
 }: {
   inputName: string;
   onChange?: (user: UserSearchUserItem) => void;
@@ -23,6 +24,7 @@ export function UserSearch({
   id?: string;
   className?: string;
   userIdsToOmit?: Set<number>;
+  required?: boolean;
 }) {
   const { t } = useTranslation();
   const [selectedUser, setSelectedUser] =
@@ -92,6 +94,7 @@ export function UserSearch({
           data-1p-ignore
           data-testid={`${inputName}-combobox-input`}
           id={id}
+          required={required}
         />
         <Combobox.Options
           className={clsx("combobox-options", {

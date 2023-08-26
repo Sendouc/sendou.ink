@@ -16,7 +16,6 @@ import {
   PlUS_SUGGESTION_FIRST_COMMENT_MAX_LENGTH,
   PLUS_TIERS,
 } from "~/constants";
-import { UserCombobox } from "~/components/Combobox";
 import type { ActionFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { z } from "zod";
@@ -33,6 +32,7 @@ import { FormMessage } from "~/components/FormMessage";
 import { atOrError } from "~/utils/arrays";
 import { requireUser, useUser } from "~/modules/auth";
 import { SubmitButton } from "~/components/SubmitButton";
+import { UserSearch } from "~/components/UserSearch";
 
 const commentActionSchema = z.object({
   tier: z.preprocess(
@@ -46,7 +46,7 @@ const commentActionSchema = z.object({
     trimmedString,
     z.string().min(1).max(PlUS_SUGGESTION_FIRST_COMMENT_MAX_LENGTH)
   ),
-  "user[value]": z.preprocess(actualNumber, z.number().positive()),
+  userId: z.preprocess(actualNumber, z.number().positive()),
 });
 
 export const action: ActionFunction = async ({ request }) => {
@@ -55,9 +55,7 @@ export const action: ActionFunction = async ({ request }) => {
     schema: commentActionSchema,
   });
 
-  const suggested = badRequestIfFalsy(
-    db.users.findByIdentifier(data["user[value]"])
-  );
+  const suggested = badRequestIfFalsy(db.users.findByIdentifier(data.userId));
 
   const user = await requireUser(request);
 
@@ -148,7 +146,16 @@ export default function PlusNewSuggestionModalPage() {
         </div>
         <div>
           <label htmlFor="user">Suggested user</label>
-          <UserCombobox inputName="user" onChange={setSelectedUser} required />
+          <UserSearch
+            inputName="userId"
+            onChange={(user) =>
+              setSelectedUser({
+                plusTier: user.plusTier,
+                value: String(user.id),
+              })
+            }
+            required
+          />
           {selectedUserErrorMessage ? (
             <FormMessage type="error">{selectedUserErrorMessage}</FormMessage>
           ) : null}
