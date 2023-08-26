@@ -22,4 +22,4 @@ order by
     else "PlusTier"."tier"
   end asc
 limit
-  25
+  @limit

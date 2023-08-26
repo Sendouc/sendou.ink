@@ -4,8 +4,9 @@ import clsx from "clsx";
 import * as React from "react";
 import { useDebounce } from "react-use";
 import type { User } from "~/db/types";
-import { UserSearchLoaderData } from "~/routes/u";
+import type { UserSearchLoaderData } from "~/routes/u";
 import { Avatar } from "./Avatar";
+import { useTranslation } from "~/hooks/useTranslation";
 
 type UserSearchUserItem = NonNullable<UserSearchLoaderData>["users"][number];
 
@@ -15,11 +16,14 @@ export function UserSearch({
   inputName,
   onChange,
   initialUserId,
+  placeholder,
 }: {
   inputName: string;
   onChange: (userId: User["id"]) => void;
   initialUserId?: number;
+  placeholder?: string;
 }) {
+  const { t } = useTranslation();
   const [selectedUser, setSelectedUser] =
     React.useState<UserSearchUserItem | null>(null);
   const fetcher = useFetcher<UserSearchLoaderData>();
@@ -28,15 +32,15 @@ export function UserSearch({
     () => {
       if (!query) return;
 
-      fetcher.load(`/u?q=${query}`);
+      fetcher.load(`/u?q=${query}&limit=6`);
     },
     1500,
     [query]
   );
 
-  const noMatches = false;
-
+  const noMatches = fetcher.data && fetcher.data.users.length === 0;
   const users = fetcher.data?.users ?? [];
+  const initialSelectionIsLoading = false;
 
   return (
     <div className="combobox-wrapper">
@@ -46,8 +50,12 @@ export function UserSearch({
           setSelectedUser(newUser);
           onChange(newUser!.id);
         }}
+        disabled={initialSelectionIsLoading}
       >
         <Combobox.Input
+          placeholder={
+            initialSelectionIsLoading ? t("actions.loading") : placeholder
+          }
           onChange={(event) => setQuery(event.target.value)}
           displayValue={(user: UserSearchUserItem) => user?.discordName ?? ""}
           name={inputName}
@@ -58,9 +66,15 @@ export function UserSearch({
         <Combobox.Options
           className={clsx("combobox-options", {
             empty: noMatches,
-            hidden: !query,
+            hidden: !fetcher.data,
           })}
         >
+          {noMatches ? (
+            <div className="combobox-no-matches">
+              {t("forms.errors.noSearchMatches")}{" "}
+              <span className="combobox-emoji">🤔</span>
+            </div>
+          ) : null}
           {users.map((user) => (
             <Combobox.Option key={user.id} value={user} as={React.Fragment}>
               {({ active }) => (
@@ -68,7 +82,9 @@ export function UserSearch({
                   <Avatar user={user} size="xs" />
                   <div>
                     <div className="stack xs horizontal items-center">
-                      {user.discordName}{" "}
+                      <span className="combobox-username">
+                        {user.discordName}
+                      </span>{" "}
                       {user.plusTier ? (
                         <span className="text-xxs">+{user.plusTier}</span>
                       ) : null}

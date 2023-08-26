@@ -240,7 +240,7 @@ export const updateResultHighlights = sql.transaction(
 
 // xxx: search by discordUniqueName
 const searchStm = sql.prepare(searchSql);
-export function search(input: string) {
+export function search({ input, limit }: { input: string; limit: number }) {
   const searchString = `%${input}%`;
 
   return (
@@ -248,6 +248,7 @@ export function search(input: string) {
       discordName: searchString,
       inGameName: searchString,
       twitter: searchString,
+      limit,
     }) as Array<
       Pick<
         UserWithPlusTier,
