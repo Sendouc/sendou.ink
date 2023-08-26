@@ -58,8 +58,6 @@ export type FindPlacement = Pick<
   | "year"
   | "region"
   | "playerId"
-  | "month"
-  | "year"
   | "mode"
 > &
   Pick<User, "customUrl" | "discordId">;

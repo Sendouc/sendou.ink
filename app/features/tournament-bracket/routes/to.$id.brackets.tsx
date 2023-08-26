@@ -521,7 +521,7 @@ function TournamentProgressPrompt({ ownedTeamId }: { ownedTeamId: number }) {
   if (data.finalStandings) return null;
 
   const { progress, currentMatchId, currentOpponent } = (() => {
-    let lowestStatus = Infinity;
+    let lowestStatus: Status = Infinity;
     let currentMatchId: number | undefined;
     let currentOpponent: string | undefined;
 
@@ -551,6 +551,7 @@ function TournamentProgressPrompt({ ownedTeamId }: { ownedTeamId: number }) {
     return { progress: lowestStatus, currentMatchId, currentOpponent };
   })();
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
   if (progress === Infinity) {
     console.error("Unexpected no status");
     return null;

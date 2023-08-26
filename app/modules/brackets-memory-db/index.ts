@@ -178,7 +178,6 @@ export class InMemoryDatabase implements CrudInterface {
       }
     }
 
-    // @ts-expect-error imported
     const values = this.data[table].filter(this.makeFilter(arg));
     if (!values) {
       return false;

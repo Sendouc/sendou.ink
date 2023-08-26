@@ -24,7 +24,7 @@ export function divideGroups({
   likes: Pick<GroupLike, "likerGroupId" | "targetGroupId">[];
 }): DividedGroupsUncensored {
   let own: LookingGroupWithInviteCode | null = null;
-  let neutral: LookingGroupWithInviteCode[] = [];
+  const neutral: LookingGroupWithInviteCode[] = [];
   const likesReceived: LookingGroupWithInviteCode[] = [];
   const likesGiven: LookingGroupWithInviteCode[] = [];
 
