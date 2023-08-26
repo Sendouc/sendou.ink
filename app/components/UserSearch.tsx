@@ -10,37 +10,58 @@ import { useTranslation } from "~/hooks/useTranslation";
 
 type UserSearchUserItem = NonNullable<UserSearchLoaderData>["users"][number];
 
-// xxx: add call to search for users by the query
-// xxx: add call to resolve user by id
 export function UserSearch({
   inputName,
   onChange,
   initialUserId,
   placeholder,
+  id,
 }: {
   inputName: string;
   onChange: (userId: User["id"]) => void;
   initialUserId?: number;
   placeholder?: string;
+  id?: string;
 }) {
   const { t } = useTranslation();
   const [selectedUser, setSelectedUser] =
     React.useState<UserSearchUserItem | null>(null);
-  const fetcher = useFetcher<UserSearchLoaderData>();
+  const queryFetcher = useFetcher<UserSearchLoaderData>();
+  const initialUserFetcher = useFetcher<UserSearchLoaderData>();
   const [query, setQuery] = React.useState("");
   useDebounce(
     () => {
       if (!query) return;
 
-      fetcher.load(`/u?q=${query}&limit=6`);
+      queryFetcher.load(`/u?q=${query}&limit=6`);
     },
-    1500,
+    1000,
     [query]
   );
 
-  const noMatches = fetcher.data && fetcher.data.users.length === 0;
-  const users = fetcher.data?.users ?? [];
-  const initialSelectionIsLoading = false;
+  // load initial user
+  React.useEffect(() => {
+    if (
+      !initialUserId ||
+      initialUserFetcher.state !== "idle" ||
+      initialUserFetcher.data
+    ) {
+      return;
+    }
+
+    initialUserFetcher.load(`/u?q=${initialUserId}`);
+  }, [initialUserId, initialUserFetcher]);
+  React.useEffect(() => {
+    if (!initialUserFetcher.data) return;
+
+    setSelectedUser(initialUserFetcher.data.users[0]);
+  }, [initialUserFetcher.data]);
+
+  const noMatches = queryFetcher.data && queryFetcher.data.users.length === 0;
+  const users = queryFetcher.data?.users ?? [];
+  const initialSelectionIsLoading = Boolean(
+    initialUserId && !initialUserFetcher.data
+  );
 
   return (
     <div className="combobox-wrapper">
@@ -62,11 +83,12 @@ export function UserSearch({
           className="combobox-input"
           data-1p-ignore
           data-testid={`${inputName}-combobox-input`}
+          id={id}
         />
         <Combobox.Options
           className={clsx("combobox-options", {
             empty: noMatches,
-            hidden: !fetcher.data,
+            hidden: !queryFetcher.data,
           })}
         >
           {noMatches ? (
