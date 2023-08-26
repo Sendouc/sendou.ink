@@ -8,13 +8,13 @@ export const LEADERBOARD_TYPES = [
   "USER",
   "TEAM",
   ...(weaponCategories.map(
-    (category) => `USER-${category.name}`
+    (category) => `USER-${category.name}`,
   ) as `USER-${(typeof weaponCategories)[number]["name"]}`[]),
   "XP-ALL",
   ...(rankedModesShort.map(
-    (mode) => `XP-MODE-${mode}`
+    (mode) => `XP-MODE-${mode}`,
   ) as `XP-MODE-${(typeof rankedModesShort)[number]}`[]),
   ...(mainWeaponIds.map(
-    (id) => `XP-WEAPON-${id}`
+    (id) => `XP-WEAPON-${id}`,
   ) as `XP-WEAPON-${(typeof mainWeaponIds)[number]}`[]),
 ] as const;

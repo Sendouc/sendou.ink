@@ -24,7 +24,7 @@ interface FindMapPoolsByTournamentIdItem {
 }
 
 export function findMapPoolsByTournamentId(
-  tournamentId: number
+  tournamentId: number,
 ): FindMapPoolsByTournamentIdItem[] {
   const rows = stm.all({ tournamentId }) as any[];
 

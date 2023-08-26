@@ -47,5 +47,5 @@ export const leaveGroup = sql.transaction(
       deleteGroupStm.run({ groupId });
       deleteGroupMapsStm.run({ groupId });
     }
-  }
+  },
 );

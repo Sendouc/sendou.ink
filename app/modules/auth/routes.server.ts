@@ -40,7 +40,7 @@ export const logOutAction: ActionFunction = async ({ request }) => {
 export const logInAction: ActionFunction = async ({ request }) => {
   validate(
     process.env["LOGIN_DISABLED"] !== "true",
-    "Login is temporarily disabled"
+    "Login is temporarily disabled",
   );
 
   return authenticator.authenticate(DISCORD_AUTH_KEY, request);
@@ -53,7 +53,7 @@ export const impersonateAction: ActionFunction = async ({ request }) => {
   }
 
   const session = await authSessionStorage.getSession(
-    request.headers.get("Cookie")
+    request.headers.get("Cookie"),
   );
 
   const url = new URL(request.url);
@@ -71,7 +71,7 @@ export const impersonateAction: ActionFunction = async ({ request }) => {
 
 export const stopImpersonatingAction: ActionFunction = async ({ request }) => {
   const session = await authSessionStorage.getSession(
-    request.headers.get("Cookie")
+    request.headers.get("Cookie"),
   );
 
   session.unset(IMPERSONATED_SESSION_KEY);

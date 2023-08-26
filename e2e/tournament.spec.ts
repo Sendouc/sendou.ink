@@ -15,7 +15,7 @@ import { tournamentBracketsPage, tournamentPage } from "~/utils/urls";
 
 const fetchTournamentLoaderData = () =>
   fetchSendouInk<TournamentLoaderData>(
-    "/to/1/admin?_data=features%2Ftournament%2Froutes%2Fto.%24id"
+    "/to/1/admin?_data=features%2Ftournament%2Froutes%2Fto.%24id",
   );
 
 const getIsOwnerOfUser = ({
@@ -145,7 +145,7 @@ test.describe("Tournament", () => {
     const firstTeam = data.teams.find((t) => t.id === 1);
     invariant(firstTeam, "First team not found");
     const firstNonOwnerMember = firstTeam.members.find(
-      (m) => m.userId !== 1 && !m.isOwner
+      (m) => m.userId !== 1 && !m.isOwner,
     );
     invariant(firstNonOwnerMember, "First non owner member not found");
 
@@ -160,7 +160,7 @@ test.describe("Tournament", () => {
 
     // ...and add to another team
     const teamWithSpace = data.teams.find(
-      (t) => t.id !== 1 && t.members.length === 4
+      (t) => t.id !== 1 && t.members.length === 4,
     );
     invariant(teamWithSpace, "Team with space not found");
 
@@ -175,12 +175,12 @@ test.describe("Tournament", () => {
 
     data = await fetchTournamentLoaderData();
     const teamWithSpaceAgain = data.teams.find(
-      (t) => t.id === teamWithSpace.id
+      (t) => t.id === teamWithSpace.id,
     );
     invariant(teamWithSpaceAgain, "Team with space again not found");
 
     expect(teamWithSpaceAgain.members.length).toBe(
-      teamWithSpace.members.length + 1
+      teamWithSpace.members.length + 1,
     );
 
     // Remove team

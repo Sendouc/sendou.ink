@@ -166,7 +166,7 @@ function useSearchParamPersistedMapPool() {
 
   const handleMapPoolChange = (
     newMapPool: MapPool,
-    event?: Pick<CalendarEvent, "id" | "name">
+    event?: Pick<CalendarEvent, "id" | "name">,
   ) => {
     setMapPool(newMapPool);
     setSearchParams(
@@ -175,7 +175,7 @@ function useSearchParamPersistedMapPool() {
         : {
             pool: newMapPool.serialized,
           },
-      { replace: true, state: { scroll: false } }
+      { replace: true, state: { scroll: false } },
     );
   };
 
@@ -207,9 +207,9 @@ function MapListCreator({ mapPool }: { mapPool: MapPool }) {
       mapPool,
       modesOrder(
         szEveryOther ? "SZ_EVERY_OTHER" : "EQUAL",
-        mapPoolToNonEmptyModes(mapPool)
+        mapPoolToNonEmptyModes(mapPool),
       ),
-      [AMOUNT_OF_MAPS_IN_MAP_LIST]
+      [AMOUNT_OF_MAPS_IN_MAP_LIST],
     );
 
     invariant(list);
@@ -253,10 +253,10 @@ function MapListCreator({ mapPool }: { mapPool: MapPool }) {
                   .map(
                     ({ mode, stageId }, i) =>
                       `${i + 1}) ${t(`game-misc:MODE_SHORT_${mode}`)} ${t(
-                        `game-misc:STAGE_${stageId}`
-                      )}`
+                        `game-misc:STAGE_${stageId}`,
+                      )}`,
                   )
-                  .join("\n")
+                  .join("\n"),
               )
             }
           >

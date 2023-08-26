@@ -37,7 +37,7 @@ export function ModePreferenceIcons({
     <>
       {["SZ_ONLY", "PREFER_SZ"].includes(preference) ? <SZOnly /> : null}
       {["ALL_MODES_ONLY", "PREFER_ALL_MODES", "NO_PREFERENCE"].includes(
-        preference
+        preference,
       ) ? (
         <AllModes />
       ) : null}

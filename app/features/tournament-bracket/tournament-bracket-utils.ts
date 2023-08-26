@@ -39,7 +39,7 @@ export function resolveRoomPass(matchId: TournamentMatch["id"]) {
 }
 
 export function resolveHostingTeam(
-  teams: [TournamentLoaderTeam, TournamentLoaderTeam]
+  teams: [TournamentLoaderTeam, TournamentLoaderTeam],
 ) {
   if (teams[0].prefersNotToHost && !teams[1].prefersNotToHost) return teams[1];
   if (!teams[0].prefersNotToHost && teams[1].prefersNotToHost) return teams[0];
@@ -65,7 +65,7 @@ export function resolveTournamentStageName(format: TournamentFormat) {
 }
 
 export function resolveTournamentStageType(
-  format: TournamentFormat
+  format: TournamentFormat,
 ): TournamentStage["type"] {
   switch (format) {
     case "SE":
@@ -79,7 +79,7 @@ export function resolveTournamentStageType(
 }
 
 export function resolveTournamentStageSettings(
-  format: TournamentFormat
+  format: TournamentFormat,
 ): Stage["settings"] {
   switch (format) {
     case "SE":

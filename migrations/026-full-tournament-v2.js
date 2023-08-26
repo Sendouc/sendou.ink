@@ -9,23 +9,23 @@ module.exports.up = function (db) {
   db.prepare(/*sql*/ `drop table "TournamentMatchGameResult"`).run();
 
   db.prepare(
-    /* sql */ `alter table "CalendarEvent" drop column "customUrl"`
+    /* sql */ `alter table "CalendarEvent" drop column "customUrl"`,
   ).run();
   db.prepare(
-    /* sql */ `alter table "CalendarEvent" drop column "toToolsEnabled"`
+    /* sql */ `alter table "CalendarEvent" drop column "toToolsEnabled"`,
   ).run();
   db.prepare(
-    /* sql */ `alter table "CalendarEvent" drop column "toToolsMode"`
+    /* sql */ `alter table "CalendarEvent" drop column "toToolsMode"`,
   ).run();
   db.prepare(
-    /* sql */ `alter table "CalendarEvent" drop column "isBeforeStart"`
+    /* sql */ `alter table "CalendarEvent" drop column "isBeforeStart"`,
   ).run();
 
   db.prepare(
-    /* sql */ `alter table "CalendarEvent" add "tournamentId" integer`
+    /* sql */ `alter table "CalendarEvent" add "tournamentId" integer`,
   ).run();
   db.prepare(
-    /*sql*/ `create index calendar_event_tournament_id on "CalendarEvent"("tournamentId")`
+    /*sql*/ `create index calendar_event_tournament_id on "CalendarEvent"("tournamentId")`,
   ).run();
 
   db.prepare(
@@ -36,7 +36,7 @@ module.exports.up = function (db) {
     "format" text not null,
     "showMapListGenerator" integer default 0
   ) strict
-  `
+  `,
   ).run();
 
   db.prepare(
@@ -52,10 +52,10 @@ module.exports.up = function (db) {
       foreign key ("tournamentId") references "Tournament"("id") on delete cascade,
       unique("tournamentId", "name") on conflict rollback
     ) strict
-    `
+    `,
   ).run();
   db.prepare(
-    /*sql*/ `create index tournament_team_tournament_id on "TournamentTeam"("tournamentId")`
+    /*sql*/ `create index tournament_team_tournament_id on "TournamentTeam"("tournamentId")`,
   ).run();
 
   db.prepare(
@@ -65,10 +65,10 @@ module.exports.up = function (db) {
       "checkedInAt" integer not null,
       foreign key ("tournamentTeamId") references "TournamentTeam"("id") on delete cascade
     ) strict
-    `
+    `,
   ).run();
   db.prepare(
-    /*sql*/ `create index tournament_team_check_in_tournament_team_id on "TournamentTeamCheckIn"("tournamentTeamId")`
+    /*sql*/ `create index tournament_team_check_in_tournament_team_id on "TournamentTeamCheckIn"("tournamentTeamId")`,
   ).run();
 
   db.prepare(
@@ -81,10 +81,10 @@ module.exports.up = function (db) {
       foreign key ("tournamentTeamId") references "TournamentTeam"("id") on delete cascade,
       unique("tournamentTeamId", "userId") on conflict rollback
     ) strict
-    `
+    `,
   ).run();
   db.prepare(
-    /*sql*/ `create index tournament_team_member_tournament_team_id on "TournamentTeamMember"("tournamentTeamId")`
+    /*sql*/ `create index tournament_team_member_tournament_team_id on "TournamentTeamMember"("tournamentTeamId")`,
   ).run();
 
   db.prepare(
@@ -99,10 +99,10 @@ module.exports.up = function (db) {
     foreign key ("tournamentId") references "Tournament"("id") on delete cascade,
     unique("number", "tournamentId") on conflict rollback
   ) strict
-  `
+  `,
   ).run();
   db.prepare(
-    `create index tournament_stage_tournament_id on "TournamentStage"("tournamentId")`
+    `create index tournament_stage_tournament_id on "TournamentStage"("tournamentId")`,
   ).run();
 
   db.prepare(
@@ -114,10 +114,10 @@ module.exports.up = function (db) {
     foreign key ("stageId") references "TournamentStage"("id") on delete cascade,
     unique("number", "stageId") on conflict rollback
   ) strict
-  `
+  `,
   ).run();
   db.prepare(
-    `create index tournament_group_stage_id on "TournamentGroup"("stageId")`
+    `create index tournament_group_stage_id on "TournamentGroup"("stageId")`,
   ).run();
 
   db.prepare(
@@ -131,13 +131,13 @@ module.exports.up = function (db) {
     foreign key ("groupId") references "TournamentGroup"("id") on delete cascade,
     unique("number", "groupId") on conflict rollback
   ) strict
-  `
+  `,
   ).run();
   db.prepare(
-    `create index tournament_round_stage_id on "TournamentRound"("stageId")`
+    `create index tournament_round_stage_id on "TournamentRound"("stageId")`,
   ).run();
   db.prepare(
-    `create index tournament_round_group_id on "TournamentRound"("groupId")`
+    `create index tournament_round_group_id on "TournamentRound"("groupId")`,
   ).run();
 
   db.prepare(
@@ -158,16 +158,16 @@ module.exports.up = function (db) {
     foreign key ("groupId") references "TournamentGroup"("id") on delete cascade,
     unique("number", "roundId") on conflict rollback
   ) strict
-  `
+  `,
   ).run();
   db.prepare(
-    `create index tournament_match_round_id on "TournamentMatch"("roundId")`
+    `create index tournament_match_round_id on "TournamentMatch"("roundId")`,
   ).run();
   db.prepare(
-    `create index tournament_match_stage_id on "TournamentMatch"("stageId")`
+    `create index tournament_match_stage_id on "TournamentMatch"("stageId")`,
   ).run();
   db.prepare(
-    `create index tournament_match_group_id on "TournamentMatch"("groupId")`
+    `create index tournament_match_group_id on "TournamentMatch"("groupId")`,
   ).run();
 
   db.prepare(
@@ -187,13 +187,13 @@ module.exports.up = function (db) {
       foreign key ("reporterId") references "User"("id") on delete restrict,
       unique("matchId", "number") on conflict rollback
     ) strict
-    `
+    `,
   ).run();
   db.prepare(
-    /*sql*/ `create index tournament_match_game_result_match_id on "TournamentMatchGameResult"("matchId")`
+    /*sql*/ `create index tournament_match_game_result_match_id on "TournamentMatchGameResult"("matchId")`,
   ).run();
   db.prepare(
-    /*sql*/ `create index tournament_match_game_result_winner_team_id on "TournamentMatchGameResult"("winnerTeamId")`
+    /*sql*/ `create index tournament_match_game_result_winner_team_id on "TournamentMatchGameResult"("winnerTeamId")`,
   ).run();
 
   db.prepare(
@@ -205,13 +205,13 @@ module.exports.up = function (db) {
     foreign key ("userId") references "User"("id") on delete cascade,
     unique("matchGameResultId", "userId") on conflict rollback
   ) strict
-  `
+  `,
   ).run();
   db.prepare(
-    `create index tournament_match_game_result_participant_match_game_result_id on "TournamentMatchGameResultParticipant"("matchGameResultId")`
+    `create index tournament_match_game_result_participant_match_game_result_id on "TournamentMatchGameResultParticipant"("matchGameResultId")`,
   ).run();
   db.prepare(
-    `create index tournament_match_game_result_participant_user_id on "TournamentMatchGameResultParticipant"("userId")`
+    `create index tournament_match_game_result_participant_user_id on "TournamentMatchGameResultParticipant"("userId")`,
   ).run();
 
   db.prepare(
@@ -223,12 +223,12 @@ module.exports.up = function (db) {
     foreign key ("trustReceiverUserId") references "User"("id") on delete cascade,
     unique("trustGiverUserId", "trustReceiverUserId") on conflict ignore
   ) strict
-  `
+  `,
   ).run();
   db.prepare(
-    `create index trust_relationship_trust_giver_user_id on "TrustRelationship"("trustGiverUserId")`
+    `create index trust_relationship_trust_giver_user_id on "TrustRelationship"("trustGiverUserId")`,
   ).run();
   db.prepare(
-    `create index trust_relationship_trust_receiver_user_id on "TrustRelationship"("trustReceiverUserId")`
+    `create index trust_relationship_trust_receiver_user_id on "TrustRelationship"("trustReceiverUserId")`,
   ).run();
 };

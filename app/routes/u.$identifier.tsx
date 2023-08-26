@@ -196,7 +196,7 @@ function useReplaceWithCustomUrl() {
       location.pathname
         .split("/")
         .map((part) => (part === identifier ? data.customUrl : part))
-        .join("/")
+        .join("/"),
     );
   }, [location, data.customUrl]);
 }

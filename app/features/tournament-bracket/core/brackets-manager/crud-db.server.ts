@@ -37,7 +37,7 @@ export class Team {
 
   static getByTournamentId(tournamentId: Tournament["id"]): Participant[] {
     return (team_getByTournamentIdStm.all({ tournamentId }) as any[]).map(
-      this.#convertTeam
+      this.#convertTeam,
     );
   }
 }
@@ -92,7 +92,7 @@ export class Stage {
     number: TournamentStage["number"],
     name: TournamentStage["name"],
     type: StageType["type"],
-    settings: TournamentStage["settings"]
+    settings: TournamentStage["settings"],
   ) {
     this.id = id;
     this.tournamentId = tournamentId;
@@ -135,13 +135,13 @@ export class Stage {
 
   static getByTournamentId(tournamentId: Tournament["id"]): Participant[] {
     return (stage_getByTournamentIdStm.all({ tournamentId }) as any[]).map(
-      this.#convertStage
+      this.#convertStage,
     );
   }
 
   static updateSettings(
     id: TournamentStage["id"],
-    settings: TournamentStage["settings"]
+    settings: TournamentStage["settings"],
   ) {
     stage_updateSettingsStm.run({ id, settings });
 
@@ -185,7 +185,7 @@ export class Group {
   constructor(
     id: TournamentGroup["id"] | undefined,
     stageId: TournamentGroup["stageId"],
-    number: TournamentGroup["number"]
+    number: TournamentGroup["number"],
   ) {
     this.id = id;
     this.stageId = stageId;
@@ -208,13 +208,13 @@ export class Group {
 
   static getByStageId(stageId: TournamentStage["id"]): GroupType[] {
     return (group_getByStageIdStm.all({ stageId }) as any[]).map(
-      this.#convertGroup
+      this.#convertGroup,
     );
   }
 
   static getByStageAndNumber(
     stageId: TournamentStage["id"],
-    number: TournamentGroup["number"]
+    number: TournamentGroup["number"],
   ): GroupType {
     const group = group_getByStageAndNumberStm.get({ stageId, number }) as any;
     if (!group) return group;
@@ -277,7 +277,7 @@ export class Round {
     id: TournamentRound["id"] | undefined,
     stageId: TournamentRound["stageId"],
     groupId: TournamentRound["groupId"],
-    number: TournamentRound["number"]
+    number: TournamentRound["number"],
   ) {
     this.id = id;
     this.stageId = stageId;
@@ -308,19 +308,19 @@ export class Round {
 
   static getByStageId(stageId: TournamentStage["id"]): RoundType[] {
     return (round_getByStageIdStm.all({ stageId }) as any[]).map(
-      this.#convertRound
+      this.#convertRound,
     );
   }
 
   static getByGroupId(groupId: TournamentGroup["id"]): RoundType[] {
     return (round_getByGroupIdStm.all({ groupId }) as any[]).map(
-      this.#convertRound
+      this.#convertRound,
     );
   }
 
   static getByGroupAndNumber(
     groupId: TournamentGroup["id"],
-    number: TournamentRound["number"]
+    number: TournamentRound["number"],
   ): RoundType {
     const round = round_getByGroupAndNumberStm.get({ groupId, number }) as any;
     if (!round) return round;
@@ -400,7 +400,7 @@ export class Match {
     _unknown2: null,
     _unknown3: null,
     opponentOne: TournamentMatch["opponentOne"],
-    opponentTwo: TournamentMatch["opponentTwo"]
+    opponentTwo: TournamentMatch["opponentTwo"],
   ) {
     this.id = id;
     this.childCount = childCount;
@@ -435,13 +435,13 @@ export class Match {
 
   static getByStageId(stageId: TournamentStage["id"]): MatchType[] {
     return (match_getByStageIdStm.all({ stageId }) as any[]).map(
-      this.#convertMatch
+      this.#convertMatch,
     );
   }
 
   static getByRoundAndNumber(
     roundId: TournamentRound["id"],
-    number: TournamentMatch["number"]
+    number: TournamentMatch["number"],
   ): MatchType {
     const match = match_getByRoundAndNumberStm.get({ roundId, number }) as any;
     if (!match) return match;

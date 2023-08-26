@@ -37,7 +37,7 @@ export const createVod = sql.transaction(
       submitterUserId: number;
       isValidated: boolean;
       id?: number;
-    }
+    },
   ) => {
     const video = createVideoStm.get({
       id: args.id,
@@ -72,7 +72,7 @@ export const createVod = sql.transaction(
     }
 
     return video;
-  }
+  },
 );
 
 export const updateVodByReplacing = sql.transaction(
@@ -81,11 +81,11 @@ export const updateVodByReplacing = sql.transaction(
       submitterUserId: number;
       isValidated: boolean;
       id: number;
-    }
+    },
   ) => {
     deleteVideoStm.run({ id: args.id });
     const video = createVod(args);
 
     return video;
-  }
+  },
 );

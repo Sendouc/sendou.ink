@@ -100,7 +100,7 @@ export interface SetHistoryByTeamIdItem {
 }
 
 export function setHistoryByTeamId(
-  tournamentTeamId: number
+  tournamentTeamId: number,
 ): Array<SetHistoryByTeamIdItem> {
   const rows = stm.all({ tournamentTeamId }) as any[];
 
@@ -111,7 +111,7 @@ export function setHistoryByTeamId(
       // TODO: there is probably a way to do this in SQL
       players: removeDuplicatesByProperty(
         parseDBArray(row.players),
-        (u: Pick<User, "id">) => u.id
+        (u: Pick<User, "id">) => u.id,
       ),
     };
   });

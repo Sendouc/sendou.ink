@@ -44,7 +44,7 @@ export function queryTeamPlayerRatingAverage({
   season: number;
 }) {
   const playerRatings = identifierToUserIds(identifier).map((userId) =>
-    queryCurrentUserRating({ userId, season })
+    queryCurrentUserRating({ userId, season }),
   );
 
   if (playerRatings.length === 0) return rating();

@@ -80,14 +80,14 @@ export const action: ActionFunction = async ({ request }) => {
       const available = trustedPlayersAvailableToPlay(user);
       validate(
         available.some((u) => u.id === data.id),
-        "Player not available to play"
+        "Player not available to play",
       );
 
       const ownGroupWithMembers = groupForMatch(currentGroup.id);
       invariant(ownGroupWithMembers, "No own group found");
       validate(
         ownGroupWithMembers.members.length < FULL_GROUP_SIZE,
-        "Group is full"
+        "Group is full",
       );
 
       addMember({

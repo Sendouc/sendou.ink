@@ -208,7 +208,7 @@ function FancyStageBanner({
 
   const style = {
     "--_tournament-bg-url": `url("${stageNameToBannerImageUrl(
-      stage.stageId
+      stage.stageId,
     )}")`,
   };
 
@@ -305,7 +305,7 @@ function ModeProgressIndicator({
                 "tournament-bracket__mode-progress__image__selected":
                   i === selectedResultIndex,
                 "cursor-pointer": Boolean(setSelectedResultIndex),
-              }
+              },
             )}
             key={i}
             path={modeImageUrl(mode)}

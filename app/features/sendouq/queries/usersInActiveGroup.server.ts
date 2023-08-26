@@ -22,7 +22,7 @@ export function trustedPlayersAvailableToPlay(user: {
   if (trusted.length === 0) return trusted;
 
   const activePlayers = (stm.all() as Array<{ userId: number }>).map(
-    (u) => u.userId
+    (u) => u.userId,
   );
 
   return trusted.filter((u) => !activePlayers.includes(u.id));

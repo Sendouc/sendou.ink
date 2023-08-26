@@ -25,10 +25,10 @@ export function useSearchParamState<T>({
       window.history.replaceState(
         {},
         "",
-        `${window.location.pathname}?${String(searchParams)}`
+        `${window.location.pathname}?${String(searchParams)}`,
       );
     },
-    [name]
+    [name],
   );
 
   return [state, handleChange] as const;

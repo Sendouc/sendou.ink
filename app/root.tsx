@@ -131,7 +131,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     },
     {
       headers: { "Set-Cookie": await i18nCookie.serialize(locale) },
-    }
+    },
   );
 };
 
@@ -220,7 +220,7 @@ function useLoadingIndicator() {
       if (states.every((state) => state === "idle")) return "idle";
       return "loading";
     },
-    [transition.state, fetchers]
+    [transition.state, fetchers],
   );
 
   React.useEffect(() => {
@@ -272,8 +272,8 @@ function useCustomizedCSSVars() {
       // even an illusion of type safety here
       return Object.fromEntries(
         Object.entries(
-          match.data[CUSTOMIZED_CSS_VARS_NAME] as Record<string, string>
-        ).map(([key, value]) => [`--${key}`, value])
+          match.data[CUSTOMIZED_CSS_VARS_NAME] as Record<string, string>,
+        ).map(([key, value]) => [`--${key}`, value]),
       ) as React.CSSProperties;
     }
   }

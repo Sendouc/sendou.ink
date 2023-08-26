@@ -15,7 +15,7 @@ const fetcher = async (url: string) => {
 export function useAllEventsWithMapPools() {
   const { data, error } = useSWRImmutable<EventsWithMapPoolsLoaderData>(
     GET_ALL_EVENTS_WITH_MAP_POOLS_ROUTE,
-    fetcher
+    fetcher,
   );
 
   return {
@@ -33,7 +33,7 @@ export function useWeaponUsage(args: {
 }) {
   const { data, error } = useSWRImmutable<WeaponUsageLoaderData>(
     getWeaponUsage(args),
-    fetcher
+    fetcher,
   );
 
   return {

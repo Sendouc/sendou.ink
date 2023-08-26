@@ -58,25 +58,25 @@ import { Ability } from "~/components/Ability";
 const FILTER_SEARCH_PARAM_KEY = "f";
 
 const filterOutMeaninglessFilters = (
-  filter: Unpacked<BuildFiltersFromSearchParams>
+  filter: Unpacked<BuildFiltersFromSearchParams>,
 ) =>
   filter.comparison !== "AT_LEAST" ||
   typeof filter.value !== "number" ||
   filter.value > 0;
 export const shouldRevalidate: ShouldRevalidateFunction = (args) => {
   const rawOldFilters = args.currentUrl.searchParams.get(
-    FILTER_SEARCH_PARAM_KEY
+    FILTER_SEARCH_PARAM_KEY,
   );
   const oldFilters = rawOldFilters
     ? safeJSONParse<BuildFiltersFromSearchParams>(rawOldFilters, []).filter(
-        filterOutMeaninglessFilters
+        filterOutMeaninglessFilters,
       )
     : null;
   const rawNewFilters = args.nextUrl.searchParams.get(FILTER_SEARCH_PARAM_KEY);
   const newFilters = rawNewFilters
     ? // no safeJSONParse as the value should be coming from app code and should be trustworthy
       (JSON.parse(rawNewFilters) as BuildFiltersFromSearchParams).filter(
-        filterOutMeaninglessFilters
+        filterOutMeaninglessFilters,
       )
     : null;
 
@@ -95,13 +95,14 @@ export const shouldRevalidate: ShouldRevalidateFunction = (args) => {
   }
   // all meaningful filters identical -> skip revalidation
   if (
-    newFilters?.every((f1) =>
-      oldFilters?.some(
-        (f2) =>
-          f1.ability === f2.ability &&
-          f1.comparison === f2.comparison &&
-          f1.value === f2.value
-      )
+    newFilters?.every(
+      (f1) =>
+        oldFilters?.some(
+          (f2) =>
+            f1.ability === f2.ability &&
+            f1.comparison === f2.comparison &&
+            f1.value === f2.value,
+        ),
     )
   ) {
     return false;
@@ -153,7 +154,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const url = new URL(request.url);
   const limit = Math.min(
     Number(url.searchParams.get("limit") ?? BUILDS_PAGE_BATCH_SIZE),
-    BUILDS_PAGE_MAX_BUILDS
+    BUILDS_PAGE_MAX_BUILDS,
   );
 
   const weaponName = t(`weapons:MAIN_${weaponId}`);
@@ -179,7 +180,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   if (!filters.success) {
     console.error(
       "Invalid filters",
-      JSON.stringify(filters.error.errors, null, 2)
+      JSON.stringify(filters.error.errors, null, 2),
     );
   }
 
@@ -229,7 +230,7 @@ export default function WeaponsBuildsPage() {
   const { t } = useTranslation(["common", "builds"]);
   const [, setSearchParams] = useSearchParams();
   const [filters, setFilters] = React.useState<BuildFilter[]>(
-    data.filters ? data.filters.map((f) => ({ ...f, id: nanoid() })) : []
+    data.filters ? data.filters.map((f) => ({ ...f, id: nanoid() })) : [],
   );
 
   const syncSearchParams = (newFilters: BuildFilter[]) => {
@@ -244,7 +245,7 @@ export default function WeaponsBuildsPage() {
         ? {
             [FILTER_SEARCH_PARAM_KEY]: JSON.stringify(filtersForSearchParams),
           }
-        : {}
+        : {},
     );
   };
 

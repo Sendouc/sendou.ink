@@ -14,7 +14,7 @@ export const questionCommand: BotCommand = {
   builder: addSubcommands(
     new SlashCommandBuilder()
       .setName(COMMAND_NAME)
-      .setDescription("Find a link")
+      .setDescription("Find a link"),
   ),
   execute: async ({ interaction }) => {
     let value: string | string[] | Record<Wave, string | string[]> =
@@ -28,7 +28,7 @@ export const questionCommand: BotCommand = {
     value = value[interaction.options.getString(WAVE_ARG) as Wave];
     if (!value) {
       throw new Error(
-        `Unknown combination: ${interaction.options.getSubcommand()} + ${value}`
+        `Unknown combination: ${interaction.options.getSubcommand()} + ${value}`,
       );
     }
 
@@ -56,8 +56,8 @@ function addSubcommands(builder: SlashCommandBuilder) {
               ...Object.keys(value).map((key) => ({
                 name: key,
                 value: key,
-              }))
-            )
+              })),
+            ),
         );
       }
 

@@ -68,10 +68,10 @@ export interface PlusVotingResultByMonthYear {
 }
 
 export function resultsByMontYear(
-  args: MonthYear
+  args: MonthYear,
 ): PlusVotingResultByMonthYear {
   const results = resultsByMonthYearStm.all(
-    args
+    args,
   ) as PlusVotingResultsByMonthYearDatabaseResult;
 
   return {
@@ -81,7 +81,7 @@ export function resultsByMontYear(
 }
 
 function groupPlusVotingResults(
-  rows: PlusVotingResultsByMonthYearDatabaseResult
+  rows: PlusVotingResultsByMonthYearDatabaseResult,
 ): PlusVotingResultByMonthYear["results"] {
   const grouped: Record<
     number,
@@ -115,7 +115,7 @@ function groupPlusVotingResults(
 }
 
 function scoresFromPlusVotingResults(
-  rows: PlusVotingResultsByMonthYearDatabaseResult
+  rows: PlusVotingResultsByMonthYearDatabaseResult,
 ) {
   return rows
     .map((row) => ({
@@ -144,7 +144,7 @@ export type UsersForVoting = {
 }[];
 
 export function usersForVoting(
-  loggedInUser?: Pick<UserWithPlusTier, "id" | "plusTier">
+  loggedInUser?: Pick<UserWithPlusTier, "id" | "plusTier">,
 ) {
   if (!loggedInUser || !loggedInUser.plusTier) return;
 
@@ -207,6 +207,6 @@ export function hasVoted({
       userId: user.id,
       month,
       year,
-    })
+    }),
   );
 }

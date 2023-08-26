@@ -40,11 +40,11 @@ export default function Planner() {
       setApp(mountedApp);
       mountedApp.setSetting(
         "language",
-        ourLanguageToTldrawLanguage(i18n.language)
+        ourLanguageToTldrawLanguage(i18n.language),
       );
       mountedApp.style({ color: ColorStyle.Red });
     },
-    [i18n]
+    [i18n],
   );
 
   const handleAddImage = React.useCallback(
@@ -91,7 +91,7 @@ export default function Planner() {
       });
       cb?.();
     },
-    [app]
+    [app],
   );
 
   const handleAddWeapon = React.useCallback(
@@ -143,7 +143,7 @@ export default function Planner() {
       plannerBgParams.bgWidth,
       plannerBgParams.pointOffsetX,
       plannerBgParams.pointOffsetY,
-    ]
+    ],
   );
 
   const handleAddBackgroundImage = React.useCallback(
@@ -168,7 +168,7 @@ export default function Planner() {
       plannerBgParams.bgWidth,
       plannerBgParams.pointOffsetX,
       plannerBgParams.pointOffsetY,
-    ]
+    ],
   );
 
   return (
@@ -220,7 +220,7 @@ function WeaponImageSelector({
                     variant="minimal"
                     onClick={() =>
                       handleAddWeapon(
-                        `${outlinedMainWeaponImageUrl(weaponId)}.png`
+                        `${outlinedMainWeaponImageUrl(weaponId)}.png`,
                       )
                     }
                   >
@@ -283,7 +283,7 @@ function WeaponImageSelector({
                 variant="minimal"
                 onClick={() =>
                   handleAddWeapon(
-                    `${specialWeaponImageUrl(specialWeaponId)}.png`
+                    `${specialWeaponImageUrl(specialWeaponId)}.png`,
                   )
                 }
               >
@@ -396,7 +396,7 @@ const ourLanguageToTldrawLanguageMap: Record<LanguageCode, string> = {
 };
 function ourLanguageToTldrawLanguage(ourLanguageUserSelected: string) {
   for (const [ourLanguage, tldrawLanguage] of Object.entries(
-    ourLanguageToTldrawLanguageMap
+    ourLanguageToTldrawLanguageMap,
   )) {
     if (ourLanguage === ourLanguageUserSelected) {
       return tldrawLanguage;

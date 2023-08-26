@@ -17,7 +17,7 @@ export class SqlDatabase {
           arg.number,
           arg.name,
           arg.type,
-          JSON.stringify(arg.settings)
+          JSON.stringify(arg.settings),
         );
         return stage.insert() && stage.id;
 
@@ -30,7 +30,7 @@ export class SqlDatabase {
           undefined,
           arg.stage_id,
           arg.group_id,
-          arg.number
+          arg.number,
         );
         return round.insert() && round.id;
 
@@ -47,7 +47,7 @@ export class SqlDatabase {
           null,
           null,
           JSON.stringify(arg.opponent1),
-          JSON.stringify(arg.opponent2)
+          JSON.stringify(arg.opponent2),
         );
         return match.insert() && match.id;
 
@@ -63,7 +63,7 @@ export class SqlDatabase {
           null,
           null,
           JSON.stringify(arg.opponent1),
-          JSON.stringify(arg.opponent2)
+          JSON.stringify(arg.opponent2),
         );
         return matchGame.insert() && matchGame.id;
     }
@@ -93,7 +93,7 @@ export class SqlDatabase {
           throw new Error("not implemented");
           const stage = Stage.getByTournamentAndNumber(
             arg.tournament_id,
-            arg.number
+            arg.number,
           );
           return stage && [convertStage(stage)];
         }
@@ -196,7 +196,7 @@ export class SqlDatabase {
         if (arg.parent_id && arg.number) {
           const game = MatchGame.getByParentAndNumber(
             arg.parent_id,
-            arg.number
+            arg.number,
           );
           return game && [convertMatchGame(game)];
         }
@@ -235,7 +235,7 @@ export class SqlDatabase {
             null,
             null,
             JSON.stringify(update.opponent1),
-            JSON.stringify(update.opponent2)
+            JSON.stringify(update.opponent2),
           );
 
           return match.update();
@@ -244,19 +244,19 @@ export class SqlDatabase {
         if (query.stage_id)
           return Match.updateChildCountByStage(
             query.stage_id,
-            update.child_count
+            update.child_count,
           );
 
         if (query.group_id)
           return Match.updateChildCountByGroup(
             query.group_id,
-            update.child_count
+            update.child_count,
           );
 
         if (query.round_id)
           return Match.updateChildCountByRound(
             query.round_id,
-            update.child_count
+            update.child_count,
           );
 
         break;
@@ -274,7 +274,7 @@ export class SqlDatabase {
             null,
             null,
             JSON.stringify(update.opponent1),
-            JSON.stringify(update.opponent2)
+            JSON.stringify(update.opponent2),
           );
 
           return game.update();
@@ -291,7 +291,7 @@ export class SqlDatabase {
             null,
             null,
             JSON.stringify(update.opponent1),
-            JSON.stringify(update.opponent2)
+            JSON.stringify(update.opponent2),
           );
 
           return game.updateByParentId();
@@ -336,7 +336,7 @@ export class SqlDatabase {
         )
           return MatchGame.deleteByParentAndNumber(
             filter.parent_id,
-            filter.number
+            filter.number,
           );
         else return false;
 

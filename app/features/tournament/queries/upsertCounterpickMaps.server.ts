@@ -33,5 +33,5 @@ export const upsertCounterpickMaps = sql.transaction(
         mode,
       });
     }
-  }
+  },
 );

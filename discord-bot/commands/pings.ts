@@ -13,7 +13,7 @@ export const pingRolesCommand: BotCommand = {
   builder: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(
-      "Turn on/off pings when people are looking for someone to play with"
+      "Turn on/off pings when people are looking for someone to play with",
     )
     .addStringOption((option) =>
       option
@@ -28,8 +28,8 @@ export const pingRolesCommand: BotCommand = {
           {
             name: "+3",
             value: "+3",
-          }
-        )
+          },
+        ),
     )
     .addStringOption((option) =>
       option
@@ -44,8 +44,8 @@ export const pingRolesCommand: BotCommand = {
           {
             name: "remove",
             value: "remove",
-          }
-        )
+          },
+        ),
     ),
   execute: async ({ interaction }) => {
     const roleBeingAdded = interaction.options.getString(ACTION_ARG) === "add";

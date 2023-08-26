@@ -166,7 +166,7 @@ export class InMemoryDatabase implements CrudInterface {
   update<T>(
     table: Table,
     arg: number | Partial<T>,
-    value?: Partial<T>
+    value?: Partial<T>,
   ): boolean {
     if (typeof arg === "number") {
       try {

@@ -47,7 +47,7 @@ GetChildGames(
 
     assert.equal(matches.length, 2);
     assert.equal(games.length, 2); // Only two child games.
-  }
+  },
 );
 
 const GetFinalStandings = suite("Get final standings");
@@ -100,7 +100,7 @@ GetFinalStandings(
       { id: 6, name: "Team 7", rank: 5 },
       { id: 2, name: "Team 3", rank: 5 },
     ]);
-  }
+  },
 );
 
 GetFinalStandings(
@@ -147,7 +147,7 @@ GetFinalStandings(
       { id: 6, name: "Team 7", rank: 4 },
       { id: 2, name: "Team 3", rank: 4 },
     ]);
-  }
+  },
 );
 
 GetFinalStandings(
@@ -191,7 +191,7 @@ GetFinalStandings(
       { id: 7, name: "Team 8", rank: 6 },
       { id: 2, name: "Team 3", rank: 6 },
     ]);
-  }
+  },
 );
 
 GetFinalStandings(
@@ -236,7 +236,7 @@ GetFinalStandings(
       { id: 4, name: "Team 5", rank: 6 },
       { id: 1, name: "Team 2", rank: 6 },
     ]);
-  }
+  },
 );
 
 const GetSeeding = suite("Get seeding");
@@ -307,7 +307,7 @@ GetSeeding(
 
     const seeding = manager.get.seeding(0);
     assert.equal(seeding.length, 8);
-  }
+  },
 );
 
 GetSeeding("should get the seeding of a single elimination stage", () => {

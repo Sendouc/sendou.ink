@@ -19,5 +19,5 @@ export const transferOwnership = sql.transaction(
   }) => {
     stm.run({ teamId, userId: oldOwnerUserId, isOwner: 0 });
     stm.run({ teamId, userId: newOwnerUserId, isOwner: 1 });
-  }
+  },
 );

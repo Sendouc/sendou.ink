@@ -37,13 +37,13 @@ export default function FrontPage() {
   const data = useRootLoaderData();
   const { userTheme } = useTheme();
   const [filters, setFilters] = React.useState<[string, string]>(
-    navItems[0]?.filters as [string, string]
+    navItems[0]?.filters as [string, string],
   );
   const { t, i18n } = useTranslation(["common"]);
   const user = useUser();
 
   const selectedLanguage = languages.find(
-    (lang) => i18n.language === lang.code
+    (lang) => i18n.language === lang.code,
   );
 
   return (

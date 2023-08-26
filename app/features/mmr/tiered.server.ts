@@ -39,7 +39,7 @@ export function freshUserSkills(): {
     userSkills: Object.fromEntries(
       points.map((p) => {
         const { name, isPlus } = tierIntervals.find(
-          (t) => t.neededOrdinal! <= p.ordinal
+          (t) => t.neededOrdinal! <= p.ordinal,
         ) ?? { name: "IRON", isPlus: false };
         return [
           p.userId as number,
@@ -49,7 +49,7 @@ export function freshUserSkills(): {
             approximate: p.matchesCount < MATCHES_COUNT_NEEDED_FOR_LEADERBOARD,
           },
         ];
-      })
+      }),
     ),
   };
 }
@@ -77,14 +77,14 @@ export type SkillTierInterval = ReturnType<typeof skillTierIntervals>[number];
 
 function skillTierIntervals(
   orderedPoints: Array<Pick<Skill, "ordinal" | "matchesCount">>,
-  type: "user" | "team"
+  type: "user" | "team",
 ) {
   const LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN =
     type === "user"
       ? USER_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN
       : TEAM_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN;
   let points = orderedPoints.filter(
-    (p) => p.matchesCount >= MATCHES_COUNT_NEEDED_FOR_LEADERBOARD
+    (p) => p.matchesCount >= MATCHES_COUNT_NEEDED_FOR_LEADERBOARD,
   );
   const hasLeviathan = points.length >= LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN;
   if (!hasLeviathan) {
@@ -102,7 +102,7 @@ function skillTierIntervals(
       ...tier,
       isPlus,
       percentile: tier.percentile / 2,
-    }))
+    })),
   );
   const result: Array<{
     name: TierName;

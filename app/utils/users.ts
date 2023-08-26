@@ -3,7 +3,7 @@ import { isAdmin } from "~/permissions";
 import { isCustomUrl } from "./urls";
 
 export function isAtLeastFiveDollarTierPatreon(
-  user?: Pick<User, "patronTier" | "id">
+  user?: Pick<User, "patronTier" | "id">,
 ) {
   if (!user) return false;
 
@@ -13,7 +13,7 @@ export function isAtLeastFiveDollarTierPatreon(
 const urlRegExp = new RegExp("(https://)?sendou.ink/u/(.+)");
 const DISCORD_ID_MIN_LENGTH = 17;
 export function queryToUserIdentifier(
-  query: string
+  query: string,
 ): { id: number } | { discordId: string } | { customUrl: string } | null {
   const match = query.match(urlRegExp);
 

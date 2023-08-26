@@ -9,7 +9,7 @@ invariant(discordId, "discord id is required (argument 1)");
 
 sql
   .prepare(
-    'delete from "Skill" where "userId" = (select id from "User" where discordId = @discordId)'
+    'delete from "Skill" where "userId" = (select id from "User" where discordId = @discordId)',
   )
   .run({ discordId });
 

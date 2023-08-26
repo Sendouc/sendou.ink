@@ -7,7 +7,7 @@ export default function Chart({
   options,
 }: {
   options: [
-    { label: string; data: Array<{ primary: Date; secondary: number }> }
+    { label: string; data: Array<{ primary: Date; secondary: number }> },
   ];
 }) {
   const theme = useTheme();
@@ -19,7 +19,7 @@ export default function Chart({
     () => ({
       getValue: (datum) => datum.primary,
     }),
-    []
+    [],
   );
 
   const secondaryAxes = React.useMemo<
@@ -30,7 +30,7 @@ export default function Chart({
         getValue: (datum) => datum.secondary,
       },
     ],
-    []
+    [],
   );
 
   if (!isMounted) return <div className="chart__container" />;

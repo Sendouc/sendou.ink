@@ -31,6 +31,6 @@ export function isTeamFull(team: DetailedTeam) {
 
 export function canAddCustomizedColors(team: DetailedTeam) {
   return team.members.some(
-    (member) => member.patronTier && member.patronTier >= 2
+    (member) => member.patronTier && member.patronTier >= 2,
   );
 }

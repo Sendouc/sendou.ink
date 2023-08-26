@@ -132,7 +132,7 @@ function formDataToObject(formData: FormData) {
 export function validate(
   condition: any,
   message?: string,
-  status = 400
+  status = 400,
 ): asserts condition {
   if (condition) return;
 
@@ -140,7 +140,7 @@ export function validate(
     message ? JSON.stringify({ validationError: message }) : undefined,
     {
       status,
-    }
+    },
   );
 }
 

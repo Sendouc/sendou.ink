@@ -70,10 +70,10 @@ export function weaponUsageStats({
   const result: WeaponUsageStat[] = [];
 
   const addDelta = (
-    stat: Omit<WeaponUsageStat, "count" | "wins" | "losses"> & { won: boolean }
+    stat: Omit<WeaponUsageStat, "count" | "wins" | "losses"> & { won: boolean },
   ) => {
     const existing = result.find(
-      (s) => s.weaponSplId === stat.weaponSplId && s.type === stat.type
+      (s) => s.weaponSplId === stat.weaponSplId && s.type === stat.type,
     );
 
     if (existing) {

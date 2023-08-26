@@ -31,7 +31,7 @@ export const upsertManyManagers = sql.transaction(
         badgeId,
       });
     }
-  }
+  },
 );
 
 const deleteManyOwnersStm = sql.prepare(deleteManyOwnersSql);
@@ -54,7 +54,7 @@ export const upsertManyOwners = sql.transaction(
         badgeId,
       });
     }
-  }
+  },
 );
 
 const findByOwnerIdStm = sql.prepare(findByOwnerIdSql);

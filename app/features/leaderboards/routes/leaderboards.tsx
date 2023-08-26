@@ -87,7 +87,7 @@ const TYPE_SEARCH_PARAM_KEY = "type";
 export const loader = async ({ request }: LoaderArgs) => {
   const t = await i18next.getFixedT(request);
   const unvalidatedType = new URL(request.url).searchParams.get(
-    TYPE_SEARCH_PARAM_KEY
+    TYPE_SEARCH_PARAM_KEY,
   );
 
   const type =
@@ -134,7 +134,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     userLeaderboard && type !== "USER"
       ? filterByWeaponCategory(
           userLeaderboard,
-          type.split("-")[1] as (typeof weaponCategories)[number]["name"]
+          type.split("-")[1] as (typeof weaponCategories)[number]["name"],
         )
       : userLeaderboard;
 
@@ -175,7 +175,7 @@ export default function LeaderboardsPage() {
                 (type) => {
                   const userOrTeam = type.includes("USER") ? "USER" : "TEAM";
                   const category = weaponCategories.find((c) =>
-                    type.includes(c.name)
+                    type.includes(c.name),
                   )?.name;
 
                   return (
@@ -186,7 +186,7 @@ export default function LeaderboardsPage() {
                         : ""}
                     </option>
                   );
-                }
+                },
               )}
             </optgroup>
           );

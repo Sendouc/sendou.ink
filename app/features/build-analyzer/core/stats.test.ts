@@ -17,7 +17,7 @@ AnalyzeBuild("Every main weapon has damage", () => {
 
     const hasDamage =
       analyzed.stats.damages.filter(
-        (dmg) => damageTypeToWeaponType[dmg.type] === "MAIN"
+        (dmg) => damageTypeToWeaponType[dmg.type] === "MAIN",
       ).length > 0;
 
     if (!hasDamage) {
@@ -27,7 +27,7 @@ AnalyzeBuild("Every main weapon has damage", () => {
 
   assert.ok(
     weaponsWithoutDamage.length === 0,
-    `Weapons without damage set: ${weaponsWithoutDamage.join(", ")}`
+    `Weapons without damage set: ${weaponsWithoutDamage.join(", ")}`,
   );
 });
 
@@ -44,7 +44,7 @@ AnalyzeBuild("Ninja Squid decreases swim speed", () => {
   });
 
   assert.ok(
-    analyzed.stats.swimSpeed.value > analyzedWithNS.stats.swimSpeed.value
+    analyzed.stats.swimSpeed.value > analyzedWithNS.stats.swimSpeed.value,
   );
 });
 
@@ -64,17 +64,17 @@ AnalyzeBuild("Tacticooler / RP calculated correctly", () => {
   assert.ok(
     fullQR.stats.quickRespawnTime.value ===
       tacticooler.stats.quickRespawnTime.value,
-    "Base QR should be same whether 57AP of QR or Tacticooler"
+    "Base QR should be same whether 57AP of QR or Tacticooler",
   );
   assert.ok(
     fullQR.stats.quickRespawnTimeSplattedByRP.value >
       tacticooler.stats.quickRespawnTimeSplattedByRP.value,
-    "Tacticooler splatted by RP should respawn faster than 57AP of QR"
+    "Tacticooler splatted by RP should respawn faster than 57AP of QR",
   );
   assert.ok(
     tacticooler.stats.quickRespawnTime.value <
       tacticooler.stats.quickRespawnTimeSplattedByRP.value,
-    "Tacticooler should respawn faster than Tacticooler splatted by RP"
+    "Tacticooler should respawn faster than Tacticooler splatted by RP",
   );
 });
 
@@ -93,9 +93,9 @@ AnalyzeBuild(
 
     assert.ok(
       analyzedDualieSquelchers.stats.subWeaponInkConsumptionPercentage.value >
-        analyzedJr.stats.subWeaponInkConsumptionPercentage.value
+        analyzedJr.stats.subWeaponInkConsumptionPercentage.value,
     );
-  }
+  },
 );
 
 const subPowerApToQuickSuperJumpAp = new Map([
@@ -119,7 +119,7 @@ AnalyzeBuild("Sub Power Up Beakon AP boost matches Lean", () => {
       analyzed.stats.subQsjBoost?.value === quickSuperJumpAp,
       `Wrong AP boost for ${subPowerAp}AP of Sub Power Up: ${
         analyzed.stats.subQsjBoost!.value
-      } (expected ${quickSuperJumpAp}))`
+      } (expected ${quickSuperJumpAp}))`,
     );
   }
 });

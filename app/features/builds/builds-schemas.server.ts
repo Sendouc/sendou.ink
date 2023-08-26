@@ -14,7 +14,7 @@ const buildFilterSchema = z.object({
 
 export const buildFiltersSearchParams = z.preprocess(
   safeJSONParse,
-  z.union([z.null(), z.array(buildFilterSchema).max(MAX_BUILD_FILTERS)])
+  z.union([z.null(), z.array(buildFilterSchema).max(MAX_BUILD_FILTERS)]),
 );
 
 export type BuildFiltersFromSearchParams = NonNullable<

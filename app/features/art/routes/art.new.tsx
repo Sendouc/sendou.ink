@@ -67,7 +67,7 @@ export const action: ActionFunction = async ({ request }) => {
     validate(
       existingArt?.authorId === user.id,
       "Insufficient permissions",
-      401
+      401,
     );
 
     const data = await parseRequestFormData({
@@ -86,7 +86,7 @@ export const action: ActionFunction = async ({ request }) => {
   } else {
     const uploadHandler = composeUploadHandlers(
       s3UploadHandler(`art-${nanoid()}-${Date.now()}`),
-      createMemoryUploadHandler()
+      createMemoryUploadHandler(),
     );
     const formData = await parseMultipartFormData(request, uploadHandler);
     const imgSrc = formData.get("img") as string | null;
@@ -119,7 +119,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   validate(user.isArtist, "Lacking artist role", 403);
 
   const artIdRaw = new URL(request.url).searchParams.get(
-    NEW_ART_EXISTING_SEARCH_PARAM_KEY
+    NEW_ART_EXISTING_SEARCH_PARAM_KEY,
   );
   if (!artIdRaw) return { art: null, tags: allArtTags() };
   const artId = Number(artIdRaw);
@@ -276,13 +276,13 @@ function Tags() {
   const data = useLoaderData<typeof loader>();
   const [creationMode, setCreationMode] = React.useState(false);
   const [tags, setTags] = React.useState<{ name?: string; id?: number }[]>(
-    data.art?.tags ?? []
+    data.art?.tags ?? [],
   );
   const [newTagValue, setNewTagValue] = React.useState("");
 
   const existingTags = data.tags;
   const unselectedTags = existingTags.filter(
-    (t) => !tags.some((tag) => tag.id === t.id)
+    (t) => !tags.some((tag) => tag.id === t.id),
   );
 
   const handleAddNewTag = () => {
@@ -300,7 +300,7 @@ function Tags() {
     }
 
     const alreadyCreatedTag = existingTags.find(
-      (t) => t.name === normalizedNewTagValue
+      (t) => t.name === normalizedNewTagValue,
     );
 
     if (alreadyCreatedTag) {
@@ -404,7 +404,7 @@ function LinkedUsers() {
   >(
     (data.art?.linkedUsers ?? []).length > 0
       ? data.art!.linkedUsers.map((userId) => ({ userId, inputId: nanoid() }))
-      : [{ inputId: nanoid() }]
+      : [{ inputId: nanoid() }],
   );
 
   return (
@@ -414,7 +414,7 @@ function LinkedUsers() {
         type="hidden"
         name="linkedUsers"
         value={JSON.stringify(
-          users.filter((u) => u.userId).map((u) => u.userId)
+          users.filter((u) => u.userId).map((u) => u.userId),
         )}
       />
       {users.map(({ inputId, userId }, i) => {

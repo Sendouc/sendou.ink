@@ -55,18 +55,18 @@ const deleteBadgesByEventIdStm = sql.prepare(deleteBadgesByEventIdSql);
 const createMapPoolMapStm = sql.prepare(createMapPoolMapSql);
 const deleteMapPoolMapsStm = sql.prepare(deleteMapPoolMapsSql);
 const createTieBreakerMapPoolMapStm = sql.prepare(
-  createTieBreakerMapPoolMapSql
+  createTieBreakerMapPoolMapSql,
 );
 const findMapPoolByEventIdStm = sql.prepare(findMapPoolByEventIdSql);
 const findTieBreakerMapPoolByEventIdtm = sql.prepare(
-  findTieBreakerMapPoolByEventIdSql
+  findTieBreakerMapPoolByEventIdSql,
 );
 const deleteByIdStm = sql.prepare(deleteByIdSql);
 const deleteTournamentByIdStm = sql.prepare(deleteTournamentByIdSql);
 const createTournamentStm = sql.prepare(createTournamentSql);
 
 const createTournament = (
-  args: Omit<Tournament, "id" | "showMapListGenerator">
+  args: Omit<Tournament, "id" | "showMapListGenerator">,
 ) => {
   return createTournamentStm.get(args) as Tournament;
 };
@@ -127,7 +127,7 @@ export const create = sql.transaction(
     });
 
     return createdEvent.id;
-  }
+  },
 );
 
 export type Update = Omit<
@@ -173,7 +173,7 @@ export const update = sql.transaction(
         isFullTournament: false,
       });
     }
-  }
+  },
 );
 
 function upsertMapPool({
@@ -205,7 +205,7 @@ function upsertMapPool({
 
 const updateParticipantsCountStm = sql.prepare(updateParticipantsCountSql);
 const deleteResultTeamsByEventIdStm = sql.prepare(
-  deleteResultTeamsByEventIdSql
+  deleteResultTeamsByEventIdSql,
 );
 const insertResultTeamStm = sql.prepare(insertResultTeamSql);
 const insertResultPlayerStm = sql.prepare(insertResultPlayerSql);
@@ -245,7 +245,7 @@ export const upsertReportedScores = sql.transaction(
         });
       }
     }
-  }
+  },
 );
 
 const findWinnersByEventIdStm = sql.prepare(findWinnersByEventIdSql);
@@ -308,7 +308,7 @@ export function findResultsByEventId(eventId: CalendarEvent["id"]) {
 const findResultsByUserIdStm = sql.prepare(findResultsByUserIdSql);
 const findMatesByResultTeamIdStm = sql.prepare(findMatesByResultTeamIdSql);
 const findMatesByTournamentTeamIdStm = sql.prepare(
-  findMatesByTournamentTeamIdSql
+  findMatesByTournamentTeamIdSql,
 );
 export function findResultsByUserId(userId: User["id"]) {
   return (
@@ -346,7 +346,7 @@ export function findResultsByUserId(userId: User["id"]) {
 }
 
 const findAllBetweenTwoTimestampsStm = sql.prepare(
-  findAllBetweenTwoTimestampsSql
+  findAllBetweenTwoTimestampsSql,
 );
 
 function addTagArray<
@@ -354,7 +354,7 @@ function addTagArray<
     hasBadge: number;
     tags?: CalendarEvent["tags"];
     tournamentId: CalendarEvent["tournamentId"];
-  }
+  },
 >(arg: T) {
   const { hasBadge, ...row } = arg;
   const tags = (row.tags ? row.tags.split(",") : []) as Array<CalendarEventTag>;
@@ -366,11 +366,11 @@ function addTagArray<
 }
 
 const findTournamentTeamMemberCountsByEventIdStm = sql.prepare(
-  findTournamentTeamMemberCountsByEventIdSql
+  findTournamentTeamMemberCountsByEventIdSql,
 );
 
 function addParticipantsCounts<
-  T extends { tournamentId: CalendarEvent["tournamentId"] }
+  T extends { tournamentId: CalendarEvent["tournamentId"] },
 >(arg: T) {
   if (!arg.tournamentId) return arg;
 
@@ -449,7 +449,7 @@ export function findById(id: CalendarEvent["id"]) {
 }
 
 function addBadges<
-  T extends { eventId: CalendarEvent["id"]; tags?: CalendarEvent["tags"] }
+  T extends { eventId: CalendarEvent["id"]; tags?: CalendarEvent["tags"] },
 >(arg: T) {
   return {
     ...arg,
@@ -509,10 +509,10 @@ export function eventsToReport(authorId?: CalendarEvent["authorId"]) {
 }
 
 const findRecentMapPoolsByAuthorIdStm = sql.prepare(
-  findRecentMapPoolsByAuthorIdSql
+  findRecentMapPoolsByAuthorIdSql,
 );
 export function findRecentMapPoolsByAuthorId(
-  authorId: CalendarEvent["authorId"]
+  authorId: CalendarEvent["authorId"],
 ) {
   return (
     findRecentMapPoolsByAuthorIdStm.all({ authorId }) as Array<
@@ -543,7 +543,7 @@ export function findAllEventsWithMapPools() {
 }
 
 export function findTieBreakerMapPoolByEventId(
-  calendarEventId: string | number
+  calendarEventId: string | number,
 ) {
   return findTieBreakerMapPoolByEventIdtm.all({ calendarEventId }) as Array<
     Pick<MapPoolMap, "mode" | "stageId">
@@ -560,5 +560,5 @@ export const deleteById = sql.transaction(
   }) => {
     deleteByIdStm.run({ id: eventId });
     if (tournamentId) deleteTournamentByIdStm.run({ id: tournamentId });
-  }
+  },
 );

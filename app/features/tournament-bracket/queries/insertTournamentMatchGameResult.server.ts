@@ -10,7 +10,7 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export function insertTournamentMatchGameResult(
-  args: Omit<TournamentMatchGameResult, "id" | "createdAt">
+  args: Omit<TournamentMatchGameResult, "id" | "createdAt">,
 ) {
   return stm.get(args) as TournamentMatchGameResult;
 }

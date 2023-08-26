@@ -80,7 +80,7 @@ export function summarizePlayerResults({
     otherUserId: number;
   }) => {
     const existing = result.find(
-      (r) => r.ownerUserId === ownerUserId && r.otherUserId === otherUserId
+      (r) => r.ownerUserId === ownerUserId && r.otherUserId === otherUserId,
     );
     if (existing) {
       if (outcome === "win") {

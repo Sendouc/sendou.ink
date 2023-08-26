@@ -42,7 +42,7 @@ export default function TournamentStreamsPage() {
     <div className="stack horizontal lg flex-wrap justify-center">
       {data.streams.flatMap((stream) => {
         const team = parentRouteData.teams.find((team) =>
-          team.members.some((m) => m.userId === stream.userId)
+          team.members.some((m) => m.userId === stream.userId),
         );
         const user = team?.members.find((m) => m.userId === stream.userId);
 

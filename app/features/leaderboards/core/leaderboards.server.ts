@@ -26,7 +26,7 @@ export function addTiers(entries: UserSPLeaderboardItem[]) {
 
 export function addWeapons<T extends { id: number }>(
   entries: T[],
-  weapons: SeasonPopularUsersWeapon
+  weapons: SeasonPopularUsersWeapon,
 ) {
   return entries.map((entry) => {
     const weaponSplId = weapons[entry.id] as MainWeaponId | undefined;
@@ -38,14 +38,14 @@ export function addWeapons<T extends { id: number }>(
 }
 
 export function filterByWeaponCategory<
-  T extends { weaponSplId?: MainWeaponId }
+  T extends { weaponSplId?: MainWeaponId },
 >(entries: Array<T>, category: (typeof weaponCategories)[number]["name"]) {
   const weaponIdsOfCategory = new Set(
-    weaponCategories.find((c) => c.name === category)!.weaponIds
+    weaponCategories.find((c) => c.name === category)!.weaponIds,
   );
 
   return entries.filter(
-    (entry) => entry.weaponSplId && weaponIdsOfCategory.has(entry.weaponSplId)
+    (entry) => entry.weaponSplId && weaponIdsOfCategory.has(entry.weaponSplId),
   );
 }
 

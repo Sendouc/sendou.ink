@@ -243,7 +243,7 @@ function MemberRow({
                 userId: String(member.id),
                 role: e.target.value === NO_ROLE ? "" : e.target.value,
               },
-              { method: "post" }
+              { method: "post" },
             )
           }
           disabled={roleFetcher.state !== "idle"}

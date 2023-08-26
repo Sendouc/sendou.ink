@@ -64,7 +64,7 @@ export class BaseGetter {
 
     const roundsLB = rounds.filter((r) => r.group_id === loserBracket.id);
     const orderedRoundsLB = roundsLB.filter((r) =>
-      helpers.isOrderingSupportedLoserBracket(r.number, roundsLB.length)
+      helpers.isOrderingSupportedLoserBracket(r.number, roundsLB.length),
     );
 
     return [firstRoundWB, ...orderedRoundsLB];
@@ -102,7 +102,7 @@ export class BaseGetter {
     match: Match,
     matchLocation: GroupType,
     stage: Stage,
-    roundNumber: number
+    roundNumber: number,
   ): Match[] {
     if (matchLocation === "loser_bracket")
       return this.getPreviousMatchesLB(match, stage, roundNumber);
@@ -125,7 +125,7 @@ export class BaseGetter {
   private getPreviousMatchesFinal(
     match: Match,
     stage: Stage,
-    roundNumber: number
+    roundNumber: number,
   ): Match[] {
     if (stage.type === "single_elimination")
       return this.getPreviousMatchesFinalSingleElimination(match, stage);
@@ -141,11 +141,11 @@ export class BaseGetter {
    */
   private getPreviousMatchesFinalSingleElimination(
     match: Match,
-    stage: Stage
+    stage: Stage,
   ): Match[] {
     const upperBracket = this.getUpperBracket(match.stage_id);
     const upperBracketRoundCount = helpers.getUpperBracketRoundCount(
-      stage.settings.size!
+      stage.settings.size!,
     );
 
     const semiFinalsRound = this.storage.selectFirst("round", {
@@ -174,7 +174,7 @@ export class BaseGetter {
    */
   private getPreviousMatchesFinalDoubleElimination(
     match: Match,
-    roundNumber: number
+    roundNumber: number,
   ): Match[] {
     if (roundNumber > 1)
       // Double grand final
@@ -214,7 +214,7 @@ export class BaseGetter {
   private getPreviousMatchesLB(
     match: Match,
     stage: Stage,
-    roundNumber: number
+    roundNumber: number,
   ): Match[] {
     if (stage.settings.skipFirstRound && roundNumber === 1) return [];
 
@@ -231,7 +231,7 @@ export class BaseGetter {
       return this.getMatchesBeforeFirstRoundLB(
         match,
         winnerBracket.id,
-        roundNumberWB
+        roundNumberWB,
       );
 
     if (roundNumber % 2 === 0)
@@ -239,7 +239,7 @@ export class BaseGetter {
         match,
         winnerBracket.id,
         roundNumber,
-        roundNumberWB
+        roundNumberWB,
       );
 
     return this.getMatchesBeforeMajorRound(match, roundNumber);
@@ -253,7 +253,7 @@ export class BaseGetter {
    */
   private getMatchesBeforeMajorRound(
     match: Match,
-    roundNumber: number
+    roundNumber: number,
   ): Match[] {
     return [
       this.findMatch(match.group_id, roundNumber - 1, match.number * 2 - 1),
@@ -271,18 +271,18 @@ export class BaseGetter {
   private getMatchesBeforeFirstRoundLB(
     match: Match,
     winnerBracketId: number,
-    roundNumberWB: number
+    roundNumberWB: number,
   ): Match[] {
     return [
       this.findMatch(
         winnerBracketId,
         roundNumberWB,
-        helpers.getOriginPosition(match, "opponent1")
+        helpers.getOriginPosition(match, "opponent1"),
       ),
       this.findMatch(
         winnerBracketId,
         roundNumberWB,
-        helpers.getOriginPosition(match, "opponent2")
+        helpers.getOriginPosition(match, "opponent2"),
       ),
     ];
   }
@@ -299,7 +299,7 @@ export class BaseGetter {
     match: Match,
     winnerBracketId: number,
     roundNumber: number,
-    roundNumberWB: number
+    roundNumberWB: number,
   ): Match[] {
     const matchNumber = helpers.getOriginPosition(match, "opponent1");
 
@@ -323,7 +323,7 @@ export class BaseGetter {
     matchLocation: GroupType,
     stage: Stage,
     roundNumber: number,
-    roundCount: number
+    roundCount: number,
   ): (Match | null)[] {
     switch (matchLocation) {
       case "single_bracket":
@@ -331,7 +331,7 @@ export class BaseGetter {
           match,
           stage.type,
           roundNumber,
-          roundCount
+          roundCount,
         );
       case "winner_bracket":
         return this.getNextMatchesWB(match, stage, roundNumber, roundCount);
@@ -340,7 +340,7 @@ export class BaseGetter {
           match,
           stage.type,
           roundNumber,
-          roundCount
+          roundCount,
         );
       case "final_group":
         return this.getNextMatchesFinal(match, roundNumber, roundCount);
@@ -361,7 +361,7 @@ export class BaseGetter {
     match: Match,
     stage: Stage,
     roundNumber: number,
-    roundCount: number
+    roundCount: number,
   ): (Match | null)[] {
     const loserBracket = this.getLoserBracket(match.stage_id);
     if (loserBracket === null)
@@ -377,13 +377,13 @@ export class BaseGetter {
     const participantCount = stage.settings.size!;
     const method = helpers.getLoserOrdering(
       stage.settings.seedOrdering!,
-      roundNumberLB
+      roundNumberLB,
     );
     const actualMatchNumberLB = helpers.findLoserMatchNumber(
       participantCount,
       roundNumberLB,
       match.number,
-      method
+      method,
     );
 
     return [
@@ -391,7 +391,7 @@ export class BaseGetter {
         match,
         stage.type,
         roundNumber,
-        roundCount
+        roundCount,
       ),
       this.findMatch(loserBracket.id, roundNumberLB, actualMatchNumberLB),
     ];
@@ -409,14 +409,14 @@ export class BaseGetter {
     match: Match,
     stageType: StageType,
     roundNumber: number,
-    roundCount: number
+    roundCount: number,
   ): (Match | null)[] {
     if (stageType === "single_elimination")
       return this.getNextMatchesUpperBracketSingleElimination(
         match,
         stageType,
         roundNumber,
-        roundCount
+        roundCount,
       );
 
     if (stageType === "double_elimination" && roundNumber === roundCount)
@@ -437,7 +437,7 @@ export class BaseGetter {
     match: Match,
     stageType: StageType,
     roundNumber: number,
-    roundCount: number
+    roundCount: number,
   ): Match[] {
     if (roundNumber === roundCount - 1) {
       const final = this.getFirstMatchFinal(match, stageType);
@@ -464,7 +464,7 @@ export class BaseGetter {
     match: Match,
     stageType: StageType,
     roundNumber: number,
-    roundCount: number
+    roundCount: number,
   ): Match[] {
     if (roundNumber === roundCount) {
       const final = this.getFirstMatchFinal(match, stageType);
@@ -500,7 +500,7 @@ export class BaseGetter {
   private getNextMatchesFinal(
     match: Match,
     roundNumber: number,
-    roundCount: number
+    roundCount: number,
   ): Match[] {
     if (roundNumber === roundCount) return [];
 
@@ -515,7 +515,7 @@ export class BaseGetter {
    */
   private getMatchAfterMajorRoundLB(
     match: Match,
-    roundNumber: number
+    roundNumber: number,
   ): Match[] {
     return [this.getParallelMatch(match.group_id, roundNumber, match.number)];
   }
@@ -528,7 +528,7 @@ export class BaseGetter {
    */
   private getMatchAfterMinorRoundLB(
     match: Match,
-    roundNumber: number
+    roundNumber: number,
   ): Match[] {
     return [this.getDiagonalMatch(match.group_id, roundNumber, match.number)];
   }
@@ -541,7 +541,7 @@ export class BaseGetter {
    */
   protected static getSeedingOrdering(
     stageType: StageType,
-    create: Create
+    create: Create,
   ): SeedOrdering {
     return stageType === "round_robin"
       ? create.getRoundRobinOrdering()
@@ -556,7 +556,7 @@ export class BaseGetter {
    */
   protected getSeedingMatches(
     stageId: number,
-    stageType: StageType
+    stageType: StageType,
   ): Match[] | null {
     if (stageType === "round_robin")
       return this.storage.select("match", { stage_id: stageId });
@@ -599,7 +599,7 @@ export class BaseGetter {
    */
   private getFinalGroupId(
     stageId: number,
-    stageType: StageType
+    stageType: StageType,
   ): number | null {
     const groupNumber =
       stageType === "single_elimination"
@@ -648,12 +648,12 @@ export class BaseGetter {
   private getDiagonalMatch(
     groupId: number,
     roundNumber: number,
-    matchNumber: number
+    matchNumber: number,
   ): Match {
     return this.findMatch(
       groupId,
       roundNumber + 1,
-      helpers.getDiagonalMatchNumber(matchNumber)
+      helpers.getDiagonalMatchNumber(matchNumber),
     );
   }
 
@@ -669,7 +669,7 @@ export class BaseGetter {
   private getParallelMatch(
     groupId: number,
     roundNumber: number,
-    matchNumber: number
+    matchNumber: number,
   ): Match {
     return this.findMatch(groupId, roundNumber + 1, matchNumber);
   }
@@ -686,7 +686,7 @@ export class BaseGetter {
   protected findMatch(
     groupId: number,
     roundNumber: number,
-    matchNumber: number
+    matchNumber: number,
   ): Match {
     const round = this.storage.selectFirst("round", {
       group_id: groupId,

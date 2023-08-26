@@ -8,15 +8,15 @@ module.exports.up = function (db) {
       foreign key ("userId") references "User"("id") on delete cascade,
       unique("teamId", "userId") on conflict rollback
     ) strict
-    `
+    `,
   ).run();
 
   db.prepare(
-    `create index user_result_highlight_user_id on "UserResultHighlight"("userId")`
+    `create index user_result_highlight_user_id on "UserResultHighlight"("userId")`,
   ).run();
 
   db.prepare(
-    `create index user_result_highlight_team_id on "UserResultHighlight"("teamId")`
+    `create index user_result_highlight_team_id on "UserResultHighlight"("teamId")`,
   ).run();
 };
 

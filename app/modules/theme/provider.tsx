@@ -73,17 +73,17 @@ function ThemeProvider({
   const setUserTheme = useCallback(
     (newTheme: Theme | "auto") => {
       setThemeState(
-        newTheme === "auto" ? [getPreferredTheme(), true] : [newTheme, false]
+        newTheme === "auto" ? [getPreferredTheme(), true] : [newTheme, false],
       );
       persistTheme(
         { theme: newTheme },
         {
           action: "theme",
           method: "post",
-        }
+        },
       );
     },
-    [setThemeState, persistTheme]
+    [setThemeState, persistTheme],
   );
 
   useEffect(() => {

@@ -32,7 +32,7 @@ RoundRobinGroups("should make the rounds for a round-robin group", () => {
   assertRoundRobin([1, 2, 3, 4, 5], makeRoundRobinMatches([1, 2, 3, 4, 5]));
   assertRoundRobin(
     [1, 2, 3, 4, 5, 6],
-    makeRoundRobinMatches([1, 2, 3, 4, 5, 6])
+    makeRoundRobinMatches([1, 2, 3, 4, 5, 6]),
   );
 });
 
@@ -44,7 +44,7 @@ SeedOrderingMethods(
     const teams = [1, 2]; // This is the minimum participant count supported by the library.
     const placement = ordering["inner_outer"](teams);
     assert.equal(placement, [1, 2]);
-  }
+  },
 );
 
 SeedOrderingMethods(
@@ -53,7 +53,7 @@ SeedOrderingMethods(
     const teams = [1, 2, 3, 4];
     const placement = ordering["inner_outer"](teams);
     assert.equal(placement, [1, 4, 2, 3]);
-  }
+  },
 );
 
 SeedOrderingMethods(
@@ -62,7 +62,7 @@ SeedOrderingMethods(
     const teams = [1, 2, 3, 4, 5, 6, 7, 8];
     const placement = ordering["inner_outer"](teams);
     assert.equal(placement, [1, 8, 4, 5, 2, 7, 3, 6]);
-  }
+  },
 );
 
 SeedOrderingMethods(
@@ -72,43 +72,43 @@ SeedOrderingMethods(
     const placement = ordering["inner_outer"](teams);
     assert.equal(
       placement,
-      [1, 16, 8, 9, 4, 13, 5, 12, 2, 15, 7, 10, 3, 14, 6, 11]
+      [1, 16, 8, 9, 4, 13, 5, 12, 2, 15, 7, 10, 3, 14, 6, 11],
     );
-  }
+  },
 );
 
 SeedOrderingMethods("should make a natural ordering", () => {
   assert.equal(
     ordering["natural"]([1, 2, 3, 4, 5, 6, 7, 8]),
-    [1, 2, 3, 4, 5, 6, 7, 8]
+    [1, 2, 3, 4, 5, 6, 7, 8],
   );
 });
 
 SeedOrderingMethods("should make a reverse ordering", () => {
   assert.equal(
     ordering["reverse"]([1, 2, 3, 4, 5, 6, 7, 8]),
-    [8, 7, 6, 5, 4, 3, 2, 1]
+    [8, 7, 6, 5, 4, 3, 2, 1],
   );
 });
 
 SeedOrderingMethods("should make a half shift ordering", () => {
   assert.equal(
     ordering["half_shift"]([1, 2, 3, 4, 5, 6, 7, 8]),
-    [5, 6, 7, 8, 1, 2, 3, 4]
+    [5, 6, 7, 8, 1, 2, 3, 4],
   );
 });
 
 SeedOrderingMethods("should make a reverse half shift ordering", () => {
   assert.equal(
     ordering["reverse_half_shift"]([1, 2, 3, 4, 5, 6, 7, 8]),
-    [4, 3, 2, 1, 8, 7, 6, 5]
+    [4, 3, 2, 1, 8, 7, 6, 5],
   );
 });
 
 SeedOrderingMethods("should make a pair flip ordering", () => {
   assert.equal(
     ordering["pair_flip"]([1, 2, 3, 4, 5, 6, 7, 8]),
-    [2, 1, 4, 3, 6, 5, 8, 7]
+    [2, 1, 4, 3, 6, 5, 8, 7],
   );
 });
 
@@ -126,13 +126,13 @@ SeedOrderingMethods(
         7, // 3rd group
         4,
         8, // 4th group
-      ]
+      ],
     );
 
     assert.equal(
       ordering["groups.effort_balanced"](
         [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
-        4
+        4,
       ),
       [
         1,
@@ -151,7 +151,7 @@ SeedOrderingMethods(
         8,
         12,
         16, // 4th group
-      ]
+      ],
     );
 
     assert.equal(
@@ -165,9 +165,9 @@ SeedOrderingMethods(
         4,
         6,
         8, // 2nd group
-      ]
+      ],
     );
-  }
+  },
 );
 
 SeedOrderingMethods("should make a snake ordering for groups", () => {
@@ -185,7 +185,7 @@ SeedOrderingMethods("should make a snake ordering for groups", () => {
   assert.equal(
     ordering["groups.seed_optimized"](
       [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
-      4
+      4,
     ),
     [
       1,
@@ -204,7 +204,7 @@ SeedOrderingMethods("should make a snake ordering for groups", () => {
       5,
       12,
       13, // 4th group
-    ]
+    ],
   );
 
   assert.equal(ordering["groups.seed_optimized"]([1, 2, 3, 4, 5, 6, 7, 8], 2), [
@@ -225,17 +225,17 @@ BalanceByes("should ignore input BYEs in the seeding", () => {
   assert.equal(
     balanceByes(
       [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, null, null, null, null],
-      16
+      16,
     ),
-    balanceByes([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], 16)
+    balanceByes([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], 16),
   );
 
   assert.equal(
     balanceByes(
       [1, 2, 3, null, 4, 5, 6, 7, 8, null, 9, 10, null, 11, null, 12, null],
-      16
+      16,
     ),
-    balanceByes([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], 16)
+    balanceByes([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], 16),
   );
 });
 
@@ -244,9 +244,9 @@ BalanceByes(
   () => {
     assert.equal(
       balanceByes([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], 16),
-      balanceByes([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
+      balanceByes([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]),
     );
-  }
+  },
 );
 
 BalanceByes("should prefer matches with only one BYE", () => {
@@ -269,15 +269,15 @@ BalanceByes("should prefer matches with only one BYE", () => {
       null,
       null,
     ]),
-    [1, 2, 3, 4, 5, 6, 7, 8, 9, null, 10, null, 11, null, 12, null]
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, null, 10, null, 11, null, 12, null],
   );
 
   assert.equal(
     balanceByes(
       [1, 2, 3, 4, 5, 6, 7, 8, null, null, null, null, null, null, null, null],
-      16
+      16,
     ),
-    [1, null, 2, null, 3, null, 4, null, 5, null, 6, null, 7, null, 8, null]
+    [1, null, 2, null, 3, null, 4, null, 5, null, 6, null, 7, null, 8, null],
   );
 
   assert.equal(
@@ -300,9 +300,9 @@ BalanceByes("should prefer matches with only one BYE", () => {
         null,
         null,
       ],
-      16
+      16,
     ),
-    [1, null, 2, null, 3, null, 4, null, 5, null, 6, null, 7, null, null, null]
+    [1, null, 2, null, 3, null, 4, null, 5, null, 6, null, 7, null, null, null],
   );
 });
 

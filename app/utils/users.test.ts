@@ -19,7 +19,7 @@ QueryToUserIdentifier("gets discord id from url", () => {
     queryToUserIdentifier("https://sendou.ink/u/79237403620945920"),
     {
       discordId: "79237403620945920",
-    }
+    },
   );
 });
 

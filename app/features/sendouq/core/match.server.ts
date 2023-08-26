@@ -76,7 +76,7 @@ const typeScore = {
   SZ_ONLY: 2,
 } as const;
 function mapListType(
-  preferences: [Group["mapListPreference"], Group["mapListPreference"]]
+  preferences: [Group["mapListPreference"], Group["mapListPreference"]],
 ) {
   // if neither team has changed the default preference, default to all modes
   if (preferences.every((p) => p === "NO_PREFERENCE")) {

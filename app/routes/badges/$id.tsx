@@ -99,7 +99,7 @@ export default function BadgeDetailsPage() {
 
 export function badgeExplanationText(
   t: TFunction<"badges", undefined>,
-  badge: Pick<BadgeDBType, "displayName" | "code"> & { count?: number }
+  badge: Pick<BadgeDBType, "displayName" | "code"> & { count?: number },
 ) {
   if (badge.code === "patreon") return t("patreon");
   if (badge.code === "patreon_plus") {

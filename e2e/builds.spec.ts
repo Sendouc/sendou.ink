@@ -67,7 +67,7 @@ test.describe("Builds", () => {
     await expect(firstBuildCard.getByAltText("Splat Zones")).not.toBeVisible();
 
     await expect(firstBuildCard.getByTestId("build-title")).toContainText(
-      "Test Build"
+      "Test Build",
     );
   });
 
@@ -87,7 +87,7 @@ test.describe("Builds", () => {
 
     await expect(page.getByTestId("builds-tab")).toContainText("Builds (50)");
     await expect(page.getByTestId("build-card").first()).toContainText(
-      "Private"
+      "Private",
     );
 
     await impersonate(page, NZAP_TEST_ID);
@@ -97,7 +97,7 @@ test.describe("Builds", () => {
     });
     await expect(page.getByTestId("builds-tab")).toContainText("Builds (49)");
     await expect(page.getByTestId("build-card").first()).not.toContainText(
-      "Private"
+      "Private",
     );
   });
 

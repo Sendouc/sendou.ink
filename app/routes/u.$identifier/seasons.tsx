@@ -63,7 +63,7 @@ export const seasonsSearchParamsSchema = z.object({
 export const loader = async ({ params, request }: LoaderArgs) => {
   const { identifier } = userParamsSchema.parse(params);
   const parsedSearchParams = seasonsSearchParamsSchema.safeParse(
-    Object.fromEntries(new URL(request.url).searchParams)
+    Object.fromEntries(new URL(request.url).searchParams),
   );
   const { info, page } = parsedSearchParams.success
     ? parsedSearchParams.data
@@ -331,7 +331,7 @@ function Weapons({
             variant="build"
             size={42}
             title={`${t(`weapons:MAIN_${weaponSplId}`)} (${percentage(
-              count
+              count,
             )}%)`}
           />
         </WeaponCircle>
@@ -363,11 +363,11 @@ function Stages({
               const stats = stages[id]?.[mode];
               const winPercentage = stats
                 ? cutToNDecimalPlaces(
-                    (stats.wins / (stats.wins + stats.losses)) * 100
+                    (stats.wins / (stats.wins + stats.losses)) * 100,
                   )
                 : "";
               const infoText = `${t(`game-misc:MODE_SHORT_${mode}`)} ${t(
-                `game-misc:STAGE_${id}`
+                `game-misc:STAGE_${id}`,
               )} ${winPercentage}${winPercentage ? "%" : ""}`;
 
               return (
@@ -452,7 +452,7 @@ function StageWeaponUsageStats(props: {
       <div className="u__season__weapon-usage__weapons-container">
         {usages.map((u) => {
           const winrate = cutToNDecimalPlaces(
-            (u.wins / (u.wins + u.losses)) * 100
+            (u.wins / (u.wins + u.losses)) * 100,
           );
 
           return (
@@ -490,10 +490,10 @@ function Players({
     <div className="stack md horizontal justify-center flex-wrap">
       {players.map((player) => {
         const setWinRate = Math.round(
-          (player.setWins / (player.setWins + player.setLosses)) * 100
+          (player.setWins / (player.setWins + player.setLosses)) * 100,
         );
         const mapWinRate = Math.round(
-          (player.mapWins / (player.mapWins + player.mapLosses)) * 100
+          (player.mapWins / (player.mapWins + player.mapLosses)) * 100,
         );
         return (
           <div key={player.user.id} className="stack">
@@ -582,7 +582,7 @@ function Matches() {
                     "text-xs font-semi-bold text-theme-secondary",
                     {
                       invisible: !isMounted || !shouldRenderDateHeader,
-                    }
+                    },
                   )}
                 >
                   {isMounted
@@ -592,7 +592,7 @@ function Matches() {
                           weekday: "long",
                           month: "long",
                           day: "numeric",
-                        }
+                        },
                       )
                     : "t"}
                 </div>
@@ -630,7 +630,7 @@ function Match({
       acc[0] + (cur === match.alphaGroupId ? 1 : 0),
       acc[1] + (cur === match.bravoGroupId ? 1 : 0),
     ],
-    [0, 0]
+    [0, 0],
   );
 
   // make sure user's team is always on the top

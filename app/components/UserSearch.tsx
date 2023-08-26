@@ -39,7 +39,7 @@ export function UserSearch({
       queryFetcher.load(`/u?q=${query}&limit=6`);
     },
     1000,
-    [query]
+    [query],
   );
 
   // load initial user
@@ -66,7 +66,7 @@ export function UserSearch({
   const noMatches = queryFetcher.data && users.length === 0;
 
   const initialSelectionIsLoading = Boolean(
-    initialUserId && !initialUserFetcher.data
+    initialUserId && !initialUserFetcher.data,
   );
 
   return (

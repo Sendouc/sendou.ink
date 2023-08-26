@@ -35,7 +35,7 @@ export function useSelectCounterpickMapPoolState() {
   const handleCounterpickMapPoolSelect =
     (
       mode: RankedModeShort,
-      i: number
+      i: number,
     ): React.ChangeEventHandler<HTMLSelectElement> =>
     (e) => {
       setCounterpickMaps({

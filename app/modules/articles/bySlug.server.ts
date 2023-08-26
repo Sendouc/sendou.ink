@@ -9,7 +9,7 @@ export function articleBySlug(slug: string) {
   try {
     const rawMarkdown = fs.readFileSync(
       path.join(ARTICLES_FOLDER_PATH, `${slug}.md`),
-      "utf8"
+      "utf8",
     );
     const { content, data } = matter(rawMarkdown);
 

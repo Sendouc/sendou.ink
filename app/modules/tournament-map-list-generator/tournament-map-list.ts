@@ -13,7 +13,7 @@ type ModeWithStageAndScore = TournamentMapListMap & { score: number };
 const OPTIMAL_MAPLIST_SCORE = 0;
 
 export function createTournamentMapList(
-  input: TournamentMaplistInput
+  input: TournamentMaplistInput,
 ): Array<TournamentMapListMap> {
   validateInput(input);
 
@@ -80,7 +80,7 @@ export function createTournamentMapList(
       const alreadyIncludedStage = result.find(
         (alreadyIncludedStage) =>
           alreadyIncludedStage.stageId === stage.stageId &&
-          alreadyIncludedStage.mode === stage.mode
+          alreadyIncludedStage.mode === stage.mode,
       );
 
       if (alreadyIncludedStage) {
@@ -101,7 +101,7 @@ export function createTournamentMapList(
           ...pair,
           score: 0,
           source: "DEFAULT" as const,
-        }))
+        })),
       );
     } else if (
       input.teams[0].maps.stages.length === 0 ||
@@ -115,7 +115,7 @@ export function createTournamentMapList(
     }
 
     return result.sort((a, b) =>
-      `${a.stageId}-${a.mode}`.localeCompare(`${b.stageId}-${b.mode}`)
+      `${a.stageId}-${a.mode}`.localeCompare(`${b.stageId}-${b.mode}`),
     );
   }
 
@@ -128,7 +128,7 @@ export function createTournamentMapList(
           .filter(
             (stageId) =>
               !input.teams[0].maps.hasStage(stageId) &&
-              !input.teams[1].maps.hasStage(stageId)
+              !input.teams[1].maps.hasStage(stageId),
           )
           .map((stageId) => ({
             stageId,
@@ -140,7 +140,7 @@ export function createTournamentMapList(
         return DEFAULT_MAP_POOL.stageModePairs
           .filter(
             (pair) =>
-              !input.teams[0].maps.has(pair) && !input.teams[1].maps.has(pair)
+              !input.teams[0].maps.has(pair) && !input.teams[1].maps.has(pair),
           )
           .map((pair) => ({
             stageId: pair.stageId,
@@ -158,20 +158,20 @@ export function createTournamentMapList(
     invariant(
       input.teams.every((t) =>
         t.maps.stageModePairs.every((pair) =>
-          input.modesIncluded.includes(pair.mode)
-        )
+          input.modesIncluded.includes(pair.mode),
+        ),
       ),
-      "Maps submitted for modes not included in the tournament"
+      "Maps submitted for modes not included in the tournament",
     );
 
     for (const team of input.teams) {
       const stringified = team.maps.stageModePairs.map(
-        (p) => `${p.stageId}-${p.mode}`
+        (p) => `${p.stageId}-${p.mode}`,
       );
       const unique = new Set(stringified);
       invariant(
         unique.size === stringified.length,
-        `Duplicate maps in map pool (team ${team.id})`
+        `Duplicate maps in map pool (team ${team.id})`,
       );
     }
   }
@@ -190,8 +190,8 @@ export function createTournamentMapList(
       [...input.teams[0].maps, ...input.teams[1].maps].filter(
         (stage) =>
           !mapList.some(
-            (map) => map.stageId === stage.stageId && map.mode === stage.mode
-          )
+            (map) => map.stageId === stage.stageId && map.mode === stage.mode,
+          ),
       ).length > 0;
     if (!teamsMapsLeftNotPicked) return true;
 
@@ -245,7 +245,7 @@ export function createTournamentMapList(
 
     if (
       mapList.some(
-        (alreadyIncludedStage) => alreadyIncludedStage.mode === stage.mode
+        (alreadyIncludedStage) => alreadyIncludedStage.mode === stage.mode,
       )
     ) {
       return true;
@@ -308,8 +308,8 @@ export function createTournamentMapList(
     const commonMaps = input.teams[0].maps.stageModePairs.filter(
       ({ stageId, mode }) =>
         input.teams[1].maps.stageModePairs.some(
-          (pair) => pair.stageId === stageId && pair.mode === mode
-        )
+          (pair) => pair.stageId === stageId && pair.mode === mode,
+        ),
     );
 
     const newMapList = [...mapList, stage];
@@ -317,8 +317,8 @@ export function createTournamentMapList(
     const newCommonMaps = commonMaps.filter(
       ({ stageId, mode }) =>
         !newMapList.some(
-          (pair) => pair.stageId === stageId && pair.mode === mode
-        )
+          (pair) => pair.stageId === stageId && pair.mode === mode,
+        ),
     );
 
     // there was at least one possible common map

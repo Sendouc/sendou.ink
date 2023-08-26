@@ -59,7 +59,7 @@ export function useObjectDamage() {
         [DAMAGE_TYPE_SP_KEY]: newDamageType ?? "",
         [MULTI_SHOT_SP_KEY]: String(newIsMultiShot),
       },
-      { replace: true, state: { scroll: false } }
+      { replace: true, state: { scroll: false } },
     );
   };
 
@@ -166,7 +166,7 @@ function validatedDamageTypeFromSearchParams({
   if (found) return found.type;
 
   const fallbackFound = damageTypePriorityList.find((type) =>
-    damages.some((d) => d.type === type)
+    damages.some((d) => d.type === type),
   );
 
   return fallbackFound;

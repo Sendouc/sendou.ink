@@ -155,7 +155,7 @@ export const newArtPage = (artId?: Art["id"]) =>
   `${artPage()}/new${artId ? `?art=${artId}` : ""}`;
 export const userNewBuildPage = (
   user: UserLinkArgs,
-  params?: { weapon: MainWeaponId; build: BuildAbilitiesTupleWithUnknown }
+  params?: { weapon: MainWeaponId; build: BuildAbilitiesTupleWithUnknown },
 ) =>
   `${userBuildsPage(user)}/new${
     params
@@ -163,7 +163,7 @@ export const userNewBuildPage = (
           new URLSearchParams({
             weapon: String(params.weapon),
             build: serializeBuild(params.build),
-          })
+          }),
         )}`
       : ""
   }`;
@@ -282,7 +282,7 @@ export const analyzerPage = (args?: {
   `/analyzer${
     args
       ? `?weapon=${args.weaponId}&build=${encodeURIComponent(
-          args.abilities.join(",")
+          args.abilities.join(","),
         )}`
       : ""
   }`;
@@ -311,14 +311,14 @@ export const navIconUrl = (navItem: (typeof navItems)[number]["name"]) =>
 export const gearImageUrl = (gearType: GearType, gearSplId: number) =>
   `/static-assets/img/gear/${gearType.toLowerCase()}/${gearSplId}`;
 export const weaponCategoryUrl = (
-  category: (typeof weaponCategories)[number]["name"]
+  category: (typeof weaponCategories)[number]["name"],
 ) => `/static-assets/img/weapon-categories/${category}`;
 export const mainWeaponImageUrl = (mainWeaponSplId: MainWeaponId) =>
   `/static-assets/img/main-weapons/${mainWeaponSplId}`;
 export const outlinedMainWeaponImageUrl = (mainWeaponSplId: MainWeaponId) =>
   `/static-assets/img/main-weapons-outlined/${mainWeaponSplId}`;
 export const outlinedFiveStarMainWeaponImageUrl = (
-  mainWeaponSplId: MainWeaponId
+  mainWeaponSplId: MainWeaponId,
 ) => `/static-assets/img/main-weapons-outlined-2/${mainWeaponSplId}`;
 export const subWeaponImageUrl = (subWeaponSplId: SubWeaponId) =>
   `/static-assets/img/sub-weapons/${subWeaponSplId}`;

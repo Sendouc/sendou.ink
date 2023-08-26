@@ -107,5 +107,5 @@ export const createGroupFromPreviousGroup = sql.transaction(
     });
 
     return group;
-  }
+  },
 );

@@ -12,18 +12,18 @@ module.exports = {
       route("/analyzer", "features/build-analyzer/routes/analyzer.tsx");
       route(
         "/object-damage-calculator",
-        "features/object-damage-calculator/routes/object-damage-calculator.tsx"
+        "features/object-damage-calculator/routes/object-damage-calculator.tsx",
       );
       route("/to/:id", "features/tournament/routes/to.$id.tsx", () => {
         route("/to/:id", "features/tournament/routes/to.$id.index.tsx");
         route(
           "/to/:id/register",
-          "features/tournament/routes/to.$id.register.tsx"
+          "features/tournament/routes/to.$id.register.tsx",
         );
         route("/to/:id/teams", "features/tournament/routes/to.$id.teams.tsx");
         route(
           "/to/:id/teams/:tid",
-          "features/tournament/routes/to.$id.teams.$tid.tsx"
+          "features/tournament/routes/to.$id.teams.$tid.tsx",
         );
         route("/to/:id/join", "features/tournament/routes/to.$id.join.tsx");
         route("/to/:id/admin", "features/tournament/routes/to.$id.admin.tsx");
@@ -31,33 +31,33 @@ module.exports = {
         route("/to/:id/maps", "features/tournament/routes/to.$id.maps.tsx");
         route(
           "/to/:id/streams",
-          "features/tournament/routes/to.$id.streams.tsx"
+          "features/tournament/routes/to.$id.streams.tsx",
         );
 
         route(
           "/to/:id/subs",
-          "features/tournament-subs/routes/to.$id.subs.tsx"
+          "features/tournament-subs/routes/to.$id.subs.tsx",
         );
         route(
           "/to/:id/subs/new",
-          "features/tournament-subs/routes/to.$id.subs.new.tsx"
+          "features/tournament-subs/routes/to.$id.subs.new.tsx",
         );
 
         route(
           "/to/:id/brackets",
-          "features/tournament-bracket/routes/to.$id.brackets.tsx"
+          "features/tournament-bracket/routes/to.$id.brackets.tsx",
         );
         route(
           "/to/:id/brackets/subscribe",
-          "features/tournament-bracket/routes/to.$id.brackets.subscribe.tsx"
+          "features/tournament-bracket/routes/to.$id.brackets.subscribe.tsx",
         );
         route(
           "/to/:id/matches/:mid",
-          "features/tournament-bracket/routes/to.$id.matches.$mid.tsx"
+          "features/tournament-bracket/routes/to.$id.matches.$mid.tsx",
         );
         route(
           "/to/:id/matches/:mid/subscribe",
-          "features/tournament-bracket/routes/to.$id.matches.$mid.subscribe.tsx"
+          "features/tournament-bracket/routes/to.$id.matches.$mid.subscribe.tsx",
         );
       });
 
@@ -69,7 +69,7 @@ module.exports = {
       route("/t/:customUrl/edit", "features/team/routes/t.$customUrl.edit.tsx");
       route(
         "/t/:customUrl/roster",
-        "features/team/routes/t.$customUrl.roster.tsx"
+        "features/team/routes/t.$customUrl.roster.tsx",
       );
       route("/t/:customUrl/join", "features/team/routes/t.$customUrl.join.tsx");
 
@@ -81,17 +81,17 @@ module.exports = {
       route("/builds/:slug", "features/builds/routes/builds.$slug.tsx");
       route(
         "/builds/:slug/stats",
-        "features/build-stats/routes/builds.$slug.stats.tsx"
+        "features/build-stats/routes/builds.$slug.stats.tsx",
       );
       route(
         "/builds/:slug/popular",
-        "features/build-stats/routes/builds.$slug.popular.tsx"
+        "features/build-stats/routes/builds.$slug.popular.tsx",
       );
 
       route("/xsearch", "features/top-search/routes/xsearch.tsx");
       route(
         "/xsearch/player/:id",
-        "features/top-search/routes/xsearch.player.$id.tsx"
+        "features/top-search/routes/xsearch.player.$id.tsx",
       );
 
       route("/leaderboards", "features/leaderboards/routes/leaderboards.tsx");

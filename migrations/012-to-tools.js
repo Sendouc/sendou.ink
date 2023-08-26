@@ -1,25 +1,25 @@
 module.exports.up = function (db) {
   db.prepare(`alter table "CalendarEvent" add "customUrl" text`).run();
   db.prepare(
-    `alter table "CalendarEvent" add "toToolsEnabled" integer default 0`
+    `alter table "CalendarEvent" add "toToolsEnabled" integer default 0`,
   ).run();
   db.prepare(
-    `alter table "CalendarEvent" add "isBeforeStart" integer default 1`
+    `alter table "CalendarEvent" add "isBeforeStart" integer default 1`,
   ).run();
   db.prepare(
-    `create unique index calendar_event_custom_url_unique on "CalendarEvent"("customUrl")`
+    `create unique index calendar_event_custom_url_unique on "CalendarEvent"("customUrl")`,
   ).run();
 
   // TODO: these should be FK's
   db.prepare(`alter table "MapPoolMap" add "tournamentTeamId" integer`).run();
   db.prepare(
-    `alter table "MapPoolMap" add "tieBreakerCalendarEventId" integer`
+    `alter table "MapPoolMap" add "tieBreakerCalendarEventId" integer`,
   ).run();
   db.prepare(
-    `create index map_pool_map_tournament_team_id on "MapPoolMap"("tournamentTeamId")`
+    `create index map_pool_map_tournament_team_id on "MapPoolMap"("tournamentTeamId")`,
   ).run();
   db.prepare(
-    `create index map_pool_map_tie_breaker_calendar_event_id on "MapPoolMap"("tieBreakerCalendarEventId")`
+    `create index map_pool_map_tie_breaker_calendar_event_id on "MapPoolMap"("tieBreakerCalendarEventId")`,
   ).run();
 
   db.prepare(
@@ -33,10 +33,10 @@ module.exports.up = function (db) {
       foreign key ("calendarEventId") references "CalendarEvent"("id") on delete cascade,
       unique("calendarEventId", "name") on conflict rollback
     ) strict
-    `
+    `,
   ).run();
   db.prepare(
-    `create index tournament_team_calendar_event_id on "TournamentTeam"("calendarEventId")`
+    `create index tournament_team_calendar_event_id on "TournamentTeam"("calendarEventId")`,
   ).run();
 
   db.prepare(
@@ -49,10 +49,10 @@ module.exports.up = function (db) {
       foreign key ("tournamentTeamId") references "TournamentTeam"("id") on delete cascade,
       unique("tournamentTeamId", "userId") on conflict rollback
     ) strict
-    `
+    `,
   ).run();
   db.prepare(
-    `create index tournament_team_member_tournament_team_id on "TournamentTeamMember"("tournamentTeamId")`
+    `create index tournament_team_member_tournament_team_id on "TournamentTeamMember"("tournamentTeamId")`,
   ).run();
 };
 
@@ -66,7 +66,7 @@ module.exports.down = function (db) {
   db.prepare(`alter table "CalendarEvent" drop column "isBeforeStart"`).run();
   db.prepare(`alter table "MapPoolMap" drop column "tournamentTeamId"`).run();
   db.prepare(
-    `alter table "MapPoolMap" drop column "tieBreakerCalendarEventId"`
+    `alter table "MapPoolMap" drop column "tieBreakerCalendarEventId"`,
   ).run();
 
   db.prepare(`drop index tournament_team_calendar_event_id`).run();

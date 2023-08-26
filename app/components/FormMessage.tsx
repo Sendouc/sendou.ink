@@ -14,7 +14,7 @@ export function FormMessage({
     <div
       className={clsx(
         { "info-message": type === "info", "error-message": type === "error" },
-        className
+        className,
       )}
     >
       {children}

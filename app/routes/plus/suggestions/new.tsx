@@ -40,11 +40,11 @@ const commentActionSchema = z.object({
     z
       .number()
       .min(Math.min(...PLUS_TIERS))
-      .max(Math.max(...PLUS_TIERS))
+      .max(Math.max(...PLUS_TIERS)),
   ),
   comment: z.preprocess(
     trimmedString,
-    z.string().min(1).max(PlUS_SUGGESTION_FIRST_COMMENT_MAX_LENGTH)
+    z.string().min(1).max(PlUS_SUGGESTION_FIRST_COMMENT_MAX_LENGTH),
   ),
   userId: z.preprocess(actualNumber, z.number().positive()),
 });
@@ -71,7 +71,7 @@ export const action: ActionFunction = async ({ request }) => {
       suggested,
       targetPlusTier: data.tier,
       suggestions,
-    })
+    }),
   );
 
   db.plusSuggestions.create({

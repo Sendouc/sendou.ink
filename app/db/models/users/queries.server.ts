@@ -49,7 +49,7 @@ export function upsert(
     | "twitter"
     | "youtubeId"
     | "discordUniqueName"
-  >
+  >,
 ) {
   return upsertStm.get(input) as User;
 }
@@ -87,7 +87,7 @@ export const updateProfile = sql.transaction(
     }
 
     return updateProfileStm.get(rest) as User;
-  }
+  },
 );
 
 const updateByDiscordIdStm = sql.prepare(updateByDiscordIdSql);
@@ -98,12 +98,12 @@ export const updateMany = sql.transaction(
         User,
         "discordAvatar" | "discordName" | "discordUniqueName" | "discordId"
       >
-    >
+    >,
   ) => {
     for (const updateArgs of argsArr) {
       updateByDiscordIdStm.run(updateArgs);
     }
-  }
+  },
 );
 
 const deleteAllPatronDataStm = sql.prepare(deleteAllPatronDataSql);
@@ -118,7 +118,7 @@ export const updatePatronData = sql.transaction(
     for (const args of argsArr) {
       addPatronDataStm.run(args);
     }
-  }
+  },
 );
 
 const deleteByIdStm = sql.prepare(deleteByIdSql);
@@ -131,7 +131,7 @@ export const migrate = sql.transaction(
       id: args.oldUserId,
       discordId: deletedUser.discordId,
     });
-  }
+  },
 );
 
 const findByIdentifierStm = sql.prepare(findByIdentifierSql);
@@ -204,18 +204,18 @@ export function findAllPatrons() {
 
 const forcePatronStm = sql.prepare(forcePatronSql);
 export function forcePatron(
-  user: Pick<User, "id" | "patronSince" | "patronTill" | "patronTier">
+  user: Pick<User, "id" | "patronSince" | "patronTill" | "patronTier">,
 ) {
   forcePatronStm.run(user);
 }
 
 const deleteAllResultHighlightsStm = sql.prepare(deleteAllResultHighlightsSql);
 const deleteAllTournamentResultHighlightsStm = sql.prepare(
-  deleteAllTournamentResultHighlightsSql
+  deleteAllTournamentResultHighlightsSql,
 );
 const addResultHighlightStm = sql.prepare(addResultHighlightSql);
 const addTournamentResultHighlightStm = sql.prepare(
-  addTournamentResultHighlightSql
+  addTournamentResultHighlightSql,
 );
 export type UpdateResultHighlightsArgs = {
   userId: User["id"];
@@ -236,7 +236,7 @@ export const updateResultHighlights = sql.transaction(
     for (const tournamentTeamId of resultTournamentTeamIds) {
       addTournamentResultHighlightStm.run({ userId, tournamentTeamId });
     }
-  }
+  },
 );
 
 const searchStm = sql.prepare(searchSql);

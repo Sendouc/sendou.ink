@@ -120,13 +120,13 @@ export const action: ActionFunction = async ({ request }) => {
       });
 
       return redirect(
-        data.direct === "true" ? SENDOUQ_LOOKING_PAGE : SENDOUQ_PREPARING_PAGE
+        data.direct === "true" ? SENDOUQ_LOOKING_PAGE : SENDOUQ_PREPARING_PAGE,
       );
     }
     case "JOIN_TEAM_WITH_TRUST":
     case "JOIN_TEAM": {
       const code = new URL(request.url).searchParams.get(
-        JOIN_CODE_SEARCH_PARAM_KEY
+        JOIN_CODE_SEARCH_PARAM_KEY,
       );
 
       const teamInvitedTo =
@@ -151,13 +151,13 @@ export const action: ActionFunction = async ({ request }) => {
       return redirect(
         teamInvitedTo.status === "PREPARING"
           ? SENDOUQ_PREPARING_PAGE
-          : SENDOUQ_LOOKING_PAGE
+          : SENDOUQ_LOOKING_PAGE,
       );
     }
     case "SET_INITIAL_SP": {
       validate(
         !userHasSkill({ userId: user.id, season: season.nth }),
-        "Already set initial SP"
+        "Already set initial SP",
       );
 
       const defaultSkill =
@@ -186,7 +186,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const user = await getUserId(request);
 
   const code = new URL(request.url).searchParams.get(
-    JOIN_CODE_SEARCH_PARAM_KEY
+    JOIN_CODE_SEARCH_PARAM_KEY,
   );
 
   const redirectLocation = groupRedirectLocationByCurrentLocation({
@@ -651,14 +651,14 @@ function MapPoolSelector({ showErrors }: { showErrors: boolean }) {
                             ...prev.stageModePairs.filter(
                               (pair) =>
                                 pair.stageId !== stageId ||
-                                pair.mode !== modeShort
+                                pair.mode !== modeShort,
                             ),
                           ]);
                         }
 
                         localStorage.setItem(
                           MAP_POOL_LOCAL_STORAGE_KEY,
-                          JSON.stringify(newMapPool.stageModePairs)
+                          JSON.stringify(newMapPool.stageModePairs),
                         );
 
                         return newMapPool;

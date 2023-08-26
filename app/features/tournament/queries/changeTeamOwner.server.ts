@@ -26,5 +26,5 @@ export const changeTeamOwner = sql.transaction(
       userId: args.newCaptainId,
       isOwner: 1,
     });
-  }
+  },
 );

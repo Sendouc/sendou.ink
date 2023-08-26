@@ -43,5 +43,5 @@ export const morphGroups = sql.transaction(
         role: "REGULAR",
       });
     }
-  }
+  },
 );

@@ -72,14 +72,14 @@ export function buildStats({
     weaponParams().subWeapons[mainWeaponParams.subWeaponId];
   invariant(
     subWeaponParams,
-    `Sub weapon with splId ${mainWeaponParams.subWeaponId} not found`
+    `Sub weapon with splId ${mainWeaponParams.subWeaponId} not found`,
   );
 
   const specialWeaponParams =
     weaponParams().specialWeapons[mainWeaponParams.specialWeaponId];
   invariant(
     specialWeaponParams,
-    `Special weapon with splId ${mainWeaponParams.specialWeaponId} not found`
+    `Special weapon with splId ${mainWeaponParams.specialWeaponId} not found`,
   );
 
   const input: StatFunctionInput = {
@@ -129,11 +129,11 @@ export function buildStats({
       shootingRunSpeedCharging: shootingRunSpeed(input, "MoveSpeed_Charge"),
       shootingRunSpeedFullCharge: shootingRunSpeed(
         input,
-        "MoveSpeedFullCharge"
+        "MoveSpeedFullCharge",
       ),
       shootingRunSpeedSecondaryMode: shootingRunSpeed(
         input,
-        "MoveSpeedVariable"
+        "MoveSpeedVariable",
       ),
       swimSpeed: swimSpeed(input),
       swimSpeedHoldingRainmaker: swimSpeedHoldingRainmaker(input),
@@ -214,7 +214,7 @@ const OWN_RESPAWN_PUNISHER_EXTRA_SPECIAL_LOST = 0.225;
 const ENEMY_RESPAWN_PUNISHER_EXTRA_SPECIAL_LOST = 0.15;
 function specialLost(
   { abilityPoints, mainWeaponParams, mainOnlyAbilities }: StatFunctionInput,
-  splattedByRP = false
+  splattedByRP = false,
 ): AnalyzedBuild["stats"]["specialPoint"] {
   const SPECIAL_SAVED_AFTER_DEATH_ABILITY = "SS";
   const hasRespawnPunisher = mainOnlyAbilities.includes("RP");
@@ -240,10 +240,10 @@ function specialLost(
 
   return {
     baseValue: specialSavedAfterDeathForDisplay(
-      baseEffect - splattedByExtraPenalty
+      baseEffect - splattedByExtraPenalty,
     ),
     value: specialSavedAfterDeathForDisplay(
-      effect - splattedByExtraPenalty - extraSpecialLost
+      effect - splattedByExtraPenalty - extraSpecialLost,
     ),
     modifiedBy: [SPECIAL_SAVED_AFTER_DEATH_ABILITY, "RP"],
   };
@@ -253,20 +253,20 @@ function subWeaponInkConsumptionPercentage(args: StatFunctionInput) {
   return {
     modifiedBy: "ISS" as const,
     baseValue: roundToNDecimalPlaces(
-      (args.subWeaponParams.InkConsume * 100) / inkTankSize(args.weaponSplId)
+      (args.subWeaponParams.InkConsume * 100) / inkTankSize(args.weaponSplId),
     ),
     value: roundToNDecimalPlaces(
       // + 0.004 is a hack to avoid situation where the value is e.g. 50.0005
       // -> rounds to 50% so it appears you can throw two subs
       // which is not correct so we force the round upwards
       (subWeaponConsume(args).inkConsume * 100 + 0.0045) /
-        inkTankSize(args.weaponSplId)
+        inkTankSize(args.weaponSplId),
     ),
   };
 }
 
 function fullInkTankOptions(
-  args: StatFunctionInput
+  args: StatFunctionInput,
 ): AnalyzedBuild["stats"]["fullInkTankOptions"] {
   const result: AnalyzedBuild["stats"]["fullInkTankOptions"] = [];
 
@@ -294,7 +294,7 @@ function fullInkTankOptions(
           (inkTankSize(args.weaponSplId) -
             subWeaponInkConsume * subsFromFullInkTank) /
             mainWeaponInkConsume,
-          2
+          2,
         ),
       });
     }
@@ -329,7 +329,7 @@ function subWeaponConsume({
   return {
     inkConsume: inkConsumeAfterISS,
     maxSubsFromFullInkTank: Math.floor(
-      inkTankSize(weaponSplId) / inkConsumeAfterISS
+      inkTankSize(weaponSplId) / inkConsumeAfterISS,
     ),
   };
 }
@@ -366,7 +366,7 @@ function mainWeaponInkConsumeByType({
 }
 
 function inkConsumeTypeToParamsKeys(
-  type: InkConsumeType
+  type: InkConsumeType,
 ): Array<keyof MainWeaponParams> {
   switch (type) {
     case "NORMAL":
@@ -487,7 +487,7 @@ function damages(args: StatFunctionInput): AnalyzedBuild["stats"]["damages"] {
 }
 
 function specialWeaponDamages(
-  args: StatFunctionInput
+  args: StatFunctionInput,
 ): AnalyzedBuild["stats"]["specialWeaponDamages"] {
   const result: AnalyzedBuild["stats"]["specialWeaponDamages"] = [];
 
@@ -537,7 +537,7 @@ function specialWeaponDamages(
   if (args.mainWeaponParams.specialWeaponId === CRAB_TANK_ID) {
     const cannonDamages = result.filter((d) => d.type === "SPECIAL_CANNON");
     const firstCannonDamageIdx = result.findIndex(
-      (d) => d.type === "SPECIAL_CANNON"
+      (d) => d.type === "SPECIAL_CANNON",
     );
 
     result.splice(firstCannonDamageIdx, 0, {
@@ -570,7 +570,7 @@ function shotsToSplat({
 }
 
 function subWeaponDefenseDamages(
-  args: StatFunctionInput
+  args: StatFunctionInput,
 ): AnalyzedBuild["stats"]["subWeaponDefenseDamages"] {
   const result: AnalyzedBuild["stats"]["subWeaponDefenseDamages"] = [];
 
@@ -614,7 +614,7 @@ function subWeaponDefenseDamages(
               baseValue: sumArray(arrayValues.map((v) => v.baseValue)),
               value: cutToNDecimalPlaces(
                 sumArray(arrayValues.map((v) => v.value)),
-                1
+                1,
               ),
               type,
             });
@@ -623,14 +623,14 @@ function subWeaponDefenseDamages(
           // Flatten many values into one
           if (id === FIZZY_BOMB_ID || id === CURLING_BOMB_ID) {
             const allArrayValues = arrayValues.sort(
-              (a, b) => a.baseValue - b.baseValue
+              (a, b) => a.baseValue - b.baseValue,
             );
             const firstHalfValues = allArrayValues.slice(
               0,
-              allArrayValues.length / 2
+              allArrayValues.length / 2,
             );
             const secondHalfValues = allArrayValues.slice(
-              allArrayValues.length / 2
+              allArrayValues.length / 2,
             );
 
             arrayValues = [
@@ -639,10 +639,14 @@ function subWeaponDefenseDamages(
                 subWeaponId: id,
                 distance: [
                   Math.min(
-                    ...secondHalfValues.map((value) => value.distance as number)
+                    ...secondHalfValues.map(
+                      (value) => value.distance as number,
+                    ),
                   ),
                   Math.max(
-                    ...secondHalfValues.map((value) => value.distance as number)
+                    ...secondHalfValues.map(
+                      (value) => value.distance as number,
+                    ),
                   ),
                 ],
                 baseValue: secondHalfValues[0]!.baseValue,
@@ -654,10 +658,10 @@ function subWeaponDefenseDamages(
                 subWeaponId: id,
                 distance: [
                   Math.min(
-                    ...firstHalfValues.map((value) => value.distance as number)
+                    ...firstHalfValues.map((value) => value.distance as number),
                   ),
                   Math.max(
-                    ...firstHalfValues.map((value) => value.distance as number)
+                    ...firstHalfValues.map((value) => value.distance as number),
                   ),
                 ],
                 baseValue: firstHalfValues[0]!.baseValue,
@@ -695,7 +699,7 @@ function subWeaponDefenseDamages(
 }
 
 function subWeaponIdToEffectKey(
-  subWeaponId: SubWeaponId
+  subWeaponId: SubWeaponId,
 ): keyof typeof abilityValuesJson {
   switch (subWeaponId) {
     case SPLAT_BOMB_ID:
@@ -716,7 +720,7 @@ function subWeaponIdToEffectKey(
       return "DamageRt_Shield";
     default:
       throw new Error(
-        `No damage rate for the sub weapon with id: ${subWeaponId}`
+        `No damage rate for the sub weapon with id: ${subWeaponId}`,
       );
   }
 }
@@ -748,7 +752,7 @@ function subWeaponDamageValue({
 const framesToSeconds = (frames: number) =>
   effectToRounded(Math.ceil(frames) / 60);
 function squidFormInkRecoverySeconds(
-  args: StatFunctionInput
+  args: StatFunctionInput,
 ): AnalyzedBuild["stats"]["squidFormInkRecoverySeconds"] {
   const SQUID_FORM_INK_RECOVERY_SECONDS_ABILITY = "IRU";
   const { baseEffect, effect } = abilityPointsToEffects({
@@ -768,7 +772,7 @@ function squidFormInkRecoverySeconds(
 }
 
 function humanoidFormInkRecoverySeconds(
-  args: StatFunctionInput
+  args: StatFunctionInput,
 ): AnalyzedBuild["stats"]["humanoidFormInkRecoverySeconds"] {
   const HUMANOID_FORM_INK_RECOVERY_SECONDS_ABILITY = "IRU";
   const { baseEffect, effect } = abilityPointsToEffects({
@@ -812,7 +816,7 @@ function runSpeed(args: StatFunctionInput): AnalyzedBuild["stats"]["runSpeed"] {
 }
 
 function runSpeedInEnemyInk(
-  args: StatFunctionInput
+  args: StatFunctionInput,
 ): AnalyzedBuild["stats"]["runSpeedInEnemyInk"] {
   const RUN_SPEED_IN_ENEMY_INK_ABILITY = "RES";
   const { baseEffect, effect } = abilityPointsToEffects({
@@ -837,7 +841,7 @@ function shootingRunSpeed(
     | "MoveSpeed"
     | "MoveSpeed_Charge"
     | "MoveSpeedFullCharge"
-    | "MoveSpeedVariable"
+    | "MoveSpeedVariable",
 ): AnalyzedBuild["stats"]["shootingRunSpeed"] {
   const SHOOTING_RUN_SPEED_ABILITY = "RSU";
   const moveSpeed = args.mainWeaponParams[keyName];
@@ -861,7 +865,7 @@ function shootingRunSpeed(
 }
 
 function swimSpeed(
-  args: StatFunctionInput
+  args: StatFunctionInput,
 ): AnalyzedBuild["stats"]["swimSpeed"] {
   const key =
     args.mainWeaponParams.WeaponSpeedType === "Fast"
@@ -889,14 +893,14 @@ function swimSpeed(
 }
 
 function swimSpeedHoldingRainmaker(
-  args: StatFunctionInput
+  args: StatFunctionInput,
 ): AnalyzedBuild["stats"]["swimSpeedHoldingRainmaker"] {
   const withoutRM = swimSpeed(args);
 
   return {
     ...withoutRM,
     baseValue: effectToRounded(
-      withoutRM.baseValue * RAINMAKER_SPEED_PENALTY_MODIFIER
+      withoutRM.baseValue * RAINMAKER_SPEED_PENALTY_MODIFIER,
     ),
     value: effectToRounded(withoutRM.value * RAINMAKER_SPEED_PENALTY_MODIFIER),
   };
@@ -916,7 +920,7 @@ const ENEMY_RESPAWN_PUNISHER_EXTRA_RESPAWN_FRAMES = 45;
 const SPLATOON_3_FASTER_RESPAWN = 60;
 function respawnTime(
   args: StatFunctionInput,
-  splattedByRP = false
+  splattedByRP = false,
 ): AnalyzedBuild["stats"]["quickRespawnTime"] {
   const QUICK_RESPAWN_TIME_ABILITY = "QR";
   const hasRespawnPunisher = args.mainOnlyAbilities.includes("RP");
@@ -957,7 +961,7 @@ function respawnTime(
         chase.baseEffect +
         splattedByExtraFrames +
         around.baseEffect -
-        SPLATOON_3_FASTER_RESPAWN
+        SPLATOON_3_FASTER_RESPAWN,
     ),
     value: framesToSeconds(
       RESPAWN_CHASE_FRAME +
@@ -965,14 +969,14 @@ function respawnTime(
         around.effect +
         splattedByExtraFrames +
         ownRPExtraFrames -
-        SPLATOON_3_FASTER_RESPAWN
+        SPLATOON_3_FASTER_RESPAWN,
     ),
     modifiedBy: [QUICK_RESPAWN_TIME_ABILITY, "RP"],
   };
 }
 
 function superJumpTimeGroundFrames(
-  args: StatFunctionInput
+  args: StatFunctionInput,
 ): AnalyzedBuild["stats"]["superJumpTimeGroundFrames"] {
   const SUPER_JUMP_TIME_GROUND_ABILITY = "QSJ";
   const { baseEffect, effect } = abilityPointsToEffects({
@@ -992,7 +996,7 @@ function superJumpTimeGroundFrames(
 }
 
 function superJumpTimeTotal(
-  args: StatFunctionInput
+  args: StatFunctionInput,
 ): AnalyzedBuild["stats"]["superJumpTimeTotal"] {
   const SUPER_JUMP_TIME_TOTAL_ABILITY = "QSJ";
 
@@ -1015,7 +1019,7 @@ function superJumpTimeTotal(
 
   return {
     baseValue: framesToSeconds(
-      Math.ceil(charge.baseEffect) + Math.ceil(move.baseEffect)
+      Math.ceil(charge.baseEffect) + Math.ceil(move.baseEffect),
     ),
     value: framesToSeconds(Math.ceil(charge.effect) + Math.ceil(move.effect)),
     modifiedBy: SUPER_JUMP_TIME_TOTAL_ABILITY,
@@ -1023,7 +1027,7 @@ function superJumpTimeTotal(
 }
 
 function shotSpreadAir(
-  args: StatFunctionInput
+  args: StatFunctionInput,
 ): AnalyzedBuild["stats"]["shotSpreadAir"] {
   const SHOT_SPREAD_AIR_ABILITY = "IA";
   const groundSpread = args.mainWeaponParams.Stand_DegSwerve;
@@ -1056,7 +1060,7 @@ function shotSpreadAir(
 }
 
 function shotAutofireSpreadAir(
-  args: StatFunctionInput
+  args: StatFunctionInput,
 ): AnalyzedBuild["stats"]["shotAutofireSpreadAir"] {
   const SHOT_SPREAD_AIR_ABILITY = "IA";
   const groundSpread = args.mainWeaponParams.Variable_Stand_DegSwerve;
@@ -1089,7 +1093,7 @@ function shotAutofireSpreadAir(
 }
 
 function squidSurgeChargeFrames(
-  args: StatFunctionInput
+  args: StatFunctionInput,
 ): AnalyzedBuild["stats"]["squidSurgeChargeFrames"] {
   const SQUID_SURGE_CHARGE_FRAMES_ABILITY = "IA";
   const { baseEffect, effect } = abilityPointsToEffects({
@@ -1109,7 +1113,7 @@ function squidSurgeChargeFrames(
 }
 
 function damageTakenInEnemyInkPerSecond(
-  args: StatFunctionInput
+  args: StatFunctionInput,
 ): AnalyzedBuild["stats"]["damageTakenInEnemyInkPerSecond"] {
   const DAMAGE_TAKEN_IN_ENEMY_INK_ABILITY = "RES";
   const { baseEffect, effect } = abilityPointsToEffects({
@@ -1129,7 +1133,7 @@ function damageTakenInEnemyInkPerSecond(
 }
 
 function enemyInkDamageLimit(
-  args: StatFunctionInput
+  args: StatFunctionInput,
 ): AnalyzedBuild["stats"]["enemyInkDamageLimit"] {
   const ENEMY_INK_DAMAGE_LIMIT_ABILITY = "RES";
   const { baseEffect, effect } = abilityPointsToEffects({
@@ -1154,7 +1158,7 @@ function effectToDamage(effect: number) {
 }
 
 function framesBeforeTakingDamageInEnemyInk(
-  args: StatFunctionInput
+  args: StatFunctionInput,
 ): AnalyzedBuild["stats"]["framesBeforeTakingDamageInEnemyInk"] {
   const FRAMES_BEFORE_TAKING_DAMAGE_IN_ENEMY_INK_ABILITY = "RES";
   const { baseEffect, effect } = abilityPointsToEffects({
@@ -1207,7 +1211,7 @@ const SUB_WEAPON_STATS = [
   { analyzedBuildKey: "subHp", abilityValuesKey: "MaxHP", type: "HP" },
 ] as const;
 export function subStats(
-  args: Pick<StatFunctionInput, "subWeaponParams" | "abilityPoints">
+  args: Pick<StatFunctionInput, "subWeaponParams" | "abilityPoints">,
 ) {
   const result: Partial<AnalyzedBuild["stats"]> = {};
   const SUB_STATS_KEY = "BRU";
@@ -1251,7 +1255,7 @@ export function subStats(
 }
 
 function subDefPointSensorMarkedTimeInSeconds(
-  args: StatFunctionInput
+  args: StatFunctionInput,
 ): AnalyzedBuild["stats"]["subDefPointSensorMarkedTimeInSeconds"] {
   const SUB_DEF_POINT_SENSOR_MARKED_TIME_IN_SECONDS_KEY = "SRU";
   const { baseEffect, effect } = abilityPointsToEffects({
@@ -1279,7 +1283,7 @@ function subDefPointSensorMarkedTimeInSeconds(
 }
 
 function subDefInkMineMarkedTimeInSeconds(
-  args: StatFunctionInput
+  args: StatFunctionInput,
 ): AnalyzedBuild["stats"]["subDefInkMineMarkedTimeInSeconds"] {
   const SUB_DEF_INK_MINE_MARKED_TIME_IN_SECONDS_KEY = "SRU";
   const { baseEffect, effect } = abilityPointsToEffects({
@@ -1307,7 +1311,7 @@ function subDefInkMineMarkedTimeInSeconds(
 }
 
 function subDefAngleShooterMarkedTimeInSeconds(
-  args: StatFunctionInput
+  args: StatFunctionInput,
 ): AnalyzedBuild["stats"]["subDefAngleShooterMarkedTimeInSeconds"] {
   const SUB_DEF_ANGLE_SHOOTER_MARKED_TIME_IN_SECONDS_KEY = "SRU";
   const { baseEffect, effect } = abilityPointsToEffects({
@@ -1335,7 +1339,7 @@ function subDefAngleShooterMarkedTimeInSeconds(
 }
 
 function subDefToxicMistMovementReduction(
-  args: StatFunctionInput
+  args: StatFunctionInput,
 ): AnalyzedBuild["stats"]["subDefToxicMistMovementReduction"] {
   const SUB_DEF_TOXIC_MIST_MOVEMENT_REDUCTION_KEY = "SRU";
   const { baseEffect, effect } = abilityPointsToEffects({
@@ -1355,7 +1359,7 @@ function subDefToxicMistMovementReduction(
 }
 
 function subQsjBoost(
-  args: StatFunctionInput
+  args: StatFunctionInput,
 ): AnalyzedBuild["stats"]["subQsjBoost"] {
   if (
     !hasEffect({
@@ -1392,7 +1396,7 @@ function subQsjBoost(
 }
 
 function specialDurationInSeconds(
-  args: StatFunctionInput
+  args: StatFunctionInput,
 ): AnalyzedBuild["stats"]["specialDurationInSeconds"] {
   if (
     !hasEffect({
@@ -1421,7 +1425,7 @@ function specialDurationInSeconds(
 }
 
 function specialDamageDistance(
-  args: StatFunctionInput
+  args: StatFunctionInput,
 ): AnalyzedBuild["stats"]["specialDamageDistance"] {
   if (
     !hasEffect({
@@ -1450,7 +1454,7 @@ function specialDamageDistance(
 }
 
 function specialPaintRadius(
-  args: StatFunctionInput
+  args: StatFunctionInput,
 ): AnalyzedBuild["stats"]["specialPaintRadius"] {
   for (const key of ["PaintRadius", "CrossPaintRadius"] as const) {
     if (!hasEffect({ key, weapon: args.specialWeaponParams })) {
@@ -1478,7 +1482,7 @@ function specialPaintRadius(
 }
 
 export function specialFieldHp(
-  args: Pick<StatFunctionInput, "specialWeaponParams" | "abilityPoints">
+  args: Pick<StatFunctionInput, "specialWeaponParams" | "abilityPoints">,
 ): AnalyzedBuild["stats"]["specialFieldHp"] {
   if (!hasEffect({ key: "MaxFieldHP", weapon: args.specialWeaponParams })) {
     return;
@@ -1502,7 +1506,7 @@ export function specialFieldHp(
 }
 
 export function specialDeviceHp(
-  args: Pick<StatFunctionInput, "specialWeaponParams" | "abilityPoints">
+  args: Pick<StatFunctionInput, "specialWeaponParams" | "abilityPoints">,
 ): AnalyzedBuild["stats"]["specialDeviceHp"] {
   if (!hasEffect({ key: "MaxHP", weapon: args.specialWeaponParams })) {
     return;
@@ -1529,7 +1533,7 @@ export function specialDeviceHp(
 const ZIPCASTER_INKTANK_SIZE = 1.5;
 
 function specialHookInkConsumptionPercentage(
-  args: StatFunctionInput
+  args: StatFunctionInput,
 ): AnalyzedBuild["stats"]["specialHookInkConsumptionPercentage"] {
   if (
     !hasEffect({
@@ -1552,7 +1556,7 @@ function specialHookInkConsumptionPercentage(
 
   return {
     baseValue: roundToNDecimalPlaces(
-      (baseEffect * 100) / ZIPCASTER_INKTANK_SIZE
+      (baseEffect * 100) / ZIPCASTER_INKTANK_SIZE,
     ),
     value: roundToNDecimalPlaces((effect * 100) / ZIPCASTER_INKTANK_SIZE),
     modifiedBy: SPECIAL_HOOK_INK_CONSUMPTION_PERCENTAGE_KEY,
@@ -1560,7 +1564,7 @@ function specialHookInkConsumptionPercentage(
 }
 
 function specialInkConsumptionPerSecondPercentage(
-  args: StatFunctionInput
+  args: StatFunctionInput,
 ): AnalyzedBuild["stats"]["specialInkConsumptionPerSecondPercentage"] {
   if (
     !hasEffect({
@@ -1583,7 +1587,7 @@ function specialInkConsumptionPerSecondPercentage(
 
   return {
     baseValue: roundToNDecimalPlaces(
-      (baseEffect * 100) / ZIPCASTER_INKTANK_SIZE
+      (baseEffect * 100) / ZIPCASTER_INKTANK_SIZE,
     ),
     value: roundToNDecimalPlaces((effect * 100) / ZIPCASTER_INKTANK_SIZE),
     modifiedBy: SPECIAL_INK_CONSUMPTION_PER_SECOND_PERCENTAGE_KEY,
@@ -1591,7 +1595,7 @@ function specialInkConsumptionPerSecondPercentage(
 }
 
 function specialReticleRadius(
-  args: StatFunctionInput
+  args: StatFunctionInput,
 ): AnalyzedBuild["stats"]["specialReticleRadius"] {
   if (
     !hasEffect({
@@ -1620,7 +1624,7 @@ function specialReticleRadius(
 }
 
 function specialThrowDistance(
-  args: StatFunctionInput
+  args: StatFunctionInput,
 ): AnalyzedBuild["stats"]["specialThrowDistance"] {
   if (
     !hasEffect({
@@ -1649,7 +1653,7 @@ function specialThrowDistance(
 }
 
 function specialAutoChargeRate(
-  args: StatFunctionInput
+  args: StatFunctionInput,
 ): AnalyzedBuild["stats"]["specialAutoChargeRate"] {
   if (
     !hasEffect({
@@ -1678,7 +1682,7 @@ function specialAutoChargeRate(
 }
 
 function specialMaxRadius(
-  args: StatFunctionInput
+  args: StatFunctionInput,
 ): AnalyzedBuild["stats"]["specialMaxRadius"] {
   if (
     !hasEffect({
@@ -1707,7 +1711,7 @@ function specialMaxRadius(
 }
 
 function specialRadiusRange(
-  args: StatFunctionInput
+  args: StatFunctionInput,
 ): AnalyzedBuild["stats"]["specialRadiusRange"] {
   if (
     !hasEffect({
@@ -1743,17 +1747,17 @@ function specialRadiusRange(
 
   return {
     baseValue: `${roundToNDecimalPlaces(
-      radiusMin.baseEffect
+      radiusMin.baseEffect,
     )}-${roundToNDecimalPlaces(radiusMax.baseEffect)}`,
     value: `${roundToNDecimalPlaces(radiusMin.effect)}-${roundToNDecimalPlaces(
-      radiusMax.effect
+      radiusMax.effect,
     )}`,
     modifiedBy: SPECIAL_RADIUS_RANGE_KEY,
   };
 }
 
 function specialPowerUpDuration(
-  args: StatFunctionInput
+  args: StatFunctionInput,
 ): AnalyzedBuild["stats"]["specialPowerUpDuration"] {
   if (
     !hasEffect({

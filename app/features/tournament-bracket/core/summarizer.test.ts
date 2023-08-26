@@ -125,7 +125,7 @@ TournamentSummary(
     assert.ok(loserSkill);
 
     assert.ok(ordinal(winnerSkill) > ordinal(loserSkill));
-  }
+  },
 );
 
 const resultsWith20: AllMatchResult[] = [
@@ -203,10 +203,10 @@ TournamentSummary("calculates team skills (many rosters for same team)", () => {
   });
 
   const teamOneRosterOne = summary.skills.find(
-    (s) => s.identifier === "1-2-3-4"
+    (s) => s.identifier === "1-2-3-4",
   );
   const teamOneRosterTwo = summary.skills.find(
-    (s) => s.identifier === "1-3-4-20"
+    (s) => s.identifier === "1-3-4-20",
   );
 
   assert.ok(teamOneRosterOne);
@@ -256,15 +256,15 @@ TournamentSummary(
     });
 
     const teamOneRosterOne = summary.skills.find(
-      (s) => s.identifier === "1-2-3-4"
+      (s) => s.identifier === "1-2-3-4",
     );
     const teamOneRosterTwo = summary.skills.find(
-      (s) => s.identifier === "1-3-4-20"
+      (s) => s.identifier === "1-3-4-20",
     );
 
     assert.ok(teamOneRosterOne);
     assert.not.ok(teamOneRosterTwo);
-  }
+  },
 );
 
 TournamentSummary(
@@ -279,18 +279,18 @@ TournamentSummary(
         (p) =>
           p.ownerUserId === 5 &&
           p.otherUserId === 20 &&
-          (p.setWins > 0 || p.setLosses > 0)
+          (p.setWins > 0 || p.setLosses > 0),
       ),
-      "player 5 should not have a result against player 20 (sub for only one game)"
+      "player 5 should not have a result against player 20 (sub for only one game)",
     );
-  }
+  },
 );
 
 TournamentSummary("calculates results of mates", () => {
   const summary = summarize();
 
   const result = summary.playerResultDeltas.find(
-    (r) => r.ownerUserId === 1 && r.otherUserId === 2
+    (r) => r.ownerUserId === 1 && r.otherUserId === 2,
   );
 
   assert.ok(result);
@@ -306,7 +306,7 @@ TournamentSummary("calculates results of opponents", () => {
   const summary = summarize();
 
   const result = summary.playerResultDeltas.find(
-    (r) => r.ownerUserId === 1 && r.otherUserId === 5
+    (r) => r.ownerUserId === 1 && r.otherUserId === 5,
   );
 
   assert.ok(result);
@@ -322,7 +322,7 @@ TournamentSummary("calculates results of opponents (losing side)", () => {
   const summary = summarize();
 
   const result = summary.playerResultDeltas.find(
-    (r) => r.ownerUserId === 5 && r.otherUserId === 1
+    (r) => r.ownerUserId === 5 && r.otherUserId === 1,
   );
 
   assert.ok(result);

@@ -35,7 +35,7 @@ export function ScoreReporterRosters({
       teamOneId: teams[0].id,
       teamTwoId: teams[1].id,
       players: data.match.players,
-    })
+    }),
   );
   const [winnerId, setWinnerId] = React.useState<number | undefined>();
 
@@ -101,10 +101,10 @@ function checkedPlayersInitialState({
   const result: [number[], number[]] = [[], []];
 
   const teamOneMembers = players.filter(
-    (player) => player.tournamentTeamId === teamOneId
+    (player) => player.tournamentTeamId === teamOneId,
   );
   const teamTwoMembers = players.filter(
-    (player) => player.tournamentTeamId === teamTwoId
+    (player) => player.tournamentTeamId === teamTwoId,
   );
 
   if (teamOneMembers.length === TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL) {
@@ -141,7 +141,7 @@ function ReportScoreButtons({
 
   if (
     !checkedPlayers.every(
-      (team) => team.length === TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL
+      (team) => team.length === TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
     )
   ) {
     return (

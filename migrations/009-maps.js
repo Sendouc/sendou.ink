@@ -7,7 +7,7 @@ module.exports.up = function (db) {
       "ownerId" integer not null,
       foreign key ("ownerId") references "User"("id") on delete restrict
     ) strict
-    `
+    `,
   ).run();
   db.prepare(`create index map_pool_owner_id on "MapPool"("ownerId")`).run();
 
@@ -19,17 +19,17 @@ module.exports.up = function (db) {
       "mode" text not null,
       foreign key ("mapPoolId") references "MapPool"("id") on delete cascade
     ) strict
-    `
+    `,
   ).run();
   db.prepare(
-    `create index map_pool_map_map_pool_id on "MapPoolMap"("mapPoolId")`
+    `create index map_pool_map_map_pool_id on "MapPoolMap"("mapPoolId")`,
   ).run();
 
   db.prepare(
-    `alter table "CalendarEvent" add "mapPoolId" integer references "MapPool"("id") on delete set null`
+    `alter table "CalendarEvent" add "mapPoolId" integer references "MapPool"("id") on delete set null`,
   ).run();
   db.prepare(
-    `create index calendar_event_map_pool_id on "CalendarEvent"("mapPoolId")`
+    `create index calendar_event_map_pool_id on "CalendarEvent"("mapPoolId")`,
   ).run();
 };
 

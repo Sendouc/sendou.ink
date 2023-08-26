@@ -9,7 +9,7 @@ const GEAR_IMAGES_DIR_PATH = path.join(
   "public",
   "static-assets",
   "img",
-  "gear"
+  "gear",
 );
 const GEAR_JSON_PATH = path.join(__dirname, "output", "gear.json");
 
@@ -41,7 +41,7 @@ async function main() {
       invariant(internalName);
 
       const gearId = gear.find(
-        (g: any) => g.internalName === internalName && g.type === type
+        (g: any) => g.internalName === internalName && g.type === type,
       )?.id;
 
       if (typeof gearId !== "number") {
@@ -51,7 +51,7 @@ async function main() {
 
       fs.renameSync(
         path.join(gearSlotDirPath, file),
-        path.join(gearSlotDirPath, `${gearId}.png`)
+        path.join(gearSlotDirPath, `${gearId}.png`),
       );
     }
   }

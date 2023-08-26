@@ -28,7 +28,7 @@ const stm = sql.prepare(/* sql */ `
 export type SeasonPopularUsersWeapon = Record<User["id"], MainWeaponId>;
 
 export function seasonPopularUsersWeapon(
-  season: RankingSeason["nth"]
+  season: RankingSeason["nth"],
 ): SeasonPopularUsersWeapon {
   const { starts, ends } = seasonObject(season);
 

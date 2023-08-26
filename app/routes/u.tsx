@@ -56,7 +56,7 @@ export const loader = ({ request }: LoaderArgs) => {
 export default function UserSearchPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [inputValue, setInputValue] = React.useState(
-    searchParams.get("q") ?? ""
+    searchParams.get("q") ?? "",
   );
   useDebounce(
     () => {
@@ -65,7 +65,7 @@ export default function UserSearchPage() {
       setSearchParams({ q: inputValue });
     },
     1500,
-    [inputValue]
+    [inputValue],
   );
 
   return (

@@ -9,7 +9,7 @@ const EMPTY_ROW: [
   AbilityWithUnknown,
   AbilityWithUnknown,
   AbilityWithUnknown,
-  AbilityWithUnknown
+  AbilityWithUnknown,
 ] = ["UNKNOWN", "UNKNOWN", "UNKNOWN", "UNKNOWN"];
 
 BuildToAbilityPoints("Calculates ability points", () => {

@@ -12,7 +12,7 @@ export const lfgRoleCommand: BotCommand = {
   builder: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(
-      "Turn on/off pings when people are looking for someone to play with"
+      "Turn on/off pings when people are looking for someone to play with",
     )
     .addStringOption((option) =>
       option
@@ -27,8 +27,8 @@ export const lfgRoleCommand: BotCommand = {
           {
             name: "remove",
             value: "remove",
-          }
-        )
+          },
+        ),
     ),
   execute: async ({ interaction }) => {
     const roleBeingAdded = interaction.options.getString(ACTION_ARG) === "add";

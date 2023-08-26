@@ -44,7 +44,7 @@ export function addSkills(
   skills: Pick<
     Skill,
     "groupMatchId" | "identifier" | "mu" | "season" | "sigma" | "userId"
-  >[]
+  >[],
 ) {
   for (const skill of skills) {
     const stm = skill.userId ? userStm : teamStm;

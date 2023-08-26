@@ -102,7 +102,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       validate(
         !team.members.find((m) => m.userId === data.memberId)?.isOwner,
 
-        "Cannot remove team owner"
+        "Cannot remove team owner",
       );
 
       leaveTeam({
@@ -118,13 +118,13 @@ export const action: ActionFunction = async ({ request, params }) => {
       validate(team, "Invalid team id");
 
       const previousTeam = teams.find((t) =>
-        t.members.some((m) => m.userId === data.userId)
+        t.members.some((m) => m.userId === data.userId),
       );
 
       if (hasTournamentStarted(event.id)) {
         validate(
           !previousTeam || !previousTeam.checkedInAt,
-          "User is already on a checked in team"
+          "User is already on a checked in team",
         );
       } else {
         validate(!previousTeam, "User is already on a team");
@@ -349,7 +349,7 @@ function EnableMapList() {
   const data = useOutletContext<TournamentLoaderData>();
   const submit = useSubmit();
   const [eventStarted, setEventStarted] = React.useState(
-    Boolean(data.event.showMapListGenerator)
+    Boolean(data.event.showMapListGenerator),
   );
   function handleToggle(toggled: boolean) {
     setEventStarted(toggled);
@@ -396,7 +396,7 @@ function DownloadParticipants() {
       .map((team) => {
         return `${team.name} - ${team.members
           .map(
-            (member) => `${discordFullName(member)} - <@${member.discordId}>`
+            (member) => `${discordFullName(member)} - <@${member.discordId}>`,
           )
           .join(" / ")}`;
       })

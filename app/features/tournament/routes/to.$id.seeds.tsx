@@ -91,11 +91,11 @@ export default function TournamentSeedsPage() {
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 
   const teamsSorted = teams.sort(
-    (a, b) => teamOrder.indexOf(a.id) - teamOrder.indexOf(b.id)
+    (a, b) => teamOrder.indexOf(a.id) - teamOrder.indexOf(b.id),
   );
 
   const plusTierToRank: Record<number, number> = {
@@ -133,7 +133,7 @@ export default function TournamentSeedsPage() {
           setTeamOrder(
             clone(teams)
               .sort((a, b) => rankTeam(b) - rankTeam(a))
-              .map((t) => t.id)
+              .map((t) => t.id),
           );
         }}
       >
@@ -153,7 +153,7 @@ export default function TournamentSeedsPage() {
           collisionDetection={closestCenter}
           onDragStart={(event) => {
             const newActiveTeam = teamsSorted.find(
-              (t) => t.id === event.active.id
+              (t) => t.id === event.active.id,
             );
             invariant(newActiveTeam, "newActiveTeam is undefined");
             setActiveTeam(newActiveTeam);
@@ -188,7 +188,7 @@ export default function TournamentSeedsPage() {
                   {
                     disabled: navigation.state !== "idle",
                     invisible: activeTeam?.id === team.id,
-                  }
+                  },
                 )}
               >
                 <RowContents team={team} seed={i + 1} />

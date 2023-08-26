@@ -39,7 +39,7 @@ export const Main = ({
                 bigger,
                 "pt-12-forced": showLeaderboard,
               },
-              className
+              className,
             )
       }
       style={style}

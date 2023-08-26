@@ -54,13 +54,13 @@ export const joinTeam = sql.transaction(
     if (checkOutTeam) {
       invariant(
         previousTeamId,
-        "previousTeamId is required when checking out team"
+        "previousTeamId is required when checking out team",
       );
       checkOut(previousTeamId);
     }
 
     createTeamMemberStm.run({ tournamentTeamId: newTeamId, userId });
-  }
+  },
 );
 
 export const leaveTeam = ({

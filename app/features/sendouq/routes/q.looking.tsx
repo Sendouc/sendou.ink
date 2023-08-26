@@ -146,11 +146,11 @@ export const action: ActionFunction = async ({ request }) => {
       });
 
       const ourGroup = lookingGroups.find(
-        (group) => group.id === currentGroup.id
+        (group) => group.id === currentGroup.id,
       );
       if (!ourGroup) return null;
       const theirGroup = lookingGroups.find(
-        (group) => group.id === data.targetGroupId
+        (group) => group.id === data.targetGroupId,
       );
       if (!theirGroup) return null;
 
@@ -199,27 +199,27 @@ export const action: ActionFunction = async ({ request }) => {
       });
 
       const ourGroup = lookingGroups.find(
-        (group) => group.id === currentGroup.id
+        (group) => group.id === currentGroup.id,
       );
       if (!ourGroup) return null;
       const theirGroup = lookingGroups.find(
-        (group) => group.id === data.targetGroupId
+        (group) => group.id === data.targetGroupId,
       );
       if (!theirGroup) return null;
 
       validate(
         ourGroup.members.length === FULL_GROUP_SIZE,
-        "'ourGroup' is not full"
+        "'ourGroup' is not full",
       );
       validate(
         theirGroup.members.length === FULL_GROUP_SIZE,
-        "'theirGroup' is not full"
+        "'theirGroup' is not full",
       );
 
       validate(!groupHasMatch(ourGroup.id), "Our group already has a match");
       validate(
         !groupHasMatch(theirGroup.id),
-        "Their group already has a match"
+        "Their group already has a match",
       );
 
       const createdMatch = createMatch({
@@ -440,7 +440,7 @@ function InfoText() {
     >
       {isMounted
         ? `Last updated at ${new Date(data.lastUpdated).toLocaleTimeString(
-            i18n.language
+            i18n.language,
           )}`
         : "Placeholder"}
     </div>
@@ -461,7 +461,7 @@ function Groups() {
 function MobileGroupCards() {
   const data = useLoaderData<typeof loader>();
   const [tab, setTab] = React.useState<"received" | "neutral" | "given">(
-    "neutral"
+    "neutral",
   );
 
   const isFullGroup = data.groups.own.members!.length === FULL_GROUP_SIZE;

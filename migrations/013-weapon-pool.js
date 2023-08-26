@@ -10,11 +10,11 @@ module.exports.up = function (db) {
     unique("userId", "order") on conflict rollback,
     foreign key ("userId") references "User"("id") on delete restrict
   ) strict
-  `
+  `,
   ).run();
 
   db.prepare(
-    `create index user_weapon_user_id on "UserWeapon"("userId")`
+    `create index user_weapon_user_id on "UserWeapon"("userId")`,
   ).run();
 };
 

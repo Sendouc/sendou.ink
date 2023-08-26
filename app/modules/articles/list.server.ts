@@ -17,7 +17,7 @@ export async function mostRecentArticles(count: number) {
   for (const file of files) {
     const rawMarkdown = fs.readFileSync(
       path.join(ARTICLES_FOLDER_PATH, file),
-      "utf8"
+      "utf8",
     );
     const { data } = matter(rawMarkdown);
 

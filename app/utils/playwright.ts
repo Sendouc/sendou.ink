@@ -69,7 +69,7 @@ export function impersonate(page: Page, userId = 1) {
 
 export async function submit(page: Page) {
   const responsePromise = page.waitForResponse(
-    (res) => res.request().method() === "POST"
+    (res) => res.request().method() === "POST",
   );
   await page.getByTestId("submit-button").click();
   await responsePromise;

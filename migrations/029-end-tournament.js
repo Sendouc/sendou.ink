@@ -1,9 +1,9 @@
 module.exports.up = function (db) {
   db.prepare(
-    `create index tournament_sub_user_id on "TournamentSub"("userId")`
+    `create index tournament_sub_user_id on "TournamentSub"("userId")`,
   ).run();
   db.prepare(
-    `create index tournament_sub_tournament_id on "TournamentSub"("tournamentId")`
+    `create index tournament_sub_tournament_id on "TournamentSub"("tournamentId")`,
   ).run();
 
   db.prepare(
@@ -21,12 +21,12 @@ module.exports.up = function (db) {
       foreign key ("tournamentId") references "Tournament"("id") on delete restrict,
       unique("userId", "tournamentId") on conflict rollback 
     ) strict
-  `
+  `,
   ).run();
 
   db.prepare(`create index skill_user_id on "Skill"("userId")`).run();
   db.prepare(
-    `create index skill_tournament_id on "Skill"("tournamentId")`
+    `create index skill_tournament_id on "Skill"("tournamentId")`,
   ).run();
 
   db.prepare(
@@ -38,14 +38,14 @@ module.exports.up = function (db) {
       foreign key ("skillId") references "Skill"("id") on delete cascade,
       unique("userId", "skillId") on conflict rollback 
     ) strict
-  `
+  `,
   ).run();
 
   db.prepare(
-    `create index skill_team_user_user_id on "SkillTeamUser"("userId")`
+    `create index skill_team_user_user_id on "SkillTeamUser"("userId")`,
   ).run();
   db.prepare(
-    `create index skill_team_user_skill_id on "SkillTeamUser"("skillId")`
+    `create index skill_team_user_skill_id on "SkillTeamUser"("skillId")`,
   ).run();
 
   db.prepare(
@@ -59,7 +59,7 @@ module.exports.up = function (db) {
       foreign key ("userId") references "User"("id") on delete cascade,
       unique("userId", "stageId", "mode") on conflict rollback 
     ) strict
-  `
+  `,
   ).run();
 
   db.prepare(`create index map_result_user_id on "MapResult"("userId")`).run();
@@ -78,14 +78,14 @@ module.exports.up = function (db) {
       foreign key ("otherUserId") references "User"("id") on delete cascade,
       unique("ownerUserId", "otherUserId", "type") on conflict rollback 
     ) strict
-  `
+  `,
   ).run();
 
   db.prepare(
-    `create index player_result_owner_user_id on "PlayerResult"("ownerUserId")`
+    `create index player_result_owner_user_id on "PlayerResult"("ownerUserId")`,
   ).run();
   db.prepare(
-    `create index player_result_other_user_id on "PlayerResult"("otherUserId")`
+    `create index player_result_other_user_id on "PlayerResult"("otherUserId")`,
   ).run();
 
   db.prepare(
@@ -102,13 +102,13 @@ module.exports.up = function (db) {
       foreign key ("tournamentTeamId") references "TournamentTeam"("id") on delete cascade,
       unique("userId", "tournamentId") on conflict rollback 
     ) strict
-  `
+  `,
   ).run();
 
   db.prepare(
-    `create index tournament_result_user_id on "TournamentResult"("userId")`
+    `create index tournament_result_user_id on "TournamentResult"("userId")`,
   ).run();
   db.prepare(
-    `create index tournament_result_tournament_id on "TournamentResult"("tournamentId")`
+    `create index tournament_result_tournament_id on "TournamentResult"("tournamentId")`,
   ).run();
 };

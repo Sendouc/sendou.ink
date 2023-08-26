@@ -62,7 +62,7 @@ export function buildToAbilityPoints(build: BuildAbilitiesTupleWithUnknown) {
 }
 
 export function isStackableAbility(
-  ability: AbilityWithUnknown
+  ability: AbilityWithUnknown,
 ): ability is Ability {
   if (ability === "UNKNOWN") return false;
   const abilityObj = abilities.find((a) => a.name === ability);
@@ -177,7 +177,7 @@ const DEFAULT_ANY_WEAPON = {
   id: weaponCategories[0].weaponIds[0],
 } as const;
 export function validatedAnyWeaponFromSearchParams(
-  searchParams: URLSearchParams
+  searchParams: URLSearchParams,
 ): AnyWeapon {
   const rawWeapon = searchParams.get("weapon");
   if (!rawWeapon) return DEFAULT_ANY_WEAPON;
@@ -224,7 +224,7 @@ export function validatedAnyWeaponFromSearchParams(
 }
 
 export function validatedWeaponIdFromSearchParams(
-  searchParams: URLSearchParams
+  searchParams: URLSearchParams,
 ): MainWeaponId {
   const weaponId = searchParams.get("weapon")
     ? Number(searchParams.get("weapon"))
@@ -239,13 +239,13 @@ export function validatedWeaponIdFromSearchParams(
 
 function validateAbility(
   legalTypes: Array<AbilityType>,
-  ability?: string
+  ability?: string,
 ): AbilityWithUnknown {
   if (!ability) throw new Error("Ability missing");
   if (ability === UNKNOWN_SHORT) return "UNKNOWN";
 
   const abilityObj = abilities.find(
-    (a) => a.name === ability && legalTypes.includes(a.type)
+    (a) => a.name === ability && legalTypes.includes(a.type),
   );
   if (abilityObj) return abilityObj.name;
 
@@ -255,7 +255,7 @@ function validateAbility(
 export function validatedBuildFromSearchParams(
   searchParams: URLSearchParams,
   key = "build",
-  otherBuild?: BuildAbilitiesTupleWithUnknown
+  otherBuild?: BuildAbilitiesTupleWithUnknown,
 ): BuildAbilitiesTupleWithUnknown {
   const abilitiesArr = searchParams.get(key)
     ? searchParams.get(key)?.split(",")
@@ -317,7 +317,7 @@ export const buildIsEmpty = (build: BuildAbilitiesTupleWithUnknown) =>
 export function damageIsSubWeaponDamage(
   damage:
     | Unpacked<AnalyzedBuild["stats"]["damages"]>
-    | Unpacked<AnalyzedBuild["stats"]["subWeaponDefenseDamages"]>
+    | Unpacked<AnalyzedBuild["stats"]["subWeaponDefenseDamages"]>,
 ): damage is Unpacked<AnalyzedBuild["stats"]["subWeaponDefenseDamages"]> {
   return typeof (damage as SubWeaponDamage).subWeaponId === "number";
 }

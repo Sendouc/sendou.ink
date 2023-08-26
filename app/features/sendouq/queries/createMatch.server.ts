@@ -55,5 +55,5 @@ export const createMatch = sql.transaction(
     }
 
     return match;
-  }
+  },
 );

@@ -25,7 +25,7 @@ export const damagePriorities: Array<
     AnyWeapon["type"],
     Array<AnyWeapon["id"]>,
     DamageType,
-    keyof typeof objectDamages
+    keyof typeof objectDamages,
   ]
 > = [
   ["MAIN", [210, 220, 260], "DIRECT", "Blaster_KillOneShot"],
@@ -151,5 +151,5 @@ invariant(
 
     return Boolean(damageTypesToCombine[id]);
   }),
-  "Splatana weapon missing from damageTypesToCombine"
+  "Splatana weapon missing from damageTypesToCombine",
 );

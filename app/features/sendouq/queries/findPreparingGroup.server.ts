@@ -49,7 +49,7 @@ const stm = sql.prepare(/* sql */ `
 `);
 
 export function findPreparingGroup(
-  ownGroupId: number
+  ownGroupId: number,
 ): LookingGroupWithInviteCode {
   const row = stm.get({ ownGroupId }) as any;
 
