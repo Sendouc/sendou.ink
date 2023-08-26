@@ -13,6 +13,7 @@ import { Avatar } from "~/components/Avatar";
 import { discordFullName } from "~/utils/strings";
 import { useTranslation } from "~/hooks/useTranslation";
 import { z } from "zod";
+import { queryToUserIdentifier } from "~/utils/users";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -30,10 +31,10 @@ export const handle: SendouRouteHandle = {
 export type UserSearchLoaderData = SerializeFrom<typeof loader>;
 
 const searchParamsSchema = z.object({
-  q: z.string().max(100),
+  q: z.string().max(100).default(""),
   limit: z.coerce.number().int().min(1).max(25).default(25),
 });
-// xxx: if input matches discord id or full url, then do exact match search instead
+
 export const loader = ({ request }: LoaderArgs) => {
   const { q, limit } = parseSearchParams({
     request,
@@ -42,7 +43,14 @@ export const loader = ({ request }: LoaderArgs) => {
 
   if (!q) return null;
 
-  return { users: db.users.search({ input: q, limit }), input: q };
+  const identifier = queryToUserIdentifier(q);
+
+  return {
+    users: identifier
+      ? db.users.searchExact(identifier)
+      : db.users.search({ input: q, limit }),
+    input: q,
+  };
 };
 
 export default function UserSearchPage() {

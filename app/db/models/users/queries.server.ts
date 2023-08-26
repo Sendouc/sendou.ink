@@ -22,6 +22,7 @@ import findAllPatronsSql from "./findAllPatrons.sql";
 import findAllPlusMembersSql from "./findAllPlusMembers.sql";
 import findByIdentifierSql from "./findByIdentifier.sql";
 import searchSql from "./search.sql";
+import searchExactSql from "./searchExact.sql";
 import updateByDiscordIdSql from "./updateByDiscordId.sql";
 import updateDiscordIdSql from "./updateDiscordId.sql";
 import updateProfileSql from "./updateProfile.sql";
@@ -247,7 +248,42 @@ export function search({ input, limit }: { input: string; limit: number }) {
       discordName: searchString,
       inGameName: searchString,
       discordUniqueName: searchString,
+      twitter: searchString,
       limit,
+    }) as Array<
+      Pick<
+        UserWithPlusTier,
+        | "id"
+        | "discordId"
+        | "discordAvatar"
+        | "discordName"
+        | "discordDiscriminator"
+        | "customUrl"
+        | "inGameName"
+        | "discordUniqueName"
+        | "showDiscordUniqueName"
+        | "plusTier"
+      >
+    >
+  ).map((user) => ({
+    ...user,
+    discordUniqueName: user.showDiscordUniqueName
+      ? user.discordUniqueName
+      : undefined,
+  }));
+}
+
+const searchExactStm = sql.prepare(searchExactSql);
+export function searchExact(args: {
+  discordId?: User["discordId"];
+  customUrl?: User["customUrl"];
+  id?: User["id"];
+}) {
+  return (
+    searchExactStm.all({
+      discordId: args.discordId ?? null,
+      customUrl: args.customUrl ?? null,
+      id: args.id ?? null,
     }) as Array<
       Pick<
         UserWithPlusTier,
