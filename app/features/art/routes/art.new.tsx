@@ -422,9 +422,9 @@ function LinkedUsers() {
           <div key={inputId} className="stack horizontal sm mb-2 items-center">
             <UserSearch
               inputName="user"
-              onChange={(userId) => {
+              onChange={(newUser) => {
                 const newUsers = clone(users);
-                newUsers[i] = { ...newUsers[i], userId };
+                newUsers[i] = { ...newUsers[i], userId: newUser.id };
 
                 setUsers(newUsers);
               }}

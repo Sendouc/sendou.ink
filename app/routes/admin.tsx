@@ -169,7 +169,10 @@ function Impersonate() {
       <h2>Impersonate user</h2>
       <div>
         <label>User to log in as</label>
-        <UserSearch inputName="user" onChange={setUserId} />
+        <UserSearch
+          inputName="user"
+          onChange={(newUser) => setUserId(newUser.id)}
+        />
       </div>
       <div className="stack horizontal md">
         <Button type="submit" disabled={!userId}>
@@ -204,11 +207,17 @@ function MigrateUser() {
       <div className="stack horizontal md">
         <div>
           <label>Old user</label>
-          <UserSearch inputName="old-user" onChange={setOldUserId} />
+          <UserSearch
+            inputName="old-user"
+            onChange={(newUser) => setOldUserId(newUser.id)}
+          />
         </div>
         <div>
           <label>New user</label>
-          <UserSearch inputName="new-user" onChange={setNewUserId} />
+          <UserSearch
+            inputName="new-user"
+            onChange={(newUser) => setNewUserId(newUser.id)}
+          />
         </div>
       </div>
       <div className="stack horizontal md">

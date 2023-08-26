@@ -3,7 +3,6 @@ import { useFetcher } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
 import { useDebounce } from "react-use";
-import type { User } from "~/db/types";
 import type { UserSearchLoaderData } from "~/routes/u";
 import { Avatar } from "./Avatar";
 import { useTranslation } from "~/hooks/useTranslation";
@@ -15,11 +14,15 @@ export function UserSearch({
   onChange,
   initialUserId,
   id,
+  className,
+  userIdsToOmit,
 }: {
   inputName: string;
-  onChange?: (userId: User["id"]) => void;
+  onChange?: (user: UserSearchUserItem) => void;
   initialUserId?: number;
   id?: string;
+  className?: string;
+  userIdsToOmit?: Set<number>;
 }) {
   const { t } = useTranslation();
   const [selectedUser, setSelectedUser] =
@@ -55,8 +58,11 @@ export function UserSearch({
     setSelectedUser(initialUserFetcher.data.users[0]);
   }, [initialUserFetcher.data]);
 
-  const noMatches = queryFetcher.data && queryFetcher.data.users.length === 0;
-  const users = queryFetcher.data?.users ?? [];
+  const allUsers = queryFetcher.data?.users ?? [];
+
+  const users = allUsers.filter((u) => !userIdsToOmit?.has(u.id));
+  const noMatches = queryFetcher.data && users.length === 0;
+
   const initialSelectionIsLoading = Boolean(
     initialUserId && !initialUserFetcher.data
   );
@@ -70,7 +76,7 @@ export function UserSearch({
         value={selectedUser}
         onChange={(newUser) => {
           setSelectedUser(newUser);
-          onChange?.(newUser!.id);
+          onChange?.(newUser!);
         }}
         disabled={initialSelectionIsLoading}
       >
@@ -82,7 +88,7 @@ export function UserSearch({
           }
           onChange={(event) => setQuery(event.target.value)}
           displayValue={(user: UserSearchUserItem) => user?.discordName ?? ""}
-          className="combobox-input"
+          className={clsx("combobox-input", className)}
           data-1p-ignore
           data-testid={`${inputName}-combobox-input`}
           id={id}

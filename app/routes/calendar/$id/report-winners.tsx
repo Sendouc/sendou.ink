@@ -416,7 +416,7 @@ function Players({
                 id={formId}
                 inputName="team-player"
                 initialUserId={player.id}
-                onChange={(newUserId) => handleInputChange(i, newUserId)}
+                onChange={(newUser) => handleInputChange(i, newUser.id)}
               />
             )}
           </div>
