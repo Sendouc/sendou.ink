@@ -238,7 +238,6 @@ export const updateResultHighlights = sql.transaction(
   }
 );
 
-// xxx: search by discordUniqueName
 const searchStm = sql.prepare(searchSql);
 export function search({ input, limit }: { input: string; limit: number }) {
   const searchString = `%${input}%`;
@@ -247,7 +246,7 @@ export function search({ input, limit }: { input: string; limit: number }) {
     searchStm.all({
       discordName: searchString,
       inGameName: searchString,
-      twitter: searchString,
+      discordUniqueName: searchString,
       limit,
     }) as Array<
       Pick<

@@ -15,7 +15,7 @@ from
 where
   "discordName" like @discordName
   or "inGameName" like @inGameName
-  or "twitter" like @twitter
+  or "discordUniqueName" like @discordUniqueName
 order by
   case
     when "PlusTier"."tier" is null then 4
