@@ -251,6 +251,7 @@ export function search(input: string) {
     }) as Array<
       Pick<
         UserWithPlusTier,
+        | "id"
         | "discordId"
         | "discordAvatar"
         | "discordName"

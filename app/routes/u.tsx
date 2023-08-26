@@ -1,4 +1,4 @@
-import type { LinksFunction, LoaderArgs } from "@remix-run/node";
+import type { LinksFunction, LoaderArgs, SerializeFrom } from "@remix-run/node";
 import { Main } from "~/components/Main";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { navIconUrl, userPage, USER_SEARCH_PAGE } from "~/utils/urls";
@@ -25,6 +25,8 @@ export const handle: SendouRouteHandle = {
     type: "IMAGE",
   }),
 };
+
+export type UserSearchLoaderData = SerializeFrom<typeof loader>;
 
 // xxx: if input matches discord id or full url, then do exact match search instead
 // xxx: allow passing limit, and set it to 5 in user search (parse search params via zod schema)

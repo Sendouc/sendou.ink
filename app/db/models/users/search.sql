@@ -1,4 +1,5 @@
 select
+  "id",
   "discordName",
   "discordId",
   "discordAvatar",
