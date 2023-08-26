@@ -22,6 +22,7 @@ export interface UsersLoaderData {
   } & Pick<UserWithPlusTier, "id" | "discordId" | "plusTier">)[];
 }
 
+// xxx: remove
 export const loader: LoaderFunction = () => {
   return json<UsersLoaderData>({
     users: db.users.findAll().map((u) => ({

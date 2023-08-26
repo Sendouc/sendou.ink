@@ -3,8 +3,11 @@ select
   "discordId",
   "discordAvatar",
   "discordDiscriminator",
+  "discordUniqueName",
+  "showDiscordUniqueName",
   "customUrl",
-  "inGameName"
+  "inGameName",
+  "PlusTier"."tier" as "plusTier"
 from
   "User"
   left join "PlusTier" on "PlusTier"."userId" = "User"."id"

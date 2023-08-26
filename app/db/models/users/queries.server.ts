@@ -238,25 +238,36 @@ export const updateResultHighlights = sql.transaction(
   }
 );
 
+// xxx: search by discordUniqueName
 const searchStm = sql.prepare(searchSql);
 export function search(input: string) {
   const searchString = `%${input}%`;
 
-  return searchStm.all({
-    discordName: searchString,
-    inGameName: searchString,
-    twitter: searchString,
-  }) as Array<
-    Pick<
-      User,
-      | "discordId"
-      | "discordAvatar"
-      | "discordName"
-      | "discordDiscriminator"
-      | "customUrl"
-      | "inGameName"
+  return (
+    searchStm.all({
+      discordName: searchString,
+      inGameName: searchString,
+      twitter: searchString,
+    }) as Array<
+      Pick<
+        UserWithPlusTier,
+        | "discordId"
+        | "discordAvatar"
+        | "discordName"
+        | "discordDiscriminator"
+        | "customUrl"
+        | "inGameName"
+        | "discordUniqueName"
+        | "showDiscordUniqueName"
+        | "plusTier"
+      >
     >
-  >;
+  ).map((user) => ({
+    ...user,
+    discordUniqueName: user.showDiscordUniqueName
+      ? user.discordUniqueName
+      : undefined,
+  }));
 }
 
 const wipePlusTiersStm = sql.prepare(wipePlusTiersSql);

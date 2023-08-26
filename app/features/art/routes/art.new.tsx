@@ -13,7 +13,7 @@ import * as React from "react";
 import { useFetcher } from "react-router-dom";
 import invariant from "tiny-invariant";
 import { Button } from "~/components/Button";
-import { Combobox, UserCombobox } from "~/components/Combobox";
+import { Combobox } from "~/components/Combobox";
 import { FormMessage } from "~/components/FormMessage";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
@@ -41,6 +41,7 @@ import { addNewArt, editArt } from "../queries/addNewArt.server";
 import { findArtById } from "../queries/findArtById.server";
 import { previewUrl } from "../art-utils";
 import { allArtTags } from "../queries/allArtTags.server";
+import { UserSearch } from "~/components/UserSearch";
 
 export const handle: SendouRouteHandle = {
   i18n: ["art"],
@@ -419,12 +420,11 @@ function LinkedUsers() {
       {users.map(({ inputId, userId }, i) => {
         return (
           <div key={inputId} className="stack horizontal sm mb-2 items-center">
-            <UserCombobox
+            <UserSearch
               inputName="user"
-              onChange={(event) => {
-                if (!event) return;
+              onChange={(userId) => {
                 const newUsers = clone(users);
-                newUsers[i] = { ...newUsers[i], userId: Number(event.value) };
+                newUsers[i] = { ...newUsers[i], userId };
 
                 setUsers(newUsers);
               }}

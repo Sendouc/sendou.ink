@@ -26,6 +26,8 @@ export const handle: SendouRouteHandle = {
   }),
 };
 
+// xxx: if input matches discord id or full url, then do exact match search instead
+// xxx: allow passing limit, and set it to 5 in user search (parse search params via zod schema)
 export const loader = ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
   const input = url.searchParams.get("q");
