@@ -14,13 +14,11 @@ export function UserSearch({
   inputName,
   onChange,
   initialUserId,
-  placeholder,
   id,
 }: {
   inputName: string;
   onChange?: (userId: User["id"]) => void;
   initialUserId?: number;
-  placeholder?: string;
   id?: string;
 }) {
   const { t } = useTranslation();
@@ -78,7 +76,9 @@ export function UserSearch({
       >
         <Combobox.Input
           placeholder={
-            initialSelectionIsLoading ? t("actions.loading") : placeholder
+            initialSelectionIsLoading
+              ? t("actions.loading")
+              : "Search via name or ID..."
           }
           onChange={(event) => setQuery(event.target.value)}
           displayValue={(user: UserSearchUserItem) => user?.discordName ?? ""}

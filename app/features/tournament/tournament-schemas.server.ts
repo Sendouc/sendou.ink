@@ -58,7 +58,7 @@ export const adminActionSchema = z.union([
   z.object({
     _action: _action("ADD_MEMBER"),
     teamId: id,
-    "user[value]": id,
+    userId: id,
   }),
   z.object({
     _action: _action("REMOVE_MEMBER"),
