@@ -1,9 +1,6 @@
-import type { ActionFunction, LoaderFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
+import type { ActionFunction } from "@remix-run/node";
 import { db } from "~/db";
-import type { UserWithPlusTier } from "~/db/types";
 import { canAccessLohiEndpoint } from "~/permissions";
-import { discordFullName } from "~/utils/strings";
 
 export const action: ActionFunction = async ({ request }) => {
   if (!canAccessLohiEndpoint(request)) {
@@ -14,22 +11,4 @@ export const action: ActionFunction = async ({ request }) => {
   db.users.updateMany(await request.json());
 
   return null;
-};
-
-export interface UsersLoaderData {
-  users: ({
-    discordFullName: string;
-  } & Pick<UserWithPlusTier, "id" | "discordId" | "plusTier">)[];
-}
-
-// xxx: remove
-export const loader: LoaderFunction = () => {
-  return json<UsersLoaderData>({
-    users: db.users.findAll().map((u) => ({
-      id: u.id,
-      discordFullName: discordFullName(u),
-      discordId: u.discordId,
-      plusTier: u.plusTier,
-    })),
-  });
 };
