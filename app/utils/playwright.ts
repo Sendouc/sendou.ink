@@ -27,6 +27,7 @@ export async function selectUser({
 
   await combobox.clear();
   await combobox.type(userName);
+  await expect(page.getByTestId("combobox-option-0")).toBeVisible();
   await page.keyboard.press("Enter");
 }
 

@@ -108,10 +108,13 @@ export function UserSearch({
               <span className="combobox-emoji">🤔</span>
             </div>
           ) : null}
-          {users.map((user) => (
+          {users.map((user, i) => (
             <Combobox.Option key={user.id} value={user} as={React.Fragment}>
               {({ active }) => (
-                <li className={clsx("combobox-item", { active })}>
+                <li
+                  className={clsx("combobox-item", { active })}
+                  data-testid={`combobox-option-${i}`}
+                >
                   <Avatar user={user} size="xs" />
                   <div>
                     <div className="stack xs horizontal items-center">
