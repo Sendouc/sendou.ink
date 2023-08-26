@@ -9,9 +9,9 @@ import * as React from "react";
 import { z } from "zod";
 import { Button } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
-import { UserCombobox } from "~/components/Combobox";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
+import { UserSearch } from "~/components/UserSearch";
 import { db } from "~/db";
 import { makeArtist } from "~/features/art";
 import {
@@ -38,29 +38,29 @@ export const meta: V2_MetaFunction = () => {
 const adminActionSchema = z.union([
   z.object({
     _action: _action("MIGRATE"),
-    "old-user[value]": z.preprocess(actualNumber, z.number().positive()),
-    "new-user[value]": z.preprocess(actualNumber, z.number().positive()),
+    "old-user": z.preprocess(actualNumber, z.number().positive()),
+    "new-user": z.preprocess(actualNumber, z.number().positive()),
   }),
   z.object({
     _action: _action("REFRESH"),
   }),
   z.object({
     _action: _action("FORCE_PATRON"),
-    "user[value]": z.preprocess(actualNumber, z.number().positive()),
+    user: z.preprocess(actualNumber, z.number().positive()),
     patronTier: z.preprocess(actualNumber, z.number()),
     patronTill: z.string(),
   }),
   z.object({
     _action: _action("VIDEO_ADDER"),
-    "user[value]": z.preprocess(actualNumber, z.number().positive()),
+    user: z.preprocess(actualNumber, z.number().positive()),
   }),
   z.object({
     _action: _action("ARTIST"),
-    "user[value]": z.preprocess(actualNumber, z.number().positive()),
+    user: z.preprocess(actualNumber, z.number().positive()),
   }),
   z.object({
     _action: _action("LINK_PLAYER"),
-    "user[value]": z.preprocess(actualNumber, z.number().positive()),
+    user: z.preprocess(actualNumber, z.number().positive()),
     playerId: z.preprocess(actualNumber, z.number().positive()),
   }),
 ]);
@@ -77,8 +77,8 @@ export const action: ActionFunction = async ({ request }) => {
   switch (data._action) {
     case "MIGRATE": {
       db.users.migrate({
-        oldUserId: data["old-user[value]"],
-        newUserId: data["new-user[value]"],
+        oldUserId: data["old-user"],
+        newUserId: data["new-user"],
       });
       break;
     }
@@ -88,7 +88,7 @@ export const action: ActionFunction = async ({ request }) => {
     }
     case "FORCE_PATRON": {
       db.users.forcePatron({
-        id: data["user[value]"],
+        id: data["user"],
         patronSince: dateToDatabaseTimestamp(new Date()),
         patronTier: data.patronTier,
         patronTill: dateToDatabaseTimestamp(new Date(data.patronTill)),
@@ -96,16 +96,16 @@ export const action: ActionFunction = async ({ request }) => {
       break;
     }
     case "ARTIST": {
-      makeArtist(data["user[value]"]);
+      makeArtist(data["user"]);
       break;
     }
     case "VIDEO_ADDER": {
-      db.users.makeVideoAdder(data["user[value]"]);
+      db.users.makeVideoAdder(data["user"]);
       break;
     }
     case "LINK_PLAYER": {
       db.users.linkPlayer({
-        userId: data["user[value]"],
+        userId: data["user"],
         playerId: data.playerId,
       });
 
@@ -169,12 +169,7 @@ function Impersonate() {
       <h2>Impersonate user</h2>
       <div>
         <label>User to log in as</label>
-        <UserCombobox
-          inputName="user"
-          onChange={(selected) =>
-            setUserId(selected?.value ? Number(selected.value) : undefined)
-          }
-        />
+        <UserSearch inputName="user" onChange={setUserId} />
       </div>
       <div className="stack horizontal md">
         <Button type="submit" disabled={!userId}>
@@ -209,21 +204,11 @@ function MigrateUser() {
       <div className="stack horizontal md">
         <div>
           <label>Old user</label>
-          <UserCombobox
-            inputName="old-user"
-            onChange={(selected) =>
-              setOldUserId(selected?.value ? Number(selected.value) : undefined)
-            }
-          />
+          <UserSearch inputName="old-user" onChange={setOldUserId} />
         </div>
         <div>
           <label>New user</label>
-          <UserCombobox
-            inputName="new-user"
-            onChange={(selected) =>
-              setNewUserId(selected?.value ? Number(selected.value) : undefined)
-            }
-          />
+          <UserSearch inputName="new-user" onChange={setNewUserId} />
         </div>
       </div>
       <div className="stack horizontal md">
@@ -249,7 +234,7 @@ function LinkPlayer() {
       <div className="stack horizontal md">
         <div>
           <label>User</label>
-          <UserCombobox inputName="user" />
+          <UserSearch inputName="user" />
         </div>
         <div>
           <label>Player ID</label>
@@ -274,7 +259,7 @@ function GiveArtist() {
       <div className="stack horizontal md">
         <div>
           <label>User</label>
-          <UserCombobox inputName="user" />
+          <UserSearch inputName="user" />
         </div>
       </div>
       <div className="stack horizontal md">
@@ -295,7 +280,7 @@ function GiveVideoAdder() {
       <div className="stack horizontal md">
         <div>
           <label>User</label>
-          <UserCombobox inputName="user" />
+          <UserSearch inputName="user" />
         </div>
       </div>
       <div className="stack horizontal md">
@@ -316,7 +301,7 @@ function ForcePatron() {
       <div className="stack horizontal md">
         <div>
           <label>User</label>
-          <UserCombobox inputName="user" />
+          <UserSearch inputName="user" />
         </div>
 
         <div>

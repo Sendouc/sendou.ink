@@ -18,7 +18,7 @@ export function UserSearch({
   id,
 }: {
   inputName: string;
-  onChange: (userId: User["id"]) => void;
+  onChange?: (userId: User["id"]) => void;
   initialUserId?: number;
   placeholder?: string;
   id?: string;
@@ -65,11 +65,14 @@ export function UserSearch({
 
   return (
     <div className="combobox-wrapper">
+      {selectedUser && inputName ? (
+        <input type="hidden" name={inputName} value={selectedUser.id} />
+      ) : null}
       <Combobox
         value={selectedUser}
         onChange={(newUser) => {
           setSelectedUser(newUser);
-          onChange(newUser!.id);
+          onChange?.(newUser!.id);
         }}
         disabled={initialSelectionIsLoading}
       >
@@ -79,7 +82,6 @@ export function UserSearch({
           }
           onChange={(event) => setQuery(event.target.value)}
           displayValue={(user: UserSearchUserItem) => user?.discordName ?? ""}
-          name={inputName}
           className="combobox-input"
           data-1p-ignore
           data-testid={`${inputName}-combobox-input`}
