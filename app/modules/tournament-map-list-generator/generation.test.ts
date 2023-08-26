@@ -763,5 +763,32 @@ TournamentMapListGeneratorOneMode(
   }
 );
 
+TournamentMapListGeneratorOneMode(
+  "Throws if duplicate maps in the pool",
+  () => {
+    assert.throws(
+      () =>
+        generateMaps({
+          teams: [
+            {
+              id: 1,
+              maps: new MapPool([
+                { mode: "SZ", stageId: 1 },
+                { mode: "SZ", stageId: 1 },
+              ]),
+            },
+            {
+              id: 2,
+              maps: new MapPool([]),
+            },
+          ],
+          modesIncluded: ["SZ"],
+        }),
+      (err: Error) => err.message.includes("Duplicate map"),
+      "Expected error to be thrown about duplicate maps"
+    );
+  }
+);
+
 TournamentMapListGenerator.run();
 TournamentMapListGeneratorOneMode.run();

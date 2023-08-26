@@ -163,6 +163,17 @@ export function createTournamentMapList(
       ),
       "Maps submitted for modes not included in the tournament"
     );
+
+    for (const team of input.teams) {
+      const stringified = team.maps.stageModePairs.map(
+        (p) => `${p.stageId}-${p.mode}`
+      );
+      const unique = new Set(stringified);
+      invariant(
+        unique.size === stringified.length,
+        `Duplicate maps in map pool (team ${team.id})`
+      );
+    }
   }
 
   function utilizeOtherStageIdsWhenNoTiebreaker() {
