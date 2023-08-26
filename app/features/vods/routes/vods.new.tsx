@@ -7,7 +7,7 @@ import { Form, useLoaderData } from "@remix-run/react";
 import * as React from "react";
 import { z } from "zod";
 import { Button } from "~/components/Button";
-import { UserCombobox, WeaponCombobox } from "~/components/Combobox";
+import { WeaponCombobox } from "~/components/Combobox";
 import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
@@ -41,6 +41,7 @@ import { videoMatchTypes, VOD } from "../vods-constants";
 import { videoInputSchema } from "../vods-schemas";
 import type { VideoBeingAdded, VideoMatchBeingAdded } from "../vods-types";
 import { canAddVideo, canEditVideo, vodToVideoBeingAdded } from "../vods-utils";
+import { UserSearch } from "~/components/UserSearch";
 
 export const handle: SendouRouteHandle = {
   i18n: ["vods", "calendar"],
@@ -387,14 +388,14 @@ function TransformingPlayerInput({
           required
         />
       ) : (
-        <UserCombobox
+        <UserSearch
           id="pov"
           inputName="team-player"
           initialUserId={match.povUserId}
-          onChange={(selected) =>
+          onChange={(newUser) =>
             onChange({
               ...match,
-              povUserId: selected?.value ? Number(selected.value) : undefined,
+              povUserId: newUser.id,
             })
           }
           required
