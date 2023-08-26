@@ -86,6 +86,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 };
 
 export default function TournamentSubsPage() {
+  const user = useUser();
   const { t } = useTranslation(["tournament"]);
   const data = useLoaderData<typeof loader>();
   const parentRouteData = useOutletContext<TournamentLoaderData>();
@@ -96,7 +97,7 @@ export default function TournamentSubsPage() {
 
   return (
     <div className="stack lg">
-      {!parentRouteData.teamMemberOfName ? (
+      {!parentRouteData.teamMemberOfName && user ? (
         <div className="stack items-end">
           <LinkButton to="new" size="tiny">
             {data.hasOwnSubPost
