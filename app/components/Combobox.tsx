@@ -28,6 +28,7 @@ import {
   subWeaponImageUrl,
 } from "~/utils/urls";
 import { Image } from "./Image";
+import { weaponAltNames } from "~/modules/in-game-lists/weapon-alt-names";
 
 const MAX_RESULTS_SHOWN = 6;
 
@@ -57,7 +58,7 @@ interface ComboboxProps<T> {
 }
 
 export function Combobox<
-  T extends Record<string, string | string[] | null | undefined | number>,
+  T extends Record<string, string | string[] | null | undefined | number>
 >({
   options,
   inputName,
@@ -197,11 +198,27 @@ export function WeaponCombobox({
 }) {
   const { t, i18n } = useTranslation("weapons");
 
+  const alt = (id: (typeof mainWeaponIds)[number]) => {
+    const result: string[] = [];
+
+    if (i18n.language !== "en") {
+      result.push(t(`MAIN_${id}`, { lng: "en" }));
+    }
+
+    const altNames = weaponAltNames.get(id);
+    if (typeof altNames === "string") {
+      result.push(altNames);
+    } else if (Array.isArray(altNames)) {
+      result.push(...altNames);
+    }
+
+    return result;
+  };
   const idToWeapon = (id: (typeof mainWeaponIds)[number]) => ({
     value: String(id),
     label: t(`MAIN_${id}`),
     imgPath: mainWeaponImageUrl(id),
-    alt: i18n.language !== "en" ? [t(`MAIN_${id}`, { lng: "en" })] : undefined,
+    alt: alt(id),
   });
 
   return (
@@ -329,7 +346,7 @@ export function GearCombobox({
 }
 
 const mapPoolEventToOption = (
-  e: SerializedMapPoolEvent,
+  e: SerializedMapPoolEvent
 ): ComboboxOption<Pick<SerializedMapPoolEvent, "serializedMapPool">> => ({
   serializedMapPool: e.serializedMapPool,
   label: e.name,
@@ -357,13 +374,13 @@ export function MapPoolEventsCombobox({
 
   const options = React.useMemo(
     () => (events ? events.map(mapPoolEventToOption) : []),
-    [events],
+    [events]
   );
 
   // this is important so that we don't trigger the reset to the initialEvent every time
   const initialOption = React.useMemo(
     () => initialEvent && mapPoolEventToOption(initialEvent),
-    [initialEvent],
+    [initialEvent]
   );
 
   if (isError) {
@@ -384,7 +401,7 @@ export function MapPoolEventsCombobox({
             id: parseInt(e.value, 10),
             name: e.label,
             serializedMapPool: e.serializedMapPool,
-          },
+          }
         );
       }}
       className={className}
