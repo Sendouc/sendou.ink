@@ -333,6 +333,16 @@ export default function QMatchPage() {
     return `SQ${lastDigit}`;
   };
 
+  const chatUsers = React.useMemo(() => {
+    return Object.fromEntries(
+      [...data.groupAlpha.members, ...data.groupBravo.members].map((m) => [
+        m.id,
+        m,
+      ]),
+    );
+  }, [data]);
+
+  // xxx: only render chat for admins and group members
   return (
     <Main className="q-match__container stack lg">
       <div className="q-match__header">
@@ -385,7 +395,7 @@ export default function QMatchPage() {
               side="BRAVO"
               showWeapons={!data.match.isLocked}
             />
-            <Chat />
+            <Chat users={chatUsers} />
           </div>
           {!data.match.isLocked && ownMember ? (
             <div>
