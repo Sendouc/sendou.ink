@@ -1302,6 +1302,10 @@ dialog::backdrop {
   word-break: break-all;
 }
 
+.chat__message__contents.pending {
+  opacity: 0.7;
+}
+
 #nprogress .bar {
   margin-top: 3rem !important;
   background: var(--theme) !important;

@@ -2,6 +2,9 @@ import { Avatar } from "./Avatar";
 import * as React from "react";
 import { SubmitButton } from "./SubmitButton";
 import type { User } from "~/db/types";
+import { useUser } from "~/modules/auth";
+import { nanoid } from "nanoid";
+import clsx from "clsx";
 
 // xxx: patron color
 type ChatUser = Pick<User, "discordName" | "discordId" | "discordAvatar">;
@@ -33,10 +36,10 @@ export function Chat({ users }: ChatProps) {
     <section className="chat__container">
       <div className="chat__input-container">
         <ol className="chat__messages" ref={messagesContainerRef}>
-          {messages.map((msg, i) => {
+          {messages.map((msg) => {
             return (
               <Message
-                key={i}
+                key={msg.id}
                 user={
                   users[msg.userId] ?? {
                     discordId: "-1",
@@ -64,26 +67,38 @@ function Message({ user, message }: { user: ChatUser; message: ChatMessage }) {
       <div>
         <div className="stack horizontal sm">
           <div className="chat__message__user">{user.discordName}</div>
-          <time className="chat__message__time">
-            {new Date(message.timestamp).toLocaleTimeString()}
-          </time>
+          {!message.pending ? (
+            <time className="chat__message__time">
+              {new Date(message.timestamp).toLocaleTimeString()}
+            </time>
+          ) : null}
         </div>
-        <div className="chat__message__contents">{message.contents}</div>
+        <div
+          className={clsx("chat__message__contents", {
+            pending: message.pending,
+          })}
+        >
+          {message.contents}
+        </div>
       </div>
     </li>
   );
 }
 
 interface ChatMessage {
+  id: string;
   type: "message" | "system";
   contents: string;
   userId: number;
   timestamp: number;
+  pending?: boolean;
 }
 
 // xxx: TODO: load initial messages
 function useChat() {
+  const user = useUser();
   const [messages, setMessages] = React.useState<ChatMessage[]>([]);
+  const [sentMessage, setSentMessage] = React.useState<ChatMessage>();
   const ws = React.useRef<WebSocket>();
   React.useEffect(() => {
     // xxx: pass from env vars
@@ -102,9 +117,25 @@ function useChat() {
     };
   }, []);
 
-  const send = React.useCallback((message: string) => {
-    ws.current!.send(message);
-  }, []);
+  const send = React.useCallback(
+    (contents: string) => {
+      const id = nanoid();
+      setSentMessage({
+        id,
+        type: "message",
+        contents,
+        timestamp: Date.now(),
+        userId: user!.id,
+      });
+      ws.current!.send(JSON.stringify({ id, contents }));
+    },
+    [user],
+  );
 
-  return { messages, send };
+  let allMessages = messages;
+  if (sentMessage && !messages.some((msg) => msg.id === sentMessage.id)) {
+    allMessages = [...messages, { ...sentMessage, pending: true }];
+  }
+
+  return { messages: allMessages, send };
 }
