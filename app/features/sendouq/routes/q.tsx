@@ -104,8 +104,8 @@ export const action: ActionFunction = async ({ request }) => {
   });
 
   const season = currentSeason(new Date());
-  validate(!findCurrentGroupByUserId(user.id), "Already in a group");
   validate(season, "Season is not active");
+  validate(!findCurrentGroupByUserId(user.id), "Already in a group");
 
   switch (data._action) {
     case "JOIN_QUEUE": {

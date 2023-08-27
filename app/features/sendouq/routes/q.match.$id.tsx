@@ -79,6 +79,7 @@ import { resolveRoomPass } from "~/features/tournament-bracket/tournament-bracke
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { addDummySkill } from "../queries/addDummySkill.server";
 import { inGameNameWithoutDiscriminator } from "~/utils/strings";
+import { currentSeason } from "~/features/mmr";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -209,6 +210,9 @@ export const action = async ({ request, params }: ActionArgs) => {
       break;
     }
     case "LOOK_AGAIN": {
+      const season = currentSeason(new Date());
+      validate(season, "Season is not active");
+
       const previousGroup = groupForMatch(data.previousGroupId);
       validate(previousGroup, "Previous group not found");
 
@@ -568,7 +572,9 @@ function AfterMatchActions({
 
   const wasReportedInTheLastHour =
     databaseTimestampToDate(reportedAt).getTime() > Date.now() - 3600 * 1000;
-  const showLookAgain = role === "OWNER" && wasReportedInTheLastHour;
+
+  const season = currentSeason(new Date());
+  const showLookAgain = role === "OWNER" && wasReportedInTheLastHour && season;
 
   const wasReportedInTheLastWeek =
     databaseTimestampToDate(reportedAt).getTime() >
