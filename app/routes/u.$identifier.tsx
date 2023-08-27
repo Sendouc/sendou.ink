@@ -134,10 +134,7 @@ export default function UserPageLayout() {
     <Main>
       <SubNav>
         <SubNavLink to={userPage(data)}>{t("header.profile")}</SubNavLink>
-        {/* TODO: show also when not current season */}
-        {currentSeason(new Date()) ? (
-          <SubNavLink to={userSeasonsPage({ user: data })}>Seasons</SubNavLink>
-        ) : null}
+        <SubNavLink to={userSeasonsPage({ user: data })}>Seasons</SubNavLink>
         {isOwnPage && (
           <SubNavLink to={userEditProfilePage(data)} prefetch="intent">
             {t("actions.edit")}

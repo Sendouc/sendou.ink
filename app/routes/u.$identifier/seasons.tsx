@@ -18,7 +18,7 @@ import {
   currentMMRByUserId,
   seasonAllMMRByUserId,
 } from "~/features/mmr/queries/seasonAllMMRByUserId.server";
-import { currentSeason, seasonObject } from "~/features/mmr/season";
+import { seasonObject } from "~/features/mmr/season";
 import { userSkills } from "~/features/mmr/tiered.server";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { notFoundIfFalsy } from "~/utils/remix";
@@ -69,12 +69,10 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     ? parsedSearchParams.data
     : seasonsSearchParamsSchema.parse({});
 
-  // TODO: handle it not being current season ("freshUserSkills" has ! that throws)
-  notFoundIfFalsy(currentSeason(new Date()));
-
   const user = notFoundIfFalsy(db.users.findByIdentifier(identifier));
 
-  const { tier } = (await userSkills()).userSkills[user.id] ?? {
+  // TODO: dynamic season
+  const { tier } = (await userSkills(0)).userSkills[user.id] ?? {
     approximate: false,
     ordinal: 0,
     tier: { isPlus: false, name: "IRON" },
