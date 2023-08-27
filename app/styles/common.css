@@ -1263,7 +1263,7 @@ dialog::backdrop {
 }
 
 .chat__container {
-  height: 100%;
+  display: flex;
 }
 
 .chat__messages {
@@ -1271,6 +1271,8 @@ dialog::backdrop {
   display: flex;
   flex-direction: column;
   gap: var(--s-2);
+  height: 300px;
+  overflow-y: auto;
 }
 
 .chat__message {
@@ -1297,6 +1299,7 @@ dialog::backdrop {
 
 .chat__message__contents {
   font-size: var(--fonts-sm);
+  word-break: break-all;
 }
 
 #nprogress .bar {

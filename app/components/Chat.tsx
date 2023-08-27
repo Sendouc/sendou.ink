@@ -11,6 +11,7 @@ interface ChatProps {
 }
 
 export function Chat({ users }: ChatProps) {
+  const messagesContainerRef = React.useRef<HTMLOListElement>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
   const { send, messages } = useChat();
 
@@ -23,10 +24,15 @@ export function Chat({ users }: ChatProps) {
     [send],
   );
 
+  React.useEffect(() => {
+    const messagesContainer = messagesContainerRef.current!;
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  }, [messages]);
+
   return (
     <section className="chat__container">
       <div className="chat__input-container">
-        <ol className="chat__messages">
+        <ol className="chat__messages" ref={messagesContainerRef}>
           {messages.map((msg, i) => {
             return (
               <Message
@@ -42,7 +48,7 @@ export function Chat({ users }: ChatProps) {
             );
           })}
         </ol>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="mt-4">
           <input className="w-full" ref={inputRef} />{" "}
           <SubmitButton>Send</SubmitButton>
         </form>
