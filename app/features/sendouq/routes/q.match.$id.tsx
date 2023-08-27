@@ -79,6 +79,7 @@ import { resolveRoomPass } from "~/features/tournament-bracket/tournament-bracke
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { addDummySkill } from "../queries/addDummySkill.server";
 import { inGameNameWithoutDiscriminator } from "~/utils/strings";
+import { Chat } from "~/components/Chat";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -384,6 +385,7 @@ export default function QMatchPage() {
               side="BRAVO"
               showWeapons={!data.match.isLocked}
             />
+            <Chat />
           </div>
           {!data.match.isLocked && ownMember ? (
             <div>

@@ -1262,6 +1262,40 @@ dialog::backdrop {
   border-radius: var(--rounded);
 }
 
+.chat__container {
+  height: 100%;
+}
+
+.chat__messages {
+  padding: 0;
+}
+
+.chat__message {
+  list-style: none;
+  display: flex;
+  gap: var(--s-2-5);
+}
+
+.chat__message__user {
+  font-weight: var(--semi-bold);
+  font-size: var(--fonts-sm);
+}
+
+.chat__message__time {
+  font-size: var(--fonts-xxs);
+  color: var(--text-lighter);
+  margin-block-start: 3px;
+}
+
+.chat__input-container {
+  margin-top: auto;
+  --input-width: 100%;
+}
+
+.chat__message__contents {
+  font-size: var(--fonts-sm);
+}
+
 #nprogress .bar {
   margin-top: 3rem !important;
   background: var(--theme) !important;
