@@ -5,8 +5,8 @@ import type { MainWeaponId } from "~/modules/in-game-lists";
 import { weaponCategories } from "~/modules/in-game-lists";
 import type { TeamSPLeaderboardItem } from "../queries/teamSPLeaderboard.server";
 
-export function addTiers(entries: UserSPLeaderboardItem[]) {
-  const tiers = freshUserSkills();
+export function addTiers(entries: UserSPLeaderboardItem[], season: number) {
+  const tiers = freshUserSkills(season);
 
   const encounteredTiers = new Set<string>();
   return entries.map((entry) => {
