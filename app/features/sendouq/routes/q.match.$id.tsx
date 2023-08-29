@@ -342,6 +342,10 @@ export default function QMatchPage() {
     );
   }, [data]);
 
+  const chatRooms = React.useMemo(() => {
+    return [`Q_MATCH_${data.match.id}`];
+  }, [data.match.id]);
+
   // xxx: only render chat for admins and group members
   return (
     <Main className="q-match__container stack lg">
@@ -395,7 +399,7 @@ export default function QMatchPage() {
               side="BRAVO"
               showWeapons={!data.match.isLocked}
             />
-            <Chat users={chatUsers} />
+            <Chat users={chatUsers} rooms={chatRooms} />
           </div>
           {!data.match.isLocked && ownMember ? (
             <div>

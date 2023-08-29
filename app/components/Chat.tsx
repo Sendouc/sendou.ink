@@ -11,12 +11,13 @@ type ChatUser = Pick<User, "discordName" | "discordId" | "discordAvatar">;
 
 interface ChatProps {
   users: Record<number, ChatUser>;
+  rooms: string[];
 }
 
-export function Chat({ users }: ChatProps) {
+export function Chat({ users, rooms }: ChatProps) {
   const messagesContainerRef = React.useRef<HTMLOListElement>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
-  const { send, messages } = useChat();
+  const { send, messages } = useChat(rooms);
 
   const handleSubmit = React.useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
@@ -91,18 +92,24 @@ interface ChatMessage {
   contents: string;
   userId: number;
   timestamp: number;
+  room: string;
   pending?: boolean;
 }
 
 // xxx: TODO: load initial messages
-function useChat() {
+function useChat(rooms: string[], _currentRoom?: string) {
   const user = useUser();
   const [messages, setMessages] = React.useState<ChatMessage[]>([]);
   const [sentMessage, setSentMessage] = React.useState<ChatMessage>();
   const ws = React.useRef<WebSocket>();
+
+  const currentRoom = _currentRoom ?? rooms[0];
+
   React.useEffect(() => {
     // xxx: pass from env vars
-    ws.current = new WebSocket("ws://localhost:5900");
+    ws.current = new WebSocket(
+      `ws://localhost:5900?${rooms.map((room) => `room=${room}`).join("&")}`,
+    );
     ws.current.onopen = () => console.log("ws opened");
     ws.current.onclose = () => console.log("ws closed");
 
@@ -115,7 +122,7 @@ function useChat() {
     return () => {
       wsCurrent.close();
     };
-  }, []);
+  }, [rooms]);
 
   const send = React.useCallback(
     (contents: string) => {
@@ -123,13 +130,14 @@ function useChat() {
       setSentMessage({
         id,
         type: "message",
+        room: currentRoom,
         contents,
         timestamp: Date.now(),
         userId: user!.id,
       });
-      ws.current!.send(JSON.stringify({ id, contents }));
+      ws.current!.send(JSON.stringify({ id, contents, room: currentRoom }));
     },
-    [user],
+    [user, currentRoom],
   );
 
   let allMessages = messages;
