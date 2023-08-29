@@ -12,7 +12,7 @@ export function usePagination<T>({
 
   const itemsToDisplay = React.useMemo(
     () => items.slice((currentPage - 1) * pageSize, currentPage * pageSize),
-    [currentPage, items, pageSize]
+    [currentPage, items, pageSize],
   );
 
   const nextPage = React.useCallback(() => {
@@ -36,7 +36,7 @@ export function usePagination<T>({
         window.scrollTo(0, 0);
       }
     },
-    [pagesCount]
+    [pagesCount],
   );
 
   const thereIsNextPage = currentPage < pagesCount;

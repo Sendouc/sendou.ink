@@ -62,7 +62,7 @@ export function Ability({
           "drop-allowed": dropAllowed,
           readonly,
         },
-        className
+        className,
       )}
       style={
         {

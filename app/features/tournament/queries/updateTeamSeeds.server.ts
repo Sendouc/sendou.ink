@@ -22,5 +22,5 @@ export const updateTeamSeeds = sql.transaction(
         seed: i + 1,
       });
     }
-  }
+  },
 );

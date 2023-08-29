@@ -10,15 +10,15 @@ invariant(discordIds, "id list of discord ids required (argument 1)");
 invariant(badgeId, "display name of badge is required (argument 2)");
 invariant(
   discordIds.includes(","),
-  "discordIds must be a comma separated list of discord ids"
+  "discordIds must be a comma separated list of discord ids",
 );
 
 const stm = sql.prepare(
-  /* sql */ `insert into "TournamentBadgeOwner" ("badgeId", "userId") values (@badgeId, (select "id" from "User" where "discordId" = @userId))`
+  /* sql */ `insert into "TournamentBadgeOwner" ("badgeId", "userId") values (@badgeId, (select "id" from "User" where "discordId" = @userId))`,
 );
 
 const userStm = sql.prepare(
-  /* sql */ `select "id" from "User" where "discordId" = @discordId`
+  /* sql */ `select "id" from "User" where "discordId" = @discordId`,
 );
 
 const users = discordIds.split(",");

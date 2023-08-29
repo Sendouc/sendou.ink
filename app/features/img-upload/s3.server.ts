@@ -81,7 +81,7 @@ export const s3UploadHandler =
   async ({ name, filename, data }) => {
     invariant(
       name !== "smallImg" || preDecidedFilename,
-      "must have predecided filename when uploading many images"
+      "must have predecided filename when uploading many images",
     );
 
     if (name !== "img" && name !== "smallImg") {

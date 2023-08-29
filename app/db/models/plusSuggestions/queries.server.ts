@@ -18,7 +18,7 @@ export function create(
   args: Pick<
     PlusSuggestion,
     "text" | "authorId" | "suggestedId" | "month" | "year" | "tier"
-  >
+  >,
 ) {
   createStm.run(args);
 }
@@ -49,14 +49,14 @@ export interface FindVisibleForUser {
 
 export function findVisibleForUser(
   args: MonthYear &
-    Pick<UserWithPlusTier, "plusTier"> & { includeBio?: boolean }
+    Pick<UserWithPlusTier, "plusTier"> & { includeBio?: boolean },
 ): FindVisibleForUser | undefined {
   if (typeof args.plusTier !== "number") return;
   return sortNewestPlayersToBeSuggestedFirst(
     mapFindVisibleForUserRowsToResult(
       findVisibleForUserStm.all(args),
-      args.includeBio
-    )
+      args.includeBio,
+    ),
   );
 }
 
@@ -68,7 +68,7 @@ export function findAll(args: MonthYear & { includeBio?: boolean }) {
 
 function mapFindVisibleForUserRowsToResult(
   rows: any[],
-  includeBio?: boolean
+  includeBio?: boolean,
 ): FindVisibleForUser {
   return rows.reduce((result: FindVisibleForUser, row) => {
     const usersOfTier = result[row.tier] ?? [];
@@ -80,7 +80,7 @@ function mapFindVisibleForUserRowsToResult(
       createdAtRelative: formatDistance(
         databaseTimestampToDate(row.createdAt),
         new Date(),
-        { addSuffix: true }
+        { addSuffix: true },
       ),
       text: row.text,
       author: {
@@ -92,7 +92,7 @@ function mapFindVisibleForUserRowsToResult(
     };
 
     const existingSuggestion = usersOfTier.find(
-      (suggestion) => suggestion.suggestedUser.id === row.suggestedId
+      (suggestion) => suggestion.suggestedUser.id === row.suggestedId,
     );
 
     if (existingSuggestion) {
@@ -116,7 +116,7 @@ function mapFindVisibleForUserRowsToResult(
 }
 
 function sortNewestPlayersToBeSuggestedFirst(
-  suggestions: FindVisibleForUser
+  suggestions: FindVisibleForUser,
 ): FindVisibleForUser {
   return Object.fromEntries(
     Object.entries(suggestions).map(([tier, suggestions]) => [
@@ -124,16 +124,16 @@ function sortNewestPlayersToBeSuggestedFirst(
       suggestions.sort(
         (a, b) =>
           atOrError(b.suggestions, 0).createdAt -
-          atOrError(a.suggestions, 0).createdAt
+          atOrError(a.suggestions, 0).createdAt,
       ),
-    ])
+    ]),
   );
 }
 
 const tiersSuggestedForStm = sql.prepare(tiersSuggestedForSql);
 export function tiersSuggestedFor(args: MonthYear & { userId: User["id"] }) {
   return JSON.parse(
-    tiersSuggestedForStm.pluck().get(args) as any
+    tiersSuggestedForStm.pluck().get(args) as any,
   ) as User["id"][];
 }
 
@@ -149,10 +149,10 @@ export function deleteAll(args: Pick<PlusSuggestion, "suggestedId" | "tier">) {
 }
 
 const deleteSuggestionWithCommentsStm = sql.prepare(
-  deleteSuggestionWithCommentsSql
+  deleteSuggestionWithCommentsSql,
 );
 export function deleteSuggestionWithComments(
-  args: Pick<PlusSuggestion, "suggestedId" | "tier" | "month" | "year">
+  args: Pick<PlusSuggestion, "suggestedId" | "tier" | "month" | "year">,
 ) {
   deleteSuggestionWithCommentsStm.run(args);
 }

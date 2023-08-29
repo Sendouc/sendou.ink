@@ -25,7 +25,7 @@ export function generateMapList(
   mapPool: MapPool,
   modeList: ModeShort[],
   games: number[],
-  popularity?: Popularity
+  popularity?: Popularity,
 ) {
   let modeIndex = 0;
   const mapList: ModeWithStage[][] = [];
@@ -67,7 +67,7 @@ function addAndReturnMap(
   stageId: StageId,
   mode: ModeShort,
   buckets: MapBucket,
-  bucketNum: number
+  bucketNum: number,
 ) {
   // if next bucket doesnt exists then create it
   const nextBucket = bucketNum + 1;
@@ -92,7 +92,7 @@ function getMapPopular(
   mapPool: MapPool,
   mode: ModeShort,
   popularity: Popularity,
-  mapHistory: StageId[]
+  mapHistory: StageId[],
 ): StageId {
   const popularity_map_pool = new Map();
   for (const [stageId, votes] of popularity.get(mode)!.entries()) {
@@ -110,7 +110,7 @@ function getMapPopular(
 function randomMap(popularityList: Map<StageId, number>) {
   const maxNumber = Array.from(popularityList.values()).reduce(
     (a, b) => a + b,
-    0
+    0,
   );
   const randInt = Math.floor(Math.random() * maxNumber);
   let counter = 0;
@@ -146,7 +146,7 @@ function getMap(
   mapPool: MapPool,
   mode: ModeShort,
   buckets: MapBucket,
-  mapHistory: StageId[]
+  mapHistory: StageId[],
 ) {
   if (!buckets.size) {
     buckets.set(0, mapPool.getClonedObject());

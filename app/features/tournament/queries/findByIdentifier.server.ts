@@ -29,14 +29,16 @@ select
   group by "CalendarEvent"."id"
 `);
 
-type FindByIdentifierRow =
-  | (Pick<CalendarEvent, "bracketUrl" | "name" | "description" | "authorId"> &
-      Pick<
-        Tournament,
-        "id" | "format" | "mapPickingStyle" | "showMapListGenerator"
-      > &
-      Pick<User, "discordId" | "discordName" | "discordDiscriminator"> &
-      Pick<CalendarEventDate, "startTime">) & { eventId: CalendarEvent["id"] };
+type FindByIdentifierRow = (Pick<
+  CalendarEvent,
+  "bracketUrl" | "name" | "description" | "authorId"
+> &
+  Pick<
+    Tournament,
+    "id" | "format" | "mapPickingStyle" | "showMapListGenerator"
+  > &
+  Pick<User, "discordId" | "discordName" | "discordDiscriminator"> &
+  Pick<CalendarEventDate, "startTime">) & { eventId: CalendarEvent["id"] };
 
 export function findByIdentifier(identifier: string | number) {
   const rows = stm.all({ identifier }) as FindByIdentifierRow[];
@@ -57,7 +59,7 @@ export function findByIdentifier(identifier: string | number) {
 }
 
 function resolveEarliestStartTime(
-  rows: Pick<CalendarEventDate, "startTime">[]
+  rows: Pick<CalendarEventDate, "startTime">[],
 ) {
   return Math.min(...rows.map((row) => row.startTime));
 }

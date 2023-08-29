@@ -20,7 +20,7 @@ export interface TournamentMaplistInput {
     {
       id: number;
       maps: MapPool;
-    }
+    },
   ];
   tiebreakerMaps: MapPool;
   modesIncluded: ModeShort[];

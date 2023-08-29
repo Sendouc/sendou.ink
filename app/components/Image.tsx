@@ -1,11 +1,14 @@
+import type { TierName } from "~/features/mmr/mmr-constants";
 import { useTranslation } from "~/hooks/useTranslation";
 import type { MainWeaponId, ModeShort, StageId } from "~/modules/in-game-lists";
 import {
+  TIER_PLUS_URL,
   mainWeaponImageUrl,
   modeImageUrl,
   outlinedFiveStarMainWeaponImageUrl,
   outlinedMainWeaponImageUrl,
   stageImageUrl,
+  tierImageUrl,
 } from "~/utils/urls";
 
 interface ImageProps {
@@ -61,12 +64,13 @@ export function Image({
 type WeaponImageProps = {
   weaponSplId: MainWeaponId;
   variant: "badge" | "badge-5-star" | "build";
-} & Omit<ImageProps, "path" | "alt" | "title">;
+} & Omit<ImageProps, "path" | "alt">;
 
 export function WeaponImage({
   weaponSplId,
   variant,
   testId,
+  title,
   ...rest
 }: WeaponImageProps) {
   const { t } = useTranslation(["weapons"]);
@@ -74,8 +78,8 @@ export function WeaponImage({
   return (
     <Image
       {...rest}
-      alt={t(`weapons:MAIN_${weaponSplId}`)}
-      title={t(`weapons:MAIN_${weaponSplId}`)}
+      alt={title ?? t(`weapons:MAIN_${weaponSplId}`)}
+      title={title ?? t(`weapons:MAIN_${weaponSplId}`)}
       testId={testId}
       path={
         variant === "badge"
@@ -90,16 +94,16 @@ export function WeaponImage({
 
 type ModeImageProps = {
   mode: ModeShort;
-} & Omit<ImageProps, "path" | "alt" | "title">;
+} & Omit<ImageProps, "path" | "alt">;
 
-export function ModeImage({ mode, testId, ...rest }: ModeImageProps) {
+export function ModeImage({ mode, testId, title, ...rest }: ModeImageProps) {
   const { t } = useTranslation(["game-misc"]);
 
   return (
     <Image
       {...rest}
-      alt={t(`game-misc:MODE_LONG_${mode}`)}
-      title={t(`game-misc:MODE_LONG_${mode}`)}
+      alt={title ?? t(`game-misc:MODE_LONG_${mode}`)}
+      title={title ?? t(`game-misc:MODE_LONG_${mode}`)}
       testId={testId}
       path={modeImageUrl(mode)}
     />
@@ -122,5 +126,38 @@ export function StageImage({ stageId, testId, ...rest }: StageImageProps) {
       path={stageImageUrl(stageId)}
       height={rest.height ?? (rest.width ? rest.width * 0.5625 : undefined)}
     />
+  );
+}
+
+type TierImageProps = {
+  tier: { name: TierName; isPlus: boolean };
+} & Omit<ImageProps, "path" | "alt" | "title" | "size" | "height">;
+
+export function TierImage({ tier, width = 200 }: TierImageProps) {
+  const title = `${tier.name}${tier.isPlus ? "+" : ""}`;
+
+  const height = width * 0.8675;
+
+  return (
+    <div className="tier__container">
+      <Image
+        path={tierImageUrl(tier.name)}
+        width={width}
+        height={height}
+        alt={title}
+        title={title}
+        containerClassName="tier__img"
+      />
+      {tier.isPlus ? (
+        <Image
+          path={TIER_PLUS_URL}
+          width={width}
+          height={height}
+          alt={title}
+          title={title}
+          containerClassName="tier__img"
+        />
+      ) : null}
+    </div>
   );
 }

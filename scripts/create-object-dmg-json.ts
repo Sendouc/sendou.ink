@@ -22,14 +22,14 @@ const OUTPUT_DIR_PATH = path.join(__dirname, "output");
 
 const weaponParamsToWeaponIds = (
   params: typeof weapons | typeof subWeapons | typeof specialWeapons,
-  key: string
+  key: string,
 ) => {
   return params
     .filter((param) => {
       return (
         param.DefaultDamageRateInfoRow === key ||
         param.ExtraDamageRateInfoRowSet?.some(
-          (row) => row.DamageRateInfoRow === key
+          (row) => row.DamageRateInfoRow === key,
         )
       );
     })
@@ -44,14 +44,14 @@ for (const cell of Object.values(params.CellList)) {
   if (!result[cell.RowKey]) {
     result[cell.RowKey] = {
       mainWeaponIds: weaponParamsToWeaponIds(weapons, cell.RowKey).filter(
-        (id) => mainWeaponIds.includes(id)
+        (id) => mainWeaponIds.includes(id),
       ),
       subWeaponIds: weaponParamsToWeaponIds(subWeapons, cell.RowKey).filter(
-        (id) => subWeaponIds.includes(id)
+        (id) => subWeaponIds.includes(id),
       ),
       specialWeaponIds: weaponParamsToWeaponIds(
         specialWeapons,
-        cell.RowKey
+        cell.RowKey,
       ).filter((id) => specialWeaponIds.includes(id)),
       rates: [],
     };
@@ -76,5 +76,5 @@ for (const cell of Object.values(params.CellList)) {
 
 fs.writeFileSync(
   path.join(OUTPUT_DIR_PATH, "object-dmg.json"),
-  JSON.stringify(result, null, 2)
+  JSON.stringify(result, null, 2),
 );

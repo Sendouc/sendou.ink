@@ -50,7 +50,7 @@ export function weekNumberToDate({
   const result = new Date(Date.UTC(year, 0, 4));
 
   result.setDate(
-    result.getDate() - (result.getDay() || 7) + 1 + 7 * (week - 1)
+    result.getDate() - (result.getDay() || 7) + 1 + 7 * (week - 1),
   );
   if (position === "end") {
     result.setDate(result.getDate() + 6);
@@ -84,7 +84,7 @@ export function dateToYearMonthDayHourMinuteString(date: Date) {
   const minute = copiedDate.getMinutes();
 
   return `${year}-${prefixZero(month)}-${prefixZero(day)}T${prefixZero(
-    hour
+    hour,
   )}:${prefixZero(minute)}`;
 }
 

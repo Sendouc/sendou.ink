@@ -74,7 +74,7 @@ CreateSingleEliminationStage(
     assert.equal(storage.select<any>("match", 4).opponent2.id, null); // To be determined.
     assert.equal(storage.select<any>("match", 5).opponent1, null); // BYE propagated.
     assert.equal(storage.select<any>("match", 5).opponent2.id, null); // To be determined.
-  }
+  },
 );
 
 CreateSingleEliminationStage(
@@ -100,7 +100,7 @@ CreateSingleEliminationStage(
     assert.equal(storage.select<any>("group")!.length, 2);
     assert.equal(storage.select<any>("round")!.length, 4);
     assert.equal(storage.select<any>("match")!.length, 8);
-  }
+  },
 );
 
 CreateSingleEliminationStage(
@@ -129,7 +129,7 @@ CreateSingleEliminationStage(
     // Consolation final
     assert.equal(storage.select<any>("match", 7).opponent1, null);
     assert.equal(storage.select<any>("match", 7).opponent2.id, null);
-  }
+  },
 );
 
 CreateSingleEliminationStage(
@@ -156,7 +156,7 @@ CreateSingleEliminationStage(
     assert.equal(storage.select<any>("round")!.length, 3);
     assert.equal(storage.select<any>("match")!.length, 7);
     assert.equal(storage.select<any>("match_game")!.length, 7 * 3);
-  }
+  },
 );
 
 CreateSingleEliminationStage(
@@ -190,7 +190,7 @@ CreateSingleEliminationStage(
     });
 
     assert.equal(storage.select<any>("stage", 2).number, 3);
-  }
+  },
 );
 
 CreateSingleEliminationStage(
@@ -221,7 +221,7 @@ CreateSingleEliminationStage(
     });
 
     assert.equal(storage.select<any>("stage", 2).number, 1);
-  }
+  },
 );
 
 CreateSingleEliminationStage(
@@ -244,9 +244,9 @@ CreateSingleEliminationStage(
           number: 1, // Duplicate
           settings: { size: 2 },
         }),
-      "The given stage number already exists."
+      "The given stage number already exists.",
     );
-  }
+  },
 );
 
 CreateSingleEliminationStage(
@@ -265,9 +265,9 @@ CreateSingleEliminationStage(
             "Team 4",
           ],
         }),
-      "The seeding has a duplicate participant."
+      "The seeding has a duplicate participant.",
     );
-  }
+  },
 );
 
 CreateSingleEliminationStage(
@@ -286,9 +286,9 @@ CreateSingleEliminationStage(
           id: 0,
           opponent1: { result: "draw" },
         }),
-      "Having a draw is forbidden in an elimination tournament."
+      "Having a draw is forbidden in an elimination tournament.",
     );
-  }
+  },
 );
 
 const PreviousAndNextMatchUpdate = suite("Previous and next match update");
@@ -322,17 +322,17 @@ PreviousAndNextMatchUpdate(
 
     assert.equal(
       storage.select<any>("match", 3).opponent1.id, // Determined opponent for the consolation final
-      storage.select<any>("match", 0).opponent2.id // Loser of Semi 1
+      storage.select<any>("match", 0).opponent2.id, // Loser of Semi 1
     );
 
     assert.equal(
       storage.select<any>("match", 3).opponent2.id, // Determined opponent for the consolation final
-      storage.select<any>("match", 1).opponent1.id // Loser of Semi 2
+      storage.select<any>("match", 1).opponent1.id, // Loser of Semi 2
     );
 
     assert.equal(storage.select<any>("match", 2).status, Status.Ready);
     assert.equal(storage.select<any>("match", 3).status, Status.Ready);
-  }
+  },
 );
 
 PreviousAndNextMatchUpdate(
@@ -393,7 +393,7 @@ PreviousAndNextMatchUpdate(
 
     assert.equal(storage.select<any>("match", 2).status, Status.Archived);
     assert.equal(storage.select<any>("match", 3).status, Status.Archived);
-  }
+  },
 );
 
 PreviousAndNextMatchUpdate("should archive previous matches", () => {

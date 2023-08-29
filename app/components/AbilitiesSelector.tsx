@@ -24,7 +24,7 @@ export function AbilitiesSelector({
     abilityI: number;
   }) => {
     const abilitiesClone = JSON.parse(
-      JSON.stringify(selectedAbilities)
+      JSON.stringify(selectedAbilities),
     ) as BuildAbilitiesTupleWithUnknown;
 
     const row = abilitiesClone[rowI];
@@ -61,7 +61,7 @@ export function AbilitiesSelector({
     (event: React.DragEvent) => {
       event.preventDefault();
       const ability = JSON.parse(
-        event.dataTransfer.getData("text/plain")
+        event.dataTransfer.getData("text/plain"),
       ) as (typeof abilities)[number];
 
       onChange(
@@ -70,7 +70,7 @@ export function AbilitiesSelector({
           ability,
           atRowIndex,
           atAbilityIndex,
-        })
+        }),
       );
     };
 
@@ -88,11 +88,11 @@ export function AbilitiesSelector({
               dropAllowed={canPlaceAbilityAtSlot(
                 rowI,
                 abilityI,
-                draggingAbility
+                draggingAbility,
               )}
               onDrop={onDrop(rowI, abilityI)}
             />
-          ))
+          )),
         )}
       </div>
       <div className="ability-selector__ability-buttons">
@@ -125,7 +125,7 @@ export function AbilitiesSelector({
 const canPlaceAbilityAtSlot = (
   rowIndex: number,
   abilityIndex: number,
-  ability?: (typeof abilities)[number]
+  ability?: (typeof abilities)[number],
 ) => {
   if (!ability) {
     return false;
@@ -167,7 +167,7 @@ function addAbility({
   atAbilityIndex?: number;
 }): BuildAbilitiesTupleWithUnknown {
   const abilitiesClone = JSON.parse(
-    JSON.stringify(oldAbilities)
+    JSON.stringify(oldAbilities),
   ) as BuildAbilitiesTupleWithUnknown;
 
   if (atRowIndex !== undefined && atAbilityIndex !== undefined) {

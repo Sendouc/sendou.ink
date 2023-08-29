@@ -43,7 +43,7 @@ export function Button(props: ButtonProps) {
           tiny: size === "tiny",
           big: size === "big",
         },
-        className
+        className,
       )}
       disabled={props.disabled || loading}
       type={type}
@@ -86,7 +86,7 @@ export function LinkButton({
           "button",
           variant,
           { tiny: size === "tiny", big: size === "big" },
-          className
+          className,
         )}
         href={to as string}
         data-testid={testId}
@@ -108,7 +108,7 @@ export function LinkButton({
         "button",
         variant,
         { tiny: size === "tiny", big: size === "big" },
-        className
+        className,
       )}
       to={to}
       data-testid={testId}

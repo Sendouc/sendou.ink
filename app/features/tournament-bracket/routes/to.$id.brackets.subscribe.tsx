@@ -17,7 +17,7 @@ export const loader = ({ request, params }: LoaderArgs) => {
       send({
         event: bracketSubscriptionKey(tournamentId),
         data: `${args.matchId}-${args.scores[0]}-${args.scores[1]}-${String(
-          args.isOver
+          args.isOver,
         )}`,
       });
     };

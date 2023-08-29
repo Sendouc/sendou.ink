@@ -13,7 +13,7 @@ module.exports.up = function (db) {
       "tags" text,
       foreign key ("authorId") references "User"("id") on delete restrict
     ) strict
-    `
+    `,
   ).run();
 
   db.prepare(
@@ -24,7 +24,7 @@ module.exports.up = function (db) {
       "startTime" integer not null,
       foreign key ("eventId") references "CalendarEvent"("id") on delete cascade
     ) strict
-    `
+    `,
   ).run();
 
   db.prepare(
@@ -36,7 +36,7 @@ module.exports.up = function (db) {
       "placement" integer not null,
       foreign key ("eventId") references "CalendarEvent"("id") on delete cascade
     ) strict
-    `
+    `,
   ).run();
 
   db.prepare(
@@ -48,7 +48,7 @@ module.exports.up = function (db) {
       foreign key ("teamId") references "CalendarEventResultTeam"("id") on delete cascade,
       foreign key ("userId") references "User"("id") on delete restrict
     ) strict
-    `
+    `,
   ).run();
 
   db.prepare(
@@ -60,7 +60,7 @@ module.exports.up = function (db) {
       foreign key ("badgeId") references "Badge"("id") on delete restrict,
       unique("eventId", "badgeId") on conflict rollback
     ) strict
-    `
+    `,
   ).run();
 };
 

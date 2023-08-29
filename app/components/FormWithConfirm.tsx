@@ -1,5 +1,5 @@
-import { useFetcher } from "@remix-run/react";
-import React from "react";
+import { type FetcherWithComponents, useFetcher } from "@remix-run/react";
+import * as React from "react";
 import invariant from "tiny-invariant";
 import { useTranslation } from "~/hooks/useTranslation";
 import { Button, type ButtonProps } from "./Button";
@@ -11,19 +11,25 @@ export function FormWithConfirm({
   children,
   dialogHeading,
   deleteButtonText,
+  cancelButtonText,
   action,
   submitButtonTestId = "submit-button",
   submitButtonVariant = "destructive",
+  fetcher: _fetcher,
 }: {
   fields?: [name: string, value: string | number][];
   children: React.ReactNode;
   dialogHeading: string;
   deleteButtonText?: string;
+  cancelButtonText?: string;
   action?: string;
   submitButtonTestId?: string;
   submitButtonVariant?: ButtonProps["variant"];
+  fetcher?: FetcherWithComponents<any>;
 }) {
-  const fetcher = useFetcher();
+  const componentsFetcher = useFetcher();
+  const fetcher = _fetcher ?? componentsFetcher;
+
   const { t } = useTranslation(["common"]);
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const formRef = React.useRef<HTMLFormElement>(null);
@@ -33,6 +39,12 @@ export function FormWithConfirm({
   const closeDialog = () => setDialogOpen(false);
 
   invariant(React.isValidElement(children));
+
+  React.useEffect(() => {
+    if (fetcher.state === "loading") {
+      closeDialog();
+    }
+  }, [fetcher.state]);
 
   return (
     <>
@@ -58,7 +70,9 @@ export function FormWithConfirm({
             >
               {deleteButtonText ?? t("common:actions.delete")}
             </SubmitButton>
-            <Button onClick={closeDialog}>{t("common:actions.cancel")}</Button>
+            <Button onClick={closeDialog}>
+              {cancelButtonText ?? t("common:actions.cancel")}
+            </Button>
           </div>
         </div>
       </Dialog>

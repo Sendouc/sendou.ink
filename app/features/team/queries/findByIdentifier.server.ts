@@ -63,7 +63,7 @@ type MemberRows = Array<
 >;
 
 export function findByIdentifier(
-  customUrl: string
+  customUrl: string,
 ): { team: DetailedTeam; css: Record<string, string> | null } | null {
   const team = teamStm.get({ customUrl: customUrl.toLowerCase() }) as TeamRow;
 
@@ -92,7 +92,7 @@ export function findByIdentifier(
         role: member.role ?? undefined,
         isOwner: Boolean(member.isOwner),
         weapons: JSON.parse(member.weapons).filter(
-          (value: any) => typeof value === "number"
+          (value: any) => typeof value === "number",
         ),
       })),
       // results: {

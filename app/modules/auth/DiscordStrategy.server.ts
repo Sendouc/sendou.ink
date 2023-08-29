@@ -26,7 +26,7 @@ const partialDiscordConnectionsSchema = z.array(
     name: z.string(),
     id: z.string(),
     type: z.string(),
-  })
+  }),
 );
 const discordUserDetailsSchema = z.tuple([
   partialDiscordUserSchema,
@@ -72,8 +72,8 @@ export class DiscordStrategy extends OAuth2Strategy<
               if (!res.ok) throw new Error("Call to Discord API failed");
 
               return res.json();
-            })
-          )
+            }),
+          ),
         );
 
         const userFromDb = db.users.upsert({
@@ -86,14 +86,14 @@ export class DiscordStrategy extends OAuth2Strategy<
         });
 
         return userFromDb.id;
-      }
+      },
     );
 
     this.scope = "identify connections";
   }
 
   private parseConnections(
-    connections: z.infer<typeof partialDiscordConnectionsSchema>
+    connections: z.infer<typeof partialDiscordConnectionsSchema>,
   ) {
     if (!connections) throw new Error("No connections");
 

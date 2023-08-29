@@ -9,6 +9,9 @@ import {
 } from "./authenticator.server";
 import { authSessionStorage } from "./session.server";
 import { getUserId } from "./user.server";
+import { validate } from "~/utils/remix";
+
+const throwOnAuthErrors = process.env["THROW_ON_AUTH_ERROR"] === "true";
 
 export const callbackLoader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
@@ -23,7 +26,8 @@ export const callbackLoader: LoaderFunction = async ({ request }) => {
 
   await authenticator.authenticate(DISCORD_AUTH_KEY, request, {
     successRedirect: "/",
-    failureRedirect: authErrorUrl("unknown"),
+    failureRedirect: throwOnAuthErrors ? undefined : authErrorUrl("unknown"),
+    throwOnError: throwOnAuthErrors,
   });
 
   throw new Response("Unknown authentication state", { status: 500 });
@@ -34,6 +38,11 @@ export const logOutAction: ActionFunction = async ({ request }) => {
 };
 
 export const logInAction: ActionFunction = async ({ request }) => {
+  validate(
+    process.env["LOGIN_DISABLED"] !== "true",
+    "Login is temporarily disabled",
+  );
+
   return authenticator.authenticate(DISCORD_AUTH_KEY, request);
 };
 
@@ -44,7 +53,7 @@ export const impersonateAction: ActionFunction = async ({ request }) => {
   }
 
   const session = await authSessionStorage.getSession(
-    request.headers.get("Cookie")
+    request.headers.get("Cookie"),
   );
 
   const url = new URL(request.url);
@@ -62,7 +71,7 @@ export const impersonateAction: ActionFunction = async ({ request }) => {
 
 export const stopImpersonatingAction: ActionFunction = async ({ request }) => {
   const session = await authSessionStorage.getSession(
-    request.headers.get("Cookie")
+    request.headers.get("Cookie"),
   );
 
   session.unset(IMPERSONATED_SESSION_KEY);

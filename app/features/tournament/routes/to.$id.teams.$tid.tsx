@@ -45,7 +45,7 @@ export const loader = ({ params }: LoaderArgs) => {
   const bracket = manager.get.tournamentData(tournamentId);
   invariant(
     bracket.stage.length === 1,
-    "Bracket doesn't have exactly one stage"
+    "Bracket doesn't have exactly one stage",
   );
   const stage = bracket.stage[0];
 
@@ -77,7 +77,7 @@ export default function TournamentTeamPage() {
   const data = useLoaderData<typeof loader>();
   const parentRouteData = useOutletContext<TournamentLoaderData>();
   const teamIndex = parentRouteData.teams.findIndex(
-    (t) => t.id === data.tournamentTeamId
+    (t) => t.id === data.tournamentTeamId,
   );
   const team = parentRouteData.teams[teamIndex];
   if (!team) {

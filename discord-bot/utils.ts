@@ -18,7 +18,7 @@ export async function usersWithAccess(): Promise<PlusListLoaderData> {
 
   if (!response.ok) {
     throw new Error(
-      `Failed to fetch users. Response status was ${response.status}`
+      `Failed to fetch users. Response status was ${response.status}`,
     );
   }
 
@@ -30,7 +30,7 @@ export async function patronsFiveDollarsAndOver(): Promise<PlusListLoaderData> {
 
   if (!response.ok) {
     throw new Error(
-      `Failed to fetch users. Response status was ${response.status}`
+      `Failed to fetch users. Response status was ${response.status}`,
     );
   }
 

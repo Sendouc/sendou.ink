@@ -76,8 +76,8 @@ export const action: ActionFunction = async ({ params, request }) => {
     const teams = findTeamsByTournamentId(tournamentId);
     const ownedTeamId = teams.find((team) =>
       team.members.some(
-        (member) => member.userId === user?.id && member.isOwner
-      )
+        (member) => member.userId === user?.id && member.isOwner,
+      ),
     )?.id;
 
     validate(
@@ -88,7 +88,7 @@ export const action: ActionFunction = async ({ params, request }) => {
         user,
       }),
       "Unauthorized",
-      401
+      401,
     );
   };
 
@@ -111,7 +111,7 @@ export const action: ActionFunction = async ({ params, request }) => {
       validate(
         match.opponentOne?.id === data.winnerTeamId ||
           match.opponentTwo?.id === data.winnerTeamId,
-        "Winner team id is invalid"
+        "Winner team id is invalid",
       );
 
       const mapList =
@@ -314,10 +314,10 @@ export const loader = ({ params }: LoaderArgs) => {
     const teams = findTeamsByTournamentId(tournamentId);
 
     const teamOneIndex = teams.findIndex(
-      (team) => team.id === match.opponentOne?.id
+      (team) => team.id === match.opponentOne?.id,
     );
     const teamTwoIndex = teams.findIndex(
-      (team) => team.id === match.opponentTwo?.id
+      (team) => team.id === match.opponentTwo?.id,
     );
 
     return [
@@ -417,7 +417,7 @@ function useAutoRefresh() {
     }),
     {
       event: matchSubscriptionKey(data.match.id),
-    }
+    },
   );
 
   React.useEffect(() => {
@@ -474,10 +474,10 @@ function ResultsSection() {
   invariant(result, "Result is missing");
 
   const teamOne = parentRouteData.teams.find(
-    (team) => team.id === data.match.opponentOne?.id
+    (team) => team.id === data.match.opponentOne?.id,
   );
   const teamTwo = parentRouteData.teams.find(
-    (team) => team.id === data.match.opponentTwo?.id
+    (team) => team.id === data.match.opponentTwo?.id,
   );
 
   if (!teamOne || !teamTwo) {
@@ -508,10 +508,10 @@ function Rosters({
   const teamOne = parentRouteData.teams.find((team) => team.id === teams[0]);
   const teamTwo = parentRouteData.teams.find((team) => team.id === teams[1]);
   const teamOnePlayers = data.match.players.filter(
-    (p) => p.tournamentTeamId === teamOne?.id
+    (p) => p.tournamentTeamId === teamOne?.id,
   );
   const teamTwoPlayers = data.match.players.filter(
-    (p) => p.tournamentTeamId === teamTwo?.id
+    (p) => p.tournamentTeamId === teamTwo?.id,
   );
 
   return (

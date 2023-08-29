@@ -34,7 +34,7 @@ export interface AbilitiesByWeapon {
 }
 
 export function abilitiesByWeaponId(
-  weaponSplId: MainWeaponId
+  weaponSplId: MainWeaponId,
 ): Array<AbilitiesByWeapon> {
   return (stm.all({ weaponSplId }) as any[]).map((row) => ({
     abilities: JSON.parse(row.abilities),

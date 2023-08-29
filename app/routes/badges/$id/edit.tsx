@@ -4,7 +4,6 @@ import { Form, useMatches, useOutletContext } from "@remix-run/react";
 import * as React from "react";
 import { z } from "zod";
 import { Button, LinkButton } from "~/components/Button";
-import { UserCombobox } from "~/components/Combobox";
 import { Dialog } from "~/components/Dialog";
 import { TrashIcon } from "~/components/icons/Trash";
 import { Label } from "~/components/Label";
@@ -18,16 +17,23 @@ import { parseRequestFormData, validate } from "~/utils/remix";
 import { discordFullName } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
 import { badgePage } from "~/utils/urls";
-import { actualNumber, id, noDuplicates, safeJSONParse } from "~/utils/zod";
+import {
+  _action,
+  actualNumber,
+  id,
+  noDuplicates,
+  safeJSONParse,
+} from "~/utils/zod";
 import type { BadgeDetailsContext, BadgeDetailsLoaderData } from "../$id";
+import { UserSearch } from "~/components/UserSearch";
 
 const editBadgeActionSchema = z.union([
   z.object({
-    _action: z.literal("MANAGERS"),
+    _action: _action("MANAGERS"),
     managerIds: z.preprocess(safeJSONParse, z.array(id).refine(noDuplicates)),
   }),
   z.object({
-    _action: z.literal("OWNERS"),
+    _action: _action("OWNERS"),
     ownerIds: z.preprocess(safeJSONParse, z.array(id)),
   }),
 ]);
@@ -52,7 +58,7 @@ export const action: ActionFunction = async ({ request, params }) => {
         canEditBadgeOwners({
           user,
           managers: db.badges.managersByBadgeId(badgeId),
-        })
+        }),
       );
 
       db.badges.upsertManyOwners({ badgeId, ownerIds: data.ownerIds });
@@ -101,7 +107,7 @@ function Managers({ data }: { data: BadgeDetailsLoaderData }) {
     data.managers.map((m) => ({
       id: m.id,
       discordFullName: discordFullName(m),
-    }))
+    })),
   );
 
   const amountOfChanges = managers
@@ -112,7 +118,7 @@ function Managers({ data }: { data: BadgeDetailsLoaderData }) {
     .concat(
       data.managers
         .filter((om) => !managers.some((m) => m.id === om.id))
-        .map((m) => m.id)
+        .map((m) => m.id),
     ).length;
 
   const userIdsToOmitFromCombobox = React.useMemo(() => {
@@ -125,15 +131,13 @@ function Managers({ data }: { data: BadgeDetailsLoaderData }) {
         <h3 className="badges-edit__small-header">Managers</h3>
         <div className="text-center my-4">
           <Label className="stack vertical items-center">Add new manager</Label>
-          <UserCombobox
+          <UserSearch
             className="mx-auto"
             inputName="new-manager"
             onChange={(user) => {
-              if (!user) return;
-
               setManagers([
                 ...managers,
-                { discordFullName: user.label, id: Number(user.value) },
+                { discordFullName: user.discordName, id: user.id },
               ]);
             }}
             userIdsToOmit={userIdsToOmitFromCombobox}
@@ -187,7 +191,7 @@ function Owners({ data }: { data: BadgeDetailsLoaderData }) {
       id: o.id,
       discordFullName: discordFullName(o),
       count: o.count,
-    }))
+    })),
   );
 
   const ownerDifferences = getOwnerDifferences(owners, data.owners);
@@ -202,17 +206,15 @@ function Owners({ data }: { data: BadgeDetailsLoaderData }) {
         <h3 className="badges-edit__small-header">Owners</h3>
         <div className="text-center my-4">
           <Label className="stack items-center">Add new owner</Label>
-          <UserCombobox
+          <UserSearch
             className="mx-auto"
             inputName="new-owner"
             onChange={(user) => {
-              if (!user) return;
-
               setOwners([
                 ...owners,
                 {
-                  discordFullName: user.label,
-                  id: Number(user.value),
+                  discordFullName: user.discordName,
+                  id: user.id,
                   count: 1,
                 },
               ]);
@@ -237,8 +239,8 @@ function Owners({ data }: { data: BadgeDetailsLoaderData }) {
                   owners.map((o) =>
                     o.id === owner.id
                       ? { ...o, count: Number(e.target.value) }
-                      : o
-                  )
+                      : o,
+                  ),
                 )
               }
             />
@@ -291,7 +293,7 @@ function getOwnerDifferences(
     discordFullName: string;
     count: number;
   }>,
-  oldOwners: BadgeDetailsLoaderData["owners"]
+  oldOwners: BadgeDetailsLoaderData["owners"],
 ) {
   const result: Array<{
     id: User["id"];
@@ -326,7 +328,7 @@ function getOwnerDifferences(
 }
 
 function countArrayToDuplicatedIdsArray(
-  owners: Array<{ id: User["id"]; count: number }>
+  owners: Array<{ id: User["id"]; count: number }>,
 ) {
   return owners.flatMap((o) => new Array(o.count).fill(null).map(() => o.id));
 }

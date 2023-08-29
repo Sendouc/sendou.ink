@@ -23,7 +23,7 @@ export function CustomizedColorsInput({
 }) {
   const { t } = useTranslation();
   const [colors, setColors] = React.useState<CustomColorsRecord>(
-    initialColors ?? {}
+    initialColors ?? {},
   );
 
   return (

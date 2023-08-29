@@ -13,7 +13,7 @@ export const action: ActionFunction = async ({ request }) => {
   if (theme === "auto") {
     return json(
       { success: true },
-      { headers: { "Set-Cookie": await themeSession.destroy() } }
+      { headers: { "Set-Cookie": await themeSession.destroy() } },
     );
   }
 
@@ -27,6 +27,6 @@ export const action: ActionFunction = async ({ request }) => {
   themeSession.setTheme(theme);
   return json(
     { success: true },
-    { headers: { "Set-Cookie": await themeSession.commit() } }
+    { headers: { "Set-Cookie": await themeSession.commit() } },
   );
 };

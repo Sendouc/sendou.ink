@@ -78,7 +78,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   }
 
   const teamMemberOfName = teams.find((team) =>
-    team.members.some((member) => member.userId === user?.id)
+    team.members.some((member) => member.userId === user?.id),
   )?.name;
 
   const subsCount = findSubsByTournamentId({
@@ -109,7 +109,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   return {
     event,
     tieBreakerMapPool: db.calendarEvents.findTieBreakerMapPoolByEventId(
-      event.eventId
+      event.eventId,
     ),
     ownTeam: user
       ? findOwnTeam({

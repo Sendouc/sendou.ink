@@ -36,7 +36,7 @@ export class Update extends BaseUpdater {
    * @param game Values to change in a match game.
    */
   public matchGame<G extends MatchGame = MatchGame>(
-    game: DeepPartial<G>
+    game: DeepPartial<G>,
   ): void {
     const stored = this.findMatchGame(game);
 
@@ -91,7 +91,7 @@ export class Update extends BaseUpdater {
   public matchChildCount(
     level: ChildCountLevel,
     id: number,
-    childCount: number
+    childCount: number,
   ): void {
     switch (level) {
       case "stage":
@@ -161,7 +161,7 @@ export class Update extends BaseUpdater {
       inLoserBracket,
       round.number,
       roundCountLB,
-      matches.length
+      matches.length,
     );
     const positions = ordering[method](seeds);
 
@@ -176,13 +176,13 @@ export class Update extends BaseUpdater {
    */
   private updateStageMatchChildCount(
     stageId: number,
-    childCount: number
+    childCount: number,
   ): void {
     if (
       !this.storage.update(
         "match",
         { stage_id: stageId },
-        { child_count: childCount }
+        { child_count: childCount },
       )
     )
       throw Error("Could not update the match.");
@@ -201,13 +201,13 @@ export class Update extends BaseUpdater {
    */
   private updateGroupMatchChildCount(
     groupId: number,
-    childCount: number
+    childCount: number,
   ): void {
     if (
       !this.storage.update(
         "match",
         { group_id: groupId },
-        { child_count: childCount }
+        { child_count: childCount },
       )
     )
       throw Error("Could not update the match.");
@@ -226,13 +226,13 @@ export class Update extends BaseUpdater {
    */
   private updateRoundMatchChildCount(
     roundId: number,
-    childCount: number
+    childCount: number,
   ): void {
     if (
       !this.storage.update(
         "match",
         { round_id: roundId },
-        { child_count: childCount }
+        { child_count: childCount },
       )
     )
       throw Error("Could not update the match.");
@@ -253,7 +253,7 @@ export class Update extends BaseUpdater {
   private applyRoundOrdering(
     roundNumber: number,
     matches: Match[],
-    positions: number[]
+    positions: number[],
   ): void {
     for (const match of matches) {
       const updated = { ...match };

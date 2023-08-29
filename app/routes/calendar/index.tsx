@@ -61,7 +61,7 @@ export const meta: V2_MetaFunction = (args) => {
       content: `${data.events.length} events happening during week ${
         data.displayedWeek
       } including ${joinListToNaturalString(
-        data.events.slice(0, 3).map((e) => e.name)
+        data.events.slice(0, 3).map((e) => e.name),
       )}`,
     },
   ];
@@ -107,11 +107,11 @@ export const loader = async ({ request }: LoaderArgs) => {
     nearbyStartTimes: db.calendarEvents.startTimesOfRange({
       startTime: subMonths(
         weekNumberToDate({ week: displayedWeek, year: displayedYear }),
-        1
+        1,
       ),
       endTime: addMonths(
         weekNumberToDate({ week: displayedWeek, year: displayedYear }),
-        1
+        1,
       ),
     }),
     weeks: closeByWeeks({ week: displayedWeek, year: displayedYear }),
@@ -162,7 +162,7 @@ export default function CalendarPage() {
     ? data.events.filter(
         (event) =>
           dateToWeekNumber(databaseTimestampToDate(event.startTime)) ===
-          data.displayedWeek
+          data.displayedWeek,
       )
     : data.events;
 
@@ -302,7 +302,7 @@ function WeekLinkTitle({
 }
 
 function getEventsCountPerWeek(
-  startTimes: SerializeFrom<typeof loader>["nearbyStartTimes"]
+  startTimes: SerializeFrom<typeof loader>["nearbyStartTimes"],
 ) {
   const result = new Map<number, number>();
 
@@ -347,7 +347,7 @@ function EventsList({
   const eventsGrouped = eventsGroupedByDay(events);
   if (sortPastEventsLast) {
     eventsGrouped.sort(
-      pastEventsLast(dayToWeekStartsAtMondayDay(data.currentDay))
+      pastEventsLast(dayToWeekStartsAtMondayDay(data.currentDay)),
     );
   }
 
@@ -391,12 +391,12 @@ function EventsList({
                       <div className="calendar__event__top-info-container">
                         <time
                           dateTime={databaseTimestampToDate(
-                            calendarEvent.startTime
+                            calendarEvent.startTime,
                           ).toISOString()}
                           className="calendar__event__time"
                         >
                           {databaseTimestampToDate(
-                            calendarEvent.startTime
+                            calendarEvent.startTime,
                           ).toLocaleTimeString(i18n.language, {
                             hour: "numeric",
                             minute: "numeric",

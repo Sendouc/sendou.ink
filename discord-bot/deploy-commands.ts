@@ -17,9 +17,9 @@ if (process.env.NODE_ENV !== "production") {
     .put(
       Routes.applicationGuildCommands(
         process.env["BOT_ID"],
-        process.env["TEST_GUILD_ID"]
+        process.env["TEST_GUILD_ID"],
       ),
-      { body: serializedCommands } // TODO: divide by guild
+      { body: serializedCommands }, // TODO: divide by guild
     )
     // eslint-disable-next-line no-console
     .then(() => console.log("Successfully registered application commands."))
@@ -27,16 +27,16 @@ if (process.env.NODE_ENV !== "production") {
 } else {
   for (const guildsCommands of commandsPerGuild()) {
     const serializedCommands = guildsCommands.commands.map((cmd) =>
-      cmd.builder.toJSON()
+      cmd.builder.toJSON(),
     );
 
     rest
       .put(
         Routes.applicationGuildCommands(
           process.env["BOT_ID"],
-          guildsCommands.guildId
+          guildsCommands.guildId,
         ),
-        { body: serializedCommands }
+        { body: serializedCommands },
       )
       .catch(console.error);
   }

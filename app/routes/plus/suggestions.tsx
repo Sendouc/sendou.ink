@@ -28,7 +28,7 @@ import {
 } from "~/permissions";
 import { parseRequestFormData, validate } from "~/utils/remix";
 import { makeTitle, discordFullName } from "~/utils/strings";
-import { actualNumber } from "~/utils/zod";
+import { _action, actualNumber } from "~/utils/zod";
 import { userPage } from "~/utils/urls";
 import { RelativeTime } from "~/components/RelativeTime";
 import { databaseTimestampToDate } from "~/utils/dates";
@@ -48,17 +48,17 @@ export const meta: V2_MetaFunction = () => {
 
 const suggestionActionSchema = z.union([
   z.object({
-    _action: z.literal("DELETE_COMMENT"),
+    _action: _action("DELETE_COMMENT"),
     suggestionId: z.preprocess(actualNumber, z.number()),
   }),
   z.object({
-    _action: z.literal("DELETE_SUGGESTION_OF_THEMSELVES"),
+    _action: _action("DELETE_SUGGESTION_OF_THEMSELVES"),
     tier: z.preprocess(
       actualNumber,
       z
         .number()
         .min(Math.min(...PLUS_TIERS))
-        .max(Math.max(...PLUS_TIERS))
+        .max(Math.max(...PLUS_TIERS)),
     ),
   }),
 ]);
@@ -83,10 +83,10 @@ export const action: ActionFunction = async ({ request }) => {
             tier: Number(tier),
             suggestedUser,
             suggestions,
-          }))
+          })),
         )
         .find(({ suggestions }) =>
-          suggestions.some((s) => s.id === data.suggestionId)
+          suggestions.some((s) => s.id === data.suggestionId),
         );
 
       validate(suggestions);
@@ -95,11 +95,11 @@ export const action: ActionFunction = async ({ request }) => {
         canDeleteComment({
           user,
           author: flattenedSuggestedUserInfo.suggestions.find(
-            (s) => s.id === data.suggestionId
+            (s) => s.id === data.suggestionId,
           )!.author,
           suggestionId: data.suggestionId,
           suggestions,
-        })
+        }),
       );
 
       const suggestionHasComments =
@@ -254,7 +254,7 @@ export default function PlusSuggestionsPage() {
 
 function searchParamsToLegalTier(
   searchParams: URLSearchParams,
-  suggestions?: plusSuggestions.FindVisibleForUser
+  suggestions?: plusSuggestions.FindVisibleForUser,
 ) {
   const tierFromSearchParams = searchParams.get("tier");
   if (
@@ -269,7 +269,7 @@ function searchParamsToLegalTier(
 }
 
 function tierVisibleInitialState(
-  suggestions?: plusSuggestions.FindVisibleForUser
+  suggestions?: plusSuggestions.FindVisibleForUser,
 ) {
   if (!suggestions || Object.keys(suggestions).length === 0) return;
   return String(Math.min(...Object.keys(suggestions).map(Number)));
@@ -390,7 +390,7 @@ export function PlusSuggestionComments({
                 <span className="plus__comment-time">
                   <RelativeTime
                     timestamp={databaseTimestampToDate(
-                      suggestion.createdAt
+                      suggestion.createdAt,
                     ).getTime()}
                   >
                     {suggestion.createdAtRelative}

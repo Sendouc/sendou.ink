@@ -14,8 +14,6 @@ module.exports = {
     "plugin:react/recommended",
     "plugin:react/jsx-runtime",
     "plugin:react-hooks/recommended",
-    "@remix-run/eslint-config",
-    "@remix-run/eslint-config/node",
   ],
   rules: {
     "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
@@ -32,6 +30,7 @@ module.exports = {
     "@typescript-eslint/no-non-null-assertion": 0,
     "@typescript-eslint/no-explicit-any": 0,
     "@typescript-eslint/unbound-method": 0,
+    "@typescript-eslint/consistent-type-imports": "warn",
     "react/prop-types": 0,
     "@typescript-eslint/no-restricted-imports": [
       "error",
@@ -42,13 +41,6 @@ module.exports = {
             importNames: ["useTranslation"],
             message:
               "Please import useTranslation from '~/hooks/useTranslation' instead.",
-          },
-        ],
-        patterns: [
-          {
-            group: ["~/features/*/*"],
-            message:
-              "Please import from '~/features' instead. Export from index.ts what should be exposed. See README for more information.",
           },
         ],
       },

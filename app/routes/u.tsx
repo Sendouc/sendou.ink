@@ -1,6 +1,6 @@
-import type { LinksFunction, LoaderArgs } from "@remix-run/node";
+import type { LinksFunction, LoaderArgs, SerializeFrom } from "@remix-run/node";
 import { Main } from "~/components/Main";
-import type { SendouRouteHandle } from "~/utils/remix";
+import { parseSearchParams, type SendouRouteHandle } from "~/utils/remix";
 import { navIconUrl, userPage, USER_SEARCH_PAGE } from "~/utils/urls";
 import styles from "~/styles/u.css";
 import { Input } from "~/components/Input";
@@ -12,6 +12,8 @@ import * as React from "react";
 import { Avatar } from "~/components/Avatar";
 import { discordFullName } from "~/utils/strings";
 import { useTranslation } from "~/hooks/useTranslation";
+import { z } from "zod";
+import { queryToUserIdentifier } from "~/utils/users";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -26,19 +28,35 @@ export const handle: SendouRouteHandle = {
   }),
 };
 
+export type UserSearchLoaderData = SerializeFrom<typeof loader>;
+
+const searchParamsSchema = z.object({
+  q: z.string().max(100).default(""),
+  limit: z.coerce.number().int().min(1).max(25).default(25),
+});
+
 export const loader = ({ request }: LoaderArgs) => {
-  const url = new URL(request.url);
-  const input = url.searchParams.get("q");
+  const { q, limit } = parseSearchParams({
+    request,
+    schema: searchParamsSchema,
+  });
 
-  if (!input) return null;
+  if (!q) return null;
 
-  return { users: db.users.search(input), input };
+  const identifier = queryToUserIdentifier(q);
+
+  return {
+    users: identifier
+      ? db.users.searchExact(identifier)
+      : db.users.search({ input: q, limit }),
+    input: q,
+  };
 };
 
 export default function UserSearchPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [inputValue, setInputValue] = React.useState(
-    searchParams.get("q") ?? ""
+    searchParams.get("q") ?? "",
   );
   useDebounce(
     () => {
@@ -47,7 +65,7 @@ export default function UserSearchPage() {
       setSearchParams({ q: inputValue });
     },
     1500,
-    [inputValue]
+    [inputValue],
   );
 
   return (

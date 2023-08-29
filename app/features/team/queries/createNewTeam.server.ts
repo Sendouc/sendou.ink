@@ -37,5 +37,5 @@ export const createNewTeam = sql.transaction(
       userId: captainId,
       isOwner: 1,
     });
-  }
+  },
 );

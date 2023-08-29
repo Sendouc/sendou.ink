@@ -10,18 +10,18 @@ import { getAbilityChunksMapAsArray } from "./abilityChunksCalc";
 //  if the abilityChunksArray contains all elements from the expected output.
 function validateAbilityChunksArray(
   abilityChunksArray: [AbilityWithUnknown, number][],
-  expectedOutput: (string | number)[][]
+  expectedOutput: (string | number)[][],
 ) {
   for (const output of expectedOutput) {
     const typedOutput = output as [AbilityWithUnknown, number];
     const isFoundInAbilityChunksArray = abilityChunksArray.filter(
-      (result) => JSON.stringify(result) === JSON.stringify(typedOutput)
+      (result) => JSON.stringify(result) === JSON.stringify(typedOutput),
     ).length;
 
     const errorString = `${JSON.stringify(
-      typedOutput
+      typedOutput,
     )} was not found in the actual output.\nExpected output: ${JSON.stringify(
-      expectedOutput
+      expectedOutput,
     )}\nActual Output: ${JSON.stringify(abilityChunksArray)}`;
 
     assert.ok(isFoundInAbilityChunksArray, errorString);
@@ -51,10 +51,10 @@ GetAbilityChunksMapAsArray(
     ] as unknown as BuildAbilitiesTupleWithUnknown;
 
     const abilityChunksArray = getAbilityChunksMapAsArray(
-      buildWithOnlyAbilityDoubler
+      buildWithOnlyAbilityDoubler,
     );
     assert.equal(abilityChunksArray, [], "Ability chunks array is not empty.");
-  }
+  },
 );
 
 GetAbilityChunksMapAsArray(
@@ -73,7 +73,7 @@ GetAbilityChunksMapAsArray(
 
     const abilityChunksArray = getAbilityChunksMapAsArray(build);
     validateAbilityChunksArray(abilityChunksArray, expectedOutput);
-  }
+  },
 );
 
 GetAbilityChunksMapAsArray(
@@ -93,7 +93,7 @@ GetAbilityChunksMapAsArray(
 
     const abilityChunksArray = getAbilityChunksMapAsArray(build);
     validateAbilityChunksArray(abilityChunksArray, expectedOutput);
-  }
+  },
 );
 
 GetAbilityChunksMapAsArray(
@@ -120,7 +120,7 @@ GetAbilityChunksMapAsArray(
 
     const abilityChunksArray = getAbilityChunksMapAsArray(slayerBuild);
     validateAbilityChunksArray(abilityChunksArray, expectedOutput);
-  }
+  },
 );
 
 GetAbilityChunksMapAsArray(
@@ -145,7 +145,7 @@ GetAbilityChunksMapAsArray(
 
     const abilityChunksArray = getAbilityChunksMapAsArray(splatlingBuild);
     validateAbilityChunksArray(abilityChunksArray, expectedOutput);
-  }
+  },
 );
 
 GetAbilityChunksMapAsArray(
@@ -164,7 +164,7 @@ GetAbilityChunksMapAsArray(
 
     const abilityChunksArray = getAbilityChunksMapAsArray(build);
     validateAbilityChunksArray(abilityChunksArray, expectedOutput);
-  }
+  },
 );
 
 GetAbilityChunksMapAsArray.run();

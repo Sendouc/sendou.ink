@@ -16,7 +16,7 @@ export const patronResponseSchema = z.object({
           }),
         }),
       }),
-    })
+    }),
   ),
   included: z.array(
     z.discriminatedUnion("type", [
@@ -34,7 +34,7 @@ export const patronResponseSchema = z.object({
       z.object({ type: z.literal("reward") }),
       z.object({ type: z.literal("goal") }),
       z.object({ type: z.literal("campaign") }),
-    ])
+    ]),
   ),
   links: z.object({ next: z.string().nullish() }),
 });

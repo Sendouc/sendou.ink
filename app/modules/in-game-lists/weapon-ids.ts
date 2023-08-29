@@ -142,7 +142,7 @@ export const specialWeaponIds = [
 export const nonDamagingSpecialWeaponIds = [BIG_BUBBLER_ID, TACTICOOLER_ID];
 
 export const exampleMainWeaponIdWithSpecialWeaponId = (
-  specialWeaponId: SpecialWeaponId
+  specialWeaponId: SpecialWeaponId,
 ): MainWeaponId => {
   switch (specialWeaponId) {
     case TRIZOOKA_ID:

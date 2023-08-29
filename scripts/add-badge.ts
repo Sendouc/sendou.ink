@@ -11,7 +11,7 @@ invariant(displayName, "display name of badge is required (argument 2)");
 invariant(code === code.toLocaleLowerCase(), "code of badge must be lowercase");
 invariant(
   displayName !== displayName.toLocaleLowerCase(),
-  "displayName of badge must have at least one uppercase letter"
+  "displayName of badge must have at least one uppercase letter",
 );
 
 sql

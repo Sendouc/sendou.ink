@@ -17,7 +17,7 @@ i18nLoader()
       document,
       <I18nextProvider i18n={i18next}>
         <RemixBrowser />
-      </I18nextProvider>
-    )
+      </I18nextProvider>,
+    ),
   )
   .catch(console.error);

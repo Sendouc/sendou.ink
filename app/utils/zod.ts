@@ -17,17 +17,17 @@ const abilityNameToType = (val: string) =>
 export const headMainSlotAbility = z
   .string()
   .refine((val) =>
-    ["STACKABLE", "HEAD_MAIN_ONLY"].includes(abilityNameToType(val) as any)
+    ["STACKABLE", "HEAD_MAIN_ONLY"].includes(abilityNameToType(val) as any),
   );
 export const clothesMainSlotAbility = z
   .string()
   .refine((val) =>
-    ["STACKABLE", "CLOTHES_MAIN_ONLY"].includes(abilityNameToType(val) as any)
+    ["STACKABLE", "CLOTHES_MAIN_ONLY"].includes(abilityNameToType(val) as any),
   );
 export const shoesMainSlotAbility = z
   .string()
   .refine((val) =>
-    ["STACKABLE", "SHOES_MAIN_ONLY"].includes(abilityNameToType(val) as any)
+    ["STACKABLE", "SHOES_MAIN_ONLY"].includes(abilityNameToType(val) as any),
   );
 export const stackableAbility = z
   .string()
@@ -69,8 +69,8 @@ export const weaponSplId = z.preprocess(
   z
     .number()
     .refine((val) =>
-      mainWeaponIds.includes(val as (typeof mainWeaponIds)[number])
-    )
+      mainWeaponIds.includes(val as (typeof mainWeaponIds)[number]),
+    ),
 );
 
 export const modeShort = z
@@ -81,7 +81,7 @@ export const stageId = z.preprocess(
   actualNumber,
   z
     .number()
-    .refine((val) => stageIds.includes(val as (typeof stageIds)[number]))
+    .refine((val) => stageIds.includes(val as (typeof stageIds)[number])),
 );
 
 export function processMany(
@@ -185,4 +185,20 @@ export function checkboxValueToDbBoolean(value: unknown) {
   if (checkboxValueToBoolean(value)) return 1;
 
   return 0;
+}
+
+export const _action = <T extends z.Primitive>(value: T) =>
+  z.preprocess(deduplicate, z.literal(value));
+
+// Fix bug at least in Safari 15 where SubmitButton value might get sent twice
+export function deduplicate(value: unknown) {
+  if (Array.isArray(value)) {
+    const [one, two, ...rest] = value;
+    if (rest.length > 0) return value;
+    if (one !== two) return value;
+
+    return one;
+  }
+
+  return value;
 }

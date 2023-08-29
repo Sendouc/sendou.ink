@@ -65,7 +65,7 @@ export default function BuildsPage() {
             {(category.weaponIds as readonly MainWeaponId[])
               .filter(weaponIdIsNotAlt)
               .sort((a, b) =>
-                t(`weapons:MAIN_${a}`).localeCompare(t(`weapons:MAIN_${b}`))
+                t(`weapons:MAIN_${a}`).localeCompare(t(`weapons:MAIN_${b}`)),
               )
               .map((weaponId) => (
                 <Link

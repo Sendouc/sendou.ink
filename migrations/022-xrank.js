@@ -19,11 +19,11 @@ module.exports.up = function (db) {
     foreign key ("playerId") references "SplatoonPlayer"("id") on delete cascade,
     unique("rank", "month", "year", "region", "mode") on conflict rollback
   ) strict
-  `
+  `,
   ).run();
 
   db.prepare(
-    `create index splatoon_placement_player_id on "XRankPlacement"("playerId")`
+    `create index splatoon_placement_player_id on "XRankPlacement"("playerId")`,
   ).run();
 
   db.prepare(
@@ -34,10 +34,10 @@ module.exports.up = function (db) {
     "splId" text unique not null,
     foreign key ("userId") references "User"("id") on delete cascade
   ) strict
-  `
+  `,
   ).run();
 
   db.prepare(
-    `create index splatoon_player_user_id on "SplatoonPlayer"("userId")`
+    `create index splatoon_player_user_id on "SplatoonPlayer"("userId")`,
   ).run();
 };

@@ -111,7 +111,12 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
         <div className="build__date-author-row">
           {owner && (
             <>
-              <Link to={userBuildsPage(owner)}>{discordFullName(owner)}</Link>
+              <Link
+                to={userBuildsPage(owner)}
+                className="build__date-author-row__owner"
+              >
+                {discordFullName(owner)}
+              </Link>
               <div>•</div>
             </>
           )}
@@ -128,15 +133,17 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
                 {t("common:build.private")}
               </div>
             ) : null}
-            <time className={clsx({ invisible: !isMounted })}>
+            <time
+              className={clsx("whitespace-nowrap", { invisible: !isMounted })}
+            >
               {isMounted
                 ? databaseTimestampToDate(updatedAt).toLocaleDateString(
                     i18n.language,
                     {
                       day: "numeric",
-                      month: "numeric",
+                      month: "long",
                       year: "numeric",
-                    }
+                    },
                   )
                 : "t"}
             </time>
@@ -267,7 +274,7 @@ function AbilitiesRowWithGear({
 }) {
   const { t } = useTranslation(["gear"]);
   const translatedGearName = t(
-    `gear:${gearTypeToInitial(gearType)}_${gearId}` as any
+    `gear:${gearTypeToInitial(gearType)}_${gearId}` as any,
   );
 
   return (

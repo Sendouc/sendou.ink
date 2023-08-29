@@ -11,7 +11,7 @@ export const authenticator = new Authenticator<LoggedInUser>(
   authSessionStorage,
   {
     sessionKey: SESSION_KEY,
-  }
+  },
 );
 
 authenticator.use(new DiscordStrategy());

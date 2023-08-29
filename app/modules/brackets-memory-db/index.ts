@@ -166,7 +166,7 @@ export class InMemoryDatabase implements CrudInterface {
   update<T>(
     table: Table,
     arg: number | Partial<T>,
-    value?: Partial<T>
+    value?: Partial<T>,
   ): boolean {
     if (typeof arg === "number") {
       try {
@@ -178,7 +178,6 @@ export class InMemoryDatabase implements CrudInterface {
       }
     }
 
-    // @ts-expect-error imported
     const values = this.data[table].filter(this.makeFilter(arg));
     if (!values) {
       return false;

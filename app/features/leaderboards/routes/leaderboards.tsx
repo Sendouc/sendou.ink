@@ -7,20 +7,18 @@ import type {
 import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
 import { Avatar } from "~/components/Avatar";
 import { Main } from "~/components/Main";
-import { discordFullName, makeTitle } from "~/utils/strings";
+import { makeTitle } from "~/utils/strings";
 import {
   LEADERBOARDS_PAGE,
   navIconUrl,
   teamPage,
   topSearchPlayerPage,
   userPage,
+  userSeasonsPage,
   userSubmittedImage,
 } from "~/utils/urls";
 import styles from "../../top-search/top-search.css";
-import {
-  userSPLeaderboard,
-  type UserSPLeaderboardItem,
-} from "../queries/userSPLeaderboard.server";
+import { userSPLeaderboard } from "../queries/userSPLeaderboard.server";
 import type { SendouRouteHandle } from "~/utils/remix";
 import {
   type TeamSPLeaderboardItem,
@@ -36,13 +34,25 @@ import {
   modeXPLeaderboard,
   weaponXPLeaderboard,
 } from "../queries/XPLeaderboard.server";
-import { WeaponImage } from "~/components/Image";
+import { TierImage, WeaponImage } from "~/components/Image";
 import {
   weaponCategories,
   type MainWeaponId,
   type RankedModeShort,
 } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
+import { allSeasons } from "~/features/mmr/season";
+import {
+  addPlacementRank,
+  addTiers,
+  addWeapons,
+  filterByWeaponCategory,
+  oneEntryPerUser,
+} from "../core/leaderboards.server";
+import { seasonPopularUsersWeapon } from "../queries/seasonPopularUsersWeapon.server";
+import { cachified } from "cachified";
+import { cache, ttl } from "~/utils/cache.server";
+import { HALF_HOUR_IN_MS } from "~/constants";
 
 export const handle: SendouRouteHandle = {
   i18n: ["vods"],
@@ -77,16 +87,59 @@ const TYPE_SEARCH_PARAM_KEY = "type";
 export const loader = async ({ request }: LoaderArgs) => {
   const t = await i18next.getFixedT(request);
   const unvalidatedType = new URL(request.url).searchParams.get(
-    TYPE_SEARCH_PARAM_KEY
+    TYPE_SEARCH_PARAM_KEY,
   );
 
   const type =
     LEADERBOARD_TYPES.find((type) => type === unvalidatedType) ??
     LEADERBOARD_TYPES[0];
 
+  const userLeaderboard = type.includes("USER")
+    ? await cachified({
+        // TODO: add season here
+        key: `user-leaderboard-season-${0}`,
+        cache,
+        ttl: ttl(HALF_HOUR_IN_MS),
+        // eslint-disable-next-line @typescript-eslint/require-await
+        async getFreshValue() {
+          const leaderboard = userSPLeaderboard(0);
+          // TODO: dynamic season
+          const withTiers = addTiers(leaderboard, 0);
+
+          return addWeapons(withTiers, seasonPopularUsersWeapon(0));
+        },
+      })
+    : null;
+
+  const teamLeaderboard =
+    type === "TEAM"
+      ? await cachified({
+          // TODO: add season here
+          key: `team-leaderboard-season-${0}`,
+          cache,
+          ttl: ttl(HALF_HOUR_IN_MS),
+          // eslint-disable-next-line @typescript-eslint/require-await
+          async getFreshValue() {
+            const leaderboard = teamSPLeaderboard(0);
+            const filteredByUser = oneEntryPerUser(leaderboard);
+
+            return addPlacementRank(filteredByUser);
+          },
+        })
+      : null;
+
+  const filteredLeaderboard =
+    userLeaderboard && type !== "USER"
+      ? filterByWeaponCategory(
+          userLeaderboard,
+          type.split("-")[1] as (typeof weaponCategories)[number]["name"],
+        )
+      : userLeaderboard;
+
+  // TODO: season selection logic
   return {
-    userLeaderboard: type === "USER" ? userSPLeaderboard() : null,
-    teamLeaderboard: type === "TEAM" ? teamSPLeaderboard() : null,
+    userLeaderboard: filteredLeaderboard ?? userLeaderboard,
+    teamLeaderboard,
     xpLeaderboard:
       type === "XP-ALL"
         ? allXPLeaderboard()
@@ -113,17 +166,29 @@ export default function LeaderboardsPage() {
           setSearchParams({ [TYPE_SEARCH_PARAM_KEY]: e.target.value })
         }
       >
-        <optgroup label="SP">
-          {LEADERBOARD_TYPES.filter((type) => !type.includes("XP")).map(
-            (type) => {
-              return (
-                <option key={type} value={type}>
-                  {t(`common:leaderboard.type.${type as "USER" | "TEAM"}`)}
-                </option>
-              );
-            }
-          )}
-        </optgroup>
+        {allSeasons(new Date()).map((season) => {
+          return (
+            <optgroup label={`SP - Season ${season}`} key={season}>
+              {LEADERBOARD_TYPES.filter((type) => !type.includes("XP")).map(
+                (type) => {
+                  const userOrTeam = type.includes("USER") ? "USER" : "TEAM";
+                  const category = weaponCategories.find((c) =>
+                    type.includes(c.name),
+                  )?.name;
+
+                  return (
+                    <option key={type} value={type}>
+                      {t(`common:leaderboard.type.${userOrTeam}`)}
+                      {category
+                        ? ` (${t(`common:weapon.category.${category}`)})`
+                        : ""}
+                    </option>
+                  );
+                },
+              )}
+            </optgroup>
+          );
+        })}
         <optgroup label="XP">
           <option value="XP-ALL">{t(`common:leaderboard.type.XP-ALL`)}</option>
           {rankedModesShort.map((mode) => {
@@ -152,37 +217,75 @@ export default function LeaderboardsPage() {
         })}
       </select>
       {data.userLeaderboard ? (
-        <PlayersTable entries={data.userLeaderboard} />
+        <PlayersTable
+          entries={data.userLeaderboard}
+          showTiers={
+            !searchParams.get(TYPE_SEARCH_PARAM_KEY) ||
+            searchParams.get(TYPE_SEARCH_PARAM_KEY) === "USER"
+          }
+        />
       ) : null}
       {data.teamLeaderboard ? (
         <TeamTable entries={data.teamLeaderboard} />
       ) : null}
       {data.xpLeaderboard ? <XPTable entries={data.xpLeaderboard} /> : null}
+      {/* TODO: only when viewing current season */}
+      {!data.xpLeaderboard ? (
+        <div className="text-xs text-lighter">
+          Leaderboard is updated once every 30 minutes.
+        </div>
+      ) : null}
     </Main>
   );
 }
 
-function PlayersTable({ entries }: { entries: UserSPLeaderboardItem[] }) {
+function PlayersTable({
+  entries,
+  showTiers,
+}: {
+  entries: NonNullable<SerializeFrom<typeof loader>["userLeaderboard"]>;
+  showTiers?: boolean;
+}) {
   return (
     <div className="placements__table">
       {entries.map((entry) => {
         return (
-          <Link
-            to={userPage(entry)}
-            key={entry.entryId}
-            className="placements__table__row"
-          >
-            <div className="placements__table__inner-row">
-              <div className="placements__table__rank">
-                {entry.placementRank}
+          <React.Fragment key={entry.entryId}>
+            {entry.tier && showTiers ? (
+              <div className="placements__tier-header">
+                <TierImage tier={entry.tier} width={32} />
+                {entry.tier.name}
+                {entry.tier.isPlus ? "+" : ""}
               </div>
-              <div>
-                <Avatar size="xxs" user={entry} />
+            ) : null}
+            {/* TODO: dynamic season */}
+            <Link
+              to={userSeasonsPage({ user: entry, season: 0 })}
+              className="placements__table__row"
+            >
+              <div className="placements__table__inner-row">
+                <div className="placements__table__rank">
+                  {entry.placementRank}
+                </div>
+                <div>
+                  <Avatar size="xxs" user={entry} />
+                </div>
+                {entry.weaponSplId ? (
+                  <WeaponImage
+                    className="placements__table__weapon"
+                    variant="build"
+                    weaponSplId={entry.weaponSplId}
+                    width={32}
+                    height={32}
+                  />
+                ) : null}
+                <div className="placements__table__name">
+                  {entry.discordName}
+                </div>
+                <div className="placements__table__power">{entry.power}</div>
               </div>
-              <div>{discordFullName(entry)}</div>
-              <div className="placements__table__power">{entry.power}</div>
-            </div>
-          </Link>
+            </Link>
+          </React.Fragment>
         );
       })}
     </div>

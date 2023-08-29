@@ -13,7 +13,7 @@ import * as React from "react";
 import { useFetcher } from "react-router-dom";
 import invariant from "tiny-invariant";
 import { Button } from "~/components/Button";
-import { Combobox, UserCombobox } from "~/components/Combobox";
+import { Combobox } from "~/components/Combobox";
 import { FormMessage } from "~/components/FormMessage";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
@@ -41,6 +41,7 @@ import { addNewArt, editArt } from "../queries/addNewArt.server";
 import { findArtById } from "../queries/findArtById.server";
 import { previewUrl } from "../art-utils";
 import { allArtTags } from "../queries/allArtTags.server";
+import { UserSearch } from "~/components/UserSearch";
 
 export const handle: SendouRouteHandle = {
   i18n: ["art"],
@@ -66,7 +67,7 @@ export const action: ActionFunction = async ({ request }) => {
     validate(
       existingArt?.authorId === user.id,
       "Insufficient permissions",
-      401
+      401,
     );
 
     const data = await parseRequestFormData({
@@ -85,7 +86,7 @@ export const action: ActionFunction = async ({ request }) => {
   } else {
     const uploadHandler = composeUploadHandlers(
       s3UploadHandler(`art-${nanoid()}-${Date.now()}`),
-      createMemoryUploadHandler()
+      createMemoryUploadHandler(),
     );
     const formData = await parseMultipartFormData(request, uploadHandler);
     const imgSrc = formData.get("img") as string | null;
@@ -118,7 +119,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   validate(user.isArtist, "Lacking artist role", 403);
 
   const artIdRaw = new URL(request.url).searchParams.get(
-    NEW_ART_EXISTING_SEARCH_PARAM_KEY
+    NEW_ART_EXISTING_SEARCH_PARAM_KEY,
   );
   if (!artIdRaw) return { art: null, tags: allArtTags() };
   const artId = Number(artIdRaw);
@@ -275,13 +276,13 @@ function Tags() {
   const data = useLoaderData<typeof loader>();
   const [creationMode, setCreationMode] = React.useState(false);
   const [tags, setTags] = React.useState<{ name?: string; id?: number }[]>(
-    data.art?.tags ?? []
+    data.art?.tags ?? [],
   );
   const [newTagValue, setNewTagValue] = React.useState("");
 
   const existingTags = data.tags;
   const unselectedTags = existingTags.filter(
-    (t) => !tags.some((tag) => tag.id === t.id)
+    (t) => !tags.some((tag) => tag.id === t.id),
   );
 
   const handleAddNewTag = () => {
@@ -299,7 +300,7 @@ function Tags() {
     }
 
     const alreadyCreatedTag = existingTags.find(
-      (t) => t.name === normalizedNewTagValue
+      (t) => t.name === normalizedNewTagValue,
     );
 
     if (alreadyCreatedTag) {
@@ -403,7 +404,7 @@ function LinkedUsers() {
   >(
     (data.art?.linkedUsers ?? []).length > 0
       ? data.art!.linkedUsers.map((userId) => ({ userId, inputId: nanoid() }))
-      : [{ inputId: nanoid() }]
+      : [{ inputId: nanoid() }],
   );
 
   return (
@@ -413,18 +414,17 @@ function LinkedUsers() {
         type="hidden"
         name="linkedUsers"
         value={JSON.stringify(
-          users.filter((u) => u.userId).map((u) => u.userId)
+          users.filter((u) => u.userId).map((u) => u.userId),
         )}
       />
       {users.map(({ inputId, userId }, i) => {
         return (
           <div key={inputId} className="stack horizontal sm mb-2 items-center">
-            <UserCombobox
+            <UserSearch
               inputName="user"
-              onChange={(event) => {
-                if (!event) return;
+              onChange={(newUser) => {
                 const newUsers = clone(users);
-                newUsers[i] = { ...newUsers[i], userId: Number(event.value) };
+                newUsers[i] = { ...newUsers[i], userId: newUser.id };
 
                 setUsers(newUsers);
               }}

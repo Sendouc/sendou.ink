@@ -24,7 +24,7 @@ const reportResult = async (
   page: Page,
   amountOfMapsToReport: 1 | 2 | 4,
   sidesWithMoreThanFourPlayers: ("first" | "last")[] = ["last"],
-  winner: 1 | 2 = 1
+  winner: 1 | 2 = 1,
 ) => {
   if (sidesWithMoreThanFourPlayers.includes("first")) {
     await page.getByTestId("player-checkbox-0").first().click();
@@ -140,7 +140,7 @@ test.describe("Tournament bracket", () => {
     await reportResult(page, 2, ["last"], 2);
     await backToBracket(page);
     await expect(
-      page.locator("[data-round-id='5'] [data-participant-id='102']")
+      page.locator("[data-round-id='5'] [data-participant-id='102']"),
     ).toBeVisible();
   });
 
@@ -161,11 +161,11 @@ test.describe("Tournament bracket", () => {
     await page.getByTestId("copy-invite-link-button").click();
 
     const inviteLinkProd: string = await page.evaluate(
-      "navigator.clipboard.readText()"
+      "navigator.clipboard.readText()",
     );
     const inviteLink = inviteLinkProd.replace(
       "https://sendou.ink",
-      "http://localhost:5800"
+      "http://localhost:5800",
     );
 
     await impersonate(page, NZAP_TEST_ID);

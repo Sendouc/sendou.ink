@@ -69,9 +69,9 @@ export const action: ActionFunction = async ({ request }) => {
 
   validate(
     teams.every((team) =>
-      team.members.every((member) => member.id !== user.id)
+      team.members.every((member) => member.id !== user.id),
     ),
-    "Already in a team"
+    "Already in a team",
   );
 
   // two teams can't have same customUrl
@@ -125,10 +125,10 @@ export const loader = async ({ request }: LoaderArgs) => {
 
     // and as tiebreaker teams with a higher plus server tier member first
     const lowestATeamPlusTier = Math.min(
-      ...teamA.members.map((m) => m.plusTier ?? Infinity)
+      ...teamA.members.map((m) => m.plusTier ?? Infinity),
     );
     const lowestBTeamPlusTier = Math.min(
-      ...teamB.members.map((m) => m.plusTier ?? Infinity)
+      ...teamB.members.map((m) => m.plusTier ?? Infinity),
     );
 
     if (lowestATeamPlusTier > lowestBTeamPlusTier) {
@@ -165,7 +165,7 @@ export default function TeamSearchPage() {
     if (team.name.toLowerCase().includes(lowerCaseInput)) return true;
     if (
       team.members.some((m) =>
-        m.discordName.toLowerCase().includes(lowerCaseInput)
+        m.discordName.toLowerCase().includes(lowerCaseInput),
       )
     ) {
       return true;
@@ -241,7 +241,7 @@ export default function TeamSearchPage() {
                   ? team.members[0]!.discordName
                   : joinListToNaturalString(
                       team.members.map((member) => member.discordName),
-                      "&"
+                      "&",
                     )}
               </div>
             </div>

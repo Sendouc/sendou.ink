@@ -14,6 +14,6 @@ module.exports.up = function (db) {
       foreign key ("tournamentId") references "Tournament"("id") on delete cascade,
       unique("userId", "tournamentId") on conflict rollback
     ) strict
-  `
+  `,
   ).run();
 };

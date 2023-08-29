@@ -26,7 +26,7 @@ ApplySpecialEffects(
 
     assert.equal(aps.size, 7);
     assert.equal(aps.get("SPU"), 10);
-  }
+  },
 );
 
 ApplySpecialEffects("Does not boost ability beyond 57", () => {
@@ -59,7 +59,7 @@ ApplySpecialEffects(
     });
 
     assert.equal(aps.get("SSU"), 30);
-  }
+  },
 );
 
 ApplySpecialEffects("Applies many effects", () => {

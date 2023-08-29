@@ -63,13 +63,13 @@ const userEditActionSchema = z
       z
         .string()
         .refine(
-          (val) => !val || Object.keys(countries).some((code) => val === code)
+          (val) => !val || Object.keys(countries).some((code) => val === code),
         )
-        .nullable()
+        .nullable(),
     ),
     bio: z.preprocess(
       falsyToNull,
-      z.string().max(USER.BIO_MAX_LENGTH).nullable()
+      z.string().max(USER.BIO_MAX_LENGTH).nullable(),
     ),
     customUrl: z.preprocess(
       falsyToNull,
@@ -83,7 +83,7 @@ const userEditActionSchema = z
           message: "forms.errors.invalidCustomUrl.strangeCharacter",
         })
         .transform((val) => val?.toLowerCase())
-        .nullable()
+        .nullable(),
     ),
     stickSens: z.preprocess(
       processMany(actualNumber, undefinedToNull),
@@ -92,7 +92,7 @@ const userEditActionSchema = z
         .min(-50)
         .max(50)
         .refine((val) => val % 5 === 0)
-        .nullable()
+        .nullable(),
     ),
     motionSens: z.preprocess(
       processMany(actualNumber, undefinedToNull),
@@ -101,18 +101,18 @@ const userEditActionSchema = z
         .min(-50)
         .max(50)
         .refine((val) => val % 5 === 0)
-        .nullable()
+        .nullable(),
     ),
     inGameNameText: z.preprocess(
       falsyToNull,
-      z.string().max(USER.IN_GAME_NAME_TEXT_MAX_LENGTH).nullable()
+      z.string().max(USER.IN_GAME_NAME_TEXT_MAX_LENGTH).nullable(),
     ),
     inGameNameDiscriminator: z.preprocess(
       falsyToNull,
       z
         .string()
         .refine((val) => /^[0-9a-z]{4,5}$/.test(val))
-        .nullable()
+        .nullable(),
     ),
     css: z.preprocess(falsyToNull, z.string().refine(jsonParseable).nullable()),
     weapons: z.preprocess(
@@ -122,19 +122,19 @@ const userEditActionSchema = z
           z.object({
             weaponSplId,
             isFavorite: dbBoolean,
-          })
+          }),
         )
-        .max(USER.WEAPON_POOL_MAX_SIZE)
+        .max(USER.WEAPON_POOL_MAX_SIZE),
     ),
     favoriteBadgeId: z.preprocess(
       processMany(actualNumber, undefinedToNull),
-      id.nullable()
+      id.nullable(),
     ),
     showDiscordUniqueName: z.preprocess(checkboxValueToDbBoolean, dbBoolean),
     commissionsOpen: z.preprocess(checkboxValueToDbBoolean, dbBoolean),
     commissionText: z.preprocess(
       falsyToNull,
-      z.string().max(USER.COMMISSION_TEXT_MAX_LENGTH).nullable()
+      z.string().max(USER.COMMISSION_TEXT_MAX_LENGTH).nullable(),
     ),
   })
   .refine(
@@ -147,7 +147,7 @@ const userEditActionSchema = z
     },
     {
       message: "forms.errors.invalidSens",
-    }
+    },
   );
 
 export const action: ActionFunction = async ({ request }) => {
@@ -468,8 +468,8 @@ function WeaponPoolSelect({
                               ...weapon,
                               isFavorite: weapon.isFavorite === 1 ? 0 : 1,
                             }
-                          : w
-                      )
+                          : w,
+                      ),
                     )
                   }
                 />
@@ -480,8 +480,8 @@ function WeaponPoolSelect({
                   onClick={() =>
                     setWeapons(
                       weapons.filter(
-                        (w) => w.weaponSplId !== weapon.weaponSplId
-                      )
+                        (w) => w.weaponSplId !== weapon.weaponSplId,
+                      ),
                     )
                   }
                   testId={`delete-weapon-${weapon.weaponSplId}`}
@@ -533,7 +533,7 @@ function FavBadgeSelect({
 
   // user's current favorite badge is the initial value
   const initialBadge = parentRouteData.badges.find(
-    (badge) => badge.id === data.favoriteBadgeId
+    (badge) => badge.id === data.favoriteBadgeId,
   );
 
   return (
@@ -566,7 +566,7 @@ function ShowUniqueDiscordNameToggle({
   const { t } = useTranslation(["user"]);
   const data = useLoaderData<typeof loader>();
   const [checked, setChecked] = React.useState(
-    Boolean(parentRouteData.showDiscordUniqueName)
+    Boolean(parentRouteData.showDiscordUniqueName),
   );
 
   return (
@@ -595,7 +595,7 @@ function CommissionsOpenToggle({
 }) {
   const { t } = useTranslation(["user"]);
   const [checked, setChecked] = React.useState(
-    Boolean(parentRouteData.commissionsOpen)
+    Boolean(parentRouteData.commissionsOpen),
   );
 
   return (

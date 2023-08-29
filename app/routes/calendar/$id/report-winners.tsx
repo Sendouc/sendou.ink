@@ -9,11 +9,11 @@ import clsx from "clsx";
 import * as React from "react";
 import { z } from "zod";
 import { Button } from "~/components/Button";
-import { UserCombobox } from "~/components/Combobox";
 import { FormErrors } from "~/components/FormErrors";
 import { FormMessage } from "~/components/FormMessage";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
+import { UserSearch } from "~/components/UserSearch";
 import { CALENDAR_EVENT_RESULT } from "~/constants";
 import { db } from "~/db";
 import type { User } from "~/db/types";
@@ -35,21 +35,21 @@ const playersSchema = z
     z.union([
       z.string().min(1).max(CALENDAR_EVENT_RESULT.MAX_PLAYER_NAME_LENGTH),
       z.object({ id }),
-    ])
+    ]),
   )
   .nonempty({ message: "forms.errors.emptyTeam" })
   .max(CALENDAR_EVENT_RESULT.MAX_PLAYERS_LENGTH)
   .refine(
     (val) => {
       const userIds = val.flatMap((user) =>
-        typeof user === "string" ? [] : user.id
+        typeof user === "string" ? [] : user.id,
       );
 
       return userIds.length === new Set(userIds).size;
     },
     {
       message: "forms.errors.duplicatePlayer",
-    }
+    },
   );
 
 const reportWinnersActionSchema = z.object({
@@ -59,7 +59,7 @@ const reportWinnersActionSchema = z.object({
       .number()
       .int()
       .positive()
-      .max(CALENDAR_EVENT_RESULT.MAX_PARTICIPANTS_COUNT)
+      .max(CALENDAR_EVENT_RESULT.MAX_PARTICIPANTS_COUNT),
   ),
   team: z.preprocess(
     toArray,
@@ -78,16 +78,16 @@ const reportWinnersActionSchema = z.object({
                 .number()
                 .int()
                 .positive()
-                .max(CALENDAR_EVENT_RESULT.MAX_TEAM_PLACEMENT)
+                .max(CALENDAR_EVENT_RESULT.MAX_TEAM_PLACEMENT),
             ),
             players: playersSchema,
-          })
-        )
+          }),
+        ),
       )
       .refine(
         (val) => val.length === new Set(val.map((team) => team.teamName)).size,
-        { message: "forms.errors.uniqueTeamName" }
-      )
+        { message: "forms.errors.uniqueTeamName" },
+      ),
   ),
 });
 
@@ -117,7 +117,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       startTimes: event.startTimes,
     }),
     "Unauthorized",
-    401
+    401,
   );
 
   db.calendarEvents.upsertReportedScores({
@@ -150,7 +150,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
       user,
       event,
       startTimes: event.startTimes,
-    })
+    }),
   );
 
   return json({
@@ -210,7 +210,7 @@ function TeamInputs() {
   const { t } = useTranslation("calendar");
   const data = useLoaderData<typeof loader>();
   const [amountOfTeams, setAmountOfTeams] = React.useState(
-    Math.max(data.winners.length, 1)
+    Math.max(data.winners.length, 1),
   );
 
   const handleTeamDelete = () => {
@@ -306,7 +306,7 @@ function Team({
           players: results.players.filter(
             (player) =>
               (typeof player === "string" && player !== "") ||
-              (typeof player === "object" && player.id !== 0)
+              (typeof player === "object" && player.id !== 0),
           ),
         })}
       />
@@ -412,16 +412,11 @@ function Players({
                 max={CALENDAR_EVENT_RESULT.MAX_PLAYER_NAME_LENGTH}
               />
             ) : (
-              <UserCombobox
+              <UserSearch
                 id={formId}
                 inputName="team-player"
                 initialUserId={player.id}
-                onChange={(selected) =>
-                  handleInputChange(
-                    i,
-                    selected?.value ? Number(selected?.value) : NEW_PLAYER.id
-                  )
-                }
+                onChange={(newUser) => handleInputChange(i, newUser.id)}
               />
             )}
           </div>

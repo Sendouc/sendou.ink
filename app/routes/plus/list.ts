@@ -14,7 +14,7 @@ export const loader: LoaderFunction = ({ request }) => {
 
   return json<PlusListLoaderData>({
     users: Object.fromEntries(
-      db.users.findAllPlusMembers().map((u) => [u.discordId, u.plusTier])
+      db.users.findAllPlusMembers().map((u) => [u.discordId, u.plusTier]),
     ),
   });
 };

@@ -12,6 +12,7 @@ import {
   mainWeaponIds,
   modesShort,
   shoesGearIds,
+  stageIds,
 } from "~/modules/in-game-lists";
 import type {
   MainWeaponId,
@@ -29,7 +30,6 @@ import { dateToDatabaseTimestamp } from "~/utils/dates";
 import type { UpsertManyPlusVotesArgs } from "../models/plusVotes/queries.server";
 import { nanoid } from "nanoid";
 import { mySlugify } from "~/utils/urls";
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { createVod } from "~/features/vods/queries/createVod.server";
 
 import placements from "./placements.json";
@@ -40,11 +40,29 @@ import {
   NZAP_TEST_ID,
   AMOUNT_OF_CALENDAR_EVENTS,
 } from "./constants";
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { TOURNAMENT } from "~/features/tournament/tournament-constants";
 import type { SeedVariation } from "~/routes/seed";
 import { nullFilledArray, pickRandomItem } from "~/utils/arrays";
 import type { Art, UserSubmittedImage } from "../types";
+import { createGroup } from "~/features/sendouq/queries/createGroup.server";
+import { MAP_LIST_PREFERENCE_OPTIONS } from "~/features/sendouq/q-constants";
+import { addMember } from "~/features/sendouq/queries/addMember.server";
+import { createMatch } from "~/features/sendouq/queries/createMatch.server";
+import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator";
+import { addSkills } from "~/features/sendouq/queries/addSkills.server";
+import { reportScore } from "~/features/sendouq/queries/reportScore.server";
+import { calculateMatchSkills } from "~/features/sendouq/core/skills.server";
+import { winnersArrayToWinner } from "~/features/sendouq/q-utils";
+import { addReportedWeapons } from "~/features/sendouq/queries/addReportedWeapons.server";
+import { findMatchById } from "~/features/sendouq/queries/findMatchById.server";
+import { setGroupAsInactive } from "~/features/sendouq/queries/setGroupAsInactive.server";
+import { addMapResults } from "~/features/sendouq/queries/addMapResults.server";
+import {
+  summarizeMaps,
+  summarizePlayerResults,
+} from "~/features/sendouq/core/summarizer.server";
+import { groupForMatch } from "~/features/sendouq/queries/groupForMatch.server";
+import { addPlayerResults } from "~/features/sendouq/queries/addPlayerResults.server";
 
 const calendarEventWithToToolsSz = () => calendarEventWithToTools(true);
 const calendarEventWithToToolsTeamsSz = () =>
@@ -89,6 +107,8 @@ const basicSeeds = (variation?: SeedVariation | null) => [
   userFavBadges,
   arts,
   commissionsOpen,
+  playedMatches,
+  groups,
 ];
 
 export function seed(variation?: SeedVariation | null) {
@@ -102,6 +122,11 @@ export function seed(variation?: SeedVariation | null) {
 
 function wipeDB() {
   const tablesToDelete = [
+    "Skill",
+    "ReportedWeapon",
+    "GroupMatchMap",
+    "GroupMatch",
+    "Group",
     "ArtUserMetadata",
     "Art",
     "UnvalidatedUserSubmittedImage",
@@ -113,7 +138,6 @@ function wipeDB() {
     "TournamentMatchGameResult",
     "TournamentTeam",
     "TournamentStage",
-    "Skill",
     "TournamentResult",
     "Tournament",
     "CalendarEventDate",
@@ -154,7 +178,7 @@ function adminUser() {
 function makeAdminPatron() {
   sql
     .prepare(
-      `update "User" set "patronTier" = 2, "patronSince" = 1674663454 where id = 1`
+      `update "User" set "patronTier" = 2, "patronSince" = 1674663454 where id = 1`,
     )
     .run();
 }
@@ -170,7 +194,7 @@ function adminUserWeaponPool() {
         `
       insert into "UserWeapon" ("userId", "weaponSplId", "order")
         values ($userId, $weaponSplId, $order)
-    `
+    `,
       )
       .run({ userId: 1, weaponSplId, order: i + 1 });
   }
@@ -222,7 +246,7 @@ function userProfiles() {
           motionSens = $motionSens,
           stickSens = $stickSens,
           inGameName = $inGameName
-        WHERE id = $userId`
+        WHERE id = $userId`,
       )
       .run(args);
   }
@@ -232,16 +256,45 @@ function userProfiles() {
 
     sql
       .prepare(
-        `UPDATE "User" SET bio = $bio, country = $country WHERE id = $id`
+        `UPDATE "User" SET bio = $bio, country = $country WHERE id = $id`,
       )
       .run({
         id,
         bio: faker.lorem.paragraphs(
           faker.helpers.arrayElement([1, 1, 1, 2, 3, 4]),
-          "\n\n"
+          "\n\n",
         ),
         country: Math.random() > 0.5 ? faker.location.countryCode() : null,
       });
+  }
+
+  for (let id = 3; id < 500; id++) {
+    if (Math.random() < 0.15) continue; // 85% have weapons
+
+    const weapons = shuffle([...mainWeaponIds]);
+
+    for (let j = 0; j < faker.helpers.arrayElement([1, 2, 3, 4, 5]); j++) {
+      sql
+        .prepare(
+          /* sql */ `insert into "UserWeapon" (
+          "userId",
+          "weaponSplId",
+          "order",
+          "isFavorite"
+        ) values (
+          @userId,
+          @weaponSplId,
+          @order,
+          @isFavorite
+        )`,
+        )
+        .run({
+          userId: id,
+          weaponSplId: weapons.pop()!,
+          order: j + 1,
+          isFavorite: Math.random() > 0.8 ? 1 : 0,
+        });
+    }
   }
 }
 
@@ -366,26 +419,26 @@ function syncPlusTiers() {
     .prepare(
       /* sql */ `
     insert into "PlusTier" ("userId", "tier") select "userId", "tier" from "FreshPlusTier" where "tier" is not null;
-  `
+  `,
     )
     .run();
 }
 
 function badgesToAdmin() {
   const availableBadgeIds = shuffle(
-    (sql.prepare(`select "id" from "Badge"`).all() as any[]).map((b) => b.id)
+    (sql.prepare(`select "id" from "Badge"`).all() as any[]).map((b) => b.id),
   ).slice(0, 8) as number[];
 
   const badgesWithDuplicates = availableBadgeIds.flatMap((id) =>
     new Array(faker.helpers.arrayElement([1, 1, 1, 2, 3, 4]))
       .fill(null)
-      .map(() => id)
+      .map(() => id),
   );
 
   for (const id of badgesWithDuplicates) {
     sql
       .prepare(
-        `insert into "TournamentBadgeOwner" ("badgeId", "userId") values ($id, $userId)`
+        `insert into "TournamentBadgeOwner" ("badgeId", "userId") values ($id, $userId)`,
       )
       .run({ id, userId: 1 });
   }
@@ -393,7 +446,7 @@ function badgesToAdmin() {
 
 function getAvailableBadgeIds() {
   return shuffle(
-    (sql.prepare(`select "id" from "Badge"`).all() as any[]).map((b) => b.id)
+    (sql.prepare(`select "id" from "Badge"`).all() as any[]).map((b) => b.id),
   );
 }
 
@@ -420,7 +473,7 @@ function badgesToUsers() {
       const userToGetABadge = userIds.shift()!;
       sql
         .prepare(
-          `insert into "TournamentBadgeOwner" ("badgeId", "userId") values ($id, $userId)`
+          `insert into "TournamentBadgeOwner" ("badgeId", "userId") values ($id, $userId)`,
         )
         .run({ id, userId: userToGetABadge });
 
@@ -434,7 +487,7 @@ function badgeManagers() {
   for (let id = 1; id <= 10; id++) {
     sql
       .prepare(
-        `insert into "BadgeManager" ("badgeId", "userId") values ($id, $userId)`
+        `insert into "BadgeManager" ("badgeId", "userId") values ($id, $userId)`,
       )
       .run({ id, userId: 2 });
   }
@@ -452,7 +505,7 @@ function patrons() {
   for (const id of userIds) {
     sql
       .prepare(
-        `update user set "patronTier" = $patronTier, "patronSince" = $patronSince where id = $id`
+        `update user set "patronTier" = $patronTier, "patronSince" = $patronSince where id = $id`,
       )
       .run({
         id,
@@ -504,12 +557,12 @@ function calendarEvents() {
         $authorId,
         $tags
       )
-      `
+      `,
       )
       .run({
         id,
         name: `${capitalize(faker.word.adjective())} ${capitalize(
-          faker.word.noun()
+          faker.word.noun(),
         )}`,
         description: faker.lorem.paragraph(),
         discordInviteCode: faker.lorem.word(),
@@ -522,7 +575,7 @@ function calendarEvents() {
                   0,
                   faker.helpers.arrayElement([
                     1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 4, 5, 6,
-                  ])
+                  ]),
                 )
                 .join(",")
             : null,
@@ -545,7 +598,7 @@ function calendarEvents() {
           $eventId,
           $startTime
         )
-      `
+      `,
       )
       .run({
         eventId: id,
@@ -565,7 +618,7 @@ function calendarEvents() {
             $eventId,
             $startTime
           )
-        `
+        `,
         )
         .run({
           eventId: id,
@@ -590,7 +643,7 @@ function calendarEventBadges() {
         .prepare(
           `insert into "CalendarEventBadge" 
           ("eventId", "badgeId") 
-          values ($eventId, $badgeId)`
+          values ($eventId, $badgeId)`,
         )
         .run({ eventId, badgeId: availableBadgeIds.pop() });
     }
@@ -606,10 +659,10 @@ function calendarEventResults() {
           `select "CalendarEvent"."id" 
           from "CalendarEvent" 
           join "CalendarEventDate" on "CalendarEventDate"."eventId" = "CalendarEvent"."id"
-          where "CalendarEventDate"."startTime" < $startTime`
+          where "CalendarEventDate"."startTime" < $startTime`,
         )
         .all({ startTime: dateToDatabaseTimestamp(new Date()) }) as any[]
-    ).map((r) => r.id)
+    ).map((r) => r.id),
   );
 
   for (const eventId of eventIdsOfPast) {
@@ -626,7 +679,7 @@ function calendarEventResults() {
           placement: i + 1,
           teamName: capitalize(faker.word.noun()),
           players: new Array(
-            faker.helpers.arrayElement([1, 2, 3, 4, 4, 4, 4, 4, 5, 6])
+            faker.helpers.arrayElement([1, 2, 3, 4, 4, 4, 4, 4, 5, 6]),
           )
             .fill(null)
             .map(() => {
@@ -661,7 +714,7 @@ function calendarEventWithToTools(sz?: boolean) {
         $mapPickingStyle,
         $format
       ) returning *
-      `
+      `,
     )
     .run({
       id: tournamentId,
@@ -689,7 +742,7 @@ function calendarEventWithToTools(sz?: boolean) {
         $authorId,
         $tournamentId
       )
-      `
+      `,
     )
     .run({
       id: eventId,
@@ -711,7 +764,7 @@ function calendarEventWithToTools(sz?: boolean) {
           $eventId,
           $startTime
         )
-      `
+      `,
     )
     .run({
       eventId,
@@ -739,7 +792,7 @@ function calendarEventWithToToolsTieBreakerMapPool() {
           $stageId,
           $mode
         )
-      `
+      `,
       )
       .run({
         tieBreakerCalendarEventId: TO_TOOLS_CALENDAR_EVENT_ID,
@@ -759,13 +812,13 @@ const validTournamentTeamName = () => {
 const availableStages: StageId[] = [1, 2, 3, 4, 6, 7, 8, 10, 11];
 const availablePairs = rankedModesShort
   .flatMap((mode) =>
-    availableStages.map((stageId) => ({ mode, stageId: stageId }))
+    availableStages.map((stageId) => ({ mode, stageId: stageId })),
   )
   .filter((pair) => !tiebreakerPicks.has(pair));
 function calendarEventWithToToolsTeams(sz?: boolean) {
   const userIds = userIdsInAscendingOrderById();
   const names = Array.from(
-    new Set(new Array(100).fill(null).map(() => validTournamentTeamName()))
+    new Set(new Array(100).fill(null).map(() => validTournamentTeamName())),
   ).concat("Chimera");
 
   for (let id = 1; id <= 16; id++) {
@@ -790,7 +843,7 @@ function calendarEventWithToToolsTeams(sz?: boolean) {
         $tournamentId,
         $inviteCode
       )
-      `
+      `,
       )
       .run({
         id: teamId,
@@ -811,7 +864,7 @@ function calendarEventWithToToolsTeams(sz?: boolean) {
         $tournamentTeamId,
         $checkedInAt
       )
-      `
+      `,
         )
         .run({
           tournamentTeamId: id + (sz ? 100 : 0),
@@ -841,7 +894,7 @@ function calendarEventWithToToolsTeams(sz?: boolean) {
         $isOwner,
         $createdAt
       )
-      `
+      `,
         )
         .run({
           tournamentTeamId: id + (sz ? 100 : 0),
@@ -885,7 +938,7 @@ function calendarEventWithToToolsTeams(sz?: boolean) {
           $stageId,
           $mode
         )
-        `
+        `,
           )
           .run({
             tournamentTeamId: id + (sz ? 100 : 0),
@@ -926,14 +979,14 @@ function tournamentSubs() {
         @message,
         @visibility
       )
-    `
+    `,
       )
       .run({
         userId: id,
         tournamentId: 1,
         canVc: Number(Math.random() > 0.5),
         bestWeapons: nullFilledArray(
-          faker.helpers.arrayElement([1, 1, 1, 2, 2, 3, 4, 5])
+          faker.helpers.arrayElement([1, 1, 1, 2, 2, 3, 4, 5]),
         )
           .map(() => {
             while (true) {
@@ -949,7 +1002,7 @@ function tournamentSubs() {
           Math.random() > 0.5
             ? null
             : nullFilledArray(
-                faker.helpers.arrayElement([1, 1, 1, 2, 2, 3, 4, 5])
+                faker.helpers.arrayElement([1, 1, 1, 2, 2, 3, 4, 5]),
               )
                 .map(() => {
                   while (true) {
@@ -983,12 +1036,12 @@ function adminBuilds() {
     const randomOrderShoesGear = shuffle(shoesGearIds.slice());
     // filter out sshot to prevent test flaking
     const randomOrderWeaponIds = shuffle(
-      adminWeaponPool.filter((id) => id !== 40).slice()
+      adminWeaponPool.filter((id) => id !== 40).slice(),
     );
 
     db.builds.create({
       title: `${capitalize(faker.word.adjective())} ${capitalize(
-        faker.word.noun()
+        faker.word.noun(),
       )}`,
       ownerId: 1,
       private: 0,
@@ -997,7 +1050,7 @@ function adminBuilds() {
       clothesGearSplId: randomOrderClothesGear[0]!,
       shoesGearSplId: randomOrderShoesGear[0]!,
       weaponSplIds: new Array(
-        faker.helpers.arrayElement([1, 1, 1, 2, 2, 3, 4, 5])
+        faker.helpers.arrayElement([1, 1, 1, 2, 2, 3, 4, 5]),
       )
         .fill(null)
         .map(() => randomOrderWeaponIds.pop()!),
@@ -1033,7 +1086,7 @@ function manySplattershotBuilds() {
   // ensure 500 has at least one splattershot build for x placement test
   const users = [
     ...userIdsInRandomOrder().filter(
-      (id) => id !== 500 && id !== ADMIN_ID && id !== NZAP_TEST_ID
+      (id) => id !== 500 && id !== ADMIN_ID && id !== NZAP_TEST_ID,
     ),
     500,
   ];
@@ -1045,13 +1098,13 @@ function manySplattershotBuilds() {
     const randomOrderClothesGear = shuffle(clothesGearIds.slice());
     const randomOrderShoesGear = shuffle(shoesGearIds.slice());
     const randomOrderWeaponIds = shuffle(mainWeaponIds.slice()).filter(
-      (id) => id !== SPLATTERSHOT_ID
+      (id) => id !== SPLATTERSHOT_ID,
     );
 
     db.builds.create({
       private: 0,
       title: `${capitalize(faker.word.adjective())} ${capitalize(
-        faker.word.noun()
+        faker.word.noun(),
       )}`,
       ownerId: users.pop()!,
       description: Math.random() < 0.75 ? faker.lorem.paragraph() : null,
@@ -1059,11 +1112,11 @@ function manySplattershotBuilds() {
       clothesGearSplId: randomOrderClothesGear[0]!,
       shoesGearSplId: randomOrderShoesGear[0]!,
       weaponSplIds: new Array(
-        faker.helpers.arrayElement([1, 1, 1, 2, 2, 3, 4, 5])
+        faker.helpers.arrayElement([1, 1, 1, 2, 2, 3, 4, 5]),
       )
         .fill(null)
         .map((_, i) =>
-          i === 0 ? SPLATTERSHOT_ID : randomOrderWeaponIds.pop()!
+          i === 0 ? SPLATTERSHOT_ID : randomOrderWeaponIds.pop()!,
         ),
       modes:
         Math.random() < 0.75
@@ -1101,7 +1154,7 @@ function detailedTeam() {
       values 
         (1672587342, 'AiGSM5T-cxm6BFGT7N_lA-1673297699133.webp', 1), 
         (1672587342, 'jTbWd95klxU2MzGFIdi1c-1673297932788.webp', 1)
-  `
+  `,
     )
     .run();
 
@@ -1118,7 +1171,7 @@ function detailedTeam() {
           1,
           2
        )
-  `
+  `,
     )
     .run();
 
@@ -1137,7 +1190,7 @@ function detailedTeam() {
           ${i === 0 ? 1 : 0},
           ${i < 4 ? "null" : "1672587342"}
         )
-    `
+    `,
       )
       .run();
   }
@@ -1150,18 +1203,18 @@ function otherTeams() {
         /*sql */ `select
     "userId"
     from "AllTeamMember"
-    `
+    `,
       )
       .all() as any[]
   ).map((row) => row.userId);
 
   const userIds = userIdsInRandomOrder().filter(
-    (u) => !usersInTeam.includes(u) && u !== 2
+    (u) => !usersInTeam.includes(u) && u !== 2,
   );
 
   for (let i = 3; i < 50; i++) {
     const teamName = `${capitalize(faker.word.adjective())} ${capitalize(
-      faker.word.noun()
+      faker.word.noun(),
     )}`;
     const teamCustomUrl = mySlugify(teamName);
 
@@ -1170,16 +1223,23 @@ function otherTeams() {
         /* sql */ `
       insert into "AllTeam" ("id", "name", "customUrl", "inviteCode", "twitter", "bio")
        values (
-          ${i},
-          '${teamName}',
-          '${teamCustomUrl}',
-          '${nanoid(INVITE_CODE_LENGTH)}',
-          '${faker.internet.userName()}',
-          '${faker.lorem.paragraph()}'
+          @id,
+          @name,
+          @customUrl,
+          @inviteCode,
+          @twitter,
+          @bio
        )
-    `
+    `,
       )
-      .run();
+      .run({
+        id: i,
+        name: teamName,
+        customUrl: teamCustomUrl,
+        inviteCode: nanoid(INVITE_CODE_LENGTH),
+        twitter: faker.internet.userName(),
+        bio: faker.lorem.paragraph(),
+      });
 
     const numMembers = faker.helpers.arrayElement([
       1, 2, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 7, 7, 8,
@@ -1197,7 +1257,7 @@ function otherTeams() {
             ${j === 0 ? "'CAPTAIN'" : "'FRONTLINE'"},
             ${j === 0 ? 1 : 0}
           )
-      `
+      `,
         )
         .run();
     }
@@ -1360,7 +1420,7 @@ function userFavBadges() {
       sql
         .prepare(`select "badgeId" from "BadgeOwner" where "userId" = 1`)
         .all() as any[]
-    ).map((row) => row.badgeId)
+    ).map((row) => row.badgeId),
   );
   sql
     .prepare(`update "User" set "favoriteBadgeId" = $id where "id" = 1`)
@@ -1496,5 +1556,258 @@ function commissionsOpen() {
         userId,
       });
     }
+  }
+}
+
+const SENDOU_IN_FULL_GROUP = true;
+function groups() {
+  const users = userIdsInAscendingOrderById()
+    .slice(0, 100)
+    .filter((id) => id !== ADMIN_ID && id !== NZAP_TEST_ID);
+  users.push(NZAP_TEST_ID);
+
+  for (let i = 0; i < 25; i++) {
+    const group = createGroup({
+      mapListPreference: faker.helpers.arrayElement(
+        MAP_LIST_PREFERENCE_OPTIONS,
+      ),
+      status: "ACTIVE",
+      userId: users.pop()!,
+      mapPool: new MapPool([
+        { mode: "SZ", stageId: 1 },
+        { mode: "SZ", stageId: 2 },
+        { mode: "SZ", stageId: 3 },
+        { mode: "SZ", stageId: 4 },
+        { mode: "SZ", stageId: 5 },
+        { mode: "SZ", stageId: 6 },
+        { mode: "TC", stageId: 7 },
+        { mode: "TC", stageId: 8 },
+        { mode: "RM", stageId: 10 },
+        { mode: "RM", stageId: 11 },
+        { mode: "CB", stageId: 13 },
+        { mode: "CB", stageId: 14 },
+      ]),
+    });
+
+    const amountOfAdditionalMembers = () => {
+      if (SENDOU_IN_FULL_GROUP) {
+        if (i === 0) return 3;
+        if (i === 1) return 3;
+      }
+
+      return i === 0 ? 2 : i % 4;
+    };
+
+    for (let j = 0; j < amountOfAdditionalMembers(); j++) {
+      sql
+        .prepare(
+          /* sql */ `
+        insert into "GroupMember" ("groupId", "userId", "role")
+        values (@groupId, @userId, @role)
+      `,
+        )
+        .run({
+          groupId: group.id,
+          userId: users.pop()!,
+          role: "REGULAR",
+        });
+    }
+
+    if (i === 0 && SENDOU_IN_FULL_GROUP) {
+      users.push(ADMIN_ID);
+    }
+  }
+}
+
+const randomMapList = (
+  groupAlpha: number,
+  groupBravo: number,
+): TournamentMapListMap[] => {
+  const szOnly = faker.helpers.arrayElement([true, false]);
+  const modePattern = shuffle([...rankedModesShort]);
+
+  const mapList: TournamentMapListMap[] = [];
+  const stageIdsShuffled = shuffle([...stageIds]);
+
+  for (let i = 0; i < 7; i++) {
+    const rankedMode = modePattern.pop()!;
+    mapList.push({
+      mode: szOnly ? "SZ" : rankedMode,
+      stageId: stageIdsShuffled.pop()!,
+      source: i === 6 ? "BOTH" : i % 2 === 0 ? groupAlpha : groupBravo,
+    });
+
+    modePattern.unshift(rankedMode);
+  }
+
+  return mapList;
+};
+
+const MATCHES_COUNT = 500;
+
+function playedMatches() {
+  const _groupMembers = (() => {
+    return new Array(50).fill(null).map(() => {
+      const users = shuffle(userIdsInAscendingOrderById().slice(0, 50));
+
+      return new Array(4).fill(null).map(() => users.pop()!);
+    });
+  })();
+  const defaultWeapons = Object.fromEntries(
+    userIdsInAscendingOrderById()
+      .slice(0, 50)
+      .map((id) => {
+        const weapons = shuffle([...mainWeaponIds]);
+        return [id, weapons[0]];
+      }),
+  );
+
+  // mid august 2021
+  let matchDate = new Date(Date.UTC(2021, 7, 15, 0, 0, 0, 0));
+  for (let i = 0; i < MATCHES_COUNT; i++) {
+    const groupMembers = shuffle([..._groupMembers]);
+    const groupAlphaMembers = groupMembers.pop()!;
+    invariant(groupAlphaMembers, "groupAlphaMembers not found");
+
+    const getGroupBravo = (): number[] => {
+      const result = groupMembers.pop()!;
+      invariant(result, "groupBravoMembers not found");
+      if (groupAlphaMembers.some((m) => result.includes(m))) {
+        return getGroupBravo();
+      }
+
+      return result;
+    };
+    const groupBravoMembers = getGroupBravo();
+
+    let groupAlpha = 0;
+    let groupBravo = 0;
+    // -> create groups
+    for (let i = 0; i < 2; i++) {
+      const users = i === 0 ? [...groupAlphaMembers] : [...groupBravoMembers];
+      const group = createGroup({
+        // these should not matter here
+        mapListPreference: "NO_PREFERENCE",
+        mapPool: new MapPool([]),
+        status: "ACTIVE",
+        userId: users.pop()!,
+      });
+
+      // -> add regular members of groups
+      for (let i = 0; i < 3; i++) {
+        addMember({
+          groupId: group.id,
+          userId: users.pop()!,
+        });
+      }
+
+      if (i === 0) {
+        groupAlpha = group.id;
+      } else {
+        groupBravo = group.id;
+      }
+    }
+
+    invariant(groupAlpha !== 0 && groupBravo !== 0, "groups not created");
+
+    const match = createMatch({
+      alphaGroupId: groupAlpha,
+      bravoGroupId: groupBravo,
+      mapList: randomMapList(groupAlpha, groupBravo),
+    });
+
+    // update match createdAt to the past
+    sql
+      .prepare(
+        /* sql */ `
+      update "GroupMatch"
+      set "createdAt" = @createdAt
+      where "id" = @id
+    `,
+      )
+      .run({
+        createdAt: dateToDatabaseTimestamp(matchDate),
+        id: match.id,
+      });
+
+    if (Math.random() > 0.95) {
+      // increment date by 1 day
+      matchDate = new Date(matchDate.getTime() + 1000 * 60 * 60 * 24);
+    }
+
+    // -> report score
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+    const winners = faker.helpers.arrayElement([
+      ["ALPHA", "ALPHA", "ALPHA", "ALPHA"],
+      ["ALPHA", "ALPHA", "ALPHA", "BRAVO", "ALPHA"],
+      ["BRAVO", "BRAVO", "BRAVO", "BRAVO"],
+      ["ALPHA", "BRAVO", "BRAVO", "BRAVO", "BRAVO"],
+      ["ALPHA", "ALPHA", "ALPHA", "BRAVO", "BRAVO", "BRAVO", "BRAVO"],
+      ["BRAVO", "ALPHA", "BRAVO", "ALPHA", "BRAVO", "ALPHA", "BRAVO"],
+      ["ALPHA", "BRAVO", "BRAVO", "ALPHA", "ALPHA", "ALPHA"],
+      ["ALPHA", "BRAVO", "ALPHA", "BRAVO", "BRAVO", "BRAVO"],
+    ]) as ("ALPHA" | "BRAVO")[];
+    const winner = winnersArrayToWinner(winners);
+    const finishedMatch = findMatchById(match.id)!;
+
+    const newSkills = calculateMatchSkills({
+      groupMatchId: match.id,
+      winner: winner === "ALPHA" ? groupAlphaMembers : groupBravoMembers,
+      loser: winner === "ALPHA" ? groupBravoMembers : groupAlphaMembers,
+    });
+    const members = [
+      ...groupForMatch(match.alphaGroupId)!.members.map((m) => ({
+        ...m,
+        groupId: match.alphaGroupId,
+      })),
+      ...groupForMatch(match.bravoGroupId)!.members.map((m) => ({
+        ...m,
+        groupId: match.bravoGroupId,
+      })),
+    ];
+    sql.transaction(() => {
+      reportScore({
+        matchId: match.id,
+        reportedByUserId:
+          Math.random() > 0.5 ? groupAlphaMembers[0] : groupBravoMembers[0],
+        winners,
+      });
+      addSkills(newSkills);
+      setGroupAsInactive(groupAlpha);
+      setGroupAsInactive(groupBravo);
+      addMapResults(summarizeMaps({ match: finishedMatch, members, winners }));
+      addPlayerResults(
+        summarizePlayerResults({ match: finishedMatch, members, winners }),
+      );
+    })();
+
+    // -> add weapons for 90% of matches
+    if (Math.random() > 0.9) continue;
+    const users = [...groupAlphaMembers, ...groupBravoMembers];
+    const mapsWithUsers = users.flatMap((u) =>
+      finishedMatch.mapList.map((m) => ({ map: m, user: u })),
+    );
+
+    addReportedWeapons(
+      mapsWithUsers.map((mu) => {
+        const weapon = () => {
+          if (Math.random() < 0.9) return defaultWeapons[mu.user];
+          if (Math.random() > 0.5)
+            return (
+              mainWeaponIds.find((id) => id > defaultWeapons[mu.user]) ?? 0
+            );
+
+          const shuffled = shuffle([...mainWeaponIds]);
+
+          return shuffled[0];
+        };
+
+        return {
+          groupMatchMapId: mu.map.id,
+          userId: mu.user,
+          weaponSplId: weapon(),
+        };
+      }),
+    );
   }
 }

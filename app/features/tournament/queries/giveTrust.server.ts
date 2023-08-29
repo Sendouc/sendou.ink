@@ -7,7 +7,7 @@ const stm = sql.prepare(/*sql */ `
   ) values (
     @trustGiverUserId,
     @trustReceiverUserId
-  )
+  ) on conflict do nothing
 `);
 
 export function giveTrust({

@@ -1,0 +1,159 @@
+.twf {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.q__clocks-container {
+  display: flex;
+  gap: var(--s-2);
+}
+
+.q__clock {
+  font-size: var(--fonts-sm);
+  font-weight: var(--bold);
+  color: var(--text-lighter);
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  flex: 1 1 0;
+  line-height: 1.3;
+}
+
+.q__clock-country {
+  color: var(--text) !important;
+  white-space: nowrap;
+  font-size: var(--fonts-xs);
+}
+
+.q__header {
+  font-size: var(--fonts-lg);
+}
+
+.q__map-preference-label {
+  margin-block-end: 0;
+  font-weight: var(--semi-bold);
+  display: flex;
+  align-items: center;
+  gap: var(--s-1);
+  color: var(--text-lighter);
+}
+
+.q__map-pool-grid {
+  display: grid;
+  grid-template-columns: repeat(7, max-content);
+  gap: var(--s-2-5);
+  font-size: var(--fonts-xs);
+  align-items: center;
+}
+
+.q__map-pool-grid__stage-image {
+  border-radius: 7px;
+}
+
+.q__own-group-container {
+  margin: 0 auto;
+  min-width: 300px;
+}
+
+.q__groups-container {
+  display: grid;
+  justify-content: center;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--s-6);
+}
+
+.q__mobile-groups-container {
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.q__group {
+  background-color: var(--bg-lighter-solid);
+  width: 100%;
+  border-radius: var(--rounded);
+  padding: var(--s-2-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+
+.q__group-member {
+  display: flex;
+  gap: var(--s-2);
+  align-items: center;
+  font-size: var(--fonts-xs);
+  font-weight: var(--semi-bold);
+  color: var(--text);
+}
+
+.q__member-placeholder {
+  border-radius: 100%;
+  background-color: var(--bg-lightest);
+  height: 24px;
+  width: 24px;
+  display: grid;
+  place-items: center;
+  font-weight: var(--semi-bold);
+}
+
+.q__group-member-weapons {
+  display: flex;
+  gap: var(--s-1);
+  margin-block-start: -2px;
+}
+
+.q__group-member-weapon {
+  background-color: var(--bg);
+  border-radius: 100%;
+  padding: var(--s-1);
+  overflow: visible;
+}
+
+.q-preparing__card-container {
+  min-width: 250px;
+  margin: 0 auto;
+}
+
+.q-match__join-discord-section {
+  border-left: 4px solid var(--theme);
+  padding-inline-start: var(--s-4);
+  font-size: var(--fonts-sm);
+  color: var(--text-lighter);
+  margin-block-start: var(--s-1);
+}
+
+.q-match__members-container {
+  min-width: 180px;
+}
+
+.q-match__container {
+  /** Push footer down to avoid it "flashing" when the score reporter animates */
+  padding-bottom: 14rem;
+}
+
+.q-match__header {
+  line-height: 1.2;
+}
+
+.q-match__teams-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s-4);
+}
+
+.q-match__report__user-name-container {
+  display: flex;
+  gap: var(--s-2);
+  width: 175px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media screen and (min-width: 480px) {
+  .q-match__teams-container {
+    grid-template-columns: 1fr 1fr;
+  }
+}
