@@ -5,19 +5,28 @@ import type { User } from "~/db/types";
 import { useUser } from "~/modules/auth";
 import { nanoid } from "nanoid";
 import clsx from "clsx";
+import { SKALOP_BASE_URL } from "~/utils/urls";
+import { Button } from "./Button";
 
 // xxx: patron color
 type ChatUser = Pick<User, "discordName" | "discordId" | "discordAvatar">;
 
-interface ChatProps {
+export interface ChatProps {
   users: Record<number, ChatUser>;
-  rooms: string[];
+  rooms: { label: string; code: string }[];
 }
 
 export function Chat({ users, rooms }: ChatProps) {
   const messagesContainerRef = React.useRef<HTMLOListElement>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
-  const { send, messages } = useChat(rooms);
+  const {
+    send,
+    messages,
+    currentRoom,
+    setCurrentRoom,
+    connected,
+    unseenMessages,
+  } = useChat(rooms);
 
   const handleSubmit = React.useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
@@ -25,7 +34,7 @@ export function Chat({ users, rooms }: ChatProps) {
       send(inputRef.current!.value);
       inputRef.current!.value = "";
     },
-    [send],
+    [send]
   );
 
   React.useEffect(() => {
@@ -35,6 +44,32 @@ export function Chat({ users, rooms }: ChatProps) {
 
   return (
     <section className="chat__container">
+      {rooms.length > 1 ? (
+        <div className="stack horizontal">
+          {rooms.map((room, i) => {
+            const unseen = unseenMessages.get(room.code);
+
+            return (
+              <Button
+                key={room.code}
+                className={clsx("chat__room-button", {
+                  "not-first": i > 0,
+                  current: currentRoom === room.code,
+                })}
+                onClick={() => setCurrentRoom(room.code)}
+              >
+                <span className="chat__room-button__unseen invisible" />
+                {room.label}
+                {unseen ? (
+                  <span className="chat__room-button__unseen">{unseen}</span>
+                ) : (
+                  <span className="chat__room-button__unseen invisible" />
+                )}
+              </Button>
+            );
+          })}
+        </div>
+      ) : null}
       <div className="chat__input-container">
         <ol className="chat__messages" ref={messagesContainerRef}>
           {messages.map((msg) => {
@@ -53,8 +88,28 @@ export function Chat({ users, rooms }: ChatProps) {
           })}
         </ol>
         <form onSubmit={handleSubmit} className="mt-4">
-          <input className="w-full" ref={inputRef} />{" "}
-          <SubmitButton>Send</SubmitButton>
+          <input
+            className="w-full"
+            ref={inputRef}
+            placeholder="Press enter to send"
+            disabled={!connected}
+          />{" "}
+          <div className="chat__bottom-row">
+            {typeof connected !== "boolean" ? (
+              <div />
+            ) : connected ? (
+              <div className="text-xxs font-semi-bold text-lighter">
+                Connected
+              </div>
+            ) : (
+              <div className="text-xxs font-semi-bold text-warning">
+                Disconnected
+              </div>
+            )}
+            <SubmitButton size="tiny" variant="minimal" disabled={!connected}>
+              Send
+            </SubmitButton>
+          </div>
         </form>
       </div>
     </section>
@@ -96,26 +151,43 @@ interface ChatMessage {
   pending?: boolean;
 }
 
-// xxx: TODO: load initial messages
-function useChat(rooms: string[], _currentRoom?: string) {
+// xxx: attempt to reconnect
+// xxx: weapon emoji
+// xxx: UI shift on initial load
+// xxx: max message length
+// xxx: virtual list?
+function useChat(rooms: ChatProps["rooms"], _currentRoom?: string) {
   const user = useUser();
-  const [messages, setMessages] = React.useState<ChatMessage[]>([]);
-  const [sentMessage, setSentMessage] = React.useState<ChatMessage>();
-  const ws = React.useRef<WebSocket>();
 
-  const currentRoom = _currentRoom ?? rooms[0];
+  const [messages, setMessages] = React.useState<ChatMessage[]>([]);
+  const [connected, setConnected] = React.useState<null | boolean>(null);
+  const [sentMessage, setSentMessage] = React.useState<ChatMessage>();
+  const [currentRoom, setCurrentRoom] = React.useState<string>(
+    _currentRoom ?? rooms[0].code
+  );
+
+  const ws = React.useRef<WebSocket>();
+  const lastSeenMessagesByRoomId = React.useRef<Map<string, string>>(new Map());
 
   React.useEffect(() => {
-    // xxx: pass from env vars
     ws.current = new WebSocket(
-      `ws://localhost:5900?${rooms.map((room) => `room=${room}`).join("&")}`,
+      `${SKALOP_BASE_URL}?${rooms.map((room) => `room=${room.code}`).join("&")}`
     );
-    ws.current.onopen = () => console.log("ws opened");
-    ws.current.onclose = () => console.log("ws closed");
+    ws.current.onopen = () => setConnected(true);
+    ws.current.onclose = () => setConnected(false);
 
     ws.current.onmessage = (e) => {
       const message = JSON.parse(e.data);
-      setMessages((messages) => [...messages, message]);
+      const messageArr = Array.isArray(message) ? message : [message];
+
+      if (Array.isArray(message)) {
+        lastSeenMessagesByRoomId.current = message.reduce((acc, cur) => {
+          acc.set(cur.room, cur.id);
+          return acc;
+        }, new Map<string, string>());
+      }
+
+      setMessages((messages) => [...messages, ...messageArr]);
     };
 
     const wsCurrent = ws.current;
@@ -137,7 +209,7 @@ function useChat(rooms: string[], _currentRoom?: string) {
       });
       ws.current!.send(JSON.stringify({ id, contents, room: currentRoom }));
     },
-    [user, currentRoom],
+    [user, currentRoom]
   );
 
   let allMessages = messages;
@@ -145,5 +217,52 @@ function useChat(rooms: string[], _currentRoom?: string) {
     allMessages = [...messages, { ...sentMessage, pending: true }];
   }
 
-  return { messages: allMessages, send };
+  const roomsMessages = allMessages
+    .filter((msg) => msg.room === currentRoom)
+    .sort((a, b) => a.timestamp - b.timestamp);
+  if (roomsMessages.length > 0) {
+    lastSeenMessagesByRoomId.current.set(
+      currentRoom,
+      roomsMessages[roomsMessages.length - 1].id
+    );
+  }
+
+  const unseenMessages = unseenMessagesCountByRoomId({
+    messages,
+    lastSeenMessages: lastSeenMessagesByRoomId.current,
+  });
+
+  return {
+    messages: roomsMessages,
+    send,
+    currentRoom,
+    setCurrentRoom,
+    connected,
+    unseenMessages,
+  };
+}
+
+function unseenMessagesCountByRoomId({
+  messages,
+  lastSeenMessages,
+}: {
+  messages: ChatMessage[];
+  lastSeenMessages: Map<string, string>;
+}) {
+  const lastUnseenEncountered = new Set<string>();
+
+  const unseenMessages = messages.filter((msg) => {
+    if (msg.id === lastSeenMessages.get(msg.room)) {
+      lastUnseenEncountered.add(msg.room);
+      return false;
+    }
+
+    return lastUnseenEncountered.has(msg.room);
+  });
+
+  return unseenMessages.reduce((acc, cur) => {
+    const count = acc.get(cur.room) ?? 0;
+    acc.set(cur.room, count + 1);
+    return acc;
+  }, new Map<string, number>());
 }
