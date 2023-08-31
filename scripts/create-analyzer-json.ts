@@ -26,7 +26,7 @@ import {
   translationJsonFolderName,
 } from "./utils";
 
-const CURRENT_SEASON = 4;
+const CURRENT_SEASON = 5;
 
 type MainWeapon = (typeof weapons)[number];
 type SubWeapon = (typeof subWeapons)[number];
@@ -784,10 +784,12 @@ function subWeaponShouldBeSkipped(subWeapon: SubWeapon) {
 }
 
 function specialWeaponShouldBeSkipped(specialWeapon: SpecialWeapon) {
+  console.log({ specialWeapon });
   if (WEAPON_TYPES_TO_IGNORE.some((val) => specialWeapon.Type.includes(val))) {
     return true;
   }
   if (specialWeapon.__RowId === "SpGachihoko") return true;
+  if (specialWeapon.__RowId === "SpGachihokoForEventMatch") return true;
 
   return false;
 }

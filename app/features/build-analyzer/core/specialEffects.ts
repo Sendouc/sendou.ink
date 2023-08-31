@@ -111,7 +111,7 @@ export const SPECIAL_EFFECTS = [
 ] as const;
 
 export function lastDitchEffortIntensityToAp(intensity: number) {
-  return Math.floor((24 / 21) * intensity);
+  return Math.floor((18 / 21) * intensity);
 }
 
 function lastDitchEffortValues(intensity: number) {

@@ -303,6 +303,7 @@ function WeaponImageSelector({
   );
 }
 
+const LAST_STAGE_ID_WITH_IMAGES = 17;
 function StageBackgroundSelector({
   onAddBackground,
 }: {
@@ -326,13 +327,15 @@ function StageBackgroundSelector({
         onChange={(e) => setStageId(Number(e.target.value) as StageId)}
         aria-label="Select stage"
       >
-        {stageIds.map((stageId) => {
-          return (
-            <option value={stageId} key={stageId}>
-              {t(`game-misc:STAGE_${stageId}`)}
-            </option>
-          );
-        })}
+        {stageIds
+          .filter((id) => id <= LAST_STAGE_ID_WITH_IMAGES)
+          .map((stageId) => {
+            return (
+              <option value={stageId} key={stageId}>
+                {t(`game-misc:STAGE_${stageId}`)}
+              </option>
+            );
+          })}
       </select>
       <select
         className="w-max"

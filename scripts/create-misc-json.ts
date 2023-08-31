@@ -31,6 +31,8 @@ const stages = [
   "Um'ami Ruins",
   "Humpback Pump Track",
   "Barnacle & Dime",
+  "Crableg Capital",
+  "Shipshape Cargo Co.",
 ] as const;
 
 const abilityShortToInternalName = new Map([
