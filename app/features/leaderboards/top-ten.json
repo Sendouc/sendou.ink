@@ -1,0 +1,80 @@
+[
+  [
+    {
+      "name": "Grey",
+      "countryCode": "FR"
+    },
+    {
+      "name": "Kyo",
+      "countryCode": "US",
+      "transforms": {
+        "left": 11,
+        "top": 5
+      }
+    },
+    {
+      "name": "biscuit!",
+      "countryCode": "US",
+      "transforms": {
+        "left": 29,
+        "top": 5
+      }
+    },
+    {
+      "name": "Stalk",
+      "countryCode": "US",
+      "transforms": {
+        "left": 32,
+        "top": 6
+      }
+    },
+    {
+      "name": "Xenith",
+      "countryCode": "US",
+      "transforms": {
+        "left": 19,
+        "top": 6
+      }
+    },
+    {
+      "name": "Kiver",
+      "countryCode": "FR",
+      "transforms": {
+        "left": 33,
+        "top": 6
+      }
+    },
+    {
+      "name": "Oscar",
+      "countryCode": "MX",
+      "transforms": {
+        "left": 18,
+        "top": 6
+      }
+    },
+    {
+      "name": "Home",
+      "countryCode": "ID",
+      "transforms": {
+        "left": 34,
+        "top": 8
+      }
+    },
+    {
+      "name": "Gos",
+      "countryCode": "US",
+      "transforms": {
+        "left": 30,
+        "top": 6
+      }
+    },
+    {
+      "name": "Elis",
+      "countryCode": "GB-WLS",
+      "transforms": {
+        "left": 27,
+        "top": 8
+      }
+    }
+  ]
+]

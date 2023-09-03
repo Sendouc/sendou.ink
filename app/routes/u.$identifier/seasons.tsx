@@ -113,6 +113,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   };
 };
 
+// xxx: show top10 when available
 export default function UserSeasonsPage() {
   const data = useLoaderData<typeof loader>();
 

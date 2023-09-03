@@ -2,33 +2,48 @@ import { Flag } from "~/components/Flag";
 import { Image } from "~/components/Image";
 import { Placement } from "~/components/Placement";
 import { winnersImageUrl } from "~/utils/urls";
+import playerData from "../top-ten.json";
+import invariant from "tiny-invariant";
 
 export function TopTenPlayer({
   power,
   placement,
   season,
-  name,
-  countryCode,
 }: {
   power: number;
   placement: number;
   season: number;
-  name: string;
-  countryCode: string;
 }) {
+  const data = playerData[season]?.[placement - 1];
+  invariant(data, `No data for season ${season} and placement ${placement}`);
+  const { name, countryCode, transforms } = data;
+
   return (
-    <div className="stack horizontal sm">
+    <div className="stack horizontal items-center md">
       <div className="winner__container">
         <Image
           path={winnersImageUrl({ season, placement })}
           alt=""
           containerClassName="winner__img-container"
           className="winner__img"
-          height={125}
+          height={150}
+          containerStyle={
+            {
+              "--winner-top": transforms?.top
+                ? `${transforms.top}px`
+                : undefined,
+              "--winner-left": transforms?.left
+                ? `${transforms.left}px`
+                : undefined,
+            } as React.CSSProperties
+          }
         />
       </div>
       <div>
-        <div className="text-xs text-lighter stack horizontal xs items-center">
+        <div
+          className="text-xs text-lighter stack horizontal xs items-center"
+          style={placement > 3 ? { marginBlockEnd: "-4px" } : undefined}
+        >
           {placement <= 3 ? (
             <Placement placement={placement} size={15} />
           ) : null}{" "}

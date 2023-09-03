@@ -53,6 +53,7 @@ import { seasonPopularUsersWeapon } from "../queries/seasonPopularUsersWeapon.se
 import { cachified } from "cachified";
 import { cache, ttl } from "~/utils/cache.server";
 import { HALF_HOUR_IN_MS } from "~/constants";
+import { TopTenPlayer } from "../components/TopTenPlayer";
 
 export const handle: SendouRouteHandle = {
   i18n: ["vods"],
@@ -152,6 +153,8 @@ export const loader = async ({ request }: LoaderArgs) => {
   };
 };
 
+// xxx: hide top 10 when pfp's available to show
+// xxx: auto get powers
 export default function LeaderboardsPage() {
   const { t } = useTranslation(["common", "game-misc", "weapons"]);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -216,6 +219,21 @@ export default function LeaderboardsPage() {
           );
         })}
       </select>
+      {true ? (
+        <div className="stack lg">
+          <TopTenPlayer placement={1} power={1715.19} season={0} />
+          <TopTenPlayer placement={2} power={1651.61} season={0} />
+          <TopTenPlayer placement={3} power={1557.06} season={0} />
+          <TopTenPlayer placement={4} power={1554.62} season={0} />
+          <TopTenPlayer placement={5} power={1554.62} season={0} />
+          <TopTenPlayer placement={6} power={1554.62} season={0} />
+          <TopTenPlayer placement={7} power={1554.62} season={0} />
+          <TopTenPlayer placement={8} power={1554.62} season={0} />
+          <TopTenPlayer placement={9} power={1554.62} season={0} />
+          <TopTenPlayer placement={10} power={1554.62} season={0} />
+        </div>
+      ) : null}
+
       {data.userLeaderboard ? (
         <PlayersTable
           entries={data.userLeaderboard}
