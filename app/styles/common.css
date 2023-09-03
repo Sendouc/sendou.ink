@@ -1262,6 +1262,36 @@ dialog::backdrop {
   border-radius: var(--rounded);
 }
 
+.winner__container {
+  height: 100px;
+  width: 100px;
+  border-radius: 100%;
+  background-color: var(--bg-lighter);
+  overflow: visible;
+  position: relative;
+}
+
+.winner__img-container {
+  overflow: visible;
+  position: absolute;
+  top: -27px;
+  left: 9px;
+}
+
+.winner__img-container.kyo {
+  left: -8px;
+  top: -26px;
+}
+
+.winner__img-container.stalk {
+  left: 14px;
+}
+
+.winner__img {
+  overflow: visible;
+  max-width: initial;
+}
+
 #nprogress .bar {
   margin-top: 3rem !important;
   background: var(--theme) !important;
