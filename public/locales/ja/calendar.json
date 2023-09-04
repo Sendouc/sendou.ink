@@ -12,6 +12,12 @@
   "members": "メンバー",
   "results": "結果",
   "createMapList": "ステージリストを作成する",
+  "from": "主催: {{author}}",
+  "pastEvents.dividerText": "過去のイベント",
+  "count.teams_one": "{{count}} チーム",
+  "count.players_one": "{{count}} プレイヤー",
+  "count.teams_other": "{{count}} チーム",
+  "count.players_other": "{{count}} プレイヤー",
 
   "forms.dates": "日",
   "forms.bracketUrl": "対戦表 URL",
@@ -62,5 +68,6 @@
   "tag.desc.S1": "スプラトゥーン1でプレイされます",
   "tag.desc.S2": "スプラトゥーン2でプレイされます",
   "tag.desc.SR": "サーモンランイベント",
-  "tag.desc.CARDS": "ナワバリバトルイベント"
+  "tag.desc.CARDS": "ナワバリバトルイベント",
+  "tag.desc.FULL_TOURNAMENT": "sendou.ink がホストのトーナメント"
 }
