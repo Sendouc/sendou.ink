@@ -53,6 +53,8 @@ import { seasonPopularUsersWeapon } from "../queries/seasonPopularUsersWeapon.se
 import { cachified } from "cachified";
 import { cache, ttl } from "~/utils/cache.server";
 import { HALF_HOUR_IN_MS } from "~/constants";
+import { TopTenPlayer } from "../components/TopTenPlayer";
+import { seasonHasTopTen } from "../leaderboards-utils";
 
 export const handle: SendouRouteHandle = {
   i18n: ["vods"],
@@ -157,6 +159,10 @@ export default function LeaderboardsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const data = useLoaderData<typeof loader>();
 
+  const isAllUserLeaderboard =
+    !searchParams.get(TYPE_SEARCH_PARAM_KEY) ||
+    searchParams.get(TYPE_SEARCH_PARAM_KEY) === "USER";
+
   return (
     <Main halfWidth className="stack lg">
       <select
@@ -216,13 +222,33 @@ export default function LeaderboardsPage() {
           );
         })}
       </select>
+      {/* TODO: dynamic season */}
+      {seasonHasTopTen(0) && isAllUserLeaderboard && data.userLeaderboard ? (
+        <div className="stack lg mx-auto">
+          {data.userLeaderboard
+            .filter((_, i) => i <= 9)
+            .map((entry, i) => {
+              return (
+                // TODO dynamic season
+                <Link
+                  key={`${entry.id}-${0}`}
+                  to={userSeasonsPage({ user: entry, season: 0 })}
+                >
+                  <TopTenPlayer
+                    placement={i + 1}
+                    power={entry.power}
+                    season={0}
+                  />
+                </Link>
+              );
+            })}
+        </div>
+      ) : null}
+
       {data.userLeaderboard ? (
         <PlayersTable
           entries={data.userLeaderboard}
-          showTiers={
-            !searchParams.get(TYPE_SEARCH_PARAM_KEY) ||
-            searchParams.get(TYPE_SEARCH_PARAM_KEY) === "USER"
-          }
+          showTiers={isAllUserLeaderboard}
         />
       ) : null}
       {data.teamLeaderboard ? (
@@ -248,46 +274,48 @@ function PlayersTable({
 }) {
   return (
     <div className="placements__table">
-      {entries.map((entry) => {
-        return (
-          <React.Fragment key={entry.entryId}>
-            {entry.tier && showTiers ? (
-              <div className="placements__tier-header">
-                <TierImage tier={entry.tier} width={32} />
-                {entry.tier.name}
-                {entry.tier.isPlus ? "+" : ""}
-              </div>
-            ) : null}
-            {/* TODO: dynamic season */}
-            <Link
-              to={userSeasonsPage({ user: entry, season: 0 })}
-              className="placements__table__row"
-            >
-              <div className="placements__table__inner-row">
-                <div className="placements__table__rank">
-                  {entry.placementRank}
+      {entries
+        .filter((_, i) => !seasonHasTopTen(0) || i > 9)
+        .map((entry) => {
+          return (
+            <React.Fragment key={entry.entryId}>
+              {entry.tier && showTiers ? (
+                <div className="placements__tier-header">
+                  <TierImage tier={entry.tier} width={32} />
+                  {entry.tier.name}
+                  {entry.tier.isPlus ? "+" : ""}
                 </div>
-                <div>
-                  <Avatar size="xxs" user={entry} />
+              ) : null}
+              {/* TODO: dynamic season */}
+              <Link
+                to={userSeasonsPage({ user: entry, season: 0 })}
+                className="placements__table__row"
+              >
+                <div className="placements__table__inner-row">
+                  <div className="placements__table__rank">
+                    {entry.placementRank}
+                  </div>
+                  <div>
+                    <Avatar size="xxs" user={entry} />
+                  </div>
+                  {entry.weaponSplId ? (
+                    <WeaponImage
+                      className="placements__table__weapon"
+                      variant="build"
+                      weaponSplId={entry.weaponSplId}
+                      width={32}
+                      height={32}
+                    />
+                  ) : null}
+                  <div className="placements__table__name">
+                    {entry.discordName}
+                  </div>
+                  <div className="placements__table__power">{entry.power}</div>
                 </div>
-                {entry.weaponSplId ? (
-                  <WeaponImage
-                    className="placements__table__weapon"
-                    variant="build"
-                    weaponSplId={entry.weaponSplId}
-                    width={32}
-                    height={32}
-                  />
-                ) : null}
-                <div className="placements__table__name">
-                  {entry.discordName}
-                </div>
-                <div className="placements__table__power">{entry.power}</div>
-              </div>
-            </Link>
-          </React.Fragment>
-        );
-      })}
+              </Link>
+            </React.Fragment>
+          );
+        })}
     </div>
   );
 }

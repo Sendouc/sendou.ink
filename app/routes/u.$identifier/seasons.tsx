@@ -54,6 +54,8 @@ import { Popover } from "~/components/Popover";
 import { useWeaponUsage } from "~/hooks/swr";
 import { atOrError } from "~/utils/arrays";
 import { Tab, Tabs } from "~/components/Tabs";
+import { TopTenPlayer } from "~/features/leaderboards/components/TopTenPlayer";
+import { playerTopTenPlacement } from "~/features/leaderboards/leaderboards-utils";
 
 export const seasonsSearchParamsSchema = z.object({
   page: z.coerce.number().default(1),
@@ -242,10 +244,19 @@ function Winrates() {
 
 function Rank({ currentOrdinal }: { currentOrdinal: number }) {
   const data = useLoaderData<typeof loader>();
+  const [, parentRoute] = useMatches();
+  invariant(parentRoute);
+  const parentRouteData = parentRoute.data as UserPageLoaderData;
 
   const maxOrdinal = Math.max(...data.skills.map((s) => s.ordinal));
 
   const peakAndCurrentSame = currentOrdinal === maxOrdinal;
+
+  // TODO: dynamic season
+  const topTenPlacement = playerTopTenPlacement({
+    season: 0,
+    userId: parentRouteData.id,
+  });
 
   return (
     <div className="stack horizontal items-center justify-center sm">
@@ -260,6 +271,10 @@ function Rank({ currentOrdinal }: { currentOrdinal: number }) {
           <div className="text-lighter text-sm">
             Peak {ordinalToSp(maxOrdinal)}SP
           </div>
+        ) : null}
+        {/* TODO: dynamic season */}
+        {topTenPlacement ? (
+          <TopTenPlayer small placement={topTenPlacement} season={0} />
         ) : null}
       </div>
     </div>
