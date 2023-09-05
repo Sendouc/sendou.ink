@@ -54,6 +54,7 @@ import { Popover } from "~/components/Popover";
 import { useWeaponUsage } from "~/hooks/swr";
 import { atOrError } from "~/utils/arrays";
 import { Tab, Tabs } from "~/components/Tabs";
+import { TopTenPlayer } from "~/features/leaderboards/components/TopTenPlayer";
 
 export const seasonsSearchParamsSchema = z.object({
   page: z.coerce.number().default(1),
@@ -113,7 +114,6 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   };
 };
 
-// xxx: show top10 when available
 export default function UserSeasonsPage() {
   const data = useLoaderData<typeof loader>();
 
@@ -262,6 +262,7 @@ function Rank({ currentOrdinal }: { currentOrdinal: number }) {
             Peak {ordinalToSp(maxOrdinal)}SP
           </div>
         ) : null}
+        <TopTenPlayer small placement={5} season={0} />
       </div>
     </div>
   );

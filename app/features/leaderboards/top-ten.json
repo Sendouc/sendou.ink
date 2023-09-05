@@ -2,7 +2,11 @@
   [
     {
       "name": "Grey",
-      "countryCode": "FR"
+      "countryCode": "FR",
+      "transforms": {
+        "left": 25,
+        "top": 5
+      }
     },
     {
       "name": "Kyo",
@@ -40,7 +44,7 @@
       "name": "Kiver",
       "countryCode": "FR",
       "transforms": {
-        "left": 33,
+        "left": 34,
         "top": 6
       }
     },

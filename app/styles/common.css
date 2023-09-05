@@ -1271,6 +1271,11 @@ dialog::backdrop {
   position: relative;
 }
 
+.winner__container.small {
+  height: 41.6666666662px;
+  width: 41.6666666662px;
+}
+
 .winner__img-container {
   position: absolute;
   top: var(--winner-top, 5px);
