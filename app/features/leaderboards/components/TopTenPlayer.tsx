@@ -25,7 +25,7 @@ export function TopTenPlayer({
 
   return (
     <div
-      className={clsx("stack horizontal items-center", {
+      className={clsx("stack horizontal items-center text-main-forced", {
         md: !small,
         sm: small,
         "mt-2": small,
