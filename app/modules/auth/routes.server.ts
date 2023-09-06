@@ -12,10 +12,10 @@ import { authSessionStorage } from "./session.server";
 import { getUserId } from "./user.server";
 import { parseSearchParams, validate } from "~/utils/remix";
 import { z } from "zod";
-import { id } from "~/utils/zod";
 import { createLogInLink } from "./queries/createLogInLink.server";
 import { userIdByLogInLinkCode } from "./queries/userIdByLogInLinkCode.server";
 import { deleteLogInLinkByCode } from "./queries/deleteLogInLinkByCode.server";
+import { db } from "~/db";
 
 const throwOnAuthErrors = process.env["THROW_ON_AUTH_ERROR"] === "true";
 
@@ -91,8 +91,12 @@ export const stopImpersonatingAction: ActionFunction = async ({ request }) => {
 // this is intended primarily as a workaround when website is having problems communicating
 // with the Discord due to rate limits or other reasons
 
+// only light validation here as we generally trust Lohi
 const createLogInLinkActionSchema = z.object({
-  userId: id,
+  discordId: z.string(),
+  discordAvatar: z.string(),
+  discordName: z.string(),
+  discordUniqueName: z.string(),
 });
 
 export const createLogInLinkAction: ActionFunction = ({ request }) => {
@@ -105,7 +109,14 @@ export const createLogInLinkAction: ActionFunction = ({ request }) => {
     throw new Response(null, { status: 403 });
   }
 
-  const createdLink = createLogInLink(data.userId);
+  const user = db.users.upsertLite({
+    discordAvatar: data.discordAvatar,
+    discordDiscriminator: "0",
+    discordId: data.discordId,
+    discordName: data.discordName,
+    discordUniqueName: data.discordUniqueName,
+  });
+  const createdLink = createLogInLink(user.id);
 
   return {
     code: createdLink.code,
