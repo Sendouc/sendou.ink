@@ -35,6 +35,7 @@ export function LogInButtonContainer({
   );
 }
 
+// xxx: info about Lohi command
 function AuthenticationErrorHelp({ errorCode }: { errorCode: string }) {
   const { t } = useTranslation();
 

@@ -97,6 +97,7 @@ const createLogInLinkActionSchema = z.object({
   discordAvatar: z.string(),
   discordName: z.string(),
   discordUniqueName: z.string(),
+  updateOnly: z.enum(["true", "false"]),
 });
 
 export const createLogInLinkAction: ActionFunction = ({ request }) => {
@@ -116,6 +117,9 @@ export const createLogInLinkAction: ActionFunction = ({ request }) => {
     discordName: data.discordName,
     discordUniqueName: data.discordUniqueName,
   });
+
+  if (data.updateOnly === "true") return null;
+
   const createdLink = createLogInLink(user.id);
 
   return {

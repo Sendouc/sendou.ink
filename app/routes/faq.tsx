@@ -23,6 +23,7 @@ export const handle: SendouRouteHandle = {
   i18n: "faq",
 };
 
+// xxx: update to include info about update command
 export default function FAQPage() {
   const { t } = useTranslation(["faq", "common"]);
   useSetTitle(t("common:pages.faq"));
