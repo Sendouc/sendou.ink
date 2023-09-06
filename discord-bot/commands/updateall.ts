@@ -53,11 +53,10 @@ async function getUsersToUpdate(client: Client<boolean>) {
 
       const hasUniqueUsername = user.discriminator === "0";
 
-      // TODO: global_name when discord.js supports it
       userUpdates.push({
         discordId: user.id,
         discordAvatar: user.avatar,
-        discordName: hasUniqueUsername ? null : user.username,
+        discordName: hasUniqueUsername ? user.globalName : user.username,
         discordUniqueName: hasUniqueUsername ? user.username : null,
       });
 
