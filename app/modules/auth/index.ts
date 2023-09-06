@@ -4,6 +4,8 @@ export {
   stopImpersonatingAction,
   logInAction,
   logOutAction,
+  createLogInLinkAction,
+  logInViaLinkLoader,
 } from "./routes.server";
 
 export { getUser, requireUser } from "./user.server";
