@@ -15,6 +15,7 @@ const stm = sql.prepare(/* sql */ `
   ) returning *
 `);
 
+// xxx: change to 10 minutes
 // 24 hours
 const LOG_IN_LINK_VALID_FOR = 24 * 60 * 60 * 1000;
 const LOG_IN_LINK_LENGTH = 12;

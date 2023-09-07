@@ -23,6 +23,7 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
+// xxx: add about priority support
 // 1 = support
 // 2 = supporter
 // 3 = supporter+
