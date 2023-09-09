@@ -4,12 +4,17 @@ import type { SeasonPopularUsersWeapon } from "../queries/seasonPopularUsersWeap
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { weaponCategories } from "~/modules/in-game-lists";
 import type { TeamSPLeaderboardItem } from "../queries/teamSPLeaderboard.server";
+import { seasonHasTopTen } from "../leaderboards-utils";
 
-export function addTiers(entries: UserSPLeaderboardItem[]) {
-  const tiers = freshUserSkills();
+export function addTiers(entries: UserSPLeaderboardItem[], season: number) {
+  const tiers = freshUserSkills(season);
 
   const encounteredTiers = new Set<string>();
-  return entries.map((entry) => {
+  return entries.map((entry, i) => {
+    if (i < 10 && seasonHasTopTen(season)) {
+      return { ...entry, tier: undefined };
+    }
+
     const tier = tiers.userSkills[entry.id].tier;
     const tierKey = `${tier.name}${tier.isPlus ? "+" : ""}`;
     const tierAlreadyEncountered = encounteredTiers.has(tierKey);
@@ -26,7 +31,7 @@ export function addTiers(entries: UserSPLeaderboardItem[]) {
 
 export function addWeapons<T extends { id: number }>(
   entries: T[],
-  weapons: SeasonPopularUsersWeapon
+  weapons: SeasonPopularUsersWeapon,
 ) {
   return entries.map((entry) => {
     const weaponSplId = weapons[entry.id] as MainWeaponId | undefined;
@@ -38,14 +43,14 @@ export function addWeapons<T extends { id: number }>(
 }
 
 export function filterByWeaponCategory<
-  T extends { weaponSplId?: MainWeaponId }
+  T extends { weaponSplId?: MainWeaponId },
 >(entries: Array<T>, category: (typeof weaponCategories)[number]["name"]) {
   const weaponIdsOfCategory = new Set(
-    weaponCategories.find((c) => c.name === category)!.weaponIds
+    weaponCategories.find((c) => c.name === category)!.weaponIds,
   );
 
   return entries.filter(
-    (entry) => entry.weaponSplId && weaponIdsOfCategory.has(entry.weaponSplId)
+    (entry) => entry.weaponSplId && weaponIdsOfCategory.has(entry.weaponSplId),
   );
 }
 

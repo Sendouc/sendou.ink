@@ -19,6 +19,7 @@
   "roles.SUPPORT": "サポート",
   "roles.MIDLINE": "中衛",
   "roles.BACKLINE": "後衛",
+  "roles.FLEX": "マルチ",
   "roles.COACH": "コーチ",
   "forms.fields.teamTwitter": "チームの Twitter",
   "forms.fields.bio": "Bio",

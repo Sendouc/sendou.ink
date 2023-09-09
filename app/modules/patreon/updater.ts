@@ -43,8 +43,8 @@ export async function updatePatreonData(): Promise<void> {
     `Added ${patrons.length} patrons. ${
       noDiscordConnected.length
     } patrons had no Discord connected. No full data for following Patreon ID's: ${noDataIds.join(
-      ", "
-    )}`
+      ", ",
+    )}`,
   );
 }
 
@@ -60,12 +60,12 @@ async function fetchPatronData(urlToFetch: string) {
         Authorization: `Bearer ${process.env["PATREON_ACCESS_TOKEN"]}`,
       },
     },
-    30_000
+    30_000,
   );
 
   if (!response.ok) {
     throw new Error(
-      `Patreon response not succesful. Status code was: ${response.status}`
+      `Patreon response not succesful. Status code was: ${response.status}`,
     );
   }
 
@@ -93,7 +93,7 @@ function parsePatronData({
     patronsWithIds.push({
       patreonId: patron.relationships.patron.data.id,
       patronSince: dateToDatabaseTimestamp(
-        new Date(patron.attributes.created_at)
+        new Date(patron.attributes.created_at),
       ),
       patronTier: idToTier(patron.relationships.reward.data.id),
     });

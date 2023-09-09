@@ -615,6 +615,13 @@ dialog::backdrop {
   background-color: var(--theme-transparent);
 }
 
+.combobox-username {
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .article > p {
   padding-block: var(--s-2-5);
 }
@@ -1253,6 +1260,31 @@ dialog::backdrop {
   height: 175px;
   background-color: var(--bg-lighter);
   border-radius: var(--rounded);
+}
+
+.winner__container {
+  height: 125px;
+  width: 125px;
+  border-radius: 100%;
+  background-color: var(--bg-lighter);
+  overflow: hidden;
+  position: relative;
+}
+
+.winner__container.small {
+  height: 41.6667px;
+  width: 41.6667px;
+}
+
+.winner__img-container {
+  position: absolute;
+  top: var(--winner-top, 5px);
+  left: var(--winner-left, 25px);
+}
+
+.winner__img {
+  overflow: visible;
+  max-width: initial;
 }
 
 #nprogress .bar {

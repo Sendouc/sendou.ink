@@ -40,11 +40,11 @@ export default function Planner() {
       setApp(mountedApp);
       mountedApp.setSetting(
         "language",
-        ourLanguageToTldrawLanguage(i18n.language)
+        ourLanguageToTldrawLanguage(i18n.language),
       );
       mountedApp.style({ color: ColorStyle.Red });
     },
-    [i18n]
+    [i18n],
   );
 
   const handleAddImage = React.useCallback(
@@ -91,7 +91,7 @@ export default function Planner() {
       });
       cb?.();
     },
-    [app]
+    [app],
   );
 
   const handleAddWeapon = React.useCallback(
@@ -143,7 +143,7 @@ export default function Planner() {
       plannerBgParams.bgWidth,
       plannerBgParams.pointOffsetX,
       plannerBgParams.pointOffsetY,
-    ]
+    ],
   );
 
   const handleAddBackgroundImage = React.useCallback(
@@ -168,7 +168,7 @@ export default function Planner() {
       plannerBgParams.bgWidth,
       plannerBgParams.pointOffsetX,
       plannerBgParams.pointOffsetY,
-    ]
+    ],
   );
 
   return (
@@ -220,7 +220,7 @@ function WeaponImageSelector({
                     variant="minimal"
                     onClick={() =>
                       handleAddWeapon(
-                        `${outlinedMainWeaponImageUrl(weaponId)}.png`
+                        `${outlinedMainWeaponImageUrl(weaponId)}.png`,
                       )
                     }
                   >
@@ -283,7 +283,7 @@ function WeaponImageSelector({
                 variant="minimal"
                 onClick={() =>
                   handleAddWeapon(
-                    `${specialWeaponImageUrl(specialWeaponId)}.png`
+                    `${specialWeaponImageUrl(specialWeaponId)}.png`,
                   )
                 }
               >
@@ -303,6 +303,7 @@ function WeaponImageSelector({
   );
 }
 
+const LAST_STAGE_ID_WITH_IMAGES = 17;
 function StageBackgroundSelector({
   onAddBackground,
 }: {
@@ -326,13 +327,15 @@ function StageBackgroundSelector({
         onChange={(e) => setStageId(Number(e.target.value) as StageId)}
         aria-label="Select stage"
       >
-        {stageIds.map((stageId) => {
-          return (
-            <option value={stageId} key={stageId}>
-              {t(`game-misc:STAGE_${stageId}`)}
-            </option>
-          );
-        })}
+        {stageIds
+          .filter((id) => id <= LAST_STAGE_ID_WITH_IMAGES)
+          .map((stageId) => {
+            return (
+              <option value={stageId} key={stageId}>
+                {t(`game-misc:STAGE_${stageId}`)}
+              </option>
+            );
+          })}
       </select>
       <select
         className="w-max"
@@ -396,7 +399,7 @@ const ourLanguageToTldrawLanguageMap: Record<LanguageCode, string> = {
 };
 function ourLanguageToTldrawLanguage(ourLanguageUserSelected: string) {
   for (const [ourLanguage, tldrawLanguage] of Object.entries(
-    ourLanguageToTldrawLanguageMap
+    ourLanguageToTldrawLanguageMap,
   )) {
     if (ourLanguage === ourLanguageUserSelected) {
       return tldrawLanguage;

@@ -7,7 +7,7 @@ const storage = new InMemoryDatabase();
 const manager = new BracketsManager(storage);
 
 const FindSingleElimination = suite(
-  "Find previous and next matches in single elimination"
+  "Find previous and next matches in single elimination",
 );
 
 FindSingleElimination.before.each(() => {
@@ -115,11 +115,11 @@ FindSingleElimination(
     const beforeSemi1Down = manager.find.previousMatches(4, 2);
     assert.equal(beforeSemi1Down.length, 1);
     assert.equal(beforeSemi1Down[0].id, 1);
-  }
+  },
 );
 
 const FindDoubleElimination = suite(
-  "Find previous and next matches in double elimination"
+  "Find previous and next matches in double elimination",
 );
 
 FindDoubleElimination.before.each(() => {
@@ -268,9 +268,9 @@ FindDoubleElimination(
 
     assert.throws(
       () => manager.find.nextMatches(3, 42),
-      "The participant does not belong to this match."
+      "The participant does not belong to this match.",
     );
-  }
+  },
 );
 
 FindSingleElimination.run();

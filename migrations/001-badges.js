@@ -6,12 +6,12 @@ module.exports.up = function (db) {
       "code" text not null,
       "displayName" text not null
     ) strict
-  `
+  `,
   ).run();
 
   for (const badge of initialBadgesForDb()) {
     db.prepare(
-      `insert into "Badge" ("code", "displayName") values ($code, $displayName)`
+      `insert into "Badge" ("code", "displayName") values ($code, $displayName)`,
     ).run(badge);
   }
 
@@ -21,7 +21,7 @@ module.exports.up = function (db) {
       "badgeId" integer not null,
       "userId" integer not null
     ) strict
-  `
+  `,
   ).run();
 
   db.prepare(
@@ -31,7 +31,7 @@ module.exports.up = function (db) {
       "userId" integer not null,
       unique("badgeId", "userId") on conflict rollback
     ) strict
-  `
+  `,
   ).run();
 };
 

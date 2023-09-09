@@ -29,14 +29,14 @@ export function rate(teams: Team[], secondaryTeams?: [[Rating], [Rating]]) {
 // due to other team score not being accurate (not enough games played) to their perceived skill level
 function rateConservative(
   teams: Team[],
-  secondaryTeams: [[Rating], [Rating]]
+  secondaryTeams: [[Rating], [Rating]],
 ): [[Rating], [Rating]] {
   const [[ordinaryRatingForWinner], [ordinaryRatingForLoser]] = openskillRate(
     teams,
     {
       tau: TAU,
       preventSigmaIncrease: true,
-    }
+    },
   );
 
   const [, [conservativeRatingForLoser]] = openskillRate(
@@ -44,7 +44,7 @@ function rateConservative(
     {
       tau: TAU,
       preventSigmaIncrease: true,
-    }
+    },
   );
 
   const [[conservativeRatingForWinner]] = openskillRate(
@@ -52,7 +52,7 @@ function rateConservative(
     {
       tau: TAU,
       preventSigmaIncrease: true,
-    }
+    },
   );
 
   const winnerRating =

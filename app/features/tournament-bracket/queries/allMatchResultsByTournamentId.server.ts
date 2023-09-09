@@ -59,7 +59,7 @@ export interface AllMatchResult {
 }
 
 export function allMatchResultsByTournamentId(
-  tournamentId: number
+  tournamentId: number,
 ): AllMatchResult[] {
   const rows = stm.all({ tournamentId }) as unknown as any[];
 

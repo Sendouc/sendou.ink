@@ -24,7 +24,7 @@ export function divideGroups({
   likes: Pick<GroupLike, "likerGroupId" | "targetGroupId">[];
 }): DividedGroupsUncensored {
   let own: LookingGroupWithInviteCode | null = null;
-  let neutral: LookingGroupWithInviteCode[] = [];
+  const neutral: LookingGroupWithInviteCode[] = [];
   const likesReceived: LookingGroupWithInviteCode[] = [];
   const likesGiven: LookingGroupWithInviteCode[] = [];
 
@@ -74,7 +74,7 @@ export function divideGroups({
 }
 
 export function filterOutGroupsWithIncompatibleMapListPreference(
-  groups: DividedGroupsUncensored
+  groups: DividedGroupsUncensored,
 ): DividedGroupsUncensored {
   if (
     groups.own.mapListPreference !== "SZ_ONLY" &&
@@ -110,13 +110,11 @@ export function addReplayIndicator({
 }): DividedGroupsUncensored {
   if (!recentMatchPlayers.length) return groups;
 
-  const ownGroupId = recentMatchPlayers.find(
-    (u) => u.userId === userId
-  )?.groupId;
+  const ownGroupId = recentMatchPlayers.find((u) => u.userId === userId)
+    ?.groupId;
   invariant(ownGroupId, "own group not found");
-  const otherGroupId = recentMatchPlayers.find(
-    (u) => u.groupId !== ownGroupId
-  )?.groupId;
+  const otherGroupId = recentMatchPlayers.find((u) => u.groupId !== ownGroupId)
+    ?.groupId;
   invariant(otherGroupId, "other group not found");
 
   const opponentPlayers = recentMatchPlayers
@@ -126,7 +124,7 @@ export function addReplayIndicator({
   const addReplayIndicatorIfNeeded = (group: LookingGroupWithInviteCode) => {
     const samePlayersCount = group.members.reduce(
       (acc, cur) => (opponentPlayers.includes(cur.id) ? acc + 1 : acc),
-      0
+      0,
     );
 
     return { ...group, isReplay: samePlayersCount >= MIN_PLAYERS_FOR_REPLAY };
@@ -164,13 +162,13 @@ export function censorGroups({
   return {
     own: showInviteCode ? groups.own : censorGroupPartly(groups.own),
     neutral: groups.neutral.map(
-      showMembers ? censorGroupPartly : censorGroupFully
+      showMembers ? censorGroupPartly : censorGroupFully,
     ),
     likesGiven: groups.likesGiven.map(
-      showMembers ? censorGroupPartly : censorGroupFully
+      showMembers ? censorGroupPartly : censorGroupFully,
     ),
     likesReceived: groups.likesReceived.map(
-      showMembers ? censorGroupPartly : censorGroupFully
+      showMembers ? censorGroupPartly : censorGroupFully,
     ),
   };
 }
@@ -185,7 +183,7 @@ export function addSkillsToGroups({
   intervals: SkillTierInterval[];
 }): DividedGroupsUncensored {
   const resolveGroupSkill = (
-    group: LookingGroupWithInviteCode
+    group: LookingGroupWithInviteCode,
   ): TieredSkill["tier"] | undefined => {
     if (group.members.length < FULL_GROUP_SIZE) return;
 
@@ -195,11 +193,14 @@ export function addSkillsToGroups({
     const averageOrdinal =
       skills.reduce((acc, s) => acc + s.ordinal, 0) / skills.length;
 
-    return (
-      intervals.find(
-        (i) => i.neededOrdinal && averageOrdinal > i.neededOrdinal
-      ) ?? { isPlus: false, name: "IRON" }
-    );
+    const tier = intervals.find(
+      (i) => i.neededOrdinal && averageOrdinal > i.neededOrdinal,
+    ) ?? { isPlus: false, name: "IRON" };
+
+    // For Leviathan we don't specify if it's plus or not
+    return tier.name === "LEVIATHAN"
+      ? { name: "LEVIATHAN", isPlus: false }
+      : tier;
   };
   const addSkill = (group: LookingGroupWithInviteCode) => ({
     ...group,
@@ -223,7 +224,7 @@ export function membersNeededForFull(currentSize: number) {
 }
 
 export function groupExpiryStatus(
-  group: Pick<Group, "latestActionAt">
+  group: Pick<Group, "latestActionAt">,
 ): null | "EXPIRING_SOON" | "EXPIRED" {
   // group expires in 30min without actions performed
   const groupExpiresAt =

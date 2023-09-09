@@ -27,7 +27,7 @@ export class Reset extends BaseUpdater {
     //    --> `reset.matchResults()` will throw the error below in all cases.
     if (!helpers.isMatchForfeitCompleted(stored) && stored.child_count > 0)
       throw Error(
-        "The parent match is controlled by its child games and its result cannot be reset."
+        "The parent match is controlled by its child games and its result cannot be reset.",
       );
 
     const stage = this.storage.select("stage", stored.stage_id);
@@ -37,7 +37,7 @@ export class Reset extends BaseUpdater {
     if (!group) throw Error("Group not found.");
 
     const { roundNumber, roundCount } = this.getRoundPositionalInfo(
-      stored.round_id
+      stored.round_id,
     );
     const matchLocation = helpers.getMatchLocation(stage.type, group.number);
     const nextMatches = this.getNextMatches(
@@ -45,7 +45,7 @@ export class Reset extends BaseUpdater {
       matchLocation,
       stage,
       roundNumber,
-      roundCount
+      roundCount,
     );
 
     if (
@@ -53,7 +53,7 @@ export class Reset extends BaseUpdater {
         (match) =>
           match &&
           match.status >= Status.Running &&
-          !helpers.isMatchByeCompleted(match)
+          !helpers.isMatchByeCompleted(match),
       )
     )
       throw Error("The match is locked.");

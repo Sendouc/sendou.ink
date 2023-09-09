@@ -97,6 +97,6 @@ export function teamSPLeaderboard(season: number): TeamSPLeaderboardItem[] {
         members: parseDBJsonArray(members),
         team: sharesSameTeam ? parsedTeams[0] : undefined,
       };
-    }
+    },
   );
 }

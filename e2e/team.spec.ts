@@ -65,7 +65,7 @@ test.describe("Team page", () => {
     await page.getByText("shorter bio").isVisible();
     await expect(page.getByTestId("twitter-link")).toHaveAttribute(
       "href",
-      "https://twitter.com/BetterAllianceRogue"
+      "https://twitter.com/BetterAllianceRogue",
     );
   });
 

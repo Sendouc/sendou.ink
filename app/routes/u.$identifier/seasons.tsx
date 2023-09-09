@@ -18,7 +18,7 @@ import {
   currentMMRByUserId,
   seasonAllMMRByUserId,
 } from "~/features/mmr/queries/seasonAllMMRByUserId.server";
-import { currentSeason, seasonObject } from "~/features/mmr/season";
+import { seasonObject } from "~/features/mmr/season";
 import { userSkills } from "~/features/mmr/tiered.server";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { notFoundIfFalsy } from "~/utils/remix";
@@ -39,13 +39,23 @@ import { databaseTimestampToDate } from "~/utils/dates";
 import { SubNav, SubNavLink } from "~/components/SubNav";
 import { z } from "zod";
 import { seasonStagesByUserId } from "~/features/sendouq/queries/seasonStagesByUserId.server";
-import { stageIds } from "~/modules/in-game-lists";
+import {
+  type ModeShort,
+  type StageId,
+  stageIds,
+} from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { seasonsMatesEnemiesByUserId } from "~/features/sendouq/queries/seasonsMatesEnemiesByUserId.server";
 import Chart from "~/components/Chart";
 import { AlertIcon } from "~/components/icons/Alert";
 import { seasonMapWinrateByUserId } from "~/features/sendouq/queries/seasonMapWinrateByUserId.server";
 import { seasonSetWinrateByUserId } from "~/features/sendouq/queries/seasonSetWinrateByUserId.server";
+import { Popover } from "~/components/Popover";
+import { useWeaponUsage } from "~/hooks/swr";
+import { atOrError } from "~/utils/arrays";
+import { Tab, Tabs } from "~/components/Tabs";
+import { TopTenPlayer } from "~/features/leaderboards/components/TopTenPlayer";
+import { playerTopTenPlacement } from "~/features/leaderboards/leaderboards-utils";
 
 export const seasonsSearchParamsSchema = z.object({
   page: z.coerce.number().default(1),
@@ -55,18 +65,16 @@ export const seasonsSearchParamsSchema = z.object({
 export const loader = async ({ params, request }: LoaderArgs) => {
   const { identifier } = userParamsSchema.parse(params);
   const parsedSearchParams = seasonsSearchParamsSchema.safeParse(
-    Object.fromEntries(new URL(request.url).searchParams)
+    Object.fromEntries(new URL(request.url).searchParams),
   );
   const { info, page } = parsedSearchParams.success
     ? parsedSearchParams.data
     : seasonsSearchParamsSchema.parse({});
 
-  // TODO: handle it not being current season ("freshUserSkills" has ! that throws)
-  notFoundIfFalsy(currentSeason(new Date()));
-
   const user = notFoundIfFalsy(db.users.findByIdentifier(identifier));
 
-  const { tier } = (await userSkills()).userSkills[user.id] ?? {
+  // TODO: dynamic season
+  const { tier } = (await userSkills(0)).userSkills[user.id] ?? {
     approximate: false,
     ordinal: 0,
     tier: { isPlus: false, name: "IRON" },
@@ -236,10 +244,19 @@ function Winrates() {
 
 function Rank({ currentOrdinal }: { currentOrdinal: number }) {
   const data = useLoaderData<typeof loader>();
+  const [, parentRoute] = useMatches();
+  invariant(parentRoute);
+  const parentRouteData = parentRoute.data as UserPageLoaderData;
 
   const maxOrdinal = Math.max(...data.skills.map((s) => s.ordinal));
 
   const peakAndCurrentSame = currentOrdinal === maxOrdinal;
+
+  // TODO: dynamic season
+  const topTenPlacement = playerTopTenPlacement({
+    season: 0,
+    userId: parentRouteData.id,
+  });
 
   return (
     <div className="stack horizontal items-center justify-center sm">
@@ -254,6 +271,10 @@ function Rank({ currentOrdinal }: { currentOrdinal: number }) {
           <div className="text-lighter text-sm">
             Peak {ordinalToSp(maxOrdinal)}SP
           </div>
+        ) : null}
+        {/* TODO: dynamic season */}
+        {topTenPlacement ? (
+          <TopTenPlayer small placement={topTenPlacement} season={0} />
         ) : null}
       </div>
     </div>
@@ -323,7 +344,7 @@ function Weapons({
             variant="build"
             size={42}
             title={`${t(`weapons:MAIN_${weaponSplId}`)} (${percentage(
-              count
+              count,
             )}%)`}
           />
         </WeaponCircle>
@@ -343,6 +364,8 @@ function Stages({
   stages: NonNullable<SerializeFrom<typeof loader>["info"]["stages"]>;
 }) {
   const { t } = useTranslation(["game-misc"]);
+  const parentPageData = atOrError(useMatches(), -2).data as UserPageLoaderData;
+
   return (
     <div className="stack horizontal justify-center md flex-wrap">
       {stageIds.map((id) => {
@@ -353,30 +376,120 @@ function Stages({
               const stats = stages[id]?.[mode];
               const winPercentage = stats
                 ? cutToNDecimalPlaces(
-                    (stats.wins / (stats.wins + stats.losses)) * 100
+                    (stats.wins / (stats.wins + stats.losses)) * 100,
                   )
                 : "";
               const infoText = `${t(`game-misc:MODE_SHORT_${mode}`)} ${t(
-                `game-misc:STAGE_${id}`
+                `game-misc:STAGE_${id}`,
               )} ${winPercentage}${winPercentage ? "%" : ""}`;
 
               return (
-                <div
+                <Popover
                   key={mode}
-                  className="stack horizontal items-center xs text-xs font-semi-bold"
-                >
-                  <ModeImage mode={mode} size={18} title={infoText} />
-                  {stats ? (
-                    <div>
-                      {stats.wins}W {stats.losses}L
+                  buttonChildren={
+                    <div className="stack horizontal items-center xs text-xs font-semi-bold text-main-forced">
+                      <ModeImage mode={mode} size={18} title={infoText} />
+                      {stats ? (
+                        <div>
+                          {stats.wins}W {stats.losses}L
+                        </div>
+                      ) : null}
                     </div>
-                  ) : null}
-                </div>
+                  }
+                >
+                  <StageWeaponUsageStats
+                    modeShort={mode}
+                    // TODO: dynamic season
+                    season={0}
+                    stageId={id}
+                    userId={parentPageData.id}
+                  />
+                </Popover>
               );
             })}
           </div>
         );
       })}
+      <div className="text-xs text-lighter font-semi-bold">
+        Click a row to show weapon usage stats
+      </div>
+    </div>
+  );
+}
+
+function StageWeaponUsageStats(props: {
+  userId: number;
+  season: number;
+  modeShort: ModeShort;
+  stageId: StageId;
+}) {
+  const { t } = useTranslation(["game-misc"]);
+  const [tab, setTab] = React.useState<"SELF" | "MATE" | "ENEMY">("SELF");
+  const { weaponUsage, isLoading } = useWeaponUsage(props);
+
+  if (isLoading) {
+    return (
+      <div className="u__season__weapon-usage__container items-center justify-center text-lighter p-2">
+        Loading...
+      </div>
+    );
+  }
+
+  const usages = (weaponUsage ?? []).filter((u) => u.type === tab);
+
+  if (usages.length === 0) {
+    return (
+      <div className="u__season__weapon-usage__container items-center justify-center text-lighter p-2">
+        No reported weapons yet
+      </div>
+    );
+  }
+
+  return (
+    <div className="u__season__weapon-usage__container">
+      <div className="stack horizontal sm text-xs items-center justify-center">
+        <ModeImage mode={props.modeShort} width={18} />
+        {t(`game-misc:STAGE_${props.stageId}`)}
+      </div>
+      <Tabs compact className="mb-0">
+        <Tab active={tab === "SELF"} onClick={() => setTab("SELF")}>
+          Self
+        </Tab>
+        <Tab active={tab === "MATE"} onClick={() => setTab("MATE")}>
+          Teammates
+        </Tab>
+        <Tab active={tab === "ENEMY"} onClick={() => setTab("ENEMY")}>
+          Opponents
+        </Tab>
+      </Tabs>
+      <div className="u__season__weapon-usage__weapons-container">
+        {usages.map((u) => {
+          const winrate = cutToNDecimalPlaces(
+            (u.wins / (u.wins + u.losses)) * 100,
+          );
+
+          return (
+            <div key={u.weaponSplId}>
+              <WeaponImage
+                weaponSplId={u.weaponSplId}
+                variant="build"
+                width={48}
+                className="u__season__weapon-usage__weapon"
+              />
+              <div
+                className={clsx("text-xs font-bold", {
+                  "text-success": winrate >= 50,
+                  "text-warning": winrate < 50,
+                })}
+              >
+                {winrate}%
+              </div>
+              <div className="text-xs">{u.wins} W</div>
+              <div className="text-xs">{u.losses} L</div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -390,10 +503,10 @@ function Players({
     <div className="stack md horizontal justify-center flex-wrap">
       {players.map((player) => {
         const setWinRate = Math.round(
-          (player.setWins / (player.setWins + player.setLosses)) * 100
+          (player.setWins / (player.setWins + player.setLosses)) * 100,
         );
         const mapWinRate = Math.round(
-          (player.mapWins / (player.mapWins + player.mapLosses)) * 100
+          (player.mapWins / (player.mapWins + player.mapLosses)) * 100,
         );
         return (
           <div key={player.user.id} className="stack">
@@ -482,7 +595,7 @@ function Matches() {
                     "text-xs font-semi-bold text-theme-secondary",
                     {
                       invisible: !isMounted || !shouldRenderDateHeader,
-                    }
+                    },
                   )}
                 >
                   {isMounted
@@ -492,7 +605,7 @@ function Matches() {
                           weekday: "long",
                           month: "long",
                           day: "numeric",
-                        }
+                        },
                       )
                     : "t"}
                 </div>
@@ -530,7 +643,7 @@ function Match({
       acc[0] + (cur === match.alphaGroupId ? 1 : 0),
       acc[1] + (cur === match.bravoGroupId ? 1 : 0),
     ],
-    [0, 0]
+    [0, 0],
   );
 
   // make sure user's team is always on the top

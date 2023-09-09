@@ -49,7 +49,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   const vods = findVods({
     ...Object.fromEntries(
-      Array.from(url.searchParams.entries()).filter(([, value]) => value)
+      Array.from(url.searchParams.entries()).filter(([, value]) => value),
     ),
     limit: limit + 1,
   });
@@ -118,19 +118,19 @@ function Filters({
 
   const [searchParams] = useSearchParams();
   const mode = modesShort.find(
-    (mode) => searchParams.get("mode") && mode === searchParams.get("mode")
+    (mode) => searchParams.get("mode") && mode === searchParams.get("mode"),
   );
   const stageId = stageIds.find(
     (stageId) =>
       searchParams.get("stageId") &&
-      stageId === Number(searchParams.get("stageId"))
+      stageId === Number(searchParams.get("stageId")),
   );
   const weapon = mainWeaponIds.find(
     (id) =>
-      searchParams.get("weapon") && id === Number(searchParams.get("weapon"))
+      searchParams.get("weapon") && id === Number(searchParams.get("weapon")),
   );
   const type = videoMatchTypes.find(
-    (type) => searchParams.get("type") && type === searchParams.get("type")
+    (type) => searchParams.get("type") && type === searchParams.get("type"),
   );
 
   return (

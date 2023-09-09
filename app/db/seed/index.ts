@@ -179,7 +179,7 @@ function adminUser() {
 function makeAdminPatron() {
   sql
     .prepare(
-      `update "User" set "patronTier" = 2, "patronSince" = 1674663454 where id = 1`
+      `update "User" set "patronTier" = 2, "patronSince" = 1674663454 where id = 1`,
     )
     .run();
 }
@@ -195,7 +195,7 @@ function adminUserWeaponPool() {
         `
       insert into "UserWeapon" ("userId", "weaponSplId", "order")
         values ($userId, $weaponSplId, $order)
-    `
+    `,
       )
       .run({ userId: 1, weaponSplId, order: i + 1 });
   }
@@ -247,7 +247,7 @@ function userProfiles() {
           motionSens = $motionSens,
           stickSens = $stickSens,
           inGameName = $inGameName
-        WHERE id = $userId`
+        WHERE id = $userId`,
       )
       .run(args);
   }
@@ -257,13 +257,13 @@ function userProfiles() {
 
     sql
       .prepare(
-        `UPDATE "User" SET bio = $bio, country = $country WHERE id = $id`
+        `UPDATE "User" SET bio = $bio, country = $country WHERE id = $id`,
       )
       .run({
         id,
         bio: faker.lorem.paragraphs(
           faker.helpers.arrayElement([1, 1, 1, 2, 3, 4]),
-          "\n\n"
+          "\n\n",
         ),
         country: Math.random() > 0.5 ? faker.location.countryCode() : null,
       });
@@ -287,7 +287,7 @@ function userProfiles() {
           @weaponSplId,
           @order,
           @isFavorite
-        )`
+        )`,
         )
         .run({
           userId: id,
@@ -438,26 +438,26 @@ function syncPlusTiers() {
     .prepare(
       /* sql */ `
     insert into "PlusTier" ("userId", "tier") select "userId", "tier" from "FreshPlusTier" where "tier" is not null;
-  `
+  `,
     )
     .run();
 }
 
 function badgesToAdmin() {
   const availableBadgeIds = shuffle(
-    (sql.prepare(`select "id" from "Badge"`).all() as any[]).map((b) => b.id)
+    (sql.prepare(`select "id" from "Badge"`).all() as any[]).map((b) => b.id),
   ).slice(0, 8) as number[];
 
   const badgesWithDuplicates = availableBadgeIds.flatMap((id) =>
     new Array(faker.helpers.arrayElement([1, 1, 1, 2, 3, 4]))
       .fill(null)
-      .map(() => id)
+      .map(() => id),
   );
 
   for (const id of badgesWithDuplicates) {
     sql
       .prepare(
-        `insert into "TournamentBadgeOwner" ("badgeId", "userId") values ($id, $userId)`
+        `insert into "TournamentBadgeOwner" ("badgeId", "userId") values ($id, $userId)`,
       )
       .run({ id, userId: 1 });
   }
@@ -465,7 +465,7 @@ function badgesToAdmin() {
 
 function getAvailableBadgeIds() {
   return shuffle(
-    (sql.prepare(`select "id" from "Badge"`).all() as any[]).map((b) => b.id)
+    (sql.prepare(`select "id" from "Badge"`).all() as any[]).map((b) => b.id),
   );
 }
 
@@ -492,7 +492,7 @@ function badgesToUsers() {
       const userToGetABadge = userIds.shift()!;
       sql
         .prepare(
-          `insert into "TournamentBadgeOwner" ("badgeId", "userId") values ($id, $userId)`
+          `insert into "TournamentBadgeOwner" ("badgeId", "userId") values ($id, $userId)`,
         )
         .run({ id, userId: userToGetABadge });
 
@@ -506,7 +506,7 @@ function badgeManagers() {
   for (let id = 1; id <= 10; id++) {
     sql
       .prepare(
-        `insert into "BadgeManager" ("badgeId", "userId") values ($id, $userId)`
+        `insert into "BadgeManager" ("badgeId", "userId") values ($id, $userId)`,
       )
       .run({ id, userId: 2 });
   }
@@ -524,7 +524,7 @@ function patrons() {
   for (const id of userIds) {
     sql
       .prepare(
-        `update user set "patronTier" = $patronTier, "patronSince" = $patronSince where id = $id`
+        `update user set "patronTier" = $patronTier, "patronSince" = $patronSince where id = $id`,
       )
       .run({
         id,
@@ -576,12 +576,12 @@ function calendarEvents() {
         $authorId,
         $tags
       )
-      `
+      `,
       )
       .run({
         id,
         name: `${capitalize(faker.word.adjective())} ${capitalize(
-          faker.word.noun()
+          faker.word.noun(),
         )}`,
         description: faker.lorem.paragraph(),
         discordInviteCode: faker.lorem.word(),
@@ -594,7 +594,7 @@ function calendarEvents() {
                   0,
                   faker.helpers.arrayElement([
                     1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 4, 5, 6,
-                  ])
+                  ]),
                 )
                 .join(",")
             : null,
@@ -617,7 +617,7 @@ function calendarEvents() {
           $eventId,
           $startTime
         )
-      `
+      `,
       )
       .run({
         eventId: id,
@@ -637,7 +637,7 @@ function calendarEvents() {
             $eventId,
             $startTime
           )
-        `
+        `,
         )
         .run({
           eventId: id,
@@ -662,7 +662,7 @@ function calendarEventBadges() {
         .prepare(
           `insert into "CalendarEventBadge" 
           ("eventId", "badgeId") 
-          values ($eventId, $badgeId)`
+          values ($eventId, $badgeId)`,
         )
         .run({ eventId, badgeId: availableBadgeIds.pop() });
     }
@@ -678,10 +678,10 @@ function calendarEventResults() {
           `select "CalendarEvent"."id" 
           from "CalendarEvent" 
           join "CalendarEventDate" on "CalendarEventDate"."eventId" = "CalendarEvent"."id"
-          where "CalendarEventDate"."startTime" < $startTime`
+          where "CalendarEventDate"."startTime" < $startTime`,
         )
         .all({ startTime: dateToDatabaseTimestamp(new Date()) }) as any[]
-    ).map((r) => r.id)
+    ).map((r) => r.id),
   );
 
   for (const eventId of eventIdsOfPast) {
@@ -698,7 +698,7 @@ function calendarEventResults() {
           placement: i + 1,
           teamName: capitalize(faker.word.noun()),
           players: new Array(
-            faker.helpers.arrayElement([1, 2, 3, 4, 4, 4, 4, 4, 5, 6])
+            faker.helpers.arrayElement([1, 2, 3, 4, 4, 4, 4, 4, 5, 6]),
           )
             .fill(null)
             .map(() => {
@@ -733,7 +733,7 @@ function calendarEventWithToTools(sz?: boolean) {
         $mapPickingStyle,
         $format
       ) returning *
-      `
+      `,
     )
     .run({
       id: tournamentId,
@@ -761,7 +761,7 @@ function calendarEventWithToTools(sz?: boolean) {
         $authorId,
         $tournamentId
       )
-      `
+      `,
     )
     .run({
       id: eventId,
@@ -783,7 +783,7 @@ function calendarEventWithToTools(sz?: boolean) {
           $eventId,
           $startTime
         )
-      `
+      `,
     )
     .run({
       eventId,
@@ -811,7 +811,7 @@ function calendarEventWithToToolsTieBreakerMapPool() {
           $stageId,
           $mode
         )
-      `
+      `,
       )
       .run({
         tieBreakerCalendarEventId: TO_TOOLS_CALENDAR_EVENT_ID,
@@ -831,13 +831,13 @@ const validTournamentTeamName = () => {
 const availableStages: StageId[] = [1, 2, 3, 4, 6, 7, 8, 10, 11];
 const availablePairs = rankedModesShort
   .flatMap((mode) =>
-    availableStages.map((stageId) => ({ mode, stageId: stageId }))
+    availableStages.map((stageId) => ({ mode, stageId: stageId })),
   )
   .filter((pair) => !tiebreakerPicks.has(pair));
 function calendarEventWithToToolsTeams(sz?: boolean) {
   const userIds = userIdsInAscendingOrderById();
   const names = Array.from(
-    new Set(new Array(100).fill(null).map(() => validTournamentTeamName()))
+    new Set(new Array(100).fill(null).map(() => validTournamentTeamName())),
   ).concat("Chimera");
 
   for (let id = 1; id <= 16; id++) {
@@ -862,7 +862,7 @@ function calendarEventWithToToolsTeams(sz?: boolean) {
         $tournamentId,
         $inviteCode
       )
-      `
+      `,
       )
       .run({
         id: teamId,
@@ -883,7 +883,7 @@ function calendarEventWithToToolsTeams(sz?: boolean) {
         $tournamentTeamId,
         $checkedInAt
       )
-      `
+      `,
         )
         .run({
           tournamentTeamId: id + (sz ? 100 : 0),
@@ -913,7 +913,7 @@ function calendarEventWithToToolsTeams(sz?: boolean) {
         $isOwner,
         $createdAt
       )
-      `
+      `,
         )
         .run({
           tournamentTeamId: id + (sz ? 100 : 0),
@@ -957,7 +957,7 @@ function calendarEventWithToToolsTeams(sz?: boolean) {
           $stageId,
           $mode
         )
-        `
+        `,
           )
           .run({
             tournamentTeamId: id + (sz ? 100 : 0),
@@ -998,14 +998,14 @@ function tournamentSubs() {
         @message,
         @visibility
       )
-    `
+    `,
       )
       .run({
         userId: id,
         tournamentId: 1,
         canVc: Number(Math.random() > 0.5),
         bestWeapons: nullFilledArray(
-          faker.helpers.arrayElement([1, 1, 1, 2, 2, 3, 4, 5])
+          faker.helpers.arrayElement([1, 1, 1, 2, 2, 3, 4, 5]),
         )
           .map(() => {
             while (true) {
@@ -1021,7 +1021,7 @@ function tournamentSubs() {
           Math.random() > 0.5
             ? null
             : nullFilledArray(
-                faker.helpers.arrayElement([1, 1, 1, 2, 2, 3, 4, 5])
+                faker.helpers.arrayElement([1, 1, 1, 2, 2, 3, 4, 5]),
               )
                 .map(() => {
                   while (true) {
@@ -1055,12 +1055,12 @@ function adminBuilds() {
     const randomOrderShoesGear = shuffle(shoesGearIds.slice());
     // filter out sshot to prevent test flaking
     const randomOrderWeaponIds = shuffle(
-      adminWeaponPool.filter((id) => id !== 40).slice()
+      adminWeaponPool.filter((id) => id !== 40).slice(),
     );
 
     db.builds.create({
       title: `${capitalize(faker.word.adjective())} ${capitalize(
-        faker.word.noun()
+        faker.word.noun(),
       )}`,
       ownerId: 1,
       private: 0,
@@ -1069,7 +1069,7 @@ function adminBuilds() {
       clothesGearSplId: randomOrderClothesGear[0]!,
       shoesGearSplId: randomOrderShoesGear[0]!,
       weaponSplIds: new Array(
-        faker.helpers.arrayElement([1, 1, 1, 2, 2, 3, 4, 5])
+        faker.helpers.arrayElement([1, 1, 1, 2, 2, 3, 4, 5]),
       )
         .fill(null)
         .map(() => randomOrderWeaponIds.pop()!),
@@ -1105,7 +1105,7 @@ function manySplattershotBuilds() {
   // ensure 500 has at least one splattershot build for x placement test
   const users = [
     ...userIdsInRandomOrder().filter(
-      (id) => id !== 500 && id !== ADMIN_ID && id !== NZAP_TEST_ID
+      (id) => id !== 500 && id !== ADMIN_ID && id !== NZAP_TEST_ID,
     ),
     500,
   ];
@@ -1117,13 +1117,13 @@ function manySplattershotBuilds() {
     const randomOrderClothesGear = shuffle(clothesGearIds.slice());
     const randomOrderShoesGear = shuffle(shoesGearIds.slice());
     const randomOrderWeaponIds = shuffle(mainWeaponIds.slice()).filter(
-      (id) => id !== SPLATTERSHOT_ID
+      (id) => id !== SPLATTERSHOT_ID,
     );
 
     db.builds.create({
       private: 0,
       title: `${capitalize(faker.word.adjective())} ${capitalize(
-        faker.word.noun()
+        faker.word.noun(),
       )}`,
       ownerId: users.pop()!,
       description: Math.random() < 0.75 ? faker.lorem.paragraph() : null,
@@ -1131,11 +1131,11 @@ function manySplattershotBuilds() {
       clothesGearSplId: randomOrderClothesGear[0]!,
       shoesGearSplId: randomOrderShoesGear[0]!,
       weaponSplIds: new Array(
-        faker.helpers.arrayElement([1, 1, 1, 2, 2, 3, 4, 5])
+        faker.helpers.arrayElement([1, 1, 1, 2, 2, 3, 4, 5]),
       )
         .fill(null)
         .map((_, i) =>
-          i === 0 ? SPLATTERSHOT_ID : randomOrderWeaponIds.pop()!
+          i === 0 ? SPLATTERSHOT_ID : randomOrderWeaponIds.pop()!,
         ),
       modes:
         Math.random() < 0.75
@@ -1173,7 +1173,7 @@ function detailedTeam() {
       values 
         (1672587342, 'AiGSM5T-cxm6BFGT7N_lA-1673297699133.webp', 1), 
         (1672587342, 'jTbWd95klxU2MzGFIdi1c-1673297932788.webp', 1)
-  `
+  `,
     )
     .run();
 
@@ -1190,7 +1190,7 @@ function detailedTeam() {
           1,
           2
        )
-  `
+  `,
     )
     .run();
 
@@ -1209,7 +1209,7 @@ function detailedTeam() {
           ${i === 0 ? 1 : 0},
           ${i < 4 ? "null" : "1672587342"}
         )
-    `
+    `,
       )
       .run();
   }
@@ -1222,18 +1222,18 @@ function otherTeams() {
         /*sql */ `select
     "userId"
     from "AllTeamMember"
-    `
+    `,
       )
       .all() as any[]
   ).map((row) => row.userId);
 
   const userIds = userIdsInRandomOrder().filter(
-    (u) => !usersInTeam.includes(u) && u !== 2
+    (u) => !usersInTeam.includes(u) && u !== 2,
   );
 
   for (let i = 3; i < 50; i++) {
     const teamName = `${capitalize(faker.word.adjective())} ${capitalize(
-      faker.word.noun()
+      faker.word.noun(),
     )}`;
     const teamCustomUrl = mySlugify(teamName);
 
@@ -1249,7 +1249,7 @@ function otherTeams() {
           @twitter,
           @bio
        )
-    `
+    `,
       )
       .run({
         id: i,
@@ -1276,7 +1276,7 @@ function otherTeams() {
             ${j === 0 ? "'CAPTAIN'" : "'FRONTLINE'"},
             ${j === 0 ? 1 : 0}
           )
-      `
+      `,
         )
         .run();
     }
@@ -1439,7 +1439,7 @@ function userFavBadges() {
       sql
         .prepare(`select "badgeId" from "BadgeOwner" where "userId" = 1`)
         .all() as any[]
-    ).map((row) => row.badgeId)
+    ).map((row) => row.badgeId),
   );
   sql
     .prepare(`update "User" set "favoriteBadgeId" = $id where "id" = 1`)
@@ -1588,7 +1588,7 @@ function groups() {
   for (let i = 0; i < 25; i++) {
     const group = createGroup({
       mapListPreference: faker.helpers.arrayElement(
-        MAP_LIST_PREFERENCE_OPTIONS
+        MAP_LIST_PREFERENCE_OPTIONS,
       ),
       status: "ACTIVE",
       userId: users.pop()!,
@@ -1623,7 +1623,7 @@ function groups() {
           /* sql */ `
         insert into "GroupMember" ("groupId", "userId", "role")
         values (@groupId, @userId, @role)
-      `
+      `,
         )
         .run({
           groupId: group.id,
@@ -1640,7 +1640,7 @@ function groups() {
 
 const randomMapList = (
   groupAlpha: number,
-  groupBravo: number
+  groupBravo: number,
 ): TournamentMapListMap[] => {
   const szOnly = faker.helpers.arrayElement([true, false]);
   const modePattern = shuffle([...rankedModesShort]);
@@ -1678,7 +1678,7 @@ function playedMatches() {
       .map((id) => {
         const weapons = shuffle([...mainWeaponIds]);
         return [id, weapons[0]];
-      })
+      }),
   );
 
   // mid august 2021
@@ -1742,7 +1742,7 @@ function playedMatches() {
       update "GroupMatch"
       set "createdAt" = @createdAt
       where "id" = @id
-    `
+    `,
       )
       .run({
         createdAt: dateToDatabaseTimestamp(matchDate),
@@ -1796,7 +1796,7 @@ function playedMatches() {
       setGroupAsInactive(groupBravo);
       addMapResults(summarizeMaps({ match: finishedMatch, members, winners }));
       addPlayerResults(
-        summarizePlayerResults({ match: finishedMatch, members, winners })
+        summarizePlayerResults({ match: finishedMatch, members, winners }),
       );
     })();
 
@@ -1804,7 +1804,7 @@ function playedMatches() {
     if (Math.random() > 0.9) continue;
     const users = [...groupAlphaMembers, ...groupBravoMembers];
     const mapsWithUsers = users.flatMap((u) =>
-      finishedMatch.mapList.map((m) => ({ map: m, user: u }))
+      finishedMatch.mapList.map((m) => ({ map: m, user: u })),
     );
 
     addReportedWeapons(
@@ -1826,7 +1826,7 @@ function playedMatches() {
           userId: mu.user,
           weaponSplId: weapon(),
         };
-      })
+      }),
     );
   }
 }

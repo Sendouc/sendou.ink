@@ -14,7 +14,7 @@ import {
   translationJsonFolderName,
 } from "./utils";
 
-const CURRENT_SEASON = 4;
+const CURRENT_SEASON = 5;
 const OUTPUT_DIR_PATH = path.join(__dirname, "output");
 
 const LEAN_HEAD_CODE = "Hed";
@@ -25,7 +25,7 @@ const LEAN_SHOES_CODE = "Shs";
 // but it's just for clarity
 const AVAILABLE_SR_GEAR = [
   21010, 21011, 21015, 21013, 21012, 21014, 21012, 21000, 21001, 21002, 21001,
-  21002, 21001, 21016, 21017, 21018,
+  21002, 21001, 21016, 21017, 21018, 21019,
 ];
 
 async function main() {
@@ -78,7 +78,7 @@ async function main() {
 
   fs.writeFileSync(
     path.join(OUTPUT_DIR_PATH, "gear.json"),
-    JSON.stringify(allGear, null, 2)
+    JSON.stringify(allGear, null, 2),
   );
 
   const headGear = allGear.filter((g) => g.type === LEAN_HEAD_CODE);
@@ -94,30 +94,30 @@ async function main() {
 
   fs.writeFileSync(
     path.join(OUTPUT_DIR_PATH, "head-ids.json"),
-    JSON.stringify(headIds, null, 2)
+    JSON.stringify(headIds, null, 2),
   );
   fs.writeFileSync(
     path.join(OUTPUT_DIR_PATH, "clothes-ids.json"),
-    JSON.stringify(clothesIds, null, 2)
+    JSON.stringify(clothesIds, null, 2),
   );
   fs.writeFileSync(
     path.join(OUTPUT_DIR_PATH, "shoes-ids.json"),
-    JSON.stringify(shoesIds, null, 2)
+    JSON.stringify(shoesIds, null, 2),
   );
 
   for (const langCode of LANG_JSONS_TO_CREATE) {
     const translationsMap = Object.fromEntries(
       allGear.map((gear) => {
         const translation = gear.translations.find(
-          (t) => t.language === langCode
+          (t) => t.language === langCode,
         )?.name;
         invariant(
           translation,
-          `No translation for ${gear.internalName} in ${langCode}`
+          `No translation for ${gear.internalName} in ${langCode}`,
         );
 
         return [`${gear.type.charAt(0).toUpperCase()}_${gear.id}`, translation];
-      })
+      }),
     );
 
     fs.writeFileSync(
@@ -127,9 +127,9 @@ async function main() {
         "public",
         "locales",
         translationJsonFolderName(langCode),
-        `gear.json`
+        `gear.json`,
       ),
-      JSON.stringify(translationsMap, null, 2) + "\n"
+      JSON.stringify(translationsMap, null, 2) + "\n",
     );
   }
 }

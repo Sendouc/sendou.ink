@@ -98,7 +98,7 @@ export function tournamentTeamSets({
       const maxRoundNumberOfGroup = Math.max(
         ...allRoundNumbers
           .filter((round) => round.groupNumber === set.groupNumber)
-          .map((round) => round.roundNumber)
+          .map((round) => round.roundNumber),
       );
 
       if (set.roundNumber === maxRoundNumberOfGroup) return "finals";

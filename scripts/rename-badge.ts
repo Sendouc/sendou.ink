@@ -10,7 +10,7 @@ invariant(id, "id of badge is required (argument 1)");
 invariant(newName, "display name of badge is required (argument 2)");
 invariant(
   newName !== newName.toLocaleLowerCase(),
-  "displayName of badge must have at least one uppercase letter"
+  "displayName of badge must have at least one uppercase letter",
 );
 
 sql

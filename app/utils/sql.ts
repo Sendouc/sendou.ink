@@ -9,7 +9,7 @@ export function parseDBJsonArray(value: any) {
   // it will be returned as object with all values being null
   // this is a (hacky) workaround for that
   return parsed.filter((item: any) =>
-    Object.values(item).some((val) => val !== null)
+    Object.values(item).some((val) => val !== null),
   );
 }
 

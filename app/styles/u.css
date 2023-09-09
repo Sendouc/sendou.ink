@@ -394,3 +394,26 @@
   font-size: var(--fonts-xs);
   font-weight: var(--semi-bold);
 }
+
+.u__season__weapon-usage__container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  width: 300px;
+  min-height: 175px;
+}
+
+.u__season__weapon-usage__weapons-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2-5);
+  justify-content: center;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.u__season__weapon-usage__weapon {
+  border-radius: 100%;
+  background-color: var(--bg-lighter);
+  padding: var(--s-1-5);
+}

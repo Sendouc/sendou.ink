@@ -91,7 +91,7 @@ export default function TournamentMapsPage() {
     defaultValue: parentRouteData.teams[1]?.id,
     revive: reviveTeam(
       parentRouteData.teams.map((t) => t.id),
-      teamOneId
+      teamOneId,
     ),
   });
   const [roundNumber, setRoundNumber] = useSearchParamState({
@@ -216,7 +216,7 @@ function RoundSelect({
         onChange={(e) => {
           const [bracketType, roundNumber] = e.target.value.split("-") as [
             BracketType,
-            string
+            string,
           ];
           handleChange(Number(roundNumber), bracketType);
         }}
@@ -228,7 +228,7 @@ function RoundSelect({
                 {t(`tournament:bracket.type.${type}`)} {i + 1}
               </option>
             );
-          })
+          }),
         )}
       </select>
     </div>
@@ -319,7 +319,7 @@ function MapList(props: Omit<TournamentMaplistInput, "tiebreakerMaps">) {
   } catch (e) {
     console.error(
       "Failed to create map list. Falling back to default maps.",
-      e
+      e,
     );
 
     mapList = createTournamentMapList({

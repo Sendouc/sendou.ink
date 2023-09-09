@@ -36,7 +36,7 @@ import { useObjectDamage } from "../calculator-hooks";
 import type { DamageReceiver } from "../calculator-types";
 import styles from "../calculator.css";
 
-export const CURRENT_PATCH = "4.1";
+export const CURRENT_PATCH = "5.0";
 
 export const shouldRevalidate: ShouldRevalidateFunction = () => false;
 
@@ -185,7 +185,7 @@ function DamageTypesSelect({
             {t(
               damageTypeTranslationString({
                 damageType,
-              })
+              }),
             )}
           </option>
         );
@@ -242,7 +242,7 @@ function DamageReceiversGrid({
       className="object-damage__grid"
       style={{
         gridTemplateColumns: gridTemplateColumnsValue(
-          damagesToReceivers[0]?.damages.length ?? 0
+          damagesToReceivers[0]?.damages.length ?? 0,
         ),
       }}
     >
@@ -262,7 +262,7 @@ function DamageReceiversGrid({
             {t(
               damageTypeTranslationString({
                 damageType: damage.type,
-              })
+              }),
             )}
             {damage.objectShredder && <Ability ability="OS" size="TINY" />}
           </div>

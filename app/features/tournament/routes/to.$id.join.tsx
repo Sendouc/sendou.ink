@@ -38,7 +38,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   const teamToJoin = teams.find((team) => team.id === leanTeam.id);
   const previousTeam = teams.find((team) =>
-    team.members.some((member) => member.userId === user.id)
+    team.members.some((member) => member.userId === user.id),
   );
 
   const tournamentHasStarted = hasTournamentStarted(tournamentId);
@@ -46,7 +46,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   if (tournamentHasStarted) {
     validate(
       !previousTeam || !previousTeam.checkedInAt,
-      "Can't leave checked in team mid tournament"
+      "Can't leave checked in team mid tournament",
     );
   }
   validate(teamToJoin, "Not team of this tournament");
@@ -57,13 +57,13 @@ export const action: ActionFunction = async ({ request, params }) => {
       userId: user.id,
       tournamentHasStarted,
     }) === "VALID",
-    "Cannot join this team or invite code is invalid"
+    "Cannot join this team or invite code is invalid",
   );
 
   const whatToDoWithPreviousTeam = !previousTeam
     ? undefined
     : previousTeam.members.some(
-        (member) => member.userId === user.id && member.isOwner
+        (member) => member.userId === user.id && member.isOwner,
       )
     ? "DELETE"
     : "LEAVE";
@@ -82,9 +82,8 @@ export const action: ActionFunction = async ({ request, params }) => {
     tournamentId,
   });
   if (data.trust) {
-    const inviterUserId = teamToJoin.members.find(
-      (member) => member.isOwner
-    )?.userId;
+    const inviterUserId = teamToJoin.members.find((member) => member.isOwner)
+      ?.userId;
     invariant(inviterUserId, "Inviter user could not be resolved");
     giveTrust({
       trustGiverUserId: user.id,
@@ -115,7 +114,7 @@ export default function JoinTeamPage() {
   const data = useLoaderData<typeof loader>();
 
   const teamToJoin = parentRouteData.teams.find(
-    (team) => team.id === data.teamId
+    (team) => team.id === data.teamId,
   );
   const captain = teamToJoin?.members.find((member) => member.isOwner);
   const validationStatus = validateCanJoin({

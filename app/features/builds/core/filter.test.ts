@@ -6,7 +6,7 @@ import type { Ability, BuildAbilitiesTuple } from "~/modules/in-game-lists";
 const FilterBuilds = suite("Filter builds");
 
 const createBuild = (
-  headAbilities: [Ability, Ability, Ability, Ability]
+  headAbilities: [Ability, Ability, Ability, Ability],
 ): { abilities: BuildAbilitiesTuple } => {
   return {
     abilities: [

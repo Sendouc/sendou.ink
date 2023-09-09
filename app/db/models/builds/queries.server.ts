@@ -42,7 +42,7 @@ export const create = sql.transaction((build: CreateArgs) => {
         ? JSON.stringify(
             build.modes
               .slice()
-              .sort((a, b) => modesShort.indexOf(a) - modesShort.indexOf(b))
+              .sort((a, b) => modesShort.indexOf(a) - modesShort.indexOf(b)),
           )
         : null,
     headGearSplId: build.headGearSplId,
@@ -77,7 +77,7 @@ export const updateByReplacing = sql.transaction(
   (build: CreateArgs & { id: Build["id"] }) => {
     deleteByIdStm.run({ id: build.id });
     create(build);
-  }
+  },
 );
 
 export function countByUserId({

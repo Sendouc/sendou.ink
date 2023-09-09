@@ -28,7 +28,7 @@ export const updateAllCommand: BotCommand = {
 
     if (!response.ok) {
       return interaction.editReply(
-        `Update failed with status code ${response.status}`
+        `Update failed with status code ${response.status}`,
       );
     }
 

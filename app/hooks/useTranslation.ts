@@ -15,10 +15,10 @@ import type { SendouRouteHandle } from "~/utils/remix";
 // Only has an effect in non-production environments.
 export function useTranslation<
   N extends Namespace = DefaultNamespace,
-  TKPrefix extends KeyPrefix<N> = undefined
+  TKPrefix extends KeyPrefix<N> = undefined,
 >(
   ns?: N | Readonly<N>,
-  options?: UseTranslationOptions<TKPrefix>
+  options?: UseTranslationOptions<TKPrefix>,
 ): UseTranslationResponse<N, TKPrefix> {
   if (process.env.NODE_ENV !== "production") {
     // These are safe because the condition cannot change at runtime, so the
@@ -30,9 +30,9 @@ export function useTranslation<
     const loadedTranslations: Set<string> = React.useMemo(
       () =>
         new Set(
-          matches.flatMap((m) => (m.handle as SendouRouteHandle)?.i18n ?? [])
+          matches.flatMap((m) => (m.handle as SendouRouteHandle)?.i18n ?? []),
         ),
-      [matches]
+      [matches],
     );
 
     // Reset the typing to the actual representation to be able to read from it.
@@ -48,8 +48,8 @@ export function useTranslation<
       if (!loadedTranslations.has(singleNs)) {
         throw new Error(
           `Tried to access translation file "${singleNs}", but the active routes only configured need for these files: ${JSON.stringify(
-            [...loadedTranslations.values()]
-          )}.\nForgot to add "${singleNs}" translation to SendouRouteHandle (handle.i18n)?`
+            [...loadedTranslations.values()],
+          )}.\nForgot to add "${singleNs}" translation to SendouRouteHandle (handle.i18n)?`,
         );
       }
     }

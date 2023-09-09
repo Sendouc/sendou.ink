@@ -168,5 +168,5 @@ export const addSummary = sql.transaction(
         tournamentTeamId: tournamentResult.tournamentTeamId,
       });
     }
-  }
+  },
 );

@@ -2,7 +2,7 @@
 export async function fetchWithTimeout(
   input: RequestInfo | URL,
   init?: RequestInit | undefined,
-  timeout = 5000
+  timeout = 5000,
 ) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => {

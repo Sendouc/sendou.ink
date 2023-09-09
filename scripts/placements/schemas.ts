@@ -40,7 +40,7 @@ const placements = z.object({
                 id: z.string(),
               }),
               z.null(),
-            ])
+            ]),
           ),
           background: z.object({
             textColor: z.object({
@@ -56,7 +56,7 @@ const placements = z.object({
         __typename: z.string(),
       }),
       cursor: z.string(),
-    })
+    }),
   ),
   pageInfo: z.object({ endCursor: z.string(), hasNextPage: z.boolean() }),
 });

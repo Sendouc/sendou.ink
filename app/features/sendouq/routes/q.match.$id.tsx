@@ -79,6 +79,7 @@ import { resolveRoomPass } from "~/features/tournament-bracket/tournament-bracke
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { addDummySkill } from "../queries/addDummySkill.server";
 import { inGameNameWithoutDiscriminator } from "~/utils/strings";
+import { currentSeason } from "~/features/mmr";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -110,7 +111,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 
       validate(
         !data.adminReport || isAdmin(user),
-        "Only admins can report scores as admin"
+        "Only admins can report scores as admin",
       );
       const members = [
         ...groupForMatch(match.alphaGroupId)!.members.map((m) => ({
@@ -126,7 +127,7 @@ export const action = async ({ request, params }: ActionArgs) => {
       const groupMemberOfId = members.find((m) => m.id === user.id)?.groupId;
       invariant(
         groupMemberOfId || data.adminReport,
-        "User is not a manager of any group"
+        "User is not a manager of any group",
       );
 
       const winner = winnersArrayToWinner(data.winners);
@@ -184,10 +185,10 @@ export const action = async ({ request, params }: ActionArgs) => {
         // skills & map/player results only update after both teams have reported
         if (newSkills) {
           addMapResults(
-            summarizeMaps({ match, members, winners: data.winners })
+            summarizeMaps({ match, members, winners: data.winners }),
           );
           addPlayerResults(
-            summarizePlayerResults({ match, members, winners: data.winners })
+            summarizePlayerResults({ match, members, winners: data.winners }),
           );
           addSkills(newSkills);
           cache.delete(USER_SKILLS_CACHE_KEY);
@@ -209,6 +210,9 @@ export const action = async ({ request, params }: ActionArgs) => {
       break;
     }
     case "LOOK_AGAIN": {
+      const season = currentSeason(new Date());
+      validate(season, "Season is not active");
+
       const previousGroup = groupForMatch(data.previousGroupId);
       validate(previousGroup, "Previous group not found");
 
@@ -218,7 +222,7 @@ export const action = async ({ request, params }: ActionArgs) => {
         if (member.id === user.id) {
           validate(
             member.role === "OWNER",
-            "You are not the owner of the group"
+            "You are not the owner of the group",
           );
         }
       }
@@ -236,11 +240,11 @@ export const action = async ({ request, params }: ActionArgs) => {
 
       const reportedMaps = match.mapList.reduce(
         (acc, cur) => acc + (cur.winnerGroupId ? 1 : 0),
-        0
+        0,
       );
       validate(
         reportedMaps === data.weapons.length,
-        "Not reporting weapons for all maps"
+        "Not reporting weapons for all maps",
       );
 
       const groupAlpha = badRequestIfFalsy(groupForMatch(match.alphaGroupId));
@@ -259,8 +263,8 @@ export const action = async ({ request, params }: ActionArgs) => {
                 groupMatchMapId: matchMap.id,
                 weaponSplId: weaponSplId as MainWeaponId,
                 userId: users[j],
-              }))
-            )
+              })),
+            ),
         );
       })();
 
@@ -310,7 +314,7 @@ export default function QMatchPage() {
     data.groupAlpha.members.find((m) => m.id === user?.id) ??
     data.groupBravo.members.find((m) => m.id === user?.id);
   const canReportScore = Boolean(
-    !data.match.isLocked && (ownMember || isAdmin(user))
+    !data.match.isLocked && (ownMember || isAdmin(user)),
   );
 
   const ownGroup = data.groupAlpha.members.some((m) => m.id === user?.id)
@@ -321,7 +325,7 @@ export default function QMatchPage() {
 
   const ownTeamReported = Boolean(
     data.match.reportedByUserId &&
-      ownGroup?.members.some((m) => m.id === data.match.reportedByUserId)
+      ownGroup?.members.some((m) => m.id === data.match.reportedByUserId),
   );
   const showScore = data.match.isLocked || ownTeamReported;
 
@@ -350,7 +354,7 @@ export default function QMatchPage() {
                   year: "numeric",
                   hour: "numeric",
                   minute: "numeric",
-                }
+                },
               )
             : // reserve place
               "0/0/0 0:00"}
@@ -474,7 +478,7 @@ function Score({ reportedAt }: { reportedAt: number }) {
 
       return [acc[0], acc[1] + 1];
     },
-    [0, 0]
+    [0, 0],
   );
 
   if (score[0] === 0 && score[1] === 0) {
@@ -507,7 +511,7 @@ function Score({ reportedAt }: { reportedAt: number }) {
                   year: "numeric",
                   hour: "numeric",
                   minute: "numeric",
-                }
+                },
               )
             : ""}
         </div>
@@ -551,12 +555,12 @@ function AfterMatchActions({
       result.push(
         players.map((u) => {
           const weaponSplId = data.reportedWeapons?.find(
-            (rw) => rw.groupMatchMapId === matchMap.id && rw.userId === u.id
+            (rw) => rw.groupMatchMapId === matchMap.id && rw.userId === u.id,
           )?.weaponSplId;
 
           invariant(typeof weaponSplId === "number", "weaponSplId is null");
           return weaponSplId;
-        })
+        }),
       );
     }
 
@@ -568,7 +572,9 @@ function AfterMatchActions({
 
   const wasReportedInTheLastHour =
     databaseTimestampToDate(reportedAt).getTime() > Date.now() - 3600 * 1000;
-  const showLookAgain = role === "OWNER" && wasReportedInTheLastHour;
+
+  const season = currentSeason(new Date());
+  const showLookAgain = role === "OWNER" && wasReportedInTheLastHour && season;
 
   const wasReportedInTheLastWeek =
     databaseTimestampToDate(reportedAt).getTime() >
@@ -577,7 +583,7 @@ function AfterMatchActions({
     wasReportedInTheLastWeek && data.match.mapList[0].winnerGroupId;
 
   const winners = playedMaps.map((m) =>
-    m.winnerGroupId === data.match.alphaGroupId ? "ALPHA" : "BRAVO"
+    m.winnerGroupId === data.match.alphaGroupId ? "ALPHA" : "BRAVO",
   );
 
   return (
@@ -664,7 +670,7 @@ function AfterMatchActions({
                                     IGN:
                                   </span>{" "}
                                   {inGameNameWithoutDiscriminator(
-                                    member.inGameName
+                                    member.inGameName,
                                   )}
                                 </>
                               ) : (
@@ -677,7 +683,8 @@ function AfterMatchActions({
                                 variant="badge"
                                 width={32}
                                 className={clsx("ml-auto", {
-                                  invisible: !weaponsUsage[i][j],
+                                  invisible:
+                                    typeof weaponsUsage[i][j] !== "number",
                                 })}
                               />
                               <WeaponCombobox
@@ -690,7 +697,7 @@ function AfterMatchActions({
                                     const newVal = [...val];
                                     newVal[i] = [...newVal[i]];
                                     newVal[i][j] = Number(
-                                      weapon.value
+                                      weapon.value,
                                     ) as MainWeaponId;
                                     return newVal;
                                   });
@@ -843,11 +850,11 @@ function MapList({
     ? data.match.mapList
         .filter((m) => m.winnerGroupId)
         .map((m) =>
-          m.winnerGroupId === data.groupAlpha.id ? "ALPHA" : "BRAVO"
+          m.winnerGroupId === data.groupAlpha.id ? "ALPHA" : "BRAVO",
         )
     : [];
   const [winners, setWinners] = React.useState<("ALPHA" | "BRAVO")[]>(
-    previouslyReportedWinners
+    previouslyReportedWinners,
   );
 
   const newScoresAreDifferent =
@@ -882,7 +889,7 @@ function MapList({
                   .sort(
                     (a, b) =>
                       allMembers.indexOf(a.userId) -
-                      allMembers.indexOf(b.userId)
+                      allMembers.indexOf(b.userId),
                   )}
               />
             );
@@ -1082,7 +1089,7 @@ function ResultSummary({ winners }: { winners: ("ALPHA" | "BRAVO")[] }) {
 
       return [acc[0], acc[1] + 1];
     },
-    [0, 0]
+    [0, 0],
   );
 
   const userWon =

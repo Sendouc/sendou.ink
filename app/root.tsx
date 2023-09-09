@@ -46,6 +46,7 @@ import invariant from "tiny-invariant";
 import { CUSTOMIZED_CSS_VARS_NAME } from "./constants";
 import NProgress from "nprogress";
 import nProgressStyles from "nprogress/nprogress.css";
+import { ExternalScripts } from "remix-utils";
 
 export const shouldRevalidate: ShouldRevalidateFunction = ({ nextUrl }) => {
   // // reload on language change so the selected language gets set into the cookie
@@ -132,7 +133,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     },
     {
       headers: { "Set-Cookie": await i18nCookie.serialize(locale) },
-    }
+    },
   );
 };
 
@@ -177,11 +178,6 @@ function Document({
         <Links />
         <ThemeHead />
         <link rel="manifest" href="/app.webmanifest" />
-        {/* TODO: preferably don't load this for every route */}
-        <script
-          type="text/javascript"
-          src="https://cdn.jsdelivr.net/npm/brackets-viewer@1.5.1/dist/brackets-viewer.min.js"
-        ></script>
         <PWALinks />
         <Fonts />
       </head>
@@ -194,6 +190,7 @@ function Document({
           </Layout>
         </React.StrictMode>
         <ConditionalScrollRestoration />
+        <ExternalScripts />
         <Scripts />
         <LiveReload />
       </body>
@@ -221,7 +218,7 @@ function useLoadingIndicator() {
       if (states.every((state) => state === "idle")) return "idle";
       return "loading";
     },
-    [transition.state, fetchers]
+    [transition.state, fetchers],
   );
 
   React.useEffect(() => {
@@ -273,8 +270,8 @@ function useCustomizedCSSVars() {
       // even an illusion of type safety here
       return Object.fromEntries(
         Object.entries(
-          match.data[CUSTOMIZED_CSS_VARS_NAME] as Record<string, string>
-        ).map(([key, value]) => [`--${key}`, value])
+          match.data[CUSTOMIZED_CSS_VARS_NAME] as Record<string, string>,
+        ).map(([key, value]) => [`--${key}`, value]),
       ) as React.CSSProperties;
     }
   }

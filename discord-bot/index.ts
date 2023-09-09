@@ -25,7 +25,7 @@ client.on("interactionCreate", async (interaction) => {
 
   if (!command) {
     throw new Error(
-      `I don't know how to handle the command called "${commandName}"`
+      `I don't know how to handle the command called "${commandName}"`,
     );
   }
 

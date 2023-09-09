@@ -40,7 +40,7 @@ export function MemberAdder({
               id="players"
               onChange={(e) =>
                 setTrustedUser(
-                  e.target.value ? Number(e.target.value) : undefined
+                  e.target.value ? Number(e.target.value) : undefined,
                 )
               }
             >

@@ -37,7 +37,7 @@ export const action: ActionFunction = async ({ request }) => {
 
   if (
     !buildsByUserId({ userId: user.id, loggedInUserId: user?.id }).some(
-      (build) => build.id === data.buildToDeleteId
+      (build) => build.id === data.buildToDeleteId,
     )
   ) {
     throw new Response(null, { status: 400 });
@@ -72,13 +72,16 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   });
 
   function calculateWeaponCounts() {
-    return builds.reduce((acc, build) => {
-      for (const weapon of build.weapons) {
-        acc[weapon.weaponSplId] = (acc[weapon.weaponSplId] ?? 0) + 1;
-      }
+    return builds.reduce(
+      (acc, build) => {
+        for (const weapon of build.weapons) {
+          acc[weapon.weaponSplId] = (acc[weapon.weaponSplId] ?? 0) + 1;
+        }
 
-      return acc;
-    }, {} as Record<MainWeaponId, number>);
+        return acc;
+      },
+      {} as Record<MainWeaponId, number>,
+    );
   }
 };
 
@@ -104,7 +107,7 @@ export default function UserBuildsPage() {
     weaponFilter === "ALL"
       ? data.builds
       : data.builds.filter((build) =>
-          build.weapons.map((wpn) => wpn.weaponSplId).includes(weaponFilter)
+          build.weapons.map((wpn) => wpn.weaponSplId).includes(weaponFilter),
         );
 
   return (

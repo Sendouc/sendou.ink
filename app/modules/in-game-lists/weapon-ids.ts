@@ -15,23 +15,25 @@ export const weaponCategories = [
   },
   {
     name: "ROLLERS",
-    weaponIds: [1000, 1001, 1010, 1011, 1020, 1030, 1040, 1041],
+    weaponIds: [1000, 1001, 1010, 1011, 1020, 1021, 1030, 1040, 1041],
   },
   {
     name: "BRUSHES",
-    weaponIds: [1100, 1101, 1110, 1120],
+    weaponIds: [1100, 1101, 1110, 1111, 1120],
   },
   {
     name: "CHARGERS",
-    weaponIds: [2000, 2010, 2011, 2020, 2021, 2030, 2040, 2050, 2060, 2070],
+    weaponIds: [
+      2000, 2010, 2011, 2020, 2021, 2030, 2040, 2050, 2060, 2061, 2070,
+    ],
   },
   {
     name: "SLOSHERS",
-    weaponIds: [3000, 3001, 3010, 3011, 3020, 3030, 3040],
+    weaponIds: [3000, 3001, 3010, 3011, 3020, 3021, 3030, 3031, 3040, 3050],
   },
   {
     name: "SPLATLINGS",
-    weaponIds: [4000, 4001, 4010, 4011, 4020, 4030, 4040],
+    weaponIds: [4000, 4001, 4010, 4011, 4020, 4030, 4031, 4040, 4050],
   },
   {
     name: "DUALIES",
@@ -39,11 +41,11 @@ export const weaponCategories = [
   },
   {
     name: "BRELLAS",
-    weaponIds: [6000, 6010, 6011, 6020],
+    weaponIds: [6000, 6001, 6010, 6011, 6020],
   },
   {
     name: "STRINGERS",
-    weaponIds: [7010, 7020],
+    weaponIds: [7010, 7011, 7020],
   },
   {
     name: "SPLATANAS",
@@ -142,7 +144,7 @@ export const specialWeaponIds = [
 export const nonDamagingSpecialWeaponIds = [BIG_BUBBLER_ID, TACTICOOLER_ID];
 
 export const exampleMainWeaponIdWithSpecialWeaponId = (
-  specialWeaponId: SpecialWeaponId
+  specialWeaponId: SpecialWeaponId,
 ): MainWeaponId => {
   switch (specialWeaponId) {
     case TRIZOOKA_ID:

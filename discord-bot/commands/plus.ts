@@ -18,7 +18,7 @@ export const plusCommand: BotCommand = {
       option
         .setName(ACTION_ARG)
         .setDescription("If true doesn't remove or give roles")
-        .setRequired(true)
+        .setRequired(true),
     ),
   // @ts-expect-error TODO: fix. Library doesn't seem to extract API Message type so I could fix this error?
   execute: async ({ interaction, client }) => {
@@ -54,7 +54,7 @@ export const plusCommand: BotCommand = {
 
 async function membersWithPlusRoles(client: Client<boolean>) {
   const plusServer = client.guilds.cache.find(
-    (g) => g.id === ids.guilds.plusServer
+    (g) => g.id === ids.guilds.plusServer,
   );
   invariant(plusServer);
 

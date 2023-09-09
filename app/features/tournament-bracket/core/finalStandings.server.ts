@@ -58,7 +58,7 @@ export function finalStandings({
       },
       placement: currentPlacement,
       players: playersThatPlayed.filter(
-        (p) => p.tournamentTeamId === standing.id
+        (p) => p.tournamentTeamId === standing.id,
       ),
     });
   }
@@ -87,7 +87,7 @@ export function finalStandingOfTeam({
 
   return (
     standings.find(
-      (standing) => standing.tournamentTeam.id === tournamentTeamId
+      (standing) => standing.tournamentTeam.id === tournamentTeamId,
     ) ?? null
   );
 }

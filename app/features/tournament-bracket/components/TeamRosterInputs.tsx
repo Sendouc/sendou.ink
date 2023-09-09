@@ -84,7 +84,7 @@ export function TeamRosterInputs({
                 const newPlayers = clone(checkedPlayers);
                 if (checkedPlayers.flat().includes(playerId)) {
                   newPlayers[teamI] = newPlayers[teamI]!.filter(
-                    (id) => id !== playerId
+                    (id) => id !== playerId,
                   );
                 } else {
                   newPlayers[teamI]!.push(playerId);
@@ -162,7 +162,7 @@ function TeamRosterInputsCheckboxes({
   const id = React.useId();
 
   const members = data.match.players.filter(
-    (p) => p.tournamentTeamId === teamId
+    (p) => p.tournamentTeamId === teamId,
   );
 
   const mode = () => {
@@ -187,7 +187,7 @@ function TeamRosterInputsCheckboxes({
             className={clsx(
               "tournament-bracket__during-match-actions__checkbox-name",
               { "disabled-opaque": mode() === "DISABLED" },
-              { presentational: mode() === "PRESENTATIONAL" }
+              { presentational: mode() === "PRESENTATIONAL" },
             )}
           >
             <input

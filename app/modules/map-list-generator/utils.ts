@@ -15,7 +15,7 @@ export function mapPoolToNonEmptyModes(mapPool: MapPool) {
 }
 
 export function mapPoolListToMapPoolObject(
-  mapPoolList: Array<Pick<MapPoolMap, "stageId" | "mode">>
+  mapPoolList: Array<Pick<MapPoolMap, "stageId" | "mode">>,
 ) {
   const result: MapPoolObject = {
     TW: [],

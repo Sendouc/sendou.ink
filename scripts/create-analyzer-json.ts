@@ -26,7 +26,7 @@ import {
   translationJsonFolderName,
 } from "./utils";
 
-const CURRENT_SEASON = 4;
+const CURRENT_SEASON = 5;
 
 type MainWeapon = (typeof weapons)[number];
 type SubWeapon = (typeof subWeapons)[number];
@@ -46,7 +46,7 @@ async function main() {
 
     const rawParams = loadWeaponParamsObject(weapon);
     const params = combineSwingsIfSame(
-      parametersToMainWeaponResult(weapon, rawParams)
+      parametersToMainWeaponResult(weapon, rawParams),
     );
 
     translationsToArray({
@@ -102,7 +102,7 @@ async function main() {
 
   fs.writeFileSync(
     path.join(__dirname, "output", `params.json`),
-    JSON.stringify(toFile, null, 2) + "\n"
+    JSON.stringify(toFile, null, 2) + "\n",
   );
 
   writeTranslationsJsons(translations);
@@ -111,7 +111,7 @@ async function main() {
 
 function parametersToMainWeaponResult(
   weapon: MainWeapon,
-  params: any
+  params: any,
 ): MainWeaponParams {
   const isSplatling =
     params["WeaponParam"]?.["$type"] === "spl__WeaponSpinnerParam";
@@ -205,7 +205,7 @@ function parametersToMainWeaponResult(
 
   const resolveMin = (
     valueOne: number | null | undefined,
-    valueTwo: number | null | undefined
+    valueTwo: number | null | undefined,
   ) => {
     if (typeof valueOne !== "number" && typeof valueTwo !== "number")
       return undefined;
@@ -218,7 +218,7 @@ function parametersToMainWeaponResult(
 
   const resolveMax = (
     valueOne: number | null | undefined,
-    valueTwo: number | null | undefined
+    valueTwo: number | null | undefined,
   ) => {
     if (typeof valueOne !== "number" && typeof valueTwo !== "number")
       return undefined;
@@ -277,7 +277,7 @@ function parametersToMainWeaponResult(
     DamageParam_SplatanaVertical:
       params["BulletSaberVerticalParam"]?.["DamageParam"]?.["HitDamage"],
     DamageParam_SplatanaHorizontalDirect: Number.isNaN(
-      DamageParam_SplatanaHorizontalDirect
+      DamageParam_SplatanaHorizontalDirect,
     )
       ? undefined
       : DamageParam_SplatanaHorizontalDirect,
@@ -292,7 +292,7 @@ function parametersToMainWeaponResult(
       ],
       params["SwingUnitGroupParam"]?.["DamageParam"]?.["Outside"]?.[
         "DamageMinValue"
-      ]
+      ],
     ),
     SwingUnitGroupParam_DamageParam_DamageMaxValue: resolveMax(
       params["SwingUnitGroupParam"]?.["DamageParam"]?.["Inside"]?.[
@@ -300,7 +300,7 @@ function parametersToMainWeaponResult(
       ],
       params["SwingUnitGroupParam"]?.["DamageParam"]?.["Outside"]?.[
         "DamageMaxValue"
-      ]
+      ],
     ),
     // roller splash damages
     VerticalSwingUnitGroupParam_DamageParam_DamageMinValue: resolveMin(
@@ -309,7 +309,7 @@ function parametersToMainWeaponResult(
       ],
       params["VerticalSwingUnitGroupParam"]?.["DamageParam"]?.["Outside"]?.[
         "DamageMinValue"
-      ]
+      ],
     ),
     VerticalSwingUnitGroupParam_DamageParam_DamageMaxValue: resolveMax(
       params["VerticalSwingUnitGroupParam"]?.["DamageParam"]?.["Inside"]?.[
@@ -317,7 +317,7 @@ function parametersToMainWeaponResult(
       ],
       params["VerticalSwingUnitGroupParam"]?.["DamageParam"]?.["Outside"]?.[
         "DamageMaxValue"
-      ]
+      ],
     ),
     WideSwingUnitGroupParam_DamageParam_DamageMinValue: resolveMin(
       params["WideSwingUnitGroupParam"]?.["DamageParam"]?.["Inside"]?.[
@@ -325,7 +325,7 @@ function parametersToMainWeaponResult(
       ],
       params["WideSwingUnitGroupParam"]?.["DamageParam"]?.["Outside"]?.[
         "DamageMinValue"
-      ]
+      ],
     ),
     WideSwingUnitGroupParam_DamageParam_DamageMaxValue: resolveMax(
       params["WideSwingUnitGroupParam"]?.["DamageParam"]?.["Inside"]?.[
@@ -333,7 +333,7 @@ function parametersToMainWeaponResult(
       ],
       params["WideSwingUnitGroupParam"]?.["DamageParam"]?.["Outside"]?.[
         "DamageMaxValue"
-      ]
+      ],
     ),
     CanopyHP: params["spl__BulletShelterCanopyParam"]?.["CanopyHP"],
     ChargeFrameFullCharge:
@@ -400,7 +400,7 @@ function combineSwingsIfSame(params: MainWeaponParams): MainWeaponParams {
 
 function parametersToSubWeaponResult(
   subWeapon: SubWeapon,
-  params: any
+  params: any,
 ): SubWeaponParams {
   const SubInkSaveLv = params["SubWeaponSetting"]?.["SubInkSaveLv"] ?? 2;
 
@@ -622,21 +622,21 @@ function unwrapSubSpecialSpecUpList(result: any) {
       }
 
       return [[key, value]];
-    })
+    }),
   );
 }
 
 function resolveSubWeaponId(weapon: MainWeapon) {
   const codeName = weapon.SubWeapon.replace("Work/Gyml/", "").replace(
     ".spl__WeaponInfoSub.gyml",
-    ""
+    "",
   );
 
   const subWeaponObj = subWeapons.find((wpn) => codeName === wpn.__RowId);
   invariant(subWeaponObj, `Could not find sub weapon for '${weapon.__RowId}'`);
   invariant(
     subWeaponIds.includes(subWeaponObj.Id as any),
-    `Invalid sub weapon id`
+    `Invalid sub weapon id`,
   );
 
   return subWeaponObj.Id as SubWeaponId;
@@ -645,15 +645,15 @@ function resolveSubWeaponId(weapon: MainWeapon) {
 function resolveSpecialWeaponId(weapon: MainWeapon) {
   const codeName = weapon.SpecialWeapon.replace("Work/Gyml/", "").replace(
     ".spl__WeaponInfoSpecial.gyml",
-    ""
+    "",
   );
 
   const specialWeaponObj = specialWeapons.find(
-    (wpn) => codeName === wpn.__RowId
+    (wpn) => codeName === wpn.__RowId,
   );
   invariant(
     specialWeaponObj,
-    `Could not find special weapon for '${codeName}'`
+    `Could not find special weapon for '${codeName}'`,
   );
 
   return specialWeaponObj.Id as SpecialWeaponId;
@@ -701,10 +701,10 @@ function resolveOverwrites(params: any) {
 
 function resolveOverwritesWithArbitraryKeys(
   result: NonNullable<MainWeaponParams["overwrites"]>,
-  paramsObj: unknown
+  paramsObj: unknown,
 ) {
   for (const [key, value] of Object.entries(
-    paramsObj as Record<string, number>
+    paramsObj as Record<string, number>,
   )) {
     if (!key.startsWith("Overwrite_")) continue;
     if (value === -1) continue;
@@ -748,8 +748,8 @@ function resolveSubWeaponOverwrites(subWeapon: SubWeapon, params: any) {
   return Object.fromEntries(
     Object.entries(result).filter(
       ([_key, value]) =>
-        value && (value.High !== value.Mid || value.Low !== value.High)
-    )
+        value && (value.High !== value.Mid || value.Low !== value.High),
+    ),
   );
 }
 
@@ -784,22 +784,24 @@ function subWeaponShouldBeSkipped(subWeapon: SubWeapon) {
 }
 
 function specialWeaponShouldBeSkipped(specialWeapon: SpecialWeapon) {
+  console.log({ specialWeapon });
   if (WEAPON_TYPES_TO_IGNORE.some((val) => specialWeapon.Type.includes(val))) {
     return true;
   }
   if (specialWeapon.__RowId === "SpGachihoko") return true;
+  if (specialWeapon.__RowId === "SpGachihokoForEventMatch") return true;
 
   return false;
 }
 
 function loadWeaponParamsObject(
-  weapon: MainWeapon | SubWeapon | SpecialWeapon
+  weapon: MainWeapon | SubWeapon | SpecialWeapon,
 ) {
   return JSON.parse(
     fs.readFileSync(
       path.join(__dirname, "dicts", "weapon", weaponRowIdToFileName(weapon)),
-      "utf8"
-    )
+      "utf8",
+    ),
   )["GameParameters"];
 }
 
@@ -823,14 +825,14 @@ function translationsToArray({
   type: "Main" | "Sub" | "Special";
   translations: [
     langCode: string,
-    translations: Record<string, Record<string, string>>
+    translations: Record<string, Record<string, string>>,
   ][];
 }) {
   for (const langCode of LANG_JSONS_TO_CREATE) {
     const translationOfLanguage = translations.find((t) => t[0] === langCode);
     invariant(
       translationOfLanguage,
-      `Could not find translation for '${langCode}'`
+      `Could not find translation for '${langCode}'`,
     );
 
     const value =
@@ -856,17 +858,17 @@ function writeTranslationsJsons(arr: TranslationArray) {
         "public",
         "locales",
         translationJsonFolderName(langCode),
-        `weapons.json`
+        `weapons.json`,
       ),
       JSON.stringify(
         Object.fromEntries(
           arr
             .filter((val) => val.language === langCode)
-            .map(({ key, value }) => [key, value])
+            .map(({ key, value }) => [key, value]),
         ),
         null,
-        2
-      ) + "\n"
+        2,
+      ) + "\n",
     );
   }
 }

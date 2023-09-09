@@ -31,6 +31,8 @@ const stages = [
   "Um'ami Ruins",
   "Humpback Pump Track",
   "Barnacle & Dime",
+  "Crableg Capital",
+  "Shipshape Cargo Co.",
 ] as const;
 
 const abilityShortToInternalName = new Map([
@@ -66,13 +68,13 @@ async function main() {
   const langDicts = await loadLangDicts();
 
   const englishLangDict = langDicts.find(
-    ([langCode]) => langCode === "EUen"
+    ([langCode]) => langCode === "EUen",
   )?.[1];
   invariant(englishLangDict);
 
   const codeNames = stages.map((stage) => {
     const codeName = Object.entries(
-      englishLangDict["CommonMsg/VS/VSStageName"]
+      englishLangDict["CommonMsg/VS/VSStageName"],
     ).find(([_key, value]) => value === stage)?.[0];
 
     invariant(codeName, `Could not find code name for stage ${stage}`);
@@ -92,7 +94,7 @@ async function main() {
         invariant(codeName);
 
         return [`STAGE_${i}`, langDict["CommonMsg/VS/VSStageName"][codeName]];
-      })
+      }),
     );
 
     for (const ability of abilitiesShort) {
@@ -100,7 +102,7 @@ async function main() {
       invariant(internalName, `Missing internal name for ${ability}`);
 
       const translation = decodeURIComponent(
-        langDict["CommonMsg/Gear/GearPowerName"][internalName]
+        langDict["CommonMsg/Gear/GearPowerName"][internalName],
       );
 
       translationsMap[`ABILITY_${ability}`] = translation;
@@ -113,9 +115,9 @@ async function main() {
         "public",
         "locales",
         translationJsonFolderName(langCode),
-        `game-misc.json`
+        `game-misc.json`,
       ),
-      JSON.stringify(translationsMap, null, 2) + "\n"
+      JSON.stringify(translationsMap, null, 2) + "\n",
     );
   }
 }

@@ -73,12 +73,12 @@ export class Find extends BaseGetter {
       match,
       matchLocation,
       stage,
-      round.number
+      round.number,
     );
 
     if (participantId !== undefined)
       return previousMatches.filter((m) =>
-        helpers.isParticipantInMatch(m, participantId)
+        helpers.isParticipantInMatch(m, participantId),
       );
 
     return previousMatches;
@@ -105,12 +105,12 @@ export class Find extends BaseGetter {
     if (!group) throw Error("Group not found.");
 
     const { roundNumber, roundCount } = this.getRoundPositionalInfo(
-      match.round_id
+      match.round_id,
     );
     const matchLocation = helpers.getMatchLocation(stage.type, group.number);
 
     const nextMatches = helpers.getNonNull(
-      this.getNextMatches(match, matchLocation, stage, roundNumber, roundCount)
+      this.getNextMatches(match, matchLocation, stage, roundNumber, roundCount),
     );
 
     if (participantId !== undefined) {
@@ -148,7 +148,7 @@ export class Find extends BaseGetter {
   public match(
     groupId: number,
     roundNumber: number,
-    matchNumber: number
+    matchNumber: number,
   ): Match {
     return this.findMatch(groupId, roundNumber, matchNumber);
   }

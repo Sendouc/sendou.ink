@@ -18,6 +18,11 @@ const deleteGroupStm = sql.prepare(/* sql */ `
     where "Group"."id" = @groupId
 `);
 
+const deleteGroupMapsStm = sql.prepare(/* sql */ `
+  delete from "MapPoolMap"
+    where "groupId" = @groupId
+`);
+
 export const leaveGroup = sql.transaction(
   ({
     groupId,
@@ -40,6 +45,7 @@ export const leaveGroup = sql.transaction(
       deleteGroupMemberStm.run({ groupId, userId });
     } else {
       deleteGroupStm.run({ groupId });
+      deleteGroupMapsStm.run({ groupId });
     }
-  }
+  },
 );

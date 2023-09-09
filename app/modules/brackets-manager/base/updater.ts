@@ -60,7 +60,7 @@ export class BaseUpdater extends BaseGetter {
     const get = new Get(this.storage);
     const currentSeeding = get.seeding(stageId);
     const newSeeding = helpers.convertSlotsToSeeding(
-      currentSeeding.map(helpers.convertTBDtoBYE)
+      currentSeeding.map(helpers.convertTBDtoBYE),
     );
 
     const create = new Create(this.storage, {
@@ -97,7 +97,7 @@ export class BaseUpdater extends BaseGetter {
     helpers.setParentMatchCompleted(
       parent,
       storedParent.child_count,
-      inRoundRobin
+      inRoundRobin,
     );
 
     this.updateMatch(storedParent, parent, true);
@@ -111,7 +111,7 @@ export class BaseUpdater extends BaseGetter {
    */
   protected static assertCanUpdateSeeding(
     matches: Match[],
-    slots: ParticipantSlot[]
+    slots: ParticipantSlot[],
   ): void {
     let index = 0;
 
@@ -140,10 +140,10 @@ export class BaseUpdater extends BaseGetter {
   protected updateRelatedMatches(
     match: Match,
     updatePrevious: boolean,
-    updateNext: boolean
+    updateNext: boolean,
   ): void {
     const { roundNumber, roundCount } = this.getRoundPositionalInfo(
-      match.round_id
+      match.round_id,
     );
 
     const stage = this.storage.select("stage", match.stage_id);
@@ -170,7 +170,7 @@ export class BaseUpdater extends BaseGetter {
   protected updateMatch(
     stored: Match,
     match: DeepPartial<Match>,
-    force?: boolean
+    force?: boolean,
   ): void {
     if (!force && helpers.isMatchUpdateLocked(stored))
       throw Error("The match is locked.");
@@ -183,7 +183,7 @@ export class BaseUpdater extends BaseGetter {
     const { statusChanged, resultChanged } = helpers.setMatchResults(
       stored,
       match,
-      inRoundRobin
+      inRoundRobin,
     );
     this.applyMatchUpdate(stored);
 
@@ -202,7 +202,7 @@ export class BaseUpdater extends BaseGetter {
    */
   protected updateMatchGame(
     stored: MatchGame,
-    game: DeepPartial<MatchGame>
+    game: DeepPartial<MatchGame>,
   ): void {
     if (helpers.isMatchUpdateLocked(stored))
       throw Error("The match game is locked.");
@@ -245,7 +245,7 @@ export class BaseUpdater extends BaseGetter {
       !this.storage.update(
         "match_game",
         { parent_id: match.id },
-        updatedMatchGame
+        updatedMatchGame,
       )
     )
       throw Error("Could not update the match game.");
@@ -263,13 +263,13 @@ export class BaseUpdater extends BaseGetter {
     match: Match,
     matchLocation: GroupType,
     stage: Stage,
-    roundNumber: number
+    roundNumber: number,
   ): void {
     const previousMatches = this.getPreviousMatches(
       match,
       matchLocation,
       stage,
-      roundNumber
+      roundNumber,
     );
     if (previousMatches.length === 0) return;
 
@@ -317,14 +317,14 @@ export class BaseUpdater extends BaseGetter {
     matchLocation: GroupType,
     stage: Stage,
     roundNumber: number,
-    roundCount: number
+    roundCount: number,
   ): void {
     const nextMatches = this.getNextMatches(
       match,
       matchLocation,
       stage,
       roundNumber,
-      roundCount
+      roundCount,
     );
     if (nextMatches.length === 0) {
       // Archive match if it doesn't have following matches and is completed.
@@ -348,7 +348,7 @@ export class BaseUpdater extends BaseGetter {
         actualRoundNumber,
         roundCount,
         nextMatches,
-        winnerSide
+        winnerSide,
       );
     else
       this.applyToNextMatches(
@@ -357,7 +357,7 @@ export class BaseUpdater extends BaseGetter {
         matchLocation,
         actualRoundNumber,
         roundCount,
-        nextMatches
+        nextMatches,
       );
   }
 
@@ -379,7 +379,7 @@ export class BaseUpdater extends BaseGetter {
     roundNumber: number,
     roundCount: number,
     nextMatches: (Match | null)[],
-    winnerSide?: Side
+    winnerSide?: Side,
   ): void {
     if (matchLocation === "final_group") {
       if (!nextMatches[0]) throw Error("First next match is null.");
@@ -393,7 +393,7 @@ export class BaseUpdater extends BaseGetter {
       match.number,
       roundNumber,
       roundCount,
-      matchLocation
+      matchLocation,
     );
 
     if (nextMatches[0]) {
@@ -411,20 +411,20 @@ export class BaseUpdater extends BaseGetter {
         nextMatches[1],
         nextSide,
         match,
-        winnerSide && helpers.getOtherSide(winnerSide)
+        winnerSide && helpers.getOtherSide(winnerSide),
       );
       this.applyMatchUpdate(nextMatches[1]);
     } else {
       const nextSideLB = helpers.getNextSideLoserBracket(
         match.number,
         nextMatches[1],
-        roundNumber
+        roundNumber,
       );
       setNextOpponent(
         nextMatches[1],
         nextSideLB,
         match,
-        winnerSide && helpers.getOtherSide(winnerSide)
+        winnerSide && helpers.getOtherSide(winnerSide),
       );
       this.propagateByeWinners(nextMatches[1]);
     }

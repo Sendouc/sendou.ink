@@ -19,20 +19,20 @@ export const ABILITIES_WITHOUT_CHUNKS = new Set(["UNKNOWN", "AD"]);
 // From a given build, create a map of <Ability, number>, then return it as an Array after sorting by value, descending.
 //    The data structure describes the number of Ability chunks required for any given build.
 export function getAbilityChunksMapAsArray(
-  build: BuildAbilitiesTupleWithUnknown
+  build: BuildAbilitiesTupleWithUnknown,
 ) {
   const abilityChunksMap: AbilityChunks = new Map<AbilityWithUnknown, number>();
   updateAbilityChunksMap(abilityChunksMap, build);
 
   // Sort by value (number, descending) first, then sort by name (string, ascending)
   return Array.from(abilityChunksMap).sort(
-    (a, b) => b[1] - a[1] || a[0].localeCompare(b[0])
+    (a, b) => b[1] - a[1] || a[0].localeCompare(b[0]),
   );
 }
 
 function updateAbilityChunksMap(
   abilityChunksMap: AbilityChunks,
-  build: BuildAbilitiesTupleWithUnknown
+  build: BuildAbilitiesTupleWithUnknown,
 ) {
   let buildIndex = 0;
 
@@ -56,7 +56,8 @@ function updateAbilityChunksMap(
       if (index === 0) {
         const primarySlotOnlyAbilityRef = abilities.filter(
           (a) =>
-            a.name === selectedAbility && a.abilityChunkTypesRequired.length > 0
+            a.name === selectedAbility &&
+            a.abilityChunkTypesRequired.length > 0,
         );
 
         // Extra processing is required for Main abilities that are primary slot-only abilities,
@@ -69,14 +70,14 @@ function updateAbilityChunksMap(
             abilityChunksMap.set(
               ability,
               (abilityChunksMap.get(ability) ?? 0) +
-                PRIMARY_SLOT_ONLY_REQUIRED_ABILITY_CHUNKS_COUNT
+                PRIMARY_SLOT_ONLY_REQUIRED_ABILITY_CHUNKS_COUNT,
             );
           }
         } else {
           abilityChunksMap.set(
             selectedAbility,
             (abilityChunksMap.get(selectedAbility) ?? 0) +
-              MAIN_REQUIRED_ABILITY_CHUNKS_COUNT
+              MAIN_REQUIRED_ABILITY_CHUNKS_COUNT,
           );
         }
       }
@@ -90,13 +91,13 @@ function updateAbilityChunksMap(
           (abilityChunksMapForGear.get(selectedAbility) ?? 0) +
             (hasAbilityDoubler
               ? SUB_WITH_ABILITY_DOUBLER_REQUIRED_ABILITY_CHUNKS_COUNT
-              : SUB_REQUIRED_ABILITY_CHUNKS_COUNT)
+              : SUB_REQUIRED_ABILITY_CHUNKS_COUNT),
         );
 
         abilityChunksMap.set(
           selectedAbility,
           (abilityChunksMap.get(selectedAbility) ?? 0) +
-            (abilityChunksMapForGear.get(selectedAbility) ?? 0)
+            (abilityChunksMapForGear.get(selectedAbility) ?? 0),
         );
       }
     }

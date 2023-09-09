@@ -111,12 +111,12 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   validate(
     !hasStarted,
-    "Tournament has started, cannot make edits to registration"
+    "Tournament has started, cannot make edits to registration",
   );
 
   const teams = findTeamsByTournamentId(tournamentId);
   const ownTeam = teams.find((team) =>
-    team.members.some((member) => member.userId === user.id && member.isOwner)
+    team.members.some((member) => member.userId === user.id && member.isOwner),
   );
 
   switch (data._action) {
@@ -151,7 +151,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       validate(
         detailedOwnTeam &&
           (!detailedOwnTeam.checkedInAt ||
-            ownTeam.members.length > TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL)
+            ownTeam.members.length > TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL),
       );
 
       deleteTeamMember({ tournamentTeamId: ownTeam.id, userId: data.userId });
@@ -162,7 +162,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       validate(ownTeam);
       validate(
         validateCounterPickMapPool(mapPool, isOneModeTournamentOf(event)) ===
-          "VALID"
+          "VALID",
       );
 
       upsertCounterpickMaps({
@@ -185,9 +185,9 @@ export const action: ActionFunction = async ({ request, params }) => {
     case "ADD_PLAYER": {
       validate(
         teams.every((team) =>
-          team.members.every((member) => member.userId !== data.userId)
+          team.members.every((member) => member.userId !== data.userId),
         ),
-        "User is already in a team"
+        "User is already in a team",
       );
       validate(ownTeam);
       validate(
@@ -195,7 +195,7 @@ export const action: ActionFunction = async ({ request, params }) => {
           userId: user.id,
           teamId: user.team?.id,
         }).some((trustedPlayer) => trustedPlayer.id === data.userId),
-        "No trust given from this user"
+        "No trust given from this user",
       );
 
       joinTeam({
@@ -254,7 +254,7 @@ export default function TournamentRegisterPage() {
   const parentRouteData = useOutletContext<TournamentLoaderData>();
 
   const isRegularMemberOfATeam = Boolean(
-    parentRouteData.teamMemberOfName && !parentRouteData.ownTeam
+    parentRouteData.teamMemberOfName && !parentRouteData.ownTeam,
   );
 
   return (
@@ -278,7 +278,7 @@ export default function TournamentRegisterPage() {
               <ClockIcon className="tournament__info__icon" />{" "}
               {isMounted
                 ? databaseTimestampToDate(
-                    parentRouteData.event.startTime
+                    parentRouteData.event.startTime,
                   ).toLocaleString(i18n.language, {
                     timeZoneName: "short",
                     minute: "numeric",
@@ -405,7 +405,7 @@ function RegistrationProgress({
 
   const checkInStartsDate = HACKY_resolveCheckInTime(parentRouteData.event);
   const checkInEndsDate = databaseTimestampToDate(
-    parentRouteData.event.startTime
+    parentRouteData.event.startTime,
   );
   const now = new Date();
 
@@ -653,14 +653,14 @@ function FillRoster({
 
   const missingMembers = Math.max(
     TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL - ownTeamMembers.length,
-    0
+    0,
   );
 
   const optionalMembers = Math.max(
     TOURNAMENT.TEAM_MAX_MEMBERS_BEFORE_START -
       ownTeamMembers.length -
       missingMembers,
-    0
+    0,
   );
 
   const showDeleteMemberSection =
@@ -671,7 +671,7 @@ function FillRoster({
   const playersAvailableToDirectlyAdd = (() => {
     return data!.trustedPlayers.filter((user) => {
       return parentRouteData.teams.every((team) =>
-        team.members.every((member) => member.userId !== user.id)
+        team.members.every((member) => member.userId !== user.id),
       );
     });
   })();
@@ -851,7 +851,7 @@ function CounterPickMapPoolPicker() {
             stageId: stageId as StageId,
           };
         });
-    })
+    }),
   );
 
   return (
@@ -873,11 +873,11 @@ function CounterPickMapPoolPicker() {
             .filter(
               (mode) =>
                 !isOneModeTournamentOf(parentRouteData.event) ||
-                isOneModeTournamentOf(parentRouteData.event) === mode
+                isOneModeTournamentOf(parentRouteData.event) === mode,
             )
             .map((mode) => {
               const tiebreakerStageId = parentRouteData.tieBreakerMapPool.find(
-                (stage) => stage.mode === mode
+                (stage) => stage.mode === mode,
               )?.stageId;
 
               return (
@@ -903,7 +903,7 @@ function CounterPickMapPoolPicker() {
                   {new Array(
                     isOneModeTournamentOf(parentRouteData.event)
                       ? TOURNAMENT.COUNTERPICK_ONE_MODE_TOURNAMENT_MAPS_PER_MODE
-                      : TOURNAMENT.COUNTERPICK_MAPS_PER_MODE
+                      : TOURNAMENT.COUNTERPICK_MAPS_PER_MODE,
                   )
                     .fill(null)
                     .map((_, i) => {
@@ -939,7 +939,7 @@ function CounterPickMapPoolPicker() {
             })}
           {validateCounterPickMapPool(
             counterPickMapPool,
-            isOneModeTournamentOf(parentRouteData.event)
+            isOneModeTournamentOf(parentRouteData.event),
           ) === "VALID" ? (
             <SubmitButton
               _action="UPDATE_MAP_POOL"
@@ -953,7 +953,7 @@ function CounterPickMapPoolPicker() {
             <MapPoolValidationStatusMessage
               status={validateCounterPickMapPool(
                 counterPickMapPool,
-                isOneModeTournamentOf(parentRouteData.event)
+                isOneModeTournamentOf(parentRouteData.event),
               )}
             />
           )}
@@ -995,7 +995,7 @@ type CounterPickValidationStatus =
 
 function validateCounterPickMapPool(
   mapPool: MapPool,
-  isOneModeOnlyTournamentFor: ModeShort | null
+  isOneModeOnlyTournamentFor: ModeShort | null,
 ): CounterPickValidationStatus {
   const stageCounts = new Map<StageId, number>();
   for (const stageId of mapPool.stages) {

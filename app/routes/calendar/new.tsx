@@ -99,19 +99,19 @@ const newCalendarEventActionSchema = z.object({
     .max(CALENDAR_EVENT.NAME_MAX_LENGTH),
   description: z.preprocess(
     falsyToNull,
-    z.string().max(CALENDAR_EVENT.DESCRIPTION_MAX_LENGTH).nullable()
+    z.string().max(CALENDAR_EVENT.DESCRIPTION_MAX_LENGTH).nullable(),
   ),
   date: z.preprocess(
     toArray,
     z
       .array(z.preprocess(date, z.date().min(MIN_DATE).max(MAX_DATE)))
       .min(1)
-      .max(CALENDAR_EVENT.MAX_AMOUNT_OF_DATES)
+      .max(CALENDAR_EVENT.MAX_AMOUNT_OF_DATES),
   ),
   bracketUrl: z.string().url().max(CALENDAR_EVENT.BRACKET_URL_MAX_LENGTH),
   discordInviteCode: z.preprocess(
     falsyToNull,
-    z.string().max(CALENDAR_EVENT.DISCORD_INVITE_CODE_MAX_LENGTH).nullable()
+    z.string().max(CALENDAR_EVENT.DISCORD_INVITE_CODE_MAX_LENGTH).nullable(),
   ),
   tags: z.preprocess(
     processMany(safeJSONParse, removeDuplicates),
@@ -120,14 +120,14 @@ const newCalendarEventActionSchema = z.object({
         z
           .string()
           .refine((val) =>
-            CALENDAR_EVENT.TAGS.includes(val as CalendarEventTag)
-          )
+            CALENDAR_EVENT.TAGS.includes(val as CalendarEventTag),
+          ),
       )
-      .nullable()
+      .nullable(),
   ),
   badges: z.preprocess(
     processMany(safeJSONParse, removeDuplicates),
-    z.array(id).nullable()
+    z.array(id).nullable(),
   ),
   pool: z.string().optional(),
   toToolsEnabled: z.preprocess(checkboxValueToBoolean, z.boolean()),
@@ -152,7 +152,7 @@ export const action: ActionFunction = async ({ request }) => {
           .sort(
             (a, b) =>
               CALENDAR_EVENT.TAGS.indexOf(a as CalendarEventTag) -
-              CALENDAR_EVENT.TAGS.indexOf(b as CalendarEventTag)
+              CALENDAR_EVENT.TAGS.indexOf(b as CalendarEventTag),
           )
           .join(",")
       : data.tags,
@@ -170,12 +170,12 @@ export const action: ActionFunction = async ({ request }) => {
 
   if (data.eventToEditId) {
     const eventToEdit = badRequestIfFalsy(
-      db.calendarEvents.findById(data.eventToEditId)
+      db.calendarEvents.findById(data.eventToEditId),
     );
     validate(
       canEditCalendarEvent({ user, event: eventToEdit }),
       "Not authorized",
-      401
+      401,
     );
 
     db.calendarEvents.update({
@@ -220,14 +220,14 @@ export const loader = async ({ request }: LoaderArgs) => {
   return json({
     managedBadges: db.badges.managedByUserId(user.id),
     recentEventsWithMapPools: db.calendarEvents.findRecentMapPoolsByAuthorId(
-      user.id
+      user.id,
     ),
     eventToEdit: canEditEvent
       ? {
           ...eventToEdit,
           // "BADGE" and "FULL_TOURNAMENT" tags are special and can't be edited like other tags
           tags: eventToEdit.tags.filter(
-            (tag) => tag !== "BADGE" && tag !== "FULL_TOURNAMENT"
+            (tag) => tag !== "BADGE" && tag !== "FULL_TOURNAMENT",
           ),
           badges: db.calendarEvents.findBadgesByEventId(eventId),
           mapPool: db.calendarEvents.findMapPoolByEventId(eventId),
@@ -409,8 +409,8 @@ function DatesInput() {
                         current.map((entry) =>
                           entry.key === key
                             ? { ...entry, date: newDate }
-                            : entry
-                        )
+                            : entry,
+                        ),
                       );
                     }}
                   />
@@ -420,7 +420,7 @@ function DatesInput() {
                       size="tiny"
                       onClick={() => {
                         setDatesInputState((current) =>
-                          current.filter((e) => e.key !== key)
+                          current.filter((e) => e.key !== key),
                         );
                       }}
                       aria-controls={`date-input-${key}`}
@@ -492,7 +492,8 @@ function TagsAdder() {
   const id = React.useId();
 
   const tagsForSelect = CALENDAR_EVENT.TAGS.filter(
-    (tag) => !tags.includes(tag) && tag !== "BADGE" && tag !== "FULL_TOURNAMENT"
+    (tag) =>
+      !tags.includes(tag) && tag !== "BADGE" && tag !== "FULL_TOURNAMENT",
   );
 
   return (
@@ -552,7 +553,7 @@ function BadgesAdder() {
   };
 
   const badgesForSelect = managedBadges.filter(
-    (badge) => !badges.some((b) => b.id === badge.id)
+    (badge) => !badges.some((b) => b.id === badge.id),
   );
 
   return (
@@ -567,7 +568,7 @@ function BadgesAdder() {
             setBadges([
               ...badges,
               managedBadges.find(
-                (badge) => badge.id === Number(e.target.value)
+                (badge) => badge.id === Number(e.target.value),
               )!,
             ]);
           }}
@@ -615,12 +616,12 @@ function TOToolsAndMapPool() {
   const user = useUser();
   const { eventToEdit } = useLoaderData<typeof loader>();
   const [checked, setChecked] = React.useState(
-    Boolean(eventToEdit?.tournamentId)
+    Boolean(eventToEdit?.tournamentId),
   );
   const [mode, setMode] = React.useState<"ALL" | RankedModeShort>(
     eventToEdit?.mapPickingStyle
       ? mapPickingStyleToShort[eventToEdit.mapPickingStyle]
-      : "ALL"
+      : "ALL",
   );
 
   // currently not possible to edit "tournament" data after submitting it
@@ -687,10 +688,10 @@ function MapPoolSection() {
   const { eventToEdit, recentEventsWithMapPools } =
     useLoaderData<typeof loader>();
   const [mapPool, setMapPool] = React.useState<MapPool>(
-    eventToEdit?.mapPool ? new MapPool(eventToEdit.mapPool) : MapPool.EMPTY
+    eventToEdit?.mapPool ? new MapPool(eventToEdit.mapPool) : MapPool.EMPTY,
   );
   const [includeMapPool, setIncludeMapPool] = React.useState(
-    Boolean(eventToEdit?.mapPool)
+    Boolean(eventToEdit?.mapPool),
   );
 
   const id = React.useId();
@@ -723,7 +724,7 @@ function CounterPickMapPoolSection() {
   const [mapPool, setMapPool] = React.useState<MapPool>(
     eventToEdit?.tieBreakerMapPool
       ? new MapPool(eventToEdit.tieBreakerMapPool)
-      : MapPool.EMPTY
+      : MapPool.EMPTY,
   );
 
   return (
@@ -760,7 +761,7 @@ type CounterPickValidationStatus =
   | "MODE_REPEATED";
 
 function validateTiebreakerMapPool(
-  mapPool: MapPool
+  mapPool: MapPool,
 ): CounterPickValidationStatus {
   if (mapPool.stages.length !== new Set(mapPool.stages).size) {
     return "MAP_REPEATED";

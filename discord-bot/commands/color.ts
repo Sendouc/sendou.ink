@@ -14,13 +14,13 @@ export const colorCommand: BotCommand = {
   builder: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(
-      "Get/update color role (Supporter tier on Patreon or higher needed)"
+      "Get/update color role (Supporter tier on Patreon or higher needed)",
     )
     .addStringOption((option) =>
       option
         .setName(ACTION_ARG)
         .setDescription("Hex code of the color role")
-        .setRequired(true)
+        .setRequired(true),
     ),
   execute: async ({ interaction, client }) => {
     let hexCode = interaction.options.getString(ACTION_ARG);
@@ -52,7 +52,7 @@ export const colorCommand: BotCommand = {
     const memberRoles = interaction.member?.roles as GuildMemberRoleManager;
 
     const roleToUpdate = memberRoles.cache.find((role) =>
-      role.name.includes("!")
+      role.name.includes("!"),
     );
 
     if (roleToUpdate) {

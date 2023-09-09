@@ -17,11 +17,11 @@ export const editTeamSchema = z.union([
     name: z.string().min(TEAM.NAME_MIN_LENGTH).max(TEAM.NAME_MAX_LENGTH),
     bio: z.preprocess(
       falsyToNull,
-      z.string().max(TEAM.BIO_MAX_LENGTH).nullable()
+      z.string().max(TEAM.BIO_MAX_LENGTH).nullable(),
     ),
     twitter: z.preprocess(
       falsyToNull,
-      z.string().max(TEAM.TWITTER_MAX_LENGTH).nullable()
+      z.string().max(TEAM.TWITTER_MAX_LENGTH).nullable(),
     ),
     css: z.preprocess(falsyToNull, z.string().refine(jsonParseable).nullable()),
   }),

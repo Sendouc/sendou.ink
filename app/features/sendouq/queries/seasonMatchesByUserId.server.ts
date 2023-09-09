@@ -145,14 +145,14 @@ export function seasonMatchesByUserId({
           ...member,
           weaponSplId: weapons.find((w: any) => w.userId === member.id)
             ?.weaponSplId,
-        })
+        }),
       ),
       groupBravoMembers: parseDBJsonArray(row.groupBravoMembers).map(
         (member: any) => ({
           ...member,
           weaponSplId: weapons.find((w: any) => w.userId === member.id)
             ?.weaponSplId,
-        })
+        }),
       ),
     };
   });

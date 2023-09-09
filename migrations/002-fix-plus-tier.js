@@ -48,7 +48,7 @@ module.exports.up = function (db) {
       )
       group by
         "votedId";
-  `
+  `,
   ).run();
 };
 
@@ -98,6 +98,6 @@ module.exports.down = function (db) {
     )
     group by
       "votedId";
-  `
+  `,
   ).run();
 };

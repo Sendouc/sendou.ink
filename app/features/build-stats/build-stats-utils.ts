@@ -11,7 +11,7 @@ const toBuildsCount = (counts: AverageAbilityPointsResult[]) =>
 
 const toAbilityPoints = (
   abilities: AverageAbilityPointsResult[],
-  ability: Ability
+  ability: Ability,
 ) =>
   abilities.find((current) => current.ability === ability)?.abilityPointsSum ??
   0;
@@ -27,7 +27,7 @@ export function abilityPointCountsToAverages({
   const weaponBuildsCount = toBuildsCount(weaponAbilities);
   invariant(
     allBuildsCount > weaponBuildsCount,
-    "allBuildsCount < weaponBuildsCount"
+    "allBuildsCount < weaponBuildsCount",
   );
 
   const mainOnlyAbilities = abilities
@@ -35,11 +35,11 @@ export function abilityPointCountsToAverages({
     .map((ability) => {
       const allBuildsAbilityPoints = toAbilityPoints(
         allAbilities,
-        ability.name
+        ability.name,
       );
       const weaponBuildsAbilityPoints = toAbilityPoints(
         weaponAbilities,
-        ability.name
+        ability.name,
       );
 
       // main only abilities always take place of 10AP
@@ -50,10 +50,10 @@ export function abilityPointCountsToAverages({
         name: ability.name,
         percentage: {
           all: roundToNDecimalPlaces(
-            (allBuildsWithTheAbility / allBuildsCount) * 100
+            (allBuildsWithTheAbility / allBuildsCount) * 100,
           ),
           weapon: roundToNDecimalPlaces(
-            (weaponBuildsWithTheAbility / weaponBuildsCount) * 100
+            (weaponBuildsWithTheAbility / weaponBuildsCount) * 100,
           ),
         },
       };
@@ -65,11 +65,11 @@ export function abilityPointCountsToAverages({
     .map((ability) => {
       const allBuildsAbilityPoints = toAbilityPoints(
         allAbilities,
-        ability.name
+        ability.name,
       );
       const weaponBuildsAbilityPoints = toAbilityPoints(
         weaponAbilities,
-        ability.name
+        ability.name,
       );
 
       return {
@@ -77,7 +77,7 @@ export function abilityPointCountsToAverages({
         apAverage: {
           all: roundToNDecimalPlaces(allBuildsAbilityPoints / allBuildsCount),
           weapon: roundToNDecimalPlaces(
-            weaponBuildsAbilityPoints / weaponBuildsCount
+            weaponBuildsAbilityPoints / weaponBuildsCount,
           ),
         },
       };

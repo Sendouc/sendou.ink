@@ -18,11 +18,11 @@ export const subSchema = z.object({
         z
           .number()
           .refine((val) =>
-            mainWeaponIds.includes(val as (typeof mainWeaponIds)[number])
-          )
+            mainWeaponIds.includes(val as (typeof mainWeaponIds)[number]),
+          ),
       )
       .min(1)
-      .max(TOURNAMENT_SUB.WEAPON_POOL_MAX_SIZE)
+      .max(TOURNAMENT_SUB.WEAPON_POOL_MAX_SIZE),
   ),
   okWeapons: z.preprocess(
     processMany(safeJSONParse, removeDuplicates),
@@ -31,10 +31,10 @@ export const subSchema = z.object({
         z
           .number()
           .refine((val) =>
-            mainWeaponIds.includes(val as (typeof mainWeaponIds)[number])
-          )
+            mainWeaponIds.includes(val as (typeof mainWeaponIds)[number]),
+          ),
       )
-      .max(TOURNAMENT_SUB.WEAPON_POOL_MAX_SIZE)
+      .max(TOURNAMENT_SUB.WEAPON_POOL_MAX_SIZE),
   ),
   message: z.string().max(TOURNAMENT_SUB.MESSAGE_MAX_LENGTH).nullish(),
   visibility: z.enum(["+1", "+2", "+3", "ALL"]).default("ALL"),

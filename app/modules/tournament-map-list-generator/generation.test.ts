@@ -9,7 +9,7 @@ import { DEFAULT_MAP_POOL } from "./constants";
 
 const TournamentMapListGenerator = suite("Tournament map list generator");
 const TournamentMapListGeneratorOneMode = suite(
-  "Tournament map list generator (one mode)"
+  "Tournament map list generator (one mode)",
 );
 
 const team1Picks = new MapPool([
@@ -136,7 +136,7 @@ TournamentMapListGenerator(
       assert.equal(mapList1[i]!.stageId, mapList2[i]!.stageId);
       assert.equal(mapList1[i]!.mode, mapList2[i]!.mode);
     }
-  }
+  },
 );
 
 TournamentMapListGenerator(
@@ -162,7 +162,7 @@ TournamentMapListGenerator(
       assert.equal(mapList1[i]!.stageId, mapList2[i]!.stageId);
       assert.equal(mapList1[i]!.mode, mapList2[i]!.mode);
     }
-  }
+  },
 );
 
 TournamentMapListGenerator(
@@ -199,7 +199,7 @@ TournamentMapListGenerator(
       assert.equal(mapList1[i]!.stageId, mapList2[i]!.stageId);
       assert.equal(mapList1[i]!.mode, mapList2[i]!.mode);
     }
-  }
+  },
 );
 
 const duplicationPicks = new MapPool([
@@ -244,7 +244,7 @@ TournamentMapListGenerator(
 
       team2Picks.has({ mode: map.mode, stageId: map.stageId });
     }
-  }
+  },
 );
 
 TournamentMapListGenerator(
@@ -264,7 +264,7 @@ TournamentMapListGenerator(
     });
 
     assert.equal(mapList.length, 5);
-  }
+  },
 );
 
 TournamentMapListGenerator("Handles worst case with duplication", () => {
@@ -383,7 +383,7 @@ TournamentMapListGenerator(
     // the one map both of them picked
     assert.equal(mapList[6].stageId, 7);
     assert.equal(mapList[6].mode, "RM");
-  }
+  },
 );
 
 TournamentMapListGenerator(
@@ -408,24 +408,24 @@ TournamentMapListGenerator(
     assert.ok(
       DEFAULT_MAP_POOL.stageModePairs.some(
         (pair) =>
-          pair.stageId === mapList[6].stageId && pair.mode === mapList[6].mode
-      )
+          pair.stageId === mapList[6].stageId && pair.mode === mapList[6].mode,
+      ),
     );
 
     // neither teams map pool contains the tiebreaker
     assert.not.ok(
       team1Picks.stageModePairs.some(
         (pair) =>
-          pair.stageId === mapList[6].stageId && pair.mode === mapList[6].mode
-      )
+          pair.stageId === mapList[6].stageId && pair.mode === mapList[6].mode,
+      ),
     );
     assert.not.ok(
       team2PicksNoOverlap.stageModePairs.some(
         (pair) =>
-          pair.stageId === mapList[6].stageId && pair.mode === mapList[6].mode
-      )
+          pair.stageId === mapList[6].stageId && pair.mode === mapList[6].mode,
+      ),
     );
-  }
+  },
 );
 
 // TODO: figure out how to handle this
@@ -585,7 +585,7 @@ TournamentMapListGeneratorOneMode(
     for (let i = 0; i < mapList.length - 1; i++) {
       assert.equal(mapList[i]!.mode, "SZ");
     }
-  }
+  },
 );
 
 TournamentMapListGeneratorOneMode(
@@ -608,7 +608,7 @@ TournamentMapListGeneratorOneMode(
     for (let i = 0; i < mapList.length - 1; i++) {
       assert.equal(mapList[i]!.mode, "SZ");
     }
-  }
+  },
 );
 
 TournamentMapListGeneratorOneMode(
@@ -631,7 +631,7 @@ TournamentMapListGeneratorOneMode(
 
     const stages = new Set(mapList.map(({ stageId }) => stageId));
     assert.equal(stages.size, 5);
-  }
+  },
 );
 
 TournamentMapListGeneratorOneMode(
@@ -659,7 +659,7 @@ TournamentMapListGeneratorOneMode(
       assert.equal(last?.mode, "SZ");
       assert.equal(last?.stageId, 9);
     }
-  }
+  },
 );
 
 TournamentMapListGeneratorOneMode(
@@ -684,15 +684,15 @@ TournamentMapListGeneratorOneMode(
 
     assert.not.ok(
       team1SZPicks.stageModePairs.some(
-        ({ stageId }) => stageId === last?.stageId
-      )
+        ({ stageId }) => stageId === last?.stageId,
+      ),
     );
     assert.not.ok(
       team2SZPicksNoOverlap.stageModePairs.some(
-        ({ stageId }) => stageId === last?.stageId
-      )
+        ({ stageId }) => stageId === last?.stageId,
+      ),
     );
-  }
+  },
 );
 
 TournamentMapListGeneratorOneMode("Handles worst case duplication", () => {
@@ -758,9 +758,36 @@ TournamentMapListGeneratorOneMode(
           },
         ],
         modesIncluded: ["SZ"],
-      })
+      }),
     );
-  }
+  },
+);
+
+TournamentMapListGeneratorOneMode(
+  "Throws if duplicate maps in the pool",
+  () => {
+    assert.throws(
+      () =>
+        generateMaps({
+          teams: [
+            {
+              id: 1,
+              maps: new MapPool([
+                { mode: "SZ", stageId: 1 },
+                { mode: "SZ", stageId: 1 },
+              ]),
+            },
+            {
+              id: 2,
+              maps: new MapPool([]),
+            },
+          ],
+          modesIncluded: ["SZ"],
+        }),
+      (err: Error) => err.message.includes("Duplicate map"),
+      "Expected error to be thrown about duplicate maps",
+    );
+  },
 );
 
 TournamentMapListGenerator.run();

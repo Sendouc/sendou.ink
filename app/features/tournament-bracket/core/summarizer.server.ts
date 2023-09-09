@@ -131,10 +131,10 @@ function calculateIndividualPlayerSkills({
 
     const allUserIds = removeDuplicates(match.maps.flatMap((m) => m.userIds));
     const loserUserIds = allUserIds.filter(
-      (userId) => userIdsToTeamId[userId] !== winnerTeamId
+      (userId) => userIdsToTeamId[userId] !== winnerTeamId,
     );
     const winnerUserIds = allUserIds.filter(
-      (userId) => userIdsToTeamId[userId] === winnerTeamId
+      (userId) => userIdsToTeamId[userId] === winnerTeamId,
     );
 
     const [ratedWinners, ratedLosers] = rate([
@@ -201,7 +201,7 @@ function calculateTeamSkills({
 
     const winnerTeamIdentifiers = match.maps.flatMap((m) => {
       const winnerUserIds = m.userIds.filter(
-        (userId) => userIdsToTeamId[userId] === winnerTeamId
+        (userId) => userIdsToTeamId[userId] === winnerTeamId,
       );
 
       return userIdsToIdentifier(winnerUserIds);
@@ -210,7 +210,7 @@ function calculateTeamSkills({
 
     const loserTeamIdentifiers = match.maps.flatMap((m) => {
       const loserUserIds = m.userIds.filter(
-        (userId) => userIdsToTeamId[userId] !== winnerTeamId
+        (userId) => userIdsToTeamId[userId] !== winnerTeamId,
       );
 
       return userIdsToIdentifier(loserUserIds);
@@ -225,7 +225,7 @@ function calculateTeamSkills({
       [
         [queryTeamPlayerRatingAverage(winnerTeamIdentifier)],
         [queryTeamPlayerRatingAverage(loserTeamIdentifier)],
-      ]
+      ],
     );
 
     teamRatings.set(winnerTeamIdentifier, ratedWinner);
@@ -233,11 +233,11 @@ function calculateTeamSkills({
 
     teamMatchesCount.set(
       winnerTeamIdentifier,
-      (teamMatchesCount.get(winnerTeamIdentifier) ?? 0) + 1
+      (teamMatchesCount.get(winnerTeamIdentifier) ?? 0) + 1,
     );
     teamMatchesCount.set(
       loserTeamIdentifier,
-      (teamMatchesCount.get(loserTeamIdentifier) ?? 0) + 1
+      (teamMatchesCount.get(loserTeamIdentifier) ?? 0) + 1,
     );
   }
 
@@ -263,13 +263,13 @@ function selectMostPopular<T>(items: T[]): T {
   }
 
   const sorted = Array.from(counts.entries()).sort(
-    ([, countA], [, countB]) => countB - countA
+    ([, countA], [, countB]) => countB - countA,
   );
 
   const mostPopularCount = sorted[0][1];
 
   const mostPopularItems = sorted.filter(
-    ([, count]) => count === mostPopularCount
+    ([, count]) => count === mostPopularCount,
   );
 
   if (mostPopularItems.length === 1) {
@@ -291,13 +291,13 @@ function mapResultDeltas({
   const addMapResult = (
     mapResult: Pick<MapResult, "stageId" | "mode" | "userId"> & {
       type: "win" | "loss";
-    }
+    },
   ) => {
     const existingResult = result.find(
       (r) =>
         r.userId === mapResult.userId &&
         r.stageId == mapResult.stageId &&
-        r.mode === mapResult.mode
+        r.mode === mapResult.mode,
     );
 
     if (existingResult) {
@@ -319,7 +319,7 @@ function mapResultDeltas({
         const tournamentTeamId = userIdsToTeamId[userId];
         invariant(
           tournamentTeamId,
-          `Couldn't resolve tournament team id for user id ${userId}`
+          `Couldn't resolve tournament team id for user id ${userId}`,
         );
 
         addMapResult({
@@ -345,13 +345,13 @@ function playerResultDeltas({
   const result: TournamentSummary["playerResultDeltas"] = [];
 
   const addPlayerResult = (
-    playerResult: TournamentSummary["playerResultDeltas"][number]
+    playerResult: TournamentSummary["playerResultDeltas"][number],
   ) => {
     const existingResult = result.find(
       (r) =>
         r.type === playerResult.type &&
         r.otherUserId === playerResult.otherUserId &&
-        r.ownerUserId === playerResult.ownerUserId
+        r.ownerUserId === playerResult.ownerUserId,
     );
 
     if (existingResult) {
@@ -373,12 +373,12 @@ function playerResultDeltas({
           const ownTournamentTeamId = userIdsToTeamId[ownerUserId];
           invariant(
             ownTournamentTeamId,
-            `Couldn't resolve tournament team id for user id ${ownerUserId}`
+            `Couldn't resolve tournament team id for user id ${ownerUserId}`,
           );
           const otherTournamentTeamId = userIdsToTeamId[otherUserId];
           invariant(
             otherTournamentTeamId,
-            `Couldn't resolve tournament team id for user id ${otherUserId}`
+            `Couldn't resolve tournament team id for user id ${otherUserId}`,
           );
 
           const won = ownTournamentTeamId === map.winnerTeamId;
@@ -403,10 +403,10 @@ function playerResultDeltas({
 
       for (const map of match.maps) {
         const alphaUserIds = map.userIds.filter(
-          (userId) => userIdsToTeamId[userId] === match.opponentOne.id
+          (userId) => userIdsToTeamId[userId] === match.opponentOne.id,
         );
         const bravoUserIds = map.userIds.filter(
-          (userId) => userIdsToTeamId[userId] === match.opponentTwo.id
+          (userId) => userIdsToTeamId[userId] === match.opponentTwo.id,
         );
 
         alphaIdentifiers.push(userIdsToIdentifier(alphaUserIds));
@@ -429,12 +429,12 @@ function playerResultDeltas({
         const ownTournamentTeamId = userIdsToTeamId[ownerUserId];
         invariant(
           ownTournamentTeamId,
-          `Couldn't resolve tournament team id for user id ${ownerUserId}`
+          `Couldn't resolve tournament team id for user id ${ownerUserId}`,
         );
         const otherTournamentTeamId = userIdsToTeamId[otherUserId];
         invariant(
           otherTournamentTeamId,
-          `Couldn't resolve tournament team id for user id ${otherUserId}`
+          `Couldn't resolve tournament team id for user id ${otherUserId}`,
         );
 
         const result =

@@ -36,7 +36,7 @@ export class BracketsManager {
 
     storage.selectFirst = <T extends Table>(
       table: T,
-      filter: Partial<DataTypes[T]>
+      filter: Partial<DataTypes[T]>,
     ): DataTypes[T] | null => {
       const results = this.storage.select<T>(table, filter);
       if (!results || results.length === 0) return null;
@@ -45,7 +45,7 @@ export class BracketsManager {
 
     storage.selectLast = <T extends Table>(
       table: T,
-      filter: Partial<DataTypes[T]>
+      filter: Partial<DataTypes[T]>,
     ): DataTypes[T] | null => {
       const results = this.storage.select<T>(table, filter);
       if (!results || results.length === 0) return null;

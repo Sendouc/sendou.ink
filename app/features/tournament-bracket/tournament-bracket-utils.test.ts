@@ -6,7 +6,7 @@ import {
 } from "./tournament-bracket-utils";
 
 const MapCountPlayedInSetWithCertainty = suite(
-  "mapCountPlayedInSetWithCertainty()"
+  "mapCountPlayedInSetWithCertainty()",
 );
 const FillWithNullTillPowerOfTwo = suite("fillWithNullTillPowerOfTwo()");
 
@@ -32,15 +32,15 @@ for (const { bestOf, scores, expected } of mapCountParamsToResult) {
     () => {
       assert.equal(
         mapCountPlayedInSetWithCertainty({ bestOf, scores }),
-        expected
+        expected,
       );
-    }
+    },
   );
 }
 
 const powerOfTwoParamsToResults: [
   amountOfTeams: number,
-  expectedNullCount: number
+  expectedNullCount: number,
 ][] = [
   [32, 0],
   [16, 0],
@@ -56,11 +56,11 @@ for (const [amountOfTeams, expectedNullCount] of powerOfTwoParamsToResults) {
     () => {
       assert.equal(
         fillWithNullTillPowerOfTwo(Array(amountOfTeams).fill("team")).filter(
-          (x) => x === null
+          (x) => x === null,
         ).length,
-        expectedNullCount
+        expectedNullCount,
       );
-    }
+    },
   );
 }
 

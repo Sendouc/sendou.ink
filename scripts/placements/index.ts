@@ -13,7 +13,7 @@ invariant(rawJsonNumber, "jsonNumber is required (argument 1)");
 const jsonNumber = Number(rawJsonNumber);
 invariant(
   Number.isInteger(jsonNumber),
-  "jsonNumber must be an integer (argument 1)"
+  "jsonNumber must be an integer (argument 1)",
 );
 
 type Placements = Array<
@@ -44,7 +44,7 @@ async function main() {
             mode,
             region,
             number: jsonNumber,
-          }))
+          })),
         );
       }
     }
@@ -95,8 +95,8 @@ async function processJson(args: {
       bannerSplId: Number(
         atob(placement.nameplate.background.id).replace(
           "NameplateBackground-",
-          ""
-        )
+          "",
+        ),
       ),
       nameDiscriminator: placement.nameId,
       power: placement.xPower,

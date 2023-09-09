@@ -20,8 +20,8 @@ export default function SendouqRules() {
             at the time of the DC)
           </li>
           <li>
-            The team without DC&apos;s objective counter had reached 30 at the
-            time of the disconnect
+            The team without DC&apos;s objective counter had not reached 30 at
+            the time of the disconnect
           </li>
           <li>Team with the disconnection stopped playing without delay</li>
           <li>Disconnection was unintentional</li>

@@ -4,7 +4,7 @@ import { TOURNAMENT } from "../tournament/tournament-constants";
 
 const reportedMatchPlayerIds = z.preprocess(
   safeJSONParse,
-  z.array(id).length(TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL * 2)
+  z.array(id).length(TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL * 2),
 );
 
 const reportedMatchPosition = z.preprocess(
@@ -13,7 +13,7 @@ const reportedMatchPosition = z.preprocess(
     .number()
     .int()
     .min(0)
-    .max(Math.max(...TOURNAMENT.AVAILABLE_BEST_OF) - 1)
+    .max(Math.max(...TOURNAMENT.AVAILABLE_BEST_OF) - 1),
 );
 
 export const matchSchema = z.union([

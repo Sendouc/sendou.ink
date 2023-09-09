@@ -5,6 +5,11 @@ const deleteGroupStm = sql.prepare(/* sql */ `
   where "Group"."id" = @groupId
 `);
 
+const deleteGroupMapsStm = sql.prepare(/* sql */ `
+  delete from "MapPoolMap"
+    where "groupId" = @groupId
+`);
+
 const addGroupMemberStm = sql.prepare(/* sql */ `
   insert into "GroupMember" ("groupId", "userId", "role")
   values (@groupId, @userId, @role)
@@ -27,6 +32,7 @@ export const morphGroups = sql.transaction(
     newMembers: number[];
   }) => {
     deleteGroupStm.run({ groupId: otherGroupId });
+    deleteGroupMapsStm.run({ groupId: otherGroupId });
 
     deleteLikesStm.run({ groupId: survivingGroupId });
 
@@ -37,5 +43,5 @@ export const morphGroups = sql.transaction(
         role: "REGULAR",
       });
     }
-  }
+  },
 );

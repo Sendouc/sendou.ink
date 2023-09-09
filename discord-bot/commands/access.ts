@@ -12,7 +12,7 @@ export const accessCommand: BotCommand = {
   builder: new SlashCommandBuilder()
     .setName(COMMAND_NAME)
     .setDescription(
-      "Get the corresponding Plus Server membership role if you have access"
+      "Get the corresponding Plus Server membership role if you have access",
     ),
   execute: async ({ interaction }) => {
     await givePlusRoleToMember({

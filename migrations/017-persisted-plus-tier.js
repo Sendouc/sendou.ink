@@ -46,7 +46,7 @@ module.exports.up = function (db) {
       )
       group by
         "votedId";
-  `
+  `,
   ).run();
 
   db.prepare(
@@ -56,12 +56,12 @@ module.exports.up = function (db) {
       "tier" integer not null,
       foreign key ("userId") references "User"("id") on delete set null
     ) strict
-  `
+  `,
   ).run();
 
   db.prepare(
     /* sql */ `
     insert into "PlusTier" ("userId", "tier") select "userId", "tier" from "FreshPlusTier" where "tier" is not null;
-  `
+  `,
   ).run();
 };

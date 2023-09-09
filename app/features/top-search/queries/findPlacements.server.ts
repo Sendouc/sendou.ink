@@ -58,14 +58,12 @@ export type FindPlacement = Pick<
   | "year"
   | "region"
   | "playerId"
-  | "month"
-  | "year"
   | "mode"
 > &
   Pick<User, "customUrl" | "discordId">;
 
 export function findPlacementsOfMonth(
-  args: Pick<XRankPlacement, "mode" | "region" | "month" | "year">
+  args: Pick<XRankPlacement, "mode" | "region" | "month" | "year">,
 ) {
   return ofMonthStm.all(args) as Array<FindPlacement>;
 }

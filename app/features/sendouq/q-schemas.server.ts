@@ -12,6 +12,8 @@ import {
   noDuplicates,
   safeJSONParse,
   weaponSplId,
+  stageId,
+  modeShort,
 } from "~/utils/zod";
 import { matchEndedAtIndex } from "./core/match";
 import { languagesUnified } from "~/modules/i18n/config";
@@ -103,7 +105,7 @@ const winners = z.preprocess(
 
       // no extra scores after match ended
       return val.length === matchEndedAt + 1;
-    })
+    }),
 );
 export const matchSchema = z.union([
   z.object({
@@ -111,7 +113,7 @@ export const matchSchema = z.union([
     winners,
     adminReport: z.preprocess(
       checkboxValueToBoolean,
-      z.boolean().nullish().default(false)
+      z.boolean().nullish().default(false),
     ),
   }),
   z.object({
@@ -122,7 +124,14 @@ export const matchSchema = z.union([
     _action: _action("REPORT_WEAPONS"),
     weapons: z.preprocess(
       safeJSONParse,
-      z.array(z.array(weaponSplId).length(FULL_GROUP_SIZE * 2))
+      z.array(z.array(weaponSplId).length(FULL_GROUP_SIZE * 2)),
     ),
   }),
 ]);
+
+export const weaponUsageSearchParamsSchema = z.object({
+  userId: id,
+  season: z.coerce.number().int(),
+  stageId,
+  modeShort,
+});

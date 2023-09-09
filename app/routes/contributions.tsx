@@ -159,7 +159,7 @@ export default function ContributionsPage() {
                   >
                     {t.name}
                   </a>
-                )
+                ),
               )
               .map((element, i, arr) => (
                 <React.Fragment key={i}>

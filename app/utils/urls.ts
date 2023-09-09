@@ -118,7 +118,6 @@ export const FRONT_GIRL_PATH = "/static-assets/img/layout/front-girl";
 export const FRONT_BOY_BG_PATH = "/static-assets/img/layout/front-boy-bg";
 export const FRONT_GIRL_BG_PATH = "/static-assets/img/layout/front-girl-bg";
 
-export const GET_ALL_USERS_ROUTE = "/users";
 export const GET_ALL_EVENTS_WITH_MAP_POOLS_ROUTE = "/calendar/map-pool-events";
 
 interface UserLinkArgs {
@@ -156,7 +155,7 @@ export const newArtPage = (artId?: Art["id"]) =>
   `${artPage()}/new${artId ? `?art=${artId}` : ""}`;
 export const userNewBuildPage = (
   user: UserLinkArgs,
-  params?: { weapon: MainWeaponId; build: BuildAbilitiesTupleWithUnknown }
+  params?: { weapon: MainWeaponId; build: BuildAbilitiesTupleWithUnknown },
 ) =>
   `${userBuildsPage(user)}/new${
     params
@@ -164,7 +163,7 @@ export const userNewBuildPage = (
           new URLSearchParams({
             weapon: String(params.weapon),
             build: serializeBuild(params.build),
-          })
+          }),
         )}`
       : ""
   }`;
@@ -257,6 +256,20 @@ export const sendouQMatchPage = (id: GroupMatch["id"]) => {
   return `${SENDOUQ_PAGE}/match/${id}`;
 };
 
+export const getWeaponUsage = ({
+  userId,
+  season,
+  modeShort,
+  stageId,
+}: {
+  userId: number;
+  season: number;
+  modeShort: ModeShort;
+  stageId: StageId;
+}) => {
+  return `/weapon-usage?userId=${userId}&season=${season}&modeShort=${modeShort}&stageId=${stageId}`;
+};
+
 export const mapsPage = (eventId?: MapPoolMap["calendarEventId"]) =>
   `/maps${eventId ? `?eventId=${eventId}` : ""}`;
 export const readonlyMapsPage = (eventId: CalendarEvent["id"]) =>
@@ -269,7 +282,7 @@ export const analyzerPage = (args?: {
   `/analyzer${
     args
       ? `?weapon=${args.weaponId}&build=${encodeURIComponent(
-          args.abilities.join(",")
+          args.abilities.join(","),
         )}`
       : ""
   }`;
@@ -298,14 +311,14 @@ export const navIconUrl = (navItem: (typeof navItems)[number]["name"]) =>
 export const gearImageUrl = (gearType: GearType, gearSplId: number) =>
   `/static-assets/img/gear/${gearType.toLowerCase()}/${gearSplId}`;
 export const weaponCategoryUrl = (
-  category: (typeof weaponCategories)[number]["name"]
+  category: (typeof weaponCategories)[number]["name"],
 ) => `/static-assets/img/weapon-categories/${category}`;
 export const mainWeaponImageUrl = (mainWeaponSplId: MainWeaponId) =>
   `/static-assets/img/main-weapons/${mainWeaponSplId}`;
 export const outlinedMainWeaponImageUrl = (mainWeaponSplId: MainWeaponId) =>
   `/static-assets/img/main-weapons-outlined/${mainWeaponSplId}`;
 export const outlinedFiveStarMainWeaponImageUrl = (
-  mainWeaponSplId: MainWeaponId
+  mainWeaponSplId: MainWeaponId,
 ) => `/static-assets/img/main-weapons-outlined-2/${mainWeaponSplId}`;
 export const subWeaponImageUrl = (subWeaponSplId: SubWeaponId) =>
   `/static-assets/img/sub-weapons/${subWeaponSplId}`;
@@ -322,6 +335,15 @@ export const brandImageUrl = (brand: "tentatek" | "takoroka") =>
 export const tierImageUrl = (tier: TierName) =>
   `/static-assets/img/tiers/${tier.toLowerCase()}`;
 export const TIER_PLUS_URL = `/static-assets/img/tiers/plus`;
+
+export const winnersImageUrl = ({
+  season,
+  placement,
+}: {
+  season: number;
+  placement: number;
+}) => `/static-assets/img/winners/${season}/${placement}`;
+
 export const stageMinimapImageUrlWithEnding = ({
   stageId,
   mode,

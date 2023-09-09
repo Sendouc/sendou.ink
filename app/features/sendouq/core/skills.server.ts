@@ -80,7 +80,7 @@ export function calculateMatchSkills({
             season,
           }),
         ],
-      ]
+      ],
     );
 
     result.push({

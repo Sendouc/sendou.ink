@@ -143,7 +143,7 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
                       day: "numeric",
                       month: "long",
                       year: "numeric",
-                    }
+                    },
                   )
                 : "t"}
             </time>
@@ -274,7 +274,7 @@ function AbilitiesRowWithGear({
 }) {
   const { t } = useTranslation(["gear"]);
   const translatedGearName = t(
-    `gear:${gearTypeToInitial(gearType)}_${gearId}` as any
+    `gear:${gearTypeToInitial(gearType)}_${gearId}` as any,
   );
 
   return (

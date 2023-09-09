@@ -73,7 +73,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   validate(
     isTeamMember({ user, team }) && !isTeamOwner({ user, team }),
-    "You are not a regular member of this team"
+    "You are not a regular member of this team",
   );
 
   leaveTeam({ userId: user.id, teamId: team.id });

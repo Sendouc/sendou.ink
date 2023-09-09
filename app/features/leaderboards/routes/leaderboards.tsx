@@ -41,7 +41,7 @@ import {
   type RankedModeShort,
 } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
-import { allSeasons, currentSeason } from "~/features/mmr/season";
+import { allSeasons } from "~/features/mmr/season";
 import {
   addPlacementRank,
   addTiers,
@@ -53,6 +53,8 @@ import { seasonPopularUsersWeapon } from "../queries/seasonPopularUsersWeapon.se
 import { cachified } from "cachified";
 import { cache, ttl } from "~/utils/cache.server";
 import { HALF_HOUR_IN_MS } from "~/constants";
+import { TopTenPlayer } from "../components/TopTenPlayer";
+import { seasonHasTopTen } from "../leaderboards-utils";
 
 export const handle: SendouRouteHandle = {
   i18n: ["vods"],
@@ -87,7 +89,7 @@ const TYPE_SEARCH_PARAM_KEY = "type";
 export const loader = async ({ request }: LoaderArgs) => {
   const t = await i18next.getFixedT(request);
   const unvalidatedType = new URL(request.url).searchParams.get(
-    TYPE_SEARCH_PARAM_KEY
+    TYPE_SEARCH_PARAM_KEY,
   );
 
   const type =
@@ -103,10 +105,8 @@ export const loader = async ({ request }: LoaderArgs) => {
         // eslint-disable-next-line @typescript-eslint/require-await
         async getFreshValue() {
           const leaderboard = userSPLeaderboard(0);
-          // TODO: handle viewing during off-season
-          const withTiers = currentSeason(new Date())
-            ? addTiers(leaderboard)
-            : leaderboard.map((e) => ({ ...e, tier: undefined }));
+          // TODO: dynamic season
+          const withTiers = addTiers(leaderboard, 0);
 
           return addWeapons(withTiers, seasonPopularUsersWeapon(0));
         },
@@ -134,7 +134,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     userLeaderboard && type !== "USER"
       ? filterByWeaponCategory(
           userLeaderboard,
-          type.split("-")[1] as (typeof weaponCategories)[number]["name"]
+          type.split("-")[1] as (typeof weaponCategories)[number]["name"],
         )
       : userLeaderboard;
 
@@ -159,6 +159,10 @@ export default function LeaderboardsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const data = useLoaderData<typeof loader>();
 
+  const isAllUserLeaderboard =
+    !searchParams.get(TYPE_SEARCH_PARAM_KEY) ||
+    searchParams.get(TYPE_SEARCH_PARAM_KEY) === "USER";
+
   return (
     <Main halfWidth className="stack lg">
       <select
@@ -175,7 +179,7 @@ export default function LeaderboardsPage() {
                 (type) => {
                   const userOrTeam = type.includes("USER") ? "USER" : "TEAM";
                   const category = weaponCategories.find((c) =>
-                    type.includes(c.name)
+                    type.includes(c.name),
                   )?.name;
 
                   return (
@@ -186,7 +190,7 @@ export default function LeaderboardsPage() {
                         : ""}
                     </option>
                   );
-                }
+                },
               )}
             </optgroup>
           );
@@ -218,13 +222,33 @@ export default function LeaderboardsPage() {
           );
         })}
       </select>
+      {/* TODO: dynamic season */}
+      {seasonHasTopTen(0) && isAllUserLeaderboard && data.userLeaderboard ? (
+        <div className="stack lg mx-auto">
+          {data.userLeaderboard
+            .filter((_, i) => i <= 9)
+            .map((entry, i) => {
+              return (
+                // TODO dynamic season
+                <Link
+                  key={`${entry.id}-${0}`}
+                  to={userSeasonsPage({ user: entry, season: 0 })}
+                >
+                  <TopTenPlayer
+                    placement={i + 1}
+                    power={entry.power}
+                    season={0}
+                  />
+                </Link>
+              );
+            })}
+        </div>
+      ) : null}
+
       {data.userLeaderboard ? (
         <PlayersTable
           entries={data.userLeaderboard}
-          showTiers={
-            !searchParams.get(TYPE_SEARCH_PARAM_KEY) ||
-            searchParams.get(TYPE_SEARCH_PARAM_KEY) === "USER"
-          }
+          showTiers={isAllUserLeaderboard}
         />
       ) : null}
       {data.teamLeaderboard ? (
@@ -250,46 +274,48 @@ function PlayersTable({
 }) {
   return (
     <div className="placements__table">
-      {entries.map((entry) => {
-        return (
-          <React.Fragment key={entry.entryId}>
-            {entry.tier && showTiers ? (
-              <div className="placements__tier-header">
-                <TierImage tier={entry.tier} width={32} />
-                {entry.tier.name}
-                {entry.tier.isPlus ? "+" : ""}
-              </div>
-            ) : null}
-            {/* TODO: dynamic season */}
-            <Link
-              to={userSeasonsPage({ user: entry, season: 0 })}
-              className="placements__table__row"
-            >
-              <div className="placements__table__inner-row">
-                <div className="placements__table__rank">
-                  {entry.placementRank}
+      {entries
+        .filter((_, i) => !seasonHasTopTen(0) || i > 9)
+        .map((entry) => {
+          return (
+            <React.Fragment key={entry.entryId}>
+              {entry.tier && showTiers ? (
+                <div className="placements__tier-header">
+                  <TierImage tier={entry.tier} width={32} />
+                  {entry.tier.name}
+                  {entry.tier.isPlus ? "+" : ""}
                 </div>
-                <div>
-                  <Avatar size="xxs" user={entry} />
+              ) : null}
+              {/* TODO: dynamic season */}
+              <Link
+                to={userSeasonsPage({ user: entry, season: 0 })}
+                className="placements__table__row"
+              >
+                <div className="placements__table__inner-row">
+                  <div className="placements__table__rank">
+                    {entry.placementRank}
+                  </div>
+                  <div>
+                    <Avatar size="xxs" user={entry} />
+                  </div>
+                  {entry.weaponSplId ? (
+                    <WeaponImage
+                      className="placements__table__weapon"
+                      variant="build"
+                      weaponSplId={entry.weaponSplId}
+                      width={32}
+                      height={32}
+                    />
+                  ) : null}
+                  <div className="placements__table__name">
+                    {entry.discordName}
+                  </div>
+                  <div className="placements__table__power">{entry.power}</div>
                 </div>
-                {entry.weaponSplId ? (
-                  <WeaponImage
-                    className="placements__table__weapon"
-                    variant="build"
-                    weaponSplId={entry.weaponSplId}
-                    width={32}
-                    height={32}
-                  />
-                ) : null}
-                <div className="placements__table__name">
-                  {entry.discordName}
-                </div>
-                <div className="placements__table__power">{entry.power}</div>
-              </div>
-            </Link>
-          </React.Fragment>
-        );
-      })}
+              </Link>
+            </React.Fragment>
+          );
+        })}
     </div>
   );
 }

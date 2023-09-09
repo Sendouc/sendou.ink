@@ -177,7 +177,7 @@ export interface CrudInterface {
    */
   select<T extends Table>(
     table: T,
-    filter: Partial<DataTypes[T]>
+    filter: Partial<DataTypes[T]>,
   ): Array<DataTypes[T]> | null;
 
   /**
@@ -199,7 +199,7 @@ export interface CrudInterface {
   update<T extends Table>(
     table: T,
     filter: Partial<DataTypes[T]>,
-    value: Partial<DataTypes[T]>
+    value: Partial<DataTypes[T]>,
   ): boolean;
 
   /**
@@ -221,10 +221,10 @@ export interface CrudInterface {
 export interface Storage extends CrudInterface {
   selectFirst<T extends Table>(
     table: T,
-    filter: Partial<DataTypes[T]>
+    filter: Partial<DataTypes[T]>,
   ): DataTypes[T] | null;
   selectLast<T extends Table>(
     table: T,
-    filter: Partial<DataTypes[T]>
+    filter: Partial<DataTypes[T]>,
   ): DataTypes[T] | null;
 }

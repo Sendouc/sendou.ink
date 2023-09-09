@@ -13,7 +13,7 @@ import type { Params } from "@remix-run/react";
 import invariant from "tiny-invariant";
 
 function groupRedirectLocation(
-  group?: Pick<Group, "status"> & { matchId?: number }
+  group?: Pick<Group, "status"> & { matchId?: number },
 ) {
   if (group?.status === "PREPARING") return SENDOUQ_PREPARING_PAGE;
   if (group?.matchId) return sendouQMatchPage(group.matchId);

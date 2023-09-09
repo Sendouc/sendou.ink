@@ -19,7 +19,7 @@ export const streamsSchema = z.object({
       tag_ids: z.array(z.unknown()),
       tags: z.array(z.string()).nullish(),
       is_mature: z.boolean(),
-    })
+    }),
   ),
   pagination: z.object({ cursor: z.string().nullish() }),
 });

@@ -53,7 +53,7 @@ AbilityPointCountsToAverages("calculates average ap (main only)", () => {
 
   assert.is(
     mainOnlyAbilities.find((a) => a.name === "T")?.percentage.weapon,
-    50
+    50,
   );
 });
 
@@ -65,7 +65,7 @@ AbilityPointCountsToAverages("calculates average ap (stackable)", () => {
 
   assert.is(
     stackableAbilities.find((a) => a.name === "SS")?.apAverage.weapon,
-    13.5
+    13.5,
   );
 });
 
@@ -77,7 +77,7 @@ AbilityPointCountsToAverages("calculates average ap for all builds", () => {
 
   assert.is(
     mainOnlyAbilities.find((a) => a.name === "T")?.percentage.all,
-    33.33
+    33.33,
   );
 });
 

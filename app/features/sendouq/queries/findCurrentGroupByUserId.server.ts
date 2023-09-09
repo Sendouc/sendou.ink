@@ -25,7 +25,7 @@ type ActiveGroup = Pick<Group, "id" | "status" | "latestActionAt"> & {
 };
 
 export function findCurrentGroupByUserId(
-  userId: number
+  userId: number,
 ): ActiveGroup | undefined {
   const groups = stm.all({ userId }) as any;
 

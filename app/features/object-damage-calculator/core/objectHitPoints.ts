@@ -49,10 +49,10 @@ export const objectHitPoints = (abilityPoints: AbilityPoints): HitPoints => {
   return {
     BulletUmbrellaCanopyNormal: SPLAT_BRELLA_SHIELD_HP,
     BulletUmbrellaCanopyWide: hpDivided(
-      weaponParams.mainWeapons[6010].CanopyHP
+      weaponParams.mainWeapons[6010].CanopyHP,
     ),
     BulletUmbrellaCanopyCompact: hpDivided(
-      weaponParams.mainWeapons[6020].CanopyHP
+      weaponParams.mainWeapons[6020].CanopyHP,
     ),
     Wsb_Shield,
     Bomb_TorpedoBullet: TORPEDO_HP,

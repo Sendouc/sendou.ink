@@ -8,7 +8,7 @@ module.exports.up = function (db) {
       "authorId" integer not null,
       foreign key ("authorId") references "User"("id") on delete restrict
     ) strict
-  `
+  `,
   ).run();
 
   db.prepare(
@@ -19,7 +19,7 @@ module.exports.up = function (db) {
       foreign key ("artId") references "Art"("id") on delete cascade,
       foreign key ("tagId") references "ArtTag"("id") on delete cascade
     ) strict
-  `
+  `,
   ).run();
 
   db.prepare(`create index tagged_art_art_id on "TaggedArt"("artId")`).run();

@@ -73,17 +73,17 @@ function ThemeProvider({
   const setUserTheme = useCallback(
     (newTheme: Theme | "auto") => {
       setThemeState(
-        newTheme === "auto" ? [getPreferredTheme(), true] : [newTheme, false]
+        newTheme === "auto" ? [getPreferredTheme(), true] : [newTheme, false],
       );
       persistTheme(
         { theme: newTheme },
         {
           action: "theme",
           method: "post",
-        }
+        },
       );
     },
-    [setThemeState, persistTheme]
+    [setThemeState, persistTheme],
   );
 
   useEffect(() => {
@@ -105,7 +105,7 @@ function ThemeProvider({
         // Gets corrected by clientThemeCode if set to "" during SSR
         htmlThemeClass: theme ?? "",
         // Gets corrected by clientThemeCode if set to wrong value during SSR
-        metaColorScheme: theme === "light" ? "light dark" : "dark light",
+        metaColorScheme: theme === Theme.LIGHT ? "light dark" : "dark light",
         userTheme:
           themeSource === "static" ? null : isAutoDetected ? "auto" : theme!,
         setUserTheme,

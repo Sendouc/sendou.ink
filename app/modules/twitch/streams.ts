@@ -55,9 +55,9 @@ async function getAllStreams() {
       ...data.filter(
         (stream) =>
           !result.some(
-            (existingStream) => existingStream.user_id === stream.user_id
-          )
-      )
+            (existingStream) => existingStream.user_id === stream.user_id,
+          ),
+      ),
     );
     if (!pagination.cursor) {
       return result;
@@ -87,7 +87,7 @@ export async function getStreamsChunk({
         ["Authorization", `Bearer ${token}`],
         ["Client-Id", TWITCH_CLIENT_ID],
       ],
-    }
+    },
   );
 
   if (res.status === 401 && !isRetry) {
@@ -97,7 +97,7 @@ export async function getStreamsChunk({
 
   if (!res.ok) {
     throw new Error(
-      `Getting Twitch token failed with status code: ${res.status}`
+      `Getting Twitch token failed with status code: ${res.status}`,
     );
   }
 

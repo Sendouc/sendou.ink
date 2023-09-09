@@ -106,7 +106,7 @@ export default function VodPage() {
             >
               {isMounted
                 ? databaseTimestampToDate(
-                    data.vod.youtubeDate
+                    data.vod.youtubeDate,
                   ).toLocaleDateString(i18n.language, {
                     day: "numeric",
                     month: "numeric",

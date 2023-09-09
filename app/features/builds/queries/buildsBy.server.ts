@@ -266,7 +266,7 @@ function augmentBuild<T>({
 
 const gearOrder: Array<BuildAbility["gearType"]> = ["HEAD", "CLOTHES", "SHOES"];
 function dbAbilitiesToArrayOfArrays(
-  abilities: Array<Pick<BuildAbility, "ability" | "gearType" | "slotIndex">>
+  abilities: Array<Pick<BuildAbility, "ability" | "gearType" | "slotIndex">>,
 ): BuildAbilitiesTuple {
   const sorted = abilities
     .slice()

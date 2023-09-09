@@ -3,7 +3,7 @@ import type { ModeShort } from "../in-game-lists";
 
 export function modesOrder(
   type: "EQUAL" | "SZ_EVERY_OTHER",
-  modes: ModeShort[]
+  modes: ModeShort[],
 ): ModeShort[] {
   if (type === "EQUAL") {
     return shuffle(modes);

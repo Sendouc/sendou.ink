@@ -1,7 +1,7 @@
 module.exports.up = function (db) {
   db.prepare(`alter table "User" add "customUrl" text`).run();
   db.prepare(
-    `create unique index user_custom_url_unique on "User"("customUrl")`
+    `create unique index user_custom_url_unique on "User"("customUrl")`,
   ).run();
 
   db.prepare(`alter table "User" add "stickSens" integer`).run();

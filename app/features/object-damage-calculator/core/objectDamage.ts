@@ -44,7 +44,7 @@ export function damageTypeToMultipliers({
     } else if (
       weapon.type === "SPECIAL" &&
       (objectDamagesObj.specialWeaponIds as SpecialWeaponId[]).includes(
-        weapon.id
+        weapon.id,
       )
     ) {
       matchingKeys.push(key as keyof typeof objectDamages);
@@ -87,8 +87,8 @@ function resolveRelevantKey({
     if (!actualKeys.includes(key)) {
       throw new Error(
         `Invalid damagePriorities (no key in object-dmg.json for the weapon): ${JSON.stringify(
-          [weaponType, weaponIds, damageType, key]
-        )}`
+          [weaponType, weaponIds, damageType, key],
+        )}`,
       );
     }
 
@@ -98,18 +98,18 @@ function resolveRelevantKey({
   throw new Error(
     `Could not resolve relevant key from ${actualKeys.join(", ")}; weapon: ${
       weapon.type
-    }_${weapon.id}; damage type: ${type} - please update damagePriorities`
+    }_${weapon.id}; damage type: ${type} - please update damagePriorities`,
   );
 }
 
 export function multipliersToRecordWithFallbacks(
-  multipliers: ReturnType<typeof damageTypeToMultipliers>
+  multipliers: ReturnType<typeof damageTypeToMultipliers>,
 ) {
   return Object.fromEntries(
     DAMAGE_RECEIVERS.map((receiver) => [
       receiver,
       multipliers?.find((m) => m.target === receiver)?.rate ?? 1,
-    ])
+    ]),
   ) as Record<DamageReceiver, number>;
 }
 
@@ -145,7 +145,7 @@ function resolveFilteredDamages({
 }) {
   if (anyWeapon.type === "SUB") {
     return analyzed.stats.subWeaponDefenseDamages.filter(
-      (damage) => damage.subWeaponId === anyWeapon.id
+      (damage) => damage.subWeaponId === anyWeapon.id,
     );
   }
 
@@ -183,7 +183,7 @@ export function calculateDamage({
   const toCombine =
     anyWeapon.type == "MAIN"
       ? (damageTypesToCombine[anyWeapon.id] ?? []).find(
-          (c) => c.when === damageType
+          (c) => c.when === damageType,
         )
       : undefined;
 
@@ -204,10 +204,10 @@ export function calculateDamage({
           damageTypeToMultipliers({
             type: damage.type,
             weapon: anyWeapon,
-          })
+          }),
         ),
       ];
-    })
+    }),
   );
 
   return DAMAGE_RECEIVERS.map((receiver) => {
@@ -228,7 +228,7 @@ export function calculateDamage({
 
           const otherDamage = () => {
             const result = filteredDamages.find(
-              (damage) => damage.type === toCombine?.combineWith
+              (damage) => damage.type === toCombine?.combineWith,
             )?.value;
             invariant(result);
 

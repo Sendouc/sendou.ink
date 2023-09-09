@@ -222,6 +222,10 @@
   margin-inline-end: auto;
 }
 
+.mr-1 {
+  margin-inline-end: var(--s-1);
+}
+
 .mx-auto {
   margin: 0 auto;
 }

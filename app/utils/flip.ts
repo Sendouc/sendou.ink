@@ -9,7 +9,7 @@
 export function animate(
   el: HTMLElement,
   keyframes: Keyframe[] | PropertyIndexedKeyframes,
-  options?: number | KeyframeAnimationOptions
+  options?: number | KeyframeAnimationOptions,
 ): Promise<void> {
   return new Promise((resolve) => {
     const anim = el.animate(keyframes, options);
