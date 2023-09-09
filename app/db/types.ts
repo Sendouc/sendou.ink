@@ -38,6 +38,8 @@ export interface User {
   commissionsOpen: number;
   commissionText: string | null;
   banned: number;
+  vc: "YES" | "NO" | "LISTEN_ONLY";
+  languages: string | null;
 }
 
 /** User table after joined with PlusTier table */

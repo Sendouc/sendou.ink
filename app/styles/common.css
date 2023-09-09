@@ -269,7 +269,7 @@ select {
   cursor: pointer;
   font-weight: 500;
   padding-block: 3.5px;
-  padding-inline: var(--s-3) var(--s-8);
+  padding-inline: var(--s-3) var(--s-9);
 }
 
 select:disabled {

@@ -111,6 +111,11 @@
   overflow: visible;
 }
 
+.q__group-member-vc-icon {
+  width: 18px;
+  stroke-width: 2;
+}
+
 .q-preparing__card-container {
   min-width: 250px;
   margin: 0 auto;
