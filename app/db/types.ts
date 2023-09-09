@@ -55,6 +55,12 @@ export interface UserWeapon {
   isFavorite: number;
 }
 
+export interface LogInLink {
+  code: string;
+  expiresAt: number;
+  userId: number;
+}
+
 export interface PlusSuggestion {
   id: number;
   text: string;

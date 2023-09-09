@@ -784,7 +784,6 @@ function subWeaponShouldBeSkipped(subWeapon: SubWeapon) {
 }
 
 function specialWeaponShouldBeSkipped(specialWeapon: SpecialWeapon) {
-  console.log({ specialWeapon });
   if (WEAPON_TYPES_TO_IGNORE.some((val) => specialWeapon.Type.includes(val))) {
     return true;
   }

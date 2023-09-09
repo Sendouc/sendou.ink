@@ -22,7 +22,6 @@
   "auth.errors.aborted": "Accesso cancellato",
   "auth.errors.failed": "Accesso fallito",
   "auth.errors.discordPermissions": "Per il tuo profilo di sendou.ink, il sito ha bisogno di accesso al nome utente, avatar e connessioni social del tuo profilo Discord.",
-  "auth.errors.unknown": "L'accesso tramite Discord ha fallito per una ragione sconosciuta. Se continua a succedere, conttattaci per un pò di aiuto.",
   "footer.github.subtitle": "Codice sorgente",
   "footer.twitter.subtitle": "Aggiornamenti",
   "footer.discord.subtitle": "Aiuto & feedback",

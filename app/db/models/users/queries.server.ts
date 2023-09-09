@@ -27,6 +27,7 @@ import updateByDiscordIdSql from "./updateByDiscordId.sql";
 import updateDiscordIdSql from "./updateDiscordId.sql";
 import updateProfileSql from "./updateProfile.sql";
 import upsertSql from "./upsert.sql";
+import upsertLiteSql from "./upsertLite.sql";
 import addUserWeaponSql from "./addUserWeapon.sql";
 import deleteUserWeaponsSql from "./deleteUserWeapons.sql";
 import wipePlusTiersSql from "./wipePlusTiers.sql";
@@ -52,6 +53,20 @@ export function upsert(
   >,
 ) {
   return upsertStm.get(input) as User;
+}
+
+const upsertLiteStm = sql.prepare(upsertLiteSql);
+export function upsertLite(
+  input: Pick<
+    User,
+    | "discordId"
+    | "discordName"
+    | "discordDiscriminator"
+    | "discordAvatar"
+    | "discordUniqueName"
+  >,
+) {
+  return upsertLiteStm.get(input) as User;
 }
 
 const updateProfileStm = sql.prepare(updateProfileSql);

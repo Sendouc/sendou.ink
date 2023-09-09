@@ -32,7 +32,6 @@
   "auth.errors.aborted": "로그인 중단됨",
   "auth.errors.failed": "로그인 실패",
   "auth.errors.discordPermissions": "sendou.ink 프로필을 위해 디스코드 프로필의 이름, 아바타와 연락처에 대한 접근이 필요합니다.",
-  "auth.errors.unknown": "알 수 없는 이유로 디스코드를 통한 로그인이 실패했습니다. 계속되면 도움을 청하세요.",
 
   "footer.github.subtitle": "소스 코드",
   "footer.twitter.subtitle": "업데이트들",

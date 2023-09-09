@@ -5,6 +5,7 @@ import { plusCommand } from "./plus";
 import { updateAllCommand } from "./updateall";
 import { pingRolesCommand } from "./pings";
 import { colorCommand } from "./color";
+import { loginCommand, updateProfileCommand } from "./login";
 import type { BotCommand } from "../types";
 
 export const commands = [
@@ -15,6 +16,8 @@ export const commands = [
   updateAllCommand,
   pingRolesCommand,
   colorCommand,
+  loginCommand,
+  updateProfileCommand,
 ];
 
 export const commandsMap = Object.fromEntries(commands.map((c) => [c.name, c]));
