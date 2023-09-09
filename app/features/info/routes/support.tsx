@@ -23,7 +23,6 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-// xxx: add about priority support
 // 1 = support
 // 2 = supporter
 // 3 = supporter+
@@ -46,6 +45,11 @@ const PERKS = [
   {
     tier: 2,
     name: "privateDiscord",
+    extraInfo: true,
+  },
+  {
+    tier: 2,
+    name: "prioritySupport",
     extraInfo: true,
   },
   {

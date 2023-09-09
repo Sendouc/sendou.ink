@@ -27,7 +27,6 @@
   "auth.errors.aborted": "Logowanie przerwane",
   "auth.errors.failed": "Logowanie nieudane",
   "auth.errors.discordPermissions": "Do twojego profilu sendou.ink, ta strona potrzebuje dostęp do twojej nazwy, avataru i połączeń konta Discord.",
-  "auth.errors.unknown": "Logowanie poprzez Discorda nie udało się. Jeśli problem się nie naprawi, sięgnij po pomoc.",
 
   "footer.github.subtitle": "Kod",
   "footer.twitter.subtitle": "Aktualizacje",

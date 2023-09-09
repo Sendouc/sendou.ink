@@ -27,7 +27,6 @@
   "auth.errors.aborted": "Вход отменён",
   "auth.errors.failed": "Ошибка входа",
   "auth.errors.discordPermissions": "Для вашего профиля на sendou.ink странице нужет доступ к вашему имени, аватару и привязанным аккаунтам соц. сетей в Discord.",
-  "auth.errors.unknown": "Вход через Discord не удался по неизвестной причине. Если это продолжается — обратитесь за помощью.",
 
   "footer.github.subtitle": "Исходный код",
   "footer.twitter.subtitle": "Обновления",

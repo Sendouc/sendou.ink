@@ -89,7 +89,8 @@ async function execute(
   const { code } = await response.json();
 
   return interaction.reply({
-    content: `Use the link below to log in to sendou.ink - link is active for 24 hours. ⚠️ Don't share this link with others as it will allow them to log in to your account.\n\n[log in link](https://sendou.ink/auth/login?code=${code})`,
+    content:
+      "Use the link below to log in to sendou.ink. It's active for 10 minutes. ⚠️ Don't share this link with others as it will allow them to log in to your account.\n\n[log in link](https://sendou.ink/auth/login?code=${code})",
     ephemeral: true,
   });
 }
