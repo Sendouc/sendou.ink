@@ -245,8 +245,8 @@ function VoiceChatInfo({
       : SpeakerXIcon;
 
   const color = () => {
-    const languagesMatch = member.languages.some((l) =>
-      user?.languages.includes(l)
+    const languagesMatch = member.languages.some(
+      (l) => user?.languages.includes(l),
     );
 
     if (!languagesMatch) return "text-error";

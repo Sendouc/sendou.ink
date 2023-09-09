@@ -31,8 +31,8 @@ export const frontPageSchema = z.union([
         .array(z.string())
         .refine(noDuplicates)
         .refine((val) =>
-          val.every((lang) => languagesUnified.some((l) => l.code === lang))
-        )
+          val.every((lang) => languagesUnified.some((l) => l.code === lang)),
+        ),
     ),
   }),
   z.object({

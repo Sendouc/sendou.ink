@@ -618,12 +618,12 @@ function Languages() {
         className="w-max"
         onChange={(e) => {
           const newLanguages = [...value, e.target.value].sort((a, b) =>
-            a.localeCompare(b)
+            a.localeCompare(b),
           );
           setValue(newLanguages);
           localStorage.setItem(
             LANGUAGES_LOCAL_STORAGE_KEY,
-            JSON.stringify(newLanguages)
+            JSON.stringify(newLanguages),
           );
         }}
       >
@@ -650,12 +650,12 @@ function Languages() {
                 variant="minimal-destructive"
                 onClick={() => {
                   const newLanguages = value.filter(
-                    (codeInArr) => codeInArr !== code
+                    (codeInArr) => codeInArr !== code,
                   );
                   setValue(newLanguages);
                   localStorage.setItem(
                     LANGUAGES_LOCAL_STORAGE_KEY,
-                    JSON.stringify(newLanguages)
+                    JSON.stringify(newLanguages),
                   );
                 }}
               />
