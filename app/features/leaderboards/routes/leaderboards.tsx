@@ -41,7 +41,11 @@ import {
   type RankedModeShort,
 } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
-import { allSeasons } from "~/features/mmr/season";
+import {
+  allSeasons,
+  currentSeason,
+  previousOrCurrentSeason,
+} from "~/features/mmr/season";
 import {
   addPlacementRank,
   addTiers,
@@ -85,30 +89,35 @@ export const links: LinksFunction = () => {
 };
 
 const TYPE_SEARCH_PARAM_KEY = "type";
+const SEASON_SEARCH_PARAM_KEY = "season";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const t = await i18next.getFixedT(request);
   const unvalidatedType = new URL(request.url).searchParams.get(
     TYPE_SEARCH_PARAM_KEY,
   );
+  const unvalidatedSeason = new URL(request.url).searchParams.get(
+    SEASON_SEARCH_PARAM_KEY,
+  );
 
   const type =
     LEADERBOARD_TYPES.find((type) => type === unvalidatedType) ??
     LEADERBOARD_TYPES[0];
+  const season =
+    allSeasons(new Date()).find((s) => s === Number(unvalidatedSeason)) ??
+    previousOrCurrentSeason(new Date())!.nth;
 
   const userLeaderboard = type.includes("USER")
     ? await cachified({
-        // TODO: add season here
-        key: `user-leaderboard-season-${0}`,
+        key: `user-leaderboard-season-${season}`,
         cache,
         ttl: ttl(HALF_HOUR_IN_MS),
         // eslint-disable-next-line @typescript-eslint/require-await
         async getFreshValue() {
-          const leaderboard = userSPLeaderboard(0);
-          // TODO: dynamic season
-          const withTiers = addTiers(leaderboard, 0);
+          const leaderboard = userSPLeaderboard(season);
+          const withTiers = addTiers(leaderboard, season);
 
-          return addWeapons(withTiers, seasonPopularUsersWeapon(0));
+          return addWeapons(withTiers, seasonPopularUsersWeapon(season));
         },
       })
     : null;
@@ -116,13 +125,12 @@ export const loader = async ({ request }: LoaderArgs) => {
   const teamLeaderboard =
     type === "TEAM"
       ? await cachified({
-          // TODO: add season here
-          key: `team-leaderboard-season-${0}`,
+          key: `team-leaderboard-season-${season}`,
           cache,
           ttl: ttl(HALF_HOUR_IN_MS),
           // eslint-disable-next-line @typescript-eslint/require-await
           async getFreshValue() {
-            const leaderboard = teamSPLeaderboard(0);
+            const leaderboard = teamSPLeaderboard(season);
             const filteredByUser = oneEntryPerUser(leaderboard);
 
             return addPlacementRank(filteredByUser);
@@ -138,7 +146,6 @@ export const loader = async ({ request }: LoaderArgs) => {
         )
       : userLeaderboard;
 
-  // TODO: season selection logic
   return {
     userLeaderboard: filteredLeaderboard ?? userLeaderboard,
     teamLeaderboard,
@@ -151,6 +158,7 @@ export const loader = async ({ request }: LoaderArgs) => {
         ? weaponXPLeaderboard(Number(type.split("-")[2]) as MainWeaponId)
         : null,
     title: makeTitle(t("pages.leaderboards")),
+    season,
   };
 };
 
@@ -163,14 +171,52 @@ export default function LeaderboardsPage() {
     !searchParams.get(TYPE_SEARCH_PARAM_KEY) ||
     searchParams.get(TYPE_SEARCH_PARAM_KEY) === "USER";
 
+  const seasonPlusTypeToKey = ({
+    season,
+    type,
+  }: {
+    season: number;
+    type: string;
+  }) => `${type};${season}`;
+
+  const selectValue = () => {
+    const type =
+      searchParams.get(TYPE_SEARCH_PARAM_KEY) ?? LEADERBOARD_TYPES[0];
+
+    if (
+      LEADERBOARD_TYPES.includes(type as (typeof LEADERBOARD_TYPES)[number])
+    ) {
+      return seasonPlusTypeToKey({
+        season: data.season,
+        type,
+      });
+    }
+
+    return type;
+  };
+
+  const showTopTen = Boolean(
+    seasonHasTopTen(data.season) &&
+      isAllUserLeaderboard &&
+      data.userLeaderboard,
+  );
+
+  const renderNoEntries =
+    (data.userLeaderboard && data.userLeaderboard.length === 0) ||
+    (data.teamLeaderboard && data.teamLeaderboard.length === 0);
+
   return (
     <Main halfWidth className="stack lg">
       <select
         className="text-sm"
-        value={searchParams.get(TYPE_SEARCH_PARAM_KEY) ?? LEADERBOARD_TYPES[0]}
-        onChange={(e) =>
-          setSearchParams({ [TYPE_SEARCH_PARAM_KEY]: e.target.value })
-        }
+        value={selectValue()}
+        onChange={(e) => {
+          const [type, season] = e.target.value.split(";");
+          setSearchParams({
+            [TYPE_SEARCH_PARAM_KEY]: type,
+            [SEASON_SEARCH_PARAM_KEY]: season,
+          });
+        }}
       >
         {allSeasons(new Date()).map((season) => {
           return (
@@ -183,7 +229,10 @@ export default function LeaderboardsPage() {
                   )?.name;
 
                   return (
-                    <option key={type} value={type}>
+                    <option
+                      key={type}
+                      value={seasonPlusTypeToKey({ season, type })}
+                    >
                       {t(`common:leaderboard.type.${userOrTeam}`)}
                       {category
                         ? ` (${t(`common:weapon.category.${category}`)})`
@@ -222,22 +271,20 @@ export default function LeaderboardsPage() {
           );
         })}
       </select>
-      {/* TODO: dynamic season */}
-      {seasonHasTopTen(0) && isAllUserLeaderboard && data.userLeaderboard ? (
+      {showTopTen ? (
         <div className="stack lg mx-auto">
-          {data.userLeaderboard
-            .filter((_, i) => i <= 9)
+          {data
+            .userLeaderboard!.filter((_, i) => i <= 9)
             .map((entry, i) => {
               return (
-                // TODO dynamic season
                 <Link
-                  key={`${entry.id}-${0}`}
-                  to={userSeasonsPage({ user: entry, season: 0 })}
+                  key={`${entry.id}-${data.season}`}
+                  to={userSeasonsPage({ user: entry, season: data.season })}
                 >
                   <TopTenPlayer
                     placement={i + 1}
                     power={entry.power}
-                    season={0}
+                    season={data.season}
                   />
                 </Link>
               );
@@ -249,15 +296,22 @@ export default function LeaderboardsPage() {
         <PlayersTable
           entries={data.userLeaderboard}
           showTiers={isAllUserLeaderboard}
+          showingTopTen={showTopTen}
         />
       ) : null}
       {data.teamLeaderboard ? (
         <TeamTable entries={data.teamLeaderboard} />
       ) : null}
       {data.xpLeaderboard ? <XPTable entries={data.xpLeaderboard} /> : null}
-      {/* TODO: only when viewing current season */}
-      {!data.xpLeaderboard ? (
-        <div className="text-xs text-lighter">
+
+      {renderNoEntries ? (
+        <div className="text-center text-lg text-lighter">
+          No players on the leaderboard yet
+        </div>
+      ) : null}
+
+      {!data.xpLeaderboard && data.season === currentSeason(new Date())?.nth ? (
+        <div className="text-xs text-lighter text-center">
           Leaderboard is updated once every 30 minutes.
         </div>
       ) : null}
@@ -268,14 +322,18 @@ export default function LeaderboardsPage() {
 function PlayersTable({
   entries,
   showTiers,
+  showingTopTen,
 }: {
   entries: NonNullable<SerializeFrom<typeof loader>["userLeaderboard"]>;
   showTiers?: boolean;
+  showingTopTen?: boolean;
 }) {
+  const data = useLoaderData<typeof loader>();
   return (
     <div className="placements__table">
       {entries
-        .filter((_, i) => !seasonHasTopTen(0) || i > 9)
+        // hide normal rows that are showed in "fancy" top 10 format
+        .filter((_, i) => !showingTopTen || i > 9)
         .map((entry) => {
           return (
             <React.Fragment key={entry.entryId}>
@@ -286,9 +344,8 @@ function PlayersTable({
                   {entry.tier.isPlus ? "+" : ""}
                 </div>
               ) : null}
-              {/* TODO: dynamic season */}
               <Link
-                to={userSeasonsPage({ user: entry, season: 0 })}
+                to={userSeasonsPage({ user: entry, season: data.season })}
                 className="placements__table__row"
               >
                 <div className="placements__table__inner-row">
