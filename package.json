@@ -28,6 +28,7 @@
     "delete-user": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/delete-user.ts",
     "ban-user": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/ban-user.ts",
     "delete-skill": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/delete-skill.ts",
+    "season-initial-powers": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/season-initial-powers.ts",
     "lint:ts": "eslint . --ext .ts,.tsx",
     "lint:css": "stylelint \"app/styles/**/*.css\"",
     "prettier:check": "prettier --check . --log-level warn",
