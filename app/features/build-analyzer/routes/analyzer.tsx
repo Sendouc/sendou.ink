@@ -336,7 +336,9 @@ export default function BuildAnalyzerPage() {
                     height={20}
                     alt={t(`weapons:MAIN_${mainWeaponId}`)}
                   />
-                  {t(`weapons:MAIN_${mainWeaponId}`)}
+                  <span className="analyzer__weapon-info-badge__text">
+                    {t(`weapons:MAIN_${mainWeaponId}`)}
+                  </span>
                 </div>
               }
             >
