@@ -112,7 +112,6 @@ sendou.ink/
 │   ├── styles/ -- All .css files of the project for styling
 │   ├── utils/ -- Random helper functions used in many places
 │   └── permissions.ts / -- What actions are allowed. Separated by frontend and backend as frontend has constraints based on what user sees.
-├── discord-bot/ -- Lohi Discord bot that works together with sendou.ink
 ├── migrations/ -- Database migrations
 ├── public/ -- Images, built assets etc. static files to be served as is
 └── scripts/ -- Stand-alone scripts to be run outside of the app
