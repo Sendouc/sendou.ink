@@ -16,6 +16,7 @@ import { createLogInLink } from "./queries/createLogInLink.server";
 import { userIdByLogInLinkCode } from "./queries/userIdByLogInLinkCode.server";
 import { deleteLogInLinkByCode } from "./queries/deleteLogInLinkByCode.server";
 import { db } from "~/db";
+import isbot from "isbot";
 
 const throwOnAuthErrors = process.env["THROW_ON_AUTH_ERROR"] === "true";
 
@@ -132,6 +133,11 @@ const logInViaLinkActionSchema = z.object({
 });
 
 export const logInViaLinkLoader: LoaderFunction = async ({ request }) => {
+  // make sure Discord link preview doesn't consume the login link
+  if (isbot(request.headers.get("user-agent"))) {
+    return null;
+  }
+
   const data = parseSearchParams({
     request,
     schema: logInViaLinkActionSchema,
