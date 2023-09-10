@@ -86,6 +86,7 @@
   "damage.header.type": "Type",
   "damage.header.damage": "Dégâts",
   "damage.header.baseDamage": "Dégâts de base",
+  "damage.header.baseDamage.short": "Base",
   "damage.header.distance": "Distance",
   "damage.toSplat_one": "{{count}} coup pour liquider",
   "damage.toSplat_other": "{{count}} coups pour liquider",
