@@ -6,60 +6,68 @@ import {
   useSearchParams,
 } from "@remix-run/react";
 import clsx from "clsx";
+import * as React from "react";
+import invariant from "tiny-invariant";
+import { z } from "zod";
+import { Avatar } from "~/components/Avatar";
+import Chart from "~/components/Chart";
 import {
   ModeImage,
   StageImage,
   TierImage,
   WeaponImage,
 } from "~/components/Image";
+import { Pagination } from "~/components/Pagination";
+import { Popover } from "~/components/Popover";
+import { SubNav, SubNavLink } from "~/components/SubNav";
+import { Tab, Tabs } from "~/components/Tabs";
+import { AlertIcon } from "~/components/icons/Alert";
 import { db } from "~/db";
+import { TopTenPlayer } from "~/features/leaderboards/components/TopTenPlayer";
+import { playerTopTenPlacement } from "~/features/leaderboards/leaderboards-utils";
 import { ordinalToSp } from "~/features/mmr";
 import {
   currentMMRByUserId,
   seasonAllMMRByUserId,
 } from "~/features/mmr/queries/seasonAllMMRByUserId.server";
-import { seasonObject } from "~/features/mmr/season";
+import {
+  allSeasons,
+  currentOrPreviousSeason,
+  seasonObject,
+} from "~/features/mmr/season";
 import { userSkills } from "~/features/mmr/tiered.server";
-import { useIsMounted } from "~/hooks/useIsMounted";
-import { notFoundIfFalsy } from "~/utils/remix";
-import { type UserPageLoaderData, userParamsSchema } from "../u.$identifier";
-import { seasonReportedWeaponsByUserId } from "~/features/sendouq/queries/seasonReportedWeaponsByUserId.server";
-import { useTranslation } from "~/hooks/useTranslation";
-import { cutToNDecimalPlaces } from "~/utils/number";
+import { seasonMapWinrateByUserId } from "~/features/sendouq/queries/seasonMapWinrateByUserId.server";
 import {
   seasonMatchesByUserId,
   seasonMatchesByUserIdPagesCount,
 } from "~/features/sendouq/queries/seasonMatchesByUserId.server";
-import { sendouQMatchPage, userSeasonsPage } from "~/utils/urls";
-import { Avatar } from "~/components/Avatar";
-import invariant from "tiny-invariant";
-import { Pagination } from "~/components/Pagination";
-import * as React from "react";
-import { databaseTimestampToDate } from "~/utils/dates";
-import { SubNav, SubNavLink } from "~/components/SubNav";
-import { z } from "zod";
+import { seasonReportedWeaponsByUserId } from "~/features/sendouq/queries/seasonReportedWeaponsByUserId.server";
+import { seasonSetWinrateByUserId } from "~/features/sendouq/queries/seasonSetWinrateByUserId.server";
 import { seasonStagesByUserId } from "~/features/sendouq/queries/seasonStagesByUserId.server";
+import { seasonsMatesEnemiesByUserId } from "~/features/sendouq/queries/seasonsMatesEnemiesByUserId.server";
+import { useWeaponUsage } from "~/hooks/swr";
+import { useIsMounted } from "~/hooks/useIsMounted";
+import { useTranslation } from "~/hooks/useTranslation";
 import {
+  stageIds,
   type ModeShort,
   type StageId,
-  stageIds,
 } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
-import { seasonsMatesEnemiesByUserId } from "~/features/sendouq/queries/seasonsMatesEnemiesByUserId.server";
-import Chart from "~/components/Chart";
-import { AlertIcon } from "~/components/icons/Alert";
-import { seasonMapWinrateByUserId } from "~/features/sendouq/queries/seasonMapWinrateByUserId.server";
-import { seasonSetWinrateByUserId } from "~/features/sendouq/queries/seasonSetWinrateByUserId.server";
-import { Popover } from "~/components/Popover";
-import { useWeaponUsage } from "~/hooks/swr";
 import { atOrError } from "~/utils/arrays";
-import { Tab, Tabs } from "~/components/Tabs";
-import { TopTenPlayer } from "~/features/leaderboards/components/TopTenPlayer";
-import { playerTopTenPlacement } from "~/features/leaderboards/leaderboards-utils";
+import { databaseTimestampToDate } from "~/utils/dates";
+import { cutToNDecimalPlaces } from "~/utils/number";
+import { notFoundIfFalsy } from "~/utils/remix";
+import { sendouQMatchPage, userSeasonsPage } from "~/utils/urls";
+import { userParamsSchema, type UserPageLoaderData } from "../u.$identifier";
 
 export const seasonsSearchParamsSchema = z.object({
   page: z.coerce.number().default(1),
   info: z.enum(["weapons", "stages", "mates", "enemies"]).default("weapons"),
+  season: z.coerce
+    .number()
+    .default(currentOrPreviousSeason(new Date())!.nth)
+    .refine((nth) => allSeasons(new Date()).includes(nth)),
 });
 
 export const loader = async ({ params, request }: LoaderArgs) => {
@@ -67,46 +75,46 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const parsedSearchParams = seasonsSearchParamsSchema.safeParse(
     Object.fromEntries(new URL(request.url).searchParams),
   );
-  const { info, page } = parsedSearchParams.success
+  const { info, page, season } = parsedSearchParams.success
     ? parsedSearchParams.data
     : seasonsSearchParamsSchema.parse({});
 
   const user = notFoundIfFalsy(db.users.findByIdentifier(identifier));
 
-  // TODO: dynamic season
-  const { tier } = (await userSkills(0)).userSkills[user.id] ?? {
+  const { tier } = (await userSkills(season)).userSkills[user.id] ?? {
     approximate: false,
     ordinal: 0,
     tier: { isPlus: false, name: "IRON" },
   };
 
   return {
-    currentOrdinal: currentMMRByUserId({ season: 0, userId: user.id }),
+    currentOrdinal: currentMMRByUserId({ season, userId: user.id }),
     winrates: {
-      maps: seasonMapWinrateByUserId({ season: 0, userId: user.id }),
-      sets: seasonSetWinrateByUserId({ season: 0, userId: user.id }),
+      maps: seasonMapWinrateByUserId({ season, userId: user.id }),
+      sets: seasonSetWinrateByUserId({ season, userId: user.id }),
     },
-    skills: seasonAllMMRByUserId({ season: 0, userId: user.id }),
+    skills: seasonAllMMRByUserId({ season, userId: user.id }),
     tier,
     matches: {
-      value: seasonMatchesByUserId({ season: 0, userId: user.id, page }),
+      value: seasonMatchesByUserId({ season, userId: user.id, page }),
       currentPage: page,
-      pages: seasonMatchesByUserIdPagesCount({ season: 0, userId: user.id }),
+      pages: seasonMatchesByUserIdPagesCount({ season, userId: user.id }),
     },
+    season,
     info: {
       currentTab: info,
       stages:
         info === "stages"
-          ? seasonStagesByUserId({ season: 0, userId: user.id })
+          ? seasonStagesByUserId({ season, userId: user.id })
           : null,
       weapons:
         info === "weapons"
-          ? seasonReportedWeaponsByUserId({ season: 0, userId: user.id })
+          ? seasonReportedWeaponsByUserId({ season, userId: user.id })
           : null,
       players:
         info === "enemies" || info === "mates"
           ? seasonsMatesEnemiesByUserId({
-              season: 0,
+              season,
               userId: user.id,
               type: info === "enemies" ? "ENEMY" : "MATE",
             })
@@ -119,12 +127,15 @@ export default function UserSeasonsPage() {
   const data = useLoaderData<typeof loader>();
 
   const tabLink = (tab: string) =>
-    `?info=${tab}&page=${data.matches.currentPage}`;
+    `?info=${tab}&page=${data.matches.currentPage}&season=${data.season}`;
 
   if (data.matches.value.length === 0) {
     return (
-      <div className="text-lg text-lighter font-semi-bold text-center mt-2">
-        This user has not played SendouQ or ranked tournaments yet.
+      <div className="stack lg half-width">
+        <SeasonHeader />
+        <div className="text-lg text-lighter font-semi-bold text-center mt-2">
+          This user has not played SendouQ or ranked tournaments this season
+        </div>
       </div>
     );
   }
@@ -188,15 +199,34 @@ export default function UserSeasonsPage() {
 }
 
 function SeasonHeader() {
+  const data = useLoaderData<typeof loader>();
   const isMounted = useIsMounted();
-  const { starts, ends } = seasonObject(0);
+  const { starts, ends } = seasonObject(data.season);
 
   const isDifferentYears =
     new Date(starts).getFullYear() !== new Date(ends).getFullYear();
 
   return (
     <div>
-      <h2 className="text-xl font-bold">Season 0</h2>
+      <div className="stack horizontal xs">
+        {allSeasons(new Date()).map((s) => {
+          const isActive = s === data.season;
+
+          return (
+            <Link
+              to={`?season=${s}`}
+              key={s}
+              className={clsx("text-xl font-bold", {
+                "text-lighter": !isActive,
+                "text-main-forced": isActive,
+              })}
+            >
+              {isActive ? "Season " : "S"}
+              {s}
+            </Link>
+          );
+        })}
+      </div>
       <div className={clsx("text-sm text-lighter", { invisible: !isMounted })}>
         {isMounted ? (
           <>
@@ -252,9 +282,8 @@ function Rank({ currentOrdinal }: { currentOrdinal: number }) {
 
   const peakAndCurrentSame = currentOrdinal === maxOrdinal;
 
-  // TODO: dynamic season
   const topTenPlacement = playerTopTenPlacement({
-    season: 0,
+    season: data.season,
     userId: parentRouteData.id,
   });
 
@@ -272,9 +301,12 @@ function Rank({ currentOrdinal }: { currentOrdinal: number }) {
             Peak {ordinalToSp(maxOrdinal)}SP
           </div>
         ) : null}
-        {/* TODO: dynamic season */}
         {topTenPlacement ? (
-          <TopTenPlayer small placement={topTenPlacement} season={0} />
+          <TopTenPlayer
+            small
+            placement={topTenPlacement}
+            season={data.season}
+          />
         ) : null}
       </div>
     </div>
@@ -363,6 +395,7 @@ function Stages({
 }: {
   stages: NonNullable<SerializeFrom<typeof loader>["info"]["stages"]>;
 }) {
+  const data = useLoaderData<typeof loader>();
   const { t } = useTranslation(["game-misc"]);
   const parentPageData = atOrError(useMatches(), -2).data as UserPageLoaderData;
 
@@ -399,8 +432,7 @@ function Stages({
                 >
                   <StageWeaponUsageStats
                     modeShort={mode}
-                    // TODO: dynamic season
-                    season={0}
+                    season={data.season}
                     stageId={id}
                     userId={parentPageData.id}
                   />
@@ -499,6 +531,8 @@ function Players({
 }: {
   players: NonNullable<SerializeFrom<typeof loader>["info"]["players"]>;
 }) {
+  const data = useLoaderData<typeof loader>();
+
   return (
     <div className="stack md horizontal justify-center flex-wrap">
       {players.map((player) => {
@@ -511,7 +545,7 @@ function Players({
         return (
           <div key={player.user.id} className="stack">
             <Link
-              to={userSeasonsPage({ user: player.user })}
+              to={userSeasonsPage({ user: player.user, season: data.season })}
               className="u__season__player-name"
             >
               <Avatar user={player.user} size="xs" className="mx-auto" />
@@ -568,10 +602,11 @@ function Matches() {
   const ref = React.useRef<HTMLDivElement>(null);
 
   const setPage = (page: number) => {
-    setSearchParams({ page: String(page) });
+    setSearchParams({ page: String(page), season: String(data.season) });
   };
 
   React.useEffect(() => {
+    if (data.matches.currentPage === 1) return;
     ref.current?.scrollIntoView({
       block: "center",
     });

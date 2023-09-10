@@ -64,11 +64,6 @@ export async function userSkills(season: number) {
     },
   });
 
-  // TODO: this can be removed after Season 0 has been kicked off
-  if (Object.keys(cachedSkills.userSkills).length < 10) {
-    return freshUserSkills(season);
-  }
-
   return cachedSkills;
 }
 

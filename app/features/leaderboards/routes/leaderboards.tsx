@@ -44,7 +44,7 @@ import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import {
   allSeasons,
   currentSeason,
-  previousOrCurrentSeason,
+  currentOrPreviousSeason,
 } from "~/features/mmr/season";
 import {
   addPlacementRank,
@@ -105,7 +105,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     LEADERBOARD_TYPES[0];
   const season =
     allSeasons(new Date()).find((s) => s === Number(unvalidatedSeason)) ??
-    previousOrCurrentSeason(new Date())!.nth;
+    currentOrPreviousSeason(new Date())!.nth;
 
   const userLeaderboard = type.includes("USER")
     ? await cachified({

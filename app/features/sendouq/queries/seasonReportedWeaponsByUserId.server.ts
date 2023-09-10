@@ -1,5 +1,5 @@
 import { sql } from "~/db/sql";
-import { type RankingSeason, seasonObject } from "~/features/mmr/season";
+import { seasonObject } from "~/features/mmr/season";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 
@@ -23,7 +23,7 @@ export function seasonReportedWeaponsByUserId({
   season,
 }: {
   userId: number;
-  season: RankingSeason["nth"];
+  season: number;
 }) {
   const { starts, ends } = seasonObject(season);
 

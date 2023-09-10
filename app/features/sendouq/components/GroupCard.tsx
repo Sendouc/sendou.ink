@@ -204,7 +204,6 @@ function GroupMember({
       {member.plusTier ? (
         <div className="text-xs text-lighter">+{member.plusTier}</div>
       ) : null}
-      <VoiceChatInfo member={member} />
       {member.role === "REGULAR" && showActions ? (
         <SubmitButton
           variant="minimal"
@@ -225,6 +224,7 @@ function GroupMember({
           Remove manager
         </SubmitButton>
       ) : null}
+      <VoiceChatInfo member={member} />
     </fetcher.Form>
   );
 }
@@ -245,9 +245,12 @@ function VoiceChatInfo({
       : SpeakerXIcon;
 
   const color = () => {
-    const languagesMatch = member.languages.some(
-      (l) => user?.languages.includes(l),
-    );
+    const languagesMatch =
+      // small hack to show green for yourself always to avoid confusion
+      // might show red because root loaders don't reload
+      // till there is a full page refresh
+      member.id === user?.id ||
+      member.languages.some((l) => user?.languages.includes(l));
 
     if (!languagesMatch) return "text-error";
 
