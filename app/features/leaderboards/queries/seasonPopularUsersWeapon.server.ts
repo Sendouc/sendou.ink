@@ -1,6 +1,5 @@
 import { sql } from "~/db/sql";
 import type { User } from "~/db/types";
-import type { RankingSeason } from "~/features/mmr/season";
 import { seasonObject } from "~/features/mmr/season";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
@@ -28,7 +27,7 @@ const stm = sql.prepare(/* sql */ `
 export type SeasonPopularUsersWeapon = Record<User["id"], MainWeaponId>;
 
 export function seasonPopularUsersWeapon(
-  season: RankingSeason["nth"],
+  season: number,
 ): SeasonPopularUsersWeapon {
   const { starts, ends } = seasonObject(season);
 

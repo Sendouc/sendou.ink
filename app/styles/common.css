@@ -269,7 +269,7 @@ select {
   cursor: pointer;
   font-weight: 500;
   padding-block: 3.5px;
-  padding-inline: var(--s-3) var(--s-8);
+  padding-inline: var(--s-3) var(--s-9);
 }
 
 select:disabled {
@@ -1340,6 +1340,31 @@ dialog::backdrop {
   align-items: flex-start;
   margin-block-start: var(--s-2);
   height: 20px;
+}
+
+.winner__container {
+  height: 125px;
+  width: 125px;
+  border-radius: 100%;
+  background-color: var(--bg-lighter);
+  overflow: hidden;
+  position: relative;
+}
+
+.winner__container.small {
+  height: 41.6667px;
+  width: 41.6667px;
+}
+
+.winner__img-container {
+  position: absolute;
+  top: var(--winner-top, 5px);
+  left: var(--winner-left, 25px);
+}
+
+.winner__img {
+  overflow: visible;
+  max-width: initial;
 }
 
 #nprogress .bar {

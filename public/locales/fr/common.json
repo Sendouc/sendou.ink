@@ -32,7 +32,6 @@
   "auth.errors.aborted": "Connexion abandonnée",
   "auth.errors.failed": "Connexion échouée",
   "auth.errors.discordPermissions": "Pour mettre en place votre profil, sendou.ink a besoin de votre nom de profil Discord, de votre avatar et de vos réseaux connectés.",
-  "auth.errors.unknown": "La connexion à Discord a échoué pour une raison inconnue. Si l'erreur persiste, n'hésitez pas à demander de l'aide.",
 
   "footer.github.subtitle": "Code source",
   "footer.twitter.subtitle": "Mises à jour",

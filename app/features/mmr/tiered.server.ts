@@ -8,7 +8,6 @@ import {
 import type { Skill } from "~/db/types";
 import { MATCHES_COUNT_NEEDED_FOR_LEADERBOARD } from "../leaderboards/leaderboards-constants";
 import { orderedMMRBySeason } from "./queries/orderedMMRBySeason.server";
-import { currentSeason } from "./season";
 import { cachified } from "cachified";
 import { cache, ttl } from "~/utils/cache.server";
 import { HALF_HOUR_IN_MS, ONE_HOUR_IN_MS } from "~/constants";
@@ -23,12 +22,12 @@ export interface TieredSkill {
   approximate: boolean;
 }
 
-export function freshUserSkills(): {
+export function freshUserSkills(season: number): {
   userSkills: Record<string, TieredSkill>;
   intervals: SkillTierInterval[];
 } {
   const points = orderedMMRBySeason({
-    season: currentSeason(new Date())!.nth,
+    season,
     type: "user",
   });
 
@@ -54,20 +53,20 @@ export function freshUserSkills(): {
   };
 }
 
-export async function userSkills() {
+export async function userSkills(season: number) {
   const cachedSkills = await cachified({
-    key: USER_SKILLS_CACHE_KEY,
+    key: `${USER_SKILLS_CACHE_KEY}-${season}`,
     cache,
     ttl: ttl(HALF_HOUR_IN_MS),
     staleWhileRevalidate: ttl(ONE_HOUR_IN_MS),
     getFreshValue() {
-      return freshUserSkills();
+      return freshUserSkills(season);
     },
   });
 
   // TODO: this can be removed after Season 0 has been kicked off
   if (Object.keys(cachedSkills.userSkills).length < 10) {
-    return freshUserSkills();
+    return freshUserSkills(season);
   }
 
   return cachedSkills;

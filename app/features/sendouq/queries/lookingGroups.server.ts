@@ -17,6 +17,8 @@ const stm = sql.prepare(/* sql */ `
       "User"."discordId",
       "User"."discordName",
       "User"."discordAvatar",
+      "User"."vc",
+      "User"."languages",
       "PlusTier"."tier" as "plusTier",
       "GroupMember"."role",
       json_group_array("UserWeapon"."weaponSplId") as "weapons"
@@ -49,7 +51,9 @@ const stm = sql.prepare(/* sql */ `
         'discordAvatar', "q1"."discordAvatar",
         'plusTier', "q1"."plusTier",
         'role', "q1"."role",
-        'weapons', "q1"."weapons"
+        'weapons', "q1"."weapons",
+        'vc', "q1"."vc",
+        'languages', "q1"."languages"
       )
     ) as "members"
   from "q1"
@@ -79,6 +83,7 @@ export function findLookingGroups({
           return {
             ...member,
             weapons: weapons.length > 0 ? weapons : undefined,
+            languages: member.languages ? member.languages.split(",") : [],
           };
         }),
       };

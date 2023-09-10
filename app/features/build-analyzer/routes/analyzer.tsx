@@ -66,7 +66,7 @@ import {
 import { useUser } from "~/modules/auth";
 import { atOrError } from "~/utils/arrays";
 
-export const CURRENT_PATCH = "4.1";
+export const CURRENT_PATCH = "5.0";
 
 export const meta: V2_MetaFunction = () => {
   return [
@@ -336,7 +336,9 @@ export default function BuildAnalyzerPage() {
                     height={20}
                     alt={t(`weapons:MAIN_${mainWeaponId}`)}
                   />
-                  {t(`weapons:MAIN_${mainWeaponId}`)}
+                  <span className="analyzer__weapon-info-badge__text">
+                    {t(`weapons:MAIN_${mainWeaponId}`)}
+                  </span>
                 </div>
               }
             >

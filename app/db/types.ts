@@ -38,6 +38,8 @@ export interface User {
   commissionsOpen: number;
   commissionText: string | null;
   banned: number;
+  vc: "YES" | "NO" | "LISTEN_ONLY";
+  languages: string | null;
 }
 
 /** User table after joined with PlusTier table */
@@ -51,6 +53,12 @@ export interface UserWeapon {
   createdAt: number;
   order: number;
   isFavorite: number;
+}
+
+export interface LogInLink {
+  code: string;
+  expiresAt: number;
+  userId: number;
 }
 
 export interface PlusSuggestion {

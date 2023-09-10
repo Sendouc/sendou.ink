@@ -18,4 +18,6 @@ export const stageIds = [
   15, // Um'ami Ruins
   16, // Humpback Pump Track
   17, // Barnacle & Dime
+  18, // Crableg Capital
+  19, // Shipshape Cargo Co.
 ] as const;

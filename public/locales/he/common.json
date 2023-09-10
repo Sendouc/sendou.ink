@@ -32,7 +32,6 @@
   "auth.errors.aborted": "הכניסה בוטלה",
   "auth.errors.failed": "הכניסה נכשלה",
   "auth.errors.discordPermissions": "עבור פרופיל sendou.ink שלך, האתר זקוק לגישה לשם, הפרופיל והקשרים החברתיים של פרופיל ה-Discord שלך.",
-  "auth.errors.unknown": "הכניסה דרך Discord נכשלה מסיבה לא ידועה. אם זה ממשיך לקרות, אנא פנו לעזרה.",
 
   "footer.github.subtitle": "קוד מקור",
   "footer.twitter.subtitle": "עדכונים",

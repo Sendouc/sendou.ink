@@ -79,7 +79,7 @@ ApplySpecialEffects("Applies LDE", () => {
     ldeIntensity: 1,
   });
 
-  assert.equal(aps.get("ISM"), 2);
+  assert.equal(aps.get("ISM"), 1);
 });
 
 ApplySpecialEffects("Applies LDE (intensity != aps given)", () => {
@@ -89,7 +89,7 @@ ApplySpecialEffects("Applies LDE (intensity != aps given)", () => {
     ldeIntensity: 15,
   });
 
-  assert.equal(aps.get("ISM"), 18);
+  assert.equal(aps.get("ISM"), 13);
 });
 
 ApplySpecialEffects.run();

@@ -337,6 +337,15 @@ export const brandImageUrl = (brand: "tentatek" | "takoroka") =>
 export const tierImageUrl = (tier: TierName) =>
   `/static-assets/img/tiers/${tier.toLowerCase()}`;
 export const TIER_PLUS_URL = `/static-assets/img/tiers/plus`;
+
+export const winnersImageUrl = ({
+  season,
+  placement,
+}: {
+  season: number;
+  placement: number;
+}) => `/static-assets/img/winners/${season}/${placement}`;
+
 export const stageMinimapImageUrlWithEnding = ({
   stageId,
   mode,

@@ -11,7 +11,7 @@ import path from "path";
 import invariant from "tiny-invariant";
 import { abilitiesShort } from "~/modules/in-game-lists";
 
-// ⚠️ keep same order as https://github.com/IPLSplatoon/IPLMapGen2/blob/splat3/data.js
+// ⚠️ keep same order as https://github.com/IPLSplatoon/IPLMapGen2/blob/main/data.js
 const stages = [
   "Scorch Gorge",
   "Eeltail Alley",
@@ -31,6 +31,8 @@ const stages = [
   "Um'ami Ruins",
   "Humpback Pump Track",
   "Barnacle & Dime",
+  "Crableg Capital",
+  "Shipshape Cargo Co.",
 ] as const;
 
 const abilityShortToInternalName = new Map([

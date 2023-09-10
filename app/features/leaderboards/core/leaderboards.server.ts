@@ -4,12 +4,17 @@ import type { SeasonPopularUsersWeapon } from "../queries/seasonPopularUsersWeap
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { weaponCategories } from "~/modules/in-game-lists";
 import type { TeamSPLeaderboardItem } from "../queries/teamSPLeaderboard.server";
+import { seasonHasTopTen } from "../leaderboards-utils";
 
-export function addTiers(entries: UserSPLeaderboardItem[]) {
-  const tiers = freshUserSkills();
+export function addTiers(entries: UserSPLeaderboardItem[], season: number) {
+  const tiers = freshUserSkills(season);
 
   const encounteredTiers = new Set<string>();
-  return entries.map((entry) => {
+  return entries.map((entry, i) => {
+    if (i < 10 && seasonHasTopTen(season)) {
+      return { ...entry, tier: undefined };
+    }
+
     const tier = tiers.userSkills[entry.id].tier;
     const tierKey = `${tier.name}${tier.isPlus ? "+" : ""}`;
     const tierAlreadyEncountered = encounteredTiers.has(tierKey);

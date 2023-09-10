@@ -26,7 +26,7 @@ import {
   translationJsonFolderName,
 } from "./utils";
 
-const CURRENT_SEASON = 4;
+const CURRENT_SEASON = 5;
 
 type MainWeapon = (typeof weapons)[number];
 type SubWeapon = (typeof subWeapons)[number];
@@ -151,7 +151,7 @@ function parametersToMainWeaponResult(
 
   const InkConsume_WeaponShelterShotgunParam = () => {
     // Splat Brella ink consumption not listed in params
-    if (weapon.Id === 6000) return 0.0632499977946;
+    if (weapon.Id === 6000 || weapon.Id === 6001) return 0.0632499977946;
 
     return params["spl__WeaponShelterShotgunParam"]?.["InkConsume"];
   };
@@ -489,7 +489,6 @@ function parametersToSpecialWeaponResult(params: any) {
       };
       // Reefslider
     } else {
-      console.log(resultUnwrapped);
       resultUnwrapped["PaintRadius"] = {
         High:
           resultUnwrapped["SplashAroundPaintRadius"].High +
@@ -788,6 +787,7 @@ function specialWeaponShouldBeSkipped(specialWeapon: SpecialWeapon) {
     return true;
   }
   if (specialWeapon.__RowId === "SpGachihoko") return true;
+  if (specialWeapon.__RowId === "SpGachihokoForEventMatch") return true;
 
   return false;
 }

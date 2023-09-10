@@ -18,7 +18,7 @@ import {
   currentMMRByUserId,
   seasonAllMMRByUserId,
 } from "~/features/mmr/queries/seasonAllMMRByUserId.server";
-import { currentSeason, seasonObject } from "~/features/mmr/season";
+import { seasonObject } from "~/features/mmr/season";
 import { userSkills } from "~/features/mmr/tiered.server";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { notFoundIfFalsy } from "~/utils/remix";
@@ -54,6 +54,8 @@ import { Popover } from "~/components/Popover";
 import { useWeaponUsage } from "~/hooks/swr";
 import { atOrError } from "~/utils/arrays";
 import { Tab, Tabs } from "~/components/Tabs";
+import { TopTenPlayer } from "~/features/leaderboards/components/TopTenPlayer";
+import { playerTopTenPlacement } from "~/features/leaderboards/leaderboards-utils";
 
 export const seasonsSearchParamsSchema = z.object({
   page: z.coerce.number().default(1),
@@ -69,12 +71,10 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     ? parsedSearchParams.data
     : seasonsSearchParamsSchema.parse({});
 
-  // TODO: handle it not being current season ("freshUserSkills" has ! that throws)
-  notFoundIfFalsy(currentSeason(new Date()));
-
   const user = notFoundIfFalsy(db.users.findByIdentifier(identifier));
 
-  const { tier } = (await userSkills()).userSkills[user.id] ?? {
+  // TODO: dynamic season
+  const { tier } = (await userSkills(0)).userSkills[user.id] ?? {
     approximate: false,
     ordinal: 0,
     tier: { isPlus: false, name: "IRON" },
@@ -244,10 +244,19 @@ function Winrates() {
 
 function Rank({ currentOrdinal }: { currentOrdinal: number }) {
   const data = useLoaderData<typeof loader>();
+  const [, parentRoute] = useMatches();
+  invariant(parentRoute);
+  const parentRouteData = parentRoute.data as UserPageLoaderData;
 
   const maxOrdinal = Math.max(...data.skills.map((s) => s.ordinal));
 
   const peakAndCurrentSame = currentOrdinal === maxOrdinal;
+
+  // TODO: dynamic season
+  const topTenPlacement = playerTopTenPlacement({
+    season: 0,
+    userId: parentRouteData.id,
+  });
 
   return (
     <div className="stack horizontal items-center justify-center sm">
@@ -262,6 +271,10 @@ function Rank({ currentOrdinal }: { currentOrdinal: number }) {
           <div className="text-lighter text-sm">
             Peak {ordinalToSp(maxOrdinal)}SP
           </div>
+        ) : null}
+        {/* TODO: dynamic season */}
+        {topTenPlacement ? (
+          <TopTenPlayer small placement={topTenPlacement} season={0} />
         ) : null}
       </div>
     </div>

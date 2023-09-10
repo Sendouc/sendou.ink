@@ -47,6 +47,7 @@ const stm = sql.prepare(/* sql */ `
     inner join (
       select "identifier", max("id") as "maxId"
       from "Skill"
+      where "season" = @season
       group by "identifier"
     ) "Latest" on "Skill"."identifier" = "Latest"."identifier" and "Skill"."id" = "Latest"."maxId"
   where
