@@ -1313,7 +1313,6 @@ dialog::backdrop {
   border-radius: var(--rounded) var(--rounded) 0 0;
   font-size: var(--fonts-xs);
   padding: var(--s-1) var(--s-1);
-  /* xxx: borders overlap */
   border-color: var(--bg-light-variation);
 }
 

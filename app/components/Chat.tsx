@@ -11,6 +11,8 @@ import { Button } from "./Button";
 // xxx: patron color
 type ChatUser = Pick<User, "discordName" | "discordId" | "discordAvatar">;
 
+const MESSAGE_MAX_LENGTH = 200;
+
 export interface ChatProps {
   users: Record<number, ChatUser>;
   rooms: { label: string; code: string }[];
@@ -34,7 +36,7 @@ export function Chat({ users, rooms }: ChatProps) {
       send(inputRef.current!.value);
       inputRef.current!.value = "";
     },
-    [send]
+    [send],
   );
 
   React.useEffect(() => {
@@ -93,6 +95,7 @@ export function Chat({ users, rooms }: ChatProps) {
             ref={inputRef}
             placeholder="Press enter to send"
             disabled={!connected}
+            maxLength={MESSAGE_MAX_LENGTH}
           />{" "}
           <div className="chat__bottom-row">
             {typeof connected !== "boolean" ? (
@@ -153,8 +156,6 @@ interface ChatMessage {
 
 // xxx: attempt to reconnect
 // xxx: weapon emoji
-// xxx: UI shift on initial load
-// xxx: max message length
 // xxx: virtual list?
 function useChat(rooms: ChatProps["rooms"], _currentRoom?: string) {
   const user = useUser();
@@ -163,7 +164,7 @@ function useChat(rooms: ChatProps["rooms"], _currentRoom?: string) {
   const [connected, setConnected] = React.useState<null | boolean>(null);
   const [sentMessage, setSentMessage] = React.useState<ChatMessage>();
   const [currentRoom, setCurrentRoom] = React.useState<string>(
-    _currentRoom ?? rooms[0].code
+    _currentRoom ?? rooms[0].code,
   );
 
   const ws = React.useRef<WebSocket>();
@@ -171,7 +172,9 @@ function useChat(rooms: ChatProps["rooms"], _currentRoom?: string) {
 
   React.useEffect(() => {
     ws.current = new WebSocket(
-      `${SKALOP_BASE_URL}?${rooms.map((room) => `room=${room.code}`).join("&")}`
+      `${SKALOP_BASE_URL}?${rooms
+        .map((room) => `room=${room.code}`)
+        .join("&")}`,
     );
     ws.current.onopen = () => setConnected(true);
     ws.current.onclose = () => setConnected(false);
@@ -209,7 +212,7 @@ function useChat(rooms: ChatProps["rooms"], _currentRoom?: string) {
       });
       ws.current!.send(JSON.stringify({ id, contents, room: currentRoom }));
     },
-    [user, currentRoom]
+    [user, currentRoom],
   );
 
   let allMessages = messages;
@@ -223,7 +226,7 @@ function useChat(rooms: ChatProps["rooms"], _currentRoom?: string) {
   if (roomsMessages.length > 0) {
     lastSeenMessagesByRoomId.current.set(
       currentRoom,
-      roomsMessages[roomsMessages.length - 1].id
+      roomsMessages[roomsMessages.length - 1].id,
     );
   }
 

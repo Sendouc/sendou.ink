@@ -354,7 +354,6 @@ export default function QMatchPage() {
     ].filter(Boolean) as ChatProps["rooms"];
   }, [data.match.id, ownGroupId]);
 
-  // xxx: only render chat for admins and group members
   return (
     <Main className="q-match__container stack lg">
       <div className="q-match__header">
@@ -407,7 +406,9 @@ export default function QMatchPage() {
               side="BRAVO"
               showWeapons={!data.match.isLocked}
             />
-            <Chat users={chatUsers} rooms={chatRooms} />
+            {ownMember || isAdmin(user) ? (
+              <Chat users={chatUsers} rooms={chatRooms} />
+            ) : null}
           </div>
           {!data.match.isLocked && (ownMember || isAdmin(user)) ? (
             <div>
