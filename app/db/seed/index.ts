@@ -1601,10 +1601,13 @@ function groups() {
         { mode: "SZ", stageId: 6 },
         { mode: "TC", stageId: 7 },
         { mode: "TC", stageId: 8 },
+        { mode: "TC", stageId: 15 },
         { mode: "RM", stageId: 10 },
         { mode: "RM", stageId: 11 },
+        { mode: "RM", stageId: 16 },
         { mode: "CB", stageId: 13 },
         { mode: "CB", stageId: 14 },
+        { mode: "CB", stageId: 17 },
       ]),
     });
 
