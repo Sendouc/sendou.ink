@@ -75,6 +75,7 @@ import { Button } from "~/components/Button";
 import { UsersIcon } from "~/components/icons/Users";
 import { ChatIcon } from "~/components/icons/Chat";
 import { LinkIcon } from "~/components/icons/Link";
+import { Chat } from "~/components/Chat";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -438,12 +439,27 @@ function InfoText() {
   );
 }
 
+// xxx: group chat notif count
+// xxx: top toast when new chat msg
 function OwnGroupSection() {
   const [tab, setTab] = React.useState<"group" | "chat" | "invite">("group");
   const data = useLoaderData<typeof loader>();
 
   const ownGroup = data.groups.own as LookingGroupWithInviteCode;
   const canInviteViaLink = Boolean(ownGroup.inviteCode);
+
+  const chatUsers = React.useMemo(() => {
+    return Object.fromEntries(data.groups.own.members!.map((m) => [m.id, m]));
+  }, [data]);
+
+  const chatRooms = React.useMemo(() => {
+    return [
+      {
+        code: `Q_GROUP_${data.groups.own.id}`,
+        label: "Group",
+      },
+    ];
+  }, [data.groups.own.id]);
 
   return (
     <section className="q__top-container">
@@ -476,6 +492,9 @@ function OwnGroupSection() {
           inviteCode={ownGroup.inviteCode}
           trustedPlayers={data.trustedPlayers}
         />
+      ) : null}
+      {tab === "chat" ? (
+        <Chat rooms={chatRooms} users={chatUsers} className="w-full" />
       ) : null}
     </section>
   );

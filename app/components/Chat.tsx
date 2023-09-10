@@ -16,9 +16,10 @@ const MESSAGE_MAX_LENGTH = 200;
 export interface ChatProps {
   users: Record<number, ChatUser>;
   rooms: { label: string; code: string }[];
+  className?: string;
 }
 
-export function Chat({ users, rooms }: ChatProps) {
+export function Chat({ users, rooms, className }: ChatProps) {
   const messagesContainerRef = React.useRef<HTMLOListElement>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
   const {
@@ -45,7 +46,7 @@ export function Chat({ users, rooms }: ChatProps) {
   }, [messages]);
 
   return (
-    <section className="chat__container">
+    <section className={clsx("chat__container", className)}>
       {rooms.length > 1 ? (
         <div className="stack horizontal">
           {rooms.map((room, i) => {
