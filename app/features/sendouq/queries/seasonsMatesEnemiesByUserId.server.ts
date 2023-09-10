@@ -1,6 +1,5 @@
 import { sql } from "~/db/sql";
 import type { PlayerResult, User } from "~/db/types";
-import { type RankingSeason } from "~/features/mmr/season";
 
 const stm = sql.prepare(/* sql */ `
   select
@@ -30,7 +29,7 @@ export function seasonsMatesEnemiesByUserId({
   type,
 }: {
   userId: number;
-  season: RankingSeason["nth"];
+  season: number;
   type: PlayerResult["type"];
 }) {
   const rows = stm.all({ userId, season, type }) as any[];

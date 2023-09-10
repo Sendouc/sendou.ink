@@ -70,7 +70,7 @@ import { Tab, Tabs } from "~/components/Tabs";
 import { useAutoRefresh } from "~/hooks/useAutoRefresh";
 import { groupHasMatch } from "../queries/groupHasMatch.server";
 import { findRecentMatchPlayersByUserId } from "../queries/findRecentMatchPlayersByUserId.server";
-import { previousOrCurrentSeason } from "~/features/mmr/season";
+import { currentOrPreviousSeason } from "~/features/mmr/season";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -317,7 +317,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     likes: findLikes(currentGroup.id),
   });
 
-  const season = previousOrCurrentSeason(new Date());
+  const season = currentOrPreviousSeason(new Date());
 
   const groupsWithSkills = addSkillsToGroups({
     groups: dividedGroups,

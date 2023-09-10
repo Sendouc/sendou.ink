@@ -7,7 +7,7 @@ import {
   userIdsToIdentifier,
 } from "~/features/mmr";
 import { queryTeamPlayerRatingAverage } from "~/features/mmr/mmr-utils.server";
-import { previousOrCurrentSeason } from "~/features/mmr/season";
+import { currentOrPreviousSeason } from "~/features/mmr/season";
 
 export function calculateMatchSkills({
   groupMatchId,
@@ -25,7 +25,7 @@ export function calculateMatchSkills({
     >
   > = [];
 
-  const season = previousOrCurrentSeason(new Date())?.nth;
+  const season = currentOrPreviousSeason(new Date())?.nth;
   invariant(typeof season === "number", "No ranked season for skills");
 
   {

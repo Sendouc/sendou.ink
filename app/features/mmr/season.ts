@@ -22,7 +22,7 @@ const SEASONS =
 
 export type RankingSeason = (typeof SEASONS)[number];
 
-export function previousOrCurrentSeason(date: Date) {
+export function currentOrPreviousSeason(date: Date) {
   const _currentSeason = currentSeason(date);
   if (_currentSeason) return _currentSeason;
 

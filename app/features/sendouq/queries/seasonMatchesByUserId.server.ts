@@ -1,6 +1,6 @@
 import { sql } from "~/db/sql";
 import type { GroupMatch, GroupMatchMap, User } from "~/db/types";
-import { type RankingSeason, seasonObject } from "~/features/mmr/season";
+import { seasonObject } from "~/features/mmr/season";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { parseDBArray, parseDBJsonArray } from "~/utils/sql";
@@ -122,7 +122,7 @@ export function seasonMatchesByUserId({
   page,
 }: {
   userId: number;
-  season: RankingSeason["nth"];
+  season: number;
   page: number;
 }): SeasonMatchByUserId[] {
   const { starts, ends } = seasonObject(season);
@@ -183,7 +183,7 @@ export function seasonMatchesByUserIdPagesCount({
   season,
 }: {
   userId: number;
-  season: RankingSeason["nth"];
+  season: number;
 }): number {
   const { starts, ends } = seasonObject(season);
 
