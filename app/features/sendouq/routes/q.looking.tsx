@@ -71,6 +71,10 @@ import { useAutoRefresh } from "~/hooks/useAutoRefresh";
 import { groupHasMatch } from "../queries/groupHasMatch.server";
 import { findRecentMatchPlayersByUserId } from "../queries/findRecentMatchPlayersByUserId.server";
 import { currentOrPreviousSeason } from "~/features/mmr/season";
+import { Button } from "~/components/Button";
+import { UsersIcon } from "~/components/icons/Users";
+import { ChatIcon } from "~/components/icons/Chat";
+import { LinkIcon } from "~/components/icons/Link";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -354,11 +358,8 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 export default function QLookingPage() {
-  const data = useLoaderData<typeof loader>();
   const [searchParams] = useSearchParams();
   useAutoRefresh();
-
-  const ownGroup = data.groups.own as LookingGroupWithInviteCode;
 
   const wasTryingToJoinAnotherTeam = searchParams.get("joining") === "true";
 
@@ -366,21 +367,8 @@ export default function QLookingPage() {
     <Main className="stack lg">
       <div className="stack sm">
         <InfoText />
-        <div className="q__own-group-container">
-          <GroupCard
-            group={data.groups.own}
-            mapListPreference={data.groups.own.mapListPreference}
-            ownRole={data.role}
-            ownGroup
-          />
-        </div>
+        <OwnGroupSection />
       </div>
-      {ownGroup.inviteCode ? (
-        <MemberAdder
-          inviteCode={ownGroup.inviteCode}
-          trustedPlayers={data.trustedPlayers}
-        />
-      ) : null}
       {wasTryingToJoinAnotherTeam ? (
         <div className="text-warning text-center">
           Before joining another group, leave the current one
@@ -447,6 +435,49 @@ function InfoText() {
           )}`
         : "Placeholder"}
     </div>
+  );
+}
+
+function OwnGroupSection() {
+  const [tab, setTab] = React.useState<"group" | "chat" | "invite">("group");
+  const data = useLoaderData<typeof loader>();
+
+  const ownGroup = data.groups.own as LookingGroupWithInviteCode;
+  const canInviteViaLink = Boolean(ownGroup.inviteCode);
+
+  return (
+    <section className="q__top-container">
+      <div className="stack sm">
+        <Button className="q__tab-button" onClick={() => setTab("group")}>
+          <UsersIcon className="q__tab-button__icon" /> Group
+        </Button>
+        <Button className="q__tab-button" onClick={() => setTab("chat")}>
+          <ChatIcon className="q__tab-button__icon" />
+          Chat
+        </Button>
+        {canInviteViaLink ? (
+          <Button className="q__tab-button" onClick={() => setTab("invite")}>
+            <LinkIcon className="q__tab-button__icon" />
+            Invite
+          </Button>
+        ) : null}
+      </div>
+      <div className="q__top-container__divider" />
+      {tab === "group" ? (
+        <GroupCard
+          group={data.groups.own}
+          mapListPreference={data.groups.own.mapListPreference}
+          ownRole={data.role}
+          ownGroup
+        />
+      ) : null}
+      {tab === "invite" ? (
+        <MemberAdder
+          inviteCode={ownGroup.inviteCode}
+          trustedPlayers={data.trustedPlayers}
+        />
+      ) : null}
+    </section>
   );
 }
 

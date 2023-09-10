@@ -30,7 +30,7 @@ export function MemberAdder({
   }, [trustedPlayerIdsJoined]);
 
   return (
-    <div className="stack horizontal lg flex-wrap justify-center">
+    <div className="stack md flex-wrap justify-center">
       {trustedPlayers.length > 0 ? (
         <fetcher.Form method="post" action={SENDOUQ_PREPARING_PAGE}>
           <label htmlFor="players">Add people you have played with</label>

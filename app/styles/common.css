@@ -1295,6 +1295,7 @@ dialog::backdrop {
 
 .chat__input-container {
   margin-top: auto;
+
   --input-width: 100%;
 }
 

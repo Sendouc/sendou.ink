@@ -52,9 +52,31 @@
   border-radius: 7px;
 }
 
-.q__own-group-container {
+.q__tab-button {
+  width: 100px;
+  background-color: var(--bg-lighter-solid);
+  color: var(--text);
+  font-size: var(--fonts-sm);
+  border-color: transparent;
+  gap: var(--s-2);
+}
+
+.q__tab-button__icon {
+  width: 14px;
+}
+
+.q__top-container {
+  display: flex;
+  gap: var(--s-3);
   margin: 0 auto;
-  min-width: 300px;
+  min-width: 450px;
+}
+
+.q__top-container__divider {
+  min-width: 3px;
+  background-color: var(--border);
+  height: 100%;
+  border-radius: var(--rounded);
 }
 
 .q__groups-container {
