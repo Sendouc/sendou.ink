@@ -204,7 +204,6 @@ function GroupMember({
       {member.plusTier ? (
         <div className="text-xs text-lighter">+{member.plusTier}</div>
       ) : null}
-      <VoiceChatInfo member={member} />
       {member.role === "REGULAR" && showActions ? (
         <SubmitButton
           variant="minimal"
@@ -225,6 +224,7 @@ function GroupMember({
           Remove manager
         </SubmitButton>
       ) : null}
+      <VoiceChatInfo member={member} />
     </fetcher.Form>
   );
 }
