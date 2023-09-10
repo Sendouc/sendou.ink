@@ -1,8 +1,12 @@
 import type { LoaderArgs, SerializeFrom } from "@remix-run/node";
 import {
   Link,
+  useActionData,
+  useFetcher,
+  useFormAction,
   useLoaderData,
   useMatches,
+  useNavigation,
   useSearchParams,
 } from "@remix-run/react";
 import clsx from "clsx";
@@ -572,6 +576,7 @@ function Matches() {
   };
 
   React.useEffect(() => {
+    if (data.matches.currentPage === 1) return;
     ref.current?.scrollIntoView({
       block: "center",
     });
