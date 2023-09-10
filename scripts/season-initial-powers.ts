@@ -33,6 +33,16 @@ invariant(
   `Skills for season ${nth} already exist`,
 );
 
+const activeMatchExistsStm = sql.prepare(/* sql */ `
+  select
+    "GroupMatch"."id"
+  from "GroupMatch"
+  left join "Skill" on "Skill"."groupMatchId" = "GroupMatch"."id"
+  where
+    "Skill"."id" is null
+`);
+invariant(!activeMatchExistsStm.get(), "There are active matches");
+
 // from prod database:
 // sqlite> select avg(sigma) from skill where matchesCount > 10 and matchesCount < 20;
 // 6.63571559436444
@@ -104,10 +114,17 @@ const newSkills = allSkills.map((s) => {
   };
 });
 
+const allGroupsInactiveStm = sql.prepare(/* sql */ `
+  update
+    "Group"
+  set
+    "status" = 'INACTIVE'
+`);
 sql.transaction(() => {
   for (const skill of newSkills) {
     addInitialSkill(skill);
   }
+  allGroupsInactiveStm.run();
 })();
 
 console.log(
