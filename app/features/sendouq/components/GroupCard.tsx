@@ -237,6 +237,8 @@ function VoiceChatInfo({
   const user = useUser();
   const { t } = useTranslation(["q"]);
 
+  if (!member.languages || !member.vc) return null;
+
   const Icon =
     member.vc === "YES"
       ? MicrophoneIcon
@@ -250,7 +252,7 @@ function VoiceChatInfo({
       // might show red because root loaders don't reload
       // till there is a full page refresh
       member.id === user?.id ||
-      member.languages.some((l) => user?.languages.includes(l));
+      member.languages?.some((l) => user?.languages.includes(l));
 
     if (!languagesMatch) return "text-error";
 
