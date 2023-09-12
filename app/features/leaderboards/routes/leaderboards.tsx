@@ -104,8 +104,9 @@ export const loader = async ({ request }: LoaderArgs) => {
     LEADERBOARD_TYPES.find((type) => type === unvalidatedType) ??
     LEADERBOARD_TYPES[0];
   const season =
-    allSeasons(new Date()).find((s) => s === Number(unvalidatedSeason)) ??
-    currentOrPreviousSeason(new Date())!.nth;
+    allSeasons(new Date()).find(
+      (s) => unvalidatedSeason && s === Number(unvalidatedSeason),
+    ) ?? currentOrPreviousSeason(new Date())!.nth;
 
   const userLeaderboard = type.includes("USER")
     ? await cachified({
