@@ -101,6 +101,10 @@ export const languagesUnified = [
     name: "Polski",
   },
   {
+    code: "pt",
+    name: "Português",
+  },
+  {
     code: "nl",
     name: "Nederlands",
   },

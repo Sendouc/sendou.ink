@@ -16,8 +16,8 @@ export type LookingGroup = {
     role: GroupMember["role"];
     weapons?: MainWeaponId[];
     skill?: TieredSkill;
-    vc: User["vc"];
-    languages: string[];
+    vc?: User["vc"];
+    languages?: string[];
   }[];
 };
 

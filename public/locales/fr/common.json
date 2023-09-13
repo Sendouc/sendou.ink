@@ -21,6 +21,7 @@
   "pages.leaderboards": "Classements",
   "pages.links": "Liens",
   "pages.art": "Art",
+  "pages.sendouq": "SendouQ",
 
   "header.profile": "Profil",
   "header.logout": "Déconnexion",
@@ -32,6 +33,7 @@
   "auth.errors.aborted": "Connexion abandonnée",
   "auth.errors.failed": "Connexion échouée",
   "auth.errors.discordPermissions": "Pour mettre en place votre profil, sendou.ink a besoin de votre nom de profil Discord, de votre avatar et de vos réseaux connectés.",
+  "auth.errors.unknown": "La connexion a échoué en raison d'une erreur de serveur. Veuillez réessayer plus tards ou utlisez la commande /login via le bot Lohi sur le serveur Discord:",
 
   "footer.github.subtitle": "Code source",
   "footer.twitter.subtitle": "Mises à jour",
@@ -99,7 +101,7 @@
   "tag.name.SPECIAL": "Règles spéciales",
   "tag.name.ART": "Illustration à gagner",
   "tag.name.MONEY": "Argent à gagner",
-  "tag.name.REGION": "Verrou géographique",
+  "tag.name.REGION": "Limite de région",
   "tag.name.LOW": "Limite de niveau",
   "tag.name.COUNT": "Limite d'inscriptions",
   "tag.name.LAN": "LAN",
@@ -110,7 +112,7 @@
   "tag.name.S2": "Splatoon 2",
   "tag.name.SR": "Salmon Run",
   "tag.name.CARDS": "Cartes & Territoire",
-  "tag.name.FULL_TOURNAMENT": "Héberger sur sendou.ink",
+  "tag.name.FULL_TOURNAMENT": "Hébergé sur sendou.ink",
 
   "weapon.category.SHOOTERS": "Lanceurs",
   "weapon.category.BLASTERS": "Blasters",
@@ -167,6 +169,8 @@
   "support.perk.customizedColorsTeam.extra": "Il est suffisant qu'un seul des membres de l'équipe soit Supporter pour avoir cet avantage.",
   "support.perk.privateDiscord": "Accès à un canal Discord exclusif",
   "support.perk.privateDiscord.extra": "Utilisé pour occasionellement partager des MàJ en cours de production, d'un support prioritaire et de suggestion prioritaire.",
+  "support.perk.prioritySupport": "Assistance prioritaire",
+  "support.perk.prioritySupport.extra": "Accès à un second canal d'aide auquel je donne la priorité pour les demandes d'assistance.",
 
   "custom.colors.title": "Couleurs personalisées",
   "custom.colors.bg": "Arrière-plan",
