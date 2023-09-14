@@ -95,7 +95,7 @@ export const stopImpersonatingAction: ActionFunction = async ({ request }) => {
 // only light validation here as we generally trust Lohi
 const createLogInLinkActionSchema = z.object({
   discordId: z.string(),
-  discordAvatar: z.string(),
+  discordAvatar: z.string().nullish(),
   discordName: z.string(),
   discordUniqueName: z.string(),
   updateOnly: z.enum(["true", "false"]),
@@ -112,7 +112,7 @@ export const createLogInLinkAction: ActionFunction = ({ request }) => {
   }
 
   const user = db.users.upsertLite({
-    discordAvatar: data.discordAvatar,
+    discordAvatar: data.discordAvatar ?? null,
     discordDiscriminator: "0",
     discordId: data.discordId,
     discordName: data.discordName,
