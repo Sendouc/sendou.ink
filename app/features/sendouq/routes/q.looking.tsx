@@ -439,10 +439,13 @@ function InfoText() {
   );
 }
 
+type Tab = "group" | "chat" | "invite";
+
 // xxx: group chat notif count
 // xxx: top toast when new chat msg
 function OwnGroupSection() {
-  const [tab, setTab] = React.useState<"group" | "chat" | "invite">("group");
+  const [unseenMessages, setUnseenMessages] = React.useState(0);
+  const [tab, setTab] = React.useState<Tab>("group");
   const data = useLoaderData<typeof loader>();
 
   const ownGroup = data.groups.own as LookingGroupWithInviteCode;
@@ -461,18 +464,37 @@ function OwnGroupSection() {
     ];
   }, [data.groups.own.id]);
 
+  const onNewMessage = React.useCallback(() => {
+    setUnseenMessages((msg) => msg + 1);
+  }, []);
+
+  const handleTabChange = (newTab: Tab) => () => {
+    const resetUnseenMessages = tab === "chat";
+    setTab(newTab);
+
+    // this logic is a bit awkward but it's to hack around dep array weirdness
+    if (resetUnseenMessages) {
+      setUnseenMessages(0);
+    }
+  };
+
+  const showUnseenMessages = tab !== "chat" && unseenMessages > 0;
+
   return (
     <section className="q__top-container">
       <div className="stack sm">
-        <Button className="q__tab-button" onClick={() => setTab("group")}>
+        <Button className="q__tab-button" onClick={handleTabChange("group")}>
           <UsersIcon className="q__tab-button__icon" /> Group
         </Button>
-        <Button className="q__tab-button" onClick={() => setTab("chat")}>
+        <Button className="q__tab-button" onClick={handleTabChange("chat")}>
           <ChatIcon className="q__tab-button__icon" />
           Chat
+          {showUnseenMessages ? (
+            <div className="q__tab-button__badge">{unseenMessages}</div>
+          ) : null}
         </Button>
         {canInviteViaLink ? (
-          <Button className="q__tab-button" onClick={() => setTab("invite")}>
+          <Button className="q__tab-button" onClick={handleTabChange("invite")}>
             <LinkIcon className="q__tab-button__icon" />
             Invite
           </Button>
@@ -493,9 +515,13 @@ function OwnGroupSection() {
           trustedPlayers={data.trustedPlayers}
         />
       ) : null}
-      {tab === "chat" ? (
-        <Chat rooms={chatRooms} users={chatUsers} className="w-full" />
-      ) : null}
+      <Chat
+        rooms={chatRooms}
+        users={chatUsers}
+        className="w-full"
+        hidden={tab !== "chat"}
+        onNewMessage={onNewMessage}
+      />
     </section>
   );
 }

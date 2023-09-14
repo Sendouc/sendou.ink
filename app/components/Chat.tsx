@@ -17,9 +17,17 @@ export interface ChatProps {
   users: Record<number, ChatUser>;
   rooms: { label: string; code: string }[];
   className?: string;
+  hidden?: boolean;
+  onNewMessage?: (message: ChatMessage) => void;
 }
 
-export function Chat({ users, rooms, className }: ChatProps) {
+export function Chat({
+  users,
+  rooms,
+  className,
+  hidden = false,
+  onNewMessage,
+}: ChatProps) {
   const messagesContainerRef = React.useRef<HTMLOListElement>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
   const {
@@ -29,7 +37,7 @@ export function Chat({ users, rooms, className }: ChatProps) {
     setCurrentRoom,
     connected,
     unseenMessages,
-  } = useChat(rooms);
+  } = useChat({ rooms, onNewMessage });
 
   const handleSubmit = React.useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
@@ -46,7 +54,7 @@ export function Chat({ users, rooms, className }: ChatProps) {
   }, [messages]);
 
   return (
-    <section className={clsx("chat__container", className)}>
+    <section className={clsx("chat__container", className, { hidden })}>
       {rooms.length > 1 ? (
         <div className="stack horizontal">
           {rooms.map((room, i) => {
@@ -145,7 +153,7 @@ function Message({ user, message }: { user: ChatUser; message: ChatMessage }) {
   );
 }
 
-interface ChatMessage {
+export interface ChatMessage {
   id: string;
   type: "message" | "system";
   contents: string;
@@ -158,7 +166,15 @@ interface ChatMessage {
 // xxx: attempt to reconnect
 // xxx: weapon emoji
 // xxx: virtual list?
-function useChat(rooms: ChatProps["rooms"], _currentRoom?: string) {
+function useChat({
+  rooms,
+  _currentRoom,
+  onNewMessage,
+}: {
+  rooms: ChatProps["rooms"];
+  _currentRoom?: string;
+  onNewMessage?: (message: ChatMessage) => void;
+}) {
   const user = useUser();
 
   const [messages, setMessages] = React.useState<ChatMessage[]>([]);
@@ -184,13 +200,16 @@ function useChat(rooms: ChatProps["rooms"], _currentRoom?: string) {
       const message = JSON.parse(e.data);
       const messageArr = Array.isArray(message) ? message : [message];
 
-      if (Array.isArray(message)) {
+      const isInitialLoad = Array.isArray(message);
+
+      if (isInitialLoad) {
         lastSeenMessagesByRoomId.current = message.reduce((acc, cur) => {
           acc.set(cur.room, cur.id);
           return acc;
         }, new Map<string, string>());
       }
 
+      if (!isInitialLoad) onNewMessage?.(message);
       setMessages((messages) => [...messages, ...messageArr]);
     };
 
@@ -198,7 +217,7 @@ function useChat(rooms: ChatProps["rooms"], _currentRoom?: string) {
     return () => {
       wsCurrent.close();
     };
-  }, [rooms]);
+  }, [rooms, onNewMessage]);
 
   const send = React.useCallback(
     (contents: string) => {
