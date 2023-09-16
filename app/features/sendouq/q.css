@@ -133,6 +133,12 @@
   min-width: 180px;
 }
 
+.q-match__star-icon {
+  width: 18px;
+  color: var(--theme-secondary);
+  stroke-width: 2;
+}
+
 .q-match__container {
   /** Push footer down to avoid it "flashing" when the score reporter animates */
   padding-bottom: 14rem;
