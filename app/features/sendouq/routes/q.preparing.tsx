@@ -34,7 +34,6 @@ import { refreshGroup } from "../queries/refreshGroup.server";
 import { setGroupAsActive } from "../queries/setGroupAsActive.server";
 import { trustedPlayersAvailableToPlay } from "../queries/usersInActiveGroup.server";
 import { useAutoRefresh } from "~/hooks/useAutoRefresh";
-import { syncGroupTeamId } from "../queries/syncGroupTeamId.server";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -94,10 +93,6 @@ export const action: ActionFunction = async ({ request }) => {
         groupId: currentGroup.id,
         userId: data.id,
       });
-
-      if (ownGroupWithMembers.members.length + 1 === FULL_GROUP_SIZE) {
-        syncGroupTeamId(ownGroupWithMembers.id);
-      }
 
       return null;
     }

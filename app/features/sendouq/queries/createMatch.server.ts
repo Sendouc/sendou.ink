@@ -1,6 +1,7 @@
 import { sql } from "~/db/sql";
 import type { GroupMatch } from "~/db/types";
 import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator";
+import { syncGroupTeamId } from "./syncGroupTeamId.server";
 
 const createMatchStm = sql.prepare(/* sql */ `
   insert into "GroupMatch" (
@@ -53,6 +54,9 @@ export const createMatch = sql.transaction(
         source: String(source),
       });
     }
+
+    syncGroupTeamId(alphaGroupId);
+    syncGroupTeamId(bravoGroupId);
 
     return match;
   },
