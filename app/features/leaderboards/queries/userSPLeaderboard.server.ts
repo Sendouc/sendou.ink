@@ -3,7 +3,7 @@ import {
   LEADERBOARD_MAX_SIZE,
   MATCHES_COUNT_NEEDED_FOR_LEADERBOARD,
 } from "../leaderboards-constants";
-import type { User } from "~/db/types";
+import type { PlusTier, User } from "~/db/types";
 import { ordinalToSp } from "~/features/mmr";
 
 const stm = sql.prepare(/* sql */ `
@@ -15,12 +15,14 @@ const stm = sql.prepare(/* sql */ `
     "User"."discordAvatar",
     "User"."discordId",
     "User"."customUrl",
+    "PlusTier"."tier" as "plusTier",
     rank () over ( 
       order by "Skill"."Ordinal" desc
     ) "placementRank"
   from 
     "Skill"
     left join "User" on "User"."id" = "Skill"."userId"
+    left join "PlusTier" on "PlusTier"."userId" = "User"."id"
     inner join (
       select "userId", max("id") as "maxId"
       from "Skill"
@@ -45,6 +47,9 @@ export interface UserSPLeaderboardItem {
   discordAvatar: User["discordAvatar"];
   discordId: User["discordId"];
   customUrl: User["customUrl"];
+  plusTier?: PlusTier["tier"];
+  /** Plus tier player is on track to join */
+  pendingPlusTier?: PlusTier["tier"];
   placementRank: number;
 }
 
