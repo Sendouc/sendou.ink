@@ -34,6 +34,8 @@ import { refreshGroup } from "../queries/refreshGroup.server";
 import { setGroupAsActive } from "../queries/setGroupAsActive.server";
 import { trustedPlayersAvailableToPlay } from "../queries/usersInActiveGroup.server";
 import { useAutoRefresh } from "~/hooks/useAutoRefresh";
+import { userHasSkill } from "../queries/userHasSkill.server";
+import { currentSeason } from "~/features/mmr";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -66,6 +68,9 @@ export const action: ActionFunction = async ({ request }) => {
     return null;
   }
 
+  const season = currentSeason(new Date());
+  validate(season, "Season is not active");
+
   switch (data._action) {
     case "JOIN_QUEUE": {
       validate(currentGroup.status === "PREPARING", "No group preparing");
@@ -76,6 +81,10 @@ export const action: ActionFunction = async ({ request }) => {
       return redirect(SENDOUQ_LOOKING_PAGE);
     }
     case "ADD_TRUSTED": {
+      validate(
+        userHasSkill({ userId: data.id, season: season.nth }),
+        "User needs to select their initial SP first",
+      );
       const available = trustedPlayersAvailableToPlay(user);
       validate(
         available.some((u) => u.id === data.id),

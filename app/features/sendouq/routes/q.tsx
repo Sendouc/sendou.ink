@@ -135,6 +135,10 @@ export const action: ActionFunction = async ({ request }) => {
     }
     case "JOIN_TEAM_WITH_TRUST":
     case "JOIN_TEAM": {
+      validate(
+        userHasSkill({ userId: user.id, season: season.nth }),
+        "Initial SP needs to be set first",
+      );
       const code = new URL(request.url).searchParams.get(
         JOIN_CODE_SEARCH_PARAM_KEY,
       );
