@@ -83,6 +83,7 @@
     "react-popper": "^2.3.0",
     "react-responsive-masonry": "^2.1.7",
     "react-use": "^17.4.0",
+    "reconnecting-websocket": "^4.4.0",
     "remix-auth": "^3.5.1",
     "remix-auth-oauth2": "^1.8.0",
     "remix-i18next": "^4.1.1",

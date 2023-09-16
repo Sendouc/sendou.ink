@@ -7,6 +7,7 @@ import { nanoid } from "nanoid";
 import clsx from "clsx";
 import { SKALOP_BASE_URL } from "~/utils/urls";
 import { Button } from "./Button";
+import ReconnectingWebSocket from "reconnecting-websocket";
 
 // xxx: patron color
 type ChatUser = Pick<User, "discordName" | "discordId" | "discordAvatar">;
@@ -163,8 +164,6 @@ export interface ChatMessage {
   pending?: boolean;
 }
 
-// xxx: attempt to reconnect
-// xxx: weapon emoji
 // xxx: virtual list?
 function useChat({
   rooms,
@@ -184,14 +183,16 @@ function useChat({
     _currentRoom ?? rooms[0].code,
   );
 
-  const ws = React.useRef<WebSocket>();
+  const ws = React.useRef<ReconnectingWebSocket>();
   const lastSeenMessagesByRoomId = React.useRef<Map<string, string>>(new Map());
 
   React.useEffect(() => {
-    ws.current = new WebSocket(
+    ws.current = new ReconnectingWebSocket(
       `${SKALOP_BASE_URL}?${rooms
         .map((room) => `room=${room.code}`)
         .join("&")}`,
+      [],
+      { maxReconnectionDelay: 10000 * 2, reconnectionDelayGrowFactor: 1.5 },
     );
     ws.current.onopen = () => setConnected(true);
     ws.current.onclose = () => setConnected(false);

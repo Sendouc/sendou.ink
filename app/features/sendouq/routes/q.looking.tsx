@@ -441,8 +441,6 @@ function InfoText() {
 
 type Tab = "group" | "chat" | "invite";
 
-// xxx: group chat notif count
-// xxx: top toast when new chat msg
 function OwnGroupSection() {
   const [unseenMessages, setUnseenMessages] = React.useState(0);
   const [tab, setTab] = React.useState<Tab>("group");
