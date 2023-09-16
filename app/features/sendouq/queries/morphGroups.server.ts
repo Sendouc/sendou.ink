@@ -1,4 +1,5 @@
 import { sql } from "~/db/sql";
+import { deleteLikesByGroupId } from "./deleteLikesByGroupId.server";
 
 const deleteGroupStm = sql.prepare(/* sql */ `
   delete from "Group"
@@ -15,12 +16,6 @@ const addGroupMemberStm = sql.prepare(/* sql */ `
   values (@groupId, @userId, @role)
 `);
 
-const deleteLikesStm = sql.prepare(/* sql */ `
-  delete from "GroupLike"
-  where "likerGroupId" = @groupId
-    or "targetGroupId" = @groupId
-`);
-
 export const morphGroups = sql.transaction(
   ({
     survivingGroupId,
@@ -34,7 +29,7 @@ export const morphGroups = sql.transaction(
     deleteGroupStm.run({ groupId: otherGroupId });
     deleteGroupMapsStm.run({ groupId: otherGroupId });
 
-    deleteLikesStm.run({ groupId: survivingGroupId });
+    deleteLikesByGroupId(survivingGroupId);
 
     for (const userId of newMembers) {
       addGroupMemberStm.run({
