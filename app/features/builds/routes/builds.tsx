@@ -8,6 +8,7 @@ import {
   mainWeaponImageUrl,
   mySlugify,
   navIconUrl,
+  weaponBuildPage,
   weaponCategoryUrl,
 } from "~/utils/urls";
 import { type SendouRouteHandle } from "~/utils/remix";
@@ -70,7 +71,7 @@ export default function BuildsPage() {
               .map((weaponId) => (
                 <Link
                   key={weaponId}
-                  to={weaponIdToSlug(weaponId)}
+                  to={weaponBuildPage(weaponIdToSlug(weaponId))}
                   className="builds__category__weapon"
                   data-testid={`weapon-${weaponId}-link`}
                 >
