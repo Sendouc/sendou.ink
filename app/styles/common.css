@@ -1285,6 +1285,7 @@ dialog::backdrop {
 .chat__message__user {
   font-weight: var(--semi-bold);
   font-size: var(--fonts-sm);
+  color: var(--chat-user-color);
 }
 
 .chat__message__time {

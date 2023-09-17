@@ -18,6 +18,7 @@ export type LookingGroup = {
     skill?: TieredSkill;
     vc?: User["vc"];
     languages?: string[];
+    chatNameColor: string | null;
   }[];
 };
 

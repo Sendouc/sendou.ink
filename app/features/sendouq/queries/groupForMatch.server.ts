@@ -29,7 +29,8 @@ const stm = sql.prepare(/* sql */ `
         'role', "GroupMemberWithWeapon"."role",
         'customUrl', "User"."customUrl",
         'inGameName', "User"."inGameName",
-        'weapons', "GroupMemberWithWeapon"."weapons"
+        'weapons', "GroupMemberWithWeapon"."weapons",
+        'chatNameColor', IIF(COALESCE("User"."patronTier", 0) >= 2, "User"."css" ->> 'chat', null)
       )
     ) as "members"
   from
@@ -60,6 +61,7 @@ export interface GroupForMatch {
     customUrl: User["customUrl"];
     inGameName: User["inGameName"];
     weapons: Array<MainWeaponId>;
+    chatNameColor: string | null;
   }>;
 }
 

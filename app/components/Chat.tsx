@@ -9,8 +9,9 @@ import { SKALOP_BASE_URL } from "~/utils/urls";
 import { Button } from "./Button";
 import ReconnectingWebSocket from "reconnecting-websocket";
 
-// xxx: patron color
-type ChatUser = Pick<User, "discordName" | "discordId" | "discordAvatar">;
+type ChatUser = Pick<User, "discordName" | "discordId" | "discordAvatar"> & {
+  chatNameColor: string | null;
+};
 
 const MESSAGE_MAX_LENGTH = 200;
 
@@ -135,7 +136,16 @@ function Message({ user, message }: { user: ChatUser; message: ChatMessage }) {
       <Avatar user={user} size="xs" />
       <div>
         <div className="stack horizontal sm">
-          <div className="chat__message__user">{user.discordName}</div>
+          <div
+            className="chat__message__user"
+            style={
+              user.chatNameColor
+                ? ({ "--chat-user-color": user.chatNameColor } as any)
+                : undefined
+            }
+          >
+            {user.discordName}
+          </div>
           {!message.pending ? (
             <time className="chat__message__time">
               {new Date(message.timestamp).toLocaleTimeString()}
@@ -164,7 +174,6 @@ export interface ChatMessage {
   pending?: boolean;
 }
 
-// xxx: virtual list?
 function useChat({
   rooms,
   _currentRoom,
