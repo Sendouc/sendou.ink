@@ -193,7 +193,7 @@
   text-overflow: ellipsis;
 }
 
-@media screen and (min-width: 480px) {
+@media screen and (min-width: 640px) {
   .q-match__teams-container {
     grid-template-columns: 1fr 1fr 1fr;
   }
