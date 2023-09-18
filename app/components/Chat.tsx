@@ -90,9 +90,11 @@ export function Chat({
               <Message
                 key={msg.id}
                 user={
-                  users[msg.userId] ?? {
+                  (msg.userId ? users[msg.userId] : null) ?? {
                     discordId: "-1",
                     discordName: String(msg.userId),
+                    discordAvatar: null,
+                    chatNameColor: null,
                   }
                 }
                 message={msg}
@@ -164,11 +166,13 @@ function Message({ user, message }: { user: ChatUser; message: ChatMessage }) {
   );
 }
 
+// export type SystemMessageType = "MANAGER_ADDED" | "MANAGER_REMOVED";
 export interface ChatMessage {
   id: string;
-  type: "message" | "system";
-  contents: string;
-  userId: number;
+  // type?: SystemMessageType;
+  contents?: string;
+  // context?: any;
+  userId?: number;
   timestamp: number;
   room: string;
   pending?: boolean;
@@ -234,7 +238,6 @@ function useChat({
       const id = nanoid();
       setSentMessage({
         id,
-        type: "message",
         room: currentRoom,
         contents,
         timestamp: Date.now(),
