@@ -76,6 +76,7 @@ import { UsersIcon } from "~/components/icons/Users";
 import { ChatIcon } from "~/components/icons/Chat";
 import { LinkIcon } from "~/components/icons/Link";
 import { Chat } from "~/components/Chat";
+import { isAdmin } from "~/permissions";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -231,6 +232,8 @@ export const action: ActionFunction = async ({ request }) => {
       const createdMatch = createMatch({
         alphaGroupId: ourGroup.id,
         bravoGroupId: theirGroup.id,
+        addChatCode:
+          ourGroup.members.some(isAdmin) || theirGroup.members.some(isAdmin),
         mapList: matchMapList({
           ourGroup,
           theirGroup,
@@ -350,6 +353,9 @@ export const loader = async ({ request }: LoaderArgs) => {
   return {
     groups: censoredGroups,
     role: currentGroup.role,
+    chatCode:
+      // don't chat with yourself...
+      censoredGroups.own.members!.length > 1 ? currentGroup.chatCode : null,
     lastUpdated: new Date().getTime(),
     expiryStatus: groupExpiryStatus(currentGroup),
     trustedPlayers: hasGroupManagerPerms(currentGroup.role)
@@ -441,6 +447,8 @@ function InfoText() {
 
 type Tab = "group" | "chat" | "invite";
 
+// xxx: mobile UI
+// xxx: test what happens when someone joins group and sends message before other side has reloaded the data
 function OwnGroupSection() {
   const [unseenMessages, setUnseenMessages] = React.useState(0);
   const [tab, setTab] = React.useState<Tab>("group");
@@ -454,13 +462,15 @@ function OwnGroupSection() {
   }, [data]);
 
   const chatRooms = React.useMemo(() => {
-    return [
-      {
-        code: `Q_GROUP_${data.groups.own.id}`,
-        label: "Group",
-      },
-    ];
-  }, [data.groups.own.id]);
+    return data.chatCode
+      ? [
+          {
+            code: data.chatCode,
+            label: "Group",
+          },
+        ]
+      : [];
+  }, [data.chatCode]);
 
   const onNewMessage = React.useCallback(() => {
     setUnseenMessages((msg) => msg + 1);
@@ -484,13 +494,15 @@ function OwnGroupSection() {
         <Button className="q__tab-button" onClick={handleTabChange("group")}>
           <UsersIcon className="q__tab-button__icon" /> Group
         </Button>
-        <Button className="q__tab-button" onClick={handleTabChange("chat")}>
-          <ChatIcon className="q__tab-button__icon" />
-          Chat
-          {showUnseenMessages ? (
-            <div className="q__tab-button__badge">{unseenMessages}</div>
-          ) : null}
-        </Button>
+        {data.chatCode ? (
+          <Button className="q__tab-button" onClick={handleTabChange("chat")}>
+            <ChatIcon className="q__tab-button__icon" />
+            Chat
+            {showUnseenMessages ? (
+              <div className="q__tab-button__badge">{unseenMessages}</div>
+            ) : null}
+          </Button>
+        ) : null}
         {canInviteViaLink ? (
           <Button className="q__tab-button" onClick={handleTabChange("invite")}>
             <LinkIcon className="q__tab-button__icon" />
@@ -513,13 +525,15 @@ function OwnGroupSection() {
           trustedPlayers={data.trustedPlayers}
         />
       ) : null}
-      <Chat
-        rooms={chatRooms}
-        users={chatUsers}
-        className="w-full"
-        hidden={tab !== "chat"}
-        onNewMessage={onNewMessage}
-      />
+      {data.chatCode ? (
+        <Chat
+          rooms={chatRooms}
+          users={chatUsers}
+          className="w-full"
+          hidden={tab !== "chat"}
+          onNewMessage={onNewMessage}
+        />
+      ) : null}
     </section>
   );
 }

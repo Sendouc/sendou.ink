@@ -24,7 +24,7 @@ import type { GroupMember, ReportedWeapon } from "~/db/types";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
-import { requireUserId } from "~/modules/auth/user.server";
+import { getUserId, requireUserId } from "~/modules/auth/user.server";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { isAdmin } from "~/permissions";
 import { databaseTimestampToDate } from "~/utils/dates";
@@ -279,7 +279,9 @@ export const action = async ({ request, params }: ActionArgs) => {
   return null;
 };
 
-export const loader = ({ params }: LoaderArgs) => {
+// xxx: add everyone has chat feature flag (function that also includes is admin logic)
+export const loader = async ({ params, request }: LoaderArgs) => {
+  const user = await getUserId(request);
   const matchId = matchIdFromParams(params);
   const match = notFoundIfFalsy(findMatchById(matchId));
 
@@ -288,16 +290,34 @@ export const loader = ({ params }: LoaderArgs) => {
   const groupBravo = groupForMatch(match.bravoGroupId);
   invariant(groupBravo, "Group bravo not found");
 
+  const censoredGroupAlpha = { ...groupAlpha, chatCode: undefined };
+  const censoredGroupBravo = { ...groupBravo, chatCode: undefined };
+  const censoredMatch = { ...match, chatCode: undefined };
+
+  const isTeamAlphaMember = groupAlpha.members.some((m) => m.id === user?.id);
+  const isTeamBravoMember = groupBravo.members.some((m) => m.id === user?.id);
+  const canAccessMatchChat = isTeamAlphaMember || isTeamBravoMember;
+
+  const groupChatCode = () => {
+    if (isTeamAlphaMember) return groupAlpha.chatCode;
+    if (isTeamBravoMember) return groupBravo.chatCode;
+
+    return null;
+  };
+
   return {
-    match,
-    groupAlpha,
-    groupBravo,
+    match: censoredMatch,
+    matchChatCode: canAccessMatchChat ? match.chatCode : null,
+    groupChatCode: groupChatCode(),
+    groupAlpha: censoredGroupAlpha,
+    groupBravo: censoredGroupBravo,
     reportedWeapons: match.reportedAt
       ? reportedWeaponsByMatchId(matchId)
       : undefined,
   };
 };
 
+// xxx: something reasonable as UI when chat is missing
 export default function QMatchPage() {
   const user = useUser();
   const isMounted = useIsMounted();
@@ -346,13 +366,12 @@ export default function QMatchPage() {
     );
   }, [data]);
 
-  const ownGroupId = ownGroup?.id;
   const chatRooms = React.useMemo(() => {
     return [
-      { code: `Q_MATCH_${data.match.id}`, label: `Match` },
-      ownGroupId ? { code: `Q_GROUP_${ownGroupId}`, label: "Group" } : null,
+      data.matchChatCode ? { code: data.matchChatCode, label: `Match` } : null,
+      data.groupChatCode ? { code: data.groupChatCode, label: "Group" } : null,
     ].filter(Boolean) as ChatProps["rooms"];
-  }, [data.match.id, ownGroupId]);
+  }, [data.matchChatCode, data.groupChatCode]);
 
   return (
     <Main className="q-match__container stack lg">
@@ -406,7 +425,7 @@ export default function QMatchPage() {
               side="BRAVO"
               showWeapons={!data.match.isLocked}
             />
-            {ownMember || isAdmin(user) ? (
+            {chatRooms.length > 0 ? (
               <Chat users={chatUsers} rooms={chatRooms} />
             ) : null}
           </div>
@@ -792,7 +811,7 @@ function MatchGroup({
   side,
   showWeapons,
 }: {
-  group: GroupForMatch;
+  group: Omit<GroupForMatch, "chatCode">;
   side: "ALPHA" | "BRAVO";
   showWeapons: boolean;
 }) {

@@ -166,6 +166,7 @@ function Message({ user, message }: { user: ChatUser; message: ChatMessage }) {
   );
 }
 
+// xxx: add optional initial msg e.g. in group chat notice that everyone can see the previous msgs who joins
 // export type SystemMessageType = "MANAGER_ADDED" | "MANAGER_REMOVED";
 export interface ChatMessage {
   id: string;

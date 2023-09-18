@@ -526,6 +526,7 @@ export interface Group {
     | "PREFER_ALL_MODES"
     | "NO_PREFERENCE";
   inviteCode: string;
+  chatCode: string | null;
   status: "PREPARING" | "ACTIVE" | "INACTIVE";
 }
 
@@ -549,6 +550,7 @@ export interface GroupMatch {
   createdAt: number;
   reportedAt: number | null;
   reportedByUserId: number | null;
+  chatCode: string | null;
 }
 
 export interface GroupMatchMap {
