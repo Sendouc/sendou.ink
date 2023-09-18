@@ -129,7 +129,7 @@ export const action = async ({ request, params }: ActionArgs) => {
       const groupMemberOfId = members.find((m) => m.id === user.id)?.groupId;
       invariant(
         groupMemberOfId || data.adminReport,
-        "User is not a manager of any group",
+        "User is not a member of any group",
       );
 
       const winner = winnersArrayToWinner(data.winners);
