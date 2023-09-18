@@ -230,6 +230,7 @@ function useChat({
     const wsCurrent = ws.current;
     return () => {
       wsCurrent.close();
+      setMessages([]);
     };
   }, [rooms, onNewMessage]);
 
