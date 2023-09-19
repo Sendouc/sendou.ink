@@ -86,20 +86,10 @@ export function Chat({
       <div className="chat__input-container">
         <ol className="chat__messages" ref={messagesContainerRef}>
           {messages.map((msg) => {
-            return (
-              <Message
-                key={msg.id}
-                user={
-                  (msg.userId ? users[msg.userId] : null) ?? {
-                    discordId: "-1",
-                    discordName: String(msg.userId),
-                    discordAvatar: null,
-                    chatNameColor: null,
-                  }
-                }
-                message={msg}
-              />
-            );
+            const user = msg.userId ? users[msg.userId] : null;
+            if (!user) return null;
+
+            return <Message key={msg.id} user={user} message={msg} />;
           })}
         </ol>
         <form onSubmit={handleSubmit} className="mt-4">

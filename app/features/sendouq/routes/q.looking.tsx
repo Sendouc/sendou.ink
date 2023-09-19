@@ -453,7 +453,6 @@ function InfoText() {
 type Tab = "group" | "chat" | "invite";
 
 // xxx: mobile UI
-// xxx: test what happens when someone joins group and sends message before other side has reloaded the data... or if someone leaves -> just hide these msgs?
 function OwnGroupSection() {
   const [unseenMessages, setUnseenMessages] = React.useState(0);
   const [tab, setTab] = React.useState<Tab>("group");
