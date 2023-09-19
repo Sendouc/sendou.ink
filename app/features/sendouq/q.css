@@ -194,7 +194,11 @@
 }
 
 @media screen and (min-width: 640px) {
-  .q-match__teams-container {
+  .q-match__teams-container.with-chat {
     grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .q-match__teams-container {
+    grid-template-columns: 1fr 1fr;
   }
 }

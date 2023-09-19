@@ -316,7 +316,6 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   };
 };
 
-// xxx: something reasonable as UI when chat is missing
 export default function QMatchPage() {
   const user = useUser();
   const isMounted = useIsMounted();
@@ -413,7 +412,11 @@ export default function QMatchPage() {
       ) : null}
       {!showWeaponsForm ? (
         <>
-          <div className="q-match__teams-container">
+          <div
+            className={clsx("q-match__teams-container", {
+              "with-chat": data.matchChatCode || data.groupChatCode,
+            })}
+          >
             <MatchGroup
               group={data.groupAlpha}
               side="ALPHA"
