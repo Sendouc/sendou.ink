@@ -4,6 +4,7 @@ import { sql } from "~/db/sql";
 import type { Group, GroupMember } from "~/db/types";
 import type { MapPool } from "~/modules/map-pool-serializer";
 import { isAdmin } from "~/permissions";
+import { hasAccessToChat } from "../core/groups.server";
 
 const createGroupStm = sql.prepare(/* sql */ `
   insert into "Group"
@@ -40,7 +41,9 @@ export const createGroup = sql.transaction((args: CreateGroupArgs) => {
     mapListPreference: args.mapListPreference,
     inviteCode: nanoid(INVITE_CODE_LENGTH),
     status: args.status,
-    chatCode: isAdmin({ id: args.userId }) ? nanoid(INVITE_CODE_LENGTH) : null,
+    chatCode: hasAccessToChat(isAdmin({ id: args.userId }))
+      ? nanoid(INVITE_CODE_LENGTH)
+      : null,
   }) as Group;
 
   createGroupMemberStm.run({

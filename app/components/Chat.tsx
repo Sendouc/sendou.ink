@@ -166,7 +166,6 @@ function Message({ user, message }: { user: ChatUser; message: ChatMessage }) {
   );
 }
 
-// xxx: add optional initial msg e.g. in group chat notice that everyone can see the previous msgs who joins
 // export type SystemMessageType = "MANAGER_ADDED" | "MANAGER_REMOVED";
 export interface ChatMessage {
   id: string;
@@ -181,11 +180,9 @@ export interface ChatMessage {
 
 function useChat({
   rooms,
-  _currentRoom,
   onNewMessage,
 }: {
   rooms: ChatProps["rooms"];
-  _currentRoom?: string;
   onNewMessage?: (message: ChatMessage) => void;
 }) {
   const user = useUser();
@@ -193,22 +190,23 @@ function useChat({
   const [messages, setMessages] = React.useState<ChatMessage[]>([]);
   const [connected, setConnected] = React.useState<null | boolean>(null);
   const [sentMessage, setSentMessage] = React.useState<ChatMessage>();
-  const [currentRoom, setCurrentRoom] = React.useState<string>(
-    _currentRoom ?? rooms[0].code,
-  );
+  const [currentRoom, setCurrentRoom] = React.useState<string>(rooms[0].code);
 
   const ws = React.useRef<ReconnectingWebSocket>();
   const lastSeenMessagesByRoomId = React.useRef<Map<string, string>>(new Map());
 
   React.useEffect(() => {
-    ws.current = new ReconnectingWebSocket(
-      `${SKALOP_BASE_URL}?${rooms
-        .map((room) => `room=${room.code}`)
-        .join("&")}`,
-      [],
-      { maxReconnectionDelay: 10000 * 2, reconnectionDelayGrowFactor: 1.5 },
-    );
-    ws.current.onopen = () => setConnected(true);
+    const url = `${SKALOP_BASE_URL}?${rooms
+      .map((room) => `room=${room.code}`)
+      .join("&")}`;
+    ws.current = new ReconnectingWebSocket(url, [], {
+      maxReconnectionDelay: 10000 * 2,
+      reconnectionDelayGrowFactor: 1.5,
+    });
+    ws.current.onopen = () => {
+      setCurrentRoom(rooms[0].code);
+      setConnected(true);
+    };
     ws.current.onclose = () => setConnected(false);
 
     ws.current.onmessage = (e) => {
@@ -224,8 +222,12 @@ function useChat({
         }, new Map<string, string>());
       }
 
-      if (!isInitialLoad) onNewMessage?.(message);
-      setMessages((messages) => [...messages, ...messageArr]);
+      if (isInitialLoad) {
+        setMessages(messageArr);
+      } else {
+        onNewMessage?.(message);
+        setMessages((messages) => [...messages, ...messageArr]);
+      }
     };
 
     const wsCurrent = ws.current;

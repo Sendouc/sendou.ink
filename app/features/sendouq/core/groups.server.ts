@@ -244,3 +244,12 @@ export function groupExpiryStatus(
 
   return null;
 }
+
+export function hasAccessToChat(isByAdmin: boolean) {
+  const ff = process.env["FF_ENABLE_CHAT"];
+
+  if (ff === "true") return true;
+  if (ff === "admin") return isByAdmin;
+
+  return false;
+}

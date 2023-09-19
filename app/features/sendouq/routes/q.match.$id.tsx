@@ -279,7 +279,6 @@ export const action = async ({ request, params }: ActionArgs) => {
   return null;
 };
 
-// xxx: add everyone has chat feature flag (function that also includes is admin logic)
 export const loader = async ({ params, request }: LoaderArgs) => {
   const user = await getUserId(request);
   const matchId = matchIdFromParams(params);
