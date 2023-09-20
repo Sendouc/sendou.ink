@@ -443,6 +443,10 @@ function InfoText() {
 }
 
 // xxx: autoselect own group after member join
+// xxx: MemberAdder handle overflow
+// xxx: implement filters
+// xxx: chat input to bottom
+// xxx: groupCard redesign??? or at least deal with owngroupcard (add manager) overflow
 function Groups() {
   const data = useLoaderData<typeof loader>();
   const isMounted = useIsMounted();
