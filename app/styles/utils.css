@@ -266,6 +266,10 @@
   white-space: nowrap;
 }
 
+.overflow-x-auto {
+  overflow-x: auto;
+}
+
 .flex {
   display: flex;
 }

@@ -105,13 +105,18 @@
   gap: var(--s-7);
 }
 
-.q__groups-container__right {
-  margin-top: 45px;
+.q__groups-container__mobile {
+  grid-template-columns: 1fr;
+  min-width: 300px;
+  margin: 0 auto;
 }
 
-.q__mobile-groups-container {
-  max-width: 300px;
-  margin: 0 auto;
+.q__groups-inner-container {
+  max-width: 94vw;
+}
+
+.q__groups-container__right {
+  margin-top: 45px;
 }
 
 .q__group {

@@ -538,14 +538,16 @@ dialog::backdrop {
 
 .tab__button {
   background-color: transparent;
-  color: var(--text);
   border: none;
   font-size: var(--fonts-xs);
   border-radius: 0;
   border-bottom: 2px solid transparent;
-  margin-bottom: -2px;
   color: var(--text-lighter);
   white-space: nowrap;
+}
+
+.tab__button:active {
+  transform: initial;
 }
 
 .tab__number {
