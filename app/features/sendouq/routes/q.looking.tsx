@@ -8,7 +8,6 @@ import { redirect } from "@remix-run/node";
 import { useFetcher, useLoaderData, useSearchParams } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
-import { Flipper } from "react-flip-toolkit";
 import invariant from "tiny-invariant";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
@@ -66,18 +65,13 @@ import { MemberAdder } from "../components/MemberAdder";
 import type { LookingGroupWithInviteCode } from "../q-types";
 import { trustedPlayersAvailableToPlay } from "../queries/usersInActiveGroup.server";
 import { userSkills } from "~/features/mmr/tiered.server";
-import { useWindowSize } from "~/hooks/useWindowSize";
-import { Tab, Tabs } from "~/components/Tabs";
 import { useAutoRefresh } from "~/hooks/useAutoRefresh";
 import { groupHasMatch } from "../queries/groupHasMatch.server";
 import { findRecentMatchPlayersByUserId } from "../queries/findRecentMatchPlayersByUserId.server";
 import { currentOrPreviousSeason } from "~/features/mmr/season";
-import { Button } from "~/components/Button";
-import { UsersIcon } from "~/components/icons/Users";
-import { ChatIcon } from "~/components/icons/Chat";
-import { LinkIcon } from "~/components/icons/Link";
 import { Chat } from "~/components/Chat";
 import { isAdmin } from "~/permissions";
+import { NewTabs } from "~/components/NewTabs";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -377,15 +371,15 @@ export default function QLookingPage() {
 
   return (
     <Main className="stack lg">
-      <div className="stack sm">
-        <InfoText />
+      <InfoText />
+      {/* <div className="stack sm">
         <OwnGroupSection />
       </div>
       {wasTryingToJoinAnotherTeam ? (
         <div className="text-warning text-center">
           Before joining another group, leave the current one
         </div>
-      ) : null}
+      ) : null} */}
       <Groups />
     </Main>
   );
@@ -450,16 +444,82 @@ function InfoText() {
   );
 }
 
-type Tab = "group" | "chat" | "invite";
-
-// xxx: mobile UI
-function OwnGroupSection() {
-  const [unseenMessages, setUnseenMessages] = React.useState(0);
-  const [tab, setTab] = React.useState<Tab>("group");
+function Groups() {
   const data = useLoaderData<typeof loader>();
+  const isMounted = useIsMounted();
+  // const { width } = useWindowSize();
 
-  const ownGroup = data.groups.own as LookingGroupWithInviteCode;
-  const canInviteViaLink = Boolean(ownGroup.inviteCode);
+  if (data.expiryStatus === "EXPIRED" || !isMounted) return null;
+
+  // if (width < 750) return <MobileGroupCards />;
+  return <GroupCardColumns />;
+}
+
+// function MobileGroupCards() {
+//   const data = useLoaderData<typeof loader>();
+//   const [tab, setTab] = React.useState<"received" | "neutral" | "given">(
+//     "neutral",
+//   );
+
+//   const isFullGroup = data.groups.own.members!.length === FULL_GROUP_SIZE;
+
+//   const groups =
+//     tab === "received"
+//       ? data.groups.likesReceived
+//       : tab === "given"
+//       ? data.groups.likesGiven
+//       : data.groups.neutral;
+
+//   return (
+//     <div className="mt-6">
+//       <Tabs compact>
+//         <Tab active={tab === "received"} onClick={() => setTab("received")}>
+//           Received ({data.groups.likesReceived.length})
+//         </Tab>
+//         <Tab active={tab === "neutral"} onClick={() => setTab("neutral")}>
+//           Neutral ({data.groups.neutral.length})
+//         </Tab>
+//         <Tab active={tab === "given"} onClick={() => setTab("given")}>
+//           Given ({data.groups.likesGiven.length})
+//         </Tab>
+//       </Tabs>
+//       <div className="stack sm q__mobile-groups-container">
+//         {groups.map((group) => {
+//           const { mapListPreference } = groupAfterMorph({
+//             liker: tab === "received" ? "THEM" : "US",
+//             ourGroup: data.groups.own,
+//             theirGroup: group,
+//           });
+
+//           const action =
+//             tab === "neutral"
+//               ? "LIKE"
+//               : tab === "given"
+//               ? "UNLIKE"
+//               : isFullGroup
+//               ? "MATCH_UP"
+//               : "GROUP_UP";
+
+//           return (
+//             <GroupCard
+//               key={group.id}
+//               group={group}
+//               action={action}
+//               mapListPreference={mapListPreference}
+//               ownRole={data.role}
+//             />
+//           );
+//         })}
+//       </div>
+//     </div>
+//   );
+// }
+
+// xxx: rename
+// xxx: add invite stuff below own group
+function GroupCardColumns() {
+  const data = useLoaderData<typeof loader>();
+  const [unseenMessages, setUnseenMessages] = React.useState(0);
 
   const chatUsers = React.useMemo(() => {
     return Object.fromEntries(data.groups.own.members!.map((m) => [m.id, m]));
@@ -480,129 +540,99 @@ function OwnGroupSection() {
     setUnseenMessages((msg) => msg + 1);
   }, []);
 
-  const handleTabChange = (newTab: Tab) => () => {
-    const resetUnseenMessages = tab === "chat";
-    setTab(newTab);
-
-    // this logic is a bit awkward but it's to hack around dep array weirdness
-    if (resetUnseenMessages) {
-      setUnseenMessages(0);
-    }
-  };
-
-  const showUnseenMessages = tab !== "chat" && unseenMessages > 0;
+  const isFullGroup = data.groups.own.members!.length === FULL_GROUP_SIZE;
+  const ownGroup = data.groups.own as LookingGroupWithInviteCode;
 
   return (
-    <section className="q__top-container">
-      <div className="stack sm">
-        <Button className="q__tab-button" onClick={handleTabChange("group")}>
-          <UsersIcon className="q__tab-button__icon" /> Group
-        </Button>
+    <div className="q__groups-container">
+      <div>
         {data.chatCode ? (
-          <Button className="q__tab-button" onClick={handleTabChange("chat")}>
-            <ChatIcon className="q__tab-button__icon" />
-            Chat
-            {showUnseenMessages ? (
-              <div className="q__tab-button__badge">{unseenMessages}</div>
-            ) : null}
-          </Button>
-        ) : null}
-        {canInviteViaLink ? (
-          <Button className="q__tab-button" onClick={handleTabChange("invite")}>
-            <LinkIcon className="q__tab-button__icon" />
-            Invite
-          </Button>
+          <Chat
+            rooms={chatRooms}
+            users={chatUsers}
+            className="w-full q__chat-container"
+            onNewMessage={onNewMessage}
+          />
         ) : null}
       </div>
-      <div className="q__top-container__divider" />
-      {tab === "group" ? (
-        <GroupCard
-          group={data.groups.own}
-          mapListPreference={data.groups.own.mapListPreference}
-          ownRole={data.role}
-          ownGroup
+      <div>
+        <NewTabs
+          tabs={[
+            {
+              label: "Groups",
+            },
+            {
+              label: "Own group",
+              number: data.groups.own.members!.length,
+            },
+            {
+              label: "Filters",
+            },
+          ]}
+          content={[
+            {
+              key: "groups",
+              element: (
+                <div className="stack sm">
+                  {data.groups.neutral.map((group) => {
+                    const { mapListPreference } = groupAfterMorph({
+                      liker: "US",
+                      ourGroup: data.groups.own,
+                      theirGroup: group,
+                    });
+
+                    return (
+                      <GroupCard
+                        key={group.id}
+                        group={group}
+                        action={group.isLiked ? "UNLIKE" : "LIKE"}
+                        mapListPreference={mapListPreference}
+                        ownRole={data.role}
+                      />
+                    );
+                  })}
+                </div>
+              ),
+            },
+            {
+              key: "own",
+              element: (
+                <div className="stack md">
+                  <GroupCard
+                    group={data.groups.own}
+                    mapListPreference={data.groups.own.mapListPreference}
+                    ownRole={data.role}
+                    ownGroup
+                  />
+                  {ownGroup.inviteCode ? (
+                    <MemberAdder
+                      inviteCode={ownGroup.inviteCode}
+                      trustedPlayers={data.trustedPlayers}
+                    />
+                  ) : null}
+                </div>
+              ),
+            },
+            {
+              key: "filters",
+              element: <div>filters</div>,
+            },
+          ]}
         />
-      ) : null}
-      {tab === "invite" ? (
-        <MemberAdder
-          inviteCode={ownGroup.inviteCode}
-          trustedPlayers={data.trustedPlayers}
-        />
-      ) : null}
-      {data.chatCode ? (
-        <Chat
-          rooms={chatRooms}
-          users={chatUsers}
-          className="w-full"
-          hidden={tab !== "chat"}
-          onNewMessage={onNewMessage}
-        />
-      ) : null}
-    </section>
-  );
-}
-
-function Groups() {
-  const data = useLoaderData<typeof loader>();
-  const isMounted = useIsMounted();
-  const { width } = useWindowSize();
-
-  if (data.expiryStatus === "EXPIRED" || !isMounted) return null;
-
-  if (width < 750) return <MobileGroupCards />;
-  return <GroupCardColumns />;
-}
-
-function MobileGroupCards() {
-  const data = useLoaderData<typeof loader>();
-  const [tab, setTab] = React.useState<"received" | "neutral" | "given">(
-    "neutral",
-  );
-
-  const isFullGroup = data.groups.own.members!.length === FULL_GROUP_SIZE;
-
-  const groups =
-    tab === "received"
-      ? data.groups.likesReceived
-      : tab === "given"
-      ? data.groups.likesGiven
-      : data.groups.neutral;
-
-  return (
-    <div className="mt-6">
-      <Tabs compact>
-        <Tab active={tab === "received"} onClick={() => setTab("received")}>
-          Received ({data.groups.likesReceived.length})
-        </Tab>
-        <Tab active={tab === "neutral"} onClick={() => setTab("neutral")}>
-          Neutral ({data.groups.neutral.length})
-        </Tab>
-        <Tab active={tab === "given"} onClick={() => setTab("given")}>
-          Given ({data.groups.likesGiven.length})
-        </Tab>
-      </Tabs>
-      <div className="stack sm q__mobile-groups-container">
-        {groups.map((group) => {
+      </div>
+      <div className="stack sm q__groups-container__right">
+        {data.groups.likesReceived.map((group) => {
           const { mapListPreference } = groupAfterMorph({
-            liker: tab === "received" ? "THEM" : "US",
+            liker: "THEM",
             ourGroup: data.groups.own,
             theirGroup: group,
           });
-
-          const action =
-            tab === "neutral"
-              ? "LIKE"
-              : tab === "given"
-              ? "UNLIKE"
-              : isFullGroup
-              ? "MATCH_UP"
-              : "GROUP_UP";
 
           return (
             <GroupCard
               key={group.id}
               group={group}
-              action={action}
+              action={isFullGroup ? "MATCH_UP" : "GROUP_UP"}
               mapListPreference={mapListPreference}
               ownRole={data.role}
             />
@@ -610,94 +640,5 @@ function MobileGroupCards() {
         })}
       </div>
     </div>
-  );
-}
-
-function GroupCardColumns() {
-  const data = useLoaderData<typeof loader>();
-
-  const isFullGroup = data.groups.own.members!.length === FULL_GROUP_SIZE;
-
-  return (
-    <Flipper
-      flipKey={`${data.groups.likesReceived
-        .map((g) => g.id)
-        .join("")}-${data.groups.neutral
-        .map((g) => g.id)
-        .join("")}-${data.groups.likesGiven.map((g) => g.id).join("")}`}
-    >
-      <div className="q__groups-container">
-        <div>
-          <h2 className="text-sm text-center mb-2">
-            {isFullGroup ? "Challenges received" : "Groups that asked you"}
-          </h2>
-          <div className="stack sm">
-            {data.groups.likesReceived.map((group) => {
-              const { mapListPreference } = groupAfterMorph({
-                liker: "THEM",
-                ourGroup: data.groups.own,
-                theirGroup: group,
-              });
-
-              return (
-                <GroupCard
-                  key={group.id}
-                  group={group}
-                  action={isFullGroup ? "MATCH_UP" : "GROUP_UP"}
-                  mapListPreference={mapListPreference}
-                  ownRole={data.role}
-                />
-              );
-            })}
-          </div>
-        </div>
-        <div className="w-full">
-          <h2 className="text-sm text-center mb-2 invisible">Neutral</h2>
-          <div className="stack sm">
-            {data.groups.neutral.map((group) => {
-              const { mapListPreference } = groupAfterMorph({
-                liker: "US",
-                ourGroup: data.groups.own,
-                theirGroup: group,
-              });
-
-              return (
-                <GroupCard
-                  key={group.id}
-                  group={group}
-                  action="LIKE"
-                  mapListPreference={mapListPreference}
-                  ownRole={data.role}
-                />
-              );
-            })}
-          </div>
-        </div>
-        <div>
-          <h2 className="text-sm text-center mb-2">
-            {isFullGroup ? "Challenges issued" : "Groups you asked"}
-          </h2>
-          <div className="stack sm">
-            {data.groups.likesGiven.map((group) => {
-              const { mapListPreference } = groupAfterMorph({
-                liker: "US",
-                ourGroup: data.groups.own,
-                theirGroup: group,
-              });
-
-              return (
-                <GroupCard
-                  key={group.id}
-                  group={group}
-                  action="UNLIKE"
-                  mapListPreference={mapListPreference}
-                  ownRole={data.role}
-                />
-              );
-            })}
-          </div>
-        </div>
-      </div>
-    </Flipper>
   );
 }

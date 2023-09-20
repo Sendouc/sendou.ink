@@ -530,6 +530,39 @@ dialog::backdrop {
   visibility: initial;
 }
 
+.tab__buttons-container {
+  display: flex;
+  flex-direction: row;
+  border-bottom: 2px solid var(--border);
+}
+
+.tab__button {
+  background-color: transparent;
+  color: var(--text);
+  border: none;
+  font-size: var(--fonts-xs);
+  border-radius: 0;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  color: var(--text-lighter);
+  white-space: nowrap;
+}
+
+.tab__number {
+  color: var(--theme);
+  margin-left: var(--s-2);
+}
+
+.tab__button:focus-visible {
+  color: var(--theme) !important;
+  outline: none;
+}
+
+.tab__button[data-headlessui-state="selected"] {
+  border-color: var(--theme);
+  color: var(--text);
+}
+
 .popover-content {
   z-index: 1;
   max-width: 20rem;

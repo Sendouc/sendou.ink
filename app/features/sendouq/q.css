@@ -93,11 +93,20 @@
   border-radius: var(--rounded);
 }
 
+.q__chat-container {
+  top: 60px;
+  position: sticky;
+}
+
 .q__groups-container {
   display: grid;
   justify-content: center;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: var(--s-6);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-7);
+}
+
+.q__groups-container__right {
+  margin-top: 45px;
 }
 
 .q__mobile-groups-container {

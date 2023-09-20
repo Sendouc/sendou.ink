@@ -7,6 +7,7 @@ export type LookingGroup = {
   mapListPreference?: Group["mapListPreference"];
   tier?: TieredSkill["tier"];
   isReplay?: boolean;
+  isLiked?: boolean;
   members?: {
     id: number;
     discordId: string;
@@ -31,12 +32,10 @@ export interface DividedGroups {
   own: LookingGroup | LookingGroupWithInviteCode;
   neutral: LookingGroup[];
   likesReceived: LookingGroup[];
-  likesGiven: LookingGroup[];
 }
 
 export interface DividedGroupsUncensored {
   own: LookingGroupWithInviteCode;
   neutral: LookingGroupWithInviteCode[];
   likesReceived: LookingGroupWithInviteCode[];
-  likesGiven: LookingGroupWithInviteCode[];
 }

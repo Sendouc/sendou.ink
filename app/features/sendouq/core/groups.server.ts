@@ -26,7 +26,6 @@ export function divideGroups({
   let own: LookingGroupWithInviteCode | null = null;
   const neutral: LookingGroupWithInviteCode[] = [];
   const likesReceived: LookingGroupWithInviteCode[] = [];
-  const likesGiven: LookingGroupWithInviteCode[] = [];
 
   const unneutralGroupIds = new Set<number>();
   for (const like of likes) {
@@ -45,9 +44,7 @@ export function divideGroups({
         break;
       }
       if (like.targetGroupId === group.id) {
-        likesGiven.push(group);
-        unneutralGroupIds.add(group.id);
-        break;
+        group.isLiked = true;
       }
     }
   }
@@ -68,7 +65,6 @@ export function divideGroups({
   return {
     own,
     neutral,
-    likesGiven,
     likesReceived,
   };
 }
@@ -132,7 +128,6 @@ export function addReplayIndicator({
 
   return {
     own: groups.own,
-    likesGiven: groups.likesGiven.map(addReplayIndicatorIfNeeded),
     likesReceived: groups.likesReceived.map(addReplayIndicatorIfNeeded),
     neutral: groups.neutral.map(addReplayIndicatorIfNeeded),
   };
@@ -162,9 +157,6 @@ export function censorGroups({
   return {
     own: showInviteCode ? groups.own : censorGroupPartly(groups.own),
     neutral: groups.neutral.map(
-      showMembers ? censorGroupPartly : censorGroupFully,
-    ),
-    likesGiven: groups.likesGiven.map(
       showMembers ? censorGroupPartly : censorGroupFully,
     ),
     likesReceived: groups.likesReceived.map(
@@ -214,7 +206,6 @@ export function addSkillsToGroups({
   return {
     own: addSkill(groups.own),
     neutral: groups.neutral.map(addSkill),
-    likesGiven: groups.likesGiven.map(addSkill),
     likesReceived: groups.likesReceived.map(addSkill),
   };
 }
