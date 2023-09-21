@@ -19,6 +19,7 @@ export interface ChatProps {
   users: Record<number, ChatUser>;
   rooms: { label: string; code: string }[];
   className?: string;
+  messagesContainerClassName?: string;
   hidden?: boolean;
   onNewMessage?: (message: ChatMessage) => void;
 }
@@ -27,6 +28,7 @@ export function Chat({
   users,
   rooms,
   className,
+  messagesContainerClassName,
   hidden = false,
   onNewMessage,
 }: ChatProps) {
@@ -84,7 +86,10 @@ export function Chat({
         </div>
       ) : null}
       <div className="chat__input-container">
-        <ol className="chat__messages" ref={messagesContainerRef}>
+        <ol
+          className={clsx("chat__messages", messagesContainerClassName)}
+          ref={messagesContainerRef}
+        >
           {messages.map((msg) => {
             const user = msg.userId ? users[msg.userId] : null;
             if (!user) return null;

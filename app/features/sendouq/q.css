@@ -98,6 +98,10 @@
   position: sticky;
 }
 
+.q__chat-messages-container {
+  height: 350px;
+}
+
 .q__groups-container {
   display: grid;
   justify-content: center;

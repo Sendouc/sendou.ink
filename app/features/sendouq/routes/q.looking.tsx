@@ -444,9 +444,10 @@ function InfoText() {
 
 // xxx: MemberAdder handle overflow
 // xxx: implement filters
-// xxx: chat input to bottom
 // xxx: groupCard redesign??? or at least deal with owngroupcard (add manager) overflow
 // xxx: chat tab looks off before it has number, make number position: absolute?
+// xxx: chat disconnects websocket when changing tabs
+// xxx: clearing of unseen messages logic missing
 function Groups() {
   const data = useLoaderData<typeof loader>();
   const isMounted = useIsMounted();
@@ -496,6 +497,7 @@ function Groups() {
           rooms={chatRooms}
           users={chatUsers}
           className="w-full q__chat-container"
+          messagesContainerClassName="q__chat-messages-container"
           onNewMessage={onNewMessage}
         />
       ) : null}
@@ -516,7 +518,7 @@ function Groups() {
           setSelectedIndex={setSelectedIndex}
           tabs={[
             {
-              label: "Own group",
+              label: "Roster",
               number: data.groups.own.members!.length,
             },
             {
@@ -524,7 +526,7 @@ function Groups() {
               number: data.groups.neutral.length,
             },
             {
-              label: "Likes received",
+              label: isFullGroup ? "Challenges" : "Invitations",
               number: data.groups.likesReceived.length,
               hidden: !isMobile,
             },
