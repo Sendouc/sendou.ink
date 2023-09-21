@@ -19,6 +19,9 @@
   "pages.vods": "Videoer",
   "pages.xsearch": "X-kamp rangliste",
   "pages.leaderboards": "Pointtavler",
+  "pages.links": "Link",
+  "pages.art": "Kunst",
+  "pages.sendouq": "SendouQ",
 
   "header.profile": "Profil",
   "header.logout": "Log ud",
@@ -30,6 +33,7 @@
   "auth.errors.aborted": "logindforsøg afbrudt",
   "auth.errors.failed": "Loginforsøg fejlet",
   "auth.errors.discordPermissions": "Før at du kan oprette en profil på Sendou.ink, skal Sendou.ink have adgang til din Discordprofils navn, brugerbillede og sociale forbindelser (de sociale medier, som du har tilknyttet din discordprofil).",
+  "auth.errors.unknown": "Log ind fejlet grundet en serverfejl. Prøv igen senere eller brug /login-kommandoen via Lohi-botten. Botten kan blive fundet på sendou.ink’s Discordserver",
 
   "footer.github.subtitle": "Kildekode",
   "footer.twitter.subtitle": "Opdateringer",
@@ -86,7 +90,7 @@
   "forms.name": "Navn",
   "forms.description": "Beskrivelse",
   "forms.errors.title": "Følgende fejl skal rettes",
-  "forms.errors.noSearchMatches": "Ingen kampe fundet",
+  "forms.errors.noSearchMatches": "Ingen resultater fundet",
 
   "errors.genericReload": "Noget gik galt. Prøv at genindlæse siden.",
 
@@ -165,6 +169,8 @@
 
   "custom.colors.title": "Tilpas farver",
   "custom.colors.bg": "Baggrund",
+  "support.perk.prioritySupport": "Prioritetssupport",
+  "support.perk.prioritySupport.extra": "Adgang til en separat helpdesk, som Sendou prioriterer for support-efterspørgsler.",
   "custom.colors.bg-darker": "Mørkere baggrund",
   "custom.colors.bg-lighter": "Lysere baggrund",
   "custom.colors.text": "Tekts",
@@ -174,6 +180,15 @@
   "divisions.WEST": "Tentatek",
   "divisions.JPN": "Takoroka",
   "xsearch.placements": "placeringer",
+  "xsearch.aliases": "Aliasser:",
 
-  "build.private": "Privat"
+  "build.private": "Privat",
+
+  "or": "Eller",
+  "yes": "Ja",
+  "no": "Nej",
+
+  "leaderboard.type.USER": "Bruger",
+  "leaderboard.type.TEAM": "Hold",
+  "leaderboard.type.XP-ALL": "Alle"
 }
