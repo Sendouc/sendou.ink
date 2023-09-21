@@ -442,16 +442,17 @@ function InfoText() {
   );
 }
 
-// xxx: autoselect own group after member join
 // xxx: MemberAdder handle overflow
 // xxx: implement filters
 // xxx: chat input to bottom
 // xxx: groupCard redesign??? or at least deal with owngroupcard (add manager) overflow
+// xxx: chat tab looks off before it has number, make number position: absolute?
 function Groups() {
   const data = useLoaderData<typeof loader>();
   const isMounted = useIsMounted();
 
   const [unseenMessages, setUnseenMessages] = React.useState(0);
+  const [selectedIndex, setSelectedIndex] = React.useState(0);
   const { width } = useWindowSize();
 
   const chatUsers = React.useMemo(() => {
@@ -472,6 +473,15 @@ function Groups() {
   const onNewMessage = React.useCallback(() => {
     setUnseenMessages((msg) => msg + 1);
   }, []);
+
+  // reset to own group tab when the roster changes
+  const memberIdsJoined = data.groups.own.members
+    ?.map((m) => m.id)
+    .sort((a, b) => a - b)
+    .join(",");
+  React.useEffect(() => {
+    setSelectedIndex(0);
+  }, [memberIdsJoined]);
 
   if (data.expiryStatus === "EXPIRED" || !isMounted) return null;
 
@@ -502,14 +512,16 @@ function Groups() {
       <div className="q__groups-inner-container">
         <NewTabs
           scrolling={isMobile}
+          selectedIndex={selectedIndex}
+          setSelectedIndex={setSelectedIndex}
           tabs={[
-            {
-              label: "Groups",
-              number: data.groups.neutral.length,
-            },
             {
               label: "Own group",
               number: data.groups.own.members!.length,
+            },
+            {
+              label: "Groups",
+              number: data.groups.neutral.length,
             },
             {
               label: "Likes received",
@@ -526,6 +538,25 @@ function Groups() {
             },
           ]}
           content={[
+            {
+              key: "own",
+              element: (
+                <div className="stack md">
+                  <GroupCard
+                    group={data.groups.own}
+                    mapListPreference={data.groups.own.mapListPreference}
+                    ownRole={data.role}
+                    ownGroup
+                  />
+                  {ownGroup.inviteCode ? (
+                    <MemberAdder
+                      inviteCode={ownGroup.inviteCode}
+                      trustedPlayers={data.trustedPlayers}
+                    />
+                  ) : null}
+                </div>
+              ),
+            },
             {
               key: "groups",
               element: (
@@ -547,25 +578,6 @@ function Groups() {
                       />
                     );
                   })}
-                </div>
-              ),
-            },
-            {
-              key: "own",
-              element: (
-                <div className="stack md">
-                  <GroupCard
-                    group={data.groups.own}
-                    mapListPreference={data.groups.own.mapListPreference}
-                    ownRole={data.role}
-                    ownGroup
-                  />
-                  {ownGroup.inviteCode ? (
-                    <MemberAdder
-                      inviteCode={ownGroup.inviteCode}
-                      trustedPlayers={data.trustedPlayers}
-                    />
-                  ) : null}
                 </div>
               ),
             },

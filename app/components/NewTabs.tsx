@@ -13,11 +13,19 @@ interface NewTabsProps {
     hidden?: boolean;
   }[];
   scrolling?: boolean;
+  selectedIndex?: number;
+  setSelectedIndex?: (index: number) => void;
 }
 
-export function NewTabs({ tabs, content, scrolling = true }: NewTabsProps) {
+export function NewTabs({
+  tabs,
+  content,
+  scrolling = true,
+  selectedIndex,
+  setSelectedIndex,
+}: NewTabsProps) {
   return (
-    <Tab.Group>
+    <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
       <Tab.List
         className={clsx("tab__buttons-container", {
           "overflow-x-auto": scrolling,
