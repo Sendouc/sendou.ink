@@ -1,29 +1,24 @@
-import { Link, useFetcher } from "@remix-run/react";
+import { useFetcher } from "@remix-run/react";
 import clsx from "clsx";
-import * as React from "react";
 import { Flipped } from "react-flip-toolkit";
 import { Avatar } from "~/components/Avatar";
 import { Button } from "~/components/Button";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
-import { TierImage, WeaponImage } from "~/components/Image";
+import { Image, TierImage, WeaponImage } from "~/components/Image";
+import { Popover } from "~/components/Popover";
 import { SubmitButton } from "~/components/SubmitButton";
-import { ArrowsPointingInIcon } from "~/components/icons/ArrowsPointingIn";
-import { StarFilledIcon } from "~/components/icons/StarFilled";
-import UndoIcon from "~/components/icons/Undo";
-import { UsersIcon } from "~/components/icons/Users";
+import { MicrophoneIcon } from "~/components/icons/Microphone";
+import { SpeakerIcon } from "~/components/icons/Speaker";
+import { SpeakerXIcon } from "~/components/icons/SpeakerX";
 import type { Group, GroupMember as GroupMemberType } from "~/db/types";
-import { SENDOUQ_LOOKING_PAGE, TIERS_PAGE, userPage } from "~/utils/urls";
+import { ordinalToRoundedSp } from "~/features/mmr/mmr-utils";
+import type { TieredSkill } from "~/features/mmr/tiered.server";
+import { useTranslation } from "~/hooks/useTranslation";
+import { useUser } from "~/modules/auth";
+import { languagesUnified } from "~/modules/i18n/config";
+import { SENDOUQ_LOOKING_PAGE, navIconUrl } from "~/utils/urls";
 import { FULL_GROUP_SIZE } from "../q-constants";
 import type { LookingGroup } from "../q-types";
-import { ModePreferenceIcons } from "./ModePrefenceIcons";
-import { ordinalToRoundedSp } from "~/features/mmr/mmr-utils";
-import { Popover } from "~/components/Popover";
-import { SpeakerIcon } from "~/components/icons/Speaker";
-import { MicrophoneIcon } from "~/components/icons/Microphone";
-import { SpeakerXIcon } from "~/components/icons/SpeakerX";
-import { useTranslation } from "~/hooks/useTranslation";
-import { languagesUnified } from "~/modules/i18n/config";
-import { useUser } from "~/modules/auth";
 
 export function GroupCard({
   group,
@@ -43,69 +38,25 @@ export function GroupCard({
   return (
     <Flipped flipId={group.id}>
       <section className="q__group">
-        {mapListPreference ? (
+        {/* {mapListPreference ? (
           <div className="stack lg horizontal justify-center">
             <div className="stack xs horizontal items-center">
               <ModePreferenceIcons preference={mapListPreference} />
             </div>
           </div>
-        ) : null}
+        ) : null} */}
         <div
-          className={clsx("stack sm", {
+          className={clsx("stack md", {
             "horizontal justify-center": !group.members,
           })}
         >
           {group.members?.map((member) => {
             return (
-              <React.Fragment key={member.discordId}>
-                <GroupMember
-                  member={member}
-                  showActions={ownGroup && ownRole === "OWNER"}
-                />
-                <div className="stack md horizontal items-center justify-between">
-                  <div className="q__group-member-weapons">
-                    {member.weapons?.map((weapon) => {
-                      return (
-                        <WeaponImage
-                          key={weapon}
-                          weaponSplId={weapon}
-                          variant="badge"
-                          size={36}
-                          className="q__group-member-weapon"
-                        />
-                      );
-                    })}
-                  </div>
-                  {member.skill ? (
-                    <Popover
-                      buttonChildren={
-                        <div className="text-xs font-bold text-lighter stack horizontal xxs items-center">
-                          <TierImage tier={member.skill.tier} width={36} />
-                          {!member.skill.approximate ? (
-                            <>{ordinalToRoundedSp(member.skill.ordinal)}SP</>
-                          ) : null}
-                        </div>
-                      }
-                    >
-                      <div className="stack sm items-center">
-                        <TierImage tier={member.skill.tier} width={100} />
-                        <div>
-                          {member.skill.tier.name}
-                          {member.skill.tier.isPlus ? "+" : ""}
-                        </div>
-                        <Link
-                          to={TIERS_PAGE}
-                          className="text-xs"
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          See all tiers
-                        </Link>
-                      </div>
-                    </Popover>
-                  ) : null}
-                </div>
-              </React.Fragment>
+              <GroupMember
+                member={member}
+                showActions={ownGroup && ownRole === "OWNER"}
+                key={member.discordId}
+              />
             );
           })}
           {!group.members
@@ -140,24 +91,13 @@ export function GroupCard({
               variant={action === "UNLIKE" ? "destructive" : "outlined"}
               _action={action}
               state={fetcher.state}
-              icon={
-                action === "MATCH_UP" ? (
-                  <ArrowsPointingInIcon />
-                ) : action === "LIKE" ? (
-                  <StarFilledIcon />
-                ) : action === "GROUP_UP" ? (
-                  <UsersIcon />
-                ) : (
-                  <UndoIcon />
-                )
-              }
             >
               {action === "MATCH_UP"
                 ? "Start match"
                 : action === "LIKE" && !group.members
                 ? "Challenge"
                 : action === "LIKE"
-                ? "Ask to play"
+                ? "Invite"
                 : action === "GROUP_UP"
                 ? "Group up"
                 : "Undo"}
@@ -191,41 +131,61 @@ function GroupMember({
   const fetcher = useFetcher();
 
   return (
-    <fetcher.Form
-      className="stack sm horizontal items-center font-bold"
-      method="post"
-      action={SENDOUQ_LOOKING_PAGE}
-    >
-      <input type="hidden" name="userId" value={member.id} />
-      <Link to={userPage(member)} className="q__group-member" target="_blank">
-        <Avatar user={member} size="xxs" />
-        {member.discordName}
-      </Link>
-      {member.plusTier ? (
-        <div className="text-xs text-lighter">+{member.plusTier}</div>
-      ) : null}
-      {member.role === "REGULAR" && showActions ? (
-        <SubmitButton
-          variant="minimal"
-          size="tiny"
-          _action="GIVE_MANAGER"
-          state={fetcher.state}
-        >
-          Give manager
-        </SubmitButton>
-      ) : null}
-      {member.role === "MANAGER" && showActions ? (
-        <SubmitButton
-          variant="minimal-destructive"
-          size="tiny"
-          _action="REMOVE_MANAGER"
-          state={fetcher.state}
-        >
-          Remove manager
-        </SubmitButton>
-      ) : null}
-      <VoiceChatInfo member={member} />
-    </fetcher.Form>
+    <div className="stack xxs">
+      <div className="q__group-member">
+        <Avatar user={member} size="xs" />
+        <span className="q__group-member__name">{member.discordName}</span>
+        {member.skill ? <TierInfo skill={member.skill} /> : null}
+      </div>
+      <div className="stack horizontal justify-between">
+        <div className="stack horizontal xxs">
+          {member.vc ? (
+            <div className="q__group-member__extra-info">
+              <VoiceChatInfo member={member} />
+            </div>
+          ) : null}
+          {member.plusTier ? (
+            <div className="q__group-member__extra-info">
+              <Image path={navIconUrl("plus")} width={20} height={20} alt="" />
+              {member.plusTier}
+            </div>
+          ) : null}
+        </div>
+        {member.weapons ? (
+          <div className="q__group-member__extra-info">
+            {member.weapons?.map((weapon) => {
+              return (
+                <WeaponImage
+                  key={weapon}
+                  weaponSplId={weapon}
+                  variant="badge"
+                  size={26}
+                />
+              );
+            })}
+          </div>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+function TierInfo({ skill }: { skill: TieredSkill }) {
+  return (
+    <div className="q__group-member__tier">
+      <Popover buttonChildren={<TierImage tier={skill.tier} width={38} />}>
+        <div className="stack sm items-center">
+          <TierImage tier={skill.tier} width={80} />
+          <div className="text-lighter text-xxs">
+            {skill.tier.name}
+            {skill.tier.isPlus ? "+" : ""}
+          </div>
+          {!skill.approximate ? (
+            <> {ordinalToRoundedSp(skill.ordinal)}SP</>
+          ) : null}
+        </div>
+      </Popover>
+    </div>
   );
 }
 

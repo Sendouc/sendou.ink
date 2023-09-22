@@ -442,18 +442,21 @@ function InfoText() {
   );
 }
 
+// xxx: add back info about mode preference of group somewhere?
 // xxx: MemberAdder handle overflow
 // xxx: implement filters
-// xxx: groupCard redesign??? or at least deal with owngroupcard (add manager) overflow
+// xxx: add/remove manager
 // xxx: chat tab looks off before it has number, make number position: absolute?
 // xxx: chat disconnects websocket when changing tabs
 // xxx: clearing of unseen messages logic missing
+// xxx: add message to chat when alone
+// xxx: when group is hidden still show everything, maybe just disabled buttons?
 function Groups() {
   const data = useLoaderData<typeof loader>();
   const isMounted = useIsMounted();
 
   const [unseenMessages, setUnseenMessages] = React.useState(0);
-  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const [selectedIndex, setSelectedIndex] = React.useState(1);
   const { width } = useWindowSize();
 
   const chatUsers = React.useMemo(() => {
@@ -481,6 +484,7 @@ function Groups() {
     .sort((a, b) => a - b)
     .join(",");
   React.useEffect(() => {
+    if (memberIdsJoined && memberIdsJoined.split(",").length === 1) return;
     setSelectedIndex(0);
   }, [memberIdsJoined]);
 

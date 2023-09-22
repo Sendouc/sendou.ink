@@ -64,7 +64,7 @@ export function MemberAdder({
         </fetcher.Form>
       ) : null}
       <div>
-        <label htmlFor="invite">Share your invite link</label>
+        <label htmlFor="invite">Invite link</label>
         <div className="stack horizontal sm items-center">
           <input type="text" value={inviteLink} readOnly id="invite" />
           <Button

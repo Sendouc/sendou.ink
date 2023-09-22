@@ -137,9 +137,33 @@
   display: flex;
   gap: var(--s-2);
   align-items: center;
-  font-size: var(--fonts-xs);
+  background-color: var(--bg-darker);
+  border-radius: var(--rounded);
+  font-size: var(--fonts-xsm);
   font-weight: var(--semi-bold);
-  color: var(--text);
+  padding-inline-end: var(--s-2-5);
+}
+
+.q__group-member__name {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.q__group-member__tier {
+  margin-inline-start: auto;
+}
+
+.q__group-member__extra-info {
+  font-size: var(--fonts-xs);
+  background-color: var(--bg-darker);
+  border-radius: var(--rounded);
+  padding: var(--s-0-5) var(--s-2);
+  width: max-content;
+  display: flex;
+  align-items: center;
+  gap: var(--s-1-5);
+  font-weight: var(--semi-bold);
 }
 
 .q__member-placeholder {
@@ -166,7 +190,7 @@
 }
 
 .q__group-member-vc-icon {
-  width: 18px;
+  height: 15px;
   stroke-width: 2;
 }
 
