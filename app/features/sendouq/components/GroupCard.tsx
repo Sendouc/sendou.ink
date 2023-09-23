@@ -24,7 +24,6 @@ import { StarFilledIcon } from "~/components/icons/StarFilled";
 export function GroupCard({
   group,
   action,
-  mapListPreference,
   ownRole,
   ownGroup = false,
 }: {
@@ -38,13 +37,6 @@ export function GroupCard({
 
   return (
     <section className="q__group">
-      {/* {mapListPreference ? (
-          <div className="stack lg horizontal justify-center">
-            <div className="stack xs horizontal items-center">
-              <ModePreferenceIcons preference={mapListPreference} />
-            </div>
-          </div>
-        ) : null} */}
       <div
         className={clsx("stack md", {
           "horizontal justify-center": !group.members,
