@@ -451,7 +451,6 @@ function InfoText() {
 // xxx: clearing of unseen messages logic missing
 // xxx: add message to chat when alone
 // xxx: when group is hidden still show everything, maybe just disabled buttons?
-// xxx: remove flipped
 // xxx: link to user profile on groupcard
 function Groups() {
   const data = useLoaderData<typeof loader>();

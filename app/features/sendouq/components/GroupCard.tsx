@@ -1,6 +1,5 @@
 import { useFetcher } from "@remix-run/react";
 import clsx from "clsx";
-import { Flipped } from "react-flip-toolkit";
 import { Avatar } from "~/components/Avatar";
 import { Button } from "~/components/Button";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
@@ -38,88 +37,86 @@ export function GroupCard({
   const fetcher = useFetcher();
 
   return (
-    <Flipped flipId={group.id}>
-      <section className="q__group">
-        {/* {mapListPreference ? (
+    <section className="q__group">
+      {/* {mapListPreference ? (
           <div className="stack lg horizontal justify-center">
             <div className="stack xs horizontal items-center">
               <ModePreferenceIcons preference={mapListPreference} />
             </div>
           </div>
         ) : null} */}
-        <div
-          className={clsx("stack md", {
-            "horizontal justify-center": !group.members,
-          })}
-        >
-          {group.members?.map((member) => {
-            return (
-              <GroupMember
-                member={member}
-                showActions={ownGroup && ownRole === "OWNER"}
-                key={member.discordId}
-              />
-            );
-          })}
-          {!group.members
-            ? new Array(FULL_GROUP_SIZE).fill(null).map((_, i) => {
-                return (
-                  <div key={i} className="q__member-placeholder">
-                    ?
-                  </div>
-                );
-              })
-            : null}
-        </div>
-        {group.tier ? (
-          <div className="stack xs text-lighter font-bold items-center justify-center text-xs">
-            <TierImage tier={group.tier} width={100} />
-            <div>
-              {group.tier.name}
-              {group.tier.isPlus ? "+" : ""}{" "}
-              {group.isReplay ? (
-                <>
-                  / <span className="text-theme-secondary">REPLAY</span>
-                </>
-              ) : null}
-            </div>
+      <div
+        className={clsx("stack md", {
+          "horizontal justify-center": !group.members,
+        })}
+      >
+        {group.members?.map((member) => {
+          return (
+            <GroupMember
+              member={member}
+              showActions={ownGroup && ownRole === "OWNER"}
+              key={member.discordId}
+            />
+          );
+        })}
+        {!group.members
+          ? new Array(FULL_GROUP_SIZE).fill(null).map((_, i) => {
+              return (
+                <div key={i} className="q__member-placeholder">
+                  ?
+                </div>
+              );
+            })
+          : null}
+      </div>
+      {group.tier ? (
+        <div className="stack xs text-lighter font-bold items-center justify-center text-xs">
+          <TierImage tier={group.tier} width={100} />
+          <div>
+            {group.tier.name}
+            {group.tier.isPlus ? "+" : ""}{" "}
+            {group.isReplay ? (
+              <>
+                / <span className="text-theme-secondary">REPLAY</span>
+              </>
+            ) : null}
           </div>
-        ) : null}
-        {action && (ownRole === "OWNER" || ownRole === "MANAGER") ? (
-          <fetcher.Form className="stack items-center" method="post">
-            <input type="hidden" name="targetGroupId" value={group.id} />
-            <SubmitButton
-              size="tiny"
-              variant={action === "UNLIKE" ? "destructive" : "outlined"}
-              _action={action}
-              state={fetcher.state}
-            >
-              {action === "MATCH_UP"
-                ? "Start match"
-                : action === "LIKE" && !group.members
-                ? "Challenge"
-                : action === "LIKE"
-                ? "Invite"
-                : action === "GROUP_UP"
-                ? "Group up"
-                : "Undo"}
-            </SubmitButton>
-          </fetcher.Form>
-        ) : null}
-        {ownGroup ? (
-          <FormWithConfirm
-            dialogHeading="Leave this group?"
-            fields={[["_action", "LEAVE_GROUP"]]}
-            deleteButtonText="Leave"
-            action={SENDOUQ_LOOKING_PAGE}
+        </div>
+      ) : null}
+      {action && (ownRole === "OWNER" || ownRole === "MANAGER") ? (
+        <fetcher.Form className="stack items-center" method="post">
+          <input type="hidden" name="targetGroupId" value={group.id} />
+          <SubmitButton
+            size="tiny"
+            variant={action === "UNLIKE" ? "destructive" : "outlined"}
+            _action={action}
+            state={fetcher.state}
           >
-            <Button variant="minimal-destructive" size="tiny">
-              Leave group
-            </Button>
-          </FormWithConfirm>
-        ) : null}
-      </section>
-    </Flipped>
+            {action === "MATCH_UP"
+              ? "Start match"
+              : action === "LIKE" && !group.members
+              ? "Challenge"
+              : action === "LIKE"
+              ? "Invite"
+              : action === "GROUP_UP"
+              ? "Group up"
+              : "Undo"}
+          </SubmitButton>
+        </fetcher.Form>
+      ) : null}
+      {ownGroup ? (
+        <FormWithConfirm
+          dialogHeading="Leave this group?"
+          fields={[["_action", "LEAVE_GROUP"]]}
+          deleteButtonText="Leave"
+          action={SENDOUQ_LOOKING_PAGE}
+        >
+          <Button variant="minimal-destructive" size="tiny">
+            Leave group
+          </Button>
+        </FormWithConfirm>
+      ) : null}
+    </section>
   );
 }
 
