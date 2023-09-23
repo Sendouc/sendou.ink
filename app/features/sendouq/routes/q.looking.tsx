@@ -13,7 +13,7 @@ import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "~/hooks/useTranslation";
-import { getUserId, requireUserId } from "~/modules/auth/user.server";
+import { getUser, requireUserId } from "~/modules/auth/user.server";
 import { MapPool } from "~/modules/map-pool-serializer";
 import {
   parseRequestFormData,
@@ -296,7 +296,7 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const user = await getUserId(request);
+  const user = await getUser(request);
 
   const currentGroup = user ? findCurrentGroupByUserId(user.id) : undefined;
   const redirectLocation = groupRedirectLocationByCurrentLocation({
@@ -442,12 +442,12 @@ function InfoText() {
   );
 }
 
-// xxx: MemberAdder handle overflow
 // xxx: implement filters
 // xxx: chat tab looks off before it has number, make number position: absolute?
 // xxx: chat disconnects websocket when changing tabs
 // xxx: clearing of unseen messages logic missing
 // xxx: add message to chat when alone
+// xxx: memberadder flash success checkmark when copied
 function Groups() {
   const data = useLoaderData<typeof loader>();
   const isMounted = useIsMounted();
@@ -537,7 +537,7 @@ function Groups() {
               number: unseenMessages,
             },
             {
-              label: "Filters",
+              label: "Filter",
             },
           ]}
           content={[

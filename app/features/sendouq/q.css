@@ -205,6 +205,11 @@
   color: var(--text-lighter);
 }
 
+.q__member-adder__input {
+  --input-width: 11rem;
+  width: 11rem;
+}
+
 .q-preparing__card-container {
   min-width: 250px;
   margin: 0 auto;

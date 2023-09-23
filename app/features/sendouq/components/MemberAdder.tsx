@@ -8,6 +8,8 @@ import {
   sendouQInviteLink,
 } from "~/utils/urls";
 import * as React from "react";
+import { ClipboardIcon } from "~/components/icons/Clipboard";
+import { PlusIcon } from "~/components/icons/Plus";
 
 export function MemberAdder({
   inviteCode,
@@ -33,7 +35,7 @@ export function MemberAdder({
     <div className="stack md flex-wrap justify-center">
       {trustedPlayers.length > 0 ? (
         <fetcher.Form method="post" action={SENDOUQ_PREPARING_PAGE}>
-          <label htmlFor="players">Add people you have played with</label>
+          <label htmlFor="players">Quick add</label>
           <div className="stack horizontal sm items-center">
             <select
               name="id"
@@ -43,8 +45,9 @@ export function MemberAdder({
                   e.target.value ? Number(e.target.value) : undefined,
                 )
               }
+              className="q__member-adder__input"
             >
-              <option value="">Select member</option>
+              <option value="">Select user</option>
               {trustedPlayers.map((player) => {
                 return (
                   <option key={player.id} value={player.id}>
@@ -57,22 +60,27 @@ export function MemberAdder({
               variant="outlined"
               _action="ADD_TRUSTED"
               disabled={!trustedUser}
-            >
-              Add
-            </SubmitButton>
+              icon={<PlusIcon />}
+            />
           </div>
         </fetcher.Form>
       ) : null}
       <div>
         <label htmlFor="invite">Invite link</label>
         <div className="stack horizontal sm items-center">
-          <input type="text" value={inviteLink} readOnly id="invite" />
+          <input
+            type="text"
+            value={inviteLink}
+            readOnly
+            id="invite"
+            className="q__member-adder__input"
+          />
           <Button
             variant="outlined"
             onClick={() => copyToClipboard(inviteLink)}
-          >
-            Copy
-          </Button>
+            icon={<ClipboardIcon />}
+            aria-label="Copy to clipboard"
+          />
         </div>
       </div>
     </div>
