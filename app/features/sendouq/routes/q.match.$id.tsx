@@ -316,6 +316,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   };
 };
 
+// xxx: make issue to use looking page group card design + show tiers (save to DB so shows the tier of the players at the time?)
 export default function QMatchPage() {
   const user = useUser();
   const isMounted = useIsMounted();
@@ -473,8 +474,13 @@ export default function QMatchPage() {
                   {SENDOU_INK_DISCORD_URL}
                 </a>
                 . Alpha team hosts. Password should be{" "}
-                <b>{resolveRoomPass(data.match.id)}</b>. Pool code is{" "}
-                <b>{poolCode()}</b>
+                <span className="q-match__join-discord-section__highlighted">
+                  {resolveRoomPass(data.match.id)}
+                </span>
+                . Pool code is{" "}
+                <span className="q-match__join-discord-section__highlighted">
+                  {poolCode()}
+                </span>
               </div>
             </div>
           ) : null}

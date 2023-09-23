@@ -218,6 +218,13 @@
   margin-block-start: var(--s-1);
 }
 
+.q-match__join-discord-section__highlighted {
+  font-size: var(--fonts-md);
+  letter-spacing: 1px;
+  color: var(--text);
+  font-weight: var(--semi-bold);
+}
+
 .q-match__members-container {
   min-width: 180px;
 }
