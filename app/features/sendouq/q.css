@@ -194,6 +194,17 @@
   stroke-width: 2;
 }
 
+.q__group-member__star {
+  min-width: 18px;
+  max-width: 18px;
+  color: var(--theme-secondary);
+  stroke-width: 2;
+}
+
+.q__group-member__star__inactive {
+  color: var(--text-lighter);
+}
+
 .q-preparing__card-container {
   min-width: 250px;
   margin: 0 auto;

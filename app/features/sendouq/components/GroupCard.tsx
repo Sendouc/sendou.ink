@@ -19,6 +19,8 @@ import { languagesUnified } from "~/modules/i18n/config";
 import { SENDOUQ_LOOKING_PAGE, navIconUrl } from "~/utils/urls";
 import { FULL_GROUP_SIZE } from "../q-constants";
 import type { LookingGroup } from "../q-types";
+import { StarIcon } from "~/components/icons/Star";
+import { StarFilledIcon } from "~/components/icons/StarFilled";
 
 export function GroupCard({
   group,
@@ -128,14 +130,15 @@ function GroupMember({
   member: NonNullable<LookingGroup["members"]>[number];
   showActions: boolean;
 }) {
-  const fetcher = useFetcher();
-
   return (
     <div className="stack xxs">
       <div className="q__group-member">
         <Avatar user={member} size="xs" />
         <span className="q__group-member__name">{member.discordName}</span>
-        {member.skill ? <TierInfo skill={member.skill} /> : null}
+        <div className="ml-auto stack horizontal sm items-center">
+          {showActions ? <MemberRoleManager member={member} /> : null}
+          {member.skill ? <TierInfo skill={member.skill} /> : null}
+        </div>
       </div>
       <div className="stack horizontal justify-between">
         <div className="stack horizontal xxs">
@@ -167,6 +170,57 @@ function GroupMember({
         ) : null}
       </div>
     </div>
+  );
+}
+
+function MemberRoleManager({
+  member,
+}: {
+  member: NonNullable<LookingGroup["members"]>[number];
+}) {
+  const fetcher = useFetcher();
+  const { t } = useTranslation(["q"]);
+  const Icon = member.role === "OWNER" ? StarFilledIcon : StarIcon;
+
+  return (
+    <Popover
+      buttonChildren={
+        <Icon
+          className={clsx("q__group-member__star", {
+            "q__group-member__star__inactive": member.role === "REGULAR",
+          })}
+        />
+      }
+    >
+      <div className="stack md items-center">
+        <div>{t(`q:roles.${member.role}`)}</div>
+        {member.role !== "OWNER" ? (
+          <fetcher.Form method="post" action={SENDOUQ_LOOKING_PAGE}>
+            <input type="hidden" name="userId" value={member.id} />
+            {member.role === "REGULAR" ? (
+              <SubmitButton
+                variant="minimal"
+                size="tiny"
+                _action="GIVE_MANAGER"
+                state={fetcher.state}
+              >
+                Give manager
+              </SubmitButton>
+            ) : null}
+            {member.role === "MANAGER" ? (
+              <SubmitButton
+                variant="minimal-destructive"
+                size="tiny"
+                _action="REMOVE_MANAGER"
+                state={fetcher.state}
+              >
+                Remove manager
+              </SubmitButton>
+            ) : null}
+          </fetcher.Form>
+        ) : null}
+      </div>
+    </Popover>
   );
 }
 
