@@ -130,7 +130,7 @@ export function Chat({
 function Message({ user, message }: { user: ChatUser; message: ChatMessage }) {
   return (
     <li className="chat__message">
-      <Avatar user={user} size="xs" />
+      <Avatar user={user} size="xs" className="my-auto" />
       <div>
         <div className="stack horizontal sm">
           <div

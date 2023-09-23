@@ -234,6 +234,10 @@
   margin-inline: var(--s-2);
 }
 
+.my-auto {
+  margin-block: auto;
+}
+
 .my-2 {
   margin-block: var(--s-2);
 }
