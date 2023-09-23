@@ -1,4 +1,4 @@
-import { useFetcher } from "@remix-run/react";
+import { Link, useFetcher } from "@remix-run/react";
 import clsx from "clsx";
 import { Avatar } from "~/components/Avatar";
 import { Button } from "~/components/Button";
@@ -15,7 +15,7 @@ import type { TieredSkill } from "~/features/mmr/tiered.server";
 import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
 import { languagesUnified } from "~/modules/i18n/config";
-import { SENDOUQ_LOOKING_PAGE, navIconUrl } from "~/utils/urls";
+import { SENDOUQ_LOOKING_PAGE, navIconUrl, userPage } from "~/utils/urls";
 import { FULL_GROUP_SIZE } from "../q-constants";
 import type { LookingGroup } from "../q-types";
 import { StarIcon } from "~/components/icons/Star";
@@ -122,8 +122,14 @@ function GroupMember({
   return (
     <div className="stack xxs">
       <div className="q__group-member">
-        <Avatar user={member} size="xs" />
-        <span className="q__group-member__name">{member.discordName}</span>
+        <Link
+          to={userPage(member)}
+          className="text-main-forced stack xs horizontal items-center"
+          target="_blank"
+        >
+          <Avatar user={member} size="xs" />
+          <span className="q__group-member__name">{member.discordName}</span>
+        </Link>
         <div className="ml-auto stack horizontal sm items-center">
           {showActions ? <MemberRoleManager member={member} /> : null}
           {member.skill ? <TierInfo skill={member.skill} /> : null}

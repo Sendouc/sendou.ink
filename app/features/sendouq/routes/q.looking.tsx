@@ -445,13 +445,11 @@ function InfoText() {
 // xxx: add back info about mode preference of group somewhere?
 // xxx: MemberAdder handle overflow
 // xxx: implement filters
-// xxx: add/remove manager
 // xxx: chat tab looks off before it has number, make number position: absolute?
 // xxx: chat disconnects websocket when changing tabs
 // xxx: clearing of unseen messages logic missing
 // xxx: add message to chat when alone
 // xxx: when group is hidden still show everything, maybe just disabled buttons?
-// xxx: link to user profile on groupcard
 function Groups() {
   const data = useLoaderData<typeof loader>();
   const isMounted = useIsMounted();
