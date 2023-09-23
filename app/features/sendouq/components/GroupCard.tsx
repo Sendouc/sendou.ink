@@ -26,12 +26,14 @@ export function GroupCard({
   action,
   ownRole,
   ownGroup = false,
+  isExpired = false,
 }: {
   group: LookingGroup;
   action?: "LIKE" | "UNLIKE" | "GROUP_UP" | "MATCH_UP";
   mapListPreference?: Group["mapListPreference"];
   ownRole?: GroupMemberType["role"];
   ownGroup?: boolean;
+  isExpired?: boolean;
 }) {
   const fetcher = useFetcher();
 
@@ -75,7 +77,9 @@ export function GroupCard({
           </div>
         </div>
       ) : null}
-      {action && (ownRole === "OWNER" || ownRole === "MANAGER") ? (
+      {action &&
+      (ownRole === "OWNER" || ownRole === "MANAGER") &&
+      !isExpired ? (
         <fetcher.Form className="stack items-center" method="post">
           <input type="hidden" name="targetGroupId" value={group.id} />
           <SubmitButton

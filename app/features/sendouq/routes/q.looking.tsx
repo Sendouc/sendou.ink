@@ -442,14 +442,12 @@ function InfoText() {
   );
 }
 
-// xxx: add back info about mode preference of group somewhere?
 // xxx: MemberAdder handle overflow
 // xxx: implement filters
 // xxx: chat tab looks off before it has number, make number position: absolute?
 // xxx: chat disconnects websocket when changing tabs
 // xxx: clearing of unseen messages logic missing
 // xxx: add message to chat when alone
-// xxx: when group is hidden still show everything, maybe just disabled buttons?
 function Groups() {
   const data = useLoaderData<typeof loader>();
   const isMounted = useIsMounted();
@@ -487,7 +485,7 @@ function Groups() {
     setSelectedIndex(0);
   }, [memberIdsJoined]);
 
-  if (data.expiryStatus === "EXPIRED" || !isMounted) return null;
+  if (!isMounted) return null;
 
   const isMobile = width < 750;
   const isFullGroup = data.groups.own.members!.length === FULL_GROUP_SIZE;
@@ -580,6 +578,7 @@ function Groups() {
                         action={group.isLiked ? "UNLIKE" : "LIKE"}
                         mapListPreference={mapListPreference}
                         ownRole={data.role}
+                        isExpired={data.expiryStatus === "EXPIRED"}
                       />
                     );
                   })}
@@ -605,6 +604,7 @@ function Groups() {
                         action={isFullGroup ? "MATCH_UP" : "GROUP_UP"}
                         mapListPreference={mapListPreference}
                         ownRole={data.role}
+                        isExpired={data.expiryStatus === "EXPIRED"}
                       />
                     );
                   })}
@@ -639,6 +639,7 @@ function Groups() {
                 action={isFullGroup ? "MATCH_UP" : "GROUP_UP"}
                 mapListPreference={mapListPreference}
                 ownRole={data.role}
+                isExpired={data.expiryStatus === "EXPIRED"}
               />
             );
           })}
