@@ -23,7 +23,7 @@ const stm = sql.prepare(/* sql */ `
   group by "Group"."id"
 `);
 
-export function findTeamByInviteCode(inviteCode: string): {
+export function findGroupByInviteCode(inviteCode: string): {
   id: number;
   status: Group["status"];
   members: { id: number; discordName: string; role: GroupMember["role"] }[];

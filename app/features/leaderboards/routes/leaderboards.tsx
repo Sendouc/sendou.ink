@@ -47,6 +47,7 @@ import {
   currentOrPreviousSeason,
 } from "~/features/mmr/season";
 import {
+  addPendingPlusTiers,
   addPlacementRank,
   addTiers,
   addWeapons,
@@ -59,6 +60,7 @@ import { cache, ttl } from "~/utils/cache.server";
 import { HALF_HOUR_IN_MS } from "~/constants";
 import { TopTenPlayer } from "../components/TopTenPlayer";
 import { seasonHasTopTen } from "../leaderboards-utils";
+import { USER_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN } from "~/features/mmr/mmr-constants";
 
 export const handle: SendouRouteHandle = {
   i18n: ["vods"],
@@ -118,7 +120,17 @@ export const loader = async ({ request }: LoaderArgs) => {
           const leaderboard = userSPLeaderboard(season);
           const withTiers = addTiers(leaderboard, season);
 
-          return addWeapons(withTiers, seasonPopularUsersWeapon(season));
+          const shouldAddPendingPlusTier =
+            season === currentOrPreviousSeason(new Date())?.nth &&
+            leaderboard.length >= USER_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN;
+          const withPendingPlusTiers = shouldAddPendingPlusTier
+            ? addPendingPlusTiers(withTiers)
+            : withTiers;
+
+          return addWeapons(
+            withPendingPlusTiers,
+            seasonPopularUsersWeapon(season),
+          );
         },
       })
     : null;
@@ -330,6 +342,7 @@ function PlayersTable({
   showingTopTen?: boolean;
 }) {
   const data = useLoaderData<typeof loader>();
+
   return (
     <div className="placements__table">
       {entries
@@ -368,6 +381,11 @@ function PlayersTable({
                   <div className="placements__table__name">
                     {entry.discordName}
                   </div>
+                  {entry.pendingPlusTier ? (
+                    <div className="text-xs text-theme whitespace-nowrap">
+                      ➜ +{entry.pendingPlusTier}
+                    </div>
+                  ) : null}
                   <div className="placements__table__power">{entry.power}</div>
                 </div>
               </Link>

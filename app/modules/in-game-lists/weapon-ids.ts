@@ -58,6 +58,7 @@ export const mainWeaponIds = weaponCategories
   .sort((a, b) => a - b);
 
 export const weaponIdToAltId = new Map<MainWeaponId, MainWeaponId>([[40, 45]]);
+export const altWeaponIdToId = new Map<MainWeaponId, MainWeaponId>([[45, 40]]);
 
 const altWeaponIds = new Set(weaponIdToAltId.values());
 export const weaponIdIsNotAlt = (weaponId: MainWeaponId) =>

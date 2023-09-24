@@ -29,6 +29,40 @@ export function addTiers(entries: UserSPLeaderboardItem[], season: number) {
   });
 }
 
+const PLUS_TIER_QUOTA = {
+  "+1": 10,
+  "+2": 20,
+  "+3": 30,
+} as const;
+export function addPendingPlusTiers<T extends UserSPLeaderboardItem>(
+  entries: T[],
+) {
+  const quota: { "+1": number; "+2": number; "+3": number } = {
+    ...PLUS_TIER_QUOTA,
+  };
+
+  const resolveHighestPlusTierWithSpace = () => {
+    if (quota["+1"] > 0) return 1;
+    if (quota["+2"] > 0) return 2;
+    if (quota["+3"] > 0) return 3;
+
+    return null;
+  };
+
+  for (const entry of entries) {
+    const highestPlusTierWithSpace = resolveHighestPlusTierWithSpace();
+    if (!highestPlusTierWithSpace) break;
+
+    if (entry.plusTier && entry.plusTier <= highestPlusTierWithSpace) continue;
+
+    entry.pendingPlusTier = highestPlusTierWithSpace;
+    const key = `+${highestPlusTierWithSpace}` as const;
+    quota[key] -= 1;
+  }
+
+  return entries;
+}
+
 export function addWeapons<T extends { id: number }>(
   entries: T[],
   weapons: SeasonPopularUsersWeapon,

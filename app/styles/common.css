@@ -1277,10 +1277,27 @@ dialog::backdrop {
   border-radius: 50%;
   background-color: var(--theme-transparent);
   transition: all 0.2s ease;
+  display: none;
 }
 
 .pagination__dot__active {
   background-color: var(--theme);
+}
+
+.pagination__page-count {
+  font-size: var(--fonts-sm);
+  font-weight: var(--bold);
+  color: var(--theme);
+}
+
+@media screen and (min-width: 640px) {
+  .pagination__dot {
+    display: initial;
+  }
+
+  .pagination__page-count {
+    display: none;
+  }
 }
 
 .tier__container {

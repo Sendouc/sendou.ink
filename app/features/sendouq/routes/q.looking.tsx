@@ -59,7 +59,6 @@ import { mapPoolByGroupId } from "../queries/mapPoolByGroupId.server";
 import { morphGroups } from "../queries/morphGroups.server";
 import { refreshGroup } from "../queries/refreshGroup.server";
 import { removeManagerRole } from "../queries/removeManagerRole.server";
-import { syncGroupTeamId } from "../queries/syncGroupTeamId.server";
 import { makeTitle } from "~/utils/strings";
 import { MemberAdder } from "../components/MemberAdder";
 import type { LookingGroupWithInviteCode } from "../q-types";
@@ -178,13 +177,6 @@ export const action: ActionFunction = async ({ request }) => {
         ),
       });
       refreshGroup(survivingGroupId);
-
-      if (
-        ourGroup.members.length + otherGroup.members.length ===
-        FULL_GROUP_SIZE
-      ) {
-        syncGroupTeamId(survivingGroupId);
-      }
 
       break;
     }

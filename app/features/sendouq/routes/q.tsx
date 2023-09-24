@@ -54,7 +54,7 @@ import type { RankingSeason } from "~/features/mmr/season";
 import { nextSeason } from "~/features/mmr/season";
 import { useUser } from "~/modules/auth";
 import { Button } from "~/components/Button";
-import { findTeamByInviteCode } from "../queries/findTeamByInviteCode.server";
+import { findGroupByInviteCode } from "../queries/findGroupByInviteCode.server";
 import { Alert } from "~/components/Alert";
 import { Dialog } from "~/components/Dialog";
 import { joinListToNaturalString } from "~/utils/arrays";
@@ -74,6 +74,8 @@ import invariant from "tiny-invariant";
 import { languagesUnified } from "~/modules/i18n/config";
 import { CrossIcon } from "~/components/icons/Cross";
 import { updateVCStatus } from "../queries/updateVCStatus.server";
+import { sql } from "~/db/sql";
+import { deleteLikesByGroupId } from "../queries/deleteLikesByGroupId.server";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -133,31 +135,39 @@ export const action: ActionFunction = async ({ request }) => {
     }
     case "JOIN_TEAM_WITH_TRUST":
     case "JOIN_TEAM": {
+      validate(
+        userHasSkill({ userId: user.id, season: season.nth }),
+        "Initial SP needs to be set first",
+      );
       const code = new URL(request.url).searchParams.get(
         JOIN_CODE_SEARCH_PARAM_KEY,
       );
 
-      const teamInvitedTo =
-        code && user ? findTeamByInviteCode(code) : undefined;
-      validate(teamInvitedTo, "Invite code doesn't match any active team");
-      validate(teamInvitedTo.members.length < FULL_GROUP_SIZE, "Team is full");
+      const groupInvitedTo =
+        code && user ? findGroupByInviteCode(code) : undefined;
+      validate(groupInvitedTo, "Invite code doesn't match any active team");
+      validate(groupInvitedTo.members.length < FULL_GROUP_SIZE, "Team is full");
 
-      addMember({
-        groupId: teamInvitedTo.id,
-        userId: user.id,
-      });
-      if (data._action === "JOIN_TEAM_WITH_TRUST") {
-        const owner = teamInvitedTo.members.find((m) => m.role === "OWNER");
-        invariant(owner, "Owner not found");
-
-        giveTrust({
-          trustGiverUserId: user.id,
-          trustReceiverUserId: owner.id,
+      sql.transaction(() => {
+        addMember({
+          groupId: groupInvitedTo.id,
+          userId: user.id,
         });
-      }
+        deleteLikesByGroupId(groupInvitedTo.id);
+
+        if (data._action === "JOIN_TEAM_WITH_TRUST") {
+          const owner = groupInvitedTo.members.find((m) => m.role === "OWNER");
+          invariant(owner, "Owner not found");
+
+          giveTrust({
+            trustGiverUserId: user.id,
+            trustReceiverUserId: owner.id,
+          });
+        }
+      })();
 
       return redirect(
-        teamInvitedTo.status === "PREPARING"
+        groupInvitedTo.status === "PREPARING"
           ? SENDOUQ_PREPARING_PAGE
           : SENDOUQ_LOOKING_PAGE,
       );
@@ -206,7 +216,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     throw redirect(`${redirectLocation}${code ? "?joining=true" : ""}`);
   }
 
-  const teamInvitedTo = code && user ? findTeamByInviteCode(code) : undefined;
+  const groupInvitedTo = code && user ? findGroupByInviteCode(code) : undefined;
 
   const now = new Date();
   const season = currentSeason(now);
@@ -219,7 +229,7 @@ export const loader = async ({ request }: LoaderArgs) => {
         : null,
     season,
     upcomingSeason,
-    teamInvitedTo,
+    groupInvitedTo,
   };
 };
 
@@ -248,18 +258,18 @@ export default function QPage() {
       ) : null}
       {data.season ? (
         <>
-          {data.hasSkill && data.teamInvitedTo === null ? (
+          {data.hasSkill && data.groupInvitedTo === null ? (
             <Alert variation="WARNING">
               Invite code doesn&apos;t match any active team
             </Alert>
           ) : null}
-          {data.teamInvitedTo &&
-          data.teamInvitedTo.members.length < FULL_GROUP_SIZE &&
+          {data.groupInvitedTo &&
+          data.groupInvitedTo.members.length < FULL_GROUP_SIZE &&
           data.hasSkill ? (
             <JoinTeamDialog
               open={dialogOpen}
               close={() => setDialogOpen(false)}
-              members={data.teamInvitedTo.members}
+              members={data.groupInvitedTo.members}
             />
           ) : null}
           {!data.hasSkill && user ? <StartRank /> : null}

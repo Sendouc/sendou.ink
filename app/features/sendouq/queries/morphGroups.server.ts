@@ -1,5 +1,6 @@
 import { nanoid } from "nanoid";
 import { sql } from "~/db/sql";
+import { deleteLikesByGroupId } from "./deleteLikesByGroupId.server";
 
 const deleteGroupStm = sql.prepare(/* sql */ `
   delete from "Group"
@@ -14,12 +15,6 @@ const deleteGroupMapsStm = sql.prepare(/* sql */ `
 const addGroupMemberStm = sql.prepare(/* sql */ `
   insert into "GroupMember" ("groupId", "userId", "role")
   values (@groupId, @userId, @role)
-`);
-
-const deleteLikesStm = sql.prepare(/* sql */ `
-  delete from "GroupLike"
-  where "likerGroupId" = @groupId
-    or "targetGroupId" = @groupId
 `);
 
 const updateGroupStm = sql.prepare(/* sql */ `
@@ -43,7 +38,7 @@ export const morphGroups = sql.transaction(
     deleteGroupStm.run({ groupId: otherGroupId });
     deleteGroupMapsStm.run({ groupId: otherGroupId });
 
-    deleteLikesStm.run({ groupId: survivingGroupId });
+    deleteLikesByGroupId(survivingGroupId);
 
     // reset chat code so previous messages are not visible
     if (addChatCode) {

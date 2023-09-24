@@ -36,6 +36,7 @@ import { Popover } from "./Popover";
 import { InfoIcon } from "./icons/Info";
 import { LockIcon } from "./icons/Lock";
 import type { BuildWeaponWithTop500Info } from "~/features/builds";
+import { altWeaponIdToId } from "~/modules/in-game-lists/weapon-ids";
 
 interface BuildProps {
   build: Pick<
@@ -231,9 +232,12 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
 
 function RoundWeaponImage({ weapon }: { weapon: BuildWeaponWithTop500Info }) {
   const { weaponSplId, maxPower, minRank } = weapon;
+  const normalizedWeaponSplId = altWeaponIdToId.get(weaponSplId) ?? weaponSplId;
 
   const { t } = useTranslation(["weapons"]);
-  const slug = mySlugify(t(`weapons:MAIN_${weaponSplId}`, { lng: "en" }));
+  const slug = mySlugify(
+    t(`weapons:MAIN_${normalizedWeaponSplId}`, { lng: "en" }),
+  );
 
   const isTop500 = typeof maxPower === "number" && typeof minRank === "number";
 

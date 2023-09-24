@@ -35,6 +35,9 @@ export function Pagination({
           onClick={() => setPage(i + 1)}
         />
       ))}
+      <div className="pagination__page-count">
+        {currentPage}/{pagesCount}
+      </div>
       <Button
         icon={<ArrowRightIcon />}
         variant="outlined"

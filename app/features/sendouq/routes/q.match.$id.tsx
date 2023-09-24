@@ -81,6 +81,8 @@ import { addDummySkill } from "../queries/addDummySkill.server";
 import { inGameNameWithoutDiscriminator } from "~/utils/strings";
 import { ConnectedChat, type ChatProps } from "~/components/Chat";
 import { currentSeason } from "~/features/mmr";
+import { StarFilledIcon } from "~/components/icons/StarFilled";
+import { StarIcon } from "~/components/icons/Star";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -128,7 +130,7 @@ export const action = async ({ request, params }: ActionArgs) => {
       const groupMemberOfId = members.find((m) => m.id === user.id)?.groupId;
       invariant(
         groupMemberOfId || data.adminReport,
-        "User is not a manager of any group",
+        "User is not a member of any group",
       );
 
       const winner = winnersArrayToWinner(data.winners);
@@ -822,6 +824,12 @@ function MatchGroup({
   side: "ALPHA" | "BRAVO";
   showWeapons: boolean;
 }) {
+  const roleString = (role: GroupMember["role"]) => {
+    if (role === "REGULAR") return "";
+
+    return ` (${role.toLowerCase()})`;
+  };
+
   return (
     <div className="stack sm items-center">
       <h3 className="text-lighter">{side}</h3>
@@ -845,6 +853,7 @@ function MatchGroup({
             <Link
               to={userPage(member)}
               className="stack horizontal xs items-center"
+              title={`${member.discordName}${roleString(member.role)}`}
             >
               <Avatar size="xxs" user={member} />
               <div className="text-sm text-main-forced font-body">
@@ -857,6 +866,12 @@ function MatchGroup({
                   member.discordName
                 )}
               </div>
+              {member.role === "OWNER" ? (
+                <StarFilledIcon className="q-match__star-icon" />
+              ) : null}
+              {member.role === "MANAGER" ? (
+                <StarIcon className="q-match__star-icon" />
+              ) : null}
             </Link>
             {showWeapons && member.weapons.length > 0 ? (
               <div className="q__group-member-weapons">
