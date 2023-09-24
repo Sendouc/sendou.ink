@@ -79,7 +79,7 @@ import { resolveRoomPass } from "~/features/tournament-bracket/tournament-bracke
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { addDummySkill } from "../queries/addDummySkill.server";
 import { inGameNameWithoutDiscriminator } from "~/utils/strings";
-import { Chat, type ChatProps } from "~/components/Chat";
+import { ConnectedChat, type ChatProps } from "~/components/Chat";
 import { currentSeason } from "~/features/mmr";
 
 export const links: LinksFunction = () => {
@@ -430,7 +430,7 @@ export default function QMatchPage() {
               showWeapons={!data.match.isLocked}
             />
             {chatRooms.length > 0 ? (
-              <Chat users={chatUsers} rooms={chatRooms} />
+              <ConnectedChat users={chatUsers} rooms={chatRooms} />
             ) : null}
           </div>
           {!data.match.isLocked && (ownMember || isAdmin(user)) ? (

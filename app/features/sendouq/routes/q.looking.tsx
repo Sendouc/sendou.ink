@@ -69,7 +69,7 @@ import { useAutoRefresh } from "~/hooks/useAutoRefresh";
 import { groupHasMatch } from "../queries/groupHasMatch.server";
 import { findRecentMatchPlayersByUserId } from "../queries/findRecentMatchPlayersByUserId.server";
 import { currentOrPreviousSeason } from "~/features/mmr/season";
-import { Chat } from "~/components/Chat";
+import { Chat, useChat } from "~/components/Chat";
 import { isAdmin } from "~/permissions";
 import { NewTabs } from "~/components/NewTabs";
 import { useWindowSize } from "~/hooks/useWindowSize";
@@ -444,7 +444,6 @@ function InfoText() {
 
 // xxx: implement filters
 // xxx: chat tab looks off before it has number, make number position: absolute?
-// xxx: chat disconnects websocket when changing tabs
 // xxx: clearing of unseen messages logic missing
 // xxx: add message to chat when alone
 // xxx: memberadder flash success checkmark when copied
@@ -460,7 +459,7 @@ function Groups() {
     return Object.fromEntries(data.groups.own.members!.map((m) => [m.id, m]));
   }, [data]);
 
-  const chatRooms = React.useMemo(() => {
+  const rooms = React.useMemo(() => {
     return data.chatCode
       ? [
           {
@@ -474,6 +473,8 @@ function Groups() {
   const onNewMessage = React.useCallback(() => {
     setUnseenMessages((msg) => msg + 1);
   }, []);
+
+  const chat = useChat({ rooms, onNewMessage });
 
   // reset to own group tab when the roster changes
   const memberIdsJoined = data.groups.own.members
@@ -491,15 +492,16 @@ function Groups() {
   const isFullGroup = data.groups.own.members!.length === FULL_GROUP_SIZE;
   const ownGroup = data.groups.own as LookingGroupWithInviteCode;
 
-  const chat = (
+  const chatElement = (
     <div>
       {data.chatCode ? (
         <Chat
-          rooms={chatRooms}
+          rooms={rooms}
           users={chatUsers}
           className="w-full q__chat-container"
           messagesContainerClassName="q__chat-messages-container"
           onNewMessage={onNewMessage}
+          chat={chat}
         />
       ) : null}
     </div>
@@ -511,7 +513,7 @@ function Groups() {
         "q__groups-container__mobile": isMobile,
       })}
     >
-      {!isMobile ? chat : null}
+      {!isMobile ? chatElement : null}
       <div className="q__groups-inner-container">
         <NewTabs
           scrolling={isMobile}
@@ -613,7 +615,7 @@ function Groups() {
             },
             {
               key: "chat",
-              element: chat,
+              element: chatElement,
               hidden: !isMobile,
             },
             {

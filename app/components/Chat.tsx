@@ -24,14 +24,20 @@ export interface ChatProps {
   onNewMessage?: (message: ChatMessage) => void;
 }
 
+export function ConnectedChat(props: ChatProps) {
+  const chat = useChat(props);
+
+  return <Chat {...props} chat={chat} />;
+}
+
 export function Chat({
   users,
   rooms,
   className,
   messagesContainerClassName,
   hidden = false,
-  onNewMessage,
-}: ChatProps) {
+  chat,
+}: ChatProps & { chat: ReturnType<typeof useChat> }) {
   const messagesContainerRef = React.useRef<HTMLOListElement>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
   const {
@@ -41,7 +47,7 @@ export function Chat({
     setCurrentRoom,
     connected,
     unseenMessages,
-  } = useChat({ rooms, onNewMessage });
+  } = chat;
 
   const handleSubmit = React.useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
@@ -173,7 +179,7 @@ export interface ChatMessage {
   pending?: boolean;
 }
 
-function useChat({
+export function useChat({
   rooms,
   onNewMessage,
 }: {
