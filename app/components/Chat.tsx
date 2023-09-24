@@ -23,6 +23,8 @@ export interface ChatProps {
   messagesContainerClassName?: string;
   hidden?: boolean;
   onNewMessage?: (message: ChatMessage) => void;
+  onMount?: () => void;
+  onUnmount?: () => void;
 }
 
 export function ConnectedChat(props: ChatProps) {
@@ -38,6 +40,8 @@ export function Chat({
   messagesContainerClassName,
   hidden = false,
   chat,
+  onMount,
+  onUnmount,
 }: ChatProps & { chat: ReturnType<typeof useChat> }) {
   const messagesContainerRef = React.useRef<HTMLOListElement>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
@@ -63,6 +67,14 @@ export function Chat({
     const messagesContainer = messagesContainerRef.current!;
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
   }, [messages]);
+
+  React.useEffect(() => {
+    onMount?.();
+
+    return () => {
+      onUnmount?.();
+    };
+  }, [onMount, onUnmount]);
 
   return (
     <section className={clsx("chat__container", className, { hidden })}>

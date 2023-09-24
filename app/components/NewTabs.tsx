@@ -24,11 +24,14 @@ export function NewTabs({
   selectedIndex,
   setSelectedIndex,
 }: NewTabsProps) {
+  const cantSwitchTabs = tabs.filter((t) => !t.hidden).length <= 1;
+
   return (
     <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
       <Tab.List
         className={clsx("tab__buttons-container", {
           "overflow-x-auto": scrolling,
+          invisible: cantSwitchTabs,
         })}
       >
         {tabs

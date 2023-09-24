@@ -439,7 +439,7 @@ function Groups() {
   const isMounted = useIsMounted();
 
   const [_unseenMessages, setUnseenMessages] = React.useState(0);
-  const [selectedIndex, setSelectedIndex] = React.useState(1);
+  const [chatVisible, setChatVisible] = React.useState(false);
   const { width } = useWindowSize();
 
   const chatUsers = React.useMemo(() => {
@@ -463,32 +463,16 @@ function Groups() {
 
   const chat = useChat({ rooms, onNewMessage });
 
-  // reset to own group tab when the roster changes
-  const memberIdsJoined = data.groups.own.members
-    ?.map((m) => m.id)
-    .sort((a, b) => a - b)
-    .join(",");
-  React.useEffect(() => {
-    if (memberIdsJoined && memberIdsJoined.split(",").length === 1) return;
-    setSelectedIndex(0);
-  }, [memberIdsJoined]);
+  const onChatMount = React.useCallback(() => {
+    setChatVisible(true);
+  }, []);
 
-  const CHAT_TAB_INDEX = 3;
-  // the way of doing it seems a bit backwards but trying to work
-  // around React dep arrays triggering unintended effects from
-  // running in the Chat component
-  const handleTabChange = React.useCallback(
-    (newIndex: number) => {
-      const currentTabIndex = selectedIndex;
-      if (currentTabIndex === CHAT_TAB_INDEX) {
-        setUnseenMessages(0);
-      }
+  const onChatUnmount = React.useCallback(() => {
+    setChatVisible(false);
+    setUnseenMessages(0);
+  }, []);
 
-      setSelectedIndex(newIndex);
-    },
-    [selectedIndex],
-  );
-  const unseenMessages = selectedIndex !== CHAT_TAB_INDEX ? _unseenMessages : 0;
+  const unseenMessages = chatVisible ? 0 : _unseenMessages;
 
   if (!isMounted) return null;
 
@@ -506,6 +490,25 @@ function Groups() {
           messagesContainerClassName="q__chat-messages-container"
           onNewMessage={onNewMessage}
           chat={chat}
+          onMount={onChatMount}
+          onUnmount={onChatUnmount}
+        />
+      ) : null}
+    </div>
+  );
+
+  const ownGroupElement = (
+    <div className="stack md">
+      <GroupCard
+        group={data.groups.own}
+        mapListPreference={data.groups.own.mapListPreference}
+        ownRole={data.role}
+        ownGroup
+      />
+      {ownGroup.inviteCode ? (
+        <MemberAdder
+          inviteCode={ownGroup.inviteCode}
+          trustedPlayers={data.trustedPlayers}
         />
       ) : null}
     </div>
@@ -517,17 +520,38 @@ function Groups() {
         "q__groups-container__mobile": isMobile,
       })}
     >
-      {!isMobile ? chatElement : null}
+      {!isMobile ? (
+        <div>
+          <NewTabs
+            tabs={[
+              {
+                label: "Roster",
+                number: data.groups.own.members!.length,
+              },
+              {
+                label: "Chat",
+                hidden: !data.chatCode,
+                number: unseenMessages,
+              },
+            ]}
+            content={[
+              {
+                key: "own",
+                element: ownGroupElement,
+              },
+              {
+                key: "chat",
+                element: chatElement,
+                hidden: !data.chatCode,
+              },
+            ]}
+          />
+        </div>
+      ) : null}
       <div className="q__groups-inner-container">
         <NewTabs
           scrolling={isMobile}
-          selectedIndex={selectedIndex}
-          setSelectedIndex={handleTabChange}
           tabs={[
-            {
-              label: "Roster",
-              number: data.groups.own.members!.length,
-            },
             {
               label: "Groups",
               number: data.groups.neutral.length,
@@ -538,34 +562,17 @@ function Groups() {
               hidden: !isMobile,
             },
             {
+              label: "Roster",
+              number: data.groups.own.members!.length,
+              hidden: !isMobile,
+            },
+            {
               label: "Chat",
               hidden: !isMobile || !data.chatCode,
               number: unseenMessages,
             },
-            // {
-            //   label: "Filter",
-            // },
           ]}
           content={[
-            {
-              key: "own",
-              element: (
-                <div className="stack md">
-                  <GroupCard
-                    group={data.groups.own}
-                    mapListPreference={data.groups.own.mapListPreference}
-                    ownRole={data.role}
-                    ownGroup
-                  />
-                  {ownGroup.inviteCode ? (
-                    <MemberAdder
-                      inviteCode={ownGroup.inviteCode}
-                      trustedPlayers={data.trustedPlayers}
-                    />
-                  ) : null}
-                </div>
-              ),
-            },
             {
               key: "groups",
               element: (
@@ -618,14 +625,15 @@ function Groups() {
               ),
             },
             {
+              key: "own",
+              hidden: !isMobile,
+              element: ownGroupElement,
+            },
+            {
               key: "chat",
               element: chatElement,
               hidden: !isMobile || !data.chatCode,
             },
-            // {
-            //   key: "filters",
-            //   element: <div>filters</div>,
-            // },
           ]}
         />
       </div>
