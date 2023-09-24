@@ -53,21 +53,9 @@ export class DiscordStrategy extends OAuth2Strategy<
         callbackURL: new URL("/auth/callback", envVars.BASE_URL).toString(),
       },
       async ({ accessToken }) => {
-        const authHeader: [string, string] = [
-          "Authorization",
-          `Bearer ${accessToken}`,
-        ];
-
         const discordResponses = this.authGatewayEnabled()
           ? await this.fetchProfileViaGateway(accessToken)
-          : await Promise.all([
-              fetch("https://discord.com/api/users/@me", {
-                headers: [authHeader],
-              }).then(this.jsonIfOk),
-              fetch("https://discord.com/api/users/@me/connections", {
-                headers: [authHeader],
-              }).then(this.jsonIfOk),
-            ]);
+          : await this.fetchProfileViaDiscordApi(accessToken);
 
         const [user, connections] =
           discordUserDetailsSchema.parse(discordResponses);
@@ -94,7 +82,22 @@ export class DiscordStrategy extends OAuth2Strategy<
     );
   }
 
+  private async fetchProfileViaDiscordApi(token: string) {
+    console.log("authenticating via discord...");
+    const authHeader: [string, string] = ["Authorization", `Bearer ${token}`];
+
+    return Promise.all([
+      fetch("https://discord.com/api/users/@me", {
+        headers: [authHeader],
+      }).then(this.jsonIfOk),
+      fetch("https://discord.com/api/users/@me/connections", {
+        headers: [authHeader],
+      }).then(this.jsonIfOk),
+    ]);
+  }
+
   private async fetchProfileViaGateway(token: string) {
+    console.log("authenticating via gateway...");
     const url = `${process.env["AUTH_GATEWAY_URL"]}?token=${token}`;
 
     const options: RequestInit = {
