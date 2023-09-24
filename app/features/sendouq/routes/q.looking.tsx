@@ -442,7 +442,6 @@ function InfoText() {
   );
 }
 
-// xxx: add message to chat when alone
 // xxx: memberadder flash success checkmark when copied
 // xxx: check that chat is handled when feature flag off
 function Groups() {
@@ -550,7 +549,7 @@ function Groups() {
             },
             {
               label: "Chat",
-              hidden: !isMobile,
+              hidden: !isMobile || !data.chatCode,
               number: unseenMessages,
             },
             // {
@@ -631,7 +630,7 @@ function Groups() {
             {
               key: "chat",
               element: chatElement,
-              hidden: !isMobile,
+              hidden: !isMobile || !data.chatCode,
             },
             // {
             //   key: "filters",

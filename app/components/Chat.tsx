@@ -8,6 +8,7 @@ import clsx from "clsx";
 import { SKALOP_BASE_URL } from "~/utils/urls";
 import { Button } from "./Button";
 import ReconnectingWebSocket from "reconnecting-websocket";
+import invariant from "tiny-invariant";
 
 type ChatUser = Pick<User, "discordName" | "discordId" | "discordAvatar"> & {
   chatNameColor: string | null;
@@ -191,12 +192,16 @@ export function useChat({
   const [messages, setMessages] = React.useState<ChatMessage[]>([]);
   const [connected, setConnected] = React.useState<null | boolean>(null);
   const [sentMessage, setSentMessage] = React.useState<ChatMessage>();
-  const [currentRoom, setCurrentRoom] = React.useState<string>(rooms[0].code);
+  const [currentRoom, setCurrentRoom] = React.useState<string | undefined>(
+    rooms[0]?.code,
+  );
 
   const ws = React.useRef<ReconnectingWebSocket>();
   const lastSeenMessagesByRoomId = React.useRef<Map<string, string>>(new Map());
 
   React.useEffect(() => {
+    if (rooms.length === 0) return;
+
     const url = `${SKALOP_BASE_URL}?${rooms
       .map((room) => `room=${room.code}`)
       .join("&")}`;
@@ -233,13 +238,15 @@ export function useChat({
 
     const wsCurrent = ws.current;
     return () => {
-      wsCurrent.close();
+      wsCurrent?.close();
       setMessages([]);
     };
   }, [rooms, onNewMessage]);
 
   const send = React.useCallback(
     (contents: string) => {
+      invariant(currentRoom);
+
       const id = nanoid();
       setSentMessage({
         id,
@@ -261,7 +268,7 @@ export function useChat({
   const roomsMessages = allMessages
     .filter((msg) => msg.room === currentRoom)
     .sort((a, b) => a.timestamp - b.timestamp);
-  if (roomsMessages.length > 0) {
+  if (roomsMessages.length > 0 && currentRoom) {
     lastSeenMessagesByRoomId.current.set(
       currentRoom,
       roomsMessages[roomsMessages.length - 1].id,
