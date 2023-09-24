@@ -37,7 +37,10 @@ const staticAssetsUrl = ({
 }) =>
   `https://raw.githubusercontent.com/Sendouc/sendou-ink-assets/main/${folder}/${fileName}`;
 
-export const SKALOP_BASE_URL = "ws://localhost:5900";
+export const SKALOP_BASE_URL =
+  process.env.NODE_ENV === "production"
+    ? "ws://skalop.sendou.ink"
+    : "ws://localhost:5900";
 
 export const SENDOU_INK_BASE_URL = "https://sendou.ink";
 
