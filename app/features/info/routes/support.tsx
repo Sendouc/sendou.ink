@@ -74,6 +74,11 @@ const PERKS = [
   },
   {
     tier: 2,
+    name: "chatColor",
+    extraInfo: false,
+  },
+  {
+    tier: 2,
     name: "seePlusPercentage",
     extraInfo: true,
   },

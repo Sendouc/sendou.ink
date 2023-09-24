@@ -17,6 +17,7 @@ const stm = sql.prepare(/* sql */ `
   )
   select
     "Group"."id",
+    "Group"."chatCode",
     "AllTeam"."name" as "teamName",
     "AllTeam"."customUrl" as "teamCustomUrl",
     "UserSubmittedImage"."url" as "teamAvatarUrl",
@@ -29,7 +30,8 @@ const stm = sql.prepare(/* sql */ `
         'role', "GroupMemberWithWeapon"."role",
         'customUrl', "User"."customUrl",
         'inGameName', "User"."inGameName",
-        'weapons', "GroupMemberWithWeapon"."weapons"
+        'weapons', "GroupMemberWithWeapon"."weapons",
+        'chatNameColor', IIF(COALESCE("User"."patronTier", 0) >= 2, "User"."css" ->> 'chat', null)
       )
     ) as "members"
   from
@@ -46,6 +48,7 @@ const stm = sql.prepare(/* sql */ `
 
 export interface GroupForMatch {
   id: Group["id"];
+  chatCode: Group["chatCode"];
   team?: {
     name: string;
     avatarUrl: string | null;
@@ -60,6 +63,7 @@ export interface GroupForMatch {
     customUrl: User["customUrl"];
     inGameName: User["inGameName"];
     weapons: Array<MainWeaponId>;
+    chatNameColor: string | null;
   }>;
 }
 
@@ -69,6 +73,7 @@ export function groupForMatch(id: number) {
 
   return {
     id: row.id,
+    chatCode: row.chatCode,
     team: row.teamName
       ? {
           name: row.teamName,

@@ -146,7 +146,7 @@ export function TierImage({ tier, width = 200 }: TierImageProps) {
   const height = width * 0.8675;
 
   return (
-    <div className="tier__container">
+    <div className="tier__container" style={{ width }}>
       <Image
         path={tierImageUrl(tier.name)}
         width={width}

@@ -8,13 +8,12 @@ import { redirect } from "@remix-run/node";
 import { useFetcher, useLoaderData, useSearchParams } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
-import { Flipper } from "react-flip-toolkit";
 import invariant from "tiny-invariant";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "~/hooks/useTranslation";
-import { getUserId, requireUserId } from "~/modules/auth/user.server";
+import { getUser, requireUserId } from "~/modules/auth/user.server";
 import { MapPool } from "~/modules/map-pool-serializer";
 import {
   parseRequestFormData,
@@ -37,6 +36,7 @@ import {
   divideGroups,
   filterOutGroupsWithIncompatibleMapListPreference,
   groupExpiryStatus,
+  hasAccessToChat,
   membersNeededForFull,
 } from "../core/groups.server";
 import { matchMapList } from "../core/match.server";
@@ -64,12 +64,14 @@ import { MemberAdder } from "../components/MemberAdder";
 import type { LookingGroupWithInviteCode } from "../q-types";
 import { trustedPlayersAvailableToPlay } from "../queries/usersInActiveGroup.server";
 import { userSkills } from "~/features/mmr/tiered.server";
-import { useWindowSize } from "~/hooks/useWindowSize";
-import { Tab, Tabs } from "~/components/Tabs";
 import { useAutoRefresh } from "~/hooks/useAutoRefresh";
 import { groupHasMatch } from "../queries/groupHasMatch.server";
 import { findRecentMatchPlayersByUserId } from "../queries/findRecentMatchPlayersByUserId.server";
 import { currentOrPreviousSeason } from "~/features/mmr/season";
+import { Chat, useChat } from "~/components/Chat";
+import { isAdmin } from "~/permissions";
+import { NewTabs } from "~/components/NewTabs";
+import { useWindowSize } from "~/hooks/useWindowSize";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -170,6 +172,9 @@ export const action: ActionFunction = async ({ request }) => {
         survivingGroupId,
         otherGroupId: otherGroup.id,
         newMembers: otherGroup.members.map((m) => m.id),
+        addChatCode: hasAccessToChat(
+          ourGroup.members.some(isAdmin) || theirGroup.members.some(isAdmin),
+        ),
       });
       refreshGroup(survivingGroupId);
 
@@ -218,6 +223,9 @@ export const action: ActionFunction = async ({ request }) => {
       const createdMatch = createMatch({
         alphaGroupId: ourGroup.id,
         bravoGroupId: theirGroup.id,
+        addChatCode: hasAccessToChat(
+          ourGroup.members.some(isAdmin) || theirGroup.members.some(isAdmin),
+        ),
         mapList: matchMapList({
           ourGroup,
           theirGroup,
@@ -280,7 +288,7 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const user = await getUserId(request);
+  const user = await getUser(request);
 
   const currentGroup = user ? findCurrentGroupByUserId(user.id) : undefined;
   const redirectLocation = groupRedirectLocationByCurrentLocation({
@@ -337,6 +345,9 @@ export const loader = async ({ request }: LoaderArgs) => {
   return {
     groups: censoredGroups,
     role: currentGroup.role,
+    chatCode:
+      // don't chat with yourself...
+      censoredGroups.own.members!.length > 1 ? currentGroup.chatCode : null,
     lastUpdated: new Date().getTime(),
     expiryStatus: groupExpiryStatus(currentGroup),
     trustedPlayers: hasGroupManagerPerms(currentGroup.role)
@@ -346,33 +357,14 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 export default function QLookingPage() {
-  const data = useLoaderData<typeof loader>();
   const [searchParams] = useSearchParams();
   useAutoRefresh();
-
-  const ownGroup = data.groups.own as LookingGroupWithInviteCode;
 
   const wasTryingToJoinAnotherTeam = searchParams.get("joining") === "true";
 
   return (
-    <Main className="stack lg">
-      <div className="stack sm">
-        <InfoText />
-        <div className="q__own-group-container">
-          <GroupCard
-            group={data.groups.own}
-            mapListPreference={data.groups.own.mapListPreference}
-            ownRole={data.role}
-            ownGroup
-          />
-        </div>
-      </div>
-      {ownGroup.inviteCode ? (
-        <MemberAdder
-          inviteCode={ownGroup.inviteCode}
-          trustedPlayers={data.trustedPlayers}
-        />
-      ) : null}
+    <Main className="stack md">
+      <InfoText />
       {wasTryingToJoinAnotherTeam ? (
         <div className="text-warning text-center">
           Before joining another group, leave the current one
@@ -414,7 +406,7 @@ function InfoText() {
         method="post"
         className="text-xs text-lighter ml-auto text-warning stack horizontal sm"
       >
-        Group will be hidden soon due to inactivity. Still looking?{" "}
+        Group will be marked inactive. Still looking?{" "}
         <SubmitButton
           size="tiny"
           variant="minimal"
@@ -445,159 +437,220 @@ function InfoText() {
 function Groups() {
   const data = useLoaderData<typeof loader>();
   const isMounted = useIsMounted();
+
+  const [_unseenMessages, setUnseenMessages] = React.useState(0);
+  const [selectedIndex, setSelectedIndex] = React.useState(1);
   const { width } = useWindowSize();
 
-  if (data.expiryStatus === "EXPIRED" || !isMounted) return null;
+  const chatUsers = React.useMemo(() => {
+    return Object.fromEntries(data.groups.own.members!.map((m) => [m.id, m]));
+  }, [data]);
 
-  if (width < 750) return <MobileGroupCards />;
-  return <GroupCardColumns />;
-}
+  const rooms = React.useMemo(() => {
+    return data.chatCode
+      ? [
+          {
+            code: data.chatCode,
+            label: "Group",
+          },
+        ]
+      : [];
+  }, [data.chatCode]);
 
-function MobileGroupCards() {
-  const data = useLoaderData<typeof loader>();
-  const [tab, setTab] = React.useState<"received" | "neutral" | "given">(
-    "neutral",
+  const onNewMessage = React.useCallback(() => {
+    setUnseenMessages((msg) => msg + 1);
+  }, []);
+
+  const chat = useChat({ rooms, onNewMessage });
+
+  // reset to own group tab when the roster changes
+  const memberIdsJoined = data.groups.own.members
+    ?.map((m) => m.id)
+    .sort((a, b) => a - b)
+    .join(",");
+  React.useEffect(() => {
+    if (memberIdsJoined && memberIdsJoined.split(",").length === 1) return;
+    setSelectedIndex(0);
+  }, [memberIdsJoined]);
+
+  const CHAT_TAB_INDEX = 3;
+  // the way of doing it seems a bit backwards but trying to work
+  // around React dep arrays triggering unintended effects from
+  // running in the Chat component
+  const handleTabChange = React.useCallback(
+    (newIndex: number) => {
+      const currentTabIndex = selectedIndex;
+      if (currentTabIndex === CHAT_TAB_INDEX) {
+        setUnseenMessages(0);
+      }
+
+      setSelectedIndex(newIndex);
+    },
+    [selectedIndex],
   );
+  const unseenMessages = selectedIndex !== CHAT_TAB_INDEX ? _unseenMessages : 0;
 
+  if (!isMounted) return null;
+
+  const isMobile = width < 750;
   const isFullGroup = data.groups.own.members!.length === FULL_GROUP_SIZE;
+  const ownGroup = data.groups.own as LookingGroupWithInviteCode;
 
-  const groups =
-    tab === "received"
-      ? data.groups.likesReceived
-      : tab === "given"
-      ? data.groups.likesGiven
-      : data.groups.neutral;
-
-  return (
-    <div className="mt-6">
-      <Tabs compact>
-        <Tab active={tab === "received"} onClick={() => setTab("received")}>
-          Received ({data.groups.likesReceived.length})
-        </Tab>
-        <Tab active={tab === "neutral"} onClick={() => setTab("neutral")}>
-          Neutral ({data.groups.neutral.length})
-        </Tab>
-        <Tab active={tab === "given"} onClick={() => setTab("given")}>
-          Given ({data.groups.likesGiven.length})
-        </Tab>
-      </Tabs>
-      <div className="stack sm q__mobile-groups-container">
-        {groups.map((group) => {
-          const { mapListPreference } = groupAfterMorph({
-            liker: tab === "received" ? "THEM" : "US",
-            ourGroup: data.groups.own,
-            theirGroup: group,
-          });
-
-          const action =
-            tab === "neutral"
-              ? "LIKE"
-              : tab === "given"
-              ? "UNLIKE"
-              : isFullGroup
-              ? "MATCH_UP"
-              : "GROUP_UP";
-
-          return (
-            <GroupCard
-              key={group.id}
-              group={group}
-              action={action}
-              mapListPreference={mapListPreference}
-              ownRole={data.role}
-            />
-          );
-        })}
-      </div>
+  const chatElement = (
+    <div>
+      {data.chatCode ? (
+        <Chat
+          rooms={rooms}
+          users={chatUsers}
+          className="w-full q__chat-container"
+          messagesContainerClassName="q__chat-messages-container"
+          onNewMessage={onNewMessage}
+          chat={chat}
+        />
+      ) : null}
     </div>
   );
-}
-
-function GroupCardColumns() {
-  const data = useLoaderData<typeof loader>();
-
-  const isFullGroup = data.groups.own.members!.length === FULL_GROUP_SIZE;
 
   return (
-    <Flipper
-      flipKey={`${data.groups.likesReceived
-        .map((g) => g.id)
-        .join("")}-${data.groups.neutral
-        .map((g) => g.id)
-        .join("")}-${data.groups.likesGiven.map((g) => g.id).join("")}`}
+    <div
+      className={clsx("q__groups-container", {
+        "q__groups-container__mobile": isMobile,
+      })}
     >
-      <div className="q__groups-container">
-        <div>
-          <h2 className="text-sm text-center mb-2">
-            {isFullGroup ? "Challenges received" : "Groups that asked you"}
-          </h2>
-          <div className="stack sm">
-            {data.groups.likesReceived.map((group) => {
-              const { mapListPreference } = groupAfterMorph({
-                liker: "THEM",
-                ourGroup: data.groups.own,
-                theirGroup: group,
-              });
+      {!isMobile ? chatElement : null}
+      <div className="q__groups-inner-container">
+        <NewTabs
+          scrolling={isMobile}
+          selectedIndex={selectedIndex}
+          setSelectedIndex={handleTabChange}
+          tabs={[
+            {
+              label: "Roster",
+              number: data.groups.own.members!.length,
+            },
+            {
+              label: "Groups",
+              number: data.groups.neutral.length,
+            },
+            {
+              label: isFullGroup ? "Challenges" : "Invitations",
+              number: data.groups.likesReceived.length,
+              hidden: !isMobile,
+            },
+            {
+              label: "Chat",
+              hidden: !isMobile || !data.chatCode,
+              number: unseenMessages,
+            },
+            // {
+            //   label: "Filter",
+            // },
+          ]}
+          content={[
+            {
+              key: "own",
+              element: (
+                <div className="stack md">
+                  <GroupCard
+                    group={data.groups.own}
+                    mapListPreference={data.groups.own.mapListPreference}
+                    ownRole={data.role}
+                    ownGroup
+                  />
+                  {ownGroup.inviteCode ? (
+                    <MemberAdder
+                      inviteCode={ownGroup.inviteCode}
+                      trustedPlayers={data.trustedPlayers}
+                    />
+                  ) : null}
+                </div>
+              ),
+            },
+            {
+              key: "groups",
+              element: (
+                <div className="stack sm">
+                  {data.groups.neutral.map((group) => {
+                    const { mapListPreference } = groupAfterMorph({
+                      liker: "US",
+                      ourGroup: data.groups.own,
+                      theirGroup: group,
+                    });
 
-              return (
-                <GroupCard
-                  key={group.id}
-                  group={group}
-                  action={isFullGroup ? "MATCH_UP" : "GROUP_UP"}
-                  mapListPreference={mapListPreference}
-                  ownRole={data.role}
-                />
-              );
-            })}
-          </div>
-        </div>
-        <div className="w-full">
-          <h2 className="text-sm text-center mb-2 invisible">Neutral</h2>
-          <div className="stack sm">
-            {data.groups.neutral.map((group) => {
-              const { mapListPreference } = groupAfterMorph({
-                liker: "US",
-                ourGroup: data.groups.own,
-                theirGroup: group,
-              });
+                    return (
+                      <GroupCard
+                        key={group.id}
+                        group={group}
+                        action={group.isLiked ? "UNLIKE" : "LIKE"}
+                        mapListPreference={mapListPreference}
+                        ownRole={data.role}
+                        isExpired={data.expiryStatus === "EXPIRED"}
+                      />
+                    );
+                  })}
+                </div>
+              ),
+            },
+            {
+              key: "received",
+              hidden: !isMobile,
+              element: (
+                <div className="stack sm">
+                  {data.groups.likesReceived.map((group) => {
+                    const { mapListPreference } = groupAfterMorph({
+                      liker: "THEM",
+                      ourGroup: data.groups.own,
+                      theirGroup: group,
+                    });
 
-              return (
-                <GroupCard
-                  key={group.id}
-                  group={group}
-                  action="LIKE"
-                  mapListPreference={mapListPreference}
-                  ownRole={data.role}
-                />
-              );
-            })}
-          </div>
-        </div>
-        <div>
-          <h2 className="text-sm text-center mb-2">
-            {isFullGroup ? "Challenges issued" : "Groups you asked"}
-          </h2>
-          <div className="stack sm">
-            {data.groups.likesGiven.map((group) => {
-              const { mapListPreference } = groupAfterMorph({
-                liker: "US",
-                ourGroup: data.groups.own,
-                theirGroup: group,
-              });
-
-              return (
-                <GroupCard
-                  key={group.id}
-                  group={group}
-                  action="UNLIKE"
-                  mapListPreference={mapListPreference}
-                  ownRole={data.role}
-                />
-              );
-            })}
-          </div>
-        </div>
+                    return (
+                      <GroupCard
+                        key={group.id}
+                        group={group}
+                        action={isFullGroup ? "MATCH_UP" : "GROUP_UP"}
+                        mapListPreference={mapListPreference}
+                        ownRole={data.role}
+                        isExpired={data.expiryStatus === "EXPIRED"}
+                      />
+                    );
+                  })}
+                </div>
+              ),
+            },
+            {
+              key: "chat",
+              element: chatElement,
+              hidden: !isMobile || !data.chatCode,
+            },
+            // {
+            //   key: "filters",
+            //   element: <div>filters</div>,
+            // },
+          ]}
+        />
       </div>
-    </Flipper>
+      {!isMobile ? (
+        <div className="stack sm q__groups-container__right">
+          {data.groups.likesReceived.map((group) => {
+            const { mapListPreference } = groupAfterMorph({
+              liker: "THEM",
+              ourGroup: data.groups.own,
+              theirGroup: group,
+            });
+
+            return (
+              <GroupCard
+                key={group.id}
+                group={group}
+                action={isFullGroup ? "MATCH_UP" : "GROUP_UP"}
+                mapListPreference={mapListPreference}
+                ownRole={data.role}
+                isExpired={data.expiryStatus === "EXPIRED"}
+              />
+            );
+          })}
+        </div>
+      ) : null}
+    </div>
   );
 }

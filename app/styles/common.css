@@ -530,6 +530,42 @@ dialog::backdrop {
   visibility: initial;
 }
 
+.tab__buttons-container {
+  display: flex;
+  flex-direction: row;
+  border-bottom: 2px solid var(--border);
+}
+
+.tab__button {
+  background-color: transparent;
+  border: none;
+  font-size: var(--fonts-xs);
+  border-radius: 0;
+  border-bottom: 2px solid transparent;
+  color: var(--text-lighter);
+  white-space: nowrap;
+  flex: 1;
+}
+
+.tab__button:active {
+  transform: initial;
+}
+
+.tab__number {
+  color: var(--theme);
+  margin-inline-start: var(--s-2);
+}
+
+.tab__button:focus-visible {
+  color: var(--theme) !important;
+  outline: none;
+}
+
+.tab__button[data-headlessui-state="selected"] {
+  border-color: var(--theme);
+  color: var(--text);
+}
+
 .popover-content {
   z-index: 1;
   max-width: 20rem;
@@ -1277,6 +1313,87 @@ dialog::backdrop {
   height: 175px;
   background-color: var(--bg-lighter);
   border-radius: var(--rounded);
+}
+
+.chat__container {
+  display: flex;
+  flex-direction: column;
+}
+
+.chat__messages {
+  padding: var(--s-2) 0 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  height: 270px;
+  overflow-y: auto;
+}
+
+.chat__message {
+  list-style: none;
+  display: flex;
+  gap: var(--s-2-5);
+}
+
+.chat__message__user {
+  font-weight: var(--semi-bold);
+  font-size: var(--fonts-sm);
+  color: var(--chat-user-color);
+}
+
+.chat__message__time {
+  font-size: var(--fonts-xxs);
+  color: var(--text-lighter);
+  margin-block-start: 3px;
+}
+
+.chat__input-container {
+  margin-top: auto;
+
+  --input-width: 100%;
+}
+
+.chat__message__contents {
+  font-size: var(--fonts-sm);
+  word-break: break-all;
+}
+
+.chat__message__contents.pending {
+  opacity: 0.7;
+}
+
+.chat__room-button {
+  background-color: var(--bg-light);
+  color: var(--text-lighter);
+  border-radius: var(--rounded) var(--rounded) 0 0;
+  font-size: var(--fonts-xs);
+  padding: var(--s-1) var(--s-1);
+  border-color: var(--bg-light-variation);
+}
+
+.chat__room-button.not-first {
+  margin-inline-start: -1px;
+}
+
+.chat__room-button.current {
+  background-color: var(--bg-lighter);
+  color: var(--text);
+}
+
+.chat__room-button__unseen {
+  color: var(--theme-secondary);
+  text-shadow: var(--fonts-xxxs);
+  margin-inline-start: var(--s-1);
+  width: 25px;
+  text-align: left;
+}
+
+.chat__bottom-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-block-start: var(--s-2);
+  height: 20px;
 }
 
 .winner__container {

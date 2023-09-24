@@ -3,12 +3,14 @@ import { INVITE_CODE_LENGTH } from "~/constants";
 import { sql } from "~/db/sql";
 import type { Group, GroupMember } from "~/db/types";
 import type { MapPool } from "~/modules/map-pool-serializer";
+import { isAdmin } from "~/permissions";
+import { hasAccessToChat } from "../core/groups.server";
 
 const createGroupStm = sql.prepare(/* sql */ `
   insert into "Group"
-    ("mapListPreference", "inviteCode", "status")
+    ("mapListPreference", "inviteCode", "status", "chatCode")
   values
-    (@mapListPreference, @inviteCode, @status)
+    (@mapListPreference, @inviteCode, @status, @chatCode)
   returning *
 `);
 
@@ -39,6 +41,9 @@ export const createGroup = sql.transaction((args: CreateGroupArgs) => {
     mapListPreference: args.mapListPreference,
     inviteCode: nanoid(INVITE_CODE_LENGTH),
     status: args.status,
+    chatCode: hasAccessToChat(isAdmin({ id: args.userId }))
+      ? nanoid(INVITE_CODE_LENGTH)
+      : null,
   }) as Group;
 
   createGroupMemberStm.run({
@@ -68,11 +73,12 @@ type CreateGroupFromPreviousGroupArgs = {
 
 const createGroupFromPreviousGroupStm = sql.prepare(/* sql */ `
   insert into "Group"
-    ("mapListPreference", "teamId", "inviteCode", "status")
+    ("mapListPreference", "teamId", "chatCode", "inviteCode", "status")
   values
     (
       (select "mapListPreference" from "Group" where "id" = @previousGroupId), 
       (select "teamId" from "Group" where "id" = @previousGroupId),
+      (select "chatCode" from "Group" where "id" = @previousGroupId),
       @inviteCode, 
       @status
     )

@@ -37,6 +37,8 @@ const staticAssetsUrl = ({
 }) =>
   `https://raw.githubusercontent.com/Sendouc/sendou-ink-assets/main/${folder}/${fileName}`;
 
+export const SKALOP_BASE_URL = "ws://localhost:5900";
+
 export const SENDOU_INK_BASE_URL = "https://sendou.ink";
 
 const USER_SUBMITTED_IMAGE_ROOT = "https://sendou.nyc3.digitaloceanspaces.com";

@@ -8,6 +8,9 @@ import {
   sendouQInviteLink,
 } from "~/utils/urls";
 import * as React from "react";
+import { ClipboardIcon } from "~/components/icons/Clipboard";
+import { PlusIcon } from "~/components/icons/Plus";
+import { CheckmarkIcon } from "~/components/icons/Checkmark";
 
 export function MemberAdder({
   inviteCode,
@@ -22,18 +25,28 @@ export function MemberAdder({
   const [trustedUser, setTrustedUser] = React.useState<number>();
   const fetcher = useFetcher();
   const inviteLink = `${SENDOU_INK_BASE_URL}${sendouQInviteLink(inviteCode)}`;
-  const [, copyToClipboard] = useCopyToClipboard();
+  const [state, copyToClipboard] = useCopyToClipboard();
+  const [copySuccess, setCopySuccess] = React.useState(false);
 
   const trustedPlayerIdsJoined = trustedPlayers.map((p) => p.id).join(",");
   React.useEffect(() => {
     setTrustedUser(undefined);
   }, [trustedPlayerIdsJoined]);
 
+  React.useEffect(() => {
+    if (!state.value) return;
+
+    setCopySuccess(true);
+    const timeout = setTimeout(() => setCopySuccess(false), 2000);
+
+    return () => clearTimeout(timeout);
+  }, [state]);
+
   return (
-    <div className="stack horizontal lg flex-wrap justify-center">
+    <div className="stack md flex-wrap justify-center">
       {trustedPlayers.length > 0 ? (
         <fetcher.Form method="post" action={SENDOUQ_PREPARING_PAGE}>
-          <label htmlFor="players">Add people you have played with</label>
+          <label htmlFor="players">Quick add</label>
           <div className="stack horizontal sm items-center">
             <select
               name="id"
@@ -43,8 +56,9 @@ export function MemberAdder({
                   e.target.value ? Number(e.target.value) : undefined,
                 )
               }
+              className="q__member-adder__input"
             >
-              <option value="">Select member</option>
+              <option value="">Select user</option>
               {trustedPlayers.map((player) => {
                 return (
                   <option key={player.id} value={player.id}>
@@ -57,22 +71,27 @@ export function MemberAdder({
               variant="outlined"
               _action="ADD_TRUSTED"
               disabled={!trustedUser}
-            >
-              Add
-            </SubmitButton>
+              icon={<PlusIcon />}
+            />
           </div>
         </fetcher.Form>
       ) : null}
       <div>
-        <label htmlFor="invite">Share your invite link</label>
+        <label htmlFor="invite">Invite link</label>
         <div className="stack horizontal sm items-center">
-          <input type="text" value={inviteLink} readOnly id="invite" />
+          <input
+            type="text"
+            value={inviteLink}
+            readOnly
+            id="invite"
+            className="q__member-adder__input"
+          />
           <Button
-            variant="outlined"
+            variant={copySuccess ? "outlined-success" : "outlined"}
             onClick={() => copyToClipboard(inviteLink)}
-          >
-            Copy
-          </Button>
+            icon={copySuccess ? <CheckmarkIcon /> : <ClipboardIcon />}
+            aria-label="Copy to clipboard"
+          />
         </div>
       </div>
     </div>

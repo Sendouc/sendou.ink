@@ -7,17 +7,20 @@ export type LookingGroup = {
   mapListPreference?: Group["mapListPreference"];
   tier?: TieredSkill["tier"];
   isReplay?: boolean;
+  isLiked?: boolean;
   members?: {
     id: number;
     discordId: string;
     discordName: string;
     discordAvatar: string;
+    customUrl?: User["customUrl"];
     plusTier?: PlusTier["tier"];
     role: GroupMember["role"];
     weapons?: MainWeaponId[];
     skill?: TieredSkill;
     vc?: User["vc"];
     languages?: string[];
+    chatNameColor: string | null;
   }[];
 };
 
@@ -30,12 +33,10 @@ export interface DividedGroups {
   own: LookingGroup | LookingGroupWithInviteCode;
   neutral: LookingGroup[];
   likesReceived: LookingGroup[];
-  likesGiven: LookingGroup[];
 }
 
 export interface DividedGroupsUncensored {
   own: LookingGroupWithInviteCode;
   neutral: LookingGroupWithInviteCode[];
   likesReceived: LookingGroupWithInviteCode[];
-  likesGiven: LookingGroupWithInviteCode[];
 }

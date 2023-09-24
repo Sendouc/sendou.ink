@@ -52,21 +52,75 @@
   border-radius: 7px;
 }
 
-.q__own-group-container {
-  margin: 0 auto;
-  min-width: 300px;
+.q__tab-button {
+  width: 100px;
+  background-color: var(--bg-lighter-solid);
+  color: var(--text);
+  font-size: var(--fonts-sm);
+  border-color: transparent;
+  gap: var(--s-2);
+  position: relative;
+}
+
+.q__tab-button__icon {
+  width: 14px;
+}
+
+.q__tab-button__badge {
+  font-size: var(--fonts-xxs);
+  display: grid;
+  place-items: center;
+  background-color: var(--theme);
+  position: absolute;
+  top: -4px;
+  right: -1px;
+  border-radius: 100%;
+  width: 17px;
+  height: 17px;
+  color: var(--button-text);
+}
+
+.q__top-container {
+  display: flex;
+  gap: var(--s-3);
+  max-width: 500px;
+}
+
+.q__top-container__divider {
+  min-width: 3px;
+  background-color: var(--border);
+  height: 100%;
+  border-radius: var(--rounded);
+}
+
+.q__chat-container {
+  top: 60px;
+  position: sticky;
+}
+
+.q__chat-messages-container {
+  height: 350px;
 }
 
 .q__groups-container {
   display: grid;
   justify-content: center;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: var(--s-6);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-7);
 }
 
-.q__mobile-groups-container {
-  max-width: 300px;
+.q__groups-container__mobile {
+  grid-template-columns: 1fr;
+  min-width: 300px;
   margin: 0 auto;
+}
+
+.q__groups-inner-container {
+  max-width: 94vw;
+}
+
+.q__groups-container__right {
+  margin-top: 45px;
 }
 
 .q__group {
@@ -83,9 +137,33 @@
   display: flex;
   gap: var(--s-2);
   align-items: center;
-  font-size: var(--fonts-xs);
+  background-color: var(--bg-darker);
+  border-radius: var(--rounded);
+  font-size: var(--fonts-xsm);
   font-weight: var(--semi-bold);
-  color: var(--text);
+  padding-inline-end: var(--s-2-5);
+}
+
+.q__group-member__name {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.q__group-member__tier {
+  margin-inline-start: auto;
+}
+
+.q__group-member__extra-info {
+  font-size: var(--fonts-xs);
+  background-color: var(--bg-darker);
+  border-radius: var(--rounded);
+  padding: var(--s-0-5) var(--s-2);
+  width: max-content;
+  display: flex;
+  align-items: center;
+  gap: var(--s-1-5);
+  font-weight: var(--semi-bold);
 }
 
 .q__member-placeholder {
@@ -112,8 +190,24 @@
 }
 
 .q__group-member-vc-icon {
-  width: 18px;
+  height: 15px;
   stroke-width: 2;
+}
+
+.q__group-member__star {
+  min-width: 18px;
+  max-width: 18px;
+  color: var(--theme-secondary);
+  stroke-width: 2;
+}
+
+.q__group-member__star__inactive {
+  color: var(--text-lighter);
+}
+
+.q__member-adder__input {
+  --input-width: 11rem;
+  width: 11rem;
 }
 
 .q-preparing__card-container {
@@ -127,6 +221,13 @@
   font-size: var(--fonts-sm);
   color: var(--text-lighter);
   margin-block-start: var(--s-1);
+}
+
+.q-match__join-discord-section__highlighted {
+  font-size: var(--fonts-md);
+  letter-spacing: 1px;
+  color: var(--text);
+  font-weight: var(--semi-bold);
 }
 
 .q-match__members-container {
@@ -163,7 +264,11 @@
   text-overflow: ellipsis;
 }
 
-@media screen and (min-width: 480px) {
+@media screen and (min-width: 640px) {
+  .q-match__teams-container.with-chat {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
   .q-match__teams-container {
     grid-template-columns: 1fr 1fr;
   }

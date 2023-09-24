@@ -234,6 +234,10 @@
   margin-inline: var(--s-2);
 }
 
+.my-auto {
+  margin-block: auto;
+}
+
 .my-2 {
   margin-block: var(--s-2);
 }
@@ -264,6 +268,10 @@
 
 .whitespace-nowrap {
   white-space: nowrap;
+}
+
+.overflow-x-auto {
+  overflow-x: auto;
 }
 
 .flex {

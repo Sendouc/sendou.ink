@@ -24,7 +24,7 @@ import type { GroupMember, ReportedWeapon } from "~/db/types";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
-import { requireUserId } from "~/modules/auth/user.server";
+import { getUserId, requireUserId } from "~/modules/auth/user.server";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { isAdmin } from "~/permissions";
 import { databaseTimestampToDate } from "~/utils/dates";
@@ -79,6 +79,7 @@ import { resolveRoomPass } from "~/features/tournament-bracket/tournament-bracke
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { addDummySkill } from "../queries/addDummySkill.server";
 import { inGameNameWithoutDiscriminator } from "~/utils/strings";
+import { ConnectedChat, type ChatProps } from "~/components/Chat";
 import { currentSeason } from "~/features/mmr";
 import { StarFilledIcon } from "~/components/icons/StarFilled";
 import { StarIcon } from "~/components/icons/Star";
@@ -280,7 +281,8 @@ export const action = async ({ request, params }: ActionArgs) => {
   return null;
 };
 
-export const loader = ({ params }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderArgs) => {
+  const user = await getUserId(request);
   const matchId = matchIdFromParams(params);
   const match = notFoundIfFalsy(findMatchById(matchId));
 
@@ -289,10 +291,27 @@ export const loader = ({ params }: LoaderArgs) => {
   const groupBravo = groupForMatch(match.bravoGroupId);
   invariant(groupBravo, "Group bravo not found");
 
+  const censoredGroupAlpha = { ...groupAlpha, chatCode: undefined };
+  const censoredGroupBravo = { ...groupBravo, chatCode: undefined };
+  const censoredMatch = { ...match, chatCode: undefined };
+
+  const isTeamAlphaMember = groupAlpha.members.some((m) => m.id === user?.id);
+  const isTeamBravoMember = groupBravo.members.some((m) => m.id === user?.id);
+  const canAccessMatchChat = isTeamAlphaMember || isTeamBravoMember;
+
+  const groupChatCode = () => {
+    if (isTeamAlphaMember) return groupAlpha.chatCode;
+    if (isTeamBravoMember) return groupBravo.chatCode;
+
+    return null;
+  };
+
   return {
-    match,
-    groupAlpha,
-    groupBravo,
+    match: censoredMatch,
+    matchChatCode: canAccessMatchChat ? match.chatCode : null,
+    groupChatCode: groupChatCode(),
+    groupAlpha: censoredGroupAlpha,
+    groupBravo: censoredGroupBravo,
     reportedWeapons: match.reportedAt
       ? reportedWeaponsByMatchId(matchId)
       : undefined,
@@ -338,6 +357,22 @@ export default function QMatchPage() {
     return `SQ${lastDigit}`;
   };
 
+  const chatUsers = React.useMemo(() => {
+    return Object.fromEntries(
+      [...data.groupAlpha.members, ...data.groupBravo.members].map((m) => [
+        m.id,
+        m,
+      ]),
+    );
+  }, [data]);
+
+  const chatRooms = React.useMemo(() => {
+    return [
+      data.matchChatCode ? { code: data.matchChatCode, label: `Match` } : null,
+      data.groupChatCode ? { code: data.groupChatCode, label: "Group" } : null,
+    ].filter(Boolean) as ChatProps["rooms"];
+  }, [data.matchChatCode, data.groupChatCode]);
+
   return (
     <Main className="q-match__container stack lg">
       <div className="q-match__header">
@@ -379,7 +414,11 @@ export default function QMatchPage() {
       ) : null}
       {!showWeaponsForm ? (
         <>
-          <div className="q-match__teams-container">
+          <div
+            className={clsx("q-match__teams-container", {
+              "with-chat": data.matchChatCode || data.groupChatCode,
+            })}
+          >
             <MatchGroup
               group={data.groupAlpha}
               side="ALPHA"
@@ -390,8 +429,11 @@ export default function QMatchPage() {
               side="BRAVO"
               showWeapons={!data.match.isLocked}
             />
+            {chatRooms.length > 0 ? (
+              <ConnectedChat users={chatUsers} rooms={chatRooms} />
+            ) : null}
           </div>
-          {!data.match.isLocked && ownMember ? (
+          {!data.match.isLocked && (ownMember || isAdmin(user)) ? (
             <div>
               <div className="stack horizontal justify-between">
                 <Link to={SENDOUQ_RULES_PAGE} className="text-xxs font-bold">
@@ -433,8 +475,13 @@ export default function QMatchPage() {
                   {SENDOU_INK_DISCORD_URL}
                 </a>
                 . Alpha team hosts. Password should be{" "}
-                <b>{resolveRoomPass(data.match.id)}</b>. Pool code is{" "}
-                <b>{poolCode()}</b>
+                <span className="q-match__join-discord-section__highlighted">
+                  {resolveRoomPass(data.match.id)}
+                </span>
+                . Pool code is{" "}
+                <span className="q-match__join-discord-section__highlighted">
+                  {poolCode()}
+                </span>
               </div>
             </div>
           ) : null}
@@ -773,7 +820,7 @@ function MatchGroup({
   side,
   showWeapons,
 }: {
-  group: GroupForMatch;
+  group: Omit<GroupForMatch, "chatCode">;
   side: "ALPHA" | "BRAVO";
   showWeapons: boolean;
 }) {
