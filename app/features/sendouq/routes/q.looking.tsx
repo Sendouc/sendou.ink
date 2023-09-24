@@ -414,7 +414,7 @@ function InfoText() {
         method="post"
         className="text-xs text-lighter ml-auto text-warning stack horizontal sm"
       >
-        Group will be hidden soon due to inactivity. Still looking?{" "}
+        Group will be marked inactive. Still looking?{" "}
         <SubmitButton
           size="tiny"
           variant="minimal"
@@ -442,7 +442,6 @@ function InfoText() {
   );
 }
 
-// xxx: clearing of unseen messages logic missing
 // xxx: add message to chat when alone
 // xxx: memberadder flash success checkmark when copied
 // xxx: check that chat is handled when feature flag off
@@ -450,7 +449,7 @@ function Groups() {
   const data = useLoaderData<typeof loader>();
   const isMounted = useIsMounted();
 
-  const [unseenMessages, setUnseenMessages] = React.useState(0);
+  const [_unseenMessages, setUnseenMessages] = React.useState(0);
   const [selectedIndex, setSelectedIndex] = React.useState(1);
   const { width } = useWindowSize();
 
@@ -485,6 +484,23 @@ function Groups() {
     setSelectedIndex(0);
   }, [memberIdsJoined]);
 
+  const CHAT_TAB_INDEX = 3;
+  // the way of doing it seems a bit backwards but trying to work
+  // around React dep arrays triggering unintended effects from
+  // running in the Chat component
+  const handleTabChange = React.useCallback(
+    (newIndex: number) => {
+      const currentTabIndex = selectedIndex;
+      if (currentTabIndex === CHAT_TAB_INDEX) {
+        setUnseenMessages(0);
+      }
+
+      setSelectedIndex(newIndex);
+    },
+    [selectedIndex],
+  );
+  const unseenMessages = selectedIndex !== CHAT_TAB_INDEX ? _unseenMessages : 0;
+
   if (!isMounted) return null;
 
   const isMobile = width < 750;
@@ -517,7 +533,7 @@ function Groups() {
         <NewTabs
           scrolling={isMobile}
           selectedIndex={selectedIndex}
-          setSelectedIndex={setSelectedIndex}
+          setSelectedIndex={handleTabChange}
           tabs={[
             {
               label: "Roster",
