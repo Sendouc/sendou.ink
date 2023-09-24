@@ -442,7 +442,6 @@ function InfoText() {
   );
 }
 
-// xxx: chat tab looks off before it has number, make number position: absolute?
 // xxx: clearing of unseen messages logic missing
 // xxx: add message to chat when alone
 // xxx: memberadder flash success checkmark when copied

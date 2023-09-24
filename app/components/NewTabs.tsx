@@ -37,14 +37,8 @@ export function NewTabs({
             return (
               <Tab key={tab.label} className="tab__button">
                 {tab.label}
-                {typeof tab.number === "number" && (
-                  <span
-                    className={clsx("tab__number", {
-                      invisible: tab.number === 0,
-                    })}
-                  >
-                    {tab.number}
-                  </span>
+                {typeof tab.number === "number" && tab.number !== 0 && (
+                  <span className={clsx("tab__number")}>{tab.number}</span>
                 )}
               </Tab>
             );
