@@ -544,6 +544,7 @@ dialog::backdrop {
   border-bottom: 2px solid transparent;
   color: var(--text-lighter);
   white-space: nowrap;
+  flex: 1;
 }
 
 .tab__button:active {

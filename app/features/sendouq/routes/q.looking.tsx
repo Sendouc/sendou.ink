@@ -442,11 +442,11 @@ function InfoText() {
   );
 }
 
-// xxx: implement filters
 // xxx: chat tab looks off before it has number, make number position: absolute?
 // xxx: clearing of unseen messages logic missing
 // xxx: add message to chat when alone
 // xxx: memberadder flash success checkmark when copied
+// xxx: check that chat is handled when feature flag off
 function Groups() {
   const data = useLoaderData<typeof loader>();
   const isMounted = useIsMounted();
@@ -538,9 +538,9 @@ function Groups() {
               hidden: !isMobile,
               number: unseenMessages,
             },
-            {
-              label: "Filter",
-            },
+            // {
+            //   label: "Filter",
+            // },
           ]}
           content={[
             {
@@ -618,10 +618,10 @@ function Groups() {
               element: chatElement,
               hidden: !isMobile,
             },
-            {
-              key: "filters",
-              element: <div>filters</div>,
-            },
+            // {
+            //   key: "filters",
+            //   element: <div>filters</div>,
+            // },
           ]}
         />
       </div>
