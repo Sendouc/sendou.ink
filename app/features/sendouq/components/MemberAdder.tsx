@@ -10,6 +10,7 @@ import {
 import * as React from "react";
 import { ClipboardIcon } from "~/components/icons/Clipboard";
 import { PlusIcon } from "~/components/icons/Plus";
+import { CheckmarkIcon } from "~/components/icons/Checkmark";
 
 export function MemberAdder({
   inviteCode,
@@ -24,12 +25,22 @@ export function MemberAdder({
   const [trustedUser, setTrustedUser] = React.useState<number>();
   const fetcher = useFetcher();
   const inviteLink = `${SENDOU_INK_BASE_URL}${sendouQInviteLink(inviteCode)}`;
-  const [, copyToClipboard] = useCopyToClipboard();
+  const [state, copyToClipboard] = useCopyToClipboard();
+  const [copySuccess, setCopySuccess] = React.useState(false);
 
   const trustedPlayerIdsJoined = trustedPlayers.map((p) => p.id).join(",");
   React.useEffect(() => {
     setTrustedUser(undefined);
   }, [trustedPlayerIdsJoined]);
+
+  React.useEffect(() => {
+    if (!state.value) return;
+
+    setCopySuccess(true);
+    const timeout = setTimeout(() => setCopySuccess(false), 2000);
+
+    return () => clearTimeout(timeout);
+  }, [state]);
 
   return (
     <div className="stack md flex-wrap justify-center">
@@ -76,9 +87,9 @@ export function MemberAdder({
             className="q__member-adder__input"
           />
           <Button
-            variant="outlined"
+            variant={copySuccess ? "outlined-success" : "outlined"}
             onClick={() => copyToClipboard(inviteLink)}
-            icon={<ClipboardIcon />}
+            icon={copySuccess ? <CheckmarkIcon /> : <ClipboardIcon />}
             aria-label="Copy to clipboard"
           />
         </div>

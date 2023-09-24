@@ -442,8 +442,6 @@ function InfoText() {
   );
 }
 
-// xxx: memberadder flash success checkmark when copied
-// xxx: check that chat is handled when feature flag off
 function Groups() {
   const data = useLoaderData<typeof loader>();
   const isMounted = useIsMounted();

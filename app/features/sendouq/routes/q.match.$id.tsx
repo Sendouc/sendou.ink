@@ -316,8 +316,6 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   };
 };
 
-// xxx: make issue to use looking page group card design + show tiers (save to DB so shows the tier of the players at the time?)
-// xxx: don't show managers, popover is also probably unnecessary
 export default function QMatchPage() {
   const user = useUser();
   const isMounted = useIsMounted();
