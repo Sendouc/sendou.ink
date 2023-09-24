@@ -57,24 +57,20 @@ export class DiscordStrategy extends OAuth2Strategy<
           "Authorization",
           `Bearer ${accessToken}`,
         ];
-        const discordResponses = await Promise.all([
-          fetch("https://discord.com/api/users/@me", {
-            headers: [authHeader],
-          }),
-          fetch("https://discord.com/api/users/@me/connections", {
-            headers: [authHeader],
-          }),
-        ]);
 
-        const [user, connections] = discordUserDetailsSchema.parse(
-          await Promise.all(
-            discordResponses.map((res) => {
-              if (!res.ok) throw new Error("Call to Discord API failed");
+        const discordResponses = this.authGatewayEnabled()
+          ? await this.fetchProfileViaGateway(accessToken)
+          : await Promise.all([
+              fetch("https://discord.com/api/users/@me", {
+                headers: [authHeader],
+              }).then(this.jsonIfOk),
+              fetch("https://discord.com/api/users/@me/connections", {
+                headers: [authHeader],
+              }).then(this.jsonIfOk),
+            ]);
 
-              return res.json();
-            }),
-          ),
-        );
+        const [user, connections] =
+          discordUserDetailsSchema.parse(discordResponses);
 
         const userFromDb = db.users.upsert({
           discordAvatar: user.avatar ?? null,
@@ -90,6 +86,33 @@ export class DiscordStrategy extends OAuth2Strategy<
     );
 
     this.scope = "identify connections";
+  }
+
+  private authGatewayEnabled() {
+    return Boolean(
+      process.env["AUTH_GATEWAY_URL"] && process.env["AUTH_GATEWAY_SECRET"],
+    );
+  }
+
+  private async fetchProfileViaGateway(token: string) {
+    const url = `${process.env["AUTH_GATEWAY_URL"]}?token=${token}`;
+
+    const options: RequestInit = {
+      method: "GET",
+      headers: { "X-Require-Whisk-Auth": process.env["AUTH_GATEWAY_SECRET"]! },
+    };
+
+    return fetch(url, options).then(this.jsonIfOk);
+  }
+
+  private jsonIfOk(res: Response) {
+    if (!res.ok) {
+      throw new Error(
+        `Auth related call failed with status code ${res.status}`,
+      );
+    }
+
+    return res.json();
   }
 
   private parseConnections(
