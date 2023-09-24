@@ -5,10 +5,10 @@ import type { User } from "~/db/types";
 import { useUser } from "~/modules/auth";
 import { nanoid } from "nanoid";
 import clsx from "clsx";
-import { SKALOP_BASE_URL } from "~/utils/urls";
 import { Button } from "./Button";
 import ReconnectingWebSocket from "reconnecting-websocket";
 import invariant from "tiny-invariant";
+import { useRootLoaderData } from "~/hooks/useRootLoaderData";
 
 type ChatUser = Pick<User, "discordName" | "discordId" | "discordAvatar"> & {
   chatNameColor: string | null;
@@ -187,6 +187,7 @@ export function useChat({
   rooms: ChatProps["rooms"];
   onNewMessage?: (message: ChatMessage) => void;
 }) {
+  const rootLoaderData = useRootLoaderData();
   const user = useUser();
 
   const [messages, setMessages] = React.useState<ChatMessage[]>([]);
@@ -202,7 +203,7 @@ export function useChat({
   React.useEffect(() => {
     if (rooms.length === 0) return;
 
-    const url = `${SKALOP_BASE_URL}?${rooms
+    const url = `${rootLoaderData.skalopUrl}?${rooms
       .map((room) => `room=${room.code}`)
       .join("&")}`;
     ws.current = new ReconnectingWebSocket(url, [], {
@@ -241,7 +242,7 @@ export function useChat({
       wsCurrent?.close();
       setMessages([]);
     };
-  }, [rooms, onNewMessage]);
+  }, [rooms, onNewMessage, rootLoaderData.skalopUrl]);
 
   const send = React.useCallback(
     (contents: string) => {

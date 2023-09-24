@@ -42,7 +42,6 @@ import { Theme, ThemeHead, useTheme, ThemeProvider } from "./modules/theme";
 import { getThemeSession } from "./modules/theme/session.server";
 import { isTheme } from "./modules/theme/provider";
 import { useIsMounted } from "./hooks/useIsMounted";
-import invariant from "tiny-invariant";
 import { CUSTOMIZED_CSS_VARS_NAME } from "./constants";
 import NProgress from "nprogress";
 import nProgressStyles from "nprogress/nprogress.css";
@@ -83,6 +82,7 @@ export interface RootLoaderData {
   theme: Theme | null;
   patrons: FindAllPatrons;
   baseUrl: string;
+  skalopUrl: string;
   user?: Pick<
     UserWithPlusTier,
     | "id"
@@ -104,8 +104,6 @@ export const loader: LoaderFunction = async ({ request }) => {
   const locale = await i18next.getLocale(request);
   const themeSession = await getThemeSession(request);
 
-  invariant(process.env["BASE_URL"], "BASE_URL env var is not set");
-
   if (user?.banned) throw new Response(null, { status: 403 });
 
   return json<RootLoaderData>(
@@ -113,7 +111,8 @@ export const loader: LoaderFunction = async ({ request }) => {
       locale,
       theme: themeSession.getTheme(),
       patrons: db.users.findAllPatrons(),
-      baseUrl: process.env["BASE_URL"],
+      baseUrl: process.env["BASE_URL"]!,
+      skalopUrl: process.env["SKALOP_WS_URL"]!,
       publisherId: process.env["PLAYWIRE_PUBLISHER_ID"],
       websiteId: process.env["PLAYWIRE_WEBSITE_ID"],
       loginDisabled: process.env["LOGIN_DISABLED"] === "true",
