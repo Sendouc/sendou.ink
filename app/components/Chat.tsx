@@ -80,14 +80,13 @@ export function Chat({
     <section className={clsx("chat__container", className, { hidden })}>
       {rooms.length > 1 ? (
         <div className="stack horizontal">
-          {rooms.map((room, i) => {
+          {rooms.map((room) => {
             const unseen = unseenMessages.get(room.code);
 
             return (
               <Button
                 key={room.code}
                 className={clsx("chat__room-button", {
-                  "not-first": i > 0,
                   current: currentRoom === room.code,
                 })}
                 onClick={() => setCurrentRoom(room.code)}

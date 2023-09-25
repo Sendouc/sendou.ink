@@ -1371,10 +1371,6 @@ dialog::backdrop {
   border-color: var(--bg-light-variation);
 }
 
-.chat__room-button.not-first {
-  margin-inline-start: -1px;
-}
-
 .chat__room-button.current {
   background-color: var(--bg-lighter);
   color: var(--text);
