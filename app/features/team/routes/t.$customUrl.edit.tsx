@@ -94,7 +94,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     case "DELETE": {
       deleteTeam(team.id);
 
-      return redirect(TEAM_SEARCH_PAGE);
+      throw redirect(TEAM_SEARCH_PAGE);
     }
     case "EDIT": {
       const newCustomUrl = mySlugify(data.name);
@@ -113,7 +113,7 @@ export const action: ActionFunction = async ({ request, params }) => {
         ...data,
       });
 
-      return redirect(teamPage(editedTeam.customUrl));
+      throw redirect(teamPage(editedTeam.customUrl));
     }
     default: {
       assertUnreachable(data);

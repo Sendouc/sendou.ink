@@ -4,10 +4,10 @@ import { IMPERSONATED_SESSION_KEY, SESSION_KEY } from "./authenticator.server";
 import { authSessionStorage } from "./session.server";
 
 export async function getUserId(
-  request: Request
+  request: Request,
 ): Promise<Pick<User, "id"> | undefined> {
   const session = await authSessionStorage.getSession(
-    request.headers.get("Cookie")
+    request.headers.get("Cookie"),
   );
 
   const userId =
@@ -44,7 +44,7 @@ export async function requireUser(request: Request) {
 
 export async function isImpersonating(request: Request) {
   const session = await authSessionStorage.getSession(
-    request.headers.get("Cookie")
+    request.headers.get("Cookie"),
   );
 
   return Boolean(session.get(IMPERSONATED_SESSION_KEY));

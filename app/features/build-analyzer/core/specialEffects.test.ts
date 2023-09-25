@@ -26,7 +26,7 @@ ApplySpecialEffects(
 
     assert.equal(aps.size, 7);
     assert.equal(aps.get("SPU"), 10);
-  }
+  },
 );
 
 ApplySpecialEffects("Does not boost ability beyond 57", () => {
@@ -59,7 +59,7 @@ ApplySpecialEffects(
     });
 
     assert.equal(aps.get("SSU"), 30);
-  }
+  },
 );
 
 ApplySpecialEffects("Applies many effects", () => {
@@ -79,7 +79,7 @@ ApplySpecialEffects("Applies LDE", () => {
     ldeIntensity: 1,
   });
 
-  assert.equal(aps.get("ISM"), 2);
+  assert.equal(aps.get("ISM"), 1);
 });
 
 ApplySpecialEffects("Applies LDE (intensity != aps given)", () => {
@@ -89,7 +89,7 @@ ApplySpecialEffects("Applies LDE (intensity != aps given)", () => {
     ldeIntensity: 15,
   });
 
-  assert.equal(aps.get("ISM"), 18);
+  assert.equal(aps.get("ISM"), 13);
 });
 
 ApplySpecialEffects.run();

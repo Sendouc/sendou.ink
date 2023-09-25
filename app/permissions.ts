@@ -42,7 +42,7 @@ interface CanAddCommentToSuggestionArgs {
   targetPlusTier: NonNullable<UserWithPlusTier["plusTier"]>;
 }
 export function canAddCommentToSuggestionFE(
-  args: CanAddCommentToSuggestionArgs
+  args: CanAddCommentToSuggestionArgs,
 ) {
   return allTruthy([
     !alreadyCommentedByUser(args),
@@ -83,7 +83,7 @@ export function canDeleteComment(args: CanDeleteCommentArgs) {
     if (votingActive) return false;
 
     return adminOverride(args.user)(
-      allTruthy([isOwnComment(args), suggestionHasNoOtherComments(args)])
+      allTruthy([isOwnComment(args), suggestionHasNoOtherComments(args)]),
     );
   }
 
@@ -114,7 +114,7 @@ function alreadyCommentedByUser({
   return Boolean(
     suggestions[targetPlusTier]
       ?.find((u) => u.suggestedUser.id === suggested.id)
-      ?.suggestions.some((s) => s.author.id === user?.id)
+      ?.suggestions.some((s) => s.author.id === user?.id),
   );
 }
 
@@ -128,8 +128,8 @@ export function playerAlreadySuggested({
 >) {
   return Boolean(
     suggestions[targetPlusTier]?.find(
-      (u) => u.suggestedUser.id === suggested.id
-    )
+      (u) => u.suggestedUser.id === suggested.id,
+    ),
   );
 }
 
@@ -230,7 +230,7 @@ function hasUserSuggestedThisMonth({
     .flat()
     .some(
       ({ suggestions }) =>
-        suggestions[0] && suggestions[0].author.id === user?.id
+        suggestions[0] && suggestions[0].author.id === user?.id,
     );
 }
 
@@ -280,7 +280,7 @@ export function canDeleteCalendarEvent({
   startTime,
 }: CanEditCalendarEventArgs & { startTime: Date }) {
   return adminOverride(user)(
-    user?.id === event.authorId && startTime.getTime() > new Date().getTime()
+    user?.id === event.authorId && startTime.getTime() > new Date().getTime(),
   );
 }
 
@@ -301,11 +301,11 @@ export function canReportCalendarEventWinners({
 }
 
 function eventStartedInThePast(
-  startTimes: CanReportCalendarEventWinnersArgs["startTimes"]
+  startTimes: CanReportCalendarEventWinnersArgs["startTimes"],
 ) {
   return startTimes.every(
     (startTime) =>
-      databaseTimestampToDate(startTime).getTime() < new Date().getTime()
+      databaseTimestampToDate(startTime).getTime() < new Date().getTime(),
   );
 }
 
@@ -347,11 +347,11 @@ export function canReportTournamentScore({
 }
 
 export function canAddCustomizedColorsToUserProfile(
-  user?: Pick<User, "id" | "patronTier">
+  user?: Pick<User, "id" | "patronTier">,
 ) {
   if (!user) return false;
 
   return adminOverride(user)(
-    Boolean(user?.patronTier) && user.patronTier! >= 2
+    Boolean(user?.patronTier) && user.patronTier! >= 2,
   );
 }

@@ -53,7 +53,7 @@ const TRANSLATORS: Array<{
     language: "es-ES",
   },
   {
-    translators: ["Charakiga", "marie-maxime"],
+    translators: ["Charakiga", "marie-maxime", "Filuz"],
     language: "fr",
   },
   {
@@ -159,7 +159,7 @@ export default function ContributionsPage() {
                   >
                     {t.name}
                   </a>
-                )
+                ),
               )
               .map((element, i, arr) => (
                 <React.Fragment key={i}>

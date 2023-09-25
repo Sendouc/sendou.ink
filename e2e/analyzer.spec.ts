@@ -42,7 +42,7 @@ test.describe("Build Analyzer", () => {
     await newBuildPrompt.click();
     await expect(page.getByTestId("HEAD-combobox-input")).toBeVisible();
     await expect(page.getByTestId("weapon-combobox-input")).toHaveValue(
-      "Luna Blaster"
+      "Luna Blaster",
     );
     await page.getByTestId("SSU-ability").isVisible();
   });
@@ -55,7 +55,7 @@ test.describe("Build Analyzer", () => {
     const swimSpeedAbilityButtonLocator =
       page.getByTestId("SSU-ability-button");
     const swimSpeedAbilityLocator = page.locator(
-      "data-testid=ability-selector > data-testid=SSU-ability"
+      "data-testid=ability-selector > data-testid=SSU-ability",
     );
 
     await swimSpeedAbilityButtonLocator.click();
@@ -71,10 +71,10 @@ test.describe("Build Analyzer", () => {
 
     await page.getByTestId("ap-tab").click();
     await expect(page.getByTestId("ap-compare-1").first()).toContainText(
-      "10AP"
+      "10AP",
     );
     await expect(page.getByTestId("ap-compare-2").first()).toContainText(
-      "13AP"
+      "13AP",
     );
 
     await page.getByTestId("swim-speed").getByText("BUILD 2").isVisible();

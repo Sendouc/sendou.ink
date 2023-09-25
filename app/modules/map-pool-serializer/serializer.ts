@@ -3,7 +3,7 @@ import { modesShort, type StageId, stageIds } from "../in-game-lists";
 import type { MapPoolObject, ReadonlyMapPoolObject } from "./types";
 
 export function mapPoolToSerializedString(
-  mapPool: ReadonlyMapPoolObject
+  mapPool: ReadonlyMapPoolObject,
 ): string {
   const serializedModes = [];
 
@@ -36,7 +36,7 @@ function binaryToHex(binary: string) {
 }
 
 export function serializedStringToMapPool(
-  serialized: string
+  serialized: string,
 ): ReadonlyMapPoolObject {
   const result: MapPoolObject = {
     SZ: [],
@@ -51,7 +51,7 @@ export function serializedStringToMapPool(
     if (!mode || !mapsInHex) continue;
 
     const validatedMode = modesShort.find(
-      (realMode) => realMode === mode.toUpperCase()
+      (realMode) => realMode === mode.toUpperCase(),
     );
     if (!validatedMode) continue;
 

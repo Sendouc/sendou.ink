@@ -36,7 +36,7 @@ export function useAnalyzeBuild() {
 
   invariant(
     !(buildIsEmpty(build) && !buildIsEmpty(build2)),
-    "build1 is empty but build2 isn't"
+    "build1 is empty but build2 isn't",
   );
 
   const handleChange = ({
@@ -63,7 +63,7 @@ export function useAnalyzeBuild() {
         effect: newEffects,
         focused: String(newFocused),
       },
-      { replace: true, state: { scroll: false } }
+      { replace: true, state: { scroll: false } },
     );
   };
 
@@ -115,7 +115,7 @@ export function useAnalyzeBuild() {
 }
 
 function filterMainOnlyAbilities(
-  ability: AbilityWithUnknown
+  ability: AbilityWithUnknown,
 ): ability is Ability {
   const abilityObj = abilities.find((a) => a.name === ability);
   return Boolean(abilityObj && abilityObj.type !== "STACKABLE");

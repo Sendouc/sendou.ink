@@ -49,5 +49,5 @@ export const addNewImage = sql.transaction(
     }
 
     return img;
-  }
+  },
 );

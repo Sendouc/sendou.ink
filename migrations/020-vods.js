@@ -1,6 +1,6 @@
 module.exports.up = function (db) {
   db.prepare(
-    `alter table "User" add column "isVideoAdder" integer default 0`
+    `alter table "User" add column "isVideoAdder" integer default 0`,
   ).run();
 
   db.prepare(
@@ -17,11 +17,11 @@ module.exports.up = function (db) {
     foreign key ("submitterUserId") references "User"("id") on delete restrict,
     foreign key ("eventId") references "CalendarEvent"("id") on delete restrict
   ) strict
-  `
+  `,
   ).run();
 
   db.prepare(
-    `create index video_event_id on "UnvalidatedVideo"("eventId")`
+    `create index video_event_id on "UnvalidatedVideo"("eventId")`,
   ).run();
 
   db.prepare(
@@ -29,7 +29,7 @@ module.exports.up = function (db) {
       create view "Video"
       as
       select * from "UnvalidatedVideo" where "validatedAt" is not null
-  `
+  `,
   ).run();
 
   db.prepare(
@@ -42,10 +42,10 @@ module.exports.up = function (db) {
       "mode" text not null,
       foreign key ("videoId") references "UnvalidatedVideo"("id") on delete cascade
     ) strict
-    `
+    `,
   ).run();
   db.prepare(
-    `create index video_match_video_id on "VideoMatch"("videoId")`
+    `create index video_match_video_id on "VideoMatch"("videoId")`,
   ).run();
 
   db.prepare(
@@ -59,12 +59,12 @@ module.exports.up = function (db) {
       foreign key ("videoMatchId") references "VideoMatch"("id") on delete cascade,
       foreign key ("playerUserId") references "User"("id") on delete restrict
     ) strict
-    `
+    `,
   ).run();
   db.prepare(
-    `create index video_match_player_video_match_id on "VideoMatchPlayer"("videoMatchId")`
+    `create index video_match_player_video_match_id on "VideoMatchPlayer"("videoMatchId")`,
   ).run();
   db.prepare(
-    `create index video_match_player_player_user_id on "VideoMatchPlayer"("playerUserId")`
+    `create index video_match_player_player_user_id on "VideoMatchPlayer"("playerUserId")`,
   ).run();
 };

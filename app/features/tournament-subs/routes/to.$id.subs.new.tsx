@@ -58,7 +58,7 @@ export const action: ActionFunction = async ({ params, request }) => {
     userId: user.id,
   });
 
-  return redirect(tournamentSubsPage(tournamentId));
+  throw redirect(tournamentSubsPage(tournamentId));
 };
 
 export const loader = async ({ request, params }: LoaderArgs) => {
@@ -66,7 +66,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const tournamentId = tournamentIdFromParams(params);
 
   const sub = findSubsByTournamentId({ tournamentId }).find(
-    (sub) => sub.userId === user.id
+    (sub) => sub.userId === user.id,
   );
 
   return {
@@ -79,10 +79,10 @@ export default function NewTournamentSubPage() {
   const { t } = useTranslation(["common", "tournament"]);
   const data = useLoaderData<typeof loader>();
   const [bestWeapons, setBestWeapons] = React.useState<MainWeaponId[]>(
-    data.sub?.bestWeapons ?? []
+    data.sub?.bestWeapons ?? [],
   );
   const [okWeapons, setOkWeapons] = React.useState<MainWeaponId[]>(
-    data.sub?.okWeapons ?? []
+    data.sub?.okWeapons ?? [],
   );
 
   return (

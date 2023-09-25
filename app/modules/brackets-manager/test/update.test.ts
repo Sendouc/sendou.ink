@@ -68,7 +68,7 @@ UpdateMatches(
 
     // Name should stay. It shouldn't be overwritten.
     assert.equal(after.opponent1.id, 0);
-  }
+  },
 );
 
 UpdateMatches("should end the match by only setting the winner", () => {
@@ -109,7 +109,7 @@ UpdateMatches(
     const nextMatch = storage.select<any>("match", 8);
     assert.equal(nextMatch.status, Status.Waiting);
     assert.equal(nextMatch.opponent1.id, 1);
-  }
+  },
 );
 
 UpdateMatches("should update the status of the next match", () => {
@@ -238,7 +238,7 @@ UpdateMatches(
 
     assert.equal(after.opponent2.result, "win");
     assert.equal(after.opponent2.score, 3);
-  }
+  },
 );
 
 UpdateMatches("should throw if two winners", () => {
@@ -249,7 +249,7 @@ UpdateMatches("should throw if two winners", () => {
         opponent1: { result: "win" },
         opponent2: { result: "win" },
       }),
-    "There are two winners."
+    "There are two winners.",
   );
 
   assert.throws(
@@ -259,7 +259,7 @@ UpdateMatches("should throw if two winners", () => {
         opponent1: { result: "loss" },
         opponent2: { result: "loss" },
       }),
-    "There are two losers."
+    "There are two losers.",
   );
 });
 
@@ -271,7 +271,7 @@ UpdateMatches("should throw if two forfeits", () => {
         opponent1: { forfeit: true },
         opponent2: { forfeit: true },
       }),
-    "There are two forfeits."
+    "There are two forfeits.",
   );
 });
 
@@ -293,9 +293,9 @@ UpdateMatches(
           id: 2,
           opponent2: { forfeit: true },
         }),
-      "Didn't throw when updating a match with second forfeit."
+      "Didn't throw when updating a match with second forfeit.",
     );
-  }
+  },
 );
 
 const GiveOpponentIds = suite("Give opponent IDs when updating");
@@ -346,7 +346,7 @@ GiveOpponentIds(
     const after = storage.select<any>("match", 0);
     assert.not.ok(after.opponent1.score);
     assert.equal(after.opponent2.score, 10);
-  }
+  },
 );
 
 GiveOpponentIds(
@@ -361,9 +361,9 @@ GiveOpponentIds(
             score: 10,
           },
         }),
-      /The given opponent[12] ID does not exist in this match./
+      /The given opponent[12] ID does not exist in this match./,
     );
-  }
+  },
 );
 
 const LockedMatches = suite("Locked matches");
@@ -379,21 +379,21 @@ LockedMatches(
     manager.update.match({ id: 0 }); // No problem when no previous match.
     assert.throws(
       () => manager.update.match({ id: 8 }),
-      "The match is locked."
+      "The match is locked.",
     ); // First match of WB Round 2.
     assert.throws(
       () => manager.update.match({ id: 15 }),
-      "The match is locked."
+      "The match is locked.",
     ); // First match of LB Round 1.
     assert.throws(
       () => manager.update.match({ id: 19 }),
-      "The match is locked."
+      "The match is locked.",
     ); // First match of LB Round 1.
     assert.throws(
       () => manager.update.match({ id: 23 }),
-      "The match is locked."
+      "The match is locked.",
     ); // First match of LB Round 3.
-  }
+  },
 );
 
 LockedMatches(
@@ -405,9 +405,9 @@ LockedMatches(
 
     assert.throws(
       () => manager.update.match({ id: 0 }),
-      "The match is locked."
+      "The match is locked.",
     );
-  }
+  },
 );
 
 const UpdateMatchGames = suite("Update match games");
@@ -432,13 +432,13 @@ UpdateMatchGames(
     manager.update.matchChildCount("stage", 0, 2); // Set Bo2 for all the stage.
     assert.equal(
       storage.select<any>("match", 0).status,
-      storage.select<any>("match_game", 0).status
+      storage.select<any>("match_game", 0).status,
     );
 
     manager.update.seeding(0, ["Team 1", "Team 2", "Team 3", "Team 4"]);
     assert.equal(
       storage.select<any>("match", 0).status,
-      storage.select<any>("match_game", 0).status
+      storage.select<any>("match_game", 0).status,
     );
 
     // Semi 1
@@ -499,7 +499,7 @@ UpdateMatchGames(
     const semi2Status = storage.select<any>("match", 1).status;
     assert.equal(semi2Status, Status.Archived);
     assert.equal(semi2Status, storage.select<any>("match_game", 2).status);
-  }
+  },
 );
 
 UpdateMatchGames(
@@ -532,7 +532,7 @@ UpdateMatchGames(
     assert.equal(secondChildReset.status, Status.Running);
     assert.equal(secondChildReset.opponent1.score, 1);
     assert.equal(secondChildReset.opponent2.score, 0);
-  }
+  },
 );
 
 UpdateMatchGames("should throw if trying to update a locked match game", () => {
@@ -549,7 +549,7 @@ UpdateMatchGames("should throw if trying to update a locked match game", () => {
 
   assert.throws(
     () => manager.update.matchGame({ id: 0 }),
-    "The match game is locked."
+    "The match game is locked.",
   );
 
   storage.reset();
@@ -567,7 +567,7 @@ UpdateMatchGames("should throw if trying to update a locked match game", () => {
   manager.update.matchChildCount("round", 0, 3); // Example with all Bo3 after creation time.
   assert.throws(
     () => manager.update.matchGame({ id: 0 }),
-    "The match game is locked."
+    "The match game is locked.",
   );
 });
 
@@ -622,7 +622,7 @@ UpdateMatchGames(
           number: 1,
           opponent1: { result: "loss" },
         }),
-      "The match game is locked."
+      "The match game is locked.",
     );
     assert.throws(
       () =>
@@ -631,7 +631,7 @@ UpdateMatchGames(
           number: 2,
           opponent1: { result: "loss" },
         }),
-      "The match game is locked."
+      "The match game is locked.",
     );
     assert.throws(
       () =>
@@ -640,7 +640,7 @@ UpdateMatchGames(
           number: 1,
           opponent1: { result: "loss" },
         }),
-      "The match game is locked."
+      "The match game is locked.",
     );
     assert.throws(
       () =>
@@ -649,9 +649,9 @@ UpdateMatchGames(
           number: 2,
           opponent1: { result: "loss" },
         }),
-      "The match game is locked."
+      "The match game is locked.",
     );
-  }
+  },
 );
 
 UpdateMatchGames(
@@ -673,9 +673,9 @@ UpdateMatchGames(
 
     assert.equal(
       storage.select<any>("match", 2).opponent1.id, // Should be determined automatically.
-      storage.select<any>("match", 0).opponent1.id // Winner of the first BO3 match.
+      storage.select<any>("match", 0).opponent1.id, // Winner of the first BO3 match.
     );
-  }
+  },
 );
 
 UpdateMatchGames(
@@ -704,7 +704,7 @@ UpdateMatchGames(
     });
 
     assert.equal(storage.select<any>("match", 0).opponent1.score, 2);
-  }
+  },
 );
 
 UpdateMatchGames(
@@ -722,9 +722,9 @@ UpdateMatchGames(
 
     assert.throws(
       () => manager.reset.matchResults(0),
-      "The parent match is controlled by its child games and its result cannot be reset."
+      "The parent match is controlled by its child games and its result cannot be reset.",
     );
-  }
+  },
 );
 
 UpdateMatchGames(
@@ -746,7 +746,7 @@ UpdateMatchGames(
 
     manager.reset.matchGameResults(0);
     assert.equal(storage.select<any>("match", 0).status, Status.Running);
-  }
+  },
 );
 
 UpdateMatchGames("should reset the forfeit of a parent match", () => {
@@ -913,7 +913,7 @@ Seeding(
 
     assert.equal(storage.select<any>("match", 0).opponent1.id, 8);
     assert.equal(storage.select<any>("participant")!.length, 16);
-  }
+  },
 );
 
 Seeding(
@@ -944,7 +944,7 @@ Seeding(
     assert.equal(storage.select<any>("match", 0).opponent1.id, 0);
     assert.equal(storage.select<any>("match", 3).opponent2.id, 8);
     assert.equal(storage.select<any>("participant")!.length, 9);
-  }
+  },
 );
 
 Seeding("should update the seeding in a stage on non-locked matches", () => {
@@ -1015,7 +1015,7 @@ Seeding(
     const match = storage.select<any>("match", 0);
     assert.equal(match.opponent1.result, "win");
     assert.equal(match.status, Status.Completed);
-  }
+  },
 );
 
 Seeding(
@@ -1050,9 +1050,9 @@ Seeding(
           "Team 7",
           "Team 8",
         ]),
-      "A match is locked."
+      "A match is locked.",
     );
-  }
+  },
 );
 
 Seeding(
@@ -1087,9 +1087,9 @@ Seeding(
           "Team G",
           "Team H", // Match 3.
         ]),
-      "A match is locked."
+      "A match is locked.",
     );
-  }
+  },
 );
 
 Seeding("should throw if the seeding has duplicate participants", () => {
@@ -1105,7 +1105,7 @@ Seeding("should throw if the seeding has duplicate participants", () => {
         "Team 7",
         "Team 8",
       ]),
-    "The seeding has a duplicate participant."
+    "The seeding has a duplicate participant.",
   );
 });
 
@@ -1165,7 +1165,7 @@ MatchGamesStatus(
     assert.equal(games![0].status, Status.Locked);
     assert.equal(games![1].status, Status.Locked);
     assert.equal(games![2].status, Status.Locked);
-  }
+  },
 );
 
 MatchGamesStatus("should set all the child games to Waiting", () => {
@@ -1256,7 +1256,7 @@ MatchGamesStatus(
 
     assert.equal(games![1].status, Status.Running);
     assert.equal(storage.select<any>("match", 0).status, Status.Running);
-  }
+  },
 );
 
 MatchGamesStatus(
@@ -1280,7 +1280,7 @@ MatchGamesStatus(
     assert.equal(storage.select<any>("match", 0).status, Status.Running);
 
     assert.equal(games![1].status, Status.Completed);
-  }
+  },
 );
 
 MatchGamesStatus("should set the parent match to Completed", () => {
@@ -1361,7 +1361,7 @@ MatchGamesStatus(
     assert.equal(secondMatchGames![2].status, Status.Archived);
 
     assert.equal(storage.select<any>("match", 1).status, Status.Archived);
-  }
+  },
 );
 
 MatchGamesStatus(
@@ -1395,7 +1395,7 @@ MatchGamesStatus(
 
     assert.equal(storage.select<any>("match_game", 2).status, Status.Ready);
     assert.equal(storage.select<any>("match_game", 3).status, Status.Ready);
-  }
+  },
 );
 
 MatchGamesStatus(
@@ -1429,7 +1429,7 @@ MatchGamesStatus(
 
     assert.equal(storage.select<any>("match_game", 2).status, Status.Ready);
     assert.equal(storage.select<any>("match_game", 3).status, Status.Ready);
-  }
+  },
 );
 
 UpdateMatches.run();

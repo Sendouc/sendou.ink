@@ -59,7 +59,7 @@ export class MapPool {
 
   get dbList(): DbMapPoolList {
     return Object.entries(this.parsed).flatMap(([mode, stages]) =>
-      stages.flatMap((stageId) => ({ mode: mode as ModeShort, stageId }))
+      stages.flatMap((stageId) => ({ mode: mode as ModeShort, stageId })),
     );
   }
 
@@ -69,7 +69,7 @@ export class MapPool {
 
   get stageModePairs() {
     return Object.entries(this.parsed).flatMap(([mode, stages]) =>
-      stages.map((stageId) => ({ mode: mode as ModeShort, stageId }))
+      stages.map((stageId) => ({ mode: mode as ModeShort, stageId })),
     );
   }
 
@@ -83,7 +83,7 @@ export class MapPool {
 
   hasStage(stageId: StageId): boolean {
     return Object.values(this.parsed).some((stages) =>
-      stages.includes(stageId)
+      stages.includes(stageId),
     );
   }
 
@@ -93,6 +93,14 @@ export class MapPool {
 
   isEmpty(): boolean {
     return Object.values(this.parsed).every((stages) => stages.length === 0);
+  }
+
+  countMapsByMode(mode: ModeShort): number {
+    return this.parsed[mode].length;
+  }
+
+  get length() {
+    return this.stageModePairs.length;
   }
 
   getClonedObject(): MapPoolObject {

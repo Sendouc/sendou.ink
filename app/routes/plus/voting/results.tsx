@@ -46,7 +46,7 @@ interface PlusVotingResultsLoaderData {
 export const loader: LoaderFunction = async ({ request }) => {
   const user = await getUser(request);
   const { results, scores } = db.plusVotes.resultsByMontYear(
-    lastCompletedVoting(new Date())
+    lastCompletedVoting(new Date()),
   );
 
   return json<PlusVotingResultsLoaderData>({
@@ -78,7 +78,7 @@ function ownScores({
         isAtLeastFiveDollarTierPatreon(user);
 
       const sameTierButNotOwn = (
-        filteredScore: Pick<PlusVotingResult, "tier"> & { userId: number }
+        filteredScore: Pick<PlusVotingResult, "tier"> & { userId: number },
       ) =>
         filteredScore.tier === score.tier && filteredScore.userId !== user?.id;
 
@@ -96,7 +96,7 @@ function ownScores({
             .filter(sameTierButNotOwn)
             .filter((otherScore) => otherScore.score <= score.score).length /
             scores.filter(sameTierButNotOwn).length) *
-            100
+            100,
         ),
       };
 

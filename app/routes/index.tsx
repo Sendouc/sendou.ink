@@ -27,25 +27,32 @@ import * as React from "react";
 import { ThemeChanger } from "~/components/layout/ThemeChanger";
 import { SelectedThemeIcon } from "~/components/layout/SelectedThemeIcon";
 import { useTheme } from "~/modules/theme";
+import { useRootLoaderData } from "~/hooks/useRootLoaderData";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
 export default function FrontPage() {
+  const data = useRootLoaderData();
   const { userTheme } = useTheme();
   const [filters, setFilters] = React.useState<[string, string]>(
-    navItems[0]?.filters as [string, string]
+    navItems[0]?.filters as [string, string],
   );
   const { t, i18n } = useTranslation(["common"]);
   const user = useUser();
 
   const selectedLanguage = languages.find(
-    (lang) => i18n.language === lang.code
+    (lang) => i18n.language === lang.code,
   );
 
   return (
     <Main className="stack lg">
+      {data.loginDisabled && (
+        <div className="text-center text-warning text-xs">
+          Log-in is temporarily disabled due to problems with the Discord API
+        </div>
+      )}
       <div className="front__nav-items-container">
         <div className="front__nav-item round">
           <LanguageChanger plain>
@@ -64,30 +71,7 @@ export default function FrontPage() {
           </ThemeChanger>
           {t(`common:theme.${userTheme ?? "auto"}`)}
         </div>
-
-        {user ? (
-          <Link to={userPage(user)} className="front__nav-item round">
-            <Avatar
-              user={user}
-              alt={t("common:header.loggedInAs", {
-                userName: `${user.discordName}`,
-              })}
-              className="front__avatar"
-              size="sm"
-            />
-            {t("common:pages.myPage")}
-          </Link>
-        ) : (
-          <div className="front__nav-item round">
-            <LogInButtonContainer>
-              <button className="front__log-in-button">
-                <LogInIcon size={28} />
-              </button>
-            </LogInButtonContainer>
-            {t("common:header.login")}
-          </div>
-        )}
-
+        <LogInButton />
         {navItems.map((item) => (
           <Link
             to={item.url}
@@ -125,6 +109,41 @@ export default function FrontPage() {
       ) : null}
       <Drawings filters={filters} />
     </Main>
+  );
+}
+
+function LogInButton() {
+  const data = useRootLoaderData();
+  const { t } = useTranslation(["common"]);
+  const user = useUser();
+
+  if (user) {
+    return (
+      <Link to={userPage(user)} className="front__nav-item round">
+        <Avatar
+          user={user}
+          alt={t("common:header.loggedInAs", {
+            userName: `${user.discordName}`,
+          })}
+          className="front__avatar"
+          size="sm"
+        />
+        {t("common:pages.myPage")}
+      </Link>
+    );
+  }
+
+  if (data.loginDisabled) return null;
+
+  return (
+    <div className="front__nav-item round">
+      <LogInButtonContainer>
+        <button className="front__log-in-button">
+          <LogInIcon size={28} />
+        </button>
+      </LogInButtonContainer>
+      {t("common:header.login")}
+    </div>
   );
 }
 

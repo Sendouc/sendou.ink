@@ -22,10 +22,12 @@ import findAllPatronsSql from "./findAllPatrons.sql";
 import findAllPlusMembersSql from "./findAllPlusMembers.sql";
 import findByIdentifierSql from "./findByIdentifier.sql";
 import searchSql from "./search.sql";
+import searchExactSql from "./searchExact.sql";
 import updateByDiscordIdSql from "./updateByDiscordId.sql";
 import updateDiscordIdSql from "./updateDiscordId.sql";
 import updateProfileSql from "./updateProfile.sql";
 import upsertSql from "./upsert.sql";
+import upsertLiteSql from "./upsertLite.sql";
 import addUserWeaponSql from "./addUserWeapon.sql";
 import deleteUserWeaponsSql from "./deleteUserWeapons.sql";
 import wipePlusTiersSql from "./wipePlusTiers.sql";
@@ -48,9 +50,23 @@ export function upsert(
     | "twitter"
     | "youtubeId"
     | "discordUniqueName"
-  >
+  >,
 ) {
   return upsertStm.get(input) as User;
+}
+
+const upsertLiteStm = sql.prepare(upsertLiteSql);
+export function upsertLite(
+  input: Pick<
+    User,
+    | "discordId"
+    | "discordName"
+    | "discordDiscriminator"
+    | "discordAvatar"
+    | "discordUniqueName"
+  >,
+) {
+  return upsertLiteStm.get(input) as User;
 }
 
 const updateProfileStm = sql.prepare(updateProfileSql);
@@ -86,7 +102,7 @@ export const updateProfile = sql.transaction(
     }
 
     return updateProfileStm.get(rest) as User;
-  }
+  },
 );
 
 const updateByDiscordIdStm = sql.prepare(updateByDiscordIdSql);
@@ -97,12 +113,12 @@ export const updateMany = sql.transaction(
         User,
         "discordAvatar" | "discordName" | "discordUniqueName" | "discordId"
       >
-    >
+    >,
   ) => {
     for (const updateArgs of argsArr) {
       updateByDiscordIdStm.run(updateArgs);
     }
-  }
+  },
 );
 
 const deleteAllPatronDataStm = sql.prepare(deleteAllPatronDataSql);
@@ -117,7 +133,7 @@ export const updatePatronData = sql.transaction(
     for (const args of argsArr) {
       addPatronDataStm.run(args);
     }
-  }
+  },
 );
 
 const deleteByIdStm = sql.prepare(deleteByIdSql);
@@ -130,7 +146,7 @@ export const migrate = sql.transaction(
       id: args.oldUserId,
       discordId: deletedUser.discordId,
     });
-  }
+  },
 );
 
 const findByIdentifierStm = sql.prepare(findByIdentifierSql);
@@ -203,18 +219,18 @@ export function findAllPatrons() {
 
 const forcePatronStm = sql.prepare(forcePatronSql);
 export function forcePatron(
-  user: Pick<User, "id" | "patronSince" | "patronTill" | "patronTier">
+  user: Pick<User, "id" | "patronSince" | "patronTill" | "patronTier">,
 ) {
   forcePatronStm.run(user);
 }
 
 const deleteAllResultHighlightsStm = sql.prepare(deleteAllResultHighlightsSql);
 const deleteAllTournamentResultHighlightsStm = sql.prepare(
-  deleteAllTournamentResultHighlightsSql
+  deleteAllTournamentResultHighlightsSql,
 );
 const addResultHighlightStm = sql.prepare(addResultHighlightSql);
 const addTournamentResultHighlightStm = sql.prepare(
-  addTournamentResultHighlightSql
+  addTournamentResultHighlightSql,
 );
 export type UpdateResultHighlightsArgs = {
   userId: User["id"];
@@ -235,28 +251,75 @@ export const updateResultHighlights = sql.transaction(
     for (const tournamentTeamId of resultTournamentTeamIds) {
       addTournamentResultHighlightStm.run({ userId, tournamentTeamId });
     }
-  }
+  },
 );
 
 const searchStm = sql.prepare(searchSql);
-export function search(input: string) {
+export function search({ input, limit }: { input: string; limit: number }) {
   const searchString = `%${input}%`;
 
-  return searchStm.all({
-    discordName: searchString,
-    inGameName: searchString,
-    twitter: searchString,
-  }) as Array<
-    Pick<
-      User,
-      | "discordId"
-      | "discordAvatar"
-      | "discordName"
-      | "discordDiscriminator"
-      | "customUrl"
-      | "inGameName"
+  return (
+    searchStm.all({
+      discordName: searchString,
+      inGameName: searchString,
+      discordUniqueName: searchString,
+      twitter: searchString,
+      limit,
+    }) as Array<
+      Pick<
+        UserWithPlusTier,
+        | "id"
+        | "discordId"
+        | "discordAvatar"
+        | "discordName"
+        | "discordDiscriminator"
+        | "customUrl"
+        | "inGameName"
+        | "discordUniqueName"
+        | "showDiscordUniqueName"
+        | "plusTier"
+      >
     >
-  >;
+  ).map((user) => ({
+    ...user,
+    discordUniqueName: user.showDiscordUniqueName
+      ? user.discordUniqueName
+      : undefined,
+  }));
+}
+
+const searchExactStm = sql.prepare(searchExactSql);
+export function searchExact(args: {
+  discordId?: User["discordId"];
+  customUrl?: User["customUrl"];
+  id?: User["id"];
+}) {
+  return (
+    searchExactStm.all({
+      discordId: args.discordId ?? null,
+      customUrl: args.customUrl ?? null,
+      id: args.id ?? null,
+    }) as Array<
+      Pick<
+        UserWithPlusTier,
+        | "id"
+        | "discordId"
+        | "discordAvatar"
+        | "discordName"
+        | "discordDiscriminator"
+        | "customUrl"
+        | "inGameName"
+        | "discordUniqueName"
+        | "showDiscordUniqueName"
+        | "plusTier"
+      >
+    >
+  ).map((user) => ({
+    ...user,
+    discordUniqueName: user.showDiscordUniqueName
+      ? user.discordUniqueName
+      : undefined,
+  }));
 }
 
 const wipePlusTiersStm = sql.prepare(wipePlusTiersSql);

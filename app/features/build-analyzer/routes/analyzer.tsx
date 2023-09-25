@@ -66,7 +66,7 @@ import {
 import { useUser } from "~/modules/auth";
 import { atOrError } from "~/utils/arrays";
 
-export const CURRENT_PATCH = "4.0";
+export const CURRENT_PATCH = "5.0";
 
 export const meta: V2_MetaFunction = () => {
   return [
@@ -210,7 +210,7 @@ export default function BuildAnalyzerPage() {
   //  and also fixes an edge case with Ability Doubler as the only ability in the build
   const showAbilityChunksRequired: boolean = build.some(
     (gear) =>
-      gear.filter((ability) => !ABILITIES_WITHOUT_CHUNKS.has(ability)).length
+      gear.filter((ability) => !ABILITIES_WITHOUT_CHUNKS.has(ability)).length,
   );
 
   return (
@@ -336,7 +336,9 @@ export default function BuildAnalyzerPage() {
                     height={20}
                     alt={t(`weapons:MAIN_${mainWeaponId}`)}
                   />
-                  {t(`weapons:MAIN_${mainWeaponId}`)}
+                  <span className="analyzer__weapon-info-badge__text">
+                    {t(`weapons:MAIN_${mainWeaponId}`)}
+                  </span>
                 </div>
               }
             >
@@ -449,12 +451,12 @@ export default function BuildAnalyzerPage() {
               <div className="analyzer__weapon-info-badge">
                 <Image
                   path={specialWeaponImageUrl(
-                    analyzed.weapon.specialWeaponSplId
+                    analyzed.weapon.specialWeaponSplId,
                   )}
                   width={20}
                   height={20}
                   alt={t(
-                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
+                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`,
                   )}
                 />
                 {t(`weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`)}
@@ -489,7 +491,7 @@ export default function BuildAnalyzerPage() {
                 stat={statKeyToTuple("specialDurationInSeconds")}
                 title={t("analyzer:stat.special.duration", {
                   weapon: t(
-                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
+                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`,
                   ),
                 })}
                 suffix={t("analyzer:suffix.seconds")}
@@ -507,7 +509,7 @@ export default function BuildAnalyzerPage() {
                 stat={statKeyToTuple("specialDamageDistance")}
                 title={t("analyzer:stat.special.damageDistance", {
                   weapon: t(
-                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
+                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`,
                   ),
                 })}
               />
@@ -519,7 +521,7 @@ export default function BuildAnalyzerPage() {
                 stat={statKeyToTuple("specialPaintRadius")}
                 title={t("analyzer:stat.special.paintRadius", {
                   weapon: t(
-                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
+                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`,
                   ),
                 })}
               />
@@ -531,7 +533,7 @@ export default function BuildAnalyzerPage() {
                 stat={statKeyToTuple("specialFieldHp")}
                 title={t("analyzer:stat.special.shieldHp", {
                   weapon: t(
-                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
+                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`,
                   ),
                 })}
                 suffix={t("analyzer:suffix.hp")}
@@ -544,7 +546,7 @@ export default function BuildAnalyzerPage() {
                 stat={statKeyToTuple("specialDeviceHp")}
                 title={t("analyzer:stat.special.deviceHp", {
                   weapon: t(
-                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
+                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`,
                   ),
                 })}
                 suffix={t("analyzer:suffix.hp")}
@@ -557,7 +559,7 @@ export default function BuildAnalyzerPage() {
                 stat={statKeyToTuple("specialHookInkConsumptionPercentage")}
                 title={t("analyzer:stat.special.inkConsumptionHook", {
                   weapon: t(
-                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
+                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`,
                   ),
                 })}
                 suffix="%"
@@ -568,11 +570,11 @@ export default function BuildAnalyzerPage() {
                 isComparing={isComparing}
                 abilityPoints={abilityPoints}
                 stat={statKeyToTuple(
-                  "specialInkConsumptionPerSecondPercentage"
+                  "specialInkConsumptionPerSecondPercentage",
                 )}
                 title={t("analyzer:stat.special.inkConsumptionPerSecond", {
                   weapon: t(
-                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
+                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`,
                   ),
                 })}
                 suffix="%"
@@ -585,7 +587,7 @@ export default function BuildAnalyzerPage() {
                 stat={statKeyToTuple("specialReticleRadius")}
                 title={t("analyzer:stat.special.reticleRadius", {
                   weapon: t(
-                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
+                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`,
                   ),
                 })}
               />
@@ -597,7 +599,7 @@ export default function BuildAnalyzerPage() {
                 stat={statKeyToTuple("specialThrowDistance")}
                 title={t("analyzer:stat.special.throwDistance", {
                   weapon: t(
-                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
+                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`,
                   ),
                 })}
               />
@@ -609,7 +611,7 @@ export default function BuildAnalyzerPage() {
                 stat={statKeyToTuple("specialAutoChargeRate")}
                 title={t("analyzer:stat.special.autoChargeRate", {
                   weapon: t(
-                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
+                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`,
                   ),
                 })}
               />
@@ -621,7 +623,7 @@ export default function BuildAnalyzerPage() {
                 stat={statKeyToTuple("specialMaxRadius")}
                 title={t("analyzer:stat.special.maxRadius", {
                   weapon: t(
-                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
+                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`,
                   ),
                 })}
                 popoverInfo={t("analyzer:stat.special.maxRadius.explanation")}
@@ -634,7 +636,7 @@ export default function BuildAnalyzerPage() {
                 stat={statKeyToTuple("specialRadiusRange")}
                 title={t("analyzer:stat.special.radiusRange", {
                   weapon: t(
-                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
+                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`,
                   ),
                 })}
               />
@@ -646,7 +648,7 @@ export default function BuildAnalyzerPage() {
                 stat={statKeyToTuple("specialPowerUpDuration")}
                 title={t("analyzer:stat.special.powerUpDuration", {
                   weapon: t(
-                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
+                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`,
                   ),
                 })}
                 suffix={t("analyzer:suffix.seconds")}
@@ -702,12 +704,21 @@ export default function BuildAnalyzerPage() {
               textBelow={t("analyzer:damageSubDefExplanation")}
             >
               {(["SRU"] as const).some(
-                (ability) => (abilityPoints.get(ability) ?? 0) > 0
+                (ability) => (abilityPoints.get(ability) ?? 0) > 0,
               ) ? (
                 <div className="analyzer__stat-card-highlighted" />
               ) : null}
               <DamageTable
                 values={analyzed.stats.subWeaponDefenseDamages}
+                comparisonValues={
+                  analyzed2.stats.subWeaponDefenseDamages.some(
+                    (dmg, i) =>
+                      dmg.value !==
+                      analyzed.stats.subWeaponDefenseDamages[i].value,
+                  )
+                    ? analyzed2.stats.subWeaponDefenseDamages
+                    : undefined
+                }
                 multiShots={analyzed.weapon.multiShots}
               />
             </StatCategory>
@@ -729,7 +740,7 @@ export default function BuildAnalyzerPage() {
             <StatCategory
               title={t("analyzer:stat.category.special.damage", {
                 specialWeapon: t(
-                  `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`
+                  `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`,
                 ),
               })}
               containerClassName="analyzer__table-container"
@@ -744,7 +755,7 @@ export default function BuildAnalyzerPage() {
               containerClassName="analyzer__table-container"
             >
               {(["ISM", "ISS"] as const).some(
-                (ability) => (abilityPoints.get(ability) ?? 0) > 0
+                (ability) => (abilityPoints.get(ability) ?? 0) > 0,
               ) ? (
                 <div className="analyzer__stat-card-highlighted" />
               ) : null}
@@ -1042,7 +1053,7 @@ function EffectsSelector({
     (effect) =>
       !isAbility(effect.type) ||
       build.flat().includes(effect.type) ||
-      build2.flat().includes(effect.type)
+      build2.flat().includes(effect.type),
   ).reverse(); // reverse to show Tacticooler first as it always shows
 
   return (
@@ -1287,9 +1298,13 @@ function ModifiedByAbilities({ abilities }: { abilities: Stat["modifiedBy"] }) {
 
 function DamageTable({
   values,
+  comparisonValues,
   multiShots,
 }: {
   values:
+    | AnalyzedBuild["stats"]["damages"]
+    | AnalyzedBuild["stats"]["subWeaponDefenseDamages"];
+  comparisonValues?:
     | AnalyzedBuild["stats"]["damages"]
     | AnalyzedBuild["stats"]["subWeaponDefenseDamages"];
   multiShots?: AnalyzedBuild["weapon"]["multiShots"];
@@ -1314,14 +1329,18 @@ function DamageTable({
               <th>{t("analyzer:damage.header.distance")}</th>
             )}
             {damageIsSubWeaponDamage(firstRow) ? (
-              <th>{t("analyzer:damage.header.baseDamage")}</th>
+              <th>
+                {comparisonValues
+                  ? t("analyzer:damage.header.baseDamage.short")
+                  : t("analyzer:damage.header.baseDamage")}
+              </th>
             ) : null}
             {showDamageColumn && <th>{t("analyzer:damage.header.damage")}</th>}
           </tr>
         </thead>
         <tbody>
-          {values.map((val) => {
-            const damage =
+          {values.map((val, i) => {
+            const damage = (val: AnalyzedBuild["stats"]["damages"][number]) =>
               multiShots && damageTypeToWeaponType[val.type] === "MAIN"
                 ? new Array(multiShots).fill(val.value).join(" + ")
                 : val.value;
@@ -1331,6 +1350,8 @@ function DamageTable({
               : damageTypeTranslationString({
                   damageType: val.type,
                 });
+
+            const comparisonVal = comparisonValues?.[i];
 
             return (
               <tr key={val.id}>
@@ -1358,7 +1379,8 @@ function DamageTable({
                 {damageIsSubWeaponDamage(val) && <td>{val.baseValue}</td>}
                 {showDamageColumn && (
                   <td>
-                    {damage}{" "}
+                    {damage(val)}
+                    {comparisonVal ? `/${damage(comparisonVal)}` : null}{" "}
                     {val.shotsToSplat && (
                       <span className="analyzer__shots-to-splat">
                         {t("analyzer:damage.toSplat", {
@@ -1385,7 +1407,7 @@ function ConsumptionTable({
   isComparing: boolean;
   options: [
     AnalyzedBuild["stats"]["fullInkTankOptions"],
-    AnalyzedBuild["stats"]["fullInkTankOptions"]
+    AnalyzedBuild["stats"]["fullInkTankOptions"],
   ];
   subWeaponId: SubWeaponId;
 }) {
@@ -1412,10 +1434,10 @@ function ConsumptionTable({
         <tbody>
           {new Array(maxSubsToUse + 1).fill(null).map((_, subsUsed) => {
             const options1ForThisSubsUsed = options1.filter(
-              (opt) => opt.subsUsed === subsUsed
+              (opt) => opt.subsUsed === subsUsed,
             );
             const options2ForThisSubsUsed = options2.filter(
-              (opt) => opt.subsUsed === subsUsed
+              (opt) => opt.subsUsed === subsUsed,
             );
 
             const cells: React.ReactNode[] = [];
@@ -1428,7 +1450,7 @@ function ConsumptionTable({
               i <
               Math.max(
                 options1ForThisSubsUsed.length,
-                options2ForThisSubsUsed.length
+                options2ForThisSubsUsed.length,
               );
               i++
             ) {

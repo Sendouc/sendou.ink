@@ -23,14 +23,14 @@ import { CommentTextarea } from "./new";
 const commentActionSchema = z.object({
   comment: z.preprocess(
     trimmedString,
-    z.string().min(1).max(PlUS_SUGGESTION_COMMENT_MAX_LENGTH)
+    z.string().min(1).max(PlUS_SUGGESTION_COMMENT_MAX_LENGTH),
   ),
   tier: z.preprocess(
     actualNumber,
     z
       .number()
       .min(Math.min(...PLUS_TIERS))
-      .max(Math.max(...PLUS_TIERS))
+      .max(Math.max(...PLUS_TIERS)),
   ),
   suggestedId: z.preprocess(actualNumber, z.number()),
 });
@@ -54,7 +54,7 @@ export const action: ActionFunction = async ({ request }) => {
       user,
       suggested: { id: data.suggestedId },
       targetPlusTier: data.tier,
-    })
+    }),
   );
 
   db.plusSuggestions.create({
@@ -64,7 +64,7 @@ export const action: ActionFunction = async ({ request }) => {
     ...nextNonCompletedVoting(new Date()),
   });
 
-  return redirect(plusSuggestionPage(data.tier));
+  throw redirect(plusSuggestionPage(data.tier));
 };
 
 export default function PlusCommentModalPage() {
@@ -77,7 +77,7 @@ export default function PlusCommentModalPage() {
   const tierSuggestedTo = String(params["tier"]);
 
   const userBeingCommented = data.suggestions?.[tierSuggestedTo]?.find(
-    (u) => u.suggestedUser.id === targetUserId
+    (u) => u.suggestedUser.id === targetUserId,
   );
 
   if (

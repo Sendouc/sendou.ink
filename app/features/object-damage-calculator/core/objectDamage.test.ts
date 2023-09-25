@@ -105,9 +105,8 @@ CalculateDamage("BRU increases Splash Wall hitpoints", () => {
     abilityPoints: new Map([["BRU", 10]]),
   });
 
-  const hpWithoutBRU = withoutBRU.find(
-    (d) => d.receiver === "Wsb_Shield"
-  )?.hitPoints;
+  const hpWithoutBRU = withoutBRU.find((d) => d.receiver === "Wsb_Shield")
+    ?.hitPoints;
   const hpWithBRU = withBRU.find((d) => d.receiver === "Wsb_Shield")?.hitPoints;
 
   assert.ok(typeof hpWithoutBRU === "number");
@@ -122,11 +121,10 @@ CalculateDamage("SPU increases Big Bubbler hitpoints", () => {
   });
 
   const hpWithoutSPU = withoutSPU.find(
-    (d) => d.receiver === "GreatBarrier_Barrier"
+    (d) => d.receiver === "GreatBarrier_Barrier",
   )?.hitPoints;
-  const hpWithSPU = withSPU.find(
-    (d) => d.receiver === "GreatBarrier_Barrier"
-  )?.hitPoints;
+  const hpWithSPU = withSPU.find((d) => d.receiver === "GreatBarrier_Barrier")
+    ?.hitPoints;
 
   assert.ok(typeof hpWithoutSPU === "number");
   assert.ok(typeof hpWithSPU === "number");
@@ -138,7 +136,7 @@ const shotsToPopRM: Array<
     weaponId: MainWeaponId,
     damageType: DamageType,
     shotsToPop: number,
-    shotsToPopOS: number
+    shotsToPopOS: number,
   ]
 > = [
   // Splattershot
@@ -185,21 +183,21 @@ CalculateDamage(
       const damages = calculate({ mainWeaponId, damageType });
 
       const damageVsRM = damages.find(
-        (d) => d.receiver === "Gachihoko_Barrier"
+        (d) => d.receiver === "Gachihoko_Barrier",
       )!;
 
       assert.equal(
         damageVsRM.damages.find((d) => !d.objectShredder)!.hitsToDestroy,
         shotsToPop,
-        `Shots to pop wrong for weapon id: ${mainWeaponId}`
+        `Shots to pop wrong for weapon id: ${mainWeaponId}`,
       );
       assert.equal(
         damageVsRM.damages.find((d) => d.objectShredder)!.hitsToDestroy,
         shotsToPopOS,
-        `Shots to pop wrong with OS for weapon id: ${mainWeaponId}`
+        `Shots to pop wrong with OS for weapon id: ${mainWeaponId}`,
       );
     }
-  }
+  },
 );
 
 const HYDRA_SPLATLING_ID = 4020;
@@ -225,7 +223,7 @@ CalculateDamage(
 
     assert.ok(min > max);
     assert.ok(max > maxFullyCharged);
-  }
+  },
 );
 
 CalculateDamage.run();

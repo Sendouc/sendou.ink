@@ -36,7 +36,7 @@ export function usePlusVoting(usersForVotingFromServer: UsersForVoting) {
         return newVotes;
       });
     },
-    [usersForVoting]
+    [usersForVoting],
   );
 
   const undoLast = React.useCallback(() => {
@@ -96,7 +96,7 @@ function useLoadInitialStateFromLocalStorageEffect({
     }
 
     const parsedUsersForVoting = JSON.parse(
-      usersForVotingFromLocalStorage
+      usersForVotingFromLocalStorage,
     ) as VotingLocalStorageData;
 
     if (
@@ -187,7 +187,7 @@ function votesToLocalStorage({
     year,
     votes,
     usersForVotingOrder: Object.fromEntries(
-      usersForVoting.map(({ user }, i) => [user.id, i])
+      usersForVoting.map(({ user }, i) => [user.id, i]),
     ),
   };
   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(toLocalStorage));

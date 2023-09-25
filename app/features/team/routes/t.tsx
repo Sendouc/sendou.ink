@@ -38,9 +38,11 @@ import {
 } from "~/utils/urls";
 import { allTeams } from "../queries/allTeams.server";
 import { createNewTeam } from "../queries/createNewTeam.server";
-import { TEAM } from "../team-constants";
+import { TEAM, TEAMS_PER_PAGE } from "../team-constants";
 import { createTeamSchema } from "../team-schemas.server";
 import styles from "../team.css";
+import { usePagination } from "~/hooks/usePagination";
+import { Pagination } from "~/components/Pagination";
 
 export const meta: V2_MetaFunction = ({
   data,
@@ -67,9 +69,9 @@ export const action: ActionFunction = async ({ request }) => {
 
   validate(
     teams.every((team) =>
-      team.members.every((member) => member.id !== user.id)
+      team.members.every((member) => member.id !== user.id),
     ),
-    "Already in a team"
+    "Already in a team",
   );
 
   // two teams can't have same customUrl
@@ -86,7 +88,7 @@ export const action: ActionFunction = async ({ request }) => {
     customUrl,
   });
 
-  return redirect(teamPage(customUrl));
+  throw redirect(teamPage(customUrl));
 };
 
 export const handle: SendouRouteHandle = {
@@ -123,10 +125,10 @@ export const loader = async ({ request }: LoaderArgs) => {
 
     // and as tiebreaker teams with a higher plus server tier member first
     const lowestATeamPlusTier = Math.min(
-      ...teamA.members.map((m) => m.plusTier ?? Infinity)
+      ...teamA.members.map((m) => m.plusTier ?? Infinity),
     );
     const lowestBTeamPlusTier = Math.min(
-      ...teamB.members.map((m) => m.plusTier ?? Infinity)
+      ...teamB.members.map((m) => m.plusTier ?? Infinity),
     );
 
     if (lowestATeamPlusTier > lowestBTeamPlusTier) {
@@ -163,13 +165,26 @@ export default function TeamSearchPage() {
     if (team.name.toLowerCase().includes(lowerCaseInput)) return true;
     if (
       team.members.some((m) =>
-        m.discordName.toLowerCase().includes(lowerCaseInput)
+        m.discordName.toLowerCase().includes(lowerCaseInput),
       )
     ) {
       return true;
     }
 
     return false;
+  });
+
+  const {
+    itemsToDisplay,
+    everythingVisible,
+    currentPage,
+    pagesCount,
+    nextPage,
+    previousPage,
+    setPage,
+  } = usePagination({
+    items: filteredTeams,
+    pageSize: TEAMS_PER_PAGE,
   });
 
   return (
@@ -194,7 +209,7 @@ export default function TeamSearchPage() {
         testId="team-search-input"
       />
       <div className="mt-6 stack lg">
-        {filteredTeams.map((team, i) => (
+        {itemsToDisplay.map((team, i) => (
           <Link
             key={team.customUrl}
             to={teamPage(team.customUrl)}
@@ -226,13 +241,22 @@ export default function TeamSearchPage() {
                   ? team.members[0]!.discordName
                   : joinListToNaturalString(
                       team.members.map((member) => member.discordName),
-                      "&"
+                      "&",
                     )}
               </div>
             </div>
           </Link>
         ))}
       </div>
+      {!everythingVisible ? (
+        <Pagination
+          currentPage={currentPage}
+          pagesCount={pagesCount}
+          nextPage={nextPage}
+          previousPage={previousPage}
+          setPage={setPage}
+        />
+      ) : null}
     </Main>
   );
 }

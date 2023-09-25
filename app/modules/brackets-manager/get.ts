@@ -47,7 +47,7 @@ export class Get extends BaseGetter {
     if (!stages) throw Error("Error getting stages.");
 
     const stagesData = stages.map((stage) =>
-      this.getStageSpecificData(stage.id)
+      this.getStageSpecificData(stage.id),
     );
 
     const participants = this.storage.select("participant", {
@@ -59,19 +59,19 @@ export class Get extends BaseGetter {
       stage: stages,
       group: stagesData.reduce(
         (acc, data) => [...acc, ...data.groups],
-        [] as Group[]
+        [] as Group[],
       ),
       round: stagesData.reduce(
         (acc, data) => [...acc, ...data.rounds],
-        [] as Round[]
+        [] as Round[],
       ),
       match: stagesData.reduce(
         (acc, data) => [...acc, ...data.matches],
-        [] as Match[]
+        [] as Match[],
       ),
       match_game: stagesData.reduce(
         (acc, data) => [...acc, ...data.matchGames],
-        [] as MatchGame[]
+        [] as MatchGame[],
       ),
       participant: participants,
     };
@@ -86,7 +86,7 @@ export class Get extends BaseGetter {
     const parentMatches = matches.filter((match) => match.child_count > 0);
 
     const matchGamesQueries = parentMatches.map((match) =>
-      this.storage.select("match_game", { parent_id: match.id })
+      this.storage.select("match_game", { parent_id: match.id }),
     );
     if (matchGamesQueries.some((game) => game === null))
       throw Error("Error getting match games.");
@@ -177,7 +177,7 @@ export class Get extends BaseGetter {
     // - For double elimination, 1 round per bracket (upper and lower) can be played in parallel at their own pace.
     if (stage.type !== "single_elimination")
       throw Error(
-        "Not implemented for round robin and double elimination. Ask if needed."
+        "Not implemented for round robin and double elimination. Ask if needed.",
       );
 
     const matches = this.storage.select("match", { stage_id: stageId });
@@ -336,7 +336,7 @@ export class Get extends BaseGetter {
     // Rest: every loser in reverse order.
     const losers = helpers.getLosers(
       participants,
-      matches.filter((match) => match.group_id === singleBracket.id)
+      matches.filter((match) => match.group_id === singleBracket.id),
     );
     grouped.push(...losers.reverse());
 
@@ -348,11 +348,11 @@ export class Get extends BaseGetter {
 
       const consolationFinalWinner = helpers.findParticipant(
         participants,
-        getFinalWinnerIfDefined(consolationFinal)
+        getFinalWinnerIfDefined(consolationFinal),
       );
       const consolationFinalLoser = helpers.findParticipant(
         participants,
-        helpers.getLoser(consolationFinal)
+        helpers.getLoser(consolationFinal),
       );
 
       // Overwrite semi-final losers with the consolation final results.
@@ -402,18 +402,18 @@ export class Get extends BaseGetter {
       ];
     } else {
       const grandFinalMatches = matches.filter(
-        (match) => match.group_id === finalGroup.id
+        (match) => match.group_id === finalGroup.id,
       );
       const decisiveMatch = helpers.getGrandFinalDecisiveMatch(
         stage.settings?.grandFinal || "none",
-        grandFinalMatches
+        grandFinalMatches,
       );
 
       // 1st place: Grand Final winner.
       grouped[0] = [
         helpers.findParticipant(
           participants,
-          getFinalWinnerIfDefined(decisiveMatch)
+          getFinalWinnerIfDefined(decisiveMatch),
         ),
       ];
 
@@ -426,7 +426,7 @@ export class Get extends BaseGetter {
     // Rest: every loser in reverse order.
     const losers = helpers.getLosers(
       participants,
-      matches.filter((match) => match.group_id === loserBracket.id)
+      matches.filter((match) => match.group_id === loserBracket.id),
     );
     grouped.push(...losers.reverse());
 

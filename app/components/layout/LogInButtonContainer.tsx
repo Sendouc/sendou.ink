@@ -1,6 +1,6 @@
 import { useSearchParams } from "@remix-run/react";
 import { useTranslation } from "~/hooks/useTranslation";
-import { LOG_IN_URL } from "~/utils/urls";
+import { LOG_IN_URL, SENDOU_INK_DISCORD_URL } from "~/utils/urls";
 import { Button } from "../Button";
 import { Dialog } from "../Dialog";
 
@@ -51,7 +51,10 @@ function AuthenticationErrorHelp({ errorCode }: { errorCode: string }) {
       return (
         <>
           <h2 className="text-lg text-center">{t("auth.errors.failed")}</h2>
-          {t("auth.errors.unknown")}
+          {t("auth.errors.unknown")}{" "}
+          <a href={SENDOU_INK_DISCORD_URL} target="_blank" rel="noreferrer">
+            {SENDOU_INK_DISCORD_URL}
+          </a>
         </>
       );
   }

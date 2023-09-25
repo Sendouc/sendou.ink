@@ -13,7 +13,7 @@ module.exports.up = function (db) {
     "bio" text,
     "country" text
   ) strict
-  `
+  `,
   ).run();
 
   db.prepare(
@@ -37,13 +37,13 @@ module.exports.up = function (db) {
       "tier"
     ) on conflict rollback
   ) strict
-  `
+  `,
   ).run();
   db.prepare(
-    `create index plus_suggestion_author_id on "PlusSuggestion"("authorId")`
+    `create index plus_suggestion_author_id on "PlusSuggestion"("authorId")`,
   ).run();
   db.prepare(
-    `create index plus_suggestion_suggested_id on "PlusSuggestion"("suggestedId")`
+    `create index plus_suggestion_suggested_id on "PlusSuggestion"("suggestedId")`,
   ).run();
 
   db.prepare(
@@ -60,10 +60,10 @@ module.exports.up = function (db) {
     foreign key ("votedId") references "User"("id") on delete cascade,
     unique("month", "year", "authorId", "votedId") on conflict rollback
   ) strict
-  `
+  `,
   ).run();
   db.prepare(
-    `create index plus_vote_author_id on "PlusVote"("authorId");`
+    `create index plus_vote_author_id on "PlusVote"("authorId");`,
   ).run();
   db.prepare(`create index plus_vote_voted_id on "PlusVote"("votedId");`).run();
 
@@ -95,7 +95,7 @@ module.exports.up = function (db) {
     "tier",
     "month",
     "year";
-  `
+  `,
   ).run();
 
   db.prepare(
@@ -141,7 +141,7 @@ module.exports.up = function (db) {
     )
     group by
       "votedId";
-  `
+  `,
   ).run();
 };
 

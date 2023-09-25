@@ -12,7 +12,7 @@ const DIR_PATH_1 = path.join(
   "public",
   "static-assets",
   "img",
-  "main-weapons"
+  "main-weapons",
 );
 
 const DIR_PATH_2 = path.join(
@@ -21,7 +21,7 @@ const DIR_PATH_2 = path.join(
   "public",
   "static-assets",
   "img",
-  "main-weapons-outlined"
+  "main-weapons-outlined",
 );
 
 const DIR_PATH_3 = path.join(
@@ -30,7 +30,7 @@ const DIR_PATH_3 = path.join(
   "public",
   "static-assets",
   "img",
-  "main-weapons-outlined-2"
+  "main-weapons-outlined-2",
 );
 
 async function main() {
@@ -54,7 +54,7 @@ async function main() {
       }
 
       const weapon: any = weapons.find((weapon: any) =>
-        file.includes(weapon.__RowId)
+        file.includes(weapon.__RowId),
       );
 
       if (!weapon) {

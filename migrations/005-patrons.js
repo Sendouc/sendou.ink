@@ -3,10 +3,10 @@ module.exports.up = function (db) {
   db.prepare(`alter table "User" add column "patronSince" integer`).run();
 
   db.prepare(
-    `insert into "Badge" ("code", "displayName") values ('patreon', 'Supporter')`
+    `insert into "Badge" ("code", "displayName") values ('patreon', 'Supporter')`,
   ).run();
   db.prepare(
-    `insert into "Badge" ("code", "displayName") values ('patreon_plus', 'Supporter+')`
+    `insert into "Badge" ("code", "displayName") values ('patreon_plus', 'Supporter+')`,
   ).run();
 
   db.prepare(`alter table "BadgeOwner" rename to "TournamentBadgeOwner"`).run();
@@ -31,7 +31,7 @@ module.exports.up = function (db) {
         end "badgeId"
       from "User"
       where "patronTier" > 1
-  `
+  `,
   ).run();
 };
 
@@ -41,7 +41,7 @@ module.exports.down = function (db) {
   db.prepare(`alter table "User" drop column "patronSince"`).run();
 
   db.prepare(
-    `delete from "Badge" where "code" in ('patreon_plus', 'patreon')`
+    `delete from "Badge" where "code" in ('patreon_plus', 'patreon')`,
   ).run();
 
   db.prepare(`alter table "TournamentBadgeOwner" rename to "BadgeOwner"`).run();

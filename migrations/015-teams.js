@@ -6,7 +6,7 @@ module.exports.up = function (db) {
       "validatedAt" integer,
       "url" text not null unique
     ) strict
-    `
+    `,
   ).run();
 
   db.prepare(
@@ -14,7 +14,7 @@ module.exports.up = function (db) {
       create view "UserSubmittedImage"
       as
       select * from "UnvalidatedUserSubmittedImage" where "validatedAt" is not null
-  `
+  `,
   ).run();
 
   db.prepare(
@@ -33,7 +33,7 @@ module.exports.up = function (db) {
       foreign key ("avatarImgId") references "UnvalidatedUserSubmittedImage"("id") on delete set null,
       foreign key ("bannerImgId") references "UnvalidatedUserSubmittedImage"("id") on delete set null
     ) strict
-    `
+    `,
   ).run();
   db.prepare(`create index team_custom_url on "AllTeam"("customUrl")`).run();
 
@@ -42,7 +42,7 @@ module.exports.up = function (db) {
       create view "Team"
       as
       select * from "AllTeam" where "deletedAt" is null
-  `
+  `,
   ).run();
 
   db.prepare(
@@ -58,7 +58,7 @@ module.exports.up = function (db) {
       foreign key ("userId") references "User"("id") on delete cascade,
       unique("teamId", "userId") on conflict rollback
     ) strict
-    `
+    `,
   ).run();
 
   db.prepare(
@@ -72,6 +72,6 @@ module.exports.up = function (db) {
         and 
       -- if team id is null the team is deleted
       "Team"."id" is not null
-  `
+  `,
   ).run();
 };

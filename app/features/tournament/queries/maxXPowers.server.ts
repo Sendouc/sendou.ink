@@ -14,8 +14,11 @@ const stm = sql.prepare(/*sql*/ `
 export const maxXPowers = () => {
   const rows = stm.all() as { id: number; xPower: number }[];
 
-  return rows.reduce((acc, row) => {
-    acc[row.id] = row.xPower;
-    return acc;
-  }, {} as Record<number, number>);
+  return rows.reduce(
+    (acc, row) => {
+      acc[row.id] = row.xPower;
+      return acc;
+    },
+    {} as Record<number, number>,
+  );
 };

@@ -110,6 +110,19 @@
   top: 6.5px;
 }
 
+.analyzer__weapon-info-badge__text {
+  max-width: 140px;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media screen and (min-width: 480px) {
+  .analyzer__weapon-info-badge__text {
+    max-width: initial;
+  }
+}
+
 .analyzer__stat-collection {
   display: grid;
   gap: var(--s-2);

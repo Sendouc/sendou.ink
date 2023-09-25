@@ -23,12 +23,12 @@ export function resolveOwnedTeam({
   if (typeof userId !== "number") return;
 
   return teams.find((team) =>
-    team.members.some((member) => member.isOwner && member.userId === userId)
+    team.members.some((member) => member.isOwner && member.userId === userId),
   );
 }
 
 export function teamHasCheckedIn(
-  team: Pick<TournamentLoaderTeam, "checkedInAt">
+  team: Pick<TournamentLoaderTeam, "checkedInAt">,
 ) {
   return Boolean(team.checkedInAt);
 }
@@ -48,7 +48,7 @@ export function tournamentTeamIdFromParams(params: Params<string>) {
 }
 
 export function modesIncluded(
-  tournament: Pick<Tournament, "mapPickingStyle">
+  tournament: Pick<Tournament, "mapPickingStyle">,
 ): ModeShort[] {
   switch (tournament.mapPickingStyle) {
     case "AUTO_SZ": {
@@ -70,7 +70,7 @@ export function modesIncluded(
 }
 
 export function isOneModeTournamentOf(
-  tournament: Pick<Tournament, "mapPickingStyle">
+  tournament: Pick<Tournament, "mapPickingStyle">,
 ) {
   return modesIncluded(tournament).length === 1
     ? modesIncluded(tournament)[0]!
@@ -87,7 +87,7 @@ export function HACKY_resolvePicture(event: TournamentLoaderData["event"]) {
 // hacky because db query not taking in account possibility of many start times
 // AND always assumed check-in starts 1h before
 export function HACKY_resolveCheckInTime(
-  event: Pick<TournamentLoaderData["event"], "startTime">
+  event: Pick<TournamentLoaderData["event"], "startTime">,
 ) {
   return databaseTimestampToDate(event.startTime - 60 * 60);
 }
@@ -99,13 +99,13 @@ export function mapPickCountPerMode(event: TournamentLoaderData["event"]) {
 }
 
 export function checkInHasStarted(
-  event: Pick<TournamentLoaderData["event"], "startTime">
+  event: Pick<TournamentLoaderData["event"], "startTime">,
 ) {
   return HACKY_resolveCheckInTime(event).getTime() < Date.now();
 }
 
 export function checkInHasEnded(
-  event: Pick<TournamentLoaderData["event"], "startTime">
+  event: Pick<TournamentLoaderData["event"], "startTime">,
 ) {
   return databaseTimestampToDate(event.startTime).getTime() < Date.now();
 }
@@ -122,7 +122,7 @@ export function validateCanCheckIn({
   validate(checkInHasStarted(event), "Check-in has not started yet");
   validate(
     team.members.length >= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
-    "Team does not have enough members"
+    "Team does not have enough members",
   );
   validate(mapPool && mapPool.length > 0, "Team does not have a map pool");
 

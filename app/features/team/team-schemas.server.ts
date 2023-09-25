@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { falsyToNull, id, jsonParseable } from "~/utils/zod";
+import { _action, falsyToNull, id, jsonParseable } from "~/utils/zod";
 import { TEAM, TEAM_MEMBER_ROLES } from "./team-constants";
 
 export const teamParamsSchema = z.object({ customUrl: z.string() });
@@ -10,18 +10,18 @@ export const createTeamSchema = z.object({
 
 export const editTeamSchema = z.union([
   z.object({
-    _action: z.literal("DELETE"),
+    _action: _action("DELETE"),
   }),
   z.object({
-    _action: z.literal("EDIT"),
+    _action: _action("EDIT"),
     name: z.string().min(TEAM.NAME_MIN_LENGTH).max(TEAM.NAME_MAX_LENGTH),
     bio: z.preprocess(
       falsyToNull,
-      z.string().max(TEAM.BIO_MAX_LENGTH).nullable()
+      z.string().max(TEAM.BIO_MAX_LENGTH).nullable(),
     ),
     twitter: z.preprocess(
       falsyToNull,
-      z.string().max(TEAM.TWITTER_MAX_LENGTH).nullable()
+      z.string().max(TEAM.TWITTER_MAX_LENGTH).nullable(),
     ),
     css: z.preprocess(falsyToNull, z.string().refine(jsonParseable).nullable()),
   }),
@@ -29,18 +29,18 @@ export const editTeamSchema = z.union([
 
 export const manageRosterSchema = z.union([
   z.object({
-    _action: z.literal("RESET_INVITE_LINK"),
+    _action: _action("RESET_INVITE_LINK"),
   }),
   z.object({
-    _action: z.literal("DELETE_MEMBER"),
+    _action: _action("DELETE_MEMBER"),
     userId: id,
   }),
   z.object({
-    _action: z.literal("TRANSFER_OWNERSHIP"),
+    _action: _action("TRANSFER_OWNERSHIP"),
     newOwnerId: id,
   }),
   z.object({
-    _action: z.literal("UPDATE_MEMBER_ROLE"),
+    _action: _action("UPDATE_MEMBER_ROLE"),
     userId: id,
     role: z.union([z.enum(TEAM_MEMBER_ROLES), z.literal("")]),
   }),

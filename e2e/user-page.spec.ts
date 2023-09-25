@@ -49,7 +49,7 @@ test.describe("User page", () => {
     const body = page.locator("body");
     const bodyColor = () =>
       body.evaluate((element) =>
-        window.getComputedStyle(element).getPropertyValue("--bg").trim()
+        window.getComputedStyle(element).getPropertyValue("--bg").trim(),
       );
 
     await expect(bodyColor()).resolves.toMatch(/#ebebf0/);
@@ -61,6 +61,7 @@ test.describe("User page", () => {
 
     // got redirected
     await expect(page).not.toHaveURL(/edit/);
+    await page.reload();
     await expect(bodyColor()).resolves.toMatch(/#4a412a/);
   });
 

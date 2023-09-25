@@ -44,7 +44,7 @@ export function resolveFreshMapList(args: ResolveCurrentMapListArgs) {
   } catch (e) {
     console.error(
       "Failed to create map list. Falling back to default maps.",
-      e
+      e,
     );
 
     return createTournamentMapList({

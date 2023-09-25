@@ -1,16 +1,21 @@
 select
+  "id",
   "discordName",
   "discordId",
   "discordAvatar",
   "discordDiscriminator",
+  "discordUniqueName",
+  "showDiscordUniqueName",
   "customUrl",
-  "inGameName"
+  "inGameName",
+  "PlusTier"."tier" as "plusTier"
 from
   "User"
   left join "PlusTier" on "PlusTier"."userId" = "User"."id"
 where
   "discordName" like @discordName
   or "inGameName" like @inGameName
+  or "discordUniqueName" like @discordUniqueName
   or "twitter" like @twitter
 order by
   case
@@ -18,4 +23,4 @@ order by
     else "PlusTier"."tier"
   end asc
 limit
-  25
+  @limit

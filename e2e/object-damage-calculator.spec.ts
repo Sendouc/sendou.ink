@@ -23,7 +23,7 @@ test.describe("Object Damage Calculator", () => {
 
     // test hits to destroy calculation
     expect(Number(htdBefore)).toBe(
-      Math.ceil(Number(hpBefore) / Number(dmgBefore))
+      Math.ceil(Number(hpBefore) / Number(dmgBefore)),
     );
 
     await page.locator("text=Damage type").selectOption("NORMAL_MIN");

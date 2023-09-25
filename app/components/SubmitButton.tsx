@@ -18,13 +18,27 @@ export function SubmitButton({
 
   const isSubmitting = state ? state !== "idle" : navigation.state !== "idle";
 
+  const name = () => {
+    if (rest.name) return rest.name;
+    if (_action) return "_action";
+
+    return undefined;
+  };
+
+  const value = () => {
+    if (rest.value) return rest.value;
+    if (_action) return _action;
+
+    return undefined;
+  };
+
   return (
     <Button
       {...rest}
       disabled={rest.disabled || isSubmitting}
       type="submit"
-      name={_action ? "_action" : undefined}
-      value={_action}
+      name={name()}
+      value={value()}
       data-testid={testId ?? "submit-button"}
     >
       {children}

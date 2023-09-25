@@ -12,11 +12,11 @@ import {
 
 const description = z.preprocess(
   falsyToNull,
-  z.string().max(ART.DESCRIPTION_MAX_LENGTH).nullable()
+  z.string().max(ART.DESCRIPTION_MAX_LENGTH).nullable(),
 );
 const linkedUsers = z.preprocess(
   processMany(safeJSONParse, removeDuplicates),
-  z.array(id).max(ART.LINKED_USERS_MAX_LENGTH)
+  z.array(id).max(ART.LINKED_USERS_MAX_LENGTH),
 );
 const tags = z.preprocess(
   safeJSONParse,
@@ -25,9 +25,9 @@ const tags = z.preprocess(
       z.object({
         name: z.string().min(1).max(ART.TAG_MAX_LENGTH).optional(),
         id: id.optional(),
-      })
+      }),
     )
-    .max(ART.TAG_MAX_LENGTH)
+    .max(ART.TAG_MAX_LENGTH),
 );
 export const newArtSchema = z.object({
   description,

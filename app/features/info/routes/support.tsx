@@ -49,6 +49,11 @@ const PERKS = [
   },
   {
     tier: 2,
+    name: "prioritySupport",
+    extraInfo: true,
+  },
+  {
+    tier: 2,
     name: "customizedColorsUser",
     extraInfo: false,
   },
@@ -66,6 +71,11 @@ const PERKS = [
     tier: 2,
     name: "discordColorRole",
     extraInfo: true,
+  },
+  {
+    tier: 2,
+    name: "chatColor",
+    extraInfo: false,
   },
   {
     tier: 2,

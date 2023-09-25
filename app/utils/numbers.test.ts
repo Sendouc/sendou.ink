@@ -20,7 +20,7 @@ CutToNDecimalPlaces(
   () => {
     const result = cutToNDecimalPlaces(100, 2);
     assert.is(result, 100);
-  }
+  },
 );
 
 CutToNDecimalPlaces(
@@ -28,7 +28,7 @@ CutToNDecimalPlaces(
   () => {
     const result = cutToNDecimalPlaces(3.0001, 2);
     assert.is(result, 3);
-  }
+  },
 );
 
 CutToNDecimalPlaces.run();

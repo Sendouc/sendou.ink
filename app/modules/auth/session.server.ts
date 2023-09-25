@@ -8,8 +8,11 @@ if (process.env.NODE_ENV === "production") {
 }
 export const authSessionStorage = createCookieSessionStorage({
   cookie: {
+    // xxx: if domain trick works this needs renaming to force people to log back in
     name: "_session",
     sameSite: "lax",
+    // need to specify domain so that sub-domains can access it
+    domain: process.env.NODE_ENV === "production" ? "sendou.ink" : undefined,
     path: "/",
     httpOnly: true,
     secrets: [process.env["SESSION_SECRET"] ?? "secret"],

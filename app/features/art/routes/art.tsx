@@ -58,7 +58,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const allTags = allArtTags();
 
   const filteredTagName = new URL(request.url).searchParams.get(
-    FILTERED_TAG_KEY
+    FILTERED_TAG_KEY,
   );
   const filteredTag = allTags.find((t) => t.name === filteredTagName);
 

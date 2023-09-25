@@ -25,21 +25,33 @@ export function matchIdFromParams(params: Params<string>) {
   return result;
 }
 
-const passNumbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+const NUM_MAP = {
+  "1": ["1", "2", "4"],
+  "2": ["2", "1", "3", "5"],
+  "3": ["3", "2", "6"],
+  "4": ["4", "1", "5", "7"],
+  "5": ["5", "2", "4", "6", "8"],
+  "6": ["6", "3", "5", "9"],
+  "7": ["7", "4", "8"],
+  "8": ["8", "7", "5", "9", "0"],
+  "9": ["9", "6", "8"],
+  "0": ["0", "8"],
+};
 export function resolveRoomPass(matchId: TournamentMatch["id"]) {
-  let result = "";
-
-  for (let i = 0; i < 4; i++) {
+  let pass = "5";
+  for (let i = 0; i < 3; i++) {
     const { shuffle } = seededRandom(`${matchId}-${i}`);
 
-    result += shuffle(passNumbers)[0];
+    const key = pass[i] as keyof typeof NUM_MAP;
+    const opts = NUM_MAP[key];
+    const next = shuffle(opts)[0];
+    pass += next;
   }
-
-  return result;
+  return pass;
 }
 
 export function resolveHostingTeam(
-  teams: [TournamentLoaderTeam, TournamentLoaderTeam]
+  teams: [TournamentLoaderTeam, TournamentLoaderTeam],
 ) {
   if (teams[0].prefersNotToHost && !teams[1].prefersNotToHost) return teams[1];
   if (!teams[0].prefersNotToHost && teams[1].prefersNotToHost) return teams[0];
@@ -65,7 +77,7 @@ export function resolveTournamentStageName(format: TournamentFormat) {
 }
 
 export function resolveTournamentStageType(
-  format: TournamentFormat
+  format: TournamentFormat,
 ): TournamentStage["type"] {
   switch (format) {
     case "SE":
@@ -79,7 +91,7 @@ export function resolveTournamentStageType(
 }
 
 export function resolveTournamentStageSettings(
-  format: TournamentFormat
+  format: TournamentFormat,
 ): Stage["settings"] {
   switch (format) {
     case "SE":

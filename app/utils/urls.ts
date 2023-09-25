@@ -7,6 +7,7 @@ import type {
   XRankPlacement,
   User,
   Art,
+  GroupMatch,
 } from "~/db/types";
 import type { ModeShort, weaponCategories } from "~/modules/in-game-lists";
 import type {
@@ -24,6 +25,8 @@ import type { StageBackgroundStyle } from "~/features/map-planner";
 import type { ImageUploadType } from "~/features/img-upload";
 import { serializeBuild } from "~/features/build-analyzer";
 import type { ArtSouce } from "~/features/art";
+import { JOIN_CODE_SEARCH_PARAM_KEY } from "~/features/sendouq/q-constants";
+import type { TierName } from "~/features/mmr/mmr-constants";
 
 const staticAssetsUrl = ({
   folder,
@@ -90,6 +93,13 @@ export const OBJECT_DAMAGE_CALCULATOR_URL = "/object-damage-calculator";
 export const VODS_PAGE = "/vods";
 export const LEADERBOARDS_PAGE = "/leaderboards";
 export const LINKS_PAGE = "/links";
+export const SENDOUQ_YOUTUBE_VIDEO =
+  "https://www.youtube.com/watch?v=XIRNcTFDYzA";
+export const SENDOUQ_PAGE = "/q";
+export const SENDOUQ_RULES_PAGE = "/q/rules";
+export const SENDOUQ_PREPARING_PAGE = "/q/preparing";
+export const SENDOUQ_LOOKING_PAGE = "/q/looking";
+export const TIERS_PAGE = "/tiers";
 
 export const BLANK_IMAGE_URL = "/static-assets/img/blank.gif";
 export const COMMON_PREVIEW_IMAGE =
@@ -108,7 +118,6 @@ export const FRONT_GIRL_PATH = "/static-assets/img/layout/front-girl";
 export const FRONT_BOY_BG_PATH = "/static-assets/img/layout/front-boy-bg";
 export const FRONT_GIRL_BG_PATH = "/static-assets/img/layout/front-girl-bg";
 
-export const GET_ALL_USERS_ROUTE = "/users";
 export const GET_ALL_EVENTS_WITH_MAP_POOLS_ROUTE = "/calendar/map-pool-events";
 
 interface UserLinkArgs {
@@ -118,6 +127,16 @@ interface UserLinkArgs {
 
 export const userPage = (user: UserLinkArgs) =>
   `/u/${user.customUrl ?? user.discordId}`;
+export const userSeasonsPage = ({
+  user,
+  season,
+}: {
+  user: UserLinkArgs;
+  season?: number;
+}) =>
+  `${userPage(user)}/seasons${
+    typeof season === "number" ? `?season=${season}` : ""
+  }`;
 export const userEditProfilePage = (user: UserLinkArgs) =>
   `${userPage(user)}/edit`;
 export const userBuildsPage = (user: UserLinkArgs) =>
@@ -136,7 +155,7 @@ export const newArtPage = (artId?: Art["id"]) =>
   `${artPage()}/new${artId ? `?art=${artId}` : ""}`;
 export const userNewBuildPage = (
   user: UserLinkArgs,
-  params?: { weapon: MainWeaponId; build: BuildAbilitiesTupleWithUnknown }
+  params?: { weapon: MainWeaponId; build: BuildAbilitiesTupleWithUnknown },
 ) =>
   `${userBuildsPage(user)}/new${
     params
@@ -144,7 +163,7 @@ export const userNewBuildPage = (
           new URLSearchParams({
             weapon: String(params.weapon),
             build: serializeBuild(params.build),
-          })
+          }),
         )}`
       : ""
   }`;
@@ -230,6 +249,27 @@ export const tournamentSubsPage = (tournamentId: number) => {
   return `/to/${tournamentId}/subs`;
 };
 
+export const sendouQInviteLink = (inviteCode: string) =>
+  `${SENDOUQ_PAGE}?${JOIN_CODE_SEARCH_PARAM_KEY}=${inviteCode}`;
+
+export const sendouQMatchPage = (id: GroupMatch["id"]) => {
+  return `${SENDOUQ_PAGE}/match/${id}`;
+};
+
+export const getWeaponUsage = ({
+  userId,
+  season,
+  modeShort,
+  stageId,
+}: {
+  userId: number;
+  season: number;
+  modeShort: ModeShort;
+  stageId: StageId;
+}) => {
+  return `/weapon-usage?userId=${userId}&season=${season}&modeShort=${modeShort}&stageId=${stageId}`;
+};
+
 export const mapsPage = (eventId?: MapPoolMap["calendarEventId"]) =>
   `/maps${eventId ? `?eventId=${eventId}` : ""}`;
 export const readonlyMapsPage = (eventId: CalendarEvent["id"]) =>
@@ -242,7 +282,7 @@ export const analyzerPage = (args?: {
   `/analyzer${
     args
       ? `?weapon=${args.weaponId}&build=${encodeURIComponent(
-          args.abilities.join(",")
+          args.abilities.join(","),
         )}`
       : ""
   }`;
@@ -271,14 +311,14 @@ export const navIconUrl = (navItem: (typeof navItems)[number]["name"]) =>
 export const gearImageUrl = (gearType: GearType, gearSplId: number) =>
   `/static-assets/img/gear/${gearType.toLowerCase()}/${gearSplId}`;
 export const weaponCategoryUrl = (
-  category: (typeof weaponCategories)[number]["name"]
+  category: (typeof weaponCategories)[number]["name"],
 ) => `/static-assets/img/weapon-categories/${category}`;
 export const mainWeaponImageUrl = (mainWeaponSplId: MainWeaponId) =>
   `/static-assets/img/main-weapons/${mainWeaponSplId}`;
 export const outlinedMainWeaponImageUrl = (mainWeaponSplId: MainWeaponId) =>
   `/static-assets/img/main-weapons-outlined/${mainWeaponSplId}`;
 export const outlinedFiveStarMainWeaponImageUrl = (
-  mainWeaponSplId: MainWeaponId
+  mainWeaponSplId: MainWeaponId,
 ) => `/static-assets/img/main-weapons-outlined-2/${mainWeaponSplId}`;
 export const subWeaponImageUrl = (subWeaponSplId: SubWeaponId) =>
   `/static-assets/img/sub-weapons/${subWeaponSplId}`;
@@ -292,6 +332,18 @@ export const stageImageUrl = (stageId: StageId) =>
   `/static-assets/img/stages/${stageId}`;
 export const brandImageUrl = (brand: "tentatek" | "takoroka") =>
   `/static-assets/img/layout/${brand}`;
+export const tierImageUrl = (tier: TierName) =>
+  `/static-assets/img/tiers/${tier.toLowerCase()}`;
+export const TIER_PLUS_URL = `/static-assets/img/tiers/plus`;
+
+export const winnersImageUrl = ({
+  season,
+  placement,
+}: {
+  season: number;
+  placement: number;
+}) => `/static-assets/img/winners/${season}/${placement}`;
+
 export const stageMinimapImageUrlWithEnding = ({
   stageId,
   mode,

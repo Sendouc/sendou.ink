@@ -66,7 +66,7 @@ export const action: ActionFunction = async ({ params, request }) => {
       user,
       event,
       startTime: databaseTimestampToDate(event.startTimes[0]!),
-    })
+    }),
   );
 
   db.calendarEvents.deleteById({
@@ -74,7 +74,7 @@ export const action: ActionFunction = async ({ params, request }) => {
     tournamentId: event.tournamentId,
   });
 
-  return redirect(CALENDAR_PAGE);
+  throw redirect(CALENDAR_PAGE);
 };
 
 export const links: LinksFunction = () => {
@@ -169,7 +169,7 @@ export default function CalendarEventPage() {
                         month: "long",
                         weekday: "long",
                         year: "numeric",
-                      }
+                      },
                     )
                   : null}
               </time>
@@ -373,7 +373,7 @@ function checkIfIsTeam(
           discordAvatar: string | null;
         }
     )[];
-  }[]
+  }[],
 ): boolean {
   for (const result of results) {
     if (result.players.length > 1) {

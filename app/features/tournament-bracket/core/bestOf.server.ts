@@ -3,7 +3,7 @@ import type { FindAllMatchesByTournamentIdMatch } from "../queries/findAllMatche
 
 // TODO: this only works for double elimination
 export function resolveBestOfs(
-  matches: Array<FindAllMatchesByTournamentIdMatch>
+  matches: Array<FindAllMatchesByTournamentIdMatch>,
 ) {
   // 3 is default
   const result: [bestOf: 5 | 7, id: number][] = [];
@@ -34,8 +34,8 @@ export function resolveBestOfs(
       match.groupNumber === 1 &&
       match.roundNumber > 2 &&
       !finalsMatches.some(
-        (finalsMatch) => finalsMatch.matchId === match.matchId
-      )
+        (finalsMatch) => finalsMatch.matchId === match.matchId,
+      ),
   );
 
   for (const match of bestOfFiveWinnersRounds) {
@@ -47,12 +47,12 @@ export function resolveBestOfs(
   const maxLosersRoundNumber = Math.max(
     ...matches
       .filter((match) => match.groupNumber === 2)
-      .map((match) => match.roundNumber)
+      .map((match) => match.roundNumber),
   );
 
   const losersFinals = matches.filter(
     (match) =>
-      match.roundNumber === maxLosersRoundNumber && match.groupNumber === 2
+      match.roundNumber === maxLosersRoundNumber && match.groupNumber === 2,
   );
   invariant(losersFinals.length === 1, "losersFinals must be 1");
 

@@ -7,7 +7,7 @@ import { Form, useLoaderData } from "@remix-run/react";
 import * as React from "react";
 import { z } from "zod";
 import { Button } from "~/components/Button";
-import { UserCombobox, WeaponCombobox } from "~/components/Combobox";
+import { WeaponCombobox } from "~/components/Combobox";
 import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
@@ -41,6 +41,7 @@ import { videoMatchTypes, VOD } from "../vods-constants";
 import { videoInputSchema } from "../vods-schemas";
 import type { VideoBeingAdded, VideoMatchBeingAdded } from "../vods-types";
 import { canAddVideo, canEditVideo, vodToVideoBeingAdded } from "../vods-utils";
+import { UserSearch } from "~/components/UserSearch";
 
 export const handle: SendouRouteHandle = {
   i18n: ["vods", "calendar"],
@@ -85,7 +86,7 @@ export const action: ActionFunction = async ({ request }) => {
     });
   }
 
-  return redirect(vodVideoPage(video.id));
+  throw redirect(vodVideoPage(video.id));
 };
 
 const newVodLoaderParamsSchema = z.object({
@@ -101,7 +102,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   const url = new URL(request.url);
   const params = newVodLoaderParamsSchema.safeParse(
-    Object.fromEntries(url.searchParams)
+    Object.fromEntries(url.searchParams),
   );
 
   if (!params.success) {
@@ -134,7 +135,7 @@ export default function NewVodPage() {
       youtubeId: "",
       title: "",
       youtubeDate: dateToDatabaseTimestamp(new Date()),
-    }
+    },
   );
 
   return (
@@ -195,7 +196,7 @@ export default function NewVodPage() {
             type="date"
             max={dateToYearMonthDayString(new Date())}
             value={dateToYearMonthDayString(
-              databaseTimestampToDate(video.youtubeDate)
+              databaseTimestampToDate(video.youtubeDate),
             )}
             onChange={(e) => {
               setVideo({
@@ -269,7 +270,7 @@ export default function NewVodPage() {
                 setVideo({
                   ...video,
                   matches: video.matches.map((match, j) =>
-                    i === j ? newMatch : match
+                    i === j ? newMatch : match,
                   ),
                 });
               }}
@@ -300,7 +301,7 @@ export default function NewVodPage() {
                 setVideo({
                   ...video,
                   matches: video.matches.filter(
-                    (_, i) => i !== video.matches.length - 1
+                    (_, i) => i !== video.matches.length - 1,
                   ),
                 })
               }
@@ -335,7 +336,7 @@ function newMatch(matches?: VideoBeingAdded["matches"]): VideoMatchBeingAdded {
 
 function extractYoutubeIdFromVideoUrl(url: string): string {
   const match = url.match(
-    /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?(.+)$/
+    /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?(.+)$/,
   );
 
   const found = match?.[1];
@@ -387,14 +388,14 @@ function TransformingPlayerInput({
           required
         />
       ) : (
-        <UserCombobox
+        <UserSearch
           id="pov"
           inputName="team-player"
           initialUserId={match.povUserId}
-          onChange={(selected) =>
+          onChange={(newUser) =>
             onChange({
               ...match,
-              povUserId: selected?.value ? Number(selected.value) : undefined,
+              povUserId: newUser.id,
             })
           }
           required
@@ -418,10 +419,10 @@ function Match({
   const id = React.useId();
 
   const [minutes, setMinutes] = React.useState(
-    secondsToMinutesNumberTuple(match.startsAt)[0]
+    secondsToMinutesNumberTuple(match.startsAt)[0],
   );
   const [seconds, setSeconds] = React.useState(
-    secondsToMinutesNumberTuple(match.startsAt)[1]
+    secondsToMinutesNumberTuple(match.startsAt)[1],
   );
 
   const { t } = useTranslation(["game-misc", "vods"]);
@@ -555,7 +556,7 @@ function Match({
                         if (!selected) return;
                         const weapons = [...match.weapons];
                         weapons[adjustedI] = Number(
-                          selected.value
+                          selected.value,
                         ) as MainWeaponId;
 
                         onChange({ ...match, weapons });

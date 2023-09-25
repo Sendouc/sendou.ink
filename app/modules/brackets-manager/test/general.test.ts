@@ -103,7 +103,7 @@ PositionChecks(
 
     const matchFromGrandFinal = storage.select<any>("match", 13);
     assert.equal(matchFromGrandFinal.opponent1.position, undefined);
-  }
+  },
 );
 
 PositionChecks(
@@ -122,7 +122,7 @@ PositionChecks(
 
     const matchFromGrandFinal = storage.select<any>("match", 13);
     assert.equal(matchFromGrandFinal.opponent2.position, 1);
-  }
+  },
 );
 
 const SpecialCases = suite("Special cases");
@@ -164,7 +164,7 @@ SpecialCases(
     manager.update.seeding(0, [0, 1, 2, 3, 4, 5, 6, 7]);
 
     assert.equal(storage.select<any>("match", 0).opponent1.id, 0);
-  }
+  },
 );
 
 SpecialCases("should throw if the name of the stage is not provided", () => {
@@ -175,7 +175,7 @@ SpecialCases("should throw if the name of the stage is not provided", () => {
         tournamentId: 0,
         type: "single_elimination",
       }),
-    "You must provide a name for the stage."
+    "You must provide a name for the stage.",
   );
 });
 
@@ -189,9 +189,9 @@ SpecialCases(
           name: "Example",
           type: "single_elimination",
         }),
-      "You must provide a tournament id for the stage."
+      "You must provide a tournament id for the stage.",
     );
-  }
+  },
 );
 
 SpecialCases(
@@ -213,7 +213,7 @@ SpecialCases(
             "Team 7",
           ],
         }),
-      "The library only supports a participant count which is a power of two."
+      "The library only supports a participant count which is a power of two.",
     );
 
     assert.throws(
@@ -224,9 +224,9 @@ SpecialCases(
           type: "single_elimination",
           settings: { size: 3 },
         }),
-      "The library only supports a participant count which is a power of two."
+      "The library only supports a participant count which is a power of two.",
     );
-  }
+  },
 );
 
 SpecialCases(
@@ -240,7 +240,7 @@ SpecialCases(
           type: "single_elimination",
           settings: { size: 0 },
         }),
-      "Impossible to create an empty stage. If you want an empty seeding, just set the size of the stage."
+      "Impossible to create an empty stage. If you want an empty seeding, just set the size of the stage.",
     );
 
     assert.throws(
@@ -251,9 +251,9 @@ SpecialCases(
           type: "single_elimination",
           settings: { size: 1 },
         }),
-      "Impossible to create a stage with less than 2 participants."
+      "Impossible to create a stage with less than 2 participants.",
     );
-  }
+  },
 );
 
 const UpdateMatchChildCount = suite("Update match child count");
@@ -320,7 +320,7 @@ UpdateMatchChildCount("should change match child count at stage level", () => {
 });
 
 const SeedingAndOrderingInElimination = suite(
-  "Seeding and ordering in elimination"
+  "Seeding and ordering in elimination",
 );
 
 SeedingAndOrderingInElimination.before.each(() => {
@@ -382,7 +382,7 @@ SeedingAndOrderingInElimination(
 
     const finalRoundMatchLB = storage.select<any>("match", 28);
     assert.equal(finalRoundMatchLB.opponent1.position, 1);
-  }
+  },
 );
 
 SeedingAndOrderingInElimination("should update the orderings in rounds", () => {
@@ -414,14 +414,14 @@ SeedingAndOrderingInElimination(
   () => {
     assert.throws(
       () => manager.update.roundOrdering(6, "natural"), // LB Round 2
-      "This round does not support ordering."
+      "This round does not support ordering.",
     );
 
     assert.throws(
       () => manager.update.roundOrdering(9, "natural"), // LB Round 6 (last minor round)
-      "This round does not support ordering."
+      "This round does not support ordering.",
     );
-  }
+  },
 );
 
 SeedingAndOrderingInElimination(
@@ -434,7 +434,7 @@ SeedingAndOrderingInElimination(
 
     assert.throws(
       () => manager.update.roundOrdering(0, "natural"),
-      "At least one match has started or is completed."
+      "At least one match has started or is completed.",
     );
 
     manager.update.match({
@@ -444,9 +444,9 @@ SeedingAndOrderingInElimination(
 
     assert.throws(
       () => manager.update.roundOrdering(0, "natural"),
-      "At least one match has started or is completed."
+      "At least one match has started or is completed.",
     );
-  }
+  },
 );
 
 SeedingAndOrderingInElimination(
@@ -478,11 +478,11 @@ SeedingAndOrderingInElimination(
 
     const finalRoundMatchLB = storage.select<any>("match", 28);
     assert.equal(finalRoundMatchLB.opponent1.position, 1);
-  }
+  },
 );
 
 const BestOfSeriesMatchesCompletion = suite(
-  "Best-Of series matches completion"
+  "Best-Of series matches completion",
 );
 
 BestOfSeriesMatchesCompletion.before.each(() => {
@@ -530,7 +530,7 @@ BestOfSeriesMatchesCompletion(
     assert.equal(match.opponent2.score, 1);
     assert.equal(match.opponent1.result, "draw");
     assert.equal(match.opponent2.result, "draw");
-  }
+  },
 );
 
 BestOfSeriesMatchesCompletion(
@@ -554,9 +554,9 @@ BestOfSeriesMatchesCompletion(
           id: 1,
           opponent2: { result: "win" },
         }),
-      "Match games result in a tie for the parent match."
+      "Match games result in a tie for the parent match.",
     );
-  }
+  },
 );
 
 BestOfSeriesMatchesCompletion("should end Bo3 matches", () => {
@@ -647,7 +647,7 @@ BestOfSeriesMatchesCompletion(
     assert.equal(match.opponent1.score, 2);
     assert.equal(match.opponent2.score, 1);
     assert.equal(match.opponent1.result, "win");
-  }
+  },
 );
 
 BestOfSeriesMatchesCompletion("should end Bo5 matches", () => {
@@ -761,7 +761,7 @@ BestOfSeriesMatchesCompletion(
 
     assert.equal(storage.select<any>("match", 4).opponent1.result, "win");
     assert.equal(storage.select<any>("match", 6).opponent1.result, "win");
-  }
+  },
 );
 
 const ResetMatchAndMatchGames = suite("Reset match and match games");
@@ -849,7 +849,7 @@ ResetMatchAndMatchGames(
     });
 
     assert.throws(() => manager.reset.matchResults(0), "The match is locked.");
-  }
+  },
 );
 
 ResetMatchAndMatchGames("should reset results of a match game", () => {

@@ -57,17 +57,20 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 
   const arts = artsByUserId(user.id);
 
-  const tagCounts = arts.reduce((acc, art) => {
-    if (!art.tags) return acc;
+  const tagCounts = arts.reduce(
+    (acc, art) => {
+      if (!art.tags) return acc;
 
-    for (const tag of art.tags) {
-      acc[tag] = (acc[tag] ?? 0) + 1;
-    }
-    return acc;
-  }, {} as Record<string, number>);
+      for (const tag of art.tags) {
+        acc[tag] = (acc[tag] ?? 0) + 1;
+      }
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
 
   const tagCountsSortedArr = Object.entries(tagCounts).sort(
-    (a, b) => b[1] - a[1]
+    (a, b) => b[1] - a[1],
   );
 
   return {
@@ -131,7 +134,7 @@ export default function UserArtPage() {
               value={filteredTag ?? ALL_TAGS_KEY}
               onChange={(e) =>
                 setFilteredTag(
-                  e.target.value === ALL_TAGS_KEY ? null : e.target.value
+                  e.target.value === ALL_TAGS_KEY ? null : e.target.value,
                 )
               }
               className="w-max"
@@ -226,7 +229,7 @@ function AddArtButton({ isArtist }: { isArtist?: boolean }) {
   }
 
   return (
-    <LinkButton to={newArtPage()} size="tiny" className="whitespace-no-wrap">
+    <LinkButton to={newArtPage()} size="tiny" className="whitespace-nowrap">
       {t("art:addArt")}
     </LinkButton>
   );

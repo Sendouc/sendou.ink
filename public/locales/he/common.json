@@ -21,6 +21,7 @@
   "pages.leaderboards": "לוח תוצאות",
   "pages.links": "קישורים",
   "pages.art": "ציור",
+  "pages.sendouq": "SendouQ",
 
   "header.profile": "פרופיל",
   "header.logout": "התנתקות",
@@ -32,7 +33,7 @@
   "auth.errors.aborted": "הכניסה בוטלה",
   "auth.errors.failed": "הכניסה נכשלה",
   "auth.errors.discordPermissions": "עבור פרופיל sendou.ink שלך, האתר זקוק לגישה לשם, הפרופיל והקשרים החברתיים של פרופיל ה-Discord שלך.",
-  "auth.errors.unknown": "הכניסה דרך Discord נכשלה מסיבה לא ידועה. אם זה ממשיך לקרות, אנא פנו לעזרה.",
+  "auth.errors.unknown": "ההתחברות נכשלה עקב שגיאה בשרת. נסו שוב בבקשה או השתמשו בפקודה /login דרך הלוהי בוט. הבוט נמצא בשרת דיסקורד sendou.ink:",
 
   "footer.github.subtitle": "קוד מקור",
   "footer.twitter.subtitle": "עדכונים",
@@ -158,6 +159,7 @@
   "support.perk.nameInFooter": "שם בכותרת התחתונה",
   "support.perk.discordColorRole": "תפקיד עם צבע בדיסקורד",
   "support.perk.discordColorRole.extra": "הנכם יכולים לקבל תפקיד צבע מותאם אישית בשרת פלוס ובשרת Discord של sendou.ink. השתמשו בפקודה /color של הבוט Lohi.",
+  "support.perk.chatColor": "בחרו צבע לשם בצ'אט של sendou.ink",
   "support.perk.badge": "תג פרופיל",
   "support.perk.seePlusPercentage": "צפו באחוזי הצבעה של שרת פלוס",
   "support.perk.seePlusPercentage.extra": "בדרך כלל רק הצעות שנכשלו יראו את אחוז ההצבעה שלהן. עם זה, אתם תמיד יכולים לראות את האחוז הצבעה שלכם.",
@@ -168,6 +170,8 @@
   "support.perk.customizedColorsTeam.extra": "מספיק שאחד מחברי הצוות יהיה פטרון כדי לקבל את ההטבה הזו.",
   "support.perk.privateDiscord": "גישה לערוץ דיסקורד בלעדי",
   "support.perk.privateDiscord.extra": "משמש לשיתוף עדכונים WIP מדי פעם, קבלת תמיכה בעדיפות עליונה ועדיפות להצעות לשיפור.",
+  "support.perk.prioritySupport": "תמיכה בעדיפות",
+  "support.perk.prioritySupport.extra": "גישה למוקד עזרה נפרד שאני נותן לו עדיפות לבקשות תמיכה",
 
   "custom.colors.title": "צבעים מותאמים אישית",
   "custom.colors.bg": "רקע",
@@ -176,6 +180,7 @@
   "custom.colors.text": "טקסט",
   "custom.colors.text-lighter": "טקסט בהיר",
   "custom.colors.theme": "נושא",
+  "custom.colors.chat": "שם צ'אט",
 
   "divisions.WEST": "Tentatek",
   "divisions.JPN": "Takoroka",

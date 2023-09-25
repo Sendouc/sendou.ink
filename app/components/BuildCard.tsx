@@ -36,6 +36,7 @@ import { Popover } from "./Popover";
 import { InfoIcon } from "./icons/Info";
 import { LockIcon } from "./icons/Lock";
 import type { BuildWeaponWithTop500Info } from "~/features/builds";
+import { altWeaponIdToId } from "~/modules/in-game-lists/weapon-ids";
 
 interface BuildProps {
   build: Pick<
@@ -111,7 +112,12 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
         <div className="build__date-author-row">
           {owner && (
             <>
-              <Link to={userBuildsPage(owner)}>{discordFullName(owner)}</Link>
+              <Link
+                to={userBuildsPage(owner)}
+                className="build__date-author-row__owner"
+              >
+                {discordFullName(owner)}
+              </Link>
               <div>•</div>
             </>
           )}
@@ -128,15 +134,17 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
                 {t("common:build.private")}
               </div>
             ) : null}
-            <time className={clsx({ invisible: !isMounted })}>
+            <time
+              className={clsx("whitespace-nowrap", { invisible: !isMounted })}
+            >
               {isMounted
                 ? databaseTimestampToDate(updatedAt).toLocaleDateString(
                     i18n.language,
                     {
                       day: "numeric",
-                      month: "numeric",
+                      month: "long",
                       year: "numeric",
-                    }
+                    },
                   )
                 : "t"}
             </time>
@@ -224,9 +232,12 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
 
 function RoundWeaponImage({ weapon }: { weapon: BuildWeaponWithTop500Info }) {
   const { weaponSplId, maxPower, minRank } = weapon;
+  const normalizedWeaponSplId = altWeaponIdToId.get(weaponSplId) ?? weaponSplId;
 
   const { t } = useTranslation(["weapons"]);
-  const slug = mySlugify(t(`weapons:MAIN_${weaponSplId}`, { lng: "en" }));
+  const slug = mySlugify(
+    t(`weapons:MAIN_${normalizedWeaponSplId}`, { lng: "en" }),
+  );
 
   const isTop500 = typeof maxPower === "number" && typeof minRank === "number";
 
@@ -267,7 +278,7 @@ function AbilitiesRowWithGear({
 }) {
   const { t } = useTranslation(["gear"]);
   const translatedGearName = t(
-    `gear:${gearTypeToInitial(gearType)}_${gearId}` as any
+    `gear:${gearTypeToInitial(gearType)}_${gearId}` as any,
   );
 
   return (

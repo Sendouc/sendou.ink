@@ -71,7 +71,7 @@ const newBuildActionSchema = z.object({
   title: z.string().min(BUILD.TITLE_MIN_LENGTH).max(BUILD.TITLE_MAX_LENGTH),
   description: z.preprocess(
     falsyToNull,
-    z.string().max(BUILD.DESCRIPTION_MAX_LENGTH).nullable()
+    z.string().max(BUILD.DESCRIPTION_MAX_LENGTH).nullable(),
   ),
   TW: z.preprocess(checkboxValueToBoolean, z.boolean()),
   SZ: z.preprocess(checkboxValueToBoolean, z.boolean()),
@@ -81,31 +81,31 @@ const newBuildActionSchema = z.object({
   private: z.preprocess(checkboxValueToDbBoolean, dbBoolean),
   "weapon[value]": z.preprocess(
     processMany(toArray, removeDuplicates),
-    z.array(weaponSplId).min(1).max(BUILD.MAX_WEAPONS_COUNT)
+    z.array(weaponSplId).min(1).max(BUILD.MAX_WEAPONS_COUNT),
   ),
   "HEAD[value]": z.preprocess(
     actualNumber,
     z
       .number()
       .refine((val) =>
-        headGearIds.includes(val as (typeof headGearIds)[number])
-      )
+        headGearIds.includes(val as (typeof headGearIds)[number]),
+      ),
   ),
   "CLOTHES[value]": z.preprocess(
     actualNumber,
     z
       .number()
       .refine((val) =>
-        clothesGearIds.includes(val as (typeof clothesGearIds)[number])
-      )
+        clothesGearIds.includes(val as (typeof clothesGearIds)[number]),
+      ),
   ),
   "SHOES[value]": z.preprocess(
     actualNumber,
     z
       .number()
       .refine((val) =>
-        shoesGearIds.includes(val as (typeof shoesGearIds)[number])
-      )
+        shoesGearIds.includes(val as (typeof shoesGearIds)[number]),
+      ),
   ),
   abilities: z.preprocess(
     safeJSONParse,
@@ -128,7 +128,7 @@ const newBuildActionSchema = z.object({
         stackableAbility,
         stackableAbility,
       ]),
-    ])
+    ]),
   ),
 });
 
@@ -149,7 +149,7 @@ export const action: ActionFunction = async ({ request }) => {
   }
   validate(
     !data.buildToEditId ||
-      usersBuilds.some((build) => build.id === data.buildToEditId)
+      usersBuilds.some((build) => build.id === data.buildToEditId),
   );
 
   const commonArgs = {
@@ -170,7 +170,7 @@ export const action: ActionFunction = async ({ request }) => {
     db.builds.create(commonArgs);
   }
 
-  return redirect(userBuildsPage(user));
+  throw redirect(userBuildsPage(user));
 };
 
 export const handle: SendouRouteHandle = {
@@ -186,7 +186,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const url = new URL(request.url);
 
   const params = newBuildLoaderParamsSchema.safeParse(
-    Object.fromEntries(url.searchParams)
+    Object.fromEntries(url.searchParams),
   );
 
   const usersBuilds = buildsByUserId({
@@ -194,7 +194,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     loggedInUserId: user.id,
   });
   const buildToEdit = usersBuilds.find(
-    (b) => params.success && b.id === params.data.buildId
+    (b) => params.success && b.id === params.data.buildId,
   );
 
   return json({
@@ -203,13 +203,16 @@ export const loader = async ({ request }: LoaderArgs) => {
   });
 
   function resolveGearIdToAbilities() {
-    return usersBuilds.reduce((acc, build) => {
-      acc[`HEAD_${build.headGearSplId}`] = build.abilities[0];
-      acc[`CLOTHES_${build.clothesGearSplId}`] = build.abilities[1];
-      acc[`SHOES_${build.shoesGearSplId}`] = build.abilities[2];
+    return usersBuilds.reduce(
+      (acc, build) => {
+        acc[`HEAD_${build.headGearSplId}`] = build.abilities[0];
+        acc[`CLOTHES_${build.clothesGearSplId}`] = build.abilities[1];
+        acc[`SHOES_${build.shoesGearSplId}`] = build.abilities[2];
 
-      return acc;
-    }, {} as Record<string, [Ability, Ability, Ability, Ability]>);
+        return acc;
+      },
+      {} as Record<string, [Ability, Ability, Ability, Ability]>,
+    );
   }
 };
 
@@ -219,7 +222,7 @@ export default function NewBuildPage() {
   const [searchParams] = useSearchParams();
   const [abilities, setAbilities] =
     React.useState<BuildAbilitiesTupleWithUnknown>(
-      buildToEdit?.abilities ?? validatedBuildFromSearchParams(searchParams)
+      buildToEdit?.abilities ?? validatedBuildFromSearchParams(searchParams),
     );
 
   return (
@@ -359,7 +362,7 @@ function WeaponsSelector() {
   const [weapons, setWeapons] = React.useState(
     buildToEdit?.weapons.map((wpn) => wpn.weaponSplId) ?? [
       validatedWeaponIdFromSearchParams(searchParams),
-    ]
+    ],
   );
 
   return (

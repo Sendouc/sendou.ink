@@ -3,17 +3,18 @@ import { Label } from "./Label";
 import * as React from "react";
 import { Button } from "./Button";
 
-const EDITABLE_CSS_VARS = [
+const CUSTOM_COLORS = [
   "bg",
   "bg-darker",
   "bg-lighter",
   "text",
   "text-lighter",
   "theme",
+  "chat",
 ] as const;
 
 type CustomColorsRecord = Partial<
-  Record<(typeof EDITABLE_CSS_VARS)[number], string>
+  Record<(typeof CUSTOM_COLORS)[number], string>
 >;
 
 export function CustomizedColorsInput({
@@ -23,7 +24,7 @@ export function CustomizedColorsInput({
 }) {
   const { t } = useTranslation();
   const [colors, setColors] = React.useState<CustomColorsRecord>(
-    initialColors ?? {}
+    initialColors ?? {},
   );
 
   return (
@@ -31,7 +32,7 @@ export function CustomizedColorsInput({
       <Label>{t("custom.colors.title")}</Label>
       <input type="hidden" name="css" value={JSON.stringify(colors)} />
       <div className="colors__grid">
-        {EDITABLE_CSS_VARS.map((cssVar) => {
+        {CUSTOM_COLORS.map((cssVar) => {
           return (
             <React.Fragment key={cssVar}>
               <div>{t(`custom.colors.${cssVar}`)}</div>

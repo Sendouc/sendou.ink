@@ -25,7 +25,7 @@ export type MapPoolSelectorProps = {
   handleRemoval?: () => void;
   handleMapPoolChange: (
     mapPool: MapPool,
-    event?: Pick<CalendarEvent, "id" | "name">
+    event?: Pick<CalendarEvent, "id" | "name">,
   ) => void;
   className?: string;
   recentEvents?: SerializedMapPoolEvent[];
@@ -55,7 +55,7 @@ export function MapPoolSelector({
   const { t } = useTranslation();
 
   const [template, setTemplate] = React.useState<MapPoolTemplateValue>(
-    initialEvent ? "event" : detectTemplate(mapPool)
+    initialEvent ? "event" : detectTemplate(mapPool),
   );
 
   const [initialSerializedEvent, setInitialSerializedEvent] = React.useState(
@@ -63,7 +63,7 @@ export function MapPoolSelector({
       initialEvent && {
         ...initialEvent,
         serializedMapPool: mapPool.serialized,
-      }
+      },
   );
 
   const handleStageModesChange = (newMapPool: MapPool) => {
@@ -257,7 +257,7 @@ export function MapPoolStages({
               {modes
                 .filter(
                   (mode) =>
-                    !modesToInclude || modesToInclude.includes(mode.short)
+                    !modesToInclude || modesToInclude.includes(mode.short),
                 )
                 .map((mode) => {
                   const selected = mapPool.has({ stageId, mode: mode.short });
@@ -418,7 +418,7 @@ function MapPoolTemplateSelect({
 type TemplateEventSelectionProps = {
   handleEventChange: (
     mapPool: MapPool,
-    event?: Pick<CalendarEvent, "id" | "name">
+    event?: Pick<CalendarEvent, "id" | "name">,
   ) => void;
   initialEvent?: SerializedMapPoolEvent;
 };

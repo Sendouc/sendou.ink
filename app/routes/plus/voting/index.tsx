@@ -73,7 +73,7 @@ export const action: ActionFunction = async ({ request }) => {
       year,
       tier: user.plusTier!, // no clue why i couldn't make narrowing the type down above work
       validAfter: endDate,
-    }))
+    })),
   );
 
   return null;
@@ -184,7 +184,7 @@ export default function PlusVotingPage() {
 }
 
 function VotingTimingInfo(
-  data: Extract<PlusVotingLoaderData, { type: "timeInfo" }>
+  data: Extract<PlusVotingLoaderData, { type: "timeInfo" }>,
 ) {
   return (
     <div className="stack md">

@@ -16,7 +16,7 @@ export async function streamsByTournamentId(tournamentId: number) {
 
   const tournamentStreams = streams.flatMap((stream) => {
     const user = twitchUsersOfTournament.find(
-      (u) => u.twitch === stream.twitchUserName
+      (u) => u.twitch === stream.twitchUserName,
     );
 
     if (!user) return [];

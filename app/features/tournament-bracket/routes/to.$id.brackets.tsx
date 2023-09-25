@@ -51,6 +51,7 @@ import {
   resolveTournamentStageType,
 } from "../tournament-bracket-utils";
 import { sql } from "~/db/sql";
+import type { ExternalScriptsFunction } from "remix-utils";
 import { useEventSource } from "remix-utils";
 import { Status } from "~/db/types";
 import clsx from "clsx";
@@ -74,7 +75,22 @@ import { tournamentSummary } from "../core/summarizer.server";
 import invariant from "tiny-invariant";
 import { allMatchResultsByTournamentId } from "../queries/allMatchResultsByTournamentId.server";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
-import { queryCurrentTeamRating, queryCurrentUserRating } from "~/features/mmr";
+import {
+  currentSeason,
+  queryCurrentTeamRating,
+  queryCurrentUserRating,
+} from "~/features/mmr";
+import { queryTeamPlayerRatingAverage } from "~/features/mmr/mmr-utils.server";
+
+const scripts: ExternalScriptsFunction<SerializeFrom<typeof loader>> = () => {
+  return [
+    {
+      src: "https://cdn.jsdelivr.net/npm/brackets-viewer@1.5.1/dist/brackets-viewer.min.js",
+    },
+  ];
+};
+
+export const handle = { scripts };
 
 export const links: LinksFunction = () => {
   return [
@@ -125,7 +141,7 @@ export const action: ActionFunction = async ({ params, request }) => {
         });
 
         const bestOfs = resolveBestOfs(
-          findAllMatchesByTournamentId(tournamentId)
+          findAllMatchesByTournamentId(tournamentId),
         );
         for (const [bestOf, id] of bestOfs) {
           setBestOf({ bestOf, id });
@@ -138,7 +154,7 @@ export const action: ActionFunction = async ({ params, request }) => {
       const bracket = manager.get.tournamentData(tournamentId);
       invariant(
         bracket.stage.length === 1,
-        "Bracket doesn't have exactly one stage"
+        "Bracket doesn't have exactly one stage",
       );
       const stage = bracket.stage[0];
 
@@ -159,11 +175,15 @@ export const action: ActionFunction = async ({ params, request }) => {
         }) ?? [];
       invariant(
         _finalStandings.length === teams.length,
-        `Final standings length (${_finalStandings.length}) does not match teams length (${teams.length})`
+        `Final standings length (${_finalStandings.length}) does not match teams length (${teams.length})`,
       );
 
       const results = allMatchResultsByTournamentId(tournamentId);
       invariant(results.length > 0, "No results found");
+
+      // TODO: support tournaments outside of seasons as well as unranked tournaments
+      const _currentSeason = currentSeason(new Date());
+      validate(_currentSeason, "No current season found");
 
       addSummary({
         tournamentId,
@@ -171,9 +191,17 @@ export const action: ActionFunction = async ({ params, request }) => {
           teams,
           finalStandings: _finalStandings,
           results,
-          queryCurrentTeamRating,
-          queryCurrentUserRating,
+          queryCurrentTeamRating: (identifier) =>
+            queryCurrentTeamRating({ identifier, season: _currentSeason.nth }),
+          queryCurrentUserRating: (userId) =>
+            queryCurrentUserRating({ userId, season: _currentSeason.nth }),
+          queryTeamPlayerRatingAverage: (identifier) =>
+            queryTeamPlayerRatingAverage({
+              identifier,
+              season: _currentSeason.nth,
+            }),
         }),
+        season: _currentSeason.nth,
       });
 
       return null;
@@ -193,7 +221,7 @@ export const loader = ({ params }: LoaderArgs) => {
     const bracket = manager.get.tournamentData(tournamentId);
     invariant(
       bracket.stage.length === 1,
-      "Bracket doesn't have exactly one stage"
+      "Bracket doesn't have exactly one stage",
     );
     const stage = bracket.stage[0];
 
@@ -265,7 +293,7 @@ export default function TournamentBracketsPage() {
           tournamentMatchPage({
             eventId: parentRouteData.event.id,
             matchId: match.id,
-          })
+          }),
         );
       };
     }
@@ -290,7 +318,7 @@ export default function TournamentBracketsPage() {
           return undefined;
         },
         separatedChildCountLabel: true,
-      }
+      },
     );
 
     // my beautiful hack to show seeds
@@ -337,7 +365,7 @@ export default function TournamentBracketsPage() {
   }, [visibility, revalidate, data.everyMatchIsOver]);
 
   const myTeam = parentRouteData.teams.find((team) =>
-    team.members.some((m) => m.userId === user?.id)
+    team.members.some((m) => m.userId === user?.id),
   );
 
   const adminCanStart = () => {
@@ -462,7 +490,7 @@ function useAutoRefresh() {
     tournamentBracketsSubscribePage(parentRouteData.event.id),
     {
       event: bracketSubscriptionKey(parentRouteData.event.id),
-    }
+    },
   );
 
   React.useEffect(() => {
@@ -504,7 +532,7 @@ function TournamentProgressPrompt({ ownedTeamId }: { ownedTeamId: number }) {
   if (data.finalStandings) return null;
 
   const { progress, currentMatchId, currentOpponent } = (() => {
-    let lowestStatus = Infinity;
+    let lowestStatus: Status = Infinity;
     let currentMatchId: number | undefined;
     let currentOpponent: string | undefined;
 
@@ -526,7 +554,7 @@ function TournamentProgressPrompt({ ownedTeamId }: { ownedTeamId: number }) {
             ? match.opponent2
             : match.opponent1;
         currentOpponent = parentRouteData.teams.find(
-          (team) => team.id === otherTeam.id
+          (team) => team.id === otherTeam.id,
         )?.name;
       }
     }
@@ -534,6 +562,7 @@ function TournamentProgressPrompt({ ownedTeamId }: { ownedTeamId: number }) {
     return { progress: lowestStatus, currentMatchId, currentOpponent };
   })();
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
   if (progress === Infinity) {
     console.error("Unexpected no status");
     return null;

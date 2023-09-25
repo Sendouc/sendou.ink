@@ -9,7 +9,7 @@ import { Popover } from "../Popover";
 const addUniqueParam = (
   oldParams: URLSearchParams,
   name: string,
-  value: string
+  value: string,
 ): URLSearchParams => {
   const paramsCopy = new URLSearchParams(oldParams);
   paramsCopy.delete(name);

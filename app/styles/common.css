@@ -269,7 +269,7 @@ select {
   cursor: pointer;
   font-weight: 500;
   padding-block: 3.5px;
-  padding-inline: var(--s-3) var(--s-8);
+  padding-inline: var(--s-3) var(--s-9);
 }
 
 select:disabled {
@@ -472,7 +472,10 @@ dialog::backdrop {
   justify-content: center;
   gap: var(--s-4);
   margin-block-end: var(--s-8);
-  margin-block-start: -12px;
+}
+
+.sub-nav__container__secondary {
+  margin-block-end: var(--s-2);
 }
 
 .sub-nav__link__container {
@@ -500,6 +503,12 @@ dialog::backdrop {
   white-space: nowrap;
 }
 
+.sub-nav__link__secondary {
+  font-size: var(--fonts-xxs);
+  padding: var(--s-0-5) var(--s-2);
+  background-color: var(--bg-lighter-solid);
+}
+
 .sub-nav__container.compact .sub-nav__link {
   padding: var(--s-1) var(--s-2);
 }
@@ -512,8 +521,49 @@ dialog::backdrop {
   visibility: hidden;
 }
 
+.sub-nav__border-guy__secondary {
+  height: 2.5px;
+  background-color: var(--bg-lighter-solid);
+}
+
 .sub-nav__link__container.active > .sub-nav__border-guy {
   visibility: initial;
+}
+
+.tab__buttons-container {
+  display: flex;
+  flex-direction: row;
+  border-bottom: 2px solid var(--border);
+}
+
+.tab__button {
+  background-color: transparent;
+  border: none;
+  font-size: var(--fonts-xs);
+  border-radius: 0;
+  border-bottom: 2px solid transparent;
+  color: var(--text-lighter);
+  white-space: nowrap;
+  flex: 1;
+}
+
+.tab__button:active {
+  transform: initial;
+}
+
+.tab__number {
+  color: var(--theme);
+  margin-inline-start: var(--s-2);
+}
+
+.tab__button:focus-visible {
+  color: var(--theme) !important;
+  outline: none;
+}
+
+.tab__button[data-headlessui-state="selected"] {
+  border-color: var(--theme);
+  color: var(--text);
 }
 
 .popover-content {
@@ -599,6 +649,13 @@ dialog::backdrop {
 
 .combobox-item.active {
   background-color: var(--theme-transparent);
+}
+
+.combobox-username {
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .article > p {
@@ -920,6 +977,12 @@ dialog::backdrop {
   gap: var(--s-1);
 }
 
+.build__date-author-row__owner {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .build__modes {
   position: absolute;
   right: 0;
@@ -968,6 +1031,7 @@ dialog::backdrop {
 .build__gear {
   border-radius: 50%;
   background-color: var(--bg-darker-very-transparent);
+  overflow: visible;
 }
 
 .build__ability {
@@ -1078,7 +1142,7 @@ dialog::backdrop {
 
 .top-leaderboard {
   min-height: 110px;
-  margin-block-start: var(--s-20);
+  margin-block-start: var(--s-16);
 }
 
 .youtube__container {
@@ -1213,10 +1277,148 @@ dialog::backdrop {
   border-radius: 50%;
   background-color: var(--theme-transparent);
   transition: all 0.2s ease;
+  display: none;
 }
 
 .pagination__dot__active {
   background-color: var(--theme);
+}
+
+.pagination__page-count {
+  font-size: var(--fonts-sm);
+  font-weight: var(--bold);
+  color: var(--theme);
+}
+
+@media screen and (min-width: 640px) {
+  .pagination__dot {
+    display: initial;
+  }
+
+  .pagination__page-count {
+    display: none;
+  }
+}
+
+.tier__container {
+  display: grid;
+}
+
+.tier__img {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.chart__container {
+  height: 175px;
+  background-color: var(--bg-lighter);
+  border-radius: var(--rounded);
+}
+
+.chat__container {
+  display: flex;
+  flex-direction: column;
+}
+
+.chat__messages {
+  padding: var(--s-2) 0 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  height: 270px;
+  overflow-y: auto;
+}
+
+.chat__message {
+  list-style: none;
+  display: flex;
+  gap: var(--s-2-5);
+}
+
+.chat__message__user {
+  font-weight: var(--semi-bold);
+  font-size: var(--fonts-sm);
+  color: var(--chat-user-color);
+}
+
+.chat__message__time {
+  font-size: var(--fonts-xxs);
+  color: var(--text-lighter);
+  margin-block-start: 3px;
+}
+
+.chat__input-container {
+  margin-top: auto;
+
+  --input-width: 100%;
+}
+
+.chat__message__contents {
+  font-size: var(--fonts-sm);
+  word-break: break-all;
+}
+
+.chat__message__contents.pending {
+  opacity: 0.7;
+}
+
+.chat__room-button {
+  background-color: var(--bg-light);
+  color: var(--text-lighter);
+  border-radius: var(--rounded) var(--rounded) 0 0;
+  font-size: var(--fonts-xs);
+  padding: var(--s-1) var(--s-1);
+  border-color: var(--bg-light-variation);
+}
+
+.chat__room-button.not-first {
+  margin-inline-start: -1px;
+}
+
+.chat__room-button.current {
+  background-color: var(--bg-lighter);
+  color: var(--text);
+}
+
+.chat__room-button__unseen {
+  color: var(--theme-secondary);
+  text-shadow: var(--fonts-xxxs);
+  margin-inline-start: var(--s-1);
+  width: 25px;
+  text-align: left;
+}
+
+.chat__bottom-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-block-start: var(--s-2);
+  height: 20px;
+}
+
+.winner__container {
+  height: 125px;
+  width: 125px;
+  border-radius: 100%;
+  background-color: var(--bg-lighter);
+  overflow: hidden;
+  position: relative;
+}
+
+.winner__container.small {
+  height: 41.6667px;
+  width: 41.6667px;
+}
+
+.winner__img-container {
+  position: absolute;
+  top: var(--winner-top, 5px);
+  left: var(--winner-left, 25px);
+}
+
+.winner__img {
+  overflow: visible;
+  max-width: initial;
 }
 
 #nprogress .bar {

@@ -1,3 +1,4 @@
+import { useCatch } from "@remix-run/react";
 import clsx from "clsx";
 import type * as React from "react";
 import { useMatches } from "react-router";
@@ -19,9 +20,10 @@ export const Main = ({
   bigger?: boolean;
   style?: React.CSSProperties;
 }) => {
+  const caught = useCatch();
   const data = useMatches()[0]?.data as RootLoaderData | undefined;
   const user = useUser();
-  const showLeaderboard = data?.publisherId && !user?.patronTier;
+  const showLeaderboard = data?.publisherId && !user?.patronTier && !caught;
 
   return (
     <main
@@ -39,7 +41,7 @@ export const Main = ({
                 bigger,
                 "pt-12-forced": showLeaderboard,
               },
-              className
+              className,
             )
       }
       style={style}

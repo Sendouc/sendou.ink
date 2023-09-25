@@ -7,20 +7,18 @@ import type {
 import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
 import { Avatar } from "~/components/Avatar";
 import { Main } from "~/components/Main";
-import { discordFullName, makeTitle } from "~/utils/strings";
+import { makeTitle } from "~/utils/strings";
 import {
   LEADERBOARDS_PAGE,
   navIconUrl,
   teamPage,
   topSearchPlayerPage,
   userPage,
+  userSeasonsPage,
   userSubmittedImage,
 } from "~/utils/urls";
 import styles from "../../top-search/top-search.css";
-import {
-  userSPLeaderboard,
-  type UserSPLeaderboardItem,
-} from "../queries/userSPLeaderboard.server";
+import { userSPLeaderboard } from "../queries/userSPLeaderboard.server";
 import type { SendouRouteHandle } from "~/utils/remix";
 import {
   type TeamSPLeaderboardItem,
@@ -36,13 +34,33 @@ import {
   modeXPLeaderboard,
   weaponXPLeaderboard,
 } from "../queries/XPLeaderboard.server";
-import { WeaponImage } from "~/components/Image";
+import { TierImage, WeaponImage } from "~/components/Image";
 import {
   weaponCategories,
   type MainWeaponId,
   type RankedModeShort,
 } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
+import {
+  allSeasons,
+  currentSeason,
+  currentOrPreviousSeason,
+} from "~/features/mmr/season";
+import {
+  addPendingPlusTiers,
+  addPlacementRank,
+  addTiers,
+  addWeapons,
+  filterByWeaponCategory,
+  oneEntryPerUser,
+} from "../core/leaderboards.server";
+import { seasonPopularUsersWeapon } from "../queries/seasonPopularUsersWeapon.server";
+import { cachified } from "cachified";
+import { cache, ttl } from "~/utils/cache.server";
+import { HALF_HOUR_IN_MS } from "~/constants";
+import { TopTenPlayer } from "../components/TopTenPlayer";
+import { seasonHasTopTen } from "../leaderboards-utils";
+import { USER_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN } from "~/features/mmr/mmr-constants";
 
 export const handle: SendouRouteHandle = {
   i18n: ["vods"],
@@ -73,20 +91,77 @@ export const links: LinksFunction = () => {
 };
 
 const TYPE_SEARCH_PARAM_KEY = "type";
+const SEASON_SEARCH_PARAM_KEY = "season";
 
 export const loader = async ({ request }: LoaderArgs) => {
   const t = await i18next.getFixedT(request);
   const unvalidatedType = new URL(request.url).searchParams.get(
-    TYPE_SEARCH_PARAM_KEY
+    TYPE_SEARCH_PARAM_KEY,
+  );
+  const unvalidatedSeason = new URL(request.url).searchParams.get(
+    SEASON_SEARCH_PARAM_KEY,
   );
 
   const type =
     LEADERBOARD_TYPES.find((type) => type === unvalidatedType) ??
     LEADERBOARD_TYPES[0];
+  const season =
+    allSeasons(new Date()).find(
+      (s) => unvalidatedSeason && s === Number(unvalidatedSeason),
+    ) ?? currentOrPreviousSeason(new Date())!.nth;
+
+  const userLeaderboard = type.includes("USER")
+    ? await cachified({
+        key: `user-leaderboard-season-${season}`,
+        cache,
+        ttl: ttl(HALF_HOUR_IN_MS),
+        // eslint-disable-next-line @typescript-eslint/require-await
+        async getFreshValue() {
+          const leaderboard = userSPLeaderboard(season);
+          const withTiers = addTiers(leaderboard, season);
+
+          const shouldAddPendingPlusTier =
+            season === currentOrPreviousSeason(new Date())?.nth &&
+            leaderboard.length >= USER_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN;
+          const withPendingPlusTiers = shouldAddPendingPlusTier
+            ? addPendingPlusTiers(withTiers)
+            : withTiers;
+
+          return addWeapons(
+            withPendingPlusTiers,
+            seasonPopularUsersWeapon(season),
+          );
+        },
+      })
+    : null;
+
+  const teamLeaderboard =
+    type === "TEAM"
+      ? await cachified({
+          key: `team-leaderboard-season-${season}`,
+          cache,
+          ttl: ttl(HALF_HOUR_IN_MS),
+          // eslint-disable-next-line @typescript-eslint/require-await
+          async getFreshValue() {
+            const leaderboard = teamSPLeaderboard(season);
+            const filteredByUser = oneEntryPerUser(leaderboard);
+
+            return addPlacementRank(filteredByUser);
+          },
+        })
+      : null;
+
+  const filteredLeaderboard =
+    userLeaderboard && type !== "USER"
+      ? filterByWeaponCategory(
+          userLeaderboard,
+          type.split("-")[1] as (typeof weaponCategories)[number]["name"],
+        )
+      : userLeaderboard;
 
   return {
-    userLeaderboard: type === "USER" ? userSPLeaderboard() : null,
-    teamLeaderboard: type === "TEAM" ? teamSPLeaderboard() : null,
+    userLeaderboard: filteredLeaderboard ?? userLeaderboard,
+    teamLeaderboard,
     xpLeaderboard:
       type === "XP-ALL"
         ? allXPLeaderboard()
@@ -96,6 +171,7 @@ export const loader = async ({ request }: LoaderArgs) => {
         ? weaponXPLeaderboard(Number(type.split("-")[2]) as MainWeaponId)
         : null,
     title: makeTitle(t("pages.leaderboards")),
+    season,
   };
 };
 
@@ -104,26 +180,83 @@ export default function LeaderboardsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const data = useLoaderData<typeof loader>();
 
+  const isAllUserLeaderboard =
+    !searchParams.get(TYPE_SEARCH_PARAM_KEY) ||
+    searchParams.get(TYPE_SEARCH_PARAM_KEY) === "USER";
+
+  const seasonPlusTypeToKey = ({
+    season,
+    type,
+  }: {
+    season: number;
+    type: string;
+  }) => `${type};${season}`;
+
+  const selectValue = () => {
+    const type =
+      searchParams.get(TYPE_SEARCH_PARAM_KEY) ?? LEADERBOARD_TYPES[0];
+
+    if (
+      LEADERBOARD_TYPES.includes(type as (typeof LEADERBOARD_TYPES)[number])
+    ) {
+      return seasonPlusTypeToKey({
+        season: data.season,
+        type,
+      });
+    }
+
+    return type;
+  };
+
+  const showTopTen = Boolean(
+    seasonHasTopTen(data.season) &&
+      isAllUserLeaderboard &&
+      data.userLeaderboard,
+  );
+
+  const renderNoEntries =
+    (data.userLeaderboard && data.userLeaderboard.length === 0) ||
+    (data.teamLeaderboard && data.teamLeaderboard.length === 0);
+
   return (
     <Main halfWidth className="stack lg">
       <select
         className="text-sm"
-        value={searchParams.get(TYPE_SEARCH_PARAM_KEY) ?? LEADERBOARD_TYPES[0]}
-        onChange={(e) =>
-          setSearchParams({ [TYPE_SEARCH_PARAM_KEY]: e.target.value })
-        }
+        value={selectValue()}
+        onChange={(e) => {
+          const [type, season] = e.target.value.split(";");
+          setSearchParams({
+            [TYPE_SEARCH_PARAM_KEY]: type,
+            [SEASON_SEARCH_PARAM_KEY]: season,
+          });
+        }}
       >
-        <optgroup label="SP">
-          {LEADERBOARD_TYPES.filter((type) => !type.includes("XP")).map(
-            (type) => {
-              return (
-                <option key={type} value={type}>
-                  {t(`common:leaderboard.type.${type as "USER" | "TEAM"}`)}
-                </option>
-              );
-            }
-          )}
-        </optgroup>
+        {allSeasons(new Date()).map((season) => {
+          return (
+            <optgroup label={`SP - Season ${season}`} key={season}>
+              {LEADERBOARD_TYPES.filter((type) => !type.includes("XP")).map(
+                (type) => {
+                  const userOrTeam = type.includes("USER") ? "USER" : "TEAM";
+                  const category = weaponCategories.find((c) =>
+                    type.includes(c.name),
+                  )?.name;
+
+                  return (
+                    <option
+                      key={type}
+                      value={seasonPlusTypeToKey({ season, type })}
+                    >
+                      {t(`common:leaderboard.type.${userOrTeam}`)}
+                      {category
+                        ? ` (${t(`common:weapon.category.${category}`)})`
+                        : ""}
+                    </option>
+                  );
+                },
+              )}
+            </optgroup>
+          );
+        })}
         <optgroup label="XP">
           <option value="XP-ALL">{t(`common:leaderboard.type.XP-ALL`)}</option>
           {rankedModesShort.map((mode) => {
@@ -151,40 +284,114 @@ export default function LeaderboardsPage() {
           );
         })}
       </select>
+      {showTopTen ? (
+        <div className="stack lg mx-auto">
+          {data
+            .userLeaderboard!.filter((_, i) => i <= 9)
+            .map((entry, i) => {
+              return (
+                <Link
+                  key={`${entry.id}-${data.season}`}
+                  to={userSeasonsPage({ user: entry, season: data.season })}
+                >
+                  <TopTenPlayer
+                    placement={i + 1}
+                    power={entry.power}
+                    season={data.season}
+                  />
+                </Link>
+              );
+            })}
+        </div>
+      ) : null}
+
       {data.userLeaderboard ? (
-        <PlayersTable entries={data.userLeaderboard} />
+        <PlayersTable
+          entries={data.userLeaderboard}
+          showTiers={isAllUserLeaderboard}
+          showingTopTen={showTopTen}
+        />
       ) : null}
       {data.teamLeaderboard ? (
         <TeamTable entries={data.teamLeaderboard} />
       ) : null}
       {data.xpLeaderboard ? <XPTable entries={data.xpLeaderboard} /> : null}
+
+      {renderNoEntries ? (
+        <div className="text-center text-lg text-lighter">
+          No players on the leaderboard yet
+        </div>
+      ) : null}
+
+      {!data.xpLeaderboard && data.season === currentSeason(new Date())?.nth ? (
+        <div className="text-xs text-lighter text-center">
+          Leaderboard is updated once every 30 minutes.
+        </div>
+      ) : null}
     </Main>
   );
 }
 
-function PlayersTable({ entries }: { entries: UserSPLeaderboardItem[] }) {
+function PlayersTable({
+  entries,
+  showTiers,
+  showingTopTen,
+}: {
+  entries: NonNullable<SerializeFrom<typeof loader>["userLeaderboard"]>;
+  showTiers?: boolean;
+  showingTopTen?: boolean;
+}) {
+  const data = useLoaderData<typeof loader>();
+
   return (
     <div className="placements__table">
-      {entries.map((entry) => {
-        return (
-          <Link
-            to={userPage(entry)}
-            key={entry.entryId}
-            className="placements__table__row"
-          >
-            <div className="placements__table__inner-row">
-              <div className="placements__table__rank">
-                {entry.placementRank}
-              </div>
-              <div>
-                <Avatar size="xxs" user={entry} />
-              </div>
-              <div>{discordFullName(entry)}</div>
-              <div className="placements__table__power">{entry.power}</div>
-            </div>
-          </Link>
-        );
-      })}
+      {entries
+        // hide normal rows that are showed in "fancy" top 10 format
+        .filter((_, i) => !showingTopTen || i > 9)
+        .map((entry) => {
+          return (
+            <React.Fragment key={entry.entryId}>
+              {entry.tier && showTiers ? (
+                <div className="placements__tier-header">
+                  <TierImage tier={entry.tier} width={32} />
+                  {entry.tier.name}
+                  {entry.tier.isPlus ? "+" : ""}
+                </div>
+              ) : null}
+              <Link
+                to={userSeasonsPage({ user: entry, season: data.season })}
+                className="placements__table__row"
+              >
+                <div className="placements__table__inner-row">
+                  <div className="placements__table__rank">
+                    {entry.placementRank}
+                  </div>
+                  <div>
+                    <Avatar size="xxs" user={entry} />
+                  </div>
+                  {entry.weaponSplId ? (
+                    <WeaponImage
+                      className="placements__table__weapon"
+                      variant="build"
+                      weaponSplId={entry.weaponSplId}
+                      width={32}
+                      height={32}
+                    />
+                  ) : null}
+                  <div className="placements__table__name">
+                    {entry.discordName}
+                  </div>
+                  {entry.pendingPlusTier ? (
+                    <div className="text-xs text-theme whitespace-nowrap">
+                      ➜ +{entry.pendingPlusTier}
+                    </div>
+                  ) : null}
+                  <div className="placements__table__power">{entry.power}</div>
+                </div>
+              </Link>
+            </React.Fragment>
+          );
+        })}
     </div>
   );
 }

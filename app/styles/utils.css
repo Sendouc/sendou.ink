@@ -1,3 +1,7 @@
+.text-xl {
+  font-size: var(--fonts-xl);
+}
+
 .text-lg {
   font-size: var(--fonts-lg);
 }
@@ -54,6 +58,10 @@
   text-transform: uppercase;
 }
 
+.text-capitalize {
+  text-transform: capitalize;
+}
+
 .fill-success {
   fill: var(--theme-success);
 }
@@ -74,6 +82,10 @@
   background-color: var(--bg-darker-transparent);
 }
 
+.bg-theme-transparent-important {
+  background-color: var(--theme-transparent) !important;
+}
+
 .rounded {
   border-radius: var(--rounded);
 }
@@ -84,6 +96,10 @@
 
 .rounded-full {
   border-radius: 100%;
+}
+
+.font-body {
+  font-weight: var(--body);
 }
 
 .font-semi-bold {
@@ -108,6 +124,10 @@
 
 .w-24 {
   width: var(--s-24);
+}
+
+.w-24px {
+  width: 24px;
 }
 
 .w-max {
@@ -194,8 +214,16 @@
   margin-inline-start: var(--s-2);
 }
 
+.ml-4 {
+  margin-inline-start: var(--s-4);
+}
+
 .mr-auto {
   margin-inline-end: auto;
+}
+
+.mr-1 {
+  margin-inline-end: var(--s-1);
 }
 
 .mx-auto {
@@ -204,6 +232,10 @@
 
 .mx-2 {
   margin-inline: var(--s-2);
+}
+
+.my-auto {
+  margin-block: auto;
 }
 
 .my-2 {
@@ -234,8 +266,12 @@
   white-space: pre-wrap;
 }
 
-.whitespace-no-wrap {
+.whitespace-nowrap {
   white-space: nowrap;
+}
+
+.overflow-x-auto {
+  overflow-x: auto;
 }
 
 .flex {
@@ -312,6 +348,10 @@
 
 .cursor-pointer {
   cursor: pointer;
+}
+
+.line-height-tight {
+  line-height: 1.3;
 }
 
 @media screen and (min-width: 480px) {

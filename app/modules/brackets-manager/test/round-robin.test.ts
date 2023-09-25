@@ -81,7 +81,7 @@ CreateRoundRobinStage(
 
       assert.equal(participants, example.settings.manualOrdering[groupIndex]);
     }
-  }
+  },
 );
 
 CreateRoundRobinStage(
@@ -108,7 +108,7 @@ CreateRoundRobinStage(
             manualOrdering: [[1, 4, 6, 7]],
           },
         }),
-      "Group count in the manual ordering does not correspond to the given group count."
+      "Group count in the manual ordering does not correspond to the given group count.",
     );
 
     assert.throws(
@@ -135,9 +135,9 @@ CreateRoundRobinStage(
             ],
           },
         }),
-      "Not enough seeds in at least one group of the manual ordering."
+      "Not enough seeds in at least one group of the manual ordering.",
     );
-  }
+  },
 );
 
 CreateRoundRobinStage(
@@ -164,7 +164,7 @@ CreateRoundRobinStage(
 
     // One match must be missing.
     assert.equal(storage.select("match")!.length, 11);
-  }
+  },
 );
 
 CreateRoundRobinStage(
@@ -183,7 +183,7 @@ CreateRoundRobinStage(
     assert.equal(storage.select("group")!.length, 4);
     assert.equal(storage.select("round")!.length, 4 * 3);
     assert.equal(storage.select("match")!.length, 4 * 3 * 2);
-  }
+  },
 );
 
 CreateRoundRobinStage(
@@ -211,7 +211,7 @@ CreateRoundRobinStage(
 
     assert.equal(storage.select<any>("match", 0).opponent1.id, 0);
     assert.equal(storage.select<any>("match", 0).opponent2.id, 7);
-  }
+  },
 );
 
 CreateRoundRobinStage("should throw if no group count given", () => {
@@ -222,7 +222,7 @@ CreateRoundRobinStage("should throw if no group count given", () => {
         tournamentId: 0,
         type: "round_robin",
       }),
-    "You must specify a group count for round-robin stages."
+    "You must specify a group count for round-robin stages.",
   );
 });
 
@@ -241,9 +241,9 @@ CreateRoundRobinStage(
             seedOrdering: ["groups.seed_optimized"],
           },
         }),
-      "You must provide a strictly positive group count."
+      "You must provide a strictly positive group count.",
     );
-  }
+  },
 );
 
 const UpdateRoundRobinScores = suite("Update scores in a round-robin stage");

@@ -69,7 +69,7 @@ CreateDoubleElimination(
       id: 0,
       opponent1: { result: "win" },
     });
-  }
+  },
 );
 
 CreateDoubleElimination(
@@ -81,7 +81,7 @@ CreateDoubleElimination(
       type: "double_elimination",
       settings: { size: 256 },
     });
-  }
+  },
 );
 
 CreateDoubleElimination(
@@ -107,11 +107,11 @@ CreateDoubleElimination(
     assert.equal(storage.select<any>("group")!.length, 3);
     assert.equal(storage.select<any>("round")!.length, 3 + 4 + 2);
     assert.equal(storage.select<any>("match")!.length, 15);
-  }
+  },
 );
 
 const MatchUpdateDoubleElimination = suite(
-  "Previous and next match update in double elimination stage"
+  "Previous and next match update in double elimination stage",
 );
 
 MatchUpdateDoubleElimination.before.each(() => {
@@ -169,24 +169,24 @@ MatchUpdateDoubleElimination(
 
     assert.equal(
       storage.select<any>("match", 8).opponent1.id, // Determined opponent for WB round 2
-      storage.select<any>("match", 0).opponent1.id // Winner of first match round 1
+      storage.select<any>("match", 0).opponent1.id, // Winner of first match round 1
     );
 
     assert.equal(
       storage.select<any>("match", 8).opponent2.id, // Determined opponent for WB round 2
-      storage.select<any>("match", 1).opponent2.id // Winner of second match round 1
+      storage.select<any>("match", 1).opponent2.id, // Winner of second match round 1
     );
 
     assert.equal(
       storage.select<any>("match", 15).opponent2.id, // Determined opponent for LB round 1
-      storage.select<any>("match", 1).opponent1.id // Loser of second match round 1
+      storage.select<any>("match", 1).opponent1.id, // Loser of second match round 1
     );
 
     assert.equal(
       storage.select<any>("match", 19).opponent2.id, // Determined opponent for LB round 2
-      storage.select<any>("match", 0).opponent2.id // Loser of first match round 1
+      storage.select<any>("match", 0).opponent2.id, // Loser of first match round 1
     );
-  }
+  },
 );
 
 MatchUpdateDoubleElimination(
@@ -215,7 +215,7 @@ MatchUpdateDoubleElimination(
 
     assert.equal(
       storage.select<any>("match", 4).opponent2.id, // Propagated winner in LB Final because of the BYE.
-      loserId
+      loserId,
     );
 
     manager.reset.matchResults(1); // Second match of WB round 1
@@ -226,7 +226,7 @@ MatchUpdateDoubleElimination(
     assert.equal(matchSemiLB.status, Status.Locked);
 
     assert.equal(storage.select<any>("match", 4).opponent2.id, null); // Propagated winner is removed.
-  }
+  },
 );
 
 MatchUpdateDoubleElimination("should determine matches in grand final", () => {
@@ -258,7 +258,7 @@ MatchUpdateDoubleElimination("should determine matches in grand final", () => {
 
   assert.equal(
     storage.select<any>("match", 5).opponent1.id, // Determined opponent for the grand final (round 1)
-    storage.select<any>("match", 0).opponent1.id // Winner of WB Final
+    storage.select<any>("match", 0).opponent1.id, // Winner of WB Final
   );
 
   manager.update.match({
@@ -275,7 +275,7 @@ MatchUpdateDoubleElimination("should determine matches in grand final", () => {
 
   assert.equal(
     storage.select<any>("match", 5).opponent2.id, // Determined opponent for the grand final (round 1)
-    storage.select<any>("match", 1).opponent2.id // Winner of LB Final
+    storage.select<any>("match", 1).opponent2.id, // Winner of LB Final
   );
 
   manager.update.match({
@@ -286,7 +286,7 @@ MatchUpdateDoubleElimination("should determine matches in grand final", () => {
 
   assert.equal(
     storage.select<any>("match", 6).opponent2.id, // Determined opponent for the grand final (round 2)
-    storage.select<any>("match", 1).opponent2.id // Winner of LB Final
+    storage.select<any>("match", 1).opponent2.id, // Winner of LB Final
   );
 
   assert.equal(storage.select<any>("match", 2).status, Status.Archived);
@@ -325,7 +325,7 @@ MatchUpdateDoubleElimination(
     const beforeReset = storage.select<any>("match", 3); // Determined opponent for LB round 1
     assert.equal(
       beforeReset.opponent1.id,
-      storage.select<any>("match", 0).opponent2.id
+      storage.select<any>("match", 0).opponent2.id,
     );
     assert.equal(beforeReset.opponent1.position, 1); // Must be set.
 
@@ -334,7 +334,7 @@ MatchUpdateDoubleElimination(
     const afterReset = storage.select<any>("match", 3); // Determined opponent for LB round 1
     assert.equal(afterReset.opponent1.id, null);
     assert.equal(afterReset.opponent1.position, 1); // It must stay.
-  }
+  },
 );
 
 MatchUpdateDoubleElimination("should archive previous matches", () => {
@@ -464,19 +464,19 @@ MatchUpdateDoubleElimination(
     manager.update.match({ id: 0, opponent1: { result: "win" } }); // WB 1.1
     assert.equal(
       storage.select<any>("match", 18).opponent2.id, // Determined opponent for last match of LB round 1 (reverse ordering for losers)
-      storage.select<any>("match", 0).opponent2.id // Loser of first match round 1
+      storage.select<any>("match", 0).opponent2.id, // Loser of first match round 1
     );
 
     manager.update.match({ id: 1, opponent1: { result: "win" } }); // WB 1.2
     assert.equal(
       storage.select<any>("match", 18).opponent1.id, // Determined opponent for last match of LB round 1 (reverse ordering for losers)
-      storage.select<any>("match", 1).opponent2.id // Loser of second match round 1
+      storage.select<any>("match", 1).opponent2.id, // Loser of second match round 1
     );
 
     manager.update.match({ id: 8, opponent1: { result: "win" } }); // WB 2.1
     assert.equal(
       storage.select<any>("match", 22).opponent1.id, // Determined opponent for last match of LB round 2 (reverse ordering for losers)
-      storage.select<any>("match", 8).opponent2.id // Loser of first match round 2
+      storage.select<any>("match", 8).opponent2.id, // Loser of first match round 2
     );
 
     manager.update.match({ id: 6, opponent1: { result: "win" } }); // WB 1.7
@@ -487,7 +487,7 @@ MatchUpdateDoubleElimination(
 
     assert.equal(storage.select<any>("match", 8).status, Status.Completed); // WB 2.1
     assert.equal(storage.select<any>("match", 11).status, Status.Archived); // WB 2.4
-  }
+  },
 );
 
 MatchUpdateDoubleElimination(
@@ -548,7 +548,7 @@ MatchUpdateDoubleElimination(
     });
 
     assert.equal(storage.select<any>("match", 7).opponent2.id, 5);
-  }
+  },
 );
 
 const SkipFirstRoundDoubleElimination = suite("Skip first round");
@@ -593,14 +593,14 @@ SkipFirstRoundDoubleElimination(
     assert.equal(storage.select<any>("round")!.length, 3 + 6 + 2); // One round less in WB.
     assert.equal(
       storage.select<any>("match")!.length,
-      4 + 2 + 1 + (4 + 4 + 2 + 2 + 1 + 1) + (1 + 1)
+      4 + 2 + 1 + (4 + 4 + 2 + 2 + 1 + 1) + (1 + 1),
     );
 
     assert.equal(storage.select<any>("round", 0).number, 1); // Even though the "real" first round is skipped, the stored first round's number should be 1.
 
     assert.equal(storage.select<any>("match", 0).opponent1.id, 0); // First match of WB.
     assert.equal(storage.select<any>("match", 7).opponent1.id, 1); // First match of LB.
-  }
+  },
 );
 
 SkipFirstRoundDoubleElimination(
@@ -634,7 +634,7 @@ SkipFirstRoundDoubleElimination(
     assert.equal(storage.select<any>("match", 22).opponent2.id, 8); // GF Round 2.
 
     manager.update.match({ id: 22, opponent2: { result: "win" } });
-  }
+  },
 );
 
 CreateDoubleElimination.run();

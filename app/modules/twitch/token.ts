@@ -11,11 +11,11 @@ async function getFreshToken() {
       `?client_id=${TWITCH_CLIENT_ID}` +
       `&client_secret=${TWITCH_CLIENT_SECRET}` +
       "&grant_type=client_credentials",
-    { method: "POST" }
+    { method: "POST" },
   );
   if (!res.ok) {
     throw new Error(
-      `Getting Twitch token failed with status code: ${res.status}`
+      `Getting Twitch token failed with status code: ${res.status}`,
     );
   }
 

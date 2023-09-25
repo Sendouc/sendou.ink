@@ -44,12 +44,12 @@ export const action: ActionFunction = async ({ request, params }) => {
       team,
       user,
     }) === "VALID",
-    "Invite code is invalid"
+    "Invite code is invalid",
   );
 
   addNewTeamMember({ teamId: team.id, userId: user.id });
 
-  return redirect(teamPage(team.customUrl));
+  throw redirect(teamPage(team.customUrl));
 };
 
 export const handle: SendouRouteHandle = {

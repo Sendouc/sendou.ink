@@ -59,13 +59,13 @@ export function allXPLeaderboard(): XPLeaderboardItem[] {
 }
 
 export function modeXPLeaderboard(
-  mode: XRankPlacement["mode"]
+  mode: XRankPlacement["mode"],
 ): XPLeaderboardItem[] {
   return modeStm.all({ mode }) as any[];
 }
 
 export function weaponXPLeaderboard(
-  weaponSplId: MainWeaponId
+  weaponSplId: MainWeaponId,
 ): XPLeaderboardItem[] {
   return weaponStm.all({ weaponSplId }) as any[];
 }

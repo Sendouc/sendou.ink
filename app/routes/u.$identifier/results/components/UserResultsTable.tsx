@@ -107,7 +107,7 @@ export function UserResultsTable({
                     day: "numeric",
                     month: "numeric",
                     year: "numeric",
-                  }
+                  },
                 )}
               </td>
               <td>

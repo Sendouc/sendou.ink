@@ -33,6 +33,8 @@ function at<T>(arr: T[], n: number) {
 }
 
 export function joinListToNaturalString(arg: string[], lastSeparator = "and") {
+  if (arg.length === 1) return arg[0];
+
   const list = [...arg];
   const last = list.pop();
   const commaJoined = list.join(", ");
@@ -41,7 +43,7 @@ export function joinListToNaturalString(arg: string[], lastSeparator = "and") {
 }
 
 export function normalizeFormFieldArray(
-  value: undefined | null | string | string[]
+  value: undefined | null | string | string[],
 ): string[] {
   return value == null ? [] : typeof value === "string" ? [value] : value;
 }
@@ -57,7 +59,7 @@ export function removeDuplicates<T>(arr: T[]): T[] {
 
 export function removeDuplicatesByProperty<T>(
   arr: T[],
-  getter: (arg0: T) => number | string
+  getter: (arg0: T) => number | string,
 ): T[] {
   const seen = new Set();
   return arr.filter((item) => {

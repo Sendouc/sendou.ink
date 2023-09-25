@@ -64,7 +64,7 @@ export const meta: V2_MetaFunction = (args) => {
 
 export const loader = async ({ params, request }: LoaderArgs) => {
   const placements = notFoundIfFalsy(
-    findPlacementsByPlayerId(Number(params["id"]))
+    findPlacementsByPlayerId(Number(params["id"])),
   );
 
   const t = await i18next.getFixedT(request);
@@ -83,7 +83,7 @@ export default function XSearchPlayerPage() {
   const aliases = removeDuplicates(
     data.placements
       .map((placement) => placement.name)
-      .filter((name) => name !== firstName)
+      .filter((name) => name !== firstName),
   );
 
   const hasUserLinked = Boolean(data.placements[0]!.discordId);

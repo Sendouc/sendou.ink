@@ -8,6 +8,7 @@ import {
   mainWeaponImageUrl,
   mySlugify,
   navIconUrl,
+  weaponBuildPage,
   weaponCategoryUrl,
 } from "~/utils/urls";
 import { type SendouRouteHandle } from "~/utils/remix";
@@ -65,12 +66,12 @@ export default function BuildsPage() {
             {(category.weaponIds as readonly MainWeaponId[])
               .filter(weaponIdIsNotAlt)
               .sort((a, b) =>
-                t(`weapons:MAIN_${a}`).localeCompare(t(`weapons:MAIN_${b}`))
+                t(`weapons:MAIN_${a}`).localeCompare(t(`weapons:MAIN_${b}`)),
               )
               .map((weaponId) => (
                 <Link
                   key={weaponId}
-                  to={weaponIdToSlug(weaponId)}
+                  to={weaponBuildPage(weaponIdToSlug(weaponId))}
                   className="builds__category__weapon"
                   data-testid={`weapon-${weaponId}-link`}
                 >

@@ -112,7 +112,6 @@ sendou.ink/
 │   ├── styles/ -- All .css files of the project for styling
 │   ├── utils/ -- Random helper functions used in many places
 │   └── permissions.ts / -- What actions are allowed. Separated by frontend and backend as frontend has constraints based on what user sees.
-├── discord-bot/ -- Lohi Discord bot that works together with sendou.ink
 ├── migrations/ -- Database migrations
 ├── public/ -- Images, built assets etc. static files to be served as is
 └── scripts/ -- Stand-alone scripts to be run outside of the app
@@ -137,8 +136,7 @@ Some common files:
 - feature-constants.ts
 - feature-schemas.server.ts
 
-Note: Anything that should be accessed outside of that feature should be re-exported in the index.ts file.
-Note 2: Currently the project is in progress to migrating this style so that's why not everything is using it yet.
+Note: Currently the project is in progress to migrating this style so that's why not everything is using it yet.
 
 ## Commands
 
@@ -204,10 +202,10 @@ Note: This is only useful if you have access to a production running on Render.c
    8a. Double check that no hard-coded special damages changed
 9. `npm run create-object-dmg-json`
 10. Fill new weapon IDs by category to `weapon-ids.ts` (easy to take from the diff of English weapons.json)
-11. Get gear IDs for each slot from /output folder and also update gear id files.
+11. Get gear IDs for each slot from /output folder and update `gear-ids.ts`.
 12. Replace `object-dmg.json` with the `object-dmg.json` in /output folder
 13. Replace `weapon-params.json` with the `params.json` in /output folder
-14. Delete all images inside `main-weapons`, `main-weapons-outlined` and `gear` folders.
+14. Delete all images inside `main-weapons`, `main-weapons-outlined`, `main-weapons-outlined-2` and `gear` folders.
 15. Replace with images from Lean's repository.
 16. Run the `npm run replace-img-names` command
 17. Run the `npm run replace-weapon-names` command

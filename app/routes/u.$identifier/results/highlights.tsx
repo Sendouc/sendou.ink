@@ -19,10 +19,10 @@ import { SubmitButton } from "~/components/SubmitButton";
 
 const editHighlightsActionSchema = z.object({
   [HIGHLIGHT_CHECKBOX_NAME]: z.optional(
-    z.union([z.array(z.string()), z.string()])
+    z.union([z.array(z.string()), z.string()]),
   ),
   [HIGHLIGHT_TOURNAMENT_CHECKBOX_NAME]: z.optional(
-    z.union([z.array(z.string()), z.string()])
+    z.union([z.array(z.string()), z.string()]),
   ),
 });
 
@@ -34,10 +34,10 @@ export const action: ActionFunction = async ({ request }) => {
   });
 
   const resultTeamIds = normalizeFormFieldArray(
-    data[HIGHLIGHT_CHECKBOX_NAME]
+    data[HIGHLIGHT_CHECKBOX_NAME],
   ).map((id) => parseInt(id, 10));
   const resultTournamentTeamIds = normalizeFormFieldArray(
-    data[HIGHLIGHT_TOURNAMENT_CHECKBOX_NAME]
+    data[HIGHLIGHT_TOURNAMENT_CHECKBOX_NAME],
   ).map((id) => parseInt(id, 10));
 
   db.users.updateResultHighlights({
@@ -46,7 +46,7 @@ export const action: ActionFunction = async ({ request }) => {
     resultTournamentTeamIds,
   });
 
-  return redirect(userResultsPage(user));
+  throw redirect(userResultsPage(user));
 };
 
 export default function ResultHighlightsEditPage() {

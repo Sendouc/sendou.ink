@@ -185,13 +185,13 @@ export class Create {
    */
   private createDoubleEliminationSkipFirstRound(
     stageId: number,
-    slots: ParticipantSlot[]
+    slots: ParticipantSlot[],
   ): void {
     const { even: directInWb, odd: directInLb } = helpers.splitByParity(slots);
     const { losers: losersWb, winner: winnerWb } = this.createStandardBracket(
       stageId,
       1,
-      directInWb
+      directInWb,
     );
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
@@ -212,12 +212,12 @@ export class Create {
    */
   private createDoubleElimination(
     stageId: number,
-    slots: ParticipantSlot[]
+    slots: ParticipantSlot[],
   ): void {
     const { losers: losersWb, winner: winnerWb } = this.createStandardBracket(
       stageId,
       1,
-      slots
+      slots,
     );
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
@@ -239,7 +239,7 @@ export class Create {
   private createRoundRobinGroup(
     stageId: number,
     number: number,
-    slots: ParticipantSlot[]
+    slots: ParticipantSlot[],
   ): void {
     const groupId = this.insertGroup({
       stage_id: stageId,
@@ -250,7 +250,7 @@ export class Create {
 
     const rounds = helpers.makeRoundRobinMatches(
       slots,
-      this.stage.settings?.roundRobinMode
+      this.stage.settings?.roundRobinMode,
     );
 
     for (let i = 0; i < rounds.length; i++)
@@ -269,7 +269,7 @@ export class Create {
   private createStandardBracket(
     stageId: number,
     number: number,
-    slots: ParticipantSlot[]
+    slots: ParticipantSlot[],
   ): StandardBracketResults {
     const roundCount = helpers.getUpperBracketRoundCount(slots.length);
     const groupId = this.insertGroup({
@@ -307,7 +307,7 @@ export class Create {
   private createLowerBracket(
     stageId: number,
     number: number,
-    losers: ParticipantSlot[][]
+    losers: ParticipantSlot[][],
   ): ParticipantSlot {
     // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
     const participantCount = this.stage.settings?.size!;
@@ -339,14 +339,14 @@ export class Create {
       const minorOrdering = this.getMinorOrdering(
         participantCount,
         i,
-        roundPairCount
+        roundPairCount,
       );
       duels = this.getCurrentDuels(
         duels,
         matchCount,
         false,
         losers[losersId++],
-        minorOrdering
+        minorOrdering,
       );
       this.createRound(stageId, groupId, roundNumber++, matchCount, duels);
     }
@@ -364,7 +364,7 @@ export class Create {
   private createUniqueMatchBracket(
     stageId: number,
     number: number,
-    duels: Duel[]
+    duels: Duel[],
   ): void {
     const groupId = this.insertGroup({
       stage_id: stageId,
@@ -391,7 +391,7 @@ export class Create {
     groupId: number,
     roundNumber: number,
     matchCount: number,
-    duels: Duel[]
+    duels: Duel[],
   ): void {
     const matchesChildCount = this.getMatchesChildCount();
 
@@ -410,7 +410,7 @@ export class Create {
         roundId,
         i + 1,
         duels[i],
-        matchesChildCount
+        matchesChildCount,
       );
   }
 
@@ -433,7 +433,7 @@ export class Create {
     roundId: number,
     matchNumber: number,
     opponents: Duel,
-    childCount: number
+    childCount: number,
   ): void {
     const opponent1 = helpers.toResultWithPosition(opponents[0]);
     const opponent2 = helpers.toResultWithPosition(opponents[1]);
@@ -477,7 +477,7 @@ export class Create {
         opponent1,
         opponent2,
       },
-      existing
+      existing,
     );
 
     if (parentId === -1) throw Error("Could not insert the match.");
@@ -504,7 +504,7 @@ export class Create {
    */
   private getCurrentDuels(
     previousDuels: Duel[],
-    currentDuelCount: number
+    currentDuelCount: number,
   ): Duel[];
 
   /**
@@ -517,7 +517,7 @@ export class Create {
   private getCurrentDuels(
     previousDuels: Duel[],
     currentDuelCount: number,
-    major: true
+    major: true,
   ): Duel[];
 
   /**
@@ -534,7 +534,7 @@ export class Create {
     currentDuelCount: number,
     major: false,
     losers: ParticipantSlot[],
-    method?: SeedOrdering
+    method?: SeedOrdering,
   ): Duel[];
 
   /**
@@ -551,7 +551,7 @@ export class Create {
     currentDuelCount: number,
     major?: boolean,
     losers?: ParticipantSlot[],
-    method?: SeedOrdering
+    method?: SeedOrdering,
   ): Duel[] {
     if (
       (major === undefined || major) &&
@@ -602,7 +602,7 @@ export class Create {
     if (this.stage.type !== "round_robin" && this.stage.settings.balanceByes)
       this.stage.seeding = helpers.balanceByes(
         this.stage.seeding,
-        this.stage.settings.size
+        this.stage.settings.size,
       );
 
     if (helpers.isSeedingWithIds(this.stage.seeding))
@@ -619,11 +619,11 @@ export class Create {
    */
   private getSlotsUsingNames(
     seeding: Seeding,
-    positions?: number[]
+    positions?: number[],
   ): ParticipantSlot[] {
     const participants = helpers.extractParticipantsFromSeeding(
       this.stage.tournamentId,
-      seeding
+      seeding,
     );
 
     if (!this.registerParticipants(participants))
@@ -646,7 +646,7 @@ export class Create {
    */
   private getSlotsUsingIds(
     seeding: Seeding,
-    positions?: number[]
+    positions?: number[],
   ): ParticipantSlot[] {
     const participants = this.storage.select("participant", {
       tournament_id: this.stage.tournamentId,
@@ -656,7 +656,7 @@ export class Create {
     return helpers.mapParticipantsIdsToDatabase(
       seeding,
       participants,
-      positions
+      positions,
     );
   }
 
@@ -701,7 +701,7 @@ export class Create {
   private getOrdering(
     orderingIndex: number,
     stageType: "elimination" | "groups",
-    defaultMethod: SeedOrdering
+    defaultMethod: SeedOrdering,
   ): SeedOrdering {
     if (!this.stage.settings?.seedOrdering) {
       this.seedOrdering.push(defaultMethod);
@@ -716,7 +716,7 @@ export class Create {
 
     if (stageType === "elimination" && method.match(/^groups\./))
       throw Error(
-        "You must specify a seed ordering method without a 'groups' prefix"
+        "You must specify a seed ordering method without a 'groups' prefix",
       );
 
     if (
@@ -725,7 +725,7 @@ export class Create {
       !method.match(/^groups\./)
     )
       throw Error(
-        "You must specify a seed ordering method with a 'groups' prefix"
+        "You must specify a seed ordering method with a 'groups' prefix",
       );
 
     return method;
@@ -750,7 +750,7 @@ export class Create {
         this.stage.settings?.groupCount
       )
         throw Error(
-          "Group count in the manual ordering does not correspond to the given group count."
+          "Group count in the manual ordering does not correspond to the given group count.",
         );
 
       const positions = this.stage.settings?.manualOrdering.flat();
@@ -794,7 +794,7 @@ export class Create {
     return this.getOrdering(
       1,
       "elimination",
-      defaultMinorOrdering[participantCount]?.[0] || "natural"
+      defaultMinorOrdering[participantCount]?.[0] || "natural",
     );
   }
 
@@ -808,7 +808,7 @@ export class Create {
   private getMinorOrdering(
     participantCount: number,
     index: number,
-    minorRoundCount: number
+    minorRoundCount: number,
   ): SeedOrdering | undefined {
     // No ordering for the last minor round. There is only one participant to order.
     if (index === minorRoundCount - 1) return undefined;
@@ -816,7 +816,7 @@ export class Create {
     return this.getOrdering(
       2 + index,
       "elimination",
-      defaultMinorOrdering[participantCount]?.[1 + index] || "natural"
+      defaultMinorOrdering[participantCount]?.[1 + index] || "natural",
     );
   }
 
@@ -888,7 +888,7 @@ export class Create {
     const updated = helpers.getUpdatedMatchResults(
       match,
       existing,
-      this.enableByesInUpdate
+      this.enableByesInUpdate,
     ) as Match;
     if (!this.storage.update("match", existing.id, updated))
       throw Error("Could not update the match.");
@@ -916,7 +916,7 @@ export class Create {
     const updated = helpers.getUpdatedMatchResults(
       matchGame,
       existing,
-      this.enableByesInUpdate
+      this.enableByesInUpdate,
     ) as MatchGame;
     if (!this.storage.update("match_game", existing.id, updated))
       throw Error("Could not update the match game.");
@@ -977,7 +977,7 @@ export class Create {
    */
   private createConsolationFinal(
     stageId: number,
-    losers: ParticipantSlot[][]
+    losers: ParticipantSlot[][],
   ): void {
     if (!this.stage.settings?.consolationFinal) return;
 
@@ -995,7 +995,7 @@ export class Create {
   private createGrandFinal(
     stageId: number,
     winnerWb: ParticipantSlot,
-    winnerLb: ParticipantSlot
+    winnerLb: ParticipantSlot,
   ): void {
     // No Grand Final by default.
     const grandFinal = this.stage.settings?.grandFinal;

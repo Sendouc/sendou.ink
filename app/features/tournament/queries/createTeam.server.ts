@@ -49,5 +49,5 @@ export const createTeam = sql.transaction(
     }) as TournamentTeam;
 
     createMemberStm.run({ tournamentTeamId: team.id, userId: ownerId });
-  }
+  },
 );

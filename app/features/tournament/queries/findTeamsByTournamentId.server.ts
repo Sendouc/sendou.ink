@@ -85,7 +85,7 @@ export function findTeamsByTournamentId(tournamentId: Tournament["id"]) {
 
 function teamSorter(
   teamA: Unpacked<FindTeamsByTournamentId>,
-  teamB: Unpacked<FindTeamsByTournamentId>
+  teamB: Unpacked<FindTeamsByTournamentId>,
 ) {
   if (
     teamA.members.length >= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL &&
@@ -109,10 +109,10 @@ function teamSorter(
   }
 
   const lowestATeamPlusTier = Math.min(
-    ...teamA.members.map((m) => m.plusTier ?? Infinity)
+    ...teamA.members.map((m) => m.plusTier ?? Infinity),
   );
   const lowestBTeamPlusTier = Math.min(
-    ...teamB.members.map((m) => m.plusTier ?? Infinity)
+    ...teamB.members.map((m) => m.plusTier ?? Infinity),
   );
 
   if (lowestATeamPlusTier > lowestBTeamPlusTier) {

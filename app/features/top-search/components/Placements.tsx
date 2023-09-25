@@ -46,7 +46,7 @@ export function PlacementsTable({
                         : "Takoroka Division"
                     }
                     path={brandImageUrl(
-                      placement.region === "WEST" ? "tentatek" : "takoroka"
+                      placement.region === "WEST" ? "tentatek" : "takoroka",
                     )}
                     width={24}
                   />

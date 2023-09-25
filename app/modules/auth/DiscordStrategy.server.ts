@@ -26,7 +26,7 @@ const partialDiscordConnectionsSchema = z.array(
     name: z.string(),
     id: z.string(),
     type: z.string(),
-  })
+  }),
 );
 const discordUserDetailsSchema = z.tuple([
   partialDiscordUserSchema,
@@ -53,28 +53,12 @@ export class DiscordStrategy extends OAuth2Strategy<
         callbackURL: new URL("/auth/callback", envVars.BASE_URL).toString(),
       },
       async ({ accessToken }) => {
-        const authHeader: [string, string] = [
-          "Authorization",
-          `Bearer ${accessToken}`,
-        ];
-        const discordResponses = await Promise.all([
-          fetch("https://discord.com/api/users/@me", {
-            headers: [authHeader],
-          }),
-          fetch("https://discord.com/api/users/@me/connections", {
-            headers: [authHeader],
-          }),
-        ]);
+        const discordResponses = this.authGatewayEnabled()
+          ? await this.fetchProfileViaGateway(accessToken)
+          : await this.fetchProfileViaDiscordApi(accessToken);
 
-        const [user, connections] = discordUserDetailsSchema.parse(
-          await Promise.all(
-            discordResponses.map((res) => {
-              if (!res.ok) throw new Error("Call to Discord API failed");
-
-              return res.json();
-            })
-          )
-        );
+        const [user, connections] =
+          discordUserDetailsSchema.parse(discordResponses);
 
         const userFromDb = db.users.upsert({
           discordAvatar: user.avatar ?? null,
@@ -86,14 +70,56 @@ export class DiscordStrategy extends OAuth2Strategy<
         });
 
         return userFromDb.id;
-      }
+      },
     );
 
     this.scope = "identify connections";
   }
 
+  private authGatewayEnabled() {
+    return Boolean(
+      process.env["AUTH_GATEWAY_URL"] && process.env["AUTH_GATEWAY_SECRET"],
+    );
+  }
+
+  private async fetchProfileViaDiscordApi(token: string) {
+    console.log("authenticating via discord...");
+    const authHeader: [string, string] = ["Authorization", `Bearer ${token}`];
+
+    return Promise.all([
+      fetch("https://discord.com/api/users/@me", {
+        headers: [authHeader],
+      }).then(this.jsonIfOk),
+      fetch("https://discord.com/api/users/@me/connections", {
+        headers: [authHeader],
+      }).then(this.jsonIfOk),
+    ]);
+  }
+
+  private async fetchProfileViaGateway(token: string) {
+    console.log("authenticating via gateway...");
+    const url = `${process.env["AUTH_GATEWAY_URL"]}?token=${token}`;
+
+    const options: RequestInit = {
+      method: "GET",
+      headers: { "X-Require-Whisk-Auth": process.env["AUTH_GATEWAY_SECRET"]! },
+    };
+
+    return fetch(url, options).then(this.jsonIfOk);
+  }
+
+  private jsonIfOk(res: Response) {
+    if (!res.ok) {
+      throw new Error(
+        `Auth related call failed with status code ${res.status}`,
+      );
+    }
+
+    return res.json();
+  }
+
   private parseConnections(
-    connections: z.infer<typeof partialDiscordConnectionsSchema>
+    connections: z.infer<typeof partialDiscordConnectionsSchema>,
   ) {
     if (!connections) throw new Error("No connections");
 
