@@ -83,6 +83,7 @@ import { ConnectedChat, type ChatProps } from "~/components/Chat";
 import { currentSeason } from "~/features/mmr";
 import { StarFilledIcon } from "~/components/icons/StarFilled";
 import { StarIcon } from "~/components/icons/Star";
+import { Popover } from "~/components/Popover";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -157,13 +158,6 @@ export const action = async ({ request, params }: ActionArgs) => {
       }
 
       const matchIsBeingCanceled = data.winners.length === 0;
-      if (compared === "DIFFERENT") {
-        return {
-          error: matchIsBeingCanceled
-            ? ("cant-cancel" as const)
-            : ("different" as const),
-        };
-      }
 
       const newSkills =
         compared === "SAME" && !matchIsBeingCanceled
@@ -178,11 +172,13 @@ export const action = async ({ request, params }: ActionArgs) => {
         compared === "SAME" && matchIsBeingCanceled;
 
       sql.transaction(() => {
-        reportScore({
-          matchId,
-          reportedByUserId: user.id,
-          winners: data.winners,
-        });
+        if (compared === "FIX_PREVIOUS" || compared === "FIRST_REPORT") {
+          reportScore({
+            matchId,
+            reportedByUserId: user.id,
+            winners: data.winners,
+          });
+        }
         // own group gets set inactive
         if (groupMemberOfId) setGroupAsInactive(groupMemberOfId);
         // skills & map/player results only update after both teams have reported
@@ -209,6 +205,14 @@ export const action = async ({ request, params }: ActionArgs) => {
           setGroupAsInactive(match.bravoGroupId);
         }
       })();
+
+      if (compared === "DIFFERENT") {
+        return {
+          error: matchIsBeingCanceled
+            ? ("cant-cancel" as const)
+            : ("different" as const),
+        };
+      }
 
       break;
     }
@@ -348,7 +352,8 @@ export default function QMatchPage() {
     data.match.reportedByUserId &&
       ownGroup?.members.some((m) => m.id === data.match.reportedByUserId),
   );
-  const showScore = data.match.isLocked || ownTeamReported;
+  const showScore =
+    data.match.isLocked || (data.match.reportedByUserId && ownGroup);
 
   const poolCode = () => {
     const stringId = String(data.match.id);
@@ -399,7 +404,10 @@ export default function QMatchPage() {
       </div>
       {showScore ? (
         <>
-          <Score reportedAt={data.match.reportedAt!} />
+          <Score
+            reportedAt={data.match.reportedAt!}
+            ownTeamReported={ownTeamReported}
+          />
           {ownGroup && ownMember && data.match.reportedAt ? (
             <AfterMatchActions
               ownGroupId={ownGroup.id}
@@ -487,7 +495,8 @@ export default function QMatchPage() {
           ) : null}
           {cancelScoreFetcher.data?.error === "cant-cancel" ? (
             <div className="text-xs text-warning font-semi-bold text-center">
-              Opponent has already reported score for this match.
+              Can&apos;t cancel since opponent has already reported score for
+              this match. See dispute instructions at the top of the page.
             </div>
           ) : null}
           <MapList
@@ -499,8 +508,8 @@ export default function QMatchPage() {
           {submitScoreFetcher.data?.error === "different" ? (
             <div className="text-xs text-warning font-semi-bold text-center">
               You reported different results than your opponent. Double check
-              the above is correct and otherwise contact the opponent to fix it
-              on their side.
+              the above is correct and otherwise see dispute instructions at the
+              top of the page.
             </div>
           ) : null}
         </>
@@ -509,7 +518,13 @@ export default function QMatchPage() {
   );
 }
 
-function Score({ reportedAt }: { reportedAt: number }) {
+function Score({
+  reportedAt,
+  ownTeamReported,
+}: {
+  reportedAt: number;
+  ownTeamReported: boolean;
+}) {
   const isMounted = useIsMounted();
   const { i18n } = useTranslation();
   const data = useLoaderData<typeof loader>();
@@ -535,8 +550,12 @@ function Score({ reportedAt }: { reportedAt: number }) {
       <div className="stack items-center line-height-tight">
         <div className="text-sm font-bold text-warning">Match canceled</div>
         {!data.match.isLocked ? (
-          <div className="text-xs text-lighter">
-            Pending other team&apos;s confirmation
+          <div className="text-xs text-lighter stack xs items-center text-center">
+            {!ownTeamReported ? (
+              <DisputePopover />
+            ) : (
+              "Pending other team's confirmation"
+            )}
           </div>
         ) : null}
       </div>
@@ -565,11 +584,29 @@ function Score({ reportedAt }: { reportedAt: number }) {
             : ""}
         </div>
       ) : (
-        <div className="text-xs text-lighter">
-          SP will be adjusted after opponent confirms the score
+        <div className="text-xs text-lighter stack xs items-center text-center">
+          SP will be adjusted after both teams report the same results{" "}
+          {!ownTeamReported ? <DisputePopover /> : null}
         </div>
       )}
     </div>
+  );
+}
+
+function DisputePopover() {
+  return (
+    <Popover buttonChildren="Dispute?" containerClassName="text-main-forced">
+      <p>
+        If there is a mistake contact the other team to correct it on their
+        side. Score can be freely rereported till both teams report the same
+        result.
+      </p>
+      <p className="mt-2">
+        If there is a problem talking with the other team, contact a mod on the
+        sendou.ink Discord helpdesk. Provide screenshots that show the correct
+        score.
+      </p>
+    </Popover>
   );
 }
 
