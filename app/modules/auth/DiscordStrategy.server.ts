@@ -55,23 +55,28 @@ export class DiscordStrategy extends OAuth2Strategy<
         callbackURL: new URL("/auth/callback", envVars.BASE_URL).toString(),
       },
       async ({ accessToken }) => {
-        const discordResponses = this.authGatewayEnabled()
-          ? await this.fetchProfileViaGateway(accessToken)
-          : await this.fetchProfileViaDiscordApi(accessToken);
+        try {
+          const discordResponses = this.authGatewayEnabled()
+            ? await this.fetchProfileViaGateway(accessToken)
+            : await this.fetchProfileViaDiscordApi(accessToken);
 
-        const [user, connections] =
-          discordUserDetailsSchema.parse(discordResponses);
+          const [user, connections] =
+            discordUserDetailsSchema.parse(discordResponses);
 
-        const userFromDb = db.users.upsert({
-          discordAvatar: user.avatar ?? null,
-          discordDiscriminator: user.discriminator,
-          discordId: user.id,
-          discordName: user.global_name ?? user.username,
-          discordUniqueName: user.global_name ? user.username : null,
-          ...this.parseConnections(connections),
-        });
+          const userFromDb = db.users.upsert({
+            discordAvatar: user.avatar ?? null,
+            discordDiscriminator: user.discriminator,
+            discordId: user.id,
+            discordName: user.global_name ?? user.username,
+            discordUniqueName: user.global_name ? user.username : null,
+            ...this.parseConnections(connections),
+          });
 
-        return userFromDb.id;
+          return userFromDb.id;
+        } catch (e) {
+          console.error("Failed to finish authentication:\n", e);
+          throw new Error("Failed to finish authentication");
+        }
       },
     );
 
