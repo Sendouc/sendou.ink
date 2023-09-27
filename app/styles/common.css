@@ -1355,7 +1355,7 @@ dialog::backdrop {
 
 .chat__message__contents {
   font-size: var(--fonts-sm);
-  word-break: break-all;
+  word-break: break-word;
 }
 
 .chat__message__contents.pending {
