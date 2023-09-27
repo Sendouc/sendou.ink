@@ -47,6 +47,11 @@ export function resolveRoomPass(matchId: TournamentMatch["id"]) {
     const next = shuffle(opts)[0];
     pass += next;
   }
+
+  // prevent 5555 since many use it as a default pass
+  // making it a bit more common guess
+  if (pass === "5555") return "5800";
+
   return pass;
 }
 
