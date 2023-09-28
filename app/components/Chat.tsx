@@ -57,6 +57,12 @@ export function Chat({
   const handleSubmit = React.useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
+
+      // can't send empty messages
+      if (inputRef.current!.value.trim().length === 0) {
+        return;
+      }
+
       send(inputRef.current!.value);
       inputRef.current!.value = "";
     },
@@ -254,6 +260,17 @@ export function useChat({
       setMessages([]);
     };
   }, [rooms, onNewMessage, rootLoaderData.skalopUrl]);
+
+  React.useEffect(() => {
+    // ping every minute to keep connection alive
+    const interval = setInterval(() => {
+      ws.current?.send("");
+    }, 1000 * 60);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [messages]);
 
   const send = React.useCallback(
     (contents: string) => {
