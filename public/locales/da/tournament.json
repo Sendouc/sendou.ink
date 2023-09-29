@@ -2,13 +2,13 @@
   "tabs.info": "Information",
   "tabs.teams": "Hold ({{count}})",
   "tabs.admin": "Admin",
-   "tabs.register": "Register",
+  "tabs.register": "Register",
   "tabs.maps": "Baner",
   "tabs.brackets": "Grupper",
   "tabs.seeds": "Seedninger",
   "tabs.streams": "Streams ({{count}})",
-  
-   "pre.steps.header": "Fuldfør disse trin for at spille",
+
+  "pre.steps.header": "Fuldfør disse trin for at spille",
   "pre.steps.name": "Holdnavn",
   "pre.steps.roster": "Holdmedlemmer",
   "pre.steps.pool": "Banepulje",
@@ -16,7 +16,6 @@
   "pre.footer": "Tilmeldingen til turneringen kan frit ændres inden turneringen starter",
   "pre.logIn": "Log in for at tilmelde dig",
   "pre.inATeam": "Du er allerede en del af et hold til denne begivenhed",
-
 
   "bracket.type.DE_WINNERS": "Runde",
   "bracket.type.DE_LOSERS": "Taber Runde",
