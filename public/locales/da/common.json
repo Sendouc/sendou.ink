@@ -156,6 +156,7 @@
   "support.perk.nameInFooter": "Discordnavn i bundtekst",
   "support.perk.discordColorRole": "Discord-farverolle",
   "support.perk.discordColorRole.extra": "Du kan have en brugerdefineret farverolle på Plus-serveren and sendou.ink’s Discordserver. Brug '/color' kommandoen på Lohi-botten.",
+  "support.perk.chatColor": "Vælg en farve til dit navn til sendou.ink-chatten",
   "support.perk.badge": "Profilmærke",
   "support.perk.seePlusPercentage": "Se Plus-serverens stemmeprocent",
   "support.perk.seePlusPercentage.extra": "Normalt kan fejlede forslag se deres stemmeprocent. Med denne frynsegode kan du se din egen stemmeprocent.",
@@ -176,6 +177,7 @@
   "custom.colors.text": "Tekts",
   "custom.colors.text-lighter": "Lysere tekst",
   "custom.colors.theme": "Tema",
+  "custom.colors.chat": "Chatnavn",
 
   "divisions.WEST": "Tentatek",
   "divisions.JPN": "Takoroka",
