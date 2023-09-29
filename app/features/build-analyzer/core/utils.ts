@@ -71,6 +71,14 @@ export function isStackableAbility(
   return abilityObj.type === "STACKABLE";
 }
 
+export function isMainOnlyAbility(
+  ability: AbilityWithUnknown,
+): ability is Ability {
+  if (ability === "UNKNOWN") return false;
+
+  return !isStackableAbility(ability);
+}
+
 export function apFromMap({
   abilityPoints,
   ability,

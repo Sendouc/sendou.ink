@@ -73,6 +73,16 @@
   padding-inline: var(--s-2);
 }
 
+.analyzer__stat-popover-trigger {
+  border-radius: 100%;
+  padding: 2px;
+}
+
+.analyzer__stat-popover-trigger__icon {
+  width: 16px;
+  stroke-width: 2;
+}
+
 .analyzer__ap-text {
   color: var(--text-lighter);
   font-size: var(--fonts-xxs);
@@ -161,6 +171,9 @@
 
 .analyzer__stat-card__ability-container {
   min-height: 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .analyzer__stat-card__popover {
@@ -254,5 +267,21 @@
 
   .analyzer__left-column {
     position: initial;
+  }
+}
+
+.analyzer__stat-popover {
+  min-width: 360px;
+
+  --chart-bg: transparent;
+  --chart-height: 250px;
+  --chart-width: 340px;
+}
+
+@media screen and (min-width: 700px) {
+  .analyzer__stat-popover {
+    min-width: calc(360px * 1.75);
+    --chart-height: calc(250px * 1.75);
+    --chart-width: calc(340px * 1.75);
   }
 }

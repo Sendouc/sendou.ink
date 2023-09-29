@@ -5,6 +5,7 @@ import * as React from "react";
 import { useTranslation } from "~/hooks/useTranslation";
 import { AbilitiesSelector } from "~/components/AbilitiesSelector";
 import { Ability } from "~/components/Ability";
+import type { Ability as AbilityType } from "~/modules/in-game-lists";
 import { WeaponCombobox } from "~/components/Combobox";
 import { Image } from "~/components/Image";
 import { Main } from "~/components/Main";
@@ -61,10 +62,17 @@ import { Tabs, Tab } from "~/components/Tabs";
 import {
   buildIsEmpty,
   damageIsSubWeaponDamage,
+  isMainOnlyAbility,
   isStackableAbility,
 } from "../core/utils";
 import { useUser } from "~/modules/auth";
-import { atOrError } from "~/utils/arrays";
+import { atOrError, nullFilledArray } from "~/utils/arrays";
+import { Dialog } from "~/components/Dialog";
+import { buildStats } from "../core/stats";
+import { MAX_AP } from "~/constants";
+import Chart from "~/components/Chart";
+import { BeakerIcon } from "~/components/icons/Beaker";
+import { Table } from "~/components/Table";
 
 export const CURRENT_PATCH = "5.0";
 
@@ -94,6 +102,7 @@ export const handle: SendouRouteHandle = {
 // Resolves this Github issue: https://github.com/Sendouc/sendou.ink/issues/1053
 export const shouldRevalidate: ShouldRevalidateFunction = () => false;
 
+// xxx: charts for the tables
 export default function BuildAnalyzerPage() {
   const user = useUser();
   const { t } = useTranslation(["analyzer", "common", "weapons"]);
@@ -114,7 +123,11 @@ export default function BuildAnalyzerPage() {
   } = useAnalyzeBuild();
 
   const statKeyToTuple = (key: keyof AnalyzedBuild["stats"]) => {
-    return [analyzed.stats[key], analyzed2.stats[key]] as [Stat, Stat];
+    return [analyzed.stats[key], analyzed2.stats[key], key] as [
+      Stat,
+      Stat,
+      keyof AnalyzedBuild["stats"],
+    ];
   };
 
   const objectShredderSelected = build[2][0] === "OS" || build2[2][0] === "OS";
@@ -946,6 +959,91 @@ export default function BuildAnalyzerPage() {
   );
 }
 
+interface StatChartProps {
+  statKey: keyof AnalyzedBuild["stats"];
+  modifiedBy: AbilityType[];
+  title: string;
+  valueSuffix?: string;
+}
+
+function StatChartPopover(props: StatChartProps) {
+  return (
+    <Popover
+      buttonChildren={
+        <BeakerIcon className="analyzer__stat-popover-trigger__icon" />
+      }
+      contentClassName="analyzer__stat-popover"
+      triggerClassName="analyzer__stat-popover-trigger"
+    >
+      <h2 className="text-center text-lg">{props.title}</h2>
+      <StatChart {...props} />
+    </Popover>
+  );
+}
+
+function StatChart({ statKey, modifiedBy, valueSuffix }: StatChartProps) {
+  const { t } = useTranslation(["analyzer"]);
+
+  const chartOptions = React.useMemo(() => {
+    const stackableAbility = modifiedBy.find(isStackableAbility)!;
+    const mainOnlyAbility = modifiedBy.find(isMainOnlyAbility);
+
+    const analyzedBuilds = nullFilledArray(MAX_AP + 1).map((_, i) =>
+      buildStats({
+        abilityPoints: new Map([[stackableAbility, i]]),
+        weaponSplId: 0,
+        mainOnlyAbilities: [],
+        hasTacticooler: false,
+      }),
+    );
+
+    const result = [
+      {
+        label: <Ability ability={stackableAbility} size="TINY" />,
+        data: analyzedBuilds.map((a, i) => ({
+          primary: i,
+          secondary: (a.stats[statKey] as Stat).value,
+        })),
+      },
+    ];
+
+    if (mainOnlyAbility) {
+      const mainOnlyAbilityAnalyzedBuilds = nullFilledArray(MAX_AP + 1).map(
+        (_, i) =>
+          buildStats({
+            abilityPoints: new Map([[stackableAbility, i]]),
+            weaponSplId: 0,
+            mainOnlyAbilities: [mainOnlyAbility],
+            hasTacticooler: false,
+          }),
+      );
+
+      result.push({
+        label: (
+          <div className="stack horizontal">
+            <Ability ability={stackableAbility} size="TINY" />
+            <Ability ability={mainOnlyAbility} size="TINY" />
+          </div>
+        ),
+        data: mainOnlyAbilityAnalyzedBuilds.map((a, i) => ({
+          primary: i,
+          secondary: (a.stats[statKey] as Stat).value,
+        })),
+      });
+    }
+
+    return result;
+  }, [statKey, modifiedBy]);
+
+  return (
+    <Chart
+      options={chartOptions as any}
+      headerSuffix={t("analyzer:abilityPoints.short")}
+      valueSuffix={valueSuffix}
+    />
+  );
+}
+
 function APCompare({
   abilityPoints,
   abilityPoints2,
@@ -1174,6 +1272,7 @@ function StatCategory({
   );
 }
 
+// xxx: type for as [Stat, Stat, keyof AnalyzedBuild["stats"]]) instead of copy paste?
 function StatCard({
   title,
   stat,
@@ -1184,7 +1283,11 @@ function StatCard({
   testId,
 }: {
   title: string;
-  stat: [Stat, Stat] | [Stat<string>, Stat<string>] | number | string;
+  stat:
+    | [Stat, Stat, keyof AnalyzedBuild["stats"]]
+    | [Stat<string>, Stat<string>, keyof AnalyzedBuild["stats"]]
+    | number
+    | string;
   suffix?: string;
   popoverInfo?: string;
   abilityPoints: AbilityPoints;
@@ -1222,6 +1325,11 @@ function StatCard({
     );
   };
 
+  const modifiedBy = React.useMemo(() => {
+    return isStaticValue ? [] : [stat[0].modifiedBy].flat();
+    // xxx: lol?
+  }, [title]);
+
   return (
     <div
       className={clsx("analyzer__stat-card", {
@@ -1255,7 +1363,9 @@ function StatCard({
               className="analyzer__stat-card__value__number"
               data-testid={testId ? `${testId}-base` : undefined}
             >
-              {showComparison ? (stat as [Stat, Stat])[0].value : baseValue}
+              {showComparison
+                ? (stat as [Stat, Stat, keyof AnalyzedBuild["stats"]])[0].value
+                : baseValue}
               {suffix}
             </div>
           </div>
@@ -1268,16 +1378,29 @@ function StatCard({
                 {showComparison ? t("build2") : t("build")}
               </h4>{" "}
               <div className="analyzer__stat-card__value__number">
-                {(stat as [Stat, Stat])[showComparison ? 1 : 0].value}
+                {
+                  (stat as [Stat, Stat, keyof AnalyzedBuild["stats"]])[
+                    showComparison ? 1 : 0
+                  ].value
+                }
                 {suffix}
               </div>
             </div>
           ) : null}
         </div>
       </div>
+      {/* always render this so it reserves space */}
       <div className="analyzer__stat-card__ability-container">
         {!isStaticValue && (
-          <ModifiedByAbilities abilities={stat[0].modifiedBy} />
+          <>
+            <ModifiedByAbilities abilities={stat[0].modifiedBy} />
+            <StatChartPopover
+              statKey={stat[2]}
+              modifiedBy={modifiedBy}
+              title={title}
+              valueSuffix={suffix}
+            />
+          </>
         )}
       </div>
     </div>
@@ -1290,7 +1413,7 @@ function ModifiedByAbilities({ abilities }: { abilities: Stat["modifiedBy"] }) {
   return (
     <div className="stack horizontal sm items-center justify-center">
       {abilitiesArray.map((ability) => (
-        <Ability key={ability} ability={ability} size="TINY" />
+        <Ability key={ability} ability={ability} size="SUBTINY" />
       ))}
     </div>
   );
@@ -1321,7 +1444,7 @@ function DamageTable({
 
   return (
     <>
-      <table>
+      <Table>
         <thead>
           <tr>
             <th>{t("analyzer:damage.header.type")}</th>
@@ -1394,7 +1517,7 @@ function DamageTable({
             );
           })}
         </tbody>
-      </table>
+      </Table>
     </>
   );
 }
@@ -1422,7 +1545,7 @@ function ConsumptionTable({
 
   return (
     <>
-      <table>
+      <Table>
         <thead>
           <tr>
             <th>{t(`weapons:SUB_${subWeaponId}`)}</th>
@@ -1472,7 +1595,7 @@ function ConsumptionTable({
             );
           })}
         </tbody>
-      </table>
+      </Table>
       {subWeaponId === TORPEDO_ID && (
         <div className="analyzer__consumption-table-explanation">
           <> {t("analyzer:torpedoExplanation")}</>
