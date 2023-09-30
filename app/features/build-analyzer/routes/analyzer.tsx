@@ -74,6 +74,7 @@ import {
   isMainOnlyAbility,
   isStackableAbility,
 } from "../core/utils";
+import { PerInkTankGrid } from "../components/PerInkTankGrid";
 
 export const CURRENT_PATCH = "5.0";
 
@@ -749,6 +750,9 @@ export default function BuildAnalyzerPage() {
                 ]}
                 subWeaponId={analyzed.weapon.subWeaponSplId}
               />
+              <div className="mt-4 flex justify-end">
+                <PerInkTankGrid subsUsed={1} weaponSplId={mainWeaponId} />
+              </div>
             </StatCategory>
           )}
 

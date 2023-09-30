@@ -285,3 +285,43 @@
     --chart-width: calc(340px * 1.75);
   }
 }
+
+.analyzer__ink-grid__container {
+  min-width: max-content;
+  overflow: auto;
+}
+
+.analyzer__ink-grid {
+  display: grid;
+  grid-template-columns: repeat(41, 1fr);
+  width: max-content;
+}
+
+.analyzer__ink-grid__vertical-ability {
+  grid-row: span 41;
+  display: grid;
+  place-items: center;
+  padding-inline-end: var(--s-2);
+}
+
+.analyzer__ink-grid__horizontal-ability {
+  grid-column: span 41;
+  display: grid;
+  place-items: center;
+  padding-block-end: var(--s-2);
+}
+
+.analyzer__ink-grid__ap {
+  display: grid;
+  place-items: center;
+  font-weight: var(--semi-bold);
+  font-size: var(--fonts-xs);
+}
+
+.analyzer__ink-grid__cell {
+  width: 25px;
+  font-size: var(--fonts-xs);
+  display: grid;
+  place-items: center;
+  background-color: var(--cell-color);
+}
