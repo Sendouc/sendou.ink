@@ -131,14 +131,16 @@ export default function BuildAnalyzerPage() {
 
   const objectShredderSelected = build[2][0] === "OS" || build2[2][0] === "OS";
 
-  const isComparing = !buildIsEmpty(build) && !buildIsEmpty(build2);
+  const context = {
+    isComparing: !buildIsEmpty(build) && !buildIsEmpty(build2),
+    mainWeaponId,
+    abilityPoints,
+  };
 
   const mainWeaponCategoryItems = [
     analyzed.stats.shotSpreadAir && (
       <StatCard
-        isComparing={isComparing}
-        mainWeaponId={mainWeaponId}
-        abilityPoints={abilityPoints}
+        context={context}
         key="jumpShotSpread"
         stat={statKeyToTuple("shotSpreadAir")}
         title={t("analyzer:stat.jumpShotSpread")}
@@ -147,9 +149,7 @@ export default function BuildAnalyzerPage() {
     ),
     typeof analyzed.stats.shotSpreadGround === "number" && (
       <StatCard
-        isComparing={isComparing}
-        mainWeaponId={mainWeaponId}
-        abilityPoints={abilityPoints}
+        context={context}
         key="groundShotSpread"
         stat={analyzed.stats.shotSpreadGround}
         title={t("analyzer:stat.groundShotSpread")}
@@ -159,9 +159,7 @@ export default function BuildAnalyzerPage() {
     // Squeezer
     analyzed.stats.shotAutofireSpreadAir && (
       <StatCard
-        isComparing={isComparing}
-        mainWeaponId={mainWeaponId}
-        abilityPoints={abilityPoints}
+        context={context}
         key="shotAutofireSpreadAir"
         stat={statKeyToTuple("shotAutofireSpreadAir")}
         title={t("analyzer:stat.shotAutofireSpreadAir")}
@@ -170,9 +168,7 @@ export default function BuildAnalyzerPage() {
     ),
     typeof analyzed.stats.shotAutofireSpreadGround === "number" && (
       <StatCard
-        isComparing={isComparing}
-        mainWeaponId={mainWeaponId}
-        abilityPoints={abilityPoints}
+        context={context}
         key="shotAutofireSpreadGround"
         stat={analyzed.stats.shotAutofireSpreadGround}
         title={t("analyzer:stat.shotAutofireSpreadGround")}
@@ -182,9 +178,7 @@ export default function BuildAnalyzerPage() {
 
     typeof analyzed.stats.mainWeaponWhiteInkSeconds === "number" && (
       <StatCard
-        isComparing={isComparing}
-        mainWeaponId={mainWeaponId}
-        abilityPoints={abilityPoints}
+        context={context}
         key="whiteInkSeconds"
         stat={analyzed.stats.mainWeaponWhiteInkSeconds}
         title={t("analyzer:stat.whiteInk")}
@@ -193,9 +187,7 @@ export default function BuildAnalyzerPage() {
     ),
     typeof analyzed.weapon.brellaCanopyHp === "number" && (
       <StatCard
-        isComparing={isComparing}
-        mainWeaponId={mainWeaponId}
-        abilityPoints={abilityPoints}
+        context={context}
         key="brellaCanopyHp"
         stat={analyzed.weapon.brellaCanopyHp}
         title={t("analyzer:stat.canopyHp")}
@@ -204,9 +196,7 @@ export default function BuildAnalyzerPage() {
     ),
     typeof analyzed.weapon.fullChargeSeconds === "number" && (
       <StatCard
-        isComparing={isComparing}
-        mainWeaponId={mainWeaponId}
-        abilityPoints={abilityPoints}
+        context={context}
         key="fullChargeSeconds"
         stat={analyzed.weapon.fullChargeSeconds}
         title={t("analyzer:stat.fullChargeSeconds")}
@@ -215,9 +205,7 @@ export default function BuildAnalyzerPage() {
     ),
     typeof analyzed.weapon.maxChargeHoldSeconds === "number" && (
       <StatCard
-        isComparing={isComparing}
-        mainWeaponId={mainWeaponId}
-        abilityPoints={abilityPoints}
+        context={context}
         key="maxChargeHoldSeconds"
         stat={analyzed.weapon.maxChargeHoldSeconds}
         title={t("analyzer:stat.maxChargeHoldSeconds")}
@@ -381,35 +369,27 @@ export default function BuildAnalyzerPage() {
             }
           >
             <StatCard
-              isComparing={isComparing}
-              mainWeaponId={mainWeaponId}
-              abilityPoints={abilityPoints}
+              context={context}
               stat={statKeyToTuple("subWeaponInkConsumptionPercentage")}
               title={t("analyzer:stat.subWeaponInkConsumptionPercentage")}
               suffix="%"
             />
             <StatCard
-              isComparing={isComparing}
-              mainWeaponId={mainWeaponId}
-              abilityPoints={abilityPoints}
+              context={context}
               stat={analyzed.stats.subWeaponWhiteInkSeconds}
               title={t("analyzer:stat.whiteInk")}
               suffix={t("analyzer:suffix.seconds")}
             />
             {analyzed.stats.subVelocity && (
               <StatCard
-                isComparing={isComparing}
-                mainWeaponId={mainWeaponId}
-                abilityPoints={abilityPoints}
+                context={context}
                 stat={statKeyToTuple("subVelocity")}
                 title={t("analyzer:stat.sub.velocity")}
               />
             )}
             {analyzed.stats.subFirstPhaseDuration && (
               <StatCard
-                isComparing={isComparing}
-                mainWeaponId={mainWeaponId}
-                abilityPoints={abilityPoints}
+                context={context}
                 stat={statKeyToTuple("subFirstPhaseDuration")}
                 title={t("analyzer:stat.sub.firstPhaseDuration")}
                 suffix={t("analyzer:suffix.seconds")}
@@ -417,9 +397,7 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.subSecondPhaseDuration && (
               <StatCard
-                isComparing={isComparing}
-                mainWeaponId={mainWeaponId}
-                abilityPoints={abilityPoints}
+                context={context}
                 stat={statKeyToTuple("subSecondPhaseDuration")}
                 title={t("analyzer:stat.sub.secondPhaseDuration")}
                 suffix={t("analyzer:suffix.seconds")}
@@ -427,9 +405,7 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.subMarkingTimeInSeconds && (
               <StatCard
-                isComparing={isComparing}
-                mainWeaponId={mainWeaponId}
-                abilityPoints={abilityPoints}
+                context={context}
                 stat={statKeyToTuple("subMarkingTimeInSeconds")}
                 title={t("analyzer:stat.sub.markingTimeInSeconds")}
                 suffix={t("analyzer:suffix.seconds")}
@@ -437,27 +413,21 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.subMarkingRadius && (
               <StatCard
-                isComparing={isComparing}
-                mainWeaponId={mainWeaponId}
-                abilityPoints={abilityPoints}
+                context={context}
                 stat={statKeyToTuple("subMarkingRadius")}
                 title={t("analyzer:stat.sub.markingRadius")}
               />
             )}
             {analyzed.stats.subExplosionRadius && (
               <StatCard
-                isComparing={isComparing}
-                mainWeaponId={mainWeaponId}
-                abilityPoints={abilityPoints}
+                context={context}
                 stat={statKeyToTuple("subExplosionRadius")}
                 title={t("analyzer:stat.sub.explosionRadius")}
               />
             )}
             {analyzed.stats.subHp && (
               <StatCard
-                isComparing={isComparing}
-                mainWeaponId={mainWeaponId}
-                abilityPoints={abilityPoints}
+                context={context}
                 stat={statKeyToTuple("subHp")}
                 title={t("analyzer:stat.sub.hp")}
                 suffix={t("analyzer:suffix.hp")}
@@ -465,9 +435,7 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.subQsjBoost && (
               <StatCard
-                isComparing={isComparing}
-                mainWeaponId={mainWeaponId}
-                abilityPoints={abilityPoints}
+                context={context}
                 stat={statKeyToTuple("subQsjBoost")}
                 title={t("analyzer:stat.sub.qsjBoost")}
                 suffix={t("analyzer:abilityPoints.short")}
@@ -494,34 +462,26 @@ export default function BuildAnalyzerPage() {
             }
           >
             <StatCard
-              isComparing={isComparing}
-              mainWeaponId={mainWeaponId}
-              abilityPoints={abilityPoints}
+              context={context}
               stat={statKeyToTuple("specialPoint")}
               title={t("analyzer:stat.specialPoints")}
               suffix={t("analyzer:suffix.specialPointsShort")}
             />
             <StatCard
-              isComparing={isComparing}
-              mainWeaponId={mainWeaponId}
-              abilityPoints={abilityPoints}
+              context={context}
               stat={statKeyToTuple("specialLost")}
               title={t("analyzer:stat.specialLost")}
               suffix="%"
             />
             <StatCard
-              isComparing={isComparing}
-              mainWeaponId={mainWeaponId}
-              abilityPoints={abilityPoints}
+              context={context}
               stat={statKeyToTuple("specialLostSplattedByRP")}
               title={t("analyzer:stat.specialLostSplattedByRP")}
               suffix="%"
             />
             {analyzed.stats.specialDurationInSeconds && (
               <StatCard
-                isComparing={isComparing}
-                mainWeaponId={mainWeaponId}
-                abilityPoints={abilityPoints}
+                context={context}
                 stat={statKeyToTuple("specialDurationInSeconds")}
                 title={t("analyzer:stat.special.duration", {
                   weapon: t(
@@ -538,9 +498,7 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.specialDamageDistance && (
               <StatCard
-                isComparing={isComparing}
-                mainWeaponId={mainWeaponId}
-                abilityPoints={abilityPoints}
+                context={context}
                 stat={statKeyToTuple("specialDamageDistance")}
                 title={t("analyzer:stat.special.damageDistance", {
                   weapon: t(
@@ -551,9 +509,7 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.specialPaintRadius && (
               <StatCard
-                isComparing={isComparing}
-                mainWeaponId={mainWeaponId}
-                abilityPoints={abilityPoints}
+                context={context}
                 stat={statKeyToTuple("specialPaintRadius")}
                 title={t("analyzer:stat.special.paintRadius", {
                   weapon: t(
@@ -564,9 +520,7 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.specialFieldHp && (
               <StatCard
-                isComparing={isComparing}
-                mainWeaponId={mainWeaponId}
-                abilityPoints={abilityPoints}
+                context={context}
                 stat={statKeyToTuple("specialFieldHp")}
                 title={t("analyzer:stat.special.shieldHp", {
                   weapon: t(
@@ -578,9 +532,7 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.specialDeviceHp && (
               <StatCard
-                isComparing={isComparing}
-                mainWeaponId={mainWeaponId}
-                abilityPoints={abilityPoints}
+                context={context}
                 stat={statKeyToTuple("specialDeviceHp")}
                 title={t("analyzer:stat.special.deviceHp", {
                   weapon: t(
@@ -592,9 +544,7 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.specialHookInkConsumptionPercentage && (
               <StatCard
-                isComparing={isComparing}
-                mainWeaponId={mainWeaponId}
-                abilityPoints={abilityPoints}
+                context={context}
                 stat={statKeyToTuple("specialHookInkConsumptionPercentage")}
                 title={t("analyzer:stat.special.inkConsumptionHook", {
                   weapon: t(
@@ -606,9 +556,7 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.specialInkConsumptionPerSecondPercentage && (
               <StatCard
-                isComparing={isComparing}
-                mainWeaponId={mainWeaponId}
-                abilityPoints={abilityPoints}
+                context={context}
                 stat={statKeyToTuple(
                   "specialInkConsumptionPerSecondPercentage",
                 )}
@@ -622,9 +570,7 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.specialReticleRadius && (
               <StatCard
-                isComparing={isComparing}
-                mainWeaponId={mainWeaponId}
-                abilityPoints={abilityPoints}
+                context={context}
                 stat={statKeyToTuple("specialReticleRadius")}
                 title={t("analyzer:stat.special.reticleRadius", {
                   weapon: t(
@@ -635,9 +581,7 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.specialThrowDistance && (
               <StatCard
-                isComparing={isComparing}
-                mainWeaponId={mainWeaponId}
-                abilityPoints={abilityPoints}
+                context={context}
                 stat={statKeyToTuple("specialThrowDistance")}
                 title={t("analyzer:stat.special.throwDistance", {
                   weapon: t(
@@ -648,9 +592,7 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.specialAutoChargeRate && (
               <StatCard
-                isComparing={isComparing}
-                mainWeaponId={mainWeaponId}
-                abilityPoints={abilityPoints}
+                context={context}
                 stat={statKeyToTuple("specialAutoChargeRate")}
                 title={t("analyzer:stat.special.autoChargeRate", {
                   weapon: t(
@@ -661,9 +603,7 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.specialMaxRadius && (
               <StatCard
-                isComparing={isComparing}
-                mainWeaponId={mainWeaponId}
-                abilityPoints={abilityPoints}
+                context={context}
                 stat={statKeyToTuple("specialMaxRadius")}
                 title={t("analyzer:stat.special.maxRadius", {
                   weapon: t(
@@ -675,9 +615,7 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.specialRadiusRange && (
               <StatCard
-                isComparing={isComparing}
-                mainWeaponId={mainWeaponId}
-                abilityPoints={abilityPoints}
+                context={context}
                 stat={statKeyToTuple("specialRadiusRange")}
                 title={t("analyzer:stat.special.radiusRange", {
                   weapon: t(
@@ -688,9 +626,7 @@ export default function BuildAnalyzerPage() {
             )}
             {analyzed.stats.specialPowerUpDuration && (
               <StatCard
-                isComparing={isComparing}
-                mainWeaponId={mainWeaponId}
-                abilityPoints={abilityPoints}
+                context={context}
                 stat={statKeyToTuple("specialPowerUpDuration")}
                 title={t("analyzer:stat.special.powerUpDuration", {
                   weapon: t(
@@ -706,9 +642,7 @@ export default function BuildAnalyzerPage() {
             textBelow={t("analyzer:trackingSubDefExplanation")}
           >
             <StatCard
-              isComparing={isComparing}
-              mainWeaponId={mainWeaponId}
-              abilityPoints={abilityPoints}
+              context={context}
               stat={statKeyToTuple("subDefToxicMistMovementReduction")}
               title={t("analyzer:stat.movementReduction", {
                 weapon: t(`weapons:SUB_${TOXIC_MIST_ID}`),
@@ -716,9 +650,7 @@ export default function BuildAnalyzerPage() {
               suffix="%"
             />
             <StatCard
-              isComparing={isComparing}
-              mainWeaponId={mainWeaponId}
-              abilityPoints={abilityPoints}
+              context={context}
               stat={statKeyToTuple("subDefPointSensorMarkedTimeInSeconds")}
               title={t("analyzer:stat.markedTime", {
                 weapon: t(`weapons:SUB_${POINT_SENSOR_ID}`),
@@ -726,9 +658,7 @@ export default function BuildAnalyzerPage() {
               suffix={t("analyzer:suffix.seconds")}
             />
             <StatCard
-              isComparing={isComparing}
-              mainWeaponId={mainWeaponId}
-              abilityPoints={abilityPoints}
+              context={context}
               stat={statKeyToTuple("subDefInkMineMarkedTimeInSeconds")}
               title={t("analyzer:stat.markedTime", {
                 weapon: t(`weapons:SUB_${INK_MINE_ID}`),
@@ -736,9 +666,7 @@ export default function BuildAnalyzerPage() {
               suffix={t("analyzer:suffix.seconds")}
             />
             <StatCard
-              isComparing={isComparing}
-              mainWeaponId={mainWeaponId}
-              abilityPoints={abilityPoints}
+              context={context}
               stat={statKeyToTuple("subDefAngleShooterMarkedTimeInSeconds")}
               title={t("analyzer:stat.markedTime", {
                 weapon: t(`weapons:SUB_${ANGLE_SHOOTER_ID}`),
@@ -810,7 +738,7 @@ export default function BuildAnalyzerPage() {
                 <div className="analyzer__stat-card-highlighted" />
               ) : null}
               <ConsumptionTable
-                isComparing={isComparing}
+                isComparing={context.isComparing}
                 options={[
                   analyzed.stats.fullInkTankOptions,
                   analyzed2.stats.fullInkTankOptions,
@@ -825,103 +753,77 @@ export default function BuildAnalyzerPage() {
             testId="movement-category"
           >
             <StatCard
-              isComparing={isComparing}
-              mainWeaponId={mainWeaponId}
+              context={context}
               title={t("analyzer:attribute.weight")}
-              abilityPoints={abilityPoints}
               stat={t(`analyzer:attribute.weight.${analyzed.weapon.speedType}`)}
             />
             <StatCard
-              isComparing={isComparing}
-              mainWeaponId={mainWeaponId}
-              abilityPoints={abilityPoints}
+              context={context}
               stat={statKeyToTuple("swimSpeed")}
               title={t("analyzer:stat.swimSpeed")}
               testId="swim-speed"
             />
             <StatCard
-              isComparing={isComparing}
-              mainWeaponId={mainWeaponId}
-              abilityPoints={abilityPoints}
+              context={context}
               stat={statKeyToTuple("swimSpeedHoldingRainmaker")}
               title={t("analyzer:stat.swimSpeedHoldingRainmaker")}
             />
             <StatCard
-              isComparing={isComparing}
-              mainWeaponId={mainWeaponId}
-              abilityPoints={abilityPoints}
+              context={context}
               stat={statKeyToTuple("runSpeed")}
               title={t("analyzer:stat.runSpeed")}
             />
             {analyzed.stats.shootingRunSpeed && (
               <StatCard
-                isComparing={isComparing}
-                mainWeaponId={mainWeaponId}
-                abilityPoints={abilityPoints}
+                context={context}
                 stat={statKeyToTuple("shootingRunSpeed")}
                 title={t("analyzer:stat.shootingRunSpeed")}
               />
             )}
             {analyzed.stats.shootingRunSpeedCharging && (
               <StatCard
-                isComparing={isComparing}
-                mainWeaponId={mainWeaponId}
-                abilityPoints={abilityPoints}
+                context={context}
                 stat={statKeyToTuple("shootingRunSpeedCharging")}
                 title={t("analyzer:stat.shootingRunSpeedCharging")}
               />
             )}
             {analyzed.stats.shootingRunSpeedFullCharge && (
               <StatCard
-                isComparing={isComparing}
-                mainWeaponId={mainWeaponId}
-                abilityPoints={abilityPoints}
+                context={context}
                 stat={statKeyToTuple("shootingRunSpeedFullCharge")}
                 title={t("analyzer:stat.shootingRunSpeedFullCharge")}
               />
             )}
             {analyzed.stats.shootingRunSpeedSecondaryMode && (
               <StatCard
-                isComparing={isComparing}
-                mainWeaponId={mainWeaponId}
-                abilityPoints={abilityPoints}
+                context={context}
                 stat={statKeyToTuple("shootingRunSpeedSecondaryMode")}
                 title={t("analyzer:stat.shootingRunSpeedSecondaryMode")}
               />
             )}
             <StatCard
-              isComparing={isComparing}
-              mainWeaponId={mainWeaponId}
-              abilityPoints={abilityPoints}
+              context={context}
               stat={statKeyToTuple("squidSurgeChargeFrames")}
               title={t("analyzer:stat.squidSurgeChargeFrames")}
             />
             <StatCard
-              isComparing={isComparing}
-              mainWeaponId={mainWeaponId}
-              abilityPoints={abilityPoints}
+              context={context}
               stat={statKeyToTuple("runSpeedInEnemyInk")}
               title={t("analyzer:stat.runSpeedInEnemyInk")}
             />
             <StatCard
-              isComparing={isComparing}
-              mainWeaponId={mainWeaponId}
-              abilityPoints={abilityPoints}
+              context={context}
               stat={statKeyToTuple("framesBeforeTakingDamageInEnemyInk")}
               title={t("analyzer:stat.framesBeforeTakingDamageInEnemyInk")}
             />
             <StatCard
-              isComparing={isComparing}
-              mainWeaponId={mainWeaponId}
-              abilityPoints={abilityPoints}
+              context={context}
               stat={statKeyToTuple("damageTakenInEnemyInkPerSecond")}
               title={t("analyzer:stat.damageTakenInEnemyInkPerSecond")}
               suffix={t("analyzer:suffix.hp")}
             />
             <StatCard
-              isComparing={isComparing}
-              mainWeaponId={mainWeaponId}
-              abilityPoints={abilityPoints}
+              context={context}
               stat={statKeyToTuple("enemyInkDamageLimit")}
               title={t("analyzer:stat.enemyInkDamageLimit")}
               suffix={t("analyzer:suffix.hp")}
@@ -930,48 +832,36 @@ export default function BuildAnalyzerPage() {
 
           <StatCategory title={t("analyzer:stat.category.misc")}>
             <StatCard
-              isComparing={isComparing}
-              mainWeaponId={mainWeaponId}
-              abilityPoints={abilityPoints}
+              context={context}
               stat={statKeyToTuple("squidFormInkRecoverySeconds")}
               title={t("analyzer:stat.squidFormInkRecoverySeconds")}
               suffix={t("analyzer:suffix.seconds")}
             />
             <StatCard
-              isComparing={isComparing}
-              mainWeaponId={mainWeaponId}
-              abilityPoints={abilityPoints}
+              context={context}
               stat={statKeyToTuple("humanoidFormInkRecoverySeconds")}
               title={t("analyzer:stat.humanoidFormInkRecoverySeconds")}
               suffix={t("analyzer:suffix.seconds")}
             />
             <StatCard
-              isComparing={isComparing}
-              mainWeaponId={mainWeaponId}
-              abilityPoints={abilityPoints}
+              context={context}
               stat={statKeyToTuple("quickRespawnTime")}
               title={t("analyzer:stat.quickRespawnTime")}
               suffix={t("analyzer:suffix.seconds")}
             />
             <StatCard
-              isComparing={isComparing}
-              mainWeaponId={mainWeaponId}
-              abilityPoints={abilityPoints}
+              context={context}
               stat={statKeyToTuple("quickRespawnTimeSplattedByRP")}
               title={t("analyzer:stat.quickRespawnTimeSplattedByRP")}
               suffix={t("analyzer:suffix.seconds")}
             />
             <StatCard
-              isComparing={isComparing}
-              mainWeaponId={mainWeaponId}
-              abilityPoints={abilityPoints}
+              context={context}
               stat={statKeyToTuple("superJumpTimeGroundFrames")}
               title={t("analyzer:stat.superJumpTimeGround")}
             />
             <StatCard
-              isComparing={isComparing}
-              mainWeaponId={mainWeaponId}
-              abilityPoints={abilityPoints}
+              context={context}
               stat={statKeyToTuple("superJumpTimeTotal")}
               title={t("analyzer:stat.superJumpTimeTotal")}
               suffix={t("analyzer:suffix.seconds")}
@@ -1340,10 +1230,8 @@ function StatCard({
   stat,
   suffix,
   popoverInfo,
-  abilityPoints,
-  isComparing,
   testId,
-  mainWeaponId,
+  context: { mainWeaponId, abilityPoints, isComparing },
 }: {
   title: string;
   stat:
@@ -1353,10 +1241,12 @@ function StatCard({
     | string;
   suffix?: string;
   popoverInfo?: string;
-  abilityPoints: AbilityPoints;
-  isComparing: boolean;
   testId?: string;
-  mainWeaponId: MainWeaponId;
+  context: {
+    mainWeaponId: MainWeaponId;
+    abilityPoints: AbilityPoints;
+    isComparing: boolean;
+  };
 }) {
   const { t } = useTranslation("analyzer");
 
