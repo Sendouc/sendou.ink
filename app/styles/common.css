@@ -1340,6 +1340,10 @@ dialog::backdrop {
   height: 12px;
 }
 
+.chart__dot__focused {
+  outline: 3px solid var(--dot-color-outline);
+}
+
 .chat__container {
   display: flex;
   flex-direction: column;

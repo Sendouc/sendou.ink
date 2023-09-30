@@ -114,8 +114,16 @@ function ChartTooltip({
         return (
           <div key={index} className="stack horizontal items-center sm">
             <div
-              className="chart__dot"
-              style={{ "--dot-color": color } as any}
+              className={clsx("chart__dot", {
+                chart__dot__focused:
+                  focusedDatum?.seriesId === dataPoint.seriesId,
+              })}
+              style={
+                {
+                  "--dot-color": color,
+                  "--dot-color-outline": color.replace(")", "-transparent)"),
+                } as any
+              }
             />
             <div className="chart__tooltip__label">
               {dataPoint.originalSeries.label}

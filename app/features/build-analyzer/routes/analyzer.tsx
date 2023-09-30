@@ -1580,7 +1580,9 @@ function DamageTable({
                           `weapons:SUB_${(val as SubWeaponDamage).subWeaponId}`,
                         )}
                         simple
-                        valueSuffix={t("analyzer:damageShort")}
+                        valueSuffix={` ${t(
+                          "analyzer:damageShort",
+                        ).toLowerCase()}`}
                       />
                     ) : null}
                   </td>
