@@ -692,7 +692,8 @@ export default function BuildAnalyzerPage() {
                   analyzed2.stats.subWeaponDefenseDamages.some(
                     (dmg, i) =>
                       dmg.value !==
-                      analyzed.stats.subWeaponDefenseDamages[i].value,
+                        analyzed.stats.subWeaponDefenseDamages[i].value &&
+                      dmg.baseValue !== dmg.value,
                   )
                     ? analyzed2.stats.subWeaponDefenseDamages
                     : undefined
@@ -1421,6 +1422,8 @@ function DamageTable({
                 });
 
             const comparisonVal = comparisonValues?.[i];
+
+            console.log(comparisonVal);
 
             return (
               <tr key={val.id}>
