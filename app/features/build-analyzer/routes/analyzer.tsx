@@ -1224,7 +1224,7 @@ function StatCategory({
   );
 }
 
-// xxx: type for as [Stat, Stat, keyof AnalyzedBuild["stats"]]) instead of copy paste?
+type StatTuple<T = number> = [Stat<T>, Stat<T>, keyof AnalyzedBuild["stats"]];
 function StatCard({
   title,
   stat,
@@ -1234,11 +1234,7 @@ function StatCard({
   context: { mainWeaponId, abilityPoints, isComparing },
 }: {
   title: string;
-  stat:
-    | [Stat, Stat, keyof AnalyzedBuild["stats"]]
-    | [Stat<string>, Stat<string>, keyof AnalyzedBuild["stats"]]
-    | number
-    | string;
+  stat: StatTuple | StatTuple<string> | number | string;
   suffix?: string;
   popoverInfo?: string;
   testId?: string;
@@ -1279,10 +1275,11 @@ function StatCard({
     );
   };
 
+  const memoKey = isStaticValue ? stat : stat[2];
   const modifiedBy = React.useMemo(() => {
     return isStaticValue ? [] : [stat[0].modifiedBy].flat();
-    // xxx: lol?
-  }, [title]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [memoKey]);
 
   return (
     <div
@@ -1317,9 +1314,7 @@ function StatCard({
               className="analyzer__stat-card__value__number"
               data-testid={testId ? `${testId}-base` : undefined}
             >
-              {showComparison
-                ? (stat as [Stat, Stat, keyof AnalyzedBuild["stats"]])[0].value
-                : baseValue}
+              {showComparison ? (stat as StatTuple)[0].value : baseValue}
               {suffix}
             </div>
           </div>
@@ -1332,11 +1327,7 @@ function StatCard({
                 {showComparison ? t("build2") : t("build")}
               </h4>{" "}
               <div className="analyzer__stat-card__value__number">
-                {
-                  (stat as [Stat, Stat, keyof AnalyzedBuild["stats"]])[
-                    showComparison ? 1 : 0
-                  ].value
-                }
+                {(stat as StatTuple)[showComparison ? 1 : 0].value}
                 {suffix}
               </div>
             </div>
