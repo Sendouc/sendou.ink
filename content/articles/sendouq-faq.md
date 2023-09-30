@@ -18,7 +18,7 @@ Ranks are assigned after completing 7 sets.
 
 ## Why can't I see my rank history?
 
-Rank history becomes available once you've played 7 sets, provided three server days have elapsed since your first set.
+Rank history becomes available once you've played 7 sets on 3 separate days on server time.
 
 ## Both teams misreported the score. What do I do?
 
