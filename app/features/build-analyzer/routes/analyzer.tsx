@@ -1,31 +1,38 @@
 import { type LinksFunction, type V2_MetaFunction } from "@remix-run/node";
 import type { ShouldRevalidateFunction } from "@remix-run/react";
 import { Link } from "@remix-run/react";
+import clsx from "clsx";
 import * as React from "react";
-import { useTranslation } from "~/hooks/useTranslation";
 import { AbilitiesSelector } from "~/components/AbilitiesSelector";
 import { Ability } from "~/components/Ability";
-import type { Ability as AbilityType } from "~/modules/in-game-lists";
+import Chart from "~/components/Chart";
 import { WeaponCombobox } from "~/components/Combobox";
 import { Image } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { Popover } from "~/components/Popover";
+import { Table } from "~/components/Table";
+import { Tab, Tabs } from "~/components/Tabs";
 import { Toggle } from "~/components/Toggle";
+import { BeakerIcon } from "~/components/icons/Beaker";
+import { MAX_AP } from "~/constants";
 import { useSetTitle } from "~/hooks/useSetTitle";
+import { useTranslation } from "~/hooks/useTranslation";
+import { useUser } from "~/modules/auth";
+import type { Ability as AbilityType } from "~/modules/in-game-lists";
 import {
   ANGLE_SHOOTER_ID,
   INK_MINE_ID,
   INK_STORM_ID,
-  isAbility,
   POINT_SENSOR_ID,
-  TOXIC_MIST_ID,
   TORPEDO_ID,
+  TOXIC_MIST_ID,
+  abilitiesShort,
+  isAbility,
   type BuildAbilitiesTupleWithUnknown,
   type MainWeaponId,
   type SubWeaponId,
-  abilitiesShort,
 } from "~/modules/in-game-lists";
-import styles from "../analyzer.css";
+import { atOrError, nullFilledArray, removeDuplicates } from "~/utils/arrays";
 import { damageTypeTranslationString } from "~/utils/i18next";
 import { type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
@@ -38,40 +45,35 @@ import {
   subWeaponImageUrl,
   userNewBuildPage,
 } from "~/utils/urls";
-import clsx from "clsx";
+import {
+  MAX_LDE_INTENSITY,
+  damageTypeToWeaponType,
+} from "../analyzer-constants";
+import { useAnalyzeBuild } from "../analyzer-hooks";
+import type {
+  AbilityPoints,
+  AnalyzedBuild,
+  Damage,
+  SpecialEffectType,
+  Stat,
+  SubWeaponDamage,
+} from "../analyzer-types";
+import styles from "../analyzer.css";
 import {
   ABILITIES_WITHOUT_CHUNKS,
   getAbilityChunksMapAsArray,
 } from "../core/abilityChunksCalc";
-import type {
-  AbilityPoints,
-  AnalyzedBuild,
-  SpecialEffectType,
-  Stat,
-} from "../analyzer-types";
 import {
-  lastDitchEffortIntensityToAp,
   SPECIAL_EFFECTS,
+  lastDitchEffortIntensityToAp,
 } from "../core/specialEffects";
-import {
-  damageTypeToWeaponType,
-  MAX_LDE_INTENSITY,
-} from "../analyzer-constants";
-import { useAnalyzeBuild } from "../analyzer-hooks";
-import { Tabs, Tab } from "~/components/Tabs";
+import { buildStats } from "../core/stats";
 import {
   buildIsEmpty,
   damageIsSubWeaponDamage,
   isMainOnlyAbility,
   isStackableAbility,
 } from "../core/utils";
-import { useUser } from "~/modules/auth";
-import { atOrError, nullFilledArray } from "~/utils/arrays";
-import { buildStats } from "../core/stats";
-import { MAX_AP } from "~/constants";
-import Chart from "~/components/Chart";
-import { BeakerIcon } from "~/components/icons/Beaker";
-import { Table } from "~/components/Table";
 
 export const CURRENT_PATCH = "5.0";
 
@@ -687,6 +689,7 @@ export default function BuildAnalyzerPage() {
                 <div className="analyzer__stat-card-highlighted" />
               ) : null}
               <DamageTable
+                showPopovers
                 values={analyzed.stats.subWeaponDefenseDamages}
                 comparisonValues={
                   analyzed2.stats.subWeaponDefenseDamages.some(
@@ -907,11 +910,13 @@ export default function BuildAnalyzerPage() {
 }
 
 interface StatChartProps {
-  statKey: keyof AnalyzedBuild["stats"];
+  statKey?: keyof AnalyzedBuild["stats"];
+  subWeaponId?: SubWeaponId;
   modifiedBy: AbilityType[];
   title: string;
   valueSuffix?: string;
   mainWeaponId: MainWeaponId;
+  simple?: boolean;
 }
 
 function StatChartPopover(props: StatChartProps) {
@@ -921,7 +926,9 @@ function StatChartPopover(props: StatChartProps) {
         <BeakerIcon className="analyzer__stat-popover-trigger__icon" />
       }
       contentClassName="analyzer__stat-popover"
-      triggerClassName="analyzer__stat-popover-trigger"
+      triggerClassName={
+        props.simple ? undefined : "analyzer__stat-popover-trigger"
+      }
     >
       <h2 className="text-center text-lg">{props.title}</h2>
       <StatChart {...props} />
@@ -934,59 +941,35 @@ function StatChart({
   modifiedBy,
   valueSuffix,
   mainWeaponId,
+  subWeaponId,
 }: StatChartProps) {
   const { t } = useTranslation(["analyzer"]);
 
+  const distanceLabel = t("analyzer:damage.header.distance");
   const chartOptions = React.useMemo(() => {
     const stackableAbility = modifiedBy.find(isStackableAbility)!;
     const mainOnlyAbility = modifiedBy.find(isMainOnlyAbility);
 
-    const analyzedBuilds = nullFilledArray(MAX_AP + 1).map((_, i) =>
-      buildStats({
-        abilityPoints: new Map([[stackableAbility, i]]),
-        weaponSplId: mainWeaponId,
-        mainOnlyAbilities: [],
-        hasTacticooler: false,
-      }),
-    );
+    return statKey
+      ? statKeyGraphOptions({
+          stackableAbility,
+          mainOnlyAbility,
+          statKey,
+          mainWeaponId,
+        })
+      : typeof subWeaponId === "number"
+      ? subDefenseGraphOptions({
+          subWeaponId,
+          distanceLabel,
+        })
+      : [];
+  }, [statKey, modifiedBy, mainWeaponId, subWeaponId, distanceLabel]);
 
-    const result = [
-      {
-        label: <Ability ability={stackableAbility} size="TINY" />,
-        data: analyzedBuilds.map((a, i) => ({
-          primary: i,
-          secondary: (a.stats[statKey] as Stat).value,
-        })),
-      },
-    ];
-
-    if (mainOnlyAbility) {
-      const mainOnlyAbilityAnalyzedBuilds = nullFilledArray(MAX_AP + 1).map(
-        (_, i) =>
-          buildStats({
-            abilityPoints: new Map([[stackableAbility, i]]),
-            weaponSplId: 0,
-            mainOnlyAbilities: [mainOnlyAbility],
-            hasTacticooler: false,
-          }),
-      );
-
-      result.push({
-        label: (
-          <div className="stack horizontal">
-            <Ability ability={stackableAbility} size="TINY" />
-            <Ability ability={mainOnlyAbility} size="TINY" />
-          </div>
-        ),
-        data: mainOnlyAbilityAnalyzedBuilds.map((a, i) => ({
-          primary: i,
-          secondary: (a.stats[statKey] as Stat).value,
-        })),
-      });
-    }
-
-    return result;
-  }, [statKey, modifiedBy, mainWeaponId]);
+  // prevent crash but this should not happen
+  if (chartOptions.length === 0) {
+    console.error("no chart options");
+    return null;
+  }
 
   return (
     <Chart
@@ -995,6 +978,116 @@ function StatChart({
       valueSuffix={valueSuffix}
     />
   );
+}
+
+function statKeyGraphOptions({
+  stackableAbility,
+  mainOnlyAbility,
+  statKey,
+  mainWeaponId,
+}: {
+  stackableAbility: AbilityType;
+  mainOnlyAbility: AbilityType | undefined;
+  statKey: keyof AnalyzedBuild["stats"];
+  mainWeaponId: MainWeaponId;
+}) {
+  const analyzedBuilds = nullFilledArray(MAX_AP + 1).map((_, i) =>
+    buildStats({
+      abilityPoints: new Map([[stackableAbility, i]]),
+      weaponSplId: mainWeaponId,
+      mainOnlyAbilities: [],
+      hasTacticooler: false,
+    }),
+  );
+
+  const result = [
+    {
+      label: <Ability ability={stackableAbility} size="TINY" />,
+      data: analyzedBuilds.map((a, i) => ({
+        primary: i,
+        secondary: (a.stats[statKey] as Stat).value,
+      })),
+    },
+  ];
+
+  if (mainOnlyAbility) {
+    const mainOnlyAbilityAnalyzedBuilds = nullFilledArray(MAX_AP + 1).map(
+      (_, i) =>
+        buildStats({
+          abilityPoints: new Map([[stackableAbility, i]]),
+          weaponSplId: 0,
+          mainOnlyAbilities: [mainOnlyAbility],
+          hasTacticooler: false,
+        }),
+    );
+
+    result.push({
+      label: (
+        <div className="stack horizontal">
+          <Ability ability={stackableAbility} size="TINY" />
+          <Ability ability={mainOnlyAbility} size="TINY" />
+        </div>
+      ),
+      data: mainOnlyAbilityAnalyzedBuilds.map((a, i) => ({
+        primary: i,
+        secondary: (a.stats[statKey] as Stat).value,
+      })),
+    });
+  }
+
+  return result;
+}
+
+const damageToKey = (damage: SubWeaponDamage) => {
+  if (typeof damage.distance === "number") {
+    return `${damage.distance},${damage.baseValue}`;
+  }
+
+  return `${damage.distance!.join(",")},${damage.baseValue}`;
+};
+function subDefenseGraphOptions({
+  subWeaponId,
+  distanceLabel,
+}: {
+  subWeaponId: SubWeaponId;
+  distanceLabel: string;
+}) {
+  const analyzedBuilds = nullFilledArray(MAX_AP + 1).map((_, i) =>
+    buildStats({
+      abilityPoints: new Map([["SRU", i]]),
+      weaponSplId: 0,
+      mainOnlyAbilities: [],
+      hasTacticooler: false,
+    }),
+  );
+
+  const distanceKeys = removeDuplicates(
+    analyzedBuilds[0].stats.subWeaponDefenseDamages
+      .filter((d) => (d as SubWeaponDamage).subWeaponId === subWeaponId)
+      .filter((d) => d.value < 100)
+      .map((d) => damageToKey(d)),
+  );
+
+  const result = [];
+
+  for (const key of distanceKeys) {
+    const distance = key.split(",")[0];
+
+    result.push({
+      label: `${distanceLabel}: ${distance}`,
+      data: analyzedBuilds.map((a, i) => ({
+        primary: i,
+        secondary:
+          a.stats.subWeaponDefenseDamages.find(
+            (d) =>
+              (d as SubWeaponDamage).subWeaponId === subWeaponId &&
+              damageToKey(d) === key,
+          )?.value ?? 0,
+      })),
+    });
+  }
+
+  return result;
 }
 
 function APCompare({
@@ -1370,6 +1463,7 @@ function DamageTable({
   values,
   comparisonValues,
   multiShots,
+  showPopovers = false,
 }: {
   values:
     | AnalyzedBuild["stats"]["damages"]
@@ -1378,6 +1472,7 @@ function DamageTable({
     | AnalyzedBuild["stats"]["damages"]
     | AnalyzedBuild["stats"]["subWeaponDefenseDamages"];
   multiShots?: AnalyzedBuild["weapon"]["multiShots"];
+  showPopovers?: boolean;
 }) {
   const { t } = useTranslation(["weapons", "analyzer"]);
 
@@ -1388,6 +1483,16 @@ function DamageTable({
     !damageIsSubWeaponDamage(firstRow) ||
     // essentially checking that we are using some sub resistance up
     values.some((val) => val.value !== (val as any).baseValue);
+
+  const renderedDamagesTypes = new Set<SubWeaponId>();
+  const renderPopover = (damage: Damage, subWeaponId: SubWeaponId) => {
+    if (damage.value >= 100) return false;
+    if (renderedDamagesTypes.has(subWeaponId)) return false;
+
+    renderedDamagesTypes.add(subWeaponId);
+
+    return true;
+  };
 
   return (
     <>
@@ -1406,6 +1511,7 @@ function DamageTable({
               </th>
             ) : null}
             {showDamageColumn && <th>{t("analyzer:damage.header.damage")}</th>}
+            {showPopovers ? <th /> : null}
           </tr>
         </thead>
         <tbody>
@@ -1422,8 +1528,6 @@ function DamageTable({
                 });
 
             const comparisonVal = comparisonValues?.[i];
-
-            console.log(comparisonVal);
 
             return (
               <tr key={val.id}>
@@ -1462,6 +1566,25 @@ function DamageTable({
                     )}
                   </td>
                 )}
+                {showPopovers ? (
+                  <td>
+                    {renderPopover(
+                      val,
+                      (val as SubWeaponDamage).subWeaponId,
+                    ) ? (
+                      <StatChartPopover
+                        mainWeaponId={0}
+                        modifiedBy={[]}
+                        subWeaponId={(val as SubWeaponDamage).subWeaponId}
+                        title={t(
+                          `weapons:SUB_${(val as SubWeaponDamage).subWeaponId}`,
+                        )}
+                        simple
+                        valueSuffix={t("analyzer:damageShort")}
+                      />
+                    ) : null}
+                  </td>
+                ) : null}
               </tr>
             );
           })}

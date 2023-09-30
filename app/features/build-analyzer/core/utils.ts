@@ -1,23 +1,25 @@
+import invariant from "tiny-invariant";
+import { EMPTY_BUILD } from "~/constants";
 import type {
+  Ability,
   AbilityType,
+  AbilityWithUnknown,
+  BuildAbilitiesTupleWithUnknown,
+  MainWeaponId,
   SpecialWeaponId,
   SubWeaponId,
-  Ability,
-  BuildAbilitiesTupleWithUnknown,
-  AbilityWithUnknown,
-  MainWeaponId,
 } from "~/modules/in-game-lists";
 import {
-  subWeaponIds,
+  abilities,
+  mainWeaponIds,
   nonBombSubWeaponIds,
   nonDamagingSpecialWeaponIds,
   specialWeaponIds,
-  abilities,
-  mainWeaponIds,
+  subWeaponIds,
   weaponCategories,
 } from "~/modules/in-game-lists";
-import weaponParamsJson from "./weapon-params.json";
-import abilityValuesJson from "./ability-values.json";
+import type { Unpacked } from "~/utils/types";
+import { UNKNOWN_SHORT } from "../analyzer-constants";
 import type {
   AbilityPoints,
   AnalyzedBuild,
@@ -28,10 +30,8 @@ import type {
   SubWeaponDamage,
   SubWeaponParams,
 } from "../analyzer-types";
-import invariant from "tiny-invariant";
-import { EMPTY_BUILD } from "~/constants";
-import { UNKNOWN_SHORT } from "../analyzer-constants";
-import type { Unpacked } from "~/utils/types";
+import abilityValuesJson from "./ability-values.json";
+import weaponParamsJson from "./weapon-params.json";
 
 export function weaponParams(): ParamsJson {
   return weaponParamsJson as ParamsJson;

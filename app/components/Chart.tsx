@@ -63,7 +63,11 @@ export default function Chart({
           primaryAxis,
           secondaryAxes,
           dark: theme.htmlThemeClass === Theme.DARK,
-          defaultColors: ["var(--theme)", "var(--theme-secondary)"],
+          defaultColors: [
+            "var(--theme)",
+            "var(--theme-secondary)",
+            "var(--theme-info)",
+          ],
         }}
       />
     </div>
