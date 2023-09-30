@@ -24,6 +24,10 @@ Rank history becomes available once you've played 7 sets, provided three server 
 
 Currently, misreported scores cannot be corrected. A score is accepted if reported identically by both teams. Verify the score before submission to avoid this issue.
 
+## The opposing team canceled the match after several games were played. What happened?
+
+Matches can only be canceled if both teams agree to it. If the match was cancelled, someone from your team accepted the cancel request thus legitimizing the match cancellation.
+
 ## Why do I have more points than my opponent but I'm ranked lower?
 
 Rank updates aren't real-time. Allow a few minutes for the server to update, then check your rank again.
