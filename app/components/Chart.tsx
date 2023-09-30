@@ -2,6 +2,7 @@ import clsx from "clsx";
 import * as React from "react";
 import { type AxisOptions, Chart as ReactChart } from "react-charts";
 import type { TooltipRendererProps } from "react-charts/types/components/TooltipRenderer";
+import { useTranslation } from "~/hooks/useTranslation";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { Theme, useTheme } from "~/modules/theme";
 
@@ -74,18 +75,33 @@ interface ChartTooltipProps extends TooltipRendererProps<any> {
   valueSuffix?: string;
 }
 
-// xxx: date header for tooltip
 function ChartTooltip({
   focusedDatum,
   headerSuffix = "",
   valueSuffix = "",
 }: ChartTooltipProps) {
+  const { i18n } = useTranslation();
   const dataPoints = focusedDatum?.interactiveGroup ?? [];
+
+  const header = () => {
+    const primaryValue = dataPoints[0]?.primaryValue;
+    if (!primaryValue) return null;
+
+    if (primaryValue instanceof Date) {
+      return primaryValue.toLocaleDateString(i18n.language, {
+        weekday: "short",
+        day: "numeric",
+        month: "long",
+      });
+    }
+
+    return primaryValue;
+  };
 
   return (
     <div className="chart__tooltip">
       <h3 className="text-center text-md">
-        {dataPoints[0]?.primaryValue}
+        {header()}
         {headerSuffix}
       </h3>
       {dataPoints.map((dataPoint, index) => {
