@@ -172,7 +172,11 @@ export const action = async ({ request, params }: ActionArgs) => {
         compared === "SAME" && matchIsBeingCanceled;
 
       sql.transaction(() => {
-        if (compared === "FIX_PREVIOUS" || compared === "FIRST_REPORT") {
+        if (
+          compared === "FIX_PREVIOUS" ||
+          compared === "FIRST_REPORT" ||
+          data.adminReport
+        ) {
           reportScore({
             matchId,
             reportedByUserId: user.id,
