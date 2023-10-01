@@ -88,7 +88,6 @@ export class DiscordStrategy extends OAuth2Strategy<
   }
 
   private async fetchProfileViaDiscordApi(token: string) {
-    console.log("authenticating via discord...");
     const authHeader: [string, string] = ["Authorization", `Bearer ${token}`];
 
     return Promise.all([
@@ -102,7 +101,6 @@ export class DiscordStrategy extends OAuth2Strategy<
   }
 
   private async fetchProfileViaGateway(token: string) {
-    console.log("authenticating via gateway...");
     const url = `${process.env["AUTH_GATEWAY_PROFILE_URL"]}?token=${token}`;
 
     return fetch(url).then(this.jsonIfOk);

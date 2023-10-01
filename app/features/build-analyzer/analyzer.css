@@ -287,14 +287,13 @@
 }
 
 .analyzer__ink-grid__container {
-  min-width: max-content;
   overflow: auto;
+  min-width: min(100vw, 1100px);
 }
 
 .analyzer__ink-grid {
   display: grid;
   grid-template-columns: repeat(41, 1fr);
-  width: max-content;
 }
 
 .analyzer__ink-grid__vertical-ability {

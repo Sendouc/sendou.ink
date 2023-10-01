@@ -51,7 +51,6 @@ function Grid({ weaponSplId }: PerInkTankGridProps) {
     setIssHovered(undefined);
   };
 
-  // xxx: mobile
   return (
     <div>
       <h2 className="text-lg text-center">
