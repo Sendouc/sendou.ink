@@ -35,7 +35,6 @@ function Grid({ weaponSplId }: PerInkTankGridProps) {
 
   const values = calculateGrid({ weaponSplId, subsUsed });
 
-  // xxx: grey "-" when no data
   // xxx: hover effect for cells
   // xxx: mobile
   return (
@@ -97,7 +96,11 @@ function Grid({ weaponSplId }: PerInkTankGridProps) {
                 }
                 if (typeof cell.shots !== "number") {
                   return (
-                    <div className="analyzer__ink-grid__cell" key={key}>
+                    <div
+                      className="analyzer__ink-grid__cell"
+                      key={key}
+                      style={{ "--cell-color": "var(--bg-lighter)" } as any}
+                    >
                       -
                     </div>
                   );
