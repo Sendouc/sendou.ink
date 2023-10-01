@@ -96,7 +96,9 @@ export default function EditBadgePage() {
         </div>
 
         {canEditBadgeManagers(user) ? <Managers data={data} /> : null}
-        <Owners data={data} />
+        {canEditBadgeOwners({ user, managers: data.managers }) ? (
+          <Owners data={data} />
+        ) : null}
       </Form>
     </Dialog>
   );

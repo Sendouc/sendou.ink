@@ -12,7 +12,7 @@ import {
 } from "~/db/models/badges/queries.server";
 import { type Badge as BadgeDBType } from "~/db/types";
 import { useUser } from "~/modules/auth";
-import { canEditBadgeOwners } from "~/permissions";
+import { canEditBadgeOwners, isMod } from "~/permissions";
 import { discordFullName } from "~/utils/strings";
 import { BADGES_PAGE } from "~/utils/urls";
 import { type BadgesLoaderData } from "../badges";
@@ -72,7 +72,7 @@ export default function BadgeDetailsPage() {
           })}
         </div>
       </div>
-      {canEditBadgeOwners({ user, managers: data.managers }) ? (
+      {isMod(user) || canEditBadgeOwners({ user, managers: data.managers }) ? (
         <LinkButton to="edit" variant="outlined" size="tiny">
           Edit
         </LinkButton>

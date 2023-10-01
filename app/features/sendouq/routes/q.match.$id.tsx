@@ -26,7 +26,7 @@ import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
 import { getUserId, requireUserId } from "~/modules/auth/user.server";
 import type { MainWeaponId } from "~/modules/in-game-lists";
-import { isAdmin } from "~/permissions";
+import { isMod } from "~/permissions";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { animate } from "~/utils/flip";
 import type { SendouRouteHandle } from "~/utils/remix";
@@ -114,8 +114,8 @@ export const action = async ({ request, params }: ActionArgs) => {
       }
 
       validate(
-        !data.adminReport || isAdmin(user),
-        "Only admins can report scores as admin",
+        !data.adminReport || isMod(user),
+        "Only mods can report scores as admin",
       );
       const members = [
         ...groupForMatch(match.alphaGroupId)!.members.map((m) => ({
@@ -301,7 +301,9 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 
   const isTeamAlphaMember = groupAlpha.members.some((m) => m.id === user?.id);
   const isTeamBravoMember = groupBravo.members.some((m) => m.id === user?.id);
-  const canAccessMatchChat = isTeamAlphaMember || isTeamBravoMember;
+  const canAccessMatchChat =
+    isTeamAlphaMember || isTeamBravoMember || isMod(user);
+  const canPostChatMessages = isTeamAlphaMember || isTeamBravoMember;
 
   const groupChatCode = () => {
     if (isTeamAlphaMember) return groupAlpha.chatCode;
@@ -313,6 +315,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   return {
     match: censoredMatch,
     matchChatCode: canAccessMatchChat ? match.chatCode : null,
+    canPostChatMessages,
     groupChatCode: groupChatCode(),
     groupAlpha: censoredGroupAlpha,
     groupBravo: censoredGroupBravo,
@@ -339,7 +342,7 @@ export default function QMatchPage() {
     data.groupAlpha.members.find((m) => m.id === user?.id) ??
     data.groupBravo.members.find((m) => m.id === user?.id);
   const canReportScore = Boolean(
-    !data.match.isLocked && (ownMember || isAdmin(user)),
+    !data.match.isLocked && (ownMember || isMod(user)),
   );
 
   const ownGroup = data.groupAlpha.members.some((m) => m.id === user?.id)
@@ -438,10 +441,14 @@ export default function QMatchPage() {
               showWeapons={!data.match.isLocked}
             />
             {chatRooms.length > 0 ? (
-              <ConnectedChat users={chatUsers} rooms={chatRooms} />
+              <ConnectedChat
+                users={chatUsers}
+                rooms={chatRooms}
+                disabled={!data.canPostChatMessages}
+              />
             ) : null}
           </div>
-          {!data.match.isLocked && (ownMember || isAdmin(user)) ? (
+          {!data.match.isLocked && (ownMember || isMod(user)) ? (
             <div>
               <div className="stack horizontal justify-between">
                 <Link to={SENDOUQ_RULES_PAGE} className="text-xxs font-bold">
@@ -995,7 +1002,7 @@ function MapList({
           })}
         </div>
       </Flipper>
-      {scoreCanBeReported && isAdmin(user) ? (
+      {scoreCanBeReported && isMod(user) ? (
         <div className="stack sm horizontal items-center text-sm font-semi-bold">
           <Toggle
             name="adminReport"
