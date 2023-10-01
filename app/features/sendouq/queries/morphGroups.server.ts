@@ -36,12 +36,10 @@ export const morphGroups = sql.transaction(
     survivingGroupId,
     otherGroupId,
     newMembers,
-    addChatCode,
   }: {
     survivingGroupId: number;
     otherGroupId: number;
     newMembers: number[];
-    addChatCode: boolean;
   }) => {
     const toBeDeletedGroupNonRegulars = findToBeDeletedGroupNonRegularsStm
       .all({ groupId: otherGroupId })
@@ -53,12 +51,10 @@ export const morphGroups = sql.transaction(
     deleteLikesByGroupId(survivingGroupId);
 
     // reset chat code so previous messages are not visible
-    if (addChatCode) {
-      updateGroupStm.run({
-        groupId: survivingGroupId,
-        chatCode: nanoid(10),
-      });
-    }
+    updateGroupStm.run({
+      groupId: survivingGroupId,
+      chatCode: nanoid(10),
+    });
 
     for (const userId of newMembers) {
       const role: GroupMember["role"] = toBeDeletedGroupNonRegulars.includes(

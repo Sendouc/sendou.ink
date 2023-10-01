@@ -38,17 +38,15 @@ export const createMatch = sql.transaction(
     alphaGroupId,
     bravoGroupId,
     mapList,
-    addChatCode,
   }: {
     alphaGroupId: number;
     bravoGroupId: number;
-    addChatCode: boolean;
     mapList: TournamentMapListMap[];
   }) => {
     const match = createMatchStm.get({
       alphaGroupId,
       bravoGroupId,
-      chatCode: addChatCode ? nanoid(10) : null,
+      chatCode: nanoid(10),
     }) as GroupMatch;
 
     for (const [i, { mode, source, stageId }] of mapList.entries()) {
