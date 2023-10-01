@@ -329,6 +329,11 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   };
 };
 
+// xxx: implement group cards
+// - mic, weapons only when appropriate (during match etc.)
+// - new group card
+// - team to new group card
+// - team skill to new group card
 export default function QMatchPage() {
   const user = useUser();
   const isMounted = useIsMounted();

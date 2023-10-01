@@ -192,7 +192,7 @@ export function addSkillsToGroups({
     // For Leviathan we don't specify if it's plus or not
     return tier.name === "LEVIATHAN"
       ? { name: "LEVIATHAN", isPlus: false }
-      : tier;
+      : { name: tier.name, isPlus: tier.isPlus };
   };
   const addSkill = (group: LookingGroupWithInviteCode) => ({
     ...group,

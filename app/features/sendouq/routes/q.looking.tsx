@@ -38,7 +38,7 @@ import {
   groupExpiryStatus,
   membersNeededForFull,
 } from "../core/groups.server";
-import { matchMapList } from "../core/match.server";
+import { createMatchMemento, matchMapList } from "../core/match.server";
 import { FULL_GROUP_SIZE } from "../q-constants";
 import { lookingSchema } from "../q-schemas.server";
 import { groupRedirectLocationByCurrentLocation } from "../q-utils";
@@ -224,6 +224,7 @@ export const action: ActionFunction = async ({ request }) => {
           ourMapPool: new MapPool(mapPoolByGroupId(ourGroup.id)),
           theirMapPool: new MapPool(mapPoolByGroupId(theirGroup.id)),
         }),
+        memento: await createMatchMemento(ourGroup, theirGroup),
       });
 
       throw redirect(sendouQMatchPage(createdMatch.id));
