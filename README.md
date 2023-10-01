@@ -140,12 +140,6 @@ Note: Currently the project is in progress to migrating this style so that's why
 
 ## Commands
 
-### Converting gifs (badges) to thumbnail (.png)
-
-```bash
-sips -s format png ./sundae.gif --out .
-```
-
 ### Add new badge to the database
 
 ```bash
@@ -162,6 +156,12 @@ npm run rename-badge -- 10 "New 4v4 Sundaes"
 
 ```bash
 npm run add-badge-winners -- 10 "750705955909664791,79237403620945920"
+```
+
+### Converting gifs (badges) to thumbnail (.png)
+
+```bash
+sips -s format png ./sundae.gif --out .
 ```
 
 ### Convert many .png files to .avif
