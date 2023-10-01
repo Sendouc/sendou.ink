@@ -2,9 +2,10 @@ import { Ability } from "~/components/Ability";
 import { Popover } from "~/components/Popover";
 import { MAX_AP } from "~/constants";
 import type { MainWeaponId } from "~/modules/in-game-lists";
-import { buildStats } from "../core/stats";
+import { fullInkTankOptions } from "../core/stats";
 import * as React from "react";
 import { useTranslation } from "~/hooks/useTranslation";
+import { weaponParams } from "../core/utils";
 
 interface PerInkTankGridProps {
   weaponSplId: MainWeaponId;
@@ -37,7 +38,6 @@ function Grid({ weaponSplId }: PerInkTankGridProps) {
   // xxx: grey "-" when no data
   // xxx: hover effect for cells
   // xxx: mobile
-  // xxx: optimize perf?
   return (
     <div>
       <h2 className="text-lg text-center">
@@ -154,29 +154,12 @@ function calculateGrid({
         continue;
       }
 
-      const { stats } = buildStats({
-        abilityPoints: new Map([
-          ["ISS", issAP],
-          ["ISM", ismAP],
-        ]),
+      const option = inkTankOptionsWhenNSubsUsed({
+        ismAP,
+        issAP,
+        subsUsed,
         weaponSplId,
-        mainOnlyAbilities: [],
-        hasTacticooler: false,
       });
-
-      // const asd = fullInkTankOptions({
-      //   abilityPoints: new Map([
-      //     ["ISS", issAP],
-      //     ["ISM", ismAP],
-      //   ]),
-      //   weaponSplId,
-      //   hasTacticooler: false,
-      //   mainOnlyAbilities: [],
-      // })
-
-      const option = stats.fullInkTankOptions.find(
-        (o) => o.subsUsed === subsUsed,
-      );
 
       row.push({
         shots: option?.value ? Math.floor(option.value) : null,
@@ -189,6 +172,43 @@ function calculateGrid({
   const withColors = addGridColors(result);
 
   return withColors;
+}
+
+// this is a performance optimization over simply calling "buildStats"
+// as it would be doing a lot of unnecessary work
+function inkTankOptionsWhenNSubsUsed({
+  issAP,
+  ismAP,
+  subsUsed,
+  weaponSplId,
+}: {
+  issAP: number;
+  ismAP: number;
+  subsUsed: number;
+  weaponSplId: MainWeaponId;
+}) {
+  const mainWeaponParams = weaponParams().mainWeapons[weaponSplId];
+
+  const subWeaponParams =
+    weaponParams().subWeapons[mainWeaponParams.subWeaponId];
+
+  const specialWeaponParams =
+    weaponParams().specialWeapons[mainWeaponParams.specialWeaponId];
+
+  const options = fullInkTankOptions({
+    abilityPoints: new Map([
+      ["ISS", issAP],
+      ["ISM", ismAP],
+    ]),
+    weaponSplId,
+    hasTacticooler: false,
+    mainOnlyAbilities: [],
+    mainWeaponParams,
+    specialWeaponParams,
+    subWeaponParams,
+  });
+
+  return options.find((o) => o.subsUsed === subsUsed);
 }
 
 function addGridColors(grid: ("N/A" | { shots: number | null })[][]) {
