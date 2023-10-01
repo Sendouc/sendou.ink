@@ -18,27 +18,34 @@ Ranks are assigned after completing 7 sets.
 
 ## Why can't I see my rank history?
 
-Rank history becomes available once you've played 7 sets on 3 separate days on server time.
+To view your rank history, two conditions must be met:
+
+1. You have completed a minimum of 7 sets.
+2. These sets were played across 3 separate days, according to server time.
 
 ## Both teams misreported the score. What do I do?
 
-A score is accepted if reported identically by both teams. Verify the score before submission to avoid this issue. If you believe the score was fraudulently misreported, please report it on the [sendou.ink Discord server](https://discord.gg/sendou) and report it on the #helpdesk channel. Please be prepared to provide screenshots for proof.
+A score is accepted if reported identically by both teams. Verify the score before submission to avoid this issue. If you suspect a reported score is fraudulent, please raise the issue in the #helpdesk channel on the [sendou.ink Discord server](https://discord.gg/sendou), and be ready to provide screenshots as evidence.
 
 ## The opposing team canceled the match after several games were played. What happened?
 
 Matches can only be canceled if both teams agree to it. If the match was cancelled, someone from your team accepted the cancel request thus legitimizing the match cancellation.
 
-## Why do I have more points than my opponent but I'm ranked lower?
+## Why do I have more SP than my opponent but I have a lower rank?
 
-Rank updates aren't real-time. Allow a few minutes for the server to update, then check your rank again.
+Rank updates aren't real-time. Allow a few minutes for the server to update, then check your (or their) rank again.
 
-## I won a set but didn't gain any points. Why?
+## I haven't played in a few days but my rank dropped. What happened?
 
-Ranking points are influenced by the relative team skills. High-ranked teams gain fewer points defeating lower-ranked teams, reflecting the expected outcome. To earn more points, compete against similarly or higher-ranked teams.
+SendouQ does not implement rank decay, however, ranks are determined by percentile. In this scenario, it's likely other players surpassed your SP, nudging you to a lower rank.
 
-## I won a set but lost points. Why?
+## I won a set but didn't gain any SP. Why?
 
-SendouQ employs [openskill.js](https://github.com/philihp/openskill.js) for rank calculations. Though widely utilized and accurate, its behavior may occasionally seem counterintuitive. In rare instances, you might lose points on a win or gain points on a loss, albeit with small changes. You can reduce how often this can happen by competing against similarly ranked teams. For an elementary understanding, refer to the [openskill.py documentation](https://openskill.me/en/stable/manual.html). For deeper insight, the [whitepaper](https://www.csie.ntu.edu.tw/~cjlin/papers/online_ranking/online_journal.pdf) is available, though it requires a strong grasp of Bayesian statistics, equivalent to upper-undergraduate level math.
+SP adjustments are influenced by the relative team SP. High-SP teams gain fewer points defeating lower-SP teams, reflecting the expected outcome. To earn more SP, compete against similarly or higher-SP teams.
+
+## I won a set but lost SP. Why?
+
+SendouQ employs [openskill.js](https://github.com/philihp/openskill.js) for SP calculations. Though widely utilized and accurate, its behavior may occasionally seem counterintuitive. In rare instances, you might lose SP on a win or gain SP on a loss, albeit with small changes. You can reduce how often this can happen by competing against similarly ranked teams. For an elementary understanding, refer to the [openskill.py documentation](https://openskill.me/en/stable/manual.html). For deeper insight, the [whitepaper](https://www.csie.ntu.edu.tw/~cjlin/papers/online_ranking/online_journal.pdf) is available, though it requires a strong grasp of Bayesian statistics, equivalent to upper-undergraduate level math.
 
 ## What if the FAQ doesn't answer my question?
 
