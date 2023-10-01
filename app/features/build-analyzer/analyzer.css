@@ -318,10 +318,17 @@
   font-size: var(--fonts-xs);
 }
 
+.analyzer__ink-grid__ap__focused {
+  color: var(--theme-secondary);
+  font-weight: var(--bold);
+  text-decoration: underline;
+}
+
 .analyzer__ink-grid__cell {
   width: 25px;
   font-size: var(--fonts-xs);
   display: grid;
   place-items: center;
   background-color: var(--cell-color);
+  cursor: help;
 }

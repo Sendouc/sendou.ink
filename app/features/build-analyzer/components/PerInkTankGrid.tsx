@@ -6,6 +6,7 @@ import { fullInkTankOptions } from "../core/stats";
 import * as React from "react";
 import { useTranslation } from "~/hooks/useTranslation";
 import { weaponParams } from "../core/utils";
+import clsx from "clsx";
 
 interface PerInkTankGridProps {
   weaponSplId: MainWeaponId;
@@ -32,10 +33,24 @@ const AP_VALUES_TO_SHOW = [
 function Grid({ weaponSplId }: PerInkTankGridProps) {
   const { t } = useTranslation(["weapons", "analyzer"]);
   const [subsUsed, setSubsUsed] = React.useState(1);
+  const [ismHovered, setIsmHovered] = React.useState<number>();
+  const [issHovered, setIssHovered] = React.useState<number>();
 
-  const values = calculateGrid({ weaponSplId, subsUsed });
+  const values = React.useMemo(
+    () => calculateGrid({ weaponSplId, subsUsed }),
+    [weaponSplId, subsUsed],
+  );
 
-  // xxx: hover effect for cells
+  const handleHover = ({ ismAP, issAP }: { ismAP: number; issAP: number }) => {
+    setIsmHovered(ismAP);
+    setIssHovered(issAP);
+  };
+
+  const handleMouseLeaveGrid = () => {
+    setIsmHovered(undefined);
+    setIssHovered(undefined);
+  };
+
   // xxx: mobile
   return (
     <div>
@@ -68,7 +83,7 @@ function Grid({ weaponSplId }: PerInkTankGridProps) {
           );
         })}
       </div>
-      <div className="stack horizontal sm">
+      <div className="stack horizontal sm" onMouseLeave={handleMouseLeaveGrid}>
         <div className="analyzer__ink-grid__horizontal-ability">
           <Ability ability="ISS" size="SUBTINY" />
         </div>
@@ -78,13 +93,24 @@ function Grid({ weaponSplId }: PerInkTankGridProps) {
           </div>
           <div />
           {AP_VALUES_TO_SHOW.map((ap) => (
-            <div className="analyzer__ink-grid__ap" key={ap}>
+            <div
+              className={clsx("analyzer__ink-grid__ap", {
+                "analyzer__ink-grid__ap__focused": ismHovered === ap,
+              })}
+              key={ap}
+            >
               {ap}
             </div>
           ))}
           {values.map((row, i) =>
             [
-              <div className="analyzer__ink-grid__ap" key={i}>
+              <div
+                className={clsx("analyzer__ink-grid__ap", {
+                  "analyzer__ink-grid__ap__focused":
+                    issHovered === AP_VALUES_TO_SHOW[i],
+                })}
+                key={i}
+              >
                 {AP_VALUES_TO_SHOW[i]}
               </div>,
             ].concat(
@@ -94,12 +120,21 @@ function Grid({ weaponSplId }: PerInkTankGridProps) {
                 if (cell === "N/A") {
                   return <div className="analyzer__ink-grid__cell" key={key} />;
                 }
+
+                const title = `${cell.shots ?? "-"} (ISM: ${cell.ismAP}, ISS: ${
+                  cell.issAP
+                })`;
+
                 if (typeof cell.shots !== "number") {
                   return (
                     <div
                       className="analyzer__ink-grid__cell"
                       key={key}
                       style={{ "--cell-color": "var(--bg-lighter)" } as any}
+                      title={title}
+                      onMouseEnter={() =>
+                        handleHover({ ismAP: cell.ismAP, issAP: cell.issAP })
+                      }
                     >
                       -
                     </div>
@@ -111,6 +146,10 @@ function Grid({ weaponSplId }: PerInkTankGridProps) {
                     key={key}
                     className="analyzer__ink-grid__cell"
                     style={{ "--cell-color": cell.hex } as any}
+                    title={title}
+                    onMouseEnter={() =>
+                      handleHover({ ismAP: cell.ismAP, issAP: cell.issAP })
+                    }
                   >
                     {cell.shots}
                   </div>
@@ -124,6 +163,8 @@ function Grid({ weaponSplId }: PerInkTankGridProps) {
   );
 }
 
+type ShotCellData = { shots: number | null; ismAP: number; issAP: number };
+
 // LDE boosts both ISM and ISS by max 18 AP each, but you need 10 AP to wear it.
 const MAX_LDE_AP = 18 * 2;
 const AP_NEEDED_TO_WEAR_LDE = 10;
@@ -136,7 +177,7 @@ function calculateGrid({
   weaponSplId: MainWeaponId;
   subsUsed: number;
 }) {
-  const result: ("N/A" | { shots: number | null })[][] = [];
+  const result: ("N/A" | ShotCellData)[][] = [];
   for (
     let issAPIndex = 0;
     issAPIndex < AP_VALUES_TO_SHOW.length;
@@ -144,7 +185,7 @@ function calculateGrid({
   ) {
     const issAP = AP_VALUES_TO_SHOW[issAPIndex];
 
-    const row: ("N/A" | { shots: number | null })[] = [];
+    const row: ("N/A" | ShotCellData)[] = [];
     for (
       let ismAPIndex = 0;
       ismAPIndex < AP_VALUES_TO_SHOW.length;
@@ -166,6 +207,8 @@ function calculateGrid({
 
       row.push({
         shots: option?.value ? Math.floor(option.value) : null,
+        issAP,
+        ismAP,
       });
     }
 
@@ -214,15 +257,21 @@ function inkTankOptionsWhenNSubsUsed({
   return options.find((o) => o.subsUsed === subsUsed);
 }
 
-function addGridColors(grid: ("N/A" | { shots: number | null })[][]) {
+function addGridColors(grid: ("N/A" | ShotCellData)[][]) {
   const maxValue = grid
     .flat()
-    .filter((v): v is { shots: number } => v !== "N/A" && v.shots !== null)
+    .filter(
+      (v): v is { shots: number; ismAP: number; issAP: number } =>
+        v !== "N/A" && v.shots !== null,
+    )
     .reduce((max, v) => Math.max(max, v.shots), 0);
 
   const minValue = grid
     .flat()
-    .filter((v): v is { shots: number } => v !== "N/A" && v.shots !== null)
+    .filter(
+      (v): v is { shots: number; ismAP: number; issAP: number } =>
+        v !== "N/A" && v.shots !== null,
+    )
     .reduce((min, v) => Math.min(min, v.shots), Infinity);
 
   const result = grid.map((row) =>
