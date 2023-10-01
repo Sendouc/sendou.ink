@@ -250,7 +250,7 @@ export default function QPage() {
           rel="noreferrer"
           className="text-xs font-bold text-center"
         >
-          Watch how-to video (YouTube)
+          Watch introduction video on YouTube by Chara
         </a>
       </div>
       {data.upcomingSeason ? (
