@@ -104,7 +104,6 @@ export const handle: SendouRouteHandle = {
 // Resolves this Github issue: https://github.com/Sendouc/sendou.ink/issues/1053
 export const shouldRevalidate: ShouldRevalidateFunction = () => false;
 
-// xxx: charts for the tables
 export default function BuildAnalyzerPage() {
   const user = useUser();
   const { t } = useTranslation(["analyzer", "common", "weapons"]);
@@ -751,7 +750,7 @@ export default function BuildAnalyzerPage() {
                 subWeaponId={analyzed.weapon.subWeaponSplId}
               />
               <div className="mt-4 flex justify-end">
-                <PerInkTankGrid subsUsed={1} weaponSplId={mainWeaponId} />
+                <PerInkTankGrid weaponSplId={mainWeaponId} />
               </div>
             </StatCategory>
           )}

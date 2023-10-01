@@ -3,10 +3,11 @@ import { Popover } from "~/components/Popover";
 import { MAX_AP } from "~/constants";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { buildStats } from "../core/stats";
+import * as React from "react";
+import { useTranslation } from "~/hooks/useTranslation";
 
 interface PerInkTankGridProps {
   weaponSplId: MainWeaponId;
-  subsUsed: number;
 }
 
 export function PerInkTankGrid(props: PerInkTankGridProps) {
@@ -27,23 +28,43 @@ const AP_VALUES_TO_SHOW = [
   57,
 ];
 
-function Grid(props: PerInkTankGridProps) {
-  const values = calculateGrid(props);
+function Grid({ weaponSplId }: PerInkTankGridProps) {
+  const { t } = useTranslation(["weapons", "analyzer"]);
+  const [subsUsed, setSubsUsed] = React.useState(1);
 
-  // xxx: hook up subsUsed to state, default to 1
+  const values = calculateGrid({ weaponSplId, subsUsed });
+
   // xxx: grey "-" when no data
   // xxx: hover effect for cells
   // xxx: mobile
   // xxx: optimize perf?
   return (
     <div>
-      <div className="stack horizontal xs justify-center">
-        {[0, 1, 2].map((subsUsed) => {
-          const id = String(subsUsed);
+      <h2 className="text-lg text-center">
+        {t("analyzer:perInkTankGrid.header", {
+          weapon: t(`weapons:MAIN_${weaponSplId}`),
+          count: subsUsed,
+        })}
+      </h2>
+      <div className="stack horizontal md justify-center my-2">
+        {[0, 1, 2].map((subsUsedOption) => {
+          const id = String(subsUsedOption);
           return (
-            <div key={subsUsed} className="stack horizontal xs items-center">
-              <input type="radio" id={id} name="subsUsed" />
-              <label htmlFor={id}>{subsUsed}</label>
+            <div
+              key={subsUsedOption}
+              className="stack horizontal xs items-center"
+            >
+              <input
+                type="radio"
+                id={id}
+                name="subsUsed"
+                value={subsUsedOption}
+                checked={subsUsedOption === subsUsed}
+                onChange={(e) => setSubsUsed(Number(e.target.value))}
+              />
+              <label htmlFor={id} className="mb-0">
+                {subsUsedOption}
+              </label>
             </div>
           );
         })}
@@ -68,15 +89,23 @@ function Grid(props: PerInkTankGridProps) {
                 {AP_VALUES_TO_SHOW[i]}
               </div>,
             ].concat(
-              row.map((cell, i) => {
-                if (cell === "N/A")
-                  return <div className="analyzer__ink-grid__cell" />;
-                if (!cell.shots)
-                  return <div className="analyzer__ink-grid__cell">-</div>;
+              row.map((cell, j) => {
+                const key = `${i}-${j}`;
+
+                if (cell === "N/A") {
+                  return <div className="analyzer__ink-grid__cell" key={key} />;
+                }
+                if (typeof cell.shots !== "number") {
+                  return (
+                    <div className="analyzer__ink-grid__cell" key={key}>
+                      -
+                    </div>
+                  );
+                }
 
                 return (
                   <div
-                    key={i}
+                    key={key}
                     className="analyzer__ink-grid__cell"
                     style={{ "--cell-color": cell.hex } as any}
                   >
@@ -97,7 +126,13 @@ const MAX_LDE_AP = 18 * 2;
 const AP_NEEDED_TO_WEAR_LDE = 10;
 const apsArePossible = (issAP: number, ismAP: number) =>
   issAP + ismAP - MAX_LDE_AP + AP_NEEDED_TO_WEAR_LDE <= MAX_AP;
-function calculateGrid({ weaponSplId, subsUsed }: PerInkTankGridProps) {
+function calculateGrid({
+  weaponSplId,
+  subsUsed,
+}: {
+  weaponSplId: MainWeaponId;
+  subsUsed: number;
+}) {
   const result: ("N/A" | { shots: number | null })[][] = [];
   for (
     let issAPIndex = 0;
