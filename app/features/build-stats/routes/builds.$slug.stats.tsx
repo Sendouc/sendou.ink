@@ -122,7 +122,9 @@ export default function BuildStatsPage() {
 
             return (
               <div key={stats.name} className="build-stats__ability-row">
-                <Ability ability={stats.name} size="SUB" />
+                <div>
+                  <Ability ability={stats.name} size="SUB" />
+                </div>
                 <div className="build-stats__bars">
                   <div>
                     <WeaponImage
