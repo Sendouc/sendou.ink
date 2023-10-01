@@ -373,7 +373,7 @@ export default function QMatchPage() {
 
   const chatRooms = React.useMemo(() => {
     return [
-      data.matchChatCode ? { code: data.matchChatCode, label: `Match` } : null,
+      data.matchChatCode ? { code: data.matchChatCode, label: "Match" } : null,
       data.groupChatCode ? { code: data.groupChatCode, label: "Group" } : null,
     ].filter(Boolean) as ChatProps["rooms"];
   }, [data.matchChatCode, data.groupChatCode]);
@@ -1032,6 +1032,7 @@ function MapListMap({
   canReportScore: boolean;
   weapons?: ReportedWeapon[];
 }) {
+  const user = useUser();
   const data = useLoaderData<typeof loader>();
   const { t } = useTranslation(["game-misc", "tournament"]);
 
@@ -1094,6 +1095,18 @@ function MapListMap({
     return <>• {winner} won</>;
   };
 
+  const relativeSideText = (side: "ALPHA" | "BRAVO") => {
+    const ownSide = data.groupAlpha.members.some((m) => m.id === user?.id)
+      ? "ALPHA"
+      : data.groupBravo.members.some((m) => m.id === user?.id)
+      ? "BRAVO"
+      : null;
+
+    if (!ownSide) return "";
+
+    return ownSide === side ? " (us)" : " (them)";
+  };
+
   return (
     <div key={map.stageId} className="stack xs">
       <Flipped flipId={map.stageId}>
@@ -1149,7 +1162,7 @@ function MapListMap({
                 onChange={handleReportScore(i, "ALPHA")}
               />
               <label className="mb-0" htmlFor={`alpha-${i}`}>
-                Alpha
+                {`Alpha${relativeSideText("ALPHA")}`}
               </label>
             </div>
             <div className="stack sm horizontal items-center font-semi-bold">
@@ -1162,7 +1175,7 @@ function MapListMap({
                 onChange={handleReportScore(i, "BRAVO")}
               />
               <label className="mb-0" htmlFor={`bravo-${i}`}>
-                Bravo
+                {`Bravo${relativeSideText("BRAVO")}`}
               </label>
             </div>
           </div>
