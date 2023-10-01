@@ -320,7 +320,7 @@ function PowerChart() {
   const chartOptions = React.useMemo(() => {
     return [
       {
-        label: "Power",
+        label: "SP",
         data: data.skills.map((s) => {
           // hack to force shorter bottom axis text
           const date = new Date(s.date);
