@@ -1732,6 +1732,7 @@ function playedMatches() {
 
     invariant(groupAlpha !== 0 && groupBravo !== 0, "groups not created");
 
+    // @ts-expect-error creating without memento on purpose
     const match = createMatch({
       alphaGroupId: groupAlpha,
       bravoGroupId: groupBravo,

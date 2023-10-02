@@ -12,7 +12,7 @@ export type LookingGroup = {
     id: number;
     discordId: string;
     discordName: string;
-    discordAvatar: string;
+    discordAvatar: string | null;
     customUrl?: User["customUrl"];
     plusTier?: PlusTier["tier"];
     role: GroupMember["role"];

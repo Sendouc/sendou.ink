@@ -114,6 +114,10 @@
   font-weight: var(--bold);
 }
 
+.h-full {
+  height: 100%;
+}
+
 .w-full {
   width: 100%;
 }
@@ -156,6 +160,10 @@
 
 .pb-4 {
   padding-block-end: var(--s-4);
+}
+
+.pb-8 {
+  padding-block-end: var(--s-8);
 }
 
 .pt-12-forced {

@@ -27,18 +27,23 @@ export function GroupCard({
   ownRole,
   ownGroup = false,
   isExpired = false,
+  displayOnly = false,
+  className,
 }: {
   group: LookingGroup;
   action?: "LIKE" | "UNLIKE" | "GROUP_UP" | "MATCH_UP";
+  // xxx: delete
   mapListPreference?: Group["mapListPreference"];
   ownRole?: GroupMemberType["role"];
   ownGroup?: boolean;
   isExpired?: boolean;
+  displayOnly?: boolean;
+  className?: string;
 }) {
   const fetcher = useFetcher();
 
   return (
-    <section className="q__group">
+    <section className={clsx("q__group", className)}>
       <div
         className={clsx("stack md", {
           "horizontal justify-center": !group.members,
@@ -50,6 +55,7 @@ export function GroupCard({
               member={member}
               showActions={ownGroup && ownRole === "OWNER"}
               key={member.discordId}
+              displayOnly={displayOnly}
             />
           );
         })}
@@ -63,7 +69,7 @@ export function GroupCard({
             })
           : null}
       </div>
-      {group.tier ? (
+      {group.tier && !displayOnly ? (
         <div className="stack xs text-lighter font-bold items-center justify-center text-xs">
           <TierImage tier={group.tier} width={100} />
           <div>
@@ -75,6 +81,13 @@ export function GroupCard({
               </>
             ) : null}
           </div>
+        </div>
+      ) : null}
+      {group.tier && displayOnly ? (
+        <div className="q__group__display-group-tier">
+          <TierImage tier={group.tier} width={38} />
+          {group.tier.name}
+          {group.tier.isPlus ? "+" : ""}
         </div>
       ) : null}
       {action &&
@@ -119,9 +132,11 @@ export function GroupCard({
 function GroupMember({
   member,
   showActions,
+  displayOnly,
 }: {
   member: NonNullable<LookingGroup["members"]>[number];
   showActions: boolean;
+  displayOnly?: boolean;
 }) {
   return (
     <div className="stack xxs">
@@ -135,7 +150,9 @@ function GroupMember({
           <span className="q__group-member__name">{member.discordName}</span>
         </Link>
         <div className="ml-auto stack horizontal sm items-center">
-          {showActions ? <MemberRoleManager member={member} /> : null}
+          {showActions || displayOnly ? (
+            <MemberRoleManager member={member} displayOnly={displayOnly} />
+          ) : null}
           {member.skill ? <TierInfo skill={member.skill} /> : null}
         </div>
       </div>
@@ -153,7 +170,7 @@ function GroupMember({
             </div>
           ) : null}
         </div>
-        {member.weapons ? (
+        {member.weapons && member.weapons.length > 0 ? (
           <div className="q__group-member__extra-info">
             {member.weapons?.map((weapon) => {
               return (
@@ -174,12 +191,16 @@ function GroupMember({
 
 function MemberRoleManager({
   member,
+  displayOnly,
 }: {
   member: NonNullable<LookingGroup["members"]>[number];
+  displayOnly?: boolean;
 }) {
   const fetcher = useFetcher();
   const { t } = useTranslation(["q"]);
   const Icon = member.role === "OWNER" ? StarFilledIcon : StarIcon;
+
+  if (displayOnly && member.role !== "OWNER") return null;
 
   return (
     <Popover
@@ -193,7 +214,7 @@ function MemberRoleManager({
     >
       <div className="stack md items-center">
         <div>{t(`q:roles.${member.role}`)}</div>
-        {member.role !== "OWNER" ? (
+        {member.role !== "OWNER" && !displayOnly ? (
           <fetcher.Form method="post" action={SENDOUQ_LOOKING_PAGE}>
             <input type="hidden" name="userId" value={member.id} />
             {member.role === "REGULAR" ? (

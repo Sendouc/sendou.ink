@@ -1,5 +1,5 @@
 import { sql } from "~/db/sql";
-import type { Group, GroupMember, User } from "~/db/types";
+import type { Group, GroupMember, ParsedMemento, User } from "~/db/types";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { parseDBArray } from "~/utils/sql";
 
@@ -18,6 +18,7 @@ const stm = sql.prepare(/* sql */ `
   select
     "Group"."id",
     "Group"."chatCode",
+    "GroupMatch"."memento",
     "AllTeam"."name" as "teamName",
     "AllTeam"."customUrl" as "teamCustomUrl",
     "UserSubmittedImage"."url" as "teamAvatarUrl",
@@ -40,6 +41,7 @@ const stm = sql.prepare(/* sql */ `
   left join "User" on "User"."id" = "GroupMemberWithWeapon"."userId"
   left join "AllTeam" on "AllTeam"."id" = "Group"."teamId"
   left join "UserSubmittedImage" on "AllTeam"."avatarImgId" = "UserSubmittedImage"."id"
+  left join "GroupMatch" on "GroupMatch"."alphaGroupId" = "Group"."id" or "GroupMatch"."bravoGroupId" = "Group"."id"
   where
     "Group"."id" = @id
   group by "Group"."id"
@@ -71,9 +73,14 @@ export function groupForMatch(id: number) {
   const row = stm.get({ id }) as any;
   if (!row) return null;
 
+  const memento = row.memento
+    ? (JSON.parse(row.memento) as ParsedMemento)
+    : null;
+
   return {
     id: row.id,
     chatCode: row.chatCode,
+    tier: memento?.groups[row.id]?.tier,
     team: row.teamName
       ? {
           name: row.teamName,
@@ -84,6 +91,8 @@ export function groupForMatch(id: number) {
     members: JSON.parse(row.members).map((m: any) => ({
       ...m,
       weapons: parseDBArray(m.weapons),
+      plusTier: memento?.users[m.id]?.plusTier,
+      skill: memento?.users[m.id]?.skill,
     })),
   } as GroupForMatch;
 }
