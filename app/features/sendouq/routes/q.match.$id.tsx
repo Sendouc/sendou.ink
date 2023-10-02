@@ -330,10 +330,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 };
 
 // xxx: implement group cards
-// - mic, weapons only when appropriate (during match etc.)
-// - new group card
 // - team to new group card
-// - team skill to new group card
 export default function QMatchPage() {
   const user = useUser();
   const isMounted = useIsMounted();
@@ -444,7 +441,8 @@ export default function QMatchPage() {
               <GroupCard
                 group={data.groupAlpha}
                 displayOnly
-                hideVc={data.groupMemberOf !== "ALPHA"}
+                hideVc={data.match.isLocked || data.groupMemberOf !== "ALPHA"}
+                hideWeapons={data.match.isLocked}
               />
             </div>
             <div className="stack sm text-center text-lighter text-xs">
@@ -452,7 +450,8 @@ export default function QMatchPage() {
               <GroupCard
                 group={data.groupBravo}
                 displayOnly
-                hideVc={data.groupMemberOf !== "BRAVO"}
+                hideVc={data.match.isLocked || data.groupMemberOf !== "BRAVO"}
+                hideWeapons={data.match.isLocked}
               />
             </div>
             {chatRooms.length > 0 ? (

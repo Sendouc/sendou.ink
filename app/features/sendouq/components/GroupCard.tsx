@@ -29,6 +29,7 @@ export function GroupCard({
   isExpired = false,
   displayOnly = false,
   hideVc = false,
+  hideWeapons = false,
 }: {
   group: LookingGroup;
   action?: "LIKE" | "UNLIKE" | "GROUP_UP" | "MATCH_UP";
@@ -37,6 +38,7 @@ export function GroupCard({
   isExpired?: boolean;
   displayOnly?: boolean;
   hideVc?: boolean;
+  hideWeapons?: boolean;
 }) {
   const fetcher = useFetcher();
 
@@ -57,6 +59,7 @@ export function GroupCard({
               key={member.discordId}
               displayOnly={displayOnly}
               hideVc={hideVc}
+              hideWeapons={hideWeapons}
             />
           );
         })}
@@ -135,11 +138,13 @@ function GroupMember({
   showActions,
   displayOnly,
   hideVc,
+  hideWeapons,
 }: {
   member: NonNullable<LookingGroup["members"]>[number];
   showActions: boolean;
   displayOnly?: boolean;
   hideVc?: boolean;
+  hideWeapons?: boolean;
 }) {
   return (
     <div className="stack xxs">
@@ -173,7 +178,7 @@ function GroupMember({
             </div>
           ) : null}
         </div>
-        {member.weapons && member.weapons.length > 0 ? (
+        {member.weapons && member.weapons.length > 0 && !hideWeapons ? (
           <div className="q__group-member__extra-info">
             {member.weapons?.map((weapon) => {
               return (

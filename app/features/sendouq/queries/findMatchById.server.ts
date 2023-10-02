@@ -36,7 +36,7 @@ export interface MatchById {
   reportedAt: GroupMatch["reportedAt"];
   reportedByUserId: GroupMatch["reportedByUserId"];
   chatCode: GroupMatch["chatCode"];
-  isLocked: number;
+  isLocked: boolean;
   mapList: Array<
     Pick<GroupMatchMap, "id" | "mode" | "stageId" | "source" | "winnerGroupId">
   >;
@@ -49,5 +49,6 @@ export function findMatchById(id: number) {
   return {
     ...row,
     mapList: parseDBJsonArray(row.mapList),
+    isLocked: Boolean(row.isLocked),
   } as MatchById;
 }
