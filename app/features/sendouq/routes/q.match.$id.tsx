@@ -318,6 +318,11 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     groupChatCode: groupChatCode(),
     groupAlpha: censoredGroupAlpha,
     groupBravo: censoredGroupBravo,
+    groupMemberOf: isTeamAlphaMember
+      ? ("ALPHA" as const)
+      : isTeamBravoMember
+      ? ("BRAVO" as const)
+      : null,
     reportedWeapons: match.reportedAt
       ? reportedWeaponsByMatchId(matchId)
       : undefined,
@@ -439,7 +444,7 @@ export default function QMatchPage() {
               <GroupCard
                 group={data.groupAlpha}
                 displayOnly
-                className="h-full pb-8"
+                hideVc={data.groupMemberOf !== "ALPHA"}
               />
             </div>
             <div className="stack sm text-center text-lighter text-xs">
@@ -447,7 +452,7 @@ export default function QMatchPage() {
               <GroupCard
                 group={data.groupBravo}
                 displayOnly
-                className="h-full pb-8"
+                hideVc={data.groupMemberOf !== "BRAVO"}
               />
             </div>
             {chatRooms.length > 0 ? (
@@ -969,7 +974,6 @@ function MapListMap({
   canReportScore: boolean;
   weapons?: ReportedWeapon[];
 }) {
-  const user = useUser();
   const data = useLoaderData<typeof loader>();
   const { t } = useTranslation(["game-misc", "tournament"]);
 
@@ -1033,15 +1037,9 @@ function MapListMap({
   };
 
   const relativeSideText = (side: "ALPHA" | "BRAVO") => {
-    const ownSide = data.groupAlpha.members.some((m) => m.id === user?.id)
-      ? "ALPHA"
-      : data.groupBravo.members.some((m) => m.id === user?.id)
-      ? "BRAVO"
-      : null;
+    if (!data.groupMemberOf) return "";
 
-    if (!ownSide) return "";
-
-    return ownSide === side ? " (us)" : " (them)";
+    return data.groupMemberOf === side ? " (us)" : " (them)";
   };
 
   return (

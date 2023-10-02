@@ -132,6 +132,12 @@
   flex-direction: column;
   gap: var(--s-4);
   position: relative;
+  color: var(--text);
+}
+
+.q__group__display-only {
+  height: 100%;
+  padding-block-end: var(--s-10);
 }
 
 .q__group-member {

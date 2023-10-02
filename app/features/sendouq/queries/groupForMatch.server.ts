@@ -31,6 +31,8 @@ const stm = sql.prepare(/* sql */ `
         'role', "GroupMemberWithWeapon"."role",
         'customUrl', "User"."customUrl",
         'inGameName', "User"."inGameName",
+        'vc', "User"."vc",
+        'languages', "User"."languages",
         'weapons', "GroupMemberWithWeapon"."weapons",
         'chatNameColor', IIF(COALESCE("User"."patronTier", 0) >= 2, "User"."css" ->> 'chat', null)
       )
@@ -66,6 +68,8 @@ export interface GroupForMatch {
     inGameName: User["inGameName"];
     weapons: Array<MainWeaponId>;
     chatNameColor: string | null;
+    vc: User["vc"];
+    languages: string[];
   }>;
 }
 
@@ -91,6 +95,7 @@ export function groupForMatch(id: number) {
     members: JSON.parse(row.members).map((m: any) => ({
       ...m,
       weapons: parseDBArray(m.weapons),
+      languages: m.languages ? m.languages.split(",") : [],
       plusTier: memento?.users[m.id]?.plusTier,
       skill: memento?.users[m.id]?.skill,
     })),

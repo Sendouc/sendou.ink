@@ -144,12 +144,7 @@ export default function QPreparingPage() {
   return (
     <Main className="stack lg items-center">
       <div className="q-preparing__card-container">
-        <GroupCard
-          group={data.group}
-          mapListPreference={data.group.mapListPreference}
-          ownRole={data.role}
-          ownGroup
-        />
+        <GroupCard group={data.group} ownRole={data.role} ownGroup />
       </div>
       {data.group.members.length < FULL_GROUP_SIZE &&
       hasGroupManagerPerms(data.role) ? (

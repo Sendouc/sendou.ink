@@ -28,7 +28,7 @@ export function GroupCard({
   ownGroup = false,
   isExpired = false,
   displayOnly = false,
-  className,
+  hideVc = false,
 }: {
   group: LookingGroup;
   action?: "LIKE" | "UNLIKE" | "GROUP_UP" | "MATCH_UP";
@@ -36,12 +36,14 @@ export function GroupCard({
   ownGroup?: boolean;
   isExpired?: boolean;
   displayOnly?: boolean;
-  className?: string;
+  hideVc?: boolean;
 }) {
   const fetcher = useFetcher();
 
   return (
-    <section className={clsx("q__group", className)}>
+    <section
+      className={clsx("q__group", { "q__group__display-only": displayOnly })}
+    >
       <div
         className={clsx("stack md", {
           "horizontal justify-center": !group.members,
@@ -54,6 +56,7 @@ export function GroupCard({
               showActions={ownGroup && ownRole === "OWNER"}
               key={member.discordId}
               displayOnly={displayOnly}
+              hideVc={hideVc}
             />
           );
         })}
@@ -131,10 +134,12 @@ function GroupMember({
   member,
   showActions,
   displayOnly,
+  hideVc,
 }: {
   member: NonNullable<LookingGroup["members"]>[number];
   showActions: boolean;
   displayOnly?: boolean;
+  hideVc?: boolean;
 }) {
   return (
     <div className="stack xxs">
@@ -156,7 +161,7 @@ function GroupMember({
       </div>
       <div className="stack horizontal justify-between">
         <div className="stack horizontal xxs">
-          {member.vc ? (
+          {member.vc && !hideVc ? (
             <div className="q__group-member__extra-info">
               <VoiceChatInfo member={member} />
             </div>
