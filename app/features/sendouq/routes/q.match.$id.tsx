@@ -53,6 +53,8 @@ import {
   SENDOUQ_RULES_PAGE,
   SENDOU_INK_DISCORD_URL,
   navIconUrl,
+  teamPage,
+  userSubmittedImage,
 } from "~/utils/urls";
 import { GroupCard } from "../components/GroupCard";
 import { matchEndedAtIndex } from "../core/match";
@@ -329,8 +331,6 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   };
 };
 
-// xxx: implement group cards
-// - team to new group card
 export default function QMatchPage() {
   const user = useUser();
   const isMounted = useIsMounted();
@@ -436,24 +436,37 @@ export default function QMatchPage() {
               "with-chat": data.matchChatCode || data.groupChatCode,
             })}
           >
-            <div className="stack sm text-center text-lighter text-xs">
-              Alpha
-              <GroupCard
-                group={data.groupAlpha}
-                displayOnly
-                hideVc={data.match.isLocked || data.groupMemberOf !== "ALPHA"}
-                hideWeapons={data.match.isLocked}
-              />
-            </div>
-            <div className="stack sm text-center text-lighter text-xs">
-              Bravo
-              <GroupCard
-                group={data.groupBravo}
-                displayOnly
-                hideVc={data.match.isLocked || data.groupMemberOf !== "BRAVO"}
-                hideWeapons={data.match.isLocked}
-              />
-            </div>
+            {[data.groupAlpha, data.groupBravo].map((group, i) => {
+              const side = i === 0 ? "ALPHA" : "BRAVO";
+
+              return (
+                <div className="stack sm text-lighter text-xs" key={group.id}>
+                  <div className="stack horizontal justify-between items-center">
+                    {i === 0 ? "Alpha" : "Bravo"}
+                    {group.team ? (
+                      <Link
+                        to={teamPage(group.team.customUrl)}
+                        className="stack horizontal items-center xs font-bold"
+                      >
+                        {group.team.avatarUrl ? (
+                          <Avatar
+                            url={userSubmittedImage(group.team.avatarUrl)}
+                            size="xxs"
+                          />
+                        ) : null}
+                        {group.team.name}
+                      </Link>
+                    ) : null}
+                  </div>
+                  <GroupCard
+                    group={group}
+                    displayOnly
+                    hideVc={data.match.isLocked || data.groupMemberOf !== side}
+                    hideWeapons={data.match.isLocked}
+                  />
+                </div>
+              );
+            })}
             {chatRooms.length > 0 ? (
               <ConnectedChat
                 users={chatUsers}

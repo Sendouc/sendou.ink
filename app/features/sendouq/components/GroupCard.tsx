@@ -20,6 +20,7 @@ import { FULL_GROUP_SIZE } from "../q-constants";
 import type { LookingGroup } from "../q-types";
 import { StarIcon } from "~/components/icons/Star";
 import { StarFilledIcon } from "~/components/icons/StarFilled";
+import type { GroupForMatch } from "../queries/groupForMatch.server";
 
 export function GroupCard({
   group,
@@ -31,7 +32,9 @@ export function GroupCard({
   hideVc = false,
   hideWeapons = false,
 }: {
-  group: LookingGroup;
+  group: LookingGroup & {
+    team?: GroupForMatch["team"];
+  };
   action?: "LIKE" | "UNLIKE" | "GROUP_UP" | "MATCH_UP";
   ownRole?: GroupMemberType["role"];
   ownGroup?: boolean;
