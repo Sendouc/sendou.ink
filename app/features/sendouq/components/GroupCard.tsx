@@ -9,7 +9,7 @@ import { SubmitButton } from "~/components/SubmitButton";
 import { MicrophoneIcon } from "~/components/icons/Microphone";
 import { SpeakerIcon } from "~/components/icons/Speaker";
 import { SpeakerXIcon } from "~/components/icons/SpeakerX";
-import type { Group, GroupMember as GroupMemberType } from "~/db/types";
+import type { GroupMember as GroupMemberType } from "~/db/types";
 import { ordinalToRoundedSp } from "~/features/mmr/mmr-utils";
 import type { TieredSkill } from "~/features/mmr/tiered.server";
 import { useTranslation } from "~/hooks/useTranslation";
@@ -32,8 +32,6 @@ export function GroupCard({
 }: {
   group: LookingGroup;
   action?: "LIKE" | "UNLIKE" | "GROUP_UP" | "MATCH_UP";
-  // xxx: delete
-  mapListPreference?: Group["mapListPreference"];
   ownRole?: GroupMemberType["role"];
   ownGroup?: boolean;
   isExpired?: boolean;
