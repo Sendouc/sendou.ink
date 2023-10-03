@@ -1,7 +1,8 @@
 import { ordinal } from "openskill";
 import { sql } from "~/db/sql";
-import type { Skill } from "~/db/types";
+import type { ParsedMemento, Skill } from "~/db/types";
 import { identifierToUserIds } from "~/features/mmr/mmr-utils";
+import type { MementoSkillDifferences } from "../core/skills.server";
 
 const getStm = (type: "user" | "team") =>
   sql.prepare(/* sql */ `
@@ -40,12 +41,26 @@ const addSkillTeamUserStm = sql.prepare(/* sql */ `
 const userStm = getStm("user");
 const teamStm = getStm("team");
 
-export function addSkills(
+const updateMatchMementoStm = sql.prepare(/* sql */ `
+  update "GroupMatch"
+  set "memento" = @memento
+  where "id" = @id
+`);
+
+export function addSkills({
+  groupMatchId,
+  skills,
+  oldMatchMemento,
+  differences,
+}: {
+  groupMatchId: number;
   skills: Pick<
     Skill,
     "groupMatchId" | "identifier" | "mu" | "season" | "sigma" | "userId"
-  >[],
-) {
+  >[];
+  oldMatchMemento: ParsedMemento;
+  differences: MementoSkillDifferences;
+}) {
   for (const skill of skills) {
     const stm = skill.userId ? userStm : teamStm;
     const insertedSkill = stm.get({
@@ -62,4 +77,25 @@ export function addSkills(
       }
     }
   }
+
+  const newMemento: ParsedMemento = { groups: {}, users: {} };
+
+  for (const [key, value] of Object.entries(oldMatchMemento.users)) {
+    newMemento.users[key as any] = {
+      ...value,
+      skillDifference: differences.users[key as any]?.skillDifference,
+    };
+  }
+
+  for (const [key, value] of Object.entries(oldMatchMemento.groups)) {
+    newMemento.groups[key as any] = {
+      ...value,
+      skillDifference: differences.groups[key as any]?.skillDifference,
+    };
+  }
+
+  updateMatchMementoStm.run({
+    id: groupMatchId,
+    memento: JSON.stringify(newMemento),
+  });
 }

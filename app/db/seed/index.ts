@@ -1773,10 +1773,12 @@ function playedMatches() {
     const winner = winnersArrayToWinner(winners);
     const finishedMatch = findMatchById(match.id)!;
 
-    const newSkills = calculateMatchSkills({
+    const { newSkills, differences } = calculateMatchSkills({
       groupMatchId: match.id,
       winner: winner === "ALPHA" ? groupAlphaMembers : groupBravoMembers,
       loser: winner === "ALPHA" ? groupBravoMembers : groupAlphaMembers,
+      loserGroupId: winner === "ALPHA" ? groupBravo : groupAlpha,
+      winnerGroupId: winner === "ALPHA" ? groupAlpha : groupBravo,
     });
     const members = [
       ...groupForMatch(match.alphaGroupId)!.members.map((m) => ({
@@ -1795,7 +1797,12 @@ function playedMatches() {
           Math.random() > 0.5 ? groupAlphaMembers[0] : groupBravoMembers[0],
         winners,
       });
-      addSkills(newSkills);
+      addSkills({
+        skills: newSkills,
+        differences,
+        groupMatchId: match.id,
+        oldMatchMemento: { users: {}, groups: {} },
+      });
       setGroupAsInactive(groupAlpha);
       setGroupAsInactive(groupBravo);
       addMapResults(summarizeMaps({ match: finishedMatch, members, winners }));

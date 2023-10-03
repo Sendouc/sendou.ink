@@ -544,18 +544,40 @@ export interface GroupLike {
   createdAt: number;
 }
 
+type CalculatingSkill = {
+  calculated: false;
+  matchesCount: number;
+  matchesCountNeeded: number;
+  /** Freshly calculated skill */
+  newSp?: number;
+};
+export type UserSkillDifference =
+  | {
+      calculated: true;
+      spDiff: number;
+    }
+  | CalculatingSkill;
+export type GroupSkillDifference =
+  | {
+      calculated: true;
+      oldSp: number;
+      newSp: number;
+    }
+  | CalculatingSkill;
 export type ParsedMemento = {
   users: Record<
     User["id"],
     {
       plusTier?: PlusTier["tier"];
       skill?: TieredSkill;
+      skillDifference?: UserSkillDifference;
     }
   >;
   groups: Record<
     Group["id"],
     {
       tier?: TieredSkill["tier"];
+      skillDifference?: GroupSkillDifference;
     }
   >;
 };

@@ -1,5 +1,5 @@
 import { sql } from "~/db/sql";
-import type { GroupMatch, GroupMatchMap } from "~/db/types";
+import type { GroupMatch, GroupMatchMap, ParsedMemento } from "~/db/types";
 import { parseDBJsonArray } from "~/utils/sql";
 
 const stm = sql.prepare(/* sql */ `
@@ -11,6 +11,7 @@ const stm = sql.prepare(/* sql */ `
     "GroupMatch"."reportedAt",
     "GroupMatch"."reportedByUserId",
     "GroupMatch"."chatCode",
+    "GroupMatch"."memento",
     (select exists (select 1 from "Skill" where "Skill"."groupMatchId" = @id)) as "isLocked",
     json_group_array(
       json_object(
@@ -37,6 +38,7 @@ export interface MatchById {
   reportedByUserId: GroupMatch["reportedByUserId"];
   chatCode: GroupMatch["chatCode"];
   isLocked: boolean;
+  memento: ParsedMemento;
   mapList: Array<
     Pick<GroupMatchMap, "id" | "mode" | "stageId" | "source" | "winnerGroupId">
   >;
@@ -50,5 +52,6 @@ export function findMatchById(id: number) {
     ...row,
     mapList: parseDBJsonArray(row.mapList),
     isLocked: Boolean(row.isLocked),
+    memento: row.memento ? JSON.parse(row.memento) : null,
   } as MatchById;
 }

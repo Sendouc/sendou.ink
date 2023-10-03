@@ -9,7 +9,7 @@ import { SubmitButton } from "~/components/SubmitButton";
 import { MicrophoneIcon } from "~/components/icons/Microphone";
 import { SpeakerIcon } from "~/components/icons/Speaker";
 import { SpeakerXIcon } from "~/components/icons/SpeakerX";
-import type { GroupMember as GroupMemberType } from "~/db/types";
+import type { GroupMember as GroupMemberType, ParsedMemento } from "~/db/types";
 import { ordinalToRoundedSp } from "~/features/mmr/mmr-utils";
 import type { TieredSkill } from "~/features/mmr/tiered.server";
 import { useTranslation } from "~/hooks/useTranslation";
@@ -20,7 +20,6 @@ import { FULL_GROUP_SIZE } from "../q-constants";
 import type { LookingGroup } from "../q-types";
 import { StarIcon } from "~/components/icons/Star";
 import { StarFilledIcon } from "~/components/icons/StarFilled";
-import type { GroupForMatch } from "../queries/groupForMatch.server";
 
 export function GroupCard({
   group,
@@ -32,9 +31,7 @@ export function GroupCard({
   hideVc = false,
   hideWeapons = false,
 }: {
-  group: LookingGroup & {
-    team?: GroupForMatch["team"];
-  };
+  group: LookingGroup;
   action?: "LIKE" | "UNLIKE" | "GROUP_UP" | "MATCH_UP";
   ownRole?: GroupMemberType["role"];
   ownGroup?: boolean;
@@ -96,6 +93,9 @@ export function GroupCard({
           {group.tier.name}
           {group.tier.isPlus ? "+" : ""}
         </div>
+      ) : null}
+      {group.skillDifference ? (
+        <GroupSkillDifference skillDifference={group.skillDifference} />
       ) : null}
       {action &&
       (ownRole === "OWNER" || ownRole === "MANAGER") &&
@@ -195,7 +195,82 @@ function GroupMember({
             })}
           </div>
         ) : null}
+        {member.skillDifference ? (
+          <MemberSkillDifference skillDifference={member.skillDifference} />
+        ) : null}
       </div>
+    </div>
+  );
+}
+
+function GroupSkillDifference({
+  skillDifference,
+}: {
+  skillDifference: NonNullable<
+    ParsedMemento["groups"][number]["skillDifference"]
+  >;
+}) {
+  if (skillDifference.calculated) {
+    return (
+      <div className="text-center font-semi-bold">
+        Team SP {skillDifference.oldSp} ➜ {skillDifference.newSp}
+      </div>
+    );
+  }
+
+  if (skillDifference.newSp) {
+    return (
+      <div className="text-center font-semi-bold">
+        Team SP calculated: {skillDifference.newSp}
+      </div>
+    );
+  }
+
+  return (
+    <div className="text-center font-semi-bold">
+      Team SP calculating... ({skillDifference.matchesCount}/
+      {skillDifference.matchesCountNeeded})
+    </div>
+  );
+}
+
+function MemberSkillDifference({
+  skillDifference,
+}: {
+  skillDifference: NonNullable<
+    ParsedMemento["users"][number]["skillDifference"]
+  >;
+}) {
+  if (skillDifference.calculated) {
+    if (skillDifference.spDiff === 0) return null;
+
+    const symbol =
+      skillDifference.spDiff > 0 ? (
+        <span className="text-success">▲</span>
+      ) : (
+        <span className="text-warning">▼</span>
+      );
+    return (
+      <div className="q__group-member__extra-info">
+        {symbol}
+        {Math.abs(skillDifference.spDiff)}SP
+      </div>
+    );
+  }
+
+  if (skillDifference.matchesCount === skillDifference.matchesCountNeeded) {
+    return (
+      <div className="q__group-member__extra-info">
+        <span className="text-lighter">Calculated:</span>{" "}
+        {skillDifference.newSp ? <>{skillDifference.newSp}SP</> : null}
+      </div>
+    );
+  }
+
+  return (
+    <div className="q__group-member__extra-info">
+      <span className="text-lighter">Calculating...</span> (
+      {skillDifference.matchesCount}/{skillDifference.matchesCountNeeded})
     </div>
   );
 }

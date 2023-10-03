@@ -132,9 +132,9 @@ export const action = async ({ request, params }: ActionArgs) => {
       );
 
       const winner = winnersArrayToWinner(data.winners);
-      const winnerTeamId =
+      const winnerGroupId =
         winner === "ALPHA" ? match.alphaGroupId : match.bravoGroupId;
-      const loserTeamId =
+      const loserGroupId =
         winner === "ALPHA" ? match.bravoGroupId : match.alphaGroupId;
 
       // when admin reports match gets locked right away
@@ -156,14 +156,16 @@ export const action = async ({ request, params }: ActionArgs) => {
 
       const matchIsBeingCanceled = data.winners.length === 0;
 
-      const newSkills =
+      const { newSkills, differences } =
         compared === "SAME" && !matchIsBeingCanceled
           ? calculateMatchSkills({
               groupMatchId: match.id,
-              winner: groupForMatch(winnerTeamId)!.members.map((m) => m.id),
-              loser: groupForMatch(loserTeamId)!.members.map((m) => m.id),
+              winner: groupForMatch(winnerGroupId)!.members.map((m) => m.id),
+              loser: groupForMatch(loserGroupId)!.members.map((m) => m.id),
+              winnerGroupId,
+              loserGroupId,
             })
-          : null;
+          : { newSkills: null, differences: null };
 
       const shouldLockMatchWithoutChangingRecords =
         compared === "SAME" && matchIsBeingCanceled;
@@ -190,7 +192,12 @@ export const action = async ({ request, params }: ActionArgs) => {
           addPlayerResults(
             summarizePlayerResults({ match, members, winners: data.winners }),
           );
-          addSkills(newSkills);
+          addSkills({
+            skills: newSkills,
+            differences,
+            groupMatchId: match.id,
+            oldMatchMemento: match.memento,
+          });
           cache.delete(USER_SKILLS_CACHE_KEY);
         }
         if (shouldLockMatchWithoutChangingRecords) {

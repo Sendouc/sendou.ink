@@ -192,9 +192,11 @@ export const action: ActionFunction = async ({ params, request }) => {
           finalStandings: _finalStandings,
           results,
           queryCurrentTeamRating: (identifier) =>
-            queryCurrentTeamRating({ identifier, season: _currentSeason.nth }),
+            queryCurrentTeamRating({ identifier, season: _currentSeason.nth })
+              .rating,
           queryCurrentUserRating: (userId) =>
-            queryCurrentUserRating({ userId, season: _currentSeason.nth }),
+            queryCurrentUserRating({ userId, season: _currentSeason.nth })
+              .rating,
           queryTeamPlayerRatingAverage: (identifier) =>
             queryTeamPlayerRatingAverage({
               identifier,
