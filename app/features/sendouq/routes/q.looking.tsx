@@ -38,7 +38,7 @@ import {
   groupExpiryStatus,
   membersNeededForFull,
 } from "../core/groups.server";
-import { matchMapList } from "../core/match.server";
+import { createMatchMemento, matchMapList } from "../core/match.server";
 import { FULL_GROUP_SIZE } from "../q-constants";
 import { lookingSchema } from "../q-schemas.server";
 import { groupRedirectLocationByCurrentLocation } from "../q-utils";
@@ -224,6 +224,7 @@ export const action: ActionFunction = async ({ request }) => {
           ourMapPool: new MapPool(mapPoolByGroupId(ourGroup.id)),
           theirMapPool: new MapPool(mapPoolByGroupId(theirGroup.id)),
         }),
+        memento: await createMatchMemento(ourGroup, theirGroup),
       });
 
       throw redirect(sendouQMatchPage(createdMatch.id));
@@ -491,12 +492,7 @@ function Groups() {
 
   const ownGroupElement = (
     <div className="stack md">
-      <GroupCard
-        group={data.groups.own}
-        mapListPreference={data.groups.own.mapListPreference}
-        ownRole={data.role}
-        ownGroup
-      />
+      <GroupCard group={data.groups.own} ownRole={data.role} ownGroup />
       {ownGroup.inviteCode ? (
         <MemberAdder
           inviteCode={ownGroup.inviteCode}
@@ -570,18 +566,11 @@ function Groups() {
               element: (
                 <div className="stack sm">
                   {data.groups.neutral.map((group) => {
-                    const { mapListPreference } = groupAfterMorph({
-                      liker: "US",
-                      ourGroup: data.groups.own,
-                      theirGroup: group,
-                    });
-
                     return (
                       <GroupCard
                         key={group.id}
                         group={group}
                         action={group.isLiked ? "UNLIKE" : "LIKE"}
-                        mapListPreference={mapListPreference}
                         ownRole={data.role}
                         isExpired={data.expiryStatus === "EXPIRED"}
                       />
@@ -596,18 +585,11 @@ function Groups() {
               element: (
                 <div className="stack sm">
                   {data.groups.likesReceived.map((group) => {
-                    const { mapListPreference } = groupAfterMorph({
-                      liker: "THEM",
-                      ourGroup: data.groups.own,
-                      theirGroup: group,
-                    });
-
                     return (
                       <GroupCard
                         key={group.id}
                         group={group}
                         action={isFullGroup ? "MATCH_UP" : "GROUP_UP"}
-                        mapListPreference={mapListPreference}
                         ownRole={data.role}
                         isExpired={data.expiryStatus === "EXPIRED"}
                       />
@@ -632,18 +614,11 @@ function Groups() {
       {!isMobile ? (
         <div className="stack sm q__groups-container__right">
           {data.groups.likesReceived.map((group) => {
-            const { mapListPreference } = groupAfterMorph({
-              liker: "THEM",
-              ourGroup: data.groups.own,
-              theirGroup: group,
-            });
-
             return (
               <GroupCard
                 key={group.id}
                 group={group}
                 action={isFullGroup ? "MATCH_UP" : "GROUP_UP"}
-                mapListPreference={mapListPreference}
                 ownRole={data.role}
                 isExpired={data.expiryStatus === "EXPIRED"}
               />

@@ -13,10 +13,10 @@ export function queryCurrentUserRating({
   const skill = findCurrentSkillByUserId({ userId, season: season ?? null });
 
   if (!skill) {
-    return rating();
+    return { rating: rating(), matchesCount: 0 };
   }
 
-  return rating(skill);
+  return { rating: rating(skill), matchesCount: skill.matchesCount };
 }
 
 export function queryCurrentTeamRating({
@@ -31,9 +31,9 @@ export function queryCurrentTeamRating({
     season,
   });
 
-  if (!skill) return rating();
+  if (!skill) return { rating: rating(), matchesCount: 0 };
 
-  return rating(skill);
+  return { rating: rating(skill), matchesCount: skill.matchesCount };
 }
 
 export function queryTeamPlayerRatingAverage({
@@ -43,8 +43,8 @@ export function queryTeamPlayerRatingAverage({
   identifier: string;
   season: number;
 }) {
-  const playerRatings = identifierToUserIds(identifier).map((userId) =>
-    queryCurrentUserRating({ userId, season }),
+  const playerRatings = identifierToUserIds(identifier).map(
+    (userId) => queryCurrentUserRating({ userId, season }).rating,
   );
 
   if (playerRatings.length === 0) return rating();

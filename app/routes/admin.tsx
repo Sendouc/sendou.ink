@@ -137,7 +137,9 @@ interface AdminPageLoaderData {
 export const loader: LoaderFunction = async ({ request }) => {
   const user = await getUserId(request);
 
-  if (!isMod(user)) throw redirect("/");
+  if (process.env.NODE_ENV === "production" && !isMod(user)) {
+    throw redirect("/");
+  }
 
   return json<AdminPageLoaderData>({
     isImpersonating: await isImpersonating(request),
@@ -157,7 +159,9 @@ export default function AdminPage() {
       {isMod(user) ? <GiveArtist /> : null}
       {isMod(user) ? <GiveVideoAdder /> : null}
 
-      {isAdmin(user) ? <Impersonate /> : null}
+      {process.env.NODE_ENV !== "production" || isAdmin(user) ? (
+        <Impersonate />
+      ) : null}
       {isAdmin(user) ? <MigrateUser /> : null}
       {isAdmin(user) ? <ForcePatron /> : null}
       {isAdmin(user) ? <RefreshPlusTiers /> : null}

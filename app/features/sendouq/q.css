@@ -131,6 +131,13 @@
   display: flex;
   flex-direction: column;
   gap: var(--s-4);
+  position: relative;
+  color: var(--text);
+}
+
+.q__group__display-only {
+  height: 100%;
+  padding-block-end: var(--s-10);
 }
 
 .q__group-member {
@@ -205,6 +212,21 @@
   color: var(--text-lighter);
 }
 
+.q__group__display-group-tier {
+  display: flex;
+  gap: var(--s-1);
+  align-items: center;
+  position: absolute;
+  border-radius: var(--rounded);
+  background-color: var(--bg-darker);
+  padding: var(--s-0-5) var(--s-2-5);
+  font-size: var(--fonts-xs);
+  font-weight: var(--semi-bold);
+  bottom: -36px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .q__member-adder__input {
   --input-width: 11rem;
   width: 11rem;
@@ -230,16 +252,6 @@
   font-weight: var(--semi-bold);
 }
 
-.q-match__members-container {
-  min-width: 180px;
-}
-
-.q-match__star-icon {
-  width: 18px;
-  color: var(--theme-secondary);
-  stroke-width: 2;
-}
-
 .q-match__container {
   /** Push footer down to avoid it "flashing" when the score reporter animates */
   padding-bottom: 14rem;
@@ -252,7 +264,7 @@
 .q-match__teams-container {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--s-4);
+  gap: var(--s-8);
 }
 
 .q-match__report__user-name-container {

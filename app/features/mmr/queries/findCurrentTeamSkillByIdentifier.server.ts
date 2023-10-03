@@ -4,7 +4,8 @@ import type { Skill } from "~/db/types";
 const stm = sql.prepare(/* sql */ `
   select
     "mu",
-    "sigma"
+    "sigma",
+    "matchesCount"
   from
     "Skill"
   where
@@ -24,5 +25,8 @@ export function findCurrentTeamSkillByIdentifier({
   identifier: string;
   season: number;
 }) {
-  return stm.get({ identifier, season }) as Pick<Skill, "mu" | "sigma"> | null;
+  return stm.get({ identifier, season }) as Pick<
+    Skill,
+    "mu" | "sigma" | "matchesCount"
+  > | null;
 }

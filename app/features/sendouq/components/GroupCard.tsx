@@ -9,7 +9,7 @@ import { SubmitButton } from "~/components/SubmitButton";
 import { MicrophoneIcon } from "~/components/icons/Microphone";
 import { SpeakerIcon } from "~/components/icons/Speaker";
 import { SpeakerXIcon } from "~/components/icons/SpeakerX";
-import type { Group, GroupMember as GroupMemberType } from "~/db/types";
+import type { GroupMember as GroupMemberType, ParsedMemento } from "~/db/types";
 import { ordinalToRoundedSp } from "~/features/mmr/mmr-utils";
 import type { TieredSkill } from "~/features/mmr/tiered.server";
 import { useTranslation } from "~/hooks/useTranslation";
@@ -27,18 +27,25 @@ export function GroupCard({
   ownRole,
   ownGroup = false,
   isExpired = false,
+  displayOnly = false,
+  hideVc = false,
+  hideWeapons = false,
 }: {
   group: LookingGroup;
   action?: "LIKE" | "UNLIKE" | "GROUP_UP" | "MATCH_UP";
-  mapListPreference?: Group["mapListPreference"];
   ownRole?: GroupMemberType["role"];
   ownGroup?: boolean;
   isExpired?: boolean;
+  displayOnly?: boolean;
+  hideVc?: boolean;
+  hideWeapons?: boolean;
 }) {
   const fetcher = useFetcher();
 
   return (
-    <section className="q__group">
+    <section
+      className={clsx("q__group", { "q__group__display-only": displayOnly })}
+    >
       <div
         className={clsx("stack md", {
           "horizontal justify-center": !group.members,
@@ -50,6 +57,9 @@ export function GroupCard({
               member={member}
               showActions={ownGroup && ownRole === "OWNER"}
               key={member.discordId}
+              displayOnly={displayOnly}
+              hideVc={hideVc}
+              hideWeapons={hideWeapons}
             />
           );
         })}
@@ -63,7 +73,7 @@ export function GroupCard({
             })
           : null}
       </div>
-      {group.tier ? (
+      {group.tier && !displayOnly ? (
         <div className="stack xs text-lighter font-bold items-center justify-center text-xs">
           <TierImage tier={group.tier} width={100} />
           <div>
@@ -76,6 +86,16 @@ export function GroupCard({
             ) : null}
           </div>
         </div>
+      ) : null}
+      {group.tier && displayOnly ? (
+        <div className="q__group__display-group-tier">
+          <TierImage tier={group.tier} width={38} />
+          {group.tier.name}
+          {group.tier.isPlus ? "+" : ""}
+        </div>
+      ) : null}
+      {group.skillDifference ? (
+        <GroupSkillDifference skillDifference={group.skillDifference} />
       ) : null}
       {action &&
       (ownRole === "OWNER" || ownRole === "MANAGER") &&
@@ -119,9 +139,15 @@ export function GroupCard({
 function GroupMember({
   member,
   showActions,
+  displayOnly,
+  hideVc,
+  hideWeapons,
 }: {
   member: NonNullable<LookingGroup["members"]>[number];
   showActions: boolean;
+  displayOnly?: boolean;
+  hideVc?: boolean;
+  hideWeapons?: boolean;
 }) {
   return (
     <div className="stack xxs">
@@ -135,13 +161,15 @@ function GroupMember({
           <span className="q__group-member__name">{member.discordName}</span>
         </Link>
         <div className="ml-auto stack horizontal sm items-center">
-          {showActions ? <MemberRoleManager member={member} /> : null}
+          {showActions || displayOnly ? (
+            <MemberRoleManager member={member} displayOnly={displayOnly} />
+          ) : null}
           {member.skill ? <TierInfo skill={member.skill} /> : null}
         </div>
       </div>
       <div className="stack horizontal justify-between">
         <div className="stack horizontal xxs">
-          {member.vc ? (
+          {member.vc && !hideVc ? (
             <div className="q__group-member__extra-info">
               <VoiceChatInfo member={member} />
             </div>
@@ -153,7 +181,7 @@ function GroupMember({
             </div>
           ) : null}
         </div>
-        {member.weapons ? (
+        {member.weapons && member.weapons.length > 0 && !hideWeapons ? (
           <div className="q__group-member__extra-info">
             {member.weapons?.map((weapon) => {
               return (
@@ -167,19 +195,98 @@ function GroupMember({
             })}
           </div>
         ) : null}
+        {member.skillDifference ? (
+          <MemberSkillDifference skillDifference={member.skillDifference} />
+        ) : null}
       </div>
+    </div>
+  );
+}
+
+function GroupSkillDifference({
+  skillDifference,
+}: {
+  skillDifference: NonNullable<
+    ParsedMemento["groups"][number]["skillDifference"]
+  >;
+}) {
+  if (skillDifference.calculated) {
+    return (
+      <div className="text-center font-semi-bold">
+        Team SP {skillDifference.oldSp} ➜ {skillDifference.newSp}
+      </div>
+    );
+  }
+
+  if (skillDifference.newSp) {
+    return (
+      <div className="text-center font-semi-bold">
+        Team SP calculated: {skillDifference.newSp}
+      </div>
+    );
+  }
+
+  return (
+    <div className="text-center font-semi-bold">
+      Team SP calculating... ({skillDifference.matchesCount}/
+      {skillDifference.matchesCountNeeded})
+    </div>
+  );
+}
+
+function MemberSkillDifference({
+  skillDifference,
+}: {
+  skillDifference: NonNullable<
+    ParsedMemento["users"][number]["skillDifference"]
+  >;
+}) {
+  if (skillDifference.calculated) {
+    if (skillDifference.spDiff === 0) return null;
+
+    const symbol =
+      skillDifference.spDiff > 0 ? (
+        <span className="text-success">▲</span>
+      ) : (
+        <span className="text-warning">▼</span>
+      );
+    return (
+      <div className="q__group-member__extra-info">
+        {symbol}
+        {Math.abs(skillDifference.spDiff)}SP
+      </div>
+    );
+  }
+
+  if (skillDifference.matchesCount === skillDifference.matchesCountNeeded) {
+    return (
+      <div className="q__group-member__extra-info">
+        <span className="text-lighter">Calculated:</span>{" "}
+        {skillDifference.newSp ? <>{skillDifference.newSp}SP</> : null}
+      </div>
+    );
+  }
+
+  return (
+    <div className="q__group-member__extra-info">
+      <span className="text-lighter">Calculating...</span> (
+      {skillDifference.matchesCount}/{skillDifference.matchesCountNeeded})
     </div>
   );
 }
 
 function MemberRoleManager({
   member,
+  displayOnly,
 }: {
   member: NonNullable<LookingGroup["members"]>[number];
+  displayOnly?: boolean;
 }) {
   const fetcher = useFetcher();
   const { t } = useTranslation(["q"]);
   const Icon = member.role === "OWNER" ? StarFilledIcon : StarIcon;
+
+  if (displayOnly && member.role !== "OWNER") return null;
 
   return (
     <Popover
@@ -193,7 +300,7 @@ function MemberRoleManager({
     >
       <div className="stack md items-center">
         <div>{t(`q:roles.${member.role}`)}</div>
-        {member.role !== "OWNER" ? (
+        {member.role !== "OWNER" && !displayOnly ? (
           <fetcher.Form method="post" action={SENDOUQ_LOOKING_PAGE}>
             <input type="hidden" name="userId" value={member.id} />
             {member.role === "REGULAR" ? (

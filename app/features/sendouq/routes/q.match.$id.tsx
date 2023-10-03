@@ -13,20 +13,28 @@ import { Flipped, Flipper } from "react-flip-toolkit";
 import invariant from "tiny-invariant";
 import { Avatar } from "~/components/Avatar";
 import { Button } from "~/components/Button";
+import { ConnectedChat, type ChatProps } from "~/components/Chat";
 import { WeaponCombobox } from "~/components/Combobox";
+import { Divider } from "~/components/Divider";
+import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { ModeImage, StageImage, WeaponImage } from "~/components/Image";
 import { Main } from "~/components/Main";
+import { Popover } from "~/components/Popover";
 import { SubmitButton } from "~/components/SubmitButton";
+import { Toggle } from "~/components/Toggle";
 import { ArchiveBoxIcon } from "~/components/icons/ArchiveBox";
 import { RefreshArrowsIcon } from "~/components/icons/RefreshArrows";
 import { sql } from "~/db/sql";
 import type { GroupMember, ReportedWeapon } from "~/db/types";
+import { currentSeason } from "~/features/mmr";
+import { resolveRoomPass } from "~/features/tournament-bracket/tournament-bracket-utils";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
 import { getUserId, requireUserId } from "~/modules/auth/user.server";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { isMod } from "~/permissions";
+import { cache } from "~/utils/cache.server";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { animate } from "~/utils/flip";
 import type { SendouRouteHandle } from "~/utils/remix";
@@ -36,6 +44,7 @@ import {
   parseRequestFormData,
   validate,
 } from "~/utils/remix";
+import { inGameNameWithoutDiscriminator } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
 import { assertUnreachable } from "~/utils/types";
 import {
@@ -45,45 +54,33 @@ import {
   SENDOU_INK_DISCORD_URL,
   navIconUrl,
   teamPage,
-  userPage,
   userSubmittedImage,
 } from "~/utils/urls";
+import { GroupCard } from "../components/GroupCard";
 import { matchEndedAtIndex } from "../core/match";
 import { compareMatchToReportedScores } from "../core/match.server";
 import { calculateMatchSkills } from "../core/skills.server";
-import { FULL_GROUP_SIZE, USER_SKILLS_CACHE_KEY } from "../q-constants";
-import { matchSchema } from "../q-schemas.server";
-import { matchIdFromParams, winnersArrayToWinner } from "../q-utils";
-import styles from "../q.css";
-import { addReportedWeapons } from "../queries/addReportedWeapons.server";
-import { addSkills } from "../queries/addSkills.server";
-import { createGroupFromPreviousGroup } from "../queries/createGroup.server";
-import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.server";
-import { findMatchById } from "../queries/findMatchById.server";
-import type { GroupForMatch } from "../queries/groupForMatch.server";
-import { groupForMatch } from "../queries/groupForMatch.server";
-import { reportScore } from "../queries/reportScore.server";
-import { reportedWeaponsByMatchId } from "../queries/reportedWeaponsByMatchId.server";
-import { setGroupAsInactive } from "../queries/setGroupAsInactive.server";
-import { deleteReporterWeaponsByMatchId } from "../queries/deleteReportedWeaponsByMatchId.server";
-import { Divider } from "~/components/Divider";
-import { cache } from "~/utils/cache.server";
-import { Toggle } from "~/components/Toggle";
-import { addMapResults } from "../queries/addMapResults.server";
 import {
   summarizeMaps,
   summarizePlayerResults,
 } from "../core/summarizer.server";
-import { addPlayerResults } from "../queries/addPlayerResults.server";
-import { resolveRoomPass } from "~/features/tournament-bracket/tournament-bracket-utils";
-import { FormWithConfirm } from "~/components/FormWithConfirm";
+import { FULL_GROUP_SIZE, USER_SKILLS_CACHE_KEY } from "../q-constants";
+import { matchSchema } from "../q-schemas.server";
+import { matchIdFromParams, winnersArrayToWinner } from "../q-utils";
+import styles from "../q.css";
 import { addDummySkill } from "../queries/addDummySkill.server";
-import { inGameNameWithoutDiscriminator } from "~/utils/strings";
-import { ConnectedChat, type ChatProps } from "~/components/Chat";
-import { currentSeason } from "~/features/mmr";
-import { StarFilledIcon } from "~/components/icons/StarFilled";
-import { StarIcon } from "~/components/icons/Star";
-import { Popover } from "~/components/Popover";
+import { addMapResults } from "../queries/addMapResults.server";
+import { addPlayerResults } from "../queries/addPlayerResults.server";
+import { addReportedWeapons } from "../queries/addReportedWeapons.server";
+import { addSkills } from "../queries/addSkills.server";
+import { createGroupFromPreviousGroup } from "../queries/createGroup.server";
+import { deleteReporterWeaponsByMatchId } from "../queries/deleteReportedWeaponsByMatchId.server";
+import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.server";
+import { findMatchById } from "../queries/findMatchById.server";
+import { groupForMatch } from "../queries/groupForMatch.server";
+import { reportScore } from "../queries/reportScore.server";
+import { reportedWeaponsByMatchId } from "../queries/reportedWeaponsByMatchId.server";
+import { setGroupAsInactive } from "../queries/setGroupAsInactive.server";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -135,9 +132,9 @@ export const action = async ({ request, params }: ActionArgs) => {
       );
 
       const winner = winnersArrayToWinner(data.winners);
-      const winnerTeamId =
+      const winnerGroupId =
         winner === "ALPHA" ? match.alphaGroupId : match.bravoGroupId;
-      const loserTeamId =
+      const loserGroupId =
         winner === "ALPHA" ? match.bravoGroupId : match.alphaGroupId;
 
       // when admin reports match gets locked right away
@@ -159,14 +156,16 @@ export const action = async ({ request, params }: ActionArgs) => {
 
       const matchIsBeingCanceled = data.winners.length === 0;
 
-      const newSkills =
+      const { newSkills, differences } =
         compared === "SAME" && !matchIsBeingCanceled
           ? calculateMatchSkills({
               groupMatchId: match.id,
-              winner: groupForMatch(winnerTeamId)!.members.map((m) => m.id),
-              loser: groupForMatch(loserTeamId)!.members.map((m) => m.id),
+              winner: groupForMatch(winnerGroupId)!.members.map((m) => m.id),
+              loser: groupForMatch(loserGroupId)!.members.map((m) => m.id),
+              winnerGroupId,
+              loserGroupId,
             })
-          : null;
+          : { newSkills: null, differences: null };
 
       const shouldLockMatchWithoutChangingRecords =
         compared === "SAME" && matchIsBeingCanceled;
@@ -193,7 +192,12 @@ export const action = async ({ request, params }: ActionArgs) => {
           addPlayerResults(
             summarizePlayerResults({ match, members, winners: data.winners }),
           );
-          addSkills(newSkills);
+          addSkills({
+            skills: newSkills,
+            differences,
+            groupMatchId: match.id,
+            oldMatchMemento: match.memento,
+          });
           cache.delete(USER_SKILLS_CACHE_KEY);
         }
         if (shouldLockMatchWithoutChangingRecords) {
@@ -323,6 +327,11 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     groupChatCode: groupChatCode(),
     groupAlpha: censoredGroupAlpha,
     groupBravo: censoredGroupBravo,
+    groupMemberOf: isTeamAlphaMember
+      ? ("ALPHA" as const)
+      : isTeamBravoMember
+      ? ("BRAVO" as const)
+      : null,
     reportedWeapons: match.reportedAt
       ? reportedWeaponsByMatchId(matchId)
       : undefined,
@@ -434,16 +443,37 @@ export default function QMatchPage() {
               "with-chat": data.matchChatCode || data.groupChatCode,
             })}
           >
-            <MatchGroup
-              group={data.groupAlpha}
-              side="ALPHA"
-              showWeapons={!data.match.isLocked}
-            />
-            <MatchGroup
-              group={data.groupBravo}
-              side="BRAVO"
-              showWeapons={!data.match.isLocked}
-            />
+            {[data.groupAlpha, data.groupBravo].map((group, i) => {
+              const side = i === 0 ? "ALPHA" : "BRAVO";
+
+              return (
+                <div className="stack sm text-lighter text-xs" key={group.id}>
+                  <div className="stack horizontal justify-between items-center">
+                    {i === 0 ? "Alpha" : "Bravo"}
+                    {group.team ? (
+                      <Link
+                        to={teamPage(group.team.customUrl)}
+                        className="stack horizontal items-center xs font-bold"
+                      >
+                        {group.team.avatarUrl ? (
+                          <Avatar
+                            url={userSubmittedImage(group.team.avatarUrl)}
+                            size="xxs"
+                          />
+                        ) : null}
+                        {group.team.name}
+                      </Link>
+                    ) : null}
+                  </div>
+                  <GroupCard
+                    group={group}
+                    displayOnly
+                    hideVc={data.match.isLocked || data.groupMemberOf !== side}
+                    hideWeapons={data.match.isLocked}
+                  />
+                </div>
+              );
+            })}
             {chatRooms.length > 0 ? (
               <ConnectedChat
                 users={chatUsers}
@@ -863,86 +893,6 @@ function AfterMatchActions({
   );
 }
 
-function MatchGroup({
-  group,
-  side,
-  showWeapons,
-}: {
-  group: Omit<GroupForMatch, "chatCode">;
-  side: "ALPHA" | "BRAVO";
-  showWeapons: boolean;
-}) {
-  const roleString = (role: GroupMember["role"]) => {
-    if (role === "REGULAR") return "";
-
-    return ` (${role.toLowerCase()})`;
-  };
-
-  return (
-    <div className="stack sm items-center">
-      <h3 className="text-lighter">{side}</h3>
-      <div className="stack sm q-match__members-container">
-        {group.team ? (
-          <Link
-            to={teamPage(group.team.customUrl)}
-            className="stack horizontal xs font-bold"
-          >
-            {group.team.avatarUrl ? (
-              <Avatar
-                url={userSubmittedImage(group.team.avatarUrl)}
-                size="xxs"
-              />
-            ) : null}
-            {group.team.name}
-          </Link>
-        ) : null}
-        {group.members.map((member) => (
-          <React.Fragment key={member.discordId}>
-            <Link
-              to={userPage(member)}
-              className="stack horizontal xs items-center"
-              title={`${member.discordName}${roleString(member.role)}`}
-            >
-              <Avatar size="xxs" user={member} />
-              <div className="text-sm text-main-forced font-body">
-                {member.inGameName ? (
-                  <>
-                    <span className="text-lighter font-semi-bold">IGN:</span>{" "}
-                    {inGameNameWithoutDiscriminator(member.inGameName)}
-                  </>
-                ) : (
-                  member.discordName
-                )}
-              </div>
-              {member.role === "OWNER" ? (
-                <StarFilledIcon className="q-match__star-icon" />
-              ) : null}
-              {member.role === "MANAGER" ? (
-                <StarIcon className="q-match__star-icon" />
-              ) : null}
-            </Link>
-            {showWeapons && member.weapons.length > 0 ? (
-              <div className="q__group-member-weapons">
-                {member.weapons.map((weapon) => {
-                  return (
-                    <WeaponImage
-                      key={weapon}
-                      weaponSplId={weapon}
-                      variant="badge"
-                      size={24}
-                      containerClassName="q__group-member-weapon bg-theme-transparent-important"
-                    />
-                  );
-                })}
-              </div>
-            ) : null}
-          </React.Fragment>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 function MapList({
   canReportScore,
   isResubmission,
@@ -1043,7 +993,6 @@ function MapListMap({
   canReportScore: boolean;
   weapons?: ReportedWeapon[];
 }) {
-  const user = useUser();
   const data = useLoaderData<typeof loader>();
   const { t } = useTranslation(["game-misc", "tournament"]);
 
@@ -1107,15 +1056,9 @@ function MapListMap({
   };
 
   const relativeSideText = (side: "ALPHA" | "BRAVO") => {
-    const ownSide = data.groupAlpha.members.some((m) => m.id === user?.id)
-      ? "ALPHA"
-      : data.groupBravo.members.some((m) => m.id === user?.id)
-      ? "BRAVO"
-      : null;
+    if (!data.groupMemberOf) return "";
 
-    if (!ownSide) return "";
-
-    return ownSide === side ? " (us)" : " (them)";
+    return data.groupMemberOf === side ? " (us)" : " (them)";
   };
 
   return (

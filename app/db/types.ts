@@ -7,6 +7,7 @@ import type {
   StageId,
 } from "~/modules/in-game-lists";
 import type allTags from "../routes/calendar/tags.json";
+import type { TieredSkill } from "~/features/mmr/tiered.server";
 
 export interface User {
   id: number;
@@ -543,6 +544,43 @@ export interface GroupLike {
   createdAt: number;
 }
 
+type CalculatingSkill = {
+  calculated: false;
+  matchesCount: number;
+  matchesCountNeeded: number;
+  /** Freshly calculated skill */
+  newSp?: number;
+};
+export type UserSkillDifference =
+  | {
+      calculated: true;
+      spDiff: number;
+    }
+  | CalculatingSkill;
+export type GroupSkillDifference =
+  | {
+      calculated: true;
+      oldSp: number;
+      newSp: number;
+    }
+  | CalculatingSkill;
+export type ParsedMemento = {
+  users: Record<
+    User["id"],
+    {
+      plusTier?: PlusTier["tier"];
+      skill?: TieredSkill;
+      skillDifference?: UserSkillDifference;
+    }
+  >;
+  groups: Record<
+    Group["id"],
+    {
+      tier?: TieredSkill["tier"];
+      skillDifference?: GroupSkillDifference;
+    }
+  >;
+};
 export interface GroupMatch {
   id: number;
   alphaGroupId: number;
@@ -551,6 +589,7 @@ export interface GroupMatch {
   reportedAt: number | null;
   reportedByUserId: number | null;
   chatCode: string | null;
+  memento: string | null;
 }
 
 export interface GroupMatchMap {
