@@ -7,7 +7,7 @@ import type {
   UserWithPlusTier,
 } from "./db/types";
 import { allTruthy } from "./utils/arrays";
-import { ADMIN_ID, LOHI_TOKEN_HEADER_NAME } from "./constants";
+import { ADMIN_ID, LOHI_TOKEN_HEADER_NAME, MOD_IDS } from "./constants";
 import invariant from "tiny-invariant";
 import type { ManagersByBadgeId } from "./db/models/badges/queries.server";
 import { databaseTimestampToDate } from "./utils/dates";
@@ -18,6 +18,12 @@ import type { FindMatchById } from "./features/tournament-bracket/queries/findMa
 type IsAdminUser = Pick<User, "id">;
 export function isAdmin(user?: IsAdminUser) {
   return user?.id === ADMIN_ID;
+}
+
+export function isMod(user?: IsAdminUser) {
+  if (!user) return false;
+
+  return isAdmin(user) || MOD_IDS.includes(user.id);
 }
 
 export function canPerformAdminActions(user?: IsAdminUser) {
@@ -260,7 +266,7 @@ function isBadgeManager({
 }
 
 export function canEditBadgeManagers(user?: IsAdminUser) {
-  return isAdmin(user);
+  return isMod(user);
 }
 
 interface CanEditCalendarEventArgs {

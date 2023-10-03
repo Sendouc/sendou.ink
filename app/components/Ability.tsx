@@ -8,6 +8,7 @@ import { useTranslation } from "~/hooks/useTranslation";
 const sizeMap = {
   MAIN: 42,
   SUB: 32,
+  SUBTINY: 26,
   TINY: 22,
 } as const;
 

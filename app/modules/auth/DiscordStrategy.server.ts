@@ -47,29 +47,36 @@ export class DiscordStrategy extends OAuth2Strategy<
     super(
       {
         authorizationURL: "https://discord.com/api/oauth2/authorize",
-        tokenURL: "https://discord.com/api/oauth2/token",
+        tokenURL:
+          process.env["AUTH_GATEWAY_TOKEN_URL"] ??
+          "https://discord.com/api/oauth2/token",
         clientID: envVars.DISCORD_CLIENT_ID,
         clientSecret: envVars.DISCORD_CLIENT_SECRET,
         callbackURL: new URL("/auth/callback", envVars.BASE_URL).toString(),
       },
       async ({ accessToken }) => {
-        const discordResponses = this.authGatewayEnabled()
-          ? await this.fetchProfileViaGateway(accessToken)
-          : await this.fetchProfileViaDiscordApi(accessToken);
+        try {
+          const discordResponses = this.authGatewayEnabled()
+            ? await this.fetchProfileViaGateway(accessToken)
+            : await this.fetchProfileViaDiscordApi(accessToken);
 
-        const [user, connections] =
-          discordUserDetailsSchema.parse(discordResponses);
+          const [user, connections] =
+            discordUserDetailsSchema.parse(discordResponses);
 
-        const userFromDb = db.users.upsert({
-          discordAvatar: user.avatar ?? null,
-          discordDiscriminator: user.discriminator,
-          discordId: user.id,
-          discordName: user.global_name ?? user.username,
-          discordUniqueName: user.global_name ? user.username : null,
-          ...this.parseConnections(connections),
-        });
+          const userFromDb = db.users.upsert({
+            discordAvatar: user.avatar ?? null,
+            discordDiscriminator: user.discriminator,
+            discordId: user.id,
+            discordName: user.global_name ?? user.username,
+            discordUniqueName: user.global_name ? user.username : null,
+            ...this.parseConnections(connections),
+          });
 
-        return userFromDb.id;
+          return userFromDb.id;
+        } catch (e) {
+          console.error("Failed to finish authentication:\n", e);
+          throw new Error("Failed to finish authentication");
+        }
       },
     );
 
@@ -77,13 +84,10 @@ export class DiscordStrategy extends OAuth2Strategy<
   }
 
   private authGatewayEnabled() {
-    return Boolean(
-      process.env["AUTH_GATEWAY_URL"] && process.env["AUTH_GATEWAY_SECRET"],
-    );
+    return Boolean(process.env["AUTH_GATEWAY_TOKEN_URL"]);
   }
 
   private async fetchProfileViaDiscordApi(token: string) {
-    console.log("authenticating via discord...");
     const authHeader: [string, string] = ["Authorization", `Bearer ${token}`];
 
     return Promise.all([
@@ -97,15 +101,9 @@ export class DiscordStrategy extends OAuth2Strategy<
   }
 
   private async fetchProfileViaGateway(token: string) {
-    console.log("authenticating via gateway...");
-    const url = `${process.env["AUTH_GATEWAY_URL"]}?token=${token}`;
+    const url = `${process.env["AUTH_GATEWAY_PROFILE_URL"]}?token=${token}`;
 
-    const options: RequestInit = {
-      method: "GET",
-      headers: { "X-Require-Whisk-Auth": process.env["AUTH_GATEWAY_SECRET"]! },
-    };
-
-    return fetch(url, options).then(this.jsonIfOk);
+    return fetch(url).then(this.jsonIfOk);
   }
 
   private jsonIfOk(res: Response) {

@@ -25,6 +25,7 @@ export interface ChatProps {
   onNewMessage?: (message: ChatMessage) => void;
   onMount?: () => void;
   onUnmount?: () => void;
+  disabled?: boolean;
 }
 
 export function ConnectedChat(props: ChatProps) {
@@ -42,6 +43,7 @@ export function Chat({
   chat,
   onMount,
   onUnmount,
+  disabled,
 }: ChatProps & { chat: ReturnType<typeof useChat> }) {
   const messagesContainerRef = React.useRef<HTMLOListElement>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
@@ -57,6 +59,12 @@ export function Chat({
   const handleSubmit = React.useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
+
+      // can't send empty messages
+      if (inputRef.current!.value.trim().length === 0) {
+        return;
+      }
+
       send(inputRef.current!.value);
       inputRef.current!.value = "";
     },
@@ -76,18 +84,19 @@ export function Chat({
     };
   }, [onMount, onUnmount]);
 
+  const sendingMessagesDisabled = disabled || !connected;
+
   return (
     <section className={clsx("chat__container", className, { hidden })}>
       {rooms.length > 1 ? (
         <div className="stack horizontal">
-          {rooms.map((room, i) => {
+          {rooms.map((room) => {
             const unseen = unseenMessages.get(room.code);
 
             return (
               <Button
                 key={room.code}
                 className={clsx("chat__room-button", {
-                  "not-first": i > 0,
                   current: currentRoom === room.code,
                 })}
                 onClick={() => setCurrentRoom(room.code)}
@@ -121,7 +130,7 @@ export function Chat({
             className="w-full"
             ref={inputRef}
             placeholder="Press enter to send"
-            disabled={!connected}
+            disabled={sendingMessagesDisabled}
             maxLength={MESSAGE_MAX_LENGTH}
           />{" "}
           <div className="chat__bottom-row">
@@ -136,7 +145,11 @@ export function Chat({
                 Disconnected
               </div>
             )}
-            <SubmitButton size="tiny" variant="minimal" disabled={!connected}>
+            <SubmitButton
+              size="tiny"
+              variant="minimal"
+              disabled={sendingMessagesDisabled}
+            >
               Send
             </SubmitButton>
           </div>
@@ -149,7 +162,7 @@ export function Chat({
 function Message({ user, message }: { user: ChatUser; message: ChatMessage }) {
   return (
     <li className="chat__message">
-      <Avatar user={user} size="xs" className="my-auto" />
+      <Avatar user={user} size="xs" />
       <div>
         <div className="stack horizontal sm">
           <div
@@ -255,6 +268,17 @@ export function useChat({
       setMessages([]);
     };
   }, [rooms, onNewMessage, rootLoaderData.skalopUrl]);
+
+  React.useEffect(() => {
+    // ping every minute to keep connection alive
+    const interval = setInterval(() => {
+      ws.current?.send("");
+    }, 1000 * 60);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [messages]);
 
   const send = React.useCallback(
     (contents: string) => {

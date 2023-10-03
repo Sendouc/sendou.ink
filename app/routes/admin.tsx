@@ -14,12 +14,13 @@ import { SubmitButton } from "~/components/SubmitButton";
 import { UserSearch } from "~/components/UserSearch";
 import { db } from "~/db";
 import { makeArtist } from "~/features/art";
+import { useUser } from "~/modules/auth";
 import {
   getUserId,
   isImpersonating,
   requireUserId,
 } from "~/modules/auth/user.server";
-import { canPerformAdminActions } from "~/permissions";
+import { isAdmin, isMod } from "~/permissions";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import {
   parseRequestFormData,
@@ -72,10 +73,10 @@ export const action: ActionFunction = async ({ request }) => {
   });
   const user = await requireUserId(request);
 
-  validate(canPerformAdminActions(user));
-
   switch (data._action) {
     case "MIGRATE": {
+      validate(isAdmin(user), "Admin needed", 401);
+
       db.users.migrate({
         oldUserId: data["old-user"],
         newUserId: data["new-user"],
@@ -83,10 +84,14 @@ export const action: ActionFunction = async ({ request }) => {
       break;
     }
     case "REFRESH": {
+      validate(isAdmin(user));
+
       db.users.refreshPlusTiers();
       break;
     }
     case "FORCE_PATRON": {
+      validate(isAdmin(user), "Admin needed", 401);
+
       db.users.forcePatron({
         id: data["user"],
         patronSince: dateToDatabaseTimestamp(new Date()),
@@ -96,14 +101,20 @@ export const action: ActionFunction = async ({ request }) => {
       break;
     }
     case "ARTIST": {
+      validate(isMod(user), "Mod needed", 401);
+
       makeArtist(data["user"]);
       break;
     }
     case "VIDEO_ADDER": {
+      validate(isMod(user), "Mod needed", 401);
+
       db.users.makeVideoAdder(data["user"]);
       break;
     }
     case "LINK_PLAYER": {
+      validate(isMod(user), "Mod needed", 401);
+
       db.users.linkPlayer({
         userId: data["user"],
         playerId: data.playerId,
@@ -126,9 +137,7 @@ interface AdminPageLoaderData {
 export const loader: LoaderFunction = async ({ request }) => {
   const user = await getUserId(request);
 
-  if (!canPerformAdminActions(user)) {
-    throw redirect("/");
-  }
+  if (!isMod(user)) throw redirect("/");
 
   return json<AdminPageLoaderData>({
     isImpersonating: await isImpersonating(request),
@@ -140,15 +149,19 @@ export const handle: SendouRouteHandle = {
 };
 
 export default function AdminPage() {
+  const user = useUser();
+
   return (
     <Main className="stack lg">
-      <Impersonate />
-      <LinkPlayer />
-      <GiveArtist />
-      <GiveVideoAdder />
-      <MigrateUser />
-      <ForcePatron />
-      <RefreshPlusTiers />
+      {isMod(user) ? <LinkPlayer /> : null}
+      {isMod(user) ? <GiveArtist /> : null}
+      {isMod(user) ? <GiveVideoAdder /> : null}
+
+      {isAdmin(user) ? <Impersonate /> : null}
+      {isAdmin(user) ? <MigrateUser /> : null}
+      {isAdmin(user) ? <ForcePatron /> : null}
+      {isAdmin(user) ? <RefreshPlusTiers /> : null}
+
       {process.env.NODE_ENV !== "production" && <Seed />}
     </Main>
   );

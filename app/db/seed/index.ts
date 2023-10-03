@@ -1736,7 +1736,6 @@ function playedMatches() {
       alphaGroupId: groupAlpha,
       bravoGroupId: groupBravo,
       mapList: randomMapList(groupAlpha, groupBravo),
-      addChatCode: false,
     });
 
     // update match createdAt to the past

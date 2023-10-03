@@ -36,7 +36,6 @@ import {
   divideGroups,
   filterOutGroupsWithIncompatibleMapListPreference,
   groupExpiryStatus,
-  hasAccessToChat,
   membersNeededForFull,
 } from "../core/groups.server";
 import { matchMapList } from "../core/match.server";
@@ -69,7 +68,6 @@ import { groupHasMatch } from "../queries/groupHasMatch.server";
 import { findRecentMatchPlayersByUserId } from "../queries/findRecentMatchPlayersByUserId.server";
 import { currentOrPreviousSeason } from "~/features/mmr/season";
 import { Chat, useChat } from "~/components/Chat";
-import { isAdmin } from "~/permissions";
 import { NewTabs } from "~/components/NewTabs";
 import { useWindowSize } from "~/hooks/useWindowSize";
 
@@ -172,9 +170,6 @@ export const action: ActionFunction = async ({ request }) => {
         survivingGroupId,
         otherGroupId: otherGroup.id,
         newMembers: otherGroup.members.map((m) => m.id),
-        addChatCode: hasAccessToChat(
-          ourGroup.members.some(isAdmin) || theirGroup.members.some(isAdmin),
-        ),
       });
       refreshGroup(survivingGroupId);
 
@@ -223,9 +218,6 @@ export const action: ActionFunction = async ({ request }) => {
       const createdMatch = createMatch({
         alphaGroupId: ourGroup.id,
         bravoGroupId: theirGroup.id,
-        addChatCode: hasAccessToChat(
-          ourGroup.members.some(isAdmin) || theirGroup.members.some(isAdmin),
-        ),
         mapList: matchMapList({
           ourGroup,
           theirGroup,

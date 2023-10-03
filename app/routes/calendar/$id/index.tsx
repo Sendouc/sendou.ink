@@ -53,6 +53,7 @@ import {
 } from "~/utils/urls";
 import { actualNumber, id } from "~/utils/zod";
 import { Tags } from "../components/Tags";
+import { Table } from "~/components/Table";
 
 export const action: ActionFunction = async ({ params, request }) => {
   const user = await requireUserId(request);
@@ -270,7 +271,7 @@ function Results() {
               })}
         </div>
       )}
-      <table>
+      <Table>
         <thead>
           <tr>
             <th>{t("calendar:forms.team.placing")}</th>
@@ -310,7 +311,7 @@ function Results() {
             </tr>
           ))}
         </tbody>
-      </table>
+      </Table>
     </Section>
   );
 }

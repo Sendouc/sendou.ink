@@ -10,6 +10,10 @@
   font-size: var(--fonts-sm);
 }
 
+.text-md {
+  font-size: var(--fonts-md);
+}
+
 .text-xs {
   font-size: var(--fonts-xs);
 }

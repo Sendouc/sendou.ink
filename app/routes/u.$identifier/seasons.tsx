@@ -123,6 +123,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   };
 };
 
+const DAYS_WITH_SKILL_NEEDED_TO_SHOW_POWER_CHART = 2;
 export default function UserSeasonsPage() {
   const data = useLoaderData<typeof loader>();
 
@@ -149,7 +150,9 @@ export default function UserSeasonsPage() {
           {data.winrates.maps.wins + data.winrates.maps.losses > 0 ? (
             <Winrates />
           ) : null}
-          {data.skills.length >= 3 ? <PowerChart /> : null}
+          {data.skills.length >= DAYS_WITH_SKILL_NEEDED_TO_SHOW_POWER_CHART ? (
+            <PowerChart />
+          ) : null}
         </div>
       ) : null}
       <div className="mt-4">
@@ -320,7 +323,7 @@ function PowerChart() {
   const chartOptions = React.useMemo(() => {
     return [
       {
-        label: "Power",
+        label: "SP",
         data: data.skills.map((s) => {
           // hack to force shorter bottom axis text
           const date = new Date(s.date);

@@ -26,7 +26,7 @@ import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
 import { getUserId, requireUserId } from "~/modules/auth/user.server";
 import type { MainWeaponId } from "~/modules/in-game-lists";
-import { isAdmin } from "~/permissions";
+import { isMod } from "~/permissions";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { animate } from "~/utils/flip";
 import type { SendouRouteHandle } from "~/utils/remix";
@@ -83,6 +83,7 @@ import { ConnectedChat, type ChatProps } from "~/components/Chat";
 import { currentSeason } from "~/features/mmr";
 import { StarFilledIcon } from "~/components/icons/StarFilled";
 import { StarIcon } from "~/components/icons/Star";
+import { Popover } from "~/components/Popover";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -113,8 +114,8 @@ export const action = async ({ request, params }: ActionArgs) => {
       }
 
       validate(
-        !data.adminReport || isAdmin(user),
-        "Only admins can report scores as admin",
+        !data.adminReport || isMod(user),
+        "Only mods can report scores as admin",
       );
       const members = [
         ...groupForMatch(match.alphaGroupId)!.members.map((m) => ({
@@ -157,13 +158,6 @@ export const action = async ({ request, params }: ActionArgs) => {
       }
 
       const matchIsBeingCanceled = data.winners.length === 0;
-      if (compared === "DIFFERENT") {
-        return {
-          error: matchIsBeingCanceled
-            ? ("cant-cancel" as const)
-            : ("different" as const),
-        };
-      }
 
       const newSkills =
         compared === "SAME" && !matchIsBeingCanceled
@@ -178,11 +172,17 @@ export const action = async ({ request, params }: ActionArgs) => {
         compared === "SAME" && matchIsBeingCanceled;
 
       sql.transaction(() => {
-        reportScore({
-          matchId,
-          reportedByUserId: user.id,
-          winners: data.winners,
-        });
+        if (
+          compared === "FIX_PREVIOUS" ||
+          compared === "FIRST_REPORT" ||
+          data.adminReport
+        ) {
+          reportScore({
+            matchId,
+            reportedByUserId: user.id,
+            winners: data.winners,
+          });
+        }
         // own group gets set inactive
         if (groupMemberOfId) setGroupAsInactive(groupMemberOfId);
         // skills & map/player results only update after both teams have reported
@@ -209,6 +209,14 @@ export const action = async ({ request, params }: ActionArgs) => {
           setGroupAsInactive(match.bravoGroupId);
         }
       })();
+
+      if (compared === "DIFFERENT") {
+        return {
+          error: matchIsBeingCanceled
+            ? ("cant-cancel" as const)
+            : ("different" as const),
+        };
+      }
 
       break;
     }
@@ -297,7 +305,9 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 
   const isTeamAlphaMember = groupAlpha.members.some((m) => m.id === user?.id);
   const isTeamBravoMember = groupBravo.members.some((m) => m.id === user?.id);
-  const canAccessMatchChat = isTeamAlphaMember || isTeamBravoMember;
+  const canAccessMatchChat =
+    isTeamAlphaMember || isTeamBravoMember || isMod(user);
+  const canPostChatMessages = isTeamAlphaMember || isTeamBravoMember;
 
   const groupChatCode = () => {
     if (isTeamAlphaMember) return groupAlpha.chatCode;
@@ -309,6 +319,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   return {
     match: censoredMatch,
     matchChatCode: canAccessMatchChat ? match.chatCode : null,
+    canPostChatMessages,
     groupChatCode: groupChatCode(),
     groupAlpha: censoredGroupAlpha,
     groupBravo: censoredGroupBravo,
@@ -335,7 +346,7 @@ export default function QMatchPage() {
     data.groupAlpha.members.find((m) => m.id === user?.id) ??
     data.groupBravo.members.find((m) => m.id === user?.id);
   const canReportScore = Boolean(
-    !data.match.isLocked && (ownMember || isAdmin(user)),
+    !data.match.isLocked && (ownMember || isMod(user)),
   );
 
   const ownGroup = data.groupAlpha.members.some((m) => m.id === user?.id)
@@ -348,7 +359,8 @@ export default function QMatchPage() {
     data.match.reportedByUserId &&
       ownGroup?.members.some((m) => m.id === data.match.reportedByUserId),
   );
-  const showScore = data.match.isLocked || ownTeamReported;
+  const showScore =
+    data.match.isLocked || (data.match.reportedByUserId && ownGroup);
 
   const poolCode = () => {
     const stringId = String(data.match.id);
@@ -368,7 +380,7 @@ export default function QMatchPage() {
 
   const chatRooms = React.useMemo(() => {
     return [
-      data.matchChatCode ? { code: data.matchChatCode, label: `Match` } : null,
+      data.matchChatCode ? { code: data.matchChatCode, label: "Match" } : null,
       data.groupChatCode ? { code: data.groupChatCode, label: "Group" } : null,
     ].filter(Boolean) as ChatProps["rooms"];
   }, [data.matchChatCode, data.groupChatCode]);
@@ -399,7 +411,10 @@ export default function QMatchPage() {
       </div>
       {showScore ? (
         <>
-          <Score reportedAt={data.match.reportedAt!} />
+          <Score
+            reportedAt={data.match.reportedAt!}
+            ownTeamReported={ownTeamReported}
+          />
           {ownGroup && ownMember && data.match.reportedAt ? (
             <AfterMatchActions
               ownGroupId={ownGroup.id}
@@ -430,10 +445,14 @@ export default function QMatchPage() {
               showWeapons={!data.match.isLocked}
             />
             {chatRooms.length > 0 ? (
-              <ConnectedChat users={chatUsers} rooms={chatRooms} />
+              <ConnectedChat
+                users={chatUsers}
+                rooms={chatRooms}
+                disabled={!data.canPostChatMessages}
+              />
             ) : null}
           </div>
-          {!data.match.isLocked && (ownMember || isAdmin(user)) ? (
+          {!data.match.isLocked && (ownMember || isMod(user)) ? (
             <div>
               <div className="stack horizontal justify-between">
                 <Link to={SENDOUQ_RULES_PAGE} className="text-xxs font-bold">
@@ -487,7 +506,8 @@ export default function QMatchPage() {
           ) : null}
           {cancelScoreFetcher.data?.error === "cant-cancel" ? (
             <div className="text-xs text-warning font-semi-bold text-center">
-              Opponent has already reported score for this match.
+              Can&apos;t cancel since opponent has already reported score for
+              this match. See dispute instructions at the top of the page.
             </div>
           ) : null}
           <MapList
@@ -499,8 +519,8 @@ export default function QMatchPage() {
           {submitScoreFetcher.data?.error === "different" ? (
             <div className="text-xs text-warning font-semi-bold text-center">
               You reported different results than your opponent. Double check
-              the above is correct and otherwise contact the opponent to fix it
-              on their side.
+              the above is correct and otherwise see dispute instructions at the
+              top of the page.
             </div>
           ) : null}
         </>
@@ -509,7 +529,13 @@ export default function QMatchPage() {
   );
 }
 
-function Score({ reportedAt }: { reportedAt: number }) {
+function Score({
+  reportedAt,
+  ownTeamReported,
+}: {
+  reportedAt: number;
+  ownTeamReported: boolean;
+}) {
   const isMounted = useIsMounted();
   const { i18n } = useTranslation();
   const data = useLoaderData<typeof loader>();
@@ -535,8 +561,12 @@ function Score({ reportedAt }: { reportedAt: number }) {
       <div className="stack items-center line-height-tight">
         <div className="text-sm font-bold text-warning">Match canceled</div>
         {!data.match.isLocked ? (
-          <div className="text-xs text-lighter">
-            Pending other team&apos;s confirmation
+          <div className="text-xs text-lighter stack xs items-center text-center">
+            {!ownTeamReported ? (
+              <DisputePopover />
+            ) : (
+              "Pending other team's confirmation"
+            )}
           </div>
         ) : null}
       </div>
@@ -565,11 +595,29 @@ function Score({ reportedAt }: { reportedAt: number }) {
             : ""}
         </div>
       ) : (
-        <div className="text-xs text-lighter">
-          SP will be adjusted after opponent confirms the score
+        <div className="text-xs text-lighter stack xs items-center text-center">
+          SP will be adjusted after both teams report the same results{" "}
+          {!ownTeamReported ? <DisputePopover /> : null}
         </div>
       )}
     </div>
+  );
+}
+
+function DisputePopover() {
+  return (
+    <Popover buttonChildren="Dispute?" containerClassName="text-main-forced">
+      <p>
+        If there is a mistake contact the other team to correct it on their
+        side. Score can be freely rereported till both teams report the same
+        result.
+      </p>
+      <p className="mt-2">
+        If there is a problem talking with the other team, contact a mod on the
+        sendou.ink Discord helpdesk. Provide screenshots that show the correct
+        score.
+      </p>
+    </Popover>
   );
 }
 
@@ -958,7 +1006,7 @@ function MapList({
           })}
         </div>
       </Flipper>
-      {scoreCanBeReported && isAdmin(user) ? (
+      {scoreCanBeReported && isMod(user) ? (
         <div className="stack sm horizontal items-center text-sm font-semi-bold">
           <Toggle
             name="adminReport"
@@ -995,6 +1043,7 @@ function MapListMap({
   canReportScore: boolean;
   weapons?: ReportedWeapon[];
 }) {
+  const user = useUser();
   const data = useLoaderData<typeof loader>();
   const { t } = useTranslation(["game-misc", "tournament"]);
 
@@ -1057,6 +1106,18 @@ function MapListMap({
     return <>• {winner} won</>;
   };
 
+  const relativeSideText = (side: "ALPHA" | "BRAVO") => {
+    const ownSide = data.groupAlpha.members.some((m) => m.id === user?.id)
+      ? "ALPHA"
+      : data.groupBravo.members.some((m) => m.id === user?.id)
+      ? "BRAVO"
+      : null;
+
+    if (!ownSide) return "";
+
+    return ownSide === side ? " (us)" : " (them)";
+  };
+
   return (
     <div key={map.stageId} className="stack xs">
       <Flipped flipId={map.stageId}>
@@ -1112,7 +1173,7 @@ function MapListMap({
                 onChange={handleReportScore(i, "ALPHA")}
               />
               <label className="mb-0" htmlFor={`alpha-${i}`}>
-                Alpha
+                {`Alpha${relativeSideText("ALPHA")}`}
               </label>
             </div>
             <div className="stack sm horizontal items-center font-semi-bold">
@@ -1125,7 +1186,7 @@ function MapListMap({
                 onChange={handleReportScore(i, "BRAVO")}
               />
               <label className="mb-0" htmlFor={`bravo-${i}`}>
-                Bravo
+                {`Bravo${relativeSideText("BRAVO")}`}
               </label>
             </div>
           </div>

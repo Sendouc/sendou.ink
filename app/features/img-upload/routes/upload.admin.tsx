@@ -3,7 +3,7 @@ import { Form, useLoaderData } from "@remix-run/react";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { requireUserId } from "~/modules/auth/user.server";
-import { isAdmin } from "~/permissions";
+import { isMod } from "~/permissions";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { userSubmittedImage } from "~/utils/urls";
 import { countAllUnvalidatedImg } from "../queries/countAllUnvalidatedImg.server";
@@ -18,7 +18,7 @@ export const action: ActionFunction = async ({ request }) => {
     request,
   });
 
-  validate(isAdmin(user), "Only admins can validate images");
+  validate(isMod(user), "Only admins can validate images");
 
   validateImage(data.imageId);
 
@@ -28,7 +28,7 @@ export const action: ActionFunction = async ({ request }) => {
 export const loader = async ({ request }: LoaderArgs) => {
   const user = await requireUserId(request);
 
-  notFoundIfFalsy(isAdmin(user));
+  notFoundIfFalsy(isMod(user));
 
   return {
     image: oneUnvalidatedImage(),

@@ -11,6 +11,7 @@ import {
   tournamentTeamPage,
   userPage,
 } from "~/utils/urls";
+import { Table } from "~/components/Table";
 
 export type UserResultsTableProps = {
   results: UserPageLoaderData["results"];
@@ -31,7 +32,7 @@ export function UserResultsTable({
   const placementHeaderId = `${id}-th-placement`;
 
   return (
-    <table>
+    <Table>
       <thead>
         <tr>
           {hasHighlightCheckboxes && <th />}
@@ -136,6 +137,6 @@ export function UserResultsTable({
           );
         })}
       </tbody>
-    </table>
+    </Table>
   );
 }

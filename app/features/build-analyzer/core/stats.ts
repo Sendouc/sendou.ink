@@ -265,7 +265,7 @@ function subWeaponInkConsumptionPercentage(args: StatFunctionInput) {
   };
 }
 
-function fullInkTankOptions(
+export function fullInkTankOptions(
   args: StatFunctionInput,
 ): AnalyzedBuild["stats"]["fullInkTankOptions"] {
   const result: AnalyzedBuild["stats"]["fullInkTankOptions"] = [];
