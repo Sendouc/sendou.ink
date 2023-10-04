@@ -41,6 +41,7 @@ export function GroupCard({
   hideWeapons?: boolean;
 }) {
   const fetcher = useFetcher();
+  const leaveQFetcher = useFetcher();
 
   return (
     <section
@@ -120,7 +121,8 @@ export function GroupCard({
           </SubmitButton>
         </fetcher.Form>
       ) : null}
-      {ownGroup ? (
+
+      {ownGroup && group.members!.length > 1 ? (
         <FormWithConfirm
           dialogHeading="Leave this group?"
           fields={[["_action", "LEAVE_GROUP"]]}
@@ -131,6 +133,20 @@ export function GroupCard({
             Leave group
           </Button>
         </FormWithConfirm>
+      ) : null}
+      {/* Leave without confirm if alone */}
+      {ownGroup && group.members!.length === 1 ? (
+        <leaveQFetcher.Form method="POST" action={SENDOUQ_LOOKING_PAGE}>
+          <SubmitButton
+            _action="LEAVE_GROUP"
+            variant="minimal-destructive"
+            size="tiny"
+            state={fetcher.state}
+            className="mx-auto"
+          >
+            Leave queue
+          </SubmitButton>
+        </leaveQFetcher.Form>
       ) : null}
     </section>
   );
