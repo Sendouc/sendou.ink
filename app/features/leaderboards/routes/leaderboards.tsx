@@ -369,7 +369,7 @@ function PlayersTable({
                   <div>
                     <Avatar size="xxs" user={entry} />
                   </div>
-                  {entry.weaponSplId ? (
+                  {typeof entry.weaponSplId === "number" ? (
                     <WeaponImage
                       className="placements__table__weapon"
                       variant="build"
