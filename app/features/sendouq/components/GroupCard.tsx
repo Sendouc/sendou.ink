@@ -20,6 +20,7 @@ import { FULL_GROUP_SIZE } from "../q-constants";
 import type { LookingGroup } from "../q-types";
 import { StarIcon } from "~/components/icons/Star";
 import { StarFilledIcon } from "~/components/icons/StarFilled";
+import { inGameNameWithoutDiscriminator } from "~/utils/strings";
 
 export function GroupCard({
   group,
@@ -174,7 +175,16 @@ function GroupMember({
           target="_blank"
         >
           <Avatar user={member} size="xs" />
-          <span className="q__group-member__name">{member.discordName}</span>
+          <span className="q__group-member__name">
+            {member.inGameName ? (
+              <>
+                <span className="text-lighter font-bold text-xxxs">IGN:</span>{" "}
+                {inGameNameWithoutDiscriminator(member.inGameName)}
+              </>
+            ) : (
+              member.discordName
+            )}
+          </span>
         </Link>
         <div className="ml-auto stack horizontal sm items-center">
           {showActions || displayOnly ? (

@@ -28,6 +28,7 @@ export type LookingGroup = {
     weapons?: MainWeaponId[];
     skill?: TieredSkill;
     vc?: User["vc"];
+    inGameName?: User["inGameName"];
     languages?: string[];
     chatNameColor: string | null;
     skillDifference?: ParsedMemento["users"][number]["skillDifference"];
