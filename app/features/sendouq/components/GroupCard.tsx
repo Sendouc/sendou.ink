@@ -15,7 +15,7 @@ import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
 import { languagesUnified } from "~/modules/i18n/config";
 import { SENDOUQ_LOOKING_PAGE, navIconUrl, userPage } from "~/utils/urls";
-import { FULL_GROUP_SIZE } from "../q-constants";
+import { FULL_GROUP_SIZE, SENDOUQ } from "../q-constants";
 import type { LookingGroup } from "../q-types";
 import { StarIcon } from "~/components/icons/Star";
 import { StarFilledIcon } from "~/components/icons/StarFilled";
@@ -226,16 +226,27 @@ function MemberNote({
 }) {
   const fetcher = useFetcher();
   const [editing, setEditing] = React.useState(false);
+  const [value, setValue] = React.useState(note ?? "");
 
-  React.useEffect(() => {
+  const startEditing = () => setEditing(true);
+  const stopEditing = React.useCallback(() => {
     setEditing(false);
+    setValue(note ?? "");
   }, [note]);
+
+  // when note updates exit editing mode
+  React.useEffect(() => {
+    stopEditing();
+  }, [stopEditing]);
+
+  const newValueLegal = value.length <= SENDOUQ.NOTE_MAX_LENGTH;
 
   if (editing) {
     return (
       <fetcher.Form method="post" action={SENDOUQ_LOOKING_PAGE}>
         <textarea
-          defaultValue={note ?? ""}
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
           rows={2}
           className="q__group-member__note-textarea mt-1"
           name="value"
@@ -244,17 +255,23 @@ function MemberNote({
           <Button
             variant="minimal-destructive"
             size="miniscule"
-            onClick={() => setEditing(false)}
+            onClick={stopEditing}
           >
             Cancel
           </Button>
-          <SubmitButton
-            _action="UPDATE_NOTE"
-            variant="minimal"
-            size="miniscule"
-          >
-            Save
-          </SubmitButton>
+          {newValueLegal ? (
+            <SubmitButton
+              _action="UPDATE_NOTE"
+              variant="minimal"
+              size="miniscule"
+            >
+              Save
+            </SubmitButton>
+          ) : (
+            <span className="text-warning text-xxs font-semi-bold">
+              {value.length}/{SENDOUQ.NOTE_MAX_LENGTH}
+            </span>
+          )}
         </div>
       </fetcher.Form>
     );
@@ -268,7 +285,7 @@ function MemberNote({
           <Button
             size="miniscule"
             variant="minimal"
-            onClick={() => setEditing(true)}
+            onClick={startEditing}
             className="mt-2 ml-auto"
           >
             Edit note
@@ -281,7 +298,7 @@ function MemberNote({
   if (!editable) return null;
 
   return (
-    <Button variant="minimal" size="miniscule" onClick={() => setEditing(true)}>
+    <Button variant="minimal" size="miniscule" onClick={startEditing}>
       Add note
     </Button>
   );
