@@ -70,6 +70,8 @@ import { currentOrPreviousSeason } from "~/features/mmr/season";
 import { Chat, useChat } from "~/components/Chat";
 import { NewTabs } from "~/components/NewTabs";
 import { useWindowSize } from "~/hooks/useWindowSize";
+import { updateNote } from "../queries/updateNote.server";
+import { GroupLeaver } from "../components/GroupLeaver";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -268,6 +270,16 @@ export const action: ActionFunction = async ({ request }) => {
       throw redirect(SENDOUQ_PAGE);
     }
     case "REFRESH_GROUP": {
+      refreshGroup(currentGroup.id);
+
+      break;
+    }
+    case "UPDATE_NOTE": {
+      updateNote({
+        note: data.value,
+        groupId: currentGroup.id,
+        userId: user.id,
+      });
       refreshGroup(currentGroup.id);
 
       break;
@@ -499,6 +511,9 @@ function Groups() {
           trustedPlayers={data.trustedPlayers}
         />
       ) : null}
+      <GroupLeaver
+        type={ownGroup.members.length === 1 ? "LEAVE_Q" : "LEAVE_GROUP"}
+      />
     </div>
   );
 

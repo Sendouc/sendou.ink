@@ -2,7 +2,6 @@ import { Link, useFetcher } from "@remix-run/react";
 import clsx from "clsx";
 import { Avatar } from "~/components/Avatar";
 import { Button } from "~/components/Button";
-import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { Image, TierImage, WeaponImage } from "~/components/Image";
 import { Popover } from "~/components/Popover";
 import { SubmitButton } from "~/components/SubmitButton";
@@ -21,6 +20,7 @@ import type { LookingGroup } from "../q-types";
 import { StarIcon } from "~/components/icons/Star";
 import { StarFilledIcon } from "~/components/icons/StarFilled";
 import { inGameNameWithoutDiscriminator } from "~/utils/strings";
+import * as React from "react";
 
 export function GroupCard({
   group,
@@ -31,6 +31,7 @@ export function GroupCard({
   displayOnly = false,
   hideVc = false,
   hideWeapons = false,
+  hideNote: _hidenote = false,
 }: {
   group: LookingGroup;
   action?: "LIKE" | "UNLIKE" | "GROUP_UP" | "MATCH_UP";
@@ -40,9 +41,15 @@ export function GroupCard({
   displayOnly?: boolean;
   hideVc?: boolean;
   hideWeapons?: boolean;
+  hideNote?: boolean;
 }) {
   const fetcher = useFetcher();
-  const leaveQFetcher = useFetcher();
+
+  const hideNote =
+    displayOnly ||
+    !group.members ||
+    group.members.length === FULL_GROUP_SIZE ||
+    _hidenote;
 
   return (
     <section
@@ -62,6 +69,7 @@ export function GroupCard({
               displayOnly={displayOnly}
               hideVc={hideVc}
               hideWeapons={hideWeapons}
+              hideNote={hideNote}
             />
           );
         })}
@@ -122,33 +130,6 @@ export function GroupCard({
           </SubmitButton>
         </fetcher.Form>
       ) : null}
-
-      {ownGroup && group.members!.length > 1 ? (
-        <FormWithConfirm
-          dialogHeading="Leave this group?"
-          fields={[["_action", "LEAVE_GROUP"]]}
-          deleteButtonText="Leave"
-          action={SENDOUQ_LOOKING_PAGE}
-        >
-          <Button variant="minimal-destructive" size="tiny">
-            Leave group
-          </Button>
-        </FormWithConfirm>
-      ) : null}
-      {/* Leave without confirm if alone */}
-      {ownGroup && group.members!.length === 1 ? (
-        <leaveQFetcher.Form method="POST" action={SENDOUQ_LOOKING_PAGE}>
-          <SubmitButton
-            _action="LEAVE_GROUP"
-            variant="minimal-destructive"
-            size="tiny"
-            state={fetcher.state}
-            className="mx-auto"
-          >
-            Leave queue
-          </SubmitButton>
-        </leaveQFetcher.Form>
-      ) : null}
     </section>
   );
 }
@@ -159,13 +140,17 @@ function GroupMember({
   displayOnly,
   hideVc,
   hideWeapons,
+  hideNote,
 }: {
   member: NonNullable<LookingGroup["members"]>[number];
   showActions: boolean;
   displayOnly?: boolean;
   hideVc?: boolean;
   hideWeapons?: boolean;
+  hideNote?: boolean;
 }) {
+  const user = useUser();
+
   return (
     <div className="stack xxs">
       <div className="q__group-member">
@@ -225,7 +210,80 @@ function GroupMember({
           <MemberSkillDifference skillDifference={member.skillDifference} />
         ) : null}
       </div>
+      {!hideNote ? (
+        <MemberNote note={member.note} editable={user?.id === member.id} />
+      ) : null}
     </div>
+  );
+}
+
+function MemberNote({
+  note,
+  editable,
+}: {
+  note?: string | null;
+  editable: boolean;
+}) {
+  const fetcher = useFetcher();
+  const [editing, setEditing] = React.useState(false);
+
+  React.useEffect(() => {
+    setEditing(false);
+  }, [note]);
+
+  if (editing) {
+    return (
+      <fetcher.Form method="post" action={SENDOUQ_LOOKING_PAGE}>
+        <textarea
+          defaultValue={note ?? ""}
+          rows={2}
+          className="q__group-member__note-textarea mt-1"
+          name="value"
+        />
+        <div className="stack horizontal justify-between">
+          <Button
+            variant="minimal-destructive"
+            size="miniscule"
+            onClick={() => setEditing(false)}
+          >
+            Cancel
+          </Button>
+          <SubmitButton
+            _action="UPDATE_NOTE"
+            variant="minimal"
+            size="miniscule"
+          >
+            Save
+          </SubmitButton>
+        </div>
+      </fetcher.Form>
+    );
+  }
+
+  if (note) {
+    return (
+      <div className="text-lighter text-center text-xs mt-1">
+        {note}{" "}
+        {editable ? (
+          <Button
+            size="miniscule"
+            variant="minimal"
+            onClick={() => setEditing(true)}
+            className="mt-2 ml-auto"
+          >
+            Edit note
+          </Button>
+        ) : null}
+      </div>
+    );
+  }
+
+  if (!editable) return null;
+
+  return (
+    <Button variant="minimal" size="miniscule" onClick={() => setEditing(true)}>
+      Add note
+    </Button>
   );
 }
 

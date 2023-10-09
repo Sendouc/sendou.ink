@@ -2,6 +2,7 @@ import { z } from "zod";
 import {
   FULL_GROUP_SIZE,
   MAP_LIST_PREFERENCE_OPTIONS,
+  SENDOUQ,
   SENDOUQ_BEST_OF,
 } from "./q-constants";
 import {
@@ -14,6 +15,7 @@ import {
   weaponSplId,
   stageId,
   modeShort,
+  falsyToNull,
 } from "~/utils/zod";
 import { matchEndedAtIndex } from "./core/match";
 import { languagesUnified } from "~/modules/i18n/config";
@@ -87,6 +89,13 @@ export const lookingSchema = z.union([
   }),
   z.object({
     _action: _action("REFRESH_GROUP"),
+  }),
+  z.object({
+    _action: _action("UPDATE_NOTE"),
+    value: z.preprocess(
+      falsyToNull,
+      z.string().max(SENDOUQ.NOTE_MAX_LENGTH).nullable(),
+    ),
   }),
 ]);
 

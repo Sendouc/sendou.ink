@@ -13,7 +13,7 @@ export interface ButtonProps
     | "minimal"
     | "minimal-success"
     | "minimal-destructive";
-  size?: "tiny" | "big";
+  size?: "miniscule" | "tiny" | "big";
   loading?: boolean;
   loadingText?: string;
   icon?: JSX.Element;
@@ -42,6 +42,7 @@ export function Button(props: ButtonProps) {
           loading,
           tiny: size === "tiny",
           big: size === "big",
+          miniscule: size === "miniscule",
         },
         className,
       )}

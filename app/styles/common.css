@@ -77,6 +77,12 @@ a {
   padding-inline: var(--s-2);
 }
 
+:is(button, .button).miniscule {
+  font-size: var(--fonts-xxs);
+  padding-block: var(--s-1);
+  padding-inline: var(--s-2);
+}
+
 :is(button, .button).big {
   font-size: var(--fonts-md);
   padding-block: var(--s-2-5);

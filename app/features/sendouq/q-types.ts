@@ -25,6 +25,7 @@ export type LookingGroup = {
     customUrl?: User["customUrl"];
     plusTier?: PlusTier["tier"];
     role: GroupMember["role"];
+    note?: GroupMember["note"];
     weapons?: MainWeaponId[];
     skill?: TieredSkill;
     vc?: User["vc"];

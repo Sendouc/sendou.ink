@@ -23,6 +23,7 @@ const stm = sql.prepare(/* sql */ `
       "User"."languages",
       "PlusTier"."tier" as "plusTier",
       "GroupMember"."role",
+      "GroupMember"."note",
       json_group_array("UserWeapon"."weaponSplId") as "weapons"
     from
       "Group"
@@ -55,6 +56,7 @@ const stm = sql.prepare(/* sql */ `
         'customUrl', "q1"."customUrl",
         'plusTier', "q1"."plusTier",
         'role', "q1"."role",
+        'note', "q1"."note",
         'weapons', "q1"."weapons",
         'vc', "q1"."vc",
         'languages', "q1"."languages"

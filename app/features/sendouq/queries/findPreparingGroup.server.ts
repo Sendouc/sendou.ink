@@ -14,6 +14,7 @@ const stm = sql.prepare(/* sql */ `
       "User"."discordName",
       "User"."discordAvatar",
       "GroupMember"."role",
+      "GroupMember"."note",
       json_group_array("UserWeapon"."weaponSplId") as "weapons"
     from
       "Group"
@@ -40,6 +41,7 @@ const stm = sql.prepare(/* sql */ `
         'discordName', "q1"."discordName",
         'discordAvatar', "q1"."discordAvatar",
         'role', "q1"."role",
+        'note', "q1"."note",
         'weapons', "q1"."weapons"
       )
     ) as "members"

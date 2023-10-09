@@ -535,6 +535,7 @@ export interface GroupMember {
   groupId: number;
   userId: number;
   role: "OWNER" | "MANAGER" | "REGULAR";
+  note: string | null;
   createdAt: number;
 }
 

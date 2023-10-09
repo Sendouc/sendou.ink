@@ -175,6 +175,10 @@
   font-weight: var(--semi-bold);
 }
 
+.q__group-member__note-textarea {
+  height: 4rem !important;
+}
+
 .q__member-placeholder {
   border-radius: 100%;
   background-color: var(--bg-lightest);
