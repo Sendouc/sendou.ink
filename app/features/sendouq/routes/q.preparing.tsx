@@ -102,6 +102,7 @@ export const action: ActionFunction = async ({ request }) => {
       addMember({
         groupId: currentGroup.id,
         userId: data.id,
+        role: "MANAGER",
       });
 
       return null;
