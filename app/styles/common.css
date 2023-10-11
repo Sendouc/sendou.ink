@@ -97,6 +97,10 @@ a {
   outline: initial;
 }
 
+:is(button, .button).minimal:focus-visible {
+  outline: 2px solid var(--theme);
+}
+
 :is(button, .button).minimal-success {
   padding: 0;
   border: none;
