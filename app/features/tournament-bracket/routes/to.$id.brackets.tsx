@@ -51,7 +51,6 @@ import {
   resolveTournamentStageType,
 } from "../tournament-bracket-utils";
 import { sql } from "~/db/sql";
-import type { ExternalScriptsFunction } from "remix-utils";
 import { useEventSource } from "remix-utils";
 import { Status } from "~/db/types";
 import clsx from "clsx";
@@ -81,16 +80,6 @@ import {
   queryCurrentUserRating,
 } from "~/features/mmr";
 import { queryTeamPlayerRatingAverage } from "~/features/mmr/mmr-utils.server";
-
-const scripts: ExternalScriptsFunction<SerializeFrom<typeof loader>> = () => {
-  return [
-    {
-      src: "https://cdn.jsdelivr.net/npm/brackets-viewer@1.5.1/dist/brackets-viewer.min.js",
-    },
-  ];
-};
-
-export const handle = { scripts };
 
 export const links: LinksFunction = () => {
   return [
