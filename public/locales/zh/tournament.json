@@ -22,7 +22,7 @@
   "pre.checkIn.over": "签到已结束",
   "pre.checkIn.cant": "请在签到之前完成前面的步骤",
   "pre.checkIn.button": "签到",
-  "pre.checkIn.checkedIn": "您的队伍已签到。请加入频道: {{pool}}",
+  "pre.checkIn.checkedIn": "您的队伍已签到",
 
   "pre.info.header": "队伍信息",
   "pre.info.unregister": "取消报名",
@@ -115,8 +115,8 @@
   "bracket.standings.showMore": "展开",
 
   "match.hosts": "{{teamName}} 为房主",
-  "match.pass": "密码 {{pass}}",
-  "match.pool": "频道 {{code}}",
+  "match.pass": "密码",
+  "match.pool": "频道",
   "match.score": "{{scoreOne}}-{{scoreTwo}} (Bo {{bestOf}})",
   "match.action.undoLastScore": "撤销上次比分",
   "match.action.reopenMatch": "重新开始对战",

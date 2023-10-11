@@ -79,15 +79,30 @@ export function ScoreReporter({
     ) : null,
     showFullInfos ? (
       <>
-        {t("tournament:match.pass", { pass: resolveRoomPass(data.match.id) })}
+        {t("tournament:match.pass")}{" "}
+        <span className="text-theme font-bold">
+          {resolveRoomPass(data.match.id)}
+        </span>
       </>
     ) : null,
     showFullInfos ? (
-      <>
-        {t("tournament:match.pool", {
-          code: HACKY_resolvePoolCode(parentRouteData.event),
-        })}
-      </>
+      <span>
+        {t("tournament:match.pool")}{" "}
+        {
+          HACKY_resolvePoolCode({
+            event: parentRouteData.event,
+            matchId: data.match.id,
+          }).prefix
+        }
+        <span className="text-theme font-bold">
+          {
+            HACKY_resolvePoolCode({
+              event: parentRouteData.event,
+              matchId: data.match.id,
+            }).lastDigit
+          }
+        </span>
+      </span>
     ) : null,
     <>
       {t("tournament:match.score", {

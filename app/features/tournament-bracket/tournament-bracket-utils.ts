@@ -141,10 +141,17 @@ export function checkSourceIsValid({
   return false;
 }
 
-export function HACKY_resolvePoolCode(event: TournamentLoaderData["event"]) {
-  if (event.name.includes("In The Zone")) return "ITZ";
+export function HACKY_resolvePoolCode({
+  event,
+  matchId,
+}: {
+  event: TournamentLoaderData["event"];
+  matchId: number;
+}) {
+  const prefix = event.name.includes("In The Zone") ? "ITZ" : "PN";
+  const lastDigit = matchId % 10;
 
-  return "PICNIC";
+  return { prefix, lastDigit };
 }
 
 export function bracketSubscriptionKey(tournamentId: number) {

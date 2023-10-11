@@ -87,10 +87,7 @@ import {
 import type { TournamentLoaderData } from "./to.$id";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { deleteTeam } from "../queries/deleteTeam.server";
-import {
-  HACKY_resolvePoolCode,
-  findMapPoolByTeamId,
-} from "~/features/tournament-bracket";
+import { findMapPoolByTeamId } from "~/features/tournament-bracket";
 import { Popover } from "~/components/Popover";
 
 export const handle: SendouRouteHandle = {
@@ -471,7 +468,6 @@ function CheckIn({
   endDate: Date;
   checkedIn?: boolean;
 }) {
-  const data = useOutletContext<TournamentLoaderData>();
   const { t, i18n } = useTranslation(["tournament"]);
   const isMounted = useIsMounted();
   const fetcher = useFetcher();
@@ -510,9 +506,7 @@ function CheckIn({
   if (checkedIn) {
     return (
       <div className="text-center text-xs">
-        {t("tournament:pre.checkIn.checkedIn", {
-          pool: HACKY_resolvePoolCode(data.event),
-        })}
+        {t("tournament:pre.checkIn.checkedIn")}
       </div>
     );
   }

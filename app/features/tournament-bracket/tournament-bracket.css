@@ -22,7 +22,8 @@
   border-end-start-radius: var(--rounded);
   color: var(--tournaments-text);
   column-gap: var(--s-8);
-  font-size: var(--fonts-xs);
+  font-size: var(--fonts-xsm);
+  letter-spacing: 0.3px;
 }
 
 .tournament-bracket__infos__label {
