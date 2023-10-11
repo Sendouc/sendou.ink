@@ -37,6 +37,7 @@ import {
   filterOutGroupsWithIncompatibleMapListPreference,
   groupExpiryStatus,
   membersNeededForFull,
+  sortGroupsBySkill,
 } from "../core/groups.server";
 import { createMatchMemento, matchMapList } from "../core/match.server";
 import { FULL_GROUP_SIZE } from "../q-constants";
@@ -324,9 +325,13 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   const season = currentOrPreviousSeason(new Date());
 
+  const { intervals, userSkills: calculatedUserSkills } = await userSkills(
+    season!.nth,
+  );
   const groupsWithSkills = addSkillsToGroups({
     groups: dividedGroups,
-    ...(await userSkills(season!.nth)),
+    intervals,
+    userSkills: calculatedUserSkills,
   });
 
   const compatibleGroups = groupIsFull
@@ -347,12 +352,18 @@ export const loader = async ({ request }: LoaderArgs) => {
     showInviteCode: hasGroupManagerPerms(currentGroup.role) && !groupIsFull,
   });
 
-  return {
+  const sortedGroups = sortGroupsBySkill({
     groups: censoredGroups,
+    intervals,
+    userSkills: calculatedUserSkills,
+  });
+
+  return {
+    groups: sortedGroups,
     role: currentGroup.role,
     chatCode:
       // don't chat with yourself...
-      censoredGroups.own.members!.length > 1 ? currentGroup.chatCode : null,
+      sortedGroups.own.members!.length > 1 ? currentGroup.chatCode : null,
     lastUpdated: new Date().getTime(),
     expiryStatus: groupExpiryStatus(currentGroup),
     trustedPlayers: hasGroupManagerPerms(currentGroup.role)

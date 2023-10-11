@@ -33,7 +33,7 @@ export function GroupCard({
   hideWeapons = false,
   hideNote: _hidenote = false,
 }: {
-  group: LookingGroup;
+  group: Omit<LookingGroup, "createdAt">;
   action?: "LIKE" | "UNLIKE" | "GROUP_UP" | "MATCH_UP";
   ownRole?: GroupMemberType["role"];
   ownGroup?: boolean;

@@ -12,6 +12,7 @@ import type { GroupForMatch } from "./queries/groupForMatch.server";
 export type LookingGroup = {
   id: number;
   mapListPreference?: Group["mapListPreference"];
+  createdAt: Group["createdAt"];
   tier?: TieredSkill["tier"];
   isReplay?: boolean;
   isLiked?: boolean;
