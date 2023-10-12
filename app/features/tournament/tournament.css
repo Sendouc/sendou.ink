@@ -1,5 +1,5 @@
 .tournament__action-section {
-  padding: var(--s-6);
+  padding: var(--s-0-5) var(--s-6) var(--s-6) var(--s-6);
   border-radius: var(--rounded);
   background-color: var(--bg-lighter);
 }

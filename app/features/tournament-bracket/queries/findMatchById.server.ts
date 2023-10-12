@@ -14,6 +14,7 @@ const stm = sql.prepare(/* sql */ `
     "TournamentMatch"."opponentOne",
     "TournamentMatch"."opponentTwo",
     "TournamentMatch"."bestOf",
+    "TournamentMatch"."chatCode",
     "Tournament"."mapPickingStyle",
     json_group_array(
       json_object(
@@ -30,7 +31,8 @@ const stm = sql.prepare(/* sql */ `
         'customUrl',
         "User"."customUrl",
         'discordAvatar',
-        "User"."discordAvatar"
+        "User"."discordAvatar",
+        'chatNameColor', IIF(COALESCE("User"."patronTier", 0) >= 2, "User"."css" ->> 'chat', null)
       )
     ) as "players"
   from "TournamentMatch"
@@ -49,7 +51,10 @@ export type FindMatchById = ReturnType<typeof findMatchById>;
 
 export const findMatchById = (id: number) => {
   const row = stm.get({ id }) as
-    | (Pick<TournamentMatch, "id" | "opponentOne" | "opponentTwo" | "bestOf"> &
+    | (Pick<
+        TournamentMatch,
+        "id" | "opponentOne" | "opponentTwo" | "bestOf" | "chatCode"
+      > &
         Pick<Tournament, "mapPickingStyle"> & { players: string })
     | undefined;
 
@@ -67,6 +72,7 @@ export const findMatchById = (id: number) => {
       discordId: User["discordId"];
       customUrl: User["customUrl"];
       discordAvatar: User["discordAvatar"];
+      chatNameColor: string | null;
     }>,
   };
 };

@@ -11,14 +11,13 @@ import { useTranslation } from "~/hooks/useTranslation";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator";
 import { modeImageUrl, stageImageUrl } from "~/utils/urls";
-import type { TournamentMatchLoaderData } from "../routes/to.$id.matches.$mid";
+import { type TournamentMatchLoaderData } from "../routes/to.$id.matches.$mid";
 import {
   HACKY_resolvePoolCode,
   mapCountPlayedInSetWithCertainty,
   resolveHostingTeam,
   resolveRoomPass,
 } from "../tournament-bracket-utils";
-import { ScoreReporterRosters } from "./ScoreReporterRosters";
 import type { SerializeFrom } from "@remix-run/node";
 import type { Unpacked } from "~/utils/types";
 import type {
@@ -29,11 +28,16 @@ import { canAdminTournament } from "~/permissions";
 import { useUser } from "~/modules/auth";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { databaseTimestampToDate } from "~/utils/dates";
+import { NewTabs } from "~/components/NewTabs";
+import { ScoreReporterRosters } from "./ScoreReporterRosters";
+import { Chat, useChat } from "~/components/Chat";
+import * as React from "react";
 
 export type Result = Unpacked<
   SerializeFrom<TournamentMatchLoaderData>["results"]
 >;
 
+// TODO: rename (since it now contains Chat as well)
 export function ScoreReporter({
   teams,
   currentStageWithMode,
@@ -44,12 +48,12 @@ export function ScoreReporter({
   type,
 }: {
   teams: [TournamentLoaderTeam, TournamentLoaderTeam];
+  result?: Result;
   currentStageWithMode: TournamentMapListMap;
   modes: ModeShort[];
   selectedResultIndex?: number;
   // if this is set it means the component is being used in presentation manner
   setSelectedResultIndex?: (index: number) => void;
-  result?: Result;
   type: "EDIT" | "MEMBER" | "OTHER";
 }) {
   const { t } = useTranslation(["tournament"]);
@@ -173,20 +177,13 @@ export function ScoreReporter({
         setSelectedResultIndex={setSelectedResultIndex}
       />
       {type === "EDIT" || presentational ? (
-        <ActionSectionWrapper>
-          <ScoreReporterRosters
-            // Without the key prop when switching to another match the winnerId is remembered
-            // which causes "No winning team matching the id" error.
-            // Switching the key props forces the component to remount.
-            key={data.match.id}
-            scores={[scoreOne, scoreTwo]}
-            teams={teams}
-            position={currentPosition}
-            currentStageWithMode={currentStageWithMode}
-            result={result}
-            bestOf={data.match.bestOf}
-          />
-        </ActionSectionWrapper>
+        <MatchActionSectionTabs
+          presentational={presentational}
+          scores={[scoreOne, scoreTwo]}
+          currentStageWithMode={currentStageWithMode}
+          teams={teams}
+          result={result}
+        />
       ) : null}
       {result ? (
         <div
@@ -333,6 +330,116 @@ function ModeProgressIndicator({
         );
       })}
     </div>
+  );
+}
+
+function MatchActionSectionTabs({
+  presentational,
+  scores,
+  currentStageWithMode,
+  teams,
+  result,
+}: {
+  presentational?: boolean;
+  scores: [number, number];
+  currentStageWithMode: TournamentMapListMap;
+  teams: [TournamentLoaderTeam, TournamentLoaderTeam];
+  result?: Result;
+}) {
+  const data = useLoaderData<TournamentMatchLoaderData>();
+  const [_unseenMessages, setUnseenMessages] = React.useState(0);
+  const [chatVisible, setChatVisible] = React.useState(false);
+
+  const chatUsers = React.useMemo(() => {
+    return Object.fromEntries(data.match.players.map((p) => [p.id, p]));
+  }, [data]);
+
+  const rooms = React.useMemo(() => {
+    return data.match.chatCode
+      ? [
+          {
+            code: data.match.chatCode,
+            label: "Match",
+          },
+        ]
+      : [];
+  }, [data.match.chatCode]);
+
+  const onNewMessage = React.useCallback(() => {
+    setUnseenMessages((msg) => msg + 1);
+  }, []);
+
+  const chat = useChat({ rooms, onNewMessage });
+
+  const onChatMount = React.useCallback(() => {
+    setChatVisible(true);
+  }, []);
+
+  const onChatUnmount = React.useCallback(() => {
+    setChatVisible(false);
+    setUnseenMessages(0);
+  }, []);
+
+  const unseenMessages = chatVisible ? 0 : _unseenMessages;
+
+  const currentPosition = scores[0] + scores[1];
+
+  return (
+    <ActionSectionWrapper>
+      <NewTabs
+        tabs={[
+          {
+            label: "Chat",
+            number: unseenMessages,
+            hidden: !data.match.chatCode,
+          },
+          {
+            label: presentational ? "Score" : "Report score",
+          },
+        ]}
+        disappearing
+        content={[
+          {
+            key: "chat",
+            hidden: !data.match.chatCode,
+            element: (
+              <>
+                {data.match.chatCode ? (
+                  <Chat
+                    rooms={rooms}
+                    users={chatUsers}
+                    className="w-full q__chat-container"
+                    messagesContainerClassName="q__chat-messages-container"
+                    onNewMessage={onNewMessage}
+                    chat={chat}
+                    onMount={onChatMount}
+                    onUnmount={onChatUnmount}
+                    missingUserName="TO"
+                  />
+                ) : null}
+              </>
+            ),
+          },
+          {
+            key: "report",
+            element: (
+              <ScoreReporterRosters
+                // Without the key prop when switching to another match the winnerId is remembered
+                // which causes "No winning team matching the id" error.
+                // Switching the key props forces the component to remount.
+                key={data.match.id}
+                scores={scores}
+                teams={teams}
+                position={currentPosition}
+                currentStageWithMode={currentStageWithMode}
+                result={result}
+                bestOf={data.match.bestOf}
+              />
+            ),
+          },
+        ]}
+      />
+    </ActionSectionWrapper>
   );
 }
 

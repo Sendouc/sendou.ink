@@ -26,6 +26,7 @@ export interface ChatProps {
   onMount?: () => void;
   onUnmount?: () => void;
   disabled?: boolean;
+  missingUserName?: string;
 }
 
 export function ConnectedChat(props: ChatProps) {
@@ -44,6 +45,7 @@ export function Chat({
   onMount,
   onUnmount,
   disabled,
+  missingUserName,
 }: ChatProps & { chat: ReturnType<typeof useChat> }) {
   const messagesContainerRef = React.useRef<HTMLOListElement>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
@@ -120,9 +122,16 @@ export function Chat({
         >
           {messages.map((msg) => {
             const user = msg.userId ? users[msg.userId] : null;
-            if (!user) return null;
+            if (!user && !missingUserName) return null;
 
-            return <Message key={msg.id} user={user} message={msg} />;
+            return (
+              <Message
+                key={msg.id}
+                user={user}
+                missingUserName={missingUserName}
+                message={msg}
+              />
+            );
           })}
         </ol>
         <form onSubmit={handleSubmit} className="mt-4">
@@ -159,21 +168,29 @@ export function Chat({
   );
 }
 
-function Message({ user, message }: { user: ChatUser; message: ChatMessage }) {
+function Message({
+  user,
+  message,
+  missingUserName,
+}: {
+  user?: ChatUser | null;
+  message: ChatMessage;
+  missingUserName?: string;
+}) {
   return (
     <li className="chat__message">
-      <Avatar user={user} size="xs" />
+      {user ? <Avatar user={user} size="xs" /> : null}
       <div>
         <div className="stack horizontal sm">
           <div
             className="chat__message__user"
             style={
-              user.chatNameColor
+              user?.chatNameColor
                 ? ({ "--chat-user-color": user.chatNameColor } as any)
                 : undefined
             }
           >
-            {user.discordName}
+            {user?.discordName ?? missingUserName}
           </div>
           {!message.pending ? (
             <time className="chat__message__time">

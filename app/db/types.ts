@@ -321,6 +321,7 @@ export interface TournamentMatch {
   opponentOne: string; // json
   opponentTwo: string; // json
   status: Status;
+  chatCode: string | null;
 }
 
 export interface TournamentMatchGameResult {
