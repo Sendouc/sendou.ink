@@ -16,7 +16,7 @@
   "deleteConfirm": "למחיקת ערכה '{{title}}'?",
 
   "stats.count.title": "נתונים סטטיסטיים מ-{{count}} ערכות של {{weapon}}",
-  "stats.ap.title": "ממצועי נקודות יכולת",
+  "stats.ap.title": "ממוצעי נקודות יכולת",
   "stats.percentage.title": "הופעת יכולת ראשית בלבד",
   "stats.all": "הכל",
 

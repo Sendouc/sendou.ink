@@ -154,6 +154,6 @@
   "labels.weapon": "Weapon",
   "dmgHtdExplanation": "DMG = Damage | HTD = Hits to destroy",
   "noDmgData": "No damage data yet for this weapon. Check back later!",
-  "perInkTankGrid.header_one": "{{weapon}} shots after ×{{count}} sub weapon used",
-  "perInkTankGrid.header_other": "{{weapon}} shots after ×{{count}} sub weapons used"
+  "perInkTankGrid.header_one": "יריות של {{weapon}} לאחר ×{{count}} שימוש בסאב",
+  "perInkTankGrid.header_other": "יריות של {{weapon}} לאחר ×{{count}} שימוש בסאב"
 }

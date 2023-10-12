@@ -26,7 +26,7 @@
   "forms.fields.uploadImages": "העלאת תמונות",
   "forms.fields.uploadImages.pfp": "תמונת פרופיל",
   "forms.fields.uploadImages.banner": "תמונת באנר של הצוות",
-  "forms.info.name": "שימו לב שאם תשנו את שם הצוות שלכם, מישהו אחר יוכל לקחת בעלות על השם וכתובת האתר עבור הצוות שלו",
+  "forms.info.name": "שימו לב שאם תשנו את שם הצוות שלכם, מישהו אחר יוכל לקחת בעלות על השם ועל כתובת האתר עבור הצוות שלו",
   "forms.errors.duplicateName": "יש כבר צוות בשם הזה",
   "roster.teamFull": "הצוות מלא",
   "roster.inviteLink.header": "שיתוף קישור הזמנה להוספת חברי צוות",
