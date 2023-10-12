@@ -166,8 +166,8 @@
   padding-block-end: var(--s-4);
 }
 
-.pt-12-forced {
-  padding-block-start: var(--s-12) !important;
+.pt-8-forced {
+  padding-block-start: var(--s-8) !important;
 }
 
 .m-auto-0 {
