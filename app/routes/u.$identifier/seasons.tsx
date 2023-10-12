@@ -684,30 +684,37 @@ function Match({
     [0, 0],
   );
 
+  // score when match has not yet been played or was canceled
+  const specialScoreMarking = () => {
+    if (score[0] + score[1] === 0) return match.isLocked ? "-" : " ";
+
+    return null;
+  };
+
   // make sure user's team is always on the top
   const rows = match.groupAlphaMembers.some((m) => m.id === userId)
     ? [
         <MatchMembersRow
           key="alpha"
           members={match.groupAlphaMembers}
-          score={score[0]}
+          score={specialScoreMarking() ?? score[0]}
         />,
         <MatchMembersRow
           key="bravo"
           members={match.groupBravoMembers}
-          score={score[1]}
+          score={specialScoreMarking() ?? score[1]}
         />,
       ]
     : [
         <MatchMembersRow
           key="bravo"
           members={match.groupBravoMembers}
-          score={score[1]}
+          score={specialScoreMarking() ?? score[1]}
         />,
         <MatchMembersRow
           key="alpha"
           members={match.groupAlphaMembers}
-          score={score[0]}
+          score={specialScoreMarking() ?? score[0]}
         />,
       ];
 
@@ -728,7 +735,7 @@ function MatchMembersRow({
   score,
   members,
 }: {
-  score: number;
+  score: React.ReactNode;
   members: SerializeFrom<
     typeof loader
   >["matches"]["value"][0]["groupAlphaMembers"];
