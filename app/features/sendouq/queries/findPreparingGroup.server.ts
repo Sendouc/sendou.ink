@@ -14,6 +14,7 @@ const stm = sql.prepare(/* sql */ `
       "User"."discordName",
       "User"."discordAvatar",
       "GroupMember"."role",
+      "GroupMember"."note",
       json_group_array("UserWeapon"."weaponSplId") as "weapons"
     from
       "Group"
@@ -33,6 +34,7 @@ const stm = sql.prepare(/* sql */ `
     "q1"."id",
     "q1"."mapListPreference",
     "q1"."inviteCode",
+    "q1"."createdAt",
     json_group_array(
       json_object(
         'id', "q1"."userId",
@@ -40,6 +42,7 @@ const stm = sql.prepare(/* sql */ `
         'discordName', "q1"."discordName",
         'discordAvatar', "q1"."discordAvatar",
         'role', "q1"."role",
+        'note', "q1"."note",
         'weapons', "q1"."weapons"
       )
     ) as "members"
@@ -55,6 +58,7 @@ export function findPreparingGroup(
 
   return {
     id: row.id,
+    createdAt: row.createdAt,
     mapListPreference: row.mapListPreference,
     inviteCode: row.inviteCode,
     members: parseDBJsonArray(row.members).map((member: any) => {

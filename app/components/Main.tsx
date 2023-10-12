@@ -31,7 +31,7 @@ export const Main = ({
         classNameOverwrite
           ? clsx(classNameOverwrite, {
               "half-width": halfWidth,
-              "pt-12-forced": showLeaderboard,
+              "pt-8-forced": showLeaderboard,
             })
           : clsx(
               "layout__main",
@@ -39,7 +39,7 @@ export const Main = ({
               {
                 "half-width": halfWidth,
                 bigger,
-                "pt-12-forced": showLeaderboard,
+                "pt-8-forced": showLeaderboard,
               },
               className,
             )

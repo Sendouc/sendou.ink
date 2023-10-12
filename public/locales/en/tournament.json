@@ -22,7 +22,7 @@
   "pre.checkIn.over": "Check-in is over",
   "pre.checkIn.cant": "Complete the previous steps before checking in",
   "pre.checkIn.button": "Check in",
-  "pre.checkIn.checkedIn": "Your team is checked in. Please join the Pool: {{pool}}",
+  "pre.checkIn.checkedIn": "Your team is checked in",
 
   "pre.info.header": "Team info",
   "pre.info.unregister": "Unregister",
@@ -115,8 +115,8 @@
   "bracket.standings.showMore": "Show more",
 
   "match.hosts": "{{teamName}} hosts",
-  "match.pass": "Pass {{pass}}",
-  "match.pool": "Pool {{code}}",
+  "match.pass": "Pass",
+  "match.pool": "Pool",
   "match.score": "{{scoreOne}}-{{scoreTwo}} (Best of {{bestOf}})",
   "match.action.undoLastScore": "Undo last score",
   "match.action.reopenMatch": "Reopen match",

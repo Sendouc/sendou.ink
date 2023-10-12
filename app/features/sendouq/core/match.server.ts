@@ -1,10 +1,13 @@
-import type { Group } from "~/db/types";
+import type { Group, ParsedMemento } from "~/db/types";
 import { MapPool } from "~/modules/map-pool-serializer";
 import { createTournamentMapList } from "~/modules/tournament-map-list-generator";
 import { SENDOUQ_BEST_OF } from "../q-constants";
-import type { LookingGroup } from "../q-types";
+import type { LookingGroup, LookingGroupWithInviteCode } from "../q-types";
 import invariant from "tiny-invariant";
 import type { MatchById } from "../queries/findMatchById.server";
+import { addSkillsToGroups } from "./groups.server";
+import { userSkills } from "~/features/mmr/tiered.server";
+import { currentOrPreviousSeason } from "~/features/mmr/season";
 
 const filterMapPoolToSZ = (mapPool: MapPool) =>
   new MapPool(mapPool.stageModePairs.filter(({ mode }) => mode === "SZ"));
@@ -136,4 +139,38 @@ export function compareMatchToReportedScores({
   if (sameGroupReporting) return "DUPLICATE";
 
   return "SAME";
+}
+
+export async function createMatchMemento(
+  ownGroup: LookingGroupWithInviteCode,
+  theirGroup: LookingGroupWithInviteCode,
+): Promise<ParsedMemento> {
+  const skills = await userSkills(currentOrPreviousSeason(new Date())!.nth);
+  const withTiers = addSkillsToGroups({
+    groups: { neutral: [], likesReceived: [theirGroup], own: ownGroup },
+    ...skills,
+  });
+
+  const ownWithTier = withTiers.own;
+  const theirWithTier = withTiers.likesReceived[0];
+
+  return {
+    users: Object.fromEntries(
+      [...ownGroup.members, ...theirGroup.members].map((member) => [
+        member.id,
+        {
+          plusTier: member.plusTier ?? undefined,
+          skill: skills.userSkills[member.id],
+        },
+      ]),
+    ),
+    groups: Object.fromEntries(
+      [ownWithTier, theirWithTier].map((group) => [
+        group.id,
+        {
+          tier: group.tier,
+        },
+      ]),
+    ),
+  };
 }

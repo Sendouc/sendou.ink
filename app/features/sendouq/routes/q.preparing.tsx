@@ -36,6 +36,7 @@ import { trustedPlayersAvailableToPlay } from "../queries/usersInActiveGroup.ser
 import { useAutoRefresh } from "~/hooks/useAutoRefresh";
 import { userHasSkill } from "../queries/userHasSkill.server";
 import { currentSeason } from "~/features/mmr";
+import { GroupLeaver } from "../components/GroupLeaver";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -101,6 +102,7 @@ export const action: ActionFunction = async ({ request }) => {
       addMember({
         groupId: currentGroup.id,
         userId: data.id,
+        role: "MANAGER",
       });
 
       return null;
@@ -146,9 +148,10 @@ export default function QPreparingPage() {
       <div className="q-preparing__card-container">
         <GroupCard
           group={data.group}
-          mapListPreference={data.group.mapListPreference}
           ownRole={data.role}
           ownGroup
+          hideNote
+          enableKicking={data.role === "OWNER"}
         />
       </div>
       {data.group.members.length < FULL_GROUP_SIZE &&
@@ -167,6 +170,9 @@ export default function QPreparingPage() {
           Join the queue
         </SubmitButton>
       </joinQFetcher.Form>
+      <GroupLeaver
+        type={data.group.members.length === 1 ? "GO_BACK" : "LEAVE_GROUP"}
+      />
     </Main>
   );
 }

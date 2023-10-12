@@ -22,7 +22,7 @@
   "pre.checkIn.over": "チェックインは終了しました",
   "pre.checkIn.cant": "チェックインするための入力を完了してください",
   "pre.checkIn.button": "チェックイン",
-  "pre.checkIn.checkedIn": "チームのチェックインが完了しました。プールに参加してください: {{pool}}",
+  "pre.checkIn.checkedIn": "チームのチェックインが完了しました",
 
   "pre.info.header": "チーム情報",
   "pre.info.unregister": "登録解除",
@@ -115,8 +115,8 @@
   "bracket.standings.showMore": "さらに表示",
 
   "match.hosts": "{{teamName}} ホスト",
-  "match.pass": "通過 {{pass}}",
-  "match.pool": "プール {{code}}",
+  "match.pass": "通過",
+  "match.pool": "プール",
   "match.score": "{{scoreOne}}-{{scoreTwo}} (Best of {{bestOf}})",
   "match.action.undoLastScore": "最後のスコアをやりなおす",
   "match.action.reopenMatch": "対戦を再度開く",

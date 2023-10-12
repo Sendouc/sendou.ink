@@ -9,10 +9,12 @@ import {
   useOutletContext,
   useRevalidator,
 } from "@remix-run/react";
+import clsx from "clsx";
 import { nanoid } from "nanoid";
 import * as React from "react";
 import { useEventSource } from "remix-utils";
 import invariant from "tiny-invariant";
+import { Avatar } from "~/components/Avatar";
 import { LinkButton } from "~/components/Button";
 import { ArrowLongLeftIcon } from "~/components/icons/ArrowLongLeft";
 import { sql } from "~/db/sql";
@@ -23,6 +25,7 @@ import {
 import { useSearchParamState } from "~/hooks/useSearchParamState";
 import { useVisibilityChange } from "~/hooks/useVisibilityChange";
 import { requireUser, useUser } from "~/modules/auth";
+import { getUserId } from "~/modules/auth/user.server";
 import { canAdminTournament, canReportTournamentScore } from "~/permissions";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
@@ -50,8 +53,6 @@ import {
   matchSubscriptionKey,
 } from "../tournament-bracket-utils";
 import bracketStyles from "../tournament-bracket.css";
-import clsx from "clsx";
-import { Avatar } from "~/components/Avatar";
 
 export const links: LinksFunction = () => [
   {
@@ -279,7 +280,8 @@ export const action: ActionFunction = async ({ params, request }) => {
 
 export type TournamentMatchLoaderData = typeof loader;
 
-export const loader = ({ params }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderArgs) => {
+  const user = await getUserId(request);
   const tournamentId = tournamentIdFromParams(params);
   const matchId = matchIdFromParams(params);
 
@@ -301,8 +303,18 @@ export const loader = ({ params }: LoaderArgs) => {
 
   const currentMap = mapList?.[scoreSum];
 
+  const showChat =
+    match.players.some((p) => p.id === user?.id) ||
+    canAdminTournament({
+      user,
+      event: notFoundIfFalsy(findByIdentifier(tournamentId)),
+    });
+
   return {
-    match,
+    match: {
+      ...match,
+      chatCode: showChat ? match.chatCode : null,
+    },
     results: findResultsByMatchId(matchId),
     seeds: resolveSeeds(),
     currentMap,

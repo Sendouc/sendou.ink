@@ -22,7 +22,6 @@
   "pre.checkIn.over": "צ'ק-אין נגמר",
   "pre.checkIn.cant": "השלימו את השלבים הקודמים לפני צ'ק-אין",
   "pre.checkIn.button": "צ'ק אין",
-  "pre.checkIn.checkedIn": "הצוות שלכם עשה צ'ק-אין. בבקשה הצטרפו לפול: {{pool}}",
 
   "pre.info.header": "מידע על הצוות",
   "pre.info.unregister": "ביטול הרשמה",
@@ -115,8 +114,8 @@
   "bracket.standings.showMore": "הראו יותר",
 
   "match.hosts": "{{teamName}} מארחים",
-  "match.pass": "סיסמה {{pass}}",
-  "match.pool": "פול {{code}}",
+  "match.pass": "סיסמה",
+  "match.pool": "פול",
   "match.score": "{{scoreOne}}-{{scoreTwo}} (הטוב מ-{{bestOf}})",
   "match.action.undoLastScore": "בטלו את התוצאה האחרונה",
   "match.action.reopenMatch": "פתיחה מחדש של הקרב",

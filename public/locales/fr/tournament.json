@@ -22,7 +22,7 @@
   "pre.checkIn.over": "L'enregistrement est fini",
   "pre.checkIn.cant": "Complétez les étapes précédentes avant de vous enregistrer",
   "pre.checkIn.button": "S'enregistrer",
-  "pre.checkIn.checkedIn": "Votre équipe est enregistrée. Veuillez rejoindre le canal: {{pool}}",
+  "pre.checkIn.checkedIn": "Votre équipe est enregistrée",
 
   "pre.info.header": "Info équipe",
   "pre.info.unregister": "Se désinscrire",
@@ -115,8 +115,8 @@
   "bracket.standings.showMore": "Montrer plus",
 
   "match.hosts": "{{teamName}} héberge",
-  "match.pass": "MdP {{pass}}",
-  "match.pool": "Canal {{code}}",
+  "match.pass": "MdP",
+  "match.pool": "Canal}",
   "match.score": "{{scoreOne}}-{{scoreTwo}} (Meilleur de {{bestOf}})",
   "match.action.undoLastScore": "Annuler le dernier score",
   "match.action.reopenMatch": "Rouvrir le match",

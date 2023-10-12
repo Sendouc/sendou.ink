@@ -77,6 +77,12 @@ a {
   padding-inline: var(--s-2);
 }
 
+:is(button, .button).miniscule {
+  font-size: var(--fonts-xxs);
+  padding-block: var(--s-1);
+  padding-inline: var(--s-2);
+}
+
 :is(button, .button).big {
   font-size: var(--fonts-md);
   padding-block: var(--s-2-5);
@@ -89,6 +95,10 @@ a {
   background-color: transparent;
   color: var(--theme);
   outline: initial;
+}
+
+:is(button, .button).minimal:focus-visible {
+  outline: 2px solid var(--theme);
 }
 
 :is(button, .button).minimal-success {
@@ -1350,11 +1360,11 @@ dialog::backdrop {
 }
 
 .chat__messages {
-  padding: var(--s-2) 0 0 0;
+  padding: var(--s-2-5) 0 0 0;
   display: flex;
   flex-direction: column;
   gap: var(--s-2);
-  height: 270px;
+  height: 310px;
   overflow-y: auto;
 }
 
@@ -1368,6 +1378,10 @@ dialog::backdrop {
   font-weight: var(--semi-bold);
   font-size: var(--fonts-sm);
   color: var(--chat-user-color);
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .chat__message__time {

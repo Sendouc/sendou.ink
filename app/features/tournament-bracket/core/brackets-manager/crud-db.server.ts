@@ -16,6 +16,7 @@ import type {
   TournamentStage,
   TournamentTeam,
 } from "~/db/types";
+import { nanoid } from "nanoid";
 
 const team_getByTournamentIdStm = sql.prepare(/*sql*/ `
   select
@@ -356,9 +357,9 @@ const match_getByRoundAndNumberStm = sql.prepare(/*sql*/ `
 const match_insertStm = sql.prepare(/*sql*/ `
   insert into
     "TournamentMatch"
-    ("childCount", "roundId", "stageId", "groupId", "number", "opponentOne", "opponentTwo", "status")
+    ("childCount", "roundId", "stageId", "groupId", "number", "opponentOne", "opponentTwo", "status", "chatCode")
   values
-    (@childCount, @roundId, @stageId, @groupId, @number, @opponentOne, @opponentTwo, @status)
+    (@childCount, @roundId, @stageId, @groupId, @number, @opponentOne, @opponentTwo, @status, @chatCode)
   returning *
 `);
 
@@ -458,6 +459,7 @@ export class Match {
       opponentOne: this.opponentOne,
       opponentTwo: this.opponentTwo,
       status: this.status,
+      chatCode: nanoid(10),
     }) as any;
 
     this.id = match.id;

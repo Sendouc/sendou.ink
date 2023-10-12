@@ -15,6 +15,8 @@ interface NewTabsProps {
   scrolling?: boolean;
   selectedIndex?: number;
   setSelectedIndex?: (index: number) => void;
+  /** Don't take space when no tabs to show? */
+  disappearing?: boolean;
 }
 
 export function NewTabs({
@@ -23,6 +25,7 @@ export function NewTabs({
   scrolling = true,
   selectedIndex,
   setSelectedIndex,
+  disappearing = false,
 }: NewTabsProps) {
   const cantSwitchTabs = tabs.filter((t) => !t.hidden).length <= 1;
 
@@ -31,14 +34,19 @@ export function NewTabs({
       <Tab.List
         className={clsx("tab__buttons-container", {
           "overflow-x-auto": scrolling,
-          invisible: cantSwitchTabs,
+          invisible: cantSwitchTabs && !disappearing,
+          hidden: cantSwitchTabs && disappearing,
         })}
       >
         {tabs
           .filter((t) => !t.hidden)
           .map((tab) => {
             return (
-              <Tab key={tab.label} className="tab__button">
+              <Tab
+                key={tab.label}
+                className="tab__button"
+                data-testid={`tab-${tab.label}`}
+              >
                 {tab.label}
                 {typeof tab.number === "number" && tab.number !== 0 && (
                   <span className={clsx("tab__number")}>{tab.number}</span>

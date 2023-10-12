@@ -13,6 +13,7 @@ import type {
   TieredSkill,
 } from "~/features/mmr/tiered.server";
 import type { RecentMatchPlayer } from "../queries/findRecentMatchPlayersByUserId.server";
+import { TIERS } from "~/features/mmr/mmr-constants";
 
 export function divideGroups({
   groups,
@@ -165,6 +166,66 @@ export function censorGroups({
   };
 }
 
+export function sortGroupsBySkill({
+  groups,
+  userSkills,
+  intervals,
+}: {
+  groups: DividedGroups;
+  userSkills: Record<string, TieredSkill>;
+  intervals: SkillTierInterval[];
+}): DividedGroups {
+  const ownGroupTier =
+    groups.own.tier?.name ??
+    resolveGroupSkill({
+      group: groups.own as LookingGroupWithInviteCode,
+      userSkills,
+      intervals,
+    })?.name;
+  const ownGroupTierIndex = TIERS.findIndex((t) => t.name === ownGroupTier);
+
+  const tierDiff = (otherGroupTierName?: string) => {
+    if (!otherGroupTierName) return 10;
+
+    const otherGroupTierIndex = TIERS.findIndex(
+      (t) => t.name === otherGroupTierName,
+    );
+
+    return Math.abs(ownGroupTierIndex - otherGroupTierIndex);
+  };
+
+  return {
+    ...groups,
+    neutral: groups.neutral.sort((a, b) => {
+      const aTier =
+        a.tier?.name ??
+        resolveGroupSkill({
+          group: a as LookingGroupWithInviteCode,
+          userSkills,
+          intervals,
+        })?.name;
+      const bTier =
+        b.tier?.name ??
+        resolveGroupSkill({
+          group: b as LookingGroupWithInviteCode,
+          userSkills,
+          intervals,
+        })?.name;
+
+      const aTierDiff = tierDiff(aTier);
+      const bTierDiff = tierDiff(bTier);
+
+      // if same tier difference, show newer groups first
+      if (aTierDiff === bTierDiff) {
+        return b.createdAt - a.createdAt;
+      }
+
+      // show groups with smaller tier difference first
+      return aTierDiff - bTierDiff;
+    }),
+  };
+}
+
 export function addSkillsToGroups({
   groups,
   userSkills,
@@ -174,33 +235,16 @@ export function addSkillsToGroups({
   userSkills: Record<string, TieredSkill>;
   intervals: SkillTierInterval[];
 }): DividedGroupsUncensored {
-  const resolveGroupSkill = (
-    group: LookingGroupWithInviteCode,
-  ): TieredSkill["tier"] | undefined => {
-    if (group.members.length < FULL_GROUP_SIZE) return;
-
-    const skills = group.members
-      .map((m) => userSkills[String(m.id)])
-      .filter(Boolean);
-    const averageOrdinal =
-      skills.reduce((acc, s) => acc + s.ordinal, 0) / skills.length;
-
-    const tier = intervals.find(
-      (i) => i.neededOrdinal && averageOrdinal > i.neededOrdinal,
-    ) ?? { isPlus: false, name: "IRON" };
-
-    // For Leviathan we don't specify if it's plus or not
-    return tier.name === "LEVIATHAN"
-      ? { name: "LEVIATHAN", isPlus: false }
-      : tier;
-  };
   const addSkill = (group: LookingGroupWithInviteCode) => ({
     ...group,
     members: group.members?.map((m) => ({
       ...m,
       skill: userSkills[String(m.id)],
     })),
-    tier: resolveGroupSkill(group),
+    tier:
+      group.members.length === FULL_GROUP_SIZE
+        ? resolveGroupSkill({ group, userSkills, intervals })
+        : undefined,
   });
 
   return {
@@ -212,6 +256,31 @@ export function addSkillsToGroups({
 
 export function membersNeededForFull(currentSize: number) {
   return FULL_GROUP_SIZE - currentSize;
+}
+
+function resolveGroupSkill({
+  group,
+  userSkills,
+  intervals,
+}: {
+  group: LookingGroupWithInviteCode;
+  userSkills: Record<string, TieredSkill>;
+  intervals: SkillTierInterval[];
+}): TieredSkill["tier"] | undefined {
+  const skills = group.members
+    .map((m) => userSkills[String(m.id)])
+    .filter(Boolean);
+  const averageOrdinal =
+    skills.reduce((acc, s) => acc + s.ordinal, 0) / skills.length;
+
+  const tier = intervals.find(
+    (i) => i.neededOrdinal && averageOrdinal > i.neededOrdinal,
+  ) ?? { isPlus: false, name: "IRON" };
+
+  // For Leviathan we don't specify if it's plus or not
+  return tier.name === "LEVIATHAN"
+    ? { name: "LEVIATHAN", isPlus: false }
+    : { name: tier.name, isPlus: tier.isPlus };
 }
 
 export function groupExpiryStatus(

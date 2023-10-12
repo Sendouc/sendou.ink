@@ -23,6 +23,7 @@ const stm = sql.prepare(/* sql */ `
       "User"."languages",
       "PlusTier"."tier" as "plusTier",
       "GroupMember"."role",
+      "GroupMember"."note",
       json_group_array("UserWeapon"."weaponSplId") as "weapons"
     from
       "Group"
@@ -45,6 +46,7 @@ const stm = sql.prepare(/* sql */ `
     "q1"."id",
     "q1"."mapListPreference",
     "q1"."inviteCode",
+    "q1"."createdAt",
     json_group_array(
       json_object(
         'id', "q1"."userId",
@@ -55,6 +57,7 @@ const stm = sql.prepare(/* sql */ `
         'customUrl', "q1"."customUrl",
         'plusTier', "q1"."plusTier",
         'role', "q1"."role",
+        'note', "q1"."note",
         'weapons', "q1"."weapons",
         'vc', "q1"."vc",
         'languages', "q1"."languages"
@@ -62,7 +65,6 @@ const stm = sql.prepare(/* sql */ `
     ) as "members"
   from "q1"
   group by "q1"."id"
-  order by "q1"."createdAt" desc
 `);
 
 export function findLookingGroups({
@@ -81,6 +83,7 @@ export function findLookingGroups({
         id: row.id,
         mapListPreference: row.mapListPreference,
         inviteCode: row.inviteCode,
+        createdAt: row.createdAt,
         members: parseDBJsonArray(row.members).map((member: any) => {
           const weapons = parseDBArray(member.weapons);
 

@@ -1,6 +1,17 @@
+import { ordinal } from "openskill";
+import type { Rating } from "openskill/dist/types";
 import invariant from "tiny-invariant";
-import type { GroupMatch, Skill, User } from "~/db/types";
+import type {
+  Group,
+  GroupMatch,
+  Skill,
+  GroupSkillDifference,
+  User,
+  UserSkillDifference,
+} from "~/db/types";
+import { MATCHES_COUNT_NEEDED_FOR_LEADERBOARD } from "~/features/leaderboards/leaderboards-constants";
 import {
+  ordinalToSp,
   queryCurrentTeamRating,
   queryCurrentUserRating,
   rate,
@@ -8,35 +19,63 @@ import {
 } from "~/features/mmr";
 import { queryTeamPlayerRatingAverage } from "~/features/mmr/mmr-utils.server";
 import { currentOrPreviousSeason } from "~/features/mmr/season";
+import { roundToNDecimalPlaces } from "~/utils/number";
+
+export type MementoSkillDifferences = {
+  users: Record<
+    User["id"],
+    {
+      skillDifference?: UserSkillDifference;
+    }
+  >;
+  groups: Record<
+    Group["id"],
+    {
+      skillDifference?: GroupSkillDifference;
+    }
+  >;
+};
 
 export function calculateMatchSkills({
   groupMatchId,
   winner,
   loser,
+  winnerGroupId,
+  loserGroupId,
 }: {
   groupMatchId: GroupMatch["id"];
   winner: User["id"][];
   loser: User["id"][];
+  winnerGroupId: Group["id"];
+  loserGroupId: Group["id"];
 }) {
-  const result: Array<
+  const newSkills: Array<
     Pick<
       Skill,
       "groupMatchId" | "identifier" | "mu" | "season" | "sigma" | "userId"
     >
   > = [];
+  const differences: MementoSkillDifferences = { users: {}, groups: {} };
 
   const season = currentOrPreviousSeason(new Date())?.nth;
   invariant(typeof season === "number", "No ranked season for skills");
 
   {
+    const oldWinnerRatings = winner.map((userId) =>
+      queryCurrentUserRating({ userId, season }),
+    );
+    const oldLoserRatings = loser.map((userId) =>
+      queryCurrentUserRating({ userId, season }),
+    );
+
     // individual skills
     const [winnerTeamNew, loserTeamNew] = rate([
-      winner.map((userId) => queryCurrentUserRating({ userId, season })),
-      loser.map((userId) => queryCurrentUserRating({ userId, season })),
+      oldWinnerRatings.map(({ rating }) => rating),
+      oldLoserRatings.map(({ rating }) => rating),
     ]);
 
     for (const [index, userId] of winner.entries()) {
-      result.push({
+      newSkills.push({
         groupMatchId: groupMatchId,
         identifier: null,
         mu: winnerTeamNew[index].mu,
@@ -44,10 +83,18 @@ export function calculateMatchSkills({
         sigma: winnerTeamNew[index].sigma,
         userId,
       });
+
+      differences.users[userId] = {
+        skillDifference: userSkillDifference({
+          oldRating: oldWinnerRatings[index].rating,
+          newRating: winnerTeamNew[index],
+          matchesCount: oldWinnerRatings[index].matchesCount,
+        }),
+      };
     }
 
     for (const [index, userId] of loser.entries()) {
-      result.push({
+      newSkills.push({
         groupMatchId: groupMatchId,
         identifier: null,
         mu: loserTeamNew[index].mu,
@@ -55,6 +102,14 @@ export function calculateMatchSkills({
         sigma: loserTeamNew[index].sigma,
         userId,
       });
+
+      differences.users[userId] = {
+        skillDifference: userSkillDifference({
+          oldRating: oldLoserRatings[index].rating,
+          newRating: loserTeamNew[index],
+          matchesCount: oldLoserRatings[index].matchesCount,
+        }),
+      };
     }
   }
 
@@ -62,11 +117,17 @@ export function calculateMatchSkills({
     // team skills
     const winnerTeamIdentifier = userIdsToIdentifier(winner);
     const loserTeamIdentifier = userIdsToIdentifier(loser);
-    const [[winnerTeamNew], [loserTeamNew]] = rate(
-      [
-        [queryCurrentTeamRating({ identifier: winnerTeamIdentifier, season })],
-        [queryCurrentTeamRating({ identifier: loserTeamIdentifier, season })],
-      ],
+
+    const oldWinnerGroupRating = queryCurrentTeamRating({
+      identifier: winnerTeamIdentifier,
+      season,
+    });
+    const oldLoserGroupRating = queryCurrentTeamRating({
+      identifier: loserTeamIdentifier,
+      season,
+    });
+    const [[winnerGroupNew], [loserGroupNew]] = rate(
+      [[oldWinnerGroupRating.rating], [oldLoserGroupRating.rating]],
       [
         [
           queryTeamPlayerRatingAverage({
@@ -83,23 +144,99 @@ export function calculateMatchSkills({
       ],
     );
 
-    result.push({
+    newSkills.push({
       groupMatchId: groupMatchId,
       identifier: winnerTeamIdentifier,
-      mu: winnerTeamNew.mu,
+      mu: winnerGroupNew.mu,
       season,
-      sigma: winnerTeamNew.sigma,
+      sigma: winnerGroupNew.sigma,
       userId: null,
     });
-    result.push({
+    newSkills.push({
       groupMatchId: groupMatchId,
       identifier: loserTeamIdentifier,
-      mu: loserTeamNew.mu,
+      mu: loserGroupNew.mu,
       season,
-      sigma: loserTeamNew.sigma,
+      sigma: loserGroupNew.sigma,
       userId: null,
     });
+
+    differences.groups[winnerGroupId] = {
+      skillDifference: groupSkillDifference({
+        oldRating: oldWinnerGroupRating.rating,
+        newRating: winnerGroupNew,
+        matchesCount: oldWinnerGroupRating.matchesCount,
+      }),
+    };
+    differences.groups[loserGroupId] = {
+      skillDifference: groupSkillDifference({
+        oldRating: oldLoserGroupRating.rating,
+        newRating: loserGroupNew,
+        matchesCount: oldLoserGroupRating.matchesCount,
+      }),
+    };
   }
 
-  return result;
+  return { newSkills, differences };
+}
+
+function userSkillDifference({
+  oldRating,
+  newRating,
+  matchesCount,
+}: {
+  oldRating: Rating;
+  newRating: Rating;
+  matchesCount: number;
+}): UserSkillDifference {
+  const calculated = matchesCount >= MATCHES_COUNT_NEEDED_FOR_LEADERBOARD;
+
+  if (calculated) {
+    return {
+      calculated,
+      spDiff: roundToNDecimalPlaces(
+        ordinalToSp(ordinal(newRating)) - ordinalToSp(ordinal(oldRating)),
+      ),
+    };
+  }
+
+  return {
+    calculated,
+    matchesCount: matchesCount + 1,
+    matchesCountNeeded: MATCHES_COUNT_NEEDED_FOR_LEADERBOARD,
+    newSp:
+      matchesCount + 1 === MATCHES_COUNT_NEEDED_FOR_LEADERBOARD
+        ? ordinalToSp(ordinal(newRating))
+        : undefined,
+  };
+}
+
+function groupSkillDifference({
+  oldRating,
+  newRating,
+  matchesCount,
+}: {
+  oldRating: Rating;
+  newRating: Rating;
+  matchesCount: number;
+}): GroupSkillDifference {
+  const calculated = matchesCount >= MATCHES_COUNT_NEEDED_FOR_LEADERBOARD;
+
+  if (calculated) {
+    return {
+      calculated,
+      newSp: ordinalToSp(ordinal(newRating)),
+      oldSp: ordinalToSp(ordinal(oldRating)),
+    };
+  }
+
+  return {
+    calculated,
+    matchesCount: matchesCount + 1,
+    matchesCountNeeded: MATCHES_COUNT_NEEDED_FOR_LEADERBOARD,
+    newSp:
+      matchesCount + 1 === MATCHES_COUNT_NEEDED_FOR_LEADERBOARD
+        ? ordinalToSp(ordinal(newRating))
+        : undefined,
+  };
 }

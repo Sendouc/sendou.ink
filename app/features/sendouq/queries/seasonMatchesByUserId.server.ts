@@ -35,7 +35,6 @@ const stm = sql.prepare(/* sql */ `
     from
       "q1"
     left join "GroupMatchMap" on "q1"."id" = "GroupMatchMap"."matchId"
-    where "GroupMatchMap"."winnerGroupId" is not null
     group by "q1"."id"
   ), "q3" as (
     select 
@@ -170,7 +169,6 @@ const pagesStm = sql.prepare(/* sql */ `
     left join "GroupMatchMap" on "GroupMatch"."id" = "GroupMatchMap"."matchId"
     where "GroupMember"."userId" = @userId
       and "GroupMatch"."createdAt" between @starts and @ends
-      and "GroupMatchMap"."winnerGroupId" is not null
     group by "GroupMatch"."id"
   )
   select

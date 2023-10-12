@@ -26,6 +26,8 @@ const reportResult = async (
   sidesWithMoreThanFourPlayers: ("first" | "last")[] = ["last"],
   winner: 1 | 2 = 1,
 ) => {
+  await page.getByTestId("tab-Report score").click();
+
   if (sidesWithMoreThanFourPlayers.includes("first")) {
     await page.getByTestId("player-checkbox-0").first().click();
     await page.getByTestId("player-checkbox-1").first().click();

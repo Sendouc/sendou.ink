@@ -37,8 +37,9 @@ import {
   filterOutGroupsWithIncompatibleMapListPreference,
   groupExpiryStatus,
   membersNeededForFull,
+  sortGroupsBySkill,
 } from "../core/groups.server";
-import { matchMapList } from "../core/match.server";
+import { createMatchMemento, matchMapList } from "../core/match.server";
 import { FULL_GROUP_SIZE } from "../q-constants";
 import { lookingSchema } from "../q-schemas.server";
 import { groupRedirectLocationByCurrentLocation } from "../q-utils";
@@ -70,6 +71,8 @@ import { currentOrPreviousSeason } from "~/features/mmr/season";
 import { Chat, useChat } from "~/components/Chat";
 import { NewTabs } from "~/components/NewTabs";
 import { useWindowSize } from "~/hooks/useWindowSize";
+import { updateNote } from "../queries/updateNote.server";
+import { GroupLeaver } from "../components/GroupLeaver";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -224,6 +227,7 @@ export const action: ActionFunction = async ({ request }) => {
           ourMapPool: new MapPool(mapPoolByGroupId(ourGroup.id)),
           theirMapPool: new MapPool(mapPoolByGroupId(theirGroup.id)),
         }),
+        memento: await createMatchMemento(ourGroup, theirGroup),
       });
 
       throw redirect(sendouQMatchPage(createdMatch.id));
@@ -266,7 +270,30 @@ export const action: ActionFunction = async ({ request }) => {
 
       throw redirect(SENDOUQ_PAGE);
     }
+    case "KICK_FROM_GROUP": {
+      validateIsGroupOwner();
+      validate(data.userId !== user.id, "Can't kick yourself");
+
+      leaveGroup({
+        groupId: currentGroup.id,
+        userId: data.userId,
+        newOwnerId: null,
+        wasOwner: false,
+      });
+
+      break;
+    }
     case "REFRESH_GROUP": {
+      refreshGroup(currentGroup.id);
+
+      break;
+    }
+    case "UPDATE_NOTE": {
+      updateNote({
+        note: data.value,
+        groupId: currentGroup.id,
+        userId: user.id,
+      });
       refreshGroup(currentGroup.id);
 
       break;
@@ -311,9 +338,13 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   const season = currentOrPreviousSeason(new Date());
 
+  const { intervals, userSkills: calculatedUserSkills } = await userSkills(
+    season!.nth,
+  );
   const groupsWithSkills = addSkillsToGroups({
     groups: dividedGroups,
-    ...(await userSkills(season!.nth)),
+    intervals,
+    userSkills: calculatedUserSkills,
   });
 
   const compatibleGroups = groupIsFull
@@ -334,12 +365,18 @@ export const loader = async ({ request }: LoaderArgs) => {
     showInviteCode: hasGroupManagerPerms(currentGroup.role) && !groupIsFull,
   });
 
-  return {
+  const sortedGroups = sortGroupsBySkill({
     groups: censoredGroups,
+    intervals,
+    userSkills: calculatedUserSkills,
+  });
+
+  return {
+    groups: sortedGroups,
     role: currentGroup.role,
     chatCode:
       // don't chat with yourself...
-      censoredGroups.own.members!.length > 1 ? currentGroup.chatCode : null,
+      sortedGroups.own.members!.length > 1 ? currentGroup.chatCode : null,
     lastUpdated: new Date().getTime(),
     expiryStatus: groupExpiryStatus(currentGroup),
     trustedPlayers: hasGroupManagerPerms(currentGroup.role)
@@ -491,18 +528,16 @@ function Groups() {
 
   const ownGroupElement = (
     <div className="stack md">
-      <GroupCard
-        group={data.groups.own}
-        mapListPreference={data.groups.own.mapListPreference}
-        ownRole={data.role}
-        ownGroup
-      />
+      <GroupCard group={data.groups.own} ownRole={data.role} ownGroup />
       {ownGroup.inviteCode ? (
         <MemberAdder
           inviteCode={ownGroup.inviteCode}
           trustedPlayers={data.trustedPlayers}
         />
       ) : null}
+      <GroupLeaver
+        type={ownGroup.members.length === 1 ? "LEAVE_Q" : "LEAVE_GROUP"}
+      />
     </div>
   );
 
@@ -570,18 +605,11 @@ function Groups() {
               element: (
                 <div className="stack sm">
                   {data.groups.neutral.map((group) => {
-                    const { mapListPreference } = groupAfterMorph({
-                      liker: "US",
-                      ourGroup: data.groups.own,
-                      theirGroup: group,
-                    });
-
                     return (
                       <GroupCard
                         key={group.id}
                         group={group}
                         action={group.isLiked ? "UNLIKE" : "LIKE"}
-                        mapListPreference={mapListPreference}
                         ownRole={data.role}
                         isExpired={data.expiryStatus === "EXPIRED"}
                       />
@@ -596,18 +624,11 @@ function Groups() {
               element: (
                 <div className="stack sm">
                   {data.groups.likesReceived.map((group) => {
-                    const { mapListPreference } = groupAfterMorph({
-                      liker: "THEM",
-                      ourGroup: data.groups.own,
-                      theirGroup: group,
-                    });
-
                     return (
                       <GroupCard
                         key={group.id}
                         group={group}
                         action={isFullGroup ? "MATCH_UP" : "GROUP_UP"}
-                        mapListPreference={mapListPreference}
                         ownRole={data.role}
                         isExpired={data.expiryStatus === "EXPIRED"}
                       />
@@ -632,18 +653,11 @@ function Groups() {
       {!isMobile ? (
         <div className="stack sm q__groups-container__right">
           {data.groups.likesReceived.map((group) => {
-            const { mapListPreference } = groupAfterMorph({
-              liker: "THEM",
-              ourGroup: data.groups.own,
-              theirGroup: group,
-            });
-
             return (
               <GroupCard
                 key={group.id}
                 group={group}
                 action={isFullGroup ? "MATCH_UP" : "GROUP_UP"}
-                mapListPreference={mapListPreference}
                 ownRole={data.role}
                 isExpired={data.expiryStatus === "EXPIRED"}
               />
