@@ -32,6 +32,7 @@ export function GroupCard({
   hideVc = false,
   hideWeapons = false,
   hideNote: _hidenote = false,
+  enableKicking,
 }: {
   group: Omit<LookingGroup, "createdAt">;
   action?: "LIKE" | "UNLIKE" | "GROUP_UP" | "MATCH_UP";
@@ -42,6 +43,7 @@ export function GroupCard({
   hideVc?: boolean;
   hideWeapons?: boolean;
   hideNote?: boolean;
+  enableKicking?: boolean;
 }) {
   const fetcher = useFetcher();
 
@@ -70,6 +72,7 @@ export function GroupCard({
               hideVc={hideVc}
               hideWeapons={hideWeapons}
               hideNote={hideNote}
+              enableKicking={enableKicking}
             />
           );
         })}
@@ -141,6 +144,7 @@ function GroupMember({
   hideVc,
   hideWeapons,
   hideNote,
+  enableKicking,
 }: {
   member: NonNullable<LookingGroup["members"]>[number];
   showActions: boolean;
@@ -148,6 +152,7 @@ function GroupMember({
   hideVc?: boolean;
   hideWeapons?: boolean;
   hideNote?: boolean;
+  enableKicking?: boolean;
 }) {
   const user = useUser();
 
@@ -173,7 +178,11 @@ function GroupMember({
         </Link>
         <div className="ml-auto stack horizontal sm items-center">
           {showActions || displayOnly ? (
-            <MemberRoleManager member={member} displayOnly={displayOnly} />
+            <MemberRoleManager
+              member={member}
+              displayOnly={displayOnly}
+              enableKicking={enableKicking}
+            />
           ) : null}
           {member.skill ? <TierInfo skill={member.skill} /> : null}
         </div>
@@ -379,10 +388,13 @@ function MemberSkillDifference({
 function MemberRoleManager({
   member,
   displayOnly,
+  enableKicking,
 }: {
   member: NonNullable<LookingGroup["members"]>[number];
   displayOnly?: boolean;
+  enableKicking?: boolean;
 }) {
+  const loggedInUser = useUser();
   const fetcher = useFetcher();
   const { t } = useTranslation(["q"]);
   const Icon = member.role === "OWNER" ? StarFilledIcon : StarIcon;
@@ -399,14 +411,18 @@ function MemberRoleManager({
         />
       }
     >
-      <div className="stack md items-center">
+      <div className="stack sm items-center">
         <div>{t(`q:roles.${member.role}`)}</div>
         {member.role !== "OWNER" && !displayOnly ? (
-          <fetcher.Form method="post" action={SENDOUQ_LOOKING_PAGE}>
+          <fetcher.Form
+            method="post"
+            action={SENDOUQ_LOOKING_PAGE}
+            className="stack md items-center"
+          >
             <input type="hidden" name="userId" value={member.id} />
             {member.role === "REGULAR" ? (
               <SubmitButton
-                variant="minimal"
+                variant="outlined"
                 size="tiny"
                 _action="GIVE_MANAGER"
                 state={fetcher.state}
@@ -416,12 +432,22 @@ function MemberRoleManager({
             ) : null}
             {member.role === "MANAGER" ? (
               <SubmitButton
-                variant="minimal-destructive"
+                variant="destructive"
                 size="tiny"
                 _action="REMOVE_MANAGER"
                 state={fetcher.state}
               >
                 Remove manager
+              </SubmitButton>
+            ) : null}
+            {enableKicking && member.id !== loggedInUser?.id ? (
+              <SubmitButton
+                variant="destructive"
+                size="tiny"
+                _action="KICK_FROM_GROUP"
+                state={fetcher.state}
+              >
+                Kick
               </SubmitButton>
             ) : null}
           </fetcher.Form>

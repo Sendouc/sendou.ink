@@ -270,6 +270,19 @@ export const action: ActionFunction = async ({ request }) => {
 
       throw redirect(SENDOUQ_PAGE);
     }
+    case "KICK_FROM_GROUP": {
+      validateIsGroupOwner();
+      validate(data.userId !== user.id, "Can't kick yourself");
+
+      leaveGroup({
+        groupId: currentGroup.id,
+        userId: data.userId,
+        newOwnerId: null,
+        wasOwner: false,
+      });
+
+      break;
+    }
     case "REFRESH_GROUP": {
       refreshGroup(currentGroup.id);
 
