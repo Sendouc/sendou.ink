@@ -385,4 +385,4 @@ function Seed() {
   );
 }
 
-export const CatchBoundary = Catcher;
+export const ErrorBoundary = Catcher;
