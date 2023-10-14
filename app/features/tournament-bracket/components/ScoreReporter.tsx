@@ -30,7 +30,7 @@ import { useIsMounted } from "~/hooks/useIsMounted";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { NewTabs } from "~/components/NewTabs";
 import { ScoreReporterRosters } from "./ScoreReporterRosters";
-import { Chat, useChat } from "~/components/Chat";
+import { Chat, useChat } from "~/features/chat/components/Chat";
 import * as React from "react";
 
 export type Result = Unpacked<

@@ -1,9 +1,9 @@
 import { nanoid } from "nanoid";
 import invariant from "tiny-invariant";
-import type { ChatMessage } from "~/components/Chat";
 import { SKALOP_TOKEN_HEADER_NAME } from "~/constants";
+import type { ChatMessage } from "./chat-types";
 
-interface SQNotificationService {
+interface NotificationService {
   notify: (
     msg: Pick<ChatMessage, "type" | "context" | "room" | "revalidateOnly">,
   ) => undefined;
@@ -15,8 +15,7 @@ invariant(
 );
 invariant(process.env["SKALOP_TOKEN"], "Missing env var: SKALOP_TOKEN");
 
-// xxx: should be common Notification service
-export const notify: SQNotificationService["notify"] = (partialMsg) => {
+export const notify: NotificationService["notify"] = (partialMsg) => {
   const msg: ChatMessage = {
     id: nanoid(),
     timestamp: Date.now(),

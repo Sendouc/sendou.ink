@@ -1,21 +1,21 @@
-import { Avatar } from "./Avatar";
+import { Avatar } from "../../../components/Avatar";
 import * as React from "react";
-import { SubmitButton } from "./SubmitButton";
+import { SubmitButton } from "../../../components/SubmitButton";
 import type { User } from "~/db/types";
 import { useUser } from "~/modules/auth";
 import { nanoid } from "nanoid";
 import clsx from "clsx";
-import { Button } from "./Button";
+import { Button } from "../../../components/Button";
 import ReconnectingWebSocket from "reconnecting-websocket";
 import invariant from "tiny-invariant";
 import { useRootLoaderData } from "~/hooks/useRootLoaderData";
 import { useRevalidator } from "@remix-run/react";
+import type { ChatMessage } from "../chat-types";
+import { MESSAGE_MAX_LENGTH } from "../chat-constants";
 
 type ChatUser = Pick<User, "discordName" | "discordId" | "discordAvatar"> & {
   chatNameColor: string | null;
 };
-
-const MESSAGE_MAX_LENGTH = 200;
 
 export interface ChatProps {
   users: Record<number, ChatUser>;
@@ -271,31 +271,6 @@ function SystemMessage({
       </div>
     </li>
   );
-}
-
-export type SystemMessageType =
-  | "USER_JOINED"
-  | "USER_LEFT"
-  | "MATCH_STARTED"
-  | "LIKE_RECEIVED"
-  | "SCORE_REPORTED"
-  | "SCORE_CONFIRMED"
-  | "CANCEL_REPORTED"
-  | "CANCEL_CONFIRMED";
-
-export type SystemMessageContext = {
-  name: string;
-};
-export interface ChatMessage {
-  id: string;
-  type?: SystemMessageType;
-  contents?: string;
-  context?: SystemMessageContext;
-  revalidateOnly?: boolean;
-  userId?: number;
-  timestamp: number;
-  room: string;
-  pending?: boolean;
 }
 
 export function useChat({

@@ -13,8 +13,7 @@ import { Flipped, Flipper } from "react-flip-toolkit";
 import invariant from "tiny-invariant";
 import { Avatar } from "~/components/Avatar";
 import { Button } from "~/components/Button";
-import type { ChatMessage } from "~/components/Chat";
-import { ConnectedChat, type ChatProps } from "~/components/Chat";
+import { ConnectedChat, type ChatProps } from "~/features/chat/components/Chat";
 import { WeaponCombobox } from "~/components/Combobox";
 import { Divider } from "~/components/Divider";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
@@ -82,7 +81,8 @@ import { groupForMatch } from "../queries/groupForMatch.server";
 import { reportScore } from "../queries/reportScore.server";
 import { reportedWeaponsByMatchId } from "../queries/reportedWeaponsByMatchId.server";
 import { setGroupAsInactive } from "../queries/setGroupAsInactive.server";
-import * as SQNotificationService from "../SQNotificationService.server";
+import * as NotificationService from "~/features/chat/NotificationService.server";
+import type { ChatMessage } from "~/features/chat/chat-types";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -235,7 +235,7 @@ export const action = async ({ request, params }: ActionArgs) => {
           return matchIsBeingCanceled ? "CANCEL_REPORTED" : "SCORE_REPORTED";
         };
 
-        SQNotificationService.notify({
+        NotificationService.notify({
           room: match.chatCode,
           type: type(),
           context: {

@@ -68,12 +68,12 @@ import { useAutoRefresh } from "~/hooks/useAutoRefresh";
 import { groupHasMatch } from "../queries/groupHasMatch.server";
 import { findRecentMatchPlayersByUserId } from "../queries/findRecentMatchPlayersByUserId.server";
 import { currentOrPreviousSeason } from "~/features/mmr/season";
-import { Chat, useChat } from "~/components/Chat";
+import { Chat, useChat } from "~/features/chat/components/Chat";
 import { NewTabs } from "~/components/NewTabs";
 import { useWindowSize } from "~/hooks/useWindowSize";
 import { updateNote } from "../queries/updateNote.server";
 import { GroupLeaver } from "../components/GroupLeaver";
-import * as SQNotificationService from "../SQNotificationService.server";
+import * as NotificationService from "~/features/chat/NotificationService.server";
 import { chatCodeByGroupId } from "../queries/chatCodeByGroupId.server";
 
 export const handle: SendouRouteHandle = {
@@ -123,7 +123,7 @@ export const action: ActionFunction = async ({ request }) => {
 
       const targetChatCode = chatCodeByGroupId(data.targetGroupId);
       if (targetChatCode) {
-        SQNotificationService.notify({
+        NotificationService.notify({
           room: targetChatCode,
           type: "LIKE_RECEIVED",
           revalidateOnly: true,
@@ -243,7 +243,7 @@ export const action: ActionFunction = async ({ request }) => {
 
       const targetChatCode = chatCodeByGroupId(theirGroup.id);
       if (targetChatCode) {
-        SQNotificationService.notify({
+        NotificationService.notify({
           room: targetChatCode,
           type: "MATCH_STARTED",
           revalidateOnly: true,
