@@ -1,5 +1,5 @@
 export type SystemMessageType =
-  | "USER_JOINED"
+  | "NEW_GROUP"
   | "USER_LEFT"
   | "MATCH_STARTED"
   | "LIKE_RECEIVED"

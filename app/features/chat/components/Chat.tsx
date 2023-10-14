@@ -31,26 +31,26 @@ export interface ChatProps {
 }
 
 const systemMessageText = (msg: ChatMessage) => {
+  const name = () => {
+    if (!msg.context) return "";
+    return msg.context.name;
+  };
+
   switch (msg.type) {
     case "SCORE_REPORTED": {
-      return `${msg.context!.name} reported score`;
+      return `${name()} reported score`;
     }
     case "SCORE_CONFIRMED": {
-      return `${msg.context!.name} confirmed score. Match is now locked`;
+      return `${name()} confirmed score. Match is now locked`;
     }
     case "CANCEL_REPORTED": {
-      return `${msg.context!.name} requested canceling the match`;
+      return `${name()} requested canceling the match`;
     }
     case "CANCEL_CONFIRMED": {
-      return `${
-        msg.context!.name
-      } confirmed canceling the match. Match is now locked`;
-    }
-    case "USER_JOINED": {
-      return `${msg.context!.name} joined the group`;
+      return `${name()} confirmed canceling the match. Match is now locked`;
     }
     case "USER_LEFT": {
-      return `${msg.context!.name} left the group`;
+      return `${name()} left the group`;
     }
     default: {
       return null;
@@ -338,7 +338,7 @@ export function useChat({
       if (isInitialLoad) {
         setMessages(messageArr);
       } else {
-        onNewMessage?.(message);
+        if (!isSystemMessage) onNewMessage?.(message);
         setMessages((messages) => [...messages, ...messageArr]);
       }
     };
