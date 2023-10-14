@@ -31,6 +31,7 @@ import { makeTitle } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
 import { impersonateUrl, SEED_URL, STOP_IMPERSONATING_URL } from "~/utils/urls";
 import { _action, actualNumber } from "~/utils/zod";
+import * as AdminService from "~/features/admin/AdminService.server";
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: makeTitle("Admin page") }];
@@ -44,6 +45,9 @@ const adminActionSchema = z.union([
   }),
   z.object({
     _action: _action("REFRESH"),
+  }),
+  z.object({
+    _action: _action("CLEAN_UP"),
   }),
   z.object({
     _action: _action("FORCE_PATRON"),
@@ -98,6 +102,12 @@ export const action: ActionFunction = async ({ request }) => {
         patronTier: data.patronTier,
         patronTill: dateToDatabaseTimestamp(new Date(data.patronTill)),
       });
+      break;
+    }
+    case "CLEAN_UP": {
+      validate(isAdmin(user), "Admin needed", 401);
+
+      AdminService.cleanUp();
       break;
     }
     case "ARTIST": {
@@ -165,6 +175,7 @@ export default function AdminPage() {
       {isAdmin(user) ? <MigrateUser /> : null}
       {isAdmin(user) ? <ForcePatron /> : null}
       {isAdmin(user) ? <RefreshPlusTiers /> : null}
+      {isAdmin(user) ? <CleanUp /> : null}
 
       {process.env.NODE_ENV !== "production" && <Seed />}
     </Main>
@@ -365,6 +376,19 @@ function RefreshPlusTiers() {
       <h2>Refresh Plus Tiers</h2>
       <SubmitButton type="submit" _action="REFRESH" state={fetcher.state}>
         Refresh
+      </SubmitButton>
+    </fetcher.Form>
+  );
+}
+
+function CleanUp() {
+  const fetcher = useFetcher();
+
+  return (
+    <fetcher.Form method="post">
+      <h2>DB Clean up</h2>
+      <SubmitButton type="submit" _action="CLEAN_UP" state={fetcher.state}>
+        Clean up
       </SubmitButton>
     </fetcher.Form>
   );
