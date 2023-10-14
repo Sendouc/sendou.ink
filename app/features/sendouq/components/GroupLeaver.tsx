@@ -19,11 +19,7 @@ export function GroupLeaver({
         deleteButtonText="Leave"
         action={SENDOUQ_LOOKING_PAGE}
       >
-        <Button
-          variant="minimal-destructive"
-          size="tiny"
-          className="self-start"
-        >
+        <Button variant="minimal-destructive" size="tiny">
           Leave group
         </Button>
       </FormWithConfirm>
