@@ -13,6 +13,7 @@ import { Flipped, Flipper } from "react-flip-toolkit";
 import invariant from "tiny-invariant";
 import { Avatar } from "~/components/Avatar";
 import { Button } from "~/components/Button";
+import type { ChatMessage } from "~/components/Chat";
 import { ConnectedChat, type ChatProps } from "~/components/Chat";
 import { WeaponCombobox } from "~/components/Combobox";
 import { Divider } from "~/components/Divider";
@@ -31,7 +32,7 @@ import { resolveRoomPass } from "~/features/tournament-bracket/tournament-bracke
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
-import { getUserId, requireUserId } from "~/modules/auth/user.server";
+import { getUserId, requireUser } from "~/modules/auth/user.server";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { isMod } from "~/permissions";
 import { cache } from "~/utils/cache.server";
@@ -81,6 +82,7 @@ import { groupForMatch } from "../queries/groupForMatch.server";
 import { reportScore } from "../queries/reportScore.server";
 import { reportedWeaponsByMatchId } from "../queries/reportedWeaponsByMatchId.server";
 import { setGroupAsInactive } from "../queries/setGroupAsInactive.server";
+import * as SQNotificationService from "../SQNotificationService.server";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -97,7 +99,7 @@ export const handle: SendouRouteHandle = {
 
 export const action = async ({ request, params }: ActionArgs) => {
   const matchId = matchIdFromParams(params);
-  const user = await requireUserId(request);
+  const user = await requireUser(request);
   const data = await parseRequestFormData({
     request,
     schema: matchSchema,
@@ -220,6 +222,26 @@ export const action = async ({ request, params }: ActionArgs) => {
             ? ("cant-cancel" as const)
             : ("different" as const),
         };
+      }
+
+      if (match.chatCode) {
+        const type = (): NonNullable<ChatMessage["type"]> => {
+          if (compared === "SAME") {
+            return matchIsBeingCanceled
+              ? "CANCEL_CONFIRMED"
+              : "SCORE_CONFIRMED";
+          }
+
+          return matchIsBeingCanceled ? "CANCEL_REPORTED" : "SCORE_REPORTED";
+        };
+
+        SQNotificationService.notify({
+          room: match.chatCode,
+          type: type(),
+          context: {
+            name: user.discordName,
+          },
+        });
       }
 
       break;

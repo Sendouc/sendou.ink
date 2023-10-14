@@ -73,6 +73,8 @@ import { NewTabs } from "~/components/NewTabs";
 import { useWindowSize } from "~/hooks/useWindowSize";
 import { updateNote } from "../queries/updateNote.server";
 import { GroupLeaver } from "../components/GroupLeaver";
+import * as SQNotificationService from "../SQNotificationService.server";
+import { chatCodeByGroupId } from "../queries/chatCodeByGroupId.server";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -118,6 +120,15 @@ export const action: ActionFunction = async ({ request }) => {
         targetGroupId: data.targetGroupId,
       });
       refreshGroup(currentGroup.id);
+
+      const targetChatCode = chatCodeByGroupId(data.targetGroupId);
+      if (targetChatCode) {
+        SQNotificationService.notify({
+          room: targetChatCode,
+          type: "LIKE_RECEIVED",
+          revalidateOnly: true,
+        });
+      }
 
       break;
     }
@@ -229,6 +240,15 @@ export const action: ActionFunction = async ({ request }) => {
         }),
         memento: await createMatchMemento(ourGroup, theirGroup),
       });
+
+      const targetChatCode = chatCodeByGroupId(theirGroup.id);
+      if (targetChatCode) {
+        SQNotificationService.notify({
+          room: targetChatCode,
+          type: "MATCH_STARTED",
+          revalidateOnly: true,
+        });
+      }
 
       throw redirect(sendouQMatchPage(createdMatch.id));
     }

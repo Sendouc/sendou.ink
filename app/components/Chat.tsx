@@ -9,6 +9,7 @@ import { Button } from "./Button";
 import ReconnectingWebSocket from "reconnecting-websocket";
 import invariant from "tiny-invariant";
 import { useRootLoaderData } from "~/hooks/useRootLoaderData";
+import { useRevalidator } from "@remix-run/react";
 
 type ChatUser = Pick<User, "discordName" | "discordId" | "discordAvatar"> & {
   chatNameColor: string | null;
@@ -28,6 +29,34 @@ export interface ChatProps {
   disabled?: boolean;
   missingUserName?: string;
 }
+
+const systemMessageText = (msg: ChatMessage) => {
+  switch (msg.type) {
+    case "SCORE_REPORTED": {
+      return `${msg.context!.name} reported score`;
+    }
+    case "SCORE_CONFIRMED": {
+      return `${msg.context!.name} confirmed score. Match is now locked`;
+    }
+    case "CANCEL_REPORTED": {
+      return `${msg.context!.name} requested canceling the match`;
+    }
+    case "CANCEL_CONFIRMED": {
+      return `${
+        msg.context!.name
+      } confirmed canceling the match. Match is now locked`;
+    }
+    case "USER_JOINED": {
+      return `${msg.context!.name} joined the group`;
+    }
+    case "USER_LEFT": {
+      return `${msg.context!.name} left the group`;
+    }
+    default: {
+      return null;
+    }
+  }
+};
 
 export function ConnectedChat(props: ChatProps) {
   const chat = useChat(props);
@@ -121,6 +150,17 @@ export function Chat({
           ref={messagesContainerRef}
         >
           {messages.map((msg) => {
+            const systemMessage = systemMessageText(msg);
+            if (systemMessage) {
+              return (
+                <SystemMessage
+                  key={msg.id}
+                  message={msg}
+                  text={systemMessage}
+                />
+              );
+            }
+
             const user = msg.userId ? users[msg.userId] : null;
             if (!user && !missingUserName) return null;
 
@@ -210,12 +250,48 @@ function Message({
   );
 }
 
-// export type SystemMessageType = "MANAGER_ADDED" | "MANAGER_REMOVED";
+function SystemMessage({
+  message,
+  text,
+}: {
+  message: ChatMessage;
+  text: string;
+}) {
+  return (
+    <li className="chat__message">
+      <div>
+        <div className="stack horizontal sm">
+          <time className="chat__message__time">
+            {new Date(message.timestamp).toLocaleTimeString()}
+          </time>
+        </div>
+        <div className="chat__message__contents text-xs text-lighter font-semi-bold">
+          {text}
+        </div>
+      </div>
+    </li>
+  );
+}
+
+export type SystemMessageType =
+  | "USER_JOINED"
+  | "USER_LEFT"
+  | "MATCH_STARTED"
+  | "LIKE_RECEIVED"
+  | "SCORE_REPORTED"
+  | "SCORE_CONFIRMED"
+  | "CANCEL_REPORTED"
+  | "CANCEL_CONFIRMED";
+
+export type SystemMessageContext = {
+  name: string;
+};
 export interface ChatMessage {
   id: string;
-  // type?: SystemMessageType;
+  type?: SystemMessageType;
   contents?: string;
-  // context?: any;
+  context?: SystemMessageContext;
+  revalidateOnly?: boolean;
   userId?: number;
   timestamp: number;
   room: string;
@@ -229,6 +305,7 @@ export function useChat({
   rooms: ChatProps["rooms"];
   onNewMessage?: (message: ChatMessage) => void;
 }) {
+  const { revalidate } = useRevalidator();
   const rootLoaderData = useRootLoaderData();
   const user = useUser();
 
@@ -260,7 +337,19 @@ export function useChat({
 
     ws.current.onmessage = (e) => {
       const message = JSON.parse(e.data);
-      const messageArr = Array.isArray(message) ? message : [message];
+      const messageArr = (
+        Array.isArray(message) ? message : [message]
+      ) as ChatMessage[];
+
+      // something interesting happened
+      // -> let's run data loaders so they can see it sooner
+      const isSystemMessage = Boolean(messageArr[0].type);
+      if (isSystemMessage) {
+        revalidate();
+      }
+      if (messageArr[0].revalidateOnly) {
+        return;
+      }
 
       const isInitialLoad = Array.isArray(message);
 
@@ -284,7 +373,7 @@ export function useChat({
       wsCurrent?.close();
       setMessages([]);
     };
-  }, [rooms, onNewMessage, rootLoaderData.skalopUrl]);
+  }, [rooms, onNewMessage, rootLoaderData.skalopUrl, revalidate]);
 
   React.useEffect(() => {
     // ping every minute to keep connection alive
