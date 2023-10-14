@@ -34,7 +34,6 @@ import { Popover } from "~/components/Popover";
 import type { TournamentMaplistSource } from "~/modules/tournament-map-list-generator";
 import type { FindTeamsByTournamentIdItem } from "../queries/findTeamsByTournamentId.server";
 import hasTournamentStarted from "../queries/hasTournamentStarted.server";
-import invariant from "tiny-invariant";
 
 export const loader = ({ params }: LoaderArgs) => {
   const tournamentId = tournamentIdFromParams(params);
@@ -43,11 +42,9 @@ export const loader = ({ params }: LoaderArgs) => {
   const manager = getTournamentManager("SQL");
 
   const bracket = manager.get.tournamentData(tournamentId);
-  invariant(
-    bracket.stage.length === 1,
-    "Bracket doesn't have exactly one stage",
-  );
   const stage = bracket.stage[0];
+
+  // TODO: handle placement when multiple stages
 
   const _everyMatchIsOver = everyMatchIsOver(bracket);
   const standing = _everyMatchIsOver
