@@ -59,11 +59,11 @@ export default function TiersPage() {
         {USER_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN} players on the leaderboard
         (or {TEAM_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN} for teams)
       </p>
-      <p>
+      <div>
         Each rank also has a plus tier (see BRONZE+ as an example below). This
         means that you are in the top 50% of that rank.
         <TierImage tier={{ isPlus: true, name: "BRONZE" }} width={32} />
-      </p>
+      </div>
     </Main>
   );
 }
