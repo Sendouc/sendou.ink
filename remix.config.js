@@ -110,6 +110,8 @@ module.exports = {
       route("/weapon-usage", "features/sendouq/routes/weapon-usage.tsx");
 
       route("/tiers", "features/sendouq/routes/tiers.tsx");
+
+      route("/settings", "features/settings/routes/settings.tsx");
     });
   },
   serverModuleFormat: "cjs",

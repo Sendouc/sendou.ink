@@ -7,3 +7,14 @@ export function messageTypeToSound(type: ChatMessage["type"]) {
 
   return null;
 }
+
+export function soundCodeToLocalStorageKey(soundCode: string) {
+  return `settings__sound-enabled__${soundCode}`;
+}
+
+export function soundEnabled(soundCode: string) {
+  const localStorageKey = soundCodeToLocalStorageKey(soundCode);
+  const soundEnabled = localStorage.getItem(localStorageKey);
+
+  return !soundEnabled || soundEnabled === "true";
+}

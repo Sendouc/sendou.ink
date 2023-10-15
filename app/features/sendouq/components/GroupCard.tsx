@@ -34,7 +34,7 @@ export function GroupCard({
   hideNote: _hidenote = false,
   enableKicking,
 }: {
-  group: Omit<LookingGroup, "createdAt">;
+  group: Omit<LookingGroup, "createdAt" | "chatCode">;
   action?: "LIKE" | "UNLIKE" | "GROUP_UP" | "MATCH_UP";
   ownRole?: GroupMemberType["role"];
   ownGroup?: boolean;

@@ -12,7 +12,7 @@ import { useRootLoaderData } from "~/hooks/useRootLoaderData";
 import { useRevalidator } from "@remix-run/react";
 import type { ChatMessage } from "../chat-types";
 import { MESSAGE_MAX_LENGTH } from "../chat-constants";
-import { messageTypeToSound } from "../chat-utils";
+import { messageTypeToSound, soundEnabled } from "../chat-utils";
 import { soundPath } from "~/utils/urls";
 
 type ChatUser = Pick<User, "discordName" | "discordId" | "discordAvatar"> & {
@@ -326,7 +326,7 @@ export function useChat({
       }
 
       const sound = messageTypeToSound(messageArr[0].type);
-      if (sound) {
+      if (sound && soundEnabled(sound)) {
         void new Audio(soundPath(sound)).play();
       }
 
