@@ -35,5 +35,5 @@ export const notify: NotificationService["notify"] = (partialMsg) => {
     method: "POST",
     body: JSON.stringify(fullMessages),
     headers: [[SKALOP_TOKEN_HEADER_NAME, process.env["SKALOP_TOKEN"]!]],
-  });
+  }).catch(console.error);
 };
