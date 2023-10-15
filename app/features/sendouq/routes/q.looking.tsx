@@ -435,7 +435,6 @@ export const loader = async ({ request }: LoaderArgs) => {
   };
 };
 
-// xxx: sound effects when things happen
 export default function QLookingPage() {
   const data = useLoaderData<typeof loader>();
   const [searchParams] = useSearchParams();

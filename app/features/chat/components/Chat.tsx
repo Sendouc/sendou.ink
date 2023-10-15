@@ -12,6 +12,8 @@ import { useRootLoaderData } from "~/hooks/useRootLoaderData";
 import { useRevalidator } from "@remix-run/react";
 import type { ChatMessage } from "../chat-types";
 import { MESSAGE_MAX_LENGTH } from "../chat-constants";
+import { messageTypeToSound } from "../chat-utils";
+import { soundPath } from "~/utils/urls";
 
 type ChatUser = Pick<User, "discordName" | "discordId" | "discordAvatar"> & {
   chatNameColor: string | null;
@@ -322,6 +324,12 @@ export function useChat({
       if (isSystemMessage) {
         revalidate();
       }
+
+      const sound = messageTypeToSound(messageArr[0].type);
+      if (sound) {
+        void new Audio(soundPath(sound)).play();
+      }
+
       if (messageArr[0].revalidateOnly) {
         return;
       }
