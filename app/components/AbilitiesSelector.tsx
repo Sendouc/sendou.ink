@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React from "react";
+import * as React from "react";
 import invariant from "tiny-invariant";
 import { abilities } from "~/modules/in-game-lists";
 import type { BuildAbilitiesTupleWithUnknown } from "~/modules/in-game-lists/types";
@@ -16,6 +16,8 @@ export function AbilitiesSelector({
   selectedAbilities,
   onChange,
 }: AbilitiesSelectorProps) {
+  const [, startTransition] = React.useTransition();
+
   const onSlotClick = ({
     rowI,
     abilityI,
@@ -39,7 +41,9 @@ export function AbilitiesSelector({
     onChange(abilitiesClone);
   };
   const onButtonClick = (ability: (typeof abilities)[number]) => {
-    onChange(addAbility({ oldAbilities: selectedAbilities, ability }));
+    startTransition(() => {
+      onChange(addAbility({ oldAbilities: selectedAbilities, ability }));
+    });
   };
 
   const [draggingAbility, setDraggingAbility] = React.useState<
