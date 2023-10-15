@@ -239,8 +239,18 @@ function DamageReceiversGrid({
   useSetTitle(t("common:pages.object-damage-calculator"));
   return (
     <div>
-      <div className="object-damage__grid" style={{ gridTemplateColumns: gridTemplateColumnsValue(damagesToReceivers[0]?.damages.length ?? 0)}}>
-        <div className="object-damage__table-header" style={{ zIndex: "1", justifyContent:"center" }}>
+      <div
+        className="object-damage__grid"
+        style={{
+          gridTemplateColumns: gridTemplateColumnsValue(
+            damagesToReceivers[0]?.damages.length ?? 0,
+          ),
+        }}
+      >
+        <div
+          className="object-damage__table-header"
+          style={{ zIndex: "1", justifyContent: "center" }}
+        >
           <div>
             <Label htmlFor="ap">
               {t("analyzer:labels.amountOf")}
@@ -341,9 +351,9 @@ function DamageReceiversGrid({
                         {t("analyzer:damageShort")}
                       </abbr>
                       <div
-                        data-testid={`dmg${damage.objectShredder ? "-os" : ""}-${
-                          damageToReceiver.receiver
-                        }`}
+                        data-testid={`dmg${
+                          damage.objectShredder ? "-os" : ""
+                        }-${damageToReceiver.receiver}`}
                       >
                         {damage.value}
                       </div>
@@ -354,9 +364,9 @@ function DamageReceiversGrid({
                         {t("analyzer:hitsToDestroyShort")}
                       </abbr>
                       <div
-                        data-testid={`htd${damage.objectShredder ? "-os" : ""}-${
-                          damageToReceiver.receiver
-                        }`}
+                        data-testid={`htd${
+                          damage.objectShredder ? "-os" : ""
+                        }-${damageToReceiver.receiver}`}
                       >
                         {damage.hitsToDestroy}
                       </div>
