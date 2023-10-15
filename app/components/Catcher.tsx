@@ -1,4 +1,4 @@
-import { useCatch } from "@remix-run/react";
+import { isRouteErrorResponse, useRouteError } from "@remix-run/react";
 import { Button } from "~/components/Button";
 import { useUser } from "~/modules/auth";
 import {
@@ -10,10 +10,10 @@ import { Image } from "./Image";
 import { Main } from "./Main";
 
 export function Catcher() {
-  const caught = useCatch();
+  const error = useRouteError();
   const user = useUser();
 
-  if (!caught)
+  if (!isRouteErrorResponse(error))
     return (
       <Main>
         <Image
@@ -32,7 +32,7 @@ export function Catcher() {
       </Main>
     );
 
-  switch (caught.status) {
+  switch (error.status) {
     case 401:
       return (
         <Main>
@@ -54,21 +54,21 @@ export function Catcher() {
     case 404:
       return (
         <Main>
-          <h2>Error {caught.status} - Page not found</h2>
+          <h2>Error {error.status} - Page not found</h2>
           <GetHelp />
         </Main>
       );
     default:
       return (
         <Main>
-          <h2>Error {caught.status}</h2>
+          <h2>Error {error.status}</h2>
           <GetHelp />
           <div className="text-sm text-lighter font-semi-bold">
             Please include the message below if any and an explanation on what
             you were doing:
           </div>
-          {caught.data ? (
-            <pre>{JSON.stringify(JSON.parse(caught.data), null, 2)}</pre>
+          {error.data ? (
+            <pre>{JSON.stringify(JSON.parse(error.data), null, 2)}</pre>
           ) : null}
         </Main>
       );

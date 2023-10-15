@@ -313,4 +313,4 @@ function RowContents({
   );
 }
 
-export const CatchBoundary = Catcher;
+export const ErrorBoundary = Catcher;

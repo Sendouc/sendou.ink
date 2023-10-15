@@ -1,6 +1,5 @@
 import { json } from "@remix-run/node";
 import type {
-  ErrorBoundaryComponent,
   LinksFunction,
   LoaderFunction,
   V2_MetaFunction,
@@ -16,6 +15,7 @@ import {
   useMatches,
   useFetchers,
   useNavigation,
+  useRouteError,
 } from "@remix-run/react";
 import * as React from "react";
 import commonStyles from "~/styles/common.css";
@@ -283,6 +283,8 @@ function useCustomizedCSSVars() {
 export default function App() {
   // prop drilling data instead of using useLoaderData in the child components directly because
   // useLoaderData can't be used in CatchBoundary and layout is rendered in it as well
+  //
+  // Update 14.10.23: not sure if this still applies as the CatchBoundary is gone
   const data = useLoaderData<RootLoaderData>();
 
   return (
@@ -297,21 +299,8 @@ export default function App() {
   );
 }
 
-export function CatchBoundary() {
-  return (
-    <ThemeProvider themeSource="static" specifiedTheme={Theme.DARK}>
-      <Document isErrored>
-        <Catcher />
-      </Document>
-    </ThemeProvider>
-  );
-}
-
-export const ErrorBoundary: ErrorBoundaryComponent = ({
-  error,
-}: {
-  error: any;
-}) => {
+export const ErrorBoundary = () => {
+  const error = useRouteError();
   console.error(error);
 
   return (

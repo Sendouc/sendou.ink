@@ -116,6 +116,12 @@ export const action: ActionFunction = async ({ params, request }) => {
       let teams = findTeamsByTournamentId(tournamentId);
       if (checkInHasStarted(tournament)) {
         teams = teams.filter(teamHasCheckedIn);
+      } else {
+        // in the normal check in process this is handled
+        teams = teams.filter(
+          (team) =>
+            team.members.length > TOURNAMENT.TEAM_MAX_MEMBERS_BEFORE_START,
+        );
       }
 
       validate(teams.length >= 2, "Not enough teams registered");

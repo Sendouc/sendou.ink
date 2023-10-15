@@ -2,7 +2,12 @@
 
 import { PassThrough } from "stream";
 
-import AWS from "aws-sdk";
+import type AWS from "aws-sdk";
+import { Upload } from "@aws-sdk/lib-storage";
+import {
+  type CompleteMultipartUploadCommandOutput,
+  S3,
+} from "@aws-sdk/client-s3";
 import type { UploadHandler } from "@remix-run/node";
 import { writeAsyncIterableToWritable } from "@remix-run/node";
 import { nanoid } from "nanoid";
@@ -47,9 +52,9 @@ const uploadStream = ({ Key }: Pick<AWS.S3.Types.PutObjectRequest, "Key">) => {
     STORAGE_BUCKET,
   } = envVars();
 
-  const s3 = new AWS.S3({
+  const s3 = new S3({
     endpoint: STORAGE_END_POINT,
-    s3ForcePathStyle: false,
+    forcePathStyle: false,
     credentials: {
       accessKeyId: STORAGE_ACCESS_KEY,
       secretAccessKey: STORAGE_SECRET,
@@ -59,9 +64,10 @@ const uploadStream = ({ Key }: Pick<AWS.S3.Types.PutObjectRequest, "Key">) => {
   const pass = new PassThrough();
   return {
     writeStream: pass,
-    promise: s3
-      .upload({ Bucket: STORAGE_BUCKET, Key, Body: pass, ACL: "public-read" })
-      .promise(),
+    promise: new Upload({
+      client: s3,
+      params: { Bucket: STORAGE_BUCKET, Key, Body: pass, ACL: "public-read" },
+    }).done(),
   };
 };
 
@@ -71,7 +77,7 @@ export async function uploadStreamToS3(data: any, filename: string) {
   });
   await writeAsyncIterableToWritable(data, stream.writeStream);
   const file = await stream.promise;
-  return file.Location;
+  return (file as CompleteMultipartUploadCommandOutput).Location;
 }
 
 // predeciding file name is useful when you are uploading more than one asset
