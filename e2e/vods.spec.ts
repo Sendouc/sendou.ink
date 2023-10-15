@@ -4,6 +4,7 @@ import {
   isNotVisible,
   navigate,
   seed,
+  selectUser,
   selectWeapon,
   submit,
 } from "~/utils/playwright";
@@ -30,8 +31,11 @@ test.describe("VoDs page", () => {
 
     await page.getByLabel("Type").selectOption("SCRIM");
 
-    await page.getByLabel("Player (Pov)").type("Sendou");
-    await page.keyboard.press("Enter");
+    await selectUser({
+      labelName: "Player (Pov)",
+      page,
+      userName: "Sendou",
+    });
 
     await page.getByTestId("match-1-seconds").clear();
     await page.getByTestId("match-1-seconds").fill("20");
