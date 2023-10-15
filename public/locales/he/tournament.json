@@ -21,7 +21,8 @@
   "pre.checkIn.range": "צ'ק-אין פתוח בין {{start}} ל-{{finish}}",
   "pre.checkIn.over": "צ'ק-אין נגמר",
   "pre.checkIn.cant": "השלימו את השלבים הקודמים לפני צ'ק-אין",
-  "pre.checkIn.button": "צ'ק אין",
+  "pre.checkIn.button": "צ'ק-אין",
+  "pre.checkIn.checkedIn": "הקבוצה שלך עשתה צ'ק-אין",
 
   "pre.info.header": "מידע על הצוות",
   "pre.info.unregister": "ביטול הרשמה",

@@ -153,5 +153,7 @@
   "labels.damageType": "סוג נזק",
   "labels.weapon": "נשק",
   "dmgHtdExplanation": "נזק = פגיעה | פ'ל = פגיעות להרוס",
-  "noDmgData": "אין נתונים על נזק של הנשק הזה. בדקו מאוחר יותר!"
+  "noDmgData": "אין נתונים על נזק של הנשק הזה. בדקו מאוחר יותר!",
+  "perInkTankGrid.header_one": "יריות של {{weapon}} לאחר ×{{count}} שימוש בסאב",
+  "perInkTankGrid.header_other": "יריות של {{weapon}} לאחר ×{{count}} שימושים בסאב"
 }
