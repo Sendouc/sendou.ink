@@ -360,6 +360,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   };
 };
 
+// xxx: check what happens when reporting score+weapons and autoupdate via ws causes the inputs to change
 export default function QMatchPage() {
   const user = useUser();
   const isMounted = useIsMounted();
