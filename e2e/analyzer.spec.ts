@@ -67,6 +67,8 @@ test.describe("Build Analyzer", () => {
     await isNotVisible(swimSpeedAbilityLocator);
 
     await swimSpeedAbilityButtonLocator.click();
+    // TODO: could assert that URL changed
+    await page.waitForTimeout(1000);
     await swimSpeedAbilityButtonLocator.click();
 
     await page.getByTestId("ap-tab").click();
