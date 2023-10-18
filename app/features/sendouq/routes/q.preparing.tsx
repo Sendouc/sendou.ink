@@ -130,6 +130,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   invariant(ownGroup, "No own group found");
 
   return {
+    lastUpdated: new Date().getTime(),
     group: ownGroup,
     role: currentGroup!.role,
     trustedPlayers: hasGroupManagerPerms(currentGroup!.role)
@@ -141,7 +142,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 export default function QPreparingPage() {
   const data = useLoaderData<typeof loader>();
   const joinQFetcher = useFetcher();
-  useAutoRefresh();
+  useAutoRefresh(data.lastUpdated);
 
   return (
     <Main className="stack lg items-center">

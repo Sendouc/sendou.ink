@@ -60,6 +60,7 @@ export function findPreparingGroup(
     id: row.id,
     createdAt: row.createdAt,
     mapListPreference: row.mapListPreference,
+    chatCode: null,
     inviteCode: row.inviteCode,
     members: parseDBJsonArray(row.members).map((member: any) => {
       const weapons = parseDBArray(member.weapons);

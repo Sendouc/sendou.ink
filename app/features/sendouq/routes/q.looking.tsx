@@ -13,7 +13,7 @@ import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "~/hooks/useTranslation";
-import { getUser, requireUserId } from "~/modules/auth/user.server";
+import { getUser, requireUser } from "~/modules/auth/user.server";
 import { MapPool } from "~/modules/map-pool-serializer";
 import {
   parseRequestFormData,
@@ -68,11 +68,13 @@ import { useAutoRefresh } from "~/hooks/useAutoRefresh";
 import { groupHasMatch } from "../queries/groupHasMatch.server";
 import { findRecentMatchPlayersByUserId } from "../queries/findRecentMatchPlayersByUserId.server";
 import { currentOrPreviousSeason } from "~/features/mmr/season";
-import { Chat, useChat } from "~/components/Chat";
+import { Chat, useChat } from "~/features/chat/components/Chat";
 import { NewTabs } from "~/components/NewTabs";
 import { useWindowSize } from "~/hooks/useWindowSize";
 import { updateNote } from "../queries/updateNote.server";
 import { GroupLeaver } from "../components/GroupLeaver";
+import * as NotificationService from "~/features/chat/NotificationService.server";
+import { chatCodeByGroupId } from "../queries/chatCodeByGroupId.server";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -95,7 +97,7 @@ export const meta: V2_MetaFunction = () => {
 // if there is a validation error the user saw stale data
 // and when we return null we just force a refresh
 export const action: ActionFunction = async ({ request }) => {
-  const user = await requireUserId(request);
+  const user = await requireUser(request);
   const data = await parseRequestFormData({
     request,
     schema: lookingSchema,
@@ -118,6 +120,15 @@ export const action: ActionFunction = async ({ request }) => {
         targetGroupId: data.targetGroupId,
       });
       refreshGroup(currentGroup.id);
+
+      const targetChatCode = chatCodeByGroupId(data.targetGroupId);
+      if (targetChatCode) {
+        NotificationService.notify({
+          room: targetChatCode,
+          type: "LIKE_RECEIVED",
+          revalidateOnly: true,
+        });
+      }
 
       break;
     }
@@ -146,6 +157,7 @@ export const action: ActionFunction = async ({ request }) => {
       const lookingGroups = findLookingGroups({
         maxGroupSize: membersNeededForFull(groupSize(currentGroup.id)),
         ownGroupId: currentGroup.id,
+        includeChatCode: true,
       });
 
       const ourGroup = lookingGroups.find(
@@ -176,6 +188,21 @@ export const action: ActionFunction = async ({ request }) => {
       });
       refreshGroup(survivingGroupId);
 
+      if (ourGroup.chatCode && theirGroup.chatCode) {
+        NotificationService.notify([
+          {
+            room: ourGroup.chatCode,
+            type: "NEW_GROUP",
+            revalidateOnly: true,
+          },
+          {
+            room: theirGroup.chatCode,
+            type: "NEW_GROUP",
+            revalidateOnly: true,
+          },
+        ]);
+      }
+
       break;
     }
     case "MATCH_UP": {
@@ -192,6 +219,7 @@ export const action: ActionFunction = async ({ request }) => {
       const lookingGroups = findLookingGroups({
         minGroupSize: FULL_GROUP_SIZE,
         ownGroupId: currentGroup.id,
+        includeChatCode: true,
       });
 
       const ourGroup = lookingGroups.find(
@@ -230,6 +258,21 @@ export const action: ActionFunction = async ({ request }) => {
         memento: await createMatchMemento(ourGroup, theirGroup),
       });
 
+      if (ourGroup.chatCode && theirGroup.chatCode) {
+        NotificationService.notify([
+          {
+            room: ourGroup.chatCode,
+            type: "MATCH_STARTED",
+            revalidateOnly: true,
+          },
+          {
+            room: theirGroup.chatCode,
+            type: "MATCH_STARTED",
+            revalidateOnly: true,
+          },
+        ]);
+      }
+
       throw redirect(sendouQMatchPage(createdMatch.id));
     }
     case "GIVE_MANAGER": {
@@ -267,6 +310,15 @@ export const action: ActionFunction = async ({ request }) => {
         newOwnerId,
         wasOwner: currentGroup.role === "OWNER",
       });
+
+      const targetChatCode = chatCodeByGroupId(currentGroup.id);
+      if (targetChatCode) {
+        NotificationService.notify({
+          room: targetChatCode,
+          type: "USER_LEFT",
+          context: { name: user.discordName },
+        });
+      }
 
       throw redirect(SENDOUQ_PAGE);
     }
@@ -374,9 +426,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   return {
     groups: sortedGroups,
     role: currentGroup.role,
-    chatCode:
-      // don't chat with yourself...
-      sortedGroups.own.members!.length > 1 ? currentGroup.chatCode : null,
+    chatCode: currentGroup.chatCode,
     lastUpdated: new Date().getTime(),
     expiryStatus: groupExpiryStatus(currentGroup),
     trustedPlayers: hasGroupManagerPerms(currentGroup.role)
@@ -386,8 +436,9 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 export default function QLookingPage() {
+  const data = useLoaderData<typeof loader>();
   const [searchParams] = useSearchParams();
-  useAutoRefresh();
+  useAutoRefresh(data.lastUpdated);
 
   const wasTryingToJoinAnotherTeam = searchParams.get("joining") === "true";
 
@@ -509,9 +560,11 @@ function Groups() {
   const isFullGroup = data.groups.own.members!.length === FULL_GROUP_SIZE;
   const ownGroup = data.groups.own as LookingGroupWithInviteCode;
 
+  const renderChat = data.groups.own.members!.length > 1;
+
   const chatElement = (
     <div>
-      {data.chatCode ? (
+      {renderChat ? (
         <Chat
           rooms={rooms}
           users={chatUsers}
@@ -557,7 +610,7 @@ function Groups() {
               },
               {
                 label: "Chat",
-                hidden: !data.chatCode,
+                hidden: !renderChat,
                 number: unseenMessages,
               },
             ]}
@@ -595,7 +648,7 @@ function Groups() {
             },
             {
               label: "Chat",
-              hidden: !isMobile || !data.chatCode,
+              hidden: !isMobile || !renderChat,
               number: unseenMessages,
             },
           ]}

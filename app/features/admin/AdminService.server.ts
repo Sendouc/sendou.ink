@@ -27,10 +27,8 @@ const cleanUpStm = sql.prepare(/*sql*/ `
   vacuum
 `);
 
-const cleanUp: AdminService["cleanUp"] = () => {
+export const cleanUp: AdminService["cleanUp"] = () => {
   removeOldLikesStm.run();
   removeOldGroupStm.run();
   cleanUpStm.run();
 };
-
-export { cleanUp };

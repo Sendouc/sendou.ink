@@ -1,20 +1,23 @@
-import { Avatar } from "./Avatar";
+import { Avatar } from "../../../components/Avatar";
 import * as React from "react";
-import { SubmitButton } from "./SubmitButton";
+import { SubmitButton } from "../../../components/SubmitButton";
 import type { User } from "~/db/types";
 import { useUser } from "~/modules/auth";
 import { nanoid } from "nanoid";
 import clsx from "clsx";
-import { Button } from "./Button";
+import { Button } from "../../../components/Button";
 import ReconnectingWebSocket from "reconnecting-websocket";
 import invariant from "tiny-invariant";
 import { useRootLoaderData } from "~/hooks/useRootLoaderData";
+import { useRevalidator } from "@remix-run/react";
+import type { ChatMessage } from "../chat-types";
+import { MESSAGE_MAX_LENGTH } from "../chat-constants";
+import { messageTypeToSound, soundEnabled } from "../chat-utils";
+import { soundPath } from "~/utils/urls";
 
 type ChatUser = Pick<User, "discordName" | "discordId" | "discordAvatar"> & {
   chatNameColor: string | null;
 };
-
-const MESSAGE_MAX_LENGTH = 200;
 
 export interface ChatProps {
   users: Record<number, ChatUser>;
@@ -28,6 +31,34 @@ export interface ChatProps {
   disabled?: boolean;
   missingUserName?: string;
 }
+
+const systemMessageText = (msg: ChatMessage) => {
+  const name = () => {
+    if (!msg.context) return "";
+    return msg.context.name;
+  };
+
+  switch (msg.type) {
+    case "SCORE_REPORTED": {
+      return `${name()} reported score`;
+    }
+    case "SCORE_CONFIRMED": {
+      return `${name()} confirmed score. Match is now locked`;
+    }
+    case "CANCEL_REPORTED": {
+      return `${name()} requested canceling the match`;
+    }
+    case "CANCEL_CONFIRMED": {
+      return `${name()} confirmed canceling the match. Match is now locked`;
+    }
+    case "USER_LEFT": {
+      return `${name()} left the group`;
+    }
+    default: {
+      return null;
+    }
+  }
+};
 
 export function ConnectedChat(props: ChatProps) {
   const chat = useChat(props);
@@ -121,6 +152,17 @@ export function Chat({
           ref={messagesContainerRef}
         >
           {messages.map((msg) => {
+            const systemMessage = systemMessageText(msg);
+            if (systemMessage) {
+              return (
+                <SystemMessage
+                  key={msg.id}
+                  message={msg}
+                  text={systemMessage}
+                />
+              );
+            }
+
             const user = msg.userId ? users[msg.userId] : null;
             if (!user && !missingUserName) return null;
 
@@ -210,16 +252,27 @@ function Message({
   );
 }
 
-// export type SystemMessageType = "MANAGER_ADDED" | "MANAGER_REMOVED";
-export interface ChatMessage {
-  id: string;
-  // type?: SystemMessageType;
-  contents?: string;
-  // context?: any;
-  userId?: number;
-  timestamp: number;
-  room: string;
-  pending?: boolean;
+function SystemMessage({
+  message,
+  text,
+}: {
+  message: ChatMessage;
+  text: string;
+}) {
+  return (
+    <li className="chat__message">
+      <div>
+        <div className="stack horizontal sm">
+          <time className="chat__message__time">
+            {new Date(message.timestamp).toLocaleTimeString()}
+          </time>
+        </div>
+        <div className="chat__message__contents text-xs text-lighter font-semi-bold">
+          {text}
+        </div>
+      </div>
+    </li>
+  );
 }
 
 export function useChat({
@@ -229,6 +282,7 @@ export function useChat({
   rooms: ChatProps["rooms"];
   onNewMessage?: (message: ChatMessage) => void;
 }) {
+  const { revalidate } = useRevalidator();
   const rootLoaderData = useRootLoaderData();
   const user = useUser();
 
@@ -260,7 +314,25 @@ export function useChat({
 
     ws.current.onmessage = (e) => {
       const message = JSON.parse(e.data);
-      const messageArr = Array.isArray(message) ? message : [message];
+      const messageArr = (
+        Array.isArray(message) ? message : [message]
+      ) as ChatMessage[];
+
+      // something interesting happened
+      // -> let's run data loaders so they can see it sooner
+      const isSystemMessage = Boolean(messageArr[0].type);
+      if (isSystemMessage) {
+        revalidate();
+      }
+
+      const sound = messageTypeToSound(messageArr[0].type);
+      if (sound && soundEnabled(sound)) {
+        void new Audio(soundPath(sound)).play();
+      }
+
+      if (messageArr[0].revalidateOnly) {
+        return;
+      }
 
       const isInitialLoad = Array.isArray(message);
 
@@ -274,7 +346,7 @@ export function useChat({
       if (isInitialLoad) {
         setMessages(messageArr);
       } else {
-        onNewMessage?.(message);
+        if (!isSystemMessage) onNewMessage?.(message);
         setMessages((messages) => [...messages, ...messageArr]);
       }
     };
@@ -284,7 +356,7 @@ export function useChat({
       wsCurrent?.close();
       setMessages([]);
     };
-  }, [rooms, onNewMessage, rootLoaderData.skalopUrl]);
+  }, [rooms, onNewMessage, rootLoaderData.skalopUrl, revalidate]);
 
   React.useEffect(() => {
     // ping every minute to keep connection alive

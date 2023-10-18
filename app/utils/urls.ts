@@ -65,6 +65,8 @@ export const ANTARISKA_TWITTER = "https://twitter.com/antariska_spl";
 export const ipLabsMaps = (pool: string) =>
   `https://maps.iplabs.ink/?3&pool=${pool}`;
 export const SPLATOON_3_INK = "https://splatoon3.ink/";
+export const RHODESMAS_FREESOUND_PROFILE_URL =
+  "https://freesound.org/people/rhodesmas/";
 
 export const twitterUrl = (accountName: string) =>
   `https://twitter.com/${accountName}`;
@@ -117,6 +119,9 @@ export const FRONT_BOY_PATH = "/static-assets/img/layout/front-boy";
 export const FRONT_GIRL_PATH = "/static-assets/img/layout/front-girl";
 export const FRONT_BOY_BG_PATH = "/static-assets/img/layout/front-boy-bg";
 export const FRONT_GIRL_BG_PATH = "/static-assets/img/layout/front-girl-bg";
+
+export const soundPath = (fileName: string) =>
+  `/static-assets/sounds/${fileName}.wav`;
 
 export const GET_ALL_EVENTS_WITH_MAP_POOLS_ROUTE = "/calendar/map-pool-events";
 

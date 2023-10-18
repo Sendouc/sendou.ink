@@ -13,6 +13,7 @@ const stm = sql.prepare(/* sql */ `
       "Group"."createdAt",
       "Group"."mapListPreference",
       "Group"."inviteCode",
+      "Group"."chatCode",
       "User"."id" as "userId",
       "User"."discordId",
       "User"."discordName",
@@ -47,6 +48,7 @@ const stm = sql.prepare(/* sql */ `
     "q1"."mapListPreference",
     "q1"."inviteCode",
     "q1"."createdAt",
+    "q1"."chatCode",
     json_group_array(
       json_object(
         'id', "q1"."userId",
@@ -71,10 +73,12 @@ export function findLookingGroups({
   minGroupSize,
   maxGroupSize,
   ownGroupId,
+  includeChatCode = false,
 }: {
   minGroupSize?: number;
   maxGroupSize?: number;
   ownGroupId: number;
+  includeChatCode?: boolean;
 }): LookingGroupWithInviteCode[] {
   return stm
     .all({ ownGroupId })
@@ -84,6 +88,7 @@ export function findLookingGroups({
         mapListPreference: row.mapListPreference,
         inviteCode: row.inviteCode,
         createdAt: row.createdAt,
+        chatCode: includeChatCode ? row.chatCode : null,
         members: parseDBJsonArray(row.members).map((member: any) => {
           const weapons = parseDBArray(member.weapons);
 

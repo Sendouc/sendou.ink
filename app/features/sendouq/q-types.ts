@@ -17,6 +17,7 @@ export type LookingGroup = {
   isReplay?: boolean;
   isLiked?: boolean;
   team?: GroupForMatch["team"];
+  chatCode: Group["chatCode"];
   skillDifference?: ParsedMemento["groups"][number]["skillDifference"];
   members?: {
     id: number;

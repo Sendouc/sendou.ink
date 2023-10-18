@@ -1,28 +1,28 @@
-// TODO: could be improved e.g. don't refresh when group has expired
-
 import { useRevalidator } from "@remix-run/react";
 import { useVisibilityChange } from "./useVisibilityChange";
 import * as React from "react";
 
-// or we got new data in the last 20 seconds
-export function useAutoRefresh() {
+const UPDATE_EVERY_N_SECONDS = 30;
+const wasUpdatedRecently = (lastUpdated: number) =>
+  Date.now() - lastUpdated < UPDATE_EVERY_N_SECONDS * 1000;
+
+export function useAutoRefresh(lastUpdated: number) {
   const { revalidate } = useRevalidator();
   const visibility = useVisibilityChange();
 
   React.useEffect(() => {
     // when user comes back to this tab
-    if (visibility === "visible") {
+    if (visibility === "visible" && !wasUpdatedRecently(lastUpdated)) {
       revalidate();
     }
 
-    // ...as well as every 20 seconds
     const interval = setInterval(() => {
-      if (visibility === "hidden") return;
+      if (visibility === "hidden" || wasUpdatedRecently(lastUpdated)) return;
       revalidate();
-    }, 20 * 1000);
+    }, UPDATE_EVERY_N_SECONDS * 1000);
 
     return () => {
       clearInterval(interval);
     };
-  }, [visibility, revalidate]);
+  }, [visibility, revalidate, lastUpdated]);
 }

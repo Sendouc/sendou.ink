@@ -9,6 +9,7 @@ import {
   BORZOIC_TWITTER,
   GITHUB_CONTRIBUTORS_URL,
   LEAN_TWITTER,
+  RHODESMAS_FREESOUND_PROFILE_URL,
   SENDOU_TWITTER_URL,
   SPLATOON_3_INK,
   UBERU_TWITTER,
@@ -171,6 +172,16 @@ export default function ContributionsPage() {
             {languages.find((lang) => lang.code === language)!.name})
           </li>
         ))}
+        <li>
+          <a
+            href={RHODESMAS_FREESOUND_PROFILE_URL}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Andy Rhode
+          </a>{" "}
+          - {t("contributions:sounds")}
+        </li>
       </ul>
     </Main>
   );
