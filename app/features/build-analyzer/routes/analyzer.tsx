@@ -76,7 +76,7 @@ import {
 } from "../core/utils";
 import { PerInkTankGrid } from "../components/PerInkTankGrid";
 
-export const CURRENT_PATCH = "5.0";
+export const CURRENT_PATCH = "5.1";
 
 export const meta: V2_MetaFunction = () => {
   return [
