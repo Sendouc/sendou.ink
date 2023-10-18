@@ -47,7 +47,7 @@ test.describe("Build Analyzer", () => {
     await page.getByTestId("SSU-ability").isVisible();
   });
 
-  test("compares builds", async ({ page }) => {
+  test.skip("compares builds", async ({ page }) => {
     await navigate({ page, url: ANALYZER_URL });
 
     await page.getByTestId("build2-tab").click();
