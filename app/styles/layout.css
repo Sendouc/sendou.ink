@@ -115,7 +115,7 @@
 
 .layout__main {
   padding-block-end: var(--s-32);
-  padding-block-start: var(--s-16);
+  padding-block-start: var(--s-4);
 }
 
 .layout__log-in-button {
@@ -261,10 +261,18 @@
   backdrop-filter: var(--backdrop-filter);
   background-color: transparent;
   overflow-y: auto;
+  overflow-x: hidden;
   direction: rtl;
-  max-height: calc(100vh - 47px);
   position: sticky;
+  /*
+  Top pixel count needs to be the same as nav height
+  Max height is calculated using the viewport height minus the nav height
+  This is unfortunately needed to avoid the sidebar from overflowing the viewport or navbar
+  Without this, the sidebar would be cut off at the bottom or top or clip into it
+  Will return if a better solution is found that doesnt require a hard coded value
+  */
   top: 47px;
+  max-height: calc(100vh - 47px);
 }
 
 .layout__side-nav::-webkit-scrollbar {
