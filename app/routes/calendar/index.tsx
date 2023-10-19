@@ -167,7 +167,7 @@ export default function CalendarPage() {
     : data.events;
 
   return (
-    <Main classNameOverwrite="stack lg layout__main">
+    <Main classNameOverwrite="stack lg main layout__main">
       <WeekLinks />
       <EventsToReport />
       <div className="stack md">
