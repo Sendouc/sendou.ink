@@ -13,8 +13,7 @@ import { Flipped, Flipper } from "react-flip-toolkit";
 import invariant from "tiny-invariant";
 import { Avatar } from "~/components/Avatar";
 import { Button } from "~/components/Button";
-import { ConnectedChat, type ChatProps } from "~/features/chat/components/Chat";
-import { WeaponCombobox } from "~/components/Combobox";
+import { ComboboxBaseOption, WeaponCombobox } from "~/components/Combobox";
 import { Divider } from "~/components/Divider";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { ModeImage, StageImage, WeaponImage } from "~/components/Image";
@@ -26,6 +25,9 @@ import { ArchiveBoxIcon } from "~/components/icons/ArchiveBox";
 import { RefreshArrowsIcon } from "~/components/icons/RefreshArrows";
 import { sql } from "~/db/sql";
 import type { GroupMember, ReportedWeapon } from "~/db/types";
+import * as NotificationService from "~/features/chat/NotificationService.server";
+import type { ChatMessage } from "~/features/chat/chat-types";
+import { ConnectedChat, type ChatProps } from "~/features/chat/components/Chat";
 import { currentSeason } from "~/features/mmr";
 import { resolveRoomPass } from "~/features/tournament-bracket/tournament-bracket-utils";
 import { useIsMounted } from "~/hooks/useIsMounted";
@@ -38,12 +40,7 @@ import { cache } from "~/utils/cache.server";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { animate } from "~/utils/flip";
 import type { SendouRouteHandle } from "~/utils/remix";
-import {
-  badRequestIfFalsy,
-  notFoundIfFalsy,
-  parseRequestFormData,
-  validate,
-} from "~/utils/remix";
+import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { inGameNameWithoutDiscriminator } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
 import { assertUnreachable } from "~/utils/types";
@@ -59,6 +56,8 @@ import {
 import { GroupCard } from "../components/GroupCard";
 import { matchEndedAtIndex } from "../core/match";
 import { compareMatchToReportedScores } from "../core/match.server";
+import type { ReportedWeaponForMerging } from "../core/reported-weapons.server";
+import { mergeReportedWeapons } from "../core/reported-weapons.server";
 import { calculateMatchSkills } from "../core/skills.server";
 import {
   summarizeMaps,
@@ -81,8 +80,6 @@ import { groupForMatch } from "../queries/groupForMatch.server";
 import { reportScore } from "../queries/reportScore.server";
 import { reportedWeaponsByMatchId } from "../queries/reportedWeaponsByMatchId.server";
 import { setGroupAsInactive } from "../queries/setGroupAsInactive.server";
-import * as NotificationService from "~/features/chat/NotificationService.server";
-import type { ChatMessage } from "~/features/chat/chat-types";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -275,34 +272,19 @@ export const action = async ({ request, params }: ActionArgs) => {
       const match = notFoundIfFalsy(findMatchById(matchId));
       validate(match.reportedAt, "Match has not been reported yet");
 
-      const reportedMaps = match.mapList.reduce(
-        (acc, cur) => acc + (cur.winnerGroupId ? 1 : 0),
-        0,
-      );
-      validate(
-        reportedMaps === data.weapons.length,
-        "Not reporting weapons for all maps",
-      );
+      const oldReportedWeapons = reportedWeaponsByMatchId(matchId) ?? [];
 
-      const groupAlpha = badRequestIfFalsy(groupForMatch(match.alphaGroupId));
-      const groupBravo = badRequestIfFalsy(groupForMatch(match.bravoGroupId));
-      const users = [
-        ...groupAlpha.members.map((m) => m.id),
-        ...groupBravo.members.map((m) => m.id),
-      ];
+      const mergedWeapons = mergeReportedWeapons({
+        oldWeapons: oldReportedWeapons,
+        newWeapons: data.weapons as (ReportedWeapon & {
+          mapIndex: number;
+          groupMatchMapId: number;
+        })[],
+      });
+
       sql.transaction(() => {
         deleteReporterWeaponsByMatchId(matchId);
-        addReportedWeapons(
-          match.mapList
-            .filter((m) => m.winnerGroupId)
-            .flatMap((matchMap, i) =>
-              data.weapons[i].map((weaponSplId, j) => ({
-                groupMatchMapId: matchMap.id,
-                weaponSplId: weaponSplId as MainWeaponId,
-                userId: users[j],
-              })),
-            ),
-        );
+        addReportedWeapons(mergedWeapons);
       })();
 
       break;
@@ -361,6 +343,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 };
 
 // xxx: check what happens when reporting score+weapons and autoupdate via ws causes the inputs to change
+// xxx: when reporting score also show input to report your own weapon
 export default function QMatchPage() {
   const user = useUser();
   const isMounted = useIsMounted();
@@ -687,38 +670,15 @@ function AfterMatchActions({
   showWeaponsForm: boolean;
   setShowWeaponsForm: (show: boolean) => void;
 }) {
-  const { t } = useTranslation(["game-misc"]);
   const data = useLoaderData<typeof loader>();
   const lookAgainFetcher = useFetcher();
   const weaponsFetcher = useFetcher();
 
   const playedMaps = data.match.mapList.filter((m) => m.winnerGroupId);
 
-  const weaponsUsageInitialValue = () => {
-    if (!data.reportedWeapons)
-      return playedMaps.map(() => new Array(FULL_GROUP_SIZE * 2).fill(null));
-
-    const result: MainWeaponId[][] = [];
-
-    const players = [...data.groupAlpha.members, ...data.groupBravo.members];
-    for (const matchMap of data.match.mapList.filter((m) => m.winnerGroupId)) {
-      result.push(
-        players.map((u) => {
-          const weaponSplId = data.reportedWeapons?.find(
-            (rw) => rw.groupMatchMapId === matchMap.id && rw.userId === u.id,
-          )?.weaponSplId;
-
-          invariant(typeof weaponSplId === "number", "weaponSplId is null");
-          return weaponSplId;
-        }),
-      );
-    }
-
-    return result;
-  };
   const [weaponsUsage, setWeaponsUsage] = React.useState<
-    (null | MainWeaponId)[][]
-  >(weaponsUsageInitialValue());
+    ReportedWeaponForMerging[]
+  >(data.reportedWeapons ?? []);
 
   const wasReportedInTheLastHour =
     databaseTimestampToDate(reportedAt).getTime() > Date.now() - 3600 * 1000;
@@ -736,6 +696,34 @@ function AfterMatchActions({
     m.winnerGroupId === data.match.alphaGroupId ? "ALPHA" : "BRAVO",
   );
 
+  const handleCopyWeaponsFromPreviousMap =
+    ({
+      mapIndex,
+      groupMatchMapId,
+    }: {
+      mapIndex: number;
+      groupMatchMapId: number;
+    }) =>
+    () => {
+      setWeaponsUsage((val) => {
+        const previousWeapons = val.filter(
+          (reportedWeapon) => reportedWeapon.mapIndex === mapIndex - 1,
+        );
+
+        return [
+          ...val.filter(
+            (reportedWeapon) => reportedWeapon.mapIndex !== mapIndex,
+          ),
+          ...previousWeapons.map((reportedWeapon) => ({
+            ...reportedWeapon,
+            mapIndex,
+            groupMatchMapId,
+          })),
+        ];
+      });
+    };
+
+  // xxx: select to report only your own weapon, your team or everyone
   return (
     <div className="stack lg">
       <lookAgainFetcher.Form
@@ -771,6 +759,8 @@ function AfterMatchActions({
           />
           <div className="stack md mx-auto">
             {playedMaps.map((map, i) => {
+              const groupMatchMapId = map.id;
+
               return (
                 <div key={map.stageId} className="stack md">
                   <MapListMap
@@ -784,13 +774,10 @@ function AfterMatchActions({
                       size="tiny"
                       variant="outlined"
                       className="self-center"
-                      onClick={() => {
-                        setWeaponsUsage((val) => {
-                          const newVal = [...val];
-                          newVal[i] = [...newVal[i - 1]];
-                          return newVal;
-                        });
-                      }}
+                      onClick={handleCopyWeaponsFromPreviousMap({
+                        groupMatchMapId,
+                        mapIndex: i,
+                      })}
                     >
                       Copy weapons from above map
                     </Button>
@@ -800,6 +787,13 @@ function AfterMatchActions({
                       ...data.groupAlpha.members,
                       ...data.groupBravo.members,
                     ].map((member, j) => {
+                      const weaponSplId =
+                        weaponsUsage.find(
+                          (w) =>
+                            w.groupMatchMapId === groupMatchMapId &&
+                            w.userId === member.id,
+                        )?.weaponSplId ?? null;
+
                       return (
                         <React.Fragment key={member.id}>
                           {j === 0 ? (
@@ -829,68 +823,42 @@ function AfterMatchActions({
                             </div>
                             <div className="stack horizontal sm items-center">
                               <WeaponImage
-                                weaponSplId={weaponsUsage[i][j] ?? 0}
+                                weaponSplId={weaponSplId ?? 0}
                                 variant="badge"
                                 width={32}
                                 className={clsx("ml-auto", {
-                                  invisible:
-                                    typeof weaponsUsage[i][j] !== "number",
+                                  invisible: typeof weaponSplId !== "number",
                                 })}
                               />
                               <WeaponCombobox
                                 inputName="weapon"
-                                value={weaponsUsage[i][j]}
+                                value={weaponSplId}
                                 onChange={(weapon) => {
                                   if (!weapon) return;
 
                                   setWeaponsUsage((val) => {
-                                    const newVal = [...val];
-                                    newVal[i] = [...newVal[i]];
-                                    newVal[i][j] = Number(
-                                      weapon.value,
-                                    ) as MainWeaponId;
-                                    return newVal;
+                                    const result = val.filter(
+                                      (reportedWeapon) =>
+                                        reportedWeapon.groupMatchMapId !==
+                                          groupMatchMapId ||
+                                        reportedWeapon.userId !== member.id,
+                                    );
+
+                                    result.push({
+                                      weaponSplId: Number(
+                                        weapon.value,
+                                      ) as MainWeaponId,
+                                      mapIndex: i,
+                                      groupMatchMapId,
+                                      userId: member.id,
+                                    });
+
+                                    return result;
                                   });
                                 }}
                               />
                             </div>
                           </div>
-                        </React.Fragment>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-          <div className="stack sm">
-            {weaponsUsage.map((match, i) => {
-              return (
-                <div key={i} className="stack xs">
-                  <div className="text-sm font-semi-bold text-center">
-                    {t(`game-misc:MODE_SHORT_${data.match.mapList[i].mode}`)}{" "}
-                    {t(`game-misc:STAGE_${data.match.mapList[i].stageId}`)}
-                  </div>
-                  <div className="stack sm horizontal justify-center items-center">
-                    {match.map((weapon, j) => {
-                      return (
-                        <React.Fragment key={j}>
-                          {typeof weapon === "number" ? (
-                            <WeaponImage
-                              key={j}
-                              weaponSplId={weapon}
-                              variant="badge"
-                              size={32}
-                            />
-                          ) : (
-                            <span
-                              className="text-lg font-bold text-center q-match__weapon-grid-item"
-                              key={j}
-                            >
-                              ?
-                            </span>
-                          )}
-                          {j === 3 ? <div className="w-4" /> : null}
                         </React.Fragment>
                       );
                     })}

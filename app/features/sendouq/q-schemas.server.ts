@@ -1,24 +1,23 @@
 import { z } from "zod";
-import {
-  FULL_GROUP_SIZE,
-  MAP_LIST_PREFERENCE_OPTIONS,
-  SENDOUQ,
-  SENDOUQ_BEST_OF,
-} from "./q-constants";
+import { languagesUnified } from "~/modules/i18n/config";
 import {
   _action,
   checkboxValueToBoolean,
   deduplicate,
+  falsyToNull,
   id,
+  modeShort,
   noDuplicates,
   safeJSONParse,
-  weaponSplId,
   stageId,
-  modeShort,
-  falsyToNull,
+  weaponSplId,
 } from "~/utils/zod";
 import { matchEndedAtIndex } from "./core/match";
-import { languagesUnified } from "~/modules/i18n/config";
+import {
+  MAP_LIST_PREFERENCE_OPTIONS,
+  SENDOUQ,
+  SENDOUQ_BEST_OF,
+} from "./q-constants";
 
 export const frontPageSchema = z.union([
   z.object({
@@ -137,7 +136,14 @@ export const matchSchema = z.union([
     _action: _action("REPORT_WEAPONS"),
     weapons: z.preprocess(
       safeJSONParse,
-      z.array(z.array(weaponSplId).length(FULL_GROUP_SIZE * 2)),
+      z.array(
+        z.object({
+          weaponSplId,
+          userId: id,
+          mapIndex: z.number().int().nonnegative(),
+          groupMatchMapId: id,
+        }),
+      ),
     ),
   }),
 ]);

@@ -1,6 +1,11 @@
-import type { ReportedWeapon } from "~/db/types";
+import type { MainWeaponId } from "~/modules/in-game-lists";
 
-type ReportedWeaponForMerging = ReportedWeapon & { mapIndex: number };
+export type ReportedWeaponForMerging = {
+  weaponSplId: MainWeaponId;
+  mapIndex: number;
+  groupMatchMapId: number;
+  userId: number;
+};
 export function mergeReportedWeapons({
   newWeapons,
   oldWeapons,
