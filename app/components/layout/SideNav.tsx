@@ -12,7 +12,7 @@ export function SideNav() {
       {navItems.map((item) => {
         return (
           <Link
-            to={item.url}
+            to={`/${item.url}`}
             key={item.name}
             prefetch={item.prefetch ? "render" : undefined}
           >
