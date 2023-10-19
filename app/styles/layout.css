@@ -273,7 +273,7 @@
   */
   top: 47px;
   max-height: calc(100vh - 47px);
-  scrollbar-color: rgb(83, 65, 91) rgb(2, 1, 30);
+  scrollbar-color: rgb(83, 65, 91) transparent;
   scrollbar-width: thin;
   scrollbar-gutter: stable;
 }
@@ -287,11 +287,13 @@ Firefox scrollbar styling is above in .layout__side-nav
 }
 
 .layout__side-nav::-webkit-scrollbar-track {
-  background-color: rgb(2, 1, 30);
+  background: black;
+  background-color: transparent;
 }
 
 .layout__side-nav::-webkit-scrollbar-corner {
-  background-color: rgb(2, 1, 30);
+  background: black;
+  background-color: transparent;
 }
 
 .layout__side-nav::-webkit-scrollbar-thumb {
