@@ -1,4 +1,7 @@
 import type { MainWeaponId } from "~/modules/in-game-lists";
+import type { reportedWeaponsByMatchId } from "../queries/reportedWeaponsByMatchId.server";
+import type { MatchById } from "../queries/findMatchById.server";
+import type { GroupForMatch } from "../queries/groupForMatch.server";
 
 export type ReportedWeaponForMerging = {
   weaponSplId: MainWeaponId;
@@ -48,6 +51,42 @@ export function mergeReportedWeapons({
   // if the score got adjusted we need to get rid of the extra reported weapons
   if (newReportedMapsCount) {
     result = result.filter((wpn) => wpn.mapIndex < newReportedMapsCount);
+  }
+
+  return result;
+}
+
+export function reportedWeaponsToArrayOfArrays({
+  reportedWeapons,
+  mapList,
+  groupAlpha,
+  groupBravo,
+}: {
+  reportedWeapons: ReturnType<typeof reportedWeaponsByMatchId>;
+  mapList: MatchById["mapList"];
+  groupAlpha: GroupForMatch;
+  groupBravo: GroupForMatch;
+}) {
+  if (!reportedWeapons) return null;
+
+  const result: (MainWeaponId | null)[][] = [];
+
+  const allMembers = [...groupAlpha.members, ...groupBravo.members].map(
+    (m) => m.id,
+  );
+
+  for (const map of mapList) {
+    const mapWeapons: (MainWeaponId | null)[] = [];
+
+    for (const userId of allMembers) {
+      const reportedWeapon = reportedWeapons.find(
+        (wpn) => wpn.groupMatchMapId === map.id && wpn.userId === userId,
+      );
+
+      mapWeapons.push(reportedWeapon ? reportedWeapon.weaponSplId : null);
+    }
+
+    result.push(mapWeapons);
   }
 
   return result;

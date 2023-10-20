@@ -13,7 +13,7 @@ import { Flipped, Flipper } from "react-flip-toolkit";
 import invariant from "tiny-invariant";
 import { Avatar } from "~/components/Avatar";
 import { Button } from "~/components/Button";
-import { ComboboxBaseOption, WeaponCombobox } from "~/components/Combobox";
+import { WeaponCombobox } from "~/components/Combobox";
 import { Divider } from "~/components/Divider";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { ModeImage, StageImage, WeaponImage } from "~/components/Image";
@@ -57,7 +57,10 @@ import { GroupCard } from "../components/GroupCard";
 import { matchEndedAtIndex } from "../core/match";
 import { compareMatchToReportedScores } from "../core/match.server";
 import type { ReportedWeaponForMerging } from "../core/reported-weapons.server";
-import { mergeReportedWeapons } from "../core/reported-weapons.server";
+import {
+  mergeReportedWeapons,
+  reportedWeaponsToArrayOfArrays,
+} from "../core/reported-weapons.server";
 import { calculateMatchSkills } from "../core/skills.server";
 import {
   summarizeMaps,
@@ -324,6 +327,10 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     return null;
   };
 
+  const rawReportedWeapons = match.reportedAt
+    ? reportedWeaponsByMatchId(matchId)
+    : null;
+
   return {
     match: censoredMatch,
     matchChatCode: canAccessMatchChat ? match.chatCode : null,
@@ -337,8 +344,14 @@ export const loader = async ({ params, request }: LoaderArgs) => {
       ? ("BRAVO" as const)
       : null,
     reportedWeapons: match.reportedAt
-      ? reportedWeaponsByMatchId(matchId)
-      : undefined,
+      ? reportedWeaponsToArrayOfArrays({
+          groupAlpha,
+          groupBravo,
+          mapList: match.mapList,
+          reportedWeapons: rawReportedWeapons,
+        })
+      : null,
+    rawReportedWeapons,
   };
 };
 
@@ -437,7 +450,7 @@ export default function QMatchPage() {
               reportedAt={data.match.reportedAt}
               showWeaponsForm={showWeaponsForm}
               setShowWeaponsForm={setShowWeaponsForm}
-              key={data.reportedWeapons?.map((w) => w.weaponSplId).join("")}
+              key={data.reportedWeapons?.join("")}
             />
           ) : null}
         </>
@@ -672,13 +685,6 @@ function AfterMatchActions({
 }) {
   const data = useLoaderData<typeof loader>();
   const lookAgainFetcher = useFetcher();
-  const weaponsFetcher = useFetcher();
-
-  const playedMaps = data.match.mapList.filter((m) => m.winnerGroupId);
-
-  const [weaponsUsage, setWeaponsUsage] = React.useState<
-    ReportedWeaponForMerging[]
-  >(data.reportedWeapons ?? []);
 
   const wasReportedInTheLastHour =
     databaseTimestampToDate(reportedAt).getTime() > Date.now() - 3600 * 1000;
@@ -692,6 +698,50 @@ function AfterMatchActions({
   const showWeaponsFormButton =
     wasReportedInTheLastWeek && data.match.mapList[0].winnerGroupId;
 
+  return (
+    <div className="stack lg">
+      <lookAgainFetcher.Form
+        method="post"
+        className="stack horizontal justify-center md flex-wrap"
+      >
+        <input type="hidden" name="previousGroupId" value={ownGroupId} />
+        {showLookAgain ? (
+          <SubmitButton
+            icon={<RefreshArrowsIcon />}
+            state={lookAgainFetcher.state}
+            _action="LOOK_AGAIN"
+          >
+            Look again with same group
+          </SubmitButton>
+        ) : null}
+        {showWeaponsFormButton ? (
+          <Button
+            icon={<ArchiveBoxIcon />}
+            onClick={() => setShowWeaponsForm(!showWeaponsForm)}
+            variant={showWeaponsForm ? "destructive" : undefined}
+          >
+            {showWeaponsForm ? "Stop reporting weapons" : "Report used weapons"}
+          </Button>
+        ) : null}
+      </lookAgainFetcher.Form>
+      {showWeaponsForm ? <ReportWeaponsForm /> : null}
+    </div>
+  );
+}
+
+function ReportWeaponsForm() {
+  const user = useUser();
+  const data = useLoaderData<typeof loader>();
+  const weaponsFetcher = useFetcher();
+
+  const [weaponsUsage, setWeaponsUsage] = React.useState<
+    ReportedWeaponForMerging[]
+  >(data.rawReportedWeapons ?? []);
+  const [reportingMode, setReportingMode] = React.useState<
+    "ALL" | "MYSELF" | "MY_TEAM"
+  >("MYSELF");
+
+  const playedMaps = data.match.mapList.filter((m) => m.winnerGroupId);
   const winners = playedMaps.map((m) =>
     m.winnerGroupId === data.match.alphaGroupId ? "ALPHA" : "BRAVO",
   );
@@ -723,164 +773,180 @@ function AfterMatchActions({
       });
     };
 
-  // xxx: select to report only your own weapon, your team or everyone
+  const playersToReport = () => {
+    const allPlayers = [...data.groupAlpha.members, ...data.groupBravo.members];
+
+    switch (reportingMode) {
+      case "ALL": {
+        return allPlayers;
+      }
+      case "MYSELF": {
+        const me = allPlayers.find((m) => m.id === user?.id);
+        invariant(me, "User not found");
+
+        return [me];
+      }
+      case "MY_TEAM": {
+        return data.groupMemberOf === "ALPHA"
+          ? data.groupAlpha.members
+          : data.groupBravo.members;
+      }
+      default:
+        assertUnreachable(reportingMode);
+    }
+  };
+
   return (
-    <div className="stack lg">
-      <lookAgainFetcher.Form
-        method="post"
-        className="stack horizontal justify-center md flex-wrap"
-      >
-        <input type="hidden" name="previousGroupId" value={ownGroupId} />
-        {showLookAgain ? (
-          <SubmitButton
-            icon={<RefreshArrowsIcon />}
-            state={lookAgainFetcher.state}
-            _action="LOOK_AGAIN"
-          >
-            Look again with same group
-          </SubmitButton>
-        ) : null}
-        {showWeaponsFormButton ? (
-          <Button
-            icon={<ArchiveBoxIcon />}
-            onClick={() => setShowWeaponsForm(!showWeaponsForm)}
-            variant={showWeaponsForm ? "destructive" : undefined}
-          >
-            {showWeaponsForm ? "Stop reporting weapons" : "Report used weapons"}
-          </Button>
-        ) : null}
-      </lookAgainFetcher.Form>
-      {showWeaponsForm ? (
-        <weaponsFetcher.Form method="post" className="stack lg">
+    <weaponsFetcher.Form method="post" className="stack lg">
+      <input
+        type="hidden"
+        name="weapons"
+        value={JSON.stringify(weaponsUsage)}
+      />
+      <div className="stack horizontal sm justify-between w-max mx-auto">
+        <h3 className="text-md">Who to report?</h3>
+        <label className="stack horizontal xs items-center mb-0">
+          Me
           <input
-            type="hidden"
-            name="weapons"
-            value={JSON.stringify(weaponsUsage)}
+            type="radio"
+            checked={reportingMode === "MYSELF"}
+            onChange={() => setReportingMode("MYSELF")}
           />
-          <div className="stack md mx-auto">
-            {playedMaps.map((map, i) => {
-              const groupMatchMapId = map.id;
+        </label>
+        <label className="stack horizontal xs items-center mb-0">
+          My team
+          <input
+            type="radio"
+            checked={reportingMode === "MY_TEAM"}
+            onChange={() => setReportingMode("MY_TEAM")}
+          />
+        </label>
+        <label className="stack horizontal xs items-center mb-0">
+          Everyone
+          <input
+            type="radio"
+            checked={reportingMode === "ALL"}
+            onChange={() => setReportingMode("ALL")}
+          />
+        </label>
+      </div>
+      <div className="stack md mx-auto">
+        {playedMaps.map((map, i) => {
+          const groupMatchMapId = map.id;
 
-              return (
-                <div key={map.stageId} className="stack md">
-                  <MapListMap
-                    canReportScore={false}
-                    i={i}
-                    map={map}
-                    winners={winners}
-                  />
-                  {i !== 0 ? (
-                    <Button
-                      size="tiny"
-                      variant="outlined"
-                      className="self-center"
-                      onClick={handleCopyWeaponsFromPreviousMap({
-                        groupMatchMapId,
-                        mapIndex: i,
-                      })}
-                    >
-                      Copy weapons from above map
-                    </Button>
-                  ) : null}
-                  <div className="stack sm">
-                    {[
-                      ...data.groupAlpha.members,
-                      ...data.groupBravo.members,
-                    ].map((member, j) => {
-                      const weaponSplId =
-                        weaponsUsage.find(
-                          (w) =>
-                            w.groupMatchMapId === groupMatchMapId &&
-                            w.userId === member.id,
-                        )?.weaponSplId ?? null;
+          return (
+            <div key={map.stageId} className="stack md">
+              <MapListMap
+                canReportScore={false}
+                i={i}
+                map={map}
+                winners={winners}
+              />
+              {i !== 0 ? (
+                <Button
+                  size="tiny"
+                  variant="outlined"
+                  className="self-center"
+                  onClick={handleCopyWeaponsFromPreviousMap({
+                    groupMatchMapId,
+                    mapIndex: i,
+                  })}
+                >
+                  Copy weapons from above map
+                </Button>
+              ) : null}
+              <div className="stack sm">
+                {playersToReport().map((member, j) => {
+                  const weaponSplId =
+                    weaponsUsage.find(
+                      (w) =>
+                        w.groupMatchMapId === groupMatchMapId &&
+                        w.userId === member.id,
+                    )?.weaponSplId ?? null;
 
-                      return (
-                        <React.Fragment key={member.id}>
-                          {j === 0 ? (
-                            <Divider className="text-sm">Alpha</Divider>
-                          ) : null}
-                          {j === FULL_GROUP_SIZE ? (
-                            <Divider className="text-sm">Bravo</Divider>
-                          ) : null}
-                          <div
-                            key={member.id}
-                            className="stack horizontal sm justify-between items-center flex-wrap"
-                          >
-                            <div className="q-match__report__user-name-container">
-                              <Avatar user={member} size="xxs" />{" "}
-                              {member.inGameName ? (
-                                <>
-                                  <span className="text-lighter font-semi-bold">
-                                    IGN:
-                                  </span>{" "}
-                                  {inGameNameWithoutDiscriminator(
-                                    member.inGameName,
-                                  )}
-                                </>
-                              ) : (
-                                member.discordName
+                  return (
+                    <React.Fragment key={member.id}>
+                      {j === 0 && reportingMode === "ALL" ? (
+                        <Divider className="text-sm">Alpha</Divider>
+                      ) : null}
+                      {j === FULL_GROUP_SIZE && reportingMode === "ALL" ? (
+                        <Divider className="text-sm">Bravo</Divider>
+                      ) : null}
+                      <div
+                        key={member.id}
+                        className="stack horizontal sm justify-between items-center flex-wrap"
+                      >
+                        <div className="q-match__report__user-name-container">
+                          <Avatar user={member} size="xxs" />{" "}
+                          {member.inGameName ? (
+                            <>
+                              <span className="text-lighter font-semi-bold">
+                                IGN:
+                              </span>{" "}
+                              {inGameNameWithoutDiscriminator(
+                                member.inGameName,
                               )}
-                            </div>
-                            <div className="stack horizontal sm items-center">
-                              <WeaponImage
-                                weaponSplId={weaponSplId ?? 0}
-                                variant="badge"
-                                width={32}
-                                className={clsx("ml-auto", {
-                                  invisible: typeof weaponSplId !== "number",
-                                })}
-                              />
-                              <WeaponCombobox
-                                inputName="weapon"
-                                value={weaponSplId}
-                                onChange={(weapon) => {
-                                  if (!weapon) return;
+                            </>
+                          ) : (
+                            member.discordName
+                          )}
+                        </div>
+                        <div className="stack horizontal sm items-center">
+                          <WeaponImage
+                            weaponSplId={weaponSplId ?? 0}
+                            variant="badge"
+                            width={32}
+                            className={clsx("ml-auto", {
+                              invisible: typeof weaponSplId !== "number",
+                            })}
+                          />
+                          <WeaponCombobox
+                            inputName="weapon"
+                            value={weaponSplId}
+                            onChange={(weapon) => {
+                              if (!weapon) return;
 
-                                  setWeaponsUsage((val) => {
-                                    const result = val.filter(
-                                      (reportedWeapon) =>
-                                        reportedWeapon.groupMatchMapId !==
-                                          groupMatchMapId ||
-                                        reportedWeapon.userId !== member.id,
-                                    );
+                              setWeaponsUsage((val) => {
+                                const result = val.filter(
+                                  (reportedWeapon) =>
+                                    reportedWeapon.groupMatchMapId !==
+                                      groupMatchMapId ||
+                                    reportedWeapon.userId !== member.id,
+                                );
 
-                                    result.push({
-                                      weaponSplId: Number(
-                                        weapon.value,
-                                      ) as MainWeaponId,
-                                      mapIndex: i,
-                                      groupMatchMapId,
-                                      userId: member.id,
-                                    });
+                                result.push({
+                                  weaponSplId: Number(
+                                    weapon.value,
+                                  ) as MainWeaponId,
+                                  mapIndex: i,
+                                  groupMatchMapId,
+                                  userId: member.id,
+                                });
 
-                                    return result;
-                                  });
-                                }}
-                              />
-                            </div>
-                          </div>
-                        </React.Fragment>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-          {weaponsUsage.flat().some((val) => val === null) ? (
-            <div className="text-sm text-center text-warning font-semi-bold">
-              Report all weapons to submit
+                                return result;
+                              });
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </React.Fragment>
+                  );
+                })}
+              </div>
             </div>
-          ) : (
-            <div className="stack items-center">
-              <SubmitButton _action="REPORT_WEAPONS">
-                Report weapons
-              </SubmitButton>
-            </div>
-          )}
-        </weaponsFetcher.Form>
-      ) : null}
-    </div>
+          );
+        })}
+      </div>
+      {weaponsUsage.flat().some((val) => val === null) ? (
+        <div className="text-sm text-center text-warning font-semi-bold">
+          Report all weapons to submit
+        </div>
+      ) : (
+        <div className="stack items-center">
+          <SubmitButton _action="REPORT_WEAPONS">Report weapons</SubmitButton>
+        </div>
+      )}
+    </weaponsFetcher.Form>
   );
 }
 
@@ -917,10 +983,6 @@ function MapList({
     !data.match.isLocked &&
     newScoresAreDifferent;
 
-  const allMembers = [
-    ...data.groupAlpha.members,
-    ...data.groupBravo.members,
-  ].map((m) => m.id);
   return (
     <fetcher.Form method="post">
       <input type="hidden" name="winners" value={JSON.stringify(winners)} />
@@ -935,13 +997,7 @@ function MapList({
                 map={map}
                 winners={winners}
                 setWinners={setWinners}
-                weapons={data.reportedWeapons
-                  ?.filter((w) => w.groupMatchMapId === map.id)
-                  .sort(
-                    (a, b) =>
-                      allMembers.indexOf(a.userId) -
-                      allMembers.indexOf(b.userId),
-                  )}
+                weapons={data.reportedWeapons?.[i]}
               />
             );
           })}
@@ -982,7 +1038,7 @@ function MapListMap({
   winners: ("ALPHA" | "BRAVO")[];
   setWinners?: (winners: ("ALPHA" | "BRAVO")[]) => void;
   canReportScore: boolean;
-  weapons?: ReportedWeapon[];
+  weapons?: (MainWeaponId | null)[] | null;
 }) {
   const data = useLoaderData<typeof loader>();
   const { t } = useTranslation(["game-misc", "tournament"]);
@@ -1068,16 +1124,22 @@ function MapListMap({
           </div>
         </div>
       </Flipped>
-      {weapons ? (
+      {weapons && map.winnerGroupId ? (
         <div className="stack sm horizontal">
-          {weapons.map((w, i) => {
+          {weapons.map((weaponSplId, i) => {
             return (
-              <React.Fragment key={w.userId}>
-                <WeaponImage
-                  weaponSplId={w.weaponSplId}
-                  size={30}
-                  variant="badge"
-                />
+              <React.Fragment key={weaponSplId}>
+                {weaponSplId ? (
+                  <WeaponImage
+                    weaponSplId={weaponSplId}
+                    size={30}
+                    variant="badge"
+                  />
+                ) : (
+                  <div className="w-4 font-semi-bold stack items-center justify-center">
+                    ?
+                  </div>
+                )}
                 {i === 3 ? <div className="w-4" /> : null}
               </React.Fragment>
             );
