@@ -30,6 +30,7 @@ export interface ChatProps {
   onUnmount?: () => void;
   disabled?: boolean;
   missingUserName?: string;
+  revalidates?: boolean;
 }
 
 const systemMessageText = (msg: ChatMessage) => {
@@ -278,9 +279,11 @@ function SystemMessage({
 export function useChat({
   rooms,
   onNewMessage,
+  revalidates,
 }: {
   rooms: ChatProps["rooms"];
   onNewMessage?: (message: ChatMessage) => void;
+  revalidates?: boolean;
 }) {
   const { revalidate } = useRevalidator();
   const rootLoaderData = useRootLoaderData();
@@ -321,7 +324,7 @@ export function useChat({
       // something interesting happened
       // -> let's run data loaders so they can see it sooner
       const isSystemMessage = Boolean(messageArr[0].type);
-      if (isSystemMessage) {
+      if (isSystemMessage && revalidates) {
         revalidate();
       }
 
@@ -356,7 +359,7 @@ export function useChat({
       wsCurrent?.close();
       setMessages([]);
     };
-  }, [rooms, onNewMessage, rootLoaderData.skalopUrl, revalidate]);
+  }, [rooms, onNewMessage, rootLoaderData.skalopUrl, revalidate, revalidates]);
 
   React.useEffect(() => {
     // ping every minute to keep connection alive

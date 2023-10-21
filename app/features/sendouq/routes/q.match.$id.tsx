@@ -377,7 +377,6 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   };
 };
 
-// xxx: check what happens when reporting score+weapons and autoupdate via ws causes the inputs to change
 export default function QMatchPage() {
   const user = useUser();
   const isMounted = useIsMounted();
@@ -519,6 +518,9 @@ export default function QMatchPage() {
                 users={chatUsers}
                 rooms={chatRooms}
                 disabled={!data.canPostChatMessages}
+                // we don't want the user to lose the weapons they are reporting
+                // when the match gets suddenly locked
+                revalidates={false}
               />
             ) : null}
           </div>
@@ -1163,7 +1165,6 @@ function MapListMap({
   };
 
   // xxx: grid for alignment
-  // xxx: flipped include wpn ? ? ? ? ? ? ? type row?
   return (
     <div key={map.stageId} className="stack xs">
       <Flipped flipId={map.stageId}>
@@ -1180,7 +1181,7 @@ function MapListMap({
           </div>
         </div>
       </Flipped>
-      {weapons && map.winnerGroupId ? (
+      {weapons && map.winnerGroupId && !showReportedOwnWeapon ? (
         <div className="stack sm horizontal">
           {weapons.map((weaponSplId, i) => {
             return (
