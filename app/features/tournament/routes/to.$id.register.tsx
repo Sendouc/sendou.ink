@@ -170,6 +170,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     }
     case "CHECK_IN": {
       validate(ownTeam);
+      validate(!ownTeam.checkedInAt, "You have already checked in");
       validateCanCheckIn({
         event,
         team: ownTeam,
