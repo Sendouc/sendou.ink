@@ -691,6 +691,10 @@ function Match({
     return null;
   };
 
+  const reserveWeaponSpace =
+    match.groupAlphaMembers.some((m) => m.weaponSplId) ||
+    match.groupBravoMembers.some((m) => m.weaponSplId);
+
   // make sure user's team is always on the top
   const rows = match.groupAlphaMembers.some((m) => m.id === userId)
     ? [
@@ -698,11 +702,13 @@ function Match({
           key="alpha"
           members={match.groupAlphaMembers}
           score={specialScoreMarking() ?? score[0]}
+          reserveWeaponSpace={reserveWeaponSpace}
         />,
         <MatchMembersRow
           key="bravo"
           members={match.groupBravoMembers}
           score={specialScoreMarking() ?? score[1]}
+          reserveWeaponSpace={reserveWeaponSpace}
         />,
       ]
     : [
@@ -710,11 +716,13 @@ function Match({
           key="bravo"
           members={match.groupBravoMembers}
           score={specialScoreMarking() ?? score[1]}
+          reserveWeaponSpace={reserveWeaponSpace}
         />,
         <MatchMembersRow
           key="alpha"
           members={match.groupAlphaMembers}
           score={specialScoreMarking() ?? score[0]}
+          reserveWeaponSpace={reserveWeaponSpace}
         />,
       ];
 
@@ -734,11 +742,13 @@ function Match({
 function MatchMembersRow({
   score,
   members,
+  reserveWeaponSpace,
 }: {
   score: React.ReactNode;
   members: SerializeFrom<
     typeof loader
   >["matches"]["value"][0]["groupAlphaMembers"];
+  reserveWeaponSpace: boolean;
 }) {
   return (
     <div className="stack horizontal xs items-center">
@@ -754,6 +764,13 @@ function MatchMembersRow({
                 weaponSplId={member.weaponSplId}
                 variant="badge"
                 size={28}
+              />
+            ) : reserveWeaponSpace ? (
+              <WeaponImage
+                weaponSplId={0}
+                variant="badge"
+                size={28}
+                className="invisible"
               />
             ) : null}
           </div>

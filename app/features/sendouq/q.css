@@ -282,6 +282,15 @@
   text-overflow: ellipsis;
 }
 
+.q-match__report-section {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  row-gap: var(--s-2);
+  column-gap: var(--s-4);
+  align-items: center;
+  font-size: var(--fonts-xs);
+}
+
 @media screen and (min-width: 640px) {
   .q-match__teams-container.with-chat {
     grid-template-columns: 1fr 1fr 1fr;
