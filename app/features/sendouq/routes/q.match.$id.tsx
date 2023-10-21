@@ -235,8 +235,6 @@ export const action = async ({ request, params }: ActionArgs) => {
           setGroupAsInactive(match.bravoGroupId);
         }
       })();
-      // in a different transaction but it's okay
-      reportWeapons();
 
       if (compared === "DIFFERENT") {
         return {
@@ -245,6 +243,9 @@ export const action = async ({ request, params }: ActionArgs) => {
             : ("different" as const),
         };
       }
+
+      // in a different transaction but it's okay
+      reportWeapons();
 
       if (match.chatCode) {
         const type = (): NonNullable<ChatMessage["type"]> => {
