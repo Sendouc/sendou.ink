@@ -104,8 +104,9 @@
 .calendar__event {
   display: flex;
   flex-direction: column;
-  padding-top: var(--s-4);
+  padding-top: var(--s-3);
   font-size: var(--fonts-lg);
+  padding-inline: var(--s-4);
 }
 
 .calendar__event + .calendar__event {
