@@ -107,8 +107,27 @@ export const action = async ({ request, params }: ActionArgs) => {
 
   switch (data._action) {
     case "REPORT_SCORE": {
+      const reportWeapons = () => {
+        const oldReportedWeapons = reportedWeaponsByMatchId(matchId) ?? [];
+
+        const mergedWeapons = mergeReportedWeapons({
+          oldWeapons: oldReportedWeapons,
+          newWeapons: data.weapons as (ReportedWeapon & {
+            mapIndex: number;
+            groupMatchMapId: number;
+          })[],
+          newReportedMapsCount: data.winners.length,
+        });
+
+        sql.transaction(() => {
+          deleteReporterWeaponsByMatchId(matchId);
+          addReportedWeapons(mergedWeapons);
+        })();
+      };
+
       const match = notFoundIfFalsy(findMatchById(matchId));
       if (match.isLocked) {
+        reportWeapons();
         return null;
       }
 
@@ -153,6 +172,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 
       // same group reporting same score, probably by mistake
       if (compared === "DUPLICATE") {
+        reportWeapons();
         return null;
       }
 
@@ -215,6 +235,8 @@ export const action = async ({ request, params }: ActionArgs) => {
           setGroupAsInactive(match.bravoGroupId);
         }
       })();
+      // in a different transaction but it's okay
+      reportWeapons();
 
       if (compared === "DIFFERENT") {
         return {
@@ -356,7 +378,6 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 };
 
 // xxx: check what happens when reporting score+weapons and autoupdate via ws causes the inputs to change
-// xxx: when reporting score also show input to report your own weapon
 export default function QMatchPage() {
   const user = useUser();
   const isMounted = useIsMounted();
@@ -841,6 +862,7 @@ function ReportWeaponsForm() {
                 i={i}
                 map={map}
                 winners={winners}
+                showReportedOwnWeapon={false}
               />
               {i !== 0 ? (
                 <Button
@@ -962,6 +984,9 @@ function MapList({
   const user = useUser();
   const data = useLoaderData<typeof loader>();
   const [adminToggleChecked, setAdminToggleChecked] = React.useState(false);
+  const [ownWeaponsUsage, setOwnWeaponsUsage] = React.useState<
+    ReportedWeaponForMerging[]
+  >([]);
 
   const previouslyReportedWinners = isResubmission
     ? data.match.mapList
@@ -982,10 +1007,18 @@ function MapList({
     Boolean(matchEndedAtIndex(winners)) &&
     !data.match.isLocked &&
     newScoresAreDifferent;
+  const ownWeaponReported = data.rawReportedWeapons?.some(
+    (reportedWeapon) => reportedWeapon.userId === user?.id,
+  );
 
   return (
     <fetcher.Form method="post">
       <input type="hidden" name="winners" value={JSON.stringify(winners)} />
+      <input
+        type="hidden"
+        name="weapons"
+        value={JSON.stringify(ownWeaponsUsage)}
+      />
       <Flipper flipKey={winners.join("")}>
         <div className="stack md w-max mx-auto">
           {data.match.mapList.map((map, i) => {
@@ -998,6 +1031,22 @@ function MapList({
                 winners={winners}
                 setWinners={setWinners}
                 weapons={data.reportedWeapons?.[i]}
+                showReportedOwnWeapon={!ownWeaponReported}
+                onOwnWeaponSelected={(newReportedWeapon) => {
+                  if (!newReportedWeapon) return;
+
+                  setOwnWeaponsUsage((val) => {
+                    const result = val.filter(
+                      (reportedWeapon) =>
+                        reportedWeapon.groupMatchMapId !==
+                        newReportedWeapon.groupMatchMapId,
+                    );
+
+                    result.push(newReportedWeapon);
+
+                    return result;
+                  });
+                }}
               />
             );
           })}
@@ -1032,6 +1081,8 @@ function MapListMap({
   setWinners,
   canReportScore,
   weapons,
+  onOwnWeaponSelected,
+  showReportedOwnWeapon,
 }: {
   i: number;
   map: Unpacked<SerializeFrom<typeof loader>["match"]["mapList"]>;
@@ -1039,7 +1090,10 @@ function MapListMap({
   setWinners?: (winners: ("ALPHA" | "BRAVO")[]) => void;
   canReportScore: boolean;
   weapons?: (MainWeaponId | null)[] | null;
+  onOwnWeaponSelected?: (weapon: ReportedWeaponForMerging | null) => void;
+  showReportedOwnWeapon: boolean;
 }) {
+  const user = useUser();
   const data = useLoaderData<typeof loader>();
   const { t } = useTranslation(["game-misc", "tournament"]);
 
@@ -1108,6 +1162,8 @@ function MapListMap({
     return data.groupMemberOf === side ? " (us)" : " (them)";
   };
 
+  // xxx: grid for alignment
+  // xxx: flipped include wpn ? ? ? ? ? ? ? type row?
   return (
     <div key={map.stageId} className="stack xs">
       <Flipped flipId={map.stageId}>
@@ -1128,7 +1184,7 @@ function MapListMap({
         <div className="stack sm horizontal">
           {weapons.map((weaponSplId, i) => {
             return (
-              <React.Fragment key={weaponSplId}>
+              <React.Fragment key={i}>
                 {weaponSplId ? (
                   <WeaponImage
                     weaponSplId={weaponSplId}
@@ -1157,34 +1213,60 @@ function MapListMap({
             el.style.opacity = "1";
           }}
         >
-          <div className="stack horizontal sm text-xs">
-            <label className="mb-0 text-theme-secondary">Winner</label>
-            <div className="stack sm horizontal items-center font-semi-bold">
-              <input
-                type="radio"
-                name={`winner-${i}`}
-                value="alpha"
-                id={`alpha-${i}`}
-                checked={winners[i] === "ALPHA"}
-                onChange={handleReportScore(i, "ALPHA")}
-              />
-              <label className="mb-0" htmlFor={`alpha-${i}`}>
-                {`Alpha${relativeSideText("ALPHA")}`}
-              </label>
+          <div className="stack sm">
+            <div className="stack horizontal sm text-xs">
+              <label className="mb-0 text-theme-secondary">Winner</label>
+              <div className="stack sm horizontal items-center font-semi-bold">
+                <input
+                  type="radio"
+                  name={`winner-${i}`}
+                  value="alpha"
+                  id={`alpha-${i}`}
+                  checked={winners[i] === "ALPHA"}
+                  onChange={handleReportScore(i, "ALPHA")}
+                />
+                <label className="mb-0" htmlFor={`alpha-${i}`}>
+                  {`Alpha${relativeSideText("ALPHA")}`}
+                </label>
+              </div>
+              <div className="stack sm horizontal items-center font-semi-bold">
+                <input
+                  type="radio"
+                  name={`winner-${i}`}
+                  value="bravo"
+                  id={`bravo-${i}`}
+                  checked={winners[i] === "BRAVO"}
+                  onChange={handleReportScore(i, "BRAVO")}
+                />
+                <label className="mb-0" htmlFor={`bravo-${i}`}>
+                  {`Bravo${relativeSideText("BRAVO")}`}
+                </label>
+              </div>
             </div>
-            <div className="stack sm horizontal items-center font-semi-bold">
-              <input
-                type="radio"
-                name={`winner-${i}`}
-                value="bravo"
-                id={`bravo-${i}`}
-                checked={winners[i] === "BRAVO"}
-                onChange={handleReportScore(i, "BRAVO")}
-              />
-              <label className="mb-0" htmlFor={`bravo-${i}`}>
-                {`Bravo${relativeSideText("BRAVO")}`}
-              </label>
-            </div>
+
+            {showReportedOwnWeapon && onOwnWeaponSelected ? (
+              <div className="stack horizontal items-center sm text-xs">
+                <label className="mb-0 text-theme-secondary">Your weapon</label>
+                <WeaponCombobox
+                  inputName="weapon"
+                  onChange={(weapon) => {
+                    const userId = user!.id;
+                    const groupMatchMapId = map.id;
+
+                    onOwnWeaponSelected(
+                      weapon
+                        ? {
+                            weaponSplId: Number(weapon.value) as MainWeaponId,
+                            mapIndex: i,
+                            groupMatchMapId,
+                            userId,
+                          }
+                        : null,
+                    );
+                  }}
+                />
+              </div>
+            ) : null}
           </div>
         </Flipped>
       ) : null}

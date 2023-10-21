@@ -119,10 +119,23 @@ const winners = z.preprocess(
       return val.length === matchEndedAt + 1;
     }),
 );
+
+const weapons = z.preprocess(
+  safeJSONParse,
+  z.array(
+    z.object({
+      weaponSplId,
+      userId: id,
+      mapIndex: z.number().int().nonnegative(),
+      groupMatchMapId: id,
+    }),
+  ),
+);
 export const matchSchema = z.union([
   z.object({
     _action: _action("REPORT_SCORE"),
     winners,
+    weapons,
     adminReport: z.preprocess(
       checkboxValueToBoolean,
       z.boolean().nullish().default(false),
@@ -134,17 +147,7 @@ export const matchSchema = z.union([
   }),
   z.object({
     _action: _action("REPORT_WEAPONS"),
-    weapons: z.preprocess(
-      safeJSONParse,
-      z.array(
-        z.object({
-          weaponSplId,
-          userId: id,
-          mapIndex: z.number().int().nonnegative(),
-          groupMatchMapId: id,
-        }),
-      ),
-    ),
+    weapons,
   }),
 ]);
 
