@@ -1378,7 +1378,7 @@ dialog::backdrop {
   font-weight: var(--semi-bold);
   font-size: var(--fonts-sm);
   color: var(--chat-user-color);
-  max-width: 130px;
+  max-width: 110px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

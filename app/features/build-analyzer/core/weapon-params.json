@@ -31,7 +31,7 @@
       "subWeaponId": 0,
       "specialWeaponId": 2,
       "WeaponSpeedType": "Fast",
-      "MoveSpeed": 0.072,
+      "MoveSpeed": 0.076,
       "DamageParam_ValueMax": 280,
       "DamageParam_ValueMin": 140,
       "Jump_DegSwerve": 15,
@@ -44,7 +44,7 @@
       "subWeaponId": 13,
       "specialWeaponId": 7,
       "WeaponSpeedType": "Fast",
-      "MoveSpeed": 0.072,
+      "MoveSpeed": 0.076,
       "DamageParam_ValueMax": 280,
       "DamageParam_ValueMin": 140,
       "Jump_DegSwerve": 15,
@@ -90,7 +90,7 @@
       "InkConsume": 0.005
     },
     "31": {
-      "SpecialPoint": 200,
+      "SpecialPoint": 190,
       "subWeaponId": 3,
       "specialWeaponId": 6,
       "WeaponSpeedType": "Fast",
@@ -439,7 +439,7 @@
       "InkConsume": 0.04
     },
     "240": {
-      "SpecialPoint": 200,
+      "SpecialPoint": 190,
       "subWeaponId": 10,
       "specialWeaponId": 14,
       "overwrites": {
@@ -548,7 +548,7 @@
       "specialWeaponId": 13,
       "overwrites": {
         "ReduceJumpSwerveRate": {
-          "Mid": 0.5
+          "Mid": 0.625
         }
       },
       "MoveSpeed": 0.04,
@@ -566,7 +566,7 @@
       "Jump_DegSwerve": 8,
       "Stand_DegSwerve": 0,
       "InkRecoverStop": 60,
-      "InkConsume": 0.1
+      "InkConsume": 0.085
     },
     "300": {
       "SpecialPoint": 200,
@@ -633,7 +633,7 @@
       "InkConsume": 0.0225
     },
     "400": {
-      "SpecialPoint": 200,
+      "SpecialPoint": 210,
       "subWeaponId": 4,
       "specialWeaponId": 1,
       "MoveSpeed": 0.072,
@@ -742,7 +742,7 @@
       "InkConsume_WeaponWideSwingParam": 0.08
     },
     "1040": {
-      "SpecialPoint": 200,
+      "SpecialPoint": 190,
       "subWeaponId": 4,
       "specialWeaponId": 8,
       "BodyParam_Damage": 700,
@@ -806,7 +806,7 @@
       "subWeaponId": 6,
       "specialWeaponId": 7,
       "BodyParam_Damage": 300,
-      "SwingUnitGroupParam_DamageParam_DamageMinValue": 250,
+      "SwingUnitGroupParam_DamageParam_DamageMinValue": 310,
       "SwingUnitGroupParam_DamageParam_DamageMaxValue": 600,
       "InkConsume_WeaponSwingParam": 0.048
     },
@@ -991,7 +991,7 @@
       "InkConsumeSlosher": 0.06
     },
     "3011": {
-      "SpecialPoint": 190,
+      "SpecialPoint": 200,
       "subWeaponId": 5,
       "specialWeaponId": 15,
       "WeaponSpeedType": "Fast",
@@ -1084,7 +1084,7 @@
       "Jump_DegSwerve": 8,
       "Stand_DegSwerve": 4,
       "InkRecoverStop": 30,
-      "InkConsumeFullChargeSplatling": 0.1725
+      "InkConsumeFullChargeSplatling": 0.15
     },
     "4001": {
       "SpecialPoint": 200,
@@ -1104,7 +1104,7 @@
       "Jump_DegSwerve": 8,
       "Stand_DegSwerve": 4,
       "InkRecoverStop": 30,
-      "InkConsumeFullChargeSplatling": 0.1725
+      "InkConsumeFullChargeSplatling": 0.15
     },
     "4010": {
       "SpecialPoint": 200,
@@ -1162,7 +1162,7 @@
       },
       "WeaponSpeedType": "Slow",
       "MoveSpeed": 0.06,
-      "MoveSpeed_Charge": 0.04,
+      "MoveSpeed_Charge": 0.044,
       "DamageParam_ValueMax": 320,
       "DamageParam_ValueMin": 160,
       "DamageParam_ValueFullChargeMax": 400,
@@ -1327,7 +1327,7 @@
       "InkConsume_SideStepParam": 0.08
     },
     "5031": {
-      "SpecialPoint": 200,
+      "SpecialPoint": 210,
       "subWeaponId": 8,
       "specialWeaponId": 16,
       "MoveSpeed": 0.072,
@@ -1469,7 +1469,7 @@
       "InkConsumeFullCharge_ChargeParam": 0.065
     },
     "8000": {
-      "SpecialPoint": 200,
+      "SpecialPoint": 210,
       "subWeaponId": 2,
       "specialWeaponId": 3,
       "DamageParam_SplatanaVerticalDirect": 1400,
@@ -1653,7 +1653,7 @@
         }
       },
       "SubInkSaveLv": 2,
-      "InkConsume": 0.7,
+      "InkConsume": 0.65,
       "InkRecoverStop": 70,
       "DistanceDamage": [
         [
@@ -1842,7 +1842,7 @@
       },
       "DistanceDamage": [
         {
-          "Damage": 600,
+          "Damage": 530,
           "Distance": 4
         }
       ],
@@ -1905,7 +1905,7 @@
         },
         {
           "Damage": 300,
-          "Distance": 5
+          "Distance": 4.25
         }
       ]
     },
@@ -1984,7 +1984,7 @@
           "Mid": 220
         }
       },
-      "TickDamage": 30
+      "TickDamage": 35
     },
     "10": {
       "overwrites": {

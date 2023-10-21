@@ -32,7 +32,7 @@ const sounds = [
 function Sounds() {
   // default to true
   const currentValue = (code: string) =>
-    !localStorage.getItem(code) ||
+    !localStorage.getItem(soundCodeToLocalStorageKey(code)) ||
     localStorage.getItem(soundCodeToLocalStorageKey(code)) === "true";
 
   const [soundValues, setSoundValues] = React.useState(

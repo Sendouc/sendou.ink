@@ -36,7 +36,7 @@ import { useObjectDamage } from "../calculator-hooks";
 import type { DamageReceiver } from "../calculator-types";
 import styles from "../calculator.css";
 
-export const CURRENT_PATCH = "5.0";
+export const CURRENT_PATCH = "5.1";
 
 export const shouldRevalidate: ShouldRevalidateFunction = () => false;
 
@@ -238,146 +238,155 @@ function DamageReceiversGrid({
   const { t } = useTranslation(["weapons", "analyzer", "common"]);
   useSetTitle(t("common:pages.object-damage-calculator"));
   return (
-    <div
-      className="object-damage__grid"
-      style={{
-        gridTemplateColumns: gridTemplateColumnsValue(
-          damagesToReceivers[0]?.damages.length ?? 0,
-        ),
-      }}
-    >
-      <div>
-        <Label htmlFor="ap">
-          {t("analyzer:labels.amountOf")}
-          <div className="object-damage__ap-label">
-            <Ability ability="BRU" size="TINY" />
-            <Ability ability="SPU" size="TINY" />
+    <div>
+      <div
+        className="object-damage__grid"
+        style={{
+          gridTemplateColumns: gridTemplateColumnsValue(
+            damagesToReceivers[0]?.damages.length ?? 0,
+          ),
+        }}
+      >
+        <div
+          className="object-damage__table-header"
+          style={{ zIndex: "1", justifyContent: "center" }}
+        >
+          <div>
+            <Label htmlFor="ap">
+              {t("analyzer:labels.amountOf")}
+              <div className="object-damage__ap-label">
+                <Ability ability="BRU" size="TINY" />
+                <Ability ability="SPU" size="TINY" />
+              </div>
+            </Label>
           </div>
-        </Label>
-      </div>
-      <div>{children}</div>
-      {damagesToReceivers[0]?.damages.map((damage) => (
-        <div key={damage.id} className="object-damage__table-header">
-          <div className="stack horizontal sm justify-center items-center">
-            {t(
-              damageTypeTranslationString({
-                damageType: damage.type,
-              }),
-            )}
-            {damage.objectShredder && <Ability ability="OS" size="TINY" />}
-          </div>
-          <div
-            className={clsx("object-damage__distance", {
-              invisible: !damage.distance,
-            })}
-          >
-            {t("analyzer:distanceInline", {
-              value: Array.isArray(damage.distance)
-                ? damage.distance.join("-")
-                : damage.distance,
-            })}
-          </div>
-          <div className="text-lighter stack horizontal sm justify-center items-center">
-            {weapon.type === "MAIN" ? (
-              <WeaponImage
-                weaponSplId={weapon.id}
-                width={24}
-                height={24}
-                variant="build"
-                className="object-damage__weapon-image"
-              />
-            ) : weapon.type === "SUB" ? (
-              <Image
-                alt=""
-                path={subWeaponImageUrl(weapon.id)}
-                width={24}
-                height={24}
-                className="object-damage__weapon-image"
-              />
-            ) : (
-              <Image
-                alt=""
-                path={specialWeaponImageUrl(weapon.id)}
-                width={24}
-                height={24}
-                className="object-damage__weapon-image"
-              />
-            )}
-            {t(`weapons:${weapon.type}_${weapon.id}` as any)}
-          </div>
+          <div>{children}</div>
         </div>
-      ))}
-      {damagesToReceivers.map((damageToReceiver, i) => {
-        return (
-          <React.Fragment key={damageToReceiver.receiver}>
-            <div>
-              <Label htmlFor="ap">
-                <div className="object-damage__ap-label">
-                  {abilityPoints !== "0" &&
-                    damageReceiverAp[damageToReceiver.receiver]}
-                </div>
-              </Label>
-              <Image
-                className="object-damage__receiver-image"
-                key={i}
-                alt=""
-                path={damageReceiverImages[damageToReceiver.receiver]}
-                width={40}
-                height={40}
-              />
+        {damagesToReceivers[0]?.damages.map((damage) => (
+          <div key={damage.id} className="object-damage__table-header">
+            {t(`weapons:${weapon.type}_${weapon.id}` as any)}
+            <div className="text-lighter stack horizontal sm justify-center items-center">
+              {weapon.type === "MAIN" ? (
+                <WeaponImage
+                  weaponSplId={weapon.id}
+                  width={24}
+                  height={24}
+                  variant="build"
+                  className="object-damage__weapon-image"
+                />
+              ) : weapon.type === "SUB" ? (
+                <Image
+                  alt=""
+                  path={subWeaponImageUrl(weapon.id)}
+                  width={24}
+                  height={24}
+                  className="object-damage__weapon-image"
+                />
+              ) : (
+                <Image
+                  alt=""
+                  path={specialWeaponImageUrl(weapon.id)}
+                  width={24}
+                  height={24}
+                  className="object-damage__weapon-image"
+                />
+              )}
             </div>
-            <div className="object-damage__hp">
-              <span data-testid={`hp-${damageToReceiver.receiver}`}>
-                {damageToReceiver.hitPoints}
-              </span>
-              {t("analyzer:suffix.hp")}
+            <div
+              className={clsx("object-damage__distance", {
+                invisible: !damage.distance,
+              })}
+            >
+              {t("analyzer:distanceInline", {
+                value: Array.isArray(damage.distance)
+                  ? damage.distance.join("-")
+                  : damage.distance,
+              })}
             </div>
-            {damageToReceiver.damages.map((damage) => {
-              return (
-                <div key={damage.id} className="object-damage__table-card">
-                  <div className="object-damage__table-card__results">
-                    <abbr
-                      className="object-damage__abbr"
-                      title={t("analyzer:stat.category.damage")}
-                    >
-                      {t("analyzer:damageShort")}
-                    </abbr>
-                    <div
-                      data-testid={`dmg${damage.objectShredder ? "-os" : ""}-${
-                        damageToReceiver.receiver
-                      }`}
-                    >
-                      {damage.value}
+            <div className="stack horizontal sm justify-center items-center">
+              {t(
+                damageTypeTranslationString({
+                  damageType: damage.type,
+                }),
+              )}
+              {damage.objectShredder && <Ability ability="OS" size="TINY" />}
+            </div>
+          </div>
+        ))}
+        {damagesToReceivers.map((damageToReceiver, i) => {
+          return (
+            <React.Fragment key={damageToReceiver.receiver}>
+              <div className="object-damage__table-header">
+                <div>
+                  <Label htmlFor="ap">
+                    <div className="object-damage__ap-label">
+                      {abilityPoints !== "0" &&
+                        damageReceiverAp[damageToReceiver.receiver]}
                     </div>
-                    <abbr
-                      className="object-damage__abbr"
-                      title={t("analyzer:hitsToDestroyLong")}
-                    >
-                      {t("analyzer:hitsToDestroyShort")}
-                    </abbr>
-                    <div
-                      data-testid={`htd${damage.objectShredder ? "-os" : ""}-${
-                        damageToReceiver.receiver
-                      }`}
-                    >
-                      {damage.hitsToDestroy}
+                  </Label>
+                  <Image
+                    className="object-damage__receiver-image"
+                    key={i}
+                    alt=""
+                    path={damageReceiverImages[damageToReceiver.receiver]}
+                    width={40}
+                    height={40}
+                  />
+                </div>
+                <div className="object-damage__hp">
+                  <span data-testid={`hp-${damageToReceiver.receiver}`}>
+                    {damageToReceiver.hitPoints}
+                  </span>
+                  {t("analyzer:suffix.hp")}
+                </div>
+              </div>
+              {damageToReceiver.damages.map((damage) => {
+                return (
+                  <div key={damage.id} className="object-damage__table-card">
+                    <div className="object-damage__table-card__results">
+                      <abbr
+                        className="object-damage__abbr"
+                        title={t("analyzer:stat.category.damage")}
+                      >
+                        {t("analyzer:damageShort")}
+                      </abbr>
+                      <div
+                        data-testid={`dmg${
+                          damage.objectShredder ? "-os" : ""
+                        }-${damageToReceiver.receiver}`}
+                      >
+                        {damage.value}
+                      </div>
+                      <abbr
+                        className="object-damage__abbr"
+                        title={t("analyzer:hitsToDestroyLong")}
+                      >
+                        {t("analyzer:hitsToDestroyShort")}
+                      </abbr>
+                      <div
+                        data-testid={`htd${
+                          damage.objectShredder ? "-os" : ""
+                        }-${damageToReceiver.receiver}`}
+                      >
+                        {damage.hitsToDestroy}
+                      </div>
+                    </div>
+                    <div className="object-damage__multiplier">
+                      ×{damage.multiplier}
                     </div>
                   </div>
-                  <div className="object-damage__multiplier">
-                    ×{damage.multiplier}
-                  </div>
-                </div>
-              );
-            })}
-          </React.Fragment>
-        );
-      })}
+                );
+              })}
+            </React.Fragment>
+          );
+        })}
+      </div>
     </div>
   );
 }
 
 function gridTemplateColumnsValue(dataColumnsCount: number) {
-  return `max-content max-content ${new Array(dataColumnsCount)
+  return `max-content ${new Array(dataColumnsCount)
     .fill(null)
     .map(() => `1fr`)
     .join(" ")}`;
