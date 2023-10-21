@@ -279,7 +279,7 @@ function SystemMessage({
 export function useChat({
   rooms,
   onNewMessage,
-  revalidates,
+  revalidates = true,
 }: {
   rooms: ChatProps["rooms"];
   onNewMessage?: (message: ChatMessage) => void;

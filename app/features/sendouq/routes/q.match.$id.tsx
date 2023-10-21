@@ -1164,7 +1164,6 @@ function MapListMap({
     return data.groupMemberOf === side ? " (us)" : " (them)";
   };
 
-  // xxx: grid for alignment
   return (
     <div key={map.stageId} className="stack xs">
       <Flipped flipId={map.stageId}>
@@ -1186,7 +1185,7 @@ function MapListMap({
           {weapons.map((weaponSplId, i) => {
             return (
               <React.Fragment key={i}>
-                {weaponSplId ? (
+                {typeof weaponSplId === "number" ? (
                   <WeaponImage
                     weaponSplId={weaponSplId}
                     size={30}
@@ -1214,9 +1213,9 @@ function MapListMap({
             el.style.opacity = "1";
           }}
         >
-          <div className="stack sm">
-            <div className="stack horizontal sm text-xs">
-              <label className="mb-0 text-theme-secondary">Winner</label>
+          <div className="q-match__report-section">
+            <label className="mb-0 text-theme-secondary">Winner</label>
+            <div className="stack sm horizontal items-center">
               <div className="stack sm horizontal items-center font-semi-bold">
                 <input
                   type="radio"
@@ -1246,7 +1245,7 @@ function MapListMap({
             </div>
 
             {showReportedOwnWeapon && onOwnWeaponSelected ? (
-              <div className="stack horizontal items-center sm text-xs">
+              <>
                 <label className="mb-0 text-theme-secondary">Your weapon</label>
                 <WeaponCombobox
                   inputName="weapon"
@@ -1266,7 +1265,7 @@ function MapListMap({
                     );
                   }}
                 />
-              </div>
+              </>
             ) : null}
           </div>
         </Flipped>
