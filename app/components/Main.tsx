@@ -1,9 +1,10 @@
-import { useCatch } from "@remix-run/react";
+import { useCatch, useLocation } from "@remix-run/react";
 import clsx from "clsx";
 import type * as React from "react";
 import { useMatches } from "react-router";
 import { useUser } from "~/modules/auth";
 import type { RootLoaderData } from "~/root";
+import { SideNav } from "app/components/layout/SideNav";
 
 export const Main = ({
   children,
@@ -25,28 +26,34 @@ export const Main = ({
   const user = useUser();
   const showLeaderboard = data?.publisherId && !user?.patronTier && !caught;
 
+  const location = useLocation();
+  const isFrontPage = location.pathname === "/";
+
   return (
-    <main
-      className={
-        classNameOverwrite
-          ? clsx(classNameOverwrite, {
-              "half-width": halfWidth,
-              "pt-8-forced": showLeaderboard,
-            })
-          : clsx(
-              "layout__main",
-              "main",
-              {
+    <div className="layout__main-container">
+      {!isFrontPage ? <SideNav /> : null}
+      <main
+        className={
+          classNameOverwrite
+            ? clsx(classNameOverwrite, {
                 "half-width": halfWidth,
-                bigger,
                 "pt-8-forced": showLeaderboard,
-              },
-              className,
-            )
-      }
-      style={style}
-    >
-      {children}
-    </main>
+              })
+            : clsx(
+                "layout__main",
+                "main",
+                {
+                  "half-width": halfWidth,
+                  bigger,
+                  "pt-8-forced": showLeaderboard,
+                },
+                className,
+              )
+        }
+        style={style}
+      >
+        {children}
+      </main>
+    </div>
   );
 };

@@ -5,7 +5,6 @@ import type { Breadcrumb, SendouRouteHandle } from "~/utils/remix";
 import { Footer } from "./Footer";
 import { useTranslation } from "~/hooks/useTranslation";
 import { Image } from "../Image";
-import { SideNav } from "./SideNav";
 import { UserItem } from "./UserItem";
 import { LanguageChanger } from "./LanguageChanger";
 import { ThemeChanger } from "./ThemeChanger";
@@ -110,7 +109,6 @@ export const Layout = React.memo(function Layout({
           {!isErrored ? <UserItem /> : null}
         </div>
       </header>
-      {!isFrontPage ? <SideNav /> : null}
       {showLeaderboard ? <MyRampUnit /> : null}
       {children}
       <Footer patrons={data?.patrons} />
