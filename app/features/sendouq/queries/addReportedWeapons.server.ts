@@ -5,7 +5,6 @@ const insertStm = sql.prepare(/* sql */ `
   insert into "ReportedWeapon" 
     ("groupMatchMapId", "weaponSplId", "userId")
   values (@groupMatchMapId, @weaponSplId, @userId)
-  -- xxx: on conflict do update
 `);
 
 export const addReportedWeapons = (
