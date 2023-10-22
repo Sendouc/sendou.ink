@@ -38,8 +38,7 @@ const query = (byUser?: true) => /* sql */ `
       : /* sql */ `
     v."type" = coalesce(@type, v."type")
     and vm."mode" = coalesce(@mode, vm."mode")
-    and vm."stageId" = coalesce(@stageId, vm."stageId")
-    and vp."weaponSplId" = coalesce(@weapon, vp."weaponSplId")`
+    and vm."stageId" = coalesce(@stageId, vm."stageId")`
   }
   group by v."id"
   order by v."youtubeDate" desc
@@ -66,16 +65,19 @@ export function findVods({
 }): Array<ListVod> {
   const stmToUse = userId ? stmByUser : stm;
 
-  return (
-    stmToUse.all({ weapon, mode, stageId, type, limit, userId }) as any[]
-  ).map(({ playerNames: playerNamesRaw, players: playersRaw, ...vod }) => {
-    const playerNames = parseDBArray(playerNamesRaw);
-    const players = parseDBJsonArray(playersRaw);
+  return (stmToUse.all({ weapon, mode, stageId, type, limit, userId }) as any[])
+    .filter((vod) => {
+      if (!weapon) return true;
+      return vod.weapons.includes(weapon);
+    })
+    .map(({ playerNames: playerNamesRaw, players: playersRaw, ...vod }) => {
+      const playerNames = parseDBArray(playerNamesRaw);
+      const players = parseDBJsonArray(playersRaw);
 
-    return {
-      ...vod,
-      weapons: removeDuplicates(parseDBArray(vod.weapons)),
-      pov: playerNames[0] ?? players[0],
-    };
-  });
+      return {
+        ...vod,
+        weapons: removeDuplicates(parseDBArray(vod.weapons)),
+        pov: playerNames[0] ?? players[0],
+      };
+    });
 }
