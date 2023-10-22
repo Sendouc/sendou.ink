@@ -14,7 +14,12 @@ import type { TieredSkill } from "~/features/mmr/tiered.server";
 import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
 import { languagesUnified } from "~/modules/i18n/config";
-import { SENDOUQ_LOOKING_PAGE, navIconUrl, userPage } from "~/utils/urls";
+import {
+  SENDOUQ_LOOKING_PAGE,
+  TIERS_PAGE,
+  navIconUrl,
+  userPage,
+} from "~/utils/urls";
 import { FULL_GROUP_SIZE, SENDOUQ } from "../q-constants";
 import type { LookingGroup } from "../q-types";
 import { StarIcon } from "~/components/icons/Star";
@@ -462,13 +467,22 @@ function TierInfo({ skill }: { skill: TieredSkill }) {
     <div className="q__group-member__tier">
       <Popover buttonChildren={<TierImage tier={skill.tier} width={38} />}>
         <div className="stack sm items-center">
-          <TierImage tier={skill.tier} width={80} />
-          <div className="text-lighter text-xxs">
-            {skill.tier.name}
-            {skill.tier.isPlus ? "+" : ""}
+          <div className="stack items-center">
+            <TierImage tier={skill.tier} width={80} />
+            <div className="text-lighter text-xxs">
+              {skill.tier.name}
+              {skill.tier.isPlus ? "+" : ""}
+            </div>
+            <Link to={TIERS_PAGE} className="text-xxs" target="_blank">
+              All tiers
+            </Link>
           </div>
           {!skill.approximate ? (
-            <> {ordinalToRoundedSp(skill.ordinal)}SP</>
+            <div className="text-lg">
+              {" "}
+              {ordinalToRoundedSp(skill.ordinal)}
+              <span className="text-lighter">SP</span>
+            </div>
           ) : null}
         </div>
       </Popover>
