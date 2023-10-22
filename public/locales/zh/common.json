@@ -32,6 +32,7 @@
   "auth.errors.aborted": "登录中止",
   "auth.errors.failed": "登录失败",
   "auth.errors.discordPermissions": "为了完善您的sendou.ink个人资料，网站需要获取您的Discord名字、头像和社交链接。",
+  "auth.errors.unknown": "登录因服务器错误失败。请稍后重试或通过Lohi机器人使用/login指令。机器人可以在sendou.ink的Discord 中找到：",
 
   "footer.github.subtitle": "源代码",
   "footer.twitter.subtitle": "更新",
@@ -157,6 +158,7 @@
   "support.perk.nameInFooter": "在页脚展示您的名字",
   "support.perk.discordColorRole": "Discord颜色身份",
   "support.perk.discordColorRole.extra": "您可以在Plus Server和sendou.ink的Discord服务器自定义颜色身份。对Lohi机器人使用/color指令即可。",
+  "support.perk.chatColor": "选择在sendou.ink聊天中的名字颜色",
   "support.perk.badge": "资料页徽章",
   "support.perk.seePlusPercentage": "查看Plus Server的得票率",
   "support.perk.seePlusPercentage.extra": "通常只有未通过投票的玩家能查看自己的得票率。成为支持者能让您看到自己的得票率。",
@@ -167,6 +169,8 @@
   "support.perk.customizedColorsTeam.extra": "只要有一名队伍成员成为Patreon支持者即可获得此特权。",
   "support.perk.privateDiscord": "特殊Discord频道的访问权",
   "support.perk.privateDiscord.extra": "分享工作进度、优先提供帮助以及优先采纳建议。",
+  "support.perk.prioritySupport": "优先支持",
+  "support.perk.prioritySupport.extra": "获得单独的helpdesk使用权，用于优先支持",
 
   "custom.colors.title": "自定义颜色",
   "custom.colors.bg": "背景",
@@ -175,6 +179,7 @@
   "custom.colors.text": "字体",
   "custom.colors.text-lighter": "字体提亮",
   "custom.colors.theme": "主题",
+  "custom.colors.chat": "聊天名",
 
   "divisions.WEST": "艾洛眼",
   "divisions.JPN": "暇谷",
