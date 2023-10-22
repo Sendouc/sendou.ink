@@ -7,8 +7,12 @@ module.exports = {
   routes: async (defineRoutes) => {
     return defineRoutes((route) => {
       route("/badges", "features/badges/routes/badges.tsx", () => {
-        route("/badges/:id", "features/badges/routes/badges.$id.tsx");
-        route("/badges/:id/edit", "features/badges/routes/badges.$id.edit.tsx");
+        route("/badges/:id", "features/badges/routes/badges.$id.tsx", () => {
+          route(
+            "/badges/:id/edit",
+            "features/badges/routes/badges.$id.edit.tsx",
+          );
+        });
       });
 
       route("/upload", "features/img-upload/routes/upload.tsx");

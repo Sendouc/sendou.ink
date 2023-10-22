@@ -1,13 +1,9 @@
-import type { LoaderArgs } from "@remix-run/node";
+import type { LoaderArgs, SerializeFrom } from "@remix-run/node";
 import { Outlet, useLoaderData, useMatches, useParams } from "@remix-run/react";
 import clsx from "clsx";
 import { Badge } from "~/components/Badge";
 import { LinkButton } from "~/components/Button";
 import { Redirect } from "~/components/Redirect";
-import {
-  type ManagersByBadgeId,
-  type OwnersByBadgeId,
-} from "~/db/models/badges/queries.server";
 import { type Badge as BadgeDBType } from "~/db/types";
 import { useUser } from "~/modules/auth";
 import { canEditBadgeOwners, isMod } from "~/permissions";
@@ -22,11 +18,7 @@ export interface BadgeDetailsContext {
   badgeName: string;
 }
 
-export interface BadgeDetailsLoaderData {
-  owners: OwnersByBadgeId;
-  managers: ManagersByBadgeId;
-}
-
+export type BadgeDetailsLoaderData = SerializeFrom<typeof loader>;
 export const loader = async ({ params }: LoaderArgs) => {
   const badgeId = Number(params["id"]);
   if (Number.isNaN(badgeId)) {
@@ -44,7 +36,7 @@ export default function BadgeDetailsPage() {
   const [, parentRoute] = useMatches();
   const { badges } = parentRoute.data as BadgesLoaderData;
   const params = useParams();
-  const data = useLoaderData<BadgeDetailsLoaderData>();
+  const data = useLoaderData<typeof loader>();
   const { t } = useTranslation("badges");
 
   const badge = badges.find((b) => b.id === Number(params["id"]));

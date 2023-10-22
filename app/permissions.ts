@@ -9,7 +9,6 @@ import type {
 import { allTruthy } from "./utils/arrays";
 import { ADMIN_ID, LOHI_TOKEN_HEADER_NAME, MOD_IDS } from "./constants";
 import invariant from "tiny-invariant";
-import type { ManagersByBadgeId } from "./db/models/badges/queries.server";
 import { databaseTimestampToDate } from "./utils/dates";
 import type { FindMatchById } from "./features/tournament-bracket/queries/findMatchById.server";
 
@@ -250,7 +249,7 @@ export function canAccessLohiEndpoint(request: Request) {
 
 interface CanEditBadgeOwnersArgs {
   user?: Pick<User, "id">;
-  managers: ManagersByBadgeId;
+  managers: { id: number }[];
 }
 
 export function canEditBadgeOwners({ user, managers }: CanEditBadgeOwnersArgs) {

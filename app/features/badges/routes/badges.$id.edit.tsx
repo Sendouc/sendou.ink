@@ -5,38 +5,21 @@ import * as React from "react";
 import { z } from "zod";
 import { Button, LinkButton } from "~/components/Button";
 import { Dialog } from "~/components/Dialog";
-import { TrashIcon } from "~/components/icons/Trash";
 import { Label } from "~/components/Label";
-import { db } from "~/db";
+import { UserSearch } from "~/components/UserSearch";
+import { TrashIcon } from "~/components/icons/Trash";
 import type { User } from "~/db/types";
 import { useUser } from "~/modules/auth";
 import { requireUserId } from "~/modules/auth/user.server";
 import { canEditBadgeManagers, canEditBadgeOwners } from "~/permissions";
 import { atOrError } from "~/utils/arrays";
 import { parseRequestFormData, validate } from "~/utils/remix";
-import { discordFullName } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
 import { badgePage } from "~/utils/urls";
-import {
-  _action,
-  actualNumber,
-  id,
-  noDuplicates,
-  safeJSONParse,
-} from "~/utils/zod";
+import { actualNumber } from "~/utils/zod";
 import type { BadgeDetailsContext, BadgeDetailsLoaderData } from "./badges.$id";
-import { UserSearch } from "~/components/UserSearch";
-
-const editBadgeActionSchema = z.union([
-  z.object({
-    _action: _action("MANAGERS"),
-    managerIds: z.preprocess(safeJSONParse, z.array(id).refine(noDuplicates)),
-  }),
-  z.object({
-    _action: _action("OWNERS"),
-    ownerIds: z.preprocess(safeJSONParse, z.array(id)),
-  }),
-]);
+import { editBadgeActionSchema } from "../badges-schemas.server";
+import * as BadgeRepository from "../BadgeRepository.server";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const data = await parseRequestFormData({
@@ -50,18 +33,21 @@ export const action: ActionFunction = async ({ request, params }) => {
     case "MANAGERS": {
       validate(canEditBadgeManagers(user));
 
-      db.badges.upsertManyManagers({ badgeId, managerIds: data.managerIds });
+      await BadgeRepository.replaceManagers({
+        badgeId,
+        managerIds: data.managerIds,
+      });
       break;
     }
     case "OWNERS": {
       validate(
         canEditBadgeOwners({
           user,
-          managers: db.badges.managersByBadgeId(badgeId),
+          managers: await BadgeRepository.findManagersByBadgeId(badgeId),
         }),
       );
 
-      db.badges.upsertManyOwners({ badgeId, ownerIds: data.ownerIds });
+      await BadgeRepository.replaceOwners({ badgeId, ownerIds: data.ownerIds });
       break;
     }
     default: {
@@ -105,12 +91,7 @@ export default function EditBadgePage() {
 }
 
 function Managers({ data }: { data: BadgeDetailsLoaderData }) {
-  const [managers, setManagers] = React.useState(
-    data.managers.map((m) => ({
-      id: m.id,
-      discordFullName: discordFullName(m),
-    })),
-  );
+  const [managers, setManagers] = React.useState(data.managers);
 
   const amountOfChanges = managers
     .filter((m) => !data.managers.some((om) => om.id === m.id))
@@ -137,10 +118,7 @@ function Managers({ data }: { data: BadgeDetailsLoaderData }) {
             className="mx-auto"
             inputName="new-manager"
             onChange={(user) => {
-              setManagers([
-                ...managers,
-                { discordFullName: user.discordName, id: user.id },
-              ]);
+              setManagers([...managers, user]);
             }}
             userIdsToOmit={userIdsToOmitFromCombobox}
           />
@@ -148,7 +126,7 @@ function Managers({ data }: { data: BadgeDetailsLoaderData }) {
         <ul className="badges-edit__users-list">
           {managers.map((manager) => (
             <li key={manager.id}>
-              {manager.discordFullName}
+              {manager.discordName}
               <Button
                 icon={<TrashIcon />}
                 variant="minimal-destructive"
@@ -188,13 +166,7 @@ function Managers({ data }: { data: BadgeDetailsLoaderData }) {
 }
 
 function Owners({ data }: { data: BadgeDetailsLoaderData }) {
-  const [owners, setOwners] = React.useState(
-    data.owners.map((o) => ({
-      id: o.id,
-      discordFullName: discordFullName(o),
-      count: o.count,
-    })),
-  );
+  const [owners, setOwners] = React.useState(data.owners);
 
   const ownerDifferences = getOwnerDifferences(owners, data.owners);
 
@@ -212,14 +184,7 @@ function Owners({ data }: { data: BadgeDetailsLoaderData }) {
             className="mx-auto"
             inputName="new-owner"
             onChange={(user) => {
-              setOwners([
-                ...owners,
-                {
-                  discordFullName: user.discordName,
-                  id: user.id,
-                  count: 1,
-                },
-              ]);
+              setOwners([...owners, { count: 1, ...user }]);
             }}
             userIdsToOmit={userIdsToOmitFromCombobox}
           />
@@ -228,7 +193,7 @@ function Owners({ data }: { data: BadgeDetailsLoaderData }) {
       <ul className="badges-edit__users-list">
         {owners.map((owner) => (
           <li key={owner.id}>
-            {owner.discordFullName}
+            {owner.discordName}
             <input
               className="badges-edit__number-input"
               id="number"
@@ -290,12 +255,8 @@ function Owners({ data }: { data: BadgeDetailsLoaderData }) {
 }
 
 function getOwnerDifferences(
-  newOwners: Array<{
-    id: number;
-    discordFullName: string;
-    count: number;
-  }>,
-  oldOwners: BadgeDetailsLoaderData["owners"],
+  newOwners: BadgeRepository.FindOwnersByBadgeIdItem[],
+  oldOwners: BadgeRepository.FindOwnersByBadgeIdItem[],
 ) {
   const result: Array<{
     id: User["id"];
@@ -311,7 +272,7 @@ function getOwnerDifferences(
         id: owner.id,
         type: "added",
         difference: owner.count,
-        discordFullName: owner.discordFullName,
+        discordFullName: owner.discordName,
       });
       continue;
     }
@@ -321,7 +282,7 @@ function getOwnerDifferences(
         id: owner.id,
         type: owner.count > oldOwner.count ? "added" : "removed",
         difference: Math.abs(owner.count - oldOwner.count),
-        discordFullName: owner.discordFullName,
+        discordFullName: owner.discordName,
       });
     }
   }
