@@ -70,6 +70,8 @@ import {
 import { Tags } from "./components/Tags";
 import type { RankedModeShort } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
+import * as BadgeRepository from "~/features/badges/BadgeRepository.server";
+import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
 
 const MIN_DATE = new Date(Date.UTC(2015, 4, 28));
 
@@ -212,13 +214,13 @@ export const loader = async ({ request }: LoaderArgs) => {
   const eventId = Number(url.searchParams.get("eventId"));
   const eventToEdit = Number.isNaN(eventId)
     ? undefined
-    : db.calendarEvents.findById(eventId);
+    : await CalendarRepository.findById(eventId);
 
   const canEditEvent =
     eventToEdit && canEditCalendarEvent({ user, event: eventToEdit });
 
   return json({
-    managedBadges: db.badges.managedByUserId(user.id),
+    managedBadges: await BadgeRepository.findManagedByUserId(user.id),
     recentEventsWithMapPools: db.calendarEvents.findRecentMapPoolsByAuthorId(
       user.id,
     ),
@@ -229,7 +231,7 @@ export const loader = async ({ request }: LoaderArgs) => {
           tags: eventToEdit.tags.filter(
             (tag) => tag !== "BADGE" && tag !== "FULL_TOURNAMENT",
           ),
-          badges: db.calendarEvents.findBadgesByEventId(eventId),
+          badges: await CalendarRepository.findBadgesByEventId(eventId),
           mapPool: db.calendarEvents.findMapPoolByEventId(eventId),
           tieBreakerMapPool:
             db.calendarEvents.findTieBreakerMapPoolByEventId(eventId),

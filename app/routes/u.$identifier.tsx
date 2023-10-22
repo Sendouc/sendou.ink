@@ -34,6 +34,7 @@ import {
   userArtPage,
   userSeasonsPage,
 } from "~/utils/urls";
+import * as BadgeRepository from "~/features/badges/BadgeRepository.server";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -104,7 +105,10 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     country: user.country,
     banned: isAdmin(loggedInUser) ? user.banned : undefined,
     css: canAddCustomizedColorsToUserProfile(user) ? user.css : undefined,
-    badges: db.badges.findByOwnerId(user.id),
+    badges: await BadgeRepository.findByOwnerId({
+      userId: user.id,
+      favoriteBadgeId: user.favoriteBadgeId,
+    }),
     // TODO: could load only on results page
     results: db.calendarEvents.findResultsByUserId(user.id),
     buildsCount: db.builds.countByUserId({

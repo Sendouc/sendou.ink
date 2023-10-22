@@ -8,6 +8,52 @@ export function all() {
     .execute();
 }
 
+export async function findByOwnerId({
+  userId,
+  favoriteBadgeId,
+}: {
+  userId: number;
+  favoriteBadgeId: number | null;
+}) {
+  const badges = await dbNew
+    .selectFrom("BadgeOwner")
+    .innerJoin("Badge", "Badge.id", "BadgeOwner.badgeId")
+    .select(({ fn }) => [
+      fn.count<number>("BadgeOwner.badgeId").as("count"),
+      "Badge.id",
+      "Badge.displayName",
+      "Badge.code",
+      "Badge.hue",
+    ])
+    .where("BadgeOwner.userId", "=", userId)
+    .groupBy(["BadgeOwner.badgeId", "BadgeOwner.userId"])
+    .orderBy("Badge.id", "asc")
+    .execute();
+
+  if (!favoriteBadgeId) {
+    return badges;
+  }
+
+  return badges.sort((a, b) => {
+    if (a.id === favoriteBadgeId) {
+      return -1;
+    }
+    if (b.id === favoriteBadgeId) {
+      return 1;
+    }
+    return 0;
+  });
+}
+
+export function findManagedByUserId(userId: number) {
+  return dbNew
+    .selectFrom("BadgeManager")
+    .innerJoin("Badge", "Badge.id", "BadgeManager.badgeId")
+    .select(["Badge.id", "Badge.code", "Badge.displayName", "Badge.hue"])
+    .where("BadgeManager.userId", "=", userId)
+    .execute();
+}
+
 export function findManagersByBadgeId(badgeId: number) {
   return (
     dbNew

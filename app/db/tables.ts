@@ -12,7 +12,7 @@ export interface AllTeam {
   css: string | null;
   customUrl: string;
   deletedAt: number | null;
-  id: number | null;
+  id: GeneratedAlways<number>;
   inviteCode: string;
   name: string;
   twitter: string | null;
@@ -31,7 +31,7 @@ export interface Art {
   authorId: number;
   createdAt: Generated<number>;
   description: string | null;
-  id: number | null;
+  id: GeneratedAlways<number>;
   imgId: number;
   isShowcase: Generated<number>;
 }
@@ -39,7 +39,7 @@ export interface Art {
 export interface ArtTag {
   authorId: number;
   createdAt: Generated<number>;
-  id: number | null;
+  id: GeneratedAlways<number>;
   name: string;
 }
 
@@ -52,7 +52,7 @@ export interface Badge {
   code: string;
   displayName: string;
   hue: number | null;
-  id: number | null;
+  id: GeneratedAlways<number>;
 }
 // export type SelectableBadge = Selectable<Badge>;
 
@@ -71,7 +71,7 @@ export interface Build {
   clothesGearSplId: number;
   description: string | null;
   headGearSplId: number;
-  id: number | null;
+  id: GeneratedAlways<number>;
   modes: string | null;
   ownerId: number;
   private: Generated<number | null>;
@@ -97,7 +97,8 @@ export interface CalendarEvent {
   bracketUrl: string;
   description: string | null;
   discordInviteCode: string | null;
-  id: number | null;
+  id: GeneratedAlways<number>;
+  discordUrl: GeneratedAlways<string | null>;
   name: string;
   participantCount: number | null;
   tags: string | null;
@@ -111,7 +112,7 @@ export interface CalendarEventBadge {
 
 export interface CalendarEventDate {
   eventId: number;
-  id: number | null;
+  id: GeneratedAlways<number>;
   startTime: number;
 }
 
@@ -123,7 +124,7 @@ export interface CalendarEventResultPlayer {
 
 export interface CalendarEventResultTeam {
   eventId: number;
-  id: number | null;
+  id: GeneratedAlways<number>;
   name: string;
   placement: number;
 }
@@ -136,7 +137,7 @@ export interface FreshPlusTier {
 export interface Group {
   chatCode: string | null;
   createdAt: Generated<number>;
-  id: number | null;
+  id: GeneratedAlways<number>;
   inviteCode: string;
   latestActionAt: Generated<number>;
   mapListPreference: string;
@@ -155,14 +156,14 @@ export interface GroupMatch {
   bravoGroupId: number;
   chatCode: string | null;
   createdAt: Generated<number>;
-  id: number | null;
+  id: GeneratedAlways<number>;
   memento: string | null;
   reportedAt: number | null;
   reportedByUserId: number | null;
 }
 
 export interface GroupMatchMap {
-  id: number | null;
+  id: GeneratedAlways<number>;
   index: number;
   matchId: number;
   mode: string;
@@ -205,7 +206,7 @@ export interface MapResult {
 
 export interface Migrations {
   created_at: string;
-  id: number | null;
+  id: GeneratedAlways<number>;
   name: string;
 }
 
@@ -223,7 +224,7 @@ export interface PlayerResult {
 export interface PlusSuggestion {
   authorId: number;
   createdAt: Generated<number>;
-  id: number | null;
+  id: GeneratedAlways<number>;
   month: number;
   suggestedId: number;
   text: string;
@@ -264,7 +265,7 @@ export interface ReportedWeapon {
 
 export interface Skill {
   groupMatchId: number | null;
-  id: number | null;
+  id: GeneratedAlways<number>;
   identifier: string | null;
   matchesCount: number;
   mu: number;
@@ -281,7 +282,7 @@ export interface SkillTeamUser {
 }
 
 export interface SplatoonPlayer {
-  id: number | null;
+  id: GeneratedAlways<number>;
   splId: string;
   userId: number | null;
 }
@@ -299,7 +300,7 @@ export interface Team {
   css: string | null;
   customUrl: string | null;
   deletedAt: number | null;
-  id: number | null;
+  id: GeneratedAlways<number>;
   inviteCode: string | null;
   name: string | null;
   twitter: string | null;
@@ -314,10 +315,19 @@ export interface TeamMember {
   userId: number | null;
 }
 
+// AUTO = style where teams pick their map pool ahead of time and the map lists are automatically made for each round
+// could also have the traditional style where TO picks the maps later
+type TournamentMapPickingStyle =
+  | "AUTO_ALL"
+  | "AUTO_SZ"
+  | "AUTO_TC"
+  | "AUTO_RM"
+  | "AUTO_CB";
+
 export interface Tournament {
   format: string;
-  id: number | null;
-  mapPickingStyle: string;
+  id: GeneratedAlways<number>;
+  mapPickingStyle: TournamentMapPickingStyle;
   showMapListGenerator: Generated<number | null>;
 }
 
@@ -327,7 +337,7 @@ export interface TournamentBadgeOwner {
 }
 
 export interface TournamentGroup {
-  id: number | null;
+  id: GeneratedAlways<number>;
   number: number;
   stageId: number;
 }
@@ -337,7 +347,7 @@ export interface TournamentMatch {
   chatCode: string | null;
   childCount: number;
   groupId: number;
-  id: number | null;
+  id: GeneratedAlways<number>;
   number: number;
   opponentOne: string;
   opponentTwo: string;
@@ -348,7 +358,7 @@ export interface TournamentMatch {
 
 export interface TournamentMatchGameResult {
   createdAt: Generated<number>;
-  id: number | null;
+  id: GeneratedAlways<number>;
   matchId: number;
   mode: string;
   number: number;
@@ -374,13 +384,13 @@ export interface TournamentResult {
 
 export interface TournamentRound {
   groupId: number;
-  id: number | null;
+  id: GeneratedAlways<number>;
   number: number;
   stageId: number;
 }
 
 export interface TournamentStage {
-  id: number | null;
+  id: GeneratedAlways<number>;
   name: string;
   number: number;
   settings: string;
@@ -401,7 +411,7 @@ export interface TournamentSub {
 
 export interface TournamentTeam {
   createdAt: Generated<number>;
-  id: number | null;
+  id: GeneratedAlways<number>;
   inviteCode: string;
   name: string;
   prefersNotToHost: Generated<number>;
@@ -427,7 +437,7 @@ export interface TrustRelationship {
 }
 
 export interface UnvalidatedUserSubmittedImage {
-  id: number | null;
+  id: GeneratedAlways<number>;
   submitterUserId: number;
   url: string;
   validatedAt: number | null;
@@ -435,7 +445,7 @@ export interface UnvalidatedUserSubmittedImage {
 
 export interface UnvalidatedVideo {
   eventId: number | null;
-  id: number | null;
+  id: GeneratedAlways<number>;
   submitterUserId: number;
   title: string;
   type: string;
@@ -481,7 +491,7 @@ export interface UserResultHighlight {
 }
 
 export interface UserSubmittedImage {
-  id: number | null;
+  id: GeneratedAlways<number>;
   submitterUserId: number | null;
   url: string | null;
   validatedAt: number | null;
@@ -497,7 +507,7 @@ export interface UserWeapon {
 
 export interface Video {
   eventId: number | null;
-  id: number | null;
+  id: GeneratedAlways<number>;
   submitterUserId: number | null;
   title: string | null;
   type: string | null;
@@ -507,7 +517,7 @@ export interface Video {
 }
 
 export interface VideoMatch {
-  id: number | null;
+  id: GeneratedAlways<number>;
   mode: string;
   stageId: number;
   startsAt: number;
@@ -525,7 +535,7 @@ export interface VideoMatchPlayer {
 export interface XRankPlacement {
   badges: string;
   bannerSplId: number;
-  id: number | null;
+  id: GeneratedAlways<number>;
   mode: string;
   month: number;
   name: string;

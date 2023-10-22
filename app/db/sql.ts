@@ -15,4 +15,5 @@ export const dbNew = new Kysely<DB>({
   dialect: new SqliteDialect({
     database: sql,
   }),
+  // plugins: [new ParseJSONResultsPlugin()],
 });
