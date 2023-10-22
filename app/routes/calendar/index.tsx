@@ -258,12 +258,13 @@ function WeekLinkTitle({
   const data = useLoaderData<typeof loader>();
   const { i18n } = useTranslation();
 
+  const isSameYear = week.year === new Date().getFullYear();
   const relativeWeekIdentifier =
-    week.number === data.currentWeek
+    week.number === data.currentWeek && isSameYear
       ? t("week.this")
-      : week.number - data.currentWeek === 1
+      : week.number - data.currentWeek === 1 && isSameYear
       ? t("week.next")
-      : week.number - data.currentWeek === -1
+      : week.number - data.currentWeek === -1 && isSameYear
       ? t("week.last")
       : null;
 
