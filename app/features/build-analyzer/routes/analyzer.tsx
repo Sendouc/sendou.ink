@@ -1018,7 +1018,7 @@ function statKeyGraphOptions({
       (_, i) =>
         buildStats({
           abilityPoints: new Map([[stackableAbility, i]]),
-          weaponSplId: 0,
+          weaponSplId: mainWeaponId,
           mainOnlyAbilities: [mainOnlyAbility],
           hasTacticooler: false,
         }),
