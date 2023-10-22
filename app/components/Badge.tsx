@@ -1,6 +1,6 @@
-import type { Badge as BadgeDBType } from "~/db/types";
 import { badgeUrl } from "~/utils/urls";
 import { Image } from "./Image";
+import type { DB } from "kysely-codegen";
 
 export function Badge({
   badge,
@@ -8,7 +8,7 @@ export function Badge({
   isAnimated,
   size,
 }: {
-  badge: Pick<BadgeDBType, "displayName" | "code" | "hue">;
+  badge: Pick<DB["Badge"], "displayName" | "code" | "hue">;
   onClick?: () => void;
   isAnimated: boolean;
   size: number;

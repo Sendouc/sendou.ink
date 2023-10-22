@@ -11,6 +11,7 @@ sql.pragma("foreign_keys = ON");
 sql.pragma("busy_timeout = 5000");
 
 // xxx: rename
+// xxx: probably this should not come directly from kysely-codegen but from our own file?
 export const dbNew = new Kysely<DB>({
   dialect: new SqliteDialect({
     database: sql,

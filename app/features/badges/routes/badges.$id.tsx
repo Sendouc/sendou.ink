@@ -1,11 +1,9 @@
-import { json } from "@remix-run/node";
-import type { LoaderFunction } from "@remix-run/node";
+import type { LoaderArgs } from "@remix-run/node";
 import { Outlet, useLoaderData, useMatches, useParams } from "@remix-run/react";
 import clsx from "clsx";
 import { Badge } from "~/components/Badge";
 import { LinkButton } from "~/components/Button";
 import { Redirect } from "~/components/Redirect";
-import { db } from "~/db";
 import {
   type ManagersByBadgeId,
   type OwnersByBadgeId,
@@ -13,12 +11,12 @@ import {
 import { type Badge as BadgeDBType } from "~/db/types";
 import { useUser } from "~/modules/auth";
 import { canEditBadgeOwners, isMod } from "~/permissions";
-import { discordFullName } from "~/utils/strings";
 import { BADGES_PAGE } from "~/utils/urls";
-import { type BadgesLoaderData } from "../badges";
+import { type BadgesLoaderData } from "./badges";
 import { type TFunction } from "react-i18next";
 import { useTranslation } from "~/hooks/useTranslation";
 import { SPLATOON_3_XP_BADGE_VALUES } from "~/constants";
+import * as BadgeRepository from "../BadgeRepository.server";
 
 export interface BadgeDetailsContext {
   badgeName: string;
@@ -29,16 +27,16 @@ export interface BadgeDetailsLoaderData {
   managers: ManagersByBadgeId;
 }
 
-export const loader: LoaderFunction = ({ params }) => {
+export const loader = async ({ params }: LoaderArgs) => {
   const badgeId = Number(params["id"]);
   if (Number.isNaN(badgeId)) {
     throw new Response(null, { status: 404 });
   }
 
-  return json<BadgeDetailsLoaderData>({
-    owners: db.badges.ownersByBadgeId(badgeId),
-    managers: db.badges.managersByBadgeId(badgeId),
-  });
+  return {
+    owners: await BadgeRepository.findOwnersByBadgeId(badgeId),
+    managers: await BadgeRepository.findManagersByBadgeId(badgeId),
+  };
 };
 
 export default function BadgeDetailsPage() {
@@ -68,7 +66,7 @@ export default function BadgeDetailsPage() {
           })}
         >
           {t("managedBy", {
-            users: data.managers.map((m) => discordFullName(m)).join(", "),
+            users: data.managers.map((m) => m.discordName).join(", "),
           })}
         </div>
       </div>
@@ -88,7 +86,7 @@ export default function BadgeDetailsPage() {
               >
                 ×{owner.count}
               </span>
-              <span>{discordFullName(owner)}</span>
+              <span>{owner.discordName}</span>
             </li>
           ))}
         </ul>

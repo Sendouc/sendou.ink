@@ -24,7 +24,7 @@ import {
   noDuplicates,
   safeJSONParse,
 } from "~/utils/zod";
-import type { BadgeDetailsContext, BadgeDetailsLoaderData } from "../$id";
+import type { BadgeDetailsContext, BadgeDetailsLoaderData } from "./badges.$id";
 import { UserSearch } from "~/components/UserSearch";
 
 const editBadgeActionSchema = z.union([

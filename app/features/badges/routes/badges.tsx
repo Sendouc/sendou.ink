@@ -1,10 +1,7 @@
-import { json } from "@remix-run/node";
-import type { LinksFunction, LoaderFunction } from "@remix-run/node";
+import type { LinksFunction, SerializeFrom } from "@remix-run/node";
 import { Link, NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import { Badge } from "~/components/Badge";
 import { Main } from "~/components/Main";
-import { db } from "~/db";
-import type { FindAll } from "~/db/models/badges/queries.server";
 import styles from "~/styles/badges.css";
 import {
   BADGES_PAGE,
@@ -15,14 +12,11 @@ import {
 import { Trans } from "react-i18next";
 import { useTranslation } from "~/hooks/useTranslation";
 import { type SendouRouteHandle } from "~/utils/remix";
+import * as BadgeRepository from "../BadgeRepository.server";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
-
-export interface BadgesLoaderData {
-  badges: FindAll;
-}
 
 export const handle: SendouRouteHandle = {
   i18n: "badges",
@@ -33,13 +27,15 @@ export const handle: SendouRouteHandle = {
   }),
 };
 
-export const loader: LoaderFunction = () => {
-  return json<BadgesLoaderData>({ badges: db.badges.all() });
+export type BadgesLoaderData = SerializeFrom<typeof loader>;
+
+export const loader = async () => {
+  return { badges: await BadgeRepository.all() };
 };
 
 export default function BadgesPageLayout() {
   const { t } = useTranslation("badges");
-  const data = useLoaderData<BadgesLoaderData>();
+  const data = useLoaderData<typeof loader>();
 
   return (
     <Main>
