@@ -67,7 +67,7 @@ import {
   safeJSONParse,
   toArray,
 } from "~/utils/zod";
-import { Tags } from "./components/Tags";
+import { Tags } from "../components/Tags";
 import type { RankedModeShort } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import * as BadgeRepository from "~/features/badges/BadgeRepository.server";
@@ -172,7 +172,7 @@ export const action: ActionFunction = async ({ request }) => {
 
   if (data.eventToEditId) {
     const eventToEdit = badRequestIfFalsy(
-      db.calendarEvents.findById(data.eventToEditId),
+      await CalendarRepository.findById(data.eventToEditId),
     );
     validate(
       canEditCalendarEvent({ user, event: eventToEdit }),
@@ -180,7 +180,7 @@ export const action: ActionFunction = async ({ request }) => {
       401,
     );
 
-    db.calendarEvents.update({
+    await CalendarRepository.update({
       eventId: data.eventToEditId,
       mapPoolMaps: deserializedMaps,
       ...commonArgs,
@@ -188,10 +188,10 @@ export const action: ActionFunction = async ({ request }) => {
 
     throw redirect(calendarEventPage(data.eventToEditId));
   } else {
-    const createdEventId = db.calendarEvents.create({
+    const createdEventId = await CalendarRepository.create({
       authorId: user.id,
       mapPoolMaps: deserializedMaps,
-      createTournament: data.toToolsEnabled,
+      isFullTournament: data.toToolsEnabled,
       mapPickingStyle: data.toToolsMode
         ? `AUTO_${data.toToolsMode}`
         : "AUTO_ALL",

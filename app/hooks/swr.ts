@@ -1,7 +1,7 @@
 import useSWRImmutable from "swr/immutable";
 import type { WeaponUsageLoaderData } from "~/features/sendouq/routes/weapon-usage";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
-import type { EventsWithMapPoolsLoaderData } from "~/routes/calendar/map-pool-events";
+import type { EventsWithMapPoolsLoaderData } from "~/features/calendar/routes/map-pool-events";
 import {
   GET_ALL_EVENTS_WITH_MAP_POOLS_ROUTE,
   getWeaponUsage,

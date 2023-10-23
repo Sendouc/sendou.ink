@@ -4,8 +4,9 @@ import { useTranslation } from "~/hooks/useTranslation";
 import { Badge } from "~/components/Badge";
 import { Button } from "~/components/Button";
 import { CrossIcon } from "~/components/icons/Cross";
-import type { Badge as BadgeType, CalendarEventTag } from "~/db/types";
+import type { CalendarEventTag } from "~/db/types";
 import allTags from "../tags.json";
+import type * as CalendarRepository from "../CalendarRepository.server";
 
 export function Tags({
   tags,
@@ -13,7 +14,8 @@ export function Tags({
   onDelete,
 }: {
   tags: Array<CalendarEventTag>;
-  badges?: Array<BadgeType>;
+  badges?: CalendarRepository.FindAllBetweenTwoTimestampsItem["badgePrizes"];
+
   /** Called when tag delete button clicked. If undefined delete buttons won't be shown. */
   onDelete?: (tag: CalendarEventTag) => void;
 }) {

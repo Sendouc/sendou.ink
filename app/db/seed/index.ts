@@ -25,7 +25,7 @@ import {
   lastCompletedVoting,
   nextNonCompletedVoting,
 } from "~/modules/plus-server";
-import allTags from "~/routes/calendar/tags.json";
+import allTags from "~/features/calendar/tags.json";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import type { UpsertManyPlusVotesArgs } from "../models/plusVotes/queries.server";
 import { nanoid } from "nanoid";

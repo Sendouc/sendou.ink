@@ -14,7 +14,6 @@ import { z } from "zod";
 import { Alert } from "~/components/Alert";
 import { LinkButton } from "~/components/Button";
 import { Main } from "~/components/Main";
-import { db } from "~/db";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
@@ -41,9 +40,10 @@ import {
   tournamentPage,
 } from "~/utils/urls";
 import { actualNumber } from "~/utils/zod";
-import { Tags } from "./components/Tags";
+import { Tags } from "../components/Tags";
 import { Divider } from "~/components/Divider";
 import { UsersIcon } from "~/components/icons/Users";
+import * as CalendarRepository from "../CalendarRepository.server";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -104,7 +104,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     currentWeek,
     displayedWeek,
     currentDay: new Date().getDay(),
-    nearbyStartTimes: db.calendarEvents.startTimesOfRange({
+    nearbyStartTimes: await CalendarRepository.startTimesOfRange({
       startTime: subMonths(
         weekNumberToDate({ week: displayedWeek, year: displayedYear }),
         1,
@@ -115,8 +115,13 @@ export const loader = async ({ request }: LoaderArgs) => {
       ),
     }),
     weeks: closeByWeeks({ week: displayedWeek, year: displayedYear }),
-    events: fetchEventsOfWeek({ week: displayedWeek, year: displayedYear }),
-    eventsToReport: db.calendarEvents.eventsToReport(user?.id),
+    events: await fetchEventsOfWeek({
+      week: displayedWeek,
+      year: displayedYear,
+    }),
+    eventsToReport: user
+      ? await CalendarRepository.eventsToReport(user.id)
+      : [],
     title: makeTitle([`Week ${displayedWeek}`, t("pages.calendar")]),
   });
 };
@@ -147,7 +152,7 @@ function fetchEventsOfWeek(args: { week: number; year: number }) {
   startTime.setHours(startTime.getHours() - 12);
   endTime.setHours(endTime.getHours() + 12);
 
-  return db.calendarEvents.findAllBetweenTwoTimestamps({ startTime, endTime });
+  return CalendarRepository.findAllBetweenTwoTimestamps({ startTime, endTime });
 }
 
 export default function CalendarPage() {

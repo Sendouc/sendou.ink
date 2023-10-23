@@ -1,6 +1,6 @@
 import Database from "better-sqlite3";
 import invariant from "tiny-invariant";
-import { Kysely, SqliteDialect } from "kysely";
+import { Kysely, ParseJSONResultsPlugin, SqliteDialect } from "kysely";
 import type { DB } from "./tables";
 
 invariant(process.env["DB_PATH"], "DB_PATH env variable must be set");
@@ -15,5 +15,7 @@ export const dbNew = new Kysely<DB>({
   dialect: new SqliteDialect({
     database: sql,
   }),
-  // plugins: [new ParseJSONResultsPlugin()],
+  // xxx: chalk, but not for prod?
+  log: ["query"],
+  plugins: [new ParseJSONResultsPlugin()],
 });

@@ -6,7 +6,7 @@ import type {
   RankedModeShort,
   StageId,
 } from "~/modules/in-game-lists";
-import type allTags from "../routes/calendar/tags.json";
+import type allTags from "~/features/calendar/tags.json";
 import type { TieredSkill } from "~/features/mmr/tiered.server";
 
 export interface User {

@@ -15,7 +15,7 @@ import { CrossIcon } from "./icons/Cross";
 import { ArrowLongLeftIcon } from "./icons/ArrowLongLeft";
 import * as React from "react";
 import type { CalendarEvent } from "~/db/types";
-import type { SerializedMapPoolEvent } from "~/routes/calendar/map-pool-events";
+import type { SerializedMapPoolEvent } from "~/features/calendar/routes/map-pool-events";
 import { assertType } from "~/utils/types";
 import { MapPoolEventsCombobox } from "./Combobox";
 

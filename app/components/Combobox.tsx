@@ -19,7 +19,7 @@ import {
   nonDamagingSpecialWeaponIds,
   specialWeaponIds,
 } from "~/modules/in-game-lists/weapon-ids";
-import { type SerializedMapPoolEvent } from "~/routes/calendar/map-pool-events";
+import { type SerializedMapPoolEvent } from "~/features/calendar/routes/map-pool-events";
 import type { Unpacked } from "~/utils/types";
 import {
   gearImageUrl,

@@ -15,6 +15,15 @@ module.exports = {
         });
       });
 
+      route("/calendar", "features/calendar/routes/calendar.tsx");
+      route("/calendar/new", "features/calendar/routes/calendar.new.tsx");
+      route("/calendar/:id", "features/calendar/routes/calendar.$id.tsx");
+      route(
+        "/calendar/:id/report-winners",
+        "features/calendar/routes/calendar.$id.report-winners.tsx",
+      );
+      route("/map-pool-events", "features/calendar/routes/map-pool-events.ts");
+
       route("/upload", "features/img-upload/routes/upload.tsx");
       route("/upload/admin", "features/img-upload/routes/upload.admin.tsx");
       route("/plans", "features/map-planner/routes/plans.tsx");
