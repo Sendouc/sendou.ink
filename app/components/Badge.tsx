@@ -1,6 +1,5 @@
 import { badgeUrl } from "~/utils/urls";
 import { Image } from "./Image";
-import type * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
 
 export function Badge({
   badge,
@@ -8,7 +7,7 @@ export function Badge({
   isAnimated,
   size,
 }: {
-  badge: CalendarRepository.FindAllBetweenTwoTimestampsItem["badgePrizes"][number];
+  badge: { displayName: string; hue?: number | null; code: string };
   onClick?: () => void;
   isAnimated: boolean;
   size: number;
