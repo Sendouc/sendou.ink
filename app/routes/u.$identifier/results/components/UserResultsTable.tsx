@@ -4,7 +4,6 @@ import { Avatar } from "~/components/Avatar";
 import { Placement } from "~/components/Placement";
 import { type UserPageLoaderData } from "~/routes/u.$identifier";
 import { databaseTimestampToDate } from "~/utils/dates";
-import { discordFullName } from "~/utils/strings";
 import {
   calendarEventPage,
   tournamentBracketsPage,
@@ -67,7 +66,7 @@ export function UserResultsTable({
                         : HIGHLIGHT_CHECKBOX_NAME
                     }
                     type="checkbox"
-                    defaultChecked={result.isHighlight}
+                    defaultChecked={Boolean(result.isHighlight)}
                   />
                 </td>
               )}
@@ -115,18 +114,19 @@ export function UserResultsTable({
                 <ul className="u__results-players">
                   {result.mates.map((player) => (
                     <li
-                      key={typeof player === "string" ? player : player.id}
+                      key={player.name ? player.name : player.id}
                       className="flex items-center"
                     >
-                      {typeof player === "string" ? (
-                        player
+                      {player.name ? (
+                        player.name
                       ) : (
+                        // as any but we know it's a user since it doesn't have name
                         <Link
-                          to={userPage(player)}
+                          to={userPage(player as any)}
                           className="stack horizontal xs items-center"
                         >
-                          <Avatar user={player} size="xxs" />
-                          {discordFullName(player)}
+                          <Avatar user={player as any} size="xxs" />
+                          {player.discordName}
                         </Link>
                       )}
                     </li>

@@ -1,73 +1,14 @@
-// select
-//   "CalendarEvent"."id" as "eventId",
-//   null as "tournamentId",
-//   "CalendarEventResultTeam"."placement",
-//   "CalendarEvent"."participantCount",
-//   "CalendarEvent"."name" as "eventName",
-//   "CalendarEventResultTeam"."id" as "teamId",
-//   "CalendarEventResultTeam"."name" as "teamName",
-//   (
-//     select
-//       max("startTime")
-//     from
-//       "CalendarEventDate"
-//     where
-//       "eventId" = "CalendarEvent"."id"
-//   ) as "startTime",
-//   exists (
-//     select
-//       1
-//     from
-//       "UserResultHighlight"
-//     where
-//       "userId" = @userId
-//       and "teamId" = "CalendarEventResultTeam"."id"
-//   ) as "isHighlight"
-// from
-//   "CalendarEventResultPlayer"
-//   join "CalendarEventResultTeam" on "CalendarEventResultTeam"."id" = "CalendarEventResultPlayer"."teamId"
-//   join "CalendarEvent" on "CalendarEvent"."id" = "CalendarEventResultTeam"."eventId"
-// where
-//   "CalendarEventResultPlayer"."userId" = @userId
-// union
-// all
-// select
-//   null as "eventId",
-//   "TournamentResult"."tournamentId",
-//   "TournamentResult"."placement",
-//   "TournamentResult"."participantCount",
-//   "CalendarEvent"."name" as "eventName",
-//   "TournamentTeam"."id" as "teamId",
-//   "TournamentTeam"."name" as "teamName",
-//   (
-//     select
-//       max("startTime")
-//     from
-//       "CalendarEventDate"
-//     where
-//       "eventId" = "CalendarEvent"."id"
-//   ) as "startTime",
-//   "TournamentResult"."isHighlight"
-// from
-//   "TournamentResult"
-//   left join "TournamentTeam" on "TournamentTeam"."id" = "TournamentResult"."tournamentTeamId"
-//   left join "CalendarEvent" on "CalendarEvent"."tournamentId" = "TournamentResult"."tournamentId"
-// where
-//   "TournamentResult"."userId" = @userId
-// order by
-//   "startTime" desc
-
-import { ExpressionBuilder, sql } from "kysely";
+import type { ExpressionBuilder } from "kysely";
+import { sql } from "kysely";
 import { jsonArrayFrom } from "kysely/helpers/sqlite";
 import { dbNew } from "~/db/sql";
-import { DB } from "~/db/tables";
+import type { DB } from "~/db/tables";
+import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
 
-const withMaxEventStartTime = <T extends "CalendarEvent">(
-  eb: ExpressionBuilder<DB, T>,
-) => {
+const withMaxEventStartTime = (eb: ExpressionBuilder<DB, "CalendarEvent">) => {
   return eb
     .selectFrom("CalendarEventDate")
-    .select(({ fn }) => [fn.max("startTime").as("startTime")])
+    .select(({ fn }) => [fn.max("CalendarEventDate.startTime").as("startTime")])
     .whereRef("CalendarEventDate.eventId", "=", "CalendarEvent.id")
     .as("startTime");
 };
@@ -92,7 +33,8 @@ export function findResultsByUserId(userId: number) {
       "CalendarEvent.name as eventName",
       "CalendarEventResultTeam.id as teamId",
       "CalendarEventResultTeam.name as teamName",
-      withMaxEventStartTime(eb),
+      // xxx: can we get rid of as?
+      withMaxEventStartTime(eb as ExpressionBuilder<DB, "CalendarEvent">),
       exists(
         selectFrom("UserResultHighlight")
           .where("UserResultHighlight.userId", "=", userId)
@@ -103,6 +45,19 @@ export function findResultsByUserId(userId: number) {
           )
           .select("UserResultHighlight.userId"),
       ).as("isHighlight"),
+      jsonArrayFrom(
+        eb
+          .selectFrom("CalendarEventResultPlayer")
+          .leftJoin("User", "User.id", "CalendarEventResultPlayer.userId")
+          .select([...COMMON_USER_FIELDS, "CalendarEventResultPlayer.name"])
+          .whereRef("CalendarEventResultPlayer.teamId", "=", "teamId")
+          .where((eb) =>
+            eb.or([
+              eb("CalendarEventResultPlayer.userId", "is", null),
+              eb("CalendarEventResultPlayer.userId", "!=", userId),
+            ]),
+          ),
+      ).as("mates"),
     ])
     .where("CalendarEventResultPlayer.userId", "=", userId)
     .unionAll(
@@ -128,8 +83,24 @@ export function findResultsByUserId(userId: number) {
           "TournamentTeam.name as teamName",
           withMaxEventStartTime(eb),
           "TournamentResult.isHighlight",
+          jsonArrayFrom(
+            eb
+              .selectFrom("TournamentTeamMember")
+              .innerJoin("User", "User.id", "TournamentTeamMember.userId")
+              .select([
+                ...COMMON_USER_FIELDS,
+                sql<string | null>`null`.as("name"),
+              ])
+              .whereRef(
+                "TournamentTeamMember.tournamentTeamId",
+                "=",
+                "TournamentTeam.id",
+              )
+              .where("TournamentTeamMember.userId", "!=", userId),
+          ).as("mates"),
         ])
         .where("TournamentResult.userId", "=", userId),
     )
-    .orderBy("startTime", "desc");
+    .orderBy("startTime", "desc")
+    .execute();
 }

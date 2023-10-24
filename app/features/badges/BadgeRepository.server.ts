@@ -1,4 +1,5 @@
 import { dbNew } from "~/db/sql";
+import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
 import type { Unwrapped } from "~/utils/types";
 
 export function all() {
@@ -55,15 +56,12 @@ export function findManagedByUserId(userId: number) {
 }
 
 export function findManagersByBadgeId(badgeId: number) {
-  return (
-    dbNew
-      .selectFrom("BadgeManager")
-      .innerJoin("User", "BadgeManager.userId", "User.id")
-      // xxx: common user fields?
-      .select(["User.id", "User.discordId", "User.discordName"])
-      .where("BadgeManager.badgeId", "=", badgeId)
-      .execute()
-  );
+  return dbNew
+    .selectFrom("BadgeManager")
+    .innerJoin("User", "BadgeManager.userId", "User.id")
+    .select(COMMON_USER_FIELDS)
+    .where("BadgeManager.badgeId", "=", badgeId)
+    .execute();
 }
 
 export type FindOwnersByBadgeIdItem = Unwrapped<typeof findOwnersByBadgeId>;
