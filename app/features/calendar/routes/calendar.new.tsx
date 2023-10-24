@@ -26,7 +26,6 @@ import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
 import { SubmitButton } from "~/components/SubmitButton";
 import { Toggle } from "~/components/Toggle";
 import { CALENDAR_EVENT } from "~/constants";
-import { db } from "~/db";
 import type {
   Badge as BadgeType,
   CalendarEventTag,
@@ -172,7 +171,7 @@ export const action: ActionFunction = async ({ request }) => {
 
   if (data.eventToEditId) {
     const eventToEdit = badRequestIfFalsy(
-      await CalendarRepository.findById(data.eventToEditId),
+      await CalendarRepository.findById({ id: data.eventToEditId }),
     );
     validate(
       canEditCalendarEvent({ user, event: eventToEdit }),
@@ -214,16 +213,19 @@ export const loader = async ({ request }: LoaderArgs) => {
   const eventId = Number(url.searchParams.get("eventId"));
   const eventToEdit = Number.isNaN(eventId)
     ? undefined
-    : await CalendarRepository.findById(eventId);
+    : await CalendarRepository.findById({
+        id: eventId,
+        includeMapPool: true,
+        includeTieBreakerMapPool: true,
+      });
 
   const canEditEvent =
     eventToEdit && canEditCalendarEvent({ user, event: eventToEdit });
 
   return json({
     managedBadges: await BadgeRepository.findManagedByUserId(user.id),
-    recentEventsWithMapPools: db.calendarEvents.findRecentMapPoolsByAuthorId(
-      user.id,
-    ),
+    recentEventsWithMapPools:
+      await CalendarRepository.findRecentMapPoolsByAuthorId(user.id),
     eventToEdit: canEditEvent
       ? {
           ...eventToEdit,
@@ -231,10 +233,6 @@ export const loader = async ({ request }: LoaderArgs) => {
           tags: eventToEdit.tags.filter(
             (tag) => tag !== "BADGE" && tag !== "FULL_TOURNAMENT",
           ),
-          badges: await CalendarRepository.findBadgesByEventId(eventId),
-          mapPool: db.calendarEvents.findMapPoolByEventId(eventId),
-          tieBreakerMapPool:
-            db.calendarEvents.findTieBreakerMapPoolByEventId(eventId),
         }
       : undefined,
     title: makeTitle([canEditEvent ? "Edit" : "New", t("pages.calendar")]),
@@ -537,7 +535,7 @@ function BadgesAdder() {
   const { t } = useTranslation("calendar");
   const { eventToEdit } = useLoaderData<typeof loader>();
   const { managedBadges } = useLoaderData<typeof loader>();
-  const [badges, setBadges] = React.useState(eventToEdit?.badges ?? []);
+  const [badges, setBadges] = React.useState(eventToEdit?.badgePrizes ?? []);
   const id = React.useId();
 
   const input = (

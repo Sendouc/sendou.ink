@@ -1,13 +1,15 @@
-import type { Transaction } from "kysely";
+import type { ExpressionBuilder, Transaction } from "kysely";
 import { sql } from "kysely";
 import { jsonArrayFrom } from "kysely/helpers/sqlite";
 import { dbNew } from "~/db/sql";
 import type { DB } from "~/db/tables";
 import type { CalendarEventTag } from "~/db/types";
+import { MapPool } from "~/modules/map-pool-serializer";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { sumArray } from "~/utils/number";
 import type { Unwrapped } from "~/utils/types";
 
+// xxx: change to be done without raw
 const hasBadge = sql<number>/* sql */ `exists (
   select
     1
@@ -17,9 +19,54 @@ const hasBadge = sql<number>/* sql */ `exists (
     "CalendarEventBadge"."eventId" = "CalendarEventDate"."eventId"
 )`.as("hasBadge");
 
-export async function findById(id: number) {
+const withMapPool = (eb: ExpressionBuilder<DB, "CalendarEvent">) => {
+  return jsonArrayFrom(
+    eb
+      .selectFrom("MapPoolMap")
+      .select(["MapPoolMap.stageId", "MapPoolMap.mode"])
+      .whereRef("MapPoolMap.calendarEventId", "=", "CalendarEvent.id"),
+  ).as("mapPool");
+};
+
+const withTieBreakerMapPool = (eb: ExpressionBuilder<DB, "CalendarEvent">) => {
+  return jsonArrayFrom(
+    eb
+      .selectFrom("MapPoolMap")
+      .select(["MapPoolMap.stageId", "MapPoolMap.mode"])
+      .whereRef(
+        "MapPoolMap.tieBreakerCalendarEventId",
+        "=",
+        "CalendarEvent.id",
+      ),
+  ).as("tieBreakerMapPool");
+};
+
+const withBadgePrizes = (eb: ExpressionBuilder<DB, "CalendarEvent">) => {
+  return jsonArrayFrom(
+    eb
+      .selectFrom("CalendarEventBadge")
+      .innerJoin("Badge", "CalendarEventBadge.badgeId", "Badge.id")
+      .select(["Badge.id", "Badge.code", "Badge.hue", "Badge.displayName"])
+      .whereRef("CalendarEventBadge.eventId", "=", "CalendarEvent.id"),
+  ).as("badgePrizes");
+};
+
+export async function findById({
+  id,
+  includeMapPool = false,
+  includeTieBreakerMapPool = false,
+  includeBadgePrizes = false,
+}: {
+  id: number;
+  includeMapPool?: boolean;
+  includeTieBreakerMapPool?: boolean;
+  includeBadgePrizes?: boolean;
+}) {
   const [firstRow, ...rest] = await dbNew
     .selectFrom("CalendarEvent")
+    .$if(includeMapPool, (qb) => qb.select(withMapPool))
+    .$if(includeTieBreakerMapPool, (qb) => qb.select(withTieBreakerMapPool))
+    .$if(includeBadgePrizes, (qb) => qb.select(withBadgePrizes))
     .innerJoin(
       "CalendarEventDate",
       "CalendarEvent.id",
@@ -179,15 +226,6 @@ async function tournamentParticipantCount(tournamentId: number) {
   };
 }
 
-export function findBadgesByEventId(eventId: number) {
-  return dbNew
-    .selectFrom("CalendarEventBadge")
-    .innerJoin("Badge", "CalendarEventBadge.badgeId", "Badge.id")
-    .select(["Badge.id", "Badge.code", "Badge.hue", "Badge.displayName"])
-    .where("CalendarEventBadge.eventId", "=", eventId)
-    .execute();
-}
-
 export async function startTimesOfRange({
   startTime,
   endTime,
@@ -230,6 +268,57 @@ export async function eventsToReport(authorId: number) {
     .execute();
 
   return rows.map((row) => ({ id: row.id, name: row.name }));
+}
+
+export async function findRecentMapPoolsByAuthorId(authorId: number) {
+  const rows = await dbNew
+    .selectFrom("CalendarEvent")
+    .innerJoin("MapPoolMap", "CalendarEvent.id", "MapPoolMap.calendarEventId")
+    .select(({ eb }) => [
+      "CalendarEvent.id",
+      "CalendarEvent.name",
+      withMapPool(eb),
+    ])
+    .where("CalendarEvent.authorId", "=", authorId)
+    .orderBy("CalendarEvent.id", "desc")
+    .limit(5)
+    .execute();
+
+  return rows.map((row) => ({
+    id: row.id,
+    name: row.name,
+    serializedMapPool: MapPool.serialize(row.mapPool),
+  }));
+}
+
+export async function findResultsByEventId(eventId: number) {
+  return dbNew
+    .selectFrom("CalendarEventResultTeam")
+    .select(({ eb }) => [
+      "CalendarEventResultTeam.id",
+      "CalendarEventResultTeam.name as teamName",
+      "CalendarEventResultTeam.placement",
+      jsonArrayFrom(
+        eb
+          .selectFrom("CalendarEventResultPlayer")
+          .leftJoin("User", "User.id", "CalendarEventResultPlayer.userId")
+          .select([
+            "CalendarEventResultPlayer.userId as id",
+            "CalendarEventResultPlayer.name",
+            "User.discordName",
+            "User.discordId",
+            "User.discordAvatar",
+          ])
+          .whereRef(
+            "CalendarEventResultPlayer.teamId",
+            "=",
+            "CalendarEventResultTeam.id",
+          ),
+      ).as("players"),
+    ])
+    .where("CalendarEventResultTeam.eventId", "=", eventId)
+    .orderBy("CalendarEventResultTeam.placement", "asc")
+    .execute();
 }
 
 type CreateArgs = Pick<
@@ -378,6 +467,56 @@ function createBadgesInTrx({
     .execute();
 }
 
+export function upsertReportedScores(args: {
+  eventId: number;
+  participantCount: number;
+  results: Array<{
+    teamName: string;
+    placement: number;
+    players: Array<{
+      userId: number | null;
+      name: string | null;
+    }>;
+  }>;
+}) {
+  return dbNew.transaction().execute(async (trx) => {
+    await trx
+      .updateTable("CalendarEvent")
+      .set({
+        participantCount: args.participantCount,
+      })
+      .where("id", "=", args.eventId)
+      .execute();
+    await trx
+      .deleteFrom("CalendarEventResultTeam")
+      .where("eventId", "=", args.eventId)
+      .execute();
+
+    for (const result of args.results) {
+      const insertedResultTeam = await trx
+        .insertInto("CalendarEventResultTeam")
+        .values({
+          eventId: args.eventId,
+          name: result.teamName,
+          placement: result.placement,
+        })
+        .returning("CalendarEventResultTeam.id")
+        .executeTakeFirstOrThrow();
+
+      await trx
+        .insertInto("CalendarEventResultPlayer")
+        .values(
+          result.players.map((player) => ({
+            teamId: insertedResultTeam.id,
+            name: player.name,
+            userId: player.userId,
+          })),
+        )
+        .execute();
+    }
+  });
+}
+
 async function upsertMapPoolInTrx({
   eventId,
   mapPoolMaps,
@@ -412,4 +551,22 @@ async function upsertMapPoolInTrx({
       })),
     )
     .execute();
+}
+
+export function deleteById({
+  eventId,
+  tournamentId,
+}: {
+  eventId: number;
+  tournamentId: number | null;
+}) {
+  return dbNew.transaction().execute(async (trx) => {
+    await trx.deleteFrom("CalendarEvent").where("id", "=", eventId).execute();
+    if (tournamentId) {
+      await trx
+        .deleteFrom("Tournament")
+        .where("id", "=", tournamentId)
+        .execute();
+    }
+  });
 }

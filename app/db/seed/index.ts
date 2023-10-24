@@ -64,6 +64,7 @@ import {
 import { groupForMatch } from "~/features/sendouq/queries/groupForMatch.server";
 import { addPlayerResults } from "~/features/sendouq/queries/addPlayerResults.server";
 import { updateVCStatus } from "~/features/sendouq/queries/updateVCStatus.server";
+import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
 
 const calendarEventWithToToolsSz = () => calendarEventWithToTools(true);
 const calendarEventWithToToolsTeamsSz = () =>
@@ -112,12 +113,14 @@ const basicSeeds = (variation?: SeedVariation | null) => [
   groups,
 ];
 
-export function seed(variation?: SeedVariation | null) {
+export async function seed(variation?: SeedVariation | null) {
   wipeDB();
 
   for (const seedFunc of basicSeeds(variation)) {
     if (!seedFunc) continue;
-    seedFunc();
+
+    // eslint-disable-next-line @typescript-eslint/await-thenable
+    await seedFunc();
   }
 }
 
@@ -669,7 +672,7 @@ function calendarEventBadges() {
   }
 }
 
-function calendarEventResults() {
+async function calendarEventResults() {
   let userIds = userIdsInRandomOrder();
   const eventIdsOfPast = new Set<number>(
     (
@@ -688,7 +691,7 @@ function calendarEventResults() {
     // event id = 1 needs to be without results for e2e tests
     if (Math.random() < 0.3 || eventId === 1) continue;
 
-    db.calendarEvents.upsertReportedScores({
+    await CalendarRepository.upsertReportedScores({
       eventId,
       participantCount: faker.number.int({ min: 10, max: 250 }),
       results: new Array(faker.helpers.arrayElement([1, 1, 2, 3, 3, 3, 8, 8]))

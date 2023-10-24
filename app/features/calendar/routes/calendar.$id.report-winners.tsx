@@ -15,8 +15,6 @@ import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import { UserSearch } from "~/components/UserSearch";
 import { CALENDAR_EVENT_RESULT } from "~/constants";
-import { db } from "~/db";
-import type { User } from "~/db/types";
 import { useTranslation } from "~/hooks/useTranslation";
 import { requireUserId } from "~/modules/auth/user.server";
 import { canReportCalendarEventWinners } from "~/permissions";
@@ -29,6 +27,7 @@ import {
 import type { Unpacked } from "~/utils/types";
 import { calendarEventPage } from "~/utils/urls";
 import { actualNumber, id, safeJSONParse, toArray } from "~/utils/zod";
+import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
 
 const playersSchema = z
   .array(
@@ -109,7 +108,9 @@ export const action: ActionFunction = async ({ request, params }) => {
     };
   }
 
-  const event = notFoundIfFalsy(db.calendarEvents.findById(parsedParams.id));
+  const event = notFoundIfFalsy(
+    await CalendarRepository.findById({ id: parsedParams.id }),
+  );
   validate(
     canReportCalendarEventWinners({
       user,
@@ -120,7 +121,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     401,
   );
 
-  db.calendarEvents.upsertReportedScores({
+  await CalendarRepository.upsertReportedScores({
     eventId: parsedParams.id,
     participantCount: parsedInput.data.participantCount,
     results: parsedInput.data.team.map((t) => ({
@@ -143,7 +144,9 @@ export const handle: SendouRouteHandle = {
 export const loader = async ({ request, params }: LoaderArgs) => {
   const parsedParams = reportWinnersParamsSchema.parse(params);
   const user = await requireUserId(request);
-  const event = notFoundIfFalsy(db.calendarEvents.findById(parsedParams.id));
+  const event = notFoundIfFalsy(
+    await CalendarRepository.findById({ id: parsedParams.id }),
+  );
 
   validate(
     canReportCalendarEventWinners({
@@ -156,10 +159,11 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   return json({
     name: event.name,
     participantCount: event.participantCount,
-    winners: db.calendarEvents.findResultsByEventId(parsedParams.id),
+    winners: await CalendarRepository.findResultsByEventId(parsedParams.id),
   });
 };
 
+// xxx: some inputs are missing users?
 export default function ReportWinnersPage() {
   const { t } = useTranslation(["common", "calendar"]);
   const data = useLoaderData<typeof loader>();
@@ -257,7 +261,7 @@ interface TeamResults {
   placement: string;
   players: Array<
     | {
-        id: User["id"];
+        id: number;
       }
     | string
   >;
@@ -282,7 +286,9 @@ function Team({
     teamName: initialValues?.teamName ?? "",
     placement: String(initialValues?.placement ?? initialPlacement),
     players: initialValues?.players
-      ? initialValues.players
+      ? (initialValues.players.map((player) =>
+          player.name ? player.name : player,
+        ) as TeamResults["players"])
       : [NEW_PLAYER, NEW_PLAYER, NEW_PLAYER, NEW_PLAYER],
   });
 

@@ -19,7 +19,6 @@ import { Main } from "~/components/Main";
 import { MapPoolStages } from "~/components/MapPoolSelector";
 import { Placement } from "~/components/Placement";
 import { Section } from "~/components/Section";
-import { db } from "~/db";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
@@ -54,13 +53,16 @@ import {
 import { actualNumber, id } from "~/utils/zod";
 import { Tags } from "../components/Tags";
 import { Table } from "~/components/Table";
+import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
 
 export const action: ActionFunction = async ({ params, request }) => {
   const user = await requireUserId(request);
   const parsedParams = z
     .object({ id: z.preprocess(actualNumber, id) })
     .parse(params);
-  const event = notFoundIfFalsy(db.calendarEvents.findById(parsedParams.id));
+  const event = notFoundIfFalsy(
+    await CalendarRepository.findById({ id: parsedParams.id }),
+  );
 
   validate(
     canDeleteCalendarEvent({
@@ -70,7 +72,7 @@ export const action: ActionFunction = async ({ params, request }) => {
     }),
   );
 
-  db.calendarEvents.deleteById({
+  await CalendarRepository.deleteById({
     eventId: event.eventId,
     tournamentId: event.tournamentId,
   });
@@ -123,7 +125,13 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const parsedParams = z
     .object({ id: z.preprocess(actualNumber, id) })
     .parse(params);
-  const event = notFoundIfFalsy(db.calendarEvents.findById(parsedParams.id));
+  const event = notFoundIfFalsy(
+    await CalendarRepository.findById({
+      id: parsedParams.id,
+      includeBadgePrizes: true,
+      includeMapPool: true,
+    }),
+  );
 
   if (event.tournamentId) {
     throw redirect(tournamentPage(event.tournamentId));
@@ -131,10 +139,8 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 
   return json({
     event,
-    badgePrizes: db.calendarEvents.findBadgesByEventId(parsedParams.id),
     title: makeTitle([event.name, t("pages.calendar")]),
-    results: db.calendarEvents.findResultsByEventId(parsedParams.id),
-    mapPool: db.calendarEvents.findMapPoolByEventId(parsedParams.id),
+    results: await CalendarRepository.findResultsByEventId(parsedParams.id),
   });
 };
 
@@ -180,7 +186,7 @@ export default function CalendarEventPage() {
         <div className="stack md">
           <div className="stack xs">
             <h2>{data.event.name}</h2>
-            <Tags tags={data.event.tags} badges={data.badgePrizes} />
+            <Tags tags={data.event.tags} badges={data.event.badgePrizes} />
           </div>
           <div className="stack horizontal sm flex-wrap">
             {data.event.discordUrl ? (
@@ -256,13 +262,15 @@ function Results() {
 
   if (!data.results.length) return null;
 
-  const isTeam = checkIfIsTeam(data.results);
+  const isTeamResults = data.results.some(
+    (result) => result.players.length > 1,
+  );
 
   return (
     <Section title={t("calendar:results")} className="event__results-section">
       {data.event.participantCount && (
         <div className="event__results-participant-count">
-          {isTeam
+          {isTeamResults
             ? t("calendar:participatedCount", {
                 count: data.event.participantCount,
               })
@@ -288,24 +296,27 @@ function Results() {
               <td>{result.teamName}</td>
               <td>
                 <ul className="event__results-players">
-                  {result.players.map((player) => (
-                    <li
-                      key={typeof player === "string" ? player : player.id}
-                      className="flex items-center"
-                    >
-                      {typeof player === "string" ? (
-                        player
-                      ) : (
-                        <Link
-                          to={userPage(player)}
-                          className="stack horizontal xs items-center"
-                        >
-                          <Avatar user={player} size="xxs" />{" "}
-                          {discordFullName(player)}
-                        </Link>
-                      )}
-                    </li>
-                  ))}
+                  {result.players.map((player) => {
+                    return (
+                      <li
+                        key={player.name ? player.name : player.id}
+                        className="flex items-center"
+                      >
+                        {player.name ? (
+                          player.name
+                        ) : (
+                          // as any but we know it's a user since it doesn't have name
+                          <Link
+                            to={userPage(player as any)}
+                            className="stack horizontal xs items-center"
+                          >
+                            <Avatar user={player as any} size="xxs" />{" "}
+                            {player.discordName}
+                          </Link>
+                        )}
+                      </li>
+                    );
+                  })}
                 </ul>
               </td>
             </tr>
@@ -320,12 +331,12 @@ function MapPoolInfo() {
   const { t } = useTranslation(["calendar"]);
   const data = useLoaderData<typeof loader>();
 
-  if (!data.mapPool) return null;
+  if (!data.event.mapPool || data.event.mapPool.length === 0) return null;
 
   return (
     <Section title={t("calendar:forms.mapPool")}>
       <div className="event__map-pool-section">
-        <MapPoolStages mapPool={new MapPool(data.mapPool)} />
+        <MapPoolStages mapPool={new MapPool(data.event.mapPool)} />
         <LinkButton
           className="event__create-map-list-link"
           to={readonlyMapsPage(data.event.eventId)}
@@ -357,29 +368,4 @@ function Description() {
       </div>
     </Section>
   );
-}
-
-// Check if any team has more than 1 player
-function checkIfIsTeam(
-  results: {
-    teamName: string;
-    placement: number;
-    players: (
-      | string
-      | {
-          id: number;
-          discordName: string;
-          discordDiscriminator: string;
-          discordId: string;
-          discordAvatar: string | null;
-        }
-    )[];
-  }[],
-): boolean {
-  for (const result of results) {
-    if (result.players.length > 1) {
-      return true;
-    }
-  }
-  return false;
 }

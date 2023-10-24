@@ -15,7 +15,6 @@ import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import { MapPoolSelector, MapPoolStages } from "~/components/MapPoolSelector";
 import { Toggle } from "~/components/Toggle";
-import { db } from "~/db";
 import type { CalendarEvent } from "~/db/types";
 import { useTranslation } from "~/hooks/useTranslation";
 import { getUserId } from "~/modules/auth/user.server";
@@ -36,6 +35,7 @@ import {
   MAPS_URL,
   navIconUrl,
 } from "~/utils/urls";
+import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
 
 const AMOUNT_OF_MAPS_IN_MAP_LIST = stageIds.length * 2;
 
@@ -74,7 +74,10 @@ export const loader = async ({ request }: LoaderArgs) => {
   const t = await i18next.getFixedT(request);
 
   const event = calendarEventId
-    ? db.calendarEvents.findById(Number(calendarEventId))
+    ? await CalendarRepository.findById({
+        id: Number(calendarEventId),
+        includeMapPool: true,
+      })
     : undefined;
 
   return {
@@ -82,13 +85,11 @@ export const loader = async ({ request }: LoaderArgs) => {
       ? {
           id: event.eventId,
           name: event.name,
+          mapPool: event.mapPool,
         }
       : undefined,
-    mapPool: event
-      ? db.calendarEvents.findMapPoolByEventId(event.eventId)
-      : null,
     recentEventsWithMapPools: user
-      ? db.calendarEvents.findRecentMapPoolsByAuthorId(user.id)
+      ? await CalendarRepository.findRecentMapPoolsByAuthorId(user.id)
       : undefined,
     title: makeTitle([t("pages.maps")]),
   };
@@ -157,8 +158,8 @@ function useSearchParamPersistedMapPool() {
       return new MapPool(searchParams.get("pool")!);
     }
 
-    if (data.mapPool) {
-      return new MapPool(data.mapPool);
+    if (data.calendarEvent?.mapPool) {
+      return new MapPool(data.calendarEvent.mapPool);
     }
 
     return MapPool.ANARCHY;

@@ -21,7 +21,7 @@ export const action: ActionFunction = async ({ request }) => {
     schema: seedSchema,
   });
 
-  seed(variation);
+  await seed(variation);
 
   return null;
 };

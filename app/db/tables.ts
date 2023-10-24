@@ -1,4 +1,5 @@
-import type { ColumnType, GeneratedAlways } from "kysely";
+import type { ColumnType, GeneratedAlways, SqlBool } from "kysely";
+import type { ModeShort, StageId } from "~/modules/in-game-lists";
 
 export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   ? ColumnType<S, I | undefined, U>
@@ -166,9 +167,9 @@ export interface GroupMatchMap {
   id: GeneratedAlways<number>;
   index: number;
   matchId: number;
-  mode: string;
+  mode: ModeShort;
   source: string;
-  stageId: number;
+  stageId: StageId;
   winnerGroupId: number | null;
 }
 
@@ -189,17 +190,17 @@ export interface LogInLink {
 export interface MapPoolMap {
   calendarEventId: number | null;
   groupId: number | null;
-  mode: string;
-  stageId: number;
+  mode: ModeShort;
+  stageId: StageId;
   tieBreakerCalendarEventId: number | null;
   tournamentTeamId: number | null;
 }
 
 export interface MapResult {
   losses: number;
-  mode: string;
+  mode: ModeShort;
   season: number;
-  stageId: number;
+  stageId: StageId;
   userId: number;
   wins: number;
 }
@@ -339,7 +340,7 @@ export interface TournamentBadgeOwner {
 export interface TournamentGroup {
   id: GeneratedAlways<number>;
   number: number;
-  stageId: number;
+  stageId: StageId;
 }
 
 export interface TournamentMatch {
@@ -352,7 +353,7 @@ export interface TournamentMatch {
   opponentOne: string;
   opponentTwo: string;
   roundId: number;
-  stageId: number;
+  stageId: StageId;
   status: number;
 }
 
@@ -360,11 +361,11 @@ export interface TournamentMatchGameResult {
   createdAt: Generated<number>;
   id: GeneratedAlways<number>;
   matchId: number;
-  mode: string;
+  mode: ModeShort;
   number: number;
   reporterId: number;
   source: string;
-  stageId: number;
+  stageId: StageId;
   winnerTeamId: number;
 }
 
@@ -374,7 +375,7 @@ export interface TournamentMatchGameResultParticipant {
 }
 
 export interface TournamentResult {
-  isHighlight: Generated<number>;
+  isHighlight: Generated<SqlBool>;
   participantCount: number;
   placement: number;
   tournamentId: number;
@@ -386,7 +387,7 @@ export interface TournamentRound {
   groupId: number;
   id: GeneratedAlways<number>;
   number: number;
-  stageId: number;
+  stageId: StageId;
 }
 
 export interface TournamentStage {
@@ -518,8 +519,8 @@ export interface Video {
 
 export interface VideoMatch {
   id: GeneratedAlways<number>;
-  mode: string;
-  stageId: number;
+  mode: ModeShort;
+  stageId: StageId;
   startsAt: number;
   videoId: number;
 }
@@ -536,7 +537,7 @@ export interface XRankPlacement {
   badges: string;
   bannerSplId: number;
   id: GeneratedAlways<number>;
-  mode: string;
+  mode: ModeShort;
   month: number;
   name: string;
   nameDiscriminator: string;
