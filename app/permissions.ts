@@ -1,16 +1,18 @@
+import invariant from "tiny-invariant";
 import type * as plusSuggestions from "~/db/models/plusSuggestions/queries.server";
-import { monthsVotingRange } from "./modules/plus-server";
+import type * as PlusSuggestionRepository from "~/features/plus-suggestions/PlusSuggestionRepository.server";
+import type * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
+import { ADMIN_ID, LOHI_TOKEN_HEADER_NAME, MOD_IDS } from "./constants";
 import type {
   CalendarEvent,
   PlusSuggestion,
   User,
   UserWithPlusTier,
 } from "./db/types";
-import { allTruthy } from "./utils/arrays";
-import { ADMIN_ID, LOHI_TOKEN_HEADER_NAME, MOD_IDS } from "./constants";
-import invariant from "tiny-invariant";
-import { databaseTimestampToDate } from "./utils/dates";
 import type { FindMatchById } from "./features/tournament-bracket/queries/findMatchById.server";
+import { monthsVotingRange } from "./modules/plus-server";
+import { allTruthy } from "./utils/arrays";
+import { databaseTimestampToDate } from "./utils/dates";
 
 // TODO: 1) move "root checkers" to one file and utils to one file 2) make utils const for more terseness
 
@@ -42,7 +44,7 @@ function adminOverride(user?: IsAdminUser) {
 
 interface CanAddCommentToSuggestionArgs {
   user?: Pick<UserWithPlusTier, "id" | "plusTier">;
-  suggestions: plusSuggestions.FindVisibleForUser;
+  suggestions: PlusSuggestionRepository.FindAllByMonthItem[];
   suggested: Pick<User, "id">;
   targetPlusTier: NonNullable<UserWithPlusTier["plusTier"]>;
 }
@@ -116,10 +118,11 @@ function alreadyCommentedByUser({
   suggested,
   targetPlusTier,
 }: CanAddCommentToSuggestionArgs) {
-  return Boolean(
-    suggestions[targetPlusTier]
-      ?.find((u) => u.suggestedUser.id === suggested.id)
-      ?.suggestions.some((s) => s.author.id === user?.id),
+  return suggestions.some(
+    (suggestion) =>
+      suggestion.author.id === user?.id &&
+      suggestion.tier === targetPlusTier &&
+      suggestion.suggested.id === suggested.id,
   );
 }
 
@@ -131,10 +134,10 @@ export function playerAlreadySuggested({
   CanAddCommentToSuggestionArgs,
   "suggestions" | "suggested" | "targetPlusTier"
 >) {
-  return Boolean(
-    suggestions[targetPlusTier]?.find(
-      (u) => u.suggestedUser.id === suggested.id,
-    ),
+  return suggestions.some(
+    (suggestion) =>
+      suggestion.suggested.id === suggested.id &&
+      suggestion.tier === targetPlusTier,
   );
 }
 
@@ -164,13 +167,9 @@ function suggestionHasNoOtherComments({
   throw new Error(`Invalid suggestion id: ${suggestionId}`);
 }
 
-export function canDeleteSuggestionOfThemselves() {
-  return !isVotingActive();
-}
-
 interface CanSuggestNewUserFEArgs {
   user?: Pick<UserWithPlusTier, "id" | "plusTier">;
-  suggestions: plusSuggestions.FindVisibleForUser;
+  suggestions: PlusSuggestionRepository.FindAllByMonthItem[];
 }
 export function canSuggestNewUserFE({
   user,
@@ -231,12 +230,7 @@ function hasUserSuggestedThisMonth({
   user,
   suggestions,
 }: Pick<CanSuggestNewUserFEArgs, "user" | "suggestions">) {
-  return Object.values(suggestions)
-    .flat()
-    .some(
-      ({ suggestions }) =>
-        suggestions[0] && suggestions[0].author.id === user?.id,
-    );
+  return suggestions.some((suggestion) => suggestion.author.id === user?.id);
 }
 
 /** Some endpoints can only be accessed with an auth token. Used by Lohi bot and cron jobs. */
@@ -320,25 +314,25 @@ export function canEnableTOTools(user?: IsAdminUser) {
 
 interface CanAdminTournament {
   user?: Pick<User, "id">;
-  event: Pick<CalendarEvent, "authorId">;
+  tournament: TournamentRepository.FindById;
 }
-export function canAdminTournament({ user, event }: CanAdminTournament) {
+export function canAdminTournament({ user, tournament }: CanAdminTournament) {
   // temporary hack to let Njok admin tournaments as well
   if (user?.id === 14710) return true;
 
-  return adminOverride(user)(user?.id === event.authorId);
+  return adminOverride(user)(user?.id === tournament.author.id);
 }
 
 export function canReportTournamentScore({
   match,
   user,
   ownedTeamId,
-  event,
+  tournament,
 }: {
   match: NonNullable<FindMatchById>;
   user?: Pick<User, "id">;
   ownedTeamId?: number;
-  event: CanAdminTournament["event"];
+  tournament: TournamentRepository.FindById;
 }) {
   const matchIsOver =
     match.opponentOne?.result === "win" || match.opponentTwo?.result === "win";
@@ -347,7 +341,7 @@ export function canReportTournamentScore({
     !matchIsOver &&
     ((match.opponentOne?.id ?? -1) === ownedTeamId ||
       (match.opponentTwo?.id ?? -1) === ownedTeamId ||
-      canAdminTournament({ user, event }))
+      canAdminTournament({ user, tournament }))
   );
 }
 

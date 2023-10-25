@@ -77,7 +77,9 @@ export function isOneModeTournamentOf(
     : null;
 }
 
-export function HACKY_resolvePicture(event: TournamentLoaderData["event"]) {
+export function HACKY_resolvePicture(
+  event: TournamentLoaderData["tournament"],
+) {
   if (event.name.includes("In The Zone"))
     return "https://abload.de/img/screenshot2023-04-19a2bfv0.png";
 
@@ -87,25 +89,25 @@ export function HACKY_resolvePicture(event: TournamentLoaderData["event"]) {
 // hacky because db query not taking in account possibility of many start times
 // AND always assumed check-in starts 1h before
 export function HACKY_resolveCheckInTime(
-  event: Pick<TournamentLoaderData["event"], "startTime">,
+  event: Pick<TournamentLoaderData["tournament"], "startTime">,
 ) {
   return databaseTimestampToDate(event.startTime - 60 * 60);
 }
 
-export function mapPickCountPerMode(event: TournamentLoaderData["event"]) {
+export function mapPickCountPerMode(event: TournamentLoaderData["tournament"]) {
   return isOneModeTournamentOf(event)
     ? TOURNAMENT.COUNTERPICK_ONE_MODE_TOURNAMENT_MAPS_PER_MODE
     : TOURNAMENT.COUNTERPICK_MAPS_PER_MODE;
 }
 
 export function checkInHasStarted(
-  event: Pick<TournamentLoaderData["event"], "startTime">,
+  event: Pick<TournamentLoaderData["tournament"], "startTime">,
 ) {
   return HACKY_resolveCheckInTime(event).getTime() < Date.now();
 }
 
 export function checkInHasEnded(
-  event: Pick<TournamentLoaderData["event"], "startTime">,
+  event: Pick<TournamentLoaderData["tournament"], "startTime">,
 ) {
   return databaseTimestampToDate(event.startTime).getTime() < Date.now();
 }
@@ -115,7 +117,7 @@ export function validateCanCheckIn({
   team,
   mapPool,
 }: {
-  event: Pick<TournamentLoaderData["event"], "startTime">;
+  event: Pick<TournamentLoaderData["tournament"], "startTime">;
   team: FindTeamsByTournamentId[number];
   mapPool: unknown[] | null;
 }) {

@@ -101,7 +101,8 @@ export function UserResultsTable({
               </td>
               <td>{result.participantCount}</td>
               <td>
-                {databaseTimestampToDate(result.startTime).toLocaleDateString(
+                {/* TODO: can be made better when $narrowNotNull lands */}
+                {databaseTimestampToDate(result.startTime!).toLocaleDateString(
                   i18n.language,
                   {
                     day: "numeric",

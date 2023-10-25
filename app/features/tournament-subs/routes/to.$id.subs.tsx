@@ -92,7 +92,9 @@ export default function TournamentSubsPage() {
   const parentRouteData = useOutletContext<TournamentLoaderData>();
 
   if (parentRouteData.hasFinalized) {
-    return <Redirect to={tournamentRegisterPage(parentRouteData.event.id)} />;
+    return (
+      <Redirect to={tournamentRegisterPage(parentRouteData.tournament.id)} />
+    );
   }
 
   return (

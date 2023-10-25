@@ -50,7 +50,11 @@ export function findResultsByUserId(userId: number) {
           .selectFrom("CalendarEventResultPlayer")
           .leftJoin("User", "User.id", "CalendarEventResultPlayer.userId")
           .select([...COMMON_USER_FIELDS, "CalendarEventResultPlayer.name"])
-          .whereRef("CalendarEventResultPlayer.teamId", "=", "teamId")
+          .whereRef(
+            "CalendarEventResultPlayer.teamId",
+            "=",
+            "CalendarEventResultTeam.id",
+          )
           .where((eb) =>
             eb.or([
               eb("CalendarEventResultPlayer.userId", "is", null),

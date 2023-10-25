@@ -1,10 +1,10 @@
-import { json, type SerializeFrom } from "@remix-run/node";
-import { findAllEventsWithMapPools } from "~/db/models/calendar/queries.server";
+import { type SerializeFrom } from "@remix-run/node";
+import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
 
-export const loader = () => {
-  return json({
-    events: findAllEventsWithMapPools(),
-  });
+export const loader = async () => {
+  return {
+    events: await CalendarRepository.allEventsWithMapPools(),
+  };
 };
 
 export type EventsWithMapPoolsLoaderData = SerializeFrom<typeof loader>;

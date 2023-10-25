@@ -224,7 +224,7 @@ export interface PlayerResult {
 
 export interface PlusSuggestion {
   authorId: number;
-  createdAt: Generated<number>;
+  createdAt: GeneratedAlways<number>;
   id: GeneratedAlways<number>;
   month: number;
   suggestedId: number;
@@ -325,8 +325,10 @@ type TournamentMapPickingStyle =
   | "AUTO_RM"
   | "AUTO_CB";
 
+type TournamentFormat = "SE" | "DE";
+
 export interface Tournament {
-  format: string;
+  format: TournamentFormat;
   id: GeneratedAlways<number>;
   mapPickingStyle: TournamentMapPickingStyle;
   showMapListGenerator: Generated<number | null>;

@@ -321,6 +321,31 @@ export async function findResultsByEventId(eventId: number) {
     .execute();
 }
 
+export async function allEventsWithMapPools() {
+  const rows = await dbNew
+    .selectFrom("CalendarEvent")
+    .select(({ eb }) => [
+      "CalendarEvent.id",
+      "CalendarEvent.name",
+      jsonArrayFrom(
+        eb
+          .selectFrom("MapPoolMap")
+          .select(["MapPoolMap.stageId", "MapPoolMap.mode"])
+          .whereRef("MapPoolMap.calendarEventId", "=", "CalendarEvent.id"),
+      ).as("mapPool"),
+    ])
+    .innerJoin("MapPoolMap", "CalendarEvent.id", "MapPoolMap.calendarEventId")
+    .groupBy("CalendarEvent.id")
+    .orderBy("CalendarEvent.id", "desc")
+    .execute();
+
+  return rows.map((row) => ({
+    id: row.id,
+    name: row.name,
+    serializedMapPool: MapPool.serialize(row.mapPool),
+  }));
+}
+
 type CreateArgs = Pick<
   DB["CalendarEvent"],
   | "name"

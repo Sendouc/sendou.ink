@@ -138,7 +138,7 @@ export default function JoinTeamPage() {
 
         return t("tournament:join.VALID", {
           teamName: teamToJoin.name,
-          eventName: parentRouteData.event.name,
+          eventName: parentRouteData.tournament.name,
         });
       }
       default: {

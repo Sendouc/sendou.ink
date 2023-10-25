@@ -111,8 +111,6 @@ export const loader = async ({ params, request }: LoaderArgs) => {
       favoriteBadgeId: user.favoriteBadgeId,
     }),
     // TODO: could load only on results page
-    // xxx: investigate slow query - loads mates x 6000
-    // xxx: bg difference with query duration time and route response time?
     // xxx: missing index at least on CalendarEventResultPlayer.userId?
     results: await UserRepository.findResultsByUserId(user.id),
     buildsCount: db.builds.countByUserId({

@@ -94,14 +94,14 @@ export function ScoreReporter({
         {t("tournament:match.pool")}{" "}
         {
           HACKY_resolvePoolCode({
-            event: parentRouteData.event,
+            event: parentRouteData.tournament,
             matchId: data.match.id,
           }).prefix
         }
         <span className="text-theme font-bold">
           {
             HACKY_resolvePoolCode({
-              event: parentRouteData.event,
+              event: parentRouteData.tournament,
               matchId: data.match.id,
             }).lastDigit
           }
@@ -140,7 +140,7 @@ export function ScoreReporter({
             </div>
           </Form>
         )}
-        {canAdminTournament({ user, event: parentRouteData.event }) &&
+        {canAdminTournament({ user, tournament: parentRouteData.tournament }) &&
           !parentRouteData.hasFinalized &&
           presentational &&
           !matchIsLockedError && (
