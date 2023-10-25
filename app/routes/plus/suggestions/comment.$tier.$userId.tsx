@@ -19,6 +19,7 @@ import { plusSuggestionPage } from "~/utils/urls";
 import { actualNumber, trimmedString } from "~/utils/zod";
 import type { PlusSuggestionsLoaderData } from "../suggestions";
 import { CommentTextarea } from "./new";
+import * as PlusSuggestionRepository from "~/features/plus-suggestions/PlusSuggestionRepository.server";
 
 const commentActionSchema = z.object({
   comment: z.preprocess(
@@ -42,10 +43,9 @@ export const action: ActionFunction = async ({ request }) => {
   });
   const user = await requireUser(request);
 
-  const suggestions = db.plusSuggestions.findVisibleForUser({
-    ...nextNonCompletedVoting(new Date()),
-    plusTier: user.plusTier,
-  });
+  const suggestions = await PlusSuggestionRepository.findAllByMonth(
+    nextNonCompletedVoting(new Date()),
+  );
 
   validate(suggestions);
   validate(
@@ -76,8 +76,10 @@ export default function PlusCommentModalPage() {
   const targetUserId = Number(params["userId"]);
   const tierSuggestedTo = String(params["tier"]);
 
-  const userBeingCommented = data.suggestions?.[tierSuggestedTo]?.find(
-    (u) => u.suggestedUser.id === targetUserId,
+  const userBeingCommented = data.suggestions.find(
+    (suggestion) =>
+      suggestion.tier === Number(tierSuggestedTo) &&
+      suggestion.suggested.id === targetUserId,
   );
 
   if (
@@ -99,8 +101,8 @@ export default function PlusCommentModalPage() {
         <input type="hidden" name="tier" value={tierSuggestedTo} />
         <input type="hidden" name="suggestedId" value={targetUserId} />
         <h2 className="plus__modal-title">
-          {userBeingCommented.suggestedUser.discordName}&apos;s +
-          {tierSuggestedTo} suggestion
+          {userBeingCommented.suggested.discordName}&apos;s +{tierSuggestedTo}{" "}
+          suggestion
         </h2>
         <CommentTextarea maxLength={PlUS_SUGGESTION_COMMENT_MAX_LENGTH} />
         <div className="plus__modal-buttons">

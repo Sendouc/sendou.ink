@@ -1,5 +1,4 @@
 import invariant from "tiny-invariant";
-import type * as plusSuggestions from "~/db/models/plusSuggestions/queries.server";
 import type * as PlusSuggestionRepository from "~/features/plus-suggestions/PlusSuggestionRepository.server";
 import type * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import { ADMIN_ID, LOHI_TOKEN_HEADER_NAME, MOD_IDS } from "./constants";
@@ -80,7 +79,7 @@ interface CanDeleteCommentArgs {
   suggestionId: PlusSuggestion["id"];
   author: Pick<User, "id">;
   user?: Pick<User, "id" | "discordId">;
-  suggestions: plusSuggestions.FindVisibleForUser;
+  suggestions: PlusSuggestionRepository.FindAllByMonthItem[];
 }
 export function canDeleteComment(args: CanDeleteCommentArgs) {
   const votingActive =
@@ -120,9 +119,11 @@ function alreadyCommentedByUser({
 }: CanAddCommentToSuggestionArgs) {
   return suggestions.some(
     (suggestion) =>
-      suggestion.author.id === user?.id &&
       suggestion.tier === targetPlusTier &&
-      suggestion.suggested.id === suggested.id,
+      suggestion.suggested.id === suggested.id &&
+      suggestion.suggestions.some(
+        (suggestion) => suggestion.author.id === user?.id,
+      ),
   );
 }
 
@@ -230,7 +231,11 @@ function hasUserSuggestedThisMonth({
   user,
   suggestions,
 }: Pick<CanSuggestNewUserFEArgs, "user" | "suggestions">) {
-  return suggestions.some((suggestion) => suggestion.author.id === user?.id);
+  return suggestions.some((suggestion) =>
+    suggestion.suggestions.some(
+      (suggestion) => suggestion.author.id === user?.id,
+    ),
+  );
 }
 
 /** Some endpoints can only be accessed with an auth token. Used by Lohi bot and cron jobs. */

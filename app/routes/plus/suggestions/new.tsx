@@ -33,6 +33,7 @@ import { atOrError } from "~/utils/arrays";
 import { requireUser, useUser } from "~/modules/auth";
 import { SubmitButton } from "~/components/SubmitButton";
 import { UserSearch } from "~/components/UserSearch";
+import * as PlusSuggestionRepository from "~/features/plus-suggestions/PlusSuggestionRepository.server";
 
 const commentActionSchema = z.object({
   tier: z.preprocess(
@@ -59,10 +60,9 @@ export const action: ActionFunction = async ({ request }) => {
 
   const user = await requireUser(request);
 
-  const suggestions = db.plusSuggestions.findVisibleForUser({
-    ...nextNonCompletedVoting(new Date()),
-    plusTier: user.plusTier,
-  });
+  const suggestions = await PlusSuggestionRepository.findAllByMonth(
+    nextNonCompletedVoting(new Date()),
+  );
 
   validate(suggestions);
   validate(
@@ -74,7 +74,7 @@ export const action: ActionFunction = async ({ request }) => {
     }),
   );
 
-  db.plusSuggestions.create({
+  await PlusSuggestionRepository.create({
     authorId: user.id,
     suggestedId: suggested.id,
     tier: data.tier,

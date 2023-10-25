@@ -1,9 +1,8 @@
 import type {
   ActionFunction,
-  LoaderFunction,
+  SerializeFrom,
   V2_MetaFunction,
 } from "@remix-run/node";
-import { json } from "@remix-run/node";
 import type { ShouldRevalidateFunction } from "@remix-run/react";
 import { Link, Outlet, useLoaderData, useSearchParams } from "@remix-run/react";
 import clsx from "clsx";
@@ -13,28 +12,26 @@ import { Avatar } from "~/components/Avatar";
 import { Button, LinkButton } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
+import { RelativeTime } from "~/components/RelativeTime";
 import { TrashIcon } from "~/components/icons/Trash";
-import { nextNonCompletedVoting } from "~/modules/plus-server";
-import { db } from "~/db";
-import type * as plusSuggestions from "~/db/models/plusSuggestions/queries.server";
+import { PLUS_TIERS } from "~/constants";
 import type { PlusSuggestion, User } from "~/db/types";
+import * as PlusSuggestionRepository from "~/features/plus-suggestions/PlusSuggestionRepository.server";
 import { requireUser, useUser } from "~/modules/auth";
+import { nextNonCompletedVoting } from "~/modules/plus-server";
 import {
   canAddCommentToSuggestionFE,
-  canSuggestNewUserFE,
   canDeleteComment,
-  canDeleteSuggestionOfThemselves,
+  canSuggestNewUserFE,
   isFirstSuggestion,
+  isVotingActive,
 } from "~/permissions";
-import { parseRequestFormData, validate } from "~/utils/remix";
-import { makeTitle, discordFullName } from "~/utils/strings";
-import { _action, actualNumber } from "~/utils/zod";
-import { userPage } from "~/utils/urls";
-import { RelativeTime } from "~/components/RelativeTime";
 import { databaseTimestampToDate } from "~/utils/dates";
-import { PLUS_TIERS } from "~/constants";
+import { parseRequestFormData, validate } from "~/utils/remix";
+import { makeTitle } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
-import { getUserId } from "~/modules/auth/user.server";
+import { userPage } from "~/utils/urls";
+import { _action, actualNumber } from "~/utils/zod";
 
 export const meta: V2_MetaFunction = () => {
   return [
@@ -72,58 +69,57 @@ export const action: ActionFunction = async ({ request }) => {
 
   switch (data._action) {
     case "DELETE_COMMENT": {
-      const suggestions = db.plusSuggestions.findVisibleForUser({
-        ...nextNonCompletedVoting(new Date()),
-        plusTier: user.plusTier,
-      });
+      const suggestions = await PlusSuggestionRepository.findAllByMonth(
+        nextNonCompletedVoting(new Date()),
+      );
 
-      const flattenedSuggestedUserInfo = Object.entries(suggestions ?? {})
-        .flatMap(([tier, suggestions]) =>
-          suggestions.map(({ suggestedUser, suggestions }) => ({
-            tier: Number(tier),
-            suggestedUser,
-            suggestions,
-          })),
-        )
-        .find(({ suggestions }) =>
-          suggestions.some((s) => s.id === data.suggestionId),
-        );
+      const suggestionToDelete = suggestions.find((suggestion) =>
+        suggestion.suggestions.some(
+          (suggestion) => suggestion.id === data.suggestionId,
+        ),
+      );
+      invariant(suggestionToDelete);
+      const subSuggestion = suggestionToDelete.suggestions.find(
+        (suggestion) => suggestion.id === data.suggestionId,
+      );
+      invariant(subSuggestion);
 
-      validate(suggestions);
-      validate(flattenedSuggestedUserInfo);
+      validate(suggestionToDelete);
       validate(
         canDeleteComment({
           user,
-          author: flattenedSuggestedUserInfo.suggestions.find(
-            (s) => s.id === data.suggestionId,
-          )!.author,
+          author: subSuggestion.author,
           suggestionId: data.suggestionId,
           suggestions,
         }),
       );
 
-      const suggestionHasComments =
-        flattenedSuggestedUserInfo.suggestions.length > 1;
+      const suggestionHasComments = suggestionToDelete.suggestions.length > 1;
+
       if (
         suggestionHasComments &&
         isFirstSuggestion({ suggestionId: data.suggestionId, suggestions })
       ) {
         // admin only action
-        db.plusSuggestions.deleteSuggestionWithComments({
+        await PlusSuggestionRepository.deleteWithCommentsBySuggestedUserId({
+          tier: suggestionToDelete.tier,
+          userId: suggestionToDelete.suggested.id,
           ...nextNonCompletedVoting(new Date()),
-          tier: flattenedSuggestedUserInfo.tier,
-          suggestedId: flattenedSuggestedUserInfo.suggestedUser.id,
         });
       } else {
-        db.plusSuggestions.del(data.suggestionId);
+        await PlusSuggestionRepository.deleteById(data.suggestionId);
       }
 
       break;
     }
     case "DELETE_SUGGESTION_OF_THEMSELVES": {
-      validate(canDeleteSuggestionOfThemselves());
+      invariant(!isVotingActive(), "Voting is active");
 
-      db.plusSuggestions.deleteAll({ suggestedId: user.id, tier: data.tier });
+      await PlusSuggestionRepository.deleteWithCommentsBySuggestedUserId({
+        tier: data.tier,
+        userId: user.id,
+        ...nextNonCompletedVoting(new Date()),
+      });
 
       break;
     }
@@ -135,47 +131,35 @@ export const action: ActionFunction = async ({ request }) => {
   return null;
 };
 
-export interface PlusSuggestionsLoaderData {
-  suggestions: plusSuggestions.FindVisibleForUser;
-  suggestedForTiers: number[];
-}
+export type PlusSuggestionsLoaderData = SerializeFrom<typeof loader>;
 
 export const shouldRevalidate: ShouldRevalidateFunction = ({ formMethod }) => {
   // only reload if form submission not when user changes tabs
   return Boolean(formMethod && formMethod !== "GET");
 };
 
-export const loader: LoaderFunction = async ({ request }) => {
-  const user = await getUserId(request);
-
-  return json<PlusSuggestionsLoaderData>({
-    suggestions: db.plusSuggestions.findAll({
-      ...nextNonCompletedVoting(new Date()),
-    }),
-    suggestedForTiers: user
-      ? db.plusSuggestions.tiersSuggestedFor({
-          ...nextNonCompletedVoting(new Date()),
-          userId: user.id,
-        })
-      : [],
-  });
+export const loader = async () => {
+  return {
+    suggestions: await PlusSuggestionRepository.findAllByMonth(
+      nextNonCompletedVoting(new Date()),
+    ),
+  };
 };
 
+// xxx: can't make a new suggest after leaving comment
 export default function PlusSuggestionsPage() {
   const data = useLoaderData<PlusSuggestionsLoaderData>();
   const [searchParams, setSearchParams] = useSearchParams();
   const user = useUser();
-  const tierVisible = searchParamsToLegalTier(searchParams, data.suggestions);
+  const tierVisible = searchParamsToLegalTier(searchParams);
 
   const handleTierChange = (tier: string) => {
     setSearchParams({ tier });
   };
 
-  const visibleSuggestions =
-    tierVisible && data.suggestions[tierVisible]
-      ? data.suggestions[tierVisible]
-      : [];
-  invariant(visibleSuggestions);
+  const visibleSuggestions = data.suggestions.filter(
+    (suggestion) => suggestion.tier === tierVisible,
+  );
 
   return (
     <>
@@ -193,29 +177,31 @@ export default function PlusSuggestionsPage() {
               })}
             >
               <div className="plus__radios">
-                {Object.entries(data.suggestions)
-                  .sort((a, b) => Number(a[0]) - Number(b[0]))
-                  .map(([tier, suggestions]) => {
-                    const id = String(tier);
-                    return (
-                      <div key={id} className="plus__radio-container">
-                        <label htmlFor={id} className="plus__radio-label">
-                          +{tier}{" "}
-                          <span className="plus__users-count">
-                            ({suggestions.length})
-                          </span>
-                        </label>
-                        <input
-                          id={id}
-                          name="tier"
-                          type="radio"
-                          checked={tierVisible === tier}
-                          onChange={() => handleTierChange(tier)}
-                          data-cy={`plus${tier}-radio`}
-                        />
-                      </div>
-                    );
-                  })}
+                {[1, 2, 3].map((tier) => {
+                  const id = String(tier);
+                  const suggestions = data.suggestions.filter(
+                    (suggestion) => suggestion.tier === tier,
+                  );
+
+                  return (
+                    <div key={id} className="plus__radio-container">
+                      <label htmlFor={id} className="plus__radio-label">
+                        +{tier}{" "}
+                        <span className="plus__users-count">
+                          ({suggestions.length})
+                        </span>
+                      </label>
+                      <input
+                        id={id}
+                        name="tier"
+                        type="radio"
+                        checked={tierVisible === tier}
+                        onChange={() => handleTierChange(String(tier))}
+                        data-cy={`plus${tier}-radio`}
+                      />
+                    </div>
+                  );
+                })}
               </div>
               {canSuggestNewUserFE({ user, suggestions: data.suggestions }) ? (
                 // TODO: resetScroll={false} https://twitter.com/ryanflorence/status/1527775882797907969
@@ -229,12 +215,12 @@ export default function PlusSuggestionsPage() {
               ) : null}
             </div>
             <div className="stack lg">
-              {visibleSuggestions.map((u) => {
+              {visibleSuggestions.map((suggestion) => {
                 invariant(tierVisible);
                 return (
                   <SuggestedUser
-                    key={`${u.suggestedUser.id}-${tierVisible}`}
-                    suggested={u}
+                    key={`${suggestion.suggested.id}-${tierVisible}`}
+                    suggestion={suggestion}
                     tier={tierVisible}
                   />
                 );
@@ -252,39 +238,31 @@ export default function PlusSuggestionsPage() {
   );
 }
 
-function searchParamsToLegalTier(
-  searchParams: URLSearchParams,
-  suggestions?: plusSuggestions.FindVisibleForUser,
-) {
+function searchParamsToLegalTier(searchParams: URLSearchParams) {
   const tierFromSearchParams = searchParams.get("tier");
-  if (
-    !tierFromSearchParams ||
-    !suggestions ||
-    !suggestions[tierFromSearchParams]
-  ) {
-    return tierVisibleInitialState(suggestions);
-  }
 
-  return tierFromSearchParams;
-}
+  if (tierFromSearchParams === "1") return 1;
+  if (tierFromSearchParams === "2") return 2;
+  if (tierFromSearchParams === "3") return 3;
 
-function tierVisibleInitialState(
-  suggestions?: plusSuggestions.FindVisibleForUser,
-) {
-  if (!suggestions || Object.keys(suggestions).length === 0) return;
-  return String(Math.min(...Object.keys(suggestions).map(Number)));
+  return 1;
 }
 
 function SuggestedForInfo() {
+  const user = useUser();
   const data = useLoaderData<PlusSuggestionsLoaderData>();
 
-  if (data.suggestedForTiers.length === 0) return null;
+  const suggestedForTiers = data.suggestions
+    .filter((suggestion) => suggestion.suggested.id === user?.id)
+    .map((suggestion) => suggestion.tier);
+
+  if (suggestedForTiers.length === 0) return null;
 
   return (
     <div className="stack md">
-      {canDeleteSuggestionOfThemselves() ? (
+      {!isVotingActive() ? (
         <div className="stack horizontal md">
-          {data.suggestedForTiers.map((tier) => (
+          {suggestedForTiers.map((tier) => (
             <FormWithConfirm
               key={tier}
               fields={[
@@ -310,11 +288,11 @@ function SuggestedForInfo() {
 }
 
 function SuggestedUser({
-  suggested,
+  suggestion,
   tier,
 }: {
-  suggested: plusSuggestions.FindVisibleForUserSuggestedUserInfo;
-  tier: string;
+  suggestion: PlusSuggestionRepository.FindAllByMonthItem;
+  tier: number;
 }) {
   const data = useLoaderData<PlusSuggestionsLoaderData>();
   const user = useUser();
@@ -324,16 +302,16 @@ function SuggestedUser({
   return (
     <div className="stack md">
       <div className="plus__suggested-user-info">
-        <Avatar user={suggested.suggestedUser} size="md" />
+        <Avatar user={suggestion.suggested} size="md" />
         <h2>
-          <Link className="all-unset" to={userPage(suggested.suggestedUser)}>
-            {suggested.suggestedUser.discordName}
+          <Link className="all-unset" to={userPage(suggestion.suggested)}>
+            {suggestion.suggested.discordName}
           </Link>
         </h2>
         {canAddCommentToSuggestionFE({
           user,
           suggestions: data.suggestions,
-          suggested: { id: suggested.suggestedUser.id },
+          suggested: { id: suggestion.suggested.id },
           targetPlusTier: Number(tier),
         }) ? (
           // TODO: resetScroll={false} https://twitter.com/ryanflorence/status/1527775882797907969
@@ -341,7 +319,7 @@ function SuggestedUser({
             className="plus__comment-button"
             size="tiny"
             variant="outlined"
-            to={`comment/${tier}/${suggested.suggestedUser.id}?tier=${tier}`}
+            to={`comment/${tier}/${suggestion.suggested.id}?tier=${tier}`}
             prefetch="render"
           >
             Comment
@@ -349,11 +327,11 @@ function SuggestedUser({
         ) : null}
       </div>
       <PlusSuggestionComments
-        suggestions={suggested.suggestions}
+        suggestion={suggestion}
         deleteButtonArgs={{
-          suggested,
+          suggested: suggestion.suggested,
           user,
-          tier,
+          tier: String(tier),
           suggestions: data.suggestions,
         }}
       />
@@ -362,29 +340,29 @@ function SuggestedUser({
 }
 
 export function PlusSuggestionComments({
-  suggestions,
+  suggestion,
   deleteButtonArgs,
   defaultOpen,
 }: {
-  suggestions: plusSuggestions.FindVisibleForUserSuggestedUserInfo["suggestions"];
+  suggestion: PlusSuggestionRepository.FindAllByMonthItem;
   deleteButtonArgs?: {
     user?: Pick<User, "id" | "discordId">;
-    suggestions: plusSuggestions.FindVisibleForUser;
+    suggestions: PlusSuggestionRepository.FindAllByMonthItem[];
     tier: string;
-    suggested: plusSuggestions.FindVisibleForUserSuggestedUserInfo;
+    suggested: PlusSuggestionRepository.FindAllByMonthItem["suggested"];
   };
   defaultOpen?: true;
 }) {
   return (
     <details open={defaultOpen} className="w-full">
       <summary className="plus__view-comments-action">
-        Comments ({suggestions.length})
+        Comments ({suggestion.suggestions.length})
       </summary>
       <div className="stack sm mt-2">
-        {suggestions.map((suggestion) => {
+        {suggestion.suggestions.map((suggestion) => {
           return (
             <fieldset key={suggestion.id} className="plus__comment">
-              <legend>{discordFullName(suggestion.author)}</legend>
+              <legend>{suggestion.author.discordName}</legend>
               {suggestion.text}
               <div className="stack horizontal xs items-center">
                 <span className="plus__comment-time">
@@ -407,10 +385,10 @@ export function PlusSuggestionComments({
                     suggestionId={suggestion.id}
                     tier={deleteButtonArgs.tier}
                     suggestedDiscordName={
-                      deleteButtonArgs.suggested.suggestedUser.discordName
+                      deleteButtonArgs.suggested.discordName
                     }
                     isFirstSuggestion={
-                      deleteButtonArgs.suggested.suggestions.length === 1
+                      deleteButtonArgs.suggestions.length === 1
                     }
                   />
                 ) : null}
