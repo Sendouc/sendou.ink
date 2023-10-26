@@ -231,10 +231,8 @@ function hasUserSuggestedThisMonth({
   user,
   suggestions,
 }: Pick<CanSuggestNewUserFEArgs, "user" | "suggestions">) {
-  return suggestions.some((suggestion) =>
-    suggestion.suggestions.some(
-      (suggestion) => suggestion.author.id === user?.id,
-    ),
+  return suggestions.some(
+    (suggestion) => suggestion.suggestions[0].author.id === user?.id,
   );
 }
 

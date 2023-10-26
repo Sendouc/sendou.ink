@@ -163,7 +163,6 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   });
 };
 
-// xxx: some inputs are missing users?
 export default function ReportWinnersPage() {
   const { t } = useTranslation(["common", "calendar"]);
   const data = useLoaderData<typeof loader>();

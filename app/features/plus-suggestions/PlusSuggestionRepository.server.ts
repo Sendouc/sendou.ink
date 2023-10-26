@@ -29,7 +29,6 @@ type FindAllByMonthRow = {
   };
 };
 
-// xxx: comments in their own array, adjust initial sorting then finalize in JS
 // xxx: better naming that suggestion inside suggestions
 export type FindAllByMonthItem = Unwrapped<typeof findAllByMonth>;
 export async function findAllByMonth(args: MonthYear) {

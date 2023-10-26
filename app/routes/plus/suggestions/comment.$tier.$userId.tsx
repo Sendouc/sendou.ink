@@ -7,7 +7,6 @@ import { Dialog } from "~/components/Dialog";
 import { Redirect } from "~/components/Redirect";
 import { PlUS_SUGGESTION_COMMENT_MAX_LENGTH, PLUS_TIERS } from "~/constants";
 import { nextNonCompletedVoting } from "~/modules/plus-server";
-import { db } from "~/db";
 import { requireUser, useUser } from "~/modules/auth";
 import {
   canAddCommentToSuggestionBE,
@@ -57,7 +56,7 @@ export const action: ActionFunction = async ({ request }) => {
     }),
   );
 
-  db.plusSuggestions.create({
+  await PlusSuggestionRepository.create({
     authorId: user.id,
     ...data,
     text: data.comment,

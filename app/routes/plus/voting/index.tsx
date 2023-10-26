@@ -24,7 +24,7 @@ import {
 } from "~/modules/plus-server";
 import { isVotingActive } from "~/permissions";
 import { parseRequestFormData } from "~/utils/remix";
-import { makeTitle, discordFullName } from "~/utils/strings";
+import { makeTitle } from "~/utils/strings";
 import { assertType, assertUnreachable } from "~/utils/types";
 import { safeJSONParse } from "~/utils/zod";
 import { PlusSuggestionComments } from "../suggestions";
@@ -54,7 +54,7 @@ export const action: ActionFunction = async ({ request }) => {
   if (!isVotingActive()) {
     throw new Response(null, { status: 400 });
   }
-  const usersForVoting = db.plusVotes.usersForVoting(user);
+  const usersForVoting = await db.plusVotes.usersForVoting(user);
   validateVotes({ votes: data.votes, usersForVoting });
 
   // freebie +1 for yourself if you vote
@@ -139,7 +139,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     });
   }
 
-  const usersForVoting = db.plusVotes.usersForVoting(user);
+  const usersForVoting = await db.plusVotes.usersForVoting(user);
   const hasVoted = db.plusVotes.hasVoted({
     user,
     ...nextNonCompletedVoting(new Date()),
@@ -243,7 +243,7 @@ function Voting(data: Extract<PlusVotingLoaderData, { type: "voting" }>) {
             {previous.score > 0 ? "+" : ""}
             {previous.score}
           </span>{" "}
-          on {discordFullName(previous.user)}.
+          on {previous.user.discordName}.
           <Button className="ml-auto" variant="minimal" onClick={undoLast}>
             Undo?
           </Button>
@@ -254,7 +254,7 @@ function Voting(data: Extract<PlusVotingLoaderData, { type: "voting" }>) {
       {currentUser ? (
         <div className="stack md items-center">
           <Avatar user={currentUser.user} size="lg" />
-          <h2>{discordFullName(currentUser.user)}</h2>
+          <h2>{currentUser.user.discordName}</h2>
           <div className="stack horizontal lg">
             <Button
               className="plus-voting__vote-button downvote"
@@ -271,9 +271,9 @@ function Voting(data: Extract<PlusVotingLoaderData, { type: "voting" }>) {
               +1
             </Button>
           </div>
-          {currentUser.suggestions ? (
+          {currentUser.suggestion ? (
             <PlusSuggestionComments
-              suggestions={currentUser.suggestions}
+              suggestion={currentUser.suggestion}
               defaultOpen
             />
           ) : null}

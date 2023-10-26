@@ -65,6 +65,7 @@ import { groupForMatch } from "~/features/sendouq/queries/groupForMatch.server";
 import { addPlayerResults } from "~/features/sendouq/queries/addPlayerResults.server";
 import { updateVCStatus } from "~/features/sendouq/queries/updateVCStatus.server";
 import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
+import * as PlusSuggestionRepository from "~/features/plus-suggestions/PlusSuggestionRepository.server";
 
 const calendarEventWithToToolsSz = () => calendarEventWithToTools(true);
 const calendarEventWithToToolsTeamsSz = () =>
@@ -392,14 +393,14 @@ function lastMonthsVoting() {
   db.plusVotes.upsertMany(votes);
 }
 
-function lastMonthSuggestions() {
+async function lastMonthSuggestions() {
   const usersSuggested = [
     3, 10, 14, 90, 120, 140, 200, 201, 203, 204, 205, 216, 217, 218, 219, 220,
   ];
   const { month, year } = lastCompletedVoting(new Date());
 
   for (const id of usersSuggested) {
-    db.plusSuggestions.create({
+    await PlusSuggestionRepository.create({
       authorId: 1,
       month,
       year,
@@ -410,7 +411,7 @@ function lastMonthSuggestions() {
   }
 }
 
-function thisMonthsSuggestions() {
+async function thisMonthsSuggestions() {
   const usersInPlus = db.users
     .findAll()
     .filter((u) => u.plusTier && u.id !== 1); // exclude admin
@@ -424,7 +425,7 @@ function thisMonthsSuggestions() {
       invariant(suggester);
       invariant(suggester.plusTier);
 
-      db.plusSuggestions.create({
+      await PlusSuggestionRepository.create({
         authorId: suggester.id,
         month,
         year,

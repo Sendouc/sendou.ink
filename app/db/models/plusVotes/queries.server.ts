@@ -5,7 +5,6 @@ import { nextNonCompletedVoting } from "~/modules/plus-server";
 import { atOrError } from "~/utils/arrays";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import type { Unpacked } from "~/utils/types";
-import { db } from "../..";
 import { sql } from "../../sql";
 import type {
   PlusVote,
@@ -13,7 +12,7 @@ import type {
   User,
   UserWithPlusTier,
 } from "../../types";
-import type { FindVisibleForUserSuggestedUserInfo } from "../plusSuggestions/queries.server";
+import * as PlusSuggestionRepository from "~/features/plus-suggestions/PlusSuggestionRepository.server";
 
 import createSql from "./create.sql";
 import deleteManySql from "./deleteMany.sql";
@@ -133,34 +132,26 @@ const plusServerMembersStm = sql.prepare(plusServerMembersSql);
 export type UsersForVoting = {
   user: Pick<
     User,
-    | "id"
-    | "discordId"
-    | "discordName"
-    | "discordDiscriminator"
-    | "discordAvatar"
-    | "bio"
+    "id" | "discordId" | "discordName" | "discordAvatar" | "bio"
   >;
-  suggestions?: FindVisibleForUserSuggestedUserInfo["suggestions"];
+  suggestion?: PlusSuggestionRepository.FindAllByMonthItem;
 }[];
 
-export function usersForVoting(
+export async function usersForVoting(
   loggedInUser?: Pick<UserWithPlusTier, "id" | "plusTier">,
 ) {
   if (!loggedInUser || !loggedInUser.plusTier) return;
 
-  const { month, year } = nextNonCompletedVoting(new Date());
   const members = plusServerMembersStm.all({
     plusTier: loggedInUser.plusTier,
   }) as Unpacked<UsersForVoting>["user"][];
 
-  const allSuggestedTiers = db.plusSuggestions.findVisibleForUser({
-    plusTier: loggedInUser.plusTier,
-    month,
-    year,
-    includeBio: true,
-  });
-  invariant(allSuggestedTiers);
-  const suggestedUsers = allSuggestedTiers[loggedInUser.plusTier] ?? [];
+  const suggestedUsers = (
+    await PlusSuggestionRepository.findAllByMonth(
+      nextNonCompletedVoting(new Date()),
+    )
+  ).filter((suggestion) => suggestion.tier === loggedInUser.plusTier);
+  invariant(suggestedUsers);
 
   const result: UsersForVoting = [];
 
@@ -170,24 +161,22 @@ export function usersForVoting(
         id: member.id,
         discordId: member.discordId,
         discordName: member.discordName,
-        discordDiscriminator: member.discordDiscriminator,
         discordAvatar: member.discordAvatar,
         bio: member.bio,
       },
     });
   }
 
-  for (const { suggestedUser, suggestions } of suggestedUsers) {
+  for (const suggestion of suggestedUsers) {
     result.push({
       user: {
-        id: suggestedUser.id,
-        discordId: suggestedUser.discordId,
-        discordName: suggestedUser.discordName,
-        discordDiscriminator: suggestedUser.discordDiscriminator,
-        discordAvatar: suggestedUser.discordAvatar,
-        bio: suggestedUser.bio,
+        id: suggestion.suggested.id,
+        discordId: suggestion.suggested.discordId,
+        discordName: suggestion.suggested.discordName,
+        discordAvatar: suggestion.suggested.discordAvatar,
+        bio: suggestion.suggested.bio,
       },
-      suggestions,
+      suggestion,
     });
   }
 
