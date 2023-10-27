@@ -13,6 +13,7 @@ import {
   notFoundIfFalsy,
   parseRequestFormData,
   privatelyCachedJson,
+  validate,
   type SendouRouteHandle,
 } from "~/utils/remix";
 import { userNewBuildPage } from "~/utils/urls";
@@ -22,7 +23,7 @@ import type { MainWeaponId } from "~/modules/in-game-lists";
 import { mainWeaponIds } from "~/modules/in-game-lists";
 import { WeaponImage } from "~/components/Image";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
-import { buildsByUserId } from "~/features/builds";
+import * as BuildRepository from "~/features/builds/BuildRepository.server";
 
 const buildsActionSchema = z.object({
   buildToDeleteId: z.preprocess(actualNumber, id),
@@ -35,15 +36,14 @@ export const action: ActionFunction = async ({ request }) => {
     schema: buildsActionSchema,
   });
 
-  if (
-    !buildsByUserId({ userId: user.id, loggedInUserId: user?.id }).some(
-      (build) => build.id === data.buildToDeleteId,
-    )
-  ) {
-    throw new Response(null, { status: 400 });
-  }
+  const usersBuilds = await BuildRepository.allByUserId({
+    userId: user.id,
+    showPrivate: true,
+  });
 
-  db.builds.deleteById(data.buildToDeleteId);
+  validate(usersBuilds.some((build) => build.id === data.buildToDeleteId));
+
+  await BuildRepository.deleteById(data.buildToDeleteId);
 
   return null;
 };
@@ -57,9 +57,9 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const { identifier } = userParamsSchema.parse(params);
   const user = notFoundIfFalsy(db.users.findByIdentifier(identifier));
 
-  const builds = buildsByUserId({
+  const builds = await BuildRepository.allByUserId({
     userId: user.id,
-    loggedInUserId: loggedInUser?.id,
+    showPrivate: loggedInUser?.id === user.id,
   });
 
   if (builds.length === 0 && loggedInUser?.id !== user.id) {
@@ -160,6 +160,8 @@ function WeaponFilters({
 }) {
   const { t } = useTranslation(["weapons", "builds"]);
   const data = useLoaderData<typeof loader>();
+
+  if (data.builds.length === 0) return null;
 
   return (
     <div className="stack horizontal sm flex-wrap">

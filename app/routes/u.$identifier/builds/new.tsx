@@ -19,7 +19,6 @@ import { Label } from "~/components/Label";
 import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
 import { SubmitButton } from "~/components/SubmitButton";
 import { BUILD } from "~/constants";
-import { db } from "~/db";
 import type { GearType } from "~/db/types";
 import {
   validatedBuildFromSearchParams,
@@ -65,6 +64,7 @@ import {
   toArray,
   weaponSplId,
 } from "~/utils/zod";
+import * as BuildRepository from "~/features/builds/BuildRepository.server";
 
 const newBuildActionSchema = z.object({
   buildToEditId: z.preprocess(actualNumber, id.nullish()),
@@ -165,9 +165,9 @@ export const action: ActionFunction = async ({ request }) => {
     private: data.private,
   };
   if (data.buildToEditId) {
-    db.builds.updateByReplacing({ id: data.buildToEditId, ...commonArgs });
+    await BuildRepository.update({ id: data.buildToEditId, ...commonArgs });
   } else {
-    db.builds.create(commonArgs);
+    await BuildRepository.create(commonArgs);
   }
 
   throw redirect(userBuildsPage(user));

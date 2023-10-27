@@ -1,5 +1,10 @@
 import type { ColumnType, GeneratedAlways, SqlBool } from "kysely";
-import type { ModeShort, StageId } from "~/modules/in-game-lists";
+import type {
+  Ability,
+  MainWeaponId,
+  ModeShort,
+  StageId,
+} from "~/modules/in-game-lists";
 
 export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   ? ColumnType<S, I | undefined, U>
@@ -73,16 +78,16 @@ export interface Build {
   description: string | null;
   headGearSplId: number;
   id: GeneratedAlways<number>;
-  modes: string | null;
+  modes: ColumnType<ModeShort[] | null, string | null, string | null>;
   ownerId: number;
-  private: Generated<number | null>;
+  private: number | null;
   shoesGearSplId: number;
   title: string;
   updatedAt: Generated<number>;
 }
 
 export interface BuildAbility {
-  ability: string;
+  ability: Ability;
   buildId: number;
   gearType: string;
   slotIndex: number;
@@ -90,7 +95,7 @@ export interface BuildAbility {
 
 export interface BuildWeapon {
   buildId: number;
-  weaponSplId: number;
+  weaponSplId: MainWeaponId;
 }
 
 export interface CalendarEvent {
@@ -548,7 +553,7 @@ export interface XRankPlacement {
   rank: number;
   region: string;
   title: string;
-  weaponSplId: number;
+  weaponSplId: MainWeaponId;
   year: number;
 }
 

@@ -171,7 +171,7 @@ export interface Build {
   ownerId: number;
   title: string;
   /** Private builds are only visible on the user builds page to the owner only */
-  private: number;
+  private: number | null;
   description: string | null;
   modes: string | null;
   headGearSplId: number;
