@@ -130,6 +130,8 @@ module.exports = {
       route("/tiers", "features/sendouq/routes/tiers.tsx");
 
       route("/settings", "features/settings/routes/settings.tsx");
+
+      route("/admin", "features/admin/routes/admin.tsx");
     });
   },
   serverModuleFormat: "cjs",

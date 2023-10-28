@@ -12,7 +12,6 @@ import { Catcher } from "~/components/Catcher";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { UserSearch } from "~/components/UserSearch";
-import { db } from "~/db";
 import { makeArtist } from "~/features/art";
 import { useUser } from "~/modules/auth";
 import {
@@ -21,7 +20,6 @@ import {
   requireUserId,
 } from "~/modules/auth/user.server";
 import { isAdmin, isMod } from "~/permissions";
-import { dateToDatabaseTimestamp } from "~/utils/dates";
 import {
   parseRequestFormData,
   validate,
@@ -31,7 +29,7 @@ import { makeTitle } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
 import { impersonateUrl, SEED_URL, STOP_IMPERSONATING_URL } from "~/utils/urls";
 import { _action, actualNumber } from "~/utils/zod";
-import * as AdminService from "~/features/admin/AdminService.server";
+import * as AdminRepository from "~/features/admin/AdminRepository.server";
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: makeTitle("Admin page") }];
@@ -81,7 +79,7 @@ export const action: ActionFunction = async ({ request }) => {
     case "MIGRATE": {
       validate(isAdmin(user), "Admin needed", 401);
 
-      db.users.migrate({
+      await AdminRepository.migrate({
         oldUserId: data["old-user"],
         newUserId: data["new-user"],
       });
@@ -90,24 +88,25 @@ export const action: ActionFunction = async ({ request }) => {
     case "REFRESH": {
       validate(isAdmin(user));
 
-      db.users.refreshPlusTiers();
+      await AdminRepository.refreshPlusTiers();
       break;
     }
     case "FORCE_PATRON": {
       validate(isAdmin(user), "Admin needed", 401);
 
-      db.users.forcePatron({
+      await AdminRepository.forcePatron({
         id: data["user"],
-        patronSince: dateToDatabaseTimestamp(new Date()),
+        patronSince: new Date(),
         patronTier: data.patronTier,
-        patronTill: dateToDatabaseTimestamp(new Date(data.patronTill)),
+        patronTill: new Date(data.patronTill),
       });
       break;
     }
     case "CLEAN_UP": {
       validate(isAdmin(user), "Admin needed", 401);
 
-      AdminService.cleanUp();
+      // on purpose sync
+      AdminRepository.cleanUp();
       break;
     }
     case "ARTIST": {
@@ -119,13 +118,13 @@ export const action: ActionFunction = async ({ request }) => {
     case "VIDEO_ADDER": {
       validate(isMod(user), "Mod needed", 401);
 
-      db.users.makeVideoAdder(data["user"]);
+      await AdminRepository.makeVideoAdderByUserId(data["user"]);
       break;
     }
     case "LINK_PLAYER": {
       validate(isMod(user), "Mod needed", 401);
 
-      db.users.linkPlayer({
+      await AdminRepository.linkUserAndPlayer({
         userId: data["user"],
         playerId: data.playerId,
       });
