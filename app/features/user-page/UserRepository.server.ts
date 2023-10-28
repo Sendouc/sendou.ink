@@ -1,4 +1,4 @@
-import type { ExpressionBuilder } from "kysely";
+import type { ExpressionBuilder, FunctionModule } from "kysely";
 import { sql } from "kysely";
 import { jsonArrayFrom } from "kysely/helpers/sqlite";
 import { dbNew } from "~/db/sql";
@@ -107,4 +107,69 @@ export function findResultsByUserId(userId: number) {
     )
     .orderBy("startTime", "desc")
     .execute();
+}
+
+const searchSelectedFields = ({ fn }: { fn: FunctionModule<DB, "User"> }) =>
+  [
+    ...COMMON_USER_FIELDS,
+    "User.inGameName",
+    "PlusTier.tier as plusTier",
+    fn<string | null>("iif", [
+      "User.showDiscordUniqueName",
+      "User.discordUniqueName",
+      sql`null`,
+    ]).as("discordUniqueName"),
+  ] as const;
+export function search({ query, limit }: { query: string; limit: number }) {
+  const criteria = `%${query}%`;
+
+  return dbNew
+    .selectFrom("User")
+    .leftJoin("PlusTier", "PlusTier.userId", "User.id")
+    .select(searchSelectedFields)
+    .where((eb) =>
+      eb.or([
+        eb("User.discordName", "like", criteria),
+        eb("User.inGameName", "like", criteria),
+        eb("User.discordUniqueName", "like", criteria),
+        eb("User.twitter", "like", criteria),
+      ]),
+    )
+    .orderBy(
+      (eb) =>
+        eb
+          .case()
+          .when("PlusTier.tier", "is", null)
+          .then(4)
+          .else(eb.ref("PlusTier.tier"))
+          .end(),
+      "asc",
+    )
+    .limit(limit)
+    .execute();
+}
+
+export function searchExact(args: {
+  id?: number;
+  discordId?: string;
+  customUrl?: string;
+}) {
+  let query = dbNew
+    .selectFrom("User")
+    .leftJoin("PlusTier", "PlusTier.userId", "User.id")
+    .select(searchSelectedFields);
+
+  if (args.id) {
+    query = query.where("User.id", "=", args.id);
+  }
+
+  if (args.discordId) {
+    query = query.where("User.discordId", "=", args.discordId);
+  }
+
+  if (args.customUrl) {
+    query = query.where("User.customUrl", "=", args.customUrl);
+  }
+
+  return query.execute();
 }

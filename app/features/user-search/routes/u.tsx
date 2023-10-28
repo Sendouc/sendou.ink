@@ -5,15 +5,14 @@ import { navIconUrl, userPage, USER_SEARCH_PAGE } from "~/utils/urls";
 import styles from "~/styles/u.css";
 import { Input } from "~/components/Input";
 import { SearchIcon } from "~/components/icons/Search";
-import { db } from "~/db";
 import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
 import { useDebounce } from "react-use";
 import * as React from "react";
 import { Avatar } from "~/components/Avatar";
-import { discordFullName } from "~/utils/strings";
 import { useTranslation } from "~/hooks/useTranslation";
 import { z } from "zod";
 import { queryToUserIdentifier } from "~/utils/users";
+import * as UserRepository from "~/features/user-page/UserRepository.server";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -35,21 +34,21 @@ const searchParamsSchema = z.object({
   limit: z.coerce.number().int().min(1).max(25).default(25),
 });
 
-export const loader = ({ request }: LoaderArgs) => {
-  const { q, limit } = parseSearchParams({
+export const loader = async ({ request }: LoaderArgs) => {
+  const { q: query, limit } = parseSearchParams({
     request,
     schema: searchParamsSchema,
   });
 
-  if (!q) return null;
+  if (!query) return null;
 
-  const identifier = queryToUserIdentifier(q);
+  const identifier = queryToUserIdentifier(query);
 
   return {
     users: identifier
-      ? db.users.searchExact(identifier)
-      : db.users.search({ input: q, limit }),
-    input: q,
+      ? await UserRepository.searchExact(identifier)
+      : await UserRepository.search({ query, limit }),
+    query,
   };
 };
 
@@ -92,7 +91,7 @@ function UsersList() {
   if (data.users.length === 0) {
     return (
       <div className="u-search__info">
-        {t("user:search.noResults", { query: data.input })}
+        {t("user:search.noResults", { query: data.query })}
       </div>
     );
   }
@@ -101,12 +100,12 @@ function UsersList() {
     <ul className="u-search__users">
       {data.users.map((user) => {
         return (
-          <li key={user.discordId}>
+          <li key={user.id}>
             <Link to={userPage(user)}>
               <div className="u-search__user">
                 <Avatar size="sm" user={user} />
                 <div>
-                  <div>{discordFullName(user)}</div>
+                  <div>{user.discordName}</div>
                   {user.inGameName ? (
                     <div className="u-search__ign">
                       {t("user:ign.short")}: {user.inGameName}

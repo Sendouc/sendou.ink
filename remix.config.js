@@ -6,6 +6,8 @@ module.exports = {
   cacheDirectory: process.env.NODE_ENV === "test" ? ".cache-test" : undefined,
   routes: async (defineRoutes) => {
     return defineRoutes((route) => {
+      route("/u", "features/user-search/routes/u.tsx");
+
       route("/badges", "features/badges/routes/badges.tsx", () => {
         route("/badges/:id", "features/badges/routes/badges.$id.tsx", () => {
           route(

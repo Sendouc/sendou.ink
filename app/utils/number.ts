@@ -24,3 +24,8 @@ export function secondsToMinutesNumberTuple(seconds: number) {
 export function sumArray(arr: number[]) {
   return arr.reduce((acc, curr) => acc + curr, 0);
 }
+
+export function safeNumberParse(value: string) {
+  const result = Number(value);
+  return Number.isNaN(result) ? null : result;
+}
