@@ -2,8 +2,8 @@ import matter from "gray-matter";
 import fs from "node:fs";
 import path from "node:path";
 import type { z } from "zod";
-import { ARTICLES_FOLDER_PATH } from "./constants";
-import { articleDataSchema } from "./schemas";
+import { ARTICLES_FOLDER_PATH } from "../articles-constants";
+import { articleDataSchema } from "../articles-schemas.server";
 
 export async function mostRecentArticles(count: number) {
   const files = await fs.promises.readdir(ARTICLES_FOLDER_PATH);

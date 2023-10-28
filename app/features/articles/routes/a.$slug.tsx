@@ -8,7 +8,7 @@ import {
 } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import * as React from "react";
-import { articleBySlug } from "~/modules/articles";
+import { articleBySlug } from "../core/bySlug.server";
 import invariant from "tiny-invariant";
 import { makeTitle } from "~/utils/strings";
 import {

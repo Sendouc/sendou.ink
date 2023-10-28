@@ -132,6 +132,9 @@ module.exports = {
       route("/settings", "features/settings/routes/settings.tsx");
 
       route("/admin", "features/admin/routes/admin.tsx");
+
+      route("/a", "features/articles/routes/a.tsx");
+      route("/a/:slug", "features/articles/routes/a.$slug.tsx");
     });
   },
   serverModuleFormat: "cjs",

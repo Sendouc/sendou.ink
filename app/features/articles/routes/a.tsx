@@ -1,7 +1,7 @@
 import { Main } from "~/components/Main";
 import type { LinksFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { mostRecentArticles } from "~/modules/articles";
+import { mostRecentArticles } from "../core/list.server";
 import styles from "~/styles/front.css";
 import { useTranslation } from "~/hooks/useTranslation";
 import type { SendouRouteHandle } from "~/utils/remix";

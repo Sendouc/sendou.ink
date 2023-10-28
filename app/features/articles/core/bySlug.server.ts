@@ -1,9 +1,9 @@
 import matter from "gray-matter";
 import fs from "node:fs";
 import { ZodError } from "zod";
-import { articleDataSchema } from "./schemas";
+import { articleDataSchema } from "../articles-schemas.server";
 import path from "node:path";
-import { ARTICLES_FOLDER_PATH } from "./constants";
+import { ARTICLES_FOLDER_PATH } from "../articles-constants";
 
 export function articleBySlug(slug: string) {
   try {
