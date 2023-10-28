@@ -66,6 +66,7 @@ import { addPlayerResults } from "~/features/sendouq/queries/addPlayerResults.se
 import { updateVCStatus } from "~/features/sendouq/queries/updateVCStatus.server";
 import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
 import * as PlusSuggestionRepository from "~/features/plus-suggestions/PlusSuggestionRepository.server";
+import * as BuildRepository from "~/features/builds/BuildRepository.server";
 
 const calendarEventWithToToolsSz = () => calendarEventWithToTools(true);
 const calendarEventWithToToolsTeamsSz = () =>
@@ -1052,7 +1053,7 @@ const randomAbility = (legalTypes: AbilityType[]) => {
 };
 
 const adminWeaponPool = mainWeaponIds.filter(() => Math.random() > 0.8);
-function adminBuilds() {
+async function adminBuilds() {
   for (let i = 0; i < 50; i++) {
     const randomOrderHeadGear = shuffle(headGearIds.slice());
     const randomOrderClothesGear = shuffle(clothesGearIds.slice());
@@ -1062,7 +1063,7 @@ function adminBuilds() {
       adminWeaponPool.filter((id) => id !== 40).slice(),
     );
 
-    db.builds.create({
+    await BuildRepository.create({
       title: `${capitalize(faker.word.adjective())} ${capitalize(
         faker.word.noun(),
       )}`,
@@ -1105,7 +1106,7 @@ function adminBuilds() {
   }
 }
 
-function manySplattershotBuilds() {
+async function manySplattershotBuilds() {
   // ensure 500 has at least one splattershot build for x placement test
   const users = [
     ...userIdsInRandomOrder().filter(
@@ -1124,7 +1125,7 @@ function manySplattershotBuilds() {
       (id) => id !== SPLATTERSHOT_ID,
     );
 
-    db.builds.create({
+    await BuildRepository.create({
       private: 0,
       title: `${capitalize(faker.word.adjective())} ${capitalize(
         faker.word.noun(),

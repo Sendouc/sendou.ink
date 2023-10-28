@@ -36,6 +36,7 @@ import {
 } from "~/utils/urls";
 import * as BadgeRepository from "~/features/badges/BadgeRepository.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
+import * as BuildRepository from "~/features/builds/BuildRepository.server";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -113,9 +114,9 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     // TODO: could load only on results page
     // xxx: missing index at least on CalendarEventResultPlayer.userId?
     results: await UserRepository.findResultsByUserId(user.id),
-    buildsCount: db.builds.countByUserId({
+    buildsCount: await BuildRepository.countByUserId({
       userId: user.id,
-      loggedInUserId: loggedInUser?.id,
+      showPrivate: user.id === loggedInUser?.id,
     }),
     vods: findVods({ userId: user.id }),
     artCount: countArtByUserId(user.id),

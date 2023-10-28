@@ -146,7 +146,6 @@ export const loader = async () => {
   };
 };
 
-// xxx: can't make a new suggest after leaving comment
 export default function PlusSuggestionsPage() {
   const data = useLoaderData<PlusSuggestionsLoaderData>();
   const [searchParams, setSearchParams] = useSearchParams();

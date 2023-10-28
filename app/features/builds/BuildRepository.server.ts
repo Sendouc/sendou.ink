@@ -114,6 +114,23 @@ function dbAbilitiesToArrayOfArrays(
   ];
 }
 
+export async function countByUserId({
+  userId,
+  showPrivate,
+}: {
+  userId: number;
+  showPrivate: boolean;
+}) {
+  return (
+    await dbNew
+      .selectFrom("Build")
+      .select(({ fn }) => fn.countAll<number>().as("count"))
+      .where("ownerId", "=", userId)
+      .$if(!showPrivate, (qb) => qb.where("Build.private", "=", 0))
+      .executeTakeFirstOrThrow()
+  ).count;
+}
+
 interface CreateArgs {
   ownerId: DB["Build"]["ownerId"];
   title: DB["Build"]["title"];
