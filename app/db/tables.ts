@@ -283,13 +283,13 @@ export interface PlusVote {
 }
 
 export interface PlusVotingResult {
-  month: number | null;
-  passedVoting: string | null;
-  score: string | null;
-  tier: number | null;
-  votedId: number | null;
-  wasSuggested: string | null;
-  year: number | null;
+  votedId: number;
+  tier: number;
+  score: number;
+  month: number;
+  year: number;
+  wasSuggested: number;
+  passedVoting: number;
 }
 
 export interface ReportedWeapon {
