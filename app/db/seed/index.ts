@@ -67,6 +67,7 @@ import { updateVCStatus } from "~/features/sendouq/queries/updateVCStatus.server
 import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
 import * as PlusSuggestionRepository from "~/features/plus-suggestions/PlusSuggestionRepository.server";
 import * as BuildRepository from "~/features/builds/BuildRepository.server";
+import * as UserRepository from "~/features/user-page/UserRepository.server";
 
 const calendarEventWithToToolsSz = () => calendarEventWithToTools(true);
 const calendarEventWithToToolsTeamsSz = () =>
@@ -169,7 +170,7 @@ function wipeDB() {
 }
 
 function adminUser() {
-  db.users.upsert({
+  return UserRepository.upsert({
     discordDiscriminator: "0",
     discordId: ADMIN_DISCORD_ID,
     discordName: "Sendou",
@@ -207,7 +208,7 @@ function adminUserWeaponPool() {
 }
 
 function nzapUser() {
-  db.users.upsert({
+  return UserRepository.upsert({
     discordDiscriminator: "6227",
     discordId: NZAP_TEST_DISCORD_ID,
     discordName: "N-ZAP",
@@ -219,9 +220,13 @@ function nzapUser() {
   });
 }
 
-function users() {
+async function users() {
   const usedNames = new Set<string>();
-  new Array(500).fill(null).map(fakeUser(usedNames)).forEach(db.users.upsert);
+  for (let i = 0; i < 500; i++) {
+    const args = fakeUser(usedNames)();
+
+    await UserRepository.upsert(args);
+  }
 }
 
 function userProfiles() {

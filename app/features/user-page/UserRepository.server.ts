@@ -284,6 +284,31 @@ export function searchExact(args: {
   return query.execute();
 }
 
+export function upsert(
+  args: Pick<
+    TablesInsertable["User"],
+    | "discordId"
+    | "discordName"
+    | "discordDiscriminator"
+    | "discordAvatar"
+    | "twitch"
+    | "twitter"
+    | "youtubeId"
+    | "discordUniqueName"
+  >,
+) {
+  return dbNew
+    .insertInto("User")
+    .values(args)
+    .onConflict((oc) => {
+      const { discordId, ...rest } = args;
+
+      return oc.column("discordId").doUpdateSet(rest);
+    })
+    .returning("id")
+    .executeTakeFirstOrThrow();
+}
+
 type UpdateProfileArgs = Pick<
   TablesInsertable["User"],
   | "country"

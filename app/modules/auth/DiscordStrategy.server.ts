@@ -1,10 +1,10 @@
 import { DISCORD_AUTH_KEY } from "./authenticator.server";
-import { db } from "~/db";
 import type { User } from "~/db/types";
 import type { OAuth2Profile } from "remix-auth-oauth2";
 import { OAuth2Strategy } from "remix-auth-oauth2";
 import invariant from "tiny-invariant";
 import { z } from "zod";
+import * as UserRepository from "~/features/user-page/UserRepository.server";
 
 interface DiscordExtraParams extends Record<string, string | number> {
   scope: string;
@@ -63,7 +63,7 @@ export class DiscordStrategy extends OAuth2Strategy<
           const [user, connections] =
             discordUserDetailsSchema.parse(discordResponses);
 
-          const userFromDb = db.users.upsert({
+          const userFromDb = await UserRepository.upsert({
             discordAvatar: user.avatar ?? null,
             discordDiscriminator: user.discriminator,
             discordId: user.id,
