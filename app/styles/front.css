@@ -63,6 +63,7 @@
 }
 
 .front__drawings {
+  direction: ltr;
   display: grid;
   grid-template-columns: 1fr 1fr;
   margin-block-start: var(--s-8);

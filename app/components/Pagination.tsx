@@ -3,6 +3,7 @@ import { Button } from "~/components/Button";
 import { ArrowLeftIcon } from "~/components/icons/ArrowLeft";
 import { ArrowRightIcon } from "~/components/icons/ArrowRight";
 import { nullFilledArray } from "~/utils/arrays";
+import { useTranslation } from "~/hooks/useTranslation";
 
 export function Pagination({
   currentPage,
@@ -17,10 +18,12 @@ export function Pagination({
   previousPage: () => void;
   setPage: (page: number) => void;
 }) {
+  const { i18n } = useTranslation();
+  var invertArrows = i18n.dir(i18n.language) === "rtl";
   return (
     <div className="stack sm horizontal items-center justify-center flex-wrap">
       <Button
-        icon={<ArrowLeftIcon />}
+        icon={invertArrows ? <ArrowRightIcon /> : <ArrowLeftIcon />}
         variant="outlined"
         disabled={currentPage === 1}
         onClick={previousPage}
@@ -39,7 +42,7 @@ export function Pagination({
         {currentPage}/{pagesCount}
       </div>
       <Button
-        icon={<ArrowRightIcon />}
+        icon={invertArrows ? <ArrowLeftIcon /> : <ArrowRightIcon />}
         variant="outlined"
         disabled={currentPage === pagesCount}
         onClick={nextPage}
