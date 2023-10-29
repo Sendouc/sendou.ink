@@ -115,6 +115,14 @@ export function findAllPatrons() {
     .execute();
 }
 
+export function findAllPlusMembers() {
+  return dbNew
+    .selectFrom("User")
+    .innerJoin("PlusTier", "PlusTier.userId", "User.id")
+    .select(["User.discordId", "PlusTier.tier as plusTier"])
+    .execute();
+}
+
 const withMaxEventStartTime = (eb: ExpressionBuilder<DB, "CalendarEvent">) => {
   return eb
     .selectFrom("CalendarEventDate")
