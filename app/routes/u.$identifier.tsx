@@ -4,14 +4,12 @@ import type {
   V2_MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
-import { json } from "@remix-run/node";
 import { Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import * as React from "react";
 import invariant from "tiny-invariant";
 import { z } from "zod";
 import { Main } from "~/components/Main";
 import { SubNav, SubNavLink } from "~/components/SubNav";
-import { db } from "~/db";
 import { countArtByUserId } from "~/features/art";
 import { userTopPlacements } from "~/features/top-search";
 import { findVods } from "~/features/vods";
@@ -81,30 +79,16 @@ export type UserPageLoaderData = SerializeFrom<typeof loader>;
 export const loader = async ({ params, request }: LoaderArgs) => {
   const loggedInUser = await getUserId(request);
   const { identifier } = userParamsSchema.parse(params);
-  const user = notFoundIfFalsy(db.users.findByIdentifier(identifier));
+  const user = notFoundIfFalsy(
+    await UserRepository.findByIdentifier(identifier),
+  );
 
-  const { playerId, topPlacements } = userTopPlacements(user.id);
-  return json({
-    id: user.id,
-    discordAvatar: user.discordAvatar,
-    discordDiscriminator: user.discordDiscriminator,
-    discordId: user.discordId,
-    discordName: user.discordName,
+  return {
+    ...user,
+    ...userTopPlacements(user.id),
     discordUniqueName: user.showDiscordUniqueName
       ? user.discordUniqueName
       : null,
-    showDiscordUniqueName: user.showDiscordUniqueName,
-    twitch: user.twitch,
-    twitter: user.twitter,
-    youtubeId: user.youtubeId,
-    bio: user.bio,
-    customUrl: user.customUrl,
-    motionSens: user.motionSens,
-    stickSens: user.stickSens,
-    inGameName: user.inGameName,
-    weapons: user.weapons,
-    team: user.team,
-    country: user.country,
     banned: isAdmin(loggedInUser) ? user.banned : undefined,
     css: canAddCustomizedColorsToUserProfile(user) ? user.css : undefined,
     badges: await BadgeRepository.findByOwnerId({
@@ -120,11 +104,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     }),
     vods: findVods({ userId: user.id }),
     artCount: countArtByUserId(user.id),
-    commissionsOpen: user.commissionsOpen,
-    commissionText: user.commissionText,
-    playerId,
-    topPlacements,
-  });
+  };
 };
 
 export default function UserPageLayout() {

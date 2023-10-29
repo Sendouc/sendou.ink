@@ -21,7 +21,6 @@ import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
 import { SubmitButton } from "~/components/SubmitButton";
 import { USER } from "~/constants";
-import { db } from "~/db";
 import type { UserWeapon, User } from "~/db/types";
 import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
@@ -198,7 +197,9 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 
   const user = await requireUser(request);
   const { identifier } = userParamsSchema.parse(params);
-  const userToBeEdited = notFoundIfFalsy(db.users.findByIdentifier(identifier));
+  const userToBeEdited = notFoundIfFalsy(
+    await UserRepository.findByIdentifier(identifier),
+  );
   if (user.id !== userToBeEdited.id) {
     throw redirect(userPage(userToBeEdited));
   }

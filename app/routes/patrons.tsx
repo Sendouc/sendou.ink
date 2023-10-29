@@ -1,9 +1,9 @@
 import type { ActionFunction, LoaderArgs } from "@remix-run/node";
-import { db } from "~/db";
 import { getUserId } from "~/modules/auth/user.server";
 import { updatePatreonData } from "~/modules/patreon";
 import { canAccessLohiEndpoint, canPerformAdminActions } from "~/permissions";
 import { validate } from "~/utils/remix";
+import * as UserRepository from "~/features/user-page/UserRepository.server";
 
 export const action: ActionFunction = async ({ request }) => {
   const user = await getUserId(request);
@@ -20,5 +20,5 @@ export const action: ActionFunction = async ({ request }) => {
 export const loader = ({ request }: LoaderArgs) => {
   validate(canAccessLohiEndpoint(request), "Invalid token", 403);
 
-  return db.users.findAllPatrons();
+  return UserRepository.findAllPatrons();
 };

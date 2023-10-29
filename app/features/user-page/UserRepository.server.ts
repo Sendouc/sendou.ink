@@ -1,13 +1,13 @@
 import type { ExpressionBuilder, FunctionModule } from "kysely";
 import { sql } from "kysely";
-import { jsonArrayFrom } from "kysely/helpers/sqlite";
+import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
 import { dbNew } from "~/db/sql";
 import type { DB, TablesInsertable } from "~/db/tables";
 import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
 import { safeNumberParse } from "~/utils/number";
 
-export function identifierToUserId(identifier: string) {
-  return dbNew
+const identifierToUserIdQuery = (identifier: string) =>
+  dbNew
     .selectFrom("User")
     .select("User.id")
     .where((eb) => {
@@ -22,7 +22,62 @@ export function identifierToUserId(identifier: string) {
         eb("User.discordId", "=", identifier),
         eb("User.customUrl", "=", identifier),
       ]);
-    })
+    });
+
+export function identifierToUserId(identifier: string) {
+  return identifierToUserIdQuery(identifier).executeTakeFirst();
+}
+
+export function findByIdentifier(identifier: string) {
+  return identifierToUserIdQuery(identifier)
+    .select(({ eb }) => [
+      "User.discordAvatar",
+      "User.discordDiscriminator",
+      "User.discordId",
+      "User.discordName",
+      "User.showDiscordUniqueName",
+      "User.discordUniqueName",
+      "User.customUrl",
+      "User.inGameName",
+      "User.twitter",
+      "User.country",
+      "User.bio",
+      "User.motionSens",
+      "User.stickSens",
+      "User.css",
+      "User.twitch",
+      "User.twitter",
+      "User.youtubeId",
+      "User.favoriteBadgeId",
+      "User.banned",
+      "User.commissionText",
+      "User.commissionsOpen",
+      "User.patronTier",
+      jsonArrayFrom(
+        eb
+          .selectFrom("UserWeapon")
+          .select(["UserWeapon.weaponSplId", "UserWeapon.isFavorite"])
+          .whereRef("UserWeapon.userId", "=", "User.id")
+          .orderBy("UserWeapon.order", "asc"),
+      ).as("weapons"),
+      jsonObjectFrom(
+        eb
+          .selectFrom("TeamMember")
+          .innerJoin("Team", "Team.id", "TeamMember.teamId")
+          .leftJoin(
+            "UserSubmittedImage",
+            "UserSubmittedImage.id",
+            "Team.avatarImgId",
+          )
+          .select([
+            "Team.name",
+            "Team.customUrl",
+            "Team.id",
+            "UserSubmittedImage.url as avatarUrl",
+          ])
+          .whereRef("TeamMember.userId", "=", "User.id"),
+      ).as("team"),
+    ])
     .executeTakeFirst();
 }
 

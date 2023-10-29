@@ -21,7 +21,7 @@ export interface AllTeam {
   bannerImgId: number | null;
   bio: string | null;
   createdAt: Generated<number>;
-  css: string | null;
+  css: ColumnType<Record<string, string> | null, string | null, string | null>;
   customUrl: string;
   deletedAt: number | null;
   id: GeneratedAlways<number>;
@@ -44,7 +44,7 @@ export interface Team {
   bannerImgId: number | null;
   bio: string | null;
   createdAt: number | null;
-  css: string | null;
+  css: ColumnType<Record<string, string> | null, string | null, string | null>;
   customUrl: string;
   deletedAt: number | null;
   id: GeneratedAlways<number>;
@@ -474,7 +474,7 @@ export interface User {
   commissionsOpen: Generated<number | null>;
   commissionText: string | null;
   country: string | null;
-  css: string | null;
+  css: ColumnType<Record<string, string> | null, string | null, string | null>;
   customUrl: string | null;
   discordAvatar: string | null;
   discordDiscriminator: string;
@@ -516,7 +516,7 @@ export interface UserWeapon {
   isFavorite: Generated<number>;
   order: number;
   userId: number;
-  weaponSplId: number;
+  weaponSplId: MainWeaponId;
 }
 
 export interface Video {
