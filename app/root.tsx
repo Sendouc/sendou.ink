@@ -26,7 +26,6 @@ import resetStyles from "~/styles/reset.css";
 import flagsStyles from "~/styles/flags.css";
 import { Catcher } from "./components/Catcher";
 import { Layout } from "./components/layout";
-import { db } from "./db";
 import type { FindAllPatrons } from "./db/models/users/queries.server";
 import { getUser } from "./modules/auth";
 import { DEFAULT_LANGUAGE, i18nCookie, i18next } from "./modules/i18n";
@@ -45,6 +44,7 @@ import { CUSTOMIZED_CSS_VARS_NAME } from "./constants";
 import NProgress from "nprogress";
 import nProgressStyles from "nprogress/nprogress.css";
 import type { Tables } from "./db/tables";
+import * as UserRepository from "~/features/user-page/UserRepository.server";
 
 export const shouldRevalidate: ShouldRevalidateFunction = ({ nextUrl }) => {
   // // reload on language change so the selected language gets set into the cookie
@@ -108,7 +108,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     {
       locale,
       theme: themeSession.getTheme(),
-      patrons: db.users.findAllPatrons(),
+      patrons: await UserRepository.findAllPatrons(),
       baseUrl: process.env["BASE_URL"]!,
       skalopUrl: process.env["SKALOP_WS_URL"]!,
       publisherId: process.env["PLAYWIRE_PUBLISHER_ID"],

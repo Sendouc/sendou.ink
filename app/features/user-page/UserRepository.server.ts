@@ -23,6 +23,22 @@ export function findLeanById(id: number) {
     .executeTakeFirst();
 }
 
+export function findAllPatrons() {
+  return dbNew
+    .selectFrom("User")
+    .select([
+      "User.id",
+      "User.discordId",
+      "User.discordName",
+      "User.discordDiscriminator",
+      "User.patronTier",
+    ])
+    .where("User.patronTier", "is not", null)
+    .orderBy("User.patronTier", "desc")
+    .orderBy("User.patronSince", "asc")
+    .execute();
+}
+
 const withMaxEventStartTime = (eb: ExpressionBuilder<DB, "CalendarEvent">) => {
   return eb
     .selectFrom("CalendarEventDate")
