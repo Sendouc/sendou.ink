@@ -425,7 +425,7 @@ export function updateResultHighlights(args: UpdateResultHighlightsArgs) {
   });
 }
 
-type UpdatePatronDataArgs = Array<
+export type UpdatePatronDataArgs = Array<
   Pick<User, "discordId" | "patronTier" | "patronSince">
 >;
 export function updatePatronData(users: UpdatePatronDataArgs) {

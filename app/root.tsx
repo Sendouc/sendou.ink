@@ -1,7 +1,8 @@
 import { json } from "@remix-run/node";
 import type {
   LinksFunction,
-  LoaderFunction,
+  LoaderArgs,
+  SerializeFrom,
   V2_MetaFunction,
 } from "@remix-run/node";
 import {
@@ -26,7 +27,6 @@ import resetStyles from "~/styles/reset.css";
 import flagsStyles from "~/styles/flags.css";
 import { Catcher } from "./components/Catcher";
 import { Layout } from "./components/layout";
-import type { FindAllPatrons } from "./db/models/users/queries.server";
 import { getUser } from "./modules/auth";
 import { DEFAULT_LANGUAGE, i18nCookie, i18next } from "./modules/i18n";
 import { useChangeLanguage } from "remix-i18next";
@@ -43,7 +43,6 @@ import { useIsMounted } from "./hooks/useIsMounted";
 import { CUSTOMIZED_CSS_VARS_NAME } from "./constants";
 import NProgress from "nprogress";
 import nProgressStyles from "nprogress/nprogress.css";
-import type { Tables } from "./db/tables";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 
 export const shouldRevalidate: ShouldRevalidateFunction = ({ nextUrl }) => {
@@ -76,35 +75,16 @@ export const meta: V2_MetaFunction = () => {
   ];
 };
 
-export interface RootLoaderData {
-  locale: string;
-  theme: Theme | null;
-  patrons: FindAllPatrons;
-  baseUrl: string;
-  skalopUrl: string;
-  user?: Pick<
-    Tables["User"],
-    | "id"
-    | "discordId"
-    | "discordAvatar"
-    | "customUrl"
-    | "discordName"
-    | "patronTier"
-    | "isArtist"
-  > & { languages: string[]; plusTier: number | null };
-  publisherId?: string;
-  websiteId?: string;
-  loginDisabled: boolean;
-}
+export type RootLoaderData = SerializeFrom<typeof loader>;
 
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader = async ({ request }: LoaderArgs) => {
   const user = await getUser(request);
   const locale = await i18next.getLocale(request);
   const themeSession = await getThemeSession(request);
 
   if (user?.banned) throw new Response(null, { status: 403 });
 
-  return json<RootLoaderData>(
+  return json(
     {
       locale,
       theme: themeSession.getTheme(),
