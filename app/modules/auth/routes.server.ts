@@ -15,8 +15,8 @@ import { z } from "zod";
 import { createLogInLink } from "./queries/createLogInLink.server";
 import { userIdByLogInLinkCode } from "./queries/userIdByLogInLinkCode.server";
 import { deleteLogInLinkByCode } from "./queries/deleteLogInLinkByCode.server";
-import { db } from "~/db";
 import isbot from "isbot";
+import * as UserRepository from "~/features/user-page/UserRepository.server";
 
 export const callbackLoader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
@@ -98,7 +98,7 @@ const createLogInLinkActionSchema = z.object({
   updateOnly: z.enum(["true", "false"]),
 });
 
-export const createLogInLinkAction: ActionFunction = ({ request }) => {
+export const createLogInLinkAction: ActionFunction = async ({ request }) => {
   const data = parseSearchParams({
     request,
     schema: createLogInLinkActionSchema,
@@ -108,7 +108,7 @@ export const createLogInLinkAction: ActionFunction = ({ request }) => {
     throw new Response(null, { status: 403 });
   }
 
-  const user = db.users.upsertLite({
+  const user = await UserRepository.upsert({
     discordAvatar: data.discordAvatar ?? null,
     discordDiscriminator: "0",
     discordId: data.discordId,

@@ -291,10 +291,10 @@ export function upsert(
     | "discordName"
     | "discordDiscriminator"
     | "discordAvatar"
+    | "discordUniqueName"
     | "twitch"
     | "twitter"
     | "youtubeId"
-    | "discordUniqueName"
   >,
 ) {
   return dbNew
