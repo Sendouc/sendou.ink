@@ -28,7 +28,6 @@ import { Catcher } from "./components/Catcher";
 import { Layout } from "./components/layout";
 import { db } from "./db";
 import type { FindAllPatrons } from "./db/models/users/queries.server";
-import type { UserWithPlusTier } from "./db/types";
 import { getUser } from "./modules/auth";
 import { DEFAULT_LANGUAGE, i18nCookie, i18next } from "./modules/i18n";
 import { useChangeLanguage } from "remix-i18next";
@@ -45,6 +44,8 @@ import { useIsMounted } from "./hooks/useIsMounted";
 import { CUSTOMIZED_CSS_VARS_NAME } from "./constants";
 import NProgress from "nprogress";
 import nProgressStyles from "nprogress/nprogress.css";
+import type { DB } from "./db/tables";
+import type { Selectable } from "kysely";
 
 export const shouldRevalidate: ShouldRevalidateFunction = ({ nextUrl }) => {
   // // reload on language change so the selected language gets set into the cookie
@@ -83,16 +84,16 @@ export interface RootLoaderData {
   baseUrl: string;
   skalopUrl: string;
   user?: Pick<
-    UserWithPlusTier,
+    // xxx: move this to tables.ts
+    Selectable<DB["User"]>,
     | "id"
     | "discordId"
     | "discordAvatar"
-    | "plusTier"
     | "customUrl"
     | "discordName"
     | "patronTier"
     | "isArtist"
-  > & { languages: string[] };
+  > & { languages: string[]; plusTier: number | null };
   publisherId?: string;
   websiteId?: string;
   loginDisabled: boolean;

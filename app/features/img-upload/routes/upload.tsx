@@ -28,15 +28,17 @@ import {
 import type { ImageUploadType } from "../upload-types";
 import { requestToImgType } from "../upload-utils";
 import { findByIdentifier, isTeamOwner } from "~/features/team";
+import * as TeamRepository from "~/features/team/TeamRepository.server";
 
 export const action = async ({ request }: ActionArgs) => {
   const user = await requireUser(request);
+  const team = await TeamRepository.findByUserId(user.id);
 
   const validatedType = requestToImgType(request);
   validate(validatedType, "Invalid image type");
 
-  validate(user.team, "You must be on a team to upload images");
-  const detailed = findByIdentifier(user.team.customUrl);
+  validate(team, "You must be on a team to upload images");
+  const detailed = findByIdentifier(team.customUrl);
   validate(
     detailed && isTeamOwner({ team: detailed.team, user }),
     "You must be the team owner to upload images",
@@ -64,7 +66,7 @@ export const action = async ({ request }: ActionArgs) => {
 
   addNewImage({
     submitterUserId: user.id,
-    teamId: user.team.id,
+    teamId: team.id,
     type: validatedType,
     url: fileName,
     validatedAt: shouldAutoValidate
@@ -73,7 +75,7 @@ export const action = async ({ request }: ActionArgs) => {
   });
 
   if (shouldAutoValidate) {
-    throw redirect(teamPage(user.team.customUrl));
+    throw redirect(teamPage(team.customUrl));
   }
 
   return null;
@@ -81,13 +83,14 @@ export const action = async ({ request }: ActionArgs) => {
 
 export const loader = async ({ request }: LoaderArgs) => {
   const user = await requireUser(request);
+  const team = await TeamRepository.findByUserId(user.id);
   const validatedType = requestToImgType(request);
 
-  if (!validatedType || !user.team) {
+  if (!validatedType || !team) {
     throw redirect("/");
   }
 
-  const detailed = findByIdentifier(user.team.customUrl);
+  const detailed = findByIdentifier(team.customUrl);
 
   if (!detailed || !isTeamOwner({ team: detailed.team, user })) {
     throw redirect("/");

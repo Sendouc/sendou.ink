@@ -33,6 +33,29 @@ export interface AllTeamMember {
   userId: number;
 }
 
+export interface Team {
+  avatarImgId: number | null;
+  bannerImgId: number | null;
+  bio: string | null;
+  createdAt: number | null;
+  css: string | null;
+  customUrl: string;
+  deletedAt: number | null;
+  id: GeneratedAlways<number>;
+  inviteCode: string;
+  name: string;
+  twitter: string | null;
+}
+
+export interface TeamMember {
+  createdAt: number | null;
+  isOwner: number | null;
+  leftAt: number | null;
+  role: string | null;
+  teamId: number;
+  userId: number;
+}
+
 export interface Art {
   authorId: number;
   createdAt: Generated<number>;
@@ -296,29 +319,6 @@ export interface SplatoonPlayer {
 export interface TaggedArt {
   artId: number;
   tagId: number;
-}
-
-export interface Team {
-  avatarImgId: number | null;
-  bannerImgId: number | null;
-  bio: string | null;
-  createdAt: number | null;
-  css: string | null;
-  customUrl: string | null;
-  deletedAt: number | null;
-  id: GeneratedAlways<number>;
-  inviteCode: string | null;
-  name: string | null;
-  twitter: string | null;
-}
-
-export interface TeamMember {
-  createdAt: number | null;
-  isOwner: number | null;
-  leftAt: number | null;
-  role: string | null;
-  teamId: number | null;
-  userId: number | null;
 }
 
 // AUTO = style where teams pick their map pool ahead of time and the map lists are automatically made for each round

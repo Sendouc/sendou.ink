@@ -5,6 +5,24 @@ import { dbNew } from "~/db/sql";
 import type { DB } from "~/db/tables";
 import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
 
+export function findLeanById(id: number) {
+  return dbNew
+    .selectFrom("User")
+    .leftJoin("PlusTier", "PlusTier.userId", "User.id")
+    .where("User.id", "=", id)
+    .select([
+      ...COMMON_USER_FIELDS,
+      "User.isArtist",
+      "User.isVideoAdder",
+      "User.patronTier",
+      "User.favoriteBadgeId",
+      "User.banned",
+      "User.languages",
+      "PlusTier.tier as plusTier",
+    ])
+    .executeTakeFirst();
+}
+
 const withMaxEventStartTime = (eb: ExpressionBuilder<DB, "CalendarEvent">) => {
   return eb
     .selectFrom("CalendarEventDate")

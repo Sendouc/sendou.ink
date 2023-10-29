@@ -1,7 +1,7 @@
-import { db } from "~/db";
 import type { User } from "~/db/types";
 import { IMPERSONATED_SESSION_KEY, SESSION_KEY } from "./authenticator.server";
 import { authSessionStorage } from "./session.server";
+import * as UserRepository from "~/features/user-page/UserRepository.server";
 
 export async function getUserId(
   request: Request,
@@ -23,7 +23,7 @@ export async function getUser(request: Request) {
 
   if (!userId) return;
 
-  return db.users.findByIdentifier(userId);
+  return UserRepository.findLeanById(userId);
 }
 
 export async function requireUserId(request: Request) {

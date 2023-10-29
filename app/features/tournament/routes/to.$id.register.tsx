@@ -89,6 +89,7 @@ import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { deleteTeam } from "../queries/deleteTeam.server";
 import { findMapPoolByTeamId } from "~/features/tournament-bracket";
 import { Popover } from "~/components/Popover";
+import * as TeamRepository from "~/features/team/TeamRepository.server";
 
 export const handle: SendouRouteHandle = {
   breadcrumb: () => ({
@@ -191,7 +192,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       validate(
         findTrustedPlayers({
           userId: user.id,
-          teamId: user.team?.id,
+          teamId: (await TeamRepository.findByUserId(user.id))?.id,
         }).some((trustedPlayer) => trustedPlayer.id === data.userId),
         "No trust given from this user",
       );
@@ -241,7 +242,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     mapPool: findMapPoolByTeamId(ownTeam.id),
     trustedPlayers: findTrustedPlayers({
       userId: user.id,
-      teamId: user.team?.id,
+      teamId: (await TeamRepository.findByUserId(user.id))?.id,
     }),
   };
 };
