@@ -95,8 +95,6 @@ export const loader = async ({ params, request }: LoaderArgs) => {
       userId: user.id,
       favoriteBadgeId: user.favoriteBadgeId,
     }),
-    // TODO: could load only on results page
-    // xxx: missing index at least on CalendarEventResultPlayer.userId?
     results: await UserRepository.findResultsByUserId(user.id),
     buildsCount: await BuildRepository.countByUserId({
       userId: user.id,
