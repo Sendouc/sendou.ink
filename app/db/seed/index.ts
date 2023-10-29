@@ -418,9 +418,9 @@ async function lastMonthSuggestions() {
 }
 
 async function thisMonthsSuggestions() {
-  const usersInPlus = db.users
-    .findAll()
-    .filter((u) => u.plusTier && u.id !== 1); // exclude admin
+  const usersInPlus = (await UserRepository.findAllPlusMembers()).filter(
+    (u) => u.id !== ADMIN_ID,
+  );
   const { month, year } = nextNonCompletedVoting(new Date());
 
   for (let userId = 150; userId < 190; userId++) {

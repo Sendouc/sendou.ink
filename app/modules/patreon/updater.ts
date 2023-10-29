@@ -1,5 +1,4 @@
 import type { z } from "zod";
-import { db } from "~/db";
 import type { UpdatePatronDataArgs } from "~/db/models/users/queries.server";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { fetchWithTimeout } from "~/utils/fetch";
@@ -12,6 +11,7 @@ import {
   TIER_4_ID,
 } from "./constants";
 import { patronResponseSchema } from "./schema";
+import * as UserRepository from "~/features/user-page/UserRepository.server";
 
 interface NoDiscordConnectionUser {
   email: string;
@@ -36,7 +36,7 @@ export async function updatePatreonData(): Promise<void> {
     nextUrlToFetchWith = patronData.links.next ?? "";
   }
 
-  db.users.updatePatronData(patrons);
+  await UserRepository.updatePatronData(patrons);
 
   // eslint-disable-next-line no-console
   console.log(

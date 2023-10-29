@@ -4,6 +4,7 @@ import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
 import { dbNew, sql as dbDirect } from "~/db/sql";
 import type { DB, TablesInsertable } from "~/db/tables";
 import type { User } from "~/db/types";
+import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
 import { safeNumberParse } from "~/utils/number";
 
@@ -120,7 +121,7 @@ export function findAllPlusMembers() {
   return dbNew
     .selectFrom("User")
     .innerJoin("PlusTier", "PlusTier.userId", "User.id")
-    .select(["User.discordId", "PlusTier.tier as plusTier"])
+    .select(["User.id", "User.discordId", "PlusTier.tier as plusTier"])
     .execute();
 }
 
@@ -419,6 +420,35 @@ export function updateResultHighlights(args: UpdateResultHighlightsArgs) {
           "in",
           args.resultTournamentTeamIds,
         )
+        .execute();
+    }
+  });
+}
+
+type UpdatePatronDataArgs = Array<
+  Pick<User, "discordId" | "patronTier" | "patronSince">
+>;
+export function updatePatronData(users: UpdatePatronDataArgs) {
+  return dbNew.transaction().execute(async (trx) => {
+    await trx
+      .updateTable("User")
+      .set({
+        patronTier: null,
+        patronSince: null,
+        patronTill: null,
+      })
+      .where("patronTill", "<", dateToDatabaseTimestamp(new Date()))
+      .execute();
+
+    for (const user of users) {
+      await trx
+        .updateTable("User")
+        .set({
+          patronTier: user.patronTier,
+          patronSince: user.patronSince,
+          patronTill: null,
+        })
+        .where("User.discordId", "=", user.discordId)
         .execute();
     }
   });
