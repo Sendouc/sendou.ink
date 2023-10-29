@@ -51,6 +51,7 @@ import { userParamsSchema, type UserPageLoaderData } from "../u.$identifier";
 import { Toggle } from "~/components/Toggle";
 import { StarIcon } from "~/components/icons/Star";
 import { StarFilledIcon } from "~/components/icons/StarFilled";
+import * as UserRepository from "~/features/user-page/UserRepository.server";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -167,7 +168,7 @@ export const action: ActionFunction = async ({ request }) => {
   const user = await requireUserId(request);
 
   try {
-    const editedUser = db.users.updateProfile({
+    const editedUser = await UserRepository.updateProfile({
       ...data,
       weapons: data.weapons as Array<
         Pick<UserWeapon, "weaponSplId" | "isFavorite">
@@ -176,7 +177,7 @@ export const action: ActionFunction = async ({ request }) => {
         inGameNameText && inGameNameDiscriminator
           ? `${inGameNameText}#${inGameNameDiscriminator}`
           : null,
-      id: user.id,
+      userId: user.id,
       showDiscordUniqueName: data.showDiscordUniqueName,
     });
 

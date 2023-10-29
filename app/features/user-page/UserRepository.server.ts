@@ -2,7 +2,7 @@ import type { ExpressionBuilder, FunctionModule } from "kysely";
 import { sql } from "kysely";
 import { jsonArrayFrom } from "kysely/helpers/sqlite";
 import { dbNew } from "~/db/sql";
-import type { DB } from "~/db/tables";
+import type { DB, TablesInsertable } from "~/db/tables";
 import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
 import { safeNumberParse } from "~/utils/number";
 
@@ -227,4 +227,61 @@ export function searchExact(args: {
   }
 
   return query.execute();
+}
+
+type UpdateProfileArgs = Pick<
+  TablesInsertable["User"],
+  | "country"
+  | "bio"
+  | "customUrl"
+  | "motionSens"
+  | "stickSens"
+  | "inGameName"
+  | "css"
+  | "favoriteBadgeId"
+  | "showDiscordUniqueName"
+  | "commissionText"
+  | "commissionsOpen"
+> & {
+  userId: number;
+  weapons: Pick<TablesInsertable["UserWeapon"], "weaponSplId" | "isFavorite">[];
+};
+export function updateProfile(args: UpdateProfileArgs) {
+  return dbNew.transaction().execute(async (trx) => {
+    await trx
+      .deleteFrom("UserWeapon")
+      .where("userId", "=", args.userId)
+      .execute();
+
+    await trx
+      .insertInto("UserWeapon")
+      .values(
+        args.weapons.map((weapon, i) => ({
+          userId: args.userId,
+          weaponSplId: weapon.weaponSplId,
+          isFavorite: weapon.isFavorite,
+          order: i + 1,
+        })),
+      )
+      .execute();
+
+    return trx
+      .updateTable("User")
+      .set({
+        country: args.country,
+        bio: args.bio,
+        customUrl: args.customUrl,
+        motionSens: args.motionSens,
+        stickSens: args.stickSens,
+        inGameName: args.inGameName,
+        css: args.css,
+        favoriteBadgeId: args.favoriteBadgeId,
+        showDiscordUniqueName: args.showDiscordUniqueName,
+        commissionText: args.commissionText,
+        commissionsOpen: args.commissionsOpen,
+      })
+      .where("id", "=", args.userId)
+      .returning(["User.id", "User.customUrl", "User.discordId"])
+      .executeTakeFirstOrThrow();
+  });
 }
