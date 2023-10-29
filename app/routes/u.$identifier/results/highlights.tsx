@@ -4,7 +4,6 @@ import { useTranslation } from "~/hooks/useTranslation";
 import invariant from "tiny-invariant";
 import { z } from "zod";
 import { FormErrors } from "~/components/FormErrors";
-import { db } from "~/db";
 import { requireUser } from "~/modules/auth";
 import { type UserPageLoaderData } from "~/routes/u.$identifier";
 import { normalizeFormFieldArray } from "~/utils/arrays";
@@ -16,6 +15,7 @@ import {
   UserResultsTable,
 } from "./components/UserResultsTable";
 import { SubmitButton } from "~/components/SubmitButton";
+import * as UserRepository from "~/features/user-page/UserRepository.server";
 
 const editHighlightsActionSchema = z.object({
   [HIGHLIGHT_CHECKBOX_NAME]: z.optional(
@@ -40,7 +40,7 @@ export const action: ActionFunction = async ({ request }) => {
     data[HIGHLIGHT_TOURNAMENT_CHECKBOX_NAME],
   ).map((id) => parseInt(id, 10));
 
-  db.users.updateResultHighlights({
+  await UserRepository.updateResultHighlights({
     userId: user.id,
     resultTeamIds,
     resultTournamentTeamIds,

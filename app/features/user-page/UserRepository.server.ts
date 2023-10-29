@@ -373,3 +373,52 @@ export function updateProfile(args: UpdateProfileArgs) {
       .executeTakeFirstOrThrow();
   });
 }
+
+type UpdateResultHighlightsArgs = {
+  userId: number;
+  resultTeamIds: Array<number>;
+  resultTournamentTeamIds: Array<number>;
+};
+export function updateResultHighlights(args: UpdateResultHighlightsArgs) {
+  return dbNew.transaction().execute(async (trx) => {
+    await trx
+      .deleteFrom("UserResultHighlight")
+      .where("userId", "=", args.userId)
+      .execute();
+
+    if (args.resultTeamIds.length > 0) {
+      await trx
+        .insertInto("UserResultHighlight")
+        .values(
+          args.resultTeamIds.map((teamId) => ({
+            userId: args.userId,
+            teamId,
+          })),
+        )
+        .execute();
+    }
+
+    await trx
+      .updateTable("TournamentResult")
+      .set({
+        isHighlight: 0,
+      })
+      .where("TournamentResult.userId", "=", args.userId)
+      .execute();
+
+    if (args.resultTournamentTeamIds.length > 0) {
+      await trx
+        .updateTable("TournamentResult")
+        .set({
+          isHighlight: 1,
+        })
+        .where("TournamentResult.userId", "=", args.userId)
+        .where(
+          "TournamentResult.tournamentTeamId",
+          "in",
+          args.resultTournamentTeamIds,
+        )
+        .execute();
+    }
+  });
+}
