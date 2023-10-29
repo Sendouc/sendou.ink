@@ -7,7 +7,6 @@ import {
   validate,
   parseRequestFormData,
 } from "~/utils/remix";
-import { db } from "~/db";
 import {
   artsByUserId,
   ArtGrid,
@@ -26,6 +25,7 @@ import { countUnvalidatedArt } from "~/features/img-upload";
 import { useTranslation } from "~/hooks/useTranslation";
 import { newArtPage } from "~/utils/urls";
 import { getUserId, requireUserId } from "~/modules/auth/user.server";
+import * as UserRepository from "~/features/user-page/UserRepository.server";
 
 export const handle: SendouRouteHandle = {
   i18n: ["art"],
@@ -53,7 +53,9 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const loggedInUser = await getUserId(request);
 
   const { identifier } = userParamsSchema.parse(params);
-  const user = notFoundIfFalsy(db.users.findByIdentifier(identifier));
+  const user = notFoundIfFalsy(
+    await UserRepository.identifierToUserId(identifier),
+  );
 
   const arts = artsByUserId(user.id);
 

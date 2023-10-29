@@ -22,7 +22,6 @@ import { Popover } from "~/components/Popover";
 import { SubNav, SubNavLink } from "~/components/SubNav";
 import { Tab, Tabs } from "~/components/Tabs";
 import { AlertIcon } from "~/components/icons/Alert";
-import { db } from "~/db";
 import { TopTenPlayer } from "~/features/leaderboards/components/TopTenPlayer";
 import { playerTopTenPlacement } from "~/features/leaderboards/leaderboards-utils";
 import { ordinalToSp } from "~/features/mmr";
@@ -60,6 +59,7 @@ import { cutToNDecimalPlaces } from "~/utils/number";
 import { notFoundIfFalsy } from "~/utils/remix";
 import { sendouQMatchPage, userSeasonsPage } from "~/utils/urls";
 import { userParamsSchema, type UserPageLoaderData } from "../u.$identifier";
+import * as UserRepository from "~/features/user-page/UserRepository.server";
 
 export const seasonsSearchParamsSchema = z.object({
   page: z.coerce.number().default(1),
@@ -79,7 +79,9 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     ? parsedSearchParams.data
     : seasonsSearchParamsSchema.parse({});
 
-  const user = notFoundIfFalsy(db.users.findByIdentifier(identifier));
+  const user = notFoundIfFalsy(
+    await UserRepository.identifierToUserId(identifier),
+  );
 
   const { tier } = (await userSkills(season)).userSkills[user.id] ?? {
     approximate: false,

@@ -4,6 +4,27 @@ import { jsonArrayFrom } from "kysely/helpers/sqlite";
 import { dbNew } from "~/db/sql";
 import type { DB } from "~/db/tables";
 import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
+import { safeNumberParse } from "~/utils/number";
+
+export function identifierToUserId(identifier: string) {
+  return dbNew
+    .selectFrom("User")
+    .select("User.id")
+    .where((eb) => {
+      // we don't want to parse discord id's as numbers (length = 18)
+      const parsedId =
+        identifier.length < 10 ? safeNumberParse(identifier) : null;
+      if (parsedId) {
+        return eb("User.id", "=", parsedId);
+      }
+
+      return eb.or([
+        eb("User.discordId", "=", identifier),
+        eb("User.customUrl", "=", identifier),
+      ]);
+    })
+    .executeTakeFirst();
+}
 
 export function findLeanById(id: number) {
   return dbNew

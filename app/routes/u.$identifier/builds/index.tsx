@@ -4,7 +4,6 @@ import { z } from "zod";
 import { BuildCard } from "~/components/BuildCard";
 import { Button, LinkButton } from "~/components/Button";
 import { BUILD } from "~/constants";
-import { db } from "~/db";
 import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
 import { getUserId, requireUserId } from "~/modules/auth/user.server";
@@ -24,6 +23,7 @@ import { mainWeaponIds } from "~/modules/in-game-lists";
 import { WeaponImage } from "~/components/Image";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
 import * as BuildRepository from "~/features/builds/BuildRepository.server";
+import * as UserRepository from "~/features/user-page/UserRepository.server";
 
 const buildsActionSchema = z.object({
   buildToDeleteId: z.preprocess(actualNumber, id),
@@ -55,7 +55,9 @@ export const handle: SendouRouteHandle = {
 export const loader = async ({ params, request }: LoaderArgs) => {
   const loggedInUser = await getUserId(request);
   const { identifier } = userParamsSchema.parse(params);
-  const user = notFoundIfFalsy(db.users.findByIdentifier(identifier));
+  const user = notFoundIfFalsy(
+    await UserRepository.identifierToUserId(identifier),
+  );
 
   const builds = await BuildRepository.allByUserId({
     userId: user.id,
