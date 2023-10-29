@@ -2,7 +2,7 @@ import type { ExpressionBuilder, Transaction } from "kysely";
 import { sql } from "kysely";
 import { jsonArrayFrom } from "kysely/helpers/sqlite";
 import { dbNew } from "~/db/sql";
-import type { DB } from "~/db/tables";
+import type { DB, Tables } from "~/db/tables";
 import type { CalendarEventTag } from "~/db/types";
 import { MapPool } from "~/modules/map-pool-serializer";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
@@ -194,8 +194,8 @@ export async function findAllBetweenTwoTimestamps({
 
 function tagsArray(args: {
   hasBadge: number;
-  tags?: DB["CalendarEvent"]["tags"];
-  tournamentId: DB["CalendarEvent"]["tournamentId"];
+  tags?: Tables["CalendarEvent"]["tags"];
+  tournamentId: Tables["CalendarEvent"]["tournamentId"];
 }) {
   const tags = (
     args.tags ? args.tags.split(",") : []
@@ -347,7 +347,7 @@ export async function allEventsWithMapPools() {
 }
 
 type CreateArgs = Pick<
-  DB["CalendarEvent"],
+  Tables["CalendarEvent"],
   | "name"
   | "authorId"
   | "tags"
@@ -355,11 +355,11 @@ type CreateArgs = Pick<
   | "discordInviteCode"
   | "bracketUrl"
 > & {
-  startTimes: Array<DB["CalendarEventDate"]["startTime"]>;
-  badges: Array<DB["CalendarEventBadge"]["badgeId"]>;
-  mapPoolMaps?: Array<Pick<DB["MapPoolMap"], "mode" | "stageId">>;
+  startTimes: Array<Tables["CalendarEventDate"]["startTime"]>;
+  badges: Array<Tables["CalendarEventBadge"]["badgeId"]>;
+  mapPoolMaps?: Array<Pick<Tables["MapPoolMap"], "mode" | "stageId">>;
   isFullTournament: boolean;
-  mapPickingStyle: DB["Tournament"]["mapPickingStyle"];
+  mapPickingStyle: Tables["Tournament"]["mapPickingStyle"];
 };
 export async function create(args: CreateArgs) {
   return dbNew.transaction().execute(async (trx) => {

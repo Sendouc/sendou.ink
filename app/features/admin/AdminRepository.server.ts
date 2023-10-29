@@ -1,6 +1,6 @@
 import { dbNew, sql } from "~/db/sql";
 import { syncXPBadges } from "../badges";
-import type { DB } from "~/db/tables";
+import type { Tables } from "~/db/tables";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 
 const removeOldLikesStm = sql.prepare(/*sql*/ `
@@ -97,7 +97,7 @@ export async function linkUserAndPlayer({
 
 export function forcePatron(args: {
   id: number;
-  patronTier: DB["User"]["patronTier"];
+  patronTier: Tables["User"]["patronTier"];
   patronSince: Date;
   patronTill: Date;
 }) {

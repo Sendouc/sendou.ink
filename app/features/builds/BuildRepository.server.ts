@@ -2,7 +2,7 @@ import type { Transaction } from "kysely";
 import { jsonArrayFrom } from "kysely/helpers/sqlite";
 import invariant from "tiny-invariant";
 import { dbNew } from "~/db/sql";
-import type { BuildWeapon, DB } from "~/db/tables";
+import type { BuildWeapon, DB, Tables, TablesInsertable } from "~/db/tables";
 import {
   type BuildAbilitiesTuple,
   type ModeShort,
@@ -86,14 +86,14 @@ export async function allByUserId({
   }));
 }
 
-const gearOrder: Array<DB["BuildAbility"]["gearType"]> = [
+const gearOrder: Array<Tables["BuildAbility"]["gearType"]> = [
   "HEAD",
   "CLOTHES",
   "SHOES",
 ];
 function dbAbilitiesToArrayOfArrays(
   abilities: Array<
-    Pick<DB["BuildAbility"], "ability" | "gearType" | "slotIndex">
+    Pick<Tables["BuildAbility"], "ability" | "gearType" | "slotIndex">
   >,
 ): BuildAbilitiesTuple {
   const sorted = abilities
@@ -132,16 +132,16 @@ export async function countByUserId({
 }
 
 interface CreateArgs {
-  ownerId: DB["Build"]["ownerId"];
-  title: DB["Build"]["title"];
-  description: DB["Build"]["description"];
+  ownerId: TablesInsertable["Build"]["ownerId"];
+  title: TablesInsertable["Build"]["title"];
+  description: TablesInsertable["Build"]["description"];
   modes: Array<ModeShort> | null;
-  headGearSplId: DB["Build"]["headGearSplId"];
-  clothesGearSplId: DB["Build"]["clothesGearSplId"];
-  shoesGearSplId: DB["Build"]["shoesGearSplId"];
+  headGearSplId: TablesInsertable["Build"]["headGearSplId"];
+  clothesGearSplId: TablesInsertable["Build"]["clothesGearSplId"];
+  shoesGearSplId: TablesInsertable["Build"]["shoesGearSplId"];
   weaponSplIds: Array<BuildWeapon["weaponSplId"]>;
   abilities: BuildAbilitiesTuple;
-  private: DB["Build"]["private"];
+  private: TablesInsertable["Build"]["private"];
 }
 
 export async function createInTrx({

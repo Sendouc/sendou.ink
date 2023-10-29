@@ -1,4 +1,10 @@
-import type { ColumnType, GeneratedAlways, SqlBool } from "kysely";
+import type {
+  ColumnType,
+  GeneratedAlways,
+  Insertable,
+  Selectable,
+  SqlBool,
+} from "kysely";
 import type {
   Ability,
   MainWeaponId,
@@ -557,7 +563,9 @@ export interface XRankPlacement {
   year: number;
 }
 
-// xxx: Selectable?
+export type Tables = { [P in keyof DB]: Selectable<DB[P]> };
+export type TablesInsertable = { [P in keyof DB]: Insertable<DB[P]> };
+
 export interface DB {
   AllTeam: AllTeam;
   AllTeamMember: AllTeamMember;

@@ -44,8 +44,7 @@ import { useIsMounted } from "./hooks/useIsMounted";
 import { CUSTOMIZED_CSS_VARS_NAME } from "./constants";
 import NProgress from "nprogress";
 import nProgressStyles from "nprogress/nprogress.css";
-import type { DB } from "./db/tables";
-import type { Selectable } from "kysely";
+import type { Tables } from "./db/tables";
 
 export const shouldRevalidate: ShouldRevalidateFunction = ({ nextUrl }) => {
   // // reload on language change so the selected language gets set into the cookie
@@ -84,8 +83,7 @@ export interface RootLoaderData {
   baseUrl: string;
   skalopUrl: string;
   user?: Pick<
-    // xxx: move this to tables.ts
-    Selectable<DB["User"]>,
+    Tables["User"],
     | "id"
     | "discordId"
     | "discordAvatar"
