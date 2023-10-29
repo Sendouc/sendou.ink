@@ -1,8 +1,9 @@
 import type { ExpressionBuilder, FunctionModule } from "kysely";
 import { sql } from "kysely";
 import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
-import { dbNew } from "~/db/sql";
+import { dbNew, sql as dbDirect } from "~/db/sql";
 import type { DB, TablesInsertable } from "~/db/tables";
+import type { User } from "~/db/types";
 import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
 import { safeNumberParse } from "~/utils/number";
 
@@ -422,3 +423,29 @@ export function updateResultHighlights(args: UpdateResultHighlightsArgs) {
     }
   });
 }
+
+// TODO: use Kysely
+const updateByDiscordIdStm = dbDirect.prepare(/* sql */ `
+  update
+    "User"
+  set
+    "discordAvatar" = @discordAvatar,
+    "discordName" = coalesce(@discordName, "discordName"),
+    "discordUniqueName" = coalesce(@discordUniqueName, "discordUniqueName")
+  where
+    "discordId" = @discordId
+`);
+export const updateMany = dbDirect.transaction(
+  (
+    argsArr: Array<
+      Pick<
+        User,
+        "discordAvatar" | "discordName" | "discordUniqueName" | "discordId"
+      >
+    >,
+  ) => {
+    for (const updateArgs of argsArr) {
+      updateByDiscordIdStm.run(updateArgs);
+    }
+  },
+);

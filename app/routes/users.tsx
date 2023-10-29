@@ -1,6 +1,6 @@
 import type { ActionFunction } from "@remix-run/node";
-import { db } from "~/db";
 import { canAccessLohiEndpoint } from "~/permissions";
+import * as UserRepository from "~/features/user-page/UserRepository.server";
 
 export const action: ActionFunction = async ({ request }) => {
   if (!canAccessLohiEndpoint(request)) {
@@ -8,7 +8,7 @@ export const action: ActionFunction = async ({ request }) => {
   }
 
   // input untyped but we trust Lohi to give us correctly shaped request here
-  db.users.updateMany(await request.json());
+  UserRepository.updateMany(await request.json());
 
   return null;
 };
