@@ -25,7 +25,10 @@ import {
   parseRequestFormData,
   validate,
 } from "~/utils/remix";
-import { nextNonCompletedVoting } from "~/modules/plus-server";
+import {
+  nextNonCompletedVoting,
+  rangeToMonthYear,
+} from "~/modules/plus-server";
 import { db } from "~/db";
 import type { UserWithPlusTier } from "~/db/types";
 import { FormMessage } from "~/components/FormMessage";
@@ -59,8 +62,10 @@ export const action: ActionFunction = async ({ request }) => {
 
   const user = await requireUser(request);
 
+  const votingMonthYear = rangeToMonthYear(nextNonCompletedVoting(new Date()));
+
   const suggestions = db.plusSuggestions.findVisibleForUser({
-    ...nextNonCompletedVoting(new Date()),
+    ...votingMonthYear,
     plusTier: user.plusTier,
   });
 
@@ -79,7 +84,7 @@ export const action: ActionFunction = async ({ request }) => {
     suggestedId: suggested.id,
     tier: data.tier,
     text: data.comment,
-    ...nextNonCompletedVoting(new Date()),
+    ...votingMonthYear,
   });
 
   throw redirect(plusSuggestionPage(data.tier));

@@ -1,5 +1,4 @@
 import type * as plusSuggestions from "~/db/models/plusSuggestions/queries.server";
-import { monthsVotingRange } from "./modules/plus-server";
 import type {
   CalendarEvent,
   PlusSuggestion,
@@ -12,6 +11,7 @@ import invariant from "tiny-invariant";
 import type { ManagersByBadgeId } from "./db/models/badges/queries.server";
 import { databaseTimestampToDate } from "./utils/dates";
 import type { FindMatchById } from "./features/tournament-bracket/queries/findMatchById.server";
+import { isVotingActive } from "./modules/plus-server/voting-time-old";
 
 // TODO: 1) move "root checkers" to one file and utils to one file 2) make utils const for more terseness
 
@@ -203,18 +203,6 @@ export function canSuggestNewUserBE({
     targetPlusTierIsSmallerOrEqual({ user, targetPlusTier }),
     !playerAlreadyMember({ suggested, targetPlusTier }),
   ]);
-}
-
-export function isVotingActive() {
-  const now = new Date();
-  const { endDate, startDate } = monthsVotingRange({
-    month: now.getMonth(),
-    year: now.getFullYear(),
-  });
-
-  return (
-    now.getTime() >= startDate.getTime() && now.getTime() <= endDate.getTime()
-  );
 }
 
 function isPlusServerMember(user?: Pick<UserWithPlusTier, "plusTier">) {

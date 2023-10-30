@@ -6,7 +6,10 @@ import { Button, LinkButton } from "~/components/Button";
 import { Dialog } from "~/components/Dialog";
 import { Redirect } from "~/components/Redirect";
 import { PlUS_SUGGESTION_COMMENT_MAX_LENGTH, PLUS_TIERS } from "~/constants";
-import { nextNonCompletedVoting } from "~/modules/plus-server";
+import {
+  nextNonCompletedVoting,
+  rangeToMonthYear,
+} from "~/modules/plus-server";
 import { db } from "~/db";
 import { requireUser, useUser } from "~/modules/auth";
 import {
@@ -42,8 +45,10 @@ export const action: ActionFunction = async ({ request }) => {
   });
   const user = await requireUser(request);
 
+  const votingMonthYear = rangeToMonthYear(nextNonCompletedVoting(new Date()));
+
   const suggestions = db.plusSuggestions.findVisibleForUser({
-    ...nextNonCompletedVoting(new Date()),
+    ...votingMonthYear,
     plusTier: user.plusTier,
   });
 
@@ -61,7 +66,7 @@ export const action: ActionFunction = async ({ request }) => {
     authorId: user.id,
     ...data,
     text: data.comment,
-    ...nextNonCompletedVoting(new Date()),
+    ...votingMonthYear,
   });
 
   throw redirect(plusSuggestionPage(data.tier));

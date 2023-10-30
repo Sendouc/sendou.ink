@@ -18,16 +18,16 @@ import type { UsersForVoting } from "~/db/models/plusVotes/queries.server";
 import { getUser, requireUser } from "~/modules/auth";
 import type { PlusVoteFromFE } from "~/modules/plus-server";
 import {
-  monthsVotingRange,
+  rangeToMonthYear,
   nextNonCompletedVoting,
   usePlusVoting,
 } from "~/modules/plus-server";
-import { isVotingActive } from "~/permissions";
 import { parseRequestFormData } from "~/utils/remix";
 import { makeTitle, discordFullName } from "~/utils/strings";
 import { assertType, assertUnreachable } from "~/utils/types";
 import { safeJSONParse } from "~/utils/zod";
 import { PlusSuggestionComments } from "../suggestions";
+import { isVotingActive } from "~/modules/plus-server/voting-time";
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: makeTitle("Plus Server voting") }];
@@ -63,8 +63,9 @@ export const action: ActionFunction = async ({ request }) => {
     score: PLUS_UPVOTE,
   });
 
-  const { month, year } = nextNonCompletedVoting(new Date());
-  const { endDate } = monthsVotingRange({ month, year });
+  const votingRange = nextNonCompletedVoting(new Date());
+  const { month, year } = rangeToMonthYear(votingRange);
+
   db.plusVotes.upsertMany(
     votesForDb.map((vote) => ({
       ...vote,
@@ -72,7 +73,7 @@ export const action: ActionFunction = async ({ request }) => {
       month,
       year,
       tier: user.plusTier!, // no clue why i couldn't make narrowing the type down above work
-      validAfter: endDate,
+      validAfter: votingRange.endDate,
     })),
   );
 
@@ -127,13 +128,15 @@ export const loader: LoaderFunction = async ({ request }) => {
   const user = await getUser(request);
 
   const now = new Date();
-  const { startDate, endDate } = monthsVotingRange(nextNonCompletedVoting(now));
+  const nextVotingRange = nextNonCompletedVoting(now);
   if (!isVotingActive()) {
     return json<PlusVotingLoaderData>({
       type: "timeInfo",
       timeInfo: {
-        relativeTime: formatDistance(startDate, now, { addSuffix: true }),
-        timestamp: startDate.getTime(),
+        relativeTime: formatDistance(nextVotingRange.startDate, now, {
+          addSuffix: true,
+        }),
+        timestamp: nextVotingRange.startDate.getTime(),
         timing: "starts",
       },
     });
@@ -142,7 +145,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   const usersForVoting = db.plusVotes.usersForVoting(user);
   const hasVoted = db.plusVotes.hasVoted({
     user,
-    ...nextNonCompletedVoting(new Date()),
+    ...rangeToMonthYear(nextVotingRange),
   });
 
   if (!usersForVoting || hasVoted) {
@@ -150,8 +153,10 @@ export const loader: LoaderFunction = async ({ request }) => {
       type: "timeInfo",
       voted: hasVoted,
       timeInfo: {
-        relativeTime: formatDistance(endDate, now, { addSuffix: true }),
-        timestamp: endDate.getTime(),
+        relativeTime: formatDistance(nextVotingRange.endDate, now, {
+          addSuffix: true,
+        }),
+        timestamp: nextVotingRange.endDate.getTime(),
         timing: "ends",
       },
     });
@@ -161,8 +166,10 @@ export const loader: LoaderFunction = async ({ request }) => {
     type: "voting",
     usersForVoting,
     votingEnds: {
-      timestamp: endDate.getTime(),
-      relativeTime: formatDistance(endDate, now, { addSuffix: true }),
+      timestamp: nextVotingRange.endDate.getTime(),
+      relativeTime: formatDistance(nextVotingRange.endDate, now, {
+        addSuffix: true,
+      }),
     },
   });
 };

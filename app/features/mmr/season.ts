@@ -1,10 +1,10 @@
-const SEASONS =
+export const SEASONS =
   process.env.NODE_ENV === "development"
     ? ([
         {
           nth: 0,
           starts: new Date("2020-08-14T15:00:00.000Z"),
-          ends: new Date("2029-08-27T20:59:59.999Z"),
+          ends: new Date("2029-08-26T20:59:59.999Z"),
         },
       ] as const)
     : ([
@@ -17,6 +17,11 @@ const SEASONS =
           nth: 1,
           starts: new Date("2023-09-11T17:00:00.000Z"),
           ends: new Date("2023-11-19T20:59:59.999Z"),
+        },
+        {
+          nth: 2,
+          starts: new Date("2023-12-04T17:00:00.000Z"),
+          ends: new Date("2024-02-18T20:59:59.999Z"),
         },
       ] as const);
 

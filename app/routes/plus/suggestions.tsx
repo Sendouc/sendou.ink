@@ -14,7 +14,10 @@ import { Button, LinkButton } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { TrashIcon } from "~/components/icons/Trash";
-import { nextNonCompletedVoting } from "~/modules/plus-server";
+import {
+  nextNonCompletedVoting,
+  rangeToMonthYear,
+} from "~/modules/plus-server";
 import { db } from "~/db";
 import type * as plusSuggestions from "~/db/models/plusSuggestions/queries.server";
 import type { PlusSuggestion, User } from "~/db/types";
@@ -70,10 +73,12 @@ export const action: ActionFunction = async ({ request }) => {
   });
   const user = await requireUser(request);
 
+  const votingMonthYear = rangeToMonthYear(nextNonCompletedVoting(new Date()));
+
   switch (data._action) {
     case "DELETE_COMMENT": {
       const suggestions = db.plusSuggestions.findVisibleForUser({
-        ...nextNonCompletedVoting(new Date()),
+        ...votingMonthYear,
         plusTier: user.plusTier,
       });
 
@@ -110,7 +115,7 @@ export const action: ActionFunction = async ({ request }) => {
       ) {
         // admin only action
         db.plusSuggestions.deleteSuggestionWithComments({
-          ...nextNonCompletedVoting(new Date()),
+          ...votingMonthYear,
           tier: flattenedSuggestedUserInfo.tier,
           suggestedId: flattenedSuggestedUserInfo.suggestedUser.id,
         });
@@ -148,13 +153,15 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({ formMethod }) => {
 export const loader: LoaderFunction = async ({ request }) => {
   const user = await getUserId(request);
 
+  const votingMonthYear = rangeToMonthYear(nextNonCompletedVoting(new Date()));
+
   return json<PlusSuggestionsLoaderData>({
     suggestions: db.plusSuggestions.findAll({
-      ...nextNonCompletedVoting(new Date()),
+      ...votingMonthYear,
     }),
     suggestedForTiers: user
       ? db.plusSuggestions.tiersSuggestedFor({
-          ...nextNonCompletedVoting(new Date()),
+          ...votingMonthYear,
           userId: user.id,
         })
       : [],

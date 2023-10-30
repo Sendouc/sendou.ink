@@ -24,6 +24,7 @@ import { MapPool } from "~/modules/map-pool-serializer";
 import {
   lastCompletedVoting,
   nextNonCompletedVoting,
+  rangeToMonthYear,
 } from "~/modules/plus-server";
 import allTags from "~/routes/calendar/tags.json";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
@@ -411,7 +412,7 @@ function thisMonthsSuggestions() {
   const usersInPlus = db.users
     .findAll()
     .filter((u) => u.plusTier && u.id !== 1); // exclude admin
-  const { month, year } = nextNonCompletedVoting(new Date());
+  const { month, year } = rangeToMonthYear(nextNonCompletedVoting(new Date()));
 
   for (let userId = 150; userId < 190; userId++) {
     const amountOfSuggestions = faker.helpers.arrayElement([1, 1, 2, 3, 4]);
