@@ -1,20 +1,20 @@
 import type {
   LinksFunction,
-  LoaderFunction,
+  LoaderArgs,
+  SerializeFrom,
   V2_MetaFunction,
 } from "@remix-run/node";
-import { json } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
-import { lastCompletedVoting } from "~/modules/plus-server";
-import { db } from "~/db";
-import type { PlusVotingResultByMonthYear } from "~/db/models/plusVotes/queries.server";
-import type { PlusVotingResult, UserWithPlusTier } from "~/db/types";
-import { roundToNDecimalPlaces } from "~/utils/number";
-import { makeTitle, discordFullName } from "~/utils/strings";
-import styles from "~/styles/plus-history.css";
-import { PLUS_SERVER_DISCORD_URL, userPage } from "~/utils/urls";
 import clsx from "clsx";
+import invariant from "tiny-invariant";
+import type { UserWithPlusTier } from "~/db/types";
+import * as PlusVotingRepository from "~/features/plus-voting/PlusVotingRepository.server";
 import { getUser } from "~/modules/auth";
+import { lastCompletedVoting } from "~/modules/plus-server";
+import styles from "~/styles/plus-history.css";
+import { roundToNDecimalPlaces } from "~/utils/number";
+import { makeTitle } from "~/utils/strings";
+import { PLUS_SERVER_DISCORD_URL, userPage } from "~/utils/urls";
 import { isAtLeastFiveDollarTierPatreon } from "~/utils/users";
 
 export const links: LinksFunction = () => {
@@ -33,26 +33,16 @@ export const meta: V2_MetaFunction = () => {
   ];
 };
 
-interface PlusVotingResultsLoaderData {
-  results?: PlusVotingResultByMonthYear["results"];
-  ownScores?: {
-    score?: PlusVotingResult["score"];
-    tier: PlusVotingResult["tier"];
-    passedVoting: PlusVotingResult["passedVoting"];
-    betterThan?: number;
-  }[];
-}
-
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader = async ({ request }: LoaderArgs) => {
   const user = await getUser(request);
-  const { results, scores } = db.plusVotes.resultsByMontYear(
+  const results = await PlusVotingRepository.resultsByMonthYear(
     lastCompletedVoting(new Date()),
   );
 
-  return json<PlusVotingResultsLoaderData>({
-    results,
-    ownScores: ownScores({ scores, user }),
-  });
+  return {
+    results: censorScores(results),
+    ownScores: ownScores({ results, user }),
+  };
 };
 
 function databaseAvgToPercentage(score: number) {
@@ -61,56 +51,77 @@ function databaseAvgToPercentage(score: number) {
   return roundToNDecimalPlaces((scoreNormalized / 2) * 100);
 }
 
+function censorScores(results: PlusVotingRepository.ResultsByMonthYearItem[]) {
+  return results.map((tier) => ({
+    ...tier,
+    passed: tier.passed.map((result) => ({
+      ...result,
+      score: undefined,
+    })),
+    failed: tier.failed.map((result) => ({
+      ...result,
+      score: undefined,
+    })),
+  }));
+}
+
 function ownScores({
-  scores,
+  results,
   user,
 }: {
-  scores: PlusVotingResultByMonthYear["scores"];
+  results: PlusVotingRepository.ResultsByMonthYearItem[];
   user?: Pick<UserWithPlusTier, "id" | "patronTier">;
 }) {
-  return scores
-    .filter((score) => {
-      return score.userId === user?.id;
+  return results
+    .flatMap((tier) => [...tier.failed, ...tier.passed])
+    .filter((result) => {
+      return result.id === user?.id;
     })
-    .map((score) => {
+    .map((result) => {
       const showScore =
-        (score.wasSuggested && !score.passedVoting) ||
+        (result.wasSuggested && !result.passedVoting) ||
         isAtLeastFiveDollarTierPatreon(user);
 
-      const sameTierButNotOwn = (
-        filteredScore: Pick<PlusVotingResult, "tier"> & { userId: number },
-      ) =>
-        filteredScore.tier === score.tier && filteredScore.userId !== user?.id;
+      const resultsOfOwnTierExcludingOwn = () => {
+        const ownTierResults = results.find(
+          (tier) => tier.tier === result.tier,
+        );
+        invariant(ownTierResults, "own tier results not found");
 
-      const result: {
+        return [...ownTierResults.failed, ...ownTierResults.passed].filter(
+          (otherResult) => otherResult.id !== result.id,
+        );
+      };
+
+      const mappedResult: {
         tier: number;
         score?: number;
         passedVoting: number;
         betterThan?: number;
       } = {
-        tier: score.tier,
-        score: databaseAvgToPercentage(score.score),
-        passedVoting: score.passedVoting,
+        tier: result.tier,
+        score: databaseAvgToPercentage(result.score),
+        passedVoting: result.passedVoting,
         betterThan: roundToNDecimalPlaces(
-          (scores
-            .filter(sameTierButNotOwn)
-            .filter((otherScore) => otherScore.score <= score.score).length /
-            scores.filter(sameTierButNotOwn).length) *
+          (resultsOfOwnTierExcludingOwn().filter(
+            (otherResult) => otherResult.score <= result.score,
+          ).length /
+            resultsOfOwnTierExcludingOwn().length) *
             100,
         ),
       };
 
-      if (!showScore) result.score = undefined;
+      if (!showScore) mappedResult.score = undefined;
       if (!isAtLeastFiveDollarTierPatreon(user) || !result.passedVoting) {
-        result.betterThan = undefined;
+        mappedResult.betterThan = undefined;
       }
 
-      return result;
+      return mappedResult;
     });
 }
 
 export default function PlusVotingResultsPage() {
-  const data = useLoaderData<PlusVotingResultsLoaderData>();
+  const data = useLoaderData<typeof loader>();
 
   const { month, year } = lastCompletedVoting(new Date());
 
@@ -164,7 +175,7 @@ export default function PlusVotingResultsPage() {
 function Results({
   results,
 }: {
-  results: NonNullable<PlusVotingResultsLoaderData["results"]>;
+  results: NonNullable<SerializeFrom<typeof loader>["results"]>;
 }) {
   return (
     <div>
@@ -192,7 +203,7 @@ function Results({
                     {user.wasSuggested ? (
                       <span className="plus-history__suggestion-s">S</span>
                     ) : null}
-                    {discordFullName(user)}
+                    {user.discordName}
                   </Link>
                 ))}
               </div>

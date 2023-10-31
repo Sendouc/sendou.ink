@@ -1,9 +1,8 @@
-// all WIP
-
 import { type InferResult, sql } from "kysely";
 import { dbNew } from "~/db/sql";
 import type { MonthYear } from "~/modules/plus-server";
 import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
+import type { Unwrapped } from "~/utils/types";
 
 const resultsByMonthYearQuery = (args: MonthYear) =>
   dbNew
@@ -18,10 +17,12 @@ const resultsByMonthYearQuery = (args: MonthYear) =>
     ])
     .where("PlusVotingResult.month", "=", args.month)
     .where("PlusVotingResult.year", "=", args.year)
-    .orderBy(sql`"User.discordName" collate nocase`, "asc");
+    .orderBy(sql`"User"."discordName" collate nocase`, "asc");
 type ResultsByMonthYearQueryReturnType = InferResult<
   ReturnType<typeof resultsByMonthYearQuery>
 >;
+
+export type ResultsByMonthYearItem = Unwrapped<typeof resultsByMonthYear>;
 export async function resultsByMonthYear(args: MonthYear) {
   const rows = await resultsByMonthYearQuery(args).execute();
 
@@ -55,15 +56,3 @@ function groupPlusVotingResults(rows: ResultsByMonthYearQueryReturnType) {
     }))
     .sort((a, b) => a.tier - b.tier);
 }
-
-// function scoresFromPlusVotingResults(rows: ResultsByMonthYearQueryReturnType) {
-//   return rows
-//     .map((row) => ({
-//       userId: row.id,
-//       tier: row.tier,
-//       score: row.score,
-//       wasSuggested: row.wasSuggested,
-//       passedVoting: row.passedVoting,
-//     }))
-//     .sort((a, b) => a.tier - b.tier);
-// }
