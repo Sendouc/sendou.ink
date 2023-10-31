@@ -1,0 +1,43 @@
+{
+  "customUrl": "URL personalizado",
+  "ign": "Nome no jogo",
+  "ign.short": "NNJ (IGN)",
+  "country": "País",
+  "bio": "Bio",
+  "stickSens": "Sensibilidade do Analógico Direito",
+  "motionSens": "Sensibilidade do Controle de Movimento",
+  "motion": "Movimento",
+  "stick": "Analógico",
+  "sens": "Sens",
+  "weaponPool": "Seleção de armas",
+  "discordExplanation": "Nome de usuário, foto de perfil, conta do YouTube, Twitter e Twitch vêm da sua conta do Discord. Veja o <1>Perguntas Frequentes</1> para mais informações.",
+  "favoriteBadge": "Insígnia Favorita",
+
+  "forms.showDiscordUniqueName": "Mostrar nome de usuário Discord",
+  "forms.showDiscordUniqueName.info": "Mostrar seu nome de usuário único do Discord ({{discordUniqueName}}) publicamente?",
+  "forms.commissionsOpen": "Comissões abertas",
+  "forms.commissionText": "Info sobre comissões",
+  "forms.commissionText.info": "Preço, vagas abertas ou qualquer outra informação relacionada ao processo de fazer um pedido para você.",
+
+  "results.title": "Resultados",
+  "results.placing": "Classificação",
+  "results.team": "Time",
+  "results.tournament": "Torneio",
+  "results.participants": "Participantes",
+  "results.date": "Data",
+  "results.mates": "Parceiros",
+  "results.highlights": "Destaques",
+  "results.nonHighlights": "Outros Resultados",
+  "results.highlights.choose": "Escolher Destaques",
+  "results.highlights.explanation": "Escolha os resultados que você quer destacar",
+
+  "forms.errors.maxWeapons": "Número máximo de armas atingido",
+  "forms.errors.invalidCustomUrl.numbers": "URL personalizado não pode conter apenas números",
+  "forms.errors.invalidCustomUrl.strangeCharacter": "URL personalizado não pode conter caracteres especiais",
+  "forms.errors.invalidCustomUrl.duplicate": "Alguém já está usando esse URL personalizado",
+  "forms.errors.invalidSens": "A sensibilidade de Movimento não pode ser definida se a sensibilidade do Analógico Direito não está",
+  "forms.info.favoriteBadge": "Sua insígnia favorita é mostrada em tamanho maior por padrão no seu perfil.",
+
+  "search.info": "Procurar por usuários pelo nome do Discord, Splatoon 3 ou Twitter",
+  "search.noResults": "Nenhum usuário encontrado com o termo '{{query}}'"
+}
