@@ -1,8 +1,12 @@
+import shuffle from "just-shuffle";
 import { type InferResult, sql } from "kysely";
 import { dbNew } from "~/db/sql";
-import type { MonthYear } from "~/modules/plus-server";
+import type { Tables, TablesInsertable } from "~/db/tables";
+import { nextNonCompletedVoting, type MonthYear } from "~/modules/plus-server";
 import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
 import type { Unwrapped } from "~/utils/types";
+import * as PlusSuggestionRepository from "~/features/plus-suggestions/PlusSuggestionRepository.server";
+import invariant from "tiny-invariant";
 
 const resultsByMonthYearQuery = (args: MonthYear) =>
   dbNew
@@ -55,4 +59,95 @@ function groupPlusVotingResults(rows: ResultsByMonthYearQueryReturnType) {
       failed,
     }))
     .sort((a, b) => a.tier - b.tier);
+}
+
+export type UsersForVoting = {
+  user: Pick<
+    Tables["User"],
+    "id" | "discordId" | "discordName" | "discordAvatar" | "bio"
+  >;
+  suggestion?: PlusSuggestionRepository.FindAllByMonthItem;
+}[];
+
+export async function usersForVoting(loggedInUser: {
+  id: number;
+  plusTier: number;
+}) {
+  const members = await dbNew
+    .selectFrom("User")
+    .innerJoin("PlusTier", "PlusTier.userId", "User.id")
+    .select([...COMMON_USER_FIELDS, "User.bio"])
+    .where("PlusTier.tier", "=", loggedInUser.plusTier)
+    .execute();
+
+  const suggestedUsers = (
+    await PlusSuggestionRepository.findAllByMonth(
+      nextNonCompletedVoting(new Date()),
+    )
+  ).filter((suggestion) => suggestion.tier === loggedInUser.plusTier);
+  invariant(suggestedUsers);
+
+  const result: UsersForVoting = [];
+
+  for (const member of members) {
+    result.push({
+      user: {
+        id: member.id,
+        discordId: member.discordId,
+        discordName: member.discordName,
+        discordAvatar: member.discordAvatar,
+        bio: member.bio,
+      },
+    });
+  }
+
+  for (const suggestion of suggestedUsers) {
+    result.push({
+      user: {
+        id: suggestion.suggested.id,
+        discordId: suggestion.suggested.discordId,
+        discordName: suggestion.suggested.discordName,
+        discordAvatar: suggestion.suggested.discordAvatar,
+        bio: suggestion.suggested.bio,
+      },
+      suggestion,
+    });
+  }
+
+  return shuffle(result.filter(({ user }) => user.id !== loggedInUser.id));
+}
+
+export async function hasVoted(args: {
+  authorId: number;
+  month: number;
+  year: number;
+}) {
+  const rows = await dbNew
+    .selectFrom("PlusVote")
+    .select(({ eb }) => eb.lit(1).as("one"))
+    .where("PlusVote.authorId", "=", args.authorId)
+    .where("PlusVote.month", "=", args.month)
+    .where("PlusVote.year", "=", args.year)
+    .execute();
+
+  return rows.length > 0;
+}
+
+export type UpsertManyPlusVotesArgs = Pick<
+  TablesInsertable["PlusVote"],
+  "month" | "year" | "tier" | "authorId" | "votedId" | "score" | "validAfter"
+>[];
+export function upsertMany(votes: UpsertManyPlusVotesArgs) {
+  const firstVote = votes[0];
+
+  return dbNew.transaction().execute(async (trx) => {
+    await trx
+      .deleteFrom("PlusVote")
+      .where("PlusVote.authorId", "=", firstVote.authorId)
+      .where("PlusVote.month", "=", firstVote.month)
+      .where("PlusVote.year", "=", firstVote.year)
+      .execute();
+
+    await trx.insertInto("PlusVote").values(votes).execute();
+  });
 }

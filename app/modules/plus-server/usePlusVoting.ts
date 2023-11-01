@@ -1,10 +1,10 @@
 import * as React from "react";
 import invariant from "tiny-invariant";
 import { PLUS_DOWNVOTE, PLUS_UPVOTE } from "~/constants";
-import type { UsersForVoting } from "~/db/models/plusVotes/queries.server";
 import type { User } from "~/db/types";
 import type { PlusVoteFromFE } from "./types";
 import { nextNonCompletedVoting } from "./voting-time";
+import type * as PlusVotingRepository from "~/features/plus-voting/PlusVotingRepository.server";
 
 const LOCAL_STORAGE_KEY = "plusVoting";
 
@@ -16,8 +16,11 @@ interface VotingLocalStorageData {
   usersForVotingOrder: Record<User["id"], number>;
 }
 
-export function usePlusVoting(usersForVotingFromServer: UsersForVoting) {
-  const [usersForVoting, setUsersForVoting] = React.useState<UsersForVoting>();
+export function usePlusVoting(
+  usersForVotingFromServer: PlusVotingRepository.UsersForVoting,
+) {
+  const [usersForVoting, setUsersForVoting] =
+    React.useState<PlusVotingRepository.UsersForVoting>();
   const [votes, setVotes] = React.useState<PlusVoteFromFE[]>([]);
 
   const addVote = React.useCallback(
@@ -78,9 +81,9 @@ function useLoadInitialStateFromLocalStorageEffect({
   setUsersForVoting,
   setVotes,
 }: {
-  usersForVotingFromServer: UsersForVoting;
+  usersForVotingFromServer: PlusVotingRepository.UsersForVoting;
   setUsersForVoting: React.Dispatch<
-    React.SetStateAction<UsersForVoting | undefined>
+    React.SetStateAction<PlusVotingRepository.UsersForVoting | undefined>
   >;
   setVotes: React.Dispatch<React.SetStateAction<PlusVoteFromFE[]>>;
 }) {
@@ -155,7 +158,7 @@ function previousUser({
   usersForVoting,
   votes,
 }: {
-  usersForVoting?: UsersForVoting;
+  usersForVoting?: PlusVotingRepository.UsersForVoting;
   votes: PlusVoteFromFE[];
 }) {
   if (!usersForVoting) return;
@@ -176,7 +179,7 @@ function votesToLocalStorage({
   usersForVoting,
   votes,
 }: {
-  usersForVoting?: UsersForVoting;
+  usersForVoting?: PlusVotingRepository.UsersForVoting;
   votes: PlusVoteFromFE[];
 }) {
   const { month, year } = nextNonCompletedVoting(new Date());

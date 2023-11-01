@@ -1,10 +1,17 @@
 import { faker } from "@faker-js/faker";
 import capitalize from "just-capitalize";
 import shuffle from "just-shuffle";
+import { nanoid } from "nanoid";
 import invariant from "tiny-invariant";
 import { ADMIN_DISCORD_ID, ADMIN_ID, INVITE_CODE_LENGTH } from "~/constants";
-import { db } from "~/db";
 import { sql } from "~/db/sql";
+import allTags from "~/features/calendar/tags.json";
+import { createVod } from "~/features/vods/queries/createVod.server";
+import type {
+  AbilityType,
+  MainWeaponId,
+  StageId,
+} from "~/modules/in-game-lists";
 import {
   abilities,
   clothesGearIds,
@@ -14,60 +21,52 @@ import {
   shoesGearIds,
   stageIds,
 } from "~/modules/in-game-lists";
-import type {
-  MainWeaponId,
-  StageId,
-  AbilityType,
-} from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { MapPool } from "~/modules/map-pool-serializer";
 import {
   lastCompletedVoting,
   nextNonCompletedVoting,
 } from "~/modules/plus-server";
-import allTags from "~/features/calendar/tags.json";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
-import type { UpsertManyPlusVotesArgs } from "../models/plusVotes/queries.server";
-import { nanoid } from "nanoid";
 import { mySlugify } from "~/utils/urls";
-import { createVod } from "~/features/vods/queries/createVod.server";
 
-import placements from "./placements.json";
-import {
-  NZAP_TEST_DISCORD_ID,
-  ADMIN_TEST_AVATAR,
-  NZAP_TEST_AVATAR,
-  NZAP_TEST_ID,
-  AMOUNT_OF_CALENDAR_EVENTS,
-} from "./constants";
-import { TOURNAMENT } from "~/features/tournament/tournament-constants";
-import type { SeedVariation } from "~/routes/seed";
-import { nullFilledArray, pickRandomItem } from "~/utils/arrays";
-import type { Art, UserSubmittedImage } from "../types";
-import { createGroup } from "~/features/sendouq/queries/createGroup.server";
-import { MAP_LIST_PREFERENCE_OPTIONS } from "~/features/sendouq/q-constants";
-import { addMember } from "~/features/sendouq/queries/addMember.server";
-import { createMatch } from "~/features/sendouq/queries/createMatch.server";
-import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator";
-import { addSkills } from "~/features/sendouq/queries/addSkills.server";
-import { reportScore } from "~/features/sendouq/queries/reportScore.server";
+import * as BuildRepository from "~/features/builds/BuildRepository.server";
+import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
+import * as PlusSuggestionRepository from "~/features/plus-suggestions/PlusSuggestionRepository.server";
+import * as PlusVotingRepository from "~/features/plus-voting/PlusVotingRepository.server";
 import { calculateMatchSkills } from "~/features/sendouq/core/skills.server";
-import { winnersArrayToWinner } from "~/features/sendouq/q-utils";
-import { addReportedWeapons } from "~/features/sendouq/queries/addReportedWeapons.server";
-import { findMatchById } from "~/features/sendouq/queries/findMatchById.server";
-import { setGroupAsInactive } from "~/features/sendouq/queries/setGroupAsInactive.server";
-import { addMapResults } from "~/features/sendouq/queries/addMapResults.server";
 import {
   summarizeMaps,
   summarizePlayerResults,
 } from "~/features/sendouq/core/summarizer.server";
-import { groupForMatch } from "~/features/sendouq/queries/groupForMatch.server";
+import { MAP_LIST_PREFERENCE_OPTIONS } from "~/features/sendouq/q-constants";
+import { winnersArrayToWinner } from "~/features/sendouq/q-utils";
+import { addMapResults } from "~/features/sendouq/queries/addMapResults.server";
+import { addMember } from "~/features/sendouq/queries/addMember.server";
 import { addPlayerResults } from "~/features/sendouq/queries/addPlayerResults.server";
+import { addReportedWeapons } from "~/features/sendouq/queries/addReportedWeapons.server";
+import { addSkills } from "~/features/sendouq/queries/addSkills.server";
+import { createGroup } from "~/features/sendouq/queries/createGroup.server";
+import { createMatch } from "~/features/sendouq/queries/createMatch.server";
+import { findMatchById } from "~/features/sendouq/queries/findMatchById.server";
+import { groupForMatch } from "~/features/sendouq/queries/groupForMatch.server";
+import { reportScore } from "~/features/sendouq/queries/reportScore.server";
+import { setGroupAsInactive } from "~/features/sendouq/queries/setGroupAsInactive.server";
 import { updateVCStatus } from "~/features/sendouq/queries/updateVCStatus.server";
-import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
-import * as PlusSuggestionRepository from "~/features/plus-suggestions/PlusSuggestionRepository.server";
-import * as BuildRepository from "~/features/builds/BuildRepository.server";
+import { TOURNAMENT } from "~/features/tournament/tournament-constants";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
+import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator";
+import type { SeedVariation } from "~/routes/seed";
+import { nullFilledArray, pickRandomItem } from "~/utils/arrays";
+import type { Art, UserSubmittedImage } from "../types";
+import {
+  ADMIN_TEST_AVATAR,
+  AMOUNT_OF_CALENDAR_EVENTS,
+  NZAP_TEST_AVATAR,
+  NZAP_TEST_DISCORD_ID,
+  NZAP_TEST_ID,
+} from "./constants";
+import placements from "./placements.json";
 
 const calendarEventWithToToolsSz = () => calendarEventWithToTools(true);
 const calendarEventWithToToolsTeamsSz = () =>
@@ -363,8 +362,8 @@ const idToPlusTier = (id: number) => {
   throw new Error("Invalid id - no plus tier");
 };
 
-function lastMonthsVoting() {
-  const votes: UpsertManyPlusVotesArgs = [];
+async function lastMonthsVoting() {
+  const votes = [];
 
   const { month, year } = lastCompletedVoting(new Date());
 
@@ -379,7 +378,7 @@ function lastMonthsVoting() {
       year,
       score: 1,
       tier: idToPlusTier(id),
-      validAfter: fiveMinutesAgo,
+      validAfter: dateToDatabaseTimestamp(fiveMinutesAgo),
       votedId: id,
     });
   }
@@ -391,12 +390,12 @@ function lastMonthsVoting() {
       year,
       score: -1,
       tier: idToPlusTier(id),
-      validAfter: fiveMinutesAgo,
+      validAfter: dateToDatabaseTimestamp(fiveMinutesAgo),
       votedId: id,
     });
   }
 
-  db.plusVotes.upsertMany(votes);
+  await PlusVotingRepository.upsertMany(votes);
 }
 
 async function lastMonthSuggestions() {

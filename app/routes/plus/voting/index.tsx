@@ -13,8 +13,6 @@ import { Button } from "~/components/Button";
 import { CheckmarkIcon } from "~/components/icons/Checkmark";
 import { RelativeTime } from "~/components/RelativeTime";
 import { PLUS_DOWNVOTE, PLUS_UPVOTE } from "~/constants";
-import { db } from "~/db";
-import type { UsersForVoting } from "~/db/models/plusVotes/queries.server";
 import { getUser, requireUser } from "~/modules/auth";
 import type { PlusVoteFromFE } from "~/modules/plus-server";
 import {
@@ -28,6 +26,9 @@ import { makeTitle } from "~/utils/strings";
 import { assertType, assertUnreachable } from "~/utils/types";
 import { safeJSONParse } from "~/utils/zod";
 import { PlusSuggestionComments } from "../suggestions";
+import * as PlusVotingRepository from "~/features/plus-voting/PlusVotingRepository.server";
+import { dateToDatabaseTimestamp } from "~/utils/dates";
+import invariant from "tiny-invariant";
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: makeTitle("Plus Server voting") }];
@@ -54,7 +55,13 @@ export const action: ActionFunction = async ({ request }) => {
   if (!isVotingActive()) {
     throw new Response(null, { status: 400 });
   }
-  const usersForVoting = await db.plusVotes.usersForVoting(user);
+
+  invariant(user.plusTier, "User should have plusTier");
+
+  const usersForVoting = await PlusVotingRepository.usersForVoting({
+    id: user.id,
+    plusTier: user.plusTier,
+  });
   validateVotes({ votes: data.votes, usersForVoting });
 
   // freebie +1 for yourself if you vote
@@ -65,14 +72,14 @@ export const action: ActionFunction = async ({ request }) => {
 
   const { month, year } = nextNonCompletedVoting(new Date());
   const { endDate } = monthsVotingRange({ month, year });
-  db.plusVotes.upsertMany(
+  await PlusVotingRepository.upsertMany(
     votesForDb.map((vote) => ({
       ...vote,
       authorId: user.id,
       month,
       year,
       tier: user.plusTier!, // no clue why i couldn't make narrowing the type down above work
-      validAfter: endDate,
+      validAfter: dateToDatabaseTimestamp(endDate),
     })),
   );
 
@@ -84,7 +91,7 @@ function validateVotes({
   usersForVoting,
 }: {
   votes: PlusVoteFromFE[];
-  usersForVoting?: UsersForVoting;
+  usersForVoting?: PlusVotingRepository.UsersForVoting;
 }) {
   if (!usersForVoting) throw new Response(null, { status: 400 });
 
@@ -116,7 +123,7 @@ type PlusVotingLoaderData =
   // user can vote
   | {
       type: "voting";
-      usersForVoting: UsersForVoting;
+      usersForVoting: PlusVotingRepository.UsersForVoting;
       votingEnds: {
         timestamp: number;
         relativeTime: string;
@@ -139,11 +146,18 @@ export const loader: LoaderFunction = async ({ request }) => {
     });
   }
 
-  const usersForVoting = await db.plusVotes.usersForVoting(user);
-  const hasVoted = db.plusVotes.hasVoted({
-    user,
-    ...nextNonCompletedVoting(new Date()),
-  });
+  const usersForVoting = user?.plusTier
+    ? await PlusVotingRepository.usersForVoting({
+        id: user.id,
+        plusTier: user.plusTier,
+      })
+    : undefined;
+  const hasVoted = user
+    ? await PlusVotingRepository.hasVoted({
+        authorId: user.id,
+        ...nextNonCompletedVoting(new Date()),
+      })
+    : false;
 
   if (!usersForVoting || hasVoted) {
     return json<PlusVotingLoaderData>({
