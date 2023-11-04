@@ -1,4 +1,4 @@
-import allTags from "~/features/calendar/tags.json";
+import allTags from "~/features/calendar/tags.json" assert { type: "json" };
 import type { CalendarEventTag } from "./db/types";
 import type { BuildAbilitiesTupleWithUnknown } from "./modules/in-game-lists";
 

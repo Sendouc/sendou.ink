@@ -30,8 +30,8 @@ import type {
   SubWeaponDamage,
   SubWeaponParams,
 } from "../analyzer-types";
-import abilityValuesJson from "./ability-values.json";
-import weaponParamsJson from "./weapon-params.json";
+import abilityValuesJson from "./ability-values.json" assert { type: "json" };
+import weaponParamsJson from "./weapon-params.json" assert { type: "json" };
 
 export function weaponParams(): ParamsJson {
   return weaponParamsJson as ParamsJson;
