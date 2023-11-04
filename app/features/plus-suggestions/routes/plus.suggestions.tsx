@@ -15,16 +15,19 @@ import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { RelativeTime } from "~/components/RelativeTime";
 import { TrashIcon } from "~/components/icons/Trash";
 import { PLUS_TIERS } from "~/constants";
+import {
+  isVotingActive,
+  nextNonCompletedVoting,
+  rangeToMonthYear,
+} from "~/modules/plus-server";
 import type { PlusSuggestion, User } from "~/db/types";
 import * as PlusSuggestionRepository from "~/features/plus-suggestions/PlusSuggestionRepository.server";
 import { requireUser, useUser } from "~/modules/auth";
-import { nextNonCompletedVoting } from "~/modules/plus-server";
 import {
   canAddCommentToSuggestionFE,
   canDeleteComment,
   canSuggestNewUserFE,
   isFirstSuggestion,
-  isVotingActive,
 } from "~/permissions";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { parseRequestFormData, validate } from "~/utils/remix";
@@ -67,11 +70,12 @@ export const action: ActionFunction = async ({ request }) => {
   });
   const user = await requireUser(request);
 
+  const votingMonthYear = rangeToMonthYear(nextNonCompletedVoting(new Date()));
+
   switch (data._action) {
     case "DELETE_COMMENT": {
-      const suggestions = await PlusSuggestionRepository.findAllByMonth(
-        nextNonCompletedVoting(new Date()),
-      );
+      const suggestions =
+        await PlusSuggestionRepository.findAllByMonth(votingMonthYear);
 
       const suggestionToDelete = suggestions.find((suggestion) =>
         suggestion.suggestions.some(
@@ -104,7 +108,7 @@ export const action: ActionFunction = async ({ request }) => {
         await PlusSuggestionRepository.deleteWithCommentsBySuggestedUserId({
           tier: suggestionToDelete.tier,
           userId: suggestionToDelete.suggested.id,
-          ...nextNonCompletedVoting(new Date()),
+          ...votingMonthYear,
         });
       } else {
         await PlusSuggestionRepository.deleteById(data.suggestionId);
@@ -118,7 +122,7 @@ export const action: ActionFunction = async ({ request }) => {
       await PlusSuggestionRepository.deleteWithCommentsBySuggestedUserId({
         tier: data.tier,
         userId: user.id,
-        ...nextNonCompletedVoting(new Date()),
+        ...votingMonthYear,
       });
 
       break;
@@ -141,7 +145,7 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({ formMethod }) => {
 export const loader = async () => {
   return {
     suggestions: await PlusSuggestionRepository.findAllByMonth(
-      nextNonCompletedVoting(new Date()),
+      rangeToMonthYear(nextNonCompletedVoting(new Date())),
     ),
   };
 };

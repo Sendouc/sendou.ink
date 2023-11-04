@@ -3,7 +3,7 @@ import invariant from "tiny-invariant";
 import { PLUS_DOWNVOTE, PLUS_UPVOTE } from "~/constants";
 import type { User } from "~/db/types";
 import type { PlusVoteFromFE } from "./types";
-import { nextNonCompletedVoting } from "./voting-time";
+import { nextNonCompletedVoting, rangeToMonthYear } from "./voting-time";
 import type * as PlusVotingRepository from "~/features/plus-voting/PlusVotingRepository.server";
 
 const LOCAL_STORAGE_KEY = "plusVoting";
@@ -87,7 +87,7 @@ function useLoadInitialStateFromLocalStorageEffect({
   >;
   setVotes: React.Dispatch<React.SetStateAction<PlusVoteFromFE[]>>;
 }) {
-  const { month, year } = nextNonCompletedVoting(new Date());
+  const { month, year } = rangeToMonthYear(nextNonCompletedVoting(new Date()));
 
   React.useEffect(() => {
     const usersForVotingFromLocalStorage =
@@ -182,7 +182,7 @@ function votesToLocalStorage({
   usersForVoting?: PlusVotingRepository.UsersForVoting;
   votes: PlusVoteFromFE[];
 }) {
-  const { month, year } = nextNonCompletedVoting(new Date());
+  const { month, year } = rangeToMonthYear(nextNonCompletedVoting(new Date()));
 
   invariant(usersForVoting);
   const toLocalStorage: VotingLocalStorageData = {

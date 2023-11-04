@@ -9,9 +9,9 @@ import type {
   UserWithPlusTier,
 } from "./db/types";
 import type { FindMatchById } from "./features/tournament-bracket/queries/findMatchById.server";
-import { monthsVotingRange } from "./modules/plus-server";
 import { allTruthy } from "./utils/arrays";
 import { databaseTimestampToDate } from "./utils/dates";
+import { isVotingActive } from "./modules/plus-server/voting-time-old";
 
 // TODO: 1) move "root checkers" to one file and utils to one file 2) make utils const for more terseness
 
@@ -202,18 +202,6 @@ export function canSuggestNewUserBE({
     targetPlusTierIsSmallerOrEqual({ user, targetPlusTier }),
     !playerAlreadyMember({ suggested, targetPlusTier }),
   ]);
-}
-
-export function isVotingActive() {
-  const now = new Date();
-  const { endDate, startDate } = monthsVotingRange({
-    month: now.getMonth(),
-    year: now.getFullYear(),
-  });
-
-  return (
-    now.getTime() >= startDate.getTime() && now.getTime() <= endDate.getTime()
-  );
 }
 
 function isPlusServerMember(user?: Pick<UserWithPlusTier, "plusTier">) {

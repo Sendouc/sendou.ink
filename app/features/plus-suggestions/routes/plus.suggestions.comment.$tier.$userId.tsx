@@ -6,7 +6,10 @@ import { Button, LinkButton } from "~/components/Button";
 import { Dialog } from "~/components/Dialog";
 import { Redirect } from "~/components/Redirect";
 import { PlUS_SUGGESTION_COMMENT_MAX_LENGTH, PLUS_TIERS } from "~/constants";
-import { nextNonCompletedVoting } from "~/modules/plus-server";
+import {
+  nextNonCompletedVoting,
+  rangeToMonthYear,
+} from "~/modules/plus-server";
 import { requireUser, useUser } from "~/modules/auth";
 import {
   canAddCommentToSuggestionBE,
@@ -42,9 +45,10 @@ export const action: ActionFunction = async ({ request }) => {
   });
   const user = await requireUser(request);
 
-  const suggestions = await PlusSuggestionRepository.findAllByMonth(
-    nextNonCompletedVoting(new Date()),
-  );
+  const votingMonthYear = rangeToMonthYear(nextNonCompletedVoting(new Date()));
+
+  const suggestions =
+    await PlusSuggestionRepository.findAllByMonth(votingMonthYear);
 
   validate(suggestions);
   validate(
@@ -61,7 +65,7 @@ export const action: ActionFunction = async ({ request }) => {
     suggestedId: data.suggestedId,
     text: data.comment,
     tier: data.tier,
-    ...nextNonCompletedVoting(new Date()),
+    ...votingMonthYear,
   });
 
   throw redirect(plusSuggestionPage(data.tier));

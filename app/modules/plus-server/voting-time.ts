@@ -1,62 +1,28 @@
-import type { MonthYear } from "./types";
+import type { MonthYear } from "~/features/top-search/top-search-utils";
+import {
+  seasonToVotingRange,
+  lastCompletedVoting as lastCompletedVotingNew,
+} from "./voting-time-new"; // TODO: seasonToVotingRange can be removed as export after the first new voting under the new system
+import { lastCompletedVoting as lastCompletedVotingOld } from "./voting-time-old";
 
+export {
+  isVotingActive,
+  nextNonCompletedVoting,
+  rangeToMonthYear,
+} from "./voting-time-new";
+
+// TODO: this can be removed after the first new voting under the new system
 export function lastCompletedVoting(now: Date): MonthYear {
-  const thisMonthsRange = monthsVotingRange({
-    month: now.getMonth(),
-    year: now.getFullYear(),
+  const range = seasonToVotingRange({
+    nth: 1,
+    starts: new Date("2023-09-11T17:00:00.000Z"),
+    ends: new Date("2023-11-19T20:59:59.999Z"),
   });
 
-  if (thisMonthsRange.endDate.getTime() < now.getTime()) {
-    return {
-      month: thisMonthsRange.endDate.getMonth(),
-      year: thisMonthsRange.endDate.getFullYear(),
-    };
-  }
+  // first voting under the new system has not yet concluded
+  const usingOldLogic = range.endDate.getTime() > now.getTime();
 
-  return previousMonth({
-    month: thisMonthsRange.endDate.getMonth(),
-    year: thisMonthsRange.endDate.getFullYear(),
-  });
-}
-
-export function nextNonCompletedVoting(now: Date): MonthYear {
-  return nextMonth(lastCompletedVoting(now));
-}
-
-/** Range of first Friday of a month to the following Sunday (this range is when voting is active) */
-export function monthsVotingRange({ month, year }: MonthYear) {
-  const startDate = new Date(Date.UTC(year, month, 1, 18)); // EU evening, NA day
-
-  while (startDate.getDay() !== 5) {
-    startDate.setDate(startDate.getDate() + 1);
-  }
-
-  const endDate = new Date(startDate.getTime());
-  endDate.setDate(endDate.getDate() + 2);
-
-  return { startDate, endDate };
-}
-
-function previousMonth(input: MonthYear): MonthYear {
-  let { month, year } = input;
-
-  month--;
-  if (month < 0) {
-    month = 11;
-    year--;
-  }
-
-  return { month, year };
-}
-
-function nextMonth(input: MonthYear): MonthYear {
-  let { month, year } = input;
-
-  month++;
-  if (month === 12) {
-    month = 0;
-    year++;
-  }
-
-  return { month, year };
+  return usingOldLogic
+    ? lastCompletedVotingOld(now)
+    : lastCompletedVotingNew(now);
 }

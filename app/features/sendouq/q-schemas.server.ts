@@ -122,14 +122,17 @@ const winners = z.preprocess(
 
 const weapons = z.preprocess(
   safeJSONParse,
-  z.array(
-    z.object({
-      weaponSplId,
-      userId: id,
-      mapIndex: z.number().int().nonnegative(),
-      groupMatchMapId: id,
-    }),
-  ),
+  z
+    .array(
+      z.object({
+        weaponSplId,
+        userId: id,
+        mapIndex: z.number().int().nonnegative(),
+        groupMatchMapId: id,
+      }),
+    )
+    .nullish()
+    .default([]),
 );
 export const matchSchema = z.union([
   z.object({

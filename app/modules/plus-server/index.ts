@@ -1,7 +1,7 @@
 export {
   lastCompletedVoting,
   nextNonCompletedVoting,
-  monthsVotingRange,
+  rangeToMonthYear,
 } from "./voting-time";
 
 export type { MonthYear, PlusVoteFromFE } from "./types";
