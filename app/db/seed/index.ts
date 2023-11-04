@@ -57,7 +57,7 @@ import { updateVCStatus } from "~/features/sendouq/queries/updateVCStatus.server
 import { TOURNAMENT } from "~/features/tournament/tournament-constants";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator";
-import type { SeedVariation } from "~/routes/seed";
+import type { SeedVariation } from "~/features/api/routes/seed";
 import { nullFilledArray, pickRandomItem } from "~/utils/arrays";
 import type { Art, UserSubmittedImage } from "../types";
 import {

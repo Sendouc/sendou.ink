@@ -215,6 +215,10 @@ module.exports = {
           "features/plus-voting/routes/plus.voting.results.tsx",
         );
       });
+
+      route("/patrons", "features/api/routes/patrons.tsx");
+      route("/seed", "features/api/routes/seed.tsx");
+      route("/users", "features/api/routes/users.tsx");
     });
   },
   serverModuleFormat: "cjs",
