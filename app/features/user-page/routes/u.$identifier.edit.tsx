@@ -1,7 +1,6 @@
 import {
   redirect,
   type ActionFunction,
-  type LinksFunction,
   type LoaderFunctionArgs,
 } from "@remix-run/node";
 import { Form, Link, useLoaderData, useMatches } from "@remix-run/react";
@@ -24,12 +23,11 @@ import { SubmitButton } from "~/components/SubmitButton";
 import { USER } from "~/constants";
 import type { UserWeapon, User } from "~/db/types";
 import { useTranslation } from "~/hooks/useTranslation";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import { requireUser, requireUserId } from "~/features/auth/core/user.server";
-import { i18next } from "~/modules/i18n";
 import { type MainWeaponId } from "~/modules/in-game-lists";
 import { canAddCustomizedColorsToUserProfile } from "~/permissions";
-import styles from "~/styles/u-edit.css";
+import "~/styles/u-edit.css";
 import { translatedCountry } from "~/utils/i18n.server";
 import { notFoundIfFalsy, safeParseRequestFormData } from "~/utils/remix";
 import { errorIsSqliteUniqueConstraintFailure } from "~/utils/sql";
@@ -52,10 +50,7 @@ import { Toggle } from "~/components/Toggle";
 import { StarIcon } from "~/components/icons/Star";
 import { StarFilledIcon } from "~/components/icons/StarFilled";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
-};
+import i18next from "~/modules/i18n/i18next.server";
 
 const userEditActionSchema = z
   .object({

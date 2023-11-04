@@ -1,4 +1,4 @@
-import { db } from "~/db/sql";
+import { db } from "~/db/sql.server";
 
 export function findByUserId(userId: number) {
   return db

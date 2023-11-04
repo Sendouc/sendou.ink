@@ -1,5 +1,5 @@
 import type { Match } from "~/modules/brackets-model";
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import type {
   Tournament,
   TournamentMatch,

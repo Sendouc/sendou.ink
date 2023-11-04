@@ -2,7 +2,6 @@ import { json, redirect } from "@remix-run/node";
 import type {
   ActionFunction,
   SerializeFrom,
-  LinksFunction,
   LoaderFunctionArgs,
   MetaFunction,
 } from "@remix-run/node";
@@ -21,17 +20,16 @@ import { Placement } from "~/components/Placement";
 import { Section } from "~/components/Section";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "~/hooks/useTranslation";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import { requireUserId } from "~/features/auth/core/user.server";
-import { i18next } from "~/modules/i18n";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import {
   canDeleteCalendarEvent,
   canEditCalendarEvent,
   canReportCalendarEventWinners,
 } from "~/permissions";
-import calendarStyles from "~/styles/calendar-event.css";
-import mapsStyles from "~/styles/maps.css";
+import "~/styles/calendar-event.css";
+import "~/styles/maps.css";
 import { databaseTimestampToDate } from "~/utils/dates";
 import {
   notFoundIfFalsy,
@@ -54,6 +52,7 @@ import { actualNumber, id } from "~/utils/zod";
 import { Tags } from "../components/Tags";
 import { Table } from "~/components/Table";
 import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
+import i18next from "~/modules/i18n/i18next.server";
 
 export const action: ActionFunction = async ({ params, request }) => {
   const user = await requireUserId(request);
@@ -78,13 +77,6 @@ export const action: ActionFunction = async ({ params, request }) => {
   });
 
   throw redirect(CALENDAR_PAGE);
-};
-
-export const links: LinksFunction = () => {
-  return [
-    { rel: "stylesheet", href: calendarStyles },
-    { rel: "stylesheet", href: mapsStyles },
-  ];
 };
 
 export const meta: MetaFunction = (args) => {

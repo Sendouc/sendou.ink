@@ -26,7 +26,7 @@ import {
 } from "~/features/build-analyzer";
 import { buildsByUserId } from "~/features/builds";
 import { useTranslation } from "~/hooks/useTranslation";
-import { requireUser } from "~/features/auth/core";
+import { requireUser } from "~/features/auth/core/user.server";
 import { requireUserId } from "~/features/auth/core/user.server";
 import {
   type Ability,

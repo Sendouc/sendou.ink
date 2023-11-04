@@ -1,4 +1,4 @@
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import { MATCHES_COUNT_NEEDED_FOR_LEADERBOARD } from "~/features/leaderboards/leaderboards-constants";
 
 const groupedSkillsStm = sql.prepare(/* sql */ `

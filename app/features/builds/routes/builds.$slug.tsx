@@ -25,7 +25,6 @@ import {
   ONE_HOUR_IN_MS,
 } from "~/constants";
 import { useTranslation } from "~/hooks/useTranslation";
-import { i18next } from "~/modules/i18n";
 import {
   abilities,
   weaponIdIsNotAlt,
@@ -54,6 +53,7 @@ import type { Unpacked } from "~/utils/types";
 import { safeJSONParse } from "~/utils/json";
 import { MAX_BUILD_FILTERS } from "../builds-constants";
 import { Ability } from "~/components/Ability";
+import i18next from "~/modules/i18n/i18next.server";
 
 const FILTER_SEARCH_PARAM_KEY = "f";
 

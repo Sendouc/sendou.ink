@@ -1,7 +1,7 @@
 import { formatDistance } from "date-fns";
 import type { Insertable } from "kysely";
 import { jsonObjectFrom } from "kysely/helpers/sqlite";
-import { db } from "~/db/sql";
+import { db } from "~/db/sql.server";
 import type { DB } from "~/db/tables";
 import type { MonthYear } from "~/features/plus-voting/core";
 import { databaseTimestampToDate } from "~/utils/dates";

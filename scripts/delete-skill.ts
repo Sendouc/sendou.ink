@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import "dotenv/config";
 import invariant from "tiny-invariant";
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 
 const discordId = process.argv[2]?.trim();
 

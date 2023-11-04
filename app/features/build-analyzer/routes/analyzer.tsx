@@ -1,4 +1,4 @@
-import { type LinksFunction, type MetaFunction } from "@remix-run/node";
+import { type MetaFunction } from "@remix-run/node";
 import type { ShouldRevalidateFunction } from "@remix-run/react";
 import { Link } from "@remix-run/react";
 import clsx from "clsx";
@@ -17,7 +17,7 @@ import { BeakerIcon } from "~/components/icons/Beaker";
 import { MAX_AP } from "~/constants";
 import { useSetTitle } from "~/hooks/useSetTitle";
 import { useTranslation } from "~/hooks/useTranslation";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import type { Ability as AbilityType } from "~/modules/in-game-lists";
 import {
   ANGLE_SHOOTER_ID,
@@ -58,7 +58,7 @@ import type {
   Stat,
   SubWeaponDamage,
 } from "../analyzer-types";
-import styles from "../analyzer.css";
+import "../analyzer.css";
 import {
   ABILITIES_WITHOUT_CHUNKS,
   getAbilityChunksMapAsArray,
@@ -86,10 +86,6 @@ export const meta: MetaFunction = () => {
       content: "Detailed stats for any weapon and build in Splatoon 3.",
     },
   ];
-};
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
 };
 
 export const handle: SendouRouteHandle = {

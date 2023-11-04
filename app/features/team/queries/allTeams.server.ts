@@ -1,4 +1,4 @@
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import { parseDBArray } from "~/utils/sql";
 import type { Team, UserWithPlusTier } from "~/db/types";
 

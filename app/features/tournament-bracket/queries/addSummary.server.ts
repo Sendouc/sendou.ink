@@ -1,4 +1,4 @@
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import type { TournamentSummary } from "../core/summarizer.server";
 import { ordinal } from "openskill";
 import type { Skill } from "~/db/types";

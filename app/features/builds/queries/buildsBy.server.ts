@@ -1,5 +1,5 @@
 import invariant from "tiny-invariant";
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import type {
   Build,
   BuildAbility,

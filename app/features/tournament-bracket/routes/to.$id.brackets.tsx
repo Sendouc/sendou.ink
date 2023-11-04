@@ -13,8 +13,8 @@ import {
   useRevalidator,
 } from "@remix-run/react";
 import * as React from "react";
-import bracketViewerStyles from "../brackets-viewer.css";
-import bracketStyles from "../tournament-bracket.css";
+import "../brackets-viewer.css";
+import "../tournament-bracket.css";
 import { findTeamsByTournamentId } from "../../tournament/queries/findTeamsByTournamentId.server";
 import { Alert } from "~/components/Alert";
 import { SubmitButton } from "~/components/SubmitButton";
@@ -35,7 +35,6 @@ import { resolveBestOfs } from "../core/bestOf.server";
 import { findAllMatchesByTournamentId } from "../queries/findAllMatchesByTournamentId.server";
 import { setBestOf } from "../queries/setBestOf.server";
 import { canAdminTournament } from "~/permissions";
-import { requireUser, useUser } from "~/features/auth/core";
 import {
   TOURNAMENT,
   tournamentIdFromParams,
@@ -50,7 +49,7 @@ import {
   resolveTournamentStageSettings,
   resolveTournamentStageType,
 } from "../tournament-bracket-utils";
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import { useEventSource } from "remix-utils/sse/react";
 import { Status } from "~/db/types";
 import clsx from "clsx";
@@ -81,20 +80,14 @@ import {
 } from "~/features/mmr";
 import { queryTeamPlayerRatingAverage } from "~/features/mmr/mmr-utils.server";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
+import { requireUser } from "~/features/auth/core/user.server";
+import { useUser } from "~/features/auth/core/user";
 
 export const links: LinksFunction = () => {
   return [
     {
       rel: "stylesheet",
       href: "https://cdn.jsdelivr.net/npm/brackets-viewer@1.5.1/dist/brackets-viewer.min.css",
-    },
-    {
-      rel: "stylesheet",
-      href: bracketViewerStyles,
-    },
-    {
-      rel: "stylesheet",
-      href: bracketStyles,
     },
   ];
 };

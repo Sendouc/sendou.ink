@@ -1,4 +1,4 @@
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import { findTrustedPlayers } from "~/features/tournament/queries/findTrustedPlayers.server";
 
 const stm = sql.prepare(/* sql */ `

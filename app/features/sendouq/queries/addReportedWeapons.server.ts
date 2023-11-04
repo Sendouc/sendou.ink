@@ -1,4 +1,4 @@
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 
 const insertStm = sql.prepare(/* sql */ `

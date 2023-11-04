@@ -1,4 +1,4 @@
-import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import {
   useActionData,
@@ -11,7 +11,7 @@ import { Alert } from "~/components/Alert";
 import type { MapPoolMap } from "~/db/types";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
 import { useTranslation } from "~/hooks/useTranslation";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import { getUserId } from "~/features/auth/core/user.server";
 import { createTournamentMapList } from "~/modules/tournament-map-list-generator";
 import type {
@@ -21,7 +21,7 @@ import type {
   TournamentMaplistSource,
 } from "~/modules/tournament-map-list-generator";
 import { canAdminTournament } from "~/permissions";
-import mapsStyles from "~/styles/maps.css";
+import "~/styles/maps.css";
 import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
 import { tournamentPage } from "~/utils/urls";
 import { findMapPoolsByTournamentId } from "../queries/findMapPoolsByTournamentId.server";
@@ -34,10 +34,6 @@ import {
 import type { TournamentLoaderData } from "./to.$id";
 import * as TournamentRepository from "../TournamentRepository.server";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: mapsStyles }];
-};
 
 export const handle: SendouRouteHandle = {
   i18n: ["tournament"],

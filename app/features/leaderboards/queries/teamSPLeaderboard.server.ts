@@ -1,4 +1,4 @@
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import {
   LEADERBOARD_MAX_SIZE,
   MATCHES_COUNT_NEEDED_FOR_LEADERBOARD,

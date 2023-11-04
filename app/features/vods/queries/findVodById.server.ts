@@ -1,4 +1,4 @@
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import { parseDBArray } from "~/utils/sql";
 import type { Vod } from "../vods-types";
 

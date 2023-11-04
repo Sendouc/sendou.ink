@@ -1,6 +1,6 @@
 import { Link } from "@remix-run/react";
 import { useTranslation } from "~/hooks/useTranslation";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import { userPage } from "~/utils/urls";
 import { Avatar } from "../Avatar";
 import { LogInIcon } from "../icons/LogIn";

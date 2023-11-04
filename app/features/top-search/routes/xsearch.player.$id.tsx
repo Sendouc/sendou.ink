@@ -1,5 +1,4 @@
 import type {
-  LinksFunction,
   LoaderFunctionArgs,
   MetaFunction,
   SerializeFrom,
@@ -9,7 +8,7 @@ import { Main } from "~/components/Main";
 import { type SendouRouteHandle, notFoundIfFalsy } from "~/utils/remix";
 import { PlacementsTable } from "../components/Placements";
 import { findPlacementsByPlayerId } from "../queries/findPlacements.server";
-import styles from "../top-search.css";
+import "../top-search.css";
 import { removeDuplicates } from "~/utils/arrays";
 import {
   navIconUrl,
@@ -17,9 +16,9 @@ import {
   topSearchPlayerPage,
   userPage,
 } from "~/utils/urls";
-import { i18next } from "~/modules/i18n";
 import { makeTitle } from "~/utils/strings";
 import { useTranslation } from "~/hooks/useTranslation";
+import i18next from "~/modules/i18n/i18next.server";
 
 export const handle: SendouRouteHandle = {
   breadcrumb: ({ match }) => {
@@ -42,10 +41,6 @@ export const handle: SendouRouteHandle = {
       },
     ];
   },
-};
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
 };
 
 export const meta: MetaFunction = (args) => {

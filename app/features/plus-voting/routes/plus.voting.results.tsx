@@ -1,5 +1,4 @@
 import type {
-  LinksFunction,
   LoaderFunctionArgs,
   SerializeFrom,
   MetaFunction,
@@ -8,18 +7,14 @@ import { Link, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import invariant from "tiny-invariant";
 import type { UserWithPlusTier } from "~/db/types";
+import { getUser } from "~/features/auth/core/user.server";
 import * as PlusVotingRepository from "~/features/plus-voting/PlusVotingRepository.server";
-import { getUser } from "~/features/auth/core";
 import { lastCompletedVoting } from "~/features/plus-voting/core";
-import styles from "~/styles/plus-history.css";
+import "~/styles/plus-history.css";
 import { roundToNDecimalPlaces } from "~/utils/number";
 import { makeTitle } from "~/utils/strings";
 import { PLUS_SERVER_DISCORD_URL, userPage } from "~/utils/urls";
 import { isAtLeastFiveDollarTierPatreon } from "~/utils/users";
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
-};
 
 export const meta: MetaFunction = () => {
   const { month, year } = lastCompletedVoting(new Date());

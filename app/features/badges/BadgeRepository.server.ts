@@ -1,4 +1,4 @@
-import { db } from "~/db/sql";
+import { db } from "~/db/sql.server";
 import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
 import type { Unwrapped } from "~/utils/types";
 

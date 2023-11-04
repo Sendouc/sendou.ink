@@ -1,4 +1,4 @@
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 
 const stm = sql.prepare(/* sql */ `
   delete from "LogInLink"

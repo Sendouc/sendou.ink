@@ -1,4 +1,4 @@
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import type { Team, TeamMember, User } from "~/db/types";
 import { removeDuplicates } from "~/utils/arrays";
 import type { DetailedTeam } from "../team-types";

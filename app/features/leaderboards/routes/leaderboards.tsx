@@ -1,5 +1,4 @@
 import type {
-  LinksFunction,
   LoaderFunctionArgs,
   SerializeFrom,
   MetaFunction,
@@ -17,7 +16,7 @@ import {
   userSeasonsPage,
   userSubmittedImage,
 } from "~/utils/urls";
-import styles from "../../top-search/top-search.css";
+import "../../top-search/top-search.css";
 import { userSPLeaderboard } from "../queries/userSPLeaderboard.server";
 import type { SendouRouteHandle } from "~/utils/remix";
 import {
@@ -27,7 +26,6 @@ import {
 import React from "react";
 import { LEADERBOARD_TYPES } from "../leaderboards-constants";
 import { useTranslation } from "~/hooks/useTranslation";
-import { i18next } from "~/modules/i18n";
 import {
   type XPLeaderboardItem,
   allXPLeaderboard,
@@ -61,6 +59,7 @@ import { HALF_HOUR_IN_MS } from "~/constants";
 import { TopTenPlayer } from "../components/TopTenPlayer";
 import { seasonHasTopTen } from "../leaderboards-utils";
 import { USER_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN } from "~/features/mmr/mmr-constants";
+import i18next from "~/modules/i18n/i18next.server";
 
 export const handle: SendouRouteHandle = {
   i18n: ["vods"],
@@ -84,10 +83,6 @@ export const meta: MetaFunction = (args) => {
         "Leaderboards of top Splatoon players ranked by their X Power and tournament results",
     },
   ];
-};
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
 };
 
 const TYPE_SEARCH_PARAM_KEY = "type";

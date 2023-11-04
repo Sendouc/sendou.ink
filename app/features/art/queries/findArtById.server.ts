@@ -1,4 +1,4 @@
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import type { Art, ArtTag, User, UserSubmittedImage } from "~/db/types";
 import { parseDBArray } from "~/utils/sql";
 

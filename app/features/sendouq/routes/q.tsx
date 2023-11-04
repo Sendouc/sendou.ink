@@ -1,12 +1,11 @@
 import { Flag } from "~/components/Flag";
 import { Main } from "~/components/Main";
 import { useAutoRerender } from "~/hooks/useAutoRerender";
-import styles from "../q.css";
+import "../q.css";
 import { redirect } from "@remix-run/node";
 import type {
   LoaderFunctionArgs,
   ActionFunction,
-  LinksFunction,
   MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
@@ -51,7 +50,7 @@ import { makeTitle } from "~/utils/strings";
 import { currentSeason } from "~/features/mmr";
 import type { RankingSeason } from "~/features/mmr/season";
 import { nextSeason } from "~/features/mmr/season";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import { Button } from "~/components/Button";
 import { findGroupByInviteCode } from "../queries/findGroupByInviteCode.server";
 import { Alert } from "~/components/Alert";
@@ -73,7 +72,7 @@ import invariant from "tiny-invariant";
 import { languagesUnified } from "~/modules/i18n/config";
 import { CrossIcon } from "~/components/icons/Cross";
 import { updateVCStatus } from "../queries/updateVCStatus.server";
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import { deleteLikesByGroupId } from "../queries/deleteLikesByGroupId.server";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
 
@@ -84,10 +83,6 @@ export const handle: SendouRouteHandle = {
     href: SENDOUQ_PAGE,
     type: "IMAGE",
   }),
-};
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
 };
 
 export const meta: MetaFunction = () => {

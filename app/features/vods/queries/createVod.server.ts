@@ -1,4 +1,4 @@
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import type { Video } from "~/db/types";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import type { VideoBeingAdded } from "../vods-types";

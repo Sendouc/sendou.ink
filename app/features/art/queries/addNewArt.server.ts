@@ -1,5 +1,5 @@
 import invariant from "tiny-invariant";
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import type { Art, ArtTag, UserSubmittedImage } from "~/db/types";
 
 const addImgStm = sql.prepare(/* sql */ `

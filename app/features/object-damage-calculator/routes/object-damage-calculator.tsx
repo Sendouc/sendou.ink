@@ -1,4 +1,3 @@
-import type { LinksFunction } from "@remix-run/node";
 import type { ShouldRevalidateFunction } from "@remix-run/react";
 import clsx from "clsx";
 import React from "react";
@@ -34,15 +33,11 @@ import {
 } from "~/utils/urls";
 import { useObjectDamage } from "../calculator-hooks";
 import type { DamageReceiver } from "../calculator-types";
-import styles from "../calculator.css";
+import "../calculator.css";
 
 export const CURRENT_PATCH = "5.1";
 
 export const shouldRevalidate: ShouldRevalidateFunction = () => false;
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
-};
 
 export const handle: SendouRouteHandle = {
   i18n: ["weapons", "analyzer", "builds"],

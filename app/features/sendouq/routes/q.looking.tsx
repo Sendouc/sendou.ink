@@ -1,6 +1,5 @@
 import type {
   ActionFunction,
-  LinksFunction,
   LoaderFunctionArgs,
   MetaFunction,
 } from "@remix-run/node";
@@ -43,7 +42,7 @@ import { createMatchMemento, matchMapList } from "../core/match.server";
 import { FULL_GROUP_SIZE } from "../q-constants";
 import { lookingSchema } from "../q-schemas.server";
 import { groupRedirectLocationByCurrentLocation } from "../q-utils";
-import styles from "../q.css";
+import "../q.css";
 import { addLike } from "../queries/addLike.server";
 import { addManagerRole } from "../queries/addManagerRole.server";
 import { createMatch } from "../queries/createMatch.server";
@@ -83,10 +82,6 @@ export const handle: SendouRouteHandle = {
     href: SENDOUQ_LOOKING_PAGE,
     type: "IMAGE",
   }),
-};
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
 };
 
 export const meta: MetaFunction = () => {

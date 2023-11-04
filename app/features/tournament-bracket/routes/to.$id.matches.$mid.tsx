@@ -1,8 +1,4 @@
-import type {
-  ActionFunction,
-  LinksFunction,
-  LoaderFunctionArgs,
-} from "@remix-run/node";
+import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import {
   Link,
   useLoaderData,
@@ -17,15 +13,14 @@ import invariant from "tiny-invariant";
 import { Avatar } from "~/components/Avatar";
 import { LinkButton } from "~/components/Button";
 import { ArrowLongLeftIcon } from "~/components/icons/ArrowLongLeft";
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import {
   tournamentIdFromParams,
   type TournamentLoaderData,
 } from "~/features/tournament";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
 import { useVisibilityChange } from "~/hooks/useVisibilityChange";
-import { requireUser, useUser } from "~/features/auth/core";
-import { getUserId } from "~/features/auth/core/user.server";
+import { getUserId, requireUser } from "~/features/auth/core/user.server";
 import { canAdminTournament, canReportTournamentScore } from "~/permissions";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
@@ -51,15 +46,9 @@ import {
   matchIdFromParams,
   matchSubscriptionKey,
 } from "../tournament-bracket-utils";
-import bracketStyles from "../tournament-bracket.css";
+import "../tournament-bracket.css";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
-
-export const links: LinksFunction = () => [
-  {
-    rel: "stylesheet",
-    href: bracketStyles,
-  },
-];
+import { useUser } from "~/features/auth/core/user";
 
 export const action: ActionFunction = async ({ params, request }) => {
   const user = await requireUser(request);

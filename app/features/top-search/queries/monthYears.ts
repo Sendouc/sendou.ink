@@ -1,4 +1,4 @@
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import type { MonthYear } from "../top-search-utils";
 
 const smt = sql.prepare(/* sql */ `

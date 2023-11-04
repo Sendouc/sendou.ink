@@ -1,6 +1,5 @@
 import type {
   ActionFunction,
-  LinksFunction,
   LoaderFunctionArgs,
   MetaFunction,
   SerializeFrom,
@@ -19,7 +18,7 @@ import { WeaponImage } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { Placement } from "~/components/Placement";
 import { useTranslation } from "~/hooks/useTranslation";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import { requireUserId } from "~/features/auth/core/user.server";
 import {
   notFoundIfFalsy,
@@ -46,7 +45,7 @@ import {
   isTeamMember,
   isTeamOwner,
 } from "../team-utils";
-import styles from "../team.css";
+import "../team.css";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (!data) return [];
@@ -55,10 +54,6 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
     { title: makeTitle(data.team.name) },
     { name: "description", content: data.team.bio },
   ];
-};
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
 };
 
 export const action: ActionFunction = async ({ request, params }) => {

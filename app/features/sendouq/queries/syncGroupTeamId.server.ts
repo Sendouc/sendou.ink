@@ -1,5 +1,5 @@
 import invariant from "tiny-invariant";
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import { FULL_GROUP_SIZE } from "../q-constants";
 
 const memberTeamIdsStm = sql.prepare(/* sql */ `

@@ -9,8 +9,8 @@ import isbot from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
 import cron from "node-cron";
 import { updatePatreonData } from "./modules/patreon";
-import { i18Instance } from "./modules/i18n";
 import { I18nextProvider } from "react-i18next";
+import { i18Instance } from "./modules/i18n/loader.server";
 
 const ABORT_DELAY = 5000;
 

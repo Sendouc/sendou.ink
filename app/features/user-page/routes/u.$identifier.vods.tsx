@@ -1,17 +1,12 @@
-import type { LinksFunction } from "@remix-run/node";
 import { useMatches } from "@remix-run/react";
 import invariant from "tiny-invariant";
-import { VodListing } from "~/features/vods";
 import type { SendouRouteHandle } from "~/utils/remix";
-import styles from "~/features/vods/vods.css";
+import "~/features/vods/vods.css";
 import type { UserPageLoaderData } from "./u.$identifier";
+import { VodListing } from "~/features/vods/components/VodListing";
 
 export const handle: SendouRouteHandle = {
   i18n: ["vods"],
-};
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
 };
 
 export default function UserVodsPage() {

@@ -1,4 +1,4 @@
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import type { TournamentTeam, User } from "~/db/types";
 import { nanoid } from "nanoid";
 import { INVITE_CODE_LENGTH } from "~/constants";

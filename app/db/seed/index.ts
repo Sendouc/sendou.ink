@@ -4,7 +4,7 @@ import shuffle from "just-shuffle";
 import { nanoid } from "nanoid";
 import invariant from "tiny-invariant";
 import { ADMIN_DISCORD_ID, ADMIN_ID, INVITE_CODE_LENGTH } from "~/constants";
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import allTags from "~/features/calendar/tags.json";
 import { createVod } from "~/features/vods/queries/createVod.server";
 import type {

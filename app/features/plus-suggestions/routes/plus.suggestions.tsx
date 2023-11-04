@@ -22,7 +22,6 @@ import {
 } from "~/features/plus-voting/core";
 import type { PlusSuggestion, User } from "~/db/types";
 import * as PlusSuggestionRepository from "~/features/plus-suggestions/PlusSuggestionRepository.server";
-import { requireUser, useUser } from "~/features/auth/core";
 import {
   canAddCommentToSuggestionFE,
   canDeleteComment,
@@ -35,6 +34,8 @@ import { makeTitle } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
 import { userPage } from "~/utils/urls";
 import { _action, actualNumber } from "~/utils/zod";
+import { requireUser } from "~/features/auth/core/user.server";
+import { useUser } from "~/features/auth/core/user";
 
 export const meta: MetaFunction = () => {
   return [

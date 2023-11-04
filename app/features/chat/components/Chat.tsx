@@ -2,7 +2,7 @@ import { Avatar } from "../../../components/Avatar";
 import * as React from "react";
 import { SubmitButton } from "../../../components/SubmitButton";
 import type { User } from "~/db/types";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import { nanoid } from "nanoid";
 import clsx from "clsx";
 import { Button } from "../../../components/Button";

@@ -1,4 +1,4 @@
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 
 const deleteStm = sql.prepare(/* sql */ `
   delete from "ReportedWeapon"

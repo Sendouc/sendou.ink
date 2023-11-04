@@ -1,5 +1,4 @@
 import type {
-  LinksFunction,
   LoaderFunctionArgs,
   MetaFunction,
   SerializeFrom,
@@ -10,7 +9,6 @@ import { WeaponCombobox } from "~/components/Combobox";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import { useTranslation } from "~/hooks/useTranslation";
-import { i18next } from "~/modules/i18n";
 import { mainWeaponIds, modesShort, stageIds } from "~/modules/in-game-lists";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
@@ -18,7 +16,8 @@ import { navIconUrl, VODS_PAGE } from "~/utils/urls";
 import { VodListing } from "../components/VodListing";
 import { findVods } from "../queries/findVods.server";
 import { videoMatchTypes, VODS_PAGE_BATCH_SIZE } from "../vods-constants";
-import styles from "../vods.css";
+import "../vods.css";
+import i18next from "~/modules/i18n/i18next.server";
 
 export const handle: SendouRouteHandle = {
   i18n: ["vods"],
@@ -27,10 +26,6 @@ export const handle: SendouRouteHandle = {
     href: VODS_PAGE,
     type: "IMAGE",
   }),
-};
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
 };
 
 export const meta: MetaFunction = (args) => {

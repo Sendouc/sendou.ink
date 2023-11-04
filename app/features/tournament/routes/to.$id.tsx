@@ -1,5 +1,4 @@
 import type {
-  LinksFunction,
   LoaderFunctionArgs,
   SerializeFrom,
   MetaFunction,
@@ -13,7 +12,7 @@ import {
 import { Main } from "~/components/Main";
 import { SubNav, SubNavLink } from "~/components/SubNav";
 import { useTranslation } from "~/hooks/useTranslation";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import { getUser } from "~/features/auth/core/user.server";
 import { canAdminTournament } from "~/permissions";
 import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
@@ -23,7 +22,7 @@ import { streamsByTournamentId } from "../core/streams.server";
 import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
 import hasTournamentStarted from "../queries/hasTournamentStarted.server";
 import { teamHasCheckedIn, tournamentIdFromParams } from "../tournament-utils";
-import styles from "../tournament.css";
+import "../tournament.css";
 import { findOwnTeam } from "../queries/findOwnTeam.server";
 import { findSubsByTournamentId } from "~/features/tournament-subs";
 import hasTournamentFinalized from "../queries/hasTournamentFinalized.server";
@@ -52,10 +51,6 @@ export const meta: MetaFunction = (args) => {
   if (!data) return [];
 
   return [{ title: makeTitle(data.tournament.name) }];
-};
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
 };
 
 export const handle: SendouRouteHandle = {

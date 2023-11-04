@@ -16,7 +16,7 @@ import {
 } from "~/features/art";
 import { useLoaderData, useMatches } from "@remix-run/react";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import { deleteArt, deleteArtSchema } from "~/features/art";
 import invariant from "tiny-invariant";
 import { LinkButton } from "~/components/Button";

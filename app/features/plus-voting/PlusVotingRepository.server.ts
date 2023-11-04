@@ -1,6 +1,6 @@
 import shuffle from "just-shuffle";
 import { type InferResult, sql } from "kysely";
-import { db } from "~/db/sql";
+import { db } from "~/db/sql.server";
 import type { Tables, TablesInsertable } from "~/db/tables";
 import {
   nextNonCompletedVoting,

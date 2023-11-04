@@ -18,7 +18,7 @@ import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { UserSearch } from "~/components/UserSearch";
 import { makeArtist } from "~/features/art";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import {
   getUserId,
   isImpersonating,

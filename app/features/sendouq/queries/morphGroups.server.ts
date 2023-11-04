@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid";
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import { deleteLikesByGroupId } from "./deleteLikesByGroupId.server";
 import type { GroupMember, User } from "~/db/types";
 

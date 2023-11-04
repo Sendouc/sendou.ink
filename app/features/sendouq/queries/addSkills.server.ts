@@ -1,5 +1,5 @@
 import { ordinal } from "openskill";
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import type { ParsedMemento, Skill } from "~/db/types";
 import { identifierToUserIds } from "~/features/mmr/mmr-utils";
 import type { MementoSkillDifferences } from "../core/skills.server";

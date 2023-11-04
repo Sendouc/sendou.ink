@@ -1,4 +1,4 @@
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import type { TournamentMatch, TournamentRound } from "~/db/types";
 
 const stm = sql.prepare(/* sql */ `

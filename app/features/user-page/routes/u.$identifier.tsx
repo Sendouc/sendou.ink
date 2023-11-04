@@ -1,5 +1,4 @@
 import type {
-  LinksFunction,
   LoaderFunctionArgs,
   MetaFunction,
   SerializeFrom,
@@ -12,12 +11,11 @@ import { Main } from "~/components/Main";
 import { SubNav, SubNavLink } from "~/components/SubNav";
 import { countArtByUserId } from "~/features/art";
 import { userTopPlacements } from "~/features/top-search";
-import { findVods } from "~/features/vods";
 import { useTranslation } from "~/hooks/useTranslation";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import { getUserId } from "~/features/auth/core/user.server";
 import { canAddCustomizedColorsToUserProfile, isAdmin } from "~/permissions";
-import styles from "~/styles/u.css";
+import "~/styles/u.css";
 import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
 import { discordFullName, makeTitle } from "~/utils/strings";
 import {
@@ -35,10 +33,7 @@ import {
 import * as BadgeRepository from "~/features/badges/BadgeRepository.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import * as BuildRepository from "~/features/builds/BuildRepository.server";
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
-};
+import { findVods } from "~/features/vods/queries/findVods.server";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (!data) return [];

@@ -1,7 +1,7 @@
 import type { ExpressionBuilder, Transaction } from "kysely";
 import { sql } from "kysely";
 import { jsonArrayFrom } from "kysely/helpers/sqlite";
-import { db } from "~/db/sql";
+import { db } from "~/db/sql.server";
 import type { DB, Tables } from "~/db/tables";
 import type { CalendarEventTag } from "~/db/types";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";

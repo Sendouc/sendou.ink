@@ -3,7 +3,7 @@ import invariant from "tiny-invariant";
 import { LinkButton } from "~/components/Button";
 import { Section } from "~/components/Section";
 import { useTranslation } from "~/hooks/useTranslation";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import { userResultsEditHighlightsPage } from "~/utils/urls";
 import type { UserPageLoaderData } from "../../../features/user-page/routes/u.$identifier";
 import { UserResultsTable } from "~/features/user-page/components/UserResultsTable";

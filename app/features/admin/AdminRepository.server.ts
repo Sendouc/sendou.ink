@@ -1,4 +1,4 @@
-import { db, sql } from "~/db/sql";
+import { db, sql } from "~/db/sql.server";
 import { syncXPBadges } from "../badges";
 import type { Tables } from "~/db/tables";
 import { dateToDatabaseTimestamp } from "~/utils/dates";

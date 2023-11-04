@@ -1,4 +1,4 @@
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import type { PlayerResult } from "~/db/types";
 
 const addPlayerResultDeltaStm = sql.prepare(/* sql */ `

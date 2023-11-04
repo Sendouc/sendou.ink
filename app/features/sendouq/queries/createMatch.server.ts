@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid";
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import type { GroupMatch, ParsedMemento } from "~/db/types";
 import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator";
 import { syncGroupTeamId } from "./syncGroupTeamId.server";

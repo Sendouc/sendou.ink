@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid";
 import { INVITE_CODE_LENGTH } from "~/constants";
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 
 const stm = sql.prepare(/* sql */ `
   update "AllTeam"

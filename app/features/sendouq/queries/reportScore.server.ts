@@ -1,4 +1,4 @@
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import type { GroupMatch } from "~/db/types";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 

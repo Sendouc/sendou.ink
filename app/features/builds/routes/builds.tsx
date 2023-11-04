@@ -12,8 +12,8 @@ import {
   weaponCategoryUrl,
 } from "~/utils/urls";
 import { type SendouRouteHandle } from "~/utils/remix";
-import styles from "~/styles/builds.css";
-import type { LinksFunction, MetaFunction } from "@remix-run/node";
+import "~/styles/builds.css";
+import type { MetaFunction } from "@remix-run/node";
 import { Main } from "~/components/Main";
 import { makeTitle } from "~/utils/strings";
 import { useSetTitle } from "~/hooks/useSetTitle";
@@ -35,10 +35,6 @@ export const handle: SendouRouteHandle = {
     href: BUILDS_PAGE,
     type: "IMAGE",
   }),
-};
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
 };
 
 export default function BuildsPage() {

@@ -9,7 +9,6 @@ import clsx from "clsx";
 import { Ability } from "~/components/Ability";
 import { Main } from "~/components/Main";
 import { useTranslation } from "~/hooks/useTranslation";
-import { i18next } from "~/modules/i18n";
 import { notFoundIfNullLike, type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { weaponNameSlugToId } from "~/utils/unslugify.server";
@@ -23,6 +22,7 @@ import { popularBuilds } from "../build-stats-utils";
 import { abilitiesByWeaponId } from "../queries/abilitiesByWeaponId.server";
 import { cache, ttl } from "~/utils/cache.server";
 import { ONE_HOUR_IN_MS } from "~/constants";
+import i18next from "~/modules/i18n/i18next.server";
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;

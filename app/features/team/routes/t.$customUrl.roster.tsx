@@ -1,6 +1,5 @@
 import { redirect } from "@remix-run/node";
 import type {
-  LinksFunction,
   MetaFunction,
   SerializeFrom,
   ActionFunction,
@@ -17,7 +16,7 @@ import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { useBaseUrl } from "~/hooks/useBaseUrl";
 import { useTranslation } from "~/hooks/useTranslation";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import { requireUserId } from "~/features/auth/core/user.server";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
@@ -39,11 +38,7 @@ import { TEAM_MEMBER_ROLES } from "../team-constants";
 import { manageRosterSchema, teamParamsSchema } from "../team-schemas.server";
 import type { DetailedTeamMember } from "../team-types";
 import { isTeamFull, isTeamOwner } from "../team-utils";
-import styles from "../team.css";
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
-};
+import "../team.css";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (!data) return [];

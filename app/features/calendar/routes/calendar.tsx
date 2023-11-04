@@ -3,7 +3,6 @@ import type {
   LoaderFunctionArgs,
   MetaFunction,
   SerializeFrom,
-  LinksFunction,
 } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
@@ -16,10 +15,9 @@ import { LinkButton } from "~/components/Button";
 import { Main } from "~/components/Main";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "~/hooks/useTranslation";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import { getUserId } from "~/features/auth/core/user.server";
-import { i18next } from "~/modules/i18n";
-import styles from "~/styles/calendar.css";
+import "~/styles/calendar.css";
 import { joinListToNaturalString } from "~/utils/arrays";
 import {
   databaseTimestampToDate,
@@ -44,10 +42,7 @@ import { Tags } from "../components/Tags";
 import { Divider } from "~/components/Divider";
 import { UsersIcon } from "~/components/icons/Users";
 import * as CalendarRepository from "../CalendarRepository.server";
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
-};
+import i18next from "~/modules/i18n/i18next.server";
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;

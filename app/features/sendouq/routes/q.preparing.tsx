@@ -1,6 +1,5 @@
 import type {
   ActionFunction,
-  LinksFunction,
   LoaderFunctionArgs,
   MetaFunction,
 } from "@remix-run/node";
@@ -25,7 +24,7 @@ import { hasGroupManagerPerms } from "../core/groups";
 import { FULL_GROUP_SIZE } from "../q-constants";
 import { preparingSchema } from "../q-schemas.server";
 import { groupRedirectLocationByCurrentLocation } from "../q-utils";
-import styles from "../q.css";
+import "../q.css";
 import { addMember } from "../queries/addMember.server";
 import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.server";
 import { findPreparingGroup } from "../queries/findPreparingGroup.server";
@@ -45,10 +44,6 @@ export const handle: SendouRouteHandle = {
     href: SENDOUQ_PREPARING_PAGE,
     type: "IMAGE",
   }),
-};
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
 };
 
 export const meta: MetaFunction = () => {

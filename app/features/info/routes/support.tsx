@@ -1,6 +1,6 @@
-import type { LinksFunction, MetaFunction } from "@remix-run/node";
+import type { MetaFunction } from "@remix-run/node";
 import { Main } from "~/components/Main";
-import styles from "../support.css";
+import "../support.css";
 import * as React from "react";
 import { CheckmarkIcon } from "~/components/icons/Checkmark";
 import { useTranslation } from "~/hooks/useTranslation";
@@ -17,10 +17,6 @@ import { useSetTitle } from "~/hooks/useSetTitle";
 
 export const meta: MetaFunction = () => {
   return [{ title: makeTitle("Support") }];
-};
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
 };
 
 // 1 = support

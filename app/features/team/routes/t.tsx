@@ -1,6 +1,5 @@
 import type {
   ActionFunction,
-  LinksFunction,
   LoaderFunctionArgs,
   MetaFunction,
 } from "@remix-run/node";
@@ -21,9 +20,8 @@ import { Input } from "~/components/Input";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { useTranslation } from "~/hooks/useTranslation";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import { getUserId, requireUserId } from "~/features/auth/core/user.server";
-import { i18next } from "~/modules/i18n";
 import { joinListToNaturalString } from "~/utils/arrays";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { parseRequestFormData, validate } from "~/utils/remix";
@@ -39,18 +37,15 @@ import { allTeams } from "../queries/allTeams.server";
 import { createNewTeam } from "../queries/createNewTeam.server";
 import { TEAM, TEAMS_PER_PAGE } from "../team-constants";
 import { createTeamSchema } from "../team-schemas.server";
-import styles from "../team.css";
+import "../team.css";
 import { usePagination } from "~/hooks/usePagination";
 import { Pagination } from "~/components/Pagination";
+import i18next from "~/modules/i18n/i18next.server";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (!data) return [];
 
   return [{ title: data.title }];
-};
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
 };
 
 export const action: ActionFunction = async ({ request }) => {

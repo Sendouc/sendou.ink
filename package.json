@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "deploy": "npm ci && npm run build",
-    "build": "remix build",
-    "dev": "cross-env NODE_ENV=development remix dev",
+    "build": "vite build && vite build --ssr",
+    "dev": "vite dev",
     "dev:ci": "cp .env.example .env && npm run migrate up && npm run dev",
     "start": "npm run migrate up && remix-serve build",
     "migrate": "ley",
@@ -123,6 +123,8 @@
     "tsconfig-paths": "^4.2.0",
     "tsm": "^2.3.0",
     "typescript": "^5.2.2",
-    "uvu": "^0.5.6"
+    "uvu": "^0.5.6",
+    "vite": "^4.5.0",
+    "vite-tsconfig-paths": "^4.2.1"
   }
 }

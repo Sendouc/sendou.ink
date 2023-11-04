@@ -10,7 +10,6 @@ import {
   nextNonCompletedVoting,
   rangeToMonthYear,
 } from "~/features/plus-voting/core";
-import { requireUser, useUser } from "~/features/auth/core";
 import {
   canAddCommentToSuggestionBE,
   canAddCommentToSuggestionFE,
@@ -22,6 +21,8 @@ import { actualNumber, trimmedString } from "~/utils/zod";
 import type { PlusSuggestionsLoaderData } from "./plus.suggestions";
 import { CommentTextarea } from "./plus.suggestions.new";
 import * as PlusSuggestionRepository from "~/features/plus-suggestions/PlusSuggestionRepository.server";
+import { requireUser } from "~/features/auth/core/user.server";
+import { useUser } from "~/features/auth/core/user";
 
 const commentActionSchema = z.object({
   comment: z.preprocess(

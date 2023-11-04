@@ -1,4 +1,4 @@
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import type { User } from "~/db/types";
 import { seasonObject } from "~/features/mmr/season";
 import type { MainWeaponId } from "~/modules/in-game-lists";

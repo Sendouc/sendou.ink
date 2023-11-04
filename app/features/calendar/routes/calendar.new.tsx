@@ -2,7 +2,6 @@ import { json, redirect } from "@remix-run/node";
 import type {
   SerializeFrom,
   ActionFunction,
-  LinksFunction,
   LoaderFunctionArgs,
   MetaFunction,
 } from "@remix-run/node";
@@ -33,13 +32,10 @@ import type {
 } from "~/db/types";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "~/hooks/useTranslation";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import { requireUserId } from "~/features/auth/core/user.server";
-import { i18next } from "~/modules/i18n";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import { canEditCalendarEvent, canEnableTOTools } from "~/permissions";
-import calendarNewStyles from "~/styles/calendar-new.css";
-import mapsStyles from "~/styles/maps.css";
 import { isDefined } from "~/utils/arrays";
 import {
   databaseTimestampToDate,
@@ -72,17 +68,14 @@ import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import * as BadgeRepository from "~/features/badges/BadgeRepository.server";
 import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
 
+import "~/styles/calendar-new.css";
+import "~/styles/maps.css";
+import i18next from "~/modules/i18n/i18next.server";
+
 const MIN_DATE = new Date(Date.UTC(2015, 4, 28));
 
 const MAX_DATE = new Date();
 MAX_DATE.setFullYear(MAX_DATE.getFullYear() + 1);
-
-export const links: LinksFunction = () => {
-  return [
-    { rel: "stylesheet", href: calendarNewStyles },
-    { rel: "stylesheet", href: mapsStyles },
-  ];
-};
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;

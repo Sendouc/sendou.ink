@@ -6,15 +6,10 @@ import {
   type SubByTournamentId,
   findSubsByTournamentId,
 } from "../queries/findSubsByTournamentId.server";
-import type {
-  ActionFunction,
-  LinksFunction,
-  LoaderFunctionArgs,
-} from "@remix-run/node";
+import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { Link, useLoaderData, useOutletContext } from "@remix-run/react";
-import { getUser, requireUser, useUser } from "~/features/auth/core";
 import { assertUnreachable } from "~/utils/types";
-import styles from "../tournament-subs.css";
+import "../tournament-subs.css";
 import { Avatar } from "~/components/Avatar";
 import { discordFullName } from "~/utils/strings";
 import { tournamentRegisterPage, userPage } from "~/utils/urls";
@@ -28,15 +23,8 @@ import { TrashIcon } from "~/components/icons/Trash";
 import { useTranslation } from "~/hooks/useTranslation";
 import React from "react";
 import { Redirect } from "~/components/Redirect";
-
-export const links: LinksFunction = () => {
-  return [
-    {
-      rel: "stylesheet",
-      href: styles,
-    },
-  ];
-};
+import { getUser, requireUser } from "~/features/auth/core/user.server";
+import { useUser } from "~/features/auth/core/user";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUser(request);

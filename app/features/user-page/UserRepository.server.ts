@@ -1,7 +1,7 @@
 import type { ExpressionBuilder, FunctionModule } from "kysely";
 import { sql } from "kysely";
 import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
-import { db, sql as dbDirect } from "~/db/sql";
+import { db, sql as dbDirect } from "~/db/sql.server";
 import type { DB, TablesInsertable } from "~/db/tables";
 import type { User } from "~/db/types";
 import { dateToDatabaseTimestamp } from "~/utils/dates";

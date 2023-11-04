@@ -1,4 +1,4 @@
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import type { TournamentTeam } from "~/db/types";
 import type { MapPool } from "~/features/map-list-generator/core/map-pool";
 

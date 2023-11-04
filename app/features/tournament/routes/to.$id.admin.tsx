@@ -26,7 +26,7 @@ import hasTournamentStarted from "../queries/hasTournamentStarted.server";
 import type { TournamentLoaderData } from "./to.$id";
 import { joinTeam, leaveTeam } from "../queries/joinLeaveTeam.server";
 import { deleteTeam } from "../queries/deleteTeam.server";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import {
   calendarEditPage,
   calendarEventPage,

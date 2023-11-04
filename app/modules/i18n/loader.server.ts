@@ -1,4 +1,5 @@
 import type { EntryContext } from "@remix-run/node";
+import type { EntryContext as ServerRuntimeEntryContext } from "@remix-run/server-runtime";
 import { createInstance } from "i18next";
 import Backend from "i18next-fs-backend";
 import { resolve } from "node:path";
@@ -10,7 +11,9 @@ export async function i18Instance(request: Request, context: EntryContext) {
   const instance = createInstance();
 
   const lng = await i18next.getLocale(request);
-  const ns = i18next.getRouteNamespaces(context);
+  const ns = i18next.getRouteNamespaces(
+    context as unknown as ServerRuntimeEntryContext,
+  );
 
   await instance
     .use(initReactI18next)

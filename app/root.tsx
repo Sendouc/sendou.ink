@@ -1,6 +1,13 @@
+import "~/styles/common.css";
+import "~/styles/vars.css";
+import "~/styles/utils.css";
+import "~/styles/layout.css";
+import "~/styles/reset.css";
+import "~/styles/flags.css";
+import "nprogress/nprogress.css";
+
 import { json } from "@remix-run/node";
 import type {
-  LinksFunction,
   LoaderFunctionArgs,
   SerializeFrom,
   MetaFunction,
@@ -19,16 +26,8 @@ import {
   useRouteError,
 } from "@remix-run/react";
 import * as React from "react";
-import commonStyles from "~/styles/common.css";
-import variableStyles from "~/styles/vars.css";
-import utilStyles from "~/styles/utils.css";
-import layoutStyles from "~/styles/layout.css";
-import resetStyles from "~/styles/reset.css";
-import flagsStyles from "~/styles/flags.css";
 import { Catcher } from "./components/Catcher";
 import { Layout } from "./components/layout";
-import { getUser } from "./features/auth/core";
-import { DEFAULT_LANGUAGE, i18nCookie, i18next } from "./modules/i18n";
 import { useChangeLanguage } from "remix-i18next";
 import { type CustomTypeOptions } from "react-i18next";
 import { useTranslation } from "~/hooks/useTranslation";
@@ -47,26 +46,16 @@ import {
 import { useIsMounted } from "./hooks/useIsMounted";
 import { CUSTOMIZED_CSS_VARS_NAME } from "./constants";
 import NProgress from "nprogress";
-import nProgressStyles from "nprogress/nprogress.css";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
+import { getUser } from "./features/auth/core/user.server";
+import i18next, { i18nCookie } from "./modules/i18n/i18next.server";
+import { DEFAULT_LANGUAGE } from "./modules/i18n/config";
 
 export const shouldRevalidate: ShouldRevalidateFunction = ({ nextUrl }) => {
   // // reload on language change so the selected language gets set into the cookie
   const lang = nextUrl.searchParams.get("lng");
 
   return Boolean(lang);
-};
-
-export const links: LinksFunction = () => {
-  return [
-    { rel: "stylesheet", href: resetStyles },
-    { rel: "stylesheet", href: commonStyles },
-    { rel: "stylesheet", href: variableStyles },
-    { rel: "stylesheet", href: utilStyles },
-    { rel: "stylesheet", href: layoutStyles },
-    { rel: "stylesheet", href: flagsStyles },
-    { rel: "stylesheet", href: nProgressStyles },
-  ];
 };
 
 export const meta: MetaFunction = () => {
@@ -176,8 +165,8 @@ function Document({
           </Layout>
         </React.StrictMode>
         <ConditionalScrollRestoration />
-        <Scripts />
         <LiveReload />
+        <Scripts />
       </body>
     </html>
   );

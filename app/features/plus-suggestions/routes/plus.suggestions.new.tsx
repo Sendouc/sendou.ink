@@ -32,11 +32,12 @@ import {
 import type { UserWithPlusTier } from "~/db/types";
 import { FormMessage } from "~/components/FormMessage";
 import { atOrError } from "~/utils/arrays";
-import { requireUser, useUser } from "~/features/auth/core";
 import { SubmitButton } from "~/components/SubmitButton";
 import { UserSearch } from "~/components/UserSearch";
 import * as PlusSuggestionRepository from "~/features/plus-suggestions/PlusSuggestionRepository.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
+import { useUser } from "~/features/auth/core/user";
+import { requireUser } from "~/features/auth/core/user.server";
 
 const commentActionSchema = z.object({
   tier: z.preprocess(

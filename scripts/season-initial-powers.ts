@@ -2,7 +2,7 @@
 import "dotenv/config";
 import { ordinal } from "openskill";
 import invariant from "tiny-invariant";
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import type { Skill } from "~/db/types";
 import type { TierName } from "~/features/mmr/mmr-constants";
 import { freshUserSkills } from "~/features/mmr/tiered.server";

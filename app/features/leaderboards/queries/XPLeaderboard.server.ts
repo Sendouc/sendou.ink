@@ -1,4 +1,4 @@
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import { LEADERBOARD_MAX_SIZE } from "../leaderboards-constants";
 import type { User, XRankPlacement } from "~/db/types";
 import type { MainWeaponId } from "~/modules/in-game-lists";

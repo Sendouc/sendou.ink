@@ -1,4 +1,4 @@
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import type { UserSubmittedImage } from "~/db/types";
 import type { ImageUploadType } from "../upload-types";
 

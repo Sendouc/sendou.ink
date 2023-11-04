@@ -1,4 +1,4 @@
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import { parseDBArray, parseDBJsonArray } from "~/utils/sql";
 

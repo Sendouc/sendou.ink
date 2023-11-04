@@ -1,7 +1,7 @@
 import type { Transaction } from "kysely";
 import { jsonArrayFrom } from "kysely/helpers/sqlite";
 import invariant from "tiny-invariant";
-import { db } from "~/db/sql";
+import { db } from "~/db/sql.server";
 import type { BuildWeapon, DB, Tables, TablesInsertable } from "~/db/tables";
 import {
   type BuildAbilitiesTuple,

@@ -12,7 +12,7 @@ import type { GroupMember as GroupMemberType, ParsedMemento } from "~/db/types";
 import { ordinalToRoundedSp } from "~/features/mmr/mmr-utils";
 import type { TieredSkill } from "~/features/mmr/tiered.server";
 import { useTranslation } from "~/hooks/useTranslation";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import { languagesUnified } from "~/modules/i18n/config";
 import {
   SENDOUQ_LOOKING_PAGE,

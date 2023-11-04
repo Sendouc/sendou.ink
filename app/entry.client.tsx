@@ -1,8 +1,8 @@
 import { RemixBrowser } from "@remix-run/react";
 import { hydrateRoot } from "react-dom/client";
-import { i18nLoader } from "./modules/i18n";
 import i18next from "i18next";
 import { I18nextProvider } from "react-i18next";
+import { i18nLoader } from "./modules/i18n/loader";
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {

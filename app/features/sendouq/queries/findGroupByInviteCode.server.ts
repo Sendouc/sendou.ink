@@ -1,4 +1,4 @@
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import type { Group, GroupMember } from "~/db/types";
 import { parseDBJsonArray } from "~/utils/sql";
 

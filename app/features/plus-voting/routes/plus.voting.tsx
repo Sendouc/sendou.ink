@@ -13,7 +13,6 @@ import { Button } from "~/components/Button";
 import { CheckmarkIcon } from "~/components/icons/Checkmark";
 import { RelativeTime } from "~/components/RelativeTime";
 import { PLUS_DOWNVOTE, PLUS_UPVOTE } from "~/constants";
-import { getUser, requireUser } from "~/features/auth/core";
 import type { PlusVoteFromFE } from "~/features/plus-voting/core";
 import {
   rangeToMonthYear,
@@ -29,6 +28,7 @@ import * as PlusVotingRepository from "~/features/plus-voting/PlusVotingReposito
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import invariant from "tiny-invariant";
 import { isVotingActive } from "~/features/plus-voting/core/voting-time";
+import { getUser, requireUser } from "~/features/auth/core/user.server";
 
 export const meta: MetaFunction = () => {
   return [{ title: makeTitle("Plus Server voting") }];

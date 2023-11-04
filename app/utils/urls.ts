@@ -20,13 +20,13 @@ import type {
   BuildAbilitiesTupleWithUnknown,
 } from "~/modules/in-game-lists/types";
 import type navItems from "~/components/layout/nav-items.json";
-import { type AuthErrorCode } from "~/features/auth/core";
 import type { StageBackgroundStyle } from "~/features/map-planner";
 import type { ImageUploadType } from "~/features/img-upload";
 import { serializeBuild } from "~/features/build-analyzer";
 import type { ArtSouce } from "~/features/art";
 import { JOIN_CODE_SEARCH_PARAM_KEY } from "~/features/sendouq/q-constants";
 import type { TierName } from "~/features/mmr/mmr-constants";
+import type { AuthErrorCode } from "~/features/auth/core/errors";
 
 const staticAssetsUrl = ({
   folder,

@@ -1,6 +1,5 @@
 import type {
   ActionFunctionArgs,
-  LinksFunction,
   LoaderFunctionArgs,
   SerializeFrom,
 } from "@remix-run/node";
@@ -23,7 +22,7 @@ import { SubmitButton } from "~/components/SubmitButton";
 import { Toggle } from "~/components/Toggle";
 import { ArchiveBoxIcon } from "~/components/icons/ArchiveBox";
 import { RefreshArrowsIcon } from "~/components/icons/RefreshArrows";
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import type { GroupMember, ReportedWeapon } from "~/db/types";
 import * as NotificationService from "~/features/chat/NotificationService.server";
 import type { ChatMessage } from "~/features/chat/chat-types";
@@ -32,7 +31,7 @@ import { currentSeason } from "~/features/mmr";
 import { resolveRoomPass } from "~/features/tournament-bracket/tournament-bracket-utils";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "~/hooks/useTranslation";
-import { useUser } from "~/features/auth/core";
+import { useUser } from "~/features/auth/core/user";
 import { getUserId, requireUser } from "~/features/auth/core/user.server";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { isMod } from "~/permissions";
@@ -69,7 +68,7 @@ import {
 import { FULL_GROUP_SIZE, USER_SKILLS_CACHE_KEY } from "../q-constants";
 import { matchSchema } from "../q-schemas.server";
 import { matchIdFromParams, winnersArrayToWinner } from "../q-utils";
-import styles from "../q.css";
+import "../q.css";
 import { addDummySkill } from "../queries/addDummySkill.server";
 import { addMapResults } from "../queries/addMapResults.server";
 import { addPlayerResults } from "../queries/addPlayerResults.server";
@@ -83,10 +82,6 @@ import { groupForMatch } from "../queries/groupForMatch.server";
 import { reportScore } from "../queries/reportScore.server";
 import { reportedWeaponsByMatchId } from "../queries/reportedWeaponsByMatchId.server";
 import { setGroupAsInactive } from "../queries/setGroupAsInactive.server";
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
-};
 
 export const handle: SendouRouteHandle = {
   i18n: ["q", "tournament"],

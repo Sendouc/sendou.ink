@@ -2,7 +2,7 @@
 import "dotenv/config";
 
 import invariant from "tiny-invariant";
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import type { XRankPlacement } from "~/db/types";
 import { type MainWeaponId, mainWeaponIds } from "~/modules/in-game-lists";
 import { xRankSchema } from "./schemas";

@@ -1,4 +1,4 @@
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import type { TournamentMatchGameResult, User } from "~/db/types";
 import type { TournamentMaplistSource } from "~/modules/tournament-map-list-generator";
 import { parseDBArray } from "~/utils/sql";

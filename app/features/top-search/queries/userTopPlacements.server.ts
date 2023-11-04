@@ -1,4 +1,4 @@
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import type { XRankPlacement } from "~/db/types";
 import type { ModeShort } from "~/modules/in-game-lists";
 

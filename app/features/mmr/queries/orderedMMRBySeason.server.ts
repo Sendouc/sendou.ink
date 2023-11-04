@@ -1,4 +1,4 @@
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import type { Skill } from "~/db/types";
 
 const userStm = sql.prepare(/* sql */ `

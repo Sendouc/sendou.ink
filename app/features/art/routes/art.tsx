@@ -10,7 +10,6 @@ import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import { Toggle } from "~/components/Toggle";
 import { useTranslation } from "~/hooks/useTranslation";
-import { i18next } from "~/modules/i18n";
 import { type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { artPage, navIconUrl } from "~/utils/urls";
@@ -22,6 +21,7 @@ import {
 } from "../queries/showcaseArts.server";
 import { Button } from "~/components/Button";
 import { CrossIcon } from "~/components/icons/Cross";
+import i18next from "~/modules/i18n/i18next.server";
 
 const FILTERED_TAG_KEY = "tag";
 const OPEN_COMMISIONS_KEY = "open";

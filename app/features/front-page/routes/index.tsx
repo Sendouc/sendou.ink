@@ -11,14 +11,12 @@ import {
   userPage,
 } from "~/utils/urls";
 import { useTranslation } from "~/hooks/useTranslation";
-import type { LinksFunction } from "@remix-run/node";
-import styles from "~/styles/front.css";
+import "~/styles/front.css";
 import { Link } from "@remix-run/react";
 import { GlobeIcon } from "~/components/icons/Globe";
 import { LanguageChanger } from "~/components/layout/LanguageChanger";
 import { Avatar } from "~/components/Avatar";
-import { useUser } from "~/features/auth/core";
-import { languages } from "~/modules/i18n";
+import { useUser } from "~/features/auth/core/user";
 import { Button } from "~/components/Button";
 import { LogOutIcon } from "~/components/icons/LogOut";
 import { LogInButtonContainer } from "~/components/layout/LogInButtonContainer";
@@ -28,10 +26,7 @@ import { ThemeChanger } from "~/components/layout/ThemeChanger";
 import { SelectedThemeIcon } from "~/components/layout/SelectedThemeIcon";
 import { useRootLoaderData } from "~/hooks/useRootLoaderData";
 import { useTheme } from "~/features/theme/core/provider";
-
-export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: styles }];
-};
+import { languages } from "~/modules/i18n/config";
 
 export default function FrontPage() {
   const data = useRootLoaderData();

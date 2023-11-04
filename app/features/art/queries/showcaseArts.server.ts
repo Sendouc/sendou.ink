@@ -1,4 +1,4 @@
-import { sql } from "~/db/sql";
+import { sql } from "~/db/sql.server";
 import type { ListedArt } from "../art-types";
 import type { ArtTag } from "~/db/types";
 
