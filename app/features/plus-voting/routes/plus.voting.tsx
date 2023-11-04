@@ -25,7 +25,7 @@ import { parseRequestFormData } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { assertType, assertUnreachable } from "~/utils/types";
 import { safeJSONParse } from "~/utils/zod";
-import { PlusSuggestionComments } from "../suggestions";
+import { PlusSuggestionComments } from "../../plus-suggestions/routes/plus.suggestions";
 import * as PlusVotingRepository from "~/features/plus-voting/PlusVotingRepository.server";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import invariant from "tiny-invariant";

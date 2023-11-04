@@ -16,8 +16,8 @@ import { atOrError } from "~/utils/arrays";
 import { parseRequestFormData, validate } from "~/utils/remix";
 import { plusSuggestionPage } from "~/utils/urls";
 import { actualNumber, trimmedString } from "~/utils/zod";
-import type { PlusSuggestionsLoaderData } from "../suggestions";
-import { CommentTextarea } from "./new";
+import type { PlusSuggestionsLoaderData } from "./plus.suggestions";
+import { CommentTextarea } from "./plus.suggestions.new";
 import * as PlusSuggestionRepository from "~/features/plus-suggestions/PlusSuggestionRepository.server";
 
 const commentActionSchema = z.object({
@@ -58,8 +58,9 @@ export const action: ActionFunction = async ({ request }) => {
 
   await PlusSuggestionRepository.create({
     authorId: user.id,
-    ...data,
+    suggestedId: data.suggestedId,
     text: data.comment,
+    tier: data.tier,
     ...nextNonCompletedVoting(new Date()),
   });
 

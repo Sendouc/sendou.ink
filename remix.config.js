@@ -137,6 +137,32 @@ module.exports = {
 
       route("/a", "features/articles/routes/a.tsx");
       route("/a/:slug", "features/articles/routes/a.$slug.tsx");
+
+      route("/plus", "features/plus-suggestions/routes/plus.tsx", () => {
+        route("/plus", "features/plus-suggestions/routes/plus.index.tsx");
+
+        route(
+          "/plus/suggestions",
+          "features/plus-suggestions/routes/plus.suggestions.tsx",
+          () => {
+            route(
+              "/plus/suggestions/new",
+              "features/plus-suggestions/routes/plus.suggestions.new.tsx",
+            );
+            route(
+              "/plus/suggestions/comment/:tier/:userId",
+              "features/plus-suggestions/routes/plus.suggestions.comment.$tier.$userId.tsx",
+            );
+          },
+        );
+
+        route("/plus/list", "features/plus-voting/routes/plus.list.ts");
+        route("/plus/voting", "features/plus-voting/routes/plus.voting.tsx");
+        route(
+          "/plus/voting/results",
+          "features/plus-voting/routes/plus.voting.results.tsx",
+        );
+      });
     });
   },
   serverModuleFormat: "cjs",

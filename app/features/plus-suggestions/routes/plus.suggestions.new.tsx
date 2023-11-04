@@ -9,7 +9,7 @@ import {
   playerAlreadySuggested,
 } from "~/permissions";
 import { plusSuggestionPage } from "~/utils/urls";
-import type { PlusSuggestionsLoaderData } from "../suggestions";
+import type { PlusSuggestionsLoaderData } from "./plus.suggestions";
 import * as React from "react";
 import { Label } from "~/components/Label";
 import {
