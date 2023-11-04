@@ -12,6 +12,8 @@ export default defineConfig(({ mode }) => {
       port: Number(process.env["PORT"]) ?? 5800,
     },
     ssr: {
+      // TODO: https://github.com/sergiodxa/remix-i18next/issues/161
+      // TODO: https://github.com/TanStack/react-charts/issues/353
       noExternal: ["remix-i18next", "react-charts"],
     },
     plugins: [
