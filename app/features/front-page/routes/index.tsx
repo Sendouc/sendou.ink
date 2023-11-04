@@ -26,8 +26,8 @@ import { LogInIcon } from "~/components/icons/LogIn";
 import * as React from "react";
 import { ThemeChanger } from "~/components/layout/ThemeChanger";
 import { SelectedThemeIcon } from "~/components/layout/SelectedThemeIcon";
-import { useTheme } from "~/modules/theme";
 import { useRootLoaderData } from "~/hooks/useRootLoaderData";
+import { useTheme } from "~/features/theme/core/provider";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];

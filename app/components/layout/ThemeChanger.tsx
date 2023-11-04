@@ -1,11 +1,11 @@
 import { useTranslation } from "~/hooks/useTranslation";
-import { Theme, useTheme } from "~/modules/theme";
 import { Button } from "../Button";
 import { MoonIcon } from "../icons/Moon";
 import { SunIcon } from "../icons/Sun";
 import { SunAndMoonIcon } from "../icons/SunAndMoon";
 import { Popover } from "../Popover";
 import { SelectedThemeIcon } from "./SelectedThemeIcon";
+import { Theme, useTheme } from "~/features/theme/core/provider";
 
 const ThemeIcons = {
   [Theme.LIGHT]: SunIcon,

@@ -36,9 +36,14 @@ import { COMMON_PREVIEW_IMAGE } from "./utils/urls";
 import { ConditionalScrollRestoration } from "./components/ConditionalScrollRestoration";
 import { type SendouRouteHandle } from "~/utils/remix";
 import generalI18next from "i18next";
-import { Theme, ThemeHead, useTheme, ThemeProvider } from "./modules/theme";
-import { getThemeSession } from "./modules/theme/session.server";
-import { isTheme } from "./modules/theme/provider";
+import { getThemeSession } from "./features/theme/core/session.server";
+import {
+  Theme,
+  ThemeHead,
+  ThemeProvider,
+  isTheme,
+  useTheme,
+} from "./features/theme/core/provider";
 import { useIsMounted } from "./hooks/useIsMounted";
 import { CUSTOMIZED_CSS_VARS_NAME } from "./constants";
 import NProgress from "nprogress";

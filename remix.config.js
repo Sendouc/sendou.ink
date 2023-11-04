@@ -219,6 +219,8 @@ module.exports = {
       route("/patrons", "features/api/routes/patrons.tsx");
       route("/seed", "features/api/routes/seed.tsx");
       route("/users", "features/api/routes/users.tsx");
+
+      route("/theme", "features/theme/routes/theme.ts");
     });
   },
   serverModuleFormat: "cjs",
