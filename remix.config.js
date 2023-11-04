@@ -130,6 +130,8 @@ module.exports = {
         );
       });
 
+      route("/faq", "features/info/routes/faq.tsx");
+      route("/contributions", "features/info/routes/contributions.tsx");
       route("/privacy-policy", "features/info/routes/privacy-policy.tsx");
       route("/support", "features/info/routes/support.tsx");
 
