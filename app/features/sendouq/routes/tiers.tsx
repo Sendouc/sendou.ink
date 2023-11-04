@@ -1,12 +1,12 @@
 import { useLoaderData } from "@remix-run/react";
 import { TierImage } from "~/components/Image";
 import { Main } from "~/components/Main";
-import { ordinalToSp } from "~/features/mmr";
 import {
   TEAM_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN,
   TIERS,
   USER_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN,
 } from "~/features/mmr/mmr-constants";
+import { ordinalToSp } from "~/features/mmr/mmr-utils";
 import { currentOrPreviousSeason } from "~/features/mmr/season";
 import { userSkills } from "~/features/mmr/tiered.server";
 

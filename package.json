@@ -8,6 +8,7 @@
     "deploy": "npm ci && npm run build",
     "build": "vite build && vite build --ssr",
     "dev": "vite dev",
+    "dev:force": "vite dev --force",
     "dev:ci": "cp .env.example .env && npm run migrate up && npm run dev",
     "start": "npm run migrate up && remix-serve build",
     "migrate": "ley",

@@ -47,9 +47,8 @@ import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.se
 import { groupRedirectLocationByCurrentLocation, mapPoolOk } from "../q-utils";
 import { ModePreferenceIcons } from "../components/ModePrefenceIcons";
 import { makeTitle } from "~/utils/strings";
-import { currentSeason } from "~/features/mmr";
 import type { RankingSeason } from "~/features/mmr/season";
-import { nextSeason } from "~/features/mmr/season";
+import { currentSeason, nextSeason } from "~/features/mmr/season";
 import { useUser } from "~/features/auth/core/user";
 import { Button } from "~/components/Button";
 import { findGroupByInviteCode } from "../queries/findGroupByInviteCode.server";

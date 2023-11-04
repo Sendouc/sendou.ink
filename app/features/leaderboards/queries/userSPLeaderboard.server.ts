@@ -4,7 +4,7 @@ import {
   MATCHES_COUNT_NEEDED_FOR_LEADERBOARD,
 } from "../leaderboards-constants";
 import type { PlusTier, User } from "~/db/types";
-import { ordinalToSp } from "~/features/mmr";
+import { ordinalToSp } from "~/features/mmr/mmr-utils";
 
 const stm = sql.prepare(/* sql */ `
   select

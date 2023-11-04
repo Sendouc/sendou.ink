@@ -9,7 +9,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     ssr: {
-      noExternal: ["remix-i18next"],
+      noExternal: ["remix-i18next", "react-charts"],
     },
     plugins: [
       tsconfigPaths(),

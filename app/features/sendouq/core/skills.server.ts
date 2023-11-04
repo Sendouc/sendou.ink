@@ -12,12 +12,14 @@ import type {
 import { MATCHES_COUNT_NEEDED_FOR_LEADERBOARD } from "~/features/leaderboards/leaderboards-constants";
 import {
   ordinalToSp,
-  queryCurrentTeamRating,
-  queryCurrentUserRating,
   rate,
   userIdsToIdentifier,
-} from "~/features/mmr";
-import { queryTeamPlayerRatingAverage } from "~/features/mmr/mmr-utils.server";
+} from "~/features/mmr/mmr-utils";
+import {
+  queryCurrentTeamRating,
+  queryCurrentUserRating,
+  queryTeamPlayerRatingAverage,
+} from "~/features/mmr/mmr-utils.server";
 import { currentOrPreviousSeason } from "~/features/mmr/season";
 import { roundToNDecimalPlaces } from "~/utils/number";
 

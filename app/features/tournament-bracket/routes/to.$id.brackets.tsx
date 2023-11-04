@@ -74,14 +74,14 @@ import invariant from "tiny-invariant";
 import { allMatchResultsByTournamentId } from "../queries/allMatchResultsByTournamentId.server";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import {
-  currentSeason,
   queryCurrentTeamRating,
   queryCurrentUserRating,
-} from "~/features/mmr";
-import { queryTeamPlayerRatingAverage } from "~/features/mmr/mmr-utils.server";
+  queryTeamPlayerRatingAverage,
+} from "~/features/mmr/mmr-utils.server";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import { requireUser } from "~/features/auth/core/user.server";
 import { useUser } from "~/features/auth/core/user";
+import { currentSeason } from "~/features/mmr/season";
 
 export const links: LinksFunction = () => {
   return [

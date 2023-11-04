@@ -34,8 +34,8 @@ import { setGroupAsActive } from "../queries/setGroupAsActive.server";
 import { trustedPlayersAvailableToPlay } from "../queries/usersInActiveGroup.server";
 import { useAutoRefresh } from "~/hooks/useAutoRefresh";
 import { userHasSkill } from "../queries/userHasSkill.server";
-import { currentSeason } from "~/features/mmr";
 import { GroupLeaver } from "../components/GroupLeaver";
+import { currentSeason } from "~/features/mmr/season";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],

@@ -24,7 +24,6 @@ import { Tab, Tabs } from "~/components/Tabs";
 import { AlertIcon } from "~/components/icons/Alert";
 import { TopTenPlayer } from "~/features/leaderboards/components/TopTenPlayer";
 import { playerTopTenPlacement } from "~/features/leaderboards/leaderboards-utils";
-import { ordinalToSp } from "~/features/mmr";
 import {
   currentMMRByUserId,
   seasonAllMMRByUserId,
@@ -60,6 +59,7 @@ import { notFoundIfFalsy } from "~/utils/remix";
 import { sendouQMatchPage, userSeasonsPage } from "~/utils/urls";
 import { userParamsSchema, type UserPageLoaderData } from "./u.$identifier";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
+import { ordinalToSp } from "~/features/mmr/mmr-utils";
 
 export const seasonsSearchParamsSchema = z.object({
   page: z.coerce.number().default(1),

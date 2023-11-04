@@ -27,7 +27,6 @@ import type { GroupMember, ReportedWeapon } from "~/db/types";
 import * as NotificationService from "~/features/chat/NotificationService.server";
 import type { ChatMessage } from "~/features/chat/chat-types";
 import { ConnectedChat, type ChatProps } from "~/features/chat/components/Chat";
-import { currentSeason } from "~/features/mmr";
 import { resolveRoomPass } from "~/features/tournament-bracket/tournament-bracket-utils";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "~/hooks/useTranslation";
@@ -82,6 +81,7 @@ import { groupForMatch } from "../queries/groupForMatch.server";
 import { reportScore } from "../queries/reportScore.server";
 import { reportedWeaponsByMatchId } from "../queries/reportedWeaponsByMatchId.server";
 import { setGroupAsInactive } from "../queries/setGroupAsInactive.server";
+import { currentSeason } from "~/features/mmr/season";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q", "tournament"],
