@@ -83,6 +83,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       locale,
       theme: themeSession.getTheme(),
       patrons: await UserRepository.findAllPatrons(),
+      // TODO: pass these as vite env vars instead
       baseUrl: process.env["BASE_URL"]!,
       skalopUrl: process.env["SKALOP_WS_URL"]!,
       publisherId: process.env["PLAYWIRE_PUBLISHER_ID"],
