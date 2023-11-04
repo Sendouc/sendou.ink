@@ -1,3 +1,3 @@
-require("dotenv").config();
+import "dotenv/config";
 
-module.exports = { database: process.env.DB_PATH };
+export default { database: process.env.DB_PATH };
