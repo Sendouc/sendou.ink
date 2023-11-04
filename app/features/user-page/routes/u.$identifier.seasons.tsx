@@ -58,7 +58,7 @@ import { databaseTimestampToDate } from "~/utils/dates";
 import { cutToNDecimalPlaces } from "~/utils/number";
 import { notFoundIfFalsy } from "~/utils/remix";
 import { sendouQMatchPage, userSeasonsPage } from "~/utils/urls";
-import { userParamsSchema, type UserPageLoaderData } from "../u.$identifier";
+import { userParamsSchema, type UserPageLoaderData } from "./u.$identifier";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 
 export const seasonsSearchParamsSchema = z.object({

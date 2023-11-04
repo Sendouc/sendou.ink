@@ -8,6 +8,33 @@ module.exports = {
     return defineRoutes((route) => {
       route("/u", "features/user-search/routes/u.tsx");
 
+      route(
+        "/u/:identifier",
+        "features/user-page/routes/u.$identifier.tsx",
+        () => {
+          route(
+            "/u/:identifier",
+            "features/user-page/routes/u.$identifier.index.tsx",
+          );
+          route(
+            "/u/:identifier/art",
+            "features/user-page/routes/u.$identifier.art.tsx",
+          );
+          route(
+            "/u/:identifier/edit",
+            "features/user-page/routes/u.$identifier.edit.tsx",
+          );
+          route(
+            "/u/:identifier/seasons",
+            "features/user-page/routes/u.$identifier.seasons.tsx",
+          );
+          route(
+            "/u/:identifier/vods",
+            "features/user-page/routes/u.$identifier.vods.tsx",
+          );
+        },
+      );
+
       route("/badges", "features/badges/routes/badges.tsx", () => {
         route("/badges/:id", "features/badges/routes/badges.$id.tsx", () => {
           route(

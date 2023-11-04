@@ -5,7 +5,7 @@ import invariant from "tiny-invariant";
 import { z } from "zod";
 import { FormErrors } from "~/components/FormErrors";
 import { requireUser } from "~/modules/auth";
-import { type UserPageLoaderData } from "~/routes/u.$identifier";
+import { type UserPageLoaderData } from "~/features/user-page/routes/u.$identifier";
 import { normalizeFormFieldArray } from "~/utils/arrays";
 import { parseRequestFormData } from "~/utils/remix";
 import { userResultsPage } from "~/utils/urls";

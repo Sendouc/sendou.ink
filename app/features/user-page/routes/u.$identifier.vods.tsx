@@ -3,8 +3,8 @@ import { useMatches } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { VodListing } from "~/features/vods";
 import type { SendouRouteHandle } from "~/utils/remix";
-import styles from "../../features/vods/vods.css";
-import type { UserPageLoaderData } from "../u.$identifier";
+import styles from "~/features/vods/vods.css";
+import type { UserPageLoaderData } from "./u.$identifier";
 
 export const handle: SendouRouteHandle = {
   i18n: ["vods"],

@@ -1,6 +1,6 @@
 import type { ActionFunction, LoaderArgs } from "@remix-run/node";
-import type { UserPageLoaderData } from "../u.$identifier";
-import { userParamsSchema } from "../u.$identifier";
+import type { UserPageLoaderData } from "./u.$identifier";
+import { userParamsSchema } from "./u.$identifier";
 import {
   type SendouRouteHandle,
   notFoundIfFalsy,

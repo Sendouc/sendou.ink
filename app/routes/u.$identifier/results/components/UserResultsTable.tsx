@@ -2,7 +2,7 @@ import { Link } from "@remix-run/react";
 import { useTranslation } from "~/hooks/useTranslation";
 import { Avatar } from "~/components/Avatar";
 import { Placement } from "~/components/Placement";
-import { type UserPageLoaderData } from "~/routes/u.$identifier";
+import { type UserPageLoaderData } from "~/features/user-page/routes/u.$identifier.index";
 import { databaseTimestampToDate } from "~/utils/dates";
 import {
   calendarEventPage,

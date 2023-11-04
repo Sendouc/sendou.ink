@@ -46,7 +46,7 @@ import {
   safeJSONParse,
   undefinedToNull,
 } from "~/utils/zod";
-import { userParamsSchema, type UserPageLoaderData } from "../u.$identifier";
+import { userParamsSchema, type UserPageLoaderData } from "./u.$identifier";
 import { Toggle } from "~/components/Toggle";
 import { StarIcon } from "~/components/icons/Star";
 import { StarFilledIcon } from "~/components/icons/StarFilled";

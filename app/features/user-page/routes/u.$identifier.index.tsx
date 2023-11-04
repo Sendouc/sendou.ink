@@ -21,8 +21,8 @@ import {
   topSearchPlayerPage,
   userSubmittedImage,
 } from "~/utils/urls";
-import { badgeExplanationText } from "../../features/badges/routes/badges.$id";
-import type { UserPageLoaderData } from "../u.$identifier";
+import { badgeExplanationText } from "../../badges/routes/badges.$id";
+import type { UserPageLoaderData } from "./u.$identifier";
 import { DiscordIcon } from "~/components/icons/Discord";
 
 export const handle: SendouRouteHandle = {
