@@ -35,7 +35,7 @@ import { resolveBestOfs } from "../core/bestOf.server";
 import { findAllMatchesByTournamentId } from "../queries/findAllMatchesByTournamentId.server";
 import { setBestOf } from "../queries/setBestOf.server";
 import { canAdminTournament } from "~/permissions";
-import { requireUser, useUser } from "~/modules/auth";
+import { requireUser, useUser } from "~/features/auth/core";
 import {
   TOURNAMENT,
   tournamentIdFromParams,

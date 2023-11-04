@@ -34,7 +34,7 @@ import type { TournamentLoaderData, TournamentLoaderTeam } from "./to.$id";
 import { Image } from "~/components/Image";
 import { navIconUrl, tournamentBracketsPage } from "~/utils/urls";
 import { maxXPowers } from "../queries/maxXPowers.server";
-import { requireUser } from "~/modules/auth";
+import { requireUser } from "~/features/auth/core";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { seedsActionSchema } from "../tournament-schemas.server";
 import { updateTeamSeeds } from "../queries/updateTeamSeeds.server";

@@ -40,7 +40,7 @@ import {
 import { stageIds } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { SubmitButton } from "~/components/SubmitButton";
-import { getUserId, requireUserId } from "~/modules/auth/user.server";
+import { getUserId, requireUserId } from "~/features/auth/core/user.server";
 import { frontPageSchema } from "../q-schemas.server";
 import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
 import { createGroup } from "../queries/createGroup.server";
@@ -51,7 +51,7 @@ import { makeTitle } from "~/utils/strings";
 import { currentSeason } from "~/features/mmr";
 import type { RankingSeason } from "~/features/mmr/season";
 import { nextSeason } from "~/features/mmr/season";
-import { useUser } from "~/modules/auth";
+import { useUser } from "~/features/auth/core";
 import { Button } from "~/components/Button";
 import { findGroupByInviteCode } from "../queries/findGroupByInviteCode.server";
 import { Alert } from "~/components/Alert";

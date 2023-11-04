@@ -5,8 +5,8 @@ import { BuildCard } from "~/components/BuildCard";
 import { Button, LinkButton } from "~/components/Button";
 import { BUILD } from "~/constants";
 import { useTranslation } from "~/hooks/useTranslation";
-import { useUser } from "~/modules/auth";
-import { getUserId, requireUserId } from "~/modules/auth/user.server";
+import { useUser } from "~/features/auth/core";
+import { getUserId, requireUserId } from "~/features/auth/core/user.server";
 import { atOrError } from "~/utils/arrays";
 import {
   notFoundIfFalsy,

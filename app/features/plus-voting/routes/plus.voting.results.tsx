@@ -9,7 +9,7 @@ import clsx from "clsx";
 import invariant from "tiny-invariant";
 import type { UserWithPlusTier } from "~/db/types";
 import * as PlusVotingRepository from "~/features/plus-voting/PlusVotingRepository.server";
-import { getUser } from "~/modules/auth";
+import { getUser } from "~/features/auth/core";
 import { lastCompletedVoting } from "~/features/plus-voting/core";
 import styles from "~/styles/plus-history.css";
 import { roundToNDecimalPlaces } from "~/utils/number";

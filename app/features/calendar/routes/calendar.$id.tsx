@@ -21,8 +21,8 @@ import { Placement } from "~/components/Placement";
 import { Section } from "~/components/Section";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "~/hooks/useTranslation";
-import { useUser } from "~/modules/auth";
-import { requireUserId } from "~/modules/auth/user.server";
+import { useUser } from "~/features/auth/core";
+import { requireUserId } from "~/features/auth/core/user.server";
 import { i18next } from "~/modules/i18n";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import {

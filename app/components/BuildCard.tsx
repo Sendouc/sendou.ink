@@ -8,7 +8,7 @@ import type {
   UserWithPlusTier,
 } from "~/db/types";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import { useUser } from "~/modules/auth";
+import { useUser } from "~/features/auth/core";
 import type {
   Ability as AbilityType,
   ModeShort,

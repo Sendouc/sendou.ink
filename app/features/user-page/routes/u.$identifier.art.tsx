@@ -16,7 +16,7 @@ import {
 } from "~/features/art";
 import { useLoaderData, useMatches } from "@remix-run/react";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
-import { useUser } from "~/modules/auth";
+import { useUser } from "~/features/auth/core";
 import { deleteArt, deleteArtSchema } from "~/features/art";
 import invariant from "tiny-invariant";
 import { LinkButton } from "~/components/Button";
@@ -24,7 +24,7 @@ import { Popover } from "~/components/Popover";
 import { countUnvalidatedArt } from "~/features/img-upload";
 import { useTranslation } from "~/hooks/useTranslation";
 import { newArtPage } from "~/utils/urls";
-import { getUserId, requireUserId } from "~/modules/auth/user.server";
+import { getUserId, requireUserId } from "~/features/auth/core/user.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 
 export const handle: SendouRouteHandle = {

@@ -15,7 +15,7 @@ import { SubmitButton } from "~/components/SubmitButton";
 import { YouTubeEmbed } from "~/components/YouTubeEmbed";
 import type { Video, VideoMatch } from "~/db/types";
 import { useTranslation } from "~/hooks/useTranslation";
-import { requireUser } from "~/modules/auth";
+import { requireUser } from "~/features/auth/core";
 import {
   stageIds,
   type MainWeaponId,

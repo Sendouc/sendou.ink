@@ -22,7 +22,7 @@ import {
 } from "~/features/plus-voting/core";
 import type { PlusSuggestion, User } from "~/db/types";
 import * as PlusSuggestionRepository from "~/features/plus-suggestions/PlusSuggestionRepository.server";
-import { requireUser, useUser } from "~/modules/auth";
+import { requireUser, useUser } from "~/features/auth/core";
 import {
   canAddCommentToSuggestionFE,
   canDeleteComment,

@@ -9,7 +9,7 @@ import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { discordFullName } from "~/utils/strings";
 import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
 import { updateShowMapListGenerator } from "../queries/updateShowMapListGenerator.server";
-import { requireUserId } from "~/modules/auth/user.server";
+import { requireUserId } from "~/features/auth/core/user.server";
 import {
   HACKY_resolveCheckInTime,
   tournamentIdFromParams,
@@ -26,7 +26,7 @@ import hasTournamentStarted from "../queries/hasTournamentStarted.server";
 import type { TournamentLoaderData } from "./to.$id";
 import { joinTeam, leaveTeam } from "../queries/joinLeaveTeam.server";
 import { deleteTeam } from "../queries/deleteTeam.server";
-import { useUser } from "~/modules/auth";
+import { useUser } from "~/features/auth/core";
 import {
   calendarEditPage,
   calendarEventPage,

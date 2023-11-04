@@ -221,6 +221,18 @@ module.exports = {
       route("/users", "features/api/routes/users.tsx");
 
       route("/theme", "features/theme/routes/theme.ts");
+
+      route("/auth", "features/auth/routes/auth.tsx");
+      route("/auth/callback", "features/auth/routes/auth.callback.tsx");
+      route("/auth/create-link", "features/auth/routes/auth.create-link.tsx");
+      route("/auth/login", "features/auth/routes/auth.login.tsx");
+      route("/auth/logout", "features/auth/routes/auth.logout.tsx");
+
+      route("/auth/impersonate", "features/auth/routes/auth.impersonate.tsx");
+      route(
+        "/auth/impersonate/stop",
+        "features/auth/routes/auth.impersonate.stop.tsx",
+      );
     });
   },
   serverModuleFormat: "cjs",

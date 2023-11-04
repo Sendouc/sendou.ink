@@ -13,8 +13,8 @@ import {
 import { Main } from "~/components/Main";
 import { SubNav, SubNavLink } from "~/components/SubNav";
 import { useTranslation } from "~/hooks/useTranslation";
-import { useUser } from "~/modules/auth";
-import { getUser } from "~/modules/auth/user.server";
+import { useUser } from "~/features/auth/core";
+import { getUser } from "~/features/auth/core/user.server";
 import { canAdminTournament } from "~/permissions";
 import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";

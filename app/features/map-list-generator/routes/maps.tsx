@@ -17,7 +17,7 @@ import { MapPoolSelector, MapPoolStages } from "~/components/MapPoolSelector";
 import { Toggle } from "~/components/Toggle";
 import type { CalendarEvent } from "~/db/types";
 import { useTranslation } from "~/hooks/useTranslation";
-import { getUserId } from "~/modules/auth/user.server";
+import { getUserId } from "~/features/auth/core/user.server";
 import { i18next } from "~/modules/i18n";
 import { stageIds, type ModeWithStage } from "~/modules/in-game-lists";
 import styles from "~/styles/maps.css";

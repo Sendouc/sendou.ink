@@ -17,7 +17,7 @@ import { Link } from "@remix-run/react";
 import { GlobeIcon } from "~/components/icons/Globe";
 import { LanguageChanger } from "~/components/layout/LanguageChanger";
 import { Avatar } from "~/components/Avatar";
-import { useUser } from "~/modules/auth";
+import { useUser } from "~/features/auth/core";
 import { languages } from "~/modules/i18n";
 import { Button } from "~/components/Button";
 import { LogOutIcon } from "~/components/icons/LogOut";

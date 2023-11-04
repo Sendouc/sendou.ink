@@ -28,8 +28,8 @@ import { UserIcon } from "~/components/icons/User";
 import { useAutoRerender } from "~/hooks/useAutoRerender";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "~/hooks/useTranslation";
-import { useUser } from "~/modules/auth";
-import { getUser, requireUser } from "~/modules/auth/user.server";
+import { useUser } from "~/features/auth/core";
+import { getUser, requireUser } from "~/features/auth/core/user.server";
 import type {
   ModeShort,
   RankedModeShort,

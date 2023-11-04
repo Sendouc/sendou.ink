@@ -13,12 +13,12 @@ import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { UserSearch } from "~/components/UserSearch";
 import { makeArtist } from "~/features/art";
-import { useUser } from "~/modules/auth";
+import { useUser } from "~/features/auth/core";
 import {
   getUserId,
   isImpersonating,
   requireUserId,
-} from "~/modules/auth/user.server";
+} from "~/features/auth/core/user.server";
 import { isAdmin, isMod } from "~/permissions";
 import {
   parseRequestFormData,

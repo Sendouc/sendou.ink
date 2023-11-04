@@ -25,7 +25,7 @@ import type {
   TournamentLoaderData,
 } from "~/features/tournament";
 import { canAdminTournament } from "~/permissions";
-import { useUser } from "~/modules/auth";
+import { useUser } from "~/features/auth/core";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { NewTabs } from "~/components/NewTabs";

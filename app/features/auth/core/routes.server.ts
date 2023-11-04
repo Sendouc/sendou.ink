@@ -12,9 +12,9 @@ import { authSessionStorage } from "./session.server";
 import { getUserId } from "./user.server";
 import { parseSearchParams, validate } from "~/utils/remix";
 import { z } from "zod";
-import { createLogInLink } from "./queries/createLogInLink.server";
-import { userIdByLogInLinkCode } from "./queries/userIdByLogInLinkCode.server";
-import { deleteLogInLinkByCode } from "./queries/deleteLogInLinkByCode.server";
+import { createLogInLink } from "../queries/createLogInLink.server";
+import { userIdByLogInLinkCode } from "../queries/userIdByLogInLinkCode.server";
+import { deleteLogInLinkByCode } from "../queries/deleteLogInLinkByCode.server";
 import isbot from "isbot";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 

@@ -11,8 +11,8 @@ import { Alert } from "~/components/Alert";
 import type { MapPoolMap } from "~/db/types";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
 import { useTranslation } from "~/hooks/useTranslation";
-import { useUser } from "~/modules/auth";
-import { getUserId } from "~/modules/auth/user.server";
+import { useUser } from "~/features/auth/core";
+import { getUserId } from "~/features/auth/core/user.server";
 import { createTournamentMapList } from "~/modules/tournament-map-list-generator";
 import type {
   TournamentMapListMap,

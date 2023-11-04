@@ -27,7 +27,7 @@ import resetStyles from "~/styles/reset.css";
 import flagsStyles from "~/styles/flags.css";
 import { Catcher } from "./components/Catcher";
 import { Layout } from "./components/layout";
-import { getUser } from "./modules/auth";
+import { getUser } from "./features/auth/core";
 import { DEFAULT_LANGUAGE, i18nCookie, i18next } from "./modules/i18n";
 import { useChangeLanguage } from "remix-i18next";
 import { type CustomTypeOptions } from "react-i18next";

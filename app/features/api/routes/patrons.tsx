@@ -1,5 +1,5 @@
 import type { ActionFunction, LoaderArgs } from "@remix-run/node";
-import { getUserId } from "~/modules/auth/user.server";
+import { getUserId } from "~/features/auth/core/user.server";
 import { updatePatreonData } from "~/modules/patreon";
 import { canAccessLohiEndpoint, canPerformAdminActions } from "~/permissions";
 import { validate } from "~/utils/remix";

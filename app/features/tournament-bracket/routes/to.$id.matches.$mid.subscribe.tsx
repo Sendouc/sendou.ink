@@ -6,7 +6,7 @@ import {
   matchIdFromParams,
   matchSubscriptionKey,
 } from "../tournament-bracket-utils";
-import { getUserId } from "~/modules/auth/user.server";
+import { getUserId } from "~/features/auth/core/user.server";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const loggedInUser = await getUserId(request);

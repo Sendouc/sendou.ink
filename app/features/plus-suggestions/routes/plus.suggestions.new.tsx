@@ -32,7 +32,7 @@ import {
 import type { UserWithPlusTier } from "~/db/types";
 import { FormMessage } from "~/components/FormMessage";
 import { atOrError } from "~/utils/arrays";
-import { requireUser, useUser } from "~/modules/auth";
+import { requireUser, useUser } from "~/features/auth/core";
 import { SubmitButton } from "~/components/SubmitButton";
 import { UserSearch } from "~/components/UserSearch";
 import * as PlusSuggestionRepository from "~/features/plus-suggestions/PlusSuggestionRepository.server";

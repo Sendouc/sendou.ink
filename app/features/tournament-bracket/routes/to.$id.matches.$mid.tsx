@@ -24,8 +24,8 @@ import {
 } from "~/features/tournament";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
 import { useVisibilityChange } from "~/hooks/useVisibilityChange";
-import { requireUser, useUser } from "~/modules/auth";
-import { getUserId } from "~/modules/auth/user.server";
+import { requireUser, useUser } from "~/features/auth/core";
+import { getUserId } from "~/features/auth/core/user.server";
 import { canAdminTournament, canReportTournamentScore } from "~/permissions";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";

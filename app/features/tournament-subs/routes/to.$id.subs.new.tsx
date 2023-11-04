@@ -10,7 +10,7 @@ import { Label } from "~/components/Label";
 import { SubmitButton } from "~/components/SubmitButton";
 import { useTranslation } from "~/hooks/useTranslation";
 import styles from "../tournament-subs.css";
-import { requireUser, useUser } from "~/modules/auth";
+import { requireUser, useUser } from "~/features/auth/core";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { WeaponCombobox } from "~/components/Combobox";
 import { TOURNAMENT_SUB } from "../tournament-subs-constants";

@@ -10,7 +10,7 @@ import {
   nextNonCompletedVoting,
   rangeToMonthYear,
 } from "~/features/plus-voting/core";
-import { requireUser, useUser } from "~/modules/auth";
+import { requireUser, useUser } from "~/features/auth/core";
 import {
   canAddCommentToSuggestionBE,
   canAddCommentToSuggestionFE,

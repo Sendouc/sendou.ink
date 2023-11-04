@@ -4,7 +4,7 @@ import { useTranslation } from "~/hooks/useTranslation";
 import invariant from "tiny-invariant";
 import { z } from "zod";
 import { FormErrors } from "~/components/FormErrors";
-import { requireUser } from "~/modules/auth";
+import { requireUser } from "~/features/auth/core";
 import { type UserPageLoaderData } from "~/features/user-page/routes/u.$identifier";
 import { normalizeFormFieldArray } from "~/utils/arrays";
 import { parseRequestFormData } from "~/utils/remix";
