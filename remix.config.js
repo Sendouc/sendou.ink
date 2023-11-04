@@ -166,6 +166,7 @@ module.exports = {
       route("/art", "features/art/routes/art.tsx");
       route("/art/new", "features/art/routes/art.new.tsx");
 
+      route("/play", "features/sendouq/routes/play.tsx");
       route("/q", "features/sendouq/routes/q.tsx");
       route("/q/rules", "features/sendouq/routes/q.rules.tsx");
       route("/q/looking", "features/sendouq/routes/q.looking.tsx");
