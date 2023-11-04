@@ -220,7 +220,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   const now = new Date();
   const season = currentSeason(now);
-  const upcomingSeason = nextSeason(now);
+  const upcomingSeason = !season ? nextSeason(now) : undefined;
 
   return {
     hasSkill:
