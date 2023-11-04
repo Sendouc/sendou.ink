@@ -1,7 +1,7 @@
 import type { ExpressionBuilder, FunctionModule } from "kysely";
 import { sql } from "kysely";
 import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
-import { dbNew, sql as dbDirect } from "~/db/sql";
+import { db, sql as dbDirect } from "~/db/sql";
 import type { DB, TablesInsertable } from "~/db/tables";
 import type { User } from "~/db/types";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
@@ -9,7 +9,7 @@ import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
 import { safeNumberParse } from "~/utils/number";
 
 const identifierToUserIdQuery = (identifier: string) =>
-  dbNew
+  db
     .selectFrom("User")
     .select("User.id")
     .where((eb) => {
@@ -84,7 +84,7 @@ export function findByIdentifier(identifier: string) {
 }
 
 export function findLeanById(id: number) {
-  return dbNew
+  return db
     .selectFrom("User")
     .leftJoin("PlusTier", "PlusTier.userId", "User.id")
     .where("User.id", "=", id)
@@ -102,7 +102,7 @@ export function findLeanById(id: number) {
 }
 
 export function findAllPatrons() {
-  return dbNew
+  return db
     .selectFrom("User")
     .select([
       "User.id",
@@ -118,7 +118,7 @@ export function findAllPatrons() {
 }
 
 export function findAllPlusMembers() {
-  return dbNew
+  return db
     .selectFrom("User")
     .innerJoin("PlusTier", "PlusTier.userId", "User.id")
     .select(["User.id", "User.discordId", "PlusTier.tier as plusTier"])
@@ -133,7 +133,7 @@ const withMaxEventStartTime = (eb: ExpressionBuilder<DB, "CalendarEvent">) => {
     .as("startTime");
 };
 export function findResultsByUserId(userId: number) {
-  return dbNew
+  return db
     .selectFrom("CalendarEventResultPlayer")
     .innerJoin(
       "CalendarEventResultTeam",
@@ -185,7 +185,7 @@ export function findResultsByUserId(userId: number) {
     ])
     .where("CalendarEventResultPlayer.userId", "=", userId)
     .unionAll(
-      dbNew
+      db
         .selectFrom("TournamentResult")
         .innerJoin(
           "TournamentTeam",
@@ -243,7 +243,7 @@ const searchSelectedFields = ({ fn }: { fn: FunctionModule<DB, "User"> }) =>
 export function search({ query, limit }: { query: string; limit: number }) {
   const criteria = `%${query}%`;
 
-  return dbNew
+  return db
     .selectFrom("User")
     .leftJoin("PlusTier", "PlusTier.userId", "User.id")
     .select(searchSelectedFields)
@@ -274,7 +274,7 @@ export function searchExact(args: {
   discordId?: string;
   customUrl?: string;
 }) {
-  let query = dbNew
+  let query = db
     .selectFrom("User")
     .leftJoin("PlusTier", "PlusTier.userId", "User.id")
     .select(searchSelectedFields);
@@ -307,7 +307,7 @@ export function upsert(
     | "youtubeId"
   >,
 ) {
-  return dbNew
+  return db
     .insertInto("User")
     .values(args)
     .onConflict((oc) => {
@@ -337,7 +337,7 @@ type UpdateProfileArgs = Pick<
   weapons: Pick<TablesInsertable["UserWeapon"], "weaponSplId" | "isFavorite">[];
 };
 export function updateProfile(args: UpdateProfileArgs) {
-  return dbNew.transaction().execute(async (trx) => {
+  return db.transaction().execute(async (trx) => {
     await trx
       .deleteFrom("UserWeapon")
       .where("userId", "=", args.userId)
@@ -382,7 +382,7 @@ type UpdateResultHighlightsArgs = {
   resultTournamentTeamIds: Array<number>;
 };
 export function updateResultHighlights(args: UpdateResultHighlightsArgs) {
-  return dbNew.transaction().execute(async (trx) => {
+  return db.transaction().execute(async (trx) => {
     await trx
       .deleteFrom("UserResultHighlight")
       .where("userId", "=", args.userId)
@@ -429,7 +429,7 @@ export type UpdatePatronDataArgs = Array<
   Pick<User, "discordId" | "patronTier" | "patronSince">
 >;
 export function updatePatronData(users: UpdatePatronDataArgs) {
-  return dbNew.transaction().execute(async (trx) => {
+  return db.transaction().execute(async (trx) => {
     await trx
       .updateTable("User")
       .set({

@@ -1,7 +1,7 @@
 import { formatDistance } from "date-fns";
 import type { Insertable } from "kysely";
 import { jsonObjectFrom } from "kysely/helpers/sqlite";
-import { dbNew } from "~/db/sql";
+import { db } from "~/db/sql";
 import type { DB } from "~/db/tables";
 import type { MonthYear } from "~/modules/plus-server";
 import { databaseTimestampToDate } from "~/utils/dates";
@@ -32,7 +32,7 @@ type FindAllByMonthRow = {
 // xxx: better naming that suggestion inside suggestions
 export type FindAllByMonthItem = Unwrapped<typeof findAllByMonth>;
 export async function findAllByMonth(args: MonthYear) {
-  const rows = (await dbNew
+  const rows = (await db
     .selectFrom("PlusSuggestion")
     .select(({ eb }) => [
       "PlusSuggestion.id",
@@ -104,11 +104,11 @@ export async function findAllByMonth(args: MonthYear) {
 }
 
 export function create(args: Insertable<DB["PlusSuggestion"]>) {
-  return dbNew.insertInto("PlusSuggestion").values(args).execute();
+  return db.insertInto("PlusSuggestion").values(args).execute();
 }
 
 export function deleteById(id: number) {
-  return dbNew.deleteFrom("PlusSuggestion").where("id", "=", id).execute();
+  return db.deleteFrom("PlusSuggestion").where("id", "=", id).execute();
 }
 
 export function deleteWithCommentsBySuggestedUserId({
@@ -122,7 +122,7 @@ export function deleteWithCommentsBySuggestedUserId({
   month: number;
   year: number;
 }) {
-  return dbNew
+  return db
     .deleteFrom("PlusSuggestion")
     .where("PlusSuggestion.suggestedId", "=", userId)
     .where("PlusSuggestion.tier", "=", tier)

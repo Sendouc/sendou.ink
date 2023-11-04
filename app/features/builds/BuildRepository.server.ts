@@ -1,7 +1,7 @@
 import type { Transaction } from "kysely";
 import { jsonArrayFrom } from "kysely/helpers/sqlite";
 import invariant from "tiny-invariant";
-import { dbNew } from "~/db/sql";
+import { db } from "~/db/sql";
 import type { BuildWeapon, DB, Tables, TablesInsertable } from "~/db/tables";
 import {
   type BuildAbilitiesTuple,
@@ -16,7 +16,7 @@ export async function allByUserId({
   userId: number;
   showPrivate: boolean;
 }) {
-  const rows = await dbNew
+  const rows = await db
     .with("Top500Weapon", (db) =>
       db
         .selectFrom("Build")
@@ -122,7 +122,7 @@ export async function countByUserId({
   showPrivate: boolean;
 }) {
   return (
-    await dbNew
+    await db
       .selectFrom("Build")
       .select(({ fn }) => fn.countAll<number>().as("count"))
       .where("ownerId", "=", userId)
@@ -199,16 +199,16 @@ export async function createInTrx({
 }
 
 export async function create(args: CreateArgs) {
-  return dbNew.transaction().execute(async (trx) => createInTrx({ args, trx }));
+  return db.transaction().execute(async (trx) => createInTrx({ args, trx }));
 }
 
 export async function update(args: CreateArgs & { id: number }) {
-  return dbNew.transaction().execute(async (trx) => {
+  return db.transaction().execute(async (trx) => {
     await trx.deleteFrom("Build").where("id", "=", args.id).execute();
     await createInTrx({ args, trx });
   });
 }
 
 export function deleteById(id: number) {
-  return dbNew.deleteFrom("Build").where("id", "=", id).execute();
+  return db.deleteFrom("Build").where("id", "=", id).execute();
 }

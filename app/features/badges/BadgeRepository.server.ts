@@ -1,9 +1,9 @@
-import { dbNew } from "~/db/sql";
+import { db } from "~/db/sql";
 import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
 import type { Unwrapped } from "~/utils/types";
 
 export function all() {
-  return dbNew
+  return db
     .selectFrom("Badge")
     .select(["id", "displayName", "code", "hue"])
     .execute();
@@ -16,7 +16,7 @@ export async function findByOwnerId({
   userId: number;
   favoriteBadgeId: number | null;
 }) {
-  const badges = await dbNew
+  const badges = await db
     .selectFrom("BadgeOwner")
     .innerJoin("Badge", "Badge.id", "BadgeOwner.badgeId")
     .select(({ fn }) => [
@@ -47,7 +47,7 @@ export async function findByOwnerId({
 }
 
 export function findManagedByUserId(userId: number) {
-  return dbNew
+  return db
     .selectFrom("BadgeManager")
     .innerJoin("Badge", "Badge.id", "BadgeManager.badgeId")
     .select(["Badge.id", "Badge.code", "Badge.displayName", "Badge.hue"])
@@ -56,7 +56,7 @@ export function findManagedByUserId(userId: number) {
 }
 
 export function findManagersByBadgeId(badgeId: number) {
-  return dbNew
+  return db
     .selectFrom("BadgeManager")
     .innerJoin("User", "BadgeManager.userId", "User.id")
     .select(COMMON_USER_FIELDS)
@@ -66,7 +66,7 @@ export function findManagersByBadgeId(badgeId: number) {
 
 export type FindOwnersByBadgeIdItem = Unwrapped<typeof findOwnersByBadgeId>;
 export function findOwnersByBadgeId(badgeId: number) {
-  return dbNew
+  return db
     .selectFrom("BadgeOwner")
     .innerJoin("User", "BadgeOwner.userId", "User.id")
     .select(({ fn }) => [
@@ -88,7 +88,7 @@ export function replaceManagers({
   badgeId: number;
   managerIds: number[];
 }) {
-  return dbNew.transaction().execute(async (trx) => {
+  return db.transaction().execute(async (trx) => {
     await trx
       .deleteFrom("BadgeManager")
       .where("badgeId", "=", badgeId)
@@ -113,7 +113,7 @@ export function replaceOwners({
   badgeId: number;
   ownerIds: number[];
 }) {
-  return dbNew.transaction().execute(async (trx) => {
+  return db.transaction().execute(async (trx) => {
     await trx
       .deleteFrom("TournamentBadgeOwner")
       .where("badgeId", "=", badgeId)

@@ -1,7 +1,7 @@
 import type { ExpressionBuilder, Transaction } from "kysely";
 import { sql } from "kysely";
 import { jsonArrayFrom } from "kysely/helpers/sqlite";
-import { dbNew } from "~/db/sql";
+import { db } from "~/db/sql";
 import type { DB, Tables } from "~/db/tables";
 import type { CalendarEventTag } from "~/db/types";
 import { MapPool } from "~/modules/map-pool-serializer";
@@ -62,7 +62,7 @@ export async function findById({
   includeTieBreakerMapPool?: boolean;
   includeBadgePrizes?: boolean;
 }) {
-  const [firstRow, ...rest] = await dbNew
+  const [firstRow, ...rest] = await db
     .selectFrom("CalendarEvent")
     .$if(includeMapPool, (qb) => qb.select(withMapPool))
     .$if(includeTieBreakerMapPool, (qb) => qb.select(withTieBreakerMapPool))
@@ -123,7 +123,7 @@ export async function findAllBetweenTwoTimestamps({
   startTime: Date;
   endTime: Date;
 }) {
-  const rows = await dbNew
+  const rows = await db
     .selectFrom("CalendarEvent")
     .innerJoin(
       "CalendarEventDate",
@@ -208,7 +208,7 @@ function tagsArray(args: {
 }
 
 async function tournamentParticipantCount(tournamentId: number) {
-  const rows = await dbNew
+  const rows = await db
     .selectFrom("TournamentTeam")
     .leftJoin(
       "TournamentTeamMember",
@@ -233,7 +233,7 @@ export async function startTimesOfRange({
   startTime: Date;
   endTime: Date;
 }) {
-  const rows = await dbNew
+  const rows = await db
     .selectFrom("CalendarEventDate")
     .select(["startTime"])
     .where("startTime", ">=", dateToDatabaseTimestamp(startTime))
@@ -247,7 +247,7 @@ export async function eventsToReport(authorId: number) {
   const oneMonthAgo = new Date();
   oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
 
-  const rows = await dbNew
+  const rows = await db
     .selectFrom("CalendarEvent")
     .innerJoin(
       "CalendarEventDate",
@@ -271,7 +271,7 @@ export async function eventsToReport(authorId: number) {
 }
 
 export async function findRecentMapPoolsByAuthorId(authorId: number) {
-  const rows = await dbNew
+  const rows = await db
     .selectFrom("CalendarEvent")
     .innerJoin("MapPoolMap", "CalendarEvent.id", "MapPoolMap.calendarEventId")
     .select(({ eb }) => [
@@ -292,7 +292,7 @@ export async function findRecentMapPoolsByAuthorId(authorId: number) {
 }
 
 export async function findResultsByEventId(eventId: number) {
-  return dbNew
+  return db
     .selectFrom("CalendarEventResultTeam")
     .select(({ eb }) => [
       "CalendarEventResultTeam.id",
@@ -322,7 +322,7 @@ export async function findResultsByEventId(eventId: number) {
 }
 
 export async function allEventsWithMapPools() {
-  const rows = await dbNew
+  const rows = await db
     .selectFrom("CalendarEvent")
     .select(({ eb }) => [
       "CalendarEvent.id",
@@ -362,7 +362,7 @@ type CreateArgs = Pick<
   mapPickingStyle: Tables["Tournament"]["mapPickingStyle"];
 };
 export async function create(args: CreateArgs) {
-  return dbNew.transaction().execute(async (trx) => {
+  return db.transaction().execute(async (trx) => {
     let tournamentId;
     if (args.isFullTournament) {
       tournamentId = (
@@ -410,7 +410,7 @@ type UpdateArgs = Omit<
   eventId: number;
 };
 export async function update(args: UpdateArgs) {
-  return dbNew.transaction().execute(async (trx) => {
+  return db.transaction().execute(async (trx) => {
     const { tournamentId } = await trx
       .updateTable("CalendarEvent")
       .set({
@@ -504,7 +504,7 @@ export function upsertReportedScores(args: {
     }>;
   }>;
 }) {
-  return dbNew.transaction().execute(async (trx) => {
+  return db.transaction().execute(async (trx) => {
     await trx
       .updateTable("CalendarEvent")
       .set({
@@ -585,7 +585,7 @@ export function deleteById({
   eventId: number;
   tournamentId: number | null;
 }) {
-  return dbNew.transaction().execute(async (trx) => {
+  return db.transaction().execute(async (trx) => {
     await trx.deleteFrom("CalendarEvent").where("id", "=", eventId).execute();
     if (tournamentId) {
       await trx

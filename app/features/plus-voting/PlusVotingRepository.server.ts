@@ -1,6 +1,6 @@
 import shuffle from "just-shuffle";
 import { type InferResult, sql } from "kysely";
-import { dbNew } from "~/db/sql";
+import { db } from "~/db/sql";
 import type { Tables, TablesInsertable } from "~/db/tables";
 import { nextNonCompletedVoting, type MonthYear } from "~/modules/plus-server";
 import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
@@ -9,7 +9,7 @@ import * as PlusSuggestionRepository from "~/features/plus-suggestions/PlusSugge
 import invariant from "tiny-invariant";
 
 const resultsByMonthYearQuery = (args: MonthYear) =>
-  dbNew
+  db
     .selectFrom("PlusVotingResult")
     .innerJoin("User", "PlusVotingResult.votedId", "User.id")
     .select([
@@ -73,7 +73,7 @@ export async function usersForVoting(loggedInUser: {
   id: number;
   plusTier: number;
 }) {
-  const members = await dbNew
+  const members = await db
     .selectFrom("User")
     .innerJoin("PlusTier", "PlusTier.userId", "User.id")
     .select([...COMMON_USER_FIELDS, "User.bio"])
@@ -122,7 +122,7 @@ export async function hasVoted(args: {
   month: number;
   year: number;
 }) {
-  const rows = await dbNew
+  const rows = await db
     .selectFrom("PlusVote")
     .select(({ eb }) => eb.lit(1).as("one"))
     .where("PlusVote.authorId", "=", args.authorId)
@@ -140,7 +140,7 @@ export type UpsertManyPlusVotesArgs = Pick<
 export function upsertMany(votes: UpsertManyPlusVotesArgs) {
   const firstVote = votes[0];
 
-  return dbNew.transaction().execute(async (trx) => {
+  return db.transaction().execute(async (trx) => {
     await trx
       .deleteFrom("PlusVote")
       .where("PlusVote.authorId", "=", firstVote.authorId)

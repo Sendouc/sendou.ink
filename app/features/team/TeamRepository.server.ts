@@ -1,7 +1,7 @@
-import { dbNew } from "~/db/sql";
+import { db } from "~/db/sql";
 
 export function findByUserId(userId: number) {
-  return dbNew
+  return db
     .selectFrom("TeamMember")
     .innerJoin("Team", "Team.id", "TeamMember.teamId")
     .select(["Team.id", "Team.customUrl"])

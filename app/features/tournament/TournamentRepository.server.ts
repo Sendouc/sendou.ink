@@ -1,12 +1,12 @@
 import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
 import invariant from "tiny-invariant";
-import { dbNew } from "~/db/sql";
+import { db } from "~/db/sql";
 import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
 import type { Unwrapped } from "~/utils/types";
 
 export type FindById = NonNullable<Unwrapped<typeof findById>>;
 export async function findById(id: number) {
-  const row = await dbNew
+  const row = await db
     .selectFrom("Tournament")
     .innerJoin("CalendarEvent", "Tournament.id", "CalendarEvent.tournamentId")
     // TODO: it does not support multiple dates

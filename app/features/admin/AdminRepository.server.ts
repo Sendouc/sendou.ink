@@ -1,4 +1,4 @@
-import { dbNew, sql } from "~/db/sql";
+import { db, sql } from "~/db/sql";
 import { syncXPBadges } from "../badges";
 import type { Tables } from "~/db/tables";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
@@ -33,7 +33,7 @@ export const cleanUp = () => {
 };
 
 export function migrate(args: { newUserId: number; oldUserId: number }) {
-  return dbNew.transaction().execute(async (trx) => {
+  return db.transaction().execute(async (trx) => {
     const deletedUser = await trx
       .deleteFrom("User")
       .where("User.id", "=", args.newUserId)
@@ -49,7 +49,7 @@ export function migrate(args: { newUserId: number; oldUserId: number }) {
 }
 
 export function refreshPlusTiers() {
-  return dbNew.transaction().execute(async (trx) => {
+  return db.transaction().execute(async (trx) => {
     await trx.deleteFrom("PlusTier").execute();
 
     await trx
@@ -66,7 +66,7 @@ export function refreshPlusTiers() {
 }
 
 export function makeVideoAdderByUserId(userId: number) {
-  return dbNew
+  return db
     .updateTable("User")
     .set({ isVideoAdder: 1 })
     .where("User.id", "=", userId)
@@ -80,13 +80,13 @@ export async function linkUserAndPlayer({
   userId: number;
   playerId: number;
 }) {
-  await dbNew
+  await db
     .updateTable("SplatoonPlayer")
     .set({ userId: null })
     .where("SplatoonPlayer.userId", "=", userId)
     .execute();
 
-  await dbNew
+  await db
     .updateTable("SplatoonPlayer")
     .set({ userId })
     .where("SplatoonPlayer.id", "=", playerId)
@@ -101,7 +101,7 @@ export function forcePatron(args: {
   patronSince: Date;
   patronTill: Date;
 }) {
-  return dbNew
+  return db
     .updateTable("User")
     .set({
       patronTier: args.patronTier,

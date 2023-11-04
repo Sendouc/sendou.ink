@@ -10,12 +10,10 @@ sql.pragma("journal_mode = WAL");
 sql.pragma("foreign_keys = ON");
 sql.pragma("busy_timeout = 5000");
 
-// xxx: rename
-export const dbNew = new Kysely<DB>({
+export const db = new Kysely<DB>({
   dialect: new SqliteDialect({
     database: sql,
   }),
-  // xxx: chalk, but not for prod?
-  log: ["query"],
+  log: process.env.NODE_ENV === "development" ? ["query"] : undefined,
   plugins: [new ParseJSONResultsPlugin()],
 });
