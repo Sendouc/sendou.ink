@@ -11,7 +11,7 @@ import type {
 import type { FindMatchById } from "./features/tournament-bracket/queries/findMatchById.server";
 import { allTruthy } from "./utils/arrays";
 import { databaseTimestampToDate } from "./utils/dates";
-import { isVotingActive } from "./modules/plus-server/voting-time-old";
+import { isVotingActive } from "./features/plus-voting/core";
 
 // TODO: 1) move "root checkers" to one file and utils to one file 2) make utils const for more terseness
 

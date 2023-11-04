@@ -3,7 +3,7 @@ import type { Insertable } from "kysely";
 import { jsonObjectFrom } from "kysely/helpers/sqlite";
 import { db } from "~/db/sql";
 import type { DB } from "~/db/tables";
-import type { MonthYear } from "~/modules/plus-server";
+import type { MonthYear } from "~/features/plus-voting/core";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
 import type { Unwrapped } from "~/utils/types";

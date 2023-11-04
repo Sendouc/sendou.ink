@@ -10,7 +10,7 @@ import invariant from "tiny-invariant";
 import type { UserWithPlusTier } from "~/db/types";
 import * as PlusVotingRepository from "~/features/plus-voting/PlusVotingRepository.server";
 import { getUser } from "~/modules/auth";
-import { lastCompletedVoting } from "~/modules/plus-server";
+import { lastCompletedVoting } from "~/features/plus-voting/core";
 import styles from "~/styles/plus-history.css";
 import { roundToNDecimalPlaces } from "~/utils/number";
 import { makeTitle } from "~/utils/strings";

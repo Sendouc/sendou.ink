@@ -28,7 +28,7 @@ import {
 import {
   nextNonCompletedVoting,
   rangeToMonthYear,
-} from "~/modules/plus-server";
+} from "~/features/plus-voting/core";
 import type { UserWithPlusTier } from "~/db/types";
 import { FormMessage } from "~/components/FormMessage";
 import { atOrError } from "~/utils/arrays";

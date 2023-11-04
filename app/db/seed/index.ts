@@ -27,7 +27,7 @@ import {
   lastCompletedVoting,
   nextNonCompletedVoting,
   rangeToMonthYear,
-} from "~/modules/plus-server";
+} from "~/features/plus-voting/core";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { mySlugify } from "~/utils/urls";
 

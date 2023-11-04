@@ -14,12 +14,12 @@ import { CheckmarkIcon } from "~/components/icons/Checkmark";
 import { RelativeTime } from "~/components/RelativeTime";
 import { PLUS_DOWNVOTE, PLUS_UPVOTE } from "~/constants";
 import { getUser, requireUser } from "~/modules/auth";
-import type { PlusVoteFromFE } from "~/modules/plus-server";
+import type { PlusVoteFromFE } from "~/features/plus-voting/core";
 import {
   rangeToMonthYear,
   nextNonCompletedVoting,
   usePlusVoting,
-} from "~/modules/plus-server";
+} from "~/features/plus-voting/core";
 import { parseRequestFormData } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { assertType, assertUnreachable } from "~/utils/types";
@@ -28,7 +28,7 @@ import { PlusSuggestionComments } from "../../plus-suggestions/routes/plus.sugge
 import * as PlusVotingRepository from "~/features/plus-voting/PlusVotingRepository.server";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import invariant from "tiny-invariant";
-import { isVotingActive } from "~/modules/plus-server/voting-time";
+import { isVotingActive } from "~/features/plus-voting/core/voting-time";
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: makeTitle("Plus Server voting") }];

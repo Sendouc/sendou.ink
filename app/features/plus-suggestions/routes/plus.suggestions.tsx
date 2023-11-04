@@ -19,7 +19,7 @@ import {
   isVotingActive,
   nextNonCompletedVoting,
   rangeToMonthYear,
-} from "~/modules/plus-server";
+} from "~/features/plus-voting/core";
 import type { PlusSuggestion, User } from "~/db/types";
 import * as PlusSuggestionRepository from "~/features/plus-suggestions/PlusSuggestionRepository.server";
 import { requireUser, useUser } from "~/modules/auth";

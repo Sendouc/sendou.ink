@@ -6,7 +6,7 @@ import {
   nextNonCompletedVoting,
   type MonthYear,
   rangeToMonthYear,
-} from "~/modules/plus-server";
+} from "~/features/plus-voting/core";
 import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
 import type { Unwrapped } from "~/utils/types";
 import * as PlusSuggestionRepository from "~/features/plus-suggestions/PlusSuggestionRepository.server";

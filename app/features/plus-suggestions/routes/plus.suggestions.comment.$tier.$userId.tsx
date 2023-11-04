@@ -9,7 +9,7 @@ import { PlUS_SUGGESTION_COMMENT_MAX_LENGTH, PLUS_TIERS } from "~/constants";
 import {
   nextNonCompletedVoting,
   rangeToMonthYear,
-} from "~/modules/plus-server";
+} from "~/features/plus-voting/core";
 import { requireUser, useUser } from "~/modules/auth";
 import {
   canAddCommentToSuggestionBE,
