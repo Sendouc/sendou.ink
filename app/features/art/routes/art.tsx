@@ -1,7 +1,7 @@
 import type {
-  LoaderArgs,
+  LoaderFunctionArgs,
   SerializeFrom,
-  V2_MetaFunction,
+  MetaFunction,
 } from "@remix-run/node";
 import type { ShouldRevalidateFunction } from "@remix-run/react";
 import { useLoaderData, useSearchParams } from "@remix-run/react";
@@ -44,7 +44,7 @@ export const handle: SendouRouteHandle = {
   }),
 };
 
-export const meta: V2_MetaFunction = (args) => {
+export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
 
   if (!data) return [];
@@ -52,7 +52,7 @@ export const meta: V2_MetaFunction = (args) => {
   return [{ title: data.title }];
 };
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const t = await i18next.getFixedT(request);
 
   const allTags = allArtTags();

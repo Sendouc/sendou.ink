@@ -1,8 +1,8 @@
 import type {
   LinksFunction,
-  LoaderArgs,
+  LoaderFunctionArgs,
   SerializeFrom,
-  V2_MetaFunction,
+  MetaFunction,
 } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
@@ -21,7 +21,7 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   const { month, year } = lastCompletedVoting(new Date());
 
   return [
@@ -33,7 +33,7 @@ export const meta: V2_MetaFunction = () => {
   ];
 };
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = await getUser(request);
   const results = await PlusVotingRepository.resultsByMonthYear(
     lastCompletedVoting(new Date()),

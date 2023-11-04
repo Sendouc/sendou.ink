@@ -1,4 +1,4 @@
-import type { ActionFunction, LoaderArgs } from "@remix-run/node";
+import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData, useMatches } from "@remix-run/react";
 import { z } from "zod";
 import { BuildCard } from "~/components/BuildCard";
@@ -52,7 +52,7 @@ export const handle: SendouRouteHandle = {
   i18n: ["weapons", "builds", "gear"],
 };
 
-export const loader = async ({ params, request }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const loggedInUser = await getUserId(request);
   const { identifier } = userParamsSchema.parse(params);
   const user = notFoundIfFalsy(

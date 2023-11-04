@@ -1,8 +1,8 @@
 import type {
   LinksFunction,
-  LoaderArgs,
+  LoaderFunctionArgs,
   SerializeFrom,
-  V2_MetaFunction,
+  MetaFunction,
 } from "@remix-run/node";
 import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
 import { Avatar } from "~/components/Avatar";
@@ -71,7 +71,7 @@ export const handle: SendouRouteHandle = {
   }),
 };
 
-export const meta: V2_MetaFunction = (args) => {
+export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
 
   if (!data) return [];
@@ -93,7 +93,7 @@ export const links: LinksFunction = () => {
 const TYPE_SEARCH_PARAM_KEY = "type";
 const SEASON_SEARCH_PARAM_KEY = "season";
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const t = await i18next.getFixedT(request);
   const unvalidatedType = new URL(request.url).searchParams.get(
     TYPE_SEARCH_PARAM_KEY,

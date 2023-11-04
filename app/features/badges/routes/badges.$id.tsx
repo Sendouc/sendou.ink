@@ -1,4 +1,4 @@
-import type { LoaderArgs, SerializeFrom } from "@remix-run/node";
+import type { LoaderFunctionArgs, SerializeFrom } from "@remix-run/node";
 import { Outlet, useLoaderData, useMatches, useParams } from "@remix-run/react";
 import clsx from "clsx";
 import { Badge } from "~/components/Badge";
@@ -19,7 +19,7 @@ export interface BadgeDetailsContext {
 }
 
 export type BadgeDetailsLoaderData = SerializeFrom<typeof loader>;
-export const loader = async ({ params }: LoaderArgs) => {
+export const loader = async ({ params }: LoaderFunctionArgs) => {
   const badgeId = Number(params["id"]);
   if (Number.isNaN(badgeId)) {
     throw new Response(null, { status: 404 });

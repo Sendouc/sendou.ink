@@ -1,4 +1,4 @@
-import type { LinksFunction, V2_MetaFunction } from "@remix-run/node";
+import type { LinksFunction, MetaFunction } from "@remix-run/node";
 import { Main } from "~/components/Main";
 import styles from "../support.css";
 import * as React from "react";
@@ -15,7 +15,7 @@ import { Trans } from "react-i18next";
 import { makeTitle } from "~/utils/strings";
 import { useSetTitle } from "~/hooks/useSetTitle";
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [{ title: makeTitle("Support") }];
 };
 

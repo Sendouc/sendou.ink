@@ -1,6 +1,6 @@
 import {
   type ActionFunction,
-  type LoaderArgs,
+  type LoaderFunctionArgs,
   redirect,
 } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
@@ -93,7 +93,7 @@ const newVodLoaderParamsSchema = z.object({
   vod: z.preprocess(actualNumber, id),
 });
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = await requireUser(request);
 
   if (!canAddVideo(user)) {

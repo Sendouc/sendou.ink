@@ -1,7 +1,7 @@
 import {
-  type LoaderArgs,
+  type LoaderFunctionArgs,
   type SerializeFrom,
-  type V2_MetaFunction,
+  type MetaFunction,
 } from "@remix-run/node";
 import {
   type ShouldRevalidateFunction,
@@ -111,7 +111,7 @@ export const shouldRevalidate: ShouldRevalidateFunction = (args) => {
   return args.defaultShouldRevalidate;
 };
 
-export const meta: V2_MetaFunction = (args) => {
+export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
 
   if (!data) return [];
@@ -141,7 +141,7 @@ export const handle: SendouRouteHandle = {
   },
 };
 
-export const loader = async ({ request, params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const t = await i18next.getFixedT(request, ["weapons", "common"], {
     lng: "en",
   });

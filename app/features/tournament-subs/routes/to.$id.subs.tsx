@@ -9,7 +9,7 @@ import {
 import type {
   ActionFunction,
   LinksFunction,
-  LoaderArgs,
+  LoaderFunctionArgs,
 } from "@remix-run/node";
 import { Link, useLoaderData, useOutletContext } from "@remix-run/react";
 import { getUser, requireUser, useUser } from "~/features/auth/core";
@@ -50,7 +50,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   return null;
 };
 
-export const loader = async ({ params, request }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const user = await getUser(request);
   const tournamentId = tournamentIdFromParams(params);
 

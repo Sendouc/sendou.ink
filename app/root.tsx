@@ -1,9 +1,9 @@
 import { json } from "@remix-run/node";
 import type {
   LinksFunction,
-  LoaderArgs,
+  LoaderFunctionArgs,
   SerializeFrom,
-  V2_MetaFunction,
+  MetaFunction,
 } from "@remix-run/node";
 import {
   Links,
@@ -69,7 +69,7 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [
     { title: "sendou.ink" },
     {
@@ -82,7 +82,7 @@ export const meta: V2_MetaFunction = () => {
 
 export type RootLoaderData = SerializeFrom<typeof loader>;
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = await getUser(request);
   const locale = await i18next.getLocale(request);
   const themeSession = await getThemeSession(request);

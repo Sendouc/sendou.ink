@@ -1,8 +1,8 @@
 import type {
   ActionFunction,
   LinksFunction,
-  LoaderArgs,
-  V2_MetaFunction,
+  LoaderFunctionArgs,
+  MetaFunction,
 } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { useFetcher, useLoaderData, useSearchParams } from "@remix-run/react";
@@ -89,7 +89,7 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [{ title: makeTitle("SendouQ") }];
 };
 
@@ -358,7 +358,7 @@ export const action: ActionFunction = async ({ request }) => {
   return null;
 };
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = await getUser(request);
 
   const currentGroup = user ? findCurrentGroupByUserId(user.id) : undefined;

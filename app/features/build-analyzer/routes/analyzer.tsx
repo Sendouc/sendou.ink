@@ -1,4 +1,4 @@
-import { type LinksFunction, type V2_MetaFunction } from "@remix-run/node";
+import { type LinksFunction, type MetaFunction } from "@remix-run/node";
 import type { ShouldRevalidateFunction } from "@remix-run/react";
 import { Link } from "@remix-run/react";
 import clsx from "clsx";
@@ -78,7 +78,7 @@ import { PerInkTankGrid } from "../components/PerInkTankGrid";
 
 export const CURRENT_PATCH = "5.1";
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [
     { title: makeTitle("Build Analyzer") },
     {

@@ -1,7 +1,7 @@
 import type {
   ActionFunction,
   LinksFunction,
-  LoaderArgs,
+  LoaderFunctionArgs,
   SerializeFrom,
 } from "@remix-run/node";
 import {
@@ -211,7 +211,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 
 export type TournamentBracketLoaderData = SerializeFrom<typeof loader>;
 
-export const loader = ({ params }: LoaderArgs) => {
+export const loader = ({ params }: LoaderFunctionArgs) => {
   const tournamentId = tournamentIdFromParams(params);
 
   const hasStarted = hasTournamentStarted(tournamentId);

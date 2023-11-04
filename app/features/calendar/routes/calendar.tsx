@@ -1,7 +1,7 @@
 import { json } from "@remix-run/node";
 import type {
-  LoaderArgs,
-  V2_MetaFunction,
+  LoaderFunctionArgs,
+  MetaFunction,
   SerializeFrom,
   LinksFunction,
 } from "@remix-run/node";
@@ -49,7 +49,7 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const meta: V2_MetaFunction = (args) => {
+export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
 
   if (!data) return [];
@@ -81,7 +81,7 @@ const loaderSearchParamsSchema = z.object({
   year: z.preprocess(actualNumber, z.number().int()),
 });
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = await getUserId(request);
   const t = await i18next.getFixedT(request);
   const url = new URL(request.url);

@@ -1,4 +1,4 @@
-import type { LoaderArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import { Link, useLoaderData, useOutletContext } from "@remix-run/react";
 import { Placement } from "~/components/Placement";
 import {
@@ -35,7 +35,7 @@ import type { TournamentMaplistSource } from "~/modules/tournament-map-list-gene
 import type { FindTeamsByTournamentIdItem } from "../queries/findTeamsByTournamentId.server";
 import hasTournamentStarted from "../queries/hasTournamentStarted.server";
 
-export const loader = ({ params }: LoaderArgs) => {
+export const loader = ({ params }: LoaderFunctionArgs) => {
   const tournamentId = tournamentIdFromParams(params);
   const tournamentTeamId = tournamentTeamIdFromParams(params);
 

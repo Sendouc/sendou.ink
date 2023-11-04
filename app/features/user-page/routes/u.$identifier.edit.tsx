@@ -2,7 +2,7 @@ import {
   redirect,
   type ActionFunction,
   type LinksFunction,
-  type LoaderArgs,
+  type LoaderFunctionArgs,
 } from "@remix-run/node";
 import { Form, Link, useLoaderData, useMatches } from "@remix-run/react";
 import { countries } from "countries-list";
@@ -192,7 +192,7 @@ export const action: ActionFunction = async ({ request }) => {
   }
 };
 
-export const loader = async ({ request, params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const locale = await i18next.getLocale(request);
 
   const user = await requireUser(request);

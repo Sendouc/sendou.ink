@@ -3,8 +3,8 @@ import type {
   ActionFunction,
   SerializeFrom,
   LinksFunction,
-  LoaderArgs,
-  V2_MetaFunction,
+  LoaderFunctionArgs,
+  MetaFunction,
 } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { Link } from "@remix-run/react/dist/components";
@@ -87,7 +87,7 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export const meta: V2_MetaFunction = (args) => {
+export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader>;
 
   if (!data) return [];
@@ -120,7 +120,7 @@ export const handle: SendouRouteHandle = {
   },
 };
 
-export const loader = async ({ params, request }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const t = await i18next.getFixedT(request);
   const parsedParams = z
     .object({ id: z.preprocess(actualNumber, id) })

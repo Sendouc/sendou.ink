@@ -1,8 +1,8 @@
 import type {
   ActionFunction,
   LinksFunction,
-  LoaderArgs,
-  V2_MetaFunction,
+  LoaderFunctionArgs,
+  MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
@@ -48,7 +48,7 @@ import {
 } from "../team-utils";
 import styles from "../team.css";
 
-export const meta: V2_MetaFunction = ({
+export const meta: MetaFunction = ({
   data,
 }: {
   data: SerializeFrom<typeof loader>;
@@ -103,7 +103,7 @@ export const handle: SendouRouteHandle = {
   },
 };
 
-export const loader = ({ params }: LoaderArgs) => {
+export const loader = ({ params }: LoaderFunctionArgs) => {
   const { customUrl } = teamParamsSchema.parse(params);
 
   const { team, css } = notFoundIfFalsy(findByIdentifier(customUrl));

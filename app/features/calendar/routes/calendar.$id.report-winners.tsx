@@ -2,7 +2,7 @@ import { json, redirect } from "@remix-run/node";
 import type {
   SerializeFrom,
   ActionFunction,
-  LoaderArgs,
+  LoaderFunctionArgs,
 } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
@@ -141,7 +141,7 @@ export const handle: SendouRouteHandle = {
   i18n: "calendar",
 };
 
-export const loader = async ({ request, params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const parsedParams = reportWinnersParamsSchema.parse(params);
   const user = await requireUserId(request);
   const event = notFoundIfFalsy(

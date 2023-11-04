@@ -1,7 +1,7 @@
 import type {
   LinksFunction,
-  LoaderArgs,
-  V2_MetaFunction,
+  LoaderFunctionArgs,
+  MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
@@ -26,7 +26,7 @@ import { makeTitle } from "~/utils/strings";
 import { cache, ttl } from "~/utils/cache.server";
 import { cachified } from "cachified";
 
-export const meta: V2_MetaFunction = (args) => {
+export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
 
   if (!data) return [];
@@ -65,7 +65,7 @@ export const handle: SendouRouteHandle = {
   },
 };
 
-export const loader = async ({ params, request }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const t = await i18next.getFixedT(request, ["builds", "weapons", "common"]);
   const weaponId = notFoundIfNullLike(weaponNameSlugToId(params["slug"]));
 

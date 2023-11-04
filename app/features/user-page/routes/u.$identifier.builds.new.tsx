@@ -2,7 +2,7 @@ import {
   json,
   redirect,
   type ActionFunction,
-  type LoaderArgs,
+  type LoaderFunctionArgs,
 } from "@remix-run/node";
 import { Form, useLoaderData, useSearchParams } from "@remix-run/react";
 import clone from "just-clone";
@@ -181,7 +181,7 @@ const newBuildLoaderParamsSchema = z.object({
   buildId: z.preprocess(actualNumber, id),
 });
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = await requireUserId(request);
   const url = new URL(request.url);
 

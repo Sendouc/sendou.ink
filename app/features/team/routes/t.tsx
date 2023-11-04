@@ -1,8 +1,8 @@
 import type {
   ActionFunction,
   LinksFunction,
-  LoaderArgs,
-  V2_MetaFunction,
+  LoaderFunctionArgs,
+  MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
@@ -44,7 +44,7 @@ import styles from "../team.css";
 import { usePagination } from "~/hooks/usePagination";
 import { Pagination } from "~/components/Pagination";
 
-export const meta: V2_MetaFunction = ({
+export const meta: MetaFunction = ({
   data,
 }: {
   data: SerializeFrom<typeof loader>;
@@ -100,7 +100,7 @@ export const handle: SendouRouteHandle = {
   }),
 };
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = await getUserId(request);
   const t = await i18next.getFixedT(request);
 

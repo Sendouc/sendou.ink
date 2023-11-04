@@ -1,7 +1,7 @@
 import type {
   ActionFunction,
   LoaderFunction,
-  V2_MetaFunction,
+  MetaFunction,
 } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { useFetcher, useLoaderData, useNavigation } from "@remix-run/react";
@@ -31,7 +31,7 @@ import { impersonateUrl, SEED_URL, STOP_IMPERSONATING_URL } from "~/utils/urls";
 import { _action, actualNumber } from "~/utils/zod";
 import * as AdminRepository from "~/features/admin/AdminRepository.server";
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [{ title: makeTitle("Admin page") }];
 };
 

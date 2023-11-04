@@ -1,4 +1,4 @@
-import type { ActionFunction, LoaderArgs } from "@remix-run/node";
+import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { Form, useLoaderData, useOutletContext } from "@remix-run/react";
 import invariant from "tiny-invariant";
@@ -94,7 +94,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   throw redirect(tournamentPage(leanTeam.tournamentId));
 };
 
-export const loader = ({ request, params }: LoaderArgs) => {
+export const loader = ({ request, params }: LoaderFunctionArgs) => {
   const tournamentId = tournamentIdFromParams(params);
   const url = new URL(request.url);
   const inviteCode = url.searchParams.get("code");

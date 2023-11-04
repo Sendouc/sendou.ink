@@ -1,7 +1,7 @@
 import type {
-  ActionArgs,
+  ActionFunctionArgs,
   LinksFunction,
-  LoaderArgs,
+  LoaderFunctionArgs,
   SerializeFrom,
 } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
@@ -97,7 +97,7 @@ export const handle: SendouRouteHandle = {
   }),
 };
 
-export const action = async ({ request, params }: ActionArgs) => {
+export const action = async ({ request, params }: ActionFunctionArgs) => {
   const matchId = matchIdFromParams(params);
   const user = await requireUser(request);
   const data = await parseRequestFormData({
@@ -323,7 +323,7 @@ export const action = async ({ request, params }: ActionArgs) => {
   return null;
 };
 
-export const loader = async ({ params, request }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const user = await getUserId(request);
   const matchId = matchIdFromParams(params);
   const match = notFoundIfFalsy(findMatchById(matchId));

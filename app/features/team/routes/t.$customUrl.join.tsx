@@ -1,7 +1,7 @@
 import type {
   ActionFunction,
   LinksFunction,
-  LoaderArgs,
+  LoaderFunctionArgs,
 } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
@@ -56,7 +56,7 @@ export const handle: SendouRouteHandle = {
   i18n: ["team"],
 };
 
-export const loader = async ({ request, params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const user = await requireUser(request);
   const { customUrl } = teamParamsSchema.parse(params);
 

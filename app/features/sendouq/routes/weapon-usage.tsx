@@ -1,12 +1,12 @@
 import { parseSearchParams } from "~/utils/remix";
 import { weaponUsageStats } from "../queries/weaponUsageStats.server";
-import type { LoaderArgs, SerializeFrom } from "@remix-run/node";
+import type { LoaderFunctionArgs, SerializeFrom } from "@remix-run/node";
 import { weaponUsageSearchParamsSchema } from "../q-schemas.server";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
 
 export type WeaponUsageLoaderData = SerializeFrom<typeof loader>;
 
-export const loader = ({ request }: LoaderArgs) => {
+export const loader = ({ request }: LoaderFunctionArgs) => {
   const data = parseSearchParams({
     request,
     schema: weaponUsageSearchParamsSchema,

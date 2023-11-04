@@ -4,10 +4,10 @@ import { useAutoRerender } from "~/hooks/useAutoRerender";
 import styles from "../q.css";
 import { redirect } from "@remix-run/node";
 import type {
-  LoaderArgs,
+  LoaderFunctionArgs,
   ActionFunction,
   LinksFunction,
-  V2_MetaFunction,
+  MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
 import { Link, useFetcher, useLoaderData } from "@remix-run/react";
@@ -90,7 +90,7 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [
     { title: makeTitle("SendouQ") },
     {
@@ -200,7 +200,7 @@ export const action: ActionFunction = async ({ request }) => {
   }
 };
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = await getUserId(request);
 
   const code = new URL(request.url).searchParams.get(

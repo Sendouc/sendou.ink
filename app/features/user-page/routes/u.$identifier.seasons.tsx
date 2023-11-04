@@ -1,4 +1,4 @@
-import type { LoaderArgs, SerializeFrom } from "@remix-run/node";
+import type { LoaderFunctionArgs, SerializeFrom } from "@remix-run/node";
 import {
   Link,
   useLoaderData,
@@ -70,7 +70,7 @@ export const seasonsSearchParamsSchema = z.object({
     .refine((nth) => allSeasons(new Date()).includes(nth)),
 });
 
-export const loader = async ({ params, request }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const { identifier } = userParamsSchema.parse(params);
   const parsedSearchParams = seasonsSearchParamsSchema.safeParse(
     Object.fromEntries(new URL(request.url).searchParams),
