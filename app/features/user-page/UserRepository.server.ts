@@ -153,7 +153,7 @@ export function findResultsByUserId(userId: number) {
       "CalendarEvent.name as eventName",
       "CalendarEventResultTeam.id as teamId",
       "CalendarEventResultTeam.name as teamName",
-      // xxx: can we get rid of as?
+      // TODO: can we get rid of the "as"?
       withMaxEventStartTime(eb as ExpressionBuilder<DB, "CalendarEvent">),
       exists(
         selectFrom("UserResultHighlight")

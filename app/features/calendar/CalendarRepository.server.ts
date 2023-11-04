@@ -9,7 +9,7 @@ import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { sumArray } from "~/utils/number";
 import type { Unwrapped } from "~/utils/types";
 
-// xxx: change to be done without raw
+// TODO: convert from raw to using the "exists" function
 const hasBadge = sql<number>/* sql */ `exists (
   select
     1

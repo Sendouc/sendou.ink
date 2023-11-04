@@ -29,7 +29,7 @@ type FindAllByMonthRow = {
   };
 };
 
-// xxx: better naming that suggestion inside suggestions
+// TODO: naming is a bit weird here (suggestion inside suggestions)
 export type FindAllByMonthItem = Unwrapped<typeof findAllByMonth>;
 export async function findAllByMonth(args: MonthYear) {
   const rows = (await db

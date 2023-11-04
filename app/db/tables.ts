@@ -96,7 +96,6 @@ export interface BadgeManager {
   userId: number;
 }
 
-// xxx: is it possible to exclude views from inserts/deletes?
 export type BadgeOwner = {
   badgeId: number | null;
   userId: number | null;
