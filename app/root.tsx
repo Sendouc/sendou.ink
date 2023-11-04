@@ -250,12 +250,15 @@ function useCustomizedCSSVars() {
   const matches = useMatches();
 
   for (const match of matches) {
-    if (match.data?.[CUSTOMIZED_CSS_VARS_NAME]) {
+    if ((match.data as any)?.[CUSTOMIZED_CSS_VARS_NAME]) {
       // cheating TypeScript here but no real way to keep up
       // even an illusion of type safety here
       return Object.fromEntries(
         Object.entries(
-          match.data[CUSTOMIZED_CSS_VARS_NAME] as Record<string, string>,
+          (match.data as any)[CUSTOMIZED_CSS_VARS_NAME] as Record<
+            string,
+            string
+          >,
         ).map(([key, value]) => [`--${key}`, value]),
       ) as React.CSSProperties;
     }

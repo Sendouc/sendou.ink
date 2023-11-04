@@ -4,7 +4,12 @@ import type {
   MetaFunction,
 } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { useFetcher, useLoaderData, useNavigation } from "@remix-run/react";
+import {
+  Form,
+  useFetcher,
+  useLoaderData,
+  useNavigation,
+} from "@remix-run/react";
 import * as React from "react";
 import { z } from "zod";
 import { Button } from "~/components/Button";
@@ -182,12 +187,11 @@ export default function AdminPage() {
 }
 
 function Impersonate() {
-  const fetcher = useFetcher();
   const [userId, setUserId] = React.useState<number>();
   const { isImpersonating } = useLoaderData<AdminPageLoaderData>();
 
   return (
-    <fetcher.Form
+    <Form
       method="post"
       action={impersonateUrl(userId ?? 0)}
       className="stack md"
@@ -211,7 +215,7 @@ function Impersonate() {
           </Button>
         ) : null}
       </div>
-    </fetcher.Form>
+    </Form>
   );
 }
 

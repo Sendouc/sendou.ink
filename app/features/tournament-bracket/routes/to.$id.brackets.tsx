@@ -51,7 +51,7 @@ import {
   resolveTournamentStageType,
 } from "../tournament-bracket-utils";
 import { sql } from "~/db/sql";
-import { useEventSource } from "remix-utils";
+import { useEventSource } from "remix-utils/sse/react";
 import { Status } from "~/db/types";
 import clsx from "clsx";
 import { Button, LinkButton } from "~/components/Button";

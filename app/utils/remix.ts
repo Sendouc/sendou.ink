@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { type TFunction, type Namespace } from "react-i18next";
-import { type RouteMatch } from "@remix-run/react";
+import { type TFunction, type Namespace } from "i18next";
 import type navItems from "~/components/layout/nav-items.json";
 import { json } from "@remix-run/node";
+import type { UIMatch } from "@remix-run/react";
 
 export function notFoundIfFalsy<T>(value: T | null | undefined): T {
   if (!value) throw new Response(null, { status: 404 });
@@ -164,7 +164,7 @@ export type SendouRouteHandle = {
    * the <Breadcrumb> component
    */
   breadcrumb?: (args: {
-    match: RouteMatch;
+    match: UIMatch;
     t: TFunction<"common", undefined>;
   }) => Breadcrumb | Array<Breadcrumb> | undefined;
 

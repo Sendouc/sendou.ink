@@ -1,4 +1,4 @@
-import type { EntryContext } from "@remix-run/server-runtime";
+import type { EntryContext } from "@remix-run/node";
 import { createInstance } from "i18next";
 import Backend from "i18next-fs-backend";
 import { resolve } from "node:path";

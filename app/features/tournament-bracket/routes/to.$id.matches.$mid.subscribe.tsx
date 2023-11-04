@@ -1,5 +1,5 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
-import { eventStream } from "remix-utils";
+import { eventStream } from "remix-utils/sse/server";
 
 import { emitter } from "../core/emitters.server";
 import {

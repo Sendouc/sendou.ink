@@ -3,7 +3,6 @@ import type {
   LinksFunction,
   LoaderFunctionArgs,
   MetaFunction,
-  SerializeFrom,
 } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import {
@@ -44,11 +43,7 @@ import styles from "../team.css";
 import { usePagination } from "~/hooks/usePagination";
 import { Pagination } from "~/components/Pagination";
 
-export const meta: MetaFunction = ({
-  data,
-}: {
-  data: SerializeFrom<typeof loader>;
-}) => {
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (!data) return [];
 
   return [{ title: data.title }];

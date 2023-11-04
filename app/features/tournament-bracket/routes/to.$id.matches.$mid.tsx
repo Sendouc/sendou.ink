@@ -12,7 +12,7 @@ import {
 import clsx from "clsx";
 import { nanoid } from "nanoid";
 import * as React from "react";
-import { useEventSource } from "remix-utils";
+import { useEventSource } from "remix-utils/sse/react";
 import invariant from "tiny-invariant";
 import { Avatar } from "~/components/Avatar";
 import { LinkButton } from "~/components/Button";

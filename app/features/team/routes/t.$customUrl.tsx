@@ -48,11 +48,7 @@ import {
 } from "../team-utils";
 import styles from "../team.css";
 
-export const meta: MetaFunction = ({
-  data,
-}: {
-  data: SerializeFrom<typeof loader>;
-}) => {
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (!data) return [];
 
   return [

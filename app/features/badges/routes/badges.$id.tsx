@@ -9,7 +9,7 @@ import { useUser } from "~/features/auth/core";
 import { canEditBadgeOwners, isMod } from "~/permissions";
 import { BADGES_PAGE } from "~/utils/urls";
 import { type BadgesLoaderData } from "./badges";
-import { type TFunction } from "react-i18next";
+import { type TFunction } from "i18next";
 import { useTranslation } from "~/hooks/useTranslation";
 import { SPLATOON_3_XP_BADGE_VALUES } from "~/constants";
 import * as BadgeRepository from "../BadgeRepository.server";
