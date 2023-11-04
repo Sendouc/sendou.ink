@@ -6,7 +6,7 @@ import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
 import { userResultsEditHighlightsPage } from "~/utils/urls";
 import type { UserPageLoaderData } from "../../../features/user-page/routes/u.$identifier";
-import { UserResultsTable } from "./components/UserResultsTable";
+import { UserResultsTable } from "~/features/user-page/components/UserResultsTable";
 
 export default function UserResultsPage() {
   const { t } = useTranslation("user");

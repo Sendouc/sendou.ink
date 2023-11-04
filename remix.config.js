@@ -32,6 +32,24 @@ module.exports = {
             "/u/:identifier/vods",
             "features/user-page/routes/u.$identifier.vods.tsx",
           );
+
+          route(
+            "/u/:identifier/builds",
+            "features/user-page/routes/u.$identifier.builds.tsx",
+          );
+          route(
+            "/u/:identifier/builds/new",
+            "features/user-page/routes/u.$identifier.builds.new.tsx",
+          );
+
+          route(
+            "/u/:identifier/results",
+            "features/user-page/routes/u.$identifier.results.tsx",
+          );
+          route(
+            "/u/:identifier/results/highlights",
+            "features/user-page/routes/u.$identifier.results.highlights.tsx",
+          );
         },
       );
 

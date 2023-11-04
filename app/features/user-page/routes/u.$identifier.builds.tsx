@@ -17,10 +17,7 @@ import {
 } from "~/utils/remix";
 import { userNewBuildPage } from "~/utils/urls";
 import { actualNumber, id } from "~/utils/zod";
-import {
-  userParamsSchema,
-  type UserPageLoaderData,
-} from "../../../features/user-page/routes/u.$identifier";
+import { userParamsSchema, type UserPageLoaderData } from "./u.$identifier";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { mainWeaponIds } from "~/modules/in-game-lists";
 import { WeaponImage } from "~/components/Image";

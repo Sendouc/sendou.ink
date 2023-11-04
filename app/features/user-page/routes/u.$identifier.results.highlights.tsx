@@ -13,7 +13,7 @@ import {
   HIGHLIGHT_CHECKBOX_NAME,
   HIGHLIGHT_TOURNAMENT_CHECKBOX_NAME,
   UserResultsTable,
-} from "./components/UserResultsTable";
+} from "~/features/user-page/components/UserResultsTable";
 import { SubmitButton } from "~/components/SubmitButton";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 
