@@ -31,8 +31,9 @@ import {
 } from "../upload-constants";
 import type { ImageUploadType } from "../upload-types";
 import { requestToImgType } from "../upload-utils";
-import { findByIdentifier, isTeamOwner } from "~/features/team";
 import * as TeamRepository from "~/features/team/TeamRepository.server";
+import { findByIdentifier } from "~/features/team/queries/findByIdentifier.server";
+import { isTeamOwner } from "~/features/team/team-utils";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const user = await requireUser(request);

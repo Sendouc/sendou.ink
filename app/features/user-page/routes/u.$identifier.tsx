@@ -9,7 +9,6 @@ import invariant from "tiny-invariant";
 import { z } from "zod";
 import { Main } from "~/components/Main";
 import { SubNav, SubNavLink } from "~/components/SubNav";
-import { countArtByUserId } from "~/features/art";
 import { userTopPlacements } from "~/features/top-search";
 import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/features/auth/core/user";
@@ -34,6 +33,7 @@ import * as BadgeRepository from "~/features/badges/BadgeRepository.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import * as BuildRepository from "~/features/builds/BuildRepository.server";
 import { findVods } from "~/features/vods/queries/findVods.server";
+import { countArtByUserId } from "~/features/art/queries/countArtByUserId.server";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (!data) return [];

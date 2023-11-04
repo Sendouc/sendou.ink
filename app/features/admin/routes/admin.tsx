@@ -17,7 +17,6 @@ import { Catcher } from "~/components/Catcher";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { UserSearch } from "~/components/UserSearch";
-import { makeArtist } from "~/features/art";
 import { useUser } from "~/features/auth/core/user";
 import {
   getUserId,
@@ -35,6 +34,7 @@ import { assertUnreachable } from "~/utils/types";
 import { impersonateUrl, SEED_URL, STOP_IMPERSONATING_URL } from "~/utils/urls";
 import { _action, actualNumber } from "~/utils/zod";
 import * as AdminRepository from "~/features/admin/AdminRepository.server";
+import { makeArtist } from "~/features/art/queries/makeArtist.server";
 
 export const meta: MetaFunction = () => {
   return [{ title: makeTitle("Admin page") }];

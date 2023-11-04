@@ -1,4 +1,3 @@
-import type { TEAM_MEMBER_ROLES } from "~/features/team";
 import type {
   Ability,
   MainWeaponId,
@@ -8,6 +7,7 @@ import type {
 } from "~/modules/in-game-lists";
 import type allTags from "~/features/calendar/tags.json";
 import type { TieredSkill } from "~/features/mmr/tiered.server";
+import type { TEAM_MEMBER_ROLES } from "~/features/team/team-constants";
 
 export interface User {
   id: number;
