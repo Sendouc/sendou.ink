@@ -2,7 +2,11 @@ import shuffle from "just-shuffle";
 import { type InferResult, sql } from "kysely";
 import { db } from "~/db/sql";
 import type { Tables, TablesInsertable } from "~/db/tables";
-import { nextNonCompletedVoting, type MonthYear } from "~/modules/plus-server";
+import {
+  nextNonCompletedVoting,
+  type MonthYear,
+  rangeToMonthYear,
+} from "~/modules/plus-server";
 import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
 import type { Unwrapped } from "~/utils/types";
 import * as PlusSuggestionRepository from "~/features/plus-suggestions/PlusSuggestionRepository.server";
@@ -82,7 +86,7 @@ export async function usersForVoting(loggedInUser: {
 
   const suggestedUsers = (
     await PlusSuggestionRepository.findAllByMonth(
-      nextNonCompletedVoting(new Date()),
+      rangeToMonthYear(nextNonCompletedVoting(new Date())),
     )
   ).filter((suggestion) => suggestion.tier === loggedInUser.plusTier);
   invariant(suggestedUsers);
