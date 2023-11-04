@@ -115,8 +115,7 @@
 }
 
 .layout__main {
-  padding-block-end: var(--s-32);
-  padding-block-start: var(--s-4);
+  padding-block: var(--s-4) var(--s-32);
 }
 
 .layout__log-in-button {
@@ -261,8 +260,7 @@
   -webkit-backdrop-filter: var(--backdrop-filter);
   backdrop-filter: var(--backdrop-filter);
   background-color: transparent;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden auto;
   direction: rtl;
   position: sticky;
 
