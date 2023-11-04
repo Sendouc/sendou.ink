@@ -71,6 +71,8 @@ module.exports = {
       );
       route("/map-pool-events", "features/calendar/routes/map-pool-events.ts");
 
+      route("/maps", "features/map-list-generator/routes/maps.tsx");
+
       route("/upload", "features/img-upload/routes/upload.tsx");
       route("/upload/admin", "features/img-upload/routes/upload.admin.tsx");
       route("/plans", "features/map-planner/routes/plans.tsx");
