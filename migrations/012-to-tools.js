@@ -1,4 +1,4 @@
-module.exports.up = function (db) {
+export function up(db) {
   db.prepare(`alter table "CalendarEvent" add "customUrl" text`).run();
   db.prepare(
     `alter table "CalendarEvent" add "toToolsEnabled" integer default 0`,
@@ -54,9 +54,9 @@ module.exports.up = function (db) {
   db.prepare(
     `create index tournament_team_member_tournament_team_id on "TournamentTeamMember"("tournamentTeamId")`,
   ).run();
-};
+}
 
-module.exports.down = function (db) {
+export function down(db) {
   db.prepare(`drop index calendar_event_custom_url_unique`).run();
   db.prepare(`drop index map_pool_map_tournament_team_id`).run();
   db.prepare(`drop index map_pool_map_tie_breaker_calendar_event_id`).run();
@@ -74,4 +74,4 @@ module.exports.down = function (db) {
 
   db.prepare(`drop table "TournamentTeam"`).run();
   db.prepare(`drop table "TournamentTeamMember"`).run();
-};
+}

@@ -1,4 +1,4 @@
-module.exports.up = function (db) {
+export function up(db) {
   db.prepare(
     /* sql */ `alter table "CalendarEvent" add "isBeforeStart" integer default 1`,
   ).run();
@@ -9,4 +9,4 @@ module.exports.up = function (db) {
   db.prepare(
     /* sql */ `alter table "TournamentTeam" drop column "friendCode"`,
   ).run();
-};
+}

@@ -1,4 +1,4 @@
-module.exports.up = function (db) {
+export function up(db) {
   db.prepare(
     /* sql */ `alter table "User" add "commissionsOpen" integer default 0`,
   ).run();
@@ -42,4 +42,4 @@ module.exports.up = function (db) {
   db.prepare(
     `create index art_user_metadata_user_id on "ArtUserMetadata"("userId")`,
   ).run();
-};
+}

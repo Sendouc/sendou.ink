@@ -1,4 +1,4 @@
-module.exports.up = function (db) {
+export function up(db) {
   db.prepare(
     `
   create table "UserWeapon" (
@@ -16,8 +16,8 @@ module.exports.up = function (db) {
   db.prepare(
     `create index user_weapon_user_id on "UserWeapon"("userId")`,
   ).run();
-};
+}
 
-module.exports.down = function (db) {
+export function down(db) {
   db.prepare(`drop table "UserWeapon"`).run();
-};
+}

@@ -1,4 +1,4 @@
-module.exports.up = function (db) {
+export function up(db) {
   db.prepare(`drop view "PlusTier"`).run();
 
   db.prepare(
@@ -64,4 +64,4 @@ module.exports.up = function (db) {
     insert into "PlusTier" ("userId", "tier") select "userId", "tier" from "FreshPlusTier" where "tier" is not null;
   `,
   ).run();
-};
+}

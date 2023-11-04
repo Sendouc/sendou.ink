@@ -1,4 +1,4 @@
-module.exports.up = function (db) {
+export function up(db) {
   db.prepare(
     /*sql*/ `
     create table "LogInLink" (
@@ -9,4 +9,4 @@ module.exports.up = function (db) {
     ) strict
   `,
   ).run();
-};
+}

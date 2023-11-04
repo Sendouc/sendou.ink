@@ -1,4 +1,4 @@
-module.exports.up = function (db) {
+export function up(db) {
   db.prepare(
     `
     create table "Build" (
@@ -46,10 +46,10 @@ module.exports.up = function (db) {
   db.prepare(
     `create index build_ability_build_id on "BuildAbility"("buildId")`,
   ).run();
-};
+}
 
-module.exports.down = function (db) {
+export function down(db) {
   for (const table of ["Build", "BuildWeapon", "BuildAbility"]) {
     db.prepare(`drop table "${table}"`).run();
   }
-};
+}

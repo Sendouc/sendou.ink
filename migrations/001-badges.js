@@ -1,4 +1,4 @@
-module.exports.up = function (db) {
+export function up(db) {
   db.prepare(
     `
     create table "Badge" (
@@ -33,13 +33,13 @@ module.exports.up = function (db) {
     ) strict
   `,
   ).run();
-};
+}
 
-module.exports.down = function (db) {
+export function down(db) {
   db.prepare(`drop table "Badge"`).run();
   db.prepare(`drop table "BadgeOwner"`).run();
   db.prepare(`drop table "BadgeManager"`).run();
-};
+}
 
 function initialBadgesForDb() {
   return [

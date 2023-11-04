@@ -1,4 +1,4 @@
-module.exports.up = function (db) {
+export function up(db) {
   db.prepare(
     `
     create table "MapPool" (
@@ -31,13 +31,13 @@ module.exports.up = function (db) {
   db.prepare(
     `create index calendar_event_map_pool_id on "CalendarEvent"("mapPoolId")`,
   ).run();
-};
+}
 
-module.exports.down = function (db) {
+export function down(db) {
   for (const table of ["MapPool", "MapPoolMap"]) {
     db.prepare(`drop table "${table}"`).run();
   }
 
   db.prepare(`drop index calendar_event_map_pool_id`).run();
   db.prepare(`alter table "CalendarEvent" drop column "mapPoolId"`).run();
-};
+}

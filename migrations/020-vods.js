@@ -1,4 +1,4 @@
-module.exports.up = function (db) {
+export function up(db) {
   db.prepare(
     `alter table "User" add column "isVideoAdder" integer default 0`,
   ).run();
@@ -67,4 +67,4 @@ module.exports.up = function (db) {
   db.prepare(
     `create index video_match_player_player_user_id on "VideoMatchPlayer"("playerUserId")`,
   ).run();
-};
+}

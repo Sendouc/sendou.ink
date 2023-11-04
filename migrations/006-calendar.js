@@ -1,4 +1,4 @@
-module.exports.up = function (db) {
+export function up(db) {
   db.prepare(
     `
     create table "CalendarEvent" (
@@ -62,9 +62,9 @@ module.exports.up = function (db) {
     ) strict
     `,
   ).run();
-};
+}
 
-module.exports.down = function (db) {
+export function down(db) {
   for (const table of [
     "CalendarEventDate",
     "CalendarEventResultPlayer",
@@ -74,4 +74,4 @@ module.exports.down = function (db) {
   ]) {
     db.prepare(`drop table "${table}"`).run();
   }
-};
+}

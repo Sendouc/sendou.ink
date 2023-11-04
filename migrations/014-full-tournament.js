@@ -1,4 +1,4 @@
-module.exports.up = function (db) {
+export function up(db) {
   db.prepare(
     /*sql*/ `alter table "CalendarEvent" drop column "isBeforeStart"`,
   ).run();
@@ -128,4 +128,4 @@ module.exports.up = function (db) {
   db.prepare(
     /*sql*/ `create index tournament_match_game_result_winner_team_id on "TournamentMatchGameResult"("winnerTeamId")`,
   ).run();
-};
+}

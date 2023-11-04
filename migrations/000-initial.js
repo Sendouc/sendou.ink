@@ -1,4 +1,4 @@
-module.exports.up = function (db) {
+export function up(db) {
   db.prepare(
     `
   create table "User" (
@@ -143,12 +143,12 @@ module.exports.up = function (db) {
       "votedId";
   `,
   ).run();
-};
+}
 
-module.exports.down = function (db) {
+export function down(db) {
   db.prepare(`drop view "PlusVotingResult"`).run();
   db.prepare(`drop view "PlusTier"`).run();
   db.prepare(`drop table "User"`).run();
   db.prepare(`drop table "PlusSuggestion"`).run();
   db.prepare(`drop table "PlusVote"`).run();
-};
+}

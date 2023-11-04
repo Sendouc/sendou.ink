@@ -1,4 +1,4 @@
-module.exports.up = function (db) {
+export function up(db) {
   db.prepare(
     /*sql*/ `
     create table "TournamentSub" (
@@ -16,4 +16,4 @@ module.exports.up = function (db) {
     ) strict
   `,
   ).run();
-};
+}

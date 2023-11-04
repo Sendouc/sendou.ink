@@ -1,4 +1,4 @@
-module.exports.up = function (db) {
+export function up(db) {
   db.prepare(
     `create index tournament_sub_user_id on "TournamentSub"("userId")`,
   ).run();
@@ -111,4 +111,4 @@ module.exports.up = function (db) {
   db.prepare(
     `create index tournament_result_tournament_id on "TournamentResult"("tournamentId")`,
   ).run();
-};
+}

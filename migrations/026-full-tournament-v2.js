@@ -1,4 +1,4 @@
-module.exports.up = function (db) {
+export function up(db) {
   db.prepare(/* sql */ `drop index "calendar_event_custom_url_unique"`).run();
   db.prepare(/*sql*/ `drop table "TournamentBracket"`).run();
   db.prepare(/*sql*/ `drop table "TournamentMatchParticipant"`).run();
@@ -231,4 +231,4 @@ module.exports.up = function (db) {
   db.prepare(
     `create index trust_relationship_trust_receiver_user_id on "TrustRelationship"("trustReceiverUserId")`,
   ).run();
-};
+}

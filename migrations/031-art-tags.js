@@ -1,4 +1,4 @@
-module.exports.up = function (db) {
+export function up(db) {
   db.prepare(
     /*sql*/ `
     create table "ArtTag" (
@@ -24,4 +24,4 @@ module.exports.up = function (db) {
 
   db.prepare(`create index tagged_art_art_id on "TaggedArt"("artId")`).run();
   db.prepare(`create index tagged_art_tag_id on "TaggedArt"("tagId")`).run();
-};
+}

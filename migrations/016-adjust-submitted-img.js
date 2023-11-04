@@ -1,4 +1,4 @@
-module.exports.up = function (db) {
+export function up(db) {
   db.prepare(
     /* sql */ `
     drop table "UnvalidatedUserSubmittedImage"
@@ -20,4 +20,4 @@ module.exports.up = function (db) {
   db.prepare(
     `create index submitter_user_id on "UnvalidatedUserSubmittedImage"("submitterUserId")`,
   ).run();
-};
+}

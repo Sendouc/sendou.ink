@@ -1,4 +1,4 @@
-module.exports.up = function (db) {
+export function up(db) {
   db.prepare(
     /*sql*/ `
   create table "XRankPlacement" (
@@ -40,4 +40,4 @@ module.exports.up = function (db) {
   db.prepare(
     `create index splatoon_player_user_id on "SplatoonPlayer"("userId")`,
   ).run();
-};
+}

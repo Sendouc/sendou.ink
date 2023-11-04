@@ -1,4 +1,4 @@
-module.exports.up = function (db) {
+export function up(db) {
   db.prepare(`alter table "User" add column "patronTier" integer`).run();
   db.prepare(`alter table "User" add column "patronSince" integer`).run();
 
@@ -33,9 +33,9 @@ module.exports.up = function (db) {
       where "patronTier" > 1
   `,
   ).run();
-};
+}
 
-module.exports.down = function (db) {
+export function down(db) {
   db.prepare(`drop view "BadgeOwner"`).run();
   db.prepare(`alter table "User" drop column "patronTier"`).run();
   db.prepare(`alter table "User" drop column "patronSince"`).run();
@@ -45,4 +45,4 @@ module.exports.down = function (db) {
   ).run();
 
   db.prepare(`alter table "TournamentBadgeOwner" rename to "BadgeOwner"`).run();
-};
+}

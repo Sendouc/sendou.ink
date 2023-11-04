@@ -1,4 +1,4 @@
-module.exports.up = function (db) {
+export function up(db) {
   db.transaction(() => {
     db.prepare(`delete from "Skill"`).run();
     db.prepare(`create index skill_identifier on "Skill"("identifier")`).run();
@@ -197,4 +197,4 @@ module.exports.up = function (db) {
       `create index reported_weapon_user_id on "ReportedWeapon"("userId")`,
     ).run();
   })();
-};
+}

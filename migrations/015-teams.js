@@ -1,4 +1,4 @@
-module.exports.up = function (db) {
+export function up(db) {
   db.prepare(
     /*sql*/ `
     create table "UnvalidatedUserSubmittedImage" (
@@ -74,4 +74,4 @@ module.exports.up = function (db) {
       "Team"."id" is not null
   `,
   ).run();
-};
+}

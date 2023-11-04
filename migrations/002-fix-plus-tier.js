@@ -1,6 +1,6 @@
 // add missing min() call to handle multiple results w/ suggests correctly
 
-module.exports.up = function (db) {
+export function up(db) {
   db.prepare(`drop view "PlusTier"`).run();
 
   db.prepare(
@@ -50,9 +50,9 @@ module.exports.up = function (db) {
         "votedId";
   `,
   ).run();
-};
+}
 
-module.exports.down = function (db) {
+export function down(db) {
   db.prepare(`drop view "PlusTier"`).run();
 
   db.prepare(
@@ -100,4 +100,4 @@ module.exports.down = function (db) {
       "votedId";
   `,
   ).run();
-};
+}
