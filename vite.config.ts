@@ -8,12 +8,16 @@ export default defineConfig(({ mode }) => {
   process.env = { ...process.env, ...env };
 
   return {
+    server: {
+      port: Number(process.env["PORT"]) ?? 5800,
+    },
     ssr: {
       noExternal: ["remix-i18next", "react-charts"],
     },
     plugins: [
       tsconfigPaths(),
       remix({
+        // not sure why the types don't match here, this example is from docs
         // eslint-disable-next-line @typescript-eslint/require-await
         routes: async (defineRoutes) => {
           return defineRoutes((route) => {
