@@ -178,6 +178,6 @@ export type SendouRouteHandle = {
  */
 export function privatelyCachedJson<T>(data: T) {
   return json(data, {
-    headers: { "Cache-Control": "private, max-age=20" },
+    headers: { "Cache-Control": "private, max-age=5" },
   });
 }

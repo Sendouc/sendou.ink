@@ -1,4 +1,3 @@
-import type { Badge as BadgeDBType } from "~/db/types";
 import { badgeUrl } from "~/utils/urls";
 import { Image } from "./Image";
 
@@ -8,7 +7,7 @@ export function Badge({
   isAnimated,
   size,
 }: {
-  badge: Pick<BadgeDBType, "displayName" | "code" | "hue">;
+  badge: { displayName: string; hue?: number | null; code: string };
   onClick?: () => void;
   isAnimated: boolean;
   size: number;

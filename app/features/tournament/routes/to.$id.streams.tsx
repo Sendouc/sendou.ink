@@ -23,7 +23,9 @@ export default function TournamentStreamsPage() {
   const data = useLoaderData<typeof loader>();
 
   if (!parentRouteData.hasStarted || parentRouteData.hasFinalized) {
-    return <Redirect to={tournamentRegisterPage(parentRouteData.event.id)} />;
+    return (
+      <Redirect to={tournamentRegisterPage(parentRouteData.tournament.id)} />
+    );
   }
 
   if (data.streams.length === 0) {

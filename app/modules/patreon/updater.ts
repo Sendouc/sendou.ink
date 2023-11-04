@@ -1,6 +1,4 @@
 import type { z } from "zod";
-import { db } from "~/db";
-import type { UpdatePatronDataArgs } from "~/db/models/users/queries.server";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { fetchWithTimeout } from "~/utils/fetch";
 import type { Unpacked } from "~/utils/types";
@@ -12,6 +10,7 @@ import {
   TIER_4_ID,
 } from "./constants";
 import { patronResponseSchema } from "./schema";
+import * as UserRepository from "~/features/user-page/UserRepository.server";
 
 interface NoDiscordConnectionUser {
   email: string;
@@ -19,7 +18,7 @@ interface NoDiscordConnectionUser {
 }
 
 export async function updatePatreonData(): Promise<void> {
-  const patrons: UpdatePatronDataArgs = [];
+  const patrons: UserRepository.UpdatePatronDataArgs = [];
   const noDiscordConnected: Array<NoDiscordConnectionUser> = [];
   const noDataIds: Array<string> = [];
   let nextUrlToFetchWith = PATREON_INITIAL_URL;
@@ -36,7 +35,7 @@ export async function updatePatreonData(): Promise<void> {
     nextUrlToFetchWith = patronData.links.next ?? "";
   }
 
-  db.users.updatePatronData(patrons);
+  await UserRepository.updatePatronData(patrons);
 
   // eslint-disable-next-line no-console
   console.log(
@@ -79,7 +78,7 @@ function parsePatronData({
   const patronsWithIds: Array<
     {
       patreonId: string;
-    } & Omit<Unpacked<UpdatePatronDataArgs>, "discordId">
+    } & Omit<Unpacked<UserRepository.UpdatePatronDataArgs>, "discordId">
   > = [];
 
   for (const patron of data) {
@@ -100,7 +99,7 @@ function parsePatronData({
   }
 
   const result: {
-    patrons: UpdatePatronDataArgs;
+    patrons: UserRepository.UpdatePatronDataArgs;
     noDiscordConnection: Array<NoDiscordConnectionUser>;
     noDataIds: string[];
   } = {

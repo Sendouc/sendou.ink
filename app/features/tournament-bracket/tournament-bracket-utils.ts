@@ -145,7 +145,7 @@ export function HACKY_resolvePoolCode({
   event,
   matchId,
 }: {
-  event: TournamentLoaderData["event"];
+  event: TournamentLoaderData["tournament"];
   matchId: number;
 }) {
   const prefix = event.name.includes("In The Zone") ? "ITZ" : "PN";

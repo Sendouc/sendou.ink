@@ -7,10 +7,9 @@ import { useTranslation } from "~/hooks/useTranslation";
 import { canAdminTournament, isAdmin } from "~/permissions";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { discordFullName } from "~/utils/strings";
-import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
 import { updateShowMapListGenerator } from "../queries/updateShowMapListGenerator.server";
-import { requireUserId } from "~/modules/auth/user.server";
+import { requireUserId } from "~/features/auth/core/user.server";
 import {
   HACKY_resolveCheckInTime,
   tournamentIdFromParams,
@@ -27,7 +26,7 @@ import hasTournamentStarted from "../queries/hasTournamentStarted.server";
 import type { TournamentLoaderData } from "./to.$id";
 import { joinTeam, leaveTeam } from "../queries/joinLeaveTeam.server";
 import { deleteTeam } from "../queries/deleteTeam.server";
-import { useUser } from "~/modules/auth";
+import { useUser } from "~/features/auth/core";
 import {
   calendarEditPage,
   calendarEventPage,
@@ -37,6 +36,7 @@ import { Redirect } from "~/components/Redirect";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { findMapPoolByTeamId } from "~/features/tournament-bracket";
 import { UserSearch } from "~/components/UserSearch";
+import * as TournamentRepository from "../TournamentRepository.server";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUserId(request);
@@ -46,15 +46,17 @@ export const action: ActionFunction = async ({ request, params }) => {
   });
 
   const tournamentId = tournamentIdFromParams(params);
-  const event = notFoundIfFalsy(findByIdentifier(tournamentId));
-  const teams = findTeamsByTournamentId(event.id);
+  const tournament = notFoundIfFalsy(
+    await TournamentRepository.findById(tournamentId),
+  );
+  const teams = findTeamsByTournamentId(tournament.id);
 
-  validate(canAdminTournament({ user, event }), "Unauthorized", 401);
+  validate(canAdminTournament({ user, tournament }), "Unauthorized", 401);
 
   switch (data._action) {
     case "UPDATE_SHOW_MAP_LIST_GENERATOR": {
       updateShowMapListGenerator({
-        tournamentId: event.id,
+        tournamentId: tournament.id,
         showMapListGenerator: Number(data.show),
       });
       break;
@@ -79,7 +81,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       const team = teams.find((t) => t.id === data.teamId);
       validate(team, "Invalid team id");
       validateCanCheckIn({
-        event,
+        event: tournament,
         team,
         mapPool: findMapPoolByTeamId(team.id),
       });
@@ -90,7 +92,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     case "CHECK_OUT": {
       const team = teams.find((t) => t.id === data.teamId);
       validate(team, "Invalid team id");
-      validate(!hasTournamentStarted(event.id), "Tournament has started");
+      validate(!hasTournamentStarted(tournament.id), "Tournament has started");
 
       checkOut(team.id);
       break;
@@ -121,7 +123,7 @@ export const action: ActionFunction = async ({ request, params }) => {
         t.members.some((m) => m.userId === data.userId),
       );
 
-      if (hasTournamentStarted(event.id)) {
+      if (hasTournamentStarted(tournament.id)) {
         validate(
           !previousTeam || !previousTeam.checkedInAt,
           "User is already on a checked in team",
@@ -143,7 +145,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     case "DELETE_TEAM": {
       const team = teams.find((t) => t.id === data.teamId);
       validate(team, "Invalid team id");
-      validate(!hasTournamentStarted(event.id), "Tournament has started");
+      validate(!hasTournamentStarted(tournament.id), "Tournament has started");
 
       deleteTeam(team.id);
       break;
@@ -163,8 +165,11 @@ export default function TournamentAdminPage() {
 
   const user = useUser();
 
-  if (!canAdminTournament({ user, event: data.event }) || data.hasFinalized) {
-    return <Redirect to={tournamentPage(data.event.id)} />;
+  if (
+    !canAdminTournament({ user, tournament: data.tournament }) ||
+    data.hasFinalized
+  ) {
+    return <Redirect to={tournamentPage(data.tournament.id)} />;
   }
 
   return (
@@ -174,7 +179,7 @@ export default function TournamentAdminPage() {
       <DownloadParticipants />
       <div className="stack horizontal items-end mt-4">
         <LinkButton
-          to={calendarEditPage(data.event.eventId)}
+          to={calendarEditPage(data.tournament.eventId)}
           size="tiny"
           variant="outlined"
         >
@@ -183,9 +188,9 @@ export default function TournamentAdminPage() {
         {!data.hasStarted ? (
           <FormWithConfirm
             dialogHeading={t("calendar:actions.delete.confirm", {
-              name: data.event.name,
+              name: data.tournament.name,
             })}
-            action={calendarEventPage(data.event.eventId)}
+            action={calendarEventPage(data.tournament.eventId)}
             submitButtonTestId="delete-submit-button"
           >
             <Button
@@ -253,7 +258,9 @@ function AdminActions() {
     for (const when of action.when) {
       switch (when) {
         case "CHECK_IN_STARTED": {
-          if (HACKY_resolveCheckInTime(data.event).getTime() > Date.now()) {
+          if (
+            HACKY_resolveCheckInTime(data.tournament).getTime() > Date.now()
+          ) {
             return false;
           }
 
@@ -349,7 +356,7 @@ function EnableMapList() {
   const data = useOutletContext<TournamentLoaderData>();
   const submit = useSubmit();
   const [eventStarted, setEventStarted] = React.useState(
-    Boolean(data.event.showMapListGenerator),
+    Boolean(data.tournament.showMapListGenerator),
   );
   function handleToggle(toggled: boolean) {
     setEventStarted(toggled);

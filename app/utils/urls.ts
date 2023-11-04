@@ -20,7 +20,7 @@ import type {
   BuildAbilitiesTupleWithUnknown,
 } from "~/modules/in-game-lists/types";
 import type navItems from "~/components/layout/nav-items.json";
-import { type AuthErrorCode } from "~/modules/auth";
+import { type AuthErrorCode } from "~/features/auth/core";
 import type { StageBackgroundStyle } from "~/features/map-planner";
 import type { ImageUploadType } from "~/features/img-upload";
 import { serializeBuild } from "~/features/build-analyzer";

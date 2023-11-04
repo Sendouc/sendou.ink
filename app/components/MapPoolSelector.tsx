@@ -7,7 +7,7 @@ import {
   type StageId,
 } from "~/modules/in-game-lists";
 import { modes, stageIds } from "~/modules/in-game-lists";
-import { MapPool } from "~/modules/map-pool-serializer";
+import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import { modeImageUrl, stageImageUrl } from "~/utils/urls";
 import { Button } from "~/components/Button";
 import { split, startsWith } from "~/utils/strings";
@@ -15,7 +15,7 @@ import { CrossIcon } from "./icons/Cross";
 import { ArrowLongLeftIcon } from "./icons/ArrowLongLeft";
 import * as React from "react";
 import type { CalendarEvent } from "~/db/types";
-import type { SerializedMapPoolEvent } from "~/routes/calendar/map-pool-events";
+import type { SerializedMapPoolEvent } from "~/features/calendar/routes/map-pool-events";
 import { assertType } from "~/utils/types";
 import { MapPoolEventsCombobox } from "./Combobox";
 

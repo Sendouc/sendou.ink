@@ -1,5 +1,6 @@
 import { getWeek } from "date-fns";
 
+// TODO: when this lands https://github.com/remix-run/remix/discussions/7768 we can get rid of this (utilizing Kysely plugin to do converting from/to Date for us)
 export function databaseTimestampToDate(timestamp: number) {
   return new Date(timestamp * 1000);
 }

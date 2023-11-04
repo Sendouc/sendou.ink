@@ -3,9 +3,9 @@ import * as assert from "uvu/assert";
 import { createTournamentMapList } from ".";
 import type { RankedModeShort } from "../in-game-lists";
 import { rankedModesShort } from "../in-game-lists/modes";
-import { MapPool } from "../map-pool-serializer";
 import type { TournamentMaplistInput } from "./types";
 import { DEFAULT_MAP_POOL } from "./constants";
+import { MapPool } from "~/features/map-list-generator/core/map-pool";
 
 const TournamentMapListGenerator = suite("Tournament map list generator");
 const TournamentMapListGeneratorOneMode = suite(

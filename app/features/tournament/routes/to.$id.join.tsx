@@ -4,8 +4,8 @@ import { Form, useLoaderData, useOutletContext } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { SubmitButton } from "~/components/SubmitButton";
 import { INVITE_CODE_LENGTH } from "~/constants";
-import { useUser } from "~/modules/auth";
-import { requireUserId } from "~/modules/auth/user.server";
+import { useUser } from "~/features/auth/core";
+import { requireUserId } from "~/features/auth/core/user.server";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
 import { tournamentPage } from "~/utils/urls";
@@ -138,7 +138,7 @@ export default function JoinTeamPage() {
 
         return t("tournament:join.VALID", {
           teamName: teamToJoin.name,
-          eventName: parentRouteData.event.name,
+          eventName: parentRouteData.tournament.name,
         });
       }
       default: {

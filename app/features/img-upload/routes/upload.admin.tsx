@@ -2,7 +2,7 @@ import type { ActionFunction, LoaderArgs } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
-import { requireUserId } from "~/modules/auth/user.server";
+import { requireUserId } from "~/features/auth/core/user.server";
 import { isMod } from "~/permissions";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { userSubmittedImage } from "~/utils/urls";

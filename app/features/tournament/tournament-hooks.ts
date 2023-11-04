@@ -16,8 +16,12 @@ export function useSelectCounterpickMapPoolState() {
       .filter((pair) => pair.mode === mode)
       .map((pair) => pair.stageId);
 
-    if (filteredStages.length !== mapPickCountPerMode(parentRouteData.event)) {
-      return new Array(mapPickCountPerMode(parentRouteData.event)).fill(null);
+    if (
+      filteredStages.length !== mapPickCountPerMode(parentRouteData.tournament)
+    ) {
+      return new Array(mapPickCountPerMode(parentRouteData.tournament)).fill(
+        null,
+      );
     }
 
     return filteredStages as [StageId, StageId];
@@ -40,7 +44,7 @@ export function useSelectCounterpickMapPoolState() {
     (e) => {
       setCounterpickMaps({
         ...counterpickMaps,
-        [mode]: new Array(mapPickCountPerMode(parentRouteData.event))
+        [mode]: new Array(mapPickCountPerMode(parentRouteData.tournament))
           .fill(null)
           .map((_, i) => counterpickMaps[mode][i])
           .map((stageId, j) => {

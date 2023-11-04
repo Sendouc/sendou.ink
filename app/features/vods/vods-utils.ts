@@ -2,8 +2,8 @@ import type { User } from "~/db/types";
 import { isAdmin } from "~/permissions";
 import { type VideoBeingAdded, type Vod } from "./vods-types";
 
-export function canAddVideo(user: Pick<User, "isVideoAdder">) {
-  return user.isVideoAdder;
+export function canAddVideo(args: { isVideoAdder: number | null }) {
+  return args.isVideoAdder;
 }
 
 export function vodToVideoBeingAdded(vod: Vod): VideoBeingAdded {

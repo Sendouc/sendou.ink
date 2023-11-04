@@ -9,7 +9,7 @@ import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { INVITE_CODE_LENGTH } from "~/constants";
 import { useTranslation } from "~/hooks/useTranslation";
-import { requireUser } from "~/modules/auth";
+import { requireUser } from "~/features/auth/core";
 import {
   notFoundIfFalsy,
   validate,

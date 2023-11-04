@@ -14,7 +14,7 @@ import { YouTubeEmbed } from "~/components/YouTubeEmbed";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
 import { useTranslation } from "~/hooks/useTranslation";
-import { useUser } from "~/modules/auth";
+import { useUser } from "~/features/auth/core";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { secondsToMinutes } from "~/utils/number";
 import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";

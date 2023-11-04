@@ -2,7 +2,7 @@ import { useCatch, useLocation } from "@remix-run/react";
 import clsx from "clsx";
 import type * as React from "react";
 import { useMatches } from "react-router";
-import { useUser } from "~/modules/auth";
+import { useUser } from "~/features/auth/core";
 import type { RootLoaderData } from "~/root";
 import { SideNav } from "app/components/layout/SideNav";
 
