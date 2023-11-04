@@ -1,8 +1,7 @@
 /**
  * @type {import('@remix-run/dev').AppConfig}
  */
-module.exports = {
-  ignoredRouteFiles: ["**/.*", "**/*.json", "**/components/*"],
+export default {
   cacheDirectory: process.env.NODE_ENV === "test" ? ".cache-test" : undefined,
   routes: async (defineRoutes) => {
     return defineRoutes((route) => {
@@ -234,14 +233,5 @@ module.exports = {
         "features/auth/routes/auth.impersonate.stop.tsx",
       );
     });
-  },
-  serverModuleFormat: "cjs",
-  serverDependenciesToBundle: ["react-charts", "d3-time-format"],
-  future: {
-    v2_meta: true,
-    v2_normalizeFormMethod: true,
-    v2_dev: true,
-    v2_headers: true,
-    v2_errorBoundary: true,
   },
 };
