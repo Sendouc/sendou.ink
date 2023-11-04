@@ -105,11 +105,11 @@ If you want to use the API then please leave an issue explaining your use case. 
 sendou.ink/
 ├── app/
 │   ├── components/ -- React components
-│   ├── db/ -- Database layer
+│   ├── db/ -- Database access
+│   ├── features/ -- Features of the app (see below)
 │   ├── hooks/ -- React hooks
-│   ├── modules/ -- "nodu_modules but part of the app" https://twitter.com/ryanflorence/status/1535103735952658432
-│   ├── routes/ -- Routes see: https://remix.run/docs/en/v1/guides/routing
-│   ├── styles/ -- All .css files of the project for styling
+│   ├── modules/ -- "node_modules but part of the app" https://twitter.com/ryanflorence/status/1535103735952658432
+│   ├── styles/ -- Some of the .css files of the project for styling
 │   ├── utils/ -- Random helper functions used in many places
 │   └── permissions.ts / -- What actions are allowed. Separated by frontend and backend as frontend has constraints based on what user sees.
 ├── migrations/ -- Database migrations
@@ -130,13 +130,11 @@ Feature folders contain all the code needed to make that feature happen. Some co
 
 Some common files:
 
-- styles.css
+- feature-styles.css
 - feature-hooks.ts
 - feature-utils.ts
 - feature-constants.ts
 - feature-schemas.server.ts
-
-Note: Currently the project is in progress to migrating this style so that's why not everything is using it yet.
 
 ## Commands
 
