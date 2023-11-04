@@ -328,7 +328,9 @@ Firefox scrollbar styling is above in .layout__side-nav
   }
 
   .layout__main {
-    padding-block-start: calc(env(safe-area-inset-top) + var(--s-16));
+    padding-block-start: calc(
+      env(safe-area-inset-top) + var(--leaderboard-top-spacing)
+    );
   }
 }
 
