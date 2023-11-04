@@ -39,7 +39,6 @@ import {
 } from "~/utils/urls";
 import { stageIds } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
-import { MapPool } from "~/modules/map-pool-serializer";
 import { SubmitButton } from "~/components/SubmitButton";
 import { getUserId, requireUserId } from "~/modules/auth/user.server";
 import { frontPageSchema } from "../q-schemas.server";
@@ -76,6 +75,7 @@ import { CrossIcon } from "~/components/icons/Cross";
 import { updateVCStatus } from "../queries/updateVCStatus.server";
 import { sql } from "~/db/sql";
 import { deleteLikesByGroupId } from "../queries/deleteLikesByGroupId.server";
+import { MapPool } from "~/features/map-list-generator/core/map-pool";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],

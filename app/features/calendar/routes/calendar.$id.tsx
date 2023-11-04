@@ -24,7 +24,7 @@ import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
 import { requireUserId } from "~/modules/auth/user.server";
 import { i18next } from "~/modules/i18n";
-import { MapPool } from "~/modules/map-pool-serializer";
+import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import {
   canDeleteCalendarEvent,
   canEditCalendarEvent,

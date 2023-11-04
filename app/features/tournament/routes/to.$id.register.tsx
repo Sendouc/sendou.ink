@@ -37,7 +37,6 @@ import type {
 } from "~/modules/in-game-lists";
 import { stageIds } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
-import { MapPool } from "~/modules/map-pool-serializer";
 import { databaseTimestampToDate } from "~/utils/dates";
 import {
   notFoundIfFalsy,
@@ -90,6 +89,7 @@ import { deleteTeam } from "../queries/deleteTeam.server";
 import { findMapPoolByTeamId } from "~/features/tournament-bracket";
 import { Popover } from "~/components/Popover";
 import * as TeamRepository from "~/features/team/TeamRepository.server";
+import { MapPool } from "~/features/map-list-generator/core/map-pool";
 
 export const handle: SendouRouteHandle = {
   breadcrumb: () => ({

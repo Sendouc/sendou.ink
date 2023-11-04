@@ -1,6 +1,7 @@
 import type { MapPoolMap } from "~/db/types";
-import type { ModeShort } from "../in-game-lists";
-import type { MapPool, MapPoolObject } from "../map-pool-serializer";
+import type { ModeShort } from "../../../../modules/in-game-lists";
+import type { MapPool } from "../map-pool";
+import type { MapPoolObject } from "../map-pool-serializer/types";
 
 export function mapPoolToNonEmptyModes(mapPool: MapPool) {
   const result: ModeShort[] = [];

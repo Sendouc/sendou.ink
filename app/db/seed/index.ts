@@ -22,7 +22,7 @@ import {
   stageIds,
 } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
-import { MapPool } from "~/modules/map-pool-serializer";
+import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import {
   lastCompletedVoting,
   nextNonCompletedVoting,

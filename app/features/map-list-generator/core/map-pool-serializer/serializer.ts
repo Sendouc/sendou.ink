@@ -1,5 +1,9 @@
 import invariant from "tiny-invariant";
-import { modesShort, type StageId, stageIds } from "../in-game-lists";
+import {
+  modesShort,
+  type StageId,
+  stageIds,
+} from "../../../../modules/in-game-lists";
 import type { MapPoolObject, ReadonlyMapPoolObject } from "./types";
 
 export function mapPoolToSerializedString(

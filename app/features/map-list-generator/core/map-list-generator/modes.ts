@@ -1,5 +1,5 @@
 import shuffle from "just-shuffle";
-import type { ModeShort } from "../in-game-lists";
+import type { ModeShort } from "../../../../modules/in-game-lists";
 
 export function modesOrder(
   type: "EQUAL" | "SZ_EVERY_OTHER",

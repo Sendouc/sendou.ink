@@ -6,7 +6,8 @@ import type {
   ModeWithStage,
   StageId,
 } from "~/modules/in-game-lists";
-import type { MapPool, MapPoolObject } from "~/modules/map-pool-serializer";
+import type { MapPool } from "../map-pool";
+import type { MapPoolObject } from "../map-pool-serializer/types";
 
 const BACKLOG = 2;
 

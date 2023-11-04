@@ -1,16 +1,19 @@
 import {
   mapPoolToSerializedString,
   serializedStringToMapPool,
-} from "./serializer";
-import type { ReadonlyMapPoolObject, MapPoolObject } from "./types";
+} from "./map-pool-serializer/serializer";
+import type {
+  ReadonlyMapPoolObject,
+  MapPoolObject,
+} from "./map-pool-serializer/types";
 import clone from "just-clone";
 import type { MapPoolMap } from "~/db/types";
-import { mapPoolListToMapPoolObject } from "~/modules/map-list-generator";
 import {
   type ModeShort,
   type StageId,
   stageIds,
 } from "~/modules/in-game-lists";
+import { mapPoolListToMapPoolObject } from "./map-list-generator/utils";
 
 type DbMapPoolList = Array<Pick<MapPoolMap, "stageId" | "mode">>;
 

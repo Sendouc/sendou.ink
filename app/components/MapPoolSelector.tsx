@@ -7,7 +7,7 @@ import {
   type StageId,
 } from "~/modules/in-game-lists";
 import { modes, stageIds } from "~/modules/in-game-lists";
-import { MapPool } from "~/modules/map-pool-serializer";
+import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import { modeImageUrl, stageImageUrl } from "~/utils/urls";
 import { Button } from "~/components/Button";
 import { split, startsWith } from "~/utils/strings";

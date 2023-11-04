@@ -13,7 +13,6 @@ import { useSearchParamState } from "~/hooks/useSearchParamState";
 import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/modules/auth";
 import { getUserId } from "~/modules/auth/user.server";
-import { MapPool } from "~/modules/map-pool-serializer";
 import { createTournamentMapList } from "~/modules/tournament-map-list-generator";
 import type {
   TournamentMapListMap,
@@ -34,6 +33,7 @@ import {
 } from "../tournament-utils";
 import type { TournamentLoaderData } from "./to.$id";
 import * as TournamentRepository from "../TournamentRepository.server";
+import { MapPool } from "~/features/map-list-generator/core/map-pool";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: mapsStyles }];

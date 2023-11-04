@@ -2,7 +2,7 @@ import { nanoid } from "nanoid";
 import { INVITE_CODE_LENGTH } from "~/constants";
 import { sql } from "~/db/sql";
 import type { Group, GroupMember } from "~/db/types";
-import type { MapPool } from "~/modules/map-pool-serializer";
+import type { MapPool } from "~/features/map-list-generator/core/map-pool";
 
 const createGroupStm = sql.prepare(/* sql */ `
   insert into "Group"

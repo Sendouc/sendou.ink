@@ -1,5 +1,5 @@
 import type { Group, ParsedMemento } from "~/db/types";
-import { MapPool } from "~/modules/map-pool-serializer";
+import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import { createTournamentMapList } from "~/modules/tournament-map-list-generator";
 import { SENDOUQ_BEST_OF } from "../q-constants";
 import type { LookingGroup, LookingGroupWithInviteCode } from "../q-types";

@@ -4,7 +4,7 @@ import { jsonArrayFrom } from "kysely/helpers/sqlite";
 import { db } from "~/db/sql";
 import type { DB, Tables } from "~/db/tables";
 import type { CalendarEventTag } from "~/db/types";
-import { MapPool } from "~/modules/map-pool-serializer";
+import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { sumArray } from "~/utils/number";
 import type { Unwrapped } from "~/utils/types";

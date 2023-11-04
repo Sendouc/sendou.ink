@@ -20,12 +20,6 @@ import { useTranslation } from "~/hooks/useTranslation";
 import { getUserId } from "~/modules/auth/user.server";
 import { i18next } from "~/modules/i18n";
 import { stageIds, type ModeWithStage } from "~/modules/in-game-lists";
-import {
-  generateMapList,
-  mapPoolToNonEmptyModes,
-  modesOrder,
-} from "~/modules/map-list-generator";
-import { MapPool } from "~/modules/map-pool-serializer";
 import styles from "~/styles/maps.css";
 import { type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
@@ -36,6 +30,10 @@ import {
   navIconUrl,
 } from "~/utils/urls";
 import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
+import { MapPool } from "../core/map-pool";
+import { generateMapList } from "../core/map-list-generator/map-list";
+import { modesOrder } from "../core/map-list-generator/modes";
+import { mapPoolToNonEmptyModes } from "../core/map-list-generator/utils";
 
 const AMOUNT_OF_MAPS_IN_MAP_LIST = stageIds.length * 2;
 

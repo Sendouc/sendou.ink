@@ -1,6 +1,5 @@
 import type { Group } from "~/db/types";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
-import type { MapPool } from "~/modules/map-pool-serializer";
 import {
   SENDOUQ_LOOKING_PAGE,
   SENDOUQ_PAGE,
@@ -11,6 +10,7 @@ import { SENDOUQ } from "./q-constants";
 import { stageIds } from "~/modules/in-game-lists";
 import type { Params } from "@remix-run/react";
 import invariant from "tiny-invariant";
+import type { MapPool } from "../map-list-generator/core/map-pool";
 
 function groupRedirectLocation(
   group?: Pick<Group, "status"> & { matchId?: number },
