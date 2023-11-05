@@ -83,6 +83,7 @@ import { groupForMatch } from "../queries/groupForMatch.server";
 import { reportScore } from "../queries/reportScore.server";
 import { reportedWeaponsByMatchId } from "../queries/reportedWeaponsByMatchId.server";
 import { setGroupAsInactive } from "../queries/setGroupAsInactive.server";
+import { useRecentlyReportedWeapons } from "../q-hooks";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -764,6 +765,8 @@ function ReportWeaponsForm() {
   const [reportingMode, setReportingMode] = React.useState<
     "ALL" | "MYSELF" | "MY_TEAM"
   >("MYSELF");
+  const { recentlyReportedWeapons, addRecentlyReportedWeapon } =
+    useRecentlyReportedWeapons();
 
   const playedMaps = data.match.mapList.filter((m) => m.winnerGroupId);
   const winners = playedMaps.map((m) =>
@@ -867,7 +870,7 @@ function ReportWeaponsForm() {
                 winners={winners}
                 showReportedOwnWeapon={false}
               />
-              {i !== 0 ? (
+              {i !== 0 && reportingMode !== "MYSELF" ? (
                 <Button
                   size="tiny"
                   variant="outlined"
@@ -928,8 +931,15 @@ function ReportWeaponsForm() {
                           <WeaponCombobox
                             inputName="weapon"
                             value={weaponSplId}
+                            quickSelectWeaponIds={recentlyReportedWeapons}
                             onChange={(weapon) => {
                               if (!weapon) return;
+
+                              const weaponSplId = Number(
+                                weapon.value,
+                              ) as MainWeaponId;
+
+                              addRecentlyReportedWeapon(weaponSplId);
 
                               setWeaponsUsage((val) => {
                                 const result = val.filter(
@@ -940,9 +950,7 @@ function ReportWeaponsForm() {
                                 );
 
                                 result.push({
-                                  weaponSplId: Number(
-                                    weapon.value,
-                                  ) as MainWeaponId,
+                                  weaponSplId,
                                   mapIndex: i,
                                   groupMatchMapId,
                                   userId: member.id,
@@ -990,6 +998,8 @@ function MapList({
   const [ownWeaponsUsage, setOwnWeaponsUsage] = React.useState<
     ReportedWeaponForMerging[]
   >([]);
+  const { recentlyReportedWeapons, addRecentlyReportedWeapon } =
+    useRecentlyReportedWeapons();
 
   const previouslyReportedWinners = isResubmission
     ? data.match.mapList
@@ -1035,6 +1045,8 @@ function MapList({
                 setWinners={setWinners}
                 weapons={data.reportedWeapons?.[i]}
                 showReportedOwnWeapon={!ownWeaponReported}
+                recentlyReportedWeapons={recentlyReportedWeapons}
+                addRecentlyReportedWeapon={addRecentlyReportedWeapon}
                 onOwnWeaponSelected={(newReportedWeapon) => {
                   if (!newReportedWeapon) return;
 
@@ -1086,6 +1098,8 @@ function MapListMap({
   weapons,
   onOwnWeaponSelected,
   showReportedOwnWeapon,
+  recentlyReportedWeapons,
+  addRecentlyReportedWeapon,
 }: {
   i: number;
   map: Unpacked<SerializeFrom<typeof loader>["match"]["mapList"]>;
@@ -1095,6 +1109,8 @@ function MapListMap({
   weapons?: (MainWeaponId | null)[] | null;
   onOwnWeaponSelected?: (weapon: ReportedWeaponForMerging | null) => void;
   showReportedOwnWeapon: boolean;
+  recentlyReportedWeapons?: MainWeaponId[];
+  addRecentlyReportedWeapon?: (weapon: MainWeaponId) => void;
 }) {
   const user = useUser();
   const data = useLoaderData<typeof loader>();
@@ -1250,14 +1266,19 @@ function MapListMap({
                 <label className="mb-0 text-theme-secondary">Your weapon</label>
                 <WeaponCombobox
                   inputName="weapon"
+                  quickSelectWeaponIds={recentlyReportedWeapons}
                   onChange={(weapon) => {
                     const userId = user!.id;
                     const groupMatchMapId = map.id;
 
+                    const weaponSplId = Number(weapon?.value) as MainWeaponId;
+
+                    addRecentlyReportedWeapon?.(weaponSplId);
+
                     onOwnWeaponSelected(
                       weapon
                         ? {
-                            weaponSplId: Number(weapon.value) as MainWeaponId,
+                            weaponSplId,
                             mapIndex: i,
                             groupMatchMapId,
                             userId,
