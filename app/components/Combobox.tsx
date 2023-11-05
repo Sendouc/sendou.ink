@@ -127,6 +127,7 @@ export function Combobox<
           data-testid={`${inputName}-combobox-input`}
           id={id}
           required={required}
+          autoComplete="off"
         />
         <HeadlessCombobox.Options
           className={clsx("combobox-options", {
