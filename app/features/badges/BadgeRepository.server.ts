@@ -119,14 +119,16 @@ export function replaceOwners({
       .where("badgeId", "=", badgeId)
       .execute();
 
-    await trx
-      .insertInto("TournamentBadgeOwner")
-      .values(
-        ownerIds.map((userId) => ({
-          badgeId,
-          userId,
-        })),
-      )
-      .execute();
+    if (ownerIds.length > 0) {
+      await trx
+        .insertInto("TournamentBadgeOwner")
+        .values(
+          ownerIds.map((userId) => ({
+            badgeId,
+            userId,
+          })),
+        )
+        .execute();
+    }
   });
 }
