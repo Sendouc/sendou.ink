@@ -46,6 +46,10 @@ export const languages = [
     name: "Polski",
   },
   {
+    code: "pt-BR",
+    name: "Português do Brasil",
+  },
+  {
     code: "nl",
     name: "Nederlands",
   },

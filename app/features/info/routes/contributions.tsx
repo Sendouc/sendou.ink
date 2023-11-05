@@ -74,6 +74,10 @@ const TRANSLATORS: Array<{
     language: "pl",
   },
   {
+    translators: [{ name: "Ant", twitter: "Ant__Spl" }],
+    language: "pt-BR",
+  },
+  {
     translators: [{ name: "Ferrari", twitter: "Blusling" }],
     language: "nl",
   },

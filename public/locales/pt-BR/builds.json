@@ -1,0 +1,35 @@
+{
+  "addBuild": "Adicionar conjunto",
+  "reachBuildMaxCount": "Você atingiu o número máximo de conjuntos.",
+  "noBuilds": "Nenhum conjunto ainda. Adicione o seu primeiro!",
+  "buildCard.info": "Info",
+  "buildCard.edit": "Editar",
+
+  "forms.title": "Título",
+  "forms.modes": "Modos",
+  "forms.weapons": "Armas",
+  "forms.gear.HEAD": "Equipamento (cabeça)",
+  "forms.gear.CLOTHES": "Equipamento (roupa)",
+  "forms.gear.SHOES": "Equipamento (sapatos)",
+  "forms.private.info": "Conjuntos privados são visívieis apenas para você",
+
+  "deleteConfirm": "Apagar a build '{{title}}'?",
+
+  "stats.count.title": "Estatísticas de {{count}} conjuntos da(o) {{weapon}}",
+  "stats.ap.title": "Médias dos pontos de habilidade",
+  "stats.percentage.title": "Aparição de habilidades exclusivamente primárias",
+  "stats.all": "Tudo",
+
+  "addFilter": "Adicionar filtro",
+  "linkButton.abilityStats": "Estatísticas de habilidade",
+  "linkButton.popularBuilds": "Conjuntos populares",
+  "noPopularBuilds": "Parece que não existem conjuntos populares para essa arma nesse momento.",
+
+  "emptyAbilitySlot": "Espaço (Slot) de habilidade vazio",
+
+  "filters.title": "Filtrar {{number}}",
+  "filters.has": "Tem",
+  "filters.does.not.have": "Não tem",
+  "filters.atLeast": "Pelo menos",
+  "filters.atMost": "No máximo"
+}
