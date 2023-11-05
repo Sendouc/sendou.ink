@@ -48,6 +48,7 @@ export function migrate(args: { newUserId: number; oldUserId: number }) {
   });
 }
 
+// xxx: rename replace plusTiers
 export function refreshPlusTiers() {
   return db.transaction().execute(async (trx) => {
     await trx.deleteFrom("PlusTier").execute();
@@ -63,6 +64,14 @@ export function refreshPlusTiers() {
       )
       .execute();
   });
+}
+
+export function allPlusTiersFromLatestVoting() {
+  return db
+    .selectFrom("FreshPlusTier")
+    .select(["FreshPlusTier.userId", "FreshPlusTier.tier"])
+    .where("FreshPlusTier.tier", "is not", null)
+    .execute() as Promise<{ userId: number; tier: number }[]>;
 }
 
 export function makeVideoAdderByUserId(userId: number) {
