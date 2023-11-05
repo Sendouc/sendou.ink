@@ -78,6 +78,7 @@ export function Combobox<
 }: ComboboxProps<T>) {
   const { t } = useTranslation();
   const buttonRef = React.useRef<HTMLButtonElement>(null);
+  const inputRef = React.useRef<HTMLInputElement>(null);
 
   const [_selectedOption, setSelectedOption] = React.useState<Unpacked<
     typeof options
@@ -123,6 +124,9 @@ export function Combobox<
         onChange={(selected) => {
           onChange?.(selected);
           setSelectedOption(selected);
+          // https://github.com/tailwindlabs/headlessui/issues/1555
+          // note that this still seems to be a problem despite what the issue says
+          setTimeout(() => inputRef.current?.blur(), 0);
         }}
         name={inputName}
         disabled={!selectedOption && isLoading}
@@ -142,6 +146,7 @@ export function Combobox<
           required={required}
           autoComplete="off"
           onFocus={showComboboxOptions}
+          ref={inputRef}
         />
         <HeadlessCombobox.Options
           className={clsx("combobox-options", {
