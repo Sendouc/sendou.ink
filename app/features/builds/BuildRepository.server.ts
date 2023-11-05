@@ -22,7 +22,7 @@ export async function allByUserId({
         .selectFrom("Build")
         .innerJoin("BuildWeapon", "Build.id", "BuildWeapon.buildId")
         .leftJoin("SplatoonPlayer", (join) =>
-          join.on("SplatoonPlayer.id", "=", userId),
+          join.on("SplatoonPlayer.userId", "=", userId),
         )
         .leftJoin("XRankPlacement", (join) =>
           join
