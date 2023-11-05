@@ -1,4 +1,4 @@
-import { MapPool } from "../map-pool-serializer";
+import { MapPool } from "~/features/map-list-generator/core/map-pool";
 
 export const DEFAULT_MAP_POOL = new MapPool([
   { mode: "SZ", stageId: 6 },

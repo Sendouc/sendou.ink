@@ -1,7 +1,8 @@
 import { json } from "@remix-run/node";
 import type {
   LinksFunction,
-  LoaderFunction,
+  LoaderArgs,
+  SerializeFrom,
   V2_MetaFunction,
 } from "@remix-run/node";
 import {
@@ -26,10 +27,7 @@ import resetStyles from "~/styles/reset.css";
 import flagsStyles from "~/styles/flags.css";
 import { Catcher } from "./components/Catcher";
 import { Layout } from "./components/layout";
-import { db } from "./db";
-import type { FindAllPatrons } from "./db/models/users/queries.server";
-import type { UserWithPlusTier } from "./db/types";
-import { getUser } from "./modules/auth";
+import { getUser } from "./features/auth/core";
 import { DEFAULT_LANGUAGE, i18nCookie, i18next } from "./modules/i18n";
 import { useChangeLanguage } from "remix-i18next";
 import { type CustomTypeOptions } from "react-i18next";
@@ -38,13 +36,19 @@ import { COMMON_PREVIEW_IMAGE } from "./utils/urls";
 import { ConditionalScrollRestoration } from "./components/ConditionalScrollRestoration";
 import { type SendouRouteHandle } from "~/utils/remix";
 import generalI18next from "i18next";
-import { Theme, ThemeHead, useTheme, ThemeProvider } from "./modules/theme";
-import { getThemeSession } from "./modules/theme/session.server";
-import { isTheme } from "./modules/theme/provider";
+import { getThemeSession } from "./features/theme/core/session.server";
+import {
+  Theme,
+  ThemeHead,
+  ThemeProvider,
+  isTheme,
+  useTheme,
+} from "./features/theme/core/provider";
 import { useIsMounted } from "./hooks/useIsMounted";
 import { CUSTOMIZED_CSS_VARS_NAME } from "./constants";
 import NProgress from "nprogress";
 import nProgressStyles from "nprogress/nprogress.css";
+import * as UserRepository from "~/features/user-page/UserRepository.server";
 
 export const shouldRevalidate: ShouldRevalidateFunction = ({ nextUrl }) => {
   // // reload on language change so the selected language gets set into the cookie
@@ -76,40 +80,20 @@ export const meta: V2_MetaFunction = () => {
   ];
 };
 
-export interface RootLoaderData {
-  locale: string;
-  theme: Theme | null;
-  patrons: FindAllPatrons;
-  baseUrl: string;
-  skalopUrl: string;
-  user?: Pick<
-    UserWithPlusTier,
-    | "id"
-    | "discordId"
-    | "discordAvatar"
-    | "plusTier"
-    | "customUrl"
-    | "discordName"
-    | "patronTier"
-    | "isArtist"
-  > & { languages: string[] };
-  publisherId?: string;
-  websiteId?: string;
-  loginDisabled: boolean;
-}
+export type RootLoaderData = SerializeFrom<typeof loader>;
 
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader = async ({ request }: LoaderArgs) => {
   const user = await getUser(request);
   const locale = await i18next.getLocale(request);
   const themeSession = await getThemeSession(request);
 
   if (user?.banned) throw new Response(null, { status: 403 });
 
-  return json<RootLoaderData>(
+  return json(
     {
       locale,
       theme: themeSession.getTheme(),
-      patrons: db.users.findAllPatrons(),
+      patrons: await UserRepository.findAllPatrons(),
       baseUrl: process.env["BASE_URL"]!,
       skalopUrl: process.env["SKALOP_WS_URL"]!,
       publisherId: process.env["PLAYWIRE_PUBLISHER_ID"],

@@ -1,6 +1,6 @@
 import type { Tournament } from "~/db/types";
 import { modesIncluded } from "~/features/tournament";
-import { MapPool } from "~/modules/map-pool-serializer";
+import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import { createTournamentMapList } from "~/modules/tournament-map-list-generator";
 import { findTieBreakerMapPoolByTournamentId } from "../queries/findTieBreakerMapPoolByTournamentId.server";
 import { findMapPoolByTeamId } from "../queries/findMapPoolByTeamId.server";

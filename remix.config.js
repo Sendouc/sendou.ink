@@ -6,6 +6,75 @@ module.exports = {
   cacheDirectory: process.env.NODE_ENV === "test" ? ".cache-test" : undefined,
   routes: async (defineRoutes) => {
     return defineRoutes((route) => {
+      route("/", "features/front-page/routes/index.tsx");
+
+      route("/u", "features/user-search/routes/u.tsx");
+
+      route(
+        "/u/:identifier",
+        "features/user-page/routes/u.$identifier.tsx",
+        () => {
+          route(
+            "/u/:identifier",
+            "features/user-page/routes/u.$identifier.index.tsx",
+          );
+          route(
+            "/u/:identifier/art",
+            "features/user-page/routes/u.$identifier.art.tsx",
+          );
+          route(
+            "/u/:identifier/edit",
+            "features/user-page/routes/u.$identifier.edit.tsx",
+          );
+          route(
+            "/u/:identifier/seasons",
+            "features/user-page/routes/u.$identifier.seasons.tsx",
+          );
+          route(
+            "/u/:identifier/vods",
+            "features/user-page/routes/u.$identifier.vods.tsx",
+          );
+
+          route(
+            "/u/:identifier/builds",
+            "features/user-page/routes/u.$identifier.builds.tsx",
+          );
+          route(
+            "/u/:identifier/builds/new",
+            "features/user-page/routes/u.$identifier.builds.new.tsx",
+          );
+
+          route(
+            "/u/:identifier/results",
+            "features/user-page/routes/u.$identifier.results.tsx",
+          );
+          route(
+            "/u/:identifier/results/highlights",
+            "features/user-page/routes/u.$identifier.results.highlights.tsx",
+          );
+        },
+      );
+
+      route("/badges", "features/badges/routes/badges.tsx", () => {
+        route("/badges/:id", "features/badges/routes/badges.$id.tsx", () => {
+          route(
+            "/badges/:id/edit",
+            "features/badges/routes/badges.$id.edit.tsx",
+          );
+        });
+      });
+
+      route("/calendar", "features/calendar/routes/calendar.tsx");
+      route("/calendar/new", "features/calendar/routes/calendar.new.tsx");
+      route("/calendar/:id", "features/calendar/routes/calendar.$id.tsx");
+      route(
+        "/calendar/:id/report-winners",
+        "features/calendar/routes/calendar.$id.report-winners.tsx",
+      );
+      route("/map-pool-events", "features/calendar/routes/map-pool-events.ts");
+
+      route("/maps", "features/map-list-generator/routes/maps.tsx");
+
       route("/upload", "features/img-upload/routes/upload.tsx");
       route("/upload/admin", "features/img-upload/routes/upload.admin.tsx");
       route("/plans", "features/map-planner/routes/plans.tsx");
@@ -61,6 +130,8 @@ module.exports = {
         );
       });
 
+      route("/faq", "features/info/routes/faq.tsx");
+      route("/contributions", "features/info/routes/contributions.tsx");
       route("/privacy-policy", "features/info/routes/privacy-policy.tsx");
       route("/support", "features/info/routes/support.tsx");
 
@@ -101,6 +172,7 @@ module.exports = {
       route("/art", "features/art/routes/art.tsx");
       route("/art/new", "features/art/routes/art.new.tsx");
 
+      route("/play", "features/sendouq/routes/play.tsx");
       route("/q", "features/sendouq/routes/q.tsx");
       route("/q/rules", "features/sendouq/routes/q.rules.tsx");
       route("/q/looking", "features/sendouq/routes/q.looking.tsx");
@@ -112,6 +184,55 @@ module.exports = {
       route("/tiers", "features/sendouq/routes/tiers.tsx");
 
       route("/settings", "features/settings/routes/settings.tsx");
+
+      route("/admin", "features/admin/routes/admin.tsx");
+
+      route("/a", "features/articles/routes/a.tsx");
+      route("/a/:slug", "features/articles/routes/a.$slug.tsx");
+
+      route("/plus", "features/plus-suggestions/routes/plus.tsx", () => {
+        route("/plus", "features/plus-suggestions/routes/plus.index.tsx");
+
+        route(
+          "/plus/suggestions",
+          "features/plus-suggestions/routes/plus.suggestions.tsx",
+          () => {
+            route(
+              "/plus/suggestions/new",
+              "features/plus-suggestions/routes/plus.suggestions.new.tsx",
+            );
+            route(
+              "/plus/suggestions/comment/:tier/:userId",
+              "features/plus-suggestions/routes/plus.suggestions.comment.$tier.$userId.tsx",
+            );
+          },
+        );
+
+        route("/plus/list", "features/plus-voting/routes/plus.list.ts");
+        route("/plus/voting", "features/plus-voting/routes/plus.voting.tsx");
+        route(
+          "/plus/voting/results",
+          "features/plus-voting/routes/plus.voting.results.tsx",
+        );
+      });
+
+      route("/patrons", "features/api/routes/patrons.tsx");
+      route("/seed", "features/api/routes/seed.tsx");
+      route("/users", "features/api/routes/users.tsx");
+
+      route("/theme", "features/theme/routes/theme.ts");
+
+      route("/auth", "features/auth/routes/auth.tsx");
+      route("/auth/callback", "features/auth/routes/auth.callback.tsx");
+      route("/auth/create-link", "features/auth/routes/auth.create-link.tsx");
+      route("/auth/login", "features/auth/routes/auth.login.tsx");
+      route("/auth/logout", "features/auth/routes/auth.logout.tsx");
+
+      route("/auth/impersonate", "features/auth/routes/auth.impersonate.tsx");
+      route(
+        "/auth/impersonate/stop",
+        "features/auth/routes/auth.impersonate.stop.tsx",
+      );
     });
   },
   serverModuleFormat: "cjs",

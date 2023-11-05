@@ -39,9 +39,8 @@ import {
 } from "~/utils/urls";
 import { stageIds } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
-import { MapPool } from "~/modules/map-pool-serializer";
 import { SubmitButton } from "~/components/SubmitButton";
-import { getUserId, requireUserId } from "~/modules/auth/user.server";
+import { getUserId, requireUserId } from "~/features/auth/core/user.server";
 import { frontPageSchema } from "../q-schemas.server";
 import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
 import { createGroup } from "../queries/createGroup.server";
@@ -52,7 +51,7 @@ import { makeTitle } from "~/utils/strings";
 import { currentSeason } from "~/features/mmr";
 import type { RankingSeason } from "~/features/mmr/season";
 import { nextSeason } from "~/features/mmr/season";
-import { useUser } from "~/modules/auth";
+import { useUser } from "~/features/auth/core";
 import { Button } from "~/components/Button";
 import { findGroupByInviteCode } from "../queries/findGroupByInviteCode.server";
 import { Alert } from "~/components/Alert";
@@ -76,6 +75,7 @@ import { CrossIcon } from "~/components/icons/Cross";
 import { updateVCStatus } from "../queries/updateVCStatus.server";
 import { sql } from "~/db/sql";
 import { deleteLikesByGroupId } from "../queries/deleteLikesByGroupId.server";
+import { MapPool } from "~/features/map-list-generator/core/map-pool";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -220,7 +220,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 
   const now = new Date();
   const season = currentSeason(now);
-  const upcomingSeason = nextSeason(now);
+  const upcomingSeason = !season ? nextSeason(now) : undefined;
 
   return {
     hasSkill:

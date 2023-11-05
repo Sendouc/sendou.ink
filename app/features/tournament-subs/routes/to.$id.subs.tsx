@@ -12,7 +12,7 @@ import type {
   LoaderArgs,
 } from "@remix-run/node";
 import { Link, useLoaderData, useOutletContext } from "@remix-run/react";
-import { getUser, requireUser, useUser } from "~/modules/auth";
+import { getUser, requireUser, useUser } from "~/features/auth/core";
 import { assertUnreachable } from "~/utils/types";
 import styles from "../tournament-subs.css";
 import { Avatar } from "~/components/Avatar";
@@ -92,7 +92,9 @@ export default function TournamentSubsPage() {
   const parentRouteData = useOutletContext<TournamentLoaderData>();
 
   if (parentRouteData.hasFinalized) {
-    return <Redirect to={tournamentRegisterPage(parentRouteData.event.id)} />;
+    return (
+      <Redirect to={tournamentRegisterPage(parentRouteData.tournament.id)} />
+    );
   }
 
   return (

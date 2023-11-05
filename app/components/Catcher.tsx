@@ -1,6 +1,6 @@
 import { isRouteErrorResponse, useRouteError } from "@remix-run/react";
 import { Button } from "~/components/Button";
-import { useUser } from "~/modules/auth";
+import { useUser } from "~/features/auth/core";
 import {
   ERROR_GIRL_IMAGE_PATH,
   LOG_IN_URL,

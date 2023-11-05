@@ -58,7 +58,7 @@ export function TeamRosterInputs({
             </span>{" "}
             <Link
               to={tournamentTeamPage({
-                eventId: parentRouteData.event.id,
+                eventId: parentRouteData.tournament.id,
                 tournamentTeamId: team.id,
               })}
               className="tournament-bracket__during-match-actions__team-name"

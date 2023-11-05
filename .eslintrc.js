@@ -15,7 +15,10 @@ module.exports = {
     "plugin:react-hooks/recommended",
   ],
   rules: {
-    "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      { argsIgnorePattern: "^_", ignoreRestSiblings: true },
+    ],
     "no-constant-condition": ["error", { checkLoops: false }],
     "no-console": ["warn", { allow: ["warn", "error"] }],
     "no-warning-comments": ["warn", { terms: ["xxx"] }],

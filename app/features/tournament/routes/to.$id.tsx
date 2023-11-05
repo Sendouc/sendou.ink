@@ -12,16 +12,14 @@ import {
 } from "@remix-run/react";
 import { Main } from "~/components/Main";
 import { SubNav, SubNavLink } from "~/components/SubNav";
-import { db } from "~/db";
 import { useTranslation } from "~/hooks/useTranslation";
-import { useUser } from "~/modules/auth";
-import { getUser } from "~/modules/auth/user.server";
+import { useUser } from "~/features/auth/core";
+import { getUser } from "~/features/auth/core/user.server";
 import { canAdminTournament } from "~/permissions";
 import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { assertUnreachable, type Unpacked } from "~/utils/types";
 import { streamsByTournamentId } from "../core/streams.server";
-import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
 import hasTournamentStarted from "../queries/hasTournamentStarted.server";
 import { teamHasCheckedIn, tournamentIdFromParams } from "../tournament-utils";
@@ -29,6 +27,7 @@ import styles from "../tournament.css";
 import { findOwnTeam } from "../queries/findOwnTeam.server";
 import { findSubsByTournamentId } from "~/features/tournament-subs";
 import hasTournamentFinalized from "../queries/hasTournamentFinalized.server";
+import * as TournamentRepository from "../TournamentRepository.server";
 
 export const shouldRevalidate: ShouldRevalidateFunction = (args) => {
   const wasMutation = args.formMethod === "POST";
@@ -52,7 +51,7 @@ export const meta: V2_MetaFunction = (args) => {
 
   if (!data) return [];
 
-  return [{ title: makeTitle(data.event.name) }];
+  return [{ title: makeTitle(data.tournament.name) }];
 };
 
 export const links: LinksFunction = () => {
@@ -69,7 +68,9 @@ export type TournamentLoaderData = SerializeFrom<typeof loader>;
 export const loader = async ({ params, request }: LoaderArgs) => {
   const user = await getUser(request);
   const tournamentId = tournamentIdFromParams(params);
-  const event = notFoundIfFalsy(findByIdentifier(tournamentId));
+  const tournament = notFoundIfFalsy(
+    await TournamentRepository.findById(tournamentId),
+  );
 
   const hasStarted = hasTournamentStarted(tournamentId);
   let teams = findTeamsByTournamentId(tournamentId);
@@ -107,10 +108,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   }).length;
 
   return {
-    event,
-    tieBreakerMapPool: db.calendarEvents.findTieBreakerMapPoolByEventId(
-      event.eventId,
-    ),
+    tournament,
     ownTeam: user
       ? findOwnTeam({
           tournamentId,
@@ -148,7 +146,7 @@ export default function TournamentLayout() {
         <SubNavLink to="brackets" data-testid="brackets-tab">
           {t("tournament:tabs.brackets")}
         </SubNavLink>
-        {data.event.showMapListGenerator ? (
+        {data.tournament.showMapListGenerator ? (
           <SubNavLink to="maps">{t("tournament:tabs.maps")}</SubNavLink>
         ) : null}
         <SubNavLink to="teams" end={false}>
@@ -164,11 +162,11 @@ export default function TournamentLayout() {
             {t("tournament:tabs.streams", { count: data.streamsCount })}
           </SubNavLink>
         ) : null}
-        {canAdminTournament({ user, event: data.event }) &&
+        {canAdminTournament({ user, tournament: data.tournament }) &&
           !data.hasStarted && (
             <SubNavLink to="seeds">{t("tournament:tabs.seeds")}</SubNavLink>
           )}
-        {canAdminTournament({ user, event: data.event }) &&
+        {canAdminTournament({ user, tournament: data.tournament }) &&
           !data.hasFinalized && (
             <SubNavLink to="admin" data-testid="admin-tab">
               {t("tournament:tabs.admin")}

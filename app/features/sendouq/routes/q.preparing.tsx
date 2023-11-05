@@ -9,7 +9,7 @@ import { useFetcher, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
-import { getUser, requireUser } from "~/modules/auth/user.server";
+import { getUser, requireUser } from "~/features/auth/core/user.server";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { parseRequestFormData, validate } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";

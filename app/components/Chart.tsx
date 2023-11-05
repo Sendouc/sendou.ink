@@ -4,7 +4,7 @@ import { type AxisOptions, Chart as ReactChart } from "react-charts";
 import type { TooltipRendererProps } from "react-charts/types/components/TooltipRenderer";
 import { useTranslation } from "~/hooks/useTranslation";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import { Theme, useTheme } from "~/modules/theme";
+import { Theme, useTheme } from "~/features/theme/core/provider";
 
 export default function Chart({
   options,

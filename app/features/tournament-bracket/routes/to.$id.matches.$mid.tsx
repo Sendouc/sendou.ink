@@ -24,8 +24,8 @@ import {
 } from "~/features/tournament";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
 import { useVisibilityChange } from "~/hooks/useVisibilityChange";
-import { requireUser, useUser } from "~/modules/auth";
-import { getUserId } from "~/modules/auth/user.server";
+import { requireUser, useUser } from "~/features/auth/core";
+import { getUserId } from "~/features/auth/core/user.server";
 import { canAdminTournament, canReportTournamentScore } from "~/permissions";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
@@ -35,7 +35,6 @@ import {
   tournamentTeamPage,
   userPage,
 } from "~/utils/urls";
-import { findByIdentifier } from "../../tournament/queries/findByIdentifier.server";
 import { findTeamsByTournamentId } from "../../tournament/queries/findTeamsByTournamentId.server";
 import { ScoreReporter } from "../components/ScoreReporter";
 import { getTournamentManager } from "../core/brackets-manager";
@@ -53,6 +52,7 @@ import {
   matchSubscriptionKey,
 } from "../tournament-bracket-utils";
 import bracketStyles from "../tournament-bracket.css";
+import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 
 export const links: LinksFunction = () => [
   {
@@ -71,7 +71,9 @@ export const action: ActionFunction = async ({ params, request }) => {
   });
 
   const tournamentId = tournamentIdFromParams(params);
-  const event = notFoundIfFalsy(findByIdentifier(tournamentId));
+  const tournament = notFoundIfFalsy(
+    await TournamentRepository.findById(tournamentId),
+  );
 
   const validateCanReportScore = () => {
     const teams = findTeamsByTournamentId(tournamentId);
@@ -83,7 +85,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 
     validate(
       canReportTournamentScore({
-        event,
+        tournament,
         match,
         ownedTeamId,
         user,
@@ -219,7 +221,7 @@ export const action: ActionFunction = async ({ params, request }) => {
       invariant(typeof scoreTwo === "number", "Score two is missing");
       invariant(scoreOne !== scoreTwo, "Scores are equal");
 
-      validate(canAdminTournament({ event, user }));
+      validate(canAdminTournament({ tournament, user }));
 
       const results = findResultsByMatchId(matchId);
       const lastResult = results[results.length - 1];
@@ -267,7 +269,7 @@ export const action: ActionFunction = async ({ params, request }) => {
     eventId: nanoid(),
     userId: user.id,
   });
-  emitter.emit(bracketSubscriptionKey(event.id), {
+  emitter.emit(bracketSubscriptionKey(tournament.id), {
     matchId: match.id,
     scores,
     isOver:
@@ -307,7 +309,9 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     match.players.some((p) => p.id === user?.id) ||
     canAdminTournament({
       user,
-      event: notFoundIfFalsy(findByIdentifier(tournamentId)),
+      tournament: notFoundIfFalsy(
+        await TournamentRepository.findById(tournamentId),
+      ),
     });
 
   return {
@@ -359,7 +363,7 @@ export default function TournamentMatchPage() {
   const isMemberOfATeam = data.match.players.some((p) => p.id === user?.id);
 
   const type = canReportTournamentScore({
-    event: parentRouteData.event,
+    tournament: parentRouteData.tournament,
     match: data.match,
     ownedTeamId: parentRouteData.ownTeam?.id,
     user,
@@ -384,7 +388,7 @@ export default function TournamentMatchPage() {
         {/* TODO: better title */}
         <h2 className="text-lighter text-lg">Match #{data.match.id}</h2>
         <LinkButton
-          to={tournamentBracketsPage(parentRouteData.event.id)}
+          to={tournamentBracketsPage(parentRouteData.tournament.id)}
           variant="outlined"
           size="tiny"
           className="w-max"
@@ -424,7 +428,7 @@ function useAutoRefresh() {
   const data = useLoaderData<typeof loader>();
   const lastEventId = useEventSource(
     tournamentMatchSubscribePage({
-      eventId: parentRouteData.event.id,
+      eventId: parentRouteData.tournament.id,
       matchId: data.match.id,
     }),
     {
@@ -541,7 +545,7 @@ function Rosters({
           {teamOne ? (
             <Link
               to={tournamentTeamPage({
-                eventId: parentRouteData.event.id,
+                eventId: parentRouteData.tournament.id,
                 tournamentTeamId: teamOne.id,
               })}
               className="text-main-forced font-bold"
@@ -576,7 +580,7 @@ function Rosters({
           {teamTwo ? (
             <Link
               to={tournamentTeamPage({
-                eventId: parentRouteData.event.id,
+                eventId: parentRouteData.tournament.id,
                 tournamentTeamId: teamTwo.id,
               })}
               className="text-main-forced font-bold"

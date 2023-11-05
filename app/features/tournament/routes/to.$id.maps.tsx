@@ -11,9 +11,8 @@ import { Alert } from "~/components/Alert";
 import type { MapPoolMap } from "~/db/types";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
 import { useTranslation } from "~/hooks/useTranslation";
-import { useUser } from "~/modules/auth";
-import { getUserId } from "~/modules/auth/user.server";
-import { MapPool } from "~/modules/map-pool-serializer";
+import { useUser } from "~/features/auth/core";
+import { getUserId } from "~/features/auth/core/user.server";
 import { createTournamentMapList } from "~/modules/tournament-map-list-generator";
 import type {
   TournamentMapListMap,
@@ -25,7 +24,6 @@ import { canAdminTournament } from "~/permissions";
 import mapsStyles from "~/styles/maps.css";
 import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
 import { tournamentPage } from "~/utils/urls";
-import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { findMapPoolsByTournamentId } from "../queries/findMapPoolsByTournamentId.server";
 import { TOURNAMENT } from "../tournament-constants";
 import {
@@ -34,6 +32,8 @@ import {
   tournamentIdFromParams,
 } from "../tournament-utils";
 import type { TournamentLoaderData } from "./to.$id";
+import * as TournamentRepository from "../TournamentRepository.server";
+import { MapPool } from "~/features/map-list-generator/core/map-pool";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: mapsStyles }];
@@ -51,10 +51,12 @@ type TeamInState = {
 export const loader = async ({ params, request }: LoaderArgs) => {
   const tournamentId = tournamentIdFromParams(params);
   const user = await getUserId(request);
-  const event = notFoundIfFalsy(findByIdentifier(tournamentId));
+  const tournament = notFoundIfFalsy(
+    await TournamentRepository.findById(tournamentId),
+  );
 
   const mapListGeneratorAvailable =
-    canAdminTournament({ user, event }) || event.showMapListGenerator;
+    canAdminTournament({ user, tournament }) || tournament.showMapListGenerator;
 
   if (!mapListGeneratorAvailable) {
     throw redirect(tournamentPage(tournamentId));
@@ -158,7 +160,7 @@ export default function TournamentMapsPage() {
         ]}
         bestOf={bestOf}
         seed={`${bracketType}-${roundNumber}`}
-        modesIncluded={modesIncluded(parentRouteData.event)}
+        modesIncluded={modesIncluded(parentRouteData.tournament)}
       />
     </div>
   );
@@ -314,7 +316,7 @@ function MapList(props: Omit<TournamentMaplistInput, "tiebreakerMaps">) {
   try {
     mapList = createTournamentMapList({
       ...props,
-      tiebreakerMaps: new MapPool(data.tieBreakerMapPool),
+      tiebreakerMaps: new MapPool(data.tournament.tieBreakerMapPool),
     });
   } catch (e) {
     console.error(
@@ -334,7 +336,7 @@ function MapList(props: Omit<TournamentMaplistInput, "tiebreakerMaps">) {
           maps: new MapPool([]),
         },
       ],
-      tiebreakerMaps: new MapPool(data.tieBreakerMapPool),
+      tiebreakerMaps: new MapPool(data.tournament.tieBreakerMapPool),
     });
   }
 

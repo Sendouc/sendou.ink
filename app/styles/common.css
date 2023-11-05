@@ -642,6 +642,16 @@ dialog::backdrop {
   list-style: none;
 }
 
+.combobox-item-image {
+  min-width: 24px;
+}
+
+.combobox-item-label {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow-x: hidden;
+}
+
 .combobox-no-matches {
   display: flex;
   align-items: center;
@@ -1152,7 +1162,7 @@ dialog::backdrop {
 
 .top-leaderboard {
   min-height: 110px;
-  margin-block-start: var(--s-16);
+  margin-block-start: var(--leaderboard-top-spacing);
 }
 
 .youtube__container {

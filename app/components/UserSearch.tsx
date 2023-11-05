@@ -3,7 +3,7 @@ import { useFetcher } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
 import { useDebounce } from "react-use";
-import type { UserSearchLoaderData } from "~/routes/u";
+import type { UserSearchLoaderData } from "~/features/user-search/routes/u";
 import { Avatar } from "./Avatar";
 import { useTranslation } from "~/hooks/useTranslation";
 

@@ -19,7 +19,7 @@ import {
   nonDamagingSpecialWeaponIds,
   specialWeaponIds,
 } from "~/modules/in-game-lists/weapon-ids";
-import { type SerializedMapPoolEvent } from "~/routes/calendar/map-pool-events";
+import { type SerializedMapPoolEvent } from "~/features/calendar/routes/map-pool-events";
 import type { Unpacked } from "~/utils/types";
 import {
   gearImageUrl,
@@ -43,6 +43,7 @@ interface ComboboxBaseOption {
 type ComboboxOption<T> = ComboboxBaseOption & T;
 interface ComboboxProps<T> {
   options: ComboboxOption<T>[];
+  quickSelectOptions?: ComboboxOption<T>[];
   inputName: string;
   placeholder: string;
   className?: string;
@@ -61,6 +62,7 @@ export function Combobox<
   T extends Record<string, string | string[] | null | undefined | number>,
 >({
   options,
+  quickSelectOptions,
   inputName,
   placeholder,
   value,
@@ -75,6 +77,8 @@ export function Combobox<
   fuseOptions = {},
 }: ComboboxProps<T>) {
   const { t } = useTranslation();
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
+  const inputRef = React.useRef<HTMLInputElement>(null);
 
   const [_selectedOption, setSelectedOption] = React.useState<Unpacked<
     typeof options
@@ -87,7 +91,11 @@ export function Combobox<
   });
 
   const filteredOptions = (() => {
-    if (!query) return [];
+    if (!query) {
+      if (quickSelectOptions) return quickSelectOptions;
+
+      return [];
+    }
 
     return fuse
       .search(query)
@@ -103,6 +111,12 @@ export function Combobox<
 
   const selectedOption = value ?? _selectedOption;
 
+  const showComboboxOptions = () => {
+    if (!quickSelectOptions || quickSelectOptions.length === 0) return;
+
+    buttonRef.current?.click();
+  };
+
   return (
     <div className="combobox-wrapper">
       <HeadlessCombobox
@@ -110,6 +124,9 @@ export function Combobox<
         onChange={(selected) => {
           onChange?.(selected);
           setSelectedOption(selected);
+          // https://github.com/tailwindlabs/headlessui/issues/1555
+          // note that this still seems to be a problem despite what the issue says
+          setTimeout(() => inputRef.current?.blur(), 0);
         }}
         name={inputName}
         disabled={!selectedOption && isLoading}
@@ -127,12 +144,17 @@ export function Combobox<
           data-testid={`${inputName}-combobox-input`}
           id={id}
           required={required}
+          autoComplete="off"
+          onFocus={showComboboxOptions}
+          ref={inputRef}
         />
         <HeadlessCombobox.Options
           className={clsx("combobox-options", {
             empty: noMatches,
             fullWidth,
-            hidden: !query,
+            hidden:
+              !query &&
+              (!quickSelectOptions || quickSelectOptions.length === 0),
           })}
         >
           {isLoading ? (
@@ -157,15 +179,17 @@ export function Combobox<
                         path={option.imgPath}
                         width={24}
                         height={24}
+                        className="combobox-item-image"
                       />
                     )}
-                    {option.label}
+                    <span className="combobox-item-label">{option.label}</span>
                   </li>
                 )}
               </HeadlessCombobox.Option>
             ))
           )}
         </HeadlessCombobox.Options>
+        <HeadlessCombobox.Button ref={buttonRef} className="hidden" />
       </HeadlessCombobox>
     </div>
   );
@@ -182,6 +206,7 @@ export function WeaponCombobox({
   fullWidth,
   nullable,
   value,
+  quickSelectWeaponIds,
 }: Pick<
   ComboboxProps<ComboboxBaseOption>,
   | "inputName"
@@ -195,6 +220,8 @@ export function WeaponCombobox({
   initialWeaponId?: (typeof mainWeaponIds)[number];
   weaponIdsToOmit?: Set<MainWeaponId>;
   value?: MainWeaponId | null;
+  /** Weapons to show when there is focus but no query */
+  quickSelectWeaponIds?: MainWeaponId[];
 }) {
   const { t, i18n } = useTranslation("weapons");
 
@@ -221,12 +248,19 @@ export function WeaponCombobox({
     alt: alt(id),
   });
 
+  const options = mainWeaponIds
+    .filter((id) => !weaponIdsToOmit?.has(id))
+    .map(idToWeapon);
+
+  const quickSelectOptions = quickSelectWeaponIds?.flatMap((weaponId) => {
+    return options.find((option) => option.value === String(weaponId)) ?? [];
+  });
+
   return (
     <Combobox
       inputName={inputName}
-      options={mainWeaponIds
-        .filter((id) => !weaponIdsToOmit?.has(id))
-        .map(idToWeapon)}
+      options={options}
+      quickSelectOptions={quickSelectOptions}
       value={typeof value === "number" ? idToWeapon(value) : null}
       initialValue={
         typeof initialWeaponId === "number" ? idToWeapon(initialWeaponId) : null

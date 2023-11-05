@@ -34,16 +34,16 @@ import type { TournamentLoaderData, TournamentLoaderTeam } from "./to.$id";
 import { Image } from "~/components/Image";
 import { navIconUrl, tournamentBracketsPage } from "~/utils/urls";
 import { maxXPowers } from "../queries/maxXPowers.server";
-import { requireUser } from "~/modules/auth";
+import { requireUser } from "~/features/auth/core";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { seedsActionSchema } from "../tournament-schemas.server";
 import { updateTeamSeeds } from "../queries/updateTeamSeeds.server";
 import { tournamentIdFromParams } from "../tournament-utils";
 import hasTournamentStarted from "../queries/hasTournamentStarted.server";
 import { canAdminTournament } from "~/permissions";
-import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { SubmitButton } from "~/components/SubmitButton";
 import clone from "just-clone";
+import * as TournamentRepository from "../TournamentRepository.server";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const data = await parseRequestFormData({
@@ -52,11 +52,13 @@ export const action: ActionFunction = async ({ request, params }) => {
   });
   const user = await requireUser(request);
   const tournamentId = tournamentIdFromParams(params);
-  const tournament = notFoundIfFalsy(findByIdentifier(tournamentId));
+  const tournament = notFoundIfFalsy(
+    await TournamentRepository.findById(tournamentId),
+  );
 
   const hasStarted = hasTournamentStarted(tournamentId);
 
-  validate(canAdminTournament({ user, event: tournament }));
+  validate(canAdminTournament({ user, tournament }));
   validate(!hasStarted, "Tournament has started");
 
   updateTeamSeeds({ tournamentId, teamIds: data.seeds });
@@ -68,9 +70,11 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const user = await requireUser(request);
   const tournamentId = tournamentIdFromParams(params);
   const hasStarted = hasTournamentStarted(tournamentId);
-  const tournament = notFoundIfFalsy(findByIdentifier(tournamentId));
+  const tournament = notFoundIfFalsy(
+    await TournamentRepository.findById(tournamentId),
+  );
 
-  if (!canAdminTournament({ user, event: tournament }) || hasStarted) {
+  if (!canAdminTournament({ user, tournament }) || hasStarted) {
     throw redirect(tournamentBracketsPage(tournamentId));
   }
 
@@ -229,7 +233,7 @@ function SeedAlert({ teamOrder }: { teamOrder: number[] }) {
 
   return (
     <fetcher.Form method="post" className="tournament__seeds__form">
-      <input type="hidden" name="tournamentId" value={data.event.id} />
+      <input type="hidden" name="tournamentId" value={data.tournament.id} />
       <input type="hidden" name="seeds" value={JSON.stringify(teamOrder)} />
       <Alert
         variation={

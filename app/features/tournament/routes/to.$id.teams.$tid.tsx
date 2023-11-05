@@ -78,7 +78,7 @@ export default function TournamentTeamPage() {
   );
   const team = parentRouteData.teams[teamIndex];
   if (!team) {
-    return <Redirect to={tournamentPage(parentRouteData.event.id)} />;
+    return <Redirect to={tournamentPage(parentRouteData.tournament.id)} />;
   }
 
   return (
@@ -201,7 +201,7 @@ function SetInfo({
         <Link
           to={tournamentMatchPage({
             matchId: set.tournamentMatchId,
-            eventId: parentRouteData.event.id,
+            eventId: parentRouteData.tournament.id,
           })}
           className="tournament__team__set__round-name"
         >
@@ -246,7 +246,7 @@ function SetInfo({
         <Link
           to={tournamentTeamPage({
             tournamentTeamId: set.opponent.id,
-            eventId: parentRouteData.event.id,
+            eventId: parentRouteData.tournament.id,
           })}
           className="tournament__team__set__opponent__team"
         >

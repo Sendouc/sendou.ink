@@ -13,8 +13,8 @@ import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "~/hooks/useTranslation";
-import { getUser, requireUser } from "~/modules/auth/user.server";
-import { MapPool } from "~/modules/map-pool-serializer";
+import { getUser, requireUser } from "~/features/auth/core/user.server";
+import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import {
   parseRequestFormData,
   validate,

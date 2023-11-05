@@ -1,10 +1,17 @@
 import { faker } from "@faker-js/faker";
 import capitalize from "just-capitalize";
 import shuffle from "just-shuffle";
+import { nanoid } from "nanoid";
 import invariant from "tiny-invariant";
 import { ADMIN_DISCORD_ID, ADMIN_ID, INVITE_CODE_LENGTH } from "~/constants";
-import { db } from "~/db";
 import { sql } from "~/db/sql";
+import allTags from "~/features/calendar/tags.json";
+import { createVod } from "~/features/vods/queries/createVod.server";
+import type {
+  AbilityType,
+  MainWeaponId,
+  StageId,
+} from "~/modules/in-game-lists";
 import {
   abilities,
   clothesGearIds,
@@ -14,57 +21,53 @@ import {
   shoesGearIds,
   stageIds,
 } from "~/modules/in-game-lists";
-import type {
-  MainWeaponId,
-  StageId,
-  AbilityType,
-} from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
-import { MapPool } from "~/modules/map-pool-serializer";
+import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import {
   lastCompletedVoting,
   nextNonCompletedVoting,
   rangeToMonthYear,
-} from "~/modules/plus-server";
-import allTags from "~/routes/calendar/tags.json";
+} from "~/features/plus-voting/core";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
-import type { UpsertManyPlusVotesArgs } from "../models/plusVotes/queries.server";
-import { nanoid } from "nanoid";
 import { mySlugify } from "~/utils/urls";
-import { createVod } from "~/features/vods/queries/createVod.server";
 
-import placements from "./placements.json";
-import {
-  NZAP_TEST_DISCORD_ID,
-  ADMIN_TEST_AVATAR,
-  NZAP_TEST_AVATAR,
-  NZAP_TEST_ID,
-  AMOUNT_OF_CALENDAR_EVENTS,
-} from "./constants";
-import { TOURNAMENT } from "~/features/tournament/tournament-constants";
-import type { SeedVariation } from "~/routes/seed";
-import { nullFilledArray, pickRandomItem } from "~/utils/arrays";
-import type { Art, UserSubmittedImage } from "../types";
-import { createGroup } from "~/features/sendouq/queries/createGroup.server";
-import { MAP_LIST_PREFERENCE_OPTIONS } from "~/features/sendouq/q-constants";
-import { addMember } from "~/features/sendouq/queries/addMember.server";
-import { createMatch } from "~/features/sendouq/queries/createMatch.server";
-import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator";
-import { addSkills } from "~/features/sendouq/queries/addSkills.server";
-import { reportScore } from "~/features/sendouq/queries/reportScore.server";
+import * as BuildRepository from "~/features/builds/BuildRepository.server";
+import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
+import * as PlusSuggestionRepository from "~/features/plus-suggestions/PlusSuggestionRepository.server";
+import * as PlusVotingRepository from "~/features/plus-voting/PlusVotingRepository.server";
 import { calculateMatchSkills } from "~/features/sendouq/core/skills.server";
-import { winnersArrayToWinner } from "~/features/sendouq/q-utils";
-import { addReportedWeapons } from "~/features/sendouq/queries/addReportedWeapons.server";
-import { findMatchById } from "~/features/sendouq/queries/findMatchById.server";
-import { setGroupAsInactive } from "~/features/sendouq/queries/setGroupAsInactive.server";
-import { addMapResults } from "~/features/sendouq/queries/addMapResults.server";
 import {
   summarizeMaps,
   summarizePlayerResults,
 } from "~/features/sendouq/core/summarizer.server";
-import { groupForMatch } from "~/features/sendouq/queries/groupForMatch.server";
+import { MAP_LIST_PREFERENCE_OPTIONS } from "~/features/sendouq/q-constants";
+import { winnersArrayToWinner } from "~/features/sendouq/q-utils";
+import { addMapResults } from "~/features/sendouq/queries/addMapResults.server";
+import { addMember } from "~/features/sendouq/queries/addMember.server";
 import { addPlayerResults } from "~/features/sendouq/queries/addPlayerResults.server";
+import { addReportedWeapons } from "~/features/sendouq/queries/addReportedWeapons.server";
+import { addSkills } from "~/features/sendouq/queries/addSkills.server";
+import { createGroup } from "~/features/sendouq/queries/createGroup.server";
+import { createMatch } from "~/features/sendouq/queries/createMatch.server";
+import { findMatchById } from "~/features/sendouq/queries/findMatchById.server";
+import { groupForMatch } from "~/features/sendouq/queries/groupForMatch.server";
+import { reportScore } from "~/features/sendouq/queries/reportScore.server";
+import { setGroupAsInactive } from "~/features/sendouq/queries/setGroupAsInactive.server";
 import { updateVCStatus } from "~/features/sendouq/queries/updateVCStatus.server";
+import { TOURNAMENT } from "~/features/tournament/tournament-constants";
+import * as UserRepository from "~/features/user-page/UserRepository.server";
+import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator";
+import type { SeedVariation } from "~/features/api/routes/seed";
+import { nullFilledArray, pickRandomItem } from "~/utils/arrays";
+import type { Art, UserSubmittedImage } from "../types";
+import {
+  ADMIN_TEST_AVATAR,
+  AMOUNT_OF_CALENDAR_EVENTS,
+  NZAP_TEST_AVATAR,
+  NZAP_TEST_DISCORD_ID,
+  NZAP_TEST_ID,
+} from "./constants";
+import placements from "./placements.json";
 
 const calendarEventWithToToolsSz = () => calendarEventWithToTools(true);
 const calendarEventWithToToolsTeamsSz = () =>
@@ -113,12 +116,14 @@ const basicSeeds = (variation?: SeedVariation | null) => [
   groups,
 ];
 
-export function seed(variation?: SeedVariation | null) {
+export async function seed(variation?: SeedVariation | null) {
   wipeDB();
 
   for (const seedFunc of basicSeeds(variation)) {
     if (!seedFunc) continue;
-    seedFunc();
+
+    // eslint-disable-next-line @typescript-eslint/await-thenable
+    await seedFunc();
   }
 }
 
@@ -165,7 +170,7 @@ function wipeDB() {
 }
 
 function adminUser() {
-  db.users.upsert({
+  return UserRepository.upsert({
     discordDiscriminator: "0",
     discordId: ADMIN_DISCORD_ID,
     discordName: "Sendou",
@@ -203,7 +208,7 @@ function adminUserWeaponPool() {
 }
 
 function nzapUser() {
-  db.users.upsert({
+  return UserRepository.upsert({
     discordDiscriminator: "6227",
     discordId: NZAP_TEST_DISCORD_ID,
     discordName: "N-ZAP",
@@ -215,9 +220,13 @@ function nzapUser() {
   });
 }
 
-function users() {
+async function users() {
   const usedNames = new Set<string>();
-  new Array(500).fill(null).map(fakeUser(usedNames)).forEach(db.users.upsert);
+  for (let i = 0; i < 500; i++) {
+    const args = fakeUser(usedNames)();
+
+    await UserRepository.upsert(args);
+  }
 }
 
 function userProfiles() {
@@ -354,8 +363,8 @@ const idToPlusTier = (id: number) => {
   throw new Error("Invalid id - no plus tier");
 };
 
-function lastMonthsVoting() {
-  const votes: UpsertManyPlusVotesArgs = [];
+async function lastMonthsVoting() {
+  const votes = [];
 
   const { month, year } = lastCompletedVoting(new Date());
 
@@ -370,7 +379,7 @@ function lastMonthsVoting() {
       year,
       score: 1,
       tier: idToPlusTier(id),
-      validAfter: fiveMinutesAgo,
+      validAfter: dateToDatabaseTimestamp(fiveMinutesAgo),
       votedId: id,
     });
   }
@@ -382,22 +391,22 @@ function lastMonthsVoting() {
       year,
       score: -1,
       tier: idToPlusTier(id),
-      validAfter: fiveMinutesAgo,
+      validAfter: dateToDatabaseTimestamp(fiveMinutesAgo),
       votedId: id,
     });
   }
 
-  db.plusVotes.upsertMany(votes);
+  await PlusVotingRepository.upsertMany(votes);
 }
 
-function lastMonthSuggestions() {
+async function lastMonthSuggestions() {
   const usersSuggested = [
     3, 10, 14, 90, 120, 140, 200, 201, 203, 204, 205, 216, 217, 218, 219, 220,
   ];
   const { month, year } = lastCompletedVoting(new Date());
 
   for (const id of usersSuggested) {
-    db.plusSuggestions.create({
+    await PlusSuggestionRepository.create({
       authorId: 1,
       month,
       year,
@@ -408,10 +417,10 @@ function lastMonthSuggestions() {
   }
 }
 
-function thisMonthsSuggestions() {
-  const usersInPlus = db.users
-    .findAll()
-    .filter((u) => u.plusTier && u.id !== 1); // exclude admin
+async function thisMonthsSuggestions() {
+  const usersInPlus = (await UserRepository.findAllPlusMembers()).filter(
+    (u) => u.id !== ADMIN_ID,
+  );
   const { month, year } = rangeToMonthYear(nextNonCompletedVoting(new Date()));
 
   for (let userId = 150; userId < 190; userId++) {
@@ -422,7 +431,7 @@ function thisMonthsSuggestions() {
       invariant(suggester);
       invariant(suggester.plusTier);
 
-      db.plusSuggestions.create({
+      await PlusSuggestionRepository.create({
         authorId: suggester.id,
         month,
         year,
@@ -670,7 +679,7 @@ function calendarEventBadges() {
   }
 }
 
-function calendarEventResults() {
+async function calendarEventResults() {
   let userIds = userIdsInRandomOrder();
   const eventIdsOfPast = new Set<number>(
     (
@@ -689,7 +698,7 @@ function calendarEventResults() {
     // event id = 1 needs to be without results for e2e tests
     if (Math.random() < 0.3 || eventId === 1) continue;
 
-    db.calendarEvents.upsertReportedScores({
+    await CalendarRepository.upsertReportedScores({
       eventId,
       participantCount: faker.number.int({ min: 10, max: 250 }),
       results: new Array(faker.helpers.arrayElement([1, 1, 2, 3, 3, 3, 8, 8]))
@@ -1049,7 +1058,7 @@ const randomAbility = (legalTypes: AbilityType[]) => {
 };
 
 const adminWeaponPool = mainWeaponIds.filter(() => Math.random() > 0.8);
-function adminBuilds() {
+async function adminBuilds() {
   for (let i = 0; i < 50; i++) {
     const randomOrderHeadGear = shuffle(headGearIds.slice());
     const randomOrderClothesGear = shuffle(clothesGearIds.slice());
@@ -1059,7 +1068,7 @@ function adminBuilds() {
       adminWeaponPool.filter((id) => id !== 40).slice(),
     );
 
-    db.builds.create({
+    await BuildRepository.create({
       title: `${capitalize(faker.word.adjective())} ${capitalize(
         faker.word.noun(),
       )}`,
@@ -1102,7 +1111,7 @@ function adminBuilds() {
   }
 }
 
-function manySplattershotBuilds() {
+async function manySplattershotBuilds() {
   // ensure 500 has at least one splattershot build for x placement test
   const users = [
     ...userIdsInRandomOrder().filter(
@@ -1121,7 +1130,7 @@ function manySplattershotBuilds() {
       (id) => id !== SPLATTERSHOT_ID,
     );
 
-    db.builds.create({
+    await BuildRepository.create({
       private: 0,
       title: `${capitalize(faker.word.adjective())} ${capitalize(
         faker.word.noun(),

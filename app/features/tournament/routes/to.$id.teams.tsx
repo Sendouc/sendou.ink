@@ -15,7 +15,7 @@ export default function TournamentTeamsPage() {
             team={team}
             seed={i + 1}
             teamPageUrl={tournamentTeamPage({
-              eventId: data.event.id,
+              eventId: data.tournament.id,
               tournamentTeamId: team.id,
             })}
           />

@@ -35,7 +35,7 @@ import { resolveBestOfs } from "../core/bestOf.server";
 import { findAllMatchesByTournamentId } from "../queries/findAllMatchesByTournamentId.server";
 import { setBestOf } from "../queries/setBestOf.server";
 import { canAdminTournament } from "~/permissions";
-import { requireUser, useUser } from "~/modules/auth";
+import { requireUser, useUser } from "~/features/auth/core";
 import {
   TOURNAMENT,
   tournamentIdFromParams,
@@ -80,6 +80,7 @@ import {
   queryCurrentUserRating,
 } from "~/features/mmr";
 import { queryTeamPlayerRatingAverage } from "~/features/mmr/mmr-utils.server";
+import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 
 export const links: LinksFunction = () => {
   return [
@@ -101,11 +102,13 @@ export const links: LinksFunction = () => {
 export const action: ActionFunction = async ({ params, request }) => {
   const user = await requireUser(request);
   const tournamentId = tournamentIdFromParams(params);
-  const tournament = notFoundIfFalsy(findByIdentifier(tournamentId));
+  const tournament = notFoundIfFalsy(
+    await TournamentRepository.findById(tournamentId),
+  );
   const data = await parseRequestFormData({ request, schema: bracketSchema });
   const manager = getTournamentManager("SQL");
 
-  validate(canAdminTournament({ user, event: tournament }));
+  validate(canAdminTournament({ user, tournament }));
 
   switch (data._action) {
     case "START_TOURNAMENT": {
@@ -288,7 +291,7 @@ export default function TournamentBracketsPage() {
         }
         navigate(
           tournamentMatchPage({
-            eventId: parentRouteData.event.id,
+            eventId: parentRouteData.tournament.id,
             matchId: match.id,
           }),
         );
@@ -370,7 +373,7 @@ export default function TournamentBracketsPage() {
     if (process.env.NODE_ENV === "development") return true;
 
     return (
-      databaseTimestampToDate(parentRouteData.event.startTime).getTime() <
+      databaseTimestampToDate(parentRouteData.tournament.startTime).getTime() <
       Date.now()
     );
   };
@@ -382,7 +385,7 @@ export default function TournamentBracketsPage() {
       ) : null}
       {data.finalStandings &&
       !parentRouteData.hasFinalized &&
-      canAdminTournament({ user, event: parentRouteData.event }) ? (
+      canAdminTournament({ user, tournament: parentRouteData.tournament }) ? (
         <div className="tournament-bracket__finalize">
           <FormWithConfirm
             dialogHeading={t("tournament:actions.finalize.confirm")}
@@ -398,7 +401,10 @@ export default function TournamentBracketsPage() {
       ) : null}
       {!parentRouteData.hasStarted && data.enoughTeams ? (
         <Form method="post" className="stack items-center">
-          {!canAdminTournament({ user, event: parentRouteData.event }) ? (
+          {!canAdminTournament({
+            user,
+            tournament: parentRouteData.tournament,
+          }) ? (
             <Alert
               variation="INFO"
               alertClassName="tournament-bracket__start-bracket-alert"
@@ -484,9 +490,9 @@ function useAutoRefresh() {
   const { revalidate } = useRevalidator();
   const parentRouteData = useOutletContext<TournamentLoaderData>();
   const lastEvent = useEventSource(
-    tournamentBracketsSubscribePage(parentRouteData.event.id),
+    tournamentBracketsSubscribePage(parentRouteData.tournament.id),
     {
-      event: bracketSubscriptionKey(parentRouteData.event.id),
+      event: bracketSubscriptionKey(parentRouteData.tournament.id),
     },
   );
 
@@ -577,7 +583,7 @@ function TournamentProgressPrompt({ ownedTeamId }: { ownedTeamId: number }) {
     return (
       <TournamentProgressContainer>
         {t("tournament:bracket.progress.thanksForPlaying", {
-          eventName: parentRouteData.event.name,
+          eventName: parentRouteData.tournament.name,
         })}
       </TournamentProgressContainer>
     );
@@ -594,7 +600,7 @@ function TournamentProgressPrompt({ ownedTeamId }: { ownedTeamId: number }) {
       <LinkButton
         to={tournamentMatchPage({
           matchId: currentMatchId,
-          eventId: parentRouteData.event.id,
+          eventId: parentRouteData.tournament.id,
         })}
         size="tiny"
         variant="outlined"
@@ -620,7 +626,7 @@ function AddSubsPopOver({
     TOURNAMENT.TEAM_MAX_MEMBERS_BEFORE_START + 1 - members.length;
 
   const inviteLink = `${SENDOU_INK_BASE_URL}${tournamentJoinPage({
-    eventId: parentRouteData.event.id,
+    eventId: parentRouteData.tournament.id,
     inviteCode,
   })}`;
 
@@ -688,7 +694,7 @@ function FinalStandings({ standings }: { standings: FinalStanding[] }) {
             </div>
             <Link
               to={tournamentTeamPage({
-                eventId: parentRouteData.event.id,
+                eventId: parentRouteData.tournament.id,
                 tournamentTeamId: standing.tournamentTeam.id,
               })}
               className="tournament-bracket__standing__team-name tournament-bracket__standing__team-name__big"
@@ -745,7 +751,7 @@ function FinalStandings({ standings }: { standings: FinalStanding[] }) {
                     >
                       <Link
                         to={tournamentTeamPage({
-                          eventId: parentRouteData.event.id,
+                          eventId: parentRouteData.tournament.id,
                           tournamentTeamId: standing.tournamentTeam.id,
                         })}
                         className="tournament-bracket__standing__team-name"

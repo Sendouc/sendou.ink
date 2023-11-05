@@ -1,0 +1,631 @@
+import type {
+  ColumnType,
+  GeneratedAlways,
+  Insertable,
+  Selectable,
+  SqlBool,
+} from "kysely";
+import type {
+  Ability,
+  MainWeaponId,
+  ModeShort,
+  StageId,
+} from "~/modules/in-game-lists";
+
+export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
+  ? ColumnType<S, I | undefined, U>
+  : ColumnType<T, T | undefined, T>;
+
+export interface AllTeam {
+  avatarImgId: number | null;
+  bannerImgId: number | null;
+  bio: string | null;
+  createdAt: Generated<number>;
+  css: ColumnType<Record<string, string> | null, string | null, string | null>;
+  customUrl: string;
+  deletedAt: number | null;
+  id: GeneratedAlways<number>;
+  inviteCode: string;
+  name: string;
+  twitter: string | null;
+}
+
+export interface AllTeamMember {
+  createdAt: Generated<number>;
+  isOwner: Generated<number>;
+  leftAt: number | null;
+  role: string | null;
+  teamId: number;
+  userId: number;
+}
+
+export interface Team {
+  avatarImgId: number | null;
+  bannerImgId: number | null;
+  bio: string | null;
+  createdAt: number | null;
+  css: ColumnType<Record<string, string> | null, string | null, string | null>;
+  customUrl: string;
+  deletedAt: number | null;
+  id: GeneratedAlways<number>;
+  inviteCode: string;
+  name: string;
+  twitter: string | null;
+}
+
+export interface TeamMember {
+  createdAt: number | null;
+  isOwner: number | null;
+  leftAt: number | null;
+  role: string | null;
+  teamId: number;
+  userId: number;
+}
+
+export interface Art {
+  authorId: number;
+  createdAt: Generated<number>;
+  description: string | null;
+  id: GeneratedAlways<number>;
+  imgId: number;
+  isShowcase: Generated<number>;
+}
+
+export interface ArtTag {
+  authorId: number;
+  createdAt: Generated<number>;
+  id: GeneratedAlways<number>;
+  name: string;
+}
+
+export interface ArtUserMetadata {
+  artId: number;
+  userId: number;
+}
+
+export interface Badge {
+  code: string;
+  displayName: string;
+  hue: number | null;
+  id: GeneratedAlways<number>;
+}
+// export type SelectableBadge = Selectable<Badge>;
+
+export interface BadgeManager {
+  badgeId: number;
+  userId: number;
+}
+
+export type BadgeOwner = {
+  badgeId: number | null;
+  userId: number | null;
+};
+
+export interface Build {
+  clothesGearSplId: number;
+  description: string | null;
+  headGearSplId: number;
+  id: GeneratedAlways<number>;
+  modes: ColumnType<ModeShort[] | null, string | null, string | null>;
+  ownerId: number;
+  private: number | null;
+  shoesGearSplId: number;
+  title: string;
+  updatedAt: Generated<number>;
+}
+
+export interface BuildAbility {
+  ability: Ability;
+  buildId: number;
+  gearType: string;
+  slotIndex: number;
+}
+
+export interface BuildWeapon {
+  buildId: number;
+  weaponSplId: MainWeaponId;
+}
+
+export interface CalendarEvent {
+  authorId: number;
+  bracketUrl: string;
+  description: string | null;
+  discordInviteCode: string | null;
+  id: GeneratedAlways<number>;
+  discordUrl: GeneratedAlways<string | null>;
+  name: string;
+  participantCount: number | null;
+  tags: string | null;
+  tournamentId: number | null;
+}
+
+export interface CalendarEventBadge {
+  badgeId: number;
+  eventId: number;
+}
+
+export interface CalendarEventDate {
+  eventId: number;
+  id: GeneratedAlways<number>;
+  startTime: number;
+}
+
+export interface CalendarEventResultPlayer {
+  name: string | null;
+  teamId: number;
+  userId: number | null;
+}
+
+export interface CalendarEventResultTeam {
+  eventId: number;
+  id: GeneratedAlways<number>;
+  name: string;
+  placement: number;
+}
+
+export interface FreshPlusTier {
+  tier: string | null;
+  userId: number | null;
+}
+
+export interface Group {
+  chatCode: string | null;
+  createdAt: Generated<number>;
+  id: GeneratedAlways<number>;
+  inviteCode: string;
+  latestActionAt: Generated<number>;
+  mapListPreference: string;
+  status: string;
+  teamId: number | null;
+}
+
+export interface GroupLike {
+  createdAt: Generated<number>;
+  likerGroupId: number;
+  targetGroupId: number;
+}
+
+export interface GroupMatch {
+  alphaGroupId: number;
+  bravoGroupId: number;
+  chatCode: string | null;
+  createdAt: Generated<number>;
+  id: GeneratedAlways<number>;
+  memento: string | null;
+  reportedAt: number | null;
+  reportedByUserId: number | null;
+}
+
+export interface GroupMatchMap {
+  id: GeneratedAlways<number>;
+  index: number;
+  matchId: number;
+  mode: ModeShort;
+  source: string;
+  stageId: StageId;
+  winnerGroupId: number | null;
+}
+
+export interface GroupMember {
+  createdAt: Generated<number>;
+  groupId: number;
+  note: string | null;
+  role: string;
+  userId: number;
+}
+
+export interface LogInLink {
+  code: string;
+  expiresAt: number;
+  userId: number;
+}
+
+export interface MapPoolMap {
+  calendarEventId: number | null;
+  groupId: number | null;
+  mode: ModeShort;
+  stageId: StageId;
+  tieBreakerCalendarEventId: number | null;
+  tournamentTeamId: number | null;
+}
+
+export interface MapResult {
+  losses: number;
+  mode: ModeShort;
+  season: number;
+  stageId: StageId;
+  userId: number;
+  wins: number;
+}
+
+export interface Migrations {
+  created_at: string;
+  id: GeneratedAlways<number>;
+  name: string;
+}
+
+export interface PlayerResult {
+  mapLosses: number;
+  mapWins: number;
+  otherUserId: number;
+  ownerUserId: number;
+  season: number;
+  setLosses: number;
+  setWins: number;
+  type: string;
+}
+
+export interface PlusSuggestion {
+  authorId: number;
+  createdAt: GeneratedAlways<number>;
+  id: GeneratedAlways<number>;
+  month: number;
+  suggestedId: number;
+  text: string;
+  tier: number;
+  year: number;
+}
+
+export interface PlusTier {
+  tier: number;
+  userId: number | null;
+}
+
+export interface PlusVote {
+  authorId: number;
+  month: number;
+  score: number;
+  tier: number;
+  validAfter: number;
+  votedId: number;
+  year: number;
+}
+
+export interface PlusVotingResult {
+  votedId: number;
+  tier: number;
+  score: number;
+  month: number;
+  year: number;
+  wasSuggested: number;
+  passedVoting: number;
+}
+
+export interface ReportedWeapon {
+  groupMatchMapId: number | null;
+  userId: number;
+  weaponSplId: number;
+}
+
+export interface Skill {
+  groupMatchId: number | null;
+  id: GeneratedAlways<number>;
+  identifier: string | null;
+  matchesCount: number;
+  mu: number;
+  ordinal: number;
+  season: number;
+  sigma: number;
+  tournamentId: number | null;
+  userId: number | null;
+}
+
+export interface SkillTeamUser {
+  skillId: number;
+  userId: number;
+}
+
+export interface SplatoonPlayer {
+  id: GeneratedAlways<number>;
+  splId: string;
+  userId: number | null;
+}
+
+export interface TaggedArt {
+  artId: number;
+  tagId: number;
+}
+
+// AUTO = style where teams pick their map pool ahead of time and the map lists are automatically made for each round
+// could also have the traditional style where TO picks the maps later
+type TournamentMapPickingStyle =
+  | "AUTO_ALL"
+  | "AUTO_SZ"
+  | "AUTO_TC"
+  | "AUTO_RM"
+  | "AUTO_CB";
+
+type TournamentFormat = "SE" | "DE";
+
+export interface Tournament {
+  format: TournamentFormat;
+  id: GeneratedAlways<number>;
+  mapPickingStyle: TournamentMapPickingStyle;
+  showMapListGenerator: Generated<number | null>;
+}
+
+export interface TournamentBadgeOwner {
+  badgeId: number;
+  userId: number;
+}
+
+export interface TournamentGroup {
+  id: GeneratedAlways<number>;
+  number: number;
+  stageId: StageId;
+}
+
+export interface TournamentMatch {
+  bestOf: Generated<number>;
+  chatCode: string | null;
+  childCount: number;
+  groupId: number;
+  id: GeneratedAlways<number>;
+  number: number;
+  opponentOne: string;
+  opponentTwo: string;
+  roundId: number;
+  stageId: StageId;
+  status: number;
+}
+
+export interface TournamentMatchGameResult {
+  createdAt: Generated<number>;
+  id: GeneratedAlways<number>;
+  matchId: number;
+  mode: ModeShort;
+  number: number;
+  reporterId: number;
+  source: string;
+  stageId: StageId;
+  winnerTeamId: number;
+}
+
+export interface TournamentMatchGameResultParticipant {
+  matchGameResultId: number;
+  userId: number;
+}
+
+export interface TournamentResult {
+  isHighlight: Generated<SqlBool>;
+  participantCount: number;
+  placement: number;
+  tournamentId: number;
+  tournamentTeamId: number;
+  userId: number;
+}
+
+export interface TournamentRound {
+  groupId: number;
+  id: GeneratedAlways<number>;
+  number: number;
+  stageId: StageId;
+}
+
+export interface TournamentStage {
+  id: GeneratedAlways<number>;
+  name: string;
+  number: number;
+  settings: string;
+  tournamentId: number;
+  type: string;
+}
+
+export interface TournamentSub {
+  bestWeapons: string;
+  canVc: number;
+  createdAt: Generated<number>;
+  message: string | null;
+  okWeapons: string | null;
+  tournamentId: number;
+  userId: number;
+  visibility: string;
+}
+
+export interface TournamentTeam {
+  createdAt: Generated<number>;
+  id: GeneratedAlways<number>;
+  inviteCode: string;
+  name: string;
+  prefersNotToHost: Generated<number>;
+  seed: number | null;
+  tournamentId: number;
+}
+
+export interface TournamentTeamCheckIn {
+  checkedInAt: number;
+  tournamentTeamId: number;
+}
+
+export interface TournamentTeamMember {
+  createdAt: Generated<number>;
+  isOwner: Generated<number>;
+  tournamentTeamId: number;
+  userId: number;
+}
+
+export interface TrustRelationship {
+  trustGiverUserId: number;
+  trustReceiverUserId: number;
+}
+
+export interface UnvalidatedUserSubmittedImage {
+  id: GeneratedAlways<number>;
+  submitterUserId: number;
+  url: string;
+  validatedAt: number | null;
+}
+
+export interface UnvalidatedVideo {
+  eventId: number | null;
+  id: GeneratedAlways<number>;
+  submitterUserId: number;
+  title: string;
+  type: string;
+  validatedAt: number | null;
+  youtubeDate: number;
+  youtubeId: string;
+}
+
+export interface User {
+  banned: Generated<number | null>;
+  bio: string | null;
+  commissionsOpen: Generated<number | null>;
+  commissionText: string | null;
+  country: string | null;
+  css: ColumnType<Record<string, string> | null, string | null, string | null>;
+  customUrl: string | null;
+  discordAvatar: string | null;
+  discordDiscriminator: string;
+  discordId: string;
+  discordName: string;
+  discordUniqueName: string | null;
+  favoriteBadgeId: number | null;
+  id: GeneratedAlways<number>;
+  inGameName: string | null;
+  isArtist: Generated<number | null>;
+  isVideoAdder: Generated<number | null>;
+  languages: string | null;
+  motionSens: number | null;
+  patronSince: number | null;
+  patronTier: number | null;
+  patronTill: number | null;
+  showDiscordUniqueName: Generated<number>;
+  stickSens: number | null;
+  twitch: string | null;
+  twitter: string | null;
+  vc: Generated<string | null>;
+  youtubeId: string | null;
+}
+
+export interface UserResultHighlight {
+  teamId: number;
+  userId: number;
+}
+
+export interface UserSubmittedImage {
+  id: GeneratedAlways<number>;
+  submitterUserId: number | null;
+  url: string | null;
+  validatedAt: number | null;
+}
+
+export interface UserWeapon {
+  createdAt: Generated<number>;
+  isFavorite: Generated<number>;
+  order: number;
+  userId: number;
+  weaponSplId: MainWeaponId;
+}
+
+export interface Video {
+  eventId: number | null;
+  id: GeneratedAlways<number>;
+  submitterUserId: number | null;
+  title: string | null;
+  type: string | null;
+  validatedAt: number | null;
+  youtubeDate: number | null;
+  youtubeId: string | null;
+}
+
+export interface VideoMatch {
+  id: GeneratedAlways<number>;
+  mode: ModeShort;
+  stageId: StageId;
+  startsAt: number;
+  videoId: number;
+}
+
+export interface VideoMatchPlayer {
+  player: number;
+  playerName: string | null;
+  playerUserId: number | null;
+  videoMatchId: number;
+  weaponSplId: number;
+}
+
+export interface XRankPlacement {
+  badges: string;
+  bannerSplId: number;
+  id: GeneratedAlways<number>;
+  mode: ModeShort;
+  month: number;
+  name: string;
+  nameDiscriminator: string;
+  playerId: number;
+  power: number;
+  rank: number;
+  region: string;
+  title: string;
+  weaponSplId: MainWeaponId;
+  year: number;
+}
+
+export type Tables = { [P in keyof DB]: Selectable<DB[P]> };
+export type TablesInsertable = { [P in keyof DB]: Insertable<DB[P]> };
+
+export interface DB {
+  AllTeam: AllTeam;
+  AllTeamMember: AllTeamMember;
+  Art: Art;
+  ArtTag: ArtTag;
+  ArtUserMetadata: ArtUserMetadata;
+  Badge: Badge;
+  BadgeManager: BadgeManager;
+  BadgeOwner: BadgeOwner;
+  Build: Build;
+  BuildAbility: BuildAbility;
+  BuildWeapon: BuildWeapon;
+  CalendarEvent: CalendarEvent;
+  CalendarEventBadge: CalendarEventBadge;
+  CalendarEventDate: CalendarEventDate;
+  CalendarEventResultPlayer: CalendarEventResultPlayer;
+  CalendarEventResultTeam: CalendarEventResultTeam;
+  FreshPlusTier: FreshPlusTier;
+  Group: Group;
+  GroupLike: GroupLike;
+  GroupMatch: GroupMatch;
+  GroupMatchMap: GroupMatchMap;
+  GroupMember: GroupMember;
+  LogInLink: LogInLink;
+  MapPoolMap: MapPoolMap;
+  MapResult: MapResult;
+  migrations: Migrations;
+  PlayerResult: PlayerResult;
+  PlusSuggestion: PlusSuggestion;
+  PlusTier: PlusTier;
+  PlusVote: PlusVote;
+  PlusVotingResult: PlusVotingResult;
+  ReportedWeapon: ReportedWeapon;
+  Skill: Skill;
+  SkillTeamUser: SkillTeamUser;
+  SplatoonPlayer: SplatoonPlayer;
+  TaggedArt: TaggedArt;
+  Team: Team;
+  TeamMember: TeamMember;
+  Tournament: Tournament;
+  TournamentBadgeOwner: TournamentBadgeOwner;
+  TournamentGroup: TournamentGroup;
+  TournamentMatch: TournamentMatch;
+  TournamentMatchGameResult: TournamentMatchGameResult;
+  TournamentMatchGameResultParticipant: TournamentMatchGameResultParticipant;
+  TournamentResult: TournamentResult;
+  TournamentRound: TournamentRound;
+  TournamentStage: TournamentStage;
+  TournamentSub: TournamentSub;
+  TournamentTeam: TournamentTeam;
+  TournamentTeamCheckIn: TournamentTeamCheckIn;
+  TournamentTeamMember: TournamentTeamMember;
+  TrustRelationship: TrustRelationship;
+  UnvalidatedUserSubmittedImage: UnvalidatedUserSubmittedImage;
+  UnvalidatedVideo: UnvalidatedVideo;
+  User: User;
+  UserResultHighlight: UserResultHighlight;
+  UserSubmittedImage: UserSubmittedImage;
+  UserWeapon: UserWeapon;
+  Video: Video;
+  VideoMatch: VideoMatch;
+  VideoMatchPlayer: VideoMatchPlayer;
+  XRankPlacement: XRankPlacement;
+}
