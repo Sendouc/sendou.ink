@@ -642,6 +642,16 @@ dialog::backdrop {
   list-style: none;
 }
 
+.combobox-item-image {
+  min-width: 24px;
+}
+
+.combobox-item-label {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow-x: hidden;
+}
+
 .combobox-no-matches {
   display: flex;
   align-items: center;

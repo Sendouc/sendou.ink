@@ -179,9 +179,10 @@ export function Combobox<
                         path={option.imgPath}
                         width={24}
                         height={24}
+                        className="combobox-item-image"
                       />
                     )}
-                    {option.label}
+                    <span className="combobox-item-label">{option.label}</span>
                   </li>
                 )}
               </HeadlessCombobox.Option>
