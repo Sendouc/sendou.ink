@@ -343,17 +343,19 @@ export function updateProfile(args: UpdateProfileArgs) {
       .where("userId", "=", args.userId)
       .execute();
 
-    await trx
-      .insertInto("UserWeapon")
-      .values(
-        args.weapons.map((weapon, i) => ({
-          userId: args.userId,
-          weaponSplId: weapon.weaponSplId,
-          isFavorite: weapon.isFavorite,
-          order: i + 1,
-        })),
-      )
-      .execute();
+    if (args.weapons.length > 0) {
+      await trx
+        .insertInto("UserWeapon")
+        .values(
+          args.weapons.map((weapon, i) => ({
+            userId: args.userId,
+            weaponSplId: weapon.weaponSplId,
+            isFavorite: weapon.isFavorite,
+            order: i + 1,
+          })),
+        )
+        .execute();
+    }
 
     return trx
       .updateTable("User")
