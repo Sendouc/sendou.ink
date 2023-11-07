@@ -22,6 +22,8 @@ import { inviteCodeById } from "../queries/inviteCodeById.server";
 import { teamParamsSchema } from "../team-schemas.server";
 import type { DetailedTeam } from "../team-types";
 import { isTeamFull, isTeamMember } from "../team-utils";
+import * as UserRepository from "~/features/user-page/UserRepository.server";
+
 import styles from "../team.css";
 
 export const links: LinksFunction = () => {
@@ -43,6 +45,9 @@ export const action: ActionFunction = async ({ request, params }) => {
       realInviteCode,
       team,
       user,
+      isInTeam: Boolean(
+        (await UserRepository.findByIdentifier(String(user.id)))?.team,
+      ),
     }) === "VALID",
     "Invite code is invalid",
   );
@@ -70,13 +75,19 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     realInviteCode,
     team,
     user,
+    isInTeam: Boolean(
+      (await UserRepository.findByIdentifier(String(user.id)))?.team,
+    ),
   });
 
   if (validation === "ALREADY_JOINED") {
     throw redirect(teamPage(team.customUrl));
   }
 
-  return { validation, teamName: team.name };
+  return {
+    validation,
+    teamName: team.name,
+  };
 };
 
 function validateInviteCode({
@@ -84,11 +95,13 @@ function validateInviteCode({
   realInviteCode,
   team,
   user,
+  isInTeam,
 }: {
   inviteCode: string;
   realInviteCode: string;
   team: DetailedTeam;
   user?: { id: number; team?: { name: string } };
+  isInTeam: boolean;
 }) {
   if (inviteCode.length !== INVITE_CODE_LENGTH) {
     return "SHORT_CODE";
@@ -102,7 +115,7 @@ function validateInviteCode({
   if (isTeamMember({ team, user })) {
     return "ALREADY_JOINED";
   }
-  if (user?.team) {
+  if (isInTeam) {
     return "ALREADY_IN_DIFFERENT_TEAM";
   }
 
