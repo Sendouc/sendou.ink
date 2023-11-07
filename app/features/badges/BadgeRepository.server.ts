@@ -94,15 +94,17 @@ export function replaceManagers({
       .where("badgeId", "=", badgeId)
       .execute();
 
-    await trx
-      .insertInto("BadgeManager")
-      .values(
-        managerIds.map((userId) => ({
-          badgeId,
-          userId,
-        })),
-      )
-      .execute();
+    if (managerIds.length > 0) {
+      await trx
+        .insertInto("BadgeManager")
+        .values(
+          managerIds.map((userId) => ({
+            badgeId,
+            userId,
+          })),
+        )
+        .execute();
+    }
   });
 }
 
