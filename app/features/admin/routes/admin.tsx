@@ -36,7 +36,8 @@ export const meta: V2_MetaFunction = () => {
   return [{ title: makeTitle("Admin page") }];
 };
 
-const adminActionSchema = z.union([
+// xxx: to different file
+export const adminActionSchema = z.union([
   z.object({
     _action: _action("MIGRATE"),
     "old-user": z.preprocess(actualNumber, z.number().positive()),

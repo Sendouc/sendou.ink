@@ -52,6 +52,7 @@ export class DiscordStrategy extends OAuth2Strategy<
           "https://discord.com/api/oauth2/token",
         clientID: envVars.DISCORD_CLIENT_ID,
         clientSecret: envVars.DISCORD_CLIENT_SECRET,
+        // xxx: "https://example.com", actual way for tests
         callbackURL: new URL("/auth/callback", envVars.BASE_URL).toString(),
       },
       async ({ accessToken }) => {

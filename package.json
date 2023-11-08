@@ -35,7 +35,7 @@
     "prettier:check": "prettier --check . --log-level warn",
     "prettier:write": "prettier --write . --log-level warn",
     "typecheck": "tsc --noEmit",
-    "test:unit": "uvu -r tsm -r tsconfig-paths/register -i e2e",
+    "test:unit": "cross-env DB_PATH=db.sqlite3 uvu -r tsm -r tsconfig-paths/register -i e2e",
     "test:e2e": "npx playwright test",
     "checks": "npm run test:unit && npm run lint:css && npm run lint:ts && npm run prettier:check && npm run typecheck",
     "cf": "npm run test:unit && npm run check-translation-jsons && npm run lint:css -- --fix && npm run lint:ts -- --fix && npm run prettier:write && npm run typecheck && npm run test:e2e",
