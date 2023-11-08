@@ -30,6 +30,7 @@ import { assertUnreachable } from "~/utils/types";
 import { impersonateUrl, SEED_URL, STOP_IMPERSONATING_URL } from "~/utils/urls";
 import { _action, actualNumber } from "~/utils/zod";
 import * as AdminRepository from "~/features/admin/AdminRepository.server";
+import { plusTiersFromVotingAndLeaderboard } from "../core/plus-tier.server";
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: makeTitle("Admin page") }];
@@ -88,7 +89,9 @@ export const action: ActionFunction = async ({ request }) => {
     case "REFRESH": {
       validate(isAdmin(user));
 
-      await AdminRepository.refreshPlusTiers();
+      await AdminRepository.replacePlusTiers(
+        await plusTiersFromVotingAndLeaderboard(),
+      );
       break;
     }
     case "FORCE_PATRON": {

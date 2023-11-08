@@ -4,7 +4,7 @@ import { userSPLeaderboard } from "~/features/leaderboards/queries/userSPLeaderb
 import { previousSeason } from "~/features/mmr/season";
 import * as AdminRepository from "~/features/admin/AdminRepository.server";
 
-export async function plusTiers() {
+export async function plusTiersFromVotingAndLeaderboard() {
   return [
     ...fromLeaderboard(),
     ...(await AdminRepository.allPlusTiersFromLatestVoting()),
