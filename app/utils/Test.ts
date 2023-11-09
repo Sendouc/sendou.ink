@@ -1,17 +1,24 @@
 import type { ActionFunction } from "@remix-run/node";
 import type { z } from "zod";
+import { ADMIN_ID } from "~/constants";
+import { NZAP_TEST_ID } from "~/db/seed/constants";
+import { SESSION_KEY } from "~/features/auth/core/authenticator.server";
+import { authSessionStorage } from "~/features/auth/core/session.server";
 
 export function wrappedAction<T extends z.ZodTypeAny>({
   action,
 }: {
   action: ActionFunction;
 }) {
-  return async (args: z.infer<T>, { user }: { user?: "admin" } = {}) => {
+  return async (
+    args: z.infer<T>,
+    { user }: { user?: "admin" | "regular" } = {},
+  ) => {
     const params = new URLSearchParams(args);
     const request = new Request("http://app.com/path", {
       method: "POST",
       body: params,
-      headers: authHeader(user),
+      headers: await authHeader(user),
     });
 
     try {
@@ -32,7 +39,12 @@ export function wrappedAction<T extends z.ZodTypeAny>({
   };
 }
 
-function authHeader(user?: "admin") {
-  return {};
-  // if admin
+async function authHeader(user?: "admin" | "regular"): Promise<HeadersInit> {
+  if (!user) return [];
+
+  const session = await authSessionStorage.getSession();
+
+  session.set(SESSION_KEY, user === "admin" ? ADMIN_ID : NZAP_TEST_ID);
+
+  return [["Cookie", await authSessionStorage.commitSession(session)]];
 }

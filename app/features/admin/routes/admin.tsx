@@ -140,7 +140,7 @@ export const action: ActionFunction = async ({ request }) => {
     }
   }
 
-  return null;
+  return { ok: true };
 };
 
 interface AdminPageLoaderData {
