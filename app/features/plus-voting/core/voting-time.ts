@@ -3,7 +3,6 @@ import {
   seasonToVotingRange,
   lastCompletedVoting as lastCompletedVotingNew,
 } from "./voting-time-new"; // TODO: seasonToVotingRange can be removed as export after the first new voting under the new system
-import { lastCompletedVoting as lastCompletedVotingOld } from "./voting-time-old";
 
 export {
   isVotingActive,
@@ -22,7 +21,5 @@ export function lastCompletedVoting(now: Date): MonthYear {
   // first voting under the new system has not yet concluded
   const usingOldLogic = range.endDate.getTime() > now.getTime();
 
-  return usingOldLogic
-    ? lastCompletedVotingOld(now)
-    : lastCompletedVotingNew(now);
+  return usingOldLogic ? { month: 9, year: 2023 } : lastCompletedVotingNew(now);
 }
