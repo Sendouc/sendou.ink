@@ -21,14 +21,18 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const meta: V2_MetaFunction = () => {
-  const { month, year } = lastCompletedVoting(new Date());
+export const meta: V2_MetaFunction = (args) => {
+  const data = args.data as SerializeFrom<typeof loader>;
+
+  if (!data) return [];
 
   return [
     { title: makeTitle("Plus Server voting history") },
     {
       name: "description",
-      content: `Plus Server voting results for ${month + 1}/${year}`,
+      content: `Plus Server voting results for ${
+        data.lastCompletedVoting.month + 1
+      }/${data.lastCompletedVoting.year}`,
     },
   ];
 };
