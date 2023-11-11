@@ -303,7 +303,8 @@ function WeaponImageSelector({
   );
 }
 
-const LAST_STAGE_ID_WITH_IMAGES = 17;
+const LAST_STAGE_ID_WITH_IMAGES = 19;
+const LAST_STAGE_ID_WITH_OBJECT_IMAGE = 17;
 function StageBackgroundSelector({
   onAddBackground,
 }: {
@@ -319,12 +320,27 @@ function StageBackgroundSelector({
   const [backgroundStyle, setBackgroundStyle] =
     React.useState<StageBackgroundStyle>("ITEMS");
 
+  const availableImageTypes = (stageId: number): StageBackgroundStyle[] => {
+    if (stageId > LAST_STAGE_ID_WITH_OBJECT_IMAGE) {
+      return ["MINI", "OVER"];
+    }
+
+    return ["ITEMS", "MINI", "OVER"];
+  };
+
+  const handleStageIdChange = (stageId: StageId) => {
+    setStageId(stageId);
+    if (!availableImageTypes(stageId).includes(backgroundStyle)) {
+      setBackgroundStyle(availableImageTypes(stageId)[0]);
+    }
+  };
+
   return (
     <div className="plans__top-section">
       <select
         className="w-max"
         value={stageId}
-        onChange={(e) => setStageId(Number(e.target.value) as StageId)}
+        onChange={(e) => handleStageIdChange(Number(e.target.value) as StageId)}
         aria-label="Select stage"
       >
         {stageIds
@@ -357,10 +373,10 @@ function StageBackgroundSelector({
           setBackgroundStyle(e.target.value as StageBackgroundStyle)
         }
       >
-        {["ITEMS", "MINI", "OVER"].map((style) => {
+        {availableImageTypes(stageId).map((style) => {
           return (
             <option key={style} value={style}>
-              {t(`common:plans.bgStyle.${style as StageBackgroundStyle}`)}
+              {t(`common:plans.bgStyle.${style}`)}
             </option>
           );
         })}

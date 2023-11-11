@@ -20,10 +20,6 @@ import {
 import styles from "../../top-search/top-search.css";
 import { userSPLeaderboard } from "../queries/userSPLeaderboard.server";
 import type { SendouRouteHandle } from "~/utils/remix";
-import {
-  type TeamSPLeaderboardItem,
-  teamSPLeaderboard,
-} from "../queries/teamSPLeaderboard.server";
 import React from "react";
 import { LEADERBOARD_TYPES } from "../leaderboards-constants";
 import { useTranslation } from "~/hooks/useTranslation";
@@ -48,11 +44,9 @@ import {
 } from "~/features/mmr/season";
 import {
   addPendingPlusTiers,
-  addPlacementRank,
   addTiers,
   addWeapons,
   filterByWeaponCategory,
-  oneEntryPerUser,
 } from "../core/leaderboards.server";
 import { seasonPopularUsersWeapon } from "../queries/seasonPopularUsersWeapon.server";
 import { cachified } from "cachified";
@@ -61,6 +55,7 @@ import { HALF_HOUR_IN_MS } from "~/constants";
 import { TopTenPlayer } from "../components/TopTenPlayer";
 import { seasonHasTopTen } from "../leaderboards-utils";
 import { USER_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN } from "~/features/mmr/mmr-constants";
+import * as LeaderboardRepository from "~/features/leaderboards/LeaderboardRepository.server";
 
 export const handle: SendouRouteHandle = {
   i18n: ["vods"],
@@ -141,12 +136,8 @@ export const loader = async ({ request }: LoaderArgs) => {
           key: `team-leaderboard-season-${season}`,
           cache,
           ttl: ttl(HALF_HOUR_IN_MS),
-          // eslint-disable-next-line @typescript-eslint/require-await
           async getFreshValue() {
-            const leaderboard = teamSPLeaderboard(season);
-            const filteredByUser = oneEntryPerUser(leaderboard);
-
-            return addPlacementRank(filteredByUser);
+            return LeaderboardRepository.teamLeaderboardBySeason(season);
           },
         })
       : null;
@@ -396,7 +387,11 @@ function PlayersTable({
   );
 }
 
-function TeamTable({ entries }: { entries: TeamSPLeaderboardItem[] }) {
+function TeamTable({
+  entries,
+}: {
+  entries: NonNullable<SerializeFrom<typeof loader>["teamLeaderboard"]>;
+}) {
   return (
     <div className="placements__table">
       {entries.map((entry) => {
@@ -406,14 +401,16 @@ function TeamTable({ entries }: { entries: TeamSPLeaderboardItem[] }) {
               <div className="placements__table__rank">
                 {entry.placementRank}
               </div>
-              {entry.team?.avatarImgUrl ? (
+              {entry.team?.avatarUrl ? (
                 <Link
-                  to={teamPage(entry.team.customUrl)}
-                  title={entry.team.name}
+                  // TODO: can be made better when $narrowNotNull lands
+                  to={teamPage(entry.team.customUrl!)}
+                  // TODO: can be made better when $narrowNotNull lands
+                  title={entry.team.name!}
                 >
                   <Avatar
                     size="xxs"
-                    url={userSubmittedImage(entry.team.avatarImgUrl)}
+                    url={userSubmittedImage(entry.team.avatarUrl)}
                     className="placements__avatar"
                   />
                 </Link>
