@@ -233,7 +233,7 @@ function TwitterInput() {
         maxLength={TEAM.TWITTER_MAX_LENGTH}
         value={value}
         onChange={(e) => setValue(pathnameFromPotentialURL(e.target.value))}
-        data-testid="twitter-input"
+        testId="twitter-input"
       />
     </div>
   );
