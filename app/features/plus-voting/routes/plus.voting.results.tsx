@@ -42,6 +42,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   return {
     results: censorScores(results),
     ownScores: ownScores({ results, user }),
+    lastCompletedVoting: lastCompletedVoting(new Date()),
   };
 };
 
@@ -123,12 +124,11 @@ function ownScores({
 export default function PlusVotingResultsPage() {
   const data = useLoaderData<typeof loader>();
 
-  const { month, year } = lastCompletedVoting(new Date());
-
   return (
     <div className="stack md">
       <h2 className="text-center">
-        Voting results for {month + 1}/{year}
+        Voting results for {data.lastCompletedVoting.month + 1}/
+        {data.lastCompletedVoting.year}
       </h2>
       {data.ownScores && data.ownScores.length > 0 ? (
         <>
