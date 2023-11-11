@@ -191,6 +191,21 @@ function parametersToMainWeaponResult(
     };
   };
 
+  const slosherDirectDamageSecondary = () => {
+    const isDreadWringer = weapon.Id === 3050 || weapon.Id === 3051;
+    if (!isDreadWringer) return;
+
+    const DamageParam_Secondary_ValueDirectMax =
+      params["UnitGroupParam"]?.["Unit"]?.[1]?.["DamageParam"]?.["ValueMax"];
+    const DamageParam_Secondary_ValueDirectMin =
+      params["UnitGroupParam"]?.["Unit"]?.[1]?.["DamageParam"]?.["ValueMin"];
+
+    return {
+      DamageParam_Secondary_ValueDirectMax,
+      DamageParam_Secondary_ValueDirectMin,
+    };
+  };
+
   const KeepChargeFullFrame =
     params["WeaponKeepChargeParam"]?.["KeepChargeFullFrame"] ??
     params["spl__WeaponStringerParam"]?.["ChargeKeepParam"]?.[
@@ -258,6 +273,7 @@ function parametersToMainWeaponResult(
       : undefined,
     DamageParam_ValueDirect,
     ...slosherDirectDamage(),
+    ...slosherDirectDamageSecondary(),
     // Glooga turret mode damage
     DamageLapOverParam_ValueMax: params["DamageLapOverParam"]?.["ValueMax"],
     DamageLapOverParam_ValueMin: params["DamageLapOverParam"]?.["ValueMin"],

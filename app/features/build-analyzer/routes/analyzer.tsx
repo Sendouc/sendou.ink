@@ -54,6 +54,7 @@ import type {
   AbilityPoints,
   AnalyzedBuild,
   Damage,
+  DamageType,
   SpecialEffectType,
   Stat,
   SubWeaponDamage,
@@ -75,6 +76,7 @@ import {
   isStackableAbility,
 } from "../core/utils";
 import { PerInkTankGrid } from "../components/PerInkTankGrid";
+import invariant from "tiny-invariant";
 
 export const CURRENT_PATCH = "5.1";
 
@@ -1497,6 +1499,27 @@ function DamageTable({
     return true;
   };
 
+  const multiShotValues = (
+    damage: AnalyzedBuild["stats"]["damages"][number],
+  ) => {
+    // initially only Dread Wringer
+    const isAsymmetric = values.some(
+      (value) => value.type === "DIRECT_SECONDARY_MIN",
+    );
+
+    if (!isAsymmetric) return new Array(multiShots).fill(damage.value);
+
+    const otherKey: DamageType =
+      damage.type === "DIRECT_MAX"
+        ? "DIRECT_SECONDARY_MAX"
+        : "DIRECT_SECONDARY_MIN";
+
+    const secondaryDamage = values.find((value) => value.type === otherKey);
+    invariant(secondaryDamage, "secondary damage not found");
+
+    return [damage.value, secondaryDamage.value];
+  };
+
   return (
     <>
       <Table>
@@ -1519,9 +1542,11 @@ function DamageTable({
         </thead>
         <tbody>
           {values.map((val, i) => {
+            if (val.type.includes("SECONDARY")) return null;
+
             const damage = (val: AnalyzedBuild["stats"]["damages"][number]) =>
               multiShots && damageTypeToWeaponType[val.type] === "MAIN"
-                ? new Array(multiShots).fill(val.value).join(" + ")
+                ? multiShotValues(val).join(" + ")
                 : val.value;
 
             const typeRowName = damageIsSubWeaponDamage(val)
@@ -1543,7 +1568,7 @@ function DamageTable({
                       height={12}
                     />
                   ) : null}{" "}
-                  {t(typeRowName)}{" "}
+                  {t(typeRowName as any)}{" "}
                   {damageIsSubWeaponDamage(val) && val.type === "SPLASH" ? (
                     <>({t("analyzer:damage.SPLASH")})</>
                   ) : null}

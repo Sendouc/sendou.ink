@@ -185,7 +185,7 @@ function DamageTypesSelect({
             {t(
               damageTypeTranslationString({
                 damageType,
-              }),
+              }) as any,
             )}
           </option>
         );
@@ -307,7 +307,7 @@ function DamageReceiversGrid({
               {t(
                 damageTypeTranslationString({
                   damageType: damage.type,
-                }),
+                }) as any,
               )}
               {damage.objectShredder && <Ability ability="OS" size="TINY" />}
             </div>
