@@ -5,9 +5,19 @@ import { previousSeason } from "~/features/mmr/season";
 import * as AdminRepository from "~/features/admin/AdminRepository.server";
 
 export async function plusTiersFromVotingAndLeaderboard() {
+  const newMembersFromLeaderboard = fromLeaderboard();
+  const newMembersFromVoting =
+    await AdminRepository.allPlusTiersFromLatestVoting();
+
   return [
-    ...fromLeaderboard(),
-    ...(await AdminRepository.allPlusTiersFromLatestVoting()),
+    ...newMembersFromLeaderboard,
+    // filter to ensure that user gets their highest tier
+    ...newMembersFromVoting.filter(
+      (member) =>
+        !newMembersFromLeaderboard.some(
+          (leaderboardMember) => leaderboardMember.userId === member.userId,
+        ),
+    ),
   ];
 }
 
