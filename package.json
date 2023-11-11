@@ -116,6 +116,7 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "ley": "^0.8.1",
+    "mockdate": "^3.0.5",
     "prettier": "3.0.2",
     "stylelint": "^15.10.3",
     "stylelint-config-standard": "^34.0.0",

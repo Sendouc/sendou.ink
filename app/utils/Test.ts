@@ -2,6 +2,7 @@ import type { ActionFunction } from "@remix-run/node";
 import type { z } from "zod";
 import { ADMIN_ID } from "~/constants";
 import { NZAP_TEST_ID } from "~/db/seed/constants";
+import { resetTestDb } from "~/db/sql";
 import { SESSION_KEY } from "~/features/auth/core/authenticator.server";
 import { authSessionStorage } from "~/features/auth/core/session.server";
 
@@ -48,3 +49,5 @@ async function authHeader(user?: "admin" | "regular"): Promise<HeadersInit> {
 
   return [["Cookie", await authSessionStorage.commitSession(session)]];
 }
+
+export const resetDB = resetTestDb;
