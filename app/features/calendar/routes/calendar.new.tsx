@@ -53,7 +53,7 @@ import {
   validate,
   type SendouRouteHandle,
 } from "~/utils/remix";
-import { makeTitle } from "~/utils/strings";
+import { makeTitle, pathnameFromPotentialURL } from "~/utils/strings";
 import { calendarEventPage } from "~/utils/urls";
 import {
   actualNumber,
@@ -471,6 +471,9 @@ function BracketUrlInput() {
 function DiscordLinkInput() {
   const { t } = useTranslation("calendar");
   const { eventToEdit } = useLoaderData<typeof loader>();
+  const [value, setValue] = React.useState(
+    eventToEdit?.discordInviteCode ?? "",
+  );
 
   return (
     <div className="stack items-start">
@@ -479,7 +482,8 @@ function DiscordLinkInput() {
         name="discordInviteCode"
         leftAddon="https://discord.gg/"
         maxLength={CALENDAR_EVENT.DISCORD_INVITE_CODE_MAX_LENGTH}
-        defaultValue={eventToEdit?.discordInviteCode ?? undefined}
+        value={value}
+        onChange={(e) => setValue(pathnameFromPotentialURL(e.target.value))}
       />
     </div>
   );
