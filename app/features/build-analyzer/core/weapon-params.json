@@ -1063,6 +1063,8 @@
       "MoveSpeed": 0.04,
       "DamageParam_ValueDirectMax": 480,
       "DamageParam_ValueDirectMin": 350,
+      "DamageParam_Secondary_ValueDirectMax": 420,
+      "DamageParam_Secondary_ValueDirectMin": 350,
       "InkRecoverStop": 50,
       "InkConsumeSlosher": 0.1
     },

@@ -24,7 +24,7 @@ import {
   validate,
   type SendouRouteHandle,
 } from "~/utils/remix";
-import { makeTitle } from "~/utils/strings";
+import { makeTitle, pathnameFromPotentialURL } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
 import {
   mySlugify,
@@ -40,6 +40,7 @@ import { TEAM } from "../team-constants";
 import { editTeamSchema, teamParamsSchema } from "../team-schemas.server";
 import { canAddCustomizedColors, isTeamOwner } from "../team-utils";
 import styles from "../team.css";
+import { Input } from "~/components/Input";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -220,16 +221,19 @@ function NameInput() {
 function TwitterInput() {
   const { t } = useTranslation(["team"]);
   const { team } = useLoaderData<typeof loader>();
+  const [value, setValue] = React.useState(team.twitter ?? "");
 
   return (
     <div>
       <Label htmlFor="twitter">{t("team:forms.fields.teamTwitter")}</Label>
-      <input
+      <Input
+        leftAddon="https://twitter.com/"
         id="twitter"
         name="twitter"
         maxLength={TEAM.TWITTER_MAX_LENGTH}
-        defaultValue={team.twitter}
-        data-testid="twitter-input"
+        value={value}
+        onChange={(e) => setValue(pathnameFromPotentialURL(e.target.value))}
+        testId="twitter-input"
       />
     </div>
   );

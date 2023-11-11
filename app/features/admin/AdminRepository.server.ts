@@ -2,6 +2,7 @@ import { db, sql } from "~/db/sql";
 import { syncXPBadges } from "../badges";
 import type { Tables } from "~/db/tables";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
+import invariant from "tiny-invariant";
 
 const removeOldLikesStm = sql.prepare(/*sql*/ `
   delete from 
@@ -48,21 +49,23 @@ export function migrate(args: { newUserId: number; oldUserId: number }) {
   });
 }
 
-export function refreshPlusTiers() {
+export function replacePlusTiers(
+  plusTiers: Array<{ userId: number; tier: number }>,
+) {
+  invariant(plusTiers.length > 0, "plusTiers must not be empty");
+
   return db.transaction().execute(async (trx) => {
     await trx.deleteFrom("PlusTier").execute();
-
-    await trx
-      .insertInto("PlusTier")
-      .columns(["userId", "tier"])
-      .expression((eb) =>
-        eb
-          .selectFrom("FreshPlusTier")
-          .select(["FreshPlusTier.userId", "FreshPlusTier.tier"])
-          .where("FreshPlusTier.tier", "is not", null),
-      )
-      .execute();
+    await trx.insertInto("PlusTier").values(plusTiers).execute();
   });
+}
+
+export function allPlusTiersFromLatestVoting() {
+  return db
+    .selectFrom("FreshPlusTier")
+    .select(["FreshPlusTier.userId", "FreshPlusTier.tier"])
+    .where("FreshPlusTier.tier", "is not", null)
+    .execute() as Promise<{ userId: number; tier: number }[]>;
 }
 
 export function makeVideoAdderByUserId(userId: number) {

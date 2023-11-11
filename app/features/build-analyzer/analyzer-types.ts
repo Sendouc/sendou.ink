@@ -39,6 +39,9 @@ export interface MainWeaponParams {
   DamageParam_ValueDirect?: number;
   DamageParam_ValueDirectMax?: number;
   DamageParam_ValueDirectMin?: number;
+  // Dread Wringer
+  DamageParam_Secondary_ValueDirectMax?: number;
+  DamageParam_Secondary_ValueDirectMin?: number;
   DamageParam_SplatanaVerticalDirect?: number;
   DamageParam_SplatanaVertical?: number;
   DamageParam_SplatanaHorizontalDirect?: number;

@@ -1,17 +1,17 @@
 import type {
-  ActionFunction,
+  ActionArgs,
   LoaderFunction,
   V2_MetaFunction,
 } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { useFetcher, useLoaderData, useNavigation } from "@remix-run/react";
 import * as React from "react";
-import { z } from "zod";
 import { Button } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { UserSearch } from "~/components/UserSearch";
+import * as AdminRepository from "~/features/admin/AdminRepository.server";
 import { makeArtist } from "~/features/art";
 import { useUser } from "~/features/auth/core";
 import {
@@ -27,48 +27,15 @@ import {
 } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
-import { impersonateUrl, SEED_URL, STOP_IMPERSONATING_URL } from "~/utils/urls";
-import { _action, actualNumber } from "~/utils/zod";
-import * as AdminRepository from "~/features/admin/AdminRepository.server";
+import { SEED_URL, STOP_IMPERSONATING_URL, impersonateUrl } from "~/utils/urls";
+import { adminActionSchema } from "../admin-schemas.server";
+import { plusTiersFromVotingAndLeaderboard } from "../core/plus-tier.server";
 
 export const meta: V2_MetaFunction = () => {
   return [{ title: makeTitle("Admin page") }];
 };
 
-const adminActionSchema = z.union([
-  z.object({
-    _action: _action("MIGRATE"),
-    "old-user": z.preprocess(actualNumber, z.number().positive()),
-    "new-user": z.preprocess(actualNumber, z.number().positive()),
-  }),
-  z.object({
-    _action: _action("REFRESH"),
-  }),
-  z.object({
-    _action: _action("CLEAN_UP"),
-  }),
-  z.object({
-    _action: _action("FORCE_PATRON"),
-    user: z.preprocess(actualNumber, z.number().positive()),
-    patronTier: z.preprocess(actualNumber, z.number()),
-    patronTill: z.string(),
-  }),
-  z.object({
-    _action: _action("VIDEO_ADDER"),
-    user: z.preprocess(actualNumber, z.number().positive()),
-  }),
-  z.object({
-    _action: _action("ARTIST"),
-    user: z.preprocess(actualNumber, z.number().positive()),
-  }),
-  z.object({
-    _action: _action("LINK_PLAYER"),
-    user: z.preprocess(actualNumber, z.number().positive()),
-    playerId: z.preprocess(actualNumber, z.number().positive()),
-  }),
-]);
-
-export const action: ActionFunction = async ({ request }) => {
+export const action = async ({ request }: ActionArgs) => {
   const data = await parseRequestFormData({
     request,
     schema: adminActionSchema,
@@ -88,7 +55,9 @@ export const action: ActionFunction = async ({ request }) => {
     case "REFRESH": {
       validate(isAdmin(user));
 
-      await AdminRepository.refreshPlusTiers();
+      await AdminRepository.replacePlusTiers(
+        await plusTiersFromVotingAndLeaderboard(),
+      );
       break;
     }
     case "FORCE_PATRON": {
@@ -136,7 +105,7 @@ export const action: ActionFunction = async ({ request }) => {
     }
   }
 
-  return null;
+  return { ok: true };
 };
 
 interface AdminPageLoaderData {

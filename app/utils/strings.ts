@@ -72,3 +72,11 @@ export function gearTypeToInitial(gearType: GearType) {
 export function capitalize(str: string) {
   return str[0].toUpperCase() + str.slice(1);
 }
+
+export function pathnameFromPotentialURL(maybeUrl: string) {
+  try {
+    return new URL(maybeUrl).pathname.replace("/", "");
+  } catch {
+    return maybeUrl;
+  }
+}

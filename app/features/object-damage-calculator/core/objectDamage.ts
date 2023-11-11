@@ -20,6 +20,7 @@ import {
 } from "../calculator-constants";
 import type { CombineWith, DamageReceiver } from "../calculator-types";
 import { removeDuplicates } from "~/utils/arrays";
+import type { Damage } from "~/features/build-analyzer/analyzer-types";
 
 export function damageTypeToMultipliers({
   type,
@@ -127,7 +128,9 @@ export function resolveAllUniqueDamageTypes({
       ? analyzed.stats.specialWeaponDamages.map((d) => d.type)
       : analyzed.stats.damages.map((d) => d.type);
 
-  return removeDuplicates(damageTypes);
+  return removeDuplicates(damageTypes).filter(
+    (dmg) => !dmg.includes("SECONDARY"),
+  );
 }
 
 function resolveFilteredDamages({
@@ -149,6 +152,27 @@ function resolveFilteredDamages({
     );
   }
 
+  const damageWithMultishots = (dmg: Damage, multiShots: number) => {
+    // initially only Dread Wringer
+    const isAsymmetric = analyzed.stats.damages.some(
+      (dmg) => dmg.type === "DIRECT_SECONDARY_MIN",
+    );
+
+    if (!isAsymmetric) return dmg.value * multiShots;
+
+    const otherKey: DamageType =
+      dmg.type === "DIRECT_MAX"
+        ? "DIRECT_SECONDARY_MAX"
+        : "DIRECT_SECONDARY_MIN";
+
+    const secondaryDamage = analyzed.stats.damages.find(
+      (dmg) => dmg.type === otherKey,
+    );
+    invariant(secondaryDamage, "secondary damage not found");
+
+    return dmg.value + secondaryDamage.value;
+  };
+
   const damages =
     anyWeapon.type === "SPECIAL"
       ? analyzed.stats.specialWeaponDamages
@@ -161,7 +185,7 @@ function resolveFilteredDamages({
 
       return {
         ...damage,
-        value: damage.value * damage.multiShots,
+        value: damageWithMultishots(damage, damage.multiShots),
       };
     });
 }

@@ -103,6 +103,8 @@ export const damageTypePriorityList = [
   "TURRET_MAX",
   "TURRET_MIN",
   "DIRECT_MAX",
+  "DIRECT_SECONDARY_MAX",
+  "DIRECT_SECONDARY_MIN",
   "DIRECT",
   "DIRECT_MIN",
   "FULL_CHARGE",
