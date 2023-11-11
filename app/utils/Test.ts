@@ -1,4 +1,4 @@
-import type { ActionFunction } from "@remix-run/node";
+import type { ActionArgs } from "@remix-run/node";
 import type { z } from "zod";
 import { ADMIN_ID } from "~/constants";
 import { NZAP_TEST_ID } from "~/db/seed/constants";
@@ -9,7 +9,8 @@ import { authSessionStorage } from "~/features/auth/core/session.server";
 export function wrappedAction<T extends z.ZodTypeAny>({
   action,
 }: {
-  action: ActionFunction;
+  // TODO: strongly type this
+  action: (args: ActionArgs) => any;
 }) {
   return async (
     args: z.infer<T>,
@@ -22,21 +23,11 @@ export function wrappedAction<T extends z.ZodTypeAny>({
       headers: await authHeader(user),
     });
 
-    try {
-      const res = (await action({
-        request,
-        context: {},
-        params: {},
-      })) as Promise<Response>;
-      return res;
-    } catch (thrown) {
-      // it doesn't really matter if Response was thrown or returned
-      if (thrown instanceof Response) {
-        return thrown;
-      }
-
-      throw thrown;
-    }
+    return action({
+      request,
+      context: {},
+      params: {},
+    });
   };
 }
 

@@ -1,5 +1,5 @@
 import type {
-  ActionFunction,
+  ActionArgs,
   LoaderFunction,
   V2_MetaFunction,
 } from "@remix-run/node";
@@ -35,7 +35,7 @@ export const meta: V2_MetaFunction = () => {
   return [{ title: makeTitle("Admin page") }];
 };
 
-export const action: ActionFunction = async ({ request }) => {
+export const action = async ({ request }: ActionArgs) => {
   const data = await parseRequestFormData({
     request,
     schema: adminActionSchema,
