@@ -164,8 +164,8 @@ export interface CalendarEventResultTeam {
 }
 
 export interface FreshPlusTier {
-  tier: string | null;
-  userId: number | null;
+  tier: number | null;
+  userId: number;
 }
 
 export interface Group {

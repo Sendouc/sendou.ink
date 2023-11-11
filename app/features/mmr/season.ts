@@ -31,9 +31,13 @@ export function currentOrPreviousSeason(date: Date) {
   const _currentSeason = currentSeason(date);
   if (_currentSeason) return _currentSeason;
 
+  return previousSeason(date);
+}
+
+export function previousSeason(date: Date) {
   let latestPreviousSeason;
   for (const season of SEASONS) {
-    if (date >= season.ends) latestPreviousSeason = season;
+    if (date > season.ends) latestPreviousSeason = season;
   }
 
   return latestPreviousSeason;
