@@ -1,11 +1,12 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 import * as Test from "~/utils/Test";
-import { action, type adminActionSchema } from "./admin";
+import { action } from "./admin";
 import { db } from "~/db/sql";
 import MockDate from "mockdate";
 import * as PlusVotingRepository from "~/features/plus-voting/PlusVotingRepository.server";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
+import type { adminActionSchema } from "../admin-schemas.server";
 
 const PlusVoting = suite("Plus voting");
 
