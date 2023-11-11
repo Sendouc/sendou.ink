@@ -3,10 +3,14 @@ import invariant from "tiny-invariant";
 import { Kysely, ParseJSONResultsPlugin, SqliteDialect } from "kysely";
 import type { DB } from "./tables";
 
-const testDb = new Database("db-test.sqlite3").serialize();
+const migratedEmptyDb = new Database("db-test.sqlite3").serialize();
 
 invariant(process.env["DB_PATH"], "DB_PATH env variable must be set");
-export const sql = new Database(testDb);
+const isInMemoryDB = process.env["DB_PATH"] === ":memory:";
+
+export const sql = new Database(
+  isInMemoryDB ? migratedEmptyDb : process.env["DB_PATH"],
+);
 
 sql.pragma("journal_mode = WAL");
 sql.pragma("foreign_keys = ON");
