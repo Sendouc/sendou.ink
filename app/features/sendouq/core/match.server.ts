@@ -1,13 +1,18 @@
+import shuffle from "just-shuffle";
+import invariant from "tiny-invariant";
+import type { UserMapModePreferences } from "~/db/tables";
 import type { Group, ParsedMemento } from "~/db/types";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
+import { currentOrPreviousSeason } from "~/features/mmr/season";
+import { userSkills } from "~/features/mmr/tiered.server";
+import type { ModeShort } from "~/modules/in-game-lists";
+import { modesShort } from "~/modules/in-game-lists";
 import { createTournamentMapList } from "~/modules/tournament-map-list-generator";
+import { averageArray } from "~/utils/number";
 import { SENDOUQ_BEST_OF } from "../q-constants";
 import type { LookingGroup, LookingGroupWithInviteCode } from "../q-types";
-import invariant from "tiny-invariant";
 import type { MatchById } from "../queries/findMatchById.server";
 import { addSkillsToGroups } from "./groups.server";
-import { userSkills } from "~/features/mmr/tiered.server";
-import { currentOrPreviousSeason } from "~/features/mmr/season";
 
 const filterMapPoolToSZ = (mapPool: MapPool) =>
   new MapPool(mapPool.stageModePairs.filter(({ mode }) => mode === "SZ"));
@@ -70,7 +75,56 @@ export function matchMapList({
   }
 }
 
-// type score as const object
+export function mapModePreferencesToModeList(
+  groupOnePreferences: UserMapModePreferences["modes"],
+  groupTwoPreferences: UserMapModePreferences["modes"],
+): ModeShort[] {
+  const groupOneScores = new Map<ModeShort, number>();
+  const groupTwoScores = new Map<ModeShort, number>();
+
+  for (const [i, groupPrefence] of [
+    groupOnePreferences,
+    groupTwoPreferences,
+  ].entries()) {
+    for (const mode of modesShort) {
+      const preferences = groupPrefence
+        .filter((preference) => preference.mode === mode)
+        .map(({ preference }) => (preference === "AVOID" ? -1 : 1));
+
+      const average = averageArray(preferences.length > 0 ? preferences : [0]);
+      const roundedAverage = Math.round(average);
+      const scoresMap = i === 0 ? groupOneScores : groupTwoScores;
+
+      scoresMap.set(mode, roundedAverage);
+    }
+  }
+
+  const combinedMap = new Map<ModeShort, number>();
+  for (const mode of modesShort) {
+    const groupOneScore = groupOneScores.get(mode) ?? 0;
+    const groupTwoScore = groupTwoScores.get(mode) ?? 0;
+    const combinedScore = groupOneScore + groupTwoScore;
+    combinedMap.set(mode, combinedScore);
+  }
+
+  const result = shuffle(modesShort).filter((mode) => {
+    const score = combinedMap.get(mode)!;
+
+    if (mode === "TW") return score > 0;
+    return score >= 0;
+  });
+
+  result.sort((a, b) => {
+    const aScore = combinedMap.get(a)!;
+    const bScore = combinedMap.get(b)!;
+
+    if (aScore === bScore) return 0;
+    return aScore > bScore ? -1 : 1;
+  });
+
+  return result;
+}
+
 const typeScore = {
   ALL_MODES_ONLY: -2,
   PREFER_ALL_MODES: -1,

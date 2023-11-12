@@ -200,6 +200,7 @@ export const action: ActionFunction = async ({ request }) => {
   }
 };
 
+// xxx: remove map picking from here, link to settings
 export const loader = async ({ request }: LoaderArgs) => {
   const user = await getUserId(request);
 

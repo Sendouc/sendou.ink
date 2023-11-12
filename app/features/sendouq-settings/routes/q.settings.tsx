@@ -232,7 +232,7 @@ function PreferenceRadioGroup({
       }
       className="stack horizontal xs"
     >
-      <RadioGroup.Option value="PREFER">
+      <RadioGroup.Option value="AVOID">
         {({ checked }) => (
           <span
             className={clsx("q-settings__radio", {
@@ -240,11 +240,11 @@ function PreferenceRadioGroup({
             })}
           >
             <img
-              src="/static-assets/img/emoji/grin.svg"
+              src="/static-assets/img/emoji/unamused.svg"
               className="q-settings__radio__emoji"
               width={18}
             />
-            Prefer
+            Avoid
           </span>
         )}
       </RadioGroup.Option>
@@ -264,7 +264,7 @@ function PreferenceRadioGroup({
           </span>
         )}
       </RadioGroup.Option>
-      <RadioGroup.Option value="AVOID">
+      <RadioGroup.Option value="PREFER">
         {({ checked }) => (
           <span
             className={clsx("q-settings__radio", {
@@ -272,11 +272,11 @@ function PreferenceRadioGroup({
             })}
           >
             <img
-              src="/static-assets/img/emoji/unamused.svg"
+              src="/static-assets/img/emoji/grin.svg"
               className="q-settings__radio__emoji"
               width={18}
             />
-            Avoid
+            Prefer
           </span>
         )}
       </RadioGroup.Option>

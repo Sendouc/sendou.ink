@@ -12,6 +12,7 @@ type ModeWithStageAndScore = TournamentMapListMap & { score: number };
 
 const OPTIMAL_MAPLIST_SCORE = 0;
 
+// xxx: prefer mode first in array?
 export function createTournamentMapList(
   input: TournamentMaplistInput,
 ): Array<TournamentMapListMap> {

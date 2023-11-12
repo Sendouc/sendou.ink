@@ -6,6 +6,12 @@ import { db, sql } from "~/db/sql";
 import { SESSION_KEY } from "~/features/auth/core/authenticator.server";
 import { authSessionStorage } from "~/features/auth/core/session.server";
 
+export function arrayContainsSameItems<T>(arr1: T[], arr2: T[]) {
+  return (
+    arr1.length === arr2.length && arr1.every((item) => arr2.includes(item))
+  );
+}
+
 export function wrappedAction<T extends z.ZodTypeAny>({
   action,
 }: {
