@@ -1,9 +1,13 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
-import { mapModePreferencesToModeList } from "./match.server";
+import {
+  mapModePreferencesToModeList,
+  mapPoolFromPreferences,
+} from "./match.server";
 import * as Test from "~/utils/Test";
 
 const MapModePreferencesToModeList = suite("mapModePreferencesToModeList()");
+const MapPoolFromPreferences = suite("mapPoolFromPreferences()");
 
 MapModePreferencesToModeList("returns default list if no preferences", () => {
   const modeList = mapModePreferencesToModeList([], []);
@@ -102,4 +106,14 @@ MapModePreferencesToModeList("doesn't include turf war if mixed", () => {
   assert.ok(Test.arrayContainsSameItems(["SZ", "TC", "RM", "CB"], modeList));
 });
 
+const MODES_COUNT = 5;
+const STAGES_PER_MODE = 6;
+
+MapPoolFromPreferences("returns maps even if no preferences", () => {
+  const mapPool = mapPoolFromPreferences([]);
+
+  assert.equal(mapPool.stageModePairs.length, STAGES_PER_MODE * MODES_COUNT);
+});
+
 MapModePreferencesToModeList.run();
+MapPoolFromPreferences.run();

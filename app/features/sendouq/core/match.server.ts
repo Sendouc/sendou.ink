@@ -14,6 +14,7 @@ import type { LookingGroup, LookingGroupWithInviteCode } from "../q-types";
 import type { MatchById } from "../queries/findMatchById.server";
 import { addSkillsToGroups } from "./groups.server";
 
+// xxx: we need this but for arbitrary mode list
 const filterMapPoolToSZ = (mapPool: MapPool) =>
   new MapPool(mapPool.stageModePairs.filter(({ mode }) => mode === "SZ"));
 export function matchMapList({
@@ -123,6 +124,12 @@ export function mapModePreferencesToModeList(
   });
 
   return result;
+}
+
+export function mapPoolFromPreferences(
+  _preferences: UserMapModePreferences["maps"][],
+) {
+  return new MapPool([]);
 }
 
 const typeScore = {
