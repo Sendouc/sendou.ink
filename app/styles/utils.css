@@ -250,6 +250,10 @@
   margin-block: auto;
 }
 
+.my-1 {
+  margin-block: var(--s-1);
+}
+
 .my-2 {
   margin-block: var(--s-2);
 }
@@ -312,6 +316,10 @@
 
 .justify-between {
   justify-content: space-between;
+}
+
+.justify-evenly {
+  justify-content: space-evenly;
 }
 
 .justify-self-end {

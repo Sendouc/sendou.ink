@@ -9,7 +9,6 @@ import type {
   Ability,
   MainWeaponId,
   ModeShort,
-  RankedModeShort,
   StageId,
 } from "~/modules/in-game-lists";
 
@@ -471,14 +470,14 @@ export interface UnvalidatedVideo {
 
 // missing means "neutral"
 export type Preference = "AVOID" | "PREFER";
-interface UserMapModePreferences {
+export interface UserMapModePreferences {
   modes: Array<{
-    mode: RankedModeShort;
+    mode: ModeShort;
     preference: Preference;
   }>;
   maps: Array<{
     stageId: StageId;
-    mode: RankedModeShort;
+    mode: ModeShort;
     preference: Preference;
   }>;
 }

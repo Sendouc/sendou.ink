@@ -2,19 +2,57 @@ import { RadioGroup } from "@headlessui/react";
 import * as React from "react";
 import { ModeImage, StageImage } from "~/components/Image";
 import { Main } from "~/components/Main";
-import type { Preference } from "~/db/tables";
-import type { StageId } from "~/modules/in-game-lists";
+import type { Preference, UserMapModePreferences } from "~/db/tables";
+import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import { stageIds } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import styles from "../q-settings.css";
-import type { LinksFunction } from "@remix-run/node";
+import type { ActionArgs, LinksFunction, LoaderArgs } from "@remix-run/node";
 import clsx from "clsx";
+import { requireUserId } from "~/features/auth/core/user.server";
+import { parseRequestFormData } from "~/utils/remix";
+import { settingsActionSchema } from "../q-settings-schemas.server";
+import * as QSettingsRepository from "~/features/sendouq-settings/QSettingsRepository.server";
+import { useFetcher, useLoaderData } from "@remix-run/react";
+import { SubmitButton } from "~/components/SubmitButton";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
+export const action = async ({ request }: ActionArgs) => {
+  const user = await requireUserId(request);
+  const data = await parseRequestFormData({
+    request,
+    schema: settingsActionSchema,
+  });
+
+  switch (data._action) {
+    case "UPDATE_MAP_MODE_PREFERENCES": {
+      await QSettingsRepository.updateUserMapModePreferences({
+        mapModePreferences: data.mapModePreferences,
+        userId: user.id,
+      });
+      break;
+    }
+    case "PLACEHOLDER": {
+      break;
+    }
+  }
+
+  return { ok: true };
+};
+
+export const loader = async ({ request }: LoaderArgs) => {
+  const user = await requireUserId(request);
+
+  return {
+    preferences: await QSettingsRepository.mapModePreferencesByUserId(user.id),
+  };
+};
+
 // xxx: sound preferences here?
+// xxx: turf war
 export default function SendouQSettingsPage() {
   return (
     <Main>
@@ -24,28 +62,147 @@ export default function SendouQSettingsPage() {
 }
 
 function MapPicker() {
+  const data = useLoaderData<typeof loader>();
+  const fetcher = useFetcher();
+  const [preferences, setPreferences] = React.useState<UserMapModePreferences>(
+    data.preferences ?? {
+      maps: [],
+      modes: [],
+    },
+  );
+
+  const handleMapPreferenceChange = ({
+    stageId,
+    mode,
+    preference,
+  }: {
+    stageId: StageId;
+    mode: ModeShort;
+    preference: Preference & "NEUTRAL";
+  }) => {
+    const newMapPreferences = preferences.maps.filter(
+      (map) => map.stageId !== stageId || map.mode !== mode,
+    );
+
+    if (preference !== "NEUTRAL") {
+      newMapPreferences.push({
+        stageId,
+        mode,
+        preference,
+      });
+    }
+
+    setPreferences({
+      ...preferences,
+      maps: newMapPreferences,
+    });
+  };
+
+  const handleModePreferenceChange = ({
+    mode,
+    preference,
+  }: {
+    mode: ModeShort;
+    preference: Preference & "NEUTRAL";
+  }) => {
+    const newModePreferences = preferences.modes.filter(
+      (map) => map.mode !== mode,
+    );
+
+    if (preference !== "NEUTRAL") {
+      newModePreferences.push({
+        mode,
+        preference,
+      });
+    }
+
+    setPreferences({
+      ...preferences,
+      modes: newModePreferences,
+    });
+  };
+
   return (
-    <div>
+    <fetcher.Form method="post">
+      <input
+        type="hidden"
+        name="mapModePreferences"
+        value={JSON.stringify(preferences)}
+      />
       <h2>Map & mode preferences</h2>
       <div className="stack lg">
-        {stageIds.map((stageId) => (
-          <MapModeRadios key={stageId} stageId={stageId} />
-        ))}
+        <div className="stack items-center">
+          {rankedModesShort.map((modeShort) => {
+            const preference = preferences.modes.find(
+              (preference) => preference.mode === modeShort,
+            );
+
+            return (
+              <div key={modeShort} className="stack horizontal xs my-1">
+                <ModeImage mode={modeShort} width={32} />
+                <PreferenceRadioGroup
+                  preference={preference?.preference}
+                  onPreferenceChange={(preference) =>
+                    handleModePreferenceChange({ mode: modeShort, preference })
+                  }
+                />
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="stack lg">
+          {stageIds.map((stageId) => (
+            <MapModeRadios
+              key={stageId}
+              stageId={stageId}
+              preferences={preferences.maps.filter(
+                (map) => map.stageId === stageId,
+              )}
+              onPreferenceChange={handleMapPreferenceChange}
+            />
+          ))}
+        </div>
       </div>
-    </div>
+      <SubmitButton _action="UPDATE_MAP_MODE_PREFERENCES" state={fetcher.state}>
+        Save
+      </SubmitButton>
+    </fetcher.Form>
   );
 }
 
-function MapModeRadios({ stageId }: { stageId: StageId }) {
+function MapModeRadios({
+  stageId,
+  preferences,
+  onPreferenceChange,
+}: {
+  stageId: StageId;
+  preferences: UserMapModePreferences["maps"];
+  onPreferenceChange: (args: {
+    stageId: StageId;
+    mode: ModeShort;
+    preference: Preference & "NEUTRAL";
+  }) => void;
+}) {
   return (
-    <div className="stack horizontal sm">
+    <div className="q__map-mode-radios-container">
       <StageImage stageId={stageId} width={250} className="rounded" />
-      <div className="stack justify-between">
+      <div className="stack justify-evenly">
         {rankedModesShort.map((modeShort) => {
+          const preference = preferences.find(
+            (preference) =>
+              preference.mode === modeShort && preference.stageId === stageId,
+          );
+
           return (
-            <div key={modeShort} className="stack horizontal xs">
+            <div key={modeShort} className="stack horizontal xs my-1">
               <ModeImage mode={modeShort} width={24} />
-              <PreferenceRadioGroup />
+              <PreferenceRadioGroup
+                preference={preference?.preference}
+                onPreferenceChange={(preference) =>
+                  onPreferenceChange({ mode: modeShort, preference, stageId })
+                }
+              />
             </div>
           );
         })}
@@ -54,22 +211,22 @@ function MapModeRadios({ stageId }: { stageId: StageId }) {
   );
 }
 
-function PreferenceRadioGroup() {
-  const [preference, setPreference] = React.useState<Preference>();
-
+function PreferenceRadioGroup({
+  preference,
+  onPreferenceChange,
+}: {
+  preference?: Preference;
+  onPreferenceChange: (preference: Preference & "NEUTRAL") => void;
+}) {
   return (
     <RadioGroup
       value={preference ?? "NEUTRAL"}
       onChange={(newPreference) =>
-        setPreference(
-          newPreference === "NEUTRAL"
-            ? undefined
-            : (newPreference as Preference),
-        )
+        onPreferenceChange(newPreference as Preference & "NEUTRAL")
       }
       className="stack horizontal xs"
     >
-      <RadioGroup.Option value="AVOID">
+      <RadioGroup.Option value="PREFER">
         {({ checked }) => (
           <span
             className={clsx("q-settings__radio", {
@@ -77,11 +234,11 @@ function PreferenceRadioGroup() {
             })}
           >
             <img
-              src="/static-assets/img/emoji/unamused.svg"
+              src="/static-assets/img/emoji/grin.svg"
               className="q-settings__radio__emoji"
               width={18}
             />
-            Avoid
+            Prefer
           </span>
         )}
       </RadioGroup.Option>
@@ -101,7 +258,7 @@ function PreferenceRadioGroup() {
           </span>
         )}
       </RadioGroup.Option>
-      <RadioGroup.Option value="PREFER">
+      <RadioGroup.Option value="AVOID">
         {({ checked }) => (
           <span
             className={clsx("q-settings__radio", {
@@ -109,11 +266,11 @@ function PreferenceRadioGroup() {
             })}
           >
             <img
-              src="/static-assets/img/emoji/grin.svg"
+              src="/static-assets/img/emoji/unamused.svg"
               className="q-settings__radio__emoji"
               width={18}
             />
-            Prefer
+            Avoid
           </span>
         )}
       </RadioGroup.Option>

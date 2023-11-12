@@ -1,3 +1,16 @@
+.q__map-mode-radios-container {
+  display: flex;
+  gap: var(--s-2);
+  flex-direction: column;
+  align-items: center;
+}
+
+@media screen and (min-width: 600px) {
+  .q__map-mode-radios-container {
+    flex-direction: row;
+  }
+}
+
 .q-settings__radio {
   background-color: var(--bg-lighter);
   font-size: var(--fonts-xs);

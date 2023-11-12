@@ -1,13 +1,9 @@
+import type { ZodType } from "zod";
 import { z } from "zod";
 import type { abilitiesShort } from "~/modules/in-game-lists";
-import {
-  abilities,
-  mainWeaponIds,
-  modesShort,
-  stageIds,
-} from "~/modules/in-game-lists";
-import { assertType } from "./types";
+import { abilities, mainWeaponIds, stageIds } from "~/modules/in-game-lists";
 import type { Unpacked } from "./types";
+import { assertType } from "./types";
 
 export const id = z.coerce.number().int().positive();
 export const dbBoolean = z.coerce.number().min(0).max(1).int();
@@ -73,16 +69,9 @@ export const weaponSplId = z.preprocess(
     ),
 );
 
-export const modeShort = z
-  .string()
-  .refine((val) => modesShort.includes(val as any));
+export const modeShort = z.enum(["TW", "SZ", "TC", "RM", "CB"]);
 
-export const stageId = z.preprocess(
-  actualNumber,
-  z
-    .number()
-    .refine((val) => stageIds.includes(val as (typeof stageIds)[number])),
-);
+export const stageId = z.preprocess(actualNumber, numericEnum(stageIds));
 
 export function processMany(
   ...processFuncs: Array<(value: unknown) => unknown>
@@ -201,4 +190,19 @@ export function deduplicate(value: unknown) {
   }
 
   return value;
+}
+
+// https://github.com/colinhacks/zod/issues/1118#issuecomment-1235065111
+export function numericEnum<TValues extends readonly number[]>(
+  values: TValues,
+) {
+  return z.number().superRefine((val, ctx) => {
+    if (!values.includes(val)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.invalid_enum_value,
+        options: [...values],
+        received: val,
+      });
+    }
+  }) as ZodType<TValues[number]>;
 }
