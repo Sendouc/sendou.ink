@@ -8,7 +8,7 @@
   "roles.OWNER": "Proprietário",
   "roles.MANAGER": "Gerente",
   "roles.REGULAR": "Membro regular",
-  "vc.YES": "Pode participar de chat de voz",
-  "vc.NO": "Não pode participar de chat de voz",
+  "vc.YES": "Pode participar do chat de voz",
+  "vc.NO": "Não pode participar do chat de voz",
   "vc.LISTEN_ONLY": "Pode apenas ouvir"
 }

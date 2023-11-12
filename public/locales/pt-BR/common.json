@@ -33,13 +33,13 @@
   "auth.errors.aborted": "Login Abortado",
   "auth.errors.failed": "Login Falhou",
   "auth.errors.discordPermissions": "Para o seu perfil do sendou.ink, o site precisa de acesso ao nome do perfil do seu Discord, incluindo também o avatar e conexões sociais.",
-  "auth.errors.unknown": "O login falhou devido a um erro do servidor. Por favor, tente novamente mais tarde ou use o comando /login através do Lohi bot. O bot pode ser encontrado no Discord do sendou.ink:",
+  "auth.errors.unknown": "O login falhou devido a um erro do servidor. Por favor, tente novamente mais tarde ou use o comando /login através do bot Lohi. O bot pode ser encontrado no Discord do sendou.ink:",
 
   "footer.github.subtitle": "Código fonte",
   "footer.twitter.subtitle": "Atualizações",
   "footer.discord.subtitle": "Ajuda e Feedback",
   "footer.patreon.subtitle": "Suporte",
-  "footer.thanks": "Obrigado aos patronos pelo suporte",
+  "footer.thanks": "Obrigado aos patronos e patronesses pelo suporte",
 
   "actions.save": "Salvar",
   "actions.saveChanges": "Salvar mudanças",
@@ -47,7 +47,7 @@
   "actions.edit": "Editar",
   "actions.add": "Adicionar",
   "actions.remove": "Remover",
-  "actions.delete": "Apagar",
+  "actions.delete": "Excluir",
   "actions.reset": "Resetar",
   "actions.loadMore": "Carregar mais",
   "actions.copyToClipboard": "Copiar para a área de transferência",
@@ -56,7 +56,7 @@
   "actions.cancel": "Cancelar",
   "actions.loading": "Carregando...",
   "actions.clear": "Limpar",
-  "actions.selectAll": "Selecionar Tudo",
+  "actions.selectAll": "Selecionar tudo",
   "actions.search": "Pesquisar",
   "actions.setBg": "Definir plano de fundo",
   "actions.join": "Entrar",
@@ -97,13 +97,13 @@
 
   "errors.genericReload": "Algo deu errado. Tente recarregar a página.",
 
-  "tag.name.BADGE": "Prêmios de insígnia",
+  "tag.name.BADGE": "Prêmio(s) em insígnia",
   "tag.name.SPECIAL": "Regras especiais",
-  "tag.name.ART": "Prêmios de arte",
-  "tag.name.MONEY": "Prêmios em dinheiro",
+  "tag.name.ART": "Prêmio(s) em arte",
+  "tag.name.MONEY": "Prêmio(s) em dinheiro",
   "tag.name.REGION": "Limitado por região",
   "tag.name.LOW": "Limitado por habilidade",
-  "tag.name.COUNT": "Limite de entrada",
+  "tag.name.COUNT": "Vagas limitadas",
   "tag.name.LAN": "LAN (Local)",
   "tag.name.QUALIFIER": "Qualificatória",
   "tag.name.SZ": "Apenas Zones",
@@ -134,7 +134,7 @@
   "plans.bgStyle.MINI": "Minimapa (vazio)",
   "plans.bgStyle.ITEMS": "Minimapa",
 
-  "articles.by": "por {{author}}",
+  "articles.by": "por/pela {{author}}",
 
   "theme.light": "Claro",
   "theme.dark": "Escuro",
@@ -146,14 +146,14 @@
   "upload.title": "Fazendo o upload de {{type}}. O tamanho recomendado é {{width}}×{{height}}.",
   "upload.type.team-pfp": "imagem de perfil do time",
   "upload.type.team-banner": "imagem de capa do time",
-  "upload.commonExplanation": "Antes da imagem ser mostrada publicamente, um moderador irá fazer a validação dela. Imagens enviadas por patronos são mostradas sem validação.",
+  "upload.commonExplanation": "Antes da imagem ser mostrada publicamente, um moderador irá fazer a validação dela. Imagens enviadas por patronos ou patronesses são mostradas sem validação.",
   "upload.afterExplanation_one": "Você tem {{count}} imagem pendente. A imagem irá aparecer automaticamente após a validação.",
-  "upload.afterExplanation_other": "Você tem {{count}} imagens pendente. A imagem irá aparecer automaticamente após a validação.",
+  "upload.afterExplanation_other": "Você tem {{count}} imagens pendente. As imagens irão aparecer automaticamente após a validação.",
 
-  "support.intro.first": "Oi! Eu sou o Sendou e o sendou.ink é o meu projeto que consiste em fornecer ferramentas e recursos para a comunidade do Splatoon. O objetivo é ajudar todos a aprimoar suas habilidades e aproveitar o Splatoon, não importando se você é um novato novinho em folha ou veterano de longa data.",
-  "support.intro.second": "Se você gosta do que eu estou fazendo, essa página dá detalhes em como você pode apoiar meu trabalho e ganhar vantagens. Seu apoio me ajuda a pagar pela hospedagem do site e também patrocina o meu tempo investido em melhorar o projeto continuamente.",
+  "support.intro.first": "Oi! Eu sou o Sendou e o sendou.ink é o meu projeto que consiste em fornecer ferramentas e recursos para a comunidade do Splatoon. O objetivo é ajudar todos a aprimorar suas habilidades e aproveitar o Splatoon, não importando se você é um novato novinho em folha ou veterano de longa data.",
+  "support.intro.second": "Se você gosta do que eu estou fazendo, essa página dá detalhes em como você pode apoiar meu trabalho e ganhar vantagens. Seu apoio me ajuda a pagar pela hospedagem do site e também patrocina o meu tempo investido em melhorar o projeto constantemente.",
   "support.action": "Apoiar no Patreon",
-  "support.footer": "Após se tonar um novo patrono, você deve conectar <2>seu Discord no Patreon.com</2>. Após isso, suas vantagens devem ser ativadas em até 2 horas. Se você tiver perguntas ou problemas, entre em contato com o Sendou para obter suporte.",
+  "support.footer": "Após se tonar um novo patrono ou patronesse, você deve conectar <2>seu Discord no Patreon.com</2>. Após isso, suas vantagens devem ser ativadas em até 2 horas. Se você tiver perguntas ou problemas, entre em contato com o Sendou para obter suporte.",
   "support.perk.supportMyWork": "Apoiar meu trabalho",
   "support.perk.adFree": "Navegação sem anúncios",
   "support.perk.nameInFooter": "Nome no rodapé",
@@ -167,7 +167,7 @@
   "support.perk.autoValidatePictures.extra": "Qualquer imagem que você envia (ex. imagem do time/capa) é automaticamente validada. Normalmente, ela precisa da aprovação de um moderador primeiro. Lembre-se que isso não se aplica para imagens que já foram enviadas.",
   "support.perk.customizedColorsUser": "Personalizar cores (página do usuário)",
   "support.perk.customizedColorsTeam": "Personalizar cores (página do time)",
-  "support.perk.customizedColorsTeam.extra": "É suficiente que apenas um membro do time seja um patrono para obter esse benefício.",
+  "support.perk.customizedColorsTeam.extra": "É suficiente que apenas um membro do time seja um patrono ou patronesse para obter essa vantagem.",
   "support.perk.privateDiscord": "Acesso à um canal exclusivo no Discord",
   "support.perk.privateDiscord.extra": "Usado para compartilhar atualizações ocasionais de trabalho(s) em progresso, receber suporte prioritário e solicitações de recursos prioritárias.",
   "support.perk.prioritySupport": "Suporte prioritário",
@@ -184,7 +184,7 @@
 
   "divisions.WEST": "Tentatek",
   "divisions.JPN": "Takoroka",
-  "xsearch.placements": "classificações",
+  "xsearch.placements": "Classificações",
   "xsearch.aliases": "Apelidos:",
 
   "build.private": "Privada",
@@ -195,5 +195,5 @@
 
   "leaderboard.type.USER": "Usuário",
   "leaderboard.type.TEAM": "Time",
-  "leaderboard.type.XP-ALL": "Tudo"
+  "leaderboard.type.XP-ALL": "Todos"
 }

@@ -1,16 +1,16 @@
 {
   "type.SCRIM": "Scrim",
-  "type.TOURNAMENT": "Torneio (PdV)",
+  "type.TOURNAMENT": "Torneio (PoV)",
   "type.MATCHMAKING": "Anarchy/X Battle/Turf War",
-  "type.CAST": "Tourneio (Elenco)",
+  "type.CAST": "Torneio (Elenco)",
   "gameCount": "Jogo {{count}}",
   "minShort": "min",
-  "secShort": "sec",
+  "secShort": "seg",
   "forms.title.youtubeUrl": "URL do YouTube",
   "forms.title.videoTitle": "Título do vídeo",
   "forms.title.videoDate": "Data do vídeo",
   "forms.title.type": "Tipo",
-  "forms.title.pov": "Jogador (PdV)",
+  "forms.title.pov": "Jogador (PoV)",
   "forms.title.startTimestamp": "Marcador de início",
   "forms.title.mode": "Modo",
   "forms.title.stage": "Mapa",
@@ -18,6 +18,6 @@
   "forms.title.weaponsTeamTwo": "Armas (Time 2)",
   "forms.title.weapon": "Arma",
   "forms.action.addMatch": "Adicionar partida",
-  "forms.action.deleteMatch": "Apagar partida",
+  "forms.action.deleteMatch": "Excluir partida",
   "noVods": "Nenhum vídeo foi encontrado com esse filtro. Está faltando alguma coisa? Mande uma mensagem para o Sendou no Discord para obter permissões de submissão de vídeo do YouTube."
 }
