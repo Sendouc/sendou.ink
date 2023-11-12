@@ -1,0 +1,31 @@
+.q-settings__radio {
+  background-color: var(--bg-lighter);
+  font-size: var(--fonts-xs);
+  text-transform: uppercase;
+  font-weight: var(--semi-bold);
+  color: var(--text-lighter);
+  padding: var(--s-1) var(--s-2);
+  border-radius: var(--rounded);
+  display: flex;
+  align-items: center;
+  gap: var(--s-1);
+  cursor: pointer;
+}
+
+.q-settings__radio:hover .q-settings__radio__emoji {
+  scale: 1.1;
+}
+
+.q-settings__radio__emoji {
+  filter: grayscale(100%);
+  transition: all 0.2s;
+}
+
+.q-settings__radio__checked {
+  color: var(--text);
+  outline: 2px solid var(--bg-lightest);
+}
+
+.q-settings__radio__checked .q-settings__radio__emoji {
+  filter: grayscale(0%);
+}

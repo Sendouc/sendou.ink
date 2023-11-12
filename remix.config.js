@@ -179,6 +179,8 @@ module.exports = {
       route("/q/preparing", "features/sendouq/routes/q.preparing.tsx");
       route("/q/match/:id", "features/sendouq/routes/q.match.$id.tsx");
 
+      route("/q/settings", "features/sendouq-settings/routes/q.settings.tsx");
+
       route("/weapon-usage", "features/sendouq/routes/weapon-usage.tsx");
 
       route("/tiers", "features/sendouq/routes/tiers.tsx");

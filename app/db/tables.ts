@@ -9,6 +9,7 @@ import type {
   Ability,
   MainWeaponId,
   ModeShort,
+  RankedModeShort,
   StageId,
 } from "~/modules/in-game-lists";
 
@@ -177,6 +178,7 @@ export interface Group {
   mapListPreference: string;
   status: string;
   teamId: number | null;
+  ownerPicksMaps: number;
 }
 
 export interface GroupLike {
@@ -467,6 +469,20 @@ export interface UnvalidatedVideo {
   youtubeId: string;
 }
 
+// missing means "neutral"
+export type Preference = "AVOID" | "PREFER";
+interface UserMapModePreferences {
+  modes: Array<{
+    mode: RankedModeShort;
+    preference: Preference;
+  }>;
+  maps: Array<{
+    stageId: StageId;
+    mode: RankedModeShort;
+    preference: Preference;
+  }>;
+}
+
 export interface User {
   banned: Generated<number | null>;
   bio: string | null;
@@ -496,6 +512,11 @@ export interface User {
   twitter: string | null;
   vc: Generated<string | null>;
   youtubeId: string | null;
+  mapModePreferences: ColumnType<
+    UserMapModePreferences | null,
+    string | null,
+    string | null
+  >;
 }
 
 export interface UserResultHighlight {
