@@ -5,7 +5,7 @@ import { Main } from "~/components/Main";
 import type { Preference, UserMapModePreferences } from "~/db/tables";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import { stageIds } from "~/modules/in-game-lists";
-import { rankedModesShort } from "~/modules/in-game-lists/modes";
+import { modesShort } from "~/modules/in-game-lists/modes";
 import styles from "../q-settings.css";
 import type { ActionArgs, LinksFunction, LoaderArgs } from "@remix-run/node";
 import clsx from "clsx";
@@ -52,7 +52,6 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 // xxx: sound preferences here?
-// xxx: turf war
 export default function SendouQSettingsPage() {
   return (
     <Main>
@@ -129,10 +128,10 @@ function MapPicker() {
         name="mapModePreferences"
         value={JSON.stringify(preferences)}
       />
-      <h2>Map & mode preferences</h2>
+      <h2>SendouQ map & mode preferences</h2>
       <div className="stack lg">
         <div className="stack items-center">
-          {rankedModesShort.map((modeShort) => {
+          {modesShort.map((modeShort) => {
             const preference = preferences.modes.find(
               (preference) => preference.mode === modeShort,
             );
@@ -164,9 +163,16 @@ function MapPicker() {
           ))}
         </div>
       </div>
-      <SubmitButton _action="UPDATE_MAP_MODE_PREFERENCES" state={fetcher.state}>
-        Save
-      </SubmitButton>
+      <div className="mt-6">
+        <SubmitButton
+          _action="UPDATE_MAP_MODE_PREFERENCES"
+          state={fetcher.state}
+          className="mx-auto"
+          size="big"
+        >
+          Save
+        </SubmitButton>
+      </div>
     </fetcher.Form>
   );
 }
@@ -188,7 +194,7 @@ function MapModeRadios({
     <div className="q__map-mode-radios-container">
       <StageImage stageId={stageId} width={250} className="rounded" />
       <div className="stack justify-evenly">
-        {rankedModesShort.map((modeShort) => {
+        {modesShort.map((modeShort) => {
           const preference = preferences.find(
             (preference) =>
               preference.mode === modeShort && preference.stageId === stageId,
