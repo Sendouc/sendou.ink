@@ -5,6 +5,7 @@ import {
   mapPoolFromPreferences,
 } from "./match.server";
 import * as Test from "~/utils/Test";
+import { stageIds } from "~/modules/in-game-lists";
 
 const MapModePreferencesToModeList = suite("mapModePreferencesToModeList()");
 const MapPoolFromPreferences = suite("mapPoolFromPreferences()");
@@ -16,14 +17,44 @@ MapModePreferencesToModeList("returns default list if no preferences", () => {
 });
 
 MapModePreferencesToModeList(
+  "returns default list if disliking everything",
+  () => {
+    const dislikingEverything = [
+      { mode: "TW", preference: "AVOID" } as const,
+      { mode: "SZ", preference: "AVOID" } as const,
+      { mode: "TC", preference: "AVOID" } as const,
+      { mode: "RM", preference: "AVOID" } as const,
+      { mode: "CB", preference: "AVOID" } as const,
+    ];
+
+    const modeList = mapModePreferencesToModeList(
+      [
+        dislikingEverything,
+        dislikingEverything,
+        dislikingEverything,
+        dislikingEverything,
+      ],
+      [
+        dislikingEverything,
+        dislikingEverything,
+        dislikingEverything,
+        dislikingEverything,
+      ],
+    );
+
+    assert.ok(Test.arrayContainsSameItems(["SZ", "TC", "RM", "CB"], modeList));
+  },
+);
+
+MapModePreferencesToModeList(
   "mode excluded if more want to avoid than prefer",
   () => {
     const modeList = mapModePreferencesToModeList(
       [
-        { mode: "SZ", preference: "PREFER" },
-        { mode: "SZ", preference: "AVOID" },
+        [{ mode: "SZ", preference: "PREFER" }],
+        [{ mode: "SZ", preference: "AVOID" }],
       ],
-      [{ mode: "SZ", preference: "AVOID" }],
+      [[{ mode: "SZ", preference: "AVOID" }]],
     );
 
     assert.ok(Test.arrayContainsSameItems(["TC", "RM", "CB"], modeList));
@@ -32,8 +63,8 @@ MapModePreferencesToModeList(
 
 MapModePreferencesToModeList("ranked modes included if mixed", () => {
   const modeList = mapModePreferencesToModeList(
-    [{ mode: "SZ", preference: "PREFER" }],
-    [{ mode: "SZ", preference: "AVOID" }],
+    [[{ mode: "SZ", preference: "PREFER" }]],
+    [[{ mode: "SZ", preference: "AVOID" }]],
   );
 
   assert.ok(Test.arrayContainsSameItems(["SZ", "TC", "RM", "CB"], modeList));
@@ -42,10 +73,10 @@ MapModePreferencesToModeList("ranked modes included if mixed", () => {
 MapModePreferencesToModeList("team preferences are grouped together", () => {
   const modeList = mapModePreferencesToModeList(
     [
-      { mode: "TC", preference: "AVOID" },
-      { mode: "TC", preference: "AVOID" },
+      [{ mode: "TC", preference: "AVOID" }],
+      [{ mode: "TC", preference: "AVOID" }],
     ],
-    [{ mode: "TC", preference: "PREFER" }],
+    [[{ mode: "TC", preference: "PREFER" }]],
   );
 
   assert.ok(Test.arrayContainsSameItems(["SZ", "TC", "RM", "CB"], modeList));
@@ -54,16 +85,16 @@ MapModePreferencesToModeList("team preferences are grouped together", () => {
 MapModePreferencesToModeList("team votes for their preference", () => {
   const modeList = mapModePreferencesToModeList(
     [
-      { mode: "TC", preference: "PREFER" },
-      { mode: "TC", preference: "PREFER" },
-      { mode: "TC", preference: "AVOID" },
-      { mode: "TC", preference: "PREFER" },
+      [{ mode: "TC", preference: "PREFER" }],
+      [{ mode: "TC", preference: "PREFER" }],
+      [{ mode: "TC", preference: "AVOID" }],
+      [{ mode: "TC", preference: "PREFER" }],
     ],
     [
-      { mode: "TC", preference: "AVOID" },
-      { mode: "TC", preference: "AVOID" },
-      { mode: "TC", preference: "AVOID" },
-      { mode: "TC", preference: "AVOID" },
+      [{ mode: "TC", preference: "AVOID" }],
+      [{ mode: "TC", preference: "AVOID" }],
+      [{ mode: "TC", preference: "AVOID" }],
+      [{ mode: "TC", preference: "AVOID" }],
     ],
   );
 
@@ -75,7 +106,7 @@ MapModePreferencesToModeList(
   () => {
     assert.equal(
       mapModePreferencesToModeList(
-        [{ mode: "TC", preference: "PREFER" }],
+        [[{ mode: "TC", preference: "PREFER" }]],
         [],
       )[0],
       "TC",
@@ -87,7 +118,7 @@ MapModePreferencesToModeList(
   "includes turf war if more prefer than want to avoid",
   () => {
     const modeList = mapModePreferencesToModeList(
-      [{ mode: "TW", preference: "PREFER" }],
+      [[{ mode: "TW", preference: "PREFER" }]],
       [],
     );
 
@@ -99,8 +130,8 @@ MapModePreferencesToModeList(
 
 MapModePreferencesToModeList("doesn't include turf war if mixed", () => {
   const modeList = mapModePreferencesToModeList(
-    [{ mode: "TW", preference: "PREFER" }],
-    [{ mode: "TW", preference: "AVOID" }],
+    [[{ mode: "TW", preference: "PREFER" }]],
+    [[{ mode: "TW", preference: "AVOID" }]],
   );
 
   assert.ok(Test.arrayContainsSameItems(["SZ", "TC", "RM", "CB"], modeList));
@@ -113,6 +144,103 @@ MapPoolFromPreferences("returns maps even if no preferences", () => {
   const mapPool = mapPoolFromPreferences([]);
 
   assert.equal(mapPool.stageModePairs.length, STAGES_PER_MODE * MODES_COUNT);
+});
+
+const MAX_STAGE_ID = Math.max(...stageIds);
+MapPoolFromPreferences(
+  "tiebreaker if tied preference is stage id (bigger preferred)",
+  () => {
+    const mapPool = mapPoolFromPreferences([]);
+
+    assert.ok(
+      mapPool.stageModePairs.every(({ stageId }) => stageId > MAX_STAGE_ID - 6),
+    );
+  },
+);
+
+MapPoolFromPreferences("returns maps even if no preferences", () => {
+  const mapPool = mapPoolFromPreferences([]);
+
+  assert.equal(mapPool.stageModePairs.length, STAGES_PER_MODE * MODES_COUNT);
+});
+
+MapPoolFromPreferences("preferring map causes it to be included", () => {
+  const mapPool = mapPoolFromPreferences([
+    [{ stageId: 0, preference: "PREFER", mode: "SZ" }],
+  ]);
+
+  assert.ok(
+    mapPool.stageModePairs.some(
+      (pair) => pair.stageId === 0 && pair.mode === "SZ",
+    ),
+  );
+});
+
+MapPoolFromPreferences("maps are voted upon", () => {
+  const mapPool = mapPoolFromPreferences([
+    [{ stageId: 0, preference: "PREFER", mode: "SZ" }],
+    [{ stageId: 0, preference: "AVOID", mode: "SZ" }],
+    [{ stageId: 0, preference: "AVOID", mode: "SZ" }],
+  ]);
+
+  assert.not.ok(
+    mapPool.stageModePairs.some(
+      (pair) => pair.stageId === 0 && pair.mode === "SZ",
+    ),
+  );
+});
+
+MapPoolFromPreferences(
+  "most popular maps are returned even if nothing to be avoided",
+  () => {
+    const commonPreferences = stageIds.map(
+      (stageId) =>
+        ({
+          stageId,
+          preference: "PREFER",
+          mode: "SZ",
+        }) as const,
+    );
+
+    const mapPool = mapPoolFromPreferences([
+      commonPreferences,
+      commonPreferences,
+      commonPreferences,
+      commonPreferences.filter((pref) => pref.stageId !== 19),
+    ]);
+
+    assert.not.ok(
+      mapPool.stageModePairs.some(
+        (pair) => pair.stageId === 19 && pair.mode === "SZ",
+      ),
+    );
+  },
+);
+
+MapPoolFromPreferences("works across multiple modes", () => {
+  const mapPool = mapPoolFromPreferences([
+    [
+      { stageId: 0, preference: "PREFER", mode: "SZ" },
+      { stageId: 1, preference: "PREFER", mode: "TC" },
+    ],
+    [{ stageId: 2, preference: "PREFER", mode: "RM" }],
+  ]);
+
+  assert.ok(
+    mapPool.stageModePairs.some(
+      (pair) => pair.stageId === 0 && pair.mode === "SZ",
+    ),
+  );
+  assert.ok(
+    mapPool.stageModePairs.some(
+      (pair) => pair.stageId === 1 && pair.mode === "TC",
+    ),
+  );
+  assert.ok(
+    mapPool.stageModePairs.some(
+      (pair) => pair.stageId === 2 && pair.mode === "RM",
+    ),
+  );
 });
 
 MapModePreferencesToModeList.run();

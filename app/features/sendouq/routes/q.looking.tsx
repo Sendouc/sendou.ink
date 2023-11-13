@@ -14,7 +14,6 @@ import { SubmitButton } from "~/components/SubmitButton";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "~/hooks/useTranslation";
 import { getUser, requireUser } from "~/features/auth/core/user.server";
-import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import {
   parseRequestFormData,
   validate,
@@ -55,7 +54,6 @@ import { groupSuccessorOwner } from "../queries/groupSuccessorOwner";
 import { leaveGroup } from "../queries/leaveGroup.server";
 import { likeExists } from "../queries/likeExists.server";
 import { findLookingGroups } from "../queries/lookingGroups.server";
-import { mapPoolByGroupId } from "../queries/mapPoolByGroupId.server";
 import { morphGroups } from "../queries/morphGroups.server";
 import { refreshGroup } from "../queries/refreshGroup.server";
 import { removeManagerRole } from "../queries/removeManagerRole.server";
@@ -75,6 +73,7 @@ import { updateNote } from "../queries/updateNote.server";
 import { GroupLeaver } from "../components/GroupLeaver";
 import * as NotificationService from "~/features/chat/NotificationService.server";
 import { chatCodeByGroupId } from "../queries/chatCodeByGroupId.server";
+import * as QRepository from "~/features/sendouq/QRepository.server";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -249,12 +248,20 @@ export const action: ActionFunction = async ({ request }) => {
       const createdMatch = createMatch({
         alphaGroupId: ourGroup.id,
         bravoGroupId: theirGroup.id,
-        mapList: matchMapList({
-          ourGroup,
-          theirGroup,
-          ourMapPool: new MapPool(mapPoolByGroupId(ourGroup.id)),
-          theirMapPool: new MapPool(mapPoolByGroupId(theirGroup.id)),
-        }),
+        mapList: matchMapList(
+          {
+            id: ourGroup.id,
+            preferences: await QRepository.mapModePreferencesByGroupId(
+              ourGroup.id,
+            ),
+          },
+          {
+            id: theirGroup.id,
+            preferences: await QRepository.mapModePreferencesByGroupId(
+              theirGroup.id,
+            ),
+          },
+        ),
         memento: await createMatchMemento(ourGroup, theirGroup),
       });
 

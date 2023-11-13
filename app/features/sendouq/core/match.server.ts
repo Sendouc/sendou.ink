@@ -1,55 +1,56 @@
 import shuffle from "just-shuffle";
-import invariant from "tiny-invariant";
 import type { UserMapModePreferences } from "~/db/tables";
-import type { Group, ParsedMemento } from "~/db/types";
+import type { ParsedMemento } from "~/db/types";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import { currentOrPreviousSeason } from "~/features/mmr/season";
 import { userSkills } from "~/features/mmr/tiered.server";
-import type { ModeShort } from "~/modules/in-game-lists";
-import { modesShort } from "~/modules/in-game-lists";
+import type { ModeShort, StageId } from "~/modules/in-game-lists";
+import { modesShort, stageIds } from "~/modules/in-game-lists";
+import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { createTournamentMapList } from "~/modules/tournament-map-list-generator";
 import { averageArray } from "~/utils/number";
 import { SENDOUQ_BEST_OF } from "../q-constants";
-import type { LookingGroup, LookingGroupWithInviteCode } from "../q-types";
+import type { LookingGroupWithInviteCode } from "../q-types";
 import type { MatchById } from "../queries/findMatchById.server";
 import { addSkillsToGroups } from "./groups.server";
 
-// xxx: we need this but for arbitrary mode list
-const filterMapPoolToSZ = (mapPool: MapPool) =>
-  new MapPool(mapPool.stageModePairs.filter(({ mode }) => mode === "SZ"));
-export function matchMapList({
-  ourGroup,
-  theirGroup,
-  ourMapPool,
-  theirMapPool,
-}: {
-  ourGroup: LookingGroup;
-  theirGroup: LookingGroup;
-  ourMapPool: MapPool;
-  theirMapPool: MapPool;
-}) {
-  invariant(ourGroup.mapListPreference, "ourGroup.mapListPreference");
-  invariant(theirGroup.mapListPreference, "theirGroup.mapListPreference");
-
-  const type = mapListType([
-    ourGroup.mapListPreference,
-    theirGroup.mapListPreference,
-  ]);
+const filterMapPoolToByMode = (mapPool: MapPool, modesIncluded: ModeShort[]) =>
+  new MapPool(
+    mapPool.stageModePairs.filter(({ mode }) => modesIncluded.includes(mode)),
+  );
+export function matchMapList(
+  groupOne: { preferences: UserMapModePreferences[]; id: number },
+  groupTwo: { preferences: UserMapModePreferences[]; id: number },
+) {
+  const modesIncluded = mapModePreferencesToModeList(
+    groupOne.preferences.map((pref) => pref.modes),
+    groupTwo.preferences.map((pref) => pref.modes),
+  );
 
   try {
     return createTournamentMapList({
       bestOf: SENDOUQ_BEST_OF,
-      seed: String(ourGroup.id),
-      modesIncluded: type === "SZ" ? ["SZ"] : ["SZ", "TC", "RM", "CB"],
+      seed: String(groupOne.id),
+      modesIncluded,
       tiebreakerMaps: new MapPool([]),
       teams: [
         {
-          id: ourGroup.id,
-          maps: type === "SZ" ? filterMapPoolToSZ(ourMapPool) : ourMapPool,
+          id: groupOne.id,
+          maps: filterMapPoolToByMode(
+            mapPoolFromPreferences(
+              groupOne.preferences.map((pref) => pref.maps),
+            ),
+            modesIncluded,
+          ),
         },
         {
-          id: theirGroup.id,
-          maps: type === "SZ" ? filterMapPoolToSZ(theirMapPool) : theirMapPool,
+          id: groupTwo.id,
+          maps: filterMapPoolToByMode(
+            mapPoolFromPreferences(
+              groupTwo.preferences.map((pref) => pref.maps),
+            ),
+            modesIncluded,
+          ),
         },
       ],
     });
@@ -59,16 +60,16 @@ export function matchMapList({
     console.error(e);
     return createTournamentMapList({
       bestOf: SENDOUQ_BEST_OF,
-      seed: String(ourGroup.id),
-      modesIncluded: type === "SZ" ? ["SZ"] : ["SZ", "TC", "RM", "CB"],
+      seed: String(groupOne.id),
+      modesIncluded,
       tiebreakerMaps: new MapPool([]),
       teams: [
         {
-          id: ourGroup.id,
+          id: groupOne.id,
           maps: new MapPool([]),
         },
         {
-          id: theirGroup.id,
+          id: groupTwo.id,
           maps: new MapPool([]),
         },
       ],
@@ -77,18 +78,19 @@ export function matchMapList({
 }
 
 export function mapModePreferencesToModeList(
-  groupOnePreferences: UserMapModePreferences["modes"],
-  groupTwoPreferences: UserMapModePreferences["modes"],
+  groupOnePreferences: UserMapModePreferences["modes"][],
+  groupTwoPreferences: UserMapModePreferences["modes"][],
 ): ModeShort[] {
   const groupOneScores = new Map<ModeShort, number>();
   const groupTwoScores = new Map<ModeShort, number>();
 
-  for (const [i, groupPrefence] of [
+  for (const [i, groupPrefences] of [
     groupOnePreferences,
     groupTwoPreferences,
   ].entries()) {
     for (const mode of modesShort) {
-      const preferences = groupPrefence
+      const preferences = groupPrefences
+        .flat()
         .filter((preference) => preference.mode === mode)
         .map(({ preference }) => (preference === "AVOID" ? -1 : 1));
 
@@ -123,36 +125,45 @@ export function mapModePreferencesToModeList(
     return aScore > bScore ? -1 : 1;
   });
 
+  if (result.length === 0) return [...rankedModesShort];
+
   return result;
 }
 
 export function mapPoolFromPreferences(
-  _preferences: UserMapModePreferences["maps"][],
+  groupPreferences: UserMapModePreferences["maps"][],
 ) {
-  return new MapPool([]);
-}
+  const stageModePairs: { stageId: StageId; mode: ModeShort }[] = [];
 
-const typeScore = {
-  ALL_MODES_ONLY: -2,
-  PREFER_ALL_MODES: -1,
-  NO_PREFERENCE: 0,
-  PREFER_SZ: 1,
-  SZ_ONLY: 2,
-} as const;
-function mapListType(
-  preferences: [Group["mapListPreference"], Group["mapListPreference"]],
-) {
-  // if neither team has changed the default preference, default to all modes
-  if (preferences.every((p) => p === "NO_PREFERENCE")) {
-    return "ALL_MODES";
+  for (const mode of modesShort) {
+    const scores = new Map<StageId, number>();
+    for (const userPreferences of groupPreferences) {
+      for (const preference of userPreferences) {
+        if (preference.mode !== mode) continue;
+
+        const currentScore = scores.get(preference.stageId) ?? 0;
+
+        const delta = preference.preference === "AVOID" ? -1 : 1;
+
+        scores.set(preference.stageId, currentScore + delta);
+      }
+    }
+
+    const stagesWithScore = stageIds.map((stageId) => ({
+      stageId,
+      score: scores.get(stageId) ?? 0,
+    }));
+    stagesWithScore.sort((a, b) => {
+      if (a.score === b.score) return b.stageId - a.stageId;
+      return a.score > b.score ? -1 : 1;
+    });
+
+    for (const { stageId } of stagesWithScore.slice(0, 6)) {
+      stageModePairs.push({ stageId, mode });
+    }
   }
 
-  const score = typeScore[preferences[0]] + typeScore[preferences[1]];
-
-  if (score < 0) return "ALL_MODES";
-  if (score > 0) return "SZ";
-
-  return Math.random() < 0.5 ? "ALL_MODES" : "SZ";
+  return new MapPool(stageModePairs);
 }
 
 export function compareMatchToReportedScores({
