@@ -4,7 +4,7 @@ import shuffle from "just-shuffle";
 import { nanoid } from "nanoid";
 import invariant from "tiny-invariant";
 import { ADMIN_DISCORD_ID, ADMIN_ID, INVITE_CODE_LENGTH } from "~/constants";
-import { sql } from "~/db/sql";
+import { db, sql } from "~/db/sql";
 import allTags from "~/features/calendar/tags.json";
 import { createVod } from "~/features/vods/queries/createVod.server";
 import type {
@@ -68,6 +68,7 @@ import {
   NZAP_TEST_ID,
 } from "./constants";
 import placements from "./placements.json";
+import type { UserMapModePreferences } from "../tables";
 
 const calendarEventWithToToolsSz = () => calendarEventWithToTools(true);
 const calendarEventWithToToolsTeamsSz = () =>
@@ -81,6 +82,7 @@ const basicSeeds = (variation?: SeedVariation | null) => [
   nzapUser,
   users,
   userProfiles,
+  userMapModePreferences,
   lastMonthsVoting,
   syncPlusTiers,
   lastMonthSuggestions,
@@ -324,6 +326,41 @@ function userProfiles() {
           ? "YES"
           : faker.helpers.arrayElement(["YES", "NO", "LISTEN_ONLY"]),
     });
+  }
+}
+
+const randomPreferences = (): UserMapModePreferences => {
+  return {
+    modes: modesShort.flatMap((mode) => {
+      if (Math.random() > 0.5) return [];
+
+      return { mode, preference: Math.random() > 0.5 ? "AVOID" : "PREFER" };
+    }),
+    maps: stageIds.flatMap((stageId) => {
+      return modesShort.flatMap((mode) => {
+        if (Math.random() > 0.5) return [];
+
+        return {
+          stageId,
+          mode,
+          preference: Math.random() > 0.5 ? "AVOID" : "PREFER",
+        };
+      });
+    }),
+  };
+};
+
+async function userMapModePreferences() {
+  for (let id = 1; id < 500; id++) {
+    if (id !== ADMIN_ID && Math.random() < 0.2) continue; // 80% have maps && admin always
+
+    await db
+      .updateTable("User")
+      .where("User.id", "=", id)
+      .set({
+        mapModePreferences: JSON.stringify(randomPreferences()),
+      })
+      .execute();
   }
 }
 
