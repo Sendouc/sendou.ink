@@ -29,7 +29,7 @@ Competitive Splatoon Hub with over 20k registered users.
 - Sqlite3
 - CSS (plain)
 - E2E tests via Playwright
-- Unit tests via uvu
+- Unit/integration tests via uvu
 
 ## Screenshots
 
@@ -57,6 +57,12 @@ There is a sequence of commands you need to run:
 ## Contributing
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for more information.
+
+## Tests
+
+### `db-test.sqlite3`
+
+Empty DB with the latest migration run. When creating new migrations they should also be applied+committed to this file (add it in `.env` and then run the migration command as normal).
 
 ### Translations
 

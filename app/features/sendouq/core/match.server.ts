@@ -1,13 +1,15 @@
 import shuffle from "just-shuffle";
-import type { UserMapModePreferences } from "~/db/tables";
-import type { ParsedMemento } from "~/db/types";
+import type { UserMapModePreferences, ParsedMemento } from "~/db/tables";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import { currentOrPreviousSeason } from "~/features/mmr/season";
 import { userSkills } from "~/features/mmr/tiered.server";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import { modesShort, stageIds } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
-import { createTournamentMapList } from "~/modules/tournament-map-list-generator";
+import {
+  type TournamentMapListMap,
+  createTournamentMapList,
+} from "~/modules/tournament-map-list-generator";
 import { averageArray } from "~/utils/number";
 import { SENDOUQ_BEST_OF } from "../q-constants";
 import type { LookingGroupWithInviteCode } from "../q-types";
@@ -130,6 +132,7 @@ export function mapModePreferencesToModeList(
   return result;
 }
 
+const AMOUNT_OF_MAPS_TO_PICK = 7;
 export function mapPoolFromPreferences(
   groupPreferences: UserMapModePreferences["maps"][],
 ) {
@@ -158,7 +161,10 @@ export function mapPoolFromPreferences(
       return a.score > b.score ? -1 : 1;
     });
 
-    for (const { stageId } of stagesWithScore.slice(0, 6)) {
+    for (const { stageId } of stagesWithScore.slice(
+      0,
+      AMOUNT_OF_MAPS_TO_PICK,
+    )) {
       stageModePairs.push({ stageId, mode });
     }
   }
@@ -213,13 +219,27 @@ export function compareMatchToReportedScores({
   return "SAME";
 }
 
+type CreateMatchMementoArgs = {
+  own: {
+    group: LookingGroupWithInviteCode;
+    preferences: UserMapModePreferences[];
+  };
+  their: {
+    group: LookingGroupWithInviteCode;
+    preferences: UserMapModePreferences[];
+  };
+  mapList: TournamentMapListMap[];
+};
 export async function createMatchMemento(
-  ownGroup: LookingGroupWithInviteCode,
-  theirGroup: LookingGroupWithInviteCode,
+  args: CreateMatchMementoArgs,
 ): Promise<ParsedMemento> {
   const skills = await userSkills(currentOrPreviousSeason(new Date())!.nth);
   const withTiers = addSkillsToGroups({
-    groups: { neutral: [], likesReceived: [theirGroup], own: ownGroup },
+    groups: {
+      neutral: [],
+      likesReceived: [args.their.group],
+      own: args.own.group,
+    },
     ...skills,
   });
 
@@ -227,8 +247,9 @@ export async function createMatchMemento(
   const theirWithTier = withTiers.likesReceived[0];
 
   return {
+    mapPreferences: mapPreferenceMemento(args),
     users: Object.fromEntries(
-      [...ownGroup.members, ...theirGroup.members].map((member) => [
+      [...args.own.group.members, ...args.their.group.members].map((member) => [
         member.id,
         {
           plusTier: member.plusTier ?? undefined,
@@ -245,4 +266,61 @@ export async function createMatchMemento(
       ]),
     ),
   };
+}
+
+function mapPreferenceMemento(args: CreateMatchMementoArgs) {
+  const result: NonNullable<ParsedMemento["mapPreferences"]> = [];
+
+  for (const map of args.mapList) {
+    const preferencesOfThisMap: NonNullable<
+      ParsedMemento["mapPreferences"]
+    >[number] = [];
+    if (map.source === args.own.group.id || map.source === "BOTH") {
+      preferencesOfThisMap.push(
+        ...opinionsAboutMapFromGroupPreferences({
+          map,
+          groupPreferences: args.own.preferences,
+        }),
+      );
+    }
+
+    if (map.source === args.their.group.id || map.source === "BOTH") {
+      preferencesOfThisMap.push(
+        ...opinionsAboutMapFromGroupPreferences({
+          map,
+          groupPreferences: args.their.preferences,
+        }),
+      );
+    }
+
+    result.push(preferencesOfThisMap);
+  }
+
+  return result;
+}
+
+function opinionsAboutMapFromGroupPreferences({
+  map,
+  groupPreferences,
+}: {
+  map: TournamentMapListMap;
+  groupPreferences: UserMapModePreferences[];
+}) {
+  const result: NonNullable<ParsedMemento["mapPreferences"]>[number] = [];
+
+  for (const userPreference of groupPreferences) {
+    const found = userPreference.maps.find(
+      (pref) => pref.stageId === map.stageId && pref.mode === map.mode,
+    );
+
+    if (!found) continue;
+
+    result.push({
+      // xxx: todo adjust in caller
+      userId: 1,
+      preference: found.preference,
+    });
+  }
+
+  return result;
 }

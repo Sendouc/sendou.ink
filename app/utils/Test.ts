@@ -29,11 +29,24 @@ export function wrappedAction<T extends z.ZodTypeAny>({
       headers: await authHeader(user),
     });
 
-    return action({
-      request,
-      context: {},
-      params: {},
-    });
+    try {
+      const response = await action({
+        request,
+        context: {},
+        params: {},
+      });
+
+      return response;
+    } catch (thrown) {
+      if (thrown instanceof Response) {
+        // it was a redirect
+        if (thrown.status === 302) return thrown;
+
+        throw new Error(`Response thrown with status code: ${thrown.status}`);
+      }
+
+      throw thrown;
+    }
   };
 }
 

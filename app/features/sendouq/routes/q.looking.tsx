@@ -245,24 +245,31 @@ export const action: ActionFunction = async ({ request }) => {
         "Their group already has a match",
       );
 
+      // xxx: handle ownerPicksMaps
+      const ourGroupPreferences = await QRepository.mapModePreferencesByGroupId(
+        ourGroup.id,
+      );
+      const theirGroupPreferences =
+        await QRepository.mapModePreferencesByGroupId(theirGroup.id);
+      const mapList = matchMapList(
+        {
+          id: ourGroup.id,
+          preferences: ourGroupPreferences,
+        },
+        {
+          id: theirGroup.id,
+          preferences: theirGroupPreferences,
+        },
+      );
       const createdMatch = createMatch({
         alphaGroupId: ourGroup.id,
         bravoGroupId: theirGroup.id,
-        mapList: matchMapList(
-          {
-            id: ourGroup.id,
-            preferences: await QRepository.mapModePreferencesByGroupId(
-              ourGroup.id,
-            ),
-          },
-          {
-            id: theirGroup.id,
-            preferences: await QRepository.mapModePreferencesByGroupId(
-              theirGroup.id,
-            ),
-          },
-        ),
-        memento: await createMatchMemento(ourGroup, theirGroup),
+        mapList,
+        memento: await createMatchMemento({
+          own: { group: ourGroup, preferences: ourGroupPreferences },
+          their: { group: theirGroup, preferences: theirGroupPreferences },
+          mapList,
+        }),
       });
 
       if (ourGroup.chatCode && theirGroup.chatCode) {

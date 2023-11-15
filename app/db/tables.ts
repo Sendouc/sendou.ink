@@ -5,12 +5,14 @@ import type {
   Selectable,
   SqlBool,
 } from "kysely";
+import type { TieredSkill } from "~/features/mmr/tiered.server";
 import type {
   Ability,
   MainWeaponId,
   ModeShort,
   StageId,
 } from "~/modules/in-game-lists";
+import type { GroupSkillDifference, UserSkillDifference } from "./types";
 
 export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   ? ColumnType<S, I | undefined, U>
@@ -174,8 +176,13 @@ export interface Group {
   id: GeneratedAlways<number>;
   inviteCode: string;
   latestActionAt: Generated<number>;
-  mapListPreference: string;
-  status: string;
+  mapListPreference:
+    | "SZ_ONLY"
+    | "ALL_MODES_ONLY"
+    | "PREFER_SZ"
+    | "PREFER_ALL_MODES"
+    | "NO_PREFERENCE";
+  status: "PREPARING" | "ACTIVE" | "INACTIVE";
   teamId: number | null;
   ownerPicksMaps: number;
 }
@@ -186,13 +193,36 @@ export interface GroupLike {
   targetGroupId: number;
 }
 
+export type ParsedMemento = {
+  users: Record<
+    number,
+    {
+      plusTier?: PlusTier["tier"];
+      skill?: TieredSkill;
+      skillDifference?: UserSkillDifference;
+    }
+  >;
+  groups: Record<
+    number,
+    {
+      tier?: TieredSkill["tier"];
+      skillDifference?: GroupSkillDifference;
+    }
+  >;
+  modePreferences?: Record<
+    ModeShort,
+    Array<{ userId: number; preference?: Preference }[]>
+  >;
+  mapPreferences?: Array<{ userId: number; preference?: Preference }[]>;
+};
+
 export interface GroupMatch {
   alphaGroupId: number;
   bravoGroupId: number;
   chatCode: string | null;
   createdAt: Generated<number>;
   id: GeneratedAlways<number>;
-  memento: string | null;
+  memento: ColumnType<ParsedMemento | null, string | null, string | null>;
   reportedAt: number | null;
   reportedByUserId: number | null;
 }
@@ -211,7 +241,7 @@ export interface GroupMember {
   createdAt: Generated<number>;
   groupId: number;
   note: string | null;
-  role: string;
+  role: "OWNER" | "MANAGER" | "REGULAR";
   userId: number;
 }
 

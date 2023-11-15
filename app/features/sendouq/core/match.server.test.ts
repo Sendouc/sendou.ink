@@ -138,7 +138,7 @@ MapModePreferencesToModeList("doesn't include turf war if mixed", () => {
 });
 
 const MODES_COUNT = 5;
-const STAGES_PER_MODE = 6;
+const STAGES_PER_MODE = 7;
 
 MapPoolFromPreferences("returns maps even if no preferences", () => {
   const mapPool = mapPoolFromPreferences([]);
@@ -153,7 +153,9 @@ MapPoolFromPreferences(
     const mapPool = mapPoolFromPreferences([]);
 
     assert.ok(
-      mapPool.stageModePairs.every(({ stageId }) => stageId > MAX_STAGE_ID - 6),
+      mapPool.stageModePairs.every(
+        ({ stageId }) => stageId > MAX_STAGE_ID - STAGES_PER_MODE,
+      ),
     );
   },
 );
