@@ -6,14 +6,11 @@ import { db } from "~/db/sql";
 import type { UserMapModePreferences } from "~/db/tables";
 import type { StageId } from "~/modules/in-game-lists";
 import invariant from "tiny-invariant";
+import * as assert from "uvu/assert";
 
 const SendouQMatchCreation = suite("SendouQ match creation");
 
 const lookingAction = Test.wrappedAction<typeof lookingSchema>({ action });
-
-SendouQMatchCreation.after.each(() => {
-  Test.database.reset();
-});
 
 const createGroup = async (userIds: number[], ownerPicksMaps: number) => {
   const group = await db
@@ -67,11 +64,18 @@ const SZ_ONLY_PREFERENCE: UserMapModePreferences["modes"] = [
   { mode: "RM", preference: "AVOID" },
   { mode: "CB", preference: "AVOID" },
 ];
+
+SendouQMatchCreation.before.each(async () => {
+  await prepareGroups();
+});
+
+SendouQMatchCreation.after.each(() => {
+  Test.database.reset();
+});
+
 SendouQMatchCreation(
   "adds about created map preferences to memento in the correct spot",
   async () => {
-    await prepareGroups();
-
     await insertMapModePreferences(1, {
       modes: SZ_ONLY_PREFERENCE,
       maps: Array.from({ length: 10 }).map((_, i) => ({
@@ -120,8 +124,6 @@ SendouQMatchCreation(
 SendouQMatchCreation(
   "adds about created map preferences to memento in the correct spot (two preferrers)",
   async () => {
-    await prepareGroups();
-
     for (const id of [1, 2]) {
       await insertMapModePreferences(id, {
         modes: SZ_ONLY_PREFERENCE,
@@ -171,6 +173,41 @@ SendouQMatchCreation(
   },
 );
 
-// mode preferences in memento, check with two users?
+SendouQMatchCreation("adds mode preferences to memento", async () => {
+  await insertMapModePreferences(1, {
+    modes: SZ_ONLY_PREFERENCE,
+    maps: Array.from({ length: 10 }).map((_, i) => ({
+      mode: "SZ",
+      preference: "PREFER",
+      stageId: i as StageId,
+    })),
+  });
+  await insertMapModePreferences(5, {
+    modes: SZ_ONLY_PREFERENCE,
+    maps: [
+      { mode: "SZ", preference: "PREFER", stageId: 11 },
+      { mode: "SZ", preference: "PREFER", stageId: 12 },
+      { mode: "SZ", preference: "PREFER", stageId: 13 },
+    ],
+  });
+
+  await lookingAction(
+    {
+      _action: "MATCH_UP",
+      targetGroupId: 2,
+    },
+    { user: "admin" },
+  );
+
+  const match = await db
+    .selectFrom("GroupMatch")
+    .selectAll()
+    .where("id", "=", 1)
+    .executeTakeFirstOrThrow();
+
+  const modePreferences = match.memento?.modePreferences;
+
+  assert.equal(modePreferences?.SZ.length, 2);
+});
 
 SendouQMatchCreation.run();
