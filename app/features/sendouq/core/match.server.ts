@@ -21,12 +21,18 @@ const filterMapPoolToByMode = (mapPool: MapPool, modesIncluded: ModeShort[]) =>
     mapPool.stageModePairs.filter(({ mode }) => modesIncluded.includes(mode)),
   );
 export function matchMapList(
-  groupOne: { preferences: UserMapModePreferences[]; id: number },
-  groupTwo: { preferences: UserMapModePreferences[]; id: number },
+  groupOne: {
+    preferences: { userId: number; preferences: UserMapModePreferences }[];
+    id: number;
+  },
+  groupTwo: {
+    preferences: { userId: number; preferences: UserMapModePreferences }[];
+    id: number;
+  },
 ) {
   const modesIncluded = mapModePreferencesToModeList(
-    groupOne.preferences.map((pref) => pref.modes),
-    groupTwo.preferences.map((pref) => pref.modes),
+    groupOne.preferences.map(({ preferences }) => preferences.modes),
+    groupTwo.preferences.map(({ preferences }) => preferences.modes),
   );
 
   try {
@@ -40,7 +46,7 @@ export function matchMapList(
           id: groupOne.id,
           maps: filterMapPoolToByMode(
             mapPoolFromPreferences(
-              groupOne.preferences.map((pref) => pref.maps),
+              groupOne.preferences.map(({ preferences }) => preferences.maps),
             ),
             modesIncluded,
           ),
@@ -49,7 +55,7 @@ export function matchMapList(
           id: groupTwo.id,
           maps: filterMapPoolToByMode(
             mapPoolFromPreferences(
-              groupTwo.preferences.map((pref) => pref.maps),
+              groupTwo.preferences.map(({ preferences }) => preferences.maps),
             ),
             modesIncluded,
           ),
@@ -222,11 +228,11 @@ export function compareMatchToReportedScores({
 type CreateMatchMementoArgs = {
   own: {
     group: LookingGroupWithInviteCode;
-    preferences: UserMapModePreferences[];
+    preferences: { userId: number; preferences: UserMapModePreferences }[];
   };
   their: {
     group: LookingGroupWithInviteCode;
-    preferences: UserMapModePreferences[];
+    preferences: { userId: number; preferences: UserMapModePreferences }[];
   };
   mapList: TournamentMapListMap[];
 };
@@ -304,20 +310,19 @@ function opinionsAboutMapFromGroupPreferences({
   groupPreferences,
 }: {
   map: TournamentMapListMap;
-  groupPreferences: UserMapModePreferences[];
+  groupPreferences: CreateMatchMementoArgs["own"]["preferences"];
 }) {
   const result: NonNullable<ParsedMemento["mapPreferences"]>[number] = [];
 
-  for (const userPreference of groupPreferences) {
-    const found = userPreference.maps.find(
+  for (const { preferences, userId } of groupPreferences) {
+    const found = preferences.maps.find(
       (pref) => pref.stageId === map.stageId && pref.mode === map.mode,
     );
 
     if (!found) continue;
 
     result.push({
-      // xxx: todo adjust in caller
-      userId: 1,
+      userId,
       preference: found.preference,
     });
   }

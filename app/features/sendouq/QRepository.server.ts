@@ -1,12 +1,14 @@
 import { db } from "~/db/sql";
+import type { UserMapModePreferences } from "~/db/tables";
 
-export async function mapModePreferencesByGroupId(groupId: number) {
-  const rows = await db
+export function mapModePreferencesByGroupId(groupId: number) {
+  return db
     .selectFrom("GroupMember")
     .innerJoin("User", "User.id", "GroupMember.userId")
-    .select("User.mapModePreferences")
+    .select(["User.id as userId", "User.mapModePreferences as preferences"])
     .where("GroupMember.groupId", "=", groupId)
-    .execute();
-
-  return rows.flatMap((row) => row.mapModePreferences ?? []);
+    .where("User.mapModePreferences", "is not", null)
+    .execute() as Promise<
+    { userId: number; preferences: UserMapModePreferences }[]
+  >;
 }

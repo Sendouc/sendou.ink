@@ -117,7 +117,59 @@ SendouQMatchCreation(
   },
 );
 
-// test map that was picked by BOTH
+SendouQMatchCreation(
+  "adds about created map preferences to memento in the correct spot (two preferrers)",
+  async () => {
+    await prepareGroups();
+
+    for (const id of [1, 2]) {
+      await insertMapModePreferences(id, {
+        modes: SZ_ONLY_PREFERENCE,
+        maps: Array.from({ length: 10 }).map((_, i) => ({
+          mode: "SZ",
+          preference: "PREFER",
+          stageId: i as StageId,
+        })),
+      });
+    }
+    await insertMapModePreferences(5, {
+      modes: SZ_ONLY_PREFERENCE,
+      maps: [
+        { mode: "SZ", preference: "PREFER", stageId: 11 },
+        { mode: "SZ", preference: "PREFER", stageId: 12 },
+        { mode: "SZ", preference: "PREFER", stageId: 13 },
+      ],
+    });
+
+    await lookingAction(
+      {
+        _action: "MATCH_UP",
+        targetGroupId: 2,
+      },
+      { user: "admin" },
+    );
+
+    const match = await db
+      .selectFrom("GroupMatch")
+      .selectAll()
+      .where("id", "=", 1)
+      .executeTakeFirstOrThrow();
+
+    const index = match.memento?.mapPreferences?.findIndex(
+      (preference) =>
+        preference.some((p) => p.userId === 1) &&
+        preference.some((p) => p.userId === 2),
+    );
+    invariant(typeof index === "number", "User 1 not found in memento");
+
+    await db
+      .selectFrom("GroupMatchMap")
+      .selectAll()
+      .where("GroupMatchMap.index", "=", index)
+      .where("GroupMatchMap.source", "=", "1")
+      .executeTakeFirstOrThrow();
+  },
+);
 
 // mode preferences in memento, check with two users?
 
