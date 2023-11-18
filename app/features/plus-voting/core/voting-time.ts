@@ -1,7 +1,6 @@
 import type { MonthYear } from "./types";
 import { type RankingSeason, SEASONS } from "~/features/mmr/season";
 
-// xxx: how to make work with seeding? currently just crashes with error
 export function lastCompletedVoting(now: Date): MonthYear {
   let match: { startDate: Date; endDate: Date } | null = null;
   for (const season of SEASONS) {
