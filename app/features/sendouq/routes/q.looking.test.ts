@@ -207,7 +207,7 @@ SendouQMatchCreation("adds mode preferences to memento", async () => {
 
   const modePreferences = match.memento?.modePreferences;
 
-  assert.equal(modePreferences?.SZ.length, 2);
+  assert.equal(modePreferences?.SZ?.length, 2);
 });
 
 SendouQMatchCreation.run();

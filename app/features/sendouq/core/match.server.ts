@@ -1,5 +1,5 @@
 import shuffle from "just-shuffle";
-import type { UserMapModePreferences, ParsedMemento } from "~/db/tables";
+import type { ParsedMemento, UserMapModePreferences } from "~/db/tables";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import { currentOrPreviousSeason } from "~/features/mmr/season";
 import { userSkills } from "~/features/mmr/tiered.server";
@@ -7,8 +7,8 @@ import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import { modesShort, stageIds } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import {
-  type TournamentMapListMap,
   createTournamentMapList,
+  type TournamentMapListMap,
 } from "~/modules/tournament-map-list-generator";
 import { averageArray } from "~/utils/number";
 import { SENDOUQ_BEST_OF } from "../q-constants";
@@ -254,6 +254,7 @@ export async function createMatchMemento(
 
   return {
     mapPreferences: mapPreferenceMemento(args),
+    modePreferences: modePreferencesMemento(args),
     users: Object.fromEntries(
       [...args.own.group.members, ...args.their.group.members].map((member) => [
         member.id,
@@ -325,6 +326,35 @@ function opinionsAboutMapFromGroupPreferences({
       userId,
       preference: found.preference,
     });
+  }
+
+  return result;
+}
+
+function modePreferencesMemento(args: CreateMatchMementoArgs) {
+  const result: NonNullable<ParsedMemento["modePreferences"]> = {};
+
+  const modesIncluded: ModeShort[] = [];
+
+  for (const { mode } of args.mapList) {
+    if (!modesIncluded.includes(mode)) modesIncluded.push(mode);
+  }
+
+  for (const mode of modesIncluded) {
+    for (const { preferences, userId } of [
+      ...args.own.preferences,
+      ...args.their.preferences,
+    ]) {
+      const found = preferences.modes.find((pref) => pref.mode === mode);
+
+      if (!found) continue;
+
+      if (!result[mode]) result[mode] = [];
+      result[mode]!.push({
+        userId,
+        preference: found.preference,
+      });
+    }
   }
 
   return result;

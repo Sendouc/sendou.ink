@@ -209,9 +209,8 @@ export type ParsedMemento = {
       skillDifference?: GroupSkillDifference;
     }
   >;
-  modePreferences?: Record<
-    ModeShort,
-    Array<{ userId: number; preference?: Preference }[]>
+  modePreferences?: Partial<
+    Record<ModeShort, Array<{ userId: number; preference?: Preference }>>
   >;
   mapPreferences?: Array<{ userId: number; preference?: Preference }[]>;
 };
