@@ -26,6 +26,7 @@ import { StarIcon } from "~/components/icons/Star";
 import { StarFilledIcon } from "~/components/icons/StarFilled";
 import { inGameNameWithoutDiscriminator } from "~/utils/strings";
 import * as React from "react";
+import type { SqlBool } from "kysely";
 
 export function GroupCard({
   group,
@@ -45,8 +46,8 @@ export function GroupCard({
   ownGroup?: boolean;
   isExpired?: boolean;
   displayOnly?: boolean;
-  hideVc?: boolean;
-  hideWeapons?: boolean;
+  hideVc?: SqlBool;
+  hideWeapons?: SqlBool;
   hideNote?: boolean;
   enableKicking?: boolean;
 }) {
@@ -154,8 +155,8 @@ function GroupMember({
   member: NonNullable<LookingGroup["members"]>[number];
   showActions: boolean;
   displayOnly?: boolean;
-  hideVc?: boolean;
-  hideWeapons?: boolean;
+  hideVc?: SqlBool;
+  hideWeapons?: SqlBool;
   hideNote?: boolean;
   enableKicking?: boolean;
 }) {

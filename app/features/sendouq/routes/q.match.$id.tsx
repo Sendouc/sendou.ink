@@ -84,6 +84,7 @@ import { reportScore } from "../queries/reportScore.server";
 import { reportedWeaponsByMatchId } from "../queries/reportedWeaponsByMatchId.server";
 import { setGroupAsInactive } from "../queries/setGroupAsInactive.server";
 import { useRecentlyReportedWeapons } from "../q-hooks";
+import * as QMatchRepository from "~/features/sendouq-match/QMatchRepository.server";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -327,7 +328,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 export const loader = async ({ params, request }: LoaderArgs) => {
   const user = await getUserId(request);
   const matchId = matchIdFromParams(params);
-  const match = notFoundIfFalsy(findMatchById(matchId));
+  const match = notFoundIfFalsy(await QMatchRepository.findById(matchId));
 
   const groupAlpha = groupForMatch(match.alphaGroupId);
   invariant(groupAlpha, "Group alpha not found");
