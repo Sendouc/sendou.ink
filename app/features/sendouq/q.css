@@ -260,6 +260,16 @@
   color: var(--theme);
 }
 
+.q-match__mode-popover-button {
+  background-color: transparent;
+  padding: 0;
+  border: none;
+}
+
+.q-match__mode-popover-button:focus {
+  outline: none;
+}
+
 .q-match__join-discord-section {
   border-left: 4px solid var(--theme);
   padding-inline-start: var(--s-4);

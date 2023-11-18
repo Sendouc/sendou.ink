@@ -1183,6 +1183,7 @@ function MapListMap({
     return data.groupMemberOf === side ? " (us)" : " (them)";
   };
 
+  const modePreferences = data.match.memento?.modePreferences?.[map.mode];
   const mapPreferences = data.match.memento?.mapPreferences?.[i];
 
   const userIdToName = (userId: number) => {
@@ -1201,7 +1202,35 @@ function MapListMap({
           <StageImage stageId={map.stageId} width={64} className="rounded-sm" />
           <div>
             <div className="text-sm stack horizontal xs items-center">
-              {i + 1}) <ModeImage mode={map.mode} size={18} />{" "}
+              {i + 1}){" "}
+              {modePreferences ? (
+                <Popover
+                  contentClassName="text-main-forced"
+                  buttonChildren={<ModeImage mode={map.mode} size={18} />}
+                  triggerClassName="q-match__mode-popover-button"
+                >
+                  <div className="text-md text-center text-lighter mb-2">
+                    {t(`game-misc:MODE_LONG_${map.mode}`)}
+                  </div>
+                  {modePreferences.map(({ userId, preference }) => {
+                    return (
+                      <div
+                        key={userId}
+                        className="stack horizontal items-center xs"
+                      >
+                        <img
+                          src={preferenceEmojiUrl(preference)}
+                          className="q-settings__radio__emoji"
+                          width={18}
+                        />
+                        {userIdToName(userId)}
+                      </div>
+                    );
+                  })}
+                </Popover>
+              ) : (
+                <ModeImage mode={map.mode} size={18} />
+              )}{" "}
               {t(`game-misc:STAGE_${map.stageId}`)}
             </div>
             <div className="text-lighter text-xs">
@@ -1211,6 +1240,10 @@ function MapListMap({
                   contentClassName="text-main-forced"
                   buttonChildren={<span>{pickInfo(map.source)}</span>}
                 >
+                  <div className="text-md text-center text-lighter mb-2">
+                    {t(`game-misc:MODE_SHORT_${map.mode}`)}{" "}
+                    {t(`game-misc:STAGE_${map.stageId}`)}
+                  </div>
                   {mapPreferences.map(({ userId, preference }) => {
                     return (
                       <div
@@ -1301,7 +1334,7 @@ function MapListMap({
 
             {showReportedOwnWeapon && onOwnWeaponSelected ? (
               <>
-                <label className="mb-0 text-theme-secondary">Your weapon</label>
+                <label className="mb-0 text-theme-secondary">Weapon</label>
                 <WeaponCombobox
                   inputName="weapon"
                   quickSelectWeaponIds={recentlyReportedWeapons}
