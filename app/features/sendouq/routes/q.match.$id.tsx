@@ -50,6 +50,7 @@ import {
   SENDOUQ_RULES_PAGE,
   SENDOU_INK_DISCORD_URL,
   navIconUrl,
+  preferenceEmojiUrl,
   teamPage,
   userSubmittedImage,
 } from "~/utils/urls";
@@ -1182,6 +1183,17 @@ function MapListMap({
     return data.groupMemberOf === side ? " (us)" : " (them)";
   };
 
+  const mapPreferences = data.match.memento?.mapPreferences?.[i];
+
+  const userIdToName = (userId: number) => {
+    const member = [
+      ...data.groupAlpha.members,
+      ...data.groupBravo.members,
+    ].find((m) => m.id === userId);
+
+    return member?.discordName ?? "";
+  };
+
   return (
     <div key={map.stageId} className="stack xs">
       <Flipped flipId={map.stageId}>
@@ -1193,7 +1205,32 @@ function MapListMap({
               {t(`game-misc:STAGE_${map.stageId}`)}
             </div>
             <div className="text-lighter text-xs">
-              {pickInfo(map.source)} {winningInfoText(map.winnerGroupId)}
+              {mapPreferences && mapPreferences.length > 0 ? (
+                <Popover
+                  triggerClassName="q-match__stage-popover-button"
+                  contentClassName="text-main-forced"
+                  buttonChildren={<span>{pickInfo(map.source)}</span>}
+                >
+                  {mapPreferences.map(({ userId, preference }) => {
+                    return (
+                      <div
+                        key={userId}
+                        className="stack horizontal items-center xs"
+                      >
+                        <img
+                          src={preferenceEmojiUrl(preference)}
+                          className="q-settings__radio__emoji"
+                          width={18}
+                        />
+                        {userIdToName(userId)}
+                      </div>
+                    );
+                  })}
+                </Popover>
+              ) : (
+                pickInfo(map.source)
+              )}{" "}
+              {winningInfoText(map.winnerGroupId)}
             </div>
           </div>
         </div>

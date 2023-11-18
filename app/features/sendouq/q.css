@@ -243,6 +243,23 @@
   margin: 0 auto;
 }
 
+.q-match__stage-popover-button {
+  background-color: transparent;
+  color: var(--text-lighter);
+  font-size: var(--fonts-xs);
+  padding: 0;
+  border: none;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  font-weight: var(--body);
+  height: 19.8281px;
+}
+
+.q-match__stage-popover-button:focus {
+  outline: none;
+  color: var(--theme);
+}
+
 .q-match__join-discord-section {
   border-left: 4px solid var(--theme);
   padding-inline-start: var(--s-4);

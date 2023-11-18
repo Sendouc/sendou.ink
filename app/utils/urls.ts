@@ -27,6 +27,7 @@ import { serializeBuild } from "~/features/build-analyzer";
 import type { ArtSouce } from "~/features/art";
 import { JOIN_CODE_SEARCH_PARAM_KEY } from "~/features/sendouq/q-constants";
 import type { TierName } from "~/features/mmr/mmr-constants";
+import type { Preference } from "~/db/tables";
 
 const staticAssetsUrl = ({
   folder,
@@ -339,6 +340,16 @@ export const brandImageUrl = (brand: "tentatek" | "takoroka") =>
   `/static-assets/img/layout/${brand}`;
 export const tierImageUrl = (tier: TierName) =>
   `/static-assets/img/tiers/${tier.toLowerCase()}`;
+export const preferenceEmojiUrl = (preference?: Preference) => {
+  const emoji =
+    preference === "PREFER"
+      ? "grin"
+      : preference === "AVOID"
+      ? "unamused"
+      : "no-mouth";
+
+  return `/static-assets/img/emoji/${emoji}.svg`;
+};
 export const TIER_PLUS_URL = `/static-assets/img/tiers/plus`;
 
 export const winnersImageUrl = ({

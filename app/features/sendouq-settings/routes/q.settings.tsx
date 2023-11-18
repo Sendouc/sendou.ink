@@ -15,6 +15,7 @@ import { settingsActionSchema } from "../q-settings-schemas.server";
 import * as QSettingsRepository from "~/features/sendouq-settings/QSettingsRepository.server";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import { SubmitButton } from "~/components/SubmitButton";
+import { preferenceEmojiUrl } from "~/utils/urls";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -240,7 +241,7 @@ function PreferenceRadioGroup({
             })}
           >
             <img
-              src="/static-assets/img/emoji/unamused.svg"
+              src={preferenceEmojiUrl("AVOID")}
               className="q-settings__radio__emoji"
               width={18}
             />
@@ -256,7 +257,7 @@ function PreferenceRadioGroup({
             })}
           >
             <img
-              src="/static-assets/img/emoji/no-mouth.svg"
+              src={preferenceEmojiUrl()}
               className="q-settings__radio__emoji"
               width={18}
             />
@@ -272,7 +273,7 @@ function PreferenceRadioGroup({
             })}
           >
             <img
-              src="/static-assets/img/emoji/grin.svg"
+              src={preferenceEmojiUrl("PREFER")}
               className="q-settings__radio__emoji"
               width={18}
             />
