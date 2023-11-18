@@ -507,7 +507,7 @@ export interface UserMapModePreferences {
   maps: Array<{
     stageId: StageId;
     mode: ModeShort;
-    preference: Preference;
+    preference?: Preference;
   }>;
 }
 

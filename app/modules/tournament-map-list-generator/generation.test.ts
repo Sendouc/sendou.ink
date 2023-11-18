@@ -540,6 +540,50 @@ TournamentMapListGenerator(
 //   }
 // );
 
+const threeModesArgs: TournamentMaplistInput = {
+  bestOf: 7,
+  seed: "1002",
+  modesIncluded: ["TC", "TW", "RM"],
+  tiebreakerMaps: new MapPool({
+    TW: [],
+    SZ: [],
+    TC: [],
+    RM: [],
+    CB: [],
+  }),
+  teams: [
+    {
+      id: 1002,
+      maps: new MapPool({
+        TW: [9, 7, 6, 5, 3, 2, 0],
+        SZ: [],
+        TC: [9, 8, 7, 4, 1, 6, 2],
+        RM: [9, 7, 6, 5, 3, 1, 0],
+        CB: [],
+      }),
+    },
+    {
+      id: 1001,
+      maps: new MapPool({
+        TW: [8, 7, 5, 2, 9, 4, 3],
+        SZ: [],
+        TC: [7, 6, 5, 3, 2, 0, 9],
+        RM: [9, 8, 6, 5, 3, 2, 7],
+        CB: [],
+      }),
+    },
+  ],
+};
+
+TournamentMapListGenerator(
+  "generates list of modes included length > 1 && < 4",
+  () => {
+    const maps = generateMaps(threeModesArgs);
+
+    assert.equal(maps.length, 7);
+  },
+);
+
 const team1SZPicks = new MapPool([
   { mode: "SZ", stageId: 4 },
   { mode: "SZ", stageId: 5 },

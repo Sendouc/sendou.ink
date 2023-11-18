@@ -16,7 +16,7 @@ import type { LookingGroupWithInviteCode } from "../q-types";
 import type { MatchById } from "../queries/findMatchById.server";
 import { addSkillsToGroups } from "./groups.server";
 
-const filterMapPoolToByMode = (mapPool: MapPool, modesIncluded: ModeShort[]) =>
+const filterMapPoolByMode = (mapPool: MapPool, modesIncluded: ModeShort[]) =>
   new MapPool(
     mapPool.stageModePairs.filter(({ mode }) => modesIncluded.includes(mode)),
   );
@@ -44,7 +44,7 @@ export function matchMapList(
       teams: [
         {
           id: groupOne.id,
-          maps: filterMapPoolToByMode(
+          maps: filterMapPoolByMode(
             mapPoolFromPreferences(
               groupOne.preferences.map(({ preferences }) => preferences.maps),
             ),
@@ -53,7 +53,7 @@ export function matchMapList(
         },
         {
           id: groupTwo.id,
-          maps: filterMapPoolToByMode(
+          maps: filterMapPoolByMode(
             mapPoolFromPreferences(
               groupTwo.preferences.map(({ preferences }) => preferences.maps),
             ),
@@ -316,15 +316,16 @@ function opinionsAboutMapFromGroupPreferences({
   const result: NonNullable<ParsedMemento["mapPreferences"]>[number] = [];
 
   for (const { preferences, userId } of groupPreferences) {
+    const hasOnlyNeutral = preferences.maps.every((m) => !m.preference);
+    if (hasOnlyNeutral) continue;
+
     const found = preferences.maps.find(
       (pref) => pref.stageId === map.stageId && pref.mode === map.mode,
     );
 
-    if (!found) continue;
-
     result.push({
       userId,
-      preference: found.preference,
+      preference: found?.preference,
     });
   }
 
@@ -345,14 +346,16 @@ function modePreferencesMemento(args: CreateMatchMementoArgs) {
       ...args.own.preferences,
       ...args.their.preferences,
     ]) {
+      const hasOnlyNeutral = preferences.modes.every((m) => !m.preference);
+      if (hasOnlyNeutral) continue;
+
       const found = preferences.modes.find((pref) => pref.mode === mode);
 
-      if (!found) continue;
-
       if (!result[mode]) result[mode] = [];
+
       result[mode]!.push({
         userId,
-        preference: found.preference,
+        preference: found?.preference,
       });
     }
   }

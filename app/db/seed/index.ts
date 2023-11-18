@@ -332,18 +332,23 @@ function userProfiles() {
 const randomPreferences = (): UserMapModePreferences => {
   return {
     modes: modesShort.flatMap((mode) => {
-      if (Math.random() > 0.5) return [];
+      if (Math.random() > 0.5 && mode !== "SZ") return [];
 
-      return { mode, preference: Math.random() > 0.5 ? "AVOID" : "PREFER" };
+      const criteria = mode === "SZ" ? 0.2 : 0.5;
+
+      return {
+        mode,
+        preference: Math.random() > criteria ? "PREFER" : "AVOID",
+      };
     }),
-    maps: stageIds.flatMap((stageId) => {
+    maps: stageIds.slice(0, 10).flatMap((stageId) => {
       return modesShort.flatMap((mode) => {
-        if (Math.random() > 0.5) return [];
+        if (Math.random() > 0.7) return { stageId, mode };
 
         return {
           stageId,
           mode,
-          preference: Math.random() > 0.5 ? "AVOID" : "PREFER",
+          preference: Math.random() > 0.3 ? "PREFER" : "AVOID",
         };
       });
     }),

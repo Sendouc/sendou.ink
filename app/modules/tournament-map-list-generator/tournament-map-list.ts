@@ -242,7 +242,7 @@ export function createTournamentMapList(
     if (tournamentIsOneModeOnly()) return false;
 
     // all modes already appeared
-    if (mapList.length >= 4) return false;
+    if (mapList.length >= input.modesIncluded.length) return false;
 
     if (
       mapList.some(
@@ -259,7 +259,7 @@ export function createTournamentMapList(
     if (tournamentIsOneModeOnly()) return false;
 
     // not all modes appeared yet
-    if (mapList.length < 4) return false;
+    if (mapList.length < input.modesIncluded.length) return false;
 
     let previousModeShouldBe: ModeShort | undefined;
     for (let i = 0; i < mapList.length; i++) {
