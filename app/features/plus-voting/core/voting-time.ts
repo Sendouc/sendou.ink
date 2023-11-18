@@ -1,25 +1,75 @@
-import type { MonthYear } from "~/features/top-search/top-search-utils";
-import {
-  seasonToVotingRange,
-  lastCompletedVoting as lastCompletedVotingNew,
-} from "./voting-time-new"; // TODO: seasonToVotingRange can be removed as export after the first new voting under the new system
+import type { MonthYear } from "./types";
+import { type RankingSeason, SEASONS } from "~/features/mmr/season";
 
-export {
-  isVotingActive,
-  nextNonCompletedVoting,
-  rangeToMonthYear,
-} from "./voting-time-new";
-
-// TODO: this can be removed after the first new voting under the new system
+// xxx: how to make work with seeding? currently just crashes with error
 export function lastCompletedVoting(now: Date): MonthYear {
-  const range = seasonToVotingRange({
-    nth: 1,
-    starts: new Date("2023-09-11T17:00:00.000Z"),
-    ends: new Date("2023-11-19T20:59:59.999Z"),
-  });
+  let match: { startDate: Date; endDate: Date } | null = null;
+  for (const season of SEASONS) {
+    const range = seasonToVotingRange(season);
 
-  // first voting under the new system has not yet concluded
-  const usingOldLogic = range.endDate.getTime() > now.getTime();
+    if (now.getTime() > range.endDate.getTime()) {
+      match = range;
+    } else if (now.getTime() < range.endDate.getTime()) {
+      break;
+    }
+  }
 
-  return usingOldLogic ? { month: 9, year: 2023 } : lastCompletedVotingNew(now);
+  if (!match) {
+    throw new Error("No previous voting found.");
+  }
+
+  return rangeToMonthYear(match);
+}
+
+export function nextNonCompletedVoting(now: Date) {
+  for (const season of SEASONS) {
+    const range = seasonToVotingRange(season);
+
+    if (now.getTime() < range.endDate.getTime()) {
+      return range;
+    }
+  }
+
+  throw new Error("No next voting found.");
+}
+
+export function rangeToMonthYear(range: { startDate: Date; endDate: Date }) {
+  return {
+    month: range.startDate.getMonth(),
+    year: range.startDate.getFullYear(),
+  };
+}
+
+export function seasonToVotingRange(season: RankingSeason) {
+  const { ends: date } = season;
+
+  if (date.getDay() !== 0) {
+    throw new Error("End date is not a Sunday.");
+  }
+
+  const endDate = new Date(date);
+  endDate.setUTCDate(endDate.getUTCDate() - 7);
+  endDate.setUTCHours(18, 0, 0, 0);
+
+  const startDate = new Date(endDate);
+  startDate.setUTCDate(startDate.getUTCDate() - 2);
+
+  return { startDate, endDate };
+}
+
+export function isVotingActive() {
+  const now = new Date();
+
+  for (const season of SEASONS) {
+    const { startDate, endDate } = seasonToVotingRange(season);
+
+    if (
+      now.getTime() > startDate.getTime() &&
+      now.getTime() < endDate.getTime()
+    ) {
+      return true;
+    }
+  }
+
+  return false;
 }
