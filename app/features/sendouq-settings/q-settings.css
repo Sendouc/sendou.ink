@@ -42,3 +42,23 @@
 .q-settings__radio__checked .q-settings__radio__emoji {
   filter: grayscale(0%);
 }
+
+.q-settings__summary {
+  padding: var(--s-3);
+  border-radius: var(--rounded);
+  background-color: var(--bg-lighter);
+  font-size: var(--fonts-lg);
+  font-weight: var(--bold);
+  margin-block-end: var(--s-4);
+}
+
+.q-settings__summary > div {
+  display: inline-flex;
+  justify-content: space-between;
+  width: 97%;
+}
+
+.q-settings__summary svg {
+  width: 24px;
+  color: var(--theme);
+}

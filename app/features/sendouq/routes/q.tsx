@@ -19,6 +19,8 @@ import { Main } from "~/components/Main";
 import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
 import { SubmitButton } from "~/components/SubmitButton";
 import { CrossIcon } from "~/components/icons/Cross";
+import { UserIcon } from "~/components/icons/User";
+import { UsersIcon } from "~/components/icons/Users";
 import { sql } from "~/db/sql";
 import type { GroupMember, User } from "~/db/types";
 import { useUser } from "~/features/auth/core";
@@ -272,20 +274,19 @@ export default function QPage() {
                 </div>
                 <VoiceChatAbility />
                 <Languages />
-                <div className="stack md items-center mt-4">
-                  <SubmitButton>Add team members</SubmitButton>
-                  <div className="text-lighter text-xs text-center">
-                    No team members in mind yet? <br />
-                    <SubmitButton
-                      variant="minimal"
-                      className="text-xs mx-auto"
-                      name="direct"
-                      value="true"
-                      state={fetcher.state}
-                    >
-                      Join the queue directly.
-                    </SubmitButton>
-                  </div>
+                <div className="stack horizontal md items-center mt-4 mx-auto">
+                  <SubmitButton icon={<UsersIcon />}>
+                    Join with mates
+                  </SubmitButton>
+                  <SubmitButton
+                    name="direct"
+                    value="true"
+                    state={fetcher.state}
+                    icon={<UserIcon />}
+                    variant="outlined"
+                  >
+                    Join solo
+                  </SubmitButton>
                 </div>
               </fetcher.Form>
             </>
@@ -490,6 +491,7 @@ function UpcomingSeasonInfo({
   );
 }
 
+// xxx: get rid of this
 function StartRank() {
   const fetcher = useFetcher();
 

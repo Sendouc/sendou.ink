@@ -16,6 +16,7 @@ import * as QSettingsRepository from "~/features/sendouq-settings/QSettingsRepos
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import { SubmitButton } from "~/components/SubmitButton";
 import { preferenceEmojiUrl } from "~/utils/urls";
+import { MapIcon } from "~/components/icons/Map";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -125,58 +126,67 @@ function MapPicker() {
   };
 
   return (
-    <fetcher.Form method="post">
-      <input
-        type="hidden"
-        name="mapModePreferences"
-        value={JSON.stringify(preferences)}
-      />
-      <h2>SendouQ map & mode preferences</h2>
-      <div className="stack lg">
-        <div className="stack items-center">
-          {modesShort.map((modeShort) => {
-            const preference = preferences.modes.find(
-              (preference) => preference.mode === modeShort,
-            );
-
-            return (
-              <div key={modeShort} className="stack horizontal xs my-1">
-                <ModeImage mode={modeShort} width={32} />
-                <PreferenceRadioGroup
-                  preference={preference?.preference}
-                  onPreferenceChange={(preference) =>
-                    handleModePreferenceChange({ mode: modeShort, preference })
-                  }
-                />
-              </div>
-            );
-          })}
+    <details>
+      <summary className="q-settings__summary">
+        <div>
+          <span>Map & mode preferences</span> <MapIcon />
         </div>
-
+      </summary>
+      <fetcher.Form method="post">
+        <input
+          type="hidden"
+          name="mapModePreferences"
+          value={JSON.stringify(preferences)}
+        />
         <div className="stack lg">
-          {stageIds.map((stageId) => (
-            <MapModeRadios
-              key={stageId}
-              stageId={stageId}
-              preferences={preferences.maps.filter(
-                (map) => map.stageId === stageId,
-              )}
-              onPreferenceChange={handleMapPreferenceChange}
-            />
-          ))}
+          <div className="stack items-center">
+            {modesShort.map((modeShort) => {
+              const preference = preferences.modes.find(
+                (preference) => preference.mode === modeShort,
+              );
+
+              return (
+                <div key={modeShort} className="stack horizontal xs my-1">
+                  <ModeImage mode={modeShort} width={32} />
+                  <PreferenceRadioGroup
+                    preference={preference?.preference}
+                    onPreferenceChange={(preference) =>
+                      handleModePreferenceChange({
+                        mode: modeShort,
+                        preference,
+                      })
+                    }
+                  />
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="stack lg">
+            {stageIds.map((stageId) => (
+              <MapModeRadios
+                key={stageId}
+                stageId={stageId}
+                preferences={preferences.maps.filter(
+                  (map) => map.stageId === stageId,
+                )}
+                onPreferenceChange={handleMapPreferenceChange}
+              />
+            ))}
+          </div>
         </div>
-      </div>
-      <div className="mt-6">
-        <SubmitButton
-          _action="UPDATE_MAP_MODE_PREFERENCES"
-          state={fetcher.state}
-          className="mx-auto"
-          size="big"
-        >
-          Save
-        </SubmitButton>
-      </div>
-    </fetcher.Form>
+        <div className="mt-6">
+          <SubmitButton
+            _action="UPDATE_MAP_MODE_PREFERENCES"
+            state={fetcher.state}
+            className="mx-auto"
+            size="big"
+          >
+            Save
+          </SubmitButton>
+        </div>
+      </fetcher.Form>
+    </details>
   );
 }
 
