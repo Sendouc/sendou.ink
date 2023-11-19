@@ -162,53 +162,37 @@ type CreateGroupFromPreviousGroupArgs = {
   }[];
 };
 export async function createGroupFromPrevious(
-  _args: CreateGroupFromPreviousGroupArgs,
+  args: CreateGroupFromPreviousGroupArgs,
 ) {
-  throw new Error("not implemented");
-  return Promise.resolve();
+  return db.transaction().execute(async (trx) => {
+    const createdGroup = await trx
+      .insertInto("Group")
+      .columns(["teamId", "chatCode", "inviteCode", "status"])
+      .expression((eb) =>
+        eb
+          .selectFrom("Group")
+          .select((eb) => [
+            "Group.teamId",
+            "Group.chatCode",
+            eb.val(nanoid(INVITE_CODE_LENGTH)).as("inviteCode"),
+            eb.val("PREPARING").as("status"),
+          ])
+          .where("Group.id", "=", args.previousGroupId),
+      )
+      .returning("id")
+      .executeTakeFirstOrThrow();
+
+    await trx
+      .insertInto("GroupMember")
+      .values(
+        args.members.map((member) => ({
+          groupId: createdGroup.id,
+          userId: member.id,
+          role: member.role,
+        })),
+      )
+      .execute();
+
+    return createdGroup;
+  });
 }
-
-// const createGroupFromPreviousGroupStm = sql.prepare(/* sql */ `
-//   insert into "Group"
-//     ("mapListPreference", "teamId", "chatCode", "inviteCode", "status")
-//   values
-//     (
-//       (select "mapListPreference" from "Group" where "id" = @previousGroupId),
-//       (select "teamId" from "Group" where "id" = @previousGroupId),
-//       (select "chatCode" from "Group" where "id" = @previousGroupId),
-//       @inviteCode,
-//       @status
-//     )
-//   returning *
-// `);
-
-// const stealMapPoolStm = sql.prepare(/* sql */ `
-//   update "MapPoolMap"
-//   set "groupId" = @groupId
-//   where "groupId" = @previousGroupId
-// `);
-
-// export const createGroupFromPreviousGroup = sql.transaction(
-//   (args: CreateGroupFromPreviousGroupArgs) => {
-//     const group = createGroupFromPreviousGroupStm.get({
-//       previousGroupId: args.previousGroupId,
-//       inviteCode: nanoid(INVITE_CODE_LENGTH),
-//       status: "PREPARING",
-//     }) as Group;
-
-//     for (const member of args.members) {
-//       createGroupMemberStm.run({
-//         groupId: group.id,
-//         userId: member.id,
-//         role: member.role,
-//       });
-//     }
-
-//     stealMapPoolStm.run({
-//       previousGroupId: args.previousGroupId,
-//       groupId: group.id,
-//     });
-
-//     return group;
-//   },
-// );
