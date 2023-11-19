@@ -448,6 +448,8 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 // xxx: link to settings here
+// xxx: headers?
+// xxx: liked groups left?
 export default function QLookingPage() {
   const data = useLoaderData<typeof loader>();
   const [searchParams] = useSearchParams();

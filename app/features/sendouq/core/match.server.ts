@@ -85,6 +85,7 @@ export function matchMapList(
   }
 }
 
+// xxx: if 0.5 then always exclude mode?
 export function mapModePreferencesToModeList(
   groupOnePreferences: UserMapModePreferences["modes"][],
   groupTwoPreferences: UserMapModePreferences["modes"][],
