@@ -62,3 +62,8 @@
   width: 24px;
   color: var(--theme);
 }
+
+.q-settings__weapon-pool-select-container {
+  width: 250px;
+  height: 70px;
+}

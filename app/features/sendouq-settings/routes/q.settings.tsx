@@ -1,9 +1,9 @@
 import { RadioGroup } from "@headlessui/react";
 import * as React from "react";
-import { ModeImage, StageImage } from "~/components/Image";
+import { ModeImage, StageImage, WeaponImage } from "~/components/Image";
 import { Main } from "~/components/Main";
 import type { Preference, Tables, UserMapModePreferences } from "~/db/tables";
-import type { ModeShort, StageId } from "~/modules/in-game-lists";
+import type { MainWeaponId, ModeShort, StageId } from "~/modules/in-game-lists";
 import { stageIds } from "~/modules/in-game-lists";
 import { modesShort } from "~/modules/in-game-lists/modes";
 import styles from "../q-settings.css";
@@ -24,6 +24,10 @@ import { languagesUnified } from "~/modules/i18n/config";
 import { Button } from "~/components/Button";
 import { CrossIcon } from "~/components/icons/Cross";
 import { useTranslation } from "~/hooks/useTranslation";
+import { SENDOUQ_WEAPON_POOL_MAX_SIZE } from "../q-settings-constants";
+import { WeaponCombobox } from "~/components/Combobox";
+import { TrashIcon } from "~/components/icons/Trash";
+import { PuzzleIcon } from "~/components/icons/Puzzle";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -52,6 +56,16 @@ export const action = async ({ request }: ActionArgs) => {
       });
       break;
     }
+    case "UPDATE_SENDOUQ_WEAPON_POOL": {
+      await QSettingsRepository.updateSendouQWeaponPool({
+        userId: user.id,
+        weaponPool: data.weaponPool,
+      });
+      break;
+    }
+    default: {
+      assertUnreachable(data);
+    }
   }
 
   return { ok: true };
@@ -61,7 +75,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   const user = await requireUserId(request);
 
   return {
-    preferences: await QSettingsRepository.preferencesByUserId(user.id),
+    settings: await QSettingsRepository.settingsByUserId(user.id),
   };
 };
 
@@ -75,6 +89,7 @@ export default function SendouQSettingsPage() {
       <div className="stack">
         <MapPicker />
         <VoiceChat />
+        <WeaponPool />
       </div>
     </Main>
   );
@@ -84,7 +99,7 @@ function MapPicker() {
   const data = useLoaderData<typeof loader>();
   const fetcher = useFetcher();
   const [preferences, setPreferences] = React.useState<UserMapModePreferences>(
-    data.preferences.mapModePreferences ?? {
+    data.settings.mapModePreferences ?? {
       maps: [],
       modes: [],
     },
@@ -370,7 +385,7 @@ function VoiceChatAbility() {
               id={option}
               value={option}
               required
-              defaultChecked={data.preferences.vc === option}
+              defaultChecked={data.settings.vc === option}
             />
             <label htmlFor={option} className="mb-0 text-main-forced">
               {label(option)}
@@ -384,7 +399,7 @@ function VoiceChatAbility() {
 
 function Languages() {
   const data = useLoaderData<typeof loader>();
-  const [value, setValue] = React.useState(data.preferences.languages ?? []);
+  const [value, setValue] = React.useState(data.settings.languages ?? []);
 
   return (
     <div className="stack">
@@ -436,5 +451,92 @@ function Languages() {
         })}
       </div>
     </div>
+  );
+}
+
+function WeaponPool() {
+  const { t } = useTranslation(["common"]);
+  const data = useLoaderData<typeof loader>();
+  const [weapons, setWeapons] = React.useState(data.settings.qWeaponPool ?? []);
+  const fetcher = useFetcher();
+
+  const latestWeapon = weapons[weapons.length - 1];
+
+  return (
+    <details>
+      <summary className="q-settings__summary">
+        <div>
+          <span>Weapon pool</span> <PuzzleIcon />
+        </div>
+      </summary>
+      <fetcher.Form method="post" className="mb-4 stack items-center">
+        <input
+          type="hidden"
+          name="weaponPool"
+          value={JSON.stringify(weapons)}
+        />
+        <div className="q-settings__weapon-pool-select-container">
+          <label htmlFor="weapon">Weapon pool</label>
+          {weapons.length < SENDOUQ_WEAPON_POOL_MAX_SIZE ? (
+            <div>
+              <WeaponCombobox
+                inputName="weapon"
+                id="weapon"
+                onChange={(weapon) => {
+                  if (!weapon) return;
+                  setWeapons([
+                    ...weapons,
+                    Number(weapon.value) as MainWeaponId,
+                  ]);
+                }}
+                // empty on selection
+                key={latestWeapon ?? "empty"}
+                weaponIdsToOmit={new Set(weapons)}
+                fullWidth
+              />
+            </div>
+          ) : (
+            <span className="text-xs text-info">Weapon pool is full</span>
+          )}
+        </div>
+        <div className="stack horizontal sm justify-center">
+          {weapons.map((weapon) => {
+            return (
+              <div key={weapon} className="stack xs">
+                <div className="u__weapon">
+                  <WeaponImage
+                    weaponSplId={weapon}
+                    variant="badge"
+                    width={38}
+                    height={38}
+                  />
+                </div>
+                <div className="stack sm horizontal items-center justify-center">
+                  <Button
+                    icon={<TrashIcon />}
+                    variant="minimal-destructive"
+                    aria-label="Delete weapon"
+                    onClick={() =>
+                      setWeapons(weapons.filter((w) => w !== weapon))
+                    }
+                    size="tiny"
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <div className="mt-6">
+          <SubmitButton
+            size="big"
+            className="mx-auto"
+            _action="UPDATE_SENDOUQ_WEAPON_POOL"
+            state={fetcher.state}
+          >
+            {t("common:actions.save")}
+          </SubmitButton>
+        </div>
+      </fetcher.Form>
+    </details>
   );
 }

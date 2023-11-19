@@ -1,10 +1,16 @@
 import { db } from "~/db/sql";
 import type { Tables, UserMapModePreferences } from "~/db/tables";
+import type { MainWeaponId } from "~/modules/in-game-lists";
 
-export async function preferencesByUserId(userId: number) {
+export async function settingsByUserId(userId: number) {
   const preferences = await db
     .selectFrom("User")
-    .select(["User.mapModePreferences", "User.vc", "User.languages"])
+    .select([
+      "User.mapModePreferences",
+      "User.vc",
+      "User.languages",
+      "User.qWeaponPool",
+    ])
     .where("id", "=", userId)
     .executeTakeFirstOrThrow();
 
@@ -38,6 +44,20 @@ export function updateVoiceChat(args: {
     .set({
       vc: args.vc,
       languages: args.languages.length > 0 ? args.languages.join(",") : null,
+    })
+    .where("User.id", "=", args.userId)
+    .execute();
+}
+
+export function updateSendouQWeaponPool(args: {
+  userId: number;
+  weaponPool: MainWeaponId[];
+}) {
+  return db
+    .updateTable("User")
+    .set({
+      qWeaponPool:
+        args.weaponPool.length > 0 ? JSON.stringify(args.weaponPool) : null,
     })
     .where("User.id", "=", args.userId)
     .execute();

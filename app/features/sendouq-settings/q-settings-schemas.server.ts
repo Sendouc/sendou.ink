@@ -6,7 +6,9 @@ import {
   noDuplicates,
   safeJSONParse,
   stageId,
+  weaponSplId,
 } from "~/utils/zod";
+import { SENDOUQ_WEAPON_POOL_MAX_SIZE } from "./q-settings-constants";
 
 const preference = z.enum(["AVOID", "PREFER"]);
 export const settingsActionSchema = z.union([
@@ -31,6 +33,13 @@ export const settingsActionSchema = z.union([
         .refine((val) =>
           val.every((lang) => languagesUnified.some((l) => l.code === lang)),
         ),
+    ),
+  }),
+  z.object({
+    _action: _action("UPDATE_SENDOUQ_WEAPON_POOL"),
+    weaponPool: z.preprocess(
+      safeJSONParse,
+      z.array(weaponSplId).max(SENDOUQ_WEAPON_POOL_MAX_SIZE),
     ),
   }),
 ]);

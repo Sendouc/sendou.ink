@@ -62,11 +62,7 @@ assertType<z.infer<typeof ability>, Unpacked<typeof abilitiesShort>>();
 
 export const weaponSplId = z.preprocess(
   actualNumber,
-  z
-    .number()
-    .refine((val) =>
-      mainWeaponIds.includes(val as (typeof mainWeaponIds)[number]),
-    ),
+  numericEnum(mainWeaponIds),
 );
 
 export const modeShort = z.enum(["TW", "SZ", "TC", "RM", "CB"]);
