@@ -31,27 +31,6 @@
   font-size: var(--fonts-lg);
 }
 
-.q__map-preference-label {
-  margin-block-end: 0;
-  font-weight: var(--semi-bold);
-  display: flex;
-  align-items: center;
-  gap: var(--s-1);
-  color: var(--text-lighter);
-}
-
-.q__map-pool-grid {
-  display: grid;
-  grid-template-columns: repeat(7, max-content);
-  gap: var(--s-2-5);
-  font-size: var(--fonts-xs);
-  align-items: center;
-}
-
-.q__map-pool-grid__stage-image {
-  border-radius: 7px;
-}
-
 .q__tab-button {
   width: 100px;
   background-color: var(--bg-lighter-solid);

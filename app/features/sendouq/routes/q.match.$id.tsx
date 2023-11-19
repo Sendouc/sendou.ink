@@ -76,7 +76,6 @@ import { addMapResults } from "../queries/addMapResults.server";
 import { addPlayerResults } from "../queries/addPlayerResults.server";
 import { addReportedWeapons } from "../queries/addReportedWeapons.server";
 import { addSkills } from "../queries/addSkills.server";
-import { createGroupFromPreviousGroup } from "../queries/createGroup.server";
 import { deleteReporterWeaponsByMatchId } from "../queries/deleteReportedWeaponsByMatchId.server";
 import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.server";
 import { findMatchById } from "../queries/findMatchById.server";
@@ -85,6 +84,7 @@ import { reportScore } from "../queries/reportScore.server";
 import { reportedWeaponsByMatchId } from "../queries/reportedWeaponsByMatchId.server";
 import { setGroupAsInactive } from "../queries/setGroupAsInactive.server";
 import { useRecentlyReportedWeapons } from "../q-hooks";
+import * as QRepository from "~/features/sendouq/QRepository.server";
 import * as QMatchRepository from "~/features/sendouq-match/QMatchRepository.server";
 
 export const links: LinksFunction = () => {
@@ -290,7 +290,7 @@ export const action = async ({ request, params }: ActionArgs) => {
         }
       }
 
-      createGroupFromPreviousGroup({
+      await QRepository.createGroupFromPrevious({
         previousGroupId: data.previousGroupId,
         members: previousGroup.members.map((m) => ({ id: m.id, role: m.role })),
       });

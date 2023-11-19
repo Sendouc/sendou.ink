@@ -6,6 +6,12 @@ import invariant from "tiny-invariant";
 import { ADMIN_DISCORD_ID, ADMIN_ID, INVITE_CODE_LENGTH } from "~/constants";
 import { db, sql } from "~/db/sql";
 import allTags from "~/features/calendar/tags.json";
+import { MapPool } from "~/features/map-list-generator/core/map-pool";
+import {
+  lastCompletedVoting,
+  nextNonCompletedVoting,
+  rangeToMonthYear,
+} from "~/features/plus-voting/core";
 import { createVod } from "~/features/vods/queries/createVod.server";
 import type {
   AbilityType,
@@ -22,32 +28,26 @@ import {
   stageIds,
 } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
-import { MapPool } from "~/features/map-list-generator/core/map-pool";
-import {
-  lastCompletedVoting,
-  nextNonCompletedVoting,
-  rangeToMonthYear,
-} from "~/features/plus-voting/core";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { mySlugify } from "~/utils/urls";
 
+import type { SeedVariation } from "~/features/api/routes/seed";
 import * as BuildRepository from "~/features/builds/BuildRepository.server";
 import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
 import * as PlusSuggestionRepository from "~/features/plus-suggestions/PlusSuggestionRepository.server";
 import * as PlusVotingRepository from "~/features/plus-voting/PlusVotingRepository.server";
+import * as QRepository from "~/features/sendouq/QRepository.server";
 import { calculateMatchSkills } from "~/features/sendouq/core/skills.server";
 import {
   summarizeMaps,
   summarizePlayerResults,
 } from "~/features/sendouq/core/summarizer.server";
-import { MAP_LIST_PREFERENCE_OPTIONS } from "~/features/sendouq/q-constants";
 import { winnersArrayToWinner } from "~/features/sendouq/q-utils";
 import { addMapResults } from "~/features/sendouq/queries/addMapResults.server";
 import { addMember } from "~/features/sendouq/queries/addMember.server";
 import { addPlayerResults } from "~/features/sendouq/queries/addPlayerResults.server";
 import { addReportedWeapons } from "~/features/sendouq/queries/addReportedWeapons.server";
 import { addSkills } from "~/features/sendouq/queries/addSkills.server";
-import { createGroup } from "~/features/sendouq/queries/createGroup.server";
 import { createMatch } from "~/features/sendouq/queries/createMatch.server";
 import { findMatchById } from "~/features/sendouq/queries/findMatchById.server";
 import { groupForMatch } from "~/features/sendouq/queries/groupForMatch.server";
@@ -57,8 +57,8 @@ import { updateVCStatus } from "~/features/sendouq/queries/updateVCStatus.server
 import { TOURNAMENT } from "~/features/tournament/tournament-constants";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator";
-import type { SeedVariation } from "~/features/api/routes/seed";
 import { nullFilledArray, pickRandomItem } from "~/utils/arrays";
+import type { UserMapModePreferences } from "../tables";
 import type { Art, UserSubmittedImage } from "../types";
 import {
   ADMIN_TEST_AVATAR,
@@ -68,7 +68,6 @@ import {
   NZAP_TEST_ID,
 } from "./constants";
 import placements from "./placements.json";
-import type { UserMapModePreferences } from "../tables";
 
 const calendarEventWithToToolsSz = () => calendarEventWithToTools(true);
 const calendarEventWithToToolsTeamsSz = () =>
@@ -1650,36 +1649,16 @@ function commissionsOpen() {
 }
 
 const SENDOU_IN_FULL_GROUP = true;
-function groups() {
+async function groups() {
   const users = userIdsInAscendingOrderById()
     .slice(0, 100)
     .filter((id) => id !== ADMIN_ID && id !== NZAP_TEST_ID);
   users.push(NZAP_TEST_ID);
 
   for (let i = 0; i < 25; i++) {
-    const group = createGroup({
-      mapListPreference: faker.helpers.arrayElement(
-        MAP_LIST_PREFERENCE_OPTIONS,
-      ),
+    const group = await QRepository.createGroup({
       status: "ACTIVE",
       userId: users.pop()!,
-      mapPool: new MapPool([
-        { mode: "SZ", stageId: 1 },
-        { mode: "SZ", stageId: 2 },
-        { mode: "SZ", stageId: 3 },
-        { mode: "SZ", stageId: 4 },
-        { mode: "SZ", stageId: 5 },
-        { mode: "SZ", stageId: 6 },
-        { mode: "TC", stageId: 7 },
-        { mode: "TC", stageId: 8 },
-        { mode: "TC", stageId: 15 },
-        { mode: "RM", stageId: 10 },
-        { mode: "RM", stageId: 11 },
-        { mode: "RM", stageId: 16 },
-        { mode: "CB", stageId: 13 },
-        { mode: "CB", stageId: 14 },
-        { mode: "CB", stageId: 17 },
-      ]),
     });
 
     const amountOfAdditionalMembers = () => {
@@ -1738,7 +1717,7 @@ const randomMapList = (
 
 const MATCHES_COUNT = 500;
 
-function playedMatches() {
+async function playedMatches() {
   const _groupMembers = (() => {
     return new Array(50).fill(null).map(() => {
       const users = shuffle(userIdsInAscendingOrderById().slice(0, 50));
@@ -1778,10 +1757,7 @@ function playedMatches() {
     // -> create groups
     for (let i = 0; i < 2; i++) {
       const users = i === 0 ? [...groupAlphaMembers] : [...groupBravoMembers];
-      const group = createGroup({
-        // these should not matter here
-        mapListPreference: "NO_PREFERENCE",
-        mapPool: new MapPool([]),
+      const group = await QRepository.createGroup({
         status: "ACTIVE",
         userId: users.pop()!,
       });

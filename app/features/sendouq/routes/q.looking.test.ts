@@ -17,7 +17,6 @@ const createGroup = async (userIds: number[], ownerPicksMaps: number) => {
     .insertInto("Group")
     .values({
       inviteCode: "1234",
-      mapListPreference: "NO_PREFERENCE",
       ownerPicksMaps,
       status: "ACTIVE",
     })

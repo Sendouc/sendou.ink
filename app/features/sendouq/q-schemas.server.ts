@@ -13,17 +13,11 @@ import {
   weaponSplId,
 } from "~/utils/zod";
 import { matchEndedAtIndex } from "./core/match";
-import {
-  MAP_LIST_PREFERENCE_OPTIONS,
-  SENDOUQ,
-  SENDOUQ_BEST_OF,
-} from "./q-constants";
+import { SENDOUQ, SENDOUQ_BEST_OF } from "./q-constants";
 
 export const frontPageSchema = z.union([
   z.object({
     _action: _action("JOIN_QUEUE"),
-    mapListPreference: z.enum(MAP_LIST_PREFERENCE_OPTIONS),
-    mapPool: z.string(),
     direct: z.preprocess(deduplicate, z.literal("true").nullish()),
     vc: z.enum(["YES", "NO", "LISTEN_ONLY"]),
     languages: z.preprocess(

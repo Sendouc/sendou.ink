@@ -176,15 +176,9 @@ export interface Group {
   id: GeneratedAlways<number>;
   inviteCode: string;
   latestActionAt: Generated<number>;
-  mapListPreference:
-    | "SZ_ONLY"
-    | "ALL_MODES_ONLY"
-    | "PREFER_SZ"
-    | "PREFER_ALL_MODES"
-    | "NO_PREFERENCE";
   status: "PREPARING" | "ACTIVE" | "INACTIVE";
   teamId: number | null;
-  ownerPicksMaps: number;
+  ownerPicksMaps: Generated<number>;
 }
 
 export interface GroupLike {
@@ -252,7 +246,6 @@ export interface LogInLink {
 
 export interface MapPoolMap {
   calendarEventId: number | null;
-  groupId: number | null;
   mode: ModeShort;
   stageId: StageId;
   tieBreakerCalendarEventId: number | null;

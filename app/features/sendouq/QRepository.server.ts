@@ -4,6 +4,8 @@ import { db } from "~/db/sql";
 import type { Tables, UserMapModePreferences } from "~/db/tables";
 import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
 import type { LookingGroupWithInviteCode } from "./q-types";
+import { nanoid } from "nanoid";
+import { INVITE_CODE_LENGTH } from "~/constants";
 
 export function mapModePreferencesByGroupId(groupId: number) {
   return db
@@ -122,3 +124,91 @@ export async function findLookingGroups({
       return true;
     });
 }
+
+type CreateGroupArgs = {
+  status: Exclude<Tables["Group"]["status"], "INACTIVE">;
+  userId: number;
+};
+export function createGroup(args: CreateGroupArgs) {
+  return db.transaction().execute(async (trx) => {
+    const createdGroup = await trx
+      .insertInto("Group")
+      .values({
+        inviteCode: nanoid(INVITE_CODE_LENGTH),
+        chatCode: nanoid(INVITE_CODE_LENGTH),
+        status: args.status,
+      })
+      .returning("id")
+      .executeTakeFirstOrThrow();
+
+    await trx
+      .insertInto("GroupMember")
+      .values({
+        groupId: createdGroup.id,
+        userId: args.userId,
+        role: "OWNER",
+      })
+      .execute();
+
+    return createdGroup;
+  });
+}
+
+type CreateGroupFromPreviousGroupArgs = {
+  previousGroupId: number;
+  members: {
+    id: number;
+    role: Tables["GroupMember"]["role"];
+  }[];
+};
+export async function createGroupFromPrevious(
+  _args: CreateGroupFromPreviousGroupArgs,
+) {
+  throw new Error("not implemented");
+  return Promise.resolve();
+}
+
+// const createGroupFromPreviousGroupStm = sql.prepare(/* sql */ `
+//   insert into "Group"
+//     ("mapListPreference", "teamId", "chatCode", "inviteCode", "status")
+//   values
+//     (
+//       (select "mapListPreference" from "Group" where "id" = @previousGroupId),
+//       (select "teamId" from "Group" where "id" = @previousGroupId),
+//       (select "chatCode" from "Group" where "id" = @previousGroupId),
+//       @inviteCode,
+//       @status
+//     )
+//   returning *
+// `);
+
+// const stealMapPoolStm = sql.prepare(/* sql */ `
+//   update "MapPoolMap"
+//   set "groupId" = @groupId
+//   where "groupId" = @previousGroupId
+// `);
+
+// export const createGroupFromPreviousGroup = sql.transaction(
+//   (args: CreateGroupFromPreviousGroupArgs) => {
+//     const group = createGroupFromPreviousGroupStm.get({
+//       previousGroupId: args.previousGroupId,
+//       inviteCode: nanoid(INVITE_CODE_LENGTH),
+//       status: "PREPARING",
+//     }) as Group;
+
+//     for (const member of args.members) {
+//       createGroupMemberStm.run({
+//         groupId: group.id,
+//         userId: member.id,
+//         role: member.role,
+//       });
+//     }
+
+//     stealMapPoolStm.run({
+//       previousGroupId: args.previousGroupId,
+//       groupId: group.id,
+//     });
+
+//     return group;
+//   },
+// );
