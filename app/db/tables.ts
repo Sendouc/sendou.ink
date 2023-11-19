@@ -545,6 +545,8 @@ export interface User {
     string | null,
     string | null
   >;
+  // xxx: initial state from weapon pool?
+  qWeaponPool: ColumnType<MainWeaponId[] | null, string | null, string | null>;
 }
 
 export interface UserResultHighlight {

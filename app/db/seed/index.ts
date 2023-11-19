@@ -83,6 +83,7 @@ const basicSeeds = (variation?: SeedVariation | null) => [
   users,
   userProfiles,
   userMapModePreferences,
+  userQWeaponPool,
   lastMonthsVoting,
   syncPlusTiers,
   lastMonthSuggestions,
@@ -365,6 +366,24 @@ async function userMapModePreferences() {
       .set({
         mapModePreferences: JSON.stringify(randomPreferences()),
       })
+      .execute();
+  }
+}
+
+async function userQWeaponPool() {
+  for (let id = 1; id < 500; id++) {
+    if (id === 2) continue; // no weapons for N-ZAP
+    if (Math.random() < 0.2) continue; // 80% have weapons
+
+    const weapons = shuffle([...mainWeaponIds]).slice(
+      0,
+      faker.helpers.arrayElement([1, 2, 3, 4]),
+    );
+
+    await db
+      .updateTable("User")
+      .set({ qWeaponPool: JSON.stringify(weapons) })
+      .where("User.id", "=", id)
       .execute();
   }
 }

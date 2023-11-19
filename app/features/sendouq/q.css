@@ -167,11 +167,11 @@
   font-size: var(--fonts-xs);
   background-color: var(--bg-darker);
   border-radius: var(--rounded);
-  padding: var(--s-0-5) var(--s-2);
+  padding: var(--s-0-5) var(--s-1-5);
   width: max-content;
   display: flex;
   align-items: center;
-  gap: var(--s-1-5);
+  gap: var(--s-1);
   font-weight: var(--semi-bold);
 }
 
@@ -179,14 +179,14 @@
   height: 4rem !important;
 }
 
-.q__member-placeholder {
+.q__group__future-match-mode {
   border-radius: 100%;
   background-color: var(--bg-lightest);
-  height: 24px;
-  width: 24px;
+  height: 30px;
+  width: 30px;
   display: grid;
   place-items: center;
-  font-weight: var(--semi-bold);
+  padding: var(--s-1-5);
 }
 
 .q__group-member-weapons {

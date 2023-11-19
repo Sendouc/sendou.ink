@@ -14,6 +14,8 @@ import type {
 } from "~/features/mmr/tiered.server";
 import type { RecentMatchPlayer } from "../queries/findRecentMatchPlayersByUserId.server";
 import { TIERS } from "~/features/mmr/mmr-constants";
+import { mapModePreferencesToModeList } from "./match.server";
+import { modesShort } from "~/modules/in-game-lists";
 
 export function divideGroups({
   groups,
@@ -70,31 +72,6 @@ export function divideGroups({
   };
 }
 
-export function filterOutGroupsWithIncompatibleMapListPreference(
-  groups: DividedGroupsUncensored,
-): DividedGroupsUncensored {
-  if (
-    groups.own.mapListPreference !== "SZ_ONLY" &&
-    groups.own.mapListPreference !== "ALL_MODES_ONLY"
-  ) {
-    return groups;
-  }
-
-  return {
-    ...groups,
-    neutral: groups.neutral.filter((group) => {
-      if (
-        group.mapListPreference !== "SZ_ONLY" &&
-        group.mapListPreference !== "ALL_MODES_ONLY"
-      ) {
-        return true;
-      }
-
-      return group.mapListPreference === groups.own.mapListPreference;
-    }),
-  };
-}
-
 const MIN_PLAYERS_FOR_REPLAY = 3;
 export function addReplayIndicator({
   groups,
@@ -134,16 +111,46 @@ export function addReplayIndicator({
   };
 }
 
+export function addFutureMatchModes(
+  groups: DividedGroupsUncensored,
+): DividedGroupsUncensored {
+  const ownModePreferences = groups.own.mapModePreferences?.map((p) => p.modes);
+  if (!ownModePreferences) return groups;
+
+  const futureMatchModes = (group: LookingGroupWithInviteCode) => {
+    const theirModePreferences = group.mapModePreferences?.map((p) => p.modes);
+    if (!theirModePreferences) return;
+
+    return mapModePreferencesToModeList(
+      ownModePreferences,
+      theirModePreferences,
+    ).sort((a, b) => modesShort.indexOf(a) - modesShort.indexOf(b));
+  };
+
+  return {
+    own: groups.own,
+    likesReceived: groups.likesReceived.map((g) => ({
+      ...g,
+      futureMatchModes: futureMatchModes(g),
+    })),
+    neutral: groups.neutral.map((g) => ({
+      ...g,
+      futureMatchModes: futureMatchModes(g),
+    })),
+  };
+}
+
 const censorGroupFully = ({
   inviteCode: _inviteCode,
+  mapModePreferences: _mapModePreferences,
   ...group
 }: LookingGroupWithInviteCode): LookingGroup => ({
   ...group,
   members: undefined,
-  mapListPreference: undefined,
 });
 const censorGroupPartly = ({
   inviteCode: _inviteCode,
+  mapModePreferences: _mapModePreferences,
   ...group
 }: LookingGroupWithInviteCode): LookingGroup => group;
 export function censorGroups({

@@ -29,11 +29,11 @@ import {
 import { GroupCard } from "../components/GroupCard";
 import { groupAfterMorph, hasGroupManagerPerms } from "../core/groups";
 import {
+  addFutureMatchModes,
   addReplayIndicator,
   addSkillsToGroups,
   censorGroups,
   divideGroups,
-  filterOutGroupsWithIncompatibleMapListPreference,
   groupExpiryStatus,
   membersNeededForFull,
   sortGroupsBySkill,
@@ -53,7 +53,6 @@ import { groupSize } from "../queries/groupSize.server";
 import { groupSuccessorOwner } from "../queries/groupSuccessorOwner";
 import { leaveGroup } from "../queries/leaveGroup.server";
 import { likeExists } from "../queries/likeExists.server";
-import { findLookingGroups } from "../queries/lookingGroups.server";
 import { morphGroups } from "../queries/morphGroups.server";
 import { refreshGroup } from "../queries/refreshGroup.server";
 import { removeManagerRole } from "../queries/removeManagerRole.server";
@@ -153,7 +152,7 @@ export const action: ActionFunction = async ({ request }) => {
         return null;
       }
 
-      const lookingGroups = findLookingGroups({
+      const lookingGroups = await QRepository.findLookingGroups({
         maxGroupSize: membersNeededForFull(groupSize(currentGroup.id)),
         ownGroupId: currentGroup.id,
         includeChatCode: true,
@@ -215,7 +214,7 @@ export const action: ActionFunction = async ({ request }) => {
         return null;
       }
 
-      const lookingGroups = findLookingGroups({
+      const lookingGroups = await QRepository.findLookingGroups({
         minGroupSize: FULL_GROUP_SIZE,
         ownGroupId: currentGroup.id,
         includeChatCode: true,
@@ -391,12 +390,13 @@ export const loader = async ({ request }: LoaderArgs) => {
   const groupIsFull = currentGroupSize === FULL_GROUP_SIZE;
 
   const dividedGroups = divideGroups({
-    groups: findLookingGroups({
+    groups: await QRepository.findLookingGroups({
       maxGroupSize: groupIsFull
         ? undefined
         : membersNeededForFull(currentGroupSize),
       minGroupSize: groupIsFull ? FULL_GROUP_SIZE : undefined,
       ownGroupId: currentGroup.id,
+      includeMapModePreferences: groupIsFull,
     }),
     ownGroupId: currentGroup.id,
     likes: findLikes(currentGroup.id),
@@ -413,17 +413,15 @@ export const loader = async ({ request }: LoaderArgs) => {
     userSkills: calculatedUserSkills,
   });
 
-  const compatibleGroups = groupIsFull
-    ? filterOutGroupsWithIncompatibleMapListPreference(groupsWithSkills)
-    : groupsWithSkills;
+  const groupsWithFutureMatchModes = addFutureMatchModes(groupsWithSkills);
 
   const groupsWithReplayIndicator = groupIsFull
     ? addReplayIndicator({
-        groups: compatibleGroups,
+        groups: groupsWithFutureMatchModes,
         recentMatchPlayers: findRecentMatchPlayersByUserId(user!.id),
         userId: user!.id,
       })
-    : compatibleGroups;
+    : groupsWithFutureMatchModes;
 
   const censoredGroups = censorGroups({
     groups: groupsWithReplayIndicator,
@@ -449,6 +447,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   };
 };
 
+// xxx: link to settings here
 export default function QLookingPage() {
   const data = useLoaderData<typeof loader>();
   const [searchParams] = useSearchParams();

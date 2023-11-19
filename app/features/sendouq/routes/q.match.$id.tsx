@@ -326,6 +326,7 @@ export const action = async ({ request, params }: ActionArgs) => {
   return null;
 };
 
+// xxx: 4 weapons here as well
 export const loader = async ({ params, request }: LoaderArgs) => {
   const user = await getUserId(request);
   const matchId = matchIdFromParams(params);

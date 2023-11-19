@@ -2,7 +2,7 @@ import { Link, useFetcher } from "@remix-run/react";
 import clsx from "clsx";
 import { Avatar } from "~/components/Avatar";
 import { Button } from "~/components/Button";
-import { Image, TierImage, WeaponImage } from "~/components/Image";
+import { Image, ModeImage, TierImage, WeaponImage } from "~/components/Image";
 import { Popover } from "~/components/Popover";
 import { SubmitButton } from "~/components/SubmitButton";
 import { MicrophoneIcon } from "~/components/icons/Microphone";
@@ -63,35 +63,35 @@ export function GroupCard({
     <section
       className={clsx("q__group", { "q__group__display-only": displayOnly })}
     >
-      <div
-        className={clsx("stack md", {
-          "horizontal justify-center": !group.members,
-        })}
-      >
-        {group.members?.map((member) => {
-          return (
-            <GroupMember
-              member={member}
-              showActions={ownGroup && ownRole === "OWNER"}
-              key={member.discordId}
-              displayOnly={displayOnly}
-              hideVc={hideVc}
-              hideWeapons={hideWeapons}
-              hideNote={hideNote}
-              enableKicking={enableKicking}
-            />
-          );
-        })}
-        {!group.members
-          ? new Array(FULL_GROUP_SIZE).fill(null).map((_, i) => {
-              return (
-                <div key={i} className="q__member-placeholder">
-                  ?
-                </div>
-              );
-            })
-          : null}
-      </div>
+      {group.members ? (
+        <div className="stack md">
+          {group.members.map((member) => {
+            return (
+              <GroupMember
+                member={member}
+                showActions={ownGroup && ownRole === "OWNER"}
+                key={member.discordId}
+                displayOnly={displayOnly}
+                hideVc={hideVc}
+                hideWeapons={hideWeapons}
+                hideNote={hideNote}
+                enableKicking={enableKicking}
+              />
+            );
+          })}
+        </div>
+      ) : null}
+      {group.futureMatchModes ? (
+        <div className="stack horizontal sm justify-center">
+          {group.futureMatchModes.map((mode) => {
+            return (
+              <div key={mode} className="q__group__future-match-mode">
+                <ModeImage mode={mode} />
+              </div>
+            );
+          })}
+        </div>
+      ) : null}
       {group.tier && !displayOnly ? (
         <div className="stack xs text-lighter font-bold items-center justify-center text-xs">
           <TierImage tier={group.tier} width={100} />

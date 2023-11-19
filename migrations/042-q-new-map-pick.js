@@ -6,5 +6,6 @@ module.exports.up = function (db) {
     db.prepare(
       /* sql */ `alter table "User" add "mapModePreferences" text`,
     ).run();
+    db.prepare(/* sql */ `alter table "User" add "qWeaponPool" text`).run();
   })();
 };

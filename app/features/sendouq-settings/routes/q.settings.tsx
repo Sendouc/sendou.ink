@@ -52,7 +52,9 @@ export const loader = async ({ request }: LoaderArgs) => {
   };
 };
 
-// xxx: sound preferences here?
+// xxx: sound preferences
+// xxx: weapon preferences - remember that 0 weapons = null
+// xxx: vc settings
 export default function SendouQSettingsPage() {
   return (
     <Main>
