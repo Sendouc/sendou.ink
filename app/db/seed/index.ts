@@ -37,6 +37,7 @@ import * as CalendarRepository from "~/features/calendar/CalendarRepository.serv
 import * as PlusSuggestionRepository from "~/features/plus-suggestions/PlusSuggestionRepository.server";
 import * as PlusVotingRepository from "~/features/plus-voting/PlusVotingRepository.server";
 import * as QRepository from "~/features/sendouq/QRepository.server";
+import * as QSettingsRepository from "~/features/sendouq-settings/QSettingsRepository.server";
 import { calculateMatchSkills } from "~/features/sendouq/core/skills.server";
 import {
   summarizeMaps,
@@ -53,7 +54,6 @@ import { findMatchById } from "~/features/sendouq/queries/findMatchById.server";
 import { groupForMatch } from "~/features/sendouq/queries/groupForMatch.server";
 import { reportScore } from "~/features/sendouq/queries/reportScore.server";
 import { setGroupAsInactive } from "~/features/sendouq/queries/setGroupAsInactive.server";
-import { updateVCStatus } from "~/features/sendouq/queries/updateVCStatus.server";
 import { TOURNAMENT } from "~/features/tournament/tournament-constants";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator";
@@ -231,7 +231,7 @@ async function users() {
   }
 }
 
-function userProfiles() {
+async function userProfiles() {
   for (const args of [
     {
       userId: 1,
@@ -318,7 +318,7 @@ function userProfiles() {
     if (Math.random() > 0.9) defaultLanguages.push("it");
     if (Math.random() > 0.9) defaultLanguages.push("ja");
 
-    updateVCStatus({
+    await QSettingsRepository.updateVoiceChat({
       languages: defaultLanguages,
       userId: id,
       vc:

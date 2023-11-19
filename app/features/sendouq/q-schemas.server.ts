@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { languagesUnified } from "~/modules/i18n/config";
 import {
   _action,
   checkboxValueToBoolean,
@@ -7,7 +6,6 @@ import {
   falsyToNull,
   id,
   modeShort,
-  noDuplicates,
   safeJSONParse,
   stageId,
   weaponSplId,
@@ -19,16 +17,6 @@ export const frontPageSchema = z.union([
   z.object({
     _action: _action("JOIN_QUEUE"),
     direct: z.preprocess(deduplicate, z.literal("true").nullish()),
-    vc: z.enum(["YES", "NO", "LISTEN_ONLY"]),
-    languages: z.preprocess(
-      safeJSONParse,
-      z
-        .array(z.string())
-        .refine(noDuplicates)
-        .refine((val) =>
-          val.every((lang) => languagesUnified.some((l) => l.code === lang)),
-        ),
-    ),
   }),
   z.object({
     _action: _action("JOIN_TEAM"),

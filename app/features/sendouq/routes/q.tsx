@@ -16,13 +16,11 @@ import { Dialog } from "~/components/Dialog";
 import { Flag } from "~/components/Flag";
 import { FormMessage } from "~/components/FormMessage";
 import { Main } from "~/components/Main";
-import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
 import { SubmitButton } from "~/components/SubmitButton";
-import { CrossIcon } from "~/components/icons/Cross";
 import { UserIcon } from "~/components/icons/User";
 import { UsersIcon } from "~/components/icons/Users";
 import { sql } from "~/db/sql";
-import type { GroupMember, User } from "~/db/types";
+import type { GroupMember } from "~/db/types";
 import { useUser } from "~/features/auth/core";
 import { getUserId, requireUserId } from "~/features/auth/core/user.server";
 import { currentSeason } from "~/features/mmr";
@@ -38,7 +36,6 @@ import { giveTrust } from "~/features/tournament/queries/giveTrust.server";
 import { useAutoRerender } from "~/hooks/useAutoRerender";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "~/hooks/useTranslation";
-import { languagesUnified } from "~/modules/i18n/config";
 import { joinListToNaturalString } from "~/utils/arrays";
 import {
   parseRequestFormData,
@@ -65,7 +62,6 @@ import { addMember } from "../queries/addMember.server";
 import { deleteLikesByGroupId } from "../queries/deleteLikesByGroupId.server";
 import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.server";
 import { findGroupByInviteCode } from "../queries/findGroupByInviteCode.server";
-import { updateVCStatus } from "../queries/updateVCStatus.server";
 import { userHasSkill } from "../queries/userHasSkill.server";
 
 export const handle: SendouRouteHandle = {
@@ -105,11 +101,6 @@ export const action: ActionFunction = async ({ request }) => {
 
   switch (data._action) {
     case "JOIN_QUEUE": {
-      updateVCStatus({
-        userId: user.id,
-        languages: data.languages,
-        vc: data.vc,
-      });
       await QRepository.createGroup({
         status: data.direct === "true" ? "ACTIVE" : "PREPARING",
         userId: user.id,
@@ -272,8 +263,6 @@ export default function QPage() {
                   </div>
                   <ActiveSeasonInfo season={data.season} />
                 </div>
-                <VoiceChatAbility />
-                <Languages />
                 <div className="stack horizontal md items-center mt-4 mx-auto">
                   <SubmitButton icon={<UsersIcon />}>
                     Join with mates
@@ -528,132 +517,5 @@ function StartRank() {
         Submit
       </SubmitButton>
     </fetcher.Form>
-  );
-}
-
-const VC_LOCAL_STORAGE_KEY = "q_vc";
-function VoiceChatAbility() {
-  const [value, setValue] = React.useState<User["vc"]>();
-
-  React.useEffect(() => {
-    const storedValue = localStorage.getItem(VC_LOCAL_STORAGE_KEY);
-    if (storedValue) {
-      setValue(storedValue as User["vc"]);
-    }
-  }, []);
-
-  const label = (vc: User["vc"]) => {
-    switch (vc) {
-      case "YES":
-        return "Yes";
-      case "NO":
-        return "No";
-      case "LISTEN_ONLY":
-        return "Listen only";
-      default:
-        assertUnreachable(vc);
-    }
-  };
-
-  return (
-    <div className="stack">
-      <label>Voice chat</label>
-      {(["YES", "NO", "LISTEN_ONLY"] as const).map((option) => {
-        return (
-          <div key={option} className="stack sm horizontal items-center">
-            <input
-              type="radio"
-              name="vc"
-              id={option}
-              value={option}
-              checked={value === option}
-              onChange={() => {
-                setValue(option);
-                localStorage.setItem(VC_LOCAL_STORAGE_KEY, option);
-              }}
-              required
-            />
-            <label
-              htmlFor={option}
-              className="q__map-preference-label text-main-forced"
-            >
-              {label(option)}
-            </label>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-const LANGUAGES_LOCAL_STORAGE_KEY = "q_lang";
-function Languages() {
-  const [value, setValue] = React.useState<string[]>([]);
-
-  React.useEffect(() => {
-    const storedValue = localStorage.getItem(LANGUAGES_LOCAL_STORAGE_KEY);
-    if (storedValue) {
-      setValue(JSON.parse(storedValue));
-    }
-  }, []);
-
-  return (
-    <div className="stack">
-      <RequiredHiddenInput
-        isValid={value.length > 0}
-        name="languages"
-        value={JSON.stringify(value)}
-      />
-      <label>Your languages</label>
-      <select
-        className="w-max"
-        onChange={(e) => {
-          const newLanguages = [...value, e.target.value].sort((a, b) =>
-            a.localeCompare(b),
-          );
-          setValue(newLanguages);
-          localStorage.setItem(
-            LANGUAGES_LOCAL_STORAGE_KEY,
-            JSON.stringify(newLanguages),
-          );
-        }}
-      >
-        <option value="">Select all that apply</option>
-        {languagesUnified
-          .filter((lang) => !value.includes(lang.code))
-          .map((option) => {
-            return (
-              <option key={option.code} value={option.code}>
-                {option.name}
-              </option>
-            );
-          })}
-      </select>
-      <div className="mt-2">
-        {value.map((code) => {
-          const name = languagesUnified.find((l) => l.code === code)?.name;
-
-          return (
-            <div key={code} className="stack horizontal items-center sm">
-              {name}{" "}
-              <Button
-                icon={<CrossIcon />}
-                variant="minimal-destructive"
-                onClick={() => {
-                  const newLanguages = value.filter(
-                    (codeInArr) => codeInArr !== code,
-                  );
-                  setValue(newLanguages);
-                  localStorage.setItem(
-                    LANGUAGES_LOCAL_STORAGE_KEY,
-                    JSON.stringify(newLanguages),
-                  );
-                }}
-              />
-            </div>
-          );
-        })}
-      </div>
-    </div>
   );
 }

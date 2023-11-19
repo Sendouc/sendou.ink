@@ -2,7 +2,7 @@ import { RadioGroup } from "@headlessui/react";
 import * as React from "react";
 import { ModeImage, StageImage } from "~/components/Image";
 import { Main } from "~/components/Main";
-import type { Preference, UserMapModePreferences } from "~/db/tables";
+import type { Preference, Tables, UserMapModePreferences } from "~/db/tables";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import { stageIds } from "~/modules/in-game-lists";
 import { modesShort } from "~/modules/in-game-lists/modes";
@@ -17,6 +17,13 @@ import { useFetcher, useLoaderData } from "@remix-run/react";
 import { SubmitButton } from "~/components/SubmitButton";
 import { preferenceEmojiUrl } from "~/utils/urls";
 import { MapIcon } from "~/components/icons/Map";
+import { MicrophoneFilledIcon } from "~/components/icons/MicrophoneFilled";
+import { assertUnreachable } from "~/utils/types";
+import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
+import { languagesUnified } from "~/modules/i18n/config";
+import { Button } from "~/components/Button";
+import { CrossIcon } from "~/components/icons/Cross";
+import { useTranslation } from "~/hooks/useTranslation";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -37,7 +44,12 @@ export const action = async ({ request }: ActionArgs) => {
       });
       break;
     }
-    case "PLACEHOLDER": {
+    case "UPDATE_VC": {
+      await QSettingsRepository.updateVoiceChat({
+        userId: user.id,
+        vc: data.vc,
+        languages: data.languages,
+      });
       break;
     }
   }
@@ -49,17 +61,21 @@ export const loader = async ({ request }: LoaderArgs) => {
   const user = await requireUserId(request);
 
   return {
-    preferences: await QSettingsRepository.mapModePreferencesByUserId(user.id),
+    preferences: await QSettingsRepository.preferencesByUserId(user.id),
   };
 };
 
 // xxx: sound preferences
 // xxx: weapon preferences - remember that 0 weapons = null
-// xxx: vc settings
+// xxx: back to q button
 export default function SendouQSettingsPage() {
   return (
-    <Main>
-      <MapPicker />
+    <Main className="stack sm">
+      <h2>SendouQ settings</h2>
+      <div className="stack">
+        <MapPicker />
+        <VoiceChat />
+      </div>
     </Main>
   );
 }
@@ -68,7 +84,7 @@ function MapPicker() {
   const data = useLoaderData<typeof loader>();
   const fetcher = useFetcher();
   const [preferences, setPreferences] = React.useState<UserMapModePreferences>(
-    data.preferences ?? {
+    data.preferences.mapModePreferences ?? {
       maps: [],
       modes: [],
     },
@@ -129,10 +145,10 @@ function MapPicker() {
     <details>
       <summary className="q-settings__summary">
         <div>
-          <span>Map & mode preferences</span> <MapIcon />
+          <span>Stage and mode preferences</span> <MapIcon />
         </div>
       </summary>
-      <fetcher.Form method="post">
+      <fetcher.Form method="post" className="mb-4">
         <input
           type="hidden"
           name="mapModePreferences"
@@ -294,5 +310,131 @@ function PreferenceRadioGroup({
         )}
       </RadioGroup.Option>
     </RadioGroup>
+  );
+}
+
+function VoiceChat() {
+  const { t } = useTranslation(["common"]);
+  const fetcher = useFetcher();
+
+  return (
+    <details>
+      <summary className="q-settings__summary">
+        <div>
+          <span>Voice chat</span> <MicrophoneFilledIcon />
+        </div>
+      </summary>
+      <fetcher.Form method="post" className="mb-4 stack sm">
+        <VoiceChatAbility />
+        <Languages />
+        <div>
+          <SubmitButton
+            size="big"
+            className="mt-2 mx-auto"
+            _action="UPDATE_VC"
+            state={fetcher.state}
+          >
+            {t("common:actions.save")}
+          </SubmitButton>
+        </div>
+      </fetcher.Form>
+    </details>
+  );
+}
+
+function VoiceChatAbility() {
+  const data = useLoaderData<typeof loader>();
+
+  const label = (vc: Tables["User"]["vc"]) => {
+    switch (vc) {
+      case "YES":
+        return "Yes";
+      case "NO":
+        return "No";
+      case "LISTEN_ONLY":
+        return "Listen only";
+      default:
+        assertUnreachable(vc);
+    }
+  };
+
+  return (
+    <div className="stack">
+      <label>Voice chat</label>
+      {(["YES", "NO", "LISTEN_ONLY"] as const).map((option) => {
+        return (
+          <div key={option} className="stack sm horizontal items-center">
+            <input
+              type="radio"
+              name="vc"
+              id={option}
+              value={option}
+              required
+              defaultChecked={data.preferences.vc === option}
+            />
+            <label htmlFor={option} className="mb-0 text-main-forced">
+              {label(option)}
+            </label>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function Languages() {
+  const data = useLoaderData<typeof loader>();
+  const [value, setValue] = React.useState(data.preferences.languages ?? []);
+
+  return (
+    <div className="stack">
+      <RequiredHiddenInput
+        isValid={value.length > 0}
+        name="languages"
+        value={JSON.stringify(value)}
+      />
+      <label>Your languages</label>
+      <select
+        className="w-max"
+        onChange={(e) => {
+          const newLanguages = [...value, e.target.value].sort((a, b) =>
+            a.localeCompare(b),
+          );
+          setValue(newLanguages);
+        }}
+      >
+        <option value="">Select all that apply</option>
+        {languagesUnified
+          .filter((lang) => !value.includes(lang.code))
+          .map((option) => {
+            return (
+              <option key={option.code} value={option.code}>
+                {option.name}
+              </option>
+            );
+          })}
+      </select>
+      <div className="mt-2">
+        {value.map((code) => {
+          const name = languagesUnified.find((l) => l.code === code)?.name;
+
+          return (
+            <div key={code} className="stack horizontal items-center sm">
+              {name}{" "}
+              <Button
+                icon={<CrossIcon />}
+                variant="minimal-destructive"
+                onClick={() => {
+                  const newLanguages = value.filter(
+                    (codeInArr) => codeInArr !== code,
+                  );
+                  setValue(newLanguages);
+                }}
+              />
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 }

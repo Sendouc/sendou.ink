@@ -531,7 +531,7 @@ export interface User {
   stickSens: number | null;
   twitch: string | null;
   twitter: string | null;
-  vc: Generated<string | null>;
+  vc: Generated<"YES" | "NO" | "LISTEN_ONLY">;
   youtubeId: string | null;
   mapModePreferences: ColumnType<
     UserMapModePreferences | null,

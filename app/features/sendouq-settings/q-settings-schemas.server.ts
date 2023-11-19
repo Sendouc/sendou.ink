@@ -1,5 +1,12 @@
 import { z } from "zod";
-import { _action, modeShort, safeJSONParse, stageId } from "~/utils/zod";
+import { languagesUnified } from "~/modules/i18n/config";
+import {
+  _action,
+  modeShort,
+  noDuplicates,
+  safeJSONParse,
+  stageId,
+} from "~/utils/zod";
 
 const preference = z.enum(["AVOID", "PREFER"]);
 export const settingsActionSchema = z.union([
@@ -14,6 +21,16 @@ export const settingsActionSchema = z.union([
     ),
   }),
   z.object({
-    _action: _action("PLACEHOLDER"),
+    _action: _action("UPDATE_VC"),
+    vc: z.enum(["YES", "NO", "LISTEN_ONLY"]),
+    languages: z.preprocess(
+      safeJSONParse,
+      z
+        .array(z.string())
+        .refine(noDuplicates)
+        .refine((val) =>
+          val.every((lang) => languagesUnified.some((l) => l.code === lang)),
+        ),
+    ),
   }),
 ]);
