@@ -15,6 +15,7 @@ const stm = sql.prepare(/* sql */ `
     "User"."discordAvatar",
     "User"."discordId",
     "User"."customUrl",
+    "User"."plusSkippedForSeasonNth",
     "PlusTier"."tier" as "plusTier",
     rank () over ( 
       order by "Skill"."Ordinal" desc
@@ -48,6 +49,7 @@ export interface UserSPLeaderboardItem {
   discordId: User["discordId"];
   customUrl: User["customUrl"];
   plusTier?: PlusTier["tier"];
+  plusSkippedForSeasonNth: number | null;
   /** Plus tier player is on track to join */
   pendingPlusTier?: PlusTier["tier"];
   placementRank: number;

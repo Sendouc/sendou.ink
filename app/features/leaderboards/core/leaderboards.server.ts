@@ -4,6 +4,7 @@ import type { SeasonPopularUsersWeapon } from "../queries/seasonPopularUsersWeap
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { weaponCategories } from "~/modules/in-game-lists";
 import { seasonHasTopTen } from "../leaderboards-utils";
+import { currentOrPreviousSeason } from "~/features/mmr/season";
 
 export function addTiers(entries: UserSPLeaderboardItem[], season: number) {
   const tiers = freshUserSkills(season);
@@ -53,6 +54,12 @@ export function addPendingPlusTiers<T extends UserSPLeaderboardItem>(
     if (!highestPlusTierWithSpace) break;
 
     if (entry.plusTier && entry.plusTier <= highestPlusTierWithSpace) continue;
+    if (
+      entry.plusSkippedForSeasonNth === currentOrPreviousSeason(new Date())?.nth
+    ) {
+      entry.plusSkippedForSeasonNth = null;
+      continue;
+    }
 
     entry.pendingPlusTier = highestPlusTierWithSpace;
     const key = `+${highestPlusTierWithSpace}` as const;

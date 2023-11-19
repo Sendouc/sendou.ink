@@ -496,6 +496,7 @@ export interface User {
   twitter: string | null;
   vc: Generated<string | null>;
   youtubeId: string | null;
+  plusSkippedForSeasonNth: number | null;
 }
 
 export interface UserResultHighlight {

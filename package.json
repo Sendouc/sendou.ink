@@ -28,6 +28,7 @@
     "delete-user": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/delete-user.ts",
     "ban-user": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/ban-user.ts",
     "delete-skill": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/delete-skill.ts",
+    "skip-plus": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/skip-plus.ts",
     "season-initial-powers": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/season-initial-powers.ts",
     "refresh-prod-db": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register scripts/refresh-prod-db.ts && npm run migrate up",
     "lint:ts": "eslint . --ext .ts,.tsx",
