@@ -140,6 +140,45 @@ PlusVoting(
   },
 );
 
+PlusVoting(
+  "skips users from leaderboard with the skip flag for the season",
+  async () => {
+    MockDate.set(new Date("2023-11-29T00:00:00.000Z"));
+
+    await Test.database.insertUsers(11);
+    await createLeaderboard(Array.from({ length: 11 }).map((_, i) => i + 1));
+
+    await db
+      .updateTable("User")
+      .set({ plusSkippedForSeasonNth: 1 })
+      .where("User.id", "=", 1)
+      .execute();
+
+    await adminAction({ _action: "REFRESH" }, { user: "admin" });
+
+    assert.equal(await countPlusTierMembers(1), 10);
+    assert.equal(await countPlusTierMembers(2), 0);
+  },
+);
+
+PlusVoting("plus server skip flag ignored if for past season", async () => {
+  MockDate.set(new Date("2023-11-29T00:00:00.000Z"));
+
+  await Test.database.insertUsers(11);
+  await createLeaderboard(Array.from({ length: 11 }).map((_, i) => i + 1));
+
+  await db
+    .updateTable("User")
+    .set({ plusSkippedForSeasonNth: 0 })
+    .where("User.id", "=", 1)
+    .execute();
+
+  await adminAction({ _action: "REFRESH" }, { user: "admin" });
+
+  assert.equal(await countPlusTierMembers(1), 10);
+  assert.equal(await countPlusTierMembers(2), 1);
+});
+
 PlusVoting("ignores leaderboard while season is ongoing", async () => {
   MockDate.set(new Date("2024-02-15T00:00:00.000Z"));
 

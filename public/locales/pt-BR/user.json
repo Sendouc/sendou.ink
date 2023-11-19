@@ -31,12 +31,12 @@
   "results.highlights.choose": "Escolher Destaques",
   "results.highlights.explanation": "Escolha os resultados que você quer destacar",
 
-  "forms.errors.maxWeapons": "Número máximo de armas atingido",
+  "forms.errors.maxWeapons": "Número máximo de armas no perfil atingido.",
   "forms.errors.invalidCustomUrl.numbers": "URL personalizado não pode conter apenas números",
   "forms.errors.invalidCustomUrl.strangeCharacter": "URL personalizado não pode conter caracteres especiais",
   "forms.errors.invalidCustomUrl.duplicate": "Alguém já está usando esse URL personalizado",
   "forms.errors.invalidSens": "A sensibilidade de Movimento não pode ser definida se a sensibilidade do Analógico Direito não está",
-  "forms.info.favoriteBadge": "Sua insígnia favorita é mostrada em tamanho maior por padrão no seu perfil.",
+  "forms.info.favoriteBadge": "Por padrão, sua insígnia favorita é mostrada em tamanho maior no seu perfil.",
 
   "search.info": "Procurar por usuários pelo nome do Discord, Splatoon 3 ou Twitter",
   "search.noResults": "Nenhum usuário encontrado com o termo '{{query}}'"

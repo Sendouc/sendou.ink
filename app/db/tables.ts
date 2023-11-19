@@ -547,6 +547,7 @@ export interface User {
   >;
   // xxx: initial state from weapon pool?
   qWeaponPool: ColumnType<MainWeaponId[] | null, string | null, string | null>;
+  plusSkippedForSeasonNth: number | null;
 }
 
 export interface UserResultHighlight {

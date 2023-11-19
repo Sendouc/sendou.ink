@@ -42,7 +42,7 @@ export function rangeToMonthYear(range: { startDate: Date; endDate: Date }) {
 export function seasonToVotingRange(season: RankingSeason) {
   const { ends: date } = season;
 
-  if (date.getDay() !== 0) {
+  if (date.getUTCDay() !== 0) {
     throw new Error("End date is not a Sunday.");
   }
 
