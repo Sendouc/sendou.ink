@@ -116,7 +116,7 @@ export const loader = async ({ request }: LoaderArgs) => {
           const withTiers = addTiers(leaderboard, season);
 
           const shouldAddPendingPlusTier =
-            season === currentOrPreviousSeason(new Date())?.nth &&
+            season === currentSeason(new Date())?.nth &&
             leaderboard.length >= USER_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN;
           const withPendingPlusTiers = shouldAddPendingPlusTier
             ? addPendingPlusTiers(withTiers)
