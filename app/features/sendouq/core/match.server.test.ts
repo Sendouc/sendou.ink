@@ -17,7 +17,7 @@ MapModePreferencesToModeList("returns default list if no preferences", () => {
 });
 
 MapModePreferencesToModeList(
-  "returns default list if disliking everything",
+  "returns default list if equally disliking everything",
   () => {
     const dislikingEverything = [
       { mode: "TW", preference: "AVOID" } as const,
@@ -47,58 +47,58 @@ MapModePreferencesToModeList(
 );
 
 MapModePreferencesToModeList(
-  "mode excluded if more want to avoid than prefer",
+  "if positive about nothing, choose the most liked (-TW)",
   () => {
     const modeList = mapModePreferencesToModeList(
-      [
-        [{ mode: "SZ", preference: "PREFER" }],
-        [{ mode: "SZ", preference: "AVOID" }],
-      ],
       [[{ mode: "SZ", preference: "AVOID" }]],
+      [],
     );
 
     assert.ok(Test.arrayContainsSameItems(["TC", "RM", "CB"], modeList));
   },
 );
 
-MapModePreferencesToModeList("ranked modes included if mixed", () => {
-  const modeList = mapModePreferencesToModeList(
-    [[{ mode: "SZ", preference: "PREFER" }]],
-    [[{ mode: "SZ", preference: "AVOID" }]],
-  );
+MapModePreferencesToModeList(
+  "only turf war possible to get if least bad option",
+  () => {
+    const modeList = mapModePreferencesToModeList(
+      [
+        [
+          { mode: "SZ", preference: "AVOID" },
+          { mode: "TC", preference: "AVOID" },
+          { mode: "RM", preference: "AVOID" },
+          { mode: "CB", preference: "AVOID" },
+          { mode: "TW", preference: "AVOID" },
+        ],
+        [{ mode: "TW", preference: "PREFER" }],
+      ],
+      [],
+    );
 
-  assert.ok(Test.arrayContainsSameItems(["SZ", "TC", "RM", "CB"], modeList));
-});
-
-MapModePreferencesToModeList("team preferences are grouped together", () => {
-  const modeList = mapModePreferencesToModeList(
-    [
-      [{ mode: "TC", preference: "AVOID" }],
-      [{ mode: "TC", preference: "AVOID" }],
-    ],
-    [[{ mode: "TC", preference: "PREFER" }]],
-  );
-
-  assert.ok(Test.arrayContainsSameItems(["SZ", "TC", "RM", "CB"], modeList));
-});
+    assert.ok(Test.arrayContainsSameItems(["TW"], modeList));
+  },
+);
 
 MapModePreferencesToModeList("team votes for their preference", () => {
   const modeList = mapModePreferencesToModeList(
     [
-      [{ mode: "TC", preference: "PREFER" }],
+      [
+        { mode: "SZ", preference: "PREFER" },
+        { mode: "TC", preference: "PREFER" },
+      ],
       [{ mode: "TC", preference: "PREFER" }],
       [{ mode: "TC", preference: "AVOID" }],
       [{ mode: "TC", preference: "PREFER" }],
     ],
     [
-      [{ mode: "TC", preference: "AVOID" }],
-      [{ mode: "TC", preference: "AVOID" }],
+      [{ mode: "TC", preference: "PREFER" }],
+      [{ mode: "TC", preference: "PREFER" }],
       [{ mode: "TC", preference: "AVOID" }],
       [{ mode: "TC", preference: "AVOID" }],
     ],
   );
 
-  assert.ok(Test.arrayContainsSameItems(["SZ", "TC", "RM", "CB"], modeList));
+  assert.ok(Test.arrayContainsSameItems(["SZ", "TC"], modeList));
 });
 
 MapModePreferencesToModeList(
@@ -119,12 +119,10 @@ MapModePreferencesToModeList(
   () => {
     const modeList = mapModePreferencesToModeList(
       [[{ mode: "TW", preference: "PREFER" }]],
-      [],
+      [[{ mode: "SZ", preference: "PREFER" }]],
     );
 
-    assert.ok(
-      Test.arrayContainsSameItems(["TW", "SZ", "TC", "RM", "CB"], modeList),
-    );
+    assert.ok(Test.arrayContainsSameItems(["TW", "SZ"], modeList));
   },
 );
 

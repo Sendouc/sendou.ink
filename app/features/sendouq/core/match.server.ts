@@ -5,7 +5,6 @@ import { currentOrPreviousSeason } from "~/features/mmr/season";
 import { userSkills } from "~/features/mmr/tiered.server";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import { modesShort, stageIds } from "~/modules/in-game-lists";
-import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import {
   createTournamentMapList,
   type TournamentMapListMap,
@@ -85,7 +84,6 @@ export function matchMapList(
   }
 }
 
-// xxx: if 0.5 then always exclude mode?
 export function mapModePreferencesToModeList(
   groupOnePreferences: UserMapModePreferences["modes"][],
   groupTwoPreferences: UserMapModePreferences["modes"][],
@@ -122,8 +120,8 @@ export function mapModePreferencesToModeList(
   const result = shuffle(modesShort).filter((mode) => {
     const score = combinedMap.get(mode)!;
 
-    if (mode === "TW") return score > 0;
-    return score >= 0;
+    // if opinion is split, don't include
+    return score > 0;
   });
 
   result.sort((a, b) => {
@@ -134,7 +132,23 @@ export function mapModePreferencesToModeList(
     return aScore > bScore ? -1 : 1;
   });
 
-  if (result.length === 0) return [...rankedModesShort];
+  if (result.length === 0) {
+    const bestScore = Math.max(...combinedMap.values());
+
+    const leastWorstModesResult = shuffle(modesShort).filter((mode) => {
+      // turf war never included if not positive
+      if (mode === "TW") return false;
+
+      const score = combinedMap.get(mode)!;
+
+      return score === bestScore;
+    });
+
+    // ok nevermind they are haters but really like turf war for some reason
+    if (leastWorstModesResult.length === 0) return ["TW"];
+
+    return leastWorstModesResult;
+  }
 
   return result;
 }
