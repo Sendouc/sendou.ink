@@ -1,33 +1,36 @@
 import { RadioGroup } from "@headlessui/react";
+import type { ActionArgs, LinksFunction, LoaderArgs } from "@remix-run/node";
+import { useFetcher, useLoaderData } from "@remix-run/react";
+import clsx from "clsx";
 import * as React from "react";
+import { Button } from "~/components/Button";
+import { WeaponCombobox } from "~/components/Combobox";
 import { ModeImage, StageImage, WeaponImage } from "~/components/Image";
 import { Main } from "~/components/Main";
+import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
+import { SubmitButton } from "~/components/SubmitButton";
+import { CrossIcon } from "~/components/icons/Cross";
+import { MapIcon } from "~/components/icons/Map";
+import { MicrophoneFilledIcon } from "~/components/icons/MicrophoneFilled";
+import { PuzzleIcon } from "~/components/icons/Puzzle";
+import { SpeakerFilledIcon } from "~/components/icons/SpeakerFilled";
+import { TrashIcon } from "~/components/icons/Trash";
 import type { Preference, Tables, UserMapModePreferences } from "~/db/tables";
+import { requireUserId } from "~/features/auth/core/user.server";
+import { soundCodeToLocalStorageKey } from "~/features/chat/chat-utils";
+import * as QSettingsRepository from "~/features/sendouq-settings/QSettingsRepository.server";
+import { useIsMounted } from "~/hooks/useIsMounted";
+import { useTranslation } from "~/hooks/useTranslation";
+import { languagesUnified } from "~/modules/i18n/config";
 import type { MainWeaponId, ModeShort, StageId } from "~/modules/in-game-lists";
 import { stageIds } from "~/modules/in-game-lists";
 import { modesShort } from "~/modules/in-game-lists/modes";
-import styles from "../q-settings.css";
-import type { ActionArgs, LinksFunction, LoaderArgs } from "@remix-run/node";
-import clsx from "clsx";
-import { requireUserId } from "~/features/auth/core/user.server";
 import { parseRequestFormData } from "~/utils/remix";
-import { settingsActionSchema } from "../q-settings-schemas.server";
-import * as QSettingsRepository from "~/features/sendouq-settings/QSettingsRepository.server";
-import { useFetcher, useLoaderData } from "@remix-run/react";
-import { SubmitButton } from "~/components/SubmitButton";
-import { preferenceEmojiUrl } from "~/utils/urls";
-import { MapIcon } from "~/components/icons/Map";
-import { MicrophoneFilledIcon } from "~/components/icons/MicrophoneFilled";
 import { assertUnreachable } from "~/utils/types";
-import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
-import { languagesUnified } from "~/modules/i18n/config";
-import { Button } from "~/components/Button";
-import { CrossIcon } from "~/components/icons/Cross";
-import { useTranslation } from "~/hooks/useTranslation";
+import { preferenceEmojiUrl } from "~/utils/urls";
 import { SENDOUQ_WEAPON_POOL_MAX_SIZE } from "../q-settings-constants";
-import { WeaponCombobox } from "~/components/Combobox";
-import { TrashIcon } from "~/components/icons/Trash";
-import { PuzzleIcon } from "~/components/icons/Puzzle";
+import { settingsActionSchema } from "../q-settings-schemas.server";
+import styles from "../q-settings.css";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -79,8 +82,6 @@ export const loader = async ({ request }: LoaderArgs) => {
   };
 };
 
-// xxx: sound preferences
-// xxx: weapon preferences - remember that 0 weapons = null
 // xxx: back to q button
 export default function SendouQSettingsPage() {
   return (
@@ -88,8 +89,9 @@ export default function SendouQSettingsPage() {
       <h2>SendouQ settings</h2>
       <div className="stack">
         <MapPicker />
-        <VoiceChat />
         <WeaponPool />
+        <VoiceChat />
+        <Sounds />
       </div>
     </Main>
   );
@@ -160,7 +162,7 @@ function MapPicker() {
     <details>
       <summary className="q-settings__summary">
         <div>
-          <span>Stage and mode preferences</span> <MapIcon />
+          <span>Stages and modes</span> <MapIcon />
         </div>
       </summary>
       <fetcher.Form method="post" className="mb-4">
@@ -339,7 +341,7 @@ function VoiceChat() {
           <span>Voice chat</span> <MicrophoneFilledIcon />
         </div>
       </summary>
-      <fetcher.Form method="post" className="mb-4 stack sm">
+      <fetcher.Form method="post" className="mb-4 ml-2-5 stack sm">
         <VoiceChatAbility />
         <Languages />
         <div>
@@ -538,5 +540,76 @@ function WeaponPool() {
         </div>
       </fetcher.Form>
     </details>
+  );
+}
+
+const sounds = [
+  {
+    code: "sq_like",
+    name: "Like received",
+  },
+  {
+    code: "sq_new-group",
+    name: "Group new members",
+  },
+  {
+    code: "sq_match",
+    name: "Match started",
+  },
+];
+
+function Sounds() {
+  const isMounted = useIsMounted();
+  return (
+    <details>
+      <summary className="q-settings__summary">
+        <div>
+          <span>Sounds</span> <SpeakerFilledIcon />
+        </div>
+      </summary>
+      {isMounted && <SoundCheckboxes />}
+    </details>
+  );
+}
+
+function SoundCheckboxes() {
+  // default to true
+  const currentValue = (code: string) =>
+    !localStorage.getItem(soundCodeToLocalStorageKey(code)) ||
+    localStorage.getItem(soundCodeToLocalStorageKey(code)) === "true";
+
+  const [soundValues, setSoundValues] = React.useState(
+    Object.fromEntries(
+      sounds.map((sound) => [sound.code, currentValue(sound.code)]),
+    ),
+  );
+
+  // toggle in local storage
+  const toggleSound = (code: string) => {
+    localStorage.setItem(
+      soundCodeToLocalStorageKey(code),
+      String(!currentValue(code)),
+    );
+    setSoundValues((prev) => ({
+      ...prev,
+      [code]: !prev[code],
+    }));
+  };
+
+  return (
+    <div className="ml-2-5">
+      {sounds.map((sound) => (
+        <div key={sound.code}>
+          <label className="stack horizontal xs items-center">
+            <input
+              type="checkbox"
+              checked={soundValues[sound.code]}
+              onChange={() => toggleSound(sound.code)}
+            />
+            {sound.name}
+          </label>
+        </div>
+      ))}
+    </div>
   );
 }

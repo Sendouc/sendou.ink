@@ -126,6 +126,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 };
 
 // xxx: turf war to stages
+// xxx: tentative next to skill tier
 const DAYS_WITH_SKILL_NEEDED_TO_SHOW_POWER_CHART = 2;
 export default function UserSeasonsPage() {
   const data = useLoaderData<typeof loader>();

@@ -37,6 +37,7 @@ import * as CalendarRepository from "~/features/calendar/CalendarRepository.serv
 import * as PlusSuggestionRepository from "~/features/plus-suggestions/PlusSuggestionRepository.server";
 import * as PlusVotingRepository from "~/features/plus-voting/PlusVotingRepository.server";
 import * as QRepository from "~/features/sendouq/QRepository.server";
+import * as QMatchRepository from "~/features/sendouq-match/QMatchRepository.server";
 import * as QSettingsRepository from "~/features/sendouq-settings/QSettingsRepository.server";
 import { calculateMatchSkills } from "~/features/sendouq/core/skills.server";
 import {
@@ -51,7 +52,6 @@ import { addReportedWeapons } from "~/features/sendouq/queries/addReportedWeapon
 import { addSkills } from "~/features/sendouq/queries/addSkills.server";
 import { createMatch } from "~/features/sendouq/queries/createMatch.server";
 import { findMatchById } from "~/features/sendouq/queries/findMatchById.server";
-import { groupForMatch } from "~/features/sendouq/queries/groupForMatch.server";
 import { reportScore } from "~/features/sendouq/queries/reportScore.server";
 import { setGroupAsInactive } from "~/features/sendouq/queries/setGroupAsInactive.server";
 import { TOURNAMENT } from "~/features/tournament/tournament-constants";
@@ -1828,11 +1828,15 @@ async function playedMatches() {
       winnerGroupId: winner === "ALPHA" ? groupAlpha : groupBravo,
     });
     const members = [
-      ...groupForMatch(match.alphaGroupId)!.members.map((m) => ({
+      ...(await QMatchRepository.findGroupById(
+        match.alphaGroupId,
+      ))!.members.map((m) => ({
         ...m,
         groupId: match.alphaGroupId,
       })),
-      ...groupForMatch(match.bravoGroupId)!.members.map((m) => ({
+      ...(await QMatchRepository.findGroupById(
+        match.alphaGroupId,
+      ))!.members.map((m) => ({
         ...m,
         groupId: match.bravoGroupId,
       })),

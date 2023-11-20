@@ -16,6 +16,7 @@ import type { RecentMatchPlayer } from "../queries/findRecentMatchPlayersByUserI
 import { TIERS } from "~/features/mmr/mmr-constants";
 import { mapModePreferencesToModeList } from "./match.server";
 import { modesShort } from "~/modules/in-game-lists";
+import { defaultOrdinal } from "~/features/mmr/mmr-utils";
 
 export function divideGroups({
   groups,
@@ -244,10 +245,14 @@ export function addSkillsToGroups({
 }): DividedGroupsUncensored {
   const addSkill = (group: LookingGroupWithInviteCode) => ({
     ...group,
-    members: group.members?.map((m) => ({
-      ...m,
-      skill: userSkills[String(m.id)],
-    })),
+    members: group.members?.map((m) => {
+      const skill = userSkills[String(m.id)];
+
+      return {
+        ...m,
+        skill: !skill || skill.approximate ? ("CALCULATING" as const) : skill,
+      };
+    }),
     tier:
       group.members.length === FULL_GROUP_SIZE
         ? resolveGroupSkill({ group, userSkills, intervals })
@@ -274,9 +279,10 @@ function resolveGroupSkill({
   userSkills: Record<string, TieredSkill>;
   intervals: SkillTierInterval[];
 }): TieredSkill["tier"] | undefined {
-  const skills = group.members
-    .map((m) => userSkills[String(m.id)])
-    .filter(Boolean);
+  const skills = group.members.map(
+    (m) => userSkills[String(m.id)] ?? { ordinal: defaultOrdinal() },
+  );
+
   const averageOrdinal =
     skills.reduce((acc, s) => acc + s.ordinal, 0) / skills.length;
 

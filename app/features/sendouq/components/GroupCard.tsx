@@ -18,6 +18,7 @@ import {
   SENDOUQ_LOOKING_PAGE,
   TIERS_PAGE,
   navIconUrl,
+  tierImageUrl,
   userPage,
 } from "~/utils/urls";
 import { FULL_GROUP_SIZE, SENDOUQ } from "../q-constants";
@@ -27,6 +28,7 @@ import { StarFilledIcon } from "~/components/icons/StarFilled";
 import { inGameNameWithoutDiscriminator } from "~/utils/strings";
 import * as React from "react";
 import type { SqlBool } from "kysely";
+import { MATCHES_COUNT_NEEDED_FOR_LEADERBOARD } from "~/features/leaderboards/leaderboards-constants";
 
 export function GroupCard({
   group,
@@ -463,7 +465,27 @@ function MemberRoleManager({
   );
 }
 
-function TierInfo({ skill }: { skill: TieredSkill }) {
+function TierInfo({ skill }: { skill: TieredSkill | "CALCULATING" }) {
+  if (skill === "CALCULATING") {
+    return (
+      <div className="q__group-member__tier">
+        <Popover
+          buttonChildren={
+            <Image
+              path={tierImageUrl("CALCULATING")}
+              alt=""
+              height={32.965}
+              className="q__group-member__tier__placeholder"
+            />
+          }
+        >
+          Less than {MATCHES_COUNT_NEEDED_FOR_LEADERBOARD} sets played. Rank is
+          still calculating...
+        </Popover>
+      </div>
+    );
+  }
+
   return (
     <div className="q__group-member__tier">
       <Popover buttonChildren={<TierImage tier={skill.tier} width={38} />}>

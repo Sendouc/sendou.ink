@@ -7,8 +7,8 @@ import type {
 } from "~/db/types";
 import type { MainWeaponId, ModeShort } from "~/modules/in-game-lists";
 import type { TieredSkill } from "../mmr/tiered.server";
-import type { GroupForMatch } from "./queries/groupForMatch.server";
 import type { Tables } from "~/db/tables";
+import type { GroupForMatch } from "../sendouq-match/QMatchRepository.server";
 
 export type LookingGroup = {
   id: number;
@@ -31,7 +31,7 @@ export type LookingGroup = {
     role: GroupMember["role"];
     note?: GroupMember["note"];
     weapons?: MainWeaponId[];
-    skill?: TieredSkill;
+    skill?: TieredSkill | "CALCULATING";
     vc?: User["vc"];
     inGameName?: User["inGameName"];
     languages?: string[];

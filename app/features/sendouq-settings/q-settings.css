@@ -50,17 +50,19 @@
   font-size: var(--fonts-lg);
   font-weight: var(--bold);
   margin-block-end: var(--s-4);
+  position: relative;
 }
 
 .q-settings__summary > div {
   display: inline-flex;
-  justify-content: space-between;
-  width: 97%;
 }
 
 .q-settings__summary svg {
   width: 24px;
   color: var(--theme);
+  position: absolute;
+  right: 20px;
+  top: 14px;
 }
 
 .q-settings__weapon-pool-select-container {

@@ -79,7 +79,6 @@ import { addSkills } from "../queries/addSkills.server";
 import { deleteReporterWeaponsByMatchId } from "../queries/deleteReportedWeaponsByMatchId.server";
 import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.server";
 import { findMatchById } from "../queries/findMatchById.server";
-import { groupForMatch } from "../queries/groupForMatch.server";
 import { reportScore } from "../queries/reportScore.server";
 import { reportedWeaponsByMatchId } from "../queries/reportedWeaponsByMatchId.server";
 import { setGroupAsInactive } from "../queries/setGroupAsInactive.server";
@@ -139,11 +138,15 @@ export const action = async ({ request, params }: ActionArgs) => {
         "Only mods can report scores as admin",
       );
       const members = [
-        ...groupForMatch(match.alphaGroupId)!.members.map((m) => ({
+        ...(await QMatchRepository.findGroupById(
+          match.alphaGroupId,
+        ))!.members.map((m) => ({
           ...m,
           groupId: match.alphaGroupId,
         })),
-        ...groupForMatch(match.bravoGroupId)!.members.map((m) => ({
+        ...(await QMatchRepository.findGroupById(
+          match.bravoGroupId,
+        ))!.members.map((m) => ({
           ...m,
           groupId: match.bravoGroupId,
         })),
@@ -185,8 +188,12 @@ export const action = async ({ request, params }: ActionArgs) => {
         compared === "SAME" && !matchIsBeingCanceled
           ? calculateMatchSkills({
               groupMatchId: match.id,
-              winner: groupForMatch(winnerGroupId)!.members.map((m) => m.id),
-              loser: groupForMatch(loserGroupId)!.members.map((m) => m.id),
+              winner: (await QMatchRepository.findGroupById(
+                winnerGroupId,
+              ))!.members.map((m) => m.id),
+              loser: (await QMatchRepository.findGroupById(
+                loserGroupId,
+              ))!.members.map((m) => m.id),
               winnerGroupId,
               loserGroupId,
             })
@@ -276,7 +283,9 @@ export const action = async ({ request, params }: ActionArgs) => {
       const season = currentSeason(new Date());
       validate(season, "Season is not active");
 
-      const previousGroup = groupForMatch(data.previousGroupId);
+      const previousGroup = await QMatchRepository.findGroupById(
+        data.previousGroupId,
+      );
       validate(previousGroup, "Previous group not found");
 
       for (const member of previousGroup.members) {
@@ -326,15 +335,16 @@ export const action = async ({ request, params }: ActionArgs) => {
   return null;
 };
 
-// xxx: 4 weapons here as well
 export const loader = async ({ params, request }: LoaderArgs) => {
   const user = await getUserId(request);
   const matchId = matchIdFromParams(params);
   const match = notFoundIfFalsy(await QMatchRepository.findById(matchId));
 
-  const groupAlpha = groupForMatch(match.alphaGroupId);
+  const [groupAlpha, groupBravo] = await Promise.all([
+    QMatchRepository.findGroupById(match.alphaGroupId),
+    QMatchRepository.findGroupById(match.bravoGroupId),
+  ]);
   invariant(groupAlpha, "Group alpha not found");
-  const groupBravo = groupForMatch(match.bravoGroupId);
   invariant(groupBravo, "Group bravo not found");
 
   const censoredGroupAlpha = { ...groupAlpha, chatCode: undefined };

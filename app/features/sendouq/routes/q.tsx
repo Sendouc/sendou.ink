@@ -24,11 +24,6 @@ import type { GroupMember } from "~/db/types";
 import { useUser } from "~/features/auth/core";
 import { getUserId, requireUserId } from "~/features/auth/core/user.server";
 import { currentSeason } from "~/features/mmr";
-import {
-  DEFAULT_SKILL_HIGH,
-  DEFAULT_SKILL_LOW,
-  DEFAULT_SKILL_MID,
-} from "~/features/mmr/mmr-constants";
 import type { RankingSeason } from "~/features/mmr/season";
 import { nextSeason } from "~/features/mmr/season";
 import * as QRepository from "~/features/sendouq/QRepository.server";
@@ -57,12 +52,10 @@ import { FULL_GROUP_SIZE, JOIN_CODE_SEARCH_PARAM_KEY } from "../q-constants";
 import { frontPageSchema } from "../q-schemas.server";
 import { groupRedirectLocationByCurrentLocation } from "../q-utils";
 import styles from "../q.css";
-import { addInitialSkill } from "../queries/addInitialSkill.server";
 import { addMember } from "../queries/addMember.server";
 import { deleteLikesByGroupId } from "../queries/deleteLikesByGroupId.server";
 import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.server";
 import { findGroupByInviteCode } from "../queries/findGroupByInviteCode.server";
-import { userHasSkill } from "../queries/userHasSkill.server";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -112,10 +105,6 @@ export const action: ActionFunction = async ({ request }) => {
     }
     case "JOIN_TEAM_WITH_TRUST":
     case "JOIN_TEAM": {
-      validate(
-        userHasSkill({ userId: user.id, season: season.nth }),
-        "Initial SP needs to be set first",
-      );
       const code = new URL(request.url).searchParams.get(
         JOIN_CODE_SEARCH_PARAM_KEY,
       );
@@ -149,28 +138,6 @@ export const action: ActionFunction = async ({ request }) => {
           : SENDOUQ_LOOKING_PAGE,
       );
     }
-    case "SET_INITIAL_SP": {
-      validate(
-        !userHasSkill({ userId: user.id, season: season.nth }),
-        "Already set initial SP",
-      );
-
-      const defaultSkill =
-        data.tier === "higher"
-          ? DEFAULT_SKILL_HIGH
-          : data.tier === "default"
-          ? DEFAULT_SKILL_MID
-          : DEFAULT_SKILL_LOW;
-
-      addInitialSkill({
-        mu: defaultSkill.mu,
-        season: season.nth,
-        sigma: defaultSkill.sigma,
-        userId: user.id,
-      });
-
-      return null;
-    }
     default: {
       assertUnreachable(data);
     }
@@ -201,10 +168,6 @@ export const loader = async ({ request }: LoaderArgs) => {
   const upcomingSeason = !season ? nextSeason(now) : undefined;
 
   return {
-    hasSkill:
-      season && user
-        ? userHasSkill({ userId: user.id, season: season.nth })
-        : null,
     season,
     upcomingSeason,
     groupInvitedTo,
@@ -235,22 +198,20 @@ export default function QPage() {
       ) : null}
       {data.season ? (
         <>
-          {data.hasSkill && data.groupInvitedTo === null ? (
+          {data.groupInvitedTo === null ? (
             <Alert variation="WARNING">
               Invite code doesn&apos;t match any active team
             </Alert>
           ) : null}
           {data.groupInvitedTo &&
-          data.groupInvitedTo.members.length < FULL_GROUP_SIZE &&
-          data.hasSkill ? (
+          data.groupInvitedTo.members.length < FULL_GROUP_SIZE ? (
             <JoinTeamDialog
               open={dialogOpen}
               close={() => setDialogOpen(false)}
               members={data.groupInvitedTo.members}
             />
           ) : null}
-          {!data.hasSkill && user ? <StartRank /> : null}
-          {user && data.hasSkill ? (
+          {user ? (
             <>
               <fetcher.Form className="stack md" method="post">
                 <input type="hidden" name="_action" value="JOIN_QUEUE" />
@@ -279,8 +240,7 @@ export default function QPage() {
                 </div>
               </fetcher.Form>
             </>
-          ) : null}
-          {!user ? (
+          ) : (
             <form
               className="stack items-center"
               action={LOG_IN_URL}
@@ -290,7 +250,7 @@ export default function QPage() {
                 Log in to join SendouQ
               </Button>
             </form>
-          ) : null}
+          )}
         </>
       ) : null}
     </Main>
@@ -477,45 +437,5 @@ function UpcomingSeasonInfo({
       <br />
       Join Season {season.nth} starting {dateToString(starts)}
     </div>
-  );
-}
-
-// xxx: get rid of this
-function StartRank() {
-  const fetcher = useFetcher();
-
-  return (
-    <fetcher.Form method="post" className="stack md items-start">
-      <div>
-        <label>Starting rank</label>
-        {["higher", "default", "lower"].map((tier) => {
-          return (
-            <div key={tier} className="stack sm horizontal items-center">
-              <input
-                type="radio"
-                name="tier"
-                id={tier}
-                value={tier}
-                defaultChecked={tier === "default"}
-              />
-              <label htmlFor={tier} className="mb-0 text-capitalize">
-                {tier}
-              </label>
-            </div>
-          );
-        })}
-        <FormMessage type="info">
-          Decides your starting SP (MMR). &quot;Higher&quot; is recommended for
-          Plus Server level players. &quot;Lower&quot; for Low Ink eligible
-          players. &quot;Default&quot; for everyone else.
-        </FormMessage>
-        <FormMessage type="info" className="font-bold">
-          Setting initial SP is mandatory before you can join SendouQ.
-        </FormMessage>
-      </div>
-      <SubmitButton _action="SET_INITIAL_SP" state={fetcher.state}>
-        Submit
-      </SubmitButton>
-    </fetcher.Form>
   );
 }

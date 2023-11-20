@@ -338,7 +338,7 @@ export const stageImageUrl = (stageId: StageId) =>
   `/static-assets/img/stages/${stageId}`;
 export const brandImageUrl = (brand: "tentatek" | "takoroka") =>
   `/static-assets/img/layout/${brand}`;
-export const tierImageUrl = (tier: TierName) =>
+export const tierImageUrl = (tier: TierName | "CALCULATING") =>
   `/static-assets/img/tiers/${tier.toLowerCase()}`;
 export const preferenceEmojiUrl = (preference?: Preference) => {
   const emoji =

@@ -1,4 +1,4 @@
-import { rate as openskillRate, ordinal } from "openskill";
+import { rate as openskillRate, ordinal, rating } from "openskill";
 import type { Rating, Team } from "openskill/dist/types";
 import invariant from "tiny-invariant";
 
@@ -75,4 +75,8 @@ export function userIdsToIdentifier(userIds: number[]) {
 
 export function identifierToUserIds(identifier: string) {
   return identifier.split("-").map(Number);
+}
+
+export function defaultOrdinal() {
+  return ordinal(rating());
 }

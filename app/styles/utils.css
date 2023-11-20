@@ -226,6 +226,10 @@
   margin-inline-start: var(--s-2);
 }
 
+.ml-2-5 {
+  margin-inline-start: var(--s-2-5);
+}
+
 .ml-4 {
   margin-inline-start: var(--s-4);
 }

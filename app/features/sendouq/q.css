@@ -142,6 +142,10 @@
   margin-inline-start: auto;
 }
 
+.q__group-member__tier__placeholder {
+  min-width: 26.58px;
+}
+
 .q__group-member__extra-info {
   font-size: var(--fonts-xs);
   background-color: var(--bg-darker);

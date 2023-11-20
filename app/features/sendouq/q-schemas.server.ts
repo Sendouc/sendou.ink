@@ -24,10 +24,6 @@ export const frontPageSchema = z.union([
   z.object({
     _action: _action("JOIN_TEAM_WITH_TRUST"),
   }),
-  z.object({
-    _action: _action("SET_INITIAL_SP"),
-    tier: z.enum(["higher", "default", "lower"]),
-  }),
 ]);
 
 export const preparingSchema = z.union([
