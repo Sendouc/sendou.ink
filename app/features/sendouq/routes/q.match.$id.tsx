@@ -392,6 +392,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   };
 };
 
+// xxx: add "match duration" after reported, from - to (can probably remove reported by)
 export default function QMatchPage() {
   const user = useUser();
   const isMounted = useIsMounted();

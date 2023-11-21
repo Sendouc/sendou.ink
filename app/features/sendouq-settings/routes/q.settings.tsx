@@ -25,15 +25,35 @@ import { languagesUnified } from "~/modules/i18n/config";
 import type { MainWeaponId, ModeShort, StageId } from "~/modules/in-game-lists";
 import { stageIds } from "~/modules/in-game-lists";
 import { modesShort } from "~/modules/in-game-lists/modes";
-import { parseRequestFormData } from "~/utils/remix";
+import { type SendouRouteHandle, parseRequestFormData } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
-import { preferenceEmojiUrl } from "~/utils/urls";
+import {
+  SENDOUQ_PAGE,
+  SENDOUQ_SETTINGS_PAGE,
+  navIconUrl,
+  preferenceEmojiUrl,
+} from "~/utils/urls";
 import { SENDOUQ_WEAPON_POOL_MAX_SIZE } from "../q-settings-constants";
 import { settingsActionSchema } from "../q-settings-schemas.server";
 import styles from "../q-settings.css";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
+};
+
+export const handle: SendouRouteHandle = {
+  breadcrumb: () => [
+    {
+      imgPath: navIconUrl("sendouq"),
+      href: SENDOUQ_PAGE,
+      type: "IMAGE",
+    },
+    {
+      imgPath: navIconUrl("settings"),
+      href: SENDOUQ_SETTINGS_PAGE,
+      type: "IMAGE",
+    },
+  ],
 };
 
 export const action = async ({ request }: ActionArgs) => {
@@ -82,11 +102,9 @@ export const loader = async ({ request }: LoaderArgs) => {
   };
 };
 
-// xxx: back to q button
 export default function SendouQSettingsPage() {
   return (
     <Main className="stack sm">
-      <h2>SendouQ settings</h2>
       <div className="stack">
         <MapPicker />
         <WeaponPool />

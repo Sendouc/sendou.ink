@@ -100,6 +100,7 @@ export const SENDOUQ_YOUTUBE_VIDEO =
   "https://youtu.be/juOIDmkS1dw?si=iMU4LC_bDmp3fiB1";
 export const SENDOUQ_PAGE = "/q";
 export const SENDOUQ_RULES_PAGE = "/q/rules";
+export const SENDOUQ_SETTINGS_PAGE = "/q/settings";
 export const SENDOUQ_PREPARING_PAGE = "/q/preparing";
 export const SENDOUQ_LOOKING_PAGE = "/q/looking";
 export const TIERS_PAGE = "/tiers";

@@ -1696,20 +1696,24 @@ const randomMapList = (
   groupBravo: number,
 ): TournamentMapListMap[] => {
   const szOnly = faker.helpers.arrayElement([true, false]);
-  const modePattern = shuffle([...rankedModesShort]);
+
+  let modePattern = shuffle([...modesShort]).filter(() => Math.random() > 0.15);
+  if (modePattern.length === 0) {
+    modePattern = shuffle([...rankedModesShort]);
+  }
 
   const mapList: TournamentMapListMap[] = [];
   const stageIdsShuffled = shuffle([...stageIds]);
 
   for (let i = 0; i < 7; i++) {
-    const rankedMode = modePattern.pop()!;
+    const mode = modePattern.pop()!;
     mapList.push({
-      mode: szOnly ? "SZ" : rankedMode,
+      mode: szOnly ? "SZ" : mode,
       stageId: stageIdsShuffled.pop()!,
       source: i === 6 ? "BOTH" : i % 2 === 0 ? groupAlpha : groupBravo,
     });
 
-    modePattern.unshift(rankedMode);
+    modePattern.unshift(mode);
   }
 
   return mapList;
@@ -1734,8 +1738,7 @@ async function playedMatches() {
       }),
   );
 
-  // mid august 2021
-  let matchDate = new Date(Date.UTC(2021, 7, 15, 0, 0, 0, 0));
+  let matchDate = new Date(Date.UTC(2023, 9, 15, 0, 0, 0, 0));
   for (let i = 0; i < MATCHES_COUNT; i++) {
     const groupMembers = shuffle([..._groupMembers]);
     const groupAlphaMembers = groupMembers.pop()!;

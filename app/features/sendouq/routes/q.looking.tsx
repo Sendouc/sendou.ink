@@ -447,9 +447,10 @@ export const loader = async ({ request }: LoaderArgs) => {
   };
 };
 
-// xxx: link to settings here
-// xxx: headers?
-// xxx: liked groups left?
+// xxx: link to settings here... as well as to other places?
+// xxx: align better when tabs appear.. or different tabs style completely? - maybe this would allow getting rid of the "gap"
+// xxx: invitations -> challenges when full group
+// xxx: flipped
 export default function QLookingPage() {
   const data = useLoaderData<typeof loader>();
   const [searchParams] = useSearchParams();
@@ -596,6 +597,7 @@ function Groups() {
 
   const ownGroupElement = (
     <div className="stack md">
+      {!renderChat && <ColumnHeader>My group</ColumnHeader>}
       <GroupCard group={data.groups.own} ownRole={data.role} ownGroup />
       {ownGroup.inviteCode ? (
         <MemberAdder
@@ -606,6 +608,26 @@ function Groups() {
       <GroupLeaver
         type={ownGroup.members.length === 1 ? "LEAVE_Q" : "LEAVE_GROUP"}
       />
+      {!isMobile ? (
+        <>
+          <div className="stack sm">
+            <ColumnHeader>Invited</ColumnHeader>
+            {data.groups.neutral
+              .filter((group) => group.isLiked)
+              .map((group) => {
+                return (
+                  <GroupCard
+                    key={group.id}
+                    group={group}
+                    action="UNLIKE"
+                    ownRole={data.role}
+                    isExpired={data.expiryStatus === "EXPIRED"}
+                  />
+                );
+              })}
+          </div>
+        </>
+      ) : null}
     </div>
   );
 
@@ -620,7 +642,7 @@ function Groups() {
           <NewTabs
             tabs={[
               {
-                label: "Roster",
+                label: "My group",
                 number: data.groups.own.members!.length,
               },
               {
@@ -672,17 +694,20 @@ function Groups() {
               key: "groups",
               element: (
                 <div className="stack sm">
-                  {data.groups.neutral.map((group) => {
-                    return (
-                      <GroupCard
-                        key={group.id}
-                        group={group}
-                        action={group.isLiked ? "UNLIKE" : "LIKE"}
-                        ownRole={data.role}
-                        isExpired={data.expiryStatus === "EXPIRED"}
-                      />
-                    );
-                  })}
+                  <ColumnHeader>Available</ColumnHeader>
+                  {data.groups.neutral
+                    .filter((group) => isMobile || !group.isLiked)
+                    .map((group) => {
+                      return (
+                        <GroupCard
+                          key={group.id}
+                          group={group}
+                          action={group.isLiked ? "UNLIKE" : "LIKE"}
+                          ownRole={data.role}
+                          isExpired={data.expiryStatus === "EXPIRED"}
+                        />
+                      );
+                    })}
                 </div>
               ),
             },
@@ -720,6 +745,7 @@ function Groups() {
       </div>
       {!isMobile ? (
         <div className="stack sm q__groups-container__right">
+          <ColumnHeader>Invitations</ColumnHeader>
           {data.groups.likesReceived.map((group) => {
             return (
               <GroupCard
@@ -735,4 +761,14 @@ function Groups() {
       ) : null}
     </div>
   );
+}
+
+function ColumnHeader({ children }: { children: React.ReactNode }) {
+  const { width } = useWindowSize();
+
+  const isMobile = width < 750;
+
+  if (isMobile) return null;
+
+  return <div className="q__column-header">{children}</div>;
 }

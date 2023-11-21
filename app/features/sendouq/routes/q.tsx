@@ -40,13 +40,16 @@ import {
 import { makeTitle } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
 import {
+  LEADERBOARDS_PAGE,
   LOG_IN_URL,
   SENDOUQ_LOOKING_PAGE,
   SENDOUQ_PAGE,
   SENDOUQ_PREPARING_PAGE,
   SENDOUQ_RULES_PAGE,
+  SENDOUQ_SETTINGS_PAGE,
   SENDOUQ_YOUTUBE_VIDEO,
   navIconUrl,
+  userSeasonsPage,
 } from "~/utils/urls";
 import { FULL_GROUP_SIZE, JOIN_CODE_SEARCH_PARAM_KEY } from "../q-constants";
 import { frontPageSchema } from "../q-schemas.server";
@@ -56,6 +59,7 @@ import { addMember } from "../queries/addMember.server";
 import { deleteLikesByGroupId } from "../queries/deleteLikesByGroupId.server";
 import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.server";
 import { findGroupByInviteCode } from "../queries/findGroupByInviteCode.server";
+import { Image } from "~/components/Image";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -144,7 +148,6 @@ export const action: ActionFunction = async ({ request }) => {
   }
 };
 
-// xxx: remove map picking from here, link to settings
 export const loader = async ({ request }: LoaderArgs) => {
   const user = await getUserId(request);
 
@@ -193,6 +196,7 @@ export default function QPage() {
           Watch introduction video on YouTube by Chara
         </a>
       </div>
+      <QLinks />
       {data.upcomingSeason ? (
         <UpcomingSeasonInfo season={data.upcomingSeason} />
       ) : null}
@@ -215,15 +219,6 @@ export default function QPage() {
             <>
               <fetcher.Form className="stack md" method="post">
                 <input type="hidden" name="_action" value="JOIN_QUEUE" />
-                <div>
-                  <div className="stack horizontal items-center justify-between">
-                    <h2 className="q__header">Join the queue!</h2>
-                    <Link to={SENDOUQ_RULES_PAGE} className="text-xs font-bold">
-                      Rules
-                    </Link>
-                  </div>
-                  <ActiveSeasonInfo season={data.season} />
-                </div>
                 <div className="stack horizontal md items-center mt-4 mx-auto">
                   <SubmitButton icon={<UsersIcon />}>
                     Join with mates
@@ -238,6 +233,7 @@ export default function QPage() {
                     Join solo
                   </SubmitButton>
                 </div>
+                <ActiveSeasonInfo season={data.season} />
               </fetcher.Form>
             </>
           ) : (
@@ -400,7 +396,7 @@ function ActiveSeasonInfo({
 
   return (
     <div
-      className={clsx("text-lighter text-xs", {
+      className={clsx("text-lighter text-xs text-center", {
         invisible: !isMounted,
       })}
     >
@@ -411,6 +407,68 @@ function ActiveSeasonInfo({
         </b>
       ) : null}
     </div>
+  );
+}
+
+// xxx: streams
+// xxx: how to play
+// xxx: todo icons
+function QLinks() {
+  const user = useUser();
+
+  return (
+    <div className="stack sm">
+      <QLink
+        navIcon="settings"
+        title="Rules"
+        url={SENDOUQ_RULES_PAGE}
+        subText="Read these before playing"
+      />
+      {user ? (
+        <QLink
+          navIcon="settings"
+          title="Settings"
+          url={SENDOUQ_SETTINGS_PAGE}
+          subText="Map preferences, weapon pool, voice chat & sounds"
+        />
+      ) : null}
+      <QLink
+        navIcon="leaderboards"
+        title="Leaderboards"
+        url={LEADERBOARDS_PAGE}
+        subText="SendouQ solo and team leaderboads"
+      />
+      {user ? (
+        <QLink
+          navIcon="u"
+          title="My season"
+          url={userSeasonsPage({ user })}
+          subText="Match and SP history"
+        />
+      ) : null}
+    </div>
+  );
+}
+
+function QLink({
+  url,
+  navIcon,
+  title,
+  subText,
+}: {
+  url: string;
+  navIcon: string;
+  title: string;
+  subText: string;
+}) {
+  return (
+    <Link to={url} className="q__front-page-link">
+      <Image path={navIconUrl(navIcon)} alt="" width={32} />
+      <div>
+        {title}
+        <div className="q__front-page-link__sub-text">{subText}</div>
+      </div>
+    </Link>
   );
 }
 

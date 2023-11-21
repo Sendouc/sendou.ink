@@ -34,7 +34,7 @@ import {
   currentOrPreviousSeason,
   seasonObject,
 } from "~/features/mmr/season";
-import { userSkills } from "~/features/mmr/tiered.server";
+import { userSkills as _userSkills } from "~/features/mmr/tiered.server";
 import { seasonMapWinrateByUserId } from "~/features/sendouq/queries/seasonMapWinrateByUserId.server";
 import {
   seasonMatchesByUserId,
@@ -52,7 +52,7 @@ import {
   type ModeShort,
   type StageId,
 } from "~/modules/in-game-lists";
-import { rankedModesShort } from "~/modules/in-game-lists/modes";
+import { modesShort } from "~/modules/in-game-lists/modes";
 import { atOrError } from "~/utils/arrays";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { cutToNDecimalPlaces } from "~/utils/number";
@@ -83,7 +83,8 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     await UserRepository.identifierToUserId(identifier),
   );
 
-  const { tier } = (await userSkills(season)).userSkills[user.id] ?? {
+  const { isAccurateTiers, userSkills } = await _userSkills(season);
+  const { tier } = userSkills[user.id] ?? {
     approximate: false,
     ordinal: 0,
     tier: { isPlus: false, name: "IRON" },
@@ -97,6 +98,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     },
     skills: seasonAllMMRByUserId({ season, userId: user.id }),
     tier,
+    isAccurateTiers,
     matches: {
       value: seasonMatchesByUserId({ season, userId: user.id, page }),
       currentPage: page,
@@ -125,8 +127,6 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   };
 };
 
-// xxx: turf war to stages
-// xxx: tentative next to skill tier
 const DAYS_WITH_SKILL_NEEDED_TO_SHOW_POWER_CHART = 2;
 export default function UserSeasonsPage() {
   const data = useLoaderData<typeof loader>();
@@ -302,6 +302,18 @@ function Rank({ currentOrdinal }: { currentOrdinal: number }) {
           {data.tier.name}
           {data.tier.isPlus ? "+" : ""}
         </div>
+        <div className="u__season__tentative">
+          Tentative
+          <Popover
+            buttonChildren={<>?</>}
+            contentClassName="u__season__tentative__explanation"
+          >
+            Leaderboard has low amount of entries. Once enough players have
+            finished their calculations the ranking tiers will recalculate. For
+            most players it will mean that their tier goes down. SP always stays
+            the same.
+          </Popover>
+        </div>
         <div className="text-lg font-bold">{ordinalToSp(currentOrdinal)}SP</div>
         {!peakAndCurrentSame ? (
           <div className="text-lighter text-sm">
@@ -412,7 +424,7 @@ function Stages({
         return (
           <div key={id} className="stack sm">
             <StageImage stageId={id} height={48} className="rounded" />
-            {rankedModesShort.map((mode) => {
+            {modesShort.map((mode) => {
               const stats = stages[id]?.[mode];
               const winPercentage = stats
                 ? cutToNDecimalPlaces(

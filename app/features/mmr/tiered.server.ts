@@ -25,19 +25,21 @@ export interface TieredSkill {
 export function freshUserSkills(season: number): {
   userSkills: Record<string, TieredSkill>;
   intervals: SkillTierInterval[];
+  isAccurateTiers: boolean;
 } {
   const points = orderedMMRBySeason({
     season,
     type: "user",
   });
 
-  const tierIntervals = skillTierIntervals(points, "user");
+  const { intervals, isAccurateTiers } = skillTierIntervals(points, "user");
 
   return {
-    intervals: tierIntervals,
+    intervals,
+    isAccurateTiers,
     userSkills: Object.fromEntries(
       points.map((p) => {
-        const { name, isPlus } = tierIntervals.find(
+        const { name, isPlus } = intervals.find(
           (t) => t.neededOrdinal! <= p.ordinal,
         ) ?? { name: "IRON", isPlus: false };
         return [
@@ -67,7 +69,9 @@ export async function userSkills(season: number) {
   return cachedSkills;
 }
 
-export type SkillTierInterval = ReturnType<typeof skillTierIntervals>[number];
+export type SkillTierInterval = ReturnType<
+  typeof skillTierIntervals
+>["intervals"][number];
 
 function skillTierIntervals(
   orderedPoints: Array<Pick<Skill, "ordinal" | "matchesCount">>,
@@ -112,7 +116,7 @@ function skillTierIntervals(
 
   if (points.length === 1) {
     result[0].neededOrdinal = points[0].ordinal;
-    return result;
+    return { intervals: result, isAccurateTiers: hasLeviathan };
   }
 
   let previousPercentiles = 0;
@@ -137,5 +141,5 @@ function skillTierIntervals(
     }
   }
 
-  return result;
+  return { intervals: result, isAccurateTiers: hasLeviathan };
 }
