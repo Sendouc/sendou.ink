@@ -7,7 +7,6 @@ import { Button } from "~/components/Button";
 import { WeaponCombobox } from "~/components/Combobox";
 import { ModeImage, StageImage, WeaponImage } from "~/components/Image";
 import { Main } from "~/components/Main";
-import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
 import { SubmitButton } from "~/components/SubmitButton";
 import { CrossIcon } from "~/components/icons/Cross";
 import { MapIcon } from "~/components/icons/Map";
@@ -423,11 +422,7 @@ function Languages() {
 
   return (
     <div className="stack">
-      <RequiredHiddenInput
-        isValid={value.length > 0}
-        name="languages"
-        value={JSON.stringify(value)}
-      />
+      <input type="hidden" name="languages" value={JSON.stringify(value)} />
       <label>Your languages</label>
       <select
         className="w-max"

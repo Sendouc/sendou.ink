@@ -40,6 +40,7 @@ export function matchMapList(
       seed: String(groupOne.id),
       modesIncluded,
       tiebreakerMaps: new MapPool([]),
+      followModeOrder: true,
       teams: [
         {
           id: groupOne.id,

@@ -137,10 +137,6 @@
   border-radius: var(--rounded);
 }
 
-.q__groups-container__right {
-  margin-top: 45px;
-}
-
 .q__group {
   background-color: var(--bg-lighter-solid);
   width: 100%;

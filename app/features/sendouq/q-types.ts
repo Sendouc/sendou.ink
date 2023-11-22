@@ -34,7 +34,7 @@ export type LookingGroup = {
     skill?: TieredSkill | "CALCULATING";
     vc?: User["vc"];
     inGameName?: User["inGameName"];
-    languages?: string[];
+    languages: string[];
     chatNameColor: string | null;
     skillDifference?: ParsedMemento["users"][number]["skillDifference"];
   }[];

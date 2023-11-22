@@ -21,7 +21,11 @@ import styles from "../../top-search/top-search.css";
 import { userSPLeaderboard } from "../queries/userSPLeaderboard.server";
 import type { SendouRouteHandle } from "~/utils/remix";
 import React from "react";
-import { LEADERBOARD_TYPES } from "../leaderboards-constants";
+import {
+  DEFAULT_LEADERBOARD_MAX_SIZE,
+  LEADERBOARD_TYPES,
+  WEAPON_LEADERBOARD_MAX_SIZE,
+} from "../leaderboards-constants";
 import { useTranslation } from "~/hooks/useTranslation";
 import { i18next } from "~/modules/i18n";
 import {
@@ -56,6 +60,7 @@ import { TopTenPlayer } from "../components/TopTenPlayer";
 import { seasonHasTopTen } from "../leaderboards-utils";
 import { USER_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN } from "~/features/mmr/mmr-constants";
 import * as LeaderboardRepository from "~/features/leaderboards/LeaderboardRepository.server";
+import { getUser } from "~/features/auth/core";
 
 export const handle: SendouRouteHandle = {
   i18n: ["vods"],
@@ -89,6 +94,7 @@ const TYPE_SEARCH_PARAM_KEY = "type";
 const SEASON_SEARCH_PARAM_KEY = "season";
 
 export const loader = async ({ request }: LoaderArgs) => {
+  const user = await getUser(request);
   const t = await i18next.getFixedT(request);
   const unvalidatedType = new URL(request.url).searchParams.get(
     TYPE_SEARCH_PARAM_KEY,
@@ -105,7 +111,7 @@ export const loader = async ({ request }: LoaderArgs) => {
       (s) => unvalidatedSeason && s === Number(unvalidatedSeason),
     ) ?? currentOrPreviousSeason(new Date())!.nth;
 
-  const userLeaderboard = type.includes("USER")
+  const fullUserLeaderboard = type.includes("USER")
     ? await cachified({
         key: `user-leaderboard-season-${season}`,
         cache,
@@ -130,6 +136,11 @@ export const loader = async ({ request }: LoaderArgs) => {
       })
     : null;
 
+  const userLeaderboard = fullUserLeaderboard?.slice(
+    0,
+    DEFAULT_LEADERBOARD_MAX_SIZE,
+  );
+
   const teamLeaderboard =
     type === "TEAM"
       ? await cachified({
@@ -142,16 +153,27 @@ export const loader = async ({ request }: LoaderArgs) => {
         })
       : null;
 
-  const filteredLeaderboard =
-    userLeaderboard && type !== "USER"
-      ? filterByWeaponCategory(
-          userLeaderboard,
-          type.split("-")[1] as (typeof weaponCategories)[number]["name"],
+  const isWeaponLeaderboard = userLeaderboard && type !== "USER";
+
+  const filteredLeaderboard = isWeaponLeaderboard
+    ? filterByWeaponCategory(
+        fullUserLeaderboard!,
+        type.split("-")[1] as (typeof weaponCategories)[number]["name"],
+      ).slice(0, WEAPON_LEADERBOARD_MAX_SIZE)
+    : userLeaderboard;
+
+  const ownEntryPeek =
+    fullUserLeaderboard && !isWeaponLeaderboard && user
+      ? fullUserLeaderboard.find(
+          (entry) =>
+            entry.id === user.id &&
+            entry.placementRank > DEFAULT_LEADERBOARD_MAX_SIZE,
         )
-      : userLeaderboard;
+      : null;
 
   return {
     userLeaderboard: filteredLeaderboard ?? userLeaderboard,
+    ownEntryPeek,
     teamLeaderboard,
     xpLeaderboard:
       type === "XP-ALL"
@@ -296,6 +318,8 @@ export default function LeaderboardsPage() {
         </div>
       ) : null}
 
+      {data.ownEntryPeek ? <OwnEntryPeek entry={data.ownEntryPeek} /> : null}
+
       {data.userLeaderboard ? (
         <PlayersTable
           entries={data.userLeaderboard}
@@ -320,6 +344,42 @@ export default function LeaderboardsPage() {
         </div>
       ) : null}
     </Main>
+  );
+}
+
+// xxx: current tier -> next tier
+function OwnEntryPeek({
+  entry,
+}: {
+  entry: NonNullable<SerializeFrom<typeof loader>["userLeaderboard"]>[number];
+}) {
+  const data = useLoaderData<typeof loader>();
+
+  return (
+    <div>
+      <Link
+        to={userSeasonsPage({ user: entry, season: data.season })}
+        className="placements__table__row"
+      >
+        <div className="placements__table__inner-row">
+          <div className="placements__table__rank">{entry.placementRank}</div>
+          <div>
+            <Avatar size="xxs" user={entry} />
+          </div>
+          {typeof entry.weaponSplId === "number" ? (
+            <WeaponImage
+              className="placements__table__weapon"
+              variant="build"
+              weaponSplId={entry.weaponSplId}
+              width={32}
+              height={32}
+            />
+          ) : null}
+          <div className="placements__table__name">{entry.discordName}</div>
+          <div className="placements__table__power">{entry.power}</div>
+        </div>
+      </Link>
+    </div>
   );
 }
 

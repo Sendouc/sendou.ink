@@ -64,6 +64,7 @@ const generateMaps = ({
   ],
   tiebreakerMaps = tiebreakerPicks,
   modesIncluded = [...rankedModesShort],
+  followModeOrder = false,
 }: Partial<TournamentMaplistInput> = {}) => {
   return createTournamentMapList({
     bestOf,
@@ -71,6 +72,7 @@ const generateMaps = ({
     teams,
     tiebreakerMaps,
     modesIncluded,
+    followModeOrder,
   });
 };
 
@@ -89,6 +91,16 @@ TournamentMapListGenerator("Modes are spread evenly", () => {
 
     modes.delete(rankedMode);
   }
+});
+
+TournamentMapListGenerator("Follow mode order option", () => {
+  const mapList = generateMaps({ followModeOrder: true });
+
+  assert.equal(mapList[0].mode, "SZ");
+  assert.equal(mapList[1].mode, "TC");
+  assert.equal(mapList[2].mode, "RM");
+  assert.equal(mapList[3].mode, "CB");
+  assert.equal(mapList[4].mode, "SZ");
 });
 
 TournamentMapListGenerator("Equal picks", () => {

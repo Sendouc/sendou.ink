@@ -3,7 +3,7 @@ import { jsonArrayFrom } from "kysely/helpers/sqlite";
 import { db } from "~/db/sql";
 import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
 import {
-  LEADERBOARD_MAX_SIZE,
+  DEFAULT_LEADERBOARD_MAX_SIZE,
   MATCHES_COUNT_NEEDED_FOR_LEADERBOARD,
 } from "./leaderboards-constants";
 import { ordinalToSp } from "../mmr";
@@ -74,7 +74,7 @@ const teamLeaderboardBySeasonQuery = (season: number) =>
     .where("Skill.matchesCount", ">=", MATCHES_COUNT_NEEDED_FOR_LEADERBOARD)
     .where("Skill.season", "=", season)
     .orderBy("Skill.ordinal", "desc")
-    .limit(LEADERBOARD_MAX_SIZE);
+    .limit(DEFAULT_LEADERBOARD_MAX_SIZE);
 type TeamLeaderboardBySeasonQueryReturnType = InferResult<
   ReturnType<typeof teamLeaderboardBySeasonQuery>
 >;

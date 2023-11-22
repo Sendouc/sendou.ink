@@ -29,6 +29,7 @@ import { inGameNameWithoutDiscriminator } from "~/utils/strings";
 import * as React from "react";
 import type { SqlBool } from "kysely";
 import { MATCHES_COUNT_NEEDED_FOR_LEADERBOARD } from "~/features/leaderboards/leaderboards-constants";
+import { Flipped } from "react-flip-toolkit";
 
 export function GroupCard({
   group,
@@ -62,86 +63,88 @@ export function GroupCard({
     _hidenote;
 
   return (
-    <section
-      className={clsx("q__group", { "q__group__display-only": displayOnly })}
-    >
-      {group.members ? (
-        <div className="stack md">
-          {group.members.map((member) => {
-            return (
-              <GroupMember
-                member={member}
-                showActions={ownGroup && ownRole === "OWNER"}
-                key={member.discordId}
-                displayOnly={displayOnly}
-                hideVc={hideVc}
-                hideWeapons={hideWeapons}
-                hideNote={hideNote}
-                enableKicking={enableKicking}
-              />
-            );
-          })}
-        </div>
-      ) : null}
-      {group.futureMatchModes ? (
-        <div className="stack horizontal sm justify-center">
-          {group.futureMatchModes.map((mode) => {
-            return (
-              <div key={mode} className="q__group__future-match-mode">
-                <ModeImage mode={mode} />
-              </div>
-            );
-          })}
-        </div>
-      ) : null}
-      {group.tier && !displayOnly ? (
-        <div className="stack xs text-lighter font-bold items-center justify-center text-xs">
-          <TierImage tier={group.tier} width={100} />
-          <div>
-            {group.tier.name}
-            {group.tier.isPlus ? "+" : ""}{" "}
-            {group.isReplay ? (
-              <>
-                / <span className="text-theme-secondary">REPLAY</span>
-              </>
-            ) : null}
+    <Flipped flipId={group.id}>
+      <section
+        className={clsx("q__group", { "q__group__display-only": displayOnly })}
+      >
+        {group.members ? (
+          <div className="stack md">
+            {group.members.map((member) => {
+              return (
+                <GroupMember
+                  member={member}
+                  showActions={ownGroup && ownRole === "OWNER"}
+                  key={member.discordId}
+                  displayOnly={displayOnly}
+                  hideVc={hideVc}
+                  hideWeapons={hideWeapons}
+                  hideNote={hideNote}
+                  enableKicking={enableKicking}
+                />
+              );
+            })}
           </div>
-        </div>
-      ) : null}
-      {group.tier && displayOnly ? (
-        <div className="q__group__display-group-tier">
-          <TierImage tier={group.tier} width={38} />
-          {group.tier.name}
-          {group.tier.isPlus ? "+" : ""}
-        </div>
-      ) : null}
-      {group.skillDifference ? (
-        <GroupSkillDifference skillDifference={group.skillDifference} />
-      ) : null}
-      {action &&
-      (ownRole === "OWNER" || ownRole === "MANAGER") &&
-      !isExpired ? (
-        <fetcher.Form className="stack items-center" method="post">
-          <input type="hidden" name="targetGroupId" value={group.id} />
-          <SubmitButton
-            size="tiny"
-            variant={action === "UNLIKE" ? "destructive" : "outlined"}
-            _action={action}
-            state={fetcher.state}
-          >
-            {action === "MATCH_UP"
-              ? "Start match"
-              : action === "LIKE" && !group.members
-              ? "Challenge"
-              : action === "LIKE"
-              ? "Invite"
-              : action === "GROUP_UP"
-              ? "Group up"
-              : "Undo"}
-          </SubmitButton>
-        </fetcher.Form>
-      ) : null}
-    </section>
+        ) : null}
+        {group.futureMatchModes ? (
+          <div className="stack horizontal sm justify-center">
+            {group.futureMatchModes.map((mode) => {
+              return (
+                <div key={mode} className="q__group__future-match-mode">
+                  <ModeImage mode={mode} />
+                </div>
+              );
+            })}
+          </div>
+        ) : null}
+        {group.tier && !displayOnly ? (
+          <div className="stack xs text-lighter font-bold items-center justify-center text-xs">
+            <TierImage tier={group.tier} width={100} />
+            <div>
+              {group.tier.name}
+              {group.tier.isPlus ? "+" : ""}{" "}
+              {group.isReplay ? (
+                <>
+                  / <span className="text-theme-secondary">REPLAY</span>
+                </>
+              ) : null}
+            </div>
+          </div>
+        ) : null}
+        {group.tier && displayOnly ? (
+          <div className="q__group__display-group-tier">
+            <TierImage tier={group.tier} width={38} />
+            {group.tier.name}
+            {group.tier.isPlus ? "+" : ""}
+          </div>
+        ) : null}
+        {group.skillDifference ? (
+          <GroupSkillDifference skillDifference={group.skillDifference} />
+        ) : null}
+        {action &&
+        (ownRole === "OWNER" || ownRole === "MANAGER") &&
+        !isExpired ? (
+          <fetcher.Form className="stack items-center" method="post">
+            <input type="hidden" name="targetGroupId" value={group.id} />
+            <SubmitButton
+              size="tiny"
+              variant={action === "UNLIKE" ? "destructive" : "outlined"}
+              _action={action}
+              state={fetcher.state}
+            >
+              {action === "MATCH_UP"
+                ? "Start match"
+                : action === "LIKE" && !group.members
+                ? "Challenge"
+                : action === "LIKE"
+                ? "Invite"
+                : action === "GROUP_UP"
+                ? "Group up"
+                : "Undo"}
+            </SubmitButton>
+          </fetcher.Form>
+        ) : null}
+      </section>
+    </Flipped>
   );
 }
 

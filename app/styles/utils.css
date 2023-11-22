@@ -222,6 +222,10 @@
   margin-inline-start: auto;
 }
 
+.ml-1 {
+  margin-inline-start: var(--s-1);
+}
+
 .ml-2 {
   margin-inline-start: var(--s-2);
 }

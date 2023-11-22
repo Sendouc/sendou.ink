@@ -73,6 +73,9 @@ import { GroupLeaver } from "../components/GroupLeaver";
 import * as NotificationService from "~/features/chat/NotificationService.server";
 import { chatCodeByGroupId } from "../queries/chatCodeByGroupId.server";
 import * as QRepository from "~/features/sendouq/QRepository.server";
+import { Flipper } from "react-flip-toolkit";
+import { Alert } from "~/components/Alert";
+import { useUser } from "~/features/auth/core";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q"],
@@ -448,15 +451,23 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 // xxx: link to settings here... as well as to other places?
-// xxx: align better when tabs appear.. or different tabs style completely? - maybe this would allow getting rid of the "gap"
 // xxx: invitations -> challenges when full group
-// xxx: flipped
 export default function QLookingPage() {
+  const user = useUser();
   const data = useLoaderData<typeof loader>();
   const [searchParams] = useSearchParams();
   useAutoRefresh(data.lastUpdated);
 
   const wasTryingToJoinAnotherTeam = searchParams.get("joining") === "true";
+
+  const isAlone = data.groups.own.members!.length === 1;
+  const hasWeaponPool = Boolean(
+    data.groups.own.members!.find((m) => m.id === user?.id)?.weapons,
+  );
+  const hasVCStatus =
+    (data.groups.own.members!.find((m) => m.id === user?.id)?.languages ?? [])
+      .length > 0;
+  const showGoToSettingPrompt = isAlone && (!hasWeaponPool || !hasVCStatus);
 
   return (
     <Main className="stack md">
@@ -465,6 +476,12 @@ export default function QLookingPage() {
         <div className="text-warning text-center">
           Before joining another group, leave the current one
         </div>
+      ) : null}
+      {showGoToSettingPrompt ? (
+        <Alert variation="INFO">
+          To help group finding set your <b>weapon pool</b> and{" "}
+          <b>voice chat status</b> on the settings page
+        </Alert>
       ) : null}
       <Groups />
     </Main>
@@ -578,19 +595,41 @@ function Groups() {
 
   const renderChat = data.groups.own.members!.length > 1;
 
+  const invitedGroupsDesktop = (
+    <div className="stack sm">
+      <ColumnHeader>Invited</ColumnHeader>
+      {data.groups.neutral
+        .filter((group) => group.isLiked)
+        .map((group) => {
+          return (
+            <GroupCard
+              key={group.id}
+              group={group}
+              action="UNLIKE"
+              ownRole={data.role}
+              isExpired={data.expiryStatus === "EXPIRED"}
+            />
+          );
+        })}
+    </div>
+  );
+
   const chatElement = (
     <div>
       {renderChat ? (
-        <Chat
-          rooms={rooms}
-          users={chatUsers}
-          className="w-full q__chat-container"
-          messagesContainerClassName="q__chat-messages-container"
-          onNewMessage={onNewMessage}
-          chat={chat}
-          onMount={onChatMount}
-          onUnmount={onChatUnmount}
-        />
+        <>
+          <Chat
+            rooms={rooms}
+            users={chatUsers}
+            className="w-full q__chat-container"
+            messagesContainerClassName="q__chat-messages-container"
+            onNewMessage={onNewMessage}
+            chat={chat}
+            onMount={onChatMount}
+            onUnmount={onChatUnmount}
+          />
+          <div className="mt-4">{invitedGroupsDesktop}</div>
+        </>
       ) : null}
     </div>
   );
@@ -608,158 +647,148 @@ function Groups() {
       <GroupLeaver
         type={ownGroup.members.length === 1 ? "LEAVE_Q" : "LEAVE_GROUP"}
       />
-      {!isMobile ? (
-        <>
-          <div className="stack sm">
-            <ColumnHeader>Invited</ColumnHeader>
-            {data.groups.neutral
-              .filter((group) => group.isLiked)
-              .map((group) => {
-                return (
-                  <GroupCard
-                    key={group.id}
-                    group={group}
-                    action="UNLIKE"
-                    ownRole={data.role}
-                    isExpired={data.expiryStatus === "EXPIRED"}
-                  />
-                );
-              })}
-          </div>
-        </>
-      ) : null}
+      {!isMobile ? invitedGroupsDesktop : null}
     </div>
   );
 
+  const flipKey = `${data.groups.neutral
+    .map((g) => `${g.id}-${g.isLiked}`)
+    .join(":")};${data.groups.likesReceived.map((g) => g.id).join(":")}`;
+
   return (
-    <div
-      className={clsx("q__groups-container", {
-        "q__groups-container__mobile": isMobile,
-      })}
-    >
-      {!isMobile ? (
-        <div>
+    <Flipper flipKey={flipKey}>
+      <div
+        className={clsx("q__groups-container", {
+          "q__groups-container__mobile": isMobile,
+        })}
+      >
+        {!isMobile ? (
+          <div>
+            <NewTabs
+              disappearing
+              type="divider"
+              tabs={[
+                {
+                  label: "My group",
+                  number: data.groups.own.members!.length,
+                },
+                {
+                  label: "Chat",
+                  hidden: !renderChat,
+                  number: unseenMessages,
+                },
+              ]}
+              content={[
+                {
+                  key: "own",
+                  element: ownGroupElement,
+                },
+                {
+                  key: "chat",
+                  element: chatElement,
+                  hidden: !data.chatCode,
+                },
+              ]}
+            />
+          </div>
+        ) : null}
+        <div className="q__groups-inner-container">
           <NewTabs
+            disappearing
+            scrolling={isMobile}
             tabs={[
               {
-                label: "My group",
+                label: "Groups",
+                number: data.groups.neutral.length,
+              },
+              {
+                label: isFullGroup ? "Challenges" : "Invitations",
+                number: data.groups.likesReceived.length,
+                hidden: !isMobile,
+              },
+              {
+                label: "Roster",
                 number: data.groups.own.members!.length,
+                hidden: !isMobile,
               },
               {
                 label: "Chat",
-                hidden: !renderChat,
+                hidden: !isMobile || !renderChat,
                 number: unseenMessages,
               },
             ]}
             content={[
               {
-                key: "own",
-                element: ownGroupElement,
+                key: "groups",
+                element: (
+                  <div className="stack sm">
+                    <ColumnHeader>Available</ColumnHeader>
+                    {data.groups.neutral
+                      .filter((group) => isMobile || !group.isLiked)
+                      .map((group) => {
+                        return (
+                          <GroupCard
+                            key={group.id}
+                            group={group}
+                            action={group.isLiked ? "UNLIKE" : "LIKE"}
+                            ownRole={data.role}
+                            isExpired={data.expiryStatus === "EXPIRED"}
+                          />
+                        );
+                      })}
+                  </div>
+                ),
               },
               {
-                key: "chat",
-                element: chatElement,
-                hidden: !data.chatCode,
-              },
-            ]}
-          />
-        </div>
-      ) : null}
-      <div className="q__groups-inner-container">
-        <NewTabs
-          scrolling={isMobile}
-          tabs={[
-            {
-              label: "Groups",
-              number: data.groups.neutral.length,
-            },
-            {
-              label: isFullGroup ? "Challenges" : "Invitations",
-              number: data.groups.likesReceived.length,
-              hidden: !isMobile,
-            },
-            {
-              label: "Roster",
-              number: data.groups.own.members!.length,
-              hidden: !isMobile,
-            },
-            {
-              label: "Chat",
-              hidden: !isMobile || !renderChat,
-              number: unseenMessages,
-            },
-          ]}
-          content={[
-            {
-              key: "groups",
-              element: (
-                <div className="stack sm">
-                  <ColumnHeader>Available</ColumnHeader>
-                  {data.groups.neutral
-                    .filter((group) => isMobile || !group.isLiked)
-                    .map((group) => {
+                key: "received",
+                hidden: !isMobile,
+                element: (
+                  <div className="stack sm">
+                    {data.groups.likesReceived.map((group) => {
                       return (
                         <GroupCard
                           key={group.id}
                           group={group}
-                          action={group.isLiked ? "UNLIKE" : "LIKE"}
+                          action={isFullGroup ? "MATCH_UP" : "GROUP_UP"}
                           ownRole={data.role}
                           isExpired={data.expiryStatus === "EXPIRED"}
                         />
                       );
                     })}
-                </div>
-              ),
-            },
-            {
-              key: "received",
-              hidden: !isMobile,
-              element: (
-                <div className="stack sm">
-                  {data.groups.likesReceived.map((group) => {
-                    return (
-                      <GroupCard
-                        key={group.id}
-                        group={group}
-                        action={isFullGroup ? "MATCH_UP" : "GROUP_UP"}
-                        ownRole={data.role}
-                        isExpired={data.expiryStatus === "EXPIRED"}
-                      />
-                    );
-                  })}
-                </div>
-              ),
-            },
-            {
-              key: "own",
-              hidden: !isMobile,
-              element: ownGroupElement,
-            },
-            {
-              key: "chat",
-              element: chatElement,
-              hidden: !isMobile || !data.chatCode,
-            },
-          ]}
-        />
-      </div>
-      {!isMobile ? (
-        <div className="stack sm q__groups-container__right">
-          <ColumnHeader>Invitations</ColumnHeader>
-          {data.groups.likesReceived.map((group) => {
-            return (
-              <GroupCard
-                key={group.id}
-                group={group}
-                action={isFullGroup ? "MATCH_UP" : "GROUP_UP"}
-                ownRole={data.role}
-                isExpired={data.expiryStatus === "EXPIRED"}
-              />
-            );
-          })}
+                  </div>
+                ),
+              },
+              {
+                key: "own",
+                hidden: !isMobile,
+                element: ownGroupElement,
+              },
+              {
+                key: "chat",
+                element: chatElement,
+                hidden: !isMobile || !data.chatCode,
+              },
+            ]}
+          />
         </div>
-      ) : null}
-    </div>
+        {!isMobile ? (
+          <div className="stack sm">
+            <ColumnHeader>Invitations</ColumnHeader>
+            {data.groups.likesReceived.map((group) => {
+              return (
+                <GroupCard
+                  key={group.id}
+                  group={group}
+                  action={isFullGroup ? "MATCH_UP" : "GROUP_UP"}
+                  ownRole={data.role}
+                  isExpired={data.expiryStatus === "EXPIRED"}
+                />
+              );
+            })}
+          </div>
+        ) : null}
+      </div>
+    </Flipper>
   );
 }
 

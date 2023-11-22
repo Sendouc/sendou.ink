@@ -12,7 +12,6 @@ type ModeWithStageAndScore = TournamentMapListMap & { score: number };
 
 const OPTIMAL_MAPLIST_SCORE = 0;
 
-// xxx: prefer mode first in array?
 export function createTournamentMapList(
   input: TournamentMaplistInput,
 ): Array<TournamentMapListMap> {
@@ -258,6 +257,10 @@ export function createTournamentMapList(
   function isNotFollowingModePattern(stage: StageValidatorInput) {
     if (tournamentIsOneModeOnly()) return false;
 
+    if (input.followModeOrder) {
+      return isNotFollowingModeOrder(stage);
+    }
+
     // not all modes appeared yet
     if (mapList.length < input.modesIncluded.length) return false;
 
@@ -274,6 +277,16 @@ export function createTournamentMapList(
     invariant(previousModeShouldBe, "Couldn't resolve maplist pattern");
 
     return mapList[mapList.length - 1]!.mode !== previousModeShouldBe;
+  }
+
+  function isNotFollowingModeOrder(stage: StageValidatorInput) {
+    let currentIndex = 0;
+    for (let i = 0; i < mapList.length; i++) {
+      currentIndex++;
+      if (currentIndex === input.modesIncluded.length) currentIndex = 0;
+    }
+
+    return stage.mode !== input.modesIncluded[currentIndex];
   }
 
   // don't allow making two picks from one team in row
