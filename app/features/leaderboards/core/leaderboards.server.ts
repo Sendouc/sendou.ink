@@ -1,10 +1,12 @@
-import { freshUserSkills } from "~/features/mmr/tiered.server";
+import { freshUserSkills, userSkills } from "~/features/mmr/tiered.server";
 import type { UserSPLeaderboardItem } from "../queries/userSPLeaderboard.server";
 import type { SeasonPopularUsersWeapon } from "../queries/seasonPopularUsersWeapon.server";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { weaponCategories } from "~/modules/in-game-lists";
 import { seasonHasTopTen } from "../leaderboards-utils";
 import { currentOrPreviousSeason } from "~/features/mmr/season";
+import { DEFAULT_LEADERBOARD_MAX_SIZE } from "../leaderboards-constants";
+import { spToOrdinal } from "~/features/mmr/mmr-utils";
 
 export function addTiers(entries: UserSPLeaderboardItem[], season: number) {
   const tiers = freshUserSkills(season);
@@ -99,4 +101,37 @@ export function addPlacementRank<T>(entries: T[]) {
     ...entry,
     placementRank: index + 1,
   }));
+}
+
+export async function ownEntryPeek({
+  leaderboard,
+  userId,
+  season,
+}: {
+  leaderboard: UserSPLeaderboardItem[];
+  userId: number;
+  season: number;
+}) {
+  const found = leaderboard.find(
+    (entry) =>
+      entry.id === userId && entry.placementRank > DEFAULT_LEADERBOARD_MAX_SIZE,
+  );
+
+  if (!found) return null;
+
+  const withTier = addTiers([found], season)[0];
+
+  const { intervals } = await userSkills(season);
+
+  return {
+    entry: withTier,
+    nextTier: intervals
+      .slice()
+      .reverse()
+      .find(
+        (tier) =>
+          tier.neededOrdinal &&
+          tier.neededOrdinal > spToOrdinal(withTier.power),
+      ),
+  };
 }

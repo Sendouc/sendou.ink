@@ -51,6 +51,7 @@ import {
   addTiers,
   addWeapons,
   filterByWeaponCategory,
+  ownEntryPeek,
 } from "../core/leaderboards.server";
 import { seasonPopularUsersWeapon } from "../queries/seasonPopularUsersWeapon.server";
 import { cachified } from "cachified";
@@ -61,6 +62,8 @@ import { seasonHasTopTen } from "../leaderboards-utils";
 import { USER_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN } from "~/features/mmr/mmr-constants";
 import * as LeaderboardRepository from "~/features/leaderboards/LeaderboardRepository.server";
 import { getUser } from "~/features/auth/core";
+import type { SkillTierInterval } from "~/features/mmr/tiered.server";
+import { ordinalToSp } from "~/features/mmr";
 
 export const handle: SendouRouteHandle = {
   i18n: ["vods"],
@@ -162,18 +165,17 @@ export const loader = async ({ request }: LoaderArgs) => {
       ).slice(0, WEAPON_LEADERBOARD_MAX_SIZE)
     : userLeaderboard;
 
-  const ownEntryPeek =
-    fullUserLeaderboard && !isWeaponLeaderboard && user
-      ? fullUserLeaderboard.find(
-          (entry) =>
-            entry.id === user.id &&
-            entry.placementRank > DEFAULT_LEADERBOARD_MAX_SIZE,
-        )
-      : null;
+  const showOwnEntryPeek = fullUserLeaderboard && !isWeaponLeaderboard && user;
 
   return {
     userLeaderboard: filteredLeaderboard ?? userLeaderboard,
-    ownEntryPeek,
+    ownEntryPeek: showOwnEntryPeek
+      ? await ownEntryPeek({
+          leaderboard: fullUserLeaderboard,
+          season,
+          userId: user.id,
+        })
+      : null,
     teamLeaderboard,
     xpLeaderboard:
       type === "XP-ALL"
@@ -318,7 +320,12 @@ export default function LeaderboardsPage() {
         </div>
       ) : null}
 
-      {data.ownEntryPeek ? <OwnEntryPeek entry={data.ownEntryPeek} /> : null}
+      {data.ownEntryPeek ? (
+        <OwnEntryPeek
+          entry={data.ownEntryPeek.entry}
+          nextTier={data.ownEntryPeek.nextTier}
+        />
+      ) : null}
 
       {data.userLeaderboard ? (
         <PlayersTable
@@ -347,38 +354,55 @@ export default function LeaderboardsPage() {
   );
 }
 
-// xxx: current tier -> next tier
 function OwnEntryPeek({
   entry,
+  nextTier,
 }: {
   entry: NonNullable<SerializeFrom<typeof loader>["userLeaderboard"]>[number];
+  nextTier?: SkillTierInterval;
 }) {
   const data = useLoaderData<typeof loader>();
 
   return (
     <div>
-      <Link
-        to={userSeasonsPage({ user: entry, season: data.season })}
-        className="placements__table__row"
-      >
-        <div className="placements__table__inner-row">
-          <div className="placements__table__rank">{entry.placementRank}</div>
-          <div>
-            <Avatar size="xxs" user={entry} />
-          </div>
-          {typeof entry.weaponSplId === "number" ? (
-            <WeaponImage
-              className="placements__table__weapon"
-              variant="build"
-              weaponSplId={entry.weaponSplId}
-              width={32}
-              height={32}
-            />
-          ) : null}
-          <div className="placements__table__name">{entry.discordName}</div>
-          <div className="placements__table__power">{entry.power}</div>
+      {entry.tier ? (
+        <div className="placements__tier-header">
+          <TierImage tier={entry.tier} width={32} />
+          {entry.tier.name}
+          {entry.tier.isPlus ? "+" : ""}
         </div>
-      </Link>
+      ) : null}
+      <div>
+        <Link
+          to={userSeasonsPage({ user: entry, season: data.season })}
+          className="placements__table__row"
+        >
+          <div className="placements__table__inner-row">
+            <div className="placements__table__rank">{entry.placementRank}</div>
+            <div>
+              <Avatar size="xxs" user={entry} />
+            </div>
+            {typeof entry.weaponSplId === "number" ? (
+              <WeaponImage
+                className="placements__table__weapon"
+                variant="build"
+                weaponSplId={entry.weaponSplId}
+                width={32}
+                height={32}
+              />
+            ) : null}
+            <div className="placements__table__name">{entry.discordName}</div>
+            <div className="placements__table__power">{entry.power}</div>
+          </div>
+        </Link>
+      </div>
+      {nextTier ? (
+        <div className="text-xs text-lighter ml-auto stack items-end">
+          {nextTier.name}
+          {nextTier.isPlus ? "+" : ""} @ {ordinalToSp(nextTier.neededOrdinal!)}
+          SP
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -238,6 +238,14 @@ export interface GroupMember {
   userId: number;
 }
 
+export interface UserNote {
+  authorId: number;
+  targetId: number;
+  text: string | null;
+  sentiment: "POSITIVE" | "NEUTRAL" | "NEGATIVE";
+  updatedAt: Generated<number>;
+}
+
 export interface LogInLink {
   code: string;
   expiresAt: number;

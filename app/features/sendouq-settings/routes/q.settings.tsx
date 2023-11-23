@@ -35,6 +35,7 @@ import {
 import { SENDOUQ_WEAPON_POOL_MAX_SIZE } from "../q-settings-constants";
 import { settingsActionSchema } from "../q-settings-schemas.server";
 import styles from "../q-settings.css";
+import { BANNED_MAPS, COMMON_BANNED_MAPS } from "../banned-maps";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -213,16 +214,23 @@ function MapPicker() {
           </div>
 
           <div className="stack lg">
-            {stageIds.map((stageId) => (
-              <MapModeRadios
-                key={stageId}
-                stageId={stageId}
-                preferences={preferences.maps.filter(
-                  (map) => map.stageId === stageId,
-                )}
-                onPreferenceChange={handleMapPreferenceChange}
-              />
-            ))}
+            {stageIds
+              .filter(
+                (stageId) =>
+                  !COMMON_BANNED_MAPS.includes(
+                    stageId as (typeof COMMON_BANNED_MAPS)[number],
+                  ),
+              )
+              .map((stageId) => (
+                <MapModeRadios
+                  key={stageId}
+                  stageId={stageId}
+                  preferences={preferences.maps.filter(
+                    (map) => map.stageId === stageId,
+                  )}
+                  onPreferenceChange={handleMapPreferenceChange}
+                />
+              ))}
           </div>
         </div>
         <div className="mt-6">
@@ -257,24 +265,26 @@ function MapModeRadios({
     <div className="q__map-mode-radios-container">
       <StageImage stageId={stageId} width={250} className="rounded" />
       <div className="stack justify-evenly">
-        {modesShort.map((modeShort) => {
-          const preference = preferences.find(
-            (preference) =>
-              preference.mode === modeShort && preference.stageId === stageId,
-          );
+        {modesShort
+          .filter((modeShort) => !BANNED_MAPS[modeShort].includes(stageId))
+          .map((modeShort) => {
+            const preference = preferences.find(
+              (preference) =>
+                preference.mode === modeShort && preference.stageId === stageId,
+            );
 
-          return (
-            <div key={modeShort} className="stack horizontal xs my-1">
-              <ModeImage mode={modeShort} width={24} />
-              <PreferenceRadioGroup
-                preference={preference?.preference}
-                onPreferenceChange={(preference) =>
-                  onPreferenceChange({ mode: modeShort, preference, stageId })
-                }
-              />
-            </div>
-          );
-        })}
+            return (
+              <div key={modeShort} className="stack horizontal xs my-1">
+                <ModeImage mode={modeShort} width={24} />
+                <PreferenceRadioGroup
+                  preference={preference?.preference}
+                  onPreferenceChange={(preference) =>
+                    onPreferenceChange({ mode: modeShort, preference, stageId })
+                  }
+                />
+              </div>
+            );
+          })}
       </div>
     </div>
   );

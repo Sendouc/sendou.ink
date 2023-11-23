@@ -14,6 +14,7 @@ import { SENDOUQ_BEST_OF } from "../q-constants";
 import type { LookingGroupWithInviteCode } from "../q-types";
 import type { MatchById } from "../queries/findMatchById.server";
 import { addSkillsToGroups } from "./groups.server";
+import { BANNED_MAPS } from "~/features/sendouq-settings/banned-maps";
 
 const filterMapPoolByMode = (mapPool: MapPool, modesIncluded: ModeShort[]) =>
   new MapPool(
@@ -183,7 +184,11 @@ export function mapPoolFromPreferences(
       return a.score > b.score ? -1 : 1;
     });
 
-    for (const { stageId } of stagesWithScore.slice(
+    const bannedMapsExcluded = stagesWithScore.filter(
+      ({ stageId }) => !BANNED_MAPS[mode].includes(stageId),
+    );
+
+    for (const { stageId } of bannedMapsExcluded.slice(
       0,
       AMOUNT_OF_MAPS_TO_PICK,
     )) {
