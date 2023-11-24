@@ -18,6 +18,7 @@ export interface ButtonProps
   loadingText?: string;
   icon?: JSX.Element;
   testId?: string;
+  iconClassName?: string;
 }
 
 export function Button(props: ButtonProps) {
@@ -31,6 +32,7 @@ export function Button(props: ButtonProps) {
     icon,
     type = "button",
     testId,
+    iconClassName,
     ...rest
   } = props;
   return (
@@ -53,7 +55,7 @@ export function Button(props: ButtonProps) {
     >
       {icon &&
         React.cloneElement(icon, {
-          className: clsx("button-icon", { lonely: !children }),
+          className: clsx("button-icon", iconClassName, { lonely: !children }),
         })}
       {loading && loadingText ? loadingText : children}
     </button>
@@ -62,7 +64,13 @@ export function Button(props: ButtonProps) {
 
 type LinkButtonProps = Pick<
   ButtonProps,
-  "variant" | "children" | "className" | "size" | "testId" | "icon"
+  | "variant"
+  | "children"
+  | "className"
+  | "size"
+  | "testId"
+  | "icon"
+  | "iconClassName"
 > &
   Pick<LinkProps, "to" | "prefetch" | "state"> & { "data-cy"?: string } & {
     isExternal?: boolean;
@@ -79,6 +87,7 @@ export function LinkButton({
   state,
   testId,
   icon,
+  iconClassName,
 }: LinkButtonProps) {
   if (isExternal) {
     return (
@@ -96,7 +105,9 @@ export function LinkButton({
       >
         {icon &&
           React.cloneElement(icon, {
-            className: clsx("button-icon", { lonely: !children }),
+            className: clsx("button-icon", iconClassName, {
+              lonely: !children,
+            }),
           })}
         {children}
       </a>

@@ -1,7 +1,7 @@
 import { Link, useFetcher } from "@remix-run/react";
 import clsx from "clsx";
 import { Avatar } from "~/components/Avatar";
-import { Button } from "~/components/Button";
+import { Button, LinkButton } from "~/components/Button";
 import { Image, ModeImage, TierImage, WeaponImage } from "~/components/Image";
 import { Popover } from "~/components/Popover";
 import { SubmitButton } from "~/components/SubmitButton";
@@ -30,6 +30,7 @@ import * as React from "react";
 import type { SqlBool } from "kysely";
 import { MATCHES_COUNT_NEEDED_FOR_LEADERBOARD } from "~/features/leaderboards/leaderboards-constants";
 import { Flipped } from "react-flip-toolkit";
+import { EditIcon } from "~/components/icons/Edit";
 
 export function GroupCard({
   group,
@@ -42,6 +43,7 @@ export function GroupCard({
   hideWeapons = false,
   hideNote: _hidenote = false,
   enableKicking,
+  showAddNote,
 }: {
   group: Omit<LookingGroup, "createdAt" | "chatCode">;
   action?: "LIKE" | "UNLIKE" | "GROUP_UP" | "MATCH_UP";
@@ -53,7 +55,9 @@ export function GroupCard({
   hideWeapons?: SqlBool;
   hideNote?: boolean;
   enableKicking?: boolean;
+  showAddNote?: SqlBool;
 }) {
+  const user = useUser();
   const fetcher = useFetcher();
 
   const hideNote =
@@ -80,6 +84,7 @@ export function GroupCard({
                   hideWeapons={hideWeapons}
                   hideNote={hideNote}
                   enableKicking={enableKicking}
+                  showAddNote={showAddNote && member.id !== user?.id}
                 />
               );
             })}
@@ -148,6 +153,7 @@ export function GroupCard({
   );
 }
 
+// xxx: different color for icon if there is a note..?
 function GroupMember({
   member,
   showActions,
@@ -156,6 +162,7 @@ function GroupMember({
   hideWeapons,
   hideNote,
   enableKicking,
+  showAddNote,
 }: {
   member: NonNullable<LookingGroup["members"]>[number];
   showActions: boolean;
@@ -164,6 +171,7 @@ function GroupMember({
   hideWeapons?: SqlBool;
   hideNote?: boolean;
   enableKicking?: boolean;
+  showAddNote?: SqlBool;
 }) {
   const user = useUser();
 
@@ -210,6 +218,16 @@ function GroupMember({
               <Image path={navIconUrl("plus")} width={20} height={20} alt="" />
               {member.plusTier}
             </div>
+          ) : null}
+          {showAddNote ? (
+            <LinkButton
+              to={`?note=${member.id}`}
+              icon={<EditIcon />}
+              className="q__group-member__add-note-button"
+              iconClassName="q__group-member__add-note-button__icon"
+            >
+              Add note
+            </LinkButton>
           ) : null}
         </div>
         {member.weapons && member.weapons.length > 0 && !hideWeapons ? (
@@ -259,7 +277,7 @@ function MemberNote({
     stopEditing();
   }, [stopEditing]);
 
-  const newValueLegal = value.length <= SENDOUQ.NOTE_MAX_LENGTH;
+  const newValueLegal = value.length <= SENDOUQ.OWN_PUBLIC_NOTE_MAX_LENGTH;
 
   if (editing) {
     return (
@@ -289,7 +307,7 @@ function MemberNote({
             </SubmitButton>
           ) : (
             <span className="text-warning text-xxs font-semi-bold">
-              {value.length}/{SENDOUQ.NOTE_MAX_LENGTH}
+              {value.length}/{SENDOUQ.OWN_PUBLIC_NOTE_MAX_LENGTH}
             </span>
           )}
         </div>

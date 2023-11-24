@@ -16,19 +16,17 @@ module.exports.up = function (db) {
 
     db.prepare(
       /*sql*/ `
-      create table "UserNote" (
+      create table "PrivateUserNote" (
         "authorId" integer not null,
         "targetId" integer not null,
         "text" text,
         "sentiment" text not null,
+        "updatedAt" integer default (strftime('%s', 'now')) not null,
         foreign key ("authorId") references "User"("id") on delete cascade,
-        foreign key ("targetId") references "User"("id") on delete cascade
+        foreign key ("targetId") references "User"("id") on delete cascade,
+        unique("authorId", "targetId") on conflict rollback
       ) strict
     `,
-    ).run();
-
-    db.prepare(
-      /* sql */ `create index user_note_author_id_target_id on "UserNote"("authorId", "targetId")`,
     ).run();
   })();
 };

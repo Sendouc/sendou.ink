@@ -1,11 +1,16 @@
 import { sql } from "kysely";
 import { jsonArrayFrom } from "kysely/helpers/sqlite";
 import { db } from "~/db/sql";
-import type { Tables, UserMapModePreferences } from "~/db/tables";
+import type {
+  Tables,
+  TablesInsertable,
+  UserMapModePreferences,
+} from "~/db/tables";
 import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
 import type { LookingGroupWithInviteCode } from "./q-types";
 import { nanoid } from "nanoid";
 import { INVITE_CODE_LENGTH } from "~/constants";
+import { dateToDatabaseTimestamp } from "~/utils/dates";
 
 export function mapModePreferencesByGroupId(groupId: number) {
   return db
@@ -195,4 +200,25 @@ export async function createGroupFromPrevious(
 
     return createdGroup;
   });
+}
+
+export function upsertPrivateUserNote(
+  args: TablesInsertable["PrivateUserNote"],
+) {
+  return db
+    .insertInto("PrivateUserNote")
+    .values({
+      authorId: args.authorId,
+      targetId: args.targetId,
+      sentiment: args.sentiment,
+      text: args.text,
+    })
+    .onConflict((oc) =>
+      oc.columns(["authorId", "targetId"]).doUpdateSet({
+        sentiment: args.sentiment,
+        text: args.text,
+        updatedAt: dateToDatabaseTimestamp(new Date()),
+      }),
+    )
+    .execute();
 }

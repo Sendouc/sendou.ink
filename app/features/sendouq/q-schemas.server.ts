@@ -75,7 +75,7 @@ export const lookingSchema = z.union([
     _action: _action("UPDATE_NOTE"),
     value: z.preprocess(
       falsyToNull,
-      z.string().max(SENDOUQ.NOTE_MAX_LENGTH).nullable(),
+      z.string().max(SENDOUQ.OWN_PUBLIC_NOTE_MAX_LENGTH).nullable(),
     ),
   }),
 ]);
@@ -129,6 +129,12 @@ export const matchSchema = z.union([
   z.object({
     _action: _action("REPORT_WEAPONS"),
     weapons,
+  }),
+  z.object({
+    _action: _action("ADD_PRIVATE_USER_NOTE"),
+    text: z.string().max(SENDOUQ.PRIVATE_USER_NOTE_MAX_LENGTH),
+    sentiment: z.enum(["POSITIVE", "NEUTRAL", "NEGATIVE"]),
+    targetId: id,
   }),
 ]);
 

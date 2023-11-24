@@ -6,7 +6,13 @@ import type {
 } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import type { FetcherWithComponents } from "@remix-run/react";
-import { Link, useFetcher, useLoaderData } from "@remix-run/react";
+import {
+  Link,
+  useFetcher,
+  useLoaderData,
+  useNavigate,
+  useSearchParams,
+} from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
 import { Flipped, Flipper } from "react-flip-toolkit";
@@ -51,6 +57,7 @@ import {
   SENDOU_INK_DISCORD_URL,
   navIconUrl,
   preferenceEmojiUrl,
+  sendouQMatchPage,
   teamPage,
   userSubmittedImage,
 } from "~/utils/urls";
@@ -85,6 +92,8 @@ import { setGroupAsInactive } from "../queries/setGroupAsInactive.server";
 import { useRecentlyReportedWeapons } from "../q-hooks";
 import * as QRepository from "~/features/sendouq/QRepository.server";
 import * as QMatchRepository from "~/features/sendouq-match/QMatchRepository.server";
+import { AddPrivateNoteDialog } from "~/features/sendouq-match/components/AddPrivateNoteDialog";
+import { safeNumberParse } from "~/utils/number";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -327,6 +336,16 @@ export const action = async ({ request, params }: ActionArgs) => {
 
       break;
     }
+    case "ADD_PRIVATE_USER_NOTE": {
+      await QRepository.upsertPrivateUserNote({
+        authorId: user.id,
+        sentiment: data.sentiment,
+        targetId: data.targetId,
+        text: data.text,
+      });
+
+      break;
+    }
     default: {
       assertUnreachable(data);
     }
@@ -392,6 +411,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   };
 };
 
+// xxx: chat next to maplist
 export default function QMatchPage() {
   const user = useUser();
   const isMounted = useIsMounted();
@@ -400,6 +420,8 @@ export default function QMatchPage() {
   const [showWeaponsForm, setShowWeaponsForm] = React.useState(false);
   const submitScoreFetcher = useFetcher<typeof action>();
   const cancelScoreFetcher = useFetcher<typeof action>();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     setShowWeaponsForm(false);
@@ -448,8 +470,16 @@ export default function QMatchPage() {
     ].filter(Boolean) as ChatProps["rooms"];
   }, [data.matchChatCode, data.groupChatCode]);
 
+  const addingNoteFor = (
+    data.groupMemberOf === "ALPHA" ? data.groupAlpha : data.groupBravo
+  ).members.find((m) => m.id === safeNumberParse(searchParams.get("note")));
+
   return (
     <Main className="q-match__container stack lg">
+      <AddPrivateNoteDialog
+        aboutUser={addingNoteFor}
+        close={() => navigate(sendouQMatchPage(data.match.id))}
+      />
       <div className="q-match__header">
         <h2>Match #{data.match.id}</h2>
         <div
@@ -524,6 +554,9 @@ export default function QMatchPage() {
                     displayOnly
                     hideVc={data.match.isLocked || data.groupMemberOf !== side}
                     hideWeapons={data.match.isLocked}
+                    showAddNote={
+                      data.groupMemberOf === side && data.match.isLocked
+                    }
                   />
                 </div>
               );

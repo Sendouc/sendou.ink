@@ -238,7 +238,7 @@ export interface GroupMember {
   userId: number;
 }
 
-export interface UserNote {
+export interface PrivateUserNote {
   authorId: number;
   targetId: number;
   text: string | null;
@@ -641,6 +641,7 @@ export interface DB {
   GroupMatch: GroupMatch;
   GroupMatchMap: GroupMatchMap;
   GroupMember: GroupMember;
+  PrivateUserNote: PrivateUserNote;
   LogInLink: LogInLink;
   MapPoolMap: MapPoolMap;
   MapResult: MapResult;

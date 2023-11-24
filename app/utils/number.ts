@@ -29,7 +29,9 @@ export function averageArray(arr: number[]) {
   return sumArray(arr) / arr.length;
 }
 
-export function safeNumberParse(value: string) {
+export function safeNumberParse(value: string | null) {
+  if (value === null) return null;
+
   const result = Number(value);
   return Number.isNaN(result) ? null : result;
 }

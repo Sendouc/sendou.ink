@@ -193,6 +193,22 @@
   font-weight: var(--semi-bold);
 }
 
+.q__group-member__add-note-button {
+  background-color: transparent;
+  border: none;
+  padding: 0 var(--s-1-5);
+  color: var(--body);
+  font-size: var(--fonts-xxs);
+  font-weight: var(--body);
+  font-weight: var(--semi-bold);
+  background-color: var(--bg-darker);
+  white-space: nowrap;
+}
+
+.q__group-member__add-note-button__icon {
+  width: 14px;
+}
+
 .q__group-member__note-textarea {
   height: 4rem !important;
 }
@@ -334,6 +350,10 @@
   column-gap: var(--s-4);
   align-items: center;
   font-size: var(--fonts-xs);
+}
+
+.q-match__sentiment-emoji {
+  width: 12px;
 }
 
 @media screen and (min-width: 640px) {
