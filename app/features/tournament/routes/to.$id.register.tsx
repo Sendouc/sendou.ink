@@ -76,6 +76,7 @@ import { registerSchema } from "../tournament-schemas.server";
 import {
   HACKY_resolveCheckInTime,
   HACKY_resolvePicture,
+  HACKY_subsFeatureEnabled,
   checkInHasEnded,
   isOneModeTournamentOf,
   modesIncluded,
@@ -305,7 +306,8 @@ export default function TournamentRegisterPage() {
       ) : (
         <RegistrationForms ownTeam={parentRouteData?.ownTeam} />
       )}
-      {!parentRouteData.teamMemberOfName ? (
+      {!parentRouteData.teamMemberOfName &&
+      HACKY_subsFeatureEnabled(parentRouteData.tournament) ? (
         <Link
           to={tournamentSubsPage(parentRouteData.tournament.id)}
           className="text-xs text-center"

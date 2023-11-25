@@ -6,10 +6,11 @@ import {
   type SubByTournamentId,
   findSubsByTournamentId,
 } from "../queries/findSubsByTournamentId.server";
-import type {
-  ActionFunction,
-  LinksFunction,
-  LoaderArgs,
+import {
+  redirect,
+  type ActionFunction,
+  type LinksFunction,
+  type LoaderArgs,
 } from "@remix-run/node";
 import { Link, useLoaderData, useOutletContext } from "@remix-run/react";
 import { getUser, requireUser, useUser } from "~/features/auth/core";
@@ -28,6 +29,9 @@ import { TrashIcon } from "~/components/icons/Trash";
 import { useTranslation } from "~/hooks/useTranslation";
 import React from "react";
 import { Redirect } from "~/components/Redirect";
+import { notFoundIfFalsy } from "~/utils/remix";
+import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
+import { HACKY_subsFeatureEnabled } from "~/features/tournament/tournament-utils";
 
 export const links: LinksFunction = () => {
   return [
@@ -53,6 +57,13 @@ export const action: ActionFunction = async ({ request, params }) => {
 export const loader = async ({ params, request }: LoaderArgs) => {
   const user = await getUser(request);
   const tournamentId = tournamentIdFromParams(params);
+
+  const tournament = notFoundIfFalsy(
+    await TournamentRepository.findById(tournamentId),
+  );
+  if (!HACKY_subsFeatureEnabled(tournament)) {
+    throw redirect(tournamentRegisterPage(tournamentId));
+  }
 
   const subs = findSubsByTournamentId({
     tournamentId,

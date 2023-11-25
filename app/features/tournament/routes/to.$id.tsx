@@ -22,7 +22,11 @@ import { assertUnreachable, type Unpacked } from "~/utils/types";
 import { streamsByTournamentId } from "../core/streams.server";
 import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
 import hasTournamentStarted from "../queries/hasTournamentStarted.server";
-import { teamHasCheckedIn, tournamentIdFromParams } from "../tournament-utils";
+import {
+  HACKY_subsFeatureEnabled,
+  teamHasCheckedIn,
+  tournamentIdFromParams,
+} from "../tournament-utils";
 import styles from "../tournament.css";
 import { findOwnTeam } from "../queries/findOwnTeam.server";
 import { findSubsByTournamentId } from "~/features/tournament-subs";
@@ -152,7 +156,7 @@ export default function TournamentLayout() {
         <SubNavLink to="teams" end={false}>
           {t("tournament:tabs.teams", { count: data.teams.length })}
         </SubNavLink>
-        {!data.hasFinalized && (
+        {!data.hasFinalized && HACKY_subsFeatureEnabled(data.tournament) && (
           <SubNavLink to="subs" end={false}>
             {t("tournament:tabs.subs", { count: data.subsCount })}
           </SubNavLink>

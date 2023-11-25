@@ -94,6 +94,18 @@ export function HACKY_resolveCheckInTime(
   return databaseTimestampToDate(event.startTime - 60 * 60);
 }
 
+const HACKY_isSendouQSeasonFinale = (
+  event: TournamentLoaderData["tournament"],
+) => event.name.includes("Finale");
+
+export function HACKY_subsFeatureEnabled(
+  event: TournamentLoaderData["tournament"],
+) {
+  if (HACKY_isSendouQSeasonFinale(event)) return false;
+
+  return true;
+}
+
 export function mapPickCountPerMode(event: TournamentLoaderData["tournament"]) {
   return isOneModeTournamentOf(event)
     ? TOURNAMENT.COUNTERPICK_ONE_MODE_TOURNAMENT_MAPS_PER_MODE
