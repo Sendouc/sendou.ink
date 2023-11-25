@@ -1,16 +1,21 @@
 import { suite } from "uvu";
 import * as Test from "~/utils/Test";
-import { action } from "./q.looking";
-import type { lookingSchema } from "../q-schemas.server";
+import { loader, action as rawLookingAction } from "./q.looking";
+import { action as rawMatchAction } from "./q.match.$id";
+import type { lookingSchema, matchSchema } from "../q-schemas.server";
 import { db } from "~/db/sql";
 import type { UserMapModePreferences } from "~/db/tables";
 import type { StageId } from "~/modules/in-game-lists";
 import invariant from "tiny-invariant";
 import * as assert from "uvu/assert";
+import type { SerializeFrom } from "@remix-run/server-runtime";
 
 const SendouQMatchCreation = suite("SendouQ match creation");
+const PrivateUserNoteSorting = suite("Private user note sorting");
 
-const lookingAction = Test.wrappedAction<typeof lookingSchema>({ action });
+const lookingAction = Test.wrappedAction<typeof lookingSchema>({
+  action: rawLookingAction,
+});
 
 const createGroup = async (userIds: number[], ownerPicksMaps: number) => {
   const group = await db
@@ -245,4 +250,68 @@ SendouQMatchCreation(
   },
 );
 
+PrivateUserNoteSorting.before.each(async () => {
+  await Test.database.insertUsers(5);
+
+  await createGroup([1], 0);
+  await createGroup([2], 0);
+  await createGroup([3], 0);
+  await createGroup([4], 0);
+  await createGroup([5], 0);
+  await createGroup([6], 0);
+
+  await db
+    .insertInto("GroupMatch")
+    .values({ alphaGroupId: 2, bravoGroupId: 3 })
+    .execute();
+});
+
+PrivateUserNoteSorting.after.each(() => {
+  Test.database.reset();
+});
+
+const lookingLoader = Test.wrappedLoader<SerializeFrom<typeof loader>>({
+  loader,
+});
+const matchAction = Test.wrappedAction<typeof matchSchema>({
+  action: rawMatchAction,
+  params: { id: "1" },
+});
+
+PrivateUserNoteSorting("users with positive note sorted first", async () => {
+  await matchAction(
+    {
+      _action: "ADD_PRIVATE_USER_NOTE",
+      targetId: 5,
+      sentiment: "POSITIVE",
+      comment: "test",
+    },
+    { user: "admin" },
+  );
+
+  const data = await lookingLoader({ user: "admin" });
+
+  assert.equal(data.groups.neutral[0].members![0].id, 5);
+});
+
+PrivateUserNoteSorting("users with negative note sorted last", async () => {
+  await matchAction(
+    {
+      _action: "ADD_PRIVATE_USER_NOTE",
+      targetId: 5,
+      sentiment: "NEGATIVE",
+      comment: "test",
+    },
+    { user: "admin" },
+  );
+
+  const data = await lookingLoader({ user: "admin" });
+
+  assert.equal(
+    data.groups.neutral[data.groups.neutral.length - 1].members![0].id,
+    5,
+  );
+});
+
 SendouQMatchCreation.run();
+PrivateUserNoteSorting.run();
