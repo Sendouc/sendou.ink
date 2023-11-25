@@ -24,6 +24,7 @@ import {
   tournamentTeamMaxSize,
 } from "../tournament-utils";
 import { useTranslation } from "~/hooks/useTranslation";
+import { findByIdentifier } from "../queries/findByIdentifier.server";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const tournamentId = tournamentIdFromParams(params);
@@ -41,6 +42,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     team.members.some((member) => member.userId === user.id),
   );
 
+  const tournament = notFoundIfFalsy(findByIdentifier(tournamentId));
   const tournamentHasStarted = hasTournamentStarted(tournamentId);
 
   if (tournamentHasStarted) {
@@ -56,6 +58,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       teamToJoin,
       userId: user.id,
       tournamentHasStarted,
+      tournament,
     }) === "VALID",
     "Cannot join this team or invite code is invalid",
   );
@@ -118,6 +121,7 @@ export default function JoinTeamPage() {
   );
   const captain = teamToJoin?.members.find((member) => member.isOwner);
   const validationStatus = validateCanJoin({
+    tournament: parentRouteData.tournament,
     inviteCode: data.inviteCode,
     teamToJoin,
     userId: user?.id,
@@ -174,11 +178,13 @@ function validateCanJoin({
   teamToJoin,
   userId,
   tournamentHasStarted,
+  tournament,
 }: {
   inviteCode?: string | null;
   teamToJoin?: TournamentLoaderTeam;
   userId?: number;
   tournamentHasStarted: boolean;
+  tournament: { name: string };
 }) {
   if (typeof inviteCode !== "string") {
     return "MISSING_CODE";
@@ -193,7 +199,8 @@ function validateCanJoin({
     return "NO_TEAM_MATCHING_CODE";
   }
   if (
-    teamToJoin.members.length >= tournamentTeamMaxSize(tournamentHasStarted)
+    teamToJoin.members.length >=
+    tournamentTeamMaxSize({ tournament, tournamentHasStarted })
   ) {
     return "TEAM_FULL";
   }

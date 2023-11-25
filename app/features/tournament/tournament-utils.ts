@@ -112,6 +112,12 @@ export function HACKY_subsFeatureEnabled(
   return true;
 }
 
+export function HACKY_maxRosterSizeBeforeStart(event: { name: string }) {
+  if (HACKY_isSendouQSeasonFinale(event)) return 5;
+
+  return TOURNAMENT.DEFAULT_TEAM_MAX_MEMBERS_BEFORE_START;
+}
+
 export function mapPickCountPerMode(event: TournamentLoaderData["tournament"]) {
   return isOneModeTournamentOf(event)
     ? TOURNAMENT.COUNTERPICK_ONE_MODE_TOURNAMENT_MAPS_PER_MODE
@@ -159,9 +165,15 @@ export function tournamentRoundI18nKey(round: PlayedSet["round"]) {
   return `bracket.${round.type}` as const;
 }
 
-export function tournamentTeamMaxSize(tournamentHasStarted: boolean) {
+export function tournamentTeamMaxSize({
+  tournament,
+  tournamentHasStarted,
+}: {
+  tournament: { name: string };
+  tournamentHasStarted: boolean;
+}) {
   // ensuring every team can add at least one sub while the tournament is ongoing
   return (
-    TOURNAMENT.TEAM_MAX_MEMBERS_BEFORE_START + Number(tournamentHasStarted)
+    HACKY_maxRosterSizeBeforeStart(tournament) + Number(tournamentHasStarted)
   );
 }
