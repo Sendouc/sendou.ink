@@ -74,6 +74,7 @@ import { TOURNAMENT } from "../tournament-constants";
 import { useSelectCounterpickMapPoolState } from "../tournament-hooks";
 import { registerSchema } from "../tournament-schemas.server";
 import {
+  HACKY_isInviteOnlyEvent,
   HACKY_resolveCheckInTime,
   HACKY_resolvePicture,
   HACKY_subsFeatureEnabled,
@@ -127,6 +128,8 @@ export const action: ActionFunction = async ({ request, params }) => {
           prefersNotToHost: booleanToInt(data.prefersNotToHost),
         });
       } else {
+        validate(!HACKY_isInviteOnlyEvent(event), "Event is invite only");
+
         createTeam({
           name: data.teamName,
           tournamentId: tournamentId,
@@ -347,15 +350,30 @@ function RegistrationForms({
     userId: user?.id,
   });
 
+  const showRegistrationProgress = () => {
+    if (ownTeam) return true;
+
+    return !HACKY_isInviteOnlyEvent(parentRouteData.tournament);
+  };
+
+  const showRegisterNewTeam = () => {
+    if (ownTeam) return true;
+    if (HACKY_isInviteOnlyEvent(parentRouteData.tournament)) return false;
+
+    return !checkInHasEnded(parentRouteData.tournament);
+  };
+
   return (
     <div className="stack lg">
-      <RegistrationProgress
-        checkedIn={Boolean(ownTeam?.checkedInAt)}
-        name={ownTeam?.name}
-        mapPool={data?.mapPool}
-        members={ownTeamFromList?.members}
-      />
-      {ownTeam || !checkInHasEnded(parentRouteData.tournament) ? (
+      {showRegistrationProgress() ? (
+        <RegistrationProgress
+          checkedIn={Boolean(ownTeam?.checkedInAt)}
+          name={ownTeam?.name}
+          mapPool={data?.mapPool}
+          members={ownTeamFromList?.members}
+        />
+      ) : null}
+      {showRegisterNewTeam() ? (
         <TeamInfo
           name={ownTeam?.name}
           prefersNotToHost={ownTeamFromList?.prefersNotToHost}

@@ -80,6 +80,9 @@ export function isOneModeTournamentOf(
 export function HACKY_resolvePicture(
   event: TournamentLoaderData["tournament"],
 ) {
+  if (HACKY_isInviteOnlyEvent(event))
+    return "https://abload.de/img/screenshot2023-11-25ay1fbc.png";
+
   if (event.name.includes("In The Zone"))
     return "https://abload.de/img/screenshot2023-04-19a2bfv0.png";
 
@@ -94,9 +97,12 @@ export function HACKY_resolveCheckInTime(
   return databaseTimestampToDate(event.startTime - 60 * 60);
 }
 
-const HACKY_isSendouQSeasonFinale = (
-  event: TournamentLoaderData["tournament"],
-) => event.name.includes("Finale");
+const HACKY_isSendouQSeasonFinale = (event: { name: string }) =>
+  event.name.includes("Finale");
+
+export function HACKY_isInviteOnlyEvent(event: { name: string }) {
+  return HACKY_isSendouQSeasonFinale(event);
+}
 
 export function HACKY_subsFeatureEnabled(
   event: TournamentLoaderData["tournament"],
