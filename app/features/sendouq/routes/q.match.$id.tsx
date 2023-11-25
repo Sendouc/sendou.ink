@@ -341,7 +341,7 @@ export const action = async ({ request, params }: ActionArgs) => {
         authorId: user.id,
         sentiment: data.sentiment,
         targetId: data.targetId,
-        text: data.text,
+        text: data.comment,
       });
 
       throw redirect(sendouQMatchPage(matchId));

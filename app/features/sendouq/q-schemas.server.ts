@@ -132,7 +132,7 @@ export const matchSchema = z.union([
   }),
   z.object({
     _action: _action("ADD_PRIVATE_USER_NOTE"),
-    text: z.string().max(SENDOUQ.PRIVATE_USER_NOTE_MAX_LENGTH),
+    comment: z.string().max(SENDOUQ.PRIVATE_USER_NOTE_MAX_LENGTH),
     sentiment: z.enum(["POSITIVE", "NEUTRAL", "NEGATIVE"]),
     targetId: id,
   }),

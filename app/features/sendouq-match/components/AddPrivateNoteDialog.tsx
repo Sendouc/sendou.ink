@@ -109,6 +109,7 @@ function Sentiment({
 }
 
 function Textarea({ initialValue }: { initialValue?: string | null }) {
+  const { t } = useTranslation(["q"]);
   const [value, setValue] = React.useState(initialValue ?? "");
 
   return (
@@ -120,11 +121,11 @@ function Textarea({ initialValue }: { initialValue?: string | null }) {
           max: SENDOUQ.PRIVATE_USER_NOTE_MAX_LENGTH,
         }}
       >
-        Text
+        {t("q:privateNote.comment.header")}
       </Label>
       <textarea
         id="text"
-        name="text"
+        name="comment"
         value={value}
         onChange={(e) => setValue(e.target.value)}
         maxLength={SENDOUQ.PRIVATE_USER_NOTE_MAX_LENGTH}

@@ -12,6 +12,7 @@
   "vc.NO": "Can't voice chat",
   "vc.LISTEN_ONLY": "Can only listen",
   "privateNote.header": "Private note about {{name}}",
+  "privateNote.comment.header": "Comment",
   "privateNote.sentiment.header": "Sentiment",
   "privateNote.sentiment.info": "Positive or negative sentiment affects their sorting for you in the queue",
   "privateNote.sentiment.POSITIVE": "Positive",
