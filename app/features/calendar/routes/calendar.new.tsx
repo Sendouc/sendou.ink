@@ -34,7 +34,7 @@ import type {
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "~/hooks/useTranslation";
 import { useUser } from "~/features/auth/core";
-import { requireUserId } from "~/features/auth/core/user.server";
+import { requireUser } from "~/features/auth/core/user.server";
 import { i18next } from "~/modules/i18n";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import { canEditCalendarEvent, canEnableTOTools } from "~/permissions";
@@ -71,6 +71,7 @@ import type { RankedModeShort } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import * as BadgeRepository from "~/features/badges/BadgeRepository.server";
 import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
+import { canAddNewEvent } from "../calendar-utils";
 
 const MIN_DATE = new Date(Date.UTC(2015, 4, 28));
 
@@ -136,11 +137,13 @@ const newCalendarEventActionSchema = z.object({
 });
 
 export const action: ActionFunction = async ({ request }) => {
-  const user = await requireUserId(request);
+  const user = await requireUser(request);
   const data = await parseRequestFormData({
     request,
     schema: newCalendarEventActionSchema,
   });
+
+  validate(canAddNewEvent(user), "Not authorized", 401);
 
   const commonArgs = {
     name: data.name,
@@ -207,8 +210,10 @@ export const handle: SendouRouteHandle = {
 
 export const loader = async ({ request }: LoaderArgs) => {
   const t = await i18next.getFixedT(request);
-  const user = await requireUserId(request);
+  const user = await requireUser(request);
   const url = new URL(request.url);
+
+  validate(canAddNewEvent(user), "Not authorized", 401);
 
   const eventId = Number(url.searchParams.get("eventId"));
   const eventToEdit = Number.isNaN(eventId)

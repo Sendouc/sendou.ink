@@ -74,8 +74,11 @@ import { TOURNAMENT } from "../tournament-constants";
 import { useSelectCounterpickMapPoolState } from "../tournament-hooks";
 import { registerSchema } from "../tournament-schemas.server";
 import {
+  HACKY_isInviteOnlyEvent,
+  HACKY_maxRosterSizeBeforeStart,
   HACKY_resolveCheckInTime,
   HACKY_resolvePicture,
+  HACKY_subsFeatureEnabled,
   checkInHasEnded,
   isOneModeTournamentOf,
   modesIncluded,
@@ -126,6 +129,8 @@ export const action: ActionFunction = async ({ request, params }) => {
           prefersNotToHost: booleanToInt(data.prefersNotToHost),
         });
       } else {
+        validate(!HACKY_isInviteOnlyEvent(event), "Event is invite only");
+
         createTeam({
           name: data.teamName,
           tournamentId: tournamentId,
@@ -305,7 +310,8 @@ export default function TournamentRegisterPage() {
       ) : (
         <RegistrationForms ownTeam={parentRouteData?.ownTeam} />
       )}
-      {!parentRouteData.teamMemberOfName ? (
+      {!parentRouteData.teamMemberOfName &&
+      HACKY_subsFeatureEnabled(parentRouteData.tournament) ? (
         <Link
           to={tournamentSubsPage(parentRouteData.tournament.id)}
           className="text-xs text-center"
@@ -345,15 +351,30 @@ function RegistrationForms({
     userId: user?.id,
   });
 
+  const showRegistrationProgress = () => {
+    if (ownTeam) return true;
+
+    return !HACKY_isInviteOnlyEvent(parentRouteData.tournament);
+  };
+
+  const showRegisterNewTeam = () => {
+    if (ownTeam) return true;
+    if (HACKY_isInviteOnlyEvent(parentRouteData.tournament)) return false;
+
+    return !checkInHasEnded(parentRouteData.tournament);
+  };
+
   return (
     <div className="stack lg">
-      <RegistrationProgress
-        checkedIn={Boolean(ownTeam?.checkedInAt)}
-        name={ownTeam?.name}
-        mapPool={data?.mapPool}
-        members={ownTeamFromList?.members}
-      />
-      {ownTeam || !checkInHasEnded(parentRouteData.tournament) ? (
+      {showRegistrationProgress() ? (
+        <RegistrationProgress
+          checkedIn={Boolean(ownTeam?.checkedInAt)}
+          name={ownTeam?.name}
+          mapPool={data?.mapPool}
+          members={ownTeamFromList?.members}
+        />
+      ) : null}
+      {showRegisterNewTeam() ? (
         <TeamInfo
           name={ownTeam?.name}
           prefersNotToHost={ownTeamFromList?.prefersNotToHost}
@@ -657,7 +678,7 @@ function FillRoster({
   );
 
   const optionalMembers = Math.max(
-    TOURNAMENT.TEAM_MAX_MEMBERS_BEFORE_START -
+    HACKY_maxRosterSizeBeforeStart(parentRouteData.tournament) -
       ownTeamMembers.length -
       missingMembers,
     0,
@@ -677,7 +698,8 @@ function FillRoster({
   })();
 
   const teamIsFull =
-    ownTeamMembers.length >= TOURNAMENT.TEAM_MAX_MEMBERS_BEFORE_START;
+    ownTeamMembers.length >=
+    HACKY_maxRosterSizeBeforeStart(parentRouteData.tournament);
 
   return (
     <div>
@@ -745,7 +767,7 @@ function FillRoster({
       <div className="tournament__section__warning">
         {t("tournament:pre.roster.footer", {
           atLeastCount: TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
-          maxCount: TOURNAMENT.TEAM_MAX_MEMBERS_BEFORE_START,
+          maxCount: HACKY_maxRosterSizeBeforeStart(parentRouteData.tournament),
         })}
       </div>
     </div>

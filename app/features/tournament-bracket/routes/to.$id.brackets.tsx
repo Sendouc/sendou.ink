@@ -81,6 +81,7 @@ import {
 } from "~/features/mmr";
 import { queryTeamPlayerRatingAverage } from "~/features/mmr/mmr-utils.server";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
+import { HACKY_maxRosterSizeBeforeStart } from "~/features/tournament/tournament-utils";
 
 export const links: LinksFunction = () => {
   return [
@@ -122,8 +123,7 @@ export const action: ActionFunction = async ({ params, request }) => {
       } else {
         // in the normal check in process this is handled
         teams = teams.filter(
-          (team) =>
-            team.members.length > TOURNAMENT.TEAM_MAX_MEMBERS_BEFORE_START,
+          (team) => team.members.length >= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
         );
       }
 
@@ -623,7 +623,9 @@ function AddSubsPopOver({
   const [, copyToClipboard] = useCopyToClipboard();
 
   const subsAvailableToAdd =
-    TOURNAMENT.TEAM_MAX_MEMBERS_BEFORE_START + 1 - members.length;
+    HACKY_maxRosterSizeBeforeStart(parentRouteData.tournament) +
+    1 -
+    members.length;
 
   const inviteLink = `${SENDOU_INK_BASE_URL}${tournamentJoinPage({
     eventId: parentRouteData.tournament.id,

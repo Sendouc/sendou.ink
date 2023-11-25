@@ -44,6 +44,7 @@ import { Tags } from "../components/Tags";
 import { Divider } from "~/components/Divider";
 import { UsersIcon } from "~/components/icons/Users";
 import * as CalendarRepository from "../CalendarRepository.server";
+import { canAddNewEvent } from "../calendar-utils";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -176,7 +177,7 @@ export default function CalendarPage() {
       <WeekLinks />
       <EventsToReport />
       <div className="stack md">
-        {user && (
+        {user && canAddNewEvent(user) && (
           <LinkButton to="new" className="calendar__add-new-button" size="tiny">
             {t("addNew")}
           </LinkButton>

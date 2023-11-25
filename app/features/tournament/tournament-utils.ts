@@ -80,6 +80,9 @@ export function isOneModeTournamentOf(
 export function HACKY_resolvePicture(
   event: TournamentLoaderData["tournament"],
 ) {
+  if (HACKY_isInviteOnlyEvent(event))
+    return "https://abload.de/img/screenshot2023-11-25ay1fbc.png";
+
   if (event.name.includes("In The Zone"))
     return "https://abload.de/img/screenshot2023-04-19a2bfv0.png";
 
@@ -92,6 +95,27 @@ export function HACKY_resolveCheckInTime(
   event: Pick<TournamentLoaderData["tournament"], "startTime">,
 ) {
   return databaseTimestampToDate(event.startTime - 60 * 60);
+}
+
+const HACKY_isSendouQSeasonFinale = (event: { name: string }) =>
+  event.name.includes("Finale");
+
+export function HACKY_isInviteOnlyEvent(event: { name: string }) {
+  return HACKY_isSendouQSeasonFinale(event);
+}
+
+export function HACKY_subsFeatureEnabled(
+  event: TournamentLoaderData["tournament"],
+) {
+  if (HACKY_isSendouQSeasonFinale(event)) return false;
+
+  return true;
+}
+
+export function HACKY_maxRosterSizeBeforeStart(event: { name: string }) {
+  if (HACKY_isSendouQSeasonFinale(event)) return 5;
+
+  return TOURNAMENT.DEFAULT_TEAM_MAX_MEMBERS_BEFORE_START;
 }
 
 export function mapPickCountPerMode(event: TournamentLoaderData["tournament"]) {
@@ -141,9 +165,15 @@ export function tournamentRoundI18nKey(round: PlayedSet["round"]) {
   return `bracket.${round.type}` as const;
 }
 
-export function tournamentTeamMaxSize(tournamentHasStarted: boolean) {
+export function tournamentTeamMaxSize({
+  tournament,
+  tournamentHasStarted,
+}: {
+  tournament: { name: string };
+  tournamentHasStarted: boolean;
+}) {
   // ensuring every team can add at least one sub while the tournament is ongoing
   return (
-    TOURNAMENT.TEAM_MAX_MEMBERS_BEFORE_START + Number(tournamentHasStarted)
+    HACKY_maxRosterSizeBeforeStart(tournament) + Number(tournamentHasStarted)
   );
 }

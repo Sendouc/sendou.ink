@@ -22,6 +22,7 @@ export function Pagination({
       <Button
         icon={<ArrowLeftIcon />}
         variant="outlined"
+        className="fix-rtl"
         disabled={currentPage === 1}
         onClick={previousPage}
         aria-label="Previous page"
@@ -41,6 +42,7 @@ export function Pagination({
       <Button
         icon={<ArrowRightIcon />}
         variant="outlined"
+        className="fix-rtl"
         disabled={currentPage === pagesCount}
         onClick={nextPage}
         aria-label="Next page"
