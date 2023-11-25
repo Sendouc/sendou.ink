@@ -1291,6 +1291,10 @@ dialog::backdrop {
   margin-block-start: var(--s-0-5);
 }
 
+html[dir="rtl"] .fix-rtl {
+  transform: rotate(180deg);
+}
+
 .pagination__dot {
   width: 0.6rem;
   height: 0.6rem;
