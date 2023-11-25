@@ -147,15 +147,15 @@ export const action = async ({ request, params }: ActionArgs) => {
         "Only mods can report scores as admin",
       );
       const members = [
-        ...(await QMatchRepository.findGroupById(
-          match.alphaGroupId,
-        ))!.members.map((m) => ({
+        ...(await QMatchRepository.findGroupById({
+          groupId: match.alphaGroupId,
+        }))!.members.map((m) => ({
           ...m,
           groupId: match.alphaGroupId,
         })),
-        ...(await QMatchRepository.findGroupById(
-          match.bravoGroupId,
-        ))!.members.map((m) => ({
+        ...(await QMatchRepository.findGroupById({
+          groupId: match.bravoGroupId,
+        }))!.members.map((m) => ({
           ...m,
           groupId: match.bravoGroupId,
         })),
@@ -197,12 +197,12 @@ export const action = async ({ request, params }: ActionArgs) => {
         compared === "SAME" && !matchIsBeingCanceled
           ? calculateMatchSkills({
               groupMatchId: match.id,
-              winner: (await QMatchRepository.findGroupById(
-                winnerGroupId,
-              ))!.members.map((m) => m.id),
-              loser: (await QMatchRepository.findGroupById(
-                loserGroupId,
-              ))!.members.map((m) => m.id),
+              winner: (await QMatchRepository.findGroupById({
+                groupId: winnerGroupId,
+              }))!.members.map((m) => m.id),
+              loser: (await QMatchRepository.findGroupById({
+                groupId: loserGroupId,
+              }))!.members.map((m) => m.id),
               winnerGroupId,
               loserGroupId,
             })
@@ -292,9 +292,9 @@ export const action = async ({ request, params }: ActionArgs) => {
       const season = currentSeason(new Date());
       validate(season, "Season is not active");
 
-      const previousGroup = await QMatchRepository.findGroupById(
-        data.previousGroupId,
-      );
+      const previousGroup = await QMatchRepository.findGroupById({
+        groupId: data.previousGroupId,
+      });
       validate(previousGroup, "Previous group not found");
 
       for (const member of previousGroup.members) {
@@ -344,7 +344,7 @@ export const action = async ({ request, params }: ActionArgs) => {
         text: data.text,
       });
 
-      break;
+      throw redirect(sendouQMatchPage(matchId));
     }
     default: {
       assertUnreachable(data);
@@ -360,8 +360,14 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const match = notFoundIfFalsy(await QMatchRepository.findById(matchId));
 
   const [groupAlpha, groupBravo] = await Promise.all([
-    QMatchRepository.findGroupById(match.alphaGroupId),
-    QMatchRepository.findGroupById(match.bravoGroupId),
+    QMatchRepository.findGroupById({
+      groupId: match.alphaGroupId,
+      loggedInUserId: user?.id,
+    }),
+    QMatchRepository.findGroupById({
+      groupId: match.bravoGroupId,
+      loggedInUserId: user?.id,
+    }),
   ]);
   invariant(groupAlpha, "Group alpha not found");
   invariant(groupBravo, "Group bravo not found");

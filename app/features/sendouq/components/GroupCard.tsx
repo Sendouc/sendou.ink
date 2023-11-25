@@ -153,7 +153,6 @@ export function GroupCard({
   );
 }
 
-// xxx: different color for icon if there is a note..?
 function GroupMember({
   member,
   showActions,
@@ -223,10 +222,11 @@ function GroupMember({
             <LinkButton
               to={`?note=${member.id}`}
               icon={<EditIcon />}
-              className="q__group-member__add-note-button"
-              iconClassName="q__group-member__add-note-button__icon"
+              className={clsx("q__group-member__add-note-button", {
+                "q__group-member__add-note-button__edit": member.privateNote,
+              })}
             >
-              Add note
+              {member.privateNote ? "Edit note" : "Add note"}
             </LinkButton>
           ) : null}
         </div>

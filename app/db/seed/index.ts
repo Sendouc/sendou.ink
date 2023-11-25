@@ -1831,15 +1831,15 @@ async function playedMatches() {
       winnerGroupId: winner === "ALPHA" ? groupAlpha : groupBravo,
     });
     const members = [
-      ...(await QMatchRepository.findGroupById(
-        match.alphaGroupId,
-      ))!.members.map((m) => ({
+      ...(await QMatchRepository.findGroupById({
+        groupId: match.alphaGroupId,
+      }))!.members.map((m) => ({
         ...m,
         groupId: match.alphaGroupId,
       })),
-      ...(await QMatchRepository.findGroupById(
-        match.alphaGroupId,
-      ))!.members.map((m) => ({
+      ...(await QMatchRepository.findGroupById({
+        groupId: match.alphaGroupId,
+      }))!.members.map((m) => ({
         ...m,
         groupId: match.bravoGroupId,
       })),

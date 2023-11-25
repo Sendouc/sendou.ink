@@ -205,8 +205,13 @@
   white-space: nowrap;
 }
 
-.q__group-member__add-note-button__icon {
+.q__group-member__add-note-button__edit > svg {
+  color: var(--theme);
+}
+
+.q__group-member__add-note-button > svg {
   width: 14px;
+  margin-inline-end: var(--s-1);
 }
 
 .q__group-member__note-textarea {

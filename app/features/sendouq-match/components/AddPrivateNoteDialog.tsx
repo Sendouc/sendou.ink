@@ -9,13 +9,17 @@ import { preferenceEmojiUrl } from "~/utils/urls";
 import { useTranslation } from "~/hooks/useTranslation";
 import { Button } from "~/components/Button";
 import { CrossIcon } from "~/components/icons/Cross";
+import type { GroupForMatch } from "../QMatchRepository.server";
+import type { Tables } from "~/db/tables";
 
-// xxx: some feedback after submitting
 export function AddPrivateNoteDialog({
   aboutUser,
   close,
 }: {
-  aboutUser?: { id: number; discordName: string };
+  aboutUser?: Pick<
+    GroupForMatch["members"][number],
+    "id" | "discordName" | "privateNote"
+  >;
   close: () => void;
 }) {
   const { t } = useTranslation(["q", "common"]);
@@ -37,8 +41,8 @@ export function AddPrivateNoteDialog({
             onClick={close}
           />
         </div>
-        <Textarea />
-        <Sentiment />
+        <Textarea initialValue={aboutUser.privateNote?.text} />
+        <Sentiment initialValue={aboutUser.privateNote?.sentiment} />
         <div className="stack items-center mt-2">
           <SubmitButton _action="ADD_PRIVATE_USER_NOTE">
             {t("common:actions.save")}
@@ -49,11 +53,15 @@ export function AddPrivateNoteDialog({
   );
 }
 
-function Sentiment() {
+function Sentiment({
+  initialValue,
+}: {
+  initialValue?: Tables["PrivateUserNote"]["sentiment"];
+}) {
   const { t } = useTranslation(["q"]);
   const [sentiment, setSentiment] = React.useState<
-    "POSITIVE" | "NEUTRAL" | "NEGATIVE"
-  >("NEUTRAL");
+    Tables["PrivateUserNote"]["sentiment"]
+  >(initialValue ?? "NEUTRAL");
 
   return (
     <div>
@@ -100,7 +108,7 @@ function Sentiment() {
   );
 }
 
-function Textarea({ initialValue }: { initialValue?: string }) {
+function Textarea({ initialValue }: { initialValue?: string | null }) {
   const [value, setValue] = React.useState(initialValue ?? "");
 
   return (

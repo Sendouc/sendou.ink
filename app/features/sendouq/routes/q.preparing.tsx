@@ -87,9 +87,9 @@ export const action: ActionFunction = async ({ request }) => {
         "Player not available to play",
       );
 
-      const ownGroupWithMembers = await QMatchRepository.findGroupById(
-        currentGroup.id,
-      );
+      const ownGroupWithMembers = await QMatchRepository.findGroupById({
+        groupId: currentGroup.id,
+      });
       invariant(ownGroupWithMembers, "No own group found");
       validate(
         ownGroupWithMembers.members.length < FULL_GROUP_SIZE,

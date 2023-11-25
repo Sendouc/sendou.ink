@@ -64,10 +64,17 @@ export interface GroupForMatch {
     vc: Tables["User"]["vc"];
     languages: string[];
     skillDifference?: UserSkillDifference;
+    privateNote: Pick<Tables["PrivateUserNote"], "sentiment" | "text"> | null;
   }>;
 }
 
-export async function findGroupById(groupId: number) {
+export async function findGroupById({
+  loggedInUserId,
+  groupId,
+}: {
+  groupId: number;
+  loggedInUserId?: number;
+}) {
   const row = await db
     .selectFrom("Group")
     .innerJoin("GroupMatch", (join) =>
@@ -101,13 +108,20 @@ export async function findGroupById(groupId: number) {
         eb
           .selectFrom("GroupMember")
           .innerJoin("User", "User.id", "GroupMember.userId")
-          .select([
+          .select((arrayEb) => [
             ...COMMON_USER_FIELDS,
             "GroupMember.role",
             "User.inGameName",
             "User.vc",
             "User.languages",
             "User.qWeaponPool as weapons",
+            jsonObjectFrom(
+              eb
+                .selectFrom("PrivateUserNote")
+                .select(["PrivateUserNote.sentiment", "PrivateUserNote.text"])
+                .where("authorId", "=", loggedInUserId ?? -1)
+                .where("targetId", "=", arrayEb.ref("User.id")),
+            ).as("privateNote"),
             sql<
               string | null
             >`IIF(COALESCE("User"."patronTier", 0) >= 2, "User"."css" ->> 'chat', null)`.as(
