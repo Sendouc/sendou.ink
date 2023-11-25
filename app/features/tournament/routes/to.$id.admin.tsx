@@ -37,6 +37,7 @@ import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { findMapPoolByTeamId } from "~/features/tournament-bracket";
 import { UserSearch } from "~/components/UserSearch";
 import * as TournamentRepository from "../TournamentRepository.server";
+import { createTeam } from "../queries/createTeam.server";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUserId(request);
@@ -54,6 +55,25 @@ export const action: ActionFunction = async ({ request, params }) => {
   validate(canAdminTournament({ user, tournament }), "Unauthorized", 401);
 
   switch (data._action) {
+    case "ADD_TEAM": {
+      validate(
+        teams.every((t) => t.name !== data.teamName),
+        "Team name taken",
+      );
+      validate(
+        teams.every((t) => t.members.every((m) => m.userId !== data.userId)),
+        "User already on a team",
+      );
+
+      createTeam({
+        name: data.teamName,
+        tournamentId: tournamentId,
+        ownerId: data.userId,
+        prefersNotToHost: 0,
+      });
+
+      break;
+    }
     case "UPDATE_SHOW_MAP_LIST_GENERATOR": {
       updateShowMapListGenerator({
         tournamentId: tournament.id,
@@ -208,36 +228,41 @@ export default function TournamentAdminPage() {
   );
 }
 
-type Input = "USER" | "ROSTER_MEMBER";
+type Input = "TEAM_NAME" | "REGISTERED_TEAM" | "USER" | "ROSTER_MEMBER";
 const actions = [
   {
+    type: "ADD_TEAM",
+    inputs: ["USER", "TEAM_NAME"] as Input[],
+    when: ["TOURNAMENT_BEFORE_START"],
+  },
+  {
     type: "CHANGE_TEAM_OWNER",
-    inputs: ["ROSTER_MEMBER"] as Input[],
+    inputs: ["ROSTER_MEMBER", "REGISTERED_TEAM"] as Input[],
     when: [],
   },
   {
     type: "CHECK_IN",
-    inputs: [] as Input[],
+    inputs: ["REGISTERED_TEAM"] as Input[],
     when: ["CHECK_IN_STARTED", "TOURNAMENT_BEFORE_START"],
   },
   {
     type: "CHECK_OUT",
-    inputs: [] as Input[],
+    inputs: ["REGISTERED_TEAM"] as Input[],
     when: ["CHECK_IN_STARTED", "TOURNAMENT_BEFORE_START"],
   },
   {
     type: "ADD_MEMBER",
-    inputs: ["USER"] as Input[],
+    inputs: ["USER", "REGISTERED_TEAM"] as Input[],
     when: [],
   },
   {
     type: "REMOVE_MEMBER",
-    inputs: ["ROSTER_MEMBER"] as Input[],
+    inputs: ["ROSTER_MEMBER", "REGISTERED_TEAM"] as Input[],
     when: ["TOURNAMENT_BEFORE_START"],
   },
   {
     type: "DELETE_TEAM",
-    inputs: [] as Input[],
+    inputs: ["REGISTERED_TEAM"] as Input[],
     when: ["TOURNAMENT_BEFORE_START"],
   },
 ] as const;
@@ -303,24 +328,32 @@ function AdminActions() {
           ))}
         </select>
       </div>
-      <div>
-        <label htmlFor="teamId">Team</label>
-        <select
-          id="teamId"
-          name="teamId"
-          value={selectedTeamId}
-          onChange={(e) => setSelectedTeamId(Number(e.target.value))}
-        >
-          {data.teams
-            .slice()
-            .sort((a, b) => a.name.localeCompare(b.name))
-            .map((team) => (
-              <option key={team.id} value={team.id}>
-                {team.name}
-              </option>
-            ))}
-        </select>
-      </div>
+      {selectedAction.inputs.includes("REGISTERED_TEAM") ? (
+        <div>
+          <label htmlFor="teamId">Team</label>
+          <select
+            id="teamId"
+            name="teamId"
+            value={selectedTeamId}
+            onChange={(e) => setSelectedTeamId(Number(e.target.value))}
+          >
+            {data.teams
+              .slice()
+              .sort((a, b) => a.name.localeCompare(b.name))
+              .map((team) => (
+                <option key={team.id} value={team.id}>
+                  {team.name}
+                </option>
+              ))}
+          </select>
+        </div>
+      ) : null}
+      {selectedAction.inputs.includes("TEAM_NAME") ? (
+        <div>
+          <label htmlFor="teamId">Team name</label>
+          <input id="teamName" name="teamName" />
+        </div>
+      ) : null}
       {selectedTeam && selectedAction.inputs.includes("ROSTER_MEMBER") ? (
         <div>
           <label htmlFor="memberId">Member</label>
