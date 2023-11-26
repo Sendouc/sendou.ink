@@ -1,5 +1,5 @@
 import { sql } from "kysely";
-import { jsonArrayFrom } from "kysely/helpers/sqlite";
+import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
 import { db } from "~/db/sql";
 import type {
   Tables,
@@ -34,12 +34,14 @@ export async function findLookingGroups({
   ownGroupId,
   includeChatCode = false,
   includeMapModePreferences = false,
+  loggedInUserId,
 }: {
   minGroupSize?: number;
   maxGroupSize?: number;
   ownGroupId: number;
   includeChatCode?: boolean;
   includeMapModePreferences?: boolean;
+  loggedInUserId?: number;
 }): Promise<LookingGroupWithInviteCode[]> {
   const rows = await db
     .selectFrom("Group")
@@ -61,13 +63,24 @@ export async function findLookingGroups({
           .selectFrom("GroupMember")
           .innerJoin("User", "User.id", "GroupMember.userId")
           .leftJoin("PlusTier", "PlusTier.userId", "GroupMember.userId")
-          .select([
+          .select((arrayEb) => [
             ...COMMON_USER_FIELDS,
             "User.qWeaponPool as weapons",
             "PlusTier.tier as plusTier",
             "GroupMember.note",
             "User.languages",
             "User.vc",
+            jsonObjectFrom(
+              eb
+                .selectFrom("PrivateUserNote")
+                .select([
+                  "PrivateUserNote.sentiment",
+                  "PrivateUserNote.text",
+                  "PrivateUserNote.updatedAt",
+                ])
+                .where("authorId", "=", loggedInUserId ?? -1)
+                .where("targetId", "=", arrayEb.ref("User.id")),
+            ).as("privateNote"),
             sql<
               string | null
             >`IIF(COALESCE("User"."patronTier", 0) >= 2, "User"."css" ->> 'chat', null)`.as(
@@ -220,5 +233,19 @@ export function upsertPrivateUserNote(
         updatedAt: dateToDatabaseTimestamp(new Date()),
       }),
     )
+    .execute();
+}
+
+export function deletePrivateUserNote({
+  authorId,
+  targetId,
+}: {
+  authorId: number;
+  targetId: number;
+}) {
+  return db
+    .deleteFrom("PrivateUserNote")
+    .where("authorId", "=", authorId)
+    .where("targetId", "=", targetId)
     .execute();
 }

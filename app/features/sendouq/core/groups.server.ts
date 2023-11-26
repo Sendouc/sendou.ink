@@ -174,7 +174,7 @@ export function censorGroups({
   };
 }
 
-export function sortGroupsBySkill({
+export function sortGroupsBySkillAndSentiment({
   groups,
   userSkills,
   intervals,
@@ -202,6 +202,18 @@ export function sortGroupsBySkill({
     return Math.abs(ownGroupTierIndex - otherGroupTierIndex);
   };
 
+  const groupSentiment = (group: LookingGroup) => {
+    if (group.members?.some((m) => m.privateNote?.sentiment === "NEGATIVE")) {
+      return "NEGATIVE";
+    }
+
+    if (group.members?.some((m) => m.privateNote?.sentiment === "POSITIVE")) {
+      return "POSITIVE";
+    }
+
+    return "NEUTRAL";
+  };
+
   return {
     ...groups,
     neutral: groups.neutral.sort((a, b) => {
@@ -219,6 +231,16 @@ export function sortGroupsBySkill({
           userSkills,
           intervals,
         })?.name;
+
+      const aSentiment = groupSentiment(a);
+      const bSentiment = groupSentiment(b);
+
+      if (aSentiment !== bSentiment) {
+        if (aSentiment === "NEGATIVE") return 1;
+        if (bSentiment === "NEGATIVE") return -1;
+        if (aSentiment === "POSITIVE") return -1;
+        if (bSentiment === "POSITIVE") return 1;
+      }
 
       const aTierDiff = tierDiff(aTier);
       const bTierDiff = tierDiff(bTier);

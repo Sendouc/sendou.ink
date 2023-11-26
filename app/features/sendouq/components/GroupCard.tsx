@@ -31,6 +31,9 @@ import type { SqlBool } from "kysely";
 import { MATCHES_COUNT_NEEDED_FOR_LEADERBOARD } from "~/features/leaderboards/leaderboards-constants";
 import { Flipped } from "react-flip-toolkit";
 import { EditIcon } from "~/components/icons/Edit";
+import { databaseTimestampToDate } from "~/utils/dates";
+import { FormWithConfirm } from "~/components/FormWithConfirm";
+import { TrashIcon } from "~/components/icons/Trash";
 
 export function GroupCard({
   group,
@@ -44,6 +47,7 @@ export function GroupCard({
   hideNote: _hidenote = false,
   enableKicking,
   showAddNote,
+  showNote = false,
 }: {
   group: Omit<LookingGroup, "createdAt" | "chatCode">;
   action?: "LIKE" | "UNLIKE" | "GROUP_UP" | "MATCH_UP";
@@ -56,6 +60,7 @@ export function GroupCard({
   hideNote?: boolean;
   enableKicking?: boolean;
   showAddNote?: SqlBool;
+  showNote?: boolean;
 }) {
   const user = useUser();
   const fetcher = useFetcher();
@@ -84,6 +89,7 @@ export function GroupCard({
                   hideWeapons={hideWeapons}
                   hideNote={hideNote}
                   enableKicking={enableKicking}
+                  showNote={showNote}
                   showAddNote={showAddNote && member.id !== user?.id}
                 />
               );
@@ -162,6 +168,7 @@ function GroupMember({
   hideNote,
   enableKicking,
   showAddNote,
+  showNote,
 }: {
   member: NonNullable<LookingGroup["members"]>[number];
   showActions: boolean;
@@ -171,19 +178,62 @@ function GroupMember({
   hideNote?: boolean;
   enableKicking?: boolean;
   showAddNote?: SqlBool;
+  showNote?: boolean;
 }) {
+  const { i18n } = useTranslation(["q"]);
   const user = useUser();
 
   return (
     <div className="stack xxs">
       <div className="q__group-member">
-        <Link
-          to={userPage(member)}
-          className="text-main-forced stack xs horizontal items-center"
-          target="_blank"
-        >
-          <Avatar user={member} size="xs" />
-          <span className="q__group-member__name">
+        <div className="text-main-forced stack xs horizontal items-center">
+          {showNote && member.privateNote ? (
+            <Popover
+              buttonChildren={
+                <>
+                  <Avatar
+                    user={member}
+                    size="xs"
+                    className={clsx(
+                      "q__group-member__avatar",
+                      `q__group-member__avatar__${member.privateNote.sentiment}`,
+                    )}
+                  />
+                </>
+              }
+            >
+              {member.privateNote.text}
+              <div
+                className={clsx(
+                  "stack sm horizontal justify-between items-center",
+                  { "mt-2": member.privateNote.text },
+                )}
+              >
+                <div className="text-xxs text-lighter">
+                  {databaseTimestampToDate(
+                    member.privateNote.updatedAt,
+                  ).toLocaleString(i18n.language, {
+                    hour: "numeric",
+                    minute: "numeric",
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </div>
+                <DeletePrivateNoteForm
+                  name={member.discordName}
+                  targetId={member.id}
+                />
+              </div>
+            </Popover>
+          ) : (
+            <Avatar user={member} size="xs" />
+          )}
+          <Link
+            to={userPage(member)}
+            className="q__group-member__name"
+            target="_blank"
+          >
             {member.inGameName ? (
               <>
                 <span className="text-lighter font-bold text-xxxs">IGN:</span>{" "}
@@ -192,8 +242,8 @@ function GroupMember({
             ) : (
               member.discordName
             )}
-          </span>
-        </Link>
+          </Link>
+        </div>
         <div className="ml-auto stack horizontal sm items-center">
           {showActions || displayOnly ? (
             <MemberRoleManager
@@ -339,6 +389,30 @@ function MemberNote({
     <Button variant="minimal" size="miniscule" onClick={startEditing}>
       Add note
     </Button>
+  );
+}
+
+function DeletePrivateNoteForm({
+  targetId,
+  name,
+}: {
+  targetId: number;
+  name: string;
+}) {
+  const { t } = useTranslation(["q"]);
+
+  return (
+    <FormWithConfirm
+      dialogHeading={t("q:privateNote.delete.header", { name })}
+      fields={[
+        ["targetId", targetId],
+        ["_action", "DELETE_PRIVATE_USER_NOTE"],
+      ]}
+    >
+      <SubmitButton variant="minimal-destructive" size="tiny" type="submit">
+        <TrashIcon className="build__icon" />
+      </SubmitButton>
+    </FormWithConfirm>
   );
 }
 

@@ -36,7 +36,7 @@ import {
   divideGroups,
   groupExpiryStatus,
   membersNeededForFull,
-  sortGroupsBySkill,
+  sortGroupsBySkillAndSentiment,
 } from "../core/groups.server";
 import { createMatchMemento, matchMapList } from "../core/match.server";
 import { FULL_GROUP_SIZE } from "../q-constants";
@@ -366,6 +366,14 @@ export const action: ActionFunction = async ({ request }) => {
 
       break;
     }
+    case "DELETE_PRIVATE_USER_NOTE": {
+      await QRepository.deletePrivateUserNote({
+        authorId: user.id,
+        targetId: data.targetId,
+      });
+
+      break;
+    }
     default: {
       assertUnreachable(data);
     }
@@ -400,6 +408,7 @@ export const loader = async ({ request }: LoaderArgs) => {
       minGroupSize: groupIsFull ? FULL_GROUP_SIZE : undefined,
       ownGroupId: currentGroup.id,
       includeMapModePreferences: groupIsFull,
+      loggedInUserId: user?.id,
     }),
     ownGroupId: currentGroup.id,
     likes: findLikes(currentGroup.id),
@@ -432,7 +441,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     showInviteCode: hasGroupManagerPerms(currentGroup.role) && !groupIsFull,
   });
 
-  const sortedGroups = sortGroupsBySkill({
+  const sortedGroups = sortGroupsBySkillAndSentiment({
     groups: censoredGroups,
     intervals,
     userSkills: calculatedUserSkills,
@@ -608,6 +617,7 @@ function Groups() {
               action="UNLIKE"
               ownRole={data.role}
               isExpired={data.expiryStatus === "EXPIRED"}
+              showNote
             />
           );
         })}
@@ -637,7 +647,12 @@ function Groups() {
   const ownGroupElement = (
     <div className="stack md">
       {!renderChat && <ColumnHeader>My group</ColumnHeader>}
-      <GroupCard group={data.groups.own} ownRole={data.role} ownGroup />
+      <GroupCard
+        group={data.groups.own}
+        ownRole={data.role}
+        ownGroup
+        showNote
+      />
       {ownGroup.inviteCode ? (
         <MemberAdder
           inviteCode={ownGroup.inviteCode}
@@ -733,6 +748,7 @@ function Groups() {
                             action={group.isLiked ? "UNLIKE" : "LIKE"}
                             ownRole={data.role}
                             isExpired={data.expiryStatus === "EXPIRED"}
+                            showNote
                           />
                         );
                       })}
@@ -752,6 +768,7 @@ function Groups() {
                           action={isFullGroup ? "MATCH_UP" : "GROUP_UP"}
                           ownRole={data.role}
                           isExpired={data.expiryStatus === "EXPIRED"}
+                          showNote
                         />
                       );
                     })}
@@ -782,6 +799,7 @@ function Groups() {
                   action={isFullGroup ? "MATCH_UP" : "GROUP_UP"}
                   ownRole={data.role}
                   isExpired={data.expiryStatus === "EXPIRED"}
+                  showNote
                 />
               );
             })}

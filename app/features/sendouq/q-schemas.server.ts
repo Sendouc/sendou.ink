@@ -78,6 +78,10 @@ export const lookingSchema = z.union([
       z.string().max(SENDOUQ.OWN_PUBLIC_NOTE_MAX_LENGTH).nullable(),
     ),
   }),
+  z.object({
+    _action: _action("DELETE_PRIVATE_USER_NOTE"),
+    targetId: id,
+  }),
 ]);
 
 const winners = z.preprocess(
@@ -132,7 +136,10 @@ export const matchSchema = z.union([
   }),
   z.object({
     _action: _action("ADD_PRIVATE_USER_NOTE"),
-    comment: z.string().max(SENDOUQ.PRIVATE_USER_NOTE_MAX_LENGTH),
+    comment: z.preprocess(
+      falsyToNull,
+      z.string().max(SENDOUQ.PRIVATE_USER_NOTE_MAX_LENGTH).nullable(),
+    ),
     sentiment: z.enum(["POSITIVE", "NEUTRAL", "NEGATIVE"]),
     targetId: id,
   }),

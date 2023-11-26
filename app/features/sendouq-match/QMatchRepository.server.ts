@@ -64,7 +64,10 @@ export interface GroupForMatch {
     vc: Tables["User"]["vc"];
     languages: string[];
     skillDifference?: UserSkillDifference;
-    privateNote: Pick<Tables["PrivateUserNote"], "sentiment" | "text"> | null;
+    privateNote: Pick<
+      Tables["PrivateUserNote"],
+      "sentiment" | "text" | "updatedAt"
+    > | null;
   }>;
 }
 
@@ -118,7 +121,11 @@ export async function findGroupById({
             jsonObjectFrom(
               eb
                 .selectFrom("PrivateUserNote")
-                .select(["PrivateUserNote.sentiment", "PrivateUserNote.text"])
+                .select([
+                  "PrivateUserNote.sentiment",
+                  "PrivateUserNote.text",
+                  "PrivateUserNote.updatedAt",
+                ])
                 .where("authorId", "=", loggedInUserId ?? -1)
                 .where("targetId", "=", arrayEb.ref("User.id")),
             ).as("privateNote"),

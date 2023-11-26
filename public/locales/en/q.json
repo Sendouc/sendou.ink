@@ -17,5 +17,6 @@
   "privateNote.sentiment.info": "Positive or negative sentiment affects their sorting for you in the queue",
   "privateNote.sentiment.POSITIVE": "Positive",
   "privateNote.sentiment.NEUTRAL": "Neutral",
-  "privateNote.sentiment.NEGATIVE": "Negative"
+  "privateNote.sentiment.NEGATIVE": "Negative",
+  "privateNote.delete.header": "Delete your note about {{name}}?"
 }

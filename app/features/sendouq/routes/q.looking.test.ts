@@ -251,14 +251,15 @@ SendouQMatchCreation(
 );
 
 PrivateUserNoteSorting.before.each(async () => {
-  await Test.database.insertUsers(5);
+  await Test.database.insertUsers(8);
 
   await createGroup([1], 0);
   await createGroup([2], 0);
   await createGroup([3], 0);
   await createGroup([4], 0);
   await createGroup([5], 0);
-  await createGroup([6], 0);
+  await createGroup([6, 7], 0);
+  await createGroup([8], 0);
 
   await db
     .insertInto("GroupMatch")
@@ -312,6 +313,38 @@ PrivateUserNoteSorting("users with negative note sorted last", async () => {
     5,
   );
 });
+
+PrivateUserNoteSorting(
+  "group with both negative and positive sentiment sorted last",
+  async () => {
+    await matchAction(
+      {
+        _action: "ADD_PRIVATE_USER_NOTE",
+        targetId: 6,
+        sentiment: "POSITIVE",
+        comment: "test",
+      },
+      { user: "admin" },
+    );
+    await matchAction(
+      {
+        _action: "ADD_PRIVATE_USER_NOTE",
+        targetId: 7,
+        sentiment: "NEGATIVE",
+        comment: "test",
+      },
+      { user: "admin" },
+    );
+
+    const data = await lookingLoader({ user: "admin" });
+
+    assert.ok(
+      data.groups.neutral[data.groups.neutral.length - 1].members?.some(
+        (m) => m.id === 6,
+      ),
+    );
+  },
+);
 
 SendouQMatchCreation.run();
 PrivateUserNoteSorting.run();

@@ -37,7 +37,10 @@ export type LookingGroup = {
     languages: string[];
     chatNameColor: string | null;
     skillDifference?: ParsedMemento["users"][number]["skillDifference"];
-    privateNote: Pick<Tables["PrivateUserNote"], "sentiment" | "text"> | null;
+    privateNote: Pick<
+      Tables["PrivateUserNote"],
+      "sentiment" | "text" | "updatedAt"
+    > | null;
   }[];
 };
 

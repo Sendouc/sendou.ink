@@ -171,6 +171,23 @@
   overflow: hidden;
   max-width: 7.5rem;
   font-size: var(--fonts-xs);
+  color: var(--text);
+}
+
+.q__group-member__avatar {
+  min-width: 36px;
+}
+
+.q__group-member__avatar__POSITIVE {
+  outline: 2px solid var(--theme-success-transparent);
+}
+
+.q__group-member__avatar__NEUTRAL {
+  outline: 2px solid var(--theme-warning-transparent);
+}
+
+.q__group-member__avatar__NEGATIVE {
+  outline: 2px solid var(--theme-error-transparent);
 }
 
 .q__group-member__tier {
