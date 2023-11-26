@@ -178,7 +178,6 @@ export interface Group {
   latestActionAt: Generated<number>;
   status: "PREPARING" | "ACTIVE" | "INACTIVE";
   teamId: number | null;
-  ownerPicksMaps: Generated<number>;
 }
 
 export interface GroupLike {

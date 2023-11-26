@@ -247,7 +247,6 @@ export const action: ActionFunction = async ({ request }) => {
         "Their group already has a match",
       );
 
-      // xxx: handle ownerPicksMaps
       const ourGroupPreferences = await QRepository.mapModePreferencesByGroupId(
         ourGroup.id,
       );

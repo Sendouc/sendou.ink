@@ -17,12 +17,11 @@ const lookingAction = Test.wrappedAction<typeof lookingSchema>({
   action: rawLookingAction,
 });
 
-const createGroup = async (userIds: number[], ownerPicksMaps: number) => {
+const createGroup = async (userIds: number[]) => {
   const group = await db
     .insertInto("Group")
     .values({
       inviteCode: "1234",
-      ownerPicksMaps,
       status: "ACTIVE",
     })
     .returning("id")
@@ -49,8 +48,8 @@ const SZ_ONLY_PREFERENCE: UserMapModePreferences["modes"] = [
 
 const prepareGroups = async () => {
   await Test.database.insertUsers(8);
-  await createGroup([1, 2, 3, 4], 0);
-  await createGroup([5, 6, 7, 8], 0);
+  await createGroup([1, 2, 3, 4]);
+  await createGroup([5, 6, 7, 8]);
   await db
     .insertInto("GroupLike")
     .values({ likerGroupId: 2, targetGroupId: 1 })
@@ -253,13 +252,13 @@ SendouQMatchCreation(
 PrivateUserNoteSorting.before.each(async () => {
   await Test.database.insertUsers(8);
 
-  await createGroup([1], 0);
-  await createGroup([2], 0);
-  await createGroup([3], 0);
-  await createGroup([4], 0);
-  await createGroup([5], 0);
-  await createGroup([6, 7], 0);
-  await createGroup([8], 0);
+  await createGroup([1]);
+  await createGroup([2]);
+  await createGroup([3]);
+  await createGroup([4]);
+  await createGroup([5]);
+  await createGroup([6, 7]);
+  await createGroup([8]);
 
   await db
     .insertInto("GroupMatch")
