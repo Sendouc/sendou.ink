@@ -99,6 +99,7 @@ import { ScaleIcon } from "~/components/icons/Scale";
 import { DiscordIcon } from "~/components/icons/Discord";
 import { useWindowSize } from "~/hooks/useWindowSize";
 import { joinListToNaturalString } from "~/utils/arrays";
+import { NewTabs } from "~/components/NewTabs";
 
 export const meta: V2_MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
@@ -1041,6 +1042,17 @@ function BottomSection({
     </LinkButton>
   );
 
+  const chat = (
+    <ConnectedChat
+      users={chatUsers}
+      rooms={chatRooms}
+      disabled={!data.canPostChatMessages}
+      // we don't want the user to lose the weapons they are reporting
+      // when the match gets suddenly locked
+      revalidates={false}
+    />
+  );
+
   const cancelMatch =
     canReportScore && !data.match.isLocked ? (
       <FormWithConfirm
@@ -1065,10 +1077,13 @@ function BottomSection({
       </FormWithConfirm>
     ) : null;
 
-  if (!showMid && chatRooms.length === 0) {
+  const chatHidden = chatRooms.length === 0;
+
+  if (!showMid && chatHidden) {
     return mapList;
   }
 
+  // xxx: sticky tabs as prop?
   if (isMobile) {
     return (
       <div className="stack lg">
@@ -1081,7 +1096,33 @@ function BottomSection({
           </div>
         </div>
 
-        {mapList}
+        <div>
+          <NewTabs
+            tabs={[
+              {
+                label: "Chat",
+                // xxx: dynamic chat number
+                number: 0,
+                hidden: chatHidden,
+              },
+              {
+                label: "Report score",
+              },
+            ]}
+            disappearing
+            content={[
+              {
+                key: "chat",
+                hidden: chatHidden,
+                element: chat,
+              },
+              {
+                key: "report",
+                element: mapList,
+              },
+            ]}
+          />
+        </div>
       </div>
     );
   }
@@ -1103,16 +1144,7 @@ function BottomSection({
           </div>
         </div>
         <div className="q-match__chat-container">
-          {chatRooms.length > 0 ? (
-            <ConnectedChat
-              users={chatUsers}
-              rooms={chatRooms}
-              disabled={!data.canPostChatMessages}
-              // we don't want the user to lose the weapons they are reporting
-              // when the match gets suddenly locked
-              revalidates={false}
-            />
-          ) : null}
+          {chatRooms.length > 0 ? chat : null}
         </div>
       </div>
       {cancelFetcher.data?.error === "cant-cancel" ? (
