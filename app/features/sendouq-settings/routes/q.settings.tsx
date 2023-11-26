@@ -42,6 +42,7 @@ export const links: LinksFunction = () => {
 };
 
 export const handle: SendouRouteHandle = {
+  i18n: ["q"],
   breadcrumb: () => [
     {
       imgPath: navIconUrl("sendouq"),
@@ -116,6 +117,7 @@ export default function SendouQSettingsPage() {
 }
 
 function MapPicker() {
+  const { t } = useTranslation(["q", "common"]);
   const data = useLoaderData<typeof loader>();
   const fetcher = useFetcher();
   const [preferences, setPreferences] = React.useState<UserMapModePreferences>(
@@ -180,7 +182,7 @@ function MapPicker() {
     <details>
       <summary className="q-settings__summary">
         <div>
-          <span>Stages and modes</span> <MapIcon />
+          <span>{t("q:settings.maps.header")}</span> <MapIcon />
         </div>
       </summary>
       <fetcher.Form method="post" className="mb-4">
@@ -240,7 +242,7 @@ function MapPicker() {
             className="mx-auto"
             size="big"
           >
-            Save
+            {t("common:actions.save")}
           </SubmitButton>
         </div>
       </fetcher.Form>
@@ -297,6 +299,8 @@ function PreferenceRadioGroup({
   preference?: Preference;
   onPreferenceChange: (preference: Preference & "NEUTRAL") => void;
 }) {
+  const { t } = useTranslation(["q"]);
+
   return (
     <RadioGroup
       value={preference ?? "NEUTRAL"}
@@ -317,7 +321,7 @@ function PreferenceRadioGroup({
               className="q-settings__radio__emoji"
               width={18}
             />
-            Avoid
+            {t("q:settings.maps.avoid")}
           </span>
         )}
       </RadioGroup.Option>
@@ -333,7 +337,7 @@ function PreferenceRadioGroup({
               className="q-settings__radio__emoji"
               width={18}
             />
-            Neutral
+            {t("q:settings.maps.neutral")}
           </span>
         )}
       </RadioGroup.Option>
@@ -349,7 +353,7 @@ function PreferenceRadioGroup({
               className="q-settings__radio__emoji"
               width={18}
             />
-            Prefer
+            {t("q:settings.maps.prefer")}
           </span>
         )}
       </RadioGroup.Option>
@@ -358,14 +362,15 @@ function PreferenceRadioGroup({
 }
 
 function VoiceChat() {
-  const { t } = useTranslation(["common"]);
+  const { t } = useTranslation(["common", "q"]);
   const fetcher = useFetcher();
 
   return (
     <details>
       <summary className="q-settings__summary">
         <div>
-          <span>Voice chat</span> <MicrophoneFilledIcon />
+          <span>{t("q:settings.voiceChat.header")}</span>{" "}
+          <MicrophoneFilledIcon />
         </div>
       </summary>
       <fetcher.Form method="post" className="mb-4 ml-2-5 stack sm">
@@ -387,16 +392,17 @@ function VoiceChat() {
 }
 
 function VoiceChatAbility() {
+  const { t } = useTranslation(["q"]);
   const data = useLoaderData<typeof loader>();
 
   const label = (vc: Tables["User"]["vc"]) => {
     switch (vc) {
       case "YES":
-        return "Yes";
+        return t("q:settings.voiceChat.canVC.yes");
       case "NO":
-        return "No";
+        return t("q:settings.voiceChat.canVC.no");
       case "LISTEN_ONLY":
-        return "Listen only";
+        return t("q:settings.voiceChat.canVC.listenOnly");
       default:
         assertUnreachable(vc);
     }
@@ -404,7 +410,7 @@ function VoiceChatAbility() {
 
   return (
     <div className="stack">
-      <label>Voice chat</label>
+      <label>{t("q:settings.voiceChat.canVC.header")}</label>
       {(["YES", "NO", "LISTEN_ONLY"] as const).map((option) => {
         return (
           <div key={option} className="stack sm horizontal items-center">
@@ -427,13 +433,14 @@ function VoiceChatAbility() {
 }
 
 function Languages() {
+  const { t } = useTranslation(["q"]);
   const data = useLoaderData<typeof loader>();
   const [value, setValue] = React.useState(data.settings.languages ?? []);
 
   return (
     <div className="stack">
       <input type="hidden" name="languages" value={JSON.stringify(value)} />
-      <label>Your languages</label>
+      <label>{t("q:settings.voiceChat.languages.header")}</label>
       <select
         className="w-max"
         onChange={(e) => {
@@ -443,7 +450,9 @@ function Languages() {
           setValue(newLanguages);
         }}
       >
-        <option value="">Select all that apply</option>
+        <option value="">
+          {t("q:settings.voiceChat.languages.placeholder")}
+        </option>
         {languagesUnified
           .filter((lang) => !value.includes(lang.code))
           .map((option) => {
@@ -480,7 +489,7 @@ function Languages() {
 }
 
 function WeaponPool() {
-  const { t } = useTranslation(["common"]);
+  const { t } = useTranslation(["common", "q"]);
   const data = useLoaderData<typeof loader>();
   const [weapons, setWeapons] = React.useState(data.settings.qWeaponPool ?? []);
   const fetcher = useFetcher();
@@ -491,7 +500,7 @@ function WeaponPool() {
     <details>
       <summary className="q-settings__summary">
         <div>
-          <span>Weapon pool</span> <PuzzleIcon />
+          <span>{t("q:settings.weaponPool.header")}</span> <PuzzleIcon />
         </div>
       </summary>
       <fetcher.Form method="post" className="mb-4 stack items-center">
@@ -501,7 +510,6 @@ function WeaponPool() {
           value={JSON.stringify(weapons)}
         />
         <div className="q-settings__weapon-pool-select-container">
-          <label htmlFor="weapon">Weapon pool</label>
           {weapons.length < SENDOUQ_WEAPON_POOL_MAX_SIZE ? (
             <div>
               <WeaponCombobox
@@ -521,14 +529,16 @@ function WeaponPool() {
               />
             </div>
           ) : (
-            <span className="text-xs text-info">Weapon pool is full</span>
+            <span className="text-xs text-info">
+              {t("q:settings.weaponPool.full")}
+            </span>
           )}
         </div>
         <div className="stack horizontal sm justify-center">
           {weapons.map((weapon) => {
             return (
               <div key={weapon} className="stack xs">
-                <div className="u__weapon">
+                <div>
                   <WeaponImage
                     weaponSplId={weapon}
                     variant="badge"
@@ -566,28 +576,15 @@ function WeaponPool() {
   );
 }
 
-const sounds = [
-  {
-    code: "sq_like",
-    name: "Like received",
-  },
-  {
-    code: "sq_new-group",
-    name: "Group new members",
-  },
-  {
-    code: "sq_match",
-    name: "Match started",
-  },
-];
-
 function Sounds() {
+  const { t } = useTranslation(["q"]);
   const isMounted = useIsMounted();
+
   return (
     <details>
       <summary className="q-settings__summary">
         <div>
-          <span>Sounds</span> <SpeakerFilledIcon />
+          <span>{t("q:settings.sounds.header")}</span> <SpeakerFilledIcon />
         </div>
       </summary>
       {isMounted && <SoundCheckboxes />}
@@ -596,6 +593,23 @@ function Sounds() {
 }
 
 function SoundCheckboxes() {
+  const { t } = useTranslation(["q"]);
+
+  const sounds = [
+    {
+      code: "sq_like",
+      name: t("q:settings.sounds.likeReceived"),
+    },
+    {
+      code: "sq_new-group",
+      name: t("q:settings.sounds.groupNewMember"),
+    },
+    {
+      code: "sq_match",
+      name: t("q:settings.sounds.matchStarted"),
+    },
+  ];
+
   // default to true
   const currentValue = (code: string) =>
     !localStorage.getItem(soundCodeToLocalStorageKey(code)) ||

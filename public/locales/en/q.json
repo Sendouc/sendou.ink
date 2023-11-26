@@ -44,5 +44,23 @@
   "front.join.joinWithTrustAction": "Join & trust {{inviterName})",
   "front.join.joinWithTrustAction.explanation": "Trusting a user allows them to add you to groups without an invite link in the future",
   "front.join.refuseAction": "No thanks",
-  "front.seasonOpen": "Season {{nth}} open"
+  "front.seasonOpen": "Season {{nth}} open",
+
+  "settings.maps.header": "Stages and modes",
+  "settings.maps.avoid": "Avoid",
+  "settings.maps.prefer": "Prefer",
+  "settings.maps.neutral": "Neutral",
+  "settings.weaponPool.header": "Weapon pool",
+  "settings.weaponPool.full": "Weapon pool is full",
+  "settings.voiceChat.header": "Voice chat",
+  "settings.voiceChat.canVC.header": "Can voice chat?",
+  "settings.voiceChat.canVC.yes": "Yes",
+  "settings.voiceChat.canVC.no": "No",
+  "settings.voiceChat.canVC.listenOnly": "Listen only",
+  "settings.voiceChat.languages.header": "Your languages",
+  "settings.voiceChat.languages.placeholder": "Select all that apply",
+  "settings.sounds.header": "Sounds",
+  "settings.sounds.likeReceived": "Like received",
+  "settings.sounds.groupNewMember": "Group new member",
+  "settings.sounds.matchStarted": "Match started"
 }
