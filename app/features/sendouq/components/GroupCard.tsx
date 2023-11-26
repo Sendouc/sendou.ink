@@ -62,6 +62,7 @@ export function GroupCard({
   showAddNote?: SqlBool;
   showNote?: boolean;
 }) {
+  const { t } = useTranslation(["q"]);
   const user = useUser();
   const fetcher = useFetcher();
 
@@ -115,7 +116,10 @@ export function GroupCard({
               {group.tier.isPlus ? "+" : ""}{" "}
               {group.isReplay ? (
                 <>
-                  / <span className="text-theme-secondary">REPLAY</span>
+                  /{" "}
+                  <span className="text-theme-secondary text-uppercase">
+                    {t("q:looking.replay")}
+                  </span>
                 </>
               ) : null}
             </div>
@@ -143,14 +147,14 @@ export function GroupCard({
               state={fetcher.state}
             >
               {action === "MATCH_UP"
-                ? "Start match"
+                ? t("q:looking.groups.actions.startMatch")
                 : action === "LIKE" && !group.members
-                ? "Challenge"
+                ? t("q:looking.groups.actions.challenge")
                 : action === "LIKE"
-                ? "Invite"
+                ? t("q:looking.groups.actions.invite")
                 : action === "GROUP_UP"
-                ? "Group up"
-                : "Undo"}
+                ? t("q:looking.groups.actions.groupUp")
+                : t("q:looking.groups.actions.undo")}
             </SubmitButton>
           </fetcher.Form>
         ) : null}
@@ -180,7 +184,7 @@ function GroupMember({
   showAddNote?: SqlBool;
   showNote?: boolean;
 }) {
-  const { i18n } = useTranslation(["q"]);
+  const { t, i18n } = useTranslation(["q", "user"]);
   const user = useUser();
 
   return (
@@ -236,7 +240,9 @@ function GroupMember({
           >
             {member.inGameName ? (
               <>
-                <span className="text-lighter font-bold text-xxxs">IGN:</span>{" "}
+                <span className="text-lighter font-bold text-xxxs">
+                  {t("user:ign.short")}:
+                </span>{" "}
                 {inGameNameWithoutDiscriminator(member.inGameName)}
               </>
             ) : (
@@ -276,7 +282,9 @@ function GroupMember({
                 "q__group-member__add-note-button__edit": member.privateNote,
               })}
             >
-              {member.privateNote ? "Edit note" : "Add note"}
+              {member.privateNote
+                ? t("q:looking.groups.editNote")
+                : t("q:looking.groups.addNote")}
             </LinkButton>
           ) : null}
         </div>
@@ -312,6 +320,7 @@ function MemberNote({
   note?: string | null;
   editable: boolean;
 }) {
+  const { t } = useTranslation(["common", "q"]);
   const fetcher = useFetcher();
   const [editing, setEditing] = React.useState(false);
   const [value, setValue] = React.useState(note ?? "");
@@ -345,7 +354,7 @@ function MemberNote({
             size="miniscule"
             onClick={stopEditing}
           >
-            Cancel
+            {t("common:actions.cancel")}
           </Button>
           {newValueLegal ? (
             <SubmitButton
@@ -353,7 +362,7 @@ function MemberNote({
               variant="minimal"
               size="miniscule"
             >
-              Save
+              {t("common:actions.save")}
             </SubmitButton>
           ) : (
             <span className="text-warning text-xxs font-semi-bold">
@@ -376,7 +385,7 @@ function MemberNote({
             onClick={startEditing}
             className="mt-2 ml-auto"
           >
-            Edit note
+            {t("q:looking.groups.editNote")}
           </Button>
         ) : null}
       </div>
@@ -387,7 +396,7 @@ function MemberNote({
 
   return (
     <Button variant="minimal" size="miniscule" onClick={startEditing}>
-      Add note
+      {t("q:looking.groups.addNote")}
     </Button>
   );
 }
@@ -423,10 +432,13 @@ function GroupSkillDifference({
     ParsedMemento["groups"][number]["skillDifference"]
   >;
 }) {
+  const { t } = useTranslation(["q"]);
+
   if (skillDifference.calculated) {
     return (
       <div className="text-center font-semi-bold">
-        Team SP {skillDifference.oldSp} ➜ {skillDifference.newSp}
+        {t("q:looking.teamSP")} {skillDifference.oldSp} ➜{" "}
+        {skillDifference.newSp}
       </div>
     );
   }
@@ -434,14 +446,14 @@ function GroupSkillDifference({
   if (skillDifference.newSp) {
     return (
       <div className="text-center font-semi-bold">
-        Team SP calculated: {skillDifference.newSp}
+        {t("q:looking.teamSP.calculated")}: {skillDifference.newSp}
       </div>
     );
   }
 
   return (
     <div className="text-center font-semi-bold">
-      Team SP calculating... ({skillDifference.matchesCount}/
+      {t("q:looking.teamSP.calculating")} ({skillDifference.matchesCount}/
       {skillDifference.matchesCountNeeded})
     </div>
   );
@@ -454,6 +466,8 @@ function MemberSkillDifference({
     ParsedMemento["users"][number]["skillDifference"]
   >;
 }) {
+  const { t } = useTranslation(["q"]);
+
   if (skillDifference.calculated) {
     if (skillDifference.spDiff === 0) return null;
 
@@ -474,7 +488,7 @@ function MemberSkillDifference({
   if (skillDifference.matchesCount === skillDifference.matchesCountNeeded) {
     return (
       <div className="q__group-member__extra-info">
-        <span className="text-lighter">Calculated:</span>{" "}
+        <span className="text-lighter">{t("q:looking.sp.calculated")}:</span>{" "}
         {skillDifference.newSp ? <>{skillDifference.newSp}SP</> : null}
       </div>
     );
@@ -482,7 +496,7 @@ function MemberSkillDifference({
 
   return (
     <div className="q__group-member__extra-info">
-      <span className="text-lighter">Calculating...</span> (
+      <span className="text-lighter">{t("q:looking.sp.calculating")}</span> (
       {skillDifference.matchesCount}/{skillDifference.matchesCountNeeded})
     </div>
   );
@@ -530,7 +544,7 @@ function MemberRoleManager({
                 _action="GIVE_MANAGER"
                 state={fetcher.state}
               >
-                Give manager
+                {t("q:looking.groups.actions.giveManager")}
               </SubmitButton>
             ) : null}
             {member.role === "MANAGER" ? (
@@ -540,7 +554,7 @@ function MemberRoleManager({
                 _action="REMOVE_MANAGER"
                 state={fetcher.state}
               >
-                Remove manager
+                {t("q:looking.groups.actions.removeManager")}
               </SubmitButton>
             ) : null}
             {enableKicking && member.id !== loggedInUser?.id ? (
@@ -550,7 +564,7 @@ function MemberRoleManager({
                 _action="KICK_FROM_GROUP"
                 state={fetcher.state}
               >
-                Kick
+                {t("q:looking.groups.actions.kick")}
               </SubmitButton>
             ) : null}
           </fetcher.Form>
@@ -561,6 +575,8 @@ function MemberRoleManager({
 }
 
 function TierInfo({ skill }: { skill: TieredSkill | "CALCULATING" }) {
+  const { t } = useTranslation(["q"]);
+
   if (skill === "CALCULATING") {
     return (
       <div className="q__group-member__tier">
@@ -574,8 +590,9 @@ function TierInfo({ skill }: { skill: TieredSkill | "CALCULATING" }) {
             />
           }
         >
-          Less than {MATCHES_COUNT_NEEDED_FOR_LEADERBOARD} sets played. Rank is
-          still calculating...
+          {t("q:looking.rankCalculating", {
+            count: MATCHES_COUNT_NEEDED_FOR_LEADERBOARD,
+          })}
         </Popover>
       </div>
     );
@@ -592,7 +609,7 @@ function TierInfo({ skill }: { skill: TieredSkill | "CALCULATING" }) {
               {skill.tier.isPlus ? "+" : ""}
             </div>
             <Link to={TIERS_PAGE} className="text-xxs" target="_blank">
-              All tiers
+              {t("q:looking.allTiers")}
             </Link>
           </div>
           {!skill.approximate ? (

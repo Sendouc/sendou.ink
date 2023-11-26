@@ -11,6 +11,7 @@ import * as React from "react";
 import { ClipboardIcon } from "~/components/icons/Clipboard";
 import { PlusIcon } from "~/components/icons/Plus";
 import { CheckmarkIcon } from "~/components/icons/Checkmark";
+import { useTranslation } from "~/hooks/useTranslation";
 
 export function MemberAdder({
   inviteCode,
@@ -22,6 +23,7 @@ export function MemberAdder({
     discordName: string;
   }>;
 }) {
+  const { t } = useTranslation(["q"]);
   const [trustedUser, setTrustedUser] = React.useState<number>();
   const fetcher = useFetcher();
   const inviteLink = `${SENDOU_INK_BASE_URL}${sendouQInviteLink(inviteCode)}`;
@@ -46,7 +48,9 @@ export function MemberAdder({
     <div className="stack md flex-wrap justify-center">
       {trustedPlayers.length > 0 ? (
         <fetcher.Form method="post" action={SENDOUQ_PREPARING_PAGE}>
-          <label htmlFor="players">Quick add</label>
+          <label htmlFor="players">
+            {t("q:looking.groups.adder.quickAdd")}
+          </label>
           <div className="stack horizontal sm items-center">
             <select
               name="id"
@@ -58,7 +62,7 @@ export function MemberAdder({
               }
               className="q__member-adder__input"
             >
-              <option value="">Select user</option>
+              <option value="">{t("q:looking.groups.adder.selectUser")}</option>
               {trustedPlayers.map((player) => {
                 return (
                   <option key={player.id} value={player.id}>
@@ -77,7 +81,7 @@ export function MemberAdder({
         </fetcher.Form>
       ) : null}
       <div>
-        <label htmlFor="invite">Invite link</label>
+        <label htmlFor="invite">{t("q:looking.groups.adder.inviteLink")}</label>
         <div className="stack horizontal sm items-center">
           <input
             type="text"

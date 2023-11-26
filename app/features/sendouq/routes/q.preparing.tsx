@@ -38,7 +38,7 @@ import { GroupLeaver } from "../components/GroupLeaver";
 import * as QMatchRepository from "~/features/sendouq-match/QMatchRepository.server";
 
 export const handle: SendouRouteHandle = {
-  i18n: ["q"],
+  i18n: ["q", "user"],
   breadcrumb: () => ({
     imgPath: navIconUrl("sendouq"),
     href: SENDOUQ_PREPARING_PAGE,

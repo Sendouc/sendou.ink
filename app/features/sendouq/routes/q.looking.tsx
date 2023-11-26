@@ -78,7 +78,7 @@ import { Alert } from "~/components/Alert";
 import { useUser } from "~/features/auth/core";
 
 export const handle: SendouRouteHandle = {
-  i18n: ["q"],
+  i18n: ["user", "q"],
   breadcrumb: () => ({
     imgPath: navIconUrl("sendouq"),
     href: SENDOUQ_LOOKING_PAGE,
@@ -459,8 +459,8 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 // xxx: link to settings here... as well as to other places?
-// xxx: invitations -> challenges when full group
 export default function QLookingPage() {
+  const { t } = useTranslation(["q"]);
   const user = useUser();
   const data = useLoaderData<typeof loader>();
   const [searchParams] = useSearchParams();
@@ -482,14 +482,11 @@ export default function QLookingPage() {
       <InfoText />
       {wasTryingToJoinAnotherTeam ? (
         <div className="text-warning text-center">
-          Before joining another group, leave the current one
+          {t("q:looking.joiningGroupError")}
         </div>
       ) : null}
       {showGoToSettingPrompt ? (
-        <Alert variation="INFO">
-          To help group finding set your <b>weapon pool</b> and{" "}
-          <b>voice chat status</b> on the settings page
-        </Alert>
+        <Alert variation="INFO">{t("q:looking.goToSettingsPrompt")}</Alert>
       ) : null}
       <Groups />
     </Main>
@@ -497,7 +494,7 @@ export default function QLookingPage() {
 }
 
 function InfoText() {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation(["q"]);
   const isMounted = useIsMounted();
   const data = useLoaderData<typeof loader>();
   const fetcher = useFetcher();
@@ -508,14 +505,14 @@ function InfoText() {
         method="post"
         className="text-xs text-lighter ml-auto text-error stack horizontal sm"
       >
-        Group hidden due to inactivity. Still looking?{" "}
+        {t("q:looking.inactiveGroup")}{" "}
         <SubmitButton
           size="tiny"
           variant="minimal"
           _action="REFRESH_GROUP"
           state={fetcher.state}
         >
-          Click here
+          {t("q:looking.inactiveGroup.action")}
         </SubmitButton>
       </fetcher.Form>
     );
@@ -527,14 +524,14 @@ function InfoText() {
         method="post"
         className="text-xs text-lighter ml-auto text-warning stack horizontal sm"
       >
-        Group will be marked inactive. Still looking?{" "}
+        {t("q:looking.inactiveGroup.soon")}{" "}
         <SubmitButton
           size="tiny"
           variant="minimal"
           _action="REFRESH_GROUP"
           state={fetcher.state}
         >
-          Click here
+          {t("q:looking.inactiveGroup.action")}
         </SubmitButton>
       </fetcher.Form>
     );
@@ -547,15 +544,16 @@ function InfoText() {
       })}
     >
       {isMounted
-        ? `Last updated at ${new Date(data.lastUpdated).toLocaleTimeString(
-            i18n.language,
-          )}`
+        ? t("q:looking.lastUpdatedAt", {
+            time: new Date(data.lastUpdated).toLocaleTimeString(i18n.language),
+          })
         : "Placeholder"}
     </div>
   );
 }
 
 function Groups() {
+  const { t } = useTranslation(["q"]);
   const data = useLoaderData<typeof loader>();
   const isMounted = useIsMounted();
 
@@ -605,7 +603,13 @@ function Groups() {
 
   const invitedGroupsDesktop = (
     <div className="stack sm">
-      <ColumnHeader>Invited</ColumnHeader>
+      <ColumnHeader>
+        {t(
+          isFullGroup
+            ? "q:looking.columns.challenged"
+            : "q:looking.columns.invited",
+        )}
+      </ColumnHeader>
       {data.groups.neutral
         .filter((group) => group.isLiked)
         .map((group) => {
@@ -645,7 +649,9 @@ function Groups() {
 
   const ownGroupElement = (
     <div className="stack md">
-      {!renderChat && <ColumnHeader>My group</ColumnHeader>}
+      {!renderChat && (
+        <ColumnHeader>{t("q:looking.columns.myGroup")}</ColumnHeader>
+      )}
       <GroupCard
         group={data.groups.own}
         ownRole={data.role}
@@ -683,11 +689,11 @@ function Groups() {
               type="divider"
               tabs={[
                 {
-                  label: "My group",
+                  label: t("q:looking.columns.myGroup"),
                   number: data.groups.own.members!.length,
                 },
                 {
-                  label: "Chat",
+                  label: t("q:looking.columns.chat"),
                   hidden: !renderChat,
                   number: unseenMessages,
                 },
@@ -712,21 +718,25 @@ function Groups() {
             scrolling={isMobile}
             tabs={[
               {
-                label: "Groups",
+                label: t("q:looking.columns.groups"),
                 number: data.groups.neutral.length,
               },
               {
-                label: isFullGroup ? "Challenges" : "Invitations",
+                label: t(
+                  isFullGroup
+                    ? "q:looking.columns.challenges"
+                    : "q:looking.columns.invitations",
+                ),
                 number: data.groups.likesReceived.length,
                 hidden: !isMobile,
               },
               {
-                label: "Roster",
+                label: t("q:looking.columns.myGroup"),
                 number: data.groups.own.members!.length,
                 hidden: !isMobile,
               },
               {
-                label: "Chat",
+                label: t("q:looking.columns.chat"),
                 hidden: !isMobile || !renderChat,
                 number: unseenMessages,
               },
@@ -736,7 +746,9 @@ function Groups() {
                 key: "groups",
                 element: (
                   <div className="stack sm">
-                    <ColumnHeader>Available</ColumnHeader>
+                    <ColumnHeader>
+                      {t("q:looking.columns.available")}
+                    </ColumnHeader>
                     {data.groups.neutral
                       .filter((group) => isMobile || !group.isLiked)
                       .map((group) => {
@@ -789,7 +801,13 @@ function Groups() {
         </div>
         {!isMobile ? (
           <div className="stack sm">
-            <ColumnHeader>Invitations</ColumnHeader>
+            <ColumnHeader>
+              {t(
+                isFullGroup
+                  ? "q:looking.columns.challenges"
+                  : "q:looking.columns.invitations",
+              )}
+            </ColumnHeader>
             {data.groups.likesReceived.map((group) => {
               return (
                 <GroupCard

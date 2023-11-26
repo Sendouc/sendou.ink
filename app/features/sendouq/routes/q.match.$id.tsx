@@ -126,7 +126,7 @@ export const links: LinksFunction = () => {
 };
 
 export const handle: SendouRouteHandle = {
-  i18n: ["q", "tournament"],
+  i18n: ["q", "tournament", "user"],
   breadcrumb: () => ({
     imgPath: navIconUrl("sendouq"),
     href: SENDOUQ_PAGE,
