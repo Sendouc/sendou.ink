@@ -18,7 +18,7 @@ import * as React from "react";
 import { Flipped, Flipper } from "react-flip-toolkit";
 import invariant from "tiny-invariant";
 import { Avatar } from "~/components/Avatar";
-import { Button } from "~/components/Button";
+import { Button, LinkButton } from "~/components/Button";
 import { WeaponCombobox } from "~/components/Combobox";
 import { Divider } from "~/components/Divider";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
@@ -94,6 +94,8 @@ import * as QRepository from "~/features/sendouq/QRepository.server";
 import * as QMatchRepository from "~/features/sendouq-match/QMatchRepository.server";
 import { AddPrivateNoteDialog } from "~/features/sendouq-match/components/AddPrivateNoteDialog";
 import { safeNumberParse } from "~/utils/number";
+import { ScaleIcon } from "~/components/icons/Scale";
+import { DiscordIcon } from "~/components/icons/Discord";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -417,15 +419,12 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   };
 };
 
-// xxx: chat next to maplist
 export default function QMatchPage() {
   const user = useUser();
   const isMounted = useIsMounted();
   const { i18n } = useTranslation();
   const data = useLoaderData<typeof loader>();
   const [showWeaponsForm, setShowWeaponsForm] = React.useState(false);
-  const submitScoreFetcher = useFetcher<typeof action>();
-  const cancelScoreFetcher = useFetcher<typeof action>();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
@@ -453,35 +452,12 @@ export default function QMatchPage() {
   const showScore =
     data.match.isLocked || (data.match.reportedByUserId && ownGroup);
 
-  const poolCode = () => {
-    const stringId = String(data.match.id);
-    const lastDigit = stringId[stringId.length - 1];
-
-    return `SQ${lastDigit}`;
-  };
-
-  const chatUsers = React.useMemo(() => {
-    return Object.fromEntries(
-      [...data.groupAlpha.members, ...data.groupBravo.members].map((m) => [
-        m.id,
-        m,
-      ]),
-    );
-  }, [data]);
-
-  const chatRooms = React.useMemo(() => {
-    return [
-      data.matchChatCode ? { code: data.matchChatCode, label: "Match" } : null,
-      data.groupChatCode ? { code: data.groupChatCode, label: "Group" } : null,
-    ].filter(Boolean) as ChatProps["rooms"];
-  }, [data.matchChatCode, data.groupChatCode]);
-
   const addingNoteFor = (
     data.groupMemberOf === "ALPHA" ? data.groupAlpha : data.groupBravo
   ).members.find((m) => m.id === safeNumberParse(searchParams.get("note")));
 
   return (
-    <Main className="q-match__container stack lg">
+    <Main className="q-match__container stack xl">
       <AddPrivateNoteDialog
         aboutUser={addingNoteFor}
         close={() => navigate(sendouQMatchPage(data.match.id))}
@@ -528,11 +504,7 @@ export default function QMatchPage() {
       ) : null}
       {!showWeaponsForm ? (
         <>
-          <div
-            className={clsx("q-match__teams-container", {
-              "with-chat": data.matchChatCode || data.groupChatCode,
-            })}
-          >
+          <div className="q-match__teams-container">
             {[data.groupAlpha, data.groupBravo].map((group, i) => {
               const side = i === 0 ? "ALPHA" : "BRAVO";
 
@@ -567,88 +539,12 @@ export default function QMatchPage() {
                 </div>
               );
             })}
-            {chatRooms.length > 0 ? (
-              <ConnectedChat
-                users={chatUsers}
-                rooms={chatRooms}
-                disabled={!data.canPostChatMessages}
-                // we don't want the user to lose the weapons they are reporting
-                // when the match gets suddenly locked
-                revalidates={false}
-              />
-            ) : null}
           </div>
-          {!data.match.isLocked && (ownMember || isMod(user)) ? (
-            <div>
-              <div className="stack horizontal justify-between">
-                <Link to={SENDOUQ_RULES_PAGE} className="text-xxs font-bold">
-                  Read the rules
-                </Link>
-                {canReportScore && !data.match.isLocked ? (
-                  <FormWithConfirm
-                    dialogHeading="Cancel match? (Check rules)"
-                    fields={[
-                      ["_action", "REPORT_SCORE"],
-                      ["winners", "[]"],
-                    ]}
-                    deleteButtonText="Cancel"
-                    cancelButtonText="Nevermind"
-                    fetcher={cancelScoreFetcher}
-                  >
-                    <Button
-                      className="build__small-text"
-                      variant="minimal-destructive"
-                      size="tiny"
-                      type="submit"
-                      disabled={
-                        ownTeamReported && !data.match.mapList[0].winnerGroupId
-                      }
-                    >
-                      Cancel match
-                    </Button>
-                  </FormWithConfirm>
-                ) : null}
-              </div>
-              <div className="q-match__join-discord-section">
-                If needed, contact your opponent on the <b>#match-meetup</b>{" "}
-                channel of the sendou.ink Discord:{" "}
-                <a
-                  href={SENDOU_INK_DISCORD_URL}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {SENDOU_INK_DISCORD_URL}
-                </a>
-                . Alpha team hosts. Password should be{" "}
-                <span className="q-match__join-discord-section__highlighted">
-                  {resolveRoomPass(data.match.id)}
-                </span>
-                . Pool code is{" "}
-                <span className="q-match__join-discord-section__highlighted">
-                  {poolCode()}
-                </span>
-              </div>
-            </div>
-          ) : null}
-          {cancelScoreFetcher.data?.error === "cant-cancel" ? (
-            <div className="text-xs text-warning font-semi-bold text-center">
-              Can&apos;t cancel since opponent has already reported score for
-              this match. See dispute instructions at the top of the page.
-            </div>
-          ) : null}
-          <MapList
-            key={data.match.id}
+          <BottomSection
             canReportScore={canReportScore}
-            isResubmission={ownTeamReported}
-            fetcher={submitScoreFetcher}
+            ownTeamReported={ownTeamReported}
+            participatingInTheMatch={Boolean(ownMember)}
           />
-          {submitScoreFetcher.data?.error === "different" ? (
-            <div className="text-xs text-warning font-semi-bold text-center">
-              You reported different results than your opponent. Double check
-              the above is correct and otherwise see dispute instructions at the
-              top of the page.
-            </div>
-          ) : null}
         </>
       ) : null}
     </Main>
@@ -1032,6 +928,162 @@ function ReportWeaponsForm() {
         </div>
       )}
     </weaponsFetcher.Form>
+  );
+}
+
+// xxx: mobile layout
+function BottomSection({
+  canReportScore,
+  ownTeamReported,
+  participatingInTheMatch,
+}: {
+  canReportScore: boolean;
+  ownTeamReported: boolean;
+  participatingInTheMatch: boolean;
+}) {
+  const user = useUser();
+  const data = useLoaderData<typeof loader>();
+  const submitScoreFetcher = useFetcher<typeof action>();
+  const cancelFetcher = useFetcher<typeof action>();
+
+  const chatUsers = React.useMemo(() => {
+    return Object.fromEntries(
+      [...data.groupAlpha.members, ...data.groupBravo.members].map((m) => [
+        m.id,
+        m,
+      ]),
+    );
+  }, [data]);
+
+  const chatRooms = React.useMemo(() => {
+    return [
+      data.matchChatCode ? { code: data.matchChatCode, label: "Match" } : null,
+      data.groupChatCode ? { code: data.groupChatCode, label: "Group" } : null,
+    ].filter(Boolean) as ChatProps["rooms"];
+  }, [data.matchChatCode, data.groupChatCode]);
+
+  const showMid =
+    !data.match.isLocked && (participatingInTheMatch || isMod(user));
+
+  const poolCode = () => {
+    const stringId = String(data.match.id);
+    const lastDigit = stringId[stringId.length - 1];
+
+    return `SQ${lastDigit}`;
+  };
+
+  if (!showMid && chatRooms.length === 0) {
+    return (
+      <MapList
+        key={data.match.id}
+        canReportScore={canReportScore}
+        isResubmission={ownTeamReported}
+        fetcher={submitScoreFetcher}
+      />
+    );
+  }
+
+  return (
+    <>
+      <div className="q-match__map-list-chat-container">
+        <MapList
+          key={data.match.id}
+          canReportScore={canReportScore}
+          isResubmission={ownTeamReported}
+          fetcher={submitScoreFetcher}
+        />
+        <div
+          className={clsx("q-match__bottom-mid-section", {
+            invisible: !showMid,
+          })}
+        >
+          <div className="stack md">
+            <div className="stack sm">
+              <InfoWithHeader header="Pool" value={poolCode()} />
+              <InfoWithHeader
+                header="Pass"
+                value={resolveRoomPass(data.match.id)}
+              />
+            </div>
+            <LinkButton
+              to={SENDOUQ_RULES_PAGE}
+              variant="outlined"
+              size="tiny"
+              icon={<ScaleIcon />}
+            >
+              Rules
+            </LinkButton>
+            <LinkButton
+              isExternal
+              to={SENDOU_INK_DISCORD_URL}
+              variant="outlined"
+              size="tiny"
+              icon={<DiscordIcon />}
+            >
+              Helpdesk
+            </LinkButton>
+            {canReportScore && !data.match.isLocked ? (
+              <FormWithConfirm
+                dialogHeading="Cancel match? (requires confirmation from the other group, abuse of the feature will lead to a ban)"
+                fields={[
+                  ["_action", "REPORT_SCORE"],
+                  ["winners", "[]"],
+                ]}
+                deleteButtonText="Cancel"
+                cancelButtonText="Nevermind"
+                fetcher={cancelFetcher}
+              >
+                <Button
+                  variant="minimal-destructive"
+                  size="tiny"
+                  type="submit"
+                  disabled={
+                    ownTeamReported && !data.match.mapList[0].winnerGroupId
+                  }
+                  className="build__small-text mt-4"
+                >
+                  Cancel match
+                </Button>
+              </FormWithConfirm>
+            ) : null}
+          </div>
+        </div>
+        <div className="q-match__chat-container">
+          {chatRooms.length > 0 ? (
+            <ConnectedChat
+              users={chatUsers}
+              rooms={chatRooms}
+              disabled={!data.canPostChatMessages}
+              // we don't want the user to lose the weapons they are reporting
+              // when the match gets suddenly locked
+              revalidates={false}
+            />
+          ) : null}
+        </div>
+      </div>
+      {cancelFetcher.data?.error === "cant-cancel" ? (
+        <div className="text-xs text-warning font-semi-bold text-center">
+          Can&apos;t cancel since opponent has already reported score for this
+          match. See dispute instructions at the top of the page.
+        </div>
+      ) : null}
+      {submitScoreFetcher.data?.error === "different" ? (
+        <div className="text-xs text-warning font-semi-bold text-center">
+          You reported different results than your opponent. Double check the
+          above is correct and otherwise see dispute instructions at the top of
+          the page.
+        </div>
+      ) : null}
+    </>
+  );
+}
+
+function InfoWithHeader({ header, value }: { header: string; value: string }) {
+  return (
+    <div>
+      <div className="q-match__info__header">{header}</div>
+      <div className="q-match__info__value">{value}</div>
+    </div>
   );
 }
 

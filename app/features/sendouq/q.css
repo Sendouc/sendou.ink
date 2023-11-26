@@ -356,6 +356,13 @@
   gap: var(--s-8);
 }
 
+.q-match__map-list-chat-container {
+  display: grid;
+  grid-template-columns: 2fr 1fr 2fr;
+  place-items: center;
+  gap: var(--s-4);
+}
+
 .q-match__report__user-name-container {
   display: flex;
   gap: var(--s-2);
@@ -378,11 +385,30 @@
   width: 12px;
 }
 
-@media screen and (min-width: 640px) {
-  .q-match__teams-container.with-chat {
-    grid-template-columns: 1fr 1fr 1fr;
-  }
+.q-match__chat-container {
+  align-self: flex-start;
+}
 
+.q-match__bottom-mid-section {
+  display: flex;
+  flex-direction: column;
+  align-self: flex-start;
+}
+
+.q-match__info__header {
+  text-transform: uppercase;
+  color: var(--text-lighter);
+  font-size: var(--fonts-xs);
+  line-height: 1.1;
+}
+
+.q-match__info__value {
+  font-size: var(--fonts-xl);
+  font-weight: var(--semi-bold);
+  letter-spacing: 1px;
+}
+
+@media screen and (min-width: 640px) {
   .q-match__teams-container {
     grid-template-columns: 1fr 1fr;
   }
