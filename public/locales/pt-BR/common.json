@@ -26,7 +26,7 @@
   "header.profile": "Perfil",
   "header.logout": "Sair",
   "header.login": "Login",
-  "header.language": "Língua",
+  "header.language": "Idioma",
   "header.loggedInAs": "Logado como {{userName}}",
   "header.theme": "Tema",
 
@@ -93,7 +93,7 @@
   "forms.name": "Nome",
   "forms.description": "Descrição",
   "forms.errors.title": "Os seguintes erros precisam ser corrigidos",
-  "forms.errors.noSearchMatches": "Nenhuma partida encontrada",
+  "forms.errors.noSearchMatches": "Nenhum resultado encontrado",
 
   "errors.genericReload": "Algo deu errado. Tente recarregar a página.",
 

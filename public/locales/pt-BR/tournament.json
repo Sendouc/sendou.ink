@@ -33,13 +33,13 @@
   "pre.roster.footer": "Pelo menos {{atLeastCount}} membros são necessários para participar. O número máximo da lista de participantes é de {{maxCount}}",
   "pre.roster.addTrusted.header": "Adicionar pessoas com que você jogou",
   "pre.roster.delete.button": "Excluir membro",
-  "pre.roster.delete.header": "Membro para ser excluído",
+  "pre.roster.delete.header": "Membro a ser excluído",
 
   "pre.pool.header": "Escolher seleção de mapas",
   "pre.pool.tiebreaker": "Desempate: {{stage}}",
   "pre.pool.pick": "Escolha {{number}}",
 
-  "pre.sub.prompt": "Não tem time em mente para esse evento? Você também pode se juntar à lista de substitutos.",
+  "pre.sub.prompt": "Não tem um time em mente para esse evento? Você também pode se juntar à lista de substitutos.",
 
   "bracket.type.DE_WINNERS": "Round dos Vencedores",
   "bracket.type.DE_LOSERS": "Round dos Perdedores",
@@ -102,11 +102,11 @@
 
   "bracket.waiting": "O bracket será mostrado aqui quando ao menos {{count}} times estiverem registrados",
   "bracket.wip": "Esse bracket é uma prévia e poderá mudar",
-  "bracket.finalize.text": "Quando tudo parecer bem, finalize o bracket para iniciar o torneio",
+  "bracket.finalize.text": "Quando tudo parecer certo, finalize o bracket para iniciar o torneio",
   "bracket.finalize.action": "Finalizar Bracket",
   "bracket.beforeStart": "O bracket não pode ser iniciado pois ainda é antes da hora de início do torneio",
 
-  "bracket.progress.thanksForPlaying": "Obrigado por participar do {{eventName}}!",
+  "bracket.progress.thanksForPlaying": "Obrigado por participar do(a) {{eventName}}!",
   "bracket.progress.match": "Oponente atual: {{opponent}}",
   "bracket.progress.match.action": "Ver",
   "bracket.progress.waiting": "Aguardando partida",
