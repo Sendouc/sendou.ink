@@ -563,6 +563,13 @@ dialog::backdrop {
   align-items: center;
 }
 
+.tab__buttons-container__sticky {
+  position: sticky;
+  top: 47px;
+  z-index: 1;
+  background-color: var(--bg);
+}
+
 .divider-tab__buttons-container::before,
 .divider-tab__buttons-container::after {
   flex: 1;

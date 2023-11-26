@@ -1083,7 +1083,6 @@ function BottomSection({
     return mapList;
   }
 
-  // xxx: sticky tabs as prop?
   if (isMobile) {
     return (
       <div className="stack lg">
@@ -1098,6 +1097,7 @@ function BottomSection({
 
         <div>
           <NewTabs
+            sticky
             tabs={[
               {
                 label: "Chat",

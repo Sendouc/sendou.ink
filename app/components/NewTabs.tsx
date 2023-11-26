@@ -19,6 +19,7 @@ interface NewTabsProps {
   /** Don't take space when no tabs to show? */
   disappearing?: boolean;
   type?: "divider";
+  sticky?: boolean;
 }
 
 export function NewTabs(args: NewTabsProps) {
@@ -44,6 +45,7 @@ export function NewTabs(args: NewTabsProps) {
           "overflow-x-auto": scrolling,
           invisible: cantSwitchTabs && !disappearing,
           hidden: cantSwitchTabs && disappearing,
+          "tab__buttons-container__sticky": args.sticky,
         })}
       >
         {tabs
