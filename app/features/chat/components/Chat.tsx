@@ -276,6 +276,7 @@ function SystemMessage({
   );
 }
 
+// TODO: should contain unseen messages logic, now it's duplicated
 export function useChat({
   rooms,
   onNewMessage,

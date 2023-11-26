@@ -34,7 +34,7 @@ import { sql } from "~/db/sql";
 import type { GroupMember, ReportedWeapon } from "~/db/types";
 import * as NotificationService from "~/features/chat/NotificationService.server";
 import type { ChatMessage } from "~/features/chat/chat-types";
-import { ConnectedChat, type ChatProps } from "~/features/chat/components/Chat";
+import { type ChatProps, Chat, useChat } from "~/features/chat/components/Chat";
 import { currentSeason } from "~/features/mmr";
 import { resolveRoomPass } from "~/features/tournament-bracket/tournament-bracket-utils";
 import { useIsMounted } from "~/hooks/useIsMounted";
@@ -956,7 +956,6 @@ function ReportWeaponsForm() {
   );
 }
 
-// xxx: mobile layout
 function BottomSection({
   canReportScore,
   ownTeamReported,
@@ -984,12 +983,32 @@ function BottomSection({
     );
   }, [data]);
 
+  const [_unseenMessages, setUnseenMessages] = React.useState(0);
+  const [chatVisible, setChatVisible] = React.useState(false);
+
+  const onNewMessage = React.useCallback(() => {
+    setUnseenMessages((msg) => msg + 1);
+  }, []);
+
   const chatRooms = React.useMemo(() => {
     return [
       data.matchChatCode ? { code: data.matchChatCode, label: "Match" } : null,
       data.groupChatCode ? { code: data.groupChatCode, label: "Group" } : null,
     ].filter(Boolean) as ChatProps["rooms"];
   }, [data.matchChatCode, data.groupChatCode]);
+
+  const chat = useChat({ rooms: chatRooms, onNewMessage });
+
+  const onChatMount = React.useCallback(() => {
+    setChatVisible(true);
+  }, []);
+
+  const onChatUnmount = React.useCallback(() => {
+    setChatVisible(false);
+    setUnseenMessages(0);
+  }, []);
+
+  const unseenMessages = chatVisible ? 0 : _unseenMessages;
 
   const showMid =
     !data.match.isLocked && (participatingInTheMatch || isMod(user));
@@ -1003,7 +1022,22 @@ function BottomSection({
 
   if (!isMounted) return null;
 
-  const mapList = (
+  const chatElement = (
+    <Chat
+      onNewMessage={onNewMessage}
+      chat={chat}
+      onMount={onChatMount}
+      onUnmount={onChatUnmount}
+      users={chatUsers}
+      rooms={chatRooms}
+      disabled={!data.canPostChatMessages}
+      // we don't want the user to lose the weapons they are reporting
+      // when the match gets suddenly locked
+      revalidates={false}
+    />
+  );
+
+  const mapListElement = (
     <MapList
       key={data.match.id}
       canReportScore={canReportScore}
@@ -1012,14 +1046,14 @@ function BottomSection({
     />
   );
 
-  const roomJoiningInfo = (
+  const roomJoiningInfoElement = (
     <div className="stack sm">
       <InfoWithHeader header="Pool" value={poolCode()} />
       <InfoWithHeader header="Pass" value={resolveRoomPass(data.match.id)} />
     </div>
   );
 
-  const rulesButton = (
+  const rulesButtonElement = (
     <LinkButton
       to={SENDOUQ_RULES_PAGE}
       variant="outlined"
@@ -1030,7 +1064,7 @@ function BottomSection({
     </LinkButton>
   );
 
-  const helpdeskButton = (
+  const helpdeskButtonElement = (
     <LinkButton
       isExternal
       to={SENDOU_INK_DISCORD_URL}
@@ -1042,18 +1076,7 @@ function BottomSection({
     </LinkButton>
   );
 
-  const chat = (
-    <ConnectedChat
-      users={chatUsers}
-      rooms={chatRooms}
-      disabled={!data.canPostChatMessages}
-      // we don't want the user to lose the weapons they are reporting
-      // when the match gets suddenly locked
-      revalidates={false}
-    />
-  );
-
-  const cancelMatch =
+  const cancelMatchElement =
     canReportScore && !data.match.isLocked ? (
       <FormWithConfirm
         dialogHeading="Cancel match? (requires confirmation from the other group, abuse of the feature will lead to a ban)"
@@ -1080,18 +1103,18 @@ function BottomSection({
   const chatHidden = chatRooms.length === 0;
 
   if (!showMid && chatHidden) {
-    return mapList;
+    return mapListElement;
   }
 
   if (isMobile) {
     return (
       <div className="stack lg">
         <div className="stack horizontal lg items-center justify-center">
-          {roomJoiningInfo}
+          {roomJoiningInfoElement}
           <div className="stack md">
-            {rulesButton}
-            {helpdeskButton}
-            {cancelMatch}
+            {rulesButtonElement}
+            {helpdeskButtonElement}
+            {cancelMatchElement}
           </div>
         </div>
 
@@ -1101,8 +1124,7 @@ function BottomSection({
             tabs={[
               {
                 label: "Chat",
-                // xxx: dynamic chat number
-                number: 0,
+                number: unseenMessages,
                 hidden: chatHidden,
               },
               {
@@ -1114,11 +1136,11 @@ function BottomSection({
               {
                 key: "chat",
                 hidden: chatHidden,
-                element: chat,
+                element: chatElement,
               },
               {
                 key: "report",
-                element: mapList,
+                element: mapListElement,
               },
             ]}
           />
@@ -1130,21 +1152,21 @@ function BottomSection({
   return (
     <>
       <div className="q-match__map-list-chat-container">
-        {mapList}
+        {mapListElement}
         <div
           className={clsx("q-match__bottom-mid-section", {
             invisible: !showMid,
           })}
         >
           <div className="stack md">
-            {roomJoiningInfo}
-            {rulesButton}
-            {helpdeskButton}
-            {cancelMatch}
+            {roomJoiningInfoElement}
+            {rulesButtonElement}
+            {helpdeskButtonElement}
+            {cancelMatchElement}
           </div>
         </div>
         <div className="q-match__chat-container">
-          {chatRooms.length > 0 ? chat : null}
+          {chatRooms.length > 0 ? chatElement : null}
         </div>
       </div>
       {cancelFetcher.data?.error === "cant-cancel" ? (
