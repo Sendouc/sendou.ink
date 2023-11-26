@@ -3,6 +3,7 @@ import type {
   LinksFunction,
   LoaderArgs,
   SerializeFrom,
+  V2_MetaFunction,
 } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import type { FetcherWithComponents } from "@remix-run/react";
@@ -47,7 +48,7 @@ import { databaseTimestampToDate } from "~/utils/dates";
 import { animate } from "~/utils/flip";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
-import { inGameNameWithoutDiscriminator } from "~/utils/strings";
+import { inGameNameWithoutDiscriminator, makeTitle } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
 import { assertUnreachable } from "~/utils/types";
 import {
@@ -97,6 +98,27 @@ import { safeNumberParse } from "~/utils/number";
 import { ScaleIcon } from "~/components/icons/Scale";
 import { DiscordIcon } from "~/components/icons/Discord";
 import { useWindowSize } from "~/hooks/useWindowSize";
+import { joinListToNaturalString } from "~/utils/arrays";
+
+export const meta: V2_MetaFunction = (args) => {
+  const data = args.data as SerializeFrom<typeof loader> | null;
+
+  if (!data) return [];
+
+  return [
+    {
+      title: makeTitle(`SendouQ Match #${data.match.id}`),
+    },
+    {
+      name: "description",
+      content: `${joinListToNaturalString(
+        data.groupAlpha.members.map((m) => m.discordName),
+      )} vs. ${joinListToNaturalString(
+        data.groupBravo.members.map((m) => m.discordName),
+      )}`,
+    },
+  ];
+};
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
