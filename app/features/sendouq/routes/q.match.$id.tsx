@@ -96,6 +96,7 @@ import { AddPrivateNoteDialog } from "~/features/sendouq-match/components/AddPri
 import { safeNumberParse } from "~/utils/number";
 import { ScaleIcon } from "~/components/icons/Scale";
 import { DiscordIcon } from "~/components/icons/Discord";
+import { useWindowSize } from "~/hooks/useWindowSize";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -419,6 +420,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   };
 };
 
+// xxx: not showing calculating icons?
 export default function QMatchPage() {
   const user = useUser();
   const isMounted = useIsMounted();
@@ -941,6 +943,10 @@ function BottomSection({
   ownTeamReported: boolean;
   participatingInTheMatch: boolean;
 }) {
+  const { width } = useWindowSize();
+  const isMobile = width < 750;
+  const isMounted = useIsMounted();
+
   const user = useUser();
   const data = useLoaderData<typeof loader>();
   const submitScoreFetcher = useFetcher<typeof action>();
@@ -972,80 +978,106 @@ function BottomSection({
     return `SQ${lastDigit}`;
   };
 
+  if (!isMounted) return null;
+
+  const mapList = (
+    <MapList
+      key={data.match.id}
+      canReportScore={canReportScore}
+      isResubmission={ownTeamReported}
+      fetcher={submitScoreFetcher}
+    />
+  );
+
+  const roomJoiningInfo = (
+    <div className="stack sm">
+      <InfoWithHeader header="Pool" value={poolCode()} />
+      <InfoWithHeader header="Pass" value={resolveRoomPass(data.match.id)} />
+    </div>
+  );
+
+  const rulesButton = (
+    <LinkButton
+      to={SENDOUQ_RULES_PAGE}
+      variant="outlined"
+      size="tiny"
+      icon={<ScaleIcon />}
+    >
+      Rules
+    </LinkButton>
+  );
+
+  const helpdeskButton = (
+    <LinkButton
+      isExternal
+      to={SENDOU_INK_DISCORD_URL}
+      variant="outlined"
+      size="tiny"
+      icon={<DiscordIcon />}
+    >
+      Helpdesk
+    </LinkButton>
+  );
+
+  const cancelMatch =
+    canReportScore && !data.match.isLocked ? (
+      <FormWithConfirm
+        dialogHeading="Cancel match? (requires confirmation from the other group, abuse of the feature will lead to a ban)"
+        fields={[
+          ["_action", "REPORT_SCORE"],
+          ["winners", "[]"],
+        ]}
+        deleteButtonText="Cancel"
+        cancelButtonText="Nevermind"
+        fetcher={cancelFetcher}
+      >
+        <Button
+          variant="minimal-destructive"
+          size="tiny"
+          type="submit"
+          disabled={ownTeamReported && !data.match.mapList[0].winnerGroupId}
+          className="build__small-text mt-4"
+        >
+          Cancel match
+        </Button>
+      </FormWithConfirm>
+    ) : null;
+
   if (!showMid && chatRooms.length === 0) {
+    return mapList;
+  }
+
+  if (isMobile) {
     return (
-      <MapList
-        key={data.match.id}
-        canReportScore={canReportScore}
-        isResubmission={ownTeamReported}
-        fetcher={submitScoreFetcher}
-      />
+      <div className="stack lg">
+        <div className="stack horizontal lg items-center justify-center">
+          {roomJoiningInfo}
+          <div className="stack md">
+            {rulesButton}
+            {helpdeskButton}
+            {cancelMatch}
+          </div>
+        </div>
+
+        {mapList}
+      </div>
     );
   }
 
   return (
     <>
       <div className="q-match__map-list-chat-container">
-        <MapList
-          key={data.match.id}
-          canReportScore={canReportScore}
-          isResubmission={ownTeamReported}
-          fetcher={submitScoreFetcher}
-        />
+        {mapList}
         <div
           className={clsx("q-match__bottom-mid-section", {
             invisible: !showMid,
           })}
         >
           <div className="stack md">
-            <div className="stack sm">
-              <InfoWithHeader header="Pool" value={poolCode()} />
-              <InfoWithHeader
-                header="Pass"
-                value={resolveRoomPass(data.match.id)}
-              />
-            </div>
-            <LinkButton
-              to={SENDOUQ_RULES_PAGE}
-              variant="outlined"
-              size="tiny"
-              icon={<ScaleIcon />}
-            >
-              Rules
-            </LinkButton>
-            <LinkButton
-              isExternal
-              to={SENDOU_INK_DISCORD_URL}
-              variant="outlined"
-              size="tiny"
-              icon={<DiscordIcon />}
-            >
-              Helpdesk
-            </LinkButton>
-            {canReportScore && !data.match.isLocked ? (
-              <FormWithConfirm
-                dialogHeading="Cancel match? (requires confirmation from the other group, abuse of the feature will lead to a ban)"
-                fields={[
-                  ["_action", "REPORT_SCORE"],
-                  ["winners", "[]"],
-                ]}
-                deleteButtonText="Cancel"
-                cancelButtonText="Nevermind"
-                fetcher={cancelFetcher}
-              >
-                <Button
-                  variant="minimal-destructive"
-                  size="tiny"
-                  type="submit"
-                  disabled={
-                    ownTeamReported && !data.match.mapList[0].winnerGroupId
-                  }
-                  className="build__small-text mt-4"
-                >
-                  Cancel match
-                </Button>
-              </FormWithConfirm>
-            ) : null}
+            {roomJoiningInfo}
+            {rulesButton}
+            {helpdeskButton}
+            {cancelMatch}
           </div>
         </div>
         <div className="q-match__chat-container">
