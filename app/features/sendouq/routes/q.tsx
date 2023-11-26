@@ -178,6 +178,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 export default function QPage() {
+  const { t } = useTranslation(["q"]);
   const [dialogOpen, setDialogOpen] = React.useState(true);
   const user = useUser();
   const data = useLoaderData<typeof loader>();
@@ -193,7 +194,7 @@ export default function QPage() {
           rel="noreferrer"
           className="text-xs font-bold text-center"
         >
-          Watch introduction video on YouTube by Chara
+          {t("q:front.watchVideo")}
         </a>
       </div>
       <QLinks />
@@ -203,9 +204,7 @@ export default function QPage() {
       {data.season ? (
         <>
           {data.groupInvitedTo === null ? (
-            <Alert variation="WARNING">
-              Invite code doesn&apos;t match any active team
-            </Alert>
+            <Alert variation="WARNING">{t("q:front.inviteCodeWrong")}</Alert>
           ) : null}
           {data.groupInvitedTo &&
           data.groupInvitedTo.members.length < FULL_GROUP_SIZE ? (
@@ -221,7 +220,7 @@ export default function QPage() {
                 <input type="hidden" name="_action" value="JOIN_QUEUE" />
                 <div className="stack horizontal md items-center mt-4 mx-auto">
                   <SubmitButton icon={<UsersIcon />}>
-                    Join with mates
+                    {t("q:front.actions.joinWithGroup")}
                   </SubmitButton>
                   <SubmitButton
                     name="direct"
@@ -230,7 +229,7 @@ export default function QPage() {
                     icon={<UserIcon />}
                     variant="outlined"
                   >
-                    Join solo
+                    {t("q:front.actions.joinSolo")}
                   </SubmitButton>
                 </div>
                 <ActiveSeasonInfo season={data.season} />
@@ -243,7 +242,7 @@ export default function QPage() {
               method="post"
             >
               <Button size="big" type="submit">
-                Log in to join SendouQ
+                {t("q:front.actions.logIn")}
               </Button>
             </form>
           )}
@@ -258,11 +257,11 @@ const countries = [
     id: 1,
     countryCode: "US",
     timeZone: "America/Los_Angeles",
-    city: "Los Angeles",
+    city: "la",
   },
-  { id: 2, countryCode: "US", timeZone: "America/New_York", city: "New York" },
-  { id: 3, countryCode: "FR", timeZone: "Europe/Paris", city: "Paris" },
-  { id: 4, countryCode: "JP", timeZone: "Asia/Tokyo", city: "Tokyo" },
+  { id: 2, countryCode: "US", timeZone: "America/New_York", city: "nyc" },
+  { id: 3, countryCode: "FR", timeZone: "Europe/Paris", city: "paris" },
+  { id: 4, countryCode: "JP", timeZone: "Asia/Tokyo", city: "tokyo" },
 ] as const;
 const weekdayFormatter = ({
   timeZone,
@@ -289,7 +288,7 @@ const clockFormatter = ({
   });
 function Clocks() {
   const isMounted = useIsMounted();
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation(["q"]);
   useAutoRerender();
 
   return (
@@ -297,7 +296,9 @@ function Clocks() {
       {countries.map((country) => {
         return (
           <div key={country.id} className="q__clock">
-            <div className="q__clock-country">{country.city}</div>
+            <div className="q__clock-country">
+              {t(`q:front.cities.${country.city}`)}
+            </div>
             <Flag countryCode={country.countryCode} />
             <div className={clsx({ invisible: !isMounted })}>
               {isMounted
@@ -336,6 +337,7 @@ function JoinTeamDialog({
     role: GroupMember["role"];
   }[];
 }) {
+  const { t } = useTranslation(["q"]);
   const fetcher = useFetcher();
 
   const owner = members.find((m) => m.role === "OWNER");
@@ -348,28 +350,30 @@ function JoinTeamDialog({
       closeOnAnyClick={false}
       className="text-center"
     >
-      Join the group with{" "}
-      {joinListToNaturalString(members.map((m) => m.discordName))}?
+      {t("q:front.join.header", {
+        members: joinListToNaturalString(members.map((m) => m.discordName)),
+      })}
       <fetcher.Form
         className="stack horizontal justify-center sm mt-4 flex-wrap"
         method="post"
       >
         <SubmitButton _action="JOIN_TEAM" state={fetcher.state}>
-          Join
+          {t("q:front.join.joinAction")}
         </SubmitButton>
         <SubmitButton
           _action="JOIN_TEAM_WITH_TRUST"
           state={fetcher.state}
           variant="outlined"
         >
-          Join & trust {owner.discordName}
+          {t("q:front.join.joinWithTrustAction", {
+            inviterName: owner.discordName,
+          })}
         </SubmitButton>
         <Button onClick={close} variant="destructive">
-          No thanks
+          {t("q:front.join.refuseAction")}
         </Button>
         <FormMessage type="info">
-          Trusting a user allows them to add you to groups without an invite
-          link in the future
+          {t("q:front.join.joinWithTrustAction.explanation")}
         </FormMessage>
       </fetcher.Form>
     </Dialog>
@@ -381,13 +385,14 @@ function ActiveSeasonInfo({
 }: {
   season: SerializeFrom<RankingSeason>;
 }) {
+  const { t, i18n } = useTranslation(["q"]);
   const isMounted = useIsMounted();
 
   const starts = new Date(season.starts);
   const ends = new Date(season.ends);
 
   const dateToString = (date: Date) =>
-    date.toLocaleString("en-US", {
+    date.toLocaleString(i18n.language, {
       month: "short",
       day: "numeric",
       hour: "numeric",
@@ -400,7 +405,7 @@ function ActiveSeasonInfo({
         invisible: !isMounted,
       })}
     >
-      Season {season.nth} open{" "}
+      {t("q:front.seasonOpen", { nth: season.nth })}{" "}
       {isMounted ? (
         <b>
           {dateToString(starts)} - {dateToString(ends)}
@@ -414,36 +419,37 @@ function ActiveSeasonInfo({
 // xxx: how to play
 // xxx: todo icons
 function QLinks() {
+  const { t } = useTranslation(["q"]);
   const user = useUser();
 
   return (
     <div className="stack sm">
       <QLink
         navIcon="settings"
-        title="Rules"
         url={SENDOUQ_RULES_PAGE}
-        subText="Read these before playing"
+        title={t("q:front.nav.rules.title")}
+        subText={t("q:front.nav.rules.description")}
       />
       {user ? (
         <QLink
           navIcon="settings"
-          title="Settings"
           url={SENDOUQ_SETTINGS_PAGE}
-          subText="Map preferences, weapon pool, voice chat & sounds"
+          title={t("q:front.nav.settings.title")}
+          subText={t("q:front.nav.settings.description")}
         />
       ) : null}
       <QLink
         navIcon="leaderboards"
-        title="Leaderboards"
         url={LEADERBOARDS_PAGE}
-        subText="SendouQ solo and team leaderboads"
+        title={t("q:front.nav.leaderboards.title")}
+        subText={t("q:front.nav.leaderboards.description")}
       />
       {user ? (
         <QLink
           navIcon="u"
-          title="My season"
           url={userSeasonsPage({ user })}
-          subText="Match and SP history"
+          title={t("q:front.nav.mySeason.title")}
+          subText={t("q:front.nav.mySeason.description")}
         />
       ) : null}
     </div>
@@ -477,6 +483,7 @@ function UpcomingSeasonInfo({
 }: {
   season: SerializeFrom<RankingSeason>;
 }) {
+  const { t } = useTranslation(["q"]);
   const isMounted = useIsMounted();
   if (!isMounted) return null;
 
@@ -491,9 +498,12 @@ function UpcomingSeasonInfo({
 
   return (
     <div className="font-semi-bold text-center text-sm">
-      It&apos;s off-season!
+      {t("q:front.upcomingSeason.header")}
       <br />
-      Join Season {season.nth} starting {dateToString(starts)}
+      {t("q:front.upcomingSeason.date", {
+        nth: season.nth,
+        date: dateToString(starts),
+      })}
     </div>
   );
 }
