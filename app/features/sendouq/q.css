@@ -381,6 +381,14 @@
   font-size: var(--fonts-xs);
 }
 
+.q-match__pool-pass-container {
+  display: flex;
+  gap: var(--s-2);
+  flex-direction: column;
+  max-width: max-content;
+  margin: 0 auto;
+}
+
 .q-match__sentiment-emoji {
   width: 12px;
 }

@@ -415,8 +415,6 @@ function ActiveSeasonInfo({
   );
 }
 
-// xxx: streams
-// xxx: how to play
 // xxx: todo icons
 function QLinks() {
   const { t } = useTranslation(["q"]);

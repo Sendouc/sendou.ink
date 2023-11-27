@@ -191,7 +191,7 @@ export type ParsedMemento = {
     number,
     {
       plusTier?: PlusTier["tier"];
-      skill?: TieredSkill;
+      skill?: TieredSkill | "CALCULATING";
       skillDifference?: UserSkillDifference;
     }
   >;

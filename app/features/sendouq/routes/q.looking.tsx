@@ -23,6 +23,7 @@ import { assertUnreachable } from "~/utils/types";
 import {
   SENDOUQ_LOOKING_PAGE,
   SENDOUQ_PAGE,
+  SENDOUQ_SETTINGS_PAGE,
   navIconUrl,
   sendouQMatchPage,
 } from "~/utils/urls";
@@ -76,6 +77,8 @@ import * as QRepository from "~/features/sendouq/QRepository.server";
 import { Flipper } from "react-flip-toolkit";
 import { Alert } from "~/components/Alert";
 import { useUser } from "~/features/auth/core";
+import { LinkButton } from "~/components/Button";
+import { Image } from "~/components/Image";
 
 export const handle: SendouRouteHandle = {
   i18n: ["user", "q"],
@@ -458,7 +461,6 @@ export const loader = async ({ request }: LoaderArgs) => {
   };
 };
 
-// xxx: link to settings here... as well as to other places?
 export default function QLookingPage() {
   const { t } = useTranslation(["q"]);
   const user = useUser();
@@ -539,10 +541,19 @@ function InfoText() {
 
   return (
     <div
-      className={clsx("text-xs text-lighter ml-auto", {
+      className={clsx("text-xs text-lighter stack horizontal justify-between", {
         invisible: !isMounted,
       })}
     >
+      <LinkButton
+        to={SENDOUQ_SETTINGS_PAGE}
+        size="tiny"
+        variant="outlined"
+        className="stack horizontal xs"
+      >
+        <Image path={navIconUrl("settings")} alt="" width={18} />
+        {t("q:front.nav.settings.title")}
+      </LinkButton>
       {isMounted
         ? t("q:looking.lastUpdatedAt", {
             time: new Date(data.lastUpdated).toLocaleTimeString(i18n.language),

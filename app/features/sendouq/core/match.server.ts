@@ -277,13 +277,18 @@ export async function createMatchMemento(
     mapPreferences: mapPreferenceMemento(args),
     modePreferences: modePreferencesMemento(args),
     users: Object.fromEntries(
-      [...args.own.group.members, ...args.their.group.members].map((member) => [
-        member.id,
-        {
-          plusTier: member.plusTier ?? undefined,
-          skill: skills.userSkills[member.id],
-        },
-      ]),
+      [...args.own.group.members, ...args.their.group.members].map((member) => {
+        const skill = skills.userSkills[member.id];
+
+        return [
+          member.id,
+          {
+            plusTier: member.plusTier ?? undefined,
+            skill:
+              !skill || skill.approximate ? ("CALCULATING" as const) : skill,
+          },
+        ];
+      }),
     ),
     groups: Object.fromEntries(
       [ownWithTier, theirWithTier].map((group) => [

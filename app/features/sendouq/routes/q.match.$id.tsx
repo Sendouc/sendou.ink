@@ -443,7 +443,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   };
 };
 
-// xxx: not showing calculating icons?
+// xxx: sticky chat and mid section for desktop
 export default function QMatchPage() {
   const user = useUser();
   const isMounted = useIsMounted();
@@ -1047,7 +1047,7 @@ function BottomSection({
   );
 
   const roomJoiningInfoElement = (
-    <div className="stack sm">
+    <div className="q-match__pool-pass-container">
       <InfoWithHeader header="Pool" value={poolCode()} />
       <InfoWithHeader header="Pass" value={resolveRoomPass(data.match.id)} />
     </div>
@@ -1419,7 +1419,7 @@ function MapListMap({
                   buttonChildren={<ModeImage mode={map.mode} size={18} />}
                   triggerClassName="q-match__mode-popover-button"
                 >
-                  <div className="text-md text-center text-lighter mb-2">
+                  <div className="text-md text-lighter mb-2 line-height-very-tight">
                     {t(`game-misc:MODE_LONG_${map.mode}`)}
                   </div>
                   {modePreferences.map(({ userId, preference }) => {
@@ -1450,7 +1450,7 @@ function MapListMap({
                   contentClassName="text-main-forced"
                   buttonChildren={<span>{pickInfo(map.source)}</span>}
                 >
-                  <div className="text-md text-center text-lighter mb-2">
+                  <div className="text-md text-center text-lighter mb-2 line-height-very-tight">
                     {t(`game-misc:MODE_SHORT_${map.mode}`)}{" "}
                     {t(`game-misc:STAGE_${map.stageId}`)}
                   </div>
