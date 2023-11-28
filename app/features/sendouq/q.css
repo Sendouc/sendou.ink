@@ -92,7 +92,7 @@
 }
 
 .q__chat-container {
-  top: 60px;
+  top: var(--sticky-top);
   position: sticky;
 }
 
@@ -395,12 +395,16 @@
 
 .q-match__chat-container {
   align-self: flex-start;
+  top: var(--sticky-top);
+  position: sticky;
 }
 
 .q-match__bottom-mid-section {
   display: flex;
   flex-direction: column;
   align-self: flex-start;
+  top: var(--sticky-top);
+  position: sticky;
 }
 
 .q-match__info__header {

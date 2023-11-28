@@ -19,6 +19,7 @@ export const loader = async () => {
   };
 };
 
+// xxx: translations - tiers page
 export default function TiersPage() {
   const data = useLoaderData<typeof loader>();
 

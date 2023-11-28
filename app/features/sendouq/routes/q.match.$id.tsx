@@ -443,7 +443,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   };
 };
 
-// xxx: sticky chat and mid section for desktop
+// xxx: translations - match page
 export default function QMatchPage() {
   const user = useUser();
   const isMounted = useIsMounted();

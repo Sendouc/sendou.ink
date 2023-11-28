@@ -136,6 +136,7 @@ export const loader = async ({ request }: LoaderArgs) => {
   };
 };
 
+// xxx: translations - preparing page
 export default function QPreparingPage() {
   const data = useLoaderData<typeof loader>();
   const joinQFetcher = useFetcher();
