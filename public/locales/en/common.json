@@ -60,6 +60,7 @@
   "actions.search": "Search",
   "actions.setBg": "Set background",
   "actions.join": "Join",
+  "actions.nevermind": "Nevermind",
   "actions.upload": "Upload",
 
   "maps.createMapList": "Create map list",

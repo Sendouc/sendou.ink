@@ -443,11 +443,10 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   };
 };
 
-// xxx: translations - match page
 export default function QMatchPage() {
   const user = useUser();
   const isMounted = useIsMounted();
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation(["q"]);
   const data = useLoaderData<typeof loader>();
   const [showWeaponsForm, setShowWeaponsForm] = React.useState(false);
   const [searchParams] = useSearchParams();
@@ -488,7 +487,7 @@ export default function QMatchPage() {
         close={() => navigate(sendouQMatchPage(data.match.id))}
       />
       <div className="q-match__header">
-        <h2>Match #{data.match.id}</h2>
+        <h2>{t("q:match.header", { number: data.match.id })}</h2>
         <div
           className={clsx("text-xs text-lighter", {
             invisible: !isMounted,
@@ -584,7 +583,7 @@ function Score({
   ownTeamReported: boolean;
 }) {
   const isMounted = useIsMounted();
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation(["q"]);
   const data = useLoaderData<typeof loader>();
   const reporter =
     data.groupAlpha.members.find((m) => m.id === data.match.reportedByUserId) ??
@@ -606,13 +605,15 @@ function Score({
   if (score[0] === 0 && score[1] === 0) {
     return (
       <div className="stack items-center line-height-tight">
-        <div className="text-sm font-bold text-warning">Match canceled</div>
+        <div className="text-sm font-bold text-warning">
+          {t("q:match.canceled")}
+        </div>
         {!data.match.isLocked ? (
           <div className="text-xs text-lighter stack xs items-center text-center">
             {!ownTeamReported ? (
               <DisputePopover />
             ) : (
-              "Pending other team's confirmation"
+              t("q:match.cancelPendingConfirmation")
             )}
           </div>
         ) : null}
@@ -627,7 +628,7 @@ function Score({
         <div
           className={clsx("text-xs text-lighter", { invisible: !isMounted })}
         >
-          Reported by {reporter?.discordName ?? <b>admin</b>} at{" "}
+          {t("q:match.reportedBy", { name: reporter?.discordName ?? "admin" })}{" "}
           {isMounted
             ? databaseTimestampToDate(reportedAt).toLocaleString(
                 i18n.language,
@@ -643,8 +644,7 @@ function Score({
         </div>
       ) : (
         <div className="text-xs text-lighter stack xs items-center text-center">
-          SP will be adjusted after both teams report the same results{" "}
-          {!ownTeamReported ? <DisputePopover /> : null}
+          {t("q:match.spInfo")} {!ownTeamReported ? <DisputePopover /> : null}
         </div>
       )}
     </div>
@@ -652,18 +652,15 @@ function Score({
 }
 
 function DisputePopover() {
+  const { t } = useTranslation(["q"]);
+
   return (
-    <Popover buttonChildren="Dispute?" containerClassName="text-main-forced">
-      <p>
-        If there is a mistake contact the other team to correct it on their
-        side. Score can be freely rereported till both teams report the same
-        result.
-      </p>
-      <p className="mt-2">
-        If there is a problem talking with the other team, contact a mod on the
-        sendou.ink Discord helpdesk. Provide screenshots that show the correct
-        score.
-      </p>
+    <Popover
+      buttonChildren={t("q:match.dispute.button")}
+      containerClassName="text-main-forced"
+    >
+      <p>{t("q:match.dispute.p1")}</p>
+      <p className="mt-2">{t("q:match.dispute.p2")}</p>
     </Popover>
   );
 }
@@ -681,6 +678,7 @@ function AfterMatchActions({
   showWeaponsForm: boolean;
   setShowWeaponsForm: (show: boolean) => void;
 }) {
+  const { t } = useTranslation(["q"]);
   const data = useLoaderData<typeof loader>();
   const lookAgainFetcher = useFetcher();
 
@@ -709,7 +707,7 @@ function AfterMatchActions({
             state={lookAgainFetcher.state}
             _action="LOOK_AGAIN"
           >
-            Look again with same group
+            {t("q:match.actions.lookAgain")}
           </SubmitButton>
         ) : null}
         {showWeaponsFormButton ? (
@@ -718,7 +716,9 @@ function AfterMatchActions({
             onClick={() => setShowWeaponsForm(!showWeaponsForm)}
             variant={showWeaponsForm ? "destructive" : undefined}
           >
-            {showWeaponsForm ? "Stop reporting weapons" : "Report used weapons"}
+            {showWeaponsForm
+              ? t("q:match.actions.stopReportingWeapons")
+              : t("q:match.actions.reportWeapons")}
           </Button>
         ) : null}
       </lookAgainFetcher.Form>
@@ -728,6 +728,7 @@ function AfterMatchActions({
 }
 
 function ReportWeaponsForm() {
+  const { t } = useTranslation(["q", "user"]);
   const user = useUser();
   const data = useLoaderData<typeof loader>();
   const weaponsFetcher = useFetcher();
@@ -804,9 +805,9 @@ function ReportWeaponsForm() {
         value={JSON.stringify(weaponsUsage)}
       />
       <div className="stack horizontal sm justify-between w-max mx-auto">
-        <h3 className="text-md">Who to report?</h3>
+        <h3 className="text-md">{t("q:match.report.whoToReport")}</h3>
         <label className="stack horizontal xs items-center mb-0">
-          Me
+          {t("q:match.report.whoToReport.me")}
           <input
             type="radio"
             checked={reportingMode === "MYSELF"}
@@ -814,7 +815,7 @@ function ReportWeaponsForm() {
           />
         </label>
         <label className="stack horizontal xs items-center mb-0">
-          My team
+          {t("q:match.report.whoToReport.myTeam")}
           <input
             type="radio"
             checked={reportingMode === "MY_TEAM"}
@@ -822,7 +823,7 @@ function ReportWeaponsForm() {
           />
         </label>
         <label className="stack horizontal xs items-center mb-0">
-          Everyone
+          {t("q:match.report.whoToReport.everyone")}
           <input
             type="radio"
             checked={reportingMode === "ALL"}
@@ -853,7 +854,7 @@ function ReportWeaponsForm() {
                     mapIndex: i,
                   })}
                 >
-                  Copy weapons from above map
+                  {t("q:match.report.copyWeapons")}
                 </Button>
               ) : null}
               <div className="stack sm">
@@ -868,10 +869,14 @@ function ReportWeaponsForm() {
                   return (
                     <React.Fragment key={member.id}>
                       {j === 0 && reportingMode === "ALL" ? (
-                        <Divider className="text-sm">Alpha</Divider>
+                        <Divider className="text-sm">
+                          {t("q:match.sides.alpha")}
+                        </Divider>
                       ) : null}
                       {j === FULL_GROUP_SIZE && reportingMode === "ALL" ? (
-                        <Divider className="text-sm">Bravo</Divider>
+                        <Divider className="text-sm">
+                          {t("q:match.sides.bravo")}
+                        </Divider>
                       ) : null}
                       <div
                         key={member.id}
@@ -882,7 +887,7 @@ function ReportWeaponsForm() {
                           {member.inGameName ? (
                             <>
                               <span className="text-lighter font-semi-bold">
-                                IGN:
+                                {t("user:ign.short")}:
                               </span>{" "}
                               {inGameNameWithoutDiscriminator(
                                 member.inGameName,
@@ -945,11 +950,13 @@ function ReportWeaponsForm() {
       </div>
       {weaponsUsage.flat().some((val) => val === null) ? (
         <div className="text-sm text-center text-warning font-semi-bold">
-          Report all weapons to submit
+          {t("q:match.report.error")}
         </div>
       ) : (
         <div className="stack items-center">
-          <SubmitButton _action="REPORT_WEAPONS">Report weapons</SubmitButton>
+          <SubmitButton _action="REPORT_WEAPONS">
+            {t("q:match.report.submit")}
+          </SubmitButton>
         </div>
       )}
     </weaponsFetcher.Form>
@@ -965,6 +972,7 @@ function BottomSection({
   ownTeamReported: boolean;
   participatingInTheMatch: boolean;
 }) {
+  const { t } = useTranslation(["q", "common"]);
   const { width } = useWindowSize();
   const isMobile = width < 750;
   const isMounted = useIsMounted();
@@ -1048,8 +1056,11 @@ function BottomSection({
 
   const roomJoiningInfoElement = (
     <div className="q-match__pool-pass-container">
-      <InfoWithHeader header="Pool" value={poolCode()} />
-      <InfoWithHeader header="Pass" value={resolveRoomPass(data.match.id)} />
+      <InfoWithHeader header={t("q:match.pool")} value={poolCode()} />
+      <InfoWithHeader
+        header={t("q:match.password.short")}
+        value={resolveRoomPass(data.match.id)}
+      />
     </div>
   );
 
@@ -1060,7 +1071,7 @@ function BottomSection({
       size="tiny"
       icon={<ScaleIcon />}
     >
-      Rules
+      {t("q:front.nav.rules.title")}
     </LinkButton>
   );
 
@@ -1072,20 +1083,20 @@ function BottomSection({
       size="tiny"
       icon={<DiscordIcon />}
     >
-      Helpdesk
+      {t("q:match.helpdesk")}
     </LinkButton>
   );
 
   const cancelMatchElement =
     canReportScore && !data.match.isLocked ? (
       <FormWithConfirm
-        dialogHeading="Cancel match? (requires confirmation from the other group, abuse of the feature will lead to a ban)"
+        dialogHeading={t("q:match.cancelMatch.confirm")}
         fields={[
           ["_action", "REPORT_SCORE"],
           ["winners", "[]"],
         ]}
-        deleteButtonText="Cancel"
-        cancelButtonText="Nevermind"
+        deleteButtonText={t("common:actions.cancel")}
+        cancelButtonText={t("common:actions.nevermind")}
         fetcher={cancelFetcher}
       >
         <Button
@@ -1095,7 +1106,7 @@ function BottomSection({
           disabled={ownTeamReported && !data.match.mapList[0].winnerGroupId}
           className="build__small-text mt-4"
         >
-          Cancel match
+          {t("q:match.cancelMatch")}
         </Button>
       </FormWithConfirm>
     ) : null;
@@ -1123,12 +1134,12 @@ function BottomSection({
             sticky
             tabs={[
               {
-                label: "Chat",
+                label: t("q:looking.columns.chat"),
                 number: unseenMessages,
                 hidden: chatHidden,
               },
               {
-                label: "Report score",
+                label: t("q:match.tabs.reportScore"),
               },
             ]}
             disappearing
@@ -1171,15 +1182,12 @@ function BottomSection({
       </div>
       {cancelFetcher.data?.error === "cant-cancel" ? (
         <div className="text-xs text-warning font-semi-bold text-center">
-          Can&apos;t cancel since opponent has already reported score for this
-          match. See dispute instructions at the top of the page.
+          {t("q:match.errors.cantCancel")}
         </div>
       ) : null}
       {submitScoreFetcher.data?.error === "different" ? (
         <div className="text-xs text-warning font-semi-bold text-center">
-          You reported different results than your opponent. Double check the
-          above is correct and otherwise see dispute instructions at the top of
-          the page.
+          {t("q:match.errors.different")}
         </div>
       ) : null}
     </>
@@ -1204,6 +1212,7 @@ function MapList({
   isResubmission: boolean;
   fetcher: FetcherWithComponents<any>;
 }) {
+  const { t } = useTranslation(["q"]);
   const user = useUser();
   const data = useLoaderData<typeof loader>();
   const [adminToggleChecked, setAdminToggleChecked] = React.useState(false);
@@ -1293,7 +1302,9 @@ function MapList({
         <div className="stack md items-center mt-4">
           <ResultSummary winners={winners} />
           <SubmitButton _action="REPORT_SCORE" state={fetcher.state}>
-            {isResubmission ? "Submit adjusted scores" : "Submit scores"}
+            {isResubmission
+              ? t("q:match.submitScores.adjusted")
+              : t("q:match.submitScores")}
           </SubmitButton>
         </div>
       ) : null}
@@ -1326,7 +1337,7 @@ function MapListMap({
 }) {
   const user = useUser();
   const data = useLoaderData<typeof loader>();
-  const { t } = useTranslation(["game-misc", "tournament"]);
+  const { t } = useTranslation(["q", "game-misc", "tournament"]);
 
   const pickInfo = (source: string) => {
     if (source === "TIEBREAKER") return t("tournament:pickInfo.tiebreaker");
@@ -1335,12 +1346,12 @@ function MapListMap({
 
     if (source === String(data.match.alphaGroupId)) {
       return t("tournament:pickInfo.team.specific", {
-        team: "Alpha",
+        team: t("q:match.sides.alpha"),
       });
     }
 
     return t("tournament:pickInfo.team.specific", {
-      team: "Bravo",
+      team: t("q:match.sides.bravo"),
     });
   };
 
@@ -1378,13 +1389,16 @@ function MapListMap({
     if (!winnerId)
       return (
         <>
-          • <i>Unplayed</i>
+          • <i>{t("q:match.results.unplayed")}</i>
         </>
       );
 
-    const winner = winnerId === data.match.alphaGroupId ? "Alpha" : "Bravo";
+    const winnerSide =
+      winnerId === data.match.alphaGroupId
+        ? t("q:match.sides.alpha")
+        : t("q:match.sides.bravo");
 
-    return <>• {winner} won</>;
+    return <>• {t("q:match.won", { side: winnerSide })}</>;
   };
 
   const relativeSideText = (side: "ALPHA" | "BRAVO") => {
@@ -1512,7 +1526,9 @@ function MapListMap({
           }}
         >
           <div className="q-match__report-section">
-            <label className="mb-0 text-theme-secondary">Winner</label>
+            <label className="mb-0 text-theme-secondary">
+              {t("q:match.report.winnerLabel")}
+            </label>
             <div className="stack sm horizontal items-center">
               <div className="stack sm horizontal items-center font-semi-bold">
                 <input
@@ -1524,7 +1540,7 @@ function MapListMap({
                   onChange={handleReportScore(i, "ALPHA")}
                 />
                 <label className="mb-0" htmlFor={`alpha-${i}`}>
-                  {`Alpha${relativeSideText("ALPHA")}`}
+                  {`${t("q:match.sides.alpha")}${relativeSideText("ALPHA")}`}
                 </label>
               </div>
               <div className="stack sm horizontal items-center font-semi-bold">
@@ -1537,14 +1553,16 @@ function MapListMap({
                   onChange={handleReportScore(i, "BRAVO")}
                 />
                 <label className="mb-0" htmlFor={`bravo-${i}`}>
-                  {`Bravo${relativeSideText("BRAVO")}`}
+                  {`${t("q:match.sides.bravo")}${relativeSideText("BRAVO")}`}
                 </label>
               </div>
             </div>
 
             {showReportedOwnWeapon && onOwnWeaponSelected ? (
               <>
-                <label className="mb-0 text-theme-secondary">Weapon</label>
+                <label className="mb-0 text-theme-secondary">
+                  {t("q:match.report.weaponLabel")}
+                </label>
                 <WeaponCombobox
                   inputName="weapon"
                   quickSelectWeaponIds={recentlyReportedWeapons}
@@ -1578,6 +1596,7 @@ function MapListMap({
 }
 
 function ResultSummary({ winners }: { winners: ("ALPHA" | "BRAVO")[] }) {
+  const { t } = useTranslation(["q"]);
   const user = useUser();
   const data = useLoaderData<typeof loader>();
 
@@ -1606,7 +1625,10 @@ function ResultSummary({ winners }: { winners: ("ALPHA" | "BRAVO")[] }) {
         "text-warning": !userWon,
       })}
     >
-      Reporting {score.join("-")} {userWon ? "win" : "loss"}
+      {t("q:match.reporting", {
+        score: score.join("-"),
+        outcome: userWon ? t("q:match.outcome.win") : t("q:match.outcome.loss"),
+      })}
     </div>
   );
 }
