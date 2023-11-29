@@ -415,7 +415,6 @@ function ActiveSeasonInfo({
   );
 }
 
-// xxx: todo icons
 function QLinks() {
   const { t } = useTranslation(["q"]);
   const user = useUser();
@@ -423,7 +422,7 @@ function QLinks() {
   return (
     <div className="stack sm">
       <QLink
-        navIcon="settings"
+        navIcon="articles"
         url={SENDOUQ_RULES_PAGE}
         title={t("q:front.nav.rules.title")}
         subText={t("q:front.nav.rules.description")}
