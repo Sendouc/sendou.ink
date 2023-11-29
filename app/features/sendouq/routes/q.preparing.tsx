@@ -36,6 +36,7 @@ import { useAutoRefresh } from "~/hooks/useAutoRefresh";
 import { currentSeason } from "~/features/mmr";
 import { GroupLeaver } from "../components/GroupLeaver";
 import * as QMatchRepository from "~/features/sendouq-match/QMatchRepository.server";
+import { useTranslation } from "~/hooks/useTranslation";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q", "user"],
@@ -136,8 +137,8 @@ export const loader = async ({ request }: LoaderArgs) => {
   };
 };
 
-// xxx: translations - preparing page
 export default function QPreparingPage() {
+  const { t } = useTranslation(["q"]);
   const data = useLoaderData<typeof loader>();
   const joinQFetcher = useFetcher();
   useAutoRefresh(data.lastUpdated);
@@ -166,7 +167,7 @@ export default function QPreparingPage() {
           state={joinQFetcher.state}
           _action="JOIN_QUEUE"
         >
-          Join the queue
+          {t("q:preparing.joinQ")}
         </SubmitButton>
       </joinQFetcher.Form>
       <GroupLeaver
