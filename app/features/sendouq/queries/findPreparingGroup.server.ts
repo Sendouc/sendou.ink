@@ -7,7 +7,6 @@ const stm = sql.prepare(/* sql */ `
     select
       "Group"."id",
       "Group"."createdAt",
-      "Group"."mapListPreference",
       "Group"."inviteCode",
       "User"."id" as "userId",
       "User"."discordId",
@@ -32,7 +31,6 @@ const stm = sql.prepare(/* sql */ `
   )
   select 
     "q1"."id",
-    "q1"."mapListPreference",
     "q1"."inviteCode",
     "q1"."createdAt",
     json_group_array(
@@ -59,7 +57,6 @@ export function findPreparingGroup(
   return {
     id: row.id,
     createdAt: row.createdAt,
-    mapListPreference: row.mapListPreference,
     chatCode: null,
     inviteCode: row.inviteCode,
     members: parseDBJsonArray(row.members).map((member: any) => {

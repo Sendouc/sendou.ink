@@ -2,6 +2,7 @@ import { useFetcher } from "@remix-run/react";
 import { Button } from "~/components/Button";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { SubmitButton } from "~/components/SubmitButton";
+import { useTranslation } from "~/hooks/useTranslation";
 import { SENDOUQ_LOOKING_PAGE } from "~/utils/urls";
 
 export function GroupLeaver({
@@ -9,6 +10,7 @@ export function GroupLeaver({
 }: {
   type: "LEAVE_GROUP" | "LEAVE_Q" | "GO_BACK";
 }) {
+  const { t } = useTranslation(["q"]);
   const fetcher = useFetcher();
 
   if (type === "LEAVE_GROUP") {
@@ -20,7 +22,7 @@ export function GroupLeaver({
         action={SENDOUQ_LOOKING_PAGE}
       >
         <Button variant="minimal-destructive" size="tiny">
-          Leave group
+          {t("q:looking.groups.actions.leaveGroup")}
         </Button>
       </FormWithConfirm>
     );
@@ -35,7 +37,9 @@ export function GroupLeaver({
         size="tiny"
         state={fetcher.state}
       >
-        {type === "LEAVE_Q" ? "Leave queue" : "Go back"}
+        {type === "LEAVE_Q"
+          ? t("q:looking.groups.actions.leaveQ")
+          : t("q:looking.groups.actions.goBack")}
       </SubmitButton>
     </fetcher.Form>
   );

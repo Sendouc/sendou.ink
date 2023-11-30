@@ -557,6 +557,52 @@ dialog::backdrop {
   flex: 1;
 }
 
+.divider-tab__buttons-container {
+  text-align: center;
+  display: flex;
+  align-items: center;
+}
+
+.tab__buttons-container__sticky {
+  position: sticky;
+  top: 47px;
+  z-index: 1;
+  background-color: var(--bg);
+}
+
+.divider-tab__buttons-container::before,
+.divider-tab__buttons-container::after {
+  flex: 1;
+  content: "";
+  padding: 2px;
+  background-color: var(--theme-transparent);
+  margin: 5px;
+  border-radius: var(--rounded);
+}
+
+.divider-tab__button {
+  background-color: transparent;
+  font-size: var(--fonts-xxs);
+  font-weight: var(--semi-bold);
+  text-transform: uppercase;
+  color: var(--text-lighter);
+  border: 0;
+  padding: 0;
+  line-height: 17.36px;
+}
+
+.divider-tab__button[data-headlessui-state="selected"] {
+  color: var(--theme);
+}
+
+.divider-tab__line-guy {
+  background-color: var(--theme-transparent);
+  border-radius: var(--rounded);
+  height: 4px;
+  width: 20.75px;
+  margin: 5px;
+}
+
 .tab__button:active {
   transform: initial;
 }
@@ -566,6 +612,7 @@ dialog::backdrop {
   margin-inline-start: var(--s-2);
 }
 
+.divider-tab__button:focus-visible,
 .tab__button:focus-visible {
   color: var(--theme) !important;
   outline: none;
@@ -735,7 +782,7 @@ dialog::backdrop {
   font-size: var(--fonts-sm);
   font-weight: var(--semi-bold);
   gap: var(--s-2);
-  line-height: 1.2;
+  line-height: 1.4;
   margin-inline: auto;
   padding-block: var(--s-1-5);
   padding-inline-end: var(--s-4);

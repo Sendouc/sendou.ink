@@ -32,6 +32,7 @@ function at<T>(arr: T[], n: number) {
   return arr[n];
 }
 
+// TODO: i18n (at least for SendouQ)
 export function joinListToNaturalString(arg: string[], lastSeparator = "and") {
   if (arg.length === 1) return arg[0];
 

@@ -3,8 +3,13 @@ export const SEASONS =
     ? ([
         {
           nth: 0,
-          starts: new Date("2020-08-14T15:00:00.000Z"),
-          ends: new Date("2029-08-26T20:59:59.999Z"),
+          starts: new Date("2023-08-14T17:00:00.000Z"),
+          ends: new Date("2023-08-27T20:59:59.999Z"),
+        },
+        {
+          nth: 1,
+          starts: new Date("2023-09-11T17:00:00.000Z"),
+          ends: new Date("2030-11-17T20:59:59.999Z"),
         },
       ] as const)
     : ([

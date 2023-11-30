@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { languagesUnified } from "~/modules/i18n/config";
 import {
   _action,
   checkboxValueToBoolean,
@@ -7,44 +6,23 @@ import {
   falsyToNull,
   id,
   modeShort,
-  noDuplicates,
   safeJSONParse,
   stageId,
   weaponSplId,
 } from "~/utils/zod";
 import { matchEndedAtIndex } from "./core/match";
-import {
-  MAP_LIST_PREFERENCE_OPTIONS,
-  SENDOUQ,
-  SENDOUQ_BEST_OF,
-} from "./q-constants";
+import { SENDOUQ, SENDOUQ_BEST_OF } from "./q-constants";
 
 export const frontPageSchema = z.union([
   z.object({
     _action: _action("JOIN_QUEUE"),
-    mapListPreference: z.enum(MAP_LIST_PREFERENCE_OPTIONS),
-    mapPool: z.string(),
     direct: z.preprocess(deduplicate, z.literal("true").nullish()),
-    vc: z.enum(["YES", "NO", "LISTEN_ONLY"]),
-    languages: z.preprocess(
-      safeJSONParse,
-      z
-        .array(z.string())
-        .refine(noDuplicates)
-        .refine((val) =>
-          val.every((lang) => languagesUnified.some((l) => l.code === lang)),
-        ),
-    ),
   }),
   z.object({
     _action: _action("JOIN_TEAM"),
   }),
   z.object({
     _action: _action("JOIN_TEAM_WITH_TRUST"),
-  }),
-  z.object({
-    _action: _action("SET_INITIAL_SP"),
-    tier: z.enum(["higher", "default", "lower"]),
   }),
 ]);
 
@@ -97,8 +75,12 @@ export const lookingSchema = z.union([
     _action: _action("UPDATE_NOTE"),
     value: z.preprocess(
       falsyToNull,
-      z.string().max(SENDOUQ.NOTE_MAX_LENGTH).nullable(),
+      z.string().max(SENDOUQ.OWN_PUBLIC_NOTE_MAX_LENGTH).nullable(),
     ),
+  }),
+  z.object({
+    _action: _action("DELETE_PRIVATE_USER_NOTE"),
+    targetId: id,
   }),
 ]);
 
@@ -151,6 +133,15 @@ export const matchSchema = z.union([
   z.object({
     _action: _action("REPORT_WEAPONS"),
     weapons,
+  }),
+  z.object({
+    _action: _action("ADD_PRIVATE_USER_NOTE"),
+    comment: z.preprocess(
+      falsyToNull,
+      z.string().max(SENDOUQ.PRIVATE_USER_NOTE_MAX_LENGTH).nullable(),
+    ),
+    sentiment: z.enum(["POSITIVE", "NEUTRAL", "NEGATIVE"]),
+    targetId: id,
   }),
 ]);
 

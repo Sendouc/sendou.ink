@@ -160,7 +160,7 @@ export const action: ActionFunction = async ({ request }) => {
     clothesGearSplId: data["CLOTHES[value]"],
     shoesGearSplId: data["SHOES[value]"],
     modes: modesShort.filter((mode) => data[mode]),
-    weaponSplIds: data["weapon[value]"] as Array<MainWeaponId>,
+    weaponSplIds: data["weapon[value]"],
     ownerId: user.id,
     private: data.private,
   };

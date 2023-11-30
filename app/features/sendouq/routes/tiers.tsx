@@ -9,6 +9,12 @@ import {
 } from "~/features/mmr/mmr-constants";
 import { currentOrPreviousSeason } from "~/features/mmr/season";
 import { userSkills } from "~/features/mmr/tiered.server";
+import { useTranslation } from "~/hooks/useTranslation";
+import type { SendouRouteHandle } from "~/utils/remix";
+
+export const handle: SendouRouteHandle = {
+  i18n: ["q"],
+};
 
 export const loader = async () => {
   const season = currentOrPreviousSeason(new Date());
@@ -21,6 +27,7 @@ export const loader = async () => {
 
 export default function TiersPage() {
   const data = useLoaderData<typeof loader>();
+  const { t } = useTranslation(["q"]);
 
   return (
     <Main halfWidth className="stack md">
@@ -39,7 +46,7 @@ export default function TiersPage() {
               {neededOrdinal ? (
                 <>
                   <div className="text-xs font-semi-bold text-lighter">
-                    Current criteria
+                    {t("q:tiers.currentCriteria")}
                   </div>
                   <div className="text-sm font-semi-bold text-lighter">
                     {ordinalToSp(neededOrdinal)}SP
@@ -50,18 +57,15 @@ export default function TiersPage() {
           </div>
         );
       })}
+      <p>{t("q:tiers.info.p1")}</p>
       <p>
-        For example Leviathan is the top 5% of players. Diamond is the 85th
-        percentile etc.
-      </p>
-      <p>
-        Note: Nobody has Leviathan rank before there are at least{" "}
-        {USER_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN} players on the leaderboard
-        (or {TEAM_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN} for teams)
+        {t("q:tiers.info.p2", {
+          usersMin: USER_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN,
+          teamsMin: TEAM_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN,
+        })}
       </p>
       <div>
-        Each rank also has a plus tier (see BRONZE+ as an example below). This
-        means that you are in the top 50% of that rank.
+        {t("q:tiers.info.p3")}
         <TierImage tier={{ isPlus: true, name: "BRONZE" }} width={32} />
       </div>
     </Main>

@@ -29,17 +29,17 @@ import styles from "../q.css";
 import { addMember } from "../queries/addMember.server";
 import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.server";
 import { findPreparingGroup } from "../queries/findPreparingGroup.server";
-import { groupForMatch } from "../queries/groupForMatch.server";
 import { refreshGroup } from "../queries/refreshGroup.server";
 import { setGroupAsActive } from "../queries/setGroupAsActive.server";
 import { trustedPlayersAvailableToPlay } from "../queries/usersInActiveGroup.server";
 import { useAutoRefresh } from "~/hooks/useAutoRefresh";
-import { userHasSkill } from "../queries/userHasSkill.server";
 import { currentSeason } from "~/features/mmr";
 import { GroupLeaver } from "../components/GroupLeaver";
+import * as QMatchRepository from "~/features/sendouq-match/QMatchRepository.server";
+import { useTranslation } from "~/hooks/useTranslation";
 
 export const handle: SendouRouteHandle = {
-  i18n: ["q"],
+  i18n: ["q", "user"],
   breadcrumb: () => ({
     imgPath: navIconUrl("sendouq"),
     href: SENDOUQ_PREPARING_PAGE,
@@ -82,17 +82,15 @@ export const action: ActionFunction = async ({ request }) => {
       return redirect(SENDOUQ_LOOKING_PAGE);
     }
     case "ADD_TRUSTED": {
-      validate(
-        userHasSkill({ userId: data.id, season: season.nth }),
-        "User needs to select their initial SP first",
-      );
       const available = trustedPlayersAvailableToPlay(user);
       validate(
         available.some((u) => u.id === data.id),
         "Player not available to play",
       );
 
-      const ownGroupWithMembers = groupForMatch(currentGroup.id);
+      const ownGroupWithMembers = await QMatchRepository.findGroupById({
+        groupId: currentGroup.id,
+      });
       invariant(ownGroupWithMembers, "No own group found");
       validate(
         ownGroupWithMembers.members.length < FULL_GROUP_SIZE,
@@ -140,6 +138,7 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 export default function QPreparingPage() {
+  const { t } = useTranslation(["q"]);
   const data = useLoaderData<typeof loader>();
   const joinQFetcher = useFetcher();
   useAutoRefresh(data.lastUpdated);
@@ -168,7 +167,7 @@ export default function QPreparingPage() {
           state={joinQFetcher.state}
           _action="JOIN_QUEUE"
         >
-          Join the queue
+          {t("q:preparing.joinQ")}
         </SubmitButton>
       </joinQFetcher.Form>
       <GroupLeaver

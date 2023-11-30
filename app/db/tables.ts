@@ -5,12 +5,14 @@ import type {
   Selectable,
   SqlBool,
 } from "kysely";
+import type { TieredSkill } from "~/features/mmr/tiered.server";
 import type {
   Ability,
   MainWeaponId,
   ModeShort,
   StageId,
 } from "~/modules/in-game-lists";
+import type { GroupSkillDifference, UserSkillDifference } from "./types";
 
 export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   ? ColumnType<S, I | undefined, U>
@@ -174,8 +176,7 @@ export interface Group {
   id: GeneratedAlways<number>;
   inviteCode: string;
   latestActionAt: Generated<number>;
-  mapListPreference: string;
-  status: string;
+  status: "PREPARING" | "ACTIVE" | "INACTIVE";
   teamId: number | null;
 }
 
@@ -185,13 +186,35 @@ export interface GroupLike {
   targetGroupId: number;
 }
 
+export type ParsedMemento = {
+  users: Record<
+    number,
+    {
+      plusTier?: PlusTier["tier"];
+      skill?: TieredSkill | "CALCULATING";
+      skillDifference?: UserSkillDifference;
+    }
+  >;
+  groups: Record<
+    number,
+    {
+      tier?: TieredSkill["tier"];
+      skillDifference?: GroupSkillDifference;
+    }
+  >;
+  modePreferences?: Partial<
+    Record<ModeShort, Array<{ userId: number; preference?: Preference }>>
+  >;
+  mapPreferences?: Array<{ userId: number; preference?: Preference }[]>;
+};
+
 export interface GroupMatch {
   alphaGroupId: number;
   bravoGroupId: number;
   chatCode: string | null;
   createdAt: Generated<number>;
   id: GeneratedAlways<number>;
-  memento: string | null;
+  memento: ColumnType<ParsedMemento | null, string | null, string | null>;
   reportedAt: number | null;
   reportedByUserId: number | null;
 }
@@ -210,8 +233,16 @@ export interface GroupMember {
   createdAt: Generated<number>;
   groupId: number;
   note: string | null;
-  role: string;
+  role: "OWNER" | "MANAGER" | "REGULAR";
   userId: number;
+}
+
+export interface PrivateUserNote {
+  authorId: number;
+  targetId: number;
+  text: string | null;
+  sentiment: "POSITIVE" | "NEUTRAL" | "NEGATIVE";
+  updatedAt: Generated<number>;
 }
 
 export interface LogInLink {
@@ -222,7 +253,6 @@ export interface LogInLink {
 
 export interface MapPoolMap {
   calendarEventId: number | null;
-  groupId: number | null;
   mode: ModeShort;
   stageId: StageId;
   tieBreakerCalendarEventId: number | null;
@@ -467,6 +497,20 @@ export interface UnvalidatedVideo {
   youtubeId: string;
 }
 
+// missing means "neutral"
+export type Preference = "AVOID" | "PREFER";
+export interface UserMapModePreferences {
+  modes: Array<{
+    mode: ModeShort;
+    preference: Preference;
+  }>;
+  maps: Array<{
+    stageId: StageId;
+    mode: ModeShort;
+    preference?: Preference;
+  }>;
+}
+
 export interface User {
   banned: Generated<number | null>;
   bio: string | null;
@@ -494,8 +538,14 @@ export interface User {
   stickSens: number | null;
   twitch: string | null;
   twitter: string | null;
-  vc: Generated<string | null>;
+  vc: Generated<"YES" | "NO" | "LISTEN_ONLY">;
   youtubeId: string | null;
+  mapModePreferences: ColumnType<
+    UserMapModePreferences | null,
+    string | null,
+    string | null
+  >;
+  qWeaponPool: ColumnType<MainWeaponId[] | null, string | null, string | null>;
   plusSkippedForSeasonNth: number | null;
 }
 
@@ -589,6 +639,7 @@ export interface DB {
   GroupMatch: GroupMatch;
   GroupMatchMap: GroupMatchMap;
   GroupMember: GroupMember;
+  PrivateUserNote: PrivateUserNote;
   LogInLink: LogInLink;
   MapPoolMap: MapPoolMap;
   MapResult: MapResult;

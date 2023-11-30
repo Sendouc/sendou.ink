@@ -1,49 +1,65 @@
-import type { Group, ParsedMemento } from "~/db/types";
+import shuffle from "just-shuffle";
+import type { ParsedMemento, UserMapModePreferences } from "~/db/tables";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
-import { createTournamentMapList } from "~/modules/tournament-map-list-generator";
+import { currentOrPreviousSeason } from "~/features/mmr/season";
+import { userSkills } from "~/features/mmr/tiered.server";
+import type { ModeShort, StageId } from "~/modules/in-game-lists";
+import { modesShort, stageIds } from "~/modules/in-game-lists";
+import {
+  createTournamentMapList,
+  type TournamentMapListMap,
+} from "~/modules/tournament-map-list-generator";
+import { averageArray } from "~/utils/number";
 import { SENDOUQ_BEST_OF } from "../q-constants";
-import type { LookingGroup, LookingGroupWithInviteCode } from "../q-types";
-import invariant from "tiny-invariant";
+import type { LookingGroupWithInviteCode } from "../q-types";
 import type { MatchById } from "../queries/findMatchById.server";
 import { addSkillsToGroups } from "./groups.server";
-import { userSkills } from "~/features/mmr/tiered.server";
-import { currentOrPreviousSeason } from "~/features/mmr/season";
+import { BANNED_MAPS } from "~/features/sendouq-settings/banned-maps";
 
-const filterMapPoolToSZ = (mapPool: MapPool) =>
-  new MapPool(mapPool.stageModePairs.filter(({ mode }) => mode === "SZ"));
-export function matchMapList({
-  ourGroup,
-  theirGroup,
-  ourMapPool,
-  theirMapPool,
-}: {
-  ourGroup: LookingGroup;
-  theirGroup: LookingGroup;
-  ourMapPool: MapPool;
-  theirMapPool: MapPool;
-}) {
-  invariant(ourGroup.mapListPreference, "ourGroup.mapListPreference");
-  invariant(theirGroup.mapListPreference, "theirGroup.mapListPreference");
-
-  const type = mapListType([
-    ourGroup.mapListPreference,
-    theirGroup.mapListPreference,
-  ]);
+const filterMapPoolByMode = (mapPool: MapPool, modesIncluded: ModeShort[]) =>
+  new MapPool(
+    mapPool.stageModePairs.filter(({ mode }) => modesIncluded.includes(mode)),
+  );
+export function matchMapList(
+  groupOne: {
+    preferences: { userId: number; preferences: UserMapModePreferences }[];
+    id: number;
+  },
+  groupTwo: {
+    preferences: { userId: number; preferences: UserMapModePreferences }[];
+    id: number;
+  },
+) {
+  const modesIncluded = mapModePreferencesToModeList(
+    groupOne.preferences.map(({ preferences }) => preferences.modes),
+    groupTwo.preferences.map(({ preferences }) => preferences.modes),
+  );
 
   try {
     return createTournamentMapList({
       bestOf: SENDOUQ_BEST_OF,
-      seed: String(ourGroup.id),
-      modesIncluded: type === "SZ" ? ["SZ"] : ["SZ", "TC", "RM", "CB"],
+      seed: String(groupOne.id),
+      modesIncluded,
       tiebreakerMaps: new MapPool([]),
+      followModeOrder: true,
       teams: [
         {
-          id: ourGroup.id,
-          maps: type === "SZ" ? filterMapPoolToSZ(ourMapPool) : ourMapPool,
+          id: groupOne.id,
+          maps: filterMapPoolByMode(
+            mapPoolFromPreferences(
+              groupOne.preferences.map(({ preferences }) => preferences.maps),
+            ),
+            modesIncluded,
+          ),
         },
         {
-          id: theirGroup.id,
-          maps: type === "SZ" ? filterMapPoolToSZ(theirMapPool) : theirMapPool,
+          id: groupTwo.id,
+          maps: filterMapPoolByMode(
+            mapPoolFromPreferences(
+              groupTwo.preferences.map(({ preferences }) => preferences.maps),
+            ),
+            modesIncluded,
+          ),
         },
       ],
     });
@@ -53,16 +69,16 @@ export function matchMapList({
     console.error(e);
     return createTournamentMapList({
       bestOf: SENDOUQ_BEST_OF,
-      seed: String(ourGroup.id),
-      modesIncluded: type === "SZ" ? ["SZ"] : ["SZ", "TC", "RM", "CB"],
+      seed: String(groupOne.id),
+      modesIncluded,
       tiebreakerMaps: new MapPool([]),
       teams: [
         {
-          id: ourGroup.id,
+          id: groupOne.id,
           maps: new MapPool([]),
         },
         {
-          id: theirGroup.id,
+          id: groupTwo.id,
           maps: new MapPool([]),
         },
       ],
@@ -70,28 +86,117 @@ export function matchMapList({
   }
 }
 
-// type score as const object
-const typeScore = {
-  ALL_MODES_ONLY: -2,
-  PREFER_ALL_MODES: -1,
-  NO_PREFERENCE: 0,
-  PREFER_SZ: 1,
-  SZ_ONLY: 2,
-} as const;
-function mapListType(
-  preferences: [Group["mapListPreference"], Group["mapListPreference"]],
-) {
-  // if neither team has changed the default preference, default to all modes
-  if (preferences.every((p) => p === "NO_PREFERENCE")) {
-    return "ALL_MODES";
+export function mapModePreferencesToModeList(
+  groupOnePreferences: UserMapModePreferences["modes"][],
+  groupTwoPreferences: UserMapModePreferences["modes"][],
+): ModeShort[] {
+  const groupOneScores = new Map<ModeShort, number>();
+  const groupTwoScores = new Map<ModeShort, number>();
+
+  for (const [i, groupPrefences] of [
+    groupOnePreferences,
+    groupTwoPreferences,
+  ].entries()) {
+    for (const mode of modesShort) {
+      const preferences = groupPrefences
+        .flat()
+        .filter((preference) => preference.mode === mode)
+        .map(({ preference }) => (preference === "AVOID" ? -1 : 1));
+
+      const average = averageArray(preferences.length > 0 ? preferences : [0]);
+      const roundedAverage = Math.round(average);
+      const scoresMap = i === 0 ? groupOneScores : groupTwoScores;
+
+      scoresMap.set(mode, roundedAverage);
+    }
   }
 
-  const score = typeScore[preferences[0]] + typeScore[preferences[1]];
+  const combinedMap = new Map<ModeShort, number>();
+  for (const mode of modesShort) {
+    const groupOneScore = groupOneScores.get(mode) ?? 0;
+    const groupTwoScore = groupTwoScores.get(mode) ?? 0;
+    const combinedScore = groupOneScore + groupTwoScore;
+    combinedMap.set(mode, combinedScore);
+  }
 
-  if (score < 0) return "ALL_MODES";
-  if (score > 0) return "SZ";
+  const result = shuffle(modesShort).filter((mode) => {
+    const score = combinedMap.get(mode)!;
 
-  return Math.random() < 0.5 ? "ALL_MODES" : "SZ";
+    // if opinion is split, don't include
+    return score > 0;
+  });
+
+  result.sort((a, b) => {
+    const aScore = combinedMap.get(a)!;
+    const bScore = combinedMap.get(b)!;
+
+    if (aScore === bScore) return 0;
+    return aScore > bScore ? -1 : 1;
+  });
+
+  if (result.length === 0) {
+    const bestScore = Math.max(...combinedMap.values());
+
+    const leastWorstModesResult = shuffle(modesShort).filter((mode) => {
+      // turf war never included if not positive
+      if (mode === "TW") return false;
+
+      const score = combinedMap.get(mode)!;
+
+      return score === bestScore;
+    });
+
+    // ok nevermind they are haters but really like turf war for some reason
+    if (leastWorstModesResult.length === 0) return ["TW"];
+
+    return leastWorstModesResult;
+  }
+
+  return result;
+}
+
+const AMOUNT_OF_MAPS_TO_PICK = 7;
+export function mapPoolFromPreferences(
+  groupPreferences: UserMapModePreferences["maps"][],
+) {
+  const stageModePairs: { stageId: StageId; mode: ModeShort }[] = [];
+
+  for (const mode of modesShort) {
+    const scores = new Map<StageId, number>();
+    for (const userPreferences of groupPreferences) {
+      for (const preference of userPreferences) {
+        if (preference.mode !== mode) continue;
+
+        const currentScore = scores.get(preference.stageId) ?? 0;
+
+        const delta = preference.preference === "AVOID" ? -1 : 1;
+
+        scores.set(preference.stageId, currentScore + delta);
+      }
+    }
+
+    const stagesWithScore = stageIds.map((stageId) => ({
+      stageId,
+      score: scores.get(stageId) ?? 0,
+    }));
+    stagesWithScore.sort((a, b) => {
+      if (a.score === b.score) return b.stageId - a.stageId;
+      return a.score > b.score ? -1 : 1;
+    });
+
+    const bannedMapsExcluded = stagesWithScore.filter(
+      ({ stageId }) => !BANNED_MAPS[mode].includes(stageId),
+    );
+
+    for (const { stageId } of bannedMapsExcluded.slice(
+      0,
+      AMOUNT_OF_MAPS_TO_PICK,
+    )) {
+      stageModePairs.push({ stageId, mode });
+    }
+  }
+
+  return new MapPool(stageModePairs);
 }
 
 export function compareMatchToReportedScores({
@@ -141,13 +246,27 @@ export function compareMatchToReportedScores({
   return "SAME";
 }
 
+type CreateMatchMementoArgs = {
+  own: {
+    group: LookingGroupWithInviteCode;
+    preferences: { userId: number; preferences: UserMapModePreferences }[];
+  };
+  their: {
+    group: LookingGroupWithInviteCode;
+    preferences: { userId: number; preferences: UserMapModePreferences }[];
+  };
+  mapList: TournamentMapListMap[];
+};
 export async function createMatchMemento(
-  ownGroup: LookingGroupWithInviteCode,
-  theirGroup: LookingGroupWithInviteCode,
+  args: CreateMatchMementoArgs,
 ): Promise<ParsedMemento> {
   const skills = await userSkills(currentOrPreviousSeason(new Date())!.nth);
   const withTiers = addSkillsToGroups({
-    groups: { neutral: [], likesReceived: [theirGroup], own: ownGroup },
+    groups: {
+      neutral: [],
+      likesReceived: [args.their.group],
+      own: args.own.group,
+    },
     ...skills,
   });
 
@@ -155,14 +274,21 @@ export async function createMatchMemento(
   const theirWithTier = withTiers.likesReceived[0];
 
   return {
+    mapPreferences: mapPreferenceMemento(args),
+    modePreferences: modePreferencesMemento(args),
     users: Object.fromEntries(
-      [...ownGroup.members, ...theirGroup.members].map((member) => [
-        member.id,
-        {
-          plusTier: member.plusTier ?? undefined,
-          skill: skills.userSkills[member.id],
-        },
-      ]),
+      [...args.own.group.members, ...args.their.group.members].map((member) => {
+        const skill = skills.userSkills[member.id];
+
+        return [
+          member.id,
+          {
+            plusTier: member.plusTier ?? undefined,
+            skill:
+              !skill || skill.approximate ? ("CALCULATING" as const) : skill,
+          },
+        ];
+      }),
     ),
     groups: Object.fromEntries(
       [ownWithTier, theirWithTier].map((group) => [
@@ -173,4 +299,92 @@ export async function createMatchMemento(
       ]),
     ),
   };
+}
+
+function mapPreferenceMemento(args: CreateMatchMementoArgs) {
+  const result: NonNullable<ParsedMemento["mapPreferences"]> = [];
+
+  for (const map of args.mapList) {
+    const preferencesOfThisMap: NonNullable<
+      ParsedMemento["mapPreferences"]
+    >[number] = [];
+    if (map.source === args.own.group.id || map.source === "BOTH") {
+      preferencesOfThisMap.push(
+        ...opinionsAboutMapFromGroupPreferences({
+          map,
+          groupPreferences: args.own.preferences,
+        }),
+      );
+    }
+
+    if (map.source === args.their.group.id || map.source === "BOTH") {
+      preferencesOfThisMap.push(
+        ...opinionsAboutMapFromGroupPreferences({
+          map,
+          groupPreferences: args.their.preferences,
+        }),
+      );
+    }
+
+    result.push(preferencesOfThisMap);
+  }
+
+  return result;
+}
+
+function opinionsAboutMapFromGroupPreferences({
+  map,
+  groupPreferences,
+}: {
+  map: TournamentMapListMap;
+  groupPreferences: CreateMatchMementoArgs["own"]["preferences"];
+}) {
+  const result: NonNullable<ParsedMemento["mapPreferences"]>[number] = [];
+
+  for (const { preferences, userId } of groupPreferences) {
+    const hasOnlyNeutral = preferences.maps.every((m) => !m.preference);
+    if (hasOnlyNeutral) continue;
+
+    const found = preferences.maps.find(
+      (pref) => pref.stageId === map.stageId && pref.mode === map.mode,
+    );
+
+    result.push({
+      userId,
+      preference: found?.preference,
+    });
+  }
+
+  return result;
+}
+
+function modePreferencesMemento(args: CreateMatchMementoArgs) {
+  const result: NonNullable<ParsedMemento["modePreferences"]> = {};
+
+  const modesIncluded: ModeShort[] = [];
+
+  for (const { mode } of args.mapList) {
+    if (!modesIncluded.includes(mode)) modesIncluded.push(mode);
+  }
+
+  for (const mode of modesIncluded) {
+    for (const { preferences, userId } of [
+      ...args.own.preferences,
+      ...args.their.preferences,
+    ]) {
+      const hasOnlyNeutral = preferences.modes.every((m) => !m.preference);
+      if (hasOnlyNeutral) continue;
+
+      const found = preferences.modes.find((pref) => pref.mode === mode);
+
+      if (!result[mode]) result[mode] = [];
+
+      result[mode]!.push({
+        userId,
+        preference: found?.preference,
+      });
+    }
+  }
+
+  return result;
 }

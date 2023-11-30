@@ -1,8 +1,8 @@
 import { Link, useFetcher } from "@remix-run/react";
 import clsx from "clsx";
 import { Avatar } from "~/components/Avatar";
-import { Button } from "~/components/Button";
-import { Image, TierImage, WeaponImage } from "~/components/Image";
+import { Button, LinkButton } from "~/components/Button";
+import { Image, ModeImage, TierImage, WeaponImage } from "~/components/Image";
 import { Popover } from "~/components/Popover";
 import { SubmitButton } from "~/components/SubmitButton";
 import { MicrophoneIcon } from "~/components/icons/Microphone";
@@ -18,6 +18,7 @@ import {
   SENDOUQ_LOOKING_PAGE,
   TIERS_PAGE,
   navIconUrl,
+  tierImageUrl,
   userPage,
 } from "~/utils/urls";
 import { FULL_GROUP_SIZE, SENDOUQ } from "../q-constants";
@@ -26,6 +27,13 @@ import { StarIcon } from "~/components/icons/Star";
 import { StarFilledIcon } from "~/components/icons/StarFilled";
 import { inGameNameWithoutDiscriminator } from "~/utils/strings";
 import * as React from "react";
+import type { SqlBool } from "kysely";
+import { MATCHES_COUNT_NEEDED_FOR_LEADERBOARD } from "~/features/leaderboards/leaderboards-constants";
+import { Flipped } from "react-flip-toolkit";
+import { EditIcon } from "~/components/icons/Edit";
+import { databaseTimestampToDate } from "~/utils/dates";
+import { FormWithConfirm } from "~/components/FormWithConfirm";
+import { TrashIcon } from "~/components/icons/Trash";
 
 export function GroupCard({
   group,
@@ -38,6 +46,8 @@ export function GroupCard({
   hideWeapons = false,
   hideNote: _hidenote = false,
   enableKicking,
+  showAddNote,
+  showNote = false,
 }: {
   group: Omit<LookingGroup, "createdAt" | "chatCode">;
   action?: "LIKE" | "UNLIKE" | "GROUP_UP" | "MATCH_UP";
@@ -45,11 +55,15 @@ export function GroupCard({
   ownGroup?: boolean;
   isExpired?: boolean;
   displayOnly?: boolean;
-  hideVc?: boolean;
-  hideWeapons?: boolean;
+  hideVc?: SqlBool;
+  hideWeapons?: SqlBool;
   hideNote?: boolean;
   enableKicking?: boolean;
+  showAddNote?: SqlBool;
+  showNote?: boolean;
 }) {
+  const { t } = useTranslation(["q"]);
+  const user = useUser();
   const fetcher = useFetcher();
 
   const hideNote =
@@ -59,86 +73,93 @@ export function GroupCard({
     _hidenote;
 
   return (
-    <section
-      className={clsx("q__group", { "q__group__display-only": displayOnly })}
-    >
-      <div
-        className={clsx("stack md", {
-          "horizontal justify-center": !group.members,
-        })}
+    <Flipped flipId={group.id}>
+      <section
+        className={clsx("q__group", { "q__group__display-only": displayOnly })}
       >
-        {group.members?.map((member) => {
-          return (
-            <GroupMember
-              member={member}
-              showActions={ownGroup && ownRole === "OWNER"}
-              key={member.discordId}
-              displayOnly={displayOnly}
-              hideVc={hideVc}
-              hideWeapons={hideWeapons}
-              hideNote={hideNote}
-              enableKicking={enableKicking}
-            />
-          );
-        })}
-        {!group.members
-          ? new Array(FULL_GROUP_SIZE).fill(null).map((_, i) => {
+        {group.members ? (
+          <div className="stack md">
+            {group.members.map((member) => {
               return (
-                <div key={i} className="q__member-placeholder">
-                  ?
+                <GroupMember
+                  member={member}
+                  showActions={ownGroup && ownRole === "OWNER"}
+                  key={member.discordId}
+                  displayOnly={displayOnly}
+                  hideVc={hideVc}
+                  hideWeapons={hideWeapons}
+                  hideNote={hideNote}
+                  enableKicking={enableKicking}
+                  showNote={showNote}
+                  showAddNote={showAddNote && member.id !== user?.id}
+                />
+              );
+            })}
+          </div>
+        ) : null}
+        {group.futureMatchModes ? (
+          <div className="stack horizontal sm justify-center">
+            {group.futureMatchModes.map((mode) => {
+              return (
+                <div key={mode} className="q__group__future-match-mode">
+                  <ModeImage mode={mode} />
                 </div>
               );
-            })
-          : null}
-      </div>
-      {group.tier && !displayOnly ? (
-        <div className="stack xs text-lighter font-bold items-center justify-center text-xs">
-          <TierImage tier={group.tier} width={100} />
-          <div>
-            {group.tier.name}
-            {group.tier.isPlus ? "+" : ""}{" "}
-            {group.isReplay ? (
-              <>
-                / <span className="text-theme-secondary">REPLAY</span>
-              </>
-            ) : null}
+            })}
           </div>
-        </div>
-      ) : null}
-      {group.tier && displayOnly ? (
-        <div className="q__group__display-group-tier">
-          <TierImage tier={group.tier} width={38} />
-          {group.tier.name}
-          {group.tier.isPlus ? "+" : ""}
-        </div>
-      ) : null}
-      {group.skillDifference ? (
-        <GroupSkillDifference skillDifference={group.skillDifference} />
-      ) : null}
-      {action &&
-      (ownRole === "OWNER" || ownRole === "MANAGER") &&
-      !isExpired ? (
-        <fetcher.Form className="stack items-center" method="post">
-          <input type="hidden" name="targetGroupId" value={group.id} />
-          <SubmitButton
-            size="tiny"
-            variant={action === "UNLIKE" ? "destructive" : "outlined"}
-            _action={action}
-            state={fetcher.state}
-          >
-            {action === "MATCH_UP"
-              ? "Start match"
-              : action === "LIKE" && !group.members
-              ? "Challenge"
-              : action === "LIKE"
-              ? "Invite"
-              : action === "GROUP_UP"
-              ? "Group up"
-              : "Undo"}
-          </SubmitButton>
-        </fetcher.Form>
-      ) : null}
-    </section>
+        ) : null}
+        {group.tier && !displayOnly ? (
+          <div className="stack xs text-lighter font-bold items-center justify-center text-xs">
+            <TierImage tier={group.tier} width={100} />
+            <div>
+              {group.tier.name}
+              {group.tier.isPlus ? "+" : ""}{" "}
+              {group.isReplay ? (
+                <>
+                  /{" "}
+                  <span className="text-theme-secondary text-uppercase">
+                    {t("q:looking.replay")}
+                  </span>
+                </>
+              ) : null}
+            </div>
+          </div>
+        ) : null}
+        {group.tier && displayOnly ? (
+          <div className="q__group__display-group-tier">
+            <TierImage tier={group.tier} width={38} />
+            {group.tier.name}
+            {group.tier.isPlus ? "+" : ""}
+          </div>
+        ) : null}
+        {group.skillDifference ? (
+          <GroupSkillDifference skillDifference={group.skillDifference} />
+        ) : null}
+        {action &&
+        (ownRole === "OWNER" || ownRole === "MANAGER") &&
+        !isExpired ? (
+          <fetcher.Form className="stack items-center" method="post">
+            <input type="hidden" name="targetGroupId" value={group.id} />
+            <SubmitButton
+              size="tiny"
+              variant={action === "UNLIKE" ? "destructive" : "outlined"}
+              _action={action}
+              state={fetcher.state}
+            >
+              {action === "MATCH_UP"
+                ? t("q:looking.groups.actions.startMatch")
+                : action === "LIKE" && !group.members
+                ? t("q:looking.groups.actions.challenge")
+                : action === "LIKE"
+                ? t("q:looking.groups.actions.invite")
+                : action === "GROUP_UP"
+                ? t("q:looking.groups.actions.groupUp")
+                : t("q:looking.groups.actions.undo")}
+            </SubmitButton>
+          </fetcher.Form>
+        ) : null}
+      </section>
+    </Flipped>
   );
 }
 
@@ -150,37 +171,85 @@ function GroupMember({
   hideWeapons,
   hideNote,
   enableKicking,
+  showAddNote,
+  showNote,
 }: {
   member: NonNullable<LookingGroup["members"]>[number];
   showActions: boolean;
   displayOnly?: boolean;
-  hideVc?: boolean;
-  hideWeapons?: boolean;
+  hideVc?: SqlBool;
+  hideWeapons?: SqlBool;
   hideNote?: boolean;
   enableKicking?: boolean;
+  showAddNote?: SqlBool;
+  showNote?: boolean;
 }) {
+  const { t, i18n } = useTranslation(["q", "user"]);
   const user = useUser();
 
   return (
     <div className="stack xxs">
       <div className="q__group-member">
-        <Link
-          to={userPage(member)}
-          className="text-main-forced stack xs horizontal items-center"
-          target="_blank"
-        >
-          <Avatar user={member} size="xs" />
-          <span className="q__group-member__name">
+        <div className="text-main-forced stack xs horizontal items-center">
+          {showNote && member.privateNote ? (
+            <Popover
+              buttonChildren={
+                <>
+                  <Avatar
+                    user={member}
+                    size="xs"
+                    className={clsx(
+                      "q__group-member__avatar",
+                      `q__group-member__avatar__${member.privateNote.sentiment}`,
+                    )}
+                  />
+                </>
+              }
+            >
+              {member.privateNote.text}
+              <div
+                className={clsx(
+                  "stack sm horizontal justify-between items-center",
+                  { "mt-2": member.privateNote.text },
+                )}
+              >
+                <div className="text-xxs text-lighter">
+                  {databaseTimestampToDate(
+                    member.privateNote.updatedAt,
+                  ).toLocaleString(i18n.language, {
+                    hour: "numeric",
+                    minute: "numeric",
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </div>
+                <DeletePrivateNoteForm
+                  name={member.discordName}
+                  targetId={member.id}
+                />
+              </div>
+            </Popover>
+          ) : (
+            <Avatar user={member} size="xs" />
+          )}
+          <Link
+            to={userPage(member)}
+            className="q__group-member__name"
+            target="_blank"
+          >
             {member.inGameName ? (
               <>
-                <span className="text-lighter font-bold text-xxxs">IGN:</span>{" "}
+                <span className="text-lighter font-bold text-xxxs">
+                  {t("user:ign.short")}:
+                </span>{" "}
                 {inGameNameWithoutDiscriminator(member.inGameName)}
               </>
             ) : (
               member.discordName
             )}
-          </span>
-        </Link>
+          </Link>
+        </div>
         <div className="ml-auto stack horizontal sm items-center">
           {showActions || displayOnly ? (
             <MemberRoleManager
@@ -204,6 +273,19 @@ function GroupMember({
               <Image path={navIconUrl("plus")} width={20} height={20} alt="" />
               {member.plusTier}
             </div>
+          ) : null}
+          {showAddNote ? (
+            <LinkButton
+              to={`?note=${member.id}`}
+              icon={<EditIcon />}
+              className={clsx("q__group-member__add-note-button", {
+                "q__group-member__add-note-button__edit": member.privateNote,
+              })}
+            >
+              {member.privateNote
+                ? t("q:looking.groups.editNote")
+                : t("q:looking.groups.addNote")}
+            </LinkButton>
           ) : null}
         </div>
         {member.weapons && member.weapons.length > 0 && !hideWeapons ? (
@@ -238,6 +320,7 @@ function MemberNote({
   note?: string | null;
   editable: boolean;
 }) {
+  const { t } = useTranslation(["common", "q"]);
   const fetcher = useFetcher();
   const [editing, setEditing] = React.useState(false);
   const [value, setValue] = React.useState(note ?? "");
@@ -253,7 +336,7 @@ function MemberNote({
     stopEditing();
   }, [stopEditing]);
 
-  const newValueLegal = value.length <= SENDOUQ.NOTE_MAX_LENGTH;
+  const newValueLegal = value.length <= SENDOUQ.OWN_PUBLIC_NOTE_MAX_LENGTH;
 
   if (editing) {
     return (
@@ -271,7 +354,7 @@ function MemberNote({
             size="miniscule"
             onClick={stopEditing}
           >
-            Cancel
+            {t("common:actions.cancel")}
           </Button>
           {newValueLegal ? (
             <SubmitButton
@@ -279,11 +362,11 @@ function MemberNote({
               variant="minimal"
               size="miniscule"
             >
-              Save
+              {t("common:actions.save")}
             </SubmitButton>
           ) : (
             <span className="text-warning text-xxs font-semi-bold">
-              {value.length}/{SENDOUQ.NOTE_MAX_LENGTH}
+              {value.length}/{SENDOUQ.OWN_PUBLIC_NOTE_MAX_LENGTH}
             </span>
           )}
         </div>
@@ -302,7 +385,7 @@ function MemberNote({
             onClick={startEditing}
             className="mt-2 ml-auto"
           >
-            Edit note
+            {t("q:looking.groups.editNote")}
           </Button>
         ) : null}
       </div>
@@ -313,8 +396,32 @@ function MemberNote({
 
   return (
     <Button variant="minimal" size="miniscule" onClick={startEditing}>
-      Add note
+      {t("q:looking.groups.addNote")}
     </Button>
+  );
+}
+
+function DeletePrivateNoteForm({
+  targetId,
+  name,
+}: {
+  targetId: number;
+  name: string;
+}) {
+  const { t } = useTranslation(["q"]);
+
+  return (
+    <FormWithConfirm
+      dialogHeading={t("q:privateNote.delete.header", { name })}
+      fields={[
+        ["targetId", targetId],
+        ["_action", "DELETE_PRIVATE_USER_NOTE"],
+      ]}
+    >
+      <SubmitButton variant="minimal-destructive" size="tiny" type="submit">
+        <TrashIcon className="build__icon" />
+      </SubmitButton>
+    </FormWithConfirm>
   );
 }
 
@@ -325,10 +432,13 @@ function GroupSkillDifference({
     ParsedMemento["groups"][number]["skillDifference"]
   >;
 }) {
+  const { t } = useTranslation(["q"]);
+
   if (skillDifference.calculated) {
     return (
       <div className="text-center font-semi-bold">
-        Team SP {skillDifference.oldSp} ➜ {skillDifference.newSp}
+        {t("q:looking.teamSP")} {skillDifference.oldSp} ➜{" "}
+        {skillDifference.newSp}
       </div>
     );
   }
@@ -336,14 +446,14 @@ function GroupSkillDifference({
   if (skillDifference.newSp) {
     return (
       <div className="text-center font-semi-bold">
-        Team SP calculated: {skillDifference.newSp}
+        {t("q:looking.teamSP.calculated")}: {skillDifference.newSp}
       </div>
     );
   }
 
   return (
     <div className="text-center font-semi-bold">
-      Team SP calculating... ({skillDifference.matchesCount}/
+      {t("q:looking.teamSP.calculating")} ({skillDifference.matchesCount}/
       {skillDifference.matchesCountNeeded})
     </div>
   );
@@ -356,6 +466,8 @@ function MemberSkillDifference({
     ParsedMemento["users"][number]["skillDifference"]
   >;
 }) {
+  const { t } = useTranslation(["q"]);
+
   if (skillDifference.calculated) {
     if (skillDifference.spDiff === 0) return null;
 
@@ -376,7 +488,7 @@ function MemberSkillDifference({
   if (skillDifference.matchesCount === skillDifference.matchesCountNeeded) {
     return (
       <div className="q__group-member__extra-info">
-        <span className="text-lighter">Calculated:</span>{" "}
+        <span className="text-lighter">{t("q:looking.sp.calculated")}:</span>{" "}
         {skillDifference.newSp ? <>{skillDifference.newSp}SP</> : null}
       </div>
     );
@@ -384,7 +496,7 @@ function MemberSkillDifference({
 
   return (
     <div className="q__group-member__extra-info">
-      <span className="text-lighter">Calculating...</span> (
+      <span className="text-lighter">{t("q:looking.sp.calculating")}</span> (
       {skillDifference.matchesCount}/{skillDifference.matchesCountNeeded})
     </div>
   );
@@ -432,7 +544,7 @@ function MemberRoleManager({
                 _action="GIVE_MANAGER"
                 state={fetcher.state}
               >
-                Give manager
+                {t("q:looking.groups.actions.giveManager")}
               </SubmitButton>
             ) : null}
             {member.role === "MANAGER" ? (
@@ -442,7 +554,7 @@ function MemberRoleManager({
                 _action="REMOVE_MANAGER"
                 state={fetcher.state}
               >
-                Remove manager
+                {t("q:looking.groups.actions.removeManager")}
               </SubmitButton>
             ) : null}
             {enableKicking && member.id !== loggedInUser?.id ? (
@@ -452,7 +564,7 @@ function MemberRoleManager({
                 _action="KICK_FROM_GROUP"
                 state={fetcher.state}
               >
-                Kick
+                {t("q:looking.groups.actions.kick")}
               </SubmitButton>
             ) : null}
           </fetcher.Form>
@@ -462,7 +574,30 @@ function MemberRoleManager({
   );
 }
 
-function TierInfo({ skill }: { skill: TieredSkill }) {
+function TierInfo({ skill }: { skill: TieredSkill | "CALCULATING" }) {
+  const { t } = useTranslation(["q"]);
+
+  if (skill === "CALCULATING") {
+    return (
+      <div className="q__group-member__tier">
+        <Popover
+          buttonChildren={
+            <Image
+              path={tierImageUrl("CALCULATING")}
+              alt=""
+              height={32.965}
+              className="q__group-member__tier__placeholder"
+            />
+          }
+        >
+          {t("q:looking.rankCalculating", {
+            count: MATCHES_COUNT_NEEDED_FOR_LEADERBOARD,
+          })}
+        </Popover>
+      </div>
+    );
+  }
+
   return (
     <div className="q__group-member__tier">
       <Popover buttonChildren={<TierImage tier={skill.tier} width={38} />}>
@@ -474,7 +609,7 @@ function TierInfo({ skill }: { skill: TieredSkill }) {
               {skill.tier.isPlus ? "+" : ""}
             </div>
             <Link to={TIERS_PAGE} className="text-xxs" target="_blank">
-              All tiers
+              {t("q:looking.allTiers")}
             </Link>
           </div>
           {!skill.approximate ? (

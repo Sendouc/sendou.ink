@@ -60,6 +60,7 @@
   "actions.search": "Search",
   "actions.setBg": "Set background",
   "actions.join": "Join",
+  "actions.nevermind": "Nevermind",
   "actions.upload": "Upload",
 
   "maps.createMapList": "Create map list",
@@ -195,5 +196,15 @@
 
   "leaderboard.type.USER": "User",
   "leaderboard.type.TEAM": "Team",
-  "leaderboard.type.XP-ALL": "All"
+  "leaderboard.type.XP-ALL": "All",
+
+  "chat.connected": "Connected",
+  "chat.disconnected": "Disconnected",
+  "chat.send": "Send",
+  "chat.input.placeholder": "Press enter to send",
+  "chat.systemMsg.scoreReported": "{{name}} reported score",
+  "chat.systemMsg.scoreConfirmed": "{{name}} confirmed score. Match is now locked",
+  "chat.systemMsg.cancelReported": "{{name}} requested canceling the match",
+  "chat.systemMsg.cancelConfirmed": "{{name}} confirmed canceling the match. Match is now locked",
+  "chat.systemMsg.userLeft": "{{name}} left the group"
 }

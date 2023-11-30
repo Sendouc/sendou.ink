@@ -14,6 +14,7 @@ import type { ChatMessage } from "../chat-types";
 import { MESSAGE_MAX_LENGTH } from "../chat-constants";
 import { messageTypeToSound, soundEnabled } from "../chat-utils";
 import { soundPath } from "~/utils/urls";
+import { useTranslation } from "~/hooks/useTranslation";
 
 type ChatUser = Pick<User, "discordName" | "discordId" | "discordAvatar"> & {
   chatNameColor: string | null;
@@ -33,34 +34,6 @@ export interface ChatProps {
   revalidates?: boolean;
 }
 
-const systemMessageText = (msg: ChatMessage) => {
-  const name = () => {
-    if (!msg.context) return "";
-    return msg.context.name;
-  };
-
-  switch (msg.type) {
-    case "SCORE_REPORTED": {
-      return `${name()} reported score`;
-    }
-    case "SCORE_CONFIRMED": {
-      return `${name()} confirmed score. Match is now locked`;
-    }
-    case "CANCEL_REPORTED": {
-      return `${name()} requested canceling the match`;
-    }
-    case "CANCEL_CONFIRMED": {
-      return `${name()} confirmed canceling the match. Match is now locked`;
-    }
-    case "USER_LEFT": {
-      return `${name()} left the group`;
-    }
-    default: {
-      return null;
-    }
-  }
-};
-
 export function ConnectedChat(props: ChatProps) {
   const chat = useChat(props);
 
@@ -79,6 +52,7 @@ export function Chat({
   disabled,
   missingUserName,
 }: ChatProps & { chat: ReturnType<typeof useChat> }) {
+  const { t } = useTranslation(["common"]);
   const messagesContainerRef = React.useRef<HTMLOListElement>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
   const {
@@ -119,6 +93,34 @@ export function Chat({
   }, [onMount, onUnmount]);
 
   const sendingMessagesDisabled = disabled || !connected;
+
+  const systemMessageText = (msg: ChatMessage) => {
+    const name = () => {
+      if (!msg.context) return "";
+      return msg.context.name;
+    };
+
+    switch (msg.type) {
+      case "SCORE_REPORTED": {
+        return t("common:chat.systemMsg.scoreReported", { name: name() });
+      }
+      case "SCORE_CONFIRMED": {
+        return t("common:chat.systemMsg.scoreConfirmed", { name: name() });
+      }
+      case "CANCEL_REPORTED": {
+        return t("common:chat.systemMsg.cancelReported", { name: name() });
+      }
+      case "CANCEL_CONFIRMED": {
+        return t("common:chat.systemMsg.cancelConfirmed", { name: name() });
+      }
+      case "USER_LEFT": {
+        return t("common:chat.systemMsg.userLeft", { name: name() });
+      }
+      default: {
+        return null;
+      }
+    }
+  };
 
   return (
     <section className={clsx("chat__container", className, { hidden })}>
@@ -181,7 +183,7 @@ export function Chat({
           <input
             className="w-full"
             ref={inputRef}
-            placeholder="Press enter to send"
+            placeholder={t("common:chat.input.placeholder")}
             disabled={sendingMessagesDisabled}
             maxLength={MESSAGE_MAX_LENGTH}
           />{" "}
@@ -190,11 +192,11 @@ export function Chat({
               <div />
             ) : connected ? (
               <div className="text-xxs font-semi-bold text-lighter">
-                Connected
+                {t("common:chat.connected")}
               </div>
             ) : (
               <div className="text-xxs font-semi-bold text-warning">
-                Disconnected
+                {t("common:chat.disconnected")}
               </div>
             )}
             <SubmitButton
@@ -202,7 +204,7 @@ export function Chat({
               variant="minimal"
               disabled={sendingMessagesDisabled}
             >
-              Send
+              {t("common:chat.send")}
             </SubmitButton>
           </div>
         </form>
@@ -276,6 +278,7 @@ function SystemMessage({
   );
 }
 
+// TODO: should contain unseen messages logic, now it's duplicated
 export function useChat({
   rooms,
   onNewMessage,

@@ -96,7 +96,9 @@ export function LinkButton({
       >
         {icon &&
           React.cloneElement(icon, {
-            className: clsx("button-icon", { lonely: !children }),
+            className: clsx("button-icon", {
+              lonely: !children,
+            }),
           })}
         {children}
       </a>

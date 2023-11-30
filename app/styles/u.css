@@ -100,7 +100,7 @@
 }
 
 .u__extra-info {
-  padding: var(--s-1) var(--s-1-5);
+  padding: var(--s-1) var(--s-1);
   border-radius: var(--rounded);
   background-color: var(--bg-darker);
   font-size: var(--fonts-xxs);
@@ -416,4 +416,18 @@
   border-radius: 100%;
   background-color: var(--bg-lighter);
   padding: var(--s-1-5);
+}
+
+.u__season__tentative {
+  text-transform: uppercase;
+  font-weight: var(--semi-bold);
+  color: var(--text-lighter);
+  font-size: var(--fonts-xxs);
+  margin-top: -8px;
+  display: flex;
+  gap: var(--s-1);
+}
+
+.u__season__tentative__explanation {
+  text-transform: initial;
 }

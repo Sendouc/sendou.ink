@@ -1,8 +1,5 @@
 import { sql } from "~/db/sql";
-import {
-  LEADERBOARD_MAX_SIZE,
-  MATCHES_COUNT_NEEDED_FOR_LEADERBOARD,
-} from "../leaderboards-constants";
+import { MATCHES_COUNT_NEEDED_FOR_LEADERBOARD } from "../leaderboards-constants";
 import type { PlusTier, User } from "~/db/types";
 import { ordinalToSp } from "~/features/mmr";
 
@@ -36,8 +33,6 @@ const stm = sql.prepare(/* sql */ `
     and "Skill"."season" = @season
   order by
     "Skill"."ordinal" desc
-  limit
-    ${LEADERBOARD_MAX_SIZE}
 `);
 
 export interface UserSPLeaderboardItem {

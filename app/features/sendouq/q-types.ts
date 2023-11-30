@@ -5,19 +5,21 @@ import type {
   PlusTier,
   User,
 } from "~/db/types";
-import type { MainWeaponId } from "~/modules/in-game-lists";
+import type { MainWeaponId, ModeShort } from "~/modules/in-game-lists";
 import type { TieredSkill } from "../mmr/tiered.server";
-import type { GroupForMatch } from "./queries/groupForMatch.server";
+import type { Tables } from "~/db/tables";
+import type { GroupForMatch } from "../sendouq-match/QMatchRepository.server";
 
 export type LookingGroup = {
   id: number;
-  mapListPreference?: Group["mapListPreference"];
   createdAt: Group["createdAt"];
   tier?: TieredSkill["tier"];
   isReplay?: boolean;
   isLiked?: boolean;
   team?: GroupForMatch["team"];
-  chatCode: Group["chatCode"];
+  chatCode?: Group["chatCode"];
+  mapModePreferences?: Array<NonNullable<Tables["User"]["mapModePreferences"]>>;
+  futureMatchModes?: Array<ModeShort>;
   skillDifference?: ParsedMemento["groups"][number]["skillDifference"];
   members?: {
     id: number;
@@ -29,12 +31,16 @@ export type LookingGroup = {
     role: GroupMember["role"];
     note?: GroupMember["note"];
     weapons?: MainWeaponId[];
-    skill?: TieredSkill;
+    skill?: TieredSkill | "CALCULATING";
     vc?: User["vc"];
     inGameName?: User["inGameName"];
-    languages?: string[];
+    languages: string[];
     chatNameColor: string | null;
     skillDifference?: ParsedMemento["users"][number]["skillDifference"];
+    privateNote: Pick<
+      Tables["PrivateUserNote"],
+      "sentiment" | "text" | "updatedAt"
+    > | null;
   }[];
 };
 

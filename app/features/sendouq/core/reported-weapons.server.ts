@@ -1,7 +1,7 @@
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import type { reportedWeaponsByMatchId } from "../queries/reportedWeaponsByMatchId.server";
 import type { MatchById } from "../queries/findMatchById.server";
-import type { GroupForMatch } from "../queries/groupForMatch.server";
+import type { GroupForMatch } from "~/features/sendouq-match/QMatchRepository.server";
 
 export type ReportedWeaponForMerging = {
   weaponSplId: MainWeaponId;

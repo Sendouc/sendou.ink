@@ -1,4 +1,4 @@
-import { rate as openskillRate, ordinal } from "openskill";
+import { rate as openskillRate, ordinal, rating } from "openskill";
 import type { Rating, Team } from "openskill/dist/types";
 import invariant from "tiny-invariant";
 
@@ -6,6 +6,10 @@ const TAU = 0.3;
 
 export function ordinalToSp(ordinal: number) {
   return toTwoDecimals(ordinal * 15 + 1000);
+}
+
+export function spToOrdinal(sp: number) {
+  return (sp - 1000) / 15;
 }
 
 export function ordinalToRoundedSp(ordinal: number) {
@@ -75,4 +79,8 @@ export function userIdsToIdentifier(userIds: number[]) {
 
 export function identifierToUserIds(identifier: string) {
   return identifier.split("-").map(Number);
+}
+
+export function defaultOrdinal() {
+  return ordinal(rating());
 }

@@ -4,8 +4,14 @@ import shuffle from "just-shuffle";
 import { nanoid } from "nanoid";
 import invariant from "tiny-invariant";
 import { ADMIN_DISCORD_ID, ADMIN_ID, INVITE_CODE_LENGTH } from "~/constants";
-import { sql } from "~/db/sql";
+import { db, sql } from "~/db/sql";
 import allTags from "~/features/calendar/tags.json";
+import { MapPool } from "~/features/map-list-generator/core/map-pool";
+import {
+  lastCompletedVoting,
+  nextNonCompletedVoting,
+  rangeToMonthYear,
+} from "~/features/plus-voting/core";
 import { createVod } from "~/features/vods/queries/createVod.server";
 import type {
   AbilityType,
@@ -22,43 +28,37 @@ import {
   stageIds,
 } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
-import { MapPool } from "~/features/map-list-generator/core/map-pool";
-import {
-  lastCompletedVoting,
-  nextNonCompletedVoting,
-  rangeToMonthYear,
-} from "~/features/plus-voting/core";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { mySlugify } from "~/utils/urls";
 
+import type { SeedVariation } from "~/features/api/routes/seed";
 import * as BuildRepository from "~/features/builds/BuildRepository.server";
 import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
 import * as PlusSuggestionRepository from "~/features/plus-suggestions/PlusSuggestionRepository.server";
 import * as PlusVotingRepository from "~/features/plus-voting/PlusVotingRepository.server";
+import * as QRepository from "~/features/sendouq/QRepository.server";
+import * as QMatchRepository from "~/features/sendouq-match/QMatchRepository.server";
+import * as QSettingsRepository from "~/features/sendouq-settings/QSettingsRepository.server";
 import { calculateMatchSkills } from "~/features/sendouq/core/skills.server";
 import {
   summarizeMaps,
   summarizePlayerResults,
 } from "~/features/sendouq/core/summarizer.server";
-import { MAP_LIST_PREFERENCE_OPTIONS } from "~/features/sendouq/q-constants";
 import { winnersArrayToWinner } from "~/features/sendouq/q-utils";
 import { addMapResults } from "~/features/sendouq/queries/addMapResults.server";
 import { addMember } from "~/features/sendouq/queries/addMember.server";
 import { addPlayerResults } from "~/features/sendouq/queries/addPlayerResults.server";
 import { addReportedWeapons } from "~/features/sendouq/queries/addReportedWeapons.server";
 import { addSkills } from "~/features/sendouq/queries/addSkills.server";
-import { createGroup } from "~/features/sendouq/queries/createGroup.server";
 import { createMatch } from "~/features/sendouq/queries/createMatch.server";
 import { findMatchById } from "~/features/sendouq/queries/findMatchById.server";
-import { groupForMatch } from "~/features/sendouq/queries/groupForMatch.server";
 import { reportScore } from "~/features/sendouq/queries/reportScore.server";
 import { setGroupAsInactive } from "~/features/sendouq/queries/setGroupAsInactive.server";
-import { updateVCStatus } from "~/features/sendouq/queries/updateVCStatus.server";
 import { TOURNAMENT } from "~/features/tournament/tournament-constants";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator";
-import type { SeedVariation } from "~/features/api/routes/seed";
 import { nullFilledArray, pickRandomItem } from "~/utils/arrays";
+import type { UserMapModePreferences } from "../tables";
 import type { Art, UserSubmittedImage } from "../types";
 import {
   ADMIN_TEST_AVATAR,
@@ -81,6 +81,8 @@ const basicSeeds = (variation?: SeedVariation | null) => [
   nzapUser,
   users,
   userProfiles,
+  userMapModePreferences,
+  userQWeaponPool,
   lastMonthsVoting,
   syncPlusTiers,
   lastMonthSuggestions,
@@ -229,7 +231,7 @@ async function users() {
   }
 }
 
-function userProfiles() {
+async function userProfiles() {
   for (const args of [
     {
       userId: 1,
@@ -316,7 +318,7 @@ function userProfiles() {
     if (Math.random() > 0.9) defaultLanguages.push("it");
     if (Math.random() > 0.9) defaultLanguages.push("ja");
 
-    updateVCStatus({
+    await QSettingsRepository.updateVoiceChat({
       languages: defaultLanguages,
       userId: id,
       vc:
@@ -324,6 +326,64 @@ function userProfiles() {
           ? "YES"
           : faker.helpers.arrayElement(["YES", "NO", "LISTEN_ONLY"]),
     });
+  }
+}
+
+const randomPreferences = (): UserMapModePreferences => {
+  return {
+    modes: modesShort.flatMap((mode) => {
+      if (Math.random() > 0.5 && mode !== "SZ") return [];
+
+      const criteria = mode === "SZ" ? 0.2 : 0.5;
+
+      return {
+        mode,
+        preference: Math.random() > criteria ? "PREFER" : "AVOID",
+      };
+    }),
+    maps: stageIds.slice(0, 10).flatMap((stageId) => {
+      return modesShort.flatMap((mode) => {
+        if (Math.random() > 0.7) return { stageId, mode };
+
+        return {
+          stageId,
+          mode,
+          preference: Math.random() > 0.3 ? "PREFER" : "AVOID",
+        };
+      });
+    }),
+  };
+};
+
+async function userMapModePreferences() {
+  for (let id = 1; id < 500; id++) {
+    if (id !== ADMIN_ID && Math.random() < 0.2) continue; // 80% have maps && admin always
+
+    await db
+      .updateTable("User")
+      .where("User.id", "=", id)
+      .set({
+        mapModePreferences: JSON.stringify(randomPreferences()),
+      })
+      .execute();
+  }
+}
+
+async function userQWeaponPool() {
+  for (let id = 1; id < 500; id++) {
+    if (id === 2) continue; // no weapons for N-ZAP
+    if (Math.random() < 0.2) continue; // 80% have weapons
+
+    const weapons = shuffle([...mainWeaponIds]).slice(
+      0,
+      faker.helpers.arrayElement([1, 2, 3, 4]),
+    );
+
+    await db
+      .updateTable("User")
+      .set({ qWeaponPool: JSON.stringify(weapons) })
+      .where("User.id", "=", id)
+      .execute();
   }
 }
 
@@ -1589,36 +1649,16 @@ function commissionsOpen() {
 }
 
 const SENDOU_IN_FULL_GROUP = true;
-function groups() {
+async function groups() {
   const users = userIdsInAscendingOrderById()
     .slice(0, 100)
     .filter((id) => id !== ADMIN_ID && id !== NZAP_TEST_ID);
   users.push(NZAP_TEST_ID);
 
   for (let i = 0; i < 25; i++) {
-    const group = createGroup({
-      mapListPreference: faker.helpers.arrayElement(
-        MAP_LIST_PREFERENCE_OPTIONS,
-      ),
+    const group = await QRepository.createGroup({
       status: "ACTIVE",
       userId: users.pop()!,
-      mapPool: new MapPool([
-        { mode: "SZ", stageId: 1 },
-        { mode: "SZ", stageId: 2 },
-        { mode: "SZ", stageId: 3 },
-        { mode: "SZ", stageId: 4 },
-        { mode: "SZ", stageId: 5 },
-        { mode: "SZ", stageId: 6 },
-        { mode: "TC", stageId: 7 },
-        { mode: "TC", stageId: 8 },
-        { mode: "TC", stageId: 15 },
-        { mode: "RM", stageId: 10 },
-        { mode: "RM", stageId: 11 },
-        { mode: "RM", stageId: 16 },
-        { mode: "CB", stageId: 13 },
-        { mode: "CB", stageId: 14 },
-        { mode: "CB", stageId: 17 },
-      ]),
     });
 
     const amountOfAdditionalMembers = () => {
@@ -1656,20 +1696,24 @@ const randomMapList = (
   groupBravo: number,
 ): TournamentMapListMap[] => {
   const szOnly = faker.helpers.arrayElement([true, false]);
-  const modePattern = shuffle([...rankedModesShort]);
+
+  let modePattern = shuffle([...modesShort]).filter(() => Math.random() > 0.15);
+  if (modePattern.length === 0) {
+    modePattern = shuffle([...rankedModesShort]);
+  }
 
   const mapList: TournamentMapListMap[] = [];
   const stageIdsShuffled = shuffle([...stageIds]);
 
   for (let i = 0; i < 7; i++) {
-    const rankedMode = modePattern.pop()!;
+    const mode = modePattern.pop()!;
     mapList.push({
-      mode: szOnly ? "SZ" : rankedMode,
+      mode: szOnly ? "SZ" : mode,
       stageId: stageIdsShuffled.pop()!,
       source: i === 6 ? "BOTH" : i % 2 === 0 ? groupAlpha : groupBravo,
     });
 
-    modePattern.unshift(rankedMode);
+    modePattern.unshift(mode);
   }
 
   return mapList;
@@ -1677,7 +1721,7 @@ const randomMapList = (
 
 const MATCHES_COUNT = 500;
 
-function playedMatches() {
+async function playedMatches() {
   const _groupMembers = (() => {
     return new Array(50).fill(null).map(() => {
       const users = shuffle(userIdsInAscendingOrderById().slice(0, 50));
@@ -1694,8 +1738,7 @@ function playedMatches() {
       }),
   );
 
-  // mid august 2021
-  let matchDate = new Date(Date.UTC(2021, 7, 15, 0, 0, 0, 0));
+  let matchDate = new Date(Date.UTC(2023, 9, 15, 0, 0, 0, 0));
   for (let i = 0; i < MATCHES_COUNT; i++) {
     const groupMembers = shuffle([..._groupMembers]);
     const groupAlphaMembers = groupMembers.pop()!;
@@ -1717,10 +1760,7 @@ function playedMatches() {
     // -> create groups
     for (let i = 0; i < 2; i++) {
       const users = i === 0 ? [...groupAlphaMembers] : [...groupBravoMembers];
-      const group = createGroup({
-        // these should not matter here
-        mapListPreference: "NO_PREFERENCE",
-        mapPool: new MapPool([]),
+      const group = await QRepository.createGroup({
         status: "ACTIVE",
         userId: users.pop()!,
       });
@@ -1791,11 +1831,15 @@ function playedMatches() {
       winnerGroupId: winner === "ALPHA" ? groupAlpha : groupBravo,
     });
     const members = [
-      ...groupForMatch(match.alphaGroupId)!.members.map((m) => ({
+      ...(await QMatchRepository.findGroupById({
+        groupId: match.alphaGroupId,
+      }))!.members.map((m) => ({
         ...m,
         groupId: match.alphaGroupId,
       })),
-      ...groupForMatch(match.bravoGroupId)!.members.map((m) => ({
+      ...(await QMatchRepository.findGroupById({
+        groupId: match.alphaGroupId,
+      }))!.members.map((m) => ({
         ...m,
         groupId: match.bravoGroupId,
       })),

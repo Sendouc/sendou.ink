@@ -14,6 +14,9 @@ import type {
 } from "~/features/mmr/tiered.server";
 import type { RecentMatchPlayer } from "../queries/findRecentMatchPlayersByUserId.server";
 import { TIERS } from "~/features/mmr/mmr-constants";
+import { mapModePreferencesToModeList } from "./match.server";
+import { modesShort } from "~/modules/in-game-lists";
+import { defaultOrdinal } from "~/features/mmr/mmr-utils";
 
 export function divideGroups({
   groups,
@@ -70,31 +73,6 @@ export function divideGroups({
   };
 }
 
-export function filterOutGroupsWithIncompatibleMapListPreference(
-  groups: DividedGroupsUncensored,
-): DividedGroupsUncensored {
-  if (
-    groups.own.mapListPreference !== "SZ_ONLY" &&
-    groups.own.mapListPreference !== "ALL_MODES_ONLY"
-  ) {
-    return groups;
-  }
-
-  return {
-    ...groups,
-    neutral: groups.neutral.filter((group) => {
-      if (
-        group.mapListPreference !== "SZ_ONLY" &&
-        group.mapListPreference !== "ALL_MODES_ONLY"
-      ) {
-        return true;
-      }
-
-      return group.mapListPreference === groups.own.mapListPreference;
-    }),
-  };
-}
-
 const MIN_PLAYERS_FOR_REPLAY = 3;
 export function addReplayIndicator({
   groups,
@@ -134,16 +112,46 @@ export function addReplayIndicator({
   };
 }
 
+export function addFutureMatchModes(
+  groups: DividedGroupsUncensored,
+): DividedGroupsUncensored {
+  const ownModePreferences = groups.own.mapModePreferences?.map((p) => p.modes);
+  if (!ownModePreferences) return groups;
+
+  const futureMatchModes = (group: LookingGroupWithInviteCode) => {
+    const theirModePreferences = group.mapModePreferences?.map((p) => p.modes);
+    if (!theirModePreferences) return;
+
+    return mapModePreferencesToModeList(
+      ownModePreferences,
+      theirModePreferences,
+    ).sort((a, b) => modesShort.indexOf(a) - modesShort.indexOf(b));
+  };
+
+  return {
+    own: groups.own,
+    likesReceived: groups.likesReceived.map((g) => ({
+      ...g,
+      futureMatchModes: futureMatchModes(g),
+    })),
+    neutral: groups.neutral.map((g) => ({
+      ...g,
+      futureMatchModes: futureMatchModes(g),
+    })),
+  };
+}
+
 const censorGroupFully = ({
   inviteCode: _inviteCode,
+  mapModePreferences: _mapModePreferences,
   ...group
 }: LookingGroupWithInviteCode): LookingGroup => ({
   ...group,
   members: undefined,
-  mapListPreference: undefined,
 });
 const censorGroupPartly = ({
   inviteCode: _inviteCode,
+  mapModePreferences: _mapModePreferences,
   ...group
 }: LookingGroupWithInviteCode): LookingGroup => group;
 export function censorGroups({
@@ -166,7 +174,7 @@ export function censorGroups({
   };
 }
 
-export function sortGroupsBySkill({
+export function sortGroupsBySkillAndSentiment({
   groups,
   userSkills,
   intervals,
@@ -194,6 +202,18 @@ export function sortGroupsBySkill({
     return Math.abs(ownGroupTierIndex - otherGroupTierIndex);
   };
 
+  const groupSentiment = (group: LookingGroup) => {
+    if (group.members?.some((m) => m.privateNote?.sentiment === "NEGATIVE")) {
+      return "NEGATIVE";
+    }
+
+    if (group.members?.some((m) => m.privateNote?.sentiment === "POSITIVE")) {
+      return "POSITIVE";
+    }
+
+    return "NEUTRAL";
+  };
+
   return {
     ...groups,
     neutral: groups.neutral.sort((a, b) => {
@@ -211,6 +231,16 @@ export function sortGroupsBySkill({
           userSkills,
           intervals,
         })?.name;
+
+      const aSentiment = groupSentiment(a);
+      const bSentiment = groupSentiment(b);
+
+      if (aSentiment !== bSentiment) {
+        if (aSentiment === "NEGATIVE") return 1;
+        if (bSentiment === "NEGATIVE") return -1;
+        if (aSentiment === "POSITIVE") return -1;
+        if (bSentiment === "POSITIVE") return 1;
+      }
 
       const aTierDiff = tierDiff(aTier);
       const bTierDiff = tierDiff(bTier);
@@ -237,10 +267,14 @@ export function addSkillsToGroups({
 }): DividedGroupsUncensored {
   const addSkill = (group: LookingGroupWithInviteCode) => ({
     ...group,
-    members: group.members?.map((m) => ({
-      ...m,
-      skill: userSkills[String(m.id)],
-    })),
+    members: group.members?.map((m) => {
+      const skill = userSkills[String(m.id)];
+
+      return {
+        ...m,
+        skill: !skill || skill.approximate ? ("CALCULATING" as const) : skill,
+      };
+    }),
     tier:
       group.members.length === FULL_GROUP_SIZE
         ? resolveGroupSkill({ group, userSkills, intervals })
@@ -267,9 +301,10 @@ function resolveGroupSkill({
   userSkills: Record<string, TieredSkill>;
   intervals: SkillTierInterval[];
 }): TieredSkill["tier"] | undefined {
-  const skills = group.members
-    .map((m) => userSkills[String(m.id)])
-    .filter(Boolean);
+  const skills = group.members.map(
+    (m) => userSkills[String(m.id)] ?? { ordinal: defaultOrdinal() },
+  );
+
   const averageOrdinal =
     skills.reduce((acc, s) => acc + s.ordinal, 0) / skills.length;
 

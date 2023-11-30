@@ -3,16 +3,23 @@ import type {
   LinksFunction,
   LoaderArgs,
   SerializeFrom,
+  V2_MetaFunction,
 } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import type { FetcherWithComponents } from "@remix-run/react";
-import { Link, useFetcher, useLoaderData } from "@remix-run/react";
+import {
+  Link,
+  useFetcher,
+  useLoaderData,
+  useNavigate,
+  useSearchParams,
+} from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
 import { Flipped, Flipper } from "react-flip-toolkit";
 import invariant from "tiny-invariant";
 import { Avatar } from "~/components/Avatar";
-import { Button } from "~/components/Button";
+import { Button, LinkButton } from "~/components/Button";
 import { WeaponCombobox } from "~/components/Combobox";
 import { Divider } from "~/components/Divider";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
@@ -27,7 +34,7 @@ import { sql } from "~/db/sql";
 import type { GroupMember, ReportedWeapon } from "~/db/types";
 import * as NotificationService from "~/features/chat/NotificationService.server";
 import type { ChatMessage } from "~/features/chat/chat-types";
-import { ConnectedChat, type ChatProps } from "~/features/chat/components/Chat";
+import { type ChatProps, Chat, useChat } from "~/features/chat/components/Chat";
 import { currentSeason } from "~/features/mmr";
 import { resolveRoomPass } from "~/features/tournament-bracket/tournament-bracket-utils";
 import { useIsMounted } from "~/hooks/useIsMounted";
@@ -41,7 +48,7 @@ import { databaseTimestampToDate } from "~/utils/dates";
 import { animate } from "~/utils/flip";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
-import { inGameNameWithoutDiscriminator } from "~/utils/strings";
+import { inGameNameWithoutDiscriminator, makeTitle } from "~/utils/strings";
 import type { Unpacked } from "~/utils/types";
 import { assertUnreachable } from "~/utils/types";
 import {
@@ -50,6 +57,8 @@ import {
   SENDOUQ_RULES_PAGE,
   SENDOU_INK_DISCORD_URL,
   navIconUrl,
+  preferenceEmojiUrl,
+  sendouQMatchPage,
   teamPage,
   userSubmittedImage,
 } from "~/utils/urls";
@@ -75,22 +84,49 @@ import { addMapResults } from "../queries/addMapResults.server";
 import { addPlayerResults } from "../queries/addPlayerResults.server";
 import { addReportedWeapons } from "../queries/addReportedWeapons.server";
 import { addSkills } from "../queries/addSkills.server";
-import { createGroupFromPreviousGroup } from "../queries/createGroup.server";
 import { deleteReporterWeaponsByMatchId } from "../queries/deleteReportedWeaponsByMatchId.server";
 import { findCurrentGroupByUserId } from "../queries/findCurrentGroupByUserId.server";
 import { findMatchById } from "../queries/findMatchById.server";
-import { groupForMatch } from "../queries/groupForMatch.server";
 import { reportScore } from "../queries/reportScore.server";
 import { reportedWeaponsByMatchId } from "../queries/reportedWeaponsByMatchId.server";
 import { setGroupAsInactive } from "../queries/setGroupAsInactive.server";
 import { useRecentlyReportedWeapons } from "../q-hooks";
+import * as QRepository from "~/features/sendouq/QRepository.server";
+import * as QMatchRepository from "~/features/sendouq-match/QMatchRepository.server";
+import { AddPrivateNoteDialog } from "~/features/sendouq-match/components/AddPrivateNoteDialog";
+import { safeNumberParse } from "~/utils/number";
+import { ScaleIcon } from "~/components/icons/Scale";
+import { DiscordIcon } from "~/components/icons/Discord";
+import { useWindowSize } from "~/hooks/useWindowSize";
+import { joinListToNaturalString } from "~/utils/arrays";
+import { NewTabs } from "~/components/NewTabs";
+
+export const meta: V2_MetaFunction = (args) => {
+  const data = args.data as SerializeFrom<typeof loader> | null;
+
+  if (!data) return [];
+
+  return [
+    {
+      title: makeTitle(`SendouQ Match #${data.match.id}`),
+    },
+    {
+      name: "description",
+      content: `${joinListToNaturalString(
+        data.groupAlpha.members.map((m) => m.discordName),
+      )} vs. ${joinListToNaturalString(
+        data.groupBravo.members.map((m) => m.discordName),
+      )}`,
+    },
+  ];
+};
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
 export const handle: SendouRouteHandle = {
-  i18n: ["q", "tournament"],
+  i18n: ["q", "tournament", "user"],
   breadcrumb: () => ({
     imgPath: navIconUrl("sendouq"),
     href: SENDOUQ_PAGE,
@@ -137,11 +173,15 @@ export const action = async ({ request, params }: ActionArgs) => {
         "Only mods can report scores as admin",
       );
       const members = [
-        ...groupForMatch(match.alphaGroupId)!.members.map((m) => ({
+        ...(await QMatchRepository.findGroupById({
+          groupId: match.alphaGroupId,
+        }))!.members.map((m) => ({
           ...m,
           groupId: match.alphaGroupId,
         })),
-        ...groupForMatch(match.bravoGroupId)!.members.map((m) => ({
+        ...(await QMatchRepository.findGroupById({
+          groupId: match.bravoGroupId,
+        }))!.members.map((m) => ({
           ...m,
           groupId: match.bravoGroupId,
         })),
@@ -183,8 +223,12 @@ export const action = async ({ request, params }: ActionArgs) => {
         compared === "SAME" && !matchIsBeingCanceled
           ? calculateMatchSkills({
               groupMatchId: match.id,
-              winner: groupForMatch(winnerGroupId)!.members.map((m) => m.id),
-              loser: groupForMatch(loserGroupId)!.members.map((m) => m.id),
+              winner: (await QMatchRepository.findGroupById({
+                groupId: winnerGroupId,
+              }))!.members.map((m) => m.id),
+              loser: (await QMatchRepository.findGroupById({
+                groupId: loserGroupId,
+              }))!.members.map((m) => m.id),
               winnerGroupId,
               loserGroupId,
             })
@@ -274,7 +318,9 @@ export const action = async ({ request, params }: ActionArgs) => {
       const season = currentSeason(new Date());
       validate(season, "Season is not active");
 
-      const previousGroup = groupForMatch(data.previousGroupId);
+      const previousGroup = await QMatchRepository.findGroupById({
+        groupId: data.previousGroupId,
+      });
       validate(previousGroup, "Previous group not found");
 
       for (const member of previousGroup.members) {
@@ -288,7 +334,7 @@ export const action = async ({ request, params }: ActionArgs) => {
         }
       }
 
-      createGroupFromPreviousGroup({
+      await QRepository.createGroupFromPrevious({
         previousGroupId: data.previousGroupId,
         members: previousGroup.members.map((m) => ({ id: m.id, role: m.role })),
       });
@@ -316,6 +362,16 @@ export const action = async ({ request, params }: ActionArgs) => {
 
       break;
     }
+    case "ADD_PRIVATE_USER_NOTE": {
+      await QRepository.upsertPrivateUserNote({
+        authorId: user.id,
+        sentiment: data.sentiment,
+        targetId: data.targetId,
+        text: data.comment,
+      });
+
+      throw redirect(sendouQMatchPage(matchId));
+    }
     default: {
       assertUnreachable(data);
     }
@@ -327,11 +383,19 @@ export const action = async ({ request, params }: ActionArgs) => {
 export const loader = async ({ params, request }: LoaderArgs) => {
   const user = await getUserId(request);
   const matchId = matchIdFromParams(params);
-  const match = notFoundIfFalsy(findMatchById(matchId));
+  const match = notFoundIfFalsy(await QMatchRepository.findById(matchId));
 
-  const groupAlpha = groupForMatch(match.alphaGroupId);
+  const [groupAlpha, groupBravo] = await Promise.all([
+    QMatchRepository.findGroupById({
+      groupId: match.alphaGroupId,
+      loggedInUserId: user?.id,
+    }),
+    QMatchRepository.findGroupById({
+      groupId: match.bravoGroupId,
+      loggedInUserId: user?.id,
+    }),
+  ]);
   invariant(groupAlpha, "Group alpha not found");
-  const groupBravo = groupForMatch(match.bravoGroupId);
   invariant(groupBravo, "Group bravo not found");
 
   const censoredGroupAlpha = { ...groupAlpha, chatCode: undefined };
@@ -382,11 +446,11 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 export default function QMatchPage() {
   const user = useUser();
   const isMounted = useIsMounted();
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation(["q"]);
   const data = useLoaderData<typeof loader>();
   const [showWeaponsForm, setShowWeaponsForm] = React.useState(false);
-  const submitScoreFetcher = useFetcher<typeof action>();
-  const cancelScoreFetcher = useFetcher<typeof action>();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     setShowWeaponsForm(false);
@@ -412,33 +476,18 @@ export default function QMatchPage() {
   const showScore =
     data.match.isLocked || (data.match.reportedByUserId && ownGroup);
 
-  const poolCode = () => {
-    const stringId = String(data.match.id);
-    const lastDigit = stringId[stringId.length - 1];
-
-    return `SQ${lastDigit}`;
-  };
-
-  const chatUsers = React.useMemo(() => {
-    return Object.fromEntries(
-      [...data.groupAlpha.members, ...data.groupBravo.members].map((m) => [
-        m.id,
-        m,
-      ]),
-    );
-  }, [data]);
-
-  const chatRooms = React.useMemo(() => {
-    return [
-      data.matchChatCode ? { code: data.matchChatCode, label: "Match" } : null,
-      data.groupChatCode ? { code: data.groupChatCode, label: "Group" } : null,
-    ].filter(Boolean) as ChatProps["rooms"];
-  }, [data.matchChatCode, data.groupChatCode]);
+  const addingNoteFor = (
+    data.groupMemberOf === "ALPHA" ? data.groupAlpha : data.groupBravo
+  ).members.find((m) => m.id === safeNumberParse(searchParams.get("note")));
 
   return (
-    <Main className="q-match__container stack lg">
+    <Main className="q-match__container stack xl">
+      <AddPrivateNoteDialog
+        aboutUser={addingNoteFor}
+        close={() => navigate(sendouQMatchPage(data.match.id))}
+      />
       <div className="q-match__header">
-        <h2>Match #{data.match.id}</h2>
+        <h2>{t("q:match.header", { number: data.match.id })}</h2>
         <div
           className={clsx("text-xs text-lighter", {
             invisible: !isMounted,
@@ -479,13 +528,13 @@ export default function QMatchPage() {
       ) : null}
       {!showWeaponsForm ? (
         <>
-          <div
-            className={clsx("q-match__teams-container", {
-              "with-chat": data.matchChatCode || data.groupChatCode,
-            })}
-          >
+          <div className="q-match__teams-container">
             {[data.groupAlpha, data.groupBravo].map((group, i) => {
               const side = i === 0 ? "ALPHA" : "BRAVO";
+
+              const matchHasBeenReported = Boolean(data.match.reportedByUserId);
+              const showAddNote =
+                data.groupMemberOf === side && matchHasBeenReported;
 
               return (
                 <div className="stack sm text-lighter text-xs" key={group.id}>
@@ -509,94 +558,19 @@ export default function QMatchPage() {
                   <GroupCard
                     group={group}
                     displayOnly
-                    hideVc={data.match.isLocked || data.groupMemberOf !== side}
-                    hideWeapons={data.match.isLocked}
+                    hideVc={matchHasBeenReported}
+                    hideWeapons={matchHasBeenReported}
+                    showAddNote={showAddNote}
                   />
                 </div>
               );
             })}
-            {chatRooms.length > 0 ? (
-              <ConnectedChat
-                users={chatUsers}
-                rooms={chatRooms}
-                disabled={!data.canPostChatMessages}
-                // we don't want the user to lose the weapons they are reporting
-                // when the match gets suddenly locked
-                revalidates={false}
-              />
-            ) : null}
           </div>
-          {!data.match.isLocked && (ownMember || isMod(user)) ? (
-            <div>
-              <div className="stack horizontal justify-between">
-                <Link to={SENDOUQ_RULES_PAGE} className="text-xxs font-bold">
-                  Read the rules
-                </Link>
-                {canReportScore && !data.match.isLocked ? (
-                  <FormWithConfirm
-                    dialogHeading="Cancel match? (Check rules)"
-                    fields={[
-                      ["_action", "REPORT_SCORE"],
-                      ["winners", "[]"],
-                    ]}
-                    deleteButtonText="Cancel"
-                    cancelButtonText="Nevermind"
-                    fetcher={cancelScoreFetcher}
-                  >
-                    <Button
-                      className="build__small-text"
-                      variant="minimal-destructive"
-                      size="tiny"
-                      type="submit"
-                      disabled={
-                        ownTeamReported && !data.match.mapList[0].winnerGroupId
-                      }
-                    >
-                      Cancel match
-                    </Button>
-                  </FormWithConfirm>
-                ) : null}
-              </div>
-              <div className="q-match__join-discord-section">
-                If needed, contact your opponent on the <b>#match-meetup</b>{" "}
-                channel of the sendou.ink Discord:{" "}
-                <a
-                  href={SENDOU_INK_DISCORD_URL}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {SENDOU_INK_DISCORD_URL}
-                </a>
-                . Alpha team hosts. Password should be{" "}
-                <span className="q-match__join-discord-section__highlighted">
-                  {resolveRoomPass(data.match.id)}
-                </span>
-                . Pool code is{" "}
-                <span className="q-match__join-discord-section__highlighted">
-                  {poolCode()}
-                </span>
-              </div>
-            </div>
-          ) : null}
-          {cancelScoreFetcher.data?.error === "cant-cancel" ? (
-            <div className="text-xs text-warning font-semi-bold text-center">
-              Can&apos;t cancel since opponent has already reported score for
-              this match. See dispute instructions at the top of the page.
-            </div>
-          ) : null}
-          <MapList
-            key={data.match.id}
+          <BottomSection
             canReportScore={canReportScore}
-            isResubmission={ownTeamReported}
-            fetcher={submitScoreFetcher}
+            ownTeamReported={ownTeamReported}
+            participatingInTheMatch={Boolean(ownMember)}
           />
-          {submitScoreFetcher.data?.error === "different" ? (
-            <div className="text-xs text-warning font-semi-bold text-center">
-              You reported different results than your opponent. Double check
-              the above is correct and otherwise see dispute instructions at the
-              top of the page.
-            </div>
-          ) : null}
         </>
       ) : null}
     </Main>
@@ -611,7 +585,7 @@ function Score({
   ownTeamReported: boolean;
 }) {
   const isMounted = useIsMounted();
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation(["q"]);
   const data = useLoaderData<typeof loader>();
   const reporter =
     data.groupAlpha.members.find((m) => m.id === data.match.reportedByUserId) ??
@@ -633,13 +607,15 @@ function Score({
   if (score[0] === 0 && score[1] === 0) {
     return (
       <div className="stack items-center line-height-tight">
-        <div className="text-sm font-bold text-warning">Match canceled</div>
+        <div className="text-sm font-bold text-warning">
+          {t("q:match.canceled")}
+        </div>
         {!data.match.isLocked ? (
           <div className="text-xs text-lighter stack xs items-center text-center">
             {!ownTeamReported ? (
               <DisputePopover />
             ) : (
-              "Pending other team's confirmation"
+              t("q:match.cancelPendingConfirmation")
             )}
           </div>
         ) : null}
@@ -654,7 +630,7 @@ function Score({
         <div
           className={clsx("text-xs text-lighter", { invisible: !isMounted })}
         >
-          Reported by {reporter?.discordName ?? <b>admin</b>} at{" "}
+          {t("q:match.reportedBy", { name: reporter?.discordName ?? "admin" })}{" "}
           {isMounted
             ? databaseTimestampToDate(reportedAt).toLocaleString(
                 i18n.language,
@@ -670,8 +646,7 @@ function Score({
         </div>
       ) : (
         <div className="text-xs text-lighter stack xs items-center text-center">
-          SP will be adjusted after both teams report the same results{" "}
-          {!ownTeamReported ? <DisputePopover /> : null}
+          {t("q:match.spInfo")} {!ownTeamReported ? <DisputePopover /> : null}
         </div>
       )}
     </div>
@@ -679,18 +654,15 @@ function Score({
 }
 
 function DisputePopover() {
+  const { t } = useTranslation(["q"]);
+
   return (
-    <Popover buttonChildren="Dispute?" containerClassName="text-main-forced">
-      <p>
-        If there is a mistake contact the other team to correct it on their
-        side. Score can be freely rereported till both teams report the same
-        result.
-      </p>
-      <p className="mt-2">
-        If there is a problem talking with the other team, contact a mod on the
-        sendou.ink Discord helpdesk. Provide screenshots that show the correct
-        score.
-      </p>
+    <Popover
+      buttonChildren={t("q:match.dispute.button")}
+      containerClassName="text-main-forced"
+    >
+      <p>{t("q:match.dispute.p1")}</p>
+      <p className="mt-2">{t("q:match.dispute.p2")}</p>
     </Popover>
   );
 }
@@ -708,6 +680,7 @@ function AfterMatchActions({
   showWeaponsForm: boolean;
   setShowWeaponsForm: (show: boolean) => void;
 }) {
+  const { t } = useTranslation(["q"]);
   const data = useLoaderData<typeof loader>();
   const lookAgainFetcher = useFetcher();
 
@@ -736,7 +709,7 @@ function AfterMatchActions({
             state={lookAgainFetcher.state}
             _action="LOOK_AGAIN"
           >
-            Look again with same group
+            {t("q:match.actions.lookAgain")}
           </SubmitButton>
         ) : null}
         {showWeaponsFormButton ? (
@@ -745,7 +718,9 @@ function AfterMatchActions({
             onClick={() => setShowWeaponsForm(!showWeaponsForm)}
             variant={showWeaponsForm ? "destructive" : undefined}
           >
-            {showWeaponsForm ? "Stop reporting weapons" : "Report used weapons"}
+            {showWeaponsForm
+              ? t("q:match.actions.stopReportingWeapons")
+              : t("q:match.actions.reportWeapons")}
           </Button>
         ) : null}
       </lookAgainFetcher.Form>
@@ -755,6 +730,7 @@ function AfterMatchActions({
 }
 
 function ReportWeaponsForm() {
+  const { t } = useTranslation(["q", "user"]);
   const user = useUser();
   const data = useLoaderData<typeof loader>();
   const weaponsFetcher = useFetcher();
@@ -831,9 +807,9 @@ function ReportWeaponsForm() {
         value={JSON.stringify(weaponsUsage)}
       />
       <div className="stack horizontal sm justify-between w-max mx-auto">
-        <h3 className="text-md">Who to report?</h3>
+        <h3 className="text-md">{t("q:match.report.whoToReport")}</h3>
         <label className="stack horizontal xs items-center mb-0">
-          Me
+          {t("q:match.report.whoToReport.me")}
           <input
             type="radio"
             checked={reportingMode === "MYSELF"}
@@ -841,7 +817,7 @@ function ReportWeaponsForm() {
           />
         </label>
         <label className="stack horizontal xs items-center mb-0">
-          My team
+          {t("q:match.report.whoToReport.myTeam")}
           <input
             type="radio"
             checked={reportingMode === "MY_TEAM"}
@@ -849,7 +825,7 @@ function ReportWeaponsForm() {
           />
         </label>
         <label className="stack horizontal xs items-center mb-0">
-          Everyone
+          {t("q:match.report.whoToReport.everyone")}
           <input
             type="radio"
             checked={reportingMode === "ALL"}
@@ -880,7 +856,7 @@ function ReportWeaponsForm() {
                     mapIndex: i,
                   })}
                 >
-                  Copy weapons from above map
+                  {t("q:match.report.copyWeapons")}
                 </Button>
               ) : null}
               <div className="stack sm">
@@ -895,10 +871,14 @@ function ReportWeaponsForm() {
                   return (
                     <React.Fragment key={member.id}>
                       {j === 0 && reportingMode === "ALL" ? (
-                        <Divider className="text-sm">Alpha</Divider>
+                        <Divider className="text-sm">
+                          {t("q:match.sides.alpha")}
+                        </Divider>
                       ) : null}
                       {j === FULL_GROUP_SIZE && reportingMode === "ALL" ? (
-                        <Divider className="text-sm">Bravo</Divider>
+                        <Divider className="text-sm">
+                          {t("q:match.sides.bravo")}
+                        </Divider>
                       ) : null}
                       <div
                         key={member.id}
@@ -909,7 +889,7 @@ function ReportWeaponsForm() {
                           {member.inGameName ? (
                             <>
                               <span className="text-lighter font-semi-bold">
-                                IGN:
+                                {t("user:ign.short")}:
                               </span>{" "}
                               {inGameNameWithoutDiscriminator(
                                 member.inGameName,
@@ -972,14 +952,256 @@ function ReportWeaponsForm() {
       </div>
       {weaponsUsage.flat().some((val) => val === null) ? (
         <div className="text-sm text-center text-warning font-semi-bold">
-          Report all weapons to submit
+          {t("q:match.report.error")}
         </div>
       ) : (
         <div className="stack items-center">
-          <SubmitButton _action="REPORT_WEAPONS">Report weapons</SubmitButton>
+          <SubmitButton _action="REPORT_WEAPONS">
+            {t("q:match.report.submit")}
+          </SubmitButton>
         </div>
       )}
     </weaponsFetcher.Form>
+  );
+}
+
+function BottomSection({
+  canReportScore,
+  ownTeamReported,
+  participatingInTheMatch,
+}: {
+  canReportScore: boolean;
+  ownTeamReported: boolean;
+  participatingInTheMatch: boolean;
+}) {
+  const { t } = useTranslation(["q", "common"]);
+  const { width } = useWindowSize();
+  const isMobile = width < 750;
+  const isMounted = useIsMounted();
+
+  const user = useUser();
+  const data = useLoaderData<typeof loader>();
+  const submitScoreFetcher = useFetcher<typeof action>();
+  const cancelFetcher = useFetcher<typeof action>();
+
+  const chatUsers = React.useMemo(() => {
+    return Object.fromEntries(
+      [...data.groupAlpha.members, ...data.groupBravo.members].map((m) => [
+        m.id,
+        m,
+      ]),
+    );
+  }, [data]);
+
+  const [_unseenMessages, setUnseenMessages] = React.useState(0);
+  const [chatVisible, setChatVisible] = React.useState(false);
+
+  const onNewMessage = React.useCallback(() => {
+    setUnseenMessages((msg) => msg + 1);
+  }, []);
+
+  const chatRooms = React.useMemo(() => {
+    return [
+      data.matchChatCode ? { code: data.matchChatCode, label: "Match" } : null,
+      data.groupChatCode ? { code: data.groupChatCode, label: "Group" } : null,
+    ].filter(Boolean) as ChatProps["rooms"];
+  }, [data.matchChatCode, data.groupChatCode]);
+
+  const chat = useChat({ rooms: chatRooms, onNewMessage });
+
+  const onChatMount = React.useCallback(() => {
+    setChatVisible(true);
+  }, []);
+
+  const onChatUnmount = React.useCallback(() => {
+    setChatVisible(false);
+    setUnseenMessages(0);
+  }, []);
+
+  const unseenMessages = chatVisible ? 0 : _unseenMessages;
+
+  const showMid =
+    !data.match.isLocked && (participatingInTheMatch || isMod(user));
+
+  const poolCode = () => {
+    const stringId = String(data.match.id);
+    const lastDigit = stringId[stringId.length - 1];
+
+    return `SQ${lastDigit}`;
+  };
+
+  if (!isMounted) return null;
+
+  const chatElement = (
+    <Chat
+      onNewMessage={onNewMessage}
+      chat={chat}
+      onMount={onChatMount}
+      onUnmount={onChatUnmount}
+      users={chatUsers}
+      rooms={chatRooms}
+      disabled={!data.canPostChatMessages}
+      // we don't want the user to lose the weapons they are reporting
+      // when the match gets suddenly locked
+      revalidates={false}
+    />
+  );
+
+  const mapListElement = (
+    <MapList
+      key={data.match.id}
+      canReportScore={canReportScore}
+      isResubmission={ownTeamReported}
+      fetcher={submitScoreFetcher}
+    />
+  );
+
+  const roomJoiningInfoElement = (
+    <div className="q-match__pool-pass-container">
+      <InfoWithHeader header={t("q:match.pool")} value={poolCode()} />
+      <InfoWithHeader
+        header={t("q:match.password.short")}
+        value={resolveRoomPass(data.match.id)}
+      />
+    </div>
+  );
+
+  const rulesButtonElement = (
+    <LinkButton
+      to={SENDOUQ_RULES_PAGE}
+      variant="outlined"
+      size="tiny"
+      icon={<ScaleIcon />}
+    >
+      {t("q:front.nav.rules.title")}
+    </LinkButton>
+  );
+
+  const helpdeskButtonElement = (
+    <LinkButton
+      isExternal
+      to={SENDOU_INK_DISCORD_URL}
+      variant="outlined"
+      size="tiny"
+      icon={<DiscordIcon />}
+    >
+      {t("q:match.helpdesk")}
+    </LinkButton>
+  );
+
+  const cancelMatchElement =
+    canReportScore && !data.match.isLocked ? (
+      <FormWithConfirm
+        dialogHeading={t("q:match.cancelMatch.confirm")}
+        fields={[
+          ["_action", "REPORT_SCORE"],
+          ["winners", "[]"],
+        ]}
+        deleteButtonText={t("common:actions.cancel")}
+        cancelButtonText={t("common:actions.nevermind")}
+        fetcher={cancelFetcher}
+      >
+        <Button
+          variant="minimal-destructive"
+          size="tiny"
+          type="submit"
+          disabled={ownTeamReported && !data.match.mapList[0].winnerGroupId}
+          className="build__small-text mt-4"
+        >
+          {t("q:match.cancelMatch")}
+        </Button>
+      </FormWithConfirm>
+    ) : null;
+
+  const chatHidden = chatRooms.length === 0;
+
+  if (!showMid && chatHidden) {
+    return mapListElement;
+  }
+
+  if (isMobile) {
+    return (
+      <div className="stack lg">
+        <div className="stack horizontal lg items-center justify-center">
+          {roomJoiningInfoElement}
+          <div className="stack md">
+            {rulesButtonElement}
+            {helpdeskButtonElement}
+            {cancelMatchElement}
+          </div>
+        </div>
+
+        <div>
+          <NewTabs
+            sticky
+            tabs={[
+              {
+                label: t("q:looking.columns.chat"),
+                number: unseenMessages,
+                hidden: chatHidden,
+              },
+              {
+                label: t("q:match.tabs.reportScore"),
+              },
+            ]}
+            disappearing
+            content={[
+              {
+                key: "chat",
+                hidden: chatHidden,
+                element: chatElement,
+              },
+              {
+                key: "report",
+                element: mapListElement,
+              },
+            ]}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <div className="q-match__map-list-chat-container">
+        {mapListElement}
+        <div
+          className={clsx("q-match__bottom-mid-section", {
+            invisible: !showMid,
+          })}
+        >
+          <div className="stack md">
+            {roomJoiningInfoElement}
+            {rulesButtonElement}
+            {helpdeskButtonElement}
+            {cancelMatchElement}
+          </div>
+        </div>
+        <div className="q-match__chat-container">
+          {chatRooms.length > 0 ? chatElement : null}
+        </div>
+      </div>
+      {cancelFetcher.data?.error === "cant-cancel" ? (
+        <div className="text-xs text-warning font-semi-bold text-center">
+          {t("q:match.errors.cantCancel")}
+        </div>
+      ) : null}
+      {submitScoreFetcher.data?.error === "different" ? (
+        <div className="text-xs text-warning font-semi-bold text-center">
+          {t("q:match.errors.different")}
+        </div>
+      ) : null}
+    </>
+  );
+}
+
+function InfoWithHeader({ header, value }: { header: string; value: string }) {
+  return (
+    <div>
+      <div className="q-match__info__header">{header}</div>
+      <div className="q-match__info__value">{value}</div>
+    </div>
   );
 }
 
@@ -992,6 +1214,7 @@ function MapList({
   isResubmission: boolean;
   fetcher: FetcherWithComponents<any>;
 }) {
+  const { t } = useTranslation(["q"]);
   const user = useUser();
   const data = useLoaderData<typeof loader>();
   const [adminToggleChecked, setAdminToggleChecked] = React.useState(false);
@@ -1081,7 +1304,9 @@ function MapList({
         <div className="stack md items-center mt-4">
           <ResultSummary winners={winners} />
           <SubmitButton _action="REPORT_SCORE" state={fetcher.state}>
-            {isResubmission ? "Submit adjusted scores" : "Submit scores"}
+            {isResubmission
+              ? t("q:match.submitScores.adjusted")
+              : t("q:match.submitScores")}
           </SubmitButton>
         </div>
       ) : null}
@@ -1114,7 +1339,7 @@ function MapListMap({
 }) {
   const user = useUser();
   const data = useLoaderData<typeof loader>();
-  const { t } = useTranslation(["game-misc", "tournament"]);
+  const { t } = useTranslation(["q", "game-misc", "tournament"]);
 
   const pickInfo = (source: string) => {
     if (source === "TIEBREAKER") return t("tournament:pickInfo.tiebreaker");
@@ -1123,12 +1348,12 @@ function MapListMap({
 
     if (source === String(data.match.alphaGroupId)) {
       return t("tournament:pickInfo.team.specific", {
-        team: "Alpha",
+        team: t("q:match.sides.alpha"),
       });
     }
 
     return t("tournament:pickInfo.team.specific", {
-      team: "Bravo",
+      team: t("q:match.sides.bravo"),
     });
   };
 
@@ -1166,19 +1391,34 @@ function MapListMap({
     if (!winnerId)
       return (
         <>
-          • <i>Unplayed</i>
+          • <i>{t("q:match.results.unplayed")}</i>
         </>
       );
 
-    const winner = winnerId === data.match.alphaGroupId ? "Alpha" : "Bravo";
+    const winnerSide =
+      winnerId === data.match.alphaGroupId
+        ? t("q:match.sides.alpha")
+        : t("q:match.sides.bravo");
 
-    return <>• {winner} won</>;
+    return <>• {t("q:match.won", { side: winnerSide })}</>;
   };
 
   const relativeSideText = (side: "ALPHA" | "BRAVO") => {
     if (!data.groupMemberOf) return "";
 
     return data.groupMemberOf === side ? " (us)" : " (them)";
+  };
+
+  const modePreferences = data.match.memento?.modePreferences?.[map.mode];
+  const mapPreferences = data.match.memento?.mapPreferences?.[i];
+
+  const userIdToName = (userId: number) => {
+    const member = [
+      ...data.groupAlpha.members,
+      ...data.groupBravo.members,
+    ].find((m) => m.id === userId);
+
+    return member?.discordName ?? "";
   };
 
   return (
@@ -1188,11 +1428,68 @@ function MapListMap({
           <StageImage stageId={map.stageId} width={64} className="rounded-sm" />
           <div>
             <div className="text-sm stack horizontal xs items-center">
-              {i + 1}) <ModeImage mode={map.mode} size={18} />{" "}
+              {i + 1}){" "}
+              {modePreferences ? (
+                <Popover
+                  contentClassName="text-main-forced"
+                  buttonChildren={<ModeImage mode={map.mode} size={18} />}
+                  triggerClassName="q-match__mode-popover-button"
+                >
+                  <div className="text-md text-lighter mb-2 line-height-very-tight">
+                    {t(`game-misc:MODE_LONG_${map.mode}`)}
+                  </div>
+                  {modePreferences.map(({ userId, preference }) => {
+                    return (
+                      <div
+                        key={userId}
+                        className="stack horizontal items-center xs"
+                      >
+                        <img
+                          src={preferenceEmojiUrl(preference)}
+                          className="q-settings__radio__emoji"
+                          width={18}
+                        />
+                        {userIdToName(userId)}
+                      </div>
+                    );
+                  })}
+                </Popover>
+              ) : (
+                <ModeImage mode={map.mode} size={18} />
+              )}{" "}
               {t(`game-misc:STAGE_${map.stageId}`)}
             </div>
             <div className="text-lighter text-xs">
-              {pickInfo(map.source)} {winningInfoText(map.winnerGroupId)}
+              {mapPreferences && mapPreferences.length > 0 ? (
+                <Popover
+                  triggerClassName="q-match__stage-popover-button"
+                  contentClassName="text-main-forced"
+                  buttonChildren={<span>{pickInfo(map.source)}</span>}
+                >
+                  <div className="text-md text-center text-lighter mb-2 line-height-very-tight">
+                    {t(`game-misc:MODE_SHORT_${map.mode}`)}{" "}
+                    {t(`game-misc:STAGE_${map.stageId}`)}
+                  </div>
+                  {mapPreferences.map(({ userId, preference }) => {
+                    return (
+                      <div
+                        key={userId}
+                        className="stack horizontal items-center xs"
+                      >
+                        <img
+                          src={preferenceEmojiUrl(preference)}
+                          className="q-settings__radio__emoji"
+                          width={18}
+                        />
+                        {userIdToName(userId)}
+                      </div>
+                    );
+                  })}
+                </Popover>
+              ) : (
+                pickInfo(map.source)
+              )}{" "}
+              {winningInfoText(map.winnerGroupId)}
             </div>
           </div>
         </div>
@@ -1231,7 +1528,9 @@ function MapListMap({
           }}
         >
           <div className="q-match__report-section">
-            <label className="mb-0 text-theme-secondary">Winner</label>
+            <label className="mb-0 text-theme-secondary">
+              {t("q:match.report.winnerLabel")}
+            </label>
             <div className="stack sm horizontal items-center">
               <div className="stack sm horizontal items-center font-semi-bold">
                 <input
@@ -1243,7 +1542,7 @@ function MapListMap({
                   onChange={handleReportScore(i, "ALPHA")}
                 />
                 <label className="mb-0" htmlFor={`alpha-${i}`}>
-                  {`Alpha${relativeSideText("ALPHA")}`}
+                  {`${t("q:match.sides.alpha")}${relativeSideText("ALPHA")}`}
                 </label>
               </div>
               <div className="stack sm horizontal items-center font-semi-bold">
@@ -1256,14 +1555,16 @@ function MapListMap({
                   onChange={handleReportScore(i, "BRAVO")}
                 />
                 <label className="mb-0" htmlFor={`bravo-${i}`}>
-                  {`Bravo${relativeSideText("BRAVO")}`}
+                  {`${t("q:match.sides.bravo")}${relativeSideText("BRAVO")}`}
                 </label>
               </div>
             </div>
 
             {showReportedOwnWeapon && onOwnWeaponSelected ? (
               <>
-                <label className="mb-0 text-theme-secondary">Your weapon</label>
+                <label className="mb-0 text-theme-secondary">
+                  {t("q:match.report.weaponLabel")}
+                </label>
                 <WeaponCombobox
                   inputName="weapon"
                   quickSelectWeaponIds={recentlyReportedWeapons}
@@ -1297,6 +1598,7 @@ function MapListMap({
 }
 
 function ResultSummary({ winners }: { winners: ("ALPHA" | "BRAVO")[] }) {
+  const { t } = useTranslation(["q"]);
   const user = useUser();
   const data = useLoaderData<typeof loader>();
 
@@ -1325,7 +1627,10 @@ function ResultSummary({ winners }: { winners: ("ALPHA" | "BRAVO")[] }) {
         "text-warning": !userWon,
       })}
     >
-      Reporting {score.join("-")} {userWon ? "win" : "loss"}
+      {t("q:match.reporting", {
+        score: score.join("-"),
+        outcome: userWon ? t("q:match.outcome.win") : t("q:match.outcome.loss"),
+      })}
     </div>
   );
 }

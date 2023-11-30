@@ -24,6 +24,7 @@ export interface TournamentMaplistInput {
   ];
   tiebreakerMaps: MapPool;
   modesIncluded: ModeShort[];
+  followModeOrder?: boolean;
 }
 
 export type TournamentMaplistSource = number | (typeof sourceTypes)[number];

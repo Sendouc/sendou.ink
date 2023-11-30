@@ -1,5 +1,5 @@
 import { sql } from "~/db/sql";
-import { LEADERBOARD_MAX_SIZE } from "../leaderboards-constants";
+import { DEFAULT_LEADERBOARD_MAX_SIZE } from "../leaderboards-constants";
 import type { User, XRankPlacement } from "~/db/types";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 
@@ -26,7 +26,7 @@ const getStm = (where = "") =>
   ${where}
   group by "XRankPlacement"."playerId"
   order by "power" desc
-  limit ${LEADERBOARD_MAX_SIZE}
+  limit ${DEFAULT_LEADERBOARD_MAX_SIZE}
 `);
 
 const allStm = getStm();

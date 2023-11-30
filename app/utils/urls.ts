@@ -27,6 +27,7 @@ import { serializeBuild } from "~/features/build-analyzer";
 import type { ArtSouce } from "~/features/art";
 import { JOIN_CODE_SEARCH_PARAM_KEY } from "~/features/sendouq/q-constants";
 import type { TierName } from "~/features/mmr/mmr-constants";
+import type { Preference } from "~/db/tables";
 
 const staticAssetsUrl = ({
   folder,
@@ -99,6 +100,7 @@ export const SENDOUQ_YOUTUBE_VIDEO =
   "https://youtu.be/juOIDmkS1dw?si=iMU4LC_bDmp3fiB1";
 export const SENDOUQ_PAGE = "/q";
 export const SENDOUQ_RULES_PAGE = "/q/rules";
+export const SENDOUQ_SETTINGS_PAGE = "/q/settings";
 export const SENDOUQ_PREPARING_PAGE = "/q/preparing";
 export const SENDOUQ_LOOKING_PAGE = "/q/looking";
 export const TIERS_PAGE = "/tiers";
@@ -337,8 +339,18 @@ export const stageImageUrl = (stageId: StageId) =>
   `/static-assets/img/stages/${stageId}`;
 export const brandImageUrl = (brand: "tentatek" | "takoroka") =>
   `/static-assets/img/layout/${brand}`;
-export const tierImageUrl = (tier: TierName) =>
+export const tierImageUrl = (tier: TierName | "CALCULATING") =>
   `/static-assets/img/tiers/${tier.toLowerCase()}`;
+export const preferenceEmojiUrl = (preference?: Preference) => {
+  const emoji =
+    preference === "PREFER"
+      ? "grin"
+      : preference === "AVOID"
+      ? "unamused"
+      : "no-mouth";
+
+  return `/static-assets/img/emoji/${emoji}.svg`;
+};
 export const TIER_PLUS_URL = `/static-assets/img/tiers/plus`;
 
 export const winnersImageUrl = ({

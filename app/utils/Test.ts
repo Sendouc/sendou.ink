@@ -1,4 +1,4 @@
-import type { ActionArgs } from "@remix-run/node";
+import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import type { z } from "zod";
 import { ADMIN_ID } from "~/constants";
 import { NZAP_TEST_ID } from "~/db/seed/constants";
@@ -6,28 +6,79 @@ import { db, sql } from "~/db/sql";
 import { SESSION_KEY } from "~/features/auth/core/authenticator.server";
 import { authSessionStorage } from "~/features/auth/core/session.server";
 
+export function arrayContainsSameItems<T>(arr1: T[], arr2: T[]) {
+  return (
+    arr1.length === arr2.length && arr1.every((item) => arr2.includes(item))
+  );
+}
+
 export function wrappedAction<T extends z.ZodTypeAny>({
   action,
+  params = {},
 }: {
   // TODO: strongly type this
   action: (args: ActionArgs) => any;
+  params?: ActionArgs["params"];
 }) {
   return async (
     args: z.infer<T>,
     { user }: { user?: "admin" | "regular" } = {},
   ) => {
-    const params = new URLSearchParams(args);
+    const body = new URLSearchParams(args);
     const request = new Request("http://app.com/path", {
       method: "POST",
-      body: params,
+      body,
       headers: await authHeader(user),
     });
 
-    return action({
-      request,
-      context: {},
-      params: {},
+    try {
+      const response = await action({
+        request,
+        context: {},
+        params,
+      });
+
+      return response;
+    } catch (thrown) {
+      if (thrown instanceof Response) {
+        // it was a redirect
+        if (thrown.status === 302) return thrown;
+
+        throw new Error(`Response thrown with status code: ${thrown.status}`);
+      }
+
+      throw thrown;
+    }
+  };
+}
+
+export function wrappedLoader<T>({
+  loader,
+}: {
+  // TODO: strongly type this
+  loader: (args: LoaderArgs) => any;
+}) {
+  return async ({ user }: { user?: "admin" | "regular" } = {}) => {
+    const request = new Request("http://app.com/path", {
+      method: "GET",
+      headers: await authHeader(user),
     });
+
+    try {
+      const data = await loader({
+        request,
+        params: {},
+        context: {},
+      });
+
+      return data as T;
+    } catch (thrown) {
+      if (thrown instanceof Response) {
+        throw new Error(`Response thrown with status code: ${thrown.status}`);
+      }
+
+      throw thrown;
+    }
   };
 }
 

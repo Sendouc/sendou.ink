@@ -64,6 +64,7 @@ const generateMaps = ({
   ],
   tiebreakerMaps = tiebreakerPicks,
   modesIncluded = [...rankedModesShort],
+  followModeOrder = false,
 }: Partial<TournamentMaplistInput> = {}) => {
   return createTournamentMapList({
     bestOf,
@@ -71,6 +72,7 @@ const generateMaps = ({
     teams,
     tiebreakerMaps,
     modesIncluded,
+    followModeOrder,
   });
 };
 
@@ -89,6 +91,16 @@ TournamentMapListGenerator("Modes are spread evenly", () => {
 
     modes.delete(rankedMode);
   }
+});
+
+TournamentMapListGenerator("Follow mode order option", () => {
+  const mapList = generateMaps({ followModeOrder: true });
+
+  assert.equal(mapList[0].mode, "SZ");
+  assert.equal(mapList[1].mode, "TC");
+  assert.equal(mapList[2].mode, "RM");
+  assert.equal(mapList[3].mode, "CB");
+  assert.equal(mapList[4].mode, "SZ");
 });
 
 TournamentMapListGenerator("Equal picks", () => {
@@ -539,6 +551,50 @@ TournamentMapListGenerator(
 //     assert.equal(maps[maps.length - 1].source, "BOTH");
 //   }
 // );
+
+const threeModesArgs: TournamentMaplistInput = {
+  bestOf: 7,
+  seed: "1002",
+  modesIncluded: ["TC", "TW", "RM"],
+  tiebreakerMaps: new MapPool({
+    TW: [],
+    SZ: [],
+    TC: [],
+    RM: [],
+    CB: [],
+  }),
+  teams: [
+    {
+      id: 1002,
+      maps: new MapPool({
+        TW: [9, 7, 6, 5, 3, 2, 0],
+        SZ: [],
+        TC: [9, 8, 7, 4, 1, 6, 2],
+        RM: [9, 7, 6, 5, 3, 1, 0],
+        CB: [],
+      }),
+    },
+    {
+      id: 1001,
+      maps: new MapPool({
+        TW: [8, 7, 5, 2, 9, 4, 3],
+        SZ: [],
+        TC: [7, 6, 5, 3, 2, 0, 9],
+        RM: [9, 8, 6, 5, 3, 2, 7],
+        CB: [],
+      }),
+    },
+  ],
+};
+
+TournamentMapListGenerator(
+  "generates list of modes included length > 1 && < 4",
+  () => {
+    const maps = generateMaps(threeModesArgs);
+
+    assert.equal(maps.length, 7);
+  },
+);
 
 const team1SZPicks = new MapPool([
   { mode: "SZ", stageId: 4 },

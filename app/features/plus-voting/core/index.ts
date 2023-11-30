@@ -8,4 +8,4 @@ export type { MonthYear, PlusVoteFromFE } from "./types";
 
 export { usePlusVoting } from "./usePlusVoting";
 
-export { isVotingActive } from "./voting-time-new";
+export { isVotingActive } from "./voting-time";

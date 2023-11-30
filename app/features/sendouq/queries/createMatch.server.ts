@@ -1,8 +1,9 @@
 import { nanoid } from "nanoid";
 import { sql } from "~/db/sql";
-import type { GroupMatch, ParsedMemento } from "~/db/types";
 import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator";
 import { syncGroupTeamId } from "./syncGroupTeamId.server";
+import type { ParsedMemento } from "~/db/tables";
+import type { GroupMatch } from "~/db/types";
 
 const createMatchStm = sql.prepare(/* sql */ `
   insert into "GroupMatch" (

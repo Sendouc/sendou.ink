@@ -528,7 +528,7 @@ function Match({
                     fullWidth
                     key={i}
                     inputName={`player-${i}-weapon`}
-                    initialWeaponId={match.weapons[i] as MainWeaponId}
+                    initialWeaponId={match.weapons[i]}
                     onChange={(selected) => {
                       if (!selected) return;
                       const weapons = [...match.weapons];
@@ -551,7 +551,7 @@ function Match({
                       fullWidth
                       key={i}
                       inputName={`player-${adjustedI}-weapon`}
-                      initialWeaponId={match.weapons[adjustedI] as MainWeaponId}
+                      initialWeaponId={match.weapons[adjustedI]}
                       onChange={(selected) => {
                         if (!selected) return;
                         const weapons = [...match.weapons];
@@ -577,7 +577,7 @@ function Match({
               fullWidth
               id={id}
               inputName={`match-${number}-weapon`}
-              initialWeaponId={match.weapons[0] as MainWeaponId}
+              initialWeaponId={match.weapons[0]}
               onChange={(selected) =>
                 onChange({
                   ...match,
