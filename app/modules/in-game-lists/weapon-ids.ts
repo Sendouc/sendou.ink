@@ -6,12 +6,14 @@ export const weaponCategories = [
     name: "SHOOTERS",
     weaponIds: [
       0, 1, 10, 11, 20, 21, 30, 31, 40, 41, 45, 50, 60, 61, 70, 71, 80, 81, 90,
-      91, 100, 101, 300, 301, 310, 311, 400,
+      91, 100, 101, 300, 301, 310, 311, 400, 401,
     ],
   },
   {
     name: "BLASTERS",
-    weaponIds: [200, 201, 210, 220, 230, 231, 240, 241, 250, 251, 260],
+    weaponIds: [
+      200, 201, 210, 211, 220, 230, 231, 240, 241, 250, 251, 260, 261,
+    ],
   },
   {
     name: "ROLLERS",
@@ -19,12 +21,12 @@ export const weaponCategories = [
   },
   {
     name: "BRUSHES",
-    weaponIds: [1100, 1101, 1110, 1111, 1120],
+    weaponIds: [1100, 1101, 1110, 1111, 1121, 1120],
   },
   {
     name: "CHARGERS",
     weaponIds: [
-      2000, 2010, 2011, 2020, 2021, 2030, 2040, 2050, 2060, 2061, 2070,
+      2000, 2010, 2011, 2020, 2021, 2030, 2040, 2050, 2060, 2061, 2070, 2071,
     ],
   },
   {
@@ -37,19 +39,19 @@ export const weaponCategories = [
   },
   {
     name: "DUALIES",
-    weaponIds: [5000, 5001, 5010, 5020, 5030, 5031, 5040, 5041],
+    weaponIds: [5000, 5001, 5010, 5011, 5020, 5030, 5031, 5040, 5041],
   },
   {
     name: "BRELLAS",
-    weaponIds: [6000, 6001, 6010, 6011, 6020],
+    weaponIds: [6000, 6001, 6010, 6011, 6020, 6021],
   },
   {
     name: "STRINGERS",
-    weaponIds: [7010, 7011, 7020],
+    weaponIds: [7010, 7011, 7020, 7021],
   },
   {
     name: "SPLATANAS",
-    weaponIds: [8000, 8010, 8011],
+    weaponIds: [8000, 8001, 8010, 8011],
   },
 ] as const;
 
@@ -121,6 +123,8 @@ export const TRIPLE_INKSTRIKE_ID = 14;
 export const TACTICOOLER_ID = 15;
 export const SUPER_CHUMP_ID = 16;
 export const KRAKEN_ROYALE_ID = 17;
+export const TRIPLE_SPLASHDOWN_ID = 18;
+export const SPLATTERCOLOR_SCREEN_ID = 19;
 
 export const specialWeaponIds = [
   TRIZOOKA_ID,
@@ -140,6 +144,8 @@ export const specialWeaponIds = [
   TACTICOOLER_ID,
   SUPER_CHUMP_ID,
   KRAKEN_ROYALE_ID,
+  TRIPLE_SPLASHDOWN_ID,
+  SPLATTERCOLOR_SCREEN_ID,
 ] as const;
 
 export const nonDamagingSpecialWeaponIds = [BIG_BUBBLER_ID, TACTICOOLER_ID];
@@ -182,6 +188,10 @@ export const exampleMainWeaponIdWithSpecialWeaponId = (
       return 61;
     case KRAKEN_ROYALE_ID:
       return 4011;
+    case TRIPLE_SPLASHDOWN_ID:
+      return 211;
+    case SPLATTERCOLOR_SCREEN_ID:
+      return 401;
     default: {
       assertUnreachable(specialWeaponId);
     }

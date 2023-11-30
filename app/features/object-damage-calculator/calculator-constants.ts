@@ -125,6 +125,15 @@ export const damageTypesToCombine: Partial<
       multiplierOnly: true,
     },
   ],
+  // Neo Splatana Stamper
+  8001: [
+    { when: "SPLATANA_VERTICAL_DIRECT", combineWith: "SPLATANA_VERTICAL" },
+    {
+      when: "SPLATANA_HORIZONTAL_DIRECT",
+      combineWith: "SPLATANA_HORIZONTAL",
+      multiplierOnly: true,
+    },
+  ],
   // Splatana Wiper
   8010: [
     { when: "SPLATANA_VERTICAL_DIRECT", combineWith: "SPLATANA_VERTICAL" },
