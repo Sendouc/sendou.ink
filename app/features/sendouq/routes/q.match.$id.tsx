@@ -532,6 +532,10 @@ export default function QMatchPage() {
             {[data.groupAlpha, data.groupBravo].map((group, i) => {
               const side = i === 0 ? "ALPHA" : "BRAVO";
 
+              const matchHasBeenReported = Boolean(data.match.reportedByUserId);
+              const showAddNote =
+                data.groupMemberOf === side && matchHasBeenReported;
+
               return (
                 <div className="stack sm text-lighter text-xs" key={group.id}>
                   <div className="stack horizontal justify-between items-center">
@@ -554,11 +558,9 @@ export default function QMatchPage() {
                   <GroupCard
                     group={group}
                     displayOnly
-                    hideVc={data.match.isLocked || data.groupMemberOf !== side}
-                    hideWeapons={data.match.isLocked}
-                    showAddNote={
-                      data.groupMemberOf === side && data.match.isLocked
-                    }
+                    hideVc={matchHasBeenReported}
+                    hideWeapons={matchHasBeenReported}
+                    showAddNote={showAddNote}
                   />
                 </div>
               );
