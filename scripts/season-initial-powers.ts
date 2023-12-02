@@ -41,7 +41,14 @@ const activeMatchExistsStm = sql.prepare(/* sql */ `
   where
     "Skill"."id" is null
 `);
-invariant(!activeMatchExistsStm.get(), "There are active matches");
+const idsOfActiveMatches = activeMatchExistsStm
+  .all()
+  .map((row) => (row as any).id) as number[];
+
+invariant(
+  !activeMatchExistsStm.get(),
+  `There are active matches: (ids: ${idsOfActiveMatches.join(", ")})`,
+);
 
 // from prod database:
 // sqlite> select avg(sigma) from skill where matchesCount > 10 and matchesCount < 20;
