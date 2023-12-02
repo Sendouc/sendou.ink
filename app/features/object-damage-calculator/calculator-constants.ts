@@ -107,6 +107,7 @@ export const damagePriorities: Array<
   ["SPECIAL", [12], "SPECIAL_BULLET_MIN", "Chariot_Cannon"],
   ["SPECIAL", [12], "SPECIAL_BUMP", "Chariot_Body"],
   ["SPECIAL", [13], "BOMB_NORMAL", "Skewer"],
+  ["SPECIAL", [18], "BOMB_NORMAL", "Pogo"],
 ];
 
 export const damageTypesToCombine: Partial<

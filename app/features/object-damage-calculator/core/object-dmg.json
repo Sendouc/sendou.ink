@@ -1738,6 +1738,65 @@
       }
     ]
   },
+  "Pogo": {
+    "mainWeaponIds": [],
+    "subWeaponIds": [],
+    "specialWeaponIds": [18],
+    "rates": [
+      {
+        "target": "Bomb_TorpedoBullet",
+        "rate": 0.5
+      },
+      {
+        "target": "BulletUmbrellaCanopyCompact",
+        "rate": 3
+      },
+      {
+        "target": "BulletUmbrellaCanopyWide",
+        "rate": 3
+      },
+      {
+        "target": "BulletUmbrellaCanopyNormal",
+        "rate": 4.75
+      },
+      {
+        "target": "Chariot",
+        "rate": 3.64
+      },
+      {
+        "target": "Gachihoko_Barrier",
+        "rate": 2.5
+      },
+      {
+        "target": "GreatBarrier_Barrier",
+        "rate": 2.5
+      },
+      {
+        "target": "GreatBarrier_WeakPoint",
+        "rate": 2.5
+      },
+      {
+        "target": "NiceBall_Armor",
+        "rate": 3.75
+      },
+      {
+        "target": "ShockSonar",
+        "rate": 2.5
+      },
+      {
+        "target": "Wsb_Flag",
+        "rate": 5
+      },
+      {
+        "target": "Wsb_Shield",
+        "rate": 2.5
+      },
+      {
+        "target": "Wsb_Sprinkler",
+        "rate": 5
+      }
+    ]
+  },
   "RollerCore": {
     "mainWeaponIds": [1000, 1001, 1020, 1021, 1030, 1010, 1011, 1040, 1041],
     "subWeaponIds": [],
