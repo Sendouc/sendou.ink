@@ -15,7 +15,6 @@ import {
   useLoaderData,
   useMatches,
   useNavigation,
-  useRouteError,
 } from "@remix-run/react";
 import * as React from "react";
 import commonStyles from "~/styles/common.css";
@@ -260,9 +259,6 @@ export default function App() {
 }
 
 export const ErrorBoundary = () => {
-  const error = useRouteError();
-  console.error(error);
-
   return (
     <ThemeProvider themeSource="static" specifiedTheme={Theme.DARK}>
       <Document isErrored>
