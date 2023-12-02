@@ -8,10 +8,7 @@ import {
   databaseTimestampToDate,
   dateToDatabaseTimestamp,
 } from "~/utils/dates";
-import {
-  BANNED_MAPS,
-  COMMON_BANNED_MAPS,
-} from "~/features/sendouq-settings/banned-maps";
+import { BANNED_MAPS } from "~/features/sendouq-settings/banned-maps";
 
 const SEASON_1_START = new Date("2023-09-11T17:00:00.000Z");
 
@@ -84,21 +81,20 @@ async function main() {
   for (const [i, { stageId, count }] of usage["ALL"].entries()) {
     const name = names[`STAGE_${stageId}`];
 
-    const isBanned = COMMON_BANNED_MAPS.includes(stageId as any);
-    if (isBanned) banCount++;
+    const partlyBanned = Object.values(BANNED_MAPS).some((arr) =>
+      arr.includes(stageId as any),
+    );
 
-    const partlyBanned =
-      !isBanned &&
-      Object.values(BANNED_MAPS).some((arr) => arr.includes(stageId as any));
+    if (partlyBanned) banCount++;
 
     console.log(
       `${i < 9 ? " " : ""}${i + 1}) ${
-        isBanned ? "❌" : partlyBanned ? "🔴" : "  "
+        partlyBanned ? "🔴" : "  "
       } ${name}: ${count}`,
     );
   }
 
-  console.log("Banned maps: " + banCount);
+  console.log("Banned maps (at least one mode): " + banCount);
   console.log();
 
   // modes
