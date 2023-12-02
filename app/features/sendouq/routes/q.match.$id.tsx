@@ -1096,6 +1096,7 @@ function BottomSection({
         fields={[
           ["_action", "REPORT_SCORE"],
           ["winners", "[]"],
+          ...(!data.groupMemberOf ? [["adminReport", "on"] as const] : []),
         ]}
         deleteButtonText={t("common:actions.cancel")}
         cancelButtonText={t("common:actions.nevermind")}

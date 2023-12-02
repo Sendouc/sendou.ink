@@ -17,7 +17,10 @@ export function FormWithConfirm({
   submitButtonVariant = "destructive",
   fetcher: _fetcher,
 }: {
-  fields?: [name: string, value: string | number][];
+  fields?: (
+    | [name: string, value: string | number]
+    | readonly [name: string, value: string | number]
+  )[];
   children: React.ReactNode;
   dialogHeading: string;
   deleteButtonText?: string;
