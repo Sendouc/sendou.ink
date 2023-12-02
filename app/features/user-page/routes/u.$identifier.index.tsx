@@ -17,6 +17,7 @@ import type { Unpacked } from "~/utils/types";
 import { assertUnreachable } from "~/utils/types";
 import {
   modeImageUrl,
+  navIconUrl,
   teamPage,
   topSearchPlayerPage,
   userSubmittedImage,
@@ -191,6 +192,12 @@ function ExtraInfos() {
           <span className="u__extra-info__heading">{t("user:sens")}</span>{" "}
           {t("user:stick")} {rawSensToString(data.stickSens)}
           {motionSensText}
+        </div>
+      )}
+      {data.plusTier && (
+        <div className="u__extra-info">
+          <Image path={navIconUrl("plus")} width={20} height={20} alt="" />{" "}
+          {data.plusTier}
         </div>
       )}
     </div>

@@ -32,6 +32,7 @@ export function identifierToUserId(identifier: string) {
 
 export function findByIdentifier(identifier: string) {
   return identifierToUserIdQuery(identifier)
+    .leftJoin("PlusTier", "PlusTier.userId", "User.id")
     .select(({ eb }) => [
       "User.discordAvatar",
       "User.discordDiscriminator",
@@ -55,6 +56,7 @@ export function findByIdentifier(identifier: string) {
       "User.commissionText",
       "User.commissionsOpen",
       "User.patronTier",
+      "PlusTier.tier as plusTier",
       jsonArrayFrom(
         eb
           .selectFrom("UserWeapon")
