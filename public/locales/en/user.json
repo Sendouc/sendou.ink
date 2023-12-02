@@ -39,5 +39,24 @@
   "forms.info.favoriteBadge": "Your favorite badge is shown as big by default on your profile.",
 
   "search.info": "Search for users by Discord, Splatoon 3 or Twitter name",
-  "search.noResults": "No users found matching '{{query}}'"
+  "search.noResults": "No users found matching '{{query}}'",
+
+  "seasons": "Seasons",
+  "seasons.noQ": "This user has not played SendouQ or ranked tournaments this season",
+  "seasons.tabs.weapons": "Weapons",
+  "seasons.tabs.stages": "Stages",
+  "seasons.tabs.self": "Self",
+  "seasons.tabs.teammates": "Teammates",
+  "seasons.tabs.opponents": "Opponents",
+  "seasons.season": "Season",
+  "seasons.season.short": "S",
+  "seasons.win.short": "W",
+  "seasons.loss.short": "L",
+  "seasons.tentative": "Tentative",
+  "seasons.tentative.explanation": "Leaderboard has a low amount of entries. Once enough players have finished their calculations the ranking tiers will recalculate. For most players it will mean that their tier goes down. SP always stays the same.",
+  "seasons.peak": "Peak",
+  "seasons.noReportedWeapons": "No reported weapons yet",
+  "seasons.clickARow": "Click a row to see weapon usage stats",
+  "seasons.loading": "Loading...",
+  "seasons.matchBeingProcessed": "This match has not been processed yet"
 }

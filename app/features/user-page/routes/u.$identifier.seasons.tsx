@@ -56,10 +56,14 @@ import { modesShort } from "~/modules/in-game-lists/modes";
 import { atOrError } from "~/utils/arrays";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { cutToNDecimalPlaces } from "~/utils/number";
-import { notFoundIfFalsy } from "~/utils/remix";
+import { type SendouRouteHandle, notFoundIfFalsy } from "~/utils/remix";
 import { sendouQMatchPage, userSeasonsPage } from "~/utils/urls";
 import { userParamsSchema, type UserPageLoaderData } from "./u.$identifier";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
+
+export const handle: SendouRouteHandle = {
+  i18n: ["user"],
+};
 
 export const seasonsSearchParamsSchema = z.object({
   page: z.coerce.number().default(1),
@@ -129,6 +133,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 
 const DAYS_WITH_SKILL_NEEDED_TO_SHOW_POWER_CHART = 2;
 export default function UserSeasonsPage() {
+  const { t } = useTranslation(["user"]);
   const data = useLoaderData<typeof loader>();
 
   const tabLink = (tab: string) =>
@@ -139,7 +144,7 @@ export default function UserSeasonsPage() {
       <div className="stack lg half-width">
         <SeasonHeader />
         <div className="text-lg text-lighter font-semi-bold text-center mt-2">
-          This user has not played SendouQ or ranked tournaments this season
+          {t("user:seasons.noQ")}
         </div>
       </div>
     );
@@ -167,7 +172,7 @@ export default function UserSeasonsPage() {
             controlled
             active={data.info.currentTab === "weapons"}
           >
-            Weapons
+            {t("user:seasons.tabs.weapons")}
           </SubNavLink>
           <SubNavLink
             to={tabLink("stages")}
@@ -175,7 +180,7 @@ export default function UserSeasonsPage() {
             controlled
             active={data.info.currentTab === "stages"}
           >
-            Stages
+            {t("user:seasons.tabs.stages")}
           </SubNavLink>
           <SubNavLink
             to={tabLink("mates")}
@@ -183,7 +188,7 @@ export default function UserSeasonsPage() {
             controlled
             active={data.info.currentTab === "mates"}
           >
-            Teammates
+            {t("user:seasons.tabs.teammates")}
           </SubNavLink>
           <SubNavLink
             to={tabLink("enemies")}
@@ -191,7 +196,7 @@ export default function UserSeasonsPage() {
             controlled
             active={data.info.currentTab === "enemies"}
           >
-            Opponents
+            {t("user:seasons.tabs.opponents")}
           </SubNavLink>
         </SubNav>
         <div className="u__season__info-container">
@@ -206,6 +211,7 @@ export default function UserSeasonsPage() {
 }
 
 function SeasonHeader() {
+  const { t, i18n } = useTranslation(["user"]);
   const data = useLoaderData<typeof loader>();
   const isMounted = useIsMounted();
   const { starts, ends } = seasonObject(data.season);
@@ -228,7 +234,9 @@ function SeasonHeader() {
                 "text-main-forced": isActive,
               })}
             >
-              {isActive ? "Season " : "S"}
+              {isActive
+                ? `${t("user:seasons.season")} `
+                : t("user:seasons.season.short")}
               {s}
             </Link>
           );
@@ -237,13 +245,13 @@ function SeasonHeader() {
       <div className={clsx("text-sm text-lighter", { invisible: !isMounted })}>
         {isMounted ? (
           <>
-            {new Date(starts).toLocaleString("en", {
+            {new Date(starts).toLocaleString(i18n.language, {
               day: "numeric",
               month: "long",
               year: isDifferentYears ? "numeric" : undefined,
             })}{" "}
             -{" "}
-            {new Date(ends).toLocaleString("en", {
+            {new Date(ends).toLocaleString(i18n.language, {
               day: "numeric",
               month: "long",
               year: "numeric",
@@ -258,6 +266,7 @@ function SeasonHeader() {
 }
 
 function Winrates() {
+  const { t } = useTranslation(["user"]);
   const data = useLoaderData<typeof loader>();
 
   const winrate = (wins: number, losses: number) =>
@@ -267,12 +276,16 @@ function Winrates() {
     <div className="stack horizontal sm">
       <div className="u__season__winrate">
         <span className="text-theme text-xxs">Sets</span>{" "}
-        {data.winrates.sets.wins}W {data.winrates.sets.losses}L (
+        {data.winrates.sets.wins}
+        {t("user:seasons.win.short")} {data.winrates.sets.losses}
+        {t("user:seasons.loss.short")} (
         {winrate(data.winrates.sets.wins, data.winrates.sets.losses)}%)
       </div>
       <div className="u__season__winrate">
         <span className="text-theme text-xxs">Maps</span>{" "}
-        {data.winrates.maps.wins}W {data.winrates.maps.losses}L (
+        {data.winrates.maps.wins}
+        {t("user:seasons.win.short")} {data.winrates.maps.losses}
+        {t("user:seasons.loss.short")} (
         {winrate(data.winrates.maps.wins, data.winrates.maps.losses)}%)
       </div>
     </div>
@@ -280,6 +293,7 @@ function Winrates() {
 }
 
 function Rank({ currentOrdinal }: { currentOrdinal: number }) {
+  const { t } = useTranslation(["user"]);
   const data = useLoaderData<typeof loader>();
   const [, parentRoute] = useMatches();
   invariant(parentRoute);
@@ -304,22 +318,19 @@ function Rank({ currentOrdinal }: { currentOrdinal: number }) {
         </div>
         {!data.isAccurateTiers ? (
           <div className="u__season__tentative">
-            Tentative
+            {t("user:seasons.tentative")}
             <Popover
               buttonChildren={<>?</>}
               contentClassName="u__season__tentative__explanation"
             >
-              Leaderboard has low amount of entries. Once enough players have
-              finished their calculations the ranking tiers will recalculate.
-              For most players it will mean that their tier goes down. SP always
-              stays the same.
+              {t("user:seasons.tentative.explanation")}
             </Popover>
           </div>
         ) : null}
         <div className="text-lg font-bold">{ordinalToSp(currentOrdinal)}SP</div>
         {!peakAndCurrentSame ? (
           <div className="text-lighter text-sm">
-            Peak {ordinalToSp(maxOrdinal)}SP
+            {t("user:seasons.peak")} {ordinalToSp(maxOrdinal)}SP
           </div>
         ) : null}
         {topTenPlacement ? (
@@ -365,7 +376,7 @@ function Weapons({
 }: {
   weapons: NonNullable<SerializeFrom<typeof loader>["info"]["weapons"]>;
 }) {
-  const { t } = useTranslation(["weapons"]);
+  const { t } = useTranslation(["user", "weapons"]);
 
   const slicedWeapons = weapons.slice(0, WEAPONS_TO_SHOW);
 
@@ -383,7 +394,7 @@ function Weapons({
     <div className="stack sm horizontal justify-center flex-wrap">
       {weapons.length === 0 ? (
         <div className="text-lighter font-bold my-4">
-          No reported weapons yet
+          {t("user:seasons.noReportedWeapons")}
         </div>
       ) : null}
       {slicedWeapons.map(({ count, weaponSplId }) => (
@@ -417,7 +428,7 @@ function Stages({
   stages: NonNullable<SerializeFrom<typeof loader>["info"]["stages"]>;
 }) {
   const data = useLoaderData<typeof loader>();
-  const { t } = useTranslation(["game-misc"]);
+  const { t } = useTranslation(["user", "game-misc"]);
   const parentPageData = atOrError(useMatches(), -2).data as UserPageLoaderData;
 
   return (
@@ -445,7 +456,9 @@ function Stages({
                       <ModeImage mode={mode} size={18} title={infoText} />
                       {stats ? (
                         <div>
-                          {stats.wins}W {stats.losses}L
+                          {stats.wins}
+                          {t("user:seasons.win.short")} {stats.losses}
+                          {t("user:seasons.loss.short")}
                         </div>
                       ) : null}
                     </div>
@@ -464,7 +477,7 @@ function Stages({
         );
       })}
       <div className="text-xs text-lighter font-semi-bold">
-        Click a row to show weapon usage stats
+        {t("user:seasons.clickARow")}
       </div>
     </div>
   );
@@ -476,14 +489,14 @@ function StageWeaponUsageStats(props: {
   modeShort: ModeShort;
   stageId: StageId;
 }) {
-  const { t } = useTranslation(["game-misc"]);
+  const { t } = useTranslation(["user", "game-misc"]);
   const [tab, setTab] = React.useState<"SELF" | "MATE" | "ENEMY">("SELF");
   const { weaponUsage, isLoading } = useWeaponUsage(props);
 
   if (isLoading) {
     return (
       <div className="u__season__weapon-usage__container items-center justify-center text-lighter p-2">
-        Loading...
+        {t("user:seasons.loading")}
       </div>
     );
   }
@@ -493,7 +506,7 @@ function StageWeaponUsageStats(props: {
   if (usages.length === 0) {
     return (
       <div className="u__season__weapon-usage__container items-center justify-center text-lighter p-2">
-        No reported weapons yet
+        {t("user:seasons.noReportedWeapons")}
       </div>
     );
   }
@@ -506,13 +519,13 @@ function StageWeaponUsageStats(props: {
       </div>
       <Tabs compact className="mb-0">
         <Tab active={tab === "SELF"} onClick={() => setTab("SELF")}>
-          Self
+          {t("user:seasons.tabs.self")}
         </Tab>
         <Tab active={tab === "MATE"} onClick={() => setTab("MATE")}>
-          Teammates
+          {t("user:seasons.tabs.teammates")}
         </Tab>
         <Tab active={tab === "ENEMY"} onClick={() => setTab("ENEMY")}>
-          Opponents
+          {t("user:seasons.tabs.opponents")}
         </Tab>
       </Tabs>
       <div className="u__season__weapon-usage__weapons-container">
@@ -537,8 +550,12 @@ function StageWeaponUsageStats(props: {
               >
                 {winrate}%
               </div>
-              <div className="text-xs">{u.wins} W</div>
-              <div className="text-xs">{u.losses} L</div>
+              <div className="text-xs">
+                {u.wins} {t("user:seasons.win.short")}
+              </div>
+              <div className="text-xs">
+                {u.losses} {t("user:seasons.loss.short")}
+              </div>
             </div>
           );
         })}
@@ -552,6 +569,7 @@ function Players({
 }: {
   players: NonNullable<SerializeFrom<typeof loader>["info"]["players"]>;
 }) {
+  const { t } = useTranslation(["user"]);
   const data = useLoaderData<typeof loader>();
 
   return (
@@ -581,10 +599,11 @@ function Players({
               {setWinRate}% ({mapWinRate}%)
             </div>
             <div className="text-xs">
-              {player.setWins} ({player.mapWins}) W
+              {player.setWins} ({player.mapWins}) {t("user:seasons.win.short")}
             </div>
             <div className="text-xs">
-              {player.setLosses} ({player.mapLosses}) L
+              {player.setLosses} ({player.mapLosses}){" "}
+              {t("user:seasons.loss.short")}
             </div>
           </div>
         );
@@ -689,6 +708,7 @@ function Match({
 }: {
   match: SerializeFrom<typeof loader>["matches"]["value"][0];
 }) {
+  const { t } = useTranslation(["user"]);
   const [, parentRoute] = useMatches();
   invariant(parentRoute);
   const userPageData = parentRoute.data as UserPageLoaderData;
@@ -750,7 +770,7 @@ function Match({
       {!match.isLocked ? (
         <div className="stack horizontal sm text-xs text-lighter items-center justify-center">
           <AlertIcon className="text-warning w-24px" />
-          This match has not been processed yet
+          {t("user:seasons.matchBeingProcessed")}
         </div>
       ) : null}
     </Link>

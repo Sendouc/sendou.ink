@@ -108,7 +108,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 export default function UserPageLayout() {
   const data = useLoaderData<typeof loader>();
   const user = useUser();
-  const { t } = useTranslation();
+  const { t } = useTranslation(["common", "user"]);
 
   const isOwnPage = data.id === user?.id;
 
@@ -117,16 +117,20 @@ export default function UserPageLayout() {
   return (
     <Main>
       <SubNav>
-        <SubNavLink to={userPage(data)}>{t("header.profile")}</SubNavLink>
-        <SubNavLink to={userSeasonsPage({ user: data })}>Seasons</SubNavLink>
+        <SubNavLink to={userPage(data)}>
+          {t("common:header.profile")}
+        </SubNavLink>
+        <SubNavLink to={userSeasonsPage({ user: data })}>
+          {t("user:seasons")}
+        </SubNavLink>
         {isOwnPage && (
           <SubNavLink to={userEditProfilePage(data)} prefetch="intent">
-            {t("actions.edit")}
+            {t("common:actions.edit")}
           </SubNavLink>
         )}
         {data.results.length > 0 && (
           <SubNavLink to={userResultsPage(data)}>
-            {t("results")} ({data.results.length})
+            {t("common:results")} ({data.results.length})
           </SubNavLink>
         )}
         {(isOwnPage || data.buildsCount > 0) && (
@@ -135,17 +139,17 @@ export default function UserPageLayout() {
             prefetch="intent"
             data-testid="builds-tab"
           >
-            {t("pages.builds")} ({data.buildsCount})
+            {t("common:pages.builds")} ({data.buildsCount})
           </SubNavLink>
         )}
         {data.vods.length > 0 && (
           <SubNavLink to={userVodsPage(data)}>
-            {t("pages.vods")} ({data.vods.length})
+            {t("common:pages.vods")} ({data.vods.length})
           </SubNavLink>
         )}
         {(isOwnPage || data.artCount > 0) && (
           <SubNavLink to={userArtPage(data)} end={false}>
-            {t("pages.art")} ({data.artCount})
+            {t("common:pages.art")} ({data.artCount})
           </SubNavLink>
         )}
       </SubNav>
