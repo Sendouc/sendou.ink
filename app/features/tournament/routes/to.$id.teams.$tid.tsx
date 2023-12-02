@@ -34,10 +34,19 @@ import { Popover } from "~/components/Popover";
 import type { TournamentMaplistSource } from "~/modules/tournament-map-list-generator";
 import type { FindTeamsByTournamentIdItem } from "../queries/findTeamsByTournamentId.server";
 import hasTournamentStarted from "../queries/hasTournamentStarted.server";
+import { canAdminTournament } from "~/permissions";
+import { getUserId } from "~/features/auth/core/user.server";
+import { notFoundIfFalsy } from "~/utils/remix";
+import * as TournamentRepository from "../TournamentRepository.server";
 
-export const loader = ({ params }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderArgs) => {
+  const user = await getUserId(request);
   const tournamentId = tournamentIdFromParams(params);
   const tournamentTeamId = tournamentTeamIdFromParams(params);
+
+  const tournament = notFoundIfFalsy(
+    await TournamentRepository.findById(tournamentId),
+  );
 
   const manager = getTournamentManager("SQL");
 
@@ -57,7 +66,9 @@ export const loader = ({ params }: LoaderArgs) => {
     : null;
 
   const sets = tournamentTeamSets({ tournamentTeamId, tournamentId });
-  const revealMapPool = hasTournamentStarted(tournamentId);
+  const revealMapPool =
+    hasTournamentStarted(tournamentId) ||
+    canAdminTournament({ user, tournament });
 
   return {
     tournamentTeamId,
