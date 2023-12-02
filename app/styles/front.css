@@ -1,3 +1,19 @@
+.front__top-banner {
+  border-radius: var(--rounded);
+  background: linear-gradient(to right, #4568dc, #b06ab3);
+  font-weight: var(--bold);
+  color: var(--button-text);
+  font-size: var(--fonts-sm);
+  padding-block: var(--s-1);
+  padding-inline: var(--s-2);
+  text-align: center;
+}
+
+.front__top-banner__link {
+  color: var(--button-text);
+  text-decoration: underline;
+}
+
 .front__nav-items-container {
   display: flex;
   margin: 0 auto;

@@ -53,6 +53,7 @@ export default function FrontPage() {
           Log-in is temporarily disabled due to problems with the Discord API
         </div>
       )}
+      <TopBanner />
       <div className="front__nav-items-container">
         <div className="front__nav-item round">
           <LanguageChanger plain>
@@ -109,6 +110,29 @@ export default function FrontPage() {
       ) : null}
       <Drawings filters={filters} />
     </Main>
+  );
+}
+
+// TODO: make into a dynamic feature
+function TopBanner() {
+  const eventInThePast = new Date() > new Date("2023-12-03T22:00:00Z");
+
+  if (eventInThePast) return null;
+
+  return (
+    <div className="front__top-banner">
+      SendouQ Season 1 Finale tournament featuring Jackpot, FTWin, Starburst,
+      Alliance Rogue and more top level teams! Catch the action{" "}
+      <a
+        href="https://www.twitch.tv/iplsplatoon"
+        className="front__top-banner__link"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        via IPL
+      </a>{" "}
+      on Sunday 3rd @ 10AM PST / 1PM EST / 6PM GMT
+    </div>
   );
 }
 
