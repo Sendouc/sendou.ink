@@ -302,18 +302,20 @@ function Rank({ currentOrdinal }: { currentOrdinal: number }) {
           {data.tier.name}
           {data.tier.isPlus ? "+" : ""}
         </div>
-        <div className="u__season__tentative">
-          Tentative
-          <Popover
-            buttonChildren={<>?</>}
-            contentClassName="u__season__tentative__explanation"
-          >
-            Leaderboard has low amount of entries. Once enough players have
-            finished their calculations the ranking tiers will recalculate. For
-            most players it will mean that their tier goes down. SP always stays
-            the same.
-          </Popover>
-        </div>
+        {!data.isAccurateTiers ? (
+          <div className="u__season__tentative">
+            Tentative
+            <Popover
+              buttonChildren={<>?</>}
+              contentClassName="u__season__tentative__explanation"
+            >
+              Leaderboard has low amount of entries. Once enough players have
+              finished their calculations the ranking tiers will recalculate.
+              For most players it will mean that their tier goes down. SP always
+              stays the same.
+            </Popover>
+          </div>
+        ) : null}
         <div className="text-lg font-bold">{ordinalToSp(currentOrdinal)}SP</div>
         {!peakAndCurrentSame ? (
           <div className="text-lighter text-sm">
