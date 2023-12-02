@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test";
 import invariant from "tiny-invariant";
+import { ADMIN_ID } from "~/constants";
+import { NZAP_TEST_ID } from "~/db/seed/constants";
 import type { TournamentLoaderData } from "~/features/tournament";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import {
@@ -114,7 +116,7 @@ test.describe("Tournament", () => {
 
     // Change team owner
     let data = await fetchTournamentLoaderData();
-    expect(getIsOwnerOfUser({ data, userId: 1, teamId: 1 })).toBe(1);
+    expect(getIsOwnerOfUser({ data, userId: ADMIN_ID, teamId: 1 })).toBe(1);
 
     await actionSelect.selectOption("CHANGE_TEAM_OWNER");
     await teamSelect.selectOption("1");
@@ -122,8 +124,8 @@ test.describe("Tournament", () => {
     await submit(page);
 
     data = await fetchTournamentLoaderData();
-    expect(getIsOwnerOfUser({ data, userId: 1, teamId: 1 })).toBe(0);
-    expect(getIsOwnerOfUser({ data, userId: 2, teamId: 1 })).toBe(1);
+    expect(getIsOwnerOfUser({ data, userId: ADMIN_ID, teamId: 1 })).toBe(0);
+    expect(getIsOwnerOfUser({ data, userId: NZAP_TEST_ID, teamId: 1 })).toBe(1);
 
     // Check in team
     expect(getTeamCheckedInAt({ data, teamId: 1 })).toBeFalsy();

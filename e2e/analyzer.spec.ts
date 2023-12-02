@@ -13,7 +13,7 @@ test.describe("Build Analyzer", () => {
     page,
   }) => {
     await seed(page);
-    await impersonate(page, 1);
+    await impersonate(page);
     await navigate({ page, url: ANALYZER_URL });
 
     const newBuildPrompt = page.getByTestId("new-build-prompt");

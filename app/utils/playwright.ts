@@ -1,4 +1,5 @@
 import { expect, type Locator, type Page } from "@playwright/test";
+import { ADMIN_ID } from "~/constants";
 import type { SeedVariation } from "~/features/api/routes/seed";
 
 export async function selectWeapon({
@@ -63,7 +64,7 @@ export function seed(page: Page, variation?: SeedVariation) {
   });
 }
 
-export function impersonate(page: Page, userId = 1) {
+export function impersonate(page: Page, userId = ADMIN_ID) {
   return page.request.post(`/auth/impersonate?id=${userId}`);
 }
 

@@ -131,7 +131,7 @@ test.describe("Tournament bracket", () => {
     await expectScore(page, [1, 0]);
 
     // 7)
-    await impersonate(page, 2);
+    await impersonate(page, NZAP_TEST_ID);
     await navigate({
       page,
       url: tournamentBracketsPage(tournamentId),

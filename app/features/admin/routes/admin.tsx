@@ -372,7 +372,7 @@ function Seed() {
       action={SEED_URL}
     >
       <h2>Seed</h2>
-      <Button type="submit">Seed</Button>
+      <SubmitButton state={fetcher.state}>Seed</SubmitButton>
     </fetcher.Form>
   );
 }

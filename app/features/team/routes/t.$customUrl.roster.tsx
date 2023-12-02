@@ -274,7 +274,7 @@ function MemberRow({
           <Button
             size="tiny"
             variant="minimal-destructive"
-            testId={`kick-button-${number}`}
+            testId={!isSelf ? "kick-button" : undefined}
           >
             {t("team:actionButtons.kick")}
           </Button>

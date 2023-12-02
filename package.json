@@ -6,7 +6,8 @@
   "scripts": {
     "deploy": "npm ci && npm run build",
     "build": "remix build",
-    "dev": "cross-env NODE_ENV=development remix dev",
+    "dev": "remix dev",
+    "dev:prod": "cross-env DB_PATH=db-prod.sqlite3 remix dev",
     "dev:ci": "cp .env.example .env && npm run migrate up && npm run dev",
     "start": "npm run migrate up && remix-serve build",
     "migrate": "ley",

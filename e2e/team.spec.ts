@@ -1,4 +1,6 @@
 import { expect, test } from "@playwright/test";
+import { ADMIN_ID } from "~/constants";
+import { NZAP_TEST_ID } from "~/db/seed/constants";
 import {
   navigate,
   seed,
@@ -30,7 +32,7 @@ test.describe("Team search page", () => {
 
   test("creates new team", async ({ page }) => {
     await seed(page);
-    await impersonate(page, 2);
+    await impersonate(page, NZAP_TEST_ID);
     await navigate({ page, url: TEAM_SEARCH_PAGE });
 
     await page.getByTestId("new-team-button").click();
@@ -45,7 +47,7 @@ test.describe("Team search page", () => {
 test.describe("Team page", () => {
   test("edit team info", async ({ page }) => {
     await seed(page);
-    await impersonate(page, 1);
+    await impersonate(page, ADMIN_ID);
     await navigate({ page, url: teamPage("alliance-rogue") });
 
     await page.getByTestId("edit-team-button").click();
@@ -71,7 +73,7 @@ test.describe("Team page", () => {
 
   test("manages roster", async ({ page }) => {
     await seed(page);
-    await impersonate(page, 1);
+    await impersonate(page, ADMIN_ID);
     await navigate({ page, url: teamPage("alliance-rogue") });
 
     await page.getByTestId("manage-roster-button").click();
@@ -79,8 +81,7 @@ test.describe("Team page", () => {
     await page.getByTestId("role-select-0").selectOption("SUPPORT");
 
     await page.getByTestId("member-row-3").isVisible();
-    // kick-button-0 is self
-    await page.getByTestId("kick-button-1").click();
+    await page.getByTestId("kick-button").last().click();
     await modalClickConfirmButton(page);
     await isNotVisible(page.getByTestId("member-row-3"));
 
@@ -95,7 +96,7 @@ test.describe("Team page", () => {
 
   test("deletes team", async ({ page }) => {
     await seed(page);
-    await impersonate(page, 1);
+    await impersonate(page, ADMIN_ID);
 
     await navigate({ page, url: TEAM_SEARCH_PAGE });
     const firstTeamName = page.getByTestId("team-0");
@@ -111,7 +112,7 @@ test.describe("Team page", () => {
 
   test("resets invite code, joins team, leaves, rejoins", async ({ page }) => {
     await seed(page);
-    await impersonate(page, 1);
+    await impersonate(page, ADMIN_ID);
     await navigate({ page, url: teamPage("alliance-rogue") });
 
     await page.getByTestId("manage-roster-button").click();
@@ -123,7 +124,7 @@ test.describe("Team page", () => {
     await expect(page.getByTestId("invite-link")).not.toHaveText(oldInviteLink);
     const newInviteLink = await page.getByTestId("invite-link").innerText();
 
-    await impersonate(page, 2);
+    await impersonate(page, NZAP_TEST_ID);
 
     await navigate({ page, url: newInviteLink });
     await submit(page);

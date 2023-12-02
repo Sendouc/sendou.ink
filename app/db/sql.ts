@@ -21,5 +21,12 @@ export const db = new Kysely<DB>({
     database: sql,
   }),
   log: process.env.NODE_ENV === "development" ? ["query"] : undefined,
+  // uncomment if you want examine the parameters of the queries
+  // log(event): void {
+  //   if (event.level === "query") {
+  //     console.log(event.query.sql);
+  //     console.log(event.query.parameters);
+  //   }
+  // },
   plugins: [new ParseJSONResultsPlugin()],
 });

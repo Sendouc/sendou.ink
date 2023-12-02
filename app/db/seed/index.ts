@@ -77,9 +77,10 @@ const basicSeeds = (variation?: SeedVariation | null) => [
   adminUser,
   makeAdminPatron,
   makeAdminVideoAdder,
-  adminUserWeaponPool,
   nzapUser,
   users,
+  fixAdminId,
+  adminUserWeaponPool,
   userProfiles,
   userMapModePreferences,
   userQWeaponPool,
@@ -121,8 +122,12 @@ const basicSeeds = (variation?: SeedVariation | null) => [
 export async function seed(variation?: SeedVariation | null) {
   wipeDB();
 
+  let count = 0;
   for (const seedFunc of basicSeeds(variation)) {
     if (!seedFunc) continue;
+
+    count++;
+    console.log(`Running seed ${count}/${basicSeeds().length}`);
 
     // eslint-disable-next-line @typescript-eslint/await-thenable
     await seedFunc();
@@ -171,8 +176,8 @@ function wipeDB() {
   }
 }
 
-function adminUser() {
-  return UserRepository.upsert({
+async function adminUser() {
+  await UserRepository.upsert({
     discordDiscriminator: "0",
     discordId: ADMIN_DISCORD_ID,
     discordName: "Sendou",
@@ -182,6 +187,12 @@ function adminUser() {
     twitter: "sendouc",
     discordUniqueName: "sendou",
   });
+}
+
+function fixAdminId() {
+  sql.prepare(`delete from user where id = ${ADMIN_ID}`).run();
+  // make admin same ID as prod for easy switching
+  sql.prepare(`update "User" set "id" = ${ADMIN_ID} where id = 1`).run();
 }
 
 function makeAdminPatron() {
@@ -205,7 +216,7 @@ function adminUserWeaponPool() {
         values ($userId, $weaponSplId, $order)
     `,
       )
-      .run({ userId: 1, weaponSplId, order: i + 1 });
+      .run({ userId: ADMIN_ID, weaponSplId, order: i + 1 });
   }
 }
 
@@ -234,7 +245,7 @@ async function users() {
 async function userProfiles() {
   for (const args of [
     {
-      userId: 1,
+      userId: ADMIN_ID,
       country: "FI",
       customUrl: "sendou",
       motionSens: 50,
@@ -264,7 +275,8 @@ async function userProfiles() {
       .run(args);
   }
 
-  for (let id = 3; id < 500; id++) {
+  for (let id = 2; id < 500; id++) {
+    if (id === ADMIN_ID || id === NZAP_TEST_ID) continue;
     if (Math.random() < 0.25) continue; // 75% have bio
 
     sql
@@ -281,7 +293,8 @@ async function userProfiles() {
       });
   }
 
-  for (let id = 3; id < 500; id++) {
+  for (let id = 2; id < 500; id++) {
+    if (id === ADMIN_ID || id === NZAP_TEST_ID) continue;
     if (Math.random() < 0.15) continue; // 85% have weapons
 
     const weapons = shuffle([...mainWeaponIds]);
@@ -411,7 +424,7 @@ function uniqueDiscordName(usedNames: Set<string>) {
 }
 
 const idToPlusTier = (id: number) => {
-  if (id < 30) return 1;
+  if (id < 30 || id === ADMIN_ID) return 1;
   if (id < 80) return 2;
   if (id <= 150) return 3;
 
@@ -430,11 +443,13 @@ async function lastMonthsVoting() {
 
   const fiveMinutesAgo = new Date(new Date().getTime() - 5 * 60 * 1000);
 
-  for (let id = 1; id < 151; id++) {
-    if (id === 2) continue; // omit N-ZAP user for testing;
+  for (let i = 1; i < 151; i++) {
+    if (i === NZAP_TEST_ID) continue; // omit N-ZAP user for testing;
+
+    const id = i === 1 ? ADMIN_ID : i;
 
     votes.push({
-      authorId: 1,
+      authorId: ADMIN_ID,
       month,
       year,
       score: 1,
@@ -446,7 +461,7 @@ async function lastMonthsVoting() {
 
   for (let id = 200; id < 225; id++) {
     votes.push({
-      authorId: 1,
+      authorId: ADMIN_ID,
       month,
       year,
       score: -1,
@@ -467,7 +482,7 @@ async function lastMonthSuggestions() {
 
   for (const id of usersSuggested) {
     await PlusSuggestionRepository.create({
-      authorId: 1,
+      authorId: ADMIN_ID,
       month,
       year,
       suggestedId: id,
@@ -529,7 +544,7 @@ function badgesToAdmin() {
       .prepare(
         `insert into "TournamentBadgeOwner" ("badgeId", "userId") values ($id, $userId)`,
       )
-      .run({ id, userId: 1 });
+      .run({ id, userId: ADMIN_ID });
   }
 }
 
@@ -578,7 +593,7 @@ function badgeManagers() {
       .prepare(
         `insert into "BadgeManager" ("badgeId", "userId") values ($id, $userId)`,
       )
-      .run({ id, userId: 2 });
+      .run({ id, userId: NZAP_TEST_ID });
   }
 }
 
@@ -611,13 +626,19 @@ function userIdsInRandomOrder(specialLast = false) {
 
   if (!specialLast) return rows;
 
-  return [...rows.filter((id) => id !== 1 && id !== 2), 1, 2];
+  return [
+    ...rows.filter((id) => id !== ADMIN_ID && id !== NZAP_TEST_ID),
+    ADMIN_ID,
+    NZAP_TEST_ID,
+  ];
 }
 
 function userIdsInAscendingOrderById() {
-  return (
+  const ids = (
     sql.prepare(`select "id" from "User" order by id asc`).all() as any[]
   ).map((u) => u.id) as number[];
+
+  return [ADMIN_ID, ...ids.filter((id) => id !== ADMIN_ID)];
 }
 
 function calendarEvents() {
@@ -839,7 +860,7 @@ function calendarEventWithToTools(sz?: boolean) {
       description: faker.lorem.paragraph(),
       discordInviteCode: faker.lorem.word(),
       bracketUrl: faker.internet.url(),
-      authorId: 1,
+      authorId: ADMIN_ID,
       tournamentId,
     });
 
@@ -1132,7 +1153,7 @@ async function adminBuilds() {
       title: `${capitalize(faker.word.adjective())} ${capitalize(
         faker.word.noun(),
       )}`,
-      ownerId: 1,
+      ownerId: ADMIN_ID,
       private: 0,
       description: Math.random() < 0.75 ? faker.lorem.paragraph() : null,
       headGearSplId: randomOrderHeadGear[0]!,
@@ -1180,7 +1201,7 @@ async function manySplattershotBuilds() {
     500,
   ];
 
-  for (let i = 0; i < 500; i++) {
+  for (let i = 0; i < 499; i++) {
     const SPLATTERSHOT_ID = 40;
 
     const randomOrderHeadGear = shuffle(headGearIds.slice());
@@ -1190,12 +1211,14 @@ async function manySplattershotBuilds() {
       (id) => id !== SPLATTERSHOT_ID,
     );
 
+    const ownerId = users.pop()!;
+
     await BuildRepository.create({
       private: 0,
       title: `${capitalize(faker.word.adjective())} ${capitalize(
         faker.word.noun(),
       )}`,
-      ownerId: users.pop()!,
+      ownerId,
       description: Math.random() < 0.75 ? faker.lorem.paragraph() : null,
       headGearSplId: randomOrderHeadGear[0]!,
       clothesGearSplId: randomOrderClothesGear[0]!,
@@ -1241,8 +1264,8 @@ function detailedTeam() {
       /* sql */ `
     insert into "UnvalidatedUserSubmittedImage" ("validatedAt", "url", "submitterUserId")
       values 
-        (1672587342, 'AiGSM5T-cxm6BFGT7N_lA-1673297699133.webp', 1), 
-        (1672587342, 'jTbWd95klxU2MzGFIdi1c-1673297932788.webp', 1)
+        (1672587342, 'AiGSM5T-cxm6BFGT7N_lA-1673297699133.webp', ${ADMIN_ID}), 
+        (1672587342, 'jTbWd95klxU2MzGFIdi1c-1673297932788.webp', ${ADMIN_ID})
   `,
     )
     .run();
@@ -1264,9 +1287,11 @@ function detailedTeam() {
     )
     .run();
 
-  const userIds = userIdsInRandomOrder(true).filter((id) => id !== 2);
+  const userIds = userIdsInRandomOrder(true).filter(
+    (id) => id !== NZAP_TEST_ID,
+  );
   for (let i = 0; i < 5; i++) {
-    const userId = i === 0 ? 1 : userIds.shift()!;
+    const userId = i === 0 ? ADMIN_ID : userIds.shift()!;
 
     sql
       .prepare(
@@ -1298,7 +1323,7 @@ function otherTeams() {
   ).map((row) => row.userId);
 
   const userIds = userIdsInRandomOrder().filter(
-    (u) => !usersInTeam.includes(u) && u !== 2,
+    (u) => !usersInTeam.includes(u) && u !== NZAP_TEST_ID,
   );
 
   for (let i = 3; i < 50; i++) {
@@ -1358,9 +1383,9 @@ function realVideo() {
     type: "TOURNAMENT",
     youtubeId: "M4aV-BQWlVg",
     youtubeDate: dateToDatabaseTimestamp(new Date("02-02-2023")),
-    submitterUserId: 1,
+    submitterUserId: ADMIN_ID,
     title: "LUTI Division X Tournament - ABBF (THRONE) vs. Ascension",
-    povUserId: 2,
+    povUserId: NZAP_TEST_ID,
     isValidated: true,
     matches: [
       {
@@ -1409,7 +1434,7 @@ function realVideoCast() {
     type: "CAST",
     youtubeId: "M4aV-BQWlVg",
     youtubeDate: dateToDatabaseTimestamp(new Date("02-02-2023")),
-    submitterUserId: 1,
+    submitterUserId: ADMIN_ID,
     title: "LUTI Division X Tournament - ABBF (THRONE) vs. Ascension",
     isValidated: true,
     matches: [
@@ -1487,7 +1512,7 @@ function xRankPlacements() {
     for (const [i, placement] of placements.entries()) {
       const userId = () => {
         // admin
-        if (placement.playerSplId === "qx6imlx72tfeqrhqfnmm") return 1;
+        if (placement.playerSplId === "qx6imlx72tfeqrhqfnmm") return ADMIN_ID;
         // user in top 500 who is not plus server member
         if (i === 0) return 500;
 
@@ -1507,12 +1532,16 @@ function userFavBadges() {
   const badgeList = shuffle(
     (
       sql
-        .prepare(`select "badgeId" from "BadgeOwner" where "userId" = 1`)
+        .prepare(
+          `select "badgeId" from "BadgeOwner" where "userId" = ${ADMIN_ID}`,
+        )
         .all() as any[]
     ).map((row) => row.badgeId),
   );
   sql
-    .prepare(`update "User" set "favoriteBadgeId" = $id where "id" = 1`)
+    .prepare(
+      `update "User" set "favoriteBadgeId" = $id where "id" = ${ADMIN_ID}`,
+    )
     .run({ id: badgeList[0] });
 }
 
