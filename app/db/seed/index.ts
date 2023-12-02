@@ -127,6 +127,7 @@ export async function seed(variation?: SeedVariation | null) {
     if (!seedFunc) continue;
 
     count++;
+    // eslint-disable-next-line no-console
     console.log(`Running seed ${count}/${basicSeeds().length}`);
 
     // eslint-disable-next-line @typescript-eslint/await-thenable
