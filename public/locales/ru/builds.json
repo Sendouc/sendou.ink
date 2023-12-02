@@ -12,4 +12,22 @@
   "forms.gear.SHOES": "Снаряжение (обувь)",
 
   "deleteConfirm": "Удалить сборку '{{title}}'?"
+
+  "stats.count.title": "Статистика по {{count}} сборкам {{weapon}}",
+  "stats.ap.title": "Среднее по количеству свойств",
+  "stats.percentage.title": "Свойства только на главный слот",
+  "stats.all": "Все",
+
+  "addFilter": "Фильтры",
+  "linkButton.abilityStats": "Статистика свойств",
+  "linkButton.popularBuilds": "Популярные сборки",
+  "noPopularBuilds": "На данный момент для данного оружия нет популярных сборок.",
+
+  "emptyAbilitySlot": "Пустой слот",
+
+  "filters.title": "Фильтр {{number}}",
+  "filters.has": "Имеет",
+  "filters.does.not.have": "Не имеет",
+  "filters.atLeast": "Минимум",
+  "filters.atMost": "Максимум"
 }
