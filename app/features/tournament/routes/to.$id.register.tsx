@@ -344,7 +344,9 @@ function RegistrationForms({
   const user = useUser();
   const parentRouteData = useOutletContext<TournamentLoaderData>();
 
-  if (!user) return <PleaseLogIn />;
+  if (!user && !HACKY_isInviteOnlyEvent(parentRouteData.tournament)) {
+    return <PleaseLogIn />;
+  }
 
   const ownTeamFromList = resolveOwnedTeam({
     teams: parentRouteData.teams,
