@@ -1450,8 +1450,8 @@ function specialDamageDistance(
   });
 
   return {
-    baseValue: roundToNDecimalPlaces(baseEffect),
-    value: roundToNDecimalPlaces(effect),
+    baseValue: roundToNDecimalPlaces(baseEffect, 4),
+    value: roundToNDecimalPlaces(effect, 4),
     modifiedBy: SPECIAL_DAMAGE_DISTANCE_KEY,
   };
 }
