@@ -96,7 +96,7 @@ export const damageTypeToWeaponType: Record<
   SPECIAL_TICK: "SPECIAL",
 };
 
-export const multiShot: Partial<Record<MainWeaponId, number>> = {
+const rawMultiShot: Partial<Record<MainWeaponId, number>> = {
   // L-3
   300: 3,
   // H-3
@@ -110,6 +110,14 @@ export const multiShot: Partial<Record<MainWeaponId, number>> = {
   // Dread Winger
   3050: 2,
 };
+
+// automatically handle alt kits
+export const multiShot = Object.fromEntries(
+  Object.entries(rawMultiShot).flatMap(([key, value]) => [
+    [Number(key), value],
+    [Number(key) + 1, value],
+  ]),
+) as Record<MainWeaponId, number>;
 
 export const RAINMAKER_SPEED_PENALTY_MODIFIER = 0.8;
 
