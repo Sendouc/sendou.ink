@@ -502,7 +502,7 @@ export type Preference = "AVOID" | "PREFER";
 export interface UserMapModePreferences {
   modes: Array<{
     mode: ModeShort;
-    preference: Preference;
+    preference?: Preference;
   }>;
   maps: Array<{
     stageId: StageId;
