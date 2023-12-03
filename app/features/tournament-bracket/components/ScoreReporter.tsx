@@ -95,14 +95,14 @@ export function ScoreReporter({
         {
           HACKY_resolvePoolCode({
             event: parentRouteData.tournament,
-            matchId: data.match.id,
+            hostingTeamId: resolveHostingTeam(teams).id,
           }).prefix
         }
         <span className="text-theme font-bold">
           {
             HACKY_resolvePoolCode({
               event: parentRouteData.tournament,
-              matchId: data.match.id,
+              hostingTeamId: resolveHostingTeam(teams).id,
             }).lastDigit
           }
         </span>

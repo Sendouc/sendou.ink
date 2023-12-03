@@ -144,17 +144,17 @@ export function checkSourceIsValid({
 
 export function HACKY_resolvePoolCode({
   event,
-  matchId,
+  hostingTeamId,
 }: {
   event: TournamentLoaderData["tournament"];
-  matchId: number;
+  hostingTeamId: number;
 }) {
   const prefix = event.name.includes("In The Zone")
     ? "ITZ"
     : HACKY_isInviteOnlyEvent(event)
     ? "SQ"
     : "PN";
-  const lastDigit = matchId % 10;
+  const lastDigit = hostingTeamId % 10;
 
   return { prefix, lastDigit };
 }
