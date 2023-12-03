@@ -170,6 +170,7 @@ export function buildStats({
         specialInkConsumptionPerSecondPercentage(input),
       specialReticleRadius: specialReticleRadius(input),
       specialThrowDistance: specialThrowDistance(input),
+      specialMoveSpeed: specialMoveSpeed(input),
       specialAutoChargeRate: specialAutoChargeRate(input),
       specialMaxRadius: specialMaxRadius(input),
       specialRadiusRange: specialRadiusRange(input),
@@ -1651,6 +1652,35 @@ function specialThrowDistance(
     baseValue: roundToNDecimalPlaces(baseEffect),
     value: roundToNDecimalPlaces(effect),
     modifiedBy: SPECIAL_THROW_DISTANCE_KEY,
+  };
+}
+
+function specialMoveSpeed(
+  args: StatFunctionInput,
+): AnalyzedBuild["stats"]["specialMoveSpeed"] {
+  if (
+    !hasEffect({
+      key: "MoveSpeed",
+      weapon: args.specialWeaponParams,
+    })
+  ) {
+    return;
+  }
+
+  const SPECIAL_MOVE_SPEED_KEY = "SPU";
+  const { baseEffect, effect } = abilityPointsToEffects({
+    abilityPoints: apFromMap({
+      abilityPoints: args.abilityPoints,
+      ability: SPECIAL_MOVE_SPEED_KEY,
+    }),
+    key: "MoveSpeed",
+    weapon: args.specialWeaponParams,
+  });
+
+  return {
+    baseValue: roundToNDecimalPlaces(baseEffect, 4),
+    value: roundToNDecimalPlaces(effect, 4),
+    modifiedBy: SPECIAL_MOVE_SPEED_KEY,
   };
 }
 

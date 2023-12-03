@@ -277,6 +277,7 @@ export interface AnalyzedBuild {
     specialInkConsumptionPerSecondPercentage?: Stat;
     specialReticleRadius?: Stat;
     specialThrowDistance?: Stat;
+    specialMoveSpeed?: Stat;
     specialAutoChargeRate?: Stat;
     specialMaxRadius?: Stat;
     specialRadiusRange?: Stat<string>;

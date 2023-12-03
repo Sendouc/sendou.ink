@@ -594,6 +594,17 @@ export default function BuildAnalyzerPage() {
                 })}
               />
             )}
+            {analyzed.stats.specialMoveSpeed && (
+              <StatCard
+                context={context}
+                stat={statKeyToTuple("specialMoveSpeed")}
+                title={t("analyzer:stat.special.moveSpeed", {
+                  weapon: t(
+                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`,
+                  ),
+                })}
+              />
+            )}
             {analyzed.stats.specialAutoChargeRate && (
               <StatCard
                 context={context}
