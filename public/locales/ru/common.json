@@ -16,6 +16,12 @@
   "pages.t": "Команды",
   "pages.support": "Поддержать",
   "pages.privacy": "Политика конфиденциальности",
+  "pages.vods": "Видео",
+  "pages.xsearch": "Топ по режиму",
+  "pages.leaderboards": "Таблицы лидеров",
+  "pages.links": "Ссылки",
+  "pages.art": "Арты",
+  "pages.sendouq": "SendouQ",
 
   "header.profile": "Профиль",
   "header.logout": "Выйти",
@@ -27,6 +33,7 @@
   "auth.errors.aborted": "Вход отменён",
   "auth.errors.failed": "Ошибка входа",
   "auth.errors.discordPermissions": "Для вашего профиля на sendou.ink странице нужет доступ к вашему имени, аватару и привязанным аккаунтам соц. сетей в Discord.",
+  "auth.errors.unknown": "Логин не удался из-за серверной ошибки. Пожалуйста, повторите попытку позже или воспользуйтесь командой /login с помощью бота Lohi, которого можно найти на Discord сервере sendou.ink:",
 
   "footer.github.subtitle": "Исходный код",
   "footer.twitter.subtitle": "Обновления",
@@ -53,6 +60,7 @@
   "actions.search": "Поиск",
   "actions.setBg": "Задать фон",
   "actions.join": "Присоединиться",
+  "actions.nevermind": "Отмена",
   "actions.upload": "Загрузить",
 
   "maps.createMapList": "Создать список карт",
@@ -68,7 +76,8 @@
   "maps.template.preset.ANARCHY": "Режимы стихийных боёв",
   "maps.template.preset.ALL": "Все режимы",
   "maps.template.preset.onlyMode": "Только {{modeName}}",
-  "maps.validation.PICKING": "Выберите одну карту для режима",
+  "maps.validation.PICKING": "Выберите одну карту для каждого режима",
+  "maps.validation.STAGE_REPEAT_IN_SAME_MODE": "Карта не может повторяться на одном режиме",
   "maps.validation.NOT_ONE_MAP_PER_MODE": "Выберите только одну карту для режима",
   "maps.validation.MAP_REPEATED": "Нельзя выбрать ту же самую карту дважды",
   "maps.validation.MODE_REPEATED": "Нельзя выбрать тот же самый режим дважды",
@@ -98,6 +107,13 @@
   "tag.name.COUNT": "Лимит участников",
   "tag.name.LAN": "LAN",
   "tag.name.QUALIFIER": "Квалификационный",
+  "tag.name.SZ": "Только Бой за зоны",
+  "tag.name.TW": "Бой за район",
+  "tag.name.S1": "Splatoon 1",
+  "tag.name.S2": "Splatoon 2",
+  "tag.name.SR": "Salmon Run",
+  "tag.name.CARDS": "Карты и район",
+  "tag.name.FULL_TOURNAMENT": "Проводится на sendou.ink",
 
   "weapon.category.SHOOTERS": "Каплестрелы",
   "weapon.category.BLASTERS": "Бластеры",
@@ -140,9 +156,11 @@
   "support.action": "Поддержать на Patreon",
   "support.footer": "После того, как вы станете новым патроном, вы должны подключить <2>свою учетную запись Discord на Patreon.com</2>. После этого вы сможете получить свои бонусы в течение 2 часов. В случае вопросов или проблем обращайтесь к Sendou за поддержкой.",
   "support.perk.supportMyWork": "Поддержать мою работу",
+  "support.perk.adFree": "Отсутствие рекламы",
   "support.perk.nameInFooter": "Имя в футере",
   "support.perk.discordColorRole": "Цветная роль в Discord",
   "support.perk.discordColorRole.extra": "Вы можете поставить цветную роль на Plus Server и сервере sendou.ink. Используйте команду /color бота Lohi.",
+  "support.perk.chatColor": "Выбрать цвет имени в чате sendou.ink",
   "support.perk.badge": "Значок в профиле",
   "support.perk.seePlusPercentage": "Просмотр процента голосования на Plus Server",
   "support.perk.seePlusPercentage.extra": "Обычно только не прошедшие голосование могут уведить их процент голосов. С этим бонусом вы можете увидеть свой процент.",
@@ -153,7 +171,9 @@
   "support.perk.customizedColorsTeam.extra": "Достаточно одного участника команды, чтобы получить этот бонус.",
   "support.perk.privateDiscord": "Доступ к эксклюзивному каналу в Discord.",
   "support.perk.privateDiscord.extra": "Используется для редких WIP-обновлений, получения приоритетной поддержки и приоритетного запроса новых улучшений.",
-
+  "support.perk.prioritySupport": "Приоритетная поддержка",
+  "support.perk.prioritySupport.extra": "Доступ к отдельной службе поддержки, в которой запросы для поддержки я приоритезирую",
+  
   "custom.colors.title": "Пользовательские цвета",
   "custom.colors.bg": "Фон",
   "custom.colors.bg-darker": "Фон темнее",
@@ -161,4 +181,30 @@
   "custom.colors.text": "Текст",
   "custom.colors.text-lighter": "Текст светлее",
   "custom.colors.theme": "Тема"
+  "custom.colors.chat": "Имя в чате",
+
+  "divisions.WEST": "Щуччи",
+  "divisions.JPN": "Рыбок",
+  "xsearch.placements": "топ",
+  "xsearch.aliases": "Ники:",
+
+  "build.private": "Приватный",
+
+  "or": "Или",
+  "yes": "Да",
+  "no": "Нет",
+
+  "leaderboard.type.USER": "Пользователь",
+  "leaderboard.type.TEAM": "Команда",
+  "leaderboard.type.XP-ALL": "Все",
+
+  "chat.connected": "В сети",
+  "chat.disconnected": "Не в сети",
+  "chat.send": "Отправить",
+  "chat.input.placeholder": "Нажмите enter, чтобы отправить",
+  "chat.systemMsg.scoreReported": "{{name}} сообщил результаты",
+  "chat.systemMsg.scoreConfirmed": "{{name}} подтвердил счёт. Матч теперь закрыт",
+  "chat.systemMsg.cancelReported": "{{name}} запросил отмену матча",
+  "chat.systemMsg.cancelConfirmed": "{{name}} подтвердил отмену матча. Матч теперь закрыт",
+  "chat.systemMsg.userLeft": "{{name}} покинул группу"
 }
