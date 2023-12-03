@@ -310,6 +310,8 @@ interface CanAdminTournament {
 export function canAdminTournament({ user, tournament }: CanAdminTournament) {
   // temporary hack to let Njok admin tournaments as well
   if (user?.id === 14710) return true;
+  // // temporary hack to let .jpg admin tournaments as well
+  if (user?.id === 622) return true;
 
   return adminOverride(user)(user?.id === tournament.author.id);
 }
