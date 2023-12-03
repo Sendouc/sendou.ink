@@ -33,6 +33,8 @@ const stages = [
   "Barnacle & Dime",
   "Crableg Capital",
   "Shipshape Cargo Co.",
+  "Bluefin Depot",
+  "Robo ROM-en",
 ] as const;
 
 const abilityShortToInternalName = new Map([
