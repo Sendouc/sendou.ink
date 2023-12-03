@@ -81,7 +81,10 @@ import {
 } from "~/features/mmr";
 import { queryTeamPlayerRatingAverage } from "~/features/mmr/mmr-utils.server";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
-import { HACKY_maxRosterSizeBeforeStart } from "~/features/tournament/tournament-utils";
+import {
+  HACKY_isInviteOnlyEvent,
+  HACKY_maxRosterSizeBeforeStart,
+} from "~/features/tournament/tournament-utils";
 
 export const links: LinksFunction = () => {
   return [
@@ -138,9 +141,11 @@ export const action: ActionFunction = async ({ params, request }) => {
           settings: resolveTournamentStageSettings(tournament.format),
         });
 
-        const bestOfs = resolveBestOfs(
-          findAllMatchesByTournamentId(tournamentId),
-        );
+        const matches = findAllMatchesByTournamentId(tournamentId);
+        // TODO: dynamic best of set when bracket is made
+        const bestOfs = HACKY_isInviteOnlyEvent(tournament)
+          ? matches.map((match) => [5, match.matchId] as [5, number])
+          : resolveBestOfs(matches);
         for (const [bestOf, id] of bestOfs) {
           setBestOf({ bestOf, id });
         }
