@@ -475,6 +475,12 @@ function parametersToSpecialWeaponResult(params: any) {
     }
   }
 
+  // for Ultra Splashdown
+  if (params["BlastParamDokanWarp"]) {
+    result["SubSpecialSpecUpList"] =
+      params["BlastParamDokanWarp"]["SubSpecialSpecUpList"];
+  }
+
   const resultUnwrapped = unwrapSubSpecialSpecUpList(result);
 
   const specialDurationFrameKeyAlises = [

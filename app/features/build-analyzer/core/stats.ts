@@ -1475,8 +1475,8 @@ function specialPaintRadius(
     });
 
     return {
-      baseValue: roundToNDecimalPlaces(baseEffect),
-      value: roundToNDecimalPlaces(effect),
+      baseValue: roundToNDecimalPlaces(baseEffect, 4),
+      value: roundToNDecimalPlaces(effect, 4),
       modifiedBy: SPECIAL_PAINT_RADIUS_KEY,
     };
   }
