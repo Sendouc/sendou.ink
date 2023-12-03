@@ -17,6 +17,7 @@ import type {
 import type { Params } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import type { DataTypes, ValueToArray } from "~/modules/brackets-manager/types";
+import { HACKY_isInviteOnlyEvent } from "../tournament/tournament-utils";
 
 export function matchIdFromParams(params: Params<string>) {
   const result = Number(params["mid"]);
@@ -148,7 +149,11 @@ export function HACKY_resolvePoolCode({
   event: TournamentLoaderData["tournament"];
   matchId: number;
 }) {
-  const prefix = event.name.includes("In The Zone") ? "ITZ" : "PN";
+  const prefix = event.name.includes("In The Zone")
+    ? "ITZ"
+    : HACKY_isInviteOnlyEvent(event)
+    ? "SQ"
+    : "PN";
   const lastDigit = matchId % 10;
 
   return { prefix, lastDigit };
