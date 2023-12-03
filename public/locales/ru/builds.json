@@ -11,7 +11,7 @@
   "forms.gear.CLOTHES": "Снаряжение (одежда)",
   "forms.gear.SHOES": "Снаряжение (обувь)",
 
-  "deleteConfirm": "Удалить сборку '{{title}}'?"
+  "deleteConfirm": "Удалить сборку '{{title}}'?",
 
   "stats.count.title": "Статистика по {{count}} сборкам {{weapon}}",
   "stats.ap.title": "Среднее по количеству свойств",
