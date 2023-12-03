@@ -79,7 +79,11 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const hasStarted = hasTournamentStarted(tournamentId);
   let teams = findTeamsByTournamentId(tournamentId);
   if (hasStarted) {
-    teams = teams.filter(teamHasCheckedIn);
+    const checkedInTeams = teams.filter(teamHasCheckedIn);
+    // handle special case where tournament was started early
+    if (checkedInTeams.length > 0) {
+      teams = checkedInTeams;
+    }
   }
 
   const teamMemberOfName = teams.find((team) =>
