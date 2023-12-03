@@ -219,6 +219,13 @@
   cursor: pointer;
 }
 
+.tournament-bracket__during-match-actions__player-name__inner {
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  padding-inline: var(--s-2);
+}
+
 .tournament-bracket__during-match-actions__seed {
   font-size: var(--fonts-xxs);
   color: var(--theme);
