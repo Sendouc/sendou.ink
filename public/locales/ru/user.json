@@ -39,7 +39,7 @@
   "forms.info.favoriteBadge": "По умолчанию ваш любимый значок отображён большим на вашем профиле.",
 
   "search.info": "Поиск пользователей по имени в Discord, Splatoon 3 или Twitter",
-  "search.noResults": "Не найден пользователь по запросу '{{query}}'"
+  "search.noResults": "Не найден пользователь по запросу '{{query}}'",
 
   "seasons": "Сезоны",
   "seasons.noQ": "Данный пользователь не играл в SendouQ или турнирах в этом сезоне",
