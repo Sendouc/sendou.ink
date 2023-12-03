@@ -25,4 +25,5 @@
   "forms.tags.addNew": "Создайте новый.",
   "forms.tags.addNew.placeholder": "Создать тег",
   "forms.tags.searchExisting.placeholder": "Поиск по существующим тегам",
-  "forms.tags.maxReached": "Максимальное кол-во тегов достигнуто"}
+  "forms.tags.maxReached": "Максимальное кол-во тегов достигнуто"
+}
