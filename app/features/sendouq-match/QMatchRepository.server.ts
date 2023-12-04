@@ -27,7 +27,7 @@ export function findById(id: number) {
         eb
           .selectFrom("GroupMatchMap")
           .select([
-            "GroupMatch.id",
+            "GroupMatchMap.id",
             "GroupMatchMap.mode",
             "GroupMatchMap.stageId",
             "GroupMatchMap.source",
