@@ -80,7 +80,7 @@ export async function findGroupById({
 }) {
   const row = await db
     .selectFrom("Group")
-    .innerJoin("GroupMatch", (join) =>
+    .leftJoin("GroupMatch", (join) =>
       join.on((eb) =>
         eb.or([
           eb("GroupMatch.alphaGroupId", "=", eb.ref("Group.id")),
