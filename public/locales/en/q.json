@@ -41,7 +41,7 @@
   "front.actions.joinSolo": "Join solo",
   "front.join.header": "Join the group with {{members}}?",
   "front.join.joinAction": "Join",
-  "front.join.joinWithTrustAction": "Join & trust {{inviterName})",
+  "front.join.joinWithTrustAction": "Join & trust {{inviterName}}",
   "front.join.joinWithTrustAction.explanation": "Trusting a user allows them to add you to groups without an invite link in the future",
   "front.join.refuseAction": "No thanks",
   "front.seasonOpen": "Season {{nth}} open",
