@@ -49,6 +49,13 @@ export default function SendouqRules() {
         don&apos;t agree then the match should be played out.
       </div>
 
+      <h2 className="text-lg mt-4">Room hosting</h2>
+      <div>
+        By default the player who says the fastest in the match chat that they
+        will host should do it. If a host can&apos;t be decided then Alpha
+        chooses a player to host from their group.
+      </div>
+
       <h2 className="text-lg mt-4">Alting</h2>
       <div>You can only play with one account.</div>
 
