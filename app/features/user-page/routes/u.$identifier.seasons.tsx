@@ -67,11 +67,11 @@ export const handle: SendouRouteHandle = {
 
 export const seasonsSearchParamsSchema = z.object({
   page: z.coerce.number().default(1),
-  info: z.enum(["weapons", "stages", "mates", "enemies"]).default("weapons"),
+  info: z.enum(["weapons", "stages", "mates", "enemies"]).optional(),
   season: z.coerce
     .number()
-    .default(currentOrPreviousSeason(new Date())!.nth)
-    .refine((nth) => allSeasons(new Date()).includes(nth)),
+    .optional()
+    .refine((nth) => !nth || allSeasons(new Date()).includes(nth)),
 });
 
 export const loader = async ({ params, request }: LoaderArgs) => {
@@ -79,7 +79,11 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const parsedSearchParams = seasonsSearchParamsSchema.safeParse(
     Object.fromEntries(new URL(request.url).searchParams),
   );
-  const { info, page, season } = parsedSearchParams.success
+  const {
+    info = "weapons",
+    page,
+    season = currentOrPreviousSeason(new Date())!.nth,
+  } = parsedSearchParams.success
     ? parsedSearchParams.data
     : seasonsSearchParamsSchema.parse({});
 
