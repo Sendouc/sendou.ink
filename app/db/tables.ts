@@ -547,7 +547,7 @@ export interface User {
   >;
   qWeaponPool: ColumnType<MainWeaponId[] | null, string | null, string | null>;
   plusSkippedForSeasonNth: number | null;
-  noScreen: number;
+  noScreen: Generated<number>;
 }
 
 export interface UserResultHighlight {
