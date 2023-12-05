@@ -10,6 +10,7 @@ export const DAMAGE_RECEIVERS = [
   "ShockSonar", // Wave Breaker
   "GreatBarrier_Barrier", // Big Bubbler Shield
   "GreatBarrier_WeakPoint", // Big Bubbler Weak Point
+  "BlowerInhale", // Ink Vac Inhale
   "Gachihoko_Barrier", // Rainmaker Shield
   "Wsb_Flag", // Squid Beakon
   "Wsb_Shield", // Splash Wall

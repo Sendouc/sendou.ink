@@ -19,6 +19,7 @@ import {
   SPLASH_WALL_ID,
   SPRINKLER_ID,
   SQUID_BEAKON_ID,
+  INK_VAC_ID,
   TORPEDO_ID,
   WAVE_BREAKER_ID,
 } from "~/modules/in-game-lists";
@@ -196,6 +197,7 @@ function DamageTypesSelect({
 
 const damageReceiverImages: Record<DamageReceiver, string> = {
   Bomb_TorpedoBullet: subWeaponImageUrl(TORPEDO_ID),
+  BlowerInhale: specialWeaponImageUrl(INK_VAC_ID),
   Chariot: specialWeaponImageUrl(CRAB_TANK_ID),
   Gachihoko_Barrier: modeImageUrl("RM"),
   GreatBarrier_Barrier: specialWeaponImageUrl(BIG_BUBBLER_ID),

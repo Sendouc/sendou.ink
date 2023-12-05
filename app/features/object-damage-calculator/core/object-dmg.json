@@ -1995,6 +1995,10 @@
         "rate": 2
       },
       {
+        "target": "BlowerInhale",
+        "rate": 2
+      },
+      {
         "target": "BulletUmbrellaCanopyCompact",
         "rate": 3
       },
