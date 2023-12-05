@@ -53,6 +53,7 @@ import {
 } from "../tournament-bracket-utils";
 import bracketStyles from "../tournament-bracket.css";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
+import { logger } from "~/utils/logger";
 
 export const links: LinksFunction = () => [
   {
@@ -193,6 +194,10 @@ export const action: ActionFunction = async ({ params, request }) => {
         scores[1]--;
       }
 
+      logger.info(
+        `Undoing score: Position: ${data.position}; User ID: ${user.id}; Match ID: ${match.id}`,
+      );
+
       sql.transaction(() => {
         deleteTournamentMatchGameResultById(lastResult.id);
 
@@ -232,6 +237,10 @@ export const action: ActionFunction = async ({ params, request }) => {
       } else {
         scores[1]--;
       }
+
+      logger.info(
+        `Reopening match: User ID: ${user.id}; Match ID: ${match.id}`,
+      );
 
       try {
         sql.transaction(() => {
