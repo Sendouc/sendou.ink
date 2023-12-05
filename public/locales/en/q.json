@@ -63,6 +63,7 @@
   "settings.sounds.likeReceived": "Like received",
   "settings.sounds.groupNewMember": "Group new member",
   "settings.sounds.matchStarted": "Match started",
+  "settings.banned": "Banned",
 
   "looking.joiningGroupError": "Before joining another group, leave the current one",
   "looking.goToSettingsPrompt": "To help group finding set your weapon pool and voice chat status on the settings page",

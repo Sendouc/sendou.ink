@@ -36,6 +36,7 @@ import { SENDOUQ_WEAPON_POOL_MAX_SIZE } from "../q-settings-constants";
 import { settingsActionSchema } from "../q-settings-schemas.server";
 import styles from "../q-settings.css";
 import { BANNED_MAPS } from "../banned-maps";
+import { Divider } from "~/components/Divider";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -256,8 +257,10 @@ function MapModeRadios({
     preference: Preference & "NEUTRAL";
   }) => void;
 }) {
+  const { t } = useTranslation(["q"]);
+
   return (
-    <div className="q__map-mode-radios-container">
+    <div className="q-settings__map-mode-radios-container">
       <StageImage stageId={stageId} width={250} className="rounded" />
       <div className="stack justify-evenly">
         {modesShort.map((modeShort) => {
@@ -271,14 +274,18 @@ function MapModeRadios({
           return (
             <div key={modeShort} className="stack horizontal xs my-1">
               <ModeImage mode={modeShort} width={24} />
-              {!isBanned ? (
+              {isBanned ? (
+                <Divider className="q-settings__banned">
+                  {t("q:settings.banned")}
+                </Divider>
+              ) : (
                 <PreferenceRadioGroup
                   preference={preference?.preference}
                   onPreferenceChange={(preference) =>
                     onPreferenceChange({ mode: modeShort, preference, stageId })
                   }
                 />
-              ) : null}
+              )}
             </div>
           );
         })}
