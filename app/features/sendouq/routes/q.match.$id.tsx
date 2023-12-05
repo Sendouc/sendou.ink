@@ -1057,7 +1057,9 @@ function BottomSection({
   );
 
   const roomJoiningInfoElement = (
-    <div className="q-match__pool-pass-container">
+    <div
+      className={clsx("q-match__pool-pass-container", { "mx-auto": !isMobile })}
+    >
       <InfoWithHeader header={t("q:match.pool")} value={poolCode()} />
       <InfoWithHeader
         header={t("q:match.password.short")}
@@ -1271,6 +1273,9 @@ function MapList({
                 showReportedOwnWeapon={!ownWeaponReported}
                 recentlyReportedWeapons={recentlyReportedWeapons}
                 addRecentlyReportedWeapon={addRecentlyReportedWeapon}
+                ownWeapon={
+                  ownWeaponsUsage.find((w) => w.mapIndex === i)?.weaponSplId
+                }
                 onOwnWeaponSelected={(newReportedWeapon) => {
                   if (!newReportedWeapon) return;
 
@@ -1322,6 +1327,7 @@ function MapListMap({
   setWinners,
   canReportScore,
   weapons,
+  ownWeapon,
   onOwnWeaponSelected,
   showReportedOwnWeapon,
   recentlyReportedWeapons,
@@ -1333,6 +1339,7 @@ function MapListMap({
   setWinners?: (winners: ("ALPHA" | "BRAVO")[]) => void;
   canReportScore: boolean;
   weapons?: (MainWeaponId | null)[] | null;
+  ownWeapon?: MainWeaponId | null;
   onOwnWeaponSelected?: (weapon: ReportedWeaponForMerging | null) => void;
   showReportedOwnWeapon: boolean;
   recentlyReportedWeapons?: MainWeaponId[];
@@ -1532,6 +1539,15 @@ function MapListMap({
             <label className="mb-0 text-theme-secondary">
               {t("q:match.report.winnerLabel")}
             </label>
+            <div className="stack items-center">
+              <div
+                className={clsx("q-match__result-dot", {
+                  "q-match__result-dot__won": winners[i] === data.groupMemberOf,
+                  "q-match__result-dot__lost":
+                    winners[i] && winners[i] !== data.groupMemberOf,
+                })}
+              />
+            </div>
             <div className="stack sm horizontal items-center">
               <div className="stack sm horizontal items-center font-semi-bold">
                 <input
@@ -1566,6 +1582,15 @@ function MapListMap({
                 <label className="mb-0 text-theme-secondary">
                   {t("q:match.report.weaponLabel")}
                 </label>
+                <div
+                  className={clsx({ invisible: typeof ownWeapon !== "number" })}
+                >
+                  <WeaponImage
+                    weaponSplId={ownWeapon ?? 0}
+                    variant="badge"
+                    size={28}
+                  />
+                </div>
                 <WeaponCombobox
                   inputName="weapon"
                   quickSelectWeaponIds={recentlyReportedWeapons}
