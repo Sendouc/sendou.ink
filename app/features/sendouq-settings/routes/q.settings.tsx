@@ -37,6 +37,8 @@ import { settingsActionSchema } from "../q-settings-schemas.server";
 import styles from "../q-settings.css";
 import { BANNED_MAPS } from "../banned-maps";
 import { Divider } from "~/components/Divider";
+import { Toggle } from "~/components/Toggle";
+import { FormMessage } from "~/components/FormMessage";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -88,6 +90,13 @@ export const action = async ({ request }: ActionArgs) => {
       });
       break;
     }
+    case "UPDATE_NO_SCREEN": {
+      await QSettingsRepository.updateNoScreen({
+        userId: user.id,
+        noScreen: Number(data.noScreen),
+      });
+      break;
+    }
     default: {
       assertUnreachable(data);
     }
@@ -112,6 +121,7 @@ export default function SendouQSettingsPage() {
         <WeaponPool />
         <VoiceChat />
         <Sounds />
+        <Misc />
       </div>
     </Main>
   );
@@ -650,5 +660,55 @@ function SoundCheckboxes() {
         </div>
       ))}
     </div>
+  );
+}
+
+function Misc() {
+  const data = useLoaderData<typeof loader>();
+  const [checked, setChecked] = React.useState(Boolean(data.settings.noScreen));
+  const { t } = useTranslation(["common", "q"]);
+  const fetcher = useFetcher();
+
+  return (
+    <details>
+      <summary className="q-settings__summary">
+        <div>Misc</div>
+      </summary>
+      <fetcher.Form method="post" className="mb-4 ml-2-5 stack sm">
+        <div className="stack horizontal xs items-center">
+          <Toggle
+            checked={checked}
+            setChecked={setChecked}
+            id="noScreen"
+            name="noScreen"
+          />
+          <label className="mb-0" htmlFor="noScreen">
+            Avoid Splattercolor Screen
+          </label>
+        </div>
+        <FormMessage type="info">
+          Accessibility concerns related to the new special have been raised.{" "}
+          <a
+            href="https://twitter.com/ProChara/status/1730986554078945562"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Read more here
+          </a>
+          . Enabling this setting will make the special banned in SendouQ
+          lobbies and tournament matches you play via sendou.ink
+        </FormMessage>
+        <div className="mt-6">
+          <SubmitButton
+            size="big"
+            className="mx-auto"
+            _action="UPDATE_NO_SCREEN"
+            state={fetcher.state}
+          >
+            {t("common:actions.save")}
+          </SubmitButton>
+        </div>
+      </fetcher.Form>
+    </details>
   );
 }
