@@ -2324,7 +2324,17 @@
           "Low": 9,
           "Mid": 9.9
         }
-      }
+      },
+      "DistanceDamage": [
+        {
+          "Damage": 2200,
+          "Distance": 7
+        },
+        {
+          "Damage": 600,
+          "Distance": 12
+        }
+      ]
     },
     "19": {
       "overwrites": {
