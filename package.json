@@ -9,7 +9,7 @@
     "dev": "remix dev",
     "dev:prod": "cross-env DB_PATH=db-prod.sqlite3 remix dev",
     "dev:ci": "cp .env.example .env && npm run migrate up && npm run dev",
-    "start": "npm run migrate up && remix-serve build",
+    "start": "npm run migrate up && remix-serve ./build/index.js",
     "migrate": "ley",
     "migrate:reset": "node scripts/delete-db-files.mjs && npm run migrate up",
     "add-badge": "node --experimental-specifier-resolution=node -r @swc-node/register -r tsconfig-paths/register scripts/add-badge.ts",
