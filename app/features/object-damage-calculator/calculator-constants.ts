@@ -96,6 +96,7 @@ export const damagePriorities: Array<
   ["SUB", [13], "BOMB_DIRECT", "Bomb_TorpedoBullet"],
 
   ["SPECIAL", [4], "BOMB_NORMAL", "MultiMissile_Bullet"], // There is also "MultiMissile_BombCore" but it seems to contain same rates as MultiMissile_Bullet
+  ["SPECIAL", [5], "SPECIAL_TICK", "InkStorm"],
   ["SPECIAL", [8], "SPECIAL_MAX_CHARGE", "BlowerExhale_BombCore"],
   ["SPECIAL", [8], "SPECIAL_MIN_CHARGE", "BlowerExhale_BombCore"],
   ["SPECIAL", [10], "BOMB_DIRECT", "Jetpack_BombCore"],

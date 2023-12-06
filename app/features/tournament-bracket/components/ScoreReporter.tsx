@@ -410,7 +410,6 @@ function MatchActionSectionTabs({
                     users={chatUsers}
                     className="w-full q__chat-container"
                     messagesContainerClassName="q__chat-messages-container"
-                    onNewMessage={onNewMessage}
                     chat={chat}
                     onMount={onChatMount}
                     onUnmount={onChatUnmount}
