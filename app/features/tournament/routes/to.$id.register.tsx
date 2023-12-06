@@ -1,7 +1,7 @@
 import {
   redirect,
   type ActionFunction,
-  type LoaderArgs,
+  type LoaderFunctionArgs,
 } from "@remix-run/node";
 import {
   Link,
@@ -226,7 +226,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 
 export type TournamentRegisterPageLoader = typeof loader;
 
-export const loader = async ({ request, params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const eventId = tournamentIdFromParams(params);
   const hasStarted = hasTournamentStarted(eventId);
 

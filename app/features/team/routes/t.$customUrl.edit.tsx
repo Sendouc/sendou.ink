@@ -1,10 +1,10 @@
 import { redirect } from "@remix-run/node";
 import type {
   LinksFunction,
-  V2_MetaFunction,
+  MetaFunction,
   SerializeFrom,
   ActionFunction,
-  LoaderArgs,
+  LoaderFunctionArgs,
 } from "@remix-run/node";
 import { Form, Link, useLoaderData } from "@remix-run/react";
 import * as React from "react";
@@ -46,11 +46,7 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const meta: V2_MetaFunction = ({
-  data,
-}: {
-  data: SerializeFrom<typeof loader>;
-}) => {
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (!data) return [];
 
   return [{ title: makeTitle(data.team.name) }];
@@ -122,7 +118,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   }
 };
 
-export const loader = async ({ request, params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const user = await requireUserId(request);
   const { customUrl } = teamParamsSchema.parse(params);
 

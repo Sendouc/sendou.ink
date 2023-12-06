@@ -30,8 +30,8 @@ export function useObjectDamage() {
       anyWeapon.type === "MAIN"
         ? anyWeapon.id
         : anyWeapon.type === "SPECIAL"
-        ? exampleMainWeaponIdWithSpecialWeaponId(anyWeapon.id)
-        : 0,
+          ? exampleMainWeaponIdWithSpecialWeaponId(anyWeapon.id)
+          : 0,
     hasTacticooler: false,
   });
 

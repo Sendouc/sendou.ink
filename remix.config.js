@@ -236,12 +236,10 @@ module.exports = {
     });
   },
   serverModuleFormat: "cjs",
-  serverDependenciesToBundle: ["react-charts", "d3-time-format"],
-  future: {
-    v2_meta: true,
-    v2_normalizeFormMethod: true,
-    v2_dev: true,
-    v2_headers: true,
-    v2_errorBoundary: true,
-  },
+  serverDependenciesToBundle: [
+    "react-charts",
+    "d3-time-format",
+    "nanoid",
+    /^remix-utils.*/,
+  ],
 };

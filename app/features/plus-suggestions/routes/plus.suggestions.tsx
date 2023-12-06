@@ -1,7 +1,7 @@
 import type {
   ActionFunction,
   SerializeFrom,
-  V2_MetaFunction,
+  MetaFunction,
 } from "@remix-run/node";
 import type { ShouldRevalidateFunction } from "@remix-run/react";
 import { Link, Outlet, useLoaderData, useSearchParams } from "@remix-run/react";
@@ -36,7 +36,7 @@ import { assertUnreachable } from "~/utils/types";
 import { userPage } from "~/utils/urls";
 import { _action, actualNumber } from "~/utils/zod";
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [
     { title: makeTitle("Plus Server suggestions") },
     {

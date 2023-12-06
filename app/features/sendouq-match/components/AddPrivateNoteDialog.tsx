@@ -90,8 +90,8 @@ function Sentiment({
                       sentimentRadio === "POSITIVE"
                         ? "PREFER"
                         : sentimentRadio === "NEGATIVE"
-                        ? "AVOID"
-                        : undefined,
+                          ? "AVOID"
+                          : undefined,
                     )}
                     alt=""
                     width={18}

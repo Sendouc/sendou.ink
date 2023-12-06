@@ -131,8 +131,8 @@ export function resolveAllUniqueDamageTypes({
     anyWeapon.type === "SUB"
       ? []
       : anyWeapon.type === "SPECIAL"
-      ? analyzed.stats.specialWeaponDamages.map((d) => d.type)
-      : analyzed.stats.damages.map((d) => d.type);
+        ? analyzed.stats.specialWeaponDamages.map((d) => d.type)
+        : analyzed.stats.damages.map((d) => d.type);
 
   return removeDuplicates(damageTypes).filter(
     (dmg) => !dmg.includes("SECONDARY"),

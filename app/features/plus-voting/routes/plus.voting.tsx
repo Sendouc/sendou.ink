@@ -1,7 +1,7 @@
 import type {
   ActionFunction,
   LoaderFunction,
-  V2_MetaFunction,
+  MetaFunction,
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
@@ -30,7 +30,7 @@ import { dateToDatabaseTimestamp } from "~/utils/dates";
 import invariant from "tiny-invariant";
 import { isVotingActive } from "~/features/plus-voting/core/voting-time";
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [{ title: makeTitle("Plus Server voting") }];
 };
 

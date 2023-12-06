@@ -1,4 +1,4 @@
-import type { LoaderArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData, useOutletContext } from "@remix-run/react";
 import { streamsByTournamentId } from "../core/streams.server";
 import { tournamentIdFromParams } from "../tournament-utils";
@@ -9,7 +9,7 @@ import { tournamentRegisterPage, twitchUrl } from "~/utils/urls";
 import { UserIcon } from "~/components/icons/User";
 import { useTranslation } from "~/hooks/useTranslation";
 
-export const loader = async ({ params }: LoaderArgs) => {
+export const loader = async ({ params }: LoaderFunctionArgs) => {
   const tournamentId = tournamentIdFromParams(params);
 
   return {

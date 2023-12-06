@@ -149,12 +149,12 @@ export function GroupCard({
               {action === "MATCH_UP"
                 ? t("q:looking.groups.actions.startMatch")
                 : action === "LIKE" && !group.members
-                ? t("q:looking.groups.actions.challenge")
-                : action === "LIKE"
-                ? t("q:looking.groups.actions.invite")
-                : action === "GROUP_UP"
-                ? t("q:looking.groups.actions.groupUp")
-                : t("q:looking.groups.actions.undo")}
+                  ? t("q:looking.groups.actions.challenge")
+                  : action === "LIKE"
+                    ? t("q:looking.groups.actions.invite")
+                    : action === "GROUP_UP"
+                      ? t("q:looking.groups.actions.groupUp")
+                      : t("q:looking.groups.actions.undo")}
             </SubmitButton>
           </fetcher.Form>
         ) : null}
@@ -639,8 +639,8 @@ function VoiceChatInfo({
     member.vc === "YES"
       ? MicrophoneIcon
       : member.vc === "LISTEN_ONLY"
-      ? SpeakerIcon
-      : SpeakerXIcon;
+        ? SpeakerIcon
+        : SpeakerXIcon;
 
   const color = () => {
     const languagesMatch =
@@ -655,8 +655,8 @@ function VoiceChatInfo({
     return member.vc === "YES"
       ? "text-success"
       : member.vc === "LISTEN_ONLY"
-      ? "text-warning"
-      : "text-error";
+        ? "text-warning"
+        : "text-error";
   };
 
   const languageToFull = (code: string) =>

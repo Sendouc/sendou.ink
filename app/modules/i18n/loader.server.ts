@@ -5,9 +5,10 @@ import { resolve } from "node:path";
 import { initReactI18next } from "react-i18next";
 import { config } from "./config";
 import i18next from "./i18next.server";
+import type { i18n as i18nType } from "i18next";
 
 export async function i18Instance(request: Request, context: EntryContext) {
-  const instance = createInstance();
+  const instance = createInstance() as i18nType;
 
   const lng = await i18next.getLocale(request);
   const ns = i18next.getRouteNamespaces(context);

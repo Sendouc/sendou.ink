@@ -346,8 +346,8 @@ export const preferenceEmojiUrl = (preference?: Preference) => {
     preference === "PREFER"
       ? "grin"
       : preference === "AVOID"
-      ? "unamused"
-      : "no-mouth";
+        ? "unamused"
+        : "no-mouth";
 
   return `/static-assets/img/emoji/${emoji}.svg`;
 };

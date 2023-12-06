@@ -2,10 +2,11 @@ import {
   redirect,
   type ActionFunction,
   type LinksFunction,
-  type LoaderArgs,
+  type LoaderFunctionArgs,
 } from "@remix-run/node";
 import { Form, Link, useLoaderData, useMatches } from "@remix-run/react";
-import { countries } from "countries-list";
+import { countries, getEmojiFlag } from "countries-list";
+import type { TCountryCode } from "countries-list";
 import * as React from "react";
 import { Trans } from "react-i18next";
 import invariant from "tiny-invariant";
@@ -192,7 +193,7 @@ export const action: ActionFunction = async ({ request }) => {
   }
 };
 
-export const loader = async ({ request, params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const locale = await i18next.getLocale(request);
 
   const user = await requireUser(request);
@@ -210,7 +211,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     countries: Object.entries(countries)
       .map(([code, country]) => ({
         code,
-        emoji: country.emoji,
+        emoji: getEmojiFlag(code as TCountryCode),
         name:
           translatedCountry({
             countryCode: code,

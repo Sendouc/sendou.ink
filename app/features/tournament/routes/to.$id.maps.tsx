@@ -1,4 +1,4 @@
-import type { LinksFunction, LoaderArgs } from "@remix-run/node";
+import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import {
   useActionData,
@@ -48,7 +48,7 @@ type TeamInState = {
   mapPool?: Pick<MapPoolMap, "mode" | "stageId">[];
 };
 
-export const loader = async ({ params, request }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const tournamentId = tournamentIdFromParams(params);
   const user = await getUserId(request);
   const tournament = notFoundIfFalsy(

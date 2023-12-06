@@ -1,7 +1,7 @@
 import type {
   LinksFunction,
-  LoaderArgs,
-  V2_MetaFunction,
+  LoaderFunctionArgs,
+  MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
 import type { ShouldRevalidateFunction } from "@remix-run/react";
@@ -48,7 +48,7 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const meta: V2_MetaFunction = (args) => {
+export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
 
   if (!data) return [];
@@ -65,7 +65,7 @@ export const handle: SendouRouteHandle = {
   }),
 };
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = await getUserId(request);
   const url = new URL(request.url);
   const calendarEventId = url.searchParams.get("eventId");

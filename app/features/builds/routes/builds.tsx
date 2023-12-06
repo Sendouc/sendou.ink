@@ -13,12 +13,12 @@ import {
 } from "~/utils/urls";
 import { type SendouRouteHandle } from "~/utils/remix";
 import styles from "~/styles/builds.css";
-import type { LinksFunction, V2_MetaFunction } from "@remix-run/node";
+import type { LinksFunction, MetaFunction } from "@remix-run/node";
 import { Main } from "~/components/Main";
 import { makeTitle } from "~/utils/strings";
 import { useSetTitle } from "~/hooks/useSetTitle";
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [
     { title: makeTitle("Builds") },
     {

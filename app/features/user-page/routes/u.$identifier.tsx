@@ -1,7 +1,7 @@
 import type {
   LinksFunction,
-  LoaderArgs,
-  V2_MetaFunction,
+  LoaderFunctionArgs,
+  MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
 import { Outlet, useLoaderData, useLocation } from "@remix-run/react";
@@ -40,11 +40,7 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const meta: V2_MetaFunction = ({
-  data,
-}: {
-  data: UserPageLoaderData;
-}) => {
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (!data) return [];
 
   return [{ title: makeTitle(discordFullName(data)) }];
@@ -76,7 +72,7 @@ export const userParamsSchema = z.object({ identifier: z.string() });
 
 export type UserPageLoaderData = SerializeFrom<typeof loader>;
 
-export const loader = async ({ params, request }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const loggedInUser = await getUserId(request);
   const { identifier } = userParamsSchema.parse(params);
   const user = notFoundIfFalsy(

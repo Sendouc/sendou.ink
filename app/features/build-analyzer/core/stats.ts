@@ -799,8 +799,8 @@ function runSpeed(args: StatFunctionInput): AnalyzedBuild["stats"]["runSpeed"] {
     args.mainWeaponParams.WeaponSpeedType === "Fast"
       ? "_Fast"
       : args.mainWeaponParams.WeaponSpeedType === "Slow"
-      ? "_Slow"
-      : "";
+        ? "_Slow"
+        : "";
   const RUN_SPEED_ABILITY = "RSU";
   const { baseEffect, effect } = abilityPointsToEffects({
     abilityPoints: apFromMap({
@@ -874,8 +874,8 @@ function swimSpeed(
     args.mainWeaponParams.WeaponSpeedType === "Fast"
       ? "_Fast"
       : args.mainWeaponParams.WeaponSpeedType === "Slow"
-      ? "_Slow"
-      : "";
+        ? "_Slow"
+        : "";
   const SWIM_SPEED_ABILITY = "SSU";
   const { baseEffect, effect } = abilityPointsToEffects({
     abilityPoints: apFromMap({

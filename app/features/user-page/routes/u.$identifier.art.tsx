@@ -1,4 +1,4 @@
-import type { ActionFunction, LoaderArgs } from "@remix-run/node";
+import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import type { UserPageLoaderData } from "./u.$identifier";
 import { userParamsSchema } from "./u.$identifier";
 import {
@@ -49,7 +49,7 @@ export const action: ActionFunction = async ({ request }) => {
   return null;
 };
 
-export const loader = async ({ params, request }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const loggedInUser = await getUserId(request);
 
   const { identifier } = userParamsSchema.parse(params);
@@ -109,8 +109,8 @@ export default function UserArtPage() {
     type === "ALL" || !hasBothArtMadeByAndMadeOf
       ? data.arts
       : type === "MADE-BY"
-      ? data.arts.filter((a) => !a.author)
-      : data.arts.filter((a) => a.author);
+        ? data.arts.filter((a) => !a.author)
+        : data.arts.filter((a) => a.author);
 
   if (filteredTag) {
     arts = arts.filter((a) => a.tags?.includes(filteredTag));

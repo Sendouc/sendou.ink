@@ -14,7 +14,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { redirect } from "@remix-run/node";
-import type { LoaderArgs, ActionFunction } from "@remix-run/node";
+import type { LoaderFunctionArgs, ActionFunction } from "@remix-run/node";
 import {
   useFetcher,
   useLoaderData,
@@ -66,7 +66,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   return null;
 };
 
-export const loader = async ({ params, request }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const user = await requireUser(request);
   const tournamentId = tournamentIdFromParams(params);
   const hasStarted = hasTournamentStarted(tournamentId);

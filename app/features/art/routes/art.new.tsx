@@ -1,4 +1,4 @@
-import type { ActionFunction, LoaderArgs } from "@remix-run/node";
+import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import {
   unstable_composeUploadHandlers as composeUploadHandlers,
   unstable_createMemoryUploadHandler as createMemoryUploadHandler,
@@ -114,7 +114,7 @@ export const action: ActionFunction = async ({ request }) => {
   throw redirect(userArtPage(user));
 };
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = await requireUser(request);
   validate(user.isArtist, "Lacking artist role", 403);
 

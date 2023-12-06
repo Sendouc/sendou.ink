@@ -1,4 +1,8 @@
-import type { ActionArgs, LoaderArgs, UploadHandler } from "@remix-run/node";
+import type {
+  ActionFunctionArgs,
+  LoaderFunctionArgs,
+  UploadHandler,
+} from "@remix-run/node";
 import {
   redirect,
   unstable_composeUploadHandlers as composeUploadHandlers,
@@ -30,7 +34,7 @@ import { requestToImgType } from "../upload-utils";
 import { findByIdentifier, isTeamOwner } from "~/features/team";
 import * as TeamRepository from "~/features/team/TeamRepository.server";
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const user = await requireUser(request);
   const team = await TeamRepository.findByUserId(user.id);
 
@@ -81,7 +85,7 @@ export const action = async ({ request }: ActionArgs) => {
   return null;
 };
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = await requireUser(request);
   const team = await TeamRepository.findByUserId(user.id);
   const validatedType = requestToImgType(request);

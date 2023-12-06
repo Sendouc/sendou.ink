@@ -131,8 +131,7 @@
   line-height: 0.75;
   margin-inline: auto;
   padding-block: var(--s-1);
-  padding-inline-end: var(--s-4);
-  padding-inline-start: var(--s-3);
+  padding-inline: var(--s-3) var(--s-4);
 }
 
 .plus-voting__alert > svg {

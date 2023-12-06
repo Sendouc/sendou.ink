@@ -1,5 +1,9 @@
 import { RadioGroup } from "@headlessui/react";
-import type { ActionArgs, LinksFunction, LoaderArgs } from "@remix-run/node";
+import type {
+  ActionFunctionArgs,
+  LinksFunction,
+  LoaderFunctionArgs,
+} from "@remix-run/node";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
@@ -60,7 +64,7 @@ export const handle: SendouRouteHandle = {
   ],
 };
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const user = await requireUserId(request);
   const data = await parseRequestFormData({
     request,
@@ -105,7 +109,7 @@ export const action = async ({ request }: ActionArgs) => {
   return { ok: true };
 };
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = await requireUserId(request);
 
   return {

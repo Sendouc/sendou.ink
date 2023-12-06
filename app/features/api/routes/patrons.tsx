@@ -1,4 +1,4 @@
-import type { ActionFunction, LoaderArgs } from "@remix-run/node";
+import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { getUserId } from "~/features/auth/core/user.server";
 import { updatePatreonData } from "~/modules/patreon";
 import { canAccessLohiEndpoint, canPerformAdminActions } from "~/permissions";
@@ -17,7 +17,7 @@ export const action: ActionFunction = async ({ request }) => {
   return null;
 };
 
-export const loader = ({ request }: LoaderArgs) => {
+export const loader = ({ request }: LoaderFunctionArgs) => {
   validate(canAccessLohiEndpoint(request), "Invalid token", 403);
 
   return UserRepository.findAllPatrons();

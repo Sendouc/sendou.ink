@@ -1,5 +1,5 @@
 import { lazy } from "react";
-import type { LinksFunction, V2_MetaFunction } from "@remix-run/node";
+import type { LinksFunction, MetaFunction } from "@remix-run/node";
 import styles from "../plans.css";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { useIsMounted } from "~/hooks/useIsMounted";
@@ -8,7 +8,7 @@ import { makeTitle } from "~/utils/strings";
 import { useTranslation } from "~/hooks/useTranslation";
 import { useSetTitle } from "~/hooks/useSetTitle";
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [
     { title: makeTitle("Planner") },
     {

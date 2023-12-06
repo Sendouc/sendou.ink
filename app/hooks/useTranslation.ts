@@ -1,15 +1,13 @@
 import * as React from "react";
 import { useMatches } from "@remix-run/react";
 import {
-  type DefaultNamespace,
-  type KeyPrefix,
-  type Namespace,
   // eslint-disable-next-line @typescript-eslint/no-restricted-imports
   useTranslation as useTranslationOriginal,
   type UseTranslationOptions,
   type UseTranslationResponse,
 } from "react-i18next";
 import type { SendouRouteHandle } from "~/utils/remix";
+import type { DefaultNamespace, KeyPrefix, Namespace } from "i18next";
 
 // Wraps useTranslation for better error detection with remix-i18next.
 // Only has an effect in non-production environments.
@@ -41,8 +39,8 @@ export function useTranslation<
       nsFixed === undefined
         ? ["common"]
         : typeof nsFixed === "string"
-        ? [nsFixed]
-        : nsFixed;
+          ? [nsFixed]
+          : nsFixed;
 
     for (const singleNs of nsArray) {
       if (!loadedTranslations.has(singleNs)) {

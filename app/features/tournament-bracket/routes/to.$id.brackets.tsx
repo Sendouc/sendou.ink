@@ -1,7 +1,7 @@
 import type {
   ActionFunction,
   LinksFunction,
-  LoaderArgs,
+  LoaderFunctionArgs,
   SerializeFrom,
 } from "@remix-run/node";
 import {
@@ -51,7 +51,7 @@ import {
   resolveTournamentStageType,
 } from "../tournament-bracket-utils";
 import { sql } from "~/db/sql";
-import { useEventSource } from "remix-utils";
+import { useEventSource } from "remix-utils/sse/react";
 import { Status } from "~/db/types";
 import clsx from "clsx";
 import { Button, LinkButton } from "~/components/Button";
@@ -216,7 +216,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 
 export type TournamentBracketLoaderData = SerializeFrom<typeof loader>;
 
-export const loader = ({ params }: LoaderArgs) => {
+export const loader = ({ params }: LoaderFunctionArgs) => {
   const tournamentId = tournamentIdFromParams(params);
 
   const hasStarted = hasTournamentStarted(tournamentId);

@@ -1,9 +1,9 @@
 import type {
-  ActionArgs,
+  ActionFunctionArgs,
   LinksFunction,
-  LoaderArgs,
+  LoaderFunctionArgs,
   SerializeFrom,
-  V2_MetaFunction,
+  MetaFunction,
 } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import type { FetcherWithComponents } from "@remix-run/react";
@@ -103,7 +103,7 @@ import { NewTabs } from "~/components/NewTabs";
 import { Alert } from "~/components/Alert";
 import cachified from "cachified";
 
-export const meta: V2_MetaFunction = (args) => {
+export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
 
   if (!data) return [];
@@ -136,7 +136,7 @@ export const handle: SendouRouteHandle = {
   }),
 };
 
-export const action = async ({ request, params }: ActionArgs) => {
+export const action = async ({ request, params }: ActionFunctionArgs) => {
   const matchId = matchIdFromParams(params);
   const user = await requireUser(request);
   const data = await parseRequestFormData({
@@ -382,7 +382,7 @@ export const action = async ({ request, params }: ActionArgs) => {
   return null;
 };
 
-export const loader = async ({ params, request }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const user = await getUserId(request);
   const matchId = matchIdFromParams(params);
   const match = notFoundIfFalsy(await QMatchRepository.findById(matchId));
@@ -448,8 +448,8 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     groupMemberOf: isTeamAlphaMember
       ? ("ALPHA" as const)
       : isTeamBravoMember
-      ? ("BRAVO" as const)
-      : null,
+        ? ("BRAVO" as const)
+        : null,
     reportedWeapons: match.reportedAt
       ? reportedWeaponsToArrayOfArrays({
           groupAlpha,
@@ -485,8 +485,8 @@ export default function QMatchPage() {
   const ownGroup = data.groupAlpha.members.some((m) => m.id === user?.id)
     ? data.groupAlpha
     : data.groupBravo.members.some((m) => m.id === user?.id)
-    ? data.groupBravo
-    : null;
+      ? data.groupBravo
+      : null;
 
   const ownTeamReported = Boolean(
     data.match.reportedByUserId &&

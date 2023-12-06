@@ -1,4 +1,4 @@
-import type { ActionArgs, LoaderArgs } from "@remix-run/node";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import type { z } from "zod";
 import { ADMIN_ID } from "~/constants";
 import { NZAP_TEST_ID } from "~/db/seed/constants";
@@ -17,8 +17,8 @@ export function wrappedAction<T extends z.ZodTypeAny>({
   params = {},
 }: {
   // TODO: strongly type this
-  action: (args: ActionArgs) => any;
-  params?: ActionArgs["params"];
+  action: (args: ActionFunctionArgs) => any;
+  params?: ActionFunctionArgs["params"];
 }) {
   return async (
     args: z.infer<T>,
@@ -56,7 +56,7 @@ export function wrappedLoader<T>({
   loader,
 }: {
   // TODO: strongly type this
-  loader: (args: LoaderArgs) => any;
+  loader: (args: LoaderFunctionArgs) => any;
 }) {
   return async ({ user }: { user?: "admin" | "regular" } = {}) => {
     const request = new Request("http://app.com/path", {

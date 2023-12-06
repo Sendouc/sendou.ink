@@ -1,10 +1,15 @@
 import type {
-  ActionArgs,
+  ActionFunctionArgs,
   LoaderFunction,
-  V2_MetaFunction,
+  MetaFunction,
 } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { useFetcher, useLoaderData, useNavigation } from "@remix-run/react";
+import {
+  Form,
+  useFetcher,
+  useLoaderData,
+  useNavigation,
+} from "@remix-run/react";
 import * as React from "react";
 import { Button } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
@@ -31,11 +36,11 @@ import { SEED_URL, STOP_IMPERSONATING_URL, impersonateUrl } from "~/utils/urls";
 import { adminActionSchema } from "../admin-schemas.server";
 import { plusTiersFromVotingAndLeaderboard } from "../core/plus-tier.server";
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [{ title: makeTitle("Admin page") }];
 };
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const data = await parseRequestFormData({
     request,
     schema: adminActionSchema,
@@ -151,12 +156,11 @@ export default function AdminPage() {
 }
 
 function Impersonate() {
-  const fetcher = useFetcher();
   const [userId, setUserId] = React.useState<number>();
   const { isImpersonating } = useLoaderData<AdminPageLoaderData>();
 
   return (
-    <fetcher.Form
+    <Form
       method="post"
       action={impersonateUrl(userId ?? 0)}
       className="stack md"
@@ -180,7 +184,7 @@ function Impersonate() {
           </Button>
         ) : null}
       </div>
-    </fetcher.Form>
+    </Form>
   );
 }
 
@@ -194,8 +198,8 @@ function MigrateUser() {
     navigation.state === "submitting"
       ? "Migrating..."
       : navigation.state === "loading"
-      ? "Migrated!"
-      : "Migrate";
+        ? "Migrated!"
+        : "Migrate";
 
   return (
     <fetcher.Form className="stack md" method="post">

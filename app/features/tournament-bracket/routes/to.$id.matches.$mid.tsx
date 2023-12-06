@@ -1,7 +1,7 @@
 import type {
   ActionFunction,
   LinksFunction,
-  LoaderArgs,
+  LoaderFunctionArgs,
 } from "@remix-run/node";
 import {
   Link,
@@ -12,7 +12,7 @@ import {
 import clsx from "clsx";
 import { nanoid } from "nanoid";
 import * as React from "react";
-import { useEventSource } from "remix-utils";
+import { useEventSource } from "remix-utils/sse/react";
 import invariant from "tiny-invariant";
 import { Avatar } from "~/components/Avatar";
 import { LinkButton } from "~/components/Button";
@@ -291,7 +291,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 
 export type TournamentMatchLoaderData = typeof loader;
 
-export const loader = async ({ params, request }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const user = await getUserId(request);
   const tournamentId = tournamentIdFromParams(params);
   const matchId = matchIdFromParams(params);
@@ -379,8 +379,8 @@ export default function TournamentMatchPage() {
   })
     ? "EDIT"
     : isMemberOfATeam
-    ? "MEMBER"
-    : "OTHER";
+      ? "MEMBER"
+      : "OTHER";
 
   const showRosterPeek = () => {
     if (matchIsOver) return false;

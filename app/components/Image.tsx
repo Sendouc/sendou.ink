@@ -92,8 +92,8 @@ export function WeaponImage({
         variant === "badge"
           ? outlinedMainWeaponImageUrl(weaponSplId)
           : variant == "badge-5-star"
-          ? outlinedFiveStarMainWeaponImageUrl(weaponSplId)
-          : mainWeaponImageUrl(weaponSplId)
+            ? outlinedFiveStarMainWeaponImageUrl(weaponSplId)
+            : mainWeaponImageUrl(weaponSplId)
       }
     />
   );

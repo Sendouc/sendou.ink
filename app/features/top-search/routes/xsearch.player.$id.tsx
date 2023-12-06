@@ -1,7 +1,7 @@
 import type {
   LinksFunction,
-  LoaderArgs,
-  V2_MetaFunction,
+  LoaderFunctionArgs,
+  MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
@@ -48,7 +48,7 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const meta: V2_MetaFunction = (args) => {
+export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
 
   if (!data) return [];
@@ -62,7 +62,7 @@ export const meta: V2_MetaFunction = (args) => {
   ];
 };
 
-export const loader = async ({ params, request }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const placements = notFoundIfFalsy(
     findPlacementsByPlayerId(Number(params["id"])),
   );

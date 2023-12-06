@@ -152,8 +152,8 @@ export function HACKY_resolvePoolCode({
   const prefix = event.name.includes("In The Zone")
     ? "ITZ"
     : HACKY_isInviteOnlyEvent(event)
-    ? "SQ"
-    : "PN";
+      ? "SQ"
+      : "PN";
   const lastDigit = hostingTeamId % 10;
 
   return { prefix, lastDigit };

@@ -1,8 +1,8 @@
 import type {
   LinksFunction,
-  LoaderArgs,
+  LoaderFunctionArgs,
   SerializeFrom,
-  V2_MetaFunction,
+  MetaFunction,
 } from "@remix-run/node";
 import {
   Outlet,
@@ -50,7 +50,7 @@ export const shouldRevalidate: ShouldRevalidateFunction = (args) => {
   return args.defaultShouldRevalidate;
 };
 
-export const meta: V2_MetaFunction = (args) => {
+export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader>;
 
   if (!data) return [];
@@ -69,7 +69,7 @@ export const handle: SendouRouteHandle = {
 export type TournamentLoaderTeam = Unpacked<TournamentLoaderData["teams"]>;
 export type TournamentLoaderData = SerializeFrom<typeof loader>;
 
-export const loader = async ({ params, request }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const user = await getUser(request);
   const tournamentId = tournamentIdFromParams(params);
   const tournament = notFoundIfFalsy(

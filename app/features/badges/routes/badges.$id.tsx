@@ -1,4 +1,4 @@
-import type { LoaderArgs, SerializeFrom } from "@remix-run/node";
+import type { LoaderFunctionArgs, SerializeFrom } from "@remix-run/node";
 import { Outlet, useLoaderData, useMatches, useParams } from "@remix-run/react";
 import clsx from "clsx";
 import { Badge } from "~/components/Badge";
@@ -9,17 +9,17 @@ import { useUser } from "~/features/auth/core";
 import { canEditBadgeOwners, isMod } from "~/permissions";
 import { BADGES_PAGE } from "~/utils/urls";
 import { type BadgesLoaderData } from "./badges";
-import { type TFunction } from "react-i18next";
 import { useTranslation } from "~/hooks/useTranslation";
 import { SPLATOON_3_XP_BADGE_VALUES } from "~/constants";
 import * as BadgeRepository from "../BadgeRepository.server";
+import type { TFunction } from "i18next";
 
 export interface BadgeDetailsContext {
   badgeName: string;
 }
 
 export type BadgeDetailsLoaderData = SerializeFrom<typeof loader>;
-export const loader = async ({ params }: LoaderArgs) => {
+export const loader = async ({ params }: LoaderFunctionArgs) => {
   const badgeId = Number(params["id"]);
   if (Number.isNaN(badgeId)) {
     throw new Response(null, { status: 404 });

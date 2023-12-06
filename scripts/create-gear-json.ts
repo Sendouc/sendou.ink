@@ -55,8 +55,8 @@ async function main() {
       type === LEAN_CLOTHES_CODE
         ? "Clothes"
         : type === LEAN_SHOES_CODE
-        ? "Shoes"
-        : "Head"
+          ? "Shoes"
+          : "Head"
     }`;
 
     allGear.push({

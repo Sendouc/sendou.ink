@@ -11,10 +11,10 @@ export const assertType = <A, B extends A>() => {}; // eslint-disable-line
 export type Unpacked<T> = T extends (infer U)[]
   ? U
   : T extends (...args: unknown[]) => infer U
-  ? U
-  : T extends Promise<infer U>
-  ? U
-  : T;
+    ? U
+    : T extends Promise<infer U>
+      ? U
+      : T;
 
 export type Nullish<T> = T | null | undefined;
 
