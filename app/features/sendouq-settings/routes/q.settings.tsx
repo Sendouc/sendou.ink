@@ -271,11 +271,14 @@ function MapModeRadios({
     preference: Preference & "NEUTRAL";
   }) => void;
 }) {
-  const { t } = useTranslation(["q"]);
+  const { t } = useTranslation(["q", "game-misc"]);
 
   return (
     <div className="q-settings__map-mode-radios-container">
-      <StageImage stageId={stageId} width={250} className="rounded" />
+      <div className="stack items-center text-uppercase text-lighter text-xs font-bold">
+        {t(`game-misc:STAGE_${stageId}`)}
+        <StageImage stageId={stageId} width={250} className="rounded" />
+      </div>
       <div className="stack justify-evenly">
         {modesShort.map((modeShort) => {
           const preference = preferences.find(
