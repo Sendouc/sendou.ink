@@ -645,14 +645,16 @@ function Groups() {
           <Chat
             rooms={rooms}
             users={chatUsers}
-            className="w-full q__chat-container"
+            className="w-full"
             messagesContainerClassName="q__chat-messages-container"
             onNewMessage={onNewMessage}
             chat={chat}
             onMount={onChatMount}
             onUnmount={onChatUnmount}
           />
-          <div className="mt-4">{invitedGroupsDesktop}</div>
+          {!isMobile ? (
+            <div className="mt-4">{invitedGroupsDesktop}</div>
+          ) : null}
         </>
       ) : null}
     </div>
