@@ -1,5 +1,5 @@
 import type { TierName } from "~/features/mmr/mmr-constants";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import type { MainWeaponId, ModeShort, StageId } from "~/modules/in-game-lists";
 import {
   TIER_PLUS_URL,

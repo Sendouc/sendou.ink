@@ -30,7 +30,7 @@ import * as QRepository from "~/features/sendouq/QRepository.server";
 import { giveTrust } from "~/features/tournament/queries/giveTrust.server";
 import { useAutoRerender } from "~/hooks/useAutoRerender";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { joinListToNaturalString } from "~/utils/arrays";
 import {
   parseRequestFormData,

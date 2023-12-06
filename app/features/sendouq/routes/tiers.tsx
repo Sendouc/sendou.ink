@@ -9,7 +9,7 @@ import {
 } from "~/features/mmr/mmr-constants";
 import { currentOrPreviousSeason } from "~/features/mmr/season";
 import { userSkills } from "~/features/mmr/tiered.server";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import type { SendouRouteHandle } from "~/utils/remix";
 
 export const handle: SendouRouteHandle = {

@@ -11,7 +11,7 @@ import { SpeakerXIcon } from "~/components/icons/SpeakerX";
 import type { GroupMember as GroupMemberType, ParsedMemento } from "~/db/types";
 import { ordinalToRoundedSp } from "~/features/mmr/mmr-utils";
 import type { TieredSkill } from "~/features/mmr/tiered.server";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { useUser } from "~/features/auth/core";
 import { languagesUnified } from "~/modules/i18n/config";
 import {

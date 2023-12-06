@@ -5,7 +5,7 @@ import { TOURNAMENT } from "../../tournament/tournament-constants";
 import { SubmitButton } from "~/components/SubmitButton";
 import { TeamRosterInputs } from "./TeamRosterInputs";
 import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import type { Result } from "./ScoreReporter";
 import type { TournamentMatchLoaderData } from "../routes/to.$id.matches.$mid";
 import type { SerializeFrom } from "@remix-run/node";

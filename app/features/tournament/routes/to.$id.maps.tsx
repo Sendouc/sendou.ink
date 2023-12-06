@@ -10,7 +10,7 @@ import * as React from "react";
 import { Alert } from "~/components/Alert";
 import type { MapPoolMap } from "~/db/types";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { useUser } from "~/features/auth/core";
 import { getUserId } from "~/features/auth/core/user.server";
 import { createTournamentMapList } from "~/modules/tournament-map-list-generator";

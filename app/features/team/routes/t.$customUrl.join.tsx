@@ -8,7 +8,7 @@ import { Form, useLoaderData } from "@remix-run/react";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { INVITE_CODE_LENGTH } from "~/constants";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { requireUser } from "~/features/auth/core";
 import {
   notFoundIfFalsy,

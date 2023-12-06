@@ -38,7 +38,7 @@ import { type ChatProps, Chat, useChat } from "~/features/chat/components/Chat";
 import { currentSeason } from "~/features/mmr";
 import { resolveRoomPass } from "~/features/tournament-bracket/tournament-bracket-utils";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { useUser } from "~/features/auth/core";
 import { getUserId, requireUser } from "~/features/auth/core/user.server";
 import type { MainWeaponId } from "~/modules/in-game-lists";

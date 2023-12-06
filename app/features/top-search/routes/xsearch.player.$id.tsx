@@ -19,7 +19,7 @@ import {
 } from "~/utils/urls";
 import { i18next } from "~/modules/i18n";
 import { makeTitle } from "~/utils/strings";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 
 export const handle: SendouRouteHandle = {
   breadcrumb: ({ match }) => {

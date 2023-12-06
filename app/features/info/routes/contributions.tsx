@@ -16,7 +16,7 @@ import {
   YAGA_TWITTER,
 } from "~/utils/urls";
 import { type SendouRouteHandle } from "~/utils/remix";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import * as React from "react";
 
 export const meta: MetaFunction = () => {

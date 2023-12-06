@@ -20,7 +20,7 @@ import { SearchIcon } from "~/components/icons/Search";
 import { Input } from "~/components/Input";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { useUser } from "~/features/auth/core";
 import { getUserId, requireUserId } from "~/features/auth/core/user.server";
 import { i18next } from "~/modules/i18n";

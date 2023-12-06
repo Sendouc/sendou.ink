@@ -28,7 +28,7 @@ import {
   tournamentTeamPage,
   userPage,
 } from "~/utils/urls";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { Redirect } from "~/components/Redirect";
 import { Popover } from "~/components/Popover";
 import type { TournamentMaplistSource } from "~/modules/tournament-map-list-generator";

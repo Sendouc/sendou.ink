@@ -23,7 +23,7 @@ import { Label } from "~/components/Label";
 import { SubmitButton } from "~/components/SubmitButton";
 import { USER } from "~/constants";
 import type { UserWeapon, User } from "~/db/types";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { useUser } from "~/features/auth/core";
 import { requireUser, requireUserId } from "~/features/auth/core/user.server";
 import { i18next } from "~/modules/i18n";

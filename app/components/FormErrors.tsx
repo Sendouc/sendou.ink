@@ -1,6 +1,6 @@
 import { useActionData } from "@remix-run/react";
 import type { CustomTypeOptions } from "react-i18next";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 
 export function FormErrors({
   namespace,

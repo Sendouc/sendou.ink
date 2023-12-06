@@ -10,7 +10,7 @@ import {
   navIconUrl,
 } from "~/utils/urls";
 import { Trans } from "react-i18next";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { type SendouRouteHandle } from "~/utils/remix";
 import * as BadgeRepository from "../BadgeRepository.server";
 

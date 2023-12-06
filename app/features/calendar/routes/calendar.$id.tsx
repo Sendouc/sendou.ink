@@ -20,7 +20,7 @@ import { MapPoolStages } from "~/components/MapPoolSelector";
 import { Placement } from "~/components/Placement";
 import { Section } from "~/components/Section";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { useUser } from "~/features/auth/core";
 import { requireUserId } from "~/features/auth/core/user.server";
 import { i18next } from "~/modules/i18n";

@@ -26,7 +26,7 @@ import {
   LEADERBOARD_TYPES,
   WEAPON_LEADERBOARD_MAX_SIZE,
 } from "../leaderboards-constants";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { i18next } from "~/modules/i18n";
 import {
   type XPLeaderboardItem,

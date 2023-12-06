@@ -2,7 +2,7 @@ import { useFetcher } from "@remix-run/react";
 import { Button } from "~/components/Button";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { SubmitButton } from "~/components/SubmitButton";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { SENDOUQ_LOOKING_PAGE } from "~/utils/urls";
 
 export function GroupLeaver({

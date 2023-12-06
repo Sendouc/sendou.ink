@@ -5,7 +5,7 @@ import * as React from "react";
 import { useDebounce } from "react-use";
 import type { UserSearchLoaderData } from "~/features/user-search/routes/u";
 import { Avatar } from "./Avatar";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 
 type UserSearchUserItem = NonNullable<UserSearchLoaderData>["users"][number];
 

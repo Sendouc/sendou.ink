@@ -9,7 +9,7 @@ import { Combobox } from "~/components/Combobox";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import { Toggle } from "~/components/Toggle";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { i18next } from "~/modules/i18n";
 import { type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";

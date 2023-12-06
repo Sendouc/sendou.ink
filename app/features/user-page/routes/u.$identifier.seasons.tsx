@@ -46,7 +46,7 @@ import { seasonStagesByUserId } from "~/features/sendouq/queries/seasonStagesByU
 import { seasonsMatesEnemiesByUserId } from "~/features/sendouq/queries/seasonsMatesEnemiesByUserId.server";
 import { useWeaponUsage } from "~/hooks/swr";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import {
   stageIds,
   type ModeShort,

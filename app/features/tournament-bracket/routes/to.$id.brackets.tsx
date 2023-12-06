@@ -67,7 +67,7 @@ import { Flag } from "~/components/Flag";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { Popover } from "~/components/Popover";
 import { useCopyToClipboard } from "react-use";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { bracketSchema } from "../tournament-bracket-schemas.server";
 import { addSummary } from "../queries/addSummary.server";
 import { tournamentSummary } from "../core/summarizer.server";

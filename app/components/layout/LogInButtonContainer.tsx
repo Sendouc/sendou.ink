@@ -1,5 +1,5 @@
 import { useSearchParams } from "@remix-run/react";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { LOG_IN_URL, SENDOU_INK_DISCORD_URL } from "~/utils/urls";
 import { Button } from "../Button";
 import { Dialog } from "../Dialog";

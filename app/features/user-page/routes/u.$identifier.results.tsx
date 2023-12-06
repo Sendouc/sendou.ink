@@ -2,7 +2,7 @@ import { useMatches } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { LinkButton } from "~/components/Button";
 import { Section } from "~/components/Section";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { useUser } from "~/features/auth/core";
 import { userResultsEditHighlightsPage } from "~/utils/urls";
 import type { UserPageLoaderData } from "../../../features/user-page/routes/u.$identifier";

@@ -11,7 +11,7 @@ import { Toggle } from "~/components/Toggle";
 import { possibleApValues } from "~/features/build-analyzer";
 import type { AnyWeapon, DamageType } from "~/features/build-analyzer";
 import { useSetTitle } from "~/hooks/useSetTitle";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import {
   BIG_BUBBLER_ID,
   BOOYAH_BOMB_ID,

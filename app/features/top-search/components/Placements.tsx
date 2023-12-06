@@ -1,6 +1,6 @@
 import { Link } from "@remix-run/react";
 import { Image, WeaponImage } from "~/components/Image";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import {
   brandImageUrl,
   modeImageUrl,

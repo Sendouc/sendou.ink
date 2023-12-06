@@ -11,7 +11,7 @@ import * as React from "react";
 import { ClipboardIcon } from "~/components/icons/Clipboard";
 import { PlusIcon } from "~/components/icons/Plus";
 import { CheckmarkIcon } from "~/components/icons/Checkmark";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 
 export function MemberAdder({
   inviteCode,

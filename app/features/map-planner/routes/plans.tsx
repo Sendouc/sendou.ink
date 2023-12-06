@@ -5,7 +5,7 @@ import type { SendouRouteHandle } from "~/utils/remix";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { navIconUrl, PLANNER_URL } from "~/utils/urls";
 import { makeTitle } from "~/utils/strings";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { useSetTitle } from "~/hooks/useSetTitle";
 
 export const meta: MetaFunction = () => {

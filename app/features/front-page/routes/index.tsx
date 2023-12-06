@@ -10,7 +10,7 @@ import {
   navIconUrl,
   userPage,
 } from "~/utils/urls";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import type { LinksFunction } from "@remix-run/node";
 import styles from "~/styles/front.css";
 import { Link } from "@remix-run/react";

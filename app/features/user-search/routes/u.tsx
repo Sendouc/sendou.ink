@@ -13,7 +13,7 @@ import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
 import { useDebounce } from "react-use";
 import * as React from "react";
 import { Avatar } from "~/components/Avatar";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { queryToUserIdentifier } from "~/utils/users";
 import * as UserRepository from "~/features/user-page/UserRepository.server";

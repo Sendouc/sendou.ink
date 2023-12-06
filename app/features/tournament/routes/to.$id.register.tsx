@@ -27,7 +27,7 @@ import { CrossIcon } from "~/components/icons/Cross";
 import { UserIcon } from "~/components/icons/User";
 import { useAutoRerender } from "~/hooks/useAutoRerender";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { useUser } from "~/features/auth/core";
 import { getUser, requireUser } from "~/features/auth/core/user.server";
 import type {

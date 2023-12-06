@@ -14,7 +14,7 @@ import type { ChatMessage } from "../chat-types";
 import { MESSAGE_MAX_LENGTH } from "../chat-constants";
 import { messageTypeToSound, soundEnabled } from "../chat-utils";
 import { soundPath } from "~/utils/urls";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 
 type ChatUser = Pick<User, "discordName" | "discordId" | "discordAvatar"> & {
   chatNameColor: string | null;

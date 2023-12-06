@@ -13,7 +13,7 @@ import { SubNav, SubNavLink } from "~/components/SubNav";
 import { countArtByUserId } from "~/features/art";
 import { userTopPlacements } from "~/features/top-search";
 import { findVods } from "~/features/vods";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { useUser } from "~/features/auth/core";
 import { getUserId } from "~/features/auth/core/user.server";
 import { canAddCustomizedColorsToUserProfile, isAdmin } from "~/permissions";

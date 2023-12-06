@@ -7,7 +7,7 @@ import { Avatar } from "~/components/Avatar";
 import { Redirect } from "~/components/Redirect";
 import { tournamentRegisterPage, twitchUrl } from "~/utils/urls";
 import { UserIcon } from "~/components/icons/User";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   const tournamentId = tournamentIdFromParams(params);

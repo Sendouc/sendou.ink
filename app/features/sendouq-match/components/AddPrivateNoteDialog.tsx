@@ -6,7 +6,7 @@ import { SENDOUQ } from "~/features/sendouq/q-constants";
 import { SubmitButton } from "~/components/SubmitButton";
 import { FormMessage } from "~/components/FormMessage";
 import { preferenceEmojiUrl } from "~/utils/urls";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { Button } from "~/components/Button";
 import { CrossIcon } from "~/components/icons/Cross";
 import type { GroupForMatch } from "../QMatchRepository.server";

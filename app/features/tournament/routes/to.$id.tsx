@@ -12,7 +12,7 @@ import {
 } from "@remix-run/react";
 import { Main } from "~/components/Main";
 import { SubNav, SubNavLink } from "~/components/SubNav";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { useUser } from "~/features/auth/core";
 import { getUser } from "~/features/auth/core/user.server";
 import { canAdminTournament } from "~/permissions";

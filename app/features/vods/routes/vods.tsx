@@ -9,7 +9,7 @@ import { Button } from "~/components/Button";
 import { WeaponCombobox } from "~/components/Combobox";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { i18next } from "~/modules/i18n";
 import { mainWeaponIds, modesShort, stageIds } from "~/modules/in-game-lists";
 import type { SendouRouteHandle } from "~/utils/remix";

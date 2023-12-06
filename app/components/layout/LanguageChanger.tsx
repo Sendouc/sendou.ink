@@ -1,6 +1,6 @@
 import { useSearchParams } from "@remix-run/react";
 import type * as React from "react";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { languages } from "~/modules/i18n";
 import { LinkButton } from "../Button";
 import { GlobeIcon } from "../icons/Globe";

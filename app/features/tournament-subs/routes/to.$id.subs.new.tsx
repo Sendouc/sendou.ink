@@ -8,7 +8,7 @@ import { Form, useLoaderData } from "@remix-run/react";
 import React from "react";
 import { Label } from "~/components/Label";
 import { SubmitButton } from "~/components/SubmitButton";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import styles from "../tournament-subs.css";
 import { requireUser, useUser } from "~/features/auth/core";
 import type { MainWeaponId } from "~/modules/in-game-lists";

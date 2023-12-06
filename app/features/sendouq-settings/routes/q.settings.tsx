@@ -23,7 +23,7 @@ import { requireUserId } from "~/features/auth/core/user.server";
 import { soundCodeToLocalStorageKey } from "~/features/chat/chat-utils";
 import * as QSettingsRepository from "~/features/sendouq-settings/QSettingsRepository.server";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { languagesUnified } from "~/modules/i18n/config";
 import type { MainWeaponId, ModeShort, StageId } from "~/modules/in-game-lists";
 import { stageIds } from "~/modules/in-game-lists";

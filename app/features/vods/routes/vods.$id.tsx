@@ -13,7 +13,7 @@ import { Main } from "~/components/Main";
 import { YouTubeEmbed } from "~/components/YouTubeEmbed";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { useUser } from "~/features/auth/core";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { secondsToMinutes } from "~/utils/number";

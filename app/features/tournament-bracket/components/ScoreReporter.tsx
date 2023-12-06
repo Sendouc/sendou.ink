@@ -7,7 +7,7 @@ import {
 import clsx from "clsx";
 import { Image } from "~/components/Image";
 import { SubmitButton } from "~/components/SubmitButton";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator";
 import { modeImageUrl, stageImageUrl } from "~/utils/urls";

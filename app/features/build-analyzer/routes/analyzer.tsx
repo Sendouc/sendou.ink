@@ -16,7 +16,7 @@ import { Toggle } from "~/components/Toggle";
 import { BeakerIcon } from "~/components/icons/Beaker";
 import { MAX_AP } from "~/constants";
 import { useSetTitle } from "~/hooks/useSetTitle";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { useUser } from "~/features/auth/core";
 import type { Ability as AbilityType } from "~/modules/in-game-lists";
 import {

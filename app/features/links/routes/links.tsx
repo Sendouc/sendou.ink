@@ -1,6 +1,6 @@
 import { Main } from "~/components/Main";
 import { useSetTitle } from "~/hooks/useSetTitle";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { LINKS_PAGE, navIconUrl } from "~/utils/urls";
 import links from "../links.json";

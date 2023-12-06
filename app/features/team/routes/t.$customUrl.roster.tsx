@@ -16,7 +16,7 @@ import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { useBaseUrl } from "~/hooks/useBaseUrl";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { useUser } from "~/features/auth/core";
 import { requireUserId } from "~/features/auth/core/user.server";
 import type { SendouRouteHandle } from "~/utils/remix";

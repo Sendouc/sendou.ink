@@ -24,7 +24,7 @@ import {
   BUILDS_PAGE_MAX_BUILDS,
   ONE_HOUR_IN_MS,
 } from "~/constants";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { i18next } from "~/modules/i18n";
 import {
   abilities,

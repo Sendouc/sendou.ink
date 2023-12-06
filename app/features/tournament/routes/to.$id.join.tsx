@@ -23,7 +23,7 @@ import {
   tournamentIdFromParams,
   tournamentTeamMaxSize,
 } from "../tournament-utils";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
 
 export const action: ActionFunction = async ({ request, params }) => {

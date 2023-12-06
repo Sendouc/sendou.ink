@@ -12,7 +12,7 @@ import invariant from "tiny-invariant";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { getUser, requireUser } from "~/features/auth/core/user.server";
 import {
   parseRequestFormData,

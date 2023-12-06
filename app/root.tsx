@@ -29,7 +29,7 @@ import { getUser } from "./features/auth/core";
 import { DEFAULT_LANGUAGE, i18nCookie, i18next } from "./modules/i18n";
 import { useChangeLanguage } from "remix-i18next";
 import { type CustomTypeOptions } from "react-i18next";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { COMMON_PREVIEW_IMAGE } from "./utils/urls";
 import { ConditionalScrollRestoration } from "./components/ConditionalScrollRestoration";
 import { type SendouRouteHandle } from "~/utils/remix";

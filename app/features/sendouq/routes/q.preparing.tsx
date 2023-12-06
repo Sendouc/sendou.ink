@@ -36,7 +36,7 @@ import { useAutoRefresh } from "~/hooks/useAutoRefresh";
 import { currentSeason } from "~/features/mmr";
 import { GroupLeaver } from "../components/GroupLeaver";
 import * as QMatchRepository from "~/features/sendouq-match/QMatchRepository.server";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 
 export const handle: SendouRouteHandle = {
   i18n: ["q", "user"],

@@ -32,7 +32,7 @@ import type {
   Tournament,
 } from "~/db/types";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { useUser } from "~/features/auth/core";
 import { requireUser } from "~/features/auth/core/user.server";
 import { i18next } from "~/modules/i18n";

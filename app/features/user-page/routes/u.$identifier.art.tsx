@@ -22,7 +22,7 @@ import invariant from "tiny-invariant";
 import { LinkButton } from "~/components/Button";
 import { Popover } from "~/components/Popover";
 import { countUnvalidatedArt } from "~/features/img-upload";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { newArtPage } from "~/utils/urls";
 import { getUserId, requireUserId } from "~/features/auth/core/user.server";
 import * as UserRepository from "~/features/user-page/UserRepository.server";

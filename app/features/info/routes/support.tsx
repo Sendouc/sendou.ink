@@ -3,7 +3,7 @@ import { Main } from "~/components/Main";
 import styles from "../support.css";
 import * as React from "react";
 import { CheckmarkIcon } from "~/components/icons/Checkmark";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { Badge } from "~/components/Badge";
 import { LinkButton } from "~/components/Button";
 import {

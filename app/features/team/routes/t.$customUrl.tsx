@@ -18,7 +18,7 @@ import { UsersIcon } from "~/components/icons/Users";
 import { WeaponImage } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { Placement } from "~/components/Placement";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { useUser } from "~/features/auth/core";
 import { requireUserId } from "~/features/auth/core/user.server";
 import {

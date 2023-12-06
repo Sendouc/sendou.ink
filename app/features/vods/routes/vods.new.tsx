@@ -14,7 +14,7 @@ import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { YouTubeEmbed } from "~/components/YouTubeEmbed";
 import type { Video, VideoMatch } from "~/db/types";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { requireUser } from "~/features/auth/core";
 import {
   stageIds,

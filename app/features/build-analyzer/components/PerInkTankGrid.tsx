@@ -4,7 +4,7 @@ import { MAX_AP } from "~/constants";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { fullInkTankOptions } from "../core/stats";
 import * as React from "react";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { weaponParams } from "../core/utils";
 import clsx from "clsx";
 

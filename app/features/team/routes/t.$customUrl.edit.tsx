@@ -16,7 +16,7 @@ import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { Label } from "~/components/Label";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { requireUserId } from "~/features/auth/core/user.server";
 import {
   notFoundIfFalsy,

@@ -3,7 +3,7 @@ import type { TDImageAsset, TldrawApp } from "@tldraw/tldraw";
 import randomInt from "just-random-integer";
 import * as React from "react";
 import { usePlannerBg } from "~/hooks/usePlannerBg";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import type { LanguageCode } from "~/modules/i18n";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import {
