@@ -80,7 +80,12 @@ export function Ability({
       }}
       type={readonly ? undefined : "button"}
     >
-      <Image alt={altText} title={altText} path={abilityImageUrl(ability)} />
+      <Image
+        alt={altText}
+        title={altText}
+        path={abilityImageUrl(ability)}
+        size={sizeNumber}
+      />
     </AbilityTag>
   );
 }
