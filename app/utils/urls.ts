@@ -52,6 +52,8 @@ export const SENDOU_INK_DISCORD_URL = "https://discord.gg/sendou";
 export const SENDOU_TWITTER_URL = "https://twitter.com/sendouc";
 export const SENDOU_INK_TWITTER_URL = "https://twitter.com/sendouink";
 export const SENDOU_INK_PATREON_URL = "https://patreon.com/sendou";
+export const NINTENDO_COMMUNITY_TOURNAMENTS_GUIDELINES_URL =
+  "https://en-americas-support.nintendo.com/app/answers/detail/a_id/63454";
 export const PATREON_HOW_TO_CONNECT_DISCORD_URL =
   "https://support.patreon.com/hc/en-us/articles/212052266-How-do-I-connect-Discord-to-Patreon-Patron-";
 export const SENDOU_INK_GITHUB_URL = "https://github.com/Sendouc/sendou.ink";
