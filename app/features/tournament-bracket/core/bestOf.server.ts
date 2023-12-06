@@ -14,16 +14,18 @@ export function resolveBestOfs(
     return result;
   }
 
-  /// Best of 7
+  /// Best of 5
 
   // 1) Grand Finals
   // 2) Bracket reset
 
+  // left like this so can easily be changed to 7 if needed
+
   const finalsMatches = matches.filter((match) => match.groupNumber === 3);
 
   invariant(finalsMatches.length === 2, "finalsMatches must be 2");
-  result.push([7, finalsMatches[0]!.matchId]);
-  result.push([7, finalsMatches[1]!.matchId]);
+  result.push([5, finalsMatches[0]!.matchId]);
+  result.push([5, finalsMatches[1]!.matchId]);
 
   /// Best of 5
 
