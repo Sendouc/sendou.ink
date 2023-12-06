@@ -51,7 +51,9 @@ export function Chat({
   onUnmount,
   disabled,
   missingUserName,
-}: ChatProps & { chat: ReturnType<typeof useChat> }) {
+}: Omit<ChatProps, "revalidates" | "onNewMessage"> & {
+  chat: ReturnType<typeof useChat>;
+}) {
   const { t } = useTranslation(["common"]);
   const messagesContainerRef = React.useRef<HTMLOListElement>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);

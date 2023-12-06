@@ -1026,7 +1026,9 @@ function BottomSection({
     ].filter(Boolean) as ChatProps["rooms"];
   }, [data.matchChatCode, data.groupChatCode]);
 
-  const chat = useChat({ rooms: chatRooms, onNewMessage });
+  // revalidates: false because we don't want the user to lose the weapons
+  // they are reporting when the match gets suddenly locked
+  const chat = useChat({ rooms: chatRooms, onNewMessage, revalidates: false });
 
   const onChatMount = React.useCallback(() => {
     setChatVisible(true);
@@ -1053,16 +1055,12 @@ function BottomSection({
 
   const chatElement = (
     <Chat
-      onNewMessage={onNewMessage}
       chat={chat}
       onMount={onChatMount}
       onUnmount={onChatUnmount}
       users={chatUsers}
       rooms={chatRooms}
       disabled={!data.canPostChatMessages}
-      // we don't want the user to lose the weapons they are reporting
-      // when the match gets suddenly locked
-      revalidates={false}
     />
   );
 
