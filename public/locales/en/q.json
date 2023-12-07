@@ -63,7 +63,11 @@
   "settings.sounds.likeReceived": "Like received",
   "settings.sounds.groupNewMember": "Group new member",
   "settings.sounds.matchStarted": "Match started",
+  "settings.misc.header": "Misc",
   "settings.banned": "Banned",
+  "settings.avoid.label": "Avoid {{special}}",
+  "settings.avoid.explanation": "Accessibility concerns related to the new special have been raised. Enabling this setting will make the special banned in SendouQ lobbies and tournament matches you play via sendou.ink.",
+  "settings.avoid.readMore": "Read more about the issues here",
 
   "looking.joiningGroupError": "Before joining another group, leave the current one",
   "looking.goToSettingsPrompt": "To help group finding set your weapon pool and voice chat status on the settings page",
@@ -143,6 +147,8 @@
   "match.reporting": "Reporting {{score}} {{outcome}}",
   "match.outcome.win": "win",
   "match.outcome.loss": "loss",
+  "match.screen.ban": "Weapons with {{special}} are not allowed in this match",
+  "match.screen.allowed": "Weapons with {{special}} are allowed in this match",
 
   "preparing.joinQ": "Join the queue",
 

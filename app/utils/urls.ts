@@ -70,6 +70,8 @@ export const ipLabsMaps = (pool: string) =>
 export const SPLATOON_3_INK = "https://splatoon3.ink/";
 export const RHODESMAS_FREESOUND_PROFILE_URL =
   "https://freesound.org/people/rhodesmas/";
+export const SPLATTERCOLOR_SCREEN_TWITTER_URL =
+  "https://twitter.com/ProChara/status/1730986554078945562";
 
 export const twitterUrl = (accountName: string) =>
   `https://twitter.com/${accountName}`;

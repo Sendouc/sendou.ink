@@ -1224,6 +1224,8 @@ function BottomSection({
 }
 
 function ScreenLegalityInfo({ ban }: { ban: boolean }) {
+  const { t } = useTranslation(["q", "weapons"]);
+
   return (
     <div className="q-match__screen-legality">
       <Popover
@@ -1238,8 +1240,12 @@ function ScreenLegalityInfo({ ban }: { ban: boolean }) {
         }
       >
         {ban
-          ? "Weapons with Splattercolor Screen are not allowed in this match"
-          : "Weapons with Splattercolor Screen are allowed in this match"}
+          ? t("q:match.screen.ban", {
+              special: t("weapons:SPECIAL_19"),
+            })
+          : t("q:match.screen.allowed", {
+              special: t("weapons:SPECIAL_19"),
+            })}
       </Popover>
     </div>
   );
