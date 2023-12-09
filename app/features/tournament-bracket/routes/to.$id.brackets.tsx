@@ -185,7 +185,9 @@ export const action: ActionFunction = async ({ params, request }) => {
       invariant(results.length > 0, "No results found");
 
       // TODO: support tournaments outside of seasons as well as unranked tournaments
-      const _currentSeason = currentSeason(new Date());
+      const _currentSeason = currentSeason(
+        databaseTimestampToDate(tournament.startTime),
+      );
       validate(_currentSeason, "No current season found");
 
       addSummary({
