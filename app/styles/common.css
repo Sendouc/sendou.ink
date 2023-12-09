@@ -603,6 +603,10 @@ dialog::backdrop {
   margin: 5px;
 }
 
+.divider-tab__button:active {
+  transform: initial;
+}
+
 .tab__button:active {
   transform: initial;
 }
