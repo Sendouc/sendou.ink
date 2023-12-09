@@ -71,7 +71,10 @@ module.exports = {
         "/calendar/:id/report-winners",
         "features/calendar/routes/calendar.$id.report-winners.tsx",
       );
-      route("/map-pool-events", "features/calendar/routes/map-pool-events.ts");
+      route(
+        "/calendar/map-pool-events",
+        "features/calendar/routes/map-pool-events.ts",
+      );
 
       route("/maps", "features/map-list-generator/routes/maps.tsx");
 
