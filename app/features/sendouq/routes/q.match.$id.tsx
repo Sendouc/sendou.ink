@@ -1519,7 +1519,7 @@ function MapListMap({
               )}{" "}
               {t(`game-misc:STAGE_${map.stageId}`)}
             </div>
-            <div className="text-lighter text-xs">
+            <div className="text-lighter text-xs stack xxs horizontal">
               {mapPreferences && mapPreferences.length > 0 ? (
                 <Popover
                   triggerClassName="q-match__stage-popover-button"
