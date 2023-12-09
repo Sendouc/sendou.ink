@@ -321,56 +321,20 @@ function MemberNote({
   editable: boolean;
 }) {
   const { t } = useTranslation(["common", "q"]);
-  const fetcher = useFetcher();
   const [editing, setEditing] = React.useState(false);
-  const [value, setValue] = React.useState(note ?? "");
 
-  const startEditing = () => setEditing(true);
-  const stopEditing = React.useCallback(() => {
-    setEditing(false);
-    setValue(note ?? "");
-  }, [note]);
+  const startEditing = () => {
+    setEditing(true);
+  };
 
   // when note updates exit editing mode
   React.useEffect(() => {
-    stopEditing();
-  }, [stopEditing]);
-
-  const newValueLegal = value.length <= SENDOUQ.OWN_PUBLIC_NOTE_MAX_LENGTH;
+    setEditing(false);
+  }, [note]);
 
   if (editing) {
     return (
-      <fetcher.Form method="post" action={SENDOUQ_LOOKING_PAGE}>
-        <textarea
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          rows={2}
-          className="q__group-member__note-textarea mt-1"
-          name="value"
-        />
-        <div className="stack horizontal justify-between">
-          <Button
-            variant="minimal-destructive"
-            size="miniscule"
-            onClick={stopEditing}
-          >
-            {t("common:actions.cancel")}
-          </Button>
-          {newValueLegal ? (
-            <SubmitButton
-              _action="UPDATE_NOTE"
-              variant="minimal"
-              size="miniscule"
-            >
-              {t("common:actions.save")}
-            </SubmitButton>
-          ) : (
-            <span className="text-warning text-xxs font-semi-bold">
-              {value.length}/{SENDOUQ.OWN_PUBLIC_NOTE_MAX_LENGTH}
-            </span>
-          )}
-        </div>
-      </fetcher.Form>
+      <AddPrivateNoteForm note={note} stopEditing={() => setEditing(false)} />
     );
   }
 
@@ -398,6 +362,63 @@ function MemberNote({
     <Button variant="minimal" size="miniscule" onClick={startEditing}>
       {t("q:looking.groups.addNote")}
     </Button>
+  );
+}
+
+function AddPrivateNoteForm({
+  note,
+  stopEditing,
+}: {
+  note?: string | null;
+  stopEditing: () => void;
+}) {
+  const fetcher = useFetcher();
+  const textareaRef = React.useRef<HTMLTextAreaElement>(null);
+  const { t } = useTranslation(["common"]);
+  const [value, setValue] = React.useState(note ?? "");
+
+  const newValueLegal = value.length <= SENDOUQ.OWN_PUBLIC_NOTE_MAX_LENGTH;
+
+  React.useEffect(() => {
+    if (!textareaRef.current) return;
+    textareaRef.current.focus();
+    textareaRef.current.selectionStart = textareaRef.current.selectionEnd =
+      textareaRef.current.value.length;
+  }, []);
+
+  return (
+    <fetcher.Form method="post" action={SENDOUQ_LOOKING_PAGE}>
+      <textarea
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        rows={2}
+        className="q__group-member__note-textarea mt-1"
+        name="value"
+        ref={textareaRef}
+      />
+      <div className="stack horizontal justify-between">
+        <Button
+          variant="minimal-destructive"
+          size="miniscule"
+          onClick={stopEditing}
+        >
+          {t("common:actions.cancel")}
+        </Button>
+        {newValueLegal ? (
+          <SubmitButton
+            _action="UPDATE_NOTE"
+            variant="minimal"
+            size="miniscule"
+          >
+            {t("common:actions.save")}
+          </SubmitButton>
+        ) : (
+          <span className="text-warning text-xxs font-semi-bold">
+            {value.length}/{SENDOUQ.OWN_PUBLIC_NOTE_MAX_LENGTH}
+          </span>
+        )}
+      </div>
+    </fetcher.Form>
   );
 }
 
