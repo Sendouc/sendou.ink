@@ -82,6 +82,7 @@
   "maps.validation.MAP_REPEATED": "Can't pick the same stage more than once",
   "maps.validation.MODE_REPEATED": "Can't pick the same mode more than once",
   "maps.validation.TOO_MUCH_STAGE_REPEAT": "Can't pick stage more than {{maxStageRepeat}} times",
+  "maps.validation.INCLUDES_BANNED": "Can't pick banned stages",
   "maps.validation.VALID": "Map pool ok!",
 
   "results": "Results",

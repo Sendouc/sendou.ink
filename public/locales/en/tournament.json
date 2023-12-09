@@ -38,6 +38,7 @@
   "pre.pool.header": "Pick map pool",
   "pre.pool.tiebreaker": "Tiebreaker: {{stage}}",
   "pre.pool.pick": "Pick {{number}}",
+  "pre.pool.banned": "Banned",
 
   "pre.sub.prompt": "No team in mind for this event? You can also join the list of subs.",
 

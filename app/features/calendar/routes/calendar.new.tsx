@@ -750,6 +750,7 @@ function CounterPickMapPoolSection() {
         handleMapPoolChange={setMapPool}
         title={t("common:maps.tieBreakerMapPool")}
         modesToInclude={["SZ", "TC", "RM", "CB"]}
+        hideBanned
         info={
           <div>
             <MapPoolValidationStatusMessage
