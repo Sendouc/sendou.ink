@@ -184,11 +184,9 @@ export const action: ActionFunction = async ({ params, request }) => {
       const results = allMatchResultsByTournamentId(tournamentId);
       invariant(results.length > 0, "No results found");
 
-      // TODO: support tournaments outside of seasons as well as unranked tournaments
-      const _currentSeason = currentSeason(
+      const season = currentSeason(
         databaseTimestampToDate(tournament.startTime),
       );
-      validate(_currentSeason, "No current season found");
 
       addSummary({
         tournamentId,
@@ -196,19 +194,18 @@ export const action: ActionFunction = async ({ params, request }) => {
           teams,
           finalStandings: _finalStandings,
           results,
+          calculateSeasonalStats: typeof season === "number",
           queryCurrentTeamRating: (identifier) =>
-            queryCurrentTeamRating({ identifier, season: _currentSeason.nth })
-              .rating,
+            queryCurrentTeamRating({ identifier, season: season!.nth }).rating,
           queryCurrentUserRating: (userId) =>
-            queryCurrentUserRating({ userId, season: _currentSeason.nth })
-              .rating,
+            queryCurrentUserRating({ userId, season: season!.nth }).rating,
           queryTeamPlayerRatingAverage: (identifier) =>
             queryTeamPlayerRatingAverage({
               identifier,
-              season: _currentSeason.nth,
+              season: season!.nth,
             }),
         }),
-        season: _currentSeason.nth,
+        season: season?.nth,
       });
 
       return null;

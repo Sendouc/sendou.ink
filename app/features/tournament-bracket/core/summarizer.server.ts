@@ -51,6 +51,7 @@ export function tournamentSummary({
   queryCurrentTeamRating,
   queryTeamPlayerRatingAverage,
   queryCurrentUserRating,
+  calculateSeasonalStats = true,
 }: {
   results: AllMatchResult[];
   teams: TeamsArg;
@@ -58,19 +59,26 @@ export function tournamentSummary({
   queryCurrentTeamRating: (identifier: string) => Rating;
   queryTeamPlayerRatingAverage: (identifier: string) => Rating;
   queryCurrentUserRating: (userId: number) => Rating;
+  calculateSeasonalStats?: boolean;
 }): TournamentSummary {
   const userIdsToTeamId = userIdsToTeamIdRecord(teams);
 
   return {
-    skills: skills({
-      results,
-      userIdsToTeamId,
-      queryCurrentTeamRating,
-      queryCurrentUserRating,
-      queryTeamPlayerRatingAverage,
-    }),
-    mapResultDeltas: mapResultDeltas({ results, userIdsToTeamId }),
-    playerResultDeltas: playerResultDeltas({ results, userIdsToTeamId }),
+    skills: calculateSeasonalStats
+      ? skills({
+          results,
+          userIdsToTeamId,
+          queryCurrentTeamRating,
+          queryCurrentUserRating,
+          queryTeamPlayerRatingAverage,
+        })
+      : [],
+    mapResultDeltas: calculateSeasonalStats
+      ? mapResultDeltas({ results, userIdsToTeamId })
+      : [],
+    playerResultDeltas: calculateSeasonalStats
+      ? playerResultDeltas({ results, userIdsToTeamId })
+      : [],
     tournamentResults: tournamentResults({
       participantCount: teams.length,
       finalStandings,
