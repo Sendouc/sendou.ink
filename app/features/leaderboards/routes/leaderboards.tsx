@@ -341,13 +341,15 @@ export default function LeaderboardsPage() {
 
       {renderNoEntries ? (
         <div className="text-center text-lg text-lighter">
-          No players on the leaderboard yet
+          {data.userLeaderboard
+            ? t("common:leaderboard.noPlayers")
+            : t("common:leaderboard.noTeams")}
         </div>
       ) : null}
 
       {!data.xpLeaderboard && data.season === currentSeason(new Date())?.nth ? (
         <div className="text-xs text-lighter text-center">
-          Leaderboard is updated once every 30 minutes.
+          {t("common:leaderboard.updateInfo")}
         </div>
       ) : null}
     </Main>
