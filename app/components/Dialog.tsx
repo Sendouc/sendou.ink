@@ -15,6 +15,7 @@ export function Dialog({
   closeOnAnyClick?: boolean;
 }) {
   const ref = useDOMSync(isOpen);
+  useControlledEsc({ ref, isOpen, close });
 
   // https://stackoverflow.com/a/26984690
   const closeOnOutsideClick = close
@@ -68,4 +69,41 @@ function useDOMSync(isOpen: boolean) {
   }, [isOpen]);
 
   return ref;
+}
+
+function useControlledEsc({
+  ref,
+  isOpen,
+  close,
+}: {
+  ref: React.MutableRefObject<any>;
+  isOpen: boolean;
+  close?: () => void;
+}) {
+  React.useEffect(() => {
+    const dialog = ref.current;
+    if (!dialog) return;
+
+    const preventDefault = (event: KeyboardEvent) => {
+      event.preventDefault();
+    };
+    dialog.addEventListener("cancel", preventDefault);
+
+    return () => {
+      dialog.removeEventListener("cancel", preventDefault);
+    };
+  }, [ref]);
+
+  React.useEffect(() => {
+    if (!isOpen || !close) return;
+
+    const closeOnEsc = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        close();
+      }
+    };
+
+    document.addEventListener("keydown", closeOnEsc);
+    return () => document.removeEventListener("keydown", closeOnEsc);
+  }, [isOpen, close]);
 }
