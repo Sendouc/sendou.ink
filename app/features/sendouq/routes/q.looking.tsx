@@ -24,6 +24,8 @@ import {
   SENDOUQ_LOOKING_PAGE,
   SENDOUQ_PAGE,
   SENDOUQ_SETTINGS_PAGE,
+  SENDOUQ_STREAMS_COUNT_ROUTE,
+  SENDOUQ_STREAMS_PAGE,
   navIconUrl,
   sendouQMatchPage,
 } from "~/utils/urls";
@@ -79,6 +81,7 @@ import { Alert } from "~/components/Alert";
 import { useUser } from "~/features/auth/core";
 import { LinkButton } from "~/components/Button";
 import { Image } from "~/components/Image";
+import type { StreamsCountLoader } from "~/features/sendouq-streams/routes/q.streams.count";
 
 export const handle: SendouRouteHandle = {
   i18n: ["user", "q"],
@@ -540,27 +543,53 @@ function InfoText() {
     );
   }
 
+  // xxx: prolly looks ugly when last updated at goes long
   return (
     <div
       className={clsx("text-xs text-lighter stack horizontal justify-between", {
         invisible: !isMounted,
       })}
     >
-      <LinkButton
-        to={SENDOUQ_SETTINGS_PAGE}
-        size="tiny"
-        variant="outlined"
-        className="stack horizontal xs"
-      >
-        <Image path={navIconUrl("settings")} alt="" width={18} />
-        {t("q:front.nav.settings.title")}
-      </LinkButton>
+      <div className="stack sm horizontal">
+        <LinkButton
+          to={SENDOUQ_SETTINGS_PAGE}
+          size="tiny"
+          variant="outlined"
+          className="stack horizontal xs"
+        >
+          <Image path={navIconUrl("settings")} alt="" width={18} />
+          {t("q:front.nav.settings.title")}
+        </LinkButton>
+        <StreamsLinkButton />
+      </div>
       {isMounted
         ? t("q:looking.lastUpdatedAt", {
             time: new Date(data.lastUpdated).toLocaleTimeString(i18n.language),
           })
         : "Placeholder"}
     </div>
+  );
+}
+
+function StreamsLinkButton() {
+  const fetcher = useFetcher<StreamsCountLoader>();
+  React.useEffect(() => {
+    if (fetcher.state !== "idle" || fetcher.data) return;
+
+    // xxx: 2-3 min interval
+    fetcher.load(SENDOUQ_STREAMS_COUNT_ROUTE);
+  }, [fetcher]);
+
+  return (
+    <LinkButton
+      to={SENDOUQ_STREAMS_PAGE}
+      size="tiny"
+      variant="outlined"
+      className="stack horizontal xs"
+    >
+      <Image path={navIconUrl("vods")} alt="" width={18} />
+      Streams
+    </LinkButton>
   );
 }
 
