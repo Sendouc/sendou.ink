@@ -2,7 +2,9 @@ import { expect, test } from "@playwright/test";
 import invariant from "tiny-invariant";
 import { ADMIN_ID } from "~/constants";
 import { NZAP_TEST_ID } from "~/db/seed/constants";
+import { BANNED_MAPS } from "~/features/sendouq-settings/banned-maps";
 import type { TournamentLoaderData } from "~/features/tournament";
+import type { StageId } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import {
   fetchSendouInk,
@@ -70,6 +72,10 @@ test.describe("Tournament", () => {
     let stage = 5;
     for (const mode of rankedModesShort) {
       for (const num of [1, 2]) {
+        while (BANNED_MAPS[mode].includes(stage as StageId)) {
+          stage++;
+        }
+
         await page
           .getByTestId(`counterpick-map-pool-${mode}-num-${num}`)
           .selectOption(String(stage));
