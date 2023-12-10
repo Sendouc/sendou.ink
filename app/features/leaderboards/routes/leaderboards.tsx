@@ -1,3 +1,4 @@
+import { cachified } from "@epic-web/cachified";
 import type {
   LinksFunction,
   LoaderFunctionArgs,
@@ -5,8 +6,30 @@ import type {
   SerializeFrom,
 } from "@remix-run/node";
 import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
+import React from "react";
+import { useTranslation } from "react-i18next";
 import { Avatar } from "~/components/Avatar";
+import { TierImage, WeaponImage } from "~/components/Image";
 import { Main } from "~/components/Main";
+import { HALF_HOUR_IN_MS } from "~/constants";
+import { getUser } from "~/features/auth/core";
+import * as LeaderboardRepository from "~/features/leaderboards/LeaderboardRepository.server";
+import { ordinalToSp } from "~/features/mmr";
+import {
+  allSeasons,
+  currentOrPreviousSeason,
+  currentSeason,
+} from "~/features/mmr/season";
+import type { SkillTierInterval } from "~/features/mmr/tiered.server";
+import { i18next } from "~/modules/i18n";
+import {
+  weaponCategories,
+  type MainWeaponId,
+  type RankedModeShort,
+} from "~/modules/in-game-lists";
+import { rankedModesShort } from "~/modules/in-game-lists/modes";
+import { cache, ttl } from "~/utils/cache.server";
+import type { SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import {
   LEADERBOARDS_PAGE,
@@ -18,52 +41,24 @@ import {
   userSubmittedImage,
 } from "~/utils/urls";
 import styles from "../../top-search/top-search.css";
-import { userSPLeaderboard } from "../queries/userSPLeaderboard.server";
-import type { SendouRouteHandle } from "~/utils/remix";
-import React from "react";
+import { TopTenPlayer } from "../components/TopTenPlayer";
+import {
+  cachedFullUserLeaderboard,
+  filterByWeaponCategory,
+  ownEntryPeek,
+} from "../core/leaderboards.server";
 import {
   DEFAULT_LEADERBOARD_MAX_SIZE,
   LEADERBOARD_TYPES,
   WEAPON_LEADERBOARD_MAX_SIZE,
 } from "../leaderboards-constants";
-import { useTranslation } from "react-i18next";
-import { i18next } from "~/modules/i18n";
+import { seasonHasTopTen } from "../leaderboards-utils";
 import {
-  type XPLeaderboardItem,
   allXPLeaderboard,
   modeXPLeaderboard,
   weaponXPLeaderboard,
+  type XPLeaderboardItem,
 } from "../queries/XPLeaderboard.server";
-import { TierImage, WeaponImage } from "~/components/Image";
-import {
-  weaponCategories,
-  type MainWeaponId,
-  type RankedModeShort,
-} from "~/modules/in-game-lists";
-import { rankedModesShort } from "~/modules/in-game-lists/modes";
-import {
-  allSeasons,
-  currentSeason,
-  currentOrPreviousSeason,
-} from "~/features/mmr/season";
-import {
-  addPendingPlusTiers,
-  addTiers,
-  addWeapons,
-  filterByWeaponCategory,
-  ownEntryPeek,
-} from "../core/leaderboards.server";
-import { seasonPopularUsersWeapon } from "../queries/seasonPopularUsersWeapon.server";
-import { cachified } from "@epic-web/cachified";
-import { cache, ttl } from "~/utils/cache.server";
-import { HALF_HOUR_IN_MS } from "~/constants";
-import { TopTenPlayer } from "../components/TopTenPlayer";
-import { seasonHasTopTen } from "../leaderboards-utils";
-import { USER_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN } from "~/features/mmr/mmr-constants";
-import * as LeaderboardRepository from "~/features/leaderboards/LeaderboardRepository.server";
-import { getUser } from "~/features/auth/core";
-import type { SkillTierInterval } from "~/features/mmr/tiered.server";
-import { ordinalToSp } from "~/features/mmr";
 
 export const handle: SendouRouteHandle = {
   i18n: ["vods"],
@@ -115,28 +110,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     ) ?? currentOrPreviousSeason(new Date())!.nth;
 
   const fullUserLeaderboard = type.includes("USER")
-    ? await cachified({
-        key: `user-leaderboard-season-${season}`,
-        cache,
-        ttl: ttl(HALF_HOUR_IN_MS),
-        // eslint-disable-next-line @typescript-eslint/require-await
-        async getFreshValue() {
-          const leaderboard = userSPLeaderboard(season);
-          const withTiers = addTiers(leaderboard, season);
-
-          const shouldAddPendingPlusTier =
-            season === currentSeason(new Date())?.nth &&
-            leaderboard.length >= USER_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN;
-          const withPendingPlusTiers = shouldAddPendingPlusTier
-            ? addPendingPlusTiers(withTiers)
-            : withTiers;
-
-          return addWeapons(
-            withPendingPlusTiers,
-            seasonPopularUsersWeapon(season),
-          );
-        },
-      })
+    ? await cachedFullUserLeaderboard(season)
     : null;
 
   const userLeaderboard = fullUserLeaderboard?.slice(
@@ -367,11 +341,11 @@ function OwnEntryPeek({
 
   return (
     <div>
-      {entry.tier ? (
+      {entry.firstOfTier ? (
         <div className="placements__tier-header">
-          <TierImage tier={entry.tier} width={32} />
-          {entry.tier.name}
-          {entry.tier.isPlus ? "+" : ""}
+          <TierImage tier={entry.firstOfTier} width={32} />
+          {entry.firstOfTier.name}
+          {entry.firstOfTier.isPlus ? "+" : ""}
         </div>
       ) : null}
       <div>
@@ -428,11 +402,11 @@ function PlayersTable({
         .map((entry) => {
           return (
             <React.Fragment key={entry.entryId}>
-              {entry.tier && showTiers ? (
+              {entry.firstOfTier && showTiers ? (
                 <div className="placements__tier-header">
-                  <TierImage tier={entry.tier} width={32} />
-                  {entry.tier.name}
-                  {entry.tier.isPlus ? "+" : ""}
+                  <TierImage tier={entry.firstOfTier} width={32} />
+                  {entry.firstOfTier.name}
+                  {entry.firstOfTier.isPlus ? "+" : ""}
                 </div>
               ) : null}
               <Link

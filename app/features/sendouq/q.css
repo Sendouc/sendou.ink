@@ -463,6 +463,7 @@
   gap: var(--s-2);
   align-items: center;
   font-weight: var(--semi-bold);
+  color: var(--text);
 }
 
 .q-stream__stream__team-name {
@@ -480,4 +481,10 @@
 
 .q-stream__stream__viewer-count > svg {
   width: 0.75rem;
+}
+
+.q-stream__info-circle {
+  border-radius: 100%;
+  background-color: var(--bg-lighter);
+  padding: var(--s-1);
 }
