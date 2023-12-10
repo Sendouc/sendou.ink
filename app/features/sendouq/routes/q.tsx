@@ -177,6 +177,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   };
 };
 
+// xxx: link to streams
 export default function QPage() {
   const { t } = useTranslation(["q"]);
   const [dialogOpen, setDialogOpen] = React.useState(true);

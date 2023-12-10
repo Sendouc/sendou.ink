@@ -461,6 +461,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   };
 };
 
+// xxx: link to streams
 export default function QLookingPage() {
   const { t } = useTranslation(["q"]);
   const user = useUser();
