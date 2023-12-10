@@ -1,4 +1,4 @@
-import { cachified } from "cachified";
+import { cachified } from "@epic-web/cachified";
 import { type StreamsResponse, type RawStream, streamsSchema } from "./schemas";
 import { getToken, purgeCachedToken } from "./token";
 import { getTwitchEnvVars } from "./utils";

@@ -54,7 +54,7 @@ import {
   ownEntryPeek,
 } from "../core/leaderboards.server";
 import { seasonPopularUsersWeapon } from "../queries/seasonPopularUsersWeapon.server";
-import { cachified } from "cachified";
+import { cachified } from "@epic-web/cachified";
 import { cache, ttl } from "~/utils/cache.server";
 import { HALF_HOUR_IN_MS } from "~/constants";
 import { TopTenPlayer } from "../components/TopTenPlayer";

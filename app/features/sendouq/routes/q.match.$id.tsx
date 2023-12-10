@@ -101,7 +101,7 @@ import { useWindowSize } from "~/hooks/useWindowSize";
 import { joinListToNaturalString } from "~/utils/arrays";
 import { NewTabs } from "~/components/NewTabs";
 import { Alert } from "~/components/Alert";
-import cachified from "cachified";
+import cachified from "@epic-web/cachified";
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;

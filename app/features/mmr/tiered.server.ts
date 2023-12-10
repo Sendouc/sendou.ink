@@ -8,7 +8,7 @@ import {
 import type { Skill } from "~/db/types";
 import { MATCHES_COUNT_NEEDED_FOR_LEADERBOARD } from "../leaderboards/leaderboards-constants";
 import { orderedMMRBySeason } from "./queries/orderedMMRBySeason.server";
-import { cachified } from "cachified";
+import { cachified } from "@epic-web/cachified";
 import { cache, ttl } from "~/utils/cache.server";
 import { HALF_HOUR_IN_MS, ONE_HOUR_IN_MS } from "~/constants";
 import { USER_SKILLS_CACHE_KEY } from "../sendouq/q-constants";

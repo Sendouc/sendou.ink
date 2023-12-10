@@ -24,7 +24,7 @@ import {
 import { i18next } from "~/modules/i18n";
 import { makeTitle } from "~/utils/strings";
 import { cache, ttl } from "~/utils/cache.server";
-import { cachified } from "cachified";
+import { cachified } from "@epic-web/cachified";
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;

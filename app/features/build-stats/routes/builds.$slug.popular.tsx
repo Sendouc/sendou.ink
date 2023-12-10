@@ -4,7 +4,7 @@ import type {
   SerializeFrom,
 } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { cachified } from "cachified";
+import { cachified } from "@epic-web/cachified";
 import clsx from "clsx";
 import { Ability } from "~/components/Ability";
 import { Main } from "~/components/Main";

@@ -8,7 +8,7 @@ import {
   useLoaderData,
   useSearchParams,
 } from "@remix-run/react";
-import { cachified } from "cachified";
+import { cachified } from "@epic-web/cachified";
 import clone from "just-clone";
 import { nanoid } from "nanoid";
 import * as React from "react";
