@@ -85,7 +85,7 @@ test.describe("Team page", () => {
     await modalClickConfirmButton(page);
     await isNotVisible(page.getByTestId("member-row-3"));
 
-    await page.getByTestId("transfer-ownership-button-1").click();
+    await page.getByTestId("transfer-ownership-button").first().click();
     await modalClickConfirmButton(page);
 
     await expect(page.getByTestId("member-row-role-0")).toHaveText("Support");

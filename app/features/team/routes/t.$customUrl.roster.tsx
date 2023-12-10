@@ -291,7 +291,7 @@ function MemberRow({
           <Button
             size="tiny"
             variant="minimal-destructive"
-            testId={`transfer-ownership-button-${number}`}
+            testId={!isSelf ? "transfer-ownership-button" : undefined}
           >
             {t("team:actionButtons.transferOwnership")}
           </Button>
