@@ -2,7 +2,7 @@ import { Link, useLoaderData } from "@remix-run/react";
 import { Main } from "~/components/Main";
 import { UserIcon } from "~/components/icons/User";
 import { twitchThumbnailUrlToSrc } from "~/modules/twitch/utils";
-import { sendouQMatchPage, twitchUrl, userPage } from "~/utils/urls";
+import { FAQ_PAGE, sendouQMatchPage, twitchUrl, userPage } from "~/utils/urls";
 import { cachedStreams } from "../core/streams.server";
 import { Avatar } from "~/components/Avatar";
 import styles from "~/features/sendouq/q.css";
@@ -12,6 +12,11 @@ import { useIsMounted } from "~/hooks/useIsMounted";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { TierImage, WeaponImage } from "~/components/Image";
 import { useAutoRerender } from "~/hooks/useAutoRerender";
+import type { SendouRouteHandle } from "~/utils/remix";
+
+export const handle: SendouRouteHandle = {
+  i18n: ["q"],
+};
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -24,16 +29,23 @@ export const loader = async () => {
   };
 };
 
-// xxx: note about why streams not showing with link to FAQ
-// xxx: i18n
 // xxx: sort higher tier first, tiebreaker view count
 export default function SendouQStreamsPage() {
+  const { t } = useTranslation(["q"]);
   const data = useLoaderData<typeof loader>();
+
+  const ownStreamNote = (
+    <div className="text-xs mt-4 font-body">
+      {t("q:streams.ownStreamInfo")}{" "}
+      <Link to={FAQ_PAGE}>{t("q:streams.ownStreamInfo.linkText")}</Link>
+    </div>
+  );
 
   if (data.streams.length === 0) {
     return (
       <Main className="text-lighter text-lg font-bold text-center">
-        No streamed matches currently
+        {t("q:streams.noStreams")}
+        {ownStreamNote}
       </Main>
     );
   }
@@ -105,6 +117,7 @@ export default function SendouQStreamsPage() {
           );
         })}
       </div>
+      {ownStreamNote}
     </Main>
   );
 }

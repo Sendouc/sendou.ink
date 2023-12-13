@@ -578,6 +578,7 @@ function InfoText() {
 }
 
 function StreamsLinkButton() {
+  const { t } = useTranslation(["q"]);
   const data = useLoaderData<typeof loader>();
 
   return (
@@ -588,7 +589,7 @@ function StreamsLinkButton() {
       className="stack horizontal xs"
     >
       <Image path={navIconUrl("vods")} alt="" width={18} />
-      Streams ({data.streamsCount})
+      {t("q:front.nav.streams.title")} ({data.streamsCount})
     </LinkButton>
   );
 }

@@ -47,6 +47,7 @@ import {
   SENDOUQ_PREPARING_PAGE,
   SENDOUQ_RULES_PAGE,
   SENDOUQ_SETTINGS_PAGE,
+  SENDOUQ_STREAMS_PAGE,
   SENDOUQ_YOUTUBE_VIDEO,
   navIconUrl,
   userSeasonsPage,
@@ -177,7 +178,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   };
 };
 
-// xxx: link to streams
 export default function QPage() {
   const { t } = useTranslation(["q"]);
   const [dialogOpen, setDialogOpen] = React.useState(true);
@@ -436,6 +436,12 @@ function QLinks() {
           subText={t("q:front.nav.settings.description")}
         />
       ) : null}
+      <QLink
+        navIcon="vods"
+        url={SENDOUQ_STREAMS_PAGE}
+        title={t("q:front.nav.streams.title")}
+        subText={t("q:front.nav.streams.description")}
+      />
       <QLink
         navIcon="leaderboards"
         url={LEADERBOARDS_PAGE}
