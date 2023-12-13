@@ -73,7 +73,7 @@ export function GroupCard({
     _hidenote;
 
   return (
-    <Flipped flipId={group.id}>
+    <GroupCardContainer groupId={group.id} ownGroup={ownGroup}>
       <section
         className={clsx("q__group", { "q__group__display-only": displayOnly })}
       >
@@ -159,8 +159,23 @@ export function GroupCard({
           </fetcher.Form>
         ) : null}
       </section>
-    </Flipped>
+    </GroupCardContainer>
   );
+}
+
+function GroupCardContainer({
+  ownGroup,
+  groupId,
+  children,
+}: {
+  ownGroup: boolean;
+  groupId: number;
+  children: React.ReactNode;
+}) {
+  // we don't want it to animate
+  if (ownGroup) return <>{children}</>;
+
+  return <Flipped flipId={groupId}>{children}</Flipped>;
 }
 
 function GroupMember({

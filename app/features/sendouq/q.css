@@ -456,3 +456,35 @@
     grid-template-columns: 1fr 1fr;
   }
 }
+
+.q-stream__stream__user-container {
+  font-size: var(--fonts-xs);
+  display: flex;
+  gap: var(--s-2);
+  align-items: center;
+  font-weight: var(--semi-bold);
+  color: var(--text);
+}
+
+.q-stream__stream__team-name {
+  color: var(--theme-secondary);
+}
+
+.q-stream__stream__viewer-count {
+  font-size: var(--fonts-xs);
+  display: flex;
+  gap: var(--s-2);
+  align-items: center;
+  margin-block-start: -5px;
+  color: var(--text-lighter);
+}
+
+.q-stream__stream__viewer-count > svg {
+  width: 0.75rem;
+}
+
+.q-stream__info-circle {
+  border-radius: 100%;
+  background-color: var(--bg-lighter);
+  padding: var(--s-1);
+}

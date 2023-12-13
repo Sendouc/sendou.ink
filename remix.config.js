@@ -184,6 +184,8 @@ module.exports = {
 
       route("/q/settings", "features/sendouq-settings/routes/q.settings.tsx");
 
+      route("/q/streams", "features/sendouq-streams/routes/q.streams.tsx");
+
       route("/weapon-usage", "features/sendouq/routes/weapon-usage.tsx");
 
       route("/tiers", "features/sendouq/routes/tiers.tsx");

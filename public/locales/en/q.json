@@ -36,6 +36,8 @@
   "front.nav.leaderboards.description": "SendouQ solo and team leaderboards",
   "front.nav.mySeason.title": "My season",
   "front.nav.mySeason.description": "Match and SP history",
+  "front.nav.streams.title": "Streams",
+  "front.nav.streams.description": "Watch SendouQ matches in progress",
   "front.actions.logIn": "Log in to join SendouQ",
   "front.actions.joinWithGroup": "Join with mates",
   "front.actions.joinSolo": "Join solo",
@@ -74,7 +76,7 @@
   "looking.inactiveGroup.soon": "Group will be marked inactive. Still looking?",
   "looking.inactiveGroup": "Group hidden due to inactivity. Still looking?",
   "looking.inactiveGroup.action": "Click here",
-  "looking.lastUpdatedAt": "Last updated at {{time}}",
+  "looking.lastUpdatedAt": "Updated {{time}}",
   "looking.columns.invited": "Invited",
   "looking.columns.challenged": "Challenged",
   "looking.columns.invitations": "Invitations",
@@ -155,5 +157,9 @@
   "tiers.currentCriteria": "Current criteria",
   "tiers.info.p1": "For example Leviathan is the top 5% of players. Diamond is the 85th percentile etc.",
   "tiers.info.p2": "Note: Nobody has Leviathan rank before there are at least {{usersMin}} players on the leaderboard (or {{teamsMin}} for teams)",
-  "tiers.info.p3": "Each rank also has a plus tier (see BRONZE+ as an example below). This means that you are in the top 50% of that rank."
+  "tiers.info.p3": "Each rank also has a plus tier (see BRONZE+ as an example below). This means that you are in the top 50% of that rank.",
+
+  "streams.noStreams": "No streamed matches currently",
+  "streams.ownStreamInfo": "Your stream is missing? Make sure your Twitch account is linked and game is set to Splatoon 3.",
+  "streams.ownStreamInfo.linkText": "See FAQ for more info on how to link your Twitch account."
 }

@@ -1,23 +1,55 @@
+import { cachified } from "@epic-web/cachified";
+import { HALF_HOUR_IN_MS } from "~/constants";
+import { USER_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN } from "~/features/mmr/mmr-constants";
+import { spToOrdinal } from "~/features/mmr/mmr-utils";
+import { currentOrPreviousSeason, currentSeason } from "~/features/mmr/season";
 import { freshUserSkills, userSkills } from "~/features/mmr/tiered.server";
-import type { UserSPLeaderboardItem } from "../queries/userSPLeaderboard.server";
-import type { SeasonPopularUsersWeapon } from "../queries/seasonPopularUsersWeapon.server";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import { weaponCategories } from "~/modules/in-game-lists";
-import { seasonHasTopTen } from "../leaderboards-utils";
-import { currentOrPreviousSeason } from "~/features/mmr/season";
+import { cache, ttl } from "~/utils/cache.server";
 import { DEFAULT_LEADERBOARD_MAX_SIZE } from "../leaderboards-constants";
-import { spToOrdinal } from "~/features/mmr/mmr-utils";
+import { seasonHasTopTen } from "../leaderboards-utils";
+import type { SeasonPopularUsersWeapon } from "../queries/seasonPopularUsersWeapon.server";
+import { seasonPopularUsersWeapon } from "../queries/seasonPopularUsersWeapon.server";
+import type { UserSPLeaderboardItem } from "../queries/userSPLeaderboard.server";
+import { userSPLeaderboard } from "../queries/userSPLeaderboard.server";
+import type { Unwrapped } from "~/utils/types";
 
-export function addTiers(entries: UserSPLeaderboardItem[], season: number) {
+export type UserLeaderboardWithAdditionsItem = Unwrapped<
+  typeof cachedFullUserLeaderboard
+>;
+export async function cachedFullUserLeaderboard(season: number) {
+  return cachified({
+    key: `user-leaderboard-season-${season}`,
+    cache,
+    ttl: ttl(HALF_HOUR_IN_MS),
+    // eslint-disable-next-line @typescript-eslint/require-await
+    async getFreshValue() {
+      const leaderboard = userSPLeaderboard(season);
+      const withTiers = addTiers(leaderboard, season);
+
+      const shouldAddPendingPlusTier =
+        season === currentSeason(new Date())?.nth &&
+        leaderboard.length >= USER_LEADERBOARD_MIN_ENTRIES_FOR_LEVIATHAN;
+      const withPendingPlusTiers = shouldAddPendingPlusTier
+        ? addPendingPlusTiers(withTiers)
+        : withTiers;
+
+      return addWeapons(withPendingPlusTiers, seasonPopularUsersWeapon(season));
+    },
+  });
+}
+
+function addTiers(entries: UserSPLeaderboardItem[], season: number) {
   const tiers = freshUserSkills(season);
 
   const encounteredTiers = new Set<string>();
   return entries.map((entry, i) => {
+    const tier = tiers.userSkills[entry.id].tier;
     if (i < 10 && seasonHasTopTen(season)) {
-      return { ...entry, tier: undefined };
+      return { ...entry, tier, firstOfTier: undefined };
     }
 
-    const tier = tiers.userSkills[entry.id].tier;
     const tierKey = `${tier.name}${tier.isPlus ? "+" : ""}`;
     const tierAlreadyEncountered = encounteredTiers.has(tierKey);
     if (!tierAlreadyEncountered) {
@@ -26,7 +58,8 @@ export function addTiers(entries: UserSPLeaderboardItem[], season: number) {
 
     return {
       ...entry,
-      tier: !tierAlreadyEncountered ? tier : undefined,
+      tier,
+      firstOfTier: !tierAlreadyEncountered ? tier : undefined,
     };
   });
 }
@@ -71,7 +104,7 @@ export function addPendingPlusTiers<T extends UserSPLeaderboardItem>(
   return entries;
 }
 
-export function addWeapons<T extends { id: number }>(
+function addWeapons<T extends { id: number }>(
   entries: T[],
   weapons: SeasonPopularUsersWeapon,
 ) {

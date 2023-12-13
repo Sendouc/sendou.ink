@@ -107,6 +107,7 @@ export const SENDOUQ_RULES_PAGE = "/q/rules";
 export const SENDOUQ_SETTINGS_PAGE = "/q/settings";
 export const SENDOUQ_PREPARING_PAGE = "/q/preparing";
 export const SENDOUQ_LOOKING_PAGE = "/q/looking";
+export const SENDOUQ_STREAMS_PAGE = "/q/streams";
 export const TIERS_PAGE = "/tiers";
 
 export const BLANK_IMAGE_URL = "/static-assets/img/blank.gif";

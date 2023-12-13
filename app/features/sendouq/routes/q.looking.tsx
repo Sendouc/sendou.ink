@@ -24,6 +24,7 @@ import {
   SENDOUQ_LOOKING_PAGE,
   SENDOUQ_PAGE,
   SENDOUQ_SETTINGS_PAGE,
+  SENDOUQ_STREAMS_PAGE,
   navIconUrl,
   sendouQMatchPage,
 } from "~/utils/urls";
@@ -79,6 +80,7 @@ import { Alert } from "~/components/Alert";
 import { useUser } from "~/features/auth/core";
 import { LinkButton } from "~/components/Button";
 import { Image } from "~/components/Image";
+import { cachedStreams } from "~/features/sendouq-streams/core/streams.server";
 
 export const handle: SendouRouteHandle = {
   i18n: ["user", "q"],
@@ -454,6 +456,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     role: currentGroup.role,
     chatCode: currentGroup.chatCode,
     lastUpdated: new Date().getTime(),
+    streamsCount: (await cachedStreams()).length,
     expiryStatus: groupExpiryStatus(currentGroup),
     trustedPlayers: hasGroupManagerPerms(currentGroup.role)
       ? trustedPlayersAvailableToPlay(user!)
@@ -545,21 +548,49 @@ function InfoText() {
         invisible: !isMounted,
       })}
     >
-      <LinkButton
-        to={SENDOUQ_SETTINGS_PAGE}
-        size="tiny"
-        variant="outlined"
-        className="stack horizontal xs"
-      >
-        <Image path={navIconUrl("settings")} alt="" width={18} />
-        {t("q:front.nav.settings.title")}
-      </LinkButton>
-      {isMounted
-        ? t("q:looking.lastUpdatedAt", {
-            time: new Date(data.lastUpdated).toLocaleTimeString(i18n.language),
-          })
-        : "Placeholder"}
+      <div className="stack sm horizontal">
+        <LinkButton
+          to={SENDOUQ_SETTINGS_PAGE}
+          size="tiny"
+          variant="outlined"
+          className="stack horizontal xs"
+        >
+          <Image path={navIconUrl("settings")} alt="" width={18} />
+          {t("q:front.nav.settings.title")}
+        </LinkButton>
+        <StreamsLinkButton />
+      </div>
+      <span className="text-xxs">
+        {isMounted
+          ? t("q:looking.lastUpdatedAt", {
+              time: new Date(data.lastUpdated).toLocaleTimeString(
+                i18n.language,
+                {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                },
+              ),
+            })
+          : "Placeholder"}
+      </span>
     </div>
+  );
+}
+
+function StreamsLinkButton() {
+  const { t } = useTranslation(["q"]);
+  const data = useLoaderData<typeof loader>();
+
+  return (
+    <LinkButton
+      to={SENDOUQ_STREAMS_PAGE}
+      size="tiny"
+      variant="outlined"
+      className="stack horizontal xs"
+    >
+      <Image path={navIconUrl("vods")} alt="" width={18} />
+      {t("q:front.nav.streams.title")} ({data.streamsCount})
+    </LinkButton>
   );
 }
 
