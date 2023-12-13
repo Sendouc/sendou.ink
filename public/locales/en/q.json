@@ -74,7 +74,7 @@
   "looking.inactiveGroup.soon": "Group will be marked inactive. Still looking?",
   "looking.inactiveGroup": "Group hidden due to inactivity. Still looking?",
   "looking.inactiveGroup.action": "Click here",
-  "looking.lastUpdatedAt": "Last updated at {{time}}",
+  "looking.lastUpdatedAt": "Updated {{time}}",
   "looking.columns.invited": "Invited",
   "looking.columns.challenged": "Challenged",
   "looking.columns.invitations": "Invitations",

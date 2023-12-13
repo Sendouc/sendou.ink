@@ -24,7 +24,6 @@ import {
   SENDOUQ_LOOKING_PAGE,
   SENDOUQ_PAGE,
   SENDOUQ_SETTINGS_PAGE,
-  SENDOUQ_STREAMS_COUNT_ROUTE,
   SENDOUQ_STREAMS_PAGE,
   navIconUrl,
   sendouQMatchPage,
@@ -81,7 +80,7 @@ import { Alert } from "~/components/Alert";
 import { useUser } from "~/features/auth/core";
 import { LinkButton } from "~/components/Button";
 import { Image } from "~/components/Image";
-import type { StreamsCountLoader } from "~/features/sendouq-streams/routes/q.streams.count";
+import { cachedStreams } from "~/features/sendouq-streams/core/streams.server";
 
 export const handle: SendouRouteHandle = {
   i18n: ["user", "q"],
@@ -457,6 +456,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     role: currentGroup.role,
     chatCode: currentGroup.chatCode,
     lastUpdated: new Date().getTime(),
+    streamsCount: (await cachedStreams()).length,
     expiryStatus: groupExpiryStatus(currentGroup),
     trustedPlayers: hasGroupManagerPerms(currentGroup.role)
       ? trustedPlayersAvailableToPlay(user!)
@@ -464,7 +464,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   };
 };
 
-// xxx: link to streams
 export default function QLookingPage() {
   const { t } = useTranslation(["q"]);
   const user = useUser();
@@ -543,7 +542,6 @@ function InfoText() {
     );
   }
 
-  // xxx: prolly looks ugly when last updated at goes long
   return (
     <div
       className={clsx("text-xs text-lighter stack horizontal justify-between", {
@@ -562,23 +560,25 @@ function InfoText() {
         </LinkButton>
         <StreamsLinkButton />
       </div>
-      {isMounted
-        ? t("q:looking.lastUpdatedAt", {
-            time: new Date(data.lastUpdated).toLocaleTimeString(i18n.language),
-          })
-        : "Placeholder"}
+      <span className="text-xxs">
+        {isMounted
+          ? t("q:looking.lastUpdatedAt", {
+              time: new Date(data.lastUpdated).toLocaleTimeString(
+                i18n.language,
+                {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                },
+              ),
+            })
+          : "Placeholder"}
+      </span>
     </div>
   );
 }
 
 function StreamsLinkButton() {
-  const fetcher = useFetcher<StreamsCountLoader>();
-  React.useEffect(() => {
-    if (fetcher.state !== "idle" || fetcher.data) return;
-
-    // xxx: 2-3 min interval
-    fetcher.load(SENDOUQ_STREAMS_COUNT_ROUTE);
-  }, [fetcher]);
+  const data = useLoaderData<typeof loader>();
 
   return (
     <LinkButton
@@ -588,7 +588,7 @@ function StreamsLinkButton() {
       className="stack horizontal xs"
     >
       <Image path={navIconUrl("vods")} alt="" width={18} />
-      Streams
+      Streams ({data.streamsCount})
     </LinkButton>
   );
 }
