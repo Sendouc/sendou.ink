@@ -6,9 +6,7 @@ import type { Unwrapped } from "~/utils/types";
 
 export type ActiveMatchPlayersItem = Unwrapped<typeof activeMatchPlayers>;
 export function activeMatchPlayers() {
-  // xxx: 1h ago
-  // const oneHourAgo = new Date(Date.now() - 1000 * 60 * 60);
-  const oneHourAgo = new Date(Date.now() - 1000 * 60 * 60 * 2);
+  const oneHourAgo = new Date(Date.now() - 1000 * 60 * 60);
 
   return db
     .selectFrom("Group")
