@@ -57,6 +57,13 @@ export function cachedStreams() {
   });
 }
 
+export function refreshStreamsCache() {
+  cache.delete(SENDOUQ_STREAMS_KEY);
+  void cachedStreams().catch((err) =>
+    console.error(`Failed to refresh cache: ${err}`),
+  );
+}
+
 function streamedMatches({
   matchPlayers,
   streams,

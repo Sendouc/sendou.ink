@@ -22,7 +22,6 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-// xxx: handle busting after matchs end / start somehow
 export const loader = async () => {
   return {
     streams: await cachedStreams(),

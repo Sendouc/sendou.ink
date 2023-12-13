@@ -102,6 +102,7 @@ import { joinListToNaturalString } from "~/utils/arrays";
 import { NewTabs } from "~/components/NewTabs";
 import { Alert } from "~/components/Alert";
 import cachified from "@epic-web/cachified";
+import { refreshStreamsCache } from "~/features/sendouq-streams/core/streams.server";
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
@@ -239,6 +240,7 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
       const shouldLockMatchWithoutChangingRecords =
         compared === "SAME" && matchIsBeingCanceled;
 
+      let clearCaches = false;
       sql.transaction(() => {
         if (
           compared === "FIX_PREVIOUS" ||
@@ -267,10 +269,11 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
             groupMatchId: match.id,
             oldMatchMemento: match.memento,
           });
-          cache.delete(USER_SKILLS_CACHE_KEY);
+          clearCaches = true;
         }
         if (shouldLockMatchWithoutChangingRecords) {
           addDummySkill(match.id);
+          clearCaches = true;
         }
         // fix edge case where they 1) report score 2) report weapons 3) report score again, but with different amount of maps played
         if (compared === "FIX_PREVIOUS") {
@@ -282,6 +285,14 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
           setGroupAsInactive(match.bravoGroupId);
         }
       })();
+
+      if (clearCaches) {
+        // this is kind of useless to do when admin reports since skills don't change
+        // but it's no the most common case so it's ok
+        cache.delete(USER_SKILLS_CACHE_KEY);
+
+        refreshStreamsCache();
+      }
 
       if (compared === "DIFFERENT") {
         return {
