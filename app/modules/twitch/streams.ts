@@ -100,7 +100,7 @@ export type MappedStream = Unpacked<ReturnType<typeof mapRawStream>>;
 function mapRawStream(stream: RawStream) {
   return {
     thumbnailUrl: stream.thumbnail_url,
-    twitchUserName: stream.user_login,
+    twitchUserName: stream.user_login.toLowerCase(),
     viewerCount: stream.viewer_count,
   };
 }

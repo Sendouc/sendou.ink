@@ -29,7 +29,6 @@ export const loader = async () => {
   };
 };
 
-// xxx: sort higher tier first, tiebreaker view count
 export default function SendouQStreamsPage() {
   const { t } = useTranslation(["q"]);
   const data = useLoaderData<typeof loader>();
