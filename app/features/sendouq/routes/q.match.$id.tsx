@@ -1191,6 +1191,7 @@ function BottomSection({
               {
                 key: "report",
                 element: mapListElement,
+                unmount: false,
               },
             ]}
           />
