@@ -309,11 +309,11 @@ interface CanAdminTournament {
 }
 export function canAdminTournament({ user, tournament }: CanAdminTournament) {
   // temporary hack to let Njok admin tournaments as well
-  if (user?.id === 14710) return true;
+  // if (user?.id === 14710) return true;
   // .jpg
-  if (user?.id === 622) return true;
+  // if (user?.id === 622) return true;
   // toasty
-  if (user?.id === 5036) return true;
+  // if (user?.id === 5036) return true;
 
   return adminOverride(user)(user?.id === tournament.author.id);
 }
