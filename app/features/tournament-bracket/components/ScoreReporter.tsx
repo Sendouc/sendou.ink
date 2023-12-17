@@ -56,7 +56,7 @@ export function ScoreReporter({
   selectedResultIndex?: number;
   // if this is set it means the component is being used in presentation manner
   setSelectedResultIndex?: (index: number) => void;
-  type: "EDIT" | "MEMBER" | "OTHER";
+  type: "EDIT" | "OTHER";
 }) {
   const { t } = useTranslation(["tournament"]);
   const isMounted = useIsMounted();
@@ -72,8 +72,7 @@ export function ScoreReporter({
 
   const presentational = Boolean(setSelectedResultIndex);
 
-  const showFullInfos =
-    !presentational && (type === "EDIT" || type === "MEMBER");
+  const showFullInfos = !presentational && type === "EDIT";
 
   const roundInfos = [
     showFullInfos ? (

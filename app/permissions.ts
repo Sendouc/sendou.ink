@@ -321,12 +321,12 @@ export function canAdminTournament({ user, tournament }: CanAdminTournament) {
 export function canReportTournamentScore({
   match,
   user,
-  ownedTeamId,
+  isMemberOfATeamInTheMatch,
   tournament,
 }: {
   match: NonNullable<FindMatchById>;
   user?: Pick<User, "id">;
-  ownedTeamId?: number;
+  isMemberOfATeamInTheMatch: boolean;
   tournament: TournamentRepository.FindById;
 }) {
   const matchIsOver =
@@ -334,9 +334,7 @@ export function canReportTournamentScore({
 
   return (
     !matchIsOver &&
-    ((match.opponentOne?.id ?? -1) === ownedTeamId ||
-      (match.opponentTwo?.id ?? -1) === ownedTeamId ||
-      canAdminTournament({ user, tournament }))
+    (isMemberOfATeamInTheMatch || canAdminTournament({ user, tournament }))
   );
 }
 

@@ -79,18 +79,15 @@ export const action: ActionFunction = async ({ params, request }) => {
   );
 
   const validateCanReportScore = () => {
-    const teams = findTeamsByTournamentId(tournamentId);
-    const ownedTeamId = teams.find((team) =>
-      team.members.some(
-        (member) => member.userId === user?.id && member.isOwner,
-      ),
-    )?.id;
+    const isMemberOfATeamInTheMatch = match.players.some(
+      (p) => p.id === user?.id,
+    );
 
     validate(
       canReportTournamentScore({
         tournament,
         match,
-        ownedTeamId,
+        isMemberOfATeamInTheMatch,
         user,
       }),
       "Unauthorized",
@@ -389,18 +386,18 @@ export default function TournamentMatchPage() {
     revalidate();
   }, [visibility, revalidate, data.matchIsOver]);
 
-  const isMemberOfATeam = data.match.players.some((p) => p.id === user?.id);
+  const isMemberOfATeamInTheMatch = data.match.players.some(
+    (p) => p.id === user?.id,
+  );
 
   const type = canReportTournamentScore({
     tournament: parentRouteData.tournament,
     match: data.match,
-    ownedTeamId: parentRouteData.ownTeam?.id,
+    isMemberOfATeamInTheMatch,
     user,
   })
     ? "EDIT"
-    : isMemberOfATeam
-      ? "MEMBER"
-      : "OTHER";
+    : "OTHER";
 
   const showRosterPeek = () => {
     if (data.matchIsOver) return false;
@@ -477,7 +474,7 @@ function MapListSection({
   type,
 }: {
   teams: [id: number, id: number];
-  type: "EDIT" | "MEMBER" | "OTHER";
+  type: "EDIT" | "OTHER";
 }) {
   const data = useLoaderData<typeof loader>();
   const parentRouteData = useOutletContext<TournamentLoaderData>();
