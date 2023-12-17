@@ -186,7 +186,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 
       const season = currentSeason(
         databaseTimestampToDate(tournament.startTime),
-      );
+      )?.nth;
 
       addSummary({
         tournamentId,
@@ -196,16 +196,16 @@ export const action: ActionFunction = async ({ params, request }) => {
           results,
           calculateSeasonalStats: typeof season === "number",
           queryCurrentTeamRating: (identifier) =>
-            queryCurrentTeamRating({ identifier, season: season!.nth }).rating,
+            queryCurrentTeamRating({ identifier, season: season! }).rating,
           queryCurrentUserRating: (userId) =>
-            queryCurrentUserRating({ userId, season: season!.nth }).rating,
+            queryCurrentUserRating({ userId, season: season! }).rating,
           queryTeamPlayerRatingAverage: (identifier) =>
             queryTeamPlayerRatingAverage({
               identifier,
-              season: season!.nth,
+              season: season!,
             }),
         }),
-        season: season?.nth,
+        season,
       });
 
       return null;
