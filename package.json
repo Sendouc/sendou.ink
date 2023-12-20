@@ -28,6 +28,7 @@
     "sync-xp-badges": "node --experimental-specifier-resolution=node -r @swc-node/register -r tsconfig-paths/register scripts/sync-xp-badges.ts",
     "delete-user": "node --experimental-specifier-resolution=node -r @swc-node/register -r tsconfig-paths/register scripts/delete-user.ts",
     "ban-user": "node --experimental-specifier-resolution=node -r @swc-node/register -r tsconfig-paths/register scripts/ban-user.ts",
+    "unban-user": "node --experimental-specifier-resolution=node -r @swc-node/register -r tsconfig-paths/register scripts/unban-user.ts",
     "delete-skill": "node --experimental-specifier-resolution=node -r @swc-node/register -r tsconfig-paths/register scripts/delete-skill.ts",
     "skip-plus": "node --experimental-specifier-resolution=node -r @swc-node/register -r tsconfig-paths/register scripts/skip-plus.ts",
     "season-initial-powers": "node --experimental-specifier-resolution=node -r @swc-node/register -r tsconfig-paths/register scripts/season-initial-powers.ts",
