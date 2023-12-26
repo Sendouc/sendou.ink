@@ -36,7 +36,7 @@
   "forms.errors.invalidCustomUrl.strangeCharacter": "Пользовательский URL не может содержать особые символы",
   "forms.errors.invalidCustomUrl.duplicate": "Кто-то уже использует этот пользовательский URL",
   "forms.errors.invalidSens": "Чувствительность наклона не может быть указана, если не указана чувствительность стика",
-  "forms.info.favoriteBadge": "По умолчанию ваш любимый значок отображён большим на вашем профиле.",
+  "forms.info.favoriteBadge": "По умолчанию ваш любимый значок отображён большим в вашем профиле.",
 
   "search.info": "Поиск пользователей по имени в Discord, Splatoon 3 или Twitter",
   "search.noResults": "Не найден пользователь по запросу '{{query}}'",
