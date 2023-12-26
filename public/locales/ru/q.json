@@ -36,7 +36,9 @@
   "front.nav.leaderboards.description": "Одиночные и командные таблицы лидеров SendouQ",
   "front.nav.mySeason.title": "Мой сезон",
   "front.nav.mySeason.description": "История матчей и SP",
-  "front.actions.logIn": "Ввойдите, чтобы присоедениться к SendouQ",
+  "front.nav.streams.title": "Трансляции",
+  "front.nav.streams.description": "Прямые трансляции матчей SendouQ",
+  "front.actions.logIn": "Войдите, чтобы присоедениться к SendouQ",
   "front.actions.joinWithGroup": "Присоедениться с напарниками",
   "front.actions.joinSolo": "Присоедениться в одиночку",
   "front.join.header": "Присоедениться к группе с {{members}}?",
@@ -47,8 +49,8 @@
   "front.seasonOpen": "Сезон {{nth}} открыт",
 
   "settings.maps.header": "Арены и режимы",
-  "settings.maps.avoid": "Избегать",
-  "settings.maps.prefer": "Предпочитать",
+  "settings.maps.avoid": "Избегаю",
+  "settings.maps.prefer": "Предпочитаю",
   "settings.maps.neutral": "Нейтрально",
   "settings.weaponPool.header": "Пул оружия",
   "settings.weaponPool.full": "Достигнут максимум",
@@ -63,6 +65,11 @@
   "settings.sounds.likeReceived": "Получен лайк",
   "settings.sounds.groupNewMember": "Новый участник команды",
   "settings.sounds.matchStarted": "Матч начался",
+  "settings.misc.header": "Прочее",
+  "settings.banned": "Запрещённый режим",
+  "settings.avoid.label": "Избегать {{special}}",
+  "settings.avoid.explanation": "Был поднят вопрос о вреде нового особого оружия. Данная опция запрещает это оружие в любых матчах SendouQ и турнирах sendou.ink, в которых вы участвуете.",
+  "settings.avoid.readMore": "Для более подробной информации читайте здесь",
 
   "looking.joiningGroupError": "Перед тем как присоединиться к новой группе, покиньте текущую",
   "looking.goToSettingsPrompt": "Чтобы облегчить процесс нахождения группы, настройте ваш пул оружия и статус голосового чата на странице настроек",
@@ -95,7 +102,7 @@
   "looking.groups.editNote": "Изменить заметку",
   "looking.groups.addNote": "Добавить заметку",
   "looking.replay": "Повтор",
-  "looking.teamSP": "Коммандое SP",
+  "looking.teamSP": "Командое SP",
   "looking.teamSP.calculated": "Коммандое SP рассчитано",
   "looking.teamSP.calculating": "Коммандое SP рассчитывается...",
   "looking.sp.calculated": "Рассчитано",
@@ -142,11 +149,17 @@
   "match.reporting": "Сообщить: {{outcome}} {{score}}",
   "match.outcome.win": "победа",
   "match.outcome.loss": "проигрыш",
+  "match.screen.ban": "Оружия с {{special}} запрещены в этом матче",
+  "match.screen.allowed": "Оружия с {{special}} разрешены в этом матче",
 
   "preparing.joinQ": "Присоедениться к очереди",
 
   "tiers.currentCriteria": "Текущие критерии",
   "tiers.info.p1": "Например, Leviathan - топ 5% игроков, Diamond - 85 процентиль и т.д.",
   "tiers.info.p2": "Учтите, что ни у кого нет ранга Leviathan пока как минимум {{usersMin}} игроков не появилось на таблице лидеров (или {{teamsMin}} для команд)",
-  "tiers.info.p3": "У каждого ранга также есть + ранг (например BRONZE+). Это значит, что вы в первой половине вашего ранга."
+  "tiers.info.p3": "У каждого ранга также есть + ранг (например BRONZE+). Это значит, что вы в первой половине вашего ранга.",
+
+  "streams.noStreams": "Прямых трансляций матчей на данный момент нет",
+  "streams.ownStreamInfo": "Ваша трансляция отсутствует? Проверьте, что ваш аккаунт Twitch привязан и выбранная игра - Splatoon 3.",
+  "streams.ownStreamInfo.linkText": "Больше информации о привязке аккаунта Twitch в FAQ."
 }
