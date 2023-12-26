@@ -82,6 +82,7 @@
   "maps.validation.MAP_REPEATED": "Нельзя выбрать ту же самую карту дважды",
   "maps.validation.MODE_REPEATED": "Нельзя выбрать тот же самый режим дважды",
   "maps.validation.TOO_MUCH_STAGE_REPEAT": "Можно выбрать карту не больше чем {{maxStageRepeat}} раз(а)",
+  "maps.validation.INCLUDES_BANNED": "Нельзя выбрать запрещённую арену",
   "maps.validation.VALID": "Список карт в порядке!",
 
   "results": "Результаты",
@@ -172,7 +173,7 @@
   "support.perk.privateDiscord": "Доступ к эксклюзивному каналу в Discord.",
   "support.perk.privateDiscord.extra": "Используется для редких WIP-обновлений, получения приоритетной поддержки и приоритетного запроса новых улучшений.",
   "support.perk.prioritySupport": "Приоритетная поддержка",
-  "support.perk.prioritySupport.extra": "Доступ к отдельной службе поддержки, в которой запросы для поддержки я приоритезирую",
+  "support.perk.prioritySupport.extra": "Доступ к отдельной службе поддержки, в которой я приоритезирую запросы для поддержки",
 
   "custom.colors.title": "Пользовательские цвета",
   "custom.colors.bg": "Фон",
@@ -197,6 +198,9 @@
   "leaderboard.type.USER": "Пользователь",
   "leaderboard.type.TEAM": "Команда",
   "leaderboard.type.XP-ALL": "Все",
+  "leaderboard.noPlayers": "На таблице лидеров ещё нет игроков",
+  "leaderboard.noTeams": "На таблице лидеров ещё нет команд",
+  "leaderboard.updateInfo": "Таблица лидеров обновляется каждые 30 минут",
 
   "chat.connected": "В сети",
   "chat.disconnected": "Не в сети",
