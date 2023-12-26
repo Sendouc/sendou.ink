@@ -1,8 +1,8 @@
-import type { V2_MetaFunction } from "@remix-run/react";
+import type { MetaFunction } from "@remix-run/react";
 import { Main } from "~/components/Main";
 import { makeTitle } from "~/utils/strings";
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [{ title: makeTitle("SendouQ Rules") }];
 };
 
@@ -37,6 +37,15 @@ export default function SendouqRules() {
         should be played out.
       </div>
 
+      <h2 className="text-lg mt-4">Unallowed weapons</h2>
+      <div>
+        If someone picks an unallowed weapon game can be canceled within 1
+        minute by any player. For the replay everyone has to use the same
+        weapons and gear except the player with unallowed weapon who should
+        switch to the allowed variant of the weapon. For example had a player
+        picked Foil Squeezer they need to play regular Squeezer in the replay.
+      </div>
+
       <h2 className="text-lg mt-4">Subs</h2>
       <div>
         There are no subs. If a player is unavailable to play from either team
@@ -47,6 +56,13 @@ export default function SendouqRules() {
       <div>
         Match can be canceled if both group owners agree. If the groups
         don&apos;t agree then the match should be played out.
+      </div>
+
+      <h2 className="text-lg mt-4">Room hosting</h2>
+      <div>
+        By default the player who says the fastest in the match chat that they
+        will host should do it. If a host can&apos;t be decided then Alpha
+        chooses a player to host from their group.
       </div>
 
       <h2 className="text-lg mt-4">Alting</h2>

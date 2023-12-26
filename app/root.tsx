@@ -1,9 +1,9 @@
 import { json } from "@remix-run/node";
 import type {
   LinksFunction,
-  LoaderArgs,
+  LoaderFunctionArgs,
   SerializeFrom,
-  V2_MetaFunction,
+  MetaFunction,
 } from "@remix-run/node";
 import {
   Links,
@@ -29,7 +29,7 @@ import { getUser } from "./features/auth/core";
 import { DEFAULT_LANGUAGE, i18nCookie, i18next } from "./modules/i18n";
 import { useChangeLanguage } from "remix-i18next";
 import { type CustomTypeOptions } from "react-i18next";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { COMMON_PREVIEW_IMAGE } from "./utils/urls";
 import { ConditionalScrollRestoration } from "./components/ConditionalScrollRestoration";
 import { type SendouRouteHandle } from "~/utils/remix";
@@ -67,7 +67,7 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [
     { title: "sendou.ink" },
     {
@@ -80,7 +80,7 @@ export const meta: V2_MetaFunction = () => {
 
 export type RootLoaderData = SerializeFrom<typeof loader>;
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = await getUser(request);
   const locale = await i18next.getLocale(request);
   const themeSession = await getThemeSession(request);
@@ -225,12 +225,15 @@ function useCustomizedCSSVars() {
   const matches = useMatches();
 
   for (const match of matches) {
-    if (match.data?.[CUSTOMIZED_CSS_VARS_NAME]) {
+    if ((match.data as any)?.[CUSTOMIZED_CSS_VARS_NAME]) {
       // cheating TypeScript here but no real way to keep up
       // even an illusion of type safety here
       return Object.fromEntries(
         Object.entries(
-          match.data[CUSTOMIZED_CSS_VARS_NAME] as Record<string, string>,
+          (match.data as any)[CUSTOMIZED_CSS_VARS_NAME] as Record<
+            string,
+            string
+          >,
         ).map(([key, value]) => [`--${key}`, value]),
       ) as React.CSSProperties;
     }

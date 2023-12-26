@@ -3,8 +3,8 @@ import { Main } from "~/components/Main";
 import {
   json,
   type SerializeFrom,
-  type LoaderArgs,
-  type V2_MetaFunction,
+  type LoaderFunctionArgs,
+  type MetaFunction,
 } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import * as React from "react";
@@ -41,7 +41,7 @@ export const handle: SendouRouteHandle = {
   },
 };
 
-export const meta: V2_MetaFunction = (args) => {
+export const meta: MetaFunction = (args) => {
   invariant(args.params["slug"]);
   const data = args.data as SerializeFrom<typeof loader> | null;
 
@@ -61,7 +61,7 @@ export const meta: V2_MetaFunction = (args) => {
   ];
 };
 
-export const loader = ({ params }: LoaderArgs) => {
+export const loader = ({ params }: LoaderFunctionArgs) => {
   invariant(params["slug"]);
 
   const article = notFoundIfFalsy(articleBySlug(params["slug"]));

@@ -10,7 +10,7 @@ import {
   redirect,
   type ActionFunction,
   type LinksFunction,
-  type LoaderArgs,
+  type LoaderFunctionArgs,
 } from "@remix-run/node";
 import { Link, useLoaderData, useOutletContext } from "@remix-run/react";
 import { getUser, requireUser, useUser } from "~/features/auth/core";
@@ -26,7 +26,7 @@ import { Button, LinkButton } from "~/components/Button";
 import { deleteSub } from "../queries/deleteSub.server";
 import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { TrashIcon } from "~/components/icons/Trash";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import React from "react";
 import { Redirect } from "~/components/Redirect";
 import { notFoundIfFalsy } from "~/utils/remix";
@@ -54,7 +54,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   return null;
 };
 
-export const loader = async ({ params, request }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const user = await getUser(request);
   const tournamentId = tournamentIdFromParams(params);
 

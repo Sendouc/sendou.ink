@@ -1,4 +1,4 @@
-import type { LoaderArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData, useOutletContext } from "@remix-run/react";
 import { streamsByTournamentId } from "../core/streams.server";
 import { tournamentIdFromParams } from "../tournament-utils";
@@ -7,9 +7,10 @@ import { Avatar } from "~/components/Avatar";
 import { Redirect } from "~/components/Redirect";
 import { tournamentRegisterPage, twitchUrl } from "~/utils/urls";
 import { UserIcon } from "~/components/icons/User";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
+import { twitchThumbnailUrlToSrc } from "~/modules/twitch/utils";
 
-export const loader = async ({ params }: LoaderArgs) => {
+export const loader = async ({ params }: LoaderFunctionArgs) => {
   const tournamentId = tournamentIdFromParams(params);
 
   return {
@@ -36,9 +37,6 @@ export default function TournamentStreamsPage() {
     );
   }
 
-  const thumbnailUrlToSrc = (url: string) =>
-    url.replace("{width}", "640").replace("{height}", "360");
-
   // TODO: link to user page, later tournament team page?
   return (
     <div className="stack horizontal lg flex-wrap justify-center">
@@ -62,7 +60,7 @@ export default function TournamentStreamsPage() {
             >
               <img
                 alt=""
-                src={thumbnailUrlToSrc(stream.thumbnailUrl)}
+                src={twitchThumbnailUrlToSrc(stream.thumbnailUrl)}
                 width={320}
                 height={180}
               />

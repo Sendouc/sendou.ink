@@ -183,12 +183,12 @@ MapPoolFromPreferences("returns maps even if no preferences", () => {
 
 MapPoolFromPreferences("preferring map causes it to be included", () => {
   const mapPool = mapPoolFromPreferences([
-    [{ stageId: 0, preference: "PREFER", mode: "SZ" }],
+    [{ stageId: 19, preference: "PREFER", mode: "SZ" }],
   ]);
 
   assert.ok(
     mapPool.stageModePairs.some(
-      (pair) => pair.stageId === 0 && pair.mode === "SZ",
+      (pair) => pair.stageId === 19 && pair.mode === "SZ",
     ),
   );
 });

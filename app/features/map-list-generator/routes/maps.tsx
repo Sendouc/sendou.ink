@@ -1,7 +1,7 @@
 import type {
   LinksFunction,
-  LoaderArgs,
-  V2_MetaFunction,
+  LoaderFunctionArgs,
+  MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
 import type { ShouldRevalidateFunction } from "@remix-run/react";
@@ -16,7 +16,7 @@ import { Main } from "~/components/Main";
 import { MapPoolSelector, MapPoolStages } from "~/components/MapPoolSelector";
 import { Toggle } from "~/components/Toggle";
 import type { CalendarEvent } from "~/db/types";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { getUserId } from "~/features/auth/core/user.server";
 import { i18next } from "~/modules/i18n";
 import { stageIds, type ModeWithStage } from "~/modules/in-game-lists";
@@ -48,7 +48,7 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const meta: V2_MetaFunction = (args) => {
+export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
 
   if (!data) return [];
@@ -65,7 +65,7 @@ export const handle: SendouRouteHandle = {
   }),
 };
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = await getUserId(request);
   const url = new URL(request.url);
   const calendarEventId = url.searchParams.get("eventId");

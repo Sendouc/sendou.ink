@@ -78,6 +78,7 @@
   "stat.special.inkConsumptionPerSecond": "{{weapon}} ink consumption per sec",
   "stat.special.reticleRadius": "{{weapon}} reticle radius",
   "stat.special.throwDistance": "{{weapon}} throw distance",
+  "stat.special.moveSpeed": "{{weapon}} movement speed",
   "stat.special.autoChargeRate": "{{weapon}} auto charge rate",
   "stat.special.maxRadius": "{{weapon}} wave max radius",
   "stat.special.maxRadius.explanation": "Travel speed of the wave is always the same despite the increased radius.",

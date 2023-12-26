@@ -3,7 +3,7 @@ import { useFetcher, useOutletContext, useSubmit } from "@remix-run/react";
 import * as React from "react";
 import { Button, LinkButton } from "~/components/Button";
 import { Toggle } from "~/components/Toggle";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { canAdminTournament, isAdmin } from "~/permissions";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { discordFullName } from "~/utils/strings";

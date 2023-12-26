@@ -52,6 +52,8 @@ export const SENDOU_INK_DISCORD_URL = "https://discord.gg/sendou";
 export const SENDOU_TWITTER_URL = "https://twitter.com/sendouc";
 export const SENDOU_INK_TWITTER_URL = "https://twitter.com/sendouink";
 export const SENDOU_INK_PATREON_URL = "https://patreon.com/sendou";
+export const NINTENDO_COMMUNITY_TOURNAMENTS_GUIDELINES_URL =
+  "https://en-americas-support.nintendo.com/app/answers/detail/a_id/63454";
 export const PATREON_HOW_TO_CONNECT_DISCORD_URL =
   "https://support.patreon.com/hc/en-us/articles/212052266-How-do-I-connect-Discord-to-Patreon-Patron-";
 export const SENDOU_INK_GITHUB_URL = "https://github.com/Sendouc/sendou.ink";
@@ -68,6 +70,8 @@ export const ipLabsMaps = (pool: string) =>
 export const SPLATOON_3_INK = "https://splatoon3.ink/";
 export const RHODESMAS_FREESOUND_PROFILE_URL =
   "https://freesound.org/people/rhodesmas/";
+export const SPLATTERCOLOR_SCREEN_TWITTER_URL =
+  "https://twitter.com/ProChara/status/1730986554078945562";
 
 export const twitterUrl = (accountName: string) =>
   `https://twitter.com/${accountName}`;
@@ -103,6 +107,7 @@ export const SENDOUQ_RULES_PAGE = "/q/rules";
 export const SENDOUQ_SETTINGS_PAGE = "/q/settings";
 export const SENDOUQ_PREPARING_PAGE = "/q/preparing";
 export const SENDOUQ_LOOKING_PAGE = "/q/looking";
+export const SENDOUQ_STREAMS_PAGE = "/q/streams";
 export const TIERS_PAGE = "/tiers";
 
 export const BLANK_IMAGE_URL = "/static-assets/img/blank.gif";
@@ -346,8 +351,8 @@ export const preferenceEmojiUrl = (preference?: Preference) => {
     preference === "PREFER"
       ? "grin"
       : preference === "AVOID"
-      ? "unamused"
-      : "no-mouth";
+        ? "unamused"
+        : "no-mouth";
 
   return `/static-assets/img/emoji/${emoji}.svg`;
 };

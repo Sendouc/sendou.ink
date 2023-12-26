@@ -12,6 +12,7 @@ interface NewTabsProps {
     key: string;
     element: React.ReactNode;
     hidden?: boolean;
+    unmount?: boolean;
   }[];
   scrolling?: boolean;
   selectedIndex?: number;
@@ -71,7 +72,11 @@ export function NewTabs(args: NewTabsProps) {
         {content
           .filter((c) => !c.hidden)
           .map((c) => {
-            return <Tab.Panel key={c.key}>{c.element}</Tab.Panel>;
+            return (
+              <Tab.Panel key={c.key} unmount={c.unmount}>
+                {c.element}
+              </Tab.Panel>
+            );
           })}
       </Tab.Panels>
     </Tab.Group>

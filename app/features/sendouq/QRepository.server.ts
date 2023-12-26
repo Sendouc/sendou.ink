@@ -68,6 +68,7 @@ export async function findLookingGroups({
             "User.qWeaponPool as weapons",
             "PlusTier.tier as plusTier",
             "GroupMember.note",
+            "GroupMember.role",
             "User.languages",
             "User.vc",
             jsonObjectFrom(

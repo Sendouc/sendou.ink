@@ -1,4 +1,4 @@
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import {
   FIRST_PLACEMENT_ICON_PATH,
   SECOND_PLACEMENT_ICON_PATH,

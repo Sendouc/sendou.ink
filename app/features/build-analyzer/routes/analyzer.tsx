@@ -1,4 +1,4 @@
-import { type LinksFunction, type V2_MetaFunction } from "@remix-run/node";
+import { type LinksFunction, type MetaFunction } from "@remix-run/node";
 import type { ShouldRevalidateFunction } from "@remix-run/react";
 import { Link } from "@remix-run/react";
 import clsx from "clsx";
@@ -16,7 +16,7 @@ import { Toggle } from "~/components/Toggle";
 import { BeakerIcon } from "~/components/icons/Beaker";
 import { MAX_AP } from "~/constants";
 import { useSetTitle } from "~/hooks/useSetTitle";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { useUser } from "~/features/auth/core";
 import type { Ability as AbilityType } from "~/modules/in-game-lists";
 import {
@@ -80,7 +80,7 @@ import invariant from "tiny-invariant";
 
 export const CURRENT_PATCH = "6.0";
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [
     { title: makeTitle("Build Analyzer") },
     {
@@ -594,6 +594,17 @@ export default function BuildAnalyzerPage() {
                 })}
               />
             )}
+            {analyzed.stats.specialMoveSpeed && (
+              <StatCard
+                context={context}
+                stat={statKeyToTuple("specialMoveSpeed")}
+                title={t("analyzer:stat.special.moveSpeed", {
+                  weapon: t(
+                    `weapons:SPECIAL_${analyzed.weapon.specialWeaponSplId}`,
+                  ),
+                })}
+              />
+            )}
             {analyzed.stats.specialAutoChargeRate && (
               <StatCard
                 context={context}
@@ -963,11 +974,11 @@ function StatChart({
           mainWeaponId,
         })
       : typeof subWeaponId === "number"
-      ? subDefenseGraphOptions({
-          subWeaponId,
-          distanceLabel,
-        })
-      : [];
+        ? subDefenseGraphOptions({
+            subWeaponId,
+            distanceLabel,
+          })
+        : [];
   }, [statKey, modifiedBy, mainWeaponId, subWeaponId, distanceLabel]);
 
   // prevent crash but this should not happen
@@ -1406,8 +1417,8 @@ function StatCard({
               {typeof stat === "number"
                 ? t("value")
                 : showComparison
-                ? t("build1")
-                : t("base")}
+                  ? t("build1")
+                  : t("base")}
             </h4>{" "}
             <div
               className="analyzer__stat-card__value__number"

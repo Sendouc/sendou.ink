@@ -71,7 +71,10 @@ module.exports = {
         "/calendar/:id/report-winners",
         "features/calendar/routes/calendar.$id.report-winners.tsx",
       );
-      route("/map-pool-events", "features/calendar/routes/map-pool-events.ts");
+      route(
+        "/calendar/map-pool-events",
+        "features/calendar/routes/map-pool-events.ts",
+      );
 
       route("/maps", "features/map-list-generator/routes/maps.tsx");
 
@@ -181,6 +184,8 @@ module.exports = {
 
       route("/q/settings", "features/sendouq-settings/routes/q.settings.tsx");
 
+      route("/q/streams", "features/sendouq-streams/routes/q.streams.tsx");
+
       route("/weapon-usage", "features/sendouq/routes/weapon-usage.tsx");
 
       route("/tiers", "features/sendouq/routes/tiers.tsx");
@@ -236,12 +241,10 @@ module.exports = {
     });
   },
   serverModuleFormat: "cjs",
-  serverDependenciesToBundle: ["react-charts", "d3-time-format"],
-  future: {
-    v2_meta: true,
-    v2_normalizeFormMethod: true,
-    v2_dev: true,
-    v2_headers: true,
-    v2_errorBoundary: true,
-  },
+  serverDependenciesToBundle: [
+    "react-charts",
+    "d3-time-format",
+    "nanoid",
+    /^remix-utils.*/,
+  ],
 };

@@ -502,7 +502,7 @@ export type Preference = "AVOID" | "PREFER";
 export interface UserMapModePreferences {
   modes: Array<{
     mode: ModeShort;
-    preference: Preference;
+    preference?: Preference;
   }>;
   maps: Array<{
     stageId: StageId;
@@ -547,6 +547,7 @@ export interface User {
   >;
   qWeaponPool: ColumnType<MainWeaponId[] | null, string | null, string | null>;
   plusSkippedForSeasonNth: number | null;
+  noScreen: Generated<number>;
 }
 
 export interface UserResultHighlight {

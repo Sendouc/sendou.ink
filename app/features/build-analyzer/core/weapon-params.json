@@ -2318,8 +2318,23 @@
           "High": 1.1,
           "Low": 1,
           "Mid": 1.05
+        },
+        "PaintRadius": {
+          "High": 10.8,
+          "Low": 9,
+          "Mid": 9.9
         }
-      }
+      },
+      "DistanceDamage": [
+        {
+          "Damage": 2200,
+          "Distance": 7
+        },
+        {
+          "Damage": 600,
+          "Distance": 12
+        }
+      ]
     },
     "19": {
       "overwrites": {

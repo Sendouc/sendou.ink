@@ -1,4 +1,4 @@
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { Label } from "./Label";
 import * as React from "react";
 import { Button } from "./Button";

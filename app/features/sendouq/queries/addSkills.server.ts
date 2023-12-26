@@ -80,7 +80,11 @@ export function addSkills({
 
   if (!oldMatchMemento) return;
 
-  const newMemento: ParsedMemento = { groups: {}, users: {} };
+  const newMemento: ParsedMemento = {
+    ...oldMatchMemento,
+    groups: {},
+    users: {},
+  };
 
   for (const [key, value] of Object.entries(oldMatchMemento.users)) {
     newMemento.users[key as any] = {

@@ -29,8 +29,7 @@ ResolveBestOfs("4 teams", () => {
 
   const bestOfs = resolveBestOfs(matches);
 
-  assert.equal(count(bestOfs, 5), 1);
-  assert.equal(count(bestOfs, 7), 2);
+  assert.equal(count(bestOfs, 5), 3);
 });
 
 ResolveBestOfs("8 teams", () => {
@@ -54,8 +53,7 @@ ResolveBestOfs("8 teams", () => {
 
   const bestOfs = resolveBestOfs(matches);
 
-  assert.equal(count(bestOfs, 5), 2);
-  assert.equal(count(bestOfs, 7), 2);
+  assert.equal(count(bestOfs, 5), 4);
 });
 
 ResolveBestOfs.run();

@@ -1,5 +1,5 @@
-import type { LoaderArgs } from "@remix-run/node";
-import { eventStream } from "remix-utils";
+import type { LoaderFunctionArgs } from "@remix-run/node";
+import { eventStream } from "remix-utils/sse/server";
 
 import { emitter } from "../core/emitters.server";
 import {
@@ -8,7 +8,7 @@ import {
 } from "../tournament-bracket-utils";
 import { getUserId } from "~/features/auth/core/user.server";
 
-export const loader = async ({ request, params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const loggedInUser = await getUserId(request);
   const matchId = matchIdFromParams(params);
 

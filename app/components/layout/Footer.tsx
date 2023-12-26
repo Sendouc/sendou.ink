@@ -1,10 +1,11 @@
 import { Link } from "@remix-run/react";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import type { RootLoaderData } from "~/root";
 import { discordFullName } from "~/utils/strings";
 import {
   CONTRIBUTIONS_PAGE,
   FAQ_PAGE,
+  NINTENDO_COMMUNITY_TOURNAMENTS_GUIDELINES_URL,
   PRIVACY_POLICY_PAGE,
   SENDOU_INK_DISCORD_URL,
   SENDOU_INK_GITHUB_URL,
@@ -109,6 +110,18 @@ export function Footer({
         <p>
           Splatoon is trademark & © of Nintendo 2014-{currentYear}. sendou.ink
           is not affiliated with Nintendo.
+        </p>
+        <p>
+          Any tournaments hosted on sendou.ink are unofficial and Nintendo is
+          not a sponsor or affiliated with them. Terms for participating in and
+          viewing Community Tournaments using Nintendo Games can be found here:{" "}
+          <a
+            href={NINTENDO_COMMUNITY_TOURNAMENTS_GUIDELINES_URL}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {NINTENDO_COMMUNITY_TOURNAMENTS_GUIDELINES_URL}
+          </a>
         </p>
       </div>
     </footer>

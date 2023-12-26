@@ -1751,17 +1751,21 @@ const randomMapList = (
 
 const MATCHES_COUNT = 500;
 
+const AMOUNT_OF_USERS_WITH_SKILLS = 100;
+
 async function playedMatches() {
   const _groupMembers = (() => {
-    return new Array(50).fill(null).map(() => {
-      const users = shuffle(userIdsInAscendingOrderById().slice(0, 50));
+    return new Array(AMOUNT_OF_USERS_WITH_SKILLS).fill(null).map(() => {
+      const users = shuffle(
+        userIdsInAscendingOrderById().slice(0, AMOUNT_OF_USERS_WITH_SKILLS),
+      );
 
       return new Array(4).fill(null).map(() => users.pop()!);
     });
   })();
   const defaultWeapons = Object.fromEntries(
     userIdsInAscendingOrderById()
-      .slice(0, 50)
+      .slice(0, AMOUNT_OF_USERS_WITH_SKILLS)
       .map((id) => {
         const weapons = shuffle([...mainWeaponIds]);
         return [id, weapons[0]];

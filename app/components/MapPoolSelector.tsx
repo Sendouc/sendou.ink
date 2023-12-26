@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { Image } from "~/components/Image";
 import {
   type ModeShort,
@@ -18,6 +18,7 @@ import type { CalendarEvent } from "~/db/types";
 import type { SerializedMapPoolEvent } from "~/features/calendar/routes/map-pool-events";
 import { assertType } from "~/utils/types";
 import { MapPoolEventsCombobox } from "./Combobox";
+import { BANNED_MAPS } from "~/features/sendouq-settings/banned-maps";
 
 export type MapPoolSelectorProps = {
   mapPool: MapPool;
@@ -36,6 +37,7 @@ export type MapPoolSelectorProps = {
   footer?: React.ReactNode;
   /** Enables clear button, template selection, and toggling a whole stage */
   allowBulkEdit?: boolean;
+  hideBanned?: boolean;
 };
 
 export function MapPoolSelector({
@@ -51,6 +53,7 @@ export function MapPoolSelector({
   info,
   footer,
   allowBulkEdit = false,
+  hideBanned = false,
 }: MapPoolSelectorProps) {
   const { t } = useTranslation();
 
@@ -156,6 +159,7 @@ export function MapPoolSelector({
           allowBulkEdit={allowBulkEdit}
           modesToInclude={modesToInclude}
           preselectedMapPool={preselectedMapPool}
+          hideBanned={hideBanned}
         />
         {footer}
       </div>
@@ -169,6 +173,7 @@ export type MapPoolStagesProps = {
   allowBulkEdit?: boolean;
   modesToInclude?: ModeShort[];
   preselectedMapPool?: MapPool;
+  hideBanned?: boolean;
 };
 
 export function MapPoolStages({
@@ -177,6 +182,7 @@ export function MapPoolStages({
   allowBulkEdit = false,
   modesToInclude,
   preselectedMapPool,
+  hideBanned = false,
 }: MapPoolStagesProps) {
   const { t } = useTranslation(["game-misc", "common"]);
 
@@ -290,6 +296,9 @@ export function MapPoolStages({
                       className={clsx("maps__mode-button", "outline-theme", {
                         selected,
                         preselected,
+                        invisible:
+                          hideBanned &&
+                          BANNED_MAPS[mode.short].includes(stageId),
                       })}
                       onClick={() =>
                         handleModeChange?.({ mode: mode.short, stageId })

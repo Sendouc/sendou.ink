@@ -1,9 +1,9 @@
 import type {
-  ActionArgs,
+  ActionFunctionArgs,
   LinksFunction,
-  LoaderArgs,
+  LoaderFunctionArgs,
   SerializeFrom,
-  V2_MetaFunction,
+  MetaFunction,
 } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import type { FetcherWithComponents } from "@remix-run/react";
@@ -38,7 +38,7 @@ import { type ChatProps, Chat, useChat } from "~/features/chat/components/Chat";
 import { currentSeason } from "~/features/mmr";
 import { resolveRoomPass } from "~/features/tournament-bracket/tournament-bracket-utils";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { useUser } from "~/features/auth/core";
 import { getUserId, requireUser } from "~/features/auth/core/user.server";
 import type { MainWeaponId } from "~/modules/in-game-lists";
@@ -100,8 +100,11 @@ import { DiscordIcon } from "~/components/icons/Discord";
 import { useWindowSize } from "~/hooks/useWindowSize";
 import { joinListToNaturalString } from "~/utils/arrays";
 import { NewTabs } from "~/components/NewTabs";
+import { Alert } from "~/components/Alert";
+import cachified from "@epic-web/cachified";
+import { refreshStreamsCache } from "~/features/sendouq-streams/core/streams.server";
 
-export const meta: V2_MetaFunction = (args) => {
+export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
 
   if (!data) return [];
@@ -134,7 +137,7 @@ export const handle: SendouRouteHandle = {
   }),
 };
 
-export const action = async ({ request, params }: ActionArgs) => {
+export const action = async ({ request, params }: ActionFunctionArgs) => {
   const matchId = matchIdFromParams(params);
   const user = await requireUser(request);
   const data = await parseRequestFormData({
@@ -237,6 +240,7 @@ export const action = async ({ request, params }: ActionArgs) => {
       const shouldLockMatchWithoutChangingRecords =
         compared === "SAME" && matchIsBeingCanceled;
 
+      let clearCaches = false;
       sql.transaction(() => {
         if (
           compared === "FIX_PREVIOUS" ||
@@ -265,10 +269,11 @@ export const action = async ({ request, params }: ActionArgs) => {
             groupMatchId: match.id,
             oldMatchMemento: match.memento,
           });
-          cache.delete(USER_SKILLS_CACHE_KEY);
+          clearCaches = true;
         }
         if (shouldLockMatchWithoutChangingRecords) {
           addDummySkill(match.id);
+          clearCaches = true;
         }
         // fix edge case where they 1) report score 2) report weapons 3) report score again, but with different amount of maps played
         if (compared === "FIX_PREVIOUS") {
@@ -280,6 +285,14 @@ export const action = async ({ request, params }: ActionArgs) => {
           setGroupAsInactive(match.bravoGroupId);
         }
       })();
+
+      if (clearCaches) {
+        // this is kind of useless to do when admin reports since skills don't change
+        // but it's no the most common case so it's ok
+        cache.delete(USER_SKILLS_CACHE_KEY);
+
+        refreshStreamsCache();
+      }
 
       if (compared === "DIFFERENT") {
         return {
@@ -380,7 +393,7 @@ export const action = async ({ request, params }: ActionArgs) => {
   return null;
 };
 
-export const loader = async ({ params, request }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const user = await getUserId(request);
   const matchId = matchIdFromParams(params);
   const match = notFoundIfFalsy(await QMatchRepository.findById(matchId));
@@ -419,6 +432,22 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     ? reportedWeaponsByMatchId(matchId)
     : null;
 
+  const banScreen = !match.isLocked
+    ? await cachified({
+        key: `matches-screen-ban-${match.id}`,
+        cache,
+        async getFreshValue() {
+          const noScreenSettings =
+            await QMatchRepository.groupMembersNoScreenSettings([
+              groupAlpha,
+              groupBravo,
+            ]);
+
+          return noScreenSettings.some((user) => user.noScreen);
+        },
+      })
+    : null;
+
   return {
     match: censoredMatch,
     matchChatCode: canAccessMatchChat ? match.chatCode : null,
@@ -426,11 +455,12 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     groupChatCode: groupChatCode(),
     groupAlpha: censoredGroupAlpha,
     groupBravo: censoredGroupBravo,
+    banScreen,
     groupMemberOf: isTeamAlphaMember
       ? ("ALPHA" as const)
       : isTeamBravoMember
-      ? ("BRAVO" as const)
-      : null,
+        ? ("BRAVO" as const)
+        : null,
     reportedWeapons: match.reportedAt
       ? reportedWeaponsToArrayOfArrays({
           groupAlpha,
@@ -466,8 +496,8 @@ export default function QMatchPage() {
   const ownGroup = data.groupAlpha.members.some((m) => m.id === user?.id)
     ? data.groupAlpha
     : data.groupBravo.members.some((m) => m.id === user?.id)
-    ? data.groupBravo
-    : null;
+      ? data.groupBravo
+      : null;
 
   const ownTeamReported = Boolean(
     data.match.reportedByUserId &&
@@ -1007,7 +1037,9 @@ function BottomSection({
     ].filter(Boolean) as ChatProps["rooms"];
   }, [data.matchChatCode, data.groupChatCode]);
 
-  const chat = useChat({ rooms: chatRooms, onNewMessage });
+  // revalidates: false because we don't want the user to lose the weapons
+  // they are reporting when the match gets suddenly locked
+  const chat = useChat({ rooms: chatRooms, onNewMessage, revalidates: false });
 
   const onChatMount = React.useCallback(() => {
     setChatVisible(true);
@@ -1034,16 +1066,12 @@ function BottomSection({
 
   const chatElement = (
     <Chat
-      onNewMessage={onNewMessage}
       chat={chat}
       onMount={onChatMount}
       onUnmount={onChatUnmount}
       users={chatUsers}
       rooms={chatRooms}
       disabled={!data.canPostChatMessages}
-      // we don't want the user to lose the weapons they are reporting
-      // when the match gets suddenly locked
-      revalidates={false}
     />
   );
 
@@ -1057,7 +1085,9 @@ function BottomSection({
   );
 
   const roomJoiningInfoElement = (
-    <div className="q-match__pool-pass-container">
+    <div
+      className={clsx("q-match__pool-pass-container", { "mx-auto": !isMobile })}
+    >
       <InfoWithHeader header={t("q:match.pool")} value={poolCode()} />
       <InfoWithHeader
         header={t("q:match.password.short")}
@@ -1114,6 +1144,11 @@ function BottomSection({
       </FormWithConfirm>
     ) : null;
 
+  const screenLegalityInfoElement =
+    data.banScreen !== null ? (
+      <ScreenLegalityInfo ban={data.banScreen} />
+    ) : null;
+
   const chatHidden = chatRooms.length === 0;
 
   if (!showMid && chatHidden) {
@@ -1126,6 +1161,7 @@ function BottomSection({
         <div className="stack horizontal lg items-center justify-center">
           {roomJoiningInfoElement}
           <div className="stack md">
+            {screenLegalityInfoElement}
             {rulesButtonElement}
             {helpdeskButtonElement}
             {cancelMatchElement}
@@ -1155,6 +1191,7 @@ function BottomSection({
               {
                 key: "report",
                 element: mapListElement,
+                unmount: false,
               },
             ]}
           />
@@ -1174,6 +1211,7 @@ function BottomSection({
         >
           <div className="stack md">
             {roomJoiningInfoElement}
+            {screenLegalityInfoElement}
             {rulesButtonElement}
             {helpdeskButtonElement}
             {cancelMatchElement}
@@ -1194,6 +1232,34 @@ function BottomSection({
         </div>
       ) : null}
     </>
+  );
+}
+
+function ScreenLegalityInfo({ ban }: { ban: boolean }) {
+  const { t } = useTranslation(["q", "weapons"]);
+
+  return (
+    <div className="q-match__screen-legality">
+      <Popover
+        triggerClassName="minimal tiny q-match__screen-legality__button"
+        buttonChildren={
+          <Alert variation={ban ? "ERROR" : "SUCCESS"}>
+            <div className="stack xs horizontal items-center">
+              <WeaponImage weaponSplId={401} width={30} variant="build" />
+              <WeaponImage weaponSplId={6021} width={30} variant="build" />
+            </div>
+          </Alert>
+        }
+      >
+        {ban
+          ? t("q:match.screen.ban", {
+              special: t("weapons:SPECIAL_19"),
+            })
+          : t("q:match.screen.allowed", {
+              special: t("weapons:SPECIAL_19"),
+            })}
+      </Popover>
+    </div>
   );
 }
 
@@ -1271,6 +1337,9 @@ function MapList({
                 showReportedOwnWeapon={!ownWeaponReported}
                 recentlyReportedWeapons={recentlyReportedWeapons}
                 addRecentlyReportedWeapon={addRecentlyReportedWeapon}
+                ownWeapon={
+                  ownWeaponsUsage.find((w) => w.mapIndex === i)?.weaponSplId
+                }
                 onOwnWeaponSelected={(newReportedWeapon) => {
                   if (!newReportedWeapon) return;
 
@@ -1322,6 +1391,7 @@ function MapListMap({
   setWinners,
   canReportScore,
   weapons,
+  ownWeapon,
   onOwnWeaponSelected,
   showReportedOwnWeapon,
   recentlyReportedWeapons,
@@ -1333,6 +1403,7 @@ function MapListMap({
   setWinners?: (winners: ("ALPHA" | "BRAVO")[]) => void;
   canReportScore: boolean;
   weapons?: (MainWeaponId | null)[] | null;
+  ownWeapon?: MainWeaponId | null;
   onOwnWeaponSelected?: (weapon: ReportedWeaponForMerging | null) => void;
   showReportedOwnWeapon: boolean;
   recentlyReportedWeapons?: MainWeaponId[];
@@ -1460,7 +1531,7 @@ function MapListMap({
               )}{" "}
               {t(`game-misc:STAGE_${map.stageId}`)}
             </div>
-            <div className="text-lighter text-xs">
+            <div className="text-lighter text-xs stack xxs horizontal">
               {mapPreferences && mapPreferences.length > 0 ? (
                 <Popover
                   triggerClassName="q-match__stage-popover-button"
@@ -1532,6 +1603,15 @@ function MapListMap({
             <label className="mb-0 text-theme-secondary">
               {t("q:match.report.winnerLabel")}
             </label>
+            <div className="stack items-center">
+              <div
+                className={clsx("q-match__result-dot", {
+                  "q-match__result-dot__won": winners[i] === data.groupMemberOf,
+                  "q-match__result-dot__lost":
+                    winners[i] && winners[i] !== data.groupMemberOf,
+                })}
+              />
+            </div>
             <div className="stack sm horizontal items-center">
               <div className="stack sm horizontal items-center font-semi-bold">
                 <input
@@ -1566,6 +1646,15 @@ function MapListMap({
                 <label className="mb-0 text-theme-secondary">
                   {t("q:match.report.weaponLabel")}
                 </label>
+                <div
+                  className={clsx({ invisible: typeof ownWeapon !== "number" })}
+                >
+                  <WeaponImage
+                    weaponSplId={ownWeapon ?? 0}
+                    variant="badge"
+                    size={28}
+                  />
+                </div>
                 <WeaponCombobox
                   inputName="weapon"
                   quickSelectWeaponIds={recentlyReportedWeapons}

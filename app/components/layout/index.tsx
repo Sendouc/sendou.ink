@@ -3,7 +3,7 @@ import * as React from "react";
 import type { RootLoaderData } from "~/root";
 import type { Breadcrumb, SendouRouteHandle } from "~/utils/remix";
 import { Footer } from "./Footer";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { Image } from "../Image";
 import { UserItem } from "./UserItem";
 import { LanguageChanger } from "./LanguageChanger";

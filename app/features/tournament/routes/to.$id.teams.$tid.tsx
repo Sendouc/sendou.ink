@@ -1,4 +1,4 @@
-import type { LoaderArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs } from "@remix-run/node";
 import { Link, useLoaderData, useOutletContext } from "@remix-run/react";
 import { Placement } from "~/components/Placement";
 import {
@@ -28,7 +28,7 @@ import {
   tournamentTeamPage,
   userPage,
 } from "~/utils/urls";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { Redirect } from "~/components/Redirect";
 import { Popover } from "~/components/Popover";
 import type { TournamentMaplistSource } from "~/modules/tournament-map-list-generator";
@@ -39,7 +39,7 @@ import { getUserId } from "~/features/auth/core/user.server";
 import { notFoundIfFalsy } from "~/utils/remix";
 import * as TournamentRepository from "../TournamentRepository.server";
 
-export const loader = async ({ params, request }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const user = await getUserId(request);
   const tournamentId = tournamentIdFromParams(params);
   const tournamentTeamId = tournamentTeamIdFromParams(params);

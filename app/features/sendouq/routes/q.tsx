@@ -1,9 +1,9 @@
 import type {
   ActionFunction,
   LinksFunction,
-  LoaderArgs,
+  LoaderFunctionArgs,
   SerializeFrom,
-  V2_MetaFunction,
+  MetaFunction,
 } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { Link, useFetcher, useLoaderData } from "@remix-run/react";
@@ -30,7 +30,7 @@ import * as QRepository from "~/features/sendouq/QRepository.server";
 import { giveTrust } from "~/features/tournament/queries/giveTrust.server";
 import { useAutoRerender } from "~/hooks/useAutoRerender";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { joinListToNaturalString } from "~/utils/arrays";
 import {
   parseRequestFormData,
@@ -47,6 +47,7 @@ import {
   SENDOUQ_PREPARING_PAGE,
   SENDOUQ_RULES_PAGE,
   SENDOUQ_SETTINGS_PAGE,
+  SENDOUQ_STREAMS_PAGE,
   SENDOUQ_YOUTUBE_VIDEO,
   navIconUrl,
   userSeasonsPage,
@@ -74,7 +75,7 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [
     { title: makeTitle("SendouQ") },
     {
@@ -148,7 +149,7 @@ export const action: ActionFunction = async ({ request }) => {
   }
 };
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = await getUserId(request);
 
   const code = new URL(request.url).searchParams.get(
@@ -435,6 +436,12 @@ function QLinks() {
           subText={t("q:front.nav.settings.description")}
         />
       ) : null}
+      <QLink
+        navIcon="vods"
+        url={SENDOUQ_STREAMS_PAGE}
+        title={t("q:front.nav.streams.title")}
+        subText={t("q:front.nav.streams.description")}
+      />
       <QLink
         navIcon="leaderboards"
         url={LEADERBOARDS_PAGE}

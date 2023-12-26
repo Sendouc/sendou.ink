@@ -139,8 +139,8 @@ const canPlaceAbilityAtSlot = (
     rowIndex === 0
       ? "HEAD_MAIN_ONLY"
       : rowIndex === 1
-      ? "CLOTHES_MAIN_ONLY"
-      : "SHOES_MAIN_ONLY";
+        ? "CLOTHES_MAIN_ONLY"
+        : "SHOES_MAIN_ONLY";
 
   const isMainSlot = abilityIndex === 0;
 

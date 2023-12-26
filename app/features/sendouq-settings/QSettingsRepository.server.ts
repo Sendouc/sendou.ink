@@ -10,6 +10,7 @@ export async function settingsByUserId(userId: number) {
       "User.vc",
       "User.languages",
       "User.qWeaponPool",
+      "User.noScreen",
     ])
     .where("id", "=", userId)
     .executeTakeFirstOrThrow();
@@ -60,5 +61,21 @@ export function updateSendouQWeaponPool(args: {
         args.weaponPool.length > 0 ? JSON.stringify(args.weaponPool) : null,
     })
     .where("User.id", "=", args.userId)
+    .execute();
+}
+
+export function updateNoScreen({
+  noScreen,
+  userId,
+}: {
+  noScreen: number;
+  userId: number;
+}) {
+  return db
+    .updateTable("User")
+    .set({
+      noScreen,
+    })
+    .where("User.id", "=", userId)
     .execute();
 }

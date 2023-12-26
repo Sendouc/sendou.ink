@@ -18,7 +18,7 @@ import { ART_PER_PAGE } from "../art-constants";
 import { Button, LinkButton } from "~/components/Button";
 import clsx from "clsx";
 import { EditIcon } from "~/components/icons/Edit";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { previewUrl } from "../art-utils";
 import { TrashIcon } from "~/components/icons/Trash";
 import { FormWithConfirm } from "~/components/FormWithConfirm";

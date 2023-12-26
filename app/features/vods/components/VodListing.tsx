@@ -1,6 +1,6 @@
 import { Link } from "@remix-run/react";
 import { WeaponImage } from "~/components/Image";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { vodVideoPage } from "~/utils/urls";
 import type { ListVod } from "../vods-types";
 import { PovUser } from "./VodPov";

@@ -1,10 +1,10 @@
-import type { ActionFunction, LoaderArgs } from "@remix-run/node";
+import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData, useMatches } from "@remix-run/react";
 import { z } from "zod";
 import { BuildCard } from "~/components/BuildCard";
 import { Button, LinkButton } from "~/components/Button";
 import { BUILD } from "~/constants";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { useUser } from "~/features/auth/core";
 import { getUserId, requireUserId } from "~/features/auth/core/user.server";
 import { atOrError } from "~/utils/arrays";
@@ -52,7 +52,7 @@ export const handle: SendouRouteHandle = {
   i18n: ["weapons", "builds", "gear"],
 };
 
-export const loader = async ({ params, request }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const loggedInUser = await getUserId(request);
   const { identifier } = userParamsSchema.parse(params);
   const user = notFoundIfFalsy(

@@ -1,7 +1,7 @@
 import {
   redirect,
   type ActionFunction,
-  type LoaderArgs,
+  type LoaderFunctionArgs,
 } from "@remix-run/node";
 import {
   Link,
@@ -27,7 +27,7 @@ import { CrossIcon } from "~/components/icons/Cross";
 import { UserIcon } from "~/components/icons/User";
 import { useAutoRerender } from "~/hooks/useAutoRerender";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { useUser } from "~/features/auth/core";
 import { getUser, requireUser } from "~/features/auth/core/user.server";
 import type {
@@ -93,6 +93,7 @@ import { findMapPoolByTeamId } from "~/features/tournament-bracket";
 import { Popover } from "~/components/Popover";
 import * as TeamRepository from "~/features/team/TeamRepository.server";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
+import { BANNED_MAPS } from "~/features/sendouq-settings/banned-maps";
 
 export const handle: SendouRouteHandle = {
   breadcrumb: () => ({
@@ -226,7 +227,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 
 export type TournamentRegisterPageLoader = typeof loader;
 
-export const loader = async ({ request, params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const eventId = tournamentIdFromParams(params);
   const hasStarted = hasTournamentStarted(eventId);
 
@@ -949,9 +950,15 @@ function CounterPickMapPoolPicker() {
                             {stageIds
                               .filter((id) => id !== tiebreakerStageId)
                               .map((stageId) => {
+                                const isBanned =
+                                  BANNED_MAPS[mode].includes(stageId);
+
                                 return (
                                   <option key={stageId} value={stageId}>
-                                    {t(`game-misc:STAGE_${stageId}`)}
+                                    {t(`game-misc:STAGE_${stageId}`)}{" "}
+                                    {isBanned
+                                      ? `(${t("tournament:pre.pool.banned")})`
+                                      : ""}
                                   </option>
                                 );
                               })}
@@ -997,7 +1004,8 @@ function MapPoolValidationStatusMessage({
 
   if (
     status !== "TOO_MUCH_STAGE_REPEAT" &&
-    status !== "STAGE_REPEAT_IN_SAME_MODE"
+    status !== "STAGE_REPEAT_IN_SAME_MODE" &&
+    status !== "INCLUDES_BANNED"
   )
     return null;
 
@@ -1016,7 +1024,8 @@ type CounterPickValidationStatus =
   | "PICKING"
   | "VALID"
   | "TOO_MUCH_STAGE_REPEAT"
-  | "STAGE_REPEAT_IN_SAME_MODE";
+  | "STAGE_REPEAT_IN_SAME_MODE"
+  | "INCLUDES_BANNED";
 
 function validateCounterPickMapPool(
   mapPool: MapPool,
@@ -1043,6 +1052,14 @@ function validateCounterPickMapPool(
     mapPool.stageModePairs.length
   ) {
     return "STAGE_REPEAT_IN_SAME_MODE";
+  }
+
+  if (
+    mapPool.stageModePairs.some((pair) =>
+      BANNED_MAPS[pair.mode].includes(pair.stageId),
+    )
+  ) {
+    return "INCLUDES_BANNED";
   }
 
   if (

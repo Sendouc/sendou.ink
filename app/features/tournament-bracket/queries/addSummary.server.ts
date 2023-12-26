@@ -111,7 +111,7 @@ export const addSummary = sql.transaction(
   }: {
     tournamentId: number;
     summary: TournamentSummary;
-    season: number;
+    season?: number;
   }) => {
     for (const skill of summary.skills) {
       const insertedSkill = addSkillStm.get({

@@ -97,8 +97,8 @@ export function weaponUsageStats({
       row.weaponUserId === userId
         ? "SELF"
         : row.weaponUserGroupId === row.ownerGroupId
-        ? "MATE"
-        : "ENEMY";
+          ? "MATE"
+          : "ENEMY";
 
     const won = () => {
       const targetWon = row.winnerGroupId === row.ownerGroupId;

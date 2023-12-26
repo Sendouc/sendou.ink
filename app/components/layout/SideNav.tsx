@@ -1,6 +1,6 @@
 import { Link } from "@remix-run/react";
 import navItems from "~/components/layout/nav-items.json";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { navIconUrl } from "~/utils/urls";
 import { Image } from "../Image";
 

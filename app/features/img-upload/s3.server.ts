@@ -4,10 +4,7 @@ import { PassThrough } from "stream";
 
 import type AWS from "aws-sdk";
 import { Upload } from "@aws-sdk/lib-storage";
-import {
-  type CompleteMultipartUploadCommandOutput,
-  S3,
-} from "@aws-sdk/client-s3";
+import { S3 } from "@aws-sdk/client-s3";
 import type { UploadHandler } from "@remix-run/node";
 import { writeAsyncIterableToWritable } from "@remix-run/node";
 import { nanoid } from "nanoid";
@@ -77,7 +74,7 @@ export async function uploadStreamToS3(data: any, filename: string) {
   });
   await writeAsyncIterableToWritable(data, stream.writeStream);
   const file = await stream.promise;
-  return (file as CompleteMultipartUploadCommandOutput).Location;
+  return file.Location;
 }
 
 // predeciding file name is useful when you are uploading more than one asset

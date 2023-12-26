@@ -22,6 +22,10 @@ import type { CombineWith, DamageReceiver } from "../calculator-types";
 import { removeDuplicates } from "~/utils/arrays";
 import type { Damage } from "~/features/build-analyzer/analyzer-types";
 
+const getNormalizedMainWeapondId = (id: MainWeaponId) => {
+  return id % 10 !== 0 ? ((id - 1) as MainWeaponId) : id;
+};
+
 export function damageTypeToMultipliers({
   type,
   weapon,
@@ -34,7 +38,9 @@ export function damageTypeToMultipliers({
   for (const [key, objectDamagesObj] of Object.entries(objectDamages)) {
     if (
       weapon.type === "MAIN" &&
-      (objectDamagesObj.mainWeaponIds as MainWeaponId[]).includes(weapon.id)
+      (objectDamagesObj.mainWeaponIds as MainWeaponId[]).includes(
+        getNormalizedMainWeapondId(weapon.id),
+      )
     ) {
       matchingKeys.push(key as keyof typeof objectDamages);
     } else if (
@@ -77,8 +83,8 @@ function resolveRelevantKey({
     // handle alt kits e.g. Splatteshot might have id 10 but Tentatek Splattershot has id 11
     // but in the context of this function they are one and the same
     const normalizedWeaponId =
-      weapon.type === "MAIN" && weapon.id % 10 !== 0
-        ? ((weapon.id - 1) as MainWeaponId)
+      weapon.type === "MAIN"
+        ? getNormalizedMainWeapondId(weapon.id)
         : weapon.id;
 
     if (weaponType !== weapon.type) continue;
@@ -125,8 +131,8 @@ export function resolveAllUniqueDamageTypes({
     anyWeapon.type === "SUB"
       ? []
       : anyWeapon.type === "SPECIAL"
-      ? analyzed.stats.specialWeaponDamages.map((d) => d.type)
-      : analyzed.stats.damages.map((d) => d.type);
+        ? analyzed.stats.specialWeaponDamages.map((d) => d.type)
+        : analyzed.stats.damages.map((d) => d.type);
 
   return removeDuplicates(damageTypes).filter(
     (dmg) => !dmg.includes("SECONDARY"),

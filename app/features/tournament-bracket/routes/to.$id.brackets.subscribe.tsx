@@ -1,11 +1,11 @@
-import type { LoaderArgs } from "@remix-run/node";
-import { eventStream } from "remix-utils";
+import type { LoaderFunctionArgs } from "@remix-run/node";
+import { eventStream } from "remix-utils/sse/server";
 
 import { emitter } from "../core/emitters.server";
 import { bracketSubscriptionKey } from "../tournament-bracket-utils";
 import { tournamentIdFromParams } from "~/features/tournament";
 
-export const loader = ({ request, params }: LoaderArgs) => {
+export const loader = ({ request, params }: LoaderFunctionArgs) => {
   const tournamentId = tournamentIdFromParams(params);
 
   return eventStream(request.signal, (send) => {

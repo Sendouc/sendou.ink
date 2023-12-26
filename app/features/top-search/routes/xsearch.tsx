@@ -1,7 +1,7 @@
 import type {
   LinksFunction,
-  LoaderArgs,
-  V2_MetaFunction,
+  LoaderFunctionArgs,
+  MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
 import { useLoaderData, useSearchParams } from "@remix-run/react";
@@ -13,7 +13,7 @@ import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import type { XRankPlacement } from "~/db/types";
 import type { RankedModeShort } from "~/modules/in-game-lists";
 import { nanoid } from "nanoid";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
 import type { MonthYear } from "../top-search-utils";
 import { i18next } from "~/modules/i18n";
@@ -34,7 +34,7 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const meta: V2_MetaFunction = (args) => {
+export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
 
   if (!data) return [];
@@ -45,7 +45,7 @@ export const meta: V2_MetaFunction = (args) => {
   ];
 };
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const availableMonthYears = monthYears();
   const { month: latestMonth, year: latestYear } = availableMonthYears[0]!;
 

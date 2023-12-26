@@ -2,6 +2,7 @@ import { z } from "zod";
 import { languagesUnified } from "~/modules/i18n/config";
 import {
   _action,
+  checkboxValueToBoolean,
   modeShort,
   noDuplicates,
   safeJSONParse,
@@ -10,7 +11,7 @@ import {
 } from "~/utils/zod";
 import { SENDOUQ_WEAPON_POOL_MAX_SIZE } from "./q-settings-constants";
 
-const preference = z.enum(["AVOID", "PREFER"]);
+const preference = z.enum(["AVOID", "PREFER"]).optional();
 export const settingsActionSchema = z.union([
   z.object({
     _action: _action("UPDATE_MAP_MODE_PREFERENCES"),
@@ -41,5 +42,9 @@ export const settingsActionSchema = z.union([
       safeJSONParse,
       z.array(weaponSplId).max(SENDOUQ_WEAPON_POOL_MAX_SIZE),
     ),
+  }),
+  z.object({
+    _action: _action("UPDATE_NO_SCREEN"),
+    noScreen: z.preprocess(checkboxValueToBoolean, z.boolean()),
   }),
 ]);

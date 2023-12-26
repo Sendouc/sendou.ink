@@ -1,7 +1,7 @@
 import type {
   LinksFunction,
-  LoaderArgs,
-  V2_MetaFunction,
+  LoaderFunctionArgs,
+  MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
@@ -14,7 +14,7 @@ import styles from "../build-stats.css";
 import { WeaponImage } from "~/components/Image";
 import { notFoundIfNullLike, type SendouRouteHandle } from "~/utils/remix";
 import { MAX_AP, ONE_HOUR_IN_MS } from "~/constants";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import {
   BUILDS_PAGE,
   navIconUrl,
@@ -24,9 +24,9 @@ import {
 import { i18next } from "~/modules/i18n";
 import { makeTitle } from "~/utils/strings";
 import { cache, ttl } from "~/utils/cache.server";
-import { cachified } from "cachified";
+import { cachified } from "@epic-web/cachified";
 
-export const meta: V2_MetaFunction = (args) => {
+export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
 
   if (!data) return [];
@@ -65,7 +65,7 @@ export const handle: SendouRouteHandle = {
   },
 };
 
-export const loader = async ({ params, request }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const t = await i18next.getFixedT(request, ["builds", "weapons", "common"]);
   const weaponId = notFoundIfNullLike(weaponNameSlugToId(params["slug"]));
 

@@ -1,4 +1,8 @@
-import type { LinksFunction, LoaderArgs, SerializeFrom } from "@remix-run/node";
+import type {
+  LinksFunction,
+  LoaderFunctionArgs,
+  SerializeFrom,
+} from "@remix-run/node";
 import { Main } from "~/components/Main";
 import { parseSearchParams, type SendouRouteHandle } from "~/utils/remix";
 import { navIconUrl, userPage, USER_SEARCH_PAGE } from "~/utils/urls";
@@ -9,7 +13,7 @@ import { Link, useLoaderData, useSearchParams } from "@remix-run/react";
 import { useDebounce } from "react-use";
 import * as React from "react";
 import { Avatar } from "~/components/Avatar";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { queryToUserIdentifier } from "~/utils/users";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
@@ -34,7 +38,7 @@ const searchParamsSchema = z.object({
   limit: z.coerce.number().int().min(1).max(25).default(25),
 });
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { q: query, limit } = parseSearchParams({
     request,
     schema: searchParamsSchema,

@@ -1,4 +1,4 @@
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { Button } from "../Button";
 import { MoonIcon } from "../icons/Moon";
 import { SunIcon } from "../icons/Sun";

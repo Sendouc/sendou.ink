@@ -1,10 +1,10 @@
 import { redirect } from "@remix-run/node";
 import type {
   LinksFunction,
-  V2_MetaFunction,
+  MetaFunction,
   SerializeFrom,
   ActionFunction,
-  LoaderArgs,
+  LoaderFunctionArgs,
 } from "@remix-run/node";
 import { Form, useFetcher, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
@@ -16,7 +16,7 @@ import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { useBaseUrl } from "~/hooks/useBaseUrl";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { useUser } from "~/features/auth/core";
 import { requireUserId } from "~/features/auth/core/user.server";
 import type { SendouRouteHandle } from "~/utils/remix";
@@ -45,11 +45,7 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const meta: V2_MetaFunction = ({
-  data,
-}: {
-  data: SerializeFrom<typeof loader>;
-}) => {
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (!data) return [];
 
   return [{ title: makeTitle(data.team.name) }];
@@ -124,7 +120,7 @@ export const handle: SendouRouteHandle = {
   },
 };
 
-export const loader = async ({ request, params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const user = await requireUserId(request);
   const { customUrl } = teamParamsSchema.parse(params);
 
@@ -295,7 +291,7 @@ function MemberRow({
           <Button
             size="tiny"
             variant="minimal-destructive"
-            testId={`transfer-ownership-button-${number}`}
+            testId={!isSelf ? "transfer-ownership-button" : undefined}
           >
             {t("team:actionButtons.transferOwnership")}
           </Button>

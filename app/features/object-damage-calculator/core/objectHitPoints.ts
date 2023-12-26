@@ -17,10 +17,11 @@ import {
 import type { HitPoints } from "../calculator-types";
 
 const WAVE_BREAKER_HP = 400;
-const SPRINKER_HP = 100;
+const SPRINKLER_HP = 120;
 const RAINMAKER_HP = 1000;
 const SPLAT_BRELLA_SHIELD_HP = 500;
 const BOOYAH_BOMB_ARMOR_HP = 470;
+const INK_VAC_HP = 800;
 const BEAKON_HP = 120;
 const TORPEDO_HP = 20;
 
@@ -61,8 +62,9 @@ export const objectHitPoints = (abilityPoints: AbilityPoints): HitPoints => {
     GreatBarrier_Barrier,
     GreatBarrier_WeakPoint,
     NiceBall_Armor: BOOYAH_BOMB_ARMOR_HP, // ??
+    BlowerInhale: INK_VAC_HP,
     ShockSonar: WAVE_BREAKER_HP,
     Wsb_Flag: BEAKON_HP,
-    Wsb_Sprinkler: SPRINKER_HP,
+    Wsb_Sprinkler: SPRINKLER_HP,
   };
 };

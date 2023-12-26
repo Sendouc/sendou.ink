@@ -13,3 +13,6 @@ export const getTwitchEnvVars = () => {
 
   return { TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET };
 };
+
+export const twitchThumbnailUrlToSrc = (url: string) =>
+  url.replace("{width}", "640").replace("{height}", "360");

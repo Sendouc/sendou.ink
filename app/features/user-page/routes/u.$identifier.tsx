@@ -1,7 +1,7 @@
 import type {
   LinksFunction,
-  LoaderArgs,
-  V2_MetaFunction,
+  LoaderFunctionArgs,
+  MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
 import { Outlet, useLoaderData, useLocation } from "@remix-run/react";
@@ -13,7 +13,7 @@ import { SubNav, SubNavLink } from "~/components/SubNav";
 import { countArtByUserId } from "~/features/art";
 import { userTopPlacements } from "~/features/top-search";
 import { findVods } from "~/features/vods";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { useUser } from "~/features/auth/core";
 import { getUserId } from "~/features/auth/core/user.server";
 import { canAddCustomizedColorsToUserProfile, isAdmin } from "~/permissions";
@@ -40,11 +40,7 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const meta: V2_MetaFunction = ({
-  data,
-}: {
-  data: UserPageLoaderData;
-}) => {
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (!data) return [];
 
   return [{ title: makeTitle(discordFullName(data)) }];
@@ -76,7 +72,7 @@ export const userParamsSchema = z.object({ identifier: z.string() });
 
 export type UserPageLoaderData = SerializeFrom<typeof loader>;
 
-export const loader = async ({ params, request }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const loggedInUser = await getUserId(request);
   const { identifier } = userParamsSchema.parse(params);
   const user = notFoundIfFalsy(

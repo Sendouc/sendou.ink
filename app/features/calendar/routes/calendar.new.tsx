@@ -3,8 +3,8 @@ import type {
   SerializeFrom,
   ActionFunction,
   LinksFunction,
-  LoaderArgs,
-  V2_MetaFunction,
+  LoaderFunctionArgs,
+  MetaFunction,
 } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
@@ -32,7 +32,7 @@ import type {
   Tournament,
 } from "~/db/types";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { useUser } from "~/features/auth/core";
 import { requireUser } from "~/features/auth/core/user.server";
 import { i18next } from "~/modules/i18n";
@@ -85,7 +85,7 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export const meta: V2_MetaFunction = (args) => {
+export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
 
   if (!data) return [];
@@ -208,7 +208,7 @@ export const handle: SendouRouteHandle = {
   i18n: ["calendar", "game-misc"],
 };
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const t = await i18next.getFixedT(request);
   const user = await requireUser(request);
   const url = new URL(request.url);
@@ -750,6 +750,7 @@ function CounterPickMapPoolSection() {
         handleMapPoolChange={setMapPool}
         title={t("common:maps.tieBreakerMapPool")}
         modesToInclude={["SZ", "TC", "RM", "CB"]}
+        hideBanned
         info={
           <div>
             <MapPoolValidationStatusMessage

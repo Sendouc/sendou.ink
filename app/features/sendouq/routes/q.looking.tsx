@@ -1,8 +1,8 @@
 import type {
   ActionFunction,
   LinksFunction,
-  LoaderArgs,
-  V2_MetaFunction,
+  LoaderFunctionArgs,
+  MetaFunction,
 } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { useFetcher, useLoaderData, useSearchParams } from "@remix-run/react";
@@ -12,7 +12,7 @@ import invariant from "tiny-invariant";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { getUser, requireUser } from "~/features/auth/core/user.server";
 import {
   parseRequestFormData,
@@ -24,6 +24,7 @@ import {
   SENDOUQ_LOOKING_PAGE,
   SENDOUQ_PAGE,
   SENDOUQ_SETTINGS_PAGE,
+  SENDOUQ_STREAMS_PAGE,
   navIconUrl,
   sendouQMatchPage,
 } from "~/utils/urls";
@@ -79,6 +80,7 @@ import { Alert } from "~/components/Alert";
 import { useUser } from "~/features/auth/core";
 import { LinkButton } from "~/components/Button";
 import { Image } from "~/components/Image";
+import { cachedStreams } from "~/features/sendouq-streams/core/streams.server";
 
 export const handle: SendouRouteHandle = {
   i18n: ["user", "q"],
@@ -93,7 +95,7 @@ export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
 };
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [{ title: makeTitle("SendouQ") }];
 };
 
@@ -384,7 +386,7 @@ export const action: ActionFunction = async ({ request }) => {
   return null;
 };
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = await getUser(request);
 
   const currentGroup = user ? findCurrentGroupByUserId(user.id) : undefined;
@@ -454,6 +456,7 @@ export const loader = async ({ request }: LoaderArgs) => {
     role: currentGroup.role,
     chatCode: currentGroup.chatCode,
     lastUpdated: new Date().getTime(),
+    streamsCount: (await cachedStreams()).length,
     expiryStatus: groupExpiryStatus(currentGroup),
     trustedPlayers: hasGroupManagerPerms(currentGroup.role)
       ? trustedPlayersAvailableToPlay(user!)
@@ -545,21 +548,49 @@ function InfoText() {
         invisible: !isMounted,
       })}
     >
-      <LinkButton
-        to={SENDOUQ_SETTINGS_PAGE}
-        size="tiny"
-        variant="outlined"
-        className="stack horizontal xs"
-      >
-        <Image path={navIconUrl("settings")} alt="" width={18} />
-        {t("q:front.nav.settings.title")}
-      </LinkButton>
-      {isMounted
-        ? t("q:looking.lastUpdatedAt", {
-            time: new Date(data.lastUpdated).toLocaleTimeString(i18n.language),
-          })
-        : "Placeholder"}
+      <div className="stack sm horizontal">
+        <LinkButton
+          to={SENDOUQ_SETTINGS_PAGE}
+          size="tiny"
+          variant="outlined"
+          className="stack horizontal xs"
+        >
+          <Image path={navIconUrl("settings")} alt="" width={18} />
+          {t("q:front.nav.settings.title")}
+        </LinkButton>
+        <StreamsLinkButton />
+      </div>
+      <span className="text-xxs">
+        {isMounted
+          ? t("q:looking.lastUpdatedAt", {
+              time: new Date(data.lastUpdated).toLocaleTimeString(
+                i18n.language,
+                {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                },
+              ),
+            })
+          : "Placeholder"}
+      </span>
     </div>
+  );
+}
+
+function StreamsLinkButton() {
+  const { t } = useTranslation(["q"]);
+  const data = useLoaderData<typeof loader>();
+
+  return (
+    <LinkButton
+      to={SENDOUQ_STREAMS_PAGE}
+      size="tiny"
+      variant="outlined"
+      className="stack horizontal xs"
+    >
+      <Image path={navIconUrl("vods")} alt="" width={18} />
+      {t("q:front.nav.streams.title")} ({data.streamsCount})
+    </LinkButton>
   );
 }
 
@@ -645,14 +676,15 @@ function Groups() {
           <Chat
             rooms={rooms}
             users={chatUsers}
-            className="w-full q__chat-container"
+            className="w-full"
             messagesContainerClassName="q__chat-messages-container"
-            onNewMessage={onNewMessage}
             chat={chat}
             onMount={onChatMount}
             onUnmount={onChatUnmount}
           />
-          <div className="mt-4">{invitedGroupsDesktop}</div>
+          {!isMobile ? (
+            <div className="mt-4">{invitedGroupsDesktop}</div>
+          ) : null}
         </>
       ) : null}
     </div>

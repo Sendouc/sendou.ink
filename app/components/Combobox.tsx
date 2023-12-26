@@ -1,10 +1,10 @@
 import { Combobox as HeadlessCombobox } from "@headlessui/react";
 import clsx from "clsx";
-import Fuse from "fuse.js";
+import Fuse, { type IFuseOptions } from "fuse.js";
 import * as React from "react";
 import type { GearType } from "~/db/types";
 import { useAllEventsWithMapPools } from "~/hooks/swr";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import type { MainWeaponId } from "~/modules/in-game-lists";
 import {
   clothesGearIds,
@@ -55,7 +55,7 @@ interface ComboboxProps<T> {
   onChange?: (selectedOption: ComboboxOption<T> | null) => void;
   fullWidth?: boolean;
   nullable?: true;
-  fuseOptions?: Fuse.IFuseOptions<ComboboxOption<T>>;
+  fuseOptions?: IFuseOptions<ComboboxOption<T>>;
 }
 
 export function Combobox<
@@ -356,8 +356,8 @@ export function GearCombobox({
     gearType === "HEAD"
       ? headGearIds
       : gearType === "CLOTHES"
-      ? clothesGearIds
-      : shoesGearIds;
+        ? clothesGearIds
+        : shoesGearIds;
 
   const idToGear = (id: (typeof ids)[number]) => ({
     value: String(id),

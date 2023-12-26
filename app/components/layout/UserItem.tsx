@@ -1,5 +1,5 @@
 import { Link } from "@remix-run/react";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { useUser } from "~/features/auth/core";
 import { userPage } from "~/utils/urls";
 import { Avatar } from "../Avatar";

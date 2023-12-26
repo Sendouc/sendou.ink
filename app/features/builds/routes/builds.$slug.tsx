@@ -1,14 +1,14 @@
 import {
-  type LoaderArgs,
+  type LoaderFunctionArgs,
   type SerializeFrom,
-  type V2_MetaFunction,
+  type MetaFunction,
 } from "@remix-run/node";
 import {
   type ShouldRevalidateFunction,
   useLoaderData,
   useSearchParams,
 } from "@remix-run/react";
-import { cachified } from "cachified";
+import { cachified } from "@epic-web/cachified";
 import clone from "just-clone";
 import { nanoid } from "nanoid";
 import * as React from "react";
@@ -24,7 +24,7 @@ import {
   BUILDS_PAGE_MAX_BUILDS,
   ONE_HOUR_IN_MS,
 } from "~/constants";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { i18next } from "~/modules/i18n";
 import {
   abilities,
@@ -64,6 +64,14 @@ const filterOutMeaninglessFilters = (
   typeof filter.value !== "number" ||
   filter.value > 0;
 export const shouldRevalidate: ShouldRevalidateFunction = (args) => {
+  const oldLimit = args.currentUrl.searchParams.get("limit");
+  const newLimit = args.nextUrl.searchParams.get("limit");
+
+  // limit was changed -> revalidate
+  if (oldLimit !== newLimit) {
+    return true;
+  }
+
   const rawOldFilters = args.currentUrl.searchParams.get(
     FILTER_SEARCH_PARAM_KEY,
   );
@@ -111,7 +119,7 @@ export const shouldRevalidate: ShouldRevalidateFunction = (args) => {
   return args.defaultShouldRevalidate;
 };
 
-export const meta: V2_MetaFunction = (args) => {
+export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader> | null;
 
   if (!data) return [];
@@ -141,7 +149,7 @@ export const handle: SendouRouteHandle = {
   },
 };
 
-export const loader = async ({ request, params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const t = await i18next.getFixedT(request, ["weapons", "common"], {
     lng: "en",
   });
@@ -233,17 +241,18 @@ export default function WeaponsBuildsPage() {
     data.filters ? data.filters.map((f) => ({ ...f, id: nanoid() })) : [],
   );
 
+  const filtersForSearchParams = (filters: BuildFilter[]) =>
+    JSON.stringify(
+      filters.map((f) => {
+        const { id, ...rest } = f;
+        return rest;
+      }),
+    );
   const syncSearchParams = (newFilters: BuildFilter[]) => {
-    const filtersForSearchParams = newFilters.map((f) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { id, ...rest } = f;
-      return rest;
-    });
-
     setSearchParams(
       filtersForSearchParams.length > 0
         ? {
-            [FILTER_SEARCH_PARAM_KEY]: JSON.stringify(filtersForSearchParams),
+            [FILTER_SEARCH_PARAM_KEY]: filtersForSearchParams(newFilters),
           }
         : {},
     );
@@ -279,6 +288,18 @@ export default function WeaponsBuildsPage() {
     setFilters(newFilters);
 
     syncSearchParams(newFilters);
+  };
+
+  const loadMoreLink = () => {
+    const params = new URLSearchParams();
+
+    params.set("limit", String(data.limit + BUILDS_PAGE_BATCH_SIZE));
+
+    if (filters.length > 0) {
+      params.set(FILTER_SEARCH_PARAM_KEY, filtersForSearchParams(filters));
+    }
+
+    return `?${params.toString()}`;
   };
 
   return (
@@ -336,7 +357,7 @@ export default function WeaponsBuildsPage() {
           <LinkButton
             className="m-0-auto"
             size="tiny"
-            to={`?limit=${data.limit + BUILDS_PAGE_BATCH_SIZE}`}
+            to={loadMoreLink()}
             state={{ scroll: false }}
           >
             {t("common:actions.loadMore")}

@@ -1,8 +1,8 @@
 import type {
   LinksFunction,
-  LoaderArgs,
+  LoaderFunctionArgs,
   SerializeFrom,
-  V2_MetaFunction,
+  MetaFunction,
 } from "@remix-run/node";
 import {
   Outlet,
@@ -12,7 +12,7 @@ import {
 } from "@remix-run/react";
 import { Main } from "~/components/Main";
 import { SubNav, SubNavLink } from "~/components/SubNav";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { useUser } from "~/features/auth/core";
 import { getUser } from "~/features/auth/core/user.server";
 import { canAdminTournament } from "~/permissions";
@@ -50,7 +50,7 @@ export const shouldRevalidate: ShouldRevalidateFunction = (args) => {
   return args.defaultShouldRevalidate;
 };
 
-export const meta: V2_MetaFunction = (args) => {
+export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader>;
 
   if (!data) return [];
@@ -69,7 +69,7 @@ export const handle: SendouRouteHandle = {
 export type TournamentLoaderTeam = Unpacked<TournamentLoaderData["teams"]>;
 export type TournamentLoaderData = SerializeFrom<typeof loader>;
 
-export const loader = async ({ params, request }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const user = await getUser(request);
   const tournamentId = tournamentIdFromParams(params);
   const tournament = notFoundIfFalsy(
@@ -79,7 +79,11 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   const hasStarted = hasTournamentStarted(tournamentId);
   let teams = findTeamsByTournamentId(tournamentId);
   if (hasStarted) {
-    teams = teams.filter(teamHasCheckedIn);
+    const checkedInTeams = teams.filter(teamHasCheckedIn);
+    // handle special case where tournament was started early
+    if (checkedInTeams.length > 0) {
+      teams = checkedInTeams;
+    }
   }
 
   const teamMemberOfName = teams.find((team) =>

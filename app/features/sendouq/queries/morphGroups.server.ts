@@ -15,9 +15,12 @@ const deleteGroupStm = sql.prepare(/* sql */ `
   where "Group"."id" = @groupId
 `);
 
-const addGroupMemberStm = sql.prepare(/* sql */ `
-  insert into "GroupMember" ("groupId", "userId", "role")
-  values (@groupId, @userId, @role)
+const updateGroupMemberStm = sql.prepare(/* sql */ `
+  update "GroupMember"
+  set "role" = @role,
+      "groupId" = @newGroupId
+  where "groupId" = @oldGroupId
+    and "userId" = @userId
 `);
 
 const updateGroupStm = sql.prepare(/* sql */ `
@@ -40,8 +43,6 @@ export const morphGroups = sql.transaction(
       .all({ groupId: otherGroupId })
       .map((row: any) => row.userId) as Array<User["id"]>;
 
-    deleteGroupStm.run({ groupId: otherGroupId });
-
     deleteLikesByGroupId(survivingGroupId);
 
     // reset chat code so previous messages are not visible
@@ -56,11 +57,14 @@ export const morphGroups = sql.transaction(
       )
         ? "MANAGER"
         : "REGULAR";
-      addGroupMemberStm.run({
-        groupId: survivingGroupId,
+      updateGroupMemberStm.run({
+        newGroupId: survivingGroupId,
+        oldGroupId: otherGroupId,
         userId,
         role,
       });
     }
+
+    deleteGroupStm.run({ groupId: otherGroupId });
   },
 );

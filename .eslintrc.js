@@ -34,19 +34,6 @@ module.exports = {
     "@typescript-eslint/unbound-method": 0,
     "@typescript-eslint/consistent-type-imports": "warn",
     "react/prop-types": 0,
-    "@typescript-eslint/no-restricted-imports": [
-      "error",
-      {
-        paths: [
-          {
-            name: "react-i18next",
-            importNames: ["useTranslation"],
-            message:
-              "Please import useTranslation from '~/hooks/useTranslation' instead.",
-          },
-        ],
-      },
-    ],
   },
   settings: {
     react: {

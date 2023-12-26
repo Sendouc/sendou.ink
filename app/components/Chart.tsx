@@ -2,7 +2,7 @@ import clsx from "clsx";
 import * as React from "react";
 import { type AxisOptions, Chart as ReactChart } from "react-charts";
 import type { TooltipRendererProps } from "react-charts/types/components/TooltipRenderer";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { Theme, useTheme } from "~/features/theme/core/provider";
 

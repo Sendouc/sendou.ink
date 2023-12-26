@@ -1,4 +1,4 @@
-import type { ActionFunction, LoaderArgs } from "@remix-run/node";
+import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import {
   unstable_composeUploadHandlers as composeUploadHandlers,
   unstable_createMemoryUploadHandler as createMemoryUploadHandler,
@@ -20,7 +20,7 @@ import { Main } from "~/components/Main";
 import { Toggle } from "~/components/Toggle";
 import { CrossIcon } from "~/components/icons/Cross";
 import { s3UploadHandler } from "~/features/img-upload";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { requireUser } from "~/features/auth/core";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import {
@@ -114,7 +114,7 @@ export const action: ActionFunction = async ({ request }) => {
   throw redirect(userArtPage(user));
 };
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = await requireUser(request);
   validate(user.isArtist, "Lacking artist role", 403);
 

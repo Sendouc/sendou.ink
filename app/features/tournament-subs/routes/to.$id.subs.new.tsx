@@ -2,13 +2,13 @@ import {
   redirect,
   type ActionFunction,
   type LinksFunction,
-  type LoaderArgs,
+  type LoaderFunctionArgs,
 } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 import React from "react";
 import { Label } from "~/components/Label";
 import { SubmitButton } from "~/components/SubmitButton";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import styles from "../tournament-subs.css";
 import { requireUser, useUser } from "~/features/auth/core";
 import type { MainWeaponId } from "~/modules/in-game-lists";
@@ -61,7 +61,7 @@ export const action: ActionFunction = async ({ params, request }) => {
   throw redirect(tournamentSubsPage(tournamentId));
 };
 
-export const loader = async ({ request, params }: LoaderArgs) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const user = await requireUser(request);
   const tournamentId = tournamentIdFromParams(params);
 

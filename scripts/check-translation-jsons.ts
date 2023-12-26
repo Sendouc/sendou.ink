@@ -370,8 +370,8 @@ function MDMissingKeysList({
       const keysLabel = allMissing
         ? "All keys"
         : missingKeys.length === 1
-        ? "1 key"
-        : `${missingKeys.length} keys`;
+          ? "1 key"
+          : `${missingKeys.length} keys`;
 
       const details = noneMissing
         ? ""

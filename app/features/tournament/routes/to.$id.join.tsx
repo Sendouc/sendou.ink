@@ -1,4 +1,4 @@
-import type { ActionFunction, LoaderArgs } from "@remix-run/node";
+import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { Form, useLoaderData, useOutletContext } from "@remix-run/react";
 import invariant from "tiny-invariant";
@@ -23,7 +23,7 @@ import {
   tournamentIdFromParams,
   tournamentTeamMaxSize,
 } from "../tournament-utils";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
 
 export const action: ActionFunction = async ({ request, params }) => {
@@ -66,10 +66,10 @@ export const action: ActionFunction = async ({ request, params }) => {
   const whatToDoWithPreviousTeam = !previousTeam
     ? undefined
     : previousTeam.members.some(
-        (member) => member.userId === user.id && member.isOwner,
-      )
-    ? "DELETE"
-    : "LEAVE";
+          (member) => member.userId === user.id && member.isOwner,
+        )
+      ? "DELETE"
+      : "LEAVE";
 
   joinTeam({
     userId: user.id,
@@ -97,7 +97,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   throw redirect(tournamentPage(leanTeam.tournamentId));
 };
 
-export const loader = ({ request, params }: LoaderArgs) => {
+export const loader = ({ request, params }: LoaderFunctionArgs) => {
   const tournamentId = tournamentIdFromParams(params);
   const url = new URL(request.url);
   const inviteCode = url.searchParams.get("code");

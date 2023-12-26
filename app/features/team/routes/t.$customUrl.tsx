@@ -1,8 +1,8 @@
 import type {
   ActionFunction,
   LinksFunction,
-  LoaderArgs,
-  V2_MetaFunction,
+  LoaderFunctionArgs,
+  MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
@@ -18,7 +18,7 @@ import { UsersIcon } from "~/components/icons/Users";
 import { WeaponImage } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { Placement } from "~/components/Placement";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { useUser } from "~/features/auth/core";
 import { requireUserId } from "~/features/auth/core/user.server";
 import {
@@ -48,11 +48,7 @@ import {
 } from "../team-utils";
 import styles from "../team.css";
 
-export const meta: V2_MetaFunction = ({
-  data,
-}: {
-  data: SerializeFrom<typeof loader>;
-}) => {
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (!data) return [];
 
   return [
@@ -103,7 +99,7 @@ export const handle: SendouRouteHandle = {
   },
 };
 
-export const loader = ({ params }: LoaderArgs) => {
+export const loader = ({ params }: LoaderFunctionArgs) => {
   const { customUrl } = teamParamsSchema.parse(params);
 
   const { team, css } = notFoundIfFalsy(findByIdentifier(customUrl));

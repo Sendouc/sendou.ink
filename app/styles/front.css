@@ -17,10 +17,9 @@
 .front__nav-items-container {
   display: flex;
   margin: 0 auto;
-  column-gap: var(--s-4);
+  gap: var(--s-4) var(--s-4);
   font-size: 13px;
   flex-wrap: wrap;
-  row-gap: var(--s-4);
   justify-content: center;
 }
 

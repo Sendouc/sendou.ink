@@ -14,7 +14,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { redirect } from "@remix-run/node";
-import type { LoaderArgs, ActionFunction } from "@remix-run/node";
+import type { LoaderFunctionArgs, ActionFunction } from "@remix-run/node";
 import {
   useFetcher,
   useLoaderData,
@@ -31,9 +31,8 @@ import { Catcher } from "~/components/Catcher";
 import { Draggable } from "~/components/Draggable";
 import { useTimeoutState } from "~/hooks/useTimeoutState";
 import type { TournamentLoaderData, TournamentLoaderTeam } from "./to.$id";
-import { Image } from "~/components/Image";
+import { Image, TierImage } from "~/components/Image";
 import { navIconUrl, tournamentBracketsPage } from "~/utils/urls";
-import { maxXPowers } from "../queries/maxXPowers.server";
 import { requireUser } from "~/features/auth/core";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { seedsActionSchema } from "../tournament-schemas.server";
@@ -44,6 +43,8 @@ import { canAdminTournament } from "~/permissions";
 import { SubmitButton } from "~/components/SubmitButton";
 import clone from "just-clone";
 import * as TournamentRepository from "../TournamentRepository.server";
+import { cachedFullUserLeaderboard } from "~/features/leaderboards/core/leaderboards.server";
+import { currentOrPreviousSeason } from "~/features/mmr/season";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const data = await parseRequestFormData({
@@ -66,7 +67,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   return null;
 };
 
-export const loader = async ({ params, request }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const user = await requireUser(request);
   const tournamentId = tournamentIdFromParams(params);
   const hasStarted = hasTournamentStarted(tournamentId);
@@ -78,8 +79,20 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     throw redirect(tournamentBracketsPage(tournamentId));
   }
 
+  const powers = async () => {
+    const leaderboard = await cachedFullUserLeaderboard(
+      currentOrPreviousSeason(new Date())!.nth,
+    );
+
+    return Object.fromEntries(
+      leaderboard.map((entry) => {
+        return [entry.id, { power: entry.power, tier: entry.tier }];
+      }),
+    );
+  };
+
   return {
-    xPowers: maxXPowers(),
+    powers: await powers(),
   };
 };
 
@@ -102,27 +115,12 @@ export default function TournamentSeedsPage() {
     (a, b) => teamOrder.indexOf(a.id) - teamOrder.indexOf(b.id),
   );
 
-  const plusTierToRank: Record<number, number> = {
-    999: 1000,
-    3: 2000,
-    2: 3000,
-    1: 4000,
-  } as const;
   const rankTeam = (team: TournamentLoaderTeam) => {
-    const plusTiers = team.members.map((m) => m.plusTier ?? 999);
-    plusTiers.sort((a, b) => a - b);
-    plusTiers.slice(0, 4);
-
-    const xPowers = team.members
-      .map((m) => data.xPowers[m.userId])
+    const powers = team.members
+      .map((m) => data.powers[m.userId]?.power)
       .filter(Boolean);
-    xPowers.sort((a, b) => b - a);
-    xPowers.slice(0, 4);
 
-    return (
-      xPowers.reduce((acc, xPower) => acc + xPower / 10, 0) +
-      plusTiers.reduce((acc, plusTier) => acc + plusTierToRank[plusTier], 0)
-    );
+    return powers.reduce((acc, cur) => acc + cur, 0) / powers.length;
   };
 
   return (
@@ -278,9 +276,9 @@ function RowContents({
       <div className="tournament__seeds__team-name">{team.name}</div>
       <div className="stack horizontal sm">
         {team.members.map((member) => {
-          const xPower = data.xPowers[member.userId];
+          const { power, tier } = data.powers[member.userId] ?? {};
           const lonely =
-            (!xPower && member.plusTier) || (!member.plusTier && xPower);
+            (!power && member.plusTier) || (!member.plusTier && power);
 
           return (
             <div key={member.userId} className="tournament__seeds__team-member">
@@ -299,14 +297,13 @@ function RowContents({
               ) : (
                 <div />
               )}
-              {xPower ? (
+              {power ? (
                 <div
                   className={clsx("stack horizontal items-center xxs", {
                     "add tournament__seeds__lonely-stat": lonely,
                   })}
                 >
-                  <Image path={navIconUrl("xsearch")} alt="" width={16} />{" "}
-                  {xPower}
+                  <TierImage tier={tier} width={32} /> {power}
                 </div>
               ) : null}
             </div>

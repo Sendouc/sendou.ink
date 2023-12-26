@@ -1,4 +1,4 @@
-import { cachified } from "cachified";
+import { cachified } from "@epic-web/cachified";
 import { cache } from "~/utils/cache.server";
 import { tokenResponseSchema } from "./schemas";
 import { getTwitchEnvVars } from "./utils";

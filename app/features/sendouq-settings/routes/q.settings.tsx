@@ -1,5 +1,9 @@
 import { RadioGroup } from "@headlessui/react";
-import type { ActionArgs, LinksFunction, LoaderArgs } from "@remix-run/node";
+import type {
+  ActionFunctionArgs,
+  LinksFunction,
+  LoaderFunctionArgs,
+} from "@remix-run/node";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
@@ -19,7 +23,7 @@ import { requireUserId } from "~/features/auth/core/user.server";
 import { soundCodeToLocalStorageKey } from "~/features/chat/chat-utils";
 import * as QSettingsRepository from "~/features/sendouq-settings/QSettingsRepository.server";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { languagesUnified } from "~/modules/i18n/config";
 import type { MainWeaponId, ModeShort, StageId } from "~/modules/in-game-lists";
 import { stageIds } from "~/modules/in-game-lists";
@@ -29,13 +33,17 @@ import { assertUnreachable } from "~/utils/types";
 import {
   SENDOUQ_PAGE,
   SENDOUQ_SETTINGS_PAGE,
+  SPLATTERCOLOR_SCREEN_TWITTER_URL,
   navIconUrl,
   preferenceEmojiUrl,
 } from "~/utils/urls";
 import { SENDOUQ_WEAPON_POOL_MAX_SIZE } from "../q-settings-constants";
 import { settingsActionSchema } from "../q-settings-schemas.server";
 import styles from "../q-settings.css";
-import { BANNED_MAPS, COMMON_BANNED_MAPS } from "../banned-maps";
+import { BANNED_MAPS } from "../banned-maps";
+import { Divider } from "~/components/Divider";
+import { Toggle } from "~/components/Toggle";
+import { FormMessage } from "~/components/FormMessage";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -57,7 +65,7 @@ export const handle: SendouRouteHandle = {
   ],
 };
 
-export const action = async ({ request }: ActionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const user = await requireUserId(request);
   const data = await parseRequestFormData({
     request,
@@ -87,6 +95,13 @@ export const action = async ({ request }: ActionArgs) => {
       });
       break;
     }
+    case "UPDATE_NO_SCREEN": {
+      await QSettingsRepository.updateNoScreen({
+        userId: user.id,
+        noScreen: Number(data.noScreen),
+      });
+      break;
+    }
     default: {
       assertUnreachable(data);
     }
@@ -95,7 +110,7 @@ export const action = async ({ request }: ActionArgs) => {
   return { ok: true };
 };
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = await requireUserId(request);
 
   return {
@@ -111,6 +126,7 @@ export default function SendouQSettingsPage() {
         <WeaponPool />
         <VoiceChat />
         <Sounds />
+        <Misc />
       </div>
     </Main>
   );
@@ -216,23 +232,16 @@ function MapPicker() {
           </div>
 
           <div className="stack lg">
-            {stageIds
-              .filter(
-                (stageId) =>
-                  !COMMON_BANNED_MAPS.includes(
-                    stageId as (typeof COMMON_BANNED_MAPS)[number],
-                  ),
-              )
-              .map((stageId) => (
-                <MapModeRadios
-                  key={stageId}
-                  stageId={stageId}
-                  preferences={preferences.maps.filter(
-                    (map) => map.stageId === stageId,
-                  )}
-                  onPreferenceChange={handleMapPreferenceChange}
-                />
-              ))}
+            {stageIds.map((stageId) => (
+              <MapModeRadios
+                key={stageId}
+                stageId={stageId}
+                preferences={preferences.maps.filter(
+                  (map) => map.stageId === stageId,
+                )}
+                onPreferenceChange={handleMapPreferenceChange}
+              />
+            ))}
           </div>
         </div>
         <div className="mt-6">
@@ -263,30 +272,41 @@ function MapModeRadios({
     preference: Preference & "NEUTRAL";
   }) => void;
 }) {
-  return (
-    <div className="q__map-mode-radios-container">
-      <StageImage stageId={stageId} width={250} className="rounded" />
-      <div className="stack justify-evenly">
-        {modesShort
-          .filter((modeShort) => !BANNED_MAPS[modeShort].includes(stageId))
-          .map((modeShort) => {
-            const preference = preferences.find(
-              (preference) =>
-                preference.mode === modeShort && preference.stageId === stageId,
-            );
+  const { t } = useTranslation(["q", "game-misc"]);
 
-            return (
-              <div key={modeShort} className="stack horizontal xs my-1">
-                <ModeImage mode={modeShort} width={24} />
+  return (
+    <div className="q-settings__map-mode-radios-container">
+      <div className="stack items-center text-uppercase text-lighter text-xs font-bold">
+        {t(`game-misc:STAGE_${stageId}`)}
+        <StageImage stageId={stageId} width={250} className="rounded" />
+      </div>
+      <div className="stack justify-evenly">
+        {modesShort.map((modeShort) => {
+          const preference = preferences.find(
+            (preference) =>
+              preference.mode === modeShort && preference.stageId === stageId,
+          );
+
+          const isBanned = BANNED_MAPS[modeShort].includes(stageId);
+
+          return (
+            <div key={modeShort} className="stack horizontal xs my-1">
+              <ModeImage mode={modeShort} width={24} />
+              {isBanned ? (
+                <Divider className="q-settings__banned">
+                  {t("q:settings.banned")}
+                </Divider>
+              ) : (
                 <PreferenceRadioGroup
                   preference={preference?.preference}
                   onPreferenceChange={(preference) =>
                     onPreferenceChange({ mode: modeShort, preference, stageId })
                   }
                 />
-              </div>
-            );
-          })}
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -648,5 +668,55 @@ function SoundCheckboxes() {
         </div>
       ))}
     </div>
+  );
+}
+
+function Misc() {
+  const data = useLoaderData<typeof loader>();
+  const [checked, setChecked] = React.useState(Boolean(data.settings.noScreen));
+  const { t } = useTranslation(["common", "q", "weapons"]);
+  const fetcher = useFetcher();
+
+  return (
+    <details>
+      <summary className="q-settings__summary">
+        <div>{t("q:settings.misc.header")}</div>
+      </summary>
+      <fetcher.Form method="post" className="mb-4 ml-2-5 stack sm">
+        <div className="stack horizontal xs items-center">
+          <Toggle
+            checked={checked}
+            setChecked={setChecked}
+            id="noScreen"
+            name="noScreen"
+          />
+          <label className="mb-0" htmlFor="noScreen">
+            {t("q:settings.avoid.label", {
+              special: t("weapons:SPECIAL_19"),
+            })}
+          </label>
+        </div>
+        <FormMessage type="info">
+          {t("q:settings.avoid.explanation")}{" "}
+          <a
+            href={SPLATTERCOLOR_SCREEN_TWITTER_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t("q:settings.avoid.readMore")}
+          </a>
+        </FormMessage>
+        <div className="mt-6">
+          <SubmitButton
+            size="big"
+            className="mx-auto"
+            _action="UPDATE_NO_SCREEN"
+            state={fetcher.state}
+          >
+            {t("common:actions.save")}
+          </SubmitButton>
+        </div>
+      </fetcher.Form>
+    </details>
   );
 }

@@ -2,7 +2,7 @@ import {
   json,
   redirect,
   type ActionFunction,
-  type LoaderArgs,
+  type LoaderFunctionArgs,
 } from "@remix-run/node";
 import { Form, useLoaderData, useSearchParams } from "@remix-run/react";
 import clone from "just-clone";
@@ -25,7 +25,7 @@ import {
   validatedWeaponIdFromSearchParams,
 } from "~/features/build-analyzer";
 import { buildsByUserId } from "~/features/builds";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { requireUser } from "~/features/auth/core";
 import { requireUserId } from "~/features/auth/core/user.server";
 import {
@@ -181,7 +181,7 @@ const newBuildLoaderParamsSchema = z.object({
   buildId: z.preprocess(actualNumber, id),
 });
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = await requireUserId(request);
   const url = new URL(request.url);
 
@@ -439,10 +439,10 @@ function GearSelector({
   const initialGearId = !buildToEdit
     ? undefined
     : type === "HEAD"
-    ? buildToEdit.headGearSplId
-    : type === "CLOTHES"
-    ? buildToEdit.clothesGearSplId
-    : buildToEdit.shoesGearSplId;
+      ? buildToEdit.headGearSplId
+      : type === "CLOTHES"
+        ? buildToEdit.clothesGearSplId
+        : buildToEdit.shoesGearSplId;
 
   return (
     <div>

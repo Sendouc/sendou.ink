@@ -1,7 +1,7 @@
 import type {
   ActionFunction,
   LinksFunction,
-  LoaderArgs,
+  LoaderFunctionArgs,
   SerializeFrom,
 } from "@remix-run/node";
 import {
@@ -51,7 +51,7 @@ import {
   resolveTournamentStageType,
 } from "../tournament-bracket-utils";
 import { sql } from "~/db/sql";
-import { useEventSource } from "remix-utils";
+import { useEventSource } from "remix-utils/sse/react";
 import { Status } from "~/db/types";
 import clsx from "clsx";
 import { Button, LinkButton } from "~/components/Button";
@@ -67,7 +67,7 @@ import { Flag } from "~/components/Flag";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { Popover } from "~/components/Popover";
 import { useCopyToClipboard } from "react-use";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { bracketSchema } from "../tournament-bracket-schemas.server";
 import { addSummary } from "../queries/addSummary.server";
 import { tournamentSummary } from "../core/summarizer.server";
@@ -81,7 +81,10 @@ import {
 } from "~/features/mmr";
 import { queryTeamPlayerRatingAverage } from "~/features/mmr/mmr-utils.server";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
-import { HACKY_maxRosterSizeBeforeStart } from "~/features/tournament/tournament-utils";
+import {
+  HACKY_isInviteOnlyEvent,
+  HACKY_maxRosterSizeBeforeStart,
+} from "~/features/tournament/tournament-utils";
 
 export const links: LinksFunction = () => {
   return [
@@ -138,9 +141,11 @@ export const action: ActionFunction = async ({ params, request }) => {
           settings: resolveTournamentStageSettings(tournament.format),
         });
 
-        const bestOfs = resolveBestOfs(
-          findAllMatchesByTournamentId(tournamentId),
-        );
+        const matches = findAllMatchesByTournamentId(tournamentId);
+        // TODO: dynamic best of set when bracket is made
+        const bestOfs = HACKY_isInviteOnlyEvent(tournament)
+          ? matches.map((match) => [5, match.matchId] as [5, number])
+          : resolveBestOfs(matches);
         for (const [bestOf, id] of bestOfs) {
           setBestOf({ bestOf, id });
         }
@@ -179,9 +184,9 @@ export const action: ActionFunction = async ({ params, request }) => {
       const results = allMatchResultsByTournamentId(tournamentId);
       invariant(results.length > 0, "No results found");
 
-      // TODO: support tournaments outside of seasons as well as unranked tournaments
-      const _currentSeason = currentSeason(new Date());
-      validate(_currentSeason, "No current season found");
+      const season = currentSeason(
+        databaseTimestampToDate(tournament.startTime),
+      )?.nth;
 
       addSummary({
         tournamentId,
@@ -189,19 +194,18 @@ export const action: ActionFunction = async ({ params, request }) => {
           teams,
           finalStandings: _finalStandings,
           results,
+          calculateSeasonalStats: typeof season === "number",
           queryCurrentTeamRating: (identifier) =>
-            queryCurrentTeamRating({ identifier, season: _currentSeason.nth })
-              .rating,
+            queryCurrentTeamRating({ identifier, season: season! }).rating,
           queryCurrentUserRating: (userId) =>
-            queryCurrentUserRating({ userId, season: _currentSeason.nth })
-              .rating,
+            queryCurrentUserRating({ userId, season: season! }).rating,
           queryTeamPlayerRatingAverage: (identifier) =>
             queryTeamPlayerRatingAverage({
               identifier,
-              season: _currentSeason.nth,
+              season: season!,
             }),
         }),
-        season: _currentSeason.nth,
+        season,
       });
 
       return null;
@@ -211,7 +215,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 
 export type TournamentBracketLoaderData = SerializeFrom<typeof loader>;
 
-export const loader = ({ params }: LoaderArgs) => {
+export const loader = ({ params }: LoaderFunctionArgs) => {
   const tournamentId = tournamentIdFromParams(params);
 
   const hasStarted = hasTournamentStarted(tournamentId);
@@ -378,6 +382,43 @@ export default function TournamentBracketsPage() {
     );
   };
 
+  const { progress, currentMatchId, currentOpponent } = (() => {
+    let lowestStatus: Status = Infinity;
+    let currentMatchId: number | undefined;
+    let currentOpponent: string | undefined;
+
+    if (!myTeam) {
+      return {
+        progress: undefined,
+        currentMatchId: undefined,
+        currentOpponent: undefined,
+      };
+    }
+
+    for (const match of data.bracket.match) {
+      // BYE
+      if (match.opponent1 === null || match.opponent2 === null) {
+        continue;
+      }
+
+      if (
+        (match.opponent1.id === myTeam.id ||
+          match.opponent2.id === myTeam.id) &&
+        lowestStatus > match.status
+      ) {
+        lowestStatus = match.status;
+        currentMatchId = match.id;
+        const otherTeam =
+          match.opponent1.id === myTeam.id ? match.opponent2 : match.opponent1;
+        currentOpponent = parentRouteData.teams.find(
+          (team) => team.id === otherTeam.id,
+        )?.name;
+      }
+    }
+
+    return { progress: lowestStatus, currentMatchId, currentOpponent };
+  })();
+
   return (
     <div>
       {visibility !== "hidden" && !data.everyMatchIsOver ? (
@@ -442,14 +483,19 @@ export default function TournamentBracketsPage() {
           )}
         </Form>
       ) : null}
-      {parentRouteData.hasStarted && myTeam ? (
-        <TournamentProgressPrompt ownedTeamId={myTeam.id} />
+      {parentRouteData.hasStarted && progress ? (
+        <TournamentProgressPrompt
+          progress={progress}
+          currentMatchId={currentMatchId}
+          currentOpponent={currentOpponent}
+        />
       ) : null}
-      {/* TODO: also hide this if out of the tournament */}
       {!data.finalStandings &&
       myTeam &&
       parentRouteData.hasStarted &&
-      parentRouteData.ownTeam ? (
+      parentRouteData.ownTeam &&
+      progress &&
+      progress < Status.Completed ? (
         <AddSubsPopOver
           members={myTeam.members}
           inviteCode={parentRouteData.ownTeam.inviteCode}
@@ -527,43 +573,20 @@ function useAutoRefresh() {
   }, [lastEvent, revalidate]);
 }
 
-function TournamentProgressPrompt({ ownedTeamId }: { ownedTeamId: number }) {
+function TournamentProgressPrompt({
+  progress,
+  currentMatchId,
+  currentOpponent,
+}: {
+  progress: Status;
+  currentMatchId?: number;
+  currentOpponent?: string;
+}) {
   const { t } = useTranslation(["tournament"]);
   const parentRouteData = useOutletContext<TournamentLoaderData>();
   const data = useLoaderData<typeof loader>();
 
   if (data.finalStandings) return null;
-
-  const { progress, currentMatchId, currentOpponent } = (() => {
-    let lowestStatus: Status = Infinity;
-    let currentMatchId: number | undefined;
-    let currentOpponent: string | undefined;
-
-    for (const match of data.bracket.match) {
-      // BYE
-      if (match.opponent1 === null || match.opponent2 === null) {
-        continue;
-      }
-
-      if (
-        (match.opponent1.id === ownedTeamId ||
-          match.opponent2.id === ownedTeamId) &&
-        lowestStatus > match.status
-      ) {
-        lowestStatus = match.status;
-        currentMatchId = match.id;
-        const otherTeam =
-          match.opponent1.id === ownedTeamId
-            ? match.opponent2
-            : match.opponent1;
-        currentOpponent = parentRouteData.teams.find(
-          (team) => team.id === otherTeam.id,
-        )?.name;
-      }
-    }
-
-    return { progress: lowestStatus, currentMatchId, currentOpponent };
-  })();
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
   if (progress === Infinity) {

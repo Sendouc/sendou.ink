@@ -47,8 +47,8 @@ function calculate({
       typeof subWeaponId === "number"
         ? { type: "SUB", id: subWeaponId }
         : typeof specialWeaponId === "number"
-        ? { type: "SPECIAL", id: specialWeaponId }
-        : { type: "MAIN", id: mainWeaponId },
+          ? { type: "SPECIAL", id: specialWeaponId }
+          : { type: "MAIN", id: mainWeaponId },
     damageType,
     isMultiShot: true,
   });

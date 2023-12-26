@@ -1,14 +1,14 @@
 import { lazy } from "react";
-import type { LinksFunction, V2_MetaFunction } from "@remix-run/node";
+import type { LinksFunction, MetaFunction } from "@remix-run/node";
 import styles from "../plans.css";
 import type { SendouRouteHandle } from "~/utils/remix";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { navIconUrl, PLANNER_URL } from "~/utils/urls";
 import { makeTitle } from "~/utils/strings";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { useSetTitle } from "~/hooks/useSetTitle";
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [
     { title: makeTitle("Planner") },
     {

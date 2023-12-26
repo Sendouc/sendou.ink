@@ -9,7 +9,7 @@ import { Image, WeaponImage } from "~/components/Image";
 import { TwitchIcon } from "~/components/icons/Twitch";
 import { TwitterIcon } from "~/components/icons/Twitter";
 import { YouTubeIcon } from "~/components/icons/YouTube";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { modesShort } from "~/modules/in-game-lists";
 import { type SendouRouteHandle } from "~/utils/remix";
 import { isNewDiscordUniqueName, rawSensToString } from "~/utils/strings";

@@ -1,4 +1,4 @@
-import type { LinksFunction, LoaderArgs } from "@remix-run/node";
+import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import {
   useActionData,
@@ -10,7 +10,7 @@ import * as React from "react";
 import { Alert } from "~/components/Alert";
 import type { MapPoolMap } from "~/db/types";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import { useUser } from "~/features/auth/core";
 import { getUserId } from "~/features/auth/core/user.server";
 import { createTournamentMapList } from "~/modules/tournament-map-list-generator";
@@ -48,7 +48,7 @@ type TeamInState = {
   mapPool?: Pick<MapPoolMap, "mode" | "stageId">[];
 };
 
-export const loader = async ({ params, request }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const tournamentId = tournamentIdFromParams(params);
   const user = await getUserId(request);
   const tournament = notFoundIfFalsy(

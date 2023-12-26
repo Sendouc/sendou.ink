@@ -44,10 +44,10 @@ export function startsWith<S extends string, Start extends string>(
 type Split<S extends string, Sep extends string> = string extends S
   ? string[]
   : S extends ""
-  ? []
-  : S extends `${infer T}${Sep}${infer U}`
-  ? [T, ...Split<U, Sep>]
-  : [S];
+    ? []
+    : S extends `${infer T}${Sep}${infer U}`
+      ? [T, ...Split<U, Sep>]
+      : [S];
 
 export function split<S extends string, Sep extends string>(
   str: S,

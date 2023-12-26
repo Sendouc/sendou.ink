@@ -1,4 +1,4 @@
-.q__map-mode-radios-container {
+.q-settings__map-mode-radios-container {
   display: flex;
   gap: var(--s-2);
   flex-direction: column;
@@ -6,9 +6,16 @@
 }
 
 @media screen and (min-width: 600px) {
-  .q__map-mode-radios-container {
+  .q-settings__map-mode-radios-container {
     flex-direction: row;
   }
+}
+
+.q-settings__banned {
+  text-transform: uppercase;
+  font-weight: var(--semi-bold);
+  font-size: var(--fonts-xs);
+  color: var(--text-lighter);
 }
 
 .q-settings__radio {

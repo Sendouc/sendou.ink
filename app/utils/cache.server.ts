@@ -1,4 +1,4 @@
-import type { CacheEntry } from "cachified";
+import type { CacheEntry } from "@epic-web/cachified";
 import { LRUCache } from "lru-cache";
 
 declare global {

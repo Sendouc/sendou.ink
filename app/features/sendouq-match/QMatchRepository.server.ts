@@ -27,7 +27,7 @@ export function findById(id: number) {
         eb
           .selectFrom("GroupMatchMap")
           .select([
-            "GroupMatch.id",
+            "GroupMatchMap.id",
             "GroupMatchMap.mode",
             "GroupMatchMap.stageId",
             "GroupMatchMap.source",
@@ -80,7 +80,7 @@ export async function findGroupById({
 }) {
   const row = await db
     .selectFrom("Group")
-    .innerJoin("GroupMatch", (join) =>
+    .leftJoin("GroupMatch", (join) =>
       join.on((eb) =>
         eb.or([
           eb("GroupMatch.alphaGroupId", "=", eb.ref("Group.id")),
@@ -158,4 +158,16 @@ export async function findGroupById({
       skillDifference: row.memento?.users[m.id]?.skillDifference,
     })),
   } as GroupForMatch;
+}
+
+export function groupMembersNoScreenSettings(groups: GroupForMatch[]) {
+  return db
+    .selectFrom("User")
+    .select("User.noScreen")
+    .where(
+      "User.id",
+      "in",
+      groups.flatMap((group) => group.members.map((member) => member.id)),
+    )
+    .execute();
 }

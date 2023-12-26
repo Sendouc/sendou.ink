@@ -103,6 +103,20 @@
   }
 }
 
+.tournament-bracket__no-screen {
+  display: flex;
+  gap: var(--s-0-5);
+}
+
+.tournament-bracket__no-screen > svg {
+  width: 24px;
+  fill: var(--theme-success);
+}
+
+.tournament-bracket__no-screen__banned > svg {
+  fill: var(--theme-error);
+}
+
 .tournament-bracket__during-match-actions {
   display: grid;
   grid-template-areas:
@@ -217,6 +231,13 @@
   text-overflow: ellipsis;
   user-select: none;
   cursor: pointer;
+}
+
+.tournament-bracket__during-match-actions__player-name__inner {
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  padding-inline: var(--s-2);
 }
 
 .tournament-bracket__during-match-actions__seed {

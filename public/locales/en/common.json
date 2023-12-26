@@ -82,6 +82,7 @@
   "maps.validation.MAP_REPEATED": "Can't pick the same stage more than once",
   "maps.validation.MODE_REPEATED": "Can't pick the same mode more than once",
   "maps.validation.TOO_MUCH_STAGE_REPEAT": "Can't pick stage more than {{maxStageRepeat}} times",
+  "maps.validation.INCLUDES_BANNED": "Can't pick banned stages",
   "maps.validation.VALID": "Map pool ok!",
 
   "results": "Results",
@@ -197,6 +198,9 @@
   "leaderboard.type.USER": "User",
   "leaderboard.type.TEAM": "Team",
   "leaderboard.type.XP-ALL": "All",
+  "leaderboard.noPlayers": "No players on the leaderboard yet",
+  "leaderboard.noTeams": "No teams on the leaderboard yet",
+  "leaderboard.updateInfo": "Leaderboard is updated once every 30 minutes",
 
   "chat.connected": "Connected",
   "chat.disconnected": "Disconnected",

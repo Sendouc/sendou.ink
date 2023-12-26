@@ -1,4 +1,4 @@
-import type { LoaderArgs, SerializeFrom } from "@remix-run/node";
+import type { LoaderFunctionArgs, SerializeFrom } from "@remix-run/node";
 import {
   Link,
   useLoaderData,
@@ -46,7 +46,7 @@ import { seasonStagesByUserId } from "~/features/sendouq/queries/seasonStagesByU
 import { seasonsMatesEnemiesByUserId } from "~/features/sendouq/queries/seasonsMatesEnemiesByUserId.server";
 import { useWeaponUsage } from "~/hooks/swr";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import { useTranslation } from "~/hooks/useTranslation";
+import { useTranslation } from "react-i18next";
 import {
   stageIds,
   type ModeShort,
@@ -67,19 +67,23 @@ export const handle: SendouRouteHandle = {
 
 export const seasonsSearchParamsSchema = z.object({
   page: z.coerce.number().default(1),
-  info: z.enum(["weapons", "stages", "mates", "enemies"]).default("weapons"),
+  info: z.enum(["weapons", "stages", "mates", "enemies"]).optional(),
   season: z.coerce
     .number()
-    .default(currentOrPreviousSeason(new Date())!.nth)
-    .refine((nth) => allSeasons(new Date()).includes(nth)),
+    .optional()
+    .refine((nth) => !nth || allSeasons(new Date()).includes(nth)),
 });
 
-export const loader = async ({ params, request }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const { identifier } = userParamsSchema.parse(params);
   const parsedSearchParams = seasonsSearchParamsSchema.safeParse(
     Object.fromEntries(new URL(request.url).searchParams),
   );
-  const { info, page, season } = parsedSearchParams.success
+  const {
+    info = "weapons",
+    page,
+    season = currentOrPreviousSeason(new Date())!.nth,
+  } = parsedSearchParams.success
     ? parsedSearchParams.data
     : seasonsSearchParamsSchema.parse({});
 

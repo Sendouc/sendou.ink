@@ -475,6 +475,12 @@ function parametersToSpecialWeaponResult(params: any) {
     }
   }
 
+  // for Ultra Splashdown
+  if (params["BlastParamDokanWarp"]) {
+    result["SubSpecialSpecUpList"] =
+      params["BlastParamDokanWarp"]["SubSpecialSpecUpList"];
+  }
+
   const resultUnwrapped = unwrapSubSpecialSpecUpList(result);
 
   const specialDurationFrameKeyAlises = [
@@ -588,7 +594,8 @@ function parametersToSpecialWeaponResult(params: any) {
       params["HookBlastParam"]?.["DistanceDamage"] ??
       params["spl__BulletBlastParam"]?.["DistanceDamage"] ??
       params["BulletBlastParam"]?.["DistanceDamage"] ??
-      params["IceParam"]?.["BlastParam"]?.["DistanceDamage"],
+      params["IceParam"]?.["BlastParam"]?.["DistanceDamage"] ??
+      params["BlastParamNormal"]?.["DistanceDamage"],
     DirectDamage:
       params["DamageParam"]?.["DirectHitDamage"] ??
       params["spl__BulletSpShockSonarParam"]?.["GeneratorParam"]?.[

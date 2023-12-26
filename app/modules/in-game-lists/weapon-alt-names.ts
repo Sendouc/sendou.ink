@@ -26,5 +26,6 @@ export const weaponAltNames = new Map<MainWeaponId, string[] | string>()
   .set(6011, "tent")
   .set(7010, "bow")
   .set(8000, ["sword", "chainsaw"])
+  .set(8001, ["sword", "chainsaw"])
   .set(8010, ["sword", "vwiper"])
   .set(8011, ["sword", "diper", "dwiper"]);
