@@ -43,7 +43,7 @@
   "front.actions.joinSolo": "Присоедениться в одиночку",
   "front.join.header": "Присоедениться к группе с {{members}}?",
   "front.join.joinAction": "Присоедениться",
-  "front.join.joinWithTrustAction": "Присоедениться и довериться {{inviterName})",
+  "front.join.joinWithTrustAction": "Присоедениться и довериться {{inviterName}}",
   "front.join.joinWithTrustAction.explanation": "Доверенный пользователь имеет право в будущем добавить вас в группу без ссылки на приглашение",
   "front.join.refuseAction": "Нет",
   "front.seasonOpen": "Сезон {{nth}} открыт",
