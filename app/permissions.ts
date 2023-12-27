@@ -309,11 +309,11 @@ interface CanAdminTournament {
 }
 export function canAdminTournament({ user, tournament }: CanAdminTournament) {
   // temporary hack to let Njok admin tournaments as well
-  if (user?.id === 14710) return true;
+  // if (user?.id === 14710) return true;
   // .jpg
-  if (user?.id === 622) return true;
+  // if (user?.id === 622) return true;
   // toasty
-  if (user?.id === 5036) return true;
+  // if (user?.id === 5036) return true;
 
   return adminOverride(user)(user?.id === tournament.author.id);
 }
@@ -321,12 +321,12 @@ export function canAdminTournament({ user, tournament }: CanAdminTournament) {
 export function canReportTournamentScore({
   match,
   user,
-  ownedTeamId,
+  isMemberOfATeamInTheMatch,
   tournament,
 }: {
   match: NonNullable<FindMatchById>;
   user?: Pick<User, "id">;
-  ownedTeamId?: number;
+  isMemberOfATeamInTheMatch: boolean;
   tournament: TournamentRepository.FindById;
 }) {
   const matchIsOver =
@@ -334,9 +334,7 @@ export function canReportTournamentScore({
 
   return (
     !matchIsOver &&
-    ((match.opponentOne?.id ?? -1) === ownedTeamId ||
-      (match.opponentTwo?.id ?? -1) === ownedTeamId ||
-      canAdminTournament({ user, tournament }))
+    (isMemberOfATeamInTheMatch || canAdminTournament({ user, tournament }))
   );
 }
 

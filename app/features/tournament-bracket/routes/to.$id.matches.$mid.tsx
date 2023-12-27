@@ -54,6 +54,8 @@ import {
 import bracketStyles from "../tournament-bracket.css";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import { logger } from "~/utils/logger";
+import cachified from "@epic-web/cachified";
+import { cache } from "~/utils/cache.server";
 
 export const links: LinksFunction = () => [
   {
@@ -77,18 +79,15 @@ export const action: ActionFunction = async ({ params, request }) => {
   );
 
   const validateCanReportScore = () => {
-    const teams = findTeamsByTournamentId(tournamentId);
-    const ownedTeamId = teams.find((team) =>
-      team.members.some(
-        (member) => member.userId === user?.id && member.isOwner,
-      ),
-    )?.id;
+    const isMemberOfATeamInTheMatch = match.players.some(
+      (p) => p.id === user?.id,
+    );
 
     validate(
       canReportTournamentScore({
         tournament,
         match,
-        ownedTeamId,
+        isMemberOfATeamInTheMatch,
         user,
       }),
       "Unauthorized",
@@ -323,6 +322,26 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
       ),
     });
 
+  const matchIsOver =
+    match.opponentOne?.result === "win" || match.opponentTwo?.result === "win";
+
+  // not cache as performance optimization but instead
+  // so that people don't change their setting mid-set
+  const banScreen = !matchIsOver
+    ? await cachified({
+        key: `tournament-screen-ban-${match.id}`,
+        cache,
+        async getFreshValue() {
+          const noScreenSettings =
+            await TournamentRepository.matchPlayersNoScreenSettings(
+              match.players,
+            );
+
+          return noScreenSettings.some((user) => user.noScreen);
+        },
+      })
+    : null;
+
   return {
     match: {
       ...match,
@@ -332,6 +351,8 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     seeds: resolveSeeds(),
     currentMap,
     modes: mapList?.map((map) => map.mode),
+    banScreen,
+    matchIsOver,
   };
 
   function resolveSeeds() {
@@ -359,31 +380,27 @@ export default function TournamentMatchPage() {
   const parentRouteData = useOutletContext<TournamentLoaderData>();
   const data = useLoaderData<typeof loader>();
 
-  const matchIsOver =
-    data.match.opponentOne?.result === "win" ||
-    data.match.opponentTwo?.result === "win";
-
   React.useEffect(() => {
-    if (visibility !== "visible" || matchIsOver) return;
+    if (visibility !== "visible" || data.matchIsOver) return;
 
     revalidate();
-  }, [visibility, revalidate, matchIsOver]);
+  }, [visibility, revalidate, data.matchIsOver]);
 
-  const isMemberOfATeam = data.match.players.some((p) => p.id === user?.id);
+  const isMemberOfATeamInTheMatch = data.match.players.some(
+    (p) => p.id === user?.id,
+  );
 
   const type = canReportTournamentScore({
     tournament: parentRouteData.tournament,
     match: data.match,
-    ownedTeamId: parentRouteData.ownTeam?.id,
+    isMemberOfATeamInTheMatch,
     user,
   })
     ? "EDIT"
-    : isMemberOfATeam
-      ? "MEMBER"
-      : "OTHER";
+    : "OTHER";
 
   const showRosterPeek = () => {
-    if (matchIsOver) return false;
+    if (data.matchIsOver) return false;
 
     if (!data.match.opponentOne?.id || !data.match.opponentTwo?.id) return true;
 
@@ -392,7 +409,7 @@ export default function TournamentMatchPage() {
 
   return (
     <div className="stack lg">
-      {!matchIsOver && visibility !== "hidden" ? <AutoRefresher /> : null}
+      {!data.matchIsOver && visibility !== "hidden" ? <AutoRefresher /> : null}
       <div className="flex horizontal justify-between items-center">
         {/* TODO: better title */}
         <h2 className="text-lighter text-lg">Match #{data.match.id}</h2>
@@ -407,8 +424,8 @@ export default function TournamentMatchPage() {
           Back to bracket
         </LinkButton>
       </div>
-      {matchIsOver ? <ResultsSection /> : null}
-      {!matchIsOver &&
+      {data.matchIsOver ? <ResultsSection /> : null}
+      {!data.matchIsOver &&
       typeof data.match.opponentOne?.id === "number" &&
       typeof data.match.opponentTwo?.id === "number" ? (
         <MapListSection
@@ -457,7 +474,7 @@ function MapListSection({
   type,
 }: {
   teams: [id: number, id: number];
-  type: "EDIT" | "MEMBER" | "OTHER";
+  type: "EDIT" | "OTHER";
 }) {
   const data = useLoaderData<typeof loader>();
   const parentRouteData = useOutletContext<TournamentLoaderData>();

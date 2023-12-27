@@ -53,3 +53,15 @@ export async function findById(id: number) {
 
   return { ...row, author };
 }
+
+export function matchPlayersNoScreenSettings(players: { id: number }[]) {
+  return db
+    .selectFrom("User")
+    .select("User.noScreen")
+    .where(
+      "User.id",
+      "in",
+      players.map((player) => player.id),
+    )
+    .execute();
+}

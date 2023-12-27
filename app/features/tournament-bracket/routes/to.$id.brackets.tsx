@@ -186,7 +186,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 
       const season = currentSeason(
         databaseTimestampToDate(tournament.startTime),
-      );
+      )?.nth;
 
       addSummary({
         tournamentId,
@@ -196,16 +196,16 @@ export const action: ActionFunction = async ({ params, request }) => {
           results,
           calculateSeasonalStats: typeof season === "number",
           queryCurrentTeamRating: (identifier) =>
-            queryCurrentTeamRating({ identifier, season: season!.nth }).rating,
+            queryCurrentTeamRating({ identifier, season: season! }).rating,
           queryCurrentUserRating: (userId) =>
-            queryCurrentUserRating({ userId, season: season!.nth }).rating,
+            queryCurrentUserRating({ userId, season: season! }).rating,
           queryTeamPlayerRatingAverage: (identifier) =>
             queryTeamPlayerRatingAverage({
               identifier,
-              season: season!.nth,
+              season: season!,
             }),
         }),
-        season: season?.nth,
+        season,
       });
 
       return null;
@@ -382,6 +382,43 @@ export default function TournamentBracketsPage() {
     );
   };
 
+  const { progress, currentMatchId, currentOpponent } = (() => {
+    let lowestStatus: Status = Infinity;
+    let currentMatchId: number | undefined;
+    let currentOpponent: string | undefined;
+
+    if (!myTeam) {
+      return {
+        progress: undefined,
+        currentMatchId: undefined,
+        currentOpponent: undefined,
+      };
+    }
+
+    for (const match of data.bracket.match) {
+      // BYE
+      if (match.opponent1 === null || match.opponent2 === null) {
+        continue;
+      }
+
+      if (
+        (match.opponent1.id === myTeam.id ||
+          match.opponent2.id === myTeam.id) &&
+        lowestStatus > match.status
+      ) {
+        lowestStatus = match.status;
+        currentMatchId = match.id;
+        const otherTeam =
+          match.opponent1.id === myTeam.id ? match.opponent2 : match.opponent1;
+        currentOpponent = parentRouteData.teams.find(
+          (team) => team.id === otherTeam.id,
+        )?.name;
+      }
+    }
+
+    return { progress: lowestStatus, currentMatchId, currentOpponent };
+  })();
+
   return (
     <div>
       {visibility !== "hidden" && !data.everyMatchIsOver ? (
@@ -446,14 +483,19 @@ export default function TournamentBracketsPage() {
           )}
         </Form>
       ) : null}
-      {parentRouteData.hasStarted && myTeam ? (
-        <TournamentProgressPrompt ownedTeamId={myTeam.id} />
+      {parentRouteData.hasStarted && progress ? (
+        <TournamentProgressPrompt
+          progress={progress}
+          currentMatchId={currentMatchId}
+          currentOpponent={currentOpponent}
+        />
       ) : null}
-      {/* TODO: also hide this if out of the tournament */}
       {!data.finalStandings &&
       myTeam &&
       parentRouteData.hasStarted &&
-      parentRouteData.ownTeam ? (
+      parentRouteData.ownTeam &&
+      progress &&
+      progress < Status.Completed ? (
         <AddSubsPopOver
           members={myTeam.members}
           inviteCode={parentRouteData.ownTeam.inviteCode}
@@ -531,43 +573,20 @@ function useAutoRefresh() {
   }, [lastEvent, revalidate]);
 }
 
-function TournamentProgressPrompt({ ownedTeamId }: { ownedTeamId: number }) {
+function TournamentProgressPrompt({
+  progress,
+  currentMatchId,
+  currentOpponent,
+}: {
+  progress: Status;
+  currentMatchId?: number;
+  currentOpponent?: string;
+}) {
   const { t } = useTranslation(["tournament"]);
   const parentRouteData = useOutletContext<TournamentLoaderData>();
   const data = useLoaderData<typeof loader>();
 
   if (data.finalStandings) return null;
-
-  const { progress, currentMatchId, currentOpponent } = (() => {
-    let lowestStatus: Status = Infinity;
-    let currentMatchId: number | undefined;
-    let currentOpponent: string | undefined;
-
-    for (const match of data.bracket.match) {
-      // BYE
-      if (match.opponent1 === null || match.opponent2 === null) {
-        continue;
-      }
-
-      if (
-        (match.opponent1.id === ownedTeamId ||
-          match.opponent2.id === ownedTeamId) &&
-        lowestStatus > match.status
-      ) {
-        lowestStatus = match.status;
-        currentMatchId = match.id;
-        const otherTeam =
-          match.opponent1.id === ownedTeamId
-            ? match.opponent2
-            : match.opponent1;
-        currentOpponent = parentRouteData.teams.find(
-          (team) => team.id === otherTeam.id,
-        )?.name;
-      }
-    }
-
-    return { progress: lowestStatus, currentMatchId, currentOpponent };
-  })();
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
   if (progress === Infinity) {
