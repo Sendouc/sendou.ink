@@ -107,6 +107,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
             customUrl: user.customUrl,
             patronTier: user.patronTier,
             isArtist: user.isArtist,
+            isVideoAdder: user.isVideoAdder,
             languages: user.languages ? user.languages.split(",") : [],
           }
         : undefined,

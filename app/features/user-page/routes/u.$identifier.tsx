@@ -138,7 +138,7 @@ export default function UserPageLayout() {
             {t("common:pages.builds")} ({data.buildsCount})
           </SubNavLink>
         )}
-        {data.vods.length > 0 && (
+        {(isOwnPage || data.vods.length > 0) && (
           <SubNavLink to={userVodsPage(data)}>
             {t("common:pages.vods")} ({data.vods.length})
           </SubNavLink>
