@@ -19,6 +19,7 @@ export default function Chart({
   headerSuffix?: string;
   valueSuffix?: string;
 }) {
+  const { i18n } = useTranslation();
   const theme = useTheme();
   const isMounted = useIsMounted();
 
@@ -27,8 +28,18 @@ export default function Chart({
   >(
     () => ({
       getValue: (datum) => datum.primary,
+      scaleType: "localTime",
+      shouldNice: false,
+      formatters: {
+        scale: (val) => {
+          return val.toLocaleDateString(i18n.language, {
+            day: "numeric",
+            month: "numeric",
+          });
+        },
+      },
     }),
-    [],
+    [i18n.language],
   );
 
   const secondaryAxes = React.useMemo<
@@ -60,6 +71,8 @@ export default function Chart({
               />
             ),
           },
+          primaryCursor: false,
+          secondaryCursor: false,
           primaryAxis,
           secondaryAxes,
           dark: theme.htmlThemeClass === Theme.DARK,
