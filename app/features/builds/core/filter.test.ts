@@ -26,6 +26,7 @@ FilterBuilds("returns correct build back based on abilities (AT_LEAST)", () => {
     count: 2,
     filters: [
       {
+        type: "ability",
         ability: "ISM",
         value: 10,
         comparison: "AT_LEAST",
@@ -46,6 +47,7 @@ FilterBuilds("returns correct build back based on abilities (AT_MOST)", () => {
     count: 2,
     filters: [
       {
+        type: "ability",
         ability: "ISM",
         value: 6,
         comparison: "AT_MOST",
@@ -66,6 +68,7 @@ FilterBuilds("filters based on main ability (true)", () => {
     count: 2,
     filters: [
       {
+        type: "ability",
         ability: "T",
         value: true,
       },
@@ -85,6 +88,7 @@ FilterBuilds("filters based on main ability (false)", () => {
     count: 2,
     filters: [
       {
+        type: "ability",
         ability: "T",
         value: false,
       },
@@ -105,10 +109,12 @@ FilterBuilds("combines filters", () => {
     count: 2,
     filters: [
       {
+        type: "ability",
         ability: "T",
         value: true,
       },
       {
+        type: "ability",
         ability: "ISM",
         value: 9,
         comparison: "AT_LEAST",

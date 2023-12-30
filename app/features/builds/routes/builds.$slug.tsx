@@ -1,30 +1,36 @@
+import { cachified } from "@epic-web/cachified";
 import {
   type LoaderFunctionArgs,
-  type SerializeFrom,
   type MetaFunction,
+  type SerializeFrom,
 } from "@remix-run/node";
 import {
-  type ShouldRevalidateFunction,
   useLoaderData,
   useSearchParams,
+  type ShouldRevalidateFunction,
 } from "@remix-run/react";
-import { cachified } from "@epic-web/cachified";
 import clone from "just-clone";
 import { nanoid } from "nanoid";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
+import { Ability } from "~/components/Ability";
 import { BuildCard } from "~/components/BuildCard";
 import { Button, LinkButton } from "~/components/Button";
 import { Main } from "~/components/Main";
+import { Menu } from "~/components/Menu";
+import { BeakerFilledIcon } from "~/components/icons/BeakerFilled";
+import { CalendarIcon } from "~/components/icons/Calendar";
 import { ChartBarIcon } from "~/components/icons/ChartBar";
 import { CrossIcon } from "~/components/icons/Cross";
 import { FilterIcon } from "~/components/icons/Filter";
 import { FireIcon } from "~/components/icons/Fire";
+import { MapIcon } from "~/components/icons/Map";
 import {
   BUILDS_PAGE_BATCH_SIZE,
   BUILDS_PAGE_MAX_BUILDS,
   ONE_HOUR_IN_MS,
 } from "~/constants";
-import { useTranslation } from "react-i18next";
+import { possibleApValues } from "~/features/build-analyzer";
 import { i18next } from "~/modules/i18n";
 import {
   abilities,
@@ -32,8 +38,10 @@ import {
   type Ability as AbilityType,
 } from "~/modules/in-game-lists";
 import { cache, ttl } from "~/utils/cache.server";
+import { safeJSONParse } from "~/utils/json";
 import { type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
+import type { Unpacked } from "~/utils/types";
 import { weaponNameSlugToId } from "~/utils/unslugify.server";
 import {
   BUILDS_PAGE,
@@ -42,26 +50,25 @@ import {
   outlinedMainWeaponImageUrl,
   weaponBuildPage,
 } from "~/utils/urls";
+import { MAX_BUILD_FILTERS } from "../builds-constants";
 import {
-  type BuildFiltersFromSearchParams,
   buildFiltersSearchParams,
+  type BuildFiltersFromSearchParams,
 } from "../builds-schemas.server";
 import type { AbilityBuildFilter, BuildFilter } from "../builds-types";
-import { buildsByWeaponId } from "../queries/buildsBy.server";
 import { filterBuilds } from "../core/filter.server";
-import { possibleApValues } from "~/features/build-analyzer";
-import type { Unpacked } from "~/utils/types";
-import { safeJSONParse } from "~/utils/json";
-import { MAX_BUILD_FILTERS } from "../builds-constants";
-import { Ability } from "~/components/Ability";
+import { buildsByWeaponId } from "../queries/buildsBy.server";
 
 const FILTER_SEARCH_PARAM_KEY = "f";
 
 const filterOutMeaninglessFilters = (
   filter: Unpacked<BuildFiltersFromSearchParams>,
 ) =>
+  // @ts-expect-error xxx: fix
   filter.comparison !== "AT_LEAST" ||
+  // @ts-expect-error xxx: fix
   typeof filter.value !== "number" ||
+  // @ts-expect-error xxx: fix
   filter.value > 0;
 export const shouldRevalidate: ShouldRevalidateFunction = (args) => {
   const oldLimit = args.currentUrl.searchParams.get("limit");
@@ -107,8 +114,11 @@ export const shouldRevalidate: ShouldRevalidateFunction = (args) => {
       (f1) =>
         oldFilters?.some(
           (f2) =>
+            // @ts-expect-error xxx: fix
             f1.ability === f2.ability &&
+            // @ts-expect-error xxx: fix
             f1.comparison === f2.comparison &&
+            // @ts-expect-error xxx: fix
             f1.value === f2.value,
         ),
     )
@@ -258,17 +268,29 @@ export default function WeaponsBuildsPage() {
     );
   };
 
-  const handleFilterAdd = () => {
-    const newFilters = [
-      ...filters,
-      {
-        id: nanoid(),
-        type: "ability",
-        ability: "ISM",
-        comparison: "AT_LEAST",
-        value: 0,
-      } as const,
-    ];
+  const handleFilterAdd = (type: BuildFilter["type"]) => {
+    const newFilter: BuildFilter =
+      type === "ability"
+        ? {
+            id: nanoid(),
+            type: "ability",
+            ability: "ISM",
+            comparison: "AT_LEAST",
+            value: 0,
+          }
+        : type === "date"
+          ? {
+              id: nanoid(),
+              type: "date",
+              date: new Date().getTime(),
+            }
+          : {
+              id: nanoid(),
+              type: "mode",
+              mode: "SZ",
+            };
+
+    const newFilters = [...filters, newFilter];
     setFilters(newFilters);
 
     // no need to sync as this doesn't have effect till they make other choices
@@ -306,21 +328,45 @@ export default function WeaponsBuildsPage() {
     return `?${params.toString()}`;
   };
 
+  const FilterMenuButton = React.forwardRef(function (props, ref) {
+    return (
+      <Button
+        variant="outlined"
+        size="tiny"
+        icon={<FilterIcon />}
+        disabled={filters.length >= MAX_BUILD_FILTERS}
+        testId="add-filter-button"
+        {...props}
+        _ref={ref}
+      >
+        {t("builds:addFilter")}
+      </Button>
+    );
+  });
+
   return (
     <Main className="stack lg">
       <div className="builds-buttons">
-        <div>
-          <Button
-            variant="outlined"
-            size="tiny"
-            icon={<FilterIcon />}
-            onClick={handleFilterAdd}
-            disabled={filters.length >= MAX_BUILD_FILTERS}
-            testId="add-filter-button"
-          >
-            {t("builds:addFilter")}
-          </Button>
-        </div>
+        <Menu
+          items={[
+            {
+              text: "By ability",
+              icon: <BeakerFilledIcon />,
+              onClick: () => handleFilterAdd("ability"),
+            },
+            {
+              text: "By mode",
+              icon: <MapIcon />,
+              onClick: () => handleFilterAdd("mode"),
+            },
+            {
+              text: "By date",
+              icon: <CalendarIcon />,
+              onClick: () => handleFilterAdd("date"),
+            },
+          ]}
+          button={FilterMenuButton}
+        />
         <div className="builds-buttons__link">
           <LinkButton
             to="stats"
