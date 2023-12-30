@@ -15,7 +15,7 @@ import { z } from "zod";
 import { createLogInLink } from "../queries/createLogInLink.server";
 import { userIdByLogInLinkCode } from "../queries/userIdByLogInLinkCode.server";
 import { deleteLogInLinkByCode } from "../queries/deleteLogInLinkByCode.server";
-import isbot from "isbot";
+import { isbot } from "isbot";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
 
 export const callbackLoader: LoaderFunction = async ({ request }) => {
@@ -131,7 +131,8 @@ const logInViaLinkActionSchema = z.object({
 
 export const logInViaLinkLoader: LoaderFunction = async ({ request }) => {
   // make sure Discord link preview doesn't consume the login link
-  if (isbot(request.headers.get("user-agent"))) {
+  const userAgent = request.headers.get("user-agent");
+  if (userAgent && isbot(userAgent)) {
     return null;
   }
 

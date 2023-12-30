@@ -5,7 +5,7 @@ import {
   type EntryContext,
 } from "@remix-run/node";
 import { RemixServer } from "@remix-run/react";
-import isbot from "isbot";
+import { isbot } from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
 import cron from "node-cron";
 import { updatePatreonData } from "./modules/patreon";
@@ -19,8 +19,9 @@ const handleRequest = (
   responseStatusCode: number,
   responseHeaders: Headers,
   remixContext: EntryContext,
-) =>
-  isbot(request.headers.get("user-agent"))
+) => {
+  const userAgent = request.headers.get("user-agent");
+  return userAgent && isbot(userAgent)
     ? handleBotRequest(
         request,
         responseStatusCode,
@@ -33,6 +34,7 @@ const handleRequest = (
         responseHeaders,
         remixContext,
       );
+};
 export default handleRequest;
 
 const handleBotRequest = (
