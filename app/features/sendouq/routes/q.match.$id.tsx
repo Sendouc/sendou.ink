@@ -100,8 +100,6 @@ import { DiscordIcon } from "~/components/icons/Discord";
 import { useWindowSize } from "~/hooks/useWindowSize";
 import { joinListToNaturalString } from "~/utils/arrays";
 import { NewTabs } from "~/components/NewTabs";
-import { Alert } from "~/components/Alert";
-import cachified from "@epic-web/cachified";
 import { refreshStreamsCache } from "~/features/sendouq-streams/core/streams.server";
 
 export const meta: MetaFunction = (args) => {
@@ -432,22 +430,6 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     ? reportedWeaponsByMatchId(matchId)
     : null;
 
-  const banScreen = !match.isLocked
-    ? await cachified({
-        key: `matches-screen-ban-${match.id}`,
-        cache,
-        async getFreshValue() {
-          const noScreenSettings =
-            await QMatchRepository.groupMembersNoScreenSettings([
-              groupAlpha,
-              groupBravo,
-            ]);
-
-          return noScreenSettings.some((user) => user.noScreen);
-        },
-      })
-    : null;
-
   return {
     match: censoredMatch,
     matchChatCode: canAccessMatchChat ? match.chatCode : null,
@@ -455,7 +437,6 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     groupChatCode: groupChatCode(),
     groupAlpha: censoredGroupAlpha,
     groupBravo: censoredGroupBravo,
-    banScreen,
     groupMemberOf: isTeamAlphaMember
       ? ("ALPHA" as const)
       : isTeamBravoMember
@@ -1144,11 +1125,6 @@ function BottomSection({
       </FormWithConfirm>
     ) : null;
 
-  const screenLegalityInfoElement =
-    data.banScreen !== null ? (
-      <ScreenLegalityInfo ban={data.banScreen} />
-    ) : null;
-
   const chatHidden = chatRooms.length === 0;
 
   if (!showMid && chatHidden) {
@@ -1161,7 +1137,6 @@ function BottomSection({
         <div className="stack horizontal lg items-center justify-center">
           {roomJoiningInfoElement}
           <div className="stack md">
-            {screenLegalityInfoElement}
             {rulesButtonElement}
             {helpdeskButtonElement}
             {cancelMatchElement}
@@ -1211,7 +1186,6 @@ function BottomSection({
         >
           <div className="stack md">
             {roomJoiningInfoElement}
-            {screenLegalityInfoElement}
             {rulesButtonElement}
             {helpdeskButtonElement}
             {cancelMatchElement}
@@ -1232,34 +1206,6 @@ function BottomSection({
         </div>
       ) : null}
     </>
-  );
-}
-
-function ScreenLegalityInfo({ ban }: { ban: boolean }) {
-  const { t } = useTranslation(["q", "weapons"]);
-
-  return (
-    <div className="q-match__screen-legality">
-      <Popover
-        triggerClassName="minimal tiny q-match__screen-legality__button"
-        buttonChildren={
-          <Alert variation={ban ? "ERROR" : "SUCCESS"}>
-            <div className="stack xs horizontal items-center">
-              <WeaponImage weaponSplId={401} width={30} variant="build" />
-              <WeaponImage weaponSplId={6021} width={30} variant="build" />
-            </div>
-          </Alert>
-        }
-      >
-        {ban
-          ? t("q:match.screen.ban", {
-              special: t("weapons:SPECIAL_19"),
-            })
-          : t("q:match.screen.allowed", {
-              special: t("weapons:SPECIAL_19"),
-            })}
-      </Popover>
-    </div>
   );
 }
 

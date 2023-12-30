@@ -54,8 +54,6 @@ import {
 import bracketStyles from "../tournament-bracket.css";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import { logger } from "~/utils/logger";
-import cachified from "@epic-web/cachified";
-import { cache } from "~/utils/cache.server";
 
 export const links: LinksFunction = () => [
   {
@@ -325,23 +323,6 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const matchIsOver =
     match.opponentOne?.result === "win" || match.opponentTwo?.result === "win";
 
-  // not cache as performance optimization but instead
-  // so that people don't change their setting mid-set
-  const banScreen = !matchIsOver
-    ? await cachified({
-        key: `tournament-screen-ban-${match.id}`,
-        cache,
-        async getFreshValue() {
-          const noScreenSettings =
-            await TournamentRepository.matchPlayersNoScreenSettings(
-              match.players,
-            );
-
-          return noScreenSettings.some((user) => user.noScreen);
-        },
-      })
-    : null;
-
   return {
     match: {
       ...match,
@@ -351,7 +332,6 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     seeds: resolveSeeds(),
     currentMap,
     modes: mapList?.map((map) => map.mode),
-    banScreen,
     matchIsOver,
   };
 

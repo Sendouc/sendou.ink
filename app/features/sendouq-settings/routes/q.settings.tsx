@@ -33,7 +33,6 @@ import { assertUnreachable } from "~/utils/types";
 import {
   SENDOUQ_PAGE,
   SENDOUQ_SETTINGS_PAGE,
-  SPLATTERCOLOR_SCREEN_TWITTER_URL,
   navIconUrl,
   preferenceEmojiUrl,
 } from "~/utils/urls";
@@ -42,8 +41,6 @@ import { settingsActionSchema } from "../q-settings-schemas.server";
 import styles from "../q-settings.css";
 import { BANNED_MAPS } from "../banned-maps";
 import { Divider } from "~/components/Divider";
-import { Toggle } from "~/components/Toggle";
-import { FormMessage } from "~/components/FormMessage";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -95,13 +92,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       });
       break;
     }
-    case "UPDATE_NO_SCREEN": {
-      await QSettingsRepository.updateNoScreen({
-        userId: user.id,
-        noScreen: Number(data.noScreen),
-      });
-      break;
-    }
     default: {
       assertUnreachable(data);
     }
@@ -126,7 +116,6 @@ export default function SendouQSettingsPage() {
         <WeaponPool />
         <VoiceChat />
         <Sounds />
-        <Misc />
       </div>
     </Main>
   );
@@ -668,55 +657,5 @@ function SoundCheckboxes() {
         </div>
       ))}
     </div>
-  );
-}
-
-function Misc() {
-  const data = useLoaderData<typeof loader>();
-  const [checked, setChecked] = React.useState(Boolean(data.settings.noScreen));
-  const { t } = useTranslation(["common", "q", "weapons"]);
-  const fetcher = useFetcher();
-
-  return (
-    <details>
-      <summary className="q-settings__summary">
-        <div>{t("q:settings.misc.header")}</div>
-      </summary>
-      <fetcher.Form method="post" className="mb-4 ml-2-5 stack sm">
-        <div className="stack horizontal xs items-center">
-          <Toggle
-            checked={checked}
-            setChecked={setChecked}
-            id="noScreen"
-            name="noScreen"
-          />
-          <label className="mb-0" htmlFor="noScreen">
-            {t("q:settings.avoid.label", {
-              special: t("weapons:SPECIAL_19"),
-            })}
-          </label>
-        </div>
-        <FormMessage type="info">
-          {t("q:settings.avoid.explanation")}{" "}
-          <a
-            href={SPLATTERCOLOR_SCREEN_TWITTER_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {t("q:settings.avoid.readMore")}
-          </a>
-        </FormMessage>
-        <div className="mt-6">
-          <SubmitButton
-            size="big"
-            className="mx-auto"
-            _action="UPDATE_NO_SCREEN"
-            state={fetcher.state}
-          >
-            {t("common:actions.save")}
-          </SubmitButton>
-        </div>
-      </fetcher.Form>
-    </details>
   );
 }

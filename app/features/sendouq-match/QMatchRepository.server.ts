@@ -159,15 +159,3 @@ export async function findGroupById({
     })),
   } as GroupForMatch;
 }
-
-export function groupMembersNoScreenSettings(groups: GroupForMatch[]) {
-  return db
-    .selectFrom("User")
-    .select("User.noScreen")
-    .where(
-      "User.id",
-      "in",
-      groups.flatMap((group) => group.members.map((member) => member.id)),
-    )
-    .execute();
-}

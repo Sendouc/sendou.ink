@@ -103,20 +103,6 @@
   }
 }
 
-.tournament-bracket__no-screen {
-  display: flex;
-  gap: var(--s-0-5);
-}
-
-.tournament-bracket__no-screen > svg {
-  width: 24px;
-  fill: var(--theme-success);
-}
-
-.tournament-bracket__no-screen__banned > svg {
-  fill: var(--theme-error);
-}
-
 .tournament-bracket__during-match-actions {
   display: grid;
   grid-template-areas:

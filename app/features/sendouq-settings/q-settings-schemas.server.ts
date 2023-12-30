@@ -2,7 +2,6 @@ import { z } from "zod";
 import { languagesUnified } from "~/modules/i18n/config";
 import {
   _action,
-  checkboxValueToBoolean,
   modeShort,
   noDuplicates,
   safeJSONParse,
@@ -42,9 +41,5 @@ export const settingsActionSchema = z.union([
       safeJSONParse,
       z.array(weaponSplId).max(SENDOUQ_WEAPON_POOL_MAX_SIZE),
     ),
-  }),
-  z.object({
-    _action: _action("UPDATE_NO_SCREEN"),
-    noScreen: z.preprocess(checkboxValueToBoolean, z.boolean()),
   }),
 ]);

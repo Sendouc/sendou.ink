@@ -5,7 +5,7 @@ import {
   useOutletContext,
 } from "@remix-run/react";
 import clsx from "clsx";
-import { Image, WeaponImage } from "~/components/Image";
+import { Image } from "~/components/Image";
 import { SubmitButton } from "~/components/SubmitButton";
 import { useTranslation } from "react-i18next";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
@@ -32,8 +32,6 @@ import { NewTabs } from "~/components/NewTabs";
 import { ScoreReporterRosters } from "./ScoreReporterRosters";
 import { Chat, useChat } from "~/features/chat/components/Chat";
 import * as React from "react";
-import { CrossIcon } from "~/components/icons/Cross";
-import { CheckmarkIcon } from "~/components/icons/Checkmark";
 
 export type Result = Unpacked<
   SerializeFrom<TournamentMatchLoaderData>["results"]
@@ -116,7 +114,6 @@ export function ScoreReporter({
         bestOf: data.match.bestOf,
       })}
     </>,
-    data.banScreen !== null ? <ScreenBanIcons banned={data.banScreen} /> : null,
   ];
 
   const matchIsLockedError = actionData?.error === "locked";
@@ -199,20 +196,6 @@ export function ScoreReporter({
             : "t"}
         </div>
       ) : null}
-    </div>
-  );
-}
-
-function ScreenBanIcons({ banned }: { banned: boolean }) {
-  return (
-    <div
-      className={clsx("tournament-bracket__no-screen", {
-        "tournament-bracket__no-screen__banned": banned,
-      })}
-    >
-      {banned ? <CrossIcon /> : <CheckmarkIcon />}
-      <WeaponImage weaponSplId={401} width={24} variant="build" />
-      <WeaponImage weaponSplId={6021} width={24} variant="build" />
     </div>
   );
 }
