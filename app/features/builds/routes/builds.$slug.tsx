@@ -46,7 +46,7 @@ import {
   type BuildFiltersFromSearchParams,
   buildFiltersSearchParams,
 } from "../builds-schemas.server";
-import type { BuildFilter } from "../builds-types";
+import type { AbilityBuildFilter, BuildFilter } from "../builds-types";
 import { buildsByWeaponId } from "../queries/buildsBy.server";
 import { filterBuilds } from "../core/filter.server";
 import { possibleApValues } from "~/features/build-analyzer";
@@ -263,6 +263,7 @@ export default function WeaponsBuildsPage() {
       ...filters,
       {
         id: nanoid(),
+        type: "ability",
         ability: "ISM",
         comparison: "AT_LEAST",
         value: 0,
@@ -276,7 +277,10 @@ export default function WeaponsBuildsPage() {
   const handleFilterChange = (i: number, newFilter: Partial<BuildFilter>) => {
     const newFilters = clone(filters);
 
-    newFilters[i] = { ...filters[i], ...newFilter };
+    newFilters[i] = {
+      ...(filters[i] as AbilityBuildFilter),
+      ...(newFilter as AbilityBuildFilter),
+    };
 
     setFilters(newFilters);
 
@@ -378,9 +382,7 @@ function FilterSection({
   onChange: (filter: Partial<BuildFilter>) => void;
   remove: () => void;
 }) {
-  const { t } = useTranslation(["analyzer", "game-misc", "builds"]);
-
-  const abilityObject = abilities.find((a) => a.name === filter.ability)!;
+  const { t } = useTranslation(["builds"]);
 
   return (
     <section>
@@ -399,73 +401,90 @@ function FilterSection({
           />
         </div>
       </div>
-      <div className="build__filter">
-        <div className="build__filter__ability">
-          <Ability ability={filter.ability} size="TINY" />
-        </div>
+      {filter.type === "ability" ? (
+        <AbilityFilter filter={filter} onChange={onChange} />
+      ) : null}
+    </section>
+  );
+}
+
+function AbilityFilter({
+  filter,
+  onChange,
+}: {
+  filter: AbilityBuildFilter;
+  onChange: (filter: Partial<BuildFilter>) => void;
+}) {
+  const { t } = useTranslation(["analyzer", "game-misc", "builds"]);
+  const abilityObject = abilities.find((a) => a.name === filter.ability)!;
+
+  return (
+    <div className="build__filter">
+      <div className="build__filter__ability">
+        <Ability ability={filter.ability} size="TINY" />
+      </div>
+      <select
+        value={filter.ability}
+        onChange={(e) =>
+          onChange({
+            ability: e.target.value as AbilityType,
+            value:
+              abilities.find((a) => a.name === e.target.value)!.type ===
+              "STACKABLE"
+                ? 0
+                : true,
+          })
+        }
+      >
+        {abilities.map((ability) => {
+          return (
+            <option key={ability.name} value={ability.name}>
+              {t(`game-misc:ABILITY_${ability.name}`)}
+            </option>
+          );
+        })}
+      </select>
+      {abilityObject.type !== "STACKABLE" ? (
         <select
-          value={filter.ability}
+          value={!filter.value ? "false" : "true"}
           onChange={(e) =>
-            onChange({
-              ability: e.target.value as AbilityType,
-              value:
-                abilities.find((a) => a.name === e.target.value)!.type ===
-                "STACKABLE"
-                  ? 0
-                  : true,
-            })
+            onChange({ value: e.target.value === "true" ? true : false })
           }
         >
-          {abilities.map((ability) => {
-            return (
-              <option key={ability.name} value={ability.name}>
-                {t(`game-misc:ABILITY_${ability.name}`)}
-              </option>
-            );
-          })}
+          <option value="true">{t("builds:filters.has")}</option>
+          <option value="false">{t("builds:filters.does.not.have")}</option>
         </select>
-        {abilityObject.type !== "STACKABLE" ? (
+      ) : null}
+      {abilityObject.type === "STACKABLE" ? (
+        <select
+          value={filter.comparison}
+          onChange={(e) =>
+            onChange({
+              comparison: e.target.value as AbilityBuildFilter["comparison"],
+            })
+          }
+          data-testid="comparison-select"
+        >
+          <option value="AT_LEAST">{t("builds:filters.atLeast")}</option>
+          <option value="AT_MOST">{t("builds:filters.atMost")}</option>
+        </select>
+      ) : null}
+      {abilityObject.type === "STACKABLE" ? (
+        <div className="stack horizontal sm items-center">
           <select
-            value={!filter.value ? "false" : "true"}
-            onChange={(e) =>
-              onChange({ value: e.target.value === "true" ? true : false })
-            }
+            className="build__filter__ap-select"
+            value={typeof filter.value === "number" ? filter.value : "0"}
+            onChange={(e) => onChange({ value: Number(e.target.value) })}
           >
-            <option value="true">{t("builds:filters.has")}</option>
-            <option value="false">{t("builds:filters.does.not.have")}</option>
+            {possibleApValues().map((value) => (
+              <option key={value} value={value}>
+                {value}
+              </option>
+            ))}
           </select>
-        ) : null}
-        {abilityObject.type === "STACKABLE" ? (
-          <select
-            value={filter.comparison}
-            onChange={(e) =>
-              onChange({
-                comparison: e.target.value as BuildFilter["comparison"],
-              })
-            }
-            data-testid="comparison-select"
-          >
-            <option value="AT_LEAST">{t("builds:filters.atLeast")}</option>
-            <option value="AT_MOST">{t("builds:filters.atMost")}</option>
-          </select>
-        ) : null}
-        {abilityObject.type === "STACKABLE" ? (
-          <div className="stack horizontal sm items-center">
-            <select
-              className="build__filter__ap-select"
-              value={typeof filter.value === "number" ? filter.value : "0"}
-              onChange={(e) => onChange({ value: Number(e.target.value) })}
-            >
-              {possibleApValues().map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-            <div className="text-sm">{t("analyzer:abilityPoints.short")}</div>
-          </div>
-        ) : null}
-      </div>
-    </section>
+          <div className="text-sm">{t("analyzer:abilityPoints.short")}</div>
+        </div>
+      ) : null}
+    </div>
   );
 }

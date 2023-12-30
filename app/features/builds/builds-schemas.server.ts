@@ -1,8 +1,9 @@
 import { z } from "zod";
-import { ability, safeJSONParse } from "~/utils/zod";
+import { ability, modeShort, safeJSONParse } from "~/utils/zod";
 import { MAX_BUILD_FILTERS } from "./builds-constants";
 
-const buildFilterSchema = z.object({
+const abilityFilterSchema = z.object({
+  type: z.literal("ability"),
   ability: z.string().toUpperCase().pipe(ability),
   value: z.union([z.number(), z.boolean()]),
   comparison: z
@@ -12,9 +13,24 @@ const buildFilterSchema = z.object({
     .optional(),
 });
 
+const modeFilterSchema = z.object({
+  type: z.literal("mode"),
+  mode: modeShort,
+});
+
+const dateFilterSchema = z.object({
+  type: z.literal("date"),
+  date: z.number(),
+});
+
 export const buildFiltersSearchParams = z.preprocess(
   safeJSONParse,
-  z.union([z.null(), z.array(buildFilterSchema).max(MAX_BUILD_FILTERS)]),
+  z.union([
+    z.null(),
+    z
+      .array(z.union([abilityFilterSchema, modeFilterSchema, dateFilterSchema]))
+      .max(MAX_BUILD_FILTERS),
+  ]),
 );
 
 export type BuildFiltersFromSearchParams = NonNullable<
