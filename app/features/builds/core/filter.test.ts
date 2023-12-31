@@ -1,27 +1,36 @@
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
 import { filterBuilds } from "./filter.server";
-import type { Ability, BuildAbilitiesTuple } from "~/modules/in-game-lists";
+import type {
+  Ability,
+  BuildAbilitiesTuple,
+  ModeShort,
+} from "~/modules/in-game-lists";
 
 const FilterBuilds = suite("Filter builds");
 
-const createBuild = (
-  headAbilities: [Ability, Ability, Ability, Ability],
-): { abilities: BuildAbilitiesTuple } => {
+const createBuild = ({
+  headAbilities,
+  modes,
+}: {
+  headAbilities: [Ability, Ability, Ability, Ability];
+  modes?: ModeShort[] | null;
+}): { abilities: BuildAbilitiesTuple; modes: ModeShort[] | null } => {
   return {
     abilities: [
       headAbilities,
       ["SSU", "SSU", "SSU", "SSU"],
       ["SSU", "SSU", "SSU", "SSU"],
     ],
+    modes: modes === undefined ? ["SZ", "TC", "RM", "CB"] : modes,
   };
 };
 
 FilterBuilds("returns correct build back based on abilities (AT_LEAST)", () => {
   const filtered = filterBuilds({
     builds: [
-      createBuild(["ISS", "ISS", "ISM", "ISM"]),
-      createBuild(["ISM", "ISM", "ISM", "ISM"]),
+      createBuild({ headAbilities: ["ISS", "ISS", "ISM", "ISM"] }),
+      createBuild({ headAbilities: ["ISM", "ISM", "ISM", "ISM"] }),
     ],
     count: 2,
     filters: [
@@ -41,8 +50,8 @@ FilterBuilds("returns correct build back based on abilities (AT_LEAST)", () => {
 FilterBuilds("returns correct build back based on abilities (AT_MOST)", () => {
   const filtered = filterBuilds({
     builds: [
-      createBuild(["ISS", "ISS", "ISM", "ISM"]),
-      createBuild(["ISM", "ISM", "ISM", "ISM"]),
+      createBuild({ headAbilities: ["ISS", "ISS", "ISM", "ISM"] }),
+      createBuild({ headAbilities: ["ISM", "ISM", "ISM", "ISM"] }),
     ],
     count: 2,
     filters: [
@@ -62,8 +71,8 @@ FilterBuilds("returns correct build back based on abilities (AT_MOST)", () => {
 FilterBuilds("filters based on main ability (true)", () => {
   const filtered = filterBuilds({
     builds: [
-      createBuild(["T", "ISM", "ISM", "ISM"]),
-      createBuild(["ISS", "ISS", "ISM", "ISM"]),
+      createBuild({ headAbilities: ["T", "ISM", "ISM", "ISM"] }),
+      createBuild({ headAbilities: ["ISS", "ISS", "ISM", "ISM"] }),
     ],
     count: 2,
     filters: [
@@ -82,8 +91,8 @@ FilterBuilds("filters based on main ability (true)", () => {
 FilterBuilds("filters based on main ability (false)", () => {
   const filtered = filterBuilds({
     builds: [
-      createBuild(["T", "ISM", "ISM", "ISM"]),
-      createBuild(["ISS", "ISS", "ISM", "ISM"]),
+      createBuild({ headAbilities: ["T", "ISM", "ISM", "ISM"] }),
+      createBuild({ headAbilities: ["ISS", "ISS", "ISM", "ISM"] }),
     ],
     count: 2,
     filters: [
@@ -99,12 +108,70 @@ FilterBuilds("filters based on main ability (false)", () => {
   assert.equal(filtered[0].abilities[0], ["ISS", "ISS", "ISM", "ISM"]);
 });
 
+FilterBuilds("filters based on mode", () => {
+  const filtered = filterBuilds({
+    builds: [
+      createBuild({
+        headAbilities: ["ISS", "ISM", "ISM", "ISM"],
+        modes: ["SZ"],
+      }),
+      createBuild({ headAbilities: ["ISM", "ISM", "ISM", "ISM"], modes: null }),
+      createBuild({ headAbilities: ["ISM", "ISM", "ISM", "ISM"], modes: [] }),
+    ],
+    count: 3,
+    filters: [
+      {
+        type: "mode",
+        mode: "SZ",
+      },
+    ],
+  });
+
+  assert.equal(filtered.length, 1);
+  assert.equal(filtered[0].abilities[0], ["ISS", "ISM", "ISM", "ISM"]);
+});
+
+FilterBuilds("filters based on many modes", () => {
+  const filtered = filterBuilds({
+    builds: [
+      createBuild({
+        headAbilities: ["ISS", "ISM", "ISM", "ISM"],
+        modes: ["SZ", "TC"],
+      }),
+      createBuild({
+        headAbilities: ["ISM", "ISM", "ISM", "ISM"],
+        modes: ["SZ"],
+      }),
+      createBuild({
+        headAbilities: ["ISM", "ISM", "ISM", "ISM"],
+        modes: ["TC"],
+      }),
+    ],
+    count: 3,
+    filters: [
+      {
+        type: "mode",
+        mode: "SZ",
+      },
+      {
+        type: "mode",
+        mode: "TC",
+      },
+    ],
+  });
+
+  assert.equal(filtered.length, 1);
+  assert.equal(filtered[0].abilities[0], ["ISS", "ISM", "ISM", "ISM"]);
+});
+
+// based on many modes
+
 FilterBuilds("combines filters", () => {
   const filtered = filterBuilds({
     builds: [
-      createBuild(["T", "ISM", "ISM", "ISM"]),
-      createBuild(["T", "RES", "RES", "RES"]),
-      createBuild(["ISS", "ISS", "ISM", "ISM"]),
+      createBuild({ headAbilities: ["T", "ISM", "ISM", "ISM"] }),
+      createBuild({ headAbilities: ["T", "RES", "RES", "RES"] }),
+      createBuild({ headAbilities: ["ISS", "ISS", "ISM", "ISM"] }),
     ],
     count: 2,
     filters: [
@@ -129,9 +196,9 @@ FilterBuilds("combines filters", () => {
 FilterBuilds("count limits returned builds", () => {
   const filtered = filterBuilds({
     builds: [
-      createBuild(["ISM", "ISM", "ISM", "ISM"]),
-      createBuild(["ISM", "ISM", "ISM", "ISM"]),
-      createBuild(["ISM", "ISM", "ISM", "ISM"]),
+      createBuild({ headAbilities: ["ISM", "ISM", "ISM", "ISM"] }),
+      createBuild({ headAbilities: ["ISM", "ISM", "ISM", "ISM"] }),
+      createBuild({ headAbilities: ["ISM", "ISM", "ISM", "ISM"] }),
     ],
     count: 2,
     filters: [],

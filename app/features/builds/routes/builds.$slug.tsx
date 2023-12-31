@@ -32,10 +32,12 @@ import {
 } from "~/constants";
 import { possibleApValues } from "~/features/build-analyzer";
 import { i18next } from "~/modules/i18n";
+import type { ModeShort } from "~/modules/in-game-lists";
 import {
   abilities,
   weaponIdIsNotAlt,
   type Ability as AbilityType,
+  modesShort,
 } from "~/modules/in-game-lists";
 import { cache, ttl } from "~/utils/cache.server";
 import { safeJSONParse } from "~/utils/json";
@@ -55,9 +57,14 @@ import {
   buildFiltersSearchParams,
   type BuildFiltersFromSearchParams,
 } from "../builds-schemas.server";
-import type { AbilityBuildFilter, BuildFilter } from "../builds-types";
+import type {
+  AbilityBuildFilter,
+  BuildFilter,
+  ModeBuildFilter,
+} from "../builds-types";
 import { filterBuilds } from "../core/filter.server";
 import { buildsByWeaponId } from "../queries/buildsBy.server";
+import { ModeImage } from "~/components/Image";
 
 const FILTER_SEARCH_PARAM_KEY = "f";
 
@@ -450,6 +457,9 @@ function FilterSection({
       {filter.type === "ability" ? (
         <AbilityFilter filter={filter} onChange={onChange} />
       ) : null}
+      {filter.type === "mode" ? (
+        <ModeFilter filter={filter} onChange={onChange} number={number} />
+      ) : null}
     </section>
   );
 }
@@ -531,6 +541,46 @@ function AbilityFilter({
           <div className="text-sm">{t("analyzer:abilityPoints.short")}</div>
         </div>
       ) : null}
+    </div>
+  );
+}
+
+function ModeFilter({
+  filter,
+  onChange,
+  number,
+}: {
+  filter: ModeBuildFilter;
+  onChange: (filter: Partial<BuildFilter>) => void;
+  number: number;
+}) {
+  const { t } = useTranslation(["analyzer", "game-misc", "builds"]);
+
+  const inputId = (mode: ModeShort) => `${number}-${mode}`;
+
+  return (
+    <div className="build__filter build__filter__mode">
+      {modesShort.map((mode) => {
+        return (
+          <div
+            key={mode}
+            className="stack horizontal xs items-center font-sm font-semi-bold"
+          >
+            <input
+              type="radio"
+              name={`mode-${number}`}
+              id={inputId(mode)}
+              value={mode}
+              checked={filter.mode === mode}
+              onChange={() => onChange({ mode })}
+            />
+            <label htmlFor={inputId(mode)} className="stack horizontal xs mb-0">
+              <ModeImage mode={mode} size={18} />
+              {t(`game-misc:MODE_LONG_${mode}`)}
+            </label>
+          </div>
+        );
+      })}
     </div>
   );
 }

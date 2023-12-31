@@ -1,9 +1,14 @@
-import type { BuildAbilitiesTuple } from "~/modules/in-game-lists";
+import type { BuildAbilitiesTuple, ModeShort } from "~/modules/in-game-lists";
 import type { BuildFiltersFromSearchParams } from "../builds-schemas.server";
 import { buildToAbilityPoints } from "~/features/build-analyzer";
-import type { AbilityBuildFilter } from "../builds-types";
+import type { AbilityBuildFilter, ModeBuildFilter } from "../builds-types";
 
-export function filterBuilds<T extends { abilities: BuildAbilitiesTuple }>({
+type PartialBuild = {
+  abilities: BuildAbilitiesTuple;
+  modes: ModeShort[] | null;
+};
+
+export function filterBuilds<T extends PartialBuild>({
   filters,
   count,
   builds,
@@ -25,7 +30,7 @@ export function filterBuilds<T extends { abilities: BuildAbilitiesTuple }>({
   return result;
 }
 
-function buildMatchesFilters<T extends { abilities: BuildAbilitiesTuple }>({
+function buildMatchesFilters<T extends PartialBuild>({
   build,
   filters,
 }: {
@@ -35,6 +40,8 @@ function buildMatchesFilters<T extends { abilities: BuildAbilitiesTuple }>({
   for (const filter of filters) {
     if (filter.type === "ability") {
       if (!matchesAbilityFilter({ build, filter })) return false;
+    } else if (filter.type === "mode") {
+      if (!matchesModeFilter({ build, filter })) return false;
     }
   }
 
@@ -45,7 +52,7 @@ function matchesAbilityFilter({
   build,
   filter,
 }: {
-  build: { abilities: BuildAbilitiesTuple };
+  build: PartialBuild;
   filter: Omit<AbilityBuildFilter, "id">;
 }) {
   if (typeof filter.value === "boolean") {
@@ -60,4 +67,16 @@ function matchesAbilityFilter({
   }
 
   return true;
+}
+
+function matchesModeFilter({
+  build,
+  filter,
+}: {
+  build: PartialBuild;
+  filter: Omit<ModeBuildFilter, "id">;
+}) {
+  if (!build.modes) return false;
+
+  return build.modes.includes(filter.mode);
 }
