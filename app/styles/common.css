@@ -987,6 +987,11 @@ dialog::backdrop {
   gap: var(--s-6);
 }
 
+.build__filter__date {
+  display: flex;
+  align-items: center;
+}
+
 @media screen and (min-width: 640px) {
   .build__filter {
     flex-direction: row;
@@ -1001,6 +1006,10 @@ dialog::backdrop {
 
 .build__filter__ap-select {
   width: 75px;
+}
+
+.build__filter__date-select {
+  width: 275px;
 }
 
 .build {
@@ -1296,6 +1305,11 @@ dialog::backdrop {
 
 .menu__item__active {
   background-color: var(--theme-very-transparent);
+}
+
+.menu__item__disabled {
+  color: var(--text-lighter);
+  cursor: not-allowed;
 }
 
 .menu__item__icon {

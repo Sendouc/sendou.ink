@@ -20,7 +20,7 @@ const modeFilterSchema = z.object({
 
 const dateFilterSchema = z.object({
   type: z.literal("date"),
-  date: z.number(),
+  date: z.string(),
 });
 
 export const buildFiltersSearchParams = z.preprocess(

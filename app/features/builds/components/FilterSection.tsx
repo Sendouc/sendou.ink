@@ -13,8 +13,11 @@ import {
 import type {
   AbilityBuildFilter,
   BuildFilter,
+  DateBuildFilter,
   ModeBuildFilter,
 } from "../builds-types";
+import { PATCHES } from "~/constants";
+import { dateToYYYYMMDD } from "~/utils/dates";
 
 export function FilterSection({
   number,
@@ -51,6 +54,9 @@ export function FilterSection({
       ) : null}
       {filter.type === "mode" ? (
         <ModeFilter filter={filter} onChange={onChange} number={number} />
+      ) : null}
+      {filter.type === "date" ? (
+        <DateFilter filter={filter} onChange={onChange} />
       ) : null}
     </section>
   );
@@ -146,7 +152,7 @@ function ModeFilter({
   onChange: (filter: Partial<BuildFilter>) => void;
   number: number;
 }) {
-  const { t } = useTranslation(["analyzer", "game-misc", "builds"]);
+  const { t } = useTranslation(["game-misc"]);
 
   const inputId = (mode: ModeShort) => `${number}-${mode}`;
 
@@ -173,6 +179,76 @@ function ModeFilter({
           </div>
         );
       })}
+    </div>
+  );
+}
+
+function DateFilter({
+  filter,
+  onChange,
+}: {
+  filter: DateBuildFilter;
+  onChange: (filter: Partial<DateBuildFilter>) => void;
+}) {
+  const { i18n } = useTranslation();
+
+  const selectValue = () => {
+    const dateString = dateToYYYYMMDD(new Date(filter.date));
+
+    if (
+      PATCHES.find(({ date }) => {
+        return new Date(date).toISOString().split("T")[0] === dateString;
+      })
+    ) {
+      return dateString;
+    }
+
+    return "CUSTOM";
+  };
+
+  const oneMonthAgo = new Date();
+  oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+
+  return (
+    <div className="build__filter build__filter__date">
+      <label className="mb-0">Since</label>
+      <select
+        className="build__filter__date-select"
+        value={selectValue()}
+        onChange={(e) =>
+          onChange({
+            date:
+              e.target.value === "CUSTOM"
+                ? dateToYYYYMMDD(oneMonthAgo)
+                : e.target.value,
+          })
+        }
+      >
+        {PATCHES.map(({ patch, date: dateString }) => {
+          const date = new Date(dateString);
+
+          return (
+            <option key={patch} value={dateString}>
+              {patch} (
+              {date.toLocaleDateString(i18n.language, {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })}
+              )
+            </option>
+          );
+        })}
+        <option value="CUSTOM">Custom</option>
+      </select>
+      {selectValue() === "CUSTOM" ? (
+        <input
+          type="date"
+          value={dateToYYYYMMDD(new Date(filter.date))}
+          onChange={(e) => onChange({ date: e.target.value })}
+          max={dateToYYYYMMDD(new Date())}
+        />
+      ) : null}
     </div>
   );
 }

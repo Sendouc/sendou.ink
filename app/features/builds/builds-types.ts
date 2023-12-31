@@ -17,7 +17,8 @@ export type ModeBuildFilter = WithId<{
 
 export type DateBuildFilter = WithId<{
   type: "date";
-  date: number;
+  /** YYYY-MM-DD */
+  date: string;
 }>;
 
 export type BuildFilter =

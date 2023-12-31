@@ -27,6 +27,7 @@ import {
   BUILDS_PAGE_BATCH_SIZE,
   BUILDS_PAGE_MAX_BUILDS,
   ONE_HOUR_IN_MS,
+  PATCHES,
 } from "~/constants";
 import { i18next } from "~/modules/i18n";
 import { weaponIdIsNotAlt } from "~/modules/in-game-lists";
@@ -286,7 +287,7 @@ export default function WeaponsBuildsPage() {
           ? {
               id: nanoid(),
               type: "date",
-              date: new Date().getTime(),
+              date: PATCHES[0].date,
             }
           : {
               id: nanoid(),
@@ -370,6 +371,7 @@ export default function WeaponsBuildsPage() {
               text: "By date",
               icon: <CalendarIcon />,
               onClick: () => handleFilterAdd("date"),
+              disabled: filters.some((filter) => filter.type === "date"),
             },
           ]}
           button={FilterMenuButton}

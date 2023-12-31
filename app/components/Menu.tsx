@@ -11,6 +11,7 @@ export function Menu({
     /*type: "button";*/ text: string;
     icon: React.ReactNode;
     onClick: () => void;
+    disabled?: boolean;
   }[];
 }) {
   return (
@@ -28,11 +29,12 @@ export function Menu({
         <HeadlessUIMenu.Items className="menu__items-container">
           {items.map((item) => {
             return (
-              <HeadlessUIMenu.Item key={item.text}>
+              <HeadlessUIMenu.Item key={item.text} disabled={item.disabled}>
                 {({ active }) => (
                   <button
                     className={clsx("menu__item", {
                       menu__item__active: active,
+                      menu__item__disabled: item.disabled,
                     })}
                     onClick={item.onClick}
                   >

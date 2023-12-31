@@ -164,8 +164,6 @@ FilterBuilds("filters based on many modes", () => {
   assert.equal(filtered[0].abilities[0], ["ISS", "ISM", "ISM", "ISM"]);
 });
 
-// based on many modes
-
 FilterBuilds("combines filters", () => {
   const filtered = filterBuilds({
     builds: [
