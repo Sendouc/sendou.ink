@@ -13,7 +13,6 @@ import clone from "just-clone";
 import { nanoid } from "nanoid";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
-import { Ability } from "~/components/Ability";
 import { BuildCard } from "~/components/BuildCard";
 import { Button, LinkButton } from "~/components/Button";
 import { Main } from "~/components/Main";
@@ -21,7 +20,6 @@ import { Menu } from "~/components/Menu";
 import { BeakerFilledIcon } from "~/components/icons/BeakerFilled";
 import { CalendarIcon } from "~/components/icons/Calendar";
 import { ChartBarIcon } from "~/components/icons/ChartBar";
-import { CrossIcon } from "~/components/icons/Cross";
 import { FilterIcon } from "~/components/icons/Filter";
 import { FireIcon } from "~/components/icons/Fire";
 import { MapIcon } from "~/components/icons/Map";
@@ -30,15 +28,8 @@ import {
   BUILDS_PAGE_MAX_BUILDS,
   ONE_HOUR_IN_MS,
 } from "~/constants";
-import { possibleApValues } from "~/features/build-analyzer";
 import { i18next } from "~/modules/i18n";
-import type { ModeShort } from "~/modules/in-game-lists";
-import {
-  abilities,
-  weaponIdIsNotAlt,
-  type Ability as AbilityType,
-  modesShort,
-} from "~/modules/in-game-lists";
+import { weaponIdIsNotAlt } from "~/modules/in-game-lists";
 import { cache, ttl } from "~/utils/cache.server";
 import { safeJSONParse } from "~/utils/json";
 import { type SendouRouteHandle } from "~/utils/remix";
@@ -57,14 +48,10 @@ import {
   buildFiltersSearchParams,
   type BuildFiltersFromSearchParams,
 } from "../builds-schemas.server";
-import type {
-  AbilityBuildFilter,
-  BuildFilter,
-  ModeBuildFilter,
-} from "../builds-types";
+import type { AbilityBuildFilter, BuildFilter } from "../builds-types";
 import { filterBuilds } from "../core/filter.server";
 import { buildsByWeaponId } from "../queries/buildsBy.server";
-import { ModeImage } from "~/components/Image";
+import { FilterSection } from "../components/FilterSection";
 
 const FILTER_SEARCH_PARAM_KEY = "f";
 
@@ -434,166 +421,5 @@ export default function WeaponsBuildsPage() {
           </LinkButton>
         )}
     </Main>
-  );
-}
-
-function FilterSection({
-  number,
-  filter,
-  onChange,
-  remove,
-}: {
-  number: number;
-  filter: BuildFilter;
-  onChange: (filter: Partial<BuildFilter>) => void;
-  remove: () => void;
-}) {
-  const { t } = useTranslation(["builds"]);
-
-  return (
-    <section>
-      <div className="stack horizontal justify-between mx-2">
-        <div className="text-xs font-bold">
-          {t("builds:filters.title", { number })}
-        </div>
-        <div>
-          <Button
-            icon={<CrossIcon />}
-            size="tiny"
-            variant="minimal-destructive"
-            onClick={remove}
-            aria-label="Delete filter"
-            testId="delete-filter-button"
-          />
-        </div>
-      </div>
-      {filter.type === "ability" ? (
-        <AbilityFilter filter={filter} onChange={onChange} />
-      ) : null}
-      {filter.type === "mode" ? (
-        <ModeFilter filter={filter} onChange={onChange} number={number} />
-      ) : null}
-    </section>
-  );
-}
-
-function AbilityFilter({
-  filter,
-  onChange,
-}: {
-  filter: AbilityBuildFilter;
-  onChange: (filter: Partial<BuildFilter>) => void;
-}) {
-  const { t } = useTranslation(["analyzer", "game-misc", "builds"]);
-  const abilityObject = abilities.find((a) => a.name === filter.ability)!;
-
-  return (
-    <div className="build__filter">
-      <div className="build__filter__ability">
-        <Ability ability={filter.ability} size="TINY" />
-      </div>
-      <select
-        value={filter.ability}
-        onChange={(e) =>
-          onChange({
-            ability: e.target.value as AbilityType,
-            value:
-              abilities.find((a) => a.name === e.target.value)!.type ===
-              "STACKABLE"
-                ? 0
-                : true,
-          })
-        }
-      >
-        {abilities.map((ability) => {
-          return (
-            <option key={ability.name} value={ability.name}>
-              {t(`game-misc:ABILITY_${ability.name}`)}
-            </option>
-          );
-        })}
-      </select>
-      {abilityObject.type !== "STACKABLE" ? (
-        <select
-          value={!filter.value ? "false" : "true"}
-          onChange={(e) =>
-            onChange({ value: e.target.value === "true" ? true : false })
-          }
-        >
-          <option value="true">{t("builds:filters.has")}</option>
-          <option value="false">{t("builds:filters.does.not.have")}</option>
-        </select>
-      ) : null}
-      {abilityObject.type === "STACKABLE" ? (
-        <select
-          value={filter.comparison}
-          onChange={(e) =>
-            onChange({
-              comparison: e.target.value as AbilityBuildFilter["comparison"],
-            })
-          }
-          data-testid="comparison-select"
-        >
-          <option value="AT_LEAST">{t("builds:filters.atLeast")}</option>
-          <option value="AT_MOST">{t("builds:filters.atMost")}</option>
-        </select>
-      ) : null}
-      {abilityObject.type === "STACKABLE" ? (
-        <div className="stack horizontal sm items-center">
-          <select
-            className="build__filter__ap-select"
-            value={typeof filter.value === "number" ? filter.value : "0"}
-            onChange={(e) => onChange({ value: Number(e.target.value) })}
-          >
-            {possibleApValues().map((value) => (
-              <option key={value} value={value}>
-                {value}
-              </option>
-            ))}
-          </select>
-          <div className="text-sm">{t("analyzer:abilityPoints.short")}</div>
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
-function ModeFilter({
-  filter,
-  onChange,
-  number,
-}: {
-  filter: ModeBuildFilter;
-  onChange: (filter: Partial<BuildFilter>) => void;
-  number: number;
-}) {
-  const { t } = useTranslation(["analyzer", "game-misc", "builds"]);
-
-  const inputId = (mode: ModeShort) => `${number}-${mode}`;
-
-  return (
-    <div className="build__filter build__filter__mode">
-      {modesShort.map((mode) => {
-        return (
-          <div
-            key={mode}
-            className="stack horizontal xs items-center font-sm font-semi-bold"
-          >
-            <input
-              type="radio"
-              name={`mode-${number}`}
-              id={inputId(mode)}
-              value={mode}
-              checked={filter.mode === mode}
-              onChange={() => onChange({ mode })}
-            />
-            <label htmlFor={inputId(mode)} className="stack horizontal xs mb-0">
-              <ModeImage mode={mode} size={18} />
-              {t(`game-misc:MODE_LONG_${mode}`)}
-            </label>
-          </div>
-        );
-      })}
-    </div>
   );
 }
