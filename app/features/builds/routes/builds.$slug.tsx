@@ -70,13 +70,15 @@ const FILTER_SEARCH_PARAM_KEY = "f";
 
 const filterOutMeaninglessFilters = (
   filter: Unpacked<BuildFiltersFromSearchParams>,
-) =>
-  // @ts-expect-error xxx: fix
-  filter.comparison !== "AT_LEAST" ||
-  // @ts-expect-error xxx: fix
-  typeof filter.value !== "number" ||
-  // @ts-expect-error xxx: fix
-  filter.value > 0;
+) => {
+  if (filter.type !== "ability") return true;
+
+  return (
+    filter.comparison !== "AT_LEAST" ||
+    typeof filter.value !== "number" ||
+    filter.value > 0
+  );
+};
 export const shouldRevalidate: ShouldRevalidateFunction = (args) => {
   const oldLimit = args.currentUrl.searchParams.get("limit");
   const newLimit = args.nextUrl.searchParams.get("limit");
@@ -119,15 +121,23 @@ export const shouldRevalidate: ShouldRevalidateFunction = (args) => {
   if (
     newFilters?.every(
       (f1) =>
-        oldFilters?.some(
-          (f2) =>
-            // @ts-expect-error xxx: fix
+        oldFilters?.some((f2) => {
+          if (f1.type !== f2.type) return false;
+
+          if (f1.type === "mode" && f2.type === "mode") {
+            return f1.mode === f2.mode;
+          }
+          if (f1.type === "date" && f2.type === "date") {
+            return f1.date === f2.date;
+          }
+          if (f1.type !== "ability" || f2.type !== "ability") return false;
+
+          return (
             f1.ability === f2.ability &&
-            // @ts-expect-error xxx: fix
             f1.comparison === f2.comparison &&
-            // @ts-expect-error xxx: fix
-            f1.value === f2.value,
-        ),
+            f1.value === f2.value
+          );
+        }),
     )
   ) {
     return false;
@@ -300,7 +310,10 @@ export default function WeaponsBuildsPage() {
     const newFilters = [...filters, newFilter];
     setFilters(newFilters);
 
-    // no need to sync as this doesn't have effect till they make other choices
+    // no need to sync new ability filter as this doesn't have effect till they make other choices
+    if (type !== "ability") {
+      syncSearchParams(newFilters);
+    }
   };
 
   const handleFilterChange = (i: number, newFilter: Partial<BuildFilter>) => {
