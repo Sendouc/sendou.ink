@@ -452,6 +452,12 @@ export interface TournamentSub {
   visibility: string;
 }
 
+export interface TournamentStaff {
+  tournamentId: number;
+  userId: number;
+  role: "STAFF" | "STREAMER";
+}
+
 export interface TournamentTeam {
   createdAt: Generated<number>;
   id: GeneratedAlways<number>;
