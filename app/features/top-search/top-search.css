@@ -52,6 +52,13 @@ a.placements__table__row:hover {
   border-radius: var(--rounded);
 }
 
+.placements__table__row__qualification {
+  font-size: var(--fonts-xs);
+  font-weight: var(--semi-bold);
+  justify-content: center;
+  background-color: var(--bg-lightest);
+}
+
 .placements__table__weapon {
   background-color: var(--bg-darker);
   border-radius: 100%;

@@ -201,6 +201,8 @@
   "leaderboard.noPlayers": "No players on the leaderboard yet",
   "leaderboard.noTeams": "No teams on the leaderboard yet",
   "leaderboard.updateInfo": "Leaderboard is updated once every 30 minutes",
+  "leaderboard.qualification": "Qualification for Season Finale",
+  "leaderboard.qualification.withBye": "Qualification for Season Finale with a BYE",
 
   "chat.connected": "Connected",
   "chat.disconnected": "Disconnected",

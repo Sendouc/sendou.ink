@@ -452,42 +452,59 @@ function TeamTable({
 }: {
   entries: NonNullable<SerializeFrom<typeof loader>["teamLeaderboard"]>;
 }) {
+  const { t } = useTranslation("common");
+  const data = useLoaderData<typeof loader>();
+  const isCurrentSeason = data.season === currentSeason(new Date())?.nth;
+  const showQualificationDividers = isCurrentSeason && entries.length > 20;
+
   return (
     <div className="placements__table">
-      {entries.map((entry) => {
+      {entries.map((entry, i) => {
         return (
-          <div key={entry.entryId} className="placements__table__row">
-            <div className="placements__table__inner-row">
-              <div className="placements__table__rank">
-                {entry.placementRank}
+          <React.Fragment key={entry.entryId}>
+            <div className="placements__table__row">
+              <div className="placements__table__inner-row">
+                <div className="placements__table__rank">
+                  {entry.placementRank}
+                </div>
+                {entry.team?.avatarUrl ? (
+                  <Link
+                    // TODO: can be made better when $narrowNotNull lands
+                    to={teamPage(entry.team.customUrl!)}
+                    // TODO: can be made better when $narrowNotNull lands
+                    title={entry.team.name!}
+                  >
+                    <Avatar
+                      size="xxs"
+                      url={userSubmittedImage(entry.team.avatarUrl)}
+                      className="placements__avatar"
+                    />
+                  </Link>
+                ) : null}
+                <div className="text-xs">
+                  {entry.members.map((member, i) => {
+                    return (
+                      <React.Fragment key={member.id}>
+                        <Link to={userPage(member)}>{member.discordName}</Link>
+                        {i !== entry.members.length - 1 ? ", " : null}
+                      </React.Fragment>
+                    );
+                  })}
+                </div>
+                <div className="placements__table__power">{entry.power}</div>
               </div>
-              {entry.team?.avatarUrl ? (
-                <Link
-                  // TODO: can be made better when $narrowNotNull lands
-                  to={teamPage(entry.team.customUrl!)}
-                  // TODO: can be made better when $narrowNotNull lands
-                  title={entry.team.name!}
-                >
-                  <Avatar
-                    size="xxs"
-                    url={userSubmittedImage(entry.team.avatarUrl)}
-                    className="placements__avatar"
-                  />
-                </Link>
-              ) : null}
-              <div className="text-xs">
-                {entry.members.map((member, i) => {
-                  return (
-                    <React.Fragment key={member.id}>
-                      <Link to={userPage(member)}>{member.discordName}</Link>
-                      {i !== entry.members.length - 1 ? ", " : null}
-                    </React.Fragment>
-                  );
-                })}
-              </div>
-              <div className="placements__table__power">{entry.power}</div>
             </div>
-          </div>
+            {i === 3 && showQualificationDividers ? (
+              <div className="placements__table__row placements__table__row__qualification">
+                {t("common:leaderboard.qualification.withBye")}
+              </div>
+            ) : null}
+            {i === 11 && showQualificationDividers ? (
+              <div className="placements__table__row placements__table__row__qualification">
+                {t("common:leaderboard.qualification")}
+              </div>
+            ) : null}
+          </React.Fragment>
         );
       })}
     </div>

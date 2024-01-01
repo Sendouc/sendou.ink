@@ -111,7 +111,7 @@ export async function findLookingGroups({
         eb(
           "Group.latestActionAt",
           ">",
-          sql`(unixepoch() - ${SECONDS_TILL_STALE})`,
+          sql<number>`(unixepoch() - ${SECONDS_TILL_STALE})`,
         ),
         eb("Group.id", "=", ownGroupId),
       ]),
