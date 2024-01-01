@@ -1,1 +1,23 @@
-{}
+{
+  "type.SCRIM": "Скрим",
+  "type.TOURNAMENT": "Турнир (PoV)",
+  "type.MATCHMAKING": "Стихийный бой/Бой Х/Бой за район",
+  "type.CAST": "Турнир (Трансляция)",
+  "gameCount": "Игра {{count}}",
+  "minShort": "мин.",
+  "secShort": "сек.",
+  "forms.title.youtubeUrl": "YouTube URL",
+  "forms.title.videoTitle": "Название видео",
+  "forms.title.videoDate": "Дата выпуска видео",
+  "forms.title.type": "Тип",
+  "forms.title.pov": "Игрок (PoV)",
+  "forms.title.startTimestamp": "Временная метка начала",
+  "forms.title.mode": "Режим",
+  "forms.title.stage": "Арена",
+  "forms.title.weaponsTeamOne": "Оружие (Команда 1)",
+  "forms.title.weaponsTeamTwo": "Оружие (Команда 2)",
+  "forms.title.weapon": "Оружие",
+  "forms.action.addMatch": "Добавить матч",
+  "forms.action.deleteMatch": "Удалить матч",
+  "noVods": "Видео по данному фильтру не найдено. Мы что-то упускаем? Напишите Sendou на Discord, чтобы получить разрешение на загрузку YouTube видео."
+}
