@@ -71,7 +71,7 @@ function matchesAbilityFilter({
     const hasAbility = build.abilities.flat().includes(filter.ability);
     if (filter.value && !hasAbility) return false;
     if (!filter.value && hasAbility) return false;
-  } else if (filter.value) {
+  } else if (typeof filter.value === "number") {
     const abilityPoints = buildToAbilityPoints(build.abilities);
     const ap = abilityPoints.get(filter.ability) ?? 0;
     if (filter.comparison === "AT_LEAST" && ap < filter.value) return false;
