@@ -1,11 +1,19 @@
 import type { BuildAbilitiesTuple, ModeShort } from "~/modules/in-game-lists";
 import type { BuildFiltersFromSearchParams } from "../builds-schemas.server";
 import { buildToAbilityPoints } from "~/features/build-analyzer";
-import type { AbilityBuildFilter, ModeBuildFilter } from "../builds-types";
+import type {
+  AbilityBuildFilter,
+  DateBuildFilter,
+  ModeBuildFilter,
+} from "../builds-types";
+import type { Tables } from "~/db/tables";
+import { databaseTimestampToDate } from "~/utils/dates";
+import { assertUnreachable } from "~/utils/types";
 
 type PartialBuild = {
   abilities: BuildAbilitiesTuple;
   modes: ModeShort[] | null;
+  updatedAt: Tables["Build"]["updatedAt"];
 };
 
 export function filterBuilds<T extends PartialBuild>({
@@ -42,6 +50,10 @@ function buildMatchesFilters<T extends PartialBuild>({
       if (!matchesAbilityFilter({ build, filter })) return false;
     } else if (filter.type === "mode") {
       if (!matchesModeFilter({ build, filter })) return false;
+    } else if (filter.type === "date") {
+      if (!matchesDateFilter({ build, filter })) return false;
+    } else {
+      assertUnreachable(filter);
     }
   }
 
@@ -79,4 +91,16 @@ function matchesModeFilter({
   if (!build.modes) return false;
 
   return build.modes.includes(filter.mode);
+}
+
+function matchesDateFilter({
+  build,
+  filter,
+}: {
+  build: PartialBuild;
+  filter: Omit<DateBuildFilter, "id">;
+}) {
+  const date = new Date(filter.date);
+
+  return date < databaseTimestampToDate(build.updatedAt);
 }
