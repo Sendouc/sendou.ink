@@ -129,3 +129,7 @@ export function getDateAtNextFullHour(date: Date) {
   copiedDate.setSeconds(0);
   return copiedDate;
 }
+
+export function dateToYYYYMMDD(date: Date) {
+  return date.toISOString().split("T")[0];
+}

@@ -18,6 +18,7 @@ export interface ButtonProps
   loadingText?: string;
   icon?: JSX.Element;
   testId?: string;
+  _ref?: React.LegacyRef<HTMLButtonElement> | React.ForwardedRef<unknown>;
 }
 
 export function Button(props: ButtonProps) {
@@ -31,6 +32,7 @@ export function Button(props: ButtonProps) {
     icon,
     type = "button",
     testId,
+    _ref,
     ...rest
   } = props;
   return (
@@ -49,6 +51,7 @@ export function Button(props: ButtonProps) {
       disabled={props.disabled || loading}
       type={type}
       data-testid={testId}
+      ref={props._ref as React.LegacyRef<HTMLButtonElement>}
       {...rest}
     >
       {icon &&

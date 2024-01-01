@@ -983,7 +983,16 @@ dialog::backdrop {
   gap: var(--s-2);
 }
 
-@media screen and (min-width: 640px) {
+.build__filter__mode {
+  gap: var(--s-6);
+}
+
+.build__filter__date {
+  display: flex;
+  align-items: center;
+}
+
+@media screen and (min-width: 750px) {
   .build__filter {
     flex-direction: row;
   }
@@ -997,6 +1006,10 @@ dialog::backdrop {
 
 .build__filter__ap-select {
   width: 75px;
+}
+
+.build__filter__date-select {
+  width: 275px;
 }
 
 .build {
@@ -1249,6 +1262,58 @@ dialog::backdrop {
 
 .divider:not(:empty)::after {
   margin-left: 0.25em;
+}
+
+.menu-container {
+  position: relative;
+}
+
+.menu__items-container {
+  position: absolute;
+  top: 32px;
+  border-radius: var(--rounded);
+  background-color: var(--bg-darker);
+  border: var(--border-style);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  align-items: flex-start;
+}
+
+.menu__item {
+  display: flex;
+  font-size: var(--fonts-xs);
+  color: var(--text);
+  white-space: nowrap;
+  gap: var(--s-2);
+  border-radius: var(--rounded-xs);
+  padding: var(--s-1-5) var(--s-2-5);
+  background-color: var(--bg-darker);
+  width: 100%;
+  border: 0;
+  justify-content: flex-start;
+}
+
+.menu__item:first-child {
+  border-radius: 14.5px 14.5px var(--rounded-xs) var(--rounded-xs);
+}
+
+.menu__item:last-child {
+  border-radius: var(--rounded-xs) var(--rounded-xs) 14.5px 14.5px;
+}
+
+.menu__item__active {
+  background-color: var(--theme-very-transparent);
+}
+
+.menu__item__disabled {
+  color: var(--text-lighter);
+  cursor: not-allowed;
+}
+
+.menu__item__icon {
+  width: 18px;
 }
 
 .discord-icon {

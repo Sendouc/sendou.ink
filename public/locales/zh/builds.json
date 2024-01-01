@@ -27,7 +27,6 @@
 
   "emptyAbilitySlot": "空能力槽",
 
-  "filters.title": "筛选 {{number}}",
   "filters.has": "包含",
   "filters.does.not.have": "不包含",
   "filters.atLeast": "至少",

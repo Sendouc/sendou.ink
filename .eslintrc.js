@@ -34,6 +34,7 @@ module.exports = {
     "@typescript-eslint/unbound-method": 0,
     "@typescript-eslint/consistent-type-imports": "warn",
     "react/prop-types": 0,
+    "react/display-name": 0,
   },
   settings: {
     react: {

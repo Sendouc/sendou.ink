@@ -1,8 +1,22 @@
-import type { BuildAbilitiesTuple } from "~/modules/in-game-lists";
+import type { BuildAbilitiesTuple, ModeShort } from "~/modules/in-game-lists";
 import type { BuildFiltersFromSearchParams } from "../builds-schemas.server";
 import { buildToAbilityPoints } from "~/features/build-analyzer";
+import type {
+  AbilityBuildFilter,
+  DateBuildFilter,
+  ModeBuildFilter,
+} from "../builds-types";
+import type { Tables } from "~/db/tables";
+import { databaseTimestampToDate } from "~/utils/dates";
+import { assertUnreachable } from "~/utils/types";
 
-export function filterBuilds<T extends { abilities: BuildAbilitiesTuple }>({
+type PartialBuild = {
+  abilities: BuildAbilitiesTuple;
+  modes: ModeShort[] | null;
+  updatedAt: Tables["Build"]["updatedAt"];
+};
+
+export function filterBuilds<T extends PartialBuild>({
   filters,
   count,
   builds,
@@ -24,7 +38,7 @@ export function filterBuilds<T extends { abilities: BuildAbilitiesTuple }>({
   return result;
 }
 
-function buildMatchesFilters<T extends { abilities: BuildAbilitiesTuple }>({
+function buildMatchesFilters<T extends PartialBuild>({
   build,
   filters,
 }: {
@@ -32,17 +46,61 @@ function buildMatchesFilters<T extends { abilities: BuildAbilitiesTuple }>({
   filters: BuildFiltersFromSearchParams;
 }) {
   for (const filter of filters) {
-    if (typeof filter.value === "boolean") {
-      const hasAbility = build.abilities.flat().includes(filter.ability);
-      if (filter.value && !hasAbility) return false;
-      if (!filter.value && hasAbility) return false;
+    if (filter.type === "ability") {
+      if (!matchesAbilityFilter({ build, filter })) return false;
+    } else if (filter.type === "mode") {
+      if (!matchesModeFilter({ build, filter })) return false;
+    } else if (filter.type === "date") {
+      if (!matchesDateFilter({ build, filter })) return false;
     } else {
-      const abilityPoints = buildToAbilityPoints(build.abilities);
-      const ap = abilityPoints.get(filter.ability) ?? 0;
-      if (filter.comparison === "AT_LEAST" && ap < filter.value) return false;
-      if (filter.comparison === "AT_MOST" && ap > filter.value) return false;
+      assertUnreachable(filter);
     }
   }
 
   return true;
+}
+
+function matchesAbilityFilter({
+  build,
+  filter,
+}: {
+  build: PartialBuild;
+  filter: Omit<AbilityBuildFilter, "id">;
+}) {
+  if (typeof filter.value === "boolean") {
+    const hasAbility = build.abilities.flat().includes(filter.ability);
+    if (filter.value && !hasAbility) return false;
+    if (!filter.value && hasAbility) return false;
+  } else if (typeof filter.value === "number") {
+    const abilityPoints = buildToAbilityPoints(build.abilities);
+    const ap = abilityPoints.get(filter.ability) ?? 0;
+    if (filter.comparison === "AT_LEAST" && ap < filter.value) return false;
+    if (filter.comparison === "AT_MOST" && ap > filter.value) return false;
+  }
+
+  return true;
+}
+
+function matchesModeFilter({
+  build,
+  filter,
+}: {
+  build: PartialBuild;
+  filter: Omit<ModeBuildFilter, "id">;
+}) {
+  if (!build.modes) return false;
+
+  return build.modes.includes(filter.mode);
+}
+
+function matchesDateFilter({
+  build,
+  filter,
+}: {
+  build: PartialBuild;
+  filter: Omit<DateBuildFilter, "id">;
+}) {
+  const date = new Date(filter.date);
+
+  return date < databaseTimestampToDate(build.updatedAt);
 }

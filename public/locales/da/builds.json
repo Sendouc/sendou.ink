@@ -27,7 +27,6 @@
 
   "emptyAbilitySlot": "Tomt egenskabsfelt",
 
-  "filters.title": "Filter {{number}}",
   "filters.has": "Indeholder",
   "filters.does.not.have": "Indeholder ikke",
   "filters.atLeast": "Mindst",

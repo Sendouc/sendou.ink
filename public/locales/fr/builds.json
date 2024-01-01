@@ -27,7 +27,6 @@
 
   "emptyAbilitySlot": "Emplacement de bonus vide",
 
-  "filters.title": "Filtre #{{number}}",
   "filters.has": "Avec",
   "filters.does.not.have": "Sans",
   "filters.atLeast": "Au moins",
