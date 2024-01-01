@@ -27,7 +27,6 @@
 
   "emptyAbilitySlot": "ギア設定をリセット",
 
-  "filters.title": "絞り込み条件 {{number}}",
   "filters.has": "含む",
   "filters.does.not.have": "含まない",
   "filters.atLeast": "最小",

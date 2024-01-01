@@ -27,7 +27,6 @@
 
   "emptyAbilitySlot": "Espaço (Slot) de habilidade vazio",
 
-  "filters.title": "Filtrar {{number}}",
   "filters.has": "Tem",
   "filters.does.not.have": "Não tem",
   "filters.atLeast": "Pelo menos",

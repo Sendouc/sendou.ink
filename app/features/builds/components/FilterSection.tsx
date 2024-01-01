@@ -21,11 +21,13 @@ import { dateToYYYYMMDD } from "~/utils/dates";
 
 export function FilterSection({
   number,
+  nthOfSame,
   filter,
   onChange,
   remove,
 }: {
   number: number;
+  nthOfSame: number;
   filter: BuildFilter;
   onChange: (filter: Partial<BuildFilter>) => void;
   remove: () => void;
@@ -36,7 +38,8 @@ export function FilterSection({
     <section>
       <div className="stack horizontal justify-between mx-2">
         <div className="text-xs font-bold">
-          {t("builds:filters.title", { number })}
+          {t(`builds:filters.${filter.type}.title`)}{" "}
+          {nthOfSame > 1 ? nthOfSame : ""}
         </div>
         <div>
           <Button

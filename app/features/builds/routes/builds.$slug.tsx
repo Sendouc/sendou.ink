@@ -352,6 +352,12 @@ export default function WeaponsBuildsPage() {
     );
   });
 
+  const nthOfSameFilter = (index: number) => {
+    const type = filters[index].type;
+
+    return filters.slice(0, index).filter((f) => f.type === type).length + 1;
+  };
+
   return (
     <Main className="stack lg">
       <div className="builds-buttons">
@@ -404,6 +410,7 @@ export default function WeaponsBuildsPage() {
               filter={filter}
               onChange={(newFilter) => handleFilterChange(i, newFilter)}
               remove={() => handleFilterDelete(i)}
+              nthOfSame={nthOfSameFilter(i)}
             />
           ))}
         </div>

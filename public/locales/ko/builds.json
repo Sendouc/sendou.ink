@@ -27,7 +27,6 @@
 
   "emptyAbilitySlot": "빈 기어 슬롯",
 
-  "filters.title": "필터 {{number}}",
   "filters.has": "포함",
   "filters.does.not.have": "미포함",
   "filters.atLeast": "최소",
