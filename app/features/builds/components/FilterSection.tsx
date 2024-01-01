@@ -218,6 +218,7 @@ function DateFilter({
       <select
         className="build__filter__date-select"
         value={selectValue()}
+        data-testid="date-select"
         onChange={(e) =>
           onChange({
             date:
@@ -250,6 +251,7 @@ function DateFilter({
           value={dateToYYYYMMDD(new Date(filter.date))}
           onChange={(e) => onChange({ date: e.target.value })}
           max={dateToYYYYMMDD(new Date())}
+          data-testid="date-input"
         />
       ) : null}
     </div>

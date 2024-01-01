@@ -110,7 +110,11 @@ test.describe("Builds", () => {
 
     await page.getByTestId("weapon-40-link").click();
 
+    //
+    // ability filter
+    //
     await page.getByTestId("add-filter-button").click();
+    await page.getByTestId("menu-item-ability").click();
     await page.getByTestId("comparison-select").selectOption("AT_MOST");
 
     await expect(page.getByTestId("ISM-ability")).toHaveCount(1);
@@ -119,5 +123,24 @@ test.describe("Builds", () => {
 
     // are we seeing builds with ISM again?
     await expect(page.getByTestId("ISM-ability").nth(1)).toBeVisible();
+
+    //
+    // mode filter
+    //
+    await page.getByTestId("add-filter-button").click();
+    await page.getByTestId("menu-item-mode").click();
+    await page.getByLabel("Tower Control").click();
+    await expect(page.getByTestId("build-mode-TC")).toHaveCount(24);
+    await page.getByTestId("delete-filter-button").click();
+
+    //
+    // date filter
+    //
+    await page.getByTestId("add-filter-button").click();
+    await page.getByTestId("menu-item-date").click();
+    await page.getByTestId("date-select").selectOption("CUSTOM");
+    await expect(page.getByTestId("date-input")).toBeVisible();
+    // no change in count since all builds in test data are new
+    await expect(page.getByTestId("build-card")).toHaveCount(24);
   });
 });

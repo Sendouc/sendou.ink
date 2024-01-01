@@ -992,7 +992,7 @@ dialog::backdrop {
   align-items: center;
 }
 
-@media screen and (min-width: 640px) {
+@media screen and (min-width: 750px) {
   .build__filter {
     flex-direction: row;
   }

@@ -101,6 +101,7 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
                   path={modeImageUrl(mode)}
                   width={18}
                   height={18}
+                  testId={`build-mode-${mode}`}
                 />
               ))}
             </div>

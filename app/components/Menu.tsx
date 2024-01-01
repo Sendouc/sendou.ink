@@ -8,7 +8,9 @@ export function Menu({
 }: {
   button: React.ElementType;
   items: {
-    /*type: "button";*/ text: string;
+    // type: "button"; TODO: type: "link"
+    text: string;
+    id: string;
     icon: React.ReactNode;
     onClick: () => void;
     disabled?: boolean;
@@ -29,7 +31,7 @@ export function Menu({
         <HeadlessUIMenu.Items className="menu__items-container">
           {items.map((item) => {
             return (
-              <HeadlessUIMenu.Item key={item.text} disabled={item.disabled}>
+              <HeadlessUIMenu.Item key={item.id} disabled={item.disabled}>
                 {({ active }) => (
                   <button
                     className={clsx("menu__item", {
@@ -37,6 +39,7 @@ export function Menu({
                       menu__item__disabled: item.disabled,
                     })}
                     onClick={item.onClick}
+                    data-testid={`menu-item-${item.id}`}
                   >
                     <span className="menu__item__icon">{item.icon}</span>
                     {item.text}

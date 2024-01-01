@@ -364,16 +364,19 @@ export default function WeaponsBuildsPage() {
         <Menu
           items={[
             {
+              id: "ability",
               text: t("builds:filters.type.ability"),
               icon: <BeakerFilledIcon />,
               onClick: () => handleFilterAdd("ability"),
             },
             {
+              id: "mode",
               text: t("builds:filters.type.mode"),
               icon: <MapIcon />,
               onClick: () => handleFilterAdd("mode"),
             },
             {
+              id: "date",
               text: t("builds:filters.type.date"),
               icon: <CalendarIcon />,
               onClick: () => handleFilterAdd("date"),
