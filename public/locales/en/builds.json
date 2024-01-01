@@ -27,9 +27,14 @@
 
   "emptyAbilitySlot": "Empty ability slot",
 
+  "filters.type.ability": "By ability",
+  "filters.type.mode": "By mode",
+  "filters.type.date": "By date",
   "filters.title": "Filter {{number}}",
   "filters.has": "Has",
   "filters.does.not.have": "Doesn't have",
   "filters.atLeast": "At least",
-  "filters.atMost": "At most"
+  "filters.atMost": "At most",
+  "filters.date.since": "Since",
+  "filters.date.custom": "Custom"
 }

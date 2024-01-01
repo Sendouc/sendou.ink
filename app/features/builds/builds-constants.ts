@@ -1,1 +1,1 @@
-export const MAX_BUILD_FILTERS = 5;
+export const MAX_BUILD_FILTERS = 6;

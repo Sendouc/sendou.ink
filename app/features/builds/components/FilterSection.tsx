@@ -190,7 +190,7 @@ function DateFilter({
   filter: DateBuildFilter;
   onChange: (filter: Partial<DateBuildFilter>) => void;
 }) {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation(["builds"]);
 
   const selectValue = () => {
     const dateString = dateToYYYYMMDD(new Date(filter.date));
@@ -211,7 +211,7 @@ function DateFilter({
 
   return (
     <div className="build__filter build__filter__date">
-      <label className="mb-0">Since</label>
+      <label className="mb-0">{t("builds:filters.date.since")}</label>
       <select
         className="build__filter__date-select"
         value={selectValue()}
@@ -239,7 +239,7 @@ function DateFilter({
             </option>
           );
         })}
-        <option value="CUSTOM">Custom</option>
+        <option value="CUSTOM">{t("builds:filters.date.custom")}</option>
       </select>
       {selectValue() === "CUSTOM" ? (
         <input
