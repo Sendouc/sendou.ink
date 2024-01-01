@@ -38,6 +38,7 @@ import { findMapPoolByTeamId } from "~/features/tournament-bracket";
 import { UserSearch } from "~/components/UserSearch";
 import * as TournamentRepository from "../TournamentRepository.server";
 import { createTeam } from "../queries/createTeam.server";
+import { Divider } from "~/components/Divider";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUserId(request);
@@ -194,10 +195,7 @@ export default function TournamentAdminPage() {
 
   return (
     <div className="stack md">
-      <AdminActions />
-      {isAdmin(user) ? <EnableMapList /> : null}
-      <DownloadParticipants />
-      <div className="stack horizontal items-end mt-4">
+      <div className="stack horizontal items-end">
         <LinkButton
           to={calendarEditPage(data.tournament.eventId)}
           size="tiny"
@@ -224,6 +222,13 @@ export default function TournamentAdminPage() {
           </FormWithConfirm>
         ) : null}
       </div>
+      <Divider smallText>Team actions</Divider>
+      <TeamActions />
+      <Divider smallText>Staff</Divider>
+      <Staff />
+      <Divider smallText>Participant list download</Divider>
+      <DownloadParticipants />
+      {isAdmin(user) ? <EnableMapList /> : null}
     </div>
   );
 }
@@ -267,7 +272,7 @@ const actions = [
   },
 ] as const;
 
-function AdminActions() {
+function TeamActions() {
   const fetcher = useFetcher();
   const { t } = useTranslation(["tournament"]);
   const data = useOutletContext<TournamentLoaderData>();
@@ -385,6 +390,10 @@ function AdminActions() {
   );
 }
 
+function Staff() {
+  return <div>TODO: implement removing & adding staff</div>;
+}
+
 function EnableMapList() {
   const data = useOutletContext<TournamentLoaderData>();
   const submit = useSubmit();
@@ -454,7 +463,6 @@ function DownloadParticipants() {
 
   return (
     <div>
-      <label>{t("tournament:admin.download")} (Discord format)</label>
       <div className="stack horizontal sm">
         <Button
           size="tiny"
