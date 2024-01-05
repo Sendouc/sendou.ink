@@ -1,5 +1,5 @@
+import type { NotNull } from "kysely";
 import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
-import invariant from "tiny-invariant";
 import { db } from "~/db/sql";
 import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
 import type { Unwrapped } from "~/utils/types";
@@ -50,13 +50,10 @@ export async function findById(id: number) {
       ).as("staff"),
     ])
     .where("Tournament.id", "=", id)
+    .$narrowType<{ author: NotNull }>()
     .executeTakeFirst();
 
   if (!row) return null;
 
-  // TODO: can be made better when $narrowNotNull lands
-  const author = row.author;
-  invariant(author, "Tournament author is missing");
-
-  return { ...row, author };
+  return row;
 }

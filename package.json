@@ -80,7 +80,7 @@
     "just-clone": "^6.2.0",
     "just-random-integer": "^4.2.0",
     "just-shuffle": "^4.2.0",
-    "kysely": "^0.27.0",
+    "kysely": "^0.27.1",
     "lru-cache": "10.1.0",
     "markdown-to-jsx": "^7.4.0",
     "nanoid": "~5.0.4",
