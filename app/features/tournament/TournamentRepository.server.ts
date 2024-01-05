@@ -41,6 +41,13 @@ export async function findById(id: number) {
           )
           .select(["MapPoolMap.stageId", "MapPoolMap.mode"]),
       ).as("tieBreakerMapPool"),
+      jsonArrayFrom(
+        eb
+          .selectFrom("TournamentStaff")
+          .leftJoin("User", "TournamentStaff.userId", "User.id")
+          .select([...COMMON_USER_FIELDS, "TournamentStaff.role"])
+          .where("TournamentStaff.tournamentId", "=", id),
+      ).as("staff"),
     ])
     .where("Tournament.id", "=", id)
     .executeTakeFirst();

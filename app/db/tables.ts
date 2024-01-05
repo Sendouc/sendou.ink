@@ -665,6 +665,7 @@ export interface DB {
   Team: Team;
   TeamMember: TeamMember;
   Tournament: Tournament;
+  TournamentStaff: TournamentStaff;
   TournamentBadgeOwner: TournamentBadgeOwner;
   TournamentGroup: TournamentGroup;
   TournamentMatch: TournamentMatch;

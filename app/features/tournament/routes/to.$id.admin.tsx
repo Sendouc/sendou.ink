@@ -194,7 +194,7 @@ export default function TournamentAdminPage() {
   }
 
   return (
-    <div className="stack md">
+    <div className="stack lg">
       <div className="stack horizontal items-end">
         <LinkButton
           to={calendarEditPage(data.tournament.eventId)}
@@ -391,6 +391,10 @@ function TeamActions() {
 }
 
 function Staff() {
+  const data = useOutletContext<TournamentLoaderData>();
+
+  // console.log({ data: data.tournament.staff });
+
   return <div>TODO: implement removing & adding staff</div>;
 }
 
@@ -419,7 +423,6 @@ function EnableMapList() {
 }
 
 function DownloadParticipants() {
-  const { t } = useTranslation(["tournament"]);
   const data = useOutletContext<TournamentLoaderData>();
 
   function allParticipantsContent() {
