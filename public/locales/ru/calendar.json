@@ -8,9 +8,16 @@
   "actions.delete": "Удалить событие",
   "actions.delete.confirm": "Вы действительно хотите удалить все данные, связанные с {{name}}?",
   "participatedCount": "{{count}} команд приняло участие",
+  "participatedPlayerCount": "{{count}} игроков приняло участие",
   "members": "Участники",
   "results": "Результаты",
   "createMapList": "Создать список карт",
+  "from": "От {{author}}",
+  "pastEvents.dividerText": "Прошлые события",
+  "count.teams_one": "{{count}} команда",
+  "count.players_one": "{{count}} игрок",
+  "count.teams_other": "{{count}} команд",
+  "count.players_other": "{{count}} игроков",
 
   "forms.dates": "Даты",
   "forms.bracketUrl": "URL сетки",
@@ -55,5 +62,12 @@
   "tag.desc.LOW": "Ограничение участников по навыкам игры",
   "tag.desc.COUNT": "Может зарегистрироваться только ограниченное количество команд.",
   "tag.desc.LAN": "Этот турнир играется локально.",
-  "tag.desc.QUALIFIER": "Этот турнир является квалификационным для другого."
+  "tag.desc.QUALIFIER": "Этот турнир является квалификационным для другого.",
+  "tag.desc.SZ": "Бой за зоны - единственный режим.",
+  "tag.desc.TW": "Бой за район входит в список режимов.",
+  "tag.desc.S1": "Игра — Splatoon 1.",
+  "tag.desc.S2": "Игра — Splatoon 2.",
+  "tag.desc.SR": "Событие по Salmon Run.",
+  "tag.desc.CARDS": "Событие по \"Карты и район\".",
+  "tag.desc.FULL_TOURNAMENT": "Турнир проводится на sendou.ink"
 }

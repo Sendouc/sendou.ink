@@ -166,7 +166,8 @@ function ExtraInfos() {
   if (
     !data.inGameName &&
     typeof data.stickSens !== "number" &&
-    !data.discordUniqueName
+    !data.discordUniqueName &&
+    !data.plusTier
   ) {
     return null;
   }
