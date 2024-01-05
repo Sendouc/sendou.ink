@@ -39,6 +39,9 @@ import { UserSearch } from "~/components/UserSearch";
 import * as TournamentRepository from "../TournamentRepository.server";
 import { createTeam } from "../queries/createTeam.server";
 import { Divider } from "~/components/Divider";
+import { Avatar } from "~/components/Avatar";
+import { TrashIcon } from "~/components/icons/Trash";
+import { FormMessage } from "~/components/FormMessage";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUserId(request);
@@ -169,6 +172,21 @@ export const action: ActionFunction = async ({ request, params }) => {
       validate(!hasTournamentStarted(tournament.id), "Tournament has started");
 
       deleteTeam(team.id);
+      break;
+    }
+    case "ADD_STAFF": {
+      await TournamentRepository.addStaff({
+        role: data.role,
+        tournamentId: tournament.id,
+        userId: data.userId,
+      });
+      break;
+    }
+    case "REMOVE_STAFF": {
+      await TournamentRepository.removeStaff({
+        tournamentId: tournament.id,
+        userId: data.userId,
+      });
       break;
     }
     default: {
@@ -393,9 +411,84 @@ function TeamActions() {
 function Staff() {
   const data = useOutletContext<TournamentLoaderData>();
 
-  // console.log({ data: data.tournament.staff });
+  return (
+    <div className="stack lg">
+      {/* Key so inputs are cleared after staff is added */}
+      <StaffAdder key={data.tournament.staff.length} />
+      <StaffList />
+    </div>
+  );
+}
 
-  return <div>TODO: implement removing & adding staff</div>;
+function StaffAdder() {
+  const fetcher = useFetcher();
+
+  return (
+    <fetcher.Form method="post" className="stack sm">
+      <div className="stack horizontal sm flex-wrap">
+        <UserSearch inputName="userId" id="user" />
+        <select name="role" className="w-max">
+          <option value="ORGANIZER">Organizer</option>
+          <option value="STREAMER">Streamer</option>
+        </select>
+        <SubmitButton state={fetcher.state} _action="ADD_STAFF">
+          Add
+        </SubmitButton>
+      </div>
+      <FormMessage type="info">
+        Organizer has same permissions as you expect adding/removing staff,
+        editing calendar event info and deleting the tournament. Streamer can
+        only talk in chats and see room password/pool.
+      </FormMessage>
+    </fetcher.Form>
+  );
+}
+
+function StaffList() {
+  const { t } = useTranslation(["tournament"]);
+  const data = useOutletContext<TournamentLoaderData>();
+
+  return (
+    <div className="stack md">
+      {data.tournament.staff.map((staff) => (
+        <div key={staff.id} className="stack horizontal sm items-center">
+          <Avatar size="xs" user={staff} />{" "}
+          <div className="mr-4">
+            <div>{staff.discordName}</div>
+            <div className="text-lighter text-xs text-capitalize">
+              {t(`tournament:staff.role.${staff.role}`)}
+            </div>
+          </div>
+          <RemoveStaffButton staff={staff} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function RemoveStaffButton({
+  staff,
+}: {
+  staff: TournamentLoaderData["tournament"]["staff"][number];
+}) {
+  const { t } = useTranslation(["tournament"]);
+
+  return (
+    <FormWithConfirm
+      dialogHeading={`Remove ${staff.discordName} as ${t(
+        `tournament:staff.role.${staff.role}`,
+      )}?`}
+      fields={[
+        ["userId", staff.id],
+        ["_action", "REMOVE_STAFF"],
+      ]}
+      deleteButtonText="Remove"
+    >
+      <SubmitButton variant="minimal-destructive" size="tiny" type="submit">
+        <TrashIcon className="build__icon" />
+      </SubmitButton>
+    </FormWithConfirm>
+  );
 }
 
 function EnableMapList() {
@@ -466,7 +559,7 @@ function DownloadParticipants() {
 
   return (
     <div>
-      <div className="stack horizontal sm">
+      <div className="stack horizontal sm flex-wrap">
         <Button
           size="tiny"
           onClick={() =>

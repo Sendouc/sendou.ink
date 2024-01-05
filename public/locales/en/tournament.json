@@ -74,6 +74,9 @@
   "admin.actions.DELETE_TEAM": "Delete team",
   "admin.actions.ADD_TEAM": "Register team",
 
+  "staff.role.ORGANIZER": "organizer",
+  "staff.role.STREAMER": "streamer",
+
   "bracket.winners": "Winners Round {{round}}",
   "bracket.winners.finals": "Winners Finals",
   "bracket.losers": "Losers Round {{round}}",

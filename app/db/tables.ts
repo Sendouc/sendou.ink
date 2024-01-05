@@ -452,10 +452,12 @@ export interface TournamentSub {
   visibility: string;
 }
 
+// xxx: unique in migration, handle in frontend same user being added twice
+
 export interface TournamentStaff {
   tournamentId: number;
   userId: number;
-  role: "STAFF" | "STREAMER";
+  role: "ORGANIZER" | "STREAMER";
 }
 
 export interface TournamentTeam {

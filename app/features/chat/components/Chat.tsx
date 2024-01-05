@@ -40,6 +40,7 @@ export function ConnectedChat(props: ChatProps) {
   return <Chat {...props} chat={chat} />;
 }
 
+// xxx: TournamentStaff, names for TO talking
 export function Chat({
   users,
   rooms,

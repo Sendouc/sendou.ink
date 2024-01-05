@@ -1,6 +1,7 @@
 import type { NotNull } from "kysely";
 import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
 import { db } from "~/db/sql";
+import { Tables } from "~/db/tables";
 import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
 import type { Unwrapped } from "~/utils/types";
 
@@ -44,7 +45,7 @@ export async function findById(id: number) {
       jsonArrayFrom(
         eb
           .selectFrom("TournamentStaff")
-          .leftJoin("User", "TournamentStaff.userId", "User.id")
+          .innerJoin("User", "TournamentStaff.userId", "User.id")
           .select([...COMMON_USER_FIELDS, "TournamentStaff.role"])
           .where("TournamentStaff.tournamentId", "=", id),
       ).as("staff"),
@@ -56,4 +57,37 @@ export async function findById(id: number) {
   if (!row) return null;
 
   return row;
+}
+
+export function addStaff({
+  tournamentId,
+  userId,
+  role,
+}: {
+  tournamentId: number;
+  userId: number;
+  role: Tables["TournamentStaff"]["role"];
+}) {
+  return db
+    .insertInto("TournamentStaff")
+    .values({
+      tournamentId,
+      userId,
+      role,
+    })
+    .execute();
+}
+
+export function removeStaff({
+  tournamentId,
+  userId,
+}: {
+  tournamentId: number;
+  userId: number;
+}) {
+  return db
+    .deleteFrom("TournamentStaff")
+    .where("tournamentId", "=", tournamentId)
+    .where("userId", "=", userId)
+    .execute();
 }

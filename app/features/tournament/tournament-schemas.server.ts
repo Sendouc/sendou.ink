@@ -74,6 +74,15 @@ export const adminActionSchema = z.union([
     userId: id,
     teamName: z.string().min(1).max(TOURNAMENT.TEAM_NAME_MAX_LENGTH),
   }),
+  z.object({
+    _action: _action("ADD_STAFF"),
+    userId: id,
+    role: z.enum(["ORGANIZER", "STREAMER"]),
+  }),
+  z.object({
+    _action: _action("REMOVE_STAFF"),
+    userId: id,
+  }),
 ]);
 
 export const joinSchema = z.object({
