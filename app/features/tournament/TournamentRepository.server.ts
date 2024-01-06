@@ -2,7 +2,7 @@ import type { NotNull } from "kysely";
 import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
 import { db } from "~/db/sql";
 import type { Tables } from "~/db/tables";
-import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
+import { COMMON_USER_FIELDS, userChatNameColor } from "~/utils/kysely.server";
 import type { Unwrapped } from "~/utils/types";
 
 export type FindById = NonNullable<Unwrapped<typeof findById>>;
@@ -30,7 +30,7 @@ export async function findById(id: number) {
         eb
           .selectFrom("User")
           .whereRef("CalendarEvent.authorId", "=", "User.id")
-          .select(COMMON_USER_FIELDS),
+          .select([...COMMON_USER_FIELDS, userChatNameColor]),
       ).as("author"),
       jsonArrayFrom(
         eb
@@ -46,7 +46,11 @@ export async function findById(id: number) {
         eb
           .selectFrom("TournamentStaff")
           .innerJoin("User", "TournamentStaff.userId", "User.id")
-          .select([...COMMON_USER_FIELDS, "TournamentStaff.role"])
+          .select([
+            ...COMMON_USER_FIELDS,
+            userChatNameColor,
+            "TournamentStaff.role",
+          ])
           .where("TournamentStaff.tournamentId", "=", id),
       ).as("staff"),
     ])
