@@ -24,7 +24,7 @@ import type {
   TournamentLoaderTeam,
   TournamentLoaderData,
 } from "~/features/tournament";
-import { isTournamentOrganizer } from "~/permissions";
+import { canReportTournamentScore, isTournamentOrganizer } from "~/permissions";
 import { useUser } from "~/features/auth/core";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { databaseTimestampToDate } from "~/utils/dates";
@@ -37,7 +37,6 @@ export type Result = Unpacked<
   SerializeFrom<TournamentMatchLoaderData>["results"]
 >;
 
-// xxx: show chat to STREAMER
 // TODO: rename (since it now contains Chat as well)
 export function ScoreReporter({
   teams,
@@ -349,6 +348,8 @@ function MatchActionSectionTabs({
   teams: [TournamentLoaderTeam, TournamentLoaderTeam];
   result?: Result;
 }) {
+  const user = useUser();
+  const parentRouteData = useOutletContext<TournamentLoaderData>();
   const data = useLoaderData<TournamentMatchLoaderData>();
   const [_unseenMessages, setUnseenMessages] = React.useState(0);
   const [chatVisible, setChatVisible] = React.useState(false);
@@ -386,6 +387,10 @@ function MatchActionSectionTabs({
   const unseenMessages = chatVisible ? 0 : _unseenMessages;
 
   const currentPosition = scores[0] + scores[1];
+
+  const isMemberOfATeamInTheMatch = data.match.players.some(
+    (p) => p.id === user?.id,
+  );
 
   return (
     <ActionSectionWrapper>
@@ -436,6 +441,14 @@ function MatchActionSectionTabs({
                 currentStageWithMode={currentStageWithMode}
                 result={result}
                 bestOf={data.match.bestOf}
+                presentational={
+                  !canReportTournamentScore({
+                    tournament: parentRouteData.tournament,
+                    match: data.match,
+                    isMemberOfATeamInTheMatch,
+                    user,
+                  })
+                }
               />
             ),
           },

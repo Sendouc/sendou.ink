@@ -374,14 +374,19 @@ export default function TournamentMatchPage() {
     (p) => p.id === user?.id,
   );
 
-  const type = canReportTournamentScore({
-    tournament: parentRouteData.tournament,
-    match: data.match,
-    isMemberOfATeamInTheMatch,
-    user,
-  })
-    ? "EDIT"
-    : "OTHER";
+  const type =
+    canReportTournamentScore({
+      tournament: parentRouteData.tournament,
+      match: data.match,
+      isMemberOfATeamInTheMatch,
+      user,
+    }) ||
+    isTournamentStreamerOrOrganizer({
+      user,
+      tournament: parentRouteData.tournament,
+    })
+      ? "EDIT"
+      : "OTHER";
 
   const showRosterPeek = () => {
     if (data.matchIsOver) return false;

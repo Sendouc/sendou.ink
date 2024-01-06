@@ -19,6 +19,7 @@ export function ScoreReporterRosters({
   result,
   scores,
   bestOf,
+  presentational: _presentational,
 }: {
   teams: [TournamentLoaderTeam, TournamentLoaderTeam];
   position: number;
@@ -26,6 +27,7 @@ export function ScoreReporterRosters({
   result?: Result;
   scores: [number, number];
   bestOf: number;
+  presentational?: boolean;
 }) {
   const data = useLoaderData<TournamentMatchLoaderData>();
   const [checkedPlayers, setCheckedPlayers] = React.useState<
@@ -39,7 +41,7 @@ export function ScoreReporterRosters({
   );
   const [winnerId, setWinnerId] = React.useState<number | undefined>();
 
-  const presentational = Boolean(result);
+  const presentational = _presentational || Boolean(result);
 
   const newScore = [
     scores[0] + (winnerId === teams[0].id ? 1 : 0),
@@ -73,6 +75,13 @@ export function ScoreReporterRosters({
               currentStageWithMode={currentStageWithMode}
               wouldEndSet={wouldEndSet}
             />
+          </div>
+        ) : null}
+        {!result && presentational ? (
+          <div className="tournament-bracket__during-match-actions__actions">
+            <p className="tournament-bracket__during-match-actions__amount-warning-paragraph">
+              No permissions to report score
+            </p>
           </div>
         ) : null}
       </div>
