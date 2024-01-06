@@ -232,6 +232,7 @@ export const tournamentTeamPage = ({
 export const tournamentRegisterPage = (eventId: number) =>
   `/to/${eventId}/register`;
 export const tournamentMapsPage = (eventId: number) => `/to/${eventId}/maps`;
+export const tournamentAdminPage = (eventId: number) => `/to/${eventId}/admin`;
 export const tournamentBracketsPage = (eventId: number) =>
   `/to/${eventId}/brackets`;
 export const tournamentBracketsSubscribePage = (eventId: number) =>

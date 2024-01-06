@@ -46,6 +46,7 @@ import { Divider } from "~/components/Divider";
 import { Avatar } from "~/components/Avatar";
 import { TrashIcon } from "~/components/icons/Trash";
 import { FormMessage } from "~/components/FormMessage";
+import { Label } from "~/components/Label";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUserId(request);
@@ -449,22 +450,32 @@ function StaffAdder() {
 
   return (
     <fetcher.Form method="post" className="stack sm">
-      <div className="stack horizontal sm flex-wrap">
-        <UserSearch
-          inputName="userId"
-          id="user"
-          userIdsToOmit={
-            new Set([
-              data.tournament.author.id,
-              ...data.tournament.staff.map((s) => s.id),
-            ])
-          }
-        />
-        <select name="role" className="w-max">
-          <option value="ORGANIZER">Organizer</option>
-          <option value="STREAMER">Streamer</option>
-        </select>
-        <SubmitButton state={fetcher.state} _action="ADD_STAFF">
+      <div className="stack horizontal sm flex-wrap items-end">
+        <div>
+          <Label htmlFor="staff-user">New staff member</Label>
+          <UserSearch
+            inputName="userId"
+            id="staff-user"
+            userIdsToOmit={
+              new Set([
+                data.tournament.author.id,
+                ...data.tournament.staff.map((s) => s.id),
+              ])
+            }
+          />
+        </div>
+        <div>
+          <Label htmlFor="staff-role">Role</Label>
+          <select name="role" id="staff-role" className="w-max">
+            <option value="ORGANIZER">Organizer</option>
+            <option value="STREAMER">Streamer</option>
+          </select>
+        </div>
+        <SubmitButton
+          state={fetcher.state}
+          _action="ADD_STAFF"
+          testId="add-staff-button"
+        >
           Add
         </SubmitButton>
       </div>
@@ -484,7 +495,11 @@ function StaffList() {
   return (
     <div className="stack md">
       {data.tournament.staff.map((staff) => (
-        <div key={staff.id} className="stack horizontal sm items-center">
+        <div
+          key={staff.id}
+          className="stack horizontal sm items-center"
+          data-testid={`staff-id-${staff.id}`}
+        >
           <Avatar size="xs" user={staff} />{" "}
           <div className="mr-4">
             <div>{staff.discordName}</div>
@@ -517,9 +532,13 @@ function RemoveStaffButton({
       ]}
       deleteButtonText="Remove"
     >
-      <SubmitButton variant="minimal-destructive" size="tiny" type="submit">
+      <Button
+        variant="minimal-destructive"
+        size="tiny"
+        data-testid="remove-staff-button"
+      >
         <TrashIcon className="build__icon" />
-      </SubmitButton>
+      </Button>
     </FormWithConfirm>
   );
 }
