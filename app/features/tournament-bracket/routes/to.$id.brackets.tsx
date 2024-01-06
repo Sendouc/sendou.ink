@@ -34,7 +34,7 @@ import type { TournamentLoaderData } from "../../tournament/routes/to.$id";
 import { resolveBestOfs } from "../core/bestOf.server";
 import { findAllMatchesByTournamentId } from "../queries/findAllMatchesByTournamentId.server";
 import { setBestOf } from "../queries/setBestOf.server";
-import { canAdminTournament } from "~/permissions";
+import { isTournamentOrganizer } from "~/permissions";
 import { requireUser, useUser } from "~/features/auth/core";
 import {
   TOURNAMENT,
@@ -112,7 +112,7 @@ export const action: ActionFunction = async ({ params, request }) => {
   const data = await parseRequestFormData({ request, schema: bracketSchema });
   const manager = getTournamentManager("SQL");
 
-  validate(canAdminTournament({ user, tournament }));
+  validate(isTournamentOrganizer({ user, tournament }));
 
   switch (data._action) {
     case "START_TOURNAMENT": {
@@ -426,7 +426,10 @@ export default function TournamentBracketsPage() {
       ) : null}
       {data.finalStandings &&
       !parentRouteData.hasFinalized &&
-      canAdminTournament({ user, tournament: parentRouteData.tournament }) ? (
+      isTournamentOrganizer({
+        user,
+        tournament: parentRouteData.tournament,
+      }) ? (
         <div className="tournament-bracket__finalize">
           <FormWithConfirm
             dialogHeading={t("tournament:actions.finalize.confirm")}
@@ -442,7 +445,7 @@ export default function TournamentBracketsPage() {
       ) : null}
       {!parentRouteData.hasStarted && data.enoughTeams ? (
         <Form method="post" className="stack items-center">
-          {!canAdminTournament({
+          {!isTournamentOrganizer({
             user,
             tournament: parentRouteData.tournament,
           }) ? (

@@ -34,7 +34,7 @@ import { Popover } from "~/components/Popover";
 import type { TournamentMaplistSource } from "~/modules/tournament-map-list-generator";
 import type { FindTeamsByTournamentIdItem } from "../queries/findTeamsByTournamentId.server";
 import hasTournamentStarted from "../queries/hasTournamentStarted.server";
-import { canAdminTournament } from "~/permissions";
+import { isTournamentOrganizer } from "~/permissions";
 import { getUserId } from "~/features/auth/core/user.server";
 import { notFoundIfFalsy } from "~/utils/remix";
 import * as TournamentRepository from "../TournamentRepository.server";
@@ -68,7 +68,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const sets = tournamentTeamSets({ tournamentTeamId, tournamentId });
   const revealMapPool =
     hasTournamentStarted(tournamentId) ||
-    canAdminTournament({ user, tournament });
+    isTournamentOrganizer({ user, tournament });
 
   return {
     tournamentTeamId,

@@ -24,7 +24,7 @@ import type {
   TournamentLoaderTeam,
   TournamentLoaderData,
 } from "~/features/tournament";
-import { canAdminTournament } from "~/permissions";
+import { isTournamentOrganizer } from "~/permissions";
 import { useUser } from "~/features/auth/core";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { databaseTimestampToDate } from "~/utils/dates";
@@ -37,6 +37,7 @@ export type Result = Unpacked<
   SerializeFrom<TournamentMatchLoaderData>["results"]
 >;
 
+// xxx: show chat to STREAMER
 // TODO: rename (since it now contains Chat as well)
 export function ScoreReporter({
   teams,
@@ -139,7 +140,10 @@ export function ScoreReporter({
             </div>
           </Form>
         )}
-        {canAdminTournament({ user, tournament: parentRouteData.tournament }) &&
+        {isTournamentOrganizer({
+          user,
+          tournament: parentRouteData.tournament,
+        }) &&
           !parentRouteData.hasFinalized &&
           presentational &&
           !matchIsLockedError && (

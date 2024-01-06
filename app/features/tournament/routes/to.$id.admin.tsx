@@ -4,7 +4,11 @@ import * as React from "react";
 import { Button, LinkButton } from "~/components/Button";
 import { Toggle } from "~/components/Toggle";
 import { useTranslation } from "react-i18next";
-import { canAdminTournament, isAdmin } from "~/permissions";
+import {
+  isTournamentAdmin,
+  isAdmin,
+  isTournamentOrganizer,
+} from "~/permissions";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { discordFullName } from "~/utils/strings";
 import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
@@ -56,10 +60,14 @@ export const action: ActionFunction = async ({ request, params }) => {
   );
   const teams = findTeamsByTournamentId(tournament.id);
 
-  validate(canAdminTournament({ user, tournament }), "Unauthorized", 401);
+  const validateIsTournamentAdmin = () =>
+    validate(isTournamentAdmin({ user, tournament }), "Unauthorized", 401);
+  const validateIsTournamentOrganizer = () =>
+    validate(isTournamentOrganizer({ user, tournament }), "Unauthorized", 401);
 
   switch (data._action) {
     case "ADD_TEAM": {
+      validateIsTournamentOrganizer();
       validate(
         teams.every((t) => t.name !== data.teamName),
         "Team name taken",
@@ -79,6 +87,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       break;
     }
     case "UPDATE_SHOW_MAP_LIST_GENERATOR": {
+      validateIsTournamentAdmin();
       updateShowMapListGenerator({
         tournamentId: tournament.id,
         showMapListGenerator: Number(data.show),
@@ -86,6 +95,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       break;
     }
     case "CHANGE_TEAM_OWNER": {
+      validateIsTournamentOrganizer();
       const team = teams.find((t) => t.id === data.teamId);
       validate(team, "Invalid team id");
       const oldCaptain = team.members.find((m) => m.isOwner);
@@ -102,6 +112,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       break;
     }
     case "CHECK_IN": {
+      validateIsTournamentOrganizer();
       const team = teams.find((t) => t.id === data.teamId);
       validate(team, "Invalid team id");
       validateCanCheckIn({
@@ -114,6 +125,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       break;
     }
     case "CHECK_OUT": {
+      validateIsTournamentOrganizer();
       const team = teams.find((t) => t.id === data.teamId);
       validate(team, "Invalid team id");
       validate(!hasTournamentStarted(tournament.id), "Tournament has started");
@@ -122,6 +134,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       break;
     }
     case "REMOVE_MEMBER": {
+      validateIsTournamentOrganizer();
       const team = teams.find((t) => t.id === data.teamId);
       validate(team, "Invalid team id");
       validate(!team.checkedInAt, "Team is checked in");
@@ -140,6 +153,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     // TODO: could also handle the case of admin trying
     // to add members from a checked in team
     case "ADD_MEMBER": {
+      validateIsTournamentOrganizer();
       const team = teams.find((t) => t.id === data.teamId);
       validate(team, "Invalid team id");
 
@@ -167,6 +181,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       break;
     }
     case "DELETE_TEAM": {
+      validateIsTournamentOrganizer();
       const team = teams.find((t) => t.id === data.teamId);
       validate(team, "Invalid team id");
       validate(!hasTournamentStarted(tournament.id), "Tournament has started");
@@ -175,6 +190,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       break;
     }
     case "ADD_STAFF": {
+      validateIsTournamentAdmin();
       await TournamentRepository.addStaff({
         role: data.role,
         tournamentId: tournament.id,
@@ -183,6 +199,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       break;
     }
     case "REMOVE_STAFF": {
+      validateIsTournamentAdmin();
       await TournamentRepository.removeStaff({
         tournamentId: tournament.id,
         userId: data.userId,
@@ -205,7 +222,7 @@ export default function TournamentAdminPage() {
   const user = useUser();
 
   if (
-    !canAdminTournament({ user, tournament: data.tournament }) ||
+    !isTournamentOrganizer({ user, tournament: data.tournament }) ||
     data.hasFinalized
   ) {
     return <Redirect to={tournamentPage(data.tournament.id)} />;
@@ -213,37 +230,43 @@ export default function TournamentAdminPage() {
 
   return (
     <div className="stack lg">
-      <div className="stack horizontal items-end">
-        <LinkButton
-          to={calendarEditPage(data.tournament.eventId)}
-          size="tiny"
-          variant="outlined"
-        >
-          Edit event info
-        </LinkButton>
-        {!data.hasStarted ? (
-          <FormWithConfirm
-            dialogHeading={t("calendar:actions.delete.confirm", {
-              name: data.tournament.name,
-            })}
-            action={calendarEventPage(data.tournament.eventId)}
-            submitButtonTestId="delete-submit-button"
+      {isTournamentAdmin({ user, tournament: data.tournament }) ? (
+        <div className="stack horizontal items-end">
+          <LinkButton
+            to={calendarEditPage(data.tournament.eventId)}
+            size="tiny"
+            variant="outlined"
           >
-            <Button
-              className="ml-auto"
-              size="tiny"
-              variant="minimal-destructive"
-              type="submit"
+            Edit event info
+          </LinkButton>
+          {!data.hasStarted ? (
+            <FormWithConfirm
+              dialogHeading={t("calendar:actions.delete.confirm", {
+                name: data.tournament.name,
+              })}
+              action={calendarEventPage(data.tournament.eventId)}
+              submitButtonTestId="delete-submit-button"
             >
-              {t("calendar:actions.delete")}
-            </Button>
-          </FormWithConfirm>
-        ) : null}
-      </div>
+              <Button
+                className="ml-auto"
+                size="tiny"
+                variant="minimal-destructive"
+                type="submit"
+              >
+                {t("calendar:actions.delete")}
+              </Button>
+            </FormWithConfirm>
+          ) : null}
+        </div>
+      ) : null}
       <Divider smallText>Team actions</Divider>
       <TeamActions />
-      <Divider smallText>Staff</Divider>
-      <Staff />
+      {isTournamentAdmin({ user, tournament: data.tournament }) ? (
+        <>
+          <Divider smallText>Staff</Divider>
+          <Staff />
+        </>
+      ) : null}
       <Divider smallText>Participant list download</Divider>
       <DownloadParticipants />
       {isAdmin(user) ? <EnableMapList /> : null}

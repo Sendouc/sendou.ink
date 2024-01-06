@@ -307,9 +307,33 @@ interface CanAdminTournament {
   user?: Pick<User, "id">;
   tournament: TournamentRepository.FindById;
 }
-// xxx: TournamentStaff
-export function canAdminTournament({ user, tournament }: CanAdminTournament) {
+
+export function isTournamentAdmin({ user, tournament }: CanAdminTournament) {
   return adminOverride(user)(user?.id === tournament.author.id);
+}
+
+export function isTournamentOrganizer({
+  user,
+  tournament,
+}: CanAdminTournament) {
+  if (isTournamentAdmin({ user, tournament })) return true;
+
+  return tournament.staff.some(
+    (staff) => staff.id === user?.id && staff.role === "ORGANIZER",
+  );
+}
+
+export function isTournamentStreamerOrOrganizer({
+  user,
+  tournament,
+}: CanAdminTournament) {
+  if (isTournamentAdmin({ user, tournament })) return true;
+
+  return tournament.staff.some(
+    (staff) =>
+      staff.id === user?.id &&
+      (staff.role === "ORGANIZER" || staff.role === "STREAMER"),
+  );
 }
 
 export function canReportTournamentScore({
@@ -328,7 +352,7 @@ export function canReportTournamentScore({
 
   return (
     !matchIsOver &&
-    (isMemberOfATeamInTheMatch || canAdminTournament({ user, tournament }))
+    (isMemberOfATeamInTheMatch || isTournamentOrganizer({ user, tournament }))
   );
 }
 
