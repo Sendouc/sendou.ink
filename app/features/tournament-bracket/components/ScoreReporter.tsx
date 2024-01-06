@@ -354,9 +354,24 @@ function MatchActionSectionTabs({
   const [_unseenMessages, setUnseenMessages] = React.useState(0);
   const [chatVisible, setChatVisible] = React.useState(false);
 
+  // xxx: chatNameColor
   const chatUsers = React.useMemo(() => {
-    return Object.fromEntries(data.match.players.map((p) => [p.id, p]));
-  }, [data]);
+    return Object.fromEntries(
+      [
+        ...data.match.players.map((p) => ({ ...p, title: undefined })),
+        ...parentRouteData.tournament.staff.map((s) => ({
+          ...s,
+          title: s.role === "STREAMER" ? "Stream" : "TO",
+          chatNameColor: null,
+        })),
+        {
+          ...parentRouteData.tournament.author,
+          title: "TO",
+          chatNameColor: null,
+        },
+      ].map((p) => [p.id, p]),
+    );
+  }, [data, parentRouteData]);
 
   const rooms = React.useMemo(() => {
     return data.match.chatCode
