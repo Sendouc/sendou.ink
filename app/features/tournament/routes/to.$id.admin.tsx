@@ -445,11 +445,21 @@ function Staff() {
 
 function StaffAdder() {
   const fetcher = useFetcher();
+  const data = useOutletContext<TournamentLoaderData>();
 
   return (
     <fetcher.Form method="post" className="stack sm">
       <div className="stack horizontal sm flex-wrap">
-        <UserSearch inputName="userId" id="user" />
+        <UserSearch
+          inputName="userId"
+          id="user"
+          userIdsToOmit={
+            new Set([
+              data.tournament.author.id,
+              ...data.tournament.staff.map((s) => s.id),
+            ])
+          }
+        />
         <select name="role" className="w-max">
           <option value="ORGANIZER">Organizer</option>
           <option value="STREAMER">Streamer</option>
