@@ -83,7 +83,7 @@ export function ScoreReporter({
     showFullInfos ? (
       <>
         {t("tournament:match.pass")}{" "}
-        <span className="text-theme font-bold">
+        <span className="text-theme font-bold" data-testid="room-pass">
           {resolveRoomPass(data.match.id)}
         </span>
       </>

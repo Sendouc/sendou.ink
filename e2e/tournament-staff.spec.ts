@@ -10,9 +10,14 @@ import {
   selectUser,
   submit,
 } from "~/utils/playwright";
-import { tournamentAdminPage, tournamentBracketsPage } from "~/utils/urls";
+import {
+  tournamentAdminPage,
+  tournamentBracketsPage,
+  tournamentMatchPage,
+} from "~/utils/urls";
+import { startBracket } from "./shared";
 
-const TOURNAMENT_ID = 1;
+const TOURNAMENT_ID = 2;
 
 test.describe("Tournament staff", () => {
   test("gives and takes away staff role", async ({ page }) => {
@@ -76,7 +81,7 @@ test.describe("Tournament staff", () => {
     await isNotVisible(page.getByTestId("add-staff-button"));
 
     await page.getByLabel("Action").selectOption("CHECK_IN");
-    await page.getByLabel("Team").selectOption("1");
+    await page.getByLabel("Team").selectOption("101");
     await submit(page);
 
     await navigate({
@@ -86,5 +91,50 @@ test.describe("Tournament staff", () => {
 
     await expect(page.getByTestId("finalize-bracket-button")).toBeVisible();
     await expect(page.getByText("Chimera")).toBeVisible();
+  });
+
+  test("gives staff role which allows another user to see limited info", async ({
+    page,
+  }) => {
+    await startBracket(page);
+
+    await impersonate(page, NZAP_TEST_ID);
+
+    await navigate({
+      page,
+      url: tournamentMatchPage({ eventId: TOURNAMENT_ID, matchId: 2 }),
+    });
+
+    const roomPassSelector = page.getByTestId("room-pass");
+
+    await isNotVisible(roomPassSelector);
+
+    await impersonate(page, ADMIN_ID);
+
+    await navigate({
+      page,
+      url: tournamentAdminPage(TOURNAMENT_ID),
+    });
+
+    await selectUser({
+      page,
+      userName: "N-ZAP",
+      labelName: "New staff member",
+    });
+    await page.getByLabel("Role").selectOption("STREAMER");
+    await page.getByTestId("add-staff-button").click();
+
+    await expect(page.getByTestId(`staff-id-${NZAP_TEST_ID}`)).toContainText(
+      "streamer",
+    );
+
+    await impersonate(page, NZAP_TEST_ID);
+    await navigate({
+      page,
+      url: tournamentMatchPage({ eventId: TOURNAMENT_ID, matchId: 2 }),
+    });
+
+    await expect(roomPassSelector).toBeVisible();
+    await expect(page.getByText("Chat")).toBeVisible();
   });
 });

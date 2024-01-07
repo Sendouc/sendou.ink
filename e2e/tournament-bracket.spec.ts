@@ -7,18 +7,7 @@ import {
   tournamentPage,
   userResultsPage,
 } from "~/utils/urls";
-
-const startBracket = async (page: Page, tournamentId = 2) => {
-  await seed(page);
-  await impersonate(page);
-
-  await navigate({
-    page,
-    url: tournamentBracketsPage(tournamentId),
-  });
-
-  await page.getByTestId("finalize-bracket-button").click();
-};
+import { startBracket } from "./shared";
 
 const reportResult = async (
   page: Page,
