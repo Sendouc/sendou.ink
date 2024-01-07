@@ -77,9 +77,7 @@ export function isOneModeTournamentOf(
     : null;
 }
 
-export function HACKY_resolvePicture(
-  event: TournamentLoaderData["tournament"],
-) {
+export function HACKY_resolvePicture(event: { name: string }) {
   if (HACKY_isInviteOnlyEvent(event))
     return "https://abload.de/img/screenshot2023-11-25ay1fbc.png";
 

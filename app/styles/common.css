@@ -876,11 +876,15 @@ dialog::backdrop {
   gap: var(--s-2);
 }
 
+.stack.sm-plus {
+  gap: var(--s-3);
+}
+
 .stack.md {
   gap: var(--s-4);
 }
 
-.stack.smedium {
+.stack.md-plus {
   gap: var(--s-6);
 }
 

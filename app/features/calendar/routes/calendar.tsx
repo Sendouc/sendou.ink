@@ -45,6 +45,8 @@ import { Divider } from "~/components/Divider";
 import { UsersIcon } from "~/components/icons/Users";
 import * as CalendarRepository from "../CalendarRepository.server";
 import { canAddNewEvent } from "../calendar-utils";
+import { Avatar } from "~/components/Avatar";
+import { HACKY_resolvePicture } from "~/features/tournament/tournament-utils";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -416,38 +418,49 @@ function EventsList({
                         </div>
                       </div>
                       <div className="stack xs">
-                        <div>
-                          <Link
-                            to={
-                              calendarEvent.tournamentId
-                                ? tournamentPage(calendarEvent.tournamentId)
-                                : String(calendarEvent.eventId)
-                            }
-                          >
-                            <h2 className="calendar__event__title">
-                              {calendarEvent.name}{" "}
-                              {calendarEvent.nthAppearance > 1 ? (
-                                <span className="calendar__event__day">
-                                  {t("day", {
-                                    number: calendarEvent.nthAppearance,
-                                  })}
-                                </span>
-                              ) : null}
-                            </h2>
-                          </Link>
-                          {calendarEvent.participantCounts &&
-                          calendarEvent.participantCounts.teams > 0 ? (
-                            <div className="calendar__event__participant-counts">
-                              <UsersIcon />{" "}
-                              {t("count.teams", {
-                                count: calendarEvent.participantCounts.teams,
-                              })}{" "}
-                              /{" "}
-                              {t("count.players", {
-                                count: calendarEvent.participantCounts.players,
+                        <div className="stack horizontal sm-plus items-center">
+                          {calendarEvent.tournamentId ? (
+                            <Avatar
+                              size="sm"
+                              url={HACKY_resolvePicture({
+                                name: calendarEvent.name,
                               })}
-                            </div>
+                            />
                           ) : null}
+                          <div>
+                            <Link
+                              to={
+                                calendarEvent.tournamentId
+                                  ? tournamentPage(calendarEvent.tournamentId)
+                                  : String(calendarEvent.eventId)
+                              }
+                            >
+                              <h2 className="calendar__event__title">
+                                {calendarEvent.name}{" "}
+                                {calendarEvent.nthAppearance > 1 ? (
+                                  <span className="calendar__event__day">
+                                    {t("day", {
+                                      number: calendarEvent.nthAppearance,
+                                    })}
+                                  </span>
+                                ) : null}
+                              </h2>
+                            </Link>
+                            {calendarEvent.participantCounts &&
+                            calendarEvent.participantCounts.teams > 0 ? (
+                              <div className="calendar__event__participant-counts">
+                                <UsersIcon />{" "}
+                                {t("count.teams", {
+                                  count: calendarEvent.participantCounts.teams,
+                                })}{" "}
+                                /{" "}
+                                {t("count.players", {
+                                  count:
+                                    calendarEvent.participantCounts.players,
+                                })}
+                              </div>
+                            ) : null}
+                          </div>
                         </div>
                         <Tags
                           tags={calendarEvent.tags}

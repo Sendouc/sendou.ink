@@ -169,7 +169,7 @@ export default function ReportWinnersPage() {
 
   return (
     <Main halfWidth>
-      <Form method="post" className="stack smedium items-start">
+      <Form method="post" className="stack md-plus items-start">
         <h1 className="text-lg">
           {t("calendar:forms.reportResultsHeader", { eventName: data.name })}
         </h1>
