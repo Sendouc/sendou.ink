@@ -32,7 +32,7 @@ test.describe("Tournament staff", () => {
     await selectUser({
       page,
       userName: "N-ZAP",
-      labelName: "New staff member",
+      labelName: "New staffer",
     });
 
     await page.getByTestId("add-staff-button").click();
@@ -66,7 +66,7 @@ test.describe("Tournament staff", () => {
     await selectUser({
       page,
       userName: "N-ZAP",
-      labelName: "New staff member",
+      labelName: "New staffer",
     });
 
     await page.getByTestId("add-staff-button").click();
@@ -119,7 +119,7 @@ test.describe("Tournament staff", () => {
     await selectUser({
       page,
       userName: "N-ZAP",
-      labelName: "New staff member",
+      labelName: "New staffer",
     });
     await page.getByLabel("Role").selectOption("STREAMER");
     await page.getByTestId("add-staff-button").click();

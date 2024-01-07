@@ -497,7 +497,7 @@ function StaffAdder() {
     <fetcher.Form method="post" className="stack sm">
       <div className="stack horizontal sm flex-wrap items-end">
         <div>
-          <Label htmlFor="staff-user">New staff member</Label>
+          <Label htmlFor="staff-user">New staffer</Label>
           <UserSearch
             inputName="userId"
             id="staff-user"
