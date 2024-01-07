@@ -362,10 +362,6 @@
   font-weight: var(--semi-bold);
 }
 
-.tournament__stream__team-name {
-  color: var(--theme-secondary);
-}
-
 .tournament__stream__viewer-count {
   font-size: var(--fonts-xs);
   display: flex;

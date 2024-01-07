@@ -11,4 +11,8 @@ module.exports.up = function (db) {
     ) strict
   `,
   ).run();
+
+  db.prepare(
+    /* sql */ `alter table "Tournament" add "castTwitchAccounts" text`,
+  ).run();
 };

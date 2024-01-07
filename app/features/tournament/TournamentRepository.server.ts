@@ -21,6 +21,7 @@ export async function findById(id: number) {
       "Tournament.mapPickingStyle",
       "Tournament.format",
       "Tournament.showMapListGenerator",
+      "Tournament.castTwitchAccounts",
       "CalendarEvent.id as eventId",
       "CalendarEvent.name",
       "CalendarEvent.description",
@@ -93,5 +94,21 @@ export function removeStaff({
     .deleteFrom("TournamentStaff")
     .where("tournamentId", "=", tournamentId)
     .where("userId", "=", userId)
+    .execute();
+}
+
+export function updateCastTwitchAccounts({
+  tournamentId,
+  castTwitchAccounts,
+}: {
+  tournamentId: number;
+  castTwitchAccounts: string[];
+}) {
+  return db
+    .updateTable("Tournament")
+    .set({
+      castTwitchAccounts: JSON.stringify(castTwitchAccounts),
+    })
+    .where("id", "=", tournamentId)
     .execute();
 }

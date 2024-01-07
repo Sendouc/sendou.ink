@@ -129,7 +129,12 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     hasFinalized: hasTournamentFinalized(tournamentId),
     subsCount,
     streamsCount: hasStarted
-      ? (await streamsByTournamentId(tournamentId)).length
+      ? (
+          await streamsByTournamentId({
+            tournamentId,
+            castTwitchAccounts: tournament.castTwitchAccounts,
+          })
+        ).length
       : 0,
   };
 };

@@ -372,6 +372,7 @@ export interface Tournament {
   id: GeneratedAlways<number>;
   mapPickingStyle: TournamentMapPickingStyle;
   showMapListGenerator: Generated<number | null>;
+  castTwitchAccounts: ColumnType<string[] | null, string | null, string | null>;
 }
 
 export interface TournamentBadgeOwner {

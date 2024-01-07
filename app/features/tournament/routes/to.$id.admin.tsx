@@ -207,6 +207,14 @@ export const action: ActionFunction = async ({ request, params }) => {
       });
       break;
     }
+    case "UPDATE_CAST_TWITCH_ACCOUNTS": {
+      validateIsTournamentOrganizer();
+      await TournamentRepository.updateCastTwitchAccounts({
+        tournamentId: tournament.id,
+        castTwitchAccounts: data.castTwitchAccounts,
+      });
+      break;
+    }
     default: {
       assertUnreachable(data);
     }
@@ -268,6 +276,8 @@ export default function TournamentAdminPage() {
           <Staff />
         </>
       ) : null}
+      <Divider smallText>Cast Twitch Accounts</Divider>
+      <CastTwitchAccounts />
       <Divider smallText>Participant list download</Divider>
       <DownloadParticipants />
       {isAdmin(user) ? <EnableMapList /> : null}
@@ -441,6 +451,41 @@ function Staff() {
       <StaffAdder key={data.tournament.staff.length} />
       <StaffList />
     </div>
+  );
+}
+
+function CastTwitchAccounts() {
+  const id = React.useId();
+  const fetcher = useFetcher();
+  const data = useOutletContext<TournamentLoaderData>();
+
+  return (
+    <fetcher.Form method="post" className="stack sm">
+      <div className="stack horizontal sm items-end">
+        <div>
+          <Label htmlFor={id}>Twitch accounts</Label>
+          <input
+            id={id}
+            placeholder="dappleproductions"
+            name="castTwitchAccounts"
+            defaultValue={data.tournament.castTwitchAccounts?.join(",")}
+          />
+        </div>
+        <SubmitButton
+          testId="save-cast-twitch-accounts-button"
+          state={fetcher.state}
+          _action="UPDATE_CAST_TWITCH_ACCOUNTS"
+        >
+          Save
+        </SubmitButton>
+      </div>
+      <FormMessage type="info">
+        Twitch account where the tournament is casted. Player streams are added
+        automatically based on their profile data. You can also enter multiple
+        accounts, just separate them with a comma e.g.
+        &quot;sendouc,leanny&quot;
+      </FormMessage>
+    </fetcher.Form>
   );
 }
 

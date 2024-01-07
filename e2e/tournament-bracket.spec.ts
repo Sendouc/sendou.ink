@@ -8,8 +8,6 @@ import {
   userResultsPage,
 } from "~/utils/urls";
 
-// xxx: tournament staff tests (in which file?)
-
 const startBracket = async (page: Page, tournamentId = 2) => {
   await seed(page);
   await impersonate(page);
