@@ -1,10 +1,9 @@
-import { sql } from "kysely";
 import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
 import { db } from "~/db/sql";
 import type { ParsedMemento, Tables } from "~/db/tables";
 import type { UserSkillDifference } from "~/db/types";
 import type { MainWeaponId } from "~/modules/in-game-lists";
-import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
+import { COMMON_USER_FIELDS, userChatNameColor } from "~/utils/kysely.server";
 
 export function findById(id: number) {
   return db
@@ -129,11 +128,7 @@ export async function findGroupById({
                 .where("authorId", "=", loggedInUserId ?? -1)
                 .where("targetId", "=", arrayEb.ref("User.id")),
             ).as("privateNote"),
-            sql<
-              string | null
-            >`IIF(COALESCE("User"."patronTier", 0) >= 2, "User"."css" ->> 'chat', null)`.as(
-              "chatNameColor",
-            ),
+            userChatNameColor,
           ])
           .where("GroupMember.groupId", "=", groupId)
           .orderBy("GroupMember.userId asc"),

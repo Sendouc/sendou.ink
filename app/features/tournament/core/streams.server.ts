@@ -1,7 +1,13 @@
 import { getStreams } from "~/modules/twitch";
 import { participantTwitchUsersByTournamentId } from "../queries/participantTwitchUsersByTournamentId.server";
 
-export async function streamsByTournamentId(tournamentId: number) {
+export async function streamsByTournamentId({
+  tournamentId,
+  castTwitchAccounts,
+}: {
+  tournamentId: number;
+  castTwitchAccounts: string[] | null;
+}) {
   // prevent error logs in development
   if (
     process.env.NODE_ENV === "development" &&
@@ -19,12 +25,21 @@ export async function streamsByTournamentId(tournamentId: number) {
       (u) => u.twitch === stream.twitchUserName,
     );
 
-    if (!user) return [];
+    if (user) {
+      return {
+        ...stream,
+        userId: user.id,
+      };
+    }
 
-    return {
-      ...stream,
-      userId: user.id,
-    };
+    if (castTwitchAccounts?.includes(stream.twitchUserName)) {
+      return {
+        ...stream,
+        userId: null,
+      };
+    }
+
+    return [];
   });
 
   return tournamentStreams;

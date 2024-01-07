@@ -1,7 +1,8 @@
+import type { NotNull } from "kysely";
 import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
-import invariant from "tiny-invariant";
 import { db } from "~/db/sql";
-import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
+import type { Tables } from "~/db/tables";
+import { COMMON_USER_FIELDS, userChatNameColor } from "~/utils/kysely.server";
 import type { Unwrapped } from "~/utils/types";
 
 export type FindById = NonNullable<Unwrapped<typeof findById>>;
@@ -20,6 +21,7 @@ export async function findById(id: number) {
       "Tournament.mapPickingStyle",
       "Tournament.format",
       "Tournament.showMapListGenerator",
+      "Tournament.castTwitchAccounts",
       "CalendarEvent.id as eventId",
       "CalendarEvent.name",
       "CalendarEvent.description",
@@ -29,7 +31,7 @@ export async function findById(id: number) {
         eb
           .selectFrom("User")
           .whereRef("CalendarEvent.authorId", "=", "User.id")
-          .select(COMMON_USER_FIELDS),
+          .select([...COMMON_USER_FIELDS, userChatNameColor]),
       ).as("author"),
       jsonArrayFrom(
         eb
@@ -41,15 +43,72 @@ export async function findById(id: number) {
           )
           .select(["MapPoolMap.stageId", "MapPoolMap.mode"]),
       ).as("tieBreakerMapPool"),
+      jsonArrayFrom(
+        eb
+          .selectFrom("TournamentStaff")
+          .innerJoin("User", "TournamentStaff.userId", "User.id")
+          .select([
+            ...COMMON_USER_FIELDS,
+            userChatNameColor,
+            "TournamentStaff.role",
+          ])
+          .where("TournamentStaff.tournamentId", "=", id),
+      ).as("staff"),
     ])
     .where("Tournament.id", "=", id)
+    .$narrowType<{ author: NotNull }>()
     .executeTakeFirst();
 
   if (!row) return null;
 
-  // TODO: can be made better when $narrowNotNull lands
-  const author = row.author;
-  invariant(author, "Tournament author is missing");
+  return row;
+}
 
-  return { ...row, author };
+export function addStaff({
+  tournamentId,
+  userId,
+  role,
+}: {
+  tournamentId: number;
+  userId: number;
+  role: Tables["TournamentStaff"]["role"];
+}) {
+  return db
+    .insertInto("TournamentStaff")
+    .values({
+      tournamentId,
+      userId,
+      role,
+    })
+    .execute();
+}
+
+export function removeStaff({
+  tournamentId,
+  userId,
+}: {
+  tournamentId: number;
+  userId: number;
+}) {
+  return db
+    .deleteFrom("TournamentStaff")
+    .where("tournamentId", "=", tournamentId)
+    .where("userId", "=", userId)
+    .execute();
+}
+
+export function updateCastTwitchAccounts({
+  tournamentId,
+  castTwitchAccounts,
+}: {
+  tournamentId: number;
+  castTwitchAccounts: string[];
+}) {
+  return db
+    .updateTable("Tournament")
+    .set({
+      castTwitchAccounts: JSON.stringify(castTwitchAccounts),
+    })
+    .where("id", "=", tournamentId)
+    .execute();
 }

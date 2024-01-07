@@ -9,12 +9,20 @@ import { tournamentRegisterPage, twitchUrl } from "~/utils/urls";
 import { UserIcon } from "~/components/icons/User";
 import { useTranslation } from "react-i18next";
 import { twitchThumbnailUrlToSrc } from "~/modules/twitch/utils";
+import * as TournamentRepository from "../TournamentRepository.server";
+import { notFoundIfFalsy } from "~/utils/remix";
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   const tournamentId = tournamentIdFromParams(params);
+  const tournament = notFoundIfFalsy(
+    await TournamentRepository.findById(tournamentId),
+  );
 
   return {
-    streams: await streamsByTournamentId(tournamentId),
+    streams: await streamsByTournamentId({
+      tournamentId,
+      castTwitchAccounts: tournament.castTwitchAccounts,
+    }),
   };
 };
 
@@ -40,16 +48,11 @@ export default function TournamentStreamsPage() {
   // TODO: link to user page, later tournament team page?
   return (
     <div className="stack horizontal lg flex-wrap justify-center">
-      {data.streams.flatMap((stream) => {
+      {data.streams.map((stream) => {
         const team = parentRouteData.teams.find((team) =>
           team.members.some((m) => m.userId === stream.userId),
         );
         const user = team?.members.find((m) => m.userId === stream.userId);
-
-        if (!team || !user) {
-          console.error("No team or user found for stream", stream);
-          return [];
-        }
 
         return (
           <div key={stream.userId} className="stack sm">
@@ -66,12 +69,17 @@ export default function TournamentStreamsPage() {
               />
             </a>
             <div className="stack horizontal justify-between">
-              <div className="tournament__stream__user-container">
-                <Avatar size="xxs" user={user} /> {user.discordName}
-                <span className="tournament__stream__team-name">
-                  {team.name}
-                </span>
-              </div>
+              {user && team ? (
+                <div className="tournament__stream__user-container">
+                  <Avatar size="xxs" user={user} /> {user.discordName}
+                  <span className="text-theme-secondary">{team.name}</span>
+                </div>
+              ) : (
+                <div className="tournament__stream__user-container">
+                  Cast
+                  <span className="text-lighter">{stream.twitchUserName}</span>
+                </div>
+              )}
               <div className="tournament__stream__viewer-count">
                 <UserIcon />
                 {stream.viewerCount}

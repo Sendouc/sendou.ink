@@ -246,6 +246,10 @@
   margin-inline-end: var(--s-1);
 }
 
+.mr-4 {
+  margin-inline-end: var(--s-4);
+}
+
 .mx-auto {
   margin: 0 auto;
 }

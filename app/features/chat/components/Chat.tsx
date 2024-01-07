@@ -18,6 +18,7 @@ import { useTranslation } from "react-i18next";
 
 type ChatUser = Pick<User, "discordName" | "discordId" | "discordAvatar"> & {
   chatNameColor: string | null;
+  title?: string;
 };
 
 export interface ChatProps {
@@ -228,7 +229,7 @@ function Message({
     <li className="chat__message">
       {user ? <Avatar user={user} size="xs" /> : null}
       <div>
-        <div className="stack horizontal sm">
+        <div className="stack horizontal sm items-center">
           <div
             className="chat__message__user"
             style={
@@ -239,6 +240,11 @@ function Message({
           >
             {user?.discordName ?? missingUserName}
           </div>
+          {user?.title ? (
+            <div className="text-xs text-theme-secondary font-semi-bold">
+              {user.title}
+            </div>
+          ) : null}
           {!message.pending ? (
             <time className="chat__message__time">
               {new Date(message.timestamp).toLocaleTimeString()}

@@ -74,6 +74,28 @@ export const adminActionSchema = z.union([
     userId: id,
     teamName: z.string().min(1).max(TOURNAMENT.TEAM_NAME_MAX_LENGTH),
   }),
+  z.object({
+    _action: _action("ADD_STAFF"),
+    userId: id,
+    role: z.enum(["ORGANIZER", "STREAMER"]),
+  }),
+  z.object({
+    _action: _action("REMOVE_STAFF"),
+    userId: id,
+  }),
+  z.object({
+    _action: _action("UPDATE_CAST_TWITCH_ACCOUNTS"),
+    castTwitchAccounts: z.preprocess(
+      (val) =>
+        typeof val === "string"
+          ? val
+              .split(",")
+              .map((account) => account.trim())
+              .map((account) => account.toLowerCase())
+          : val,
+      z.array(z.string()),
+    ),
+  }),
 ]);
 
 export const joinSchema = z.object({

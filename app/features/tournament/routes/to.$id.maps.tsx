@@ -20,7 +20,7 @@ import type {
   TournamentMaplistInput,
   TournamentMaplistSource,
 } from "~/modules/tournament-map-list-generator";
-import { canAdminTournament } from "~/permissions";
+import { isTournamentAdmin } from "~/permissions";
 import mapsStyles from "~/styles/maps.css";
 import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
 import { tournamentPage } from "~/utils/urls";
@@ -56,7 +56,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   );
 
   const mapListGeneratorAvailable =
-    canAdminTournament({ user, tournament }) || tournament.showMapListGenerator;
+    isTournamentAdmin({ user, tournament }) || tournament.showMapListGenerator;
 
   if (!mapListGeneratorAvailable) {
     throw redirect(tournamentPage(tournamentId));

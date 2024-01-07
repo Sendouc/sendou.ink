@@ -39,7 +39,7 @@ import { seedsActionSchema } from "../tournament-schemas.server";
 import { updateTeamSeeds } from "../queries/updateTeamSeeds.server";
 import { tournamentIdFromParams } from "../tournament-utils";
 import hasTournamentStarted from "../queries/hasTournamentStarted.server";
-import { canAdminTournament } from "~/permissions";
+import { isTournamentOrganizer } from "~/permissions";
 import { SubmitButton } from "~/components/SubmitButton";
 import clone from "just-clone";
 import * as TournamentRepository from "../TournamentRepository.server";
@@ -59,7 +59,7 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   const hasStarted = hasTournamentStarted(tournamentId);
 
-  validate(canAdminTournament({ user, tournament }));
+  validate(isTournamentOrganizer({ user, tournament }));
   validate(!hasStarted, "Tournament has started");
 
   updateTeamSeeds({ tournamentId, teamIds: data.seeds });
@@ -75,7 +75,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     await TournamentRepository.findById(tournamentId),
   );
 
-  if (!canAdminTournament({ user, tournament }) || hasStarted) {
+  if (!isTournamentOrganizer({ user, tournament }) || hasStarted) {
     throw redirect(tournamentBracketsPage(tournamentId));
   }
 

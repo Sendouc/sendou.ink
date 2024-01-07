@@ -4,7 +4,11 @@ import * as React from "react";
 import { Button, LinkButton } from "~/components/Button";
 import { Toggle } from "~/components/Toggle";
 import { useTranslation } from "react-i18next";
-import { canAdminTournament, isAdmin } from "~/permissions";
+import {
+  isTournamentAdmin,
+  isAdmin,
+  isTournamentOrganizer,
+} from "~/permissions";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { discordFullName } from "~/utils/strings";
 import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
@@ -38,6 +42,11 @@ import { findMapPoolByTeamId } from "~/features/tournament-bracket";
 import { UserSearch } from "~/components/UserSearch";
 import * as TournamentRepository from "../TournamentRepository.server";
 import { createTeam } from "../queries/createTeam.server";
+import { Divider } from "~/components/Divider";
+import { Avatar } from "~/components/Avatar";
+import { TrashIcon } from "~/components/icons/Trash";
+import { FormMessage } from "~/components/FormMessage";
+import { Label } from "~/components/Label";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUserId(request);
@@ -52,10 +61,14 @@ export const action: ActionFunction = async ({ request, params }) => {
   );
   const teams = findTeamsByTournamentId(tournament.id);
 
-  validate(canAdminTournament({ user, tournament }), "Unauthorized", 401);
+  const validateIsTournamentAdmin = () =>
+    validate(isTournamentAdmin({ user, tournament }), "Unauthorized", 401);
+  const validateIsTournamentOrganizer = () =>
+    validate(isTournamentOrganizer({ user, tournament }), "Unauthorized", 401);
 
   switch (data._action) {
     case "ADD_TEAM": {
+      validateIsTournamentOrganizer();
       validate(
         teams.every((t) => t.name !== data.teamName),
         "Team name taken",
@@ -75,6 +88,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       break;
     }
     case "UPDATE_SHOW_MAP_LIST_GENERATOR": {
+      validateIsTournamentAdmin();
       updateShowMapListGenerator({
         tournamentId: tournament.id,
         showMapListGenerator: Number(data.show),
@@ -82,6 +96,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       break;
     }
     case "CHANGE_TEAM_OWNER": {
+      validateIsTournamentOrganizer();
       const team = teams.find((t) => t.id === data.teamId);
       validate(team, "Invalid team id");
       const oldCaptain = team.members.find((m) => m.isOwner);
@@ -98,6 +113,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       break;
     }
     case "CHECK_IN": {
+      validateIsTournamentOrganizer();
       const team = teams.find((t) => t.id === data.teamId);
       validate(team, "Invalid team id");
       validateCanCheckIn({
@@ -110,6 +126,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       break;
     }
     case "CHECK_OUT": {
+      validateIsTournamentOrganizer();
       const team = teams.find((t) => t.id === data.teamId);
       validate(team, "Invalid team id");
       validate(!hasTournamentStarted(tournament.id), "Tournament has started");
@@ -118,6 +135,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       break;
     }
     case "REMOVE_MEMBER": {
+      validateIsTournamentOrganizer();
       const team = teams.find((t) => t.id === data.teamId);
       validate(team, "Invalid team id");
       validate(!team.checkedInAt, "Team is checked in");
@@ -136,6 +154,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     // TODO: could also handle the case of admin trying
     // to add members from a checked in team
     case "ADD_MEMBER": {
+      validateIsTournamentOrganizer();
       const team = teams.find((t) => t.id === data.teamId);
       validate(team, "Invalid team id");
 
@@ -163,11 +182,37 @@ export const action: ActionFunction = async ({ request, params }) => {
       break;
     }
     case "DELETE_TEAM": {
+      validateIsTournamentOrganizer();
       const team = teams.find((t) => t.id === data.teamId);
       validate(team, "Invalid team id");
       validate(!hasTournamentStarted(tournament.id), "Tournament has started");
 
       deleteTeam(team.id);
+      break;
+    }
+    case "ADD_STAFF": {
+      validateIsTournamentAdmin();
+      await TournamentRepository.addStaff({
+        role: data.role,
+        tournamentId: tournament.id,
+        userId: data.userId,
+      });
+      break;
+    }
+    case "REMOVE_STAFF": {
+      validateIsTournamentAdmin();
+      await TournamentRepository.removeStaff({
+        tournamentId: tournament.id,
+        userId: data.userId,
+      });
+      break;
+    }
+    case "UPDATE_CAST_TWITCH_ACCOUNTS": {
+      validateIsTournamentOrganizer();
+      await TournamentRepository.updateCastTwitchAccounts({
+        tournamentId: tournament.id,
+        castTwitchAccounts: data.castTwitchAccounts,
+      });
       break;
     }
     default: {
@@ -186,44 +231,56 @@ export default function TournamentAdminPage() {
   const user = useUser();
 
   if (
-    !canAdminTournament({ user, tournament: data.tournament }) ||
+    !isTournamentOrganizer({ user, tournament: data.tournament }) ||
     data.hasFinalized
   ) {
     return <Redirect to={tournamentPage(data.tournament.id)} />;
   }
 
   return (
-    <div className="stack md">
-      <AdminActions />
-      {isAdmin(user) ? <EnableMapList /> : null}
-      <DownloadParticipants />
-      <div className="stack horizontal items-end mt-4">
-        <LinkButton
-          to={calendarEditPage(data.tournament.eventId)}
-          size="tiny"
-          variant="outlined"
-        >
-          Edit event info
-        </LinkButton>
-        {!data.hasStarted ? (
-          <FormWithConfirm
-            dialogHeading={t("calendar:actions.delete.confirm", {
-              name: data.tournament.name,
-            })}
-            action={calendarEventPage(data.tournament.eventId)}
-            submitButtonTestId="delete-submit-button"
+    <div className="stack lg">
+      {isTournamentAdmin({ user, tournament: data.tournament }) ? (
+        <div className="stack horizontal items-end">
+          <LinkButton
+            to={calendarEditPage(data.tournament.eventId)}
+            size="tiny"
+            variant="outlined"
           >
-            <Button
-              className="ml-auto"
-              size="tiny"
-              variant="minimal-destructive"
-              type="submit"
+            Edit event info
+          </LinkButton>
+          {!data.hasStarted ? (
+            <FormWithConfirm
+              dialogHeading={t("calendar:actions.delete.confirm", {
+                name: data.tournament.name,
+              })}
+              action={calendarEventPage(data.tournament.eventId)}
+              submitButtonTestId="delete-submit-button"
             >
-              {t("calendar:actions.delete")}
-            </Button>
-          </FormWithConfirm>
-        ) : null}
-      </div>
+              <Button
+                className="ml-auto"
+                size="tiny"
+                variant="minimal-destructive"
+                type="submit"
+              >
+                {t("calendar:actions.delete")}
+              </Button>
+            </FormWithConfirm>
+          ) : null}
+        </div>
+      ) : null}
+      <Divider smallText>Team actions</Divider>
+      <TeamActions />
+      {isTournamentAdmin({ user, tournament: data.tournament }) ? (
+        <>
+          <Divider smallText>Staff</Divider>
+          <Staff />
+        </>
+      ) : null}
+      <Divider smallText>Cast Twitch Accounts</Divider>
+      <CastTwitchAccounts />
+      <Divider smallText>Participant list download</Divider>
+      <DownloadParticipants />
+      {isAdmin(user) ? <EnableMapList /> : null}
     </div>
   );
 }
@@ -267,7 +324,7 @@ const actions = [
   },
 ] as const;
 
-function AdminActions() {
+function TeamActions() {
   const fetcher = useFetcher();
   const { t } = useTranslation(["tournament"]);
   const data = useOutletContext<TournamentLoaderData>();
@@ -385,6 +442,152 @@ function AdminActions() {
   );
 }
 
+function Staff() {
+  const data = useOutletContext<TournamentLoaderData>();
+
+  return (
+    <div className="stack lg">
+      {/* Key so inputs are cleared after staff is added */}
+      <StaffAdder key={data.tournament.staff.length} />
+      <StaffList />
+    </div>
+  );
+}
+
+function CastTwitchAccounts() {
+  const id = React.useId();
+  const fetcher = useFetcher();
+  const data = useOutletContext<TournamentLoaderData>();
+
+  return (
+    <fetcher.Form method="post" className="stack sm">
+      <div className="stack horizontal sm items-end">
+        <div>
+          <Label htmlFor={id}>Twitch accounts</Label>
+          <input
+            id={id}
+            placeholder="dappleproductions"
+            name="castTwitchAccounts"
+            defaultValue={data.tournament.castTwitchAccounts?.join(",")}
+          />
+        </div>
+        <SubmitButton
+          testId="save-cast-twitch-accounts-button"
+          state={fetcher.state}
+          _action="UPDATE_CAST_TWITCH_ACCOUNTS"
+        >
+          Save
+        </SubmitButton>
+      </div>
+      <FormMessage type="info">
+        Twitch account where the tournament is casted. Player streams are added
+        automatically based on their profile data. You can also enter multiple
+        accounts, just separate them with a comma e.g.
+        &quot;sendouc,leanny&quot;
+      </FormMessage>
+    </fetcher.Form>
+  );
+}
+
+function StaffAdder() {
+  const fetcher = useFetcher();
+  const data = useOutletContext<TournamentLoaderData>();
+
+  return (
+    <fetcher.Form method="post" className="stack sm">
+      <div className="stack horizontal sm flex-wrap items-end">
+        <div>
+          <Label htmlFor="staff-user">New staffer</Label>
+          <UserSearch
+            inputName="userId"
+            id="staff-user"
+            userIdsToOmit={
+              new Set([
+                data.tournament.author.id,
+                ...data.tournament.staff.map((s) => s.id),
+              ])
+            }
+          />
+        </div>
+        <div>
+          <Label htmlFor="staff-role">Role</Label>
+          <select name="role" id="staff-role" className="w-max">
+            <option value="ORGANIZER">Organizer</option>
+            <option value="STREAMER">Streamer</option>
+          </select>
+        </div>
+        <SubmitButton
+          state={fetcher.state}
+          _action="ADD_STAFF"
+          testId="add-staff-button"
+        >
+          Add
+        </SubmitButton>
+      </div>
+      <FormMessage type="info">
+        Organizer has same permissions as you expect adding/removing staff,
+        editing calendar event info and deleting the tournament. Streamer can
+        only talk in chats and see room password/pool.
+      </FormMessage>
+    </fetcher.Form>
+  );
+}
+
+function StaffList() {
+  const { t } = useTranslation(["tournament"]);
+  const data = useOutletContext<TournamentLoaderData>();
+
+  return (
+    <div className="stack md">
+      {data.tournament.staff.map((staff) => (
+        <div
+          key={staff.id}
+          className="stack horizontal sm items-center"
+          data-testid={`staff-id-${staff.id}`}
+        >
+          <Avatar size="xs" user={staff} />{" "}
+          <div className="mr-4">
+            <div>{staff.discordName}</div>
+            <div className="text-lighter text-xs text-capitalize">
+              {t(`tournament:staff.role.${staff.role}`)}
+            </div>
+          </div>
+          <RemoveStaffButton staff={staff} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function RemoveStaffButton({
+  staff,
+}: {
+  staff: TournamentLoaderData["tournament"]["staff"][number];
+}) {
+  const { t } = useTranslation(["tournament"]);
+
+  return (
+    <FormWithConfirm
+      dialogHeading={`Remove ${staff.discordName} as ${t(
+        `tournament:staff.role.${staff.role}`,
+      )}?`}
+      fields={[
+        ["userId", staff.id],
+        ["_action", "REMOVE_STAFF"],
+      ]}
+      deleteButtonText="Remove"
+    >
+      <Button
+        variant="minimal-destructive"
+        size="tiny"
+        data-testid="remove-staff-button"
+      >
+        <TrashIcon className="build__icon" />
+      </Button>
+    </FormWithConfirm>
+  );
+}
+
 function EnableMapList() {
   const data = useOutletContext<TournamentLoaderData>();
   const submit = useSubmit();
@@ -410,7 +613,6 @@ function EnableMapList() {
 }
 
 function DownloadParticipants() {
-  const { t } = useTranslation(["tournament"]);
   const data = useOutletContext<TournamentLoaderData>();
 
   function allParticipantsContent() {
@@ -454,8 +656,7 @@ function DownloadParticipants() {
 
   return (
     <div>
-      <label>{t("tournament:admin.download")} (Discord format)</label>
-      <div className="stack horizontal sm">
+      <div className="stack horizontal sm flex-wrap">
         <Button
           size="tiny"
           onClick={() =>

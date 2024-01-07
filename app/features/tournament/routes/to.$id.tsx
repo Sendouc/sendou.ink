@@ -15,7 +15,7 @@ import { SubNav, SubNavLink } from "~/components/SubNav";
 import { useTranslation } from "react-i18next";
 import { useUser } from "~/features/auth/core";
 import { getUser } from "~/features/auth/core/user.server";
-import { canAdminTournament } from "~/permissions";
+import { isTournamentOrganizer } from "~/permissions";
 import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { assertUnreachable, type Unpacked } from "~/utils/types";
@@ -129,7 +129,12 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     hasFinalized: hasTournamentFinalized(tournamentId),
     subsCount,
     streamsCount: hasStarted
-      ? (await streamsByTournamentId(tournamentId)).length
+      ? (
+          await streamsByTournamentId({
+            tournamentId,
+            castTwitchAccounts: tournament.castTwitchAccounts,
+          })
+        ).length
       : 0,
   };
 };
@@ -170,11 +175,11 @@ export default function TournamentLayout() {
             {t("tournament:tabs.streams", { count: data.streamsCount })}
           </SubNavLink>
         ) : null}
-        {canAdminTournament({ user, tournament: data.tournament }) &&
+        {isTournamentOrganizer({ user, tournament: data.tournament }) &&
           !data.hasStarted && (
             <SubNavLink to="seeds">{t("tournament:tabs.seeds")}</SubNavLink>
           )}
-        {canAdminTournament({ user, tournament: data.tournament }) &&
+        {isTournamentOrganizer({ user, tournament: data.tournament }) &&
           !data.hasFinalized && (
             <SubNavLink to="admin" data-testid="admin-tab">
               {t("tournament:tabs.admin")}

@@ -26,7 +26,11 @@ import { useSearchParamState } from "~/hooks/useSearchParamState";
 import { useVisibilityChange } from "~/hooks/useVisibilityChange";
 import { requireUser, useUser } from "~/features/auth/core";
 import { getUserId } from "~/features/auth/core/user.server";
-import { canAdminTournament, canReportTournamentScore } from "~/permissions";
+import {
+  canReportTournamentScore,
+  isTournamentOrganizer,
+  isTournamentStreamerOrOrganizer,
+} from "~/permissions";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
 import {
@@ -223,7 +227,7 @@ export const action: ActionFunction = async ({ params, request }) => {
       invariant(typeof scoreTwo === "number", "Score two is missing");
       invariant(scoreOne !== scoreTwo, "Scores are equal");
 
-      validate(canAdminTournament({ tournament, user }));
+      validate(isTournamentOrganizer({ tournament, user }));
 
       const results = findResultsByMatchId(matchId);
       const lastResult = results[results.length - 1];
@@ -313,7 +317,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
   const showChat =
     match.players.some((p) => p.id === user?.id) ||
-    canAdminTournament({
+    isTournamentStreamerOrOrganizer({
       user,
       tournament: notFoundIfFalsy(
         await TournamentRepository.findById(tournamentId),
@@ -370,14 +374,19 @@ export default function TournamentMatchPage() {
     (p) => p.id === user?.id,
   );
 
-  const type = canReportTournamentScore({
-    tournament: parentRouteData.tournament,
-    match: data.match,
-    isMemberOfATeamInTheMatch,
-    user,
-  })
-    ? "EDIT"
-    : "OTHER";
+  const type =
+    canReportTournamentScore({
+      tournament: parentRouteData.tournament,
+      match: data.match,
+      isMemberOfATeamInTheMatch,
+      user,
+    }) ||
+    isTournamentStreamerOrOrganizer({
+      user,
+      tournament: parentRouteData.tournament,
+    })
+      ? "EDIT"
+      : "OTHER";
 
   const showRosterPeek = () => {
     if (data.matchIsOver) return false;

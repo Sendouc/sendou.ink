@@ -372,6 +372,7 @@ export interface Tournament {
   id: GeneratedAlways<number>;
   mapPickingStyle: TournamentMapPickingStyle;
   showMapListGenerator: Generated<number | null>;
+  castTwitchAccounts: ColumnType<string[] | null, string | null, string | null>;
 }
 
 export interface TournamentBadgeOwner {
@@ -450,6 +451,12 @@ export interface TournamentSub {
   tournamentId: number;
   userId: number;
   visibility: string;
+}
+
+export interface TournamentStaff {
+  tournamentId: number;
+  userId: number;
+  role: "ORGANIZER" | "STREAMER";
 }
 
 export interface TournamentTeam {
@@ -659,6 +666,7 @@ export interface DB {
   Team: Team;
   TeamMember: TeamMember;
   Tournament: Tournament;
+  TournamentStaff: TournamentStaff;
   TournamentBadgeOwner: TournamentBadgeOwner;
   TournamentGroup: TournamentGroup;
   TournamentMatch: TournamentMatch;

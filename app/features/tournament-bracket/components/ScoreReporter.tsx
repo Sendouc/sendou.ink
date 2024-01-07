@@ -24,7 +24,7 @@ import type {
   TournamentLoaderTeam,
   TournamentLoaderData,
 } from "~/features/tournament";
-import { canAdminTournament } from "~/permissions";
+import { canReportTournamentScore, isTournamentOrganizer } from "~/permissions";
 import { useUser } from "~/features/auth/core";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { databaseTimestampToDate } from "~/utils/dates";
@@ -83,7 +83,7 @@ export function ScoreReporter({
     showFullInfos ? (
       <>
         {t("tournament:match.pass")}{" "}
-        <span className="text-theme font-bold">
+        <span className="text-theme font-bold" data-testid="room-pass">
           {resolveRoomPass(data.match.id)}
         </span>
       </>
@@ -139,7 +139,10 @@ export function ScoreReporter({
             </div>
           </Form>
         )}
-        {canAdminTournament({ user, tournament: parentRouteData.tournament }) &&
+        {isTournamentOrganizer({
+          user,
+          tournament: parentRouteData.tournament,
+        }) &&
           !parentRouteData.hasFinalized &&
           presentational &&
           !matchIsLockedError && (
@@ -345,13 +348,27 @@ function MatchActionSectionTabs({
   teams: [TournamentLoaderTeam, TournamentLoaderTeam];
   result?: Result;
 }) {
+  const user = useUser();
+  const parentRouteData = useOutletContext<TournamentLoaderData>();
   const data = useLoaderData<TournamentMatchLoaderData>();
   const [_unseenMessages, setUnseenMessages] = React.useState(0);
   const [chatVisible, setChatVisible] = React.useState(false);
 
   const chatUsers = React.useMemo(() => {
-    return Object.fromEntries(data.match.players.map((p) => [p.id, p]));
-  }, [data]);
+    return Object.fromEntries(
+      [
+        ...data.match.players.map((p) => ({ ...p, title: undefined })),
+        ...parentRouteData.tournament.staff.map((s) => ({
+          ...s,
+          title: s.role === "STREAMER" ? "Stream" : "TO",
+        })),
+        {
+          ...parentRouteData.tournament.author,
+          title: "TO",
+        },
+      ].map((p) => [p.id, p]),
+    );
+  }, [data, parentRouteData]);
 
   const rooms = React.useMemo(() => {
     return data.match.chatCode
@@ -382,6 +399,10 @@ function MatchActionSectionTabs({
   const unseenMessages = chatVisible ? 0 : _unseenMessages;
 
   const currentPosition = scores[0] + scores[1];
+
+  const isMemberOfATeamInTheMatch = data.match.players.some(
+    (p) => p.id === user?.id,
+  );
 
   return (
     <ActionSectionWrapper>
@@ -432,6 +453,14 @@ function MatchActionSectionTabs({
                 currentStageWithMode={currentStageWithMode}
                 result={result}
                 bestOf={data.match.bestOf}
+                presentational={
+                  !canReportTournamentScore({
+                    tournament: parentRouteData.tournament,
+                    match: data.match,
+                    isMemberOfATeamInTheMatch,
+                    user,
+                  })
+                }
               />
             ),
           },
