@@ -94,3 +94,25 @@
   font-size: var(--fonts-xxxs);
   color: var(--theme);
 }
+
+/** Round robin */
+
+.brackets-viewer .round-robin {
+  margin: 0 auto;
+}
+
+th[title="Forfeits"] {
+  display: none;
+}
+
+th[title="Draws"] {
+  display: none;
+}
+
+.group td:nth-child(5) {
+  display: none;
+}
+
+.group td:nth-child(7) {
+  display: none;
+}

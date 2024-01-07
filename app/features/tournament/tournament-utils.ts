@@ -81,6 +81,10 @@ export function HACKY_resolvePicture(event: { name: string }) {
   if (HACKY_isInviteOnlyEvent(event))
     return "https://abload.de/img/screenshot2023-11-25ay1fbc.png";
 
+  if (event.name.includes("Paddling Pool")) {
+    return "https://abload.de/img/3hii5p.jpg";
+  }
+
   if (event.name.includes("In The Zone"))
     return "https://abload.de/img/screenshot2023-04-19a2bfv0.png";
 

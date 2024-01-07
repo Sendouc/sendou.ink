@@ -365,11 +365,16 @@ export async function create(args: CreateArgs) {
   return db.transaction().execute(async (trx) => {
     let tournamentId;
     if (args.isFullTournament) {
+      const format: Tables["Tournament"]["bracketsStyle"] = [{ format: "DE" }];
+
       tournamentId = (
         await trx
           .insertInto("Tournament")
-          // TODO: format picking
-          .values({ mapPickingStyle: args.mapPickingStyle, format: "DE" })
+          // xxx: format picking
+          .values({
+            mapPickingStyle: args.mapPickingStyle,
+            bracketsStyle: JSON.stringify(format),
+          })
           .returning("id")
           .executeTakeFirstOrThrow()
       ).id;

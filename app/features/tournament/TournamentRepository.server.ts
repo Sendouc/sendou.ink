@@ -19,7 +19,7 @@ export async function findById(id: number) {
     .select(({ eb }) => [
       "Tournament.id",
       "Tournament.mapPickingStyle",
-      "Tournament.format",
+      "Tournament.bracketsStyle",
       "Tournament.showMapListGenerator",
       "Tournament.castTwitchAccounts",
       "CalendarEvent.id as eventId",

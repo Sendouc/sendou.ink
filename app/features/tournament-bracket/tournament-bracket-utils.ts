@@ -1,9 +1,5 @@
 import type { Stage } from "~/modules/brackets-model";
-import type {
-  TournamentFormat,
-  TournamentMatch,
-  TournamentStage,
-} from "~/db/types";
+import type { TournamentMatch, TournamentStage } from "~/db/types";
 import {
   sourceTypes,
   seededRandom,
@@ -18,6 +14,7 @@ import type { Params } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import type { DataTypes, ValueToArray } from "~/modules/brackets-manager/types";
 import { HACKY_isInviteOnlyEvent } from "../tournament/tournament-utils";
+import type { BracketFormat } from "~/db/tables";
 
 export function matchIdFromParams(params: Params<string>) {
   const result = Number(params["mid"]);
@@ -71,11 +68,13 @@ export function resolveHostingTeam(
   return teams[0];
 }
 
-export function resolveTournamentStageName(format: TournamentFormat) {
+export function resolveTournamentStageName(format: BracketFormat) {
   switch (format) {
     case "SE":
     case "DE":
       return "Elimination stage";
+    case "RR":
+      return "Groups stage";
     default: {
       assertUnreachable(format);
     }
@@ -83,13 +82,15 @@ export function resolveTournamentStageName(format: TournamentFormat) {
 }
 
 export function resolveTournamentStageType(
-  format: TournamentFormat,
+  format: BracketFormat,
 ): TournamentStage["type"] {
   switch (format) {
     case "SE":
       return "single_elimination";
     case "DE":
       return "double_elimination";
+    case "RR":
+      return "round_robin";
     default: {
       assertUnreachable(format);
     }
@@ -97,14 +98,19 @@ export function resolveTournamentStageType(
 }
 
 export function resolveTournamentStageSettings(
-  format: TournamentFormat,
+  format: BracketFormat,
 ): Stage["settings"] {
   switch (format) {
     case "SE":
-      return {};
+      return { consolationFinal: false };
     case "DE":
       return {
         grandFinal: "double",
+      };
+    // xxx: resolve from TO setting
+    case "RR":
+      return {
+        groupCount: 4,
       };
     default: {
       assertUnreachable(format);

@@ -1,10 +1,20 @@
 import invariant from "tiny-invariant";
 import type { FindAllMatchesByTournamentIdMatch } from "../queries/findAllMatchesByTournamentId.server";
+import type { BracketFormat } from "~/db/tables";
 
-// TODO: this only works for double elimination
 export function resolveBestOfs(
   matches: Array<FindAllMatchesByTournamentIdMatch>,
-) {
+  format: BracketFormat,
+): [bestOf: 3 | 5 | 7, id: number][] {
+  if (format === "RR") {
+    return matches.map((match) => [3, match.matchId]);
+  }
+  if (format === "SE") {
+    return matches.map((match) => [5, match.matchId]);
+  }
+
+  // Double Elimination logic
+
   // 3 is default
   const result: [bestOf: 5 | 7, id: number][] = [];
 

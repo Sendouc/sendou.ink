@@ -1,4 +1,5 @@
 import { sql } from "~/db/sql";
+import type { Tables } from "~/db/tables";
 import type {
   CalendarEvent,
   CalendarEventDate,
@@ -10,7 +11,7 @@ const stm = sql.prepare(/*sql*/ `
 select
   "Tournament"."id",
   "Tournament"."mapPickingStyle",
-  "Tournament"."format",
+  "Tournament"."bracketsStyle",
   "Tournament"."showMapListGenerator",
   "CalendarEvent"."id" as "eventId",
   "CalendarEvent"."name",
@@ -33,12 +34,11 @@ type FindByIdentifierRow = (Pick<
   CalendarEvent,
   "bracketUrl" | "name" | "description" | "authorId"
 > &
-  Pick<
-    Tournament,
-    "id" | "format" | "mapPickingStyle" | "showMapListGenerator"
-  > &
+  Pick<Tournament, "id" | "mapPickingStyle" | "showMapListGenerator"> &
   Pick<User, "discordId" | "discordName" | "discordDiscriminator"> &
-  Pick<CalendarEventDate, "startTime">) & { eventId: CalendarEvent["id"] };
+  Pick<CalendarEventDate, "startTime">) & {
+  eventId: CalendarEvent["id"];
+} & { bracketsStyle: string };
 
 export function findByIdentifier(identifier: string | number) {
   const rows = stm.all({ identifier }) as FindByIdentifierRow[];
@@ -50,6 +50,9 @@ export function findByIdentifier(identifier: string | number) {
 
   return {
     ...rest,
+    bracketsStyle: JSON.parse(
+      tournament.bracketsStyle,
+    ) as Tables["Tournament"]["bracketsStyle"],
     author: {
       discordId,
       discordName,

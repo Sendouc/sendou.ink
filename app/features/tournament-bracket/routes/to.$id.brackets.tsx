@@ -132,20 +132,32 @@ export const action: ActionFunction = async ({ params, request }) => {
 
       validate(teams.length >= 2, "Not enough teams registered");
 
+      // xxx:
+      const bracketIndex = 0;
+
       sql.transaction(() => {
         manager.create({
           tournamentId,
-          name: resolveTournamentStageName(tournament.format),
-          type: resolveTournamentStageType(tournament.format),
+          name: resolveTournamentStageName(
+            tournament.bracketsStyle[bracketIndex].format,
+          ),
+          type: resolveTournamentStageType(
+            tournament.bracketsStyle[bracketIndex].format,
+          ),
           seeding: fillWithNullTillPowerOfTwo(teams.map((team) => team.name)),
-          settings: resolveTournamentStageSettings(tournament.format),
+          settings: resolveTournamentStageSettings(
+            tournament.bracketsStyle[bracketIndex].format,
+          ),
         });
 
         const matches = findAllMatchesByTournamentId(tournamentId);
         // TODO: dynamic best of set when bracket is made
         const bestOfs = HACKY_isInviteOnlyEvent(tournament)
           ? matches.map((match) => [5, match.matchId] as [5, number])
-          : resolveBestOfs(matches);
+          : resolveBestOfs(
+              matches,
+              tournament.bracketsStyle[bracketIndex].format,
+            );
         for (const [bestOf, id] of bestOfs) {
           setBestOf({ bestOf, id });
         }
@@ -248,14 +260,23 @@ export const loader = ({ params }: LoaderFunctionArgs) => {
     teams = teams.filter(teamHasCheckedIn);
   }
 
+  // xxx:
+  const bracketIndex = 0;
+
   const enoughTeams = teams.length >= TOURNAMENT.ENOUGH_TEAMS_TO_START;
   if (enoughTeams) {
     manager.create({
       tournamentId,
-      name: resolveTournamentStageName(tournament.format),
-      type: resolveTournamentStageType(tournament.format),
+      name: resolveTournamentStageName(
+        tournament.bracketsStyle[bracketIndex].format,
+      ),
+      type: resolveTournamentStageType(
+        tournament.bracketsStyle[bracketIndex].format,
+      ),
       seeding: fillWithNullTillPowerOfTwo(teams.map((team) => team.name)),
-      settings: resolveTournamentStageSettings(tournament.format),
+      settings: resolveTournamentStageSettings(
+        tournament.bracketsStyle[bracketIndex].format,
+      ),
     });
   }
 
