@@ -836,10 +836,14 @@ function calendarEventWithToTools(event: "PICNIC" | "ITZ" | "PP" = "PICNIC") {
   const bracketsStyle: Tables["Tournament"]["bracketsStyle"] =
     event === "PP"
       ? [
-          { format: "RR" },
-          { format: "DE", source: { bracketIdx: 0, placements: [1, 2] } },
+          { format: "RR", name: "Groups stage" },
+          {
+            format: "DE",
+            name: "Final stage",
+            sources: [{ bracketIdx: 0, placements: [1, 2] }],
+          },
         ]
-      : [{ format: "DE" }];
+      : [{ format: "DE", name: "Elimination stage" }];
 
   sql
     .prepare(

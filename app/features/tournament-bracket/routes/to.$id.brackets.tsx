@@ -20,7 +20,6 @@ import { Alert } from "~/components/Alert";
 import { SubmitButton } from "~/components/SubmitButton";
 import { getTournamentManager } from "../core/brackets-manager";
 import hasTournamentStarted from "../../tournament/queries/hasTournamentStarted.server";
-import { findByIdentifier } from "../../tournament/queries/findByIdentifier.server";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import {
   SENDOU_INK_BASE_URL,
@@ -85,6 +84,11 @@ import {
   HACKY_isInviteOnlyEvent,
   HACKY_maxRosterSizeBeforeStart,
 } from "~/features/tournament/tournament-utils";
+import {
+  bracketData,
+  registeredTeamsReadyToPlay,
+} from "../core/bracket-progression.server";
+import type { DataTypes, ValueToArray } from "~/modules/brackets-manager/types";
 
 export const links: LinksFunction = () => {
   return [
@@ -115,6 +119,7 @@ export const action: ActionFunction = async ({ params, request }) => {
   validate(isTournamentOrganizer({ user, tournament }));
 
   switch (data._action) {
+    // xxx: "START_BRACKET" and refactor logic
     case "START_TOURNAMENT": {
       const hasStarted = hasTournamentStarted(tournamentId);
 
@@ -132,7 +137,6 @@ export const action: ActionFunction = async ({ params, request }) => {
 
       validate(teams.length >= 2, "Not enough teams registered");
 
-      // xxx:
       const bracketIndex = 0;
 
       sql.transaction(() => {
@@ -227,68 +231,41 @@ export const action: ActionFunction = async ({ params, request }) => {
 
 export type TournamentBracketLoaderData = SerializeFrom<typeof loader>;
 
-export const loader = ({ params }: LoaderFunctionArgs) => {
+export const loader = async ({ params }: LoaderFunctionArgs) => {
   const tournamentId = tournamentIdFromParams(params);
 
-  const hasStarted = hasTournamentStarted(tournamentId);
-  const manager = getTournamentManager(hasStarted ? "SQL" : "IN_MEMORY");
+  const inProgressTournamentFields = (bracket: ValueToArray<DataTypes>) => {
+    // xxx: TODO: infer hasStarted from bracket instead
+    const hasStarted = hasTournamentStarted(tournamentId);
 
-  if (hasStarted) {
-    const bracket = manager.get.tournamentData(tournamentId);
-    invariant(
-      bracket.stage.length === 1,
-      "Bracket doesn't have exactly one stage",
-    );
-    const stage = bracket.stage[0];
+    if (!hasStarted)
+      return {
+        roundBestOfs: null,
+        finalStandings: null,
+        everyMatchIsOver: false,
+      };
 
     const _everyMatchIsOver = everyMatchIsOver(bracket);
     return {
-      enoughTeams: true,
-      bracket,
       roundBestOfs: bestOfsByTournamentId(tournamentId),
       everyMatchIsOver: _everyMatchIsOver,
       finalStandings: _everyMatchIsOver
-        ? finalStandings({ manager, tournamentId, stageId: stage.id })
+        ? finalStandings({
+            manager: getTournamentManager("SQL"),
+            tournamentId,
+            stageId: bracket.stage[0].id,
+          })
         : null,
     };
-  }
+  };
 
-  const tournament = notFoundIfFalsy(findByIdentifier(tournamentId));
-
-  let teams = findTeamsByTournamentId(tournamentId);
-  if (checkInHasStarted(tournament)) {
-    teams = teams.filter(teamHasCheckedIn);
-  }
-
-  // xxx:
-  const bracketIndex = 0;
-
-  const enoughTeams = teams.length >= TOURNAMENT.ENOUGH_TEAMS_TO_START;
-  if (enoughTeams) {
-    manager.create({
-      tournamentId,
-      name: resolveTournamentStageName(
-        tournament.bracketsStyle[bracketIndex].format,
-      ),
-      type: resolveTournamentStageType(
-        tournament.bracketsStyle[bracketIndex].format,
-      ),
-      seeding: fillWithNullTillPowerOfTwo(teams.map((team) => team.name)),
-      settings: resolveTournamentStageSettings(
-        tournament.bracketsStyle[bracketIndex].format,
-      ),
-    });
-  }
-
-  // TODO: use get.stageData
-  const data = manager.get.tournamentData(tournamentId);
-
+  // xxx: bracketIdx from search params
+  const bracket = await bracketData({ tournamentId, bracketIdx: 0 });
   return {
-    bracket: data,
-    enoughTeams,
-    everyMatchIsOver: false,
-    roundBestOfs: null,
-    finalStandings: null,
+    bracket,
+    // xxx: -> "can be started"?
+    enoughTeams: registeredTeamsReadyToPlay({ tournamentId }).enoughTeams,
+    ...inProgressTournamentFields(bracket),
   };
 };
 

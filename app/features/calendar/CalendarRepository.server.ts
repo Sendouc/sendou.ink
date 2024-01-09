@@ -365,7 +365,9 @@ export async function create(args: CreateArgs) {
   return db.transaction().execute(async (trx) => {
     let tournamentId;
     if (args.isFullTournament) {
-      const format: Tables["Tournament"]["bracketsStyle"] = [{ format: "DE" }];
+      const format: Tables["Tournament"]["bracketsStyle"] = [
+        { format: "DE", name: "Elimination bracket" },
+      ];
 
       tournamentId = (
         await trx

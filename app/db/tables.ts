@@ -367,15 +367,16 @@ type TournamentMapPickingStyle =
 
 export type BracketFormat = "SE" | "DE" | "RR";
 
-type TournamentBracketsStyle = {
+export type TournamentBracketsStyle = {
   format: BracketFormat;
+  name: string;
   /** Where do the teams come from? If missing then it means the source is the full registered teams list. */
-  source?: {
+  sources?: {
     /** Index of the bracket where the teams come from */
     bracketIdx: number;
     /** Team placements that join this bracket. E.g. [1, 2] would mean top 1 & 2 teams. [-1] would mean the last placing teams. */
     placements: number[];
-  };
+  }[];
 }[];
 
 export interface Tournament {

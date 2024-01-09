@@ -68,6 +68,7 @@ export function resolveHostingTeam(
   return teams[0];
 }
 
+// xxx: delete
 export function resolveTournamentStageName(format: BracketFormat) {
   switch (format) {
     case "SE":
