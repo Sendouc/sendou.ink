@@ -45,7 +45,6 @@ import {
   bracketSubscriptionKey,
   everyMatchIsOver,
   fillWithNullTillPowerOfTwo,
-  resolveTournamentStageName,
   resolveTournamentStageSettings,
   resolveTournamentStageType,
 } from "../tournament-bracket-utils";
@@ -86,7 +85,7 @@ import {
 } from "~/features/tournament/tournament-utils";
 import {
   bracketData,
-  registeredTeamsReadyToPlay,
+  teamsForBracketByBracketIdx,
 } from "../core/bracket-progression.server";
 import type { DataTypes, ValueToArray } from "~/modules/brackets-manager/types";
 
@@ -118,50 +117,40 @@ export const action: ActionFunction = async ({ params, request }) => {
 
   validate(isTournamentOrganizer({ user, tournament }));
 
+  const bracketIdx = 0;
+
   switch (data._action) {
     // xxx: "START_BRACKET" and refactor logic
     case "START_TOURNAMENT": {
+      // xxx: bracket has started
       const hasStarted = hasTournamentStarted(tournamentId);
 
       validate(!hasStarted);
 
-      let teams = findTeamsByTournamentId(tournamentId);
-      if (checkInHasStarted(tournament)) {
-        teams = teams.filter(teamHasCheckedIn);
-      } else {
-        // in the normal check in process this is handled
-        teams = teams.filter(
-          (team) => team.members.length >= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
-        );
-      }
+      const { teams, enoughTeams } = await teamsForBracketByBracketIdx({
+        tournamentId,
+        bracketIdx,
+      });
 
-      validate(teams.length >= 2, "Not enough teams registered");
+      validate(enoughTeams, "Not enough teams registered");
 
-      const bracketIndex = 0;
+      const { format, name } = tournament.bracketsStyle[bracketIdx];
 
       sql.transaction(() => {
         manager.create({
           tournamentId,
-          name: resolveTournamentStageName(
-            tournament.bracketsStyle[bracketIndex].format,
-          ),
-          type: resolveTournamentStageType(
-            tournament.bracketsStyle[bracketIndex].format,
-          ),
+          name,
+          type: resolveTournamentStageType(format),
           seeding: fillWithNullTillPowerOfTwo(teams.map((team) => team.name)),
-          settings: resolveTournamentStageSettings(
-            tournament.bracketsStyle[bracketIndex].format,
-          ),
+          settings: resolveTournamentStageSettings(format),
         });
 
+        // xxx: matches of the bracket
         const matches = findAllMatchesByTournamentId(tournamentId);
         // TODO: dynamic best of set when bracket is made
         const bestOfs = HACKY_isInviteOnlyEvent(tournament)
           ? matches.map((match) => [5, match.matchId] as [5, number])
-          : resolveBestOfs(
-              matches,
-              tournament.bracketsStyle[bracketIndex].format,
-            );
+          : resolveBestOfs(matches, format);
         for (const [bestOf, id] of bestOfs) {
           setBestOf({ bestOf, id });
         }
@@ -238,12 +227,13 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     // xxx: TODO: infer hasStarted from bracket instead
     const hasStarted = hasTournamentStarted(tournamentId);
 
-    if (!hasStarted)
+    if (!hasStarted) {
       return {
         roundBestOfs: null,
         finalStandings: null,
         everyMatchIsOver: false,
       };
+    }
 
     const _everyMatchIsOver = everyMatchIsOver(bracket);
     return {
@@ -260,11 +250,15 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   };
 
   // xxx: bracketIdx from search params
-  const bracket = await bracketData({ tournamentId, bracketIdx: 0 });
+  const bracket = await bracketData({
+    tournamentId,
+    bracketIdx: 0,
+  });
   return {
     bracket,
     // xxx: -> "can be started"?
-    enoughTeams: registeredTeamsReadyToPlay({ tournamentId }).enoughTeams,
+    enoughTeams: true,
+    // enoughTeams: registeredTeamsReadyToPlay({ tournamentId }).enoughTeams,
     ...inProgressTournamentFields(bracket),
   };
 };

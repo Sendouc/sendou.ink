@@ -65,23 +65,33 @@ export async function findById(id: number) {
 }
 
 export function findBracketProgressionByTournamentId(tournamentId: number) {
-  return db
-    .selectFrom("Tournament")
-    .select(({ eb }) => [
-      "Tournament.bracketsStyle",
-      jsonArrayFrom(
-        eb
-          .selectFrom("TournamentStage")
-          .select([
-            "TournamentStage.id",
-            "TournamentStage.number",
-            "TournamentStage.name",
-          ])
-          .whereRef("Tournament.id", "=", "TournamentStage.tournamentId"),
-      ).as("stages"),
-    ])
-    .where("Tournament.id", "=", tournamentId)
-    .executeTakeFirstOrThrow();
+  return (
+    db
+      .selectFrom("Tournament")
+      .innerJoin("CalendarEvent", "Tournament.id", "CalendarEvent.tournamentId")
+      // TODO: it does not support multiple dates
+      .innerJoin(
+        "CalendarEventDate",
+        "CalendarEvent.id",
+        "CalendarEventDate.eventId",
+      )
+      .select(({ eb }) => [
+        "Tournament.bracketsStyle",
+        "CalendarEventDate.startTime",
+        jsonArrayFrom(
+          eb
+            .selectFrom("TournamentStage")
+            .select([
+              "TournamentStage.id",
+              "TournamentStage.number",
+              "TournamentStage.name",
+            ])
+            .whereRef("Tournament.id", "=", "TournamentStage.tournamentId"),
+        ).as("stages"),
+      ])
+      .where("Tournament.id", "=", tournamentId)
+      .executeTakeFirstOrThrow()
+  );
 }
 
 export function addStaff({

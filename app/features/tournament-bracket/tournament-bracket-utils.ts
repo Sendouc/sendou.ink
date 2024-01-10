@@ -68,20 +68,6 @@ export function resolveHostingTeam(
   return teams[0];
 }
 
-// xxx: delete
-export function resolveTournamentStageName(format: BracketFormat) {
-  switch (format) {
-    case "SE":
-    case "DE":
-      return "Elimination stage";
-    case "RR":
-      return "Groups stage";
-    default: {
-      assertUnreachable(format);
-    }
-  }
-}
-
 export function resolveTournamentStageType(
   format: BracketFormat,
 ): TournamentStage["type"] {

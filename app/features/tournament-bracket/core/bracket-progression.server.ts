@@ -5,7 +5,11 @@ import type { TournamentBracketsStyle } from "~/db/tables";
 import { logger } from "~/utils/logger";
 import { getTournamentManager } from "..";
 import { findTeamsByTournamentId } from "~/features/tournament/queries/findTeamsByTournamentId.server";
-import { TOURNAMENT } from "~/features/tournament";
+import {
+  TOURNAMENT,
+  checkInHasStarted,
+  teamHasCheckedIn,
+} from "~/features/tournament";
 import {
   fillWithNullTillPowerOfTwo,
   resolveTournamentStageSettings,
@@ -20,14 +24,19 @@ export async function bracketData({
   bracketIdx?: number;
   tournamentId: number;
 }): Promise<ValueToArray<DataTypes>> {
-  const { bracketsStyle, stages } =
+  const tournament =
     await TournamentRepository.findBracketProgressionByTournamentId(
       tournamentId,
     );
 
-  const bracket = bracketByIndex({ bracketsStyle, bracketIdx });
+  const bracket = bracketByIndex({
+    bracketsStyle: tournament.bracketsStyle,
+    bracketIdx,
+  });
 
-  const bracketInDb = stages.find((stage) => stage.name === bracket.name);
+  const bracketInDb = tournament.stages.find(
+    (stage) => stage.name === bracket.name,
+  );
 
   if (bracketInDb) {
     return getTournamentManager("SQL").get.stageData(bracketInDb.id);
@@ -35,9 +44,11 @@ export async function bracketData({
 
   const manager = getTournamentManager("IN_MEMORY");
 
-  const { teams, enoughTeams } = bracket.sources
-    ? { teams: [], enoughTeams: false } // xxx: resolveTeamsFromSourceBrackets(...)
-    : registeredTeamsReadyToPlay({ tournamentId });
+  const { teams, enoughTeams } = teamsForBracket({
+    tournamentId,
+    bracket,
+    checkInHasStarted: checkInHasStarted(tournament),
+  });
 
   if (enoughTeams) {
     manager.create({
@@ -69,16 +80,55 @@ function bracketByIndex({
   return fallbackBracket;
 }
 
-export function registeredTeamsReadyToPlay({
+export async function teamsForBracketByBracketIdx({
+  bracketIdx = 0,
   tournamentId,
 }: {
+  bracketIdx?: number;
   tournamentId: number;
 }) {
-  const teams = findTeamsByTournamentId(tournamentId);
-  // xxx: checkInHasStarted
-  // if (checkInHasStarted(tournament)) {
-  //   teams = teams.filter(teamHasCheckedIn);
-  // }
+  const tournament =
+    await TournamentRepository.findBracketProgressionByTournamentId(
+      tournamentId,
+    );
+
+  const bracket = bracketByIndex({
+    bracketsStyle: tournament.bracketsStyle,
+    bracketIdx,
+  });
+
+  return teamsForBracket({
+    tournamentId,
+    bracket,
+    checkInHasStarted: checkInHasStarted(tournament),
+  });
+}
+
+function teamsForBracket({
+  tournamentId,
+  bracket,
+  checkInHasStarted,
+}: {
+  tournamentId: number;
+  bracket: TournamentBracketsStyle[number];
+  checkInHasStarted: boolean;
+}) {
+  return bracket.sources
+    ? { teams: [], enoughTeams: false } // xxx: resolveTeamsFromSourceBrackets(...)
+    : registeredTeamsReadyToPlay({ tournamentId, checkInHasStarted });
+}
+
+function registeredTeamsReadyToPlay({
+  tournamentId,
+  checkInHasStarted,
+}: {
+  tournamentId: number;
+  checkInHasStarted: boolean;
+}) {
+  let teams = findTeamsByTournamentId(tournamentId);
+  if (checkInHasStarted) {
+    teams = teams.filter(teamHasCheckedIn);
+  }
 
   return {
     teams,
