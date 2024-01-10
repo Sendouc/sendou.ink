@@ -256,9 +256,6 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   });
   return {
     bracket,
-    // xxx: -> "can be started"?
-    enoughTeams: true,
-    // enoughTeams: registeredTeamsReadyToPlay({ tournamentId }).enoughTeams,
     ...inProgressTournamentFields(bracket),
   };
 };
@@ -273,9 +270,12 @@ export default function TournamentBracketsPage() {
   const navigate = useNavigate();
   const parentRouteData = useOutletContext<TournamentLoaderData>();
 
+  const enoughTeams =
+    data.bracket.participant.length >= TOURNAMENT.ENOUGH_TEAMS_TO_START;
+
   // TODO: bracket i18n
   React.useEffect(() => {
-    if (!data.enoughTeams) return;
+    if (!enoughTeams) return;
 
     // matches aren't generated before tournament starts
     if (parentRouteData.hasStarted) {
@@ -352,7 +352,7 @@ export default function TournamentBracketsPage() {
 
       element.innerHTML = "";
     };
-  }, [data, navigate, parentRouteData]);
+  }, [data, navigate, parentRouteData, enoughTeams]);
 
   React.useEffect(() => {
     if (visibility !== "visible" || data.everyMatchIsOver) return;
@@ -435,7 +435,7 @@ export default function TournamentBracketsPage() {
           </FormWithConfirm>
         </div>
       ) : null}
-      {!parentRouteData.hasStarted && data.enoughTeams ? (
+      {!parentRouteData.hasStarted && enoughTeams ? (
         <Form method="post" className="stack items-center">
           {!isTournamentOrganizer({
             user,
@@ -500,7 +500,7 @@ export default function TournamentBracketsPage() {
         <FinalStandings standings={data.finalStandings} />
       ) : null}
       <div className="brackets-viewer" ref={ref}></div>
-      {!data.enoughTeams ? (
+      {!enoughTeams ? (
         <div className="text-center text-lg font-semi-bold text-lighter">
           {t("tournament:bracket.waiting", {
             count: TOURNAMENT.ENOUGH_TEAMS_TO_START,

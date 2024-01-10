@@ -50,15 +50,16 @@ export async function bracketData({
     checkInHasStarted: checkInHasStarted(tournament),
   });
 
-  if (enoughTeams) {
-    manager.create({
-      tournamentId,
-      name: bracket.name,
-      type: resolveTournamentStageType(bracket.format),
-      seeding: fillWithNullTillPowerOfTwo(teams.map((team) => team.name)),
-      settings: resolveTournamentStageSettings(bracket.format),
-    });
-  }
+  // no stages but return what we can
+  if (!enoughTeams) return manager.get.tournamentData(tournamentId);
+
+  manager.create({
+    tournamentId,
+    name: bracket.name,
+    type: resolveTournamentStageType(bracket.format),
+    seeding: fillWithNullTillPowerOfTwo(teams.map((team) => team.name)),
+    settings: resolveTournamentStageSettings(bracket.format),
+  });
 
   return manager.get.stageData(0);
 }
