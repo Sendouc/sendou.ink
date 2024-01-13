@@ -7,12 +7,15 @@ import type { GetTournamentResponse } from "../schema";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { HACKY_resolvePicture } from "~/features/tournament/tournament-utils";
 import { jsonArrayFrom } from "kysely/helpers/sqlite";
+import { requireBearerAuth } from "../api-public-utils.server";
 
 const paramsSchema = z.object({
   id,
 });
 
-export const loader = async ({ params }: LoaderFunctionArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
+  requireBearerAuth(request);
+
   const { id } = parseParams({ params, schema: paramsSchema });
 
   const tournament = notFoundIfFalsy(

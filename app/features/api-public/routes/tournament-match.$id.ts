@@ -7,12 +7,15 @@ import type { GetTournamentMatchResponse } from "../schema";
 import { i18next } from "~/modules/i18n";
 import { jsonArrayFrom } from "kysely/helpers/sqlite";
 import { resolveMapList } from "~/features/tournament-bracket/core/mapList.server";
+import { requireBearerAuth } from "../api-public-utils.server";
 
 const paramsSchema = z.object({
   id,
 });
 
-export const loader = async ({ params }: LoaderFunctionArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
+  requireBearerAuth(request);
+
   const t = await i18next.getFixedT("en", ["game-misc"]);
   const { id } = parseParams({
     params,

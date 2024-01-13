@@ -7,12 +7,15 @@ import type { GetTournamentTeamsResponse } from "../schema";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { jsonArrayFrom } from "kysely/helpers/sqlite";
 import { i18next } from "~/modules/i18n";
+import { requireBearerAuth } from "../api-public-utils.server";
 
 const paramsSchema = z.object({
   id,
 });
 
-export const loader = async ({ params }: LoaderFunctionArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
+  requireBearerAuth(request);
+
   const t = await i18next.getFixedT("en", ["game-misc"]);
   const { id } = parseParams({
     params,

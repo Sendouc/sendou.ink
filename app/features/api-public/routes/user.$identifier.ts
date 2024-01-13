@@ -6,12 +6,15 @@ import { notFoundIfFalsy, parseParams } from "~/utils/remix";
 import type { GetUserResponse } from "../schema";
 import { jsonArrayFrom } from "kysely/helpers/sqlite";
 import { i18next } from "~/modules/i18n";
+import { requireBearerAuth } from "../api-public-utils.server";
 
 const paramsSchema = z.object({
   identifier: z.string(),
 });
 
-export const loader = async ({ params }: LoaderFunctionArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
+  requireBearerAuth(request);
+
   const t = await i18next.getFixedT("en", ["weapons"]);
   const { identifier } = parseParams({ params, schema: paramsSchema });
 
