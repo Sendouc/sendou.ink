@@ -225,6 +225,23 @@ module.exports = {
       route("/seed", "features/api-private/routes/seed.tsx");
       route("/users", "features/api-private/routes/users.tsx");
 
+      route(
+        "/api/user/:identifier",
+        "features/api-public/routes/user.$identifier.ts",
+      );
+      route(
+        "/api/tournament/:id",
+        "features/api-public/routes/tournament.$id.ts",
+      );
+      route(
+        "/api/tournament/:id/teams",
+        "features/api-public/routes/tournament.$id.teams.ts",
+      );
+      route(
+        "/api/tournament-match/:id",
+        "features/api-public/routes/tournament-match.$id.ts",
+      );
+
       route("/theme", "features/theme/routes/theme.ts");
 
       route("/auth", "features/auth/routes/auth.tsx");

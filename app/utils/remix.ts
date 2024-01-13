@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { UIMatch } from "@remix-run/react";
+import type { Params, UIMatch } from "@remix-run/react";
 import type navItems from "~/components/layout/nav-items.json";
 import { json } from "@remix-run/node";
 import type { Namespace, TFunction } from "i18next";
@@ -79,6 +79,26 @@ export function parseFormData<T extends z.ZodTypeAny>({
 }): z.infer<T> {
   try {
     return schema.parse(formDataToObject(formData));
+  } catch (e) {
+    if (e instanceof z.ZodError) {
+      console.error(e);
+      throw new Response(JSON.stringify(e), { status: 400 });
+    }
+
+    throw e;
+  }
+}
+
+/** Parse params with the given schema. Throws HTTP 400 response if fails. */
+export function parseParams<T extends z.ZodTypeAny>({
+  params,
+  schema,
+}: {
+  params: Params<string>;
+  schema: T;
+}): z.infer<T> {
+  try {
+    return schema.parse(params);
   } catch (e) {
     if (e instanceof z.ZodError) {
       console.error(e);
