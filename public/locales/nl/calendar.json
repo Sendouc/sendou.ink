@@ -40,9 +40,6 @@
   "forms.errors.duplicatePlayer": "Je kunt niet een speler twee keer in hetzelfde team neerzetten.",
   "forms.errors.emptyTeam": "Elk team moet tenminste één speler hebben",
 
-  "forms.toTools.header": "Activeer TO gereedschappen",
-  "forms.toTools.explanation": "Met TO-gereedschappen zal je toernooi voorbestemde levels gebruiken en de plaatsen-gereedschap zal beschikbaar zijn.",
-
   "week.this": "Deze week",
   "week.next": "Volgende week",
   "week.last": "Vorige week",

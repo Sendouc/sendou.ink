@@ -47,9 +47,6 @@
   "forms.errors.duplicatePlayer": "Impossible d'avoir le même joueur plusieurs fois dans la même équipe.",
   "forms.errors.emptyTeam": "Chaque équipe doit au moins avoir un joueur.",
 
-  "forms.toTools.header": "Activer les outils de TO",
-  "forms.toTools.explanation": "En activant les outils de TO, votre tournoi aura accès à des stages présélectionnés et l'outil de création de seed sera disponible",
-
   "week.this": "Cette Sem.",
   "week.next": "Sem. Suiv.",
   "week.last": "Sem. Préc.",

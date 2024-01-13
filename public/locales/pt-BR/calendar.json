@@ -47,9 +47,6 @@
   "forms.errors.duplicatePlayer": "Não é possível ter o mesmo jogador duas vezes no mesmo time.",
   "forms.errors.emptyTeam": "Cada time deve ter pelo menos um jogador.",
 
-  "forms.toTools.header": "Habilitar ferramentas de OT (Organizador de Torneios)",
-  "forms.toTools.explanation": "Com Ferramentas de OT seu torneio irá usar mapas pré-escolhidos e a ferramenta de criação de semente (seed) está disponível.",
-
   "week.this": "Essa semana",
   "week.next": "Próxima semana",
   "week.last": "Semana anterior",

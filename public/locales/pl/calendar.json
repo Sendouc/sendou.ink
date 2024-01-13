@@ -40,9 +40,6 @@
   "forms.errors.duplicatePlayer": "Nie można mieć takiej samej nazwy członka dwa razy w jednej drużynie.",
   "forms.errors.emptyTeam": "Każda drużyna musi mieć przynajmniej jednego członka.",
 
-  "forms.toTools.header": "Włącz narzędzia organizatora",
-  "forms.toTools.explanation": "Z narzędziami organizatora twój turniej użyje automatycznie wybrane mapy i Seed-Creator-Tool jest dostępny.",
-
   "week.this": "W tym tygodniu",
   "week.next": "W następnym tygodniu",
   "week.last": "W poprzednim tygodniu",

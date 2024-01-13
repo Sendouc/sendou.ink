@@ -47,9 +47,6 @@
   "forms.errors.duplicatePlayer": "לא יכול להיות אותו שחקן פעמיים באותה קבוצה.",
   "forms.errors.emptyTeam": "בכל קבוצה חייב להיות שחקן אחד לפחות.",
 
-  "forms.toTools.header": "אפשר כלים של TO",
-  "forms.toTools.explanation": "עם כלים של TO, הטורניר שלך ישתמש במפות שנבחרו מראש והכלי ליצירת סיד זמין.",
-
   "week.this": "השבוע",
   "week.next": "שבוע הבא",
   "week.last": "שבוע שעבר",
