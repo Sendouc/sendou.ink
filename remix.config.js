@@ -221,9 +221,9 @@ module.exports = {
         );
       });
 
-      route("/patrons", "features/api/routes/patrons.tsx");
-      route("/seed", "features/api/routes/seed.tsx");
-      route("/users", "features/api/routes/users.tsx");
+      route("/patrons", "features/api-private/routes/patrons.tsx");
+      route("/seed", "features/api-private/routes/seed.tsx");
+      route("/users", "features/api-private/routes/users.tsx");
 
       route("/theme", "features/theme/routes/theme.ts");
 

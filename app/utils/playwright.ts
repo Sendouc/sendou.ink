@@ -1,6 +1,6 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 import { ADMIN_ID } from "~/constants";
-import type { SeedVariation } from "~/features/api/routes/seed";
+import type { SeedVariation } from "~/features/api-private/routes/seed";
 
 export async function selectWeapon({
   page,
