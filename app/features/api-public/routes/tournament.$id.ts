@@ -50,7 +50,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     name: tournament.name,
     startTime: databaseTimestampToDate(tournament.startTime).toISOString(),
     url: `https://sendou.ink/to/${id}/brackets`,
-    logoUrl: HACKY_resolvePicture(tournament),
+    logoUrl: `https://sendou.ink${HACKY_resolvePicture(tournament)}`,
     teams: {
       checkedInCount: tournament.teams.filter((team) => team.checkedInAt)
         .length,

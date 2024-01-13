@@ -52,7 +52,7 @@ export interface GetTournamentResponse {
    */
   url: string;
   /**
-   * @example "https://abload.de/img/screenshot2023-04-19a2bfv0.png"
+   * @example "https://sendou.ink/static-assets/img/tournament-logos/itz.png"
    */
   logoUrl: string | null;
   /**

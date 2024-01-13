@@ -12,6 +12,7 @@ import type {
 import { TOURNAMENT } from "./tournament-constants";
 import { validate } from "~/utils/remix";
 import type { PlayedSet } from "./core/sets.server";
+import { tournamentLogoUrl } from "~/utils/urls";
 
 export function resolveOwnedTeam({
   teams,
@@ -78,13 +79,27 @@ export function isOneModeTournamentOf(
 }
 
 export function HACKY_resolvePicture(event: { name: string }) {
-  if (HACKY_isInviteOnlyEvent(event))
-    return "https://abload.de/img/screenshot2023-11-25ay1fbc.png";
+  if (HACKY_isInviteOnlyEvent(event)) {
+    return tournamentLogoUrl("sf");
+  }
 
-  if (event.name.includes("In The Zone"))
-    return "https://abload.de/img/screenshot2023-04-19a2bfv0.png";
+  if (event.name.includes("Paddling Pool")) {
+    return tournamentLogoUrl("pp");
+  }
 
-  return "https://abload.de/img/screenshot2022-12-15ap0ca1.png";
+  if (event.name.includes("In The Zone")) {
+    return tournamentLogoUrl("itz");
+  }
+
+  if (event.name.includes("PICNIC")) {
+    return tournamentLogoUrl("pn");
+  }
+
+  if (event.name.includes("Proving Grounds")) {
+    return tournamentLogoUrl("pg");
+  }
+
+  return tournamentLogoUrl("default");
 }
 
 // hacky because db query not taking in account possibility of many start times
