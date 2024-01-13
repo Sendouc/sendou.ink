@@ -33,11 +33,10 @@ import type {
 } from "~/db/types";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "react-i18next";
-import { useUser } from "~/features/auth/core";
 import { requireUser } from "~/features/auth/core/user.server";
 import { i18next } from "~/modules/i18n";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
-import { canEditCalendarEvent, canEnableTOTools } from "~/permissions";
+import { canEditCalendarEvent } from "~/permissions";
 import calendarNewStyles from "~/styles/calendar-new.css";
 import mapsStyles from "~/styles/maps.css";
 import { isDefined } from "~/utils/arrays";
@@ -72,6 +71,7 @@ import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import * as BadgeRepository from "~/features/badges/BadgeRepository.server";
 import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
 import { canAddNewEvent } from "../calendar-utils";
+import { canCreateTournament } from "../calendar-utils.server";
 
 const MIN_DATE = new Date(Date.UTC(2015, 4, 28));
 
@@ -182,7 +182,7 @@ export const action: ActionFunction = async ({ request }) => {
           .join(",")
       : data.tags,
     badges: data.badges ?? [],
-    toToolsEnabled: canEnableTOTools(user) ? Number(data.toToolsEnabled) : 0,
+    toToolsEnabled: canCreateTournament(user) ? Number(data.toToolsEnabled) : 0,
     toToolsMode:
       rankedModesShort.find((mode) => mode === data.toToolsMode) ?? null,
   };
@@ -262,11 +262,12 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         }
       : undefined,
     title: makeTitle([canEditEvent ? "Edit" : "New", t("pages.calendar")]),
+    canCreateTournament: canCreateTournament(user),
   });
 };
 
 export default function CalendarNewEventPage() {
-  const user = useUser();
+  const data = useLoaderData<typeof loader>();
   const { t } = useTranslation();
   const { eventToEdit } = useLoaderData<typeof loader>();
   const [isTournament, setIsTournament] = React.useState(
@@ -285,7 +286,7 @@ export default function CalendarNewEventPage() {
         )}
         <NameInput />
         <DescriptionTextarea />
-        {canEnableTOTools(user) && !eventToEdit && (
+        {data.canCreateTournament && !eventToEdit && (
           <TournamentEnabler
             checked={isTournament}
             setChecked={setIsTournament}
