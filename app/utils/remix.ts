@@ -47,12 +47,18 @@ export function parseSearchParams<T extends z.ZodTypeAny>({
 export async function parseRequestFormData<T extends z.ZodTypeAny>({
   request,
   schema,
+  parseAsync,
 }: {
   request: Request;
   schema: T;
+  parseAsync?: boolean;
 }): Promise<z.infer<T>> {
   try {
-    return schema.parse(formDataToObject(await request.formData()));
+    const parsed = parseAsync
+      ? await schema.parseAsync(formDataToObject(await request.formData()))
+      : schema.parse(formDataToObject(await request.formData()));
+
+    return parsed;
   } catch (e) {
     if (e instanceof z.ZodError) {
       console.error(e);

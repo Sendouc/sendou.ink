@@ -93,58 +93,75 @@ export const meta: MetaFunction = (args) => {
   return [{ title: data.title }];
 };
 
-const newCalendarEventActionSchema = z.object({
-  eventToEditId: z.preprocess(actualNumber, id.nullish()),
-  name: z
-    .string()
-    .min(CALENDAR_EVENT.NAME_MIN_LENGTH)
-    .max(CALENDAR_EVENT.NAME_MAX_LENGTH),
-  description: z.preprocess(
-    falsyToNull,
-    z.string().max(CALENDAR_EVENT.DESCRIPTION_MAX_LENGTH).nullable(),
-  ),
-  date: z.preprocess(
-    toArray,
-    z
-      .array(z.preprocess(date, z.date().min(MIN_DATE).max(MAX_DATE)))
-      .min(1)
-      .max(CALENDAR_EVENT.MAX_AMOUNT_OF_DATES),
-  ),
-  bracketUrl: z
-    .string()
-    .url()
-    .max(CALENDAR_EVENT.BRACKET_URL_MAX_LENGTH)
-    .default("https://sendou.ink"),
-  discordInviteCode: z.preprocess(
-    falsyToNull,
-    z.string().max(CALENDAR_EVENT.DISCORD_INVITE_CODE_MAX_LENGTH).nullable(),
-  ),
-  tags: z.preprocess(
-    processMany(safeJSONParse, removeDuplicates),
-    z
-      .array(
-        z
-          .string()
-          .refine((val) =>
-            CALENDAR_EVENT.TAGS.includes(val as CalendarEventTag),
-          ),
-      )
-      .nullable(),
-  ),
-  badges: z.preprocess(
-    processMany(safeJSONParse, removeDuplicates),
-    z.array(id).nullable(),
-  ),
-  pool: z.string().optional(),
-  toToolsEnabled: z.preprocess(checkboxValueToBoolean, z.boolean()),
-  toToolsMode: z.enum(["ALL", "SZ", "TC", "RM", "CB"]).optional(),
-});
+const newCalendarEventActionSchema = z
+  .object({
+    eventToEditId: z.preprocess(actualNumber, id.nullish()),
+    name: z
+      .string()
+      .min(CALENDAR_EVENT.NAME_MIN_LENGTH)
+      .max(CALENDAR_EVENT.NAME_MAX_LENGTH),
+    description: z.preprocess(
+      falsyToNull,
+      z.string().max(CALENDAR_EVENT.DESCRIPTION_MAX_LENGTH).nullable(),
+    ),
+    date: z.preprocess(
+      toArray,
+      z
+        .array(z.preprocess(date, z.date().min(MIN_DATE).max(MAX_DATE)))
+        .min(1)
+        .max(CALENDAR_EVENT.MAX_AMOUNT_OF_DATES),
+    ),
+    bracketUrl: z
+      .string()
+      .url()
+      .max(CALENDAR_EVENT.BRACKET_URL_MAX_LENGTH)
+      .default("https://sendou.ink"),
+    discordInviteCode: z.preprocess(
+      falsyToNull,
+      z.string().max(CALENDAR_EVENT.DISCORD_INVITE_CODE_MAX_LENGTH).nullable(),
+    ),
+    tags: z.preprocess(
+      processMany(safeJSONParse, removeDuplicates),
+      z
+        .array(
+          z
+            .string()
+            .refine((val) =>
+              CALENDAR_EVENT.TAGS.includes(val as CalendarEventTag),
+            ),
+        )
+        .nullable(),
+    ),
+    badges: z.preprocess(
+      processMany(safeJSONParse, removeDuplicates),
+      z.array(id).nullable(),
+    ),
+    pool: z.string().optional(),
+    toToolsEnabled: z.preprocess(checkboxValueToBoolean, z.boolean()),
+    toToolsMode: z.enum(["ALL", "SZ", "TC", "RM", "CB"]).optional(),
+  })
+  .refine(
+    async (schema) => {
+      if (schema.eventToEditId) {
+        const eventToEdit = await CalendarRepository.findById({
+          id: schema.eventToEditId,
+        });
+        return schema.date.length === 1 || !eventToEdit?.tournamentId;
+      } else {
+        return schema.date.length === 1 || !schema.toToolsEnabled;
+      }
+    },
+    {
+      message: "Tournament must have exactly one date",
+    },
+  );
 
 export const action: ActionFunction = async ({ request }) => {
   const user = await requireUser(request);
   const data = await parseRequestFormData({
     request,
     schema: newCalendarEventActionSchema,
+    parseAsync: true,
   });
 
   validate(canAddNewEvent(user), "Not authorized", 401);
