@@ -10,7 +10,6 @@ export async function findById(id: number) {
   const row = await db
     .selectFrom("Tournament")
     .innerJoin("CalendarEvent", "Tournament.id", "CalendarEvent.tournamentId")
-    // TODO: it does not support multiple dates
     .innerJoin(
       "CalendarEventDate",
       "CalendarEvent.id",

@@ -299,10 +299,6 @@ function eventStartedInThePast(
   );
 }
 
-export function canEnableTOTools(user?: IsAdminUser) {
-  return isAdmin(user);
-}
-
 interface CanAdminTournament {
   user?: Pick<User, "id">;
   tournament: TournamentRepository.FindById;

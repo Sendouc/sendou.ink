@@ -33,11 +33,10 @@ import type {
 } from "~/db/types";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "react-i18next";
-import { useUser } from "~/features/auth/core";
 import { requireUser } from "~/features/auth/core/user.server";
 import { i18next } from "~/modules/i18n";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
-import { canEditCalendarEvent, canEnableTOTools } from "~/permissions";
+import { canEditCalendarEvent } from "~/permissions";
 import calendarNewStyles from "~/styles/calendar-new.css";
 import mapsStyles from "~/styles/maps.css";
 import { isDefined } from "~/utils/arrays";
@@ -72,6 +71,7 @@ import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import * as BadgeRepository from "~/features/badges/BadgeRepository.server";
 import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
 import { canAddNewEvent } from "../calendar-utils";
+import { canCreateTournament } from "../calendar-utils.server";
 
 const MIN_DATE = new Date(Date.UTC(2015, 4, 28));
 
@@ -93,54 +93,75 @@ export const meta: MetaFunction = (args) => {
   return [{ title: data.title }];
 };
 
-const newCalendarEventActionSchema = z.object({
-  eventToEditId: z.preprocess(actualNumber, id.nullish()),
-  name: z
-    .string()
-    .min(CALENDAR_EVENT.NAME_MIN_LENGTH)
-    .max(CALENDAR_EVENT.NAME_MAX_LENGTH),
-  description: z.preprocess(
-    falsyToNull,
-    z.string().max(CALENDAR_EVENT.DESCRIPTION_MAX_LENGTH).nullable(),
-  ),
-  date: z.preprocess(
-    toArray,
-    z
-      .array(z.preprocess(date, z.date().min(MIN_DATE).max(MAX_DATE)))
-      .min(1)
-      .max(CALENDAR_EVENT.MAX_AMOUNT_OF_DATES),
-  ),
-  bracketUrl: z.string().url().max(CALENDAR_EVENT.BRACKET_URL_MAX_LENGTH),
-  discordInviteCode: z.preprocess(
-    falsyToNull,
-    z.string().max(CALENDAR_EVENT.DISCORD_INVITE_CODE_MAX_LENGTH).nullable(),
-  ),
-  tags: z.preprocess(
-    processMany(safeJSONParse, removeDuplicates),
-    z
-      .array(
-        z
-          .string()
-          .refine((val) =>
-            CALENDAR_EVENT.TAGS.includes(val as CalendarEventTag),
-          ),
-      )
-      .nullable(),
-  ),
-  badges: z.preprocess(
-    processMany(safeJSONParse, removeDuplicates),
-    z.array(id).nullable(),
-  ),
-  pool: z.string().optional(),
-  toToolsEnabled: z.preprocess(checkboxValueToBoolean, z.boolean()),
-  toToolsMode: z.enum(["ALL", "SZ", "TC", "RM", "CB"]).optional(),
-});
+const newCalendarEventActionSchema = z
+  .object({
+    eventToEditId: z.preprocess(actualNumber, id.nullish()),
+    name: z
+      .string()
+      .min(CALENDAR_EVENT.NAME_MIN_LENGTH)
+      .max(CALENDAR_EVENT.NAME_MAX_LENGTH),
+    description: z.preprocess(
+      falsyToNull,
+      z.string().max(CALENDAR_EVENT.DESCRIPTION_MAX_LENGTH).nullable(),
+    ),
+    date: z.preprocess(
+      toArray,
+      z
+        .array(z.preprocess(date, z.date().min(MIN_DATE).max(MAX_DATE)))
+        .min(1)
+        .max(CALENDAR_EVENT.MAX_AMOUNT_OF_DATES),
+    ),
+    bracketUrl: z
+      .string()
+      .url()
+      .max(CALENDAR_EVENT.BRACKET_URL_MAX_LENGTH)
+      .default("https://sendou.ink"),
+    discordInviteCode: z.preprocess(
+      falsyToNull,
+      z.string().max(CALENDAR_EVENT.DISCORD_INVITE_CODE_MAX_LENGTH).nullable(),
+    ),
+    tags: z.preprocess(
+      processMany(safeJSONParse, removeDuplicates),
+      z
+        .array(
+          z
+            .string()
+            .refine((val) =>
+              CALENDAR_EVENT.TAGS.includes(val as CalendarEventTag),
+            ),
+        )
+        .nullable(),
+    ),
+    badges: z.preprocess(
+      processMany(safeJSONParse, removeDuplicates),
+      z.array(id).nullable(),
+    ),
+    pool: z.string().optional(),
+    toToolsEnabled: z.preprocess(checkboxValueToBoolean, z.boolean()),
+    toToolsMode: z.enum(["ALL", "SZ", "TC", "RM", "CB"]).optional(),
+  })
+  .refine(
+    async (schema) => {
+      if (schema.eventToEditId) {
+        const eventToEdit = await CalendarRepository.findById({
+          id: schema.eventToEditId,
+        });
+        return schema.date.length === 1 || !eventToEdit?.tournamentId;
+      } else {
+        return schema.date.length === 1 || !schema.toToolsEnabled;
+      }
+    },
+    {
+      message: "Tournament must have exactly one date",
+    },
+  );
 
 export const action: ActionFunction = async ({ request }) => {
   const user = await requireUser(request);
   const data = await parseRequestFormData({
     request,
     schema: newCalendarEventActionSchema,
+    parseAsync: true,
   });
 
   validate(canAddNewEvent(user), "Not authorized", 401);
@@ -161,7 +182,7 @@ export const action: ActionFunction = async ({ request }) => {
           .join(",")
       : data.tags,
     badges: data.badges ?? [],
-    toToolsEnabled: canEnableTOTools(user) ? Number(data.toToolsEnabled) : 0,
+    toToolsEnabled: canCreateTournament(user) ? Number(data.toToolsEnabled) : 0,
     toToolsMode:
       rankedModesShort.find((mode) => mode === data.toToolsMode) ?? null,
   };
@@ -241,12 +262,17 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         }
       : undefined,
     title: makeTitle([canEditEvent ? "Edit" : "New", t("pages.calendar")]),
+    canCreateTournament: canCreateTournament(user),
   });
 };
 
 export default function CalendarNewEventPage() {
+  const data = useLoaderData<typeof loader>();
   const { t } = useTranslation();
   const { eventToEdit } = useLoaderData<typeof loader>();
+  const [isTournament, setIsTournament] = React.useState(
+    Boolean(eventToEdit?.tournamentId),
+  );
 
   return (
     <Main className="calendar-new__container">
@@ -260,12 +286,22 @@ export default function CalendarNewEventPage() {
         )}
         <NameInput />
         <DescriptionTextarea />
-        <DatesInput />
-        <BracketUrlInput />
+        {data.canCreateTournament && !eventToEdit && (
+          <TournamentEnabler
+            checked={isTournament}
+            setChecked={setIsTournament}
+          />
+        )}
+        <DatesInput allowMultiDate={!isTournament} />
+        {!isTournament ? <BracketUrlInput /> : null}
         <DiscordLinkInput />
         <TagsAdder />
         <BadgesAdder />
-        <TOToolsAndMapPool />
+        {isTournament && !eventToEdit ? (
+          <TournamentMapPickingStyleSelect />
+        ) : null}
+        {/* TODO: this will be selectable depending on the tournament map picking style in future */}
+        {!isTournament ? <MapPoolSection /> : null}
         <SubmitButton className="mt-4">{t("actions.submit")}</SubmitButton>
       </Form>
     </Main>
@@ -329,7 +365,7 @@ function AddButton({ onAdd, id }: { onAdd: () => void; id?: string }) {
   );
 }
 
-function DatesInput() {
+function DatesInput({ allowMultiDate }: { allowMultiDate?: boolean }) {
   const { t } = useTranslation(["common", "calendar"]);
   const { eventToEdit } = useLoaderData<typeof loader>();
 
@@ -341,7 +377,7 @@ function DatesInput() {
 
   // React hook that keeps track of child DateInput's dates
   // (necessary for determining additional Date's defaultValues)
-  const [datesInputState, setDatesInputState] = React.useState<
+  const [_datesInputState, setDatesInputState] = React.useState<
     Array<{
       key: number;
       date: Date | null;
@@ -358,6 +394,10 @@ function DatesInput() {
     // Initial date rounded to next full hour from now
     return [{ key: getKey(), date: getDateAtNextFullHour(new Date()) }];
   });
+
+  const datesInputState = allowMultiDate
+    ? _datesInputState
+    : _datesInputState.filter((_, i) => i === 0);
 
   const datesCount = datesInputState.length;
 
@@ -440,9 +480,8 @@ function DatesInput() {
               );
             })}
           </div>
-          {datesCount < CALENDAR_EVENT.MAX_AMOUNT_OF_DATES && (
-            <AddButton onAdd={addDate} />
-          )}
+          {datesCount < CALENDAR_EVENT.MAX_AMOUNT_OF_DATES &&
+            allowMultiDate && <AddButton onAdd={addDate} />}
           <FormMessage type="info" className={clsx({ invisible: !isMounted })}>
             {t("calendar:inYourTimeZone")} {usersTimeZone}
           </FormMessage>
@@ -452,7 +491,6 @@ function DatesInput() {
   );
 }
 
-// TODO: when full tournament this doesn't really make sense
 function BracketUrlInput() {
   const { t } = useTranslation("calendar");
   const { eventToEdit } = useLoaderData<typeof loader>();
@@ -621,62 +659,49 @@ const mapPickingStyleToShort: Record<
   AUTO_RM: "RM",
   AUTO_CB: "CB",
 };
-function TOToolsAndMapPool() {
-  const user = useUser();
+function TournamentMapPickingStyleSelect() {
+  const id = React.useId();
   const { eventToEdit } = useLoaderData<typeof loader>();
-  const [checked, setChecked] = React.useState(
-    Boolean(eventToEdit?.tournamentId),
-  );
   const [mode, setMode] = React.useState<"ALL" | RankedModeShort>(
     eventToEdit?.mapPickingStyle
       ? mapPickingStyleToShort[eventToEdit.mapPickingStyle]
       : "ALL",
   );
 
-  // currently not possible to edit "tournament" data after submitting it
-  if (eventToEdit?.tournamentId) return null;
-
   return (
     <>
-      {canEnableTOTools(user) && !eventToEdit && (
-        <TOToolsEnabler checked={checked} setChecked={setChecked} />
-      )}
-      {checked ? (
-        <>
-          <select
-            className="calendar-new__select"
-            onChange={(e) => setMode(e.target.value as RankedModeShort)}
-            name="toToolsMode"
-            defaultValue={mode}
-          >
-            <option value="ALL">All modes</option>
-            <option value="SZ">SZ only</option>
-            <option value="TC">TC only</option>
-            <option value="RM">RM only</option>
-            <option value="CB">CB only</option>
-          </select>
-          {mode === "ALL" ? <CounterPickMapPoolSection /> : null}
-        </>
-      ) : (
-        <MapPoolSection />
-      )}
+      <div>
+        <label htmlFor={id}>Map picking style</label>
+        <select
+          onChange={(e) => setMode(e.target.value as RankedModeShort)}
+          name="toToolsMode"
+          defaultValue={mode}
+          id={id}
+        >
+          <option value="ALL">Prepicked by teams - All modes</option>
+          <option value="SZ">Prepicked by teams - SZ only</option>
+          <option value="TC">Prepicked by teams - TC only</option>
+          <option value="RM">Prepicked by teams - RM only</option>
+          <option value="CB">Prepicked by teams - CB only</option>
+        </select>
+      </div>
+      {mode === "ALL" ? <CounterPickMapPoolSection /> : null}
     </>
   );
 }
 
-function TOToolsEnabler({
+function TournamentEnabler({
   checked,
   setChecked,
 }: {
   checked: boolean;
   setChecked: (checked: boolean) => void;
 }) {
-  const { t } = useTranslation(["calendar"]);
   const id = React.useId();
 
   return (
     <div>
-      <label htmlFor={id}>{t("calendar:forms.toTools.header")}</label>
+      <label htmlFor={id}>Host on sendou.ink</label>
       <Toggle
         name="toToolsEnabled"
         id={id}
@@ -685,7 +710,7 @@ function TOToolsEnabler({
         setChecked={setChecked}
       />
       <FormMessage type="info">
-        {t("calendar:forms.toTools.explanation")}
+        Host the full event including bracket and sign ups on sendou.ink
       </FormMessage>
     </div>
   );

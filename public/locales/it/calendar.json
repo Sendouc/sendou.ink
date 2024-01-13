@@ -35,8 +35,6 @@
   "forms.errors.uniqueTeamName": "Tutte le squadre devono avere un nome unico.",
   "forms.errors.duplicatePlayer": "Non puoi avere lo stesso giocatore due volte nella stessa squadra.",
   "forms.errors.emptyTeam": "Tutte le squadre devono avere almeno un giocatore.",
-  "forms.toTools.header": "Abilita TO Tools",
-  "forms.toTools.explanation": "Con i TO Tools, il tuo torneo utilizzerà scenari preselezionati e il creatore di seme è disponibile.",
   "week.this": "Questa Settimana",
   "week.next": "Prossima Settimana",
   "week.last": "Settimana Scorsa",

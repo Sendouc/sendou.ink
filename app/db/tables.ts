@@ -13,6 +13,7 @@ import type {
   StageId,
 } from "~/modules/in-game-lists";
 import type { GroupSkillDifference, UserSkillDifference } from "./types";
+import type { ParticipantResult } from "~/modules/brackets-model";
 
 export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   ? ColumnType<S, I | undefined, U>
@@ -395,20 +396,20 @@ export interface TournamentBadgeOwner {
 export interface TournamentGroup {
   id: GeneratedAlways<number>;
   number: number;
-  stageId: StageId;
+  stageId: number;
 }
 
 export interface TournamentMatch {
-  bestOf: Generated<number>;
+  bestOf: Generated<3 | 5 | 7>;
   chatCode: string | null;
   childCount: number;
   groupId: number;
   id: GeneratedAlways<number>;
   number: number;
-  opponentOne: string;
-  opponentTwo: string;
+  opponentOne: ColumnType<ParticipantResult, string, string>;
+  opponentTwo: ColumnType<ParticipantResult, string, string>;
   roundId: number;
-  stageId: StageId;
+  stageId: number;
   status: number;
 }
 

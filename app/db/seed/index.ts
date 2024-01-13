@@ -31,7 +31,7 @@ import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { mySlugify } from "~/utils/urls";
 
-import type { SeedVariation } from "~/features/api/routes/seed";
+import type { SeedVariation } from "~/features/api-private/routes/seed";
 import * as BuildRepository from "~/features/builds/BuildRepository.server";
 import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
 import * as PlusSuggestionRepository from "~/features/plus-suggestions/PlusSuggestionRepository.server";
