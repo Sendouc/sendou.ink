@@ -665,12 +665,11 @@ function SoundCheckboxes() {
 
 function SoundSlider() {
   const [volume, setVolume] = useState(() => {
-    if (isBrowser()) return soundVolume();
-    return 1;
+    return soundVolume();
   });
 
   useEffect(() => {
-    if (isBrowser()) setVolume(soundVolume());
+    setVolume(soundVolume());
   }, []);
 
   const saveVolume = (event: React.MouseEvent<HTMLInputElement> | React.TouchEvent<HTMLInputElement>) => {
@@ -681,7 +680,7 @@ function SoundSlider() {
       newVolume = parseFloat((event.target as HTMLInputElement).value);
     }
 
-    if (isBrowser()) localStorage.setItem("settings__sound-volume", String(Math.floor(newVolume)));
+    localStorage.setItem("settings__sound-volume", String(Math.floor(newVolume)));
 
     setVolume(newVolume);
     playSound();
@@ -691,12 +690,6 @@ function SoundSlider() {
     const audio = new Audio(soundPath("sq_like"));
     audio.volume = soundVolume() / 100;
     audio.play();
-  }
-
-  // Helper class for checking if we are in browser or not to access localStorage
-  // Literally wont work without this and I have no idea why
-  function isBrowser() {
-    return typeof window !== 'undefined';
   }
 
   return (
