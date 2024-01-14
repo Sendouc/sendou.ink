@@ -15,6 +15,9 @@ import {
   resolveTournamentStageSettings,
   resolveTournamentStageType,
 } from "../tournament-bracket-utils";
+import { assertUnreachable } from "~/utils/types";
+
+type BracketProgressionTeam = { id: number; name: string };
 
 /** Get bracket data either as it exists in DB or if in pre-started state then as preview */
 export async function bracketData({
@@ -45,9 +48,8 @@ export async function bracketData({
   const manager = getTournamentManager("IN_MEMORY");
 
   const { teams, enoughTeams } = teamsForBracket({
-    tournamentId,
+    tournament,
     bracket,
-    checkInHasStarted: checkInHasStarted(tournament),
   });
 
   // no stages but return what we can
@@ -99,24 +101,24 @@ export async function teamsForBracketByBracketIdx({
   });
 
   return teamsForBracket({
-    tournamentId,
+    tournament,
     bracket,
-    checkInHasStarted: checkInHasStarted(tournament),
   });
 }
 
 function teamsForBracket({
-  tournamentId,
   bracket,
-  checkInHasStarted,
+  tournament,
 }: {
-  tournamentId: number;
   bracket: TournamentBracketsStyle[number];
-  checkInHasStarted: boolean;
+  tournament: TournamentRepository.FindBracketProgressionByTournamentIdItem;
 }) {
   return bracket.sources
-    ? { teams: [], enoughTeams: false } // xxx: resolveTeamsFromSourceBrackets(...)
-    : registeredTeamsReadyToPlay({ tournamentId, checkInHasStarted });
+    ? teamsFromAnotherBracketsReadyToPlay({ bracket, tournament })
+    : registeredTeamsReadyToPlay({
+        tournamentId: tournament.id,
+        checkInHasStarted: checkInHasStarted(tournament),
+      });
 }
 
 function registeredTeamsReadyToPlay({
@@ -135,4 +137,68 @@ function registeredTeamsReadyToPlay({
     teams,
     enoughTeams: teams.length >= TOURNAMENT.ENOUGH_TEAMS_TO_START,
   };
+}
+
+// xxx: checked-in
+function teamsFromAnotherBracketsReadyToPlay({
+  bracket,
+  tournament,
+}: {
+  bracket: TournamentBracketsStyle[number];
+  tournament: TournamentRepository.FindBracketProgressionByTournamentIdItem;
+}) {
+  const sources = bracket.sources;
+  invariant(sources, "Bracket sources not found");
+
+  const teams: BracketProgressionTeam[] = [];
+
+  for (const { bracketIdx, placements } of sources) {
+    const sourceBracket = bracketByIndex({
+      bracketsStyle: tournament.bracketsStyle,
+      bracketIdx,
+    });
+
+    switch (sourceBracket.format) {
+      case "SE": {
+        throw new Error("Not implemented");
+      }
+      case "DE": {
+        teams.push(
+          ...teamsFromDoubleElim({ placements, tournament, sourceBracket }),
+        );
+        break;
+      }
+      case "RR": {
+        throw new Error("Not implemented");
+      }
+      default: {
+        assertUnreachable(sourceBracket.format);
+      }
+    }
+  }
+
+  return { teams, enoughTeams: true };
+}
+
+function teamsFromDoubleElim({
+  placements,
+  tournament,
+  sourceBracket,
+}: {
+  placements: number[];
+  tournament: TournamentRepository.FindBracketProgressionByTournamentIdItem;
+  sourceBracket: TournamentBracketsStyle[number];
+}): BracketProgressionTeam[] {
+  const bracketInDb = tournament.stages.find(
+    (stage) => stage.name === sourceBracket.name,
+  );
+
+  // stage has not started yet
+  if (!bracketInDb) return [];
+
+  const data = getTournamentManager("SQL").get.stageData(bracketInDb.id);
+  console.log(data);
+
+  // xxx: todo
+  return [];
 }

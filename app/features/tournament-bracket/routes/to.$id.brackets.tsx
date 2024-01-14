@@ -106,6 +106,8 @@ export const links: LinksFunction = () => {
   ];
 };
 
+const bracketIdx = 0;
+
 export const action: ActionFunction = async ({ params, request }) => {
   const user = await requireUser(request);
   const tournamentId = tournamentIdFromParams(params);
@@ -116,8 +118,6 @@ export const action: ActionFunction = async ({ params, request }) => {
   const manager = getTournamentManager("SQL");
 
   validate(isTournamentOrganizer({ user, tournament }));
-
-  const bracketIdx = 0;
 
   switch (data._action) {
     // xxx: "START_BRACKET" and refactor logic
@@ -252,7 +252,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   // xxx: bracketIdx from search params
   const bracket = await bracketData({
     tournamentId,
-    bracketIdx: 0,
+    bracketIdx,
   });
   return {
     bracket,

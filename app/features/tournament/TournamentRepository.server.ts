@@ -63,6 +63,9 @@ export async function findById(id: number) {
   return row;
 }
 
+export type FindBracketProgressionByTournamentIdItem = Unwrapped<
+  typeof findBracketProgressionByTournamentId
+>;
 export function findBracketProgressionByTournamentId(tournamentId: number) {
   return (
     db
@@ -75,6 +78,7 @@ export function findBracketProgressionByTournamentId(tournamentId: number) {
         "CalendarEventDate.eventId",
       )
       .select(({ eb }) => [
+        "Tournament.id",
         "Tournament.bracketsStyle",
         "CalendarEventDate.startTime",
         jsonArrayFrom(

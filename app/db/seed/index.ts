@@ -838,12 +838,54 @@ function calendarEventWithToTools(event: "PICNIC" | "ITZ" | "PP" = "PICNIC") {
       ? [
           { format: "RR", name: "Groups stage" },
           {
-            format: "DE",
+            format: "SE",
             name: "Final stage",
             sources: [{ bracketIdx: 0, placements: [1, 2] }],
           },
+          {
+            format: "SE",
+            name: "Bravo bracket",
+            sources: [{ bracketIdx: 0, placements: [3, 4] }],
+          },
         ]
-      : [{ format: "DE", name: "Elimination stage" }];
+      : event === "ITZ"
+        ? [
+            { format: "DE", name: "Main bracket" },
+            {
+              format: "SE",
+              name: "Underground bracket",
+              sources: [{ bracketIdx: 0, placements: [-1, -2] }],
+            },
+          ]
+        : [{ format: "DE", name: "Elimination stage" }];
+
+  // xxx: single elim bracket that stops at top 4
+  // [
+  //   { format: "SE", name: "First stage" },
+  //   {
+  //     format: "DE",
+  //     name: "Final stage",
+  //     sources: [{ bracketIdx: 0, placements: [1, 2, 3, 4] }], // ???
+  //   },
+  // ];
+
+  // xxx: redemption bracket before final bracket
+  // [
+  //   { format: "RR", name: "Groups stage" },
+  //   {
+  //     format: "SE",
+  //     name: "Redemption bracket",
+  //     sources: [{ bracketIdx: 0, placements: [3, 4] }],
+  //   },
+  //   {
+  //     format: "SE",
+  //     name: "Final stage",
+  //     sources: [
+  //       { bracketIdx: 0, placements: [1, 2] },
+  //       { bracketIdx: 1, placements: [1] },
+  //     ],
+  //   },
+  // ];
 
   sql
     .prepare(
