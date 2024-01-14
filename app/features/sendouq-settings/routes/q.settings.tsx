@@ -599,7 +599,7 @@ function Sounds() {
         </div>
       </summary>
       {isMounted && <SoundCheckboxes />}
-      <SoundSlider />
+      {isMounted && <SoundSlider />}
     </details>
   );
 }
