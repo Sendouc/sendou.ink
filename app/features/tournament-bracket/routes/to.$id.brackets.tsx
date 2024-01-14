@@ -20,7 +20,12 @@ import { Alert } from "~/components/Alert";
 import { SubmitButton } from "~/components/SubmitButton";
 import { getTournamentManager } from "../core/brackets-manager";
 import hasTournamentStarted from "../../tournament/queries/hasTournamentStarted.server";
-import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
+import {
+  notFoundIfFalsy,
+  parseRequestFormData,
+  parseSafeSearchParams,
+  validate,
+} from "~/utils/remix";
 import {
   SENDOU_INK_BASE_URL,
   tournamentBracketsSubscribePage,
@@ -66,7 +71,10 @@ import { databaseTimestampToDate } from "~/utils/dates";
 import { Popover } from "~/components/Popover";
 import { useCopyToClipboard } from "react-use";
 import { useTranslation } from "react-i18next";
-import { bracketSchema } from "../tournament-bracket-schemas.server";
+import {
+  bracketSchema,
+  bracketSearchParamsSchema,
+} from "../tournament-bracket-schemas.server";
 import { addSummary } from "../queries/addSummary.server";
 import { tournamentSummary } from "../core/summarizer.server";
 import invariant from "tiny-invariant";
@@ -220,8 +228,12 @@ export const action: ActionFunction = async ({ params, request }) => {
 
 export type TournamentBracketLoaderData = SerializeFrom<typeof loader>;
 
-export const loader = async ({ params }: LoaderFunctionArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const tournamentId = tournamentIdFromParams(params);
+  const parsedSearchParams = parseSafeSearchParams({
+    request,
+    schema: bracketSearchParamsSchema,
+  });
 
   const inProgressTournamentFields = (bracket: ValueToArray<DataTypes>) => {
     const hasStarted = bracket.stage[0].id !== 0;
@@ -250,13 +262,16 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     };
   };
 
-  // xxx: bracketIdx from search params
+  const bracketIdx = parsedSearchParams.success
+    ? parsedSearchParams.data.idx
+    : 0;
   const bracket = await bracketData({
     tournamentId,
     bracketIdx,
   });
   return {
     bracket,
+    bracketIdx,
     ...inProgressTournamentFields(bracket),
   };
 };
@@ -500,7 +515,8 @@ export default function TournamentBracketsPage() {
       {data.finalStandings ? (
         <FinalStandings standings={data.finalStandings} />
       ) : null}
-      <div className="brackets-viewer" ref={ref}></div>
+      <BracketNav />
+      <div className="brackets-viewer" ref={ref} />
       {!enoughTeams ? (
         <div className="text-center text-lg font-semi-bold text-lighter">
           {t("tournament:bracket.waiting", {
@@ -825,6 +841,31 @@ function FinalStandings({ standings }: { standings: FinalStanding[] }) {
           </Button>
         </>
       ) : null}
+    </div>
+  );
+}
+
+function BracketNav() {
+  const data = useLoaderData<typeof loader>();
+  const parentRouteData = useOutletContext<TournamentLoaderData>();
+
+  if (parentRouteData.tournament.bracketsStyle.length < 2) return null;
+
+  return (
+    <div className="stack sm horizontal flex-wrap">
+      {parentRouteData.tournament.bracketsStyle.map((bracket, i) => {
+        return (
+          <Link
+            key={bracket.name}
+            to={`?idx=${i}`}
+            className={clsx("text-xs text-lighter", {
+              "text-theme underline": data.bracketIdx === i,
+            })}
+          >
+            {bracket.name}
+          </Link>
+        );
+      })}
     </div>
   );
 }

@@ -25,6 +25,8 @@
 
   font-family: Lexend, sans-serif !important;
   font-weight: var(--semi-bold) !important;
+
+  padding: 10px 0;
 }
 
 .brackets-viewer .opponents.connect-previous::before {
@@ -39,11 +41,11 @@
   border-radius: var(--rounded-sm);
 }
 
-.brackets-viewer .bracket h2 {
-  color: transparent;
+.brackets-viewer h1 {
+  display: none;
 }
 
-.brackets-viewer h1 {
+.brackets-viewer h2 {
   display: none;
 }
 

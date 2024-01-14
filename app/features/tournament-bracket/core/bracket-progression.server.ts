@@ -21,10 +21,10 @@ type BracketProgressionTeam = { id: number; name: string };
 
 /** Get bracket data either as it exists in DB or if in pre-started state then as preview */
 export async function bracketData({
-  bracketIdx = 0,
+  bracketIdx,
   tournamentId,
 }: {
-  bracketIdx?: number;
+  bracketIdx: number;
   tournamentId: number;
 }): Promise<ValueToArray<DataTypes>> {
   const tournament =

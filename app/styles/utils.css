@@ -70,6 +70,10 @@
   text-transform: capitalize;
 }
 
+.underline {
+  text-decoration: underline;
+}
+
 .fill-success {
   fill: var(--theme-success);
 }

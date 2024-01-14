@@ -43,6 +43,17 @@ export function parseSearchParams<T extends z.ZodTypeAny>({
   }
 }
 
+export function parseSafeSearchParams<T extends z.ZodTypeAny>({
+  request,
+  schema,
+}: {
+  request: Request;
+  schema: T;
+}): z.SafeParseReturnType<any, z.infer<T>> {
+  const url = new URL(request.url);
+  return schema.safeParse(Object.fromEntries(url.searchParams));
+}
+
 /** Parse formData of a request with the given schema. Throws HTTP 400 response if fails. */
 export async function parseRequestFormData<T extends z.ZodTypeAny>({
   request,

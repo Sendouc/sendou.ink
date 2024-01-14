@@ -40,3 +40,7 @@ export const bracketSchema = z.union([
     _action: _action("FINALIZE_TOURNAMENT"),
   }),
 ]);
+
+export const bracketSearchParamsSchema = z.object({
+  idx: z.coerce.number().int().min(0).max(2),
+});
