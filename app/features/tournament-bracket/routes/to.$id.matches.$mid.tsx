@@ -292,6 +292,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 
 export type TournamentMatchLoaderData = typeof loader;
 
+// xxx: back button not considering bracketIdx
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const user = await getUserId(request);
   const tournamentId = tournamentIdFromParams(params);

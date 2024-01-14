@@ -53,7 +53,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const bracket = manager.get.tournamentData(tournamentId);
   const stage = bracket.stage[0];
 
-  // TODO: handle placement when multiple stages
+  // xxx: handle placement when multiple stages
 
   const _everyMatchIsOver = everyMatchIsOver(bracket);
   const standing = _everyMatchIsOver

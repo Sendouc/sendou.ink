@@ -20,7 +20,6 @@ import { findTeamsByTournamentId } from "../../tournament/queries/findTeamsByTou
 import { Alert } from "~/components/Alert";
 import { SubmitButton } from "~/components/SubmitButton";
 import { getTournamentManager } from "../core/brackets-manager";
-import hasTournamentStarted from "../../tournament/queries/hasTournamentStarted.server";
 import {
   badRequestIfFalsy,
   notFoundIfFalsy,
@@ -38,7 +37,7 @@ import {
 } from "~/utils/urls";
 import type { TournamentLoaderData } from "../../tournament/routes/to.$id";
 import { resolveBestOfs } from "../core/bestOf.server";
-import { findAllMatchesByTournamentId } from "../queries/findAllMatchesByTournamentId.server";
+import { findAllMatchesByStageId } from "../queries/findAllMatchesByStageId.server";
 import { setBestOf } from "../queries/setBestOf.server";
 import { isTournamentOrganizer } from "~/permissions";
 import { requireUser, useUser } from "~/features/auth/core";
@@ -119,8 +118,6 @@ export const links: LinksFunction = () => {
   ];
 };
 
-const bracketIdx = 1;
-
 export const action: ActionFunction = async ({ params, request }) => {
   const user = await requireUser(request);
   const tournamentId = tournamentIdFromParams(params);
@@ -131,28 +128,32 @@ export const action: ActionFunction = async ({ params, request }) => {
   const manager = getTournamentManager("SQL");
 
   switch (data._action) {
-    // xxx: "START_BRACKET" and refactor logic
-    case "START_TOURNAMENT": {
+    case "START_BRACKET": {
       validate(isTournamentOrganizer({ user, tournament }));
-      // xxx: bracket has started
-      const hasStarted = hasTournamentStarted(tournamentId);
 
-      validate(!hasStarted);
+      const tournamentBracketProgression =
+        await TournamentRepository.findBracketProgressionByTournamentId(
+          tournamentId,
+        );
+
+      const bracket = await bracketData({
+        tournamentId,
+        bracketIdx: data.bracketIdx,
+      });
+
+      validate(!bracketHasStarted(bracket), "Bracket has already started");
 
       const { teams, enoughTeams } = await teamsForBracket({
-        tournament:
-          await TournamentRepository.findBracketProgressionByTournamentId(
-            tournamentId,
-          ),
-        bracketIdx,
+        tournament: tournamentBracketProgression,
+        bracketIdx: data.bracketIdx,
       });
 
       validate(enoughTeams, "Not enough teams registered");
 
-      const { format, name } = tournament.bracketsStyle[bracketIdx];
+      const { format, name } = tournament.bracketsStyle[data.bracketIdx];
 
       sql.transaction(() => {
-        manager.create({
+        const stage = manager.create({
           tournamentId,
           name,
           type: resolveTournamentStageType(format),
@@ -160,8 +161,7 @@ export const action: ActionFunction = async ({ params, request }) => {
           settings: resolveTournamentStageSettings(format),
         });
 
-        // xxx: matches of the bracket
-        const matches = findAllMatchesByTournamentId(tournamentId);
+        const matches = findAllMatchesByStageId(stage.id);
         // TODO: dynamic best of set when bracket is made
         const bestOfs = HACKY_isInviteOnlyEvent(tournament)
           ? matches.map((match) => [5, match.matchId] as [5, number])
@@ -238,7 +238,7 @@ export const action: ActionFunction = async ({ params, request }) => {
       );
 
       await TournamentRepository.checkInToBracket({
-        bracketIdx,
+        bracketIdx: data.bracketIdx,
         tournamentTeamId: ownTeam.id,
       });
       break;
@@ -324,6 +324,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   };
 };
 
+// xxx: finalize logic for underground brackets
 export default function TournamentBracketsPage() {
   const { t } = useTranslation(["tournament"]);
   const visibility = useVisibilityChange();
@@ -430,9 +431,11 @@ export default function TournamentBracketsPage() {
     team.members.some((m) => m.userId === user?.id),
   );
 
-  const adminCanStart = () => {
+  const canStartBracket = () => {
     // for testing, is always possible to start in development
     if (process.env.NODE_ENV === "development") return true;
+
+    // xxx: logic when to start underground etc. brackets
 
     return (
       databaseTimestampToDate(parentRouteData.tournament.startTime).getTime() <
@@ -507,6 +510,7 @@ export default function TournamentBracketsPage() {
       ) : null}
       {data.preview && enoughTeams ? (
         <Form method="post" className="stack items-center mb-4">
+          <input type="hidden" name="bracketIdx" value={data.bracketIdx} />
           {!isTournamentOrganizer({
             user,
             tournament: parentRouteData.tournament,
@@ -525,12 +529,12 @@ export default function TournamentBracketsPage() {
               textClassName="stack horizontal md items-center"
             >
               {t("tournament:bracket.finalize.text")}{" "}
-              {adminCanStart() ? (
+              {canStartBracket() ? (
                 <SubmitButton
                   variant="outlined"
                   size="tiny"
                   testId="finalize-bracket-button"
-                  _action="START_TOURNAMENT"
+                  _action="START_BRACKET"
                 >
                   {t("tournament:bracket.finalize.action")}
                 </SubmitButton>

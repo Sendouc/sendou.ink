@@ -1,9 +1,9 @@
 import invariant from "tiny-invariant";
-import type { FindAllMatchesByTournamentIdMatch } from "../queries/findAllMatchesByTournamentId.server";
+import type { FindAllMatchesByStageIdItem } from "../queries/findAllMatchesByStageId.server";
 import type { BracketFormat } from "~/db/tables";
 
 export function resolveBestOfs(
-  matches: Array<FindAllMatchesByTournamentIdMatch>,
+  matches: Array<FindAllMatchesByStageIdItem>,
   format: BracketFormat,
 ): [bestOf: 3 | 5 | 7, id: number][] {
   if (format === "RR") {

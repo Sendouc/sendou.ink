@@ -3,6 +3,7 @@ import { tournamentTeamPage } from "~/utils/urls";
 import { TeamWithRoster } from "../components/TeamWithRoster";
 import type { TournamentLoaderData } from "./to.$id";
 
+// xxx: when checked in more than once, roster duplicated
 export default function TournamentTeamsPage() {
   const data = useOutletContext<TournamentLoaderData>();
 
