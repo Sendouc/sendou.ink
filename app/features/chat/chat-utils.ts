@@ -18,3 +18,9 @@ export function soundEnabled(soundCode: string) {
 
   return !soundEnabled || soundEnabled === "true";
 }
+
+export function soundVolume() {
+  const volume = localStorage.getItem("settings__sound-volume");
+
+  return volume ? parseFloat(volume) : 100;
+}

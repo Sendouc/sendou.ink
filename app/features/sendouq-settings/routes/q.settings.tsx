@@ -20,7 +20,7 @@ import { SpeakerFilledIcon } from "~/components/icons/SpeakerFilled";
 import { TrashIcon } from "~/components/icons/Trash";
 import type { Preference, Tables, UserMapModePreferences } from "~/db/tables";
 import { requireUserId } from "~/features/auth/core/user.server";
-import { soundCodeToLocalStorageKey } from "~/features/chat/chat-utils";
+import { soundCodeToLocalStorageKey, soundVolume } from "~/features/chat/chat-utils";
 import * as QSettingsRepository from "~/features/sendouq-settings/QSettingsRepository.server";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "react-i18next";
@@ -41,6 +41,8 @@ import { settingsActionSchema } from "../q-settings-schemas.server";
 import styles from "../q-settings.css";
 import { BANNED_MAPS } from "../banned-maps";
 import { Divider } from "~/components/Divider";
+import { useState, useEffect } from "react";
+import { soundPath } from "~/utils/urls";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -597,6 +599,7 @@ function Sounds() {
         </div>
       </summary>
       {isMounted && <SoundCheckboxes />}
+      <SoundSlider />
     </details>
   );
 }
@@ -656,6 +659,56 @@ function SoundCheckboxes() {
           </label>
         </div>
       ))}
+    </div>
+  );
+}
+
+function SoundSlider() {
+  const [volume, setVolume] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return soundVolume();
+    }
+    return 1;
+  });
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setVolume(soundVolume());
+    }
+  }, []);
+
+  const saveVolume = (event: React.MouseEvent<HTMLInputElement> | React.TouchEvent<HTMLInputElement>) => {
+    let newVolume;
+    if (event instanceof TouchEvent) {
+      newVolume = parseFloat((event.changedTouches[0].target as HTMLInputElement).value);
+    } else {
+      newVolume = parseFloat((event.target as HTMLInputElement).value);
+    }
+
+    if (typeof window !== 'undefined') {
+      localStorage.setItem("settings__sound-volume", String(Math.floor(newVolume)));
+    }
+
+    setVolume(newVolume);
+    playSound();
+  };
+
+  function playSound() {
+    const audio = new Audio(soundPath("sq_like"));
+    audio.volume = soundVolume() / 100;
+    audio.play();
+  }
+
+  return (
+    <div className="stack horizontal xs items-center ml-2-5">
+      <SpeakerFilledIcon className="q-settings__volume-slider-icon"/>
+      <input 
+        className="q-settings__volume-slider-input" 
+        type="range" 
+        defaultValue={volume} 
+        onTouchEnd={saveVolume} 
+        onMouseUp={saveVolume} 
+      />
     </div>
   );
 }

@@ -12,7 +12,7 @@ import { useRootLoaderData } from "~/hooks/useRootLoaderData";
 import { useRevalidator } from "@remix-run/react";
 import type { ChatMessage } from "../chat-types";
 import { MESSAGE_MAX_LENGTH } from "../chat-constants";
-import { messageTypeToSound, soundEnabled } from "../chat-utils";
+import { messageTypeToSound, soundEnabled, soundVolume } from "../chat-utils";
 import { soundPath } from "~/utils/urls";
 import { useTranslation } from "react-i18next";
 
@@ -341,7 +341,9 @@ export function useChat({
 
       const sound = messageTypeToSound(messageArr[0].type);
       if (sound && soundEnabled(sound)) {
-        void new Audio(soundPath(sound)).play();
+        const audio = new Audio(soundPath(sound));
+        audio.volume = soundVolume() / 100;
+        audio.play();
       }
 
       if (messageArr[0].revalidateOnly) {
