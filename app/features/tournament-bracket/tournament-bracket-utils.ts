@@ -194,3 +194,6 @@ export function everyMatchIsOver(bracket: ValueToArray<DataTypes>) {
 
   return true;
 }
+
+export const bracketHasStarted = (bracket: ValueToArray<DataTypes>) =>
+  bracket.stage[0] && bracket.stage[0].id !== 0;

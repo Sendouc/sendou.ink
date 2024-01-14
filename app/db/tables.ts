@@ -484,6 +484,8 @@ export interface TournamentTeam {
 
 export interface TournamentTeamCheckIn {
   checkedInAt: number;
+  /** Which bracket checked in for. If missing is check in for the whole event. */
+  bracketIdx: number | null;
   tournamentTeamId: number;
 }
 

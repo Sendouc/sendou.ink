@@ -7,6 +7,7 @@ import type {
 import {
   Form,
   Link,
+  useFetcher,
   useLoaderData,
   useNavigate,
   useOutletContext,
@@ -21,6 +22,7 @@ import { SubmitButton } from "~/components/SubmitButton";
 import { getTournamentManager } from "../core/brackets-manager";
 import hasTournamentStarted from "../../tournament/queries/hasTournamentStarted.server";
 import {
+  badRequestIfFalsy,
   notFoundIfFalsy,
   parseRequestFormData,
   parseSafeSearchParams,
@@ -47,6 +49,7 @@ import {
   teamHasCheckedIn,
 } from "~/features/tournament";
 import {
+  bracketHasStarted,
   bracketSubscriptionKey,
   everyMatchIsOver,
   fillWithNullTillPowerOfTwo,
@@ -90,12 +93,14 @@ import * as TournamentRepository from "~/features/tournament/TournamentRepositor
 import {
   HACKY_isInviteOnlyEvent,
   HACKY_maxRosterSizeBeforeStart,
+  resolveOwnedTeam,
 } from "~/features/tournament/tournament-utils";
 import {
   bracketData,
-  teamsForBracketByBracketIdx,
+  teamsForBracket,
 } from "../core/bracket-progression.server";
 import type { DataTypes, ValueToArray } from "~/modules/brackets-manager/types";
+import { assertUnreachable } from "~/utils/types";
 
 export const links: LinksFunction = () => {
   return [
@@ -125,18 +130,20 @@ export const action: ActionFunction = async ({ params, request }) => {
   const data = await parseRequestFormData({ request, schema: bracketSchema });
   const manager = getTournamentManager("SQL");
 
-  validate(isTournamentOrganizer({ user, tournament }));
-
   switch (data._action) {
     // xxx: "START_BRACKET" and refactor logic
     case "START_TOURNAMENT": {
+      validate(isTournamentOrganizer({ user, tournament }));
       // xxx: bracket has started
       const hasStarted = hasTournamentStarted(tournamentId);
 
       validate(!hasStarted);
 
-      const { teams, enoughTeams } = await teamsForBracketByBracketIdx({
-        tournamentId,
+      const { teams, enoughTeams } = await teamsForBracket({
+        tournament:
+          await TournamentRepository.findBracketProgressionByTournamentId(
+            tournamentId,
+          ),
         bracketIdx,
       });
 
@@ -164,9 +171,10 @@ export const action: ActionFunction = async ({ params, request }) => {
         }
       })();
 
-      return null;
+      break;
     }
     case "FINALIZE_TOURNAMENT": {
+      validate(isTournamentOrganizer({ user, tournament }));
       const bracket = manager.get.tournamentData(tournamentId);
       invariant(
         bracket.stage.length === 1,
@@ -221,9 +229,26 @@ export const action: ActionFunction = async ({ params, request }) => {
         season,
       });
 
-      return null;
+      break;
+    }
+    case "BRACKET_CHECK_IN": {
+      const teams = findTeamsByTournamentId(tournamentId);
+      const ownTeam = badRequestIfFalsy(
+        resolveOwnedTeam({ userId: user.id, teams }),
+      );
+
+      await TournamentRepository.checkInToBracket({
+        bracketIdx,
+        tournamentTeamId: ownTeam.id,
+      });
+      break;
+    }
+    default: {
+      assertUnreachable(data);
     }
   }
+
+  return null;
 };
 
 export type TournamentBracketLoaderData = SerializeFrom<typeof loader>;
@@ -236,9 +261,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   });
 
   const inProgressTournamentFields = (bracket: ValueToArray<DataTypes>) => {
-    const hasStarted = bracket.stage[0].id !== 0;
-
-    if (!hasStarted) {
+    if (!bracketHasStarted(bracket)) {
       return {
         preview: true,
         roundBestOfs: null,
@@ -262,6 +285,30 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     };
   };
 
+  const teamsPendingCheckIn = async (bracket: ValueToArray<DataTypes>) => {
+    if (bracketHasStarted(bracket)) return;
+    // regular check-in flow used
+    if (bracketIdx === 0) return;
+
+    const { teams } = await teamsForBracket({
+      bracketIdx,
+      tournament:
+        await TournamentRepository.findBracketProgressionByTournamentId(
+          tournamentId,
+        ),
+      allTeams: true,
+    });
+
+    return (
+      teams
+        // would be better to use id but it's not available in the in-memory bracket
+        .filter((team) =>
+          bracket.participant.every((p) => p.name !== team.name),
+        )
+        .map((t) => t.id)
+    );
+  };
+
   const bracketIdx = parsedSearchParams.success
     ? parsedSearchParams.data.idx
     : 0;
@@ -272,6 +319,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   return {
     bracket,
     bracketIdx,
+    teamsPendingCheckIn: await teamsPendingCheckIn(bracket),
     ...inProgressTournamentFields(bracket),
   };
 };
@@ -367,6 +415,8 @@ export default function TournamentBracketsPage() {
       if (!element) return;
 
       element.innerHTML = "";
+      // @ts-expect-error - brackets-viewer is not typed
+      window.bracketsViewer!.onMatchClicked = () => {};
     };
   }, [data, navigate, parentRouteData, enoughTeams]);
 
@@ -427,6 +477,10 @@ export default function TournamentBracketsPage() {
     return { progress: lowestStatus, currentMatchId, currentOpponent };
   })();
 
+  const teamPendingBracketCheckin = data.teamsPendingCheckIn?.includes(
+    parentRouteData.ownTeam?.id ?? -1,
+  );
+
   return (
     <div>
       {visibility !== "hidden" && !data.everyMatchIsOver ? (
@@ -451,8 +505,8 @@ export default function TournamentBracketsPage() {
           </FormWithConfirm>
         </div>
       ) : null}
-      {!parentRouteData.hasStarted && enoughTeams ? (
-        <Form method="post" className="stack items-center">
+      {data.preview && enoughTeams ? (
+        <Form method="post" className="stack items-center mb-4">
           {!isTournamentOrganizer({
             user,
             tournament: parentRouteData.tournament,
@@ -494,31 +548,34 @@ export default function TournamentBracketsPage() {
           )}
         </Form>
       ) : null}
-      {parentRouteData.hasStarted && progress ? (
+      {!data.preview && progress ? (
         <TournamentProgressPrompt
           progress={progress}
           currentMatchId={currentMatchId}
           currentOpponent={currentOpponent}
         />
       ) : null}
-      {!data.finalStandings &&
-      myTeam &&
-      parentRouteData.hasStarted &&
-      parentRouteData.ownTeam &&
-      progress &&
-      progress < Status.Completed ? (
-        <AddSubsPopOver
-          members={myTeam.members}
-          inviteCode={parentRouteData.ownTeam.inviteCode}
-        />
-      ) : null}
+      <div className="stack horizontal sm justify-end">
+        {teamPendingBracketCheckin ? <BracketCheckinButton /> : null}
+        {!data.finalStandings &&
+        myTeam &&
+        parentRouteData.hasStarted &&
+        parentRouteData.ownTeam ? (
+          // TODO: could also hide this when tournament is not in the any bracket anymore
+          <AddSubsPopOver
+            members={myTeam.members}
+            inviteCode={parentRouteData.ownTeam.inviteCode}
+          />
+        ) : null}
+      </div>
       {data.finalStandings ? (
         <FinalStandings standings={data.finalStandings} />
       ) : null}
       <BracketNav />
       <div className="brackets-viewer" ref={ref} />
+      {/* xxx: different text for underground etc. bracket */}
       {!enoughTeams ? (
-        <div className="text-center text-lg font-semi-bold text-lighter">
+        <div className="text-center text-lg font-semi-bold text-lighter mt-6">
           {t("tournament:bracket.waiting", {
             count: TOURNAMENT.ENOUGH_TEAMS_TO_START,
           })}
@@ -640,6 +697,22 @@ function TournamentProgressPrompt({
   );
 }
 
+function BracketCheckinButton() {
+  const fetcher = useFetcher();
+
+  return (
+    <fetcher.Form method="post">
+      <SubmitButton
+        size="tiny"
+        _action="BRACKET_CHECK_IN"
+        state={fetcher.state}
+      >
+        Check-in & join the bracket
+      </SubmitButton>
+    </fetcher.Form>
+  );
+}
+
 function AddSubsPopOver({
   members,
   inviteCode,
@@ -666,7 +739,6 @@ function AddSubsPopOver({
       buttonChildren={<>{t("tournament:actions.addSub")}</>}
       triggerClassName="tiny outlined ml-auto"
       triggerTestId="add-sub-button"
-      containerClassName="mt-4"
       contentClassName="text-xs"
     >
       {t("tournament:actions.sub.prompt", { count: subsAvailableToAdd })}

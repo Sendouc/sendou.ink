@@ -2,6 +2,7 @@ import type { NotNull } from "kysely";
 import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
 import { db } from "~/db/sql";
 import type { Tables } from "~/db/tables";
+import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { COMMON_USER_FIELDS, userChatNameColor } from "~/utils/kysely.server";
 import type { Unwrapped } from "~/utils/types";
 
@@ -95,6 +96,43 @@ export function findBracketProgressionByTournamentId(tournamentId: number) {
       .where("Tournament.id", "=", tournamentId)
       .executeTakeFirstOrThrow()
   );
+}
+
+export function checkedInTournamentTeamsByBracket({
+  tournamentId,
+  bracketIdx,
+}: {
+  tournamentId: number;
+  bracketIdx: number;
+}) {
+  return db
+    .selectFrom("TournamentTeamCheckIn")
+    .innerJoin(
+      "TournamentTeam",
+      "TournamentTeamCheckIn.tournamentTeamId",
+      "TournamentTeam.id",
+    )
+    .select(["TournamentTeamCheckIn.tournamentTeamId"])
+    .where("TournamentTeamCheckIn.bracketIdx", "=", bracketIdx)
+    .where("TournamentTeam.tournamentId", "=", tournamentId)
+    .execute();
+}
+
+export function checkInToBracket({
+  tournamentTeamId,
+  bracketIdx,
+}: {
+  tournamentTeamId: number;
+  bracketIdx: number;
+}) {
+  return db
+    .insertInto("TournamentTeamCheckIn")
+    .values({
+      checkedInAt: dateToDatabaseTimestamp(new Date()),
+      tournamentTeamId,
+      bracketIdx,
+    })
+    .execute();
 }
 
 export function addStaff({

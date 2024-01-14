@@ -223,6 +223,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   return null;
 };
 
+// xxx: check in action for specific bracket
 // TODO: translations
 export default function TournamentAdminPage() {
   const { t } = useTranslation(["calendar"]);

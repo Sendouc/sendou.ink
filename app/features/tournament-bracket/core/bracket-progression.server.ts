@@ -19,6 +19,7 @@ import { assertUnreachable } from "~/utils/types";
 
 type BracketProgressionTeam = { id: number; name: string };
 
+// xxx: no check-in if bracket is not a underground etc. bracket
 /** Get bracket data either as it exists in DB or if in pre-started state then as preview */
 export async function bracketData({
   bracketIdx,
@@ -26,7 +27,7 @@ export async function bracketData({
 }: {
   bracketIdx: number;
   tournamentId: number;
-}): Promise<ValueToArray<DataTypes>> {
+}) {
   const tournament =
     await TournamentRepository.findBracketProgressionByTournamentId(
       tournamentId,
@@ -47,13 +48,15 @@ export async function bracketData({
 
   const manager = getTournamentManager("IN_MEMORY");
 
-  const { teams, enoughTeams } = teamsForBracket({
+  const { teams, enoughTeams } = await teamsForBracket({
+    bracketIdx,
     tournament,
-    bracket,
   });
 
   // no stages but return what we can
-  if (!enoughTeams) return manager.get.tournamentData(tournamentId);
+  if (!enoughTeams) {
+    return manager.get.tournamentData(tournamentId);
+  }
 
   manager.create({
     tournamentId,
@@ -83,75 +86,70 @@ function bracketByIndex({
   return fallbackBracket;
 }
 
-export async function teamsForBracketByBracketIdx({
-  bracketIdx = 0,
-  tournamentId,
+export async function teamsForBracket({
+  bracketIdx,
+  tournament,
+  allTeams,
 }: {
-  bracketIdx?: number;
-  tournamentId: number;
+  bracketIdx: number;
+  tournament: TournamentRepository.FindBracketProgressionByTournamentIdItem;
+  allTeams?: boolean;
 }) {
-  const tournament =
-    await TournamentRepository.findBracketProgressionByTournamentId(
-      tournamentId,
-    );
-
   const bracket = bracketByIndex({
     bracketsStyle: tournament.bracketsStyle,
     bracketIdx,
   });
 
-  return teamsForBracket({
-    tournament,
-    bracket,
-  });
-}
-
-function teamsForBracket({
-  bracket,
-  tournament,
-}: {
-  bracket: TournamentBracketsStyle[number];
-  tournament: TournamentRepository.FindBracketProgressionByTournamentIdItem;
-}) {
   return bracket.sources
-    ? teamsFromAnotherBracketsReadyToPlay({ bracket, tournament })
+    ? await teamsFromAnotherBracketsReadyToPlay({
+        bracket,
+        tournament,
+        bracketIdx,
+        allTeams,
+      })
     : registeredTeamsReadyToPlay({
         tournamentId: tournament.id,
         checkInHasStarted: checkInHasStarted(tournament),
+        allTeams,
       });
 }
 
 function registeredTeamsReadyToPlay({
   tournamentId,
   checkInHasStarted,
+  allTeams,
 }: {
   tournamentId: number;
   checkInHasStarted: boolean;
+  allTeams?: boolean;
 }) {
-  let teams = findTeamsByTournamentId(tournamentId);
-  if (checkInHasStarted) {
-    teams = teams.filter(teamHasCheckedIn);
-  }
+  const teams = findTeamsByTournamentId(tournamentId);
+  const checkedInTeams =
+    checkInHasStarted && !allTeams ? teams.filter(teamHasCheckedIn) : teams;
 
   return {
-    teams,
-    enoughTeams: teams.length >= TOURNAMENT.ENOUGH_TEAMS_TO_START,
+    teams: checkedInTeams,
+    enoughTeams: checkedInTeams.length >= TOURNAMENT.ENOUGH_TEAMS_TO_START,
   };
 }
 
-// xxx: checked-in
-function teamsFromAnotherBracketsReadyToPlay({
+async function teamsFromAnotherBracketsReadyToPlay({
   bracket,
   tournament,
+  bracketIdx,
+  allTeams,
 }: {
   bracket: TournamentBracketsStyle[number];
   tournament: TournamentRepository.FindBracketProgressionByTournamentIdItem;
+  bracketIdx: number;
+  allTeams?: boolean;
 }) {
   const sources = bracket.sources;
   invariant(sources, "Bracket sources not found");
 
   const teams: BracketProgressionTeam[] = [];
 
+  let bracketReadyToStart = true;
   for (const { bracketIdx, placements } of sources) {
     const sourceBracket = bracketByIndex({
       bracketsStyle: tournament.bracketsStyle,
@@ -163,9 +161,17 @@ function teamsFromAnotherBracketsReadyToPlay({
         throw new Error("Not implemented");
       }
       case "DE": {
-        teams.push(
-          ...teamsFromDoubleElim({ placements, tournament, sourceBracket }),
-        );
+        const { teams: teamsFromBracket, relevantMatchesFinished } =
+          teamsFromDoubleElim({
+            placements,
+            tournament,
+            sourceBracket,
+          });
+        teams.push(...teamsFromBracket);
+
+        if (!relevantMatchesFinished) {
+          bracketReadyToStart = false;
+        }
         break;
       }
       case "RR": {
@@ -177,7 +183,26 @@ function teamsFromAnotherBracketsReadyToPlay({
     }
   }
 
-  return { teams, enoughTeams: true };
+  const checkedInTeams = await (async () => {
+    if (!bracketReadyToStart || allTeams) return teams;
+
+    const checkedInTeams =
+      await TournamentRepository.checkedInTournamentTeamsByBracket({
+        bracketIdx,
+        tournamentId: tournament.id,
+      });
+
+    return teams.filter((team) =>
+      checkedInTeams.some(
+        (checkedInTeam) => checkedInTeam.tournamentTeamId === team.id,
+      ),
+    );
+  })();
+
+  return {
+    teams: checkedInTeams,
+    enoughTeams: checkedInTeams.length >= TOURNAMENT.ENOUGH_TEAMS_TO_START,
+  };
 }
 
 const teamsWithNames = ({
@@ -238,7 +263,7 @@ function teamsFromDoubleElim({
   );
 
   // stage has not started yet
-  if (!bracketInDb) return [];
+  if (!bracketInDb) return { teams: [], relevantMatchesFinished: false };
 
   const data = getTournamentManager("SQL").get.stageData(bracketInDb.id);
 
@@ -249,6 +274,7 @@ function teamsFromDoubleElim({
   );
 
   const teams: { id: number }[] = [];
+  let relevantMatchesFinished = true;
   for (const roundId of sourceRoundsIds) {
     const roundsMatches = data.match.filter(
       (match) => match.round_id === roundId,
@@ -259,6 +285,7 @@ function teamsFromDoubleElim({
         match.opponent1?.result !== "win" &&
         match.opponent2?.result !== "win"
       ) {
+        relevantMatchesFinished = false;
         continue;
       }
 
@@ -270,5 +297,8 @@ function teamsFromDoubleElim({
     }
   }
 
-  return teamsWithNames({ teams, bracketData: data });
+  return {
+    relevantMatchesFinished,
+    teams: teamsWithNames({ teams, bracketData: data }),
+  };
 }
