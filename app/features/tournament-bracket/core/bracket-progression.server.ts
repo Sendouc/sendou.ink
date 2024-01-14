@@ -180,6 +180,26 @@ function teamsFromAnotherBracketsReadyToPlay({
   return { teams, enoughTeams: true };
 }
 
+const teamsWithNames = ({
+  teams,
+  bracketData,
+}: {
+  teams: { id: number }[];
+  bracketData: ValueToArray<DataTypes>;
+}) => {
+  return teams.map((team) => {
+    const name = bracketData.participant.find(
+      (participant) => participant.id === team.id,
+    )?.name;
+    invariant(name, `Team name not found for id: ${team.id}`);
+
+    return {
+      id: team.id,
+      name,
+    };
+  });
+};
+
 function teamsFromDoubleElim({
   placements,
   tournament,
@@ -188,7 +208,31 @@ function teamsFromDoubleElim({
   placements: number[];
   tournament: TournamentRepository.FindBracketProgressionByTournamentIdItem;
   sourceBracket: TournamentBracketsStyle[number];
-}): BracketProgressionTeam[] {
+}) {
+  const resolveLosersGroupId = (data: ValueToArray<DataTypes>) => {
+    const minGroupId = Math.min(...data.round.map((round) => round.group_id));
+
+    return minGroupId + 1;
+  };
+  const placementsToRoundsIds = (
+    data: ValueToArray<DataTypes>,
+    groupId: number,
+  ) => {
+    const losersRounds = data.round.filter(
+      (round) => round.group_id === groupId,
+    );
+    const orderedRoundsIds = losersRounds
+      .map((round) => round.id)
+      .sort((a, b) => a - b);
+    const amountOfRounds = Math.abs(Math.min(...placements));
+    return orderedRoundsIds.slice(0, amountOfRounds);
+  };
+
+  invariant(
+    placements.every((placement) => placement < 0),
+    "Positive placements in DE not implemented",
+  );
+
   const bracketInDb = tournament.stages.find(
     (stage) => stage.name === sourceBracket.name,
   );
@@ -197,8 +241,34 @@ function teamsFromDoubleElim({
   if (!bracketInDb) return [];
 
   const data = getTournamentManager("SQL").get.stageData(bracketInDb.id);
-  console.log(data);
 
-  // xxx: todo
-  return [];
+  const losersGroupId = resolveLosersGroupId(data);
+  const sourceRoundsIds = placementsToRoundsIds(data, losersGroupId).sort(
+    // teams who made it further in the bracket get higher seed
+    (a, b) => b - a,
+  );
+
+  const teams: { id: number }[] = [];
+  for (const roundId of sourceRoundsIds) {
+    const roundsMatches = data.match.filter(
+      (match) => match.round_id === roundId,
+    );
+
+    for (const match of roundsMatches) {
+      if (
+        match.opponent1?.result !== "win" &&
+        match.opponent2?.result !== "win"
+      ) {
+        continue;
+      }
+
+      const loser =
+        match.opponent1?.result === "win" ? match.opponent2 : match.opponent1;
+      invariant(loser?.id, "Loser id not found");
+
+      teams.push({ id: loser.id });
+    }
+  }
+
+  return teamsWithNames({ teams, bracketData: data });
 }
