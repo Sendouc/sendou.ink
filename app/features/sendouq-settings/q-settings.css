@@ -76,3 +76,18 @@
   width: 250px;
   height: 50px;
 }
+
+.q-settings__volume-slider-icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* 
+Necessary because default style adds padding, making the slider not go from 0 to 1 visually
+Changing the default style would affect all other input elements, so we need to override it
+*/
+.q-settings__volume-slider-input {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  border: 0 !important;
+}
