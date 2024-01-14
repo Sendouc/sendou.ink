@@ -106,7 +106,7 @@ export const links: LinksFunction = () => {
   ];
 };
 
-const bracketIdx = 0;
+const bracketIdx = 1;
 
 export const action: ActionFunction = async ({ params, request }) => {
   const user = await requireUser(request);
@@ -224,11 +224,11 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   const tournamentId = tournamentIdFromParams(params);
 
   const inProgressTournamentFields = (bracket: ValueToArray<DataTypes>) => {
-    // xxx: TODO: infer hasStarted from bracket instead
-    const hasStarted = hasTournamentStarted(tournamentId);
+    const hasStarted = bracket.stage[0].id !== 0;
 
     if (!hasStarted) {
       return {
+        preview: true,
         roundBestOfs: null,
         finalStandings: null,
         everyMatchIsOver: false,
@@ -237,6 +237,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 
     const _everyMatchIsOver = everyMatchIsOver(bracket);
     return {
+      preview: false,
       roundBestOfs: bestOfsByTournamentId(tournamentId),
       everyMatchIsOver: _everyMatchIsOver,
       finalStandings: _everyMatchIsOver
@@ -278,7 +279,7 @@ export default function TournamentBracketsPage() {
     if (!enoughTeams) return;
 
     // matches aren't generated before tournament starts
-    if (parentRouteData.hasStarted) {
+    if (!data.preview) {
       // @ts-expect-error - brackets-viewer is not typed
       window.bracketsViewer.onMatchClicked = (match) => {
         // can't view match page of a bye
@@ -598,13 +599,7 @@ function TournamentProgressPrompt({
   }
 
   if (progress >= Status.Completed) {
-    return (
-      <TournamentProgressContainer>
-        {t("tournament:bracket.progress.thanksForPlaying", {
-          eventName: parentRouteData.tournament.name,
-        })}
-      </TournamentProgressContainer>
-    );
+    return null;
   }
 
   if (!currentMatchId || !currentOpponent) {
