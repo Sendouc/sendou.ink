@@ -675,7 +675,7 @@ function SoundSlider() {
 
   const saveVolume = (event: React.MouseEvent<HTMLInputElement> | React.TouchEvent<HTMLInputElement>) => {
     let newVolume;
-    if (event instanceof TouchEvent) {
+    if (typeof TouchEvent !== 'undefined' && event instanceof TouchEvent) {
       newVolume = parseFloat((event.changedTouches[0].target as HTMLInputElement).value);
     } else {
       newVolume = parseFloat((event.target as HTMLInputElement).value);
