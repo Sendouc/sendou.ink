@@ -209,6 +209,7 @@ export const action: ActionFunction = async ({ params, request }) => {
         databaseTimestampToDate(tournament.startTime),
       )?.nth;
 
+      // xxx: for final standings use results of underground bracket as well, use this on the tournament team page too?
       addSummary({
         tournamentId,
         summary: tournamentSummary({
@@ -952,7 +953,7 @@ function TournamentProgressContainer({
   children: React.ReactNode;
 }) {
   return (
-    <div className="stack items-center">
+    <div className="stack items-center mb-4">
       <div className="tournament-bracket__progress">{children}</div>
     </div>
   );

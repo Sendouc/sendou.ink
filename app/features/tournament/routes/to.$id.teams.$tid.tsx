@@ -53,7 +53,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const bracket = manager.get.tournamentData(tournamentId);
   const stage = bracket.stage[0];
 
-  // xxx: handle placement when multiple stages
+  // xxx: handle placement when multiple stages - boolean in the format that tells which bracket is the final one?
 
   const _everyMatchIsOver = everyMatchIsOver(bracket);
   const standing = _everyMatchIsOver

@@ -844,7 +844,7 @@ function calendarEventWithToTools(event: "PICNIC" | "ITZ" | "PP" = "PICNIC") {
           },
           {
             format: "SE",
-            name: "Bravo bracket",
+            name: "Underground bracket",
             sources: [{ bracketIdx: 0, placements: [3, 4] }],
           },
         ]
@@ -857,7 +857,7 @@ function calendarEventWithToTools(event: "PICNIC" | "ITZ" | "PP" = "PICNIC") {
               sources: [{ bracketIdx: 0, placements: [-1, -2] }],
             },
           ]
-        : [{ format: "DE", name: "Elimination stage" }];
+        : [{ format: "DE", name: "Main bracket" }];
 
   // xxx: single elim bracket that stops at top 4
   // [

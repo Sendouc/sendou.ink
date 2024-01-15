@@ -39,7 +39,7 @@ const stm = sql.prepare(/*sql*/ `
     ) as "members"
     from
     "TournamentTeam"
-    left join "TournamentTeamCheckIn" on "TournamentTeamCheckIn"."tournamentTeamId" = "TournamentTeam"."id"
+    left join "TournamentTeamCheckIn" on "TournamentTeamCheckIn"."tournamentTeamId" = "TournamentTeam"."id" and "TournamentTeamCheckIn"."bracketIdx" is null
     left join "TournamentTeamMember" on "TournamentTeamMember"."tournamentTeamId" = "TournamentTeam"."id"
     left join "User" on "User"."id" = "TournamentTeamMember"."userId"
     left join "PlusTier" on "User"."id" = "PlusTier"."userId"

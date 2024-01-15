@@ -13,6 +13,7 @@ const stm = sql.prepare(/* sql */ `
       "otherTeam"."name" as "otherTeamName",
       "otherTeam"."id" as "otherTeamId",
       "round"."number" as "roundNumber",
+      "round"."stageId" as "stageId",
       "group"."number" as "groupNumber",
       json_group_array(
         json_object(
@@ -84,6 +85,7 @@ export interface SetHistoryByTeamIdItem {
   otherTeamName: string;
   otherTeamId: number;
   roundNumber: number;
+  stageId: number;
   groupNumber: number;
   matches: {
     stageId: StageId;

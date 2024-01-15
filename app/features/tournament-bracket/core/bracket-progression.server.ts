@@ -174,6 +174,7 @@ async function teamsFromAnotherBracketsReadyToPlay({
         }
         break;
       }
+      // xxx: implement
       case "RR": {
         throw new Error("Not implemented");
       }

@@ -452,7 +452,7 @@ export interface TournamentStage {
   number: number;
   settings: string;
   tournamentId: number;
-  type: string;
+  type: "double_elimination" | "single_elimination" | "round_robin";
 }
 
 export interface TournamentSub {
