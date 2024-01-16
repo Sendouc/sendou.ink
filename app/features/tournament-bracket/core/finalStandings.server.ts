@@ -2,6 +2,7 @@ import type { Tournament, TournamentStage, TournamentTeam } from "~/db/types";
 import type { BracketsManager } from "~/modules/brackets-manager";
 import type { FinalStandingsItem } from "~/modules/brackets-manager/types";
 import type { PlayerThatPlayedByTeamId } from "../queries/playersThatPlayedByTeamId.server";
+import type * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import { playersThatPlayedByTournamentId } from "../queries/playersThatPlayedByTeamId.server";
 
 export interface FinalStanding {
@@ -90,4 +91,21 @@ export function finalStandingOfTeam({
       (standing) => standing.tournamentTeam.id === tournamentTeamId,
     ) ?? null
   );
+}
+
+export function bracketIsFinalStage({
+  tournament,
+  bracketIdx,
+}: {
+  tournament: TournamentRepository.FindBracketProgressionByTournamentIdItem;
+  bracketIdx: number;
+}) {
+  if (tournament.bracketsStyle.length === 1) return true;
+
+  const finalBracketIdx = tournament.bracketsStyle.findIndex(
+    (bracket) =>
+      bracket.sources?.some((source) => source.placements.includes(1)),
+  );
+
+  return bracketIdx === finalBracketIdx;
 }

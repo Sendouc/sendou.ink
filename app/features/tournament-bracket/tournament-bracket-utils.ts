@@ -15,6 +15,7 @@ import invariant from "tiny-invariant";
 import type { DataTypes, ValueToArray } from "~/modules/brackets-manager/types";
 import { HACKY_isInviteOnlyEvent } from "../tournament/tournament-utils";
 import type { BracketFormat } from "~/db/tables";
+import { removeDuplicates } from "~/utils/arrays";
 
 export function matchIdFromParams(params: Params<string>) {
   const result = Number(params["mid"]);
@@ -167,7 +168,13 @@ export function fillWithNullTillPowerOfTwo<T>(arr: T[]) {
   return [...arr, ...new Array(nullsToAdd).fill(null)];
 }
 
-export function everyMatchIsOver(bracket: ValueToArray<DataTypes>) {
+export function everyMatchIsOver(
+  bracket: Pick<ValueToArray<DataTypes>, "match">,
+) {
+  // winners, losers & grand finals+bracket reset are all different stages
+  const isDoubleElimination =
+    removeDuplicates(bracket.match.map((match) => match.group_id)).length === 3;
+
   // tournament didn't start yet
   if (bracket.match.length === 0) return false;
 
@@ -175,7 +182,7 @@ export function everyMatchIsOver(bracket: ValueToArray<DataTypes>) {
   for (const [i, match] of bracket.match.entries()) {
     // special case - bracket reset might not be played depending on who wins in the grands
     const isLast = i === bracket.match.length - 1;
-    if (isLast && lastWinner === 1) {
+    if (isLast && lastWinner === 1 && isDoubleElimination) {
       continue;
     }
     // BYE
@@ -190,6 +197,22 @@ export function everyMatchIsOver(bracket: ValueToArray<DataTypes>) {
     }
 
     lastWinner = match.opponent1?.result === "win" ? 1 : 2;
+  }
+
+  return true;
+}
+
+export function everyBracketOver(tournament: ValueToArray<DataTypes>) {
+  const stageIds = tournament.stage.map((stage) => stage.id);
+
+  for (const stageId of stageIds) {
+    const matches = tournament.match.filter(
+      (match) => match.stage_id === stageId,
+    );
+
+    if (!everyMatchIsOver({ match: matches })) {
+      return false;
+    }
   }
 
   return true;

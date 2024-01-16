@@ -50,6 +50,7 @@ import {
 import {
   bracketHasStarted,
   bracketSubscriptionKey,
+  everyBracketOver,
   everyMatchIsOver,
   fillWithNullTillPowerOfTwo,
   resolveTournamentStageSettings,
@@ -63,7 +64,10 @@ import { Button, LinkButton } from "~/components/Button";
 import { useVisibilityChange } from "~/hooks/useVisibilityChange";
 import { bestOfsByTournamentId } from "../queries/bestOfsByTournamentId.server";
 import type { FinalStanding } from "../core/finalStandings.server";
-import { finalStandings } from "../core/finalStandings.server";
+import {
+  bracketIsFinalStage,
+  finalStandings,
+} from "../core/finalStandings.server";
 import { Placement } from "~/components/Placement";
 import { Avatar } from "~/components/Avatar";
 import { Divider } from "~/components/Divider";
@@ -137,7 +141,7 @@ export const action: ActionFunction = async ({ params, request }) => {
         );
 
       const bracket = await bracketData({
-        tournamentId,
+        tournament: tournamentBracketProgression,
         bracketIdx: data.bracketIdx,
       });
 
@@ -261,27 +265,43 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     schema: bracketSearchParamsSchema,
   });
 
-  const inProgressTournamentFields = (bracket: ValueToArray<DataTypes>) => {
+  const inProgressTournamentFields = ({
+    bracket,
+  }: {
+    bracket: ValueToArray<DataTypes>;
+    tournament: TournamentRepository.FindBracketProgressionByTournamentIdItem;
+  }) => {
     if (!bracketHasStarted(bracket)) {
       return {
         preview: true,
         roundBestOfs: null,
         finalStandings: null,
         everyMatchIsOver: false,
+        everyBracketOver: null,
       };
     }
 
+    const manager = getTournamentManager("SQL");
+
     const _everyMatchIsOver = everyMatchIsOver(bracket);
-    return {
-      preview: false,
-      roundBestOfs: bestOfsByTournamentId(tournamentId),
-      everyMatchIsOver: _everyMatchIsOver,
-      finalStandings: _everyMatchIsOver
+    const _finalStandings =
+      _everyMatchIsOver && bracketIsFinalStage({ tournament, bracketIdx })
         ? finalStandings({
-            manager: getTournamentManager("SQL"),
+            manager,
             tournamentId,
             stageId: bracket.stage[0].id,
           })
+        : null;
+    return {
+      preview: false,
+      roundBestOfs: bestOfsByTournamentId(tournamentId),
+      // xxx: rename this + function to "everyMatchOfBracketIsOver" or something
+      everyMatchIsOver: _everyMatchIsOver,
+      finalStandings: _finalStandings,
+      // as optimization this check is not run till it's relevant
+      // xxx: test this
+      everyBracketOver: _finalStandings
+        ? everyBracketOver(manager.get.tournamentData(tournamentId))
         : null,
     };
   };
@@ -313,15 +333,19 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const bracketIdx = parsedSearchParams.success
     ? parsedSearchParams.data.idx
     : 0;
+  const tournament =
+    await TournamentRepository.findBracketProgressionByTournamentId(
+      tournamentId,
+    );
   const bracket = await bracketData({
-    tournamentId,
+    tournament,
     bracketIdx,
   });
   return {
     bracket,
     bracketIdx,
     teamsPendingCheckIn: await teamsPendingCheckIn(bracket),
-    ...inProgressTournamentFields(bracket),
+    ...inProgressTournamentFields({ bracket, tournament }),
   };
 };
 
@@ -490,7 +514,7 @@ export default function TournamentBracketsPage() {
       {visibility !== "hidden" && !data.everyMatchIsOver ? (
         <AutoRefresher />
       ) : null}
-      {data.finalStandings &&
+      {data.everyBracketOver &&
       !parentRouteData.hasFinalized &&
       isTournamentOrganizer({
         user,

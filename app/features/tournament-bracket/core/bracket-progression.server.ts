@@ -19,20 +19,24 @@ import { assertUnreachable } from "~/utils/types";
 
 type BracketProgressionTeam = { id: number; name: string };
 
-// xxx: no check-in if bracket is not a underground etc. bracket
+// xxx: no check-in if bracket is not a underground etc. bracket - maybe these can be added when tournament starts..?
 /** Get bracket data either as it exists in DB or if in pre-started state then as preview */
 export async function bracketData({
   bracketIdx,
-  tournamentId,
+  tournament,
 }: {
   bracketIdx: number;
-  tournamentId: number;
+  tournament: {
+    id: number;
+    bracketsStyle: TournamentBracketsStyle;
+    startTime: number;
+    stages: {
+      id: number;
+      number: number;
+      name: string;
+    }[];
+  };
 }) {
-  const tournament =
-    await TournamentRepository.findBracketProgressionByTournamentId(
-      tournamentId,
-    );
-
   const bracket = bracketByIndex({
     bracketsStyle: tournament.bracketsStyle,
     bracketIdx,
@@ -55,11 +59,11 @@ export async function bracketData({
 
   // no stages but return what we can
   if (!enoughTeams) {
-    return manager.get.tournamentData(tournamentId);
+    return manager.get.tournamentData(tournament.id);
   }
 
   manager.create({
-    tournamentId,
+    tournamentId: tournament.id,
     name: bracket.name,
     type: resolveTournamentStageType(bracket.format),
     seeding: fillWithNullTillPowerOfTwo(teams.map((team) => team.name)),

@@ -322,6 +322,7 @@
   gap: var(--s-2);
   max-width: max-content;
   margin: 0 auto;
+  margin-bottom: var(--s-4);
 }
 [data-placement="1"] {
   order: -1;
