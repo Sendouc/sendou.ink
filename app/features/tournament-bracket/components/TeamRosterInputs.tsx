@@ -3,12 +3,12 @@ import clone from "just-clone";
 import * as React from "react";
 import { TOURNAMENT } from "../../tournament/tournament-constants";
 import { Label } from "~/components/Label";
-import type {
-  TournamentLoaderData,
-  TournamentLoaderTeam,
+import {
+  useTournament,
+  type TournamentLoaderTeam,
 } from "../../tournament/routes/to.$id";
 import { inGameNameWithoutDiscriminator } from "~/utils/strings";
-import { Link, useLoaderData, useOutletContext } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
 import type { TournamentMatchLoaderData } from "../routes/to.$id.matches.$mid";
 import type { Result } from "./ScoreReporter";
 import { tournamentTeamPage } from "~/utils/urls";
@@ -31,7 +31,7 @@ export function TeamRosterInputs({
 }) {
   const presentational = Boolean(result);
 
-  const parentRouteData = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
   const data = useLoaderData<TournamentMatchLoaderData>();
 
   React.useEffect(() => {
@@ -58,7 +58,7 @@ export function TeamRosterInputs({
             </span>{" "}
             <Link
               to={tournamentTeamPage({
-                eventId: parentRouteData.tournament.id,
+                eventId: tournament.ctx.id,
                 tournamentTeamId: team.id,
               })}
               className="tournament-bracket__during-match-actions__team-name"

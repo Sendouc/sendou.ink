@@ -24,7 +24,9 @@ export async function tournamentData({
     ctx: {
       ...ctx,
       teams: ctx.teams.map((team) => {
-        const isOwnTeam = team.members.some((member) => member.id === user?.id);
+        const isOwnTeam = team.members.some(
+          (member) => member.userId === user?.id,
+        );
 
         return {
           ...team,

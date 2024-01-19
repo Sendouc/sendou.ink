@@ -235,7 +235,9 @@ export class Tournament {
     if (!user) return null;
 
     return this.ctx.teams.find((team) =>
-      team.members.some((member) => member.id === user.id && member.isOwner),
+      team.members.some(
+        (member) => member.userId === user.id && member.isOwner,
+      ),
     );
   }
 
@@ -243,7 +245,7 @@ export class Tournament {
     if (!user) return null;
 
     return this.ctx.teams.find((team) =>
-      team.members.some((member) => member.id === user.id),
+      team.members.some((member) => member.userId === user.id),
     );
   }
 

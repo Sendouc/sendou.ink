@@ -20,7 +20,6 @@ import {
   useLoaderData,
   useMatches,
   useNavigation,
-  useOutletContext,
 } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
@@ -30,7 +29,11 @@ import { Button } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
 import { Draggable } from "~/components/Draggable";
 import { useTimeoutState } from "~/hooks/useTimeoutState";
-import type { TournamentLoaderData, TournamentLoaderTeam } from "./to.$id";
+import {
+  useTournament,
+  type TournamentLoaderData,
+  type TournamentLoaderTeam,
+} from "./to.$id";
 import { Image, TierImage } from "~/components/Image";
 import { navIconUrl, tournamentBracketsPage } from "~/utils/urls";
 import { requireUser } from "~/features/auth/core";
@@ -212,7 +215,7 @@ export default function TournamentSeedsPage() {
 }
 
 function SeedAlert({ teamOrder }: { teamOrder: number[] }) {
-  const data = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
   const [teamOrderInDb, setTeamOrderInDb] = React.useState(teamOrder);
   const [showSuccess, setShowSuccess] = useTimeoutState(false);
   const fetcher = useFetcher();
@@ -231,7 +234,7 @@ function SeedAlert({ teamOrder }: { teamOrder: number[] }) {
 
   return (
     <fetcher.Form method="post" className="tournament__seeds__form">
-      <input type="hidden" name="tournamentId" value={data.tournament.id} />
+      <input type="hidden" name="tournamentId" value={tournament.ctx.id} />
       <input type="hidden" name="seeds" value={JSON.stringify(teamOrder)} />
       <Alert
         variation={

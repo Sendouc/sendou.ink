@@ -1,10 +1,10 @@
 import { Link } from "@remix-run/react";
-import type { FindTeamsByTournamentIdItem } from "../queries/findTeamsByTournamentId.server";
-import { Avatar } from "~/components/Avatar";
-import { userPage } from "~/utils/urls";
-import { ModeImage, StageImage } from "~/components/Image";
 import clsx from "clsx";
+import { Avatar } from "~/components/Avatar";
+import { ModeImage, StageImage } from "~/components/Image";
 import type { MapPoolMap, User } from "~/db/types";
+import type { TournamentDataTeam } from "~/features/tournament-bracket/core/Tournament.server";
+import { userPage } from "~/utils/urls";
 
 export function TeamWithRoster({
   team,
@@ -13,7 +13,7 @@ export function TeamWithRoster({
   teamPageUrl,
   activePlayers,
 }: {
-  team: Pick<FindTeamsByTournamentIdItem, "members" | "name">;
+  team: TournamentDataTeam;
   mapPool?: Array<Pick<MapPoolMap, "stageId" | "mode">> | null;
   seed?: number;
   teamPageUrl?: string;

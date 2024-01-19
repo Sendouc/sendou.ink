@@ -1,43 +1,43 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
-import { Link, useLoaderData, useOutletContext } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
+import clsx from "clsx";
+import { useTranslation } from "react-i18next";
+import { Avatar } from "~/components/Avatar";
+import { ModeImage, StageImage } from "~/components/Image";
 import { Placement } from "~/components/Placement";
+import { Popover } from "~/components/Popover";
+import { Redirect } from "~/components/Redirect";
+import { getUserId } from "~/features/auth/core/user.server";
 import {
   everyMatchIsOver,
   finalStandingOfTeam,
-  getTournamentManager,
   findMapPoolByTeamId,
+  getTournamentManager,
 } from "~/features/tournament-bracket";
-import { TeamWithRoster } from "../components/TeamWithRoster";
-import {
-  type PlayedSet,
-  tournamentTeamSets,
-  winCounts,
-} from "../core/sets.server";
-import {
-  tournamentIdFromParams,
-  tournamentRoundI18nKey,
-  tournamentTeamIdFromParams,
-} from "../tournament-utils";
-import type { TournamentLoaderData } from "./to.$id";
-import { ModeImage, StageImage } from "~/components/Image";
-import clsx from "clsx";
-import { Avatar } from "~/components/Avatar";
+import type { TournamentDataTeam } from "~/features/tournament-bracket/core/Tournament.server";
+import type { TournamentMaplistSource } from "~/modules/tournament-map-list-generator";
+import { isTournamentOrganizer } from "~/permissions";
+import { notFoundIfFalsy } from "~/utils/remix";
 import {
   tournamentMatchPage,
   tournamentPage,
   tournamentTeamPage,
   userPage,
 } from "~/utils/urls";
-import { useTranslation } from "react-i18next";
-import { Redirect } from "~/components/Redirect";
-import { Popover } from "~/components/Popover";
-import type { TournamentMaplistSource } from "~/modules/tournament-map-list-generator";
-import type { FindTeamsByTournamentIdItem } from "../queries/findTeamsByTournamentId.server";
-import hasTournamentStarted from "../queries/hasTournamentStarted.server";
-import { isTournamentOrganizer } from "~/permissions";
-import { getUserId } from "~/features/auth/core/user.server";
-import { notFoundIfFalsy } from "~/utils/remix";
 import * as TournamentRepository from "../TournamentRepository.server";
+import { TeamWithRoster } from "../components/TeamWithRoster";
+import {
+  tournamentTeamSets,
+  winCounts,
+  type PlayedSet,
+} from "../core/sets.server";
+import hasTournamentStarted from "../queries/hasTournamentStarted.server";
+import {
+  tournamentIdFromParams,
+  tournamentRoundI18nKey,
+  tournamentTeamIdFromParams,
+} from "../tournament-utils";
+import { useTournament } from "./to.$id";
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const user = await getUserId(request);
@@ -83,13 +83,13 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 // TODO: could cache this after tournament is finalized
 export default function TournamentTeamPage() {
   const data = useLoaderData<typeof loader>();
-  const parentRouteData = useOutletContext<TournamentLoaderData>();
-  const teamIndex = parentRouteData.teams.findIndex(
+  const tournament = useTournament();
+  const teamIndex = tournament.ctx.teams.findIndex(
     (t) => t.id === data.tournamentTeamId,
   );
-  const team = parentRouteData.teams[teamIndex];
+  const team = tournament.teamById(data.tournamentTeamId);
   if (!team) {
-    return <Redirect to={tournamentPage(parentRouteData.tournament.id)} />;
+    return <Redirect to={tournamentPage(tournament.ctx.id)} />;
   }
 
   return (
@@ -102,7 +102,7 @@ export default function TournamentTeamPage() {
       {data.winCounts.sets.total > 0 ? (
         <StatSquares
           seed={teamIndex + 1}
-          teamsCount={parentRouteData.teams.length}
+          teamsCount={tournament.ctx.teams.length}
         />
       ) : null}
       <div className="tournament__team__sets">
@@ -176,15 +176,9 @@ function StatSquares({
   );
 }
 
-function SetInfo({
-  set,
-  team,
-}: {
-  set: PlayedSet;
-  team: FindTeamsByTournamentIdItem;
-}) {
+function SetInfo({ set, team }: { set: PlayedSet; team: TournamentDataTeam }) {
   const { t } = useTranslation(["tournament"]);
-  const parentRouteData = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
 
   const sourceToText = (source: TournamentMaplistSource) => {
     switch (source) {
@@ -212,7 +206,7 @@ function SetInfo({
         <Link
           to={tournamentMatchPage({
             matchId: set.tournamentMatchId,
-            eventId: parentRouteData.tournament.id,
+            eventId: tournament.ctx.id,
           })}
           className="tournament__team__set__round-name"
         >
@@ -257,7 +251,7 @@ function SetInfo({
         <Link
           to={tournamentTeamPage({
             tournamentTeamId: set.opponent.id,
-            eventId: parentRouteData.tournament.id,
+            eventId: tournament.ctx.id,
           })}
           className="tournament__team__set__opponent__team"
         >

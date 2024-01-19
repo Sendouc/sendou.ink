@@ -657,7 +657,7 @@ function FillRoster({
   const playersAvailableToDirectlyAdd = (() => {
     return data!.trustedPlayers.filter((user) => {
       return tournament.ctx.teams.every((team) =>
-        team.members.every((member) => member.id !== user.id),
+        team.members.every((member) => member.userId !== user.id),
       );
     });
   })();
@@ -696,7 +696,7 @@ function FillRoster({
           {ownTeamMembers.map((member, i) => {
             return (
               <div
-                key={member.id}
+                key={member.userId}
                 className="stack sm items-center text-sm"
                 data-testid={`member-num-${i + 1}`}
               >
@@ -795,7 +795,7 @@ function DeleteMember({ members }: { members: TournamentDataTeam["members"] }) {
           {members
             .filter((member) => !member.isOwner)
             .map((member) => (
-              <option key={member.id} value={member.id}>
+              <option key={member.userId} value={member.userId}>
                 {member.discordName}
               </option>
             ))}

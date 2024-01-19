@@ -127,7 +127,11 @@ export async function findByIdNew(id: number) {
                 .innerJoin("User", "TournamentTeamMember.userId", "User.id")
                 .leftJoin("PlusTier", "User.id", "PlusTier.userId")
                 .select([
-                  ...COMMON_USER_FIELDS,
+                  "User.id as userId",
+                  "User.discordName",
+                  "User.discordId",
+                  "User.discordAvatar",
+                  "User.customUrl",
                   "User.inGameName",
                   "PlusTier.tier as plusTier",
                   "TournamentTeamMember.isOwner",
