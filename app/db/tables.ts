@@ -366,6 +366,7 @@ type TournamentMapPickingStyle =
   | "AUTO_RM"
   | "AUTO_CB";
 
+// xxx: switch to TournamentStage.type
 export type BracketFormat = "SE" | "DE" | "RR";
 
 export type TournamentBracketsStyle = {

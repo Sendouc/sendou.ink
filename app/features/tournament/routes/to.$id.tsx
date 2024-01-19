@@ -1,8 +1,8 @@
 import type {
   LinksFunction,
   LoaderFunctionArgs,
-  SerializeFrom,
   MetaFunction,
+  SerializeFrom,
 } from "@remix-run/node";
 import {
   Outlet,
@@ -10,29 +10,28 @@ import {
   useLocation,
   type ShouldRevalidateFunction,
 } from "@remix-run/react";
+import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { Main } from "~/components/Main";
 import { SubNav, SubNavLink } from "~/components/SubNav";
-import { useTranslation } from "react-i18next";
 import { useUser } from "~/features/auth/core";
 import { getUser } from "~/features/auth/core/user.server";
-import { isTournamentOrganizer } from "~/permissions";
+import { Tournament } from "~/features/tournament-bracket/core/Tournament";
+import { tournamentData } from "~/features/tournament-bracket/core/Tournament.server";
+import { findSubsByTournamentId } from "~/features/tournament-subs";
 import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
 import { assertUnreachable, type Unpacked } from "~/utils/types";
-import { streamsByTournamentId } from "../core/streams.server";
-import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
-import hasTournamentStarted from "../queries/hasTournamentStarted.server";
-import {
-  HACKY_subsFeatureEnabled,
-  teamHasCheckedIn,
-  tournamentIdFromParams,
-} from "../tournament-utils";
-import styles from "../tournament.css";
-import { findOwnTeam } from "../queries/findOwnTeam.server";
-import { findSubsByTournamentId } from "~/features/tournament-subs";
-import hasTournamentFinalized from "../queries/hasTournamentFinalized.server";
 import * as TournamentRepository from "../TournamentRepository.server";
+import { streamsByTournamentId } from "../core/streams.server";
+import { findOwnTeam } from "../queries/findOwnTeam.server";
+import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
+import hasTournamentFinalized from "../queries/hasTournamentFinalized.server";
+import hasTournamentStarted from "../queries/hasTournamentStarted.server";
+import { teamHasCheckedIn, tournamentIdFromParams } from "../tournament-utils";
+import styles from "../tournament.css";
 
+// xxx: remove
 export const shouldRevalidate: ShouldRevalidateFunction = (args) => {
   const wasMutation = args.formMethod === "POST";
   const wasOnMatchPage = args.formAction?.includes("matches");
@@ -117,6 +116,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
   return {
     tournament,
+    newTournament: await tournamentData({ tournamentId, user }),
     ownTeam: user
       ? findOwnTeam({
           tournamentId,
@@ -139,19 +139,25 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   };
 };
 
+const TournamentContext = React.createContext<Tournament>(null!);
+
 // TODO: icons to nav could be nice
 export default function TournamentLayout() {
   const { t } = useTranslation(["tournament"]);
   const user = useUser();
   const data = useLoaderData<typeof loader>();
   const location = useLocation();
+  const tournament = React.useMemo(
+    () => new Tournament(data.newTournament),
+    [data],
+  );
 
   const onBracketsPage = location.pathname.includes("brackets");
 
   return (
     <Main bigger={onBracketsPage}>
       <SubNav>
-        {!data.hasStarted ? (
+        {!tournament.hasStarted ? (
           <SubNavLink to="register" data-testid="register-tab">
             {t("tournament:tabs.register")}
           </SubNavLink>
@@ -159,34 +165,38 @@ export default function TournamentLayout() {
         <SubNavLink to="brackets" data-testid="brackets-tab">
           {t("tournament:tabs.brackets")}
         </SubNavLink>
-        {data.tournament.showMapListGenerator ? (
+        {tournament.ctx.showMapListGenerator ? (
           <SubNavLink to="maps">{t("tournament:tabs.maps")}</SubNavLink>
         ) : null}
         <SubNavLink to="teams" end={false}>
-          {t("tournament:tabs.teams", { count: data.teams.length })}
+          {t("tournament:tabs.teams", { count: tournament.ctx.teams.length })}
         </SubNavLink>
-        {!data.hasFinalized && HACKY_subsFeatureEnabled(data.tournament) && (
+        {!tournament.everyBracketOver && tournament.subsFeatureEnabled && (
           <SubNavLink to="subs" end={false}>
             {t("tournament:tabs.subs", { count: data.subsCount })}
           </SubNavLink>
         )}
-        {data.hasStarted && !data.hasFinalized ? (
+        {tournament.hasStarted && !tournament.everyBracketOver ? (
           <SubNavLink to="streams">
             {t("tournament:tabs.streams", { count: data.streamsCount })}
           </SubNavLink>
         ) : null}
-        {isTournamentOrganizer({ user, tournament: data.tournament }) &&
-          !data.hasStarted && (
-            <SubNavLink to="seeds">{t("tournament:tabs.seeds")}</SubNavLink>
-          )}
-        {isTournamentOrganizer({ user, tournament: data.tournament }) &&
-          !data.hasFinalized && (
-            <SubNavLink to="admin" data-testid="admin-tab">
-              {t("tournament:tabs.admin")}
-            </SubNavLink>
-          )}
+        {tournament.isOrganizer(user) && !tournament.hasStarted && (
+          <SubNavLink to="seeds">{t("tournament:tabs.seeds")}</SubNavLink>
+        )}
+        {tournament.isOrganizer(user) && !tournament.everyBracketOver && (
+          <SubNavLink to="admin" data-testid="admin-tab">
+            {t("tournament:tabs.admin")}
+          </SubNavLink>
+        )}
       </SubNav>
-      <Outlet context={data} />
+      <TournamentContext.Provider value={tournament}>
+        <Outlet context={data} />
+      </TournamentContext.Provider>
     </Main>
   );
+}
+
+export function useTournament() {
+  return React.useContext(TournamentContext);
 }

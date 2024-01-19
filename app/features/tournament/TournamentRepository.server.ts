@@ -6,6 +6,7 @@ import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { COMMON_USER_FIELDS, userChatNameColor } from "~/utils/kysely.server";
 import type { Unwrapped } from "~/utils/types";
 
+// xxx: delete
 export type FindById = NonNullable<Unwrapped<typeof findById>>;
 export async function findById(id: number) {
   const row = await db
@@ -62,6 +63,130 @@ export async function findById(id: number) {
   if (!row) return null;
 
   return row;
+}
+
+export async function findByIdNew(id: number) {
+  return db
+    .selectFrom("Tournament")
+    .innerJoin("CalendarEvent", "Tournament.id", "CalendarEvent.tournamentId")
+    .innerJoin("CalendarEventDate", "CalendarEvent.id", "CalendarEventDate.id")
+    .select(({ eb, exists, selectFrom }) => [
+      "Tournament.id",
+      "Tournament.bracketsStyle",
+      "Tournament.showMapListGenerator",
+      "Tournament.castTwitchAccounts",
+      "Tournament.mapPickingStyle",
+      "CalendarEvent.name",
+      "CalendarEvent.description",
+      "CalendarEventDate.startTime",
+      jsonObjectFrom(
+        eb
+          .selectFrom("User")
+          .select([...COMMON_USER_FIELDS, userChatNameColor])
+          .whereRef("User.id", "=", "CalendarEvent.authorId"),
+      ).as("author"),
+      jsonArrayFrom(
+        eb
+          .selectFrom("TournamentStaff")
+          .innerJoin("User", "TournamentStaff.userId", "User.id")
+          .select([
+            ...COMMON_USER_FIELDS,
+            userChatNameColor,
+            "TournamentStaff.role",
+          ])
+          .where("TournamentStaff.tournamentId", "=", id),
+      ).as("staff"),
+      exists(
+        selectFrom("TournamentResult")
+          .where("TournamentResult.tournamentId", "=", id)
+          .select("TournamentResult.tournamentId"),
+      ).as("isFinalized"),
+      // xxx: ordering..?
+      jsonArrayFrom(
+        eb
+          .selectFrom("TournamentStage")
+          .select([
+            "TournamentStage.id",
+            "TournamentStage.name",
+            "TournamentStage.type",
+          ])
+          .where("TournamentStage.tournamentId", "=", id),
+      ).as("inProgressBrackets"),
+      jsonArrayFrom(
+        eb
+          .selectFrom("TournamentTeam")
+          .select(({ eb: innerEb }) => [
+            "TournamentTeam.id",
+            "TournamentTeam.name",
+            "TournamentTeam.seed",
+            "TournamentTeam.prefersNotToHost",
+            "TournamentTeam.inviteCode",
+            jsonArrayFrom(
+              innerEb
+                .selectFrom("TournamentTeamMember")
+                .innerJoin("User", "TournamentTeamMember.userId", "User.id")
+                .leftJoin("PlusTier", "User.id", "PlusTier.userId")
+                .select([
+                  ...COMMON_USER_FIELDS,
+                  "User.inGameName",
+                  "PlusTier.tier as plusTier",
+                  "TournamentTeamMember.isOwner",
+                ])
+                .whereRef(
+                  "TournamentTeamMember.tournamentTeamId",
+                  "=",
+                  "TournamentTeam.id",
+                )
+                .orderBy("TournamentTeamMember.createdAt asc"),
+            ).as("members"),
+            jsonArrayFrom(
+              eb
+                .selectFrom("TournamentTeamCheckIn")
+                .select([
+                  "TournamentTeamCheckIn.bracketIdx",
+                  "TournamentTeamCheckIn.checkedInAt",
+                ])
+                .whereRef(
+                  "TournamentTeamCheckIn.tournamentTeamId",
+                  "=",
+                  "TournamentTeamCheckIn.tournamentTeamId",
+                ),
+            ).as("checkIns"),
+          ])
+          .where("TournamentTeam.tournamentId", "=", id)
+          .orderBy(["TournamentTeam.seed asc", "TournamentTeam.createdAt asc"]),
+      ).as("teams"),
+      jsonArrayFrom(
+        eb
+          .selectFrom("TournamentRound")
+          .innerJoin(
+            "TournamentMatch",
+            "TournamentMatch.roundId",
+            "TournamentRound.id",
+          )
+          .innerJoin(
+            "TournamentStage",
+            "TournamentRound.stageId",
+            "TournamentStage.id",
+          )
+          .select(["TournamentRound.id as roundId", "TournamentMatch.bestOf"])
+          .groupBy("roundId")
+          .where("TournamentStage.tournamentId", "=", id),
+      ).as("bestOfs"),
+      jsonArrayFrom(
+        eb
+          .selectFrom("MapPoolMap")
+          .select(["MapPoolMap.stageId", "MapPoolMap.mode"])
+          .whereRef(
+            "MapPoolMap.tieBreakerCalendarEventId",
+            "=",
+            "CalendarEvent.id",
+          ),
+      ).as("tieBreakerMapPool"),
+    ])
+    .where("Tournament.id", "=", id)
+    .$narrowType<{ author: NotNull }>()
+    .executeTakeFirst();
 }
 
 export type FindBracketProgressionByTournamentIdItem = Unwrapped<
