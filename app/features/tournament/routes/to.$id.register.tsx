@@ -29,7 +29,10 @@ import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import { BANNED_MAPS } from "~/features/sendouq-settings/banned-maps";
 import * as TeamRepository from "~/features/team/TeamRepository.server";
 import { findMapPoolByTeamId } from "~/features/tournament-bracket";
-import type { TournamentDataTeam } from "~/features/tournament-bracket/core/Tournament.server";
+import {
+  tournamentFromDB,
+  type TournamentDataTeam,
+} from "~/features/tournament-bracket/core/Tournament.server";
 import { useAutoRerender } from "~/hooks/useAutoRerender";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import type {
@@ -78,7 +81,6 @@ import {
   HACKY_isInviteOnlyEvent,
   isOneModeTournamentOf,
   tournamentIdFromParams,
-  validateCanCheckIn,
 } from "../tournament-utils";
 import { useTournament } from "./to.$id";
 
@@ -95,6 +97,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   const data = await parseRequestFormData({ request, schema: registerSchema });
 
   const tournamentId = tournamentIdFromParams(params);
+  const tournament = await tournamentFromDB({ tournamentId, user });
   const hasStarted = hasTournamentStarted(tournamentId);
   const event = notFoundIfFalsy(findByIdentifier(tournamentId));
 
@@ -163,13 +166,15 @@ export const action: ActionFunction = async ({ request, params }) => {
       break;
     }
     case "CHECK_IN": {
+      validate(tournament.regularCheckInIsOpen, "Check in is not open");
       validate(ownTeam);
       validate(!ownTeam.checkedInAt, "You have already checked in");
-      validateCanCheckIn({
-        event,
-        team: ownTeam,
-        mapPool: findMapPoolByTeamId(ownTeam.id),
-      });
+      validate(
+        tournament.checkInConditionsFulfilled({
+          tournamentTeamId: ownTeam.id,
+          mapPool: findMapPoolByTeamId(ownTeam.id),
+        }),
+      );
 
       checkIn(ownTeam.id);
       break;

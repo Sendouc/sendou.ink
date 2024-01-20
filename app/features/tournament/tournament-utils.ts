@@ -1,38 +1,11 @@
 import type { Params } from "@remix-run/react";
 import invariant from "tiny-invariant";
-import type { Tournament, User } from "~/db/types";
+import type { Tournament } from "~/db/types";
 import type { ModeShort } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
-import { databaseTimestampToDate } from "~/utils/dates";
-import type { FindTeamsByTournamentId } from "./queries/findTeamsByTournamentId.server";
-import type {
-  TournamentLoaderData,
-  TournamentLoaderTeam,
-} from "./routes/to.$id";
-import { TOURNAMENT } from "./tournament-constants";
-import { validate } from "~/utils/remix";
-import type { PlayedSet } from "./core/sets.server";
 import { tournamentLogoUrl } from "~/utils/urls";
-
-export function resolveOwnedTeam({
-  teams,
-  userId,
-}: {
-  teams: Array<TournamentLoaderTeam>;
-  userId?: User["id"];
-}) {
-  if (typeof userId !== "number") return;
-
-  return teams.find((team) =>
-    team.members.some((member) => member.isOwner && member.userId === userId),
-  );
-}
-
-export function teamHasCheckedIn(
-  team: Pick<TournamentLoaderTeam, "checkedInAt">,
-) {
-  return Boolean(team.checkedInAt);
-}
+import type { PlayedSet } from "./core/sets.server";
+import { TOURNAMENT } from "./tournament-constants";
 
 export function tournamentIdFromParams(params: Params<string>) {
   const result = Number(params["id"]);
@@ -106,14 +79,6 @@ export function HACKY_resolvePicture(event: { name: string }) {
   return tournamentLogoUrl("default");
 }
 
-// hacky because db query not taking in account possibility of many start times
-// AND always assumed check-in starts 1h before
-export function HACKY_resolveCheckInTime(
-  event: Pick<TournamentLoaderData["tournament"], "startTime">,
-) {
-  return databaseTimestampToDate(event.startTime - 60 * 60);
-}
-
 const HACKY_isSendouQSeasonFinale = (event: { name: string }) =>
   event.name.includes("Finale");
 
@@ -121,55 +86,10 @@ export function HACKY_isInviteOnlyEvent(event: { name: string }) {
   return HACKY_isSendouQSeasonFinale(event);
 }
 
-export function HACKY_subsFeatureEnabled(
-  event: TournamentLoaderData["tournament"],
-) {
-  if (HACKY_isSendouQSeasonFinale(event)) return false;
-
-  return true;
-}
-
 export function HACKY_maxRosterSizeBeforeStart(event: { name: string }) {
   if (HACKY_isSendouQSeasonFinale(event)) return 5;
 
   return TOURNAMENT.DEFAULT_TEAM_MAX_MEMBERS_BEFORE_START;
-}
-
-export function mapPickCountPerMode(event: TournamentLoaderData["tournament"]) {
-  return isOneModeTournamentOf(event)
-    ? TOURNAMENT.COUNTERPICK_ONE_MODE_TOURNAMENT_MAPS_PER_MODE
-    : TOURNAMENT.COUNTERPICK_MAPS_PER_MODE;
-}
-
-export function checkInHasStarted(
-  event: Pick<TournamentLoaderData["tournament"], "startTime">,
-) {
-  return HACKY_resolveCheckInTime(event).getTime() < Date.now();
-}
-
-export function checkInHasEnded(
-  event: Pick<TournamentLoaderData["tournament"], "startTime">,
-) {
-  return databaseTimestampToDate(event.startTime).getTime() < Date.now();
-}
-
-export function validateCanCheckIn({
-  event,
-  team,
-  mapPool,
-}: {
-  event: Pick<TournamentLoaderData["tournament"], "startTime">;
-  team: FindTeamsByTournamentId[number];
-  mapPool: unknown[] | null;
-}) {
-  validate(checkInHasStarted(event), "Check-in has not started yet");
-  validate(
-    team.members.length >= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
-    "Team does not have enough members",
-  );
-  validate(mapPool && mapPool.length > 0, "Team does not have a map pool");
-
-  return true;
 }
 
 export function tournamentRoundI18nKey(round: PlayedSet["round"]) {

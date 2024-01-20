@@ -225,6 +225,17 @@ export class Tournament {
     }
   }
 
+  resolvePoolCode({ hostingTeamId }: { hostingTeamId: number }) {
+    const prefix = this.ctx.name.includes("In The Zone")
+      ? "ITZ"
+      : HACKY_isInviteOnlyEvent(this.ctx)
+        ? "SQ"
+        : "PN";
+    const lastDigit = hostingTeamId % 10;
+
+    return { prefix, lastDigit };
+  }
+
   get mapPickCountPerMode() {
     return this.modesIncluded.length === 1
       ? TOURNAMENT.COUNTERPICK_ONE_MODE_TOURNAMENT_MAPS_PER_MODE
@@ -297,21 +308,59 @@ export class Tournament {
     );
   }
 
+  canReportScore({
+    matchId,
+    user,
+  }: {
+    matchId: number;
+    user: OptionalIdObject;
+  }) {
+    const match = this.brackets
+      .flatMap((bracket) => (bracket.preview ? [] : bracket.data.match))
+      .find((match) => match.id === matchId);
+    invariant(match, "Match not found");
+
+    // match didn't start yet
+    if (!match.opponent1 || !match.opponent2) return false;
+
+    const matchIsOver =
+      match.opponent1.result === "win" || match.opponent2.result === "win";
+
+    if (matchIsOver) return false;
+
+    const teamMemberOf = this.teamMemberOfByUser(user)?.id;
+
+    const isParticipant =
+      match.opponent1.id === teamMemberOf ||
+      match.opponent2.id === teamMemberOf;
+
+    return isParticipant || this.isOrganizer(user);
+  }
+
   // xxx: read from settings or HACKY
   get subsFeatureEnabled() {
     return true;
   }
 
-  canCheckInToTournament(bracketIdx: number, user: OptionalIdObject) {
-    const team = this.teamMemberOfByUser(user);
-    if (!team) return false;
+  checkInConditionsFulfilled({
+    tournamentTeamId,
+    mapPool,
+  }: {
+    tournamentTeamId: number;
+    mapPool: unknown[];
+  }) {
+    const team = this.teamById(tournamentTeamId);
+    invariant(team, "Team not found");
 
-    // bracket already started
-    const bracket = this.bracketByIdxOrDefault(bracketIdx);
-    if (!bracket.preview) return false;
+    if (!this.regularCheckInIsOpen && !this.regularCheckInHasEnded) {
+      return false;
+    }
 
-    // already checked in
-    if (team.checkIns.some((checkIn) => checkIn.bracketIdx === bracketIdx)) {
+    if (team.members.length < TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL) {
+      return false;
+    }
+
+    if (mapPool.length === 0) {
       return false;
     }
 
@@ -392,6 +441,16 @@ export class Tournament {
 
     return this.ctx.staff.some(
       (staff) => staff.id === user.id && staff.role === "ORGANIZER",
+    );
+  }
+
+  isOrganizerOrStreamer(user: OptionalIdObject) {
+    if (!user) return false;
+    if (isAdmin(user)) return true;
+
+    return this.ctx.staff.some(
+      (staff) =>
+        staff.id === user.id && ["ORGANIZER", "STREAMER"].includes(staff.role),
     );
   }
 

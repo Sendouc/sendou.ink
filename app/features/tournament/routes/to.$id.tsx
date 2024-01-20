@@ -4,7 +4,12 @@ import type {
   MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
-import { Outlet, useLoaderData, useLocation } from "@remix-run/react";
+import {
+  Outlet,
+  useLoaderData,
+  useLocation,
+  useOutletContext,
+} from "@remix-run/react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { Main } from "~/components/Main";
@@ -14,16 +19,11 @@ import { getUser } from "~/features/auth/core/user.server";
 import { Tournament } from "~/features/tournament-bracket/core/Tournament";
 import { tournamentData } from "~/features/tournament-bracket/core/Tournament.server";
 import { findSubsByTournamentId } from "~/features/tournament-subs";
-import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
+import { type SendouRouteHandle } from "~/utils/remix";
 import { makeTitle } from "~/utils/strings";
-import { assertUnreachable, type Unpacked } from "~/utils/types";
-import * as TournamentRepository from "../TournamentRepository.server";
+import { assertUnreachable } from "~/utils/types";
 import { streamsByTournamentId } from "../core/streams.server";
-import { findOwnTeam } from "../queries/findOwnTeam.server";
-import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
-import hasTournamentFinalized from "../queries/hasTournamentFinalized.server";
-import hasTournamentStarted from "../queries/hasTournamentStarted.server";
-import { teamHasCheckedIn, tournamentIdFromParams } from "../tournament-utils";
+import { tournamentIdFromParams } from "../tournament-utils";
 import styles from "../tournament.css";
 
 export const meta: MetaFunction = (args) => {
@@ -31,7 +31,7 @@ export const meta: MetaFunction = (args) => {
 
   if (!data) return [];
 
-  return [{ title: makeTitle(data.tournament.name) }];
+  return [{ title: makeTitle(data.tournament.ctx.name) }];
 };
 
 export const links: LinksFunction = () => {
@@ -42,29 +42,11 @@ export const handle: SendouRouteHandle = {
   i18n: ["tournament", "calendar"],
 };
 
-export type TournamentLoaderTeam = Unpacked<TournamentLoaderData["teams"]>;
 export type TournamentLoaderData = SerializeFrom<typeof loader>;
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const user = await getUser(request);
   const tournamentId = tournamentIdFromParams(params);
-  const tournament = notFoundIfFalsy(
-    await TournamentRepository.findById(tournamentId),
-  );
-
-  const hasStarted = hasTournamentStarted(tournamentId);
-  let teams = findTeamsByTournamentId(tournamentId);
-  if (hasStarted) {
-    const checkedInTeams = teams.filter(teamHasCheckedIn);
-    // handle special case where tournament was started early
-    if (checkedInTeams.length > 0) {
-      teams = checkedInTeams;
-    }
-  }
-
-  const teamMemberOfName = teams.find((team) =>
-    team.members.some((member) => member.userId === user?.id),
-  )?.name;
 
   const subsCount = findSubsByTournamentId({
     tournamentId,
@@ -91,28 +73,20 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     }
   }).length;
 
+  const tournament = await tournamentData({ tournamentId, user });
+
   return {
     tournament,
-    newTournament: await tournamentData({ tournamentId, user }),
-    ownTeam: user
-      ? findOwnTeam({
-          tournamentId,
-          userId: user.id,
-        })
-      : null,
-    teamMemberOfName,
-    teams,
-    hasStarted,
-    hasFinalized: hasTournamentFinalized(tournamentId),
     subsCount,
-    streamsCount: hasStarted
-      ? (
-          await streamsByTournamentId({
-            tournamentId,
-            castTwitchAccounts: tournament.castTwitchAccounts,
-          })
-        ).length
-      : 0,
+    streamsCount:
+      tournament.ctx.inProgressBrackets.length > 0
+        ? (
+            await streamsByTournamentId({
+              tournamentId,
+              castTwitchAccounts: tournament.ctx.castTwitchAccounts,
+            })
+          ).length
+        : 0,
   };
 };
 
@@ -125,7 +99,7 @@ export default function TournamentLayout() {
   const data = useLoaderData<typeof loader>();
   const location = useLocation();
   const tournament = React.useMemo(
-    () => new Tournament(data.newTournament),
+    () => new Tournament(data.tournament),
     [data],
   );
 
@@ -168,12 +142,12 @@ export default function TournamentLayout() {
         )}
       </SubNav>
       <TournamentContext.Provider value={tournament}>
-        <Outlet context={data} />
+        <Outlet context={tournament satisfies Tournament} />
       </TournamentContext.Provider>
     </Main>
   );
 }
 
 export function useTournament() {
-  return React.useContext(TournamentContext);
+  return useOutletContext<Tournament>();
 }

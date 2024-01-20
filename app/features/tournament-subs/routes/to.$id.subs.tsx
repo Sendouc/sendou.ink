@@ -17,10 +17,7 @@ import { MicrophoneIcon } from "~/components/icons/Microphone";
 import { TrashIcon } from "~/components/icons/Trash";
 import { getUser, requireUser, useUser } from "~/features/auth/core";
 import { tournamentIdFromParams } from "~/features/tournament";
-import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import { useTournament } from "~/features/tournament/routes/to.$id";
-import { HACKY_subsFeatureEnabled } from "~/features/tournament/tournament-utils";
-import { notFoundIfFalsy } from "~/utils/remix";
 import { discordFullName } from "~/utils/strings";
 import { assertUnreachable } from "~/utils/types";
 import { tournamentRegisterPage, userPage } from "~/utils/urls";
@@ -30,6 +27,7 @@ import {
   type SubByTournamentId,
 } from "../queries/findSubsByTournamentId.server";
 import styles from "../tournament-subs.css";
+import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.server";
 
 export const links: LinksFunction = () => {
   return [
@@ -56,10 +54,8 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const user = await getUser(request);
   const tournamentId = tournamentIdFromParams(params);
 
-  const tournament = notFoundIfFalsy(
-    await TournamentRepository.findById(tournamentId),
-  );
-  if (!HACKY_subsFeatureEnabled(tournament)) {
+  const tournament = await tournamentFromDB({ tournamentId, user });
+  if (!tournament.subsFeatureEnabled) {
     throw redirect(tournamentRegisterPage(tournamentId));
   }
 

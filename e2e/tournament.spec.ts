@@ -3,7 +3,7 @@ import invariant from "tiny-invariant";
 import { ADMIN_ID } from "~/constants";
 import { NZAP_TEST_ID } from "~/db/seed/constants";
 import { BANNED_MAPS } from "~/features/sendouq-settings/banned-maps";
-import type { TournamentLoaderData } from "~/features/tournament";
+import type { TournamentLoaderData } from "~/features/tournament/routes/to.$id";
 import type { StageId } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import {
@@ -31,7 +31,7 @@ const getIsOwnerOfUser = ({
   userId: number;
   teamId: number;
 }) => {
-  const team = data.teams.find((t) => t.id === teamId);
+  const team = data.tournament.ctx.teams.find((t) => t.id === teamId);
   invariant(team, "Team not found");
 
   return team.members.find((m) => m.userId === userId)?.isOwner;
@@ -44,9 +44,9 @@ const getTeamCheckedInAt = ({
   data: TournamentLoaderData;
   teamId: number;
 }) => {
-  const team = data.teams.find((t) => t.id === teamId);
+  const team = data.tournament.ctx.teams.find((t) => t.id === teamId);
   invariant(team, "Team not found");
-  return team.checkedInAt;
+  return team.checkIns.length > 0;
 };
 
 test.describe("Tournament", () => {
@@ -150,7 +150,7 @@ test.describe("Tournament", () => {
     expect(getTeamCheckedInAt({ data, teamId: 1 })).toBeFalsy();
 
     // Remove member...
-    const firstTeam = data.teams.find((t) => t.id === 1);
+    const firstTeam = data.tournament.ctx.teams.find((t) => t.id === 1);
     invariant(firstTeam, "First team not found");
     const firstNonOwnerMember = firstTeam.members.find(
       (m) => m.userId !== 1 && !m.isOwner,
@@ -162,12 +162,12 @@ test.describe("Tournament", () => {
     await submit(page);
 
     data = await fetchTournamentLoaderData();
-    const firstTeamAgain = data.teams.find((t) => t.id === 1);
+    const firstTeamAgain = data.tournament.ctx.teams.find((t) => t.id === 1);
     invariant(firstTeamAgain, "First team again not found");
     expect(firstTeamAgain.members.length).toBe(firstTeam.members.length - 1);
 
     // ...and add to another team
-    const teamWithSpace = data.teams.find(
+    const teamWithSpace = data.tournament.ctx.teams.find(
       (t) => t.id !== 1 && t.members.length === 4,
     );
     invariant(teamWithSpace, "Team with space not found");
@@ -182,7 +182,7 @@ test.describe("Tournament", () => {
     await submit(page);
 
     data = await fetchTournamentLoaderData();
-    const teamWithSpaceAgain = data.teams.find(
+    const teamWithSpaceAgain = data.tournament.ctx.teams.find(
       (t) => t.id === teamWithSpace.id,
     );
     invariant(teamWithSpaceAgain, "Team with space again not found");
@@ -197,6 +197,6 @@ test.describe("Tournament", () => {
     await submit(page);
 
     data = await fetchTournamentLoaderData();
-    expect(data.teams.find((t) => t.id === 1)).toBeFalsy();
+    expect(data.tournament.ctx.teams.find((t) => t.id === 1)).toBeFalsy();
   });
 });

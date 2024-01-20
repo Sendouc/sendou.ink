@@ -3,12 +3,7 @@ import type {
   LinksFunction,
   LoaderFunctionArgs,
 } from "@remix-run/node";
-import {
-  Link,
-  useLoaderData,
-  useOutletContext,
-  useRevalidator,
-} from "@remix-run/react";
+import { Link, useLoaderData, useRevalidator } from "@remix-run/react";
 import clsx from "clsx";
 import { nanoid } from "nanoid";
 import * as React from "react";
@@ -18,10 +13,7 @@ import { Avatar } from "~/components/Avatar";
 import { LinkButton } from "~/components/Button";
 import { ArrowLongLeftIcon } from "~/components/icons/ArrowLongLeft";
 import { sql } from "~/db/sql";
-import {
-  tournamentIdFromParams,
-  type TournamentLoaderData,
-} from "~/features/tournament";
+import { tournamentIdFromParams } from "~/features/tournament";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
 import { useVisibilityChange } from "~/hooks/useVisibilityChange";
 import { requireUser, useUser } from "~/features/auth/core";
@@ -58,6 +50,7 @@ import {
 import bracketStyles from "../tournament-bracket.css";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import { logger } from "~/utils/logger";
+import { useTournament } from "~/features/tournament/routes/to.$id";
 
 export const links: LinksFunction = () => [
   {
@@ -362,7 +355,7 @@ export default function TournamentMatchPage() {
   const user = useUser();
   const visibility = useVisibilityChange();
   const { revalidate } = useRevalidator();
-  const parentRouteData = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
   const data = useLoaderData<typeof loader>();
 
   React.useEffect(() => {
@@ -371,21 +364,9 @@ export default function TournamentMatchPage() {
     revalidate();
   }, [visibility, revalidate, data.matchIsOver]);
 
-  const isMemberOfATeamInTheMatch = data.match.players.some(
-    (p) => p.id === user?.id,
-  );
-
   const type =
-    canReportTournamentScore({
-      tournament: parentRouteData.tournament,
-      match: data.match,
-      isMemberOfATeamInTheMatch,
-      user,
-    }) ||
-    isTournamentStreamerOrOrganizer({
-      user,
-      tournament: parentRouteData.tournament,
-    })
+    tournament.canReportScore({ matchId: data.match.id, user }) ||
+    tournament.isOrganizerOrStreamer(user)
       ? "EDIT"
       : "OTHER";
 
@@ -404,7 +385,7 @@ export default function TournamentMatchPage() {
         {/* TODO: better title */}
         <h2 className="text-lighter text-lg">Match #{data.match.id}</h2>
         <LinkButton
-          to={tournamentBracketsPage(parentRouteData.tournament.id)}
+          to={tournamentBracketsPage(tournament.ctx.id)}
           variant="outlined"
           size="tiny"
           className="w-max"
@@ -440,11 +421,11 @@ function AutoRefresher() {
 
 function useAutoRefresh() {
   const { revalidate } = useRevalidator();
-  const parentRouteData = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
   const data = useLoaderData<typeof loader>();
   const lastEventId = useEventSource(
     tournamentMatchSubscribePage({
-      eventId: parentRouteData.tournament.id,
+      eventId: tournament.ctx.id,
       matchId: data.match.id,
     }),
     {
@@ -467,10 +448,10 @@ function MapListSection({
   type: "EDIT" | "OTHER";
 }) {
   const data = useLoaderData<typeof loader>();
-  const parentRouteData = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
 
-  const teamOne = parentRouteData.teams.find((team) => team.id === teams[0]);
-  const teamTwo = parentRouteData.teams.find((team) => team.id === teams[1]);
+  const teamOne = tournament.teamById(teams[0]);
+  const teamTwo = tournament.teamById(teams[1]);
 
   if (!teamOne || !teamTwo) return null;
 
@@ -489,7 +470,7 @@ function MapListSection({
 
 function ResultsSection() {
   const data = useLoaderData<typeof loader>();
-  const parentRouteData = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
   const [selectedResultIndex, setSelectedResultIndex] = useSearchParamState({
     defaultValue: data.results.length - 1,
     name: "result",
@@ -505,12 +486,12 @@ function ResultsSection() {
   const result = data.results[selectedResultIndex];
   invariant(result, "Result is missing");
 
-  const teamOne = parentRouteData.teams.find(
-    (team) => team.id === data.match.opponentOne?.id,
-  );
-  const teamTwo = parentRouteData.teams.find(
-    (team) => team.id === data.match.opponentTwo?.id,
-  );
+  const teamOne = data.match.opponentOne?.id
+    ? tournament.teamById(data.match.opponentOne.id)
+    : undefined;
+  const teamTwo = data.match.opponentTwo?.id
+    ? tournament.teamById(data.match.opponentTwo.id)
+    : undefined;
 
   if (!teamOne || !teamTwo) {
     throw new Error("Team is missing");
@@ -535,10 +516,10 @@ function Rosters({
   teams: [id: number | null | undefined, id: number | null | undefined];
 }) {
   const data = useLoaderData<typeof loader>();
-  const parentRouteData = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
 
-  const teamOne = parentRouteData.teams.find((team) => team.id === teams[0]);
-  const teamTwo = parentRouteData.teams.find((team) => team.id === teams[1]);
+  const teamOne = teams[0] ? tournament.teamById(teams[0]) : undefined;
+  const teamTwo = teams[1] ? tournament.teamById(teams[1]) : undefined;
   const teamOnePlayers = data.match.players.filter(
     (p) => p.tournamentTeamId === teamOne?.id,
   );
@@ -561,7 +542,7 @@ function Rosters({
           {teamOne ? (
             <Link
               to={tournamentTeamPage({
-                eventId: parentRouteData.tournament.id,
+                eventId: tournament.ctx.id,
                 tournamentTeamId: teamOne.id,
               })}
               className="text-main-forced font-bold"
@@ -596,7 +577,7 @@ function Rosters({
           {teamTwo ? (
             <Link
               to={tournamentTeamPage({
-                eventId: parentRouteData.tournament.id,
+                eventId: tournament.ctx.id,
                 tournamentTeamId: teamTwo.id,
               })}
               className="text-main-forced font-bold"

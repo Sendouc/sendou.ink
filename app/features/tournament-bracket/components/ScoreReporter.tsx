@@ -1,37 +1,28 @@
-import {
-  Form,
-  useActionData,
-  useLoaderData,
-  useOutletContext,
-} from "@remix-run/react";
+import type { SerializeFrom } from "@remix-run/node";
+import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
-import { Image } from "~/components/Image";
-import { SubmitButton } from "~/components/SubmitButton";
+import * as React from "react";
 import { useTranslation } from "react-i18next";
+import { Image } from "~/components/Image";
+import { NewTabs } from "~/components/NewTabs";
+import { SubmitButton } from "~/components/SubmitButton";
+import { useUser } from "~/features/auth/core";
+import { Chat, useChat } from "~/features/chat/components/Chat";
+import { useTournament } from "~/features/tournament/routes/to.$id";
+import { useIsMounted } from "~/hooks/useIsMounted";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator";
+import { databaseTimestampToDate } from "~/utils/dates";
+import type { Unpacked } from "~/utils/types";
 import { modeImageUrl, stageImageUrl } from "~/utils/urls";
 import { type TournamentMatchLoaderData } from "../routes/to.$id.matches.$mid";
 import {
-  HACKY_resolvePoolCode,
   mapCountPlayedInSetWithCertainty,
   resolveHostingTeam,
   resolveRoomPass,
 } from "../tournament-bracket-utils";
-import type { SerializeFrom } from "@remix-run/node";
-import type { Unpacked } from "~/utils/types";
-import type {
-  TournamentLoaderTeam,
-  TournamentLoaderData,
-} from "~/features/tournament";
-import { canReportTournamentScore, isTournamentOrganizer } from "~/permissions";
-import { useUser } from "~/features/auth/core";
-import { useIsMounted } from "~/hooks/useIsMounted";
-import { databaseTimestampToDate } from "~/utils/dates";
-import { NewTabs } from "~/components/NewTabs";
 import { ScoreReporterRosters } from "./ScoreReporterRosters";
-import { Chat, useChat } from "~/features/chat/components/Chat";
-import * as React from "react";
+import type { TournamentDataTeam } from "../core/Tournament.server";
 
 export type Result = Unpacked<
   SerializeFrom<TournamentMatchLoaderData>["results"]
@@ -47,7 +38,7 @@ export function ScoreReporter({
   result,
   type,
 }: {
-  teams: [TournamentLoaderTeam, TournamentLoaderTeam];
+  teams: [TournamentDataTeam, TournamentDataTeam];
   result?: Result;
   currentStageWithMode: TournamentMapListMap;
   modes: ModeShort[];
@@ -60,7 +51,7 @@ export function ScoreReporter({
   const isMounted = useIsMounted();
   const actionData = useActionData<{ error?: "locked" }>();
   const user = useUser();
-  const parentRouteData = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
   const data = useLoaderData<TournamentMatchLoaderData>();
 
   const scoreOne = data.match.opponentOne?.score ?? 0;
@@ -92,15 +83,13 @@ export function ScoreReporter({
       <span>
         {t("tournament:match.pool")}{" "}
         {
-          HACKY_resolvePoolCode({
-            event: parentRouteData.tournament,
+          tournament.resolvePoolCode({
             hostingTeamId: resolveHostingTeam(teams).id,
           }).prefix
         }
         <span className="text-theme font-bold">
           {
-            HACKY_resolvePoolCode({
-              event: parentRouteData.tournament,
+            tournament.resolvePoolCode({
               hostingTeamId: resolveHostingTeam(teams).id,
             }).lastDigit
           }
@@ -139,11 +128,8 @@ export function ScoreReporter({
             </div>
           </Form>
         )}
-        {isTournamentOrganizer({
-          user,
-          tournament: parentRouteData.tournament,
-        }) &&
-          !parentRouteData.hasFinalized &&
+        {tournament.isOrganizer(user) &&
+          !tournament.ctx.isFinalized &&
           presentational &&
           !matchIsLockedError && (
             <Form method="post">
@@ -212,7 +198,7 @@ function FancyStageBanner({
   stage: TournamentMapListMap;
   infos?: (JSX.Element | null)[];
   children?: React.ReactNode;
-  teams: [TournamentLoaderTeam, TournamentLoaderTeam];
+  teams: [TournamentDataTeam, TournamentDataTeam];
 }) {
   const { t } = useTranslation(["game-misc", "tournament"]);
 
@@ -345,11 +331,11 @@ function MatchActionSectionTabs({
   presentational?: boolean;
   scores: [number, number];
   currentStageWithMode: TournamentMapListMap;
-  teams: [TournamentLoaderTeam, TournamentLoaderTeam];
+  teams: [TournamentDataTeam, TournamentDataTeam];
   result?: Result;
 }) {
   const user = useUser();
-  const parentRouteData = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
   const data = useLoaderData<TournamentMatchLoaderData>();
   const [_unseenMessages, setUnseenMessages] = React.useState(0);
   const [chatVisible, setChatVisible] = React.useState(false);
@@ -358,17 +344,17 @@ function MatchActionSectionTabs({
     return Object.fromEntries(
       [
         ...data.match.players.map((p) => ({ ...p, title: undefined })),
-        ...parentRouteData.tournament.staff.map((s) => ({
+        ...tournament.ctx.staff.map((s) => ({
           ...s,
           title: s.role === "STREAMER" ? "Stream" : "TO",
         })),
         {
-          ...parentRouteData.tournament.author,
+          ...tournament.ctx.author,
           title: "TO",
         },
       ].map((p) => [p.id, p]),
     );
-  }, [data, parentRouteData]);
+  }, [data, tournament]);
 
   const rooms = React.useMemo(() => {
     return data.match.chatCode
@@ -399,10 +385,6 @@ function MatchActionSectionTabs({
   const unseenMessages = chatVisible ? 0 : _unseenMessages;
 
   const currentPosition = scores[0] + scores[1];
-
-  const isMemberOfATeamInTheMatch = data.match.players.some(
-    (p) => p.id === user?.id,
-  );
 
   return (
     <ActionSectionWrapper>
@@ -454,12 +436,7 @@ function MatchActionSectionTabs({
                 result={result}
                 bestOf={data.match.bestOf}
                 presentational={
-                  !canReportTournamentScore({
-                    tournament: parentRouteData.tournament,
-                    match: data.match,
-                    isMemberOfATeamInTheMatch,
-                    user,
-                  })
+                  !tournament.canReportScore({ matchId: data.match.id, user })
                 }
               />
             ),

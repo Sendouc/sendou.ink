@@ -15,12 +15,7 @@ import {
 } from "@dnd-kit/sortable";
 import { redirect } from "@remix-run/node";
 import type { LoaderFunctionArgs, ActionFunction } from "@remix-run/node";
-import {
-  useFetcher,
-  useLoaderData,
-  useMatches,
-  useNavigation,
-} from "@remix-run/react";
+import { useFetcher, useLoaderData, useNavigation } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
 import invariant from "tiny-invariant";
@@ -29,11 +24,7 @@ import { Button } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
 import { Draggable } from "~/components/Draggable";
 import { useTimeoutState } from "~/hooks/useTimeoutState";
-import {
-  useTournament,
-  type TournamentLoaderData,
-  type TournamentLoaderTeam,
-} from "./to.$id";
+import { useTournament } from "./to.$id";
 import { Image, TierImage } from "~/components/Image";
 import { navIconUrl, tournamentBracketsPage } from "~/utils/urls";
 import { requireUser } from "~/features/auth/core";
@@ -48,6 +39,7 @@ import clone from "just-clone";
 import * as TournamentRepository from "../TournamentRepository.server";
 import { cachedFullUserLeaderboard } from "~/features/leaderboards/core/leaderboards.server";
 import { currentOrPreviousSeason } from "~/features/mmr/season";
+import type { TournamentDataTeam } from "~/features/tournament-bracket/core/Tournament.server";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const data = await parseRequestFormData({
@@ -101,12 +93,14 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
 export default function TournamentSeedsPage() {
   const data = useLoaderData<typeof loader>();
-  const [, parentRoute] = useMatches();
-  const { teams } = parentRoute.data as TournamentLoaderData;
+  const tournament = useTournament();
   const navigation = useNavigation();
-  const [teamOrder, setTeamOrder] = React.useState(teams.map((t) => t.id));
-  const [activeTeam, setActiveTeam] =
-    React.useState<TournamentLoaderTeam | null>(null);
+  const [teamOrder, setTeamOrder] = React.useState(
+    tournament.ctx.teams.map((t) => t.id),
+  );
+  const [activeTeam, setActiveTeam] = React.useState<TournamentDataTeam | null>(
+    null,
+  );
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -114,11 +108,11 @@ export default function TournamentSeedsPage() {
     }),
   );
 
-  const teamsSorted = teams.sort(
+  const teamsSorted = tournament.ctx.teams.sort(
     (a, b) => teamOrder.indexOf(a.id) - teamOrder.indexOf(b.id),
   );
 
-  const rankTeam = (team: TournamentLoaderTeam) => {
+  const rankTeam = (team: TournamentDataTeam) => {
     const powers = team.members
       .map((m) => data.powers[m.userId]?.power)
       .filter(Boolean);
@@ -136,7 +130,7 @@ export default function TournamentSeedsPage() {
         type="button"
         onClick={() => {
           setTeamOrder(
-            clone(teams)
+            clone(tournament.ctx.teams)
               .sort((a, b) => rankTeam(b) - rankTeam(a))
               .map((t) => t.id),
           );
@@ -268,7 +262,7 @@ function RowContents({
   team,
   seed,
 }: {
-  team: TournamentLoaderTeam;
+  team: TournamentDataTeam;
   seed?: number;
 }) {
   const data = useLoaderData<typeof loader>();

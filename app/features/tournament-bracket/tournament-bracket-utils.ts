@@ -1,18 +1,14 @@
-import type { TournamentMatch } from "~/db/types";
-import {
-  sourceTypes,
-  seededRandom,
-} from "~/modules/tournament-map-list-generator";
-import type { FindMatchById } from "../tournament-bracket/queries/findMatchById.server";
-import type {
-  TournamentLoaderData,
-  TournamentLoaderTeam,
-} from "~/features/tournament";
 import type { Params } from "@remix-run/react";
 import invariant from "tiny-invariant";
+import type { TournamentMatch } from "~/db/types";
 import type { DataTypes, ValueToArray } from "~/modules/brackets-manager/types";
-import { HACKY_isInviteOnlyEvent } from "../tournament/tournament-utils";
+import {
+  seededRandom,
+  sourceTypes,
+} from "~/modules/tournament-map-list-generator";
 import { removeDuplicates } from "~/utils/arrays";
+import type { FindMatchById } from "../tournament-bracket/queries/findMatchById.server";
+import type { TournamentDataTeam } from "./core/Tournament.server";
 
 export function matchIdFromParams(params: Params<string>) {
   const result = Number(params["mid"]);
@@ -52,7 +48,7 @@ export function resolveRoomPass(matchId: TournamentMatch["id"]) {
 }
 
 export function resolveHostingTeam(
-  teams: [TournamentLoaderTeam, TournamentLoaderTeam],
+  teams: [TournamentDataTeam, TournamentDataTeam],
 ) {
   if (teams[0].prefersNotToHost && !teams[1].prefersNotToHost) return teams[1];
   if (!teams[0].prefersNotToHost && teams[1].prefersNotToHost) return teams[0];
@@ -94,23 +90,6 @@ export function checkSourceIsValid({
   if (match.opponentTwo?.id === asTeamId) return true;
 
   return false;
-}
-
-export function HACKY_resolvePoolCode({
-  event,
-  hostingTeamId,
-}: {
-  event: TournamentLoaderData["tournament"];
-  hostingTeamId: number;
-}) {
-  const prefix = event.name.includes("In The Zone")
-    ? "ITZ"
-    : HACKY_isInviteOnlyEvent(event)
-      ? "SQ"
-      : "PN";
-  const lastDigit = hostingTeamId % 10;
-
-  return { prefix, lastDigit };
 }
 
 export function bracketSubscriptionKey(tournamentId: number) {

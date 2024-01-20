@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Form, useLoaderData } from "@remix-run/react";
-import type { TournamentLoaderTeam } from "../../tournament/routes/to.$id";
 import { TOURNAMENT } from "../../tournament/tournament-constants";
 import { SubmitButton } from "~/components/SubmitButton";
 import { TeamRosterInputs } from "./TeamRosterInputs";
@@ -11,6 +10,7 @@ import type { TournamentMatchLoaderData } from "../routes/to.$id.matches.$mid";
 import type { SerializeFrom } from "@remix-run/node";
 import { stageImageUrl } from "~/utils/urls";
 import { Image } from "~/components/Image";
+import type { TournamentDataTeam } from "../core/Tournament.server";
 
 export function ScoreReporterRosters({
   teams,
@@ -21,7 +21,7 @@ export function ScoreReporterRosters({
   bestOf,
   presentational: _presentational,
 }: {
-  teams: [TournamentLoaderTeam, TournamentLoaderTeam];
+  teams: [TournamentDataTeam, TournamentDataTeam];
   position: number;
   currentStageWithMode: TournamentMapListMap;
   result?: Result;

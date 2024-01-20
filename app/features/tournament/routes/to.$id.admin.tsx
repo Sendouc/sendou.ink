@@ -16,7 +16,8 @@ import { UserSearch } from "~/components/UserSearch";
 import { TrashIcon } from "~/components/icons/Trash";
 import { useUser } from "~/features/auth/core";
 import { requireUserId } from "~/features/auth/core/user.server";
-import { findMapPoolByTeamId } from "~/features/tournament-bracket";
+import type { TournamentData } from "~/features/tournament-bracket/core/Tournament.server";
+import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.server";
 import {
   isAdmin,
   isTournamentAdmin,
@@ -41,11 +42,9 @@ import hasTournamentStarted from "../queries/hasTournamentStarted.server";
 import { joinTeam, leaveTeam } from "../queries/joinLeaveTeam.server";
 import { updateShowMapListGenerator } from "../queries/updateShowMapListGenerator.server";
 import { adminActionSchema } from "../tournament-schemas.server";
-import {
-  tournamentIdFromParams,
-  validateCanCheckIn,
-} from "../tournament-utils";
-import { useTournament, type TournamentLoaderData } from "./to.$id";
+import { tournamentIdFromParams } from "../tournament-utils";
+import { useTournament } from "./to.$id";
+import { findMapPoolByTeamId } from "~/features/tournament-bracket";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUserId(request);
@@ -55,6 +54,8 @@ export const action: ActionFunction = async ({ request, params }) => {
   });
 
   const tournamentId = tournamentIdFromParams(params);
+  const tournamentNew = await tournamentFromDB({ tournamentId, user });
+  // xxx: remove
   const tournament = notFoundIfFalsy(
     await TournamentRepository.findById(tournamentId),
   );
@@ -115,11 +116,13 @@ export const action: ActionFunction = async ({ request, params }) => {
       validateIsTournamentOrganizer();
       const team = teams.find((t) => t.id === data.teamId);
       validate(team, "Invalid team id");
-      validateCanCheckIn({
-        event: tournament,
-        team,
-        mapPool: findMapPoolByTeamId(team.id),
-      });
+      validate(
+        tournamentNew.checkInConditionsFulfilled({
+          tournamentTeamId: team.id,
+          mapPool: findMapPoolByTeamId(team.id),
+        }),
+        "Can't check-in",
+      );
 
       checkIn(team.id);
       break;
@@ -562,7 +565,7 @@ function StaffList() {
 function RemoveStaffButton({
   staff,
 }: {
-  staff: TournamentLoaderData["tournament"]["staff"][number];
+  staff: TournamentData["ctx"]["staff"][number];
 }) {
   const { t } = useTranslation(["tournament"]);
 

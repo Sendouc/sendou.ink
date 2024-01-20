@@ -3,15 +3,13 @@ import clone from "just-clone";
 import * as React from "react";
 import { TOURNAMENT } from "../../tournament/tournament-constants";
 import { Label } from "~/components/Label";
-import {
-  useTournament,
-  type TournamentLoaderTeam,
-} from "../../tournament/routes/to.$id";
+import { useTournament } from "../../tournament/routes/to.$id";
 import { inGameNameWithoutDiscriminator } from "~/utils/strings";
 import { Link, useLoaderData } from "@remix-run/react";
 import type { TournamentMatchLoaderData } from "../routes/to.$id.matches.$mid";
 import type { Result } from "./ScoreReporter";
 import { tournamentTeamPage } from "~/utils/urls";
+import type { TournamentDataTeam } from "../core/Tournament.server";
 
 /** Inputs to select who played for teams in a match as well as the winner. Can also be used in a presentational way. */
 export function TeamRosterInputs({
@@ -22,7 +20,7 @@ export function TeamRosterInputs({
   setCheckedPlayers,
   result,
 }: {
-  teams: [TournamentLoaderTeam, TournamentLoaderTeam];
+  teams: [TournamentDataTeam, TournamentDataTeam];
   winnerId?: number | null;
   setWinnerId: (newId?: number) => void;
   checkedPlayers: [number[], number[]];
