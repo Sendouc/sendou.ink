@@ -4,12 +4,7 @@ import type {
   MetaFunction,
   SerializeFrom,
 } from "@remix-run/node";
-import {
-  Outlet,
-  useLoaderData,
-  useLocation,
-  type ShouldRevalidateFunction,
-} from "@remix-run/react";
+import { Outlet, useLoaderData, useLocation } from "@remix-run/react";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { Main } from "~/components/Main";
@@ -30,24 +25,6 @@ import hasTournamentFinalized from "../queries/hasTournamentFinalized.server";
 import hasTournamentStarted from "../queries/hasTournamentStarted.server";
 import { teamHasCheckedIn, tournamentIdFromParams } from "../tournament-utils";
 import styles from "../tournament.css";
-
-// xxx: remove
-export const shouldRevalidate: ShouldRevalidateFunction = (args) => {
-  const wasMutation = args.formMethod === "POST";
-  const wasOnMatchPage = args.formAction?.includes("matches");
-
-  if (wasMutation && wasOnMatchPage) {
-    return false;
-  }
-
-  const wasRevalidation = !args.formMethod;
-
-  if (wasRevalidation) {
-    return false;
-  }
-
-  return args.defaultShouldRevalidate;
-};
 
 export const meta: MetaFunction = (args) => {
   const data = args.data as SerializeFrom<typeof loader>;

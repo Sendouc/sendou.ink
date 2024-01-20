@@ -26,27 +26,12 @@ import {
   queryCurrentUserRating,
 } from "~/features/mmr";
 import { queryTeamPlayerRatingAverage } from "~/features/mmr/mmr-utils.server";
-import {
-  TOURNAMENT,
-  checkInHasStarted,
-  teamHasCheckedIn,
-  tournamentIdFromParams,
-} from "~/features/tournament";
+import { TOURNAMENT, tournamentIdFromParams } from "~/features/tournament";
 import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
-import {
-  HACKY_isInviteOnlyEvent,
-  resolveOwnedTeam,
-} from "~/features/tournament/tournament-utils";
+import { HACKY_isInviteOnlyEvent } from "~/features/tournament/tournament-utils";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
 import { useVisibilityChange } from "~/hooks/useVisibilityChange";
-import { isTournamentOrganizer } from "~/permissions";
-import { databaseTimestampToDate } from "~/utils/dates";
-import {
-  badRequestIfFalsy,
-  notFoundIfFalsy,
-  parseRequestFormData,
-  validate,
-} from "~/utils/remix";
+import { parseRequestFormData, validate } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
 import {
   SENDOU_INK_BASE_URL,
@@ -54,14 +39,10 @@ import {
   tournamentJoinPage,
   tournamentMatchPage,
 } from "~/utils/urls";
-import { findTeamsByTournamentId } from "../../tournament/queries/findTeamsByTournamentId.server";
 import { useTournament } from "../../tournament/routes/to.$id";
 import bracketViewerStyles from "../brackets-viewer.css";
+import { tournamentFromDB } from "../core/Tournament.server";
 import { resolveBestOfs } from "../core/bestOf.server";
-import {
-  bracketData,
-  teamsForBracket,
-} from "../core/bracket-progression.server";
 import { getTournamentManager } from "../core/brackets-manager";
 import { finalStandings } from "../core/finalStandings.server";
 import { tournamentSummary } from "../core/summarizer.server";
@@ -71,12 +52,8 @@ import { findAllMatchesByStageId } from "../queries/findAllMatchesByStageId.serv
 import { setBestOf } from "../queries/setBestOf.server";
 import { bracketSchema } from "../tournament-bracket-schemas.server";
 import {
-  bracketHasStarted,
   bracketSubscriptionKey,
-  everyMatchIsOver,
   fillWithNullTillPowerOfTwo,
-  resolveTournamentStageSettings,
-  resolveTournamentStageType,
 } from "../tournament-bracket-utils";
 import bracketStyles from "../tournament-bracket.css";
 
@@ -100,51 +77,35 @@ export const links: LinksFunction = () => {
 export const action: ActionFunction = async ({ params, request }) => {
   const user = await requireUser(request);
   const tournamentId = tournamentIdFromParams(params);
-  const tournament = notFoundIfFalsy(
-    await TournamentRepository.findById(tournamentId),
-  );
+  const tournament = await tournamentFromDB({ tournamentId, user });
   const data = await parseRequestFormData({ request, schema: bracketSchema });
   const manager = getTournamentManager("SQL");
 
   switch (data._action) {
     case "START_BRACKET": {
-      validate(isTournamentOrganizer({ user, tournament }));
+      validate(tournament.isOrganizer(user));
 
-      const tournamentBracketProgression =
-        await TournamentRepository.findBracketProgressionByTournamentId(
-          tournamentId,
-        );
+      const bracket = tournament.bracketByIdx(data.bracketIdx);
+      invariant(bracket, "Bracket not found");
 
-      const bracket = await bracketData({
-        tournament: tournamentBracketProgression,
-        bracketIdx: data.bracketIdx,
-      });
-
-      validate(!bracketHasStarted(bracket), "Bracket has already started");
-
-      const { teams, enoughTeams } = await teamsForBracket({
-        tournament: tournamentBracketProgression,
-        bracketIdx: data.bracketIdx,
-      });
-
-      validate(enoughTeams, "Not enough teams registered");
-
-      const { format, name } = tournament.bracketsStyle[data.bracketIdx];
+      validate(bracket.canBeStarted, "Bracket is not ready to be started");
 
       sql.transaction(() => {
         const stage = manager.create({
           tournamentId,
-          name,
-          type: resolveTournamentStageType(format),
-          seeding: fillWithNullTillPowerOfTwo(teams.map((team) => team.name)),
-          settings: resolveTournamentStageSettings(format),
+          name: bracket.name,
+          type: bracket.type,
+          seeding: fillWithNullTillPowerOfTwo(
+            bracket.data.participant.map((p) => p.name),
+          ),
+          settings: tournament.bracketSettings(bracket.type),
         });
 
         const matches = findAllMatchesByStageId(stage.id);
         // TODO: dynamic best of set when bracket is made
-        const bestOfs = HACKY_isInviteOnlyEvent(tournament)
+        const bestOfs = HACKY_isInviteOnlyEvent(tournament.ctx)
           ? matches.map((match) => [5, match.matchId] as [5, number])
-          : resolveBestOfs(matches, format);
+          : resolveBestOfs(matches, bracket.type);
         for (const [bestOf, id] of bestOfs) {
           setBestOf({ bestOf, id });
         }
@@ -153,46 +114,38 @@ export const action: ActionFunction = async ({ params, request }) => {
       break;
     }
     case "FINALIZE_TOURNAMENT": {
-      validate(isTournamentOrganizer({ user, tournament }));
-      const bracket = manager.get.tournamentData(tournamentId);
+      validate(tournament.isOrganizer(user));
       invariant(
-        bracket.stage.length === 1,
-        "Bracket doesn't have exactly one stage",
+        !tournament.bracketByIdx(1),
+        "Not possible yet to finalize tournaments with many stages",
       );
-      const stage = bracket.stage[0];
+      const bracket = tournament.bracketByIdx(0);
+      invariant(bracket, "Stage not found");
 
-      const _everyMatchIsOver = everyMatchIsOver(bracket);
-      validate(_everyMatchIsOver, "Not every match is over");
-
-      let teams = findTeamsByTournamentId(tournamentId);
-      if (checkInHasStarted(tournament)) {
-        teams = teams.filter(teamHasCheckedIn);
-      }
+      validate(tournament.everyBracketOver, "Not every match is over");
 
       const _finalStandings =
         finalStandings({
           manager,
           tournamentId,
           includeAll: true,
-          stageId: stage.id,
+          stageId: bracket.id,
         }) ?? [];
       invariant(
-        _finalStandings.length === teams.length,
-        `Final standings length (${_finalStandings.length}) does not match teams length (${teams.length})`,
+        _finalStandings.length === tournament.ctx.teams.length,
+        `Final standings length (${_finalStandings.length}) does not match teams length (${tournament.ctx.teams.length})`,
       );
 
       const results = allMatchResultsByTournamentId(tournamentId);
       invariant(results.length > 0, "No results found");
 
-      const season = currentSeason(
-        databaseTimestampToDate(tournament.startTime),
-      )?.nth;
+      const season = currentSeason(tournament.ctx.startTime)?.nth;
 
       // xxx: for final standings use results of underground bracket as well, use this on the tournament team page too?
       addSummary({
         tournamentId,
         summary: tournamentSummary({
-          teams,
+          teams: tournament.ctx.teams,
           finalStandings: _finalStandings,
           results,
           calculateSeasonalStats: typeof season === "number",
@@ -212,10 +165,13 @@ export const action: ActionFunction = async ({ params, request }) => {
       break;
     }
     case "BRACKET_CHECK_IN": {
-      const teams = findTeamsByTournamentId(tournamentId);
-      const ownTeam = badRequestIfFalsy(
-        resolveOwnedTeam({ userId: user.id, teams }),
-      );
+      const bracket = tournament.bracketByIdx(data.bracketIdx);
+      invariant(bracket, "Bracket not found");
+
+      const ownTeam = tournament.ownedTeamByUser(user);
+      invariant(ownTeam, "User doesn't have owned team");
+
+      validate(bracket.canCheckIn(user));
 
       await TournamentRepository.checkInToBracket({
         bracketIdx: data.bracketIdx,
@@ -417,9 +373,7 @@ export default function TournamentBracketsPage() {
         />
       ) : null} */}
       <div className="stack horizontal sm justify-end">
-        {tournament.canCheckInToBracket({ user, bracketIdx }) ? (
-          <BracketCheckinButton />
-        ) : null}
+        {bracket.canCheckIn(user) ? <BracketCheckinButton /> : null}
         {showAddSubsButton ? (
           // TODO: could also hide this when tournament is not in the any bracket anymore
           <AddSubsPopOver />
@@ -779,11 +733,11 @@ function BracketNav({
 }) {
   const tournament = useTournament();
 
-  if (tournament.ctx.bracketsStyle.length < 2) return null;
+  if (tournament.ctx.settings.bracketProgression.length < 2) return null;
 
   return (
     <div className="stack sm horizontal flex-wrap">
-      {tournament.ctx.bracketsStyle.map((bracket, i) => {
+      {tournament.ctx.settings.bracketProgression.map((bracket, i) => {
         return (
           <Button
             key={bracket.name}

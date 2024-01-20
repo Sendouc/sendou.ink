@@ -833,59 +833,39 @@ function calendarEventWithToTools(event: "PICNIC" | "ITZ" | "PP" = "PICNIC") {
     PP: "Paddling Pool 253",
   }[event];
 
-  const bracketsStyle: Tables["Tournament"]["bracketsStyle"] =
+  const settings: Tables["Tournament"]["settings"] =
     event === "PP"
-      ? [
-          { format: "RR", name: "Groups stage" },
-          {
-            format: "SE",
-            name: "Final stage",
-            sources: [{ bracketIdx: 0, placements: [1, 2] }],
-          },
-          {
-            format: "SE",
-            name: "Underground bracket",
-            sources: [{ bracketIdx: 0, placements: [3, 4] }],
-          },
-        ]
-      : event === "ITZ"
-        ? [
-            { format: "DE", name: "Main bracket" },
+      ? {
+          bracketProgression: [
+            { type: "round_robin", name: "Groups stage" },
             {
-              format: "SE",
-              name: "Underground bracket",
-              sources: [{ bracketIdx: 0, placements: [-1, -2] }],
+              type: "single_elimination",
+              name: "Final stage",
+              sources: [{ bracketIdx: 0, placements: [1, 2] }],
             },
-          ]
-        : [{ format: "DE", name: "Main bracket" }];
-
-  // xxx: single elim bracket that stops at top 4
-  // [
-  //   { format: "SE", name: "First stage" },
-  //   {
-  //     format: "DE",
-  //     name: "Final stage",
-  //     sources: [{ bracketIdx: 0, placements: [1, 2, 3, 4] }], // ???
-  //   },
-  // ];
-
-  // xxx: redemption bracket before final bracket
-  // [
-  //   { format: "RR", name: "Groups stage" },
-  //   {
-  //     format: "SE",
-  //     name: "Redemption bracket",
-  //     sources: [{ bracketIdx: 0, placements: [3, 4] }],
-  //   },
-  //   {
-  //     format: "SE",
-  //     name: "Final stage",
-  //     sources: [
-  //       { bracketIdx: 0, placements: [1, 2] },
-  //       { bracketIdx: 1, placements: [1] },
-  //     ],
-  //   },
-  // ];
+            {
+              type: "single_elimination",
+              name: "Underground bracket",
+              sources: [{ bracketIdx: 0, placements: [3, 4] }],
+            },
+          ],
+        }
+      : event === "ITZ"
+        ? {
+            bracketProgression: [
+              { type: "double_elimination", name: "Main bracket" },
+              {
+                type: "single_elimination",
+                name: "Underground bracket",
+                sources: [{ bracketIdx: 0, placements: [-1, -2] }],
+              },
+            ],
+          }
+        : {
+            bracketProgression: [
+              { type: "double_elimination", name: "Main bracket" },
+            ],
+          };
 
   sql
     .prepare(
@@ -893,17 +873,17 @@ function calendarEventWithToTools(event: "PICNIC" | "ITZ" | "PP" = "PICNIC") {
       insert into "Tournament" (
         "id",
         "mapPickingStyle",
-        "bracketsStyle"
+        "settings"
       ) values (
         $id,
         $mapPickingStyle,
-        $bracketsStyle
+        $settings
       ) returning *
       `,
     )
     .run({
       id: tournamentId,
-      bracketsStyle: JSON.stringify(bracketsStyle),
+      settings: JSON.stringify(settings),
       mapPickingStyle: event === "ITZ" ? "AUTO_SZ" : "AUTO_ALL",
     });
 
@@ -1020,7 +1000,7 @@ function calendarEventWithToToolsTeams(
     PP: 200,
   }[event];
 
-  for (let id = 1; id <= 16; id++) {
+  for (let id = 1; id <= (event === "ITZ" ? 8 : 16); id++) {
     const teamId = id + teamIdAddition;
 
     const name = names.pop();
@@ -1052,7 +1032,8 @@ function calendarEventWithToToolsTeams(
         inviteCode: nanoid(INVITE_CODE_LENGTH),
       });
 
-    if (event !== "PICNIC" || id !== 1) {
+    // in PICNIC Chimera is not checked in
+    if (event !== "PICNIC" || teamId !== 1) {
       sql
         .prepare(
           `
@@ -1066,7 +1047,7 @@ function calendarEventWithToToolsTeams(
       `,
         )
         .run({
-          tournamentTeamId: id + teamIdAddition,
+          tournamentTeamId: teamId,
           checkedInAt: dateToDatabaseTimestamp(new Date()),
         });
     }

@@ -1,29 +1,50 @@
 import invariant from "tiny-invariant";
-import type { Tables } from "~/db/tables";
+import type { Tables, TournamentBracketProgression } from "~/db/tables";
 import { TOURNAMENT } from "~/features/tournament";
 import type { DataTypes, ValueToArray } from "~/modules/brackets-manager/types";
 import { assertUnreachable } from "~/utils/types";
+import type { OptionalIdObject, Tournament } from "./Tournament";
 
 interface CreateBracketArgs {
+  id: number;
   preview: boolean;
   data: ValueToArray<DataTypes>;
   type: Tables["TournamentStage"]["type"];
   canBeStarted?: boolean;
+  name: string;
+  teamsPendingCheckIn?: number[];
+  tournament: Tournament;
 }
 
 export abstract class Bracket {
+  id;
   preview;
   data;
   canBeStarted;
+  name;
+  teamsPendingCheckIn;
+  tournament;
 
   constructor({
+    id,
     preview,
     data,
     canBeStarted,
+    name,
+    teamsPendingCheckIn,
+    tournament,
   }: Omit<CreateBracketArgs, "format">) {
+    this.id = id;
     this.preview = preview;
     this.data = data;
     this.canBeStarted = canBeStarted;
+    this.name = name;
+    this.teamsPendingCheckIn = teamsPendingCheckIn;
+    this.tournament = tournament;
+  }
+
+  get type(): TournamentBracketProgression[number]["type"] {
+    throw new Error("not implemented");
   }
 
   get everyMatchOver() {
@@ -47,6 +68,16 @@ export abstract class Bracket {
 
   get enoughTeams() {
     return this.data.participant.length >= TOURNAMENT.ENOUGH_TEAMS_TO_START;
+  }
+
+  canCheckIn(user: OptionalIdObject) {
+    // using regular check-in
+    if (!this.teamsPendingCheckIn) return false;
+
+    const team = this.tournament.ownedTeamByUser(user);
+    if (!team) return false;
+
+    return this.teamsPendingCheckIn.includes(team.id);
   }
 
   source(_placements: number[]): {
@@ -94,11 +125,19 @@ class SingleEliminationBracket extends Bracket {
   constructor(args: CreateBracketArgs) {
     super(args);
   }
+
+  get type(): TournamentBracketProgression[number]["type"] {
+    return "single_elimination";
+  }
 }
 
 class DoubleEliminationBracket extends Bracket {
   constructor(args: CreateBracketArgs) {
     super(args);
+  }
+
+  get type(): TournamentBracketProgression[number]["type"] {
+    return "double_elimination";
   }
 
   get everyMatchOver() {
@@ -196,5 +235,9 @@ class DoubleEliminationBracket extends Bracket {
 class RoundRobinBracket extends Bracket {
   constructor(args: CreateBracketArgs) {
     super(args);
+  }
+
+  get type(): TournamentBracketProgression[number]["type"] {
+    return "round_robin";
   }
 }

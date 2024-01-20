@@ -1,15 +1,15 @@
 import invariant from "tiny-invariant";
 import type { FindAllMatchesByStageIdItem } from "../queries/findAllMatchesByStageId.server";
-import type { BracketFormat } from "~/db/tables";
+import type { TournamentStage } from "~/db/tables";
 
 export function resolveBestOfs(
   matches: Array<FindAllMatchesByStageIdItem>,
-  format: BracketFormat,
+  type: TournamentStage["type"],
 ): [bestOf: 3 | 5 | 7, id: number][] {
-  if (format === "RR") {
+  if (type === "round_robin") {
     return matches.map((match) => [3, match.matchId]);
   }
-  if (format === "SE") {
+  if (type === "single_elimination") {
     return matches.map((match) => [5, match.matchId]);
   }
 

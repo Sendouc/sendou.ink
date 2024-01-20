@@ -20,7 +20,7 @@ export async function findById(id: number) {
     .select(({ eb }) => [
       "Tournament.id",
       "Tournament.mapPickingStyle",
-      "Tournament.bracketsStyle",
+      "Tournament.settings",
       "Tournament.showMapListGenerator",
       "Tournament.castTwitchAccounts",
       "CalendarEvent.id as eventId",
@@ -73,7 +73,7 @@ export async function findByIdNew(id: number) {
     .select(({ eb, exists, selectFrom }) => [
       "Tournament.id",
       "CalendarEvent.id as eventId",
-      "Tournament.bracketsStyle",
+      "Tournament.settings",
       "Tournament.showMapListGenerator",
       "Tournament.castTwitchAccounts",
       "Tournament.mapPickingStyle",
@@ -102,7 +102,6 @@ export async function findByIdNew(id: number) {
           .where("TournamentResult.tournamentId", "=", id)
           .select("TournamentResult.tournamentId"),
       ).as("isFinalized"),
-      // xxx: ordering..?
       jsonArrayFrom(
         eb
           .selectFrom("TournamentStage")
@@ -111,7 +110,8 @@ export async function findByIdNew(id: number) {
             "TournamentStage.name",
             "TournamentStage.type",
           ])
-          .where("TournamentStage.tournamentId", "=", id),
+          .where("TournamentStage.tournamentId", "=", id)
+          .orderBy("TournamentStage.number asc"),
       ).as("inProgressBrackets"),
       jsonArrayFrom(
         eb
@@ -146,7 +146,7 @@ export async function findByIdNew(id: number) {
                 .orderBy("TournamentTeamMember.createdAt asc"),
             ).as("members"),
             jsonArrayFrom(
-              eb
+              innerEb
                 .selectFrom("TournamentTeamCheckIn")
                 .select([
                   "TournamentTeamCheckIn.bracketIdx",
@@ -155,7 +155,7 @@ export async function findByIdNew(id: number) {
                 .whereRef(
                   "TournamentTeamCheckIn.tournamentTeamId",
                   "=",
-                  "TournamentTeamCheckIn.tournamentTeamId",
+                  "TournamentTeam.id",
                 ),
             ).as("checkIns"),
           ])
@@ -193,40 +193,6 @@ export async function findByIdNew(id: number) {
     .where("Tournament.id", "=", id)
     .$narrowType<{ author: NotNull }>()
     .executeTakeFirst();
-}
-
-export type FindBracketProgressionByTournamentIdItem = Unwrapped<
-  typeof findBracketProgressionByTournamentId
->;
-export function findBracketProgressionByTournamentId(tournamentId: number) {
-  return (
-    db
-      .selectFrom("Tournament")
-      .innerJoin("CalendarEvent", "Tournament.id", "CalendarEvent.tournamentId")
-      // TODO: it does not support multiple dates
-      .innerJoin(
-        "CalendarEventDate",
-        "CalendarEvent.id",
-        "CalendarEventDate.eventId",
-      )
-      .select(({ eb }) => [
-        "Tournament.id",
-        "Tournament.bracketsStyle",
-        "CalendarEventDate.startTime",
-        jsonArrayFrom(
-          eb
-            .selectFrom("TournamentStage")
-            .select([
-              "TournamentStage.id",
-              "TournamentStage.number",
-              "TournamentStage.name",
-            ])
-            .whereRef("Tournament.id", "=", "TournamentStage.tournamentId"),
-        ).as("stages"),
-      ])
-      .where("Tournament.id", "=", tournamentId)
-      .executeTakeFirstOrThrow()
-  );
 }
 
 export function checkedInTournamentTeamsByBracket({

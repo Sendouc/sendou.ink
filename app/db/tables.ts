@@ -366,11 +366,8 @@ type TournamentMapPickingStyle =
   | "AUTO_RM"
   | "AUTO_CB";
 
-// xxx: switch to TournamentStage.type
-export type BracketFormat = "SE" | "DE" | "RR";
-
-export type TournamentBracketsStyle = {
-  format: BracketFormat;
+export type TournamentBracketProgression = {
+  type: TournamentStage["type"];
   name: string;
   /** Where do the teams come from? If missing then it means the source is the full registered teams list. */
   sources?: {
@@ -381,8 +378,12 @@ export type TournamentBracketsStyle = {
   }[];
 }[];
 
+export interface TournamentSettings {
+  bracketProgression: TournamentBracketProgression;
+}
+
 export interface Tournament {
-  bracketsStyle: ColumnType<TournamentBracketsStyle, string, string>;
+  settings: ColumnType<TournamentSettings, string, string>;
   id: GeneratedAlways<number>;
   mapPickingStyle: TournamentMapPickingStyle;
   showMapListGenerator: Generated<number | null>;

@@ -1,5 +1,5 @@
 import invariant from "tiny-invariant";
-import type { BracketFormat, TournamentBracketsStyle } from "~/db/tables";
+import type { TournamentBracketProgression } from "~/db/tables";
 import type { DataTypes, ValueToArray } from "~/modules/brackets-manager/types";
 import { logger } from "~/utils/logger";
 import { assertUnreachable } from "~/utils/types";
@@ -14,14 +14,11 @@ import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import type { ModeShort } from "~/modules/in-game-lists";
 import { databaseTimestampToDate } from "~/utils/dates";
 import { getTournamentManager } from "..";
-import {
-  fillWithNullTillPowerOfTwo,
-  resolveTournamentStageType,
-} from "../tournament-bracket-utils";
+import { fillWithNullTillPowerOfTwo } from "../tournament-bracket-utils";
 import type { Stage } from "~/modules/brackets-model";
 import { Bracket } from "./Bracket";
 
-type OptionalIdObject = { id: number } | undefined;
+export type OptionalIdObject = { id: number } | undefined;
 
 /** Extends and providers utility functions on top of the bracket-manager library. Updating data after the bracket has started is responsibility of bracket-manager. */
 export class Tournament {
@@ -29,16 +26,27 @@ export class Tournament {
   private brackets: Bracket[] = [];
   ctx;
 
-  // xxx: filter teams based on check-in after tournament starts?
   constructor({ data, ctx }: TournamentData) {
     this.data = data;
-    this.ctx = { ...ctx, startTime: databaseTimestampToDate(ctx.startTime) };
+
+    const hasStarted = ctx.inProgressBrackets.length > 0;
+    this.ctx = {
+      ...ctx,
+      teams: hasStarted
+        ? // after the start the teams who did not check-in are irrelevant
+          ctx.teams.filter((team) => team.checkIns.length > 0)
+        : ctx.teams,
+      startTime: databaseTimestampToDate(ctx.startTime),
+    };
 
     this.initBrackets();
   }
 
   private initBrackets() {
-    for (const { format, name, sources } of this.ctx.bracketsStyle) {
+    for (const [
+      bracketIdx,
+      { type, name, sources },
+    ] of this.ctx.settings.bracketProgression.entries()) {
       const inProgressStage = this.ctx.inProgressBrackets.find(
         (stage) => stage.name === name,
       );
@@ -46,7 +54,10 @@ export class Tournament {
       if (inProgressStage) {
         this.brackets.push(
           Bracket.create({
+            id: inProgressStage.id,
+            tournament: this,
             preview: false,
+            name,
             data: {
               ...this.data,
               match: this.data.match.filter(
@@ -59,34 +70,49 @@ export class Tournament {
                 (round) => round.stage_id === inProgressStage.id,
               ),
             },
-            // xxx: type: format,
-            type: inProgressStage.type,
+            type,
           }),
         );
       } else {
         const manager = getTournamentManager("IN_MEMORY");
         const { teams, relevantMatchesFinished } = sources
           ? this.resolveTeamsFromSources(sources)
-          : { teams: this.ctx.teams, relevantMatchesFinished: true };
+          : {
+              teams: this.ctx.teams,
+              relevantMatchesFinished: true,
+            };
 
-        manager.create({
-          tournamentId: this.ctx.id,
-          name,
-          // xxx: type: format,
-          type: resolveTournamentStageType(format),
-          seeding: fillWithNullTillPowerOfTwo(teams.map((team) => team.name)),
-          settings: this.bracketSettings(format),
-        });
+        const { checkedInTeams, notCheckedInTeams } =
+          this.divideTeamsToCheckedInAndNotCheckedIn({
+            teams,
+            bracketIdx,
+          });
+
+        if (checkedInTeams.length >= TOURNAMENT.ENOUGH_TEAMS_TO_START) {
+          manager.create({
+            tournamentId: this.ctx.id,
+            name,
+            type,
+            seeding: fillWithNullTillPowerOfTwo(
+              checkedInTeams.map((team) => team.name),
+            ),
+            settings: this.bracketSettings(type),
+          });
+        }
 
         this.brackets.push(
           Bracket.create({
+            id: -1 * bracketIdx,
+            tournament: this,
             preview: true,
-            data: manager.get.stageData(0),
-            // xxx: type: format,
-            type: resolveTournamentStageType(format),
+            name,
+            data: manager.get.tournamentData(this.ctx.id),
+            type,
             canBeStarted:
-              teams.length >= TOURNAMENT.ENOUGH_TEAMS_TO_START &&
+              checkedInTeams.length >= TOURNAMENT.ENOUGH_TEAMS_TO_START &&
               (sources ? relevantMatchesFinished : this.regularCheckInHasEnded),
+            teamsPendingCheckIn:
+              bracketIdx !== 0 ? notCheckedInTeams.map((t) => t.id) : undefined,
           }),
         );
       }
@@ -94,7 +120,7 @@ export class Tournament {
   }
 
   private resolveTeamsFromSources(
-    sources: NonNullable<TournamentBracketsStyle[number]["sources"]>,
+    sources: NonNullable<TournamentBracketProgression[number]["sources"]>,
   ) {
     const teams: { id: number; name: string }[] = [];
 
@@ -114,22 +140,63 @@ export class Tournament {
     return { teams, relevantMatchesFinished: allRelevantMatchesFinished };
   }
 
-  // xxx: type
-  private bracketSettings(format: BracketFormat): Stage["settings"] {
-    switch (format) {
-      case "SE":
+  private divideTeamsToCheckedInAndNotCheckedIn({
+    teams,
+    bracketIdx,
+  }: {
+    teams: { id: number; name: string }[];
+    bracketIdx: number;
+  }) {
+    return teams.reduce(
+      (acc, cur) => {
+        const team = this.teamById(cur.id);
+        invariant(team, "Team not found");
+
+        const usesRegularCheckIn = bracketIdx === 0;
+        const regularCheckInHasBeenPossible =
+          this.regularCheckInIsOpen || this.regularCheckInHasEnded;
+        if (usesRegularCheckIn) {
+          if (team.checkIns.length > 0 || !regularCheckInHasBeenPossible) {
+            acc.checkedInTeams.push(cur);
+          } else {
+            acc.notCheckedInTeams.push(cur);
+          }
+        } else {
+          if (
+            team.checkIns.some((checkIn) => checkIn.bracketIdx === bracketIdx)
+          ) {
+            acc.checkedInTeams.push(cur);
+          } else {
+            acc.notCheckedInTeams.push(cur);
+          }
+        }
+
+        return acc;
+      },
+      { checkedInTeams: [], notCheckedInTeams: [] } as {
+        checkedInTeams: { id: number; name: string }[];
+        notCheckedInTeams: { id: number; name: string }[];
+      },
+    );
+  }
+
+  bracketSettings(
+    type: TournamentBracketProgression[number]["type"],
+  ): Stage["settings"] {
+    switch (type) {
+      case "single_elimination":
         return { consolationFinal: false };
-      case "DE":
+      case "double_elimination":
         return {
           grandFinal: "double",
         };
       // xxx: resolve from TO setting
-      case "RR":
+      case "round_robin":
         return {
           groupCount: 4,
         };
       default: {
-        assertUnreachable(format);
+        assertUnreachable(type);
       }
     }
   }
@@ -178,33 +245,6 @@ export class Tournament {
 
   teamById(id: number) {
     return this.ctx.teams.find((team) => team.id === id);
-  }
-
-  canCheckInToBracket({
-    user,
-    bracketIdx,
-  }: {
-    user: OptionalIdObject;
-    bracketIdx: number;
-  }) {
-    // regular check-in flow used
-    if (bracketIdx === 0) return false;
-
-    const team = this.teamMemberOfByUser(user);
-    if (!team) return false;
-
-    const bracket = this.bracketByIdx(bracketIdx);
-    if (!bracket?.preview) return false;
-
-    if (!bracket.data.participant.some((p) => p.name === team.name)) {
-      return false;
-    }
-
-    if (team.checkIns.some((checkIn) => checkIn.bracketIdx === bracketIdx)) {
-      return false;
-    }
-
-    return true;
   }
 
   // const { progress, currentMatchId, currentOpponent } = (() => {

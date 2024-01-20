@@ -1,10 +1,8 @@
-import type { Stage } from "~/modules/brackets-model";
-import type { TournamentMatch, TournamentStage } from "~/db/types";
+import type { TournamentMatch } from "~/db/types";
 import {
   sourceTypes,
   seededRandom,
 } from "~/modules/tournament-map-list-generator";
-import { assertUnreachable } from "~/utils/types";
 import type { FindMatchById } from "../tournament-bracket/queries/findMatchById.server";
 import type {
   TournamentLoaderData,
@@ -14,7 +12,6 @@ import type { Params } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import type { DataTypes, ValueToArray } from "~/modules/brackets-manager/types";
 import { HACKY_isInviteOnlyEvent } from "../tournament/tournament-utils";
-import type { BracketFormat } from "~/db/tables";
 import { removeDuplicates } from "~/utils/arrays";
 
 export function matchIdFromParams(params: Params<string>) {
@@ -67,43 +64,6 @@ export function resolveHostingTeam(
 
   console.error("resolveHostingTeam: unexpected default");
   return teams[0];
-}
-
-export function resolveTournamentStageType(
-  format: BracketFormat,
-): TournamentStage["type"] {
-  switch (format) {
-    case "SE":
-      return "single_elimination";
-    case "DE":
-      return "double_elimination";
-    case "RR":
-      return "round_robin";
-    default: {
-      assertUnreachable(format);
-    }
-  }
-}
-
-export function resolveTournamentStageSettings(
-  format: BracketFormat,
-): Stage["settings"] {
-  switch (format) {
-    case "SE":
-      return { consolationFinal: false };
-    case "DE":
-      return {
-        grandFinal: "double",
-      };
-    // xxx: resolve from TO setting
-    case "RR":
-      return {
-        groupCount: 4,
-      };
-    default: {
-      assertUnreachable(format);
-    }
-  }
 }
 
 export function mapCountPlayedInSetWithCertainty({

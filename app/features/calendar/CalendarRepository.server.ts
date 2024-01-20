@@ -365,9 +365,11 @@ export async function create(args: CreateArgs) {
   return db.transaction().execute(async (trx) => {
     let tournamentId;
     if (args.isFullTournament) {
-      const format: Tables["Tournament"]["bracketsStyle"] = [
-        { format: "DE", name: "Elimination bracket" },
-      ];
+      const settings: Tables["Tournament"]["settings"] = {
+        bracketProgression: [
+          { type: "double_elimination", name: "Main bracket" },
+        ],
+      };
 
       tournamentId = (
         await trx
@@ -375,7 +377,7 @@ export async function create(args: CreateArgs) {
           // xxx: format picking
           .values({
             mapPickingStyle: args.mapPickingStyle,
-            bracketsStyle: JSON.stringify(format),
+            settings: JSON.stringify(settings),
           })
           .returning("id")
           .executeTakeFirstOrThrow()
