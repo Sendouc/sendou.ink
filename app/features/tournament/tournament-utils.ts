@@ -99,6 +99,10 @@ export function HACKY_resolvePicture(event: { name: string }) {
     return tournamentLogoUrl("pg");
   }
 
+  if (event.name.includes("Triton")) {
+    return tournamentLogoUrl("tc");
+  }
+
   return tournamentLogoUrl("default");
 }
 

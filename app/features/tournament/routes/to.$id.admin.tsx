@@ -22,6 +22,7 @@ import {
   isTournamentAdmin,
   isTournamentOrganizer,
 } from "~/permissions";
+import { databaseTimestampToDate } from "~/utils/dates";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
 import {
@@ -627,6 +628,26 @@ function DownloadParticipants() {
       .join("\n");
   }
 
+  function checkedInParticipantsContent() {
+    const header = "Teams ordered by registration time\n---\n";
+
+    return (
+      header +
+      tournament.ctx.teams
+        .slice()
+        .sort((a, b) => a.createdAt - b.createdAt)
+        .filter((team) => team.checkIns.length > 0)
+        .map((team, i) => {
+          return `${i + 1}) ${team.name} - ${databaseTimestampToDate(
+            team.createdAt,
+          ).toISOString()} - ${team.members
+            .map((member) => `${member.discordName} - <@${member.discordId}>`)
+            .join(" / ")}`;
+        })
+        .join("\n")
+    );
+  }
+
   function notCheckedInParticipantsContent() {
     return tournament.ctx.teams
       .slice()
@@ -662,6 +683,17 @@ function DownloadParticipants() {
           }
         >
           All participants
+        </Button>
+        <Button
+          size="tiny"
+          onClick={() =>
+            handleDownload({
+              filename: "checked-in-participants.txt",
+              content: checkedInParticipantsContent(),
+            })
+          }
+        >
+          Checked in participants
         </Button>
         <Button
           size="tiny"

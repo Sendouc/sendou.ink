@@ -122,6 +122,7 @@ export async function findByIdNew(id: number) {
             "TournamentTeam.seed",
             "TournamentTeam.prefersNotToHost",
             "TournamentTeam.inviteCode",
+            "TournamentTeam.createdAt",
             jsonArrayFrom(
               innerEb
                 .selectFrom("TournamentTeamMember")
