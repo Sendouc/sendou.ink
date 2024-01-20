@@ -354,4 +354,11 @@ export class Tournament {
       (staff) => staff.id === user.id && staff.role === "ORGANIZER",
     );
   }
+
+  isAdmin(user: OptionalIdObject) {
+    if (!user) return false;
+    if (isAdmin(user)) return true;
+
+    return this.ctx.author.id === user.id;
+  }
 }

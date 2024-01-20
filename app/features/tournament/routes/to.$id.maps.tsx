@@ -1,39 +1,31 @@
 import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import {
-  useActionData,
-  useLoaderData,
-  useOutletContext,
-} from "@remix-run/react";
+import { useActionData, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { Alert } from "~/components/Alert";
 import type { MapPoolMap } from "~/db/types";
-import { useSearchParamState } from "~/hooks/useSearchParamState";
-import { useTranslation } from "react-i18next";
 import { useUser } from "~/features/auth/core";
 import { getUserId } from "~/features/auth/core/user.server";
-import { createTournamentMapList } from "~/modules/tournament-map-list-generator";
+import { MapPool } from "~/features/map-list-generator/core/map-pool";
+import { useSearchParamState } from "~/hooks/useSearchParamState";
 import type {
-  TournamentMapListMap,
   BracketType,
+  TournamentMapListMap,
   TournamentMaplistInput,
   TournamentMaplistSource,
 } from "~/modules/tournament-map-list-generator";
+import { createTournamentMapList } from "~/modules/tournament-map-list-generator";
 import { isTournamentAdmin } from "~/permissions";
 import mapsStyles from "~/styles/maps.css";
 import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
 import { tournamentPage } from "~/utils/urls";
+import * as TournamentRepository from "../TournamentRepository.server";
 import { findMapPoolsByTournamentId } from "../queries/findMapPoolsByTournamentId.server";
 import { TOURNAMENT } from "../tournament-constants";
-import {
-  modesIncluded,
-  resolveOwnedTeam,
-  tournamentIdFromParams,
-} from "../tournament-utils";
-import type { TournamentLoaderData } from "./to.$id";
-import * as TournamentRepository from "../TournamentRepository.server";
-import { MapPool } from "~/features/map-list-generator/core/map-pool";
+import { tournamentIdFromParams } from "../tournament-utils";
+import { useTournament } from "./to.$id";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: mapsStyles }];
@@ -72,7 +64,7 @@ export default function TournamentMapsPage() {
   const { t } = useTranslation(["tournament"]);
   const actionData = useActionData<{ failed?: boolean }>();
   const data = useLoaderData<typeof loader>();
-  const parentRouteData = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
 
   const [bestOf, setBestOf] = useSearchParamState<
     (typeof TOURNAMENT)["AVAILABLE_BEST_OF"][number]
@@ -84,15 +76,14 @@ export default function TournamentMapsPage() {
   const [teamOneId, setTeamOneId] = useSearchParamState({
     name: "team-one",
     defaultValue:
-      resolveOwnedTeam({ teams: parentRouteData.teams, userId: user?.id })
-        ?.id ?? parentRouteData.teams[0]?.id,
-    revive: reviveTeam(parentRouteData.teams.map((t) => t.id)),
+      tournament.ownedTeamByUser(user)?.id ?? tournament.ctx.teams[0]?.id,
+    revive: reviveTeam(tournament.ctx.teams.map((t) => t.id)),
   });
   const [teamTwoId, setTeamTwoId] = useSearchParamState({
     name: "team-two",
-    defaultValue: parentRouteData.teams[1]?.id,
+    defaultValue: tournament.ctx.teams[1]?.id,
     revive: reviveTeam(
-      parentRouteData.teams.map((t) => t.id),
+      tournament.ctx.teams.map((t) => t.id),
       teamOneId,
     ),
   });
@@ -107,11 +98,11 @@ export default function TournamentMapsPage() {
     revive: reviveBracketType,
   });
 
-  const teamOne = parentRouteData.teams.find((t) => t.id === teamOneId) ?? {
+  const teamOne = tournament.ctx.teams.find((t) => t.id === teamOneId) ?? {
     id: -1,
     mapPool: [],
   };
-  const teamTwo = parentRouteData.teams.find((t) => t.id === teamTwoId) ?? {
+  const teamTwo = tournament.ctx.teams.find((t) => t.id === teamTwoId) ?? {
     id: -1,
     mapPool: [],
   };
@@ -160,7 +151,7 @@ export default function TournamentMapsPage() {
         ]}
         bestOf={bestOf}
         seed={`${bracketType}-${roundNumber}`}
-        modesIncluded={modesIncluded(parentRouteData.tournament)}
+        modesIncluded={tournament.modesIncluded}
       />
     </div>
   );
@@ -249,7 +240,7 @@ function TeamsSelect({
   setTeam: (newTeamId: number) => void;
 }) {
   const { t } = useTranslation(["tournament"]);
-  const data = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
 
   return (
     <div className="tournament__select-container">
@@ -265,7 +256,7 @@ function TeamsSelect({
         }}
       >
         <option value={-1}>({t("tournament:team.unlisted")})</option>
-        {data.teams
+        {tournament.ctx.teams
           .filter((t) => t.id !== otherTeam.id)
           .map((team) => (
             <option key={team.id} value={team.id}>
@@ -309,14 +300,14 @@ function BestOfRadios({
 
 function MapList(props: Omit<TournamentMaplistInput, "tiebreakerMaps">) {
   const { t } = useTranslation(["game-misc"]);
-  const data = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
 
   let mapList: Array<TournamentMapListMap>;
 
   try {
     mapList = createTournamentMapList({
       ...props,
-      tiebreakerMaps: new MapPool(data.tournament.tieBreakerMapPool),
+      tiebreakerMaps: new MapPool(tournament.ctx.tieBreakerMapPool),
     });
   } catch (e) {
     console.error(
@@ -336,7 +327,7 @@ function MapList(props: Omit<TournamentMaplistInput, "tiebreakerMaps">) {
           maps: new MapPool([]),
         },
       ],
-      tiebreakerMaps: new MapPool(data.tournament.tieBreakerMapPool),
+      tiebreakerMaps: new MapPool(tournament.ctx.tieBreakerMapPool),
     });
   }
 

@@ -3,7 +3,6 @@ import {
   Form,
   useFetcher,
   useNavigate,
-  useOutletContext,
   useRevalidator,
 } from "@remix-run/react";
 import clsx from "clsx";
@@ -56,10 +55,7 @@ import {
   tournamentMatchPage,
 } from "~/utils/urls";
 import { findTeamsByTournamentId } from "../../tournament/queries/findTeamsByTournamentId.server";
-import {
-  useTournament,
-  type TournamentLoaderData,
-} from "../../tournament/routes/to.$id";
+import { useTournament } from "../../tournament/routes/to.$id";
 import bracketViewerStyles from "../brackets-viewer.css";
 import { resolveBestOfs } from "../core/bestOf.server";
 import {
@@ -464,11 +460,11 @@ function appendStyleTagToHead(content: string) {
 
 function useAutoRefresh() {
   const { revalidate } = useRevalidator();
-  const parentRouteData = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
   const lastEvent = useEventSource(
-    tournamentBracketsSubscribePage(parentRouteData.tournament.id),
+    tournamentBracketsSubscribePage(tournament.ctx.id),
     {
-      event: bracketSubscriptionKey(parentRouteData.tournament.id),
+      event: bracketSubscriptionKey(tournament.ctx.id),
     },
   );
 

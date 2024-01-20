@@ -1,52 +1,50 @@
 import type { ActionFunction } from "@remix-run/node";
-import { useFetcher, useOutletContext, useSubmit } from "@remix-run/react";
+import { useFetcher, useSubmit } from "@remix-run/react";
 import * as React from "react";
-import { Button, LinkButton } from "~/components/Button";
-import { Toggle } from "~/components/Toggle";
 import { useTranslation } from "react-i18next";
+import invariant from "tiny-invariant";
+import { Avatar } from "~/components/Avatar";
+import { Button, LinkButton } from "~/components/Button";
+import { Divider } from "~/components/Divider";
+import { FormMessage } from "~/components/FormMessage";
+import { FormWithConfirm } from "~/components/FormWithConfirm";
+import { Label } from "~/components/Label";
+import { Redirect } from "~/components/Redirect";
+import { SubmitButton } from "~/components/SubmitButton";
+import { Toggle } from "~/components/Toggle";
+import { UserSearch } from "~/components/UserSearch";
+import { TrashIcon } from "~/components/icons/Trash";
+import { useUser } from "~/features/auth/core";
+import { requireUserId } from "~/features/auth/core/user.server";
+import { findMapPoolByTeamId } from "~/features/tournament-bracket";
 import {
-  isTournamentAdmin,
   isAdmin,
+  isTournamentAdmin,
   isTournamentOrganizer,
 } from "~/permissions";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
-import { discordFullName } from "~/utils/strings";
-import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
-import { updateShowMapListGenerator } from "../queries/updateShowMapListGenerator.server";
-import { requireUserId } from "~/features/auth/core/user.server";
-import {
-  HACKY_resolveCheckInTime,
-  tournamentIdFromParams,
-  validateCanCheckIn,
-} from "../tournament-utils";
-import { SubmitButton } from "~/components/SubmitButton";
-import { adminActionSchema } from "../tournament-schemas.server";
-import { changeTeamOwner } from "../queries/changeTeamOwner.server";
-import invariant from "tiny-invariant";
 import { assertUnreachable } from "~/utils/types";
-import { checkIn } from "../queries/checkIn.server";
-import { checkOut } from "../queries/checkOut.server";
-import hasTournamentStarted from "../queries/hasTournamentStarted.server";
-import type { TournamentLoaderData } from "./to.$id";
-import { joinTeam, leaveTeam } from "../queries/joinLeaveTeam.server";
-import { deleteTeam } from "../queries/deleteTeam.server";
-import { useUser } from "~/features/auth/core";
 import {
   calendarEditPage,
   calendarEventPage,
   tournamentPage,
 } from "~/utils/urls";
-import { Redirect } from "~/components/Redirect";
-import { FormWithConfirm } from "~/components/FormWithConfirm";
-import { findMapPoolByTeamId } from "~/features/tournament-bracket";
-import { UserSearch } from "~/components/UserSearch";
 import * as TournamentRepository from "../TournamentRepository.server";
+import { changeTeamOwner } from "../queries/changeTeamOwner.server";
+import { checkIn } from "../queries/checkIn.server";
+import { checkOut } from "../queries/checkOut.server";
 import { createTeam } from "../queries/createTeam.server";
-import { Divider } from "~/components/Divider";
-import { Avatar } from "~/components/Avatar";
-import { TrashIcon } from "~/components/icons/Trash";
-import { FormMessage } from "~/components/FormMessage";
-import { Label } from "~/components/Label";
+import { deleteTeam } from "../queries/deleteTeam.server";
+import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
+import hasTournamentStarted from "../queries/hasTournamentStarted.server";
+import { joinTeam, leaveTeam } from "../queries/joinLeaveTeam.server";
+import { updateShowMapListGenerator } from "../queries/updateShowMapListGenerator.server";
+import { adminActionSchema } from "../tournament-schemas.server";
+import {
+  tournamentIdFromParams,
+  validateCanCheckIn,
+} from "../tournament-utils";
+import { useTournament, type TournamentLoaderData } from "./to.$id";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUserId(request);
@@ -228,34 +226,31 @@ export const action: ActionFunction = async ({ request, params }) => {
 // TODO: translations
 export default function TournamentAdminPage() {
   const { t } = useTranslation(["calendar"]);
-  const data = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
 
   const user = useUser();
 
-  if (
-    !isTournamentOrganizer({ user, tournament: data.tournament }) ||
-    data.hasFinalized
-  ) {
-    return <Redirect to={tournamentPage(data.tournament.id)} />;
+  if (!tournament.isOrganizer(user) || tournament.everyBracketOver) {
+    return <Redirect to={tournamentPage(tournament.ctx.id)} />;
   }
 
   return (
     <div className="stack lg">
-      {isTournamentAdmin({ user, tournament: data.tournament }) ? (
+      {tournament.isAdmin(user) ? (
         <div className="stack horizontal items-end">
           <LinkButton
-            to={calendarEditPage(data.tournament.eventId)}
+            to={calendarEditPage(tournament.ctx.eventId)}
             size="tiny"
             variant="outlined"
           >
             Edit event info
           </LinkButton>
-          {!data.hasStarted ? (
+          {!tournament.hasStarted ? (
             <FormWithConfirm
               dialogHeading={t("calendar:actions.delete.confirm", {
-                name: data.tournament.name,
+                name: tournament.ctx.name,
               })}
-              action={calendarEventPage(data.tournament.eventId)}
+              action={calendarEventPage(tournament.ctx.eventId)}
               submitButtonTestId="delete-submit-button"
             >
               <Button
@@ -272,7 +267,7 @@ export default function TournamentAdminPage() {
       ) : null}
       <Divider smallText>Team actions</Divider>
       <TeamActions />
-      {isTournamentAdmin({ user, tournament: data.tournament }) ? (
+      {tournament.isAdmin(user) ? (
         <>
           <Divider smallText>Staff</Divider>
           <Staff />
@@ -329,21 +324,23 @@ const actions = [
 function TeamActions() {
   const fetcher = useFetcher();
   const { t } = useTranslation(["tournament"]);
-  const data = useOutletContext<TournamentLoaderData>();
-  const parentRouteData = useOutletContext<TournamentLoaderData>();
-  const [selectedTeamId, setSelectedTeamId] = React.useState(data.teams[0]?.id);
+  const tournament = useTournament();
+  const [selectedTeamId, setSelectedTeamId] = React.useState(
+    tournament.ctx.teams[0]?.id,
+  );
   const [selectedAction, setSelectedAction] = React.useState<
     (typeof actions)[number]
   >(actions[0]);
 
-  const selectedTeam = data.teams.find((team) => team.id === selectedTeamId);
+  const selectedTeam = tournament.teamById(selectedTeamId);
 
   const actionsToShow = actions.filter((action) => {
     for (const when of action.when) {
       switch (when) {
         case "CHECK_IN_STARTED": {
           if (
-            HACKY_resolveCheckInTime(data.tournament).getTime() > Date.now()
+            tournament.regularCheckInIsOpen ||
+            tournament.regularCheckInHasEnded
           ) {
             return false;
           }
@@ -351,7 +348,7 @@ function TeamActions() {
           break;
         }
         case "TOURNAMENT_BEFORE_START": {
-          if (parentRouteData.hasStarted) {
+          if (tournament.hasStarted) {
             return false;
           }
           break;
@@ -396,7 +393,7 @@ function TeamActions() {
             value={selectedTeamId}
             onChange={(e) => setSelectedTeamId(Number(e.target.value))}
           >
-            {data.teams
+            {tournament.ctx.teams
               .slice()
               .sort((a, b) => a.name.localeCompare(b.name))
               .map((team) => (
@@ -419,7 +416,7 @@ function TeamActions() {
           <select id="memberId" name="memberId">
             {selectedTeam.members.map((member) => (
               <option key={member.userId} value={member.userId}>
-                {discordFullName(member)}
+                {member.discordName}
               </option>
             ))}
           </select>
@@ -445,12 +442,12 @@ function TeamActions() {
 }
 
 function Staff() {
-  const data = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
 
   return (
     <div className="stack lg">
       {/* Key so inputs are cleared after staff is added */}
-      <StaffAdder key={data.tournament.staff.length} />
+      <StaffAdder key={tournament.ctx.staff.length} />
       <StaffList />
     </div>
   );
@@ -459,7 +456,7 @@ function Staff() {
 function CastTwitchAccounts() {
   const id = React.useId();
   const fetcher = useFetcher();
-  const data = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
 
   return (
     <fetcher.Form method="post" className="stack sm">
@@ -470,7 +467,7 @@ function CastTwitchAccounts() {
             id={id}
             placeholder="dappleproductions"
             name="castTwitchAccounts"
-            defaultValue={data.tournament.castTwitchAccounts?.join(",")}
+            defaultValue={tournament.ctx.castTwitchAccounts?.join(",")}
           />
         </div>
         <SubmitButton
@@ -493,7 +490,7 @@ function CastTwitchAccounts() {
 
 function StaffAdder() {
   const fetcher = useFetcher();
-  const data = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
 
   return (
     <fetcher.Form method="post" className="stack sm">
@@ -505,8 +502,8 @@ function StaffAdder() {
             id="staff-user"
             userIdsToOmit={
               new Set([
-                data.tournament.author.id,
-                ...data.tournament.staff.map((s) => s.id),
+                tournament.ctx.author.id,
+                ...tournament.ctx.staff.map((s) => s.id),
               ])
             }
           />
@@ -537,11 +534,11 @@ function StaffAdder() {
 
 function StaffList() {
   const { t } = useTranslation(["tournament"]);
-  const data = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
 
   return (
     <div className="stack md">
-      {data.tournament.staff.map((staff) => (
+      {tournament.ctx.staff.map((staff) => (
         <div
           key={staff.id}
           className="stack horizontal sm items-center"
@@ -591,10 +588,10 @@ function RemoveStaffButton({
 }
 
 function EnableMapList() {
-  const data = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
   const submit = useSubmit();
   const [eventStarted, setEventStarted] = React.useState(
-    Boolean(data.tournament.showMapListGenerator),
+    Boolean(tournament.ctx.showMapListGenerator),
   );
   function handleToggle(toggled: boolean) {
     setEventStarted(toggled);
@@ -615,43 +612,39 @@ function EnableMapList() {
 }
 
 function DownloadParticipants() {
-  const data = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
 
   function allParticipantsContent() {
-    return data.teams
+    return tournament.ctx.teams
       .slice()
       .sort((a, b) => a.name.localeCompare(b.name))
       .map((team) => {
         const owner = team.members.find((user) => user.isOwner);
         invariant(owner);
 
-        return `${team.name} - ${discordFullName(owner)} - <@${
-          owner.discordId
-        }>`;
+        return `${team.name} - ${owner.discordName} - <@${owner.discordId}>`;
       })
       .join("\n");
   }
 
   function notCheckedInParticipantsContent() {
-    return data.teams
+    return tournament.ctx.teams
       .slice()
       .sort((a, b) => a.name.localeCompare(b.name))
-      .filter((team) => !team.checkedInAt)
+      .filter((team) => team.checkIns.length === 0)
       .map((team) => {
         return `${team.name} - ${team.members
-          .map(
-            (member) => `${discordFullName(member)} - <@${member.discordId}>`,
-          )
+          .map((member) => `${member.discordName} - <@${member.discordId}>`)
           .join(" / ")}`;
       })
       .join("\n");
   }
 
   function simpleListInSeededOrder() {
-    return data.teams
+    return tournament.ctx.teams
       .slice()
       .sort((a, b) => (a.seed ?? Infinity) - (b.seed ?? Infinity))
-      .filter((team) => team.checkedInAt)
+      .filter((team) => team.checkIns.length > 0)
       .map((team) => team.name)
       .join("\n");
   }

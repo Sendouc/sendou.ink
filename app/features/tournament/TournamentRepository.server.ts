@@ -72,6 +72,7 @@ export async function findByIdNew(id: number) {
     .innerJoin("CalendarEventDate", "CalendarEvent.id", "CalendarEventDate.id")
     .select(({ eb, exists, selectFrom }) => [
       "Tournament.id",
+      "CalendarEvent.id as eventId",
       "Tournament.bracketsStyle",
       "Tournament.showMapListGenerator",
       "Tournament.castTwitchAccounts",
