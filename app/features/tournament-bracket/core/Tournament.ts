@@ -1,5 +1,5 @@
 import invariant from "tiny-invariant";
-import type { Tables } from "~/db/tables";
+import type { BracketFormat, TournamentBracketsStyle } from "~/db/tables";
 import type { DataTypes, ValueToArray } from "~/modules/brackets-manager/types";
 import { logger } from "~/utils/logger";
 import { assertUnreachable } from "~/utils/types";
@@ -13,6 +13,13 @@ import {
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import type { ModeShort } from "~/modules/in-game-lists";
 import { databaseTimestampToDate } from "~/utils/dates";
+import { getTournamentManager } from "..";
+import {
+  fillWithNullTillPowerOfTwo,
+  resolveTournamentStageType,
+} from "../tournament-bracket-utils";
+import type { Stage } from "~/modules/brackets-model";
+import { Bracket } from "./Bracket";
 
 type OptionalIdObject = { id: number } | undefined;
 
@@ -31,10 +38,7 @@ export class Tournament {
   }
 
   private initBrackets() {
-    for (const [
-      i,
-      { format, name, sources },
-    ] of this.ctx.bracketsStyle.entries()) {
+    for (const { format, name, sources } of this.ctx.bracketsStyle) {
       const inProgressStage = this.ctx.inProgressBrackets.find(
         (stage) => stage.name === name,
       );
@@ -43,11 +47,16 @@ export class Tournament {
         this.brackets.push(
           Bracket.create({
             preview: false,
-            // xxx: does anything else need to be filtered?
             data: {
               ...this.data,
               match: this.data.match.filter(
                 (match) => match.stage_id === inProgressStage.id,
+              ),
+              stage: this.data.stage.filter(
+                (stage) => stage.id === inProgressStage.id,
+              ),
+              round: this.data.round.filter(
+                (round) => round.stage_id === inProgressStage.id,
               ),
             },
             // xxx: type: format,
@@ -55,7 +64,72 @@ export class Tournament {
           }),
         );
       } else {
-        // TODO: create bracket by creating new in memory bracket
+        const manager = getTournamentManager("IN_MEMORY");
+        const { teams, relevantMatchesFinished } = sources
+          ? this.resolveTeamsFromSources(sources)
+          : { teams: this.ctx.teams, relevantMatchesFinished: true };
+
+        manager.create({
+          tournamentId: this.ctx.id,
+          name,
+          // xxx: type: format,
+          type: resolveTournamentStageType(format),
+          seeding: fillWithNullTillPowerOfTwo(teams.map((team) => team.name)),
+          settings: this.bracketSettings(format),
+        });
+
+        this.brackets.push(
+          Bracket.create({
+            preview: true,
+            data: manager.get.stageData(0),
+            // xxx: type: format,
+            type: resolveTournamentStageType(format),
+            canBeStarted:
+              teams.length >= TOURNAMENT.ENOUGH_TEAMS_TO_START &&
+              (sources ? relevantMatchesFinished : this.regularCheckInHasEnded),
+          }),
+        );
+      }
+    }
+  }
+
+  private resolveTeamsFromSources(
+    sources: NonNullable<TournamentBracketsStyle[number]["sources"]>,
+  ) {
+    const teams: { id: number; name: string }[] = [];
+
+    let allRelevantMatchesFinished = true;
+    for (const { bracketIdx, placements } of sources) {
+      const sourceBracket = this.bracketByIdx(bracketIdx);
+      invariant(sourceBracket, "Bracket not found");
+
+      const { teams: sourcedTeams, relevantMatchesFinished } =
+        sourceBracket.source(placements);
+      if (!relevantMatchesFinished) {
+        allRelevantMatchesFinished = false;
+      }
+      teams.push(...sourcedTeams);
+    }
+
+    return { teams, relevantMatchesFinished: allRelevantMatchesFinished };
+  }
+
+  // xxx: type
+  private bracketSettings(format: BracketFormat): Stage["settings"] {
+    switch (format) {
+      case "SE":
+        return { consolationFinal: false };
+      case "DE":
+        return {
+          grandFinal: "double",
+        };
+      // xxx: resolve from TO setting
+      case "RR":
+        return {
+          groupCount: 4,
+        };
+      default: {
+        assertUnreachable(format);
       }
     }
   }
@@ -106,6 +180,33 @@ export class Tournament {
     return this.ctx.teams.find((team) => team.id === id);
   }
 
+  canCheckInToBracket({
+    user,
+    bracketIdx,
+  }: {
+    user: OptionalIdObject;
+    bracketIdx: number;
+  }) {
+    // regular check-in flow used
+    if (bracketIdx === 0) return false;
+
+    const team = this.teamMemberOfByUser(user);
+    if (!team) return false;
+
+    const bracket = this.bracketByIdx(bracketIdx);
+    if (!bracket?.preview) return false;
+
+    if (!bracket.data.participant.some((p) => p.name === team.name)) {
+      return false;
+    }
+
+    if (team.checkIns.some((checkIn) => checkIn.bracketIdx === bracketIdx)) {
+      return false;
+    }
+
+    return true;
+  }
+
   // const { progress, currentMatchId, currentOpponent } = (() => {
   //   let lowestStatus: Status = Infinity;
   //   let currentMatchId: number | undefined;
@@ -142,7 +243,7 @@ export class Tournament {
 
   //   return { progress: lowestStatus, currentMatchId, currentOpponent };
   // })();
-  progress(user: OptionalIdObject) {
+  progress(_user: OptionalIdObject) {
     // return opponent team name + match id
     // or null if not started / not in the tournament
     // or "WAITING" if still in tournament but no match currently
@@ -161,13 +262,7 @@ export class Tournament {
     return true;
   }
 
-  canAddSubs(user: OptionalIdObject) {
-    return (
-      !this.everyBracketOver && this.hasStarted && this.ownedTeamByUser(user)
-    );
-  }
-
-  canCheckInToBracket(bracketIdx: number, user: OptionalIdObject) {
+  canCheckInToTournament(bracketIdx: number, user: OptionalIdObject) {
     const team = this.teamMemberOfByUser(user);
     if (!team) return false;
 
@@ -231,14 +326,16 @@ export class Tournament {
     return bracket;
   }
 
-  ownedTeamByUser(user: OptionalIdObject) {
+  ownedTeamByUser(
+    user: OptionalIdObject,
+  ): ((typeof this.ctx.teams)[number] & { inviteCode: string }) | null {
     if (!user) return null;
 
     return this.ctx.teams.find((team) =>
       team.members.some(
         (member) => member.userId === user.id && member.isOwner,
       ),
-    );
+    ) as (typeof this.ctx.teams)[number] & { inviteCode: string };
   }
 
   teamMemberOfByUser(user: OptionalIdObject) {
@@ -256,81 +353,5 @@ export class Tournament {
     return this.ctx.staff.some(
       (staff) => staff.id === user.id && staff.role === "ORGANIZER",
     );
-  }
-}
-
-interface BracketArgs {
-  preview: boolean;
-  data: ValueToArray<DataTypes>;
-  type: Tables["TournamentStage"]["type"];
-}
-
-abstract class Bracket {
-  preview: boolean;
-  data: ValueToArray<DataTypes>;
-
-  constructor({
-    preview,
-    data,
-  }: {
-    preview: boolean;
-    data: ValueToArray<DataTypes>;
-  }) {
-    this.preview = preview;
-    this.data = data;
-  }
-
-  // xxx: logic
-  // return (
-  //   databaseTimestampToDate(parentRouteData.tournament.startTime).getTime() <
-  //   Date.now()
-  // );
-  get canBeStarted() {
-    return true;
-  }
-
-  get everyMatchOver() {
-    return true;
-  }
-
-  get enoughTeams() {
-    return this.data.participant.length >= TOURNAMENT.ENOUGH_TEAMS_TO_START;
-  }
-
-  static create(
-    args: BracketArgs,
-  ): SingleEliminationBracket | DoubleEliminationBracket | RoundRobinBracket {
-    switch (args.type) {
-      case "single_elimination": {
-        return new SingleEliminationBracket(args);
-      }
-      case "double_elimination": {
-        return new DoubleEliminationBracket(args);
-      }
-      case "round_robin": {
-        return new RoundRobinBracket(args);
-      }
-      default: {
-        assertUnreachable(args.type);
-      }
-    }
-  }
-}
-
-class SingleEliminationBracket extends Bracket {
-  constructor(args: BracketArgs) {
-    super(args);
-  }
-}
-
-class DoubleEliminationBracket extends Bracket {
-  constructor(args: BracketArgs) {
-    super(args);
-  }
-}
-
-class RoundRobinBracket extends Bracket {
-  constructor(args: BracketArgs) {
-    super(args);
   }
 }
