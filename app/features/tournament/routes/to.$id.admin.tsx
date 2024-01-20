@@ -47,6 +47,7 @@ import { Avatar } from "~/components/Avatar";
 import { TrashIcon } from "~/components/icons/Trash";
 import { FormMessage } from "~/components/FormMessage";
 import { Label } from "~/components/Label";
+import { databaseTimestampToDate } from "~/utils/dates";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const user = await requireUserId(request);
@@ -630,6 +631,28 @@ function DownloadParticipants() {
       .join("\n");
   }
 
+  function checkedInParticipantsContent() {
+    const header = "Teams ordered by registration time\n---\n";
+
+    return (
+      header +
+      data.teams
+        .slice()
+        .sort((a, b) => a.createdAt - b.createdAt)
+        .filter((team) => team.checkedInAt)
+        .map((team, i) => {
+          return `${i + 1}) ${team.name} - ${databaseTimestampToDate(
+            team.createdAt,
+          ).toISOString()} - ${team.members
+            .map(
+              (member) => `${discordFullName(member)} - <@${member.discordId}>`,
+            )
+            .join(" / ")}`;
+        })
+        .join("\n")
+    );
+  }
+
   function notCheckedInParticipantsContent() {
     return data.teams
       .slice()
@@ -667,6 +690,17 @@ function DownloadParticipants() {
           }
         >
           All participants
+        </Button>
+        <Button
+          size="tiny"
+          onClick={() =>
+            handleDownload({
+              filename: "checked-in-participants.txt",
+              content: checkedInParticipantsContent(),
+            })
+          }
+        >
+          Checked in participants
         </Button>
         <Button
           size="tiny"
