@@ -3,39 +3,50 @@ import * as assert from "uvu/assert";
 import { tournamentSummary } from "./summarizer.server";
 import { ordinal, rating } from "openskill";
 import type { AllMatchResult } from "../queries/allMatchResultsByTournamentId.server";
+import type { TournamentDataTeam } from "./Tournament.server";
 
 const TournamentSummary = suite("tournamentSummary()");
+
+const createTeam = (teamId: number, userIds: number[]): TournamentDataTeam => ({
+  checkIns: [],
+  createdAt: 0,
+  id: teamId,
+  inviteCode: null,
+  mapPool: [],
+  members: userIds.map((userId) => ({
+    country: null,
+    customUrl: null,
+    discordAvatar: null,
+    discordId: "123",
+    discordName: "test",
+    inGameName: "test",
+    isOwner: 0,
+    plusTier: null,
+    userId,
+  })),
+  name: "Team " + teamId,
+  prefersNotToHost: 0,
+  seed: 1,
+});
 
 function summarize({ results }: { results?: AllMatchResult[] } = {}) {
   return tournamentSummary({
     finalStandings: [
       {
         placement: 1,
-        players: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }],
-        tournamentTeam: {
-          id: 1,
-        },
+        team: createTeam(1, [1, 2, 3, 4]),
       },
       {
         placement: 2,
-        players: [{ id: 5 }, { id: 6 }, { id: 7 }, { id: 8 }],
-        tournamentTeam: {
-          id: 2,
-        },
+        team: createTeam(2, [5, 6, 7, 8]),
       },
       {
         placement: 3,
-        players: [{ id: 9 }, { id: 10 }, { id: 11 }, { id: 12 }],
-        tournamentTeam: {
-          id: 3,
-        },
+        team: createTeam(3, [9, 10, 11, 12]),
       },
       {
         placement: 4,
-        players: [{ id: 13 }, { id: 14 }, { id: 15 }, { id: 16 }],
-        tournamentTeam: {
-          id: 4,
-        },
+        team: createTeam(4, [13, 14, 15, 16]),
       },
     ],
     results: results ?? [

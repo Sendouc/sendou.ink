@@ -302,50 +302,6 @@ export class Tournament {
     return [];
   }
 
-  // const { progress, currentMatchId, currentOpponent } = (() => {
-  //   let lowestStatus: Status = Infinity;
-  //   let currentMatchId: number | undefined;
-  //   let currentOpponent: string | undefined;
-
-  //   if (!myTeam) {
-  //     return {
-  //       progress: undefined,
-  //       currentMatchId: undefined,
-  //       currentOpponent: undefined,
-  //     };
-  //   }
-
-  //   for (const match of data.bracket.match) {
-  //     // BYE
-  //     if (match.opponent1 === null || match.opponent2 === null) {
-  //       continue;
-  //     }
-
-  //     if (
-  //       (match.opponent1.id === myTeam.id ||
-  //         match.opponent2.id === myTeam.id) &&
-  //       lowestStatus > match.status
-  //     ) {
-  //       lowestStatus = match.status;
-  //       currentMatchId = match.id;
-  //       const otherTeam =
-  //         match.opponent1.id === myTeam.id ? match.opponent2 : match.opponent1;
-  //       currentOpponent = parentRouteData.teams.find(
-  //         (team) => team.id === otherTeam.id,
-  //       )?.name;
-  //     }
-  //   }
-
-  //   return { progress: lowestStatus, currentMatchId, currentOpponent };
-  // })();
-  progress(_user: OptionalIdObject) {
-    // return opponent team name + match id
-    // or null if not started / not in the tournament
-    // or "WAITING" if still in tournament but no match currently
-    // or "CHECK-IN"..?
-    return null;
-  }
-
   canFinalize(user: OptionalIdObject) {
     return (
       this.everyBracketOver && this.isOrganizer(user) && !this.ctx.isFinalized

@@ -1,6 +1,7 @@
 import type { ActionFunction, LinksFunction } from "@remix-run/node";
 import {
   Form,
+  Link,
   useFetcher,
   useNavigate,
   useRevalidator,
@@ -38,13 +39,14 @@ import {
   tournamentBracketsSubscribePage,
   tournamentJoinPage,
   tournamentMatchPage,
+  tournamentTeamPage,
+  userPage,
 } from "~/utils/urls";
 import { useTournament } from "../../tournament/routes/to.$id";
 import bracketViewerStyles from "../brackets-viewer.css";
 import { tournamentFromDB } from "../core/Tournament.server";
 import { resolveBestOfs } from "../core/bestOf.server";
 import { getTournamentManager } from "../core/brackets-manager";
-import { finalStandings } from "../core/finalStandings.server";
 import { tournamentSummary } from "../core/summarizer.server";
 import { addSummary } from "../queries/addSummary.server";
 import { allMatchResultsByTournamentId } from "../queries/allMatchResultsByTournamentId.server";
@@ -56,6 +58,11 @@ import {
   fillWithNullTillPowerOfTwo,
 } from "../tournament-bracket-utils";
 import bracketStyles from "../tournament-bracket.css";
+import type { Standing } from "../core/Bracket";
+import { removeDuplicates } from "~/utils/arrays";
+import { Placement } from "~/components/Placement";
+import { Avatar } from "~/components/Avatar";
+import { Flag } from "~/components/Flag";
 
 export const links: LinksFunction = () => {
   return [
@@ -115,22 +122,10 @@ export const action: ActionFunction = async ({ params, request }) => {
     }
     case "FINALIZE_TOURNAMENT": {
       validate(tournament.isOrganizer(user));
-      invariant(
-        !tournament.bracketByIdx(1),
-        "Not possible yet to finalize tournaments with many stages",
-      );
-      const bracket = tournament.bracketByIdx(0);
-      invariant(bracket, "Stage not found");
 
       validate(tournament.everyBracketOver, "Not every match is over");
 
-      const _finalStandings =
-        finalStandings({
-          manager,
-          tournamentId,
-          includeAll: true,
-          stageId: bracket.id,
-        }) ?? [];
+      const _finalStandings = tournament.standings;
       invariant(
         _finalStandings.length === tournament.ctx.teams.length,
         `Final standings length (${_finalStandings.length}) does not match teams length (${tournament.ctx.teams.length})`,
@@ -141,7 +136,6 @@ export const action: ActionFunction = async ({ params, request }) => {
 
       const season = currentSeason(tournament.ctx.startTime)?.nth;
 
-      // xxx: for final standings use results of underground bracket as well, use this on the tournament team page too?
       addSummary({
         tournamentId,
         summary: tournamentSummary({
@@ -187,7 +181,6 @@ export const action: ActionFunction = async ({ params, request }) => {
   return null;
 };
 
-// xxx: finalize logic for underground brackets
 export default function TournamentBracketsPage() {
   const { t } = useTranslation(["tournament"]);
   const visibility = useVisibilityChange();
@@ -395,9 +388,9 @@ export default function TournamentBracketsPage() {
           <AddSubsPopOver />
         ) : null}
       </div>
-      {/* {data.finalStandings ? (
-        <FinalStandings standings={data.finalStandings} />
-      ) : null} */}
+      {tournament.everyBracketOver ? (
+        <FinalStandings standings={tournament.standings} />
+      ) : null}
       <BracketNav bracketIdx={bracketIdx} setBracketIdx={setBracketIdx} />
       <div className="brackets-viewer" ref={ref} />
       {!bracket.enoughTeams ? (
@@ -466,61 +459,6 @@ function useAutoRefresh() {
   }, [lastEvent, revalidate]);
 }
 
-// function TournamentProgressPrompt({
-//   progress,
-//   currentMatchId,
-//   currentOpponent,
-// }: {
-//   progress: Status;
-//   currentMatchId?: number;
-//   currentOpponent?: string;
-// }) {
-//   const { t } = useTranslation(["tournament"]);
-//   const parentRouteData = useOutletContext<TournamentLoaderData>();
-//   const data = useLoaderData<typeof loader>();
-
-//   if (data.finalStandings) return null;
-
-//   // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
-//   if (progress === Infinity) {
-//     console.error("Unexpected no status");
-//     return null;
-//   }
-
-//   if (progress === Status.Waiting) {
-//     return (
-//       <TournamentProgressContainer>
-//         <WaitingForMatchText />
-//       </TournamentProgressContainer>
-//     );
-//   }
-
-//   if (progress >= Status.Completed) {
-//     return null;
-//   }
-
-//   if (!currentMatchId || !currentOpponent) {
-//     console.error("Unexpected no match id or opponent");
-//     return null;
-//   }
-
-//   return (
-//     <TournamentProgressContainer>
-//       {t("tournament:bracket.progress.match", { opponent: currentOpponent })}
-//       <LinkButton
-//         to={tournamentMatchPage({
-//           matchId: currentMatchId,
-//           eventId: parentRouteData.tournament.id,
-//         })}
-//         size="tiny"
-//         variant="outlined"
-//       >
-//         {t("tournament:bracket.progress.match.action")}
-//       </LinkButton>
-//     </TournamentProgressContainer>
-//   );
-// }
-
 function BracketCheckinButton({ bracketIdx }: { bracketIdx: number }) {
   const fetcher = useFetcher();
 
@@ -584,159 +522,162 @@ function AddSubsPopOver() {
   );
 }
 
-// function FinalStandings({ standings }: { standings: FinalStanding[] }) {
-//   const { t } = useTranslation(["tournament"]);
-//   const parentRouteData = useOutletContext<TournamentLoaderData>();
-//   const [viewAll, setViewAll] = React.useState(false);
+function FinalStandings({ standings }: { standings: Standing[] }) {
+  const tournament = useTournament();
+  const { t } = useTranslation(["tournament"]);
+  const [viewAll, setViewAll] = React.useState(false);
 
-//   if (standings.length < 2) {
-//     console.error("Unexpectedly few standings");
-//     return null;
-//   }
+  if (standings.length < 2) {
+    console.error("Unexpectedly few standings");
+    return null;
+  }
 
-//   // eslint-disable-next-line prefer-const
-//   let [first, second, third, ...rest] = standings;
+  // eslint-disable-next-line prefer-const
+  let [first, second, third, ...rest] = standings;
 
-//   const onlyTwoTeams = !third;
+  const onlyTwoTeams = !third;
 
-//   const nonTopThreePlacements = viewAll
-//     ? removeDuplicates(rest.map((s) => s.placement))
-//     : [];
+  const nonTopThreePlacements = viewAll
+    ? removeDuplicates(rest.map((s) => s.placement))
+    : [];
 
-//   return (
-//     <div className="tournament-bracket__standings">
-//       {[third, first, second].map((standing, i) => {
-//         if (onlyTwoTeams && i == 0) return <div key="placeholder" />;
-//         return (
-//           <div
-//             className="tournament-bracket__standing"
-//             key={standing.tournamentTeam.id}
-//             data-placement={standing.placement}
-//           >
-//             <div>
-//               <Placement placement={standing.placement} size={40} />
-//             </div>
-//             <Link
-//               to={tournamentTeamPage({
-//                 eventId: parentRouteData.tournament.id,
-//                 tournamentTeamId: standing.tournamentTeam.id,
-//               })}
-//               className="tournament-bracket__standing__team-name tournament-bracket__standing__team-name__big"
-//             >
-//               {standing.tournamentTeam.name}
-//             </Link>
-//             <div className="stack horizontal sm flex-wrap justify-center">
-//               {standing.players.map((player) => {
-//                 return (
-//                   <Link
-//                     to={userPage(player)}
-//                     key={player.id}
-//                     className="stack items-center text-xs"
-//                   >
-//                     <Avatar user={player} size="xxs" />
-//                   </Link>
-//                 );
-//               })}
-//             </div>
-//             <div className="stack horizontal sm flex-wrap justify-center">
-//               {standing.players.map((player) => {
-//                 return (
-//                   <div key={player.id} className="stack items-center">
-//                     {player.country ? (
-//                       <Flag countryCode={player.country} tiny />
-//                     ) : null}
-//                     <Link
-//                       to={userPage(player)}
-//                       className="stack items-center text-xs mt-auto"
-//                     >
-//                       {player.discordName}
-//                     </Link>
-//                   </div>
-//                 );
-//               })}
-//             </div>
-//           </div>
-//         );
-//       })}
-//       {nonTopThreePlacements.map((placement) => {
-//         return (
-//           <React.Fragment key={placement}>
-//             <Divider className="tournament-bracket__stadings__full-row-taker">
-//               <Placement placement={placement} />
-//             </Divider>
-//             <div className="stack xl horizontal justify-center tournament-bracket__stadings__full-row-taker">
-//               {standings
-//                 .filter((s) => s.placement === placement)
-//                 .map((standing) => {
-//                   return (
-//                     <div
-//                       className="tournament-bracket__standing"
-//                       key={standing.tournamentTeam.id}
-//                     >
-//                       <Link
-//                         to={tournamentTeamPage({
-//                           eventId: parentRouteData.tournament.id,
-//                           tournamentTeamId: standing.tournamentTeam.id,
-//                         })}
-//                         className="tournament-bracket__standing__team-name"
-//                       >
-//                         {standing.tournamentTeam.name}
-//                       </Link>
-//                       <div className="stack horizontal sm flex-wrap justify-center">
-//                         {standing.players.map((player) => {
-//                           return (
-//                             <Link
-//                               to={userPage(player)}
-//                               key={player.id}
-//                               className="stack items-center text-xs"
-//                             >
-//                               <Avatar user={player} size="xxs" />
-//                             </Link>
-//                           );
-//                         })}
-//                       </div>
-//                       <div className="stack horizontal sm flex-wrap justify-center">
-//                         {standing.players.map((player) => {
-//                           return (
-//                             <div key={player.id} className="stack items-center">
-//                               {player.country ? (
-//                                 <Flag countryCode={player.country} tiny />
-//                               ) : null}
-//                               <Link
-//                                 to={userPage(player)}
-//                                 className="stack items-center text-xs mt-auto"
-//                               >
-//                                 {player.discordName}
-//                               </Link>
-//                             </div>
-//                           );
-//                         })}
-//                       </div>
-//                     </div>
-//                   );
-//                 })}
-//             </div>
-//           </React.Fragment>
-//         );
-//       })}
-//       {rest.length > 0 ? (
-//         <>
-//           <div />
-//           <Button
-//             variant="outlined"
-//             className="tournament-bracket__standings__show-more"
-//             size="tiny"
-//             onClick={() => setViewAll((v) => !v)}
-//           >
-//             {viewAll
-//               ? t("tournament:bracket.standings.showLess")
-//               : t("tournament:bracket.standings.showMore")}
-//           </Button>
-//         </>
-//       ) : null}
-//     </div>
-//   );
-// }
+  return (
+    <div className="tournament-bracket__standings">
+      {[third, first, second].map((standing, i) => {
+        if (onlyTwoTeams && i == 0) return <div key="placeholder" />;
+        return (
+          <div
+            className="tournament-bracket__standing"
+            key={standing.team.id}
+            data-placement={standing.placement}
+          >
+            <div>
+              <Placement placement={standing.placement} size={40} />
+            </div>
+            <Link
+              to={tournamentTeamPage({
+                eventId: tournament.ctx.id,
+                tournamentTeamId: standing.team.id,
+              })}
+              className="tournament-bracket__standing__team-name tournament-bracket__standing__team-name__big"
+            >
+              {standing.team.name}
+            </Link>
+            <div className="stack horizontal sm flex-wrap justify-center">
+              {standing.team.members.map((player) => {
+                return (
+                  <Link
+                    to={userPage(player)}
+                    key={player.userId}
+                    className="stack items-center text-xs"
+                  >
+                    <Avatar user={player} size="xxs" />
+                  </Link>
+                );
+              })}
+            </div>
+            <div className="stack horizontal sm flex-wrap justify-center">
+              {standing.team.members.map((player) => {
+                return (
+                  <div key={player.userId} className="stack items-center">
+                    {player.country ? (
+                      <Flag countryCode={player.country} tiny />
+                    ) : null}
+                    <Link
+                      to={userPage(player)}
+                      className="stack items-center text-xs mt-auto"
+                    >
+                      {player.discordName}
+                    </Link>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
+      {nonTopThreePlacements.map((placement) => {
+        return (
+          <React.Fragment key={placement}>
+            <Divider className="tournament-bracket__stadings__full-row-taker">
+              <Placement placement={placement} />
+            </Divider>
+            <div className="stack xl horizontal justify-center tournament-bracket__stadings__full-row-taker">
+              {standings
+                .filter((s) => s.placement === placement)
+                .map((standing) => {
+                  return (
+                    <div
+                      className="tournament-bracket__standing"
+                      key={standing.team.id}
+                    >
+                      <Link
+                        to={tournamentTeamPage({
+                          eventId: tournament.ctx.id,
+                          tournamentTeamId: standing.team.id,
+                        })}
+                        className="tournament-bracket__standing__team-name"
+                      >
+                        {standing.team.name}
+                      </Link>
+                      <div className="stack horizontal sm flex-wrap justify-center">
+                        {standing.team.members.map((player) => {
+                          return (
+                            <Link
+                              to={userPage(player)}
+                              key={player.userId}
+                              className="stack items-center text-xs"
+                            >
+                              <Avatar user={player} size="xxs" />
+                            </Link>
+                          );
+                        })}
+                      </div>
+                      <div className="stack horizontal sm flex-wrap justify-center">
+                        {standing.team.members.map((player) => {
+                          return (
+                            <div
+                              key={player.userId}
+                              className="stack items-center"
+                            >
+                              {player.country ? (
+                                <Flag countryCode={player.country} tiny />
+                              ) : null}
+                              <Link
+                                to={userPage(player)}
+                                className="stack items-center text-xs mt-auto"
+                              >
+                                {player.discordName}
+                              </Link>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
+            </div>
+          </React.Fragment>
+        );
+      })}
+      {rest.length > 0 ? (
+        <>
+          <div />
+          <Button
+            variant="outlined"
+            className="tournament-bracket__standings__show-more"
+            size="tiny"
+            onClick={() => setViewAll((v) => !v)}
+          >
+            {viewAll
+              ? t("tournament:bracket.standings.showLess")
+              : t("tournament:bracket.standings.showMore")}
+          </Button>
+        </>
+      ) : null}
+    </div>
+  );
+}
 
 function BracketNav({
   bracketIdx,
@@ -769,35 +710,3 @@ function BracketNav({
     </div>
   );
 }
-
-// function TournamentProgressContainer({
-//   children,
-// }: {
-//   children: React.ReactNode;
-// }) {
-//   return (
-//     <div className="stack items-center mb-4">
-//       <div className="tournament-bracket__progress">{children}</div>
-//     </div>
-//   );
-// }
-
-// function WaitingForMatchText() {
-//   const { t } = useTranslation(["tournament"]);
-//   const [showDot, setShowDot] = React.useState(false);
-
-//   React.useEffect(() => {
-//     const interval = setInterval(() => {
-//       setShowDot((prev) => !prev);
-//     }, 1000);
-
-//     return () => clearInterval(interval);
-//   });
-
-//   return (
-//     <div>
-//       {t("tournament:bracket.progress.waiting")}..
-//       <span className={clsx({ invisible: !showDot })}>.</span>
-//     </div>
-//   );
-// }

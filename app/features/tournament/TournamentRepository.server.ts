@@ -139,6 +139,7 @@ export async function findByIdNew(id: number) {
                   "User.discordAvatar",
                   "User.customUrl",
                   "User.inGameName",
+                  "User.country",
                   "PlusTier.tier as plusTier",
                   "TournamentTeamMember.isOwner",
                 ])

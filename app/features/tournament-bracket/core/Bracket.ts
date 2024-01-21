@@ -59,6 +59,20 @@ export abstract class Bracket {
     throw new Error("not implemented");
   }
 
+  protected standingsWithoutNonParticipants(standings: Standing[]): Standing[] {
+    return standings.map((standing) => {
+      return {
+        ...standing,
+        team: {
+          ...standing.team,
+          members: standing.team.members.filter((member) =>
+            this.tournament.ctx.participatedUsers.includes(member.userId),
+          ),
+        },
+      };
+    });
+  }
+
   get isUnderground() {
     return this.name === BRACKET_NAMES.UNDERGROUND;
   }
@@ -206,7 +220,7 @@ class SingleEliminationBracket extends Bracket {
 
     // TODO: 3rd place match
 
-    return result.reverse();
+    return this.standingsWithoutNonParticipants(result.reverse());
   }
 }
 
@@ -325,7 +339,7 @@ class DoubleEliminationBracket extends Bracket {
       });
     }
 
-    return result.reverse();
+    return this.standingsWithoutNonParticipants(result.reverse());
   }
 
   get everyMatchOver() {
