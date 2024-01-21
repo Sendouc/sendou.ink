@@ -4,6 +4,9 @@ import { TOURNAMENT } from "~/features/tournament";
 import type { DataTypes, ValueToArray } from "~/modules/brackets-manager/types";
 import { assertUnreachable } from "~/utils/types";
 import type { OptionalIdObject, Tournament } from "./Tournament";
+import type { TournamentDataTeam } from "./Tournament.server";
+import { removeDuplicates } from "~/utils/arrays";
+import { BRACKET_NAMES } from "~/features/tournament/tournament-constants";
 
 interface CreateBracketArgs {
   id: number;
@@ -14,6 +17,11 @@ interface CreateBracketArgs {
   name: string;
   teamsPendingCheckIn?: number[];
   tournament: Tournament;
+}
+
+export interface Standing {
+  team: TournamentDataTeam;
+  placement: number; // 1st, 2nd, 3rd, 4th, 5th, 5th...
 }
 
 export abstract class Bracket {
@@ -45,6 +53,14 @@ export abstract class Bracket {
 
   get type(): TournamentBracketProgression[number]["type"] {
     throw new Error("not implemented");
+  }
+
+  get standings(): Standing[] {
+    throw new Error("not implemented");
+  }
+
+  get isUnderground() {
+    return this.name === BRACKET_NAMES.UNDERGROUND;
   }
 
   get everyMatchOver() {
@@ -129,6 +145,69 @@ class SingleEliminationBracket extends Bracket {
   get type(): TournamentBracketProgression[number]["type"] {
     return "single_elimination";
   }
+
+  get standings(): Standing[] {
+    const teams: { id: number; lostAt: number }[] = [];
+
+    for (const match of this.data.match
+      .slice()
+      .sort((a, b) => a.round_id - b.round_id)) {
+      if (
+        match.opponent1?.result !== "win" &&
+        match.opponent2?.result !== "win"
+      ) {
+        continue;
+      }
+
+      const loser =
+        match.opponent1?.result === "win" ? match.opponent2 : match.opponent1;
+      invariant(loser?.id, "Loser id not found");
+
+      teams.push({ id: loser.id, lostAt: match.round_id });
+    }
+
+    const teamCountWhoDidntLoseYet =
+      this.data.participant.length - teams.length;
+
+    const result: Standing[] = [];
+    for (const roundId of removeDuplicates(teams.map((team) => team.lostAt))) {
+      const teamsLostThisRound: { id: number }[] = [];
+      while (teams.length && teams[0].lostAt === roundId) {
+        teamsLostThisRound.push(teams.shift()!);
+      }
+
+      for (const { id: teamId } of teamsLostThisRound) {
+        const team = this.tournament.teamById(teamId);
+        invariant(team, `Team not found for id: ${teamId}`);
+
+        const teamsPlacedAbove = teamCountWhoDidntLoseYet + teams.length;
+
+        result.push({
+          team,
+          placement: teamsPlacedAbove + 1,
+        });
+      }
+    }
+
+    if (teamCountWhoDidntLoseYet === 1) {
+      const winner = this.data.participant.find((participant) =>
+        result.every(({ team }) => team.id !== participant.id),
+      );
+      invariant(winner, "No winner identified");
+
+      const winnerTeam = this.tournament.teamById(winner.id);
+      invariant(winnerTeam, `Winner team not found for id: ${winner.id}`);
+
+      result.push({
+        team: winnerTeam,
+        placement: 1,
+      });
+    }
+
+    // TODO: 3rd place match
+
+    return result.reverse();
+  }
 }
 
 class DoubleEliminationBracket extends Bracket {
@@ -138,6 +217,60 @@ class DoubleEliminationBracket extends Bracket {
 
   get type(): TournamentBracketProgression[number]["type"] {
     return "double_elimination";
+  }
+
+  get standings(): Standing[] {
+    const losersGroupId = this.data.group.find((g) => g.number === 2)?.id;
+    invariant(losersGroupId, "Losers group not found");
+
+    const teams: { id: number; lostAt: number }[] = [];
+
+    for (const match of this.data.match
+      .slice()
+      .sort((a, b) => a.round_id - b.round_id)) {
+      if (match.group_id !== losersGroupId) continue;
+
+      if (
+        match.opponent1?.result !== "win" &&
+        match.opponent2?.result !== "win"
+      ) {
+        continue;
+      }
+
+      const loser =
+        match.opponent1?.result === "win" ? match.opponent2 : match.opponent1;
+      invariant(loser?.id, "Loser id not found");
+
+      teams.push({ id: loser.id, lostAt: match.round_id });
+    }
+
+    const teamCountWhoDidntLoseInLosersYet =
+      this.data.participant.length - teams.length;
+
+    const result: Standing[] = [];
+    for (const roundId of removeDuplicates(teams.map((team) => team.lostAt))) {
+      const teamsLostThisRound: { id: number }[] = [];
+      while (teams.length && teams[0].lostAt === roundId) {
+        teamsLostThisRound.push(teams.shift()!);
+      }
+
+      for (const { id: teamId } of teamsLostThisRound) {
+        const team = this.tournament.teamById(teamId);
+        invariant(team, `Team not found for id: ${teamId}`);
+
+        const teamsPlacedAbove =
+          teamCountWhoDidntLoseInLosersYet + teams.length;
+
+        result.push({
+          team,
+          placement: teamsPlacedAbove + 1,
+        });
+      }
+    }
+
+    // xxx: finals calculation
+
+    return result.reverse();
   }
 
   get everyMatchOver() {

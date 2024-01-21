@@ -19,6 +19,13 @@ export async function tournamentData({
     await TournamentRepository.findByIdNew(tournamentId),
   );
 
+  const revealAllMapPools =
+    ctx.inProgressBrackets.length > 0 ||
+    ctx.author.id === user?.id ||
+    ctx.staff.some(
+      (staff) => staff.id === user?.id && staff.role === "ORGANIZER",
+    );
+
   return {
     data: manager.get.tournamentData(tournamentId),
     ctx: {
@@ -30,6 +37,7 @@ export async function tournamentData({
 
         return {
           ...team,
+          mapPool: revealAllMapPools || isOwnTeam ? team.mapPool : null,
           inviteCode: isOwnTeam ? team.inviteCode : null,
         };
       }),

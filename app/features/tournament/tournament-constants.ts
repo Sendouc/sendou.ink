@@ -8,3 +8,10 @@ export const TOURNAMENT = {
   AVAILABLE_BEST_OF: [3, 5, 7] as const,
   ENOUGH_TEAMS_TO_START: 2,
 } as const;
+
+export const BRACKET_NAMES = {
+  UNDERGROUND: "Underground bracket",
+  MAIN: "Main bracket",
+  GROUPS: "Group stage",
+  FINALS: "Final stage",
+};

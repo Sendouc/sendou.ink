@@ -37,7 +37,7 @@ export const handle: SendouRouteHandle = {
 
 type TeamInState = {
   id: number;
-  mapPool?: Pick<MapPoolMap, "mode" | "stageId">[];
+  mapPool?: Pick<MapPoolMap, "mode" | "stageId">[] | null;
 };
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {

@@ -17,6 +17,7 @@ import { getTournamentManager } from "..";
 import { fillWithNullTillPowerOfTwo } from "../tournament-bracket-utils";
 import type { Stage } from "~/modules/brackets-model";
 import { Bracket } from "./Bracket";
+import { BRACKET_NAMES } from "~/features/tournament/tournament-constants";
 
 export type OptionalIdObject = { id: number } | undefined;
 
@@ -49,6 +50,15 @@ export class Tournament {
       );
 
       if (inProgressStage) {
+        const match = data.match.filter(
+          (match) => match.stage_id === inProgressStage.id,
+        );
+        const participants = new Set(
+          match
+            .flatMap((match) => [match.opponent1?.id, match.opponent2?.id])
+            .filter(Boolean),
+        );
+
         this.brackets.push(
           Bracket.create({
             id: inProgressStage.id,
@@ -57,9 +67,13 @@ export class Tournament {
             name,
             data: {
               ...data,
-              match: data.match.filter(
-                (match) => match.stage_id === inProgressStage.id,
+              participant: data.participant.filter((participant) =>
+                participants.has(participant.id),
               ),
+              group: data.group.filter(
+                (group) => group.stage_id === inProgressStage.id,
+              ),
+              match,
               stage: data.stage.filter(
                 (stage) => stage.id === inProgressStage.id,
               ),
@@ -251,6 +265,31 @@ export class Tournament {
 
   teamById(id: number) {
     return this.ctx.teams.find((team) => team.id === id);
+  }
+
+  participatedPlayersByTeamId(id: number) {
+    const team = this.teamById(id);
+    invariant(team, "Team not found");
+
+    return team.members.filter((member) =>
+      this.ctx.participatedUsers.includes(member.userId),
+    );
+  }
+
+  get standings() {
+    for (const bracket of this.brackets) {
+      if (bracket.name === BRACKET_NAMES.MAIN) {
+        return bracket.standings;
+      }
+
+      // TODO: a bit more complex for RR->SE than this
+      if (bracket.name === BRACKET_NAMES.FINALS) {
+        return bracket.standings;
+      }
+    }
+
+    logger.warn("Standings not found");
+    return [];
   }
 
   // const { progress, currentMatchId, currentOpponent } = (() => {

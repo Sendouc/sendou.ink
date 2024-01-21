@@ -66,10 +66,14 @@ export async function findById(id: number) {
 }
 
 export async function findByIdNew(id: number) {
-  return db
+  const result = await db
     .selectFrom("Tournament")
     .innerJoin("CalendarEvent", "Tournament.id", "CalendarEvent.tournamentId")
-    .innerJoin("CalendarEventDate", "CalendarEvent.id", "CalendarEventDate.id")
+    .innerJoin(
+      "CalendarEventDate",
+      "CalendarEvent.id",
+      "CalendarEventDate.eventId",
+    )
     .select(({ eb, exists, selectFrom }) => [
       "Tournament.id",
       "CalendarEvent.id as eventId",
@@ -158,6 +162,16 @@ export async function findByIdNew(id: number) {
                   "TournamentTeam.id",
                 ),
             ).as("checkIns"),
+            jsonArrayFrom(
+              innerEb
+                .selectFrom("MapPoolMap")
+                .whereRef(
+                  "MapPoolMap.tournamentTeamId",
+                  "=",
+                  "TournamentTeam.id",
+                )
+                .select(["MapPoolMap.stageId", "MapPoolMap.mode"]),
+            ).as("mapPool"),
           ])
           .where("TournamentTeam.tournamentId", "=", id)
           .orderBy(["TournamentTeam.seed asc", "TournamentTeam.createdAt asc"]),
@@ -189,10 +203,39 @@ export async function findByIdNew(id: number) {
             "CalendarEvent.id",
           ),
       ).as("tieBreakerMapPool"),
+      jsonArrayFrom(
+        eb
+          .selectFrom("TournamentStage")
+          .innerJoin(
+            "TournamentMatch",
+            "TournamentMatch.stageId",
+            "TournamentStage.id",
+          )
+          .innerJoin(
+            "TournamentMatchGameResult",
+            "TournamentMatch.id",
+            "TournamentMatchGameResult.matchId",
+          )
+          .innerJoin(
+            "TournamentMatchGameResultParticipant",
+            "TournamentMatchGameResult.id",
+            "TournamentMatchGameResultParticipant.matchGameResultId",
+          )
+          .select("TournamentMatchGameResultParticipant.userId")
+          .groupBy("TournamentMatchGameResultParticipant.userId")
+          .where("TournamentStage.tournamentId", "=", id),
+      ).as("participatedUsers"),
     ])
     .where("Tournament.id", "=", id)
     .$narrowType<{ author: NotNull }>()
     .executeTakeFirst();
+
+  if (!result) return null;
+
+  return {
+    ...result,
+    participatedUsers: result.participatedUsers.map((user) => user.userId),
+  };
 }
 
 export function checkedInTournamentTeamsByBracket({

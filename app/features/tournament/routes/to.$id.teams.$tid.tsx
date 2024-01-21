@@ -7,31 +7,20 @@ import { ModeImage, StageImage } from "~/components/Image";
 import { Placement } from "~/components/Placement";
 import { Popover } from "~/components/Popover";
 import { Redirect } from "~/components/Redirect";
-import { getUserId } from "~/features/auth/core/user.server";
-import {
-  everyMatchIsOver,
-  finalStandingOfTeam,
-  findMapPoolByTeamId,
-  getTournamentManager,
-} from "~/features/tournament-bracket";
 import type { TournamentDataTeam } from "~/features/tournament-bracket/core/Tournament.server";
 import type { TournamentMaplistSource } from "~/modules/tournament-map-list-generator";
-import { isTournamentOrganizer } from "~/permissions";
-import { notFoundIfFalsy } from "~/utils/remix";
 import {
   tournamentMatchPage,
   tournamentPage,
   tournamentTeamPage,
   userPage,
 } from "~/utils/urls";
-import * as TournamentRepository from "../TournamentRepository.server";
 import { TeamWithRoster } from "../components/TeamWithRoster";
 import {
   tournamentTeamSets,
   winCounts,
   type PlayedSet,
 } from "../core/sets.server";
-import hasTournamentStarted from "../queries/hasTournamentStarted.server";
 import {
   tournamentIdFromParams,
   tournamentRoundI18nKey,
@@ -39,48 +28,20 @@ import {
 } from "../tournament-utils";
 import { useTournament } from "./to.$id";
 
-export const loader = async ({ params, request }: LoaderFunctionArgs) => {
-  const user = await getUserId(request);
+export const loader = ({ params }: LoaderFunctionArgs) => {
   const tournamentId = tournamentIdFromParams(params);
   const tournamentTeamId = tournamentTeamIdFromParams(params);
 
-  const tournament = notFoundIfFalsy(
-    await TournamentRepository.findById(tournamentId),
-  );
-
-  const manager = getTournamentManager("SQL");
-
-  const bracket = manager.get.tournamentData(tournamentId);
-  const stage = bracket.stage[0];
-
-  // xxx: handle placement when multiple stages - boolean in the format that tells which bracket is the final one?
-
-  const _everyMatchIsOver = everyMatchIsOver(bracket);
-  const standing = _everyMatchIsOver
-    ? finalStandingOfTeam({
-        manager,
-        tournamentId,
-        tournamentTeamId,
-        stageId: stage.id,
-      })
-    : null;
-
   const sets = tournamentTeamSets({ tournamentTeamId, tournamentId });
-  const revealMapPool =
-    hasTournamentStarted(tournamentId) ||
-    isTournamentOrganizer({ user, tournament });
 
   return {
     tournamentTeamId,
-    mapPool: revealMapPool ? findMapPoolByTeamId(tournamentTeamId) : null,
-    placement: standing?.placement,
     sets,
+    // TODO: could be inferred from tournament data
     winCounts: winCounts(sets),
-    playersThatPlayed: standing?.players.map((p) => p.id),
   };
 };
 
-// TODO: could cache this after tournament is finalized
 export default function TournamentTeamPage() {
   const data = useLoaderData<typeof loader>();
   const tournament = useTournament();
@@ -96,8 +57,10 @@ export default function TournamentTeamPage() {
     <div className="stack lg">
       <TeamWithRoster
         team={team}
-        mapPool={data.mapPool}
-        activePlayers={data.playersThatPlayed}
+        mapPool={team.mapPool}
+        activePlayers={tournament
+          .participatedPlayersByTeamId(team.id)
+          .map((p) => p.userId)}
       />
       {data.winCounts.sets.total > 0 ? (
         <StatSquares
@@ -123,6 +86,16 @@ function StatSquares({
 }) {
   const { t } = useTranslation(["tournament"]);
   const data = useLoaderData<typeof loader>();
+  const tournament = useTournament();
+
+  const placement = tournament.standings.find(
+    (s) => s.team.id === data.tournamentTeamId,
+  )?.placement;
+
+  const undergroundBracket = tournament.brackets.find((b) => b.isUnderground);
+  const undergroundPlacement = undergroundBracket?.standings.find(
+    (s) => s.team.id === data.tournamentTeamId,
+  )?.placement;
 
   return (
     <div className="tournament__team__stats">
@@ -165,12 +138,19 @@ function StatSquares({
           {t("tournament:team.placement")}
         </div>
         <div className="tournament__team__stat__main">
-          {data.placement ? (
-            <Placement placement={data.placement} textOnly />
-          ) : (
-            "-"
-          )}
+          {placement ? <Placement placement={placement} textOnly /> : "-"}
+          {undergroundPlacement ? (
+            <>
+              {" "}
+              / <Placement placement={undergroundPlacement} textOnly />
+            </>
+          ) : null}
         </div>
+        {undergroundPlacement ? (
+          <div className="tournament__team__stat__sub">
+            {t("tournament:team.placement.footer")}
+          </div>
+        ) : null}
       </div>
     </div>
   );
