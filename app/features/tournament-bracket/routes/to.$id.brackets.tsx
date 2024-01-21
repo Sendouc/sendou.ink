@@ -296,7 +296,7 @@ export default function TournamentBracketsPage() {
     if (visibility !== "visible" || tournament.everyBracketOver) return;
 
     revalidate();
-  }, [visibility, revalidate, tournament]);
+  }, [visibility, revalidate, tournament.everyBracketOver]);
 
   const showAddSubsButton =
     !tournament.everyBracketOver &&
