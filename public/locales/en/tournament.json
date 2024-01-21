@@ -112,6 +112,7 @@
   "bracket.finalize.text": "When everything looks good, finalize the bracket to start the tournament",
   "bracket.finalize.action": "Finalize",
   "bracket.beforeStart": "Bracket can't be started yet as it is before the start time",
+  "bracket.waitingForResults": "Bracket can't be started yet as it is waiting for results of the previous bracket",
 
   "bracket.progress.thanksForPlaying": "Thanks for playing in {{eventName}}!",
   "bracket.progress.match": "Current opponent: {{opponent}}",

@@ -6,6 +6,7 @@ import {
   safeJSONParse,
 } from "~/utils/zod";
 import { TOURNAMENT } from "./tournament-constants";
+import { bracketIdx } from "../tournament-bracket/tournament-bracket-schemas.server";
 
 export const registerSchema = z.union([
   z.object({
@@ -50,10 +51,12 @@ export const adminActionSchema = z.union([
   z.object({
     _action: _action("CHECK_IN"),
     teamId: id,
+    bracketIdx,
   }),
   z.object({
     _action: _action("CHECK_OUT"),
     teamId: id,
+    bracketIdx,
   }),
   z.object({
     _action: _action("ADD_MEMBER"),

@@ -173,7 +173,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 
       validate(bracket.canCheckIn(user));
 
-      await TournamentRepository.checkInToBracket({
+      await TournamentRepository.checkIn({
         bracketIdx: data.bracketIdx,
         tournamentTeamId: ownTeam.id,
       });
@@ -370,7 +370,9 @@ export default function TournamentBracketsPage() {
                   }
                   triggerClassName="tiny outlined"
                 >
-                  {t("tournament:bracket.beforeStart")}
+                  {bracketIdx === 0
+                    ? t("tournament:bracket.beforeStart")
+                    : t("tournament:bracket.waitingForResults")}
                 </Popover>
               )}
             </Alert>
@@ -385,7 +387,9 @@ export default function TournamentBracketsPage() {
         />
       ) : null} */}
       <div className="stack horizontal sm justify-end">
-        {bracket.canCheckIn(user) ? <BracketCheckinButton /> : null}
+        {bracket.canCheckIn(user) ? (
+          <BracketCheckinButton bracketIdx={bracketIdx} />
+        ) : null}
         {showAddSubsButton ? (
           // TODO: could also hide this when tournament is not in the any bracket anymore
           <AddSubsPopOver />
@@ -517,11 +521,12 @@ function useAutoRefresh() {
 //   );
 // }
 
-function BracketCheckinButton() {
+function BracketCheckinButton({ bracketIdx }: { bracketIdx: number }) {
   const fetcher = useFetcher();
 
   return (
     <fetcher.Form method="post">
+      <input type="hidden" name="bracketIdx" value={bracketIdx} />
       <SubmitButton
         size="tiny"
         _action="BRACKET_CHECK_IN"

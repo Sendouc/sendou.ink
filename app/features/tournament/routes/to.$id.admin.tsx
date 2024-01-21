@@ -29,8 +29,6 @@ import {
 } from "~/utils/urls";
 import * as TournamentRepository from "../TournamentRepository.server";
 import { changeTeamOwner } from "../queries/changeTeamOwner.server";
-import { checkIn } from "../queries/checkIn.server";
-import { checkOut } from "../queries/checkOut.server";
 import { createTeam } from "../queries/createTeam.server";
 import { deleteTeam } from "../queries/deleteTeam.server";
 import { joinTeam, leaveTeam } from "../queries/joinLeaveTeam.server";
@@ -49,7 +47,6 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   const tournamentId = tournamentIdFromParams(params);
   const tournament = await tournamentFromDB({ tournamentId, user });
-  const teams = tournament.ctx.teams;
 
   const validateIsTournamentAdmin = () =>
     validate(tournament.isAdmin(user), "Unauthorized", 401);
@@ -60,11 +57,11 @@ export const action: ActionFunction = async ({ request, params }) => {
     case "ADD_TEAM": {
       validateIsTournamentOrganizer();
       validate(
-        teams.every((t) => t.name !== data.teamName),
+        tournament.ctx.teams.every((t) => t.name !== data.teamName),
         "Team name taken",
       );
       validate(
-        teams.every((t) => t.members.every((m) => m.userId !== data.userId)),
+        !tournament.teamMemberOfByUser({ id: data.userId }),
         "User already on a team",
       );
 
@@ -87,7 +84,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     }
     case "CHANGE_TEAM_OWNER": {
       validateIsTournamentOrganizer();
-      const team = teams.find((t) => t.id === data.teamId);
+      const team = tournament.teamById(data.teamId);
       validate(team, "Invalid team id");
       const oldCaptain = team.members.find((m) => m.isOwner);
       invariant(oldCaptain, "Team has no captain");
@@ -104,31 +101,51 @@ export const action: ActionFunction = async ({ request, params }) => {
     }
     case "CHECK_IN": {
       validateIsTournamentOrganizer();
-      const team = teams.find((t) => t.id === data.teamId);
+      const team = tournament.teamById(data.teamId);
       validate(team, "Invalid team id");
       validate(
-        tournament.checkInConditionsFulfilled({
-          tournamentTeamId: team.id,
-          mapPool: findMapPoolByTeamId(team.id),
-        }),
+        data.bracketIdx !== 0 ||
+          tournament.checkInConditionsFulfilled({
+            tournamentTeamId: team.id,
+            mapPool: findMapPoolByTeamId(team.id),
+          }),
         "Can't check-in",
       );
 
-      checkIn(team.id);
+      const bracket = tournament.bracketByIdx(data.bracketIdx);
+      invariant(bracket, "Invalid bracket idx");
+      validate(bracket.preview, "Bracket has been started");
+
+      await TournamentRepository.checkIn({
+        tournamentTeamId: data.teamId,
+        // 0 = regular check in
+        bracketIdx: data.bracketIdx === 0 ? null : data.bracketIdx,
+      });
       break;
     }
     case "CHECK_OUT": {
       validateIsTournamentOrganizer();
-      const team = teams.find((t) => t.id === data.teamId);
+      const team = tournament.teamById(data.teamId);
       validate(team, "Invalid team id");
-      validate(!tournament.hasStarted, "Tournament has started");
+      validate(
+        data.bracketIdx !== 0 || !tournament.hasStarted,
+        "Tournament has started",
+      );
 
-      checkOut(team.id);
+      const bracket = tournament.bracketByIdx(data.bracketIdx);
+      invariant(bracket, "Invalid bracket idx");
+      validate(bracket.preview, "Bracket has been started");
+
+      await TournamentRepository.checkOut({
+        tournamentTeamId: data.teamId,
+        // 0 = regular check in
+        bracketIdx: data.bracketIdx === 0 ? null : data.bracketIdx,
+      });
       break;
     }
     case "REMOVE_MEMBER": {
       validateIsTournamentOrganizer();
-      const team = teams.find((t) => t.id === data.teamId);
+      const team = tournament.teamById(data.teamId);
       validate(team, "Invalid team id");
       validate(team.checkIns.length === 0, "Team is checked in");
       validate(
@@ -147,12 +164,10 @@ export const action: ActionFunction = async ({ request, params }) => {
     // to add members from a checked in team
     case "ADD_MEMBER": {
       validateIsTournamentOrganizer();
-      const team = teams.find((t) => t.id === data.teamId);
+      const team = tournament.teamById(data.teamId);
       validate(team, "Invalid team id");
 
-      const previousTeam = teams.find((t) =>
-        t.members.some((m) => m.userId === data.userId),
-      );
+      const previousTeam = tournament.teamMemberOfByUser({ id: data.userId });
 
       if (tournament.hasStarted) {
         validate(
@@ -175,7 +190,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     }
     case "DELETE_TEAM": {
       validateIsTournamentOrganizer();
-      const team = teams.find((t) => t.id === data.teamId);
+      const team = tournament.teamById(data.teamId);
       validate(team, "Invalid team id");
       validate(!tournament.hasStarted, "Tournament has started");
 
@@ -215,7 +230,6 @@ export const action: ActionFunction = async ({ request, params }) => {
   return null;
 };
 
-// xxx: check in action for specific bracket
 // xxx: download participants of certain bracket (not checked in probably most relevant)
 // TODO: translations
 export default function TournamentAdminPage() {
@@ -276,7 +290,12 @@ export default function TournamentAdminPage() {
   );
 }
 
-type Input = "TEAM_NAME" | "REGISTERED_TEAM" | "USER" | "ROSTER_MEMBER";
+type Input =
+  | "TEAM_NAME"
+  | "REGISTERED_TEAM"
+  | "USER"
+  | "ROSTER_MEMBER"
+  | "BRACKET";
 const actions = [
   {
     type: "ADD_TEAM",
@@ -290,13 +309,13 @@ const actions = [
   },
   {
     type: "CHECK_IN",
-    inputs: ["REGISTERED_TEAM"] as Input[],
-    when: ["CHECK_IN_STARTED", "TOURNAMENT_BEFORE_START"],
+    inputs: ["REGISTERED_TEAM", "BRACKET"] as Input[],
+    when: ["CHECK_IN_STARTED"],
   },
   {
     type: "CHECK_OUT",
-    inputs: ["REGISTERED_TEAM"] as Input[],
-    when: ["CHECK_IN_STARTED", "TOURNAMENT_BEFORE_START"],
+    inputs: ["REGISTERED_TEAM", "BRACKET"] as Input[],
+    when: ["CHECK_IN_STARTED"],
   },
   {
     type: "ADD_MEMBER",
@@ -332,10 +351,7 @@ function TeamActions() {
     for (const when of action.when) {
       switch (when) {
         case "CHECK_IN_STARTED": {
-          if (
-            tournament.regularCheckInIsOpen ||
-            tournament.regularCheckInHasEnded
-          ) {
+          if (!tournament.regularCheckInStartInThePast) {
             return false;
           }
 
@@ -420,6 +436,18 @@ function TeamActions() {
         <div>
           <label htmlFor="user">User</label>
           <UserSearch inputName="userId" id="user" />
+        </div>
+      ) : null}
+      {selectedAction.inputs.includes("BRACKET") ? (
+        <div>
+          <label htmlFor="bracket">Bracket</label>
+          <select id="bracket" name="bracketIdx">
+            {tournament.brackets.map((bracket, bracketIdx) => (
+              <option key={bracket.name} value={bracketIdx}>
+                {bracket.name}
+              </option>
+            ))}
+          </select>
         </div>
       ) : null}
       <SubmitButton

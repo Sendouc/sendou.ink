@@ -215,12 +215,12 @@ export function checkedInTournamentTeamsByBracket({
     .execute();
 }
 
-export function checkInToBracket({
+export function checkIn({
   tournamentTeamId,
   bracketIdx,
 }: {
   tournamentTeamId: number;
-  bracketIdx: number;
+  bracketIdx: number | null;
 }) {
   return db
     .insertInto("TournamentTeamCheckIn")
@@ -230,6 +230,24 @@ export function checkInToBracket({
       bracketIdx,
     })
     .execute();
+}
+
+export function checkOut({
+  tournamentTeamId,
+  bracketIdx,
+}: {
+  tournamentTeamId: number;
+  bracketIdx: number | null;
+}) {
+  let query = db
+    .deleteFrom("TournamentTeamCheckIn")
+    .where("TournamentTeamCheckIn.tournamentTeamId", "=", tournamentTeamId);
+
+  if (typeof bracketIdx === "number") {
+    query = query.where("TournamentTeamCheckIn.bracketIdx", "=", bracketIdx);
+  }
+
+  return query.execute();
 }
 
 export function addStaff({

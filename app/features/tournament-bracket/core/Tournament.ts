@@ -22,13 +22,10 @@ export type OptionalIdObject = { id: number } | undefined;
 
 /** Extends and providers utility functions on top of the bracket-manager library. Updating data after the bracket has started is responsibility of bracket-manager. */
 export class Tournament {
-  private data: ValueToArray<DataTypes>;
-  private brackets: Bracket[] = [];
+  brackets: Bracket[] = [];
   ctx;
 
   constructor({ data, ctx }: TournamentData) {
-    this.data = data;
-
     const hasStarted = ctx.inProgressBrackets.length > 0;
     this.ctx = {
       ...ctx,
@@ -39,10 +36,10 @@ export class Tournament {
       startTime: databaseTimestampToDate(ctx.startTime),
     };
 
-    this.initBrackets();
+    this.initBrackets(data);
   }
 
-  private initBrackets() {
+  private initBrackets(data: ValueToArray<DataTypes>) {
     for (const [
       bracketIdx,
       { type, name, sources },
@@ -59,14 +56,14 @@ export class Tournament {
             preview: false,
             name,
             data: {
-              ...this.data,
-              match: this.data.match.filter(
+              ...data,
+              match: data.match.filter(
                 (match) => match.stage_id === inProgressStage.id,
               ),
-              stage: this.data.stage.filter(
+              stage: data.stage.filter(
                 (stage) => stage.id === inProgressStage.id,
               ),
-              round: this.data.round.filter(
+              round: data.round.filter(
                 (round) => round.stage_id === inProgressStage.id,
               ),
             },

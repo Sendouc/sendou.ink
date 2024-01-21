@@ -32,7 +32,7 @@ export const matchSchema = z.union([
   }),
 ]);
 
-const bracketIdx = z.coerce.number().int().min(0).max(2);
+export const bracketIdx = z.coerce.number().int().min(0).max(2);
 
 export const bracketSchema = z.union([
   z.object({
@@ -47,7 +47,3 @@ export const bracketSchema = z.union([
     bracketIdx,
   }),
 ]);
-
-export const bracketSearchParamsSchema = z.object({
-  idx: bracketIdx,
-});
