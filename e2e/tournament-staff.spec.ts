@@ -86,7 +86,7 @@ test.describe("Tournament staff", () => {
 
     await navigate({
       page,
-      url: tournamentBracketsPage(TOURNAMENT_ID),
+      url: tournamentBracketsPage({ tournamentId: TOURNAMENT_ID }),
     });
 
     await expect(page.getByTestId("finalize-bracket-button")).toBeVisible();

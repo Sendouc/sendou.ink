@@ -385,7 +385,10 @@ export default function TournamentMatchPage() {
         {/* TODO: better title */}
         <h2 className="text-lighter text-lg">Match #{data.match.id}</h2>
         <LinkButton
-          to={tournamentBracketsPage(tournament.ctx.id)}
+          to={tournamentBracketsPage({
+            tournamentId: tournament.ctx.id,
+            bracketIdx: tournament.matchIdToBracketIdx(data.match.id),
+          })}
           variant="outlined"
           size="tiny"
           className="w-max"

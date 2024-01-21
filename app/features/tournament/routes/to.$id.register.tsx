@@ -224,7 +224,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const hasStarted = hasTournamentStarted(eventId);
 
   if (hasStarted) {
-    throw redirect(tournamentBracketsPage(eventId));
+    throw redirect(tournamentBracketsPage({ tournamentId: eventId }));
   }
 
   const user = await getUser(request);

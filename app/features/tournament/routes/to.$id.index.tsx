@@ -10,5 +10,5 @@ export const loader = ({ params }: LoaderFunctionArgs) => {
     throw redirect(tournamentRegisterPage(eventId));
   }
 
-  throw redirect(tournamentBracketsPage(eventId));
+  throw redirect(tournamentBracketsPage({ tournamentId: eventId }));
 };

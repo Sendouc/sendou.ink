@@ -94,7 +94,11 @@ export function UserResultsTable({
                   </Link>
                 ) : null}
                 {result.tournamentId ? (
-                  <Link to={tournamentBracketsPage(result.tournamentId)}>
+                  <Link
+                    to={tournamentBracketsPage({
+                      tournamentId: result.tournamentId,
+                    })}
+                  >
                     {result.eventName}
                   </Link>
                 ) : null}

@@ -276,6 +276,16 @@ export class Tournament {
     );
   }
 
+  matchIdToBracketIdx(matchId: number) {
+    const idx = this.brackets.findIndex((bracket) =>
+      bracket.data.match.some((match) => match.id === matchId),
+    );
+
+    if (idx === -1) return null;
+
+    return idx;
+  }
+
   get standings() {
     for (const bracket of this.brackets) {
       if (bracket.name === BRACKET_NAMES.MAIN) {

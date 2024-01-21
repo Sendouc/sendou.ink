@@ -93,7 +93,7 @@ test.describe("Tournament", () => {
 
     await navigate({
       page,
-      url: tournamentBracketsPage(1),
+      url: tournamentBracketsPage({ tournamentId: 1 }),
     });
 
     await isNotVisible(page.getByText("Chimera"));

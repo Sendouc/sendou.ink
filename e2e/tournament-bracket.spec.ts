@@ -79,7 +79,7 @@ test.describe("Tournament bracket", () => {
     await impersonate(page, NZAP_TEST_ID);
     await navigate({
       page,
-      url: tournamentBracketsPage(tournamentId),
+      url: tournamentBracketsPage({ tournamentId }),
     });
 
     // 1)
@@ -91,7 +91,7 @@ test.describe("Tournament bracket", () => {
     await impersonate(page);
     await navigate({
       page,
-      url: tournamentBracketsPage(tournamentId),
+      url: tournamentBracketsPage({ tournamentId }),
     });
     await page.locator('[data-match-id="6"]').click();
     await reportResult(page, 2);
@@ -123,7 +123,7 @@ test.describe("Tournament bracket", () => {
     await impersonate(page, NZAP_TEST_ID);
     await navigate({
       page,
-      url: tournamentBracketsPage(tournamentId),
+      url: tournamentBracketsPage({ tournamentId }),
     });
     await page.locator('[data-match-id="5"]').click();
     await page.getByTestId("undo-score-button").click();
@@ -145,7 +145,7 @@ test.describe("Tournament bracket", () => {
     await impersonate(page, 5);
     await navigate({
       page,
-      url: tournamentBracketsPage(tournamentId),
+      url: tournamentBracketsPage({ tournamentId }),
     });
 
     await page.getByTestId("add-sub-button").click();
@@ -191,7 +191,7 @@ test.describe("Tournament bracket", () => {
 
     await navigate({
       page,
-      url: tournamentBracketsPage(tournamentId),
+      url: tournamentBracketsPage({ tournamentId }),
     });
 
     await page.getByTestId("finalize-bracket-button").click();

@@ -71,7 +71,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   );
 
   if (!isTournamentOrganizer({ user, tournament }) || hasStarted) {
-    throw redirect(tournamentBracketsPage(tournamentId));
+    throw redirect(tournamentBracketsPage({ tournamentId }));
   }
 
   const powers = async () => {
