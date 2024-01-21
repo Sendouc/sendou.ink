@@ -18,13 +18,9 @@ import { useUser } from "~/features/auth/core";
 import { requireUserId } from "~/features/auth/core/user.server";
 import type { TournamentData } from "~/features/tournament-bracket/core/Tournament.server";
 import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.server";
-import {
-  isAdmin,
-  isTournamentAdmin,
-  isTournamentOrganizer,
-} from "~/permissions";
+import { isAdmin } from "~/permissions";
 import { databaseTimestampToDate } from "~/utils/dates";
-import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
+import { parseRequestFormData, validate } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
 import {
   calendarEditPage,
@@ -37,8 +33,6 @@ import { checkIn } from "../queries/checkIn.server";
 import { checkOut } from "../queries/checkOut.server";
 import { createTeam } from "../queries/createTeam.server";
 import { deleteTeam } from "../queries/deleteTeam.server";
-import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
-import hasTournamentStarted from "../queries/hasTournamentStarted.server";
 import { joinTeam, leaveTeam } from "../queries/joinLeaveTeam.server";
 import { updateShowMapListGenerator } from "../queries/updateShowMapListGenerator.server";
 import { adminActionSchema } from "../tournament-schemas.server";
@@ -54,17 +48,13 @@ export const action: ActionFunction = async ({ request, params }) => {
   });
 
   const tournamentId = tournamentIdFromParams(params);
-  const tournamentNew = await tournamentFromDB({ tournamentId, user });
-  // xxx: remove
-  const tournament = notFoundIfFalsy(
-    await TournamentRepository.findById(tournamentId),
-  );
-  const teams = findTeamsByTournamentId(tournament.id);
+  const tournament = await tournamentFromDB({ tournamentId, user });
+  const teams = tournament.ctx.teams;
 
   const validateIsTournamentAdmin = () =>
-    validate(isTournamentAdmin({ user, tournament }), "Unauthorized", 401);
+    validate(tournament.isAdmin(user), "Unauthorized", 401);
   const validateIsTournamentOrganizer = () =>
-    validate(isTournamentOrganizer({ user, tournament }), "Unauthorized", 401);
+    validate(tournament.isOrganizer(user), "Unauthorized", 401);
 
   switch (data._action) {
     case "ADD_TEAM": {
@@ -90,7 +80,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     case "UPDATE_SHOW_MAP_LIST_GENERATOR": {
       validateIsTournamentAdmin();
       updateShowMapListGenerator({
-        tournamentId: tournament.id,
+        tournamentId: tournament.ctx.id,
         showMapListGenerator: Number(data.show),
       });
       break;
@@ -117,7 +107,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       const team = teams.find((t) => t.id === data.teamId);
       validate(team, "Invalid team id");
       validate(
-        tournamentNew.checkInConditionsFulfilled({
+        tournament.checkInConditionsFulfilled({
           tournamentTeamId: team.id,
           mapPool: findMapPoolByTeamId(team.id),
         }),
@@ -131,7 +121,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       validateIsTournamentOrganizer();
       const team = teams.find((t) => t.id === data.teamId);
       validate(team, "Invalid team id");
-      validate(!hasTournamentStarted(tournament.id), "Tournament has started");
+      validate(!tournament.hasStarted, "Tournament has started");
 
       checkOut(team.id);
       break;
@@ -140,7 +130,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       validateIsTournamentOrganizer();
       const team = teams.find((t) => t.id === data.teamId);
       validate(team, "Invalid team id");
-      validate(!team.checkedInAt, "Team is checked in");
+      validate(team.checkIns.length === 0, "Team is checked in");
       validate(
         !team.members.find((m) => m.userId === data.memberId)?.isOwner,
 
@@ -164,9 +154,9 @@ export const action: ActionFunction = async ({ request, params }) => {
         t.members.some((m) => m.userId === data.userId),
       );
 
-      if (hasTournamentStarted(tournament.id)) {
+      if (tournament.hasStarted) {
         validate(
-          !previousTeam || !previousTeam.checkedInAt,
+          !previousTeam || previousTeam.checkIns.length === 0,
           "User is already on a checked in team",
         );
       } else {
@@ -187,7 +177,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       validateIsTournamentOrganizer();
       const team = teams.find((t) => t.id === data.teamId);
       validate(team, "Invalid team id");
-      validate(!hasTournamentStarted(tournament.id), "Tournament has started");
+      validate(!tournament.hasStarted, "Tournament has started");
 
       deleteTeam(team.id);
       break;
@@ -196,7 +186,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       validateIsTournamentAdmin();
       await TournamentRepository.addStaff({
         role: data.role,
-        tournamentId: tournament.id,
+        tournamentId: tournament.ctx.id,
         userId: data.userId,
       });
       break;
@@ -204,7 +194,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     case "REMOVE_STAFF": {
       validateIsTournamentAdmin();
       await TournamentRepository.removeStaff({
-        tournamentId: tournament.id,
+        tournamentId: tournament.ctx.id,
         userId: data.userId,
       });
       break;
@@ -212,7 +202,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     case "UPDATE_CAST_TWITCH_ACCOUNTS": {
       validateIsTournamentOrganizer();
       await TournamentRepository.updateCastTwitchAccounts({
-        tournamentId: tournament.id,
+        tournamentId: tournament.ctx.id,
         castTwitchAccounts: data.castTwitchAccounts,
       });
       break;
