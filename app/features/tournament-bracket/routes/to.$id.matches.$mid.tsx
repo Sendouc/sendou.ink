@@ -212,6 +212,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 
       break;
     }
+    // xxx: can't reopen grand finals bracket reset?
     // TODO: bug where you can reopen losers finals after winners finals
     case "REOPEN_MATCH": {
       const scoreOne = match.opponentOne?.score ?? 0;
@@ -285,7 +286,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 
 export type TournamentMatchLoaderData = typeof loader;
 
-// xxx: back button not considering bracketIdx
+// TODO: could probably slim down this loader a lot with useTournament
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const user = await getUserId(request);
   const tournamentId = tournamentIdFromParams(params);

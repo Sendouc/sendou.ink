@@ -268,7 +268,62 @@ class DoubleEliminationBracket extends Bracket {
       }
     }
 
-    // xxx: finals calculation
+    const grandFinalsGroupId = this.data.group.find((g) => g.number === 3)?.id;
+    invariant(grandFinalsGroupId, "GF group not found");
+    const grandFinalMatches = this.data.match.filter(
+      (match) => match.group_id === grandFinalsGroupId,
+    );
+    invariant(grandFinalMatches.length === 2, "GF matches incorrect amount");
+
+    // if opponent1 won it means that bracket reset is not played
+    if (grandFinalMatches[0].opponent1?.result === "win") {
+      const loserTeam = this.tournament.teamById(
+        grandFinalMatches[0].opponent2!.id!,
+      );
+      invariant(loserTeam, "Loser team not found");
+      const winnerTeam = this.tournament.teamById(
+        grandFinalMatches[0].opponent1.id!,
+      );
+      invariant(winnerTeam, "Winner team not found");
+
+      result.push({
+        team: loserTeam,
+        placement: 2,
+      });
+
+      result.push({
+        team: winnerTeam,
+        placement: 1,
+      });
+    } else if (
+      grandFinalMatches[1].opponent1?.result === "win" ||
+      grandFinalMatches[1].opponent2?.result === "win"
+    ) {
+      const loser =
+        grandFinalMatches[1].opponent1?.result === "win"
+          ? "opponent2"
+          : "opponent1";
+      const winner = loser === "opponent1" ? "opponent2" : "opponent1";
+
+      const loserTeam = this.tournament.teamById(
+        grandFinalMatches[1][loser]!.id!,
+      );
+      invariant(loserTeam, "Loser team not found");
+      const winnerTeam = this.tournament.teamById(
+        grandFinalMatches[1][winner]!.id!,
+      );
+      invariant(winnerTeam, "Winner team not found");
+
+      result.push({
+        team: loserTeam,
+        placement: 2,
+      });
+
+      result.push({
+        team: winnerTeam,
+        placement: 1,
+      });
+    }
 
     return result.reverse();
   }
