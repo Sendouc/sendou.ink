@@ -103,6 +103,15 @@ export default function TournamentLayout() {
     [data],
   );
 
+  // this is nice to debug with tournament in browser console
+  if (process.env.NODE_ENV === "development") {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    React.useEffect(() => {
+      // @ts-expect-error for dev purposes
+      window.tourney = tournament;
+    }, [tournament]);
+  }
+
   const onBracketsPage = location.pathname.includes("brackets");
 
   return (
