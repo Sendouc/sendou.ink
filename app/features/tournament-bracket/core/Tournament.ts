@@ -153,10 +153,8 @@ export class Tournament {
         invariant(team, "Team not found");
 
         const usesRegularCheckIn = bracketIdx === 0;
-        const regularCheckInHasBeenPossible =
-          this.regularCheckInIsOpen || this.regularCheckInHasEnded;
         if (usesRegularCheckIn) {
-          if (team.checkIns.length > 0 || !regularCheckInHasBeenPossible) {
+          if (team.checkIns.length > 0 || !this.regularCheckInStartInThePast) {
             acc.checkedInTeams.push(cur);
           } else {
             acc.notCheckedInTeams.push(cur);
@@ -385,6 +383,10 @@ export class Tournament {
 
   get regularCheckInHasEnded() {
     return this.ctx.startTime < new Date();
+  }
+
+  get regularCheckInStartInThePast() {
+    return this.regularCheckInStartsAt < new Date();
   }
 
   get regularCheckInStartsAt() {

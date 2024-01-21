@@ -303,6 +303,18 @@ export default function TournamentBracketsPage() {
     tournament.ownedTeamByUser(user) &&
     tournament.hasStarted;
 
+  const waitingForTeamsText = () => {
+    if (bracketIdx > 0 || tournament.regularCheckInStartInThePast) {
+      return t("tournament:bracket.waiting.checkin", {
+        count: TOURNAMENT.ENOUGH_TEAMS_TO_START,
+      });
+    }
+
+    return t("tournament:bracket.waiting", {
+      count: TOURNAMENT.ENOUGH_TEAMS_TO_START,
+    });
+  };
+
   return (
     <div>
       {visibility !== "hidden" && !tournament.everyBracketOver ? (
@@ -384,12 +396,9 @@ export default function TournamentBracketsPage() {
       ) : null} */}
       <BracketNav bracketIdx={bracketIdx} setBracketIdx={setBracketIdx} />
       <div className="brackets-viewer" ref={ref} />
-      {/* xxx: different text for underground etc. bracket */}
       {!bracket.enoughTeams ? (
         <div className="text-center text-lg font-semi-bold text-lighter mt-6">
-          {t("tournament:bracket.waiting", {
-            count: TOURNAMENT.ENOUGH_TEAMS_TO_START,
-          })}
+          {waitingForTeamsText()}
         </div>
       ) : null}
     </div>

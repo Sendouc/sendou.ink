@@ -107,6 +107,7 @@
   "team.placement": "Placement",
 
   "bracket.waiting": "Bracket will be shown here when at least {{count}} teams have registered",
+  "bracket.waiting.checkin": "Bracket will be shown here when at least {{count}} teams have checked in",
   "bracket.wip": "This bracket is a preview and subject to change",
   "bracket.finalize.text": "When everything looks good, finalize the bracket to start the tournament",
   "bracket.finalize.action": "Finalize",
