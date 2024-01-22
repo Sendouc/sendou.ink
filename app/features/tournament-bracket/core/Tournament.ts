@@ -100,13 +100,15 @@ export class Tournament {
           });
 
         if (checkedInTeams.length >= TOURNAMENT.ENOUGH_TEAMS_TO_START) {
+          const seeding = checkedInTeams.map((team) => team.name);
           manager.create({
             tournamentId: this.ctx.id,
             name,
             type,
-            seeding: fillWithNullTillPowerOfTwo(
-              checkedInTeams.map((team) => team.name),
-            ),
+            seeding:
+              type === "round_robin"
+                ? seeding
+                : fillWithNullTillPowerOfTwo(seeding),
             settings: this.bracketSettings(type),
           });
         }
@@ -199,12 +201,11 @@ export class Tournament {
         return {
           grandFinal: "double",
         };
-      // xxx: https://github.com/Drarig29/brackets-manager.js/issues/187
-      // xxx: when 5 teams & 1 group creates too many rounds
       case "round_robin":
         return {
-          // xxx: change to targetGroupSize in the lib
+          // xxx: resolve from settings
           groupCount: 2,
+          seedOrdering: ["groups.seed_optimized"],
         };
       default: {
         assertUnreachable(type);

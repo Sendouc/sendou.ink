@@ -734,7 +734,6 @@ export class Create {
   /**
    * Gets the duels in groups for a round-robin stage.
    */
-  // xxx: change?
   private getRoundRobinGroups(): ParticipantSlot[][] {
     if (
       this.stage.settings?.groupCount === undefined ||

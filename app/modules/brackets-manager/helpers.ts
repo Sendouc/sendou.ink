@@ -96,7 +96,6 @@ export function makeRoundRobinMatches<T>(
  *
  * @param participants The participants to distribute.
  */
-// xxx: change?
 export function makeRoundRobinDistribution<T>(participants: T[]): [T, T][][] {
   const n = participants.length;
   const n1 = n % 2 === 0 ? n : n + 1;
