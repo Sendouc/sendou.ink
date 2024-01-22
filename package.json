@@ -31,6 +31,7 @@
     "unban-user": "node --experimental-specifier-resolution=node -r @swc-node/register -r tsconfig-paths/register scripts/unban-user.ts",
     "delete-skill": "node --experimental-specifier-resolution=node -r @swc-node/register -r tsconfig-paths/register scripts/delete-skill.ts",
     "skip-plus": "node --experimental-specifier-resolution=node -r @swc-node/register -r tsconfig-paths/register scripts/skip-plus.ts",
+    "unskip-plus": "node --experimental-specifier-resolution=node -r @swc-node/register -r tsconfig-paths/register scripts/unskip-plus.ts",
     "season-initial-powers": "node --experimental-specifier-resolution=node -r @swc-node/register -r tsconfig-paths/register scripts/season-initial-powers.ts",
     "map-popularity": "node --experimental-specifier-resolution=node -r @swc-node/register -r tsconfig-paths/register scripts/map-popularity.ts",
     "map-popularity-q": "node --experimental-specifier-resolution=node -r @swc-node/register -r tsconfig-paths/register scripts/map-popularity-q.ts",
