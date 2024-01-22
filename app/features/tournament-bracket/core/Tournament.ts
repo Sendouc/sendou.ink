@@ -199,10 +199,12 @@ export class Tournament {
         return {
           grandFinal: "double",
         };
-      // xxx: resolve from TO setting
+      // xxx: https://github.com/Drarig29/brackets-manager.js/issues/187
+      // xxx: when 5 teams & 1 group creates too many rounds
       case "round_robin":
         return {
-          groupCount: 4,
+          // xxx: change to targetGroupSize in the lib
+          groupCount: 2,
         };
       default: {
         assertUnreachable(type);
