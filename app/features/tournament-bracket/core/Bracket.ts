@@ -7,6 +7,7 @@ import type { OptionalIdObject, Tournament } from "./Tournament";
 import type { TournamentDataTeam } from "./Tournament.server";
 import { removeDuplicates } from "~/utils/arrays";
 import { BRACKET_NAMES } from "~/features/tournament/tournament-constants";
+import { logger } from "~/utils/logger";
 
 interface CreateBracketArgs {
   id: number;
@@ -437,6 +438,15 @@ class DoubleEliminationBracket extends Bracket {
 class RoundRobinBracket extends Bracket {
   constructor(args: CreateBracketArgs) {
     super(args);
+  }
+
+  source(_placements: number[]): {
+    relevantMatchesFinished: boolean;
+    teams: { id: number; name: string }[];
+  } {
+    logger.warn("RoundRobinBracket.source not implemented");
+
+    return { relevantMatchesFinished: false, teams: [] };
   }
 
   get type(): TournamentBracketProgression[number]["type"] {
