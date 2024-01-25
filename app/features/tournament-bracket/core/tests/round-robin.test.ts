@@ -2,10 +2,21 @@ import { suite } from "uvu";
 import { FIVE_TEAMS_RR, FOUR_TEAMS_RR } from "./mocks";
 import { adjustResults, testTournament } from "./test-utils";
 import * as assert from "uvu/assert";
+import { BRACKET_NAMES } from "~/features/tournament/tournament-constants";
+import type { TournamentData } from "../Tournament.server";
 
 const RoundRobinStandings = suite("Round Robin Standings");
 
-RoundRobinStandings.skip("resolves standings from points", () => {
+const roundRobinTournamentCtx: Partial<TournamentData["ctx"]> = {
+  settings: {
+    bracketProgression: [{ name: BRACKET_NAMES.GROUPS, type: "round_robin" }],
+  },
+  inProgressBrackets: [
+    { id: 0, type: "round_robin", name: BRACKET_NAMES.GROUPS },
+  ],
+};
+
+RoundRobinStandings("resolves standings from points", () => {
   const tournament = testTournament(
     adjustResults(FOUR_TEAMS_RR(), [
       { ids: [0, 3], score: [2, 0] },
@@ -15,9 +26,10 @@ RoundRobinStandings.skip("resolves standings from points", () => {
       { ids: [2, 3], score: [2, 0] },
       { ids: [1, 0], score: [0, 2] },
     ]),
+    roundRobinTournamentCtx,
   );
 
-  const standings = tournament.standings;
+  const standings = tournament.bracketByIdx(0)!.standings;
 
   assert.equal(standings.length, 4);
   assert.equal(standings[0].team.id, 0);
@@ -27,7 +39,7 @@ RoundRobinStandings.skip("resolves standings from points", () => {
   assert.equal(standings[3].team.id, 3);
 });
 
-RoundRobinStandings.skip("tiebreaker via head-to-head", () => {
+RoundRobinStandings("tiebreaker via head-to-head", () => {
   // id 0 = WWWW
   // id 1 = WWWL
   // id 2 = WWLL
@@ -76,9 +88,10 @@ RoundRobinStandings.skip("tiebreaker via head-to-head", () => {
         score: [2, 0],
       },
     ]),
+    roundRobinTournamentCtx,
   );
 
-  const standings = tournament.standings;
+  const standings = tournament.bracketByIdx(0)!.standings;
 
   assert.equal(standings.length, 5);
   assert.equal(standings[2].team.id, 3);
@@ -87,7 +100,7 @@ RoundRobinStandings.skip("tiebreaker via head-to-head", () => {
   assert.equal(standings[3].placement, 4);
 });
 
-RoundRobinStandings.skip("tiebreaker via maps won", () => {
+RoundRobinStandings("tiebreaker via maps won", () => {
   // id 0 = WWWW
   // id 1 = WWLL
   // id 2 = WWLL
@@ -101,9 +114,10 @@ RoundRobinStandings.skip("tiebreaker via maps won", () => {
       { ids: [2, 3], score: [2, 1] },
       { ids: [1, 0], score: [0, 2] },
     ]),
+    roundRobinTournamentCtx,
   );
 
-  const standings = tournament.standings;
+  const standings = tournament.bracketByIdx(0)!.standings;
 
   // they won the most maps out of the 3 tied teams
   assert.equal(standings[1].team.id, 3);
@@ -118,6 +132,11 @@ RoundRobinStandings.skip(
 
 RoundRobinStandings.skip(
   "if one group finished and other ongoing, standings for just one group",
+  () => {},
+);
+
+RoundRobinStandings.skip(
+  "teams with same placements are ordered by group id",
   () => {},
 );
 

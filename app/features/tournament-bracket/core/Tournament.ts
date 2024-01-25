@@ -56,7 +56,7 @@ export class Tournament {
         const participants = new Set(
           match
             .flatMap((match) => [match.opponent1?.id, match.opponent2?.id])
-            .filter(Boolean),
+            .filter((id) => typeof id === "number"),
         );
 
         this.brackets.push(

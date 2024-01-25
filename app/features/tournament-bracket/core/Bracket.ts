@@ -449,6 +449,129 @@ class RoundRobinBracket extends Bracket {
     return { relevantMatchesFinished: false, teams: [] };
   }
 
+  get standings(): Standing[] {
+    const groupIds = this.data.group.map((group) => group.id);
+
+    const placements: (Standing & { groupId: number })[] = [];
+    for (const groupId of groupIds) {
+      const matches = this.data.match.filter(
+        (match) => match.group_id === groupId,
+      );
+
+      const groupIsFinished = matches.every(
+        (match) =>
+          // BYE
+          match.opponent1 === null ||
+          match.opponent2 === null ||
+          // match was played out
+          match.opponent1?.result === "win" ||
+          match.opponent2?.result === "win",
+      );
+
+      if (!groupIsFinished) continue;
+
+      const teams: {
+        id: number;
+        setWins: number;
+        setLosses: number;
+        mapWins: number;
+        mapLosses: number;
+      }[] = [];
+
+      const updateTeam = ({
+        teamId,
+        setWins,
+        setLosses,
+        mapWins,
+        mapLosses,
+      }: {
+        teamId: number;
+        setWins: number;
+        setLosses: number;
+        mapWins: number;
+        mapLosses: number;
+      }) => {
+        const team = teams.find((team) => team.id === teamId);
+        if (team) {
+          team.setWins += setWins;
+          team.setLosses += setLosses;
+          team.mapWins += mapWins;
+          team.mapLosses += mapLosses;
+        } else {
+          teams.push({
+            id: teamId,
+            setWins,
+            setLosses,
+            mapWins,
+            mapLosses,
+          });
+        }
+      };
+
+      for (const match of matches) {
+        const winner =
+          match.opponent1?.result === "win" ? match.opponent1 : match.opponent2;
+
+        const loser =
+          match.opponent1?.result === "win" ? match.opponent2 : match.opponent1;
+
+        if (!winner || !loser) continue;
+
+        invariant(
+          typeof winner.id === "number" &&
+            typeof loser.id === "number" &&
+            typeof winner.score === "number" &&
+            typeof loser.score === "number",
+        );
+
+        updateTeam({
+          teamId: winner.id,
+          setWins: 1,
+          setLosses: 0,
+          mapWins: winner.score,
+          mapLosses: loser.score,
+        });
+        updateTeam({
+          teamId: loser.id,
+          setWins: 0,
+          setLosses: 1,
+          mapWins: loser.score,
+          mapLosses: winner.score,
+        });
+      }
+
+      placements.push(
+        ...teams
+          .sort((a, b) => {
+            if (a.setWins > b.setWins) return -1;
+            if (a.setWins < b.setWins) return 1;
+
+            if (a.mapWins > b.mapWins) return -1;
+            if (a.mapWins < b.mapWins) return 1;
+
+            return 0;
+          })
+          .map((team, i) => {
+            return {
+              team: this.tournament.teamById(team.id)!,
+              placement: i + 1,
+              groupId,
+            };
+          }),
+      );
+    }
+
+    return placements.sort((a, b) => {
+      if (a.placement < b.placement) return -1;
+      if (a.placement > b.placement) return 1;
+
+      if (a.groupId < b.groupId) return -1;
+      if (a.groupId > b.groupId) return 1;
+
+      return 0;
+    });
+  }
+
   get type(): TournamentBracketProgression[number]["type"] {
     return "round_robin";
   }

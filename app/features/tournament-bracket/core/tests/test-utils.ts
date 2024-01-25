@@ -99,10 +99,12 @@ export const adjustResults = (
         opponent1: {
           ...match.opponent1!,
           score: adjusted.score[0],
+          result: adjusted.score[0] > adjusted.score[1] ? "win" : "loss",
         },
         opponent2: {
           ...match.opponent2!,
           score: adjusted.score[1],
+          result: adjusted.score[1] > adjusted.score[0] ? "win" : "loss",
         },
       };
     }),
