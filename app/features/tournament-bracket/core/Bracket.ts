@@ -476,6 +476,8 @@ class RoundRobinBracket extends Bracket {
         setLosses: number;
         mapWins: number;
         mapLosses: number;
+        winsAgainstTied: number;
+        points: number;
       }[] = [];
 
       const updateTeam = ({
@@ -484,12 +486,14 @@ class RoundRobinBracket extends Bracket {
         setLosses,
         mapWins,
         mapLosses,
+        points,
       }: {
         teamId: number;
         setWins: number;
         setLosses: number;
         mapWins: number;
         mapLosses: number;
+        points: number;
       }) => {
         const team = teams.find((team) => team.id === teamId);
         if (team) {
@@ -497,6 +501,7 @@ class RoundRobinBracket extends Bracket {
           team.setLosses += setLosses;
           team.mapWins += mapWins;
           team.mapLosses += mapLosses;
+          team.points += points;
         } else {
           teams.push({
             id: teamId,
@@ -504,6 +509,8 @@ class RoundRobinBracket extends Bracket {
             setLosses,
             mapWins,
             mapLosses,
+            winsAgainstTied: 0,
+            points,
           });
         }
       };
@@ -524,12 +531,22 @@ class RoundRobinBracket extends Bracket {
             typeof loser.score === "number",
         );
 
+        if (
+          typeof winner.points !== "number" ||
+          typeof loser.points !== "number"
+        ) {
+          logger.warn(
+            "RoundRobinBracket.standings: winner or loser points not found",
+          );
+        }
+
         updateTeam({
           teamId: winner.id,
           setWins: 1,
           setLosses: 0,
           mapWins: winner.score,
           mapLosses: loser.score,
+          points: winner.points ?? 0,
         });
         updateTeam({
           teamId: loser.id,
@@ -537,7 +554,31 @@ class RoundRobinBracket extends Bracket {
           setLosses: 1,
           mapWins: loser.score,
           mapLosses: winner.score,
+          points: loser.points ?? 0,
         });
+      }
+
+      for (const team of teams) {
+        for (const team2 of teams) {
+          if (team.id === team2.id) continue;
+          if (team.setWins !== team2.setWins) continue;
+
+          // they are different teams and are tied, let's check who won
+
+          const wonTheirMatch = matches.some(
+            (match) =>
+              (match.opponent1?.id === team.id &&
+                match.opponent2?.id === team2.id &&
+                match.opponent1?.result === "win") ||
+              (match.opponent1?.id === team2.id &&
+                match.opponent2?.id === team.id &&
+                match.opponent2?.result === "win"),
+          );
+
+          if (wonTheirMatch) {
+            team.winsAgainstTied++;
+          }
+        }
       }
 
       placements.push(
@@ -546,8 +587,14 @@ class RoundRobinBracket extends Bracket {
             if (a.setWins > b.setWins) return -1;
             if (a.setWins < b.setWins) return 1;
 
+            if (a.winsAgainstTied > b.winsAgainstTied) return -1;
+            if (a.winsAgainstTied < b.winsAgainstTied) return 1;
+
             if (a.mapWins > b.mapWins) return -1;
             if (a.mapWins < b.mapWins) return 1;
+
+            if (a.points > b.points) return -1;
+            if (a.points < b.points) return 1;
 
             return 0;
           })

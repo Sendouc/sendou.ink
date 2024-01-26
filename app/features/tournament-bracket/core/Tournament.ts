@@ -28,12 +28,28 @@ export class Tournament {
 
   constructor({ data, ctx }: TournamentData) {
     const hasStarted = ctx.inProgressBrackets.length > 0;
+
+    const teamsInSeedOrder = ctx.teams.sort((a, b) => {
+      if (a.seed && b.seed) {
+        return a.seed - b.seed;
+      }
+
+      if (a.seed && !b.seed) {
+        return -1;
+      }
+
+      if (!a.seed && b.seed) {
+        return 1;
+      }
+
+      return a.createdAt - b.createdAt;
+    });
     this.ctx = {
       ...ctx,
       teams: hasStarted
         ? // after the start the teams who did not check-in are irrelevant
-          ctx.teams.filter((team) => team.checkIns.length > 0)
-        : ctx.teams,
+          teamsInSeedOrder.filter((team) => team.checkIns.length > 0)
+        : teamsInSeedOrder,
       startTime: databaseTimestampToDate(ctx.startTime),
     };
 

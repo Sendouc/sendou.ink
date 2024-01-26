@@ -248,23 +248,6 @@ export const FIVE_TEAMS_RR = (): ValueToArray<DataTypes> => ({
       },
     },
     {
-      id: 1,
-      number: 2,
-      stage_id: 0,
-      group_id: 0,
-      round_id: 0,
-      child_count: 0,
-      status: 2,
-      opponent1: {
-        id: 3,
-        position: 4,
-      },
-      opponent2: {
-        id: 2,
-        position: 3,
-      },
-    },
-    {
       id: 2,
       number: 1,
       stage_id: 0,
@@ -398,6 +381,23 @@ export const FIVE_TEAMS_RR = (): ValueToArray<DataTypes> => ({
       opponent2: {
         id: 1,
         position: 2,
+      },
+    },
+    {
+      id: 1,
+      number: 2,
+      stage_id: 0,
+      group_id: 0,
+      round_id: 0,
+      child_count: 0,
+      status: 2,
+      opponent1: {
+        id: 3,
+        position: 4,
+      },
+      opponent2: {
+        id: 2,
+        position: 3,
       },
     },
   ],

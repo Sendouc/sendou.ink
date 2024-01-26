@@ -425,6 +425,8 @@ export interface TournamentMatchGameResult {
   source: string;
   stageId: StageId;
   winnerTeamId: number;
+  opponentOnePoints: number | null;
+  opponentTwoPoints: number | null;
 }
 
 export interface TournamentMatchGameResultParticipant {

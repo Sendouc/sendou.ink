@@ -43,6 +43,9 @@ export interface ParticipantResult {
   /** The current score of the participant. */
   score?: number;
 
+  /** How many points in total participant scored in this match. KO = 100 points. Getting KO'd = 0 points. */
+  points?: number;
+
   /** Tells what is the result of a duel for this participant. */
   result?: Result;
 }

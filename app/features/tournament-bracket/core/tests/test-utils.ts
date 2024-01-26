@@ -78,7 +78,11 @@ export const testTournament = (
 
 export const adjustResults = (
   data: ValueToArray<DataTypes>,
-  adjustedArr: Array<{ ids: [number, number]; score: [number, number] }>,
+  adjustedArr: Array<{
+    ids: [number, number];
+    score: [number, number];
+    points?: [number, number];
+  }>,
 ): ValueToArray<DataTypes> => {
   return {
     ...data,
@@ -100,11 +104,21 @@ export const adjustResults = (
           ...match.opponent1!,
           score: adjusted.score[0],
           result: adjusted.score[0] > adjusted.score[1] ? "win" : "loss",
+          points: adjusted.points
+            ? adjusted.points[0]
+            : adjusted.score[0] > adjusted.score[1]
+              ? 100
+              : 0,
         },
         opponent2: {
           ...match.opponent2!,
           score: adjusted.score[1],
           result: adjusted.score[1] > adjusted.score[0] ? "win" : "loss",
+          points: adjusted.points
+            ? adjusted.points[1]
+            : adjusted.score[1] > adjusted.score[0]
+              ? 100
+              : 0,
         },
       };
     }),

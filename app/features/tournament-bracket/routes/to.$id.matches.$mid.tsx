@@ -352,6 +352,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   }
 };
 
+// xxx: points for round robin
 export default function TournamentMatchPage() {
   const user = useUser();
   const visibility = useVisibilityChange();

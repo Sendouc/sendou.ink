@@ -335,6 +335,8 @@ export class Round {
   }
 }
 
+// xxx: points to opponentOne & opponentTwo
+
 const match_getByIdStm = sql.prepare(/*sql*/ `
   select *
     from "TournamentMatch"

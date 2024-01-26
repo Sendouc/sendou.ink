@@ -1,5 +1,5 @@
 import { suite } from "uvu";
-import { FIVE_TEAMS_RR, FOUR_TEAMS_RR } from "./mocks";
+import { FIVE_TEAMS_RR, FOUR_TEAMS_RR, SIX_TEAMS_TWO_GROUPS_RR } from "./mocks";
 import { adjustResults, testTournament } from "./test-utils";
 import * as assert from "uvu/assert";
 import { BRACKET_NAMES } from "~/features/tournament/tournament-constants";
@@ -40,7 +40,7 @@ RoundRobinStandings("resolves standings from points", () => {
 });
 
 RoundRobinStandings("tiebreaker via head-to-head", () => {
-  // id 0 = WWWW
+  // id 0 = WWWL
   // id 1 = WWWL
   // id 2 = WWLL
   // id 3 = WWLL but won against 2
@@ -50,10 +50,6 @@ RoundRobinStandings("tiebreaker via head-to-head", () => {
       {
         ids: [4, 1],
         score: [0, 2],
-      },
-      {
-        ids: [3, 2],
-        score: [2, 0],
       },
       {
         ids: [0, 2],
@@ -77,7 +73,7 @@ RoundRobinStandings("tiebreaker via head-to-head", () => {
       },
       {
         ids: [1, 0],
-        score: [0, 2],
+        score: [2, 0],
       },
       {
         ids: [3, 0],
@@ -85,6 +81,10 @@ RoundRobinStandings("tiebreaker via head-to-head", () => {
       },
       {
         ids: [2, 1],
+        score: [2, 0],
+      },
+      {
+        ids: [3, 2],
         score: [2, 0],
       },
     ]),
@@ -123,21 +123,167 @@ RoundRobinStandings("tiebreaker via maps won", () => {
   assert.equal(standings[1].team.id, 3);
 });
 
-RoundRobinStandings.skip("three way tiebreaker via points scored", () => {});
+RoundRobinStandings("three way tiebreaker via points scored", () => {
+  // id 0 = LLL
+  // id 1 = WWL
+  // id 2 = WWL
+  // id 3 = WWL
+  const tournament = testTournament(
+    adjustResults(FOUR_TEAMS_RR(), [
+      { ids: [0, 3], score: [0, 2], points: [0, 200] },
+      { ids: [2, 1], score: [0, 2], points: [50, 100] },
+      { ids: [1, 3], score: [0, 2], points: [0, 200] },
+      { ids: [0, 2], score: [0, 2], points: [0, 200] },
+      { ids: [2, 3], score: [2, 0], points: [150, 149] },
+      { ids: [1, 0], score: [2, 0], points: [200, 0] },
+    ]),
+    roundRobinTournamentCtx,
+  );
+
+  const standings = tournament.bracketByIdx(0)!.standings;
+
+  assert.equal(standings[0].team.id, 3);
+  assert.equal(standings[1].team.id, 2);
+});
 
 RoundRobinStandings.skip(
-  "if two groups finished, standings for both groups",
-  () => {},
+  "if everything is tied, uses seeds as tiebreaker",
+  () => {
+    // id 0 = LLL
+    // id 1 = WWL
+    // id 2 = WWL
+    // id 3 = WWL
+    const tournament = testTournament(
+      adjustResults(FOUR_TEAMS_RR(), [
+        { ids: [0, 3], score: [0, 2], points: [0, 200] },
+        { ids: [2, 1], score: [0, 2], points: [0, 200] },
+        { ids: [1, 3], score: [0, 2], points: [0, 200] },
+        { ids: [0, 2], score: [0, 2], points: [0, 200] },
+        { ids: [2, 3], score: [2, 0], points: [200, 0] },
+        { ids: [1, 0], score: [2, 0], points: [200, 0] },
+      ]),
+      roundRobinTournamentCtx,
+    );
+
+    // xxx: TODO implement
+  },
 );
 
-RoundRobinStandings.skip(
+RoundRobinStandings("if two groups finished, standings for both groups", () => {
+  const tournament = testTournament(
+    adjustResults(SIX_TEAMS_TWO_GROUPS_RR(), [
+      {
+        ids: [4, 3],
+        score: [2, 0],
+      },
+      {
+        ids: [0, 4],
+        score: [2, 0],
+      },
+      {
+        ids: [3, 0],
+        score: [2, 0],
+      },
+      {
+        ids: [5, 2],
+        score: [2, 0],
+      },
+      {
+        ids: [1, 5],
+        score: [2, 0],
+      },
+      {
+        ids: [2, 1],
+        score: [2, 0],
+      },
+    ]),
+    roundRobinTournamentCtx,
+  );
+
+  const standings = tournament.bracketByIdx(0)!.standings;
+
+  assert.equal(standings.length, 6);
+  assert.equal(standings.filter((s) => s.placement === 1).length, 2);
+});
+
+RoundRobinStandings(
   "if one group finished and other ongoing, standings for just one group",
-  () => {},
+  () => {
+    const tournament = testTournament(
+      adjustResults(SIX_TEAMS_TWO_GROUPS_RR(), [
+        {
+          ids: [4, 3],
+          score: [2, 0],
+        },
+        {
+          ids: [0, 4],
+          score: [2, 0],
+        },
+        {
+          ids: [3, 0],
+          score: [2, 0],
+        },
+        {
+          ids: [5, 2],
+          score: [2, 0],
+        },
+        {
+          ids: [1, 5],
+          score: [2, 0],
+        },
+        {
+          ids: [2, 1],
+          score: [0, 0],
+        },
+      ]),
+      roundRobinTournamentCtx,
+    );
+
+    const standings = tournament.bracketByIdx(0)!.standings;
+
+    assert.equal(standings.length, 3);
+    assert.equal(standings.filter((s) => s.placement === 1).length, 1);
+  },
 );
 
-RoundRobinStandings.skip(
+RoundRobinStandings(
   "teams with same placements are ordered by group id",
-  () => {},
+  () => {
+    const base = SIX_TEAMS_TWO_GROUPS_RR();
+    const tournament = testTournament(
+      adjustResults({ ...base, group: base.group.reverse() }, [
+        {
+          ids: [4, 3],
+          score: [2, 0],
+        },
+        {
+          ids: [0, 4],
+          score: [0, 2],
+        },
+        {
+          ids: [3, 0],
+          score: [2, 0],
+        },
+        {
+          ids: [5, 2],
+          score: [2, 0],
+        },
+        {
+          ids: [1, 5],
+          score: [2, 0],
+        },
+        {
+          ids: [2, 1],
+          score: [2, 0],
+        },
+      ]),
+      roundRobinTournamentCtx,
+    );
+
+    const standings = tournament.bracketByIdx(0)!.standings;
+
+    assert.equal(standings[0].team.id, 4);
+  },
 );
 
 RoundRobinStandings.run();
