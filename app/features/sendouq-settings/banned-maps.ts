@@ -3,14 +3,8 @@ import { stagesObj as s } from "~/modules/in-game-lists/stage-ids";
 
 export const BANNED_MAPS: Record<ModeShort, StageId[]> = {
   TW: [],
-  SZ: [
-    s.SCORCH_GORGE,
-    s.EELTAIL_ALLEY,
-    s.MINCEMEAT_METALWORKS,
-    s.HAMMERHEAD_BRIDGE,
-  ],
+  SZ: [s.SCORCH_GORGE, s.EELTAIL_ALLEY, s.HAMMERHEAD_BRIDGE],
   TC: [
-    s.MINCEMEAT_METALWORKS,
     s.HAMMERHEAD_BRIDGE,
     s.WAHOO_WORLD,
     s.FLOUNDER_HEIGHTS,
@@ -19,7 +13,6 @@ export const BANNED_MAPS: Record<ModeShort, StageId[]> = {
   ],
   RM: [
     s.EELTAIL_ALLEY,
-    s.MINCEMEAT_METALWORKS,
     s.HAMMERHEAD_BRIDGE,
     s.WAHOO_WORLD,
     s.BRINEWATER_SPRINGS,
@@ -28,7 +21,6 @@ export const BANNED_MAPS: Record<ModeShort, StageId[]> = {
   CB: [
     s.EELTAIL_ALLEY,
     s.UNDERTOW_SPILLWAY,
-    s.MINCEMEAT_METALWORKS,
     s.HAMMERHEAD_BRIDGE,
     s.STURGEON_SHIPYARD,
     s.WAHOO_WORLD,
