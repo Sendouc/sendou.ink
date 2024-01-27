@@ -364,11 +364,6 @@ export class Tournament {
     return isParticipant || this.isOrganizer(user);
   }
 
-  // xxx: read from settings or HACKY
-  get subsFeatureEnabled() {
-    return true;
-  }
-
   checkInConditionsFulfilled({
     tournamentTeamId,
     mapPool,
@@ -394,13 +389,25 @@ export class Tournament {
     return true;
   }
 
-  // xxx: setting or if (HACKY_isSendouQSeasonFinale(event)) return 5;
+  // TODO: get from settings
+  private isInvitational() {
+    return this.ctx.name.includes("Finale");
+  }
+
+  get subsFeatureEnabled() {
+    return !this.isInvitational();
+  }
+
   get maxTeamMemberCount() {
+    const maxMembersBeforeStart = this.isInvitational()
+      ? 5
+      : TOURNAMENT.DEFAULT_TEAM_MAX_MEMBERS_BEFORE_START;
+
     if (this.hasStarted) {
-      return TOURNAMENT.DEFAULT_TEAM_MAX_MEMBERS_BEFORE_START + 1;
+      return maxMembersBeforeStart + 1;
     }
 
-    return TOURNAMENT.DEFAULT_TEAM_MAX_MEMBERS_BEFORE_START;
+    return maxMembersBeforeStart;
   }
 
   get regularCheckInIsOpen() {
