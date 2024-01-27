@@ -44,7 +44,7 @@ import { settingsActionSchema } from "../q-settings-schemas.server";
 import styles from "../q-settings.css";
 import { BANNED_MAPS } from "../banned-maps";
 import { Divider } from "~/components/Divider";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { soundPath } from "~/utils/urls";
 
 export const links: LinksFunction = () => {
