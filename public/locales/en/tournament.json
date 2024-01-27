@@ -110,7 +110,7 @@
   "bracket.waiting": "Bracket will be shown here when at least {{count}} teams have registered",
   "bracket.waiting.checkin": "Bracket will be shown here when at least {{count}} teams have checked in",
   "bracket.wip": "This bracket is a preview and subject to change",
-  "bracket.finalize.text": "When everything looks good, finalize the bracket to start the tournament",
+  "bracket.finalize.text": "When everything looks good, finalize the bracket to allow matches to be played",
   "bracket.finalize.action": "Finalize",
   "bracket.beforeStart": "Bracket can't be started yet as it is before the start time",
   "bracket.waitingForResults": "Bracket can't be started yet as it is waiting for results of the previous bracket",

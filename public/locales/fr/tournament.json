@@ -102,7 +102,6 @@
 
   "bracket.waiting": "Le bracket sera affiché ici quand au moins {{count}} équipes seront inscrites",
   "bracket.wip": "Ce bracket est un aperçu et sujet à changement",
-  "bracket.finalize.text": "Quand tout semble bon, finalisez le bracket pour commencer le tournoi",
   "bracket.finalize.action": "Finaliser",
   "bracket.beforeStart": "Le bracket ne peut pas encore démarrer car il est avant l'heure du début.",
 

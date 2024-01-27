@@ -248,6 +248,25 @@ export function checkOut({
   return query.execute();
 }
 
+export function checkInMany({
+  tournamentTeamIds,
+  bracketIdx,
+}: {
+  tournamentTeamIds: number[];
+  bracketIdx: number;
+}) {
+  return db
+    .insertInto("TournamentTeamCheckIn")
+    .values(
+      tournamentTeamIds.map((tournamentTeamId) => ({
+        checkedInAt: dateToDatabaseTimestamp(new Date()),
+        tournamentTeamId,
+        bracketIdx,
+      })),
+    )
+    .execute();
+}
+
 export function addStaff({
   tournamentId,
   userId,

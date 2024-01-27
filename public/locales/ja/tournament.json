@@ -102,7 +102,6 @@
 
   "bracket.waiting": "ブラケットは、少なくとも {{count}} チームが登録した時点で表示されます",
   "bracket.wip": "このブラケットはまだプレビューで、変更される可能性があります",
-  "bracket.finalize.text": "全ての情報が正しいことを確認したら、トーナメントを開始するためにブラケットを確定してください",
   "bracket.finalize.action": "確定",
   "bracket.beforeStart": "開始時間前なのでブラケットを開始することができません",
 

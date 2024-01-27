@@ -63,6 +63,7 @@ import { removeDuplicates } from "~/utils/arrays";
 import { Placement } from "~/components/Placement";
 import { Avatar } from "~/components/Avatar";
 import { Flag } from "~/components/Flag";
+import { BRACKET_NAMES } from "~/features/tournament/tournament-constants";
 
 export const links: LinksFunction = () => {
   return [
@@ -117,6 +118,22 @@ export const action: ActionFunction = async ({ params, request }) => {
           setBestOf({ bestOf, id });
         }
       })();
+
+      // TODO: to transaction
+      // check in teams to the final stage ahead of time so they don't have to do it
+      // separately, but also allow for TO's to check them out if needed
+      if (data.bracketIdx === 0 && tournament.brackets.length > 1) {
+        const finalStageIdx = tournament.brackets.findIndex(
+          (b) => b.name === BRACKET_NAMES.FINALS,
+        );
+
+        if (finalStageIdx !== -1) {
+          await TournamentRepository.checkInMany({
+            bracketIdx: finalStageIdx,
+            tournamentTeamIds: tournament.ctx.teams.map((t) => t.id),
+          });
+        }
+      }
 
       break;
     }
@@ -373,19 +390,12 @@ export default function TournamentBracketsPage() {
           )}
         </Form>
       ) : null}
-      {/* {!data.preview && progress ? (
-        <TournamentProgressPrompt
-          progress={progress}
-          currentMatchId={currentMatchId}
-          currentOpponent={currentOpponent}
-        />
-      ) : null} */}
       <div className="stack horizontal sm justify-end">
         {bracket.canCheckIn(user) ? (
           <BracketCheckinButton bracketIdx={bracketIdx} />
         ) : null}
         {showAddSubsButton ? (
-          // TODO: could also hide this when tournament is not in the any bracket anymore
+          // TODO: could also hide this when team is not in any bracket anymore
           <AddSubsPopOver />
         ) : null}
       </div>
