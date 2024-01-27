@@ -423,6 +423,7 @@ function MatchActionSectionTabs({
           },
           {
             key: "report",
+            unmount: false,
             element: (
               <ScoreReporterRosters
                 // Without the key prop when switching to another match the winnerId is remembered
