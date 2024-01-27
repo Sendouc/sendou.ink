@@ -270,7 +270,9 @@ function RowContents({
   return (
     <>
       <div>{seed}</div>
-      <div className="tournament__seeds__team-name">{team.name}</div>
+      <div className="tournament__seeds__team-name">
+        {team.checkIns.length > 0 ? "✅ " : "❌ "} {team.name}
+      </div>
       <div className="stack horizontal sm">
         {team.members.map((member) => {
           const { power, tier } = data.powers[member.userId] ?? {};
