@@ -6,6 +6,7 @@ export const videoMatchTypes = [
   "CAST",
   "SCRIM",
   "MATCHMAKING",
+  "SENDOUQ",
 ] as const;
 assertType<(typeof videoMatchTypes)[number], Array<Video["type"]>[number]>();
 

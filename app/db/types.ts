@@ -442,7 +442,7 @@ export interface TeamMember {
 export interface Video {
   id: number;
   title: string;
-  type: "SCRIM" | "TOURNAMENT" | "MATCHMAKING" | "CAST";
+  type: "SCRIM" | "TOURNAMENT" | "MATCHMAKING" | "CAST" | "SENDOUQ";
   youtubeDate: number;
   eventId: number | null;
   youtubeId: string;

@@ -3,6 +3,7 @@
   "type.TOURNAMENT": "Tournament (PoV)",
   "type.MATCHMAKING": "Anarchy/X Battle/Turf War",
   "type.CAST": "Tournament (Cast)",
+  "type.SENDOUQ": "SendouQ",
   "gameCount": "Game {{count}}",
   "minShort": "min",
   "secShort": "sec",
