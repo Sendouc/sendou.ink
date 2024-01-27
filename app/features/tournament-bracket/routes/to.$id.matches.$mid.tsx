@@ -111,6 +111,7 @@ export const action: ActionFunction = async ({ params, request }) => {
           match.opponentTwo?.id === data.winnerTeamId,
         "Winner team id is invalid",
       );
+      validate(match.opponentOne && match.opponentTwo, "Teams are missing");
 
       const mapList =
         match.opponentOne?.id && match.opponentTwo?.id
@@ -131,6 +132,15 @@ export const action: ActionFunction = async ({ params, request }) => {
 
         validate(false, "Winner team id is invalid");
       };
+
+      validate(
+        !data.points ||
+          (scoreToIncrement() === 0 && data.points[0] > data.points[1]) ||
+          (scoreToIncrement() === 1 && data.points[1] > data.points[0]),
+        "Points are invalid (winner must have more points than loser)",
+      );
+
+      // TODO: could also validate that if bracket demands it then points are defined
 
       scores[scoreToIncrement()]++;
 
@@ -157,6 +167,8 @@ export const action: ActionFunction = async ({ params, request }) => {
           winnerTeamId: data.winnerTeamId,
           number: data.position + 1,
           source: String(currentMap.source),
+          opponentOnePoints: data.points?.[0] ?? null,
+          opponentTwoPoints: data.points?.[1] ?? null,
         });
 
         for (const userId of data.playerIds) {
@@ -352,7 +364,6 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   }
 };
 
-// xxx: points for round robin
 export default function TournamentMatchPage() {
   const user = useUser();
   const visibility = useVisibilityChange();

@@ -11,6 +11,7 @@ import type { SerializeFrom } from "@remix-run/node";
 import { stageImageUrl } from "~/utils/urls";
 import { Image } from "~/components/Image";
 import type { TournamentDataTeam } from "../core/Tournament.server";
+import { useTournament } from "~/features/tournament/routes/to.$id";
 
 export function ScoreReporterRosters({
   teams,
@@ -29,6 +30,7 @@ export function ScoreReporterRosters({
   bestOf: number;
   presentational?: boolean;
 }) {
+  const tournament = useTournament();
   const data = useLoaderData<TournamentMatchLoaderData>();
   const [checkedPlayers, setCheckedPlayers] = React.useState<
     [number[], number[]]
@@ -40,6 +42,7 @@ export function ScoreReporterRosters({
     }),
   );
   const [winnerId, setWinnerId] = React.useState<number | undefined>();
+  const [points, setPoints] = React.useState<[number, number]>([0, 0]);
 
   const presentational = _presentational || Boolean(result);
 
@@ -48,6 +51,10 @@ export function ScoreReporterRosters({
     scores[1] + (winnerId === teams[1].id ? 1 : 0),
   ];
   const wouldEndSet = newScore.some((score) => score > bestOf / 2);
+
+  const showPoints = tournament.bracketByIdxOrDefault(
+    tournament.matchIdToBracketIdx(data.match.id) ?? 0,
+  ).collectResultsWithPoints;
 
   return (
     <Form method="post" className="width-full">
@@ -58,6 +65,8 @@ export function ScoreReporterRosters({
           setWinnerId={setWinnerId}
           checkedPlayers={checkedPlayers}
           setCheckedPlayers={setCheckedPlayers}
+          points={showPoints ? points : undefined}
+          setPoints={setPoints}
           result={result}
         />
         {!presentational ? (
@@ -68,8 +77,17 @@ export function ScoreReporterRosters({
               name="playerIds"
               value={JSON.stringify(checkedPlayers.flat())}
             />
+            {showPoints ? (
+              <input
+                type="hidden"
+                name="points"
+                value={JSON.stringify(points)}
+              />
+            ) : null}
             <input type="hidden" name="position" value={position} />
             <ReportScoreButtons
+              winnerIdx={winnerId ? winningTeamIdx() : undefined}
+              points={showPoints ? points : undefined}
               checkedPlayers={checkedPlayers}
               winnerName={winningTeam()}
               currentStageWithMode={currentStageWithMode}
@@ -92,6 +110,14 @@ export function ScoreReporterRosters({
     if (!winnerId) return;
     if (teams[0].id === winnerId) return teams[0].name;
     if (teams[1].id === winnerId) return teams[1].name;
+
+    throw new Error("No winning team matching the id");
+  }
+
+  function winningTeamIdx() {
+    if (!winnerId) return;
+    if (teams[0].id === winnerId) return 0;
+    if (teams[1].id === winnerId) return 1;
 
     throw new Error("No winning team matching the id");
   }
@@ -128,11 +154,15 @@ function checkedPlayersInitialState({
 }
 
 function ReportScoreButtons({
+  points,
+  winnerIdx,
   checkedPlayers,
   winnerName,
   currentStageWithMode,
   wouldEndSet,
 }: {
+  points?: [number, number];
+  winnerIdx?: number;
   checkedPlayers: number[][];
   winnerName?: string;
   currentStageWithMode: TournamentMapListMap;
@@ -144,6 +174,30 @@ function ReportScoreButtons({
     return (
       <p className="tournament-bracket__during-match-actions__amount-warning-paragraph">
         Please select rosters to report the score
+      </p>
+    );
+  }
+
+  if (
+    points &&
+    typeof winnerIdx === "number" &&
+    points[winnerIdx] <= points[winnerIdx === 0 ? 1 : 0]
+  ) {
+    return (
+      <p className="tournament-bracket__during-match-actions__amount-warning-paragraph">
+        Winner should have more points than loser
+      </p>
+    );
+  }
+
+  if (
+    points &&
+    ((points[0] === 100 && points[1] !== 0) ||
+      (points[0] !== 0 && points[1] === 100))
+  ) {
+    return (
+      <p className="tournament-bracket__during-match-actions__amount-warning-paragraph">
+        If there was a KO (100 points), other team should have 0 points
       </p>
     );
   }

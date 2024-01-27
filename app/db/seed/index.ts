@@ -933,7 +933,7 @@ function calendarEventWithToTools(event: "PICNIC" | "ITZ" | "PP" = "PICNIC") {
     )
     .run({
       eventId,
-      startTime: dateToDatabaseTimestamp(new Date(Date.now() + 1000 * 60 * 60)),
+      startTime: dateToDatabaseTimestamp(new Date(Date.now() - 1000 * 60 * 60)),
     });
 }
 

@@ -18,6 +18,8 @@ export function TeamRosterInputs({
   setWinnerId,
   checkedPlayers,
   setCheckedPlayers,
+  points: _points,
+  setPoints,
   result,
 }: {
   teams: [TournamentDataTeam, TournamentDataTeam];
@@ -25,6 +27,8 @@ export function TeamRosterInputs({
   setWinnerId: (newId?: number) => void;
   checkedPlayers: [number[], number[]];
   setCheckedPlayers?: (newPlayerIds: [number[], number[]]) => void;
+  points?: [number, number];
+  setPoints: (newPoints: [number, number]) => void;
   result?: Result;
 }) {
   const presentational = Boolean(result);
@@ -34,67 +38,104 @@ export function TeamRosterInputs({
 
   React.useEffect(() => {
     setWinnerId(undefined);
-  }, [data, setWinnerId]);
+    setPoints([0, 0]);
+  }, [data, setWinnerId, setPoints]);
+
+  const points =
+    typeof result?.opponentOnePoints === "number" &&
+    typeof result?.opponentTwoPoints === "number"
+      ? ([result.opponentOnePoints, result.opponentTwoPoints] as [
+          number,
+          number,
+        ])
+      : _points;
 
   return (
     <div className="tournament-bracket__during-match-actions__rosters">
-      {teams.map((team, teamI) => (
-        <div key={team.id}>
-          <div className="text-xs text-lighter font-semi-bold stack horizontal xs items-center justify-center">
-            <div
-              className={
-                teamI === 0
-                  ? "tournament-bracket__team-one-dot"
-                  : "tournament-bracket__team-two-dot"
-              }
-            />
-            Team {teamI + 1}
-          </div>
-          <h4>
-            <span className="tournament-bracket__during-match-actions__seed">
-              #{data.seeds[teamI]}
-            </span>{" "}
-            <Link
-              to={tournamentTeamPage({
-                eventId: tournament.ctx.id,
-                tournamentTeamId: team.id,
-              })}
-              className="tournament-bracket__during-match-actions__team-name"
-            >
-              {team.name}
-            </Link>
-          </h4>
-          <WinnerRadio
-            presentational={presentational}
-            checked={
-              result ? result.winnerTeamId === team.id : winnerId === team.id
-            }
-            teamId={team.id}
-            onChange={() => setWinnerId?.(team.id)}
-            team={teamI + 1}
-          />
-          <TeamRosterInputsCheckboxes
-            teamId={team.id}
-            checkedPlayers={result?.participantIds ?? checkedPlayers[teamI]!}
-            presentational={presentational}
-            handlePlayerClick={(playerId: number) => {
-              const newCheckedPlayers = () => {
-                const newPlayers = clone(checkedPlayers);
-                if (checkedPlayers.flat().includes(playerId)) {
-                  newPlayers[teamI] = newPlayers[teamI]!.filter(
-                    (id) => id !== playerId,
-                  );
-                } else {
-                  newPlayers[teamI]!.push(playerId);
-                }
+      {teams.map((team, teamI) => {
+        const winnerRadioChecked = result
+          ? result.winnerTeamId === team.id
+          : winnerId === team.id;
 
-                return newPlayers;
-              };
-              setCheckedPlayers?.(newCheckedPlayers());
-            }}
-          />
-        </div>
-      ))}
+        // just so we can center the points nicely
+        const showWinnerRadio =
+          !points || !presentational || winnerRadioChecked;
+
+        return (
+          <div key={team.id}>
+            <div className="text-xs text-lighter font-semi-bold stack horizontal xs items-center justify-center">
+              <div
+                className={
+                  teamI === 0
+                    ? "tournament-bracket__team-one-dot"
+                    : "tournament-bracket__team-two-dot"
+                }
+              />
+              Team {teamI + 1}
+            </div>
+            <h4>
+              <span className="tournament-bracket__during-match-actions__seed">
+                #{data.seeds[teamI]}
+              </span>{" "}
+              <Link
+                to={tournamentTeamPage({
+                  eventId: tournament.ctx.id,
+                  tournamentTeamId: team.id,
+                })}
+                className="tournament-bracket__during-match-actions__team-name"
+              >
+                {team.name}
+              </Link>
+            </h4>
+            <div
+              className={clsx("stack horizontal md justify-center", {
+                "mt-1": points && !presentational,
+              })}
+            >
+              {showWinnerRadio ? (
+                <WinnerRadio
+                  presentational={presentational}
+                  checked={winnerRadioChecked}
+                  teamId={team.id}
+                  onChange={() => setWinnerId?.(team.id)}
+                  team={teamI + 1}
+                />
+              ) : null}
+              {points ? (
+                <PointInput
+                  value={points[teamI]}
+                  onChange={(newPoint: number) => {
+                    const newPoints = clone(points);
+                    newPoints[teamI] = newPoint;
+                    setPoints(newPoints);
+                  }}
+                  presentational={presentational}
+                />
+              ) : null}
+            </div>
+            <TeamRosterInputsCheckboxes
+              teamId={team.id}
+              checkedPlayers={result?.participantIds ?? checkedPlayers[teamI]!}
+              presentational={presentational}
+              handlePlayerClick={(playerId: number) => {
+                const newCheckedPlayers = () => {
+                  const newPlayers = clone(checkedPlayers);
+                  if (checkedPlayers.flat().includes(playerId)) {
+                    newPlayers[teamI] = newPlayers[teamI]!.filter(
+                      (id) => id !== playerId,
+                    );
+                  } else {
+                    newPlayers[teamI]!.push(playerId);
+                  }
+
+                  return newPlayers;
+                };
+                setCheckedPlayers?.(newCheckedPlayers());
+              }}
+            />
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -118,7 +159,7 @@ function WinnerRadio({
   if (presentational) {
     return (
       <div
-        className={clsx("text-xs font-bold", {
+        className={clsx("text-xs font-bold stack justify-center", {
           invisible: !checked,
           "text-theme": team === 1,
           "text-theme-secondary": team === 2,
@@ -140,6 +181,44 @@ function WinnerRadio({
       />
       <Label className="mb-0 ml-2" htmlFor={`${teamId}-${id}`}>
         Winner
+      </Label>
+    </div>
+  );
+}
+
+function PointInput({
+  value,
+  onChange,
+  presentational,
+}: {
+  value: number;
+  onChange: (newPoint: number) => void;
+  presentational: boolean;
+}) {
+  const id = React.useId();
+
+  if (presentational) {
+    return (
+      <div className="text-xs text-lighter">
+        {value === 100 ? <>KO</> : <>{value}p</>}
+      </div>
+    );
+  }
+
+  return (
+    <div className="stack horizontal sm items-center">
+      <input
+        className="tournament-bracket__points-input"
+        onChange={(e) => onChange(Number(e.target.value))}
+        type="number"
+        min={0}
+        max={100}
+        value={value}
+        required
+        id={id}
+      />
+      <Label htmlFor={id} spaced={false}>
+        Points
       </Label>
     </div>
   );

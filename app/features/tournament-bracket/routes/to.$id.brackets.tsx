@@ -181,6 +181,7 @@ export const action: ActionFunction = async ({ params, request }) => {
   return null;
 };
 
+// xxx: should be able to reopen matches of one bracket till a follow up bracket starts (RR mostly)
 export default function TournamentBracketsPage() {
   const { t } = useTranslation(["tournament"]);
   const visibility = useVisibilityChange();

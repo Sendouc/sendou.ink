@@ -16,12 +16,35 @@ const reportedMatchPosition = z.preprocess(
     .max(Math.max(...TOURNAMENT.AVAILABLE_BEST_OF) - 1),
 );
 
+const point = z.number().int().min(0).max(100);
 export const matchSchema = z.union([
   z.object({
     _action: _action("REPORT_SCORE"),
     winnerTeamId: id,
     position: reportedMatchPosition,
     playerIds: reportedMatchPlayerIds,
+    points: z.preprocess(
+      safeJSONParse,
+      z
+        .tuple([point, point])
+        .nullish()
+        .refine(
+          (val) => {
+            if (!val) return true;
+            const [p1, p2] = val;
+
+            if (p1 === p2) return false;
+            if (p1 === 100 && p2 !== 0) return false;
+            if (p2 === 100 && p1 !== 0) return false;
+
+            return true;
+          },
+          {
+            message:
+              "Invalid points. Must not be equal & if one is 100, the other must be 0.",
+          },
+        ),
+    ),
   }),
   z.object({
     _action: _action("UNDO_REPORT_SCORE"),

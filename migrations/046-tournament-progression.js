@@ -8,4 +8,11 @@ module.exports.up = function (db) {
   ).run();
 
   db.prepare(/* sql */ `alter table "Tournament" drop column "format"`).run();
+
+  db.prepare(
+    /* sql */ `alter table "TournamentMatchGameResult" add "opponentOnePoints" integer`,
+  ).run();
+  db.prepare(
+    /* sql */ `alter table "TournamentMatchGameResult" add "opponentTwoPoints" integer`,
+  ).run();
 };

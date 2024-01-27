@@ -52,6 +52,10 @@ export abstract class Bracket {
     this.tournament = tournament;
   }
 
+  get collectResultsWithPoints() {
+    return false;
+  }
+
   get type(): TournamentBracketProgression[number]["type"] {
     throw new Error("not implemented");
   }
@@ -440,13 +444,27 @@ class RoundRobinBracket extends Bracket {
     super(args);
   }
 
-  source(_placements: number[]): {
+  get collectResultsWithPoints() {
+    return true;
+  }
+
+  source(placements: number[]): {
     relevantMatchesFinished: boolean;
     teams: { id: number; name: string }[];
   } {
-    logger.warn("RoundRobinBracket.source not implemented");
+    if (placements.some((p) => p < 0)) {
+      throw new Error("Negative placements not implemented");
+    }
+    const standings = this.standings;
+    const relevantMatchesFinished =
+      standings.length === this.data.participant.length;
 
-    return { relevantMatchesFinished: false, teams: [] };
+    return {
+      relevantMatchesFinished,
+      teams: standings
+        .filter((s) => placements.includes(s.placement))
+        .map((s) => ({ id: s.team.id, name: s.team.name })),
+    };
   }
 
   get standings(): Standing[] {
