@@ -383,58 +383,14 @@ PreviousAndNextMatchUpdate(
     });
 
     assert.equal(storage.select<any>("match", 2).status, Status.Running);
-    assert.equal(storage.select<any>("match", 3).status, Status.Archived);
 
     manager.update.match({
       id: 2, // Final
       opponent1: { score: 16, result: "win" },
       opponent2: { score: 9 },
     });
-
-    assert.equal(storage.select<any>("match", 2).status, Status.Archived);
-    assert.equal(storage.select<any>("match", 3).status, Status.Archived);
   },
 );
-
-PreviousAndNextMatchUpdate("should archive previous matches", () => {
-  manager.create({
-    name: "Example",
-    tournamentId: 0,
-    type: "single_elimination",
-    seeding: ["Team 1", "Team 2", "Team 3", "Team 4"],
-    settings: { consolationFinal: true },
-  });
-
-  manager.update.match({
-    id: 0, // First match of round 1
-    opponent1: { score: 16, result: "win" },
-    opponent2: { score: 12 },
-  });
-
-  manager.update.match({
-    id: 1, // Second match of round 1
-    opponent1: { score: 13 },
-    opponent2: { score: 16, result: "win" },
-  });
-
-  manager.update.match({
-    id: 2, // Final
-    opponent1: { score: 16, result: "win" },
-    opponent2: { score: 9 },
-  });
-
-  assert.equal(storage.select<any>("match", 0).status, Status.Archived);
-  assert.equal(storage.select<any>("match", 1).status, Status.Archived);
-
-  manager.update.match({
-    id: 3, // Consolation final
-    opponent1: { score: 16, result: "win" },
-    opponent2: { score: 9 },
-  });
-
-  assert.equal(storage.select<any>("match", 2).status, Status.Archived); // Final
-  assert.equal(storage.select<any>("match", 3).status, Status.Archived); // Consolation final
-});
 
 CreateSingleEliminationStage.run();
 PreviousAndNextMatchUpdate.run();

@@ -143,6 +143,7 @@ export const action: ActionFunction = async ({ params, request }) => {
       validate(tournament.everyBracketOver, "Not every match is over");
 
       const _finalStandings = tournament.standings;
+      // xxx: rr->se standings
       invariant(
         _finalStandings.length === tournament.ctx.teams.length,
         `Final standings length (${_finalStandings.length}) does not match teams length (${tournament.ctx.teams.length})`,
@@ -198,7 +199,7 @@ export const action: ActionFunction = async ({ params, request }) => {
   return null;
 };
 
-// xxx: should be able to reopen matches of one bracket till a follow up bracket starts (RR mostly)
+// xxx: allow for underground bracket to be skipped?
 export default function TournamentBracketsPage() {
   const { t } = useTranslation(["tournament"]);
   const visibility = useVisibilityChange();

@@ -301,9 +301,6 @@ export enum Status {
 
   /** The match is completed. */
   Completed = 4,
-
-  /** At least one participant started their following match. */
-  Archived = 5,
 }
 
 /** A match between two participants (more participants are not allowed).

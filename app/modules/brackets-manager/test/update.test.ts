@@ -396,20 +396,6 @@ LockedMatches(
   },
 );
 
-LockedMatches(
-  "should throw when one of participants already played next match",
-  () => {
-    manager.update.match({ id: 0, opponent1: { result: "win" } });
-    manager.update.match({ id: 1, opponent1: { result: "win" } });
-    manager.update.match({ id: 8, opponent1: { result: "win" } });
-
-    assert.throws(
-      () => manager.update.match({ id: 0 }),
-      "The match is locked.",
-    );
-  },
-);
-
 const UpdateMatchGames = suite("Update match games");
 
 UpdateMatchGames.before.each(() => {
@@ -489,15 +475,12 @@ UpdateMatchGames(
     });
 
     finalMatchStatus = storage.select<any>("match", 2).status;
-    assert.equal(finalMatchStatus, Status.Archived);
     assert.equal(finalMatchStatus, storage.select<any>("match_game", 4).status);
 
     const semi1Status = storage.select<any>("match", 0).status;
-    assert.equal(semi1Status, Status.Archived);
     assert.equal(semi1Status, storage.select<any>("match_game", 0).status);
 
     const semi2Status = storage.select<any>("match", 1).status;
-    assert.equal(semi2Status, Status.Archived);
     assert.equal(semi2Status, storage.select<any>("match_game", 2).status);
   },
 );
@@ -570,89 +553,6 @@ UpdateMatchGames("should throw if trying to update a locked match game", () => {
     "The match game is locked.",
   );
 });
-
-UpdateMatchGames(
-  "should throw if trying to update a child game of a locked match",
-  () => {
-    manager.create({
-      name: "Example",
-      tournamentId: 0,
-      type: "single_elimination",
-      seeding: ["Team 1", "Team 2", "Team 3", "Team 4"],
-      settings: {
-        seedOrdering: ["natural"],
-        matchesChildCount: 3, // Bo3
-      },
-    });
-
-    manager.update.matchGame({
-      parent_id: 0,
-      number: 1,
-      opponent1: { result: "win" },
-    });
-    manager.update.matchGame({
-      parent_id: 0,
-      number: 2,
-      opponent1: { result: "win" },
-    });
-
-    manager.update.matchGame({
-      parent_id: 1,
-      number: 1,
-      opponent1: { result: "win" },
-    });
-    manager.update.matchGame({
-      parent_id: 1,
-      number: 2,
-      opponent1: { result: "win" },
-    });
-
-    // Starting the next match will lock previous matches and their match games.
-    manager.update.matchGame({
-      parent_id: 2,
-      number: 1,
-      opponent1: { score: 0 },
-      opponent2: { score: 0 },
-    });
-
-    assert.throws(
-      () =>
-        manager.update.matchGame({
-          parent_id: 0,
-          number: 1,
-          opponent1: { result: "loss" },
-        }),
-      "The match game is locked.",
-    );
-    assert.throws(
-      () =>
-        manager.update.matchGame({
-          parent_id: 0,
-          number: 2,
-          opponent1: { result: "loss" },
-        }),
-      "The match game is locked.",
-    );
-    assert.throws(
-      () =>
-        manager.update.matchGame({
-          parent_id: 1,
-          number: 1,
-          opponent1: { result: "loss" },
-        }),
-      "The match game is locked.",
-    );
-    assert.throws(
-      () =>
-        manager.update.matchGame({
-          parent_id: 1,
-          number: 2,
-          opponent1: { result: "loss" },
-        }),
-      "The match game is locked.",
-    );
-  },
-);
 
 UpdateMatchGames(
   "should propagate the winner of the parent match in the next match",
@@ -742,7 +642,6 @@ UpdateMatchGames(
 
     manager.update.matchGame({ id: 0, opponent1: { result: "win" } });
     manager.update.matchGame({ id: 1, opponent1: { result: "win" } });
-    assert.equal(storage.select<any>("match", 0).status, Status.Archived); // Completed, but single match in the stage.
 
     manager.reset.matchGameResults(0);
     assert.equal(storage.select<any>("match", 0).status, Status.Running);
@@ -1303,66 +1202,6 @@ MatchGamesStatus("should set the parent match to Completed", () => {
   assert.equal(storage.select<any>("match", 0).status, Status.Completed);
   assert.equal(storage.select<any>("match_game", 2).status, Status.Completed);
 });
-
-MatchGamesStatus(
-  "should archive previous matches and their games when next match is started",
-  () => {
-    manager.create({
-      tournamentId: 0,
-      name: "Example",
-      type: "single_elimination",
-      seeding: ["Team 1", "Team 2", "Team 3", "Team 4"],
-      settings: { matchesChildCount: 3 },
-    });
-
-    manager.update.matchGame({
-      parent_id: 0,
-      number: 1,
-      opponent1: { result: "win" },
-    });
-    manager.update.matchGame({
-      parent_id: 0,
-      number: 2,
-      opponent1: { result: "win" },
-    });
-
-    manager.update.matchGame({
-      parent_id: 1,
-      number: 1,
-      opponent1: { result: "win" },
-    });
-    manager.update.matchGame({
-      parent_id: 1,
-      number: 2,
-      opponent1: { result: "win" },
-    });
-
-    manager.update.matchGame({
-      parent_id: 2,
-      number: 1,
-      opponent1: { score: 0 },
-      opponent2: { score: 0 },
-    });
-
-    const firstMatchGames = storage.select<any>("match_game", {
-      parent_id: 0,
-    });
-    assert.equal(firstMatchGames![0].status, Status.Archived);
-    assert.equal(firstMatchGames![1].status, Status.Archived);
-    assert.equal(firstMatchGames![2].status, Status.Archived);
-
-    assert.equal(storage.select<any>("match", 0).status, Status.Archived);
-
-    const secondMatchGames = storage.select<any>("match_game", {
-      parent_id: 1,
-    });
-    assert.equal(secondMatchGames![0].status, Status.Archived);
-    assert.equal(secondMatchGames![1].status, Status.Archived);
-    assert.equal(secondMatchGames![2].status, Status.Archived);
-
-    assert.equal(storage.select<any>("match", 1).status, Status.Archived);
-  },
-);
 
 MatchGamesStatus(
   "should work with unique match games when controlled via the parent",

@@ -119,7 +119,6 @@
   "match.score": "{{scoreOne}}-{{scoreTwo}} (Meilleur de {{bestOf}})",
   "match.action.undoLastScore": "Annuler le dernier score",
   "match.action.reopenMatch": "Rouvrir le match",
-  "match.action.matchIsLocked": "Le match est verrouillé",
 
   "join.error.MISSING_CODE": "Le code d'invitation est manquant. L'URL complète a-t-elle été copiée ?",
   "join.error.SHORT_CODE": "Le code d'invitation n'a pas la bonne longueur. L'URL complète a-t-elle été copiée ?",

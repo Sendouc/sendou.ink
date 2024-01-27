@@ -119,7 +119,6 @@
   "match.score": "{{scoreOne}}-{{scoreTwo}} (הטוב מ-{{bestOf}})",
   "match.action.undoLastScore": "בטלו את התוצאה האחרונה",
   "match.action.reopenMatch": "פתיחה מחדש של הקרב",
-  "match.action.matchIsLocked": "הקרב נעול",
 
   "join.error.MISSING_CODE": "חסר קוד הזמנה. האם כתובת האתר המלאה הועתקה?",
   "join.error.SHORT_CODE": "קוד ההזמנה אינו באורך המתאים. האם כתובת האתר המלאה הועתקה?",

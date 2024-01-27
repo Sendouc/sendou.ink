@@ -129,7 +129,6 @@
   "match.score": "{{scoreOne}}-{{scoreTwo}} (Best of {{bestOf}})",
   "match.action.undoLastScore": "Undo last score",
   "match.action.reopenMatch": "Reopen match",
-  "match.action.matchIsLocked": "Match is locked",
 
   "join.error.MISSING_CODE": "Invite code is missing. Was the full URL copied?",
   "join.error.SHORT_CODE": "Invite code is not the right length. Was the full URL copied?",

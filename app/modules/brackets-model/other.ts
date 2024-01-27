@@ -22,9 +22,6 @@ export enum Status {
 
   /** The match is completed. */
   Completed = 4,
-
-  /** At least one participant completed his following match. */
-  Archived = 5,
 }
 
 /**

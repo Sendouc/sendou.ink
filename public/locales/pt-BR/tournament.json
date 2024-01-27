@@ -119,7 +119,6 @@
   "match.score": "{{scoreOne}}-{{scoreTwo}} (Melhor de {{bestOf}})",
   "match.action.undoLastScore": "Desfazer última pontuação",
   "match.action.reopenMatch": "Reabrir partida",
-  "match.action.matchIsLocked": "A partida está trancada",
 
   "join.error.MISSING_CODE": "O código de convite está faltando. O URL foi copiado completamente?",
   "join.error.SHORT_CODE": "O código de convite está com o comprimento incorreto. O URL foi copiado completamente?",

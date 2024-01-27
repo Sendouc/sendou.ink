@@ -81,6 +81,7 @@ export class Tournament {
             tournament: this,
             preview: false,
             name,
+            sources,
             data: {
               ...data,
               participant: data.participant.filter((participant) =>
@@ -137,6 +138,7 @@ export class Tournament {
             name,
             data: manager.get.tournamentData(this.ctx.id),
             type,
+            sources,
             canBeStarted:
               checkedInTeams.length >= TOURNAMENT.ENOUGH_TEAMS_TO_START &&
               (sources ? relevantMatchesFinished : this.regularCheckInHasEnded),
@@ -254,11 +256,16 @@ export class Tournament {
   }
 
   resolvePoolCode({ hostingTeamId }: { hostingTeamId: number }) {
-    const prefix = this.ctx.name.includes("In The Zone")
-      ? "ITZ"
-      : HACKY_isInviteOnlyEvent(this.ctx)
-        ? "SQ"
-        : "PN";
+    const tournamentNameWithoutOnlyLetters = this.ctx.name.replace(
+      /[^a-zA-Z]/g,
+      "",
+    );
+    const prefix = tournamentNameWithoutOnlyLetters
+      .split(" ")
+      .map((word) => word[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 3);
     const lastDigit = hostingTeamId % 10;
 
     return { prefix, lastDigit };
@@ -471,6 +478,71 @@ export class Tournament {
     return this.ctx.teams.find((team) =>
       team.members.some((member) => member.userId === user.id),
     );
+  }
+
+  // basic idea is that they can reopen match as long as they don't have a following match
+  // in progress whose participants could be dependent on the results of this match
+  matchCanBeReopened(matchId: number) {
+    if (this.ctx.isFinalized) return false;
+
+    const allMatches = this.brackets.flatMap((bracket) =>
+      // preview matches don't even have real id's and anyway don't prevent anything
+      bracket.preview ? [] : bracket.data.match,
+    );
+    const match = allMatches.find((match) => match.id === matchId);
+    if (!match) {
+      logger.error("matchCanBeReopened: Match not found");
+      return false;
+    }
+
+    const bracketIdx = this.matchIdToBracketIdx(matchId);
+
+    if (typeof bracketIdx !== "number") {
+      logger.error("matchCanBeReopened: Bracket not found");
+      return false;
+    }
+
+    const bracket = this.bracketByIdx(bracketIdx);
+    invariant(bracket, "Bracket not found");
+
+    const hasInProgressFollowUpBracket = this.brackets.some(
+      (b) => !b.preview && b.sources?.some((s) => s.bracketIdx === bracketIdx),
+    );
+
+    if (hasInProgressFollowUpBracket) return false;
+
+    // round robin matches don't prevent reopening
+    if (bracket.type === "round_robin") return true;
+
+    // BYE match
+    if (!match.opponent1 || !match.opponent2) return false;
+
+    const anotherMatchBlocking = allMatches
+      .filter(
+        // only interested in matches of the same bracket & not the match being reopened itself
+        (match2) =>
+          match2.stage_id === match.stage_id && match2.id !== match.id,
+      )
+      .some((match2) => {
+        const hasAtLeastOneMapReported =
+          (match2.opponent1?.score && match2.opponent1.score > 0) ||
+          (match2.opponent2?.score && match2.opponent2.score > 0);
+
+        const hasSameParticipant =
+          match2.opponent1?.id === match.opponent1?.id ||
+          match2.opponent1?.id === match.opponent2?.id ||
+          match2.opponent2?.id === match.opponent1?.id ||
+          match2.opponent2?.id === match.opponent2?.id;
+
+        const isFollowingMatch =
+          match2.group_id > match.group_id || match2.round_id > match.round_id;
+
+        return (
+          hasAtLeastOneMapReported && isFollowingMatch && hasSameParticipant
+        );
+      });
+
+    return !anotherMatchBlocking;
   }
 
   isOrganizer(user: OptionalIdObject) {

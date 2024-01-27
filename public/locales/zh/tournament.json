@@ -119,7 +119,6 @@
   "match.score": "{{scoreOne}}-{{scoreTwo}} (Bo {{bestOf}})",
   "match.action.undoLastScore": "撤销上次比分",
   "match.action.reopenMatch": "重新开始对战",
-  "match.action.matchIsLocked": "对战已锁定",
 
   "join.error.MISSING_CODE": "缺少邀请码。您是否复制了完整URL？",
   "join.error.SHORT_CODE": "邀请码长度不符。您是否复制了完整URL？",

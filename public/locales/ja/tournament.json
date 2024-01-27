@@ -119,7 +119,6 @@
   "match.score": "{{scoreOne}}-{{scoreTwo}} (Best of {{bestOf}})",
   "match.action.undoLastScore": "最後のスコアをやりなおす",
   "match.action.reopenMatch": "対戦を再度開く",
-  "match.action.matchIsLocked": "対戦がロックされています",
 
   "join.error.MISSING_CODE": "招待コードがみつかりません。すべての URL をコピーしましたか?",
   "join.error.SHORT_CODE": "招待コードの長さが正しくありません。すべての URL をコピーしましたか?",

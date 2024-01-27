@@ -237,9 +237,8 @@ export class BaseUpdater extends BaseGetter {
     };
 
     // Only sync the child games' status with their parent's status when changing the parent match participants
-    // (Locked, Waiting, Ready) or when archiving the parent match.
-    if (match.status <= Status.Ready || match.status === Status.Archived)
-      updatedMatchGame.status = match.status;
+    // (Locked, Waiting, Ready).
+    if (match.status <= Status.Ready) updatedMatchGame.status = match.status;
 
     if (
       !this.storage.update(
@@ -273,21 +272,8 @@ export class BaseUpdater extends BaseGetter {
     );
     if (previousMatches.length === 0) return;
 
-    if (match.status >= Status.Running) this.archiveMatches(previousMatches);
-    else this.resetMatchesStatus(previousMatches);
-  }
-
-  /**
-   * Sets the status of a list of matches to archived.
-   *
-   * @param matches The matches to update.
-   */
-  protected archiveMatches(matches: Match[]): void {
-    for (const match of matches) {
-      if (match.status === Status.Archived) continue;
-
-      match.status = Status.Archived;
-      this.applyMatchUpdate(match);
+    if (match.status < Status.Running) {
+      this.resetMatchesStatus(previousMatches);
     }
   }
 
@@ -327,10 +313,6 @@ export class BaseUpdater extends BaseGetter {
       roundCount,
     );
     if (nextMatches.length === 0) {
-      // Archive match if it doesn't have following matches and is completed.
-      // When the stage is fully complete, all matches should be archived.
-      if (match.status === Status.Completed) this.archiveMatches([match]);
-
       return;
     }
 

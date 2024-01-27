@@ -1,5 +1,5 @@
 import type { SerializeFrom } from "@remix-run/node";
-import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import { Form, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
@@ -49,7 +49,6 @@ export function ScoreReporter({
 }) {
   const { t } = useTranslation(["tournament"]);
   const isMounted = useIsMounted();
-  const actionData = useActionData<{ error?: "locked" }>();
   const user = useUser();
   const tournament = useTournament();
   const data = useLoaderData<TournamentMatchLoaderData>();
@@ -105,8 +104,6 @@ export function ScoreReporter({
     </>,
   ];
 
-  const matchIsLockedError = actionData?.error === "locked";
-
   return (
     <div className="tournament-bracket__during-match-actions">
       <FancyStageBanner
@@ -129,9 +126,8 @@ export function ScoreReporter({
           </Form>
         )}
         {tournament.isOrganizer(user) &&
-          !tournament.ctx.isFinalized &&
-          presentational &&
-          !matchIsLockedError && (
+          tournament.matchCanBeReopened(data.match.id) &&
+          presentational && (
             <Form method="post">
               <div className="tournament-bracket__stage-banner__bottom-bar">
                 <SubmitButton
@@ -144,18 +140,6 @@ export function ScoreReporter({
               </div>
             </Form>
           )}
-        {matchIsLockedError && (
-          <div className="tournament-bracket__stage-banner__bottom-bar">
-            <SubmitButton
-              _action="REOPEN_MATCH"
-              className="tournament-bracket__stage-banner__undo-button"
-              disabled
-              testId="match-is-locked-button"
-            >
-              {t("tournament:match.action.matchIsLocked")}
-            </SubmitButton>
-          </div>
-        )}
       </FancyStageBanner>
       <ModeProgressIndicator
         modes={modes}

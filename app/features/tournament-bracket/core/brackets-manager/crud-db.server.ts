@@ -430,14 +430,20 @@ export class Match {
       child_count: rawMatch.childCount,
       group_id: rawMatch.groupId,
       number: rawMatch.number,
-      opponent1: {
-        ...JSON.parse(rawMatch.opponentOne),
-        totalPoints: rawMatch.opponentOnePointsTotal ?? undefined,
-      },
-      opponent2: {
-        ...JSON.parse(rawMatch.opponentTwo),
-        totalPoints: rawMatch.opponentTwoPointsTotal ?? undefined,
-      },
+      opponent1:
+        rawMatch.opponentOne === "null"
+          ? null
+          : {
+              ...JSON.parse(rawMatch.opponentOne),
+              totalPoints: rawMatch.opponentOnePointsTotal ?? undefined,
+            },
+      opponent2:
+        rawMatch.opponentTwo === "null"
+          ? null
+          : {
+              ...JSON.parse(rawMatch.opponentTwo),
+              totalPoints: rawMatch.opponentTwoPointsTotal ?? undefined,
+            },
       round_id: rawMatch.roundId,
       stage_id: rawMatch.stageId,
       status: rawMatch.status,

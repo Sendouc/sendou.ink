@@ -734,11 +734,7 @@ export function isMatchByeCompleted(match: DeepPartial<MatchResults>): boolean {
  * @param match The match to check.
  */
 export function isMatchUpdateLocked(match: MatchResults): boolean {
-  return (
-    match.status === Status.Locked ||
-    match.status === Status.Waiting ||
-    match.status === Status.Archived
-  );
+  return match.status === Status.Locked || match.status === Status.Waiting;
 }
 
 /**

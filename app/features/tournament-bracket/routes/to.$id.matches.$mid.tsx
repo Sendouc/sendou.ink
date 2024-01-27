@@ -215,8 +215,6 @@ export const action: ActionFunction = async ({ params, request }) => {
 
       break;
     }
-    // xxx: can't reopen grand finals bracket reset?
-    // TODO: bug where you can reopen losers finals after winners finals
     case "REOPEN_MATCH": {
       const scoreOne = match.opponentOne?.score ?? 0;
       const scoreTwo = match.opponentTwo?.score ?? 0;
@@ -225,6 +223,10 @@ export const action: ActionFunction = async ({ params, request }) => {
       invariant(scoreOne !== scoreTwo, "Scores are equal");
 
       validate(tournament.isOrganizer(user));
+      validate(
+        tournament.matchCanBeReopened(match.id),
+        "Match can't be reopened, bracket has progressed",
+      );
 
       const results = findResultsByMatchId(matchId);
       const lastResult = results[results.length - 1];
@@ -240,30 +242,20 @@ export const action: ActionFunction = async ({ params, request }) => {
         `Reopening match: User ID: ${user.id}; Match ID: ${match.id}`,
       );
 
-      try {
-        sql.transaction(() => {
-          deleteTournamentMatchGameResultById(lastResult.id);
-          manager.update.match({
-            id: match.id,
-            opponent1: {
-              score: scores[0],
-              result: undefined,
-            },
-            opponent2: {
-              score: scores[1],
-              result: undefined,
-            },
-          });
-        })();
-      } catch (err) {
-        if (!(err instanceof Error)) throw err;
-
-        if (err.message.includes("locked")) {
-          return { error: "locked" };
-        }
-
-        throw err;
-      }
+      sql.transaction(() => {
+        deleteTournamentMatchGameResultById(lastResult.id);
+        manager.update.match({
+          id: match.id,
+          opponent1: {
+            score: scores[0],
+            result: undefined,
+          },
+          opponent2: {
+            score: scores[1],
+            result: undefined,
+          },
+        });
+      })();
 
       break;
     }

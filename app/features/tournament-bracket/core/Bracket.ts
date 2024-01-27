@@ -18,6 +18,10 @@ interface CreateBracketArgs {
   name: string;
   teamsPendingCheckIn?: number[];
   tournament: Tournament;
+  sources?: {
+    bracketIdx: number;
+    placements: number[];
+  }[];
 }
 
 export interface Standing {
@@ -33,6 +37,7 @@ export abstract class Bracket {
   name;
   teamsPendingCheckIn;
   tournament;
+  sources;
 
   constructor({
     id,
@@ -42,6 +47,7 @@ export abstract class Bracket {
     name,
     teamsPendingCheckIn,
     tournament,
+    sources,
   }: Omit<CreateBracketArgs, "format">) {
     this.id = id;
     this.preview = preview;
@@ -50,6 +56,7 @@ export abstract class Bracket {
     this.name = name;
     this.teamsPendingCheckIn = teamsPendingCheckIn;
     this.tournament = tournament;
+    this.sources = sources;
   }
 
   get collectResultsWithPoints() {
@@ -255,6 +262,9 @@ class DoubleEliminationBracket extends Bracket {
       ) {
         continue;
       }
+
+      // BYE
+      if (!match.opponent1 || !match.opponent2) continue;
 
       const loser =
         match.opponent1?.result === "win" ? match.opponent2 : match.opponent1;
