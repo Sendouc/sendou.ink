@@ -15,7 +15,12 @@ import {
 } from "@dnd-kit/sortable";
 import { redirect } from "@remix-run/node";
 import type { LoaderFunctionArgs, ActionFunction } from "@remix-run/node";
-import { useFetcher, useLoaderData, useNavigation } from "@remix-run/react";
+import {
+  Link,
+  useFetcher,
+  useLoaderData,
+  useNavigation,
+} from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
 import invariant from "tiny-invariant";
@@ -26,7 +31,7 @@ import { Draggable } from "~/components/Draggable";
 import { useTimeoutState } from "~/hooks/useTimeoutState";
 import { useTournament } from "./to.$id";
 import { Image, TierImage } from "~/components/Image";
-import { navIconUrl, tournamentBracketsPage } from "~/utils/urls";
+import { navIconUrl, tournamentBracketsPage, userPage } from "~/utils/urls";
 import { requireUser } from "~/features/auth/core";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { seedsActionSchema } from "../tournament-schemas.server";
@@ -102,7 +107,11 @@ export default function TournamentSeedsPage() {
     null,
   );
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     }),
@@ -281,9 +290,13 @@ function RowContents({
 
           return (
             <div key={member.userId} className="tournament__seeds__team-member">
-              <div className="tournament__seeds__team-member__name">
+              <Link
+                to={userPage(member)}
+                target="_blank"
+                className="tournament__seeds__team-member__name"
+              >
                 {member.discordName}
-              </div>
+              </Link>
               {member.plusTier ? (
                 <div
                   className={clsx("stack horizontal items-center xxs", {
