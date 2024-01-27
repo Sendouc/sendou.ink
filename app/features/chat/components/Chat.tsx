@@ -343,7 +343,7 @@ export function useChat({
       if (sound && soundEnabled(sound)) {
         const audio = new Audio(soundPath(sound));
         audio.volume = soundVolume() / 100;
-        audio.play();
+        void audio.play();
       }
 
       if (messageArr[0].revalidateOnly) {

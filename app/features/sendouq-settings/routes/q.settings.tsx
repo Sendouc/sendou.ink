@@ -685,7 +685,7 @@ function SoundSlider() {
   const playSound = () => {
     const audio = new Audio(soundPath("sq_like"));
     audio.volume = soundVolume() / 100;
-    audio.play();
+    void audio.play();
   };
 
   return (
