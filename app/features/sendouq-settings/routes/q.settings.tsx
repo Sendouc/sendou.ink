@@ -671,10 +671,6 @@ function SoundSlider() {
     return soundVolume();
   });
 
-  useEffect(() => {
-    setVolume(soundVolume());
-  }, []);
-
   const saveVolume = (
     event:
       | React.MouseEvent<HTMLInputElement>
