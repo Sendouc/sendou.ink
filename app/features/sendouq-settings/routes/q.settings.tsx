@@ -671,34 +671,22 @@ function SoundSlider() {
     return soundVolume();
   });
 
-  const saveVolume = (
-    event:
-      | React.MouseEvent<HTMLInputElement>
-      | React.TouchEvent<HTMLInputElement>,
-  ) => {
-    let newVolume;
-    if (typeof TouchEvent !== "undefined" && event instanceof TouchEvent) {
-      newVolume = parseFloat(
-        (event.changedTouches[0].target as HTMLInputElement).value,
-      );
-    } else {
-      newVolume = parseFloat((event.target as HTMLInputElement).value);
-    }
+  const changeVolume = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newVolume = parseFloat(event.target.value);
+
+    setVolume(newVolume);
 
     localStorage.setItem(
       "settings__sound-volume",
       String(Math.floor(newVolume)),
     );
-
-    setVolume(newVolume);
-    playSound();
   };
 
-  function playSound() {
+  const playSound = () => {
     const audio = new Audio(soundPath("sq_like"));
     audio.volume = soundVolume() / 100;
     audio.play();
-  }
+  };
 
   return (
     <div className="stack horizontal xs items-center ml-2-5">
@@ -706,9 +694,10 @@ function SoundSlider() {
       <input
         className="q-settings__volume-slider-input"
         type="range"
-        defaultValue={volume}
-        onTouchEnd={saveVolume}
-        onMouseUp={saveVolume}
+        value={volume}
+        onChange={changeVolume}
+        onTouchEnd={playSound}
+        onMouseUp={playSound}
       />
     </div>
   );
