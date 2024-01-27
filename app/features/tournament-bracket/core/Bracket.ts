@@ -550,8 +550,8 @@ class RoundRobinBracket extends Bracket {
         );
 
         if (
-          typeof winner.points !== "number" ||
-          typeof loser.points !== "number"
+          typeof winner.totalPoints !== "number" ||
+          typeof loser.totalPoints !== "number"
         ) {
           logger.warn(
             "RoundRobinBracket.standings: winner or loser points not found",
@@ -564,7 +564,7 @@ class RoundRobinBracket extends Bracket {
           setLosses: 0,
           mapWins: winner.score,
           mapLosses: loser.score,
-          points: winner.points ?? 0,
+          points: winner.totalPoints ?? 0,
         });
         updateTeam({
           teamId: loser.id,
@@ -572,7 +572,7 @@ class RoundRobinBracket extends Bracket {
           setLosses: 1,
           mapWins: loser.score,
           mapLosses: winner.score,
-          points: loser.points ?? 0,
+          points: loser.totalPoints ?? 0,
         });
       }
 
@@ -613,6 +613,12 @@ class RoundRobinBracket extends Bracket {
 
             if (a.points > b.points) return -1;
             if (a.points < b.points) return 1;
+
+            const aSeed = Number(this.tournament.seedByTeamId(a.id));
+            const bSeed = Number(this.tournament.seedByTeamId(b.id));
+
+            if (aSeed < bSeed) return -1;
+            if (aSeed > bSeed) return 1;
 
             return 0;
           })

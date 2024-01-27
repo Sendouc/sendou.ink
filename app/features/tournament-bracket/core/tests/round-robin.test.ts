@@ -146,28 +146,28 @@ RoundRobinStandings("three way tiebreaker via points scored", () => {
   assert.equal(standings[1].team.id, 2);
 });
 
-RoundRobinStandings.skip(
-  "if everything is tied, uses seeds as tiebreaker",
-  () => {
-    // id 0 = LLL
-    // id 1 = WWL
-    // id 2 = WWL
-    // id 3 = WWL
-    const tournament = testTournament(
-      adjustResults(FOUR_TEAMS_RR(), [
-        { ids: [0, 3], score: [0, 2], points: [0, 200] },
-        { ids: [2, 1], score: [0, 2], points: [0, 200] },
-        { ids: [1, 3], score: [0, 2], points: [0, 200] },
-        { ids: [0, 2], score: [0, 2], points: [0, 200] },
-        { ids: [2, 3], score: [2, 0], points: [200, 0] },
-        { ids: [1, 0], score: [2, 0], points: [200, 0] },
-      ]),
-      roundRobinTournamentCtx,
-    );
+RoundRobinStandings("if everything is tied, uses seeds as tiebreaker", () => {
+  // id 0 = LLL
+  // id 1 = WWL
+  // id 2 = WWL
+  // id 3 = WWL
+  const tournament = testTournament(
+    adjustResults(FOUR_TEAMS_RR(), [
+      { ids: [0, 3], score: [0, 2], points: [0, 200] },
+      { ids: [2, 1], score: [0, 2], points: [0, 200] },
+      { ids: [1, 3], score: [0, 2], points: [0, 200] },
+      { ids: [0, 2], score: [0, 2], points: [0, 200] },
+      { ids: [2, 3], score: [2, 0], points: [200, 0] },
+      { ids: [1, 0], score: [2, 0], points: [200, 0] },
+    ]),
+    roundRobinTournamentCtx,
+  );
 
-    // xxx: TODO implement
-  },
-);
+  const standings = tournament.bracketByIdx(0)!.standings;
+
+  assert.equal(standings[0].team.id, 1);
+  assert.equal(standings[1].team.id, 2);
+});
 
 RoundRobinStandings("if two groups finished, standings for both groups", () => {
   const tournament = testTournament(

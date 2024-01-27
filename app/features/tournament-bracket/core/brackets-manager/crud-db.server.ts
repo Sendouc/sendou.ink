@@ -335,8 +335,6 @@ export class Round {
   }
 }
 
-// xxx: points to opponentOne & opponentTwo
-
 const match_getByIdStm = sql.prepare(/*sql*/ `
   select *
     from "TournamentMatch"
@@ -344,9 +342,14 @@ const match_getByIdStm = sql.prepare(/*sql*/ `
 `);
 
 const match_getByStageIdStm = sql.prepare(/*sql*/ `
-  select *
-    from "TournamentMatch"
-    where "TournamentMatch"."stageId" = @stageId
+  select 
+    "TournamentMatch".*, 
+    sum("TournamentMatchGameResult"."opponentOnePoints") as "opponentOnePointsTotal",
+    sum("TournamentMatchGameResult"."opponentTwoPoints") as "opponentTwoPointsTotal"
+  from "TournamentMatch"
+  left join "TournamentMatchGameResult" on "TournamentMatch"."id" = "TournamentMatchGameResult"."matchId"
+  where "TournamentMatch"."stageId" = @stageId
+  group by "TournamentMatch"."id"
 `);
 
 const match_getByRoundAndNumberStm = sql.prepare(/*sql*/ `
@@ -416,14 +419,25 @@ export class Match {
     this.status = status;
   }
 
-  static #convertMatch(rawMatch: TournamentMatch): MatchType {
+  static #convertMatch(
+    rawMatch: TournamentMatch & {
+      opponentOnePointsTotal: number | null;
+      opponentTwoPointsTotal: number | null;
+    },
+  ): MatchType {
     return {
       id: rawMatch.id,
       child_count: rawMatch.childCount,
       group_id: rawMatch.groupId,
       number: rawMatch.number,
-      opponent1: JSON.parse(rawMatch.opponentOne),
-      opponent2: JSON.parse(rawMatch.opponentTwo),
+      opponent1: {
+        ...JSON.parse(rawMatch.opponentOne),
+        totalPoints: rawMatch.opponentOnePointsTotal ?? undefined,
+      },
+      opponent2: {
+        ...JSON.parse(rawMatch.opponentTwo),
+        totalPoints: rawMatch.opponentTwoPointsTotal ?? undefined,
+      },
       round_id: rawMatch.roundId,
       stage_id: rawMatch.stageId,
       status: rawMatch.status,

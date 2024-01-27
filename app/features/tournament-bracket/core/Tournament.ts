@@ -286,6 +286,14 @@ export class Tournament {
     return this.ctx.teams.find((team) => team.id === id);
   }
 
+  seedByTeamId(id: number) {
+    const idx = this.ctx.teams.findIndex((team) => team.id === id);
+
+    if (idx === -1) return null;
+
+    return idx + 1;
+  }
+
   participatedPlayersByTeamId(id: number) {
     const team = this.teamById(id);
     invariant(team, "Team not found");
