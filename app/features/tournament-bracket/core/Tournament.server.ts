@@ -16,7 +16,7 @@ export async function tournamentData({
   tournamentId: number;
 }) {
   const ctx = notFoundIfFalsy(
-    await TournamentRepository.findByIdNew(tournamentId),
+    await TournamentRepository.findById(tournamentId),
   );
 
   const revealAllMapPools =

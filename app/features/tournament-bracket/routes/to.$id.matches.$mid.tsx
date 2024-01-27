@@ -13,16 +13,13 @@ import { Avatar } from "~/components/Avatar";
 import { LinkButton } from "~/components/Button";
 import { ArrowLongLeftIcon } from "~/components/icons/ArrowLongLeft";
 import { sql } from "~/db/sql";
+import { requireUser, useUser } from "~/features/auth/core";
 import { tournamentIdFromParams } from "~/features/tournament";
+import { useTournament } from "~/features/tournament/routes/to.$id";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
 import { useVisibilityChange } from "~/hooks/useVisibilityChange";
-import { requireUser, useUser } from "~/features/auth/core";
-import { getUserId } from "~/features/auth/core/user.server";
-import {
-  canReportTournamentScore,
-  isTournamentOrganizer,
-  isTournamentStreamerOrOrganizer,
-} from "~/permissions";
+import { canReportTournamentScore } from "~/permissions";
+import { logger } from "~/utils/logger";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
 import {
@@ -31,8 +28,8 @@ import {
   tournamentTeamPage,
   userPage,
 } from "~/utils/urls";
-import { findTeamsByTournamentId } from "../../tournament/queries/findTeamsByTournamentId.server";
 import { ScoreReporter } from "../components/ScoreReporter";
+import { tournamentFromDB } from "../core/Tournament.server";
 import { getTournamentManager } from "../core/brackets-manager";
 import { emitter } from "../core/emitters.server";
 import { resolveMapList } from "../core/mapList.server";
@@ -48,9 +45,6 @@ import {
   matchSubscriptionKey,
 } from "../tournament-bracket-utils";
 import bracketStyles from "../tournament-bracket.css";
-import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
-import { logger } from "~/utils/logger";
-import { useTournament } from "~/features/tournament/routes/to.$id";
 
 export const links: LinksFunction = () => [
   {
@@ -69,9 +63,7 @@ export const action: ActionFunction = async ({ params, request }) => {
   });
 
   const tournamentId = tournamentIdFromParams(params);
-  const tournament = notFoundIfFalsy(
-    await TournamentRepository.findById(tournamentId),
-  );
+  const tournament = await tournamentFromDB({ tournamentId, user });
 
   const validateCanReportScore = () => {
     const isMemberOfATeamInTheMatch = match.players.some(
@@ -80,10 +72,9 @@ export const action: ActionFunction = async ({ params, request }) => {
 
     validate(
       canReportTournamentScore({
-        tournament,
         match,
         isMemberOfATeamInTheMatch,
-        user,
+        isOrganizer: tournament.isOrganizer(user),
       }),
       "Unauthorized",
       401,
@@ -233,7 +224,7 @@ export const action: ActionFunction = async ({ params, request }) => {
       invariant(typeof scoreTwo === "number", "Score two is missing");
       invariant(scoreOne !== scoreTwo, "Scores are equal");
 
-      validate(isTournamentOrganizer({ tournament, user }));
+      validate(tournament.isOrganizer(user));
 
       const results = findResultsByMatchId(matchId);
       const lastResult = results[results.length - 1];
@@ -285,7 +276,7 @@ export const action: ActionFunction = async ({ params, request }) => {
     eventId: nanoid(),
     userId: user.id,
   });
-  emitter.emit(bracketSubscriptionKey(tournament.id), {
+  emitter.emit(bracketSubscriptionKey(tournament.ctx.id), {
     matchId: match.id,
     scores,
     isOver:
@@ -298,9 +289,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 
 export type TournamentMatchLoaderData = typeof loader;
 
-// TODO: could probably slim down this loader a lot with useTournament
-export const loader = async ({ params, request }: LoaderFunctionArgs) => {
-  const user = await getUserId(request);
+export const loader = ({ params }: LoaderFunctionArgs) => {
   const tournamentId = tournamentIdFromParams(params);
   const matchId = matchIdFromParams(params);
 
@@ -322,46 +311,16 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
   const currentMap = mapList?.[scoreSum];
 
-  const showChat =
-    match.players.some((p) => p.id === user?.id) ||
-    isTournamentStreamerOrOrganizer({
-      user,
-      tournament: notFoundIfFalsy(
-        await TournamentRepository.findById(tournamentId),
-      ),
-    });
-
   const matchIsOver =
     match.opponentOne?.result === "win" || match.opponentTwo?.result === "win";
 
   return {
-    match: {
-      ...match,
-      chatCode: showChat ? match.chatCode : null,
-    },
+    match,
     results: findResultsByMatchId(matchId),
-    seeds: resolveSeeds(),
     currentMap,
     modes: mapList?.map((map) => map.mode),
     matchIsOver,
   };
-
-  function resolveSeeds() {
-    const tournamentId = tournamentIdFromParams(params);
-    const teams = findTeamsByTournamentId(tournamentId);
-
-    const teamOneIndex = teams.findIndex(
-      (team) => team.id === match.opponentOne?.id,
-    );
-    const teamTwoIndex = teams.findIndex(
-      (team) => team.id === match.opponentTwo?.id,
-    );
-
-    return [
-      teamOneIndex !== -1 ? teamOneIndex + 1 : null,
-      teamTwoIndex !== -1 ? teamTwoIndex + 1 : null,
-    ];
-  }
 };
 
 export default function TournamentMatchPage() {

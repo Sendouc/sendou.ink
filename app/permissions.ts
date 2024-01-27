@@ -1,6 +1,5 @@
 import invariant from "tiny-invariant";
 import type * as PlusSuggestionRepository from "~/features/plus-suggestions/PlusSuggestionRepository.server";
-import type * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 import { ADMIN_ID, LOHI_TOKEN_HEADER_NAME, MOD_IDS } from "./constants";
 import type {
   CalendarEvent,
@@ -299,57 +298,19 @@ function eventStartedInThePast(
   );
 }
 
-interface CanAdminTournament {
-  user?: Pick<User, "id">;
-  tournament: TournamentRepository.FindById;
-}
-
-export function isTournamentAdmin({ user, tournament }: CanAdminTournament) {
-  return adminOverride(user)(user?.id === tournament.author.id);
-}
-
-export function isTournamentOrganizer({
-  user,
-  tournament,
-}: CanAdminTournament) {
-  if (isTournamentAdmin({ user, tournament })) return true;
-
-  return tournament.staff.some(
-    (staff) => staff.id === user?.id && staff.role === "ORGANIZER",
-  );
-}
-
-export function isTournamentStreamerOrOrganizer({
-  user,
-  tournament,
-}: CanAdminTournament) {
-  if (isTournamentAdmin({ user, tournament })) return true;
-
-  return tournament.staff.some(
-    (staff) =>
-      staff.id === user?.id &&
-      (staff.role === "ORGANIZER" || staff.role === "STREAMER"),
-  );
-}
-
 export function canReportTournamentScore({
   match,
-  user,
   isMemberOfATeamInTheMatch,
-  tournament,
+  isOrganizer,
 }: {
   match: NonNullable<FindMatchById>;
-  user?: Pick<User, "id">;
   isMemberOfATeamInTheMatch: boolean;
-  tournament: TournamentRepository.FindById;
+  isOrganizer: boolean;
 }) {
   const matchIsOver =
     match.opponentOne?.result === "win" || match.opponentTwo?.result === "win";
 
-  return (
-    !matchIsOver &&
-    (isMemberOfATeamInTheMatch || isTournamentOrganizer({ user, tournament }))
-  );
+  return !matchIsOver && (isMemberOfATeamInTheMatch || isOrganizer);
 }
 
 export function canAddCustomizedColorsToUserProfile(

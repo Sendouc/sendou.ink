@@ -356,8 +356,13 @@ function MatchActionSectionTabs({
     );
   }, [data, tournament]);
 
+  const showChat =
+    data.match.chatCode &&
+    (data.match.players.some((p) => p.id === user?.id) ||
+      tournament.isOrganizerOrStreamer(user));
+
   const rooms = React.useMemo(() => {
-    return data.match.chatCode
+    return showChat && data.match.chatCode
       ? [
           {
             code: data.match.chatCode,
@@ -365,7 +370,7 @@ function MatchActionSectionTabs({
           },
         ]
       : [];
-  }, [data.match.chatCode]);
+  }, [showChat, data.match.chatCode]);
 
   const onNewMessage = React.useCallback(() => {
     setUnseenMessages((msg) => msg + 1);
@@ -393,7 +398,7 @@ function MatchActionSectionTabs({
           {
             label: "Chat",
             number: unseenMessages,
-            hidden: !data.match.chatCode,
+            hidden: !showChat,
           },
           {
             label: presentational ? "Score" : "Report score",
@@ -403,10 +408,10 @@ function MatchActionSectionTabs({
         content={[
           {
             key: "chat",
-            hidden: !data.match.chatCode,
+            hidden: !showChat,
             element: (
               <>
-                {data.match.chatCode ? (
+                {showChat ? (
                   <Chat
                     rooms={rooms}
                     users={chatUsers}

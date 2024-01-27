@@ -5,7 +5,6 @@ import { Avatar } from "~/components/Avatar";
 import { Redirect } from "~/components/Redirect";
 import { UserIcon } from "~/components/icons/User";
 import { twitchThumbnailUrlToSrc } from "~/modules/twitch/utils";
-import { notFoundIfFalsy } from "~/utils/remix";
 import { tournamentRegisterPage, twitchUrl } from "~/utils/urls";
 import * as TournamentRepository from "../TournamentRepository.server";
 import { streamsByTournamentId } from "../core/streams.server";
@@ -14,14 +13,14 @@ import { useTournament } from "./to.$id";
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   const tournamentId = tournamentIdFromParams(params);
-  const tournament = notFoundIfFalsy(
-    await TournamentRepository.findById(tournamentId),
-  );
 
   return {
     streams: await streamsByTournamentId({
       tournamentId,
-      castTwitchAccounts: tournament.castTwitchAccounts,
+      castTwitchAccounts:
+        await TournamentRepository.findCastTwitchAccountsByTournamentId(
+          tournamentId,
+        ),
     }),
   };
 };

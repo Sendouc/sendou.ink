@@ -9,6 +9,7 @@ import type { MapPoolMap } from "~/db/types";
 import { useUser } from "~/features/auth/core";
 import { getUserId } from "~/features/auth/core/user.server";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
+import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.server";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
 import type {
   BracketType,
@@ -17,11 +18,9 @@ import type {
   TournamentMaplistSource,
 } from "~/modules/tournament-map-list-generator";
 import { createTournamentMapList } from "~/modules/tournament-map-list-generator";
-import { isTournamentAdmin } from "~/permissions";
 import mapsStyles from "~/styles/maps.css";
-import { notFoundIfFalsy, type SendouRouteHandle } from "~/utils/remix";
+import { type SendouRouteHandle } from "~/utils/remix";
 import { tournamentPage } from "~/utils/urls";
-import * as TournamentRepository from "../TournamentRepository.server";
 import { findMapPoolsByTournamentId } from "../queries/findMapPoolsByTournamentId.server";
 import { TOURNAMENT } from "../tournament-constants";
 import { tournamentIdFromParams } from "../tournament-utils";
@@ -43,12 +42,10 @@ type TeamInState = {
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const tournamentId = tournamentIdFromParams(params);
   const user = await getUserId(request);
-  const tournament = notFoundIfFalsy(
-    await TournamentRepository.findById(tournamentId),
-  );
+  const tournament = await tournamentFromDB({ tournamentId, user });
 
   const mapListGeneratorAvailable =
-    isTournamentAdmin({ user, tournament }) || tournament.showMapListGenerator;
+    tournament.isAdmin(user) || tournament.ctx.showMapListGenerator;
 
   if (!mapListGeneratorAvailable) {
     throw redirect(tournamentPage(tournamentId));

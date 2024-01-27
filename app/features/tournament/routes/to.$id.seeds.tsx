@@ -13,8 +13,8 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import type { LoaderFunctionArgs, ActionFunction } from "@remix-run/node";
 import {
   Link,
   useFetcher,
@@ -22,29 +22,29 @@ import {
   useNavigation,
 } from "@remix-run/react";
 import clsx from "clsx";
+import clone from "just-clone";
 import * as React from "react";
 import invariant from "tiny-invariant";
 import { Alert } from "~/components/Alert";
 import { Button } from "~/components/Button";
 import { Catcher } from "~/components/Catcher";
 import { Draggable } from "~/components/Draggable";
-import { useTimeoutState } from "~/hooks/useTimeoutState";
-import { useTournament } from "./to.$id";
 import { Image, TierImage } from "~/components/Image";
-import { navIconUrl, tournamentBracketsPage, userPage } from "~/utils/urls";
-import { requireUser } from "~/features/auth/core";
-import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
-import { seedsActionSchema } from "../tournament-schemas.server";
-import { updateTeamSeeds } from "../queries/updateTeamSeeds.server";
-import { tournamentIdFromParams } from "../tournament-utils";
-import hasTournamentStarted from "../queries/hasTournamentStarted.server";
-import { isTournamentOrganizer } from "~/permissions";
 import { SubmitButton } from "~/components/SubmitButton";
-import clone from "just-clone";
-import * as TournamentRepository from "../TournamentRepository.server";
+import { requireUser } from "~/features/auth/core";
 import { cachedFullUserLeaderboard } from "~/features/leaderboards/core/leaderboards.server";
 import { currentOrPreviousSeason } from "~/features/mmr/season";
-import type { TournamentDataTeam } from "~/features/tournament-bracket/core/Tournament.server";
+import {
+  tournamentFromDB,
+  type TournamentDataTeam,
+} from "~/features/tournament-bracket/core/Tournament.server";
+import { useTimeoutState } from "~/hooks/useTimeoutState";
+import { parseRequestFormData, validate } from "~/utils/remix";
+import { navIconUrl, tournamentBracketsPage, userPage } from "~/utils/urls";
+import { updateTeamSeeds } from "../queries/updateTeamSeeds.server";
+import { seedsActionSchema } from "../tournament-schemas.server";
+import { tournamentIdFromParams } from "../tournament-utils";
+import { useTournament } from "./to.$id";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const data = await parseRequestFormData({
@@ -53,14 +53,10 @@ export const action: ActionFunction = async ({ request, params }) => {
   });
   const user = await requireUser(request);
   const tournamentId = tournamentIdFromParams(params);
-  const tournament = notFoundIfFalsy(
-    await TournamentRepository.findById(tournamentId),
-  );
+  const tournament = await tournamentFromDB({ tournamentId, user });
 
-  const hasStarted = hasTournamentStarted(tournamentId);
-
-  validate(isTournamentOrganizer({ user, tournament }));
-  validate(!hasStarted, "Tournament has started");
+  validate(tournament.isOrganizer(user));
+  validate(!tournament.hasStarted, "Tournament has started");
 
   updateTeamSeeds({ tournamentId, teamIds: data.seeds });
 
@@ -70,12 +66,9 @@ export const action: ActionFunction = async ({ request, params }) => {
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const user = await requireUser(request);
   const tournamentId = tournamentIdFromParams(params);
-  const hasStarted = hasTournamentStarted(tournamentId);
-  const tournament = notFoundIfFalsy(
-    await TournamentRepository.findById(tournamentId),
-  );
+  const tournament = await tournamentFromDB({ tournamentId, user });
 
-  if (!isTournamentOrganizer({ user, tournament }) || hasStarted) {
+  if (!tournament.isOrganizer(user) || tournament.hasStarted) {
     throw redirect(tournamentBracketsPage({ tournamentId }));
   }
 

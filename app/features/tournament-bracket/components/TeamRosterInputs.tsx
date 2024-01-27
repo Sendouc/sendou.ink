@@ -61,6 +61,8 @@ export function TeamRosterInputs({
         const showWinnerRadio =
           !points || !presentational || winnerRadioChecked;
 
+        const seed = tournament.seedByTeamId(team.id);
+
         return (
           <div key={team.id}>
             <div className="text-xs text-lighter font-semi-bold stack horizontal xs items-center justify-center">
@@ -74,9 +76,11 @@ export function TeamRosterInputs({
               Team {teamI + 1}
             </div>
             <h4>
-              <span className="tournament-bracket__during-match-actions__seed">
-                #{data.seeds[teamI]}
-              </span>{" "}
+              {seed ? (
+                <span className="tournament-bracket__during-match-actions__seed">
+                  #{seed}
+                </span>
+              ) : null}{" "}
               <Link
                 to={tournamentTeamPage({
                   eventId: tournament.ctx.id,
