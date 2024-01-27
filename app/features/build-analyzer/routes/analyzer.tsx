@@ -78,7 +78,7 @@ import {
 import { PerInkTankGrid } from "../components/PerInkTankGrid";
 import invariant from "tiny-invariant";
 
-export const CURRENT_PATCH = "6.0";
+export const CURRENT_PATCH = "6.1";
 
 export const meta: MetaFunction = () => {
   return [
