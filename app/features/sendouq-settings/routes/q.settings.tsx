@@ -20,7 +20,10 @@ import { SpeakerFilledIcon } from "~/components/icons/SpeakerFilled";
 import { TrashIcon } from "~/components/icons/Trash";
 import type { Preference, Tables, UserMapModePreferences } from "~/db/tables";
 import { requireUserId } from "~/features/auth/core/user.server";
-import { soundCodeToLocalStorageKey, soundVolume } from "~/features/chat/chat-utils";
+import {
+  soundCodeToLocalStorageKey,
+  soundVolume,
+} from "~/features/chat/chat-utils";
 import * as QSettingsRepository from "~/features/sendouq-settings/QSettingsRepository.server";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "react-i18next";
@@ -672,15 +675,24 @@ function SoundSlider() {
     setVolume(soundVolume());
   }, []);
 
-  const saveVolume = (event: React.MouseEvent<HTMLInputElement> | React.TouchEvent<HTMLInputElement>) => {
+  const saveVolume = (
+    event:
+      | React.MouseEvent<HTMLInputElement>
+      | React.TouchEvent<HTMLInputElement>,
+  ) => {
     let newVolume;
-    if (typeof TouchEvent !== 'undefined' && event instanceof TouchEvent) {
-      newVolume = parseFloat((event.changedTouches[0].target as HTMLInputElement).value);
+    if (typeof TouchEvent !== "undefined" && event instanceof TouchEvent) {
+      newVolume = parseFloat(
+        (event.changedTouches[0].target as HTMLInputElement).value,
+      );
     } else {
       newVolume = parseFloat((event.target as HTMLInputElement).value);
     }
 
-    localStorage.setItem("settings__sound-volume", String(Math.floor(newVolume)));
+    localStorage.setItem(
+      "settings__sound-volume",
+      String(Math.floor(newVolume)),
+    );
 
     setVolume(newVolume);
     playSound();
@@ -694,13 +706,13 @@ function SoundSlider() {
 
   return (
     <div className="stack horizontal xs items-center ml-2-5">
-      <SpeakerFilledIcon className="q-settings__volume-slider-icon"/>
-      <input 
-        className="q-settings__volume-slider-input" 
-        type="range" 
-        defaultValue={volume} 
-        onTouchEnd={saveVolume} 
-        onMouseUp={saveVolume} 
+      <SpeakerFilledIcon className="q-settings__volume-slider-icon" />
+      <input
+        className="q-settings__volume-slider-input"
+        type="range"
+        defaultValue={volume}
+        onTouchEnd={saveVolume}
+        onMouseUp={saveVolume}
       />
     </div>
   );
