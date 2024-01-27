@@ -668,7 +668,7 @@ function SoundCheckboxes() {
 
 function SoundSlider() {
   const [volume, setVolume] = useState(() => {
-    return soundVolume();
+    return soundVolume() || 100;
   });
 
   const changeVolume = (event: React.ChangeEvent<HTMLInputElement>) => {
