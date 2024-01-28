@@ -392,15 +392,33 @@ class DoubleEliminationBracket extends Bracket {
     };
     const placementsToRoundsIds = (
       data: ValueToArray<DataTypes>,
-      groupId: number,
+      losersGroupId: number,
     ) => {
+      const firstRoundIsOnlyByes = () => {
+        const losersMatches = data.match.filter(
+          (match) => match.group_id === losersGroupId,
+        );
+
+        const fistRoundId = Math.min(...losersMatches.map((m) => m.round_id));
+
+        const firstRoundMatches = losersMatches.filter(
+          (match) => match.round_id === fistRoundId,
+        );
+
+        return firstRoundMatches.every(
+          (match) => match.opponent1 === null || match.opponent2 === null,
+        );
+      };
+
       const losersRounds = data.round.filter(
-        (round) => round.group_id === groupId,
+        (round) => round.group_id === losersGroupId,
       );
       const orderedRoundsIds = losersRounds
         .map((round) => round.id)
         .sort((a, b) => a - b);
-      const amountOfRounds = Math.abs(Math.min(...placements));
+      const amountOfRounds =
+        Math.abs(Math.min(...placements)) + (firstRoundIsOnlyByes() ? 1 : 0);
+
       return orderedRoundsIds.slice(0, amountOfRounds);
     };
 

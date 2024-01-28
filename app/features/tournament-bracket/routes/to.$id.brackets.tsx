@@ -197,7 +197,6 @@ export const action: ActionFunction = async ({ params, request }) => {
   return null;
 };
 
-// xxx: DE underground handle first round being all byes (PICNIC 5)
 export default function TournamentBracketsPage() {
   const { t } = useTranslation(["tournament"]);
   const visibility = useVisibilityChange();
