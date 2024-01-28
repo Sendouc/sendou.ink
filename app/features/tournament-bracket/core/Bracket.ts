@@ -469,10 +469,19 @@ class RoundRobinBracket extends Bracket {
     const relevantMatchesFinished =
       standings.length === this.data.participant.length;
 
+    const uniquePlacements = removeDuplicates(
+      standings.map((s) => s.placement),
+    );
+
+    // 1,3,5 -> 1,2,3 e.g.
+    const placementNormalized = (p: number) => {
+      return uniquePlacements.indexOf(p) + 1;
+    };
+
     return {
       relevantMatchesFinished,
       teams: standings
-        .filter((s) => placements.includes(s.placement))
+        .filter((s) => placements.includes(placementNormalized(s.placement)))
         .map((s) => ({ id: s.team.id, name: s.team.name })),
     };
   }
@@ -642,7 +651,7 @@ class RoundRobinBracket extends Bracket {
       );
     }
 
-    return placements.sort((a, b) => {
+    const sorted = placements.sort((a, b) => {
       if (a.placement < b.placement) return -1;
       if (a.placement > b.placement) return 1;
 
@@ -650,6 +659,21 @@ class RoundRobinBracket extends Bracket {
       if (a.groupId > b.groupId) return 1;
 
       return 0;
+    });
+
+    let lastPlacement = 0;
+    let currentPlacement = 1;
+    let teamsEncountered = 0;
+    return sorted.map((team) => {
+      if (team.placement !== lastPlacement) {
+        lastPlacement = team.placement;
+        currentPlacement = teamsEncountered + 1;
+      }
+      teamsEncountered++;
+      return {
+        ...team,
+        placement: currentPlacement,
+      };
     });
   }
 

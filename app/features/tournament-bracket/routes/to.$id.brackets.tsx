@@ -143,16 +143,9 @@ export const action: ActionFunction = async ({ params, request }) => {
       break;
     }
     case "FINALIZE_TOURNAMENT": {
-      validate(tournament.isOrganizer(user));
-
-      validate(tournament.everyBracketOver, "Not every match is over");
+      validate(tournament.canFinalize(user), "Can't finalize tournament");
 
       const _finalStandings = tournament.standings;
-      // xxx: rr->se standings
-      invariant(
-        _finalStandings.length === tournament.ctx.teams.length,
-        `Final standings length (${_finalStandings.length}) does not match teams length (${tournament.ctx.teams.length})`,
-      );
 
       const results = allMatchResultsByTournamentId(tournamentId);
       invariant(results.length > 0, "No results found");
@@ -204,7 +197,6 @@ export const action: ActionFunction = async ({ params, request }) => {
   return null;
 };
 
-// xxx: allow for underground bracket to be skipped?
 // xxx: DE underground handle first round being all byes (PICNIC 5)
 export default function TournamentBracketsPage() {
   const { t } = useTranslation(["tournament"]);
@@ -317,6 +309,7 @@ export default function TournamentBracketsPage() {
   }, [visibility, revalidate, tournament.everyBracketOver]);
 
   const showAddSubsButton =
+    !tournament.canFinalize(user) &&
     !tournament.everyBracketOver &&
     tournament.ownedTeamByUser(user) &&
     tournament.hasStarted;
@@ -367,9 +360,7 @@ export default function TournamentBracketsPage() {
       {visibility !== "hidden" && !tournament.everyBracketOver ? (
         <AutoRefresher />
       ) : null}
-      {tournament.everyBracketOver &&
-      !tournament.ctx.isFinalized &&
-      tournament.isOrganizer(user) ? (
+      {tournament.canFinalize(user) ? (
         <div className="tournament-bracket__finalize">
           <FormWithConfirm
             dialogHeading={t("tournament:actions.finalize.confirm")}
@@ -435,7 +426,7 @@ export default function TournamentBracketsPage() {
           <AddSubsPopOver />
         ) : null}
       </div>
-      {tournament.everyBracketOver ? (
+      {tournament.ctx.isFinalized || tournament.canFinalize(user) ? (
         <FinalStandings standings={tournament.standings} />
       ) : null}
       <BracketNav bracketIdx={bracketIdx} setBracketIdx={setBracketIdx} />
@@ -588,6 +579,11 @@ function FinalStandings({ standings }: { standings: Standing[] }) {
 
   // eslint-disable-next-line prefer-const
   let [first, second, third, ...rest] = standings;
+
+  if (third.placement === rest[0]?.placement) {
+    rest.unshift(third);
+    third = undefined as unknown as Standing;
+  }
 
   const onlyTwoTeams = !third;
 
@@ -747,6 +743,14 @@ function BracketNav({
   return (
     <div className="stack sm horizontal flex-wrap">
       {tournament.ctx.settings.bracketProgression.map((bracket, i) => {
+        // underground bracket was never played despite being in the format
+        if (
+          tournament.bracketByIdxOrDefault(i).preview &&
+          tournament.ctx.isFinalized
+        ) {
+          return null;
+        }
+
         return (
           <Button
             key={bracket.name}

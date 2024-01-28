@@ -288,6 +288,8 @@ export class Tournament {
   }
 
   get everyBracketOver() {
+    if (this.ctx.isFinalized) return true;
+
     return this.brackets.every((bracket) => bracket.everyMatchOver);
   }
 
@@ -328,9 +330,36 @@ export class Tournament {
         return bracket.standings;
       }
 
-      // TODO: a bit more complex for RR->SE than this
       if (bracket.name === BRACKET_NAMES.FINALS) {
-        return bracket.standings;
+        const finalsStandings = bracket.standings;
+
+        const firstStageStandings = this.brackets[0].standings;
+
+        const uniqueFinalsPlacements = new Set<number>();
+        const firstStageWithoutFinalsParticipants = firstStageStandings.filter(
+          (firstStageStanding) => {
+            const isFinalsParticipant = finalsStandings.some(
+              (finalsStanding) =>
+                finalsStanding.team.id === firstStageStanding.team.id,
+            );
+
+            if (isFinalsParticipant) {
+              uniqueFinalsPlacements.add(firstStageStanding.placement);
+            }
+
+            return !isFinalsParticipant;
+          },
+        );
+
+        return [
+          ...finalsStandings,
+          ...firstStageWithoutFinalsParticipants.filter(
+            // handle edge case where teams didn't check in to the final stage despite being qualified
+            // although this would bug out if all teams of certain placement fail to check in
+            // but probably that should not happen too likely
+            (p) => !uniqueFinalsPlacements.has(p.placement),
+          ),
+        ];
       }
     }
 
@@ -339,8 +368,15 @@ export class Tournament {
   }
 
   canFinalize(user: OptionalIdObject) {
+    // can skip underground bracket
+    const relevantBrackets = this.brackets.filter(
+      (b) => !b.preview || !b.isUnderground,
+    );
+
     return (
-      this.everyBracketOver && this.isOrganizer(user) && !this.ctx.isFinalized
+      relevantBrackets.every((b) => b.everyMatchOver) &&
+      this.isOrganizer(user) &&
+      !this.ctx.isFinalized
     );
   }
 
