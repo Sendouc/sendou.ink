@@ -193,7 +193,7 @@ function SetInfo({ set, team }: { set: PlayedSet; team: TournamentDataTeam }) {
           {t(`tournament:${tournamentRoundI18nKey(set.round)}`, {
             round: set.round.round,
           })}{" "}
-          - {t(`tournament:bracket.${set.bracket}`)}
+          - {set.stageName}
         </Link>
       </div>
       <div className="overlap-divider">

@@ -80,8 +80,6 @@
   "bracket.single_elim.finals": "ファイナル",
   "bracket.grand_finals": "グランド・ファイナル",
   "bracket.grand_finals.bracket_reset": "ブラケットをリセット",
-  "bracket.main": "メイン・ブラケット",
-  "bracket.underground": "アンダーグラウンド・ブラケット",
 
   "actions.addSub": "サブを追加",
   "actions.shareLink": "メンバー招待リンクをシェアする: {{inviteLink}}",

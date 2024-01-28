@@ -80,8 +80,6 @@
   "bracket.single_elim.finals": "单败制决赛",
   "bracket.grand_finals": "总决赛",
   "bracket.grand_finals.bracket_reset": "加赛",
-  "bracket.main": "主对战表",
-  "bracket.underground": "副对战表",
 
   "actions.addSub": "添加替补",
   "actions.shareLink": "分享您的邀请链接以添加成员: {{inviteLink}}",

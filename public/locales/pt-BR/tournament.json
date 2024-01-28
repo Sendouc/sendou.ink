@@ -80,8 +80,6 @@
   "bracket.single_elim.finals": "Finais",
   "bracket.grand_finals": "Grandes Finais",
   "bracket.grand_finals.bracket_reset": "Reset do Bracket",
-  "bracket.main": "Bracket Principal",
-  "bracket.underground": "Bracket Subterrâneo",
 
   "actions.addSub": "Adicionar substituto(a)",
   "actions.shareLink": "Compartilhe seu link de convite para adicionar membros: {{inviteLink}}",

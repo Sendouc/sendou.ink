@@ -10,6 +10,7 @@ import { sourceTypes } from "~/modules/tournament-map-list-generator";
 import invariant from "tiny-invariant";
 import type { Tables } from "~/db/tables";
 import { logger } from "~/utils/logger";
+import { BRACKET_NAMES } from "../tournament-constants";
 
 export interface PlayedSet {
   tournamentMatchId: number;
@@ -18,7 +19,7 @@ export interface PlayedSet {
     type: "winners" | "losers" | "single_elim" | "round_robin";
     round: number | "finals" | "grand_finals" | "bracket_reset";
   };
-  bracket: "main" | "underground";
+  stageName: string;
   maps: Array<{
     stageId: StageId;
     modeShort: ModeShort;
@@ -92,14 +93,6 @@ export function tournamentTeamSets({
     const round =
       allRounds.find((round) => round.stageId === set.stageId) ?? allRounds[0];
 
-    const resolveBracket = () => {
-      if (round.stageName.toLowerCase().includes("underground")) {
-        return "underground";
-      }
-
-      return "main";
-    };
-
     const resolveRound = () => {
       if (set.groupNumber === 3) {
         if (set.roundNumber === 2) return "bracket_reset";
@@ -117,14 +110,19 @@ export function tournamentTeamSets({
           .map((round) => round.roundNumber),
       );
 
-      if (set.roundNumber === maxRoundNumberOfGroup) return "finals";
+      if (
+        round.stageName !== BRACKET_NAMES.GROUPS &&
+        set.roundNumber === maxRoundNumberOfGroup
+      ) {
+        return "finals";
+      }
 
       return set.roundNumber;
     };
 
     return {
       tournamentMatchId: set.tournamentMatchId,
-      bracket: resolveBracket(),
+      stageName: round.stageName,
       round: {
         round: resolveRound(),
         type: resolveRoundType({

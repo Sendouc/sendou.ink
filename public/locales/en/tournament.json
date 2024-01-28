@@ -86,8 +86,6 @@
   "bracket.single_elim.finals": "Finals",
   "bracket.grand_finals": "Grand Finals",
   "bracket.grand_finals.bracket_reset": "Bracket Reset",
-  "bracket.main": "Main Bracket",
-  "bracket.underground": "Underground Bracket",
 
   "actions.addSub": "Add sub",
   "actions.shareLink": "Share your invite link to add members: {{inviteLink}}",

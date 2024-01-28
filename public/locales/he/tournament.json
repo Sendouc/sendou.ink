@@ -80,8 +80,6 @@
   "bracket.single_elim.finals": "גמר",
   "bracket.grand_finals": "הגמר הגדול",
   "bracket.grand_finals.bracket_reset": "מערך אופס",
-  "bracket.main": "מערך ראשי",
-  "bracket.underground": "מערך תת קרקעי",
 
   "actions.addSub": "הוסיפו ממלא מקום",
   "actions.shareLink": "שתפו קישור הזמנה להוספת חברי צוות: {{inviteLink}}",
