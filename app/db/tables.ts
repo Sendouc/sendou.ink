@@ -380,6 +380,7 @@ export type TournamentBracketProgression = {
 
 export interface TournamentSettings {
   bracketProgression: TournamentBracketProgression;
+  teamsPerGroup?: number;
 }
 
 export interface Tournament {

@@ -7,6 +7,8 @@ export const TOURNAMENT = {
   DEFAULT_TEAM_MAX_MEMBERS_BEFORE_START: 6,
   AVAILABLE_BEST_OF: [3, 5, 7] as const,
   ENOUGH_TEAMS_TO_START: 2,
+  MIN_GROUP_SIZE: 3,
+  MAX_GROUP_SIZE: 6,
 } as const;
 
 export const BRACKET_NAMES = {
@@ -15,3 +17,6 @@ export const BRACKET_NAMES = {
   GROUPS: "Group stage",
   FINALS: "Final stage",
 };
+
+export const FORMATS_SHORT = ["DE", "RR_TO_SE"] as const;
+export type TournamentFormatShort = (typeof FORMATS_SHORT)[number];

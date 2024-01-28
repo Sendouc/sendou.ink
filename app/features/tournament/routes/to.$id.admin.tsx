@@ -244,7 +244,7 @@ export default function TournamentAdminPage() {
 
   return (
     <div className="stack lg">
-      {tournament.isAdmin(user) ? (
+      {tournament.isAdmin(user) && !tournament.hasStarted ? (
         <div className="stack horizontal items-end">
           <LinkButton
             to={calendarEditPage(tournament.ctx.eventId)}
@@ -253,24 +253,22 @@ export default function TournamentAdminPage() {
           >
             Edit event info
           </LinkButton>
-          {!tournament.hasStarted ? (
-            <FormWithConfirm
-              dialogHeading={t("calendar:actions.delete.confirm", {
-                name: tournament.ctx.name,
-              })}
-              action={calendarEventPage(tournament.ctx.eventId)}
-              submitButtonTestId="delete-submit-button"
+          <FormWithConfirm
+            dialogHeading={t("calendar:actions.delete.confirm", {
+              name: tournament.ctx.name,
+            })}
+            action={calendarEventPage(tournament.ctx.eventId)}
+            submitButtonTestId="delete-submit-button"
+          >
+            <Button
+              className="ml-auto"
+              size="tiny"
+              variant="minimal-destructive"
+              type="submit"
             >
-              <Button
-                className="ml-auto"
-                size="tiny"
-                variant="minimal-destructive"
-                type="submit"
-              >
-                {t("calendar:actions.delete")}
-              </Button>
-            </FormWithConfirm>
-          ) : null}
+              {t("calendar:actions.delete")}
+            </Button>
+          </FormWithConfirm>
         </div>
       ) : null}
       <Divider smallText>Team actions</Divider>

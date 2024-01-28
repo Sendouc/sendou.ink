@@ -126,7 +126,7 @@ export class Tournament {
               type === "round_robin"
                 ? seeding
                 : fillWithNullTillPowerOfTwo(seeding),
-            settings: this.bracketSettings(type),
+            settings: this.bracketSettings(type, checkedInTeams.length),
           });
         }
 
@@ -211,6 +211,7 @@ export class Tournament {
 
   bracketSettings(
     type: TournamentBracketProgression[number]["type"],
+    participantsCount: number,
   ): Stage["settings"] {
     switch (type) {
       case "single_elimination":
@@ -221,8 +222,9 @@ export class Tournament {
         };
       case "round_robin":
         return {
-          // xxx: resolve from settings
-          groupCount: 2,
+          groupCount: Math.ceil(
+            participantsCount / (this.ctx.settings.teamsPerGroup ?? 4),
+          ),
           seedOrdering: ["groups.seed_optimized"],
         };
       default: {

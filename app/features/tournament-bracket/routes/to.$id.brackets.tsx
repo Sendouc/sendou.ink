@@ -99,14 +99,19 @@ export const action: ActionFunction = async ({ params, request }) => {
       validate(bracket.canBeStarted, "Bracket is not ready to be started");
 
       sql.transaction(() => {
+        const participants = bracket.data.participant.map((p) => p.name);
         const stage = manager.create({
           tournamentId,
           name: bracket.name,
           type: bracket.type,
-          seeding: fillWithNullTillPowerOfTwo(
-            bracket.data.participant.map((p) => p.name),
+          seeding:
+            bracket.type === "round_robin"
+              ? participants
+              : fillWithNullTillPowerOfTwo(participants),
+          settings: tournament.bracketSettings(
+            bracket.type,
+            participants.length,
           ),
-          settings: tournament.bracketSettings(bracket.type),
         });
 
         const matches = findAllMatchesByStageId(stage.id);
@@ -200,6 +205,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 };
 
 // xxx: allow for underground bracket to be skipped?
+// xxx: DE underground handle first round being all byes (PICNIC 5)
 export default function TournamentBracketsPage() {
   const { t } = useTranslation(["tournament"]);
   const visibility = useVisibilityChange();
@@ -327,6 +333,35 @@ export default function TournamentBracketsPage() {
     });
   };
 
+  const teamsSourceText = () => {
+    if (
+      tournament.brackets[0].type === "round_robin" &&
+      !bracket.isUnderground
+    ) {
+      return `Teams that place in the top ${Math.max(
+        ...(bracket.sources ?? []).flatMap((s) => s.placements),
+      )} of their group will advance to this stage`;
+    }
+
+    if (
+      tournament.brackets[0].type === "round_robin" &&
+      bracket.isUnderground
+    ) {
+      return "Teams that don't advance to the final stage can play in this bracket (optional)";
+    }
+
+    if (
+      tournament.brackets[0].type === "double_elimination" &&
+      bracket.isUnderground
+    ) {
+      return `Teams that get eliminated in the first ${Math.abs(
+        Math.min(...(bracket.sources ?? []).flatMap((s) => s.placements)),
+      )} rounds of the losers bracket can play in this bracket (optional)`;
+    }
+
+    return null;
+  };
+
   return (
     <div>
       {visibility !== "hidden" && !tournament.everyBracketOver ? (
@@ -406,8 +441,15 @@ export default function TournamentBracketsPage() {
       <BracketNav bracketIdx={bracketIdx} setBracketIdx={setBracketIdx} />
       <div className="brackets-viewer" ref={ref} />
       {!bracket.enoughTeams ? (
-        <div className="text-center text-lg font-semi-bold text-lighter mt-6">
-          {waitingForTeamsText()}
+        <div>
+          <div className="text-center text-lg font-semi-bold text-lighter mt-6">
+            {waitingForTeamsText()}
+          </div>
+          {bracket.sources ? (
+            <div className="text-center text-sm font-semi-bold text-lighter mt-2">
+              {teamsSourceText()}
+            </div>
+          ) : null}
         </div>
       ) : null}
     </div>
