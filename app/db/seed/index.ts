@@ -75,6 +75,8 @@ const calendarEventWithToToolsSz = () => calendarEventWithToTools("ITZ");
 const calendarEventWithToToolsTeamsSz = () =>
   calendarEventWithToToolsTeams("ITZ");
 const calendarEventWithToToolsPP = () => calendarEventWithToTools("PP");
+const calendarEventWithToToolsPPRegOpen = () =>
+  calendarEventWithToTools("PP", true);
 const calendarEventWithToToolsTeamsPP = () =>
   calendarEventWithToToolsTeams("PP");
 
@@ -107,11 +109,13 @@ const basicSeeds = (variation?: SeedVariation | null) => [
   variation === "NO_TOURNAMENT_TEAMS" || variation === "REG_OPEN"
     ? undefined
     : calendarEventWithToToolsTeams,
-  variation === "NO_TOURNAMENT_TEAMS" ? undefined : calendarEventWithToToolsSz,
+  calendarEventWithToToolsSz,
   variation === "NO_TOURNAMENT_TEAMS"
     ? undefined
     : calendarEventWithToToolsTeamsSz,
-  variation === "NO_TOURNAMENT_TEAMS" ? undefined : calendarEventWithToToolsPP,
+  variation === "REG_OPEN"
+    ? calendarEventWithToToolsPPRegOpen
+    : calendarEventWithToToolsPP,
   variation === "NO_TOURNAMENT_TEAMS"
     ? undefined
     : calendarEventWithToToolsTeamsPP,
@@ -1045,8 +1049,8 @@ function calendarEventWithToToolsTeams(
         inviteCode: nanoid(INVITE_CODE_LENGTH),
       });
 
-    // in PICNIC Chimera is not checked in
-    if (event !== "PICNIC" || teamId !== 1) {
+    // in PICNIC & PP Chimera is not checked in
+    if (teamId !== 1 && teamId !== 201) {
       sql
         .prepare(
           `

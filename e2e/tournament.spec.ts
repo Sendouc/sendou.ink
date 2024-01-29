@@ -93,7 +93,7 @@ test.describe("Tournament", () => {
 
     await navigate({
       page,
-      url: tournamentBracketsPage({ tournamentId: 1 }),
+      url: tournamentBracketsPage({ tournamentId: 3 }),
     });
 
     await isNotVisible(page.getByText("Chimera"));
@@ -102,7 +102,8 @@ test.describe("Tournament", () => {
     await page.getByTestId("check-in-button").click();
 
     await page.getByTestId("brackets-tab").click();
-    await page.getByText("#1 Chimera").waitFor();
+    await expect(page.getByTestId("brackets-viewer")).toBeVisible();
+    await page.getByText("Chimera").nth(0).waitFor();
   });
 
   test("operates admin controls", async ({ page }) => {
