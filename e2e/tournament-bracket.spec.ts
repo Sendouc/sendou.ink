@@ -1,13 +1,26 @@
 import { type Page, test, expect } from "@playwright/test";
 import { ADMIN_DISCORD_ID } from "~/constants";
 import { NZAP_TEST_ID } from "~/db/seed/constants";
-import { impersonate, navigate, seed, submit } from "~/utils/playwright";
+import {
+  impersonate,
+  isNotVisible,
+  navigate,
+  seed,
+  submit,
+} from "~/utils/playwright";
 import {
   tournamentBracketsPage,
   tournamentPage,
   userResultsPage,
 } from "~/utils/urls";
 import { startBracket } from "./shared";
+
+const navigateToMatch = async (page: Page, matchId: number) => {
+  await expect(async () => {
+    await page.locator(`[data-match-id="${matchId}"]`).click();
+    await expect(page.getByTestId("match-header")).toBeVisible();
+  }).toPass();
+};
 
 const reportResult = async (
   page: Page,
@@ -58,8 +71,10 @@ const reportResult = async (
   }
 };
 
-const backToBracket = (page: Page) =>
-  page.getByTestId("back-to-bracket-button").click();
+const backToBracket = async (page: Page) => {
+  await page.getByTestId("back-to-bracket-button").click();
+  await expect(page.getByTestId("brackets-viewer")).toBeVisible();
+};
 
 const expectScore = (page: Page, score: [number, number]) =>
   expect(page.getByText(score.join("-"))).toBeVisible();
@@ -93,29 +108,28 @@ test.describe("Tournament bracket", () => {
       page,
       url: tournamentBracketsPage({ tournamentId }),
     });
-    await page.locator('[data-match-id="6"]').click();
+    await navigateToMatch(page, 6);
     await reportResult(page, 2);
     await backToBracket(page);
 
     // 3)
-    await page.locator('[data-match-id="18"]').click();
+    await navigateToMatch(page, 18);
     await reportResult(page, 1, ["first", "last"]);
     await backToBracket(page);
 
     // 4)
-    await page.locator('[data-match-id="5"]').click();
-    await page.getByTestId("reopen-match-button").click();
-    await expect(page.getByTestId("match-is-locked-button")).toBeVisible();
+    await navigateToMatch(page, 5);
+    await isNotVisible(page.getByTestId("reopen-match-button"));
     await backToBracket(page);
 
     // 5)
-    await page.locator('[data-match-id="18"]').click();
+    await navigateToMatch(page, 18);
     await page.getByTestId("undo-score-button").click();
     await expectScore(page, [0, 0]);
     await backToBracket(page);
 
     // 6)
-    await page.locator('[data-match-id="5"]').click();
+    await navigateToMatch(page, 5);
     await page.getByTestId("reopen-match-button").click();
     await expectScore(page, [1, 0]);
 
@@ -125,7 +139,7 @@ test.describe("Tournament bracket", () => {
       page,
       url: tournamentBracketsPage({ tournamentId }),
     });
-    await page.locator('[data-match-id="5"]').click();
+    await navigateToMatch(page, 5);
     await page.getByTestId("undo-score-button").click();
     await expectScore(page, [0, 0]);
     await reportResult(page, 2, ["last"], 2);

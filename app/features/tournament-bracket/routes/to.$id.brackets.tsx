@@ -429,7 +429,11 @@ export default function TournamentBracketsPage() {
         <FinalStandings standings={tournament.standings} />
       ) : null}
       <BracketNav bracketIdx={bracketIdx} setBracketIdx={setBracketIdx} />
-      <div className="brackets-viewer" ref={ref} />
+      <div
+        className="brackets-viewer"
+        ref={ref}
+        data-testid="brackets-viewer"
+      />
       {!bracket.enoughTeams ? (
         <div>
           <div className="text-center text-lg font-semi-bold text-lighter mt-6">
@@ -579,7 +583,7 @@ function FinalStandings({ standings }: { standings: Standing[] }) {
   // eslint-disable-next-line prefer-const
   let [first, second, third, ...rest] = standings;
 
-  if (third.placement === rest[0]?.placement) {
+  if (third && third.placement === rest[0]?.placement) {
     rest.unshift(third);
     third = undefined as unknown as Standing;
   }

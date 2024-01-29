@@ -247,7 +247,6 @@ class DoubleEliminationBracket extends Bracket {
 
   get standings(): Standing[] {
     const losersGroupId = this.data.group.find((g) => g.number === 2)?.id;
-    invariant(losersGroupId, "Losers group not found");
 
     const teams: { id: number; lostAt: number }[] = [];
 
@@ -297,15 +296,22 @@ class DoubleEliminationBracket extends Bracket {
       }
     }
 
-    const grandFinalsGroupId = this.data.group.find((g) => g.number === 3)?.id;
+    // edge case: 1 match only
+    const noLosersRounds = !losersGroupId;
+    const grandFinalsNumber = noLosersRounds ? 1 : 3;
+    const grandFinalsGroupId = this.data.group.find(
+      (g) => g.number === grandFinalsNumber,
+    )?.id;
     invariant(grandFinalsGroupId, "GF group not found");
     const grandFinalMatches = this.data.match.filter(
       (match) => match.group_id === grandFinalsGroupId,
     );
-    invariant(grandFinalMatches.length === 2, "GF matches incorrect amount");
 
-    // if opponent1 won it means that bracket reset is not played
-    if (grandFinalMatches[0].opponent1?.result === "win") {
+    // if opponent1 won in DE it means that bracket reset is not played
+    if (
+      grandFinalMatches[0].opponent1 &&
+      (noLosersRounds || grandFinalMatches[0].opponent1.result === "win")
+    ) {
       const loserTeam = this.tournament.teamById(
         grandFinalMatches[0].opponent2!.id!,
       );

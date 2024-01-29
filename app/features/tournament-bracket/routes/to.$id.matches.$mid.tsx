@@ -347,7 +347,9 @@ export default function TournamentMatchPage() {
       {!data.matchIsOver && visibility !== "hidden" ? <AutoRefresher /> : null}
       <div className="flex horizontal justify-between items-center">
         {/* TODO: better title */}
-        <h2 className="text-lighter text-lg">Match #{data.match.id}</h2>
+        <h2 className="text-lighter text-lg" data-testid="match-header">
+          Match #{data.match.id}
+        </h2>
         <LinkButton
           to={tournamentBracketsPage({
             tournamentId: tournament.ctx.id,
