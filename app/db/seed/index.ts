@@ -69,6 +69,8 @@ import {
 } from "./constants";
 import placements from "./placements.json";
 
+const calendarEventWithToToolsRegOpen = () =>
+  calendarEventWithToTools("PICNIC", true);
 const calendarEventWithToToolsSz = () => calendarEventWithToTools("ITZ");
 const calendarEventWithToToolsTeamsSz = () =>
   calendarEventWithToToolsTeams("ITZ");
@@ -98,9 +100,11 @@ const basicSeeds = (variation?: SeedVariation | null) => [
   calendarEvents,
   calendarEventBadges,
   calendarEventResults,
-  calendarEventWithToTools,
+  variation === "REG_OPEN"
+    ? calendarEventWithToToolsRegOpen
+    : calendarEventWithToTools,
   calendarEventWithToToolsTieBreakerMapPool,
-  variation === "NO_TOURNAMENT_TEAMS"
+  variation === "NO_TOURNAMENT_TEAMS" || variation === "REG_OPEN"
     ? undefined
     : calendarEventWithToToolsTeams,
   variation === "NO_TOURNAMENT_TEAMS" ? undefined : calendarEventWithToToolsSz,
@@ -816,7 +820,10 @@ async function calendarEventResults() {
 }
 
 const TO_TOOLS_CALENDAR_EVENT_ID = 201;
-function calendarEventWithToTools(event: "PICNIC" | "ITZ" | "PP" = "PICNIC") {
+function calendarEventWithToTools(
+  event: "PICNIC" | "ITZ" | "PP" = "PICNIC",
+  registrationOpen: boolean = false,
+) {
   const tournamentId = {
     PICNIC: 1,
     ITZ: 2,
@@ -919,6 +926,8 @@ function calendarEventWithToTools(event: "PICNIC" | "ITZ" | "PP" = "PICNIC") {
       tournamentId,
     });
 
+  const halfAnHourFromNow = new Date(Date.now() + 1000 * 60 * 30);
+
   sql
     .prepare(
       `
@@ -933,7 +942,11 @@ function calendarEventWithToTools(event: "PICNIC" | "ITZ" | "PP" = "PICNIC") {
     )
     .run({
       eventId,
-      startTime: dateToDatabaseTimestamp(new Date(Date.now() - 1000 * 60 * 60)),
+      startTime: dateToDatabaseTimestamp(
+        registrationOpen
+          ? halfAnHourFromNow
+          : new Date(Date.now() - 1000 * 60 * 60),
+      ),
     });
 }
 
@@ -1000,7 +1013,7 @@ function calendarEventWithToToolsTeams(
     PP: 200,
   }[event];
 
-  for (let id = 1; id <= (event === "ITZ" ? 8 : 16); id++) {
+  for (let id = 1; id <= 16; id++) {
     const teamId = id + teamIdAddition;
 
     const name = names.pop();

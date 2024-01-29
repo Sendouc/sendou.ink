@@ -51,7 +51,7 @@ const getTeamCheckedInAt = ({
 
 test.describe("Tournament", () => {
   test("registers for tournament", async ({ page }) => {
-    await seed(page, "NO_TOURNAMENT_TEAMS");
+    await seed(page, "REG_OPEN");
     await impersonate(page);
 
     await navigate({
@@ -88,7 +88,7 @@ test.describe("Tournament", () => {
   });
 
   test("checks in and appears on the bracket", async ({ page }) => {
-    await seed(page);
+    await seed(page, "REG_OPEN");
     await impersonate(page);
 
     await navigate({
