@@ -58,9 +58,13 @@ export default function TournamentTeamPage() {
       <TeamWithRoster
         team={team}
         mapPool={team.mapPool}
-        activePlayers={tournament
-          .participatedPlayersByTeamId(team.id)
-          .map((p) => p.userId)}
+        activePlayers={
+          data.sets.length > 0
+            ? tournament
+                .participatedPlayersByTeamId(team.id)
+                .map((p) => p.userId)
+            : undefined
+        }
       />
       {data.winCounts.sets.total > 0 ? (
         <StatSquares
