@@ -22,9 +22,6 @@ export enum Status {
 
   /** The match is completed. */
   Completed = 4,
-
-  /** At least one participant completed his following match. */
-  Archived = 5,
 }
 
 /**
@@ -42,6 +39,9 @@ export interface ParticipantResult {
 
   /** The current score of the participant. */
   score?: number;
+
+  /** How many points in total participant scored in total this set. KO = 100 points. Getting KO'd = 0 points. */
+  totalPoints?: number;
 
   /** Tells what is the result of a duel for this participant. */
   result?: Result;

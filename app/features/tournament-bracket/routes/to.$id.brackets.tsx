@@ -1,27 +1,39 @@
-import type {
-  ActionFunction,
-  LinksFunction,
-  LoaderFunctionArgs,
-  SerializeFrom,
-} from "@remix-run/node";
+import type { ActionFunction, LinksFunction } from "@remix-run/node";
 import {
   Form,
   Link,
-  useLoaderData,
+  useFetcher,
   useNavigate,
-  useOutletContext,
   useRevalidator,
 } from "@remix-run/react";
+import clsx from "clsx";
 import * as React from "react";
-import bracketViewerStyles from "../brackets-viewer.css";
-import bracketStyles from "../tournament-bracket.css";
-import { findTeamsByTournamentId } from "../../tournament/queries/findTeamsByTournamentId.server";
+import { useTranslation } from "react-i18next";
+import { useCopyToClipboard } from "react-use";
+import { useEventSource } from "remix-utils/sse/react";
+import invariant from "tiny-invariant";
 import { Alert } from "~/components/Alert";
+import { Button } from "~/components/Button";
+import { Divider } from "~/components/Divider";
+import { FormWithConfirm } from "~/components/FormWithConfirm";
+import { Popover } from "~/components/Popover";
 import { SubmitButton } from "~/components/SubmitButton";
-import { getTournamentManager } from "../core/brackets-manager";
-import hasTournamentStarted from "../../tournament/queries/hasTournamentStarted.server";
-import { findByIdentifier } from "../../tournament/queries/findByIdentifier.server";
-import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
+import { sql } from "~/db/sql";
+import { Status } from "~/db/types";
+import { requireUser, useUser } from "~/features/auth/core";
+import {
+  currentSeason,
+  queryCurrentTeamRating,
+  queryCurrentUserRating,
+} from "~/features/mmr";
+import { queryTeamPlayerRatingAverage } from "~/features/mmr/mmr-utils.server";
+import { TOURNAMENT, tournamentIdFromParams } from "~/features/tournament";
+import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
+import { HACKY_isInviteOnlyEvent } from "~/features/tournament/tournament-utils";
+import { useSearchParamState } from "~/hooks/useSearchParamState";
+import { useVisibilityChange } from "~/hooks/useVisibilityChange";
+import { parseRequestFormData, validate } from "~/utils/remix";
+import { assertUnreachable } from "~/utils/types";
 import {
   SENDOU_INK_BASE_URL,
   tournamentBracketsSubscribePage,
@@ -30,61 +42,28 @@ import {
   tournamentTeamPage,
   userPage,
 } from "~/utils/urls";
-import type { TournamentLoaderData } from "../../tournament/routes/to.$id";
+import { useTournament } from "../../tournament/routes/to.$id";
+import bracketViewerStyles from "../brackets-viewer.css";
+import { tournamentFromDB } from "../core/Tournament.server";
 import { resolveBestOfs } from "../core/bestOf.server";
-import { findAllMatchesByTournamentId } from "../queries/findAllMatchesByTournamentId.server";
+import { getTournamentManager } from "../core/brackets-manager";
+import { tournamentSummary } from "../core/summarizer.server";
+import { addSummary } from "../queries/addSummary.server";
+import { allMatchResultsByTournamentId } from "../queries/allMatchResultsByTournamentId.server";
+import { findAllMatchesByStageId } from "../queries/findAllMatchesByStageId.server";
 import { setBestOf } from "../queries/setBestOf.server";
-import { isTournamentOrganizer } from "~/permissions";
-import { requireUser, useUser } from "~/features/auth/core";
-import {
-  TOURNAMENT,
-  tournamentIdFromParams,
-  checkInHasStarted,
-  teamHasCheckedIn,
-} from "~/features/tournament";
+import { bracketSchema } from "../tournament-bracket-schemas.server";
 import {
   bracketSubscriptionKey,
-  everyMatchIsOver,
   fillWithNullTillPowerOfTwo,
-  resolveTournamentStageName,
-  resolveTournamentStageSettings,
-  resolveTournamentStageType,
 } from "../tournament-bracket-utils";
-import { sql } from "~/db/sql";
-import { useEventSource } from "remix-utils/sse/react";
-import { Status } from "~/db/types";
-import clsx from "clsx";
-import { Button, LinkButton } from "~/components/Button";
-import { useVisibilityChange } from "~/hooks/useVisibilityChange";
-import { bestOfsByTournamentId } from "../queries/bestOfsByTournamentId.server";
-import type { FinalStanding } from "../core/finalStandings.server";
-import { finalStandings } from "../core/finalStandings.server";
+import bracketStyles from "../tournament-bracket.css";
+import type { Standing } from "../core/Bracket";
+import { removeDuplicates } from "~/utils/arrays";
 import { Placement } from "~/components/Placement";
 import { Avatar } from "~/components/Avatar";
-import { Divider } from "~/components/Divider";
-import { removeDuplicates } from "~/utils/arrays";
 import { Flag } from "~/components/Flag";
-import { databaseTimestampToDate } from "~/utils/dates";
-import { Popover } from "~/components/Popover";
-import { useCopyToClipboard } from "react-use";
-import { useTranslation } from "react-i18next";
-import { bracketSchema } from "../tournament-bracket-schemas.server";
-import { addSummary } from "../queries/addSummary.server";
-import { tournamentSummary } from "../core/summarizer.server";
-import invariant from "tiny-invariant";
-import { allMatchResultsByTournamentId } from "../queries/allMatchResultsByTournamentId.server";
-import { FormWithConfirm } from "~/components/FormWithConfirm";
-import {
-  currentSeason,
-  queryCurrentTeamRating,
-  queryCurrentUserRating,
-} from "~/features/mmr";
-import { queryTeamPlayerRatingAverage } from "~/features/mmr/mmr-utils.server";
-import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
-import {
-  HACKY_isInviteOnlyEvent,
-  HACKY_maxRosterSizeBeforeStart,
-} from "~/features/tournament/tournament-utils";
+import { BRACKET_NAMES } from "~/features/tournament/tournament-constants";
 
 export const links: LinksFunction = () => {
   return [
@@ -106,92 +85,77 @@ export const links: LinksFunction = () => {
 export const action: ActionFunction = async ({ params, request }) => {
   const user = await requireUser(request);
   const tournamentId = tournamentIdFromParams(params);
-  const tournament = notFoundIfFalsy(
-    await TournamentRepository.findById(tournamentId),
-  );
+  const tournament = await tournamentFromDB({ tournamentId, user });
   const data = await parseRequestFormData({ request, schema: bracketSchema });
   const manager = getTournamentManager("SQL");
 
-  validate(isTournamentOrganizer({ user, tournament }));
-
   switch (data._action) {
-    case "START_TOURNAMENT": {
-      const hasStarted = hasTournamentStarted(tournamentId);
+    case "START_BRACKET": {
+      validate(tournament.isOrganizer(user));
 
-      validate(!hasStarted);
+      const bracket = tournament.bracketByIdx(data.bracketIdx);
+      invariant(bracket, "Bracket not found");
 
-      let teams = findTeamsByTournamentId(tournamentId);
-      if (checkInHasStarted(tournament)) {
-        teams = teams.filter(teamHasCheckedIn);
-      } else {
-        // in the normal check in process this is handled
-        teams = teams.filter(
-          (team) => team.members.length >= TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
-        );
-      }
-
-      validate(teams.length >= 2, "Not enough teams registered");
+      validate(bracket.canBeStarted, "Bracket is not ready to be started");
 
       sql.transaction(() => {
-        manager.create({
+        const participants = bracket.data.participant.map((p) => p.name);
+        const stage = manager.create({
           tournamentId,
-          name: resolveTournamentStageName(tournament.format),
-          type: resolveTournamentStageType(tournament.format),
-          seeding: fillWithNullTillPowerOfTwo(teams.map((team) => team.name)),
-          settings: resolveTournamentStageSettings(tournament.format),
+          name: bracket.name,
+          type: bracket.type,
+          seeding:
+            bracket.type === "round_robin"
+              ? participants
+              : fillWithNullTillPowerOfTwo(participants),
+          settings: tournament.bracketSettings(
+            bracket.type,
+            participants.length,
+          ),
         });
 
-        const matches = findAllMatchesByTournamentId(tournamentId);
+        const matches = findAllMatchesByStageId(stage.id);
         // TODO: dynamic best of set when bracket is made
-        const bestOfs = HACKY_isInviteOnlyEvent(tournament)
+        const bestOfs = HACKY_isInviteOnlyEvent(tournament.ctx)
           ? matches.map((match) => [5, match.matchId] as [5, number])
-          : resolveBestOfs(matches);
+          : resolveBestOfs(matches, bracket.type);
         for (const [bestOf, id] of bestOfs) {
           setBestOf({ bestOf, id });
         }
       })();
 
-      return null;
-    }
-    case "FINALIZE_TOURNAMENT": {
-      const bracket = manager.get.tournamentData(tournamentId);
-      invariant(
-        bracket.stage.length === 1,
-        "Bracket doesn't have exactly one stage",
-      );
-      const stage = bracket.stage[0];
+      // TODO: to transaction
+      // check in teams to the final stage ahead of time so they don't have to do it
+      // separately, but also allow for TO's to check them out if needed
+      if (data.bracketIdx === 0 && tournament.brackets.length > 1) {
+        const finalStageIdx = tournament.brackets.findIndex(
+          (b) => b.name === BRACKET_NAMES.FINALS,
+        );
 
-      const _everyMatchIsOver = everyMatchIsOver(bracket);
-      validate(_everyMatchIsOver, "Not every match is over");
-
-      let teams = findTeamsByTournamentId(tournamentId);
-      if (checkInHasStarted(tournament)) {
-        teams = teams.filter(teamHasCheckedIn);
+        if (finalStageIdx !== -1) {
+          await TournamentRepository.checkInMany({
+            bracketIdx: finalStageIdx,
+            tournamentTeamIds: tournament.ctx.teams.map((t) => t.id),
+          });
+        }
       }
 
-      const _finalStandings =
-        finalStandings({
-          manager,
-          tournamentId,
-          includeAll: true,
-          stageId: stage.id,
-        }) ?? [];
-      invariant(
-        _finalStandings.length === teams.length,
-        `Final standings length (${_finalStandings.length}) does not match teams length (${teams.length})`,
-      );
+      break;
+    }
+    case "FINALIZE_TOURNAMENT": {
+      validate(tournament.canFinalize(user), "Can't finalize tournament");
+
+      const _finalStandings = tournament.standings;
 
       const results = allMatchResultsByTournamentId(tournamentId);
       invariant(results.length > 0, "No results found");
 
-      const season = currentSeason(
-        databaseTimestampToDate(tournament.startTime),
-      )?.nth;
+      const season = currentSeason(tournament.ctx.startTime)?.nth;
 
       addSummary({
         tournamentId,
         summary: tournamentSummary({
-          teams,
+          teams: tournament.ctx.teams,
           finalStandings: _finalStandings,
           results,
           calculateSeasonalStats: typeof season === "number",
@@ -208,67 +172,29 @@ export const action: ActionFunction = async ({ params, request }) => {
         season,
       });
 
-      return null;
+      break;
+    }
+    case "BRACKET_CHECK_IN": {
+      const bracket = tournament.bracketByIdx(data.bracketIdx);
+      invariant(bracket, "Bracket not found");
+
+      const ownTeam = tournament.ownedTeamByUser(user);
+      invariant(ownTeam, "User doesn't have owned team");
+
+      validate(bracket.canCheckIn(user));
+
+      await TournamentRepository.checkIn({
+        bracketIdx: data.bracketIdx,
+        tournamentTeamId: ownTeam.id,
+      });
+      break;
+    }
+    default: {
+      assertUnreachable(data);
     }
   }
-};
 
-export type TournamentBracketLoaderData = SerializeFrom<typeof loader>;
-
-export const loader = ({ params }: LoaderFunctionArgs) => {
-  const tournamentId = tournamentIdFromParams(params);
-
-  const hasStarted = hasTournamentStarted(tournamentId);
-  const manager = getTournamentManager(hasStarted ? "SQL" : "IN_MEMORY");
-
-  if (hasStarted) {
-    const bracket = manager.get.tournamentData(tournamentId);
-    invariant(
-      bracket.stage.length === 1,
-      "Bracket doesn't have exactly one stage",
-    );
-    const stage = bracket.stage[0];
-
-    const _everyMatchIsOver = everyMatchIsOver(bracket);
-    return {
-      enoughTeams: true,
-      bracket,
-      roundBestOfs: bestOfsByTournamentId(tournamentId),
-      everyMatchIsOver: _everyMatchIsOver,
-      finalStandings: _everyMatchIsOver
-        ? finalStandings({ manager, tournamentId, stageId: stage.id })
-        : null,
-    };
-  }
-
-  const tournament = notFoundIfFalsy(findByIdentifier(tournamentId));
-
-  let teams = findTeamsByTournamentId(tournamentId);
-  if (checkInHasStarted(tournament)) {
-    teams = teams.filter(teamHasCheckedIn);
-  }
-
-  const enoughTeams = teams.length >= TOURNAMENT.ENOUGH_TEAMS_TO_START;
-  if (enoughTeams) {
-    manager.create({
-      tournamentId,
-      name: resolveTournamentStageName(tournament.format),
-      type: resolveTournamentStageType(tournament.format),
-      seeding: fillWithNullTillPowerOfTwo(teams.map((team) => team.name)),
-      settings: resolveTournamentStageSettings(tournament.format),
-    });
-  }
-
-  // TODO: use get.stageData
-  const data = manager.get.tournamentData(tournamentId);
-
-  return {
-    bracket: data,
-    enoughTeams,
-    everyMatchIsOver: false,
-    roundBestOfs: null,
-    finalStandings: null,
-  };
+  return null;
 };
 
 export default function TournamentBracketsPage() {
@@ -276,17 +202,26 @@ export default function TournamentBracketsPage() {
   const visibility = useVisibilityChange();
   const { revalidate } = useRevalidator();
   const user = useUser();
-  const data = useLoaderData<typeof loader>();
+  const [bracketIdx, setBracketIdx] = useSearchParamState({
+    defaultValue: 0,
+    name: "idx",
+    revive: Number,
+  });
   const ref = React.useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const parentRouteData = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
+
+  const bracket = React.useMemo(
+    () => tournament.bracketByIdxOrDefault(bracketIdx),
+    [tournament, bracketIdx],
+  );
 
   // TODO: bracket i18n
   React.useEffect(() => {
-    if (!data.enoughTeams) return;
+    if (!bracket.enoughTeams) return;
 
     // matches aren't generated before tournament starts
-    if (parentRouteData.hasStarted) {
+    if (!bracket.preview) {
       // @ts-expect-error - brackets-viewer is not typed
       window.bracketsViewer.onMatchClicked = (match) => {
         // can't view match page of a bye
@@ -295,7 +230,7 @@ export default function TournamentBracketsPage() {
         }
         navigate(
           tournamentMatchPage({
-            eventId: parentRouteData.tournament.id,
+            eventId: tournament.ctx.id,
             matchId: match.id,
           }),
         );
@@ -305,10 +240,10 @@ export default function TournamentBracketsPage() {
     // @ts-expect-error - brackets-viewer is not typed
     window.bracketsViewer.render(
       {
-        stages: data.bracket.stage,
-        matches: data.bracket.match,
-        matchGames: data.bracket.match_game,
-        participants: data.bracket.participant,
+        stages: bracket.data.stage,
+        matches: bracket.data.match,
+        matchGames: bracket.data.match_game,
+        participants: bracket.data.participant,
       },
       {
         customRoundName: (info: any) => {
@@ -327,8 +262,8 @@ export default function TournamentBracketsPage() {
 
     // my beautiful hack to show seeds
     // clean up probably not needed as it's not harmful to append more than one
-    const cssRulesToAppend = parentRouteData.teams.map((team, i) => {
-      const participantId = parentRouteData.hasStarted ? team.id : i;
+    const cssRulesToAppend = tournament.ctx.teams.map((team, i) => {
+      const participantId = tournament.hasStarted ? team.id : i;
       return /* css */ `
         [data-participant-id="${participantId}"] {
           --seed: "${i + 1}  ";
@@ -336,15 +271,17 @@ export default function TournamentBracketsPage() {
         }
       `;
     });
-    if (parentRouteData.teamMemberOfName) {
+
+    const ownTeam = tournament.teamMemberOfByUser(user);
+    if (ownTeam) {
       cssRulesToAppend.push(/* css */ `
-        [title="${parentRouteData.teamMemberOfName}"] {
+        [title="${ownTeam.name}"] {
           --team-text-color: var(--theme-secondary);
         }
       `);
     }
-    if (data.roundBestOfs) {
-      for (const { bestOf, roundId } of data.roundBestOfs) {
+    if (tournament.ctx.bestOfs) {
+      for (const { bestOf, roundId } of tournament.ctx.bestOfs) {
         cssRulesToAppend.push(/* css */ `
           [data-round-id="${roundId}"] {
             --best-of-text: "Bo${bestOf}";
@@ -359,77 +296,70 @@ export default function TournamentBracketsPage() {
       if (!element) return;
 
       element.innerHTML = "";
+      // @ts-expect-error - brackets-viewer is not typed
+      window.bracketsViewer!.onMatchClicked = () => {};
     };
-  }, [data, navigate, parentRouteData]);
+  }, [navigate, bracket, tournament, user]);
 
   React.useEffect(() => {
-    if (visibility !== "visible" || data.everyMatchIsOver) return;
+    if (visibility !== "visible" || tournament.everyBracketOver) return;
 
     revalidate();
-  }, [visibility, revalidate, data.everyMatchIsOver]);
+  }, [visibility, revalidate, tournament.everyBracketOver]);
 
-  const myTeam = parentRouteData.teams.find((team) =>
-    team.members.some((m) => m.userId === user?.id),
-  );
+  const showAddSubsButton =
+    !tournament.canFinalize(user) &&
+    !tournament.everyBracketOver &&
+    tournament.ownedTeamByUser(user) &&
+    tournament.hasStarted;
 
-  const adminCanStart = () => {
-    // for testing, is always possible to start in development
-    if (process.env.NODE_ENV === "development") return true;
+  const waitingForTeamsText = () => {
+    if (bracketIdx > 0 || tournament.regularCheckInStartInThePast) {
+      return t("tournament:bracket.waiting.checkin", {
+        count: TOURNAMENT.ENOUGH_TEAMS_TO_START,
+      });
+    }
 
-    return (
-      databaseTimestampToDate(parentRouteData.tournament.startTime).getTime() <
-      Date.now()
-    );
+    return t("tournament:bracket.waiting", {
+      count: TOURNAMENT.ENOUGH_TEAMS_TO_START,
+    });
   };
 
-  const { progress, currentMatchId, currentOpponent } = (() => {
-    let lowestStatus: Status = Infinity;
-    let currentMatchId: number | undefined;
-    let currentOpponent: string | undefined;
-
-    if (!myTeam) {
-      return {
-        progress: undefined,
-        currentMatchId: undefined,
-        currentOpponent: undefined,
-      };
+  const teamsSourceText = () => {
+    if (
+      tournament.brackets[0].type === "round_robin" &&
+      !bracket.isUnderground
+    ) {
+      return `Teams that place in the top ${Math.max(
+        ...(bracket.sources ?? []).flatMap((s) => s.placements),
+      )} of their group will advance to this stage`;
     }
 
-    for (const match of data.bracket.match) {
-      // BYE
-      if (match.opponent1 === null || match.opponent2 === null) {
-        continue;
-      }
-
-      if (
-        (match.opponent1.id === myTeam.id ||
-          match.opponent2.id === myTeam.id) &&
-        lowestStatus > match.status
-      ) {
-        lowestStatus = match.status;
-        currentMatchId = match.id;
-        const otherTeam =
-          match.opponent1.id === myTeam.id ? match.opponent2 : match.opponent1;
-        currentOpponent = parentRouteData.teams.find(
-          (team) => team.id === otherTeam.id,
-        )?.name;
-      }
+    if (
+      tournament.brackets[0].type === "round_robin" &&
+      bracket.isUnderground
+    ) {
+      return "Teams that don't advance to the final stage can play in this bracket (optional)";
     }
 
-    return { progress: lowestStatus, currentMatchId, currentOpponent };
-  })();
+    if (
+      tournament.brackets[0].type === "double_elimination" &&
+      bracket.isUnderground
+    ) {
+      return `Teams that get eliminated in the first ${Math.abs(
+        Math.min(...(bracket.sources ?? []).flatMap((s) => s.placements)),
+      )} rounds of the losers bracket can play in this bracket (optional)`;
+    }
+
+    return null;
+  };
 
   return (
     <div>
-      {visibility !== "hidden" && !data.everyMatchIsOver ? (
+      {visibility !== "hidden" && !tournament.everyBracketOver ? (
         <AutoRefresher />
       ) : null}
-      {data.finalStandings &&
-      !parentRouteData.hasFinalized &&
-      isTournamentOrganizer({
-        user,
-        tournament: parentRouteData.tournament,
-      }) ? (
+      {tournament.canFinalize(user) ? (
         <div className="tournament-bracket__finalize">
           <FormWithConfirm
             dialogHeading={t("tournament:actions.finalize.confirm")}
@@ -443,12 +373,10 @@ export default function TournamentBracketsPage() {
           </FormWithConfirm>
         </div>
       ) : null}
-      {!parentRouteData.hasStarted && data.enoughTeams ? (
-        <Form method="post" className="stack items-center">
-          {!isTournamentOrganizer({
-            user,
-            tournament: parentRouteData.tournament,
-          }) ? (
+      {bracket.preview && bracket.enoughTeams ? (
+        <Form method="post" className="stack items-center mb-4">
+          <input type="hidden" name="bracketIdx" value={bracketIdx} />
+          {!tournament.isOrganizer(user) ? (
             <Alert
               variation="INFO"
               alertClassName="tournament-bracket__start-bracket-alert"
@@ -463,12 +391,12 @@ export default function TournamentBracketsPage() {
               textClassName="stack horizontal md items-center"
             >
               {t("tournament:bracket.finalize.text")}{" "}
-              {adminCanStart() ? (
+              {bracket.canBeStarted ? (
                 <SubmitButton
                   variant="outlined"
                   size="tiny"
                   testId="finalize-bracket-button"
-                  _action="START_TOURNAMENT"
+                  _action="START_BRACKET"
                 >
                   {t("tournament:bracket.finalize.action")}
                 </SubmitButton>
@@ -479,40 +407,43 @@ export default function TournamentBracketsPage() {
                   }
                   triggerClassName="tiny outlined"
                 >
-                  {t("tournament:bracket.beforeStart")}
+                  {bracketIdx === 0
+                    ? t("tournament:bracket.beforeStart")
+                    : t("tournament:bracket.waitingForResults")}
                 </Popover>
               )}
             </Alert>
           )}
         </Form>
       ) : null}
-      {parentRouteData.hasStarted && progress ? (
-        <TournamentProgressPrompt
-          progress={progress}
-          currentMatchId={currentMatchId}
-          currentOpponent={currentOpponent}
-        />
+      <div className="stack horizontal sm justify-end">
+        {bracket.canCheckIn(user) ? (
+          <BracketCheckinButton bracketIdx={bracketIdx} />
+        ) : null}
+        {showAddSubsButton ? (
+          // TODO: could also hide this when team is not in any bracket anymore
+          <AddSubsPopOver />
+        ) : null}
+      </div>
+      {tournament.ctx.isFinalized || tournament.canFinalize(user) ? (
+        <FinalStandings standings={tournament.standings} />
       ) : null}
-      {!data.finalStandings &&
-      myTeam &&
-      parentRouteData.hasStarted &&
-      parentRouteData.ownTeam &&
-      progress &&
-      progress < Status.Completed ? (
-        <AddSubsPopOver
-          members={myTeam.members}
-          inviteCode={parentRouteData.ownTeam.inviteCode}
-        />
-      ) : null}
-      {data.finalStandings ? (
-        <FinalStandings standings={data.finalStandings} />
-      ) : null}
-      <div className="brackets-viewer" ref={ref}></div>
-      {!data.enoughTeams ? (
-        <div className="text-center text-lg font-semi-bold text-lighter">
-          {t("tournament:bracket.waiting", {
-            count: TOURNAMENT.ENOUGH_TEAMS_TO_START,
-          })}
+      <BracketNav bracketIdx={bracketIdx} setBracketIdx={setBracketIdx} />
+      <div
+        className="brackets-viewer"
+        ref={ref}
+        data-testid="brackets-viewer"
+      />
+      {!bracket.enoughTeams ? (
+        <div>
+          <div className="text-center text-lg font-semi-bold text-lighter mt-6">
+            {waitingForTeamsText()}
+          </div>
+          {bracket.sources ? (
+            <div className="text-center text-sm font-semi-bold text-lighter mt-2">
+              {teamsSourceText()}
+            </div>
+          ) : null}
         </div>
       ) : null}
     </div>
@@ -537,11 +468,11 @@ function appendStyleTagToHead(content: string) {
 
 function useAutoRefresh() {
   const { revalidate } = useRevalidator();
-  const parentRouteData = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
   const lastEvent = useEventSource(
-    tournamentBracketsSubscribePage(parentRouteData.tournament.id),
+    tournamentBracketsSubscribePage(tournament.ctx.id),
     {
-      event: bracketSubscriptionKey(parentRouteData.tournament.id),
+      event: bracketSubscriptionKey(tournament.ctx.id),
     },
   );
 
@@ -576,86 +507,38 @@ function useAutoRefresh() {
   }, [lastEvent, revalidate]);
 }
 
-function TournamentProgressPrompt({
-  progress,
-  currentMatchId,
-  currentOpponent,
-}: {
-  progress: Status;
-  currentMatchId?: number;
-  currentOpponent?: string;
-}) {
-  const { t } = useTranslation(["tournament"]);
-  const parentRouteData = useOutletContext<TournamentLoaderData>();
-  const data = useLoaderData<typeof loader>();
-
-  if (data.finalStandings) return null;
-
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
-  if (progress === Infinity) {
-    console.error("Unexpected no status");
-    return null;
-  }
-
-  if (progress === Status.Waiting) {
-    return (
-      <TournamentProgressContainer>
-        <WaitingForMatchText />
-      </TournamentProgressContainer>
-    );
-  }
-
-  if (progress >= Status.Completed) {
-    return (
-      <TournamentProgressContainer>
-        {t("tournament:bracket.progress.thanksForPlaying", {
-          eventName: parentRouteData.tournament.name,
-        })}
-      </TournamentProgressContainer>
-    );
-  }
-
-  if (!currentMatchId || !currentOpponent) {
-    console.error("Unexpected no match id or opponent");
-    return null;
-  }
+function BracketCheckinButton({ bracketIdx }: { bracketIdx: number }) {
+  const fetcher = useFetcher();
 
   return (
-    <TournamentProgressContainer>
-      {t("tournament:bracket.progress.match", { opponent: currentOpponent })}
-      <LinkButton
-        to={tournamentMatchPage({
-          matchId: currentMatchId,
-          eventId: parentRouteData.tournament.id,
-        })}
+    <fetcher.Form method="post">
+      <input type="hidden" name="bracketIdx" value={bracketIdx} />
+      <SubmitButton
         size="tiny"
-        variant="outlined"
+        _action="BRACKET_CHECK_IN"
+        state={fetcher.state}
       >
-        {t("tournament:bracket.progress.match.action")}
-      </LinkButton>
-    </TournamentProgressContainer>
+        Check-in & join the bracket
+      </SubmitButton>
+    </fetcher.Form>
   );
 }
 
-function AddSubsPopOver({
-  members,
-  inviteCode,
-}: {
-  members: unknown[];
-  inviteCode: string;
-}) {
-  const parentRouteData = useOutletContext<TournamentLoaderData>();
+function AddSubsPopOver() {
   const { t } = useTranslation(["common", "tournament"]);
   const [, copyToClipboard] = useCopyToClipboard();
+  const tournament = useTournament();
+  const user = useUser();
+
+  const ownedTeam = tournament.ownedTeamByUser(user);
+  invariant(ownedTeam, "User doesn't have owned team");
 
   const subsAvailableToAdd =
-    HACKY_maxRosterSizeBeforeStart(parentRouteData.tournament) +
-    1 -
-    members.length;
+    tournament.maxTeamMemberCount - ownedTeam.members.length;
 
   const inviteLink = `${SENDOU_INK_BASE_URL}${tournamentJoinPage({
-    eventId: parentRouteData.tournament.id,
-    inviteCode,
+    eventId: tournament.ctx.id,
+    inviteCode: ownedTeam.inviteCode,
   })}`;
 
   return (
@@ -663,7 +546,6 @@ function AddSubsPopOver({
       buttonChildren={<>{t("tournament:actions.addSub")}</>}
       triggerClassName="tiny outlined ml-auto"
       triggerTestId="add-sub-button"
-      containerClassName="mt-4"
       contentClassName="text-xs"
     >
       {t("tournament:actions.sub.prompt", { count: subsAvailableToAdd })}
@@ -688,9 +570,9 @@ function AddSubsPopOver({
   );
 }
 
-function FinalStandings({ standings }: { standings: FinalStanding[] }) {
+function FinalStandings({ standings }: { standings: Standing[] }) {
+  const tournament = useTournament();
   const { t } = useTranslation(["tournament"]);
-  const parentRouteData = useOutletContext<TournamentLoaderData>();
   const [viewAll, setViewAll] = React.useState(false);
 
   if (standings.length < 2) {
@@ -700,6 +582,11 @@ function FinalStandings({ standings }: { standings: FinalStanding[] }) {
 
   // eslint-disable-next-line prefer-const
   let [first, second, third, ...rest] = standings;
+
+  if (third && third.placement === rest[0]?.placement) {
+    rest.unshift(third);
+    third = undefined as unknown as Standing;
+  }
 
   const onlyTwoTeams = !third;
 
@@ -714,7 +601,7 @@ function FinalStandings({ standings }: { standings: FinalStanding[] }) {
         return (
           <div
             className="tournament-bracket__standing"
-            key={standing.tournamentTeam.id}
+            key={standing.team.id}
             data-placement={standing.placement}
           >
             <div>
@@ -722,19 +609,19 @@ function FinalStandings({ standings }: { standings: FinalStanding[] }) {
             </div>
             <Link
               to={tournamentTeamPage({
-                eventId: parentRouteData.tournament.id,
-                tournamentTeamId: standing.tournamentTeam.id,
+                eventId: tournament.ctx.id,
+                tournamentTeamId: standing.team.id,
               })}
               className="tournament-bracket__standing__team-name tournament-bracket__standing__team-name__big"
             >
-              {standing.tournamentTeam.name}
+              {standing.team.name}
             </Link>
             <div className="stack horizontal sm flex-wrap justify-center">
-              {standing.players.map((player) => {
+              {standing.team.members.map((player) => {
                 return (
                   <Link
                     to={userPage(player)}
-                    key={player.id}
+                    key={player.userId}
                     className="stack items-center text-xs"
                   >
                     <Avatar user={player} size="xxs" />
@@ -743,9 +630,9 @@ function FinalStandings({ standings }: { standings: FinalStanding[] }) {
               })}
             </div>
             <div className="stack horizontal sm flex-wrap justify-center">
-              {standing.players.map((player) => {
+              {standing.team.members.map((player) => {
                 return (
-                  <div key={player.id} className="stack items-center">
+                  <div key={player.userId} className="stack items-center">
                     {player.country ? (
                       <Flag countryCode={player.country} tiny />
                     ) : null}
@@ -775,23 +662,23 @@ function FinalStandings({ standings }: { standings: FinalStanding[] }) {
                   return (
                     <div
                       className="tournament-bracket__standing"
-                      key={standing.tournamentTeam.id}
+                      key={standing.team.id}
                     >
                       <Link
                         to={tournamentTeamPage({
-                          eventId: parentRouteData.tournament.id,
-                          tournamentTeamId: standing.tournamentTeam.id,
+                          eventId: tournament.ctx.id,
+                          tournamentTeamId: standing.team.id,
                         })}
                         className="tournament-bracket__standing__team-name"
                       >
-                        {standing.tournamentTeam.name}
+                        {standing.team.name}
                       </Link>
                       <div className="stack horizontal sm flex-wrap justify-center">
-                        {standing.players.map((player) => {
+                        {standing.team.members.map((player) => {
                           return (
                             <Link
                               to={userPage(player)}
-                              key={player.id}
+                              key={player.userId}
                               className="stack items-center text-xs"
                             >
                               <Avatar user={player} size="xxs" />
@@ -800,9 +687,12 @@ function FinalStandings({ standings }: { standings: FinalStanding[] }) {
                         })}
                       </div>
                       <div className="stack horizontal sm flex-wrap justify-center">
-                        {standing.players.map((player) => {
+                        {standing.team.members.map((player) => {
                           return (
-                            <div key={player.id} className="stack items-center">
+                            <div
+                              key={player.userId}
+                              className="stack items-center"
+                            >
                               {player.country ? (
                                 <Flag countryCode={player.country} tiny />
                               ) : null}
@@ -842,34 +732,42 @@ function FinalStandings({ standings }: { standings: FinalStanding[] }) {
   );
 }
 
-function TournamentProgressContainer({
-  children,
+function BracketNav({
+  bracketIdx,
+  setBracketIdx,
 }: {
-  children: React.ReactNode;
+  bracketIdx: number;
+  setBracketIdx: (bracketIdx: number) => void;
 }) {
-  return (
-    <div className="stack items-center">
-      <div className="tournament-bracket__progress">{children}</div>
-    </div>
-  );
-}
+  const tournament = useTournament();
 
-function WaitingForMatchText() {
-  const { t } = useTranslation(["tournament"]);
-  const [showDot, setShowDot] = React.useState(false);
-
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      setShowDot((prev) => !prev);
-    }, 1000);
-
-    return () => clearInterval(interval);
-  });
+  if (tournament.ctx.settings.bracketProgression.length < 2) return null;
 
   return (
-    <div>
-      {t("tournament:bracket.progress.waiting")}..
-      <span className={clsx({ invisible: !showDot })}>.</span>
+    <div className="stack sm horizontal flex-wrap">
+      {tournament.ctx.settings.bracketProgression.map((bracket, i) => {
+        // underground bracket was never played despite being in the format
+        if (
+          tournament.bracketByIdxOrDefault(i).preview &&
+          tournament.ctx.isFinalized
+        ) {
+          return null;
+        }
+
+        return (
+          <Button
+            key={bracket.name}
+            variant="minimal"
+            onClick={() => setBracketIdx(i)}
+            className={clsx("text-xs", {
+              "text-theme underline": bracketIdx === i,
+              "text-lighter-important": bracketIdx !== i,
+            })}
+          >
+            {bracket.name}
+          </Button>
+        );
+      })}
     </div>
   );
 }

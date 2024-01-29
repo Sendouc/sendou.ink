@@ -256,7 +256,7 @@
   gap: var(--s-6);
   padding-block: var(--s-3);
   padding-inline: var(--s-4);
-  width: fit-content;
+  min-width: fit-content;
   -webkit-backdrop-filter: var(--backdrop-filter);
   backdrop-filter: var(--backdrop-filter);
   background-color: transparent;

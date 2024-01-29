@@ -1,37 +1,28 @@
-import {
-  Form,
-  useActionData,
-  useLoaderData,
-  useOutletContext,
-} from "@remix-run/react";
+import type { SerializeFrom } from "@remix-run/node";
+import { Form, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
-import { Image } from "~/components/Image";
-import { SubmitButton } from "~/components/SubmitButton";
+import * as React from "react";
 import { useTranslation } from "react-i18next";
+import { Image } from "~/components/Image";
+import { NewTabs } from "~/components/NewTabs";
+import { SubmitButton } from "~/components/SubmitButton";
+import { useUser } from "~/features/auth/core";
+import { Chat, useChat } from "~/features/chat/components/Chat";
+import { useTournament } from "~/features/tournament/routes/to.$id";
+import { useIsMounted } from "~/hooks/useIsMounted";
 import type { ModeShort, StageId } from "~/modules/in-game-lists";
 import type { TournamentMapListMap } from "~/modules/tournament-map-list-generator";
+import { databaseTimestampToDate } from "~/utils/dates";
+import type { Unpacked } from "~/utils/types";
 import { modeImageUrl, stageImageUrl } from "~/utils/urls";
 import { type TournamentMatchLoaderData } from "../routes/to.$id.matches.$mid";
 import {
-  HACKY_resolvePoolCode,
   mapCountPlayedInSetWithCertainty,
   resolveHostingTeam,
   resolveRoomPass,
 } from "../tournament-bracket-utils";
-import type { SerializeFrom } from "@remix-run/node";
-import type { Unpacked } from "~/utils/types";
-import type {
-  TournamentLoaderTeam,
-  TournamentLoaderData,
-} from "~/features/tournament";
-import { canReportTournamentScore, isTournamentOrganizer } from "~/permissions";
-import { useUser } from "~/features/auth/core";
-import { useIsMounted } from "~/hooks/useIsMounted";
-import { databaseTimestampToDate } from "~/utils/dates";
-import { NewTabs } from "~/components/NewTabs";
 import { ScoreReporterRosters } from "./ScoreReporterRosters";
-import { Chat, useChat } from "~/features/chat/components/Chat";
-import * as React from "react";
+import type { TournamentDataTeam } from "../core/Tournament.server";
 
 export type Result = Unpacked<
   SerializeFrom<TournamentMatchLoaderData>["results"]
@@ -47,7 +38,7 @@ export function ScoreReporter({
   result,
   type,
 }: {
-  teams: [TournamentLoaderTeam, TournamentLoaderTeam];
+  teams: [TournamentDataTeam, TournamentDataTeam];
   result?: Result;
   currentStageWithMode: TournamentMapListMap;
   modes: ModeShort[];
@@ -58,9 +49,8 @@ export function ScoreReporter({
 }) {
   const { t } = useTranslation(["tournament"]);
   const isMounted = useIsMounted();
-  const actionData = useActionData<{ error?: "locked" }>();
   const user = useUser();
-  const parentRouteData = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
   const data = useLoaderData<TournamentMatchLoaderData>();
 
   const scoreOne = data.match.opponentOne?.score ?? 0;
@@ -92,15 +82,13 @@ export function ScoreReporter({
       <span>
         {t("tournament:match.pool")}{" "}
         {
-          HACKY_resolvePoolCode({
-            event: parentRouteData.tournament,
+          tournament.resolvePoolCode({
             hostingTeamId: resolveHostingTeam(teams).id,
           }).prefix
         }
         <span className="text-theme font-bold">
           {
-            HACKY_resolvePoolCode({
-              event: parentRouteData.tournament,
+            tournament.resolvePoolCode({
               hostingTeamId: resolveHostingTeam(teams).id,
             }).lastDigit
           }
@@ -115,8 +103,6 @@ export function ScoreReporter({
       })}
     </>,
   ];
-
-  const matchIsLockedError = actionData?.error === "locked";
 
   return (
     <div className="tournament-bracket__during-match-actions">
@@ -139,13 +125,9 @@ export function ScoreReporter({
             </div>
           </Form>
         )}
-        {isTournamentOrganizer({
-          user,
-          tournament: parentRouteData.tournament,
-        }) &&
-          !parentRouteData.hasFinalized &&
-          presentational &&
-          !matchIsLockedError && (
+        {tournament.isOrganizer(user) &&
+          tournament.matchCanBeReopened(data.match.id) &&
+          presentational && (
             <Form method="post">
               <div className="tournament-bracket__stage-banner__bottom-bar">
                 <SubmitButton
@@ -158,18 +140,6 @@ export function ScoreReporter({
               </div>
             </Form>
           )}
-        {matchIsLockedError && (
-          <div className="tournament-bracket__stage-banner__bottom-bar">
-            <SubmitButton
-              _action="REOPEN_MATCH"
-              className="tournament-bracket__stage-banner__undo-button"
-              disabled
-              testId="match-is-locked-button"
-            >
-              {t("tournament:match.action.matchIsLocked")}
-            </SubmitButton>
-          </div>
-        )}
       </FancyStageBanner>
       <ModeProgressIndicator
         modes={modes}
@@ -212,7 +182,7 @@ function FancyStageBanner({
   stage: TournamentMapListMap;
   infos?: (JSX.Element | null)[];
   children?: React.ReactNode;
-  teams: [TournamentLoaderTeam, TournamentLoaderTeam];
+  teams: [TournamentDataTeam, TournamentDataTeam];
 }) {
   const { t } = useTranslation(["game-misc", "tournament"]);
 
@@ -345,11 +315,11 @@ function MatchActionSectionTabs({
   presentational?: boolean;
   scores: [number, number];
   currentStageWithMode: TournamentMapListMap;
-  teams: [TournamentLoaderTeam, TournamentLoaderTeam];
+  teams: [TournamentDataTeam, TournamentDataTeam];
   result?: Result;
 }) {
   const user = useUser();
-  const parentRouteData = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
   const data = useLoaderData<TournamentMatchLoaderData>();
   const [_unseenMessages, setUnseenMessages] = React.useState(0);
   const [chatVisible, setChatVisible] = React.useState(false);
@@ -358,20 +328,25 @@ function MatchActionSectionTabs({
     return Object.fromEntries(
       [
         ...data.match.players.map((p) => ({ ...p, title: undefined })),
-        ...parentRouteData.tournament.staff.map((s) => ({
+        ...tournament.ctx.staff.map((s) => ({
           ...s,
           title: s.role === "STREAMER" ? "Stream" : "TO",
         })),
         {
-          ...parentRouteData.tournament.author,
+          ...tournament.ctx.author,
           title: "TO",
         },
       ].map((p) => [p.id, p]),
     );
-  }, [data, parentRouteData]);
+  }, [data, tournament]);
+
+  const showChat =
+    data.match.chatCode &&
+    (data.match.players.some((p) => p.id === user?.id) ||
+      tournament.isOrganizerOrStreamer(user));
 
   const rooms = React.useMemo(() => {
-    return data.match.chatCode
+    return showChat && data.match.chatCode
       ? [
           {
             code: data.match.chatCode,
@@ -379,7 +354,7 @@ function MatchActionSectionTabs({
           },
         ]
       : [];
-  }, [data.match.chatCode]);
+  }, [showChat, data.match.chatCode]);
 
   const onNewMessage = React.useCallback(() => {
     setUnseenMessages((msg) => msg + 1);
@@ -400,10 +375,6 @@ function MatchActionSectionTabs({
 
   const currentPosition = scores[0] + scores[1];
 
-  const isMemberOfATeamInTheMatch = data.match.players.some(
-    (p) => p.id === user?.id,
-  );
-
   return (
     <ActionSectionWrapper>
       <NewTabs
@@ -411,7 +382,7 @@ function MatchActionSectionTabs({
           {
             label: "Chat",
             number: unseenMessages,
-            hidden: !data.match.chatCode,
+            hidden: !showChat,
           },
           {
             label: presentational ? "Score" : "Report score",
@@ -421,10 +392,10 @@ function MatchActionSectionTabs({
         content={[
           {
             key: "chat",
-            hidden: !data.match.chatCode,
+            hidden: !showChat,
             element: (
               <>
-                {data.match.chatCode ? (
+                {showChat ? (
                   <Chat
                     rooms={rooms}
                     users={chatUsers}
@@ -441,6 +412,7 @@ function MatchActionSectionTabs({
           },
           {
             key: "report",
+            unmount: false,
             element: (
               <ScoreReporterRosters
                 // Without the key prop when switching to another match the winnerId is remembered
@@ -454,12 +426,7 @@ function MatchActionSectionTabs({
                 result={result}
                 bestOf={data.match.bestOf}
                 presentational={
-                  !canReportTournamentScore({
-                    tournament: parentRouteData.tournament,
-                    match: data.match,
-                    isMemberOfATeamInTheMatch,
-                    user,
-                  })
+                  !tournament.canReportScore({ matchId: data.match.id, user })
                 }
               />
             ),

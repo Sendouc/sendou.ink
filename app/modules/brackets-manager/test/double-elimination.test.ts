@@ -289,9 +289,6 @@ MatchUpdateDoubleElimination("should determine matches in grand final", () => {
     storage.select<any>("match", 1).opponent2.id, // Winner of LB Final
   );
 
-  assert.equal(storage.select<any>("match", 2).status, Status.Archived);
-  assert.equal(storage.select<any>("match", 4).status, Status.Archived);
-
   assert.equal(storage.select<any>("match", 5).status, Status.Completed); // Grand final (round 1)
   assert.equal(storage.select<any>("match", 6).status, Status.Ready); // Grand final (round 2)
 
@@ -300,9 +297,6 @@ MatchUpdateDoubleElimination("should determine matches in grand final", () => {
     opponent1: { score: 16, result: "win" },
     opponent2: { score: 10 },
   });
-
-  assert.equal(storage.select<any>("match", 5).status, Status.Archived); // Grand final (round 1)
-  assert.equal(storage.select<any>("match", 6).status, Status.Archived); // Grand final (round 2)
 });
 
 MatchUpdateDoubleElimination(
@@ -336,99 +330,6 @@ MatchUpdateDoubleElimination(
     assert.equal(afterReset.opponent1.position, 1); // It must stay.
   },
 );
-
-MatchUpdateDoubleElimination("should archive previous matches", () => {
-  manager.create({
-    name: "Example",
-    tournamentId: 0,
-    type: "double_elimination",
-    seeding: ["Team 1", "Team 2", "Team 3", "Team 4"],
-    settings: { grandFinal: "double" },
-  });
-
-  manager.update.match({
-    id: 0, // First match of WB round 1
-    opponent1: { score: 16, result: "win" },
-    opponent2: { score: 12 },
-  });
-
-  manager.update.match({
-    id: 1, // Second match of WB round 1
-    opponent1: { score: 13 },
-    opponent2: { score: 16, result: "win" },
-  });
-
-  manager.update.match({
-    id: 2, // WB Final
-    opponent1: { score: 16, result: "win" },
-    opponent2: { score: 9 },
-  });
-
-  // WB Final archived both WB round 1 matches
-  assert.equal(storage.select<any>("match", 0).status, Status.Archived);
-  assert.equal(storage.select<any>("match", 1).status, Status.Archived);
-
-  // Reset the score...
-  manager.update.match({
-    id: 2,
-    opponent1: { score: undefined },
-    opponent2: { score: undefined },
-  });
-
-  // ...and reset the result
-  manager.reset.matchResults(2); // WB Final
-
-  // Should remove the archived status
-  assert.equal(storage.select<any>("match", 0).status, Status.Completed);
-  assert.equal(storage.select<any>("match", 1).status, Status.Completed);
-
-  manager.update.match({
-    id: 3, // Only match of LB round 1
-    opponent1: { score: 12, result: "win" }, // Team 4
-    opponent2: { score: 8 },
-  });
-
-  // First round of LB archived both WB round 1 matches
-  assert.equal(storage.select<any>("match", 0).status, Status.Archived);
-  assert.equal(storage.select<any>("match", 1).status, Status.Archived);
-
-  manager.update.match({
-    id: 2, // WB Final
-    opponent1: { score: 16, result: "win" },
-    opponent2: { score: 9 },
-  });
-
-  manager.update.match({
-    id: 4, // LB Final
-    opponent1: { score: 14, result: "win" }, // Team 3
-    opponent2: { score: 7 },
-  });
-
-  assert.equal(storage.select<any>("match", 2).status, Status.Archived);
-  assert.equal(storage.select<any>("match", 3).status, Status.Archived);
-
-  // Force status of WB Final to completed to make sure the Grand Final sets it to Archived.
-  storage.update("match", 2, {
-    ...storage.select<any>("match", 2),
-    status: Status.Completed,
-  });
-
-  manager.update.match({
-    id: 5, // Grand Final round 1
-    opponent1: { score: 10 },
-    opponent2: { score: 16, result: "win" }, // Team 3
-  });
-
-  assert.equal(storage.select<any>("match", 2).status, Status.Archived);
-
-  manager.update.match({
-    id: 6, // Grand Final round 2
-    opponent1: { score: 10 },
-    opponent2: { score: 16, result: "win" }, // Team 3
-  });
-
-  assert.equal(storage.select<any>("match", 5).status, Status.Archived);
-});
 
 MatchUpdateDoubleElimination(
   "should choose the correct previous and next matches based on losers ordering",
@@ -486,7 +387,6 @@ MatchUpdateDoubleElimination(
     manager.update.match({ id: 19, opponent1: { result: "win" } }); // LB 2.1
 
     assert.equal(storage.select<any>("match", 8).status, Status.Completed); // WB 2.1
-    assert.equal(storage.select<any>("match", 11).status, Status.Archived); // WB 2.4
   },
 );
 

@@ -3,12 +3,7 @@ import type {
   LinksFunction,
   LoaderFunctionArgs,
 } from "@remix-run/node";
-import {
-  Link,
-  useLoaderData,
-  useOutletContext,
-  useRevalidator,
-} from "@remix-run/react";
+import { Link, useLoaderData, useRevalidator } from "@remix-run/react";
 import clsx from "clsx";
 import { nanoid } from "nanoid";
 import * as React from "react";
@@ -18,19 +13,13 @@ import { Avatar } from "~/components/Avatar";
 import { LinkButton } from "~/components/Button";
 import { ArrowLongLeftIcon } from "~/components/icons/ArrowLongLeft";
 import { sql } from "~/db/sql";
-import {
-  tournamentIdFromParams,
-  type TournamentLoaderData,
-} from "~/features/tournament";
+import { requireUser, useUser } from "~/features/auth/core";
+import { tournamentIdFromParams } from "~/features/tournament";
+import { useTournament } from "~/features/tournament/routes/to.$id";
 import { useSearchParamState } from "~/hooks/useSearchParamState";
 import { useVisibilityChange } from "~/hooks/useVisibilityChange";
-import { requireUser, useUser } from "~/features/auth/core";
-import { getUserId } from "~/features/auth/core/user.server";
-import {
-  canReportTournamentScore,
-  isTournamentOrganizer,
-  isTournamentStreamerOrOrganizer,
-} from "~/permissions";
+import { canReportTournamentScore } from "~/permissions";
+import { logger } from "~/utils/logger";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
 import {
@@ -39,8 +28,8 @@ import {
   tournamentTeamPage,
   userPage,
 } from "~/utils/urls";
-import { findTeamsByTournamentId } from "../../tournament/queries/findTeamsByTournamentId.server";
 import { ScoreReporter } from "../components/ScoreReporter";
+import { tournamentFromDB } from "../core/Tournament.server";
 import { getTournamentManager } from "../core/brackets-manager";
 import { emitter } from "../core/emitters.server";
 import { resolveMapList } from "../core/mapList.server";
@@ -56,8 +45,6 @@ import {
   matchSubscriptionKey,
 } from "../tournament-bracket-utils";
 import bracketStyles from "../tournament-bracket.css";
-import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
-import { logger } from "~/utils/logger";
 
 export const links: LinksFunction = () => [
   {
@@ -76,9 +63,7 @@ export const action: ActionFunction = async ({ params, request }) => {
   });
 
   const tournamentId = tournamentIdFromParams(params);
-  const tournament = notFoundIfFalsy(
-    await TournamentRepository.findById(tournamentId),
-  );
+  const tournament = await tournamentFromDB({ tournamentId, user });
 
   const validateCanReportScore = () => {
     const isMemberOfATeamInTheMatch = match.players.some(
@@ -87,10 +72,9 @@ export const action: ActionFunction = async ({ params, request }) => {
 
     validate(
       canReportTournamentScore({
-        tournament,
         match,
         isMemberOfATeamInTheMatch,
-        user,
+        isOrganizer: tournament.isOrganizer(user),
       }),
       "Unauthorized",
       401,
@@ -118,6 +102,7 @@ export const action: ActionFunction = async ({ params, request }) => {
           match.opponentTwo?.id === data.winnerTeamId,
         "Winner team id is invalid",
       );
+      validate(match.opponentOne && match.opponentTwo, "Teams are missing");
 
       const mapList =
         match.opponentOne?.id && match.opponentTwo?.id
@@ -138,6 +123,15 @@ export const action: ActionFunction = async ({ params, request }) => {
 
         validate(false, "Winner team id is invalid");
       };
+
+      validate(
+        !data.points ||
+          (scoreToIncrement() === 0 && data.points[0] > data.points[1]) ||
+          (scoreToIncrement() === 1 && data.points[1] > data.points[0]),
+        "Points are invalid (winner must have more points than loser)",
+      );
+
+      // TODO: could also validate that if bracket demands it then points are defined
 
       scores[scoreToIncrement()]++;
 
@@ -164,6 +158,8 @@ export const action: ActionFunction = async ({ params, request }) => {
           winnerTeamId: data.winnerTeamId,
           number: data.position + 1,
           source: String(currentMap.source),
+          opponentOnePoints: data.points?.[0] ?? null,
+          opponentTwoPoints: data.points?.[1] ?? null,
         });
 
         for (const userId of data.playerIds) {
@@ -219,7 +215,6 @@ export const action: ActionFunction = async ({ params, request }) => {
 
       break;
     }
-    // TODO: bug where you can reopen losers finals after winners finals
     case "REOPEN_MATCH": {
       const scoreOne = match.opponentOne?.score ?? 0;
       const scoreTwo = match.opponentTwo?.score ?? 0;
@@ -227,7 +222,11 @@ export const action: ActionFunction = async ({ params, request }) => {
       invariant(typeof scoreTwo === "number", "Score two is missing");
       invariant(scoreOne !== scoreTwo, "Scores are equal");
 
-      validate(isTournamentOrganizer({ tournament, user }));
+      validate(tournament.isOrganizer(user));
+      validate(
+        tournament.matchCanBeReopened(match.id),
+        "Match can't be reopened, bracket has progressed",
+      );
 
       const results = findResultsByMatchId(matchId);
       const lastResult = results[results.length - 1];
@@ -243,30 +242,20 @@ export const action: ActionFunction = async ({ params, request }) => {
         `Reopening match: User ID: ${user.id}; Match ID: ${match.id}`,
       );
 
-      try {
-        sql.transaction(() => {
-          deleteTournamentMatchGameResultById(lastResult.id);
-          manager.update.match({
-            id: match.id,
-            opponent1: {
-              score: scores[0],
-              result: undefined,
-            },
-            opponent2: {
-              score: scores[1],
-              result: undefined,
-            },
-          });
-        })();
-      } catch (err) {
-        if (!(err instanceof Error)) throw err;
-
-        if (err.message.includes("locked")) {
-          return { error: "locked" };
-        }
-
-        throw err;
-      }
+      sql.transaction(() => {
+        deleteTournamentMatchGameResultById(lastResult.id);
+        manager.update.match({
+          id: match.id,
+          opponent1: {
+            score: scores[0],
+            result: undefined,
+          },
+          opponent2: {
+            score: scores[1],
+            result: undefined,
+          },
+        });
+      })();
 
       break;
     }
@@ -279,7 +268,7 @@ export const action: ActionFunction = async ({ params, request }) => {
     eventId: nanoid(),
     userId: user.id,
   });
-  emitter.emit(bracketSubscriptionKey(tournament.id), {
+  emitter.emit(bracketSubscriptionKey(tournament.ctx.id), {
     matchId: match.id,
     scores,
     isOver:
@@ -292,8 +281,7 @@ export const action: ActionFunction = async ({ params, request }) => {
 
 export type TournamentMatchLoaderData = typeof loader;
 
-export const loader = async ({ params, request }: LoaderFunctionArgs) => {
-  const user = await getUserId(request);
+export const loader = ({ params }: LoaderFunctionArgs) => {
   const tournamentId = tournamentIdFromParams(params);
   const matchId = matchIdFromParams(params);
 
@@ -315,53 +303,23 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
   const currentMap = mapList?.[scoreSum];
 
-  const showChat =
-    match.players.some((p) => p.id === user?.id) ||
-    isTournamentStreamerOrOrganizer({
-      user,
-      tournament: notFoundIfFalsy(
-        await TournamentRepository.findById(tournamentId),
-      ),
-    });
-
   const matchIsOver =
     match.opponentOne?.result === "win" || match.opponentTwo?.result === "win";
 
   return {
-    match: {
-      ...match,
-      chatCode: showChat ? match.chatCode : null,
-    },
+    match,
     results: findResultsByMatchId(matchId),
-    seeds: resolveSeeds(),
     currentMap,
     modes: mapList?.map((map) => map.mode),
     matchIsOver,
   };
-
-  function resolveSeeds() {
-    const tournamentId = tournamentIdFromParams(params);
-    const teams = findTeamsByTournamentId(tournamentId);
-
-    const teamOneIndex = teams.findIndex(
-      (team) => team.id === match.opponentOne?.id,
-    );
-    const teamTwoIndex = teams.findIndex(
-      (team) => team.id === match.opponentTwo?.id,
-    );
-
-    return [
-      teamOneIndex !== -1 ? teamOneIndex + 1 : null,
-      teamTwoIndex !== -1 ? teamTwoIndex + 1 : null,
-    ];
-  }
 };
 
 export default function TournamentMatchPage() {
   const user = useUser();
   const visibility = useVisibilityChange();
   const { revalidate } = useRevalidator();
-  const parentRouteData = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
   const data = useLoaderData<typeof loader>();
 
   React.useEffect(() => {
@@ -370,21 +328,9 @@ export default function TournamentMatchPage() {
     revalidate();
   }, [visibility, revalidate, data.matchIsOver]);
 
-  const isMemberOfATeamInTheMatch = data.match.players.some(
-    (p) => p.id === user?.id,
-  );
-
   const type =
-    canReportTournamentScore({
-      tournament: parentRouteData.tournament,
-      match: data.match,
-      isMemberOfATeamInTheMatch,
-      user,
-    }) ||
-    isTournamentStreamerOrOrganizer({
-      user,
-      tournament: parentRouteData.tournament,
-    })
+    tournament.canReportScore({ matchId: data.match.id, user }) ||
+    tournament.isOrganizerOrStreamer(user)
       ? "EDIT"
       : "OTHER";
 
@@ -401,9 +347,14 @@ export default function TournamentMatchPage() {
       {!data.matchIsOver && visibility !== "hidden" ? <AutoRefresher /> : null}
       <div className="flex horizontal justify-between items-center">
         {/* TODO: better title */}
-        <h2 className="text-lighter text-lg">Match #{data.match.id}</h2>
+        <h2 className="text-lighter text-lg" data-testid="match-header">
+          Match #{data.match.id}
+        </h2>
         <LinkButton
-          to={tournamentBracketsPage(parentRouteData.tournament.id)}
+          to={tournamentBracketsPage({
+            tournamentId: tournament.ctx.id,
+            bracketIdx: tournament.matchIdToBracketIdx(data.match.id),
+          })}
           variant="outlined"
           size="tiny"
           className="w-max"
@@ -439,11 +390,11 @@ function AutoRefresher() {
 
 function useAutoRefresh() {
   const { revalidate } = useRevalidator();
-  const parentRouteData = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
   const data = useLoaderData<typeof loader>();
   const lastEventId = useEventSource(
     tournamentMatchSubscribePage({
-      eventId: parentRouteData.tournament.id,
+      eventId: tournament.ctx.id,
       matchId: data.match.id,
     }),
     {
@@ -466,10 +417,10 @@ function MapListSection({
   type: "EDIT" | "OTHER";
 }) {
   const data = useLoaderData<typeof loader>();
-  const parentRouteData = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
 
-  const teamOne = parentRouteData.teams.find((team) => team.id === teams[0]);
-  const teamTwo = parentRouteData.teams.find((team) => team.id === teams[1]);
+  const teamOne = tournament.teamById(teams[0]);
+  const teamTwo = tournament.teamById(teams[1]);
 
   if (!teamOne || !teamTwo) return null;
 
@@ -488,7 +439,7 @@ function MapListSection({
 
 function ResultsSection() {
   const data = useLoaderData<typeof loader>();
-  const parentRouteData = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
   const [selectedResultIndex, setSelectedResultIndex] = useSearchParamState({
     defaultValue: data.results.length - 1,
     name: "result",
@@ -504,12 +455,12 @@ function ResultsSection() {
   const result = data.results[selectedResultIndex];
   invariant(result, "Result is missing");
 
-  const teamOne = parentRouteData.teams.find(
-    (team) => team.id === data.match.opponentOne?.id,
-  );
-  const teamTwo = parentRouteData.teams.find(
-    (team) => team.id === data.match.opponentTwo?.id,
-  );
+  const teamOne = data.match.opponentOne?.id
+    ? tournament.teamById(data.match.opponentOne.id)
+    : undefined;
+  const teamTwo = data.match.opponentTwo?.id
+    ? tournament.teamById(data.match.opponentTwo.id)
+    : undefined;
 
   if (!teamOne || !teamTwo) {
     throw new Error("Team is missing");
@@ -534,10 +485,10 @@ function Rosters({
   teams: [id: number | null | undefined, id: number | null | undefined];
 }) {
   const data = useLoaderData<typeof loader>();
-  const parentRouteData = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
 
-  const teamOne = parentRouteData.teams.find((team) => team.id === teams[0]);
-  const teamTwo = parentRouteData.teams.find((team) => team.id === teams[1]);
+  const teamOne = teams[0] ? tournament.teamById(teams[0]) : undefined;
+  const teamTwo = teams[1] ? tournament.teamById(teams[1]) : undefined;
   const teamOnePlayers = data.match.players.filter(
     (p) => p.tournamentTeamId === teamOne?.id,
   );
@@ -560,7 +511,7 @@ function Rosters({
           {teamOne ? (
             <Link
               to={tournamentTeamPage({
-                eventId: parentRouteData.tournament.id,
+                eventId: tournament.ctx.id,
                 tournamentTeamId: teamOne.id,
               })}
               className="text-main-forced font-bold"
@@ -595,7 +546,7 @@ function Rosters({
           {teamTwo ? (
             <Link
               to={tournamentTeamPage({
-                eventId: parentRouteData.tournament.id,
+                eventId: tournament.ctx.id,
                 tournamentTeamId: teamTwo.id,
               })}
               className="text-main-forced font-bold"

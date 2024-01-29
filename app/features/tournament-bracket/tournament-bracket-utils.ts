@@ -1,23 +1,14 @@
-import type { Stage } from "~/modules/brackets-model";
-import type {
-  TournamentFormat,
-  TournamentMatch,
-  TournamentStage,
-} from "~/db/types";
-import {
-  sourceTypes,
-  seededRandom,
-} from "~/modules/tournament-map-list-generator";
-import { assertUnreachable } from "~/utils/types";
-import type { FindMatchById } from "../tournament-bracket/queries/findMatchById.server";
-import type {
-  TournamentLoaderData,
-  TournamentLoaderTeam,
-} from "~/features/tournament";
 import type { Params } from "@remix-run/react";
 import invariant from "tiny-invariant";
+import type { TournamentMatch } from "~/db/types";
 import type { DataTypes, ValueToArray } from "~/modules/brackets-manager/types";
-import { HACKY_isInviteOnlyEvent } from "../tournament/tournament-utils";
+import {
+  seededRandom,
+  sourceTypes,
+} from "~/modules/tournament-map-list-generator";
+import { removeDuplicates } from "~/utils/arrays";
+import type { FindMatchById } from "../tournament-bracket/queries/findMatchById.server";
+import type { TournamentDataTeam } from "./core/Tournament.server";
 
 export function matchIdFromParams(params: Params<string>) {
   const result = Number(params["mid"]);
@@ -57,7 +48,7 @@ export function resolveRoomPass(matchId: TournamentMatch["id"]) {
 }
 
 export function resolveHostingTeam(
-  teams: [TournamentLoaderTeam, TournamentLoaderTeam],
+  teams: [TournamentDataTeam, TournamentDataTeam],
 ) {
   if (teams[0].prefersNotToHost && !teams[1].prefersNotToHost) return teams[1];
   if (!teams[0].prefersNotToHost && teams[1].prefersNotToHost) return teams[0];
@@ -69,47 +60,6 @@ export function resolveHostingTeam(
 
   console.error("resolveHostingTeam: unexpected default");
   return teams[0];
-}
-
-export function resolveTournamentStageName(format: TournamentFormat) {
-  switch (format) {
-    case "SE":
-    case "DE":
-      return "Elimination stage";
-    default: {
-      assertUnreachable(format);
-    }
-  }
-}
-
-export function resolveTournamentStageType(
-  format: TournamentFormat,
-): TournamentStage["type"] {
-  switch (format) {
-    case "SE":
-      return "single_elimination";
-    case "DE":
-      return "double_elimination";
-    default: {
-      assertUnreachable(format);
-    }
-  }
-}
-
-export function resolveTournamentStageSettings(
-  format: TournamentFormat,
-): Stage["settings"] {
-  switch (format) {
-    case "SE":
-      return {};
-    case "DE":
-      return {
-        grandFinal: "double",
-      };
-    default: {
-      assertUnreachable(format);
-    }
-  }
 }
 
 export function mapCountPlayedInSetWithCertainty({
@@ -142,23 +92,6 @@ export function checkSourceIsValid({
   return false;
 }
 
-export function HACKY_resolvePoolCode({
-  event,
-  hostingTeamId,
-}: {
-  event: TournamentLoaderData["tournament"];
-  hostingTeamId: number;
-}) {
-  const prefix = event.name.includes("In The Zone")
-    ? "ITZ"
-    : HACKY_isInviteOnlyEvent(event)
-      ? "SQ"
-      : "PN";
-  const lastDigit = hostingTeamId % 10;
-
-  return { prefix, lastDigit };
-}
-
 export function bracketSubscriptionKey(tournamentId: number) {
   return `BRACKET_CHANGED_${tournamentId}`;
 }
@@ -174,7 +107,13 @@ export function fillWithNullTillPowerOfTwo<T>(arr: T[]) {
   return [...arr, ...new Array(nullsToAdd).fill(null)];
 }
 
-export function everyMatchIsOver(bracket: ValueToArray<DataTypes>) {
+export function everyMatchIsOver(
+  bracket: Pick<ValueToArray<DataTypes>, "match">,
+) {
+  // winners, losers & grand finals+bracket reset are all different stages
+  const isDoubleElimination =
+    removeDuplicates(bracket.match.map((match) => match.group_id)).length === 3;
+
   // tournament didn't start yet
   if (bracket.match.length === 0) return false;
 
@@ -182,7 +121,7 @@ export function everyMatchIsOver(bracket: ValueToArray<DataTypes>) {
   for (const [i, match] of bracket.match.entries()) {
     // special case - bracket reset might not be played depending on who wins in the grands
     const isLast = i === bracket.match.length - 1;
-    if (isLast && lastWinner === 1) {
+    if (isLast && lastWinner === 1 && isDoubleElimination) {
       continue;
     }
     // BYE
@@ -201,3 +140,22 @@ export function everyMatchIsOver(bracket: ValueToArray<DataTypes>) {
 
   return true;
 }
+
+export function everyBracketOver(tournament: ValueToArray<DataTypes>) {
+  const stageIds = tournament.stage.map((stage) => stage.id);
+
+  for (const stageId of stageIds) {
+    const matches = tournament.match.filter(
+      (match) => match.stage_id === stageId,
+    );
+
+    if (!everyMatchIsOver({ match: matches })) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+export const bracketHasStarted = (bracket: ValueToArray<DataTypes>) =>
+  bracket.stage[0] && bracket.stage[0].id !== 0;

@@ -80,8 +80,6 @@
   "bracket.single_elim.finals": "גמר",
   "bracket.grand_finals": "הגמר הגדול",
   "bracket.grand_finals.bracket_reset": "מערך אופס",
-  "bracket.main": "מערך ראשי",
-  "bracket.underground": "מערך תת קרקעי",
 
   "actions.addSub": "הוסיפו ממלא מקום",
   "actions.shareLink": "שתפו קישור הזמנה להוספת חברי צוות: {{inviteLink}}",
@@ -102,7 +100,6 @@
 
   "bracket.waiting": "מערכים יופיעו כאן כאשר לפחות {{count}} צוותים נרשמו",
   "bracket.wip": "מערך זה הוא תצוגה מקדימה ונתון לשינויים",
-  "bracket.finalize.text": "כשהכל נראה טוב, סיים את המערך כדי להתחיל את הטורניר",
   "bracket.finalize.action": "סיימו",
   "bracket.beforeStart": "מערך עדיין לא ניתן להפעלה כפי שהוא לפני שעת ההתחלה",
 
@@ -120,7 +117,6 @@
   "match.score": "{{scoreOne}}-{{scoreTwo}} (הטוב מ-{{bestOf}})",
   "match.action.undoLastScore": "בטלו את התוצאה האחרונה",
   "match.action.reopenMatch": "פתיחה מחדש של הקרב",
-  "match.action.matchIsLocked": "הקרב נעול",
 
   "join.error.MISSING_CODE": "חסר קוד הזמנה. האם כתובת האתר המלאה הועתקה?",
   "join.error.SHORT_CODE": "קוד ההזמנה אינו באורך המתאים. האם כתובת האתר המלאה הועתקה?",

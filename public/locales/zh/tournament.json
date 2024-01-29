@@ -80,8 +80,6 @@
   "bracket.single_elim.finals": "单败制决赛",
   "bracket.grand_finals": "总决赛",
   "bracket.grand_finals.bracket_reset": "加赛",
-  "bracket.main": "主对战表",
-  "bracket.underground": "副对战表",
 
   "actions.addSub": "添加替补",
   "actions.shareLink": "分享您的邀请链接以添加成员: {{inviteLink}}",
@@ -102,7 +100,6 @@
 
   "bracket.waiting": "至少 {{count}} 支队伍报名后，对战表将显示在这里",
   "bracket.wip": "此对战表为可调整的预览",
-  "bracket.finalize.text": "如果没有问题，生成对战表并开始比赛",
   "bracket.finalize.action": "生成",
   "bracket.beforeStart": "还未到比赛开始时间，对战表目前无法开始",
 
@@ -120,7 +117,6 @@
   "match.score": "{{scoreOne}}-{{scoreTwo}} (Bo {{bestOf}})",
   "match.action.undoLastScore": "撤销上次比分",
   "match.action.reopenMatch": "重新开始对战",
-  "match.action.matchIsLocked": "对战已锁定",
 
   "join.error.MISSING_CODE": "缺少邀请码。您是否复制了完整URL？",
   "join.error.SHORT_CODE": "邀请码长度不符。您是否复制了完整URL？",

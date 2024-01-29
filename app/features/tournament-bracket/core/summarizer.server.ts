@@ -8,7 +8,6 @@ import type { AllMatchResult } from "../queries/allMatchResultsByTournamentId.se
 import type { FindTeamsByTournamentIdItem } from "../../tournament/queries/findTeamsByTournamentId.server";
 import invariant from "tiny-invariant";
 import { removeDuplicates } from "~/utils/arrays";
-import type { FinalStanding } from "./finalStandings.server";
 import type { Rating } from "openskill/dist/types";
 import {
   rate,
@@ -17,6 +16,7 @@ import {
 } from "~/features/mmr/mmr-utils";
 import shuffle from "just-shuffle";
 import type { Unpacked } from "~/utils/types";
+import type { Standing } from "./Bracket";
 
 export interface TournamentSummary {
   skills: Omit<
@@ -36,13 +36,6 @@ type TeamsArg = Array<{
     Pick<Unpacked<FindTeamsByTournamentIdItem["members"]>, "userId">
   >;
 }>;
-type FinalStandingsArg = Array<{
-  placement: FinalStanding["placement"];
-  tournamentTeam: {
-    id: FinalStanding["tournamentTeam"]["id"];
-  };
-  players: Array<{ id: number }>;
-}>;
 
 export function tournamentSummary({
   results,
@@ -55,7 +48,7 @@ export function tournamentSummary({
 }: {
   results: AllMatchResult[];
   teams: TeamsArg;
-  finalStandings: FinalStandingsArg;
+  finalStandings: Standing[];
   queryCurrentTeamRating: (identifier: string) => Rating;
   queryTeamPlayerRatingAverage: (identifier: string) => Rating;
   queryCurrentUserRating: (userId: number) => Rating;
@@ -473,17 +466,17 @@ function tournamentResults({
   finalStandings,
 }: {
   participantCount: number;
-  finalStandings: FinalStandingsArg;
+  finalStandings: Standing[];
 }) {
   const result: TournamentSummary["tournamentResults"] = [];
 
   for (const standing of finalStandings) {
-    for (const player of standing.players) {
+    for (const player of standing.team.members) {
       result.push({
         participantCount,
         placement: standing.placement,
-        tournamentTeamId: standing.tournamentTeam.id,
-        userId: player.id,
+        tournamentTeamId: standing.team.id,
+        userId: player.userId,
       });
     }
   }

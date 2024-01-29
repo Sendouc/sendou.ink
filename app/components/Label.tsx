@@ -14,6 +14,7 @@ type LabelProps = Pick<
   required?: boolean;
   className?: string;
   labelClassName?: string;
+  spaced?: boolean;
 };
 
 export function Label({
@@ -23,9 +24,10 @@ export function Label({
   htmlFor,
   className,
   labelClassName,
+  spaced = true,
 }: LabelProps) {
   return (
-    <div className={clsx("label__container", className)}>
+    <div className={clsx("label__container", className, { "mb-0": !spaced })}>
       <label htmlFor={htmlFor} className={labelClassName}>
         {children} {required && <span className="text-error">*</span>}
       </label>

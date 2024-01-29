@@ -366,10 +366,25 @@ type TournamentMapPickingStyle =
   | "AUTO_RM"
   | "AUTO_CB";
 
-type TournamentFormat = "SE" | "DE";
+export type TournamentBracketProgression = {
+  type: TournamentStage["type"];
+  name: string;
+  /** Where do the teams come from? If missing then it means the source is the full registered teams list. */
+  sources?: {
+    /** Index of the bracket where the teams come from */
+    bracketIdx: number;
+    /** Team placements that join this bracket. E.g. [1, 2] would mean top 1 & 2 teams. [-1] would mean the last placing teams. */
+    placements: number[];
+  }[];
+}[];
+
+export interface TournamentSettings {
+  bracketProgression: TournamentBracketProgression;
+  teamsPerGroup?: number;
+}
 
 export interface Tournament {
-  format: TournamentFormat;
+  settings: ColumnType<TournamentSettings, string, string>;
   id: GeneratedAlways<number>;
   mapPickingStyle: TournamentMapPickingStyle;
   showMapListGenerator: Generated<number | null>;
@@ -411,6 +426,8 @@ export interface TournamentMatchGameResult {
   source: string;
   stageId: StageId;
   winnerTeamId: number;
+  opponentOnePoints: number | null;
+  opponentTwoPoints: number | null;
 }
 
 export interface TournamentMatchGameResultParticipant {
@@ -440,7 +457,7 @@ export interface TournamentStage {
   number: number;
   settings: string;
   tournamentId: number;
-  type: string;
+  type: "double_elimination" | "single_elimination" | "round_robin";
 }
 
 export interface TournamentSub {
@@ -472,6 +489,8 @@ export interface TournamentTeam {
 
 export interface TournamentTeamCheckIn {
   checkedInAt: number;
+  /** Which bracket checked in for. If missing is check in for the whole event. */
+  bracketIdx: number | null;
   tournamentTeamId: number;
 }
 

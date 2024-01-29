@@ -1,37 +1,33 @@
 import {
-  type TournamentLoaderData,
-  tournamentIdFromParams,
-} from "~/features/tournament";
-import {
-  type SubByTournamentId,
-  findSubsByTournamentId,
-} from "../queries/findSubsByTournamentId.server";
-import {
   redirect,
   type ActionFunction,
   type LinksFunction,
   type LoaderFunctionArgs,
 } from "@remix-run/node";
-import { Link, useLoaderData, useOutletContext } from "@remix-run/react";
-import { getUser, requireUser, useUser } from "~/features/auth/core";
-import { assertUnreachable } from "~/utils/types";
-import styles from "../tournament-subs.css";
-import { Avatar } from "~/components/Avatar";
-import { discordFullName } from "~/utils/strings";
-import { tournamentRegisterPage, userPage } from "~/utils/urls";
-import { WeaponImage } from "~/components/Image";
-import { Flag } from "~/components/Flag";
-import { MicrophoneIcon } from "~/components/icons/Microphone";
-import { Button, LinkButton } from "~/components/Button";
-import { deleteSub } from "../queries/deleteSub.server";
-import { FormWithConfirm } from "~/components/FormWithConfirm";
-import { TrashIcon } from "~/components/icons/Trash";
-import { useTranslation } from "react-i18next";
+import { Link, useLoaderData } from "@remix-run/react";
 import React from "react";
+import { useTranslation } from "react-i18next";
+import { Avatar } from "~/components/Avatar";
+import { Button, LinkButton } from "~/components/Button";
+import { Flag } from "~/components/Flag";
+import { FormWithConfirm } from "~/components/FormWithConfirm";
+import { WeaponImage } from "~/components/Image";
 import { Redirect } from "~/components/Redirect";
-import { notFoundIfFalsy } from "~/utils/remix";
-import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
-import { HACKY_subsFeatureEnabled } from "~/features/tournament/tournament-utils";
+import { MicrophoneIcon } from "~/components/icons/Microphone";
+import { TrashIcon } from "~/components/icons/Trash";
+import { getUser, requireUser, useUser } from "~/features/auth/core";
+import { tournamentIdFromParams } from "~/features/tournament";
+import { useTournament } from "~/features/tournament/routes/to.$id";
+import { discordFullName } from "~/utils/strings";
+import { assertUnreachable } from "~/utils/types";
+import { tournamentRegisterPage, userPage } from "~/utils/urls";
+import { deleteSub } from "../queries/deleteSub.server";
+import {
+  findSubsByTournamentId,
+  type SubByTournamentId,
+} from "../queries/findSubsByTournamentId.server";
+import styles from "../tournament-subs.css";
+import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.server";
 
 export const links: LinksFunction = () => {
   return [
@@ -58,10 +54,8 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const user = await getUser(request);
   const tournamentId = tournamentIdFromParams(params);
 
-  const tournament = notFoundIfFalsy(
-    await TournamentRepository.findById(tournamentId),
-  );
-  if (!HACKY_subsFeatureEnabled(tournament)) {
+  const tournament = await tournamentFromDB({ tournamentId, user });
+  if (!tournament.subsFeatureEnabled) {
     throw redirect(tournamentRegisterPage(tournamentId));
   }
 
@@ -100,17 +94,15 @@ export default function TournamentSubsPage() {
   const user = useUser();
   const { t } = useTranslation(["tournament"]);
   const data = useLoaderData<typeof loader>();
-  const parentRouteData = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
 
-  if (parentRouteData.hasFinalized) {
-    return (
-      <Redirect to={tournamentRegisterPage(parentRouteData.tournament.id)} />
-    );
+  if (tournament.everyBracketOver) {
+    return <Redirect to={tournamentRegisterPage(tournament.ctx.id)} />;
   }
 
   return (
     <div className="stack lg">
-      {!parentRouteData.teamMemberOfName && user ? (
+      {!tournament.teamMemberOfByUser(user) && user ? (
         <div className="stack items-end">
           <LinkButton to="new" size="tiny">
             {data.hasOwnSubPost

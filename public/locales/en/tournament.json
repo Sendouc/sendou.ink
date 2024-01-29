@@ -82,11 +82,10 @@
   "bracket.losers": "Losers Round {{round}}",
   "bracket.losers.finals": "Losers Finals",
   "bracket.single_elim": "Round {{round}}",
+  "bracket.round_robin": "Groups Round {{round}}",
   "bracket.single_elim.finals": "Finals",
   "bracket.grand_finals": "Grand Finals",
   "bracket.grand_finals.bracket_reset": "Bracket Reset",
-  "bracket.main": "Main Bracket",
-  "bracket.underground": "Underground Bracket",
 
   "actions.addSub": "Add sub",
   "actions.shareLink": "Share your invite link to add members: {{inviteLink}}",
@@ -104,12 +103,15 @@
   "team.seed": "Seed",
   "team.seed.footer": "out of {{count}}",
   "team.placement": "Placement",
+  "team.placement.footer": "Main/UG",
 
   "bracket.waiting": "Bracket will be shown here when at least {{count}} teams have registered",
+  "bracket.waiting.checkin": "Bracket will be shown here when at least {{count}} teams have checked in",
   "bracket.wip": "This bracket is a preview and subject to change",
-  "bracket.finalize.text": "When everything looks good, finalize the bracket to start the tournament",
+  "bracket.finalize.text": "When everything looks good, finalize the bracket to allow matches to be played",
   "bracket.finalize.action": "Finalize",
   "bracket.beforeStart": "Bracket can't be started yet as it is before the start time",
+  "bracket.waitingForResults": "Bracket can't be started yet as it is waiting for results of the previous bracket",
 
   "bracket.progress.thanksForPlaying": "Thanks for playing in {{eventName}}!",
   "bracket.progress.match": "Current opponent: {{opponent}}",
@@ -125,7 +127,6 @@
   "match.score": "{{scoreOne}}-{{scoreTwo}} (Best of {{bestOf}})",
   "match.action.undoLastScore": "Undo last score",
   "match.action.reopenMatch": "Reopen match",
-  "match.action.matchIsLocked": "Match is locked",
 
   "join.error.MISSING_CODE": "Invite code is missing. Was the full URL copied?",
   "join.error.SHORT_CODE": "Invite code is not the right length. Was the full URL copied?",

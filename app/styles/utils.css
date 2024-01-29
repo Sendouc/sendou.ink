@@ -38,6 +38,10 @@
   color: var(--text-lighter);
 }
 
+.text-lighter-important {
+  color: var(--text-lighter) !important;
+}
+
 .text-error {
   color: var(--theme-error);
 }
@@ -68,6 +72,10 @@
 
 .text-capitalize {
   text-transform: capitalize;
+}
+
+.underline {
+  text-decoration: underline;
 }
 
 .fill-success {

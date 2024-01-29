@@ -3,33 +3,38 @@ import {
   type ActionFunction,
   type LoaderFunctionArgs,
 } from "@remix-run/node";
-import {
-  Link,
-  useFetcher,
-  useLoaderData,
-  useOutletContext,
-} from "@remix-run/react";
+import { Link, useFetcher, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { useCopyToClipboard } from "react-use";
 import invariant from "tiny-invariant";
 import { Alert } from "~/components/Alert";
 import { Avatar } from "~/components/Avatar";
 import { Button } from "~/components/Button";
 import { Divider } from "~/components/Divider";
+import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { Image, ModeImage } from "~/components/Image";
 import { Input } from "~/components/Input";
 import { Label } from "~/components/Label";
+import { Popover } from "~/components/Popover";
 import { SubmitButton } from "~/components/SubmitButton";
 import { CheckmarkIcon } from "~/components/icons/Checkmark";
 import { ClockIcon } from "~/components/icons/Clock";
 import { CrossIcon } from "~/components/icons/Cross";
 import { UserIcon } from "~/components/icons/User";
-import { useAutoRerender } from "~/hooks/useAutoRerender";
-import { useIsMounted } from "~/hooks/useIsMounted";
-import { useTranslation } from "react-i18next";
 import { useUser } from "~/features/auth/core";
 import { getUser, requireUser } from "~/features/auth/core/user.server";
+import { MapPool } from "~/features/map-list-generator/core/map-pool";
+import { BANNED_MAPS } from "~/features/sendouq-settings/banned-maps";
+import * as TeamRepository from "~/features/team/TeamRepository.server";
+import { findMapPoolByTeamId } from "~/features/tournament-bracket";
+import {
+  tournamentFromDB,
+  type TournamentDataTeam,
+} from "~/features/tournament-bracket/core/Tournament.server";
+import { useAutoRerender } from "~/hooks/useAutoRerender";
+import { useIsMounted } from "~/hooks/useIsMounted";
 import type {
   ModeShort,
   RankedModeShort,
@@ -37,7 +42,6 @@ import type {
 } from "~/modules/in-game-lists";
 import { stageIds } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
-import { databaseTimestampToDate } from "~/utils/dates";
 import {
   notFoundIfFalsy,
   parseRequestFormData,
@@ -46,7 +50,6 @@ import {
 } from "~/utils/remix";
 import { booleanToInt } from "~/utils/sql";
 import { discordFullName } from "~/utils/strings";
-import type { Unpacked } from "~/utils/types";
 import { assertUnreachable } from "~/utils/types";
 import {
   CALENDAR_PAGE,
@@ -60,6 +63,7 @@ import {
 } from "~/utils/urls";
 import { checkIn } from "../queries/checkIn.server";
 import { createTeam } from "../queries/createTeam.server";
+import { deleteTeam } from "../queries/deleteTeam.server";
 import deleteTeamMember from "../queries/deleteTeamMember.server";
 import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { findOwnTeam } from "../queries/findOwnTeam.server";
@@ -75,25 +79,10 @@ import { useSelectCounterpickMapPoolState } from "../tournament-hooks";
 import { registerSchema } from "../tournament-schemas.server";
 import {
   HACKY_isInviteOnlyEvent,
-  HACKY_maxRosterSizeBeforeStart,
-  HACKY_resolveCheckInTime,
-  HACKY_resolvePicture,
-  HACKY_subsFeatureEnabled,
-  checkInHasEnded,
   isOneModeTournamentOf,
-  modesIncluded,
-  resolveOwnedTeam,
   tournamentIdFromParams,
-  validateCanCheckIn,
 } from "../tournament-utils";
-import type { TournamentLoaderData } from "./to.$id";
-import { FormWithConfirm } from "~/components/FormWithConfirm";
-import { deleteTeam } from "../queries/deleteTeam.server";
-import { findMapPoolByTeamId } from "~/features/tournament-bracket";
-import { Popover } from "~/components/Popover";
-import * as TeamRepository from "~/features/team/TeamRepository.server";
-import { MapPool } from "~/features/map-list-generator/core/map-pool";
-import { BANNED_MAPS } from "~/features/sendouq-settings/banned-maps";
+import { useTournament } from "./to.$id";
 
 export const handle: SendouRouteHandle = {
   breadcrumb: () => ({
@@ -108,6 +97,7 @@ export const action: ActionFunction = async ({ request, params }) => {
   const data = await parseRequestFormData({ request, schema: registerSchema });
 
   const tournamentId = tournamentIdFromParams(params);
+  const tournament = await tournamentFromDB({ tournamentId, user });
   const hasStarted = hasTournamentStarted(tournamentId);
   const event = notFoundIfFalsy(findByIdentifier(tournamentId));
 
@@ -176,13 +166,15 @@ export const action: ActionFunction = async ({ request, params }) => {
       break;
     }
     case "CHECK_IN": {
+      validate(tournament.regularCheckInIsOpen, "Check in is not open");
       validate(ownTeam);
       validate(!ownTeam.checkedInAt, "You have already checked in");
-      validateCanCheckIn({
-        event,
-        team: ownTeam,
-        mapPool: findMapPoolByTeamId(ownTeam.id),
-      });
+      validate(
+        tournament.checkInConditionsFulfilled({
+          tournamentTeamId: ownTeam.id,
+          mapPool: findMapPoolByTeamId(ownTeam.id),
+        }),
+      );
 
       checkIn(ownTeam.id);
       break;
@@ -232,7 +224,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   const hasStarted = hasTournamentStarted(eventId);
 
   if (hasStarted) {
-    throw redirect(tournamentBracketsPage(eventId));
+    throw redirect(tournamentBracketsPage({ tournamentId: eventId }));
   }
 
   const user = await getUser(request);
@@ -254,39 +246,35 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 };
 
 export default function TournamentRegisterPage() {
+  const user = useUser();
   const isMounted = useIsMounted();
   const { t, i18n } = useTranslation(["tournament"]);
-  const parentRouteData = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
 
-  const isRegularMemberOfATeam = Boolean(
-    parentRouteData.teamMemberOfName && !parentRouteData.ownTeam,
-  );
+  const isRegularMemberOfATeam =
+    tournament.teamMemberOfByUser(user) && !tournament.ownedTeamByUser(user);
 
   return (
     <div className="stack lg">
       <div className="tournament__logo-container">
         <img
-          src={HACKY_resolvePicture(parentRouteData.tournament)}
+          src={tournament.logoSrc}
           alt=""
           className="tournament__logo"
           width={124}
           height={124}
         />
         <div>
-          <div className="tournament__title">
-            {parentRouteData.tournament.name}
-          </div>
+          <div className="tournament__title">{tournament.ctx.name}</div>
           <div className="tournament__by">
             <div className="stack horizontal xs items-center">
               <UserIcon className="tournament__info__icon" />{" "}
-              {parentRouteData.tournament.author.discordName}
+              {tournament.ctx.author.discordName}
             </div>
             <div className="stack horizontal xs items-center">
               <ClockIcon className="tournament__info__icon" />{" "}
               {isMounted
-                ? databaseTimestampToDate(
-                    parentRouteData.tournament.startTime,
-                  ).toLocaleString(i18n.language, {
+                ? tournament.ctx.startTime.toLocaleString(i18n.language, {
                     timeZoneName: "short",
                     minute: "numeric",
                     hour: "numeric",
@@ -296,7 +284,7 @@ export default function TournamentRegisterPage() {
                 : null}
             </div>
             <div className="stack horizontal sm mt-1">
-              {modesIncluded(parentRouteData.tournament).map((mode) => (
+              {tournament.modesIncluded.map((mode) => (
                 <div key={mode} className="tournament___info__mode-container">
                   <ModeImage mode={mode} size={18} />
                 </div>
@@ -305,16 +293,15 @@ export default function TournamentRegisterPage() {
           </div>
         </div>
       </div>
-      <div>{parentRouteData.tournament.description}</div>
+      <div>{tournament.ctx.description}</div>
       {isRegularMemberOfATeam ? (
         <Alert>{t("tournament:pre.inATeam")}</Alert>
       ) : (
-        <RegistrationForms ownTeam={parentRouteData?.ownTeam} />
+        <RegistrationForms />
       )}
-      {!parentRouteData.teamMemberOfName &&
-      HACKY_subsFeatureEnabled(parentRouteData.tournament) ? (
+      {!tournament.teamMemberOfByUser(user) && tournament.subsFeatureEnabled ? (
         <Link
-          to={tournamentSubsPage(parentRouteData.tournament.id)}
+          to={tournamentSubsPage(tournament.ctx.id)}
           className="text-xs text-center"
         >
           {t("tournament:pre.sub.prompt")}
@@ -336,57 +323,51 @@ function PleaseLogIn() {
   );
 }
 
-function RegistrationForms({
-  ownTeam,
-}: {
-  ownTeam?: TournamentLoaderData["ownTeam"];
-}) {
+function RegistrationForms() {
   const data = useLoaderData<typeof loader>();
   const user = useUser();
-  const parentRouteData = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
 
-  if (!user && !HACKY_isInviteOnlyEvent(parentRouteData.tournament)) {
+  const ownTeam = tournament.ownedTeamByUser(user);
+  const ownTeamCheckedIn = Boolean(ownTeam && ownTeam.checkIns.length > 0);
+
+  if (!user && tournament.hasOpenRegistration) {
     return <PleaseLogIn />;
   }
-
-  const ownTeamFromList = resolveOwnedTeam({
-    teams: parentRouteData.teams,
-    userId: user?.id,
-  });
 
   const showRegistrationProgress = () => {
     if (ownTeam) return true;
 
-    return !HACKY_isInviteOnlyEvent(parentRouteData.tournament);
+    return tournament.hasOpenRegistration;
   };
 
   const showRegisterNewTeam = () => {
     if (ownTeam) return true;
-    if (HACKY_isInviteOnlyEvent(parentRouteData.tournament)) return false;
+    if (!tournament.hasOpenRegistration) return false;
 
-    return !checkInHasEnded(parentRouteData.tournament);
+    return !tournament.regularCheckInHasEnded;
   };
 
   return (
     <div className="stack lg">
       {showRegistrationProgress() ? (
         <RegistrationProgress
-          checkedIn={Boolean(ownTeam?.checkedInAt)}
+          checkedIn={ownTeamCheckedIn}
           name={ownTeam?.name}
           mapPool={data?.mapPool}
-          members={ownTeamFromList?.members}
+          members={ownTeam?.members}
         />
       ) : null}
       {showRegisterNewTeam() ? (
         <TeamInfo
           name={ownTeam?.name}
-          prefersNotToHost={ownTeamFromList?.prefersNotToHost}
-          canUnregister={Boolean(ownTeam && !ownTeam.checkedInAt)}
+          prefersNotToHost={ownTeam?.prefersNotToHost}
+          canUnregister={Boolean(ownTeam && !ownTeamCheckedIn)}
         />
       ) : null}
       {ownTeam ? (
         <>
-          <FillRoster ownTeam={ownTeam} />
+          <FillRoster ownTeam={ownTeam} ownTeamCheckedIn={ownTeamCheckedIn} />
           <CounterPickMapPoolPicker />
         </>
       ) : null}
@@ -406,7 +387,7 @@ function RegistrationProgress({
   mapPool?: unknown[];
 }) {
   const { t } = useTranslation(["tournament"]);
-  const parentRouteData = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
 
   const steps = [
     {
@@ -427,22 +408,6 @@ function RegistrationProgress({
       completed: checkedIn,
     },
   ];
-
-  const checkInStartsDate = HACKY_resolveCheckInTime(
-    parentRouteData.tournament,
-  );
-  const checkInEndsDate = databaseTimestampToDate(
-    parentRouteData.tournament.startTime,
-  );
-  const now = new Date();
-
-  const checkInIsOpen =
-    now.getTime() > checkInStartsDate.getTime() &&
-    now.getTime() < checkInEndsDate.getTime();
-
-  const checkInIsOver =
-    now.getTime() > checkInEndsDate.getTime() &&
-    now.getTime() > checkInStartsDate.getTime();
 
   return (
     <div>
@@ -472,9 +437,15 @@ function RegistrationProgress({
         </div>
         <CheckIn
           canCheckIn={steps.filter((step) => !step.completed).length === 1}
-          status={checkInIsOpen ? "OPEN" : checkInIsOver ? "OVER" : "UPCOMING"}
-          startDate={checkInStartsDate}
-          endDate={checkInEndsDate}
+          status={
+            tournament.regularCheckInIsOpen
+              ? "OPEN"
+              : tournament.regularCheckInHasEnded
+                ? "OVER"
+                : "UPCOMING"
+          }
+          startDate={tournament.regularCheckInStartsAt}
+          endDate={tournament.regularCheckInEndsAt}
           checkedIn={checkedIn}
         />
       </section>
@@ -654,25 +625,23 @@ function TeamInfo({
 
 function FillRoster({
   ownTeam,
+  ownTeamCheckedIn,
 }: {
-  ownTeam: NonNullable<TournamentLoaderData["ownTeam"]>;
+  ownTeam: TournamentDataTeam;
+  ownTeamCheckedIn: boolean;
 }) {
   const data = useLoaderData<typeof loader>();
   const user = useUser();
-  const parentRouteData = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
   const [, copyToClipboard] = useCopyToClipboard();
   const { t } = useTranslation(["common", "tournament"]);
 
   const inviteLink = `${SENDOU_INK_BASE_URL}${tournamentJoinPage({
-    eventId: parentRouteData.tournament.id,
-    inviteCode: ownTeam.inviteCode,
+    eventId: tournament.ctx.id,
+    inviteCode: ownTeam.inviteCode!,
   })}`;
 
-  const { members: ownTeamMembers } =
-    resolveOwnedTeam({
-      teams: parentRouteData.teams,
-      userId: user?.id,
-    }) ?? {};
+  const { members: ownTeamMembers } = tournament.ownedTeamByUser(user) ?? {};
   invariant(ownTeamMembers, "own team members should exist");
 
   const missingMembers = Math.max(
@@ -681,28 +650,24 @@ function FillRoster({
   );
 
   const optionalMembers = Math.max(
-    HACKY_maxRosterSizeBeforeStart(parentRouteData.tournament) -
-      ownTeamMembers.length -
-      missingMembers,
+    tournament.maxTeamMemberCount - ownTeamMembers.length - missingMembers,
     0,
   );
 
   const showDeleteMemberSection =
-    (!ownTeam.checkedInAt && ownTeamMembers.length > 1) ||
-    (ownTeam.checkedInAt &&
+    (!ownTeamCheckedIn && ownTeamMembers.length > 1) ||
+    (ownTeamCheckedIn &&
       ownTeamMembers.length > TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL);
 
   const playersAvailableToDirectlyAdd = (() => {
     return data!.trustedPlayers.filter((user) => {
-      return parentRouteData.teams.every((team) =>
+      return tournament.ctx.teams.every((team) =>
         team.members.every((member) => member.userId !== user.id),
       );
     });
   })();
 
-  const teamIsFull =
-    ownTeamMembers.length >=
-    HACKY_maxRosterSizeBeforeStart(parentRouteData.tournament);
+  const teamIsFull = ownTeamMembers.length >= tournament.maxTeamMemberCount;
 
   return (
     <div>
@@ -770,7 +735,7 @@ function FillRoster({
       <div className="tournament__section__warning">
         {t("tournament:pre.roster.footer", {
           atLeastCount: TOURNAMENT.TEAM_MIN_MEMBERS_FOR_FULL,
-          maxCount: HACKY_maxRosterSizeBeforeStart(parentRouteData.tournament),
+          maxCount: tournament.maxTeamMemberCount,
         })}
       </div>
     </div>
@@ -809,11 +774,7 @@ function DirectlyAddPlayerSelect({ players }: { players: TrustedPlayer[] }) {
   );
 }
 
-function DeleteMember({
-  members,
-}: {
-  members: Unpacked<TournamentLoaderData["teams"]>["members"];
-}) {
+function DeleteMember({ members }: { members: TournamentDataTeam["members"] }) {
   const { t } = useTranslation(["tournament", "common"]);
   const id = React.useId();
   const fetcher = useFetcher();
@@ -840,7 +801,7 @@ function DeleteMember({
             .filter((member) => !member.isOwner)
             .map((member) => (
               <option key={member.userId} value={member.userId}>
-                {discordFullName(member)}
+                {member.discordName}
               </option>
             ))}
         </select>
@@ -860,7 +821,7 @@ function DeleteMember({
 // TODO: useBlocker to prevent leaving page if made changes without saving
 function CounterPickMapPoolPicker() {
   const { t } = useTranslation(["common", "game-misc", "tournament"]);
-  const parentRouteData = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
   const fetcher = useFetcher();
 
   const { counterpickMaps, handleCounterpickMapPoolSelect } =
@@ -878,6 +839,9 @@ function CounterPickMapPoolPicker() {
         });
     }),
   );
+
+  const isOneModeTournamentOf =
+    tournament.modesIncluded.length === 1 ? tournament.modesIncluded[0] : null;
 
   return (
     <div>
@@ -897,14 +861,12 @@ function CounterPickMapPoolPicker() {
           {rankedModesShort
             .filter(
               (mode) =>
-                !isOneModeTournamentOf(parentRouteData.tournament) ||
-                isOneModeTournamentOf(parentRouteData.tournament) === mode,
+                !isOneModeTournamentOf || isOneModeTournamentOf === mode,
             )
             .map((mode) => {
-              const tiebreakerStageId =
-                parentRouteData.tournament.tieBreakerMapPool.find(
-                  (stage) => stage.mode === mode,
-                )?.stageId;
+              const tiebreakerStageId = tournament.ctx.tieBreakerMapPool.find(
+                (stage) => stage.mode === mode,
+              )?.stageId;
 
               return (
                 <div key={mode} className="stack md">
@@ -927,7 +889,7 @@ function CounterPickMapPoolPicker() {
                     ) : null}
                   </div>
                   {new Array(
-                    isOneModeTournamentOf(parentRouteData.tournament)
+                    isOneModeTournamentOf
                       ? TOURNAMENT.COUNTERPICK_ONE_MODE_TOURNAMENT_MAPS_PER_MODE
                       : TOURNAMENT.COUNTERPICK_MAPS_PER_MODE,
                   )
@@ -971,7 +933,7 @@ function CounterPickMapPoolPicker() {
             })}
           {validateCounterPickMapPool(
             counterPickMapPool,
-            isOneModeTournamentOf(parentRouteData.tournament),
+            isOneModeTournamentOf,
           ) === "VALID" ? (
             <SubmitButton
               _action="UPDATE_MAP_POOL"
@@ -985,7 +947,7 @@ function CounterPickMapPoolPicker() {
             <MapPoolValidationStatusMessage
               status={validateCounterPickMapPool(
                 counterPickMapPool,
-                isOneModeTournamentOf(parentRouteData.tournament),
+                isOneModeTournamentOf,
               )}
             />
           )}

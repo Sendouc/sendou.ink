@@ -26,11 +26,7 @@ import { RequiredHiddenInput } from "~/components/RequiredHiddenInput";
 import { SubmitButton } from "~/components/SubmitButton";
 import { Toggle } from "~/components/Toggle";
 import { CALENDAR_EVENT } from "~/constants";
-import type {
-  Badge as BadgeType,
-  CalendarEventTag,
-  Tournament,
-} from "~/db/types";
+import type { Badge as BadgeType, CalendarEventTag } from "~/db/types";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "react-i18next";
 import { requireUser } from "~/features/auth/core/user.server";
@@ -53,7 +49,7 @@ import {
   type SendouRouteHandle,
 } from "~/utils/remix";
 import { makeTitle, pathnameFromPotentialURL } from "~/utils/strings";
-import { calendarEventPage } from "~/utils/urls";
+import { calendarEventPage, tournamentBracketsPage } from "~/utils/urls";
 import {
   actualNumber,
   checkboxValueToBoolean,
@@ -70,8 +66,24 @@ import type { RankedModeShort } from "~/modules/in-game-lists";
 import { rankedModesShort } from "~/modules/in-game-lists/modes";
 import * as BadgeRepository from "~/features/badges/BadgeRepository.server";
 import * as CalendarRepository from "~/features/calendar/CalendarRepository.server";
-import { canAddNewEvent } from "../calendar-utils";
-import { canCreateTournament } from "../calendar-utils.server";
+import {
+  bracketProgressionToShortTournamentFormat,
+  canAddNewEvent,
+} from "../calendar-utils";
+import {
+  canCreateTournament,
+  formValuesToBracketProgression,
+} from "../calendar-utils.server";
+import { tournamentFromDB } from "~/features/tournament-bracket/core/Tournament.server";
+import type { Tournament } from "~/features/tournament-bracket/core/Tournament";
+import type { Tables } from "~/db/tables";
+import { Divider } from "~/components/Divider";
+import {
+  BRACKET_NAMES,
+  FORMATS_SHORT,
+  TOURNAMENT,
+  type TournamentFormatShort,
+} from "~/features/tournament/tournament-constants";
 
 const MIN_DATE = new Date(Date.UTC(2015, 4, 28));
 
@@ -93,7 +105,7 @@ export const meta: MetaFunction = (args) => {
   return [{ title: data.title }];
 };
 
-const newCalendarEventActionSchema = z
+export const newCalendarEventActionSchema = z
   .object({
     eventToEditId: z.preprocess(actualNumber, id.nullish()),
     name: z
@@ -139,6 +151,21 @@ const newCalendarEventActionSchema = z
     pool: z.string().optional(),
     toToolsEnabled: z.preprocess(checkboxValueToBoolean, z.boolean()),
     toToolsMode: z.enum(["ALL", "SZ", "TC", "RM", "CB"]).optional(),
+    //
+    // tournament format related fields
+    //
+    format: z.enum(FORMATS_SHORT).nullish(),
+    withUndergroundBracket: z.preprocess(checkboxValueToBoolean, z.boolean()),
+    teamsPerGroup: z.coerce
+      .number()
+      .min(TOURNAMENT.MIN_GROUP_SIZE)
+      .max(TOURNAMENT.MAX_GROUP_SIZE)
+      .nullish(),
+    advancingCount: z.coerce
+      .number()
+      .min(1)
+      .max(TOURNAMENT.MAX_GROUP_SIZE)
+      .nullish(),
   })
   .refine(
     async (schema) => {
@@ -185,7 +212,13 @@ export const action: ActionFunction = async ({ request }) => {
     toToolsEnabled: canCreateTournament(user) ? Number(data.toToolsEnabled) : 0,
     toToolsMode:
       rankedModesShort.find((mode) => mode === data.toToolsMode) ?? null,
+    bracketProgression: formValuesToBracketProgression(data),
+    teamsPerGroup: data.teamsPerGroup ?? undefined,
   };
+  validate(
+    !commonArgs.toToolsEnabled || commonArgs.bracketProgression,
+    "Bracket progression must be set for tournaments",
+  );
 
   const deserializedMaps = (() => {
     if (!data.pool) return;
@@ -197,6 +230,13 @@ export const action: ActionFunction = async ({ request }) => {
     const eventToEdit = badRequestIfFalsy(
       await CalendarRepository.findById({ id: data.eventToEditId }),
     );
+    if (eventToEdit.tournamentId) {
+      const tournament = await tournamentFromDB({
+        tournamentId: eventToEdit.tournamentId,
+        user,
+      });
+      validate(!tournament.hasStarted, "Tournament has already started", 400);
+    }
     validate(
       canEditCalendarEvent({ user, event: eventToEdit }),
       "Not authorized",
@@ -248,6 +288,17 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const canEditEvent =
     eventToEdit && canEditCalendarEvent({ user, event: eventToEdit });
 
+  let tournament: Tournament | undefined;
+  if (eventToEdit?.tournamentId) {
+    tournament = await tournamentFromDB({
+      tournamentId: eventToEdit.tournamentId,
+      user,
+    });
+    if (tournament.hasStarted) {
+      redirect(tournamentBracketsPage({ tournamentId: tournament.ctx.id }));
+    }
+  }
+
   return json({
     managedBadges: await BadgeRepository.findManagedByUserId(user.id),
     recentEventsWithMapPools:
@@ -263,6 +314,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       : undefined,
     title: makeTitle([canEditEvent ? "Edit" : "New", t("pages.calendar")]),
     canCreateTournament: canCreateTournament(user),
+    tournamentCtx: tournament?.ctx,
   });
 };
 
@@ -297,11 +349,13 @@ export default function CalendarNewEventPage() {
         <DiscordLinkInput />
         <TagsAdder />
         <BadgesAdder />
+        {/* can't edit as participants might have chosen maps and changing this might cause impossible states */}
         {isTournament && !eventToEdit ? (
           <TournamentMapPickingStyleSelect />
         ) : null}
         {/* TODO: this will be selectable depending on the tournament map picking style in future */}
         {!isTournament ? <MapPoolSection /> : null}
+        {isTournament ? <TournamentFormatSelector /> : null}
         <SubmitButton className="mt-4">{t("actions.submit")}</SubmitButton>
       </Form>
     </Main>
@@ -650,7 +704,7 @@ function BadgesAdder() {
 }
 
 const mapPickingStyleToShort: Record<
-  Tournament["mapPickingStyle"],
+  Tables["Tournament"]["mapPickingStyle"],
   "ALL" | RankedModeShort
 > = {
   AUTO_ALL: "ALL",
@@ -836,6 +890,110 @@ function MapPoolValidationStatusMessage({
       <Alert alertClassName="w-max" variation={alertVariation} tiny>
         {t(`common:maps.validation.${status}`)}
       </Alert>
+    </div>
+  );
+}
+
+function TournamentFormatSelector() {
+  const data = useLoaderData<typeof loader>();
+  const [format, setFormat] = React.useState<TournamentFormatShort>(
+    data.tournamentCtx?.settings.bracketProgression
+      ? bracketProgressionToShortTournamentFormat(
+          data.tournamentCtx.settings.bracketProgression,
+        )
+      : "DE",
+  );
+  const [withUndergroundBracket, setWithUndergroundBracket] = React.useState(
+    data.tournamentCtx
+      ? data.tournamentCtx.settings.bracketProgression.some(
+          (b) => b.name === BRACKET_NAMES.UNDERGROUND,
+        )
+      : true,
+  );
+  const [teamsPerGroup, setTeamsPerGroup] = React.useState(
+    data.tournamentCtx?.settings.teamsPerGroup ?? 4,
+  );
+
+  const undergroundBracketExplanation = () => {
+    if (format === "RR_TO_SE") {
+      return "Optional bracket for teams that don't make it to the final stage";
+    }
+
+    return "Optional bracket for teams who lose in the first two rounds of losers bracket.";
+  };
+
+  return (
+    <div className="stack md">
+      <Divider>Tournament format</Divider>
+      <div>
+        <Label htmlFor="format">Format</Label>
+        <select
+          value={format}
+          onChange={(e) => setFormat(e.target.value as TournamentFormatShort)}
+          className="w-max"
+          name="format"
+          id="format"
+        >
+          <option value="DE">Double-elimination</option>
+          <option value="RR_TO_SE">
+            Round robin -{">"} Single-elimination
+          </option>
+        </select>
+      </div>
+
+      <div>
+        <Label htmlFor="withUndergroundBracket">With underground bracket</Label>
+        <Toggle
+          checked={withUndergroundBracket}
+          setChecked={setWithUndergroundBracket}
+          name="withUndergroundBracket"
+          id="withUndergroundBracket"
+        />
+        <FormMessage type="info">{undergroundBracketExplanation()}</FormMessage>
+      </div>
+
+      {format === "RR_TO_SE" ? (
+        <div>
+          <Label htmlFor="teamsPerGroup">Teams per group</Label>
+          <select
+            value={teamsPerGroup}
+            onChange={(e) => setTeamsPerGroup(Number(e.target.value))}
+            className="w-max"
+            name="teamsPerGroup"
+            id="teamsPerGroup"
+          >
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+          </select>
+        </div>
+      ) : null}
+
+      {format === "RR_TO_SE" ? (
+        <div>
+          <Label htmlFor="advancingCount">
+            Amount of teams advancing per group
+          </Label>
+          <select
+            defaultValue={2}
+            className="w-max"
+            name="advancingCount"
+            id="advancingCount"
+          >
+            {new Array(TOURNAMENT.MAX_GROUP_SIZE).fill(null).map((_, i) => {
+              const advancingCount = i + 1;
+
+              if (advancingCount > teamsPerGroup) return null;
+              return (
+                <option key={i} value={advancingCount}>
+                  {advancingCount}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+      ) : null}
     </div>
   );
 }

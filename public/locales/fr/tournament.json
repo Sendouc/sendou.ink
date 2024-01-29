@@ -80,8 +80,6 @@
   "bracket.single_elim.finals": "Finale",
   "bracket.grand_finals": "Grande Finale",
   "bracket.grand_finals.bracket_reset": "Bracket Reset",
-  "bracket.main": "Bracket Principal",
-  "bracket.underground": "Underground Bracket",
 
   "actions.addSub": "Ajouter remplaçant",
   "actions.shareLink": "Partagez votre lien d'invitation pour ajouter des membres: {{inviteLink}}",
@@ -102,7 +100,6 @@
 
   "bracket.waiting": "Le bracket sera affiché ici quand au moins {{count}} équipes seront inscrites",
   "bracket.wip": "Ce bracket est un aperçu et sujet à changement",
-  "bracket.finalize.text": "Quand tout semble bon, finalisez le bracket pour commencer le tournoi",
   "bracket.finalize.action": "Finaliser",
   "bracket.beforeStart": "Le bracket ne peut pas encore démarrer car il est avant l'heure du début.",
 
@@ -120,7 +117,6 @@
   "match.score": "{{scoreOne}}-{{scoreTwo}} (Meilleur de {{bestOf}})",
   "match.action.undoLastScore": "Annuler le dernier score",
   "match.action.reopenMatch": "Rouvrir le match",
-  "match.action.matchIsLocked": "Le match est verrouillé",
 
   "join.error.MISSING_CODE": "Le code d'invitation est manquant. L'URL complète a-t-elle été copiée ?",
   "join.error.SHORT_CODE": "Le code d'invitation n'a pas la bonne longueur. L'URL complète a-t-elle été copiée ?",

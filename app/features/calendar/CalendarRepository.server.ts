@@ -2,12 +2,13 @@ import type { ExpressionBuilder, Transaction } from "kysely";
 import { sql } from "kysely";
 import { jsonArrayFrom } from "kysely/helpers/sqlite";
 import { db } from "~/db/sql";
-import type { DB, Tables } from "~/db/tables";
+import type { DB, Tables, TournamentSettings } from "~/db/tables";
 import type { CalendarEventTag } from "~/db/types";
 import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { sumArray } from "~/utils/number";
 import type { Unwrapped } from "~/utils/types";
+import invariant from "tiny-invariant";
 
 // TODO: convert from raw to using the "exists" function
 const hasBadge = sql<number>/* sql */ `exists (
@@ -360,16 +361,26 @@ type CreateArgs = Pick<
   mapPoolMaps?: Array<Pick<Tables["MapPoolMap"], "mode" | "stageId">>;
   isFullTournament: boolean;
   mapPickingStyle: Tables["Tournament"]["mapPickingStyle"];
+  bracketProgression: TournamentSettings["bracketProgression"] | null;
+  teamsPerGroup?: number;
 };
 export async function create(args: CreateArgs) {
   return db.transaction().execute(async (trx) => {
     let tournamentId;
     if (args.isFullTournament) {
+      invariant(args.bracketProgression, "Expected bracketProgression");
+      const settings: Tables["Tournament"]["settings"] = {
+        bracketProgression: args.bracketProgression,
+        teamsPerGroup: args.teamsPerGroup,
+      };
+
       tournamentId = (
         await trx
           .insertInto("Tournament")
-          // TODO: format picking
-          .values({ mapPickingStyle: args.mapPickingStyle, format: "DE" })
+          .values({
+            mapPickingStyle: args.mapPickingStyle,
+            settings: JSON.stringify(settings),
+          })
           .returning("id")
           .executeTakeFirstOrThrow()
       ).id;
@@ -423,6 +434,22 @@ export async function update(args: UpdateArgs) {
       .where("id", "=", args.eventId)
       .returning("tournamentId")
       .executeTakeFirstOrThrow();
+
+    if (tournamentId) {
+      invariant(args.bracketProgression, "Expected bracketProgression");
+      const settings: Tables["Tournament"]["settings"] = {
+        bracketProgression: args.bracketProgression,
+        teamsPerGroup: args.teamsPerGroup,
+      };
+
+      await trx
+        .updateTable("Tournament")
+        .set({
+          settings: JSON.stringify(settings),
+        })
+        .where("id", "=", tournamentId)
+        .execute();
+    }
 
     await trx
       .deleteFrom("CalendarEventDate")

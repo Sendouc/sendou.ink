@@ -1,40 +1,37 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
-import { useLoaderData, useOutletContext } from "@remix-run/react";
-import { streamsByTournamentId } from "../core/streams.server";
-import { tournamentIdFromParams } from "../tournament-utils";
-import type { TournamentLoaderData } from "./to.$id";
+import { useLoaderData } from "@remix-run/react";
+import { useTranslation } from "react-i18next";
 import { Avatar } from "~/components/Avatar";
 import { Redirect } from "~/components/Redirect";
-import { tournamentRegisterPage, twitchUrl } from "~/utils/urls";
 import { UserIcon } from "~/components/icons/User";
-import { useTranslation } from "react-i18next";
 import { twitchThumbnailUrlToSrc } from "~/modules/twitch/utils";
+import { tournamentRegisterPage, twitchUrl } from "~/utils/urls";
 import * as TournamentRepository from "../TournamentRepository.server";
-import { notFoundIfFalsy } from "~/utils/remix";
+import { streamsByTournamentId } from "../core/streams.server";
+import { tournamentIdFromParams } from "../tournament-utils";
+import { useTournament } from "./to.$id";
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   const tournamentId = tournamentIdFromParams(params);
-  const tournament = notFoundIfFalsy(
-    await TournamentRepository.findById(tournamentId),
-  );
 
   return {
     streams: await streamsByTournamentId({
       tournamentId,
-      castTwitchAccounts: tournament.castTwitchAccounts,
+      castTwitchAccounts:
+        await TournamentRepository.findCastTwitchAccountsByTournamentId(
+          tournamentId,
+        ),
     }),
   };
 };
 
 export default function TournamentStreamsPage() {
   const { t } = useTranslation(["tournament"]);
-  const parentRouteData = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
   const data = useLoaderData<typeof loader>();
 
-  if (!parentRouteData.hasStarted || parentRouteData.hasFinalized) {
-    return (
-      <Redirect to={tournamentRegisterPage(parentRouteData.tournament.id)} />
-    );
+  if (!tournament.hasStarted || tournament.everyBracketOver) {
+    return <Redirect to={tournamentRegisterPage(tournament.ctx.id)} />;
   }
 
   if (data.streams.length === 0) {
@@ -49,7 +46,7 @@ export default function TournamentStreamsPage() {
   return (
     <div className="stack horizontal lg flex-wrap justify-center">
       {data.streams.map((stream) => {
-        const team = parentRouteData.teams.find((team) =>
+        const team = tournament.ctx.teams.find((team) =>
           team.members.some((m) => m.userId === stream.userId),
         );
         const user = team?.members.find((m) => m.userId === stream.userId);

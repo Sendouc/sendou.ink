@@ -1,6 +1,8 @@
 import type { ActionFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import { Form, useLoaderData, useOutletContext } from "@remix-run/react";
+import { Form, useLoaderData } from "@remix-run/react";
+import React from "react";
+import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
 import { SubmitButton } from "~/components/SubmitButton";
 import { INVITE_CODE_LENGTH } from "~/constants";
@@ -9,22 +11,19 @@ import { requireUserId } from "~/features/auth/core/user.server";
 import { notFoundIfFalsy, parseRequestFormData, validate } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
 import { tournamentPage } from "~/utils/urls";
+import { findByIdentifier } from "../queries/findByIdentifier.server";
 import { findByInviteCode } from "../queries/findTeamByInviteCode.server";
 import { findTeamsByTournamentId } from "../queries/findTeamsByTournamentId.server";
+import { giveTrust } from "../queries/giveTrust.server";
+import hasTournamentStarted from "../queries/hasTournamentStarted.server";
 import { joinTeam } from "../queries/joinLeaveTeam.server";
 import { TOURNAMENT } from "../tournament-constants";
-import type { TournamentLoaderData, TournamentLoaderTeam } from "./to.$id";
-import hasTournamentStarted from "../queries/hasTournamentStarted.server";
-import React from "react";
-import { discordFullName } from "~/utils/strings";
 import { joinSchema } from "../tournament-schemas.server";
-import { giveTrust } from "../queries/giveTrust.server";
 import {
   tournamentIdFromParams,
   tournamentTeamMaxSize,
 } from "../tournament-utils";
-import { useTranslation } from "react-i18next";
-import { findByIdentifier } from "../queries/findByIdentifier.server";
+import { useTournament } from "./to.$id";
 
 export const action: ActionFunction = async ({ request, params }) => {
   const tournamentId = tournamentIdFromParams(params);
@@ -113,15 +112,13 @@ export default function JoinTeamPage() {
   const { t } = useTranslation(["tournament", "common"]);
   const id = React.useId();
   const user = useUser();
-  const parentRouteData = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
   const data = useLoaderData<typeof loader>();
 
-  const teamToJoin = parentRouteData.teams.find(
-    (team) => team.id === data.teamId,
-  );
+  const teamToJoin = data.teamId ? tournament.teamById(data.teamId) : undefined;
   const captain = teamToJoin?.members.find((member) => member.isOwner);
   const validationStatus = validateCanJoin({
-    tournament: parentRouteData.tournament,
+    tournament: tournament.ctx,
     inviteCode: data.inviteCode,
     teamToJoin,
     userId: user?.id,
@@ -142,7 +139,7 @@ export default function JoinTeamPage() {
 
         return t("tournament:join.VALID", {
           teamName: teamToJoin.name,
-          eventName: parentRouteData.tournament.name,
+          eventName: tournament.ctx.name,
         });
       }
       default: {
@@ -160,7 +157,7 @@ export default function JoinTeamPage() {
             <input id={id} type="checkbox" name="trust" />{" "}
             <label htmlFor={id} className="mb-0">
               {t("tournament:join.giveTrust", {
-                name: captain ? discordFullName(captain) : "",
+                name: captain ? captain.discordName : "",
               })}
             </label>
           </div>
@@ -181,7 +178,7 @@ function validateCanJoin({
   tournament,
 }: {
   inviteCode?: string | null;
-  teamToJoin?: TournamentLoaderTeam;
+  teamToJoin?: { members: { userId: number }[] };
   userId?: number;
   tournamentHasStarted: boolean;
   tournament: { name: string };

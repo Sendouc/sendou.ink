@@ -1,13 +1,12 @@
-import { useLoaderData, useOutletContext } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 import * as React from "react";
 import type { RankedModeShort, StageId } from "~/modules/in-game-lists";
-import type { TournamentLoaderData } from "./routes/to.$id";
-import { mapPickCountPerMode } from "./tournament-utils";
+import { useTournament } from "./routes/to.$id";
 import type { TournamentRegisterPageLoader } from "./routes/to.$id.register";
 
 export function useSelectCounterpickMapPoolState() {
   const data = useLoaderData<TournamentRegisterPageLoader>();
-  const parentRouteData = useOutletContext<TournamentLoaderData>();
+  const tournament = useTournament();
 
   const resolveInitialMapPool = (mode: RankedModeShort) => {
     const ownMapPool = data?.mapPool ?? [];
@@ -16,12 +15,8 @@ export function useSelectCounterpickMapPoolState() {
       .filter((pair) => pair.mode === mode)
       .map((pair) => pair.stageId);
 
-    if (
-      filteredStages.length !== mapPickCountPerMode(parentRouteData.tournament)
-    ) {
-      return new Array(mapPickCountPerMode(parentRouteData.tournament)).fill(
-        null,
-      );
+    if (filteredStages.length !== tournament.mapPickCountPerMode) {
+      return new Array(tournament.mapPickCountPerMode).fill(null);
     }
 
     return filteredStages as [StageId, StageId];
@@ -44,7 +39,7 @@ export function useSelectCounterpickMapPoolState() {
     (e) => {
       setCounterpickMaps({
         ...counterpickMaps,
-        [mode]: new Array(mapPickCountPerMode(parentRouteData.tournament))
+        [mode]: new Array(tournament.mapPickCountPerMode)
           .fill(null)
           .map((_, i) => counterpickMaps[mode][i])
           .map((stageId, j) => {

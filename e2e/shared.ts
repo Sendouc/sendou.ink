@@ -8,7 +8,7 @@ export const startBracket = async (page: Page, tournamentId = 2) => {
 
   await navigate({
     page,
-    url: tournamentBracketsPage(tournamentId),
+    url: tournamentBracketsPage({ tournamentId }),
   });
 
   await page.getByTestId("finalize-bracket-button").click();

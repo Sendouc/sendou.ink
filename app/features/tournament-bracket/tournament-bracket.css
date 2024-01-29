@@ -303,6 +303,12 @@
   height: 8px;
 }
 
+.tournament-bracket__points-input {
+  --input-width: 4.5rem;
+  padding: var(--s-3-5) var(--s-2) !important;
+  font-size: var(--fonts-sm);
+}
+
 .tournament-bracket__progress {
   display: flex;
   align-items: center;
@@ -322,6 +328,7 @@
   gap: var(--s-2);
   max-width: max-content;
   margin: 0 auto;
+  margin-bottom: var(--s-4);
 }
 [data-placement="1"] {
   order: -1;

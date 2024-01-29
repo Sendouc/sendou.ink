@@ -4,13 +4,13 @@ import { resolveBestOfs } from "./bestOf.server";
 
 const ResolveBestOfs = suite("resolveBestOfs()");
 
-const count = (bestOfs: [bestOf: 5 | 7, id: number][], target: 5 | 7) =>
+const count = (bestOfs: [bestOf: 3 | 5 | 7, id: number][], target: 5 | 7) =>
   bestOfs.reduce((acc, cur) => acc + (cur[0] === target ? 1 : 0), 0);
 
 ResolveBestOfs("2 teams", () => {
   const matches = [{ matchId: 1, roundNumber: 1, groupNumber: 1 }];
 
-  const bestOfs = resolveBestOfs(matches);
+  const bestOfs = resolveBestOfs(matches, "double_elimination");
 
   assert.equal(count(bestOfs, 5), 0);
   assert.equal(count(bestOfs, 7), 1);
@@ -27,7 +27,7 @@ ResolveBestOfs("4 teams", () => {
     { matchId: 7, roundNumber: 2, groupNumber: 3 },
   ];
 
-  const bestOfs = resolveBestOfs(matches);
+  const bestOfs = resolveBestOfs(matches, "double_elimination");
 
   assert.equal(count(bestOfs, 5), 3);
 });
@@ -51,7 +51,7 @@ ResolveBestOfs("8 teams", () => {
     { matchId: 15, roundNumber: 2, groupNumber: 3 },
   ];
 
-  const bestOfs = resolveBestOfs(matches);
+  const bestOfs = resolveBestOfs(matches, "double_elimination");
 
   assert.equal(count(bestOfs, 5), 4);
 });

@@ -9,15 +9,15 @@ const stm = sql.prepare(/* sql */ `
   left join "TournamentRound" on "TournamentRound"."id" = "TournamentMatch"."roundId"
   left join "TournamentGroup" on "TournamentGroup"."id" = "TournamentMatch"."groupId"
   left join "TournamentStage" on "TournamentStage"."id" = "TournamentMatch"."stageId"
-  where "TournamentStage"."tournamentId" = @tournamentId
+  where "TournamentStage"."id" = @stageId
 `);
 
-export interface FindAllMatchesByTournamentIdMatch {
+export interface FindAllMatchesByStageIdItem {
   matchId: number;
   roundNumber: number;
   groupNumber: number;
 }
 
-export function findAllMatchesByTournamentId(tournamentId: number) {
-  return stm.all({ tournamentId }) as Array<FindAllMatchesByTournamentIdMatch>;
+export function findAllMatchesByStageId(stageId: number) {
+  return stm.all({ stageId }) as Array<FindAllMatchesByStageIdItem>;
 }

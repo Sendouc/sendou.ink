@@ -1,10 +1,20 @@
 import invariant from "tiny-invariant";
-import type { FindAllMatchesByTournamentIdMatch } from "../queries/findAllMatchesByTournamentId.server";
+import type { FindAllMatchesByStageIdItem } from "../queries/findAllMatchesByStageId.server";
+import type { TournamentStage } from "~/db/tables";
 
-// TODO: this only works for double elimination
 export function resolveBestOfs(
-  matches: Array<FindAllMatchesByTournamentIdMatch>,
-) {
+  matches: Array<FindAllMatchesByStageIdItem>,
+  type: TournamentStage["type"],
+): [bestOf: 3 | 5 | 7, id: number][] {
+  if (type === "round_robin") {
+    return matches.map((match) => [3, match.matchId]);
+  }
+  if (type === "single_elimination") {
+    return matches.map((match) => [5, match.matchId]);
+  }
+
+  // Double Elimination logic
+
   // 3 is default
   const result: [bestOf: 5 | 7, id: number][] = [];
 

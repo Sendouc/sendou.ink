@@ -55,7 +55,14 @@ export function isDefined<T>(value: T | undefined | null): value is T {
 }
 
 export function removeDuplicates<T>(arr: T[]): T[] {
-  return [...new Set(arr)];
+  const seen = new Set<T>();
+
+  return arr.filter((item) => {
+    if (seen.has(item)) return false;
+    seen.add(item);
+
+    return true;
+  });
 }
 
 export function removeDuplicatesByProperty<T>(
