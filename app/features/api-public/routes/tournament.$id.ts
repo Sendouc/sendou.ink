@@ -24,7 +24,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
       .innerJoin("CalendarEvent", "CalendarEvent.tournamentId", "Tournament.id")
       .innerJoin(
         "CalendarEventDate",
-        "CalendarEventDate.id",
+        "CalendarEventDate.eventId",
         "CalendarEvent.id",
       )
       .select(({ eb }) => [
