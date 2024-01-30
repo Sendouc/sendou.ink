@@ -478,8 +478,8 @@ export class Match {
       stageId: this.stageId,
       groupId: this.groupId,
       number: this.number,
-      opponentOne: this.opponentOne,
-      opponentTwo: this.opponentTwo,
+      opponentOne: this.opponentOne ?? "null",
+      opponentTwo: this.opponentTwo ?? "null",
       status: this.status,
       chatCode: nanoid(10),
     }) as any;
@@ -497,8 +497,8 @@ export class Match {
       stageId: this.stageId,
       groupId: this.groupId,
       number: this.number,
-      opponentOne: this.opponentOne,
-      opponentTwo: this.opponentTwo,
+      opponentOne: this.opponentOne ?? "null",
+      opponentTwo: this.opponentTwo ?? "null",
       status: this.status,
     });
 
