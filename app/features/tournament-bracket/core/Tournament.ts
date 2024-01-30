@@ -587,6 +587,8 @@ export class Tournament {
     if (!user) return false;
     if (isAdmin(user)) return true;
 
+    if (this.ctx.author.id === user.id) return true;
+
     return this.ctx.staff.some(
       (staff) => staff.id === user.id && staff.role === "ORGANIZER",
     );
@@ -595,6 +597,8 @@ export class Tournament {
   isOrganizerOrStreamer(user: OptionalIdObject) {
     if (!user) return false;
     if (isAdmin(user)) return true;
+
+    if (this.ctx.author.id === user.id) return true;
 
     return this.ctx.staff.some(
       (staff) =>
