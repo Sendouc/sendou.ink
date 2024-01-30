@@ -36,7 +36,7 @@
   "filters.has": "Indeholder",
   "filters.does.not.have": "Indeholder ikke",
   "filters.atLeast": "Mindst",
-  "filters.atMost": "Maks"
-   "filters.date.since": "Siden",
+  "filters.atMost": "Maks",
+  "filters.date.since": "Siden",
   "filters.date.custom": "Tilpasset"
 }
