@@ -47,7 +47,7 @@ test.describe("Build Analyzer", () => {
     await page.getByTestId("SSU-ability").isVisible();
   });
 
-  test.skip("compares builds", async ({ page }) => {
+  test("compares builds", async ({ page }) => {
     await navigate({ page, url: ANALYZER_URL });
 
     await page.getByTestId("build2-tab").click();
@@ -55,11 +55,11 @@ test.describe("Build Analyzer", () => {
     const swimSpeedAbilityButtonLocator =
       page.getByTestId("SSU-ability-button");
     const swimSpeedAbilityLocator = page.locator(
-      "data-testid=ability-selector > data-testid=SSU-ability",
+      "[data-testid='ability-selector'] [data-testid='SSU-ability']",
     );
 
     await swimSpeedAbilityButtonLocator.click();
-    await swimSpeedAbilityLocator.isVisible();
+    await expect(swimSpeedAbilityLocator).toBeVisible();
 
     // can't add abilities to build 2 if build 1 is empty
     // -> they automatically go to build 1
@@ -67,6 +67,7 @@ test.describe("Build Analyzer", () => {
     await isNotVisible(swimSpeedAbilityLocator);
 
     await swimSpeedAbilityButtonLocator.click();
+    await expect(swimSpeedAbilityLocator).toBeVisible();
     await swimSpeedAbilityButtonLocator.click();
 
     await page.getByTestId("ap-tab").click();
