@@ -250,6 +250,7 @@ export default function TournamentAdminPage() {
             to={calendarEditPage(tournament.ctx.eventId)}
             size="tiny"
             variant="outlined"
+            testId="edit-event-info-button"
           >
             Edit event info
           </LinkButton>

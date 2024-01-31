@@ -114,6 +114,7 @@ export function TeamRosterInputs({
                     setPoints(newPoints);
                   }}
                   presentational={presentational}
+                  testId={`points-input-${teamI + 1}`}
                 />
               ) : null}
             </div>
@@ -194,10 +195,12 @@ function PointInput({
   value,
   onChange,
   presentational,
+  testId,
 }: {
   value: number;
   onChange: (newPoint: number) => void;
   presentational: boolean;
+  testId?: string;
 }) {
   const id = React.useId();
 
@@ -220,6 +223,7 @@ function PointInput({
         value={value}
         required
         id={id}
+        data-testid={testId}
       />
       <Label htmlFor={id} spaced={false}>
         Points

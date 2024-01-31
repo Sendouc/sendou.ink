@@ -517,6 +517,7 @@ function BracketCheckinButton({ bracketIdx }: { bracketIdx: number }) {
         size="tiny"
         _action="BRACKET_CHECK_IN"
         state={fetcher.state}
+        testId="check-in-bracket-button"
       >
         Check-in & join the bracket
       </SubmitButton>
@@ -603,6 +604,7 @@ function FinalStandings({ standings }: { standings: Standing[] }) {
             className="tournament-bracket__standing"
             key={standing.team.id}
             data-placement={standing.placement}
+            data-testid={`standing-${standing.placement}`}
           >
             <div>
               <Placement placement={standing.placement} size={40} />
