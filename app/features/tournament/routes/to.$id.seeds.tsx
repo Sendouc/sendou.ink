@@ -119,6 +119,8 @@ export default function TournamentSeedsPage() {
       .map((m) => data.powers[m.userId]?.power)
       .filter(Boolean);
 
+    if (powers.length === 0) return 0;
+
     return powers.reduce((acc, cur) => acc + cur, 0) / powers.length;
   };
 
