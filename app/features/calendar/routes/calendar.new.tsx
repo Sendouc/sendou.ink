@@ -922,6 +922,25 @@ function TournamentFormatSelector() {
     return "Optional bracket for teams who lose in the first two rounds of losers bracket.";
   };
 
+  const advancingPerGroup = () => {
+    const DEFAULT = 2;
+    const hasRR = data.tournamentCtx?.settings.bracketProgression.some(
+      (b) => b.type === "round_robin",
+    );
+
+    if (!hasRR) return DEFAULT;
+
+    const finalBracket = data.tournamentCtx?.settings.bracketProgression.find(
+      (b) => b.name === BRACKET_NAMES.FINALS,
+    );
+
+    if (!finalBracket) return DEFAULT;
+
+    return Math.max(
+      ...(finalBracket.sources?.flatMap((s) => s.placements) ?? [DEFAULT]),
+    );
+  };
+
   return (
     <div className="stack md">
       <Divider>Tournament format</Divider>
@@ -976,7 +995,7 @@ function TournamentFormatSelector() {
             Amount of teams advancing per group
           </Label>
           <select
-            defaultValue={2}
+            defaultValue={advancingPerGroup()}
             className="w-max"
             name="advancingCount"
             id="advancingCount"
