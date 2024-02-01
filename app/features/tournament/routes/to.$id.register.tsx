@@ -29,6 +29,7 @@ import { MapPool } from "~/features/map-list-generator/core/map-pool";
 import { BANNED_MAPS } from "~/features/sendouq-settings/banned-maps";
 import * as TeamRepository from "~/features/team/TeamRepository.server";
 import { findMapPoolByTeamId } from "~/features/tournament-bracket";
+import type { TournamentData } from "~/features/tournament-bracket/core/Tournament.server";
 import {
   tournamentFromDB,
   type TournamentDataTeam,
@@ -155,8 +156,11 @@ export const action: ActionFunction = async ({ request, params }) => {
       const mapPool = new MapPool(data.mapPool);
       validate(ownTeam);
       validate(
-        validateCounterPickMapPool(mapPool, isOneModeTournamentOf(event)) ===
-          "VALID",
+        validateCounterPickMapPool(
+          mapPool,
+          isOneModeTournamentOf(event),
+          tournament.ctx.tieBreakerMapPool,
+        ) === "VALID",
       );
 
       upsertCounterpickMaps({
@@ -557,7 +561,6 @@ function TeamInfo({
   canUnregister: boolean;
 }) {
   const { t } = useTranslation(["tournament", "common"]);
-  const id = React.useId();
   const fetcher = useFetcher();
 
   return (
@@ -599,12 +602,12 @@ function TeamInfo({
             <div>
               <div className="text-lighter text-sm stack horizontal sm items-center">
                 <input
-                  id={id}
+                  id="no-host"
                   type="checkbox"
                   name="prefersNotToHost"
                   defaultChecked={Boolean(prefersNotToHost)}
                 />
-                <label htmlFor={id} className="mb-0">
+                <label htmlFor="no-host" className="mb-0">
                   {t("tournament:pre.info.noHost")}
                 </label>
               </div>
@@ -909,21 +912,26 @@ function CounterPickMapPoolPicker() {
                             }`}
                           >
                             <option value=""></option>
-                            {stageIds
-                              .filter((id) => id !== tiebreakerStageId)
-                              .map((stageId) => {
-                                const isBanned =
-                                  BANNED_MAPS[mode].includes(stageId);
+                            {stageIds.map((stageId) => {
+                              const isBanned =
+                                BANNED_MAPS[mode].includes(stageId);
 
-                                return (
-                                  <option key={stageId} value={stageId}>
-                                    {t(`game-misc:STAGE_${stageId}`)}{" "}
-                                    {isBanned
+                              const isTiebreaker =
+                                stageId === tiebreakerStageId;
+
+                              return (
+                                <option key={stageId} value={stageId}>
+                                  {t(`game-misc:STAGE_${stageId}`)}{" "}
+                                  {isTiebreaker
+                                    ? `(${t(
+                                        "tournament:pre.pool.tiebreaker.short",
+                                      )})`
+                                    : isBanned
                                       ? `(${t("tournament:pre.pool.banned")})`
                                       : ""}
-                                  </option>
-                                );
-                              })}
+                                </option>
+                              );
+                            })}
                           </select>
                         </div>
                       );
@@ -934,6 +942,7 @@ function CounterPickMapPoolPicker() {
           {validateCounterPickMapPool(
             counterPickMapPool,
             isOneModeTournamentOf,
+            tournament.ctx.tieBreakerMapPool,
           ) === "VALID" ? (
             <SubmitButton
               _action="UPDATE_MAP_POOL"
@@ -948,6 +957,7 @@ function CounterPickMapPoolPicker() {
               status={validateCounterPickMapPool(
                 counterPickMapPool,
                 isOneModeTournamentOf,
+                tournament.ctx.tieBreakerMapPool,
               )}
             />
           )}
@@ -967,7 +977,8 @@ function MapPoolValidationStatusMessage({
   if (
     status !== "TOO_MUCH_STAGE_REPEAT" &&
     status !== "STAGE_REPEAT_IN_SAME_MODE" &&
-    status !== "INCLUDES_BANNED"
+    status !== "INCLUDES_BANNED" &&
+    status !== "INCLUDES_TIEBREAKER"
   )
     return null;
 
@@ -987,11 +998,13 @@ type CounterPickValidationStatus =
   | "VALID"
   | "TOO_MUCH_STAGE_REPEAT"
   | "STAGE_REPEAT_IN_SAME_MODE"
-  | "INCLUDES_BANNED";
+  | "INCLUDES_BANNED"
+  | "INCLUDES_TIEBREAKER";
 
 function validateCounterPickMapPool(
   mapPool: MapPool,
   isOneModeOnlyTournamentFor: ModeShort | null,
+  tieBreakerMapPool: TournamentData["ctx"]["tieBreakerMapPool"],
 ): CounterPickValidationStatus {
   const stageCounts = new Map<StageId, number>();
   for (const stageId of mapPool.stages) {
@@ -1022,6 +1035,16 @@ function validateCounterPickMapPool(
     )
   ) {
     return "INCLUDES_BANNED";
+  }
+
+  if (
+    mapPool.stageModePairs.some((pair) =>
+      tieBreakerMapPool.some(
+        (stage) => stage.mode === pair.mode && stage.stageId === pair.stageId,
+      ),
+    )
+  ) {
+    return "INCLUDES_TIEBREAKER";
   }
 
   if (

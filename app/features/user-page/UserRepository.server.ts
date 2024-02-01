@@ -211,18 +211,18 @@ export function findResultsByUserId(userId: number) {
           "TournamentResult.isHighlight",
           jsonArrayFrom(
             eb
-              .selectFrom("TournamentTeamMember")
-              .innerJoin("User", "User.id", "TournamentTeamMember.userId")
+              .selectFrom("TournamentResult as TournamentResult2")
+              .innerJoin("User", "User.id", "TournamentResult2.userId")
               .select([
                 ...COMMON_USER_FIELDS,
                 sql<string | null>`null`.as("name"),
               ])
               .whereRef(
-                "TournamentTeamMember.tournamentTeamId",
+                "TournamentResult2.tournamentTeamId",
                 "=",
-                "TournamentTeam.id",
+                "TournamentResult.tournamentTeamId",
               )
-              .where("TournamentTeamMember.userId", "!=", userId),
+              .where("TournamentResult2.userId", "!=", userId),
           ).as("mates"),
         ])
         .where("TournamentResult.userId", "=", userId),

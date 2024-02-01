@@ -44,7 +44,7 @@ export function UserResultsTable({
         </tr>
       </thead>
       <tbody>
-        {results.map((result) => {
+        {results.map((result, i) => {
           // We are trying to construct a reasonable label for the checkbox
           // which shouldn't contain the whole information of the table row as
           // that can be also accessed when needed.
@@ -98,6 +98,7 @@ export function UserResultsTable({
                     to={tournamentBracketsPage({
                       tournamentId: result.tournamentId,
                     })}
+                    data-testid="tournament-name-cell"
                   >
                     {result.eventName}
                   </Link>
@@ -116,7 +117,10 @@ export function UserResultsTable({
                 )}
               </td>
               <td>
-                <ul className="u__results-players">
+                <ul
+                  className="u__results-players"
+                  data-testid={`mates-cell-placement-${i}`}
+                >
                   {result.mates.map((player) => (
                     <li
                       key={player.name ? player.name : player.id}

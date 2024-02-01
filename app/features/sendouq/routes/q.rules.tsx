@@ -47,6 +47,10 @@ export default function SendouqRules() {
       <div>
         Match can be canceled if both group owners agree. If the groups
         don&apos;t agree then the match should be played out.
+        <br />
+        <br /> Only exception is if a group asks to play without Splattercolor
+        Screen and the other group in the match doesn&apos;t want to. In this
+        situation either group is free to cancel the match.
       </div>
 
       <h2 className="text-lg mt-4">Room hosting</h2>

@@ -992,6 +992,7 @@ function StatChart({
       options={chartOptions as any}
       headerSuffix={t("analyzer:abilityPoints.short")}
       valueSuffix={valueSuffix}
+      xAxis="linear"
     />
   );
 }

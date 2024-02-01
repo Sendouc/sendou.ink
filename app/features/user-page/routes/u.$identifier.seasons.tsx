@@ -366,7 +366,7 @@ function PowerChart() {
     ];
   }, [data]);
 
-  return <Chart options={chartOptions as any} />;
+  return <Chart options={chartOptions as any} xAxis="localTime" />;
 }
 
 const MIN_DEGREE = 5;

@@ -363,7 +363,19 @@ test.describe("Tournament bracket", () => {
     await expect(page.getByTestId("standing-1")).toBeVisible();
     await isNotVisible(page.getByTestId("standing-3"));
 
+    // not possible to reopen finals match anymore
     await navigateToMatch(page, 14);
     await isNotVisible(page.getByTestId("reopen-match-button"));
+    await backToBracket(page);
+
+    // added result to user profile
+    await page.getByTestId("standing-player").first().click();
+    await page.getByText("Results").click();
+    await expect(
+      page.getByTestId("tournament-name-cell").first(),
+    ).toContainText("Paddling Pool 253");
+    await expect(
+      page.locator('[data-testid="mates-cell-placement-0"] li'),
+    ).toHaveCount(3);
   });
 });

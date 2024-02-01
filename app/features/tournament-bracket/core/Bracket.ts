@@ -688,17 +688,19 @@ class RoundRobinBracket extends Bracket {
     let lastPlacement = 0;
     let currentPlacement = 1;
     let teamsEncountered = 0;
-    return sorted.map((team) => {
-      if (team.placement !== lastPlacement) {
-        lastPlacement = team.placement;
-        currentPlacement = teamsEncountered + 1;
-      }
-      teamsEncountered++;
-      return {
-        ...team,
-        placement: currentPlacement,
-      };
-    });
+    return this.standingsWithoutNonParticipants(
+      sorted.map((team) => {
+        if (team.placement !== lastPlacement) {
+          lastPlacement = team.placement;
+          currentPlacement = teamsEncountered + 1;
+        }
+        teamsEncountered++;
+        return {
+          ...team,
+          placement: currentPlacement,
+        };
+      }),
+    );
   }
 
   get type(): TournamentBracketProgression[number]["type"] {

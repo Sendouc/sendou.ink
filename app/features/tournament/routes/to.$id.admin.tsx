@@ -230,7 +230,6 @@ export const action: ActionFunction = async ({ request, params }) => {
   return null;
 };
 
-// xxx: download participants of certain bracket (not checked in probably most relevant)
 // TODO: translations
 export default function TournamentAdminPage() {
   const { t } = useTranslation(["calendar"]);

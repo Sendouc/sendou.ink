@@ -68,6 +68,7 @@ import {
   NZAP_TEST_ID,
 } from "./constants";
 import placements from "./placements.json";
+import { BANNED_MAPS } from "~/features/sendouq-settings/banned-maps";
 
 const calendarEventWithToToolsRegOpen = () =>
   calendarEventWithToTools("PICNIC", true);
@@ -961,26 +962,31 @@ const tiebreakerPicks = new MapPool([
   { mode: "CB", stageId: 4 },
 ]);
 function calendarEventWithToToolsTieBreakerMapPool() {
-  for (const { mode, stageId } of tiebreakerPicks.stageModePairs) {
-    sql
-      .prepare(
-        `
-        insert into "MapPoolMap" (
-          "tieBreakerCalendarEventId",
-          "stageId",
-          "mode"
-        ) values (
-          $tieBreakerCalendarEventId,
-          $stageId,
-          $mode
+  for (const tieBreakerCalendarEventId of [
+    TO_TOOLS_CALENDAR_EVENT_ID, // PICNIC
+    TO_TOOLS_CALENDAR_EVENT_ID + 2, // Paddling Pool
+  ]) {
+    for (const { mode, stageId } of tiebreakerPicks.stageModePairs) {
+      sql
+        .prepare(
+          `
+          insert into "MapPoolMap" (
+            "tieBreakerCalendarEventId",
+            "stageId",
+            "mode"
+          ) values (
+            $tieBreakerCalendarEventId,
+            $stageId,
+            $mode
+          )
+        `,
         )
-      `,
-      )
-      .run({
-        tieBreakerCalendarEventId: TO_TOOLS_CALENDAR_EVENT_ID,
-        stageId,
-        mode,
-      });
+        .run({
+          tieBreakerCalendarEventId,
+          stageId,
+          mode,
+        });
+    }
   }
 }
 
@@ -1112,6 +1118,9 @@ function calendarEventWithToToolsTeams(
 
       for (const pair of shuffledPairs) {
         if (event === "ITZ" && pair.mode !== "SZ") continue;
+        if (BANNED_MAPS[pair.mode].includes(pair.stageId)) {
+          continue;
+        }
 
         if (pair.mode === "SZ" && SZ >= (event === "ITZ" ? 6 : 2)) continue;
         if (pair.mode === "TC" && TC >= 2) continue;

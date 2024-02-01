@@ -426,7 +426,7 @@ export default function TournamentBracketsPage() {
         ) : null}
       </div>
       {tournament.ctx.isFinalized || tournament.canFinalize(user) ? (
-        <FinalStandings standings={tournament.standings} />
+        <FinalStandings />
       ) : null}
       <BracketNav bracketIdx={bracketIdx} setBracketIdx={setBracketIdx} />
       <div
@@ -571,10 +571,12 @@ function AddSubsPopOver() {
   );
 }
 
-function FinalStandings({ standings }: { standings: Standing[] }) {
+function FinalStandings() {
   const tournament = useTournament();
   const { t } = useTranslation(["tournament"]);
   const [viewAll, setViewAll] = React.useState(false);
+
+  const standings = tournament.standings;
 
   if (standings.length < 2) {
     console.error("Unexpectedly few standings");
@@ -625,6 +627,7 @@ function FinalStandings({ standings }: { standings: Standing[] }) {
                     to={userPage(player)}
                     key={player.userId}
                     className="stack items-center text-xs"
+                    data-testid="standing-player"
                   >
                     <Avatar user={player} size="xxs" />
                   </Link>
