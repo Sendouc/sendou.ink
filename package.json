@@ -35,7 +35,7 @@
     "season-initial-powers": "node --experimental-specifier-resolution=node -r @swc-node/register -r tsconfig-paths/register scripts/season-initial-powers.ts",
     "map-popularity": "node --experimental-specifier-resolution=node -r @swc-node/register -r tsconfig-paths/register scripts/map-popularity.ts",
     "map-popularity-q": "node --experimental-specifier-resolution=node -r @swc-node/register -r tsconfig-paths/register scripts/map-popularity-q.ts",
-    "fix-tournaments": "node --experimental-specifier-resolution=node -r @swc-node/register -r tsconfig-paths/register scripts/fix-tournaments.ts",
+    "remove-vodder": "node --experimental-specifier-resolution=node -r @swc-node/register -r tsconfig-paths/register scripts/remove-vodder.ts",
     "transfer-weapon-pools": "node --experimental-specifier-resolution=node -r @swc-node/register -r tsconfig-paths/register scripts/transfer-weapon-pools.ts",
     "reopen-tournament": "node --experimental-specifier-resolution=node -r @swc-node/register -r tsconfig-paths/register scripts/reopen-tournament.ts",
     "refresh-prod-db": "node --experimental-specifier-resolution=node -r @swc-node/register -r tsconfig-paths/register scripts/refresh-prod-db.ts && npm run migrate up",
