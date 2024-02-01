@@ -1471,7 +1471,7 @@
       "MoveSpeed": 0.065,
       "DamageParam_ValueMax": 810,
       "InkConsumeUmbrella_WeaponShelterCanopyParam": 0.3,
-      "InkConsume_WeaponShelterShotgunParam": 0.0632499977946
+      "InkConsume_WeaponShelterShotgunParam": 0.055
     },
     "6001": {
       "SpecialPoint": 190,
@@ -1480,7 +1480,7 @@
       "MoveSpeed": 0.065,
       "DamageParam_ValueMax": 810,
       "InkConsumeUmbrella_WeaponShelterCanopyParam": 0.3,
-      "InkConsume_WeaponShelterShotgunParam": 0.0632499977946
+      "InkConsume_WeaponShelterShotgunParam": 0.055
     },
     "6010": {
       "SpecialPoint": 190,

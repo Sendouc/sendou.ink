@@ -150,9 +150,6 @@ function parametersToMainWeaponResult(
   };
 
   const InkConsume_WeaponShelterShotgunParam = () => {
-    // Splat Brella ink consumption not listed in params
-    if (weapon.Id === 6000 || weapon.Id === 6001) return 0.0632499977946;
-
     return params["spl__WeaponShelterShotgunParam"]?.["InkConsume"];
   };
 
