@@ -11,6 +11,7 @@ export default function Chart({
   containerClassName,
   headerSuffix,
   valueSuffix,
+  xAxis,
 }: {
   options: [
     { label: string; data: Array<{ primary: Date; secondary: number }> },
@@ -18,6 +19,7 @@ export default function Chart({
   containerClassName?: string;
   headerSuffix?: string;
   valueSuffix?: string;
+  xAxis: "linear" | "localTime";
 }) {
   const { i18n } = useTranslation();
   const theme = useTheme();
@@ -26,20 +28,25 @@ export default function Chart({
   const primaryAxis = React.useMemo<
     AxisOptions<(typeof options)[number]["data"][number]>
   >(
+    // @ts-expect-error TODO: type this
     () => ({
       getValue: (datum) => datum.primary,
-      scaleType: "localTime",
+      scaleType: xAxis,
       shouldNice: false,
       formatters: {
-        scale: (val) => {
-          return val.toLocaleDateString(i18n.language, {
-            day: "numeric",
-            month: "numeric",
-          });
+        scale: (val: any) => {
+          if (val instanceof Date) {
+            return val.toLocaleDateString(i18n.language, {
+              day: "numeric",
+              month: "numeric",
+            });
+          }
+
+          return val;
         },
       },
     }),
-    [i18n.language],
+    [i18n.language, xAxis],
   );
 
   const secondaryAxes = React.useMemo<
