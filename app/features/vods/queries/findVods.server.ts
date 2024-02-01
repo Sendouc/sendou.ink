@@ -42,7 +42,6 @@ const query = (byUser?: true) => /* sql */ `
   }
   group by v."id"
   order by v."youtubeDate" desc
-  limit @limit
 `;
 
 const stm = sql.prepare(query());
@@ -65,10 +64,18 @@ export function findVods({
 }): Array<ListVod> {
   const stmToUse = userId ? stmByUser : stm;
 
-  return (stmToUse.all({ weapon, mode, stageId, type, limit, userId }) as any[])
+  const vods = stmToUse.all({
+    weapon,
+    mode,
+    stageId,
+    type,
+    userId,
+  }) as any[];
+
+  return vods
     .filter((vod) => {
       if (!weapon) return true;
-      return vod.weapons.includes(weapon);
+      return parseDBArray(vod.weapons).includes(Number(weapon));
     })
     .map(({ playerNames: playerNamesRaw, players: playersRaw, ...vod }) => {
       const playerNames = parseDBArray(playerNamesRaw);
@@ -79,5 +86,6 @@ export function findVods({
         weapons: removeDuplicates(parseDBArray(vod.weapons)),
         pov: playerNames[0] ?? players[0],
       };
-    });
+    })
+    .slice(0, limit);
 }
