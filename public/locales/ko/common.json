@@ -34,7 +34,6 @@
   "auth.errors.discordPermissions": "sendou.ink 프로필을 위해 디스코드 프로필의 이름, 아바타와 연락처에 대한 접근이 필요합니다.",
 
   "footer.github.subtitle": "소스 코드",
-  "footer.twitter.subtitle": "업데이트들",
   "footer.discord.subtitle": "도움 & 피드백",
   "footer.patreon.subtitle": "후원",
   "footer.thanks": "Patreon 후원자들에게 갑사드립니다",

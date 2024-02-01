@@ -29,7 +29,6 @@
   "auth.errors.discordPermissions": "Do twojego profilu sendou.ink, ta strona potrzebuje dostęp do twojej nazwy, avataru i połączeń konta Discord.",
 
   "footer.github.subtitle": "Kod",
-  "footer.twitter.subtitle": "Aktualizacje",
   "footer.discord.subtitle": "Pomoc",
   "footer.patreon.subtitle": "Wsparcie",
   "footer.thanks": "Dziękujemy patronom za wsparcie",

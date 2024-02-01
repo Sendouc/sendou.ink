@@ -36,7 +36,6 @@
   "auth.errors.unknown": "La connexion a échoué en raison d'une erreur de serveur. Veuillez réessayer plus tards ou utlisez la commande /login via le bot Lohi sur le serveur Discord:",
 
   "footer.github.subtitle": "Code source",
-  "footer.twitter.subtitle": "Mises à jour",
   "footer.discord.subtitle": "Aide & retours",
   "footer.patreon.subtitle": "Soutien",
   "footer.thanks": "Merci à nos Supporters pour le soutien",

@@ -36,7 +36,6 @@
   "auth.errors.unknown": "O login falhou devido a um erro do servidor. Por favor, tente novamente mais tarde ou use o comando /login através do bot Lohi. O bot pode ser encontrado no Discord do sendou.ink:",
 
   "footer.github.subtitle": "Código fonte",
-  "footer.twitter.subtitle": "Atualizações",
   "footer.discord.subtitle": "Ajuda e Feedback",
   "footer.patreon.subtitle": "Suporte",
   "footer.thanks": "Obrigado aos patronos e patronesses pelo suporte",

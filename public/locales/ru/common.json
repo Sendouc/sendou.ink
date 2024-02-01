@@ -36,7 +36,6 @@
   "auth.errors.unknown": "Логин не удался из-за серверной ошибки. Пожалуйста, повторите попытку позже или воспользуйтесь командой /login с помощью бота Lohi, которого можно найти на Discord сервере sendou.ink:",
 
   "footer.github.subtitle": "Исходный код",
-  "footer.twitter.subtitle": "Обновления",
   "footer.discord.subtitle": "Помощь и обратная связь",
   "footer.patreon.subtitle": "Поддержать",
   "footer.thanks": "Спасибо меценатам за поддержку",

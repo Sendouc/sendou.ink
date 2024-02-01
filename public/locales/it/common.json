@@ -23,7 +23,6 @@
   "auth.errors.failed": "Accesso fallito",
   "auth.errors.discordPermissions": "Per il tuo profilo di sendou.ink, il sito ha bisogno di accesso al nome utente, avatar e connessioni social del tuo profilo Discord.",
   "footer.github.subtitle": "Codice sorgente",
-  "footer.twitter.subtitle": "Aggiornamenti",
   "footer.discord.subtitle": "Aiuto & feedback",
   "footer.patreon.subtitle": "Supporto",
   "footer.thanks": "Mille grazie ai supporter su Patreon!",

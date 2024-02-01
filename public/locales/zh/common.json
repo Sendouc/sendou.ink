@@ -36,7 +36,6 @@
   "auth.errors.unknown": "登录因服务器错误失败。请稍后重试或通过Lohi机器人使用/login指令。机器人可以在sendou.ink的Discord 中找到：",
 
   "footer.github.subtitle": "源代码",
-  "footer.twitter.subtitle": "更新",
   "footer.discord.subtitle": "帮助及反馈",
   "footer.patreon.subtitle": "支持",
   "footer.thanks": "感谢Patreon上的支持者",

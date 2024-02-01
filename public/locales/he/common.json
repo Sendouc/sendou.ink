@@ -36,7 +36,6 @@
   "auth.errors.unknown": "ההתחברות נכשלה עקב שגיאה בשרת. נסו שוב בבקשה או השתמשו בפקודה /login דרך הלוהי בוט. הבוט נמצא בשרת דיסקורד sendou.ink:",
 
   "footer.github.subtitle": "קוד מקור",
-  "footer.twitter.subtitle": "עדכונים",
   "footer.discord.subtitle": "עזרה & משוב",
   "footer.patreon.subtitle": "תמיכה",
   "footer.thanks": "תודה לפטרונים על התמיכה",

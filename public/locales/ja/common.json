@@ -35,7 +35,6 @@
   "auth.errors.discordPermissions": "sendou.ink は、Discord のプロファイル名、アバター、SNS連携をサイトのプロファイルに使用します。",
 
   "footer.github.subtitle": "ソースコード",
-  "footer.twitter.subtitle": "最新情報",
   "footer.discord.subtitle": "ヘルプ & フィードバック",
   "footer.patreon.subtitle": "寄付",
   "footer.thanks": "寄付のご協力ありがとうございます",

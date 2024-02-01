@@ -9,7 +9,6 @@ import {
   PRIVACY_POLICY_PAGE,
   SENDOU_INK_DISCORD_URL,
   SENDOU_INK_GITHUB_URL,
-  SENDOU_INK_TWITTER_URL,
   SENDOU_LOVE_EMOJI_PATH,
   SUPPORT_PAGE,
   userPage,
@@ -17,7 +16,6 @@ import {
 import { DiscordIcon } from "../icons/Discord";
 import { GitHubIcon } from "../icons/GitHub";
 import { PatreonIcon } from "../icons/Patreon";
-import { TwitterIcon } from "../icons/Twitter";
 import { Image } from "../Image";
 
 const currentYear = new Date().getFullYear();
@@ -47,17 +45,6 @@ export function Footer({
             GitHub<p>{t("footer.github.subtitle")}</p>
           </div>
           <GitHubIcon className="layout__footer__social-icon github" />
-        </a>
-        <a
-          className="layout__footer__social-link"
-          href={SENDOU_INK_TWITTER_URL}
-          target="_blank"
-          rel="noreferrer"
-        >
-          <div className="layout__footer__social-header">
-            Twitter<p>{t("footer.twitter.subtitle")}</p>
-          </div>
-          <TwitterIcon className="layout__footer__social-icon twitter" />
         </a>
         <a
           className="layout__footer__social-link"

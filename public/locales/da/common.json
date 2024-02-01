@@ -36,7 +36,6 @@
   "auth.errors.unknown": "Log ind fejlet grundet en serverfejl. Prøv igen senere eller brug /login-kommandoen via Lohi-botten. Botten kan blive fundet på sendou.ink’s Discordserver",
 
   "footer.github.subtitle": "Kildekode",
-  "footer.twitter.subtitle": "Opdateringer",
   "footer.discord.subtitle": "Hjælp og feedback",
   "footer.patreon.subtitle": "Støt hjemmesiden",
   "footer.thanks": "Tak til vores patrons for støtten",
