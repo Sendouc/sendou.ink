@@ -123,7 +123,7 @@ export class MapPool {
     var data = this.stageModePairs;
 
     return {
-      next: () => ({ value: data[++index]!, done: !(index in data) }),
+      next: () => ({ value: data[++index], done: !(index in data) }),
     };
   }
 

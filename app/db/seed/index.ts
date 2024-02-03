@@ -1253,9 +1253,9 @@ async function adminBuilds() {
       ownerId: ADMIN_ID,
       private: 0,
       description: Math.random() < 0.75 ? faker.lorem.paragraph() : null,
-      headGearSplId: randomOrderHeadGear[0]!,
-      clothesGearSplId: randomOrderClothesGear[0]!,
-      shoesGearSplId: randomOrderShoesGear[0]!,
+      headGearSplId: randomOrderHeadGear[0],
+      clothesGearSplId: randomOrderClothesGear[0],
+      shoesGearSplId: randomOrderShoesGear[0],
       weaponSplIds: new Array(
         faker.helpers.arrayElement([1, 1, 1, 2, 2, 3, 4, 5]),
       )
@@ -1317,9 +1317,9 @@ async function manySplattershotBuilds() {
       )}`,
       ownerId,
       description: Math.random() < 0.75 ? faker.lorem.paragraph() : null,
-      headGearSplId: randomOrderHeadGear[0]!,
-      clothesGearSplId: randomOrderClothesGear[0]!,
-      shoesGearSplId: randomOrderShoesGear[0]!,
+      headGearSplId: randomOrderHeadGear[0],
+      clothesGearSplId: randomOrderClothesGear[0],
+      shoesGearSplId: randomOrderShoesGear[0],
       weaponSplIds: new Array(
         faker.helpers.arrayElement([1, 1, 1, 2, 2, 3, 4, 5]),
       )

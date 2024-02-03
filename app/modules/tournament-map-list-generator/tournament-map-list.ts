@@ -132,7 +132,7 @@ export function createTournamentMapList(
           )
           .map((stageId) => ({
             stageId,
-            mode: input.modesIncluded[0]!,
+            mode: input.modesIncluded[0],
             score: 0,
             source: "TIEBREAKER" as const,
           }));
@@ -200,7 +200,7 @@ export function createTournamentMapList(
 
   function getDefaultMapPool() {
     if (tournamentIsOneModeOnly()) {
-      const mode = input.modesIncluded[0]!;
+      const mode = input.modesIncluded[0];
 
       return stageIds.map((id) => ({ mode, stageId: id }));
     }
@@ -266,17 +266,17 @@ export function createTournamentMapList(
 
     let previousModeShouldBe: ModeShort | undefined;
     for (let i = 0; i < mapList.length; i++) {
-      if (mapList[i]!.mode === stage.mode) {
+      if (mapList[i].mode === stage.mode) {
         if (i === 0) {
-          previousModeShouldBe = mapList[mapList.length - 1]!.mode;
+          previousModeShouldBe = mapList[mapList.length - 1].mode;
         } else {
-          previousModeShouldBe = mapList[i - 1]!.mode;
+          previousModeShouldBe = mapList[i - 1].mode;
         }
       }
     }
     invariant(previousModeShouldBe, "Couldn't resolve maplist pattern");
 
-    return mapList[mapList.length - 1]!.mode !== previousModeShouldBe;
+    return mapList[mapList.length - 1].mode !== previousModeShouldBe;
   }
 
   function isNotFollowingModeOrder(stage: StageValidatorInput) {
@@ -375,7 +375,7 @@ export function createTournamentMapList(
     if (!tournamentIsOneModeOnly()) return true;
 
     // specifically made tiebreaker map is considered good
-    const last = mapList[mapList.length - 1]!;
+    const last = mapList[mapList.length - 1];
     if (last.source === "TIEBREAKER") return true;
 
     // we can't have a map from pools of both teams if both didn't submit maps
@@ -383,7 +383,7 @@ export function createTournamentMapList(
       return true;
     }
 
-    const tieBreakerMap = mapList[mapList.length - 1]!;
+    const tieBreakerMap = mapList[mapList.length - 1];
 
     let appearanceCount = 0;
 

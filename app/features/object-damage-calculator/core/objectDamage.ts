@@ -271,7 +271,7 @@ export function calculateDamage({
             return damage.value;
           };
           const baseMultiplier = () => {
-            const normalMultiplier = multipliers[damage.type]![receiver];
+            const normalMultiplier = multipliers[damage.type][receiver];
             if (toCombine) {
               const actualDamage = () => {
                 if (toCombine.multiplierOnly) {
@@ -283,7 +283,7 @@ export function calculateDamage({
               };
 
               const otherMultiplier =
-                multipliers[toCombine.combineWith]![receiver];
+                multipliers[toCombine.combineWith][receiver];
 
               // calculate "made up" multiplier that is taking the
               // weighted average of the two multipliers

@@ -280,8 +280,8 @@ function dbAbilitiesToArrayOfArrays(
   invariant(sorted.length === 12, "expected 12 abilities");
 
   return [
-    [sorted[0]!, sorted[1]!, sorted[2]!, sorted[3]!],
-    [sorted[4]!, sorted[5]!, sorted[6]!, sorted[7]!],
-    [sorted[8]!, sorted[9]!, sorted[10]!, sorted[11]!],
+    [sorted[0], sorted[1], sorted[2], sorted[3]],
+    [sorted[4], sorted[5], sorted[6], sorted[7]],
+    [sorted[8], sorted[9], sorted[10], sorted[11]],
   ];
 }

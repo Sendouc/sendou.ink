@@ -107,25 +107,24 @@ export const shouldRevalidate: ShouldRevalidateFunction = (args) => {
   }
   // all meaningful filters identical -> skip revalidation
   if (
-    newFilters?.every(
-      (f1) =>
-        oldFilters?.some((f2) => {
-          if (f1.type !== f2.type) return false;
+    newFilters?.every((f1) =>
+      oldFilters?.some((f2) => {
+        if (f1.type !== f2.type) return false;
 
-          if (f1.type === "mode" && f2.type === "mode") {
-            return f1.mode === f2.mode;
-          }
-          if (f1.type === "date" && f2.type === "date") {
-            return f1.date === f2.date;
-          }
-          if (f1.type !== "ability" || f2.type !== "ability") return false;
+        if (f1.type === "mode" && f2.type === "mode") {
+          return f1.mode === f2.mode;
+        }
+        if (f1.type === "date" && f2.type === "date") {
+          return f1.date === f2.date;
+        }
+        if (f1.type !== "ability" || f2.type !== "ability") return false;
 
-          return (
-            f1.ability === f2.ability &&
-            f1.comparison === f2.comparison &&
-            f1.value === f2.value
-          );
-        }),
+        return (
+          f1.ability === f2.ability &&
+          f1.comparison === f2.comparison &&
+          f1.value === f2.value
+        );
+      }),
     )
   ) {
     return false;

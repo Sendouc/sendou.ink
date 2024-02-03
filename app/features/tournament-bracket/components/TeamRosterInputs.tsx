@@ -120,17 +120,17 @@ export function TeamRosterInputs({
             </div>
             <TeamRosterInputsCheckboxes
               teamId={team.id}
-              checkedPlayers={result?.participantIds ?? checkedPlayers[teamI]!}
+              checkedPlayers={result?.participantIds ?? checkedPlayers[teamI]}
               presentational={presentational}
               handlePlayerClick={(playerId: number) => {
                 const newCheckedPlayers = () => {
                   const newPlayers = clone(checkedPlayers);
                   if (checkedPlayers.flat().includes(playerId)) {
-                    newPlayers[teamI] = newPlayers[teamI]!.filter(
+                    newPlayers[teamI] = newPlayers[teamI].filter(
                       (id) => id !== playerId,
                     );
                   } else {
-                    newPlayers[teamI]!.push(playerId);
+                    newPlayers[teamI].push(playerId);
                   }
 
                   return newPlayers;

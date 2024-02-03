@@ -20,7 +20,7 @@ export function resolveBestOfs(
 
   // special case: only 2 teams
   if (matches.length === 1) {
-    result.push([7, matches[0]!.matchId]);
+    result.push([7, matches[0].matchId]);
     return result;
   }
 
@@ -34,8 +34,8 @@ export function resolveBestOfs(
   const finalsMatches = matches.filter((match) => match.groupNumber === 3);
 
   invariant(finalsMatches.length === 2, "finalsMatches must be 2");
-  result.push([5, finalsMatches[0]!.matchId]);
-  result.push([5, finalsMatches[1]!.matchId]);
+  result.push([5, finalsMatches[0].matchId]);
+  result.push([5, finalsMatches[1].matchId]);
 
   /// Best of 5
 
@@ -68,7 +68,7 @@ export function resolveBestOfs(
   );
   invariant(losersFinals.length === 1, "losersFinals must be 1");
 
-  result.push([5, losersFinals[0]!.matchId]);
+  result.push([5, losersFinals[0].matchId]);
 
   return result;
 }

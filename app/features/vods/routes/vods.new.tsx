@@ -342,7 +342,7 @@ function extractYoutubeIdFromVideoUrl(url: string): string {
   const found = match?.[1];
   if (!found) return "";
 
-  const withoutSearchParams = found.split("&")[0]!;
+  const withoutSearchParams = found.split("&")[0];
 
   return withoutSearchParams;
 }

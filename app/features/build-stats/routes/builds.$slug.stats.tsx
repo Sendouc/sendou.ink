@@ -117,7 +117,7 @@ export default function BuildStatsPage() {
           {data.stats.stackableAbilities.map((stats) => {
             const apToPx = (ap: number) =>
               Math.floor(
-                (ap / data.stats.stackableAbilities[0]!.apAverage.weapon) * 200,
+                (ap / data.stats.stackableAbilities[0].apAverage.weapon) * 200,
               );
 
             return (

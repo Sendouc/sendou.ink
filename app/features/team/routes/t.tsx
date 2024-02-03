@@ -233,7 +233,7 @@ export default function TeamSearchPage() {
               </div>
               <div className="team-search__team__members">
                 {team.members.length === 1
-                  ? team.members[0]!.discordName
+                  ? team.members[0].discordName
                   : joinListToNaturalString(
                       team.members.map((member) => member.discordName),
                       "&",

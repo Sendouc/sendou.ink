@@ -37,7 +37,7 @@ export function generateMapList(
   for (let i = 0; i < games.length; i++) {
     const roundMapList: ModeWithStage[] = [];
 
-    for (let j = 0; j < games[i]!; j++) {
+    for (let j = 0; j < games[i]; j++) {
       const mode = modeList[modeIndex];
       invariant(mode, "Mode is missing");
 

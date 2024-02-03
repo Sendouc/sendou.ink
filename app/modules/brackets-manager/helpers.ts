@@ -516,11 +516,11 @@ export function byeWinner(opponents: Duel): ParticipantSlot {
 
   if (opponents[0] === null && opponents[1] !== null)
     // opponent1 BYE.
-    return { id: opponents[1]!.id }; // opponent2.
+    return { id: opponents[1].id }; // opponent2.
 
   if (opponents[0] !== null && opponents[1] === null)
     // opponent2 BYE.
-    return { id: opponents[0]!.id }; // opponent1.
+    return { id: opponents[0].id }; // opponent1.
 
   return { id: null }; // Normal.
 }

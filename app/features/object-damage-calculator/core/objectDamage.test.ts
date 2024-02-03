@@ -105,8 +105,9 @@ CalculateDamage("BRU increases Splash Wall hitpoints", () => {
     abilityPoints: new Map([["BRU", 10]]),
   });
 
-  const hpWithoutBRU = withoutBRU.find((d) => d.receiver === "Wsb_Shield")
-    ?.hitPoints;
+  const hpWithoutBRU = withoutBRU.find(
+    (d) => d.receiver === "Wsb_Shield",
+  )?.hitPoints;
   const hpWithBRU = withBRU.find((d) => d.receiver === "Wsb_Shield")?.hitPoints;
 
   assert.ok(typeof hpWithoutBRU === "number");
@@ -123,8 +124,9 @@ CalculateDamage("SPU increases Big Bubbler hitpoints", () => {
   const hpWithoutSPU = withoutSPU.find(
     (d) => d.receiver === "GreatBarrier_Barrier",
   )?.hitPoints;
-  const hpWithSPU = withSPU.find((d) => d.receiver === "GreatBarrier_Barrier")
-    ?.hitPoints;
+  const hpWithSPU = withSPU.find(
+    (d) => d.receiver === "GreatBarrier_Barrier",
+  )?.hitPoints;
 
   assert.ok(typeof hpWithoutSPU === "number");
   assert.ok(typeof hpWithSPU === "number");

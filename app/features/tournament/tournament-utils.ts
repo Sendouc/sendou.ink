@@ -47,7 +47,7 @@ export function isOneModeTournamentOf(
   tournament: Pick<Tournament, "mapPickingStyle">,
 ) {
   return modesIncluded(tournament).length === 1
-    ? modesIncluded(tournament)[0]!
+    ? modesIncluded(tournament)[0]
     : null;
 }
 

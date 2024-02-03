@@ -95,12 +95,12 @@ for (const file of fileNames) {
           throw new Error(`missing keys in ${lang}/${file}`);
         }
       } else {
-        missingTranslations[lang]![key] = missingKeys;
+        missingTranslations[lang][key] = missingKeys;
       }
     } catch (e) {
       if ((e as { code: string }).code !== "ENOENT") throw e;
 
-      missingTranslations[lang]![key] = englishContentKeys;
+      missingTranslations[lang][key] = englishContentKeys;
     }
   }
 }
@@ -323,7 +323,7 @@ function MDOverviewTable({
 
       cells.push(
         MDCompletionStatus({
-          totalCount: totalTranslationCounts[fileKey]!,
+          totalCount: totalTranslationCounts[fileKey],
           missingCount: missingKeysInFile.length,
         }),
       );
@@ -364,8 +364,7 @@ function MDMissingKeysList({
       const checkbox = noneMissing ? MD.ticked : MD.unticked;
       const fileEntry = checkbox(MD.inlineCode(`${fileKey}.json`));
 
-      const allMissing =
-        missingKeys.length === totalTranslationCounts[fileKey]!;
+      const allMissing = missingKeys.length === totalTranslationCounts[fileKey];
 
       const keysLabel = allMissing
         ? "All keys"

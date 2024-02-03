@@ -27,7 +27,7 @@ export const handle: SendouRouteHandle = {
 
     if (!data) return [];
 
-    const firstName = data.placements[0]!.name;
+    const firstName = data.placements[0].name;
 
     return [
       {
@@ -38,7 +38,7 @@ export const handle: SendouRouteHandle = {
       {
         text: firstName,
         type: "TEXT",
-        href: topSearchPlayerPage(data.placements[0]!.playerId),
+        href: topSearchPlayerPage(data.placements[0].playerId),
       },
     ];
   },
@@ -57,7 +57,7 @@ export const meta: MetaFunction = (args) => {
     { title: data.title },
     {
       name: "description",
-      content: `Splatoon 3 X Battle for the player ${data.placements[0]!.name}`,
+      content: `Splatoon 3 X Battle for the player ${data.placements[0].name}`,
     },
   ];
 };
@@ -71,7 +71,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
   return {
     placements,
-    title: makeTitle([placements[0]!.name, t("pages.xsearch")]),
+    title: makeTitle([placements[0].name, t("pages.xsearch")]),
   };
 };
 
@@ -79,21 +79,21 @@ export default function XSearchPlayerPage() {
   const { t } = useTranslation(["common"]);
   const data = useLoaderData<typeof loader>();
 
-  const firstName = data.placements[0]!.name;
+  const firstName = data.placements[0].name;
   const aliases = removeDuplicates(
     data.placements
       .map((placement) => placement.name)
       .filter((name) => name !== firstName),
   );
 
-  const hasUserLinked = Boolean(data.placements[0]!.discordId);
+  const hasUserLinked = Boolean(data.placements[0].discordId);
 
   return (
     <Main halfWidth className="stack lg">
       <div>
         <h2 className="text-lg">
           {hasUserLinked ? (
-            <Link to={userPage(data.placements[0]!)}>{firstName}</Link>
+            <Link to={userPage(data.placements[0])}>{firstName}</Link>
           ) : (
             <>{firstName}</>
           )}{" "}

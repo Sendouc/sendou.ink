@@ -92,8 +92,8 @@ PopularBuilds("calculates popular build", () => {
   ]);
 
   assert.is(builds.length, 1);
-  assert.is(builds[0]!.count, 10);
-  assert.is(builds[0]!.abilities[0]!.ability, "QR");
+  assert.is(builds[0].count, 10);
+  assert.is(builds[0].abilities[0].ability, "QR");
 });
 
 PopularBuilds("calculates second most popular build (sorted by count)", () => {
@@ -110,7 +110,7 @@ PopularBuilds("calculates second most popular build (sorted by count)", () => {
   ]);
 
   assert.is(builds.length, 3);
-  assert.is(builds[1]!.abilities[0]!.ability, "SSU");
+  assert.is(builds[1].abilities[0].ability, "SSU");
 });
 
 PopularBuilds("sums up abilities", () => {
@@ -143,7 +143,7 @@ PopularBuilds("sorts abilities", () => {
     },
   ]);
 
-  assert.is(builds[0]!.abilities[1]!.ability, "QR");
+  assert.is(builds[0].abilities[1].ability, "QR");
 });
 
 AbilityPointCountsToAverages.run();

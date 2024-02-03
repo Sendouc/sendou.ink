@@ -47,7 +47,7 @@ export const meta: MetaFunction = (args) => {
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const availableMonthYears = monthYears();
-  const { month: latestMonth, year: latestYear } = availableMonthYears[0]!;
+  const { month: latestMonth, year: latestYear } = availableMonthYears[0];
 
   // #region parse URL params
   const url = new URL(request.url);
@@ -128,8 +128,8 @@ export default function XSearchPage() {
   };
 
   const selectValue = `${
-    searchParams.get("month") ?? data.availableMonthYears[0]!.month
-  }-${searchParams.get("year") ?? data.availableMonthYears[0]!.year}-${
+    searchParams.get("month") ?? data.availableMonthYears[0].month
+  }-${searchParams.get("year") ?? data.availableMonthYears[0].year}-${
     searchParams.get("mode") ?? "SZ"
   }-${searchParams.get("region") ?? "WEST"}`;
 
@@ -143,8 +143,8 @@ export default function XSearchPage() {
       >
         {selectOptions(data.availableMonthYears).map((group) => (
           <optgroup
-            key={group[0]!.id}
-            label={t(`common:divisions.${group[0]!.region}`)}
+            key={group[0].id}
+            label={t(`common:divisions.${group[0].region}`)}
           >
             {group.map((option) => (
               <option

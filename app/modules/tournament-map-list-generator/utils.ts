@@ -34,7 +34,7 @@ function mulberry32(a: number) {
 }
 
 export const seededRandom = (seed: string) => {
-  const rng = mulberry32(cyrb128(seed)[0]!);
+  const rng = mulberry32(cyrb128(seed)[0]);
 
   const rnd = (lo: number, hi?: number, defaultHi = 1) => {
     if (hi === undefined) {

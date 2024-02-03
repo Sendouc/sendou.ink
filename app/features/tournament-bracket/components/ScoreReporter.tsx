@@ -282,10 +282,10 @@ function ModeProgressIndicator({
                   i <= maxIndexThatWillBePlayedForSure,
                 "tournament-bracket__mode-progress__image__team-one-win":
                   data.results[i] &&
-                  data.results[i]!.winnerTeamId === data.match.opponentOne?.id,
+                  data.results[i].winnerTeamId === data.match.opponentOne?.id,
                 "tournament-bracket__mode-progress__image__team-two-win":
                   data.results[i] &&
-                  data.results[i]!.winnerTeamId === data.match.opponentTwo?.id,
+                  data.results[i].winnerTeamId === data.match.opponentTwo?.id,
                 "tournament-bracket__mode-progress__image__selected":
                   i === selectedResultIndex,
                 "cursor-pointer": Boolean(setSelectedResultIndex),

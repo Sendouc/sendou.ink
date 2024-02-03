@@ -273,7 +273,7 @@ function BadgeContainer(props: { badges: UserPageLoaderData["badges"] }) {
     setBadges(
       badges.map((b, i) => {
         if (i === 0) return badge;
-        if (b.code === badge.code) return badges[0]!;
+        if (b.code === badge.code) return badges[0];
 
         return b;
       }),

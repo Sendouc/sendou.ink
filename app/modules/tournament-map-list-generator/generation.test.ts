@@ -86,7 +86,7 @@ TournamentMapListGenerator("Modes are spread evenly", () => {
     const rankedMode = mode as RankedModeShort;
     if (!modes.has(rankedMode)) {
       assert.equal(i, 4, "Repeated mode early");
-      assert.equal(mode, mapList[0]!.mode, "1st and 5th mode are not the same");
+      assert.equal(mode, mapList[0].mode, "1st and 5th mode are not the same");
     }
 
     modes.delete(rankedMode);
@@ -145,8 +145,8 @@ TournamentMapListGenerator(
     assert.equal(mapList1.length, 5);
 
     for (let i = 0; i < mapList1.length; i++) {
-      assert.equal(mapList1[i]!.stageId, mapList2[i]!.stageId);
-      assert.equal(mapList1[i]!.mode, mapList2[i]!.mode);
+      assert.equal(mapList1[i].stageId, mapList2[i].stageId);
+      assert.equal(mapList1[i].mode, mapList2[i].mode);
     }
   },
 );
@@ -171,8 +171,8 @@ TournamentMapListGenerator(
     assert.equal(mapList1.length, 5);
 
     for (let i = 0; i < mapList1.length; i++) {
-      assert.equal(mapList1[i]!.stageId, mapList2[i]!.stageId);
-      assert.equal(mapList1[i]!.mode, mapList2[i]!.mode);
+      assert.equal(mapList1[i].stageId, mapList2[i].stageId);
+      assert.equal(mapList1[i].mode, mapList2[i].mode);
     }
   },
 );
@@ -208,8 +208,8 @@ TournamentMapListGenerator(
     assert.equal(mapList1.length, 5);
 
     for (let i = 0; i < mapList1.length; i++) {
-      assert.equal(mapList1[i]!.stageId, mapList2[i]!.stageId);
-      assert.equal(mapList1[i]!.mode, mapList2[i]!.mode);
+      assert.equal(mapList1[i].stageId, mapList2[i].stageId);
+      assert.equal(mapList1[i].mode, mapList2[i].mode);
     }
   },
 );
@@ -303,7 +303,7 @@ TournamentMapListGenerator("Handles worst case with duplication", () => {
 
   // no consecutive stage replays
   for (let i = 0; i < maplist.length - 1; i++) {
-    assert.not.equal(maplist[i]!.stageId, maplist[i + 1]!.stageId);
+    assert.not.equal(maplist[i].stageId, maplist[i + 1].stageId);
   }
 });
 
@@ -368,8 +368,8 @@ TournamentMapListGenerator("No map picked by same team twice in row", () => {
     });
 
     for (let j = 0; j < mapList.length - 1; j++) {
-      if (typeof mapList[j]!.source !== "number") continue;
-      assert.not.equal(mapList[j]!.source, mapList[j + 1]!.source);
+      if (typeof mapList[j].source !== "number") continue;
+      assert.not.equal(mapList[j].source, mapList[j + 1].source);
     }
   }
 });
@@ -639,7 +639,7 @@ TournamentMapListGeneratorOneMode(
       tiebreakerMaps: new MapPool([]),
     });
     for (let i = 0; i < mapList.length - 1; i++) {
-      assert.equal(mapList[i]!.mode, "SZ");
+      assert.equal(mapList[i].mode, "SZ");
     }
   },
 );
@@ -662,7 +662,7 @@ TournamentMapListGeneratorOneMode(
       tiebreakerMaps: new MapPool([]),
     });
     for (let i = 0; i < mapList.length - 1; i++) {
-      assert.equal(mapList[i]!.mode, "SZ");
+      assert.equal(mapList[i].mode, "SZ");
     }
   },
 );

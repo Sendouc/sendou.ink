@@ -84,8 +84,9 @@ export const action: ActionFunction = async ({ request, params }) => {
     tournamentId,
   });
   if (data.trust) {
-    const inviterUserId = teamToJoin.members.find((member) => member.isOwner)
-      ?.userId;
+    const inviterUserId = teamToJoin.members.find(
+      (member) => member.isOwner,
+    )?.userId;
     invariant(inviterUserId, "Inviter user could not be resolved");
     giveTrust({
       trustGiverUserId: user.id,

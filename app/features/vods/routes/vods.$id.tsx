@@ -158,7 +158,7 @@ function Match({
 }) {
   const { t } = useTranslation(["game-misc", "weapons"]);
 
-  const weapon = match.weapons.length === 1 ? match.weapons[0]! : null;
+  const weapon = match.weapons.length === 1 ? match.weapons[0] : null;
   const weapons = match.weapons.length === 8 ? match.weapons : null;
 
   return (

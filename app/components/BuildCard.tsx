@@ -158,7 +158,7 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
         ))}
         {weapons.length === 1 && (
           <div className="build__weapon-text">
-            {t(`weapons:MAIN_${weapons[0]!.weaponSplId}` as any)}
+            {t(`weapons:MAIN_${weapons[0].weaponSplId}` as any)}
           </div>
         )}
       </div>
@@ -182,7 +182,7 @@ export function BuildCard({ build, owner, canEdit = false }: BuildProps) {
       <div className="build__bottom-row">
         <Link
           to={analyzerPage({
-            weaponId: weapons[0]!.weaponSplId,
+            weaponId: weapons[0].weaponSplId,
             abilities: abilities.flat(),
           })}
         >

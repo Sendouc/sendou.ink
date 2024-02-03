@@ -15,9 +15,10 @@ import type {
 import type { GroupSkillDifference, UserSkillDifference } from "./types";
 import type { ParticipantResult } from "~/modules/brackets-model";
 
-export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
-  ? ColumnType<S, I | undefined, U>
-  : ColumnType<T, T | undefined, T>;
+export type Generated<T> =
+  T extends ColumnType<infer S, infer I, infer U>
+    ? ColumnType<S, I | undefined, U>
+    : ColumnType<T, T | undefined, T>;
 
 export interface AllTeam {
   avatarImgId: number | null;

@@ -179,7 +179,7 @@ function addAbility({
     // were given an atRowIndex and atAbilityIndex
     if (canPlaceAbilityAtSlot(atRowIndex, atAbilityIndex, ability)) {
       // Assign this ability to the slot
-      abilitiesClone[atRowIndex]![atAbilityIndex] = ability.name;
+      abilitiesClone[atRowIndex][atAbilityIndex] = ability.name;
     }
   } else {
     // Loop through all slots and attempt to place this ability
@@ -197,7 +197,7 @@ function addAbility({
         }
 
         // Assign this ability to the slot
-        abilitiesClone[rowIndex]![abilityIndex] = ability.name;
+        abilitiesClone[rowIndex][abilityIndex] = ability.name;
 
         return abilitiesClone;
       }

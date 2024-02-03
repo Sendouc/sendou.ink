@@ -85,11 +85,13 @@ export function addReplayIndicator({
 }): DividedGroupsUncensored {
   if (!recentMatchPlayers.length) return groups;
 
-  const ownGroupId = recentMatchPlayers.find((u) => u.userId === userId)
-    ?.groupId;
+  const ownGroupId = recentMatchPlayers.find(
+    (u) => u.userId === userId,
+  )?.groupId;
   invariant(ownGroupId, "own group not found");
-  const otherGroupId = recentMatchPlayers.find((u) => u.groupId !== ownGroupId)
-    ?.groupId;
+  const otherGroupId = recentMatchPlayers.find(
+    (u) => u.groupId !== ownGroupId,
+  )?.groupId;
   invariant(otherGroupId, "other group not found");
 
   const opponentPlayers = recentMatchPlayers

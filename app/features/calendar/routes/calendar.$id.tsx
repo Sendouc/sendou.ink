@@ -68,7 +68,7 @@ export const action: ActionFunction = async ({ params, request }) => {
     canDeleteCalendarEvent({
       user,
       event,
-      startTime: databaseTimestampToDate(event.startTimes[0]!),
+      startTime: databaseTimestampToDate(event.startTimes[0]),
     }),
   );
 
@@ -233,7 +233,7 @@ export default function CalendarEventPage() {
         <Description />
         {canDeleteCalendarEvent({
           user,
-          startTime: databaseTimestampToDate(data.event.startTimes[0]!),
+          startTime: databaseTimestampToDate(data.event.startTimes[0]),
           event: data.event,
         }) ? (
           <FormWithConfirm

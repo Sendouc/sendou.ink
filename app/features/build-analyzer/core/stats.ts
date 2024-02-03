@@ -652,8 +652,8 @@ function subWeaponDefenseDamages(
                     ),
                   ),
                 ],
-                baseValue: secondHalfValues[0]!.baseValue,
-                value: secondHalfValues[0]!.value,
+                baseValue: secondHalfValues[0].baseValue,
+                value: secondHalfValues[0].value,
                 type,
               },
               {
@@ -667,8 +667,8 @@ function subWeaponDefenseDamages(
                     ...firstHalfValues.map((value) => value.distance as number),
                   ),
                 ],
-                baseValue: firstHalfValues[0]!.baseValue,
-                value: firstHalfValues[0]!.value,
+                baseValue: firstHalfValues[0].baseValue,
+                value: firstHalfValues[0].value,
                 type,
               },
             ];
