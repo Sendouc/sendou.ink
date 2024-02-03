@@ -118,17 +118,21 @@ export default function TournamentLayout() {
     <Main bigger={onBracketsPage}>
       <SubNav>
         {!tournament.hasStarted ? (
-          <SubNavLink to="register" data-testid="register-tab">
+          <SubNavLink
+            to="register"
+            data-testid="register-tab"
+            prefetch="render"
+          >
             {t("tournament:tabs.register")}
           </SubNavLink>
         ) : null}
-        <SubNavLink to="brackets" data-testid="brackets-tab">
+        <SubNavLink to="brackets" data-testid="brackets-tab" prefetch="render">
           {t("tournament:tabs.brackets")}
         </SubNavLink>
         {tournament.ctx.showMapListGenerator ? (
           <SubNavLink to="maps">{t("tournament:tabs.maps")}</SubNavLink>
         ) : null}
-        <SubNavLink to="teams" end={false}>
+        <SubNavLink to="teams" end={false} prefetch="render">
           {t("tournament:tabs.teams", { count: tournament.ctx.teams.length })}
         </SubNavLink>
         {!tournament.everyBracketOver && tournament.subsFeatureEnabled && (
