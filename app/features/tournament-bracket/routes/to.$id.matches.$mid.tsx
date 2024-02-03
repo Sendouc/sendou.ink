@@ -315,6 +315,7 @@ export const loader = ({ params }: LoaderFunctionArgs) => {
   };
 };
 
+// xxx: lacks padding on top as non-admin http://localhost:5800/to/10/matches/997
 export default function TournamentMatchPage() {
   const user = useUser();
   const visibility = useVisibilityChange();

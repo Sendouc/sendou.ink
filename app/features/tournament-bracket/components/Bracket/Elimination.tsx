@@ -68,11 +68,20 @@ function getRounds(props: EliminationBracketSideProps) {
     return group.id;
   });
 
-  const rounds = props.bracket.data.round.flatMap((round) => {
-    if (round.group_id && !groupIds.includes(round.group_id)) return [];
+  const rounds = props.bracket.data.round
+    .flatMap((round) => {
+      if (round.group_id && !groupIds.includes(round.group_id)) return [];
 
-    return round;
-  });
+      return round;
+    })
+    .filter((round) => {
+      const matches = props.bracket.data.match.filter(
+        (match) => match.round_id === round.id,
+      );
+
+      // hide rounds with only byes
+      return matches.some((m) => m.opponent1 && m.opponent2);
+    });
 
   return rounds.map((round, i) => {
     const name = () => {
