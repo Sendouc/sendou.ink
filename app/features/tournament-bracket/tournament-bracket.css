@@ -152,13 +152,14 @@
   width: 15rem;
   flex-direction: column;
   margin-top: var(--s-3);
+  margin-inline: auto;
   gap: var(--s-2);
 }
 
 .tournament-bracket__during-match-actions__checkbox-name {
   display: flex;
-  width: 100%;
   align-items: center;
+  flex: 1;
 }
 
 .tournament-bracket__during-match-actions__checkbox-name:not(
@@ -171,7 +172,7 @@
 }
 
 .tournament-bracket__during-match-actions__checkbox {
-  width: 50% !important;
+  width: 40% !important;
   height: 1.5rem !important;
   appearance: none;
   background-color: var(--theme-transparent);
@@ -205,7 +206,7 @@
 
 .tournament-bracket__during-match-actions__player-name {
   display: flex;
-  width: 50%;
+  width: 60%;
   height: 1.5rem;
   align-items: center;
   justify-content: center;
@@ -217,6 +218,7 @@
   text-overflow: ellipsis;
   user-select: none;
   cursor: pointer;
+  flex: 1;
 }
 
 .tournament-bracket__during-match-actions__player-name__inner {

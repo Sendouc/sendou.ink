@@ -8,8 +8,9 @@ import { inGameNameWithoutDiscriminator } from "~/utils/strings";
 import { Link, useLoaderData } from "@remix-run/react";
 import type { TournamentMatchLoaderData } from "../routes/to.$id.matches.$mid";
 import type { Result } from "./ScoreReporter";
-import { tournamentTeamPage } from "~/utils/urls";
+import { tournamentTeamPage, userPage } from "~/utils/urls";
 import type { TournamentDataTeam } from "../core/Tournament.server";
+import { Avatar } from "~/components/Avatar";
 
 /** Inputs to select who played for teams in a match as well as the winner. Can also be used in a presentational way. */
 export function TeamRosterInputs({
@@ -267,35 +268,39 @@ function TeamRosterInputsCheckboxes({
     <div className="tournament-bracket__during-match-actions__team-players">
       {members.map((member, i) => {
         return (
-          <div
-            key={member.id}
-            className={clsx(
-              "tournament-bracket__during-match-actions__checkbox-name",
-              { "disabled-opaque": mode() === "DISABLED" },
-              { presentational: mode() === "PRESENTATIONAL" },
-            )}
-          >
-            <input
-              className="plain tournament-bracket__during-match-actions__checkbox"
-              type="checkbox"
-              id={`${member.id}-${id}`}
-              name="playerName"
-              disabled={mode() === "DISABLED" || mode() === "PRESENTATIONAL"}
-              value={member.id}
-              checked={checkedPlayers.flat().includes(member.id)}
-              onChange={() => handlePlayerClick(member.id)}
-              data-testid={`player-checkbox-${i}`}
-            />{" "}
-            <label
-              className="tournament-bracket__during-match-actions__player-name"
-              htmlFor={`${member.id}-${id}`}
+          <div key={member.id} className="stack horizontal xs">
+            <div
+              className={clsx(
+                "tournament-bracket__during-match-actions__checkbox-name",
+                { "disabled-opaque": mode() === "DISABLED" },
+                { presentational: mode() === "PRESENTATIONAL" },
+              )}
             >
-              <span className="tournament-bracket__during-match-actions__player-name__inner">
-                {member.inGameName
-                  ? inGameNameWithoutDiscriminator(member.inGameName)
-                  : member.discordName}
-              </span>
-            </label>
+              <input
+                className="plain tournament-bracket__during-match-actions__checkbox"
+                type="checkbox"
+                id={`${member.id}-${id}`}
+                name="playerName"
+                disabled={mode() === "DISABLED" || mode() === "PRESENTATIONAL"}
+                value={member.id}
+                checked={checkedPlayers.flat().includes(member.id)}
+                onChange={() => handlePlayerClick(member.id)}
+                data-testid={`player-checkbox-${i}`}
+              />{" "}
+              <label
+                className="tournament-bracket__during-match-actions__player-name"
+                htmlFor={`${member.id}-${id}`}
+              >
+                <span className="tournament-bracket__during-match-actions__player-name__inner">
+                  {member.inGameName
+                    ? inGameNameWithoutDiscriminator(member.inGameName)
+                    : member.discordName}
+                </span>
+              </label>
+            </div>
+            <Link to={userPage(member)} target="_blank">
+              <Avatar size="xxs" user={member} />
+            </Link>
           </div>
         );
       })}
