@@ -170,9 +170,7 @@ function Owners({ data }: { data: BadgeDetailsLoaderData }) {
 
   const ownerDifferences = getOwnerDifferences(owners, data.owners);
 
-  const userIdsToOmitFromCombobox = React.useMemo(() => {
-    return new Set(data.owners.map((m) => m.id));
-  }, [data]);
+  const userInputKey = owners.map((o) => `${o.id}-${o.count}`).join("-");
 
   return (
     <div className="stack md">
@@ -183,10 +181,20 @@ function Owners({ data }: { data: BadgeDetailsLoaderData }) {
           <UserSearch
             className="mx-auto"
             inputName="new-owner"
+            key={userInputKey}
             onChange={(user) => {
-              setOwners([...owners, { count: 1, ...user }]);
+              setOwners((previousOwners) => {
+                const existingOwner = previousOwners.find(
+                  (o) => o.id === user.id,
+                );
+                if (existingOwner) {
+                  return previousOwners.map((o) =>
+                    o.id === user.id ? { ...o, count: o.count + 1 } : o,
+                  );
+                }
+                return [...previousOwners, { count: 1, ...user }];
+              });
             }}
-            userIdsToOmit={userIdsToOmitFromCombobox}
           />
         </div>
       </div>
