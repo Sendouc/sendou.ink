@@ -259,7 +259,7 @@ export class Tournament {
 
   resolvePoolCode({ hostingTeamId }: { hostingTeamId: number }) {
     const tournamentNameWithoutOnlyLetters = this.ctx.name.replace(
-      /[^a-zA-Z]/g,
+      /[^a-zA-Z ]/g,
       "",
     );
     const prefix = tournamentNameWithoutOnlyLetters
