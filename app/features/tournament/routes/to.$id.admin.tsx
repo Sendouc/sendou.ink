@@ -520,6 +520,7 @@ function StaffAdder() {
           <UserSearch
             inputName="userId"
             id="staff-user"
+            required
             userIdsToOmit={
               new Set([
                 tournament.ctx.author.id,
