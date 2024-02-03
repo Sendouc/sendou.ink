@@ -68,28 +68,50 @@ function getRounds(props: EliminationBracketSideProps) {
     return group.id;
   });
 
+  let showingBracketReset = true;
   const rounds = props.bracket.data.round
     .flatMap((round) => {
       if (round.group_id && !groupIds.includes(round.group_id)) return [];
 
       return round;
     })
-    .filter((round) => {
+    .filter((round, i, rounds) => {
+      const isBracketReset =
+        props.type === "winners" && i === rounds.length - 1;
+      const grandFinalsMatch =
+        props.type === "winners"
+          ? props.bracket.data.match.find(
+              (match) => match.round_id === rounds[rounds.length - 2].id,
+            )
+          : undefined;
+
+      if (isBracketReset && grandFinalsMatch?.opponent1?.result === "win") {
+        showingBracketReset = false;
+        return false;
+      }
+
       const matches = props.bracket.data.match.filter(
         (match) => match.round_id === round.id,
       );
 
-      // hide rounds with only byes
-      return matches.some((m) => m.opponent1 && m.opponent2);
+      const atLeastOneNonByeMatch = matches.some(
+        (m) => m.opponent1 && m.opponent2,
+      );
+
+      return atLeastOneNonByeMatch;
     });
 
   return rounds.map((round, i) => {
     const name = () => {
-      if (props.type === "winners" && i === rounds.length - 2) {
+      if (
+        showingBracketReset &&
+        props.type === "winners" &&
+        i === rounds.length - 2
+      ) {
         return "Grand Finals";
       }
       if (props.type === "winners" && i === rounds.length - 1) {
-        return "Bracket Reset";
+        return showingBracketReset ? "Bracket Reset" : "Grand Finals";
       }
 
       const namePrefix =

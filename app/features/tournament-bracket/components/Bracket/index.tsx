@@ -3,7 +3,7 @@ import { EliminationBracketSide } from "./Elimination";
 
 export function Bracket({ bracket }: { bracket: BracketType }) {
   return (
-    <div className="bracket">
+    <div className="bracket elim-bracket">
       <EliminationBracketSide type="winners" bracket={bracket} />
       <EliminationBracketSide type="losers" bracket={bracket} />
     </div>

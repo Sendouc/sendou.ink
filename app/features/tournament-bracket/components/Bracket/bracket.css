@@ -3,6 +3,12 @@
   --match-height: 55px;
 }
 
+.elim-bracket {
+  overflow-x: auto;
+  display: flex;
+  flex-direction: column;
+}
+
 .bracket__match__header {
   display: flex;
   justify-content: space-between;
@@ -76,15 +82,14 @@
     var(--round-count),
     calc(var(--match-width) + var(--line-width))
   );
-  overflow-x: auto;
 }
 
 .elim-bracket__round-matches-container {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
-  height: 100%;
   gap: var(--s-1-5);
+  height: 94%;
   margin-block-start: var(--s-2);
 }
 
