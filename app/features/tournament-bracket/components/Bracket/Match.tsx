@@ -20,7 +20,7 @@ export function Match(props: MatchProps) {
   }
 
   return (
-    <div>
+    <div className="relative">
       <MatchHeader {...props} />
       <MatchWrapper {...props}>
         <MatchRow {...props} side={1} />

@@ -7,15 +7,17 @@
   overflow-x: auto;
   display: flex;
   flex-direction: column;
+  gap: var(--s-8);
 }
 
 .bracket__match__header {
+  position: absolute;
   display: flex;
   justify-content: space-between;
   font-size: var(--fonts-xxxs);
   width: var(--match-width);
   font-weight: var(--semi-bold);
-  margin-block-end: -2px;
+  margin-block-start: -15px;
 }
 
 .bracket__match__header__box {
@@ -26,7 +28,8 @@
 
 .bracket__match {
   width: var(--match-width);
-  height: var(--match-height);
+  min-height: var(--match-height);
+  max-height: var(--match-height);
   border-radius: var(--rounded-sm);
   background-color: var(--bg-light-variation);
   font-size: var(--fonts-xxs);
@@ -54,7 +57,8 @@
 
 .bracket__match__bye {
   visibility: hidden;
-  height: var(--match-height);
+  min-height: var(--match-height);
+  max-height: var(--match-height);
 }
 
 .bracket__match__seed {
@@ -87,10 +91,11 @@
 .elim-bracket__round-matches-container {
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
-  gap: var(--s-1-5);
-  height: 94%;
-  margin-block-start: var(--s-2);
+  justify-content: space-around;
+  gap: var(--s-7);
+  /** xxx: skip this for the side if no topmost match (or even negative) */
+  margin-top: var(--s-6);
+  flex: 1;
 }
 
 .elim-bracket__round-header {
@@ -110,4 +115,9 @@
   font-size: var(--fonts-xxs);
   color: var(--text-lighter);
   font-weight: var(--semi-bold);
+}
+
+.elim-bracket__round-column {
+  display: flex;
+  flex-direction: column;
 }

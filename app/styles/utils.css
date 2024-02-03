@@ -310,6 +310,10 @@
   overflow-x: auto;
 }
 
+.relative {
+  position: relative;
+}
+
 .flex {
   display: flex;
 }

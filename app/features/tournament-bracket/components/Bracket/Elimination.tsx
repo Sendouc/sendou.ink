@@ -24,7 +24,7 @@ export function EliminationBracketSide(props: EliminationBracketSideProps) {
             ?.bestOf ?? 3;
 
         return (
-          <div key={round.id}>
+          <div key={round.id} className="elim-bracket__round-column">
             <RoundHeader
               name={round.name}
               bestOf={bestOf}
