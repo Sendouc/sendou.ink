@@ -49,18 +49,25 @@ import {
   fillWithNullTillPowerOfTwo,
 } from "../tournament-bracket-utils";
 import bracketStyles from "../tournament-bracket.css";
+import bracketStyles2 from "../components/Bracket/bracket.css";
 import type { Standing } from "../core/Bracket";
 import { removeDuplicates } from "~/utils/arrays";
 import { Placement } from "~/components/Placement";
 import { Avatar } from "~/components/Avatar";
 import { Flag } from "~/components/Flag";
 import { BRACKET_NAMES } from "~/features/tournament/tournament-constants";
+import { Bracket } from "../components/Bracket";
 
+// xxx: adjust naming of css
 export const links: LinksFunction = () => {
   return [
     {
       rel: "stylesheet",
       href: bracketStyles,
+    },
+    {
+      rel: "stylesheet",
+      href: bracketStyles2,
     },
   ];
 };
@@ -325,6 +332,7 @@ export default function TournamentBracketsPage() {
         <FinalStandings />
       ) : null}
       <BracketNav bracketIdx={bracketIdx} setBracketIdx={setBracketIdx} />
+      <Bracket bracket={bracket} />
       {!bracket.enoughTeams ? (
         <div>
           <div className="text-center text-lg font-semi-bold text-lighter mt-6">

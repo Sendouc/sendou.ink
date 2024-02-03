@@ -1,0 +1,108 @@
+.bracket {
+  --match-width: 140px;
+  --match-height: 55px;
+}
+
+.bracket__match__header {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--fonts-xxxs);
+  width: var(--match-width);
+  font-weight: var(--semi-bold);
+  margin-block-end: -2px;
+}
+
+.bracket__match__header__box {
+  background-color: var(--bg-lightest-solid);
+  padding: var(--s-0-5) var(--s-1);
+  border-radius: var(--rounded-sm);
+}
+
+.bracket__match {
+  width: var(--match-width);
+  height: var(--match-height);
+  border-radius: var(--rounded-sm);
+  background-color: var(--bg-light-variation);
+  font-size: var(--fonts-xxs);
+  font-weight: var(--semi-bold);
+  padding: 0 var(--s-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+  color: var(--text-main);
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.bracket__match:hover {
+  background-color: var(--bg-lighter);
+  border-radius: var(--rounded-sm);
+}
+
+.bracket__match__separator {
+  min-height: 2px;
+  max-height: 2px;
+  width: 100%;
+  background-color: var(--bg-lighter);
+}
+
+.bracket__match__bye {
+  visibility: hidden;
+  height: var(--match-height);
+}
+
+.bracket__match__seed {
+  color: var(--theme);
+  margin-inline-end: var(--s-0-5);
+  min-width: 15px;
+  max-width: 15px;
+}
+
+.bracket__match__team-name {
+  max-width: 100px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.bracket__match__score {
+  margin-inline-start: auto;
+}
+
+.elim-bracket__container {
+  --line-width: 40px;
+  display: grid;
+  grid-template-columns: repeat(
+    var(--round-count),
+    calc(var(--match-width) + var(--line-width))
+  );
+  overflow-x: auto;
+}
+
+.elim-bracket__round-matches-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  height: 100%;
+  gap: var(--s-1-5);
+  margin-block-start: var(--s-2);
+}
+
+.elim-bracket__round-header {
+  text-align: center;
+  background-color: var(--bg-lightest);
+  font-size: var(--fonts-xs);
+  font-weight: var(--semi-bold);
+  padding-block: var(--s-2);
+  width: var(--match-width);
+  border-radius: var(--rounded-sm);
+}
+
+.elim-bracket__round-header__infos {
+  width: var(--match-width);
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--fonts-xxs);
+  color: var(--text-lighter);
+  font-weight: var(--semi-bold);
+}

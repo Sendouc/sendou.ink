@@ -92,6 +92,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
 const TournamentContext = React.createContext<Tournament>(null!);
 
+// xxx: could slim down match response, e.g. remove child_count
 // TODO: icons to nav could be nice
 export default function TournamentLayout() {
   const { t } = useTranslation(["tournament"]);

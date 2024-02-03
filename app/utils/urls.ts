@@ -29,6 +29,8 @@ import { JOIN_CODE_SEARCH_PARAM_KEY } from "~/features/sendouq/q-constants";
 import type { TierName } from "~/features/mmr/mmr-constants";
 import type { Preference } from "~/db/tables";
 
+// xxx: eventId -> tournamentId
+
 const staticAssetsUrl = ({
   folder,
   fileName,

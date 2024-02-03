@@ -294,9 +294,14 @@ export class Tournament {
   }
 
   teamById(id: number) {
-    return this.ctx.teams.find((team) => team.id === id);
+    const teamIdx = this.ctx.teams.findIndex((team) => team.id === id);
+
+    if (teamIdx === -1) return;
+
+    return { ...this.ctx.teams[teamIdx], seed: teamIdx + 1 };
   }
 
+  // xxx: merge with the one above
   seedByTeamId(id: number) {
     const idx = this.ctx.teams.findIndex((team) => team.id === id);
 
