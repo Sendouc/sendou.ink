@@ -1,11 +1,5 @@
 import type { ActionFunction, LinksFunction } from "@remix-run/node";
-import {
-  Form,
-  Link,
-  useFetcher,
-  useNavigate,
-  useRevalidator,
-} from "@remix-run/react";
+import { Form, Link, useFetcher, useRevalidator } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
@@ -19,7 +13,6 @@ import { FormWithConfirm } from "~/components/FormWithConfirm";
 import { Popover } from "~/components/Popover";
 import { SubmitButton } from "~/components/SubmitButton";
 import { sql } from "~/db/sql";
-import { Status } from "~/db/types";
 import { requireUser, useUser } from "~/features/auth/core";
 import {
   currentSeason,
@@ -38,12 +31,10 @@ import {
   SENDOU_INK_BASE_URL,
   tournamentBracketsSubscribePage,
   tournamentJoinPage,
-  tournamentMatchPage,
   tournamentTeamPage,
   userPage,
 } from "~/utils/urls";
 import { useTournament } from "../../tournament/routes/to.$id";
-import bracketViewerStyles from "../brackets-viewer.css";
 import { tournamentFromDB } from "../core/Tournament.server";
 import { resolveBestOfs } from "../core/bestOf.server";
 import { getTournamentManager } from "../core/brackets-manager";
@@ -67,14 +58,6 @@ import { BRACKET_NAMES } from "~/features/tournament/tournament-constants";
 
 export const links: LinksFunction = () => {
   return [
-    {
-      rel: "stylesheet",
-      href: "https://cdn.jsdelivr.net/npm/brackets-viewer@1.5.1/dist/brackets-viewer.min.css",
-    },
-    {
-      rel: "stylesheet",
-      href: bracketViewerStyles,
-    },
     {
       rel: "stylesheet",
       href: bracketStyles,
@@ -207,99 +190,12 @@ export default function TournamentBracketsPage() {
     name: "idx",
     revive: Number,
   });
-  const ref = React.useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
   const tournament = useTournament();
 
   const bracket = React.useMemo(
     () => tournament.bracketByIdxOrDefault(bracketIdx),
     [tournament, bracketIdx],
   );
-
-  // TODO: bracket i18n
-  React.useEffect(() => {
-    if (!bracket.enoughTeams) return;
-
-    // matches aren't generated before tournament starts
-    if (!bracket.preview) {
-      // @ts-expect-error - brackets-viewer is not typed
-      window.bracketsViewer.onMatchClicked = (match) => {
-        // can't view match page of a bye
-        if (match.opponent1 === null || match.opponent2 === null) {
-          return;
-        }
-        navigate(
-          tournamentMatchPage({
-            eventId: tournament.ctx.id,
-            matchId: match.id,
-          }),
-        );
-      };
-    }
-
-    // @ts-expect-error - brackets-viewer is not typed
-    window.bracketsViewer.render(
-      {
-        stages: bracket.data.stage,
-        matches: bracket.data.match,
-        matchGames: bracket.data.match_game,
-        participants: bracket.data.participant,
-      },
-      {
-        customRoundName: (info: any) => {
-          if (info.groupType === "final-group" && info.roundNumber === 1) {
-            return "Grand Finals";
-          }
-          if (info.groupType === "final-group" && info.roundNumber === 2) {
-            return "Bracket Reset";
-          }
-
-          return undefined;
-        },
-        separatedChildCountLabel: true,
-      },
-    );
-
-    // my beautiful hack to show seeds
-    // clean up probably not needed as it's not harmful to append more than one
-    const cssRulesToAppend = tournament.ctx.teams.map((team, i) => {
-      const participantId = tournament.hasStarted ? team.id : i;
-      return /* css */ `
-        [data-participant-id="${participantId}"] {
-          --seed: "${i + 1}  ";
-          --space-after-seed: ${i < 9 ? "6px" : "0px"};
-        }
-      `;
-    });
-
-    const ownTeam = tournament.teamMemberOfByUser(user);
-    if (ownTeam) {
-      cssRulesToAppend.push(/* css */ `
-        [title="${ownTeam.name}"] {
-          --team-text-color: var(--theme-secondary);
-        }
-      `);
-    }
-    if (tournament.ctx.bestOfs) {
-      for (const { bestOf, roundId } of tournament.ctx.bestOfs) {
-        cssRulesToAppend.push(/* css */ `
-          [data-round-id="${roundId}"] {
-            --best-of-text: "Bo${bestOf}";
-          }
-        `);
-      }
-    }
-    appendStyleTagToHead(cssRulesToAppend.join("\n"));
-
-    const element = ref.current;
-    return () => {
-      if (!element) return;
-
-      element.innerHTML = "";
-      // @ts-expect-error - brackets-viewer is not typed
-      window.bracketsViewer!.onMatchClicked = () => {};
-    };
-  }, [navigate, bracket, tournament, user]);
 
   React.useEffect(() => {
     if (visibility !== "visible" || tournament.everyBracketOver) return;
@@ -429,11 +325,6 @@ export default function TournamentBracketsPage() {
         <FinalStandings />
       ) : null}
       <BracketNav bracketIdx={bracketIdx} setBracketIdx={setBracketIdx} />
-      <div
-        className="brackets-viewer"
-        ref={ref}
-        data-testid="brackets-viewer"
-      />
       {!bracket.enoughTeams ? (
         <div>
           <div className="text-center text-lg font-semi-bold text-lighter mt-6">
@@ -456,16 +347,6 @@ function AutoRefresher() {
   return null;
 }
 
-function appendStyleTagToHead(content: string) {
-  const head = document.head || document.getElementsByTagName("head")[0];
-  const style = document.createElement("style");
-
-  head.appendChild(style);
-
-  style.type = "text/css";
-  style.appendChild(document.createTextNode(content));
-}
-
 function useAutoRefresh() {
   const { revalidate } = useRevalidator();
   const tournament = useTournament();
@@ -479,31 +360,33 @@ function useAutoRefresh() {
   React.useEffect(() => {
     if (!lastEvent) return;
 
-    const [matchIdRaw, scoreOneRaw, scoreTwoRaw, isOverRaw] =
-      lastEvent.split("-");
-    const matchId = Number(matchIdRaw);
-    const scoreOne = Number(scoreOneRaw);
-    const scoreTwo = Number(scoreTwoRaw);
-    const isOver = isOverRaw === "true";
+    // xxx: update bracket logic
 
-    if (isOver) {
-      // bracketsViewer.updateMatch can't advance bracket
-      // so we revalidate loader when the match is over
-      revalidate();
-    } else {
-      // TODO: shows 1 - "-" when updating match where other score is 0
-      // @ts-expect-error - brackets-viewer is not typed
-      window.bracketsViewer.updateMatch({
-        id: matchId,
-        opponent1: {
-          score: scoreOne,
-        },
-        opponent2: {
-          score: scoreTwo,
-        },
-        status: Status.Running,
-      });
-    }
+    // const [matchIdRaw, scoreOneRaw, scoreTwoRaw, isOverRaw] =
+    //   lastEvent.split("-");
+    // const matchId = Number(matchIdRaw);
+    // const scoreOne = Number(scoreOneRaw);
+    // const scoreTwo = Number(scoreTwoRaw);
+    // const isOver = isOverRaw === "true";
+
+    // if (isOver) {
+    //   // bracketsViewer.updateMatch can't advance bracket
+    //   // so we revalidate loader when the match is over
+    //   revalidate();
+    // } else {
+    //   // TODO: shows 1 - "-" when updating match where other score is 0
+    //   // @ts-expect-error - brackets-viewer is not typed
+    //   window.bracketsViewer.updateMatch({
+    //     id: matchId,
+    //     opponent1: {
+    //       score: scoreOne,
+    //     },
+    //     opponent2: {
+    //       score: scoreTwo,
+    //     },
+    //     status: Status.Running,
+    //   });
+    // }
   }, [lastEvent, revalidate]);
 }
 
