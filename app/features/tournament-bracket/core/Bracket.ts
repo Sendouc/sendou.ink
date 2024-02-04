@@ -798,8 +798,8 @@ class RoundRobinBracket extends Bracket {
             if (a.points > b.points) return -1;
             if (a.points < b.points) return 1;
 
-            const aSeed = Number(this.tournament.seedByTeamId(a.id));
-            const bSeed = Number(this.tournament.seedByTeamId(b.id));
+            const aSeed = Number(this.tournament.teamById(a.id)?.seed);
+            const bSeed = Number(this.tournament.teamById(b.id)?.seed);
 
             if (aSeed < bSeed) return -1;
             if (aSeed > bSeed) return 1;

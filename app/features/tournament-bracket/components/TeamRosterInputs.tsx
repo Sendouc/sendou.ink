@@ -62,7 +62,7 @@ export function TeamRosterInputs({
         const showWinnerRadio =
           !points || !presentational || winnerRadioChecked;
 
-        const seed = tournament.seedByTeamId(team.id);
+        const seed = tournament.teamById(team.id)?.seed;
 
         return (
           <div key={team.id}>

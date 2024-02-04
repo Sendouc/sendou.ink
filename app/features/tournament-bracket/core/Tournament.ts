@@ -306,15 +306,6 @@ export class Tournament {
     return { ...this.ctx.teams[teamIdx], seed: teamIdx + 1 };
   }
 
-  // xxx: merge with the one above
-  seedByTeamId(id: number) {
-    const idx = this.ctx.teams.findIndex((team) => team.id === id);
-
-    if (idx === -1) return null;
-
-    return idx + 1;
-  }
-
   participatedPlayersByTeamId(id: number) {
     const team = this.teamById(id);
     invariant(team, "Team not found");
