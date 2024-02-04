@@ -68,6 +68,7 @@ export abstract class Bracket {
     this.createdSimulation();
   }
 
+  // xxx: http://localhost:5800/to/3/brackets?idx=0 Bracket.createdSimulation:  TypeError: Cannot read properties of null (reading 'id')
   // xxx: make lazy..? or render bracket only in browser
   private createdSimulation() {
     if (this.type === "round_robin" || this.preview) return;

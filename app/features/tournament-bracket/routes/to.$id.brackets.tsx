@@ -52,7 +52,7 @@ import {
   fillWithNullTillPowerOfTwo,
 } from "../tournament-bracket-utils";
 import bracketStyles from "../tournament-bracket.css";
-import bracketStyles2 from "../components/Bracket/bracket.css";
+import bracketComponentStyles from "../components/Bracket/bracket.css";
 import type { Standing } from "../core/Bracket";
 import { removeDuplicates } from "~/utils/arrays";
 import { Placement } from "~/components/Placement";
@@ -63,7 +63,6 @@ import { Bracket } from "../components/Bracket";
 import { EyeIcon } from "~/components/icons/Eye";
 import { EyeSlashIcon } from "~/components/icons/EyeSlash";
 
-// xxx: adjust naming of css
 export const links: LinksFunction = () => {
   return [
     {
@@ -72,7 +71,7 @@ export const links: LinksFunction = () => {
     },
     {
       rel: "stylesheet",
-      href: bracketStyles2,
+      href: bracketComponentStyles,
     },
   ];
 };
