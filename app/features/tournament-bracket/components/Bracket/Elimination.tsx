@@ -3,6 +3,7 @@ import type { Bracket as BracketType } from "../../core/Bracket";
 import clsx from "clsx";
 import { Match } from "./Match";
 import { useIsMounted } from "~/hooks/useIsMounted";
+import { useDeadline } from "./useDeadline";
 
 interface EliminationBracketSideProps {
   bracket: BracketType;
@@ -19,39 +20,47 @@ export function EliminationBracketSide(props: EliminationBracketSideProps) {
       style={{ "--round-count": rounds.length } as any}
     >
       {rounds.map((round) => {
-        const bestOf =
-          tournament.ctx.bestOfs.find(({ roundId }) => roundId === round.id)
-            ?.bestOf ?? 3;
+        const bestOf = tournament.ctx.bestOfs.find(
+          ({ roundId }) => roundId === round.id,
+        )?.bestOf;
+
+        const matches = props.bracket.data.match.filter(
+          (match) => match.round_id === round.id,
+        );
 
         return (
           <div key={round.id} className="elim-bracket__round-column">
             <RoundHeader
+              roundId={round.id}
               name={round.name}
               bestOf={bestOf}
-              // xxx: calc, first round 5min extra?, no DL in finals
-              deadline={new Date()}
+              showInfos={matches.some(
+                (match) =>
+                  match.opponent1 &&
+                  match.opponent2 &&
+                  match.opponent1.result !== "win" &&
+                  match.opponent2.result !== "win",
+              )}
             />
             <div className="elim-bracket__round-matches-container">
-              {props.bracket.data.match
-                .filter((match) => match.round_id === round.id)
-                .map((match) => (
-                  <Match
-                    key={match.id}
-                    match={match}
-                    roundNumber={round.number}
-                    isPreview={props.bracket.preview}
-                    type={
-                      round.name === "Grand Finals" ||
-                      round.name === "Bracket Reset"
-                        ? "grands"
-                        : props.type === "winners"
-                          ? "winners"
-                          : props.type === "losers"
-                            ? "losers"
-                            : undefined
-                    }
-                  />
-                ))}
+              {matches.map((match) => (
+                <Match
+                  key={match.id}
+                  match={match}
+                  roundNumber={round.number}
+                  isPreview={props.bracket.preview}
+                  type={
+                    round.name === "Grand Finals" ||
+                    round.name === "Bracket Reset"
+                      ? "grands"
+                      : props.type === "winners"
+                        ? "winners"
+                        : props.type === "losers"
+                          ? "losers"
+                          : undefined
+                  }
+                />
+              ))}
             </div>
           </div>
         );
@@ -136,35 +145,54 @@ function getRounds(props: EliminationBracketSideProps) {
 }
 
 function RoundHeader({
+  roundId,
   name,
   bestOf,
-  deadline,
+  showInfos,
 }: {
+  roundId: number;
   name: string;
-  bestOf: number;
-  deadline?: Date;
+  bestOf?: 3 | 5 | 7;
+  showInfos?: boolean;
 }) {
-  const isMounted = useIsMounted();
+  const hasDeadline = !["WB Finals", "Grand Finals", "Bracket Reset"].includes(
+    name,
+  );
 
   return (
     <div>
       <div className="elim-bracket__round-header">{name}</div>
-      <div className="elim-bracket__round-header__infos">
-        <div>Bo{bestOf}</div>
-        {deadline ? (
-          <div
-            className={clsx({
-              "text-warning": isMounted && deadline < new Date(),
-            })}
-          >
-            DL{" "}
-            {deadline.toLocaleTimeString("en-US", {
-              hour: "numeric",
-              minute: "numeric",
-            })}
-          </div>
-        ) : null}
-      </div>
+      {showInfos && bestOf ? (
+        <div className="elim-bracket__round-header__infos">
+          <div>Bo{bestOf}</div>
+          {hasDeadline ? <Deadline roundId={roundId} bestOf={bestOf} /> : null}
+        </div>
+      ) : (
+        <div className="elim-bracket__round-header__infos invisible">
+          Hidden
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Deadline({ roundId, bestOf }: { roundId: number; bestOf: 3 | 5 | 7 }) {
+  const isMounted = useIsMounted();
+  const deadline = useDeadline(roundId, bestOf);
+
+  if (!deadline) return null;
+
+  return (
+    <div
+      className={clsx({
+        "text-warning": isMounted && deadline < new Date(),
+      })}
+    >
+      DL{" "}
+      {deadline.toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "numeric",
+      })}
     </div>
   );
 }

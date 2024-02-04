@@ -226,6 +226,7 @@
   overflow-x: hidden;
   text-overflow: ellipsis;
   padding-inline: var(--s-2);
+  max-width: 150px;
 }
 
 .tournament-bracket__during-match-actions__seed {
@@ -408,7 +409,7 @@
 .tournament-bracket__bracket-nav__link:not(
     .tournament-bracket__bracket-nav__link:first-of-type
   ) {
-  margin-left: -1px;
+  margin-left: -2px;
 }
 
 .tournament-bracket__bracket-nav__link:last-of-type {

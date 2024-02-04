@@ -82,6 +82,7 @@ export class Tournament {
             preview: false,
             name,
             sources,
+            createdAt: inProgressStage.createdAt,
             data: {
               ...data,
               participant: data.participant.filter((participant) =>
@@ -142,6 +143,7 @@ export class Tournament {
             data: manager.get.tournamentData(this.ctx.id),
             type,
             sources,
+            createdAt: null,
             canBeStarted:
               checkedInTeams.length >= TOURNAMENT.ENOUGH_TEAMS_TO_START &&
               (sources ? relevantMatchesFinished : this.regularCheckInHasEnded),

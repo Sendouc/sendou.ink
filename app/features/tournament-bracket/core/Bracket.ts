@@ -8,6 +8,7 @@ import type { TournamentDataTeam } from "./Tournament.server";
 import { removeDuplicates } from "~/utils/arrays";
 import { BRACKET_NAMES } from "~/features/tournament/tournament-constants";
 import { logger } from "~/utils/logger";
+import type { Round } from "~/modules/brackets-model";
 
 interface CreateBracketArgs {
   id: number;
@@ -18,6 +19,7 @@ interface CreateBracketArgs {
   name: string;
   teamsPendingCheckIn?: number[];
   tournament: Tournament;
+  createdAt: number | null;
   sources?: {
     bracketIdx: number;
     placements: number[];
@@ -38,6 +40,7 @@ export abstract class Bracket {
   teamsPendingCheckIn;
   tournament;
   sources;
+  createdAt;
 
   constructor({
     id,
@@ -48,6 +51,7 @@ export abstract class Bracket {
     teamsPendingCheckIn,
     tournament,
     sources,
+    createdAt,
   }: Omit<CreateBracketArgs, "format">) {
     this.id = id;
     this.preview = preview;
@@ -57,6 +61,7 @@ export abstract class Bracket {
     this.teamsPendingCheckIn = teamsPendingCheckIn;
     this.tournament = tournament;
     this.sources = sources;
+    this.createdAt = createdAt;
   }
 
   get collectResultsWithPoints() {
@@ -68,6 +73,10 @@ export abstract class Bracket {
   }
 
   get standings(): Standing[] {
+    throw new Error("not implemented");
+  }
+
+  winnersSourceRound(_roundNumber: number): Round | undefined {
     throw new Error("not implemented");
   }
 
@@ -243,6 +252,19 @@ class DoubleEliminationBracket extends Bracket {
 
   get type(): TournamentBracketProgression[number]["type"] {
     return "double_elimination";
+  }
+
+  winnersSourceRound(roundNumber: number) {
+    const isMajorRound = roundNumber === 1 || roundNumber % 2 === 0;
+    if (!isMajorRound) return;
+
+    const roundNumberWB = Math.ceil((roundNumber + 1) / 2);
+
+    const groupIdWB = this.data.group.find((g) => g.number === 1)?.id;
+
+    return this.data.round.find(
+      (round) => round.number === roundNumberWB && round.group_id === groupIdWB,
+    );
   }
 
   get standings(): Standing[] {

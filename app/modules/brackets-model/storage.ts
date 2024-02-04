@@ -97,6 +97,8 @@ export interface Match extends MatchResults {
 
   /** The count of match games this match has. Can be `0` if it's a simple match, or a positive number for "Best Of" matches. */
   child_count: number;
+
+  lastGameFinishedAt?: number | null;
 }
 
 /**

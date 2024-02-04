@@ -12,7 +12,7 @@ const roundRobinTournamentCtx: Partial<TournamentData["ctx"]> = {
     bracketProgression: [{ name: BRACKET_NAMES.GROUPS, type: "round_robin" }],
   },
   inProgressBrackets: [
-    { id: 0, type: "round_robin", name: BRACKET_NAMES.GROUPS },
+    { id: 0, type: "round_robin", name: BRACKET_NAMES.GROUPS, createdAt: 0 },
   ],
 };
 

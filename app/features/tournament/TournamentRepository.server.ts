@@ -53,6 +53,7 @@ export async function findById(id: number) {
             "TournamentStage.id",
             "TournamentStage.name",
             "TournamentStage.type",
+            "TournamentStage.createdAt",
           ])
           .where("TournamentStage.tournamentId", "=", id)
           .orderBy("TournamentStage.number asc"),

@@ -81,7 +81,7 @@ function MatchWrapper({
   return <div className="bracket__match">{children}</div>;
 }
 
-function MatchRow({ match, side }: MatchProps & { side: 1 | 2 }) {
+function MatchRow({ match, side, isPreview }: MatchProps & { side: 1 | 2 }) {
   const user = useUser();
   const tournament = useTournament();
 
@@ -89,7 +89,7 @@ function MatchRow({ match, side }: MatchProps & { side: 1 | 2 }) {
   const team = opponent?.id ? tournament.teamById(opponent.id) : null;
 
   const score = () => {
-    if (!opponent?.id) return null;
+    if (!opponent?.id || isPreview) return null;
 
     return opponent.score ?? 0;
   };
@@ -98,15 +98,19 @@ function MatchRow({ match, side }: MatchProps & { side: 1 | 2 }) {
 
   const ownTeam = tournament.teamMemberOfByUser(user);
 
+  // xxx: resolve + add also light seed
+  const placeholder = "Chimera";
+
   return (
     <div className={clsx("stack horizontal", { "text-lighter": isLoser })}>
       <div className="bracket__match__seed">{team?.seed}</div>
       <div
         className={clsx("bracket__match__team-name", {
           "text-theme-secondary": ownTeam && ownTeam?.id === team?.id,
+          "text-lighter italic": !team,
         })}
       >
-        {team?.name}
+        {team?.name ?? placeholder}
       </div>{" "}
       <div className="bracket__match__score">{score()}</div>
     </div>

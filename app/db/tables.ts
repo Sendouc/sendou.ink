@@ -459,6 +459,8 @@ export interface TournamentStage {
   settings: string;
   tournamentId: number;
   type: "double_elimination" | "single_elimination" | "round_robin";
+  // not Generated<> because SQLite doesn't allow altering tables to add columns with default values :(
+  createdAt: number | null;
 }
 
 export interface TournamentSub {

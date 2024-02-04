@@ -57,6 +57,7 @@ export const testTournament = (
         id: stage.id,
         name: stage.name,
         type: stage.type,
+        createdAt: 0,
       })),
       bestOfs: data.round.map((round) => ({ bestOf: 3, roundId: round.id })),
       teams: nTeams(

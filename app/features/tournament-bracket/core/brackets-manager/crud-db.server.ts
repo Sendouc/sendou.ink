@@ -17,6 +17,7 @@ import type {
   TournamentTeam,
 } from "~/db/types";
 import { nanoid } from "nanoid";
+import { dateToDatabaseTimestamp } from "~/utils/dates";
 
 const team_getByTournamentIdStm = sql.prepare(/*sql*/ `
   select
@@ -64,9 +65,9 @@ const stage_getByTournamentIdStm = sql.prepare(/*sql*/ `
 const stage_insertStm = sql.prepare(/*sql*/ `
   insert into
     "TournamentStage"
-    ("tournamentId", "number", "name", "type", "settings")
+    ("tournamentId", "number", "name", "type", "settings", "createdAt")
   values
-    (@tournamentId, @number, @name, @type, @settings)
+    (@tournamentId, @number, @name, @type, @settings, @createdAt)
   returning *
 `);
 
@@ -110,6 +111,7 @@ export class Stage {
       name: this.name,
       type: this.type,
       settings: this.settings,
+      createdAt: dateToDatabaseTimestamp(new Date()),
     }) as any;
 
     this.id = stage.id;
@@ -345,7 +347,8 @@ const match_getByStageIdStm = sql.prepare(/*sql*/ `
   select 
     "TournamentMatch".*, 
     sum("TournamentMatchGameResult"."opponentOnePoints") as "opponentOnePointsTotal",
-    sum("TournamentMatchGameResult"."opponentTwoPoints") as "opponentTwoPointsTotal"
+    sum("TournamentMatchGameResult"."opponentTwoPoints") as "opponentTwoPointsTotal",
+    max("TournamentMatchGameResult"."createdAt") as "lastGameFinishedAt"
   from "TournamentMatch"
   left join "TournamentMatchGameResult" on "TournamentMatch"."id" = "TournamentMatchGameResult"."matchId"
   where "TournamentMatch"."stageId" = @stageId
@@ -423,6 +426,7 @@ export class Match {
     rawMatch: TournamentMatch & {
       opponentOnePointsTotal: number | null;
       opponentTwoPointsTotal: number | null;
+      lastGameFinishedAt: number | null;
     },
   ): MatchType {
     return {
@@ -447,6 +451,7 @@ export class Match {
       round_id: rawMatch.roundId,
       stage_id: rawMatch.stageId,
       status: rawMatch.status,
+      lastGameFinishedAt: rawMatch.lastGameFinishedAt,
     };
   }
 

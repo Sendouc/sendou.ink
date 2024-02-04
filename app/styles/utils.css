@@ -314,6 +314,10 @@
   position: relative;
 }
 
+.italic {
+  font-style: italic;
+}
+
 .flex {
   display: flex;
 }
