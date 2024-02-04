@@ -5,12 +5,15 @@ import { Link } from "@remix-run/react";
 import { tournamentMatchPage } from "~/utils/urls";
 import clsx from "clsx";
 import { useUser } from "~/features/auth/core";
+import type { Bracket } from "../../core/Bracket";
 
 interface MatchProps {
   match: Unpacked<TournamentData["data"]["match"]>;
   isPreview?: boolean;
   type?: "winners" | "losers" | "grands";
   roundNumber: number;
+  showSimulation: boolean;
+  bracket: Bracket;
 }
 
 export function Match(props: MatchProps) {
@@ -81,12 +84,18 @@ function MatchWrapper({
   return <div className="bracket__match">{children}</div>;
 }
 
-function MatchRow({ match, side, isPreview }: MatchProps & { side: 1 | 2 }) {
+function MatchRow({
+  match,
+  side,
+  isPreview,
+  showSimulation,
+  bracket,
+}: MatchProps & { side: 1 | 2 }) {
   const user = useUser();
   const tournament = useTournament();
 
+  const opponentKey = `opponent${side}` as const;
   const opponent = match[`opponent${side}`];
-  const team = opponent?.id ? tournament.teamById(opponent.id) : null;
 
   const score = () => {
     if (!opponent?.id || isPreview) return null;
@@ -96,21 +105,41 @@ function MatchRow({ match, side, isPreview }: MatchProps & { side: 1 | 2 }) {
 
   const isLoser = opponent?.result === "loss";
 
-  const ownTeam = tournament.teamMemberOfByUser(user);
+  const { team, simulated } = (() => {
+    if (opponent?.id) {
+      return { team: tournament.teamById(opponent.id), simulated: false };
+    }
 
-  // xxx: resolve + add also light seed
-  const placeholder = "Chimera";
+    const simulated = showSimulation
+      ? bracket.simulatedMatch(match.id)
+      : undefined;
+    const simulatedOpponent = simulated?.[opponentKey];
+
+    return simulatedOpponent?.id
+      ? { team: tournament.teamById(simulatedOpponent.id), simulated: true }
+      : { team: null, simulated: true };
+  })();
+
+  const ownTeam = tournament.teamMemberOfByUser(user);
 
   return (
     <div className={clsx("stack horizontal", { "text-lighter": isLoser })}>
-      <div className="bracket__match__seed">{team?.seed}</div>
       <div
-        className={clsx("bracket__match__team-name", {
-          "text-theme-secondary": ownTeam && ownTeam?.id === team?.id,
-          "text-lighter italic": !team,
+        className={clsx("bracket__match__seed", {
+          "text-lighter-important italic opaque": simulated,
         })}
       >
-        {team?.name ?? placeholder}
+        {team?.seed}
+      </div>
+      <div
+        className={clsx("bracket__match__team-name", {
+          "text-theme-secondary":
+            !simulated && ownTeam && ownTeam?.id === team?.id,
+          "text-lighter italic opaque": simulated,
+          invisible: !team,
+        })}
+      >
+        {team?.name ?? "???"}
       </div>{" "}
       <div className="bracket__match__score">{score()}</div>
     </div>

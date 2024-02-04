@@ -9,6 +9,7 @@ import { removeDuplicates } from "~/utils/arrays";
 import { BRACKET_NAMES } from "~/features/tournament/tournament-constants";
 import { logger } from "~/utils/logger";
 import type { Round } from "~/modules/brackets-model";
+import { getTournamentManager } from "..";
 
 interface CreateBracketArgs {
   id: number;
@@ -35,6 +36,7 @@ export abstract class Bracket {
   id;
   preview;
   data;
+  simulatedData: ValueToArray<DataTypes> | undefined;
   canBeStarted;
   name;
   teamsPendingCheckIn;
@@ -62,6 +64,123 @@ export abstract class Bracket {
     this.tournament = tournament;
     this.sources = sources;
     this.createdAt = createdAt;
+
+    this.createdSimulation();
+  }
+
+  // xxx: make lazy..? or render bracket only in browser
+  private createdSimulation() {
+    if (this.type === "round_robin" || this.preview) return;
+
+    try {
+      const manager = getTournamentManager("IN_MEMORY");
+
+      manager.import(this.data);
+
+      const teamOrder = this.teamOrderForSimulation();
+
+      let matchesToResolve = true;
+      let loopCount = 0;
+      while (matchesToResolve) {
+        if (loopCount > 100) {
+          logger.error("Bracket.createdSimulation: loopCount > 100");
+          break;
+        }
+        matchesToResolve = false;
+        loopCount++;
+
+        for (const match of manager.export().match) {
+          if (!match) continue;
+          // we have a result already
+          if (
+            match.opponent1?.result === "win" ||
+            match.opponent2?.result === "win"
+          ) {
+            continue;
+          }
+          // no opponent yet, let's simulate this in a coming loop
+          if (
+            (match.opponent1 && !match.opponent1.id) ||
+            (match.opponent2 && !match.opponent2.id)
+          ) {
+            matchesToResolve = true;
+            continue;
+          }
+          // BYE
+          if (match.opponent1 === null || match.opponent2 === null) {
+            continue;
+          }
+
+          const winner =
+            (teamOrder.get(match.opponent1.id!) ?? 0) <
+            (teamOrder.get(match.opponent2.id!) ?? 0)
+              ? 1
+              : 2;
+
+          manager.update.match({
+            id: match.id,
+            opponent1: {
+              score: winner === 1 ? 1 : 0,
+              result: winner === 1 ? "win" : undefined,
+            },
+            opponent2: {
+              score: winner === 2 ? 1 : 0,
+              result: winner === 2 ? "win" : undefined,
+            },
+          });
+        }
+      }
+
+      this.simulatedData = manager.export();
+    } catch (e) {
+      logger.error("Bracket.createdSimulation: ", e);
+    }
+  }
+
+  private teamOrderForSimulation() {
+    const result = new Map(this.tournament.ctx.teams.map((t, i) => [t.id, i]));
+
+    for (const match of this.data.match) {
+      if (
+        match.opponent1?.result !== "win" &&
+        match.opponent2?.result !== "win"
+      ) {
+        continue;
+      }
+
+      const opponent1Seed = result.get(match.opponent1!.id!) ?? -1;
+      const opponent2Seed = result.get(match.opponent2!.id!) ?? -1;
+      if (opponent1Seed === -1 || opponent2Seed === -1) {
+        console.error("opponent1Seed or opponent2Seed not found");
+        continue;
+      }
+
+      if (opponent1Seed < opponent2Seed && match.opponent1?.result === "win") {
+        continue;
+      }
+
+      if (opponent2Seed < opponent1Seed && match.opponent2?.result === "win") {
+        continue;
+      }
+
+      if (opponent1Seed < opponent2Seed) {
+        result.set(match.opponent1!.id!, opponent1Seed + 0.1);
+        result.set(match.opponent2!.id!, opponent1Seed);
+      } else {
+        result.set(match.opponent2!.id!, opponent2Seed + 0.1);
+        result.set(match.opponent1!.id!, opponent2Seed);
+      }
+    }
+
+    return result;
+  }
+
+  simulatedMatch(matchId: number) {
+    if (!this.simulatedData) return;
+
+    return this.simulatedData.match
+      .filter(Boolean)
+      .find((match) => match.id === matchId);
   }
 
   get collectResultsWithPoints() {

@@ -73,8 +73,14 @@ export class InMemoryDatabase implements CrudInterface {
 
     if (!Array.isArray(values)) {
       try {
-        // @ts-expect-error imported
-        this.data[table].push({ id, ...values });
+        // @ts-expect-error idc
+        if (values.id) {
+          // @ts-expect-error idc
+          this.data[table][values.id] = values;
+        } else {
+          // @ts-expect-error imported
+          this.data[table].push({ id, ...values });
+        }
       } catch (error) {
         return -1;
       }
@@ -83,8 +89,14 @@ export class InMemoryDatabase implements CrudInterface {
 
     try {
       values.forEach((object) => {
-        // @ts-expect-error imported
-        this.data[table].push({ id: id++, ...object });
+        // @ts-expect-error idc
+        if (object.id) {
+          // @ts-expect-error idc
+          this.data[table][object.id] = object;
+        } else {
+          // @ts-expect-error imported
+          this.data[table].push({ id: id++, ...object });
+        }
       });
     } catch (error) {
       return false;
@@ -127,7 +139,7 @@ export class InMemoryDatabase implements CrudInterface {
 
       if (typeof arg === "number") {
         // @ts-expect-error imported
-        return clone(this.data[table].find((d) => d.id === arg));
+        return clone(this.data[table].find((d) => d?.id === arg));
       }
 
       // @ts-expect-error imported
@@ -169,6 +181,14 @@ export class InMemoryDatabase implements CrudInterface {
     value?: Partial<T>,
   ): boolean {
     if (typeof arg === "number") {
+      if (
+        this.data[table][arg] &&
+        value &&
+        // @ts-expect-error idc
+        this.data[table][arg].id !== value.id
+      ) {
+        throw new Error("ID mismatch.");
+      }
       try {
         // @ts-expect-error imported
         this.data[table][arg] = value;

@@ -61,6 +61,8 @@ export function EliminationBracketSide(props: EliminationBracketSideProps) {
                   match={match}
                   roundNumber={round.number}
                   isPreview={props.bracket.preview}
+                  showSimulation={round.name !== "Bracket Reset"}
+                  bracket={props.bracket}
                   type={
                     round.name === "Grand Finals" ||
                     round.name === "Bracket Reset"
