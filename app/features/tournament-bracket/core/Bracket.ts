@@ -196,7 +196,7 @@ export abstract class Bracket {
   }
 
   winnersSourceRound(_roundNumber: number): Round | undefined {
-    throw new Error("not implemented");
+    return;
   }
 
   protected standingsWithoutNonParticipants(standings: Standing[]): Standing[] {

@@ -10,7 +10,8 @@ import type { Bracket } from "../../core/Bracket";
 interface MatchProps {
   match: Unpacked<TournamentData["data"]["match"]>;
   isPreview?: boolean;
-  type?: "winners" | "losers" | "grands";
+  type?: "winners" | "losers" | "grands" | "groups";
+  group?: string;
   roundNumber: number;
   showSimulation: boolean;
   bracket: Bracket;
@@ -35,11 +36,12 @@ export function Match(props: MatchProps) {
   );
 }
 
-function MatchHeader({ match, type, roundNumber }: MatchProps) {
+function MatchHeader({ match, type, roundNumber, group }: MatchProps) {
   const prefix = () => {
     if (type === "winners") return "WB ";
     if (type === "losers") return "LB ";
     if (type === "grands") return "GF ";
+    if (type === "groups") return `${group}`;
     return "";
   };
 

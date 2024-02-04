@@ -16,49 +16,57 @@ const MINUTES = {
 export function useDeadline(roundId: number, bestOf: 3 | 5 | 7) {
   const tournament = useTournament();
 
-  const bracket = tournament.brackets.find((b) =>
-    b.data.round.some((r) => r.id === roundId),
-  );
-  if (!bracket) return null;
+  try {
+    const bracket = tournament.brackets.find((b) =>
+      b.data.round.some((r) => r.id === roundId),
+    );
+    if (!bracket) return null;
 
-  const roundIdx = bracket.data.round.findIndex((r) => r.id === roundId);
-  const round = bracket.data.round[roundIdx];
-  if (!round) return null;
+    const roundIdx = bracket.data.round.findIndex((r) => r.id === roundId);
+    const round = bracket.data.round[roundIdx];
+    if (!round) return null;
 
-  const isFirstRoundOfBracket = roundIdx === 0;
+    const isFirstRoundOfBracket =
+      roundIdx === 0 || (bracket.type === "round_robin" && round.number === 1);
 
-  const matches = bracket.data.match.filter((m) => m.round_id === roundId);
-  const everyMatchHasStarted = matches.every(
-    (m) =>
-      (!m.opponent1 || m.opponent1.id) && (!m.opponent2 || m.opponent2?.id),
-  );
+    const matches = bracket.data.match.filter((m) => m.round_id === roundId);
+    const everyMatchHasStarted = matches.every(
+      (m) =>
+        (!m.opponent1 || m.opponent1.id) && (!m.opponent2 || m.opponent2?.id),
+    );
 
-  if (!everyMatchHasStarted) return null;
+    if (!everyMatchHasStarted) return null;
 
-  let dl: Date | null;
-  if (isFirstRoundOfBracket) {
-    // should not happen
-    if (!bracket.createdAt) return null;
+    let dl: Date | null;
+    if (isFirstRoundOfBracket) {
+      // should not happen
+      if (!bracket.createdAt) return null;
 
-    dl = databaseTimestampToDate(bracket.createdAt);
-  } else {
-    // xxx: round robin DL logic
-    const losersGroupId = bracket.data.group.find((g) => g.number === 2)?.id;
-    if (
-      bracket.type === "single_elimination" ||
-      round.group_id !== losersGroupId
-    ) {
-      dl = dateByPreviousRound(bracket, round);
+      dl = databaseTimestampToDate(bracket.createdAt);
     } else {
-      dl = dateByPreviousRoundAndWinners(bracket, round);
+      const losersGroupId = bracket.data.group.find((g) => g.number === 2)?.id;
+      if (
+        bracket.type === "single_elimination" ||
+        (bracket.type === "double_elimination" &&
+          round.group_id !== losersGroupId)
+      ) {
+        dl = dateByPreviousRound(bracket, round);
+      } else if (bracket.type === "round_robin") {
+        dl = dateByManyPreviousRounds(bracket, round);
+      } else {
+        dl = dateByPreviousRoundAndWinners(bracket, round);
+      }
     }
+
+    if (!dl) return null;
+
+    dl.setMinutes(dl.getMinutes() + MINUTES[`BO${bestOf}`]);
+
+    return dl;
+  } catch (e) {
+    logger.error("useDeadline", { roundId, bestOf }, e);
+    return null;
   }
-
-  if (!dl) return null;
-
-  dl.setMinutes(dl.getMinutes() + MINUTES[`BO${bestOf}`]);
-
-  return dl;
 }
 
 function dateByPreviousRound(bracket: Bracket, round: Round) {
@@ -74,6 +82,34 @@ function dateByPreviousRound(bracket: Bracket, round: Round) {
   for (const match of bracket.data.match.filter(
     (m) => m.round_id === previousRound.id,
   )) {
+    if (!match.opponent1 || !match.opponent2) {
+      continue;
+    }
+
+    if (match.opponent1.result !== "win" && match.opponent2.result !== "win") {
+      return null;
+    }
+
+    maxFinishedAt = Math.max(maxFinishedAt, match.lastGameFinishedAt ?? 0);
+  }
+
+  if (maxFinishedAt === 0) {
+    return null;
+  }
+
+  return databaseTimestampToDate(maxFinishedAt);
+}
+
+function dateByManyPreviousRounds(bracket: Bracket, round: Round) {
+  const relevantRounds = bracket.data.round.filter(
+    (r) => r.number === round.number - 1,
+  );
+  const allMatches = bracket.data.match.filter((match) =>
+    relevantRounds.some((round) => round.id === match.round_id),
+  );
+
+  let maxFinishedAt = 0;
+  for (const match of allMatches) {
     if (!match.opponent1 || !match.opponent2) {
       continue;
     }

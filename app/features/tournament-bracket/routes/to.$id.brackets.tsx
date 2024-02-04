@@ -343,7 +343,7 @@ export default function TournamentBracketsPage() {
             <CompactifyButton />
           ) : null}
         </div>
-        <Bracket bracket={bracket} />
+        {bracket.enoughTeams ? <Bracket bracket={bracket} /> : null}
       </div>
       {!bracket.enoughTeams ? (
         <div>
