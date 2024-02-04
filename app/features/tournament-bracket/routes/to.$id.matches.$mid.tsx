@@ -395,7 +395,7 @@ function useAutoRefresh() {
   const data = useLoaderData<typeof loader>();
   const lastEventId = useEventSource(
     tournamentMatchSubscribePage({
-      eventId: tournament.ctx.id,
+      tournamentId: tournament.ctx.id,
       matchId: data.match.id,
     }),
     {
@@ -512,7 +512,7 @@ function Rosters({
           {teamOne ? (
             <Link
               to={tournamentTeamPage({
-                eventId: tournament.ctx.id,
+                tournamentId: tournament.ctx.id,
                 tournamentTeamId: teamOne.id,
               })}
               className="text-main-forced font-bold"
@@ -547,7 +547,7 @@ function Rosters({
           {teamTwo ? (
             <Link
               to={tournamentTeamPage({
-                eventId: tournament.ctx.id,
+                tournamentId: tournament.ctx.id,
                 tournamentTeamId: teamTwo.id,
               })}
               className="text-main-forced font-bold"

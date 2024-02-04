@@ -74,7 +74,7 @@ function MatchWrapper({
       <Link
         className="bracket__match"
         to={tournamentMatchPage({
-          eventId: tournament.ctx.id,
+          tournamentId: tournament.ctx.id,
           matchId: match.id,
         })}
       >

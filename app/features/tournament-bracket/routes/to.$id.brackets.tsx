@@ -441,7 +441,7 @@ function AddSubsPopOver() {
     tournament.maxTeamMemberCount - ownedTeam.members.length;
 
   const inviteLink = `${SENDOU_INK_BASE_URL}${tournamentJoinPage({
-    eventId: tournament.ctx.id,
+    tournamentId: tournament.ctx.id,
     inviteCode: ownedTeam.inviteCode,
   })}`;
 
@@ -516,7 +516,7 @@ function FinalStandings() {
             </div>
             <Link
               to={tournamentTeamPage({
-                eventId: tournament.ctx.id,
+                tournamentId: tournament.ctx.id,
                 tournamentTeamId: standing.team.id,
               })}
               className="tournament-bracket__standing__team-name tournament-bracket__standing__team-name__big"
@@ -574,7 +574,7 @@ function FinalStandings() {
                     >
                       <Link
                         to={tournamentTeamPage({
-                          eventId: tournament.ctx.id,
+                          tournamentId: tournament.ctx.id,
                           tournamentTeamId: standing.team.id,
                         })}
                         className="tournament-bracket__standing__team-name"

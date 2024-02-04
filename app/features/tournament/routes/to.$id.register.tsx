@@ -640,7 +640,7 @@ function FillRoster({
   const { t } = useTranslation(["common", "tournament"]);
 
   const inviteLink = `${SENDOU_INK_BASE_URL}${tournamentJoinPage({
-    eventId: tournament.ctx.id,
+    tournamentId: tournament.ctx.id,
     inviteCode: ownTeam.inviteCode!,
   })}`;
 

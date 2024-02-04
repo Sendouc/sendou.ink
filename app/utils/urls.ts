@@ -29,8 +29,6 @@ import { JOIN_CODE_SEARCH_PARAM_KEY } from "~/features/sendouq/q-constants";
 import type { TierName } from "~/features/mmr/mmr-constants";
 import type { Preference } from "~/db/tables";
 
-// xxx: eventId -> tournamentId
-
 const staticAssetsUrl = ({
   folder,
   fileName,
@@ -222,18 +220,20 @@ export const calendarEditPage = (eventId?: number) =>
   `/calendar/new${eventId ? `?eventId=${eventId}` : ""}`;
 export const calendarReportWinnersPage = (eventId: number) =>
   `/calendar/${eventId}/report-winners`;
-export const tournamentPage = (eventId: number) => `/to/${eventId}`;
+export const tournamentPage = (tournamentId: number) => `/to/${tournamentId}`;
 export const tournamentTeamPage = ({
-  eventId,
+  tournamentId,
   tournamentTeamId,
 }: {
-  eventId: number;
+  tournamentId: number;
   tournamentTeamId: number;
-}) => `/to/${eventId}/teams/${tournamentTeamId}`;
-export const tournamentRegisterPage = (eventId: number) =>
-  `/to/${eventId}/register`;
-export const tournamentMapsPage = (eventId: number) => `/to/${eventId}/maps`;
-export const tournamentAdminPage = (eventId: number) => `/to/${eventId}/admin`;
+}) => `/to/${tournamentId}/teams/${tournamentTeamId}`;
+export const tournamentRegisterPage = (tournamentId: number) =>
+  `/to/${tournamentId}/register`;
+export const tournamentMapsPage = (tournamentId: number) =>
+  `/to/${tournamentId}/maps`;
+export const tournamentAdminPage = (tournamentId: number) =>
+  `/to/${tournamentId}/admin`;
 export const tournamentBracketsPage = ({
   tournamentId,
   bracketIdx,
@@ -244,29 +244,29 @@ export const tournamentBracketsPage = ({
   `/to/${tournamentId}/brackets${
     typeof bracketIdx === "number" ? `?idx=${bracketIdx}` : ""
   }`;
-export const tournamentBracketsSubscribePage = (eventId: number) =>
-  `/to/${eventId}/brackets/subscribe`;
+export const tournamentBracketsSubscribePage = (tournamentId: number) =>
+  `/to/${tournamentId}/brackets/subscribe`;
 export const tournamentMatchPage = ({
-  eventId,
+  tournamentId,
   matchId,
 }: {
-  eventId: number;
+  tournamentId: number;
   matchId: number;
-}) => `/to/${eventId}/matches/${matchId}`;
+}) => `/to/${tournamentId}/matches/${matchId}`;
 export const tournamentMatchSubscribePage = ({
-  eventId,
+  tournamentId,
   matchId,
 }: {
-  eventId: number;
+  tournamentId: number;
   matchId: number;
-}) => `/to/${eventId}/matches/${matchId}/subscribe`;
+}) => `/to/${tournamentId}/matches/${matchId}/subscribe`;
 export const tournamentJoinPage = ({
-  eventId,
+  tournamentId,
   inviteCode,
 }: {
-  eventId: number;
+  tournamentId: number;
   inviteCode: string;
-}) => `/to/${eventId}/join?code=${inviteCode}`;
+}) => `/to/${tournamentId}/join?code=${inviteCode}`;
 export const tournamentSubsPage = (tournamentId: number) => {
   return `/to/${tournamentId}/subs`;
 };
