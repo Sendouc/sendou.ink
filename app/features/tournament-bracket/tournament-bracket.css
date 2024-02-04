@@ -382,3 +382,42 @@
     flex-direction: row;
   }
 }
+
+.tournament-bracket__bracket-nav {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tournament-bracket__bracket-nav__link {
+  font-size: var(--fonts-xxs);
+  color: var(--text-lighter);
+  border-color: var(--bg-lightest-solid);
+  background-color: var(--bg);
+  border-radius: 0;
+}
+
+.tournament-bracket__bracket-nav__link:active {
+  transform: translateY(0px);
+}
+
+.tournament-bracket__bracket-nav__link:first-of-type {
+  border-start-start-radius: var(--rounded);
+  border-end-start-radius: var(--rounded);
+}
+
+.tournament-bracket__bracket-nav__link:not(
+    .tournament-bracket__bracket-nav__link:first-of-type
+  ) {
+  margin-left: -1px;
+}
+
+.tournament-bracket__bracket-nav__link:last-of-type {
+  border-start-end-radius: var(--rounded);
+  border-end-end-radius: var(--rounded);
+}
+
+.tournament-bracket__bracket-nav__link__selected {
+  color: var(--text);
+  background-color: var(--bg);
+  background-color: var(--bg-lighter);
+}

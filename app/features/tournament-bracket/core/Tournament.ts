@@ -117,7 +117,10 @@ export class Tournament {
           });
 
         if (checkedInTeams.length >= TOURNAMENT.ENOUGH_TEAMS_TO_START) {
-          const seeding = checkedInTeams.map((team) => team.name);
+          const seeding = checkedInTeams.map((team) => ({
+            name: team.name,
+            id: team.id,
+          }));
           manager.create({
             tournamentId: this.ctx.id,
             name,

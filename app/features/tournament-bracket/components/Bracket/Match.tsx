@@ -4,6 +4,7 @@ import { useTournament } from "~/features/tournament/routes/to.$id";
 import { Link } from "@remix-run/react";
 import { tournamentMatchPage } from "~/utils/urls";
 import clsx from "clsx";
+import { useUser } from "~/features/auth/core";
 
 interface MatchProps {
   match: Unpacked<TournamentData["data"]["match"]>;
@@ -80,25 +81,33 @@ function MatchWrapper({
   return <div className="bracket__match">{children}</div>;
 }
 
-// xxx: highlight own team name
 function MatchRow({ match, side }: MatchProps & { side: 1 | 2 }) {
+  const user = useUser();
   const tournament = useTournament();
 
   const opponent = match[`opponent${side}`];
   const team = opponent?.id ? tournament.teamById(opponent.id) : null;
 
   const score = () => {
-    if (!opponent) return null;
+    if (!opponent?.id) return null;
 
     return opponent.score ?? 0;
   };
 
   const isLoser = opponent?.result === "loss";
 
+  const ownTeam = tournament.teamMemberOfByUser(user);
+
   return (
     <div className={clsx("stack horizontal", { "text-lighter": isLoser })}>
       <div className="bracket__match__seed">{team?.seed}</div>
-      <div className="bracket__match__team-name">{team?.name}</div>{" "}
+      <div
+        className={clsx("bracket__match__team-name", {
+          "text-theme-secondary": ownTeam && ownTeam?.id === team?.id,
+        })}
+      >
+        {team?.name}
+      </div>{" "}
       <div className="bracket__match__score">{score()}</div>
     </div>
   );

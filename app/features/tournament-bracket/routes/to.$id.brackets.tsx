@@ -331,8 +331,10 @@ export default function TournamentBracketsPage() {
       {tournament.ctx.isFinalized || tournament.canFinalize(user) ? (
         <FinalStandings />
       ) : null}
-      <BracketNav bracketIdx={bracketIdx} setBracketIdx={setBracketIdx} />
-      <Bracket bracket={bracket} />
+      <div className="stack md">
+        <BracketNav bracketIdx={bracketIdx} setBracketIdx={setBracketIdx} />
+        <Bracket bracket={bracket} />
+      </div>
       {!bracket.enoughTeams ? (
         <div>
           <div className="text-center text-lg font-semi-bold text-lighter mt-6">
@@ -640,7 +642,7 @@ function BracketNav({
   if (tournament.ctx.settings.bracketProgression.length < 2) return null;
 
   return (
-    <div className="stack sm horizontal flex-wrap">
+    <div className="tournament-bracket__bracket-nav">
       {tournament.ctx.settings.bracketProgression.map((bracket, i) => {
         // underground bracket was never played despite being in the format
         if (
@@ -653,11 +655,10 @@ function BracketNav({
         return (
           <Button
             key={bracket.name}
-            variant="minimal"
             onClick={() => setBracketIdx(i)}
-            className={clsx("text-xs", {
-              "text-theme underline": bracketIdx === i,
-              "text-lighter-important": bracketIdx !== i,
+            className={clsx("tournament-bracket__bracket-nav__link", {
+              "tournament-bracket__bracket-nav__link__selected":
+                bracketIdx === i,
             })}
           >
             {bracket.name}

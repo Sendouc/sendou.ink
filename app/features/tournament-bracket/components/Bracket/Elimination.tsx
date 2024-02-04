@@ -71,7 +71,12 @@ function getRounds(props: EliminationBracketSideProps) {
   let showingBracketReset = true;
   const rounds = props.bracket.data.round
     .flatMap((round) => {
-      if (round.group_id && !groupIds.includes(round.group_id)) return [];
+      if (
+        typeof round.group_id === "number" &&
+        !groupIds.includes(round.group_id)
+      ) {
+        return [];
+      }
 
       return round;
     })
