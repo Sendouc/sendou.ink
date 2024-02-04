@@ -80,6 +80,7 @@ function MatchWrapper({
   return <div className="bracket__match">{children}</div>;
 }
 
+// xxx: highlight own team name
 function MatchRow({ match, side }: MatchProps & { side: 1 | 2 }) {
   const tournament = useTournament();
 
