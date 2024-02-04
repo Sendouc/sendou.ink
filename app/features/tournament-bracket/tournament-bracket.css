@@ -422,3 +422,15 @@
   background-color: var(--bg);
   background-color: var(--bg-lighter);
 }
+
+.tournament-bracket__compactify-button {
+  font-size: var(--fonts-xxs);
+  color: var(--text-lighter);
+  border-color: var(--bg-lightest-solid);
+  background-color: var(--bg);
+  border-radius: var(--rounded);
+}
+
+.tournament-bracket__compactify-button .button-icon {
+  width: 1rem;
+}

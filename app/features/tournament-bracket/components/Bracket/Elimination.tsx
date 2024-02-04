@@ -8,6 +8,7 @@ import { useDeadline } from "./useDeadline";
 interface EliminationBracketSideProps {
   bracket: BracketType;
   type: "winners" | "losers" | "single";
+  isExpanded: boolean;
 }
 
 export function EliminationBracketSide(props: EliminationBracketSideProps) {
@@ -19,7 +20,7 @@ export function EliminationBracketSide(props: EliminationBracketSideProps) {
       className="elim-bracket__container"
       style={{ "--round-count": rounds.length } as any}
     >
-      {rounds.map((round) => {
+      {rounds.flatMap((round, roundIdx) => {
         const bestOf = tournament.ctx.bestOfs.find(
           ({ roundId }) => roundId === round.id,
         )?.bestOf;
@@ -28,19 +29,30 @@ export function EliminationBracketSide(props: EliminationBracketSideProps) {
           (match) => match.round_id === round.id,
         );
 
+        const someMatchOngoing = matches.some(
+          (match) =>
+            match.opponent1 &&
+            match.opponent2 &&
+            match.opponent1.result !== "win" &&
+            match.opponent2.result !== "win",
+        );
+
+        if (
+          !props.isExpanded &&
+          // always show at least 2 rounds per side
+          roundIdx < rounds.length - 2 &&
+          !someMatchOngoing
+        ) {
+          return null;
+        }
+
         return (
           <div key={round.id} className="elim-bracket__round-column">
             <RoundHeader
               roundId={round.id}
               name={round.name}
               bestOf={bestOf}
-              showInfos={matches.some(
-                (match) =>
-                  match.opponent1 &&
-                  match.opponent2 &&
-                  match.opponent1.result !== "win" &&
-                  match.opponent2.result !== "win",
-              )}
+              showInfos={someMatchOngoing}
             />
             <div className="elim-bracket__round-matches-container">
               {matches.map((match) => (

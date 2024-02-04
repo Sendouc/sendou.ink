@@ -34,7 +34,10 @@ import {
   tournamentTeamPage,
   userPage,
 } from "~/utils/urls";
-import { useTournament } from "../../tournament/routes/to.$id";
+import {
+  useBracketExpanded,
+  useTournament,
+} from "../../tournament/routes/to.$id";
 import { tournamentFromDB } from "../core/Tournament.server";
 import { resolveBestOfs } from "../core/bestOf.server";
 import { getTournamentManager } from "../core/brackets-manager";
@@ -57,6 +60,8 @@ import { Avatar } from "~/components/Avatar";
 import { Flag } from "~/components/Flag";
 import { BRACKET_NAMES } from "~/features/tournament/tournament-constants";
 import { Bracket } from "../components/Bracket";
+import { EyeIcon } from "~/components/icons/Eye";
+import { EyeSlashIcon } from "~/components/icons/EyeSlash";
 
 // xxx: adjust naming of css
 export const links: LinksFunction = () => {
@@ -332,7 +337,12 @@ export default function TournamentBracketsPage() {
         <FinalStandings />
       ) : null}
       <div className="stack md">
-        <BracketNav bracketIdx={bracketIdx} setBracketIdx={setBracketIdx} />
+        <div className="stack horizontal sm">
+          <BracketNav bracketIdx={bracketIdx} setBracketIdx={setBracketIdx} />
+          {bracket.type !== "round_robin" && !bracket.preview ? (
+            <CompactifyButton />
+          ) : null}
+        </div>
         <Bracket bracket={bracket} />
       </div>
       {!bracket.enoughTeams ? (
@@ -661,10 +671,26 @@ function BracketNav({
                 bracketIdx === i,
             })}
           >
-            {bracket.name}
+            {bracket.name.replace("bracket", "")}
           </Button>
         );
       })}
     </div>
+  );
+}
+
+function CompactifyButton() {
+  const { bracketExpanded, setBracketExpanded } = useBracketExpanded();
+
+  return (
+    <Button
+      onClick={() => {
+        setBracketExpanded(!bracketExpanded);
+      }}
+      className="tournament-bracket__compactify-button"
+      icon={bracketExpanded ? <EyeSlashIcon /> : <EyeIcon />}
+    >
+      {bracketExpanded ? "Compactify" : "Show all"}
+    </Button>
   );
 }

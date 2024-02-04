@@ -103,6 +103,7 @@ export default function TournamentLayout() {
     () => new Tournament(data.tournament),
     [data],
   );
+  const [bracketExpanded, setBracketExpanded] = React.useState(true);
 
   // this is nice to debug with tournament in browser console
   if (process.env.NODE_ENV === "development") {
@@ -156,12 +157,33 @@ export default function TournamentLayout() {
         )}
       </SubNav>
       <TournamentContext.Provider value={tournament}>
-        <Outlet context={tournament satisfies Tournament} />
+        <Outlet
+          context={
+            {
+              tournament,
+              bracketExpanded,
+              setBracketExpanded,
+            } satisfies TournamentContext
+          }
+        />
       </TournamentContext.Provider>
     </Main>
   );
 }
 
+type TournamentContext = {
+  tournament: Tournament;
+  bracketExpanded: boolean;
+  setBracketExpanded: (expanded: boolean) => void;
+};
+
 export function useTournament() {
-  return useOutletContext<Tournament>();
+  return useOutletContext<TournamentContext>().tournament;
+}
+
+export function useBracketExpanded() {
+  const { bracketExpanded, setBracketExpanded } =
+    useOutletContext<TournamentContext>();
+
+  return { bracketExpanded, setBracketExpanded };
 }

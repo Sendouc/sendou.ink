@@ -18,7 +18,7 @@
   font-size: var(--fonts-xxxs);
   width: var(--match-width);
   font-weight: var(--semi-bold);
-  margin-block-start: -15px;
+  margin-block-start: -16px;
 }
 
 .bracket__match__header__box {
@@ -81,7 +81,7 @@ a.bracket__match:hover {
 }
 
 .elim-bracket__container {
-  --line-width: 40px;
+  --line-width: 30px;
   display: grid;
   grid-template-columns: repeat(
     var(--round-count),
