@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useDeadline } from "./useDeadline";
+import { useAutoRerender } from "~/hooks/useAutoRerender";
 
 export function RoundHeader({
   roundId,
@@ -35,6 +36,7 @@ export function RoundHeader({
 }
 
 function Deadline({ roundId, bestOf }: { roundId: number; bestOf: 3 | 5 | 7 }) {
+  useAutoRerender("ten seconds");
   const isMounted = useIsMounted();
   const deadline = useDeadline(roundId, bestOf);
 

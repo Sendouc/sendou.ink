@@ -42,9 +42,12 @@ import { matchSchema } from "../tournament-bracket-schemas.server";
 import {
   bracketSubscriptionKey,
   matchIdFromParams,
+  matchIsLocked,
   matchSubscriptionKey,
 } from "../tournament-bracket-utils";
 import bracketStyles from "../tournament-bracket.css";
+import { CastInfo } from "../components/CastInfo";
+import * as TournamentRepository from "~/features/tournament/TournamentRepository.server";
 
 export const links: LinksFunction = () => [
   {
@@ -103,6 +106,10 @@ export const action: ActionFunction = async ({ params, request }) => {
         "Winner team id is invalid",
       );
       validate(match.opponentOne && match.opponentTwo, "Teams are missing");
+      validate(
+        !matchIsLocked({ matchId: match.id, tournament, scores }),
+        "Match is locked",
+      );
 
       const mapList =
         match.opponentOne?.id && match.opponentTwo?.id
@@ -259,6 +266,42 @@ export const action: ActionFunction = async ({ params, request }) => {
 
       break;
     }
+    case "SET_AS_CASTED": {
+      validate(tournament.isOrganizerOrStreamer(user));
+
+      await TournamentRepository.setMatchAsCasted({
+        matchId: match.id,
+        tournamentId: tournament.ctx.id,
+        twitchAccount: data.twitchAccount,
+      });
+
+      break;
+    }
+    case "LOCK": {
+      validate(tournament.isOrganizerOrStreamer(user));
+
+      // can't lock, let's update their view to reflect that
+      if (match.opponentOne?.id && match.opponentTwo?.id) {
+        return null;
+      }
+
+      await TournamentRepository.lockMatch({
+        matchId: match.id,
+        tournamentId: tournament.ctx.id,
+      });
+
+      break;
+    }
+    case "UNLOCK": {
+      validate(tournament.isOrganizerOrStreamer(user));
+
+      await TournamentRepository.unlockMatch({
+        matchId: match.id,
+        tournamentId: tournament.ctx.id,
+      });
+
+      break;
+    }
     default: {
       assertUnreachable(data);
     }
@@ -315,6 +358,7 @@ export const loader = ({ params }: LoaderFunctionArgs) => {
   };
 };
 
+// xxx: rename points -> score to match ingame in the UI?
 // xxx: lacks padding on top as non-admin http://localhost:5800/to/10/matches/997
 export default function TournamentMatchPage() {
   const user = useUser();
@@ -365,20 +409,35 @@ export default function TournamentMatchPage() {
           Back to bracket
         </LinkButton>
       </div>
-      {data.matchIsOver ? <ResultsSection /> : null}
-      {!data.matchIsOver &&
-      typeof data.match.opponentOne?.id === "number" &&
-      typeof data.match.opponentTwo?.id === "number" ? (
-        <MapListSection
-          teams={[data.match.opponentOne.id, data.match.opponentTwo.id]}
-          type={type}
+      <div className="stack md">
+        <CastInfo
+          matchIsOngoing={Boolean(
+            (data.match.opponentOne?.score &&
+              data.match.opponentOne.score > 0) ||
+              (data.match.opponentTwo?.score &&
+                data.match.opponentTwo.score > 0),
+          )}
+          matchIsOver={data.matchIsOver}
+          matchId={data.match.id}
+          hasBothParticipants={Boolean(
+            data.match.opponentOne?.id && data.match.opponentTwo?.id,
+          )}
         />
-      ) : null}
-      {showRosterPeek() ? (
-        <Rosters
-          teams={[data.match.opponentOne?.id, data.match.opponentTwo?.id]}
-        />
-      ) : null}
+        {data.matchIsOver ? <ResultsSection /> : null}
+        {!data.matchIsOver &&
+        typeof data.match.opponentOne?.id === "number" &&
+        typeof data.match.opponentTwo?.id === "number" ? (
+          <MapListSection
+            teams={[data.match.opponentOne.id, data.match.opponentTwo.id]}
+            type={type}
+          />
+        ) : null}
+        {showRosterPeek() ? (
+          <Rosters
+            teams={[data.match.opponentOne?.id, data.match.opponentTwo?.id]}
+          />
+        ) : null}
+      </div>
     </div>
   );
 }

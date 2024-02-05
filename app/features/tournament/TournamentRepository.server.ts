@@ -1,7 +1,7 @@
-import type { NotNull } from "kysely";
+import type { NotNull, Transaction } from "kysely";
 import { jsonArrayFrom, jsonObjectFrom } from "kysely/helpers/sqlite";
 import { db } from "~/db/sql";
-import type { Tables } from "~/db/tables";
+import type { CastedMatchesInfo, DB, Tables } from "~/db/tables";
 import { dateToDatabaseTimestamp } from "~/utils/dates";
 import { COMMON_USER_FIELDS, userChatNameColor } from "~/utils/kysely.server";
 
@@ -20,6 +20,7 @@ export async function findById(id: number) {
       "Tournament.settings",
       "Tournament.showMapListGenerator",
       "Tournament.castTwitchAccounts",
+      "Tournament.castedMatchesInfo",
       "Tournament.mapPickingStyle",
       "CalendarEvent.name",
       "CalendarEvent.description",
@@ -315,4 +316,110 @@ export function updateCastTwitchAccounts({
     })
     .where("id", "=", tournamentId)
     .execute();
+}
+
+const castedMatchesInfoByTournamentId = async (
+  trx: Transaction<DB>,
+  tournamentId: number,
+) =>
+  (
+    await trx
+      .selectFrom("Tournament")
+      .select("castedMatchesInfo")
+      .where("id", "=", tournamentId)
+      .executeTakeFirstOrThrow()
+  ).castedMatchesInfo ??
+  ({
+    castedMatches: {},
+    lockedMatches: [],
+  } as CastedMatchesInfo);
+
+export function lockMatch({
+  matchId,
+  tournamentId,
+}: {
+  matchId: number;
+  tournamentId: number;
+}) {
+  return db.transaction().execute(async (trx) => {
+    const castedMatchesInfo = await castedMatchesInfoByTournamentId(
+      trx,
+      tournamentId,
+    );
+
+    if (!castedMatchesInfo.lockedMatches.includes(matchId)) {
+      castedMatchesInfo.lockedMatches.push(matchId);
+    }
+
+    await trx
+      .updateTable("Tournament")
+      .set({
+        castedMatchesInfo: JSON.stringify(castedMatchesInfo),
+      })
+      .where("id", "=", tournamentId)
+      .execute();
+  });
+}
+
+export function unlockMatch({
+  matchId,
+  tournamentId,
+}: {
+  matchId: number;
+  tournamentId: number;
+}) {
+  return db.transaction().execute(async (trx) => {
+    const castedMatchesInfo = await castedMatchesInfoByTournamentId(
+      trx,
+      tournamentId,
+    );
+
+    castedMatchesInfo.lockedMatches = castedMatchesInfo.lockedMatches.filter(
+      (lockedMatchId) => lockedMatchId !== matchId,
+    );
+
+    await trx
+      .updateTable("Tournament")
+      .set({
+        castedMatchesInfo: JSON.stringify(castedMatchesInfo),
+      })
+      .where("id", "=", tournamentId)
+      .execute();
+  });
+}
+
+export function setMatchAsCasted({
+  matchId,
+  tournamentId,
+  twitchAccount,
+}: {
+  matchId: number;
+  tournamentId: number;
+  twitchAccount: string | null;
+}) {
+  return db.transaction().execute(async (trx) => {
+    const castedMatchesInfo = await castedMatchesInfoByTournamentId(
+      trx,
+      tournamentId,
+    );
+
+    if (twitchAccount === null) {
+      const previousTwitchAccount = Object.entries(
+        castedMatchesInfo.castedMatches,
+      ).find(([, value]) => value === matchId)?.[0];
+      if (previousTwitchAccount) {
+        delete castedMatchesInfo.castedMatches[previousTwitchAccount];
+      }
+    } else {
+      castedMatchesInfo.castedMatches[twitchAccount] = matchId;
+    }
+
+    await trx
+      .updateTable("Tournament")
+      .set({
+        castedMatchesInfo: JSON.stringify(castedMatchesInfo),
+      })
+      .where("id", "=", tournamentId)
+      .execute();
+  });
 }

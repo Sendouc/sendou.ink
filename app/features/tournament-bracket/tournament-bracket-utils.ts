@@ -9,6 +9,7 @@ import {
 import { removeDuplicates } from "~/utils/arrays";
 import type { FindMatchById } from "../tournament-bracket/queries/findMatchById.server";
 import type { TournamentDataTeam } from "./core/Tournament.server";
+import type { Tournament } from "./core/Tournament";
 
 export function matchIdFromParams(params: Params<string>) {
   const result = Number(params["mid"]);
@@ -159,3 +160,19 @@ export function everyBracketOver(tournament: ValueToArray<DataTypes>) {
 
 export const bracketHasStarted = (bracket: ValueToArray<DataTypes>) =>
   bracket.stage[0] && bracket.stage[0].id !== 0;
+
+export function matchIsLocked({
+  tournament,
+  matchId,
+  scores,
+}: {
+  tournament: Tournament;
+  matchId: number;
+  scores: [number, number];
+}) {
+  if (scores[0] !== 0 || scores[1] !== 0) return false;
+
+  const locked = tournament.ctx.castedMatchesInfo?.lockedMatches ?? [];
+
+  return locked.includes(matchId);
+}

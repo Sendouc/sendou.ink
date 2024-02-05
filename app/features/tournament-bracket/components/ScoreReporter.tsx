@@ -18,6 +18,7 @@ import { modeImageUrl, stageImageUrl } from "~/utils/urls";
 import { type TournamentMatchLoaderData } from "../routes/to.$id.matches.$mid";
 import {
   mapCountPlayedInSetWithCertainty,
+  matchIsLocked,
   resolveHostingTeam,
   resolveRoomPass,
 } from "../tournament-bracket-utils";
@@ -106,48 +107,60 @@ export function ScoreReporter({
 
   return (
     <div className="tournament-bracket__during-match-actions">
-      <FancyStageBanner
-        stage={currentStageWithMode}
-        infos={roundInfos}
-        teams={teams}
-      >
-        {currentPosition > 0 && !presentational && type === "EDIT" && (
-          <Form method="post">
-            <input type="hidden" name="position" value={currentPosition - 1} />
-            <div className="tournament-bracket__stage-banner__bottom-bar">
-              <SubmitButton
-                _action="UNDO_REPORT_SCORE"
-                className="tournament-bracket__stage-banner__undo-button"
-                testId="undo-score-button"
-              >
-                {t("tournament:match.action.undoLastScore")}
-              </SubmitButton>
-            </div>
-          </Form>
-        )}
-        {tournament.isOrganizer(user) &&
-          tournament.matchCanBeReopened(data.match.id) &&
-          presentational && (
-            <Form method="post">
-              <div className="tournament-bracket__stage-banner__bottom-bar">
-                <SubmitButton
-                  _action="REOPEN_MATCH"
-                  className="tournament-bracket__stage-banner__undo-button"
-                  testId="reopen-match-button"
-                >
-                  {t("tournament:match.action.reopenMatch")}
-                </SubmitButton>
-              </div>
-            </Form>
-          )}
-      </FancyStageBanner>
-      <ModeProgressIndicator
-        modes={modes}
-        scores={[scoreOne, scoreTwo]}
-        bestOf={data.match.bestOf}
-        selectedResultIndex={selectedResultIndex}
-        setSelectedResultIndex={setSelectedResultIndex}
-      />
+      {!matchIsLocked({
+        matchId: data.match.id,
+        scores: [scoreOne, scoreTwo],
+        tournament,
+      }) ? (
+        <>
+          <FancyStageBanner
+            stage={currentStageWithMode}
+            infos={roundInfos}
+            teams={teams}
+          >
+            {currentPosition > 0 && !presentational && type === "EDIT" && (
+              <Form method="post">
+                <input
+                  type="hidden"
+                  name="position"
+                  value={currentPosition - 1}
+                />
+                <div className="tournament-bracket__stage-banner__bottom-bar">
+                  <SubmitButton
+                    _action="UNDO_REPORT_SCORE"
+                    className="tournament-bracket__stage-banner__undo-button"
+                    testId="undo-score-button"
+                  >
+                    {t("tournament:match.action.undoLastScore")}
+                  </SubmitButton>
+                </div>
+              </Form>
+            )}
+            {tournament.isOrganizer(user) &&
+              tournament.matchCanBeReopened(data.match.id) &&
+              presentational && (
+                <Form method="post">
+                  <div className="tournament-bracket__stage-banner__bottom-bar">
+                    <SubmitButton
+                      _action="REOPEN_MATCH"
+                      className="tournament-bracket__stage-banner__undo-button"
+                      testId="reopen-match-button"
+                    >
+                      {t("tournament:match.action.reopenMatch")}
+                    </SubmitButton>
+                  </div>
+                </Form>
+              )}
+          </FancyStageBanner>
+          <ModeProgressIndicator
+            modes={modes}
+            scores={[scoreOne, scoreTwo]}
+            bestOf={data.match.bestOf}
+            selectedResultIndex={selectedResultIndex}
+            setSelectedResultIndex={setSelectedResultIndex}
+          />
+        </>
+      ) : null}
       {type === "EDIT" || presentational ? (
         <MatchActionSectionTabs
           presentational={presentational}

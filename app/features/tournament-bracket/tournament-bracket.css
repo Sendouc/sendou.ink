@@ -434,3 +434,30 @@
 .tournament-bracket__compactify-button .button-icon {
   width: 0.85rem;
 }
+
+.tournament-bracket__cast-info-container {
+  display: flex;
+  gap: var(--s-2);
+  border-radius: var(--rounded);
+  background-color: var(--bg-lighter);
+  width: max-content;
+  margin: 0 auto;
+}
+
+.tournament-bracket__cast-info-container__label {
+  padding: var(--s-2) var(--s-3-5);
+  text-transform: uppercase;
+  background-color: var(--bg-lightest);
+  border-radius: var(--rounded) 0 0 var(--rounded);
+  font-weight: var(--bold);
+  color: var(--text-lighter);
+  display: grid;
+  place-items: center;
+  justify-content: center;
+}
+
+.tournament-bracket__cast-info-container__content {
+  padding-block: var(--s-2);
+  display: flex;
+  align-items: center;
+}

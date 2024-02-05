@@ -379,3 +379,5 @@ test.describe("Tournament bracket", () => {
     ).toHaveCount(3);
   });
 });
+
+// xxx: match locking e2e test
