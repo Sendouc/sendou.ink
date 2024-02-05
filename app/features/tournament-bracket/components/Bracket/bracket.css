@@ -15,9 +15,7 @@
   position: absolute;
   display: flex;
   justify-content: space-between;
-  font-size: var(--fonts-xxxs);
   width: var(--match-width);
-  font-weight: var(--semi-bold);
   margin-block-start: -16px;
 }
 
@@ -25,6 +23,10 @@
   background-color: var(--bg-lightest-solid);
   padding: var(--s-0-5) var(--s-1);
   border-radius: var(--rounded-sm);
+  font-size: var(--fonts-xxxs) !important;
+  font-weight: var(--semi-bold);
+  color: var(--text);
+  border: 0;
 }
 
 .bracket__match {
@@ -121,4 +123,35 @@ a.bracket__match:hover {
 .elim-bracket__round-column {
   display: flex;
   flex-direction: column;
+}
+
+.rr__placements-table {
+  font-size: var(--fonts-xs);
+  font-weight: var(--semi-bold);
+  min-width: max-content;
+  overflow-x: auto;
+}
+
+.rr__placements-table thead {
+  color: var(--text-lighter);
+}
+
+.rr__placements-table th {
+  text-align: left;
+}
+
+.rr__placements-table th abbr {
+  padding-inline: var(--s-2);
+}
+
+.rr__placements-table td span {
+  padding-inline: var(--s-2);
+}
+
+.rr__placements-table tbody tr:nth-child(odd) {
+  background-color: var(--bg-lighter);
+}
+
+.rr__placements-table tbody tr:nth-child(even) {
+  background-color: var(--bg-lightest);
 }

@@ -30,6 +30,15 @@ interface CreateBracketArgs {
 export interface Standing {
   team: TournamentDataTeam;
   placement: number; // 1st, 2nd, 3rd, 4th, 5th, 5th...
+  groupId?: number;
+  stats?: {
+    setWins: number;
+    setLosses: number;
+    mapWins: number;
+    mapLosses: number;
+    points: number;
+    winsAgainstTied: number;
+  };
 }
 
 export abstract class Bracket {
@@ -194,6 +203,10 @@ export abstract class Bracket {
 
   get standings(): Standing[] {
     throw new Error("not implemented");
+  }
+
+  currentStandings(_includeUnfinishedGroups: boolean) {
+    return this.standings;
   }
 
   winnersSourceRound(_roundNumber: number): Round | undefined {
@@ -653,6 +666,10 @@ class RoundRobinBracket extends Bracket {
   }
 
   get standings(): Standing[] {
+    return this.currentStandings();
+  }
+
+  currentStandings(includeUnfinishedGroups = false) {
     const groupIds = this.data.group.map((group) => group.id);
 
     const placements: (Standing & { groupId: number })[] = [];
@@ -671,7 +688,7 @@ class RoundRobinBracket extends Bracket {
           match.opponent2?.result === "win",
       );
 
-      if (!groupIsFinished) continue;
+      if (!groupIsFinished && !includeUnfinishedGroups) continue;
 
       const teams: {
         id: number;
@@ -719,6 +736,13 @@ class RoundRobinBracket extends Bracket {
       };
 
       for (const match of matches) {
+        if (
+          match.opponent1?.result !== "win" &&
+          match.opponent2?.result !== "win"
+        ) {
+          continue;
+        }
+
         const winner =
           match.opponent1?.result === "win" ? match.opponent1 : match.opponent2;
 
@@ -732,6 +756,7 @@ class RoundRobinBracket extends Bracket {
             typeof loser.id === "number" &&
             typeof winner.score === "number" &&
             typeof loser.score === "number",
+          "RoundRobinBracket.standings: winner or loser id not found",
         );
 
         if (
@@ -812,6 +837,14 @@ class RoundRobinBracket extends Bracket {
               team: this.tournament.teamById(team.id)!,
               placement: i + 1,
               groupId,
+              stats: {
+                setWins: team.setWins,
+                setLosses: team.setLosses,
+                mapWins: team.mapWins,
+                mapLosses: team.mapLosses,
+                points: team.points,
+                winsAgainstTied: team.winsAgainstTied,
+              },
             };
           }),
       );
@@ -840,6 +873,7 @@ class RoundRobinBracket extends Bracket {
         return {
           ...team,
           placement: currentPlacement,
+          stats: team.stats,
         };
       }),
     );

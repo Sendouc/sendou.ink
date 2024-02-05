@@ -254,6 +254,10 @@
   margin-inline-end: var(--s-1);
 }
 
+.mr-2 {
+  margin-inline-end: var(--s-2);
+}
+
 .mr-4 {
   margin-inline-end: var(--s-4);
 }
