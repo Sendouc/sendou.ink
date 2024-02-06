@@ -73,8 +73,8 @@ export async function getStreams() {
     const result = await cachified({
       key: `twitch-streams`,
       cache,
-      // 5 minutes
-      ttl: 1000 * 60 * 5,
+      // 2 minutes
+      ttl: 1000 * 60 * 2,
       // 10 minutes
       staleWhileRevalidate: 1000 * 60 * 5 * 2,
       async getFreshValue() {
