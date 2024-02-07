@@ -15,9 +15,10 @@ import type {
 import type { GroupSkillDifference, UserSkillDifference } from "./types";
 import type { ParticipantResult } from "~/modules/brackets-model";
 
-export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
-  ? ColumnType<S, I | undefined, U>
-  : ColumnType<T, T | undefined, T>;
+export type Generated<T> =
+  T extends ColumnType<infer S, infer I, infer U>
+    ? ColumnType<S, I | undefined, U>
+    : ColumnType<T, T | undefined, T>;
 
 export interface AllTeam {
   avatarImgId: number | null;
@@ -386,8 +387,8 @@ export interface TournamentSettings {
 export interface CastedMatchesInfo {
   /** Array for match ID's that are locked because they are pending to be casted */
   lockedMatches: number[];
-  /** Record of twitch account (string) to match id (number) depicting what matches are streamed currently */
-  castedMatches: Record<string, number>;
+  /** What matches are streamed currently & where */
+  castedMatches: { twitchAccount: string; matchId: number }[];
 }
 
 export interface Tournament {

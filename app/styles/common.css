@@ -639,6 +639,17 @@ dialog::backdrop {
   white-space: pre-wrap;
 }
 
+.info-popover__trigger {
+  border: 2px solid var(--bg-lightest);
+  border-radius: 100%;
+  background-color: transparent;
+  color: var(--text);
+  font-size: var(--fonts-md);
+  padding: var(--s-0-5);
+  width: 28px;
+  height: 28px;
+}
+
 .articles-list {
   display: flex;
   flex-direction: column;

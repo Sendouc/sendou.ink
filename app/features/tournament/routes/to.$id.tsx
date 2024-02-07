@@ -75,18 +75,19 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
   const tournament = await tournamentData({ tournamentId, user });
 
+  const streams =
+    tournament.ctx.inProgressBrackets.length > 0
+      ? await streamsByTournamentId({
+          tournamentId,
+          castTwitchAccounts: tournament.ctx.castTwitchAccounts,
+        })
+      : [];
+
   return {
     tournament,
     subsCount,
-    streamsCount:
-      tournament.ctx.inProgressBrackets.length > 0
-        ? (
-            await streamsByTournamentId({
-              tournamentId,
-              castTwitchAccounts: tournament.ctx.castTwitchAccounts,
-            })
-          ).length
-        : 0,
+    streamingParticipants: streams.flatMap((s) => (s.userId ? [s.userId] : [])),
+    streamsCount: streams.length,
   };
 };
 
@@ -144,7 +145,9 @@ export default function TournamentLayout() {
         )}
         {tournament.hasStarted && !tournament.everyBracketOver ? (
           <SubNavLink to="streams">
-            {t("tournament:tabs.streams", { count: data.streamsCount })}
+            {t("tournament:tabs.streams", {
+              count: data.streamsCount,
+            })}
           </SubNavLink>
         ) : null}
         {tournament.isOrganizer(user) && !tournament.hasStarted && (
@@ -163,6 +166,7 @@ export default function TournamentLayout() {
               tournament,
               bracketExpanded,
               setBracketExpanded,
+              streamingParticipants: data.streamingParticipants,
             } satisfies TournamentContext
           }
         />
@@ -174,6 +178,7 @@ export default function TournamentLayout() {
 type TournamentContext = {
   tournament: Tournament;
   bracketExpanded: boolean;
+  streamingParticipants: number[];
   setBracketExpanded: (expanded: boolean) => void;
 };
 
@@ -186,4 +191,8 @@ export function useBracketExpanded() {
     useOutletContext<TournamentContext>();
 
   return { bracketExpanded, setBracketExpanded };
+}
+
+export function useStreamingParticipants() {
+  return useOutletContext<TournamentContext>().streamingParticipants;
 }

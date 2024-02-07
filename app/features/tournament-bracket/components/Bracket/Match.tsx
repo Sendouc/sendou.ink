@@ -1,11 +1,18 @@
 import type { Unpacked } from "~/utils/types";
 import type { TournamentData } from "../../core/Tournament.server";
-import { useTournament } from "~/features/tournament/routes/to.$id";
-import { Link } from "@remix-run/react";
-import { tournamentMatchPage } from "~/utils/urls";
+import {
+  useStreamingParticipants,
+  useTournament,
+} from "~/features/tournament/routes/to.$id";
+import { Link, useFetcher } from "@remix-run/react";
+import { tournamentMatchPage, tournamentStreamsPage } from "~/utils/urls";
 import clsx from "clsx";
 import { useUser } from "~/features/auth/core";
 import type { Bracket } from "../../core/Bracket";
+import { Popover } from "~/components/Popover";
+import * as React from "react";
+import type { TournamentStreamsLoader } from "~/features/tournament/routes/to.$id.streams";
+import { TournamentStream } from "~/features/tournament/components/TournamentStream";
 
 interface MatchProps {
   match: Unpacked<TournamentData["data"]["match"]>;
@@ -37,6 +44,9 @@ export function Match(props: MatchProps) {
 }
 
 function MatchHeader({ match, type, roundNumber, group }: MatchProps) {
+  const tournament = useTournament();
+  const streamingParticipants = useStreamingParticipants();
+
   const prefix = () => {
     if (type === "winners") return "WB ";
     if (type === "losers") return "LB ";
@@ -47,7 +57,26 @@ function MatchHeader({ match, type, roundNumber, group }: MatchProps) {
 
   const isOver =
     match.opponent1?.result === "win" || match.opponent2?.result === "win";
-  const hasStreams = !isOver && true; // xxx: resolve from loader data
+  const hasStreams = () => {
+    if (isOver || !match.opponent1?.id || !match.opponent2?.id) return false;
+    if (
+      tournament.ctx.castedMatchesInfo?.castedMatches.some(
+        (cm) => cm.matchId === match.id,
+      )
+    ) {
+      return true;
+    }
+
+    const matchParticipants = [match.opponent1.id, match.opponent2.id].flatMap(
+      (teamId) =>
+        tournament.teamById(teamId)?.members.map((m) => m.userId) ?? [],
+    );
+
+    return streamingParticipants.some((p) => matchParticipants.includes(p));
+  };
+  const toBeCasted =
+    !isOver &&
+    tournament.ctx.castedMatchesInfo?.lockedMatches?.includes(match.id);
 
   return (
     <div className="bracket__match__header">
@@ -55,8 +84,23 @@ function MatchHeader({ match, type, roundNumber, group }: MatchProps) {
         {prefix()}
         {roundNumber}.{match.number}
       </div>
-      {hasStreams ? (
-        <div className="bracket__match__header__box">🔴 LIVE</div>
+      {hasStreams() ? (
+        <Popover
+          buttonChildren={<>🔴 LIVE</>}
+          triggerClassName="bracket__match__header__box bracket__match__header__box__button"
+          contentClassName="w-max"
+          placement="top"
+        >
+          <MatchStreams match={match} />
+        </Popover>
+      ) : null}
+      {toBeCasted ? (
+        <Popover
+          buttonChildren={<>⚪ CAST</>}
+          triggerClassName="bracket__match__header__box bracket__match__header__box__button"
+        >
+          Match is scheduled to be casted
+        </Popover>
       ) : null}
     </div>
   );
@@ -144,6 +188,58 @@ function MatchRow({
         {team?.name ?? "???"}
       </div>{" "}
       <div className="bracket__match__score">{score()}</div>
+    </div>
+  );
+}
+
+function MatchStreams({ match }: Pick<MatchProps, "match">) {
+  const tournament = useTournament();
+  const fetcher = useFetcher<TournamentStreamsLoader>();
+
+  React.useEffect(() => {
+    if (fetcher.state !== "idle" || fetcher.data) return;
+    fetcher.load(`/to/${tournament.ctx.id}/streams`);
+  }, [fetcher, tournament.ctx.id]);
+
+  if (!fetcher.data || !match.opponent1?.id || !match.opponent2?.id)
+    return (
+      <div className="text-lighter text-center tournament-bracket__stream-popover">
+        Loading streams...
+      </div>
+    );
+
+  const castingAccount = tournament.ctx.castedMatchesInfo?.castedMatches.find(
+    (cm) => cm.matchId === match.id,
+  )?.twitchAccount;
+
+  const matchParticipants = [match.opponent1.id, match.opponent2.id].flatMap(
+    (teamId) => tournament.teamById(teamId)?.members.map((m) => m.userId) ?? [],
+  );
+
+  const streamsOfThisMatch = fetcher.data.streams.filter(
+    (stream) =>
+      (stream.userId && matchParticipants.includes(stream.userId)) ||
+      stream.twitchUserName === castingAccount,
+  );
+
+  if (streamsOfThisMatch.length === 0)
+    return (
+      <div className="tournament-bracket__stream-popover">
+        After all there seems to be no streams of this match. Check the{" "}
+        <Link to={tournamentStreamsPage(tournament.ctx.id)}>streams page</Link>{" "}
+        for all the available streams.
+      </div>
+    );
+
+  return (
+    <div className="stack md justify-center tournament-bracket__stream-popover">
+      {streamsOfThisMatch.map((stream) => (
+        <TournamentStream
+          key={stream.twitchUserName}
+          stream={stream}
+          withThumbnail={false}
+        />
+      ))}
     </div>
   );
 }

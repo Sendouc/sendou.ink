@@ -270,6 +270,9 @@ export const tournamentJoinPage = ({
 export const tournamentSubsPage = (tournamentId: number) => {
   return `/to/${tournamentId}/subs`;
 };
+export const tournamentStreamsPage = (tournamentId: number) => {
+  return `/to/${tournamentId}/streams`;
+};
 
 export const sendouQInviteLink = (inviteCode: string) =>
   `${SENDOUQ_PAGE}?${JOIN_CODE_SEARCH_PARAM_KEY}=${inviteCode}`;

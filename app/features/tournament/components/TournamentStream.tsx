@@ -8,10 +8,10 @@ import { useTournament } from "../routes/to.$id";
 
 export function TournamentStream({
   stream,
-  preview = "large",
+  withThumbnail = true,
 }: {
   stream: SerializeFrom<TournamentStreamsLoader>["streams"][number];
-  preview?: "small" | "large";
+  withThumbnail?: boolean;
 }) {
   const tournament = useTournament();
   const team = tournament.ctx.teams.find((team) =>
@@ -21,19 +21,21 @@ export function TournamentStream({
 
   return (
     <div key={stream.userId} className="stack sm">
-      <a
-        href={twitchUrl(stream.twitchUserName)}
-        target="_blank"
-        rel="noreferrer"
-      >
-        <img
-          alt=""
-          src={twitchThumbnailUrlToSrc(stream.thumbnailUrl)}
-          width={preview === "small" ? 160 : 320}
-          height={preview === "small" ? 90 : 180}
-        />
-      </a>
-      <div className="stack horizontal justify-between">
+      {withThumbnail ? (
+        <a
+          href={twitchUrl(stream.twitchUserName)}
+          target="_blank"
+          rel="noreferrer"
+        >
+          <img
+            alt=""
+            src={twitchThumbnailUrlToSrc(stream.thumbnailUrl)}
+            width={320}
+            height={180}
+          />
+        </a>
+      ) : null}
+      <div className="stack md horizontal justify-between">
         {user && team ? (
           <div className="tournament__stream__user-container">
             <Avatar size="xxs" user={user} /> {user.discordName}
@@ -41,8 +43,8 @@ export function TournamentStream({
           </div>
         ) : (
           <div className="tournament__stream__user-container">
-            Cast
-            <span className="text-lighter">{stream.twitchUserName}</span>
+            <Avatar size="xxs" url={tournament.logoSrc} />
+            Cast <span className="text-lighter">{stream.twitchUserName}</span>
           </div>
         )}
         <div className="tournament__stream__viewer-count">
@@ -50,6 +52,16 @@ export function TournamentStream({
           {stream.viewerCount}
         </div>
       </div>
+      {!withThumbnail ? (
+        <a
+          href={twitchUrl(stream.twitchUserName)}
+          target="_blank"
+          rel="noreferrer"
+          className="text-xxs text-semi-bold text-center"
+        >
+          Watch now
+        </a>
+      ) : null}
     </div>
   );
 }

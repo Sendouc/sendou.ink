@@ -330,7 +330,7 @@ const castedMatchesInfoByTournamentId = async (
       .executeTakeFirstOrThrow()
   ).castedMatchesInfo ??
   ({
-    castedMatches: {},
+    castedMatches: [],
     lockedMatches: [],
   } as CastedMatchesInfo);
 
@@ -403,21 +403,33 @@ export function setMatchAsCasted({
       tournamentId,
     );
 
+    let newCastedMatchesInfo: CastedMatchesInfo;
     if (twitchAccount === null) {
-      const previousTwitchAccount = Object.entries(
-        castedMatchesInfo.castedMatches,
-      ).find(([, value]) => value === matchId)?.[0];
-      if (previousTwitchAccount) {
-        delete castedMatchesInfo.castedMatches[previousTwitchAccount];
-      }
+      newCastedMatchesInfo = {
+        ...castedMatchesInfo,
+        castedMatches: castedMatchesInfo.castedMatches.filter(
+          (cm) => cm.matchId !== matchId,
+        ),
+      };
     } else {
-      castedMatchesInfo.castedMatches[twitchAccount] = matchId;
+      newCastedMatchesInfo = {
+        ...castedMatchesInfo,
+        castedMatches: castedMatchesInfo.castedMatches
+          .filter(
+            (cm) =>
+              // currently a match can only  be streamed by one account
+              // and a cast can only stream one match at a time
+              // these can change in the future
+              cm.matchId !== matchId && cm.twitchAccount !== twitchAccount,
+          )
+          .concat([{ twitchAccount, matchId }]),
+      };
     }
 
     await trx
       .updateTable("Tournament")
       .set({
-        castedMatchesInfo: JSON.stringify(castedMatchesInfo),
+        castedMatchesInfo: JSON.stringify(newCastedMatchesInfo),
       })
       .where("id", "=", tournamentId)
       .execute();

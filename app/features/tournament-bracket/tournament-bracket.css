@@ -441,7 +441,6 @@
   border-radius: var(--rounded);
   background-color: var(--bg-lighter);
   width: max-content;
-  margin: 0 auto;
 }
 
 .tournament-bracket__cast-info-container__label {
@@ -460,4 +459,8 @@
   padding-block: var(--s-2);
   display: flex;
   align-items: center;
+}
+
+.tournament-bracket__stream-popover {
+  width: 280px;
 }

@@ -146,7 +146,9 @@ function getRounds(props: EliminationBracketSideProps) {
       const isFinals = i === rounds.length - (props.type === "winners" ? 3 : 1);
       const isSemis = i === rounds.length - (props.type === "winners" ? 4 : 2);
 
-      return `${namePrefix}${isFinals ? "Finals" : isSemis ? "Semis" : `Round ${i + 1}`}`;
+      return `${namePrefix}${
+        isFinals ? "Finals" : isSemis ? "Semis" : `Round ${i + 1}`
+      }`;
     };
 
     return {

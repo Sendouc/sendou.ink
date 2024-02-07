@@ -29,6 +29,10 @@
   border: 0;
 }
 
+.bracket__match__header__box__button {
+  height: 18.86px;
+}
+
 .bracket__match {
   width: var(--match-width);
   min-height: var(--match-height);
@@ -130,6 +134,7 @@ a.bracket__match:hover {
   font-weight: var(--semi-bold);
   min-width: max-content;
   overflow-x: auto;
+  max-width: 600px;
 }
 
 .rr__placements-table thead {
