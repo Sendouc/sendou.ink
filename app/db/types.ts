@@ -307,8 +307,6 @@ export enum Status {
  * Participants can be teams or individuals. */
 export interface TournamentMatch {
   id: number;
-  /** Not used */
-  childCount: number;
   bestOf: 3 | 5 | 7;
   roundId: number;
   stageId: number;

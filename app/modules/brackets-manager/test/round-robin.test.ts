@@ -2,7 +2,6 @@ import { InMemoryDatabase } from "~/modules/brackets-memory-db";
 import { BracketsManager } from "../manager";
 import { suite } from "uvu";
 import * as assert from "uvu/assert";
-import { Status } from "~/db/types";
 
 const storage = new InMemoryDatabase();
 const manager = new BracketsManager(storage);
@@ -257,21 +256,6 @@ UpdateRoundRobinScores.before.each(() => {
     seeding: ["Team 1", "Team 2", "Team 3", "Team 4"],
     settings: { groupCount: 1 },
   });
-});
-
-UpdateRoundRobinScores("should set two forfeits for the match", () => {
-  manager.update.match({
-    id: 0,
-    opponent1: { forfeit: true },
-    opponent2: { forfeit: true },
-  });
-
-  const after = storage.select<any>("match", 0);
-  assert.equal(after.status, Status.Completed);
-  assert.equal(after.opponent1.forfeit, true);
-  assert.equal(after.opponent2.forfeit, true);
-  assert.equal(after.opponent1.result, undefined);
-  assert.equal(after.opponent2.result, undefined);
 });
 
 const ExampleUseCase = suite("Example use-case");

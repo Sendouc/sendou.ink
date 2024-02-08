@@ -77,11 +77,14 @@ export abstract class Bracket {
     this.createdSimulation();
   }
 
-  // xxx: http://localhost:5800/to/3/brackets?idx=0 Bracket.createdSimulation:  TypeError: Cannot read properties of null (reading 'id')
-  // xxx: make lazy..? or render bracket only in browser
   // xxx: match class with nice helpers to remove copy-paste?
   private createdSimulation() {
-    if (this.type === "round_robin" || this.preview) return;
+    if (
+      this.type === "round_robin" ||
+      this.preview ||
+      this.tournament.ctx.isFinalized
+    )
+      return;
 
     try {
       const manager = getTournamentManager("IN_MEMORY");
@@ -153,14 +156,15 @@ export abstract class Bracket {
 
     for (const match of this.data.match) {
       if (
-        match.opponent1?.result !== "win" &&
-        match.opponent2?.result !== "win"
+        !match.opponent1?.id ||
+        !match.opponent2?.id ||
+        (match.opponent1?.result !== "win" && match.opponent2?.result !== "win")
       ) {
         continue;
       }
 
-      const opponent1Seed = result.get(match.opponent1!.id!) ?? -1;
-      const opponent2Seed = result.get(match.opponent2!.id!) ?? -1;
+      const opponent1Seed = result.get(match.opponent1.id) ?? -1;
+      const opponent2Seed = result.get(match.opponent2.id) ?? -1;
       if (opponent1Seed === -1 || opponent2Seed === -1) {
         console.error("opponent1Seed or opponent2Seed not found");
         continue;
@@ -175,11 +179,11 @@ export abstract class Bracket {
       }
 
       if (opponent1Seed < opponent2Seed) {
-        result.set(match.opponent1!.id!, opponent1Seed + 0.1);
-        result.set(match.opponent2!.id!, opponent1Seed);
+        result.set(match.opponent1.id, opponent1Seed + 0.1);
+        result.set(match.opponent2.id, opponent1Seed);
       } else {
-        result.set(match.opponent2!.id!, opponent2Seed + 0.1);
-        result.set(match.opponent1!.id!, opponent2Seed);
+        result.set(match.opponent2.id, opponent2Seed + 0.1);
+        result.set(match.opponent1.id, opponent2Seed);
       }
     }
 

@@ -2,6 +2,7 @@ import { useTournament } from "~/features/tournament/routes/to.$id";
 import type { Bracket as BracketType } from "../../core/Bracket";
 import { Match } from "./Match";
 import { RoundHeader } from "./RoundHeader";
+import clsx from "clsx";
 
 interface EliminationBracketSideProps {
   bracket: BracketType;
@@ -52,7 +53,14 @@ export function EliminationBracketSide(props: EliminationBracketSideProps) {
               bestOf={bestOf}
               showInfos={someMatchOngoing}
             />
-            <div className="elim-bracket__round-matches-container">
+            <div
+              className={clsx("elim-bracket__round-matches-container", {
+                "elim-bracket__round-matches-container__top-bye":
+                  props.type === "winners" &&
+                  (!props.bracket.data.match[0].opponent1 ||
+                    !props.bracket.data.match[0].opponent2),
+              })}
+            >
               {matches.map((match) => (
                 <Match
                   key={match.id}

@@ -29,6 +29,7 @@ export type Result = Unpacked<
   SerializeFrom<TournamentMatchLoaderData>["results"]
 >;
 
+// xxx: chat loses focus when match updates?
 // TODO: rename (since it now contains Chat as well)
 export function ScoreReporter({
   teams,
@@ -107,60 +108,53 @@ export function ScoreReporter({
 
   return (
     <div className="tournament-bracket__during-match-actions">
-      {!matchIsLocked({
-        matchId: data.match.id,
-        scores: [scoreOne, scoreTwo],
-        tournament,
-      }) ? (
-        <>
-          <FancyStageBanner
-            stage={currentStageWithMode}
-            infos={roundInfos}
-            teams={teams}
-          >
-            {currentPosition > 0 && !presentational && type === "EDIT" && (
-              <Form method="post">
-                <input
-                  type="hidden"
-                  name="position"
-                  value={currentPosition - 1}
-                />
-                <div className="tournament-bracket__stage-banner__bottom-bar">
-                  <SubmitButton
-                    _action="UNDO_REPORT_SCORE"
-                    className="tournament-bracket__stage-banner__undo-button"
-                    testId="undo-score-button"
-                  >
-                    {t("tournament:match.action.undoLastScore")}
-                  </SubmitButton>
-                </div>
-              </Form>
-            )}
-            {tournament.isOrganizer(user) &&
-              tournament.matchCanBeReopened(data.match.id) &&
-              presentational && (
-                <Form method="post">
-                  <div className="tournament-bracket__stage-banner__bottom-bar">
-                    <SubmitButton
-                      _action="REOPEN_MATCH"
-                      className="tournament-bracket__stage-banner__undo-button"
-                      testId="reopen-match-button"
-                    >
-                      {t("tournament:match.action.reopenMatch")}
-                    </SubmitButton>
-                  </div>
-                </Form>
-              )}
-          </FancyStageBanner>
-          <ModeProgressIndicator
-            modes={modes}
-            scores={[scoreOne, scoreTwo]}
-            bestOf={data.match.bestOf}
-            selectedResultIndex={selectedResultIndex}
-            setSelectedResultIndex={setSelectedResultIndex}
-          />
-        </>
-      ) : null}
+      <FancyStageBanner
+        stage={currentStageWithMode}
+        infos={roundInfos}
+        teams={teams}
+        matchIsLocked={matchIsLocked({
+          matchId: data.match.id,
+          scores: [scoreOne, scoreTwo],
+          tournament,
+        })}
+      >
+        {currentPosition > 0 && !presentational && type === "EDIT" && (
+          <Form method="post">
+            <input type="hidden" name="position" value={currentPosition - 1} />
+            <div className="tournament-bracket__stage-banner__bottom-bar">
+              <SubmitButton
+                _action="UNDO_REPORT_SCORE"
+                className="tournament-bracket__stage-banner__undo-button"
+                testId="undo-score-button"
+              >
+                {t("tournament:match.action.undoLastScore")}
+              </SubmitButton>
+            </div>
+          </Form>
+        )}
+        {tournament.isOrganizer(user) &&
+          tournament.matchCanBeReopened(data.match.id) &&
+          presentational && (
+            <Form method="post">
+              <div className="tournament-bracket__stage-banner__bottom-bar">
+                <SubmitButton
+                  _action="REOPEN_MATCH"
+                  className="tournament-bracket__stage-banner__undo-button"
+                  testId="reopen-match-button"
+                >
+                  {t("tournament:match.action.reopenMatch")}
+                </SubmitButton>
+              </div>
+            </Form>
+          )}
+      </FancyStageBanner>
+      <ModeProgressIndicator
+        modes={modes}
+        scores={[scoreOne, scoreTwo]}
+        bestOf={data.match.bestOf}
+        selectedResultIndex={selectedResultIndex}
+        setSelectedResultIndex={setSelectedResultIndex}
+      />
       {type === "EDIT" || presentational ? (
         <MatchActionSectionTabs
           presentational={presentational}
@@ -191,11 +185,13 @@ function FancyStageBanner({
   infos,
   children,
   teams,
+  matchIsLocked,
 }: {
   stage: TournamentMapListMap;
   infos?: (JSX.Element | null)[];
   children?: React.ReactNode;
   teams: [TournamentDataTeam, TournamentDataTeam];
+  matchIsLocked: boolean;
 }) {
   const { t } = useTranslation(["game-misc", "tournament"]);
 
@@ -225,33 +221,44 @@ function FancyStageBanner({
 
   return (
     <>
-      <div
-        className={clsx("tournament-bracket__stage-banner", {
-          rounded: !infos,
-        })}
-        style={style as any}
-      >
-        <div className="tournament-bracket__stage-banner__top-bar">
-          <h4 className="tournament-bracket__stage-banner__top-bar__header">
-            <Image
-              className="tournament-bracket__stage-banner__top-bar__mode-image"
-              path={modeImageUrl(stage.mode)}
-              alt=""
-              width={24}
-            />
-            <span className="tournament-bracket__stage-banner__top-bar__map-text-small">
-              {t(`game-misc:MODE_SHORT_${stage.mode}`)}{" "}
-              {t(`game-misc:STAGE_${stage.stageId}`)}
-            </span>
-            <span className="tournament-bracket__stage-banner__top-bar__map-text-big">
-              {t(`game-misc:MODE_LONG_${stage.mode}`)} on{" "}
-              {t(`game-misc:STAGE_${stage.stageId}`)}
-            </span>
-          </h4>
-          <h4>{pickInfoText()}</h4>
+      {matchIsLocked ? (
+        <div className="tournament-bracket__locked-banner">
+          <div className="stack sm items-center">
+            <div className="text-lg text-center font-bold">
+              Match locked to be casted
+            </div>
+            <div>Please wait for staff to unlock</div>
+          </div>
         </div>
-        {children}
-      </div>
+      ) : (
+        <div
+          className={clsx("tournament-bracket__stage-banner", {
+            rounded: !infos,
+          })}
+          style={style as any}
+        >
+          <div className="tournament-bracket__stage-banner__top-bar">
+            <h4 className="tournament-bracket__stage-banner__top-bar__header">
+              <Image
+                className="tournament-bracket__stage-banner__top-bar__mode-image"
+                path={modeImageUrl(stage.mode)}
+                alt=""
+                width={24}
+              />
+              <span className="tournament-bracket__stage-banner__top-bar__map-text-small">
+                {t(`game-misc:MODE_SHORT_${stage.mode}`)}{" "}
+                {t(`game-misc:STAGE_${stage.stageId}`)}
+              </span>
+              <span className="tournament-bracket__stage-banner__top-bar__map-text-big">
+                {t(`game-misc:MODE_LONG_${stage.mode}`)} on{" "}
+                {t(`game-misc:STAGE_${stage.stageId}`)}
+              </span>
+            </h4>
+            <h4>{pickInfoText()}</h4>
+          </div>
+          {children}
+        </div>
+      )}
       {infos && (
         <div className="tournament-bracket__infos">
           {infos.filter(Boolean).map((info, i) => (
@@ -354,6 +361,7 @@ function MatchActionSectionTabs({
   }, [data, tournament]);
 
   const showChat =
+    !tournament.ctx.isFinalized &&
     data.match.chatCode &&
     (data.match.players.some((p) => p.id === user?.id) ||
       tournament.isOrganizerOrStreamer(user));
@@ -389,7 +397,7 @@ function MatchActionSectionTabs({
   const currentPosition = scores[0] + scores[1];
 
   return (
-    <ActionSectionWrapper>
+    <ActionSectionWrapper topPadded={!showChat}>
       <NewTabs
         tabs={[
           {
@@ -453,11 +461,13 @@ function MatchActionSectionTabs({
 function ActionSectionWrapper({
   children,
   icon,
+  topPadded,
   ...rest
 }: {
   children: React.ReactNode;
   icon?: "warning" | "info" | "success" | "error";
   "justify-center"?: boolean;
+  topPadded?: boolean;
 }) {
   // todo: flex-dir: column on mobile
   const style = icon
@@ -470,6 +480,7 @@ function ActionSectionWrapper({
       <div
         className={clsx("tournament__action-section__content", {
           "justify-center": rest["justify-center"],
+          "pt-3": topPadded,
         })}
       >
         {children}

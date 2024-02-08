@@ -1,7 +1,6 @@
 import type {
   Group,
   Match,
-  MatchGame,
   Participant,
   Round,
   SeedOrdering,
@@ -52,11 +51,6 @@ export type Side = "opponent1" | "opponent2";
 export type Scores = { opponent1: number; opponent2: number };
 
 /**
- * The possible levels of data to which we can update the child games count.
- */
-export type ChildCountLevel = "stage" | "group" | "round" | "match";
-
-/**
  * Positional information about a round.
  */
 export type RoundPositionalInfo = {
@@ -96,7 +90,6 @@ export interface DataTypes {
   group: Group;
   round: Round;
   match: Match;
-  match_game: MatchGame;
   participant: Participant;
 }
 

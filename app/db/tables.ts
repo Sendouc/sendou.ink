@@ -418,7 +418,6 @@ export interface TournamentGroup {
 export interface TournamentMatch {
   bestOf: Generated<3 | 5 | 7>;
   chatCode: string | null;
-  childCount: number;
   groupId: number;
   id: GeneratedAlways<number>;
   number: number;

@@ -473,12 +473,16 @@ function AddSubsPopOver() {
   );
 }
 
+const MAX_PLACEMENT_TO_SHOW = 7;
+
 function FinalStandings() {
   const tournament = useTournament();
   const { t } = useTranslation(["tournament"]);
   const [viewAll, setViewAll] = React.useState(false);
 
-  const standings = tournament.standings;
+  const standings = tournament.standings.filter(
+    (s) => s.placement <= MAX_PLACEMENT_TO_SHOW,
+  );
 
   if (standings.length < 2) {
     console.error("Unexpectedly few standings");

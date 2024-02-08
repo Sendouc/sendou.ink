@@ -15,7 +15,7 @@ import { Reset } from "./reset";
 import * as helpers from "./helpers";
 
 /**
- * A class to handle tournament management at those levels: `stage`, `group`, `round`, `match` and `match_game`.
+ * A class to handle tournament management at those levels: `stage`, `group`, `round` and `match`.
  */
 export class BracketsManager {
   public storage: Storage;
@@ -102,11 +102,6 @@ export class BracketsManager {
       throw Error("Could not empty the match table.");
     if (!this.storage.insert("match", data.match))
       throw Error("Could not import matches.");
-
-    if (!this.storage.delete("match_game"))
-      throw Error("Could not empty the match_game table.");
-    if (!this.storage.insert("match_game", data.match_game))
-      throw Error("Could not import match games.");
   }
 
   /**
@@ -128,15 +123,12 @@ export class BracketsManager {
     const matches = this.storage.select("match");
     if (!matches) throw Error("Error getting matches.");
 
-    const matchGames = this.get.matchGames(matches);
-
     return {
       participant: participants,
       stage: stages,
       group: groups,
       round: rounds,
       match: matches,
-      match_game: matchGames,
     };
   }
 }

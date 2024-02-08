@@ -1,6 +1,5 @@
 import type {
   Match,
-  MatchGame,
   Seeding,
   Stage,
   GroupType,
@@ -74,33 +73,6 @@ export class BaseUpdater extends BaseGetter {
     create.setExisting(stageId, true);
 
     create.run();
-  }
-
-  /**
-   * Updates a parent match based on its child games.
-   *
-   * @param parentId ID of the parent match.
-   * @param inRoundRobin Indicates whether the parent match is in a round-robin stage.
-   */
-  protected updateParentMatch(parentId: number, inRoundRobin: boolean): void {
-    const storedParent = this.storage.select("match", parentId);
-    if (!storedParent) throw Error("Parent not found.");
-
-    const games = this.storage.select("match_game", {
-      parent_id: parentId,
-    });
-    if (!games) throw Error("No match games.");
-
-    const parentScores = helpers.getChildGamesResults(games);
-    const parent = helpers.getParentMatchResults(storedParent, parentScores);
-
-    helpers.setParentMatchCompleted(
-      parent,
-      storedParent.child_count,
-      inRoundRobin,
-    );
-
-    this.updateMatch(storedParent, parent, true);
   }
 
   /**
@@ -195,32 +167,6 @@ export class BaseUpdater extends BaseGetter {
   }
 
   /**
-   * Updates a match game based on a partial match game.
-   *
-   * @param stored A reference to what will be updated in the storage.
-   * @param game Input of the update.
-   */
-  protected updateMatchGame(
-    stored: MatchGame,
-    game: DeepPartial<MatchGame>,
-  ): void {
-    if (helpers.isMatchUpdateLocked(stored))
-      throw Error("The match game is locked.");
-
-    const stage = this.storage.select("stage", stored.stage_id);
-    if (!stage) throw Error("Stage not found.");
-
-    const inRoundRobin = helpers.isRoundRobin(stage);
-
-    helpers.setMatchResults(stored, game, inRoundRobin);
-
-    if (!this.storage.update("match_game", stored.id, stored))
-      throw Error("Could not update the match game.");
-
-    this.updateParentMatch(stored.parent_id, inRoundRobin);
-  }
-
-  /**
    * Updates the opponents and status of a match and its child games.
    *
    * @param match A match.
@@ -228,26 +174,6 @@ export class BaseUpdater extends BaseGetter {
   protected applyMatchUpdate(match: Match): void {
     if (!this.storage.update("match", match.id, match))
       throw Error("Could not update the match.");
-
-    if (match.child_count === 0) return;
-
-    const updatedMatchGame: Partial<MatchGame> = {
-      opponent1: helpers.toResult(match.opponent1),
-      opponent2: helpers.toResult(match.opponent2),
-    };
-
-    // Only sync the child games' status with their parent's status when changing the parent match participants
-    // (Locked, Waiting, Ready).
-    if (match.status <= Status.Ready) updatedMatchGame.status = match.status;
-
-    if (
-      !this.storage.update(
-        "match_game",
-        { parent_id: match.id },
-        updatedMatchGame,
-      )
-    )
-      throw Error("Could not update the match game.");
   }
 
   /**

@@ -1,8 +1,7 @@
-import type { DeepPartial, Storage, RoundPositionalInfo } from "../types";
+import type { Storage, RoundPositionalInfo } from "../types";
 import type {
   Group,
   Match,
-  MatchGame,
   Round,
   SeedOrdering,
   Stage,
@@ -703,30 +702,5 @@ export class BaseGetter {
     if (!match) throw Error("Match not found.");
 
     return match;
-  }
-
-  /**
-   * Finds a match game based on its `id` or based on the combination of its `parent_id` and `number`.
-   *
-   * @param game Values to change in a match game.
-   */
-  protected findMatchGame(game: DeepPartial<MatchGame>): MatchGame {
-    if (game.id !== undefined) {
-      const stored = this.storage.select("match_game", game.id);
-      if (!stored) throw Error("Match game not found.");
-      return stored;
-    }
-
-    if (game.parent_id !== undefined && game.number) {
-      const stored = this.storage.selectFirst("match_game", {
-        parent_id: game.parent_id,
-        number: game.number,
-      });
-
-      if (!stored) throw Error("Match game not found.");
-      return stored;
-    }
-
-    throw Error("No match game id nor parent id and number given.");
   }
 }

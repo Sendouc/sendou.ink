@@ -34,6 +34,17 @@
   font-size: var(--fonts-xxs);
 }
 
+.tournament-bracket__locked-banner {
+  width: 100%;
+  height: 10rem;
+  background-color: var(--bg-lightest-solid);
+  border-start-end-radius: var(--rounded);
+  border-start-start-radius: var(--rounded);
+  grid-area: img;
+  display: grid;
+  place-items: center;
+}
+
 .tournament-bracket__stage-banner {
   display: flex;
   width: 100%;

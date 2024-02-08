@@ -2,7 +2,6 @@ import type {
   Group,
   InputStage,
   Match,
-  MatchGame,
   Participant,
   Round,
   Seeding,
@@ -68,9 +67,6 @@ export class Create {
 
     if (stage.type === "double_elimination")
       this.stage.settings.grandFinal = this.stage.settings.grandFinal || "none";
-
-    this.stage.settings.matchesChildCount =
-      this.stage.settings.matchesChildCount || 0;
   }
 
   /**
@@ -393,8 +389,6 @@ export class Create {
     matchCount: number,
     duels: Duel[],
   ): void {
-    const matchesChildCount = this.getMatchesChildCount();
-
     const roundId = this.insertRound({
       number: roundNumber,
       stage_id: stageId,
@@ -404,28 +398,17 @@ export class Create {
     if (roundId === -1) throw Error("Could not insert the round.");
 
     for (let i = 0; i < matchCount; i++)
-      this.createMatch(
-        stageId,
-        groupId,
-        roundId,
-        i + 1,
-        duels[i],
-        matchesChildCount,
-      );
+      this.createMatch(stageId, groupId, roundId, i + 1, duels[i]);
   }
 
   /**
    * Creates a match, possibly with match games.
-   *
-   * - If `childCount` is 0, then there is no children. The score of the match is directly its intrinsic score.
-   * - If `childCount` is greater than 0, then the score of the match will automatically be calculated based on its child games.
    *
    * @param stageId ID of the parent stage.
    * @param groupId ID of the parent group.
    * @param roundId ID of the parent round.
    * @param matchNumber Number in the round.
    * @param opponents The two opponents matching against each other.
-   * @param childCount Child count for this match (number of games).
    */
   private createMatch(
     stageId: number,
@@ -433,7 +416,6 @@ export class Create {
     roundId: number,
     matchNumber: number,
     opponents: Duel,
-    childCount: number,
   ): void {
     const opponent1 = helpers.toResultWithPosition(opponents[0]);
     const opponent2 = helpers.toResultWithPosition(opponents[1]);
@@ -455,10 +437,6 @@ export class Create {
         number: matchNumber,
       });
 
-      const currentChildCount = existing?.child_count;
-      childCount =
-        currentChildCount === undefined ? childCount : currentChildCount;
-
       if (existing) {
         // Keep the most advanced status when updating a match.
         const existingStatus = helpers.getMatchStatus(existing);
@@ -472,7 +450,6 @@ export class Create {
         stage_id: stageId,
         group_id: groupId,
         round_id: roundId,
-        child_count: childCount,
         status: status,
         opponent1,
         opponent2,
@@ -481,19 +458,6 @@ export class Create {
     );
 
     if (parentId === -1) throw Error("Could not insert the match.");
-
-    for (let i = 0; i < childCount; i++) {
-      const id = this.insertMatchGame({
-        number: i + 1,
-        stage_id: stageId,
-        parent_id: parentId,
-        status: status,
-        opponent1: helpers.toResult(opponents[0]),
-        opponent2: helpers.toResult(opponents[1]),
-      });
-
-      if (id === -1) throw Error("Could not insert the match game.");
-    }
   }
 
   /**
@@ -680,15 +644,6 @@ export class Create {
 
     const maxNumber = Math.max(...stageNumbers);
     return maxNumber + 1;
-  }
-
-  /**
-   * Safely gets `matchesChildCount` in the stage input settings.
-   */
-  private getMatchesChildCount(): number {
-    if (!this.stage.settings?.matchesChildCount) return 0;
-
-    return this.stage.settings.matchesChildCount;
   }
 
   /**
@@ -892,34 +847,6 @@ export class Create {
     ) as Match;
     if (!this.storage.update("match", existing.id, updated))
       throw Error("Could not update the match.");
-
-    return existing.id;
-  }
-
-  /**
-   * Inserts a match game or finds an existing one (and updates it).
-   *
-   * @param matchGame The match game to insert.
-   */
-  private insertMatchGame(matchGame: OmitId<MatchGame>): number {
-    let existing: MatchGame | null = null;
-
-    if (this.updateMode) {
-      existing = this.storage.selectFirst("match_game", {
-        parent_id: matchGame.parent_id,
-        number: matchGame.number,
-      });
-    }
-
-    if (!existing) return this.storage.insert("match_game", matchGame);
-
-    const updated = helpers.getUpdatedMatchResults(
-      matchGame,
-      existing,
-      this.enableByesInUpdate,
-    ) as MatchGame;
-    if (!this.storage.update("match_game", existing.id, updated))
-      throw Error("Could not update the match game.");
 
     return existing.id;
   }

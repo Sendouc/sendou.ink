@@ -100,9 +100,12 @@ a.bracket__match:hover {
   flex-direction: column;
   justify-content: space-around;
   gap: var(--s-7);
-  /** xxx: skip this for the side if no topmost match (or even negative) */
   margin-top: var(--s-6);
   flex: 1;
+}
+
+.elim-bracket__round-matches-container__top-bye {
+  margin-top: -18px;
 }
 
 .elim-bracket__round-header {

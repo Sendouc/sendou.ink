@@ -1,6 +1,5 @@
 import type {
   Match,
-  MatchGame,
   Round,
   Seeding,
   SeedOrdering,
@@ -8,7 +7,7 @@ import type {
 import { Status } from "~/modules/brackets-model";
 import { ordering } from "./ordering";
 import { BaseUpdater } from "./base/updater";
-import type { ChildCountLevel, DeepPartial } from "./types";
+import type { DeepPartial } from "./types";
 import * as helpers from "./helpers";
 
 export class Update extends BaseUpdater {
@@ -26,21 +25,6 @@ export class Update extends BaseUpdater {
     if (!stored) throw Error("Match not found.");
 
     this.updateMatch(stored, match);
-  }
-
-  /**
-   * Updates partial information of a match game. Its id must be given.
-   *
-   * This will update the parent match accordingly.
-   *
-   * @param game Values to change in a match game.
-   */
-  public matchGame<G extends MatchGame = MatchGame>(
-    game: DeepPartial<G>,
-  ): void {
-    const stored = this.findMatchGame(game);
-
-    this.updateMatchGame(stored, game);
   }
 
   /**
@@ -79,39 +63,6 @@ export class Update extends BaseUpdater {
     helpers.ensureNotRoundRobin(stage);
 
     this.updateRoundOrdering(round, method);
-  }
-
-  /**
-   * Updates child count of all matches of a given level.
-   *
-   * @param level The level at which to act.
-   * @param id ID of the chosen level.
-   * @param childCount The target child count.
-   */
-  public matchChildCount(
-    level: ChildCountLevel,
-    id: number,
-    childCount: number,
-  ): void {
-    switch (level) {
-      case "stage":
-        this.updateStageMatchChildCount(id, childCount);
-        break;
-      case "group":
-        this.updateGroupMatchChildCount(id, childCount);
-        break;
-      case "round":
-        this.updateRoundMatchChildCount(id, childCount);
-        break;
-      case "match":
-        // eslint-disable-next-line no-case-declarations
-        const match = this.storage.select("match", id);
-        if (!match) throw Error("Match not found.");
-        this.adjustMatchChildGames(match, childCount);
-        break;
-      default:
-        throw Error("Unknown child count level.");
-    }
   }
 
   /**
@@ -169,81 +120,6 @@ export class Update extends BaseUpdater {
   }
 
   /**
-   * Updates child count of all matches of a stage.
-   *
-   * @param stageId ID of the stage.
-   * @param childCount The target child count.
-   */
-  private updateStageMatchChildCount(
-    stageId: number,
-    childCount: number,
-  ): void {
-    if (
-      !this.storage.update(
-        "match",
-        { stage_id: stageId },
-        { child_count: childCount },
-      )
-    )
-      throw Error("Could not update the match.");
-
-    const matches = this.storage.select("match", { stage_id: stageId });
-    if (!matches) throw Error("This stage has no match.");
-
-    for (const match of matches) this.adjustMatchChildGames(match, childCount);
-  }
-
-  /**
-   * Updates child count of all matches of a group.
-   *
-   * @param groupId ID of the group.
-   * @param childCount The target child count.
-   */
-  private updateGroupMatchChildCount(
-    groupId: number,
-    childCount: number,
-  ): void {
-    if (
-      !this.storage.update(
-        "match",
-        { group_id: groupId },
-        { child_count: childCount },
-      )
-    )
-      throw Error("Could not update the match.");
-
-    const matches = this.storage.select("match", { group_id: groupId });
-    if (!matches) throw Error("This group has no match.");
-
-    for (const match of matches) this.adjustMatchChildGames(match, childCount);
-  }
-
-  /**
-   * Updates child count of all matches of a round.
-   *
-   * @param roundId ID of the round.
-   * @param childCount The target child count.
-   */
-  private updateRoundMatchChildCount(
-    roundId: number,
-    childCount: number,
-  ): void {
-    if (
-      !this.storage.update(
-        "match",
-        { round_id: roundId },
-        { child_count: childCount },
-      )
-    )
-      throw Error("Could not update the match.");
-
-    const matches = this.storage.select("match", { round_id: roundId });
-    if (!matches) throw Error("This round has no match.");
-
-    for (const match of matches) this.adjustMatchChildGames(match, childCount);
-  }
-
-  /**
    * Updates the ordering of participants in a round's matches.
    *
    * @param roundNumber The number of the round.
@@ -266,54 +142,5 @@ export class Update extends BaseUpdater {
       if (!this.storage.update("match", updated.id, updated))
         throw Error("Could not update the match.");
     }
-  }
-
-  /**
-   * Adds or deletes match games of a match based on a target child count.
-   *
-   * @param match The match of which child games need to be adjusted.
-   * @param targetChildCount The target child count.
-   */
-  private adjustMatchChildGames(match: Match, targetChildCount: number): void {
-    const games = this.storage.select("match_game", {
-      parent_id: match.id,
-    });
-    let childCount = games ? games.length : 0;
-
-    while (childCount < targetChildCount) {
-      const id = this.storage.insert("match_game", {
-        number: childCount + 1,
-        stage_id: match.stage_id,
-        parent_id: match.id,
-        status: match.status,
-        opponent1: { id: null },
-        opponent2: { id: null },
-      });
-
-      if (id === -1)
-        throw Error("Could not adjust the match games when inserting.");
-
-      childCount++;
-    }
-
-    while (childCount > targetChildCount) {
-      const deleted = this.storage.delete("match_game", {
-        parent_id: match.id,
-        number: childCount,
-      });
-
-      if (!deleted)
-        throw Error("Could not adjust the match games when deleting.");
-
-      childCount--;
-    }
-
-    if (
-      !this.storage.update("match", match.id, {
-        ...match,
-        child_count: targetChildCount,
-      })
-    )
-      throw Error("Could not update the match.");
   }
 }

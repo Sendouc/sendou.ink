@@ -227,7 +227,7 @@ function PointInput({
         data-testid={testId}
       />
       <Label htmlFor={id} spaced={false}>
-        Points
+        Score
       </Label>
     </div>
   );

@@ -365,16 +365,15 @@ const match_getByRoundAndNumberStm = sql.prepare(/*sql*/ `
 const match_insertStm = sql.prepare(/*sql*/ `
   insert into
     "TournamentMatch"
-    ("childCount", "roundId", "stageId", "groupId", "number", "opponentOne", "opponentTwo", "status", "chatCode")
+    ("roundId", "stageId", "groupId", "number", "opponentOne", "opponentTwo", "status", "chatCode")
   values
-    (@childCount, @roundId, @stageId, @groupId, @number, @opponentOne, @opponentTwo, @status, @chatCode)
+    (@roundId, @stageId, @groupId, @number, @opponentOne, @opponentTwo, @status, @chatCode)
   returning *
 `);
 
 const match_updateStm = sql.prepare(/*sql*/ `
   update "TournamentMatch"
     set
-      "childCount" = @childCount,
       "roundId" = @roundId,
       "stageId" = @stageId,
       "groupId" = @groupId,
@@ -388,7 +387,6 @@ const match_updateStm = sql.prepare(/*sql*/ `
 
 export class Match {
   id?: TournamentMatch["id"];
-  childCount: TournamentMatch["childCount"];
   roundId: TournamentMatch["roundId"];
   stageId: TournamentMatch["stageId"];
   groupId: TournamentMatch["groupId"];
@@ -404,7 +402,6 @@ export class Match {
     groupId: TournamentMatch["groupId"],
     roundId: TournamentMatch["roundId"],
     number: TournamentMatch["number"],
-    childCount: TournamentMatch["childCount"],
     _unknown1: null,
     _unknown2: null,
     _unknown3: null,
@@ -412,7 +409,6 @@ export class Match {
     opponentTwo: TournamentMatch["opponentTwo"],
   ) {
     this.id = id;
-    this.childCount = childCount;
     this.roundId = roundId;
     this.stageId = stageId;
     this.groupId = groupId;
@@ -431,7 +427,6 @@ export class Match {
   ): MatchType {
     return {
       id: rawMatch.id,
-      child_count: rawMatch.childCount,
       group_id: rawMatch.groupId,
       number: rawMatch.number,
       opponent1:
@@ -478,7 +473,6 @@ export class Match {
 
   insert() {
     const match = match_insertStm.get({
-      childCount: this.childCount,
       roundId: this.roundId,
       stageId: this.stageId,
       groupId: this.groupId,
@@ -497,7 +491,6 @@ export class Match {
   update() {
     match_updateStm.run({
       id: this.id,
-      childCount: this.childCount,
       roundId: this.roundId,
       stageId: this.stageId,
       groupId: this.groupId,

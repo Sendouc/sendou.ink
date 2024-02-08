@@ -13,7 +13,6 @@ export class InMemoryDatabase implements CrudInterface {
     group: [],
     round: [],
     match: [],
-    match_game: [],
   };
 
   /**
@@ -46,7 +45,6 @@ export class InMemoryDatabase implements CrudInterface {
       group: [],
       round: [],
       match: [],
-      match_game: [],
     };
   }
 

@@ -149,13 +149,12 @@ CreateSingleEliminationStage(
         "Team 7",
         "Team 8",
       ],
-      settings: { seedOrdering: ["natural"], matchesChildCount: 3 },
+      settings: { seedOrdering: ["natural"] },
     });
 
     assert.equal(storage.select<any>("group")!.length, 1);
     assert.equal(storage.select<any>("round")!.length, 3);
     assert.equal(storage.select<any>("match")!.length, 7);
-    assert.equal(storage.select<any>("match_game")!.length, 7 * 3);
   },
 );
 

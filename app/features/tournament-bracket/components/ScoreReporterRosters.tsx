@@ -201,7 +201,7 @@ function ReportScoreButtons({
   ) {
     return (
       <p className="tournament-bracket__during-match-actions__amount-warning-paragraph">
-        Winner should have more points than loser
+        Winner should have higher score than loser
       </p>
     );
   }
@@ -213,7 +213,7 @@ function ReportScoreButtons({
   ) {
     return (
       <p className="tournament-bracket__during-match-actions__amount-warning-paragraph">
-        If there was a KO (100 points), other team should have 0 points
+        If there was a KO (100 score), other team should have 0 score
       </p>
     );
   }

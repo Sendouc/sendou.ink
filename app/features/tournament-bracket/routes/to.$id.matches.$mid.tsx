@@ -358,9 +358,6 @@ export const loader = ({ params }: LoaderFunctionArgs) => {
   };
 };
 
-// xxx: when match is locked still show room pass + pool?
-// xxx: rename points -> score to match ingame in the UI?
-// xxx: lacks padding on top as non-admin http://localhost:5800/to/10/matches/997
 // xxx: checkbox "set will be over & locked" when reporting last score?
 export default function TournamentMatchPage() {
   const user = useUser();

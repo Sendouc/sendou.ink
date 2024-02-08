@@ -4,6 +4,10 @@
   background-color: var(--bg-lighter);
 }
 
+.tournament__action-section__top-padded {
+  padding: var(--s-3) var(--s-6) var(--s-6) var(--s-6);
+}
+
 .tournament__action-section-title {
   font-size: var(--fonts-lg);
   font-weight: var(--bold);

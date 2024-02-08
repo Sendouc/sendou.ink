@@ -7,5 +7,9 @@ module.exports.up = function (db) {
     db.prepare(
       /* sql */ `alter table "Tournament" add "castedMatchesInfo" text`,
     ).run();
+
+    db.prepare(
+      /* sql */ `alter table "TournamentMatch" drop "childCount"`,
+    ).run();
   })();
 };

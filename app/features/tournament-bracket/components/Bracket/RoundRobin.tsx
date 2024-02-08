@@ -205,7 +205,7 @@ function PlacementsTable({
             <abbr title="Map wins and losses">W/L (M)</abbr>
           </th>
           <th>
-            <abbr title="Total points scored">Pts</abbr>
+            <abbr title="Score summed up">Scr</abbr>
           </th>
           <th>Seed</th>
           <th />
