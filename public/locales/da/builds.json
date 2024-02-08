@@ -27,8 +27,16 @@
 
   "emptyAbilitySlot": "Tomt egenskabsfelt",
 
+  "filters.type.ability": "Efter egenskab",
+  "filters.type.mode": "Efter  spiltilstand",
+  "filters.type.date": "Efter dato",
+  "filters.ability.title": "Egenskabsfilter",
+  "filters.mode.title": "Spiltilstandsfilter",
+  "filters.date.title": "Datofilter",
   "filters.has": "Indeholder",
   "filters.does.not.have": "Indeholder ikke",
   "filters.atLeast": "Mindst",
-  "filters.atMost": "Maks"
+  "filters.atMost": "Maks",
+  "filters.date.since": "Siden",
+  "filters.date.custom": "Tilpasset"
 }
