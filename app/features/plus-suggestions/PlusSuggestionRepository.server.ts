@@ -26,13 +26,14 @@ type FindAllByMonthRow = {
     discordId: string;
     discordAvatar: string | null;
     bio: string | null;
+    plusTier: number | null;
   };
 };
 
 // TODO: naming is a bit weird here (suggestion inside suggestions)
 export type FindAllByMonthItem = Unwrapped<typeof findAllByMonth>;
 export async function findAllByMonth(args: MonthYear) {
-  const rows = (await db
+  const allRows = (await db
     .selectFrom("PlusSuggestion")
     .select(({ eb }) => [
       "PlusSuggestion.id",
@@ -48,7 +49,12 @@ export async function findAllByMonth(args: MonthYear) {
       jsonObjectFrom(
         eb
           .selectFrom("User")
-          .select([...COMMON_USER_FIELDS, "User.bio"])
+          .leftJoin("PlusTier", "PlusSuggestion.suggestedId", "PlusTier.userId")
+          .select([
+            ...COMMON_USER_FIELDS,
+            "User.bio",
+            "PlusTier.tier as plusTier",
+          ])
           .whereRef("PlusSuggestion.suggestedId", "=", "User.id"),
       ).as("suggested"),
     ])
@@ -56,6 +62,12 @@ export async function findAllByMonth(args: MonthYear) {
     .where("PlusSuggestion.year", "=", args.year)
     .orderBy("PlusSuggestion.createdAt", "asc")
     .execute()) as FindAllByMonthRow[];
+
+  // filter out suggestions that were made in the time period
+  // between voting ending and people gaining access from the leaderboard
+  const rows = allRows.filter(
+    (r) => !r.suggested.plusTier || r.suggested.plusTier > r.tier,
+  );
 
   const result: Array<{
     suggested: FindAllByMonthRow["suggested"];
