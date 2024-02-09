@@ -20,7 +20,10 @@ import { SpeakerFilledIcon } from "~/components/icons/SpeakerFilled";
 import { TrashIcon } from "~/components/icons/Trash";
 import type { Preference, Tables, UserMapModePreferences } from "~/db/tables";
 import { requireUserId } from "~/features/auth/core/user.server";
-import { soundCodeToLocalStorageKey } from "~/features/chat/chat-utils";
+import {
+  soundCodeToLocalStorageKey,
+  soundVolume,
+} from "~/features/chat/chat-utils";
 import * as QSettingsRepository from "~/features/sendouq-settings/QSettingsRepository.server";
 import { useIsMounted } from "~/hooks/useIsMounted";
 import { useTranslation } from "react-i18next";
@@ -41,6 +44,8 @@ import { settingsActionSchema } from "../q-settings-schemas.server";
 import styles from "../q-settings.css";
 import { BANNED_MAPS } from "../banned-maps";
 import { Divider } from "~/components/Divider";
+import { useState } from "react";
+import { soundPath } from "~/utils/urls";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -597,6 +602,7 @@ function Sounds() {
         </div>
       </summary>
       {isMounted && <SoundCheckboxes />}
+      {isMounted && <SoundSlider />}
     </details>
   );
 }
@@ -656,6 +662,43 @@ function SoundCheckboxes() {
           </label>
         </div>
       ))}
+    </div>
+  );
+}
+
+function SoundSlider() {
+  const [volume, setVolume] = useState(() => {
+    return soundVolume() || 100;
+  });
+
+  const changeVolume = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newVolume = parseFloat(event.target.value);
+
+    setVolume(newVolume);
+
+    localStorage.setItem(
+      "settings__sound-volume",
+      String(Math.floor(newVolume)),
+    );
+  };
+
+  const playSound = () => {
+    const audio = new Audio(soundPath("sq_like"));
+    audio.volume = soundVolume() / 100;
+    void audio.play();
+  };
+
+  return (
+    <div className="stack horizontal xs items-center ml-2-5">
+      <SpeakerFilledIcon className="q-settings__volume-slider-icon" />
+      <input
+        className="q-settings__volume-slider-input"
+        type="range"
+        value={volume}
+        onChange={changeVolume}
+        onTouchEnd={playSound}
+        onMouseUp={playSound}
+      />
     </div>
   );
 }
