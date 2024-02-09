@@ -46,7 +46,11 @@ export function EliminationBracketSide(props: EliminationBracketSideProps) {
         }
 
         return (
-          <div key={round.id} className="elim-bracket__round-column">
+          <div
+            key={round.id}
+            className="elim-bracket__round-column"
+            data-round-id={round.id}
+          >
             <RoundHeader
               roundId={round.id}
               name={round.name}
@@ -115,7 +119,7 @@ function getRounds(props: EliminationBracketSideProps) {
       const grandFinalsMatch =
         props.type === "winners"
           ? props.bracket.data.match.find(
-              (match) => match.round_id === rounds[rounds.length - 2].id,
+              (match) => match.round_id === rounds[rounds.length - 2]?.id,
             )
           : undefined;
 

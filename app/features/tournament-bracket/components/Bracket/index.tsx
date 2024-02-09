@@ -8,26 +8,26 @@ export function Bracket({ bracket }: { bracket: BracketType }) {
 
   if (bracket.type === "round_robin") {
     return (
-      <div className="bracket elim-bracket">
+      <BracketContainer>
         <RoundRobinBracket bracket={bracket} />
-      </div>
+      </BracketContainer>
     );
   }
 
   if (bracket.type === "single_elimination") {
     return (
-      <div className="bracket elim-bracket">
+      <BracketContainer>
         <EliminationBracketSide
           type="single"
           bracket={bracket}
           isExpanded={bracketExpanded}
         />
-      </div>
+      </BracketContainer>
     );
   }
 
   return (
-    <div className="bracket elim-bracket">
+    <BracketContainer>
       <EliminationBracketSide
         type="winners"
         bracket={bracket}
@@ -38,6 +38,15 @@ export function Bracket({ bracket }: { bracket: BracketType }) {
         bracket={bracket}
         isExpanded={bracketExpanded}
       />
+    </BracketContainer>
+  );
+}
+
+// xxx: refactor css classes
+function BracketContainer({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="bracket elim-bracket" data-testid="brackets-viewer">
+      {children}
     </div>
   );
 }

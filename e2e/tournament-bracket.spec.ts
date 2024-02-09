@@ -317,7 +317,7 @@ test.describe("Tournament bracket", () => {
       url: tournamentBracketsPage({ tournamentId }),
     });
 
-    await page.getByText("Underground bracket").click();
+    await page.getByRole("button", { name: "Underground" }).click();
     await page.getByTestId("check-in-bracket-button").click();
 
     await impersonate(page);

@@ -121,6 +121,7 @@ function MatchWrapper({
           tournamentId: tournament.ctx.id,
           matchId: match.id,
         })}
+        data-match-id={match.id}
       >
         {children}
       </Link>
@@ -169,7 +170,10 @@ function MatchRow({
   const ownTeam = tournament.teamMemberOfByUser(user);
 
   return (
-    <div className={clsx("stack horizontal", { "text-lighter": isLoser })}>
+    <div
+      className={clsx("stack horizontal", { "text-lighter": isLoser })}
+      data-participant-id={team?.id}
+    >
       <div
         className={clsx("bracket__match__seed", {
           "text-lighter-important italic opaque": simulated,
