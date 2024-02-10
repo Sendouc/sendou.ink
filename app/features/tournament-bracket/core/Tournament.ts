@@ -18,6 +18,7 @@ import { fillWithNullTillPowerOfTwo } from "../tournament-bracket-utils";
 import type { Stage } from "~/modules/brackets-model";
 import { Bracket } from "./Bracket";
 import { BRACKET_NAMES } from "~/features/tournament/tournament-constants";
+import { currentSeason } from "~/features/mmr";
 
 export type OptionalIdObject = { id: number } | undefined;
 
@@ -261,6 +262,10 @@ export class Tournament {
         assertUnreachable(type);
       }
     }
+  }
+
+  get ranked() {
+    return Boolean(currentSeason(this.ctx.startTime));
   }
 
   get logoSrc() {
