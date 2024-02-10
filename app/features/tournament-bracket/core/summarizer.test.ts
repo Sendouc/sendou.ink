@@ -22,6 +22,7 @@ const createTeam = (teamId: number, userIds: number[]): TournamentDataTeam => ({
     inGameName: "test",
     isOwner: 0,
     plusTier: null,
+    createdAt: 0,
     userId,
   })),
   name: "Team " + teamId,

@@ -537,6 +537,8 @@ function ResultsSection() {
   );
 }
 
+const INACTIVE_PLAYER_CSS =
+  "tournament__team-with-roster__member__inactive text-lighter-important";
 function Rosters({
   teams,
 }: {
@@ -552,6 +554,13 @@ function Rosters({
   );
   const teamTwoPlayers = data.match.players.filter(
     (p) => p.tournamentTeamId === teamTwo?.id,
+  );
+
+  const teamOneParticipatedPlayers = teamOnePlayers.filter((p) =>
+    tournament.ctx.participatedUsers.includes(p.id),
+  );
+  const teamTwoParticipatedPlayers = teamTwoPlayers.filter((p) =>
+    tournament.ctx.participatedUsers.includes(p.id),
   );
 
   return (
@@ -585,7 +594,17 @@ function Rosters({
             {teamOnePlayers.map((p) => {
               return (
                 <li key={p.id}>
-                  <Link to={userPage(p)} className="stack horizontal sm">
+                  <Link
+                    to={userPage(p)}
+                    className={clsx("stack horizontal sm", {
+                      [INACTIVE_PLAYER_CSS]:
+                        teamOneParticipatedPlayers.length === 0 ||
+                        teamOneParticipatedPlayers.every(
+                          (participatedPlayer) =>
+                            p.id !== participatedPlayer.id,
+                        ),
+                    })}
+                  >
                     <Avatar user={p} size="xxs" />
                     {p.discordName}
                   </Link>
@@ -620,7 +639,17 @@ function Rosters({
             {teamTwoPlayers.map((p) => {
               return (
                 <li key={p.id}>
-                  <Link to={userPage(p)} className="stack horizontal sm">
+                  <Link
+                    to={userPage(p)}
+                    className={clsx("stack horizontal sm", {
+                      [INACTIVE_PLAYER_CSS]:
+                        teamTwoParticipatedPlayers.length === 0 ||
+                        teamTwoParticipatedPlayers.every(
+                          (participatedPlayer) =>
+                            p.id !== participatedPlayer.id,
+                        ),
+                    })}
+                  >
                     <Avatar user={p} size="xxs" />
                     {p.discordName}
                   </Link>
