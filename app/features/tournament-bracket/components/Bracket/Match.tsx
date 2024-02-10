@@ -173,6 +173,7 @@ function MatchRow({
     <div
       className={clsx("stack horizontal", { "text-lighter": isLoser })}
       data-participant-id={team?.id}
+      title={team?.members.map((m) => m.discordName).join(", ")}
     >
       <div
         className={clsx("bracket__match__seed", {
