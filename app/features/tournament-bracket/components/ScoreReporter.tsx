@@ -29,7 +29,6 @@ export type Result = Unpacked<
   SerializeFrom<TournamentMatchLoaderData>["results"]
 >;
 
-// xxx: chat loses focus when match updates?
 // TODO: rename (since it now contains Chat as well)
 export function ScoreReporter({
   teams,
