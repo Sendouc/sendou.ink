@@ -7,6 +7,7 @@ import { tournamentIdFromParams } from "~/features/tournament";
 import { ignoreTransaction } from "~/utils/newrelic.server";
 
 export const loader = ({ request, params }: LoaderFunctionArgs) => {
+  ignoreTransaction();
   const tournamentId = tournamentIdFromParams(params);
 
   return eventStream(request.signal, (send) => {
@@ -15,8 +16,6 @@ export const loader = ({ request, params }: LoaderFunctionArgs) => {
       scores: [number, number];
       isOver: boolean;
     }) => {
-      ignoreTransaction();
-
       send({
         event: bracketSubscriptionKey(tournamentId),
         data: `${args.matchId}-${args.scores[0]}-${args.scores[1]}-${String(

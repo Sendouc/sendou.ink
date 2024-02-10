@@ -7,8 +7,10 @@ import {
   matchSubscriptionKey,
 } from "../tournament-bracket-utils";
 import { getUserId } from "~/features/auth/core/user.server";
+import { ignoreTransaction } from "~/utils/newrelic.server";
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
+  ignoreTransaction();
   const loggedInUser = await getUserId(request);
   const matchId = matchIdFromParams(params);
 
