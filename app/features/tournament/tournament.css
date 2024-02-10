@@ -179,10 +179,9 @@
   white-space: nowrap;
 }
 
-.tournament__team-member-name__captain {
+.tournament__team-member-name__role {
   font-size: var(--fonts-xxxs);
-  color: var(--theme);
-  font-weight: var(--semi-bold);
+  font-weight: var(--bold);
 }
 
 .tournament__logo-container {

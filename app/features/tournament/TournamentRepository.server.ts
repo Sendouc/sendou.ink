@@ -84,6 +84,7 @@ export async function findById(id: number) {
                   "User.country",
                   "PlusTier.tier as plusTier",
                   "TournamentTeamMember.isOwner",
+                  "TournamentTeamMember.createdAt",
                 ])
                 .whereRef(
                   "TournamentTeamMember.tournamentTeamId",
