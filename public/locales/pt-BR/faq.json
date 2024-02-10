@@ -3,22 +3,22 @@
   "a1": "O Servidor Plus é um servidor do Discord para jogadores de alto nível procurarem pessoas para jogar com e contra. Foi fundado em setembro de 2017. É dividido em três níveis dos quais o +1 é o maior. Você obtém acesso quando um membro do servidor sugere você e você é aprovado(a) na votação OU você consegue um posicionamento bom o suficiente nas classficações do SendouQ. \n\nNa votação você obtém uma porcentagem baseada no seu resultado. 0% significa que todos que participaram na votação te rebaixaram e um 100% significa o contrário. 60% é necessário para ser aprovado(a) na votação. Se um membro obtém uma porcentagem abaixo de 60%, ele(a) é rebaixado(a) de nível, ou no caso de estar no +3, removido(a) do servidor. \n\nVeja a página de classificações para ver os indicadores sobre quem está conseguindo acesso por esse método. Um total de 60 pessoas obtém acesso cada temporada: 10 para o +1, 20 para o +2 e 30 para o +3.",
 
   "q2": "Como conseguir um prêmio de insígnia para o meu evento?",
-  "a2": "Você comissiona o borzoic#1991 no Discord para fazer a insígnia. O preço é entre 10 a 30 euros dependendo da complexidade. Após isso, entre em contato com o Sendou para ter ela adicionada na página web.\n\nQualquer torneio pode ter uma insígnia como prêmio. Se você quer premiar insígnias por outros feitos, é melhor consultar o Sendou primeiro sobre sua ideia.",
+  "a2": "Você comissiona a borzoic no Discord para fazer a insígnia. O preço é entre 10 a 30 euros dependendo da complexidade. Após isso, entre em contato com o Sendou para ter ela adicionada na página web.\n\nQualquer torneio pode ter uma insígnia como prêmio. Se você quer premiar insígnias por outros feitos, é melhor consultar o Sendou primeiro sobre sua ideia.",
 
   "q3": "Como atualizar meu avatar ou nome de usuário?",
   "a3": "Atualizar o avatar ou nome de usuário no Discord não os atualiza imediatamente no sendou.ink. Para fazer isso acontecer, você tem duas opções:\n\n1) Se você for membro do Discord desse site ou do Servidor Plus, você pode simplesmente esperar. Existe um processo automático que acontece uma vez por dia e cuida da atualização.\n\n2) Para fazer a atualização imediatamente, você pode usar o comando /update-profile do bot Lohi no Discord.",
 
   "q4": "Eu me inscrevi no Patreon mas eu não vejo nenhuma mudança no website?",
-  "a4": "Tenha certeza que conectou seu Discord no Patreon.com. Depois disso, pode levar até duas horas para o status atualizar no site. Se você está tendo problemas, envie uma mensagem direta ao Sendou para obter ajuda.",
+  "a4": "Tenha certeza que conectou seu Discord ao Patreon.com. Depois disso, pode levar até duas horas para o status atualizar no site. Se você está tendo problemas, envie uma mensagem direta ao Sendou para obter ajuda.",
 
   "q5": "Existe um aplicativo do sendou.ink?",
-  "a5": "Não mas, o sendou.ink pode ser instalado como um 'Aplicativo Web Progressivo' que possui muitos dos benefícios de um aplicativo tais como tela cheia, um ícone na tela inicial e um processo separado do navegador. Pesquise no Google 'como instalar AWP (PWA em Inglês) no *seu navegador*' para ver como.",
+  "a5": "Não mas, o sendou.ink pode ser instalado como um 'Aplicativo Web Progressivo' que possui muitos dos benefícios de um aplicativo tradicional tais como tela cheia, um ícone na tela inicial do seu dispositivo e um processo separado do navegador. Pesquise no Google 'como instalar AWP (PWA em Inglês) no *seu navegador*' para ver como.",
 
   "q6": "Como adicionar o meu Twitch/Twitter(X)/YouTube ao meu perfil?",
   "a6": "Nós usamos seu perfil do Discord para isso. Conecte e verifique seus perfis no Discord, depois saia e faça login novamente no sendou.ink para que o seu perfil atualize.",
 
   "q7": "Como posso adicionar vídeos?",
-  "a7": "Envie uma mensagem ao Sendou no Discord para acesso e instruções.",
+  "a7": "Envie uma mensagem ao Sendou no Discord para obter acesso e instruções.",
 
   "q8": "Como posso mostrar meus resultados do X Battle no meu perfil?",
   "a8": "Encontre sua página de jogador na página Pesquisar Tops. Poste o link na central de ajuda do nosso Discord dizendo que você quer ela conectada. Lembre-se que a conexão não é possível se você não alcançou Top 500 ou foi top player com alguma arma.",
