@@ -379,33 +379,8 @@ function useAutoRefresh() {
   React.useEffect(() => {
     if (!lastEvent) return;
 
-    // xxx: update bracket logic
-
-    // const [matchIdRaw, scoreOneRaw, scoreTwoRaw, isOverRaw] =
-    //   lastEvent.split("-");
-    // const matchId = Number(matchIdRaw);
-    // const scoreOne = Number(scoreOneRaw);
-    // const scoreTwo = Number(scoreTwoRaw);
-    // const isOver = isOverRaw === "true";
-
-    // if (isOver) {
-    //   // bracketsViewer.updateMatch can't advance bracket
-    //   // so we revalidate loader when the match is over
-    //   revalidate();
-    // } else {
-    //   // TODO: shows 1 - "-" when updating match where other score is 0
-    //   // @ts-expect-error - brackets-viewer is not typed
-    //   window.bracketsViewer.updateMatch({
-    //     id: matchId,
-    //     opponent1: {
-    //       score: scoreOne,
-    //     },
-    //     opponent2: {
-    //       score: scoreTwo,
-    //     },
-    //     status: Status.Running,
-    //   });
-    // }
+    // TODO: maybe later could look into not revalidating unless bracket advanced but do something fancy in the tournament class instead
+    revalidate();
   }, [lastEvent, revalidate]);
 }
 

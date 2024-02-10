@@ -42,10 +42,9 @@ export function Bracket({ bracket }: { bracket: BracketType }) {
   );
 }
 
-// xxx: refactor css classes
 function BracketContainer({ children }: { children: React.ReactNode }) {
   return (
-    <div className="bracket elim-bracket" data-testid="brackets-viewer">
+    <div className="bracket" data-testid="brackets-viewer">
       {children}
     </div>
   );

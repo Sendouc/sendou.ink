@@ -77,7 +77,6 @@ export abstract class Bracket {
     this.createdSimulation();
   }
 
-  // xxx: match class with nice helpers to remove copy-paste?
   private createdSimulation() {
     if (
       this.type === "round_robin" ||

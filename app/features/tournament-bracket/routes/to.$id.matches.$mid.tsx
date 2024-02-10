@@ -358,7 +358,6 @@ export const loader = ({ params }: LoaderFunctionArgs) => {
   };
 };
 
-// xxx: checkbox "set will be over & locked" when reporting last score?
 export default function TournamentMatchPage() {
   const user = useUser();
   const visibility = useVisibilityChange();

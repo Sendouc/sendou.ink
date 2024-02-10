@@ -145,9 +145,9 @@ function MatchRow({
   const opponent = match[`opponent${side}`];
 
   const score = () => {
-    if (!opponent?.id || isPreview) return null;
+    if (!match.opponent1?.id || !match.opponent2?.id || isPreview) return null;
 
-    return opponent.score ?? 0;
+    return opponent!.score ?? 0;
   };
 
   const isLoser = opponent?.result === "loss";

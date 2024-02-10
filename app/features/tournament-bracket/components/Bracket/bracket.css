@@ -1,9 +1,6 @@
 .bracket {
   --match-width: 140px;
   --match-height: 55px;
-}
-
-.elim-bracket {
   overflow-x: auto;
   display: flex;
   flex-direction: column;
