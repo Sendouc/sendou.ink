@@ -47,6 +47,7 @@ import { CUSTOMIZED_CSS_VARS_NAME } from "./constants";
 import NProgress from "nprogress";
 import nProgressStyles from "nprogress/nprogress.css";
 import * as UserRepository from "~/features/user-page/UserRepository.server";
+import { browserTimingHeader } from "./utils/newrelic.server";
 
 export const shouldRevalidate: ShouldRevalidateFunction = ({ nextUrl }) => {
   // // reload on language change so the selected language gets set into the cookie
@@ -97,6 +98,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       publisherId: process.env["PLAYWIRE_PUBLISHER_ID"],
       websiteId: process.env["PLAYWIRE_WEBSITE_ID"],
       loginDisabled: process.env["LOGIN_DISABLED"] === "true",
+      browserTimingHeader: browserTimingHeader(),
       user: user
         ? {
             discordName: user.discordName,
@@ -163,6 +165,12 @@ function Document({
           type="text/javascript"
           src="https://cdn.jsdelivr.net/npm/brackets-viewer@1.5.1/dist/brackets-viewer.min.js"
         />
+        {data?.browserTimingHeader ? (
+          <script
+            type="text/javascript"
+            dangerouslySetInnerHTML={{ __html: data?.browserTimingHeader }}
+          />
+        ) : null}
         <PWALinks />
         <Fonts />
       </head>

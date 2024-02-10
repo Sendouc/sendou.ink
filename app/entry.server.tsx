@@ -1,16 +1,20 @@
 import { PassThrough } from "stream";
 
 import {
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
   createReadableStreamFromReadable,
   type EntryContext,
 } from "@remix-run/node";
 import { RemixServer } from "@remix-run/react";
 import { isbot } from "isbot";
-import { renderToPipeableStream } from "react-dom/server";
 import cron from "node-cron";
-import { updatePatreonData } from "./modules/patreon";
-import { i18Instance } from "./modules/i18n";
+import { renderToPipeableStream } from "react-dom/server";
 import { I18nextProvider } from "react-i18next";
+import { getUser } from "./features/auth/core";
+import { i18Instance } from "./modules/i18n";
+import { updatePatreonData } from "./modules/patreon";
+import { noticeError, setTransactionName } from "./utils/newrelic.server";
 
 const ABORT_DELAY = 5000;
 
@@ -21,6 +25,14 @@ const handleRequest = (
   remixContext: EntryContext,
 ) => {
   const userAgent = request.headers.get("user-agent");
+
+  const lastMatch =
+    remixContext.staticHandlerContext.matches[
+      remixContext.staticHandlerContext.matches.length - 1
+    ];
+
+  if (lastMatch) setTransactionName(`ssr/${lastMatch.route.id}`);
+
   return userAgent && isbot(userAgent)
     ? handleBotRequest(
         request,
@@ -36,6 +48,16 @@ const handleRequest = (
       );
 };
 export default handleRequest;
+
+export function handleDataRequest(
+  response: Response,
+  { request }: LoaderFunctionArgs | ActionFunctionArgs,
+) {
+  const name = new URL(request.url).searchParams.get("_data");
+  if (name) setTransactionName(name);
+
+  return response;
+}
 
 const handleBotRequest = (
   request: Request,
@@ -124,6 +146,23 @@ const handleBrowserRequest = (
       setTimeout(abort, ABORT_DELAY);
     });
   });
+
+export async function handleError(
+  error: unknown,
+  { request }: LoaderFunctionArgs | ActionFunctionArgs,
+) {
+  const user = await getUser(request);
+  if (!request.signal.aborted) {
+    if (error instanceof Error) {
+      noticeError(error, {
+        "enduser.id": user?.id,
+        // TODO: FetchError: Invalid response body while trying to fetch http://localhost:5800/admin?_data=features%2Fadmin%2Froutes%2Fadmin: This stream has already been locked for exclusive reading by another reader
+        // formData: JSON.stringify(formDataToObject(await request.formData())),
+      });
+    }
+    console.error(error);
+  }
+}
 
 // example from https://github.com/BenMcH/remix-rss/blob/main/app/entry.server.tsx
 declare global {

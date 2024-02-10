@@ -3,6 +3,7 @@ import type { Params, UIMatch } from "@remix-run/react";
 import type navItems from "~/components/layout/nav-items.json";
 import { json } from "@remix-run/node";
 import type { Namespace, TFunction } from "i18next";
+import { noticeError } from "./newrelic.server";
 
 export function notFoundIfFalsy<T>(value: T | null | undefined): T {
   if (!value) throw new Response(null, { status: 404 });
@@ -18,7 +19,10 @@ export function notFoundIfNullLike<T>(value: T | null | undefined): T {
 }
 
 export function badRequestIfFalsy<T>(value: T | null | undefined): T {
-  if (!value) throw new Response(null, { status: 400 });
+  if (!value) {
+    noticeError(new Error("Value is falsy"));
+    throw new Response(null, { status: 400 });
+  }
 
   return value;
 }
@@ -30,11 +34,14 @@ export function parseSearchParams<T extends z.ZodTypeAny>({
   request: Request;
   schema: T;
 }): z.infer<T> {
+  const url = new URL(request.url);
+  const searchParams = Object.fromEntries(url.searchParams);
+
   try {
-    const url = new URL(request.url);
-    return schema.parse(Object.fromEntries(url.searchParams));
+    return schema.parse(searchParams);
   } catch (e) {
     if (e instanceof z.ZodError) {
+      noticeError(e, { searchParams: JSON.stringify(searchParams) });
       console.error(e);
       throw new Response(JSON.stringify(e), { status: 400 });
     }
@@ -64,14 +71,16 @@ export async function parseRequestFormData<T extends z.ZodTypeAny>({
   schema: T;
   parseAsync?: boolean;
 }): Promise<z.infer<T>> {
+  const formDataObj = formDataToObject(await request.formData());
   try {
     const parsed = parseAsync
-      ? await schema.parseAsync(formDataToObject(await request.formData()))
-      : schema.parse(formDataToObject(await request.formData()));
+      ? await schema.parseAsync(formDataObj)
+      : schema.parse(formDataObj);
 
     return parsed;
   } catch (e) {
     if (e instanceof z.ZodError) {
+      noticeError(e, { formData: JSON.stringify(formDataObj) });
       console.error(e);
       throw new Response(JSON.stringify(e), { status: 400 });
     }
@@ -88,10 +97,12 @@ export function parseFormData<T extends z.ZodTypeAny>({
   formData: FormData;
   schema: T;
 }): z.infer<T> {
+  const formDataObj = formDataToObject(formData);
   try {
-    return schema.parse(formDataToObject(formData));
+    return schema.parse(formDataObj);
   } catch (e) {
     if (e instanceof z.ZodError) {
+      noticeError(e, { formData: JSON.stringify(formDataObj) });
       console.error(e);
       throw new Response(JSON.stringify(e), { status: 400 });
     }
@@ -112,6 +123,7 @@ export function parseParams<T extends z.ZodTypeAny>({
     return schema.parse(params);
   } catch (e) {
     if (e instanceof z.ZodError) {
+      noticeError(e, { params: JSON.stringify(params) });
       console.error(e);
       throw new Response(JSON.stringify(e), { status: 400 });
     }
@@ -173,6 +185,7 @@ export function validate(
 ): asserts condition {
   if (condition) return;
 
+  noticeError(new Error(`Validation error: ${message}`));
   throw new Response(
     message ? JSON.stringify({ validationError: message }) : undefined,
     {
