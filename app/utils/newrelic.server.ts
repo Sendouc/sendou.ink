@@ -27,3 +27,10 @@ export const noticeError = (
 
 export const setTransactionName = (name: string) =>
   isEnabled && newrelic.setTransactionName(name);
+
+export const ignoreTransaction = () => {
+  if (!isEnabled) return;
+
+  const transactionHandle = newrelic.getTransaction();
+  transactionHandle.ignore();
+};

@@ -4,6 +4,7 @@ import { eventStream } from "remix-utils/sse/server";
 import { emitter } from "../core/emitters.server";
 import { bracketSubscriptionKey } from "../tournament-bracket-utils";
 import { tournamentIdFromParams } from "~/features/tournament";
+import { ignoreTransaction } from "~/utils/newrelic.server";
 
 export const loader = ({ request, params }: LoaderFunctionArgs) => {
   const tournamentId = tournamentIdFromParams(params);
@@ -14,6 +15,8 @@ export const loader = ({ request, params }: LoaderFunctionArgs) => {
       scores: [number, number];
       isOver: boolean;
     }) => {
+      ignoreTransaction();
+
       send({
         event: bracketSubscriptionKey(tournamentId),
         data: `${args.matchId}-${args.scores[0]}-${args.scores[1]}-${String(
