@@ -117,20 +117,27 @@ export function ScoreReporter({
           tournament,
         })}
       >
-        {currentPosition > 0 && !presentational && type === "EDIT" && (
-          <Form method="post">
-            <input type="hidden" name="position" value={currentPosition - 1} />
-            <div className="tournament-bracket__stage-banner__bottom-bar">
-              <SubmitButton
-                _action="UNDO_REPORT_SCORE"
-                className="tournament-bracket__stage-banner__undo-button"
-                testId="undo-score-button"
-              >
-                {t("tournament:match.action.undoLastScore")}
-              </SubmitButton>
-            </div>
-          </Form>
-        )}
+        {currentPosition > 0 &&
+          !presentational &&
+          type === "EDIT" &&
+          tournament.isOrganizer(user) && (
+            <Form method="post">
+              <input
+                type="hidden"
+                name="position"
+                value={currentPosition - 1}
+              />
+              <div className="tournament-bracket__stage-banner__bottom-bar">
+                <SubmitButton
+                  _action="UNDO_REPORT_SCORE"
+                  className="tournament-bracket__stage-banner__undo-button"
+                  testId="undo-score-button"
+                >
+                  {t("tournament:match.action.undoLastScore")}
+                </SubmitButton>
+              </div>
+            </Form>
+          )}
         {tournament.isOrganizer(user) &&
           tournament.matchCanBeReopened(data.match.id) &&
           presentational && (
