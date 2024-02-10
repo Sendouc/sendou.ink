@@ -22,3 +22,5 @@ dump
 /test-results/
 /playwright-report/
 /playwright/.cache/
+
+newrelic_agent.log

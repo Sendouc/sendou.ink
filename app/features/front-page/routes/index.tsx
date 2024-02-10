@@ -75,7 +75,7 @@ export default function FrontPage() {
         <LogInButton />
         {navItems.map((item) => (
           <Link
-            to={item.url}
+            to={`/${item.url}`}
             className="front__nav-item"
             key={item.name}
             prefetch={item.prefetch ? "render" : undefined}

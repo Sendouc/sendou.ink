@@ -10,7 +10,6 @@ import {
 import { COMMON_USER_FIELDS } from "~/utils/kysely.server";
 import type { Unwrapped } from "~/utils/types";
 import * as PlusSuggestionRepository from "~/features/plus-suggestions/PlusSuggestionRepository.server";
-import invariant from "tiny-invariant";
 
 const resultsByMonthYearQuery = (args: MonthYear) =>
   db
@@ -89,7 +88,6 @@ export async function usersForVoting(loggedInUser: {
       rangeToMonthYear(nextNonCompletedVoting(new Date())),
     )
   ).filter((suggestion) => suggestion.tier === loggedInUser.plusTier);
-  invariant(suggestedUsers);
 
   const result: UsersForVoting = [];
 

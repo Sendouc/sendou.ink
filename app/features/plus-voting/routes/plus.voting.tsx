@@ -62,10 +62,22 @@ export const action: ActionFunction = async ({ request }) => {
     id: user.id,
     plusTier: user.plusTier,
   });
-  validateVotes({ votes: data.votes, usersForVoting });
+
+  // this should not be needed but makes the voting a bit more resilient
+  // if there is a bug that causes some user to show up twice, or some user to show up who should not be included
+  const seen = new Set<number>();
+  const filteredVotes = data.votes.filter((vote) => {
+    if (seen.has(vote.votedId)) {
+      return false;
+    }
+    seen.add(vote.votedId);
+    return usersForVoting.some((u) => u.user.id === vote.votedId);
+  });
+
+  validateVotes({ votes: filteredVotes, usersForVoting });
 
   // freebie +1 for yourself if you vote
-  const votesForDb = [...data.votes].concat({
+  const votesForDb = [...filteredVotes].concat({
     votedId: user.id,
     score: PLUS_UPVOTE,
   });
