@@ -15,7 +15,10 @@ interface ResolveCurrentMapListArgs {
 }
 
 export function resolveMapList(args: ResolveCurrentMapListArgs) {
-  return syncCached(String(args.matchId), () => resolveFreshMapList(args));
+  // include team ids in the key to handle a case where match was reopened causing one of the teams to change
+  return syncCached(`${args.matchId}-${args.teams[0]}-${args.teams[1]}`, () =>
+    resolveFreshMapList(args),
+  );
 }
 
 export function resolveFreshMapList(args: ResolveCurrentMapListArgs) {
