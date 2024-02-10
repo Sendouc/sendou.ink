@@ -81,6 +81,7 @@ import { useUser } from "~/features/auth/core";
 import { LinkButton } from "~/components/Button";
 import { Image } from "~/components/Image";
 import { cachedStreams } from "~/features/sendouq-streams/core/streams.server";
+import { errorIsSqliteForeignKeyConstraintFailure } from "~/utils/sql";
 
 export const handle: SendouRouteHandle = {
   i18n: ["user", "q"],
@@ -121,10 +122,18 @@ export const action: ActionFunction = async ({ request }) => {
     case "LIKE": {
       if (!isGroupManager()) return null;
 
-      addLike({
-        likerGroupId: currentGroup.id,
-        targetGroupId: data.targetGroupId,
-      });
+      try {
+        addLike({
+          likerGroupId: currentGroup.id,
+          targetGroupId: data.targetGroupId,
+        });
+      } catch (e) {
+        if (!(e instanceof Error)) throw e;
+        // the group disbanded before we could like it
+        if (errorIsSqliteForeignKeyConstraintFailure(e)) return null;
+
+        throw e;
+      }
       refreshGroup(currentGroup.id);
 
       const targetChatCode = chatCodeByGroupId(data.targetGroupId);

@@ -2,6 +2,10 @@ export function errorIsSqliteUniqueConstraintFailure(error: any) {
   return error?.code === "SQLITE_CONSTRAINT_UNIQUE";
 }
 
+export function errorIsSqliteForeignKeyConstraintFailure(error: Error) {
+  return error?.message?.includes("FOREIGN KEY constraint failed");
+}
+
 export function parseDBJsonArray(value: any) {
   const parsed = JSON.parse(value);
 
