@@ -1,5 +1,4 @@
 import clsx from "clsx";
-import * as React from "react";
 import { useTranslation } from "react-i18next";
 import { Divider } from "~/components/Divider";
 import { ModeImage } from "~/components/Image";
@@ -10,63 +9,46 @@ import { nullFilledArray } from "~/utils/arrays";
 import { stageImageUrl } from "~/utils/urls";
 import { BANNED_MAPS } from "../banned-maps";
 
-const AMOUNT_OF_MAPS_TO_PICK = 7;
-
-export function ModeMapPoolPicker({ mode }: { mode: ModeShort }) {
+export function ModeMapPoolPicker({
+  mode,
+  amountToPick,
+  pool,
+  onChange,
+}: {
+  mode: ModeShort;
+  amountToPick: number;
+  pool: StageId[];
+  onChange: (stages: StageId[]) => void;
+}) {
   // xxx: initial state from data but take in account they might have banned stages in DB
-  const [stages, setStages] = React.useState<(StageId | null)[]>(() =>
-    nullFilledArray(AMOUNT_OF_MAPS_TO_PICK),
-  );
+
+  const stages: (StageId | null)[] = [
+    ...pool,
+    ...nullFilledArray(amountToPick - pool.length),
+  ];
 
   const handlePickedStageClick = (stageId: StageId) => {
-    const newStages = [...stages];
-    const index = newStages.indexOf(stageId);
-    newStages[index] = null;
-
-    newStages.sort((a, b) => {
-      if (a === null && b === null) return 0;
-      if (a === null) return 1;
-      if (b === null) return -1;
-
-      return a - b;
-    });
-
-    setStages(newStages);
+    onChange(pool.filter((s) => s !== stageId));
   };
 
   const handleUnpickedStageClick = (stageId: StageId) => {
-    if (stages[AMOUNT_OF_MAPS_TO_PICK - 1] !== null) {
+    // is there space left?
+    if (stages[amountToPick - 1] !== null) {
       return;
     }
 
-    const pickedStages = stages.filter((s) => s !== null);
-
-    if (
-      pickedStages.includes(stageId) ||
-      pickedStages.length === AMOUNT_OF_MAPS_TO_PICK
-    ) {
+    // was it already picked?
+    if (pool.includes(stageId)) {
       return;
     }
 
-    const newStages = [...stages];
-    const firstNull = newStages.indexOf(null);
-    newStages[firstNull] = stageId;
-
-    setStages(
-      newStages.sort((a, b) => {
-        if (a === null && b === null) return 0;
-        if (a === null) return 1;
-        if (b === null) return -1;
-
-        return a - b;
-      }),
-    );
+    onChange([...pool, stageId].sort((a, b) => a - b));
   };
 
   return (
     <div className="map-pool-picker stack sm">
       <div className="stack sm horizontal justify-center">
-        {nullFilledArray(AMOUNT_OF_MAPS_TO_PICK).map((_, index) => {
+        {nullFilledArray(amountToPick).map((_, index) => {
           return (
             <MapSlot
               key={index}
@@ -79,7 +61,7 @@ export function ModeMapPoolPicker({ mode }: { mode: ModeShort }) {
       <Divider className="map-pool-picker__divider">
         <ModeImage mode={mode} size={32} />
       </Divider>
-      <div className="stack sm horizontal flex-wrap mt-1">
+      <div className="stack sm horizontal flex-wrap justify-center mt-1">
         {stageIds.map((stageId) => {
           const banned = BANNED_MAPS[mode].includes(stageId);
           const selected = stages.includes(stageId);
@@ -146,6 +128,7 @@ function MapButton({
         }
         onClick={onClick}
         disabled={banned}
+        type="button"
       />
       {selected ? (
         <CheckmarkIcon

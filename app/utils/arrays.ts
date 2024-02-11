@@ -80,7 +80,7 @@ export function removeDuplicatesByProperty<T>(
   });
 }
 
-export function nullFilledArray(size: number) {
+export function nullFilledArray(size: number): null[] {
   return new Array(size).fill(null);
 }
 

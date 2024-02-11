@@ -545,10 +545,9 @@ export interface UserMapModePreferences {
     mode: ModeShort;
     preference?: Preference;
   }>;
-  maps: Array<{
-    stageId: StageId;
+  pools: Array<{
     mode: ModeShort;
-    preference?: Preference;
+    stages: StageId[];
   }>;
 }
 
@@ -581,6 +580,7 @@ export interface User {
   twitter: string | null;
   vc: Generated<"YES" | "NO" | "LISTEN_ONLY">;
   youtubeId: string | null;
+  // xxx: migration?
   mapModePreferences: ColumnType<
     UserMapModePreferences | null,
     string | null,

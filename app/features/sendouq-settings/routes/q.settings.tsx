@@ -7,9 +7,11 @@ import type {
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import clsx from "clsx";
 import * as React from "react";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "~/components/Button";
 import { WeaponCombobox } from "~/components/Combobox";
-import { ModeImage, StageImage, WeaponImage } from "~/components/Image";
+import { ModeImage, WeaponImage } from "~/components/Image";
 import { Main } from "~/components/Main";
 import { SubmitButton } from "~/components/SubmitButton";
 import { CrossIcon } from "~/components/icons/Cross";
@@ -26,26 +28,25 @@ import {
 } from "~/features/chat/chat-utils";
 import * as QSettingsRepository from "~/features/sendouq-settings/QSettingsRepository.server";
 import { useIsMounted } from "~/hooks/useIsMounted";
-import { useTranslation } from "react-i18next";
 import { languagesUnified } from "~/modules/i18n/config";
-import type { MainWeaponId, ModeShort, StageId } from "~/modules/in-game-lists";
-import { stageIds } from "~/modules/in-game-lists";
+import type { MainWeaponId, ModeShort } from "~/modules/in-game-lists";
 import { modesShort } from "~/modules/in-game-lists/modes";
-import { type SendouRouteHandle, parseRequestFormData } from "~/utils/remix";
+import { parseRequestFormData, type SendouRouteHandle } from "~/utils/remix";
 import { assertUnreachable } from "~/utils/types";
 import {
   SENDOUQ_PAGE,
   SENDOUQ_SETTINGS_PAGE,
   navIconUrl,
   preferenceEmojiUrl,
+  soundPath,
 } from "~/utils/urls";
-import { SENDOUQ_WEAPON_POOL_MAX_SIZE } from "../q-settings-constants";
+import { ModeMapPoolPicker } from "../components/ModeMapPoolPicker";
+import {
+  AMOUNT_OF_MAPS_IN_POOL_PER_MODE,
+  SENDOUQ_WEAPON_POOL_MAX_SIZE,
+} from "../q-settings-constants";
 import { settingsActionSchema } from "../q-settings-schemas.server";
 import styles from "../q-settings.css";
-import { BANNED_MAPS } from "../banned-maps";
-import { Divider } from "~/components/Divider";
-import { useState } from "react";
-import { soundPath } from "~/utils/urls";
 
 export const links: LinksFunction = () => {
   return [{ rel: "stylesheet", href: styles }];
@@ -132,37 +133,10 @@ function MapPicker() {
   const fetcher = useFetcher();
   const [preferences, setPreferences] = React.useState<UserMapModePreferences>(
     data.settings.mapModePreferences ?? {
-      maps: [],
+      pools: [],
       modes: [],
     },
   );
-
-  const handleMapPreferenceChange = ({
-    stageId,
-    mode,
-    preference,
-  }: {
-    stageId: StageId;
-    mode: ModeShort;
-    preference: Preference & "NEUTRAL";
-  }) => {
-    const newMapPreferences = preferences.maps.filter(
-      (map) => map.stageId !== stageId || map.mode !== mode,
-    );
-
-    if (preference !== "NEUTRAL") {
-      newMapPreferences.push({
-        stageId,
-        mode,
-        preference,
-      });
-    }
-
-    setPreferences({
-      ...preferences,
-      maps: newMapPreferences,
-    });
-  };
 
   const handleModePreferenceChange = ({
     mode,
@@ -188,6 +162,22 @@ function MapPicker() {
     });
   };
 
+  const poolsOk = () => {
+    for (const mode of modesShort) {
+      const mp = preferences.modes.find(
+        (preference) => preference.mode === mode,
+      );
+      if (mp?.preference === "AVOID") continue;
+
+      const pool = preferences.pools.find((p) => p.mode === mode);
+      if (!pool || pool.stages.length !== AMOUNT_OF_MAPS_IN_POOL_PER_MODE) {
+        return false;
+      }
+    }
+
+    return true;
+  };
+
   return (
     <details>
       <summary className="q-settings__summary">
@@ -199,7 +189,16 @@ function MapPicker() {
         <input
           type="hidden"
           name="mapModePreferences"
-          value={JSON.stringify(preferences)}
+          value={JSON.stringify({
+            ...preferences,
+            pools: preferences.pools.filter((p) => {
+              const isAvoided =
+                preferences.modes.find((m) => m.mode === p.mode)?.preference ===
+                "AVOID";
+
+              return !isAvoided;
+            }),
+          })}
         />
         <div className="stack lg">
           <div className="stack items-center">
@@ -226,83 +225,55 @@ function MapPicker() {
           </div>
 
           <div className="stack lg">
-            {stageIds.map((stageId) => (
-              <MapModeRadios
-                key={stageId}
-                stageId={stageId}
-                preferences={preferences.maps.filter(
-                  (map) => map.stageId === stageId,
-                )}
-                onPreferenceChange={handleMapPreferenceChange}
-              />
-            ))}
+            {modesShort.map((mode) => {
+              const mp = preferences.modes.find(
+                (preference) => preference.mode === mode,
+              );
+              if (mp?.preference === "AVOID") return null;
+
+              return (
+                <ModeMapPoolPicker
+                  key={mode}
+                  mode={mode}
+                  amountToPick={AMOUNT_OF_MAPS_IN_POOL_PER_MODE}
+                  pool={
+                    preferences.pools.find((p) => p.mode === mode)?.stages ?? []
+                  }
+                  onChange={(stages) => {
+                    const newPools = preferences.pools.filter(
+                      (p) => p.mode !== mode,
+                    );
+                    newPools.push({ mode, stages });
+                    setPreferences({
+                      ...preferences,
+                      pools: newPools,
+                    });
+                  }}
+                />
+              );
+            })}
           </div>
         </div>
         <div className="mt-6">
-          <SubmitButton
-            _action="UPDATE_MAP_MODE_PREFERENCES"
-            state={fetcher.state}
-            className="mx-auto"
-            size="big"
-          >
-            {t("common:actions.save")}
-          </SubmitButton>
+          {poolsOk() ? (
+            <SubmitButton
+              _action="UPDATE_MAP_MODE_PREFERENCES"
+              state={fetcher.state}
+              className="mx-auto"
+              size="big"
+            >
+              {t("common:actions.save")}
+            </SubmitButton>
+          ) : (
+            <div className="text-warning text-sm text-center font-bold">
+              {t("q:settings.mapPool.notOk", {
+                count: AMOUNT_OF_MAPS_IN_POOL_PER_MODE,
+              })}
+            </div>
+          )}
         </div>
       </fetcher.Form>
     </details>
-  );
-}
-
-function MapModeRadios({
-  stageId,
-  preferences,
-  onPreferenceChange,
-}: {
-  stageId: StageId;
-  preferences: UserMapModePreferences["maps"];
-  onPreferenceChange: (args: {
-    stageId: StageId;
-    mode: ModeShort;
-    preference: Preference & "NEUTRAL";
-  }) => void;
-}) {
-  const { t } = useTranslation(["q", "game-misc"]);
-
-  return (
-    <div className="q-settings__map-mode-radios-container">
-      <div className="stack items-center text-uppercase text-lighter text-xs font-bold">
-        {t(`game-misc:STAGE_${stageId}`)}
-        <StageImage stageId={stageId} width={250} className="rounded" />
-      </div>
-      <div className="stack justify-evenly">
-        {modesShort.map((modeShort) => {
-          const preference = preferences.find(
-            (preference) =>
-              preference.mode === modeShort && preference.stageId === stageId,
-          );
-
-          const isBanned = BANNED_MAPS[modeShort].includes(stageId);
-
-          return (
-            <div key={modeShort} className="stack horizontal xs my-1">
-              <ModeImage mode={modeShort} width={24} />
-              {isBanned ? (
-                <Divider className="q-settings__banned">
-                  {t("q:settings.banned")}
-                </Divider>
-              ) : (
-                <PreferenceRadioGroup
-                  preference={preference?.preference}
-                  onPreferenceChange={(preference) =>
-                    onPreferenceChange({ mode: modeShort, preference, stageId })
-                  }
-                />
-              )}
-            </div>
-          );
-        })}
-      </div>
-    </div>
   );
 }
 
