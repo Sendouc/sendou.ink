@@ -242,6 +242,7 @@ function FancyStageBanner({
             rounded: !infos,
           })}
           style={style as any}
+          data-testid="stage-banner"
         >
           <div className="tournament-bracket__stage-banner__top-bar">
             <h4 className="tournament-bracket__stage-banner__top-bar__header">

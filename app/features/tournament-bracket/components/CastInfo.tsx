@@ -71,6 +71,7 @@ export function CastInfo({
         name="twitchAccount"
         id="twitchAccount"
         defaultValue={currentlyCastedOn ?? "null"}
+        data-testid="cast-info-select"
       >
         <option value="null">Not casted</option>
         {castTwitchAccounts.map((account) => (
@@ -120,6 +121,7 @@ function CastInfoWrapper({
               state={fetcher.state}
               _action={_action}
               icon={icon}
+              testId="cast-info-submit-button"
             >
               {submitButtonText}
             </SubmitButton>
