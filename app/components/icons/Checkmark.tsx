@@ -1,9 +1,11 @@
 export function CheckmarkIcon({
   className,
   testId,
+  onClick,
 }: {
   className?: string;
   testId?: string;
+  onClick?: () => void;
 }) {
   return (
     <svg
@@ -12,6 +14,7 @@ export function CheckmarkIcon({
       viewBox="0 0 20 20"
       fill="currentColor"
       data-testid={testId}
+      onClick={onClick}
     >
       <path
         fillRule="evenodd"
